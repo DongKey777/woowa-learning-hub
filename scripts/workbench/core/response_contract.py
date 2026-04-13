@@ -201,18 +201,220 @@ def build_verification_block(
     }
 
 
+APPLICABILITY_HINTS = ("primary", "supporting", "omit")
+
+
+def _hint_from_plan(block_plan: dict[str, Any] | None, key: str, default: str) -> str:
+    if not block_plan:
+        return default
+    value = block_plan.get(key)
+    if value in APPLICABILITY_HINTS:
+        return value
+    return default
+
+
+def _iter_cs_hits(augment_result: dict[str, Any]):
+    """Yield (bucket_key, hit) pairs for cs_block rendering.
+
+    by_fallback_key is preferred when ``fallback_reason`` is set; by_learning_point
+    is preferred otherwise. Both may appear when ``fallback_reason='partial_coverage'``.
+    """
+    fallback_reason = augment_result.get("fallback_reason")
+    by_lp = augment_result.get("by_learning_point") or {}
+    by_fb = augment_result.get("by_fallback_key") or {}
+
+    if fallback_reason and by_fb:
+        for key, hits in by_fb.items():
+            for hit in hits:
+                yield key, hit
+        if fallback_reason == "partial_coverage":
+            for key, hits in by_lp.items():
+                for hit in hits:
+                    yield key, hit
+        return
+
+    for key, hits in by_lp.items():
+        for hit in hits:
+            yield key, hit
+    for key, hits in by_fb.items():
+        for hit in hits:
+            yield key, hit
+
+
+def build_cs_block(
+    augment_result: dict[str, Any] | None,
+    *,
+    applicability_hint: str = "omit",
+) -> dict[str, Any]:
+    """Render a cs_block as a **view** of cs_augmentation.
+
+    cs_augmentation is the source of truth; this block is rebuildable from it.
+    ``reason`` tracks whether we have hits, no hits, or a degrade.
+    """
+    if not augment_result:
+        return {
+            "markdown": None,
+            "sources": [],
+            "reason": "no_augmentation",
+            "applicability_hint": applicability_hint,
+        }
+
+    meta = augment_result.get("meta") or {}
+    mode_used = meta.get("mode_used")
+    if mode_used == "skip":
+        return {
+            "markdown": None,
+            "sources": [],
+            "reason": "rag_skip",
+            "applicability_hint": applicability_hint,
+        }
+    if not meta.get("rag_ready", False):
+        return {
+            "markdown": None,
+            "sources": [],
+            "reason": meta.get("reason") or "rag_not_ready",
+            "applicability_hint": applicability_hint,
+        }
+
+    pairs = list(_iter_cs_hits(augment_result))
+    if not pairs:
+        return {
+            "markdown": None,
+            "sources": [],
+            "reason": "no_hits",
+            "applicability_hint": applicability_hint,
+        }
+
+    lines = ["## 이번 질문의 CS 근거"]
+    sources: list[dict[str, Any]] = []
+    for bucket_key, hit in pairs:
+        category = hit.get("category") or "general"
+        path = hit.get("path") or ""
+        section = hit.get("section_title") or ""
+        snippet = (hit.get("snippet_preview") or "").strip()
+        header = f"- [{category}] {path}"
+        if section:
+            header += f" — {section}"
+        lines.append(header)
+        if snippet:
+            lines.append(f"  {snippet}")
+        sources.append({
+            "bucket": bucket_key,
+            "path": path,
+            "category": category,
+            "section_title": section or None,
+            "score": hit.get("score"),
+        })
+
+    return {
+        "markdown": "\n".join(lines),
+        "sources": sources,
+        "reason": "ready",
+        "applicability_hint": applicability_hint,
+    }
+
+
+def build_drill_block(
+    drill_offer: dict[str, Any] | None,
+    drill_result: dict[str, Any] | None,
+    *,
+    applicability_hint: str = "omit",
+) -> dict[str, Any]:
+    """Drill offer block. Phase 4 replaces the body; Phase 2 ships a stub."""
+    if drill_offer:
+        question = drill_offer.get("question") or ""
+        markdown = (
+            "## 확인 질문 (선택)\n"
+            f"{question}\n\n"
+            "(원한다면 다음 턴에 답변해 줘. 약점 축을 다듬을 수 있어.)"
+        )
+        return {
+            "markdown": markdown,
+            "reason": "new_offer",
+            "applicability_hint": applicability_hint,
+        }
+    if drill_result is not None:
+        return {
+            "markdown": None,
+            "reason": "result_from_previous",
+            "applicability_hint": applicability_hint,
+        }
+    return {
+        "markdown": None,
+        "reason": "none",
+        "applicability_hint": applicability_hint,
+    }
+
+
+def build_drill_result_block(
+    drill_result: dict[str, Any] | None,
+    *,
+    applicability_hint: str = "omit",
+) -> dict[str, Any]:
+    """Drill answer scoring block. Phase 4 fills in real scoring."""
+    if not drill_result:
+        return {
+            "markdown": None,
+            "reason": "none",
+            "applicability_hint": applicability_hint,
+        }
+    total = drill_result.get("total_score")
+    level = drill_result.get("level")
+    weak = ", ".join(drill_result.get("weak_tags") or []) or "-"
+    markdown = (
+        "## 지난 확인 질문 채점\n"
+        f"- 점수: {total}/10 ({level})\n"
+        f"- 약점: {weak}"
+    )
+    return {
+        "markdown": markdown,
+        "reason": "scored",
+        "applicability_hint": applicability_hint,
+    }
+
+
 def build_response_contract(
     snapshot: dict[str, Any] | None,
     execution_status: str,
+    *,
+    augment_result: dict[str, Any] | None = None,
+    intent_decision: dict[str, Any] | None = None,
+    drill_offer: dict[str, Any] | None = None,
+    drill_result: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Top-level entry — returns the full ``response_contract`` payload dict.
 
     ``snapshot`` may be ``None`` when the pipeline failed before learner-state
     was produced; in that case an empty always-present contract is returned so
     downstream schema validation and AI consumers see a uniform shape.
+
+    ``augment_result`` + ``intent_decision`` feed the CS/drill blocks. Both are
+    optional for backward compatibility with peer-only code paths.
     """
     effective_snapshot = snapshot or {}
+    block_plan = (intent_decision or {}).get("block_plan") or {}
+
+    snapshot_block = build_snapshot_block(effective_snapshot, execution_status)
+    verification = build_verification_block(effective_snapshot, execution_status)
+
+    cs_block = build_cs_block(
+        augment_result,
+        applicability_hint=_hint_from_plan(block_plan, "cs_block", "omit"),
+    )
+    drill_block = build_drill_block(
+        drill_offer,
+        drill_result,
+        applicability_hint=_hint_from_plan(block_plan, "drill_block", "omit"),
+    )
+    drill_result_block = build_drill_result_block(
+        drill_result,
+        applicability_hint=_hint_from_plan(block_plan, "drill_block", "omit"),
+    )
+
     return {
-        "snapshot_block": build_snapshot_block(effective_snapshot, execution_status),
-        "verification": build_verification_block(effective_snapshot, execution_status),
+        "snapshot_block": snapshot_block,
+        "verification": verification,
+        "cs_block": cs_block,
+        "drill_block": drill_block,
+        "drill_result_block": drill_result_block,
     }
