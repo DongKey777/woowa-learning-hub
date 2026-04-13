@@ -88,7 +88,7 @@ Contains:
 - representative patches
 - structured evidence summary
 
-See [evidence-roles.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/evidence-roles.md) for role definitions and bucket semantics.
+See [evidence-roles.md](../docs/evidence-roles.md) for role definitions and bucket semantics.
 
 ### `packets/reviewer-*.json`
 
@@ -163,7 +163,7 @@ Do not:
 - use `cycle_hint` as an identifier — the learner's work is identified by `(branch, PR number)`, not by cycle label
 - treat `resolved: "unknown"` as resolved — surface it to the learner as pending
 
-See [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) **First-Run Protocol step 6** for how this artifact is produced.
+See [agent-operating-contract.md](../docs/agent-operating-contract.md) **First-Run Protocol step 6** for how this artifact is produced.
 
 ### `contexts/my-pr-context.json`
 
@@ -284,7 +284,7 @@ Contains:
 - `response_contract` — pre-rendered Response Contract fragments (see below)
 - `error_detail` and `canonical_write_failed` when `execution_status=error`
 
-This is the preferred first artifact to read. See [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md) for error-state handling.
+This is the preferred first artifact to read. See [error-recovery.md](../docs/error-recovery.md) for error-state handling.
 
 **`response_contract`** — always-present object so AI sessions can copy the canonical blocks verbatim instead of recomputing from `learner-state.json`.
 
@@ -298,7 +298,7 @@ This is the preferred first artifact to read. See [error-recovery.md](/Users/ido
   - `thread_refs` — deterministic list of `{thread_id, path, line, classification, classification_reason}` sorted by `(ambiguous first, then likely-fixed) → path → line`.
   - `stub_markdown` — paste-ready `## 수동 확인 필요` block listing every `thread_refs` entry. Null when `required_count == 0`.
 
-AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; for each entry in `verification.thread_refs`, either run `git show <head_sha>:<path>` in the same turn and promote inside `## 이 턴에 직접 확인`, or paste `verification.stub_markdown` into a `## 수동 확인 필요` section. See [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) Response Contract.
+AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; for each entry in `verification.thread_refs`, either run `git show <head_sha>:<path>` in the same turn and promote inside `## 이 턴에 직접 확인`, or paste `verification.stub_markdown` into a `## 수동 확인 필요` section. See [agent-operating-contract.md](../docs/agent-operating-contract.md) Response Contract.
 
 - `cs_block` (CS/theory evidence)
   - `markdown` — rendered `## 이번 질문의 CS 근거` block listing hits as `- [category] path — preview`. Null when `cs_readiness != ready`, `cs_search_mode == skip`, or there are no hits.
@@ -387,7 +387,7 @@ Contains:
 
 **profile.json is persisted truth.** `coach-run.json.unified_profile` is a derived per-turn projection. Never write back from `unified_profile` to `profile.json`.
 
-`recency_status` values: `active`, `cooling`, `dormant`. See [memory-model.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/memory-model.md) for interpretation.
+`recency_status` values: `active`, `cooling`, `dormant`. See [memory-model.md](../docs/memory-model.md) for interpretation.
 
 Use this artifact when deciding whether to deepen or broaden.
 
@@ -453,4 +453,4 @@ Default:
 7. `memory/profile.json` and `memory/summary.json` only when the embedded snapshot is missing a field you specifically need
 8. lower-level packets only when interpretation + focus are insufficient
 
-Do not re-read `memory/profile.json` or `memory/summary.json` by default. The snapshot embedded in `coach-run.json.memory` is the same data and reading the sidecars duplicates cost. See [token-budget.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/token-budget.md).
+Do not re-read `memory/profile.json` or `memory/summary.json` by default. The snapshot embedded in `coach-run.json.memory` is the same data and reading the sidecars duplicates cost. See [token-budget.md](../docs/token-budget.md).

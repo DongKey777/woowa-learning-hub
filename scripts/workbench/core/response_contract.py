@@ -4,8 +4,7 @@ This module produces the machine-computed pieces of the Response Contract —
 snapshot counts and verification (git-show-required) thread lists — so the AI
 session can copy them verbatim instead of re-deriving from learner-state.json.
 
-See `docs/agent-operating-contract.md` Response Contract section, and
-`/Users/idonghun/.claude/plans/declarative-imagining-ullman.md` Part 2.
+See `docs/agent-operating-contract.md` Response Contract section.
 """
 
 from __future__ import annotations

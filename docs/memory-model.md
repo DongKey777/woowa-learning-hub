@@ -183,7 +183,7 @@ Do not use memory to answer:
 
 ## Write Ordering and Recovery
 
-Memory state is persisted by `coach-run` in a best-effort 2-phase write. Details are in [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md). Key points for memory consumers:
+Memory state is persisted by `coach-run` in a best-effort 2-phase write. Details are in [error-recovery.md](../docs/error-recovery.md). Key points for memory consumers:
 
 - `coach-run.json` embeds the authoritative memory snapshot for the current session
 - `memory/summary.json` and `memory/profile.json` are the next-session initial context

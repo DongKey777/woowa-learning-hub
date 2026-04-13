@@ -51,7 +51,7 @@
 
 ## Write Order Invariant
 
-`coach-run.json` is the canonical first-read artifact and embeds the authoritative memory snapshot. Phase 2 writes `history.jsonl` first (so future sessions can recompute), then `coach-run.json` (so the canonical artifact is visible), then the memory sidecars. On failure the remaining writes are skipped and `execution_status=error` is recorded. On canonical write failure the payload falls back to `coach-run.error.json`. See [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md).
+`coach-run.json` is the canonical first-read artifact and embeds the authoritative memory snapshot. Phase 2 writes `history.jsonl` first (so future sessions can recompute), then `coach-run.json` (so the canonical artifact is visible), then the memory sidecars. On failure the remaining writes are skipped and `execution_status=error` is recorded. On canonical write failure the payload falls back to `coach-run.error.json`. See [error-recovery.md](../docs/error-recovery.md).
 
 ## Principles
 
@@ -64,6 +64,6 @@
 
 ## Related Documents
 
-- [capability-map.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/capability-map.md) — capability-level breakdown of modules
-- [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md) — artifact-level breakdown of state
-- [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) — agent-facing operating rules
+- [capability-map.md](../docs/capability-map.md) — capability-level breakdown of modules
+- [artifact-catalog.md](../docs/artifact-catalog.md) — artifact-level breakdown of state
+- [agent-operating-contract.md](../docs/agent-operating-contract.md) — agent-facing operating rules

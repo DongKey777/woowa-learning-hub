@@ -20,8 +20,9 @@ See Phase 2.3 / 5차 Finding 2 in the plan.
 ``block_plan`` is advisory guidance, not a hard enforcement. The AI
 session copies ``primary`` and ``supporting`` blocks into its reply and
 may omit ``omit`` blocks — but runtime validators do not punish
-divergence. This matches mission-coach's existing snapshot_block copy
-rule (the "verbatim" guidance is not enforced at validation time).
+divergence. This matches the existing snapshot_block copy rule
+inherited from the coach pipeline (the "verbatim" guidance is not
+enforced at validation time).
 """
 
 from __future__ import annotations

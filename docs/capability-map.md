@@ -15,7 +15,7 @@ Responsibility:
 
 Primary code:
 
-- [repo_intake.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/repo_intake.py)
+- [repo_intake.py](../scripts/workbench/core/repo_intake.py)
 
 When to use:
 
@@ -30,8 +30,8 @@ Responsibility:
 
 Primary code:
 
-- [mission_relevance.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/pr_archive/mission_relevance.py)
-- [collect_prs.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/pr_archive/collect_prs.py)
+- [mission_relevance.py](../scripts/pr_archive/mission_relevance.py)
+- [collect_prs.py](../scripts/pr_archive/collect_prs.py)
 
 When to use:
 
@@ -46,7 +46,7 @@ Responsibility:
 
 Primary code:
 
-- [comment_classifier.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/comment_classifier.py)
+- [comment_classifier.py](../scripts/workbench/core/comment_classifier.py)
 
 When to use:
 
@@ -57,7 +57,7 @@ Notes:
 
 - uses `BOT_USERS` to exclude automated reviewers
 - stable metadata only; dynamic weighting lives in `session_focus.py`
-- see [evidence-roles.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/evidence-roles.md)
+- see [evidence-roles.md](../docs/evidence-roles.md)
 
 ## Capability 2.6. Review Thread Reconstruction
 
@@ -68,7 +68,7 @@ Responsibility:
 
 Primary code:
 
-- [thread_builder.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/thread_builder.py)
+- [thread_builder.py](../scripts/workbench/core/thread_builder.py)
 
 When to use:
 
@@ -86,7 +86,7 @@ Responsibility:
 
 Primary code:
 
-- [packets.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/packets.py)
+- [packets.py](../scripts/workbench/core/packets.py)
 
 When to use:
 
@@ -101,7 +101,7 @@ Responsibility:
 
 Primary code:
 
-- [session_focus.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/session_focus.py)
+- [session_focus.py](../scripts/workbench/core/session_focus.py)
 
 When to use:
 
@@ -124,7 +124,7 @@ Responsibility:
 
 Primary code:
 
-- [candidate_interpretation.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/candidate_interpretation.py)
+- [candidate_interpretation.py](../scripts/workbench/core/candidate_interpretation.py)
 
 When to use:
 
@@ -139,7 +139,7 @@ Responsibility:
 
 Primary code:
 
-- [reviewer_profile.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/reviewer_profile.py)
+- [reviewer_profile.py](../scripts/workbench/core/reviewer_profile.py)
 
 When to use:
 
@@ -156,7 +156,7 @@ Responsibility:
 
 Primary code:
 
-- [response.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/response.py)
+- [response.py](../scripts/workbench/core/response.py)
 
 When to use:
 
@@ -174,7 +174,7 @@ Responsibility:
 
 Primary code:
 
-- [memory.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/memory.py)
+- [memory.py](../scripts/workbench/core/memory.py)
 
 When to use:
 
@@ -182,7 +182,7 @@ When to use:
 - during session generation: `compute_memory_update` in Phase 1
 - after session generation: sequential commit in Phase 2
 
-See [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md) for failure matrix.
+See [error-recovery.md](../docs/error-recovery.md) for failure matrix.
 
 ## Capability 8.5. Learner State Assessment
 
@@ -197,14 +197,14 @@ Responsibility:
 
 Primary code:
 
-- [learner_state.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/learner_state.py)
+- [learner_state.py](../scripts/workbench/core/learner_state.py)
 
 When to use:
 
 - every coach-run session (invoked implicitly by `coach_run.py`)
 - manually via `bin/assess-learner-state --repo <name>` when debugging snapshot freshness or fallback behavior
 
-See [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md) `contexts/learner-state.json`.
+See [artifact-catalog.md](../docs/artifact-catalog.md) `contexts/learner-state.json`.
 
 ## Capability 8.6. Response Contract Pre-Render
 
@@ -217,7 +217,7 @@ Responsibility:
 
 Primary code:
 
-- [response_contract.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/response_contract.py)
+- [response_contract.py](../scripts/workbench/core/response_contract.py)
 
 When to use:
 
@@ -237,13 +237,13 @@ Responsibility:
 
 Primary code:
 
-- [coach_run.py](/Users/idonghun/IdeaProjects/woowa-mission-coach/scripts/workbench/core/coach_run.py)
+- [coach_run.py](../scripts/workbench/core/coach_run.py)
 
 When to use:
 
 - default entrypoint for almost every learner question
 
-See [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md) for the execution_status contract.
+See [error-recovery.md](../docs/error-recovery.md) for the execution_status contract.
 
 ## Question To Capability Mapping
 

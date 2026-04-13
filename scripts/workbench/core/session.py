@@ -32,7 +32,7 @@ def write_response_artifacts(repo_name: str, mode: str, response: dict) -> tuple
     # artifact for an integrated turn is actions/coach-run.json, which carries
     # cs_block / drill / intent_decision. AI sessions must not read this file
     # as the source of truth — it exists for backward compatibility with
-    # pre-integration tests and the mission-coach render path.
+    # pre-integration tests and the inherited peer-only render path.
     on_disk = dict(response)
     on_disk["scope"] = "peer_only_reference"
     on_disk["canonical_artifact"] = "actions/coach-run.json"

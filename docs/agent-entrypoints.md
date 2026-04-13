@@ -8,7 +8,7 @@ This is the canonical mapping between agent families and their startup / skill-l
 
 Startup file:
 
-- [AGENTS.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/AGENTS.md)
+- [AGENTS.md](../AGENTS.md)
 
 Skill-like files:
 
@@ -18,7 +18,7 @@ Skill-like files:
 
 Startup file:
 
-- [CLAUDE.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/CLAUDE.md)
+- [CLAUDE.md](../CLAUDE.md)
 
 Skill-like files:
 
@@ -29,7 +29,7 @@ Skill-like files:
 
 Startup file:
 
-- [GEMINI.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/GEMINI.md)
+- [GEMINI.md](../GEMINI.md)
 
 Skill-like files:
 
@@ -41,8 +41,8 @@ Agent-family-specific entry files should stay thin.
 
 Shared operational truth should live in:
 
-- [AGENTS.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/AGENTS.md)
-- [external-ai-operating-guide.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/external-ai-operating-guide.md)
-- [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md)
-- [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md)
-- [memory-model.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/memory-model.md)
+- [AGENTS.md](../AGENTS.md)
+- [external-ai-operating-guide.md](../docs/external-ai-operating-guide.md)
+- [agent-operating-contract.md](../docs/agent-operating-contract.md)
+- [artifact-catalog.md](../docs/artifact-catalog.md)
+- [memory-model.md](../docs/memory-model.md)

@@ -2,8 +2,8 @@
 
 coach_run imports this module **lazily** (inside the pipeline step that
 needs it) so missing ML dependencies degrade to cs_readiness.state="missing"
-instead of crashing the whole coach-run call. See the Phase 2.0 "Lazy
-import contract" in /Users/idonghun/.claude/plans/declarative-imagining-ullman.md.
+instead of crashing the whole coach-run call. See the "Lazy import
+contract" section in ``docs/cs-rag-internals.md``.
 
 Public contract
 ---------------

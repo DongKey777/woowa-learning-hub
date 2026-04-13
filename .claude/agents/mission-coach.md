@@ -65,7 +65,7 @@ Narrative body (after the contract blocks): current situation, evidence tied bac
 ## Safety
 
 - Do not modify the mission repo unless explicitly requested.
-- Keep state changes inside `woowa-mission-coach`.
+- Keep state changes inside `woowa-learning-hub`.
 
 ## Related docs
 

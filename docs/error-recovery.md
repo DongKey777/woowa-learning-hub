@@ -116,7 +116,7 @@ When any of these fire, the fallback propagates as:
 - `threads[].learner_reactions = []`
 - `classification` is still computed from the diff hunks and thread metadata — only the GraphQL-sourced fields collapse
 
-The surrounding `classification` heuristic is unaffected, so `still-applies` / `likely-fixed` / `ambiguous` still populate even when GraphQL fails. Narrative rule: treat `"unknown"` as a separate bucket (`불명`) and never merge into `없음`. See [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) Response Contract.
+The surrounding `classification` heuristic is unaffected, so `still-applies` / `likely-fixed` / `ambiguous` still populate even when GraphQL fails. Narrative rule: treat `"unknown"` as a separate bucket (`불명`) and never merge into `없음`. See [agent-operating-contract.md](../docs/agent-operating-contract.md) Response Contract.
 
 Reproduction recipe:
 

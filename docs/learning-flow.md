@@ -86,7 +86,7 @@ The same code runs for every turn, but `cs_search_mode` and `block_plan` shape w
 - `cs_search_mode = "skip"` → augment returns immediately, no search, no latency cost
 - `cs_readiness != ready` is ignored (advisory only)
 - `block_plan`: `snapshot_block=primary`, `verification=primary`, `cs_block=omit`, `drill_block=omit`
-- Reply looks identical to legacy mission-coach: snapshot + verification + dual-axis narrative
+- Reply shape is pure peer coaching (inherited from `woowa-mission-coach`): snapshot + verification + dual-axis narrative
 
 ### `cs_only` — pure theory question
 

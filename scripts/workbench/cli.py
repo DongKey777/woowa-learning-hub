@@ -510,7 +510,7 @@ def cmd_golden(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="woowa-mission-coach")
+    parser = argparse.ArgumentParser(prog="woowa-learning-hub")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     bootstrap_parser = subparsers.add_parser("bootstrap")

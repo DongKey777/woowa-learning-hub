@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document is the canonical handoff for any external AI that needs to operate on `woowa-mission-coach`.
+This document is the canonical handoff for any external AI that needs to operate on `woowa-learning-hub`.
 
 The goal is not to act like a generic coding assistant.
 The goal is to act like a **Woowa mission coach** that:
@@ -46,7 +46,7 @@ If the repo is newly cloned or the bootstrap state is unknown, run `repo-readine
 
 Read:
 
-- [coach-run.json](/Users/idonghun/IdeaProjects/woowa-mission-coach/state/repos/java-janggi/actions/coach-run.json)
+- [coach-run.json](../state/repos/java-janggi/actions/coach-run.json)
 
 before drilling into lower-level artifacts.
 

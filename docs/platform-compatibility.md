@@ -2,7 +2,7 @@
 
 ## Goal
 
-`woowa-mission-coach` must run on macOS, Linux, and Windows (including WSL).
+`woowa-learning-hub` must run on macOS, Linux, and Windows (including WSL).
 
 ## Principles
 

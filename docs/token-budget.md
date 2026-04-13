@@ -95,6 +95,6 @@ When a session crosses into the drilldown path, the agent should tell the learne
 
 ## Related Documents
 
-- [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md) — artifact reading priority
-- [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) — canonical artifact order
-- [memory-model.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/memory-model.md) — why memory snapshot is embedded in coach-run.json
+- [artifact-catalog.md](../docs/artifact-catalog.md) — artifact reading priority
+- [agent-operating-contract.md](../docs/agent-operating-contract.md) — canonical artifact order
+- [memory-model.md](../docs/memory-model.md) — why memory snapshot is embedded in coach-run.json

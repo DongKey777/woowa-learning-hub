@@ -1,1 +1,1 @@
-"""Core modules for woowa-mission-coach."""
+"""Core modules for woowa-learning-hub."""
