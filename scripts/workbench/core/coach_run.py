@@ -343,43 +343,52 @@ def _build_unified_profile(memory_profile: dict | None) -> dict | None:
     return _unify(memory_profile or {}, drill_history=drill_history)
 
 
-def _run_learning_pipeline(
+def _pre_augment_phase(
     *,
     prompt: str | None,
     learner_state_full: dict | None,
     session_payload: dict,
-    verification_required_count: int,
-) -> tuple[dict, dict | None, dict, dict | None]:
-    """Execute pre_decide → readiness → augment → finalize.
+    pending_drill: dict | None,
+) -> dict:
+    """Steps 3–6 of the learning pipeline: route drill → pre_decide → readiness → augment.
 
-    Returns (cs_readiness, cs_augmentation_compact, intent_decision, sidecar).
-    ``cs_augmentation_compact`` carries the compact top-level view (long bodies
-    go to the sidecar file). ``sidecar`` is the dict to write under
-    contexts/cs-augmentation.json, or None if nothing to write.
+    Returns a dict bundle consumed by ``run_coach`` — keeps the ordering
+    explicit so drill offer generation (step 8) can run after
+    ``profile_merge.unify`` without duplicating the earlier steps.
     """
+    # Lazy drill import — stdlib-only but deferred to keep coach_run alive
+    # if anything in scripts.learning blows up.
+    try:
+        from scripts.learning import drill  # noqa: WPS433
+    except Exception:
+        drill = None  # type: ignore[assignment]
+
+    drill_result: dict | None = None
+    consumed_pending_id: str | None = None
+    route_signals: dict = {}
+    if drill is not None and pending_drill is not None:
+        is_answer, route_signals = drill.route_answer(prompt or "", pending_drill)
+        if is_answer:
+            drill_result = drill.score_pending_answer(prompt or "", pending_drill)
+            consumed_pending_id = pending_drill.get("drill_session_id")
+
     learning_points = [
         rec.get("learning_point")
         for rec in (session_payload.get("learning_point_recommendations") or [])
         if rec.get("learning_point")
     ]
-    topic_hints = [
-        t for t in (
-            session_payload.get("primary_topic"),
-        ) if t
-    ]
+    topic_hints = [t for t in (session_payload.get("primary_topic"),) if t]
 
     pre_result = intent_pre_decide(
         prompt or "",
         history=None,
-        pending_drill=None,
+        pending_drill=pending_drill if drill_result is None else None,
         learner_state=learner_state_full,
     )
 
     cs_readiness = _check_cs_readiness()
     cs_search_mode = pre_result.get("cs_search_mode", "skip")
 
-    # Lazy import of integration.augment — keeps coach_run alive when
-    # sentence-transformers is not installed.
     augment_result: dict | None = None
     if cs_search_mode != "skip" and cs_readiness.get("state") == "ready":
         try:
@@ -394,14 +403,6 @@ def _run_learning_pipeline(
             augment_result = None
         except Exception:
             augment_result = None
-
-    intent_decision = intent_finalize(
-        pre_result,
-        augment_result=augment_result,
-        drill_offer=None,
-        drill_result=None,
-        verification_required_count=verification_required_count,
-    )
 
     sidecar = None
     cs_augmentation_compact: dict | None = None
@@ -418,7 +419,15 @@ def _run_learning_pipeline(
             "meta": augment_result.get("meta") or {},
         }
 
-    return cs_readiness, cs_augmentation_compact, intent_decision, sidecar
+    return {
+        "pre_result": pre_result,
+        "cs_readiness": cs_readiness,
+        "cs_augmentation_compact": cs_augmentation_compact,
+        "sidecar": sidecar,
+        "drill_result": drill_result,
+        "consumed_pending_id": consumed_pending_id,
+        "route_signals": route_signals,
+    }
 
 
 def _assert_response_contract(payload: dict) -> None:
@@ -563,23 +572,64 @@ def run_coach(
         archive_status=archive_status,
     )
 
-    # Learning pipeline — pre_decide → readiness → augment → finalize.
+    # Learning pipeline phase A — route drill → pre_decide → readiness → augment.
     # verification_required_count is derived from the same learner-state full
     # snapshot that build_response_contract will use, so block_plan stays in
     # sync with the rendered verification block.
+    try:
+        from scripts.learning import drill as _drill  # noqa: WPS433
+        pending_drill_raw = _drill.load_pending(repo["name"])
+        pending_drill = _drill.decrement_ttl(pending_drill_raw)
+    except Exception:
+        _drill = None  # type: ignore[assignment]
+        pending_drill_raw = None
+        pending_drill = None
+
     pre_verification = build_verification_block(learner_state_full or {}, "ready")
-    cs_readiness, cs_augmentation_compact, intent_decision, cs_sidecar = _run_learning_pipeline(
+    phase_a = _pre_augment_phase(
         prompt=prompt,
         learner_state_full=learner_state_full,
         session_payload=session_payload,
-        verification_required_count=pre_verification.get("required_count", 0),
+        pending_drill=pending_drill,
     )
+    pre_result = phase_a["pre_result"]
+    cs_readiness = phase_a["cs_readiness"]
+    cs_augmentation_compact = phase_a["cs_augmentation_compact"]
+    cs_sidecar = phase_a["sidecar"]
+    drill_result = phase_a["drill_result"]
+    consumed_pending_id = phase_a["consumed_pending_id"]
 
     # Phase 1: compute everything in memory (no file writes)
     memory_update = compute_memory_update(repo["name"], session_payload)
     memory_summary = memory_update["summary"]
     memory_profile = memory_update["profile"]
     unified_profile = _build_unified_profile(memory_profile)
+
+    # Learning pipeline phase B — drill offer (after unified_profile) + finalize.
+    drill_offer: dict | None = None
+    if _drill is not None:
+        # Skip the cooldown check when the same turn just consumed a pending
+        # drill: the plan forbids chaining drill_answer → new offer in one turn.
+        _pending_for_offer = pending_drill_raw if drill_result is None else {"just_consumed": True}
+        try:
+            drill_offer = _drill.build_offer_if_due(
+                unified_profile,
+                pre_intent=pre_result.get("pre_intent"),
+                pending=_pending_for_offer,
+                drill_history=_drill.load_history(repo["name"], limit=10),
+                session_payload=session_payload,
+            )
+        except Exception:
+            drill_offer = None
+
+    intent_decision = intent_finalize(
+        pre_result,
+        augment_result=cs_augmentation_compact,
+        drill_offer=drill_offer,
+        drill_result=drill_result,
+        verification_required_count=pre_verification.get("required_count", 0),
+    )
+
     coach_reply_markdown = _render_coach_reply(
         session_payload,
         memory_summary,
@@ -646,8 +696,8 @@ def run_coach(
             "ready",
             augment_result=cs_augmentation_compact,
             intent_decision=intent_decision,
-            drill_offer=None,
-            drill_result=None,
+            drill_offer=drill_offer,
+            drill_result=drill_result,
         ),
     }
     _assert_response_contract(payload)
@@ -673,6 +723,20 @@ def run_coach(
             )
         except Exception:
             # Sidecar write is advisory; do not block coach-run on failure.
+            pass
+
+    if _drill is not None:
+        try:
+            if drill_result is not None:
+                _drill.append_history(repo["name"], drill_result)
+            if consumed_pending_id is not None:
+                _drill.clear_pending(repo["name"])
+            if drill_offer is not None:
+                _drill.save_pending(repo["name"], drill_offer)
+            elif pending_drill is not None and consumed_pending_id is None:
+                # TTL was decremented in memory — persist the new counter.
+                _drill.save_pending(repo["name"], pending_drill)
+        except Exception:
             pass
 
     try:
