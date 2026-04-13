@@ -115,6 +115,16 @@ def _assert_result(assertion: dict, payload: dict) -> dict:
             "expected": expected,
         }
 
+    if "in" in assertion:
+        choices = assertion["in"]
+        passed = actual in choices
+        return {
+            "path": path,
+            "status": "passed" if passed else "failed",
+            "expected_in": choices,
+            "actual": actual,
+        }
+
     if "list_length_equals_lookup" in assertion:
         if not isinstance(actual, list):
             return {"path": path, "status": "failed", "error": "not a list"}

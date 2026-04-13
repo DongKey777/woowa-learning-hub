@@ -25,7 +25,14 @@
         {
           "path": "response_contract.verification.thread_refs",
           "list_length_equals_lookup": "response_contract.verification.required_count"
-        }
+        },
+        { "path": "cs_readiness.state", "in": ["ready", "missing", "stale"] },
+        { "path": "intent_decision.detected_intent", "in": ["mission_only", "cs_only", "mixed", "drill_answer", "unknown"] },
+        { "path": "intent_decision.cs_search_mode", "in": ["skip", "cheap", "full"] },
+        { "path": "response_contract.cs_block.reason", "in": ["ready", "rag_skip", "rag_not_ready", "no_hits", "no_augmentation"] },
+        { "path": "response_contract.cs_block.applicability_hint", "in": ["primary", "supporting", "omit"] },
+        { "path": "response_contract.drill_block.reason", "in": ["new_offer", "result_from_previous", "none"] },
+        { "path": "response_contract.drill_block.applicability_hint", "in": ["primary", "supporting", "omit"] }
       ]
     },
     {
@@ -53,7 +60,14 @@
         {
           "path": "response_contract.verification.thread_refs",
           "list_length_equals_lookup": "response_contract.verification.required_count"
-        }
+        },
+        { "path": "cs_readiness.state", "in": ["ready", "missing", "stale"] },
+        { "path": "intent_decision.detected_intent", "in": ["mission_only", "cs_only", "mixed", "drill_answer", "unknown"] },
+        { "path": "intent_decision.cs_search_mode", "in": ["skip", "cheap", "full"] },
+        { "path": "response_contract.cs_block.reason", "in": ["ready", "rag_skip", "rag_not_ready", "no_hits", "no_augmentation"] },
+        { "path": "response_contract.cs_block.applicability_hint", "in": ["primary", "supporting", "omit"] },
+        { "path": "response_contract.drill_block.reason", "in": ["new_offer", "result_from_previous", "none"] },
+        { "path": "response_contract.drill_block.applicability_hint", "in": ["primary", "supporting", "omit"] }
       ]
     }
   ]
