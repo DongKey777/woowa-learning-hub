@@ -447,7 +447,27 @@ def _append_with_lock(path: Path, line: str) -> None:
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
-def compute_memory_update(repo_name: str, session_payload: dict) -> dict:
+def compute_memory_update(
+    repo_name: str,
+    session_payload: dict,
+    *,
+    learning_projection: dict | None = None,
+) -> dict:
+    """Compute history/summary/profile updates for this turn.
+
+    ``learning_projection`` carries the CS/drill fields that profile.json
+    should persist as source-of-truth. The coach_run pipeline derives it
+    via profile_merge.unify() against the drill_history jsonl + the
+    optional this-turn drill_result, then hands the compact fields here
+    so the persisted profile matches the per-turn projection.
+
+    Expected keys (all optional):
+      - ``cs_view`` — {avg_score, level, weak_dimensions, weak_tags,
+                       low_categories, recent_drills} or None
+      - ``drill_history`` — compact list of recent drill entries
+      - ``reconciled`` — {priority_focus, empirical_only_gaps,
+                          theoretical_only_gaps} or None
+    """
     entry = _memory_entry(session_payload)
     validate_payload("learning-memory-entry", entry)
 
@@ -458,6 +478,10 @@ def compute_memory_update(repo_name: str, session_payload: dict) -> dict:
     validate_payload("learning-memory-summary", summary)
 
     profile = _build_profile(repo_name, summary, projected_entries)
+    if learning_projection:
+        for field in ("cs_view", "drill_history", "reconciled"):
+            if field in learning_projection:
+                profile[field] = learning_projection[field]
     validate_payload("learning-memory-profile", profile)
 
     return {
