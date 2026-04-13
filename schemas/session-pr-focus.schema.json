@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SessionPrFocus",
+  "type": "object",
+  "required": [
+    "focus_type",
+    "repo",
+    "mode",
+    "generated_at",
+    "current_pr_number",
+    "prompt",
+    "prompt_terms",
+    "topic_terms",
+    "local_path_signature",
+    "candidate_count",
+    "candidates"
+  ],
+  "properties": {
+    "focus_type": { "const": "session_pr_focus" },
+    "repo": { "type": "string" },
+    "mode": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "current_pr_number": { "type": ["integer", "null"] },
+    "prompt": { "type": "string" },
+    "prompt_terms": { "type": "array", "items": { "type": "string" } },
+    "topic_terms": { "type": "array", "items": { "type": "string" } },
+    "local_path_signature": { "type": "object" },
+    "candidate_count": { "type": "integer" },
+    "candidates": { "type": "array" },
+    "json_path": { "type": "string" }
+  }
+}

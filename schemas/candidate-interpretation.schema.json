@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CandidateInterpretation",
+  "type": "object",
+  "required": [
+    "interpretation_type",
+    "repo",
+    "mode",
+    "generated_at",
+    "source_focus_path",
+    "candidate_count",
+    "shortlist_count",
+    "candidate_profiles",
+    "learning_point_recommendations"
+  ],
+  "properties": {
+    "interpretation_type": { "const": "candidate_interpretation" },
+    "repo": { "type": "string" },
+    "mode": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "source_focus_path": { "type": ["string", "null"] },
+    "candidate_count": { "type": "integer" },
+    "shortlist_count": { "type": "integer" },
+    "candidate_profiles": { "type": "array" },
+    "learning_point_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "learning_point",
+          "label",
+          "description",
+          "primary_candidate"
+        ],
+        "properties": {
+          "learning_point": { "type": "string" },
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "primary_candidate": {
+            "type": "object",
+            "required": ["pr_number", "title", "evidence_quotes", "why_this_learning_point"],
+            "properties": {
+              "pr_number": { "type": "integer" },
+              "title": { "type": "string" },
+              "evidence_quotes": { "type": "array" },
+              "why_this_learning_point": { "type": "string" }
+            }
+          },
+          "alternative_candidates": { "type": "array" }
+        }
+      }
+    },
+    "json_path": { "type": "string" }
+  }
+}

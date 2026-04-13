@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LearnerProfile",
+  "type": "object",
+  "required": [
+    "experience_level",
+    "preferred_depth",
+    "focus",
+    "recent_weaknesses"
+  ],
+  "properties": {
+    "experience_level": { "type": "string" },
+    "preferred_depth": { "type": "string" },
+    "focus": { "type": "array", "items": { "type": "string" } },
+    "recent_weaknesses": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TopicPacket",
+  "type": "object",
+  "required": [
+    "packet_type",
+    "repo",
+    "topic",
+    "query",
+    "generated",
+    "source_db_path",
+    "related_prs",
+    "top_reviewers",
+    "hotspot_paths",
+    "representative_comments",
+    "representative_patches",
+    "evidence"
+  ],
+  "properties": {
+    "packet_type": { "const": "topic" },
+    "repo": { "type": "string" },
+    "topic": { "type": "string" },
+    "query": { "type": "string" },
+    "generated": { "type": "boolean" },
+    "source_db_path": { "type": "string" },
+    "markdown_path": { "type": ["string", "null"] },
+    "markdown_preview": { "type": "array" },
+    "error": { "type": ["string", "null"] },
+    "related_prs": { "type": "array" },
+    "top_reviewers": { "type": "array" },
+    "hotspot_paths": { "type": "array" },
+    "representative_comments": { "type": "array" },
+    "representative_patches": { "type": "array" },
+    "evidence": { "type": "object" },
+    "generated_at": { "type": "string" }
+  }
+}

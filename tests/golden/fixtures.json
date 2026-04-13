@@ -1,0 +1,60 @@
+{
+  "cases": [
+    {
+      "name": "repository concept question stays lesson-oriented",
+      "repo": "java-janggi",
+      "context": "coach",
+      "prompt": "Repository가 왜 이걸 알면 안 돼?",
+      "assertions": [
+        { "path": "execution_status", "equals": "ready" },
+        { "path": "session.primary_intent", "equals": "concept_explanation" },
+        { "path": "session.primary_topic", "equals": "Repository" },
+        { "path": "session.mission_map_path", "truthy": true },
+        { "path": "coach_reply.response.response_role", "equals": "reference" },
+        { "path": "coach_reply.response.question_focus", "equals": "lesson" },
+        { "path": "coach_reply.response.usage_guidance.0", "contains": "reference frame" },
+        { "path": "response_contract.snapshot_block.markdown", "contains": "## 상태 요약 (snapshot" },
+        {
+          "path": "response_contract.snapshot_block.counts.classification",
+          "dict_value_sum_equals_lookup": "response_contract.snapshot_block.counts.total"
+        },
+        {
+          "path": "response_contract.snapshot_block.counts.reply_axis",
+          "dict_value_sum_equals_lookup": "response_contract.snapshot_block.counts.total"
+        },
+        {
+          "path": "response_contract.verification.thread_refs",
+          "list_length_equals_lookup": "response_contract.verification.required_count"
+        }
+      ]
+    },
+    {
+      "name": "review response question stays response-oriented",
+      "repo": "java-janggi",
+      "context": "coach",
+      "prompt": "이 리뷰에 어떻게 답변할까?",
+      "assertions": [
+        { "path": "execution_status", "equals": "ready" },
+        { "path": "session.primary_intent", "equals": "pr_response" },
+        { "path": "session.primary_topic", "truthy": true },
+        { "path": "session.mission_map_path", "truthy": true },
+        { "path": "coach_reply.response.response_role", "equals": "reference" },
+        { "path": "coach_reply.response.question_focus", "equals": "response" },
+        { "path": "coach_reply.response.next_actions.0.title", "truthy": true },
+        { "path": "response_contract.snapshot_block.markdown", "contains": "## 상태 요약 (snapshot" },
+        {
+          "path": "response_contract.snapshot_block.counts.classification",
+          "dict_value_sum_equals_lookup": "response_contract.snapshot_block.counts.total"
+        },
+        {
+          "path": "response_contract.snapshot_block.counts.reply_axis",
+          "dict_value_sum_equals_lookup": "response_contract.snapshot_block.counts.total"
+        },
+        {
+          "path": "response_contract.verification.thread_refs",
+          "list_length_equals_lookup": "response_contract.verification.required_count"
+        }
+      ]
+    }
+  ]
+}

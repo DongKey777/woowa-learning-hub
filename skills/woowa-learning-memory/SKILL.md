@@ -1,0 +1,48 @@
+---
+name: "woowa-learning-memory"
+description: "Use when repeated learner patterns, dominant learning points, underexplored points, or long-term coaching continuity should affect the answer."
+---
+
+# Woowa Learning Memory Skill
+
+## When to use
+
+- The learner has repeated questions over multiple sessions.
+- You need to explain current recommendations using long-term learning profile.
+- You need to decide whether to deepen or broaden.
+
+## Preferred artifacts
+
+1. `actions/coach-run.json` — read the embedded `memory` field first; it is authoritative for the current session.
+2. `memory/profile.json` — next-session initial context.
+3. `memory/summary.json` — aggregate counts.
+4. `memory/history.jsonl` — only specific recent lines when a session needs inspection. Never read the whole file.
+
+## What to extract
+
+- dominant learning points (prefer `weighted_learning_points` over raw `top_learning_points`)
+- `recency_status` of each dominant or repeated point (`active`, `cooling`, `dormant`)
+- underexplored learning points
+- recent learning streak
+- repeated question patterns
+- open follow-up queue
+
+## Interpretation rules
+
+- `weighted_learning_points` is the recency-aware view.
+- `top_learning_points` is the historical cumulative view.
+- A repeated point with `recency_status=dormant` is history, not a current concern.
+- If `confidence=low`, downgrade memory claims; current question and evidence dominate.
+- If `coach-run.json.memory` and sidecar `memory/*.json` disagree, trust the embedded snapshot for the current session.
+
+## Output requirements
+
+- If counts are weak, say they are weak.
+- If a pattern is repeated and currently active, call it out explicitly.
+- Use memory to steer recommendation priority, not to override current evidence.
+- Never say "you always do X" when confidence is low.
+
+## Related docs
+
+- `docs/memory-model.md`
+- `docs/error-recovery.md`

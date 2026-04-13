@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CoachResponse",
+  "type": "object",
+  "required": [
+    "response_type",
+    "response_role",
+    "repo",
+    "generated_at",
+    "intent",
+    "question_focus",
+    "memory_policy",
+    "experience_level",
+    "level_notes",
+    "usage_guidance",
+    "summary",
+    "answer",
+    "teaching_points",
+    "sections",
+    "evidence",
+    "next_actions",
+    "postpone",
+    "follow_up_question"
+  ],
+  "properties": {
+    "response_type": { "const": "coach_response" },
+    "response_role": { "const": "reference" },
+    "repo": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "intent": { "type": "string" },
+    "question_focus": { "type": "string" },
+    "memory_policy": {
+      "type": "object",
+      "required": ["mode", "reason"],
+      "properties": {
+        "mode": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    },
+    "experience_level": { "type": "string" },
+    "level_notes": { "type": "array", "items": { "type": "string" } },
+    "usage_guidance": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "array", "items": { "type": "string" } },
+    "answer": { "type": "array", "items": { "type": "string" } },
+    "teaching_points": { "type": "array", "items": { "type": "string" } },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "items"],
+        "properties": {
+          "title": { "type": "string" },
+          "items": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "summary", "highlights"],
+        "properties": {
+          "type": { "type": "string" },
+          "json_path": { "type": ["string", "null"] },
+          "markdown_path": { "type": ["string", "null"] },
+          "summary": { "type": "array", "items": { "type": "string" } },
+          "highlights": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "title", "why", "action"],
+        "properties": {
+          "priority": { "type": "integer" },
+          "category": { "type": "string" },
+          "title": { "type": "string" },
+          "why": { "type": "string" },
+          "action": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "postpone": { "type": "array", "items": { "type": "string" } },
+    "follow_up_question": { "type": ["string", "null"] }
+  }
+}

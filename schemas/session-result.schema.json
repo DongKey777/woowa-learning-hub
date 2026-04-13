@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SessionResult",
+  "type": "object",
+  "required": [
+    "session_type",
+    "repo",
+    "mode",
+    "generated_at",
+    "context_path",
+    "action_path",
+    "response_json_path",
+    "response_markdown_path",
+    "context_type",
+    "primary_intent",
+    "recommended_next_actions",
+    "response"
+  ],
+  "properties": {
+    "session_type": { "const": "session_start" },
+    "repo": { "type": "string" },
+    "mode": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "context_path": { "type": ["string", "null"] },
+    "action_path": { "type": ["string", "null"] },
+    "response_json_path": { "type": "string" },
+    "response_markdown_path": { "type": "string" },
+    "context_type": { "type": ["string", "null"] },
+    "primary_intent": { "type": ["string", "null"] },
+    "primary_topic": { "type": ["string", "null"] },
+    "reviewer": { "type": ["string", "null"] },
+    "current_pr": { "type": ["object", "null"] },
+    "recommended_next_actions": { "type": "array", "items": { "type": "object" } },
+    "response": { "type": "object" },
+    "json_path": { "type": "string" }
+  }
+}

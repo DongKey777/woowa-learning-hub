@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MissionMap",
+  "type": "object",
+  "required": [
+    "report_type",
+    "repo",
+    "repo_path",
+    "generated_at",
+    "mission_hints",
+    "repo_fingerprint",
+    "readme_analysis",
+    "codebase_analysis",
+    "analysis",
+    "summary"
+  ],
+  "properties": {
+    "report_type": { "const": "mission_map" },
+    "repo": { "type": "string" },
+    "repo_path": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "mission_hints": { "type": "object" },
+    "repo_fingerprint": { "type": "object" },
+    "readme_analysis": { "type": "object" },
+    "codebase_analysis": { "type": "object" },
+    "analysis": {
+      "type": "object",
+      "required": [
+        "mission_kind",
+        "primary_concerns",
+        "secondary_concerns",
+        "likely_review_topics",
+        "retrieval_terms",
+        "retrieval_path_hints",
+        "coaching_notes"
+      ],
+      "properties": {
+        "mission_kind": { "type": "string" },
+        "primary_concerns": { "type": "array", "items": { "type": "string" } },
+        "secondary_concerns": { "type": "array", "items": { "type": "string" } },
+        "likely_review_topics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "topic", "query", "keywords", "score", "reasons"],
+            "properties": {
+              "id": { "type": "string" },
+              "topic": { "type": "string" },
+              "query": { "type": "string" },
+              "keywords": { "type": "array", "items": { "type": "string" } },
+              "score": { "type": "integer" },
+              "reasons": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "retrieval_terms": { "type": "array", "items": { "type": "string" } },
+        "retrieval_path_hints": { "type": "array", "items": { "type": "string" } },
+        "coaching_notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "summary": { "type": "array", "items": { "type": "string" } },
+    "json_path": { "type": "string" }
+  }
+}

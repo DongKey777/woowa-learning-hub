@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArchiveStatus",
+  "type": "object",
+  "required": [
+    "repo",
+    "db_path",
+    "bootstrap_state",
+    "data_confidence",
+    "reasons",
+    "thresholds",
+    "signals",
+    "sync_status",
+    "bootstrap_guidance",
+    "computed_at"
+  ],
+  "properties": {
+    "repo": { "type": "string" },
+    "db_path": { "type": "string" },
+    "bootstrap_state": { "enum": ["uninitialized", "bootstrapping", "ready"] },
+    "data_confidence": { "enum": ["bootstrap", "partial", "ready"] },
+    "reasons": { "type": "array", "items": { "type": "string" } },
+    "thresholds": { "type": "object" },
+    "signals": { "type": "object" },
+    "latest_run": { "type": ["object", "null"] },
+    "sync_status": { "type": "object" },
+    "bootstrap_guidance": {
+      "type": "object",
+      "required": ["action", "message", "next_steps", "commands"],
+      "properties": {
+        "action": { "type": "string" },
+        "message": { "type": "string" },
+        "last_failure": { "type": ["object", "null"] },
+        "next_steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "why", "command"],
+            "properties": {
+              "title": { "type": "string" },
+              "why": { "type": "string" },
+              "command": { "type": "string" }
+            }
+          }
+        },
+        "commands": { "type": "object" }
+      }
+    },
+    "computed_at": { "type": "string" },
+    "status_path": { "type": "string" }
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LearnerState",
+  "description": "Direct-observation snapshot of the learner's mission repository captured before coach-run. Authoritative for learner-side facts; coach-run supplements with peer evidence.",
+  "type": "object",
+  "required": [
+    "computed_at",
+    "repo",
+    "mission_path",
+    "head_branch",
+    "head_sha",
+    "fetch_state",
+    "upstream_remote",
+    "working_copy",
+    "prs",
+    "target_pr_number",
+    "target_pr_selection_reason",
+    "target_pr_detail",
+    "diff",
+    "coverage"
+  ],
+  "description_contract": "target_pr_detail MUST be null when target_pr_number is null (selection reason = no_open_pr) and MUST be a non-null object in all other cases.",
+  "properties": {
+    "computed_at": { "type": "string", "description": "ISO8601 timestamp" },
+    "repo": { "type": "string" },
+    "mission_path": { "type": "string" },
+    "head_branch": { "type": "string" },
+    "head_sha": { "type": "string" },
+    "fetch_state": { "enum": ["fresh", "stale"] },
+    "upstream_remote": { "type": "string" },
+    "working_copy": {
+      "type": "object",
+      "required": ["clean", "ahead", "behind", "uncommitted_files", "untracked_files", "fingerprint"],
+      "properties": {
+        "clean": { "type": "boolean" },
+        "ahead": { "type": "integer", "minimum": 0 },
+        "behind": { "type": "integer", "minimum": 0 },
+        "uncommitted_files": { "type": "array", "items": { "type": "string" } },
+        "untracked_files": { "type": "array", "items": { "type": "string" } },
+        "fingerprint": { "type": "string", "description": "sha256 of `git status --porcelain=v1` output; part of the re-scan cache key" }
+      }
+    },
+    "prs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["number", "title", "head_ref", "base_ref", "state"],
+        "properties": {
+          "number": { "type": "integer" },
+          "title": { "type": "string" },
+          "head_ref": { "type": "string" },
+          "base_ref": { "type": "string" },
+          "head_sha": { "type": ["string", "null"] },
+          "review_decision": { "type": ["string", "null"] },
+          "state": { "enum": ["open", "closed", "merged"] },
+          "cycle_hint": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "target_pr_number": { "type": ["integer", "null"] },
+    "target_pr_selection_reason": {
+      "enum": [
+        "prompt_reference",
+        "head_matches_single_open_pr",
+        "most_recently_updated",
+        "no_open_pr"
+      ]
+    },
+    "target_pr_detail": {
+      "type": ["object", "null"],
+      "properties": {
+        "number": { "type": "integer" },
+        "threads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "path", "author", "role", "resolved", "classification"],
+            "properties": {
+              "id": { "type": ["integer", "string"] },
+              "path": { "type": "string" },
+              "line": { "type": ["integer", "null"] },
+              "author": { "type": "string" },
+              "role": { "enum": ["bot", "mentor", "self", "unknown"] },
+              "role_sequence": { "type": "string" },
+              "participants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "author", "role"],
+                  "properties": {
+                    "id": { "type": ["integer", "string"] },
+                    "author": { "type": "string" },
+                    "role": { "enum": ["bot", "mentor", "self", "unknown"] },
+                    "body_excerpt": { "type": "string" },
+                    "reactions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["content", "user"],
+                        "properties": {
+                          "content": { "type": "string" },
+                          "user": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "resolved": { "enum": [true, false, "unknown"] },
+              "classification": {
+                "enum": ["still-applies", "likely-fixed", "already-fixed", "ambiguous", "unread"]
+              },
+              "classification_reason": { "type": ["string", "null"] },
+              "learner_reactions": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "learner_acknowledged": { "enum": [true, false, "unknown"] },
+              "body_excerpt": { "type": "string" },
+              "evidence_snippet": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "status_check_rollup": { "type": ["object", "array", "null"] }
+      }
+    },
+    "diff": {
+      "type": "object",
+      "required": ["base_ref", "head_ref"],
+      "properties": {
+        "base_ref": { "type": ["string", "null"] },
+        "head_ref": { "type": ["string", "null"] }
+      }
+    },
+    "coverage": { "enum": ["full", "partial"] },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["what", "reason"],
+        "properties": {
+          "what": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "cycle_hint": { "type": ["string", "null"] }
+  }
+}

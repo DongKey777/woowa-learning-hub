@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrReport",
+  "type": "object",
+  "required": [
+    "packet_type",
+    "repo",
+    "pr_number",
+    "generated",
+    "source_db_path",
+    "state",
+    "author",
+    "changed_files",
+    "additions",
+    "deletions",
+    "reviews",
+    "review_comments",
+    "evidence"
+  ],
+  "properties": {
+    "packet_type": { "const": "pr_report" },
+    "repo": { "type": "string" },
+    "pr_number": { "type": "integer" },
+    "generated": { "type": "boolean" },
+    "source_db_path": { "type": "string" },
+    "markdown_path": { "type": ["string", "null"] },
+    "markdown_preview": { "type": "array" },
+    "error": { "type": ["string", "null"] },
+    "state": { "type": ["string", "null"] },
+    "author": { "type": ["string", "null"] },
+    "changed_files": { "type": ["integer", "null"] },
+    "additions": { "type": ["integer", "null"] },
+    "deletions": { "type": ["integer", "null"] },
+    "body": { "type": "string" },
+    "reviews": { "type": "array" },
+    "review_comments": { "type": "array" },
+    "evidence": { "type": "object" }
+  }
+}

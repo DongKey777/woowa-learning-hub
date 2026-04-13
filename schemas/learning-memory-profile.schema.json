@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LearningMemoryProfile",
+  "type": "object",
+  "required": [
+    "profile_type",
+    "repo",
+    "updated_at",
+    "total_sessions",
+    "confidence",
+    "dominant_topics",
+    "dominant_intents",
+    "dominant_learning_points",
+    "repeated_learning_points",
+    "underexplored_learning_points",
+    "recent_learning_streak",
+    "repeated_question_patterns",
+    "open_follow_up_queue"
+  ],
+  "properties": {
+    "profile_type": { "const": "learning_memory_profile" },
+    "repo": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "total_sessions": { "type": "integer" },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "dominant_topics": { "type": "array" },
+    "dominant_intents": { "type": "array" },
+    "dominant_learning_points": { "type": "array" },
+    "repeated_learning_points": { "type": "array" },
+    "underexplored_learning_points": { "type": "array" },
+    "recent_learning_streak": { "type": ["object", "null"] },
+    "repeated_question_patterns": { "type": "array" },
+    "open_follow_up_queue": { "type": "array" }
+  }
+}

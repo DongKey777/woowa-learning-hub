@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LearningMemoryEntry",
+  "type": "object",
+  "required": [
+    "entry_type",
+    "repo",
+    "mode",
+    "created_at",
+    "primary_intent",
+    "primary_topic",
+    "question_fingerprint",
+    "diff_fingerprint",
+    "primary_learning_points",
+    "learning_point_recommendations",
+    "summary",
+    "answer",
+    "next_action_titles",
+    "evidence_highlights"
+  ],
+  "properties": {
+    "entry_type": { "const": "learning_memory_entry" },
+    "repo": { "type": "string" },
+    "mode": { "type": ["string", "null"] },
+    "created_at": { "type": "string" },
+    "prompt": { "type": ["string", "null"] },
+    "primary_intent": { "type": ["string", "null"] },
+    "primary_topic": { "type": ["string", "null"] },
+    "question_fingerprint": { "type": ["string", "null"] },
+    "diff_fingerprint": { "type": ["string", "null"] },
+    "primary_learning_points": { "type": "array", "items": { "type": "string" } },
+    "learning_point_recommendations": { "type": "array" },
+    "reviewer": { "type": ["string", "null"] },
+    "current_pr": { "type": ["object", "null"] },
+    "summary": { "type": "array", "items": { "type": "string" } },
+    "answer": { "type": "array", "items": { "type": "string" } },
+    "follow_up_question": { "type": ["string", "null"] },
+    "next_action_titles": { "type": "array", "items": { "type": "string" } },
+    "evidence_highlights": { "type": "array", "items": { "type": "string" } }
+  }
+}

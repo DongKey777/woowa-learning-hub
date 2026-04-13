@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RepoReadiness",
+  "type": "object",
+  "required": [
+    "report_type",
+    "generated_at",
+    "repo_resolution",
+    "environment",
+    "repo",
+    "readiness",
+    "archive_status",
+    "next_steps"
+  ],
+  "properties": {
+    "report_type": { "const": "repo_readiness" },
+    "generated_at": { "type": "string" },
+    "repo_resolution": { "type": "object" },
+    "environment": { "type": "object" },
+    "mission_map_path": { "type": "string" },
+    "mission_map_summary": { "type": "array", "items": { "type": "string" } },
+    "repo": { "type": "object" },
+    "readiness": {
+      "type": "object",
+      "required": ["stage", "coaching_available", "message", "issues"],
+      "properties": {
+        "stage": { "type": "string" },
+        "coaching_available": { "type": "boolean" },
+        "message": { "type": "string" },
+        "issues": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "archive_status": { "type": "object" },
+    "next_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "why", "command"],
+        "properties": {
+          "title": { "type": "string" },
+          "why": { "type": "string" },
+          "command": { "type": "string" }
+        }
+      }
+    }
+  }
+}

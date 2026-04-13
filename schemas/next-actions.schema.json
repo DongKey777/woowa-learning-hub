@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NextActions",
+  "type": "object",
+  "required": [
+    "repo",
+    "context",
+    "generated_at",
+    "experience_level",
+    "next_actions"
+  ],
+  "properties": {
+    "repo": { "type": "string" },
+    "context": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "experience_level": { "type": "string" },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "title", "why", "action"],
+        "properties": {
+          "priority": { "type": "integer" },
+          "category": { "type": "string" },
+          "title": { "type": "string" },
+          "why": { "type": "string" },
+          "action": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

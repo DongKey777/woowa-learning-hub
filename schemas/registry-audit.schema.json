@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RegistryAudit",
+  "type": "object",
+  "required": [
+    "report_type",
+    "generated_at",
+    "environment",
+    "repo_count",
+    "summary",
+    "repos"
+  ],
+  "properties": {
+    "report_type": { "const": "registry_audit" },
+    "generated_at": { "type": "string" },
+    "environment": { "type": "object" },
+    "repo_count": { "type": "integer" },
+    "summary": { "type": "object" },
+    "repos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "readiness_stage",
+          "coaching_available",
+          "issues"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "track": { "type": ["string", "null"] },
+          "mission": { "type": ["string", "null"] },
+          "upstream": { "type": ["string", "null"] },
+          "title_contains": { "type": ["string", "null"] },
+          "readiness_stage": { "type": "string" },
+          "coaching_available": { "type": "boolean" },
+          "issues": { "type": "array", "items": { "type": "string" } },
+          "bootstrap_action": { "type": ["string", "null"] },
+          "bootstrap_message": { "type": ["string", "null"] },
+          "mission_kind": { "type": ["string", "null"] },
+          "mission_summary": { "type": "array", "items": { "type": "string" } },
+          "archive_status_path": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

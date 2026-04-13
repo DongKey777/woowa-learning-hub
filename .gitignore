@@ -1,0 +1,37 @@
+# Runtime state (per-repo archives, packets, contexts, actions, memory, CS RAG index)
+state/
+
+# HuggingFace model cache (sentence-transformers, cross-encoder)
+.hf_cache/
+.cache/huggingface/
+
+# Learner mission repos (cloned locally, never tracked)
+missions/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Logs / tmp
+*.log
+tmp/
+.tmp/
+
+# Secrets / local overrides
+.env
+.env.*
+*.local

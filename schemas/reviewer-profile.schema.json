@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReviewerProfile",
+  "type": "object",
+  "required": [
+    "repo",
+    "reviewer",
+    "generated_at",
+    "summary",
+    "lenses",
+    "hotspot_paths"
+  ],
+  "properties": {
+    "repo": { "type": "string" },
+    "reviewer": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "summary": { "type": ["object", "null"] },
+    "lenses": { "type": "array", "items": { "type": "string" } },
+    "hotspot_paths": { "type": "array" },
+    "json_path": { "type": "string" }
+  }
+}
