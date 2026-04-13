@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .archive import compute_archive_status, ensure_repo_archive, write_archive_status
+from .artifact_budget import enforce_budget
 from .learner_state import (
     _section_b_working_copy,
     is_stale,
@@ -305,12 +306,44 @@ def _empty_cs_readiness(reason: str = "not_checked") -> dict:
     }
 
 
+def _probe_missing_ml_deps() -> list[str]:
+    """Return the subset of CS RAG ML deps that are not importable.
+
+    Uses ``importlib.util.find_spec`` so the check stays lightweight and
+    does not pull ~1 GB of torch/sentence-transformers into memory just to
+    report readiness. Reused by both the ready path in
+    ``_pre_augment_phase`` and the archive-blocked payload builder so the
+    ``cs_readiness.reason == "deps_missing"`` contract is uniform across
+    execution_status.
+    """
+    from importlib.util import find_spec  # noqa: WPS433
+
+    return [
+        name
+        for name in ("sentence_transformers", "numpy", "sklearn")
+        if find_spec(name) is None
+    ]
+
+
 def _check_cs_readiness() -> dict:
     """Probe CS RAG index readiness without importing ML deps.
 
     Lazy: only imports scripts.learning.rag.indexer, which is pure stdlib.
-    Falls back to a degraded report if even that import fails.
+    Falls back to a degraded report if even that import fails. The ML
+    dependency probe runs first — if deps are missing, we report
+    ``reason=deps_missing`` regardless of whether the index files exist,
+    because ``pip install -e .`` must land before an index rebuild can
+    even be attempted.
     """
+    missing_deps = _probe_missing_ml_deps()
+    if missing_deps:
+        return {
+            "state": "missing",
+            "reason": "deps_missing",
+            "corpus_hash": None,
+            "index_manifest_hash": None,
+            "next_command": "pip install -e .",
+        }
     try:
         from scripts.learning.rag import indexer as rag_indexer  # noqa: WPS433
     except Exception:
@@ -328,10 +361,54 @@ def _check_cs_readiness() -> dict:
     }
 
 
+def _build_learning_projection(
+    *,
+    repo_name: str,
+    drill_result: dict | None,
+) -> dict | None:
+    """Assemble cs_view / drill_history / reconciled for profile.json.
+
+    Loads the append-only drill-history jsonl (including the this-turn
+    drill_result that Phase 2 will persist), derives a compact summary,
+    and runs profile_merge.compute_cs_view for the cs_view projection.
+    Returns None if profile_merge is unavailable.
+    """
+    try:
+        from scripts.learning import drill as _drill_mod  # noqa: WPS433
+        from scripts.learning.profile_merge import compute_cs_view  # noqa: WPS433
+    except Exception:
+        return None
+
+    history = _drill_mod.load_history(repo_name, limit=50)
+    if drill_result is not None:
+        history = history + [drill_result]
+
+    cs_view = compute_cs_view(history)
+    compact_history = [
+        {
+            "drill_session_id": h.get("drill_session_id"),
+            "scored_at": h.get("scored_at"),
+            "total_score": h.get("total_score"),
+            "level": h.get("level"),
+            "weak_tags": h.get("weak_tags") or [],
+        }
+        for h in history[-5:]
+    ]
+    return {
+        "cs_view": cs_view,
+        "drill_history": compact_history,
+        "reconciled": None,  # filled in after unify()
+    }
+
+
 def _build_unified_profile(memory_profile: dict | None) -> dict | None:
     """Derive the per-turn unified_profile projection.
 
     Persisted truth stays in memory/profile.json; this is a compact view.
+    Reuse the already-persisted ``cs_view`` directly — recomputing from
+    ``drill_history`` here would only see the compact tail (missing
+    ``dimensions`` and ``source_doc.category``), silently weakening
+    ``weak_dimensions`` / ``low_categories`` vs persisted truth.
     Returns None if profile_merge is unavailable (never happens in practice
     because it's pure stdlib, but defensive to keep the payload valid).
     """
@@ -339,8 +416,8 @@ def _build_unified_profile(memory_profile: dict | None) -> dict | None:
         from scripts.learning.profile_merge import unify as _unify  # noqa: WPS433
     except Exception:
         return None
-    drill_history = (memory_profile or {}).get("drill_history") or []
-    return _unify(memory_profile or {}, drill_history=drill_history)
+    persisted_cs_view = (memory_profile or {}).get("cs_view")
+    return _unify(memory_profile or {}, cs_view=persisted_cs_view)
 
 
 def _pre_augment_phase(
@@ -389,6 +466,9 @@ def _pre_augment_phase(
     cs_readiness = _check_cs_readiness()
     cs_search_mode = pre_result.get("cs_search_mode", "skip")
 
+    # ``_check_cs_readiness`` already folded the ML deps probe: a missing
+    # stack yields state="missing"/reason="deps_missing", so the
+    # state=="ready" guard below is sufficient — no second probe needed.
     augment_result: dict | None = None
     if cs_search_mode != "skip" and cs_readiness.get("state") == "ready":
         try:
@@ -400,6 +480,14 @@ def _pre_augment_phase(
                 cs_search_mode=cs_search_mode,
             )
         except (ImportError, ModuleNotFoundError):
+            # Defensive — find_spec said deps are present but an internal
+            # import still broke. Degrade the same way so the AI can act.
+            cs_readiness = {
+                **cs_readiness,
+                "state": "missing",
+                "reason": "deps_missing",
+                "next_command": "pip install -e .",
+            }
             augment_result = None
         except Exception:
             augment_result = None
@@ -544,6 +632,25 @@ def run_coach(
                 previous_memory.get("summary", {}),
                 previous_memory.get("profile", {}),
             ),
+            # Keep the top-level shape uniform with ready payloads so AI
+            # consumers don't need a special branch for blocked. Learning
+            # fields are null/omit because archive bootstrap must complete
+            # first; CS readiness is still reported honestly.
+            "cs_readiness": _check_cs_readiness(),
+            "cs_augmentation": None,
+            "intent_decision": {
+                "detected_intent": "unknown",
+                "pre_intent": "unknown",
+                "cs_search_mode": "skip",
+                "signals": {"reason": "archive_blocked"},
+                "block_plan": {
+                    "snapshot_block": "omit",
+                    "cs_block": "omit",
+                    "verification": "omit",
+                    "drill_block": "omit",
+                },
+            },
+            "unified_profile": None,
             "response_contract": build_response_contract(learner_state_full, "blocked"),
         }
         _assert_response_contract(blocked_payload)
@@ -599,11 +706,28 @@ def run_coach(
     drill_result = phase_a["drill_result"]
     consumed_pending_id = phase_a["consumed_pending_id"]
 
-    # Phase 1: compute everything in memory (no file writes)
-    memory_update = compute_memory_update(repo["name"], session_payload)
+    # Phase 1: compute everything in memory (no file writes).
+    # Build learning_projection first so the persisted profile matches the
+    # per-turn unified_profile view (cs_view / drill_history / reconciled
+    # are the source-of-truth fields in profile.json, not coach-run.json).
+    learning_projection = _build_learning_projection(
+        repo_name=repo["name"],
+        drill_result=drill_result,
+    )
+    memory_update = compute_memory_update(
+        repo["name"],
+        session_payload,
+        learning_projection=learning_projection,
+    )
     memory_summary = memory_update["summary"]
     memory_profile = memory_update["profile"]
     unified_profile = _build_unified_profile(memory_profile)
+
+    # Persist reconciled onto profile.json so the next session can read it
+    # directly instead of rerunning profile_merge.unify on the jsonl tail.
+    if unified_profile is not None and isinstance(memory_profile, dict):
+        memory_profile["reconciled"] = unified_profile.get("reconciled")
+        memory_update["profile"] = memory_profile
 
     # Learning pipeline phase B — drill offer (after unified_profile) + finalize.
     drill_offer: dict | None = None
@@ -701,43 +825,23 @@ def run_coach(
         ),
     }
     _assert_response_contract(payload)
+    # Size budget: shrink heavy optional fields before schema validation so
+    # the canonical artifact stays within the top-level budget (see
+    # artifact_budget.SHRINK_LADDER). Load-bearing fields are untouched.
+    payload = enforce_budget(payload)
     validate_payload("coach-run-result", payload)
 
-    # Phase 2: sequential file writes
-    # Order matters: history.jsonl → coach-run.json → summary.json → profile.json
-    # Rationale: coach-run.json is the canonical first-read artifact and contains
-    # the authoritative memory snapshot for the current session. If summary/profile
-    # writes fail, needs_recompute() will detect the stale state on the next session.
+    # Phase 2: sequential file writes — docs/learning-flow.md write-order:
+    #   history.jsonl → coach-run.json → cs-augmentation sidecar →
+    #   summary.json → profile.json → drill persistence
+    # Rationale: history is append-only truth, then the canonical top-level
+    # artifact, then advisory sidecars, then derived snapshots, then drill
+    # state. Drill persistence runs last so a partial failure leaves an
+    # unambiguous "pending still valid" state on disk.
     action_dir = repo_action_dir(repo["name"])
     path = action_dir / "coach-run.json"
     error_phase: str | None = None
     error_message: str | None = None
-
-    if cs_sidecar is not None:
-        try:
-            sidecar_path = repo_context_dir(repo["name"]) / "cs-augmentation.json"
-            sidecar_path.parent.mkdir(parents=True, exist_ok=True)
-            sidecar_path.write_text(
-                json.dumps(cs_sidecar, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
-            )
-        except Exception:
-            # Sidecar write is advisory; do not block coach-run on failure.
-            pass
-
-    if _drill is not None:
-        try:
-            if drill_result is not None:
-                _drill.append_history(repo["name"], drill_result)
-            if consumed_pending_id is not None:
-                _drill.clear_pending(repo["name"])
-            if drill_offer is not None:
-                _drill.save_pending(repo["name"], drill_offer)
-            elif pending_drill is not None and consumed_pending_id is None:
-                # TTL was decremented in memory — persist the new counter.
-                _drill.save_pending(repo["name"], pending_drill)
-        except Exception:
-            pass
 
     try:
         commit_history_entry(repo["name"], memory_update)
@@ -752,12 +856,38 @@ def run_coach(
             error_phase = "coach_run_write"
             error_message = str(exc)
 
+    if error_phase is None and cs_sidecar is not None:
+        try:
+            sidecar_path = repo_context_dir(repo["name"]) / "cs-augmentation.json"
+            sidecar_path.parent.mkdir(parents=True, exist_ok=True)
+            sidecar_path.write_text(
+                json.dumps(cs_sidecar, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            # Sidecar write is advisory; do not block coach-run on failure.
+            pass
+
     if error_phase is None:
         try:
             commit_memory_snapshot(repo["name"], memory_update)
         except Exception as exc:
             error_phase = "memory_snapshot"
             error_message = str(exc)
+
+    if error_phase is None and _drill is not None:
+        try:
+            if drill_result is not None:
+                _drill.append_history(repo["name"], drill_result)
+            if consumed_pending_id is not None:
+                _drill.clear_pending(repo["name"])
+            if drill_offer is not None:
+                _drill.save_pending(repo["name"], drill_offer)
+            elif pending_drill is not None and consumed_pending_id is None:
+                # TTL was decremented in memory — persist the new counter.
+                _drill.save_pending(repo["name"], pending_drill)
+        except Exception:
+            pass
 
     if error_phase is not None:
         payload["execution_status"] = "error"
