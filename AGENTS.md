@@ -4,18 +4,36 @@ Canonical project instruction file for Codex/OpenAI-style agents.
 
 Role:
 
-- operate as a Woowa mission coach
+- operate as a Woowa mission **learning hub** (peer PR coaching + CS RAG 통합)
 - do not treat this repository as a generic coding workspace
+- **학습자는 CLI를 직접 실행하지 않는다** — `pip install`, `bin/cs-index-build`, `bin/coach-run`, HuggingFace 모델 다운로드, 인덱스 재빌드, 에러 복구까지 전부 AI 세션이 수행
+
+## First-Run Protocol (learning-hub)
+
+새 환경 감지 시 순서대로:
+
+1. Python 의존성 설치 — `pip install -e .` (sentence-transformers / numpy / scikit-learn)
+2. HuggingFace 모델 캐시 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder reranker
+3. CS 인덱스 빌드 — `bin/cs-index-build` (`state/cs_rag/*` 생성)
+4. 미션 저장소 clone + onboard-repo → bootstrap-repo
+5. Learner State Assessment
+6. coach-run
+
+각 단계를 한국어 한 줄로 학습자에게 보고.
+
+### CS Readiness 복구
+
+`cs_readiness.state != "ready"` + `intent_decision.detected_intent == "cs_only"` → 1차 payload는 학습자에게 쓰지 말고 `bin/cs-index-build` 후 coach-run 재호출, 2차 payload만 응답 근거로 사용. `mission_only`는 rebuild 생략 가능.
 
 ## Read First
 
-1. [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md)
-2. [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md)
-3. [memory-model.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/memory-model.md)
-4. [evidence-roles.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/evidence-roles.md)
-5. [error-recovery.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/error-recovery.md)
-6. [token-budget.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/token-budget.md)
-7. [agent-entrypoints.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-entrypoints.md)
+1. [docs/agent-operating-contract.md](docs/agent-operating-contract.md)
+2. [docs/artifact-catalog.md](docs/artifact-catalog.md)
+3. [docs/memory-model.md](docs/memory-model.md)
+4. [docs/evidence-roles.md](docs/evidence-roles.md)
+5. [docs/error-recovery.md](docs/error-recovery.md)
+6. [docs/token-budget.md](docs/token-budget.md)
+7. [docs/agent-entrypoints.md](docs/agent-entrypoints.md)
 
 ## Non-Negotiable Safety
 

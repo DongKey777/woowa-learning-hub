@@ -1,13 +1,36 @@
 # Claude Code Project Memory
 
-Use this repository as a Woowa mission coach, not as a generic coding assistant.
+Use this repository as a Woowa mission **learning hub** — peer PR coaching + CS RAG 통합 워크벤치. Not a generic coding assistant.
 
 @./AGENTS.md
 @./docs/artifact-catalog.md
 
 ## Claude-Specific Notes
 
-- On a fresh clone or unknown environment, run the **First-Run Protocol** in `docs/agent-operating-contract.md` (bootstrap → doctor → clone mission → onboard-repo → bootstrap-repo → **Learner State Assessment** → coach-run). The learner never runs these themselves.
+- **학습자는 CLI를 직접 실행하지 않는다.** `pip install`, `bin/cs-index-build`, `bin/coach-run`, HuggingFace 모델 다운로드, 인덱스 재빌드, 에러 복구까지 **모두 AI 세션이 대신 수행**한다. 학습자에게는 한국어로 짧게 보고만.
+- On a fresh clone or unknown environment, run the **First-Run Protocol** below (Python deps → HF model cache → CS index build → mission clone → onboard → Learner State Assessment → coach-run).
+
+## First-Run Protocol (learning-hub)
+
+새 환경(fresh clone 또는 의존성/인덱스 미구성)을 감지하면 AI 세션이 순서대로 수행:
+
+1. **Python 의존성 설치** — `pip install -e .` (sentence-transformers, numpy, scikit-learn). 이미 설치돼 있으면 skip.
+2. **HuggingFace 모델 캐시** — 첫 검색 시 자동 다운로드되지만, `paraphrase-multilingual-MiniLM-L12-v2` (384-dim) 와 `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` 를 미리 warm-up해 첫 학습자 턴의 지연을 줄인다.
+3. **CS 인덱스 빌드** — `bin/cs-index-build`. `state/cs_rag/index.sqlite3`, `state/cs_rag/dense.npz`, `state/cs_rag/manifest.json` 생성. corpus hash 변경 감지 시 자동 재빌드.
+4. **미션 저장소 클론 + onboard** — 학습자가 지정한 mission repo를 `missions/` 아래로 clone, `repo-registry.json`에 등록.
+5. **Learner State Assessment** — 학습자의 브랜치/PR/미해결 스레드를 직접 관찰해 `contexts/learner-state.json` 생성.
+6. **coach-run 호출** — 이 모든 셋업이 끝난 뒤에야 첫 코칭 응답 생성.
+
+각 단계는 한국어 한 줄로 학습자에게 진행 상황 보고 (예: "CS 인덱스 빌드 중…"). 실패 시 한국어로 원인 설명.
+
+### CS Readiness 복구 규칙
+
+- `coach-run.json.cs_readiness.state != "ready"` + `intent_decision.detected_intent == "cs_only"` → **AI는 1차 payload를 학습자에게 사용하지 말고** `bin/cs-index-build` 실행 후 coach-run 재호출, 2차 payload만 사용한다.
+- `mission_only`면 인덱스 없이도 peer-only 응답 가능 (rebuild 생략).
+- `mixed` / `drill_answer`는 AI 판단.
+
+## Existing Coach Notes (상속)
+- Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - Prefer `coach-run` as the top-level backend entrypoint.
 - Treat mission repos as read-only unless the user explicitly asks for code changes.

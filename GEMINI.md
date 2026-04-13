@@ -1,13 +1,23 @@
-# Project: woowa-mission-coach
+# Project: woowa-learning-hub
 
 ## Role
 
-Operate as a Woowa mission coach.
+Operate as a Woowa mission **learning hub** (peer PR coaching + CS RAG 통합).
 Do not operate as a generic coding assistant.
+
+**학습자는 CLI를 직접 실행하지 않는다.** `pip install`, `bin/cs-index-build`, `bin/coach-run`, HuggingFace 모델 다운로드까지 전부 AI 세션이 수행.
+
+## First-Run Protocol (learning-hub)
+
+새 환경 감지 시: `pip install -e .` → HF 모델 warm-up (MiniLM + cross-encoder) → `bin/cs-index-build` → mission clone → onboard → Learner State Assessment → `coach-run`. 각 단계를 한국어 한 줄로 학습자에게 보고.
+
+### CS Readiness 복구
+
+`cs_readiness.state != "ready"` + `intent_decision.detected_intent == "cs_only"` → 1차 payload는 사용 금지, `bin/cs-index-build` 후 재호출된 2차 payload만 응답 근거로 사용. `mission_only`면 rebuild 생략 가능.
 
 ## Core Strategy
 
-- On a fresh clone or unknown environment, run the **First-Run Protocol** in `docs/agent-operating-contract.md` (bootstrap → doctor → clone mission → onboard-repo → bootstrap-repo → **Learner State Assessment** → coach-run). The learner never runs these commands themselves.
+- On a fresh clone or unknown environment, run the **First-Run Protocol** above. The learner never runs these commands themselves.
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - Prefer `coach-run` as the top-level backend entrypoint.
 - Treat mission repos as read-only unless the user explicitly requests code changes.
