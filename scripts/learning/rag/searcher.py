@@ -6,10 +6,16 @@ Pipeline
 2. FTS5 MATCH to get top-N candidates (score = bm25, lower is better).
 3. Dense cosine similarity top-N (skipped in ``cheap`` mode).
 4. Reciprocal Rank Fusion (RRF, k=60) to merge the two rankings.
-5. Optional cross-encoder rerank (skipped in ``cheap`` mode, env-disabled in
-   tests via WOOWA_RAG_NO_RERANK=1).
-6. Category boost for learning-point ↔ CS category pairs.
-7. Return top-K dicts ready for cs_block rendering.
+5. Category boost for learning-point ↔ CS category pairs.
+6. Category filter — when learning_points are set, restrict the pool to the
+   mapped categories so the reranker never sees off-topic noise (e.g. an
+   auth doc winning a persistence query on surface-token overlap). If the
+   filter would leave fewer than top_k items, fall back to unfiltered.
+7. Optional cross-encoder rerank (skipped in ``cheap`` mode, env-disabled
+   in tests via WOOWA_RAG_NO_RERANK=1).
+8. Document-level dedupe — keep the best-scoring chunk per source path so
+   a single document's sibling sections cannot monopolize top-K.
+9. Return top-K dicts ready for cs_block rendering.
 
 Modes
 -----
@@ -251,12 +257,25 @@ def search(
             allowed_categories,
         )
 
-        # 6. Optional rerank (full mode only)
-        if mode == "full" and _rerank_enabled(use_reranker):
-            boosted = _rerank(prompt, boosted, chunks, top_n=top_k * 2)
+        # 6. Category filter — keep only chunks whose category matches the
+        #    learning points, if any. Falls back to unfiltered when the
+        #    filter would leave fewer than top_k candidates.
+        filtered = _filter_allowed_categories(boosted, chunks, allowed_categories, top_k)
 
-        # 7. Compose output
-        return [_format_hit(chunks[rid], score) for rid, score in boosted[:top_k]]
+        # 7. Optional rerank (full mode only). Decorate the prompt with
+        #    learning-point anchor phrases so the reranker sees canonical
+        #    domain terms (fixes e.g. "책임 분리" collapsing onto
+        #    "Chain of Responsibility" on raw token overlap).
+        if mode == "full" and _rerank_enabled(use_reranker):
+            anchor = category_mapping.anchor_phrase_for(learning_points)
+            rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
+            filtered = _rerank(rerank_prompt, filtered, chunks, top_n=top_k * 2)
+
+        # 8. Document-level dedupe — one chunk per source path
+        deduped = _dedupe_by_path(filtered, chunks)
+
+        # 9. Compose output
+        return [_format_hit(chunks[rid], score) for rid, score in deduped[:top_k]]
     finally:
         conn.close()
 
@@ -281,6 +300,58 @@ def _rerank_enabled(use_reranker: bool | None) -> bool:
     if os.environ.get("WOOWA_RAG_NO_RERANK") == "1":
         return False
     return use_reranker is True or use_reranker is None  # default on
+
+
+def _filter_allowed_categories(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+    allowed_categories: set[str],
+    min_keep: int,
+) -> list[tuple[int, float]]:
+    """Filter the pool to chunks whose category is in ``allowed_categories``.
+
+    When ``allowed_categories`` is empty (no learning points supplied) the
+    pool is returned untouched. If strict filtering would leave fewer than
+    ``min_keep`` items (too narrow — e.g. a learning point mapped to a
+    single category with thin coverage), the original unfiltered pool is
+    returned so retrieval still produces an answer.
+    """
+    if not allowed_categories:
+        return scored
+    kept: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        if chunk is None:
+            continue
+        if chunk["category"] in allowed_categories:
+            kept.append((row_id, score))
+    if len(kept) < min_keep:
+        return scored
+    return kept
+
+
+def _dedupe_by_path(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+) -> list[tuple[int, float]]:
+    """Keep only the first (highest-ranked) chunk per source path.
+
+    Preserves input order, so whatever upstream ranking determined the
+    winner wins. Chunks whose row_id is missing from the chunk map are
+    dropped silently.
+    """
+    seen: set[str] = set()
+    out: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        if chunk is None:
+            continue
+        path = chunk["path"]
+        if path in seen:
+            continue
+        seen.add(path)
+        out.append((row_id, score))
+    return out
 
 
 def _rerank(

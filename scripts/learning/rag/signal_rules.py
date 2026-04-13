@@ -21,7 +21,13 @@ _RULES: list[Rule] = [
     {
         "tag": "persistence_boundary",
         "triggers": {"repository", "dao", "aggregate", "레포지토리", "영속성", "persistence"},
-        "expand": ["repository", "aggregate root", "dao", "persistence"],
+        "expand": [
+            "repository",
+            "repository pattern",
+            "dao pattern",
+            "persistence",
+            "aggregate root",
+        ],
         "category": "database",
     },
     {
@@ -87,12 +93,25 @@ _RULES: list[Rule] = [
 ]
 
 _TOKEN_RE = re.compile(r"[0-9a-zA-Z가-힣]+")
+# Strip a trailing Korean-particle run from ASCII-prefixed tokens like
+# "boundary와" / "repository가" so the FTS side queries the bare stem the
+# index actually stores. Pure-Hangul tokens are left untouched (stripping
+# particles from them risks mangling legitimate stems).
+_MIXED_TAIL_RE = re.compile(r"^([0-9A-Za-z]+)[가-힣]+$")
 
 
 def _tokenize(text: str) -> list[str]:
     if not text:
         return []
-    return [tok.lower() for tok in _TOKEN_RE.findall(text) if tok]
+    out: list[str] = []
+    for tok in _TOKEN_RE.findall(text):
+        if not tok:
+            continue
+        m = _MIXED_TAIL_RE.match(tok)
+        if m:
+            tok = m.group(1)
+        out.append(tok.lower())
+    return out
 
 
 def _haystack(prompt: str, topic_hints: list[str] | None) -> str:

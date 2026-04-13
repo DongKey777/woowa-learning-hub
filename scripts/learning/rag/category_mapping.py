@@ -31,12 +31,54 @@ GENERAL_FALLBACK_CATEGORIES: list[str] = [
     "language",
 ]
 
+# Canonical domain phrases prepended to the reranker prompt when a
+# learning point is active. These steer the multilingual cross-encoder
+# toward the right topic even when the raw learner prompt contains
+# Korean terms that collide with unrelated English pattern names — e.g.
+# "책임 분리" (separation of responsibilities) surface-matching
+# "Chain of Responsibility". FTS/dense retrieval is left untouched; only
+# the reranker sees the decorated prompt.
+LEARNING_POINT_ANCHOR_PHRASES: dict[str, str] = {
+    "repository_boundary":
+        "repository pattern 영속성 경계 persistence boundary DAO anti-pattern",
+    "responsibility_boundary":
+        "layered architecture service layer separation of concerns 계층 책임",
+    "transaction_consistency":
+        "transaction isolation propagation commit rollback 트랜잭션 격리 전파",
+    "db_modeling":
+        "schema design normalization index primary key foreign key 정규화",
+    "reconstruction_mapping":
+        "domain model object mapping value object 도메인 매핑",
+    "testing_strategy":
+        "unit test integration test fixture mock 테스트 전략",
+    "resource_lifecycle":
+        "connection pool resource lifecycle close leak 리소스 수명",
+    "review_response":
+        "code review feedback communication 리뷰 대응",
+}
+
 
 def categories_for(learning_point_id: str) -> list[str]:
     """Return the category whitelist for a learning point, or the general fallback."""
     return LEARNING_POINT_TO_CS_CATEGORY.get(
         learning_point_id, list(GENERAL_FALLBACK_CATEGORIES)
     )
+
+
+def anchor_phrase_for(learning_points: list[str] | None) -> str:
+    """Return a combined anchor phrase for the active learning points.
+
+    Preserves the order in which learning points were provided. Unknown
+    ids are skipped. Returns an empty string when no anchors apply.
+    """
+    if not learning_points:
+        return ""
+    parts: list[str] = []
+    for lp in learning_points:
+        phrase = LEARNING_POINT_ANCHOR_PHRASES.get(lp)
+        if phrase:
+            parts.append(phrase)
+    return " ".join(parts)
 
 
 def reverse_lookup(category: str) -> list[str]:
