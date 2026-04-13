@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is the canonical operating contract for agents working in `woowa-mission-coach`.
+This is the canonical operating contract for agents working in `woowa-learning-hub`.
 
 ## Core Rules
 
@@ -297,7 +297,7 @@ If `coach-run` is called on an `uninitialized` repo, the returned payload keeps 
 
 See:
 
-- [artifact-catalog.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/artifact-catalog.md)
+- [artifact-catalog.md](./artifact-catalog.md)
 
 ## Recommendation Rules
 
@@ -320,7 +320,8 @@ See:
 ## CS Readiness and Intent-Aware Blocks
 
 - `cs_readiness.state` is reported separately from `execution_status`. Missing/stale indexes never downgrade `execution_status=ready`; `blocked` is reserved for archive/bootstrap issues.
-- On `intent_decision.detected_intent == "cs_only"` with `cs_readiness.state != "ready"`: the 1st `coach-run` payload is a diagnostic, **not** learner-facing. Run `bin/cs-index-build` (the command surfaced in `cs_readiness.next_command`) and re-invoke `coach-run`. Only the 2nd payload is used to compose the learner reply. If the 2nd attempt still fails, report the failure in Korean and degrade to peer-only.
+- When `cs_readiness.reason == "deps_missing"`, the ML dependency stack (`sentence_transformers` / `numpy` / `sklearn`) is not installed. `cs_readiness.next_command` is set to the exact string `pip install -e .` — run that verbatim from the repo root, then re-invoke `coach-run`. This probe runs on every turn (including `mission_only` / `skip`), so the signal is uniform. Do not invent alternative install commands.
+- On `intent_decision.detected_intent == "cs_only"` with `cs_readiness.state != "ready"`: the 1st `coach-run` payload is a diagnostic, **not** learner-facing. Dispatch by `cs_readiness.reason` — `deps_missing` → `pip install -e .`, otherwise → `bin/cs-index-build`. The right command is always in `cs_readiness.next_command`. Re-invoke `coach-run` and compose the learner reply from the 2nd payload only. If the 2nd attempt still fails, report the failure in Korean and degrade to peer-only.
 - On `mission_only`: rebuild is advisory. Use the 1st payload directly.
 - On `mixed` / `drill_answer`: rebuild is advisory; AI decides based on `cs_augmentation` completeness.
 - `response_contract.{cs_block, drill_block, drill_result_block}` each carry an `applicability_hint ∈ {primary, supporting, omit}`. This is advisory — include the `primary` and `supporting` blocks, skip `omit`. AI may reinterpret based on the learner's question.
@@ -329,7 +330,7 @@ See:
 ## Drill UX Rules
 
 - Drill offers are optional. Learners may ignore or decline with no penalty.
-- Do not re-offer within 3 turns of a previous offer (handled by `drill.build_offer_if_due`).
+- Only one drill is active at a time. `drill.build_offer_if_due` refuses a new offer while a pending drill exists in `memory/drill-pending.json`; the learner must either answer it or let its TTL (`DEFAULT_TTL_TURNS=3`) expire before another offer can be generated.
 - `drill_block.markdown` should be copied as-is into the reply when `applicability_hint != "omit"`, but wording should make opt-out trivial.
 - When `drill_result_block` is present, acknowledge the previous drill briefly but keep the main focus on the learner's current question.
 - A turn classified as `drill_answer` never produces a new drill offer — `build_offer_if_due` refuses to avoid stacking feedback loops.
@@ -337,7 +338,7 @@ See:
 ## Safety
 
 - Do not modify the mission repo during learning-only questions.
-- Keep all state changes inside `woowa-mission-coach/state`.
+- Keep all state changes inside `woowa-learning-hub/state`.
 - If evidence is weak, say that it is weak.
 
 ## Outputs

@@ -61,7 +61,7 @@ Recovery (see `docs/agent-operating-contract.md` CS Readiness section):
 }
 ```
 
-Top-level `coach-run.json.cs_augmentation` is a compact view. Raw document bodies + full sections + reranker raw scores live in `contexts/cs-augmentation.json`, rewritten each turn.
+Top-level `coach-run.json.cs_augmentation` is a compact view for AI consumption. `contexts/cs-augmentation.json` is a rewritten-each-turn sidecar that currently mirrors the same compact hit shape (path / section / score / snippet_preview) — raw document bodies, full section text, and reranker raw scores are planned to land here once `integration.augment` grows that bundling step. Treat the sidecar as an advisory artifact for now; AI sessions should read `cs_augmentation` from `coach-run.json` as canonical.
 
 ## Search Modes
 
@@ -82,7 +82,7 @@ Decided by `intent_router.pre_decide()` before augment:
 - `searcher` / `reranker` import sentence-transformers + numpy + sklearn lazily inside their entry functions.
 - `test_coach_run_import_isolation.py` pins this — blocks `sentence_transformers` / `torch` / `numpy` / `sklearn` / `searcher` / `reranker` / `integration` in `sys.modules` and verifies `coach_run` still imports.
 
-An `ImportError` during lazy import is caught and degraded to `cs_readiness={state: missing, reason: deps_missing}`, `cs_augmentation=null`, `execution_status=ready`, peer-only reply.
+Before any lazy import, `coach_run._pre_augment_phase` runs a lightweight `importlib.util.find_spec` probe against `sentence_transformers`, `numpy`, and `sklearn`. If any is absent, `cs_readiness` is degraded uniformly — on every turn, including `mission_only`/`skip` — to `{state: "missing", reason: "deps_missing", next_command: "pip install -e ."}`, with `cs_augmentation=null`, `execution_status=ready`, and a peer-only reply. The exact `next_command` string is `pip install -e .` — AI sessions should run that verbatim from the repo root. A defensive `ImportError` catch around the actual `cs_augment(...)` call degrades the same way if `find_spec` succeeds but an internal import still fails.
 
 ## Rebuild Triggers
 
