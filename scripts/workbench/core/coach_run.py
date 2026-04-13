@@ -19,9 +19,10 @@ from .memory import (
     needs_recompute,
     recompute_from_history,
 )
+from .intent_router import finalize as intent_finalize, pre_decide as intent_pre_decide
 from .paths import repo_action_dir, repo_context_dir
 from .repo_intake import resolve_repo_input
-from .response_contract import build_response_contract
+from .response_contract import build_response_contract, build_verification_block
 from .schema_validation import validate_payload
 from .session import start_session
 
@@ -294,6 +295,117 @@ def _blocked_coach_reply(repo_name: str, archive_status: dict, memory_summary: d
     }
 
 
+def _empty_cs_readiness(reason: str = "not_checked") -> dict:
+    return {
+        "state": "missing",
+        "reason": reason,
+        "corpus_hash": None,
+        "index_manifest_hash": None,
+        "next_command": "bin/cs-index-build",
+    }
+
+
+def _check_cs_readiness() -> dict:
+    """Probe CS RAG index readiness without importing ML deps.
+
+    Lazy: only imports scripts.learning.rag.indexer, which is pure stdlib.
+    Falls back to a degraded report if even that import fails.
+    """
+    try:
+        from scripts.learning.rag import indexer as rag_indexer  # noqa: WPS433
+    except Exception:
+        return _empty_cs_readiness("indexer_import_failed")
+    try:
+        report = rag_indexer.is_ready()
+    except Exception:
+        return _empty_cs_readiness("readiness_error")
+    return {
+        "state": report.state,
+        "reason": report.reason,
+        "corpus_hash": report.corpus_hash,
+        "index_manifest_hash": report.index_manifest_hash,
+        "next_command": report.next_command,
+    }
+
+
+def _run_learning_pipeline(
+    *,
+    prompt: str | None,
+    learner_state_full: dict | None,
+    session_payload: dict,
+    verification_required_count: int,
+) -> tuple[dict, dict | None, dict, dict | None]:
+    """Execute pre_decide → readiness → augment → finalize.
+
+    Returns (cs_readiness, cs_augmentation_compact, intent_decision, sidecar).
+    ``cs_augmentation_compact`` carries the compact top-level view (long bodies
+    go to the sidecar file). ``sidecar`` is the dict to write under
+    contexts/cs-augmentation.json, or None if nothing to write.
+    """
+    learning_points = [
+        rec.get("learning_point")
+        for rec in (session_payload.get("learning_point_recommendations") or [])
+        if rec.get("learning_point")
+    ]
+    topic_hints = [
+        t for t in (
+            session_payload.get("primary_topic"),
+        ) if t
+    ]
+
+    pre_result = intent_pre_decide(
+        prompt or "",
+        history=None,
+        pending_drill=None,
+        learner_state=learner_state_full,
+    )
+
+    cs_readiness = _check_cs_readiness()
+    cs_search_mode = pre_result.get("cs_search_mode", "skip")
+
+    # Lazy import of integration.augment — keeps coach_run alive when
+    # sentence-transformers is not installed.
+    augment_result: dict | None = None
+    if cs_search_mode != "skip" and cs_readiness.get("state") == "ready":
+        try:
+            from scripts.learning.integration import augment as cs_augment  # noqa: WPS433
+            augment_result = cs_augment(
+                prompt=prompt or "",
+                learning_points=learning_points,
+                topic_hints=topic_hints,
+                cs_search_mode=cs_search_mode,
+            )
+        except (ImportError, ModuleNotFoundError):
+            augment_result = None
+        except Exception:
+            augment_result = None
+
+    intent_decision = intent_finalize(
+        pre_result,
+        augment_result=augment_result,
+        drill_offer=None,
+        drill_result=None,
+        verification_required_count=verification_required_count,
+    )
+
+    sidecar = None
+    cs_augmentation_compact: dict | None = None
+    if augment_result is not None:
+        sidecar = augment_result.get("sidecar")
+        cs_augmentation_compact = {
+            "by_learning_point": augment_result.get("by_learning_point") or {},
+            "by_fallback_key": augment_result.get("by_fallback_key") or {},
+            "fallback_reason": augment_result.get("fallback_reason"),
+            "cs_categories_hit": augment_result.get("cs_categories_hit") or [],
+            "sidecar_path": (
+                "contexts/cs-augmentation.json" if sidecar else None
+            ),
+            "meta": augment_result.get("meta") or {},
+        }
+
+    return cs_readiness, cs_augmentation_compact, intent_decision, sidecar
+
+
 def _assert_response_contract(payload: dict) -> None:
     """Producer-side guard for response_contract shape.
 
@@ -436,6 +548,18 @@ def run_coach(
         archive_status=archive_status,
     )
 
+    # Learning pipeline — pre_decide → readiness → augment → finalize.
+    # verification_required_count is derived from the same learner-state full
+    # snapshot that build_response_contract will use, so block_plan stays in
+    # sync with the rendered verification block.
+    pre_verification = build_verification_block(learner_state_full or {}, "ready")
+    cs_readiness, cs_augmentation_compact, intent_decision, cs_sidecar = _run_learning_pipeline(
+        prompt=prompt,
+        learner_state_full=learner_state_full,
+        session_payload=session_payload,
+        verification_required_count=pre_verification.get("required_count", 0),
+    )
+
     # Phase 1: compute everything in memory (no file writes)
     memory_update = compute_memory_update(repo["name"], session_payload)
     memory_summary = memory_update["summary"]
@@ -497,7 +621,18 @@ def run_coach(
             "response": session_payload["response"],
             "markdown": coach_reply_markdown,
         },
-        "response_contract": build_response_contract(learner_state_full, "ready"),
+        "cs_readiness": cs_readiness,
+        "cs_augmentation": cs_augmentation_compact,
+        "intent_decision": intent_decision,
+        "unified_profile": None,
+        "response_contract": build_response_contract(
+            learner_state_full,
+            "ready",
+            augment_result=cs_augmentation_compact,
+            intent_decision=intent_decision,
+            drill_offer=None,
+            drill_result=None,
+        ),
     }
     _assert_response_contract(payload)
     validate_payload("coach-run-result", payload)
@@ -511,6 +646,18 @@ def run_coach(
     path = action_dir / "coach-run.json"
     error_phase: str | None = None
     error_message: str | None = None
+
+    if cs_sidecar is not None:
+        try:
+            sidecar_path = repo_context_dir(repo["name"]) / "cs-augmentation.json"
+            sidecar_path.parent.mkdir(parents=True, exist_ok=True)
+            sidecar_path.write_text(
+                json.dumps(cs_sidecar, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            # Sidecar write is advisory; do not block coach-run on failure.
+            pass
 
     try:
         commit_history_entry(repo["name"], memory_update)
