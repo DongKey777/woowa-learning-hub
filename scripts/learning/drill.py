@@ -36,9 +36,11 @@ from . import scoring
 # --- state ------------------------------------------------------------------
 
 DEFAULT_TTL_TURNS = 3
-# Minimum number of turns between drill offers. "Three-turn cooldown" in
-# the plan — counted on consecutive drill-history entries.
-COOLDOWN_TURNS = 3
+# The plan originally proposed a 3-turn cooldown between offers. Coach_run
+# does not track turn indices, so the effective rule is: one drill pending
+# at a time — a new offer cannot be generated while drill-pending.json is
+# live (either unanswered or still inside TTL). This is enforced in
+# build_offer_if_due via the ``pending`` argument.
 
 _DRILL_ANSWER_NEGATIVE_KEYWORDS = {
     "뭐야", "어떻게", "왜", "알려줘", "설명해", "차이", "무엇",
@@ -255,22 +257,6 @@ def _pick_category_for_focus(focus: str) -> str | None:
     return cats[0] if cats else None
 
 
-def _history_cooldown_ok(history: list[dict]) -> bool:
-    """True if the most recent ``COOLDOWN_TURNS`` drills have been sparse.
-
-    The plan's rule is "no drill in the last 3 turns". Here we approximate
-    by checking the wall-clock ordering in history: if the last entry is
-    further back than a cooldown window's worth of turns, we are free.
-    Since coach_run does not yet store a "turns since last drill" counter,
-    we instead require that the last entry's ``scored_at`` is present (i.e.
-    the drill engine has booted) and simply trust coach_run to decrement.
-    """
-    # Conservative default: allow offer if history is empty, otherwise rely
-    # on caller to avoid hammering. This is tuned further in the routing
-    # tests and in the Phase 4 E2E follow-up.
-    return True
-
-
 def build_offer_if_due(
     unified_profile: dict | None,
     *,
@@ -290,8 +276,6 @@ def build_offer_if_due(
     if pending is not None:
         return None
     if pre_intent in {"drill_answer", "mixed_with_drill_answer"}:
-        return None
-    if not _history_cooldown_ok(drill_history or []):
         return None
 
     focus = _pick_focus(unified_profile)
