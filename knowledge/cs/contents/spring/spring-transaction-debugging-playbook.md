@@ -1,0 +1,207 @@
+# Spring Transaction Debugging Playbook
+
+> 한 줄 요약: 트랜잭션 문제는 "안 된다"가 아니라, 프록시, 전파, 롤백, 커밋 시점 중 어디서 어긋났는지 찾아야 해결된다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+> - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
+> - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
+> - [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md)
+
+---
+
+## 핵심 개념
+
+트랜잭션 디버깅은 아래 네 가지를 분리해서 보는 작업이다.
+
+1. 트랜잭션이 시작됐는가
+2. 같은 트랜잭션 안에서 실행됐는가
+3. 예외가 롤백 조건에 해당하는가
+4. 커밋 시점에 다른 부작용이 끼어들지 않았는가
+
+이걸 못 분리하면, “DB가 이상하다”, “Spring이 이상하다”, “프록시가 이상하다”가 한 덩어리로 보인다.
+
+실무에서 가장 자주 터지는 것은 대개 다음이다.
+
+- self-invocation으로 `@Transactional`이 안 먹음
+- `RuntimeException`이 아닌 예외를 던져 커밋됨
+- `REQUIRES_NEW`로 기대와 다른 분리 커밋이 발생함
+- 락 대기 때문에 트랜잭션이 길어지고 p99가 튐
+
+---
+
+## 깊이 들어가기
+
+### 1. 먼저 프록시부터 의심한다
+
+`@Transactional`은 AOP 프록시를 통해 동작한다.  
+따라서 첫 질문은 "이 메서드가 프록시를 거쳤는가?"다.
+
+체크 포인트:
+
+- 같은 클래스 내부 호출인가
+- private/final 메서드인가
+- 빈이 아닌 객체를 `new`로 생성했는가
+- 테스트에서 프록시가 아닌 직접 객체를 호출했는가
+
+### 2. 로그로 시작한다
+
+트랜잭션 문제는 로그가 없다면 거의 감으로만 보게 된다.
+
+실무에서 유용한 설정:
+
+```properties
+logging.level.org.springframework.transaction=TRACE
+logging.level.org.springframework.orm.jpa=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql=TRACE
+```
+
+필요하면 SQL 파라미터 추적을 위해 p6spy나 datasource proxy를 붙인다.
+
+### 3. 전파와 롤백 규칙을 분리해서 본다
+
+전파는 "이미 트랜잭션이 있으면 합류할지"의 문제다.  
+롤백은 "예외를 만났을 때 실제로 커밋할지"의 문제다.
+
+문제는 이 둘이 섞여 보인다는 점이다.
+
+예를 들어 바깥 트랜잭션이 있고 안쪽이 `REQUIRES_NEW`이면, 바깥이 실패해도 안쪽은 이미 커밋됐을 수 있다.
+
+### 4. DB lock 대기와 트랜잭션 시간을 같이 본다
+
+트랜잭션이 길어지는 흔한 이유:
+
+- 느린 쿼리
+- 인덱스 미사용
+- 외부 API 호출을 트랜잭션 안에서 함
+- 락 경합
+- 같은 row에 update가 몰림
+
+이 주제는 [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md)와 같이 봐야 한다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: 예외가 났는데 DB가 커밋됐다
+
+원인 후보:
+
+- 체크 예외를 던졌는데 rollbackFor를 안 줌
+- try/catch로 예외를 삼킴
+- 다른 스레드에서 일어난 예외라 트랜잭션이 못 봄
+
+### 시나리오 2: 트랜잭션이 걸린 줄 알았는데 안 걸렸다
+
+원인 후보:
+
+- 내부 메서드 호출
+- private 메서드
+- `new`로 생성한 객체
+- 테스트에서 프록시 바깥 객체를 직접 호출
+
+### 시나리오 3: `REQUIRES_NEW` 때문에 감사 로그는 남았는데 주문은 롤백됐다
+
+이건 버그일 수도 있고 의도일 수도 있다.  
+핵심은 **같이 실패해야 하는지, 분리 커밋이 필요한지**를 먼저 판단하는 것이다.
+
+### 시나리오 4: 결제 트랜잭션이 길어져 락 대기가 폭증했다
+
+대응 순서:
+
+1. 트랜잭션 안에서 외부 호출이 있는지 본다
+2. 쿼리 실행 계획과 인덱스를 본다
+3. 락 잡는 순서와 범위를 본다
+4. 필요하면 트랜잭션 범위를 줄인다
+
+---
+
+## 코드로 보기
+
+### 롤백 규칙
+
+```java
+@Transactional(rollbackFor = Exception.class)
+public void pay() throws Exception {
+    paymentRepository.save(new Payment());
+    throw new Exception("checked exception");
+}
+```
+
+### self-invocation 문제
+
+```java
+@Service
+public class OrderService {
+
+    public void placeOrder() {
+        saveOrder(); // 프록시를 안 탈 수 있다
+    }
+
+    @Transactional
+    public void saveOrder() {
+    }
+}
+```
+
+### 전파 분리
+
+```java
+@Service
+public class AuditService {
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void record(String message) {
+        auditRepository.save(new AuditLog(message));
+    }
+}
+```
+
+### 트랜잭션 상태 확인
+
+```java
+if (TransactionSynchronizationManager.isActualTransactionActive()) {
+    log.info("transaction active");
+}
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 쓰는가 |
+|---|---|---|---|
+| 큰 트랜잭션 | 단순하다 | 락과 실패 범위가 커진다 | 작은 유스케이스 |
+| 작은 트랜잭션 | 빠르게 끝난다 | 정합성 설계가 어려워진다 | 독립 작업 |
+| `REQUIRES_NEW` | 분리 커밋이 된다 | 추적이 어려워진다 | 감사 로그, 보조 기록 |
+| `rollbackFor` 명시 | 의도가 분명하다 | 규칙을 매번 적어야 한다 | 체크 예외가 중요한 경우 |
+
+---
+
+## 꼬리질문
+
+> Q: `@Transactional`이 안 먹는지 어떻게 가장 먼저 확인할 것인가?
+> 의도: 프록시/호출 경로 이해 확인
+> 핵심: self-invocation과 빈 프록시 여부부터 본다
+
+> Q: 체크 예외가 커밋되는 이유는 무엇인가?
+> 의도: rollback 규칙 이해 확인
+> 핵심: 기본 롤백 규칙이 런타임 예외 중심이다
+
+> Q: `REQUIRES_NEW`를 남용하면 왜 문제인가?
+> 의도: 전파 분리의 의미 이해 확인
+> 핵심: 커밋 경계가 쪼개져 추적이 어려워진다
+
+> Q: 트랜잭션이 길어지면 왜 장애가 되기 쉬운가?
+> 의도: DB lock과 운영 영향 이해 확인
+> 핵심: 락 점유와 대기열이 커진다
+
+---
+
+## 한 줄 정리
+
+트랜잭션 문제는 프록시, 전파, 롤백, 락 대기를 분리해서 보면 원인이 보인다.

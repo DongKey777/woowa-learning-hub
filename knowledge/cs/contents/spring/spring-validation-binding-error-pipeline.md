@@ -1,0 +1,237 @@
+# Spring Validation and Binding Error Pipeline
+
+> 한 줄 요약: Spring validation은 단순히 `@Valid`를 붙이는 일이 아니라, 바인딩 실패와 검증 실패가 어떤 순서로 발생하고 어떤 응답으로 번역되는지 이해하는 문제다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+> - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
+> - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+
+retrieval-anchor-keywords: validation, binding, BindingResult, MethodArgumentNotValidException, ConstraintViolationException, field error, object error, type mismatch, conversion service, message codes
+
+## 핵심 개념
+
+Spring MVC에서 요청은 곧바로 컨트롤러 파라미터로 들어가지 않는다.
+
+먼저 바인딩이 있고, 그 다음 검증이 있다.
+
+- Binding: 문자열/JSON/폼 데이터를 자바 객체로 변환
+- Validation: 변환된 객체가 규칙을 만족하는지 확인
+
+이 둘은 다르다.
+
+- 바인딩 실패는 타입, 형식, 변환 문제다
+- 검증 실패는 business rule, constraint 문제다
+
+즉, "값이 잘못됐다"는 하나의 문장으로 보이더라도 실제 원인은 서로 다를 수 있다.
+
+## 깊이 들어가기
+
+### 1. 요청 데이터는 먼저 바인딩된다
+
+컨트롤러 메서드에 들어오는 데이터는 `WebDataBinder`, `ConversionService`, `HttpMessageConverter` 등을 거쳐 객체로 변환된다.
+
+```java
+@PostMapping("/users")
+public UserResponse create(@RequestBody @Valid CreateUserRequest request) {
+    return userService.create(request);
+}
+```
+
+이 단계에서 일어날 수 있는 일은 다음이다.
+
+- 문자열이 숫자로 바뀌지 않는다
+- 날짜 포맷이 맞지 않는다
+- JSON 구조가 대상 객체와 다르다
+
+이건 아직 validation이 아니다. 바인딩 실패다.
+
+### 2. 검증은 Bean Validation이 담당한다
+
+`@Valid` 또는 `@Validated`가 붙으면 constraint가 평가된다.
+
+```java
+public record CreateUserRequest(
+    @NotBlank String username,
+    @Email String email,
+    @Min(18) int age
+) {}
+```
+
+이때 다음과 같은 오류가 날 수 있다.
+
+- `NotBlank` 위반
+- `Email` 형식 위반
+- `Min` 범위 위반
+
+검증 실패는 바인딩 성공 이후의 문제다.
+
+### 3. `BindingResult`는 에러를 메서드 안으로 가져온다
+
+컨트롤러 메서드에서 `BindingResult`를 함께 받으면 예외 대신 에러 목록을 직접 다룰 수 있다.
+
+```java
+@PostMapping("/users")
+public ResponseEntity<?> create(
+        @Valid @RequestBody CreateUserRequest request,
+        BindingResult bindingResult) {
+
+    if (bindingResult.hasErrors()) {
+        return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+    }
+
+    return ResponseEntity.ok(userService.create(request));
+}
+```
+
+이 방식은 명시적이지만, 모든 컨트롤러에서 반복되기 쉽다.
+
+### 4. 검증 실패는 보통 예외로 번역된다
+
+`@Valid @RequestBody`가 실패하면 보통 `MethodArgumentNotValidException`이 난다.
+
+`@RequestParam`이나 `@PathVariable` 제약은 `ConstraintViolationException` 또는 바인딩 예외와 연결될 수 있다.
+
+이 예외를 `@ControllerAdvice`에서 표준 에러로 바꾸는 게 일반적이다.
+
+### 5. field error와 object error는 다르다
+
+- field error: 특정 필드 하나가 잘못됨
+- object error: 객체 전체 규칙이 깨짐
+
+예를 들어 "비밀번호 확인 값이 같아야 한다"는 필드 하나의 문제보다 객체 전체 검증이 더 자연스러울 수 있다.
+
+## 실전 시나리오
+
+### 시나리오 1: 숫자 파라미터가 들어왔는데 400이 난다
+
+```java
+@GetMapping("/orders/{id}")
+public OrderResponse get(@PathVariable Long id) {
+    ...
+}
+```
+
+`/orders/abc`가 들어오면 validation이 아니라 type conversion 단계에서 실패한다.
+
+### 시나리오 2: JSON은 들어왔는데 `@Valid`에서 터진다
+
+이 경우는 바인딩은 성공했지만 constraint를 만족하지 못한 것이다.
+
+- 응답을 400으로 보낼지
+- 에러 메시지를 어떻게 표준화할지
+- field error를 어떻게 클라이언트에 노출할지
+
+이것이 별도 계약이 된다.
+
+### 시나리오 3: 에러 메시지가 필드명만 나오고 의미가 없다
+
+기본 메시지 그대로 노출하면 클라이언트 경험이 나쁘다.
+
+대응:
+
+- message codes를 사용한다
+- 국제화 메시지를 분리한다
+- field/path를 표준 에러 포맷에 넣는다
+
+### 시나리오 4: validation이 서비스 레이어까지 침투한다
+
+입력값 검증은 컨트롤러/DTO 레이어에서 막는 것이 일반적이다.
+
+서비스 안에서 같은 검증을 다시 하는 건 중복일 수 있지만, 도메인 invariant는 별개다.
+
+즉, "요청 검증"과 "도메인 불변식"은 같은 것이 아니다.
+
+## 코드로 보기
+
+### DTO validation
+
+```java
+public record CreateProductRequest(
+    @NotBlank String name,
+    @Positive int price,
+    @Size(max = 100) String description
+) {}
+```
+
+### controller validation
+
+```java
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+    @PostMapping
+    public ProductResponse create(@Valid @RequestBody CreateProductRequest request) {
+        return productService.create(request);
+    }
+}
+```
+
+### global error translation
+
+```java
+@RestControllerAdvice
+public class ValidationAdvice {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException ex) {
+        List<String> messages = ex.getBindingResult().getFieldErrors().stream()
+            .map(error -> error.getField() + ":" + error.getDefaultMessage())
+            .toList();
+
+        return ResponseEntity.badRequest()
+            .body(new ErrorResponse("VALIDATION_FAILED", messages));
+    }
+}
+```
+
+### custom validator
+
+```java
+@Constraint(validatedBy = PasswordMatchValidator.class)
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PasswordMatch {
+    String message() default "password mismatch";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| `BindingResult` 직접 처리 | 에러를 메서드 안에서 다룰 수 있다 | 반복 코드가 많아진다 | 일부 API에서 특수 처리 필요 |
+| `@ControllerAdvice` 전역 처리 | 응답 포맷을 표준화하기 쉽다 | 모든 규칙을 한곳에 몰기 쉽다 | 공통 API 에러 형식 |
+| DTO validation | 요청 경계를 깨끗하게 지킨다 | 도메인 규칙과 혼동하기 쉽다 | 입력 검증 |
+| 도메인 invariant | 핵심 규칙을 강제한다 | 예외 처리 설계가 필요하다 | 비즈니스 규칙 |
+
+핵심은 validation을 "한 번만" 하는 게 아니라, **어느 계층의 규칙인지 분리하는 것**이다.
+
+## 꼬리질문
+
+> Q: 바인딩 실패와 validation 실패의 차이는 무엇인가?
+> 의도: 변환과 검증 구분 확인
+> 핵심: 바인딩은 타입 변환, validation은 규칙 검사다.
+
+> Q: `BindingResult`를 받으면 무엇이 달라지는가?
+> 의도: 예외 vs 명시적 처리 구분 확인
+> 핵심: 예외 대신 메서드 안에서 에러를 다룰 수 있다.
+
+> Q: `@Valid`와 도메인 invariant는 왜 다른가?
+> 의도: 계층별 책임 이해 확인
+> 핵심: `@Valid`는 요청 검증, invariant는 도메인 규칙이다.
+
+> Q: `MethodArgumentNotValidException`은 보통 어디서 처리하는가?
+> 의도: MVC 예외 번역 이해 확인
+> 핵심: `@RestControllerAdvice`에서 HTTP 에러로 번역한다.
+
+## 한 줄 정리
+
+Spring validation은 바인딩 실패와 constraint 실패를 구분하고, 그 결과를 API 에러 계약으로 일관되게 번역하는 작업이다.

@@ -1,0 +1,236 @@
+# Spring MVC 요청 생명주기
+
+> 한 줄 요약: HTTP 요청이 `DispatcherServlet`을 지나 컨트롤러, 예외 처리, 응답 렌더링까지 도달하는 전체 파이프라인을 코드 수준에서 이해한다.
+
+**난이도: 🟡 Intermediate**
+
+## 핵심 개념
+
+Spring MVC는 요청을 받으면 곧바로 컨트롤러를 호출하지 않는다. 먼저 `DispatcherServlet`이 진입점이 되고, 그 안에서 어떤 핸들러가 이 요청을 처리할지 찾고, 어떤 방식으로 메서드 인자를 만들지 해석하고, 실행 후에는 예외와 응답 형식을 정리한다.
+
+이 흐름을 이해하면 다음 질문에 답할 수 있다.
+
+1. 같은 URL인데 왜 어떤 요청은 `@Controller`로 가고 어떤 요청은 `@RestController`로 가는가.
+2. `@PathVariable`, `@RequestParam`, `@RequestBody`는 누가 어떻게 채우는가.
+3. 인터셉터와 필터는 어디가 다르고, 왜 `preHandle`에서 막아도 컨트롤러는 실행되지 않는가.
+4. 예외가 났을 때 왜 어떤 경우는 JSON 에러가 나고 어떤 경우는 에러 페이지가 나오는가.
+
+> 관련 문서: [IoC 컨테이너와 DI](./ioc-di-container.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md), [@Transactional 깊이 파기](./transactional-deep-dive.md), [Spring Security 아키텍처](./spring-security-architecture.md)
+
+## 깊이 들어가기
+
+### 1. DispatcherServlet은 관문이다
+
+요청이 들어오면 가장 먼저 `DispatcherServlet`이 받는다. 이 서블릿은 Spring MVC의 프론트 컨트롤러 역할을 하며, 요청을 직접 처리하기보다 여러 전략 객체에게 일을 나눠준다.
+
+실제 흐름은 대략 다음과 같다.
+
+1. `DispatcherServlet`이 요청 수신
+2. `HandlerMapping`이 처리 가능한 핸들러 탐색
+3. `HandlerAdapter`가 해당 핸들러 실행
+4. `HandlerMethodArgumentResolver`가 메서드 인자 생성
+5. `HandlerInterceptor`가 전후 처리
+6. `HandlerExceptionResolver`가 예외 변환
+7. `ViewResolver` 또는 `HttpMessageConverter`가 응답 생성
+
+핵심은 `DispatcherServlet`이 모든 것을 직접 구현하지 않고, 인터페이스 기반 전략 패턴으로 확장된다는 점이다.
+
+### 2. HandlerMapping과 HandlerAdapter는 역할이 다르다
+
+`HandlerMapping`은 "이 요청을 누가 처리하는가"를 찾는다. `HandlerAdapter`는 "찾은 핸들러를 어떻게 실행하는가"를 담당한다.
+
+예를 들어 `@RequestMapping` 기반 컨트롤러는 내부적으로 `RequestMappingHandlerMapping`이 핸들러를 찾고, `RequestMappingHandlerAdapter`가 실제 메서드를 호출한다.
+
+이 분리가 중요한 이유는 Spring이 단순 컨트롤러뿐 아니라 다양한 실행 모델을 수용하기 위해서다. 같은 DispatcherServlet 아래에서도 `@Controller`, `@RestController`, `HttpRequestHandler` 같은 서로 다른 처리 방식을 연결할 수 있다.
+
+### 3. Argument Resolution은 메서드 주입의 핵심이다
+
+컨트롤러 메서드의 인자는 리플렉션과 resolver 체인을 통해 채워진다.
+
+```java
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @GetMapping("/{orderId}")
+    public OrderResponse getOrder(
+            @PathVariable Long orderId,
+            @RequestParam(required = false) String locale,
+            @AuthenticationPrincipal CustomUserPrincipal user) {
+        return new OrderResponse(orderId, user.getUsername(), locale);
+    }
+}
+```
+
+여기서 각각의 인자는 다음처럼 해석된다.
+
+1. `@PathVariable`은 URI 템플릿에서 값을 추출한다.
+2. `@RequestParam`은 query string에서 값을 읽는다.
+3. `@AuthenticationPrincipal`은 SecurityContext에 저장된 인증 정보를 꺼낸다.
+
+이 과정은 `HandlerMethodArgumentResolver` 체인에서 이뤄진다. 그래서 커스텀 어노테이션을 만들고 싶다면 resolver를 추가해야 한다. 단순히 파라미터 이름을 바꾼다고 자동으로 주입되지는 않는다.
+
+### 4. Interceptor는 컨트롤러 전후의 공통 처리다
+
+인터셉터는 컨트롤러 호출 전후에 끼어들 수 있다. 인증과 인가의 핵심은 보통 Security Filter Chain에서 처리하지만, 요청 로깅, 트랜잭션 외부 측정, locale 설정 같은 MVC 수준 공통 관심사는 인터셉터가 적합하다.
+
+```java
+public class LoggingInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        request.setAttribute("startTime", System.currentTimeMillis());
+        return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        Long startTime = (Long) request.getAttribute("startTime");
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println(request.getRequestURI() + " took " + elapsed + "ms");
+    }
+}
+```
+
+`preHandle`이 `false`를 반환하면 이후 단계는 진행되지 않는다. 그래서 인증 실패를 빠르게 차단할 수 있지만, 비즈니스 예외 처리를 여기서 무리하게 넣으면 MVC 책임과 섞이기 쉽다.
+
+### 5. 예외 처리는 Resolver가 맡는다
+
+컨트롤러에서 예외가 발생하면 `HandlerExceptionResolver` 체인이 예외를 처리한다. 대표적으로 `@ExceptionHandler`, `@ControllerAdvice`, 기본 에러 처리기가 여기에 속한다.
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFound(OrderNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("ORDER_NOT_FOUND", e.getMessage()));
+    }
+}
+```
+
+예외가 없다면 단순히 성공 응답을 만들면 되지만, 실제 서비스에서는 실패 응답의 형태를 표준화하는 것이 더 중요하다. 이 단계가 없으면 컨트롤러마다 에러 포맷이 달라진다.
+
+### 6. View Rendering과 REST 응답은 같은 파이프라인에서 갈라진다
+
+`@Controller`는 일반적으로 뷰 이름을 반환하고, `@RestController`는 객체를 반환한다. 그러나 둘 다 같은 생명주기 안에서 처리된다.
+
+```java
+@Controller
+public class PageController {
+
+    @GetMapping("/home")
+    public String home(Model model) {
+        model.addAttribute("message", "hello");
+        return "home";
+    }
+}
+```
+
+이 경우 `ViewResolver`가 `home`에 해당하는 뷰를 찾는다.
+
+```java
+@RestController
+public class ApiController {
+
+    @GetMapping("/api/home")
+    public HomeResponse home() {
+        return new HomeResponse("hello");
+    }
+}
+```
+
+이 경우 `HttpMessageConverter`가 객체를 JSON 같은 바디로 직렬화한다. 즉 뷰 렌더링과 REST 응답은 둘 다 "응답 생성"이지만, 마지막 변환 전략이 다르다.
+
+## 실전 시나리오
+
+### 시나리오 1. 컨트롤러는 맞는데 404가 난다
+
+이 경우는 보통 `HandlerMapping` 단계에서 핸들러를 못 찾은 것이다. 컨트롤러 구현 문제가 아니라 URL 매핑, `context-path`, HTTP method mismatch, 혹은 정적 리소스 핸들러와 충돌했는지부터 봐야 한다.
+
+### 시나리오 2. `@RequestBody`가 null이거나 400이 난다
+
+이 경우는 `HttpMessageConverter`가 요청 바디를 원하는 타입으로 읽지 못한 것이다. `Content-Type`, JSON 형식, 생성자/게터 구조, 필드명 불일치를 확인해야 한다.
+
+### 시나리오 3. 인터셉터는 통과했는데 Security에서 막힌다
+
+이 경우는 MVC보다 앞단의 필터 체인에서 차단된 것이다. 즉 `HandlerInterceptor`보다 `Spring Security` 필터가 먼저 실행된다. 인증/인가 문제를 인터셉터에서 찾으면 시간을 낭비하기 쉽다.
+
+### 시나리오 4. 예외 핸들러가 있는데도 HTML 에러 페이지가 나온다
+
+이 경우는 `@RestControllerAdvice` 범위, 패키지 스캔, 또는 반환 타입 해석을 확인해야 한다. 요청이 API인지 페이지인지에 따라 다른 resolver가 응답을 마무리할 수 있다.
+
+## 코드로 보기
+
+### 커스텀 Argument Resolver
+
+```java
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ClientIp {
+}
+```
+
+```java
+public class ClientIpArgumentResolver implements HandlerMethodArgumentResolver {
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.getParameterType().equals(String.class)
+                && parameter.hasParameterAnnotation(ClientIp.class);
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+        return request != null ? request.getRemoteAddr() : null;
+    }
+}
+```
+
+이 코드를 등록하면 컨트롤러에서 `@ClientIp String ip` 같은 인자를 받을 수 있다. 이게 바로 Spring MVC의 확장 지점이다.
+
+### 인터셉터 등록
+
+```java
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggingInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/actuator/**");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new ClientIpArgumentResolver());
+    }
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 쓰는가 |
+|---|---|---|---|
+| `Filter` | 서블릿 이전 단계에서 공통 처리 가능 | Spring MVC 문맥을 모르기 쉬움 | 인증, CORS, 인코딩 |
+| `Interceptor` | 컨트롤러 단위 공통 처리에 적합 | 서블릿 범위 밖에는 못 감 | 로깅, locale, 측정 |
+| `AOP` | 비즈니스 로직 중심으로 분리 가능 | MVC 요청 흐름과 직접 연결되진 않음 | 서비스 계층 횡단 관심사 |
+| `HandlerMethodArgumentResolver` | 선언적으로 인자 주입 가능 | 남용하면 메서드 시그니처가 불투명해짐 | 사용자 정보, 커스텀 요청 컨텍스트 |
+
+핵심은 "무조건 한 곳에서 처리"가 아니라 "책임이 어디에 있는가"를 맞추는 것이다. 인증은 보통 Security 필터, 요청 메타 처리와 로깅은 인터셉터, 비즈니스 횡단 관심사는 AOP가 더 자연스럽다.
+
+## 꼬리질문
+
+1. `DispatcherServlet`이 `HandlerMapping`과 `HandlerAdapter`를 분리한 이유는 무엇인가?
+2. `Filter`와 `Interceptor`는 실행 순서와 책임이 어떻게 다른가?
+3. `@RequestBody`와 `@ModelAttribute`는 무엇이 다르고, 각각 어떤 resolver를 타는가?
+4. `@Controller`와 `@RestController`의 차이는 응답 생성 단계에서 어떻게 드러나는가?
+5. `@ExceptionHandler`가 동작하지 않을 때 가장 먼저 확인할 설정은 무엇인가?
+
+## 한 줄 정리
+
+Spring MVC 요청 생명주기는 `DispatcherServlet`이 관문이 되어 핸들러 탐색, 인자 해석, 인터셉터, 예외 처리, 응답 렌더링까지 조율하는 구조이며, 이 흐름을 알아야 404, 400, 500, 인증 실패를 정확히 분리해서 볼 수 있다.

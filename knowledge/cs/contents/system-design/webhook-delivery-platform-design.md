@@ -1,0 +1,225 @@
+# Webhook Delivery Platform 설계
+
+> 한 줄 요약: 외부 시스템으로 이벤트를 안정적으로 전달하기 위해 서명, 재시도, 순서, 관측성을 함께 설계하는 플랫폼이다.
+
+retrieval-anchor-keywords: webhook delivery, signed payload, hmac signature, subscription registry, retries, idempotency, endpoint health, dead letter queue, delivery attempts, replay protection
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [시스템 설계 면접 프레임워크](./system-design-framework.md)
+> - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [Notification 시스템 설계](./notification-system-design.md)
+> - [Job Queue 설계](./job-queue-design.md)
+> - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
+> - [Payment System Ledger, Idempotency, Reconciliation](./payment-system-ledger-idempotency-reconciliation-design.md)
+
+## 핵심 개념
+
+Webhook은 "내부 이벤트를 밖으로 흘리는 통로"지만, 실전에서는 그 이상이다.
+
+- 구독 관리
+- 이벤트 버전 관리
+- 서명과 검증
+- 재시도와 backoff
+- 수신 측 장애 격리
+- 중복 전달 방지
+- delivery trace와 replay
+
+Webhook 플랫폼은 사실상 외부 연동용 신뢰성 계층이다.
+
+## 깊이 들어가기
+
+### 1. 무엇을 제공하는가
+
+기본 기능은 보통 다음과 같다.
+
+- endpoint 등록/삭제
+- event type 선택
+- secret 발급/회전
+- delivery 상태 조회
+- 실패 이력 조회
+- 재전송 요청
+
+운영 관점에서는 구독자별 SLA와 rate limit도 필요하다.
+
+### 2. Capacity Estimation
+
+Webhook은 fan-out 때문에 생각보다 빨리 커진다.
+
+예:
+
+- 내부 이벤트 10,000 events/sec
+- 이벤트당 평균 구독 endpoint 5개
+- retry factor 1.3
+
+대략 delivery 시도 수는 다음과 같다.
+
+```text
+10,000 * 5 * 1.3 = 65,000 delivery attempts/sec
+```
+
+즉, 원본 이벤트 QPS보다 delivery QPS가 훨씬 커질 수 있다.  
+따라서 queue, worker, outbound bandwidth를 delivery 기준으로 잡아야 한다.
+
+### 3. Delivery lifecycle
+
+보통 상태는 다음처럼 간다.
+
+```text
+PENDING -> SIGNED -> SENT -> ACKED
+                    \-> RETRYING -> FAILED -> DLQ
+```
+
+이 흐름이 중요한 이유는 운영자가 "왜 이 webhook이 안 갔는가"를 추적해야 하기 때문이다.
+
+### 4. 서명과 replay protection
+
+외부에 보내는 payload는 반드시 검증 가능해야 한다.
+
+권장 요소:
+
+- HMAC signature
+- timestamp header
+- unique delivery id
+- body hash
+- secret rotation policy
+
+수신자는 timestamp를 확인해서 오래된 요청을 거부할 수 있어야 한다.  
+이렇게 해야 replay 공격과 중간자 변조를 줄일 수 있다.
+
+### 5. Retry와 endpoint health
+
+모든 endpoint를 같은 방식으로 재시도하면 안 된다.
+
+- 2xx가 오면 성공
+- 4xx 중 일부는 영구 실패로 본다
+- 5xx와 timeout은 재시도한다
+- 너무 느린 endpoint는 circuit breaker를 건다
+
+수신자별로 장애가 다르므로, endpoint 단위 backlog와 실패율을 따로 봐야 한다.
+
+### 6. Ordering과 dedup
+
+웹훅은 "같은 이벤트를 한 번만, 가능한 순서대로" 보내고 싶지만 현실은 다르다.
+
+- at-least-once 전달이 일반적이다
+- 재시도 때문에 중복이 생긴다
+- 순서는 endpoint별 partition에서만 보장하는 편이 현실적이다
+
+따라서 event id, delivery id, sequence number를 함께 설계해야 한다.
+
+### 7. 격리와 공정성
+
+한 구독자의 느린 endpoint가 전체 시스템을 막아서는 안 된다.
+
+대응책:
+
+- tenant별 queue 분리
+- endpoint별 rate limit
+- worker pool bulkhead
+- timeout 상한
+- 실패 endpoint의 자동 quarantine
+
+이 부분은 [Rate Limiter 설계](./rate-limiter-design.md)와 [Job Queue 설계](./job-queue-design.md)와 함께 봐야 한다.
+
+## 실전 시나리오
+
+### 시나리오 1: 결제 상태 변경 알림
+
+문제:
+
+- 외부 파트너에게 결제 승인/취소를 알려야 한다
+- 중복 알림은 안 된다
+
+해결:
+
+- payment event를 webhook 이벤트로 변환한다
+- delivery id와 HMAC signature를 넣는다
+- 재시도는 backoff로 처리한다
+
+### 시나리오 2: SaaS 통합 플랫폼
+
+문제:
+
+- 고객사가 자기 서버로 이벤트를 받는다
+- endpoint 품질이 제각각이다
+
+해결:
+
+- endpoint health를 모니터링한다
+- 실패 endpoint는 자동으로 분리한다
+- replay API를 제공한다
+
+### 시나리오 3: 대량 fan-out
+
+문제:
+
+- 하나의 내부 이벤트가 수천 endpoint로 퍼진다
+- retry가 곱으로 붙는다
+
+해결:
+
+- 이벤트를 queue로 전개한다
+- endpoint partition을 나눈다
+- delivery budget을 tenant별로 제한한다
+
+## 코드로 보기
+
+```pseudo
+function buildWebhook(event, endpoint):
+  payload = serialize(event)
+  ts = nowUnixSeconds()
+  sig = hmac(endpoint.secret, ts + "." + payload)
+  return {
+    headers: {
+      "X-Webhook-Id": deliveryId,
+      "X-Webhook-Timestamp": ts,
+      "X-Webhook-Signature": sig
+    },
+    body: payload
+  }
+```
+
+```java
+public boolean shouldRetry(int statusCode, long latencyMs) {
+    if (statusCode >= 500) return true;
+    if (statusCode == 408 || statusCode == 429) return true;
+    return false;
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| Push webhook | 즉시성이 좋다 | 수신자 장애에 민감하다 | 파트너 연동 |
+| Polling | 수신자 부담이 적다 | 지연과 비용이 크다 | 단순 조회형 연동 |
+| Shared delivery queue | 운영이 단순하다 | noisy neighbor 위험 | 작은 플랫폼 |
+| Endpoint partitioned queue | 격리가 좋다 | 운영 복잡도 증가 | 대규모 플랫폼 |
+| 강한 순서 보장 | 소비자 구현이 쉽다 | 처리량이 낮아진다 | 금전/상태 전이 이벤트 |
+
+핵심은 webhook이 네트워크 호출이 아니라 **신뢰성 있는 이벤트 배달 계약**이라는 점이다.
+
+## 꼬리질문
+
+> Q: webhook과 polling 중 왜 webhook을 선택하나요?
+> 의도: 푸시형 통합의 장단점 이해 확인
+> 핵심: latency가 낮고 실시간성이 좋지만, delivery 신뢰성을 직접 책임져야 한다.
+
+> Q: 서명은 왜 필요한가요?
+> 의도: 보안과 무결성 이해 확인
+> 핵심: payload 변조와 위조를 막고, 수신자가 출처를 검증할 수 있게 한다.
+
+> Q: 2xx를 못 받았는데 상대 서버가 실제로 처리했을 수 있지 않나요?
+> 의도: 재시도와 중복 처리 이해 확인
+> 핵심: 그래서 webhook 수신자는 idempotent해야 하고, delivery id를 저장해야 한다.
+
+> Q: 한 endpoint가 느리면 전체를 막지 않으려면 어떻게 하나요?
+> 의도: 격리와 bulkhead 이해 확인
+> 핵심: endpoint별 queue, timeout, circuit breaker, quota가 필요하다.
+
+## 한 줄 정리
+
+Webhook 플랫폼은 외부 시스템으로 이벤트를 안전하게 밀어 보내기 위해, 서명과 재시도, 격리, 관측성을 함께 제공하는 전달 인프라다.
+

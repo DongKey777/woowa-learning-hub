@@ -1,0 +1,137 @@
+# Failover Promotion과 Read Divergence
+
+> 한 줄 요약: failover가 끝나도 읽기 결과가 바로 하나로 모이지 않으면, 사용자는 같은 데이터베이스를 두 개의 진실로 경험한다.
+
+관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
+Retrieval anchors: `promotion`, `read divergence`, `stale primary`, `write fencing`, `topology cache`
+
+## 핵심 개념
+
+Failover promotion은 replica를 새 primary로 승격하는 과정이다.  
+그런데 승격 자체보다 더 자주 깨지는 것은, 승격 전후에 생기는 **읽기 경로의 분기**다.
+
+왜 중요한가:
+
+- 옛 primary와 새 primary가 잠깐 동시에 읽히면 결과가 달라진다
+- topology cache가 늦게 바뀌면 앱이 잘못된 endpoint를 계속 읽는다
+- 승격은 되었지만 읽기 라우팅이 아직 바뀌지 않으면 데이터가 “사라진 것처럼” 보인다
+
+이 문서는 split brain보다 한 단계 더 미묘한, **읽기만 갈라지는 증상**에 초점을 둔다.
+
+## 깊이 들어가기
+
+### 1. promotion 직후 왜 read divergence가 생기는가
+
+승격이 완료되면 새 primary는 쓰기를 받기 시작한다.  
+하지만 애플리케이션과 캐시는 즉시 바뀌지 않을 수 있다.
+
+- 커넥션 풀은 옛 topology를 잠시 유지한다
+- read endpoint DNS TTL이 남아 있다
+- replica 목록 갱신이 늦는다
+- 일부 노드는 옛 primary를 아직 읽기 대상으로 본다
+
+결과적으로 같은 시점에 서로 다른 노드가 서로 다른 값을 보여준다.
+
+### 2. stale primary가 더 위험한 경우
+
+옛 primary가 read-only로 잘 잠겼다면 그나마 낫다.  
+하지만 read-only 전환이 늦으면 문제가 더 복잡해진다.
+
+- 옛 primary가 최신 쓰기를 보지 못한 채 읽힌다
+- 새 primary는 최신 상태를 보여준다
+- 사용자별로 다른 페이지에서 다른 진실이 나온다
+
+이때 문제는 단순한 lag가 아니라, **누가 authoritative source인가**가 흔들리는 것이다.
+
+### 3. topology cache가 만드는 착시
+
+클라이언트나 라우터는 종종 DB topology를 캐시한다.
+
+- primary 후보
+- replica 목록
+- read/write endpoint 매핑
+
+failover 후 이 캐시가 늦게 갱신되면, 앱은 이미 전환된 줄 알고 옛 서버를 계속 읽는다.  
+그래서 장애 대응에서는 DB 전환과 함께 앱 캐시 무효화가 필요하다.
+
+### 4. 읽기 다이버전스를 줄이는 방법
+
+- read endpoint를 단일 진실원으로 운영
+- failover 시 읽기 라우팅까지 같이 전환
+- topology cache TTL을 짧게 가져감
+- 일정 시간은 primary pinning으로 보호
+
+즉 승격이 아니라 **승격 + 읽기 경로 통일**이 완성 조건이다.
+
+## 실전 시나리오
+
+### 시나리오 1: 새 primary 승격 후 관리자 화면이 서로 다른 값을 보여줌
+
+승격은 끝났지만 일부 앱은 옛 replica 목록을 사용한다.  
+관리자는 목록과 상세에서 다른 상태를 보고 혼란을 겪는다.
+
+### 시나리오 2: read-only 전환이 늦은 옛 primary
+
+옛 primary가 잠깐이라도 읽기 경로에 남아 있으면, 사용자는 “데이터가 두 갈래로 갈라졌다”고 느낀다.  
+이때는 fencing과 라우팅 동시 전환이 필요하다.
+
+### 시나리오 3: DNS TTL이 길어 failover가 늦게 반영됨
+
+새 endpoint로 바뀌었는데도 클라이언트가 옛 IP를 계속 바라보면, 승격 이후에도 read divergence가 지속된다.  
+이건 DB 문제가 아니라 트래픽 전환 문제다.
+
+## 코드로 보기
+
+```text
+before failover:
+  app -> primary A / replicas B,C
+
+after failover:
+  app must switch to primary B and stop reading A
+
+bad:
+  some requests still read A while others read B
+```
+
+```sql
+-- 승격 이후 확인해야 할 상태
+SELECT @@read_only, @@super_read_only;
+```
+
+```java
+// topology cache를 짧게 유지하고, failover 이벤트에서 무효화한다.
+class TopologyCache {
+    void onFailoverEvent() {
+        this.invalidateAll();
+    }
+}
+```
+
+failover는 서버를 바꾸는 작업이 아니라, **읽기 기준점을 하나로 다시 묶는 작업**이다.
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|------|------|------|------|
+| 빠른 promotion | 복구가 빠르다 | 읽기 다이버전스 위험 | RTO가 중요할 때 |
+| 보수적 promotion | 정합성이 높다 | 복구가 느리다 | 금융/관리 데이터 |
+| 짧은 topology TTL | 전환이 빨라진다 | 조회 부하가 늘 수 있다 | failover가 잦은 시스템 |
+| primary pinning | read-after-write가 안정적이다 | primary 부하 증가 | 전환 직후 안정화 구간 |
+
+## 꼬리질문
+
+> Q: failover가 끝났는데 왜 읽기 결과가 갈라지나요?
+> 의도: promotion과 read routing의 분리를 아는지 확인
+> 핵심: 앱/캐시/TTL이 늦게 바뀌면 서로 다른 노드를 읽는다
+
+> Q: split brain과 read divergence는 같은 문제인가요?
+> 의도: 쓰기 충돌과 읽기 불일치를 구분하는지 확인
+> 핵심: split brain은 둘 다 쓰는 문제, read divergence는 읽기 진실이 갈라지는 문제다
+
+> Q: failover 직후 무엇을 가장 먼저 확인해야 하나요?
+> 의도: 운영 우선순위 이해 여부 확인
+> 핵심: old primary 격리, read-only 상태, topology 갱신이다
+
+## 한 줄 정리
+
+Failover promotion은 primary를 바꾸는 것으로 끝나지 않고, 읽기 라우팅과 topology cache까지 함께 바꿔야 read divergence를 막을 수 있다.

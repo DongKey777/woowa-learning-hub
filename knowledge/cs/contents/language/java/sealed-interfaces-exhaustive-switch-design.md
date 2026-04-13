@@ -1,0 +1,148 @@
+# Sealed Interfaces and Exhaustive Switch Design
+
+> 한 줄 요약: sealed interface는 허용된 구현체를 타입 수준에서 고정해 도메인 상태를 좁히고, exhaustive switch는 그 닫힌 집합을 안전하게 다루게 해준다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
+> - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
+> - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
+> - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
+
+> retrieval-anchor-keywords: sealed interface, sealed class, permits, exhaustive switch, pattern matching switch, closed hierarchy, domain state, algebraic data type, polymorphism, default branch, evolution safety
+
+<details>
+<summary>Table of Contents</summary>
+
+- [핵심 개념](#핵심-개념)
+- [깊이 들어가기](#깊이-들어가기)
+- [실전 시나리오](#실전-시나리오)
+- [코드로 보기](#코드로-보기)
+- [트레이드오프](#트레이드오프)
+- [꼬리질문](#꼬리질문)
+- [한 줄 정리](#한-줄-정리)
+
+</details>
+
+## 핵심 개념
+
+sealed type은 상속 가능한 타입 집합을 닫는다.  
+즉 "누가 구현할 수 있는가"를 코드가 아니라 타입 시스템이 강하게 관리한다.
+
+이 구조는 다음에 특히 유리하다.
+
+- 상태가 제한적인 도메인
+- 성공/실패/대기 같은 결과 타입
+- 이벤트/명령/상태 전이 모델
+
+exhaustive switch는 이 닫힌 집합을 다룰 때 모든 경우를 빠뜨리지 않게 해준다.
+
+## 깊이 들어가기
+
+### 1. sealed가 주는 설계상의 이득
+
+sealed는 단순 문법이 아니라 모델링 도구다.
+
+- 가능한 상태를 줄인다
+- 예외적인 분기 누락을 막는다
+- 코드 읽는 사람이 "끝이 보이는 타입"이라고 인식하게 한다
+
+도메인 타입이 닫혀 있으면 로직이 더 예측 가능해진다.
+
+### 2. exhaustive switch의 핵심
+
+sealed hierarchy를 switch로 분기할 때, 모든 허용 타입을 다루면 default가 필요 없거나 최소화될 수 있다.  
+이것은 "나중에 누가 새 하위 타입을 추가하면 컴파일 타임에 걸리게 하자"는 의도와 잘 맞는다.
+
+즉 런타임 bug를 컴파일 단계로 끌어올리는 효과가 있다.
+
+### 3. default branch는 편하지만 위험할 수 있다
+
+`default`는 편하다.  
+하지만 sealed hierarchy에서는 default가 지나치게 넓은 안전망이 될 수 있다.
+
+- 새 타입을 추가해도 조용히 default로 빠질 수 있다
+- 도메인 분기 누락을 컴파일러가 잡지 못할 수 있다
+
+그래서 가능한 한 exhaustive하게 쓰는 편이 좋다.
+
+### 4. 기록 타입과 함께 쓰면 모델이 더 단단해진다
+
+sealed interface와 record 조합은 결과 타입 모델링에 잘 맞는다.  
+값 객체는 record로, 가능한 변형은 sealed로 제한하는 식이다.
+
+## 실전 시나리오
+
+### 시나리오 1: 이벤트 타입이 늘어날 수 있다
+
+sealed hierarchy로 먼저 닫아 두면, 새 event가 생겼을 때 컴파일러가 분기 누락을 잘 드러내 준다.
+
+### 시나리오 2: 결과 타입의 분기 누락이 자주 생긴다
+
+`Success`, `Failure`, `Pending` 같은 타입을 sealed로 모델링하면 switch에서 빠진 경우를 줄일 수 있다.
+
+### 시나리오 3: `default`가 너무 많아져서 의미가 흐려진다
+
+default 하나가 너무 많은 상태를 삼키면 도메인 모델이 흐려진다.  
+sealed는 그 흐림을 줄이는 데 도움이 된다.
+
+## 코드로 보기
+
+### 1. sealed interface와 record
+
+```java
+public sealed interface PaymentResult permits PaymentSuccess, PaymentFailure {}
+
+public record PaymentSuccess(String transactionId) implements PaymentResult {}
+
+public record PaymentFailure(String reason) implements PaymentResult {}
+```
+
+### 2. exhaustive switch
+
+```java
+public String describe(PaymentResult result) {
+    return switch (result) {
+        case PaymentSuccess success -> "ok:" + success.transactionId();
+        case PaymentFailure failure -> "fail:" + failure.reason();
+    };
+}
+```
+
+### 3. default를 최소화하는 설계
+
+```java
+// sealed hierarchy가 닫혀 있다면
+// 불필요한 default보다 모든 허용 타입을 명시적으로 다루는 편이 낫다.
+```
+
+### 4. 분기 확장이 필요하면 먼저 타입을 추가한다
+
+새 상태가 생기면 switch를 먼저 편법으로 늘리기보다 타입 계층을 설계해야 한다.
+
+## 트레이드오프
+
+| 선택 | 장점 | 비용 |
+|---|---|---|
+| open hierarchy | 확장하기 쉽다 | 분기 누락이 쉬워진다 |
+| sealed hierarchy | 상태를 강하게 통제한다 | 타입 추가가 더 신중해야 한다 |
+| exhaustive switch | 컴파일러 도움을 받는다 | 초기 설계가 더 필요하다 |
+| default branch | 간단하다 | 도메인 누락을 숨길 수 있다 |
+
+핵심은 "확장성"과 "안전한 닫힘" 사이에서 도메인 특성에 맞는 균형을 잡는 것이다.
+
+## 꼬리질문
+
+> Q: sealed interface를 왜 쓰나요?
+> 핵심: 가능한 구현체를 제한해 도메인 상태를 타입 시스템으로 통제하기 위해서다.
+
+> Q: exhaustive switch의 장점은 무엇인가요?
+> 핵심: 모든 경우를 빠뜨리지 않게 하고, 새 타입 추가 시 컴파일 타임 경고를 받기 쉽다.
+
+> Q: default branch는 왜 조심해야 하나요?
+> 핵심: sealed hierarchy의 장점을 약화시켜 누락을 숨길 수 있기 때문이다.
+
+## 한 줄 정리
+
+sealed interface는 닫힌 도메인 모델을 만들고, exhaustive switch는 그 닫힌 집합을 컴파일 타임에 안전하게 다루게 해준다.

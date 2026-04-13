@@ -1,0 +1,235 @@
+# Executor Sizing, Queue, Rejection Policy
+
+> 한 줄 요약: `ThreadPoolExecutor`는 "스레드 수"만 정하는 도구가 아니라, 큐와 거절 정책까지 함께 설계해야 시스템이 예측 가능해진다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Java 동시성 유틸리티](./5.md)
+> - [JVM, GC, JMM](./4.md)
+> - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
+> - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
+
+<details>
+<summary>Table of Contents</summary>
+
+- [핵심 개념](#핵심-개념)
+- [왜 단순한 숫자가 아닌가](#왜-단순한-숫자가-아닌가)
+- [깊이 들어가기](#깊이-들어가기)
+- [실전 시나리오](#실전-시나리오)
+- [코드로 보기](#코드로-보기)
+- [트레이드오프](#트레이드오프)
+- [꼬리질문](#꼬리질문)
+- [한 줄 정리](#한-줄-정리)
+
+</details>
+
+## 핵심 개념
+
+Executor 설계는 보통 다음 세 축으로 결정된다.
+
+- `corePoolSize`와 `maximumPoolSize`
+- 작업을 받는 `Queue`
+- 큐가 찼을 때의 `RejectedExecutionHandler`
+
+이 세 가지는 분리된 설정이 아니라 하나의 정책이다.  
+스레드를 많이 늘려도 큐가 무한이면 지연이 쌓이고, 큐를 너무 작게 잡으면 거절이 폭증한다.
+
+---
+
+## 왜 단순한 숫자가 아닌가
+
+스레드 풀의 목적은 "더 많은 일을 하자"가 아니라 **요청 폭주를 시스템이 버틸 수 있는 형태로 흡수하자**는 데 있다.
+
+그래서 설계 질문은 다음 순서로 바뀐다.
+
+1. 작업이 CPU-bound인가, blocking I/O가 많은가
+2. 지연을 쌓아도 되는가, 아니면 빨리 실패해야 하는가
+3. 백프레셔를 호출자에게 돌릴 것인가
+4. 작업 유실이 허용되는가
+
+즉, queue와 rejection policy는 오류 처리 옵션이 아니라 **부하 제어 메커니즘**이다.
+
+---
+
+## 깊이 들어가기
+
+### 1. 큐가 먼저인 이유
+
+`ThreadPoolExecutor`의 동작은 대략 다음 순서로 이해하면 된다.
+
+1. core thread가 있으면 바로 실행한다
+2. 없으면 큐에 넣는다
+3. 큐가 꽉 차면 maximum thread까지 늘린다
+4. 그것도 다 차면 rejection policy를 탄다
+
+이 때문에 `Queue` 선택이 사실상 설계의 절반이다.
+
+| Queue | 성질 | 의미 |
+|---|---|---|
+| `SynchronousQueue` | 저장하지 않음 | 바로 소비할 스레드가 있어야 한다 |
+| `ArrayBlockingQueue` | bounded | 지연과 메모리를 제한한다 |
+| `LinkedBlockingQueue` | bounded 또는 사실상 큼 | 버퍼링은 쉽지만 지연이 커질 수 있다 |
+
+무제한 큐는 편해 보이지만, 사실상 "장애를 뒤로 미루는 장치"가 되기 쉽다.  
+메모리보다 먼저 **latency debt**가 쌓인다.
+
+### 2. 스레드 수는 무엇을 기준으로 잡나
+
+대략적인 출발점은 작업 성격에 따라 다르다.
+
+- CPU-bound: 코어 수 근처에서 시작
+- blocking I/O: 기다리는 시간이 많으면 더 크게 잡을 수 있음
+- 혼합형: 큐와 timeout, downstream 제한을 먼저 본다
+
+다만 공식은 없다. 실제로는 다음을 같이 봐야 한다.
+
+- 평균 작업 시간
+- p95/p99 작업 시간
+- 블로킹 비율
+- downstream 처리량
+- JVM 메모리와 컨텍스트 스위칭 비용
+
+### 3. rejection policy는 어떤 의미인가
+
+`RejectedExecutionHandler`는 "실패했다"가 아니라 **어떻게 실패할지**를 정한다.
+
+| Policy | 동작 | 보통의 의미 |
+|---|---|---|
+| `AbortPolicy` | 예외 발생 | 즉시 실패 |
+| `CallerRunsPolicy` | 호출자 스레드가 실행 | 자연스러운 백프레셔 |
+| `DiscardPolicy` | 조용히 버림 | 손실 허용 |
+| `DiscardOldestPolicy` | 큐의 오래된 작업 제거 후 시도 | 최신성 우선 |
+
+실무에서는 대개 `AbortPolicy`와 `CallerRunsPolicy`를 먼저 검토한다.
+
+- API 요청처럼 실패를 명확히 드러내야 하면 `AbortPolicy`
+- 내부 배치나 버스트 완화가 필요하면 `CallerRunsPolicy`
+
+### 4. JVM 관점에서 봐야 하는 이유
+
+스레드가 많아지면 다음 비용이 같이 움직인다.
+
+- 스택 메모리 증가
+- 컨텍스트 스위칭 증가
+- lock 경쟁 증가
+- GC 압력 증가
+
+그래서 executor 튜닝은 단순 애플리케이션 설정이 아니라 JVM 관측과 같이 봐야 한다.  
+예를 들어 `jcmd`, `jstack`, `JFR`로 보면 큐가 쌓이는 동안 실제로 무엇이 막혔는지 더 빨리 보인다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: 응답은 늦어지는데 에러는 없다
+
+무제한 큐를 쓰면 요청은 거절되지 않고 쌓인다.  
+겉보기에는 안정적이지만, 실제로는 오래된 요청이 뒤늦게 처리된다.
+
+대응:
+
+1. 큐를 bounded로 바꾼다
+2. timeout을 넣는다
+3. `CallerRunsPolicy` 또는 명시적 실패를 선택한다
+
+### 시나리오 2: 갑자기 트래픽이 몰릴 때 서비스가 죽는다
+
+스레드 수를 너무 크게 잡으면 폭주를 스레드 생성과 메모리 사용으로 떠안는다.  
+이 경우는 큐가 아니라 **스레드 자체가 완충재가 되며** 시스템을 흔든다.
+
+### 시나리오 3: 배치 작업이 API를 밀어낸다
+
+배치와 API가 같은 executor를 공유하면 우선순위가 섞인다.  
+큐와 풀을 분리하고, API에는 짧은 timeout과 빠른 rejection을 두는 편이 낫다.
+
+---
+
+## 코드로 보기
+
+### 1. bounded queue + CallerRunsPolicy
+
+```java
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class ExecutorFactory {
+    public static ThreadPoolExecutor create() {
+        return new ThreadPoolExecutor(
+            8,
+            16,
+            30,
+            TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(200),
+            Executors.defaultThreadFactory(),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+    }
+}
+```
+
+이 설정은 큐가 꽉 차면 호출자에게 부담을 돌려서 폭주를 늦춘다.
+
+### 2. `SynchronousQueue`로 직접 핸드오프
+
+```java
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+ThreadPoolExecutor executor = new ThreadPoolExecutor(
+    0,
+    64,
+    60,
+    TimeUnit.SECONDS,
+    new SynchronousQueue<>(),
+    new ThreadPoolExecutor.AbortPolicy()
+);
+```
+
+이 패턴은 큐에 쌓지 않고 바로 처리 가능한 스레드가 있어야만 받아준다.  
+폭주를 오래 버퍼링하지 않으려는 경우에 유용하다.
+
+### 3. 상태 확인용 JVM 도구
+
+```bash
+jcmd <pid> Thread.print
+jstack <pid>
+```
+
+큐가 차 있는데 스레드가 특정 lock이나 I/O에서 멈춰 있으면, executor 크기보다 downstream 병목이 먼저다.
+
+---
+
+## 트레이드오프
+
+| 선택 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| 큰 큐 | 흡수가 쉽다 | 지연이 쌓인다 | 일시적 버스트 완화 |
+| 작은 큐 + rejection | 빠르게 실패한다 | 에러가 늘 수 있다 | SLA가 중요한 API |
+| 많은 스레드 | 병렬성이 높다 | JVM 비용이 증가한다 | blocking I/O가 많을 때 |
+| CallerRunsPolicy | 자연스러운 백프레셔 | 호출자 latency가 늘어난다 | 내부 처리량 제어 |
+
+핵심은 "최대한 받아주기"가 아니라 **어디서 막을지 결정하는 것**이다.
+
+---
+
+## 꼬리질문
+
+> Q: 큐를 크게 잡으면 왜 위험한가요?
+> 의도: 지연과 메모리의 관계를 이해하는지 확인
+> 핵심: 무제한 버퍼는 실패를 숨길 뿐, 처리량이 늘지는 않는다.
+
+> Q: `CallerRunsPolicy`는 왜 백프레셔로 자주 쓰이나요?
+> 의도: rejection을 제어 신호로 해석하는지 확인
+> 핵심: 호출자 스레드가 일을 떠안아 입력 속도를 늦춘다.
+
+> Q: Virtual Threads를 쓰면 executor 튜닝이 사라지나요?
+> 의도: 실행 모델과 자원 제어를 구분하는지 확인
+> 핵심: 스레드는 싸져도 downstream 처리량과 큐잉 문제는 남는다.
+
+## 한 줄 정리
+
+Executor는 스레드 수만의 문제가 아니라, 큐와 거절 정책으로 부하를 어디서 흡수하고 어디서 실패시킬지 정하는 설계다.

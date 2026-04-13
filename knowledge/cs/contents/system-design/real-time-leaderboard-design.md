@@ -1,0 +1,225 @@
+# Real-time Leaderboard 설계
+
+> 한 줄 요약: 실시간 리더보드는 빈번한 점수 갱신과 순위 조회를 동시에 만족시키기 위해, 정렬 자료구조와 집계 파이프라인을 함께 설계하는 시스템이다.
+
+retrieval-anchor-keywords: real-time leaderboard, top-k, score update, ranking store, hot key, write amplification, eventual consistency, score board, sliding window, anti-cheat, cache invalidation
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [시스템 설계 면접 프레임워크](./system-design-framework.md)
+> - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [Distributed Cache 설계](./distributed-cache-design.md)
+> - [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)
+> - [Recommendation / Feed Ranking Architecture](./recommendation-feed-ranking-architecture.md)
+> - [Job Queue 설계](./job-queue-design.md)
+
+## 핵심 개념
+
+리더보드는 점수만 저장하는 시스템이 아니다.  
+실전에서는 다음을 동시에 다뤄야 한다.
+
+- 점수 갱신 빈도
+- top-k 조회 성능
+- 동점 처리
+- 기간별 랭킹
+- 부정 행위 방지
+- 캐시와 실시간성의 균형
+
+즉, 리더보드는 **쓰기 집중형 순위 시스템**이다.
+
+## 깊이 들어가기
+
+### 1. 어떤 랭킹을 만들 것인가
+
+먼저 정의해야 하는 것:
+
+- 전체 랭킹인가
+- 일간/주간 랭킹인가
+- 지역별 랭킹인가
+- 게임 모드별 랭킹인가
+- 시즌 초기화가 있는가
+
+기간이 들어가면 점수 모델과 저장 구조가 달라진다.
+
+### 2. Capacity Estimation
+
+예:
+
+- 초당 50,000 score update
+- 초당 5,000 leaderboard read
+- top 100만 내려주면 충분
+
+이 경우 top-k 조회보다 update path가 더 어렵다.  
+왜냐하면 모든 갱신이 정렬 구조를 흔들기 때문이다.
+
+보는 숫자:
+
+- update QPS
+- top-k read latency
+- ranking refresh lag
+- cache hit ratio
+- hot player concentration
+
+### 3. 저장 구조
+
+대표적인 접근:
+
+- score table
+- sorted set or ranking index
+- aggregate cache
+- snapshot table
+
+기본 흐름:
+
+1. 점수 이벤트를 받는다.
+2. 집계 테이블을 갱신한다.
+3. 정렬 인덱스에 반영한다.
+4. top-k 조회는 캐시 또는 인덱스로 응답한다.
+
+### 4. 정렬 전략
+
+실시간 리더보드는 정렬이 핵심이다.
+
+동점 처리 규칙:
+
+- 더 최근 점수가 우선
+- 더 적은 시도 횟수 우선
+- 더 빠른 도달 시간 우선
+- 사용자 ID를 최종 tie-breaker로 사용
+
+동점 규칙이 없으면 같은 score에서 순위가 흔들린다.
+
+### 5. Sliding window와 시즌 점수
+
+리더보드가 영원히 누적되면 신규 사용자가 올라오기 어렵다.
+
+그래서 자주 쓰는 방식:
+
+- daily reset
+- weekly reset
+- seasonal reset
+- sliding window score
+
+예를 들어 최근 7일 점수만 반영하면 순위가 더 역동적이 된다.
+
+### 6. Hot key와 write amplification
+
+상위 플레이어 몇 명에게 갱신이 몰리면 hot key가 된다.
+
+대응:
+
+- score update를 shard한다
+- aggregate를 비동기화한다
+- top-k는 주기적으로 materialize한다
+- hot player를 별도 bucket에 둔다
+
+이 관점은 [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)과 연결된다.
+
+### 7. 부정 행위와 신뢰성
+
+리더보드는 조작 시도가 많다.
+
+- 비정상적인 score burst
+- replay된 score event
+- client-side tampering
+
+대응:
+
+- server-authoritative score
+- idempotency key
+- anomaly detection
+- rate limit
+- audit trail
+
+## 실전 시나리오
+
+### 시나리오 1: 게임 시즌 리더보드
+
+문제:
+
+- 시즌별로 점수가 초기화된다
+- 초반 트래픽이 폭주한다
+
+해결:
+
+- 시즌별 partition을 둔다
+- snapshot을 미리 준비한다
+- update를 queue로 완충한다
+
+### 시나리오 2: 이벤트 점수 경쟁
+
+문제:
+
+- 짧은 기간에 점수 갱신이 몰린다
+
+해결:
+
+- 실시간 인덱스와 주기적 materialized view를 함께 쓴다
+- top 100만 실시간으로 유지한다
+
+### 시나리오 3: 부정 점수 주입
+
+문제:
+
+- 클라이언트가 점수를 조작한다
+
+해결:
+
+- server-side validation
+- audit log
+- 이상치 탐지
+
+## 코드로 보기
+
+```pseudo
+function updateScore(userId, delta):
+  newScore = scoreTable.increment(userId, delta)
+  rankingIndex.upsert(userId, newScore)
+
+function topK(limit):
+  return rankingIndex.readTopK(limit)
+```
+
+```java
+public void applyScoreEvent(ScoreEvent event) {
+    if (dedup.exists(event.id())) return;
+    scoreRepository.add(event.userId(), event.delta());
+    rankingRepository.upsert(event.userId());
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| 실시간 정렬 인덱스 | 조회가 빠르다 | update 비용이 높다 | top-k가 중요할 때 |
+| 배치 snapshot | 단순하고 안정적이다 | freshness가 느리다 | 일간/주간 랭킹 |
+| Stream 집계 | 확장성이 좋다 | 운영이 복잡하다 | 대규모 이벤트 |
+| Cache-first | 빠르다 | 무효화가 어렵다 | 읽기 우선 |
+| Server-authoritative score | 조작에 강하다 | 서버 부하가 늘어난다 | 경쟁 게임/공정성 |
+
+핵심은 "누가 1등인가"보다 **점수 갱신 빈도와 top-k 조회를 동시에 버티는가**다.
+
+## 꼬리질문
+
+> Q: 실시간 리더보드에서 가장 어려운 부분은 무엇인가요?
+> 의도: update/read 균형과 hot key 이해 확인
+> 핵심: 점수 갱신이 많을 때 순위 구조를 어떻게 유지하느냐이다.
+
+> Q: 동점은 어떻게 처리하나요?
+> 의도: deterministic ordering 이해 확인
+> 핵심: 명확한 tie-breaker가 없으면 순위가 흔들린다.
+
+> Q: 부정 행위는 왜 서버에서 막아야 하나요?
+> 의도: trust boundary 이해 확인
+> 핵심: 클라이언트는 신뢰 경계 밖이기 때문이다.
+
+> Q: 배치 랭킹이면 실시간 리더보드보다 뭐가 낫나요?
+> 의도: freshness와 비용 trade-off 이해 확인
+> 핵심: 구현은 쉽지만 최신성이 떨어진다.
+
+## 한 줄 정리
+
+Real-time leaderboard는 잦은 점수 갱신과 top-k 조회를 동시에 처리하며, 정렬 인덱스, 캐시, 부정 방지, 시즌 전략을 함께 설계하는 시스템이다.
+

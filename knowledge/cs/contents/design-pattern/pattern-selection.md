@@ -1,0 +1,250 @@
+# 실전 패턴 선택 가이드
+
+> 작성자 : [정희재](https://github.com/Hee-Jae)
+
+> 한 줄 요약: 패턴 선택은 유명한 이름을 맞히는 게임이 아니라, 무엇이 바뀌는지와 어디서 경계를 잘라야 하는지 판단하는 일이다.
+
+이 문서는 패턴의 이름을 외우는 대신, **어떤 문제에 어떤 구조를 쓰는지**를 빠르게 판단하기 위한 실전 비교표다.
+
+<details>
+<summary>Table of Contents</summary>
+
+- [문제를 먼저 본다](#문제를-먼저-본다)
+- [생성 축을 본다](#생성-축을-본다)
+- [행동 축을 본다](#행동-축을-본다)
+- [구조 축을 본다](#구조-축을-본다)
+- [흐름 축을 본다](#흐름-축을-본다)
+- [경계와 저장소 축을 본다](#경계와-저장소-축을-본다)
+- [패턴을 잘못 고르는 신호](#패턴을-잘못-고르는-신호)
+- [디버깅 질문](#디버깅-질문)
+- [패턴을 고르는 기준](#패턴을-고르는-기준)
+
+</details>
+
+---
+
+## 문제를 먼저 본다
+
+실전에서는 "이 패턴이 유명하다"보다 **무엇이 자주 바뀌는지**를 먼저 봐야 한다.  
+같은 모양의 코드라도 변경 이유가 다르면 선택해야 할 구조가 달라진다.
+
+- 알고리즘이 바뀌는가
+- 상태 전이가 바뀌는가
+- 객체 생성이 바뀌는가
+- 요청 흐름이 바뀌는가
+- 외부 경계가 바뀌는가
+- 저장/조회 책임이 바뀌는가
+
+이 질문에 답하면 대부분의 패턴 선택은 끝난다.
+
+### Retrieval Anchors
+
+- `pattern selection`
+- `change axis`
+- `boundary first`
+- `what changes most`
+- `backend pattern map`
+
+---
+
+## 생성 축을 본다
+
+생성 문제는 객체를 어떻게 만들지의 문제다.  
+이 축은 팩토리, 빌더, 싱글톤, Registry와 자주 연결된다.
+
+| 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
+|---|---|---|---|
+| 생성자/정적 팩토리 | 단순히 만든다 | 필드 수가 적고 규칙이 단순할 때 | 복잡도가 늘면 읽기 어렵다 |
+| 빌더 | 조립 과정을 드러낸다 | 선택값이 많고 불변 객체일 때 | mutable fluent API로 변질되기 쉽다 |
+| 팩토리 | 생성 규칙을 한곳에 모은다 | 구현 선택이 바뀔 때 | switch 폭발을 조심한다 |
+| 싱글톤 | 하나만 둔다 | 전역 설정, registry성 객체 | 테스트와 classloader 경계가 문제다 |
+| Registry | 키로 찾아 쓴다 | 전략/핸들러가 많을 때 | Service Locator처럼 숨겨지면 안 된다 |
+
+### 실전 판단
+
+- 생성 옵션이 많으면 빌더를 먼저 본다.
+- 생성 규칙이 바뀌면 팩토리를 본다.
+- 객체를 하나만 두려는 욕망이 있으면 정말 싱글톤이어야 하는지 먼저 확인한다.
+- "찾는 것"이 핵심이면 Registry, "만드는 것"이 핵심이면 Factory다.
+
+---
+
+## 행동 축을 본다
+
+행동 선택은 알고리즘, 정책, 상태, 조건을 어떻게 다루는가의 문제다.
+
+| 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
+|---|---|---|---|
+| 전략 | 알고리즘을 객체로 분리 | 결제, 정렬, 할인 정책 | 전략 폭발을 조심한다 |
+| 상태 | 상태가 행위를 바꾼다 | 워크플로, 결제 단계 | 상태와 전략을 혼동하지 말 것 |
+| Specification | 조건을 조합한다 | 검색, 승인, 검증 | 너무 작은 조건까지 쪼개지 말 것 |
+| Policy Object | 도메인 결정을 담는다 | 환불, 과금, 권한 | 규칙과 결과를 함께 보면 좋다 |
+| Command | 요청을 객체로 캡슐화 | undo, queue, retry | 이벤트와 역할을 혼동하지 말 것 |
+
+### 실전 판단
+
+- "무엇을 할까"가 바뀌면 전략이다.
+- "지금 상태가 무엇인가"가 바뀌면 상태다.
+- "조건을 만족하는가"가 중요하면 Specification이다.
+- 판단 결과와 사유가 필요하면 Policy Object다.
+- 실행 요청 자체를 옮기고 싶으면 Command다.
+
+### 관련 문서
+
+- [전략 패턴](./strategy-pattern.md)
+- [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
+- [Specification Pattern](./specification-pattern.md)
+- [Policy Object Pattern](./policy-object-pattern.md)
+- [Command Pattern Undo Queue](./command-pattern-undo-queue.md)
+
+---
+
+## 구조 축을 본다
+
+객체를 감싸고 조합하는 구조 문제는 유사해 보여도 목적이 다르다.
+
+| 선택지 | 목적 | 잘 맞는 상황 | 주의할 점 |
+|---|---|---|---|
+| Adapter | 인터페이스를 맞춘다 | 외부 SDK 통합 | 의미 정리는 못한다 |
+| Facade | 복잡성을 숨긴다 | 서브시스템 단순화 | 내부 흐름이 가려진다 |
+| Proxy | 호출을 제어한다 | 인증, 캐시, 지연 로딩 | 실제 객체보다 더 복잡해질 수 있다 |
+| Decorator | 책임을 덧붙인다 | 로깅, 압축, 암호화 | 체인이 길어지면 추적이 어렵다 |
+| Bridge | 추상화와 구현을 분리 | storage/provider 축이 둘 다 바뀜 | 구조가 너무 추상적일 수 있다 |
+| Composite | 부분과 전체를 통일 | 트리형 규칙, 메뉴, 쿼리 | 의미보다 구조만 남기지 말 것 |
+| Visitor | 연산을 외부로 뺀다 | AST, 리포트, 검증 | 타입이 자주 바뀌면 비용이 크다 |
+
+### 실전 판단
+
+- 인터페이스 변환이면 Adapter.
+- 사용자가 알아야 할 복잡도를 줄이면 Facade.
+- 접근/호출을 제어하면 Proxy.
+- 책임을 덧붙이면 Decorator.
+- 두 변화 축을 분리하면 Bridge.
+- 트리 구조를 표현하면 Composite.
+- 구조는 고정하고 연산만 늘리면 Visitor.
+
+### 관련 문서
+
+- [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+- [데코레이터 vs 프록시](./decorator-vs-proxy.md)
+- [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
+- [Composite Pattern: 쿼리 트리와 규칙 트리를 조립하는 방법](./composite-query-rule-trees.md)
+- [Visitor Pattern Trade-offs](./visitor-pattern-tradeoffs.md)
+
+---
+
+## 흐름 축을 본다
+
+흐름 문제는 요청, 이벤트, 배치, 보상, 재시도 같은 orchestration과 pipeline 문제다.
+
+| 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
+|---|---|---|---|
+| 책임 연쇄 | 요청을 단계별로 넘긴다 | 인증, 검증, 차단 | 어디서 끊겼는지 추적해야 한다 |
+| Pipeline | 단계별로 값을 변환 | 정제, 파싱, batch 처리 | 중단 조건은 약하다 |
+| Middleware | 공통 관심사를 스택으로 조합 | HTTP, 메시지, job | 순서가 곧 정책이다 |
+| Command Handler | 명령 하나를 처리 | command side use case | 너무 작게 쪼개지 말 것 |
+| Command Bus | 명령을 라우팅 | handler가 많을 때 | 디스패치가 숨겨질 수 있다 |
+| Saga / Coordinator | 보상 가능한 분산 흐름 | 주문, 결제, 재고 | 중앙 조율자가 비대해질 수 있다 |
+| Orchestration vs Choreography | 중앙 지휘 vs 이벤트 자율 | 서비스 간 흐름 설계 | 한쪽이 항상 답은 아니다 |
+
+### 실전 판단
+
+- 막아야 하면 책임 연쇄다.
+- 변환해야 하면 Pipeline이다.
+- 공통 전후처리면 Middleware다.
+- 명령 하나를 처리하는 유스케이스면 Command Handler다.
+- 명령이 많아 라우팅이 필요하면 Command Bus다.
+- 여러 서비스에 걸친 보상이 필요하면 Saga / Coordinator다.
+
+### 관련 문서
+
+- [책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기](./chain-of-responsibility-filters-interceptors.md)
+- [Pipeline vs Chain of Responsibility](./pipeline-vs-chain-of-responsibility.md)
+- [Middleware Pattern Language](./middleware-pattern-language.md)
+- [Command Handler Pattern](./command-handler-pattern.md)
+- [Command Bus Pattern](./command-bus-pattern.md)
+- [Saga / Coordinator](./saga-coordinator-pattern-language.md)
+- [Orchestration vs Choreography Pattern Language](./orchestration-vs-choreography-pattern-language.md)
+
+---
+
+## 경계와 저장소 축을 본다
+
+아키텍처 경계는 패턴 선택에서 가장 많이 놓치는 부분이다.
+
+| 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
+|---|---|---|---|
+| Ports and Adapters | 외부 기술과 도메인을 분리 | backend 핵심 유스케이스 | 경계만 있고 의미가 없으면 안 됨 |
+| Repository | 도메인 컬렉션처럼 저장/조회 | aggregate 저장 | 쿼리와 규칙을 섞지 말 것 |
+| Unit of Work | 변경을 한 트랜잭션으로 묶는다 | 여러 엔티티 변경 | 저장 경계를 도메인과 헷갈리지 말 것 |
+| Facade / Anti-corruption seam | 외부 개념을 번역 | 레거시/외부 API 통합 | 단순화와 번역을 함께 생각 |
+| Event Envelope | 이벤트 메타데이터를 분리 | 메시징/이벤트 시스템 | payload만 두고 운영 맥락을 잃지 말 것 |
+
+### 실전 판단
+
+- 도메인과 기술을 분리하려면 Ports and Adapters다.
+- 저장소처럼 보이지만 조회가 복잡하면 Repository만으로 버티지 말고 query side를 본다.
+- 여러 변경을 한 번에 반영하면 Unit of Work를 떠올린다.
+- 외부 모델이 도메인을 오염시키면 anti-corruption seam이나 translation layer를 둔다.
+- 이벤트를 운영 가능하게 만들려면 envelope를 붙인다.
+
+### 관련 문서
+
+- [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+- [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
+- [Unit of Work Pattern](./unit-of-work-pattern.md)
+- [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
+- [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
+- [Anti-Corruption Translation Map Pattern](./anti-corruption-translation-map-pattern.md)
+- [Event Envelope Pattern](./event-envelope-pattern.md)
+
+---
+
+## 패턴을 잘못 고르는 신호
+
+1. 패턴 이름은 멋진데 설명이 더 복잡해진다.
+2. 실제 변화 지점보다 추상화 계층이 더 많다.
+3. 객체 생성 문제를 행동 문제처럼 푼다.
+4. 행동 선택 문제를 저장소 문제처럼 푼다.
+5. 역할이 불분명한 `Manager`, `Helper`, `Util`, `Common`이 늘어난다.
+6. `switch`를 없앴는데 지금은 registry/service locator가 됐다.
+7. tracer, retry, validation, mapping이 한 클래스에 섞인다.
+
+이런 신호가 보이면 패턴을 더 쓰는 게 아니라, **문제를 다시 나눠야** 한다.
+
+### 관련 문서
+
+- [Builder vs Fluent Mutation Smell](./builder-vs-fluent-mutation-smell.md)
+- [Coordinator vs Manager Object Smell](./coordinator-vs-manager-object-smell.md)
+- [Service Locator Antipattern](./service-locator-antipattern.md)
+- [Adapter Chaining Smells](./adapter-chaining-smells.md)
+- [Layered Validation Pattern](./layered-validation-pattern.md)
+
+---
+
+## 디버깅 질문
+
+패턴을 고를 때는 설계만 보지 말고 디버깅 비용도 봐야 한다.
+
+- 어디서 생성됐는지 추적할 수 있는가
+- 어느 단계에서 중단됐는지 알 수 있는가
+- 어떤 정책이 선택됐는지 로그로 남는가
+- 외부 모델이 내부 모델로 언제 바뀌는가
+- replay나 재시도가 가능하도록 설계되었는가
+
+디버깅 질문이 막히면, 선택한 패턴이 너무 숨기고 있다는 뜻일 수 있다.
+
+---
+
+## 패턴을 고르는 기준
+
+패턴 선택은 "어떤 이름이 더 유명한가"가 아니라 "무엇이 가장 자주 변하는가"로 정리하면 된다.
+
+1. 변경 빈도가 높은 축이 무엇인지 먼저 찾는다.
+2. 조건문이 늘어나는 지점이 반복되면 패턴을 검토한다.
+3. 추상화가 실제로 읽기 쉬워지는지 확인한다.
+4. 새 클래스가 생기는 비용보다 유지보수 이득이 큰지 본다.
+5. 팀이 이해하지 못하는 패턴은 좋은 패턴이 아니다.
+6. 패턴이 디버깅을 어렵게 만들면 경계가 잘못 잘렸을 수 있다.
+
+한 줄로 정리하면, **패턴은 복잡도를 줄이기 위한 도구이지 복잡도를 전시하는 장식이 아니다.**

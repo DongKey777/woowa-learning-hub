@@ -1,0 +1,130 @@
+# Replica Lag Observability와 Routing SLO
+
+> 한 줄 요약: replica lag는 측정하지 않으면 그냥 “가끔 늦는 것”처럼 보이고, 라우팅 SLO가 없으면 그 늦음을 사용자 경험으로 번역할 수 없다.
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
+Retrieval anchors: `replica lag observability`, `routing SLO`, `replication delay`, `freshness SLO`, `read routing metrics`
+
+## 핵심 개념
+
+Replica lag 자체보다 더 중요한 것은, 그 lag를 얼마나 빨리 관측하고 라우팅 정책에 반영하느냐이다.
+
+왜 중요한가:
+
+- 늦은 replica를 계속 읽으면 최신성이 깨진다
+- lag를 알지 못하면 primary fallback 타이밍을 정할 수 없다
+- SLO가 없으면 “느린 정도”가 아니라 “얼마나 늦으면 안 되는지”를 말할 수 없다
+
+observability는 메트릭을 보는 일이 아니라, **읽기 라우팅 의사결정을 가능하게 하는 일**이다.
+
+## 깊이 들어가기
+
+### 1. 무엇을 측정해야 하나
+
+대표적인 신호는 다음이다.
+
+- replication delay
+- replica apply position
+- primary와의 commit gap
+- 최근 write 이후 경과 시간
+- primary fallback 비율
+
+이 신호가 있어야 라우팅이 감이 아니라 정책이 된다.
+
+### 2. routing SLO의 의미
+
+routing SLO는 “이 정도 freshness 이내의 데이터는 어디서 읽어야 하는가”를 정하는 규칙이다.
+
+- 결제 직후 3초 이내는 primary
+- 일반 조회는 replica
+- lag가 임계치 넘으면 primary fallback
+
+즉 SLO는 DB 성능이 아니라 **사용자에게 보장할 최신성 수준**이다.
+
+### 3. lag를 숨기면 안 되는 이유
+
+lag가 큰 replica를 계속 읽으면:
+
+- 사용자는 옛 값을 본다
+- support는 재현이 어렵다
+- 장애가 아닌데도 장애처럼 보인다
+
+그래서 lag는 숨길 지표가 아니라, 라우터가 즉시 반응해야 할 지표다.
+
+### 4. 관측과 라우팅을 연결하는 방법
+
+- lag metric 수집
+- threshold 설정
+- replica 별 health score 계산
+- 최근 write 세션은 primary pinning
+- 임계치 초과 시 자동 fallback
+
+이 연결이 없으면 관측은 대시보드에만 남는다.
+
+## 실전 시나리오
+
+### 시나리오 1: 주문 직후 상세 조회가 오래된 replica로 간다
+
+lag metric은 이미 경고였는데 라우터가 무시했다.  
+이 경우 freshness SLO 위반이다.
+
+### 시나리오 2: 특정 replica가 반복적으로 뒤처짐
+
+한 노드만 지속적으로 lag가 크다면, 읽기 분산 대상에서 잠시 제외해야 한다.
+
+### 시나리오 3: lag를 봤는데도 사용자 이슈가 줄지 않음
+
+측정만 하고 라우팅 정책이 없으면 관측은 아무 효과가 없다.  
+SLO와 연결해야 한다.
+
+## 코드로 보기
+
+```java
+class ReplicaHealth {
+    long lagMillis;
+    boolean freshEnoughForRead(long maxLagMillis) {
+        return lagMillis <= maxLagMillis;
+    }
+}
+
+DataSource choose(long recentWriteAgeMillis, ReplicaHealth health) {
+    if (recentWriteAgeMillis < 3000 || !health.freshEnoughForRead(500)) {
+        return primary;
+    }
+    return replica;
+}
+```
+
+```sql
+-- 운영 점검 예시
+SHOW REPLICA STATUS\G
+```
+
+observability의 목적은 “lag가 있다”는 사실이 아니라, **그 lag를 기준으로 어디를 읽을지 결정하는 것**이다.
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|------|------|------|------|
+| lag metric만 수집 | 관측이 쉽다 | 라우팅에 반영되지 않을 수 있다 | 초기 단계 |
+| threshold-based routing | 구현이 현실적이다 | 경계값 튜닝이 필요하다 | 일반 서비스 |
+| per-session freshness SLO | 사용자 경험이 좋다 | 상태 관리가 복잡하다 | 중요한 경로 |
+| always-primary fallback | 가장 안전하다 | primary 부하가 커진다 | 강한 최신성 필요 시 |
+
+## 꼬리질문
+
+> Q: replica lag를 왜 관측해야 하나요?
+> 의도: 관측이 라우팅 정책으로 이어지는지 확인
+> 핵심: lag를 알아야 primary fallback과 freshness SLO를 정할 수 있다
+
+> Q: lag를 측정했는데도 문제가 계속되면 무엇을 봐야 하나요?
+> 의도: 관측과 정책의 연결을 아는지 확인
+> 핵심: 라우팅이 실제로 lag를 반영하는지 봐야 한다
+
+> Q: routing SLO는 무엇을 의미하나요?
+> 의도: 사용자 경험 기준을 이해하는지 확인
+> 핵심: 이 정도 최신성은 어떤 경로에서 보장할지 정하는 기준이다
+
+## 한 줄 정리
+
+Replica lag observability는 라우팅 결정을 가능하게 하는 관측이고, routing SLO는 얼마나 오래된 데이터를 허용할지 정하는 사용자 경험 기준이다.

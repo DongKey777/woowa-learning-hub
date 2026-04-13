@@ -1,0 +1,176 @@
+# 시스템 콜과 User-Kernel Boundary
+
+> 운영체제와 성능 면접에서 깊게 들어가기 좋은 주제 정리
+
+<details>
+<summary>Table of Contents</summary>
+
+- [왜 중요한가](#왜-중요한가)
+- [User mode와 Kernel mode](#user-mode와-kernel-mode)
+- [시스템 콜은 어떻게 발생하는가](#시스템-콜은-어떻게-발생하는가)
+- [시스템 콜 비용이 생기는 이유](#시스템-콜-비용이-생기는-이유)
+- [자주 쓰는 시스템 콜](#자주-쓰는-시스템-콜)
+- [실무에서의 최적화 포인트](#실무에서의-최적화-포인트)
+- [시니어 질문](#시니어-질문)
+
+</details>
+
+## 왜 중요한가
+
+프로그램은 평소에는 user mode에서 실행되지만,
+파일, 네트워크, 메모리, 프로세스 제어 같은 일은 kernel의 도움이 필요하다.
+
+이 경계를 이해하면 다음을 설명할 수 있다.
+
+- 왜 syscall이 비싼가
+- 왜 read/write를 줄이려 하는가
+- 왜 blocking I/O가 스레드를 묶는가
+- 왜 epoll, futex, mmap 같은 API가 중요한가
+
+---
+
+## User mode와 Kernel mode
+
+CPU는 보통 두 가지 권한 수준을 구분한다.
+
+- `User mode`: 일반 애플리케이션 실행 영역
+- `Kernel mode`: 운영체제 핵심 코드가 실행되는 영역
+
+user mode에서는 잘못된 메모리 접근이나 장치 제어를 마음대로 할 수 없다.
+이 제한이 있어야 한 프로세스의 오류가 전체 시스템을 바로 망가뜨리지 않는다.
+
+반대로 kernel mode는 더 높은 권한을 가지므로,
+실수 한 번의 영향 범위가 크다.
+
+---
+
+## 시스템 콜은 어떻게 발생하는가
+
+애플리케이션이 `open`, `read`, `write`, `socket`, `epoll_wait` 같은 기능을 쓰려면 kernel로 들어가야 한다.
+
+전형적인 흐름은 이렇다.
+
+1. 사용자 코드가 libc wrapper를 호출한다
+2. wrapper가 syscall 번호와 인자를 레지스터에 세팅한다
+3. trap / syscall instruction으로 kernel에 진입한다
+4. CPU 권한이 user mode에서 kernel mode로 바뀐다
+5. 커널이 syscall table을 보고 실제 구현을 찾는다
+6. 필요한 검증과 작업을 수행한다
+7. 결과를 레지스터에 담고 user mode로 복귀한다
+
+중요한 건, 단순 함수 호출이 아니라 **권한 전환 + 커널 경계 통과**가 일어난다는 점이다.
+
+### 커널이 추가로 하는 일
+
+- 사용자 포인터가 유효한지 검사한다
+- 접근 권한이 맞는지 확인한다
+- 커널 버퍼와 사용자 버퍼 사이를 복사한다
+- 필요하면 현재 스레드를 sleep 시킨다
+- I/O 완료를 기다렸다가 다시 깨운다
+
+---
+
+## 시스템 콜 비용이 생기는 이유
+
+시스템 콜은 그냥 함수보다 비싸다.
+
+이유는 다음과 같다.
+
+- user mode와 kernel mode를 오가야 한다
+- 레지스터, 스택, 제어 흐름을 저장하고 복구해야 한다
+- 커널에서 인자 검증과 권한 검사가 들어간다
+- 데이터 복사가 자주 발생한다
+- 경우에 따라 context switch까지 이어진다
+
+여기서 자주 헷갈리는 점이 있다.
+
+- 모든 syscall이 곧바로 context switch는 아니다
+- 하지만 blocking syscall은 다른 runnable task로 전환될 수 있다
+
+즉 syscall 비용과 context switch 비용은 관련은 있지만 같은 개념은 아니다.
+
+---
+
+## 자주 쓰는 시스템 콜
+
+### 파일 I/O
+
+- `open`, `close`
+- `read`, `write`
+- `lseek`
+- `stat`
+
+### 네트워크
+
+- `socket`
+- `connect`
+- `accept`
+- `send`, `recv`
+- `epoll_wait`
+
+### 프로세스와 스레드
+
+- `fork`
+- `execve`
+- `wait`
+- `clone`
+- `futex`
+
+### 메모리
+
+- `mmap`
+- `munmap`
+- `brk`
+
+실무에서는 syscall 이름을 외우는 것보다,
+**어떤 자원에 접근하려는 순간 kernel boundary를 넘는지**를 이해하는 게 더 중요하다.
+
+---
+
+## 실무에서의 최적화 포인트
+
+### 1. syscall 횟수를 줄인다
+
+예를 들면:
+
+- 작은 write를 여러 번 하지 않고 배치한다
+- 불필요한 polling을 줄인다
+- 한 번의 read로 더 많은 데이터를 가져온다
+
+### 2. 복사를 줄인다
+
+- `mmap`으로 파일을 매핑할 수 있는지 본다
+- zero-copy 계열 API를 검토한다
+- 커널 버퍼와 사용자 버퍼 사이 데이터 이동을 최소화한다
+
+### 3. blocking을 관리한다
+
+- blocking read/write가 스레드를 오래 잡지 않게 한다
+- 이벤트 기반 I/O와 잘 맞는 API를 사용한다
+- 필요하면 `epoll`과 non-blocking socket을 조합한다
+
+### 4. 경쟁 지점을 줄인다
+
+- 많은 스레드가 하나의 락에 몰리지 않게 한다
+- 커널 내부 대기 지점은 `futex` 같은 메커니즘으로 줄인다
+
+### 5. 관찰 가능한 병목을 분리한다
+
+- CPU 바운드인지
+- syscall 바운드인지
+- I/O 대기인지
+
+이 세 가지를 구분해야 원인 분석이 된다.
+
+---
+
+## 시니어 질문
+
+- syscall이 왜 느린가?
+- user mode와 kernel mode를 분리하는 이유는 무엇인가?
+- 모든 blocking I/O가 context switch를 유발하나?
+- `read()`를 많이 하는 코드와 `mmap()`을 쓰는 코드는 어떤 트레이드오프가 있는가?
+- `epoll`은 왜 많은 연결을 다루는 데 유리한가?
+- `futex`는 왜 사용자 공간 락과 잘 맞는가?
+- syscall을 줄이는 최적화가 항상 좋은가, 부작용은 없는가?
+

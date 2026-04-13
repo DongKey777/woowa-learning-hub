@@ -1,0 +1,149 @@
+# Monotone Deque Proof Intuition
+
+> 한 줄 요약: 단조 덱의 핵심 증명은 "버려진 원소는 앞으로도 답이 될 수 없다"와 "각 원소는 한 번씩만 들어오고 나간다"로 정리된다.
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [Monotonic Queue and Stack](../data-structure/monotonic-queue-and-stack.md)
+> - [Sliding Window Patterns](./sliding-window-patterns.md)
+> - [Amortized Analysis Pitfalls](./amortized-analysis-pitfalls.md)
+
+> retrieval-anchor-keywords: monotone deque, monotonic queue proof, sliding window maximum, amortized O(n), invariant, dominated element, candidate pruning, deque invariant, proof intuition
+
+## 핵심 개념
+
+단조 덱은 슬라이딩 윈도우에서 최댓값/최솟값 후보를 유지할 때 쓰는 구조다.  
+이 문서는 구현보다 "왜 맞는가"에 집중한다.
+
+증명 아이디어는 두 개로 요약된다.
+
+- 뒤에서 더 나쁜 후보는 앞으로도 답이 될 수 없다.
+- 덱 안의 각 원소는 최대 한 번 들어오고 한 번 나간다.
+
+이 두 문장만 이해하면 단조 덱의 정당성과 시간 복잡도를 함께 잡을 수 있다.
+
+## 깊이 들어가기
+
+### 1. 불변식이 무엇인가
+
+단조 덱의 불변식은 보통 다음과 같다.
+
+- 덱은 값 기준으로 단조 증가 또는 단조 감소를 유지한다.
+- 덱의 앞쪽은 현재 윈도우에서 가장 유력한 후보다.
+- 윈도우 밖 원소는 유지하지 않는다.
+
+이 불변식이 유지되면 front만 봐도 답이 된다.
+
+### 2. 왜 뒤의 작은 값은 버려도 되나
+
+최댓값을 구하는 단조 감소 덱을 예로 들자.
+
+새 원소 `x`가 들어왔는데 덱 뒤의 원소 `y`보다 크거나 같다면,  
+`y`는 앞으로 어떤 윈도우에서도 `x`보다 먼저 답이 될 수 없다.
+
+이유:
+
+- `x`는 `y`보다 늦게 들어왔지만 더 크다.
+- `y`가 살아남아도 `x`가 있는 윈도우에서는 `y`가 이길 수 없다.
+- `y`가 나중에 윈도우 밖으로 빠질 때까지 기다릴 이유가 없다.
+
+즉 `y`는 지배(dominated)된 후보다.
+
+### 3. 왜 O(n)인가
+
+while pop이 많아 보여도 전체 비용은 O(n)이다.
+
+- 각 원소는 덱에 한 번 들어간다.
+- 각 원소는 덱에서 한 번만 제거된다.
+
+따라서 pop이 한 번에 여러 번 일어나더라도, 전체적으로는 원소당 상수 횟수만 움직인다.
+
+### 4. backend에서의 감각
+
+단조 덱은 "최근 구간에서의 극값"을 다룰 때 좋다.
+
+- 실시간 모니터링
+- 최근 트래픽 최대치
+- 연속 구간의 압력/온도/부하 측정
+- 이벤트 스트림의 국소 극값 추적
+
+## 실전 시나리오
+
+### 시나리오 1: 슬라이딩 윈도우 최대값
+
+현재 윈도우에서 더 작은 뒤쪽 후보는 모두 제거해도 답이 변하지 않는다.
+
+### 시나리오 2: 최소값도 같은 논리
+
+최소값을 구할 때는 단조 증가 덱을 쓰면 된다.  
+증명 구조는 똑같고 부호만 바뀐다.
+
+### 시나리오 3: 오판
+
+단조 덱은 "정렬된 덱"이 아니다.  
+중간 원소를 임의로 찾는 자료구조가 아니라, 극값 후보를 압축하는 구조다.
+
+### 시나리오 4: 구현 버그
+
+윈도우 밖 원소 제거를 늦게 하거나, 비교 연산을 잘못 쓰면 불변식이 깨진다.  
+증명이 맞아도 코드가 틀릴 수 있는 대표 케이스다.
+
+## 코드로 보기
+
+```java
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class MonotoneDequeProof {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        Deque<Integer> dq = new ArrayDeque<>();
+        int[] result = new int[nums.length - k + 1];
+        int idx = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) {
+                dq.pollLast();
+            }
+            dq.offerLast(i);
+
+            if (dq.peekFirst() <= i - k) {
+                dq.pollFirst();
+            }
+
+            if (i >= k - 1) {
+                result[idx++] = nums[dq.peekFirst()];
+            }
+        }
+        return result;
+    }
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| Monotone Deque | O(n) 상각으로 극값을 처리한다 | invariant를 깨기 쉽다 | 슬라이딩 윈도우 극값 |
+| Heap | 구현이 직관적이다 | 오래된 원소 제거가 번거롭다 | 삭제 정책이 단순할 때 |
+| 단순 스캔 | 이해하기 쉽다 | 너무 느리다 | 데이터가 작을 때 |
+
+단조 덱의 핵심은 "버려도 되는 후보를 미리 버린다"는 논리다.
+
+## 꼬리질문
+
+> Q: 왜 버린 원소가 다시 필요 없나?
+> 의도: 지배 관계를 이해하는지 확인
+> 핵심: 더 새롭고 더 좋은 후보가 이미 있기 때문이다.
+
+> Q: 왜 O(n)이라고 말할 수 있나?
+> 의도: 상각 분석 이해 확인
+> 핵심: 각 원소는 한 번 들어오고 한 번만 제거된다.
+
+> Q: heap 대신 단조 덱을 쓰는 이유는?
+> 의도: 문제 구조를 자료구조와 연결하는지 확인
+> 핵심: 윈도우 만료가 있는 극값 문제에 더 잘 맞기 때문이다.
+
+## 한 줄 정리
+
+단조 덱의 정당성은 지배된 후보를 제거해도 답이 변하지 않는다는 불변식과 원소당 한 번씩만 움직인다는 상각 논리에 있다.

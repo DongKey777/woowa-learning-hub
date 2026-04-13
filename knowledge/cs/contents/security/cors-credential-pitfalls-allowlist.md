@@ -1,0 +1,179 @@
+# CORS Credential Pitfalls / Allowlist Design
+
+> 한 줄 요약: CORS는 응답 읽기 규칙이고, credential 설정은 쿠키와 인증 헤더 전송을 바꾼다. 허용 origin, credential, preflight를 따로 설계하지 않으면 브라우저 보안이 쉽게 흔들린다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
+> - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
+> - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
+> - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+
+retrieval-anchor-keywords: CORS, credentials, allowlist, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, preflight, origin, wildcard, cookie, browser security, cross-origin
+
+---
+
+## 핵심 개념
+
+CORS는 브라우저가 cross-origin 응답을 읽을 수 있게 할지 결정하는 메커니즘이다.  
+여기에 `credentials`가 섞이면 cookie와 인증 정보 전송의 경계가 바뀐다.
+
+핵심은 이 세 가지를 분리해서 보는 것이다.
+
+- `origin allowlist`: 어떤 출처를 허용할 것인가
+- `credentials`: 쿠키/인증 정보를 실어 보낼 것인가
+- `preflight`: 실제 요청 전에 허용 여부를 확인할 것인가
+
+많은 사고는 `Access-Control-Allow-Origin: *` 와 credential 설정을 같이 생각하지 못해서 생긴다.
+
+---
+
+## 깊이 들어가기
+
+### 1. CORS는 서버간 보안이 아니다
+
+브라우저만 적용하는 규칙이다.
+
+- curl은 상관없다
+- 서버 간 호출은 상관없다
+- 브라우저 스크립트가 응답을 읽을 때만 중요하다
+
+### 2. wildcard와 credentials는 같이 두면 안 된다
+
+브라우저 보안 규칙상 credential을 허용하는 응답은 허용 origin을 더 엄격하게 잡아야 한다.
+
+실무 위험:
+
+- 허용 origin을 넓게 둔다
+- cookie credential도 허용한다
+- 다른 사이트의 스크립트가 응답을 읽는다
+
+### 3. preflight는 비용이 아니라 경계다
+
+preflight는 실제 요청 전에 브라우저가 서버에 허용을 묻는 과정이다.
+
+- custom header
+- non-simple method
+- credentialed cross-origin request
+
+이때 허용 헤더와 메서드가 너무 넓으면 공격 면이 커진다.
+
+### 4. origin reflection은 매우 위험하다
+
+요청 `Origin`을 그대로 `Access-Control-Allow-Origin`에 반사하는 구현은 취약해지기 쉽다.
+
+- 공격 origin도 그대로 허용할 수 있다
+- allowlist가 아니라 reflection이 된다
+
+### 5. CORS와 CSRF를 혼동하면 안 된다
+
+- CORS: 응답 읽기 제어
+- CSRF: 요청 위조 방어
+
+credential을 허용하는 순간 CSRF 경계도 같이 봐야 한다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: SPA에서 cookie credential을 쓰는데 CORS가 넓다
+
+대응:
+
+- origin allowlist를 정확히 둔다
+- `Allow-Credentials`를 정말 필요한 경우에만 켠다
+- 민감 endpoint는 추가 CSRF 방어를 둔다
+
+### 시나리오 2: preflight는 통과하는데 실제 요청이 이상하다
+
+대응:
+
+- preflight와 실제 응답 헤더를 모두 본다
+- Allow-Origin, Allow-Credentials, Vary 헤더를 점검한다
+- cache가 잘못된 CORS 응답을 재사용하지 않는지 확인한다
+
+### 시나리오 3: 개발 편의로 모든 origin을 허용함
+
+대응:
+
+- 운영과 개발 origin을 분리한다
+- wildcard를 로컬 개발에만 제한한다
+- credentialed endpoint에는 allowlist를 강제한다
+
+---
+
+## 코드로 보기
+
+### 1. 안전한 allowlist 개념
+
+```java
+public void addCorsHeaders(HttpServletRequest request, HttpServletResponse response) {
+    String origin = request.getHeader("Origin");
+    if (allowedOrigins.contains(origin)) {
+        response.setHeader("Access-Control-Allow-Origin", origin);
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+}
+```
+
+### 2. preflight 응답 개념
+
+```java
+public void handlePreflight(HttpServletResponse response) {
+    response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type, X-CSRF-TOKEN");
+    response.setHeader("Access-Control-Max-Age", "600");
+}
+```
+
+### 3. 위험한 reflection 예시
+
+```text
+1. 요청 Origin을 그대로 반사하지 않는다
+2. wildcard와 credentials를 같이 쓰지 않는다
+3. 실제 브라우저 요청과 preflight를 모두 테스트한다
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|--------|------|------|----------------|
+| strict allowlist | 안전하다 | 운영이 필요하다 | 대부분의 실서비스 |
+| wildcard CORS | 편하다 | credential과 함께 위험하다 | 비credential 공개 API |
+| reflective CORS | 구현이 쉬워 보인다 | 매우 위험하다 | 피해야 함 |
+| credentialed CORS | cookie auth에 맞는다 | CSRF와 경계가 필요하다 | SPA + BFF |
+
+판단 기준은 이렇다.
+
+- cross-origin 응답을 정말 읽어야 하는가
+- credential을 실어야 하는가
+- origin을 정확히 나열할 수 있는가
+- preflight와 실제 응답을 일관되게 관리할 수 있는가
+
+---
+
+## 꼬리질문
+
+> Q: CORS는 무엇을 제어하나요?
+> 의도: 응답 읽기 제어라는 본질을 아는지 확인
+> 핵심: 브라우저가 cross-origin 응답을 읽는 것을 제어한다.
+
+> Q: wildcard origin과 credentials를 같이 쓰면 왜 위험한가요?
+> 의도: 브라우저 credential 경계 이해 확인
+> 핵심: 다른 origin이 credentialed 응답을 읽을 위험이 생긴다.
+
+> Q: preflight가 왜 필요한가요?
+> 의도: 교차 출처 요청의 사전 허용 확인을 아는지 확인
+> 핵심: 실제 요청 전에 브라우저가 허용 여부를 묻기 때문이다.
+
+> Q: CORS와 CSRF의 차이는 무엇인가요?
+> 의도: 두 브라우저 방어 층을 구분하는지 확인
+> 핵심: CORS는 읽기, CSRF는 요청 위조다.
+
+## 한 줄 정리
+
+CORS credential 설계는 origin allowlist와 cookie 전송, preflight를 각각 따로 안전하게 맞추는 일이다.
