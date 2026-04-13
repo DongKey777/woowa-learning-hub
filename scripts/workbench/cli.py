@@ -213,9 +213,15 @@ def cmd_next_action(args: argparse.Namespace) -> int:
     return 0
 
 
+_OPTIONAL_MISSING_SCHEMAS = {"cs-augmentation", "drill-pending"}
+
+
 def _append_validation(validations: list[dict], schema_name: str, path: Path) -> None:
     if not path.exists():
-        validations.append({"schema": schema_name, "path": str(path), "exists": False, "valid": None})
+        entry = {"schema": schema_name, "path": str(path), "exists": False, "valid": None}
+        if schema_name in _OPTIONAL_MISSING_SCHEMAS:
+            entry["status"] = "not_applicable"
+        validations.append(entry)
         return
     try:
         validate_file(schema_name, path)
@@ -268,6 +274,33 @@ def _append_history_validation(validations: list[dict], path: Path) -> None:
     })
 
 
+def _append_drill_history_validation(validations: list[dict], path: Path) -> None:
+    if not path.exists():
+        validations.append({
+            "schema": "drill-history-entry",
+            "path": str(path),
+            "exists": False,
+            "valid": None,
+            "status": "not_applicable",
+        })
+        return
+    errors = []
+    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not raw_line.strip():
+            continue
+        try:
+            validate_payload("drill-history-entry", json.loads(raw_line))
+        except Exception as e:  # noqa: BLE001
+            errors.append({"line": line_number, "error": str(e)})
+    validations.append({
+        "schema": "drill-history-entry",
+        "path": str(path),
+        "exists": True,
+        "valid": not errors,
+        "line_errors": errors or None,
+    })
+
+
 def _discover_validation_targets(base: Path) -> list[tuple[str, Path]]:
     targets: list[tuple[str, Path]] = [
         ("archive-status", base / "archive" / "status.json"),
@@ -300,9 +333,12 @@ def _discover_validation_targets(base: Path) -> list[tuple[str, Path]]:
         "coach-context.json": "coach-context",
         "coach-focus.json": "session-pr-focus",
         "coach-candidate-interpretation.json": "candidate-interpretation",
+        "cs-augmentation.json": "cs-augmentation",
     }
     for name, schema in context_map.items():
         targets.append((schema, base / "contexts" / name))
+
+    targets.append(("drill-pending", base / "memory" / "drill-pending.json"))
 
     for path in sorted((base / "actions").glob("*.json")):
         if path.name in {"coach-run.json", "coach-run.error.json"}:
@@ -326,6 +362,7 @@ def cmd_validate_state(args: argparse.Namespace) -> int:
     for schema_name, path in _discover_validation_targets(base):
         _append_validation(validations, schema_name, path)
     _append_history_validation(validations, base / "memory" / "history.jsonl")
+    _append_drill_history_validation(validations, base / "memory" / "drill-history.jsonl")
     print(json.dumps({"repo": args.repo, "validations": validations}, ensure_ascii=False, indent=2))
     return 0
 

@@ -266,7 +266,7 @@ Role:
 Role:
 
 - top-level orchestration result
-- canonical first-read artifact
+- canonical first-read artifact — reading this file plus `contexts/learner-state.json` is enough to answer most turns
 
 Contains:
 
@@ -275,7 +275,11 @@ Contains:
 - archive sync result
 - archive status
 - session summary
-- `memory` (authoritative embedded snapshot: summary + profile)
+- `memory` (authoritative embedded snapshot: summary + profile, optionally with `cs_view` / `drill_history` / `reconciled`)
+- `cs_readiness`: `{state: ready|missing|stale, next_command, reason, corpus_hash, index_manifest_hash}`. **Separate from `execution_status`** — missing/stale indexes never downgrade `execution_status`. AI decides whether to rebuild via `bin/cs-index-build`. `execution_status=blocked` remains archive-only.
+- `cs_augmentation`: compact `{by_learning_point | by_fallback_key, cs_categories_hit, sidecar_path, meta}`. Raw document bodies live in `contexts/cs-augmentation.json`. When `fallback_reason` is set, `by_fallback_key` renders primary; otherwise `by_learning_point` renders primary.
+- `intent_decision`: `{detected_intent, signals, block_plan, cs_search_mode}`. Two-stage (`pre_decide` before augment → `finalize` after). `block_plan.{snapshot_block, cs_block, verification, drill_block, drill_result_block}` ∈ `{primary, supporting, omit}` is advisory guidance, not runtime-enforced.
+- `unified_profile`: per-turn compact projection of `memory/profile.json` — `{coach_view, cs_view, reconciled}`. **profile.json is source of truth**; `unified_profile` is a derived view and must not be written back.
 - reference coach reply markdown
 - `response_contract` — pre-rendered Response Contract fragments (see below)
 - `error_detail` and `canonical_write_failed` when `execution_status=error`
@@ -295,6 +299,24 @@ This is the preferred first artifact to read. See [error-recovery.md](/Users/ido
   - `stub_markdown` — paste-ready `## 수동 확인 필요` block listing every `thread_refs` entry. Null when `required_count == 0`.
 
 AI usage rule: copy `snapshot_block.markdown` verbatim at the top of the reply; for each entry in `verification.thread_refs`, either run `git show <head_sha>:<path>` in the same turn and promote inside `## 이 턴에 직접 확인`, or paste `verification.stub_markdown` into a `## 수동 확인 필요` section. See [agent-operating-contract.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/agent-operating-contract.md) Response Contract.
+
+- `cs_block` (CS/theory evidence)
+  - `markdown` — rendered `## 이번 질문의 CS 근거` block listing hits as `- [category] path — preview`. Null when `cs_readiness != ready`, `cs_search_mode == skip`, or there are no hits.
+  - `sources` — `[{path, category, section}, ...]`. Each entry must exist inside `cs_augmentation` (the source of truth). If the two drift, trust `cs_augmentation` and re-render.
+  - `reason` — `ready` | `rag_skip` | `rag_not_ready` | `no_hits` | `no_augmentation`.
+  - `applicability_hint` ∈ `{primary, supporting, omit}`. Advisory — AI selects which blocks to include in the learner reply based on the detected intent.
+
+- `drill_block` (new drill offer this turn, optional)
+  - `markdown` — `## 확인 질문 (선택)\n{question}\n\n(원한다면 다음 턴에 답변해 줘. 약점 축을 다듬을 수 있어.)` when a new offer was generated, else null.
+  - `reason` — `new_offer` | `none`.
+  - `applicability_hint` — usually `supporting` when an offer exists, `omit` otherwise. Drills are optional; learners can always ignore them without penalty.
+
+- `drill_result_block` (grading of the previous turn's pending drill, optional)
+  - `markdown` — `## 지난 확인 질문 채점\n- 점수: 6/10 (L3)\n- 약점: 깊이, 완결성\n- 다음 제안: ...` when the previous turn's pending drill was consumed this turn, else null.
+  - `reason` — `result_from_previous` | `none`.
+  - `applicability_hint` — `supporting` typically; the main reply focus stays on the learner's current question.
+
+cs_block ↔ cs_augmentation contract: `cs_augmentation` is source of truth. `cs_block` is a render view. Tests (`test_cs_block_is_view_of_augmentation.py`) assert every `cs_block.sources` entry exists in `cs_augmentation`.
 
 ### `actions/coach-run.error.json`
 
@@ -359,10 +381,64 @@ Contains:
 - underexplored learning points
 - recent learning streak
 - open follow-up queue
+- (optional) `cs_view` — `{avg_score, level, weak_dimensions, weak_tags, low_categories, recent_drills}` derived from `drill-history.jsonl`
+- (optional) `drill_history` — compact summary of recent drill results (total_score, level, weak_tags). Full detail lives in `drill-history.jsonl`.
+- (optional) `reconciled` — `{priority_focus, empirical_only_gaps, theoretical_only_gaps}` cross-axis weak points
+
+**profile.json is persisted truth.** `coach-run.json.unified_profile` is a derived per-turn projection. Never write back from `unified_profile` to `profile.json`.
 
 `recency_status` values: `active`, `cooling`, `dormant`. See [memory-model.md](/Users/idonghun/IdeaProjects/woowa-mission-coach/docs/memory-model.md) for interpretation.
 
 Use this artifact when deciding whether to deepen or broaden.
+
+### `memory/drill-pending.json` (optional)
+
+Role:
+
+- single open drill offer awaiting the learner's answer
+- present only while a drill question is in flight; absent otherwise
+
+Contains:
+
+- `drill_session_id`, `question`, `linked_learning_point`, `source_doc`, `expected_terms`, `created_at`, `ttl_turns`
+
+Lifecycle:
+
+1. `drill.build_offer_if_due` creates it after `unified_profile.reconciled` is computed
+2. Next turn: `drill.decrement_ttl` → `route_answer` → on answer, `score_pending_answer` → append to `drill-history.jsonl` → clear file
+3. If TTL hits zero without an answer, file is cleared
+
+Missing is normal — `validate-state` reports `status: not_applicable`.
+
+### `memory/drill-history.jsonl` (optional, append-only)
+
+Role:
+
+- append-only record of 4-dimension drill results (accuracy, depth, practicality, completeness)
+- authoritative source for `profile.json.cs_view` and `unified_profile.cs_view`
+
+Each line:
+
+- `drill_session_id`, `scored_at`, `linked_learning_point`, `question`, `answer`, `total_score`, `level`, `dimensions`, `weak_tags`, `improvement_notes`, `source_doc`
+
+Missing is normal (no drills yet). If the file exists, `validate-state` validates every line strictly.
+
+## Context Layer — CS Sidecar
+
+### `contexts/cs-augmentation.json` (optional)
+
+Role:
+
+- sidecar with full CS document bodies + sections + raw reranker scores for the current turn
+- source of truth for `coach-run.json.cs_augmentation` (top-level is a compact view)
+
+Present only when:
+
+- `intent_decision.cs_search_mode ∈ {cheap, full}`, AND
+- `cs_readiness.state == "ready"`, AND
+- the augment call returned hits
+
+Missing is normal for mission-only turns or when the CS index is not ready. `validate-state` reports `status: not_applicable` in those cases.
 
 ## Reading Priority
 

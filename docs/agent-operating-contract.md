@@ -315,6 +315,24 @@ See:
 - Use question and diff fingerprints to separate learner repetition from repeated processing of the same diff.
 - Use decay so recent sessions matter more than stale sessions.
 - Use confidence to decide whether memory should meaningfully steer recommendation priority.
+- `memory/profile.json` is persisted truth. `coach-run.json.unified_profile` is a derived per-turn projection — never write back.
+
+## CS Readiness and Intent-Aware Blocks
+
+- `cs_readiness.state` is reported separately from `execution_status`. Missing/stale indexes never downgrade `execution_status=ready`; `blocked` is reserved for archive/bootstrap issues.
+- On `intent_decision.detected_intent == "cs_only"` with `cs_readiness.state != "ready"`: the 1st `coach-run` payload is a diagnostic, **not** learner-facing. Run `bin/cs-index-build` (the command surfaced in `cs_readiness.next_command`) and re-invoke `coach-run`. Only the 2nd payload is used to compose the learner reply. If the 2nd attempt still fails, report the failure in Korean and degrade to peer-only.
+- On `mission_only`: rebuild is advisory. Use the 1st payload directly.
+- On `mixed` / `drill_answer`: rebuild is advisory; AI decides based on `cs_augmentation` completeness.
+- `response_contract.{cs_block, drill_block, drill_result_block}` each carry an `applicability_hint ∈ {primary, supporting, omit}`. This is advisory — include the `primary` and `supporting` blocks, skip `omit`. AI may reinterpret based on the learner's question.
+- `cs_block` is a rendered view of `cs_augmentation`. If they disagree, trust `cs_augmentation` and re-render.
+
+## Drill UX Rules
+
+- Drill offers are optional. Learners may ignore or decline with no penalty.
+- Do not re-offer within 3 turns of a previous offer (handled by `drill.build_offer_if_due`).
+- `drill_block.markdown` should be copied as-is into the reply when `applicability_hint != "omit"`, but wording should make opt-out trivial.
+- When `drill_result_block` is present, acknowledge the previous drill briefly but keep the main focus on the learner's current question.
+- A turn classified as `drill_answer` never produces a new drill offer — `build_offer_if_due` refuses to avoid stacking feedback loops.
 
 ## Safety
 
