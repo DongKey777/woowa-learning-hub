@@ -30,6 +30,31 @@
     "underexplored_learning_points": { "type": "array" },
     "recent_learning_streak": { "type": ["object", "null"] },
     "repeated_question_patterns": { "type": "array" },
-    "open_follow_up_queue": { "type": "array" }
+    "open_follow_up_queue": { "type": "array" },
+    "cs_view": {
+      "type": ["object", "null"],
+      "description": "Optional CS drill projection. Null before the learner's first drill.",
+      "properties": {
+        "avg_score": { "type": "number" },
+        "level": { "type": "string" },
+        "weak_dimensions": { "type": "array", "items": { "type": "string" } },
+        "weak_tags": { "type": "array", "items": { "type": "string" } },
+        "low_categories": { "type": "array", "items": { "type": "string" } },
+        "recent_drills": { "type": "array" }
+      }
+    },
+    "drill_history": {
+      "type": "array",
+      "description": "Optional compact drill history (recent N). Long-form history lives in memory/drill-history.jsonl."
+    },
+    "reconciled": {
+      "type": ["object", "null"],
+      "description": "Optional coach × CS reconciliation. Null until both views have content.",
+      "properties": {
+        "priority_focus": { "type": "array", "items": { "type": "string" } },
+        "empirical_only_gaps": { "type": "array", "items": { "type": "string" } },
+        "theoretical_only_gaps": { "type": "array", "items": { "type": "string" } }
+      }
+    }
   }
 }

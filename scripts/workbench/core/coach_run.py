@@ -328,6 +328,21 @@ def _check_cs_readiness() -> dict:
     }
 
 
+def _build_unified_profile(memory_profile: dict | None) -> dict | None:
+    """Derive the per-turn unified_profile projection.
+
+    Persisted truth stays in memory/profile.json; this is a compact view.
+    Returns None if profile_merge is unavailable (never happens in practice
+    because it's pure stdlib, but defensive to keep the payload valid).
+    """
+    try:
+        from scripts.learning.profile_merge import unify as _unify  # noqa: WPS433
+    except Exception:
+        return None
+    drill_history = (memory_profile or {}).get("drill_history") or []
+    return _unify(memory_profile or {}, drill_history=drill_history)
+
+
 def _run_learning_pipeline(
     *,
     prompt: str | None,
@@ -564,6 +579,7 @@ def run_coach(
     memory_update = compute_memory_update(repo["name"], session_payload)
     memory_summary = memory_update["summary"]
     memory_profile = memory_update["profile"]
+    unified_profile = _build_unified_profile(memory_profile)
     coach_reply_markdown = _render_coach_reply(
         session_payload,
         memory_summary,
@@ -624,7 +640,7 @@ def run_coach(
         "cs_readiness": cs_readiness,
         "cs_augmentation": cs_augmentation_compact,
         "intent_decision": intent_decision,
-        "unified_profile": None,
+        "unified_profile": unified_profile,
         "response_contract": build_response_contract(
             learner_state_full,
             "ready",
