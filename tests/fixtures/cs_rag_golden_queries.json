@@ -1,0 +1,110 @@
+{
+  "_meta": {
+    "description": "Golden query → expected-path fixture for CS RAG regression. Each entry asserts that the expected path appears in top_k results (default K=5). Queries mix Korean/English to exercise tokenizer + reranker bilingual behavior.",
+    "top_k": 5
+  },
+  "queries": [
+    {
+      "id": "repo_boundary_ko",
+      "prompt": "Repository 경계가 뭐야? 트랜잭션까지 알아야 하는거야?",
+      "learning_points": ["repository_boundary"],
+      "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
+    },
+    {
+      "id": "repo_vs_dao",
+      "prompt": "Repository 랑 DAO 차이가 뭐야",
+      "learning_points": ["repository_boundary"],
+      "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
+    },
+    {
+      "id": "jwt_basics",
+      "prompt": "JWT 토큰이 뭐고 세션이랑 뭐가 달라?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwt-deep-dive.md"
+    },
+    {
+      "id": "tx_isolation",
+      "prompt": "트랜잭션 격리 수준에 따라 어떤 이상 현상이 생겨?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+    },
+    {
+      "id": "spring_tx_propagation",
+      "prompt": "@Transactional propagation 은 어떻게 동작해?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/spring/transactional-deep-dive.md"
+    },
+    {
+      "id": "api_versioning",
+      "prompt": "API versioning contract testing anti-corruption layer 어떻게 설계해",
+      "learning_points": ["testing_strategy"],
+      "expected_path": "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md"
+    },
+    {
+      "id": "testing_doubles",
+      "prompt": "단위 테스트 mock fake stub 뭐 써야 해?",
+      "learning_points": ["testing_strategy"],
+      "expected_path": "contents/software-engineering/testing-strategy-and-test-doubles.md"
+    },
+    {
+      "id": "hikari_pool",
+      "prompt": "HikariCP 커넥션 풀 튜닝 어떻게 해",
+      "learning_points": ["resource_lifecycle"],
+      "expected_path": "contents/database/hikari-connection-pool-tuning.md"
+    },
+    {
+      "id": "deadlock_case",
+      "prompt": "MySQL 데드락이 왜 생기는 거야",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/deadlock-case-study.md"
+    },
+    {
+      "id": "normalization",
+      "prompt": "정규화와 반정규화 트레이드오프가 뭐야",
+      "learning_points": ["db_modeling"],
+      "expected_path": "contents/database/normalization-denormalization-tradeoffs.md"
+    },
+    {
+      "id": "csrf_xss_spring",
+      "prompt": "Spring Security 에서 CSRF 랑 XSS 어떻게 막아",
+      "learning_points": [],
+      "expected_path": "contents/security/xss-csrf-spring-security.md"
+    },
+    {
+      "id": "password_hash",
+      "prompt": "비밀번호 저장은 bcrypt scrypt argon2 중 뭐가 좋아",
+      "learning_points": [],
+      "expected_path": "contents/security/password-storage-bcrypt-scrypt-argon2.md"
+    },
+    {
+      "id": "layered_responsibility",
+      "prompt": "Controller Service Repository 계층 책임을 어떻게 나누지",
+      "learning_points": ["responsibility_boundary"],
+      "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
+    },
+    {
+      "id": "unit_of_work",
+      "prompt": "Unit of Work 패턴이랑 Aggregate Root 차이",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/aggregate-root-vs-unit-of-work.md"
+    },
+    {
+      "id": "gap_lock",
+      "prompt": "MySQL gap lock next-key lock 어떻게 동작해",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/gap-lock-next-key-lock.md"
+    },
+    {
+      "id": "mvcc_snapshot",
+      "prompt": "InnoDB MVCC 스냅샷이 어떻게 만들어지는지 궁금해",
+      "learning_points": [],
+      "expected_path": "contents/database/mvcc-read-view-consistent-read-internals.md"
+    },
+    {
+      "id": "idempotency",
+      "prompt": "POST 요청 중복 방지하려면 idempotency key 어떻게 설계해",
+      "learning_points": [],
+      "expected_path": "contents/database/idempotency-key-and-deduplication.md"
+    }
+  ]
+}

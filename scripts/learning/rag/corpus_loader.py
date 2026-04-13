@@ -14,17 +14,26 @@ Chunk strategy
 - Each chunk carries the file path, document title (first H1), category
   (path prefix under ``contents/``), section heading path, and body text.
 
-Category detection
-------------------
-The CS corpus layout is::
+Scope
+-----
+Only files under ``knowledge/cs/contents/<category>/...`` are indexed.
+Top-level docs (``README.md``, ``ADVANCED-BACKEND-ROADMAP.md``, ``LICENSE``,
+etc.) and sibling trees like ``master-notes/`` / ``rag/`` are meta content
+— they show up in retrieval as noise because they cover everything at a
+high level. Rebuilding the index after this change is what enforces the
+scope; callers that point ``iter_corpus`` at a subdirectory directly are
+unaffected.
 
-    knowledge/cs/contents/<category>/...
-    knowledge/cs/master-notes/...
-    knowledge/cs/rag/...
-
-Files under ``contents/<category>/...`` get that category. Other top-level
-folders are labeled with the folder name itself (``master-notes``, ``rag``,
-``JUNIOR-BACKEND-ROADMAP`` → ``_root``).
+Retrieval anchors
+-----------------
+Woowa CS notes embed an explicit ``### Retrieval Anchors`` subsection
+listing canonical phrases the author wants the doc to surface on. We
+extract that list once per document and append it to every chunk's body
+so FTS recall and dense embeddings both pick up the intent — e.g. a
+"repository boundary" query hits every chunk of
+``repository-pattern-vs-antipattern.md`` via the anchors even when the
+chunk text itself is discussing a tangential subtopic. Dedupe-by-path
+downstream ensures only one chunk per doc still reaches top-K.
 """
 
 from __future__ import annotations
@@ -45,6 +54,14 @@ H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 H3_RE = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 DETAILS_RE = re.compile(r"<details>.*?</details>", re.DOTALL | re.IGNORECASE)
+# Matches the body of a "### Retrieval Anchors" subsection until the next
+# heading. Used once per doc to harvest canonical retrieval phrases.
+RETRIEVAL_ANCHORS_RE = re.compile(
+    r"^###\s+Retrieval Anchors\s*\n(.*?)(?=^#{1,3}\s|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+# Extracts `phrase` list items (backtick-quoted or plain bullets).
+_ANCHOR_ITEM_RE = re.compile(r"^\s*[-*]\s+`?([^`\n]+?)`?\s*$", re.MULTILINE)
 
 
 @dataclass
@@ -168,6 +185,27 @@ def _hard_split(body: str, limit: int) -> list[str]:
     return out or [body[:limit]]
 
 
+def _extract_retrieval_anchors(text: str) -> list[str]:
+    """Pull canonical phrases from a ``### Retrieval Anchors`` subsection.
+
+    Returns an ordered, de-duplicated list of phrases. Empty when the doc
+    has no such section.
+    """
+    m = RETRIEVAL_ANCHORS_RE.search(text)
+    if not m:
+        return []
+    body = m.group(1)
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in _ANCHOR_ITEM_RE.finditer(body):
+        phrase = item.group(1).strip()
+        if not phrase or phrase.lower() in seen:
+            continue
+        seen.add(phrase.lower())
+        out.append(phrase)
+    return out
+
+
 def _extract_anchors(body: str) -> list[str]:
     """Pick up well-known Woowa-style anchor headings inside a chunk."""
     anchors = []
@@ -186,7 +224,11 @@ def _emit_chunks(
     title: str,
     category: str,
     sections: list[tuple[str, str]],
+    retrieval_anchors: list[str] | None = None,
 ) -> Iterator[CorpusChunk]:
+    anchor_suffix = ""
+    if retrieval_anchors:
+        anchor_suffix = "\n\n[retrieval anchors] " + " | ".join(retrieval_anchors)
     counter = 0
     for h2, body in sections:
         pieces: list[tuple[list[str], str]] = []
@@ -207,6 +249,7 @@ def _emit_chunks(
             if len(chunk_body) < MIN_CHARS_PER_CHUNK:
                 continue
             section_title = section_path[-1] if len(section_path) > 1 else ""
+            final_body = chunk_body + anchor_suffix
             yield CorpusChunk(
                 doc_id=doc_id,
                 chunk_id=f"{doc_id}#{counter}",
@@ -215,19 +258,27 @@ def _emit_chunks(
                 category=category,
                 section_title=section_title,
                 section_path=section_path,
-                body=chunk_body,
-                char_len=len(chunk_body),
+                body=final_body,
+                char_len=len(final_body),
                 anchors=_extract_anchors(chunk_body),
             )
             counter += 1
 
 
 def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[CorpusChunk]:
-    """Walk the corpus root and yield CorpusChunk objects."""
+    """Walk the corpus root and yield CorpusChunk objects.
+
+    Only files under ``<root>/contents/<category>/...`` are yielded — root
+    READMEs, roadmaps, and sibling trees like ``master-notes/`` / ``rag/``
+    are skipped because they behave as retrieval noise.
+    """
     root = Path(corpus_root)
     if not root.exists():
         return
-    for md_path in sorted(root.rglob("*.md")):
+    contents_root = root / CONTENTS_DIR
+    if not contents_root.exists():
+        return
+    for md_path in sorted(contents_root.rglob("*.md")):
         try:
             text = md_path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
@@ -240,12 +291,14 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
         title = _doc_title(text, md_path.stem.replace("-", " "))
         doc_id = hashlib.sha1(str(relpath.as_posix()).encode("utf-8")).hexdigest()[:16]
         sections = _split_sections(text)
+        retrieval_anchors = _extract_retrieval_anchors(text)
         yield from _emit_chunks(
             doc_id=doc_id,
             path=relpath.as_posix(),
             title=title,
             category=category,
             sections=sections,
+            retrieval_anchors=retrieval_anchors,
         )
 
 

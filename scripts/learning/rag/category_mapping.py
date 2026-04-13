@@ -19,7 +19,7 @@ LEARNING_POINT_TO_CS_CATEGORY: dict[str, list[str]] = {
     "db_modeling":             ["database"],
     "reconstruction_mapping":  ["design-pattern", "software-engineering"],
     "testing_strategy":        ["software-engineering", "language"],
-    "resource_lifecycle":      ["operating-system", "network", "spring"],
+    "resource_lifecycle":      ["database", "operating-system", "network", "spring"],
     "review_response":         ["software-engineering"],
 }
 
