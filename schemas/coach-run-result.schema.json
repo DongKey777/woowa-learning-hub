@@ -60,10 +60,96 @@
         "markdown": { "type": "string" }
       }
     },
+    "cs_readiness": {
+      "type": "object",
+      "description": "CS RAG index readiness, separate from execution_status. State≠ready means peer-only degrade, not blocked.",
+      "required": ["state", "next_command", "reason"],
+      "properties": {
+        "state": { "enum": ["ready", "missing", "stale", "corrupt"] },
+        "reason": { "type": ["string", "null"] },
+        "corpus_hash": { "type": ["string", "null"] },
+        "index_manifest_hash": { "type": ["string", "null"] },
+        "next_command": { "type": ["string", "null"] }
+      }
+    },
+    "cs_augmentation": {
+      "type": ["object", "null"],
+      "description": "Compact CS RAG search results. Source-of-truth for cs_block (which is a render view). Long bodies live in contexts/cs-augmentation.json sidecar.",
+      "properties": {
+        "by_learning_point": { "type": "object" },
+        "by_fallback_key": { "type": "object" },
+        "fallback_reason": { "type": ["string", "null"] },
+        "cs_categories_hit": { "type": "array", "items": { "type": "string" } },
+        "sidecar_path": { "type": ["string", "null"] },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "latency_ms": { "type": "integer", "minimum": 0 },
+            "rag_ready": { "type": "boolean" },
+            "reason": { "type": ["string", "null"] },
+            "mode_used": { "enum": ["skip", "cheap", "full"] }
+          }
+        }
+      }
+    },
+    "intent_decision": {
+      "type": "object",
+      "description": "Two-stage intent routing result. block_plan is advisory guidance for the AI session.",
+      "required": ["detected_intent", "block_plan"],
+      "properties": {
+        "detected_intent": {
+          "enum": [
+            "mission_only", "cs_only", "mixed",
+            "drill_answer", "mixed_with_drill_answer", "unknown"
+          ]
+        },
+        "pre_intent": { "type": "string" },
+        "cs_search_mode": { "enum": ["skip", "cheap", "full"] },
+        "signals": { "type": "object" },
+        "block_plan": {
+          "type": "object",
+          "required": ["snapshot_block", "cs_block", "verification", "drill_block"],
+          "properties": {
+            "snapshot_block": { "enum": ["primary", "supporting", "omit"] },
+            "cs_block":       { "enum": ["primary", "supporting", "omit"] },
+            "verification":   { "enum": ["primary", "supporting", "omit"] },
+            "drill_block":    { "enum": ["primary", "supporting", "omit"] }
+          }
+        },
+        "drill_in_turn": { "type": "object" }
+      }
+    },
+    "unified_profile": {
+      "type": ["object", "null"],
+      "description": "Per-turn compact projection of memory/profile.json (Phase 3). Persisted truth lives in profile.json; this is a derived view."
+    },
     "response_contract": {
       "type": "object",
       "required": ["snapshot_block", "verification"],
       "properties": {
+        "cs_block": {
+          "type": ["object", "null"],
+          "description": "Render view of cs_augmentation. Not a source of truth — rebuild from cs_augmentation if drift suspected.",
+          "properties": {
+            "markdown": { "type": ["string", "null"] },
+            "sources": { "type": "array" },
+            "reason": { "type": ["string", "null"] },
+            "applicability_hint": { "enum": ["primary", "supporting", "omit"] }
+          }
+        },
+        "drill_block": {
+          "type": ["object", "null"],
+          "description": "Drill question offer for this turn (Phase 4). reason='none' until drill engine ships.",
+          "properties": {
+            "markdown": { "type": ["string", "null"] },
+            "reason": { "type": ["string", "null"] },
+            "applicability_hint": { "enum": ["primary", "supporting", "omit"] }
+          }
+        },
+        "drill_result_block": {
+          "type": ["object", "null"],
+          "description": "Scoring of a drill answer routed in this turn (Phase 4)."
+        },
         "snapshot_block": {
           "type": "object",
           "required": [

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DrillPending",
+  "description": "A single pending drill offer awaiting learner answer. Lives at memory/drill-pending.json. Absence of the file = no pending drill (normal state).",
+  "type": "object",
+  "required": ["drill_session_id", "question", "created_at", "ttl_turns"],
+  "properties": {
+    "drill_session_id": { "type": "string" },
+    "question": { "type": "string" },
+    "linked_learning_point": { "type": ["string", "null"] },
+    "source_doc": {
+      "type": ["object", "null"],
+      "properties": {
+        "path": { "type": "string" },
+        "title": { "type": ["string", "null"] },
+        "category": { "type": ["string", "null"] },
+        "section_title": { "type": ["string", "null"] }
+      }
+    },
+    "created_at": { "type": "string" },
+    "ttl_turns": { "type": "integer", "minimum": 0 },
+    "origin_turn": { "type": ["string", "null"] }
+  }
+}

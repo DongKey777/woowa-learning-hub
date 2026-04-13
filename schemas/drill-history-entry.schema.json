@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DrillHistoryEntry",
+  "description": "One line of memory/drill-history.jsonl. Append-only record of a scored drill answer. File absence is normal before the learner's first drill.",
+  "type": "object",
+  "required": ["drill_session_id", "scored_at", "total_score"],
+  "properties": {
+    "drill_session_id": { "type": "string" },
+    "scored_at": { "type": "string" },
+    "linked_learning_point": { "type": ["string", "null"] },
+    "question": { "type": ["string", "null"] },
+    "answer": { "type": ["string", "null"] },
+    "total_score": { "type": "number", "minimum": 0, "maximum": 10 },
+    "level": { "type": ["string", "null"] },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "accuracy": { "type": "number", "minimum": 0 },
+        "depth": { "type": "number", "minimum": 0 },
+        "practicality": { "type": "number", "minimum": 0 },
+        "completeness": { "type": "number", "minimum": 0 }
+      }
+    },
+    "weak_tags": { "type": "array", "items": { "type": "string" } },
+    "improvement_notes": { "type": "array", "items": { "type": "string" } },
+    "source_doc": { "type": ["object", "null"] }
+  }
+}

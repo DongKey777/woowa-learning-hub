@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CsAugmentationSidecar",
+  "description": "Full-body CS RAG augmentation sidecar at contexts/cs-augmentation.json. Source-of-truth for long CS document bodies; the compact view lives in coach-run.json.cs_augmentation.",
+  "type": "object",
+  "required": ["generated_by", "mode_used", "hits"],
+  "properties": {
+    "generated_by": { "type": "string" },
+    "mode_used": { "enum": ["skip", "cheap", "full"] },
+    "generated_at": { "type": "string" },
+    "hits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "title", "category", "score"],
+        "properties": {
+          "path": { "type": "string" },
+          "title": { "type": "string" },
+          "category": { "type": "string" },
+          "section_title": { "type": ["string", "null"] },
+          "section_path": { "type": "array", "items": { "type": "string" } },
+          "score": { "type": "number" },
+          "snippet_preview": { "type": "string" },
+          "body": { "type": ["string", "null"] },
+          "raw_scores": { "type": ["object", "null"] }
+        }
+      }
+    }
+  }
+}
