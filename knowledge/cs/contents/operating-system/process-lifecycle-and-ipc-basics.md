@@ -1,0 +1,239 @@
+# Process Lifecycle and IPC Basics
+
+> 한 줄 요약: 프로세스는 `fork()`로 갈라지고, `exec()`로 새 프로그램으로 갈아타고, `waitpid()`로 회수되며, IPC는 "무엇을 얼마나 주고받는가"에 따라 고른다.
+>
+> 문서 역할: 이 문서는 operating-system `primer` 다음에 읽는 beginner bridge다. 프로세스 생성-실행-종료 흐름과 기본 IPC 선택 감각을 한 번에 연결한다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+- [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+- [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+- [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+- [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
+- [signals, process supervision](./signals-process-supervision.md)
+- [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
+- [UNIX Domain Socket, FD Passing, Credentials](./unix-domain-socket-fd-passing-credentials.md)
+- [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
+- [Java Thread Basics](../language/java/java-thread-basics.md)
+
+retrieval-anchor-keywords: process lifecycle basics, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics, process exit reap, 프로세스 처음 배우는데, 프로세스 생명주기 뭐예요
+
+## 핵심 개념
+
+운영체제 입문을 읽고 나면 다음 질문이 자연스럽게 나온다.
+
+- 프로세스는 실제로 어떻게 태어나고 끝나는가
+- `fork()`와 `exec()`는 각각 무엇을 바꾸는가
+- zombie와 orphan은 왜 다른가
+- 부모/자식 프로세스는 무엇으로 통신하는가
+
+이 네 질문은 사실 하나의 흐름이다.  
+프로세스는 생성되고, 필요하면 자식을 만들고, 새 프로그램으로 갈아타고, 통신하고, 종료 후 회수된다.  
+이 생명주기 전체를 같이 봐야 runtime 문서와 subprocess 버그를 덜 헷갈린다.
+
+## 한눈에 보는 전체 흐름
+
+가장 흔한 그림은 shell이나 서버가 자식을 실행하는 흐름이다.
+
+```text
+parent process
+  -> fork() 로 child 생성
+  -> child가 필요하면 fd 정리/리다이렉션
+  -> child가 exec() 로 새 프로그램 이미지로 교체
+  -> parent/child가 pipe, socketpair, shared memory 등으로 통신
+  -> child exit()
+  -> parent가 SIGCHLD를 받거나 waitpid()로 종료 상태 회수
+  -> 회수 전까지는 zombie, 회수 후에는 완전히 제거
+```
+
+부모가 먼저 죽으면 흐름이 조금 달라진다.
+
+```text
+parent exits first
+  -> child becomes orphan
+  -> init/systemd 같은 상위 프로세스가 입양
+  -> child는 계속 실행될 수 있음
+```
+
+핵심은 이것이다.
+
+- `fork()`는 새 프로세스를 만든다
+- `exec()`는 현재 프로세스의 프로그램 이미지를 바꾼다
+- `waitpid()`는 종료한 자식의 흔적을 회수한다
+- IPC는 데이터 크기와 관계에 맞는 도구를 고르는 문제다
+
+## 1. `fork()`: 부모를 기준으로 자식이 하나 더 생긴다
+
+`fork()`를 호출하면 부모와 매우 비슷한 자식 프로세스가 하나 생긴다.
+
+- 부모와 자식은 서로 다른 PID를 가진다
+- 둘 다 `fork()` 다음 줄부터 실행을 이어 간다
+- 메모리는 "당장 전부 복사"라기보다 copy-on-write 방식으로 시작하는 경우가 많다
+- 열린 file descriptor는 자식도 이어받을 수 있다
+
+초보자 감각으로는 "`fork()`는 실행 흐름을 둘로 나누는 함수"라고 이해하면 된다.
+
+```c
+pid_t pid = fork();
+if (pid == 0) {
+    /* child */
+} else {
+    /* parent */
+}
+```
+
+실무에서 중요한 포인트:
+
+- 자식은 부모의 메모리를 그대로 공유하는 것이 아니다
+- 하지만 열린 fd, 현재 작업 디렉터리 같은 일부 실행 문맥은 이어받는다
+- 그래서 `fork()` 직후에 "무엇을 닫고 무엇을 남길지"가 중요해진다
+
+## 2. `exec()`: 새 프로세스를 만드는 것이 아니라 현재 프로세스를 갈아낀다
+
+`exec()` 계열 호출은 현재 프로세스에 **새 프로그램을 덮어쓴다**.
+
+- PID는 그대로일 수 있다
+- 코드/데이터/힙/스택 같은 주소 공간은 새 프로그램 기준으로 바뀐다
+- `fork()` 없이 `exec()`만 하면 "프로세스 개수"는 늘지 않는다
+
+그래서 shell이 명령을 실행할 때 흔히 이렇게 이해한다.
+
+```text
+shell
+  -> fork() 해서 child 생성
+  -> child가 execve("/usr/bin/python", ...)
+  -> child는 더 이상 shell 코드가 아니라 python 프로그램이 됨
+```
+
+많이 헷갈리는 점:
+
+- `fork()`는 "새 자식 추가"
+- `exec()`는 "현재 프로세스 교체"
+
+둘은 보통 같이 쓰이지만 역할은 다르다.
+
+`fork()` / `vfork()` / `posix_spawn()` / `exec()` / `clone()` 이름군이 한 번에 섞인다면, 먼저 [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)에서 "새 child를 만드는가, 현재 프로세스를 교체하는가" 축부터 고정하고 돌아오면 덜 헷갈린다.
+
+또 하나 기억할 점:
+
+- `exec()`를 해도 close-on-exec가 아닌 fd는 남을 수 있다
+- 그래서 pipe나 socket이 의도치 않게 자식에게 새어 나가면 EOF나 종료가 꼬일 수 있다
+
+## 3. 종료 후의 상태: zombie와 orphan은 완전히 다르다
+
+프로세스 생명주기에서 초보자가 가장 많이 섞는 두 단어가 zombie와 orphan이다.
+
+| 용어 | 살아 있나 | 왜 생기나 | 핵심 포인트 |
+|------|-----------|-----------|-------------|
+| zombie | 아니다 | 자식은 종료했지만 부모가 아직 `wait()`/`waitpid()`로 회수하지 않음 | 종료 기록만 잠시 남아 있다 |
+| orphan | 그렇다 | 부모가 먼저 종료됨 | 자식은 계속 살 수 있고 다른 부모가 입양한다 |
+
+짧게 외우면 이렇다.
+
+- zombie: **죽었는데 기록이 남아 있다**
+- orphan: **살아 있는데 부모가 바뀐다**
+
+상태 흐름은 다음처럼 보면 된다.
+
+```text
+child exit()
+  -> zombie
+  -> parent waitpid()
+  -> fully removed
+```
+
+```text
+parent exit()
+  -> child becomes orphan
+  -> init/systemd adopts it
+```
+
+따라서 orphan이 곧 zombie는 아니다.  
+오히려 둘은 "부모-자식 관계에서 무엇이 먼저 끝났는가"가 다른 상태다.
+
+## 4. `waitpid()`와 `SIGCHLD`: 종료를 알아채고 회수하는 방법
+
+자식이 종료되면 부모는 그 사실을 알고 정리해야 한다.  
+여기서 자주 같이 등장하는 것이 `SIGCHLD`와 `waitpid()`다.
+
+- `SIGCHLD`: 자식 종료를 부모에게 알려 주는 signal
+- `wait()` / `waitpid()`: 부모가 자식 종료 상태를 읽고 회수하는 syscall
+
+중요한 감각:
+
+- `SIGCHLD`는 "자식이 끝났음"을 알리는 신호다
+- 실제 회수는 `waitpid()` 같은 호출이 담당한다
+- signal을 받았다고 자동으로 zombie가 사라지는 것은 아니다
+
+초보자 실수는 보통 다음 둘 중 하나다.
+
+- 자식을 실행해 놓고 `waitpid()`를 호출하지 않는다
+- signal은 notification인데 data channel처럼 오해한다
+
+## 5. IPC는 "관계"와 "payload"에 맞춰 고른다
+
+부모/자식 프로세스가 같이 일하려면 IPC가 필요하다.  
+여기서 핵심은 "IPC가 하나만 있는가"가 아니라, **무엇을 전달하느냐에 따라 도구가 달라진다**는 점이다.
+
+| 상황 | 보통 먼저 보는 선택지 | 왜 맞는가 | 주의할 점 |
+|------|----------------------|-----------|-----------|
+| 자식의 stdout/stderr를 부모가 읽음 | `pipe` | 단순한 단방향 byte stream이라서 | 양방향이면 보통 두 개가 필요하고, 안 쓰는 쪽 fd를 빨리 닫아야 EOF가 온다 |
+| 부모와 자식이 요청/응답 형태로 제어 메시지를 주고받음 | `socketpair` | 양방향 control channel로 자연스럽다 | 메시지 경계와 종료 규칙을 정해야 한다 |
+| 서로 unrelated local process도 붙고, 필요하면 fd도 넘겨야 함 | UNIX domain socket | local socket + FD passing까지 가능하다 | 설정은 pipe보다 많다 |
+| "일이 생겼다", "이제 종료해라" 같은 알림만 필요함 | `signal`, 경우에 따라 `eventfd` | payload보다 notification이 핵심이다 | signal은 큰 데이터 전달 채널이 아니다 |
+| 큰 데이터를 여러 번 복사하지 않고 같이 보고 싶음 | shared memory, 경우에 따라 `memfd` | 큰 payload 공유에 유리하다 | 동기화와 수명 관리를 따로 설계해야 한다 |
+
+여기서 중요한 기준은 세 가지다.
+
+- 관계: 부모-자식인가, 같은 머신의 다른 프로세스인가
+- payload: 작은 제어 메시지인가, 큰 데이터인가
+- lifecycle: 누가 닫고 누가 회수할 것인가
+
+## 6. 초보자용 선택 감각
+
+처음에는 아래처럼 단순하게 잡아도 충분하다.
+
+- 외부 명령 실행 후 출력 캡처: `pipe`
+- 부모/자식이 양방향으로 명령과 응답 주고받기: `socketpair`
+- 로컬 프로세스 사이에서 socket처럼 연결하고 fd까지 넘기기: UNIX domain socket
+- 데이터는 따로 있고 "깨우기"만 필요함: `signal` 또는 `eventfd`
+- 큰 payload를 공유하고 싶음: shared memory 또는 `memfd` + 별도 control channel
+
+현실의 시스템은 보통 하나만 쓰지 않는다.
+
+- 큰 데이터는 `memfd`
+- "준비 완료" 알림은 `eventfd`
+- 제어 메시지는 UNIX domain socket
+
+이렇게 섞는 이유는 데이터 경로와 제어 경로의 성질이 다르기 때문이다.
+
+## 7. 자주 섞이는 질문
+
+> Q: `fork()`와 `exec()` 중 무엇이 새 프로세스를 만드나요?
+> 핵심: 새 자식을 만드는 것은 `fork()`이고, `exec()`는 현재 프로세스를 새 프로그램으로 바꾼다.
+
+> Q: zombie와 orphan은 같은 말인가요?
+> 핵심: 아니다. zombie는 이미 죽은 자식이고, orphan은 부모를 잃었지만 살아 있는 자식이다.
+
+> Q: signal도 IPC인가요?
+> 핵심: 넓게 보면 프로세스 간 알림이지만, 보통은 데이터 전달 채널보다 notification으로 이해하는 편이 정확하다.
+
+> Q: pipe 하나면 부모와 자식이 양방향 통신할 수 있나요?
+> 핵심: 보통은 아니다. pipe는 단방향으로 이해하고, 양방향이면 두 개의 pipe나 `socketpair`를 먼저 떠올리면 된다.
+
+## 이 문서 다음에 보면 좋은 문서
+
+- subprocess의 stdout/stderr redirect, pipe EOF, close-on-exec 기본 규칙이 필요하면 [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+- 메모리 복제와 copy-on-write 비용이 궁금하면 [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+- zombie/orphan 운영 진단이 궁금하면 [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+- container PID 1과 `SIGTERM`/reaping 기대치로 이어 가려면 [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
+- graceful shutdown과 supervision까지 이어서 보려면 [signals, process supervision](./signals-process-supervision.md)
+- IPC primitive를 더 구체적으로 비교하려면 [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md), [UNIX Domain Socket, FD Passing, Credentials](./unix-domain-socket-fd-passing-credentials.md)
+
+## 한 줄 정리
+
+프로세스 lifecycle 입문에서 가장 중요한 감각은 "`fork()`로 자식을 만들고, `exec()`로 역할을 바꾸고, `waitpid()`로 끝을 정리하며, IPC는 데이터와 수명에 맞게 고른다"는 흐름을 한 번에 보는 것이다.

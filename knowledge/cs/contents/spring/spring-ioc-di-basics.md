@@ -1,0 +1,107 @@
+# IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가
+
+> 한 줄 요약: IoC는 객체 생성과 조립의 제어권을 개발자에서 컨테이너로 넘기는 원칙이고, DI는 그 구현 방법으로 컨테이너가 필요한 의존 객체를 직접 주입해 준다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [IoC 컨테이너와 DI](./ioc-di-container.md)
+- [Spring Bean과 DI 기초](./spring-bean-di-basics.md)
+- [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
+- [spring 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di
+
+## 핵심 개념
+
+DI(Dependency Injection, 의존성 주입)를 처음 접하면 "왜 내가 `new`로 직접 만들면 안 되는가?"라는 질문이 자연스럽게 생긴다.
+
+핵심은 **결합도**다. 내가 `new MemoryOrderRepository()`를 직접 쓰면 `OrderService`와 `MemoryOrderRepository`가 강하게 묶인다. 나중에 `JpaOrderRepository`로 바꾸고 싶을 때 `OrderService` 코드를 직접 수정해야 한다.
+
+IoC(Inversion of Control, 제어 역전)는 이 조립 책임을 컨테이너에게 넘기는 원칙이다. DI는 그 방식으로 컨테이너가 의존 객체를 생성해서 주입한다.
+
+## 한눈에 보기
+
+```text
+DI 없이:
+  OrderService -> new MemoryOrderRepository()
+  (OrderService가 구현체를 직접 선택)
+
+DI 있음:
+  OrderService <- (컨테이너가 OrderRepository를 주입)
+  (OrderService는 인터페이스만 알면 됨)
+```
+
+| 비교 | `new` 직접 생성 | Spring DI |
+|---|---|---|
+| 구현체 결정 | 클래스가 직접 결정 | 컨테이너가 결정 |
+| 테스트 | 구현체 교체 어려움 | mock으로 쉽게 교체 |
+| 결합도 | 높음 | 낮음 |
+
+## 상세 분해
+
+- **IoC 컨테이너**: `ApplicationContext`가 Spring의 IoC 컨테이너다. Bean 등록, 생성, 의존성 조립을 담당한다.
+- **의존성 주입 방식 세 가지**:
+  - 생성자 주입: 생성 시점에 의존성이 고정되어 불변 설계가 가능하다. Spring 권장 방식.
+  - setter 주입: 선택적 의존성이나 나중에 변경할 가능성이 있을 때.
+  - 필드 주입(`@Autowired`를 필드에 직접): 짧고 편하지만 테스트에서 주입이 어렵고 불변성도 없어 학습 예제 외에는 피한다.
+- **인터페이스 기반 설계**: DI의 이점을 최대로 누리려면 구체 클래스 대신 인터페이스에 의존해야 한다. 컨테이너가 구현체를 바꿔 주입할 수 있다.
+- **`ApplicationContext` vs `BeanFactory`**: `BeanFactory`가 기본 컨테이너, `ApplicationContext`는 그 위에 이벤트, 국제화 등 부가 기능을 더한 것이다. 실무에서는 거의 항상 `ApplicationContext`를 쓴다.
+
+## 흔한 오해와 함정
+
+**오해 1: DI를 쓰면 코드가 복잡해진다**
+처음에는 인터페이스, Bean 등록이 낯설어 복잡하게 느껴지지만, 프로젝트 규모가 커질수록 테스트가 쉬워지고 구현체 교체 비용이 줄어드는 효과가 명확해진다.
+
+**오해 2: `@Autowired` 필드 주입이 제일 편하니 그냥 써도 된다**
+필드 주입은 테스트에서 mock을 주입하려면 리플렉션을 써야 하고, 객체가 불완전한 상태로 만들어질 수 있다. 생성자 주입을 기본으로 쓰는 것이 Spring의 권장이다.
+
+**오해 3: IoC와 DI는 같은 말이다**
+IoC는 더 넓은 원칙(제어를 역전하라)이고, DI는 그 구현 방법 중 하나다. IoC는 DI 외에도 서비스 로케이터 패턴 등으로 구현할 수 있다.
+
+## 실무에서 쓰는 모습
+
+생성자 주입을 사용하는 가장 기본 패턴이다.
+
+```java
+@Service
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+
+    // Lombok @RequiredArgsConstructor 또는 직접 작성
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    public Order findOrder(Long id) {
+        return orderRepository.findById(id);
+    }
+}
+```
+
+`OrderService`는 `OrderRepository`가 `MemoryOrderRepository`인지 `JpaOrderRepository`인지 알 필요가 없다. 컨테이너가 적절한 구현체를 결정해서 주입한다.
+
+## 더 깊이 가려면
+
+- Bean 후보 선택, `@Primary`, `@Qualifier`, `ObjectProvider` 등 주입 전략 세부 내용은 [IoC 컨테이너와 DI](./ioc-di-container.md)와 [Spring Bean과 DI 기초](./spring-bean-di-basics.md)에서 이어서 본다.
+- 저장소 레이어에서 DI가 어떻게 쓰이는지는 [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)를 같이 보면 연결이 명확해진다.
+
+## 면접/시니어 질문 미리보기
+
+> Q: IoC와 DI의 차이를 설명하면?
+> 의도: 용어 구분 확인
+> 핵심: IoC는 제어 역전 원칙, DI는 그 구현 방법으로 컨테이너가 의존 객체를 주입하는 것이다.
+
+> Q: 생성자 주입을 권장하는 이유는?
+> 의도: 주입 방식 트레이드오프 이해 확인
+> 핵심: 불변 설계 가능, 테스트에서 mock 주입 용이, 필수 의존성을 생성 시점에 강제할 수 있다.
+
+> Q: 인터페이스에 의존해야 DI가 효과적인 이유는?
+> 의도: 결합도 개념 이해 확인
+> 핵심: 구체 클래스에 의존하면 컨테이너가 구현체를 교체하는 이점이 없어진다.
+
+## 한 줄 정리
+
+IoC는 객체 조립 책임을 컨테이너에게 넘기는 원칙이고, DI는 컨테이너가 인터페이스 기반 의존 객체를 주입하는 방법으로 결합도를 낮추고 테스트를 쉽게 만든다.
