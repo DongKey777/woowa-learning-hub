@@ -40,6 +40,7 @@
 - `0-1 BFS`, `zero one bfs`, `binary edge weight shortest path`, `0/1 cost shortest path`, `deque shortest path`, `shortest path with deque`, `teleport shortest path`, `portal shortest path`, `warp shortest path`, `무료/유료 간선 최단 경로`처럼 0/1 가중치 shortest-path phrasing이면:
   - [Sparse Graph Shortest Paths](sparse-graph-shortest-paths.md)
   - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md)
+  - [Deque Router Example Pack](../data-structure/deque-router-example-pack.md)
 - `pathfinding`, `point-to-point shortest path`, `single-pair shortest path`, `route planning`, `route-planning`, `weighted route planning`, `minimum cost route between two nodes`, `maze navigation`, `maze-navigation`, `maze pathfinding`, `가중치 길찾기`, `두 정점 사이 최소 비용 경로`, `target-fixed shortest path`, `start-to-goal shortest path`, `source-to-target routing`, `A*`, `A-star`, `astar`처럼 목표 정점이 또렷하면:
   - [A* vs Dijkstra](a-star-vs-dijkstra.md)
   - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md)
@@ -131,6 +132,7 @@
 - `sliding window maximum`, `window minimum`, `최근 k개 최대값`처럼 deque 상태가 필요하다면:
   - [슬라이딩 윈도우 패턴](sliding-window-patterns.md)
   - [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md)
+  - [Deque Router Example Pack](../data-structure/deque-router-example-pack.md)
 - `monotonic queue proof`, `sliding window maximum proof`, `왜 뒤에서 pop`, `단조 덱 O(n)`처럼 증명/불변식이 먼저라면:
   - [Monotone Deque Proof Intuition](monotone-deque-proof-intuition.md)
   - [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md)
@@ -196,6 +198,7 @@
 - [두 포인터 (two-pointer)](two-pointer.md) (pair relation scan, same-direction / opposite-direction, contiguous index scan, schedule interval boundary)
 - [슬라이딩 윈도우 패턴](sliding-window-patterns.md) (substring/subarray, fixed or variable window, contiguous index interval, not schedule overlap)
 - [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md) (sliding window maximum/minimum, deque-based window state, contiguous index extrema)
+- [Deque Router Example Pack](../data-structure/deque-router-example-pack.md) (plain deque vs monotonic deque vs 0-1 BFS quick split)
 - [Monotone Deque Proof Intuition](monotone-deque-proof-intuition.md) (monotonic queue correctness, dominated candidate proof, amortized O(n), contiguous window proof, why back-pop is safe)
 - [구간 / Interval Greedy 패턴](interval-greedy-patterns.md) (activity selection, erase overlap intervals, minimum arrows, end-time sort, meeting rooms I boundary)
 - [Sweep Line Overlap Counting](sweep-line-overlap-counting.md) (meeting rooms II, minimum meeting rooms, railway platform, hotel booking possible, event sweep, heap boundary)

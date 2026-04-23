@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
+> - [Deque Router Example Pack](./deque-router-example-pack.md)
 > - [Sliding Window 패턴](../algorithm/sliding-window-patterns.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
 > - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
@@ -13,7 +14,7 @@
 > - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
 > - [Deque](./applied-data-structures-overview.md#deque-덱)
 >
-> retrieval-anchor-keywords: monotonic queue, monotonic stack, monotonic deque, monotonic deque walkthrough, monotonic stack walkthrough, monotonic stack trace, monotonic queue walkthrough, sliding window maximum, sliding window minimum, sliding window maximum trace, sliding window minimum trace, plain deque to monotonic deque, max in every window, min in every window, recent k maximum, recent k minimum, contiguous index window extrema, array window extrema, next greater element, next greater element walkthrough, next smaller element, histogram largest rectangle, histogram largest rectangle walkthrough, deque max min, fixed-size window extrema, amortized O(n), window extrema, candidate pruning, monotonic deque vs schedule overlap, meeting rooms not monotonic deque, calendar overlap not monotonic deque
+> retrieval-anchor-keywords: monotonic queue, monotonic stack, monotonic deque, monotonic deque walkthrough, monotonic stack walkthrough, monotonic stack trace, monotonic queue walkthrough, sliding window maximum, sliding window minimum, sliding window maximum trace, sliding window minimum trace, plain deque to monotonic deque, monotonic deque vs 0-1 bfs, max in every window, min in every window, recent k maximum, recent k minimum, contiguous index window extrema, array window extrema, next greater element, next greater element walkthrough, next smaller element, histogram largest rectangle, histogram largest rectangle walkthrough, deque max min, fixed-size window extrema, amortized O(n), window extrema, candidate pruning, monotonic deque vs schedule overlap, meeting rooms not monotonic deque, calendar overlap not monotonic deque
 
 ## 핵심 개념
 
@@ -30,6 +31,7 @@
 
 - 질문이 `substring`, `window sum`, `중복 없는 가장 긴 구간`처럼 빈도/개수/합 갱신이면 먼저 [Sliding Window 패턴](../algorithm/sliding-window-patterns.md)을 본다.
 - 질문이 `sliding window maximum walkthrough`, `단조 덱 trace`, `plain deque가 왜 안 되는가`처럼 손으로 추적하며 배우고 싶다면 [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)부터 본다.
+- 질문이 `plain deque`, `monotonic deque`, `0-1 BFS`를 먼저 가르고 싶다면 [Deque Router Example Pack](./deque-router-example-pack.md)에서 세 갈래를 먼저 자르면 된다.
 - 질문이 `deque vs heap`, `lazy deletion으로도 되나`, `왜 monotonic deque가 더 낫나`처럼 구조 선택이 먼저 막히면 [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)로 가면 된다.
 - 질문이 `next greater element walkthrough`, `오큰수 trace`, `histogram largest rectangle walkthrough`처럼 단조 스택을 손으로 추적하고 싶다면 [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)로 가면 된다.
 - 질문이 `sliding window maximum`, `sliding window minimum`, `최근 k개 중 최대/최소`처럼 윈도우 극값이면 이 문서가 더 직접적인 라우트다.

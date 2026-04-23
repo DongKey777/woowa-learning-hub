@@ -12,6 +12,7 @@ retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica re
 - [Cache Invalidation Patterns Primer](./cache-invalidation-patterns-primer.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [분산 캐시 설계](./distributed-cache-design.md)
 - [Read / Write Quorum & Staleness Budget](./read-write-quorum-staleness-budget-design.md)
 - [Cache와 Replica가 갈라질 때의 Read Inconsistency](../database/cache-replica-split-read-inconsistency.md)

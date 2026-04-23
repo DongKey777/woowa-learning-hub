@@ -12,6 +12,7 @@ retrieval-anchor-keywords: read-after-write consistency basics, read-after-write
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Stateless Sessions Primer](./stateless-sessions-primer.md)
 - [Session Store Design at Scale](./session-store-design-at-scale.md)
 - [Read / Write Quorum & Staleness Budget](./read-write-quorum-staleness-budget-design.md)

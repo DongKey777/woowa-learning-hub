@@ -352,6 +352,17 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         )
         self.assertEqual(projection_query.get("max_rank"), 1)
 
+        self.assertIn("projection_freshness_intro_rollback_window_noise_guard", queries_by_id)
+        rollback_query = queries_by_id["projection_freshness_intro_rollback_window_noise_guard"]
+        self.assertIn("rollback window", rollback_query["prompt"])
+        self.assertIn("stale read", rollback_query["prompt"])
+        self.assertIn("read-your-writes", rollback_query["prompt"])
+        self.assertEqual(
+            rollback_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(rollback_query.get("max_rank"), 1)
+
     def test_java_direct_sibling_queries_are_tracked_explicitly(self) -> None:
         payload = _load_fixture_payload()
         queries_by_id = {query["id"]: query for query in payload["queries"]}

@@ -8,6 +8,7 @@
 
 - [인증과 인가의 차이](./authentication-vs-authorization.md)
 - [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+- [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)
 - [Session Revocation at Scale](./session-revocation-at-scale.md)
 - [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
@@ -19,6 +20,7 @@ retrieval-anchor-keywords: role change session freshness, session freshness basi
 
 - `인증`, `principal`, `session` 자체가 아직 섞이면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 먼저 돌아가면 된다.
 - 세션 상태를 어디에 두는지부터 다시 잡아야 하면 [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md)를 이어 보면 된다.
+- role, permission 변경이 JWT, server session, cache, revoke plane을 따라 어떻게 퍼지며 왜 old authority가 남는지 한 장 timeline으로 보고 싶으면 [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)로 이어 가면 된다.
 - `session_version`, `authz_version`, `tenant_version`을 실제로 어떻게 나눠 들고 갈지 궁금하면 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)로 바로 이어 보면 된다.
 - role change보다 `org/team/tenant move 뒤 active tenant가 왜 refresh되어야 하는가`가 더 궁금하면 [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)로 바로 내려가면 된다.
 - `로그아웃했는데 계속 된다`, revoke tail, distributed invalidation 자체가 궁금하면 [Session Revocation at Scale](./session-revocation-at-scale.md)로 내려가면 된다.

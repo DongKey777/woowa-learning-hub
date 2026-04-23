@@ -810,6 +810,28 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("old data after write", expanded)
         self.assertIn("eventual consistency ux", expanded)
 
+    def test_introductory_projection_rollback_window_query_suppresses_transaction_noise(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 rollback window 때문에 stale read 랑 "
+            "read-your-writes 큰 그림이 더 헷갈려"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertIn("old data after write", expanded)
+        self.assertNotIn("mvcc", expanded)
+        self.assertNotIn("read committed", expanded)
+
     def test_projection_watermark_terms_map_to_projection_signal(self) -> None:
         prompt = "read model cutover 에서 dual projection run 이랑 projection watermark 를 어떻게 써?"
 

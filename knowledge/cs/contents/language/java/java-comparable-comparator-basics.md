@@ -8,6 +8,7 @@
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+> - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
@@ -16,7 +17,7 @@
 > - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
-> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareTo basics, java compare method basics, java sorting beginner, java list sort comparator, java collections sort comparable, java Arrays.sort basics, java Arrays.binarySearch basics, java sort search same comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareTo equals consistency, java compareTo returning 0, java comparator thenComparing, java comparator reversed, java natural order beginner, java custom order beginner, java sorted collection duplicate surprise, java BigDecimal compareTo equals
+> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareTo basics, java compare method basics, java sorting beginner, java list sort comparator, java collections sort comparable, java Arrays.sort basics, java Arrays.binarySearch basics, java sort search same comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareTo equals consistency, java compareTo returning 0, java comparator comparing, java comparator thenComparing, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator utility patterns, java natural order beginner, java custom order beginner, java sorted collection duplicate surprise, java BigDecimal compareTo equals
 
 <details>
 <summary>Table of Contents</summary>
@@ -315,6 +316,7 @@ public class ComparableComparatorExample {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 비교의 기본 개념을 먼저 더 단단히 잡으려면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- `Comparator.comparing`, `thenComparing`, `reversed`, `nullsLast`를 작은 정렬 예제로 손에 익히려면 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 - 정렬된 컬렉션과 해시 컬렉션의 차이를 성능 감각까지 묶어 보려면 [Java Collections 성능 감각](./collections-performance.md)
 - `BigDecimal`의 `compareTo()`와 `equals()`가 왜 자주 문제를 만드는지 보려면 [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - 계약을 더 엄밀하게 보려면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)

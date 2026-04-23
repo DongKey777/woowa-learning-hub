@@ -4,8 +4,8 @@
 
 **난이도: 🔴 Advanced**
 
-관련 문서: [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md), [Compare-and-Set와 Version Columns](./compare-and-set-version-columns.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
-retrieval-anchor-keywords: spring jpa locking example, spring optimistic locking example, spring pessimistic locking example, jpa version column service flow, select for update spring data jpa, retry boundary transactional spring, optimistic lock retry facade, spring transaction retry boundary, jpa for update example, spring lock timeout retry, version column flush sql, objectoptimisticlockingfailureexception, optimistic lock failure propagation, rollback only optimistic lock
+관련 문서: [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md), [Compare-and-Set와 Version Columns](./compare-and-set-version-columns.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md), [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
+retrieval-anchor-keywords: spring jpa locking example, spring optimistic locking example, spring pessimistic locking example, jpa version column service flow, select for update spring data jpa, retry boundary transactional spring, optimistic lock retry facade, spring transaction retry boundary, jpa for update example, spring lock timeout retry, version column flush sql, objectoptimisticlockingfailureexception, optimistic lock failure propagation, rollback only optimistic lock, jpa pessimistic write limitation, jpa absence invariant, jpa range invariant, jpa empty result for update
 
 ## 핵심 개념
 
@@ -27,7 +27,7 @@ Spring/JPA에서 락킹을 설명할 때는 DB 이론만으로는 부족하고, 
 | 같은 row에 요청이 몰리고 중복 성공이 치명적이다 | `FOR UPDATE` / `PESSIMISTIC_WRITE` | DB가 순서를 직접 세운다 | lock timeout, deadlock만 bounded retry |
 | "없음"이나 범위를 믿고 insert한다 | row lock만으로 부족할 수 있다 | set invariant 문제다 | guard row / unique / serializable 문서로 이동 |
 
-세 번째 축은 이 문서의 범위를 넘는다. 그 경우는 [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md), [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)로 내려가는 편이 맞다.
+세 번째 축은 이 문서의 범위를 넘는다. 그 경우는 [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md), [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md), [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)로 내려가는 편이 맞다.
 
 ## 서비스 계층을 두 겹으로 자르기
 

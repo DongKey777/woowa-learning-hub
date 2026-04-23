@@ -57,6 +57,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 - incident badge를 통일해야 하면 같은 문서의 [Incident Badge Vocabulary](./navigation-taxonomy.md#incident-badge-vocabulary)부터 본다.
 - 링크 이름, 섹션 라벨, `materials/`·`img/`·`code/` asset filename을 손봐야 하면 [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)로 내려간다. lowercase image/PDF extension과 mixed-case extension scanner pitfall, local HTML `src` / `href` / `srcset` update 규칙도 여기서 같이 정리한다. linked `img/`·`code/` path와 local HTML asset form을 따로 audit하고 싶으면 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)을 먼저 본다.
 - category 문서의 same-category `README.md#...` reverse-link가 빠졌거나 stale slug를 잡고 있는지 보고 싶으면 [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md)를 먼저 돌린다.
+- markdown이나 inline HTML이 가리키는 repo-local asset target이 실제로 존재하는지 review 전에 바로 실패시키고 싶으면 [Local Asset Existence Lint](./local-asset-existence-lint.md)를 먼저 돌린다. HTML `<a href>` / `srcset` candidate도 같은 check에 포함된다.
 - markdown이 이미 가리키는 local asset path 중 punctuation-heavy filename이나 mixed-case image/PDF extension만 review 전에 빠르게 걸러야 하면 [Asset Filename Lint](./asset-filename-lint.md)를 먼저 돌린다. HTML `<a href>` / `srcset` candidate도 같은 check에 포함된다.
 - markdown link와 무관하게 `knowledge/cs/**` 실제 PDF/image basename에서 rename queue만 좁게 만들고 싶으면 [Asset Filename Outlier Sweep](./asset-filename-outlier-sweep.md)을 먼저 본다.
 - `knowledge/cs/contents/**` 아래 실제 `img/`·`code/` file인데 contents 문서에서 더는 inbound markdown/HTML link가 없는 orphan queue를 보고 싶으면 [Orphaned Auxiliary Asset Drift Scan](./orphaned-auxiliary-asset-drift-scan.md)을 먼저 본다. relink 전 filename-risky orphan도 여기서 같이 좁힌다.
@@ -89,6 +90,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 - [Question Decomposition Examples](./question-decomposition-examples.md)
 - [Retrieval Failure Modes](./retrieval-failure-modes.md)
 - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md) - README 라벨, 링크 문구, scanner-safe `materials/`·`img/`·`code/` filename, repo-local PDF/image short rule, lowercase image/PDF extension, mixed-case extension scanner pitfall, local HTML `src` / `href` / `srcset` co-update rule, fenced literal markdown spacing guard, metadata snippet fence 선택을 같이 정리할 때
+- [Local Asset Existence Lint](./local-asset-existence-lint.md) - markdown과 inline HTML이 가리키는 repo-local asset target 중 실제 파일이 없는 unresolved path를 review 전에 바로 실패시키고 싶을 때
 - [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md) - category 문서가 sibling `README.md#...` reverse-link를 잃었거나 stale heading slug를 들고 있지 않은지 touched path 기준으로 확인할 때
 - [Asset Filename Lint](./asset-filename-lint.md) - markdown과 inline HTML이 이미 가리키는 local asset path만 대상으로 공백, 괄호, `&`, extra dot stem, mixed-case image/PDF extension 같은 punctuation-heavy filename을 review 전에 빠르게 거를 때
 - [Asset Filename Outlier Sweep](./asset-filename-outlier-sweep.md) - markdown link 유무와 무관하게 `knowledge/cs/**` 실제 PDF/image basename 전체에서 rename 후보만 작게 큐잉할 때

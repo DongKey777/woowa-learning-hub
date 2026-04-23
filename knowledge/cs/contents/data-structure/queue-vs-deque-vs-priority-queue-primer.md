@@ -8,11 +8,12 @@
 > - [기본 자료 구조](./basic.md)
 > - [자료구조 정리](./README.md)
 > - [응용 자료 구조 개요](./applied-data-structures-overview.md#deque-덱)
+> - [Deque Router Example Pack](./deque-router-example-pack.md)
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Heap Variants](./heap-variants.md)
 > - [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
 >
-> retrieval-anchor-keywords: queue vs deque vs priority queue, fifo queue, deque basics, double ended queue, deque vs queue, priority queue basics, priority queue vs queue, heap vs queue, queue interview, deque interview, priority queue interview, bfs queue, topological sort queue, sliding window deque, monotonic deque, zero one bfs deque, 0-1 bfs deque, dijkstra priority queue, meeting rooms heap, top k heap, 큐 덱 우선순위 큐 차이, fifo 큐, 덱 입문, 양방향 큐, 큐와 덱 차이, 우선순위 큐 입문, 큐와 힙 차이, bfs 큐, 위상정렬 큐, 슬라이딩 윈도우 덱, 단조 덱, 0-1 bfs 덱, 다익스트라 우선순위 큐, 회의실 최소 힙, top k 힙
+> retrieval-anchor-keywords: queue vs deque vs priority queue, fifo queue, deque basics, double ended queue, deque vs queue, priority queue basics, priority queue vs queue, heap vs queue, queue interview, deque interview, priority queue interview, bfs queue, topological sort queue, sliding window deque, monotonic deque, plain deque, plain deque simulation, deque router, deque example pack, deque problem pattern, monotonic deque vs 0-1 bfs, zero one bfs deque, 0-1 bfs deque, dijkstra priority queue, meeting rooms heap, top k heap, 큐 덱 우선순위 큐 차이, fifo 큐, 덱 입문, 양방향 큐, 큐와 덱 차이, 우선순위 큐 입문, 큐와 힙 차이, bfs 큐, 위상정렬 큐, 슬라이딩 윈도우 덱, 일반 덱, 단조 덱, 0-1 bfs 덱, 다익스트라 우선순위 큐, 회의실 최소 힙, top k 힙
 
 ## 핵심 질문
 
@@ -39,6 +40,20 @@
 | Queue | FIFO, 먼저 들어온 것이 먼저 나간다 | `offer`, `poll`, `peek` | `O(1)` | BFS, level-order traversal, Kahn 위상정렬 |
 | Deque | 양쪽 끝에서 넣고 뺄 수 있다 | `offerFirst`, `offerLast`, `pollFirst`, `pollLast` | 양끝 연산 `O(1)` | sliding window maximum, 0-1 BFS, circular deque design |
 | Priority Queue | 우선순위가 가장 높은 원소가 먼저 나온다 | `offer`, `poll`, `peek` | `peek O(1)`, `offer/poll O(log n)` | Dijkstra, meeting rooms, top-k / kth largest |
+
+## 같은 deque라도 세 패턴이 있다
+
+`deque`라는 단어 하나만 보고 같은 풀이로 묶으면 오진이 잦다.
+같은 `ArrayDeque`를 써도 아래 세 갈래는 저장 대상과 invariant가 다르다.
+
+| signal | 실제로 유지하는 것 | front/back 의미 | 바로 가면 좋은 문서 |
+|---|---|---|---|
+| `push/pop/reverse`, `양끝 시뮬레이션`, `circular deque design` | 수열 자체 | 실제 앞/뒤 끝 | [Deque Router Example Pack](./deque-router-example-pack.md), [덱 기초](./deque-basics.md) |
+| `sliding window maximum/minimum`, `최근 k개 max/min` | 답 후보 index들 | front는 현재 extrema, back은 약한 후보 정리 | [Monotonic Queue and Stack](./monotonic-queue-and-stack.md), [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md) |
+| `0 edge는 앞`, `1 edge는 뒤`, `teleport cost 0`, `deque shortest path` | 정점/상태 | 현재 거리 층 vs 다음 거리 층 | [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md), [Deque Router Example Pack](./deque-router-example-pack.md) |
+
+즉 `Deque`는 컨테이너 이름일 뿐이고,
+plain deque / monotonic deque / 0-1 BFS는 같은 자료구조 위에 서로 다른 규칙을 얹는 패턴이다.
 
 ## 1. Queue: "도착 순서"가 답을 정한다
 
@@ -98,6 +113,7 @@ Deque가 자연스러운 대표 상황은 다음과 같다.
 
 - `deque`라고 해서 자동으로 monotonic deque는 아니다.
 - 단조성은 sliding window maximum 같은 문제에서 **추가 invariant**를 붙인 것이다.
+- `0-1 BFS`도 deque를 쓰지만 monotonic deque는 아니다. 이 경우 deque에는 `window index`가 아니라 `정점/상태`가 들어간다.
 
 ## 3. Priority Queue: "가장 작은 값/큰 값"이 먼저다
 

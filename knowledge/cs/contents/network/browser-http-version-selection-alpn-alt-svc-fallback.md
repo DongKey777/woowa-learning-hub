@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 > - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+> - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 > - [ALPN Negotiation Failure, Routing Mismatch](./alpn-negotiation-failure-routing-mismatch.md)
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
@@ -97,6 +98,8 @@ retrieval-anchor-keywords: browser protocol negotiation, browser HTTP version se
 - 이미 H2 연결이 열려 있으면 새 요청도 그 H2 연결로 갈 수 있다
 - 그래서 `Alt-Svc`를 방금 배웠더라도 **같은 응답이 갑자기 H3로 바뀌는 것처럼 생각하면 안 된다**
 - 버전 선택은 종종 "요청 시점"이 아니라 "새 연결 생성 시점"에 일어난다
+
+같은 연결을 다른 origin까지 확장해서 공유하는 규칙은 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)에서 이어서 보면 된다.
 
 ### 2. 새 연결이 필요하면, H3로 갈 근거가 있는지 본다
 

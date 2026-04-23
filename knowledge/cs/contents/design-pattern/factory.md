@@ -9,6 +9,7 @@
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
+> - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
 > - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
 > - [Factory Switch Registry Smell](./factory-switch-registry-smell.md)
 > - [Registry Pattern](./registry-pattern.md)
@@ -17,7 +18,7 @@
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: factory pattern, object creation boundary, runtime implementation selection, factory overuse, when not to use factory, factory vs constructor, factory vs static factory method, factory vs builder, factory vs registry, switch factory smell, beginner factory pattern, constructor vs static factory vs factory pattern, java static factory naming, of from valueOf parse getInstance newInstance
+retrieval-anchor-keywords: factory pattern, object creation boundary, runtime implementation selection, factory overuse, when not to use factory, factory vs constructor, factory vs static factory method, factory vs builder, factory vs registry, switch factory smell, beginner factory pattern, constructor vs static factory vs factory pattern, java static factory naming, of from valueOf parse getInstance newInstance, factory vs di container, spring bean factory method, handwritten factory vs @Bean, framework wiring vs runtime factory
 
 ---
 

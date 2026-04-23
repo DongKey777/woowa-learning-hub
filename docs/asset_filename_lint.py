@@ -327,6 +327,11 @@ def main() -> int:
             "markdown reference in the same turn.",
             file=sys.stderr,
         )
+        print(
+            "If the problem is a missing target rather than filename hygiene, run "
+            "`python docs/local_asset_existence_lint.py` as the companion check.",
+            file=sys.stderr,
+        )
         return 1
 
     print(

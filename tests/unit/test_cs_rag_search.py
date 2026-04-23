@@ -1906,6 +1906,23 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
         self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
+    def test_introductory_projection_rollback_window_query_keeps_transaction_isolation_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 rollback window 때문에 stale read 랑 read-your-writes 큰 그림이 더 헷갈려",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
     def test_projection_freshness_slo_query_keeps_slo_doc_within_top3(self) -> None:
         hits = self._search(
             "projection freshness SLO, freshness SLI, lag breach policy 를 어떻게 잡아?",

@@ -6,11 +6,12 @@
 > - [RAG Design](./README.md)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
 > - [Asset Filename Lint](./asset-filename-lint.md)
+> - [Local Asset Existence Lint](./local-asset-existence-lint.md)
 > - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
 > - [Fence False-Link Precheck](./fence-false-link-precheck.md)
 > - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
 
-> retrieval-anchor-keywords: stale asset reverse-link sweep, stale reverse link, renamed asset orphan reference, asset rename inbound link, missing local asset target, reverse-link sweep, old basename scan, stale basename grep, old basename grep, post-rename grep, rg old basename, repo-local asset rename qa, inbound markdown asset reference, asset rename regression check, orphaned asset link, reverse-link hygiene, html asset stale link, local a href stale link, srcset stale target
+> retrieval-anchor-keywords: stale asset reverse-link sweep, stale reverse link, renamed asset orphan reference, asset rename inbound link, missing local asset target, reverse-link sweep, old basename scan, stale basename grep, old basename grep, post-rename grep, rg old basename, repo-local asset rename qa, inbound markdown asset reference, asset rename regression check, orphaned asset link, reverse-link hygiene, html asset stale link, local a href stale link, srcset stale target, local asset existence lint
 
 ## 언제 돌리나
 
@@ -86,6 +87,7 @@ knowledge/cs/contents/software-engineering/materials/CS_(Agile).pdf -> 2 inbound
 
 ## 왜 별도 check가 필요한가
 
+- [Local Asset Existence Lint](./local-asset-existence-lint.md)는 unresolved local asset target을 generic gate로 실패시키고, 이 문서는 rename 직후 old basename grep과 missing target 묶음까지 포함하는 rename-focused triage다.
 - [Asset Filename Lint](./asset-filename-lint.md)는 "현재 link된 path의 filename이 scanner-safe한가"를 본다.
 - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)는 "현재 link된 `img/`·`code/` 자산이 존재하고 보수 규칙을 지키는가"를 본다.
 - rename이 이미 끝난 뒤에는 old basename이 missing target이 되므로, 이번 check처럼 inbound reference를 missing target 기준으로 다시 묶어 보는 편이 더 빠르다.

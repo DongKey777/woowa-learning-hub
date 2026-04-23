@@ -6,12 +6,14 @@
 
 관련 문서:
 
+- [템플릿 메소드 패턴 기초](./template-method-basics.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 - [Composition over Inheritance — 심화](./composition-over-inheritance-practical.md)
 - [전략 패턴 기초](./strategy-pattern-basics.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [소프트웨어 공학 카테고리 인덱스](../software-engineering/README.md)
 
-retrieval-anchor-keywords: composition over inheritance, 상속보다 조합, favor composition, 상속 단점, 조합이 뭔가요, 상속 vs 조합, fragile base class, inheritance problem, has-a vs is-a, composition beginner, 조합으로 리팩터링, 처음 배우는데 상속 언제 써요, 왜 조합을 선택하나요
+retrieval-anchor-keywords: composition over inheritance, 상속보다 조합, favor composition, 상속 단점, 조합이 뭔가요, 상속 vs 조합, fragile base class, inheritance problem, has-a vs is-a, composition beginner, 조합으로 리팩터링, 처음 배우는데 상속 언제 써요, 왜 조합을 선택하나요, template method vs composition, template method vs strategy, 상속으로 뼈대 잡아야 하나, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, extends vs composition, subclass vs delegate, favor composition over inheritance beginner
 
 ---
 
@@ -20,6 +22,17 @@ retrieval-anchor-keywords: composition over inheritance, 상속보다 조합, fa
 상속(`extends`)은 부모 클래스의 모든 구현을 자식이 물려받는다. 직관적이고 코드를 줄일 수 있지만, 부모가 바뀌면 자식도 영향을 받는다는 문제("깨지기 쉬운 기반 클래스")가 있다.
 
 조합은 여러 객체를 **필드로 가져다 쓰는** 방식이다. "내가 알림을 보낼 줄 안다"고 상속받는 게 아니라, "알림 서비스를 가지고 있어서 호출한다"는 구조다. 원하는 기능만 가져올 수 있고, 나중에 다른 구현으로 교체하기도 쉽다.
+
+## 상속 질문을 빠르게 자르는 기준
+
+초보자가 자주 묻는 "그럼 상속은 언제 써도 되나요?"에 대한 짧은 답은 이렇다.
+
+- 부모 클래스가 **공통 순서를 강하게 고정**해야 한다: 템플릿 메소드 쪽
+- 규칙이나 정책을 **객체로 갈아끼워야** 한다: 조합 + 전략 쪽
+- 단지 코드 재사용이 목적이다: 먼저 조합 쪽을 의심한다
+
+즉 상속은 금지가 아니라, **안정된 skeleton이 있을 때만 좁게 허용**되는 선택이다.  
+이 경계를 바로 비교하고 싶으면 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md), 템플릿 메소드 자체를 기초부터 다시 보고 싶으면 [템플릿 메소드 패턴 기초](./template-method-basics.md)를 이어서 보면 된다.
 
 ## 한눈에 보기
 
@@ -69,6 +82,8 @@ public class OrderService {
 
 ## 더 깊이 가려면
 
+- [템플릿 메소드 패턴 기초](./template-method-basics.md) — 상속이 허용되는 대표 예외인 template skeleton을 beginner 기준으로 다시 정리
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) — "부모 클래스가 순서를 쥐어야 하나, 전략 객체를 주입해야 하나"를 바로 비교
 - [Composition over Inheritance — 심화](./composition-over-inheritance-practical.md) — 변경 축 분석, 조합 리팩터링 사례, 상속이 여전히 맞는 경우
 - [전략 패턴 기초](./strategy-pattern-basics.md) — 조합의 가장 대표적인 패턴, 행동을 필드로 가져다 교체하는 구조
 

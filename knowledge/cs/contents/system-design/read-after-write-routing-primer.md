@@ -9,6 +9,7 @@ retrieval-anchor-keywords: read-after-write routing primer, read your writes rou
 관련 문서:
 
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
+- [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)

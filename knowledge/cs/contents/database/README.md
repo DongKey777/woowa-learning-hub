@@ -123,6 +123,7 @@ Cycle 2 추가 — 5편:
   - `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md): PostgreSQL SSI에서 왜 `40001`이 나는지, 어떤 service-layer 경계에서 whole-transaction retry를 걸어야 하는지 beginner 기준으로 정리한다.
   - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md): 최소 인원, capacity oversell, overlap absence-check race를 사례별로 구분해 본다.
   - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md): guard row, slotization, reservation ledger처럼 규칙을 저장 시점 enforcement로 내리는 방법을 정리한다.
+  - [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md): `find...ForUpdate()`가 `0 row`일 때 무엇이 안 잠기는지, overlap/capacity에서 언제 constraint, guard row, native SQL로 전환해야 하는지 Spring/JPA 예제로 정리한다.
   - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): `unique-slot`, exclusion constraint, guard row를 booking overlap의 시간 모델, 엔진 적합성, 패배 요청 비용 기준으로 먼저 비교하는 primer다.
   - [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md): capacity, quota, minimum staffing 같은 count/sum invariant에서 1차 차단, bounded retry, drift repair를 어떻게 조합할지 비교한다.
   - `[playbook]` [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md): `40001`/`40P01`/timeout을 어떻게 분류하고, retry budget과 alert threshold를 minimum staffing, quota path에 어떻게 거는지 정리한다.
@@ -248,6 +249,7 @@ Cycle 2 추가 — 5편:
 
 - [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md): `jdbc vs jpa vs mybatis`, `orm vs sql mapper`, `hibernate vs jpa`, `@Transactional`, `EntityManager`, `flush`, `open session in view`, `connection pool exhaustion`처럼 접근 기술 설명에서 Spring 트랜잭션/영속성 컨텍스트/OSIV/pool primer로 갈라지는 용어 축을 먼저 정리하는 primer
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md): `@Version`, `PESSIMISTIC_WRITE`, retry facade를 Spring service/repository 흐름으로 묶어 보여주는 application-layer guide
+- [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md): `0 row FOR UPDATE` 착시, overlap/capacity race, exact duplicate에서 언제 `UNIQUE`, guard row, native SQL로 전환해야 하는지 정리
 - [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md): MySQL `1205`/`1213`, PostgreSQL `55P03`/`40P01`이 JDBC/Hibernate/JPA/Spring translator를 거치며 어떤 예외 이름으로 바뀌는지와 bounded retry 분류 기준을 함께 정리
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md): `@Retryable`, self-invocation, outer `@Transactional`, `REQUIRES_NEW`, `UnexpectedRollbackException`, pool starvation이 한 묶음으로 꼬일 때 proxy boundary 기준으로 다시 정리하는 follow-up
 
@@ -264,6 +266,7 @@ Cycle 2 추가 — 5편:
 - [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md): absence check, overlap probe, index-path assumption이 언제 RR next-key에 기대도 되는지 검증하는 checklist
 - [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md): optimistic/pessimistic locking을 충돌 빈도와 retry 비용 기준으로 고르는 법
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md): version column flush SQL, `SELECT ... FOR UPDATE` 매핑, retry boundary를 Spring facade/transactional service 기준으로 정리
+- [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md): empty-result locking 착시, overlap query의 predicate 누수, capacity invariant에서 detail-row lock 대신 constraint/guard row로 옮기는 기준을 정리
 - [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md): deadlock과 lock timeout이 MyBatis/JDBC, Hibernate/JPA, Spring DAO 예외에서 서로 다르게 surface되는 이유와 `SQLSTATE/errno` 기준 bounded retry 분류를 정리
 - [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md): `@Version` 충돌이 `UPDATE ... WHERE version = ?` 실패에서 rollback-only transaction, `409 Conflict`, 사용자 안내문까지 어떻게 전파되는지 beginner 기준으로 단계별 설명
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md): `@Retryable`이 fresh transaction per attempt를 보장하는 조건, self-invocation으로 advice가 사라지는 경우, `REQUIRES_NEW`가 retry 복구가 아니라 별도 commit이 되는 함정을 정리

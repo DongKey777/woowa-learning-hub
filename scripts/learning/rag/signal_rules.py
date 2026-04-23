@@ -781,6 +781,7 @@ _RULES: list[Rule] = [
             "read model cutover guardrails",
             "freshness guardrail",
             "rollback window",
+            "rollback windows",
             "cutover fallback",
             "dual read parity",
         },
@@ -1233,6 +1234,18 @@ _PROJECTION_FRESHNESS_PRIMER_CUES = {
     "stale read",
     "old data after write",
     "saved but still old data",
+}
+
+_PROJECTION_ROLLBACK_WINDOW_CUES = {
+    "rollback window",
+    "rollback windows",
+}
+
+_PROJECTION_TX_NOISE_TRIGGERS = {
+    "rollback",
+    "transaction",
+    "트랜잭션",
+    "commit",
 }
 
 _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
@@ -1700,6 +1713,30 @@ def _should_suppress_failover_rotation_cache_noise(hits: list[dict]) -> bool:
     return bool(matched_triggers) and matched_triggers <= {"cache invalidation"}
 
 
+def _should_suppress_projection_rollback_transaction_noise(
+    haystack: str,
+    tokens: set[str],
+    hits: list[dict],
+) -> bool:
+    if not _has_beginner_intent(haystack, tokens):
+        return False
+    if not _is_projection_freshness_primer_prompt(haystack):
+        return False
+    if not any(cue in haystack for cue in _PROJECTION_ROLLBACK_WINDOW_CUES):
+        return False
+
+    present_tags = {hit["tag"] for hit in hits}
+    if "projection_freshness" not in present_tags or "transaction_isolation" not in present_tags:
+        return False
+
+    transaction_hit = next((hit for hit in hits if hit["tag"] == "transaction_isolation"), None)
+    if not transaction_hit:
+        return False
+
+    matched_triggers = transaction_hit.get("_matched_triggers", set())
+    return bool(matched_triggers) and matched_triggers <= _PROJECTION_TX_NOISE_TRIGGERS
+
+
 def _java_concurrency_false_positive_suppressions(hits: list[dict]) -> set[str]:
     present_tags = {hit["tag"] for hit in hits}
     if "java_concurrency_utilities" not in present_tags:
@@ -1905,6 +1942,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             suppressed_tags.add("concurrency")
         if _should_suppress_failover_rotation_cache_noise(hits):
             suppressed_tags.add("security_key_rotation_rollover")
+        if _should_suppress_projection_rollback_transaction_noise(haystack, tokens, hits):
+            suppressed_tags.add("transaction_isolation")
         suppressed_tags.update(_java_concurrency_false_positive_suppressions(hits))
         suppressed_tags.update(_java_runtime_false_positive_suppressions(hits))
         suppressed_tags.update(_java_virtual_threads_false_positive_suppressions(hits))

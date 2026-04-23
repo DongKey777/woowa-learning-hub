@@ -11,9 +11,10 @@
 > - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 > - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
+> - [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)
 > - [pidfd Basics: Race-Free Process Handles](./pidfd-basics-race-free-process-handles.md)
 
-> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, new pid or not, process image replacement
+> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement
 
 ## 핵심 개념
 
@@ -147,6 +148,8 @@ beginner mental model은 이쪽이 더 안전하다.
 - namespace를 분리할지
 
 이런 성질이 flag로 결정된다.
+
+어떤 flag 묶음을 thread-like child, process-like child, namespace-isolated child로 읽을지는 [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)에서 이어서 보면 된다.
 
 그래서 `clone()`의 beginner mental model은 이렇다.
 

@@ -7,11 +7,12 @@
 관련 문서:
 
 - [팩토리 (Factory) 심화](./factory.md)
+- [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
 - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
 
-retrieval-anchor-keywords: factory pattern basics, 팩토리 패턴 기초, 객체 생성 패턴, 팩토리 메서드 입문, factory method beginner, when to use factory, 팩토리가 뭔가요, new 대신 팩토리, 생성 책임 분리, 팩토리 패턴 왜 쓰나요, beginner factory, 팩토리 패턴 예시
+retrieval-anchor-keywords: factory pattern basics, 팩토리 패턴 기초, 객체 생성 패턴, 팩토리 메서드 입문, factory method beginner, when to use factory, 팩토리가 뭔가요, new 대신 팩토리, 생성 책임 분리, 팩토리 패턴 왜 쓰나요, beginner factory, 팩토리 패턴 예시, factory vs di container, spring bean factory method, handwritten factory vs @Bean
 
 ---
 
@@ -57,7 +58,7 @@ PaymentFactory ──→ CardPayment (implements Payment)
 
 결제 수단마다 다른 처리 객체가 필요할 때, 팩토리 메서드 하나로 수단 코드를 받아 알맞은 구현체를 반환한다. 호출 측은 `Payment payment = PaymentFactory.create(method)` 처럼 사용하고, 새 수단이 추가되면 팩토리만 수정한다.
 
-Spring에서는 `@Bean` 메서드가 팩토리 메서드 역할을 한다. 설정 클래스에서 객체를 만들고, 컨테이너가 그 객체를 필요한 곳에 주입한다.
+Spring에서는 `@Bean` 메서드가 팩토리 메서드 역할을 한다. 설정 클래스에서 객체를 만들고, 컨테이너가 그 객체를 필요한 곳에 주입한다. 다만 애플리케이션 wiring이 핵심이면 손으로 `*ServiceFactory`를 늘리기보다 컨테이너에 맡기는 편이 자연스럽다. 이 경계는 [Factory와 DI 컨테이너 Wiring](./factory-vs-di-container-wiring.md)에서 예시로 이어서 볼 수 있다.
 
 ## 더 깊이 가려면
 

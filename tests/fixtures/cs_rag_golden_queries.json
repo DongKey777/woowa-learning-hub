@@ -615,6 +615,13 @@
       "max_rank": 1
     },
     {
+      "id": "projection_freshness_intro_rollback_window_noise_guard",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window 때문에 stale read 랑 read-your-writes 큰 그림이 더 헷갈려",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
       "id": "projection_freshness_budget",
       "prompt": "projection freshness budget 이랑 read-your-writes 는 어떻게 설명해?",
       "learning_points": [],

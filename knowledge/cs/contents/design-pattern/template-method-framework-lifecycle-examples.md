@@ -11,9 +11,10 @@
 > - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
 > - [JUnit 5 Callback Model vs Classic xUnit Template Skeleton](./junit5-callback-model-vs-classic-xunit-template-skeleton.md)
 > - [Template Hook Smells](./template-hook-smells.md)
+> - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 
-retrieval-anchor-keywords: template method framework example, framework native template method, servlet lifecycle template method, HttpServlet service doGet doPost, GenericServlet service, OncePerRequestFilter doFilterInternal shouldNotFilter, filter lifecycle template method, junit TestCase runBare setUp tearDown, xUnit fixture template method, framework callback skeleton, hollywood principle, test lifecycle api template method
+retrieval-anchor-keywords: template method framework example, framework native template method, servlet lifecycle template method, HttpServlet service doGet doPost, GenericServlet service, OncePerRequestFilter doFilterInternal shouldNotFilter, filter lifecycle template method, junit TestCase runBare setUp tearDown, xUnit fixture template method, framework callback skeleton, hollywood principle, test lifecycle api template method, should i extend framework base class, framework inheritance vs composition, base class hook vs injected policy, servlet base class subclassing, onceperrequestfilter extend or compose, test base class inheritance smell
 
 ---
 
@@ -21,6 +22,9 @@ retrieval-anchor-keywords: template method framework example, framework native t
 
 기본 정의는 [템플릿 메소드 패턴](./template-method.md)에서 이미 다뤘다고 가정한다.  
 여기서는 "프레임워크가 골격을 어디에 숨겨 두는가", "필수 단계와 hook이 무엇인가", "다른 패턴과 왜 헷갈리는가"만 짚는다.
+
+질문이 "이 프레임워크 base class를 상속해야 하나, 별도 policy/component로 빼야 하나?"라면 예시를 읽기 전에 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)이나 [상속보다 조합 기초](./composition-over-inheritance-basics.md)를 먼저 보는 편이 빠르다.  
+이 문서는 inheritance 선택 자체를 판정하기보다, **이미 base class를 읽고 있을 때 skeleton과 hook을 식별하는 보조 문서**다.
 
 ---
 
