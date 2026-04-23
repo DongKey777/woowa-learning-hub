@@ -539,6 +539,27 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
             }
         ],
     },
+    "qa-content": {
+        "kind": "quality",
+        "priority": 79,
+        "templates": [
+            {
+                "title": "Beginner content clarity pass",
+                "goal": "Audit beginner or primer docs for missing mental model, weak examples, dense terminology, and unclear next-step links so entry docs read like teaching guides instead of glossaries.",
+                "tags": ["qa", "content", "beginner", "clarity", "rubric"],
+            },
+            {
+                "title": "Common confusion and example pass",
+                "goal": "Strengthen beginner docs that explain terms but still need one concrete example, one compact comparison table, or one common-confusion section.",
+                "tags": ["qa", "content", "beginner", "examples", "confusion"],
+            },
+            {
+                "title": "Beginner scope creep cleanup",
+                "goal": "Trim advanced operator or incident-heavy digressions from docs marked Beginner and push those branches behind related-doc links or deeper follow-up docs.",
+                "tags": ["qa", "content", "beginner", "scope", "next-step"],
+            },
+        ],
+    },
 }
 
 
@@ -864,6 +885,42 @@ class Orchestrator:
                         return broken
         return broken
 
+    def _scan_beginner_content_gaps(self, limit: int = 4) -> list[str]:
+        scored: list[tuple[int, str]] = []
+        for path in sorted(KNOWLEDGE_CONTENTS_DIR.rglob("*.md")):
+            if path.name == "README.md":
+                continue
+            text = path.read_text(encoding="utf-8")
+            if "**난이도: 🟢 Beginner**" not in text:
+                continue
+            score = 0
+            lowered = text.lower()
+            if "한 줄 요약" not in text:
+                score += 2
+            if "관련 문서:" not in text:
+                score += 1
+            if not any(
+                marker in lowered
+                for marker in (
+                    "헷갈",
+                    "오해",
+                    "자주 묻",
+                    "common confusion",
+                    "빠른 비교표",
+                    "먼저 10초 판별표",
+                    "먼저 자를 질문",
+                    "한눈에 보기",
+                )
+            ):
+                score += 1
+            if "다음 단계" not in text and "다음에 읽" not in text:
+                score += 1
+            if score <= 0:
+                continue
+            scored.append((score, _relative_to_contents(path)))
+        scored.sort(key=lambda item: (-item[0], item[1]))
+        return [path for _, path in scored[:limit]]
+
     def _adaptive_probe(self, lane: str, items: list[dict[str, Any]], planner: dict[str, Any], now: datetime) -> dict[str, Any] | None:
         if lane == "qa-anchor":
             docs = self._scan_anchorless_docs()
@@ -886,6 +943,21 @@ class Orchestrator:
                 if not self._candidate_exists(items, lane, title):
                     goal = "Fix broken markdown links and strengthen reverse links. Current examples: " + "; ".join(broken)
                     return self._make_adaptive_item(lane, title, goal, ["qa", "link", "broken-links", "reverse-link"], planner, now, source="adaptive-probe")
+        if lane == "qa-content":
+            docs = self._scan_beginner_content_gaps()
+            if docs:
+                title = f"Beginner content rubric gaps: {docs[0].split('/')[0]}"
+                if not self._candidate_exists(items, lane, title):
+                    goal = "Tighten beginner content quality (mental model, examples, common confusion, next-step routing) in: " + ", ".join(docs)
+                    return self._make_adaptive_item(
+                        lane,
+                        title,
+                        goal,
+                        ["qa", "content", "beginner", "clarity", "adaptive"],
+                        planner,
+                        now,
+                        source="adaptive-probe",
+                    )
         return None
 
     def enqueue_candidates(
@@ -1058,12 +1130,17 @@ class Orchestrator:
                 "see the next safe step, and avoid mistaking deep dives or playbooks for entrypoints. Prefer fixes "
                 "that improve first-hit routing, beginner wording, and explicit primer -> follow-up -> deep-dive ladders."
             )
+        content_qa_suffix = ""
+        if item["lane"] == "qa-content":
+            content_qa_suffix = (
+                " For this lane, inspect the body itself: favor plain-language mental models, one concrete example or small comparison table, an explicit common-confusion section, and clear next-step links. If a doc is marked Beginner, advanced incident or operator detail should not dominate the main narrative."
+            )
         return (
             f"[{item['lane']}] {item['title']}\n"
             f"Goal: {item['goal']}\n"
             f"Tags: {tags}\n"
             "Do one coherent wave: add or deepen docs, strengthen related-doc links, add retrieval-anchor-keywords where missing, and update the relevant README index."
-            f"{beginner_suffix}{qa_suffix}"
+            f"{beginner_suffix}{qa_suffix}{content_qa_suffix}"
         )
 
     def run_once(

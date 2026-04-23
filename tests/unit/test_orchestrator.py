@@ -77,12 +77,12 @@ class OrchestratorTest(unittest.TestCase):
 
 
 class FleetSpecTest(unittest.TestCase):
-    def test_worker_fleet_has_15_distinct_workers(self) -> None:
-        self.assertEqual(len(WORKER_FLEET), 15)
+    def test_worker_fleet_has_16_distinct_workers(self) -> None:
+        self.assertEqual(len(WORKER_FLEET), 16)
         names = {entry["name"] for entry in WORKER_FLEET}
         lanes = {entry["lane"] for entry in WORKER_FLEET}
-        self.assertEqual(len(names), 15)
-        self.assertEqual(len(lanes), 15)
+        self.assertEqual(len(names), 16)
+        self.assertEqual(len(lanes), 16)
 
 
 if __name__ == "__main__":

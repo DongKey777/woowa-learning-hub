@@ -35,6 +35,7 @@ WORKER_FLEET: list[dict[str, str]] = [
     {"name": "runtime-qa-link", "lane": "qa-link"},
     {"name": "runtime-qa-taxonomy", "lane": "qa-taxonomy"},
     {"name": "runtime-qa-retrieval", "lane": "qa-retrieval"},
+    {"name": "runtime-qa-content", "lane": "qa-content"},
 ]
 
 LANE_SCOPE: dict[str, str] = {
@@ -53,6 +54,7 @@ LANE_SCOPE: dict[str, str] = {
     "qa-link": "knowledge/cs/** and docs/** for link/reverse-link hygiene",
     "qa-taxonomy": "knowledge/cs/** README/navigator/taxonomy files",
     "qa-retrieval": "tests/fixtures/**, tests/unit/test_cs_rag_*.py, scripts/learning/rag/signal_rules.py",
+    "qa-content": "knowledge/cs/**, especially beginner or primer docs that need clearer explanations, examples, common-confusion notes, and safer next-step routing",
 }
 
 
@@ -214,6 +216,13 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
         qa_beginner_rules = """- Judge retrieval quality through a beginner-first lens.
 - Prefer primer docs over deep dives for introductory prompts.
 - When possible, lock the behavior with golden fixtures, signal-rule assertions, or search regressions.
+"""
+    elif lane == "qa-content":
+        qa_beginner_rules = """- Judge the body itself through a beginner-first lens.
+- Prefer plain-language mental models before jargon.
+- Add one concrete example or a small comparison table when it clarifies the first read.
+- Add or tighten common-confusion guidance when the doc still reads like a glossary.
+- If the doc is marked Beginner, push advanced operator or incident-heavy detail behind related-doc links instead of centering it.
 """
     return f"""You are {worker}, the persistent lane worker for {lane}.
 
