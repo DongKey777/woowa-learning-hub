@@ -75,6 +75,21 @@ class OrchestratorTest(unittest.TestCase):
         item = next(entry for entry in orchestrator.load_queue() if entry["item_id"] == item_id)
         self.assertEqual(item["status"], "pending")
 
+    def test_seed_woowa_backend_curriculum_backlog_adds_foundation_pack(self) -> None:
+        orchestrator = self._make_orchestrator()
+        created = orchestrator.seed_woowa_backend_curriculum_backlog()
+        self.assertIn("language-java", created)
+        self.assertIn("spring", created)
+        queue = orchestrator.load_queue()
+        java_item = next(
+            entry
+            for entry in queue
+            if entry.get("base_title") == "Java execution model and object mental model"
+        )
+        self.assertEqual(java_item["source"], "curriculum-foundation")
+        self.assertIn("curriculum-foundation", java_item["tags"])
+        self.assertGreaterEqual(int(java_item["priority"]), 100)
+
 
 class FleetSpecTest(unittest.TestCase):
     def test_worker_fleet_has_16_distinct_workers(self) -> None:

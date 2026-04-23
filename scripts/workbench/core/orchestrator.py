@@ -562,6 +562,145 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
     },
 }
 
+WOOWA_BACKEND_CURRICULUM_BACKLOG: dict[str, list[dict[str, Any]]] = {
+    "language-java": [
+        {
+            "title": "Java execution model and object mental model",
+            "goal": "Build a beginner-first entrypoint for source -> bytecode -> JVM execution, class vs object vs instance, static vs instance, and stack/heap intuition for Woowacourse backend learners.",
+            "tags": ["java", "jvm", "object-model", "beginner", "primer", "woowacourse-backend"],
+        },
+        {
+            "title": "Collections, equality, and mutable-state foundations",
+            "goal": "Strengthen the first-read layer for List/Set/Map choice, equals/hashCode/Comparable, mutable key pitfalls, and collection iteration/update trade-offs in Java mission code.",
+            "tags": ["java", "collections", "equals-hashcode", "mutable-state", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "data-structure": [
+        {
+            "title": "Backend data-structure starter pack",
+            "goal": "Clarify the practical choice among array/list/map/set/queue/priority queue/trie from backend scenarios such as lookup, dedupe, ordering, FIFO handoff, and top-k selection.",
+            "tags": ["data-structure", "selection", "map", "queue", "priority-queue", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Complexity and algorithm pattern foundations for backend juniors",
+            "goal": "Tighten the beginner layer for Big-O, sorting, binary search, BFS/DFS, and the small set of algorithm patterns that repeatedly appear in Woowacourse mission problem solving.",
+            "tags": ["algorithm", "complexity", "sorting", "binary-search", "bfs", "dfs", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "network": [
+        {
+            "title": "Browser to server request lifecycle foundations",
+            "goal": "Strengthen the beginner explanation of URL -> DNS -> TCP/TLS -> HTTP request/response, cookies, sessions, status codes, and proxies so backend learners can read web traffic before building Spring apps.",
+            "tags": ["network", "http", "dns", "tcp", "tls", "cookie", "session", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "HTTP semantics and caching first principles",
+            "goal": "Clarify HTTP methods, safety/idempotency, cache-control, conditional requests, CDN/reverse-proxy roles, and the basic difference between browser cache and server-side caching.",
+            "tags": ["network", "http", "cache", "idempotency", "cdn", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "operating-system": [
+        {
+            "title": "Process, thread, memory, and file descriptor foundations",
+            "goal": "Build a beginner-first mental model for process vs thread, stack vs heap, file descriptor, socket, and why backend servers care about these boundaries.",
+            "tags": ["os", "process", "thread", "memory", "file-descriptor", "socket", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Blocking I/O, thread pool, and backpressure foundations",
+            "goal": "Explain blocking vs non-blocking I/O, request-per-thread intuition, thread pool role, queue saturation, and backpressure at the level needed for java-http and server-side troubleshooting.",
+            "tags": ["os", "io-model", "thread-pool", "backpressure", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "database": [
+        {
+            "title": "SQL reading and relational modeling foundations",
+            "goal": "Strengthen the beginner layer for SELECT/JOIN/GROUP BY reading, primary/foreign key modeling, cardinality, and normalization trade-offs that appear in early backend missions.",
+            "tags": ["database", "sql", "join", "modeling", "primary-key", "foreign-key", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Transactions, locks, and connection pool foundations",
+            "goal": "Build a first-read explanation for transaction boundaries, isolation, locking vs uniqueness, deadlock intuition, and why a connection pool exists before deeper JDBC and JPA material.",
+            "tags": ["database", "transaction", "locking", "connection-pool", "isolation", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "spring": [
+        {
+            "title": "Spring request pipeline and bean container foundations",
+            "goal": "Create or strengthen beginner entrypoints for DispatcherServlet, controller/service/repository roles, bean registration, DI, component scan, and configuration reading in Spring missions.",
+            "tags": ["spring", "dispatcher-servlet", "bean", "di", "component-scan", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Spring persistence and transaction mental model",
+            "goal": "Clarify @Transactional, persistence context, flush, lazy loading, and transaction boundaries across web/service/repository layers for backend juniors.",
+            "tags": ["spring", "transactional", "jpa", "persistence-context", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "security": [
+        {
+            "title": "Authentication, authorization, and session foundations",
+            "goal": "Strengthen the basic layer for authentication vs authorization, session/cookie/JWT/BFF boundaries, login/logout, and permission checks in browser and API flows.",
+            "tags": ["security", "authentication", "authorization", "session", "jwt", "bff", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Web security starter pack for backend juniors",
+            "goal": "Improve beginner entry docs for HTTPS, password hashing, CSRF, XSS, CORS, and secret/config handling so web-security basics are in place before Spring Security deep dives.",
+            "tags": ["security", "https", "csrf", "xss", "cors", "password", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "software-engineering": [
+        {
+            "title": "Readable code, layering, and test feedback loop",
+            "goal": "Strengthen beginner material for readable code, separation of concerns, unit vs integration testing, and the refactor-with-tests loop that underpins Woowacourse code review culture.",
+            "tags": ["software-engineering", "readable-code", "layering", "testing", "refactoring", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Backend delivery and observability foundations",
+            "goal": "Clarify logs, metrics, feature flags, rollout/rollback, and simple incident-response intuition so project-stage backend work has a practical foundation.",
+            "tags": ["software-engineering", "observability", "deployment", "rollback", "feature-flag", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "system-design": [
+        {
+            "title": "Stateless backend, cache, database, and queue starter pack",
+            "goal": "Build a beginner-first system view of how stateless apps, database, cache, and queue fit together before learners dive into deeper project architecture.",
+            "tags": ["system-design", "stateless", "cache", "database", "queue", "beginner", "woowacourse-backend"],
+        },
+        {
+            "title": "Consistency, idempotency, and async workflow foundations",
+            "goal": "Strengthen the first-read layer for sync vs async, eventual consistency, outbox, retry, idempotency, and duplicate handling in backend workflows.",
+            "tags": ["system-design", "consistency", "idempotency", "outbox", "async", "beginner", "woowacourse-backend"],
+        },
+    ],
+    "qa-bridge": [
+        {
+            "title": "Woowacourse backend learning ladder sync",
+            "goal": "Tighten README and related-doc ladders so learners can climb from Java basics -> HTTP/web basics -> MVC -> JDBC/transactions -> DI/AOP -> system design without unsafe jumps.",
+            "tags": ["qa", "bridge", "beginner", "learning-path", "woowacourse-backend"],
+        }
+    ],
+    "qa-link": [
+        {
+            "title": "Woowacourse backend primer return-path hygiene",
+            "goal": "Make foundational backend primers link back to the right README entrypoints and forward to the next safe follow-up doc, especially across Java, Spring, network, and database lanes.",
+            "tags": ["qa", "link", "primer", "readme", "beginner", "woowacourse-backend"],
+        }
+    ],
+    "qa-retrieval": [
+        {
+            "title": "Woowacourse backend beginner query lock-in",
+            "goal": "Lock first-hit retrieval for core learner prompts such as DispatcherServlet, keep-alive, connection pool, @Transactional, DI vs IoC, and session vs JWT so primers consistently win over deep dives.",
+            "tags": ["qa", "retrieval", "beginner", "golden", "woowacourse-backend"],
+        }
+    ],
+    "qa-content": [
+        {
+            "title": "Mission-prerequisite primer rubric pass",
+            "goal": "Audit the most important prerequisite primers for Woowacourse backend missions and add missing mental models, examples, common-confusion notes, and safe next-step links.",
+            "tags": ["qa", "content", "beginner", "clarity", "woowacourse-backend"],
+        }
+    ],
+}
+
 
 class Orchestrator:
     def __init__(self, base_dir: Path | None = None):
@@ -959,6 +1098,44 @@ class Orchestrator:
                         source="adaptive-probe",
                     )
         return None
+
+    def seed_woowa_backend_curriculum_backlog(self, *, now: datetime | None = None) -> dict[str, list[str]]:
+        with self._locked():
+            current = now or _utc_now()
+            items = self.load_queue()
+            planner = self.load_planner()
+            created: dict[str, list[str]] = {}
+            for lane, candidates in WOOWA_BACKEND_CURRICULUM_BACKLOG.items():
+                for candidate in candidates:
+                    title = str(candidate["title"]).strip()
+                    goal = str(candidate["goal"]).strip()
+                    tags = [str(tag).strip() for tag in candidate.get("tags", []) if str(tag).strip()]
+                    if not title or not goal or self._candidate_exists(items, lane, title):
+                        continue
+                    priority_boost = 18 if LANE_CATALOG[lane]["kind"] == "content" else 15
+                    item = self._make_adaptive_item(
+                        lane,
+                        title,
+                        goal,
+                        tags + ["curriculum-foundation"],
+                        planner,
+                        current,
+                        source="curriculum-foundation",
+                        priority_boost=priority_boost,
+                    )
+                    items.append(item)
+                    created.setdefault(lane, []).append(item["item_id"])
+                    self._append_history(
+                        "queue.seed",
+                        {"item_id": item["item_id"], "lane": lane, "title": item["title"], "source": "curriculum-foundation"},
+                        now=current,
+                    )
+            if created:
+                items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
+                self.save_queue(items)
+                self.save_planner(planner)
+                self.run_once(now=current)
+            return created
 
     def enqueue_candidates(
         self,
