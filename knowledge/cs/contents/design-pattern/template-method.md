@@ -10,10 +10,11 @@
 > - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [전략 패턴](./strategy-pattern.md)
+> - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: template method pattern, template method beginner, algorithm skeleton, fixed workflow inheritance, hook method, hook method vs abstract method, final template method, template method vs strategy, framework callback skeleton, framework native template method, servlet doGet doPost, OncePerRequestFilter doFilterInternal, onceperrequestfilter template method, filter chain vs template method, handlerinterceptor not template method, junit setUp tearDown, xUnit fixture template method, when not to use template method, inheritance explosion, composition over inheritance
+retrieval-anchor-keywords: template method pattern, template method beginner, algorithm skeleton, fixed workflow inheritance, hook method, hook method vs abstract method, final template method, template method vs strategy, framework callback skeleton, framework native template method, servlet doGet doPost, OncePerRequestFilter doFilterInternal, onceperrequestfilter template method, filter chain vs template method, handlerinterceptor not template method, junit setUp tearDown, xUnit fixture template method, when not to use template method, inheritance explosion, composition over inheritance, inheritance vs composition template method, 상속으로 할까 조합으로 할까, 상속으로 흐름 고정, 부모 클래스가 순서 고정, abstract class skeleton vs strategy object, extends vs injected policy, subclass hook vs composition
 
 ---
 
@@ -43,6 +44,12 @@ retrieval-anchor-keywords: template method pattern, template method beginner, al
 
 한 문장 규칙:  
 **"흐름은 고정, 단계만 다름"이면 템플릿 메소드를 먼저 본다.**
+
+### 상속 질문이 먼저면 이렇게 본다
+
+- "부모 클래스가 순서를 반드시 쥐어야 하나?"가 핵심이면 템플릿 메소드 쪽이다.
+- "부모 클래스를 늘리기보다 객체를 주입해야 하나?"가 핵심이면 전략/조합 쪽이다.
+- 아직 상속 자체가 불안하면 [상속보다 조합 기초](./composition-over-inheritance-basics.md)와 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)을 먼저 짧게 훑고 돌아오면 된다.
 
 ---
 

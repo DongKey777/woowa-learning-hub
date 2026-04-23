@@ -9,10 +9,11 @@
 > - [템플릿 메소드 패턴](./template-method.md)
 > - [전략 패턴](./strategy-pattern.md)
 > - [Template Hook Smells: 템플릿 메소드가 과해졌다는 신호](./template-hook-smells.md)
+> - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtime vs fixed flow, fixed workflow vs runtime algorithm selection, hook method vs abstract method, abstract step vs strategy, template method beginner, strategy beginner, template hook smell, composition over inheritance, when to use template method, when to use strategy, fixed workflow inheritance, runtime policy swap
+retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtime vs fixed flow, fixed workflow vs runtime algorithm selection, hook method vs abstract method, abstract step vs strategy, template method beginner, strategy beginner, template hook smell, composition over inheritance, inheritance vs composition, composition vs inheritance beginner, favor composition over inheritance template method, when to use template method, when to use strategy, fixed workflow inheritance, runtime policy swap, 상속으로 할까 조합으로 할까, 상속으로 뼈대 잡아야 하나, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, extends vs composition, subclass vs delegate, abstract class vs injected strategy
 
 ---
 
@@ -28,6 +29,18 @@ retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtim
 
 ---
 
+## 상속 질문에서 바로 들어오면
+
+질문이 패턴 이름보다 "상속을 써야 하나?"에서 시작됐다면 먼저 이렇게 자른다.
+
+- 부모 클래스가 `검증 -> 변환 -> 저장` 같은 **순서를 끝까지 지켜야 한다**: 템플릿 메소드 후보
+- 요청, 설정, DI가 **구현을 갈아끼워야 한다**: 전략 + 조합 후보
+- 아직 "상속 자체가 맞나?"도 애매하다: [상속보다 조합 기초](./composition-over-inheritance-basics.md)로 먼저 큰 그림을 잡고 다시 이 문서로 온다
+
+짧게 말하면 템플릿 메소드는 **상속이 허용되는 좁은 경우**이고, 전략은 **조합이 기본인 경우**다.
+
+---
+
 ## 30초 선택 가이드
 
 먼저 두 질문만 보면 대부분 정리된다.
@@ -35,7 +48,7 @@ retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtim
 1. **공통 순서를 실수로 바꾸면 안 되는가?**
    `검증 -> 변환 -> 저장`처럼 흐름이 고정이라면 템플릿 메소드 쪽이다.
 2. **구현을 실행 시점에 바꿔 끼워야 하는가?**
-   결제 수단, 할인 정책, 정렬 기준처럼 호출자나 설정이 구현을 고르면 전략 쪽이다.
+   결제 수단, 할인 정책, 정렬 기준처럼 호출자나 설정이 구현을 고르고, 부모 클래스를 더 만드는 대신 전략 객체를 주입해야 한다면 전략 쪽이다.
 
 짧게 외우면 다음과 같다.
 
@@ -43,6 +56,7 @@ retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtim
 - **"규칙을 갈아끼우는 문제"**면 전략
 - **"기본 흐름에 선택적 덧붙임만 필요"**하면 템플릿 메소드의 hook
 - **"hook가 사실상 전체 규칙을 대신"**하기 시작하면 전략이나 pipeline 쪽으로 다시 본다
+- **"상속을 쓰는 게 맞는지부터 모르겠다"**면 [상속보다 조합 기초](./composition-over-inheritance-basics.md)를 먼저 본다
 
 ---
 
