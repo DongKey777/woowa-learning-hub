@@ -47,6 +47,31 @@ FTS_POOL_SIZE = 40
 DENSE_POOL_SIZE = 40
 CATEGORY_BOOST = 0.15  # added to final score when category matches a learning point
 
+# Difficulty boost ladder — applied as a tie-breaker inside the top pool only,
+# so it never promotes an unrelated doc into the candidate set. Experience
+# levels other than beginner/intermediate keep the legacy zero-boost behavior
+# to guarantee zero diff against existing golden fixtures.
+#
+# Magnitudes are intentionally an order of magnitude smaller than CATEGORY_BOOST
+# (0.15) so a clearly-more-relevant advanced doc still beats a marginally
+# relevant beginner doc, while ties are broken in favor of the learner level.
+DIFFICULTY_BOOST_LADDER: dict[str | None, dict[str | None, float]] = {
+    "beginner": {
+        "beginner": 0.04,
+        "intermediate": 0.02,
+        "advanced": 0.0,
+        "expert": -0.01,
+        None: 0.0,
+    },
+    "intermediate": {
+        "beginner": 0.01,
+        "intermediate": 0.03,
+        "advanced": 0.01,
+        "expert": 0.0,
+        None: 0.0,
+    },
+}
+
 
 # ---------------------------------------------------------------------------
 # FTS query sanitization
@@ -106,11 +131,23 @@ def _fts_search(
 # Dense search (lazy)
 # ---------------------------------------------------------------------------
 
-def _load_query_vector(prompt: str, topic_hints: list[str] | None):
+_QUERY_EMBEDDER = None  # module-level cache to avoid reloading per query
+
+
+def _get_query_embedder():
+    global _QUERY_EMBEDDER
+    if _QUERY_EMBEDDER is not None:
+        return _QUERY_EMBEDDER
     from sentence_transformers import SentenceTransformer  # type: ignore
+
+    _QUERY_EMBEDDER = SentenceTransformer(indexer.EMBED_MODEL)
+    return _QUERY_EMBEDDER
+
+
+def _load_query_vector(prompt: str, topic_hints: list[str] | None):
     import numpy as np  # type: ignore
 
-    model = SentenceTransformer(indexer.EMBED_MODEL)
+    model = _get_query_embedder()
     text = prompt
     if topic_hints:
         text = f"{prompt}\n\n" + "\n".join(topic_hints)
@@ -189,6 +226,32 @@ def _apply_category_boost(
     return boosted
 
 
+def _apply_difficulty_boost(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+    experience_level: str | None,
+) -> list[tuple[int, float]]:
+    """Re-rank the existing pool toward the learner's level.
+
+    No-op when ``experience_level`` is None or not in the ladder (advanced /
+    expert learners keep legacy ranking exactly). Applied after category
+    boost so the discovery set is unchanged — purely a tie-breaker on the
+    candidates that already passed FTS+dense+category filtering.
+    """
+    if not experience_level:
+        return scored
+    ladder = DIFFICULTY_BOOST_LADDER.get(experience_level)
+    if ladder is None:
+        return scored
+    boosted: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        delta = ladder.get((chunk or {}).get("difficulty"), 0.0) if chunk else 0.0
+        boosted.append((row_id, score + delta))
+    boosted.sort(key=lambda t: (-t[1], t[0]))
+    return boosted
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -202,6 +265,8 @@ def search(
     mode: str = "full",
     index_root: Path | str = indexer.DEFAULT_INDEX_ROOT,
     use_reranker: bool | None = None,
+    experience_level: str | None = None,
+    debug: dict | None = None,
 ) -> list[dict]:
     """Run a hybrid CS RAG search and return top-K chunk dicts.
 
@@ -257,10 +322,22 @@ def search(
             allowed_categories,
         )
 
+        # 5b. Difficulty boost — re-rank the existing top pool toward the
+        #     learner's experience level. No-op for advanced/expert learners
+        #     and when experience_level is None, so legacy goldens are
+        #     untouched. Applied to the same `boosted` pool so the discovery
+        #     set is never widened by difficulty alone.
+        boosted = _apply_difficulty_boost(boosted, chunks, experience_level)
+
         # 6. Category filter — keep only chunks whose category matches the
         #    learning points, if any. Falls back to unfiltered when the
         #    filter would leave fewer than top_k candidates.
-        filtered = _filter_allowed_categories(boosted, chunks, allowed_categories, top_k)
+        filtered, filter_fallback_used = _filter_allowed_categories(
+            boosted, chunks, allowed_categories, top_k
+        )
+        if debug is not None:
+            debug["category_filter_fallback"] = filter_fallback_used
+            debug["allowed_categories"] = sorted(allowed_categories)
 
         # 7. Optional rerank (full mode only). Decorate the prompt with
         #    learning-point anchor phrases so the reranker sees canonical
@@ -307,7 +384,7 @@ def _filter_allowed_categories(
     chunks: dict[int, dict],
     allowed_categories: set[str],
     min_keep: int,
-) -> list[tuple[int, float]]:
+) -> tuple[list[tuple[int, float]], bool]:
     """Filter the pool to chunks whose category is in ``allowed_categories``.
 
     When ``allowed_categories`` is empty (no learning points supplied) the
@@ -315,9 +392,14 @@ def _filter_allowed_categories(
     ``min_keep`` items (too narrow — e.g. a learning point mapped to a
     single category with thin coverage), the original unfiltered pool is
     returned so retrieval still produces an answer.
+
+    Returns ``(pool, fallback_used)``. ``fallback_used`` is True when the
+    strict filter would have starved the pool and the unfiltered result
+    was returned instead — callers surface this as observability so AI
+    sessions can footnote "results from outside the expected category".
     """
     if not allowed_categories:
-        return scored
+        return scored, False
     kept: list[tuple[int, float]] = []
     for row_id, score in scored:
         chunk = chunks.get(row_id)
@@ -326,8 +408,8 @@ def _filter_allowed_categories(
         if chunk["category"] in allowed_categories:
             kept.append((row_id, score))
     if len(kept) < min_keep:
-        return scored
-    return kept
+        return scored, True
+    return kept, False
 
 
 def _dedupe_by_path(

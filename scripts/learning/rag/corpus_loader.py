@@ -26,10 +26,11 @@ unaffected.
 
 Retrieval anchors
 -----------------
-Woowa CS notes embed an explicit ``### Retrieval Anchors`` subsection
-listing canonical phrases the author wants the doc to surface on. We
-extract that list once per document and append it to every chunk's body
-so FTS recall and dense embeddings both pick up the intent — e.g. a
+Woowa CS notes carry retrieval phrases in a few live markdown forms:
+``### Retrieval Anchors`` sections, inline ``retrieval-anchor-keywords:``
+metadata, and inline ``Retrieval anchors:`` metadata. We extract those
+phrases once per document and append them to every chunk's body so FTS
+recall and dense embeddings both pick up the intent — e.g. a
 "repository boundary" query hits every chunk of
 ``repository-pattern-vs-antipattern.md`` via the anchors even when the
 chunk text itself is discussing a tangential subtopic. Dedupe-by-path
@@ -54,14 +55,30 @@ H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 H3_RE = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 DETAILS_RE = re.compile(r"<details>.*?</details>", re.DOTALL | re.IGNORECASE)
-# Matches the body of a "### Retrieval Anchors" subsection until the next
-# heading. Used once per doc to harvest canonical retrieval phrases.
-RETRIEVAL_ANCHORS_RE = re.compile(
-    r"^###\s+Retrieval Anchors\s*\n(.*?)(?=^#{1,3}\s|\Z)",
-    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+HEADING_START_RE = re.compile(r"^#{1,6}\s+", re.IGNORECASE)
+RETRIEVAL_ANCHOR_SECTION_RE = re.compile(
+    r"^###\s+(?:\d+\.\s*)?retrieval anchors\s*$",
+    re.IGNORECASE,
+)
+RETRIEVAL_ANCHOR_INLINE_RE = re.compile(
+    r"^(?:>\s*)?(?:retrieval-anchor-keywords|retrieval anchors):\s*(.*)$",
+    re.IGNORECASE,
 )
 # Extracts `phrase` list items (backtick-quoted or plain bullets).
-_ANCHOR_ITEM_RE = re.compile(r"^\s*[-*]\s+`?([^`\n]+?)`?\s*$", re.MULTILINE)
+_ANCHOR_ITEM_RE = re.compile(r"^\s*(?:>\s*)?(?:[-*]|\d+\.)\s+(.+?)\s*$")
+
+# Difficulty label — emitted by the metadata normalization sweep as
+# ``**난이도: 🟢 Beginner**`` (or 🟡 Intermediate / 🔴 Advanced / 🔴 Expert).
+# We extract the canonical English tier so the index can rank against
+# learner experience_level without re-parsing the label at query time.
+DIFFICULTY_RE = re.compile(r"\*\*난이도:\s*[^A-Za-z]*([A-Za-z]+)\s*\*\*")
+DIFFICULTY_TIERS = {
+    "beginner": "beginner",
+    "basic": "beginner",
+    "intermediate": "intermediate",
+    "advanced": "advanced",
+    "expert": "expert",
+}
 
 
 @dataclass
@@ -78,6 +95,7 @@ class CorpusChunk:
     body: str               # raw markdown body of the chunk
     char_len: int = 0
     anchors: list[str] = field(default_factory=list)
+    difficulty: str | None = None  # "beginner"|"intermediate"|"advanced"|"expert"|None
 
     def to_dict(self) -> dict:
         return {
@@ -91,6 +109,7 @@ class CorpusChunk:
             "body": self.body,
             "char_len": self.char_len,
             "anchors": list(self.anchors),
+            "difficulty": self.difficulty,
         }
 
 
@@ -186,24 +205,99 @@ def _hard_split(body: str, limit: int) -> list[str]:
 
 
 def _extract_retrieval_anchors(text: str) -> list[str]:
-    """Pull canonical phrases from a ``### Retrieval Anchors`` subsection.
+    """Pull canonical phrases from live retrieval-anchor metadata styles.
 
     Returns an ordered, de-duplicated list of phrases. Empty when the doc
-    has no such section.
+    has no supported anchor metadata.
     """
-    m = RETRIEVAL_ANCHORS_RE.search(text)
-    if not m:
-        return []
-    body = m.group(1)
     seen: set[str] = set()
     out: list[str] = []
-    for item in _ANCHOR_ITEM_RE.finditer(body):
-        phrase = item.group(1).strip()
-        if not phrase or phrase.lower() in seen:
-            continue
-        seen.add(phrase.lower())
+
+    def add_phrase(raw: str) -> None:
+        phrase = re.sub(r"\s+", " ", raw.strip().strip("`").strip("\"'"))
+        if not phrase:
+            return
+        key = phrase.casefold()
+        if key in seen:
+            return
+        seen.add(key)
         out.append(phrase)
+
+    def add_inline_values(raw: str) -> None:
+        buf: list[str] = []
+        in_backticks = False
+        for char in raw:
+            if char == "`":
+                in_backticks = not in_backticks
+                buf.append(char)
+                continue
+            if not in_backticks and char in ",;|":
+                add_phrase("".join(buf))
+                buf = []
+                continue
+            buf.append(char)
+        add_phrase("".join(buf))
+
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+
+        if RETRIEVAL_ANCHOR_SECTION_RE.match(line):
+            i += 1
+            while i < len(lines) and not HEADING_START_RE.match(lines[i]):
+                item = _ANCHOR_ITEM_RE.match(lines[i])
+                if item:
+                    add_phrase(item.group(1))
+                else:
+                    inline = RETRIEVAL_ANCHOR_INLINE_RE.match(lines[i])
+                    if inline and inline.group(1).strip():
+                        add_inline_values(inline.group(1).strip())
+                i += 1
+            continue
+
+        inline = RETRIEVAL_ANCHOR_INLINE_RE.match(line)
+        if inline:
+            value = inline.group(1).strip()
+            if value:
+                add_inline_values(value)
+                i += 1
+                continue
+
+            i += 1
+            found_item = False
+            while i < len(lines):
+                if HEADING_START_RE.match(lines[i]):
+                    break
+                if not lines[i].strip():
+                    if found_item:
+                        break
+                    i += 1
+                    continue
+                item = _ANCHOR_ITEM_RE.match(lines[i])
+                if not item:
+                    break
+                add_phrase(item.group(1))
+                found_item = True
+                i += 1
+            continue
+
+        i += 1
+
     return out
+
+
+def _extract_difficulty(text: str) -> str | None:
+    """Return canonical tier (``beginner``|``intermediate``|``advanced``|``expert``).
+
+    Reads the first ``**난이도: ...**`` label in the document. Returns
+    ``None`` when the label is absent or the tier word is unrecognized.
+    """
+    m = DIFFICULTY_RE.search(text)
+    if not m:
+        return None
+    word = m.group(1).strip().lower()
+    return DIFFICULTY_TIERS.get(word)
 
 
 def _extract_anchors(body: str) -> list[str]:
@@ -225,6 +319,7 @@ def _emit_chunks(
     category: str,
     sections: list[tuple[str, str]],
     retrieval_anchors: list[str] | None = None,
+    difficulty: str | None = None,
 ) -> Iterator[CorpusChunk]:
     anchor_suffix = ""
     if retrieval_anchors:
@@ -261,6 +356,7 @@ def _emit_chunks(
                 body=final_body,
                 char_len=len(final_body),
                 anchors=_extract_anchors(chunk_body),
+                difficulty=difficulty,
             )
             counter += 1
 
@@ -292,6 +388,7 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
         doc_id = hashlib.sha1(str(relpath.as_posix()).encode("utf-8")).hexdigest()[:16]
         sections = _split_sections(text)
         retrieval_anchors = _extract_retrieval_anchors(text)
+        difficulty = _extract_difficulty(text)
         yield from _emit_chunks(
             doc_id=doc_id,
             path=relpath.as_posix(),
@@ -299,6 +396,7 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             category=category,
             sections=sections,
             retrieval_anchors=retrieval_anchors,
+            difficulty=difficulty,
         )
 
 

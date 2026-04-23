@@ -72,6 +72,7 @@ def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
             "rag_ready": False,
             "reason": reason,
             "mode_used": mode_used,
+            "category_filter_fallback": False,
         },
     }
 
@@ -85,6 +86,7 @@ def augment(
     index_root: Path | str = rag_indexer.DEFAULT_INDEX_ROOT,
     top_k: int = 5,
     readiness: rag_indexer.ReadinessReport | None = None,
+    experience_level: str | None = None,
 ) -> dict[str, Any]:
     """Run CS RAG search and shape results for coach_run payload assembly."""
     if cs_search_mode not in ("skip", "cheap", "full"):
@@ -119,12 +121,14 @@ def augment(
     fallback_reason: str | None = None
     all_hits: list[dict] = []
     seen_paths: set[str] = set()
+    category_filter_fallback = False
 
     try:
         if learning_points:
             # Peer-derived path: search once per learning point so each
             # bucket reflects its own category boost.
             for lp in learning_points:
+                lp_debug: dict = {}
                 hits = searcher.search(
                     prompt,
                     learning_points=[lp],
@@ -132,7 +136,11 @@ def augment(
                     mode=cs_search_mode,
                     index_root=index_root,
                     top_k=top_k,
+                    experience_level=experience_level,
+                    debug=lp_debug,
                 )
+                if lp_debug.get("category_filter_fallback"):
+                    category_filter_fallback = True
                 if hits:
                     by_lp[lp] = hits
                     for h in hits:
@@ -160,6 +168,7 @@ def augment(
                         mode=cs_search_mode,
                         index_root=index_root,
                         top_k=top_k,
+                        experience_level=experience_level,
                     )
                     if hits:
                         by_fallback[key] = hits
@@ -180,6 +189,7 @@ def augment(
                     mode=cs_search_mode,
                     index_root=index_root,
                     top_k=top_k,
+                    experience_level=experience_level,
                 )
                 if hits:
                     by_fallback[key] = hits
@@ -217,6 +227,7 @@ def augment(
             "rag_ready": True,
             "reason": "ready",
             "mode_used": cs_search_mode,
+            "category_filter_fallback": category_filter_fallback,
         },
     }
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -240,6 +241,20 @@ def _render_coach_reply(
         for item in profile_notes:
             lines.append(f"- {item}")
 
+    follow_ups = (memory_profile or {}).get("open_follow_up_queue") or []
+    if follow_ups:
+        lines.append("")
+        lines.append("지난 턴 후속 질문:")
+        for entry in follow_ups[:3]:
+            if not isinstance(entry, dict):
+                continue
+            question = (entry.get("question") or "").strip()
+            if not question:
+                continue
+            created_at = (entry.get("created_at") or "").split("T", 1)[0]
+            suffix = f" _(from {created_at})_" if created_at else ""
+            lines.append(f"- {question}{suffix}")
+
     if response.get("answer"):
         lines.append("")
         lines.append("이번 질문에 대한 해석:")
@@ -473,11 +488,16 @@ def _pre_augment_phase(
     if cs_search_mode != "skip" and cs_readiness.get("state") == "ready":
         try:
             from scripts.learning.integration import augment as cs_augment  # noqa: WPS433
+            from .profile import load_profile  # noqa: WPS433
+            learner_experience_level = load_profile(
+                session_payload.get("repo") or ""
+            ).get("experience_level")
             augment_result = cs_augment(
                 prompt=prompt or "",
                 learning_points=learning_points,
                 topic_hints=topic_hints,
                 cs_search_mode=cs_search_mode,
+                experience_level=learner_experience_level,
             )
         except (ImportError, ModuleNotFoundError):
             # Defensive — find_spec said deps are present but an internal
@@ -651,7 +671,11 @@ def run_coach(
                 },
             },
             "unified_profile": None,
-            "response_contract": build_response_contract(learner_state_full, "blocked"),
+            "response_contract": build_response_contract(
+                learner_state_full,
+                "blocked",
+                learning_profile=(previous_memory or {}).get("profile"),
+            ),
         }
         _assert_response_contract(blocked_payload)
         validate_payload("coach-run-result", blocked_payload)
@@ -752,6 +776,7 @@ def run_coach(
         drill_offer=drill_offer,
         drill_result=drill_result,
         verification_required_count=pre_verification.get("required_count", 0),
+        learner_state_coverage=(learner_state_full or {}).get("coverage"),
     )
 
     coach_reply_markdown = _render_coach_reply(
@@ -822,6 +847,7 @@ def run_coach(
             intent_decision=intent_decision,
             drill_offer=drill_offer,
             drill_result=drill_result,
+            learning_profile=memory_profile,
         ),
     }
     _assert_response_contract(payload)
@@ -908,14 +934,30 @@ def run_coach(
             pass
         if not canonical_ok:
             sidecar = action_dir / "coach-run.error.json"
+            sidecar_ok = False
             try:
                 sidecar.parent.mkdir(parents=True, exist_ok=True)
                 sidecar.write_text(error_body, encoding="utf-8")
+                # Re-stat to confirm the write actually landed on disk.
+                # On some networked filesystems write_text can succeed
+                # without the file being visible to a subsequent read,
+                # which leaves AI sessions with no error marker at all.
+                sidecar.stat()
+                sidecar_ok = True
                 written_path = sidecar
                 payload["canonical_write_failed"] = True
                 payload["error_detail"]["sidecar_path"] = str(sidecar)
             except Exception:
                 pass
+            if not sidecar_ok:
+                payload["canonical_write_failed"] = True
+                payload["write_fallback_exhausted"] = True
+                payload["error_detail"]["sidecar_path"] = None
+                print(
+                    f"[coach-run] canonical + sidecar write both failed for {repo['name']};"
+                    f" AI session will have no error marker on disk",
+                    file=sys.stderr,
+                )
         payload["json_path"] = str(written_path)
         return payload
 

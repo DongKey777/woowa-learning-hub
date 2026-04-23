@@ -1,14 +1,38 @@
 {
   "_meta": {
-    "description": "Golden query → expected-path fixture for CS RAG regression. Each entry asserts that the expected path appears in top_k results (default K=5). Queries mix Korean/English to exercise tokenizer + reranker bilingual behavior.",
-    "top_k": 5
+    "description": "Golden query → expected-path fixture for CS RAG regression. Each entry asserts that the expected path appears in top_k results (default K=5). High-value entries may also set max_rank to catch ranking drift, not just total misses. Close sibling docs may declare acceptable_paths so assertions stay family-aware as the corpus grows, but high-frequency sibling intents should also earn dedicated queries so prompt-specific swaps stay visible. Queries mix Korean/English to exercise tokenizer + reranker bilingual behavior.",
+    "explicit_sibling_paths": [
+      "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md",
+      "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md",
+      "contents/software-engineering/schema-contract-evolution-cross-service.md",
+      "contents/database/compare-and-swap-vs-pessimistic-locks.md",
+      "contents/database/mvcc-read-view-consistent-read-internals.md",
+      "contents/database/deadlock-case-study.md",
+      "contents/database/engine-fallbacks-overlap-enforcement.md",
+      "contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md",
+      "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md",
+      "contents/design-pattern/read-model-cutover-guardrails.md",
+      "contents/language/java/classloader-memory-leak-playbook.md",
+      "contents/language/java/jit-warmup-deoptimization.md",
+      "contents/language/java/executor-sizing-queue-rejection-policy.md"
+    ],
+    "top_k": 5,
+    "live_readiness_contract": {
+      "missing": "skip",
+      "stale": "fail",
+      "corrupt": "fail",
+      "rationale": "Stale or corrupt indexes can hide full-mode golden regressions after corpus churn; only a genuinely missing first-run index may skip."
+    }
   },
   "queries": [
     {
       "id": "repo_boundary_ko",
       "prompt": "Repository 경계가 뭐야? 트랜잭션까지 알아야 하는거야?",
       "learning_points": ["repository_boundary"],
-      "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
+      "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md",
+      "acceptable_paths": [
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ]
     },
     {
       "id": "repo_vs_dao",
@@ -17,10 +41,150 @@
       "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
     },
     {
+      "id": "repo_read_model_boundary",
+      "prompt": "Repository 에서 화면용 join DTO 까지 만들어도 돼? aggregate persistence 와 read model 경계가 헷갈려",
+      "learning_points": ["repository_boundary"],
+      "expected_path": "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md",
+      "max_rank": 3
+    },
+    {
+      "id": "read_model_staleness",
+      "prompt": "CQRS read model 이 stale 할 때 read-your-writes 랑 projection lag 를 어떻게 설명해야 해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 3
+    },
+    {
+      "id": "java_language_basics_overview",
+      "prompt": "자바 기본 문법, 데이터 타입, 바이트코드/JVM 실행 흐름을 한 번에 정리해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/java-language-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "java_runtime_overview",
+      "prompt": "JVM, GC, JMM 차이랑 heap stack happens-before 를 한 번에 개념 잡고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/language/java/jvm-gc-jmm-overview.md",
+      "acceptable_paths": [
+        "contents/language/java/classloader-memory-leak-playbook.md",
+        "contents/language/java/jit-warmup-deoptimization.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "java_runtime_intro_before_deep_dive",
+      "prompt": "자바 런타임을 처음 배우는데 classloader JIT GC JMM 차이를 큰 그림으로 먼저 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/jvm-gc-jmm-overview.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_classloader_metaspace_leak_playbook",
+      "prompt": "metaspace leak, thread context class loader, static cache pinning, hot redeploy leak triage 를 어떻게 해?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/classloader-memory-leak-playbook.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_jit_warmup_deoptimization",
+      "prompt": "tiered compilation, inlining, code cache, profile pollution, deopt trigger 를 JIT warmup 관점에서 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/jit-warmup-deoptimization.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_concurrency_overview",
+      "prompt": "Java 에서 ExecutorService Future CompletableFuture CountDownLatch 같은 동시성 유틸을 전체적으로 훑고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/language/java/java-concurrency-utilities.md",
+      "acceptable_paths": [
+        "contents/language/java/executor-sizing-queue-rejection-policy.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "java_concurrency_intro_before_executor_tuning",
+      "prompt": "Java 동시성을 처음 배우는데 queue rejection policy 같은 튜닝보다 ExecutorService Future CompletableFuture CountDownLatch 를 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/java-concurrency-utilities.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_future_completablefuture_intro_overview",
+      "prompt": "Future CompletableFuture 를 처음 배우는데 ExecutorService Callable CountDownLatch 큰 그림부터 정리해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/java-concurrency-utilities.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_completablefuture_common_pool_pitfalls",
+      "prompt": "CompletableFuture common pool default executor blocking stage thread hopping starvation 을 어떻게 이해해야 해?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_executor_sizing_queue_rejection",
+      "prompt": "executor sizing, queue capacity, rejection policy, worker saturation, thread pool tuning 을 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/executor-sizing-queue-rejection-policy.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_virtual_threads_project_loom_intro",
+      "prompt": "Project Loom virtual threads 를 처음 배우는데 blocking I/O, carrier thread, pinning 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/virtual-threads-project-loom.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_virtual_thread_migration_boundaries",
+      "prompt": "virtual thread migration 에서 pinning, ThreadLocal, pool boundary 를 어떻게 점검해?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/virtual-thread-migration-pinning-threadlocal-pool-boundaries.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_connection_budget_alignment_after_loom",
+      "prompt": "Loom 이후 datasource pool sizing, DB safe concurrency, outbound HTTP bulkhead 예산을 어떻게 맞춰?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/connection-budget-alignment-after-loom.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_jfr_loom_incident_signal_map",
+      "prompt": "JFR Loom incident 에서 ThreadPark VirtualThreadPinned SocketRead JavaMonitorEnter 를 어떻게 묶어 읽어?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/jfr-loom-incident-signal-map.md",
+      "max_rank": 1
+    },
+    {
+      "id": "java_oop_overview",
+      "prompt": "객체지향 캡슐화 상속 다형성 추상화를 자바 기준으로 정리해줘",
+      "learning_points": [],
+      "expected_path": "contents/language/java/object-oriented-core-principles.md",
+      "max_rank": 3
+    },
+    {
+      "id": "applied_data_structures_overview",
+      "prompt": "ring buffer, bloom filter, hyperloglog, trie 같은 응용 자료 구조를 문제 패턴별로 어디서부터 읽어야 해?",
+      "learning_points": [],
+      "expected_path": "contents/data-structure/applied-data-structures-overview.md",
+      "max_rank": 3
+    },
+    {
       "id": "jwt_basics",
       "prompt": "JWT 토큰이 뭐고 세션이랑 뭐가 달라?",
       "learning_points": [],
       "expected_path": "contents/security/jwt-deep-dive.md"
+    },
+    {
+      "id": "jwt_intro_validation_basics",
+      "prompt": "JWT 를 처음 배우는데 kid issuer audience signature validation 순서를 입문자 기준으로 먼저 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/security/jwt-deep-dive.md",
+      "max_rank": 1
     },
     {
       "id": "tx_isolation",
@@ -29,16 +193,74 @@
       "expected_path": "contents/database/read-committed-vs-repeatable-read-anomalies.md"
     },
     {
+      "id": "tx_boundary_locking_framework",
+      "prompt": "동시에 수정되는 도메인에서 transaction boundary isolation locking strategy 를 어떤 순서로 고르지?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/transaction-boundary-isolation-locking-decision-framework.md",
+      "max_rank": 3
+    },
+    {
+      "id": "tx_intro_isolation_locking_primer",
+      "prompt": "트랜잭션 격리 수준이랑 locking 을 처음 배우는데 optimistic/pessimistic lock 전에 read committed, repeatable read, phantom read 같은 이상 현상 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/database/read-committed-vs-repeatable-read-anomalies.md",
+      "max_rank": 1
+    },
+    {
+      "id": "cas_vs_pessimistic_lock_choice",
+      "prompt": "compare-and-swap (CAS) 와 pessimistic lock 중에 어느 쪽을 골라야 해? lost update retry 와 select for update trade-off 가 헷갈려",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/compare-and-swap-vs-pessimistic-locks.md",
+      "max_rank": 3
+    },
+    {
+      "id": "tx_lock_intro_optimistic_pessimistic_primer",
+      "prompt": "optimistic/pessimistic lock 을 처음 배우는데 언제 쓰는지 말고 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-locking.md",
+      "acceptable_paths": [
+        "contents/database/compare-and-swap-vs-pessimistic-locks.md"
+      ],
+      "max_rank": 3
+    },
+    {
       "id": "spring_tx_propagation",
       "prompt": "@Transactional propagation 은 어떻게 동작해?",
       "learning_points": ["transaction_consistency"],
       "expected_path": "contents/spring/transactional-deep-dive.md"
     },
     {
+      "id": "spring_service_tx_boundary",
+      "prompt": "@Transactional 을 controller 나 repository 말고 service layer 어디에 둬야 해? remote call 도 같이 고민돼",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+      "max_rank": 3
+    },
+    {
       "id": "api_versioning",
       "prompt": "API versioning contract testing anti-corruption layer 어떻게 설계해",
       "learning_points": ["testing_strategy"],
       "expected_path": "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md"
+    },
+    {
+      "id": "api_schema_evolution_compatibility_layer",
+      "prompt": "REST API versioning 과 schema evolution 에서 compatibility layer 를 어디까지 둬야 해?",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md",
+      "acceptable_paths": [
+        "contents/software-engineering/schema-contract-evolution-cross-service.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "schema_contract_evolution_cross_service",
+      "prompt": "cross-service schema evolution 에서 backward compatible payload 와 consumer tolerance 를 어떻게 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/schema-contract-evolution-cross-service.md",
+      "acceptable_paths": [
+        "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md"
+      ],
+      "max_rank": 3
     },
     {
       "id": "testing_doubles",
@@ -59,6 +281,13 @@
       "expected_path": "contents/database/deadlock-case-study.md"
     },
     {
+      "id": "mysql_deadlock_lock_ordering",
+      "prompt": "MySQL deadlock log 보고 lock ordering 을 어떻게 고쳐?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/deadlock-case-study.md",
+      "max_rank": 1
+    },
+    {
       "id": "normalization",
       "prompt": "정규화와 반정규화 트레이드오프가 뭐야",
       "learning_points": ["db_modeling"],
@@ -69,6 +298,48 @@
       "prompt": "Spring Security 에서 CSRF 랑 XSS 어떻게 막아",
       "learning_points": [],
       "expected_path": "contents/security/xss-csrf-spring-security.md"
+    },
+    {
+      "id": "jwt_jwks_validation",
+      "prompt": "JWT 검증할 때 JWKS kid issuer audience signature 는 어떤 순서로 확인해?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwt-signature-verification-failure-playbook.md",
+      "max_rank": 2
+    },
+    {
+      "id": "jwks_outage_recovery",
+      "prompt": "JWKS endpoint outage 나면 stale cache fail-open fail-closed 를 어떻게 결정해?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwt-jwks-outage-recovery-failover-drills.md",
+      "max_rank": 3
+    },
+    {
+      "id": "jwks_key_rotation_rollover",
+      "prompt": "JWKS key rotation 때 kid rollover 와 cache invalidation 을 어떻게 안전하게 운영해?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
+      "max_rank": 3
+    },
+    {
+      "id": "key_rotation_runbook",
+      "prompt": "key rotation runbook 에서 dual validation grace window revoke old key 순서를 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/security/key-rotation-runbook.md",
+      "max_rank": 3
+    },
+    {
+      "id": "jwks_recovery_ladder",
+      "prompt": "kid miss storm, stale-if-error, fail-closed 로 JWKS recovery ladder 를 어떻게 운영해?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwt-jwks-outage-recovery-failover-drills.md",
+      "max_rank": 3
+    },
+    {
+      "id": "jwks_rotation_failure_recovery",
+      "prompt": "old key removal failure 와 signer cutover rollback 이 동시에 나면 어디부터 복구해?",
+      "learning_points": [],
+      "expected_path": "contents/security/jwks-rotation-cutover-failure-recovery.md",
+      "max_rank": 3
     },
     {
       "id": "password_hash",
@@ -92,7 +363,55 @@
       "id": "gap_lock",
       "prompt": "MySQL gap lock next-key lock 어떻게 동작해",
       "learning_points": ["transaction_consistency"],
-      "expected_path": "contents/database/gap-lock-next-key-lock.md"
+      "expected_path": "contents/database/gap-lock-next-key-lock.md",
+      "max_rank": 3
+    },
+    {
+      "id": "gap_lock_overlap_enforcement_fallback",
+      "prompt": "예약 겹침 검사에서 select for update 했는데 insert blocked 되는 이유가 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/database/gap-lock-next-key-lock.md",
+      "acceptable_paths": [
+        "contents/database/engine-fallbacks-overlap-enforcement.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "engine_fallback_overlap_enforcement",
+      "prompt": "engine fallback overlap enforcement 로 예약 겹침 검사를 처리할 때 gap lock 대신 어떤 제약이 생겨?",
+      "learning_points": [],
+      "expected_path": "contents/database/engine-fallbacks-overlap-enforcement.md",
+      "acceptable_paths": [
+        "contents/database/gap-lock-next-key-lock.md"
+      ]
+    },
+    {
+      "id": "innodb_lock_wait_timeout",
+      "prompt": "InnoDB lock wait timeout 이랑 next-key lock 은 왜 같이 언급돼?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/gap-lock-next-key-lock.md",
+      "acceptable_paths": [
+        "contents/database/deadlock-case-study.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "innodb_lock_wait_timeout_range_locking",
+      "prompt": "InnoDB lock wait timeout 이 next-key lock range locking 에서 왜 생겨?",
+      "learning_points": ["transaction_consistency"],
+      "expected_path": "contents/database/gap-lock-next-key-lock.md",
+      "max_rank": 1
+    },
+    {
+      "id": "mvcc_intro_before_read_view_deep_dive",
+      "prompt": "MVCC 를 처음 배우는데 read view, undo chain 같은 내부 용어 전에 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-locking.md",
+      "acceptable_paths": [
+        "contents/database/read-committed-vs-repeatable-read-anomalies.md",
+        "contents/database/mvcc-read-view-consistent-read-internals.md"
+      ],
+      "max_rank": 3
     },
     {
       "id": "mvcc_snapshot",
@@ -104,7 +423,363 @@
       "id": "idempotency",
       "prompt": "POST 요청 중복 방지하려면 idempotency key 어떻게 설계해",
       "learning_points": [],
-      "expected_path": "contents/database/idempotency-key-and-deduplication.md"
+      "expected_path": "contents/database/idempotency-key-and-deduplication.md",
+      "acceptable_paths": [
+        "contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md",
+        "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "payment_ledger_idempotency",
+      "prompt": "payment ledger 에서 double charge 막으려면 idempotency 와 reconciliation 을 어떻게 같이 보지?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md",
+      "acceptable_paths": [
+        "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md"
+      ],
+      "max_rank": 1
+    },
+    {
+      "id": "idempotency_key_store_replay_safe_retry",
+      "prompt": "idempotency key store 에서 dedup-window 와 replay-safe-retry 를 어떻게 같이 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md",
+      "max_rank": 1
+    },
+    {
+      "id": "idempotency_key_store_dedup_window_lease",
+      "prompt": "idempotency key store 에서 dedup-window TTL 이랑 processing lease 를 어떻게 같이 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md",
+      "max_rank": 1
+    },
+    {
+      "id": "idempotency_key_store_request_log_retention_ttl",
+      "prompt": "idempotency key store 에서 request-log retention TTL 이랑 key TTL 을 어떻게 같이 잡아야 해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md",
+      "max_rank": 1
+    },
+    {
+      "id": "timeout_retry_backoff",
+      "prompt": "timeout budget, retry budget, exponential backoff 는 어떻게 같이 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/network/timeout-retry-backoff-practical.md",
+      "max_rank": 2
+    },
+    {
+      "id": "timeout_attribution_proxy_local_reply",
+      "prompt": "timeout attribution 할 때 local reply 와 upstream error source 를 어떻게 구분해?",
+      "learning_points": [],
+      "expected_path": "contents/network/proxy-local-reply-vs-upstream-error-attribution.md",
+      "max_rank": 3
+    },
+    {
+      "id": "anycast_edge_failover_tradeoffs",
+      "prompt": "anycast edge failover tradeoff 랑 route convergence 차이를 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/network/anycast-routing-tradeoffs-edge-failover.md",
+      "max_rank": 3
+    },
+    {
+      "id": "backpressure_load_shedding",
+      "prompt": "retry amplification 이 날 때 backpressure 와 load shedding 을 어디에 둬야 해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/backpressure-and-load-shedding-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "futex_offcpu_debugging",
+      "prompt": "futex wait 때문에 off-CPU lock contention 이 생길 때 perf lock 으로 어디부터 봐야 해?",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/lock-contention-futex-offcpu-debugging.md",
+      "max_rank": 3
+    },
+    {
+      "id": "io_uring_sq_cq_basics",
+      "prompt": "epoll kqueue 보다 io_uring 의 SQ CQ submission queue completion queue 가 어떻게 도는지 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/io-uring-sq-cq-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "io_uring_overview",
+      "prompt": "epoll kqueue io_uring 차이와 readiness model 을 개념적으로 보고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/epoll-kqueue-io-uring.md",
+      "max_rank": 3
+    },
+    {
+      "id": "io_uring_intro_before_sq_cq",
+      "prompt": "io_uring 을 처음 배우는데 SQ CQ 보다 epoll kqueue 랑 차이를 먼저 개념적으로 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/epoll-kqueue-io-uring.md",
+      "max_rank": 1
+    },
+    {
+      "id": "io_uring_operational_hazards",
+      "prompt": "io_uring registered buffers, fixed files, SQPOLL 같은 operational hazards 는 어디서 봐야 해?",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/io-uring-operational-hazards-registered-resources-sqpoll.md",
+      "max_rank": 3
+    },
+    {
+      "id": "io_uring_cq_overflow",
+      "prompt": "CQ overflow, provided buffer ring, IOWQ worker placement 은 어디서 봐야 해?",
+      "learning_points": [],
+      "expected_path": "contents/operating-system/io-uring-cq-overflow-provided-buffers-iowq-placement.md",
+      "max_rank": 3
+    },
+    {
+      "id": "bigdecimal_money_equality",
+      "prompt": "BigDecimal equals compareTo rounding 직렬화 함정이 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/bigdecimal-money-equality-rounding-serialization-pitfalls.md",
+      "max_rank": 3
+    },
+    {
+      "id": "bigdecimal_canonicalization_traps",
+      "prompt": "BigDecimal canonicalization, MathContext, stripTrailingZeros, toPlainString 함정이 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md",
+      "max_rank": 3
+    },
+    {
+      "id": "value_object_canonicalization",
+      "prompt": "value object canonicalization 으로 scale normalization invariant 를 강제해야 하나?",
+      "learning_points": [],
+      "expected_path": "contents/language/java/value-object-invariants-canonicalization-boundary-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "migration_reconciliation_cutover",
+      "prompt": "dual write 이후 rehearsal reconciliation cutover 를 어떻게 준비하지?",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/data-migration-rehearsal-reconciliation-cutover.md",
+      "max_rank": 3
+    },
+    {
+      "id": "cdc_schema_evolution_expand_contract",
+      "prompt": "CDC schema evolution 에서 expand-contract migration, versioned payload, forward compatible consumer 순서를 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/database/cdc-schema-evolution-compatibility-playbook.md",
+      "max_rank": 3
+    },
+    {
+      "id": "contract_remove_phase_destructive_cleanup",
+      "prompt": "expand-contract rollout 이 contract/remove phase 에 들어갔는데 destructive schema cleanup 전에 old field shadow read 제거, retention/replay window, drop column safety 를 어떻게 확인해?",
+      "learning_points": [],
+      "expected_path": "contents/database/destructive-schema-cleanup-column-retirement.md",
+      "acceptable_paths": [
+        "contents/database/cdc-schema-evolution-compatibility-playbook.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "column_retirement_read_off_write_off_drop",
+      "prompt": "column retirement 에서 read-off -> write-off -> drop 순서와 field removal runbook 을 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/database/destructive-schema-cleanup-column-retirement.md",
+      "max_rank": 3
+    },
+    {
+      "id": "replay_repair_control_plane",
+      "prompt": "운영에서 replay repair 작업을 approval 과 blast radius guardrail 로 통제하려면 어떻게 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/replay-repair-orchestration-control-plane-design.md",
+      "max_rank": 2
+    },
+    {
+      "id": "projection_rebuild_cutover",
+      "prompt": "projection rebuild backfill cutover 할 때 dual run 이랑 watermark 는 어떻게 써?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md",
+      "max_rank": 3
+    },
+    {
+      "id": "projection_watermark_dual_run",
+      "prompt": "read model cutover 에서 dual projection run 이랑 projection watermark 를 어떻게 써?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md",
+      "acceptable_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_before_cutover_playbooks",
+      "prompt": "read model freshness 를 처음 배우는데 read model cutover guardrails 나 projection rebuild backfill cutover playbook 전에 stale read 랑 read-your-writes 큰 그림부터 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_budget",
+      "prompt": "projection freshness budget 이랑 read-your-writes 는 어떻게 설명해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 3
+    },
+    {
+      "id": "projection_freshness_slo",
+      "prompt": "projection freshness SLO, freshness SLI, lag breach policy 를 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+      "max_rank": 3
+    },
+    {
+      "id": "projection_lag_budgeting",
+      "prompt": "projection lag budget, consumer backlog budget, freshness budget 을 어떻게 나눠?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+      "max_rank": 3
+    },
+    {
+      "id": "projection_cutover_guardrails",
+      "prompt": "read model cutover guardrails, dual read parity, rollback window, freshness guardrail 을 같이 보고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-cutover-guardrails.md",
+      "max_rank": 3
+    },
+    {
+      "id": "projection_cutover_canary",
+      "prompt": "projection canary, dual read parity, rollback window 를 같이 보고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-cutover-guardrails.md",
+      "max_rank": 3
+    },
+    {
+      "id": "receiver_warmup_write_freeze_cutover",
+      "prompt": "receiver warmup, cache prefill, write freeze 로 cutover blast radius 를 줄이고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/system-design/receiver-warmup-cache-prefill-write-freeze-cutover-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "event_upcaster_compatibility",
+      "prompt": "event schema evolution 이 있을 때 upcaster compatibility layer 를 어떻게 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/event-upcaster-compatibility-patterns.md",
+      "max_rank": 2
+    },
+    {
+      "id": "legacy_event_replay_upcast_chain",
+      "prompt": "legacy event replay 에서 upcast chain 과 tolerant reader 를 어떻게 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/event-upcaster-compatibility-patterns.md",
+      "max_rank": 3
+    },
+    {
+      "id": "event_upcaster_legacy_fixture_replay",
+      "prompt": "event upcaster 로 legacy fixture replay 와 semantic versioned event upcast chain 을 어떻게 테스트해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/event-upcaster-compatibility-patterns.md",
+      "max_rank": 1
+    },
+    {
+      "id": "event_upcaster_snapshot_mixed_replay",
+      "prompt": "snapshot 이전/이후 혼합 replay 에서 event upcaster compatibility policy 로 legacy event 를 current model 로 끌어올리는 기준이 궁금해",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/event-upcaster-compatibility-patterns.md",
+      "max_rank": 1
+    },
+    {
+      "id": "global_traffic_failover_control_plane",
+      "prompt": "regional evacuation 이랑 weighted region routing 을 하는 global traffic failover control plane 을 어떻게 설계해?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/global-traffic-failover-control-plane-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "stateful_failover_placement",
+      "prompt": "stateful workload placement failover control plane 에서 evacuation 과 placement budget 을 어떻게 잡아?",
+      "learning_points": [],
+      "expected_path": "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "failover_visibility_window",
+      "prompt": "failover visibility window 동안 stale primary 와 topology cache divergence 를 어떻게 줄이지?",
+      "learning_points": [],
+      "expected_path": "contents/database/failover-visibility-window-topology-cache-playbook.md",
+      "max_rank": 3
+    },
+    {
+      "id": "failover_visibility_post_promotion",
+      "prompt": "post-promotion stale reads 와 topology cache invalidation visibility window 를 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/database/failover-visibility-window-topology-cache-playbook.md",
+      "max_rank": 3
+    },
+    {
+      "id": "failover_commit_horizon_verification",
+      "prompt": "commit horizon after failover verification 을 어떻게 해야 하지?",
+      "learning_points": [],
+      "expected_path": "contents/database/commit-horizon-after-failover-verification.md",
+      "max_rank": 3
+    },
+    {
+      "id": "progressive_cutover_shadowing",
+      "prompt": "shadow traffic mirrored requests route guardrail 로 progressive cutover 를 운영하고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/system-design/traffic-shadowing-progressive-cutover-design.md",
+      "max_rank": 3
+    },
+    {
+      "id": "strangler_shadow_verification",
+      "prompt": "strangler verification, shadow traffic metrics, diffing 으로 cutover 전 검증하고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/strangler-verification-shadow-traffic-metrics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_db_normalization_intro",
+      "prompt": "정규화가 뭐예요? 1NF 2NF 3NF 처음 배우는데 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/normalization-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_db_index_intro",
+      "prompt": "DB 인덱스가 왜 필요해요? 처음 배우는데 어떻게 동작하는지 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/index-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_spring_ioc_di_intro",
+      "prompt": "스프링 IoC DI 가 뭐예요? 처음 배우는데 왜 필요한지부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_network_tcp_udp_intro",
+      "prompt": "TCP 랑 UDP 차이가 뭐예요? 처음 배우는데 어떨 때 쓰는지 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/tcp-udp-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_os_sync_async_intro",
+      "prompt": "동기 비동기 블로킹 논블로킹 차이가 뭐예요? 처음 배우는데 큰 그림 잡고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+      "max_rank": 3
+    },
+    {
+      "id": "beginner_solid_principles_intro",
+      "prompt": "SOLID 원칙이 뭐예요? 처음 배우는데 5개 원칙 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/solid-principles-basics.md",
+      "max_rank": 3
     }
   ]
 }

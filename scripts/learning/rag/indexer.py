@@ -40,7 +40,7 @@ SQLITE_NAME = "index.sqlite3"
 DENSE_NAME = "dense.npz"
 MANIFEST_NAME = "manifest.json"
 
-INDEX_VERSION = 1
+INDEX_VERSION = 2  # bumped when chunks schema changed (added `difficulty` column).
 EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBED_DIM = 384
 
@@ -117,6 +117,18 @@ def is_ready(
             index_manifest_hash=stored_hash,
             next_command="bin/cs-index-build",
         )
+    # Schema upgrades (e.g. v1 → v2 added the `difficulty` column) require a
+    # rebuild even when the corpus content itself is unchanged. Without this,
+    # searcher.py would crash on a SELECT against a column that does not
+    # exist in the legacy table.
+    if manifest.get("index_version") != INDEX_VERSION:
+        return ReadinessReport(
+            state="stale",
+            reason="index_schema_changed",
+            corpus_hash=current_hash,
+            index_manifest_hash=stored_hash,
+            next_command="bin/cs-index-build",
+        )
     return ReadinessReport(
         state="ready",
         reason="ready",
@@ -142,11 +154,15 @@ CREATE TABLE IF NOT EXISTS chunks (
     section_path    TEXT NOT NULL,  -- json array
     body            TEXT NOT NULL,
     char_len        INTEGER NOT NULL,
-    anchors         TEXT NOT NULL   -- json array
+    anchors         TEXT NOT NULL,  -- json array
+    difficulty      TEXT            -- "beginner"|"intermediate"|"advanced"|"expert"|NULL
 );
 
 CREATE INDEX IF NOT EXISTS chunks_category_idx ON chunks(category);
 CREATE INDEX IF NOT EXISTS chunks_path_idx ON chunks(path);
+-- chunks_difficulty_idx is created by _ensure_difficulty_column so legacy
+-- v1 databases (which predate the column) can be ALTERed before the index
+-- statement runs against a column that doesn't exist yet.
 
 CREATE VIRTUAL TABLE IF NOT EXISTS chunks_fts USING fts5(
     title, section_title, body,
@@ -172,7 +188,23 @@ def _open_sqlite(path: Path) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA synchronous=NORMAL;")
     conn.executescript(_SCHEMA)
+    _ensure_difficulty_column(conn)
     return conn
+
+
+def _ensure_difficulty_column(conn: sqlite3.Connection) -> None:
+    """Idempotent ALTER for legacy v1 databases.
+
+    ``CREATE TABLE IF NOT EXISTS`` skips the new column on existing v1
+    tables, so we add it manually when missing. New builds (where the
+    table did not exist) already get the column from ``_SCHEMA`` and this
+    is a cheap no-op.
+    """
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(chunks)").fetchall()}
+    if "difficulty" not in cols:
+        conn.execute("ALTER TABLE chunks ADD COLUMN difficulty TEXT")
+    conn.execute("CREATE INDEX IF NOT EXISTS chunks_difficulty_idx ON chunks(difficulty)")
+    conn.commit()
 
 
 def _insert_chunks(
@@ -187,8 +219,9 @@ def _insert_chunks(
             """
             INSERT INTO chunks (
                 doc_id, chunk_id, path, title, category,
-                section_title, section_path, body, char_len, anchors
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                section_title, section_path, body, char_len, anchors,
+                difficulty
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 chunk.doc_id,
@@ -201,6 +234,7 @@ def _insert_chunks(
                 chunk.body,
                 chunk.char_len,
                 json.dumps(chunk.anchors, ensure_ascii=False),
+                chunk.difficulty,
             ),
         )
         row_ids.append(cur.lastrowid)
@@ -360,7 +394,8 @@ def fetch_chunks_by_rowid(
     cur = conn.execute(
         f"""
         SELECT id, doc_id, chunk_id, path, title, category,
-               section_title, section_path, body, char_len, anchors
+               section_title, section_path, body, char_len, anchors,
+               difficulty
         FROM chunks WHERE id IN ({placeholders})
         """,
         rows,
@@ -379,5 +414,6 @@ def fetch_chunks_by_rowid(
             "body": row[8],
             "char_len": row[9],
             "anchors": json.loads(row[10]),
+            "difficulty": row[11],
         }
     return out
