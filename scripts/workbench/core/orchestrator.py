@@ -193,6 +193,15 @@ def _is_beginner_quality_task(lane: str, title: str, goal: str, tags: list[str])
     )
 
 
+def _qa_content_prefixes_for_lane(lane: str) -> tuple[str, ...] | None:
+    if lane == "qa-content":
+        return None
+    config = QA_CONTENT_CATEGORY_LANES.get(lane)
+    if config is None:
+        return None
+    return tuple(config["prefixes"])
+
+
 def _live_lane_items(items: list[dict[str, Any]], lane: str) -> list[dict[str, Any]]:
     return [
         item
@@ -561,6 +570,84 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         ],
     },
 }
+
+QA_CONTENT_CATEGORY_LANES: dict[str, dict[str, Any]] = {
+    "qa-content-database": {
+        "label": "database",
+        "prefixes": ("database/",),
+        "scope_hint": "database primers, transaction/JDBC/JPA entrypoints, and README routing",
+    },
+    "qa-content-security": {
+        "label": "security",
+        "prefixes": ("security/",),
+        "scope_hint": "security primers, auth/session/cookie/JWT/web-security entrypoints, and README routing",
+    },
+    "qa-content-network": {
+        "label": "network",
+        "prefixes": ("network/",),
+        "scope_hint": "network primers, HTTP/browser/request lifecycle/caching entrypoints, and README routing",
+    },
+    "qa-content-system-design": {
+        "label": "system-design",
+        "prefixes": ("system-design/",),
+        "scope_hint": "system design foundations, consistency/cache/queue starter docs, and README routing",
+    },
+    "qa-content-operating-system": {
+        "label": "operating-system",
+        "prefixes": ("operating-system/",),
+        "scope_hint": "OS primers for backend runtime/process/thread/I-O basics and README routing",
+    },
+    "qa-content-spring": {
+        "label": "spring",
+        "prefixes": ("spring/",),
+        "scope_hint": "Spring beginner docs for MVC/DI/transaction/request pipeline and README routing",
+    },
+    "qa-content-design-pattern": {
+        "label": "design-pattern",
+        "prefixes": ("design-pattern/",),
+        "scope_hint": "design-pattern beginner docs for naming, strategy/factory/registry boundaries, and README routing",
+    },
+    "qa-content-software-engineering": {
+        "label": "software-engineering",
+        "prefixes": ("software-engineering/",),
+        "scope_hint": "software-engineering primers for layering/testing/readability and README routing",
+    },
+    "qa-content-language-java": {
+        "label": "language-java",
+        "prefixes": ("language/java/",),
+        "scope_hint": "Java beginner docs for execution/object model/collections/equality and language README routing",
+    },
+    "qa-content-data-structure": {
+        "label": "data-structure",
+        "prefixes": ("data-structure/", "algorithm/"),
+        "scope_hint": "data-structure and algorithm entrypoint primers used by backend juniors, plus README routing",
+    },
+}
+
+for lane, config in QA_CONTENT_CATEGORY_LANES.items():
+    label = config["label"]
+    scope_hint = config["scope_hint"]
+    LANE_CATALOG[lane] = {
+        "kind": "quality",
+        "priority": 79,
+        "templates": [
+            {
+                "title": f"{label} beginner content clarity pass",
+                "goal": f"Audit {scope_hint} for missing mental model, weak examples, dense terminology, and unclear next-step links so entry docs read like teaching guides instead of glossaries.",
+                "tags": ["qa", "content", "beginner", "clarity", label],
+            },
+            {
+                "title": f"{label} common confusion and example pass",
+                "goal": f"Strengthen {scope_hint} where beginner docs still need one concrete example, one compact comparison table, or one common-confusion section.",
+                "tags": ["qa", "content", "beginner", "examples", "confusion", label],
+            },
+            {
+                "title": f"{label} beginner scope creep cleanup",
+                "goal": f"Trim advanced operator or incident-heavy digressions from {scope_hint} and push those branches behind related-doc links or deeper follow-up docs.",
+                "tags": ["qa", "content", "beginner", "scope", "next-step", label],
+            },
+        ],
+    }
 
 WOOWA_BACKEND_CURRICULUM_BACKLOG: dict[str, list[dict[str, Any]]] = {
     "language-java": [
@@ -1024,10 +1111,13 @@ class Orchestrator:
                         return broken
         return broken
 
-    def _scan_beginner_content_gaps(self, limit: int = 4) -> list[str]:
+    def _scan_beginner_content_gaps(self, limit: int = 4, prefixes: tuple[str, ...] | None = None) -> list[str]:
         scored: list[tuple[int, str]] = []
         for path in sorted(KNOWLEDGE_CONTENTS_DIR.rglob("*.md")):
             if path.name == "README.md":
+                continue
+            relative = _relative_to_contents(path)
+            if prefixes and not any(relative.startswith(prefix) for prefix in prefixes):
                 continue
             text = path.read_text(encoding="utf-8")
             if "**난이도: 🟢 Beginner**" not in text:
@@ -1056,7 +1146,7 @@ class Orchestrator:
                 score += 1
             if score <= 0:
                 continue
-            scored.append((score, _relative_to_contents(path)))
+            scored.append((score, relative))
         scored.sort(key=lambda item: (-item[0], item[1]))
         return [path for _, path in scored[:limit]]
 
@@ -1082,10 +1172,12 @@ class Orchestrator:
                 if not self._candidate_exists(items, lane, title):
                     goal = "Fix broken markdown links and strengthen reverse links. Current examples: " + "; ".join(broken)
                     return self._make_adaptive_item(lane, title, goal, ["qa", "link", "broken-links", "reverse-link"], planner, now, source="adaptive-probe")
-        if lane == "qa-content":
-            docs = self._scan_beginner_content_gaps()
+        if lane == "qa-content" or lane in QA_CONTENT_CATEGORY_LANES:
+            prefixes = _qa_content_prefixes_for_lane(lane)
+            docs = self._scan_beginner_content_gaps(prefixes=prefixes)
             if docs:
-                title = f"Beginner content rubric gaps: {docs[0].split('/')[0]}"
+                title_prefix = lane.removeprefix("qa-content-") if lane in QA_CONTENT_CATEGORY_LANES else docs[0].split('/')[0]
+                title = f"Beginner content rubric gaps: {title_prefix}"
                 if not self._candidate_exists(items, lane, title):
                     goal = "Tighten beginner content quality (mental model, examples, common confusion, next-step routing) in: " + ", ".join(docs)
                     return self._make_adaptive_item(
@@ -1308,7 +1400,7 @@ class Orchestrator:
                 "that improve first-hit routing, beginner wording, and explicit primer -> follow-up -> deep-dive ladders."
             )
         content_qa_suffix = ""
-        if item["lane"] == "qa-content":
+        if item["lane"] == "qa-content" or item["lane"].startswith("qa-content-"):
             content_qa_suffix = (
                 " For this lane, inspect the body itself: favor plain-language mental models, one concrete example or small comparison table, an explicit common-confusion section, and clear next-step links. If a doc is marked Beginner, advanced incident or operator detail should not dominate the main narrative."
             )

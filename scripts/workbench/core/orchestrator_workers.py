@@ -20,16 +20,16 @@ DEFAULT_TASK_TIMEOUT_SECONDS = 45 * 60
 DEFAULT_SUPERVISOR_INTERVAL_SECONDS = 20
 
 WORKER_FLEET: list[dict[str, str]] = [
-    {"name": "runtime-database", "lane": "database"},
-    {"name": "runtime-security", "lane": "security"},
-    {"name": "runtime-network", "lane": "network"},
-    {"name": "runtime-system-design", "lane": "system-design"},
-    {"name": "runtime-operating-system", "lane": "operating-system"},
-    {"name": "runtime-spring", "lane": "spring"},
-    {"name": "runtime-design-pattern", "lane": "design-pattern"},
-    {"name": "runtime-software-engineering", "lane": "software-engineering"},
-    {"name": "runtime-language-java", "lane": "language-java"},
-    {"name": "runtime-data-structure", "lane": "data-structure"},
+    {"name": "runtime-qa-content-database", "lane": "qa-content-database"},
+    {"name": "runtime-qa-content-security", "lane": "qa-content-security"},
+    {"name": "runtime-qa-content-network", "lane": "qa-content-network"},
+    {"name": "runtime-qa-content-system-design", "lane": "qa-content-system-design"},
+    {"name": "runtime-qa-content-operating-system", "lane": "qa-content-operating-system"},
+    {"name": "runtime-qa-content-spring", "lane": "qa-content-spring"},
+    {"name": "runtime-qa-content-design-pattern", "lane": "qa-content-design-pattern"},
+    {"name": "runtime-qa-content-software-engineering", "lane": "qa-content-software-engineering"},
+    {"name": "runtime-qa-content-language-java", "lane": "qa-content-language-java"},
+    {"name": "runtime-qa-content-data-structure", "lane": "qa-content-data-structure"},
     {"name": "runtime-qa-bridge", "lane": "qa-bridge"},
     {"name": "runtime-qa-anchor", "lane": "qa-anchor"},
     {"name": "runtime-qa-link", "lane": "qa-link"},
@@ -39,16 +39,16 @@ WORKER_FLEET: list[dict[str, str]] = [
 ]
 
 LANE_SCOPE: dict[str, str] = {
-    "database": "knowledge/cs/contents/database/** and knowledge/cs/contents/database/README.md",
-    "security": "knowledge/cs/contents/security/** and knowledge/cs/contents/security/README.md",
-    "network": "knowledge/cs/contents/network/** and knowledge/cs/contents/network/README.md",
-    "system-design": "knowledge/cs/contents/system-design/** and knowledge/cs/contents/system-design/README.md",
-    "operating-system": "knowledge/cs/contents/operating-system/** and knowledge/cs/contents/operating-system/README.md",
-    "spring": "knowledge/cs/contents/spring/** and knowledge/cs/contents/spring/README.md",
-    "design-pattern": "knowledge/cs/contents/design-pattern/** and knowledge/cs/contents/design-pattern/README.md",
-    "software-engineering": "knowledge/cs/contents/software-engineering/** and knowledge/cs/contents/software-engineering/README.md",
-    "language-java": "knowledge/cs/contents/language/java/** and knowledge/cs/contents/language/README.md",
-    "data-structure": "knowledge/cs/contents/data-structure/**, knowledge/cs/contents/algorithm/**, and their README files",
+    "qa-content-database": "knowledge/cs/contents/database/** and knowledge/cs/contents/database/README.md",
+    "qa-content-security": "knowledge/cs/contents/security/** and knowledge/cs/contents/security/README.md",
+    "qa-content-network": "knowledge/cs/contents/network/** and knowledge/cs/contents/network/README.md",
+    "qa-content-system-design": "knowledge/cs/contents/system-design/** and knowledge/cs/contents/system-design/README.md",
+    "qa-content-operating-system": "knowledge/cs/contents/operating-system/** and knowledge/cs/contents/operating-system/README.md",
+    "qa-content-spring": "knowledge/cs/contents/spring/** and knowledge/cs/contents/spring/README.md",
+    "qa-content-design-pattern": "knowledge/cs/contents/design-pattern/** and knowledge/cs/contents/design-pattern/README.md",
+    "qa-content-software-engineering": "knowledge/cs/contents/software-engineering/** and knowledge/cs/contents/software-engineering/README.md",
+    "qa-content-language-java": "knowledge/cs/contents/language/java/** and knowledge/cs/contents/language/README.md",
+    "qa-content-data-structure": "knowledge/cs/contents/data-structure/**, knowledge/cs/contents/algorithm/**, and their README files",
     "qa-bridge": "knowledge/cs/**, especially cross-category README and related-doc bridges",
     "qa-anchor": "knowledge/cs/** where retrieval-anchor-keywords are missing or weak",
     "qa-link": "knowledge/cs/** and docs/** for link/reverse-link hygiene",
@@ -217,7 +217,7 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
 - Prefer primer docs over deep dives for introductory prompts.
 - When possible, lock the behavior with golden fixtures, signal-rule assertions, or search regressions.
 """
-    elif lane == "qa-content":
+    elif lane == "qa-content" or lane.startswith("qa-content-"):
         qa_beginner_rules = """- Judge the body itself through a beginner-first lens.
 - Prefer plain-language mental models before jargon.
 - Add one concrete example or a small comparison table when it clarifies the first read.
