@@ -766,6 +766,20 @@ _RULES: list[Rule] = [
             "read model cutover",
             "projection lag",
             "projection freshness",
+            "롤백 윈도우",
+            "예전 값이 보임",
+            "예전 값이 보여",
+            "옛값이 보임",
+            "옛값이 보여",
+            "옛 값이 보임",
+            "옛 값이 보여",
+            "쓴 직후 읽기",
+            "방금 저장했는데 안 보여",
+            "방금 저장했는데 안 보임",
+            "저장했는데 안 보여",
+            "저장했는데 안 보임",
+            "저장한 값이 안 보여",
+            "저장한 값이 안 보임",
             "freshness budget",
             "lag budget",
             "freshness slo",
@@ -1234,11 +1248,59 @@ _PROJECTION_FRESHNESS_PRIMER_CUES = {
     "stale read",
     "old data after write",
     "saved but still old data",
+    "예전 값이 보임",
+    "예전 값이 보여",
+    "옛값이 보임",
+    "옛값이 보여",
+    "옛 값이 보임",
+    "옛 값이 보여",
+    "쓴 직후 읽기",
+    "방금 저장했는데 안 보여",
+    "방금 저장했는데 안 보임",
+    "저장했는데 안 보여",
+    "저장했는데 안 보임",
+    "저장한 값이 안 보여",
+    "저장한 값이 안 보임",
 }
 
 _PROJECTION_ROLLBACK_WINDOW_CUES = {
     "rollback window",
     "rollback windows",
+    "롤백 윈도우",
+}
+
+_PROJECTION_CUTOVER_SAFETY_WINDOW_CUES = {
+    "cutover safety window",
+    "cutover safety windows",
+    "safety window",
+    "safety windows",
+}
+
+_PROJECTION_TRANSACTION_ROLLBACK_CUES = {
+    "transaction rollback",
+    "트랜잭션 rollback",
+    "트랜잭션 롤백",
+}
+
+_PROJECTION_TX_CONTRAST_CUES = {
+    "차이",
+    "비교",
+    "구분",
+    "헷갈",
+    "vs",
+    "versus",
+    "compare",
+    "contrast",
+}
+
+_PROJECTION_OPERATIONAL_COMPARISON_CUES = {
+    "차이",
+    "비교",
+    "구분",
+    "vs",
+    "versus",
+    "compare",
+    "contrast",
 }
 
 _PROJECTION_TX_NOISE_TRIGGERS = {
@@ -1246,6 +1308,32 @@ _PROJECTION_TX_NOISE_TRIGGERS = {
     "transaction",
     "트랜잭션",
     "commit",
+}
+
+_PROJECTION_BEGINNER_OPERATIONAL_NOISE_TAGS = {
+    "global_failover_control_plane",
+    "stateful_failover_placement",
+    "failover_visibility",
+    "failover_verification",
+    "security_key_rotation_rollover",
+    "security_key_rotation_runbook",
+    "security_jwks_recovery",
+}
+
+_PROJECTION_BEGINNER_NOISE_PROTECTED_TOKENS = {
+    "cutover",
+    "freshness",
+    "model",
+    "old",
+    "projection",
+    "read",
+    "reads",
+    "rollback",
+    "safe",
+    "safety",
+    "stale",
+    "window",
+    "windows",
 }
 
 _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
@@ -1722,7 +1810,17 @@ def _should_suppress_projection_rollback_transaction_noise(
         return False
     if not _is_projection_freshness_primer_prompt(haystack):
         return False
-    if not any(cue in haystack for cue in _PROJECTION_ROLLBACK_WINDOW_CUES):
+    has_projection_rollback_window = any(
+        cue in haystack for cue in _PROJECTION_ROLLBACK_WINDOW_CUES
+    )
+    if not has_projection_rollback_window and not _is_projection_beginner_cutover_safety_primer(
+        haystack, tokens
+    ):
+        return False
+    if (
+        any(cue in haystack for cue in _PROJECTION_TRANSACTION_ROLLBACK_CUES)
+        and any(cue in haystack for cue in _PROJECTION_TX_CONTRAST_CUES)
+    ):
         return False
 
     present_tags = {hit["tag"] for hit in hits}
@@ -1735,6 +1833,46 @@ def _should_suppress_projection_rollback_transaction_noise(
 
     matched_triggers = transaction_hit.get("_matched_triggers", set())
     return bool(matched_triggers) and matched_triggers <= _PROJECTION_TX_NOISE_TRIGGERS
+
+
+def _projection_beginner_operational_noise_tags(
+    haystack: str,
+    tokens: set[str],
+    hits: list[dict],
+) -> set[str]:
+    if not _is_projection_beginner_cutover_safety_primer(haystack, tokens):
+        return set()
+
+    present_tags = {hit["tag"] for hit in hits}
+    if "projection_freshness" not in present_tags:
+        return set()
+
+    return {
+        hit["tag"]
+        for hit in hits
+        if hit["tag"] in _PROJECTION_BEGINNER_OPERATIONAL_NOISE_TAGS
+        and hit.get("_matched_triggers")
+    }
+
+
+def _projection_beginner_operational_noise_tokens(
+    haystack: str,
+    tokens: set[str],
+) -> set[str]:
+    if not _is_projection_beginner_cutover_safety_primer(haystack, tokens):
+        return set()
+
+    stripped_tokens: set[str] = set()
+    for rule in _RULES:
+        if rule["tag"] not in _PROJECTION_BEGINNER_OPERATIONAL_NOISE_TAGS:
+            continue
+        for trigger in _matched_triggers(haystack, tokens, rule["triggers"]):
+            stripped_tokens.update(
+                token
+                for token in _tokenize(trigger)
+                if token not in _PROJECTION_BEGINNER_NOISE_PROTECTED_TOKENS
+            )
+    return stripped_tokens
 
 
 def _java_concurrency_false_positive_suppressions(hits: list[dict]) -> set[str]:
@@ -1850,6 +1988,16 @@ def _is_projection_freshness_primer_prompt(haystack: str) -> bool:
     return any(cue in haystack for cue in _PROJECTION_FRESHNESS_PRIMER_CUES)
 
 
+def _is_projection_beginner_cutover_safety_primer(haystack: str, tokens: set[str]) -> bool:
+    if not _has_beginner_intent(haystack, tokens):
+        return False
+    if not _is_projection_freshness_primer_prompt(haystack):
+        return False
+    if not any(cue in haystack for cue in _PROJECTION_CUTOVER_SAFETY_WINDOW_CUES):
+        return False
+    return not any(cue in haystack for cue in _PROJECTION_OPERATIONAL_COMPARISON_CUES)
+
+
 def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict]) -> set[str]:
     if not _has_beginner_intent(haystack, tokens):
         return set()
@@ -1944,6 +2092,9 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             suppressed_tags.add("security_key_rotation_rollover")
         if _should_suppress_projection_rollback_transaction_noise(haystack, tokens, hits):
             suppressed_tags.add("transaction_isolation")
+        suppressed_tags.update(
+            _projection_beginner_operational_noise_tags(haystack, tokens, hits)
+        )
         suppressed_tags.update(_java_concurrency_false_positive_suppressions(hits))
         suppressed_tags.update(_java_runtime_false_positive_suppressions(hits))
         suppressed_tags.update(_java_virtual_threads_false_positive_suppressions(hits))
@@ -1957,9 +2108,14 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
 
 def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]:
     """Produce augmented query tokens (original + rule expansions)."""
+    haystack = _haystack(prompt, topic_hints)
+    tokens = set(_tokenize(haystack))
     base = _tokenize(prompt)
     for hint in topic_hints or []:
         base.extend(_tokenize(hint))
+    stripped_tokens = _projection_beginner_operational_noise_tokens(haystack, tokens)
+    if stripped_tokens:
+        base = [tok for tok in base if tok.lower() not in stripped_tokens]
     for signal in detect_signals(prompt, topic_hints):
         base.extend(signal["expand"])
     # de-dupe while preserving order

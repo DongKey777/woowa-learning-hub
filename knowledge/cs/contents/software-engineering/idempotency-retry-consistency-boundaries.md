@@ -6,11 +6,12 @@
 
 > 관련 문서:
 > - [API 설계와 예외 처리](./api-design-error-handling.md)
+> - [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
 > - [Cache, Messaging, Observability](./cache-message-observability.md)
 > - [System Design](../system-design/README.md)
 
-retrieval-anchor-keywords: idempotency retry boundary, retry consistency boundary, idempotency key, duplicate request suppression, timeout retry safety, partial success retry, consistency boundary, outbox with retry, exactly once myth, retry side effect control
+retrieval-anchor-keywords: idempotency retry boundary, retry consistency boundary, idempotency key, duplicate request suppression, timeout retry safety, partial success retry, consistency boundary, outbox with retry, exactly once myth, retry side effect control, batch idempotency key boundaries, item-level idempotency key, chunk-level idempotency key, run-level idempotency key, retry-safe batch recovery
 
 ## 핵심 개념
 

@@ -1,0 +1,258 @@
+# ScheduledExecutorService vs DelayQueue Bridge
+
+> 한 줄 요약: `ScheduledExecutorService`는 "나중에 실행해 주세요"라는 executor API이고, 그 아래 mental model은 deadline이 가장 이른 작업만 head에 두고 시간이 될 때까지 숨기는 delay-aware priority queue다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+> - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
+> - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
+> - [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)
+> - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
+> - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
+> - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
+>
+> retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduledexecutorservice delay queue, scheduledthreadpoolexecutor delayed work queue, java scheduled executor data structure, schedule runnable after delay, scheduleAtFixedRate scheduleWithFixedDelay, fixed rate vs fixed delay queue mental model, scheduled future cancel, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, delayed task queue mental model, delay-aware priority queue, deadline ticket queue, deadline heap, expired head, hidden future task, not one sleeping thread per task, scheduler worker waits for earliest deadline, executor queue bridge beginner, timer cancellation stale entry, timer reschedule stale entry, beginner scheduler queue, java timer queue beginner, 스케줄드 executor delayqueue, 자바 스케줄러 자료구조, 지연 작업 큐
+
+## 먼저 그림부터
+
+`ScheduledExecutorService`를 처음 쓰면 API만 보인다.
+
+```java
+scheduler.schedule(job, 3, TimeUnit.SECONDS);
+```
+
+하지만 자료구조 관점에서는 이렇게 보면 쉽다.
+
+1. 지금 시각에 `3초`를 더해 **실행 가능 시각(deadline)** 을 만든다.
+2. `job`을 deadline이 붙은 ticket으로 감싼다.
+3. ticket들을 deadline이 빠른 순서로 queue에 넣는다.
+4. worker는 queue head만 보고, 아직 시간이 안 됐으면 기다린다.
+5. head의 시간이 되면 꺼내서 실행한다.
+
+즉 핵심은 "스레드가 3초 동안 무작정 자는 것"이 아니라  
+**deadline이 붙은 작업들이 delay-aware queue에서 차례를 기다린다**는 감각이다.
+
+## DelayQueue에서 executor로 한 단계 올려 보기
+
+`DelayQueue`를 먼저 배웠다면 이런 그림이 익숙하다.
+
+```text
+DelayQueue<TaskTicket>
+  head = deadline이 가장 이른 ticket
+  take() = head의 시간이 될 때까지 기다렸다가 꺼냄
+```
+
+`ScheduledExecutorService`는 이 queue 감각 위에 실행 서비스를 얹은 것으로 보면 된다.
+
+```text
+schedule(...) 호출
+  -> deadline ticket 생성
+  -> delayed work queue에 보관
+  -> 시간이 된 ticket을 worker가 꺼냄
+  -> executor가 Runnable/Callable 실행
+```
+
+초보자에게 중요한 연결은 "JVM 내부 클래스 이름"이 아니다.  
+`DelayQueue`에서 배운 **가장 이른 deadline만 head가 되고, head가 아직 미래면 worker가 기다린다**는 규칙이 scheduler queue를 이해하는 발판이 된다는 점이다.
+
+| `DelayQueue`에서 본 개념 | scheduled executor에서 떠올릴 대응물 |
+|---|---|
+| `Delayed` 원소 | 실행할 `Runnable/Callable`을 감싼 scheduled task |
+| `getDelay()` | 아직 실행하면 안 되는 남은 시간 |
+| `compareTo()` deadline 순서 | 어떤 scheduled task가 가장 먼저 실행 가능해지는지 |
+| `take()`가 기다림 | worker가 가장 이른 task의 시간이 될 때까지 대기 |
+| 꺼낸 뒤 직접 처리 | executor worker가 task body 실행 |
+
+## 두 이름은 층이 다르다
+
+`ScheduledExecutorService`와 `DelayQueue`는 같은 종류의 물건이 아니다.
+
+| 이름 | 초보자용 역할 | 관심사 |
+|---|---|---|
+| `ScheduledExecutorService` | delayed task를 실행해 주는 서비스 API | thread pool, `Future`, cancellation, periodic scheduling |
+| `DelayQueue` | 시간이 된 원소만 꺼낼 수 있는 queue | deadline ordering, `take()` blocking, `Delayed` contract |
+
+그래서 보통 애플리케이션 코드는 직접 `DelayQueue`를 만지기보다  
+`ScheduledExecutorService`를 쓰는 편이 자연스럽다.
+
+다만 내부 감각은 `DelayQueue`와 닮아 있다.
+
+> "작업 실행 API는 executor이고, 작업 대기 규칙은 delay-aware priority queue다."
+
+JDK의 `ScheduledThreadPoolExecutor`는 public `DelayQueue`를 그대로 노출하는 구조는 아니지만,  
+작업을 deadline 순으로 보관하고 만료된 head만 실행 가능하게 보는 mental model은 같다.
+
+## `schedule()` 한 번을 queue 동작으로 풀어보기
+
+아래 코드는 3초 뒤 실행을 요청한다.
+
+```java
+ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+scheduler.schedule(() -> {
+    System.out.println("send reminder");
+}, 3, TimeUnit.SECONDS);
+```
+
+자료구조 흐름으로 번역하면 다음과 같다.
+
+| 단계 | executor API에서 보이는 일 | queue mental model |
+|---|---|---|
+| 등록 | `schedule(job, 3, SECONDS)` 호출 | `runAt = now + 3초` ticket 생성 |
+| 보관 | scheduler가 작업을 기억함 | deadline 기준 min-heap에 `offer` |
+| 대기 | worker thread가 아직 실행하지 않음 | head delay가 양수라서 `take()`가 block |
+| 실행 | 3초쯤 뒤 `job.run()` 호출 | head delay가 0 이하가 되어 `poll` 가능 |
+
+여기서 "우선순위"는 business priority가 아니라 **실행 가능 시각이 얼마나 이른가**다.
+
+## 여러 작업이 섞이면 head만 보면 된다
+
+세 작업을 거의 동시에 등록했다고 하자.
+
+```java
+scheduler.schedule(taskA, 5, TimeUnit.SECONDS);
+scheduler.schedule(taskB, 1, TimeUnit.SECONDS);
+scheduler.schedule(taskC, 3, TimeUnit.SECONDS);
+```
+
+queue mental model에서는 대략 이렇게 정렬된다.
+
+| task | deadline 감각 | queue에서의 위치 |
+|---|---:|---|
+| B | now + 1초 | head |
+| C | now + 3초 | B 뒤 |
+| A | now + 5초 | C 뒤 |
+
+worker는 A와 C를 보며 각각 따로 잠들 필요가 없다.  
+head인 B의 delay만 보고 1초 정도 기다린 뒤 B를 꺼낸다. 그 다음 head는 C가 되고, 다시 C의 남은 시간만 기다린다.
+
+이 그림 때문에 scheduled executor queue는 "예약된 작업마다 sleep 중인 스레드가 하나씩 있다"가 아니라  
+"deadline 순서 queue와 worker가 협력한다"로 이해하는 편이 안전하다.
+
+## `DelayQueue`로 보면 이런 모양이다
+
+직접 scheduler를 만들라는 뜻은 아니다.  
+다만 `ScheduledExecutorService` 밑의 자료구조 감각을 잡기 위한 축소 모델은 이렇게 생겼다.
+
+```java
+final class TaskTicket implements Delayed {
+    private final long runAtNanos;
+    private final long sequence;
+    private final Runnable task;
+
+    TaskTicket(long delayNanos, long sequence, Runnable task) {
+        this.runAtNanos = System.nanoTime() + delayNanos;
+        this.sequence = sequence;
+        this.task = task;
+    }
+
+    @Override
+    public long getDelay(TimeUnit unit) {
+        return unit.convert(runAtNanos - System.nanoTime(), TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public int compareTo(Delayed other) {
+        TaskTicket that = (TaskTicket) other;
+        int byDeadline = Long.compare(this.runAtNanos, that.runAtNanos);
+        if (byDeadline != 0) {
+            return byDeadline;
+        }
+        return Long.compare(this.sequence, that.sequence);
+    }
+
+    void run() {
+        task.run();
+    }
+}
+```
+
+worker loop는 개념적으로는 이런 식이다.
+
+```java
+while (true) {
+    TaskTicket ticket = delayQueue.take(); // 시간이 된 head만 반환
+    ticket.run();
+}
+```
+
+중요한 점은 `take()`가 "queue에 원소가 있으면 바로 반환"이 아니라는 것이다.  
+**head의 deadline이 아직 미래라면 원소가 있어도 기다린다.**
+
+이 차이가 [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)의 핵심 오해와 이어진다.
+
+## 반복 실행은 "다시 넣는 규칙"으로 보면 된다
+
+`ScheduledExecutorService`에는 한 번만 실행하는 `schedule()` 말고 반복 API도 있다.
+
+| API | 다음 deadline을 잡는 감각 | 초보자용 해석 |
+|---|---|---|
+| `schedule(job, delay, unit)` | `now + delay` ticket 하나 | 한 번 늦게 실행 |
+| `scheduleAtFixedRate(job, initialDelay, period, unit)` | 이전 예정 시각에 `period`를 더해 다시 enqueue | 일정한 박자를 유지하려고 함 |
+| `scheduleWithFixedDelay(job, initialDelay, delay, unit)` | 실행이 끝난 시각에 `delay`를 더해 다시 enqueue | 작업 사이 간격을 유지하려고 함 |
+
+반복 작업도 특별한 마법이라기보다,  
+한 번 실행한 뒤 새 deadline으로 ticket을 다시 넣는다고 생각하면 이해가 쉽다.
+
+차이는 "다음 deadline의 기준이 무엇인가"다.
+
+- fixed rate: 원래 박자표에 맞춘다.
+- fixed delay: 이번 실행이 끝난 뒤부터 쉰다.
+
+예를 들어 period/delay가 10초이고 작업 실행에 3초가 걸렸다면 이렇게 느끼면 된다.
+
+| API | 첫 실행 예정 | 첫 실행 종료 | 다음 deadline 감각 |
+|---|---:|---:|---|
+| `scheduleAtFixedRate` | 10초 | 13초 | 20초 예정 박자로 다시 queue에 들어감 |
+| `scheduleWithFixedDelay` | 10초 | 13초 | 종료 후 10초 쉰 23초로 다시 queue에 들어감 |
+
+둘 다 "반복 전용 스레드가 계속 돈다"기보다, 실행 후 새 deadline ticket을 다시 예약하는 mental model로 읽으면 된다.
+
+## 이 bridge가 뜻하지 않는 것
+
+이 문서는 `ScheduledExecutorService`의 JVM 내부 구현을 외우자는 문서가 아니다.  
+입문 단계에서는 아래 경계만 잡으면 충분하다.
+
+| 오해 | 더 안전한 이해 |
+|---|---|
+| scheduled executor는 public `DelayQueue`를 그대로 감싼 것이다 | API는 executor이고, 내부 대기 규칙을 `DelayQueue`처럼 상상하면 된다 |
+| delay가 짧으면 business priority가 높다는 뜻이다 | delay는 실행 가능 시각이고, priority 정책은 별도 관심사다 |
+| 등록된 작업마다 sleeping thread가 필요하다 | queue head의 가장 이른 deadline을 기준으로 worker가 기다린다고 보면 된다 |
+| 반복 실행은 queue와 별개인 특수 기능이다 | 다음 deadline을 계산해 다시 예약하는 흐름으로 보면 된다 |
+| cancel하면 queue 구조 문제가 모두 사라진다 | 취소/재예약에는 stale ticket 정책이 남을 수 있고, Java에서는 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)에서 `removeOnCancelPolicy`까지 같이 보면 된다 |
+
+## 언제 무엇을 쓰면 되나
+
+| 지금 하려는 일 | 먼저 고를 것 | 이유 |
+|---|---|---|
+| Java 애플리케이션에서 몇 초 뒤 작업 실행 | `ScheduledExecutorService` | 실행 스레드, `Future`, 반복 실행 API까지 이미 있다 |
+| delay-aware queue 자체를 학습하거나 custom consumer loop를 만들기 | `DelayQueue` | deadline head와 blocking semantics가 드러난다 |
+| thread-safe priority order만 공유하고 시간 대기는 바깥에서 처리 | `PriorityBlockingQueue` | empty blocking과 deadline blocking은 다르다 |
+| 수많은 timeout이 등록/취소되고 tick 근사를 허용 | timing wheel 계열 | heap보다 churn 비용을 줄일 수 있다 |
+
+초보자라면 이렇게 기억하면 된다.
+
+> 앱 코드는 `ScheduledExecutorService`, 자료구조 설명은 `DelayQueue` mental model.
+
+## 자주 하는 오해
+
+1. `ScheduledExecutorService`가 작업마다 스레드를 하나씩 재워 둔다고 생각한다.
+2. `DelayQueue`가 그냥 thread-safe `PriorityQueue`라고 생각한다.
+3. `PriorityBlockingQueue.take()`도 deadline이 될 때까지 기다린다고 생각한다.
+4. `delay`를 "높은 priority"처럼 이해한다.
+5. `scheduleAtFixedRate()`와 `scheduleWithFixedDelay()`가 같은 반복 실행이라고 생각한다.
+6. deadline 필드를 queue 안에서 바꾸면 heap 순서도 자동으로 바뀐다고 생각한다.
+
+특히 6번은 heap 계열에서 흔한 함정이다.  
+deadline이 바뀌면 보통 새 ticket을 넣고, 예전 ticket은 cancellation/stale 정책으로 처리한다.
+Java API 관점의 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`가 먼저 궁금하면 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)를 보고, 직접 timer ticket을 설계하는 감각은 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket` 단위로 잡으면 된다. 구조 선택 비교는 [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)에서 더 깊게 보면 된다.
+
+## 면접형 한 문장
+
+`ScheduledExecutorService`는 delayed task를 실행하는 executor API이고, 그 내부 감각은 deadline 기준 priority queue에서 head가 만료될 때만 꺼내는 `DelayQueue` 모델로 설명할 수 있다.
+
+## 한 줄 정리
+
+`ScheduledExecutorService`를 쓸 때도 머릿속에는 "deadline이 붙은 ticket들이 min-heap에 있고, worker는 가장 이른 ticket이 만료될 때까지 기다린다"는 그림을 두면 API 사용과 자료구조 의미가 자연스럽게 이어진다.

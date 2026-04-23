@@ -20,6 +20,13 @@
 - [Ports and Adapters Beginner Primer](#ports-and-adapters-beginner-primer)
 - [Message-Driven Adapter Example](#message-driven-adapter-example)
 - [Batch Job Scope In Hexagonal Architecture](#batch-job-scope-in-hexagonal-architecture)
+- [Batch Partial Failure Policies Primer](#batch-partial-failure-policies-primer)
+- [Batch Run Result Modeling Examples](#batch-run-result-modeling-examples)
+- [Batch Idempotency Key Boundaries](#batch-idempotency-key-boundaries)
+- [Bulk Port vs Per-Item Use Case Tradeoffs](#bulk-port-vs-per-item-use-case-tradeoffs)
+- [saveAll/sendAll Port Smells and Safer Alternatives](#saveallsendall-port-smells-and-safer-alternatives)
+- [True Bulk Contracts and Partial Failure Results](#true-bulk-contracts-and-partial-failure-results)
+- [Adapter Bulk Optimization Without Port Leakage](#adapter-bulk-optimization-without-port-leakage)
 - [Webhook and Broker Boundary Primer](#webhook-and-broker-boundary-primer)
 - [Hexagonal Testing Seams Primer](#hexagonal-testing-seams-primer)
 - [Inbound Adapter Test Slices Primer](#inbound-adapter-test-slices-primer)
@@ -32,6 +39,7 @@
 - [Persistence Model Leakage Anti-Patterns](#persistence-model-leakage-anti-patterns)
 - [JPA Lazy Loading and N+1 Boundary Smells](#jpa-lazy-loading-and-n1-boundary-smells)
 - [Query Model Separation for Read-Heavy APIs](#query-model-separation-for-read-heavy-apis)
+- [Bulk Helper Ports vs Query Model Separation](#bulk-helper-ports-vs-query-model-separation)
 - [API 설계와 예외 처리](#api-설계와-예외-처리)
 - [테스트 전략과 테스트 더블](#테스트-전략과-테스트-더블)
 - [캐시, 메시징, 관측성](#캐시-메시징-관측성)
@@ -128,7 +136,7 @@
 
 ---
 
-> retrieval-anchor-keywords: software engineering readme, architecture navigator, governance catalog, ddd boundary, modular monolith, modular monolith starter guide, package rule, public module api, module api dto patterns, command query result dto, module boundary dto, safe module contract, aggregate boundary leak, internal package, architecture test starter, ArchUnit starter, ArchUnit brownfield rollout, fail-new-only gate, legacy violation baseline, architecture test allowlist, cycle detection, anti-corruption layer, rollout safety, nfr budget, production readiness, ownership model, refactoring timing, contract testing, shadow catalog schema, shadow review packet template, shadow packet automation mapping, catalog entry to packet row, shadow review outcome template, shadow decision record symmetry, shadow forum agenda, shadow forum escalation rules, local stewardship vs architecture council, blocked shadow escalation, shadow catalog state machine, shadow catalog review cadence profiles, shadow lifecycle scorecard metrics, lifecycle_state aging dashboard, blocked duration dashboard, hold expiry dashboard, retirement verification health, shadow escalation sla, verification pending metric freshness, temporary hold exit criteria, hold extension governance, manual path ratio instrumentation, mirror lag SLA calibration, manual breach classification, shadow candidate promotion thresholds, threshold override governance, workflow specific threshold override, threshold override expiry, threshold override approver matrix, shadow promotion snapshot schema fields, promotion threshold summary, break-glass path segmentation, emergency misclassification signals, incidentless break-glass, break-glass to shadow reclassification, break-glass to override backlog, overdue reentry debt, break-glass reentry governance, reentry slo, emergency mode exit governance, shadow retirement denominator split, official fallback visibility, shadow retirement proof metrics, shadow retirement scorecard schema, shadow catalog reopen rules, successor lineage preservation, lineage adjacency rules, verification pending rollback, verification window schema, verdict record schema, retirement exit signals, exception burndown, audit log coverage, platform scorecards, platform scorecard panel template, normal path health panel, break-glass visibility panel, governance spillover panel, architecture layering fundamentals, layered architecture beginner, clean architecture beginner, ports and adapters beginner, hexagonal architecture beginner, inbound outbound port, hexagonal folder layout, message-driven adapter example, http controller vs message consumer vs scheduled job, scheduled job inbound adapter, batch job scope hexagonal architecture, scheduled job loop existing use case, batch-oriented application service, dedicated batch application service, batch window checkpoint resume, scheduler adapter vs application service, webhook vs broker consumer, webhook inbound adapter, webhook retry semantics, webhook acknowledgment semantics, http callback vs message broker consumer, broker ack nack retry, inbound adapter delivery semantics, inbound adapter test slice, controller slice test, message handler slice test, slice vs full integration test, inbound adapter testing matrix, controller consumer scheduler test matrix, scheduled job lock misfire test, scheduled job integration test, consumer ack retry dlq test, outbox test matrix, inbox dedup test, message adapter contract test, outbox unit integration contract test, hexagonal testing seam, use case unit test, fake outbound port, adapter integration test, repository entity separation, persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist, aggregate persistence mapping pitfalls, aggregate root mapping beginner, bidirectional association pitfall, owning side mappedBy beginner, cascade type all smell, orphanRemoval smell, private child lifecycle, persistence model leakage, jpa entity leakage, entity to dto separation, orm leakage anti-pattern, jpa lazy loading, n+1 query smell, fetch join boundary, lazy initialization exception, lazy loading api serialization, fetch join vs projection, osiv lazy loading, query model separation, read-heavy api, cqrs lite, dedicated query repository, list detail response model, software engineering cross-category bridge, hexagonal bridge, message-driven adapter bridge, persistence bridge, repository boundary bridge, job queue handoff, control plane vs layered architecture
+> retrieval-anchor-keywords: software engineering readme, architecture navigator, governance catalog, ddd boundary, modular monolith, modular monolith starter guide, package rule, public module api, module api dto patterns, command query result dto, module boundary dto, safe module contract, aggregate boundary leak, internal package, architecture test starter, ArchUnit starter, ArchUnit brownfield rollout, fail-new-only gate, legacy violation baseline, architecture test allowlist, cycle detection, anti-corruption layer, rollout safety, nfr budget, production readiness, ownership model, refactoring timing, contract testing, shadow catalog schema, shadow review packet template, shadow packet automation mapping, catalog entry to packet row, shadow review outcome template, shadow decision record symmetry, shadow forum agenda, shadow forum escalation rules, local stewardship vs architecture council, blocked shadow escalation, shadow catalog state machine, shadow catalog review cadence profiles, shadow lifecycle scorecard metrics, lifecycle_state aging dashboard, blocked duration dashboard, hold expiry dashboard, retirement verification health, shadow escalation sla, verification pending metric freshness, temporary hold exit criteria, hold extension governance, manual path ratio instrumentation, mirror lag SLA calibration, manual breach classification, shadow candidate promotion thresholds, threshold override governance, workflow specific threshold override, threshold override expiry, threshold override approver matrix, shadow promotion snapshot schema fields, promotion threshold summary, break-glass path segmentation, emergency misclassification signals, incidentless break-glass, break-glass to shadow reclassification, break-glass to override backlog, overdue reentry debt, break-glass reentry governance, reentry slo, emergency mode exit governance, shadow retirement denominator split, official fallback visibility, shadow retirement proof metrics, shadow retirement scorecard schema, shadow catalog reopen rules, successor lineage preservation, lineage adjacency rules, verification pending rollback, verification window schema, verdict record schema, retirement exit signals, exception burndown, audit log coverage, platform scorecards, platform scorecard panel template, normal path health panel, break-glass visibility panel, governance spillover panel, architecture layering fundamentals, layered architecture beginner, clean architecture beginner, ports and adapters beginner, hexagonal architecture beginner, inbound outbound port, hexagonal folder layout, message-driven adapter example, http controller vs message consumer vs scheduled job, scheduled job inbound adapter, batch job scope hexagonal architecture, scheduled job loop existing use case, batch-oriented application service, dedicated batch application service, bulk port vs per-item use case, bulk-oriented outbound port, per-item use case execution, bulk helper port, saveAll port smell, sendAll port smell, hidden invariant batch contract, named batch contract, true bulk contract, named chunk contract, named file contract, bulk result type, partial failure result, item failure result, batch receipt result, adapter optimization vs application bulk contract, adapter bulk optimization without port leakage, JPA batch inside adapter, JDBC batch adapter, HTTP bulk endpoint adapter, no saveAll port leak, transaction scoped batch buffer, adapter coalescing, batch window checkpoint resume, batch idempotency key boundaries, item-level idempotency key, chunk-level idempotency key, run-level idempotency key, retry-safe batch recovery, duplicate-safe batch rerun, batch partial failure policy, batch retry queue primer, chunk summary retry queue checkpoint, per-item retry vs checkpoint resume, scheduler adapter vs application service, webhook vs broker consumer, webhook inbound adapter, webhook retry semantics, webhook acknowledgment semantics, http callback vs message broker consumer, broker ack nack retry, inbound adapter delivery semantics, inbound adapter test slice, controller slice test, message handler slice test, slice vs full integration test, inbound adapter testing matrix, controller consumer scheduler test matrix, scheduled job lock misfire test, scheduled job integration test, consumer ack retry dlq test, outbox test matrix, inbox dedup test, message adapter contract test, outbox unit integration contract test, hexagonal testing seam, use case unit test, fake outbound port, adapter integration test, repository entity separation, persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist, aggregate persistence mapping pitfalls, aggregate root mapping beginner, bidirectional association pitfall, owning side mappedBy beginner, cascade type all smell, orphanRemoval smell, private child lifecycle, persistence model leakage, jpa entity leakage, entity to dto separation, orm leakage anti-pattern, jpa lazy loading, n+1 query smell, fetch join boundary, lazy initialization exception, lazy loading api serialization, fetch join vs projection, osiv lazy loading, query model separation, read-heavy api, cqrs lite, dedicated query repository, list detail response model, findByIds helper port, helper port vs query repository, bulk helper vs query model separation, support query vs read model, query repository next step, software engineering cross-category bridge, hexagonal bridge, message-driven adapter bridge, persistence bridge, repository boundary bridge, job queue handoff, control plane vs layered architecture
 
 ## 빠른 탐색
 
@@ -149,6 +157,13 @@
   - `Ports and Adapters Beginner Primer`
   - `Message-Driven Adapter Example`
   - `Batch Job Scope In Hexagonal Architecture`
+  - `Batch Partial Failure Policies Primer`
+  - `Batch Run Result Modeling Examples`
+  - `Batch Idempotency Key Boundaries`
+  - `Bulk Port vs Per-Item Use Case Tradeoffs`
+  - `saveAll/sendAll Port Smells and Safer Alternatives`
+  - `True Bulk Contracts and Partial Failure Results`
+  - `Adapter Bulk Optimization Without Port Leakage`
   - `Webhook and Broker Boundary Primer`
   - `Hexagonal Testing Seams Primer`
   - `Inbound Adapter Test Slices Primer`
@@ -161,10 +176,18 @@
   - `Persistence Model Leakage Anti-Patterns`
   - `JPA Lazy Loading and N+1 Boundary Smells`
   - `Query Model Separation for Read-Heavy APIs`
+  - `Bulk Helper Ports vs Query Model Separation`
   - `API 설계와 예외 처리`
 - 설계/경계 deep dive로 바로 들어가려면:
   - `DDD, Hexagonal Architecture, Consistency Boundary`
   - `Batch Job Scope In Hexagonal Architecture`
+  - `Batch Partial Failure Policies Primer`
+  - `Batch Run Result Modeling Examples`
+  - `Batch Idempotency Key Boundaries`
+  - `Bulk Port vs Per-Item Use Case Tradeoffs`
+  - `saveAll/sendAll Port Smells and Safer Alternatives`
+  - `True Bulk Contracts and Partial Failure Results`
+  - `Adapter Bulk Optimization Without Port Leakage`
   - `DDD Bounded Context Failure Patterns`
   - `Clean Architecture vs Layered Architecture, Modular Monolith`
   - `Modular Monolith Boundary Enforcement`
@@ -219,7 +242,7 @@
 빠른 탐색에서는 software-engineering 내부 primer entrypoint만 남기고, adjacent-category handoff는 이 섹션에만 모아 둔다.
 
 - 구조 primer를 디자인 패턴 언어와 runtime plane으로 이어 읽으려면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md), [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md) 다음에 [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md), [Design Pattern: Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](../design-pattern/hexagonal-ports-pattern-language.md), [System Design: Control Plane / Data Plane Separation 설계](../system-design/control-plane-data-plane-separation-design.md)를 같이 보면 `layer`, `port`, `plane`이 서로 다른 질문에 답한다는 감각이 빨리 잡힌다.
-- 채널별 inbound adapter를 command lifecycle과 테스트 경계까지 함께 잡으려면 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md), [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md), [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md), [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md) 다음에 [Design Pattern: Command Handler Pattern](../design-pattern/command-handler-pattern.md), [Design Pattern: Process Manager Deadlines and Timeouts](../design-pattern/process-manager-deadlines-timeouts.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md), [System Design: Workflow Orchestration + Saga 설계](../system-design/workflow-orchestration-saga-design.md)를 이어서 본다.
+- 채널별 inbound adapter를 command lifecycle과 테스트 경계까지 함께 잡으려면 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md), [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md), [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md), [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md), [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md), [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md), [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md) 다음에 [Design Pattern: Command Handler Pattern](../design-pattern/command-handler-pattern.md), [Design Pattern: Process Manager Deadlines and Timeouts](../design-pattern/process-manager-deadlines-timeouts.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md), [System Design: Workflow Orchestration + Saga 설계](../system-design/workflow-orchestration-saga-design.md)를 이어서 본다.
 - persistence primer를 read-model boundary와 migration/cutover handoff로 확장하려면 [Repository, DAO, Entity](./repository-dao-entity.md), [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md), [Repository Fake Design Guide](./repository-fake-design-guide.md), [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) 다음에 [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md), [Design Pattern: Anti-Corruption Adapter Layering](../design-pattern/anti-corruption-adapter-layering.md), [System Design: Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md), [System Design: Zero-Downtime Schema Migration Platform 설계](../system-design/zero-downtime-schema-migration-platform-design.md)를 붙이면 aggregate 경계와 relay/cutover 경계가 한 줄로 연결된다.
 
 ## 레거시 primer
@@ -400,6 +423,48 @@
 
 > scheduled job가 기존 유스케이스를 per-item loop로 재사용해도 되는 경우와, batch window/chunk/checkpoint/failure policy가 application 의미가 되는 순간 dedicated batch-oriented application service로 올려야 하는 기준을 정리한 follow-up
 
+## Batch Partial Failure Policies Primer
+
+- [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
+
+> batch가 단순 per-item retry를 넘어서 chunk summary, retry queue, checkpoint를 언제 별도 정책으로 가져가야 하는지, run 재개와 실패 backlog를 beginner 눈높이에서 구분해 설명한 primer
+
+## Batch Run Result Modeling Examples
+
+- [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
+
+> `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint`를 framework-specific 구현체가 아니라 batch 실패/재개를 설명하는 네 가지 결과 모델로 나누어 초심자 예시와 비교표로 정리한 bridge primer
+
+## Batch Idempotency Key Boundaries
+
+- [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)
+
+> item-level, chunk-level, run-level idempotency key를 "같은 일을 다시 요청했는가"라는 질문으로 나누어, batch retry/resume이 중복 부작용 없이 복구되도록 설명한 beginner bridge primer
+
+## Bulk Port vs Per-Item Use Case Tradeoffs
+
+- [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
+
+> 처리량 문제를 보고 곧바로 `saveAll`/`sendAll` 같은 bulk port를 노출하기보다, strict per-item execution을 유지할지, per-item 유스케이스는 둔 채 bulk helper port만 둘지, 아니면 bulk 자체를 application 계약으로 올릴지를 초심자 기준으로 비교한 primer
+
+## saveAll/sendAll Port Smells and Safer Alternatives
+
+- [saveAll/sendAll Port Smells and Safer Alternatives](./saveall-sendall-port-smells-safer-alternatives.md)
+
+> `saveAll`/`sendAll`를 outbound port로 바로 노출할 때 왜 item 단위 불변식과 실패 정책이 숨어 버리는지 설명하고, 단건 port 유지, bulk helper port, named batch contract로 나누는 더 안전한 beginner primer
+
+## True Bulk Contracts and Partial Failure Results
+
+- [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)
+
+> bulk가 실제 업무 단위가 되었을 때 `List<T>`와 단순 count 대신 run/chunk/file 입력 계약과 partial failure result 타입을 어떻게 이름 붙여야 하는지 beginner 눈높이에서 정리한 follow-up primer
+
+## Adapter Bulk Optimization Without Port Leakage
+
+- [Adapter Bulk Optimization Without Port Leakage](./adapter-bulk-optimization-without-port-leakage.md)
+
+> JPA `saveAll`, JDBC batch, HTTP bulk endpoint를 adapter 내부 최적화로 유지하면서 application port는 per-item, domain-shaped 계약으로 남기는 기준을 초심자용 mental model과 예시로 정리한 bridge primer
+
 ## Webhook and Broker Boundary Primer
 
 - [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md)
@@ -469,6 +534,12 @@
 - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 
 > 목록/상세 화면 때문에 write entity와 aggregate를 계속 늘리는 대신, 같은 DB 위에서도 query repository와 response model을 분리하는 CQRS-lite 도입 시점을 정리한 beginner primer
+
+## Bulk Helper Ports vs Query Model Separation
+
+- [Bulk Helper Ports vs Query Model Separation](./bulk-helper-ports-vs-query-model-separation.md)
+
+> `findByIds` 같은 helper port가 command 보조 조회로 충분한 경우와, helper snapshot이 화면/query 책임을 빨아들이기 시작할 때 dedicated query repository/read model로 넘어가는 기준을 초심자 눈높이에서 비교한 bridge primer
 
 ## API 설계와 예외 처리
 

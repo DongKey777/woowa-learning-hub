@@ -7,12 +7,17 @@
 > 관련 문서:
 > - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+> - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+> - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+> - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+> - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+> - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 > - [Connection Reuse vs Service Discovery Churn](./connection-reuse-vs-service-discovery-churn.md)
 
-retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, 421 misdirected request, Alt-Svc connection reuse, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection
+retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, cross-origin connection reuse, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, wildcard cert routing boundary, routing boundary, same certificate different backend, CDN wildcard certificate, load balancer wildcard certificate, HTTP/2 ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, Alt-Svc endpoint authority, 421 misdirected request, misdirected request retry, Alt-Svc connection reuse, HTTPS RR coalescing, SVCB coalescing, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection, 421 troubleshooting trace, 421 vs 403 vs 404, wrong connection failure
 
 <details>
 <summary>Table of Contents</summary>
@@ -50,12 +55,17 @@ retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coale
 
 이때 브라우저가 하는 판단이 바로 **connection coalescing**이다.
 
+다만 H3에서는 그 전에 "브라우저가 이 endpoint를 어떻게 알았나"라는 discovery 단계가 먼저 있다.
+그 bridge는 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)에서 이어서 보면 된다.
+
 ### Retrieval Anchors
 
 - `HTTP/2 connection coalescing`
 - `HTTP/3 connection coalescing`
 - `origin coalescing`
 - `multiple origins same connection`
+- `HTTP/2 ORIGIN frame`
+- `Origin Set`
 - `421 misdirected request`
 - `authority`
 - `certificate SAN`
@@ -113,6 +123,9 @@ retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coale
 - 서버가 "이 origin은 이 연결로 받지 않겠다"면 `421 Misdirected Request`를 보낼 수 있다
 - 브라우저는 그 신호를 보면 그 origin용 새 연결을 따로 연다
 
+HTTP/2에서는 여기서 한 걸음 더 나가, 서버가 `ORIGIN` frame으로 아예 이 connection의 origin 범위를 미리 좁힐 수도 있다.
+이 흐름은 [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)에서 이어서 보면 된다.
+
 즉 한 줄로 줄이면:
 
 **브라우저가 보기에 안전하고, 서버도 실제로 처리 가능해야 여러 origin을 한 connection에 묶을 수 있다.**
@@ -148,6 +161,8 @@ HTTP/3에서도 생각 자체는 같다.
 - 브라우저가 같은 connection을 재사용할 수 있다
 
 다만 H3는 브라우저가 그 endpoint를 보통 `Alt-Svc` 같은 신호로 배우기 때문에, "H3를 어디로 시도했는가"가 같이 중요해진다.
+
+H3에서 H2의 `ORIGIN` frame 없이 certificate, `Alt-Svc` endpoint authority, `421`로 재사용 경계를 잡는 후속 흐름은 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)에서 이어서 보면 된다.
 
 ---
 

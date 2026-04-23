@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Reservoir Sampling](./reservoir-sampling.md)
 > - [Heap Variants](../data-structure/heap-variants.md)
+> - [Top-K Heap Direction Patterns](../data-structure/top-k-heap-direction-patterns.md)
 > - [Fenwick Tree (Binary Indexed Tree)](../data-structure/fenwick-tree.md)
 
 > retrieval-anchor-keywords: top-k streaming, heavy hitters, frequent items, space saving, count min sketch, approximate frequency, hot keys, streaming analytics, sketch, cardinality
@@ -44,6 +45,7 @@ heavy hitters는 그중 특히 자주 등장하는 항목들을 의미한다.
 ### 2. heap 기반 top-k
 
 가장 직관적인 방식은 `count`를 해시맵에 쌓고, top-k는 최소 힙으로 관리하는 것이다.
+Java에서 "`top-k largest`인데 왜 min-heap을 쓰는가", "`median`은 왜 min/max를 같이 쓰는가"가 함께 헷갈리면 [Top-K Heap Direction Patterns](../data-structure/top-k-heap-direction-patterns.md)로 연결해서 보는 편이 빠르다.
 
 장점:
 

@@ -5,8 +5,10 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
 > - [팩토리 (Factory)](./factory.md)
 > - [Factory Switch Registry Smell](./factory-switch-registry-smell.md)
+> - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 > - [전략 패턴](./strategy-pattern.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
@@ -29,13 +31,29 @@ backend에서 흔히 이런 형태로 나타난다.
 ### Retrieval Anchors
 
 - `registry pattern`
+- `registry pattern beginner`
+- `registry 처음 배우는데`
+- `registry 큰 그림`
+- `registry 기초`
+- `registry 언제 쓰는지`
 - `registry backed factory`
 - `lookup table`
+- `lookup table beginner`
+- `lookup table vs registry`
+- `lookup table vs resolver`
+- `lookup table vs router`
+- `keyed lookup primer`
 - `named handlers`
 - `strategy map`
 - `service registry`
 - `factory vs registry`
+- `resolver vs registry`
+- `router vs registry`
 - `registry vs service locator`
+- `service locator vs registry`
+- `lookup table resolver router service locator difference`
+- `injected registry vs service locator checklist`
+- `explicit constructor injection registry`
 
 ---
 

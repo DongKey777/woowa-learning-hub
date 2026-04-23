@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+> - [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
 > - [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)
 > - [Session Fixation, Clickjacking, CSP](./session-fixation-clickjacking-csp.md)
@@ -14,7 +15,7 @@
 > - [CSP Nonces / Hashes / Script Policy](./csp-nonces-vs-hashes-script-policy.md)
 > - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: open redirect, redirect hardening, login redirect hardening, post-login redirect, callback hardening, allowlist, exact match, phishing, OAuth redirect_uri, token leak, navigation abuse, URL validation, local redirect, browser server boundary, federated login redirect, nested redirect, redirect destination validation, browser server boundary catalog, security readme browser server boundary
+retrieval-anchor-keywords: open redirect, redirect hardening, login redirect hardening, post-login redirect, callback hardening, allowlist, exact match, phishing, OAuth redirect_uri, token leak, navigation abuse, URL validation, local redirect, browser server boundary, federated login redirect, nested redirect, redirect destination validation, absolute redirect behind load balancer, post-login redirect wrong origin, X-Forwarded-Host redirect, browser server boundary catalog, security readme browser server boundary
 
 ---
 
@@ -22,6 +23,8 @@ retrieval-anchor-keywords: open redirect, redirect hardening, login redirect har
 
 open redirect는 사용자가 입력한 URL로 서버가 그대로 redirect해 버리는 문제다.  
 겉으로는 편의 기능이지만, 보안에서는 강력한 악용 경로가 된다.
+
+load balancer 뒤에서 앱이 자기 public origin을 잘못 알아 absolute URL을 틀리게 만드는 문제는 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)에서 먼저 분리한다. 이 문서는 그다음 단계인 "사용자가 준 destination을 그대로 믿어도 되는가"를 다룬다.
 
 위험:
 

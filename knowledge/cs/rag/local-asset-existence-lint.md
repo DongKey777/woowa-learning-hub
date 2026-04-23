@@ -5,6 +5,7 @@
 > 관련 문서:
 > - [RAG Design](./README.md)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)
 > - [Asset Filename Lint](./asset-filename-lint.md)
 > - [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)
 > - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
@@ -38,6 +39,7 @@ python docs/local_asset_existence_lint.py knowledge/cs/contents/database docs
 - prose 영역의 reference-style link target
 - markdown 안 HTML `src` / `href`가 가리키는 repo-local asset path
 - HTML `srcset`의 candidate URL (`1x`, `2x`, `800w` descriptor는 떼고 URL만 검사)
+- nested parentheses와 angle-bracket target도 shared markdown parser 기준으로 읽는다
 - 실제 파일이 존재하지 않는 non-Markdown local target
 
 다음은 범위에서 뺀다.
@@ -73,6 +75,7 @@ Restore the asset or update every inbound reference, then rerun this lint.
 - [Asset Filename Lint](./asset-filename-lint.md)는 "현재 target path 문자열이 scanner-safe한가"를 보고, 이 check는 "그 target이 실제로 존재하는가"를 본다.
 - broader broken-link report는 문서 link, anchor, fenced example noise까지 한 번에 섞이기 쉬운데, 이 check는 repo-local asset target만 좁게 실패시킨다.
 - [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)는 rename triage와 old basename grep 흐름까지 같이 설명하는 rename-focused 문서이고, 여기서는 generic pre-review gate로 바로 돌릴 수 있게 이름을 분리했다.
+- shared parser를 [Fence False-Link Precheck](./fence-false-link-precheck.md), [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md)와 같이 쓰므로 "어떤 markdown target을 읽었는가"는 맞추고, 여기서는 existence만 따로 본다.
 
 ## 한 줄 정리
 

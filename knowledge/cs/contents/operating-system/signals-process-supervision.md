@@ -6,13 +6,15 @@
 
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
+> - [Session vs Process Group Primer](./session-vs-process-group-primer.md)
+> - [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)
 > - [Linux 프로세스 상태 머신, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 > - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
 > - [eventfd, signalfd, Epoll Control-Plane Integration](./eventfd-signalfd-epoll-control-plane-integration.md)
 > - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 
-> retrieval-anchor-keywords: signals, SIGTERM, SIGKILL, SIGCHLD, graceful shutdown, process supervision, PID 1, zombie reaping, signalfd, supervisor
+> retrieval-anchor-keywords: signals, SIGTERM, SIGKILL, SIGCHLD, graceful shutdown, process supervision, PID 1, zombie reaping, signalfd, supervisor, process group signal, foreground process group signal, controlling terminal signal, Ctrl-C SIGINT process group, signal mask vs disposition, blocked signal vs ignored signal
 
 ## 핵심 개념
 

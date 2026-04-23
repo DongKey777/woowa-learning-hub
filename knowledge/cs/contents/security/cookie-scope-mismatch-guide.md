@@ -6,13 +6,19 @@
 
 > 관련 문서:
 > - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+> - [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
+> - [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
+> - [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)
 > - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 > - [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
 > - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: cookie scope mismatch, cookie exists but login loops, cookie exists but no cookie header, cookie stored not sent, host-only cookie, domain path samesite mismatch, subdomain cookie mismatch, login loop cookie scope, cookie exists but session missing, cookie visible in devtools but not sent, application tab cookie but network request missing, auth cookie scope guide, browser cookie scope beginner, Domain Path SameSite beginner, sibling subdomain cookie missing, auth.example.com app.example.com cookie, cookie path too narrow, SameSite login loop, host only cookie login loop
+retrieval-anchor-keywords: cookie scope mismatch, cookie exists but login loops, cookie exists but no cookie header, cookie stored not sent, host-only cookie, domain path samesite mismatch, subdomain cookie mismatch, login loop cookie scope, cookie exists but session missing, cookie visible in devtools but not sent, application tab cookie but network request missing, auth cookie scope guide, browser cookie scope beginner, Domain Path SameSite beginner, sibling subdomain cookie missing, auth.example.com app.example.com cookie, cookie path too narrow, SameSite login loop, host only cookie login loop, Set-Cookie but next request has no Cookie, cookie request header missing after redirect, cookie saved but not sent to subdomain, cookie callback only path, cookie devtools storage vs network header, return to browser session troubleshooting path, security readme cookie scope return path
+retrieval-anchor-keywords: fetch credentials include cookie scope, credentials include cookie not sent, fetch include cookie missing, Access-Control-Allow-Credentials not sending cookie, CORS open but cookie missing
+retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, same cookie name different path, same cookie name different domain, cookie header duplicate name, stale cookie shadows new cookie, path shadowing login loop, domain shadowing login loop
+retrieval-anchor-keywords: SameSite None cross-site login primer, SameSite=None external IdP cookie, iframe login cookie blocked, partner portal iframe login loop, SameSite None vs X-Forwarded-Proto
 
 ## 이 문서를 먼저 읽는 이유
 
@@ -70,6 +76,29 @@ cookie를 "열쇠"보다 "출입증"으로 생각하면 쉽다.
 - `Network` 탭의 request header는 "전송 여부"
 
 login loop를 볼 때는 항상 "보관"보다 "전송"을 먼저 확인한다.
+
+---
+
+## 한 장면으로 보는 "cookie는 있는데 login loop"
+
+아래는 초보자가 가장 많이 겪는 흐름이다.
+
+| 단계 | 브라우저에서 보이는 것 | 실제 의미 |
+|---|---|---|
+| 1. login 응답 | `Set-Cookie: session=abc123; Path=/; HttpOnly; Secure` | 서버는 cookie를 저장하라고 했다 |
+| 2. `Application > Cookies` | `auth.example.com` 아래에 `session=abc123`가 보인다 | cookie가 **auth host 기준으로 저장**됐다 |
+| 3. 다음 이동 | 브라우저가 `https://app.example.com/dashboard`로 이동한다 | 이제 요청 host가 바뀌었다 |
+| 4. 실패한 요청 | request `Cookie` header가 비어 있다 | 저장은 됐지만 **이 요청에는 안 붙었다** |
+| 5. 서버 응답 | `302 -> /login` 또는 `/api/me`가 익명 응답 | 서버는 session cookie를 보지 못했다 |
+
+겉으로 보면 "방금 cookie가 생겼는데 왜 또 로그인하지?"처럼 보이지만,
+실제 원인은 대개 이 중 하나다.
+
+- host가 달라져 `Domain` 범위를 벗어났다
+- path가 달라져 `Path` 범위를 벗어났다
+- 요청 맥락이 cross-site라 `SameSite`에 막혔다
+
+즉 login loop는 종종 "cookie가 없다"가 아니라 **그 요청에 붙는 cookie가 없다**는 뜻이다.
 
 ---
 
@@ -182,6 +211,41 @@ Set-Cookie: session=abc123; Path=/auth; HttpOnly; Secure
 - external IdP나 partner site를 경유한 뒤 특정 요청에서만 세션이 안 붙는다
 
 이때는 cookie가 저장돼 있어도, 브라우저가 "이건 cross-site 맥락이니 안 보낸다"라고 판단할 수 있다.
+redirect와 다음 요청 URL이 계속 `https://...`인데 external IdP/iframe 경로에서만 이 장면이 보이면 [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)에서 `SameSite=None; Secure` 문제와 proxy `X-Forwarded-Proto` mismatch를 먼저 분리하면 된다. 반대로 login 직후 `Location`이 `http://...`로 바뀌면 이 문서보다 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)가 더 가깝다.
+
+---
+
+## `Domain` / `Path` / `SameSite`를 한 표로 비교
+
+| 무엇이 안 맞나 | cookie는 어디엔가 보이나? | 어느 순간 빠지나 | 초보자용 기억 문장 |
+|---|---|---|---|
+| `Domain` | 보일 수 있다 | 다른 host나 sibling subdomain 요청 | "저장된 host가 다르면 못 간다" |
+| `Path` | 보일 수 있다 | callback 밖 다른 URL path | "cookie는 자기 path prefix 밖으로 안 간다" |
+| `SameSite` | 보일 수 있다 | iframe, external redirect 뒤 요청, cross-site fetch | "site 맥락이 다르면 브라우저가 막을 수 있다" |
+
+이 표의 핵심은 단순하다.
+
+- 세 경우 모두 `Application` 탭에는 cookie가 보일 수 있다
+- 하지만 실패는 항상 **다음 request header에서** 드러난다
+
+---
+
+## DevTools에서 딱 세 군데만 비교한다
+
+초보자는 `Application` 탭만 보고 끝내기 쉽다.
+실제로는 아래 세 칸을 순서대로 비교해야 원인이 보인다.
+
+| 어디서 보나 | 확인할 질문 | 예시 |
+|---|---|---|
+| login 응답의 `Set-Cookie` | 서버가 어떤 범위로 저장하라고 했나? | `Domain`, `Path`, `SameSite`가 무엇인가 |
+| `Application > Cookies` | 브라우저가 어느 host 아래 저장했나? | `auth.example.com` 아래에만 보이나 |
+| 실패한 다음 요청의 `Cookie` header | 그 cookie가 실제로 전송됐나? | `Cookie: session=abc123`가 있나 없나 |
+
+이 세 칸을 나란히 보면 분리가 쉽다.
+
+- `Set-Cookie`는 있었는데 저장이 안 됐다면 저장 단계 문제다
+- 저장은 됐는데 next request `Cookie` header가 없으면 scope 문제다
+- `Cookie` header도 있었는데 계속 익명처럼 보이면 서버 session/BFF mapping 문제다
 
 ---
 
@@ -205,22 +269,33 @@ CORS와 cookie scope는 다른 문제다.
 - cookie scope: 브라우저가 cookie를 붙여도 되는가
 
 즉 CORS가 맞아도 `Domain`, `Path`, `SameSite`가 틀리면 cookie는 안 갈 수 있다.
+여기에 `fetch` 요청 옵션까지 섞이면 [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)에서 `credentials: "include"`, `Access-Control-Allow-Credentials`, cookie scope를 세 칸으로 먼저 나누면 된다.
 
 ### 3. "cookie가 auth 서브도메인에 보이는데 앱은 왜 익명이지?"
 
 이건 `SameSite`보다 먼저 host-only cookie를 의심한다.
 특히 login 전용 host와 app host를 나눠 둔 구조에서 자주 나온다.
 
+### 4. "같은 이름 cookie가 두 개 보이는데 어느 쪽이 진짜지?"
+
+이건 단순 scope mismatch보다 한 단계 더 좁은 문제일 수 있다.
+
+- 같은 이름 cookie가 서로 다른 `Domain`/`Path`로 같이 남아 있을 수 있다
+- 특정 route에서만 old session이 shadowing하며 login loop를 만들 수 있다
+
+이 경우는 [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)에서 `Path`/`Domain`별 중복 이름 cookie가 왜 헷갈리는지 따로 분리해 보면 좋다.
+
 ---
 
 ## 실전 확인 순서
 
-1. `Application > Cookies`에서 cookie가 어느 host 아래 저장됐는지 본다.
-2. 실패한 요청 하나를 고르고 `Network` 탭에서 request `Cookie` header가 실제로 있었는지 본다.
-3. request host와 cookie `Domain`이 맞는지 본다.
-4. request path와 cookie `Path`가 맞는지 본다.
-5. 그 요청이 same-site인지 cross-site인지 보고 `SameSite`를 비교한다.
-6. cookie가 실제로 실렸는데도 익명처럼 보이면 그때 서버 session/BFF mapping 문제로 넘어간다.
+1. login 응답 하나를 고르고 `Set-Cookie`에서 `Domain`, `Path`, `SameSite`를 먼저 적어 둔다.
+2. `Application > Cookies`에서 cookie가 어느 host 아래 저장됐는지 본다.
+3. 실패한 요청 하나를 고르고 `Network` 탭에서 request `Cookie` header가 실제로 있었는지 본다.
+4. request host와 cookie `Domain`이 맞는지 본다.
+5. request path와 cookie `Path`가 맞는지 본다.
+6. 그 요청이 same-site인지 cross-site인지 보고 `SameSite`를 비교한다.
+7. cookie가 실제로 실렸는데도 익명처럼 보이면 그때 서버 session/BFF mapping 문제로 넘어간다.
 
 이 순서로 보면 "cookie는 있는데 왜 또 로그인하지?"를 브라우저 범위 문제와 서버 상태 문제로 분리할 수 있다.
 
@@ -228,9 +303,10 @@ CORS와 cookie scope는 다른 문제다.
 
 ## 다음 단계
 
+- 이 문서가 `Domain`/`Path`/`SameSite`라는 한 failure mode 안에서만 맴돈다고 느껴지면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 `SavedRequest`, proxy `Secure` cookie, server session/BFF mapping 중 다음 갈래를 다시 고른다.
 - `302 -> /login`, `SavedRequest`, login HTML fallback이 같이 보이면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)로 이어 가면 된다.
 - cookie/session/JWT 자체가 아직 섞여 보이면 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)부터 다시 맞춘다.
-- cross-site credential, `fetch`, preflight까지 같이 얽히면 [CORS, SameSite, Preflight](./cors-samesite-preflight.md)로 내려간다.
+- cross-site credential, `fetch`, preflight까지 같이 얽히면 [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)로 먼저 분리한 뒤 [CORS, SameSite, Preflight](./cors-samesite-preflight.md)로 내려간다.
 - cookie는 실제로 실리는데 server-side에서만 세션이 끊기면 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)을 본다.
 
 ## 한 줄 정리

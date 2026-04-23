@@ -8,10 +8,12 @@
 
 - [executor-sizing-queue-rejection-policy](./executor-sizing-queue-rejection-policy.md)
 - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+- [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 - [language 카테고리 인덱스](../README.md)
 - [Spring IoC 컨테이너와 DI](../../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: java stream basics, java lambda basics, 스트림 입문, 람다 입문, functional interface basics, java filter map reduce, stream pipeline beginner, method reference basics, java 8 stream beginner, 스트림 어떻게 쓰나요, java lambda syntax, 람다식 처음, collector basics
+retrieval-anchor-keywords: java stream basics, java lambda basics, 스트림 입문, 람다 입문, functional interface basics, java filter map reduce, stream pipeline beginner, java stream sorted comparator, stream sorted comparator chain, java list sort vs stream sorted, java sorted stream original list unchanged, method reference basics, java 8 stream beginner, 스트림 어떻게 쓰나요, java lambda syntax, 람다식 처음, collector basics
 
 ## 핵심 개념
 
@@ -109,6 +111,8 @@ Spring 프로젝트에서 DTO 변환, 필터링, 집계를 스트림으로 처�
 
 ## 더 깊이 가려면
 
+- `List.sort(...)`와 `stream.sorted(...)`에 같은 comparator chain을 재사용하는 감각은 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+- `Comparator.comparingInt`, `thenComparing`, `reversed` 조립법은 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 - 스트림과 스레드 풀의 관계, `parallelStream` 위험은 [executor-sizing-queue-rejection-policy](./executor-sizing-queue-rejection-policy.md)
 - 스트림에서 자주 쓰이는 Optional 패턴은 [language README](../README.md)
 

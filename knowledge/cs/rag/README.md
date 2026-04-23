@@ -4,7 +4,7 @@
 >
 > 이 `README`도 개념 본문이 아니라 retrieval 운영용 **navigator**다.
 
-> retrieval-anchor-keywords: rag design readme, role routing, routing helper, meta navigator, category navigator, survey, study order, big picture, primer, basics, intro, catalog, navigator, index guide, what to read next, deep dive, playbook, runbook, drill, incident matrix, incident badge vocabulary, troubleshooting, response ladder, game day guide, master note, question bank, readme labeling, role audit, taxonomy checklist, authority transfer route, scim deprovision route, decision parity route, access tail remains route, auth shadow divergence route, revoke lag route, stale authz cache route, 403 after revoke route, auth outage route, auth-outage route, login loop route, hidden session mismatch route, savedrequest route, sid mapping route, spring security symptom route, cookie 있는데 다시 로그인 route, cookie exists but session missing route, 401 302 bounce route, api login html route, fetch gets login page instead of 401 route, transaction isolation route, transaction-isolation route, @Transactional route, transactional not applied route, rollback-only route, self invocation route, UnexpectedRollbackException route, database spring transaction bridge, database + spring route, authz-focused synthesis route, database security system design bridge, database + system design route, database + security + system design route, spring + network route, spring + security route, security + system design route, database routing summary, network routing summary, cross-category bridge, bridge entrypoint, authority route parity, identity authority transfer route, database security authority bridge route, verification shadowing authority bridge route, timeout disconnect bridge, spring network bridge, http stateless route, cookie session spring security route, beginner auth bridge, hidden jsessionid route, incident recovery trust route, browser session troubleshooting path route, session boundary replay route, identity delegation lifecycle route, authz tenant response contracts route, system design handoff cue, control plane handoff cue, cutover handoff cue
+> retrieval-anchor-keywords: rag design readme, role routing, routing helper, meta navigator, category navigator, survey, study order, big picture, primer, primer bridge, first-step primer, handoff primer, basics, intro, catalog, navigator, index guide, what to read next, deep dive, playbook, runbook, drill, incident matrix, incident badge vocabulary, troubleshooting, response ladder, game day guide, master note, question bank, readme labeling, role audit, taxonomy checklist, authority transfer route, scim deprovision route, decision parity route, access tail remains route, auth shadow divergence route, revoke lag route, stale authz cache route, 403 after revoke route, auth outage route, auth-outage route, login loop route, hidden session mismatch route, savedrequest route, sid mapping route, spring security symptom route, cookie 있는데 다시 로그인 route, cookie exists but session missing route, 401 302 bounce route, api login html route, fetch gets login page instead of 401 route, transaction isolation route, transaction-isolation route, @Transactional route, transactional not applied route, rollback-only route, self invocation route, UnexpectedRollbackException route, database spring transaction bridge, database + spring route, authz-focused synthesis route, database security system design bridge, database + system design route, database + security + system design route, spring + network route, spring + security route, security + system design route, database routing summary, network routing summary, cross-category bridge, bridge entrypoint, authority route parity, identity authority transfer route, database security authority bridge route, verification shadowing authority bridge route, timeout disconnect bridge, spring network bridge, http stateless route, cookie session spring security route, beginner auth bridge, hidden jsessionid route, incident recovery trust route, browser session troubleshooting path route, session boundary replay route, identity delegation lifecycle route, authz tenant response contracts route, system design handoff cue, control plane handoff cue, cutover handoff cue
 
 ## 이 폴더의 역할
 
@@ -12,7 +12,7 @@
 
 1. 진입점 문서: `README.md`는 `meta navigator`, roadmap은 `survey`, `SENIOR-QUESTIONS.md`는 `question bank`
 2. 카테고리 인덱스: `contents/*/README.md`는 `catalog/navigator`
-3. 본문 문서: `contents/**/**/*.md`는 `primer`, `deep dive`, `playbook`, `runbook`, `drill`, `incident matrix`가 섞여 있다
+3. 본문 문서: `contents/**/**/*.md`는 `primer`, `primer bridge`, `deep dive`, `playbook`, `runbook`, `drill`, `incident matrix`가 섞여 있다
 4. 보조 자산: `materials/`, `code/`, `img/`
 
 RAG에서는 이 네 층을 같은 무게로 보지 않는다.  
@@ -28,7 +28,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 - [CS Root README](../README.md) = 저장소 전체 `meta navigator`
 - 각 `contents/*/README.md` = 카테고리 `catalog / navigator`
 - 이 `rag/README.md`와 [Navigation Taxonomy](./navigation-taxonomy.md) = retrieval `routing helper`
-- 실제 개념 설명과 trade-off 판단 = 카테고리 `primer`, 개별 `deep dive`, `playbook`, `runbook`, `drill`, `incident matrix`, `master note`
+- 실제 개념 설명과 trade-off 판단 = 카테고리 `primer`, `primer bridge`, 개별 `deep dive`, `playbook`, `runbook`, `drill`, `incident matrix`, `master note`
 
 ## 역할 우선 바로가기
 
@@ -45,7 +45,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 | `LIS`, `subsequence`, `subarray`, `subwindow`, `lower_bound`가 섞여 들어온다 | [Topic Map](./topic-map.md), [Query Playbook](./query-playbook.md), [Algorithm README](../contents/algorithm/README.md) | algorithm alias re-query + adjacency check |
 | `transaction isolation`, `@Transactional`, `self invocation`, `UnexpectedRollbackException`, `readOnly isolation`이 같이 보이고 README를 거치지 않고 바로 ladder로 들어가고 싶다 | [Topic Map](./topic-map.md), [Query Playbook](./query-playbook.md), [Cross-Domain Bridge Map](./cross-domain-bridge-map.md) | transaction isolation / `@Transactional` / rollback debugging route (`database ↔ spring`) |
 | `HTTP stateless`, `cookie`, `session`, `JWT`, `왜 로그인 상태가 유지되나`, `hidden JSESSIONID`처럼 기초 auth 개념에서 Spring 경계로 올라가고 싶다 | [Cross-Domain Bridge Map](./cross-domain-bridge-map.md), [Network README](../contents/network/README.md), [Security README](../contents/security/README.md) | beginner auth bridge (`network -> security -> spring`) |
-| `SavedRequest`, `login loop`, `hidden session mismatch`, `cookie 있는데 다시 로그인`, `401 -> 302 bounce`, `API가 login HTML을 받음`이 보이는데 `cookie/session`부터 다시 잡고 싶다 | [Cross-Domain Bridge Map](./cross-domain-bridge-map.md), [Query Playbook](./query-playbook.md), [Security README](../contents/security/README.md) | beginner auth bridge -> browser `401` vs `302` symptom route |
+| `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `API가 login HTML을 받음`이 보이는데 `cookie/session`부터 다시 잡고 싶다 | [Cross-Domain Bridge Map](./cross-domain-bridge-map.md), [Query Playbook](./query-playbook.md), [Security README](../contents/security/README.md) | beginner auth bridge -> [primer] `Login Redirect, Hidden JSESSIONID, SavedRequest 입문` -> [primer bridge] `Browser 401 vs 302 Login Redirect Guide` -> [deep dive] `Spring Security RequestCache / SavedRequest Boundaries` |
 | `stale read`, `499`, `broken pipe`, `client disconnect`, `JWKS outage`, `backfill is green but access tail remains`, `auth shadow divergence`처럼 증상으로 먼저 묻는다 | [Topic Map](./topic-map.md), [Query Playbook](./query-playbook.md), [Cross-Domain Bridge Map](./cross-domain-bridge-map.md) | symptom-first cluster match with canonical route labels |
 | `auth-outage`, `login loop`, `hidden session mismatch`, `SavedRequest`, `cookie 있는데 다시 로그인`, `401 -> 302 bounce`, `API가 login HTML을 받음`, `logout token은 오는데 spring 앱 세션을 못 찾는다`처럼 spring/security/session symptom으로 먼저 묻는다 | [Topic Map](./topic-map.md), [Query Playbook](./query-playbook.md), [Cross-Domain Bridge Map](./cross-domain-bridge-map.md) | spring+security symptom route + browser/API fallback split + session persistence handoff |
 | `revoke lag`, `logout but still works`, `stale deny`, `grant but still denied`, `403 after revoke`처럼 revoke/authz cache symptom으로 먼저 묻는다 | [Topic Map](./topic-map.md), [Query Playbook](./query-playbook.md), [Cross-Domain Bridge Map](./cross-domain-bridge-map.md), [Master Notes Index](../master-notes/README.md) | revoke-lag vs stale-authz-cache split + authz synthesis handoff |
@@ -63,6 +63,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 - `knowledge/cs/contents/**` 아래 실제 `img/`·`code/` file인데 contents 문서에서 더는 inbound markdown/HTML link가 없는 orphan queue를 보고 싶으면 [Orphaned Auxiliary Asset Drift Scan](./orphaned-auxiliary-asset-drift-scan.md)을 먼저 본다. relink 전 filename-risky orphan도 여기서 같이 좁힌다.
 - asset rename 뒤 old basename을 `rg -n --glob '*.md' -F '<old-basename.ext>' knowledge/cs docs`로 즉시 확인하고 missing target inbound link까지 묶어서 봐야 하면 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)을 먼저 돌린다. HTML `<a href>` / `srcset` stale path도 여기서 같이 본다.
 - quick-start나 `역할별 라우팅 요약`의 bridge row가 later bridge bundle을 다시 펼치기 시작하면 [README Quick-Start / Bridge Overlap Check](./readme-bridge-overlap-check.md)로 중복 lint와 수동 rule을 함께 보고, anchor-first before/after 예시대로 entrypoint anchor만 남긴다.
+- asset/fence/README QA script가 같은 줄을 다르게 읽는 것처럼 보이거나 nested-paren target, angle-bracket target, inline code span이 섞여 parser 차이를 먼저 확인해야 하면 [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)부터 본다.
 - code fence 안 literal markdown 예시 때문에 link/reverse-link QA가 흔들리면 같은 문서의 spacing guard 규칙을 보고, `.md` path만 담은 metadata 샘플이면 fence를 `yaml`/`text`로 낮춘다.
 - broken-link reporting 전에 fenced example만 먼저 걸러야 하면 [Fence False-Link Precheck](./fence-false-link-precheck.md)로 repo-local QA check를 돌린다.
 - retrieval-anchor-keywords를 보강해야 하면 [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)에서 role alias를 함께 정리한다.
@@ -70,7 +71,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 ## 권장 흐름
 
 1. 질문 분류
-2. 문서 역할 결정 (`survey` / `primer` / `catalog` / `deep dive` / `master note` / `playbook` / `runbook` / `drill` / `incident matrix`)
+2. 문서 역할 결정 (`survey` / `primer` / `primer bridge` / `catalog` / `deep dive` / `master note` / `playbook` / `runbook` / `drill` / `incident matrix`)
 3. 카테고리 선택
 4. 인덱스 문서 우선 탐색
 5. 심화 문서 검색
@@ -90,6 +91,7 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 - [Question Decomposition Examples](./question-decomposition-examples.md)
 - [Retrieval Failure Modes](./retrieval-failure-modes.md)
 - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md) - README 라벨, 링크 문구, scanner-safe `materials/`·`img/`·`code/` filename, repo-local PDF/image short rule, lowercase image/PDF extension, mixed-case extension scanner pitfall, local HTML `src` / `href` / `srcset` co-update rule, fenced literal markdown spacing guard, metadata snippet fence 선택을 같이 정리할 때
+- [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md) - asset/fence/README QA script가 shared parser로 어떤 markdown target을 읽는지, nested parentheses·angle-bracket target·reference-style target·code-span masking을 어디까지 맞추는지 먼저 확인할 때
 - [Local Asset Existence Lint](./local-asset-existence-lint.md) - markdown과 inline HTML이 가리키는 repo-local asset target 중 실제 파일이 없는 unresolved path를 review 전에 바로 실패시키고 싶을 때
 - [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md) - category 문서가 sibling `README.md#...` reverse-link를 잃었거나 stale heading slug를 들고 있지 않은지 touched path 기준으로 확인할 때
 - [Asset Filename Lint](./asset-filename-lint.md) - markdown과 inline HTML이 이미 가리키는 local asset path만 대상으로 공백, 괄호, `&`, extra dot stem, mixed-case image/PDF extension 같은 punctuation-heavy filename을 review 전에 빠르게 거를 때

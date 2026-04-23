@@ -6,12 +6,13 @@
 
 > 관련 문서:
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 > - [Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle](./spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md)
 > - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
 
-retrieval-anchor-keywords: ConfigurationProperties, Binder, relaxed binding, metadata, immutable properties, constructor binding, validation, property source, bind handler
+retrieval-anchor-keywords: ConfigurationProperties, Binder, relaxed binding, metadata, immutable properties, constructor binding, validation, property source, bind handler, relaxed binding env var cheatsheet, env var property key mapping, list env var binding, map env var binding
 
 ## 핵심 개념
 
@@ -99,6 +100,7 @@ public class AppProperties {
 ### 시나리오 2: YAML에서는 되는데 환경 변수에서는 안 된다
 
 relaxed binding 규칙을 잘못 이해한 경우다.
+먼저 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)에서 dashed key, list index, map key 변환을 확인한다.
 
 ### 시나리오 3: 바인딩은 됐는데 validation에서 시작이 막힌다
 

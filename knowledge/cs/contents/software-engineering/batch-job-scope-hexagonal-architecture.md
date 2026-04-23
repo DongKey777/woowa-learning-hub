@@ -5,6 +5,8 @@
 **난이도: 🟡 Intermediate**
 
 [Message-Driven Adapter Example](./message-driven-adapter-example.md)에서 scheduled job도 inbound adapter라는 감각을 잡았다면, 이 문서는 그다음 질문인 "그 job이 기존 유스케이스를 `for` loop로 호출하면 충분한가, 아니면 배치 전용 application service가 필요한가"만 좁혀서 본다.
+여기까지 이해한 뒤 "실패 정책을 언제 pure per-item retry에서 chunk summary/retry queue/checkpoint로 올려야 하나?"가 궁금하면 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)를 먼저 보면 된다.
+그다음 "batch 전용 서비스까지는 아닌데 outbound port를 `List` 기반 bulk port로 바꿔야 하나?"가 고민이라면 [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)를 이어서 보면 된다.
 스케줄링 인프라, 분산 락, 큐 handoff까지 커지는 경우는 [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md)로 넘기면 된다.
 
 <details>
@@ -24,6 +26,8 @@
 > 관련 문서:
 > - [Software Engineering README: Batch Job Scope In Hexagonal Architecture](./README.md#batch-job-scope-in-hexagonal-architecture)
 > - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
+> - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
+> - [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)
 > - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
@@ -41,6 +45,9 @@
 > - batch window checkpoint resume
 > - chunked batch application service
 > - per-item use case vs batch run
+> - bulk port vs per-item use case
+> - batch partial failure policy
+> - chunk summary retry queue checkpoint
 > - bulk processing use case
 > - batch orchestration hexagonal
 > - scheduled reconciliation batch service

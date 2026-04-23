@@ -5,13 +5,14 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
 > - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
 
-retrieval-anchor-keywords: CORS, credentials, allowlist, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, preflight, origin, wildcard, cookie, browser security, cross-origin
+retrieval-anchor-keywords: CORS, credentials, allowlist, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, preflight, origin, wildcard, cookie, browser security, cross-origin, credentials include vs Access-Control-Allow-Credentials, fetch credentials vs cors, credentialed cors allowlist
 
 ---
 

@@ -4,7 +4,9 @@
 
 > 작성자 : [권혁진](https://github.com/KimKwon), [서그림](https://github.com/Seogeurim), [윤가영](https://github.com/yoongoing)
 
-> retrieval-anchor-keywords: network readme, network navigator, network primer, network survey, network catalog, network deep dive, network playbook, network runbook, network routing, network index guide, http request response basics, URL DNS TCP TLS flow, browser server basics, browser request lifecycle, status code basics, keep-alive basics, HTTP/1.1 vs HTTP/2 vs HTTP/3, beginner HTTP version comparison, browser protocol negotiation, connection reuse vs multiplexing, connection coalescing, origin coalescing, HTTP/2 connection coalescing, HTTP/3 connection coalescing, multiple origins same connection, certificate SAN reuse, 421 misdirected request, TCP HOL vs QUIC streams, QUIC basics, timeout retry backoff, proxy gateway, tls proxy, websocket, http2 http3, latency breakdown, dns ttl, cache control, conditional request basics, browser cache revalidation, browser devtools cache trace, chrome devtools cache, memory cache, disk cache, ETag, strong ETag, weak ETag, weak validator, strong validator, validator precision, If-Match, If-Range, range request validator, compressed variant ETag, Last-Modified, If-None-Match, If-Modified-Since, 304 Not Modified, Vary basics, content negotiation basics, response variant, Accept-Language, Accept-Encoding, language cache variation, compression cache variation, forwarded trust boundary, spring network bridge, spring + network route, request lifecycle timeout, webclient pool, 499 broken pipe, client disconnect, connection reset, proxy timeout, client closed request, 502, 504, bad gateway, gateway timeout, local reply, upstream reset, upstream prematurely closed, timeout mismatch, async timeout mismatch, idle timeout mismatch, deadline budget mismatch, edge 504 app 200, spring early reject, late write, request body drain, unread body observability, expect 100-continue, upload early reject, upload cleanup matrix, proxy to container upload cleanup, edge 401 413 499 mapping, request body bytes received vs consumed, gateway buffering expect cleanup, origin fast reject edge late upload, http2 upload reject, h2 upload early reject, RST_STREAM NO_ERROR upload, discard DATA after reset, connection flow control after reset, reactor netty, pending acquire timeout, servlet container abort, spring boot disconnect logging, disconnectedclienthelper, disconnect breadcrumb code example, disconnectedclienthelper breadcrumb wiring, mvc download disconnect breadcrumb, sse disconnect breadcrumb, async late write breadcrumb, client abort logging category, tomcat clientabortexception, jetty eofexception, undertow broken pipe, undertow request io logger, access log correlation recipe, tomcat jetty undertow access log, tomcat accesslog %X %F, jetty customrequestlog %O %X, undertow access log response time, undertow record request start time, access log partial response attribution, bytes sent duration disconnect bucket, multipart abort spring, request.getParts container difference, swallowAbortedUploads, maxSwallowSize, maxUnconsumedRequestContentReads, undertow connection terminated parsing multipart data, multipart auth reject boundary, MultipartFilter before Spring Security, DispatcherServlet checkMultipart, StandardServletMultipartResolver resolveLazily, unauthorized temp file upload, spring multipart exception translation, multipart exception matrix, MultipartException vs MaxUploadSizeExceededException, MissingServletRequestPartException 400, Failed to parse multipart servlet request, Could not access multipart servlet request, multipart observability fields, nginx request_completion, envoy response_code_details, envoy connection_termination_details, ALB 460, elb_status_code target_status_code, actions_executed, SSE disconnect, WebFlux cancel lag, reactor netty cancel lag, webflux prefetch cancellation, onBackpressureBuffer cancel lag, boundedElastic cancel lag, partial flush failure, last-event-id, SSE replay window, duplicate suppression, async onerror timeline, asyncrequestnotusableexception timeline, response not usable after response errors, response not usable after async request completion, committed response race, async listener onerror, SSE HTTP/1.1 HTTP/2 abort attribution, chunked flush failure, RST_STREAM cancel, 499 EOF crosswalk, http stateless bridge, cookie session spring security route, beginner auth bridge, savedrequest beginner route, 401 302 bounce starter, login redirect primer, 302 login flow, Set-Cookie on redirect response, post-login original URL, hidden session mismatch, hidden jsessionid route, why login state is kept, Set-Cookie Cookie browser flow, HttpOnly SameSite Secure basics, SameSite HttpOnly Secure matrix, cookie attribute matrix, SameSite Lax Strict None, Domain Path cookie scope, host-only cookie, Path is not security boundary, JWT authorization header vs cookie, fetch credentials mode, same-origin vs same-site, cross-origin cookie fetch, cross-site cookie SameSite None, CORS credentials cookie
+> retrieval-anchor-keywords: network readme, network navigator, network primer, network survey, network catalog, network deep dive, network playbook, network runbook, network routing, network index guide, http request response basics, URL DNS TCP TLS flow, browser server basics, browser request lifecycle, status code basics, keep-alive basics, HTTP/1.1 vs HTTP/2 vs HTTP/3, beginner HTTP version comparison, browser protocol negotiation, Alt-Svc vs HTTPS RR, HTTPS RR, HTTPS resource record, SVCB, browser H3 discovery, H3 endpoint discovery, DNS H3 hint, H3 discovery observability, DevTools H3 discovery, browser DevTools Alt-Svc h3, DNS HTTPS RR h3, dig HTTPS RR, curl Alt-Svc h3 trace, first request h3, Alt-Svc driven H3, HTTPS RR driven H3, discovery before coalescing, connection reuse vs multiplexing, connection coalescing, origin coalescing, HTTP/2 connection coalescing, HTTP/3 connection coalescing, HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, HTTP/3 cross-origin reuse guardrails, Alt-Svc endpoint authority, 421 retry recovery, cross-origin connection reuse, coalescing allowlist, misdirected request retry, multiple origins same connection, certificate SAN reuse, 421 misdirected request, 421 troubleshooting trace, 421 vs 403 vs 404, browser devtools 421, curl 421, proxy log 421, wrong connection failure, TCP HOL vs QUIC streams, QUIC basics, timeout retry backoff, proxy gateway, tls proxy, websocket, http2 http3, latency breakdown, dns ttl, cache control, conditional request basics, browser cache revalidation, browser devtools cache trace, chrome devtools cache, memory cache, disk cache, ETag, strong ETag, weak ETag, weak validator, strong validator, validator precision, If-Match, If-Range, range request validator, compressed variant ETag, Last-Modified, If-None-Match, If-Modified-Since, 304 Not Modified, Vary basics, content negotiation basics, response variant, Accept-Language, Accept-Encoding, language cache variation, compression cache variation, forwarded trust boundary, spring network bridge, spring + network route, request lifecycle timeout, webclient pool, 499 broken pipe, client disconnect, connection reset, proxy timeout, client closed request, 502, 504, bad gateway, gateway timeout, local reply, upstream reset, upstream prematurely closed, timeout mismatch, async timeout mismatch, idle timeout mismatch, deadline budget mismatch, edge 504 app 200, spring early reject, late write, request body drain, unread body observability, expect 100-continue, upload early reject, upload cleanup matrix, proxy to container upload cleanup, edge 401 413 499 mapping, request body bytes received vs consumed, gateway buffering expect cleanup, origin fast reject edge late upload, http2 upload reject, h2 upload early reject, RST_STREAM NO_ERROR upload, discard DATA after reset, connection flow control after reset, reactor netty, pending acquire timeout, servlet container abort, spring boot disconnect logging, disconnectedclienthelper, disconnect breadcrumb code example, disconnectedclienthelper breadcrumb wiring, mvc download disconnect breadcrumb, sse disconnect breadcrumb, async late write breadcrumb, client abort logging category, tomcat clientabortexception, jetty eofexception, undertow broken pipe, undertow request io logger, access log correlation recipe, tomcat jetty undertow access log, tomcat accesslog %X %F, jetty customrequestlog %O %X, undertow access log response time, undertow record request start time, access log partial response attribution, bytes sent duration disconnect bucket, multipart abort spring, request.getParts container difference, swallowAbortedUploads, maxSwallowSize, maxUnconsumedRequestContentReads, undertow connection terminated parsing multipart data, multipart auth reject boundary, MultipartFilter before Spring Security, DispatcherServlet checkMultipart, StandardServletMultipartResolver resolveLazily, unauthorized temp file upload, spring multipart exception translation, multipart exception matrix, MultipartException vs MaxUploadSizeExceededException, MissingServletRequestPartException 400, Failed to parse multipart servlet request, Could not access multipart servlet request, multipart observability fields, nginx request_completion, envoy response_code_details, envoy connection_termination_details, ALB 460, elb_status_code target_status_code, actions_executed, SSE disconnect, WebFlux cancel lag, reactor netty cancel lag, webflux prefetch cancellation, onBackpressureBuffer cancel lag, boundedElastic cancel lag, partial flush failure, last-event-id, SSE replay window, duplicate suppression, async onerror timeline, asyncrequestnotusableexception timeline, response not usable after response errors, response not usable after async request completion, committed response race, async listener onerror, SSE HTTP/1.1 HTTP/2 abort attribution, chunked flush failure, RST_STREAM cancel, 499 EOF crosswalk, http stateless bridge, cookie session spring security route, beginner auth bridge, savedrequest beginner route, saved request bounce route, cookie 있는데 다시 로그인 route, 401 302 bounce starter, login redirect primer, 302 login flow, Set-Cookie on redirect response, post-login original URL, hidden session mismatch, hidden jsessionid route, why login state is kept, Set-Cookie Cookie browser flow, HttpOnly SameSite Secure basics, SameSite HttpOnly Secure matrix, cookie attribute matrix, SameSite Lax Strict None, Domain Path cookie scope, host-only cookie, Path is not security boundary, JWT authorization header vs cookie, fetch credentials mode, same-origin vs same-site, cross-origin cookie fetch, cross-site cookie SameSite None, CORS credentials cookie
+
+> retrieval-anchor-keywords: wildcard certificate, wildcard cert routing boundary, same certificate different backend, CDN wildcard certificate, load balancer wildcard certificate, routing boundary vs certificate scope
 
 <details>
 <summary>Table of Contents</summary>
@@ -28,7 +30,13 @@
 - [gRPC vs REST](#grpc-vs-rest)
 - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](#http11-vs-http2-vs-http3-입문-비교)
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](#브라우저의-http-버전-선택-alpn-alt-svc-fallback-입문)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](#alt-svc와-https-rr-svcb-h3-discovery와-coalescing-bridge)
+- [H3 Discovery Observability Primer](#h3-discovery-observability-primer)
 - [HTTP/2와 HTTP/3 Connection Coalescing 입문](#http2와-http3-connection-coalescing-입문)
+- [Wildcard Certificate vs Routing Boundary Primer](#wildcard-certificate-vs-routing-boundary-primer)
+- [HTTP/2 ORIGIN Frame와 421 입문](#http2-origin-frame와-421-입문)
+- [HTTP 421 Troubleshooting Trace Examples](#http-421-troubleshooting-trace-examples)
+- [HTTP/3 Cross-Origin Reuse Guardrails Primer](#http3-cross-origin-reuse-guardrails-primer)
 - [gRPC Status, Trailers, Transport Error Mapping](#grpc-status-trailers-transport-error-mapping)
 - [HTTP/2 멀티플렉싱과 HOL blocking](#http2-멀티플렉싱과-hol-blocking)
 - [h2c, Cleartext Upgrade, Prior Knowledge, Routing](#h2c-cleartext-upgrade-prior-knowledge-routing)
@@ -124,7 +132,13 @@
   - [HTTP와 HTTPS 기초](./http-https-basics.md) — TLS 역할, 암호화·인증·무결성 입문
   - [IP 주소와 포트 기초](./ip-address-port-basics.md) — IP, 포트, 소켓 개념과 well-known port
   - [HTTP 버전 비교 입문](./http-versions-beginner-overview.md) — HTTP/1.1 vs HTTP/2 vs HTTP/3 핵심 차이
+  - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md) — H3 endpoint discovery가 coalescing 판단보다 먼저라는 감각
+  - [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md) — DevTools, DNS answer, curl/dig trace로 `Alt-Svc`와 HTTPS RR driven H3 discovery를 구분하는 입문
   - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) — 여러 origin이 언제 같은 H2/H3 연결을 공유할 수 있는지
+  - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md) — wildcard cert가 넓어도 CDN/LB 경계 때문에 일부 host만 같은 connection을 써야 하는 이유
+  - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md) — ORIGIN으로 재사용 범위를 좁히고 `421`로 잘못된 공유를 되돌리는 후속 primer
+  - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md) — DevTools, curl, proxy log에서 `421` wrong-connection 신호를 `403/404`와 구분하는 실전 입문
+  - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md) — H3에서 ORIGIN frame 없이 certificate, Alt-Svc endpoint authority, `421`로 재사용 경계를 잡는 후속 primer
   - [웹소켓 기초](./websocket-basics.md) — HTTP Upgrade, 양방향 통신, ws vs wss
 - network `primer`부터 읽고 싶다면:
   - [레거시 primer](#레거시-primer)
@@ -133,7 +147,13 @@
   - [TCP 와 UDP](#tcp-와-udp)
   - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
   - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+  - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+  - [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
   - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+  - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+  - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+  - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+  - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
   - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
   - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
   - [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
@@ -144,7 +164,7 @@
   - [Vary와 Content Negotiation 기초: 언어, 압축, 응답 variant](./vary-content-negotiation-basics-language-compression.md)
   - [보조 primer](#보조-primer)
   - cookie / session / JWT 기본에서 auth/security/spring 경계로 올라가려면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md) -> [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md) -> [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md) -> [Browser Session Spring Auth](#network-bridge-browser-session-auth) anchor와 [Cross-Domain Bridge Map: HTTP Stateless / Cookie / Session / Spring Security](../../rag/cross-domain-bridge-map.md#bridge-http-session-security-cluster) route를 함께 탄다.
-  - `SavedRequest`, `401 -> 302` bounce, `hidden session mismatch`까지 보이면 먼저 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)으로 browser redirect/cookie 흐름을 고정한 뒤 [Browser Session Spring Auth](#network-bridge-browser-session-auth) anchor에서 browser/session boundary ladder를 따라간다.
+  - `cookie 있는데 다시 로그인`, `saved request bounce`, `SavedRequest`, `401 -> 302` bounce, `hidden session mismatch`는 같은 beginner ladder로 묶는다. 먼저 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)으로 browser redirect/cookie 흐름을 고정하고, 다음 한 걸음으로 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 거친 뒤 [Browser Session Spring Auth](#network-bridge-browser-session-auth) anchor에서 browser/session boundary ladder를 따라간다.
 - 운영형 `deep dive catalog`에서 bucket을 먼저 고르려면:
   - [현대 topic catalog](#현대-topic-catalog)
   - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
@@ -191,7 +211,13 @@
 | URL 입력부터 request/response와 status code까지 한 번에 복습 | `primer` | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md) |
 | HTTP/1.1, HTTP/2, HTTP/3 차이를 connection reuse와 HOL blocking 중심으로 빠르게 비교 | `primer` | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) |
 | 브라우저가 왜 첫 요청은 H2인데 다음엔 H3를 쓸 수 있는지, 언제 H1/H2로 fallback 되는지 이해 | `primer / browser protocol negotiation` | [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md), [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md) |
+| 브라우저가 H3 endpoint를 응답의 `Alt-Svc`로 배우는지, DNS의 HTTPS RR/SVCB로 먼저 아는지, 그리고 이 discovery가 coalescing보다 먼저라는 흐름을 이해 | `bridge primer / discovery mental model` | [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md), [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md), [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) |
+| DevTools, DNS answer, `curl`/`dig` trace로 H3 discovery가 `Alt-Svc` driven인지 HTTPS RR driven인지 확인 | `primer / discovery observability` | [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md), [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md), [DNS 기초](./dns-basics.md) |
 | 서로 다른 origin이 왜 하나의 H2/H3 connection을 공유할 수 있고, 언제 `421`로 끊어야 하는지 이해 | `primer / connection reuse boundary` | [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md), [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) |
+| wildcard cert가 여러 host를 덮더라도 왜 CDN/LB 경계 때문에 일부 origin만 같은 connection을 써야 하는지 concrete example로 이해 | `primer / wildcard cert boundary example` | [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md), [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md), [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md) |
+| `ORIGIN` frame이 coalescing 범위를 어떻게 좁히고 `421`이 wrong-connection retry를 어떻게 유도하는지 이해 | `follow-up primer / connection reuse guardrail` | [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md), [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) |
+| DevTools, curl, proxy log에서 `421`이 `403/404`와 어떻게 다르게 보이는지 빠르게 판독 | `primer / troubleshooting entry` | [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md), [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md), [HTTP 상태 코드 기초](./http-status-codes-basics.md) |
+| H3에서 `ORIGIN` frame 없이 certificate scope, `Alt-Svc` endpoint authority, `421` recovery로 cross-origin reuse를 지키는 흐름을 이해 | `follow-up primer / H3 reuse guardrail` | [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md), [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md), [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md) |
 | 브라우저가 cookie를 저장/전송하고 session/JWT가 request에 어디 실리는지 이해 | `primer / auth bridge` | [Browser Session Spring Auth](#network-bridge-browser-session-auth), [Cross-Domain Bridge Map: HTTP Stateless / Cookie / Session / Spring Security](../../rag/cross-domain-bridge-map.md#bridge-http-session-security-cluster) |
 | 브라우저 login redirect, `302`, 숨은 `JSESSIONID`, `SavedRequest` 복귀를 Spring deep dive 전에 묶어서 이해 | `primer / auth bridge` | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md), [Browser Session Spring Auth](#network-bridge-browser-session-auth) |
 | `SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`가 브라우저 동작과 CSRF 노출을 각각 어떻게 바꾸는지 이해 | `primer / cookie security boundary` | [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md), [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md), [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md) |
@@ -214,7 +240,7 @@
 
 ### 1. TCP / HTTP Version Progression
 
-[OSI 7 계층](#osi-7-계층) -> [TCP 와 UDP](#tcp-와-udp) -> [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md) -> [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md) -> [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) -> [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) -> [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) -> [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) -> [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md)
+[OSI 7 계층](#osi-7-계층) -> [TCP 와 UDP](#tcp-와-udp) -> [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md) -> [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md) -> [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) -> [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) -> [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md) -> [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md) -> [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) -> [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md) -> [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md) -> [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md) -> [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md) -> [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) -> [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md)
 
 ### 2. Proxy / Mesh / Trust Boundary
 
@@ -546,8 +572,31 @@ POST 방식은 다음과 같은 특징이 있다.
 
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
 - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 - [ALPN Negotiation Failure, Routing Mismatch](./alpn-negotiation-failure-routing-mismatch.md)
+- [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
+
+## Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge
+
+> 브라우저가 H3 endpoint를 응답의 `Alt-Svc`로 배우는지, DNS의 HTTPS RR/SVCB로 먼저 아는지, 그리고 이 discovery가 왜 coalescing 판단보다 앞단에 있는지를 이어 주는 beginner bridge다
+
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
+- [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+- [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
+
+## H3 Discovery Observability Primer
+
+> DevTools의 `Protocol`, response `Alt-Svc`, DNS HTTPS RR/SVCB answer, `curl`/`dig` trace를 함께 보며 H3 discovery source를 beginner 수준에서 구분하는 관측 primer다
+
+- [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+- [DNS 기초](./dns-basics.md)
 - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 
 ## HTTP/2와 HTTP/3 Connection Coalescing 입문
@@ -555,9 +604,55 @@ POST 방식은 다음과 같은 특징이 있다.
 > 여러 origin이 언제 같은 H2/H3 connection을 공유할 수 있는지, certificate, endpoint, routing, `421 Misdirected Request` 관점으로 먼저 잡는 beginner primer다
 
 - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
 - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
+
+## Wildcard Certificate vs Routing Boundary Primer
+
+> wildcard cert가 여러 host를 덮더라도 왜 CDN/LB 경계 때문에 일부 origin만 같은 connection을 써야 하는지 concrete CDN/LB example로 설명하는 beginner primer다
+
+- [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+- [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
+- [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
+- [SNI, Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
+
+## HTTP/2 ORIGIN Frame와 421 입문
+
+> 브라우저가 cross-origin reuse 후보를 만든 뒤, 서버가 `ORIGIN` frame으로 범위를 미리 좁히고 `421`로 잘못된 재사용을 되돌리는 흐름을 설명하는 beginner follow-up primer다
+
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+- [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+
+## HTTP 421 Troubleshooting Trace Examples
+
+> Browser DevTools, curl, proxy log에서 `421 Misdirected Request`가 `403 Forbidden`, `404 Not Found`와 다르게 보이는 trace 신호를 먼저 잡는 beginner troubleshooting entrypoint다
+
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- [Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB](./vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md)
+
+## HTTP/3 Cross-Origin Reuse Guardrails Primer
+
+> H3에서 H2의 `ORIGIN` frame 없이 certificate scope, `Alt-Svc` endpoint authority, `421 Misdirected Request`로 cross-origin reuse 경계를 잡는 beginner follow-up primer다
+
+- [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
+- [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 
 ## h2c, Cleartext Upgrade, Prior Knowledge, Routing
 

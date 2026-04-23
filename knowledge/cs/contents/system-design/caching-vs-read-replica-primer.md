@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache는 같은 읽기를 아예 줄이는 전략이고 read replica는 DB 읽기 처리량을 늘리는 전략이며, 둘 다 stale 문제가 있지만 원인과 대응이 다르다는 점을 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scaling primer, cache invalidation basics, stale read basics, stale-if-error, cache-first read scaling, read replica basics, cache-aside vs read replica, read-after-write basics, read-after-write routing primer, replica lag basics, primary fallback, session pinning primer, read-only downgrade, session stickiness, strong read consistency, cache miss storm, mixed cache replica read path, dual stale source, cache miss stale replica, beginner database scaling
+retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scaling primer, cache invalidation basics, stale read basics, stale-if-error, cache-first read scaling, read replica basics, cache-aside vs read replica, read-after-write basics, read-after-write routing primer, replica lag basics, primary fallback, session pinning primer, read-only downgrade, session stickiness, strong read consistency, cache miss storm, mixed cache replica read path, dual stale source, cache miss stale replica, mixed cache replica freshness bridge, cache hit miss refill consistency, rejected hit observability, replica fallback reason, refill no-fill reason, beginner database scaling
 
 **난이도: 🟢 Beginner**
 
@@ -12,6 +12,8 @@ retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scali
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+- [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
 - [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)
 - [분산 캐시 설계](./distributed-cache-design.md)
@@ -182,7 +184,7 @@ read path:
 - source selection 규칙이 없으면 화면마다 값이 갈라질 수 있다
 
 그래서 둘을 같이 둘수록 "무엇을 어디서 읽을지"를 더 엄격히 정해야 한다.
-이 mixed read path의 dual stale source, source-selection 규칙, observability는 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 본다.
+이 mixed read path의 request-carried freshness context, hit/miss/refill bridge는 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)에서, rejected hit/fallback/no-fill 관측성은 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)에서, dual stale source와 source-selection/observability pitfall은 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 본다.
 
 ### 7. 초보자가 자주 하는 오해
 

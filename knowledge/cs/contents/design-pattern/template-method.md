@@ -5,6 +5,7 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
+> - [템플릿 메소드 패턴 기초](./template-method-basics.md)
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](./template-method-framework-lifecycle-examples.md)
 > - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
@@ -14,11 +15,13 @@
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: template method pattern, template method beginner, algorithm skeleton, fixed workflow inheritance, hook method, hook method vs abstract method, final template method, template method vs strategy, framework callback skeleton, framework native template method, servlet doGet doPost, OncePerRequestFilter doFilterInternal, onceperrequestfilter template method, filter chain vs template method, handlerinterceptor not template method, junit setUp tearDown, xUnit fixture template method, when not to use template method, inheritance explosion, composition over inheritance, inheritance vs composition template method, 상속으로 할까 조합으로 할까, 상속으로 흐름 고정, 부모 클래스가 순서 고정, abstract class skeleton vs strategy object, extends vs injected policy, subclass hook vs composition
+retrieval-anchor-keywords: template method pattern, template method deep dive, algorithm skeleton, fixed workflow inheritance, hook method, hook method vs abstract method, abstract step vs hook method, final template method, template method vs strategy, framework callback skeleton, framework native template method, servlet doGet doPost, OncePerRequestFilter doFilterInternal, onceperrequestfilter template method, filter chain vs template method, handlerinterceptor not template method, junit setUp tearDown, xUnit fixture template method, when not to use template method, inheritance explosion, composition over inheritance, inheritance vs composition template method, 상속으로 할까 조합으로 할까, 상속으로 흐름 고정, 부모 클래스가 순서 고정, abstract class skeleton vs strategy object, extends vs injected policy, subclass hook vs composition
 
 ---
 
 ## 핵심 개념
+
+`hook method`와 `abstract step`을 처음 배우는 중이면 먼저 [템플릿 메소드 패턴 기초](./template-method-basics.md)에서 "필수 빈칸 vs 선택 빈칸"으로 큰 그림을 잡고 온다.
 
 템플릿 메소드 패턴은 **공통 흐름을 한곳에 고정**하려고 쓴다.  
 초보자가 이 패턴을 처음 볼 때 놓치기 쉬운 핵심은 "상속으로 재사용"보다 **순서를 통제**하는 데 있다.

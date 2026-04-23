@@ -1,0 +1,261 @@
+# Policy Object vs Strategy Map: 커지는 전략 맵을 규칙 객체로 올릴 때
+
+> 한 줄 요약: `Map<Key, Strategy>`가 "키로 행동을 고르는 메뉴"라면 그대로 strategy map이고, 키보다 규칙 판정과 이유가 중요해지면 policy object로 올리는 편이 읽기 쉽다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [전략 패턴 기초](./strategy-pattern-basics.md)
+> - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
+> - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
+> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+> - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
+> - [Policy Registry Pattern: 정책 객체를 키로 찾아 조합하기](./policy-registry-pattern.md)
+> - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
+> - [디자인 패턴 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy object, growing strategy map smell, Map Key Strategy policy object, strategy collection vs policy object, behavior selector vs rule object, policy selector beginner, refund policy decision object, discount strategy map smell, strategy map rule explosion, strategy map beginner bridge, policy object beginner bridge, rule deserves policy object, rich decision result vs strategy result, strategy selector with policy object, policy registry beginner, 전략 맵 정책 객체, strategy map 커질 때, Map 으로 전략 고르기 정책 객체, 행동 선택기 vs 규칙 객체, 정책 객체 초급, 규칙 판정 객체, 환불 정책 decision, 할인 전략 맵 냄새, strategy map 에 if 가 늘어남
+
+---
+
+## 먼저 머릿속 그림
+
+전략 맵과 정책 객체는 둘 다 `if-else`를 줄이는 데 쓰일 수 있다.
+그래서 처음 보면 거의 같은 모양처럼 보인다.
+
+하지만 머릿속 그림은 다르다.
+
+- **Strategy map**: 메뉴판에서 하나를 고른다. "카드 결제면 카드 전략, 포인트 결제면 포인트 전략."
+- **Policy object**: 판정표로 결정을 내린다. "이 주문은 환불 가능한가, 수수료는 얼마인가, 거절 사유는 무엇인가."
+
+짧게 외우면 이렇게 된다.
+
+**키로 행동을 고르면 strategy map, 규칙으로 결정을 내리면 policy object다.**
+
+---
+
+## 30초 구분표
+
+| 질문 | Strategy map으로 남겨도 좋다 | Policy object로 올리는 게 좋다 |
+|---|---|---|
+| 중심 질문 | 어떤 행동을 실행할까 | 어떤 규칙으로 판단할까 |
+| 선택 기준 | 결제수단, 배송타입처럼 단순한 key | 상태, 시간, 등급, 예외 조건이 함께 작동 |
+| 꺼낸 뒤 하는 일 | 같은 메서드를 실행한다 | 허용/거절, 이유, 금액, 등급을 판정한다 |
+| 새 코드가 생기는 이유 | 새 행동 방식이 추가된다 | 새 규칙 조항이나 예외가 추가된다 |
+| 결과 모양 | 계산값, 실행 결과 | `Decision`, `Reason`, `Fee`, `Level` 같은 판정 결과 |
+| 좋은 이름 | `PaymentStrategySelector`, `ShippingStrategyMap` | `RefundPolicy`, `CancellationPolicy`, `DiscountPolicy` |
+
+핵심은 자료구조가 아니다.
+`Map<Key, Something>`을 쓰더라도, 그 `Something`이 **단순 실행 방식**인지 **도메인 판정 규칙**인지가 더 중요하다.
+
+---
+
+## Strategy map으로 충분한 예
+
+결제 수단별로 실제 결제 실행 방식만 바뀐다고 하자.
+
+```java
+public interface PaymentStrategy {
+    PaymentResult pay(Order order);
+}
+
+public final class PaymentStrategySelector {
+    private final Map<PaymentMethod, PaymentStrategy> strategies;
+
+    public PaymentStrategySelector(Map<PaymentMethod, PaymentStrategy> strategies) {
+        this.strategies = strategies;
+    }
+
+    public PaymentResult pay(PaymentMethod method, Order order) {
+        PaymentStrategy strategy = strategies.get(method);
+        if (strategy == null) {
+            throw new IllegalArgumentException("unsupported method: " + method);
+        }
+        return strategy.pay(order);
+    }
+}
+```
+
+이 구조는 strategy map으로 충분하다.
+
+- key가 `PaymentMethod` 하나로 단순하다.
+- 후보들은 모두 `PaymentStrategy`라는 같은 역할이다.
+- lookup 직후 `pay(...)`라는 같은 행동을 실행한다.
+- 새 항목은 "새 결제 방식"을 추가한다는 뜻이다.
+
+즉 이 코드는 "규칙을 판정한다"보다 "실행 방식을 고른다"에 가깝다.
+
+---
+
+## Policy object가 필요해지는 예
+
+처음에는 할인도 아래처럼 단순한 strategy map으로 시작할 수 있다.
+
+```java
+public interface DiscountStrategy {
+    int discountAmount(Order order);
+}
+
+public final class DiscountService {
+    private final Map<MemberGrade, DiscountStrategy> discounts;
+
+    public int discount(Order order) {
+        DiscountStrategy strategy = discounts.get(order.memberGrade());
+        return strategy.discountAmount(order);
+    }
+}
+```
+
+그런데 시간이 지나면서 `VipDiscountStrategy` 안에 이런 조건이 늘어난다고 하자.
+
+```java
+public final class VipDiscountStrategy implements DiscountStrategy {
+    @Override
+    public int discountAmount(Order order) {
+        if (order.hasCoupon()) {
+            return 0;
+        }
+        if (order.isFirstOrder()) {
+            return 5000;
+        }
+        if (order.totalPrice() < 30000) {
+            return 1000;
+        }
+        return 3000;
+    }
+}
+```
+
+이제 이름은 `Strategy`지만 실제 관심사는 점점 "VIP 할인 실행 방식"이 아니다.
+관심사는 이런 판정에 가까워진다.
+
+- 쿠폰과 멤버십 할인은 함께 적용 가능한가
+- 첫 주문이면 어떤 우선순위를 갖는가
+- 최소 주문 금액 미달이면 왜 할인 금액이 줄어드는가
+- 사용자에게 어떤 reason code를 보여 줄 것인가
+
+이때는 정책 객체가 더 읽기 쉽다.
+
+```java
+public interface DiscountPolicy {
+    DiscountDecision evaluate(Order order);
+}
+
+public record DiscountDecision(int amount, String reasonCode) {}
+
+public final class VipDiscountPolicy implements DiscountPolicy {
+    @Override
+    public DiscountDecision evaluate(Order order) {
+        if (order.hasCoupon()) {
+            return new DiscountDecision(0, "COUPON_ALREADY_APPLIED");
+        }
+        if (order.isFirstOrder()) {
+            return new DiscountDecision(5000, "VIP_FIRST_ORDER");
+        }
+        if (order.totalPrice() < 30000) {
+            return new DiscountDecision(1000, "VIP_MINIMUM_AMOUNT_NOT_MET");
+        }
+        return new DiscountDecision(3000, "VIP_STANDARD");
+    }
+}
+```
+
+바뀐 점은 "객체를 더 만들었다"가 아니다.
+규칙의 의미가 코드에 더 직접적으로 드러난다.
+
+- `discountAmount(...)`보다 `evaluate(...)`가 판정 느낌을 준다.
+- `int` 하나보다 `DiscountDecision`이 금액과 이유를 함께 전한다.
+- 테스트 이름도 `coupon_already_applied_returns_zero_discount`처럼 규칙 문장에 가까워진다.
+
+---
+
+## 전략 맵을 유지할지 묻는 체크리스트
+
+아래에 많이 해당하면 strategy map으로 남겨도 괜찮다.
+
+- key 하나로 후보를 고르는 설명이 충분하다.
+- 후보들이 같은 인터페이스의 같은 메서드를 실행한다.
+- 반환값이 단순 계산 결과나 실행 결과다.
+- 새 항목을 추가할 때 "새 방식이 생겼다"고 말할 수 있다.
+- 각 전략 안의 조건문이 작고, 도메인 예외 설명이 거의 없다.
+
+예를 들면 `PaymentMethod -> PaymentStrategy`, `ShippingType -> ShippingStrategy`는 보통 이쪽이다.
+
+---
+
+## Policy object로 올릴지 묻는 체크리스트
+
+아래에 많이 해당하면 policy object를 고려한다.
+
+- key 하나로는 규칙을 설명하기 어렵다.
+- 상태, 시간, 금액, 등급, 예외 조건이 함께 판정에 들어간다.
+- 호출자가 `allowed`, `reasonCode`, `fee`, `discountAmount`, `nextAction` 같은 결과를 함께 필요로 한다.
+- "새 결제 방식"이 아니라 "새 규칙 조항"이 자주 추가된다.
+- 전략 클래스 안에 `if`, `else if`, `return 0`, `throw`가 계속 늘어난다.
+- 테스트가 "어떤 구현을 썼나"보다 "어떤 조건에서 왜 허용/거절되나"를 묻는다.
+
+예를 들면 `RefundPolicy`, `CancellationPolicy`, `DiscountPolicy`, `ApprovalPolicy`는 보통 이쪽이다.
+
+---
+
+## 둘은 같이 쓸 수도 있다
+
+초보자가 자주 놓치는 부분은 이것이다.
+strategy map과 policy object는 반드시 둘 중 하나만 고르는 관계가 아니다.
+
+예를 들어 지역별 환불 규정이 다르면 이렇게 둘을 조합할 수 있다.
+
+```java
+public final class RefundPolicySelector {
+    private final Map<Region, RefundPolicy> policies;
+
+    public RefundPolicy select(Region region) {
+        RefundPolicy policy = policies.get(region);
+        if (policy == null) {
+            throw new IllegalArgumentException("unsupported region: " + region);
+        }
+        return policy;
+    }
+}
+```
+
+```java
+RefundPolicy policy = refundPolicySelector.select(order.region());
+RefundDecision decision = policy.evaluate(order);
+```
+
+여기서 역할은 분리된다.
+
+- `RefundPolicySelector`: 지역 key로 어떤 정책을 쓸지 고른다.
+- `RefundPolicy`: 주문을 보고 환불 가능 여부와 이유를 판정한다.
+- `RefundDecision`: 호출자가 써야 할 결과를 담는다.
+
+즉 `Map<Region, RefundPolicy>`는 policy object를 고르는 selector일 수 있다.
+그렇다고 policy object의 규칙까지 selector 안에 넣어야 하는 것은 아니다.
+
+---
+
+## 흔한 오해
+
+- **"`Map<Key, Policy>`면 strategy map인가요?"**
+  - map은 선택 도구다. 값이 정책 객체라면 전체 구조는 "정책 선택 + 정책 판정"으로 읽는 편이 더 정확하다.
+- **"`Strategy` 이름을 `Policy`로 바꾸면 해결인가요?"**
+  - 아니다. 반환값과 테스트가 여전히 단순 실행 방식이면 이름만 바꾼 것이다.
+- **"조건문이 하나라도 있으면 무조건 policy object인가요?"**
+  - 아니다. 작은 guard나 입력 검증은 전략 안에 있어도 된다. 규칙 설명, reason code, 예외 조항이 중심이 될 때 옮긴다.
+- **"Policy object도 구현체가 여러 개면 결국 strategy 아닌가요?"**
+  - 구조는 비슷할 수 있다. 하지만 독자가 읽어야 할 의미가 "실행 방식"인지 "규칙 판정"인지가 이름을 결정한다.
+
+---
+
+## 다음에 이어서 보면 좋은 문서
+
+- `Map<Key, ...>`가 registry인지 strategy인지 먼저 가르고 싶다면 [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
+- policy object 자체를 더 깊게 보고 싶다면 [Policy Object Pattern](./policy-object-pattern.md)
+- strategy, state, policy object를 한 번에 비교하려면 [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+- 선택기가 전역 조회소처럼 커지는 냄새는 [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
+
+## 한 줄 정리
+
+strategy map은 **이미 있는 후보 중 어떤 행동을 실행할지 고르는 구조**다.
+규칙의 이유, 수수료, 허용 여부, 예외 조항이 코드의 중심이 되면 그 행동 후보 안쪽을 **policy object**로 올리는 편이 더 명확하다.

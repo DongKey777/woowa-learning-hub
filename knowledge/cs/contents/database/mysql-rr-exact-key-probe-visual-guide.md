@@ -1,0 +1,128 @@
+# MySQL RR exact-key probe visual guide
+
+> 한 줄 요약: InnoDB `REPEATABLE READ`의 exact-key locking read는 같은 key insert를 잠깐 줄 세우는 데 도움이 될 수 있지만, 그 직관은 matching index path와 같은 isolation이 유지될 때만 맞고, 실제 정합성 backstop은 여전히 `UNIQUE`다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
+- [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
+- [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md)
+- [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md)
+- [database 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: mysql rr exact key probe, mysql repeatable read duplicate check, innodb next key duplicate check, exact key for update beginner, exact key for share beginner, duplicate insert race mysql, why rr worked then broke, read committed duplicate check mysql, chosen index path duplicate probe, mysql unique key vs next key, 0 row for share exact key, 왜 rr에서만 막혀요, mysql duplicate check basics
+
+## 핵심 개념
+
+먼저 "정렬된 책꽂이" 그림으로 보면 쉽다. InnoDB 인덱스는 key 순서대로 꽂힌 책꽂이와 비슷하다. exact-key probe는 "`(coupon_id, member_id) = (7, 11)` 자리 있나요?"처럼 **한 칸**을 찾는 동작이다.
+
+`REPEATABLE READ`에서 locking read를 하면 InnoDB는 그 칸 주변 gap/next-key를 잠깐 붙잡을 수 있다. 그래서 뒤에서 같은 칸에 책을 꽂으려는 insert가 잠시 대기하는 모습이 나온다. 다만 잠그는 것은 "`WHERE` 절 전체 의미"가 아니라 **실제로 스캔한 인덱스 자리**다.
+
+입문자용 기억법은 이 두 줄이면 충분하다.
+
+- exact-key duplicate check는 "같은 칸을 먼저 만졌는가"의 문제다
+- correctness의 마지막 문은 next-key가 아니라 `UNIQUE`가 닫는다
+
+## 한눈에 보기
+
+| 장면 | 무엇이 보이나 | 초보자 기억법 |
+|---|---|---|
+| RR + full-key equality + matching index | 같은 key insert가 잠시 기다리거나, 뒤에서 duplicate error를 맞는다 | 같은 책꽂이의 같은 칸 |
+| RC로 내림 | search gap 보호가 약해져 probe-first 직관이 바로 흔들린다 | 책꽂이는 같아도 줄 세우는 표식이 사라짐 |
+| plan/path가 바뀜 | 잠금은 원래 상상한 key slot이 아니라 chosen index path를 따라간다 | 다른 칸을 더듬고 있었을 수 있음 |
+| `UNIQUE`가 없음 | RR 테스트는 통과해도 hard backstop이 없다 | 줄 세우는 도우미는 있어도 출입문 잠금장치는 없음 |
+
+## 상세 분해
+
+### 1. 직관이 맞는 가장 좁은 장면
+
+`UNIQUE(coupon_id, member_id)`가 있고, probe도 그 full key를 그대로 탄다고 가정하자.
+
+```text
+index uq_coupon_member
+...(7,10) | [ gap for (7,11) ] | (7,12)...
+                      ^
+                  exact-key probe
+```
+
+```sql
+SELECT 1
+FROM coupon_issue
+WHERE coupon_id = :coupon_id
+  AND member_id = :member_id
+FOR SHARE;
+```
+
+여기서 `0 row`가 나와도 RR이라면 `(7,11)`이 들어갈 index slot 주변 gap/next-key가 잠깐 잠길 수 있다. 그래서 다른 세션이 **같은 key**를 insert하려고 오면 대기하거나, 앞선 트랜잭션이 insert/commit한 뒤 duplicate error를 본다.
+
+이 장면에서 next-key가 도움 되는 이유는 "`없음` 전체를 잠가서"가 아니라, **같은 ordered key slot을 두 세션이 같이 노리고 있기 때문**이다.
+
+### 2. isolation이 바뀌면 왜 바로 깨지나
+
+같은 SQL이라도 `READ COMMITTED`로 내리면 search gap protection을 기대하기 어렵다. 그러면 둘 다 `0 row`를 보고 insert 쪽으로 달릴 수 있다.
+
+- `UNIQUE`가 있으면 늦게 들어온 쪽이 duplicate error를 맞는다
+- `UNIQUE`가 없으면 진짜 중복 row가 생길 수 있다
+
+즉 RR에서 보던 "probe가 먼저 줄을 세워 준다"는 체감은 isolation이 바뀌는 순간 보너스에서 사라진다.
+
+### 3. plan/path가 바뀌면 왜 같은 SQL처럼 보여도 달라지나
+
+next-key는 business 문장을 잠그지 않고 chosen index path를 따른다. 그래서 아래처럼 probe 모양이 흔들리면 직관도 같이 흔들린다.
+
+- `LOWER(email) = LOWER(:email)`처럼 함수가 끼어 exact-key index probe가 깨진다
+- 필요한 composite index가 없어 더 넓은 range를 스캔한다
+- 통계나 인덱스 추가로 optimizer가 다른 경로를 고른다
+- 어떤 writer는 probe 후 insert하지만, 다른 writer는 바로 insert한다
+
+핵심은 "`같은 SQL 텍스트`"가 아니라 "`같은 key slot을 같은 protocol로 건드렸는가`"다.
+
+## 흔한 오해와 함정
+
+- "RR exact-key probe면 uniqueness가 보장된다"
+  - 아니다. backstop은 `UNIQUE`다. next-key는 앞단 queue를 조금 만들어 줄 뿐이다.
+- "`0 row`였으니 아무것도 안 잠겼다"
+  - RR에서는 exact-key 주변 scanned gap이 남을 수 있다.
+- "`FOR UPDATE`면 `FOR SHARE`보다 무조건 안전하다"
+  - empty-result exact-key에서는 lock 세기보다 **같은 index path를 탔는지**가 더 중요하다.
+- "테스트에서 한 번 막혔으니 앞으로도 계속 막힌다"
+  - RC 전환, 함수 추가, 인덱스 변경, optimizer plan drift가 오면 바로 다른 결과가 나온다.
+
+## 실무에서 쓰는 모습
+
+exact duplicate check를 beginner-safe하게 가져가려면 순서를 이렇게 잡는 편이 낫다.
+
+1. 먼저 `UNIQUE(coupon_id, member_id)` 같은 hard constraint를 둔다.
+2. duplicate retry 폭주를 조금 줄이고 싶다면 RR exact-key probe를 **보조 장치**로 둔다.
+3. 문서나 코드 리뷰에서 "이 로직은 RR + full-key equality + matching index를 전제한다"를 명시한다.
+4. RC 전환이나 predicate 변경이 생기면 `EXPLAIN`과 동시성 재현을 다시 돌린다.
+
+짧게 말해, exact-key probe는 "`중복을 막는 주인공`"이 아니라 "`같은 key 경합을 조금 일찍 보이게 하는 조연`"으로 두는 편이 덜 틀린다.
+
+## 더 깊이 가려면
+
+- exact-key와 overlap을 한 번에 비교하려면 [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
+- `0 row` 뒤에 실제로 어떤 gap/next-key가 남는지 더 깊게 보려면 [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- RR 가정이 plan/path 의존인지 체크리스트로 확인하려면 [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
+- 애플리케이션 코드에서 `PESSIMISTIC_WRITE` 착시로 이어지는 지점을 보려면 [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md), [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md)
+
+## 면접/시니어 질문 미리보기
+
+> Q. MySQL RR exact-key probe가 duplicate check에 도움 되는 이유는 뭔가요?
+> 의도: next-key를 "`WHERE` 전체 잠금"이 아니라 same-key slot queue로 설명할 수 있는지 확인
+> 핵심: absent key 주변 scanned gap/next-key가 남아 같은 ordered key insert를 잠시 대기시킬 수 있기 때문이다.
+
+> Q. 그런데 왜 `UNIQUE`가 여전히 필요하죠?
+> 의도: 보조 잠금과 hard correctness backstop을 분리하는지 확인
+> 핵심: isolation이나 chosen index path가 바뀌면 probe 직관은 깨질 수 있지만, `UNIQUE`는 write 시점 충돌을 끝까지 강제하기 때문이다.
+
+> Q. RR에서 잘 되던 코드가 RC에서 왜 갑자기 duplicate error를 많이 내나요?
+> 의도: isolation change가 queue surface를 어떻게 바꾸는지 이해하는지 확인
+> 핵심: RC에서는 search gap protection을 기대하기 어려워져 concurrent insert가 probe를 지나 더 자주 경합하기 때문이다.
+
+## 한 줄 정리
+
+MySQL RR exact-key probe는 같은 key insert를 잠깐 줄 세우는 데는 도움이 되지만, 그 직관은 matching index path와 isolation이 유지될 때만 맞고, 실제 duplicate safety는 결국 `UNIQUE`가 책임진다.

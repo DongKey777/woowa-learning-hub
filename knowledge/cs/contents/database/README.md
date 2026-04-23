@@ -77,13 +77,16 @@
 - [SQL 조인 기초](./sql-join-basics.md) — INNER·LEFT·RIGHT·FULL OUTER JOIN 포함 범위
 - [커넥션 풀 기초](./connection-pool-basics.md) — 연결 재사용 원리, 풀 크기 설정 기준
 
-Cycle 2 추가 — 5편:
+Cycle 2 추가 — 7편:
 
 - [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) — READ COMMITTED·REPEATABLE READ·SERIALIZABLE 4단계와 Dirty/Non-Repeatable/Phantom Read
 - [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) — 저수준 API vs ORM vs SQL 매퍼 차이
 - [기본 키와 외래 키 기초](./primary-foreign-key-basics.md) — PK 종류, FK 참조 무결성, ON DELETE 옵션
 - [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md) — COUNT·SUM·AVG, WHERE vs HAVING 실행 순서
 - [락 기초](./lock-basics.md) — 공유락·배타락, 낙관적·비관적 락, 데드락 입문
+- [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md) — `0 row FOR UPDATE`가 언제 absence check를 보호하지 못하는지, exact duplicate와 overlap 예제로 바로 잡는 beginner follow-up
+- [MySQL RR exact-key probe visual guide](./mysql-rr-exact-key-probe-visual-guide.md) — exact duplicate check에서 RR next-key가 언제 같은 key insert를 줄 세우고, RC나 plan/path drift에서 왜 그 직관이 깨지는지 보여주는 beginner bridge
+- [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md) — RR에서 안전해 보이던 exact-key duplicate pre-check가 RC 전환 후 왜 duplicate race/error를 더 자주 드러내는지 설명하는 짧은 beginner note
 
 - 전체 흐름 `survey`가 먼저 필요하면:
   - [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey)
@@ -124,6 +127,8 @@ Cycle 2 추가 — 5편:
   - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md): 최소 인원, capacity oversell, overlap absence-check race를 사례별로 구분해 본다.
   - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md): guard row, slotization, reservation ledger처럼 규칙을 저장 시점 enforcement로 내리는 방법을 정리한다.
   - [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md): `find...ForUpdate()`가 `0 row`일 때 무엇이 안 잠기는지, overlap/capacity에서 언제 constraint, guard row, native SQL로 전환해야 하는지 Spring/JPA 예제로 정리한다.
+  - [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md): `없으면 insert`, duplicate insert race, idempotency key, booking slot claim, day guard를 한 장에서 비교하는 beginner chooser다.
+  - [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md): RR exact-key pre-check가 RC 전환 후 duplicate-key error와 retry를 더 자주 surface시키는 이유를 beginner 기준으로 정리한다.
   - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): `unique-slot`, exclusion constraint, guard row를 booking overlap의 시간 모델, 엔진 적합성, 패배 요청 비용 기준으로 먼저 비교하는 primer다.
   - [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md): capacity, quota, minimum staffing 같은 count/sum invariant에서 1차 차단, bounded retry, drift repair를 어떻게 조합할지 비교한다.
   - `[playbook]` [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md): `40001`/`40P01`/timeout을 어떻게 분류하고, retry budget과 alert threshold를 minimum staffing, quota path에 어떻게 거는지 정리한다.
@@ -184,7 +189,7 @@ Cycle 2 추가 — 5편:
 
 ### 1. Transaction / Locking / Invariant
 
-[트랜잭션 격리수준과 락](./transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) -> [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md) -> [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md) -> `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) -> [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md) -> [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md) -> [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) -> [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) -> [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md) -> [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md) -> [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md) -> [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md) -> [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md) -> [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md) -> [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md) -> [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md) -> [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md) -> [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md) -> [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md) -> `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+[트랜잭션 격리수준과 락](./transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) -> [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md) -> [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md) -> `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) -> [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md) -> [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md) -> [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) -> [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) -> [MySQL RR exact-key probe visual guide](./mysql-rr-exact-key-probe-visual-guide.md) -> [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md) -> [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md) -> [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md) -> [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md) -> [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md) -> [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md) -> [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md) -> [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md) -> [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md) -> [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md) -> [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md) -> [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md) -> `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 
 ### 2. Query Plan / Index / Write Path
 
@@ -224,6 +229,15 @@ Cycle 2 추가 — 5편:
 ### Identity / Authority Transfer 브리지
 
 - `authority transfer`, `SCIM deprovision`, `SCIM disable but still access`, `decision parity`, `auth shadow divergence` alias cluster의 database-side entrypoint다. security README에서는 같은 route를 `Identity / Delegation / Lifecycle`, system-design README에서는 `Database / Security Authority Bridge` -> `Verification / Shadowing / Authority Bridge`로 이어서 부른다.
+- 초보자용 mental model: 이 route는 "DB row backfill이 끝났나"만 보는 곳이 아니라, "새 identity source가 같은 allow/deny 결정을 내리고 old authority path를 지워도 되는가"를 확인하는 handoff다.
+
+| README label | 초보자가 먼저 확인할 질문 |
+|---|---|
+| Database: `Identity / Authority Transfer 브리지` | row/backfill parity가 auth 결정 근거로 쓸 만큼 맞는가 |
+| Security: `Identity / Delegation / Lifecycle` | session, claim, SCIM, authz cache에 old authority tail이 남는가 |
+| System Design: `Database / Security Authority Bridge` | mixed-version cutover와 capability rollout을 어떻게 운영할 것인가 |
+| System Design: `Verification / Shadowing / Authority Bridge` | shadow parity, decision log, audit evidence로 cleanup gate를 닫아도 되는가 |
+
 - authority transfer route를 category README bridge 기준으로 맞추려면 [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle), [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge), [System Design: Verification / Shadowing / Authority Bridge](../system-design/README.md#system-design-verification-shadowing-authority-bridge)를 함께 열어 둔다. database row parity -> security authority parity -> system-design retirement gate 순서의 handoff를 고정하는 entrypoint다.
 - authority transfer cutover를 database row parity 바깥까지 확장하려면 [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md), [System Design: Database / Security Identity Bridge Cutover 설계](../system-design/database-security-identity-bridge-cutover-design.md), [Security: Authorization Runtime Signals / Shadow Evaluation](../security/authorization-runtime-signals-shadow-evaluation.md), [Security: SCIM Deprovisioning / Session / AuthZ Consistency](../security/scim-deprovisioning-session-authz-consistency.md)를 같이 본다.
 
@@ -259,6 +273,9 @@ Cycle 2 추가 — 5편:
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md): dirty read, non-repeatable read, lost update, write skew, phantom을 isolation level과 guardrail confusion 축으로 한 장에 정리한 beginner entry
 - [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md): `READ COMMITTED`와 `REPEATABLE READ`가 관측 일관성에 어떤 차이를 만드는지 비교
 - [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md): `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`이 PostgreSQL과 MySQL에서 왜 같은 이름인데도 다른 직관을 만드는지 비교
+- [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md): `0 row FOR UPDATE`가 왜 absence check를 보호하지 못하는지, PostgreSQL과 MySQL 차이를 exact duplicate / overlap 예제로 설명하는 beginner entry
+- [MySQL RR exact-key probe visual guide](./mysql-rr-exact-key-probe-visual-guide.md): exact duplicate check에서 RR next-key가 언제 same-key insert를 막아 주는지, RC 전환이나 chosen index path 변화에서 왜 직관이 깨지는지 보여주는 beginner bridge
+- [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md): RR에서 안전해 보이던 exact-key duplicate pre-check가 RC 전환 뒤 duplicate race와 duplicate-key error를 더 많이 드러내는 이유를 설명하는 beginner note
 - `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md): PostgreSQL SSI에서 `40001`이 왜 정상 경쟁 결과인지, retry loop를 왜 `@Transactional` 바깥에 두어야 하는지 beginner 기준으로 정리
 - [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md): plain `SELECT`, locking read, `UPDATE`/`DELETE`가 PostgreSQL과 MySQL에서 같은 visibility 규칙을 따르지 않는다는 점을 portability 관점에서 정리
 - [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md): `same row / different row / new row` 기준으로 세 anomaly를 beginner 관점에서 한 번에 분리
@@ -343,6 +360,7 @@ Cycle 2 추가 — 5편:
 
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
+- [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md): single-key dedup, slot claim, 대표 guard queue 중 어디에 insert-if-absent 충돌을 모을지 고르는 beginner entry
 - [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): `ON CONFLICT` / `ON DUPLICATE KEY UPDATE`를 guard creation과 canonical lock ordering 관점에서 비교
 - `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
@@ -395,6 +413,7 @@ Cycle 2 추가 — 5편:
 
 `authority transfer`, `SCIM deprovision`, `SCIM disable but still access`, `decision parity`, `auth shadow divergence`, `deprovision tail`이 같이 보이면 schema migration이 identity/session/authz authority 이전과 엮인 상황이다.
 row parity만으로는 승격을 닫을 수 없다.
+이 section은 `deep dive` 본문이 아니라 category-local bridge다. 세부 원인은 아래 개별 문서로 내려가고, route label은 위 `Identity / Authority Transfer 브리지`와 같은 축으로 읽는다.
 읽는 순서를 README bridge entrypoint 기준으로 맞추려면 위 [Identity / Authority Transfer 브리지](#database-bridge-identity-authority), [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle), [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge), [System Design: Verification / Shadowing / Authority Bridge](../system-design/README.md#system-design-verification-shadowing-authority-bridge)를 같이 본다.
 
 - [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)
@@ -465,6 +484,7 @@ row parity만으로는 승격을 닫을 수 없다.
 - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md): 부재 기반 판단이 어떻게 minimum staffing, capacity, overlap race로 이어지는지 사례 중심으로 정리
 - [Write Skew Detection과 Compensation Patterns](./write-skew-detection-compensation-patterns.md)
 - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md): guard row, slotization, ledger로 range/set invariant를 저장 시점에 강제하는 패턴
+- [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md): exact key, discrete slot, 대표 guard queue 중 어느 충돌 surface가 맞는지 빠르게 고르는 beginner primer
 - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): `unique-slot`, exclusion constraint, guard row를 booking overlap의 시간 모델, 엔진 제약, queue shape 기준으로 비교하는 빠른 entry
 - [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md): count/sum invariant에서 guard row, bounded retry, reconciliation을 언제 조합할지 결정하는 가이드
 - `[playbook]` [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md): serializable 보호를 쓰는 minimum staffing, quota path에서 retry budget, SQLSTATE 분류, hot key 알람을 어떻게 잡을지 정리

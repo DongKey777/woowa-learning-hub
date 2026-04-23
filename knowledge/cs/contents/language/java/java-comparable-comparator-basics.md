@@ -9,15 +9,21 @@
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 > - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
+> - [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+> - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+> - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+> - [Mutable Fields Inside Sorted Collections](./treeset-treemap-mutable-comparator-fields-primer.md)
+> - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 > - [Java Collections 성능 감각](./collections-performance.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 > - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
-> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareTo basics, java compare method basics, java sorting beginner, java list sort comparator, java collections sort comparable, java Arrays.sort basics, java Arrays.binarySearch basics, java sort search same comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareTo equals consistency, java compareTo returning 0, java comparator comparing, java comparator thenComparing, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator utility patterns, java natural order beginner, java custom order beginner, java sorted collection duplicate surprise, java BigDecimal compareTo equals
+> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareTo basics, java compare method basics, java sorting beginner, java list sort comparator, java stream sorted comparator, java list sort vs stream sorted, java collections sort comparable, java Arrays.sort basics, java Arrays.binarySearch basics, java sort search same comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareTo equals consistency, java compareTo returning 0, java comparator comparing, java comparator thenComparing, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator utility patterns, java natural order beginner, java custom order beginner, java sorted collection duplicate surprise, java TreeSet natural ordering duplicate, java TreeMap natural ordering replace value, compareTo TreeSet TreeMap bridge, navigableset floor ceiling lower higher, navigablemap floorKey ceilingKey lowerKey higherKey, comparator order drives lookup behavior, mutable comparator field sorted collection, java BigDecimal compareTo equals
 
 <details>
 <summary>Table of Contents</summary>
@@ -316,7 +322,12 @@ public class ComparableComparatorExample {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 비교의 기본 개념을 먼저 더 단단히 잡으려면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
-- `Comparator.comparing`, `thenComparing`, `reversed`, `nullsLast`를 작은 정렬 예제로 손에 익히려면 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
+- `Comparator.comparing`, `comparingInt`/`Long`/`Double`, `thenComparing`, `reversed`, `nullsLast`를 작은 정렬 예제로 손에 익히려면 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
+- 같은 comparator를 `List.sort(...)`와 `stream.sorted(...)`에 재사용하는 입문 감각을 잡으려면 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+- wrapper 숫자 필드에서 comparator 선택이 왜 `null` 정책으로 바뀌는지 짧게 연결해 보려면 [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
+- `Comparator`를 넘기지 않은 `TreeSet`/`TreeMap`에서 natural ordering의 `compareTo()`가 중복과 값 교체에 미치는 영향을 보려면 [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+- `TreeSet`/`TreeMap`에서 tie-breaker가 실제 distinctness를 어떻게 바꾸는지 보려면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+- `TreeSet`/`TreeMap` 안에 넣은 뒤 비교 기준 필드를 바꾸면 조회와 정렬이 왜 어긋나는지 보려면 [Mutable Fields Inside Sorted Collections](./treeset-treemap-mutable-comparator-fields-primer.md)
 - 정렬된 컬렉션과 해시 컬렉션의 차이를 성능 감각까지 묶어 보려면 [Java Collections 성능 감각](./collections-performance.md)
 - `BigDecimal`의 `compareTo()`와 `equals()`가 왜 자주 문제를 만드는지 보려면 [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - 계약을 더 엄밀하게 보려면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)

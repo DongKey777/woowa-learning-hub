@@ -7,13 +7,15 @@
 > 관련 문서:
 > - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 > - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+> - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+> - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 > - [ALPN Negotiation Failure, Routing Mismatch](./alpn-negotiation-failure-routing-mismatch.md)
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 > - [QUIC Version Negotiation, Fallback Behavior](./quic-version-negotiation-fallback.md)
 
-retrieval-anchor-keywords: browser protocol negotiation, browser HTTP version selection, ALPN vs Alt-Svc, HTTP/1.1 fallback, HTTP/2 fallback, HTTP/3 fallback, browser protocol fallback, first request vs next request, TLS ALPN, Alt-Svc cache, h3 upgrade, h2 downgrade, UDP blocked H3, QUIC fallback, browser chooses h2 or http/1.1, browser chooses h3
+retrieval-anchor-keywords: browser protocol negotiation, browser HTTP version selection, ALPN vs Alt-Svc, HTTPS RR, SVCB, Alt-Svc vs HTTPS RR, HTTP/1.1 fallback, HTTP/2 fallback, HTTP/3 fallback, browser protocol fallback, first request vs next request, TLS ALPN, Alt-Svc cache, h3 upgrade, h2 downgrade, UDP blocked H3, QUIC fallback, browser chooses h2 or http/1.1, browser chooses h3, DNS H3 discovery
 
 <details>
 <summary>Table of Contents</summary>
@@ -111,7 +113,7 @@ retrieval-anchor-keywords: browser protocol negotiation, browser HTTP version se
 이 단계가 없으면 많은 경우 첫 연결은 그냥 TCP+TLS로 간다.
 
 참고로 최신 browser/CDN 조합에서는 `Alt-Svc` 말고 HTTPS RR/SVCB 같은 DNS 힌트로 H3 가능성을 먼저 아는 경우도 있다.  
-이 문서는 beginner용 기본 흐름인 **ALPN + `Alt-Svc` mental model**에 집중한다.
+이 문서는 beginner용 기본 흐름인 **ALPN + `Alt-Svc` mental model**에 집중하고, DNS 기반 discovery가 coalescing 입력으로 이어지는 다리는 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)에서 이어서 본다.
 
 ### 3. H3를 시도하면, 그 안에서 다시 ALPN으로 `h3`를 맞춘다
 

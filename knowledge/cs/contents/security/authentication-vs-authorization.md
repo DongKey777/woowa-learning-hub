@@ -14,12 +14,14 @@
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
 > - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
 
-retrieval-anchor-keywords: authentication vs authorization, authn vs authz, principal meaning, principal vs user, principal vs session, permission model basics, role vs permission, subject resource action, login vs access control, session basics, session vs token vs oauth, authenticated but forbidden, owner check, claim vs authority, 401 403 404, session revocation basics, authorization boundary, role change while logged in, permission change active session, session freshness basics
+retrieval-anchor-keywords: authentication vs authorization, authn vs authz, principal meaning, principal vs user, principal vs session, permission model basics, role vs permission, subject resource action, login vs access control, session basics, session vs token vs oauth, authenticated but forbidden, owner check, claim vs authority, 401 403 404, session revocation basics, authorization boundary, role change while logged in, permission change active session, session freshness basics, security readme auth primer, security basic primer authn authz, auth basics route, auth beginner route, security beginner route, security basics route, first-step auth primer, security primer next step, return to security README
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- security beginner route 안에서 다른 입문 문서를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
 - 방금 잡은 authn / authz 차이를 HTTP 상태 코드로 바로 연결하려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)를 바로 이어서 보면 된다.
 - 로그인한 상태에서 role, permission, tenant membership이 바뀌면 무엇이 달라져야 하는지 초보자 관점으로 바로 이어 보려면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)를 보면 된다.
 - 인증 상태를 세션, signed cookie, JWT 중 어디에 둘지는 [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)에서 비교할 수 있다.

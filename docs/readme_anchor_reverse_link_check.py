@@ -10,16 +10,18 @@ import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
+from markdown_link_scanner import (
+    iter_markdown_files,
+    iter_markdown_targets,
+    iter_prose_lines,
+    normalize_target,
+)
+
 DEFAULT_SCAN_PATHS = ("knowledge/cs/contents",)
 REPO_ROOT = Path.cwd().resolve()
 CONTENTS_ROOT = (REPO_ROOT / "knowledge/cs/contents").resolve(strict=False)
-FENCE_RE = re.compile(r"^\s*```")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(?P<title>.+?)\s*$")
 EXPLICIT_ANCHOR_RE = re.compile(r"""<a\s+id=["']([^"']+)["']\s*>\s*</a>""", re.IGNORECASE)
-INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
-SIMPLE_QUOTED_TITLE_RE = re.compile(
-    r"""^(?P<target>\S+)(?:\s+(?:"[^"]*"|'[^']*'))\s*$"""
-)
 IGNORED_PREFIXES = ("http://", "https://", "mailto:")
 
 
@@ -64,30 +66,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def iter_markdown_files(raw_paths: list[str]) -> list[Path]:
-    files: list[Path] = []
-    seen: set[Path] = set()
-
-    for raw_path in raw_paths:
-        path = Path(raw_path)
-        candidates: list[Path]
-        if path.is_dir():
-            candidates = sorted(item for item in path.rglob("*.md") if item.is_file())
-        elif path.is_file() and path.suffix == ".md":
-            candidates = [path]
-        else:
-            continue
-
-        for candidate in candidates:
-            resolved = candidate.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            files.append(candidate)
-
-    return files
-
-
 def display_path(path: Path) -> str:
     try:
         return path.relative_to(REPO_ROOT).as_posix()
@@ -106,68 +84,6 @@ def is_category_doc(path: Path) -> bool:
         return False
 
     return len(relative.parts) >= 2 and (resolved.parent / "README.md").is_file()
-
-
-def mask_inline_code(line: str) -> str:
-    return INLINE_CODE_RE.sub(lambda match: " " * len(match.group(0)), line)
-
-
-def iter_inline_targets(line: str) -> list[str]:
-    targets: list[str] = []
-    index = 0
-
-    while index < len(line):
-        open_bracket = line.find("[", index)
-        if open_bracket == -1:
-            break
-
-        close_bracket = line.find("]", open_bracket + 1)
-        if close_bracket == -1:
-            break
-
-        if close_bracket + 1 >= len(line) or line[close_bracket + 1] != "(":
-            index = close_bracket + 1
-            continue
-
-        cursor = close_bracket + 2
-        depth = 1
-        in_angle = False
-
-        while cursor < len(line):
-            char = line[cursor]
-            if char == "<":
-                in_angle = True
-            elif char == ">" and in_angle:
-                in_angle = False
-            elif not in_angle:
-                if char == "(":
-                    depth += 1
-                elif char == ")":
-                    depth -= 1
-                    if depth == 0:
-                        if open_bracket == 0 or line[open_bracket - 1] != "!":
-                            targets.append(line[close_bracket + 2 : cursor].strip())
-                        index = cursor + 1
-                        break
-            cursor += 1
-        else:
-            break
-
-    return targets
-
-
-def normalize_target(raw_target: str) -> str:
-    target = raw_target.strip()
-    if target.startswith("<"):
-        closing = target.find(">")
-        if closing != -1:
-            return target[1:closing].strip()
-
-    title_match = SIMPLE_QUOTED_TITLE_RE.match(target)
-    if title_match:
-        return title_match.group("target")
-
-    return target
 
 
 def normalize_heading_title(title: str) -> str:
@@ -197,15 +113,9 @@ def slugify_heading(title: str) -> str:
 def collect_readme_anchors(path: Path) -> dict[str, AnchorDef]:
     anchors: dict[str, AnchorDef] = {}
     slug_counts: dict[str, int] = {}
-    in_fence = False
-
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if FENCE_RE.match(line):
-            in_fence = not in_fence
-            continue
-
-        if in_fence:
-            continue
+    for markdown_line in iter_prose_lines(path):
+        line_number = markdown_line.line_number
+        line = markdown_line.text
 
         for explicit_anchor in EXPLICIT_ANCHOR_RE.findall(line):
             anchors.setdefault(
@@ -271,18 +181,9 @@ def scan_file(path: Path) -> Finding | None:
     anchor_defs = collect_readme_anchors(readme_path)
     stale_links: list[StaleReverseLink] = []
     found_same_readme_anchor = False
-    in_fence = False
-
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if FENCE_RE.match(line):
-            in_fence = not in_fence
-            continue
-
-        if in_fence:
-            continue
-
-        for raw_target in iter_inline_targets(mask_inline_code(line)):
-            target = normalize_target(raw_target)
+    for markdown_line in iter_prose_lines(path):
+        for target_match in iter_markdown_targets(markdown_line.text, include_images=False):
+            target = normalize_target(target_match.raw_target)
             resolved_target = resolve_target_path(target, path)
             if resolved_target is None:
                 continue
@@ -297,7 +198,7 @@ def scan_file(path: Path) -> Finding | None:
 
             stale_links.append(
                 StaleReverseLink(
-                    line_number=line_number,
+                    line_number=markdown_line.line_number,
                     raw_target=target,
                     anchor=anchor,
                     suggestion=suggest_anchor(anchor, anchor_defs),

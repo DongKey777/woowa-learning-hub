@@ -31,7 +31,7 @@
 - `502`, `504`, `bad gateway`, `gateway timeout`, `local reply인지 app 에러인지`처럼 edge status owner가 먼저 헷갈리면 [Edge Request Lifecycle Master Note](../master-notes/edge-request-lifecycle-master-note.md)와 [Edge 502 / 504 / Timeout Mismatch](#bridge-edge-timeout-cluster) route를 같이 본다.
 - `timeout mismatch`, `async timeout mismatch`, `idle timeout mismatch`, `deadline budget mismatch`, `gateway는 504인데 app은 200`처럼 종료 순서가 흔들리면 [Retry, Timeout, Idempotency Master Note](../master-notes/retry-timeout-idempotency-master-note.md)와 [Edge 502 / 504 / Timeout Mismatch](#bridge-edge-timeout-cluster) route를 같이 본다.
 - `HTTP stateless`, `cookie`, `session`, `JWT`, `왜 로그인 상태가 유지되나`, `Spring Security는 어디서 세션을 쓰나`, `hidden JSESSIONID`처럼 기초 개념에서 Spring 경계로 올라가려면 [HTTP Stateless / Cookie / Session / Spring Security](#bridge-http-session-security-cluster) route를 먼저 탄다.
-- `SavedRequest`, `login loop`, `401 -> 302` bounce, `hidden session mismatch`가 먼저 보이지만 아직 `cookie`와 `session` 차이부터 다시 잡아야 한다면 위 beginner auth bridge를 먼저 탄 뒤 [Spring + Security](#spring--security) route로 넘어간다.
+- `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`이 먼저 보이지만 아직 `cookie`와 `session` 차이부터 다시 잡아야 한다면 위 beginner auth bridge를 먼저 탄 뒤 [Spring + Security](#spring--security) route로 넘어간다.
 - `JWKS outage`, `kid miss`, `unable to find jwk`, `unable to find JWK`, `auth verification outage`처럼 인증 장애 문장으로 들어오면 [Auth, Session, Token Master Note](../master-notes/auth-session-token-master-note.md)로 auth state를 먼저 잡고, [Auth Incident / JWKS Outage / Auth Verification](#bridge-auth-incident-cluster) route로 failover 레버를 붙인다.
 - `logout but still works`, `allowed after revoke`, `revoked admin still has access`, `revocation tail`, `revoke lag`처럼 revoke propagation tail이 먼저 보이면 [Authz and Permission Master Note](../master-notes/authz-and-permission-master-note.md)로 revoke 의미를 먼저 고정하고, [Revoke Lag / Stale AuthZ Cache / 403 After Revoke](#bridge-revoke-authz-cluster) route로 내려간다.
 - `stale authz cache`, `stale deny`, `grant but still denied`, `tenant-specific 403`, `403 after revoke`, `cached 404 after grant`처럼 deny/cache drift가 먼저 보이면 역시 [Authz and Permission Master Note](../master-notes/authz-and-permission-master-note.md)를 대표 진입점으로 잡고, 필요하면 [Auth Failure Response Contracts: `401` / `403` / `404`](../contents/security/auth-failure-response-401-403-404.md)를 붙인 뒤 [Revoke Lag / Stale AuthZ Cache / 403 After Revoke](#bridge-revoke-authz-cluster) route로 내려간다.
@@ -330,6 +330,14 @@ system-design handoff cue: [Security README: Identity / Delegation / Lifecycle](
 
 카테고리 entrypoint: [Network README: 레거시 primer](../contents/network/README.md#레거시-primer), [Security README: 기본 primer](../contents/security/README.md#기본-primer), [Spring README: Spring Security 아키텍처](../contents/spring/README.md#spring-security-아키텍처)
 
+먼저 beginner alias를 한 번 맞춘다.
+
+| 자주 하는 말 | 먼저 이렇게 읽는다 | 안전한 다음 문서 |
+|---|---|---|
+| `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login` | browser에는 cookie/session reference가 보이지만 서버는 아직 또는 더 이상 auth/session 상태를 복원하지 못하는 축일 수 있다 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md) |
+| `browser 401 -> 302 /login bounce`, `API가 login HTML을 받음` | raw `401` auth failure가 browser redirect UX로 감싸져 보이는 축일 수 있다 | [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md) |
+| `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | 로그인 상태가 아니라 로그인 전 원래 URL을 기억하는 navigation memory 축이다 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md) |
+
 질문 예시:
 
 `쿠키`, `세션`, `JWT` 차이는 대충 아는데 Spring Security 문서로 올라가면 왜 갑자기 `SecurityContextRepository`, `SessionCreationPolicy`, `SavedRequest`, `hidden JSESSIONID`가 나오는지 모르겠어요. login loop 전까지 어떤 순서로 읽어야 안전한가요?`
@@ -344,8 +352,9 @@ system-design handoff cue: [Security README: Identity / Delegation / Lifecycle](
 
 증상으로 갈라지면:
 
-- `로그인 후 다시 /login으로 튄다`, `SavedRequest 때문에 loop가 난다`: [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
-- `cookie는 있는데 session missing`, `브라우저는 로그인돼 보이는데 API만 돈다`: [BFF Session Store Outage / Degradation Recovery](../contents/security/bff-session-store-outage-degradation-recovery.md)
+- `browser 401 -> 302 /login bounce`, `SavedRequest`, `saved request bounce`, `로그인 후 다시 /login으로 튄다`: [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md) -> [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
+- `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login`: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md) -> [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+- `브라우저는 로그인돼 보이는데 API만 돈다`, `cookie는 있는데 session missing`이 outage/translation 쪽으로 기울면: [BFF Session Store Outage / Degradation Recovery](../contents/security/bff-session-store-outage-degradation-recovery.md)
 
 ### Spring + Security
 

@@ -5,6 +5,7 @@
 > 관련 문서:
 > - [RAG Design](./README.md)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)
 > - [Source Priority and Citation](./source-priority-and-citation.md)
 > - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
 
@@ -33,6 +34,7 @@ python docs/link_fence_false_link_check.py knowledge/cs/rag docs
 - fenced code block 안의 inline markdown link/image pattern
 - fenced code block 안의 reference-style link definition
 - target이 repo 상대경로, 절대경로, anchor, URL처럼 보이는 경우만 본다
+- nested parentheses나 angle-bracket target도 asset/readme check와 같은 parser로 읽는다
 - `] (` / `] :` spacing guard가 들어간 literal 예시는 통과한다
 
 ## 실패했을 때 고치는 순서
@@ -54,6 +56,7 @@ knowledge/cs/rag/source-priority-and-citation.md:82: inline-link in fence(markdo
 
 - broken-link report가 본문과 fenced example을 같은 수준으로 훑으면 false positive가 섞인다.
 - 이 precheck는 "링크가 진짜 깨졌는가"보다 먼저 "이 라인이 애초에 literal example인가"를 분리한다.
+- shared parser를 써 두면 asset/readme check가 이해하는 markdown target 범위와 fence precheck 범위가 크게 어긋나지 않는다.
 - 그래서 수정 순서를 `fence hygiene -> broken-link validation`으로 고정하기 쉽다.
 
 ## 한 줄 정리

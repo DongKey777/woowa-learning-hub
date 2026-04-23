@@ -6,13 +6,14 @@
 
 관련 문서:
 
+- [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 - [팩토리 (Factory) 심화](./factory.md)
 - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
 - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
 
-retrieval-anchor-keywords: factory pattern basics, 팩토리 패턴 기초, 객체 생성 패턴, 팩토리 메서드 입문, factory method beginner, when to use factory, 팩토리가 뭔가요, new 대신 팩토리, 생성 책임 분리, 팩토리 패턴 왜 쓰나요, beginner factory, 팩토리 패턴 예시, factory vs di container, spring bean factory method, handwritten factory vs @Bean
+retrieval-anchor-keywords: factory pattern basics, 팩토리 패턴 기초, 객체 생성 패턴, 팩토리 메서드 입문, factory method beginner, when to use factory, 팩토리가 뭔가요, new 대신 팩토리, 생성 책임 분리, 팩토리 패턴 왜 쓰나요, beginner factory, 팩토리 패턴 예시, factory vs di container, spring bean factory method, handwritten factory vs @Bean, policy selector vs factory, selector resolver registry strategy vs factory, factory naming smell, 생성이 아니면 factory 아님
 
 ---
 

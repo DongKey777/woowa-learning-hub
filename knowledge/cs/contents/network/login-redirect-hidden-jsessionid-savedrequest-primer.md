@@ -1,6 +1,6 @@
 # Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문
 
-> 한 줄 요약: 브라우저 로그인 흐름에서는 `302 Location`, `Set-Cookie: JSESSIONID`, 원래 URL을 기억하는 `SavedRequest`가 한 묶음으로 움직이기 쉽고, 이때 보이는 `JSESSIONID`는 곧바로 "로그인 성공"이 아니라 redirect/navigation memory를 위한 session일 수도 있다.
+> 한 줄 요약: 브라우저 로그인 흐름에서는 `302 Location`, `Set-Cookie: JSESSIONID`, 원래 URL을 기억하는 `SavedRequest`가 한 묶음으로 보이기 쉽고, 초보자가 말하는 `hidden session`은 대개 "cookie는 보이는데 서버가 auth/session을 아직 못 복원하는 상태"를 가리킨다.
 
 **난이도: 🟢 Beginner**
 
@@ -14,7 +14,7 @@
 > - [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
 > - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
 
-retrieval-anchor-keywords: login redirect primer, browser login redirect, 302 login flow, 302 Found Location Set-Cookie, Set-Cookie on redirect response, hidden JSESSIONID, why JSESSIONID before login, JSESSIONID after login, HttpOnly JSESSIONID, SavedRequest beginner bridge, post-login redirect original URL, original URL after login, request cache beginner route, login loop primer, cookie 있는데 다시 로그인, 401 302 bounce starter, browser page redirect vs api 401, hidden session mismatch, login redirect spring security bridge
+retrieval-anchor-keywords: login redirect primer, browser login redirect, 302 login flow, browser 401 302 /login bounce, 302 Found Location Set-Cookie, Set-Cookie on redirect response, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden JSESSIONID next step, why JSESSIONID before login, JSESSIONID after login, HttpOnly JSESSIONID, cookie exists but session missing, cookie 있는데 다시 로그인, cookie 있는데 다시 로그인 primer, cookie 있는데 다시 로그인 beginner route, SavedRequest beginner bridge, SavedRequest original URL memory, saved request bounce, saved request bounce primer, saved request bounce beginner route, saved request bounce entry route, post-login redirect original URL, original URL after login, request cache beginner route, login loop primer, login loop first step, login loop beginner entrypoint, next request anonymous after login, 401 302 bounce starter, browser page redirect vs api 401, login redirect spring security bridge
 
 <details>
 <summary>Table of Contents</summary>
@@ -50,12 +50,21 @@ retrieval-anchor-keywords: login redirect primer, browser login redirect, 302 lo
 
 이 문서는 Spring Security deep dive 전에 browser와 HTTP 관점에서 이 셋을 분리해 두는 primer다.
 
+### 먼저 세 표현을 분리한다
+
+| 자주 하는 말 | beginner mental model | 이 문서 다음 안전한 한 걸음 |
+|---|---|---|
+| `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login` | browser에는 cookie/session reference가 보이지만 서버는 아직 또는 더 이상 auth/session 상태를 못 찾는 장면을 뭉뚱그려 부르는 말인 경우가 많다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+| `browser 401 -> 302 /login bounce`, `API가 login HTML을 받음` | raw `401` auth failure가 browser redirect UX로 감싸진 장면일 수 있다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+| `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | 로그인 상태가 아니라 로그인 전 원래 URL을 기억하는 navigation memory다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+
 ### Retrieval Anchors
 
 - `login redirect primer`
 - `302 login flow`
 - `hidden JSESSIONID`
 - `SavedRequest beginner bridge`
+- `saved request bounce`
 - `post-login redirect original URL`
 - `cookie 있는데 다시 로그인`
 
@@ -68,7 +77,7 @@ retrieval-anchor-keywords: login redirect primer, browser login redirect, 302 lo
 | 보호 페이지 요청 직후 `302 Location: /login` | 브라우저용 로그인 UX일 수 있다 | page 요청인지 API 요청인지 |
 | `302` 응답에 `Set-Cookie: JSESSIONID=...`가 있다 | redirect 응답에서도 browser는 cookie를 저장할 수 있다 | login 전 임시 session인지 |
 | 로그인 직후 원래 URL로 다시 `302` 된다 | `SavedRequest`가 원래 URL 복귀를 시도하는 장면일 수 있다 | 그 다음 요청이 `200`인지 다시 `302`인지 |
-| cookie가 있는데 또 `/login`으로 간다 | cookie 존재와 인증 성립은 다르다 | cookie가 실제 전송됐는지, 서버가 session을 찾았는지 |
+| `hidden session`처럼 cookie가 있는데 또 `/login`으로 간다 | cookie 존재와 인증 성립은 다르다 | cookie가 실제 전송됐는지, 서버가 session을 찾았는지 |
 | `fetch('/api/...')`가 JSON `401` 대신 login HTML을 받는다 | browser page redirect 정책이 API 계약에 섞였을 가능성이 크다 | page 체인과 API 체인을 분리했는지 |
 
 초보자용 핵심 규칙은 이것이다.
@@ -303,10 +312,11 @@ Network 탭과 Application 탭에서 아래 순서대로 보면 대부분 풀린
 
 ## 다음 문서 라우팅
 
+- `cookie 있는데 다시 로그인`, `saved request bounce` 둘 다 beginner entry route는 이 문서 -> [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)다. route를 다시 고르려면 [Network README: Browser Session Spring Auth](./README.md#network-bridge-browser-session-auth), [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 돌아간다.
 - `cookie`, `session`, `JWT` 기본 용어가 아직 흐리면 [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md) -> [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md) 순으로 먼저 본다.
-- browser에서 `401`과 `302`를 어떻게 다르게 읽어야 하는지 더 쉬운 사례 중심으로 보고 싶으면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)로 간다.
-- `SavedRequest`, `RequestCache`, 원래 URL 복귀 우선순위를 framework 관점에서 보고 싶으면 [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)로 이어 간다.
-- `STATELESS`인데 `JSESSIONID`가 생기거나 login 후 다음 요청이 다시 익명이면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 넘어간다.
+- `browser 401 -> 302 /login bounce`, `API가 login HTML을 받음`을 사례 중심으로 다시 읽고 싶으면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)로 먼저 간다.
+- `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, 원래 URL 복귀 우선순위를 framework 관점에서 보고 싶으면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거친 뒤 [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)로 이어 간다.
+- `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login`이 핵심이면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거친 뒤 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 넘어간다.
 - cookie는 보이는데 browser/BFF/session store 경계가 헷갈리면 [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)도 함께 본다.
 
 ---

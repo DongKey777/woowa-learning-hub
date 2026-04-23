@@ -1,19 +1,23 @@
 # Comparator Utility Patterns
 
-> 한 줄 요약: Java 입문자가 `Comparator.comparing`, `thenComparing`, `reversed`, `nullsFirst`, `nullsLast`를 "정렬 규칙을 조립하는 도구"로 이해하고 바로 손으로 연습할 수 있게 만든 practice-oriented companion doc이다.
+> 한 줄 요약: Java 입문자가 `Comparator.comparing`, `thenComparing`, primitive tie-breaker shortcut, `reversed`, `nullsFirst`, `nullsLast`를 "정렬 규칙을 조립하는 도구"로 이해하고 바로 손으로 연습할 수 있게 만든 practice-oriented companion doc이다.
 
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+> - [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+> - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 > - [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 > - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+> - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 
-> retrieval-anchor-keywords: comparator utility patterns, java comparator comparing, java comparator comparingint, java comparator comparinglong, java comparator comparingdouble, java comparator primitive specialization, java comparator boxing overhead, java comparator thenComparing, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator chaining beginner, java list sort comparator practice, java primitive field sort comparator, java nullable field sorting java, beginner comparator examples
+> retrieval-anchor-keywords: comparator utility patterns, java comparator comparing, java comparator comparingint, java comparator comparinglong, java comparator comparingdouble, java comparingInt vs comparing, java comparingLong vs comparing, java comparingDouble vs comparing, java comparator primitive specialization, java comparator primitive shortcut, java comparator boxing overhead, java comparator boxing matters, java comparator boxing ignore, java comparator thenComparing, java comparator thenComparingInt, java comparator thenComparingLong, java comparator thenComparingDouble, java primitive tie breaker comparator, java comparator primitive tie breaker, java comparator tie breaker lambda, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator chaining beginner, java list sort comparator practice, java stream sorted comparator, java list sort vs stream sorted, java primitive field sort comparator, java nullable field sorting java, java wrapper field comparator, java Integer wrapper comparator, java Long wrapper comparator, java Double wrapper comparator, beginner comparator examples
 
 <details>
 <summary>Table of Contents</summary>
@@ -24,6 +28,7 @@
 - [`comparing`: 첫 정렬 기준 고르기](#comparing-첫-정렬-기준-고르기)
 - [`comparingInt`, `comparingLong`, `comparingDouble`: primitive 필드 follow-up](#comparingint-comparinglong-comparingdouble-primitive-필드-follow-up)
 - [`thenComparing`: 동점일 때 다음 기준 붙이기](#thencomparing-동점일-때-다음-기준-붙이기)
+- [`thenComparingInt`, `thenComparingLong`, `thenComparingDouble`: primitive tie-breaker shortcut](#thencomparingint-thencomparinglong-thencomparingdouble-primitive-tie-breaker-shortcut)
 - [`reversed`: 정렬 방향 뒤집기](#reversed-정렬-방향-뒤집기)
 - [`nullsFirst`, `nullsLast`: `null` 위치 먼저 정하기](#nullsfirst-nullslast-null-위치-먼저-정하기)
 - [초보자가 자주 헷갈리는 지점](#초보자가-자주-헷갈리는-지점)
@@ -39,6 +44,7 @@
 `Comparator` 입문 뒤에 바로 나오는 막힘은 대체로 비슷하다.
 
 - `Comparator.comparing(Student::name)`는 알겠는데, 2차 기준은 어떻게 붙일까?
+- 1차 기준은 `comparingInt`로 시작했는데, 동점자 기준도 primitive면 다시 custom lambda를 써야 할까?
 - 내림차순은 어디에 `reversed()`를 붙여야 할까?
 - `null`이 섞이면 왜 바로 `NullPointerException`이 나거나 정렬이 깨질까?
 - 이름은 오름차순인데 학년만 내림차순으로 하고 싶으면 어떻게 해야 할까?
@@ -47,6 +53,7 @@
 
 - `comparing`은 첫 기준을 만든다
 - `thenComparing`은 동점자용 추가 기준을 만든다
+- primitive tie-breaker면 `thenComparingInt`/`Long`/`Double`도 바로 붙일 수 있다
 - `reversed`는 현재 comparator의 방향을 뒤집는다
 - `nullsFirst`와 `nullsLast`는 `null`을 어디에 둘지 먼저 정한다
 
@@ -62,6 +69,7 @@
 
 - 이름순으로만 정렬하고 싶다 -> `comparing`
 - 학년이 같으면 이름순으로 정렬하고 싶다 -> `thenComparing`
+- 학년이 같으면 반 번호나 학생 번호 같은 primitive 필드로 정렬하고 싶다 -> `thenComparingInt`/`thenComparingLong`
 - 학년 높은 순으로 보고 싶다 -> `reversed`
 - 담당 멘토가 없는 학생(`null`)은 맨 뒤로 보내고 싶다 -> `nullsLast`
 
@@ -126,15 +134,40 @@ System.out.println(students);
 | `Comparator.comparingLong(...)` | `long id`, `long createdAtEpoch` | "long을 바로 비교" |
 | `Comparator.comparingDouble(...)` | `double average`, `double distance` | "double을 바로 비교" |
 
-예를 들어 점수는 `int` 필드라면 이렇게 쓴다.
+예를 들어 학년이 `int` 필드라면 이렇게 쓴다.
 
 ```java
-Comparator<Student> byScore =
-        Comparator.comparingInt(Student::score);
+Comparator<Student> byGrade =
+        Comparator.comparingInt(Student::grade);
 ```
 
-`comparing(Student::score)`와 정렬 결과는 같을 때가 많다.  
-초보자 기준에서 중요한 차이는 "primitive를 비교하느냐, wrapper boxing을 거치느냐"다.
+같은 정렬 규칙을 일반 `comparing(...)`로 쓰면 이런 느낌이다.
+
+```java
+Comparator<Student> byGradeBoxed =
+        Comparator.comparing(Student::grade);
+
+Comparator<Student> byGradePrimitive =
+        Comparator.comparingInt(Student::grade);
+```
+
+둘 다 "학년 오름차순"이라는 뜻으로 읽어도 된다.
+초보자 기준에서 먼저 볼 차이는 "primitive를 바로 비교하느냐, 잠깐 `Integer` boxing을 거치느냐"다.
+
+### 먼저 외울 한 줄 판단
+
+> primitive `int`/`long`/`double`이고 `null`이 없으면 `comparingInt`/`Long`/`Double`을 기본값처럼 쓰고, 그 외에는 `comparing(...)`부터 생각해도 충분하다.
+
+### boxing이 언제 의미 있고, 언제 무시해도 되나
+
+| 상황 | 초보자용 추천 | 왜 이렇게 보면 되나 |
+|---|---|---|
+| `int`/`long`/`double` 필드를 큰 컬렉션에서 자주 정렬한다 | `comparingInt`/`Long`/`Double` 우선 | boxing을 줄이는 방향이라 성능 감각상 자연스럽다 |
+| stream `sorted`, `max`, `min`처럼 값을 계속 꺼내 비교한다 | primitive specialization 우선 | 같은 값 추출과 비교가 많이 반복된다 |
+| 화면용 작은 리스트를 한두 번 정렬한다 | boxing은 일단 무시 가능 | 병목보다 "정렬 규칙이 바로 읽히는가"가 더 중요하다 |
+| 필드가 `Integer`/`Long`/`Double`이거나 `null`이 올 수 있다 | `comparing(...)` + `nullsFirst`/`nullsLast` 우선 | primitive specialization은 `null` 다루기가 불편하거나 위험하다 |
+
+즉 `comparingInt`류는 "무조건 미세 최적화"가 아니라, **primitive 필드를 정렬할 때 자연스러운 기본 선택지** 정도로 이해하면 충분하다.
 
 ### boxing이 신경 쓰일 때
 
@@ -155,6 +188,7 @@ Comparator<Student> byScore =
 - 필드가 primitive이고 `null`이 될 수 없으면 `comparingInt`/`Long`/`Double`을 먼저 떠올린다
 - 필드가 wrapper거나 `null` 가능성이 있으면 `comparing(...)` + `nullsFirst`/`nullsLast` 쪽이 더 안전하다
 - 작은 코드에서는 boxing보다 "정렬 기준이 읽히는가"가 더 중요할 수 있다
+- `comparingDouble`을 쓴다고 해서 부동소수점 반올림/`NaN` 문제가 사라지는 것은 아니다. 그 부분은 [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)에서 따로 보면 된다.
 
 같은 감각으로 tie-breaker도 `thenComparingInt`, `thenComparingLong`, `thenComparingDouble`을 붙일 수 있다.
 
@@ -196,6 +230,82 @@ System.out.println(students);
 2. `grade`가 같으면 그때 `name`으로 다시 비교한다.
 
 초보자 관점에서는 `thenComparing`을 "**동점자 처리 규칙**"이라고 기억하면 가장 쉽다.
+
+## `thenComparingInt`, `thenComparingLong`, `thenComparingDouble`: primitive tie-breaker shortcut
+
+동점자 기준도 primitive 필드라면 `thenComparing(...)` 대신 더 짧고 읽기 쉬운 primitive shortcut을 그대로 이어 붙이면 된다.
+
+> 이미 만든 comparator 체인 뒤에 primitive tie-breaker를 하나 더 붙이는 도구가 `thenComparingInt`/`thenComparingLong`/`thenComparingDouble`이다.
+
+| 메서드 | 이런 tie-breaker에 자주 쓴다 | 읽는 법 |
+|---|---|---|
+| `thenComparingInt(...)` | `int classNumber`, `int age`, `int round` | "앞 기준이 같으면 int로 한 번 더 비교" |
+| `thenComparingLong(...)` | `long studentId`, `long createdAtEpoch` | "앞 기준이 같으면 long으로 한 번 더 비교" |
+| `thenComparingDouble(...)` | `double average`, `double distance` | "앞 기준이 같으면 double로 한 번 더 비교" |
+
+예를 들어 학생 랭킹을 다음처럼 갖고 있다고 해 보자.
+
+```java
+record StudentRank(
+        String name,
+        int grade,
+        int classNumber,
+        long studentId,
+        double averageScore
+) {}
+```
+
+각 shortcut은 이렇게 읽으면 된다.
+
+```java
+Comparator<StudentRank> byGradeThenClassNumber =
+        Comparator.comparingInt(StudentRank::grade)
+                .thenComparingInt(StudentRank::classNumber);
+
+Comparator<StudentRank> byGradeThenStudentId =
+        Comparator.comparingInt(StudentRank::grade)
+                .thenComparingLong(StudentRank::studentId);
+
+Comparator<StudentRank> byGradeThenAverageScore =
+        Comparator.comparingInt(StudentRank::grade)
+                .thenComparingDouble(StudentRank::averageScore)
+                .thenComparing(StudentRank::name);
+```
+
+- 첫 번째는 "학년순, 같은 학년이면 반 번호순"이다.
+- 두 번째는 "학년순, 같은 학년이면 학생 번호순"이다.
+- 세 번째는 "학년순, 같은 학년이면 평균 점수순, 그래도 같으면 이름순"이다.
+
+여기서 중요한 감각은 하나다.
+
+- 1차 기준이 primitive shortcut이었으면 2차 기준도 같은 방식으로 계속 붙일 수 있다
+- 첫 기준이 `comparing(...)`였더라도 2차 기준은 `thenComparingInt`/`Long`/`Double`로 붙일 수 있다
+- 즉 "primitive tie-breaker니까 다시 verbose lambda로 풀어써야 하나?"라고 생각할 필요가 없다
+
+### custom lambda로 돌아가지 않아도 된다
+
+초보자가 자주 쓰는 우회는 이런 형태다.
+
+```java
+Comparator<StudentRank> verbose =
+        (left, right) -> {
+            int result = Integer.compare(left.grade(), right.grade());
+            if (result != 0) {
+                return result;
+            }
+            return Long.compare(left.studentId(), right.studentId());
+        };
+```
+
+같은 규칙을 comparator utility로 쓰면 더 짧고 의도가 바로 보인다.
+
+```java
+Comparator<StudentRank> fluent =
+        Comparator.comparingInt(StudentRank::grade)
+                .thenComparingLong(StudentRank::studentId);
+```
+
+입문 단계에서는 이 차이를 "고급 최적화"보다 **정렬 기준이 문장처럼 읽히는가**로 보면 충분하다.
 
 ## `reversed`: 정렬 방향 뒤집기
 
@@ -318,12 +428,16 @@ System.out.println(students);
 
 - `comparing`은 기본이 오름차순이다. 내림차순이 필요하면 `reversed()`를 별도로 붙여야 한다.
 - `comparing(Student::grade)`와 `comparingInt(Student::grade)`는 보통 같은 순서를 만든다. 차이는 주로 boxing 여부다.
+- `comparingInt`/`Long`/`Double`은 "primitive 필드에서 기본으로 떠올리면 좋은 shortcut"이지, 모든 작은 코드에서 성능 집착을 해야 한다는 뜻은 아니다.
 - `comparingInt`, `comparingLong`, `comparingDouble`은 primitive 전용이라 `null`을 직접 다루지 못한다. nullable 필드는 `comparing(...)` 쪽이 더 안전하다.
+- `comparingDouble`은 comparator 선택 문제이고, 부동소수점 정밀도 문제 자체를 해결하는 도구는 아니다.
 - `thenComparing`은 2차 기준이 아니라 "1차 기준이 같을 때만 쓰는 기준"이다.
+- `thenComparingInt`/`Long`/`Double`도 똑같이 "앞 기준이 같을 때만" 동작한다. 첫 비교를 건너뛰는 별도 정렬이 아니다.
+- 첫 기준이 `comparing(Student::name)`처럼 object comparator여도, 다음 기준은 `thenComparingInt(Student::grade)`처럼 primitive shortcut으로 섞어 쓸 수 있다.
 - `a.thenComparing(b).reversed()`는 전체 체인을 뒤집는다. `a.reversed().thenComparing(b)`와 다르다.
 - `nullsFirst`와 `nullsLast`는 "`null`을 어디에 둘지"를 정하는 도구다. 문자열 사전순 자체를 바꾸는 도구는 아니다.
 - `List.of(...)`는 `null`을 허용하지 않는다. `null` 예제는 `Arrays.asList(...)`나 별도 `ArrayList`로 만들어야 한다.
-- `TreeSet`이나 `TreeMap`에 comparator를 넣을 때는 `thenComparing`으로 tie-breaker를 충분히 넣지 않으면 서로 다른 객체가 같은 원소처럼 보일 수 있다. 이 부분은 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)와 [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)에서 이어서 보면 된다.
+- `TreeSet`이나 `TreeMap`에 comparator를 넣을 때는 `thenComparing`으로 tie-breaker를 충분히 넣지 않으면 서로 다른 객체가 같은 원소나 같은 key처럼 보일 수 있다. 이 부분은 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md), [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md), [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)에서 이어서 보면 된다.
 
 ## 코드로 한 번에 보기
 
@@ -405,7 +519,7 @@ public class ComparatorUtilityPatternsExample {
 
 - 한 필드 기준 정렬이면 `Comparator.comparing(...)`
 - primitive `int`/`long`/`double` 필드면 `Comparator.comparingInt(...)`, `comparingLong(...)`, `comparingDouble(...)`도 먼저 후보에 둔다
-- 동점 처리까지 필요하면 `.thenComparing(...)`
+- 동점 처리까지 필요하면 `.thenComparing(...)`, primitive tie-breaker면 `.thenComparingInt(...)`/`Long(...)`/`Double(...)`
 - 내림차순이면 `.reversed()`
 - `null`이 섞이면 `Comparator.nullsFirst(...)` 또는 `Comparator.nullsLast(...)`
 - `reversed()` 위치가 전체 체인을 뒤집는지, 일부 기준만 뒤집는지 항상 확인
@@ -414,10 +528,14 @@ public class ComparatorUtilityPatternsExample {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - `Comparable`과 `Comparator`의 큰 그림을 먼저 다시 묶고 싶다면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+- `Integer`/`Long`/`Double` wrapper 필드가 있을 때 `nullsFirst`/`nullsLast`를 어떤 감각으로 붙여야 하는지 좁혀 보고 싶다면 [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 - 배열 정렬과 comparator precondition을 같이 보고 싶다면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 - 정렬된 컬렉션에서 comparator가 중복 판단에 어떻게 연결되는지 보려면 [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
-- 스트림의 `sorted(comparator)`까지 연결해서 보고 싶다면 [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
+- `TreeSet`/`TreeMap`에서 tie-breaker 부족이 왜 값 손실처럼 보이는지 보려면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+- 같은 comparator chain을 `List.sort(...)`와 `stream.sorted(...)` 양쪽에 어떻게 재사용하는지 보고 싶다면 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+- stream pipeline의 `sorted(comparator)` 위치까지 넓게 연결하고 싶다면 [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 - boxing/unboxing 자체를 더 정확히 보고 싶다면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+- `double` 정렬에서 정밀도나 `NaN`까지 같이 떠오른다면 [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 
 ## 한 줄 정리
 

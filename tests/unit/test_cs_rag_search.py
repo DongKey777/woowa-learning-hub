@@ -23,9 +23,10 @@ import json
 import os
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
-from scripts.learning.rag import corpus_loader, indexer, searcher
+from scripts.learning.rag import corpus_loader, indexer, searcher, signal_rules
 
 
 def _chunk(
@@ -259,7 +260,10 @@ FIXTURES = [
         "Projection lag and freshness budget",
         (
             "CQRS read model staleness, projection lag, read-your-writes, freshness budget, eventual "
-            "consistency UX 계약을 다룬다."
+            "consistency UX 계약을 다룬다.\n\n"
+            "retrieval-anchor-keywords: 읽기 모델 최신성, 읽기 모델 지연, "
+            "방금 저장했는데 안 보여, 저장했는데 옛값이 보임, 예전 값이 보임, "
+            "쓴 직후 읽기 보장, 방금 쓴 값 읽기, 오래된 값 조회"
         ),
     ),
     _chunk(
@@ -1237,6 +1241,22 @@ class CsRagSearchTest(unittest.TestCase):
             5,
         )
 
+    def test_korean_read_model_symptom_query_uses_primer_fixture_anchors_without_signal_expansion(
+        self,
+    ) -> None:
+        with mock.patch.object(
+            signal_rules,
+            "expand_query",
+            side_effect=lambda prompt, topic_hints=None: searcher._fallback_tokens(prompt),
+        ):
+            hits = self._search("방금 저장했는데 안 보여", top_k=3)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+            1,
+        )
+
     def test_event_upcaster_query_prefers_compatibility_doc(self) -> None:
         hits = self._search(
             "legacy event replay 를 위한 event upcaster compatibility layer 와 schema evolution",
@@ -1906,6 +1926,22 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
         self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
+    def test_introductory_projection_primer_vs_guardrail_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, read model cutover guardrails 를 같이 비교해서 보고 싶어. 입문자는 guardrail 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
     def test_introductory_projection_rollback_window_query_keeps_transaction_isolation_noise_out_of_top3(
         self,
     ) -> None:
@@ -1921,6 +1957,131 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, overview_doc, 1)
         self.assert_path_rank_at_most(hits, guardrail_doc, 3)
         self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_projection_rollback_window_vs_transaction_rollback_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, tx_doc, 5)
+        self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_introductory_projection_rollback_window_vs_korean_transaction_rollback_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 rollback window 랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, tx_doc, 5)
+        self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_introductory_projection_rollback_contrast_synonym_queries_keep_primer_first(
+        self,
+    ) -> None:
+        prompts = {
+            "구분": (
+                "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 을 "
+                "어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "헷갈림": (
+                "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback "
+                "헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "vs": (
+                "read model freshness 를 처음 배우는데 rollback window vs transaction rollback 이 "
+                "뭐가 다른지 모르겠어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assert_path_rank_at_most(hits, tx_doc, 5)
+                self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_korean_projection_freshness_synonym_query_keeps_primer_first(self) -> None:
+        prompts = {
+            "old_value_visible": (
+                "CQRS 읽기 모델을 처음 배우는데 롤백 윈도우 때문에 예전 값이 보임. "
+                "쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘"
+            ),
+            "saved_not_visible": (
+                "읽기 모델을 처음 배우는데 방금 저장했는데 안 보여. "
+                "왜 옛값이 보여? 큰 그림부터 설명해줘"
+            ),
+            "saved_value_not_visible": (
+                "CQRS를 처음 배우는데 저장한 값이 안 보이고 옛값이 보여. "
+                "쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘"
+            ),
+            "minimal_saved_not_visible": "방금 저장했는데 안 보여",
+            "minimal_old_value_visible": "옛값이 보여",
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
+                self.assertTrue(
+                    all(hit["category"] == "design-pattern" for hit in hits[:3]),
+                    hits[:3],
+                )
+
+    def test_introductory_projection_cutover_safety_window_keeps_failover_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 cutover safety window 동안 stale read 랑 read-your-writes 를 어떻게 이해해야 해? failover rollback 같은 운영 얘기 전에 큰 그림부터 알고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_projection_cutover_safety_window_keeps_key_rotation_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 cutover safety window 와 rollback window 때문에 stale read 가 왜 생기는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        security_docs = {
+            "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
+            "contents/security/key-rotation-runbook.md",
+            "contents/security/jwks-rotation-cutover-failure-recovery.md",
+        }
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertFalse(security_docs & {hit["path"] for hit in hits[:3]}, hits[:3])
         self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
     def test_projection_freshness_slo_query_keeps_slo_doc_within_top3(self) -> None:

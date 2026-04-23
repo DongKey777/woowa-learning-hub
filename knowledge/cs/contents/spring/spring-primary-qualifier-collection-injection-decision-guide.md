@@ -8,13 +8,14 @@
 
 > 관련 문서:
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 > - [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)
 > - [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)
 > - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 > - [Spring Multiple Transaction Managers and Qualifier Boundaries](./spring-multiple-transaction-managers-qualifier-boundaries.md)
 
-retrieval-anchor-keywords: @Primary vs @Qualifier vs collection injection, spring multiple bean decision guide, spring bean candidate selection, single default bean, explicit bean pick, multiple bean collect, list injection, map injection, List<T> injection, Map<String, T> injection, NoUniqueBeanDefinitionException choice, default candidate vs qualifier, qualifier beats primary, primary not applied to list, bean name map key, runtime strategy selection, router pattern, Map<String, Bean> router, runtime dispatch vs qualifier
+retrieval-anchor-keywords: @Primary vs @Qualifier vs collection injection, spring multiple bean decision guide, spring bean candidate selection, single default bean, explicit bean pick, multiple bean collect, list injection, map injection, List<T> injection, Map<String, T> injection, NoUniqueBeanDefinitionException choice, default candidate vs qualifier, qualifier beats primary, primary not applied to list, bean name map key, runtime strategy selection, router pattern, Map<String, Bean> router, runtime dispatch vs qualifier, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -23,6 +24,7 @@ retrieval-anchor-keywords: @Primary vs @Qualifier vs collection injection, sprin
 - 문자열 `@Qualifier("beanName")`를 언제 커스텀 역할 annotation으로 올려야 하는지는 [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)로 이어진다.
 - collection 주입 다음 단계로 runtime router까지 이어서 보고 싶다면 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 이어진다.
 - startup 로그에서 `found 2`가 보여서 이 문제를 디버깅 중이라면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)로 이어진다.
+- "`@Primary`를 붙였는데 Boot 기본 bean은 왜 안 돌아오지?"처럼 auto-configuration back-off와 후보 선택이 섞이면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.
 
 ---
 

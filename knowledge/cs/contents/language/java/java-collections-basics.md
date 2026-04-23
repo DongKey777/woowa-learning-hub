@@ -8,10 +8,12 @@
 
 - [Java Collections 성능 감각](./collections-performance.md)
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+- [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+- [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - [language 카테고리 인덱스](../README.md)
 - [Java 제네릭 입문](./java-generics-basics.md)
 
-retrieval-anchor-keywords: java collections basics, list set map 입문, arraylist linkedlist 차이, hashmap 입문, 컬렉션 프레임워크 기초, java collection framework beginner, java list 언제 쓰나, java set 중복 제거, java map key value, 컬렉션 어떤 걸 써야 하나요, collection interface beginner, java iterable basics
+retrieval-anchor-keywords: java collections basics, list set map 입문, arraylist linkedlist 차이, hashmap 입문, 컬렉션 프레임워크 기초, java collection framework beginner, java list 언제 쓰나, java set 중복 제거, java map key value, 컬렉션 어떤 걸 써야 하나요, collection interface beginner, java iterable basics, treeset natural ordering, treemap compareTo key slot, treeset floor ceiling lower higher, treemap floorEntry ceilingEntry beginner, navigablemap navigableset basics
 
 ## 핵심 개념
 
@@ -92,6 +94,8 @@ System.out.println(scores.get("Alice")); // 95
 
 - 성능 감각을 키우려면: [Java Collections 성능 감각](./collections-performance.md)
 - Set 중복 판단 규칙 세부 사항: [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+- `TreeSet`/`TreeMap`이 `Comparator` 없이 `compareTo()`로 중복과 key 자리를 판단하는 흐름: [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+- `TreeSet`/`TreeMap`에서 `first`/`last`/`floor`/`ceiling`/`lower`/`higher`가 comparator 순서 위에서 어떻게 동작하는지 보려면: [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
 ## 면접/시니어 질문 미리보기
 

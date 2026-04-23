@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [싱글톤 (Singleton) Java 구현 방법](./singleton-java.md)
+> - [Request Scope vs Plain Request Objects](./request-scope-vs-plain-request-objects.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [안티 패턴](./anti-pattern.md)
@@ -28,6 +29,8 @@ backend에서는 대부분 후자가 더 자연스럽다.
 - `container managed singleton`
 - `application lifecycle`
 - `dependency injection scope`
+- `request scope vs request object`
+- `spring request scoped bean vs dto`
 
 ---
 
@@ -59,6 +62,7 @@ backend에서는 singleton scope 말고도 요청, 세션, 프로토타입 scope
 ### 시나리오 2: request-bound state
 
 요청별 상태가 필요하면 singleton이 아니라 request scope나 method-local state를 본다.
+다만 request DTO와 command까지 bean으로 올리는 문제는 아니므로, 이 경계는 [Request Scope vs Plain Request Objects](./request-scope-vs-plain-request-objects.md)에서 따로 본다.
 
 ### 시나리오 3: heavy resource
 
@@ -136,4 +140,3 @@ public class PaymentService {
 ## 한 줄 정리
 
 디자인 패턴 singleton은 전역 객체를 직접 통제하는 방식이고, DI container singleton scope는 컨테이너가 생명주기를 관리하는 방식이다.
-

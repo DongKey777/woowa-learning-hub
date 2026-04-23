@@ -1,0 +1,185 @@
+# DelayQueue vs PriorityQueue Timer Pitfalls
+
+> 한 줄 요약: Java timer workload에서 plain `PriorityQueue`는 "deadline 정렬"만 주고, `DelayQueue`는 "만료될 때까지 기다렸다가 꺼내기" 계약까지 주므로 blocking scheduler를 직접 구현할지 여부가 갈린다.
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
+> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+> - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
+> - [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)
+> - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
+> - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
+> - [Heap Variants](./heap-variants.md)
+> - [Concurrent Skip List Internals](./concurrent-skiplist-internals.md)
+>
+> retrieval-anchor-keywords: delayqueue vs priorityqueue, delayqueue vs priority queue, java delayqueue, java delay queue, java timer queue, java delayed task scheduler, plain priorityqueue timer, priorityqueue timer pitfalls, priorityblockingqueue vs delayqueue, priorityblockingqueue timer misuse, priorityblockingqueue timer queue, delayed work queue java, delayed executor java, cancellation stale entry timer, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, timer cancellation heap, reschedule stale entry, delayqueue cancellation, delayqueue reschedule, stale timer ticket, generation token scheduler, delayed task blocking queue, delayed head only, delayed scheduler wakeup, java timer workload heap
+
+## 빠른 선택표
+
+| 지금 필요한 것 | 더 자연스러운 기본값 | 이유 |
+|---|---|---|
+| "다음 deadline까지 자고 있다가" 만료된 작업만 꺼내고 싶다 | `DelayQueue` | `take()`가 만료 시점까지 block한다 |
+| 단순히 deadline 순으로만 정렬해 두면 되고, wait/wakeup은 바깥 event loop가 맡는다 | plain `PriorityQueue` | heap 정렬만 있으면 충분하다 |
+| thread-safe priority queue는 필요하지만, 만료 시점까지 기다릴 필요는 없다 | `PriorityBlockingQueue` | 동시성만 보강하면 된다 |
+| 등록/취소 churn이 매우 크고 tick 근사 expiry를 허용한다 | `Timing Wheel` | stale entry와 heap churn을 더 싸게 누를 수 있다 |
+
+핵심은 "`PriorityQueue`냐 `DelayQueue`냐"보다  
+"정렬만 필요하냐, 만료 시점까지 기다리는 계약도 필요하냐"다.
+
+## 1. plain `PriorityQueue`는 deadline 정렬까지만 해 준다
+
+`PriorityQueue`를 timer queue로 쓰면 보통 이렇게 생각한다.
+
+- deadline이 가장 이른 작업이 heap top에 있다
+- `peek()`로 남은 시간을 계산한다
+- 아직 이르면 `wait`/`park`/`condition.awaitNanos()`로 잔다
+- 시간이 되면 `poll()`해서 실행한다
+
+여기까지는 가능하다.  
+문제는 **timer semantics의 절반을 직접 구현해야 한다**는 점이다.
+
+- `PriorityQueue` 자체는 thread-safe가 아니다
+- "다음 deadline까지 기다렸다가 깨기" 기능이 없다
+- 더 이른 deadline이 새로 들어왔을 때 sleeping thread를 깨우는 규칙도 없다
+
+즉 plain `PriorityQueue`를 고르는 순간, 실제로는 "heap + lock + condition + earlier-deadline wakeup"을 직접 짜는 셈이다.
+
+`PriorityBlockingQueue`로 바꿔도 이 차이는 남는다.
+이 감각만 먼저 짧게 잡고 싶다면 [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)를 먼저 보고 돌아와도 된다.
+
+- `PriorityBlockingQueue.take()`는 "원소가 있으면 바로" 꺼낸다
+- timer queue에 필요한 것은 "원소가 만료됐을 때만" 꺼내는 동작이다
+
+그래서 timer-style workload에서는 plain `PriorityQueue`와 `PriorityBlockingQueue` 모두
+"정렬은 되지만 delay-aware scheduler는 아님"을 먼저 기억해야 한다.
+
+## 2. `DelayQueue`는 expired head만 꺼내는 계약을 준다
+
+`DelayQueue`는 내부적으로 heap을 쓰지만, 외부 API는 timer 소비자에 맞춰져 있다.
+
+- head는 가장 이른 deadline이다
+- `peek()`는 아직 만료되지 않은 head도 보여줄 수 있다
+- `poll()`/`take()`는 **만료된 head만** 꺼낸다
+- 더 이른 deadline이 들어오면 대기 중인 consumer를 깨워 다음 wait를 다시 계산한다
+
+그래서 worker thread가 아래처럼 동작해야 할 때 `DelayQueue`가 훨씬 자연스럽다.
+
+- 평소에는 block
+- deadline이 되면 깨어남
+- 가장 먼저 만료된 작업 하나를 즉시 실행
+
+이 패턴은 retry scheduler, lease expiry, timeout executor처럼  
+"정렬"보다 "`언제 깨울 것인가`"가 중요한 작업에서 차이가 크게 난다.
+
+## 3. Java timer workload에서 `DelayQueue`를 먼저 고르는 경우
+
+### 단일 JVM delayed executor
+
+스레드 하나나 소수의 worker가 `take()`로 다음 만료 작업을 소비하면 되는 구조라면 `DelayQueue`가 기본값에 가깝다.
+
+- 구현이 단순하다
+- wait/wakeup correctness를 라이브러리에 맡길 수 있다
+- "sleep 중 더 이른 task가 들어오면 재계산" 같은 함정을 줄인다
+
+### retry / backoff / timeout 관리
+
+재시도 시각, timeout 시각처럼 deadline 중심으로 움직이는 작업은  
+`DelayQueue`의 "expired head only" 계약과 잘 맞는다.
+
+특히 아래 요구가 있으면 plain `PriorityQueue`보다 이득이 크다.
+
+- 가장 이른 deadline만 정확히 처리하면 된다
+- 작업 수는 많아도 "대규모 tick bucket"까지는 필요 없다
+- worker가 polling loop보다 blocking loop에 가깝다
+
+### 구현 실수 비용이 큰 경우
+
+학습용 코드나 서비스 초기 구현에서는 자료구조 오버헤드보다  
+`lost wakeup`, `남은 시간 재계산 누락`, `미래 task를 너무 일찍 poll` 같은 버그가 더 치명적일 수 있다.
+
+이때는 `DelayQueue`가 "정답에 가까운 기본 계약"을 준다.
+
+## 4. plain `PriorityQueue`가 더 자연스러운 경우
+
+아래처럼 runtime이 이미 wait/wakeup을 책임지는 구조라면 plain `PriorityQueue`가 충분할 수 있다.
+
+- event loop tick이 이미 있다
+- 시뮬레이터가 가상 시간을 직접 전진시킨다
+- scheduler thread가 외부 clock interrupt에 맞춰 주기적으로 돈다
+- deadline 정렬은 필요하지만 `take()` 같은 blocking API는 오히려 맞지 않는다
+
+즉 `PriorityQueue`는 "timer queue의 재료"로는 좋지만,  
+"Java delayed executor 완성품"으로 쓰기에는 부족한 경우가 많다.
+
+## 5. cancellation과 stale entry trade-off는 둘 다 남는다
+
+여기서 초보자가 많이 오해하는 지점이 있다.
+
+> `DelayQueue`를 쓰면 cancellation도 자동으로 싸질까?
+
+그렇지는 않다. `DelayQueue`는 **waiting semantics**를 개선해 주지만,  
+arbitrary cancellation 자체를 마법처럼 cheap하게 만들지는 않는다.
+
+실무에서 흔한 패턴은 두 가지다.
+
+### 즉시 제거
+
+- 취소할 때 queue 안에서 해당 entry를 찾아서 제거한다
+- 장점: stale entry가 덜 남는다
+- 단점: heap 내부 탐색 비용과 lock 경쟁이 취소 hot path로 온다
+
+### lazy cancellation / stale skip
+
+- entry를 바로 빼지 않고 "취소됨" 또는 "이 세대는 만료"라고 표기한다
+- 나중에 head로 올라왔을 때 consumer가 버린다
+- 장점: reschedule이 단순하다
+- 단점: heap 안에 tombstone/stale entry가 남아 메모리와 poll cost를 밀어 올린다
+
+Java timer workload에서는 **reschedule** 때문에 stale entry가 더 자주 생긴다.
+
+- deadline 필드를 heap 안에서 제자리 수정하면 안 된다
+- 새 deadline으로 새 entry를 넣고
+- 이전 entry는 stale로 취급해야 한다
+
+이 패턴은 [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)의  
+stale entry 사고방식과 거의 같다. 다만 timer queue에서는 stale 기준이  
+`dist`나 `visited`가 아니라 `cancelled`, `generation`, `latestDeadline` 쪽으로 바뀐다.
+
+Java `ScheduledExecutorService`를 쓰는 중이라면 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)에서 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`를 먼저 잡으면 된다. 직접 timer queue를 만드는 지점만 입문자용 mental model로 보고 싶다면 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket`, `cancelled flag`, `generation` 흐름을 따로 잡고 돌아오면 된다.
+
+정리하면 이렇다.
+
+- `DelayQueue`는 "언제 깨울 것인가" 문제를 줄여 준다
+- cancellation-heavy workload에서는 stale entry 정책을 여전히 설계해야 한다
+- stale entry가 너무 많이 쌓이면 heap 계열보다 [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)를 다시 봐야 한다
+
+## 자주 하는 오해
+
+1. `DelayQueue`는 그냥 thread-safe `PriorityQueue`라고 생각한다.
+2. `PriorityBlockingQueue`면 timer queue 문제도 끝난다고 생각한다.
+3. heap 안에 든 entry의 deadline 필드를 직접 바꿔도 순서가 유지된다고 생각한다.
+4. cancellation이 많아도 stale entry가 거의 안 쌓일 것이라 기대한다.
+
+## 꼬리질문
+
+> Q: Java timer executor에서 `DelayQueue`를 쓰는 첫 이유는 무엇인가요?
+> 의도: 정렬과 delay-aware blocking을 구분하는지 확인
+> 핵심: `DelayQueue`는 만료된 head가 나올 때까지 기다리는 계약을 기본 제공한다.
+
+> Q: `PriorityBlockingQueue`가 있는데 왜 `DelayQueue`가 또 필요한가요?
+> 의도: thread safety와 timer semantics를 분리하는지 확인
+> 핵심: `PriorityBlockingQueue`는 우선순위 큐일 뿐, deadline이 오기 전까지 원소를 막아 두지는 않는다.
+
+> Q: `DelayQueue`를 쓰면 cancellation 비용도 자동으로 해결되나요?
+> 의도: waiting semantics와 stale-entry 정책을 구분하는지 확인
+> 핵심: 아니다. 취소가 많으면 즉시 제거와 lazy cancellation 사이의 trade-off를 여전히 설계해야 한다.
+
+> Q: reschedule이 많은 timer queue에서 흔한 구현 패턴은 무엇인가요?
+> 의도: heap 내부 key mutation 금지를 이해하는지 확인
+> 핵심: 기존 entry를 제자리 수정하지 말고 새 entry를 넣은 뒤, 이전 entry를 stale로 건너뛰는 패턴이다.
+
+## 한 줄 정리
+
+Java timer-style workload에서 `PriorityQueue`는 "deadline 정렬용 부품"이고, `DelayQueue`는 "만료될 때까지 기다렸다가 꺼내는 scheduler 계약"까지 주는 도구다. cancellation과 stale entry trade-off는 여전히 남지만, blocking timer loop라면 기본값은 보통 `DelayQueue`가 더 안전하다.

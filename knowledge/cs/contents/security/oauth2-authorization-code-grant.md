@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [OAuth2 기초](./oauth2-basics.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
@@ -12,6 +13,7 @@
 > - [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
 > - [OAuth Device Code Flow / Security Model](./oauth-device-code-flow-security.md)
 > - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
+> - [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
@@ -21,14 +23,17 @@
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
 > - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: OAuth2 authorization code grant, PKCE, redirect URI, state, code exchange, authorization server, token endpoint, callback, front-channel, back-channel, browser auth, federated login session regeneration, logout coherence, device code flow, device authorization grant, limited input device, PAR, JAR, pushed authorization request, request object signing, browser session coherence, login hardening path, browser auth primer, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token, UserInfo endpoint, external identity mapping, issuer audience nonce, browser server boundary catalog, security readme browser server boundary, callback hardening, login completion hardening, post-login session regeneration, post-login csrf token rotation, BFF login completion, social login callback hardening
+retrieval-anchor-keywords: OAuth2 authorization code grant, PKCE, redirect URI, state, code exchange, authorization server, token endpoint, callback, front-channel, back-channel, browser auth, federated login session regeneration, logout coherence, device code flow, device authorization grant, limited input device, PAR, JAR, pushed authorization request, request object signing, browser session coherence, login hardening path, browser auth primer, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token, UserInfo endpoint, external identity mapping, issuer audience nonce, browser server boundary catalog, security readme browser server boundary, callback hardening, login completion hardening, post-login session regeneration, post-login csrf token rotation, BFF login completion, social login callback hardening, oauth redirect_uri mismatch behind proxy, callback URL flips to internal host, X-Forwarded-Host callback, oauth follow-up primer, after oauth basics route, oauth authorization code route, security readme oauth branch
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- OAuth2 용어 자체가 아직 흐리면 [OAuth2 기초](./oauth2-basics.md) 또는 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가 first-step primer부터 다시 잡는 편이 낫다.
 - 브라우저 login hardening 문서를 cluster 형태로 다시 고르려면 [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)로 돌아가 redirect, session regeneration, browser storage 흐름을 이어 고르면 된다.
 - callback에서 `code` / `state` / `code_verifier` 저장과 소비가 왜 자주 깨지는지는 [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)로 내려가면 된다.
+- load balancer 뒤에서 앱이 `redirect_uri`를 `app-internal`, `localhost`, staging host로 만들거나 `X-Forwarded-Host` / host preservation 때문에 callback origin이 뒤집히면 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)를 먼저 본다.
 - callback 이후 기존 세션을 재사용하면 왜 fixation이 되는지는 [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)으로 이어진다.
 - callback은 성공했는데 cookie 기반 login completion과 첫 번째 POST hardening이 헷갈리면 [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)로 이어진다.
 - high-security client에서 authorization request 자체를 더 단단하게 보호해야 하면 [OAuth PAR / JAR Basics](./oauth-par-jar-basics.md)로 이어진다.

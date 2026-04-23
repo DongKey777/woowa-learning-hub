@@ -8,10 +8,16 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
+from markdown_link_scanner import (
+    iter_markdown_files,
+    iter_markdown_targets,
+    iter_prose_lines,
+    mask_inline_code,
+    normalize_target,
+)
+
 DEFAULT_SCAN_PATHS = ("knowledge/cs", "docs")
 REPO_ROOT = Path.cwd().resolve()
-FENCE_RE = re.compile(r"^\s*```")
-INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 HTML_SIMPLE_ATTR_RE = re.compile(
     r"""<(?:img|a|source)\b[^>]*\b(?:src|href)=["']([^"']+)["']""",
     re.IGNORECASE,
@@ -19,10 +25,6 @@ HTML_SIMPLE_ATTR_RE = re.compile(
 HTML_SRCSET_RE = re.compile(
     r"""<(?:img|source)\b[^>]*\bsrcset=["']([^"']+)["']""",
     re.IGNORECASE,
-)
-REFERENCE_LINK_RE = re.compile(r"^\s*\[[^\]\n]+\]:\s*(.+?)\s*$")
-SIMPLE_QUOTED_TITLE_RE = re.compile(
-    r"""^(?P<target>\S+)(?:\s+(?:"[^"]*"|'[^']*'))\s*$"""
 )
 LOCAL_DOC_SUFFIX = ".md"
 IGNORED_PREFIXES = ("http://", "https://", "mailto:", "data:")
@@ -52,82 +54,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def iter_markdown_files(raw_paths: list[str]) -> list[Path]:
-    files: list[Path] = []
-    seen: set[Path] = set()
-
-    for raw_path in raw_paths:
-        path = Path(raw_path)
-        candidates: list[Path]
-        if path.is_dir():
-            candidates = sorted(item for item in path.rglob("*.md") if item.is_file())
-        elif path.is_file() and path.suffix == ".md":
-            candidates = [path]
-        else:
-            continue
-
-        for candidate in candidates:
-            resolved = candidate.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            files.append(candidate)
-
-    return files
-
-
-def iter_inline_targets(line: str) -> list[tuple[str, str]]:
-    targets: list[tuple[str, str]] = []
-    index = 0
-
-    while index < len(line):
-        open_bracket = line.find("[", index)
-        if open_bracket == -1:
-            break
-
-        close_bracket = line.find("]", open_bracket + 1)
-        if close_bracket == -1:
-            break
-
-        if close_bracket + 1 >= len(line) or line[close_bracket + 1] != "(":
-            index = close_bracket + 1
-            continue
-
-        cursor = close_bracket + 2
-        depth = 1
-        in_angle = False
-
-        while cursor < len(line):
-            char = line[cursor]
-            if char == "<":
-                in_angle = True
-            elif char == ">" and in_angle:
-                in_angle = False
-            elif not in_angle:
-                if char == "(":
-                    depth += 1
-                elif char == ")":
-                    depth -= 1
-                    if depth == 0:
-                        kind = (
-                            "inline-image"
-                            if open_bracket > 0 and line[open_bracket - 1] == "!"
-                            else "inline-link"
-                        )
-                        targets.append((kind, line[close_bracket + 2 : cursor].strip()))
-                        index = cursor + 1
-                        break
-            cursor += 1
-        else:
-            break
-
-    return targets
-
-
-def mask_inline_code(line: str) -> str:
-    return INLINE_CODE_RE.sub(lambda match: " " * len(match.group(0)), line)
-
-
 def iter_html_targets(line: str) -> list[tuple[str, str]]:
     targets: list[tuple[str, str]] = []
     seen: set[tuple[str, str]] = set()
@@ -152,20 +78,6 @@ def iter_html_targets(line: str) -> list[tuple[str, str]]:
             targets.append(pair)
 
     return targets
-
-
-def normalize_target(raw_target: str) -> str:
-    target = raw_target.strip()
-    if target.startswith("<"):
-        closing = target.find(">")
-        if closing != -1:
-            return target[1:closing].strip()
-
-    title_match = SIMPLE_QUOTED_TITLE_RE.match(target)
-    if title_match:
-        return title_match.group("target")
-
-    return target
 
 
 def is_local_asset_target(target: str) -> bool:
@@ -199,24 +111,12 @@ def display_path(path: Path) -> str:
 
 def collect_file_references(path: Path) -> dict[str, list[InboundReference]]:
     findings: dict[str, list[InboundReference]] = defaultdict(list)
-    in_fence = False
-
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if FENCE_RE.match(line):
-            in_fence = not in_fence
-            continue
-
-        if in_fence:
-            continue
-
-        masked_line = mask_inline_code(line)
-        raw_targets: list[tuple[str, str]] = []
-        raw_targets.extend(iter_inline_targets(masked_line))
-
-        reference_match = REFERENCE_LINK_RE.match(masked_line)
-        if reference_match:
-            raw_targets.append(("reference-link", reference_match.group(1)))
-
+    for markdown_line in iter_prose_lines(path):
+        masked_line = mask_inline_code(markdown_line.text)
+        raw_targets = [
+            (target.kind, target.raw_target)
+            for target in iter_markdown_targets(markdown_line.text)
+        ]
         raw_targets.extend(iter_html_targets(masked_line))
 
         for kind, raw_target in raw_targets:
@@ -231,7 +131,7 @@ def collect_file_references(path: Path) -> dict[str, list[InboundReference]]:
             findings[display_path(resolved)].append(
                 InboundReference(
                     path=path,
-                    line_number=line_number,
+                    line_number=markdown_line.line_number,
                     kind=kind,
                     target=target,
                 )

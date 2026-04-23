@@ -20,7 +20,7 @@
 > - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, hidden session beginner bridge, session basics to SecurityContextRepository, why JSESSIONID appears, cookie 있는데 다시 로그인, next request anonymous after login
+retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SecurityContextRepository, session basics to Spring Security, why JSESSIONID appears, cookie exists but session missing, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, SavedRequest beginner bridge, post-login session persistence, next request anonymous after login
 
 ## 입문 브리지
 
@@ -28,6 +28,7 @@ retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, sta
 아래 순서로 읽으면 "왜 세션이 생겼지?"와 "왜 다음 요청에서 다시 익명이지?"를 같은 축에서 설명할 수 있다.
 
 - `cookie`, `session`, `JWT` 기본 차이부터 다시 잡아야 하면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) -> [Spring Security 아키텍처](./spring-security-architecture.md) 순으로 먼저 올라온다.
+- primer에서 `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거친 뒤 이 문서에서 **post-login persistence / 다음 요청 복원** 축을 본다.
 - 로그인 redirect 자체가 꼬여 `SavedRequest` loop처럼 보이면 이 문서보다 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 먼저 본다.
 - `STATELESS`인데 `JSESSIONID`가 생긴다, 로그인 성공 직후 다음 요청이 다시 익명이다, `SecurityContextHolder`에 넣었는데 유지가 안 된다는 질문이면 이 문서가 맞다.
 - browser cookie는 남아 있는데 서버 세션이나 token translation을 못 찾아 `hidden session mismatch`, `cookie는 있는데 session missing`처럼 보이면 이 문서 다음에 [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)를 붙여 outage/translation 경계까지 내려간다.

@@ -8,11 +8,13 @@
 > - [팩토리 (Factory)](./factory.md)
 > - [팩토리 패턴 기초](./factory-basics.md)
 > - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
+> - [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md)
 > - [Registry Pattern](./registry-pattern.md)
+> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 > - [Singleton vs DI Container Scope](./singleton-vs-di-container-scope.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: factory vs di container, spring bean factory method, handwritten factory vs @Bean, framework wiring factory example, dependency injection wiring vs runtime factory, conditional bean vs manual factory, payment handler map injection, applicationcontext getbean service locator, beginner spring factory, di container wiring beginner
+retrieval-anchor-keywords: factory vs di container, spring bean factory method, handwritten factory vs @Bean, framework wiring factory example, dependency injection wiring vs runtime factory, conditional bean vs manual factory, payment handler map injection, applicationcontext getbean service locator, beginner spring factory, di container wiring beginner, request dto bean, command object not bean, builder vs di container
 
 ---
 
@@ -234,6 +236,7 @@ public class CheckoutService {
 
 즉 **DI와 factory는 경쟁 관계가 아니라 역할 분담 관계**일 수 있다.
 다만 이 구조가 단순 lookup만 한다면 [Registry Pattern](./registry-pattern.md)에 더 가깝게 부를 수도 있다.
+핸들러 컬렉션 주입에서 이 경계를 바로 자르고 싶다면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)를 이어서 보면 된다.
 
 ---
 
@@ -260,6 +263,7 @@ UploadRequest request = UploadRequest.builder()
 - 사용자 입력이나 메서드 인자에 강하게 묶인다
 
 그래서 컨테이너가 관리할 대상이 아니라 **호출부가 직접 만드는 데이터**에 가깝다.
+요청 DTO, command, value object 경계를 이 예시만 따로 다시 잡고 싶다면 [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md)를 이어서 보면 된다.
 
 ---
 

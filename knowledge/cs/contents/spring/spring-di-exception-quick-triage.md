@@ -11,11 +11,12 @@
 > - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 > - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)
 > - [Spring Startup / Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 
-retrieval-anchor-keywords: spring di exception quick triage, NoSuchBeanDefinitionException vs NoUniqueBeanDefinitionException, missing bean vs ambiguous bean, bean not found vs bean duplication, scan miss vs duplicate candidate, component scan omission, profile mismatch bean missing, active profile bean missing, @Profile bean not loaded, conditional bean missing, @ConditionalOnProperty false, @ConditionalOnClass miss, @ConditionalOnBean miss, qualifier mismatch, @Primary @Qualifier beginner, @Primary vs @Qualifier vs collection injection, expected single matching bean but found 2, no qualifying bean of type available
+retrieval-anchor-keywords: spring di exception quick triage, NoSuchBeanDefinitionException vs NoUniqueBeanDefinitionException, missing bean vs ambiguous bean, bean not found vs bean duplication, scan miss vs duplicate candidate, component scan omission, profile mismatch bean missing, active profile bean missing, @Profile bean not loaded, conditional bean missing, @ConditionalOnProperty false, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing bean, env var mismatch bean missing, @ConditionalOnClass miss, @ConditionalOnBean miss, qualifier mismatch, @Primary @Qualifier beginner, @Primary vs @Qualifier vs collection injection, expected single matching bean but found 2, no qualifying bean of type available
 
 ## 핵심 개념
 
@@ -133,6 +134,8 @@ public class SmsConfig {
 
 `app.sms.enabled=true`가 없으면 `SmsSender`는 등록되지 않는다.  
 이때 beginner 질문은 "`왜 scan을 못 했지?`"가 아니라 **"`지금 profile/property/classpath가 이 bean을 켜고 있나?`"**여야 한다.
+
+`havingValue`, `matchIfMissing`, env var naming 차이 때문에 "property가 있는 줄 알았는데 사실 missing이었다" 같은 경우는 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)에서 바로 분리한다.
 
 특히 아래 신호가 보이면 scan보다 조건 탈락을 먼저 본다.
 

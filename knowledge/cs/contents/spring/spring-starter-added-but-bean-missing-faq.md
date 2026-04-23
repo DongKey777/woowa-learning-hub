@@ -10,16 +10,23 @@
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+> - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
+> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
 > - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 > - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
 
-retrieval-anchor-keywords: starter added but bean missing, starter bean not created, spring starter bean missing, starter added no bean, why starter bean not created, spring boot starter bean missing, classpath condition fail, ConditionalOnClass miss, ConditionalOnProperty false, ConditionalOnMissingBean back off, existing bean found, bean override rule, allow-bean-definition-overriding, @Primary is not override, component scan boundary, scan import boundary, starter configuration not loaded, starter added but bean not created faq
+retrieval-anchor-keywords: starter added but bean missing, starter bean not created, spring starter bean missing, starter added no bean, why starter bean not created, spring boot starter bean missing, classpath condition fail, ConditionalOnClass miss, ConditionalOnClass classpath trap, dependency scope bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, test slice auto-configuration missing, ConditionalOnProperty false, ConditionalOnProperty havingValue, ConditionalOnProperty matchIfMissing, env var mismatch bean missing, relaxed binding env var cheatsheet, dashed property env var mismatch, ConditionalOnMissingBean back off, existing bean found, bean override rule, allow-bean-definition-overriding, @Primary is not override, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override, component scan boundary, scan import boundary, starter configuration not loaded, starter added but bean not created faq
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - `@Configuration`과 Boot auto-configuration의 큰 그림이 먼저 필요하면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)로 간다.
 - 조건 평가를 실제로 보는 첫 진입점은 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)다.
+- "`@Primary`를 붙였는데 왜 Boot 기본 bean은 안 돌아오지?"처럼 back-off와 주입 우선순위가 섞이면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 간다.
+- classpath 조건이 왜 환경마다 달라지는지 scope/optional/test slice 기준으로 먼저 나누고 싶으면 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)로 간다.
+- property 조건은 보이는데 운영 env var 이름이 맞는지부터 의심되면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)에서 dotted/dashed/list/map 변환을 먼저 맞춘다.
 - "누가 기존 bean으로 간주됐는가"를 더 정확히 보려면 [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)로 이어진다.
 - 내 설정 클래스나 shared module 자체가 안 읽힌 것 같으면 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md), [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)으로 넘어간다.
 
@@ -71,7 +78,7 @@ starter 추가 = auto-configuration 후보 등록 + 조건 평가 시작
 | 먼저 묻는 질문 | 보통 뜻하는 것 | 가장 먼저 확인할 증거 | 다음 문서 |
 |---|---|---|---|
 | target auto-configuration이 아예 negative match인가? | classpath 조건 또는 웹 타입 조건이 안 맞는다 | `--debug`, Actuator `conditions`, `@ConditionalOnClass`, `@ConditionalOnWebApplication` | [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md) |
-| auto-configuration은 보이는데 property 조건에서 꺼졌나? | profile/env/property가 기능을 껐다 | `@ConditionalOnProperty`, active profile, env override | [Spring Boot 자동 구성](./spring-boot-autoconfiguration.md) |
+| auto-configuration은 보이는데 property 조건에서 꺼졌나? | profile/env/property가 기능을 껐다 | `@ConditionalOnProperty`, active profile, env override | [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md) |
 | report에 `@ConditionalOnMissingBean` miss나 `existing bean`이 보이나? | 이미 사용자 bean 또는 다른 starter bean이 있어 기본값이 물러났다 | 내 `@Bean`, `@Import`, test config, 다른 starter | [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md) |
 | Boot 쪽은 positive match인데 내 설정 클래스나 커스텀 bean만 안 보이나? | scan/import boundary 문제다 | `@SpringBootApplication` package, `scanBasePackages`, `@Import` 여부 | [Spring Component Scan 실패 패턴](./spring-component-scan-failure-patterns.md) |
 
@@ -107,6 +114,8 @@ spring.main.web-application-type=none
 
 즉 이미 사용자 bean이 하나라도 존재해서 Boot 기본값이 물러났다면, `@Primary`를 붙여도 "빠진 auto-config bean을 다시 생성"하지는 않는다.
 
+이 구분을 등록 단계와 주입 단계로 짧게 다시 잡고 싶다면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)를 바로 이어서 본다.
+
 ### Q3. `spring.main.allow-bean-definition-overriding=true`를 켜면 해결되나?
 
 대개 아니다.
@@ -136,6 +145,8 @@ starter와 component scan은 다른 경로다.
 - test slice가 전체 auto-configuration을 안 올릴 수 있다
 - test property가 feature를 껐을 수 있다
 - dependency scope나 optional dependency 차이로 classpath가 달라질 수 있다
+
+이 경우는 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)에서 scope / optional / slice를 먼저 분리하면 빠르다.
 
 즉 "같은 코드인데 다르게 보인다"면 우선 classpath/profile/property diff를 본다.
 

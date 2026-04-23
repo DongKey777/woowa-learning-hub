@@ -13,8 +13,11 @@
 > - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 > - [객체지향 핵심 원리](./object-oriented-core-principles.md)
 > - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
+> - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
+> - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
+> - [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
 
-> retrieval-anchor-keywords: java inheritance basics, java overriding basics, java overloading vs overriding, java extends basics, java override annotation basics, java @Override basics, java dynamic dispatch basics, runtime polymorphism basics, parent child class basics, java beginner inheritance primer, java super constructor basics, java overridden method dispatch, java overloaded method signature basics
+> retrieval-anchor-keywords: java inheritance basics, java overriding basics, java overloading vs overriding, java extends basics, java @override basics, java dynamic dispatch basics, runtime polymorphism basics, java super constructor basics, parent child class basics, 상속 기초, 처음 배우는데 상속, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 기초, composition over inheritance beginner, template method vs strategy beginner
 
 <details>
 <summary>Table of Contents</summary>
@@ -271,6 +274,16 @@ field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 자식이 직접 볼 수 없는 멤버는 같은 의미의 overriding 대상이 되지 않는다.  
 그래서 overriding은 보통 상속받아 접근 가능한 instance method를 중심으로 이해하면 된다.
 
+### 상속을 배웠다면 다음으로 볼 큰 그림
+
+처음 배우는 단계에서는 "상속이 되냐 안 되냐"보다 "이걸 상속으로 풀어야 하냐"가 더 중요해진다.
+
+- 부모가 공통 순서를 **끝까지 고정**해야 하면 템플릿 메소드 쪽이다.
+- 규칙을 **객체로 갈아끼우고 싶으면** 상속보다 조합 쪽이다.
+- 단지 코드 재사용 때문에 `extends`를 고르고 있다면 한 번 더 멈춰 보는 편이 안전하다.
+
+이 질문을 바로 이어서 풀고 싶다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)로 먼저 "왜 상속보다 조합을 기본값으로 보는가"를 보고, 상속이 자연스러운 좁은 경우를 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md), 최종 비교를 [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)에서 정리하면 된다.
+
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 클래스, 객체, 인터페이스, 추상 클래스까지 OOP 지도를 먼저 잡고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
@@ -278,6 +291,7 @@ field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 - method overloading과 method overriding의 차이만 짧게 다시 고정하고 싶다면 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - `super(...)`, constructor chaining, 초기화 순서를 같이 이해하고 싶다면 [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
 - `protected`, `final`, `static` 같은 멤버 규칙과 함께 상속 경계를 보고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
+- 처음 배우는데 "상속을 언제 쓰는지", "상속보다 조합이 왜 자주 나오나"가 궁금하다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) -> [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) -> [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md) 순서로 읽으면 설계 선택까지 자연스럽게 이어진다
 - 상속, 다형성, 추상화를 조금 더 넓은 OOP 문맥에서 다시 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
 - 추상 클래스와 인터페이스를 언제 나눠 써야 하는지 더 정확히 보고 싶다면 [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
 

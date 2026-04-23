@@ -1,11 +1,13 @@
 # 템플릿 메소드 vs 전략
 
-> 한 줄 요약: 템플릿 메소드는 **고정된 흐름 안의 필수 단계/선택적 hook**을 상속으로 연다. 전략은 **바뀌는 규칙 전체**를 조합으로 갈아낀다.
+> 한 줄 요약: 템플릿 메소드는 **부모가 흐름을 쥐고**, 전략은 **호출자가 전략을 고른다**. 즉 템플릿 메소드는 고정된 흐름 안의 필수 단계/선택적 hook을 상속으로 열고, 전략은 바뀌는 규칙 전체를 조합으로 갈아낀다.
 
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
+> - [템플릿 메소드 패턴 기초](./template-method-basics.md)
+> - [전략 패턴 기초](./strategy-pattern-basics.md)
 > - [템플릿 메소드 패턴](./template-method.md)
 > - [전략 패턴](./strategy-pattern.md)
 > - [Template Hook Smells: 템플릿 메소드가 과해졌다는 신호](./template-hook-smells.md)
@@ -13,15 +15,33 @@
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtime vs fixed flow, fixed workflow vs runtime algorithm selection, hook method vs abstract method, abstract step vs strategy, template method beginner, strategy beginner, template hook smell, composition over inheritance, inheritance vs composition, composition vs inheritance beginner, favor composition over inheritance template method, when to use template method, when to use strategy, fixed workflow inheritance, runtime policy swap, 상속으로 할까 조합으로 할까, 상속으로 뼈대 잡아야 하나, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, extends vs composition, subclass vs delegate, abstract class vs injected strategy
+retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtime vs fixed flow, fixed workflow vs runtime algorithm selection, hook method vs abstract method, abstract step vs strategy, template method beginner, strategy beginner, template hook smell, composition over inheritance, inheritance vs composition, composition vs inheritance beginner, favor composition over inheritance template method, when to use template method, when to use strategy, fixed workflow inheritance, runtime policy swap, 상속으로 할까 조합으로 할까, 상속으로 뼈대 잡아야 하나, 상속 vs 객체 주입, 객체 주입 vs 상속, 부모 클래스 vs 전략 객체, 부모 클래스냐 전략 객체냐, 부모 클래스 상속 vs 객체 주입, 부모 클래스 만들까 전략 객체 넣을까, 추상 클래스냐 전략 객체냐, 언제 부모 클래스를 쓰고 언제 전략 객체를 주입하나요, extends vs composition, subclass vs delegate, abstract class vs injected strategy, 처음 배우는데 템플릿 메소드 vs 전략, 처음 배우는데 상속 vs 객체 주입, 처음 배우는데 부모 클래스냐 전략 객체냐, 템플릿 메소드 전략 큰 그림, 템플릿 메소드 전략 기초 비교, 템플릿 메소드 전략 언제 쓰는지, 큰 그림 상속 vs 객체 주입, 기초 상속 vs 객체 주입, 부모가 흐름을 쥔다, 호출자가 전략을 고른다, 부모가 흐름을 쥔다 vs 호출자가 전략을 고른다, parent controls flow vs caller chooses strategy
 
 ---
+
+## 처음 배우는데 큰 그림
+
+처음 배우는데는 아래 두 문장만 먼저 기억해도 된다.
+
+- 템플릿 메소드: **부모가 흐름을 쥔다**
+- 전략: **호출자가 전략을 고른다**
+
+| 큰 그림 질문 | 템플릿 메소드 | 전략 |
+|---|---|---|
+| 누가 주도권을 쥐는가 | 부모 클래스가 공통 순서를 고정한다 | 호출자, 설정, DI가 전략 객체를 고른다 |
+| 무엇이 안정적인가 | 검증 -> 변환 -> 저장 같은 흐름 | 호출 흐름은 그대로 두고 교체할 규칙 |
+| 언제 쓰는지 | 순서를 바꾸면 안 되는 기초 파이프라인 | 요청/상황마다 다른 구현을 고를 때 |
+
+이 문서는 이 큰 그림을 기준으로, hook/추상 단계/전략이 어디서 갈리는지까지 이어서 설명한다.
 
 ## 이 문서는 언제 읽으면 좋은가
 
 아래 질문이 한 번이라도 떠오르면 이 비교 문서를 먼저 보면 된다.
 
+- "처음 배우는데 상속 vs 객체 주입 큰 그림부터 알고 싶다"
+- "부모 클래스냐 전략 객체냐, 어디서 갈리는지 모르겠다"
 - "상속으로 뼈대를 잡아야 하나, 객체를 주입해야 하나?"
+- "추상 클래스냐 전략 객체냐, 언제 쓰는지 감이 안 잡힌다"
 - "흐름은 같은데 일부만 다르다"와 "규칙 자체를 갈아낀다"가 자꾸 섞일 때
 - hook method를 열어야 하는지, 그냥 전략으로 빼야 하는지 헷갈릴 때
 
@@ -34,16 +54,23 @@ retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtim
 질문이 패턴 이름보다 "상속을 써야 하나?"에서 시작됐다면 먼저 이렇게 자른다.
 
 - 부모 클래스가 `검증 -> 변환 -> 저장` 같은 **순서를 끝까지 지켜야 한다**: 템플릿 메소드 후보
-- 요청, 설정, DI가 **구현을 갈아끼워야 한다**: 전략 + 조합 후보
+- 요청, 설정, DI가 **전략 객체를 골라 끼워야 한다**: 전략 + 조합 후보
 - 아직 "상속 자체가 맞나?"도 애매하다: [상속보다 조합 기초](./composition-over-inheritance-basics.md)로 먼저 큰 그림을 잡고 다시 이 문서로 온다
 
 짧게 말하면 템플릿 메소드는 **상속이 허용되는 좁은 경우**이고, 전략은 **조합이 기본인 경우**다.
 
 ---
 
-## 30초 선택 가이드
+## 상속 vs 객체 주입 10초 chooser
 
-먼저 두 질문만 보면 대부분 정리된다.
+`상속 vs 객체 주입`, `부모 클래스냐 전략 객체냐` 같은 초보 질문은 아래 두 줄로 먼저 자르면 된다.
+
+- **부모 클래스가 순서를 끝까지 잡아야 한다**: 템플릿 메소드
+- **호출자/설정/DI가 이번 규칙 객체를 골라 넣어야 한다**: 전략
+
+즉 이 질문은 패턴 이름 암기보다 **고정 흐름을 부모에 둘지, 교체 규칙을 객체로 주입할지**를 고르는 chooser에 가깝다.
+
+그다음에는 아래 두 질문만 보면 대부분 정리된다.
 
 1. **공통 순서를 실수로 바꾸면 안 되는가?**
    `검증 -> 변환 -> 저장`처럼 흐름이 고정이라면 템플릿 메소드 쪽이다.
@@ -75,8 +102,8 @@ retrieval-anchor-keywords: template method vs strategy, beginner chooser, runtim
 
 한 문장으로 다시 정리하면:
 
-- 템플릿 메소드: **"순서를 통제하고 싶다"**
-- 전략: **"방법을 바꿔 끼우고 싶다"**
+- 템플릿 메소드: **"부모가 흐름을 쥔다"**
+- 전략: **"호출자가 전략을 고른다"**
 
 ---
 

@@ -6,12 +6,15 @@
 
 관련 문서:
 
+- [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 - [전략 (Strategy) — 심화](./strategy-pattern.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 - [전략 폭발 냄새](./strategy-explosion-smell.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: strategy pattern basics, 전략 패턴, strategy pattern beginner, 전략 패턴이 뭔가요, context strategy interface, 알고리즘 교체, if-else 대신 전략, when to use strategy pattern, strategy pattern example, 결제 수단 전략, 할인 정책 전략, runtime 구현 교체, strategy vs if-else
+retrieval-anchor-keywords: strategy pattern basics, 전략 패턴, strategy pattern beginner, 전략 패턴이 뭔가요, context strategy interface, 알고리즘 교체, if-else 대신 전략, when to use strategy pattern, strategy pattern example, 결제 수단 전략, 할인 정책 전략, runtime 구현 교체, strategy vs if-else, caller chooses strategy, caller selected strategy, caller chooses implementation, caller picks implementation, caller selects policy object, policy selector vs factory, selector resolver registry strategy vs factory, strategy selector naming, 호출자가 전략 선택, 호출자가 구현 선택, 호출자가 정책 선택, caller owned strategy selection, context delegates to strategy, object injection strategy, injected strategy object, strategy object injection, strategy dependency injection, strategy constructor injection, 객체 주입 전략 패턴, 전략 객체 주입, 전략 주입, 주입받은 전략 객체, composition over inheritance strategy, inheritance vs composition strategy, 상속 vs 조합 전략, 상속보다 조합 전략, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, extends vs strategy object, abstract class vs injected strategy, 처음 배우는데 전략 패턴, 전략 패턴 큰 그림, 전략 패턴 언제 쓰는지
 
 ---
 
@@ -20,6 +23,20 @@ retrieval-anchor-keywords: strategy pattern basics, 전략 패턴, strategy patt
 전략 패턴은 "무엇을 할지"는 `Context`가 결정하고, "어떻게 할지"는 `Strategy` 구현체가 결정하도록 역할을 나누는 패턴이다. `Context`는 구체 구현 대신 공통 인터페이스(`Strategy`)에만 의존하므로, 구현체를 교체해도 `Context`를 바꿀 필요가 없다.
 
 입문자가 자주 막히는 지점은 "if-else와 결과가 같은데 왜 구조를 키우나?"라는 의문이다. 핵심은 **변경 축의 분리**다. 새 결제 수단이나 새 할인 정책이 추가될 때 기존 코드를 건드리지 않고 새 구현체만 추가하면 된다.
+
+## 처음 배우는데 큰 그림부터
+
+처음 배우는데 가장 빨리 잡아야 할 큰 그림은 이것이다.
+
+- 부모 클래스를 늘려서 공통 흐름을 잡고 싶다: 템플릿 메소드/상속 쪽 질문
+- 호출자나 DI가 "이번에는 이 구현을 써"라고 객체를 넣어 준다: 전략/조합 쪽 질문
+
+즉 전략 패턴은 "`Context`가 스스로 분기해서 고른다"보다 **호출자가 전략 객체를 골라 주입하고, `Context`는 그 객체에 위임한다**는 쪽에 가깝다.
+
+짧게 외우면 다음 두 문장으로 충분하다.
+
+- **상속은 부모가 뼈대를 쥔다**
+- **전략은 호출자가 규칙 객체를 고른다**
 
 ## 한눈에 보기
 
@@ -36,6 +53,18 @@ Context (주문 처리)
 | Context | 전략을 보유하고 실행 흐름을 가짐 |
 | Strategy 인터페이스 | 공통 행동을 정의하는 추상화 |
 | 구현체 (Concrete Strategy) | 실제 알고리즘/행동을 담은 클래스 |
+
+## 상속 vs 조합으로 바로 자르기
+
+전략 패턴은 "객체를 주입한다"는 말이 자주 같이 나온다. 이유는 단순하다.
+
+| 질문 | 상속/템플릿 메소드 쪽 | 전략/조합 쪽 |
+|------|----------------------|--------------|
+| 누가 변화를 쥐는가 | 부모 클래스가 흐름을 쥔다 | 호출자, 설정, DI가 구현을 고른다 |
+| 어떻게 연결되는가 | `extends`로 묶인다 | 필드/생성자로 전략 객체를 받는다 |
+| 언제 잘 맞는가 | 순서를 꼭 고정해야 할 때 | 규칙을 바꿔 끼워야 할 때 |
+
+그래서 "부모 클래스를 만들어야 하나, 객체를 주입해야 하나?"라는 질문이 나오면 전략 패턴 후보를 같이 봐야 한다.
 
 ## 상세 분해
 
@@ -60,6 +89,8 @@ public class VipDiscount implements DiscountStrategy {
 - **"if-else를 없애는 게 목적이다"** — 목적은 변경 축을 나누는 것이지 분기를 없애는 것이 아니다. 구현이 2개이고 단순하다면 if-else가 더 읽기 쉬울 수 있다.
 - **"구현체 수가 많아야 전략이다"** — 구현체가 1개라도 교체 가능성이 있고 테스트에서 가짜를 넣어야 한다면 전략이 유용하다.
 - **"전략 = 행동을 주입하는 모든 것"** — 람다나 함수도 넓게 보면 전략이지만, 이름 있는 역할·협력 객체·독립 테스트가 필요할 때 Strategy 타입으로 분리한다.
+- **"전략은 `Context`가 알아서 고른다"** — 초보자가 자주 헷갈리지만, 전략 패턴의 핵심은 `Context`가 구현 선택 책임을 많이 갖지 않는다는 점이다. 보통 호출자, 설정, DI가 전략을 고른다.
+- **"객체 주입이면 다 전략 패턴이다"** — 단순 서비스 의존성 주입과 교체 가능한 규칙 객체 주입은 다르다. 주입받는 대상이 "바뀌는 정책/알고리즘"일 때 전략에 가깝다.
 
 ## 실무에서 쓰는 모습
 
@@ -70,6 +101,8 @@ public class VipDiscount implements DiscountStrategy {
 ## 더 깊이 가려면
 
 - [전략 (Strategy) — 심화](./strategy-pattern.md) — hook method, Context 결합 방식, 전략 선택 registry 구조까지
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) — 상속으로 뼈대를 잡을지, 호출자가 전략 객체를 주입할지 바로 비교
+- [상속보다 조합 기초](./composition-over-inheritance-basics.md) — 객체 주입과 조합이 왜 전략 패턴과 자주 같이 나오는지 큰 그림 정리
 - [Strategy vs Function: lambda로 충분한가](./strategy-vs-function-chooser.md) — 언제 lambda로 끝낼지, 언제 Strategy 타입이 필요한지
 
 ## 면접/시니어 질문 미리보기

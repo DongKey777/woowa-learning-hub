@@ -8,6 +8,7 @@
 
 > 관련 문서:
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-call, 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
@@ -15,12 +16,13 @@
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 
-retrieval-anchor-keywords: configuration vs autoconfiguration, @Configuration vs auto-configuration, @Configuration @Bean difference, spring configuration beginner, boot auto configuration beginner, proxyBeanMethods beginner, full configuration vs lite configuration, method parameter injection bean, inter-bean reference, @Bean method call singleton, @ConditionalOnMissingBean mental model, user configuration wins, boot default bean registration, @AutoConfiguration primer, condition evaluation report beginner, --debug first checklist, actuator conditions endpoint, boot bean missing first debug
+retrieval-anchor-keywords: configuration vs autoconfiguration, @Configuration vs auto-configuration, @Configuration @Bean difference, spring configuration beginner, boot auto configuration beginner, proxyBeanMethods beginner, full configuration vs lite configuration, method parameter injection bean, inter-bean reference, @Bean method call singleton, @ConditionalOnMissingBean mental model, user configuration wins, boot default bean registration, @AutoConfiguration primer, condition evaluation report beginner, --debug first checklist, actuator conditions endpoint, boot bean missing first debug, @ConditionalOnMissingBean vs @Primary, auto-configuration back-off vs bean selection
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - Boot 조건부 등록을 더 자세히 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
 - 내 설정이 있을 때 Boot 기본값이 왜 빠지는지 처음 디버깅하려면 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)로 이어진다.
+- "`@Primary`와 `@ConditionalOnMissingBean`이 같은 문제인가?"를 짧은 표로 먼저 분리하고 싶다면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.
 - full configuration, lite configuration, method-parameter injection을 예제로 바로 비교하려면 [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-call, 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)으로 이어진다.
 - `proxyBeanMethods`와 post-processor 체인을 더 깊게 보려면 [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)으로 이어진다.
 - BeanDefinition과 컨테이너 생명주기 자체를 더 보려면 [IoC 컨테이너와 DI](./ioc-di-container.md)를 같이 본다.

@@ -16,13 +16,16 @@
 > - [Spring Authority Mapping Pitfalls](./spring-authority-mapping-pitfalls.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 > - [Spring Security Filter Chain](../spring/spring-security-filter-chain.md)
+> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, JwtAuthenticationConverter, authorities claim mapping, hasRole vs hasAuthority, ROLE_ prefix, SCOPE_ prefix, scope vs permission, oauth scope vs audience vs permission, api audience vs scope vs permission, aud claim vs scope claim, role claim 403, spring security role claim mismatch, claims are not permissions, claims are not authorities, application permission source of truth, stale authority claim, stale authorities, role vs scope vs ownership, scope is not ownership, role is not ownership
+retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, JwtAuthenticationConverter, authorities claim mapping, hasRole vs hasAuthority, ROLE_ prefix, SCOPE_ prefix, scope vs permission, oauth scope vs audience vs permission, api audience vs scope vs permission, aud claim vs scope claim, role claim 403, spring security role claim mismatch, valid jwt but spring 403, valid token empty authorities, valid JWT route 403, hasRole hasAuthority mismatch beginner, ROLE prefix mismatch beginner, SCOPE prefix mismatch beginner, claims are not permissions, claims are not authorities, application permission source of truth, stale authority claim, stale authorities, role vs scope vs ownership, scope is not ownership, role is not ownership, security symptom shortcut, category return path
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- `valid JWT인데 Spring route / method security에서만 403` 증상표에서 들어왔다면 이 문서로 claim/role/authority/permission 층을 먼저 분리하고, 실제 `JwtAuthenticationConverter`, `ROLE_`, `SCOPE_` 문자열 mismatch는 [Spring Authority Mapping Pitfalls](./spring-authority-mapping-pitfalls.md)에서 확인하면 된다.
+- 다른 security 증상 row를 다시 고르고 싶으면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아간다.
 - authn / authz / principal / session 자체가 아직 흐리면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 먼저 돌아가면 된다.
 - `role`, OAuth `scope`, 객체 `ownership`이 서로 다른 질문이라는 초보자용 분리가 먼저 필요하면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)를 먼저 보면 된다.
 - OAuth `scope`, token `audience`, 내부 app permission이 어느 지점에서 갈라지는지 multi-service 관점으로 보고 싶으면 [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)으로 이어 가면 된다.

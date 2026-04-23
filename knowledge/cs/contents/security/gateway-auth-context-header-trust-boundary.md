@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
 > - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
 > - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
 > - [Workload Identity / User Context Propagation Boundaries](./workload-identity-user-context-propagation-boundaries.md)

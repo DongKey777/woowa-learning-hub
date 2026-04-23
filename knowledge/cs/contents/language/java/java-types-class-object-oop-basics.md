@@ -13,10 +13,13 @@
 > - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 > - [객체지향 핵심 원리](./object-oriented-core-principles.md)
 > - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
+> - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
+> - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
+> - [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 > - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
 
-> retrieval-anchor-keywords: java beginner fundamentals, java oop primer, java primitive vs reference type, java class object instance basics, java constructor field method, java interface basics, java abstract class basics, java encapsulation abstraction inheritance polymorphism, java beginner syntax and oop, class vs object vs instance, interface vs abstract class, java inheritance basics, java overriding basics, java dynamic dispatch basics
+> retrieval-anchor-keywords: java beginner oop, java oop primer, java class object instance basics, java primitive vs reference type, java interface vs abstract class basics, java inheritance basics, java overriding basics, java dynamic dispatch basics, 객체지향 기초, oop 큰 그림, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 기초, template method basics, template method vs strategy beginner
 
 <details>
 <summary>Table of Contents</summary>
@@ -360,11 +363,22 @@ public class VipMember extends Member {
 상속은 강한 결합을 만들 수 있다.  
 공통 기능 공유보다 역할 조합이 더 중요하면 인터페이스와 필드 조합이 더 자연스러울 수 있다.
 
+### 처음 배우는데 "상속을 언제 쓰는지" 헷갈리면
+
+큰 그림은 먼저 이렇게 자르면 된다.
+
+- 부모 클래스가 **공통 순서를 끝까지 고정**해야 한다면 템플릿 메소드 쪽 질문이다.
+- 동작이나 정책을 **객체로 갈아끼워야** 한다면 상속보다 조합 쪽 질문이다.
+- 이유가 "코드 재사용이 쉬워 보여서"라면 상속을 바로 고르지 말고 조합을 먼저 의심한다.
+
+이 감각을 이어서 보고 싶다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)로 먼저 큰 그림을 잡고, 상속이 허용되는 좁은 예외를 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md), 조합과 상속의 비교를 [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)에서 이어 보면 된다.
+
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 변수, 제어문, 배열, 형변환까지 문법을 먼저 다지고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - 메서드, 생성자, parameter, return type, overloading을 한 클래스 흐름으로 묶어 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - `extends`, overriding, `@Override`, dynamic dispatch를 작은 예제로 이어 보고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
+- 처음 배우는데 "상속을 언제 쓰는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) -> [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) -> [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md) 순서로 보면 큰 그림이 빨리 잡힌다
 - 접근 제한자, `static`, `final`을 클래스 모델과 함께 잡고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 클래스/객체/캡슐화/상속/다형성을 조금 더 길게 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
 - 인터페이스와 추상 클래스의 차이를 더 정확히 판단하고 싶다면 [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)

@@ -12,7 +12,7 @@
 > - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [팩토리 (Factory)](./factory.md)
 
-retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, strategy vs policy object, payment method strategy, lambda vs strategy, function vs strategy, strategy vs small function, function map vs strategy
+retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, strategy vs policy object, payment method strategy, lambda vs strategy, function vs strategy, strategy vs small function, function map vs strategy, caller chooses implementation, caller selects policy object, 호출자가 전략 선택, 호출자가 구현 선택, 호출자가 정책 선택, strategy object injection, object injection strategy, injected strategy object, strategy constructor injection, 객체 주입 전략 패턴, 전략 객체 주입, 주입받은 전략 객체, composition over inheritance strategy, inheritance vs composition strategy, 상속 vs 조합 전략, 상속보다 조합 전략, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, abstract class vs injected strategy, 처음 배우는데 전략 패턴, 전략 패턴 큰 그림, 전략 패턴 언제 쓰는지
 
 ---
 
@@ -31,6 +31,11 @@ retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtim
 - 구현마다 이름, 협력 객체, 테스트 경계를 독립적으로 두고 싶다
 
 즉 전략 패턴은 **if-else sprawl을 객체 분리로 치유하면서, 선택 책임을 호출자 쪽으로 돌리는 방법**이다.
+
+처음 배우는데 헷갈리면 이 한 줄로 다시 잡으면 된다.
+
+- 상속/템플릿 메소드: 부모가 흐름을 쥔다
+- 전략/조합: 호출자가 규칙 객체를 고른다
 
 ### 전략 패턴이 잘 맞는 경우
 

@@ -5,6 +5,7 @@
 > 관련 문서:
 > - [RAG Design](./README.md)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)
 > - [Local Asset Existence Lint](./local-asset-existence-lint.md)
 > - [Asset Filename Outlier Sweep](./asset-filename-outlier-sweep.md)
 > - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
@@ -37,6 +38,7 @@ python docs/asset_filename_lint.py knowledge/cs/contents/network/README.md docs
 - prose 영역의 reference-style link target
 - markdown 안 HTML `src` / `href`가 가리키는 repo-local asset path
 - HTML `srcset`의 candidate URL (`1x`, `2x`, `800w` descriptor는 떼고 URL만 검사)
+- nested parentheses와 angle-bracket target도 shared markdown parser 기준으로 읽는다
 - directory segment의 공백, 괄호, `&`, `#`, `%`, `?`, 쉼표 같은 scanner-hostile 문자
 - filename stem의 extra `.`와 image/PDF 확장자의 대문자·mixed-case 사용
 
@@ -77,6 +79,7 @@ knowledge/cs/contents/network/README.md:236: html-asset -> img/thread-state-diag
 - [Local Asset Existence Lint](./local-asset-existence-lint.md)는 "path가 실제로 존재하느냐"를 보고, 이 lint는 "존재하는 path 이름이 scanner-safe하냐"를 본다.
 - broken-link report는 "존재하느냐"를 말하지만, filename이 scanner-safe한지는 따로 말해 주지 않는다.
 - manual audit note만 두면 review 직전에 빠르게 회귀를 막기 어렵다.
+- shared parser를 [Local Asset Existence Lint](./local-asset-existence-lint.md), [Fence False-Link Precheck](./fence-false-link-precheck.md), [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md)와 같이 써서 target 집합 자체는 맞추고, 여기서는 filename hygiene만 더 본다.
 - 이 lint는 "링크는 살아 있어도 path가 QA에 불리한가"를 먼저 걸러서 rename wave를 더 작게 만든다.
 
 ## 한 줄 정리

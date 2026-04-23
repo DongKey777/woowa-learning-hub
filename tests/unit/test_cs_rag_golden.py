@@ -352,6 +352,19 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         )
         self.assertEqual(projection_query.get("max_rank"), 1)
 
+        self.assertIn("projection_freshness_intro_primer_vs_guardrail_compare", queries_by_id)
+        primer_vs_guardrail_query = queries_by_id[
+            "projection_freshness_intro_primer_vs_guardrail_compare"
+        ]
+        self.assertIn("stale read", primer_vs_guardrail_query["prompt"])
+        self.assertIn("read-your-writes primer", primer_vs_guardrail_query["prompt"])
+        self.assertIn("read model cutover guardrails", primer_vs_guardrail_query["prompt"])
+        self.assertEqual(
+            primer_vs_guardrail_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(primer_vs_guardrail_query.get("max_rank"), 1)
+
         self.assertIn("projection_freshness_intro_rollback_window_noise_guard", queries_by_id)
         rollback_query = queries_by_id["projection_freshness_intro_rollback_window_noise_guard"]
         self.assertIn("rollback window", rollback_query["prompt"])
@@ -362,6 +375,113 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "contents/design-pattern/read-model-staleness-read-your-writes.md",
         )
         self.assertEqual(rollback_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+            queries_by_id,
+        )
+        contrast_query = queries_by_id[
+            "projection_freshness_intro_rollback_window_vs_transaction_rollback"
+        ]
+        self.assertIn("rollback window", contrast_query["prompt"])
+        self.assertIn("transaction rollback", contrast_query["prompt"])
+        self.assertIn("차이", contrast_query["prompt"])
+        self.assertEqual(
+            contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(contrast_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback",
+            queries_by_id,
+        )
+        korean_contrast_query = queries_by_id[
+            "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback"
+        ]
+        self.assertIn("rollback window", korean_contrast_query["prompt"])
+        self.assertIn("트랜잭션 롤백", korean_contrast_query["prompt"])
+        self.assertIn("차이", korean_contrast_query["prompt"])
+        self.assertEqual(
+            korean_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_contrast_query.get("max_rank"), 1)
+
+        synonym_cases = {
+            "projection_freshness_intro_rollback_window_transaction_rollback_distinguish": "구분",
+            "projection_freshness_intro_rollback_window_transaction_rollback_confusion": "헷갈림",
+            "projection_freshness_intro_rollback_window_transaction_rollback_vs": "vs",
+        }
+        for query_id, cue in synonym_cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                synonym_query = queries_by_id[query_id]
+                self.assertIn("rollback window", synonym_query["prompt"])
+                self.assertIn("transaction rollback", synonym_query["prompt"])
+                self.assertIn(cue, synonym_query["prompt"])
+                self.assertIn("stale read", synonym_query["prompt"])
+                self.assertIn("read-your-writes", synonym_query["prompt"])
+                self.assertEqual(
+                    synonym_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(synonym_query.get("max_rank"), 1)
+
+        self.assertIn("projection_freshness_intro_korean_synonyms", queries_by_id)
+        korean_query = queries_by_id["projection_freshness_intro_korean_synonyms"]
+        self.assertIn("롤백 윈도우", korean_query["prompt"])
+        self.assertIn("예전 값이 보임", korean_query["prompt"])
+        self.assertIn("쓴 직후 읽기", korean_query["prompt"])
+        self.assertEqual(
+            korean_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_query.get("max_rank"), 1)
+
+        self.assertIn("projection_freshness_intro_korean_saved_not_visible", queries_by_id)
+        saved_not_visible_query = queries_by_id[
+            "projection_freshness_intro_korean_saved_not_visible"
+        ]
+        self.assertIn("방금 저장했는데 안 보여", saved_not_visible_query["prompt"])
+        self.assertIn("옛값이 보여", saved_not_visible_query["prompt"])
+        self.assertEqual(
+            saved_not_visible_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(saved_not_visible_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_cutover_safety_failover_rollback_noise_guard",
+            queries_by_id,
+        )
+        failover_noise_query = queries_by_id[
+            "projection_freshness_intro_cutover_safety_failover_rollback_noise_guard"
+        ]
+        self.assertIn("cutover safety window", failover_noise_query["prompt"])
+        self.assertIn("failover rollback", failover_noise_query["prompt"])
+        self.assertIn("큰 그림부터", failover_noise_query["prompt"])
+        self.assertEqual(
+            failover_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(failover_noise_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_cutover_safety_key_rotation_noise_guard",
+            queries_by_id,
+        )
+        key_rotation_noise_query = queries_by_id[
+            "projection_freshness_intro_cutover_safety_key_rotation_noise_guard"
+        ]
+        self.assertIn("cutover safety window", key_rotation_noise_query["prompt"])
+        self.assertIn("key rotation rollback", key_rotation_noise_query["prompt"])
+        self.assertIn("stale read", key_rotation_noise_query["prompt"])
+        self.assertEqual(
+            key_rotation_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(key_rotation_noise_query.get("max_rank"), 1)
 
     def test_java_direct_sibling_queries_are_tracked_explicitly(self) -> None:
         payload = _load_fixture_payload()

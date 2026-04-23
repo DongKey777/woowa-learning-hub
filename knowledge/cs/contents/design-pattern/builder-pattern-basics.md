@@ -8,10 +8,12 @@
 
 - [빌더 패턴 심화](./builder-pattern.md)
 - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
+- [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md)
+- [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [Java 제네릭 기초](../language/java/java-generics-basics.md)
 
-retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시
+retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시, request dto builder, command builder
 
 ---
 
@@ -65,6 +67,8 @@ Spring에서는 `UriComponentsBuilder.fromHttpUrl(...).queryParam(...).build()` 
 
 - [빌더 패턴 심화](./builder-pattern.md) — Director 역할, Step Builder, 불변 객체 설계와의 연결
 - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md) — 팩토리와 빌더의 선택 기준 비교
+- [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md) — 작은 request/query model을 굳이 builder로 시작하지 않아도 되는 기준을 먼저 본다
+- [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md) — request DTO, command, value object를 builder로 조립할 때도 bean wiring과 섞지 않는 기준
 
 ## 면접/시니어 질문 미리보기
 

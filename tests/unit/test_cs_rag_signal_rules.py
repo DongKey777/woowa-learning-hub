@@ -810,6 +810,28 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("old data after write", expanded)
         self.assertIn("eventual consistency ux", expanded)
 
+    def test_introductory_projection_primer_vs_guardrail_compare_prompt_keeps_primer_signal(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, "
+            "read model cutover guardrails 를 같이 비교해서 보고 싶어. 입문자는 "
+            "guardrail 전에 뭐부터 이해해야 해?"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("migration_repair_cutover", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("read your writes", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertIn("read model cutover guardrails", expanded)
+
     def test_introductory_projection_rollback_window_query_suppresses_transaction_noise(
         self,
     ) -> None:
@@ -831,6 +853,192 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("old data after write", expanded)
         self.assertNotIn("mvcc", expanded)
         self.assertNotIn("read committed", expanded)
+
+    def test_introductory_projection_rollback_window_vs_transaction_rollback_query_keeps_contrast_signal(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback "
+            "차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 "
+            "설명해줘"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        signals = signal_rules.detect_signals(prompt)
+        tags = [signal["tag"] for signal in signals]
+        self.assertIn("projection_freshness", tags)
+        self.assertIn("transaction_isolation", tags)
+        self.assertLess(tags.index("projection_freshness"), tags.index("transaction_isolation"))
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertIn("mvcc", expanded)
+        self.assertIn("read committed", expanded)
+
+    def test_introductory_projection_rollback_window_vs_korean_transaction_rollback_query_keeps_contrast_signal(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 rollback window 랑 트랜잭션 롤백 "
+            "차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 "
+            "설명해줘"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        signals = signal_rules.detect_signals(prompt)
+        tags = [signal["tag"] for signal in signals]
+        self.assertIn("projection_freshness", tags)
+        self.assertIn("transaction_isolation", tags)
+        self.assertLess(tags.index("projection_freshness"), tags.index("transaction_isolation"))
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertIn("mvcc", expanded)
+        self.assertIn("read committed", expanded)
+
+    def test_introductory_projection_rollback_contrast_synonyms_keep_comparison_signal(
+        self,
+    ) -> None:
+        prompts = {
+            "구분": (
+                "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 을 "
+                "어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "헷갈림": (
+                "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback "
+                "헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "vs": (
+                "read model freshness 를 처음 배우는데 rollback window vs transaction rollback 이 "
+                "뭐가 다른지 모르겠어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+        }
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "projection_freshness",
+                )
+                signals = signal_rules.detect_signals(prompt)
+                tags = [signal["tag"] for signal in signals]
+                self.assertIn("projection_freshness", tags)
+                self.assertIn("transaction_isolation", tags)
+                self.assertLess(
+                    tags.index("projection_freshness"),
+                    tags.index("transaction_isolation"),
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("read model staleness", expanded)
+                self.assertIn("stale read", expanded)
+                self.assertIn("mvcc", expanded)
+                self.assertIn("read committed", expanded)
+
+    def test_introductory_projection_cutover_safety_window_suppresses_failover_noise(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 cutover safety window 동안 stale read 랑 "
+            "read-your-writes 를 어떻게 이해해야 해? failover rollback 같은 운영 얘기 "
+            "전에 큰 그림부터 알고 싶어"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("global_failover_control_plane", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("old data after write", expanded)
+        self.assertNotIn("failover", expanded)
+        self.assertNotIn("global traffic failover", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_introductory_projection_cutover_safety_window_suppresses_key_rotation_noise(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 cutover safety window 와 rollback window "
+            "때문에 stale read 가 왜 생기는지 알고 싶어. key rotation rollback 같은 "
+            "운영 얘기는 잠깐 빼고"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("projection_freshness", tags)
+        self.assertNotIn("security_key_rotation_rollover", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertNotIn("key", expanded)
+        self.assertNotIn("rotation", expanded)
+        self.assertNotIn("jwks", expanded)
+        self.assertNotIn("key rotation", expanded)
+
+    def test_korean_projection_freshness_synonyms_map_to_primer_signal(self) -> None:
+        prompts = {
+            "old_value_visible": (
+                "CQRS 읽기 모델을 처음 배우는데 롤백 윈도우 때문에 예전 값이 보임. "
+                "쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘"
+            ),
+            "saved_not_visible": (
+                "읽기 모델을 처음 배우는데 방금 저장했는데 안 보여. "
+                "왜 옛값이 보여? 큰 그림부터 설명해줘"
+            ),
+            "saved_value_not_visible": (
+                "CQRS를 처음 배우는데 저장한 값이 안 보이고 옛값이 보여. "
+                "쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘"
+            ),
+        }
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "projection_freshness",
+                )
+                tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+                self.assertIn("projection_freshness", tags)
+                self.assertNotIn("persistence_boundary", tags)
+                self.assertNotIn("transaction_isolation", tags)
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("read model staleness", expanded)
+                self.assertIn("read your writes", expanded)
+                self.assertIn("old data after write", expanded)
+                self.assertIn("saved but still old data", expanded)
+
+    def test_korean_projection_freshness_minimal_symptom_queries_route_to_primer_signal(
+        self,
+    ) -> None:
+        prompts = {
+            "saved_not_visible": "방금 저장했는데 안 보여",
+            "old_value_visible": "옛값이 보여",
+            "saved_not_visible_compact": "저장했는데 안 보임",
+        }
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "projection_freshness",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("read model staleness", expanded)
+                self.assertIn("read your writes", expanded)
+                self.assertIn("projection lag budget", expanded)
 
     def test_projection_watermark_terms_map_to_projection_signal(self) -> None:
         prompt = "read model cutover 에서 dual projection run 이랑 projection watermark 를 어떻게 써?"

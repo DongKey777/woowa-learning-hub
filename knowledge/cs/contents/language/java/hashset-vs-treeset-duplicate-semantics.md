@@ -8,12 +8,14 @@
 > - [Language README](../README.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+> - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 > - [Record and Value Object Equality](./record-value-object-equality-basics.md)
 > - [Java Collections 성능 감각](./collections-performance.md)
 > - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
-> retrieval-anchor-keywords: hashset vs treeset duplicate semantics, java hashset duplicate rule, java treeset duplicate rule, java set duplicate semantics, hashset equals hashCode, treeset compareTo duplicate, treeset comparator compare zero duplicate, equals hashCode vs compare == 0, sorted set duplicate surprise, treeset compareTo 0 same element, comparator returning 0 same element, hash collision not duplicate, hashset vs treeset beginner, java set equality ordering mismatch
+> retrieval-anchor-keywords: hashset vs treeset duplicate semantics, java hashset duplicate rule, java treeset duplicate rule, java set duplicate semantics, hashset equals hashCode, treeset compareTo duplicate, treeset comparator compare zero duplicate, equals hashCode vs compare == 0, sorted set duplicate surprise, treeset compareTo 0 same element, comparator returning 0 same element, hash collision not duplicate, hashset vs treeset beginner, java set equality ordering mismatch, natural ordering treeset duplicate, compareTo tree map value replacement
 
 <details>
 <summary>Table of Contents</summary>
@@ -212,6 +214,8 @@ System.out.println(students.size()); // 2
 
 - equality와 `hashCode()` 기초를 먼저 더 단단히 하려면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - `compareTo()`, `Comparator`, tie-breaker를 더 배우려면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+- `Comparator` 없이 `compareTo()`만으로 `TreeSet` 중복과 `TreeMap` 값 덮어쓰기가 생기는 모습을 보려면 [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+- `TreeMap`까지 확장해서 `compare == 0`과 tie-breaker를 보고 싶다면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - value object를 `HashSet` key로 안전하게 쓰는 감각을 익히려면 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - `BigDecimal`처럼 `equals()`와 `compareTo()`가 어긋나는 표준 라이브러리 사례를 보려면 [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 

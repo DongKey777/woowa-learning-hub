@@ -1,0 +1,268 @@
+# posix_spawn Attributes Primer
+
+> 한 줄 요약: `posix_spawnattr_t`는 "`child가 어떤 fd를 볼까`"가 아니라 "`child가 어떤 프로세스 상태로 시작할까`"를 적는 설정 묶음이고, beginner 단계에서는 process group, signal mask, signal default 세 가지만 먼저 잡으면 충분하다.
+>
+> 문서 역할: 이 문서는 operating-system `primer`에서 [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md) 다음에 읽는 beginner follow-up이다. `posix_spawn()`의 stdin/stdout redirect는 이해했는데 `posix_spawnattr_t`, `POSIX_SPAWN_SETPGROUP`, `POSIX_SPAWN_SETSIGMASK`가 갑자기 추상적으로 느껴질 때, "`file actions`와 `attrs`가 왜 분리돼 있는가"를 process group / signal 관점으로 다시 고정해 준다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
+- [Session vs Process Group Primer](./session-vs-process-group-primer.md)
+- [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+- [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+- [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)
+- [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
+- [signals, process supervision](./signals-process-supervision.md)
+- [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
+- [operating-system 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: posix_spawn attributes primer, posix_spawnattr basics, posix_spawnattr_t mental model, posix_spawnattr_setflags, POSIX_SPAWN_SETPGROUP, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, posix_spawn process group basics, posix_spawn signal mask basics, posix_spawn signal default basics, posix_spawn attrs vs file actions, spawn attributes beginner, process group ctrl c child launch, signal mask child launch basics, posix_spawn attrs session process group, setsid setpgid follow-up, blocked signal vs ignored signal, signal mask vs disposition follow-up
+
+## 핵심 개념
+
+`posix_spawn()`를 처음 볼 때는 설정이 둘로 쪼개져 있어 어색하다.
+
+- `posix_spawn_file_actions_t`
+- `posix_spawnattr_t`
+
+하지만 beginner용 mental model은 아주 단순하다.
+
+```text
+file actions = child의 fd table을 어떻게 바꿀까
+attrs        = child의 process 상태를 어떻게 시작시킬까
+```
+
+즉 질문이 다르다.
+
+| 내가 정하고 싶은 것 | 들어가는 곳 | beginner용 해석 |
+|---|---|---|
+| child stdout을 어느 pipe/file로 보낼까 | `file actions` | fd 배선표 |
+| child에 필요 없는 fd를 무엇을 닫을까 | `file actions` | child-side `dup2()` / `close()` 체크리스트 |
+| child를 어떤 process group에서 시작할까 | `attrs` | signal을 누구와 같이 받을지 정하는 시작 상태 |
+| child가 처음부터 어떤 signal을 block한 채 시작할까 | `attrs` | initial signal mask |
+| parent가 무시하던 signal을 child에서는 기본 동작으로 되돌릴까 | `attrs` | initial signal disposition 보정 |
+
+초보자에게는 이 문장 하나가 제일 중요하다.
+
+> `file actions`가 "stdio와 fd 정리"라면, `attrs`는 "signal / process-group 시작 조건"이다.
+
+## 왜 `attrs`가 `file actions`와 따로 있나
+
+이 분리는 이름 장난이 아니라 역할 차이를 드러낸다.
+
+| 구분 | `file actions` | `attrs` |
+|---|---|---|
+| 다루는 대상 | file descriptor table | process-wide startup state |
+| 대표 예 | `adddup2`, `addopen`, `addclose` | process group, signal mask, signal defaults |
+| 읽는 질문 | "`stdin/stdout/stderr`를 어디에 붙일까?" | "`Ctrl-C`, `SIGTERM`, background job 신호를 어떤 상태로 시작할까?" |
+| 사고방식 | 순서가 중요한 child-side 작업 목록 | "이 child는 이런 상태로 시작해라"라는 선언형 설정 묶음 |
+| 흔한 버그 | pipe EOF 안 옴, leaked fd, redirect 꼬임 | `Ctrl-C`가 엉뚱하게 퍼짐, signal이 계속 block됨, 부모의 ignore 설정이 child에 남음 |
+
+여기서 beginner가 기억하면 좋은 포인트가 하나 더 있다.
+
+- `file actions`는 "이 순서로 `dup2()` / `close()` / `open()` 해 둬"에 가깝다
+- `attrs`는 "이 child의 시작 상태는 이렇다"에 가깝다
+- 그래서 `attrs`는 setter 호출 순서를 실행 순서처럼 읽기보다, "최종 시작 상태를 선언한다"는 쪽으로 이해하는 편이 안전하다
+
+즉 둘을 억지로 한 객체에 넣는 것보다, **fd 배선과 process 시작 조건을 분리해서 읽는 편이 훨씬 덜 헷갈린다.**
+
+## `posix_spawnattr_t`는 어떻게 읽으면 되나
+
+`posix_spawnattr_t`는 opaque 설정 객체라서 안쪽 구조를 들여다보는 타입이 아니다.  
+beginner 단계에서는 아래 3단계만 기억하면 충분하다.
+
+1. `posix_spawnattr_init()`으로 빈 설정을 만든다
+2. `posix_spawnattr_set*()`로 값을 넣는다
+3. `posix_spawnattr_setflags()`로 **어떤 설정을 실제 적용할지** 켠다
+
+이 마지막 줄이 자주 빠진다.
+
+| 넣는 값 | 같이 켜야 하는 flag | 안 켜면 생기는 혼란 |
+|---|---|---|
+| `posix_spawnattr_setpgroup()` | `POSIX_SPAWN_SETPGROUP` | "분명 pgroup 값을 넣었는데 child가 부모 그룹 그대로네?" |
+| `posix_spawnattr_setsigmask()` | `POSIX_SPAWN_SETSIGMASK` | "sigmask를 넣었는데 block 상태가 안 바뀌네?" |
+| `posix_spawnattr_setsigdefault()` | `POSIX_SPAWN_SETSIGDEF` | "부모가 무시하던 signal이 child에서도 계속 무시되네?" |
+
+즉 setter와 flag는 한 쌍으로 읽어야 한다.
+
+## 먼저 잡아야 할 1번: process group
+
+process group은 beginner에게 "`signal을 함께 받는 팀`"이라고 설명하는 편이 가장 쉽다.
+
+- shell foreground job의 여러 프로세스가 같은 `Ctrl-C`를 받는 이유
+- background job과 foreground job의 signal 동작이 달라 보이는 이유
+- supervisor가 child tree를 묶어 종료하려는 이유
+
+이런 맥락이 process group과 연결된다.
+
+### process group을 왜 `attrs`에서 정하나
+
+이건 fd 문제가 아니라 **child가 어떤 signal-broadcast 묶음에 속할지**의 문제이기 때문이다.
+
+- stdout을 pipe로 보내는 일은 `file actions`
+- "`이 child는 부모와 같은 그룹인가, 별도 그룹인가`"는 `attrs`
+
+같은 `posix_spawn()` 호출 안에 같이 들어가더라도, 의미는 완전히 다르다.
+
+### 초보자용 감각
+
+| 상황 | process group 관점에서 무슨 의미인가 |
+|---|---|
+| shell이 foreground job을 실행한다 | child가 foreground process group 맥락 안에서 시작한다 |
+| worker를 별도 그룹으로 묶고 싶다 | 그 그룹 전체에 `SIGTERM` / `SIGINT`를 다루기 쉬워진다 |
+| parent와 child가 같은 그룹에 있다 | terminal-origin signal이 같이 묶여 보일 수 있다 |
+
+`posix_spawnattr_setpgroup()`와 `POSIX_SPAWN_SETPGROUP`은 이 시작 지점을 정하는 도구라고 보면 된다.
+
+## 먼저 잡아야 할 2번: signal mask
+
+signal mask는 "그 signal이 존재하지 않는다"가 아니라 **"지금 당장은 delivery를 막아 둔다"**에 가깝다.
+
+이 차이를 초보자가 자주 놓친다.
+
+| 개념 | 의미 |
+|---|---|
+| signal mask | 지금 이 프로세스가 어떤 signal delivery를 block하고 있는가 |
+| signal disposition | signal이 도착했을 때 기본 동작/ignore/handler 중 무엇을 쓸 것인가 |
+
+즉 `signal mask`와 `signal default`는 다른 문제다.
+
+`blocked`, `ignored`, `default`, `handler` 네 상태가 `fork()` / `exec()` / `posix_spawn()` 경계에서 각각 어떻게 이어지는지 한 장으로 다시 보고 싶다면 [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)로 바로 이어서 보면 된다.
+
+### 왜 `posix_spawnattr_setsigmask()`가 필요하나
+
+부모 프로세스가 어떤 signal을 block한 채 `posix_spawn()`을 호출할 수 있기 때문이다.
+
+- event loop
+- signal-safe section
+- library 내부 critical section
+
+이런 경로에서 spawn하면 child도 그 block 상태를 이어받는 것이 당연할 수 있다.  
+그런데 beginner가 원하는 건 보통 "새 프로그램은 깔끔한 signal 시작 상태"다.
+
+이럴 때 `posix_spawnattr_setsigmask()` + `POSIX_SPAWN_SETSIGMASK`로 child의 initial mask를 명시한다.
+
+### 초보자용 감각
+
+| 하고 싶은 일 | beginner mental model |
+|---|---|
+| child가 시작할 때 아무 signal도 block하지 않게 만들고 싶다 | empty signal set을 child initial mask로 준다 |
+| parent는 `SIGINT`를 잠깐 block하고 있지만 child는 그렇게 시작하면 안 된다 | child initial mask를 attrs로 덮어쓴다 |
+| process group은 따로 두되 signal mask는 부모와 동일하게 가고 싶다 | pgroup만 attrs로 건드리고 sigmask flag는 켜지 않는다 |
+
+즉 process group과 signal mask는 같이 자주 언급되지만, 같은 knob는 아니다.
+
+## beginner가 같이 알아두면 좋은 3번: signal defaults
+
+`signal mask`만 알면 반쯤 맞고 반쯤 틀린다.  
+왜냐하면 "block 여부"와 "받았을 때 무엇을 할지"는 다르기 때문이다.
+
+`posix_spawnattr_setsigdefault()` + `POSIX_SPAWN_SETSIGDEF`는 child에서 특정 signal을 **기본 동작으로 되돌리는** 용도다.
+
+초보자 관점에서는 아래 정도만 기억해도 충분하다.
+
+- parent가 어떤 signal을 ignore하고 있었을 수 있다
+- child는 그 signal을 보통 프로그램 기본 의미대로 받고 싶을 수 있다
+- 그럴 때 `sigdefault` 쪽 attr를 쓴다
+
+특히 shell/job-control 경로를 읽다 보면 "`Ctrl-C`가 왜 child에서 기대와 다르게 동작하지?"라는 질문이 나오는데, 이때 process group뿐 아니라 signal default도 같이 봐야 한다.
+
+## 작은 예제로 묶어 보기
+
+아래 코드는 두 가지를 한 번에 보여 주는 beginner용 skeleton이다.
+
+- stdout은 pipe로 보낸다 -> `file actions`
+- child는 별도 process group + 빈 signal mask로 시작한다 -> `attrs`
+
+```c
+posix_spawn_file_actions_t actions;
+posix_spawn_file_actions_init(&actions);
+posix_spawn_file_actions_adddup2(&actions, out_pipe[1], STDOUT_FILENO);
+posix_spawn_file_actions_addclose(&actions, out_pipe[0]);
+posix_spawn_file_actions_addclose(&actions, out_pipe[1]);
+
+posix_spawnattr_t attr;
+posix_spawnattr_init(&attr);
+
+short flags = POSIX_SPAWN_SETPGROUP | POSIX_SPAWN_SETSIGMASK;
+posix_spawnattr_setflags(&attr, flags);
+
+/* common POSIX practice: 0 means "start a new process group"; check your platform man page */
+posix_spawnattr_setpgroup(&attr, 0);
+
+sigset_t child_mask;
+sigemptyset(&child_mask);   /* child는 아무 signal도 block하지 않은 채 시작 */
+posix_spawnattr_setsigmask(&attr, &child_mask);
+
+char *argv[] = {"worker", NULL};
+pid_t pid;
+posix_spawnp(&pid, "worker", &actions, &attr, argv, environ);
+
+posix_spawnattr_destroy(&attr);
+posix_spawn_file_actions_destroy(&actions);
+```
+
+이 예제는 "`posix_spawn()`에는 설정이 두 묶음 들어간다"는 사실을 가장 작게 보여 준다.
+
+- `actions`: stdout 배선
+- `attr`: process group / signal start 상태
+
+둘은 같은 launch 순간에 적용되지만, **서로 다른 종류의 문제를 푼다.**
+
+## 자주 헷갈리는 포인트
+
+### 1. `signal mask`와 `ignore`는 같은 말이 아니다
+
+아니다.
+
+- `mask`: 지금 delivery를 막아 둠
+- `ignore`: signal이 와도 무시
+
+그래서 "`SIGINT`가 안 먹는다"는 현상 하나만 보고 `sigmask` 문제인지 `sigdefault` 문제인지 바로 단정하면 안 된다.
+
+### 2. process group은 부모-자식 관계와 같은 말이 아니다
+
+아니다.
+
+- 부모-자식은 생성 관계다
+- process group은 signal/job-control 묶음이다
+
+같은 parent 밑 child라도 다른 process group에 둘 수 있고, 반대로 같은 group 안에 여러 sibling이 같이 있을 수 있다.
+
+### 3. setter만 호출하고 flag를 안 켜면 적용되지 않는다
+
+`posix_spawnattr_t` beginner 버그의 대부분이 여기서 난다.
+
+- `setpgroup()`만 하고 `POSIX_SPAWN_SETPGROUP`를 안 켠다
+- `setsigmask()`만 하고 `POSIX_SPAWN_SETSIGMASK`를 안 켠다
+
+이러면 "값은 넣었는데 왜 launch 결과가 안 바뀌지?"라는 혼란이 생긴다.
+
+### 4. attrs가 있다고 fd hygiene가 해결되는 것은 아니다
+
+아니다.
+
+- pipe EOF
+- leaked fd across `exec()`
+- stdout/stderr redirect
+
+이 문제들은 여전히 `file actions`, `O_CLOEXEC`, parent/child `close()` 규칙 쪽이다.  
+`attrs`는 그걸 대신해 주지 않는다.
+
+## 어떤 순서로 이해하면 좋은가
+
+`posix_spawn()`이 헷갈릴 때는 보통 아래 순서가 가장 안정적이다.
+
+1. [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)에서 "무엇이 생성되고 무엇이 교체되는가"를 먼저 나눈다
+2. [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)에서 fd 기본 규칙을 잡는다
+3. [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)에서 child-side `dup2()` mental model을 잡는다
+4. 이 문서에서 `attrs`를 process group / signal 시작 조건으로 읽는다
+5. blocked signal과 ignored/default/handler 차이가 아직 섞이면 [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)로 내려가 "mask 문제인지 disposition 문제인지"부터 분리한다
+6. session, process group, controlling terminal, `setsid()`, `setpgid()`가 섞이면 [Session vs Process Group Primer](./session-vs-process-group-primer.md)로 bridge를 건다
+7. signal 운영 감각을 더 넓히려면 [signals, process supervision](./signals-process-supervision.md)로 내려간다
+
+## 한 줄 정리
+
+`posix_spawnattr_t`는 "`child의 fd를 어디에 붙일까`"가 아니라 "`child를 어떤 process-group / signal 상태로 시작시킬까`"를 적는 설정 묶음이고, 그래서 `file actions`와 분리해서 읽어야 beginner가 덜 헷갈린다.

@@ -615,8 +615,78 @@
       "max_rank": 1
     },
     {
+      "id": "projection_freshness_intro_primer_vs_guardrail_compare",
+      "prompt": "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, read model cutover guardrails 를 같이 비교해서 보고 싶어. 입문자는 guardrail 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
       "id": "projection_freshness_intro_rollback_window_noise_guard",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 때문에 stale read 랑 read-your-writes 큰 그림이 더 헷갈려",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_rollback_window_transaction_rollback_distinguish",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 을 어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_rollback_window_transaction_rollback_confusion",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_rollback_window_transaction_rollback_vs",
+      "prompt": "read model freshness 를 처음 배우는데 rollback window vs transaction rollback 이 뭐가 다른지 모르겠어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_synonyms",
+      "prompt": "CQRS 읽기 모델을 처음 배우는데 롤백 윈도우 때문에 예전 값이 보임. 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_saved_not_visible",
+      "prompt": "읽기 모델을 처음 배우는데 방금 저장했는데 안 보여. 왜 옛값이 보여? 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_cutover_safety_failover_rollback_noise_guard",
+      "prompt": "read model freshness 를 처음 배우는데 cutover safety window 동안 stale read 랑 read-your-writes 를 어떻게 이해해야 해? failover rollback 같은 운영 얘기 전에 큰 그림부터 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_cutover_safety_key_rotation_noise_guard",
+      "prompt": "read model freshness 를 처음 배우는데 cutover safety window 와 rollback window 때문에 stale read 가 왜 생기는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고",
       "learning_points": [],
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1

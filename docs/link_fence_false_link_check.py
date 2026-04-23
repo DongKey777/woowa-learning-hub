@@ -2,15 +2,18 @@
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from markdown_link_scanner import (
+    iter_fence_lines,
+    iter_markdown_files,
+    iter_markdown_targets,
+    normalize_target,
+)
+
 DEFAULT_SCAN_PATHS = ("knowledge/cs", "docs")
-FENCE_RE = re.compile(r"^\s*```(?P<lang>[A-Za-z0-9_-]*)")
-INLINE_LINK_RE = re.compile(r"(!?\[[^\]\n]+\])\(([^)\s]+)\)")
-REFERENCE_LINK_RE = re.compile(r"^\s*\[[^\]\n]+\]:\s*(\S+)")
 LINKISH_SUFFIXES = (
     ".md",
     ".png",
@@ -61,73 +64,22 @@ def target_looks_linkish(target: str) -> bool:
     )
 
 
-def iter_markdown_files(raw_paths: list[str]) -> list[Path]:
-    files: list[Path] = []
-    seen: set[Path] = set()
-
-    for raw_path in raw_paths:
-        path = Path(raw_path)
-        candidates: list[Path]
-        if path.is_dir():
-            candidates = sorted(item for item in path.rglob("*.md") if item.is_file())
-        elif path.is_file() and path.suffix == ".md":
-            candidates = [path]
-        else:
-            continue
-
-        for candidate in candidates:
-            resolved = candidate.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            files.append(candidate)
-
-    return files
-
-
 def scan_file(path: Path) -> list[Finding]:
     findings: list[Finding] = []
-    in_fence = False
-    fence_lang = ""
-
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        fence_match = FENCE_RE.match(line)
-        if fence_match:
-            if not in_fence:
-                in_fence = True
-                fence_lang = fence_match.group("lang") or "plain"
-            else:
-                in_fence = False
-                fence_lang = ""
-            continue
-
-        if not in_fence:
-            continue
-
-        inline_match = INLINE_LINK_RE.search(line)
-        if inline_match and target_looks_linkish(inline_match.group(2)):
+    for markdown_line in iter_fence_lines(path):
+        for target in iter_markdown_targets(markdown_line.text):
+            if not target_looks_linkish(normalize_target(target.raw_target)):
+                continue
             findings.append(
                 Finding(
                     path=path,
-                    line_number=line_number,
-                    kind="inline-link",
-                    fence_lang=fence_lang,
-                    line=line.strip(),
+                    line_number=markdown_line.line_number,
+                    kind=target.kind,
+                    fence_lang=markdown_line.fence_lang,
+                    line=markdown_line.text.strip(),
                 )
             )
-            continue
-
-        reference_match = REFERENCE_LINK_RE.search(line)
-        if reference_match and target_looks_linkish(reference_match.group(1)):
-            findings.append(
-                Finding(
-                    path=path,
-                    line_number=line_number,
-                    kind="reference-link",
-                    fence_lang=fence_lang,
-                    line=line.strip(),
-                )
-            )
+            break
 
     return findings
 

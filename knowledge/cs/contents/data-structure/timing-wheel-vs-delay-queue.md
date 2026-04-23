@@ -7,12 +7,13 @@
 > 관련 문서:
 > - [Hierarchical Timing Wheel](./hierarchical-timing-wheel.md)
 > - [Timing Wheel Variants and Selection](./timing-wheel-variants-and-selection.md)
+> - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
 > - [Heap Variants](./heap-variants.md)
 > - [Calendar Queue](./calendar-queue.md)
 > - [Radix Heap](./radix-heap.md)
 > - [Concurrent Skip List Internals](./concurrent-skiplist-internals.md)
 
-> retrieval-anchor-keywords: timing wheel vs delay queue, hashed wheel timer vs delay queue, heap timer queue, delayed task scheduler, timeout churn, timer precision, blocking scheduler queue, timer structure comparison, deadline queue, scheduler tradeoff, ordered workload, concurrent ordered scheduler, delay queue vs skip list, deadline index, cancellation heavy scheduler
+> retrieval-anchor-keywords: timing wheel vs delay queue, hashed wheel timer vs delay queue, heap timer queue, delayed task scheduler, timeout churn, timer precision, blocking scheduler queue, timer structure comparison, deadline queue, scheduler tradeoff, ordered workload, concurrent ordered scheduler, delay queue vs skip list, deadline index, cancellation heavy scheduler, java delayqueue vs priorityqueue, delayqueue timer queue java, timer cancellation stale entry
 
 ## 핵심 개념
 

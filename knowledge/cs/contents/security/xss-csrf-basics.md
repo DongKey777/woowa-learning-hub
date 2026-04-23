@@ -8,10 +8,19 @@
 
 - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
 - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+- [OAuth2 기초](./oauth2-basics.md)
+- [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+- [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)
-- [Security 카테고리 README](./README.md)
+- [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 
-retrieval-anchor-keywords: xss csrf basics, xss가 뭔가요, csrf란 무엇인가, cross-site scripting beginner, cross-site request forgery beginner, 스크립트 삽입 공격, xss csrf 차이, csrf token 왜 써요, xss 방어 방법, input sanitization, 반사형 xss, 저장형 xss, 쿠키 hijacking, samesite cookie
+retrieval-anchor-keywords: xss csrf basics, xss가 뭔가요, csrf란 무엇인가, cross-site scripting beginner, cross-site request forgery beginner, 스크립트 삽입 공격, xss csrf 차이, csrf token 왜 써요, xss 방어 방법, input sanitization, 반사형 xss, 저장형 xss, 쿠키 hijacking, samesite cookie, social login first post 403, first post 403 after login, callback 이후 csrf, post-login csrf token rotation, csrf boundary after oauth callback, oauth callback success first post forbidden, BFF login completion csrf, security symptom shortcut, category return path
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 증상표에서 `social login callback은 성공했는데 첫 POST가 403`으로 들어왔다면, 여기서 CSRF mental model을 먼저 잡고 [OAuth2 기초](./oauth2-basics.md) -> [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)로 callback/login completion 흐름을 확인한 뒤 [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)로 내려가면 된다.
+- 다른 security 증상 row를 다시 고르고 싶으면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아간다.
+- Spring Security 필터와 header 설정까지 이어 보려면 [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)를 보면 된다.
 
 ## 핵심 개념
 

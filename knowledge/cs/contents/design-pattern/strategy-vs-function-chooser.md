@@ -6,12 +6,13 @@
 
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
+> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 > - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 
-retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object
+retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object, lambda로 충분한가, 람다 vs 전략, 전략 vs 함수, 작은 함수 vs 전략, 작은 규칙 람다로 끝내도 되나요, strategy 처음 배우는데 lambda, strategy 처음 배우는데 큰 그림, strategy 언제 쓰는지 기초, function map vs strategy, function map으로 끝내도 되나요, Map<String, Function> vs Strategy, 함수 맵 vs 전략 객체, 함수 맵으로 충분한가, 작은 계산식 vs 전략 객체, 언제 lambda 쓰는지, 언제 strategy 쓰는지
 
 ---
 
@@ -22,6 +23,7 @@ retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function ob
 - "`if-else`를 줄이고 싶은데 클래스까지 만드는 건 과한가?"
 - "`lambda`로 끝낼 수 있는지, 인터페이스와 구현 클래스를 만들어야 하는지 헷갈린다"
 - 전략 패턴을 배웠는데 작은 계산식마다 클래스를 만들어야 할 것처럼 느껴진다
+- "`Map<String, Function>` 정도면 충분한지, `Map<String, Strategy>`까지 올려야 하는지 판단이 안 선다"
 
 핵심은 패턴 이름이 아니라 **변화의 크기와 협력의 무게**다.
 
@@ -40,6 +42,24 @@ retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function ob
 
 - **"짧은 계산식"**이면 함수
 - **"이름 있는 규칙 묶음"**이면 Strategy
+
+---
+
+## function map 질문을 먼저 자르기
+
+처음 배우는데 `Map`이 같이 나오면 질문이 두 종류로 섞이기 쉽다.
+
+| 질문 모양 | 먼저 볼 문서 | 왜 그쪽이 맞는가 |
+|---|---|---|
+| `Map<String, Function>`이나 `Map<String, IntUnaryOperator>`로 충분한가 | 이 문서 | 값이 짧은 계산식인지, Strategy 타입까지 올려야 하는지 묻는 문제다 |
+| `Map<String, DiscountStrategy>`가 너무 무거운가 | 이 문서 | 이름 있는 규칙 객체가 필요한지 판단하는 문제다 |
+| Spring이 주입한 `Map<String, Handler>`가 registry인가 factory인가 | [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md) | 이미 있는 bean lookup인지, 새 객체 creation인지가 핵심이다 |
+| `Map<Key, Creator>`를 찾은 뒤 `create()`까지 호출한다 | [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md) | function/strategy보다 registry/factory 경계가 핵심이다 |
+
+짧게 자르면 다음 두 줄이다.
+
+- **값이 짧은 규칙인가?** 그러면 함수 vs Strategy 질문이다.
+- **이미 있는 후보를 찾는가, 새 객체를 만드는가?** 그러면 registry vs factory 질문이다.
 
 ---
 

@@ -9,16 +9,19 @@
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 > - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
 > - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 
-retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, @ConditionalOnMissingBean miss, existing bean found, user bean wins, boot default bean skipped, auto-configuration first debug, why boot bean missing, starter bean not created, spring boot conditions report beginner route
+retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, @ConditionalOnMissingBean miss, existing bean found, user bean wins, boot default bean skipped, auto-configuration first debug, why boot bean missing, starter bean not created, spring boot conditions report beginner route, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing vs false, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - `@Configuration`과 Boot auto-configuration의 큰 그림이 아직 흐리면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)를 먼저 본다.
 - 자동 구성 자체의 동작 원리를 더 넓게 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
+- report에서 `existing bean found`를 봤는데 `@Primary`와 무엇이 다른지 헷갈리면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.
 - report 구조와 조건 종류를 더 깊게 파고들려면 [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)으로 이어진다.
 - `conditions` endpoint를 운영에서 어떻게 안전하게 열지 고민되면 [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)를 같이 본다.
 
@@ -149,6 +152,8 @@ beginner가 가장 자주 헷갈리는 지점이다.
 | property 조건 실패 | 설정값이 기대와 다르다 | active profile, env var, test property |
 | web 조건 실패 | servlet/reactive/none 문맥이 다르다 | `spring.main.web-application-type`, starter 조합 |
 | 같은 코드인데 환경별 결과가 다르다 | profile/property/classpath 차이 가능성 | 로컬 vs CI vs 운영 설정 diff |
+
+특히 `@ConditionalOnProperty`면 "`false`인가?"만 보지 말고 **missing / `havingValue` 불일치 / env var key 차이**를 나눠 보는 게 빠르다. 이 부분은 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)에서 바로 이어진다.
 
 여기까지 보고도 방향이 안 나오면, 그때 advanced report 문서나 startup playbook으로 올라가면 된다.
 

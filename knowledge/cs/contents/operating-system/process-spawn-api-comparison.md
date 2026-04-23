@@ -10,11 +10,15 @@
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+> - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+> - [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
+> - [posix_spawn Attributes Primer](./posix-spawn-attributes-primer.md)
+> - [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)
 > - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 > - [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)
 > - [pidfd Basics: Race-Free Process Handles](./pidfd-basics-race-free-process-handles.md)
 
-> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement
+> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement, spawn api fd hygiene, posix_spawn fd inheritance basics, fork exec signal inheritance, signal mask vs disposition bridge
 
 ## 핵심 개념
 
@@ -64,6 +68,8 @@ shell process
 - `posix_spawn()`이 왜 `exec()`와 다른지
 - `vfork()`가 왜 `exec()` 직전 fast path처럼 설명되는지
 - `O_CLOEXEC`가 왜 exec 경계에서 중요해지는지
+
+여기에 더해 "`blocked signal`과 `ignored signal`도 `exec()` 뒤에 같은 방식으로 남나?"가 다음 혼동 포인트라면 [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)에서 mask와 disposition을 분리해 이어서 보는 편이 안전하다.
 
 ## 2. `fork()`: 가장 직관적인 기본 모델
 
@@ -136,6 +142,10 @@ beginner mental model은 이쪽이 더 안전하다.
 
 - child 안에서 복잡한 사용자 코드를 직접 돌려야 한다면 `fork()` + `exec()`
 - "프로그램 실행"이 목적이고 설정도 file actions/attrs 정도면 `posix_spawn()`
+
+여기서 stdin/stdout redirect, `O_CLOEXEC`, `pipe EOF`, leaked fd 같은 감각이 바로 이어지지 않는다면 [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)로 내려가서 "무엇을 남기고 무엇을 닫는가"를 같은 축으로 다시 보는 편이 좋다.
+`dup2()` 감각은 있는데 `posix_spawn_file_actions_adddup2()` / `addopen()` / `addclose()` 이름이 추상적으로 느껴지면 [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)에서 redirection 패턴만 따로 잡고 돌아오면 된다.
+반대로 redirect는 이해했는데 `posix_spawnattr_t`, process group, signal mask가 추상적으로 느껴지면 [posix_spawn Attributes Primer](./posix-spawn-attributes-primer.md)에서 `attrs`를 process 시작 조건으로 따로 읽고 돌아오면 된다.
 
 ## 5. `clone()`: Linux가 "얼마나 공유할지" 직접 정하게 하는 primitive
 

@@ -7,12 +7,13 @@
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Heap Variants](./heap-variants.md)
+> - [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)
 > - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
 > - [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
 > - [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
 > - [Top-k Streaming / Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
 >
-> retrieval-anchor-keywords: java priorityqueue pitfalls, java priority queue pitfalls, java priorityqueue, java priority queue, priorityqueue comparator direction, priorityqueue max heap java, priorityqueue min heap default, priorityqueue tie breaker, priorityqueue tiebreaker, priorityqueue stale entry, priorityqueue stale entries, priorityqueue decrease key, priorityqueue mutable key, priorityqueue not sorted, priorityqueue iteration order, priorityqueue iterator order, heap is not sorted list, dijkstra stale entry java, prim stale entry java, java heap comparator overflow, 우선순위 큐 비교자 방향, 자바 priorityqueue 함정, 자바 우선순위 큐 함정, priorityqueue 동점 처리, stale entry 다익스트라, priorityqueue 정렬 리스트 아님, priorityqueue 순회 순서, priorityqueue decrease-key 없음
+> retrieval-anchor-keywords: java priorityqueue pitfalls, java priority queue pitfalls, java priorityqueue, java priority queue, priorityqueue comparator direction, priorityqueue max heap java, priorityqueue min heap default, priorityqueue tie breaker, priorityqueue tiebreaker, priorityqueue stale entry, priorityqueue stale entries, priorityqueue decrease key, priorityqueue mutable key, priorityqueue not sorted, priorityqueue iteration order, priorityqueue iterator order, heap is not sorted list, dijkstra stale entry java, prim stale entry java, java heap comparator overflow, priorityqueue kth largest min heap java, priorityqueue median two heaps java, priorityqueue heap direction java, 우선순위 큐 비교자 방향, 자바 priorityqueue 함정, 자바 우선순위 큐 함정, priorityqueue 동점 처리, stale entry 다익스트라, priorityqueue 정렬 리스트 아님, priorityqueue 순회 순서, priorityqueue decrease-key 없음, 자바 kth largest 힙 방향, 자바 median 두 힙
 
 ## 빠른 진단 표
 
@@ -53,6 +54,7 @@ PriorityQueue<Task> byLargestScore =
 
 추가로 `top k largest` 류 문제는 이름만 보고 max-heap을 고르기 쉽지만, 실제로는 **크기 `k`짜리 min-heap**을 유지하는 쪽이 더 흔하다.  
 루트에 "`현재 top-k 중 가장 약한 후보`"를 두어 새 값과 빠르게 비교하기 위해서다.
+`kth-largest`, `streaming top-k`, `median`에서 이 방향 감각이 자꾸 헷갈리면 [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)로 바로 이어 보면 흐름이 정리된다.
 
 ## 2. 동점은 stable하지 않다
 

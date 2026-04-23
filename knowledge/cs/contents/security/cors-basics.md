@@ -6,12 +6,13 @@
 
 관련 문서:
 
+- [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
 - [CORS / SameSite / Preflight 심화](./cors-samesite-preflight.md)
 - [API 보안 헤더 기초](./api-security-headers-beyond-csp.md)
 - [security 카테고리 인덱스](./README.md)
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 
-retrieval-anchor-keywords: cors 기초, cors가 뭐예요, cross origin 오류, cors 에러 브라우저, preflight란 무엇인가, access-control-allow-origin, same origin policy beginner, cors allow headers, cors 해결 방법, beginner cors
+retrieval-anchor-keywords: cors 기초, cors가 뭐예요, cross origin 오류, cors 에러 브라우저, preflight란 무엇인가, access-control-allow-origin, same origin policy beginner, cors allow headers, cors 해결 방법, beginner cors, credentials include cookie not sent, Access-Control-Allow-Credentials beginner, fetch credentials vs cors
 
 ## 핵심 개념
 
@@ -54,6 +55,7 @@ Spring Boot에서는 `@CrossOrigin` 어노테이션이나 `WebMvcConfigurer`의 
 
 ## 더 깊이 가려면
 
+- [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md) — `credentials: "include"`와 `Access-Control-Allow-Credentials`, cookie scope가 섞여 보일 때 먼저 분리하는 bridge
 - [CORS / SameSite / Preflight 심화](./cors-samesite-preflight.md) — Preflight 캐싱, SameSite 쿠키와의 관계, allowlist 설계
 - [API 보안 헤더 기초](./api-security-headers-beyond-csp.md) — CORS 외에 응답 헤더로 설정하는 다른 보안 정책들
 

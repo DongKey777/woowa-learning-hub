@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache hit path와 replica miss path가 각각 다른 stale window를 가지면 `cache miss == fresh read`가 깨지므로, source-selection 규칙과 by-source observability를 같이 설계해야 한다.
 
-retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica read path pitfalls, dual stale sources, dual stale source, cache miss stale replica, stale refill from replica, cache and replica both stale, cache hit newer than miss, invalidation exposes stale replica, mixed read path source selection, source selection rules, freshness routing rules, recent-write pinning with cache, cache boundary pinning, read path source tagging, cache replica observability, by-source freshness metrics, cache age vs replica lag, post-write stale read ratio, list detail source mismatch, miss path observability, version tagged cache fill, cache replica routing policy, intermediate freshness design
+retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica read path pitfalls, dual stale sources, dual stale source, cache miss stale replica, stale refill from replica, cache and replica both stale, cache hit newer than miss, invalidation exposes stale replica, mixed read path source selection, source selection rules, freshness routing rules, recent-write pinning with cache, cache boundary pinning, read path source tagging, cache replica observability, rejected hit observability, cache hit reject reason, replica fallback reason, refill no-fill reason, by-source freshness metrics, cache age vs replica lag, post-write stale read ratio, list detail source mismatch, miss path observability, version tagged cache fill, cache replica routing policy, recent write min version causal token, freshness bridge, intermediate freshness design
 
 **난이도: 🟡 Intermediate**
 
@@ -13,6 +13,8 @@ retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica re
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
+- [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+- [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [분산 캐시 설계](./distributed-cache-design.md)
 - [Read / Write Quorum & Staleness Budget](./read-write-quorum-staleness-budget-design.md)
 - [Cache와 Replica가 갈라질 때의 Read Inconsistency](../database/cache-replica-split-read-inconsistency.md)
@@ -42,6 +44,8 @@ Client
 - lagging replica 값을 다시 cache에 채우면 stale window가 더 길어진다
 
 즉 mixed path의 핵심 문제는 "cache냐 replica냐"보다 **이번 요청이 어떤 freshness contract를 갖고 있고, 그 계약을 만족하는 source를 골랐는가**다.
+
+초보자라면 `recent-write`, `min-version`, `causal token`이 hit/miss/refill 전체에 어떻게 이어져야 하는지 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)부터 보고 오는 편이 덜 헷갈린다.
 
 ---
 

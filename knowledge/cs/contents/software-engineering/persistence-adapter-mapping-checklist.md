@@ -21,6 +21,7 @@
 > - [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
 > - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 > - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
+> - [Adapter Bulk Optimization Without Port Leakage](./adapter-bulk-optimization-without-port-leakage.md)
 > - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
@@ -30,7 +31,7 @@
 > - [System Design: Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md)
 > - [System Design: Zero-Downtime Schema Migration Platform 설계](../system-design/zero-downtime-schema-migration-platform-design.md)
 >
-> retrieval-anchor-keywords: persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist, repository adapter mapping, orm concern leakage, aggregate mapping checklist, aggregate persistence mapping pitfalls, bidirectional association mapping, cascade type all boundary, orphanRemoval boundary, hexagonal persistence adapter, domain repository port, fetch cascade dirty checking boundary, domain model vs jpa entity, fetch join boundary, lazy loading boundary, n+1 query boundary, projection vs aggregate read, managed entity collection diff, repository boundary read model, anti corruption adapter layering, cdc outbox relay handoff, schema migration mapping bridge, persistence cross-category bridge
+> retrieval-anchor-keywords: persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist, repository adapter mapping, orm concern leakage, aggregate mapping checklist, aggregate persistence mapping pitfalls, bidirectional association mapping, cascade type all boundary, orphanRemoval boundary, hexagonal persistence adapter, domain repository port, fetch cascade dirty checking boundary, domain model vs jpa entity, fetch join boundary, lazy loading boundary, n+1 query boundary, projection vs aggregate read, managed entity collection diff, adapter bulk optimization without port leakage, JPA batch inside adapter, JDBC batch adapter, saveAll as adapter detail, repository boundary read model, anti corruption adapter layering, cdc outbox relay handoff, schema migration mapping bridge, persistence cross-category bridge
 
 repository 경계가 조회 모델, 외부 모델 번역, relay/cutover 운영까지 넓어지기 시작하면 [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md), [Design Pattern: Anti-Corruption Adapter Layering](../design-pattern/anti-corruption-adapter-layering.md)로 경계 언어를 먼저 고정하는 편이 좋다.
 그다음 실제 데이터 이동과 호환성 창은 [System Design: Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md), [System Design: Zero-Downtime Schema Migration Platform 설계](../system-design/zero-downtime-schema-migration-platform-design.md)로 이어서 보면 된다.

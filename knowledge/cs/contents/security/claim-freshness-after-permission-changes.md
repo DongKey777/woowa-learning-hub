@@ -16,17 +16,18 @@
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
+> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 > - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old, role revoked but old authorities remain, old authorities remain stale, stale authorities after role change, stale authority propagation, permission revoke propagation, role grant propagation, authz freshness propagation, jwt session cache revoke timeline, stale allow after revoke, stale deny after grant, session claim stale after permission change, refresh after role change, re-login after permission change, authz version revoke, claim snapshot stale
+retrieval-anchor-keywords: claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old, role revoked but old authorities remain, old authorities remain stale, stale authorities after role change, stale authority propagation, permission revoke propagation, role grant propagation, authz freshness propagation, jwt session cache revoke timeline, stale allow after revoke, stale deny after grant, session claim stale after permission change, refresh after role change, re-login after permission change, authz version revoke, claim snapshot stale, security symptom shortcut, session tail beginner route, grant freshness handoff, category return path
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - role, permission, session freshness 자체가 아직 낯설면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)부터 보면 된다.
 - 방금 권한을 줬는데 `403`이 남는 쪽이 더 가깝다면 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)로 바로 이어 가면 된다.
 - `authz_version`, `session_version`, `tenant_version`, `refresh_family_version`을 실제로 어떻게 나눠 설계하는지 궁금하면 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)로 내려가면 된다.
-- stale allow/deny를 cache key와 invalidation 관점에서 더 깊게 보고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md)를 붙이면 된다.
+- stale allow/deny를 cache key와 invalidation 관점에서 더 깊게 보기 전에 증상 branch가 헷갈리면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 `role revoked but still works` row와 `권한을 방금 줬는데 still 403` row를 비교한다. cache branch가 맞으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md)를 붙이면 된다.
 - revoke tail, regional lag, `last accepted after revoke`를 운영 관점에서 보고 싶으면 [Session Revocation at Scale](./session-revocation-at-scale.md), [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)로 이어진다.
 - self-contained JWT와 introspection이 freshness에 어떤 차이를 만드는지 비교하려면 [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)를 같이 보면 된다.
 

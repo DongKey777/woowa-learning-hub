@@ -11,22 +11,26 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 > - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
+> - [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 > - [AuthZ Decision Logging Design](./authz-decision-logging-design.md)
 > - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 > - [Spring ProblemDetail / Error Response Design](../spring/spring-problemdetail-error-response-design.md)
 
-retrieval-anchor-keywords: 401 403 404 beginner guide, 401 vs 403 vs 404, when to use 401 403 404, login required vs forbidden vs not found, unauthorized forbidden not found, auth failure response, authn authz response guide, expired token 401, missing token 401, missing scope 403, role missing 403, other user's resource 404, conceal existence 404, IDOR concealment, WWW-Authenticate, security response semantics, access denied contract, hide existence, API authorization errors, browser 401 vs 302, login redirect instead of 401, browser login page instead of 401, 401 302 bounce beginner, inconsistent 401 404, 401 404 flip, tenant-specific 403, only one tenant 403, stale deny, cached concealment, cached 404 after grant, 401 response body example, 403 response body example, 404 response body example, safe error body auth failure, auth failure problem detail example, concealment 404 body, auth failure request_id example, auth deny log fields, 401 403 404 internal log fields, recovery hint without information leak
+retrieval-anchor-keywords: 401 403 404 beginner guide, 401 vs 403 vs 404, when to use 401 403 404, response code route, auth failure primer route, security symptom shortcut, category return path, 증상별 바로 가기, login required vs forbidden vs not found, unauthorized forbidden not found, auth failure response, authn authz response guide, expired token 401, missing token 401, missing scope 403, role missing 403, other user's resource 404, conceal existence 404, IDOR concealment, WWW-Authenticate, security response semantics, access denied contract, hide existence, API authorization errors, browser 401 vs 302, login redirect instead of 401, browser login page instead of 401, 401 302 bounce beginner, inconsistent 401 404, 401 404 flip, tenant-specific 403, only one tenant 403, stale deny, cached concealment, cached 404 after grant, 401 response body example, 403 response body example, 404 response body example, safe error body auth failure, auth failure problem detail example, concealment 404 body, auth failure request_id example, auth deny log fields, 401 403 404 internal log fields, recovery hint without information leak, auth basics route, auth beginner route, security beginner route, security basics route, follow-up auth primer, primer bridge, security primer next step, return to security README
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- 응답 코드 질문에서 시작했지만 다른 auth 증상으로 다시 고르고 싶으면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 category route를 다시 잡으면 된다.
 - 아직 `인증`과 `인가`의 차이가 흐리면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 돌아가 `principal`, `session`, `permission model`부터 다시 맞추면 된다.
 - raw `401`을 기대했는데 브라우저에서는 `302 -> /login`이나 login HTML이 보여 더 헷갈리면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)로 가서 browser redirect와 API 계약을 먼저 분리하면 된다.
 - "다른 사람 리소스에 왜 `404`를 줄 수 있지?"가 더 궁금하면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)에서 객체 단위 concealment를 이어 보면 된다.
 - gateway, filter, app이 각각 어디서 `401` / `403` / `404`를 내야 하는지 설계로 보고 싶으면 [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)로 이어진다.
-- 권한을 방금 줬는데도 `403`이나 concealment `404`가 남는 운영 문제는 [Authorization Caching / Staleness](./authorization-caching-staleness.md)에서 따로 본다.
+- 권한을 방금 줬는데도 `403`이나 concealment `404`가 남는 운영 문제는 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)에서 claim refresh와 stale deny cache를 먼저 나눈 뒤 [Authorization Caching / Staleness](./authorization-caching-staleness.md)로 내려간다.
+- 특정 tenant에서만 `403`이 반복되거나 같은 실패가 `401`/`404` 사이에서 흔들리면 이 문서로 응답 의미를 먼저 고정하고 [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)에서 runtime cache/debugging 축을 본다.
 
 ---
 

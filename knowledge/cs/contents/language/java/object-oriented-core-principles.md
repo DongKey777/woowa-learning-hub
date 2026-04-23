@@ -1,6 +1,8 @@
 # 객체지향 핵심 원리
 
-**난이도: 🟡 Intermediate**
+> 한 줄 요약: 처음 배우는 사람이 OOP 큰 그림에서 클래스/객체, 캡슐화, 상속, 다형성, 추상화가 언제 쓰이는지 연결해 보는 Java 중심 primer다.
+
+**난이도: 🟢 Beginner**
 
 > 작성자 : [서그림](https://github.com/Seogeurim)
 
@@ -8,19 +10,46 @@
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+> - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
+> - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
+> - [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 > - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
+> - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
+> - [객체지향 설계 기초](../../software-engineering/oop-design-basics.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 > - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 
-retrieval-anchor-keywords: object oriented core principles, OOP basics, inheritance polymorphism abstraction encapsulation, 객체지향 캡슐화 상속 다형성 추상화, 객체지향 4대 원칙, 객체지향 정리 자바, 자바 객체지향 정리, 객체지향 자바 기준 정리, information hiding, class vs object vs instance, message passing in OOP, is a relationship inheritance, overloading vs overriding, abstraction and encapsulation, object oriented paradigm, Java beginner OOP, class object interface basics
+> retrieval-anchor-keywords: object oriented core principles, OOP basics, OOP primer, OOP big picture, object oriented programming for beginners, Java beginner OOP, Java OOP primer, class object instance basics, class vs object vs instance, 객체지향 기초, 객체지향 입문, 객체지향 큰 그림, 객체지향 처음 배우는데, OOP 처음 배우는데, OOP 언제 쓰는지, 객체지향 언제 쓰는지, 객체지향 4대 원칙, 객체지향 4원칙 기초, 캡슐화 상속 다형성 추상화 기초, encapsulation beginner, inheritance beginner, polymorphism beginner, abstraction beginner, 상속 기초, 상속 큰 그림, 상속 처음 배우는데, 상속 언제 쓰는지, inheritance basics beginner, is-a relationship beginner, parent child class basics, overloading vs overriding beginner, dynamic dispatch beginner, message passing in OOP, information hiding beginner, abstraction and encapsulation difference, 상속 vs 조합 기초
 
 <details>
 <summary>Table of Contents</summary>
 
+- [처음 배우는 사람을 위한 큰 그림](#처음-배우는-사람을-위한-큰-그림)
 - [객체 지향 핵심 개념](#객체-지향-핵심-개념)
 - [객체 지향 언어의 주요 개념](#객체-지향-언어의-주요-개념)
+- [클래스의 구조](#클래스의-구조)
+- [초보자가 자주 헷갈리는 포인트](#초보자가-자주-헷갈리는-포인트)
+- [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
+- [한 줄 정리](#한-줄-정리)
 
 </details>
+
+## 처음 배우는 사람을 위한 큰 그림
+
+객체지향 프로그래밍(OOP)은 "프로그램을 객체들의 협력으로 나누는 방식"이다. 객체는 데이터만 들고 있는 상자가 아니라, **자기 상태와 그 상태를 다루는 행동을 함께 가진 작은 책임 단위**라고 보면 된다.
+
+처음 배우는데 용어가 한꺼번에 나오면 아래 순서로 잡는 편이 쉽다.
+
+| 질문 | 먼저 떠올릴 말 | 코드에서 보이는 모습 |
+|---|---|---|
+| 클래스와 객체는 무엇인가 | 클래스는 설계도, 객체는 만들어진 실체 | `new Member(...)`로 객체 생성 |
+| 캡슐화는 왜 쓰는가 | 상태를 아무나 못 바꾸게 하고 규칙을 메서드 안에 둠 | `private balance`, `deposit()` |
+| 상속은 언제 쓰는가 | `Dog is an Animal`처럼 자연스러운 is-a 관계 | `class Dog extends Animal` |
+| 다형성은 왜 필요한가 | 같은 메시지를 보내도 실제 객체마다 다르게 반응 | `Animal animal = new Dog()` |
+| 추상화는 무엇인가 | 세부 구현보다 공통 역할과 규칙을 먼저 잡음 | `interface DiscountPolicy` |
+| 정보 은닉은 무엇인가 | 바깥에 꼭 필요한 것만 공개함 | `public` 메서드, `private` 필드 |
+
+즉 OOP의 큰 그림은 "상태를 숨기고, 행동을 공개하고, 공통 역할로 여러 구현을 바꿔 끼우는 것"이다. 상속은 그중 하나의 도구일 뿐이고, 코드 재사용만 목적이라면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)를 먼저 의심한다.
 
 ## 객체 지향 핵심 개념
 
@@ -45,17 +74,17 @@ retrieval-anchor-keywords: object oriented core principles, OOP basics, inherita
 
 ### 객체, 클래스, 인스턴스
 
-> 관계 : 객체 ▶︎ 클래스 ▶︎ 인스턴스
+> 관계: 클래스(설계도) -> 객체/인스턴스(실행 중 만들어진 실체)
 
-- **객체 (Object)** : 현실 세계에 존재하는 유무형의 모든 것
-  - 정적인 요소 : 변수 (Variable)
-  - 동적인 요소 : 메서드 (Method)
-- **클래스 (Class)** : 현실 세계의 객체를 프로그램에서 이용할 수 있는 객체로 표현하는 것
-  - 현실 세계의 객체를 컴퓨터 메모리에 생성할 수 있는 템플릿이라고 볼 수 있다.
+- **클래스 (Class)** : 프로그램에서 만들 객체의 상태와 행동을 정의한 사용자 정의 타입
+  - 객체를 컴퓨터 메모리에 생성할 수 있는 템플릿이라고 볼 수 있다.
   - 자바 프로그램을 구성하는 가장 기본적인 요소이다.
-- **인스턴스 (Instance)** : 컴퓨터 메모리에 존재하는 객체
-  - 클래스로부터 생성된 컴퓨터 메모리 상의 객체이다.
-  - Object = Instance
+- **객체 (Object)** : 클래스에 정의된 상태와 행동을 가진 실행 중 대상
+  - 정적인 요소 : 변수, 필드 (Variable, Field)
+  - 동적인 요소 : 메서드 (Method)
+- **인스턴스 (Instance)** : 특정 클래스로부터 생성된 객체
+  - Java 입문 단계에서는 객체와 인스턴스를 거의 같은 뜻으로 봐도 된다.
+  - 다만 "어떤 클래스의 인스턴스"처럼 출처를 강조할 때 인스턴스라는 말을 자주 쓴다.
 
 ## 객체 지향 언어의 주요 개념
 
@@ -81,6 +110,19 @@ retrieval-anchor-keywords: object oriented core principles, OOP basics, inherita
 
 자바는 단일 상속만을 지원하는 언어이다.
 
+#### 처음 배우는데 상속은 언제 쓰는가
+
+상속은 "부모 코드를 편하게 복사하는 문법"이 아니라 **타입 관계를 만드는 도구**다. 그래서 처음 판단할 때는 다음 질문을 먼저 던진다.
+
+| 질문 | 상속이 자연스러운 경우 | 조합을 먼저 볼 경우 |
+|---|---|---|
+| is-a 관계인가 | `Dog is an Animal`처럼 자식이 부모의 한 종류다 | `Car has an Engine`처럼 부품을 가진 관계다 |
+| 부모 타입으로 다뤄도 되는가 | `Animal animal = new Dog()`가 자연스럽다 | 부모 타입으로 부르면 의미가 어색하다 |
+| 공통 흐름이 안정적인가 | 부모 골격은 같고 일부만 자식이 바꾼다 | 바뀌는 정책을 런타임에 갈아 끼우고 싶다 |
+| 목적이 단순 중복 제거인가 | 아니다. 모델 관계가 먼저다 | 그렇다. 상속보다 조합을 의심한다 |
+
+상속을 처음 배우는 단계에서는 `extends` 문법보다 "이 관계가 정말 is-a인가"를 먼저 보는 습관이 중요하다. 자세한 Java 예제는 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)에서 이어서 본다.
+
 ### 다형성 (Polymorphism)
 
 > one interface, multiple implementation
@@ -91,6 +133,15 @@ retrieval-anchor-keywords: object oriented core principles, OOP basics, inherita
 
 - **오버로딩(Overloading)** : 한 클래스 안에 같은 이름의 메서드를 여러개 정의하면서, 그 인자의 개수나 유형을 다르게 해 놓은 형태
 - **오버라이딩(Overriding)** : 상속 관계에 있는 하위 클래스가 상위 클래스가 가지고 있는 메서드를 재정의하는 것 (재정의된 메서드가 선언된 형태는 상위 클래스에서 선언된 것과 같음)
+
+초보자용으로 줄이면 다형성은 "같은 말로 요청했는데 실제 대상에 따라 다른 행동을 하는 것"이다.
+
+```java
+Animal animal = new Dog("Coco");
+animal.speak(); // 변수 타입은 Animal이지만 실제 객체 Dog의 speak가 실행될 수 있다.
+```
+
+오버로딩과 오버라이딩은 이름이 비슷해서 자주 헷갈린다. 이름은 같고 매개변수가 다르면 오버로딩이고, 부모 메서드와 같은 시그니처를 자식이 다시 정의하면 오버라이딩이다. 더 좁은 설명은 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)을 본다.
 
 ### 추상화 (Abstraction)
 
@@ -179,13 +230,13 @@ public class Employee { // 클래스 선언부
 - 하나의 클래스로부터 여러 개의 객체를 생성할 수 있다.
 
 ```java
-Employee emp1 = new Employee('John', 'sales');
-Employee emp2 = new Employee('Alice', 'design');
+Employee emp1 = new Employee("John", "sales");
+Employee emp2 = new Employee("Alice", "design");
 ```
 
 ### 멤버 변수의 선언
 
-- 전역(Global) 변수 : 멤버 변수라고도 칭하며, 클래스의 여러 메서드에서 공통으로 사용할 수 있다.
+- 멤버 변수/필드 : 클래스의 여러 메서드에서 공통으로 사용할 수 있는 객체의 상태이다.
 - 지역(Local) 변수 : 해당 변수가 선언된 메서드 내에서만 사용할 수 있다.
 
 변수는 **modifier**를 통해 접근 권한이나 활용 방법을 제어한다. 이를 통해 객체 지향의 **정보 은닉(Information Hiding)** 개념을 구현할 수 있다.
@@ -225,3 +276,27 @@ Employee emp2 = new Employee('Alice', 'design');
 
 - Getter : private 멤버 변수에 저장된 값을 반환
 - Setter : private 멤버 변수에 값을 저장
+
+## 초보자가 자주 헷갈리는 포인트
+
+- 객체지향은 "클래스를 많이 만드는 것"이 아니라 상태와 행동을 책임 단위로 묶는 방식이다.
+- 캡슐화는 필드를 `private`으로 만들고 getter/setter를 모두 여는 것만으로 완성되지 않는다. 상태 변경 규칙을 객체 안에 두는 것이 핵심이다.
+- 상속은 코드 복사용 도구가 아니다. 부모-자식 타입 관계가 자연스럽지 않으면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)를 먼저 본다.
+- 다형성은 인터페이스에서만 생기는 개념이 아니다. 상속과 오버라이딩에서도 런타임 객체 기준으로 메서드가 선택될 수 있다.
+- 추상화와 캡슐화는 다르다. 추상화는 중요한 공통점만 드러내는 것이고, 캡슐화는 내부 상태와 구현을 감싸서 안전한 사용법만 공개하는 것이다.
+- `객체`, `인스턴스`는 Java 입문 단계에서는 거의 같은 뜻으로 써도 된다. `클래스`는 그 객체를 만들기 위한 정의라는 점만 구분한다.
+
+## 어떤 문서를 다음에 읽으면 좋은가
+
+| 지금 막힌 질문 | 다음 문서 |
+|---|---|
+| 클래스, 객체, 참조형부터 다시 잡고 싶다 | [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) |
+| 상속, `extends`, `@Override`, 런타임 메서드 선택이 헷갈린다 | [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) |
+| 오버로딩과 오버라이딩 차이를 코드로 구분하고 싶다 | [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) |
+| 추상 클래스와 인터페이스를 언제 쓰는지 모르겠다 | [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) |
+| 상속을 쓰면 안 좋은 경우와 조합을 알고 싶다 | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) |
+| 객체가 책임을 나누고 협력한다는 설계 감각을 보고 싶다 | [객체지향 설계 기초](../../software-engineering/oop-design-basics.md) |
+
+## 한 줄 정리
+
+객체지향의 기초는 클래스 문법 암기가 아니라, 객체가 자기 상태를 지키고 메시지로 협력하며 상속·다형성·추상화를 필요한 곳에만 쓰게 만드는 큰 그림을 잡는 것이다.

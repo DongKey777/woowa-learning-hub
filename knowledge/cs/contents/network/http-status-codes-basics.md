@@ -7,11 +7,12 @@
 관련 문서:
 
 - [HTTP 메서드, REST, 멱등성 기초](./http-methods-rest-idempotency-basics.md)
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 - [HTTP와 HTTPS 기초](./http-https-basics.md)
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle-basics.md)
 
-retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 404 뭔가요, 500 에러 왜 나요, http 응답 코드 입문, 2xx 3xx 4xx 5xx 차이, 상태 코드 처음 배우는데, 200 ok, 201 created, beginner status code
+retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 404 뭔가요, 500 에러 왜 나요, http 응답 코드 입문, 2xx 3xx 4xx 5xx 차이, 상태 코드 처음 배우는데, 200 ok, 201 created, beginner status code, 421 vs 403 vs 404, 421 misdirected request
 
 ## 핵심 개념
 

@@ -13,19 +13,21 @@
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
+> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, authz grant propagation, grant path cache invalidation, deny cache invalidation after grant, session claim stale after grant, jwt stale after role grant, support role granted still 403, tenant membership granted still 403, re-login after permission grant, forced refresh after grant, grant convergence, grant path convergence, stale authorities after grant
+retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, authz grant propagation, grant path cache invalidation, deny cache invalidation after grant, session claim stale after grant, jwt stale after role grant, support role granted still 403, tenant membership granted still 403, re-login after permission grant, forced refresh after grant, grant convergence, grant path convergence, stale authorities after grant, security symptom shortcut, authz symptom table, category return path, beginner grant freshness route, 증상별 바로 가기
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- 증상 문장을 다시 고르거나 cache deep dive로 내려가기 전에 branch를 확인하려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 `권한을 방금 줬는데 still 403` row와 `stale deny가 남거나 특정 tenant에서만 403` row를 비교하면 된다.
 - role/permission 변경과 session freshness의 큰 그림을 먼저 잡고 싶으면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)로 바로 이어 가면 된다.
 - 새 tenant membership이나 workspace access를 받은 뒤에도 `403`이 남는 쪽이 더 가깝다면 [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)를 같이 보면 된다.
 - claim, role, authority, permission이라는 단어가 섞여 있으면 [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)를 먼저 붙이는 편이 읽기 쉽다.
 - `authz_version`, `session_version`, `tenant_version`을 어떻게 나눠 bump할지 궁금하면 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)로 이어 가면 된다.
-- stale deny와 negative cache를 실제 운영 문제로 더 깊게 보고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)를 바로 이어 보면 된다.
+- 이 표에서 cache/concealment branch가 맞다고 확인한 뒤 stale deny와 negative cache를 실제 운영 문제로 더 깊게 보고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)를 이어 보면 된다.
 - self-contained JWT라서 즉시 반영이 어려운지, introspection이라 다음 요청에 더 빨리 반영 가능한지 비교하려면 [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)를 붙이면 된다.
 
 ---
@@ -43,6 +45,15 @@ retrieval-anchor-keywords: grant path freshness, stale deny basics, permission g
 
 - `grant가 저장됐다`와 `요청이 새 allow를 본다`는 같은 이벤트가 아니다.
 - 새 권한이 열리려면 `fresh claim/context`와 `stale deny cleanup`이 둘 다 끝나야 한다.
+
+## 증상표로 한 번 되돌아가기
+
+이 문서는 `grant인데 still 403`을 여는 primer bridge다. 바로 cache 내부로 내려가기 전에 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)에서 아래 둘을 먼저 가른다.
+
+| 지금 더 가까운 증상 | 여기서 읽을 것 | 다음 단계 |
+|---|---|---|
+| 권한이나 tenant membership을 방금 받았는데 현재 session이 새 상태를 못 보는 것 같다 | 이 문서의 `claim/session refresh`와 `active context refresh` | [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md), [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) |
+| 특정 tenant, pod, route에서만 old deny 또는 cached `404`가 남는다 | 이 문서의 `stale deny cleanup` | [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md) |
 
 ---
 

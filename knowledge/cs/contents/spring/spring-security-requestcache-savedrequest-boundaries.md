@@ -20,15 +20,16 @@
 > - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, request cache stateless api, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session creation, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, login loop beginner bridge, cookie 있는데 다시 로그인, 401 302 bounce starter, hidden JSESSIONID next step
+retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, post-login redirect original URL, request cache stateless api, request cache beginner route, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, cookie exists but session missing, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, session basics to Spring Security, SavedRequest beginner bridge, login loop beginner bridge, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, next request anonymous after login
 
 ## 입문 브리지
 
 이 문서는 `SavedRequest`, `RequestCache`, `302` login loop를 다루는 advanced deep dive지만, 기초 개념에서 막 올라온 독자를 위한 계단을 먼저 두는 편이 안전하다.
 
 - `cookie`, `session`, `JWT` 차이 자체가 아직 흐리면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) -> [Spring Security 아키텍처](./spring-security-architecture.md) 순으로 먼저 올라온다.
+- primer에서 `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, `원래 URL 복귀` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거친 뒤 이 문서에서 **navigation memory / redirect 복귀** 축을 먼저 분리한다.
 - 그 다음 `로그인 후 다시 /login으로 튄다`, `보호 페이지로 돌아가자마자 또 인증하라고 한다`, `API가 401 대신 HTML login page를 준다`면 이 문서에서 `SavedRequest` / `RequestCache`를 먼저 분리한다.
-- `STATELESS`인데 왜 `JSESSIONID`가 생기는지, 로그인은 성공했는데 다음 요청이 다시 익명인지가 핵심이면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 바로 이어 간다.
+- 같은 primer handoff라도 `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login`처럼 **다음 요청 인증 유지** 쪽이 핵심이면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 이어 간다.
 - 브라우저 cookie는 남아 있는데 서버가 session/token translation을 못 찾아 `hidden session mismatch`처럼 보이면 [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)까지 내려가 browser/BFF 경계를 확인한다.
 
 ## 핵심 개념

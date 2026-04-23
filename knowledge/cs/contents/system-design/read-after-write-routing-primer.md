@@ -2,7 +2,7 @@
 
 > 한 줄 요약: read-after-write routing은 write 직후 읽기를 무심코 replica로 보내지 않고, primary fallback, session pinning, monotonic reads로 필요한 경로만 더 신선한 read path에 태우는 입문 설계 문서다.
 
-retrieval-anchor-keywords: read-after-write routing primer, read your writes routing, primary fallback routing, session pinning primer, recent-write pinning, monotonic reads primer, monotonic read guarantee, replica unsafe after write, post-write replica read unsafe, write then read routing, freshness routing basics, read-after-write policy, session consistency routing, order confirmation stale read, permission change freshness, mixed cache replica routing, cache boundary pinning, beginner consistency routing
+retrieval-anchor-keywords: read-after-write routing primer, read your writes routing, primary fallback routing, session pinning primer, recent-write pinning, monotonic reads primer, monotonic read guarantee, replica unsafe after write, post-write replica read unsafe, write then read routing, freshness routing basics, read-after-write policy, session consistency routing, order confirmation stale read, permission change freshness, mixed cache replica routing, cache boundary pinning, cache hit miss refill bridge, freshness context routing, beginner consistency routing
 
 **난이도: 🟢 Beginner**
 
@@ -10,6 +10,7 @@ retrieval-anchor-keywords: read-after-write routing primer, read your writes rou
 
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
+- [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
@@ -187,7 +188,7 @@ function routeRead(endpoint, key, session):
 
 여기서 `3초` 같은 숫자는 정답이 아니라 시작점이다.
 실전에서는 replica lag 분포, endpoint 중요도, primary headroom을 같이 보고 조정한다.
-앞단에 cache가 있으면 이 routing ladder가 cache miss 경계에서 끊기지 않아야 하고, miss 뒤 replica 결과를 다시 cache에 채울 때도 같은 freshness contract를 적용해야 한다. 이 mixed path 확장은 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 다룬다.
+앞단에 cache가 있으면 이 routing ladder가 cache miss 경계에서 끊기지 않아야 하고, miss 뒤 replica 결과를 다시 cache에 채울 때도 같은 freshness contract를 적용해야 한다. hit/miss/refill 전체에 `recent-write`, `min-version`, `causal token`을 어떻게 들고 가는지는 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)에서, mixed path의 pitfall과 observability는 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 다룬다.
 
 ### 7. 흔한 실수
 

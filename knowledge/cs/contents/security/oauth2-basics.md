@@ -9,9 +9,9 @@
 - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 - [Spring Security 기초](../spring/spring-security-basics.md)
-- [Security 카테고리 README](./README.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: oauth2 basics, oauth2가 뭔가요, oauth2 입문, 소셜 로그인 원리, 구글 로그인 어떻게 되나, access token 이란, authorization server beginner, resource owner, client credentials beginner, oauth2 흐름 쉽게, 위임 인증 개념, third party access
+retrieval-anchor-keywords: oauth2 basics, oauth2가 뭔가요, oauth2 입문, 소셜 로그인 원리, 구글 로그인 어떻게 되나, access token 이란, authorization server beginner, resource owner, client credentials beginner, oauth2 흐름 쉽게, 위임 인증 개념, third party access, oauth basics route, auth basics route, auth beginner route, security beginner route, security basics route, first-step oauth primer, security readme oauth primer, oauth authorization code next step, return to security README
 
 ## 핵심 개념
 
@@ -73,6 +73,7 @@ Spring Boot에서 "구글로 로그인"을 구현할 때 `spring-boot-starter-oa
 
 ## 더 깊이 가려면
 
+- 보안 입문 문서 묶음으로 돌아가기: [Security README 기본 primer 묶음](./README.md#기본-primer)
 - Authorization Code Grant 상세 흐름: [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 - JWT로 Access Token을 표현하는 방법: [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 
