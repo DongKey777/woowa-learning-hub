@@ -9,6 +9,7 @@
 > 관련 문서:
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
 > - [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)
 > - [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)
@@ -23,6 +24,7 @@ retrieval-anchor-keywords: spring component scan failure, component scan boundar
 - `@SpringBootApplication` 안에서 `@ComponentScan`과 auto-configuration이 어떻게 갈리는지는 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)과 연결된다.
 - shared module을 scan으로 붙일지 `@Import`/auto-configuration으로 붙일지 판단하려면 [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)을 같이 본다.
 - service는 뜨는데 repository나 entity에서만 깨지면 [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)로 넘어가서 JPA 전용 경계를 따로 본다.
+- package와 stereotype annotation은 멀쩡한데 특정 profile/test/CI에서만 bean이 사라지면 component scan보다 `@Profile`/conditional 탈락일 수 있으니 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md), [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md)로 먼저 분기한다.
 - 증상이 startup failure 전체로 번졌다면 [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)으로 이어서 본다.
 - `NoSuchBeanDefinitionException`와 `NoUniqueBeanDefinitionException`를 먼저 가르고 싶다면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)에서 빠른 분기표를 먼저 본다.
 
@@ -47,6 +49,14 @@ component scan 실패는 대개 "Spring이 이상하다"가 아니라 아래 셋
 - `NoUniqueBeanDefinitionException`면 scan 문제가 아니라 **후보 중복 경로**일 가능성이 더 크다
 
 즉 예외 이름이 "못 찾음"인지 "못 고름"인지 먼저 나누면 component scan 문서로 와야 할지 더 빨리 결정된다.
+
+여기서 하나만 더 붙이면 초보자 시행착오가 크게 줄어든다.
+
+- package와 annotation이 틀렸으면 component scan 쪽이다
+- package와 annotation은 맞는데 특정 환경에서만 bean이 사라지면 `@Profile`/conditional 쪽일 가능성이 더 크다
+
+즉 `NoSuchBeanDefinitionException`라고 해서 항상 이 문서의 범위는 아니다.  
+scan 경계가 멀쩡해 보이면 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md)나 [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ](./spring-starter-added-but-bean-missing-faq.md)로 바로 넘어가는 편이 빠르다.
 
 ### 먼저 이 오해부터 버린다
 

@@ -1,188 +1,295 @@
-# HTTP/2, HTTP/3 Connection Reuse, Coalescing
+# HTTP/2와 HTTP/3 Connection Coalescing 입문
 
-> 한 줄 요약: HTTP/2와 HTTP/3는 연결을 아끼기 위해 재사용과 coalescing을 적극적으로 쓰지만, 그 이득은 인증서, DNS, 라우팅, 손실 특성까지 맞아야 나온다.
+> 이미 열린 H2/H3 연결을 언제 다른 origin까지 같이 쓸 수 있는지, 브라우저와 서버가 각각 무엇을 만족해야 하는지부터 잡는 beginner primer
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
 > 관련 문서:
+> - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
-> - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
-> - [DNS, CDN, HTTP/2, HTTP/3](./dns-cdn-websocket-http2-http3.md)
-> - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
-> - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
-> - [HTTP/2 MAX_CONCURRENT_STREAMS, Pending Queue, Saturation](./http2-max-concurrent-streams-pending-queue-saturation.md)
+> - [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md)
+> - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
+> - [Connection Reuse vs Service Discovery Churn](./connection-reuse-vs-service-discovery-churn.md)
 
-retrieval-anchor-keywords: connection reuse, coalescing, HTTP/2 origin coalescing, HTTP/3 connection reuse, multiplexing, authority, certificate SAN, shared connection, pooled connection
+retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, 421 misdirected request, Alt-Svc connection reuse, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection
 
 <details>
 <summary>Table of Contents</summary>
 
-- [핵심 개념](#핵심-개념)
-- [깊이 들어가기](#깊이-들어가기)
-- [실전 시나리오](#실전-시나리오)
-- [코드로 보기](#코드로-보기)
-- [트레이드오프](#트레이드오프)
-- [꼬리질문](#꼬리질문)
+- [왜 헷갈리나](#왜-헷갈리나)
+- [먼저 잡는 mental model](#먼저-잡는-mental-model)
+- [용어를 짧게 정리하면](#용어를-짧게-정리하면)
+- [언제 한 connection을 여러 origin이 같이 쓸 수 있나](#언제-한-connection을-여러-origin이-같이-쓸-수-있나)
+- [HTTP/2와 HTTP/3는 무엇이 다르나](#http2와-http3는-무엇이-다르나)
+- [브라우저 체크리스트](#브라우저-체크리스트)
+- [서버운영자 체크리스트](#서버운영자-체크리스트)
+- [작은 예시로 보기](#작은-예시로-보기)
+- [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [한 줄 정리](#한-줄-정리)
 
 </details>
 
-## 핵심 개념
+## 왜 헷갈리나
 
-HTTP/2와 HTTP/3는 연결을 더 적게 만들고 더 많이 재사용하려고 설계됐다.
+입문자가 가장 자주 섞는 개념은 아래 두 쌍이다.
 
-- 하나의 연결에 여러 요청을 태운다
-- origin이 같거나 안전하게 묶일 수 있으면 connection coalescing을 시도한다
-- 연결 수를 줄여 handshake 비용을 낮춘다
+- 같은 origin인가?
+- 같은 connection을 써도 되나?
 
-하지만 연결을 아끼는 만큼, **잘못 묶으면 잘못된 서버로 연결을 재사용할 위험**도 생긴다.
+이 둘은 같은 질문이 아니다.
+
+- **같은 origin**이면 보통 같은 connection을 재사용하기 쉽다
+- **다른 origin**이어도 조건이 맞으면 같은 connection을 공유할 수 있다
+
+그래서 브라우저에서는 이런 장면이 나온다.
+
+- `https://www.example.com`을 보다가
+- `https://static.example.com` 요청이 나갔는데
+- 새 연결을 열지 않고 기존 H2/H3 연결에 같이 실릴 수 있다
+
+이때 브라우저가 하는 판단이 바로 **connection coalescing**이다.
 
 ### Retrieval Anchors
 
-- `connection reuse`
-- `coalescing`
-- `HTTP/2 origin coalescing`
-- `HTTP/3 connection reuse`
-- `multiplexing`
+- `HTTP/2 connection coalescing`
+- `HTTP/3 connection coalescing`
+- `origin coalescing`
+- `multiple origins same connection`
+- `421 misdirected request`
 - `authority`
 - `certificate SAN`
-- `shared connection`
-- `pooled connection`
+- `Alt-Svc connection reuse`
 
-## 깊이 들어가기
+---
 
-### 1. connection reuse가 왜 중요한가
+## 먼저 잡는 mental model
 
-새 연결을 만들 때마다 비용이 든다.
+간단히 이렇게 생각하면 된다.
 
-- TCP handshake
-- TLS handshake
-- 혼잡 제어 초기화
-- 커널과 FD 비용
+- connection reuse: 이미 연 문을 같은 가게가 다시 쓴다
+- coalescing: 간판은 다른데 같은 프런트 데스크가 안전하게 둘 다 처리할 수 있으면 문 하나를 같이 쓴다
 
-reuse는 이 비용을 줄여 준다.  
-특히 짧은 요청이 많은 서비스에서 효과가 크다.
+중요한 점은 "같은 건물"처럼 보여도 정말 같은 프런트 데스크가 맞아야 한다는 것이다.
 
-### 2. coalescing은 무엇인가
+- 인증서가 두 이름을 모두 커버해야 하고
+- 브라우저가 그 연결이 새 origin에도 안전하다고 믿어야 하고
+- 서버도 그 connection에서 그 origin 요청을 제대로 처리할 수 있어야 한다
 
-coalescing은 서로 다른 hostname처럼 보여도, 같은 연결을 안전하게 공유하는 것이다.
+즉 coalescing은 "연결을 아끼는 최적화"이지만, 더 근본적으로는 **이 연결이 그 origin에 대해 authoritative한가**를 확인하는 문제다.
 
-HTTP/2에서 이런 일이 가능하려면 보통 다음이 맞아야 한다.
+---
 
-- 인증서 SAN이 여러 origin을 커버한다
-- DNS가 같은 엔드포인트로 간다
-- 서버가 같은 권한 범위를 받아들인다
-- 라우팅이 혼동되지 않는다
+## 용어를 짧게 정리하면
 
-즉, "도메인이 다르다"와 "연결을 못 공유한다"는 같은 말이 아니다.  
-조건이 맞으면 하나의 연결을 더 똑똑하게 쓸 수 있다.
+| 용어 | 뜻 | 입문 감각 |
+|---|---|---|
+| origin | `scheme + host + port` 조합 | `https://api.example.com:443` 같은 요청 대상 |
+| connection reuse | 이미 열린 연결을 다시 사용 | 같은 origin 요청을 기존 H2/H3 연결에 다시 실음 |
+| connection coalescing | 서로 다른 origin이 한 연결을 공유 | `www`와 `static`이 같은 연결을 나눠 씀 |
+| authoritative | 그 서버가 그 origin을 진짜로 처리해도 됨 | "이 간판 요청을 이 프런트 데스크가 받아도 맞다" |
+| `421 Misdirected Request` | 잘못 공유된 연결이라고 서버가 거절 | "이 origin은 이 연결로 보내지 마" |
 
-### 3. HTTP/2의 재사용은 왜 조심해야 하나
+짧게 요약하면:
 
-HTTP/2는 하나의 TCP 연결 위에 많은 stream을 올린다.
+- reuse는 "같은 대상의 재사용"
+- coalescing은 "다른 대상까지 공유"
 
-- 연결 수는 줄어든다
-- 하지만 손실이 생기면 같은 연결 위의 스트림이 같이 영향을 받는다
-- coalescing을 과하게 하면 장애 반경이 커질 수 있다
+---
 
-이 부분은 [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)와 연결된다.
+## 언제 한 connection을 여러 origin이 같이 쓸 수 있나
 
-### 4. HTTP/3에서도 비슷한 고민이 남는다
+실제 브라우저 구현은 조금씩 다르지만, beginner 관점에서는 아래 4가지를 같이 보면 된다.
 
-HTTP/3는 QUIC 위에서 동작하므로 TCP HOL blocking은 덜하지만, 연결 재사용 자체의 운영 고민은 남는다.
+| 조건 | 왜 필요한가 | 실무 감각 |
+|---|---|---|
+| 이미 건강한 H2/H3 연결이 있다 | 공유할 대상 connection이 있어야 한다 | idle timeout으로 닫혔으면 새 연결 필요 |
+| 인증서가 새 origin도 커버한다 | 그 서버가 새 hostname에 대해 authoritative해야 한다 | SAN / wildcard가 자주 등장 |
+| 브라우저가 같은 edge/endpoint라고 본다 | 전혀 다른 서버에 잘못 보내면 안 된다 | H2는 같은 IP/edge로 보이는지, H3는 같은 QUIC endpoint/Alt-Svc인지가 중요 |
+| 서버 라우팅이 그 연결에서 새 origin도 올바르게 처리한다 | 인증서만 맞고 라우팅이 틀리면 오동작한다 | CDN/LB/TLS terminator가 실제로 둘 다 받아야 한다 |
 
-- connection ID와 migration 고려
-- QUIC path validation
-- 손실/재시도 특성
-- 로드밸런서와 미들박스 호환성
+여기에 마지막 안전장치가 하나 더 있다.
 
-즉, HTTP/3가 "연결 관리가 없다"는 뜻은 아니다.
+- 서버가 "이 origin은 이 연결로 받지 않겠다"면 `421 Misdirected Request`를 보낼 수 있다
+- 브라우저는 그 신호를 보면 그 origin용 새 연결을 따로 연다
 
-### 5. 왜 coalescing이 운영에서 더 까다로운가
+즉 한 줄로 줄이면:
 
-coalescing은 이득이 크지만, 잘못되면 분석이 어려워진다.
+**브라우저가 보기에 안전하고, 서버도 실제로 처리 가능해야 여러 origin을 한 connection에 묶을 수 있다.**
 
-- 한 origin의 문제처럼 보이는데 실제로는 shared connection의 문제일 수 있다
-- 인증서 갱신 후 갑자기 coalescing hit rate가 바뀔 수 있다
-- DNS/anycast/LB 변경이 연결 재사용 패턴에 영향을 준다
+---
 
-## 실전 시나리오
+## HTTP/2와 HTTP/3는 무엇이 다르나
 
-### 시나리오 1: 연결 수는 줄었는데 느려졌다
+둘 다 큰 원리는 비슷하지만, 브라우저가 connection을 바라보는 방식은 조금 다르다.
 
-가능한 원인:
+| 항목 | HTTP/2 | HTTP/3 |
+|---|---|---|
+| 공유하는 것 | TCP + TLS 연결 | QUIC 연결 |
+| 브라우저가 주로 보는 것 | 인증서, 이미 열린 TLS 연결, 같은 edge/IP인지 여부 | 인증서, 이미 열린 QUIC 연결, `Alt-Svc`나 H3 endpoint 정보 |
+| 흔한 blocker | cert는 맞지만 실제 backend가 다름, SNI/Host 라우팅 불일치 | UDP/H3 endpoint가 다름, `Alt-Svc`가 일부 origin에만 맞음 |
+| 거절 신호 | `421 Misdirected Request` | `421 Misdirected Request` |
 
-- 하나의 shared connection에 많은 요청이 몰렸다
-- packet loss가 같은 연결 전체에 영향을 줬다
-- HOL blocking이 체감됐다
+### HTTP/2 감각
 
-### 시나리오 2: 특정 서브도메인에서만 성능이 들쭉날쭉하다
+HTTP/2에서는 브라우저가 이미 가진 **하나의 TLS 연결**을 다른 origin에도 써도 되는지 본다.
 
-SAN과 routing이 coalescing 조건을 바꾸었을 수 있다.
+- 인증서가 두 host를 모두 커버해야 하고
+- 브라우저는 보통 같은 edge에 도착하는지 보수적으로 확인한다
+- 서버는 `:authority`가 달라져도 올바른 사이트로 라우팅해야 한다
 
-- 인증서가 여러 host를 커버한다
-- 하지만 backend는 다른 origin처럼 다뤄야 한다
-- 연결 재사용이 오히려 혼선을 만든다
+### HTTP/3 감각
 
-### 시나리오 3: HTTP/3 전환 후 연결은 적어졌는데 장애 분석이 어려워졌다
+HTTP/3에서도 생각 자체는 같다.
 
-connection reuse가 더 공격적으로 보일수록, tracing과 metrics가 더 중요해진다.
+- 이미 열린 QUIC 연결이 있고
+- 그 연결의 인증서가 새 origin에도 맞고
+- H3 endpoint가 실제로 그 origin도 처리할 수 있으면
+- 브라우저가 같은 connection을 재사용할 수 있다
 
-- 어느 origin의 요청이 같은 연결을 썼는지
-- 재사용 비율이 얼마나 되는지
-- 손실이 어떤 path에 있었는지
+다만 H3는 브라우저가 그 endpoint를 보통 `Alt-Svc` 같은 신호로 배우기 때문에, "H3를 어디로 시도했는가"가 같이 중요해진다.
 
-## 코드로 보기
+---
 
-### curl에서 HTTP 버전과 재사용 감각 보기
+## 브라우저 체크리스트
 
-```bash
-curl -w 'proto=%{http_version} connect=%{time_connect} appconnect=%{time_appconnect}\n' \
-  -o /dev/null -s https://api.example.com
-```
+브라우저 쪽 판단을 초보자용으로 줄이면 아래 순서다.
 
-### HTTP/2 연결 확인
+1. 이미 열린 H2/H3 connection이 있는가?
+2. 그 연결에서 받은 인증서가 새 origin hostname에도 유효한가?
+3. 이 connection이 새 origin을 처리하는 같은 edge/endpoint라고 믿을 근거가 있는가?
+4. 이전에 `421` 같은 거절 신호를 받은 적은 없는가?
+5. 새로 연결하는 편이 더 안전하다고 판단할 이유는 없는가?
 
-```bash
-nghttp -nv https://api.example.com
-```
+핵심은 브라우저가 **"같은 certificate이니 무조건 공유"** 하지 않는다는 점이다.
 
-### TLS 인증서와 origin 매칭 보기
+브라우저는 보통 꽤 보수적으로 행동한다.
 
-```bash
-openssl s_client -connect api.example.com:443 -servername api.example.com -showcerts
-```
+- cert만 맞고 endpoint가 다르게 보이면 안 묶을 수 있다
+- H3는 `Alt-Svc` cache나 endpoint 정보가 없으면 처음부터 새 QUIC 경로를 못 쓸 수 있다
+- connection 상태가 나쁘거나 닫힐 시점이면 새 연결을 열 수 있다
 
-### 관찰 포인트
+즉 coalescing은 브라우저가 "할 수 있으면 한다"에 가깝지, "항상 해야 한다"는 규칙이 아니다.
 
-```text
-- connection pool hit ratio
-- reused stream count
-- handshake frequency
-- p95 / p99 under loss
-```
+---
 
-## 트레이드오프
+## 서버운영자 체크리스트
 
-| 선택지 | 장점 | 단점 | 언제 쓰는가 |
-|--------|------|------|-------------|
-| 적극적 connection reuse | handshake 비용이 줄어든다 | shared connection failure domain이 커진다 | 짧은 요청이 많을 때 |
-| origin coalescing | 연결 수를 더 줄인다 | 라우팅과 인증서 조건이 복잡하다 | 멀티호스트 운영 |
-| 연결을 덜 공유한다 | 장애 반경이 작아진다 | handshake 비용이 늘어난다 | 격리 우선 |
+서버/CDN/LB 입장에서 "브라우저가 coalescing해도 안전한 상태"를 만들려면 아래를 확인하면 된다.
 
-핵심은 연결을 얼마나 적게 쓰느냐가 아니라 **어느 경계까지 공유해도 안전한가**다.
+1. 여러 origin이 정말 같은 edge에서 처리되는가?
+2. 인증서 SAN 또는 wildcard가 그 origin들을 모두 커버하는가?
+3. TLS termination 뒤 라우팅이 `Host`/`:authority` 기준으로 올바르게 분기되는가?
+4. H3를 광고한다면 `Alt-Svc` endpoint가 그 origin에도 실제로 authoritative한가?
+5. 잘못 공유된 요청이 들어오면 `421 Misdirected Request`로 거절할 수 있는가?
+6. 로그와 메트릭이 connection 단위뿐 아니라 origin/authority 단위로도 보이는가?
 
-## 꼬리질문
+특히 아래 상황은 주의해야 한다.
 
-> Q: coalescing은 왜 필요한가요?
-> 핵심: 연결 수와 handshake 비용을 줄이기 위해서다.
+- wildcard cert 하나로 여러 host를 덮었지만 backend는 완전히 분리된 경우
+- TLS terminator가 첫 SNI 기준으로 upstream을 고정해 버리는 경우
+- CDN 설정상 `www`와 `static`은 같은 edge인데 `api`는 다른 정책을 써야 하는 경우
 
-> Q: 왜 coalescing이 항상 좋은 건가요?
-> 핵심: shared connection의 장애 반경이 커지고 분석이 어려워질 수 있다.
+즉 서버 쪽 핵심은 "같이 받아도 된다"는 사실을 **인증서뿐 아니라 라우팅과 운영 설정으로도 보장**하는 것이다.
 
-> Q: HTTP/3에서도 connection reuse 고민이 남나요?
-> 핵심: 남는다. 전송 계층은 바뀌어도 연결 관리와 라우팅 문제는 계속 있다.
+---
+
+## 작은 예시로 보기
+
+### 예시 1: coalescing이 잘 되는 경우
+
+- `https://www.example.com`
+- `https://static.example.com`
+
+조건:
+
+- 둘 다 같은 CDN edge로 간다
+- 인증서 SAN이 두 hostname을 모두 포함한다
+- edge가 `Host`/`:authority`를 보고 올바른 서비스로 보낸다
+
+결과:
+
+- 브라우저는 기존 H2 또는 H3 연결을 새로 열지 않고 공유할 수 있다
+
+### 예시 2: 인증서는 맞지만 공유하면 안 되는 경우
+
+- `https://api.example.com`
+- `https://admin.example.com`
+
+조건:
+
+- wildcard cert `*.example.com`은 둘 다 커버한다
+- 하지만 `admin`은 별도 보안 영역이고 다른 LB/정책이 필요하다
+
+결과:
+
+- 인증서만 보고 묶으면 위험하다
+- 서버는 coalescing이 일어나지 않게 보수적으로 설정하거나, 잘못 온 요청에 `421`을 보내야 한다
+
+### 예시 3: H3에서 특히 자주 보는 경우
+
+- `www.example.com`이 `Alt-Svc: h3="edge.example.net:443"`를 광고한다
+- 그 H3 endpoint의 인증서가 `www.example.com`과 `static.example.com` 모두에 유효하다
+- `static`도 실제로 같은 H3 edge에서 처리된다
+
+결과:
+
+- 브라우저는 두 origin을 같은 H3 connection으로 묶을 수 있다
+
+반대로 `static`은 다른 edge 정책을 써야 한다면, 같은 `Alt-Svc` endpoint를 함부로 공유하면 안 된다.
+
+---
+
+## 자주 헷갈리는 포인트
+
+### 같은 origin이어야만 같은 connection을 쓰는가
+
+아니다.
+
+- 같은 origin이면 reuse가 쉽다
+- 다른 origin이어도 조건이 맞으면 coalescing 가능하다
+
+### 같은 IP면 무조건 coalescing되는가
+
+아니다.
+
+- 같은 IP는 힌트일 뿐이다
+- 인증서와 라우팅이 같이 맞아야 한다
+
+### 인증서 SAN만 맞으면 충분한가
+
+아니다.
+
+- SAN은 필요 조건에 가깝다
+- backend routing과 authority 처리가 틀리면 잘못된 서버로 갈 수 있다
+
+### 서버가 원하면 브라우저에게 coalescing을 강제할 수 있는가
+
+아니다.
+
+- 최종적으로 연결을 재사용할지 결정하는 쪽은 브라우저다
+- 서버는 "가능하게 만들기" 또는 "`421`로 거절하기"를 할 수 있다
+
+### coalescing과 multiplexing은 같은 말인가
+
+아니다.
+
+- multiplexing: 한 connection에서 여러 stream을 동시에 보냄
+- coalescing: 서로 다른 origin이 그 같은 connection을 공유할 수 있는지 판단
+
+### HTTP/3면 이 문제가 거의 사라지는가
+
+아니다.
+
+HTTP/3는 TCP HOL 문제를 줄이는 데 강점이 있지만,
+
+- 어떤 origin을 같은 QUIC connection에 실어도 되는지
+- `Alt-Svc` endpoint가 실제로 authoritative한지
+
+같은 질문은 그대로 남는다.
+
+---
 
 ## 한 줄 정리
 
-HTTP/2와 HTTP/3의 connection reuse와 coalescing은 비용을 줄이는 강력한 도구지만, 인증서와 라우팅 조건이 맞을 때만 안전하게 이득이 난다.
+HTTP/2와 HTTP/3의 connection coalescing은 "여러 origin이 정말 같은 authoritative edge를 공유하느냐"를 확인한 뒤 연결을 아끼는 최적화다. 인증서, endpoint, 라우팅, `421` 처리까지 함께 맞아야 안전하다.
