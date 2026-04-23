@@ -6,11 +6,16 @@
 
 > 관련 문서:
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+> - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 > - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 > - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
+> - [OverlayFS Copy-up, Container Layering, Runtime Debugging](./overlayfs-copy-up-container-layering-debugging.md)
+> - [tmpfs, shmem, /dev/shm, Cgroup Memory Accounting](./tmpfs-shmem-cgroup-memory-accounting.md)
 > - [Virtual Threads(Project Loom)](../language/java/virtual-threads-project-loom.md)
 > - [Spring Boot 자동 구성](../spring/spring-boot-autoconfiguration.md)
+
+> retrieval-anchor-keywords: container, cgroup, namespace, pid namespace, mount namespace, network namespace, capability, cgroup v2, PID 1, container isolation, overlayfs, tmpfs
 
 ---
 
@@ -41,6 +46,8 @@
 - UTS namespace: hostname 분리
 - IPC namespace: shared memory, semaphore 분리
 - user namespace: root 권한을 호스트와 분리해서 매핑
+
+실제 런타임에서는 이 mount view가 OverlayFS 기반 image layer와 결합되는 경우가 많아서, "컨테이너 파일 시스템도 결국 일반 디렉터리"라고 보면 write path를 과소평가하기 쉽다.
 
 핵심은 프로세스가 커널 자원 전체를 보는 것이 아니라, **자기 namespace 안의 일부만 보는 것처럼 느끼게 하는 것**이다.
 

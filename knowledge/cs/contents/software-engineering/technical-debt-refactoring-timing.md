@@ -10,6 +10,16 @@
 > - [Monolith to MSA Failure Patterns](./monolith-to-msa-failure-patterns.md)
 > - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
 
+> retrieval-anchor-keywords:
+> - technical debt
+> - refactoring timing
+> - refactor window
+> - architectural debt
+> - boy scout rule
+> - debt interest
+> - 리팩터링 타이밍
+> - 기술 부채
+
 ## 핵심 개념
 
 기술 부채는 단순히 코드가 더럽다는 뜻이 아니다.

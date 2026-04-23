@@ -5,11 +5,15 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [응용 자료 구조 개요](./applied-data-structures-overview.md)
+> - [Approximate Counting for Rate Limiting and Observability](./approximate-counting-rate-limiting-observability.md)
+> - [Count-Min Sketch vs HyperLogLog](./count-min-vs-hyperloglog.md)
+> - [Space-Saving Heavy Hitters](./space-saving-heavy-hitters.md)
+> - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
 > - [Top-k Streaming and Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
-> - [Bloom Filter](./bloom-filter.md)
 > - [HyperLogLog](./hyperloglog.md)
 
-> retrieval-anchor-keywords: count-min sketch, CMS, approximate frequency, frequency sketch, heavy hitters, hot keys, streaming analytics, overestimation, hash rows, approximate count
+> retrieval-anchor-keywords: count-min sketch, CMS, approximate frequency, frequency sketch, heavy hitters, hot keys, rate limiting, observability, noisy tenant, streaming analytics, overestimation, hash rows, approximate count
 
 ## 핵심 개념
 

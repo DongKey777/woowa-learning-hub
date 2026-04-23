@@ -1,0 +1,248 @@
+# Demand Paging and Page Fault Primer
+
+> 한 줄 요약: demand paging은 "필요할 때만 페이지를 준비하자"는 가상 메모리의 실행 전략이고, page fault는 그 약속을 실제 메모리 상태로 바꾸는 진입점이다.
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+> - [가상 메모리](./README.md#가상-메모리)
+> - [페이지 교체 알고리즘](./README.md#페이지-교체-알고리즘)
+> - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+> - [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
+> - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+> - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
+> - [Page Table Overhead, Memory Footprint](./page-table-overhead-memory-footprint.md)
+
+> retrieval-anchor-keywords: demand paging primer, page fault primer, virtual memory bridge, page fault basics, major vs minor page fault, copy-on-write primer, COW page fault, mmap page fault, anonymous page, file-backed page, first touch, lazy allocation, lazy loading, page cache hit fault, page cache miss fault, zero-fill-on-demand, MAP_PRIVATE, fork first write, demand-zero page
+
+## 핵심 개념
+
+가상 메모리 입문에서 "프로세스마다 독립적인 주소 공간이 있다"까지 이해했다면, 그다음 질문은 보통 이렇다.
+
+- 아직 물리 메모리에 없는 페이지를 왜 읽을 수 있나
+- 프로그램 시작 때 전체를 올리지 않고도 왜 실행되나
+- `fork()`가 왜 처음엔 빠른데 첫 write에서 느려지나
+- `mmap()`이 왜 시스템 콜 시점이 아니라 접근 시점에 비용을 만든다고 하나
+- minor / major page fault는 정확히 무엇이 다른가
+
+이 문서는 그 다섯 질문을 한 흐름으로 묶어, 가상 메모리 기초에서 demand paging, copy-on-write, `mmap()`, major/minor fault 해석까지 이어 주는 `bridge`다.
+
+## 한눈에 보기
+
+| 용어 | 뜻 | 꼭 기억할 점 |
+|------|----|--------------|
+| 가상 메모리 | 프로세스가 보는 논리 주소 공간 | 실제 물리 메모리와 분리되어 있다 |
+| demand paging | 페이지를 미리 다 올리지 않고 필요할 때 준비하는 방식 | 시작은 가볍고, 첫 접근 시 비용이 생긴다 |
+| page fault | 지금 접근한 페이지를 즉시 쓸 수 없어서 커널 도움을 받는 사건 | "오류"가 아니라 정상 제어 흐름일 수 있다 |
+| minor fault | 디스크 I/O 없이 해결되는 fault | zero-fill, page cache hit, COW 같은 경우가 많다 |
+| major fault | 디스크 I/O가 필요한 fault | file read나 swap-in이 걸리면 훨씬 비싸다 |
+| copy-on-write | 공유하던 페이지를 첫 write 때 분리 복제하는 방식 | `fork()`와 `MAP_PRIVATE`에서 자주 보인다 |
+| `mmap()` | 파일/메모리를 주소 공간에 매핑하는 방식 | 실제 데이터 준비는 접근 시점 fault로 드러난다 |
+
+## 1. demand paging: "주소는 먼저 주고, 페이지는 나중에 준비"한다
+
+프로세스가 보는 가상 주소 공간은 커 보여도, 그 안의 모든 페이지가 프로그램 시작 순간부터 물리 메모리에 올라와 있을 필요는 없다.
+
+demand paging의 핵심은 이렇다.
+
+- 프로세스는 먼저 주소 공간과 매핑 정보를 받는다
+- 실제 페이지는 **처음 필요해진 순간** 준비한다
+- 준비가 안 된 페이지에 닿으면 page fault가 발생한다
+- 커널이 페이지를 준비한 뒤 같은 명령을 다시 실행한다
+
+즉 demand paging은 "가상 주소 공간을 미리 약속해 두고, 실제 페이지 공급은 늦추는 전략"이다.
+
+이 덕분에 생기는 장점:
+
+- 프로그램 시작이 가벼워진다
+- 한 번도 쓰지 않을 코드/데이터를 굳이 메모리에 안 올린다
+- 큰 프로세스도 실제 사용량 기준으로 메모리를 소비한다
+
+대신 비용은 사라지지 않고 **첫 접근 시점**으로 이동한다.
+
+## 2. page fault: CPU가 커널에게 "이 페이지를 준비해 달라"고 넘기는 순간
+
+현대 CPU는 보통 TLB를 먼저 확인하고, miss가 나면 page table walk로 현재 매핑 상태를 확인한다. 그 결과가 "지금 바로 접근 불가"이면 page fault trap이 발생한다. TLB miss와 page fault의 경계는 [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)에서 따로 정리한다.
+
+중요한 점은 page fault가 항상 비정상이라는 뜻은 아니라는 것이다.
+
+- 아직 적재되지 않은 파일 페이지를 처음 읽는 fault
+- 처음 touch한 heap 페이지를 zero-fill 하는 fault
+- `fork()` 뒤 첫 write에서 COW를 전개하는 fault
+- `mmap()`한 파일에서 접근 시점에 page cache를 연결하는 fault
+
+이들은 모두 운영체제가 **의도적으로 늦춰 둔 일**이 실행되는 순간이다.
+
+```text
+CPU가 가상 주소 접근
+  -> TLB miss
+  -> page table walk에서 "지금은 바로 못 씀" 확인
+  -> page fault trap
+  -> 커널이 anonymous / file-backed / COW 경로 판단
+  -> 필요한 페이지 준비
+  -> page table 갱신
+  -> 같은 명령 재시도
+```
+
+이 흐름을 이해하면 "page fault = 장애"라는 오해를 버릴 수 있다.
+
+## 3. 어떤 접근이 어떤 fault를 만드는가
+
+### 1. anonymous memory의 첫 touch
+
+`malloc()`이나 큰 stack frame처럼 **파일에 연결되지 않은 메모리**는 anonymous memory로 잡힌다.
+
+```c
+char *buf = malloc(4096);
+buf[0] = 1;
+```
+
+이때 흔한 흐름은:
+
+- 가상 주소 범위는 이미 확보되어 있다
+- 아직 실제 물리 페이지는 없다
+- 첫 read/write에서 page fault가 난다
+- 커널이 zero-filled page를 준비하고 매핑한다
+
+보통 디스크 I/O가 없으므로 **minor fault**로 끝난다.
+
+### 2. file-backed page의 첫 접근
+
+실행 파일 코드, 공유 라이브러리, `mmap()`한 파일처럼 **파일에 연결된 페이지**는 file-backed page다.
+
+이 경우 첫 접근에서 두 갈래가 생긴다.
+
+- 필요한 페이지가 이미 page cache에 있다: minor fault
+- page cache에 없고 저장장치에서 읽어와야 한다: major fault
+
+즉 file-backed라고 해서 항상 major는 아니다.  
+핵심은 "그 페이지가 이미 메모리에 있느냐"다.
+
+### 3. `fork()` 뒤 첫 write: copy-on-write
+
+`fork()`는 부모 메모리를 즉시 통째로 복사하지 않는다. 부모와 자식이 같은 물리 페이지를 **읽기 전용으로 공유**하다가, 누군가 write 하는 순간 그 페이지를 분리한다.
+
+```c
+pid_t pid = fork();
+if (pid == 0) {
+    cache[0] = 42; // 첫 write에서 COW 가능
+}
+```
+
+이때 page fault는 "없던 페이지를 디스크에서 읽는" 사건이 아니라:
+
+- 공유 중인 페이지에 write하려고 했고
+- 권한/매핑 상태상 바로 쓸 수 없어서
+- 커널이 새 private page를 만들어 복제한 뒤
+- write 가능하게 바꾸는 과정
+
+이 역시 보통 **minor fault**다.  
+그래서 COW는 "fault는 났지만 디스크는 안 읽는" 대표 사례다.
+
+### 4. `MAP_PRIVATE mmap()`의 첫 write
+
+`mmap()`도 `MAP_PRIVATE`라면 COW를 쓴다.
+
+- 처음 read: 파일 페이지를 매핑한다
+- 이후 write: 원본 파일을 바로 덮지 않고 private copy를 만든다
+
+즉 COW는 `fork()`에만 있는 개념이 아니라, **private mapping 일반의 쓰기 분리 전략**이기도 하다.
+
+## 4. minor vs major: "중요도"가 아니라 "서비스 경로" 차이다
+
+`minor`와 `major`는 "가벼운 문제 / 심각한 문제" 구분이 아니다.  
+정확히는 **fault를 처리하는 데 디스크 I/O가 필요했는가**에 더 가깝다.
+
+| 상황 | 보통 fault 종류 | 이유 |
+|------|-----------------|------|
+| `malloc()` 후 첫 touch | minor | 새 anonymous page를 준비하면 된다 |
+| `fork()` 후 첫 write | minor | COW로 private page만 만들면 된다 |
+| `mmap()` 파일 접근 + page cache hit | minor | 이미 메모리에 있는 파일 페이지를 연결하면 된다 |
+| `mmap()` 파일 접근 + cache miss | major | 저장장치에서 실제로 읽어와야 한다 |
+| swap-out된 anonymous page 재접근 | major | swap에서 다시 가져와야 한다 |
+
+이 표가 중요한 이유는 다음과 같다.
+
+- 같은 page fault라도 지연 성질이 다르다
+- `minor`는 많아도 누적형일 수 있고
+- `major`는 적어도 p99를 크게 흔들 수 있다
+
+그래서 운영에서는 fault "개수"만이 아니라 **무슨 경로에서 난 fault인지**를 같이 봐야 한다.
+
+## 5. `mmap()`이 이 주제의 핵심 bridge인 이유
+
+가상 메모리 입문만 보면 page fault는 추상적으로 느껴질 수 있다.  
+`mmap()`은 이 추상 개념을 실전 코드와 바로 연결해 준다.
+
+`read()`와 `mmap()`의 차이를 아주 단순하게 보면:
+
+- `read()`: 시스템 콜 시점에 데이터를 읽고 유저 버퍼로 복사한다
+- `mmap()`: 주소만 먼저 연결하고, 실제 데이터 준비는 접근 시점 fault로 일어난다
+
+즉 `mmap()`은 demand paging이 어떻게 애플리케이션 체감으로 드러나는지 보여주는 가장 쉬운 예다.
+
+```text
+read()
+  -> syscall 시점에 I/O + copy 비용이 드러남
+
+mmap()
+  -> 매핑은 먼저 끝남
+  -> 실제 read/write 때 page fault 비용이 드러남
+```
+
+그래서 다음 문서들로 자연스럽게 이어진다.
+
+- `mmap()`의 fault/복사 위치 차이: [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
+- fault를 운영 지표로 보는 법: [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+- `fork()`와 private mapping의 COW 전개: [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+
+## 6. 자주 나오는 오해
+
+### "page fault는 무조건 나쁜 것이다"
+
+아니다. demand paging, COW, lazy allocation은 모두 page fault를 정상 경로로 사용한다.
+
+### "major fault만 page fault고, minor는 그냥 통계용이다"
+
+아니다. minor도 실제 커널 개입과 지연을 만든다. 다만 major보다 서비스 경로가 짧을 뿐이다.
+
+### "`fork()`는 부모 메모리를 바로 다 복사한다"
+
+아니다. 처음엔 page table과 공유 관계를 복제하고, write가 시작될 때만 COW가 실제 페이지 복제를 만든다.
+
+### "`mmap()`은 디스크 읽기를 없애 준다"
+
+아니다. 읽기를 없애는 게 아니라, **시스템 콜 시점의 I/O를 접근 시점 fault로 이동**시키는 경우가 많다.
+
+## 7. 이 다음에 어디로 이어 읽으면 좋은가
+
+- virtual memory 전체 큰 틀을 다시 잡으려면:
+  - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- `fork()`와 COW가 서버 start-up / worker model에 어떻게 보이는지 보려면:
+  - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+- minor/major fault를 `perf`, `/proc` 관점에서 측정하려면:
+  - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+- `mmap()`과 page cache가 실전 I/O 선택에 어떤 차이를 만드는지 보려면:
+  - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
+- 메모리 압박과 교체까지 이어서 보려면:
+  - [페이지 교체 알고리즘](./README.md#페이지-교체-알고리즘)
+  - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
+
+## 꼬리질문
+
+> Q: demand paging과 page fault는 같은 말인가요?
+> 핵심: 아니다. demand paging은 전략이고, page fault는 그 전략을 실행할 때 나타나는 이벤트다.
+
+> Q: 왜 `malloc()` 직후보다 실제 접근할 때 비용이 느껴지나요?
+> 핵심: 주소만 먼저 잡고 실제 페이지 준비는 first touch 때 미루는 경우가 많기 때문이다.
+
+> Q: COW fault는 왜 보통 minor fault인가요?
+> 핵심: 공유 페이지를 private page로 복제하면 되지, 디스크에서 읽어올 필요는 없는 경우가 많기 때문이다.
+
+> Q: `mmap()` 파일 첫 접근이 항상 major fault인가요?
+> 핵심: 아니다. 필요한 페이지가 page cache에 이미 있으면 minor fault로 끝날 수 있다.
+
+## 한 줄 정리
+
+가상 메모리는 "주소 공간을 먼저 약속"하고, demand paging은 "페이지 준비를 뒤로 미루며", page fault는 그 약속을 실제 메모리 상태로 연결하고, COW와 `mmap()`은 그 지연 전략이 실전 코드에서 어떻게 보이는지를 보여준다.

@@ -136,12 +136,30 @@ state/               # 런타임 상태: archive, packets, memory (gitignored)
 
 ---
 
+## 지속 오케스트레이션
+
+CS 코퍼스 확장 같은 장기 작업은 `bin/orchestrator`로 지속 오케스트레이션할 수 있습니다.
+
+```bash
+bin/orchestrator start
+bin/orchestrator status
+bin/orchestrator claim --worker database-worker --limit 2
+bin/orchestrator complete --worker database-worker --item-id database-00001 --summary "failover 문서 2개 추가"
+bin/orchestrator fleet-start
+bin/orchestrator fleet-status
+```
+
+이 오케스트레이터는 직접 LLM을 호출하지는 않고, `state/orchestrator/` 아래에 backlog, 현재 wave, worker lease, 완료 이력을 유지합니다. 즉 세션이 바뀌어도 “다음에 무엇을 할지”와 “누가 무엇을 잡고 있는지”를 계속 이어갈 수 있습니다. 자세한 구조는 [`docs/orchestrator.md`](docs/orchestrator.md)에 정리했습니다.
+
+---
+
 ## 더 읽을거리
 
 - [`docs/architecture.md`](docs/architecture.md) — 파이프라인 구조
 - [`docs/capability-map.md`](docs/capability-map.md) — 내부 capability
 - [`docs/artifact-catalog.md`](docs/artifact-catalog.md) — 생성되는 artifact
 - [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) — AI 운영 계약
+- [`docs/orchestrator.md`](docs/orchestrator.md) — 지속 오케스트레이터
 - [`docs/onboarding.md`](docs/onboarding.md) — 새 미션 온보딩 가이드
 
 ---

@@ -1,0 +1,196 @@
+# Cache-Oblivious B-Tree / Leaf-Packed Variants vs Plain vEB Layout
+
+> 한 줄 요약: plain vEB binary layout은 root-to-leaf search locality에는 강하지만, range scan 친화적 ordered index를 만들려면 leaf를 연속 chunk로 다루는 cache-oblivious B-tree나 leaf-packed hybrid가 더 직접적이다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Ordered Search Workload Matrix](./ordered-search-workload-matrix.md)
+> - [van Emde Boas Layout vs Eytzinger vs Blocked Arrays](./van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md)
+> - [Cache-Oblivious vs Cache-Aware Layouts](./cache-oblivious-vs-cache-aware-layouts.md)
+> - [Cache-Aware Data Structure Layouts](./cache-aware-data-structure-layouts.md)
+> - [Eytzinger Layout and Cache-Friendly Search](./eytzinger-layout-and-cache-friendly-search.md)
+> - [Hybrid Top-Index / Leaf Layouts](./hybrid-top-index-leaf-layouts.md)
+> - [LSM-Friendly Index Structures](./lsm-friendly-index-structures.md)
+
+> retrieval-anchor-keywords: cache-oblivious b-tree, cache oblivious btree, plain veb binary layout, van emde boas binary tree layout, leaf packed ordered index, cache-oblivious leaf block layout, range-scan-friendly ordered index, lower_bound then range scan, ordered iterator locality, contiguous leaf block, scan-friendly cache-oblivious index, immutable ordered index layout, separator tree with packed leaves, recursive guide index, hybrid top index leaf layout, guide index plus contiguous leaves, ordered merge locality, ordered search workload matrix
+
+## 핵심 개념
+
+plain vEB binary layout과 cache-oblivious B-tree 계열은 둘 다  
+"특정 block 크기를 하드코딩하지 않고 locality를 얻자"는 family에 속한다.
+
+하지만 locality를 주는 단위가 다르다.
+
+- plain vEB binary layout: `root -> leaf` search path를 재귀 subtree 단위로 붙인다
+- cache-oblivious B-tree / leaf-packed variant: `lower_bound -> leaf scan -> next leaf`까지 ordered path로 붙인다
+
+즉 차이는 cache-oblivious냐 아니냐보다  
+`비교 경로를 최적화하느냐`와 `scan continuation을 최적화하느냐`에 있다.
+
+## 깊이 들어가기
+
+### 1. plain vEB binary layout은 "이진 탐색 트리를 잘 깔아 놓은 것"에 가깝다
+
+- fan-out이 2다
+- 각 subtree가 재귀적으로 인접 배치된다
+- search path가 여러 메모리 계층에서 비교적 짧게 묶인다
+
+그래서 이런 경우엔 여전히 좋다.
+
+- point lookup
+- `contains`
+- predecessor / successor 한두 번
+- immutable `lower_bound`
+
+하지만 약점도 분명하다.
+
+- in-order iterator가 leaf block을 직진하는 구조가 아니다
+- `lower_bound` 뒤 수십 개 이상 scan하면 재귀 cut을 자주 넘는다
+- ordered merge / intersection / range iterator처럼 "경계 뒤가 본체"인 workload에선 leaf locality가 부족하다
+
+### 2. cache-oblivious B-tree는 locality의 단위를 leaf block까지 넓힌다
+
+cache-oblivious B-tree 계열은 보통 이런 감각을 가진다.
+
+- fan-out을 2보다 크게 잡아 depth를 줄인다
+- separator node와 leaf payload를 역할별로 나눈다
+- leaf에 여러 key나 record pointer를 packed하게 모은다
+- block 크기 `B`를 박지 않더라도 재귀 packing으로 여러 계층의 locality를 노린다
+
+이렇게 되면 `lower_bound`로 leaf를 찾은 뒤  
+같은 leaf 안에서 여러 원소를 amortize하고, 다음 leaf로도 자연스럽게 이어질 수 있다.
+
+핵심 차이는 이 문장으로 줄어든다.
+
+- plain vEB binary: "찾는 경로"를 잘 붙인다
+- cache-oblivious B-tree: "찾은 뒤 읽는 순서"까지 잘 붙인다
+
+### 3. leaf-packed hybrid는 실무에서 더 다루기 쉬운 절충안이다
+
+실무에서는 모든 레벨을 이론적인 cache-oblivious B-tree로 만들지 않고  
+다음 같은 hybrid가 자주 더 현실적이다.
+
+- 상위 guide index만 recursive / implicit layout
+- bottom leaf는 sorted contiguous array나 fixed-size chunk
+- leaf 간 이동은 logical next block 순서로 처리
+
+이런 leaf-packed variant는:
+
+- point lookup은 상위 guide index가 맡고
+- range scan은 packed leaf가 맡고
+- pure vEB binary보다 scan-friendly하고
+- full page-aware B-tree보다 block-size hardcoding 부담이 적다
+
+즉 "cache-oblivious 철학"과 "leaf-contiguous scan"을 섞은 형태다.
+이 패턴을 top guide와 contiguous leaf의 역할 분리 관점으로 더 좁혀서 보면
+[Hybrid Top-Index / Leaf Layouts](./hybrid-top-index-leaf-layouts.md)가 바로 다음 문서다.
+
+### 4. scan-heavy ordered index에서 leaf packing이 중요한 이유
+
+range scan 비용은 종종 `O(log n + k)`의 `log n`보다  
+**경계 이후 몇 개의 leaf/page를 어떤 순서로 밟느냐**가 더 크게 가른다.
+
+leaf-packed 구조가 유리한 이유:
+
+- 경계를 찾은 뒤 같은 leaf에서 여러 key를 연속 처리한다
+- 다음 leaf도 ordered chunk라 prefetch와 sequential access가 잘 맞는다
+- merge join, iterator, prefix range, posting merge처럼 leaf-to-leaf walk가 중요한 workload와 맞는다
+
+반면 plain vEB binary는 successor가 정렬 이웃이더라도  
+메모리상으로는 긴 contiguous leaf run이 아니라 재귀 partition을 넘나들게 된다.
+
+### 5. 그래서 선택 질문이 달라진다
+
+| workload 질문 | 더 유력한 구조 |
+|---|---|
+| point lookup / short neighbor access가 대부분인가 | plain vEB binary layout |
+| `lower_bound` 뒤 수십~수백 key scan, range iterator, ordered merge가 잦은가 | cache-oblivious B-tree |
+| scan이 중요하지만 구현을 과하게 복잡하게 만들고 싶지 않은가 | leaf-packed hybrid |
+| page size를 명시적으로 맞추는 편이 더 쉬운 저장 경로인가 | cache-aware blocked/B-tree layout |
+
+즉 "vEB가 cache-oblivious라서 range scan에도 좋겠지"라고 보면 자주 틀린다.
+short scan과 long scan을 한 표로 먼저 고르고 싶다면 [Ordered Search Workload Matrix](./ordered-search-workload-matrix.md)를 같이 보면 된다.
+
+### 6. LSM / immutable segment 관점으로 보면 더 분명하다
+
+SSTable, segment dictionary, fence-pointer index 같은 구조는  
+경계 탐색 뒤에 실제 data block이나 posting block scan이 이어진다.
+
+이런 구조에선 보통:
+
+- 상위 sparse index는 guide 역할
+- 하위 block은 contiguous ordered payload
+- iterator는 block-to-block 순회
+
+가 핵심이다.  
+그래서 pure vEB binary tree보다  
+leaf-packed ordered index가 read path를 설명하기 쉽다.
+
+### 7. 자주 나오는 오해
+
+**오해 1: cache-oblivious B-tree는 결국 vEB binary의 다른 이름이다**
+
+아니다. 둘 다 cache-oblivious family지만  
+fan-out, leaf packing, scan continuation locality를 다루는 방식이 다르다.
+
+**오해 2: range scan이 붙어도 `O(log n + k)`면 layout 차이는 작다**
+
+아니다. `k`개를 읽는 동안 몇 번의 leaf/page jump가 나는지가 실제 비용을 가른다.
+
+**오해 3: leaf-packed variant는 결국 cache-aware 구조라 cache-oblivious와 반대다**
+
+꼭 그렇지 않다. 상위 guide index는 block-size agnostic하게 두고,  
+leaf만 contiguous ordered chunk로 두는 hybrid도 충분히 가능하다.
+
+## 실전 시나리오
+
+### 시나리오 1: immutable in-memory ordered map
+
+조회가 대부분 `contains`, `lower_bound`, predecessor 정도면  
+plain vEB binary layout이 여전히 설득력 있다.
+
+### 시나리오 2: analytics range filter / iterator
+
+한 번 경계를 찾은 뒤 인접 key를 길게 훑는다면  
+cache-oblivious B-tree나 leaf-packed variant가 더 자연스럽다.
+
+### 시나리오 3: fence pointer + payload block
+
+상위 index는 작고 하위 data block scan이 본체라면  
+guide index + packed leaf/block 구조가 pure binary vEB보다 설명력이 좋다.
+
+### 시나리오 4: 구현 단순성이 중요한 라이브러리
+
+완전한 cache-oblivious B-tree 대신  
+`recursive guide index + contiguous leaves` hybrid가 디버깅과 유지보수에 더 낫다.
+
+## 비교 표
+
+| 축 | Plain vEB Binary Layout | Cache-Oblivious B-Tree | Leaf-Packed Hybrid |
+|---|---|---|---|
+| locality의 기본 단위 | subtree / search path | separator + leaf block | guide index + contiguous leaf |
+| fan-out | 2 | 2보다 큼 | 상위는 작고 하위 leaf는 chunk |
+| `lower_bound` 뒤 scan | 덜 자연스럽다 | 매우 자연스럽다 | 자연스럽다 |
+| block-size hardcoding | 없다 | 없다 | 낮다 |
+| 구현 난이도 | 중간 | 높다 | 중간 |
+| 가장 잘 맞는 곳 | search-heavy immutable index | range-scan-friendly ordered index | practical hybrid ordered index |
+
+## 꼬리질문
+
+> Q: 왜 plain vEB binary layout은 range scan에 약해질 수 있나요?
+> 의도: search-path locality와 in-order leaf walk locality를 구분하는지 확인
+> 핵심: 재귀 subtree는 뭉쳐 있어도 정렬 이웃이 긴 contiguous leaf chunk로 보장되진 않기 때문이다.
+
+> Q: cache-oblivious B-tree가 plain vEB보다 range iterator에 잘 맞는 이유는 무엇인가요?
+> 의도: fan-out과 leaf packing의 역할을 설명하는지 확인
+> 핵심: 경계를 찾은 뒤 leaf block 안에서 여러 key를 연속 처리하고 다음 leaf로 이어질 수 있어서다.
+
+> Q: leaf-packed hybrid는 언제 고르나요?
+> 의도: 이론적 완전성보다 실전 절충안을 볼 수 있는지 확인
+> 핵심: scan-friendly ordered index가 필요하지만 full cache-oblivious B-tree 구현 복잡도까지는 감당하고 싶지 않을 때다.
+
+## 한 줄 정리
+
+plain vEB binary layout은 "잘 찾는" cache-oblivious 배치에 가깝고,  
+range scan 친화적 ordered index를 원하면 leaf block을 연속화한 cache-oblivious B-tree나 leaf-packed hybrid 쪽이 더 직접적이다.

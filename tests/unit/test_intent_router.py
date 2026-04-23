@@ -75,6 +75,20 @@ class PreDecideTest(unittest.TestCase):
         self.assertEqual(result["pre_intent"], intent_router.CS_ONLY)
         self.assertEqual(result["cs_search_mode"], "full")
 
+    def test_mixed_korean_and_code_keyword_routes_to_cs(self) -> None:
+        # Learner pastes a mixed Korean + code keyword question with no PR/
+        # mission cues. Should classify as CS_ONLY (or at least run full
+        # CS search), not UNKNOWN.
+        result = intent_router.pre_decide("synchronized 키워드가 왜 필요한지 알려줘")
+        self.assertEqual(result["pre_intent"], intent_router.CS_ONLY)
+        self.assertEqual(result["cs_search_mode"], "full")
+
+    def test_interface_vs_abstract_routes_to_cs(self) -> None:
+        result = intent_router.pre_decide(
+            "interface 랑 abstract class 차이가 뭐야?"
+        )
+        self.assertEqual(result["pre_intent"], intent_router.CS_ONLY)
+
     def test_empty_prompt_without_state_is_unknown(self) -> None:
         result = intent_router.pre_decide("")
         self.assertEqual(result["pre_intent"], intent_router.UNKNOWN)
@@ -162,6 +176,31 @@ class FinalizeTest(unittest.TestCase):
         # base plan for mission_only leaves drill_block=omit; offer elevates.
         self.assertEqual(plan["drill_block"], "supporting")
         self.assertTrue(decision["drill_in_turn"]["has_offer"])
+
+    def test_partial_coverage_downgrades_primary_snapshot(self) -> None:
+        pre = {"pre_intent": intent_router.MISSION_ONLY, "cs_search_mode": "skip", "signals": {}}
+        decision = intent_router.finalize(pre, learner_state_coverage="partial")
+        plan = decision["block_plan"]
+        self.assertEqual(plan["snapshot_block"], "supporting")
+        self.assertTrue(decision["coverage_downgraded_snapshot"])
+        self.assertEqual(decision["coverage"], "partial")
+
+    def test_full_coverage_leaves_snapshot_primary(self) -> None:
+        pre = {"pre_intent": intent_router.MISSION_ONLY, "cs_search_mode": "skip", "signals": {}}
+        decision = intent_router.finalize(pre, learner_state_coverage="full")
+        self.assertEqual(decision["block_plan"]["snapshot_block"], "primary")
+        self.assertFalse(decision["coverage_downgraded_snapshot"])
+
+    def test_partial_coverage_does_not_promote_supporting(self) -> None:
+        # On CS_ONLY turns the snapshot starts as omit; partial coverage
+        # should not touch it (nothing to downgrade).
+        pre = {"pre_intent": intent_router.CS_ONLY, "cs_search_mode": "full", "signals": {}}
+        augment = {"by_learning_point": {"repository_boundary": [{"path": "x"}]}}
+        decision = intent_router.finalize(
+            pre, augment_result=augment, learner_state_coverage="partial"
+        )
+        self.assertEqual(decision["block_plan"]["snapshot_block"], "omit")
+        self.assertFalse(decision["coverage_downgraded_snapshot"])
 
     def test_finalize_preserves_pre_signals_and_mode(self) -> None:
         pre = {

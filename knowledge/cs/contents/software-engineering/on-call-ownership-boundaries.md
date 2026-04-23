@@ -10,6 +10,8 @@
 > - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
 > - [Runbook, Playbook, Automation Boundaries](./runbook-playbook-automation-boundaries.md)
 > - [Platform Team, Product Team, and Business Capability Boundaries](./platform-team-product-team-capability-boundaries.md)
+> - [Service Criticality Tiering and Control Intensity](./service-criticality-tiering-control-intensity.md)
+> - [Support SLA and Escalation Contracts](./support-sla-escalation-contracts.md)
 
 > retrieval-anchor-keywords:
 > - on-call ownership

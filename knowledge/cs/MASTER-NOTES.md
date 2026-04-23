@@ -2,6 +2,8 @@
 
 > 개별 문서를 많이 읽는 대신, 여러 분야를 한 번에 엮어 학습하고 회수하기 위한 상위 요약 노트 모음
 
+> retrieval-anchor-keywords: master notes guide, master note overview, synthesis guide, cross-domain reading, symptom-first navigator, broad question routing, master note role, retrieval escalation
+
 ## 이 문서의 목적
 
 `contents/` 아래의 문서는 주제별 깊이를 담당한다.  
@@ -15,6 +17,7 @@
 만드는 상위 노트다.
 
 즉 `master-notes`는 카테고리 README의 대체물이 아니라, **교차 관점 학습용 상위 레이어**다.
+대표 노트 목록은 [Master Notes Index](./master-notes/README.md), 문서 역할 기준은 [Navigation Taxonomy](./rag/navigation-taxonomy.md)에서 함께 본다.
 
 ## 어떤 상황에서 보는가
 
@@ -52,6 +55,8 @@
 
 ## 관련 문서
 
+- [Master Notes Index](./master-notes/README.md)
+- [Navigation Taxonomy](./rag/navigation-taxonomy.md)
 - [RAG Ready Checklist](./RAG-READY.md)
 - [Advanced Backend Roadmap](./ADVANCED-BACKEND-ROADMAP.md)
 - [Senior-Level Questions](./SENIOR-QUESTIONS.md)

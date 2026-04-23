@@ -10,6 +10,11 @@
 > - [Service Ownership and Catalog Boundaries](./service-ownership-catalog-boundaries.md)
 > - [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)
 > - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
+> - [Deprecation Enforcement, Tombstone, and Sunset Guardrails](./deprecation-enforcement-tombstone-guardrails.md)
+> - [Backward Compatibility Waivers and Consumer Exception Governance](./backward-compatibility-waiver-consumer-exception-governance.md)
+> - [Consumer Exception Operating Model](./consumer-exception-operating-model.md)
+> - [Shadow Process Officialization and Absorption Criteria](./shadow-process-officialization-absorption-criteria.md)
 
 > retrieval-anchor-keywords:
 > - service deprecation
@@ -20,6 +25,10 @@
 > - consumer notice
 > - hard delete
 > - backward compatibility
+> - retire vs absorb
+> - sunset exception path
+> - deprecation extension governance
+> - sunset allowlist absorb
 
 ## 핵심 개념
 
@@ -66,7 +75,22 @@
 
 이 순서는 소비자에게 준비 시간을 주고, 내부 관측을 유지한다.
 
-### 3. 관측 가능성을 먼저 줄이지 말아야 한다
+### 3. deprecated path 주변의 예외 경로는 retire할지 absorb할지 먼저 정해야 한다
+
+서비스 자체는 sunset 대상이어도, 그 주변의 exception path는 두 종류로 나뉜다.
+
+- 이미 exception registry, waiver review, tombstone policy가 있는데 사람들이 slack DM이나 개인 시트로 마감 연장을 처리한다면: 그 bypass는 **retire** 대상이다
+- 서비스별 allowlist, extension count, replacement readiness, tombstone reason code를 매번 같은 형태로 따로 적고 있다면: 그 반복 데이터는 **absorb** 대상이다
+
+핵심 질문은 단순하다.
+
+- 공식 경로가 이미 있는데 사람들이 우회하는가 -> retire
+- 반복되는 structured data가 공식 registry/gateway에 못 들어가고 있는가 -> absorb
+
+이 기준을 [Shadow Process Officialization and Absorption Criteria](./shadow-process-officialization-absorption-criteria.md)와 같은 언어로 써 두면, sunset governance와 consumer exception review가 서로 다른 말로 같은 문제를 설명하지 않게 된다.
+특히 deprecation 연장 request는 [Consumer Exception Operating Model](./consumer-exception-operating-model.md)과 [Backward Compatibility Waivers and Consumer Exception Governance](./backward-compatibility-waiver-consumer-exception-governance.md)에서 관리하는 exception backlog와 연결해 보는 편이 안전하다.
+
+### 4. 관측 가능성을 먼저 줄이지 말아야 한다
 
 서비스를 내리기 전에 다음을 남겨야 한다.
 
@@ -77,7 +101,7 @@
 
 이게 없으면 누가 아직 쓰는지 알 수 없다.
 
-### 4. hard delete는 가장 마지막이다
+### 5. hard delete는 가장 마지막이다
 
 API endpoint를 내리는 것과, backing data를 지우는 것은 다르다.
 
@@ -91,7 +115,7 @@ API endpoint를 내리는 것과, backing data를 지우는 것은 다르다.
 
 서비스는 코드보다 주변 의존성이 더 오래 남을 수 있다.
 
-### 5. 종료는 ADR과 연결되어야 한다
+### 6. 종료는 ADR과 연결되어야 한다
 
 왜 종료하는지, 무엇이 대체인지, 어떤 조건이 충족되면 지우는지 남겨야 한다.
 이 문맥은 [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)와 직접 연결된다.
@@ -156,6 +180,7 @@ deprecation은 지우는 속도가 아니라 **안전하게 떠나게 하는 능
 - 소비자 migration이 끝났는지 어떻게 확인하는가?
 - 읽기/쓰기 경로는 언제 분리할 것인가?
 - tombstone 상태를 운영 도구가 이해하는가?
+- 남은 sunset side path는 retire 대상인가, absorb 대상인가?
 
 ## 한 줄 정리
 

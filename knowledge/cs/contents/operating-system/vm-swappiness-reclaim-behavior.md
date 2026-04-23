@@ -7,11 +7,12 @@
 > 관련 문서:
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+> - [Swap-In, Reclaim, and Major Fault Path Primer](./swap-in-reclaim-fault-path-primer.md)
 > - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 
-> retrieval-anchor-keywords: vm.swappiness, swap, reclaim, kswapd, direct reclaim, anon memory, page cache pressure, swapin, swapout, memory latency
+> retrieval-anchor-keywords: vm.swappiness, swap, reclaim, kswapd, direct reclaim, anon memory, page cache pressure, swapin, swapout, major fault under pressure, reclaim-induced fault, memory latency
 
 ## 핵심 개념
 

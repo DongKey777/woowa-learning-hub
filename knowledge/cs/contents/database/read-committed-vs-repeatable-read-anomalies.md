@@ -2,8 +2,10 @@
 
 > 한 줄 요약: Read Committed는 최신성을, Repeatable Read는 관측 일관성을 더 챙기지만, 둘 다 비즈니스 불변식을 자동으로 지켜주지는 않는다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Write Skew and Phantom Read Case Studies](./write-skew-phantom-read-case-studies.md)
-Retrieval anchors: `read committed`, `repeatable read`, `non-repeatable read`, `phantom read`, `snapshot isolation`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Write Skew and Phantom Read Case Studies](./write-skew-phantom-read-case-studies.md), [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md)
+retrieval-anchor-keywords: read committed, repeatable read, non-repeatable read, phantom read, snapshot isolation, gap locking disabled, overlap check phantom, 트랜잭션 격리 수준 이상 현상, isolation level anomaly intro, 격리 수준 phantom non-repeatable dirty, transaction isolation anomaly primer, isolation primer beginner, read committed repeatable read 큰 그림, 트랜잭션 격리 수준 처음 배우는데, isolation locking primer 입문
 
 ## 핵심 개념
 
@@ -41,6 +43,9 @@ Repeatable Read는 한 트랜잭션 안에서 같은 row를 다시 읽으면 같
 
 Read Committed에서는 Non-repeatable Read와 Phantom Read가 더 쉽게 나타난다.  
 Repeatable Read에서는 row-level 재조회는 안정적이지만, 범위 불변식은 gap lock이나 별도 제약이 필요하다.
+
+특히 MySQL InnoDB에서는 `REPEATABLE READ`의 locking range scan이 next-key/gap lock으로 overlap absence-check를 보조하던 경우가 있다.  
+이 경로를 `READ COMMITTED`로 내리면 search/scan gap protection이 사라져, 같은 `SELECT ... FOR UPDATE`가 다시 phantom insert를 허용할 수 있다.
 
 ### 4. 비즈니스 불변식은 별도다
 

@@ -7,9 +7,13 @@
 > 관련 문서:
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+> - [Spring `RequestContextHolder`, `ThreadLocal`, and Request Context Leakage Across Async Pools](./spring-requestcontextholder-threadlocal-leakage-async-pools.md)
+> - [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
 > - [Spring MVC vs WebFlux](./spring-webflux-vs-mvc.md)
 > - [Spring Request Scope Proxy Pitfalls](./spring-request-scope-proxy-pitfalls.md)
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
 
 retrieval-anchor-keywords: SecurityContext propagation, DelegatingSecurityContextAsyncTaskExecutor, ReactiveSecurityContextHolder, context propagation, thread local security, reactive context, async boundary, reactor context
 

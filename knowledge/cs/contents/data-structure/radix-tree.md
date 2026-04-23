@@ -6,6 +6,8 @@
 
 > 관련 문서:
 > - [Trie (Prefix Search / Autocomplete)](./trie-prefix-search-autocomplete.md)
+> - [Adaptive Radix Tree](./adaptive-radix-tree.md)
+> - [Finite State Transducer](./finite-state-transducer.md)
 > - [HashMap 내부 구조](./hashmap-internals.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 

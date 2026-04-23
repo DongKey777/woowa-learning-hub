@@ -7,11 +7,14 @@
 > 관련 문서:
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
+> - [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)
 > - [Session Fixation, Clickjacking, CSP](./session-fixation-clickjacking-csp.md)
+> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [CSP Nonces / Hashes / Script Policy](./csp-nonces-vs-hashes-script-policy.md)
+> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: open redirect, redirect hardening, allowlist, exact match, phishing, OAuth redirect_uri, token leak, navigation abuse, URL validation, local redirect
+retrieval-anchor-keywords: open redirect, redirect hardening, login redirect hardening, post-login redirect, callback hardening, allowlist, exact match, phishing, OAuth redirect_uri, token leak, navigation abuse, URL validation, local redirect, browser server boundary, federated login redirect, nested redirect, redirect destination validation, browser server boundary catalog, security readme browser server boundary
 
 ---
 
@@ -66,6 +69,8 @@ open redirect는 authorization code나 token leak의 보조 통로가 될 수 �
 - redirect_uri가 느슨하면 code가 새어 나간다
 - login completion이 외부로 튈 수 있다
 - phishing page가 우리 사이트처럼 보인다
+
+redirect를 막았다고 로그인 경계가 끝나는 것은 아니다. callback 이후 기존 세션을 그대로 재사용하면 fixation은 별도 축으로 남으므로, post-login hardening은 [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)과 함께 보는 편이 안전하다.
 
 ### 5. 검증은 문자열 비교만으로 끝나지 않는다
 

@@ -5,10 +5,15 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
+> - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+> - [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 > - [PID Limits, Process Table Exhaustion](./pid-limit-process-table-exhaustion.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
+> - [Open File Description, dup, fork, Shared Offsets](./open-file-description-dup-fork-shared-offsets.md)
+> - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 > - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
 
 > retrieval-anchor-keywords: fork, execve, copy-on-write, COW, vfork, address space, page duplication, child process, first write penalty
@@ -27,7 +32,7 @@
 - 큰 heap이나 캐시를 가진 프로세스는 fork 비용이 커진다
 - exec는 상태를 갈아엎기 때문에 안정적이지만 초기화 비용이 든다
 
-이 문서는 [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)와 [PID Limits, Process Table Exhaustion](./pid-limit-process-table-exhaustion.md)를 프로세스 생성 관점으로 묶는다.
+이 문서는 [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)와 [PID Limits, Process Table Exhaustion](./pid-limit-process-table-exhaustion.md)를 프로세스 생성 관점으로 묶는다. 반대로 `fork()` / `vfork()` / `posix_spawn()` / `exec()` / `clone()`의 역할 구분 자체가 먼저 필요하면 [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)을 먼저 보는 편이 안전하다.
 
 ## 깊이 들어가기
 
@@ -52,6 +57,7 @@
 `execve()`는 기존 주소 공간을 새 프로그램 이미지로 바꾼다.
 
 - 부모/자식 관계를 유지하되 코드와 메모리 이미지는 갈아탄다
+- 단, close-on-exec가 아닌 file descriptor는 새 이미지에도 남는다
 - 초기화 비용은 있지만 상태를 단순하게 만든다
 - shell wrapper, init 프로세스, worker exec 패턴에 중요하다
 

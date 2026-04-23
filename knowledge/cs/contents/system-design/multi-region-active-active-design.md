@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 여러 리전에서 동시에 서비스를 제공하면서도 지연, 장애, 충돌을 제어하는 글로벌 아키텍처를 설계한다.
 
-retrieval-anchor-keywords: multi-region active-active, regional failover, write locality, split brain, quorum, replication lag, data residency, conflict resolution, active-passive, rpo rto, global traffic routing
+retrieval-anchor-keywords: multi-region active-active, regional failover, write locality, split brain, quorum, replication lag, data residency, conflict resolution, active-passive, rpo rto, global traffic routing, disaster recovery drill, regional routing, evacuation control plane, global traffic failover
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,12 @@ retrieval-anchor-keywords: multi-region active-active, regional failover, write 
 > - [Distributed Cache 설계](./distributed-cache-design.md)
 > - [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)
 > - [Payment System Ledger, Idempotency, Reconciliation](./payment-system-ledger-idempotency-reconciliation-design.md)
+> - [Service Discovery / Health Routing 설계](./service-discovery-health-routing-design.md)
+> - [Backup, Restore, Disaster Recovery Drill 설계](./backup-restore-disaster-recovery-drill-design.md)
+> - [Stateful Workload Placement / Failover Control Plane 설계](./stateful-workload-placement-failover-control-plane-design.md)
+> - [Failure Injection / Resilience Validation Platform 설계](./failure-injection-resilience-validation-platform-design.md)
+> - [Global Traffic Failover Control Plane 설계](./global-traffic-failover-control-plane-design.md)
+> - [Read / Write Quorum & Staleness Budget 설계](./read-write-quorum-staleness-budget-design.md)
 
 ## 핵심 개념
 
@@ -133,6 +139,7 @@ active-active의 난제는 write conflict다.
 - failover drill
 
 완전한 split brain 회피는 어렵기 때문에, write 범위를 좁히는 것이 더 현실적이다.
+그리고 failover drill이 곧 restore drill을 대체하지는 않는다. 트래픽 우회와 데이터 복구는 다른 runbook으로 설계해야 한다.
 
 ## 실전 시나리오
 
@@ -232,4 +239,3 @@ public boolean canWrite(EntityType type) {
 ## 한 줄 정리
 
 Multi-region active-active는 글로벌 지연과 장애 대응을 개선하지만, 충돌 해결과 데이터 경계를 설계하지 않으면 가장 복잡한 분산 시스템이 된다.
-

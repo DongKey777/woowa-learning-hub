@@ -6,10 +6,12 @@
 
 > 관련 문서:
 > - [Reflection, Generics, Annotations](./reflection-generics-annotations.md)
-> - [JVM, GC, JMM](./4.md)
-> - [ClassLoader, Exception 설계, equals/hashCode/compareTo](./6.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
+> - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 > - [Spring Framework](../../spring/README.md)
 > - [Spring Boot 자동 구성](../../spring/spring-boot-autoconfiguration.md)
+
+retrieval-anchor-keywords: Java reflection cost, reflection overhead, MethodHandle vs reflection, reflection alternative, classpath scanning cost, runtime dynamic invocation, code generation vs reflection, annotation processing alternative, JIT unfriendly reflection, Spring reflection startup cost
 
 ---
 

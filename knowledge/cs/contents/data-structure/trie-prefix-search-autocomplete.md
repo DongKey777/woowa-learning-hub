@@ -5,12 +5,16 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [응용 자료 구조 개요](./applied-data-structures-overview.md)
 > - [HashMap 내부 구조](./hashmap-internals.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 > - [Skip List](./skip-list.md)
+> - [Radix Tree (Compressed Trie)](./radix-tree.md)
+> - [Adaptive Radix Tree](./adaptive-radix-tree.md)
+> - [Finite State Transducer](./finite-state-transducer.md)
 > - [Search 시스템 설계](../system-design/search-system-design.md)
 
-> retrieval-anchor-keywords: trie, prefix tree, digital search tree, retrieval tree, autocomplete, prefix search, top-k autocomplete, suggestion ranking, search-as-you-type, prefix frequency, radix tree
+> retrieval-anchor-keywords: trie, prefix tree, digital search tree, retrieval tree, autocomplete, prefix search, top-k autocomplete, suggestion ranking, search-as-you-type, prefix frequency, radix tree, adaptive radix tree, finite state transducer, fst
 
 ## 핵심 개념
 

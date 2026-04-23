@@ -1,4 +1,6 @@
 # Reflection, Generics, Annotations
+
+**난이도: 🔴 Advanced**
 > 자바 플랫폼의 메타프로그래밍 3대 축 -- 런타임 타입 정보 조작, 컴파일 타임 타입 안전성, 선언적 메타데이터
 
 ## 핵심 개념

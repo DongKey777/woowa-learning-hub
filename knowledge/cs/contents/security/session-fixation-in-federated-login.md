@@ -10,8 +10,16 @@
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 > - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Session Fixation, Clickjacking, CSP](./session-fixation-clickjacking-csp.md)
+> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: session fixation, federated login, login CSRF, session regeneration, callback, IdP, state, nonce, session fixation attack, authenticated session, Spring Security
+retrieval-anchor-keywords: session fixation, federated login, login CSRF, session regeneration, callback, IdP, state, nonce, session fixation attack, authenticated session, Spring Security, browser session coherence, login hardening path, post-login hardening, browser server boundary catalog, security readme browser server boundary
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 브라우저 login hardening 묶음으로 다시 돌아가려면 [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)에서 redirect, fixation, browser-visible credential 축을 한 번에 다시 고를 수 있다.
+- callback 이전 redirect 검증 축은 [Open Redirect Hardening](./open-redirect-hardening.md)으로 이어진다.
+- callback 이후 frame/script hardening까지 붙여 보려면 [Session Fixation, Clickjacking, CSP](./session-fixation-clickjacking-csp.md)로 이어진다.
 
 ---
 

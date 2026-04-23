@@ -10,6 +10,8 @@
 > - [Brownfield Strangler Org Model](./brownfield-strangler-org-model.md)
 > - [Brownfield Modularization Strategy](./brownfield-modularization-strategy.md)
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
+> - [Team Cognitive Load and Boundary Design](./team-cognitive-load-boundary-design.md)
+> - [Team APIs and Interaction Modes in Architecture](./team-apis-interaction-modes-architecture.md)
 
 > retrieval-anchor-keywords:
 > - Conway effect
@@ -69,6 +71,7 @@ Conway's Law는 "조직이 소프트웨어 구조를 닮는다"는 관찰이다.
 - 명확한 service catalog
 - ADR로 책임 기록
 - on-call과 ownership 일치
+- cognitive load review
 
 ### 4. 잘못된 조직 구조는 기술 부채가 된다
 

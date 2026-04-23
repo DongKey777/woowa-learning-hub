@@ -7,13 +7,19 @@
 > 이 주제의 IoC/DI 관점은 [IoC 컨테이너와 DI](./ioc-di-container.md)를, 프록시 기반 동작 원리는 [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)를 함께 보면 이해가 빨라진다.
 
 > 관련 문서:
+> - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
+> - [Spring Transaction Propagation: `MANDATORY` / `SUPPORTS` / `NOT_SUPPORTED` Boundaries](./spring-transaction-propagation-mandatory-supports-not-supported-boundaries.md)
+> - [Spring `TransactionTemplate` and Programmatic Transaction Boundaries](./spring-transactiontemplate-programmatic-transaction-boundaries.md)
+> - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
 > - [Spring Transaction Synchronization Callbacks and `afterCommit` Pitfalls](./spring-transaction-synchronization-aftercommit-pitfalls.md)
 > - [Spring Multiple Transaction Managers and Qualifier Boundaries](./spring-multiple-transaction-managers-qualifier-boundaries.md)
 > - [Spring Transactional Test Rollback Misconceptions](./spring-transactional-test-rollback-misconceptions.md)
+> - [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
 > - [Spring EventListener, TransactionalEventListener, and Outbox](./spring-eventlistener-transaction-phase-outbox.md)
+> - [Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`](./spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 
-retrieval-anchor-keywords: transaction boundary, propagation, rollback rules, isolation level, transaction manager, synchronization callback, afterCommit, savepoint, rollback-only, qualifier, test rollback
+retrieval-anchor-keywords: transaction boundary, service layer transaction boundary, application service, transactional placement, propagation, rollback rules, isolation level, transaction manager, synchronization callback, afterCommit, savepoint, rollback-only, qualifier, self invocation, test rollback
 
 ---
 

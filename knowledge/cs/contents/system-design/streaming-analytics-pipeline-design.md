@@ -2,7 +2,7 @@
 
 > 한 줄 요약: streaming analytics pipeline은 이벤트를 실시간으로 흡수해 윈도우 집계, 세션화, 이상 탐지, 근사 통계를 만드는 데이터 처리 시스템이다.
 
-retrieval-anchor-keywords: streaming analytics, event time, watermark, window aggregation, sessionization, approximate count, heavy hitters, count min sketch, hyperloglog, stream processor
+retrieval-anchor-keywords: streaming analytics, event time, watermark, window aggregation, sessionization, approximate count, heavy hitters, count min sketch, hyperloglog, stream processor, state store, checkpoint recovery, analytics late data reconciliation
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,8 @@ retrieval-anchor-keywords: streaming analytics, event time, watermark, window ag
 > - [HyperLogLog](../data-structure/hyperloglog.md)
 > - [Event Bus Control Plane 설계](./event-bus-control-plane-design.md)
 > - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
+> - [Stateful Stream Processor State Store / Checkpoint Recovery 설계](./stateful-stream-processor-state-store-checkpoint-recovery-design.md)
+> - [Analytics Late Data Reconciliation 설계](./analytics-late-data-reconciliation-design.md)
 
 ## 핵심 개념
 
@@ -100,6 +102,7 @@ Event Source
 
 완전한 exactly-once는 비용이 크다.  
 실무에서는 재처리 가능성과 idempotency를 같이 설계한다.
+특히 window, join, dedup이 많은 job은 checkpoint 비용과 restore 시간을 별도 state store 관점에서 봐야 한다.
 
 ### 7. sinks and serving
 
@@ -195,4 +198,3 @@ public void onEvent(StreamEvent event) {
 ## 한 줄 정리
 
 Streaming analytics pipeline은 실시간 이벤트에서 윈도우 집계와 근사 통계를 계산해 대시보드, 알림, 분석 싱크로 흘려보내는 시스템이다.
-

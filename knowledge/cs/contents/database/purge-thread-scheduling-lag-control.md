@@ -13,6 +13,7 @@ retrieval-anchor-keywords: purge thread scheduling, purge lag, innodb_purge_thre
   - [Undo Tablespace Truncation and Purge Debt](./undo-tablespace-truncation-purge-debt.md)
   - [Change Buffer, Purge, History List Length](./change-buffer-purge-history-length.md)
   - [Redo Log, Undo Log, Checkpoint, Crash Recovery](./redo-log-undo-log-checkpoint-crash-recovery.md)
+  - [Purge Backlog Remediation, Throttling, and Recovery Playbook](./purge-backlog-remediation-throttle-playbook.md)
 
 purge thread는 undo chain에서 더 이상 필요한 과거 버전을 정리하는 백그라운드 작업자다.  
 이 작업이 밀리면 history list length가 커지고, undo debt와 읽기 비용이 같이 증가한다.

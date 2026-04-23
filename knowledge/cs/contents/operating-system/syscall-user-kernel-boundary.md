@@ -1,5 +1,7 @@
 # 시스템 콜과 User-Kernel Boundary
 
+**난이도: 🔴 Advanced**
+
 > 운영체제와 성능 면접에서 깊게 들어가기 좋은 주제 정리
 
 <details>

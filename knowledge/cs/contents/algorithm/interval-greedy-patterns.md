@@ -1,10 +1,30 @@
 # Interval Greedy Patterns
 
 > 한 줄 요약: 구간 문제는 시작점보다 끝점 기준이 더 중요할 때가 많고, 그때 greedy가 강력해진다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **비겹침 회의 선택 / 예약 충돌 제거 / interval scheduling 패턴**을 다루는 deep dive다.
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서: [알고리즘 기본](./basic.md)
+> 관련 문서:
+> - [탐욕 / Greedy 알고리즘 개요](./greedy.md)
+> - [정렬 알고리즘](./sort.md)
+> - [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)
+> - [Interval Tree](../data-structure/interval-tree.md)
+> - [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)
+> - [Sliding Window Patterns](./sliding-window-patterns.md)
+> - [두 포인터 (two-pointer)](./two-pointer.md)
+>
+> retrieval-anchor-keywords: interval greedy, interval scheduling, activity selection, activity selection problem, interval scheduling maximization, interval greedy proof, activity selection proof, exchange argument for interval scheduling, finish-time greedy proof, meeting rooms i, can attend all meetings, meeting attendance, non-overlapping intervals, maximize non-overlapping intervals, erase overlap intervals, overlap removal, schedule conflict, reservation conflict, calendar booking feasibility, timeline overlap feasibility, end time sort, earliest finish time, earliest finishing interval, finish-time greedy, minimum arrows to burst balloons, interval merge vs interval scheduling, interval vs sliding window, meeting rooms i vs ii boundary, 회의 참석 가능 여부, 구간 스케줄링, 구간 겹침 제거, 일정 충돌 제거, 겹치지 않는 회의 선택, 끝나는 시간 기준 정렬
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `substring`, `subarray`, `최근 k개`처럼 원래 순서를 유지한 연속 구간을 밀어야 하면 [Sliding Window Patterns](./sliding-window-patterns.md)로 가야 한다.
+- 정렬 배열의 양끝 관계를 줄이는 문제라면 [두 포인터 (two-pointer)](./two-pointer.md)가 더 직접적이다.
+- 끝점 정렬과 시작점 정렬이 왜 다른지 감이 약하면 [정렬 알고리즘](./sort.md)에서 정렬을 전처리로 쓰는 감각을 먼저 다시 잡는 편이 좋다.
+- `meeting rooms II`, `최소 몇 개 방 필요`, `최대 동시성`처럼 겹침 수 자체를 세야 하면 [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)으로 가야 한다.
+- 새 예약이 계속 들어오고 `insert -> overlap query`가 반복되면 [Interval Tree](../data-structure/interval-tree.md)나 [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)처럼 자료구조 쪽 라우트가 맞다.
+- greedy 선택 근거 자체가 낯설면 [탐욕 / Greedy 알고리즘 개요](./greedy.md)에서 먼저 판단 기준과 증명 어휘를 다시 잡는 편이 좋다.
 
 ---
 
@@ -12,14 +32,41 @@
 
 구간 문제는 보통 다음 패턴으로 나온다.
 
-- 회의실 배정
+- 최대 비겹침 회의 선택
 - 구간 겹침 제거
-- 최소 개수의 구간 선택
-- 최대 비겹침 선택
+- meeting rooms I / can attend all meetings
+- 최소 화살표로 interval 커버
+
+여기서 말하는 `interval`은 배열 안의 연속 부분구간 window가 아니라, 각 원소가 이미 `start/end`를 가진 **독립 일정 레코드**라는 점이 중요하다.
 
 이 문제들의 공통점은 "현재 선택이 미래 선택을 막지 않도록" 해야 한다는 점이다.
 
 그래서 대부분 `시작점`이 아니라 `끝점` 기준 정렬이 핵심이다.
+
+## 자주 헷갈리는 패턴 구분
+
+| 패턴 | 유지하는 상태 | 대표 질문 | 구분 포인트 |
+|---|---|---|---|
+| Interval Greedy | 정렬된 interval 집합에서 선택/제거 기준 | "최대 몇 개를 안 겹치게 고르나?", "몇 개를 제거해야 하나?" | `meeting`, `reservation`, `calendar`, `end time`, `overlap removal`처럼 독립 일정들의 선택이 핵심이다 |
+| [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md) | 타임라인 이벤트의 누적 개수 | "동시에 몇 개가 겹치나?", "회의실이 몇 개 필요하나?" | 시작/끝 이벤트를 쪼개서 동시성 개수를 센다 |
+| Sliding Window | 원래 순서를 유지한 연속 구간 `[left, right]` | "부분배열/부분문자열을 밀며 조건을 유지할 수 있나?" | `subarray`, `substring`, `recent k`처럼 중간 원소를 빼지 않는 연속성이 핵심이다 |
+
+- `meeting room`, `erase overlap intervals`, `예약 충돌`, `일정 배정`은 보통 interval greedy나 overlap counting 계열이다.
+- `minimum window substring`, `길이 k 구간`, `최근 k개 합`은 sliding window 쪽 신호다.
+- 구간들을 끝점 기준으로 다시 정렬해도 의미가 유지된다면 window 스캔보다 interval 패턴일 가능성이 높다.
+
+## 검색 앵커 / 문제 이름 매핑
+
+| 문제 표현 | 보통 라우트 | 빠른 구분 기준 |
+|---|---|---|
+| `activity selection`, `non-overlapping intervals`, `erase overlap intervals`, `최대 몇 개 회의를 넣나` | 끝점 기준 greedy | 최대한 많이 남기거나 최소한만 제거하는 선택 문제다 |
+| `meeting rooms II`, `minimum meeting rooms`, `회의실 최소 개수`, `강의실 배정`, `railway platform` | [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md) | 어떤 interval을 고를지가 아니라 동시 몇 개가 겹치는지가 핵심이다 |
+| `minimum arrows to burst balloons`, `풍선 터뜨리기` | 끝점 기준 greedy 변형 | 한 점이나 한 자원으로 여러 interval을 동시에 커버한다 |
+| `merge intervals`, `insert interval`, `구간 병합` | 시작점 기준 정렬 + merge | 안 겹치게 고르는 게 아니라 겹치는 구간을 합친다 |
+| `calendar booking`, `online reservation insert`, `새 예약이 들어올 때마다 겹치나` | [Interval Tree](../data-structure/interval-tree.md) / [Disjoint Interval Set](../data-structure/disjoint-interval-set.md) | 한 번 정렬해서 끝나는 batch가 아니라 insert/query workload다 |
+
+- 같은 `meeting` 계열 표현이 나와도 질문이 `최대로 많이 배정`인지, `최소 몇 개 방 필요`인지에 따라 greedy selection과 overlap counting이 갈린다.
+- `minimum arrows`처럼 "선택한 한 점이 여러 구간을 같이 덮는다"는 표현이 보이면 일반 meeting scheduling보다 커버형 greedy로 읽는 편이 맞다.
 
 ---
 
@@ -44,16 +91,24 @@ Arrays.sort(intervals, (a, b) -> {
 
 이 부등호 하나 때문에 정답이 달라진다.
 
-### 3. 스위핑과의 연결
+### 3. 동시성 계산은 별도 라우트다
 
-구간 문제는 정렬 후 한 번 훑는 sweep line과도 연결된다.
-특히 "동시에 몇 개가 겹치는가"를 구할 때는 greedy와 sweep이 섞인다.
+구간 문제 전부가 greedy는 아니다.
+특히 "동시에 몇 개가 겹치는가"를 묻는 순간에는 [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)처럼 event 누적 라우트로 분리해야 한다.
+
+### 4. online insert/query는 자료구조 문제다
+
+interval scheduling은 보통 모든 interval이 이미 주어진 상태에서 한 번 정렬하고 답을 낸다.
+반대로 예약 API처럼 새 interval이 계속 들어오고 매번 `겹치나?`, `넣어도 되나?`를 물으면 greedy 정렬을 반복하는 발상 자체가 맞지 않는다.
+
+이때는 [Interval Tree](../data-structure/interval-tree.md)나 [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)처럼
+insert와 query를 함께 감당하는 자료구조로 넘어가야 한다.
 
 ---
 
 ## 실전 시나리오
 
-### 시나리오 1: 회의실 배정
+### 시나리오 1: 최대 비겹침 회의 선택
 
 가장 빨리 끝나는 회의를 먼저 고르면 더 많은 회의를 넣을 수 있다.
 
@@ -69,6 +124,11 @@ Arrays.sort(intervals, (a, b) -> {
 
 구간 문제를 DFS로 풀려다 보면, 가능한 조합 수가 급격히 늘어난다.
 끝점 기준 정렬이 되는지 먼저 봐야 한다.
+
+### 시나리오 5: sliding window로 착각하는 경우
+
+일정 목록을 시간순으로 보더라도, 문제의 본질이 "연속한 몇 개의 일정"이 아니라 "서로 안 겹치게 어떤 일정들을 고를까"라면 sliding window가 아니다.
+중간 interval을 건너뛰어도 되거나 끝점 기준 재정렬이 가능하면 interval greedy 쪽 라우트가 맞다.
 
 ---
 
@@ -105,6 +165,7 @@ public static int maxNonOverlapping(int[][] intervals) {
 | 끝점 정렬 greedy | 단순하고 빠름 | 조건이 안 맞으면 실패 | 최대 비겹침/배정 |
 | 시작점 정렬 | 직관적이다 | 최적 보장 안 됨 | 구간 병합 보조 |
 | sweep line | 동시성 계산에 강함 | 이벤트 분해가 필요 | 겹침 수/최대 동시성 |
+| Sliding Window | 연속 인덱스 스캔에 강하다 | interval 선택 문제에는 맞지 않는다 | 부분배열/부분문자열, 최근 `k`개 |
 | DP | 일반성이 높다 | 느릴 수 있다 | greedy 성립이 안 될 때 |
 
 interval 문제는 "정렬만 하면 끝"이 아니라,
@@ -118,7 +179,7 @@ interval 문제는 "정렬만 하면 끝"이 아니라,
 > 의도: greedy 선택 근거 확인
 > 핵심: 빨리 끝나는 구간이 이후 선택 공간을 가장 많이 남긴다
 
-> Q: 구간 병합과 회의실 배정은 어떻게 다른가요?
+> Q: 구간 병합과 최대 비겹침 회의 선택은 어떻게 다른가요?
 > 의도: 유사 패턴 구분 확인
 > 핵심: 병합은 합치기, 배정은 최대 비겹침 선택이다
 
@@ -131,4 +192,3 @@ interval 문제는 "정렬만 하면 끝"이 아니라,
 ## 한 줄 정리
 
 interval greedy는 끝점 기준 정렬 후 현재 선택이 미래 선택을 얼마나 살리는지 보는 패턴이다.
-

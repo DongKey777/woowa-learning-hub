@@ -1,5 +1,7 @@
 # Gap Lock과 Next-Key Lock
 
+**난이도: 🔴 Advanced**
+
 > 신입 백엔드 개발자가 InnoDB 동시성 제어를 설명할 때 필요한 핵심 정리
 
 <details>
@@ -16,6 +18,8 @@
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+retrieval-anchor-keywords: gap lock, next-key lock, phantom read prevention, select for update insert blocked, range lock, repeatable read locking, InnoDB gap locking, insert intention wait, record lock vs gap lock, locking range by index, overlap enforcement fallback, MySQL overlap locking
 
 ## 왜 중요한가
 
@@ -155,6 +159,7 @@ VALUES (15, 'RESERVED');
 
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
+- [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md)
 - [Deadlock Case Study](./deadlock-case-study.md)
 
 ---

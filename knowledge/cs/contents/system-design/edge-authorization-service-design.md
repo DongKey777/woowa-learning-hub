@@ -10,6 +10,7 @@ retrieval-anchor-keywords: edge authorization, authz service, policy decision po
 > - [인증과 인가의 차이](../security/authentication-vs-authorization.md)
 > - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
 > - [Session Store Design at Scale](./session-store-design-at-scale.md)
+> - [Edge Verifier Claim-Skew Fallback 설계](./edge-verifier-claim-skew-fallback-design.md)
 > - [Entitlement / Quota 설계](./entitlement-quota-design.md)
 > - [Audit Logging for Auth / AuthZ Traceability](../security/audit-logging-auth-authz-traceability.md)
 > - [Authorization Caching / Staleness](../security/authorization-caching-staleness.md)
@@ -214,4 +215,3 @@ public AuthorizationDecision decide(AuthContext ctx) {
 ## 한 줄 정리
 
 Edge authorization service는 요청이 백엔드에 도달하기 전에 권한, 자원 소유권, tenant scope를 빠르게 판단하는 엣지 정책 엔진이다.
-

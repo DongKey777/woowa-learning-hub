@@ -10,8 +10,14 @@
 > - [Spring Resilience4j: Retry, CircuitBreaker, Bulkhead](./spring-resilience4j-retry-circuit-breaker-bulkhead.md)
 > - [Spring Observability with Micrometer Tracing](./spring-observability-micrometer-tracing.md)
 > - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](../network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](../network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
+> - [Connection Pool Starvation, Stale Idle Reuse, Debugging](../network/connection-pool-starvation-stale-idle-reuse-debugging.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](../network/upstream-queueing-connection-pool-wait-tail-latency.md)
+> - [Service Mesh Local Reply, Timeout, Reset Attribution](../network/service-mesh-local-reply-timeout-reset-attribution.md)
+> - [Network, Spring Request Lifecycle, Timeout, Disconnect Bridge](../network/network-spring-request-lifecycle-timeout-disconnect-bridge.md)
 
-retrieval-anchor-keywords: WebClient, connection pool, Reactor Netty, response timeout, connect timeout, pending acquire timeout, max connections, proxy timeout, http client tuning
+retrieval-anchor-keywords: WebClient, connection pool, Reactor Netty, response timeout, connect timeout, pending acquire timeout, max connections, proxy timeout, http client tuning, connection pool wait, stale idle reuse, upstream queueing, service mesh local reply
 
 ## 핵심 개념
 

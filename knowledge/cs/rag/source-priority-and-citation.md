@@ -1,6 +1,15 @@
 # Source Priority and Citation
 
 > 한 줄 요약: 질문 유형마다 먼저 볼 문서와 마지막에 인용할 문서를 나눠야 RAG가 덜 흔들린다.
+>
+> 관련 문서:
+> - [RAG Design](./README.md)
+> - [Chunking and Metadata](./chunking-and-metadata.md)
+> - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
+> - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
+
+> retrieval-anchor-keywords: source priority, citation guide, citation policy, evidence ranking, primary source, secondary source, tertiary source, asset evidence qa, auxiliary asset filename audit, img asset evidence, code asset evidence, local html asset evidence, reverse-link evidence hygiene
 
 ## 우선순위 원칙
 
@@ -31,6 +40,7 @@
 - `img/`
 
 이들은 설명 보강용이다. 답변 본문보다 증거로 쓰는 편이 낫다.
+`img/`, `code/`, local HTML `src` / `href` / `srcset`를 증거로 붙일 때는 path 자체가 QA에 안전한지 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)으로 먼저 확인해 두면 이후 reverse-link wave에서 덜 흔들린다.
 
 ## 질문별 우선순위
 
@@ -79,8 +89,8 @@
 ## 추천 인용 문구 패턴
 
 ```markdown
-이 부분은 [인덱스와 실행 계획](../contents/database/index-and-explain.md)와
-[쿼리 튜닝 체크리스트](../contents/database/query-tuning-checklist.md)를 같이 보면 된다.
+이 부분은 [인덱스와 실행 계획] (../contents/database/index-and-explain.md)와
+[쿼리 튜닝 체크리스트] (../contents/database/query-tuning-checklist.md)를 같이 보면 된다.
 ```
 
 ## 실전 기준
@@ -89,6 +99,7 @@
 - 원리와 trade-off를 말할 때는 deep dive를 인용한다.
 - 장애와 운영을 말할 때는 실전 시나리오와 `SENIOR-QUESTIONS.md`를 인용한다.
 - 코드 조각은 설명보다 짧고 정확해야 한다. 길면 보조 링크로 넘긴다.
+- repo-local `img/`·`code/`나 local HTML asset form을 근거로 인용할 때는 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md) 기준으로 target 존재 여부와 filename hygiene를 먼저 고정한다.
 
 ## 한 줄 정리
 

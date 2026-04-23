@@ -2,13 +2,18 @@
 
 > 한 줄 요약: Ports and Adapters는 아키텍처 경계의 규칙이고, GoF 어댑터는 클래스 수준 변환이다. 둘을 구분해야 코드 경계가 흐려지지 않는다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Adapter (어댑터) 패턴](./adapter.md)
 > - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+> - [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md)
+> - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
+> - [Adapter Chaining Smells](./adapter-chaining-smells.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [안티 패턴](./anti-pattern.md)
+
+> retrieval-anchor-keywords: ports and adapters, hexagonal architecture, hexagonal vs adapter pattern, boundary architecture, clean architecture boundary, inbound port, outbound port, driving adapter, driven adapter, application service port, interface translation vs boundary architecture, anti-corruption boundary
 
 ---
 
@@ -23,13 +28,11 @@ GoF Adapter와 이름은 비슷하지만 역할은 다르다.
 - Port: 애플리케이션이 외부에 기대는 계약이다
 - Adapter: 그 계약을 구현하는 인프라 코드다
 
-### Retrieval Anchors
+### 질문 분기
 
-- `hexagonal architecture`
-- `driving adapter`
-- `driven adapter`
-- `application service port`
-- `anti-corruption boundary`
+- 메서드 시그니처 하나를 맞추거나 SDK wrapper가 필요하면 [Adapter (어댑터) 패턴](./adapter.md)이나 [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md) 범주다.
+- inbound/outbound port, controller adapter, repository adapter처럼 경계와 의존성 방향이 핵심이면 이 문서와 [Hexagonal Ports](./hexagonal-ports-pattern-language.md)를 본다.
+- port는 맞지만 adapter, translator, facade가 너무 많아 책임이 흐리면 [Adapter Chaining Smells](./adapter-chaining-smells.md)나 [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)로 내려간다.
 
 ---
 
@@ -54,6 +57,8 @@ Ports and Adapters는 그보다 큰 범위에서 **의존성 방향을 뒤집는
 | 범위 | 클래스/객체 수준 | 아키텍처 수준 |
 | 목적 | 호환성 확보 | 경계 분리 |
 | 중심 | 변환 | 의존성 역전 |
+
+둘은 배타적이지 않다. Ports and Adapters 구조 안쪽의 boundary마다 GoF Adapter 하나가 놓일 수 있다. 혼동 포인트는 "adapter"라는 이름이 같다는 것뿐이고, 역할 층위는 다르다.
 
 ### 3. 패키지 경계가 설계의 절반이다
 
@@ -194,4 +199,3 @@ public class PgPaymentAdapter implements PaymentPort {
 ## 한 줄 정리
 
 Ports and Adapters는 도메인과 기술의 경계를 고정하는 아키텍처이고, GoF Adapter는 그 경계 안팎의 인터페이스를 맞추는 도구다.
-

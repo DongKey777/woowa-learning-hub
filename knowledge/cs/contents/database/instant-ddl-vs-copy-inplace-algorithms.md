@@ -11,6 +11,8 @@ retrieval-anchor-keywords: instant ddl, inplace algorithm, copy algorithm, alter
 - 관련 문서:
   - [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md)
   - [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
+  - [Destructive Schema Cleanup, Column Retirement, and Contract-Phase Safety](./destructive-schema-cleanup-column-retirement.md)
+  - [Index Maintenance Window, Rollout, and Fallback Playbook](./index-maintenance-window-rollout-playbook.md)
   - [Clustered Index Locality](./clustered-index-locality.md)
   - [Page Split, Merge, and Fill Factor](./page-split-merge-fill-factor.md)
 

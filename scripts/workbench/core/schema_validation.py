@@ -20,21 +20,30 @@ def _load_schema(name: str) -> dict:
     return json.loads(_schema_path(name).read_text(encoding="utf-8"))
 
 
+_TYPE_MAPPING: dict[str, tuple[type, ...]] = {
+    "string": (str,),
+    "integer": (int,),
+    "number": (int, float),
+    "boolean": (bool,),
+    "array": (list,),
+    "object": (dict,),
+    "null": (type(None),),
+}
+
+
 def _check_type(value, expected) -> bool:
     if isinstance(expected, list):
         return any(_check_type(value, item) for item in expected)
 
-    mapping = {
-        "string": str,
-        "integer": int,
-        "boolean": bool,
-        "array": list,
-        "object": dict,
-        "null": type(None),
-    }
-    if expected not in mapping:
-        return True
-    return isinstance(value, mapping[expected])
+    if expected not in _TYPE_MAPPING:
+        raise SchemaValidationError(f"unknown schema type {expected!r}")
+
+    types = _TYPE_MAPPING[expected]
+    # bool is a subclass of int in Python — exclude it from "integer"/"number"
+    # so a stray True/False does not satisfy a numeric field.
+    if expected in ("integer", "number") and isinstance(value, bool):
+        return False
+    return isinstance(value, types)
 
 
 def _validate(schema: dict, value, path: str = "$") -> None:
@@ -70,6 +79,17 @@ def _validate(schema: dict, value, path: str = "$") -> None:
         for field, field_schema in properties.items():
             if field in value:
                 _validate(field_schema, value[field], f"{path}.{field}")
+
+        # additionalProperties: false closes the dict to extra keys. We only
+        # honor this when the schema explicitly opts in — top-level coach-run
+        # schemas remain open-world by default to avoid breaking optional
+        # fields that grow over time.
+        if schema.get("additionalProperties") is False:
+            extras = sorted(set(value.keys()) - set(properties.keys()))
+            if extras:
+                raise SchemaValidationError(
+                    f"{path}: unexpected properties {extras}"
+                )
 
     if isinstance(value, list):
         item_schema = schema.get("items")

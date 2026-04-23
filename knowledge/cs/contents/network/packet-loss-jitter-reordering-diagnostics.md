@@ -10,6 +10,7 @@
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
 > - [MTU, Fragmentation, MSS, Blackhole](./mtu-fragmentation-mss-blackhole.md)
 > - [Nagle 알고리즘과 Delayed ACK](./nagle-delayed-ack-small-packet-latency.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: packet loss, jitter, reordering, retransmission, out-of-order, tail latency, p95, p99, tc netem, tcpdump, ss -ti
 

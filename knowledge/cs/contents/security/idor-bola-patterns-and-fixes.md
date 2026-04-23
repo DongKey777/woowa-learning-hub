@@ -6,12 +6,13 @@
 
 > 관련 문서:
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
+> - [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [BFF Boundaries and Client-Specific Aggregation](../software-engineering/bff-boundaries-client-specific-aggregation.md)
 > - [Multi-tenant SaaS Isolation Design](../system-design/multi-tenant-saas-isolation-design.md)
 
-retrieval-anchor-keywords: IDOR, BOLA, broken object level authorization, broken access control, object ownership, resource id, path parameter, tenant isolation, horizontal privilege escalation
+retrieval-anchor-keywords: IDOR, BOLA, broken object level authorization, broken access control, object ownership, resource id, path parameter, tenant isolation, horizontal privilege escalation, ownership check primer, scope is not ownership, role is not ownership, role vs scope vs ownership
 
 ---
 

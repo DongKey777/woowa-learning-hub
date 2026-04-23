@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 분산 환경에서 “유일해야 한다”는 요구는 단순한 생성 문제가 아니라, 충돌을 언제 발견하고 어떻게 회수할지의 문제다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Hot Row Contention과 Counter Sharding](./hot-row-contention-counter-sharding.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
-Retrieval anchors: `distributed uniqueness`, `id allocation`, `unique constraint`, `ULID`, `snowflake`, `ticket pool`
+retrieval-anchor-keywords: distributed uniqueness, id allocation, unique constraint, ULID, snowflake, ticket pool
 
 ## 핵심 개념
 

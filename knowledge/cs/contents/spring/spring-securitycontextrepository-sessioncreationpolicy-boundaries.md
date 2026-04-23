@@ -1,0 +1,271 @@
+# Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries
+
+> 한 줄 요약: `SessionCreationPolicy.STATELESS`만 붙인다고 곧바로 무상태가 되는 것은 아니며, 실제 인증 상태의 적재/복원은 `SecurityContextRepository`와 숨은 세션 생성 지점이 결정한다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
+> - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
+> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)
+> - [Spring SecurityContext Propagation across Async / Reactive Boundaries](./spring-securitycontext-propagation-async-reactive-boundaries.md)
+> - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+> - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+> - [Session Revocation at Scale](../security/session-revocation-at-scale.md)
+> - [Revocation Propagation Lag / Debugging](../security/revocation-propagation-lag-debugging.md)
+> - [Session Inventory UX / Revocation Scope Design](../security/session-inventory-ux-revocation-scope-design.md)
+> - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
+> - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
+
+retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, hidden session beginner bridge, session basics to SecurityContextRepository, why JSESSIONID appears, cookie 있는데 다시 로그인, next request anonymous after login
+
+## 입문 브리지
+
+`SessionCreationPolicy`, `SecurityContextRepository`, `hidden JSESSIONID`는 입문자에게 갑자기 난이도가 뛰는 지점이다.
+아래 순서로 읽으면 "왜 세션이 생겼지?"와 "왜 다음 요청에서 다시 익명이지?"를 같은 축에서 설명할 수 있다.
+
+- `cookie`, `session`, `JWT` 기본 차이부터 다시 잡아야 하면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) -> [Spring Security 아키텍처](./spring-security-architecture.md) 순으로 먼저 올라온다.
+- 로그인 redirect 자체가 꼬여 `SavedRequest` loop처럼 보이면 이 문서보다 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 먼저 본다.
+- `STATELESS`인데 `JSESSIONID`가 생긴다, 로그인 성공 직후 다음 요청이 다시 익명이다, `SecurityContextHolder`에 넣었는데 유지가 안 된다는 질문이면 이 문서가 맞다.
+- browser cookie는 남아 있는데 서버 세션이나 token translation을 못 찾아 `hidden session mismatch`, `cookie는 있는데 session missing`처럼 보이면 이 문서 다음에 [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)를 붙여 outage/translation 경계까지 내려간다.
+
+## 핵심 개념
+
+Spring Security는 요청마다 현재 인증 정보를 `SecurityContext`로 다룬다.
+
+여기서 중요한 질문은 두 가지다.
+
+1. 요청 시작 시 인증 정보를 어디서 읽어 오는가
+2. 요청 종료 시 인증 정보를 어디에 저장하는가
+
+이 책임을 쥔 것이 `SecurityContextRepository`다.
+
+반면 `SessionCreationPolicy`는 세션을 얼마나 만들고 활용할지에 대한 정책이다.
+
+즉 다음 둘은 같은 말이 아니다.
+
+- "세션을 안 쓰고 싶다"
+- "보안 컨텍스트를 어디에도 저장하지 않겠다"
+
+실무에서는 이 둘을 섞어 생각해서 무상태 API, form login, OAuth2 login, admin UI가 서로 꼬이는 경우가 많다.
+
+## 깊이 들어가기
+
+### 1. SecurityContext는 요청 단위로 로드되고 저장된다
+
+요청이 들어오면 Security는 현재 인증 상태를 repository에서 읽어 `SecurityContextHolder`에 올린다.
+
+요청이 끝나면 현재 상태를 다시 저장하거나 버린다.
+
+즉 인증은 단순히 "필터에서 한 번 성공했다"로 끝나지 않는다.
+
+- 다음 요청에서도 이어질 것인가
+- 이번 요청에서만 쓸 것인가
+- 아예 매 요청마다 토큰으로 다시 인증할 것인가
+
+이건 repository 전략에 달려 있다.
+
+### 2. `SessionCreationPolicy`는 세션 사용 태도를 정한다
+
+주요 정책 감각은 아래와 같다.
+
+| 정책 | 의미 |
+|---|---|
+| `ALWAYS` | 필요 여부와 관계없이 세션을 적극적으로 만든다 |
+| `IF_REQUIRED` | 필요할 때만 세션을 만든다 |
+| `NEVER` | 새 세션은 만들지 않지만, 이미 있으면 사용할 수 있다 |
+| `STATELESS` | Security 관점에서 세션을 만들거나 인증 저장소로 사용하지 않겠다는 의도가 강하다 |
+
+문제는 이 설정 하나만 보고 "우리 앱은 완전히 stateless다"라고 결론 내리기 쉽다는 점이다.
+
+실제로는 다른 구성 요소가 세션을 만들 수 있다.
+
+### 3. repository 선택이 실제 지속성 경계를 만든다
+
+대표적인 선택지는 다음처럼 이해하면 된다.
+
+- `HttpSessionSecurityContextRepository`: 인증 상태를 HTTP session에 저장한다
+- `NullSecurityContextRepository`: 요청 간 저장을 하지 않는다
+
+stateful browser app이라면 전자가 자연스럽다.
+
+반면 bearer token 기반 API라면 보통 매 요청마다 토큰을 다시 검증하고, 세션 repository를 두지 않는 편이 자연스럽다.
+
+핵심은 인증 성공 그 자체보다, **그 결과를 다음 요청까지 유지할지 여부**다.
+
+### 4. 숨은 세션 생성 지점을 같이 봐야 한다
+
+다음 기능은 보안이나 웹 계층에서 세션을 만들기 쉽다.
+
+- request cache
+- form login redirect 흐름
+- OAuth2 authorization request 저장
+- CSRF token 저장소
+- `@SessionAttributes` 같은 MVC 세션 사용
+
+즉 API 체인에 `STATELESS`를 설정해도, 다른 체인이나 웹 기능이 세션을 만들면 `JSESSIONID`가 보일 수 있다.
+
+그래서 "쿠키가 생겼다 = Security stateless 설정이 무시됐다"라고 단정하면 안 된다.
+
+먼저 **누가 세션을 만들었는지**를 분리해야 한다.
+
+### 5. API와 브라우저는 같은 체인으로 묶지 않는 편이 안전하다
+
+실무에서 가장 흔한 안정 패턴은 경로별 체인 분리다.
+
+- `/api/**`: bearer token, `STATELESS`, request cache 비활성화
+- `/app/**` 혹은 `/admin/**`: session 기반 인증, redirect 허용
+- `/oauth2/**`: 인증 핸드셰이크에 필요한 state 저장 허용
+
+이렇게 나누지 않으면 API가 로그인 redirect를 받거나, 브라우저 흐름이 stateless 설정 때문에 깨지기 쉽다.
+
+### 6. 직접 `SecurityContextHolder`만 건드리면 끝이 아니다
+
+custom filter나 login endpoint에서 아래처럼 인증 정보를 넣었다고 해도,
+
+```java
+SecurityContextHolder.getContext().setAuthentication(authentication);
+```
+
+그 상태가 다음 요청에도 남을지는 별개의 문제다.
+
+repository가 저장하지 않으면 다음 요청에서 다시 빈 컨텍스트로 시작할 수 있다.
+
+즉 `SecurityContextHolder`는 현재 요청의 실행 컨텍스트고, **영속화 경계는 repository**다.
+
+## 실전 시나리오
+
+### 시나리오 1: `STATELESS`인데도 `JSESSIONID` 쿠키가 생긴다
+
+원인 후보:
+
+- request cache가 동작했다
+- OAuth2 login state를 세션에 저장했다
+- MVC가 세션 속성을 만들었다
+
+이때는 먼저 세션 생성 주체를 나눠 봐야 한다.
+
+### 시나리오 2: 커스텀 로그인은 성공했는데 다음 요청에서 다시 익명 사용자다
+
+현재 요청에서는 `SecurityContextHolder`에 인증을 넣었지만, repository에 저장되지 않았을 수 있다.
+
+stateful 인증을 원했다면 저장 전략을 같이 구성해야 한다.
+
+### 시나리오 3: API와 admin UI를 한 체인에 넣었더니 응답이 이상하다
+
+API는 JSON 401을 기대하는데, admin UI용 로그인 redirect가 섞여 나올 수 있다.
+
+이는 예외 처리 문제가 아니라 체인과 컨텍스트 저장 전략이 섞인 것이다.
+
+### 시나리오 4: OAuth2 login 후에는 상태가 필요한데 전체 앱을 stateless로 밀어붙인다
+
+OAuth2 authorization code 흐름은 보통 state 저장이 필요하다.
+
+즉 로그인 핸드셰이크 구간과 인증 이후 API 구간은 같은 "무상태"로 다루기 어려울 수 있다.
+
+## Auth Session Troubleshooting Flow
+
+### 0. saved-request loop와 hidden-session 문제를 먼저 분리한다
+
+- 로그인 직후 다시 같은 보호 URL로 bounce된다면 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)에서 redirect 복귀를 먼저 본다.
+- redirect는 끝났는데 다음 요청에서 다시 익명이거나 숨은 `JSESSIONID`가 설명되지 않으면 이 문서에서 persistence 경계를 본다.
+
+### 1. 먼저 request entry 문제와 persisted session 문제를 분리한다
+
+- `302` login redirect, `SavedRequest` 복귀 꼬임, 예상 못 한 `JSESSIONID`는 먼저 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 본다.
+- 브라우저 cookie는 지워졌는데 BFF가 여전히 downstream token을 재사용한다면 [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)로 넘어가 browser session, provider refresh token, audience token cache를 분리한다.
+- logout 이후 일부 요청만 계속 통과하거나 region마다 tail이 다르면 [Session Revocation at Scale](../security/session-revocation-at-scale.md), [Revocation Propagation Lag / Debugging](../security/revocation-propagation-lag-debugging.md), [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)를 같이 본다.
+
+### 2. "현재 세션", "이 기기", "모든 기기" semantics는 Spring 바깥에서 완성된다
+
+Spring chain은 현재 요청과 세션 저장 경계를 설명하지만, 사용자-facing revoke 범위 naming은 별도 문제다. `logout all devices`나 device별 revoke semantics가 헷갈리면 [Session Inventory UX / Revocation Scope Design](../security/session-inventory-ux-revocation-scope-design.md)까지 이어서 보는 편이 빠르다.
+
+### 3. store 장애를 의심하기 전에 누가 세션을 만들었는지 확인한다
+
+stateless API에서 `JSESSIONID`가 보인다고 곧바로 session store 장애나 sticky routing 문제로 가면 자주 헛돈다. 먼저 request cache, OAuth2 state 저장, CSRF 저장소처럼 framework가 세션을 만든 경로를 끊고, 그 다음에야 replication lag나 revoke propagation을 보는 편이 정확하다.
+
+## 코드로 보기
+
+### stateless API 체인
+
+```java
+@Bean
+SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
+    return http
+        .securityMatcher("/api/**")
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .securityContext(context -> context
+            .securityContextRepository(new NullSecurityContextRepository())
+        )
+        .requestCache(request -> request.disable())
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .build();
+}
+```
+
+### stateful web 체인
+
+```java
+@Bean
+SecurityFilterChain webChain(HttpSecurity http) throws Exception {
+    return http
+        .securityMatcher("/app/**", "/login/**")
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+        )
+        .securityContext(context -> context
+            .securityContextRepository(new HttpSessionSecurityContextRepository())
+        )
+        .formLogin(Customizer.withDefaults())
+        .build();
+}
+```
+
+### manual authentication 이후 저장 경계 의식하기
+
+```java
+Authentication authentication = authenticationManager.authenticate(authRequest);
+SecurityContext context = SecurityContextHolder.createEmptyContext();
+context.setAuthentication(authentication);
+SecurityContextHolder.setContext(context);
+```
+
+이 코드는 "현재 요청"에는 효과가 있지만, 다음 요청까지 유지할지는 repository 전략에 달려 있다.
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| session 기반 저장 | 브라우저 UX가 단순하다 | 서버 상태와 세션 운영 비용이 든다 | 웹 UI, admin console |
+| stateless + token 재검증 | 수평 확장에 유리하다 | 토큰 폐기, 흐름 제어가 까다롭다 | API, 모바일, SPA 백엔드 |
+| 단일 체인 혼합 | 설정이 적다 | redirect, 저장 전략, 예외 계약이 섞인다 | 아주 작은 서비스 |
+| 경로별 체인 분리 | 경계가 명확하다 | 설정과 문서화가 늘어난다 | API + web 혼합 서비스 |
+
+핵심은 stateless를 어노테이션 한 줄이 아니라, **컨텍스트 저장 경계와 세션 생성 경로를 통제하는 설계**로 보는 것이다.
+
+## 꼬리질문
+
+> Q: `SessionCreationPolicy.STATELESS`만으로 완전한 무상태가 보장되지 않는 이유는 무엇인가?
+> 의도: 세션 생성 주체 분리 확인
+> 핵심: 다른 웹/보안 기능이 세션을 만들 수 있기 때문이다.
+
+> Q: `SecurityContextHolder`와 `SecurityContextRepository`의 역할 차이는 무엇인가?
+> 의도: 실행 컨텍스트와 지속성 경계 구분 확인
+> 핵심: 전자는 현재 요청의 컨텍스트, 후자는 요청 간 저장 전략이다.
+
+> Q: `NEVER`와 `STATELESS`의 차이는 무엇인가?
+> 의도: 세션 정책 세분화 이해 확인
+> 핵심: `NEVER`는 기존 세션을 사용할 수 있지만, `STATELESS`는 보안 상태 저장소로 세션을 쓰지 않겠다는 의도가 더 강하다.
+
+> Q: 왜 API와 OAuth2 login을 같은 체인으로 단순하게 묶기 어려운가?
+> 의도: 하이브리드 인증 흐름 이해 확인
+> 핵심: 로그인 핸드셰이크는 state가 필요할 수 있지만, API 요청은 stateless가 자연스럽기 때문이다.
+
+## 한 줄 정리
+
+Spring Security의 무상태성은 `SessionCreationPolicy` 한 줄이 아니라, `SecurityContextRepository`와 세션 생성 경로를 함께 통제할 때 비로소 성립한다.

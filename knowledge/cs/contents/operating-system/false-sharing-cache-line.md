@@ -7,7 +7,9 @@
 > 관련 문서:
 > - [CPU 캐시, 코히어런시, 메모리 배리어](./cpu-cache-coherence-memory-barrier.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
-> - [Java 동시성 유틸리티](../language/java/5.md)
+> - [Java 동시성 유틸리티](../language/java/java-concurrency-utilities.md)
+
+retrieval-anchor-keywords: false sharing, cache line bouncing, cache line contention, @Contended, padding to avoid false sharing, coherence traffic, hot counter cache line, ring buffer head tail contention, perf c2c, p99 latency from false sharing
 
 ---
 

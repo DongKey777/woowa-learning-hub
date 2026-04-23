@@ -2,8 +2,10 @@
 
 > 한 줄 요약: lease handoff는 “주인이 바뀐다”를 안전하게 넘겨주는 절차이고, 겹침 구간과 fencing 없이는 사고가 난다.
 
+**난이도: 🟡 Intermediate**
+
 관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Stale Lease Renewal Failure와 Fencing](./stale-lease-renewal-failure-fencing.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
-Retrieval anchors: `lease handoff`, `handoff protocol`, `ownership transfer`, `fencing token`, `grace period`
+retrieval-anchor-keywords: lease handoff, handoff protocol, ownership transfer, fencing token, grace period
 
 ## 핵심 개념
 

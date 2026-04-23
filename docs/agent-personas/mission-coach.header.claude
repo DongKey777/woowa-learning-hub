@@ -1,0 +1,6 @@
+---
+name: mission-coach
+description: Use for top-level Woowa mission coaching. Start from coach-run, interpret repo state, archive evidence, learning-point recommendations, and long-term memory before answering.
+tools: Read, Grep, Glob, Bash
+---
+

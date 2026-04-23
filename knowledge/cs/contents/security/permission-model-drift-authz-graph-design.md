@@ -5,13 +5,18 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+> - [Authorization Graph Caching](./authorization-graph-caching.md)
+> - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
+> - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 > - [Multi-tenant SaaS Isolation Design](../system-design/multi-tenant-saas-isolation-design.md)
+> - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: permission drift, authz graph, policy version, entitlement, role explosion, relationship-based access control, RBAC, ABAC, decision graph, policy engine, source of truth
+retrieval-anchor-keywords: permission drift, authz graph, policy version, entitlement, role explosion, relationship-based access control, RBAC, ABAC, decision graph, policy engine, source of truth, authorization graph cache, authorization graph caching, graph snapshot, graph snapshot version, relationship cache, relationship edge cache, delegated admin scope, tenant-scoped graph invalidation
 
 ---
 
@@ -62,11 +67,18 @@ graph 관점에서 보면:
 - tenant는 resource를 소유한다
 - role은 edge로 표현된다
 
+multi-tenant delegated admin은 graph가 필요한 대표 사례다.  
+누가 누구를 어느 tenant에서 대신 관리하는지까지 edge로 표현해야 하므로 [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)처럼 scope model을 같이 봐야 한다.  
+이 edge 변경이 캐시와 PEP까지 퍼지는 운영은 [Authorization Graph Caching](./authorization-graph-caching.md), [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md), [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)에서 이어서 본다.
+
 장점:
 
 - 권한의 출처를 추적하기 쉽다
 - drift를 비교하기 쉽다
 - 감사 로그와 설명 가능성이 좋아진다
+
+다만 graph를 source of truth로 세운 뒤 path cache나 edge cache를 얹으면 invalidation fan-out 자체가 새로운 drift 원인이 된다.  
+modeling 다음 운영 쟁점은 [Authorization Graph Caching](./authorization-graph-caching.md)에서 따로 본다.
 
 ### 4. policy version이 없으면 비교가 어렵다
 
@@ -77,6 +89,8 @@ graph 관점에서 보면:
 - incident 후 원인 분석이 느려진다
 
 그래서 policy version 또는 entitlement snapshot이 필요하다.
+
+graph-based authz를 쓴다면 policy version과 graph snapshot version을 분리해 기록하는 편이 좋다.
 
 ### 5. UI hiding은 보안이 아니다
 
@@ -114,6 +128,7 @@ graph 관점에서 보면:
 
 - permission version을 올린다
 - decision cache key에 version을 넣는다
+- graph snapshot version을 cache key에 같이 넣는다
 - drift detector로 UI/API/DB 정책을 비교한다
 
 ---

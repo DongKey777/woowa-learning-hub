@@ -1,5 +1,7 @@
 # API Versioning, Contract Testing, Anti-Corruption Layer
 
+**난이도: 🟡 Intermediate**
+
 > 외부와 연결된 시스템이 오래 살아남기 위해 필요한 "진화 전략"을 정리한 문서
 
 <details>
@@ -15,6 +17,17 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+> retrieval-anchor-keywords:
+> - API versioning
+> - URI versioning
+> - media type versioning
+> - backward compatibility
+> - contract testing
+> - anti-corruption layer
+> - ACL
+> - monolith to microservice
+> - 버전 관리
 
 ## 왜 이 주제가 중요한가
 

@@ -5,9 +5,14 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Command Handler Pattern](./command-handler-pattern.md)
+> - [Command Bus Pattern](./command-bus-pattern.md)
+> - [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
+> - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
-> - [전략 (Strategy)](./strategy-pattern.md)
 > - [안티 패턴](./anti-pattern.md)
+
+retrieval-anchor-keywords: command pattern, command object, undo redo command, command queue, command history stack, invoker receiver, retryable job command, text editor undo, queued work item, command vs event
 
 ---
 

@@ -1,12 +1,35 @@
 # Adapter (어댑터) 패턴 🟢 Basic
 
+**난이도: 🟡 Intermediate**
+
 > 호환되지 않는 인터페이스를 가진 객체들이 함께 동작할 수 있게 중간 번역기를 끼워 넣는 패턴
+
+> 관련 문서:
+> - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+> - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+> - [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md)
+> - [Adapter Chaining Smells](./adapter-chaining-smells.md)
+> - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
+> - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
+> - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
+> - [Composition over Inheritance](./composition-over-inheritance-practical.md)
+
+> retrieval-anchor-keywords: adapter pattern, classic adapter, gof adapter, 어댑터 패턴, classic gof wrapper, incompatible interface wrapper, interface translation layer, signature mismatch wrapper, method name translation, wire format translation, request response format conversion, legacy sdk integration, third party client wrapper, xml to json wrapper, target adaptee translation, method signature mismatch, object adapter vs class adapter, spring handleradapter, adapter vs facade vs proxy, adapter vs bridge, interface translation vs provider abstraction, classic adapter vs ports and adapters
 
 ## 핵심 개념
 
 어댑터 패턴은 **기존 코드를 수정하지 않고**, 서로 다른 인터페이스를 가진 클래스를 연결하는 구조 패턴이다. 해외여행에서 돼지코(전원 어댑터)를 꽂듯이, 이미 존재하는 코드의 인터페이스를 클라이언트가 기대하는 형태로 변환한다.
 
 **문제를 먼저 보자**: 외부 라이브러리를 도입했는데 우리 시스템의 인터페이스와 메서드 시그니처가 다르다. 외부 코드를 수정할 수 없고, 우리 코드도 수십 곳에서 기존 인터페이스를 쓰고 있다. 이때 자연스럽게 나오는 구조가 어댑터다.
+
+이 문서에서 `adapter`는 **classic GoF Adapter**를 뜻한다. `inbound/outbound adapter`, `ports and adapters`, `hexagonal architecture`처럼 아키텍처 경계를 말하는 문맥이면 [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md), [Hexagonal Ports](./hexagonal-ports-pattern-language.md)로 내려가야 한다.
+
+### 질문 분기
+
+- `adapter pattern`, `classic adapter`, `GoF adapter`, `메서드 이름이 다르다`, `파라미터 타입이 안 맞는다`, `XML -> JSON`, `SDK wrapper`, `target/adaptee`처럼 인터페이스 번역이 핵심이면 이 문서가 맞다.
+- `inbound adapter`, `outbound adapter`, `port`, `use case contract`, `hexagonal architecture`, `ports and adapters`처럼 경계와 의존성 방향이 핵심이면 [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md), [Hexagonal Ports](./hexagonal-ports-pattern-language.md)로 간다.
+- `S3/GCS/local` 같은 구현체와 `image/document` 같은 추상화 축이 함께 늘어나는 문제면 [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)로 간다.
+- `외부 용어를 내부 도메인으로 격리`, `레거시 응답 의미 정리`, `호출 순서 단순화`가 핵심이면 [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)으로 간다.
 
 ## 깊이 들어가기
 
@@ -125,6 +148,8 @@ public class OrderService {
 - **인터페이스가 근본적으로 호환 불가능할 때**: 메서드 시그니처 변환이 아니라 비즈니스 로직 자체가 다르면 어댑터가 아니라 새로운 설계가 필요하다.
 - **어댑터 안에 비즈니스 로직이 커질 때**: 어댑터는 "번역"만 해야 한다. 변환 로직이 복잡해지면 별도 서비스로 분리해야 한다.
 - **처음부터 설계할 수 있는 상황**: 레거시 통합이 아니라면 처음부터 통일된 인터페이스를 설계하는 게 낫다.
+- **변화 축이 둘 이상 독립적으로 늘 때**: provider/abstraction 조합 폭발이 문제라면 Adapter보다 [Bridge](./bridge-storage-provider-abstractions.md)가 맞다.
+- **외부 개념 오염을 막아야 할 때**: 단순 시그니처 번역이 아니라 도메인 언어 보호와 호출 흐름 정리가 필요하면 [Facade seam](./facade-anti-corruption-seam.md)이나 ACL layering이 맞다.
 
 ## 꼬리질문
 

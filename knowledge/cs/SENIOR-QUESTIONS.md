@@ -2,6 +2,8 @@
 
 > 10년 차 시니어 개발자가 신입/주니어에게 던질 법한 질문을 기준으로 정리한 심화 질문 모음
 
+> retrieval-anchor-keywords: senior level cs questions, 시니어 면접 질문, backend interview drill, question bank, self-check, 꼬리질문, trade-off interview, 운영 관점 질문, deep dive drill
+
 ## 이 문서를 어떻게 써야 하나
 
 각 질문은 단순 암기 확인용이 아니다.  

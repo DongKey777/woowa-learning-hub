@@ -2,6 +2,8 @@
 
 > 증상, 의사결정, 교차 관점 중심으로 여러 CS 문서를 묶어 읽기 위한 상위 노트 인덱스
 
+> retrieval-anchor-keywords: master notes index, synthesis navigator, cross-domain guide, symptom-first reading, broad question routing, latency cluster, transaction cluster, master note catalog, stale read, stale-read, read-after-write, replica lag, 499, client disconnect, broken pipe, cancellation propagation, auth outage, auth-outage, login loop, 401 storm, 403 storm, session store outage, replay session defense bundle, service delegation boundary bundle, hardware trust recovery bundle, replay store down, nonce store down, acting on behalf of, break glass, hardware attestation recovery, trust bundle recovery
+
 ## 이 디렉토리의 역할
 
 이 디렉토리는 `contents/`의 카테고리 문서를 대체하지 않는다.  
@@ -12,14 +14,30 @@
 - RAG가 광범위한 질문을 놓치지 않도록 상위 요약 레이어 만들기
 - 회고와 시니어 질문 대비용 상위 설명 노트 제공하기
 
+문서 역할 이름이 헷갈리면 [Navigation Taxonomy](../rag/navigation-taxonomy.md)를 먼저 보고, 저장소 전체 진입점은 [CS Root README](../README.md)에서 다시 잡는다.
+
 ## 추천 진입 방식
 
 - `latency`, `timeout`, `retry`, `backpressure`
 - `transaction`, `consistency`, `idempotency`, `outbox`
 - `auth`, `session`, `token`, `trust boundary`
+- `replay`, `replay store`, `nonce store`, `dedupe window`, `replay-safe retry`
 - `migration`, `rollout`, `cutover`, `rollback`
+- `delegation`, `acting on behalf of`, `break glass`, `support access`, `trust bundle`, `attestation`
 - `cache`, `hot key`, `invalidation`, `stampede`
+- `stale read`, `stale-read`, `read-after-write`, `replica lag`, `freshness budget`
+- `499`, `client disconnect`, `broken pipe`, `cancel propagation`
+- `auth outage`, `auth-outage`, `login loop`, `401`, `403`, `session store`
 - `JVM`, `native memory`, `RSS`, `page cache`, `cgroup`
+
+## Symptom Shortcuts
+
+- `stale-read`, `stale read`, `read-after-write failure`, `방금 쓴 데이터가 안 보임`, `replica lag`부터 떠오르면 [Replica Freshness Master Note](./replica-freshness-master-note.md)로 먼저 들어가고, 일관성 경계 자체를 넓게 잡아야 하면 [Eventual Consistency Master Note](./eventual-consistency-master-note.md), [Cache Consistency Master Note](./cache-consistency-master-note.md)로 이어진다.
+- `dirty read`, `lost update`, `write skew`, `phantom`, `@Transactional`, `왜 안 롤백되지`, `self invocation`, `checked exception commit`이 같이 나오면 [Database to Spring Transaction Master Note](./database-to-spring-transaction-master-note.md)를 대표 진입점으로 잡고, invariant scope가 더 먼저면 [Transaction Boundary Master Note](./transaction-boundary-master-note.md), lock/deadlock 감각이 먼저면 [Transaction Locking Master Note](./transaction-locking-master-note.md)를 함께 본다.
+- `499`, `client disconnect`, `broken pipe`, `cancelled request`, `zombie work`가 섞이면 [Network Failure Handling Master Note](./network-failure-handling-master-note.md)와 [Edge Request Lifecycle Master Note](./edge-request-lifecycle-master-note.md)를 먼저 보고, timeout/retry budget까지 엮이면 [Retry, Timeout, Idempotency Master Note](./retry-timeout-idempotency-master-note.md)로 확장한다.
+- `auth-outage`, `auth outage`, `login loop`, `cookie drop`, `401/403 storm`, `session store outage`라면 [Auth, Session, Token Master Note](./auth-session-token-master-note.md)를 대표 진입점으로 잡고, 브라우저/BFF 경계면 [Browser Auth Frontend Backend Master Note](./browser-auth-frontend-backend-master-note.md), 브라우저 callback이 없으면 [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md), authorization request hardening이 먼저면 [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md), service identity나 policy deny면 [Trust and Identity Master Note](./trust-and-identity-master-note.md), [Authz and Permission Master Note](./authz-and-permission-master-note.md)로 이어진다.
+- `replay store down`, `nonce store down`, `duplicate request after retry`, `replay-safe retry`, `backfill replay`가 섞이면 [Retry, Timeout, Idempotency Master Note](./retry-timeout-idempotency-master-note.md)를 먼저 보고, 저장소 replay/backfill/repair 축이 더 크면 [Data Pipeline Replay Master Note](./data-pipeline-replay-master-note.md), [Eventual Consistency Master Note](./eventual-consistency-master-note.md)로 이어진다.
+- `acting on behalf of`, `break glass`, `delegated admin`, `support access notification`, `trust bundle rollback`, `hardware attestation failure`라면 [Trust and Identity Master Note](./trust-and-identity-master-note.md)를 대표 진입점으로 잡고, session fallout까지 붙으면 [Auth, Session, Token Master Note](./auth-session-token-master-note.md), rollout/cutover 문맥이 크면 [Migration Cutover Master Note](./migration-cutover-master-note.md)로 이어진다.
 
 ## Start Here
 
@@ -110,7 +128,11 @@
 
 ## 관련 문서
 
-- [Master Notes](../MASTER-NOTES.md)
+- [CS Root README](../README.md)
+- [Security README](../contents/security/README.md)
+- [System Design README](../contents/system-design/README.md)
+- [Master Notes Guide](../MASTER-NOTES.md)
+- [Navigation Taxonomy](../rag/navigation-taxonomy.md)
 - [Topic Map](../rag/topic-map.md)
 - [Query Playbook](../rag/query-playbook.md)
 - [Cross-Domain Bridge Map](../rag/cross-domain-bridge-map.md)

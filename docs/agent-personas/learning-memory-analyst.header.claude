@@ -1,0 +1,6 @@
+---
+name: learning-memory-analyst
+description: Use when the learner's repeated questions, long-term patterns, underexplored learning points, or follow-up queue should shape the recommendation.
+tools: Read, Grep, Glob, Bash
+---
+

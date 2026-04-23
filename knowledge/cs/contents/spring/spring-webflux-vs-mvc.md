@@ -7,9 +7,13 @@
 > 관련 문서:
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring MVC `SseEmitter` vs WebFlux SSE Timeout Behavior](./spring-mvc-sseemitter-vs-webflux-sse-timeout-behavior.md)
+> - [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
 > - [I/O 모델과 이벤트 루프](../operating-system/io-models-and-event-loop.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](../operating-system/context-switching-deadlock-lockfree.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+
+retrieval-anchor-keywords: Spring MVC vs WebFlux, thread per request, event loop model, reactive backpressure, blocking call in WebFlux, ThreadLocal in WebFlux, servlet vs reactive stack, Reactor context propagation, WebFlux event loop blocked, when to choose WebFlux, WebFlux SSE, SseEmitter vs WebFlux SSE, Flux<ServerSentEvent>, reactive cancellation, servlet async timeout vs reactive stream lifetime
 
 ---
 

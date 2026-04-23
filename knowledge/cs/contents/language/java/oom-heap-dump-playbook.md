@@ -5,7 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 > - [G1 GC vs ZGC](./g1-vs-zgc.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
@@ -26,6 +26,8 @@
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+retrieval-anchor-keywords: OutOfMemoryError playbook, heap dump analysis, Java heap space, GC overhead limit exceeded, direct buffer memory, native thread exhaustion, jcmd GC.heap_dump, class histogram, dominator tree, heap dump triage
 
 ## 왜 필요한가
 

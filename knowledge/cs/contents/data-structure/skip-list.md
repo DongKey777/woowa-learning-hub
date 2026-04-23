@@ -6,8 +6,12 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
+> - [Balanced BST vs Unbalanced BST Primer](./balanced-bst-vs-unbalanced-bst-primer.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
+> - [Concurrent Skip List Internals](./concurrent-skiplist-internals.md)
 > - [Graph / 정렬 응용](../algorithm/README.md)
+
+retrieval-anchor-keywords: skip list, probabilistic ordered index, skiplist search insert delete, range query ordered structure, balanced tree alternative, balanced bst alternative, skip list vs bst, unbalanced bst alternative, random level promotion, Redis sorted set intuition, concurrent skip list intuition, sorted set data structure, O(log n) probabilistic search
 
 ## 핵심 개념
 
@@ -23,7 +27,8 @@
 
 ### 1. 왜 쓰는가
 
-트리는 균형을 맞추는 로직이 복잡하고, 락을 걸어야 하는 상황에서 구현 부담이 커질 수 있다.
+plain BST는 삽입 순서가 나쁘면 높이가 `O(n)`까지 무너질 수 있고, 균형을 맞추는 트리는 회전/재균형 로직이 들어간다.
+스킵 리스트는 같은 ordered search 문제를 더 단순한 "레벨 지름길" 방식으로 풀려는 쪽에 가깝다.
 
 스킵 리스트는 확률적 높이 배치를 사용하므로 구현이 비교적 단순하고,  
 정렬된 순서를 유지하면서 range query도 지원하기 쉽다.

@@ -2,8 +2,19 @@
 
 > 한 줄 요약: failover가 끝나도 읽기 결과가 바로 하나로 모이지 않으면, 사용자는 같은 데이터베이스를 두 개의 진실로 경험한다.
 
-관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
-Retrieval anchors: `promotion`, `read divergence`, `stale primary`, `write fencing`, `topology cache`
+**난이도: 🟡 Intermediate**
+
+관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
+retrieval-anchor-keywords: promotion, read divergence, stale primary, write fencing, topology cache, visibility window, topology invalidation, commit horizon, post promotion stale read, failover freshness split, old primary still serving reads, some pods old some new, stale endpoint after promotion, dns ttl failover stale read, topology cache stale after promotion, promotion visibility lag
+
+## 빠른 증상 라우팅
+
+| 보이는 증상 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| failover 직후 일부 요청은 새 값, 일부 요청은 옛값을 본다 | 이 문서 | 승격 이후 read authority가 둘로 갈라지는 현상 자체를 설명한다 |
+| lag metric 상승과 fallback threshold, replica health score 설계가 핵심이다 | [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md) | steady-state lag 관측과 정책 문제가 중심이다 |
+| topology cache invalidation, DNS TTL, cache bust, temporary primary pinning 액션이 바로 필요하다 | [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md) | visibility window를 줄이는 운영 순서를 다룬다 |
+| 새 primary가 실제로 최근 commit을 포함했는지부터 확인해야 한다 | [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md) | divergence가 아니라 data loss / horizon gap 여부를 먼저 가린다 |
 
 ## 핵심 개념
 
@@ -53,6 +64,10 @@ Failover promotion은 replica를 새 primary로 승격하는 과정이다.
 
 failover 후 이 캐시가 늦게 갱신되면, 앱은 이미 전환된 줄 알고 옛 서버를 계속 읽는다.  
 그래서 장애 대응에서는 DB 전환과 함께 앱 캐시 무효화가 필요하다.
+
+lag metric이 낮다고 안심하면 안 되는 이유도 여기에 있다.  
+promotion 이후에는 replica apply delay가 아니라 **topology cache stale** 때문에 read divergence가 길어질 수 있다.  
+이런 경우 운영 액션은 [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md)보다 [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md)에 더 가깝다.
 
 ### 4. 읽기 다이버전스를 줄이는 방법
 

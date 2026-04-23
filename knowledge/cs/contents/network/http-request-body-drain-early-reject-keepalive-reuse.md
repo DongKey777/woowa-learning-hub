@@ -1,0 +1,207 @@
+# HTTP Request Body Drain, Early Reject, Keep-Alive Reuse
+
+> 한 줄 요약: 서버나 proxy가 요청 본문을 끝까지 읽기 전에 `401`, `413`, `429` 같은 early reject를 하려면, 남은 body를 drain할지 connection을 닫을지 명확히 정해야 한다. 그렇지 않으면 keep-alive 재사용이 꼬이고 다음 요청까지 오염될 수 있다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Expect 100-continue, Proxy Request Buffering](./expect-100-continue-proxy-request-buffering.md)
+> - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
+> - [Gateway Buffering vs Spring Early Reject](./gateway-buffering-vs-spring-early-reject.md)
+> - [Proxy-to-Container Upload Cleanup Matrix](./proxy-to-container-upload-cleanup-matrix.md)
+> - [Multipart Parsing vs Auth Reject Boundary](./multipart-parsing-vs-auth-reject-boundary.md)
+> - [HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup](./http2-upload-early-reject-rst-stream-flow-control-cleanup.md)
+> - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [FIN, RST, Half-Close, EOF](./fin-rst-half-close-eof-semantics.md)
+> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](./client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+> - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)
+> - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](../spring/spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
+
+retrieval-anchor-keywords: request body drain, early reject, keep-alive reuse, unread request body, 413 payload too large, 100-continue, discard body, connection close, request buffering, leftover bytes, unread body observability, spring filter unread body, http2 upload reject, h2 unread body cleanup, RST_STREAM NO_ERROR upload
+
+<details>
+<summary>Table of Contents</summary>
+
+- [핵심 개념](#핵심-개념)
+- [깊이 들어가기](#깊이-들어가기)
+- [실전 시나리오](#실전-시나리오)
+- [코드로 보기](#코드로-보기)
+- [트레이드오프](#트레이드오프)
+- [꼬리질문](#꼬리질문)
+- [한 줄 정리](#한-줄-정리)
+
+</details>
+
+## 핵심 개념
+
+HTTP keep-alive는 같은 TCP connection 위에 여러 요청을 이어서 보낼 수 있다는 뜻이다.  
+이 말은 곧 **현재 요청의 바이트 경계를 정확히 정리해야 다음 요청도 안전하다**는 뜻이다.
+
+그래서 request body를 다 읽기 전에 응답을 돌려주려면 보통 둘 중 하나를 선택한다.
+
+- 남은 body를 버리며 끝까지 drain하고 connection을 재사용
+- drain하지 않고 connection 자체를 닫아 재사용을 막음
+
+### Retrieval Anchors
+
+- `request body drain`
+- `early reject`
+- `keep-alive reuse`
+- `unread request body`
+- `413 payload too large`
+- `100-continue`
+- `discard body`
+- `leftover bytes`
+
+## 깊이 들어가기
+
+### 1. early reject는 성능엔 좋지만 바이트 스트림 정리는 더 어려워진다
+
+앞단이 다음을 빨리 판단할 수 있으면 이득이 크다.
+
+- 인증 실패
+- quota 초과
+- body size 초과
+- 허용되지 않은 content type
+
+하지만 client가 이미 body를 보내고 있다면 문제가 생긴다.
+
+- 서버는 논리적으로는 거절을 끝냈다
+- 그러나 wire에는 아직 읽히지 않은 body 바이트가 남아 있다
+
+이 남은 바이트를 어떻게 처리할지 정하지 않으면 keep-alive 재사용이 위험해진다.
+
+### 2. unread body를 남긴 채 connection을 재사용하면 안 된다
+
+같은 TCP connection에 다음 요청이 이어질 수 있기 때문이다.
+
+- 이전 요청의 leftover bytes
+- 다음 요청의 새 header bytes
+
+가 뒤섞이면 framing이 망가진다.  
+그래서 많은 서버와 proxy는 drain을 못 하겠으면 아예 `Connection: close` 쪽으로 간다.
+
+핵심은 "거절 응답을 빨리 보냈다"보다 **그 뒤 connection 상태를 깨끗하게 정리했는가**다.
+
+### 3. request buffering 유무가 대응을 바꾼다
+
+proxy request buffering이 켜져 있으면:
+
+- proxy가 client body를 먼저 다 받을 수 있다
+- upstream app은 깨끗한 요청만 보게 된다
+- early reject 이점은 줄지만 connection 정리는 쉬워질 수 있다
+
+buffering이 꺼져 있으면:
+
+- early reject는 빨라질 수 있다
+- 대신 origin이 slow upload와 unread body를 직접 다뤄야 한다
+
+즉 성능과 단순성의 교환이다.
+
+### 4. `Expect: 100-continue`는 이 문제를 줄여 주지만 없애지는 못한다
+
+이 헤더가 있으면:
+
+- client가 body 전송 전 잠깐 기다릴 수 있다
+- 서버가 early reject를 body 전송 전에 할 기회가 생긴다
+
+하지만 현실에서는:
+
+- 일부 client는 오래 안 기다리고 body를 그냥 보낸다
+- 중간 proxy가 header를 다르게 처리한다
+- 이미 일부 body가 전송 중일 수 있다
+
+그래서 `100-continue`가 있어도 drain/close 정책은 여전히 필요하다.
+
+### 5. HTTP/1.1과 HTTP/2의 정리 방식은 감각이 다르다
+
+HTTP/1.1 keep-alive에서는 같은 byte stream 위에 요청이 이어지므로 unread body 처리가 특히 민감하다.
+
+HTTP/2에서는 stream framing이 분리되어 있어 byte-level 혼선은 덜하지만:
+
+- stream cancel
+- request body stop reading
+- flow control credit 반환
+
+같은 다른 문제가 생긴다.  
+즉 계층은 달라도 "더 안 읽을 body를 어떻게 끝낼지"는 여전히 중요하다.  
+특히 upload early reject에서는 [HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup](./http2-upload-early-reject-rst-stream-flow-control-cleanup.md)처럼 `RST_STREAM`과 connection-level credit accounting을 함께 봐야 한다.
+
+### 6. client abort와 결합되면 진단이 더 어렵다
+
+upload 중:
+
+- 서버는 early reject를 내렸다
+- client는 이미 떠났다
+- proxy는 499를 남겼다
+
+이때 어떤 연결은 close로 끝나고, 어떤 연결은 drain되며 재사용될 수 있다.  
+그래서 access log만으로는 body drain 정책 문제를 놓치기 쉽다.
+
+## 실전 시나리오
+
+### 시나리오 1: 인증 실패 요청인데도 업로드 트래픽이 크게 나온다
+
+원인 후보:
+
+- early reject가 origin까지 늦게 전달된다
+- proxy가 body를 먼저 다 받는다
+- `Expect: 100-continue`가 사실상 무시된다
+
+### 시나리오 2: `413` 뒤에 같은 keep-alive connection에서 이상한 파싱 오류가 난다
+
+unread body를 남긴 채 재사용했거나, drain/close 정책이 일관되지 않을 수 있다.
+
+### 시나리오 3: buffering을 끄자 성능은 좋아졌는데 broken pipe와 reset이 늘었다
+
+origin이 slow upload, early reject, client abort를 직접 다루기 시작한 패턴일 수 있다.
+
+### 시나리오 4: app은 거절을 빨리 했는데 proxy p99가 여전히 길다
+
+응답은 빨랐지만 body drain에 시간이 계속 들어가고 있을 수 있다.
+
+## 코드로 보기
+
+### 운영 체크 포인트
+
+```text
+- early reject 응답 후 connection을 재사용하는가 닫는가
+- unread body drain duration이 얼마나 되는가
+- request buffering on/off에 따라 어느 홉이 body를 읽는가
+- 401/413/429 이후 next request parse error가 있는가
+```
+
+### 정책 감각
+
+```text
+if body not fully consumed:
+  either drain remainder safely
+  or close connection explicitly
+never assume keep-alive reuse is safe with leftover bytes
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 쓰는가 |
+|--------|------|------|-------------|
+| drain 후 재사용 | keep-alive 효율을 유지한다 | discard 시간과 자원 사용이 든다 | moderate upload, 재사용 중요 |
+| 즉시 close | 구현이 단순하고 안전하다 | handshake 비용이 늘고 client 체감이 흔들릴 수 있다 | 매우 큰 body, 불신 경로 |
+| request buffering on | unread body 처리가 단순해진다 | early reject 이점이 줄고 proxy 비용이 커진다 | 일반 업로드 프록시 |
+| buffering off + early reject | 업로드 낭비를 줄인다 | origin이 drain/abort를 더 정교하게 다뤄야 한다 | 대용량 upload API |
+
+핵심은 early reject를 business decision으로만 보지 않고 **남은 request body와 connection 재사용을 어떻게 정리할지까지 포함한 wire-level 결정**으로 보는 것이다.
+
+## 꼬리질문
+
+> Q: 요청 본문을 끝까지 안 읽고도 바로 401/413을 내려도 되나요?
+> 핵심: 논리적으로는 가능하지만, 남은 body를 drain할지 connection을 닫을지 명확히 정해야 keep-alive가 안전하다.
+
+> Q: unread body를 남긴 채 keep-alive 재사용이 왜 위험한가요?
+> 핵심: leftover bytes가 다음 요청과 섞여 framing과 파싱을 망칠 수 있기 때문이다.
+
+> Q: `100-continue`가 있으면 이 문제가 사라지나요?
+> 핵심: 줄어들 수는 있지만, 중간 홉과 client 동작 차이 때문에 drain/close 정책은 여전히 필요하다.
+
+## 한 줄 정리
+
+HTTP early reject를 잘하려면 응답 코드만 빠르게 결정하는 것으로 끝나지 않고, unread request body를 drain할지 close할지까지 결정해야 keep-alive 재사용이 안전하다.

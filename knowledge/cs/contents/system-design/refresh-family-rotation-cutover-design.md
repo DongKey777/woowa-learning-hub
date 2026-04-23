@@ -1,0 +1,320 @@
+# Refresh-Family Rotation Cutover 설계
+
+> 한 줄 요약: refresh-family rotation cutover 설계는 mixed-version auth rollout 동안 legacy refresh lineage를 새 family 모델로 수렴시키면서도, forced reissue와 replay containment를 같은 canonical lineage 위에서 처리해 "마이그레이션 중 재시도"와 "실제 탈취 replay"를 구분 가능한 상태로 만드는 운영 설계다.
+
+> 문서 역할: 이 문서는 [Session Store / Claim-Version Cutover 설계](./session-store-claim-version-cutover-design.md)의 refresh family 축을 더 깊게 파고들어, family migration, forced reissue, replay containment가 왜 하나의 cutover state machine이어야 하는지 설명하는 focused deep dive다.
+
+retrieval-anchor-keywords: refresh family rotation cutover, refresh token family migration, forced reissue, mixed-version auth rollout, replay containment, legacy refresh lineage, canonical family graph, single-issue single-revoke, migration retry vs token theft, refresh family alias, migration grace window, refresh family quarantine, session authority skew, auth rollout drain, family reissue conversion ratio, canonical revocation plane, generation-aware revoke fan-out, refresh exchange lease, response replay cache, duplicate response replay, same-context duplicate
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Session Store / Claim-Version Cutover 설계](./session-store-claim-version-cutover-design.md)
+> - [Canonical Revocation Plane Across Token Generations 설계](./canonical-revocation-plane-across-token-generations-design.md)
+> - [Session Store Design at Scale](./session-store-design-at-scale.md)
+> - [Database / Security Identity Bridge Cutover 설계](./database-security-identity-bridge-cutover-design.md)
+> - [Capability Negotiation / Feature Gating 설계](./capability-negotiation-feature-gating-design.md)
+> - [Refresh Reauth Escalation Matrix 설계](./refresh-reauth-escalation-matrix-design.md)
+> - [Refresh Exchange Idempotency Under Cutover 설계](./refresh-exchange-idempotency-under-cutover-design.md)
+> - [Cleanup Point-of-No-Return 설계](./cleanup-point-of-no-return-design.md)
+> - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
+> - [Security: Refresh Token Rotation / Reuse Detection](../security/refresh-token-rotation-reuse-detection.md)
+> - [Security: Refresh Token Family Invalidation at Scale](../security/refresh-token-family-invalidation-at-scale.md)
+> - [Security: Token Misuse Detection / Replay Containment](../security/token-misuse-detection-replay-containment.md)
+> - [Security: Revocation Propagation Lag / Debugging](../security/revocation-propagation-lag-debugging.md)
+> - [Security: Device / Session Graph Revocation Design](../security/device-session-graph-revocation-design.md)
+
+## 핵심 개념
+
+refresh token rotation만 이미 쓰고 있어도, mixed-version rollout이 시작되면 문제는 단순 rotation이 아니라 lineage authority가 된다.
+
+- old auth server는 legacy family를 기준으로 refresh를 소비한다
+- new auth server는 새 canonical family graph와 새 claim/device binding 규칙을 기준으로 refresh를 소비한다
+- security 팀은 reuse detection과 replay containment를 family 단위로 보고 싶다
+- platform 팀은 로그인 강제 종료 없이 legacy family를 새 세대로 옮기고 싶다
+
+이 네 가지를 따로 구현하면 다음 같은 반쪽 rollout이 생긴다.
+
+- new server가 forced reissue를 했는데 old server가 같은 legacy token으로 다시 child를 발급해 family가 fork된다
+- migration retry를 replay 공격으로 오판해 정상 사용자를 전 family revoke 한다
+- security는 family revoke를 canonical graph에 기록했는데 legacy verifier는 alias mapping을 몰라 zombie refresh를 허용한다
+
+즉 이 주제의 핵심은 **dual-accept 환경에서도 issue truth와 containment truth는 하나만 남겨야 한다**는 점이다.
+
+## 깊이 들어가기
+
+### 1. mixed-version rollout에서 실제로 옮겨야 하는 것은 token format이 아니라 family truth다
+
+refresh family migration은 흔히 `v1 refresh -> v2 refresh`처럼 보이지만, 실전에서는 아래 세 가지를 동시에 옮긴다.
+
+| 축 | old world | new world | 잘못 옮기면 생기는 문제 |
+|---|---|---|---|
+| issuance truth | legacy store가 child token을 발급 | canonical family service가 child token을 발급 | 두 곳이 동시에 child를 만들어 lineage fork |
+| lineage truth | `family_id`, `parent_id`가 legacy schema | alias + canonical family graph로 수렴 | revoke나 audit가 세대별로 찢어짐 |
+| containment truth | reuse detection이 legacy token row 기준 | replay/quarantine가 canonical family 기준 | 한쪽에서 revoke했는데 다른 쪽이 계속 refresh 허용 |
+
+그래서 mixed-version rollout의 기본 원칙은 `dual-accept, single-issue, single-contain`이다.
+
+- `dual-accept`: overlap window 동안 old/new refresh 표현을 둘 다 읽는다
+- `single-issue`: successor refresh는 오직 target generation만 발급한다
+- `single-contain`: replay containment와 family revoke는 canonical family id 하나에 기록한다
+
+읽기 호환만 맞추고 family truth를 둘로 두면 cutover가 아니라 장기 분기 상태가 된다.
+
+### 2. forced reissue는 부가 최적화가 아니라 수렴 경로다
+
+legacy refresh family를 새 세대로 옮기는 가장 현실적인 방법은 "다음 refresh 때 강제 재발급"이다.
+이때 forced reissue는 단순히 token value를 바꾸는 작업이 아니다.
+
+- legacy token을 canonical family에 연결한다
+- successor token은 새 generation/new binding/new claim semantic으로만 발급한다
+- old token은 `consumed_by_migration`으로 닫고 재사용 판단 기준점을 만든다
+- 같은 user/device/session에 대해 revoke epoch를 그대로 보존한다
+
+권장 모드는 세 가지다.
+
+| 모드 | 설명 | 장점 | 주의점 |
+|---|---|---|---|
+| opportunistic reissue | 다음 정상 refresh 때 새 family로 승격 | UX가 부드럽다 | inactive device는 오래 남는다 |
+| risk-gated reissue | 고위험 scope나 민감 route에서만 step-up 후 승격 | blast radius를 줄인다 | state가 더 복잡해진다 |
+| hard reauth fallback | binding 정보가 이식 불가하면 재로그인 강제 | semantic이 단순하다 | 사용자 비용이 크다 |
+
+세 모드 중 언제 silent migration에 머물고, 언제 step-up으로 올리고, 언제 full reauth로 닫아야 하는지는 [Refresh Reauth Escalation Matrix 설계](./refresh-reauth-escalation-matrix-design.md)에서 별도 matrix로 정리한다.
+
+중요한 점은 forced reissue가 진행되는 동안에도 refresh family revoke, subject epoch, device epoch가 모두 같은 canonical state를 봐야 한다는 것이다.
+
+### 3. migration retry와 공격 replay를 구분하려면 refresh exchange를 idempotent하게 만들어야 한다
+
+forced reissue rollout에서 가장 흔한 오탐은 "사용자는 응답을 못 받았고, 서버는 이미 migration child를 발급한 상태"다.
+이때 같은 legacy token이 다시 오면 두 가지 가능성이 섞인다.
+
+1. 네트워크 유실이나 앱 재시도로 인한 benign duplicate
+2. 탈취된 토큰의 실제 replay
+
+둘을 구분하지 못하고 무조건 family revoke를 걸면 rollout 자체가 misuse detector를 망가뜨린다.
+
+권장 패턴은 아래와 같다.
+
+| 관찰 이벤트 | 가능한 정상 원인 | 위험한 과잉 반응 | 권장 처리 |
+|---|---|---|---|
+| 같은 legacy token이 짧은 시간 안에 같은 device/build/context에서 재도착 | 응답 유실, 앱 재시도 | 즉시 family revoke | prior reissue response replay 또는 `already_migrated` 응답 |
+| legacy token이 successor 발급 후 grace window 안에서만 반복 | stale client cache, 탭 경쟁 | lineage 분기 허용 | 새 child 재발급 금지, canonical family pointer만 반환 |
+| legacy token이 다른 ASN/device/binding에서 다시 등장 | 탈취 replay | benign retry로 무시 | canonical family quarantine + revoke + step-up |
+| migrated family가 이미 high-risk route에서 새 token까지 사용 중인데 old token이 다시 등장 | 실제 compromise 가능성 큼 | 단순 401로 끝냄 | family-wide containment와 incident signal 승격 |
+
+즉 forced reissue cutover는 replay detection을 느슨하게 하라는 뜻이 아니라, **refresh exchange 자체를 idempotent state machine으로 바꿔야 한다**는 뜻이다.
+
+[Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)와 같은 이유로, refresh endpoint도 "같은 입력에 대해 이미 결정된 successor를 재현할 수 있어야" benign duplicate를 공격 신호와 분리할 수 있다.
+이 exchange path를 lease, replay cache, duplicate-response contract 관점으로 더 좁혀 보면 [Refresh Exchange Idempotency Under Cutover 설계](./refresh-exchange-idempotency-under-cutover-design.md)로 바로 이어진다.
+
+### 4. canonical family graph가 있어야 세대가 달라도 containment가 하나로 닫힌다
+
+mixed-version auth rollout에서 가장 나쁜 설계는 legacy family table과 new family table이 서로를 모르고 각각 revoke를 수행하는 구조다.
+
+권장 모델은 아래와 같다.
+
+- every legacy family has `canonical_family_id` or a deterministic alias
+- `legacy_token_id -> migration_record -> successor_token_id`를 추적할 수 있다
+- family revoke는 `canonical_family_id` 하나에 기록되고 각 generation read path가 이를 해석한다
+- audit/event pipeline은 legacy id와 canonical id를 둘 다 남겨 포렌식과 rollback 판단을 돕는다
+
+핵심 필드는 보통 다음처럼 잡는다.
+
+- `canonical_family_id`
+- `legacy_family_id`
+- `token_id`
+- `parent_token_id`
+- `generation`
+- `device_binding_key`
+- `migrated_from_token_id`
+- `reissue_decision_id`
+- `family_state` (`ACTIVE`, `QUARANTINED`, `REVOKED`, `DRAINING`)
+- `revoke_before`
+
+이 구조가 있어야 old token replay를 보더라도 "어느 canonical family를 닫아야 하는가"가 명확해진다.
+legacy/new generation access cache와 refresh path까지 포함한 revoke fan-out, alias projection backlog, quarantine release gate를 더 좁혀 보려면 [Canonical Revocation Plane Across Token Generations 설계](./canonical-revocation-plane-across-token-generations-design.md)를 이어서 보면 된다.
+
+### 5. rollout gate는 conversion ratio만 아니라 containment 품질을 같이 봐야 한다
+
+forced reissue rollout에서 conversion ratio만 보면 거의 항상 너무 낙관적이다.
+보아야 하는 지표는 최소한 아래 네 묶음이다.
+
+| gate | issuance / migration 지표 | containment 지표 | 판단 |
+|---|---|---|---|
+| pre-ramp | legacy/new parser health, alias miss 0, canonical family write success | reuse detector healthy, revoke bus healthy | ramp 가능 여부 |
+| forced reissue ramp | forced reissue conversion ratio 상승, legacy successor issuance 0 | replay-after-reissue rate 안정, false quarantine 낮음 | rollout 확대 여부 |
+| mixed-version soak | legacy family open 수 감소, `deprecated_generation_last_seen` 감소 | quarantine clear lag, family revoke fan-out SLO, region skew 0 근접 | overlap 유지 여부 |
+| retirement | `legacy_family_open == 0`, rollback window 종료 | replay queue/drain queue 0, suspicious legacy replay only residual | cleanup 허용 |
+
+특히 아래 지표는 별도 경보가 있어야 한다.
+
+- `legacy_successor_issued_total`
+- `forced_reissue_conversion_ratio`
+- `legacy_family_alias_miss`
+- `replay_after_forced_reissue_total`
+- `family_quarantine_false_positive_total`
+- `legacy_generation_last_seen`
+- `canonical_family_revoke_propagation_p99`
+
+이 숫자들을 보면 "migration은 잘 되고 있는데 containment는 망가진 상태"를 빨리 구분할 수 있다.
+
+### 6. cleanup은 마지막 legacy refresh expiry가 아니라 마지막 containment horizon까지 기다려야 한다
+
+refresh-family cutover cleanup을 access token TTL이나 평균 refresh TTL 기준으로 잡으면 거의 항상 너무 이르다.
+
+```text
+cleanup_eligible_at =
+  max(
+    rollback_window_end,
+    last_legacy_family_seen + observation_window,
+    last_forced_reissue_response_replay_window_end,
+    last_legacy_refresh_expiry,
+    canonical_family_revoke_tail_recovered_at + safety_buffer,
+    audit_hold_end
+  )
+```
+
+각 항목이 필요한 이유:
+
+- `last_legacy_family_seen + observation_window`: long-tail caller와 늦은 mobile wake-up을 보기 위해
+- `last_forced_reissue_response_replay_window_end`: benign duplicate를 아직 재현해야 할 수 있어서
+- `last_legacy_refresh_expiry`: old generation이 실제로 더는 합법적으로 오지 않는 시점
+- `canonical_family_revoke_tail_recovered_at + safety_buffer`: containment가 region/cache에 다 닫혔는지 보기 위해
+
+즉 refresh-family cleanup은 lineage 저장 공간 회수보다 **replay containment 근거를 언제 버려도 되는가**의 문제다.
+
+## 실전 시나리오
+
+### 시나리오 1: 모바일 구버전 앱이 legacy refresh를 들고 있고 웹은 이미 new generation으로 올라감
+
+문제:
+
+- 웹은 new family graph를 쓰지만 모바일은 `v1` refresh만 들고 있어 mixed-version 기간이 길어진다
+
+해결:
+
+- 모바일 refresh 요청 시 forced reissue로 canonical family에 편입한다
+- old parser는 accept하되 legacy successor 발급은 금지한다
+- `legacy_generation_last_seen`이 줄지 않으면 app minimum version gate를 함께 올린다
+
+### 시나리오 2: forced reissue 직후 replay detection이 급증한다
+
+문제:
+
+- 응답 유실과 재시도로 같은 legacy token이 재도착하면서 benign duplicate가 compromise처럼 보인다
+
+해결:
+
+- refresh exchange lease와 response replay cache를 둔다
+- grace window 안의 same-context duplicate는 prior decision replay로 처리한다
+- different-context duplicate만 quarantine 승격 대상으로 본다
+
+### 시나리오 3: rollout 중 실제 탈취 replay가 발생했다
+
+문제:
+
+- 이미 new generation child가 발급된 canonical family에 old legacy token이 다른 device에서 재등장했다
+
+해결:
+
+- canonical family 단위로 즉시 `QUARANTINED` 또는 `REVOKED` 처리한다
+- access token, session cache, downstream token cache까지 같은 family key로 fan-out한다
+- forced reissue 성공률과 별개로 incident ladder를 타고 step-up 또는 재로그인을 요구한다
+
+### 시나리오 4: rollout을 멈추고 일부를 rollback해야 한다
+
+문제:
+
+- new verifier의 binding rule 버그로 forced reissue된 family 일부가 계속 실패한다
+
+해결:
+
+- dual-accept는 유지하되 new issuance ramp를 중지한다
+- alias mapping과 canonical family graph는 유지한 채 issue policy만 되돌린다
+- cleanup clock을 리셋하고 `legacy_generation_last_seen`을 다시 측정한다
+
+## 코드로 보기
+
+```pseudo
+function refresh(presentedToken, context):
+  lineage = familyGraph.lookupByTokenHash(hash(presentedToken))
+  if lineage == null:
+    return deny("unknown_refresh")
+
+  if lineage.familyState in ["QUARANTINED", "REVOKED"]:
+    return deny("family_blocked")
+
+  if isSuspiciousReplay(lineage, context):
+    containment.quarantine(lineage.canonicalFamilyId, reason="legacy_replay_after_cutover")
+    return deny("replay_suspected")
+
+  lease = exchangeLease.tryAcquire(lineage.tokenId, context.requestId)
+  if !lease.acquired:
+    return responseReplayCache.replay(lineage.tokenId)
+
+  if lineage.generation < targetGeneration():
+    successor = familyGraph.issueMigratedSuccessor(
+      canonicalFamilyId = lineage.canonicalFamilyId,
+      migratedFromTokenId = lineage.tokenId,
+      generation = targetGeneration(),
+      binding = currentBinding(context)
+    )
+    lineage.markConsumed(reason="forced_reissue")
+    responseReplayCache.store(lineage.tokenId, successor)
+    return successor
+
+  successor = familyGraph.issueRotatedSuccessor(lineage)
+  responseReplayCache.store(lineage.tokenId, successor)
+  return successor
+```
+
+```yaml
+refresh_family_cutover:
+  accept:
+    allowed_generations: [legacy, v2]
+  issue:
+    target_generation_only: v2
+    legacy_successor_issuance: forbidden
+  contain:
+    canonical_family_state_required: true
+    suspicious_replay_action: quarantine_family
+  cleanup:
+    enabled: false
+    reason: "legacy generation and replay window still open"
+```
+
+핵심은 forced reissue가 있어도 successor issuance와 replay containment가 둘 다 canonical family graph 위에서 결정되어야 한다는 점이다.
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| opportunistic forced reissue | UX 충격이 작다 | inactive device가 오래 남는다 | 일반 consumer 세션 |
+| hard reauth migration | semantic이 단순하다 | 전환 비용이 크다 | binding/claim 차이가 커서 호환 불가할 때 |
+| duplicate를 무조건 compromise 처리 | 보안이 강해 보인다 | rollout 중 false positive가 급증한다 | 매우 고위험 관리자 세션만 제한적으로 |
+| duplicate response replay 허용 | benign retry를 흡수한다 | replay cache와 lease가 필요하다 | 모바일/다중 탭 환경 |
+| generation별 revoke 분리 | 구현이 쉬워 보일 수 있다 | containment와 audit가 분기된다 | 권장하지 않음 |
+
+핵심은 refresh-family rotation cutover가 token format migration이 아니라, **forced reissue와 replay containment를 같은 lineage authority 아래로 모으는 운영 설계**라는 점이다.
+
+## 꼬리질문
+
+> Q: mixed-version rollout이면 old/new generation을 둘 다 받으니 issue도 양쪽에서 해도 되나요?
+> 의도: accept와 issue truth를 구분하는지 확인
+> 핵심: 아니다. dual-accept는 호환성이고 successor issuance truth는 하나여야 family가 fork되지 않는다.
+
+> Q: forced reissue 중 같은 legacy token이 다시 오면 바로 탈취라고 봐야 하나요?
+> 의도: benign duplicate와 실제 replay를 구분하는지 확인
+> 핵심: 아니다. 같은 context의 짧은 재시도는 prior decision replay로 흡수하고, 다른 context 재등장만 containment 승격 후보로 보는 편이 안전하다.
+
+> Q: refresh family migration이 끝났는지는 무엇으로 판단하나요?
+> 의도: conversion ratio 하나에 집착하지 않는지 확인
+> 핵심: `forced_reissue_conversion_ratio`, `legacy_generation_last_seen`, `replay_after_forced_reissue`, `canonical revoke propagation`을 함께 봐야 한다.
+
+> Q: cleanup은 last old refresh expiry만 지나면 시작해도 되나요?
+> 의도: replay containment horizon을 cleanup 계산에 넣는지 확인
+> 핵심: 아니다. response replay window, revoke tail, rollback window, audit hold까지 닫혀야 legacy family evidence를 지워도 안전하다.
+
+## 한 줄 정리
+
+Refresh-family rotation cutover 설계는 legacy refresh lineage를 새 세대로 옮기는 migration과 탈취 replay containment를 분리하지 않고, canonical family graph 위에서 forced reissue와 family revoke를 함께 운영해 mixed-version auth rollout의 long tail을 안전하게 닫는 설계다.

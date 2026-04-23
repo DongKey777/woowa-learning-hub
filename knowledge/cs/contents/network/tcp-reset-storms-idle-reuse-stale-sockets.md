@@ -10,6 +10,8 @@
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
 > - [TCP Keepalive vs App Heartbeat](./tcp-keepalive-vs-app-heartbeat.md)
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
+> - [Connection Pool Starvation, Stale Idle Reuse, Debugging](./connection-pool-starvation-stale-idle-reuse-debugging.md)
+> - [Retry Storm Containment, Concurrency Limiter, Load Shedding](./retry-storm-containment-concurrency-limiter-load-shedding.md)
 
 retrieval-anchor-keywords: TCP reset storm, stale socket, idle reuse, ECONNRESET, connection pool eviction, connection churn, retry amplification, keep-alive reuse, proxy close
 

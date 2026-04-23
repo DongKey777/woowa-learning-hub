@@ -6,12 +6,13 @@
 
 > 관련 문서:
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
 > - [API Gateway auth / rate limit chain](../network/api-gateway-auth-rate-limit-chain.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 
-retrieval-anchor-keywords: token introspection, self-contained JWT, opaque token, JWKS, revocation, audience, auth server, gateway, latency, offline validation, circuit breaker, token cache
+retrieval-anchor-keywords: token introspection, self-contained JWT, opaque token, JWKS, revocation, jwt version claim, authz version, permission version, audience, auth server, gateway, latency, offline validation, circuit breaker, token cache
 
 ---
 
@@ -83,10 +84,13 @@ introspection은 토큰이 지금도 active한지 서버에 묻는다.
 
 - access token은 짧은 JWT
 - refresh token은 opaque 또는 server-side state
+- access token에는 `authz_version` 같은 low-churn version claim을 같이 싣는다
 - 고위험 endpoint는 introspection 또는 fresh check
 - gateway는 JWT 검증, service는 policy check
 
 이렇게 하면 latency와 revocation 사이를 어느 정도 타협할 수 있다.
+
+이때 어떤 version을 JWT에 싣고 어떤 version은 cache/PDP에서만 봐야 하는지는 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)에서 따로 정리한다.
 
 ### 4. JWKS와 introspection cache
 

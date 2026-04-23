@@ -8,6 +8,10 @@
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 > - [CPU 캐시, 코히어런시, 메모리 배리어](./cpu-cache-coherence-memory-barrier.md)
 > - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
+> - [Lock Contention, Futex Wait, Off-CPU Debugging](./lock-contention-futex-offcpu-debugging.md)
+> - [Futex Requeue, Priority Inheritance, Convoy Debugging](./futex-requeue-priority-inheritance-convoy-debugging.md)
+
+> retrieval-anchor-keywords: futex, mutex, semaphore, spinlock, futex_wait, futex_wake, futex requeue, priority inheritance, lock contention, spin wait, sleeping lock, critical section
 
 ---
 

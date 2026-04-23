@@ -6,11 +6,12 @@
 
 > 관련 문서:
 > - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
+> - [JFR Loom Incident Signal Map](./jfr-loom-incident-signal-map.md)
 > - [Safepoint and Stop-the-World Diagnostics](./safepoint-stop-the-world-diagnostics.md)
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [JNI Native Call Overhead](./jni-native-call-overhead.md)
 
-> retrieval-anchor-keywords: JFR, event interpretation, event type, duration, stack trace, allocation context, thread state, lock profile, gc pause, socket read, safepoint, JMC
+> retrieval-anchor-keywords: JFR, event interpretation, event type, duration, stack trace, allocation context, thread state, lock profile, gc pause, socket read, safepoint, JMC, loom incident map, virtual thread pinned, Java Thread Park, Java Monitor Blocked
 
 <details>
 <summary>Table of Contents</summary>

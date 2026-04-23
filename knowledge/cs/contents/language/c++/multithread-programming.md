@@ -1,5 +1,7 @@
 # Multithread Programming
 
+**난이도: 🔴 Advanced**
+
 > 작성자 : [박재용](https://github.com/ggjae)
 
 본 자료는 작성자인 '박재용'의 개인 Repository의 글을 재구성하여 작성되었습니다.  
@@ -98,7 +100,7 @@ int main(){
     });
 
     std::thread Threads2;
-    Threads2 = std::thread([&](){
+    Threads2 = std::thread([&] (){
         for(int i=10;i<15;++i){
             mtx_lock.lock();
             std::cout << "Thread Num : " << i << std::endl;

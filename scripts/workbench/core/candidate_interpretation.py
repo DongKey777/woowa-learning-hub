@@ -190,7 +190,56 @@ def _why_learning_point(point: dict, candidate: dict) -> str:
     return f"{candidate.get('title')}은 {point.get('label')}을 살펴보는 데 쓸 수 있는 후보다."
 
 
-def _score_learning_points(candidate: dict) -> list[dict]:
+def _profile_boost(rule_id: str, learning_profile: dict | None) -> tuple[int, list[str]]:
+    """Return (boost, reasons) for a rule based on the learner memory profile.
+
+    The boost only amplifies rules that already have a positive content
+    score — we never fabricate a match out of thin air. Semantics:
+
+    - repeated_learning_points match: +3 (+2 more when recency_status == "active")
+    - dominant_learning_points match (not repeated): +2 (+1 when active)
+    - underexplored_learning_points match: +1 (surface blind spots gently)
+    """
+    if not learning_profile:
+        return 0, []
+
+    repeated = {
+        item.get("learning_point"): item
+        for item in (learning_profile.get("repeated_learning_points") or [])
+    }
+    dominant = {
+        item.get("learning_point"): item
+        for item in (learning_profile.get("dominant_learning_points") or [])
+    }
+    underexplored = {
+        item.get("learning_point")
+        for item in (learning_profile.get("underexplored_learning_points") or [])
+    }
+
+    boost = 0
+    reasons: list[str] = []
+    if rule_id in repeated:
+        boost += 3
+        reasons.append("profile:repeated")
+        if repeated[rule_id].get("recency_status") == "active":
+            boost += 2
+            reasons.append("profile:active")
+    elif rule_id in dominant:
+        boost += 2
+        reasons.append("profile:dominant")
+        if dominant[rule_id].get("recency_status") == "active":
+            boost += 1
+            reasons.append("profile:active")
+    elif rule_id in underexplored:
+        boost += 1
+        reasons.append("profile:underexplored")
+    return boost, reasons
+
+
+def _score_learning_points(
+    candidate: dict,
+    learning_profile: dict | None = None,
+) -> list[dict]:
     text = _candidate_text(candidate)
     path_text = _candidate_path_text(candidate)
     scores = []
@@ -209,6 +258,13 @@ def _score_learning_points(candidate: dict) -> list[dict]:
                 reasons.append(f"path:{keyword}")
         if score <= 0:
             continue
+        # Amplify rules that match the learner's accumulated profile so
+        # repeated/underexplored points float to the top when content is
+        # otherwise tied. This is the single write→read hook for
+        # memory/profile.json in candidate interpretation.
+        profile_boost, profile_reasons = _profile_boost(rule["id"], learning_profile)
+        score += profile_boost
+        reasons.extend(profile_reasons)
         scores.append({
             "id": rule["id"],
             "label": rule["label"],
@@ -220,10 +276,17 @@ def _score_learning_points(candidate: dict) -> list[dict]:
     return scores
 
 
-def build_candidate_interpretation(repo_name: str, mode: str, focus_payload: dict, db_path: str | None = None) -> dict:
+def build_candidate_interpretation(
+    repo_name: str,
+    mode: str,
+    focus_payload: dict,
+    db_path: str | None = None,
+    *,
+    learning_profile: dict | None = None,
+) -> dict:
     candidate_profiles = []
     for candidate in focus_payload.get("candidates", []):
-        learning_points = _score_learning_points(candidate)
+        learning_points = _score_learning_points(candidate, learning_profile=learning_profile)
         if not learning_points:
             continue
         profile = {

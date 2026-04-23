@@ -10,6 +10,8 @@
 > - [Release Policy, Change Freeze, and Error Budget Coupling](./release-policy-change-freeze-error-budget-coupling.md)
 > - [Production Readiness Review](./production-readiness-review.md)
 > - [Service Maturity Model](./service-maturity-model.md)
+> - [Non-Functional Requirements as Budgets](./non-functional-requirements-budgeting.md)
+> - [Cross-Service NFR Budget Negotiation](./cross-service-nfr-budget-negotiation.md)
 
 > retrieval-anchor-keywords:
 > - SLA
@@ -20,6 +22,7 @@
 > - reliability target
 > - support boundary
 > - accountability
+> - SLO decomposition
 
 ## 핵심 개념
 
@@ -37,6 +40,7 @@ SLA/SLO는 운영 지표처럼 보이지만, 실제로는 책임 경계를 드�
 ### 1. SLO는 서비스 성숙도의 일부다
 
 성숙한 서비스는 단순 기능이 아니라 reliability target을 가진다.
+이때 SLO는 더 큰 NFR budget의 한 부분으로 분해되어야 한다.
 
 ### 2. ownership boundary와 맞춰야 한다
 

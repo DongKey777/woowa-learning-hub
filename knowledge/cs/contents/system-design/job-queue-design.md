@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 느린 작업을 요청 경로에서 분리하고, 버퍼링과 재시도로 시스템을 안정화하는 비동기 작업 처리 설계다.
 
-retrieval-anchor-keywords: job queue, durable delivery, worker pool, retry, dead letter queue, visibility timeout, at-least-once, backpressure, priority queue, delayed job
+retrieval-anchor-keywords: job queue, durable delivery, worker pool, retry, dead letter queue, visibility timeout, at-least-once, backpressure, priority queue, delayed job, redrive queue, replay campaign
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,7 @@ retrieval-anchor-keywords: job queue, durable delivery, worker pool, retry, dead
 > - [Workflow Orchestration + Saga 설계](./workflow-orchestration-saga-design.md)
 > - [Notification 시스템 설계](./notification-system-design.md)
 > - [Rate Limiter 설계](./rate-limiter-design.md)
+> - [Replay / Repair Orchestration Control Plane 설계](./replay-repair-orchestration-control-plane-design.md)
 
 ## 핵심 개념
 
@@ -235,4 +236,3 @@ public void handle(Job job) {
 ## 한 줄 정리
 
 Job Queue는 느린 작업을 버퍼링하고 재시도와 격리를 담당해, 요청 경로를 보호하는 비동기 처리의 핵심 인프라다.
-

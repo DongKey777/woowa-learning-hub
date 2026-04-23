@@ -2,7 +2,18 @@
 
 > 한 줄 요약: 디스크 쓰기는 보이는 순간 끝난 게 아니라, page cache와 writeback 정책을 거쳐야 진짜 안전해진다.
 
-> 관련 문서: [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md), [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
+> - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
+> - [Dirty Page Ratios, Writeback Tuning](./dirty-page-ratios-writeback-tuning.md)
+> - [Dirty Throttling, balance_dirty_pages, Writeback Stalls](./dirty-throttling-balance-dirty-pages-writeback-stalls.md)
+> - [Fsync Batching Semantics](./fsync-batching-semantics.md)
+> - [Fsync Tail Latency, Dirty Writeback, Backend Debugging](./fsync-tail-latency-dirty-writeback-debugging.md)
+> - [Rename Atomicity, Directory fsync, Crash Consistency](./rename-atomicity-directory-fsync-crash-consistency.md)
+
+> retrieval-anchor-keywords: page cache, dirty writeback, fsync, fdatasync, durable write, dirty page, writeback, journal commit, page cache flush, backend durability
 
 ## 핵심 개념
 

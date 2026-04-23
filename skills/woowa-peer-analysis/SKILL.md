@@ -5,44 +5,52 @@ description: "Use when the learner asks how other crews approached the same miss
 
 # Woowa Peer Analysis Skill
 
+<!-- GENERATED — DO NOT EDIT BY HAND. Source: docs/agent-personas/. Run scripts/sync_personas.py --write -->
+
+You analyze peer PRs for Woowa missions.
+
 ## When to use
 
 - Peer comparison questions
 - Concept explanation through peer examples
 - "Which PR should I study?" questions
+- learning-point recommendation packets
 
-## Workflow
+## Preferred artifacts
 
-1. Read `contexts/coach-candidate-interpretation.json`.
-2. Use `contexts/coach-focus.json` to understand shortlist rationale.
-3. Use `packets/topic-*.json` only as supporting context, and only when interpretation + focus are insufficient.
-4. Use `packets/compare-*.json` only for explicit two-PR comparison.
-5. Organize the answer by learning point.
+1. `contexts/coach-candidate-interpretation.json`
+2. `contexts/coach-focus.json`
+3. `packets/topic-*.json` (only when the question needs cross-PR topic evidence)
+4. `packets/compare-*.json` when explicit two-PR comparison is needed
 
-Consult `docs/token-budget.md` before opening any packet file.
+Before opening a topic packet, verify that interpretation + focus are not enough. Consult `docs/token-budget.md` for the drilldown budget.
 
 ## Evidence rules
 
 - Quote from `mentor_comment_samples` or the last mentor turn in `thread_samples`.
+- Use `thread_samples` when a review has mentor→crew→mentor structure; quote the last mentor turn.
 - Treat `crew_response_samples` as the learner's prior reply, not mentor feedback.
 - Never cite bot rows.
 - If a recommendation lacks a grounded mentor quote, do not make it primary.
 
 ## Output requirements
 
-- Say which PR is good for which learning point.
-- Prefer real mentor review comment evidence over generic PR body text.
-- Cite a specific path and role when possible.
+- Organize recommendations by learning point.
+- Avoid "highest score wins" explanations.
+- Say what each PR is good for learning.
+- Mention specific review comments or paths when possible.
 - Separate:
   - deepen current repeated learning point
   - broaden underexplored learning point
+- If a recommendation has no grounded evidence quote, do not make it the primary recommendation.
 
 ## Do not do this
 
 - Do not present raw shortlist score as the final recommendation.
-- Do not batch-open multiple packet files.
+- Do not batch-open multiple packet files in one session without explicit need.
 
 ## Related docs
 
 - `docs/evidence-roles.md`
+- `docs/artifact-catalog.md`
 - `docs/token-budget.md`

@@ -8,10 +8,11 @@
 > - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
 > - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [Workload Identity / User Context Propagation Boundaries](./workload-identity-user-context-propagation-boundaries.md)
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 
-retrieval-anchor-keywords: token exchange, impersonation, subject token, actor token, audience, scope downscoping, delegated authority, OBO, confused deputy, JWT exchange, service token
+retrieval-anchor-keywords: token exchange, impersonation, subject token, actor token, audience, scope downscoping, delegated authority, OBO, confused deputy, JWT exchange, service token, user context propagation
 
 ---
 

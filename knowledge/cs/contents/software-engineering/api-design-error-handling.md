@@ -1,6 +1,25 @@
 # API 설계와 예외 처리 🟡 Intermediate
 
+**난이도: 🟡 Intermediate**
+
 > 좋은 API는 호출자가 소스코드를 읽지 않아도 실패 이유를 알 수 있는 API다.
+
+> 관련 문서:
+> - [Software Engineering README: API 설계와 예외 처리](./README.md#api-설계와-예외-처리)
+> - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
+> - [API Versioning, Contract Testing, Anti-Corruption Layer](./api-versioning-contract-testing-anti-corruption-layer.md)
+> - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
+>
+> retrieval-anchor-keywords:
+> - API design
+> - API error handling
+> - error response envelope
+> - problem details
+> - RFC 7807
+> - HTTP status code semantics
+> - error code taxonomy
+> - exception to API translation
+> - 예외 처리 설계
 
 ## 핵심 개념
 

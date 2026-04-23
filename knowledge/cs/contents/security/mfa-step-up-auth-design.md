@@ -8,10 +8,12 @@
 > - [Rate Limiting vs Brute Force Defense](./rate-limiting-vs-brute-force-defense.md)
 > - [WebAuthn / Passkeys / Phishing-Resistant Login](./webauthn-passkeys-phishing-resistant-login.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [Step-Up Session Coherence / Auth Assurance](./step-up-session-coherence-auth-assurance.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
 
-retrieval-anchor-keywords: MFA, step-up auth, risk-based auth, TOTP, WebAuthn, recovery code, reauthentication, sensitive action, account takeover, session age, auth assurance
+retrieval-anchor-keywords: MFA, step-up auth, risk-based auth, TOTP, WebAuthn, recovery code, reauthentication, sensitive action, account takeover, session age, auth assurance, elevated session, auth_time
 
 ---
 

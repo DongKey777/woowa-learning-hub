@@ -6,6 +6,8 @@
 
 > 관련 문서:
 > - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
+> - [Event Upcaster Compatibility Patterns](./event-upcaster-compatibility-patterns.md)
+> - [Checkpoint / Snapshot Pattern](./checkpoint-snapshot-pattern.md)
 > - [Saga / Coordinator](./saga-coordinator-pattern-language.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [Unit of Work Pattern](./unit-of-work-pattern.md)
@@ -31,6 +33,8 @@ Event Sourcing은 **상태를 덮어쓰는 대신 사건을 순서대로 저장*
 - `state reconstruction`
 - `replay events`
 - `event versioning`
+- `event upcaster`
+- `legacy replay compatibility`
 
 ---
 
@@ -163,4 +167,3 @@ public OrderAggregate rehydrate(List<DomainEvent> history) {
 ## 한 줄 정리
 
 Event Sourcing은 상태를 직접 저장하지 않고 사건의 흐름을 저장해, 재현과 감사에 강한 패턴 언어다.
-

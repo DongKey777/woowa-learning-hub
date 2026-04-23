@@ -6,10 +6,14 @@
 
 > 관련 문서:
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+> - [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
+> - [Spring `BasicErrorController`, `ErrorAttributes`, and Whitelabel Error Boundaries](./spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Proxy Local Reply vs Upstream Error Attribution](../network/proxy-local-reply-vs-upstream-error-attribution.md)
 
 retrieval-anchor-keywords: HandlerExceptionResolver, ExceptionResolver chain, @ExceptionHandler, @ControllerAdvice, DefaultHandlerExceptionResolver, ResponseStatusExceptionResolver, error contract
 

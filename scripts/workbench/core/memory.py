@@ -189,12 +189,36 @@ def _repeated_learning_point_counts(entries: list[dict]) -> Counter:
     return counts
 
 
-def _confidence_level(count: int, weighted_count: float) -> str:
+_CONFIDENCE_ORDER = ("low", "medium", "high")
+
+
+def _shift_level(level: str, delta: int) -> str:
+    try:
+        idx = _CONFIDENCE_ORDER.index(level)
+    except ValueError:
+        return level
+    shifted = max(0, min(len(_CONFIDENCE_ORDER) - 1, idx + delta))
+    return _CONFIDENCE_ORDER[shifted]
+
+
+def _confidence_level(
+    count: int,
+    weighted_count: float,
+    avg_drill_score: float | None = None,
+) -> str:
     if count >= 4 or weighted_count >= 3.0:
-        return "high"
-    if count >= 2 or weighted_count >= 1.5:
-        return "medium"
-    return "low"
+        level = "high"
+    elif count >= 2 or weighted_count >= 1.5:
+        level = "medium"
+    else:
+        level = "low"
+    if avg_drill_score is None:
+        return level
+    if avg_drill_score >= 7.0:
+        return _shift_level(level, +1)
+    if avg_drill_score < 5.0:
+        return _shift_level(level, -1)
+    return level
 
 
 def _question_pattern_counter(entries: list[dict]) -> Counter:
@@ -335,7 +359,13 @@ def _learning_point_catalog() -> dict[str, dict]:
     return {rule["id"]: rule for rule in LEARNING_POINT_RULES}
 
 
-def _build_profile(repo_name: str, summary: dict, entries: list[dict]) -> dict:
+def _build_profile(
+    repo_name: str,
+    summary: dict,
+    entries: list[dict],
+    *,
+    avg_drill_score: float | None = None,
+) -> dict:
     catalog = _learning_point_catalog()
     confidence_map = {
         item["learning_point"]: item
@@ -402,6 +432,15 @@ def _build_profile(repo_name: str, summary: dict, entries: list[dict]) -> dict:
         global_confidence = "high"
     elif repeated_learning_points or any(item.get("confidence") == "medium" for item in dominant_learning_points[:2]):
         global_confidence = "medium"
+
+    # Drill performance is a second signal: strong drill answers promote the
+    # confidence we show the learner even when history is thin, and weak
+    # drill answers demote it even when history looks dense.
+    if avg_drill_score is not None:
+        if avg_drill_score >= 7.0:
+            global_confidence = _shift_level(global_confidence, +1)
+        elif avg_drill_score < 5.0:
+            global_confidence = _shift_level(global_confidence, -1)
 
     profile = {
         "profile_type": "learning_memory_profile",
@@ -477,7 +516,19 @@ def compute_memory_update(
     summary = _summarize_history(repo_name, projected_entries)
     validate_payload("learning-memory-summary", summary)
 
-    profile = _build_profile(repo_name, summary, projected_entries)
+    avg_drill_score: float | None = None
+    if learning_projection:
+        cs_view = learning_projection.get("cs_view") or {}
+        raw = cs_view.get("avg_score") if isinstance(cs_view, dict) else None
+        if isinstance(raw, (int, float)):
+            avg_drill_score = float(raw)
+
+    profile = _build_profile(
+        repo_name,
+        summary,
+        projected_entries,
+        avg_drill_score=avg_drill_score,
+    )
     if learning_projection:
         for field in ("cs_view", "drill_history", "reconciled"):
             if field in learning_projection:

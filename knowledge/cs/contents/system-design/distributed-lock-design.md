@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 분산 환경에서 단일 실행권을 보장하려면, 락 자체보다 "언제 안전하게 풀 수 있는가"와 "누가 진짜 소유자인가"를 먼저 설계해야 한다.
 
+retrieval-anchor-keywords: distributed lock, lease, fencing token, ownership, leader election, stale owner, compare and delete, coordination, failover control, placement fencing, consensus reconfiguration
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
@@ -11,6 +13,8 @@
 > - [Deadlock Case Study](../database/deadlock-case-study.md)
 > - [멱등성 키와 중복 방지](../database/idempotency-key-and-deduplication.md)
 > - [Transaction Debugging Playbook](../spring/spring-transaction-debugging-playbook.md)
+> - [Stateful Workload Placement / Failover Control Plane 설계](./stateful-workload-placement-failover-control-plane-design.md)
+> - [Consensus Membership Reconfiguration 설계](./consensus-membership-reconfiguration-design.md)
 
 ---
 

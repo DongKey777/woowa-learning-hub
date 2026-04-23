@@ -2,6 +2,8 @@
 
 > 신입 백엔드 개발자 기준으로 CS-study를 어떤 순서로 공부할지 정리한 가이드
 
+> retrieval-anchor-keywords: junior backend roadmap, 신입 백엔드 로드맵, beginner backend study order, backend learning path, cs study sequence, foundational curriculum, backend starter guide, roadmap, survey
+
 ## 목표
 
 이 문서는 CS-study의 범위가 넓어서 무엇부터 봐야 할지 막막할 때,
@@ -16,10 +18,10 @@
 
 추천 순서:
 
-1. [자바 언어의 구조와 기본 문법](./contents/language/java/1.md)
-2. [객체지향 핵심 원리](./contents/language/java/2.md)
-3. [불변 객체와 방어적 복사](./contents/language/java/3.md)
-4. [부록 - 생각해보기](./contents/language/java/appendix.md)
+1. [자바 언어의 구조와 기본 문법](./contents/language/java/java-language-basics.md)
+2. [객체지향 핵심 원리](./contents/language/java/object-oriented-core-principles.md)
+3. [불변 객체와 방어적 복사](./contents/language/java/immutable-objects-and-defensive-copying.md)
+4. [추상 클래스 vs 인터페이스](./contents/language/java/abstract-class-vs-interface.md)
 
 이 단계 목표:
 
@@ -123,9 +125,9 @@
 
 추천 순서:
 
-1. [JVM, GC, JMM](./contents/language/java/4.md)
-2. [Java 동시성 유틸리티](./contents/language/java/5.md)
-3. [ClassLoader, Exception 설계, equals/hashCode/compareTo](./contents/language/java/6.md)
+1. [JVM, GC, JMM](./contents/language/java/jvm-gc-jmm-overview.md)
+2. [Java 동시성 유틸리티](./contents/language/java/java-concurrency-utilities.md)
+3. [ClassLoader, Exception 경계, 객체 계약](./contents/language/java/classloader-exception-boundaries-object-contracts.md)
 4. [컨텍스트 스위칭, 데드락, lock-free](./contents/operating-system/context-switching-deadlock-lockfree.md)
 5. [I/O 모델과 이벤트 루프](./contents/operating-system/io-models-and-event-loop.md)
 6. [Reflection, Generics, Annotations](./contents/language/java/reflection-generics-annotations.md)

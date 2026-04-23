@@ -1,16 +1,29 @@
 # epoll, kqueue, io_uring
 
 > 한 줄 요약: 많은 연결을 다룰 때는 `blocking`을 줄이는 것보다, 커널이 I/O 준비 완료를 더 싸게 알려주도록 구조를 바꾸는 게 핵심이다.
+>
+> 문서 역할: 이 문서는 operating-system 운영 cluster 안에서 **이벤트 통지 API와 커널 인터페이스 선택**을 다루는 deep dive다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [I/O 모델과 이벤트 루프](./io-models-and-event-loop.md)
+> - [epoll Level-Triggered, Edge-Triggered, ONESHOT Wakeup Semantics](./epoll-level-edge-oneshot-wakeup-semantics.md)
+> - [io_uring Operational Hazards, Registered Resources, SQPOLL](./io-uring-operational-hazards-registered-resources-sqpoll.md)
+> - [io_uring CQ Overflow, Provided Buffers, IOWQ Worker Placement](./io-uring-cq-overflow-provided-buffers-iowq-placement.md)
 > - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 > - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
 > - [Virtual Threads(Project Loom)](../language/java/virtual-threads-project-loom.md)
 > - [gRPC vs REST](../network/grpc-vs-rest.md)
+
+> retrieval-anchor-keywords: epoll, kqueue, io_uring, EPOLLET, EPOLLONESHOT, level triggered, edge triggered, completion queue, readiness model, async I/O
+
+## 이 문서 다음에 보면 좋은 문서
+
+- I/O 모델 전체 맥락은 [I/O Models and Event Loop](./io-models-and-event-loop.md)로 되돌아가면 좋다.
+- `epoll` 세부 wakeup 함정은 [epoll Level-Triggered, Edge-Triggered, ONESHOT Wakeup Semantics](./epoll-level-edge-oneshot-wakeup-semantics.md)에서 이어진다.
+- `io_uring` 운영 함정은 [io_uring Operational Hazards, Registered Resources, SQPOLL](./io-uring-operational-hazards-registered-resources-sqpoll.md)로 이어진다.
 
 ---
 

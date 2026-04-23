@@ -6,11 +6,12 @@
 
 > 관련 문서:
 > - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
+> - [Record/Sealed Hierarchy Evolution and Pattern Matching Compatibility](./record-sealed-hierarchy-evolution-pattern-matching-compatibility.md)
 > - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 
-> retrieval-anchor-keywords: sealed interface, sealed class, permits, exhaustive switch, pattern matching switch, closed hierarchy, domain state, algebraic data type, polymorphism, default branch, evolution safety
+> retrieval-anchor-keywords: sealed interface, sealed class, permits, exhaustive switch, pattern matching switch, closed hierarchy, domain state, algebraic data type, polymorphism, default branch, evolution safety, variant addition, compatibility
 
 <details>
 <summary>Table of Contents</summary>

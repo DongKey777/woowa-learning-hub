@@ -8,7 +8,16 @@
 > - [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
 > - [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md)
 > - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+> - [CDC Backpressure, Binlog/WAL Retention, and Replay Safety](./cdc-backpressure-binlog-retention-replay.md)
+> - [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md)
+> - [CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook](./cdc-schema-evolution-compatibility-playbook.md)
+> - [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)
+> - [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
 > - [API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
+> - [Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md)
+> - [Historical Backfill / Replay Platform 설계](../system-design/historical-backfill-replay-platform-design.md)
+
+retrieval-anchor-keywords: cdc, debezium, outbox, binlog, wal, connector offset, replay safe consumer, cdc backpressure, event dedup, cdc gap repair, projection rebuild, schema evolution, expand contract
 
 ## 핵심 개념
 
@@ -71,6 +80,10 @@ Debezium은 이 로그를 읽어 Kafka 같은 스트림으로 보낸다.
 - connector offset을 관리해야 한다
 - 재처리 시 idempotent consumer가 필요하다
 - schema evolution을 고려해야 한다
+- lag seconds뿐 아니라 binlog/WAL retention 압박도 같이 봐야 한다
+- heartbeat가 없으면 low-traffic 구간의 정지 여부를 오판하기 쉽다
+- 실제 gap이 생기면 replay, backfill, recompute 중 어떤 repair 경계를 택할지 미리 정해 두어야 한다
+- old/new consumer가 함께 살아 있는 동안 forward/backward compatibility를 유지하는 rollout 순서를 준비해야 한다
 
 ## 실전 시나리오
 

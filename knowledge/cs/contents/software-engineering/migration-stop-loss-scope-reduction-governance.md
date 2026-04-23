@@ -1,0 +1,167 @@
+# Migration Stop-Loss and Scope Reduction Governance
+
+> 한 줄 요약: migration은 한 번 시작했다고 끝까지 같은 범위로 밀어붙여야 하는 일이 아니라, stop-loss와 scope reduction 기준을 미리 정해 두고 경제성·리스크·채택 속도를 다시 보며 줄이거나 멈추거나 다른 경로로 바꾸는 governance가 필요하다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Software Engineering README: Migration Stop-Loss and Scope Reduction Governance](./README.md#migration-stop-loss-and-scope-reduction-governance)
+> - [Migration Carrying Cost and Cost of Delay](./migration-carrying-cost-cost-of-delay.md)
+> - [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md)
+> - [Migration Funding Model](./migration-funding-model.md)
+> - [Decision Revalidation and Supersession Lifecycle](./decision-revalidation-supersession-lifecycle.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
+
+> retrieval-anchor-keywords:
+> - migration stop loss
+> - scope reduction
+> - migration pivot
+> - kill criteria
+> - continue or stop
+> - sunk cost trap
+> - modernization stop rule
+> - transition exit criteria
+
+## 핵심 개념
+
+많은 migration이 기술적으로 어려워서보다, **이미 많이 투자했으니 계속 가야 한다**는 sunk-cost 논리 때문에 길어진다.
+
+하지만 좋은 migration governance는 계속할 기준뿐 아니라 다음도 미리 정한다.
+
+- 언제 scope를 줄일 것인가
+- 언제 temporary coexistence를 인정할 것인가
+- 언제 다른 전략으로 pivot할 것인가
+- 언제 종료하거나 abandon할 것인가
+
+즉 stop-loss는 실패 선언이 아니라 **전환 포트폴리오를 보호하는 안전장치**다.
+
+---
+
+## 깊이 들어가기
+
+### 1. stop-loss는 감정이 아니라 사전 계약이어야 한다
+
+전환이 힘들어지고 나서 stop 여부를 논의하면 감정과 정치가 커진다.
+그래서 시작 전에 기준을 둬야 한다.
+
+예:
+
+- adoption coverage가 두 분기 연속 목표 미달
+- carrying cost가 기대 절감 효과를 넘김
+- repeated exception이 줄지 않음
+- replacement architecture가 예상보다 더 복잡함
+
+이런 기준이 없으면 전환은 "거의 다 왔다" 상태로 오래 머문다.
+
+### 2. stop과 fail은 다르다
+
+stop-loss는 반드시 전환 실패를 뜻하지 않는다.
+좋은 결과는 여러 형태일 수 있다.
+
+예:
+
+- 전체 전환 대신 high-value capability만 이동
+- shared service 대신 library + guardrail로 축소
+- full replacement 대신 interface stabilization만 수행
+
+즉 scope reduction은 종종 **더 현실적인 성공 조건**이 된다.
+
+### 3. wave별로 partial win을 정의해야 한다
+
+큰 migration은 중간 산출물을 가치 있게 만들어야 stop-loss 논의가 건강해진다.
+
+partial win 예:
+
+- observability modernization
+- contract registry 정리
+- ownership metadata 정비
+- read path만 신규화
+
+이렇게 해야 전체 전환을 줄이더라도 조직이 얻는 것이 남는다.
+
+### 4. pivot path를 준비해야 한다
+
+stop-loss를 정해도 대체 경로가 없으면 아무도 멈추지 못한다.
+
+pivot options 예:
+
+- big migration -> staged coexistence
+- full service replacement -> critical path replacement only
+- new platform build -> adopt existing paved road
+- dual-run -> read-only fallback model
+
+즉 governance는 stop rule뿐 아니라 **다음 경로 후보**를 같이 가져야 한다.
+
+### 5. stop-loss 권한은 sponsor와 operator 둘 다 연결돼야 한다
+
+경제성만 보는 sponsor와 runtime risk를 보는 owner/on-call이 따로 놀면 안 된다.
+필요한 것은 joint decision right다.
+
+보통 같이 봐야 할 것:
+
+- budget owner
+- migration sponsor
+- service owner
+- operational owner
+- affected consumer owner
+
+즉 continue/stop 판단은 finance 문제도, pure tech 문제도 아니다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: 전사 표준 메시지 플랫폼으로 다 옮기려 한다
+
+핵심 consumer 몇 개만 옮겨도 대부분의 위험이 줄어든다면, long-tail consumer까지 밀어붙이는 대신 scope reduction이 더 낫다.
+
+### 시나리오 2: 새 서비스가 기대보다 운영 복잡하다
+
+replacement가 business value는 비슷한데 operational surface만 커진다면, 부분 modernize 후 full replacement를 중단할 수 있다.
+
+### 시나리오 3: dual-run이 1년째 계속된다
+
+이 경우 "곧 끝난다"보다 stop-loss 기준을 다시 보고, coexistence를 장기 모델로 인정할지 scope를 축소할지 결정해야 한다.
+
+---
+
+## 코드로 보기
+
+```yaml
+migration_stop_loss:
+  trigger_if:
+    - adoption_coverage < 60% for 2_quarters
+    - carrying_cost > expected_benefit
+    - repeated_exception >= 3
+  options:
+    - reduce_scope_to_critical_paths
+    - pivot_to_coexistence_model
+    - stop_and_retain_partial_wins
+```
+
+좋은 stop-loss 모델은 멈출 조건과 다음 선택지를 같이 적는다.
+
+---
+
+## 트레이드오프
+
+| 선택 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| 끝까지 밀어붙임 | 메시지가 단순하다 | sunk-cost trap에 빠질 수 있다 | 드문 경우 |
+| stop-loss 기준 운영 | 경제성이 높다 | 합의가 필요하다 | 장기 migration |
+| scope reduction + partial win | 현실적이다 | 이상적인 목표는 줄어든다 | adoption/경제성이 흔들릴 때 |
+
+migration stop-loss governance의 핵심은 전환 의지를 약하게 만드는 것이 아니라, **잘못된 방향으로 오래 가는 비용을 줄이는 것**이다.
+
+---
+
+## 꼬리질문
+
+- 이 migration은 언제 scope를 줄여야 하는가?
+- stop을 실패가 아니라 partial success로 설명할 수 있는가?
+- repeated exception과 carrying cost가 stop rule에 포함돼 있는가?
+- pivot path 없이 "계속"만 선택하고 있지는 않은가?
+
+## 한 줄 정리
+
+Migration stop-loss and scope reduction governance는 전환을 계속할지 줄일지 바꿀지를 미리 정의해 sunk-cost trap을 줄이고, 더 현실적인 modernization 결과를 남기게 만드는 운영 원칙이다.

@@ -8,10 +8,11 @@
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
 > - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
 > - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+> - [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)
 
-> retrieval-anchor-keywords: cpu.max, cpu.stat, throttling, nr_throttled, throttled_usec, cgroup quota, cfs quota, period, cpu.pressure
+> retrieval-anchor-keywords: cpu.max, cpu.stat, throttling, nr_throttled, throttled_usec, cgroup quota, cfs quota, period, cpu.pressure, load average triage, cpu saturation vs throttling
 
 ## 핵심 개념
 
@@ -56,6 +57,8 @@ throttled 태스크는 runnable이지만 실행 기회를 못 받는다. 이 상
 - load average는 밀려 있는 압력을 보여준다
 - throttling은 정책으로 잘린 시간을 보여준다
 - PSI는 그 결과로 생긴 stall을 보여준다
+
+즉 `load average`가 높다고 바로 scheduler contention으로 결론내리면 안 된다. 초보자용 1차 분기는 [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)처럼 saturation, throttling, I/O wait를 먼저 가르는 것이다.
 
 ### 4. bursty workload가 특히 취약하다
 

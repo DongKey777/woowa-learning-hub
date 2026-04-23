@@ -10,6 +10,9 @@
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
 > - [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
+> - [Technology Radar and Adoption Governance](./technology-radar-adoption-governance.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
+> - [Platform Control Plane and Delegation Boundaries](./platform-control-plane-delegation-boundaries.md)
 
 > retrieval-anchor-keywords:
 > - paved road
@@ -32,6 +35,7 @@ Paved road는 플랫폼 팀이 제공하는 "가장 쉬운 경로"다.
 - 기본 인증
 - 기본 알림
 - 기본 테스트
+- 안전한 설정 변경 경로
 
 을 쉽게 만들어준다.
 
@@ -92,6 +96,8 @@ Paved road는 플랫폼 팀이 제공하는 "가장 쉬운 경로"다.
 ### 5. paved road는 플랫폼 팀의 제품이다
 
 이 경로도 지속적으로 개선해야 한다.
+
+또한 radar에서 adopt 상태인 기술일수록 paved road에서 가장 쉽게 쓸 수 있어야 한다.
 
 필요한 피드백:
 

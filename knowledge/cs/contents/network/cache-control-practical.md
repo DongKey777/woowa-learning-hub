@@ -1,6 +1,18 @@
 # Cache-Control 실전
 
+**난이도: 🔴 Advanced**
+
 > 캐시를 "빠르게 만드는 기능"이 아니라 "정확하게 통제해야 하는 계약"으로 보는 정리
+
+> 관련 문서:
+> - [CDN 캐시 키와 무효화 전략](./cdn-cache-key-invalidation.md)
+> - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+> - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+> - [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md)
+> - [Compression, Cache, Vary, Accept-Encoding, Personalization](./compression-cache-vary-accept-encoding-personalization.md)
+> - [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)
+
+retrieval-anchor-keywords: Cache-Control, max-age, no-store, no-cache, stale-while-revalidate, immutable, shared cache, browser cache, CDN cache, HTTP caching
 
 <details>
 <summary>Table of Contents</summary>
@@ -26,6 +38,17 @@
 - stale 데이터를 얼마나 허용하는가
 
 를 명확히 정해야 한다.
+
+### Retrieval Anchors
+
+- `Cache-Control`
+- `max-age`
+- `no-store`
+- `no-cache`
+- `stale-while-revalidate`
+- `immutable`
+- `shared cache`
+- `HTTP caching`
 
 ---
 

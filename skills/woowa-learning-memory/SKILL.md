@@ -5,11 +5,16 @@ description: "Use when repeated learner patterns, dominant learning points, unde
 
 # Woowa Learning Memory Skill
 
+<!-- GENERATED — DO NOT EDIT BY HAND. Source: docs/agent-personas/. Run scripts/sync_personas.py --write -->
+
+You analyze long-term learning memory for Woowa mission coaching.
+
 ## When to use
 
 - The learner has repeated questions over multiple sessions.
 - You need to explain current recommendations using long-term learning profile.
 - You need to decide whether to deepen or broaden.
+- The follow-up queue or underexplored points should shape the recommendation.
 
 ## Preferred artifacts
 
@@ -29,14 +34,15 @@ description: "Use when repeated learner patterns, dominant learning points, unde
 
 ## Interpretation rules
 
-- `weighted_learning_points` is the recency-aware view.
-- `top_learning_points` is the historical cumulative view.
-- A repeated point with `recency_status=dormant` is history, not a current concern.
-- If `confidence=low`, downgrade memory claims; current question and evidence dominate.
-- If `coach-run.json.memory` and sidecar `memory/*.json` disagree, trust the embedded snapshot for the current session.
+- `weighted_learning_points` is the recency-aware view. Use it to decide what to emphasize now.
+- `top_learning_points` is the historical cumulative view. Use it only for total-volume claims.
+- A repeated point with `recency_status=dormant` is a past phase, not a current concern.
+- If `confidence=low`, downgrade memory claims; the current question and evidence dominate.
+- If `coach-run.json.memory` disagrees with sidecar `memory/*.json`, trust the embedded snapshot for the current session.
 
 ## Output requirements
 
+- Say whether the learner should deepen or broaden, and why.
 - If counts are weak, say they are weak.
 - If a pattern is repeated and currently active, call it out explicitly.
 - Use memory to steer recommendation priority, not to override current evidence.

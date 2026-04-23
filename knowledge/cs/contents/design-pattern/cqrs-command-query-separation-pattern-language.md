@@ -7,6 +7,9 @@
 > 관련 문서:
 > - [Command Pattern, Undo, Queue](./command-pattern-undo-queue.md)
 > - [Specification Pattern](./specification-pattern.md)
+> - [Repository Boundary: Aggregate Persistence vs Read Model](./repository-boundary-aggregate-vs-read-model.md)
+> - [Read Model Staleness and Read-Your-Writes](./read-model-staleness-read-your-writes.md)
+> - [Projection Rebuild, Backfill, and Cutover Pattern](./projection-rebuild-backfill-cutover-pattern.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [Saga / Coordinator](./saga-coordinator-pattern-language.md)
@@ -31,6 +34,12 @@ CQRS(Command Query Responsibility Segregation)는 **상태를 바꾸는 책임�
 - `write model`
 - `projection`
 - `materialized view`
+- `query service boundary`
+- `aggregate persistence boundary`
+- `read your writes`
+- `projection lag`
+- `projection rebuild`
+- `projection cutover`
 
 ---
 
@@ -164,4 +173,3 @@ Command은 상태를 바꾸고, Query는 읽기 최적화 모델을 조회한다
 ## 한 줄 정리
 
 CQRS는 명령과 조회를 분리해 쓰기 정합성과 읽기 최적화를 각각 다루게 하는 패턴 언어다.
-

@@ -10,6 +10,8 @@
 > - [Idle Timeout 불일치: LB, Proxy, App](./idle-timeout-mismatch-lb-proxy-app.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [gRPC Deadlines, Cancellation Propagation](./grpc-deadlines-cancellation-propagation.md)
+> - [TLS close_notify, FIN/RST, Truncation](./tls-close-notify-fin-rst-truncation.md)
+> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](./client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 
 retrieval-anchor-keywords: FIN, RST, half-close, EOF, shutdown(SHUT_WR), CLOSE_WAIT, TIME_WAIT, ECONNRESET, EPIPE, SO_LINGER
 

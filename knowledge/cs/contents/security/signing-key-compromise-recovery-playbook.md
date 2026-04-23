@@ -1,0 +1,307 @@
+# Signing Key Compromise Recovery Playbook
+
+> 한 줄 요약: JWT signing key나 request-signing key가 유출됐을 때는 단순 rotation이 아니라, 어느 토큰이 더 이상 신뢰 불가인지 범위를 정하고 signer 중지, verifier policy tighten, session/token 회수, 포렌식까지 묶은 compromise runbook이 필요하다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Key Rotation Runbook](./key-rotation-runbook.md)
+> - [JWK Rotation / Cache Invalidation / `kid` Rollover](./jwk-rotation-cache-invalidation-kid-rollover.md)
+> - [JWKS Rotation Cutover Failure / Recovery](./jwks-rotation-cutover-failure-recovery.md)
+> - [JWT / JWKS Outage Recovery / Failover Drills](./jwt-jwks-outage-recovery-failover-drills.md)
+> - [JWT Signature Verification Failure Playbook](./jwt-signature-verification-failure-playbook.md)
+> - [mTLS Certificate Rotation / Trust Bundle Rollout](./mtls-certificate-rotation-trust-bundle-rollout.md)
+> - [Hardware-Backed Keys / Attestation](./hardware-backed-keys-attestation.md)
+> - [Secret Scanning / Credential Leak Response](./secret-scanning-credential-leak-response.md)
+> - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Auth Incident Triage / Blast-Radius Recovery Matrix](./auth-incident-triage-blast-radius-recovery-matrix.md)
+
+retrieval-anchor-keywords: signing key compromise, JWT signing key leak, private key compromise, emergency key revoke, compromised signer recovery, token trust cutoff, forged token incident, secret leak recovery, compromised key runbook, jwks compromise response, compromised kid reject, trust bundle recovery, signer freeze, key lineage recovery
+
+---
+
+## 핵심 개념
+
+정기 rotation과 compromise recovery는 같은 작업이 아니다.
+
+정기 rotation은 계획된 교체다.  
+compromise recovery는 "이 키로 서명된 토큰을 아직 믿어도 되는가"를 다시 결정하는 일이다.
+
+즉 키 유출 사고의 핵심 질문은:
+
+- 유출된 키로 위조 토큰이 만들어질 수 있는가
+- 어느 시각 이후 발급/서명된 artifact를 불신할 것인가
+- verifier가 즉시 그 키를 거부해야 하는가
+- access token, refresh token, signed request, webhook secret 중 무엇이 영향받았는가
+
+---
+
+## 깊이 들어가기
+
+### 1. compromise recovery는 availability보다 trust cutoff를 먼저 정해야 한다
+
+복구 초기에 가장 필요한 것은 "cutoff line"이다.
+
+- compromise suspected at
+- signer last-known-good window
+- token TTL
+- audit confidence
+
+이 선이 없으면:
+
+- 너무 넓게 다 끊어 UX가 망가지거나
+- 반대로 위조 가능 토큰을 너무 오래 허용한다
+
+### 2. signer stop과 verifier reject는 별도 단계다
+
+해야 할 일:
+
+- compromised key로 더 이상 서명하지 않음
+- verifier가 compromised key를 더 이상 신뢰하지 않음
+
+두 단계 사이가 길면:
+
+- 새 위조 토큰이 계속 만들어질 수 있고
+- old legitimate token도 함께 끊길 수 있다
+
+여기서 중요한 차이:
+
+- planned rotation이면 old key를 overlap으로 잠깐 남겨 둘 수 있다
+- compromise recovery면 compromised key를 verifier trust set에 오래 남기면 안 된다
+
+즉 기존 legitimate token tail은 session/token 회수나 direct check로 다뤄야지, compromised key를 계속 JWKS에 남겨서 해결하면 안 된다.
+
+### 3. self-contained token은 즉시 회수가 어렵다
+
+특히 JWT access token은 이미 발급된 것이 verifier에 local validation될 수 있다.
+
+대응 옵션:
+
+- session version / revocation check 강화
+- 민감 route에 direct check 추가
+- access token TTL 단축
+- refresh family 전면 회수
+
+즉 키만 바꿔도 이미 발급된 토큰 tail은 남을 수 있다.
+
+### 4. compromise 범위를 key usage별로 나눠야 한다
+
+같은 key 사고라도 의미가 다르다.
+
+- JWT signing key
+- API HMAC secret
+- webhook signing secret
+- client assertion signing key
+
+각각:
+
+- 위조 가능한 artifact
+- verifier 변경 위치
+- 회수 범위
+
+가 다르다.
+
+여기에 trust material 계층도 같이 봐야 한다.
+
+- private signer key 자체가 유출되었는가
+- JWKS/x5c publish 경로가 변조되었는가
+- verifier trust bundle이 잘못된 root/intermediate를 신뢰하는가
+
+private key 사고와 trust bundle 사고는 둘 다 "검증 경로를 다시 세운다"는 점은 같지만, 교체해야 하는 대상이 다르다.
+
+### 5. JWKS cutover 실패와 compromise는 복구 레버가 다르다
+
+겉보기 증상은 둘 다 `kid` miss나 signature failure로 보일 수 있다.
+
+- cutover failure: old key는 여전히 신뢰 가능하다
+- compromise: old key를 더 이상 신뢰하면 안 된다
+
+따라서:
+
+- cutover failure면 old key republish가 유효할 수 있다
+- compromise면 old key republish는 금지하고, new `kid` publish + session/token revoke로 간다
+
+즉 "기존 토큰이 깨지니 old key를 다시 올리자"는 대응은 compromise 상황에서는 잘못된 응급처치다.
+
+### 6. emergency revoke는 old token 사용자를 강하게 끊을 수 있다
+
+예:
+
+- 모든 refresh family revoke
+- password reset / re-login 강제
+- signed request secret rollover
+- downstream internal token exchange 경로 재발급
+
+이 조합은 안전하지만 UX 비용이 크다.  
+그래서 actor class, route class별 우선순위가 필요하다.
+
+### 7. trust bundle recovery는 signer recovery와 분리해서 계획해야 한다
+
+일부 환경은 bare JWK가 아니라 certificate chain, `x5c`, mTLS trust store, HSM/KMS attestation chain까지 같이 신뢰한다.
+
+이 경우 recovery는 두 레이어로 나뉜다.
+
+1. compromised signer/issuer를 멈춘다
+2. verifier trust bundle에 새 root/intermediate를 배포한다
+3. 새 chain으로 서명/발급된 material만 허용한다
+4. old chain과 session/resumption tail을 정리한다
+
+즉 새 private key만 만들고 verifier bundle이 old trust anchor를 계속 믿으면 복구가 끝난 것이 아니다.
+
+### 8. compromise와 bad publish를 구분해야 한다
+
+둘 다 verification 장애를 만들 수 있지만 의미가 다르다.
+
+- bad publish: 운영 실수
+- compromise: 신뢰 상실
+
+compromise라면:
+
+- availability fallback보다 신뢰 차단이 우선
+- forged token hunting 필요
+- audit scope를 넓혀야 함
+
+### 9. observability는 forged token suspicion을 따로 봐야 한다
+
+유용한 필드:
+
+- affected key id/fingerprint
+- issuance time bucket
+- suspicious allow after cutoff
+- last accepted token signed by compromised key
+- route/region/tenant spread
+- verifier bundle generation / fingerprint
+- reissued session or credential family count
+
+### 10. post-incident에는 key hygiene와 blast radius를 줄여야 한다
+
+질문:
+
+- 왜 키 접근이 가능했는가
+- signer key가 너무 넓게 배포됐는가
+- hardware-backed or KMS/HSM로 줄일 수 있는가
+- per-issuer/per-env isolation이 충분했는가
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: JWT signing private key가 repo/CI에서 유출된다
+
+문제:
+
+- forged JWT 발급 가능성
+
+대응:
+
+- signer 즉시 중단
+- verifier에서 compromised key 제거
+- JWKS에 new `kid`를 publish하되 old compromised key는 남기지 않음
+- refresh family와 high-risk session 회수
+- cutoff 이후 signed token hunting
+
+### 시나리오 2: HMAC request signing secret이 파트너 경로에서 노출된다
+
+문제:
+
+- 요청 위조와 replay 가능성
+
+대응:
+
+- dual-secret rollover를 매우 짧게 운영
+- nonce/replay store를 강화
+- partner별 key 분리 여부를 점검
+
+### 시나리오 3: verifier가 `x5c` chain이나 trust bundle을 같이 신뢰하는 환경에서 intermediate가 의심된다
+
+문제:
+
+- signer key만 바꿔도 old trust anchor가 남아 있으면 forged chain을 계속 받아들일 수 있다
+
+대응:
+
+- 새 trust bundle을 verifier fleet에 먼저 배포한다
+- 새 chain으로 재발급된 material만 허용한다
+- old chain 수용 로그가 남는 verifier를 우선 격리한다
+
+### 시나리오 4: compromise suspected 시각이 불명확하다
+
+문제:
+
+- 어디까지 신뢰를 깎아야 할지 애매하다
+
+대응:
+
+- 보수적 cutoff를 잡고
+- high-risk route는 강하게 revoke
+- low-risk route는 추가 direct check와 reauth로 완화한다
+
+---
+
+## 코드로 보기
+
+### 1. compromise cutoff 개념
+
+```text
+compromise suspected at = T
+trust cutoff = T - safety margin
+tokens signed after cutoff = distrust
+tokens before cutoff = route/risk tier별 추가 판단
+```
+
+### 2. 운영 체크리스트
+
+```text
+1. compromise suspected 시각과 trust cutoff를 정했는가
+2. signer stop과 verifier reject를 분리해서 실행하는가
+3. self-contained token tail에 대한 direct check/revoke 전략이 있는가
+4. compromised key를 overlap 명목으로 verifier trust set에 남기지 않는가
+5. JWKS/trust bundle recovery와 session/token revoke를 함께 설계했는가
+6. forged token hunting과 postmortem hardening까지 포함하는가
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|--------|------|------|----------------|
+| 즉시 전면 reject | trust 회복이 빠르다 | legitimate session 피해가 크다 | 강한 compromise 증거 |
+| risk-tiered revoke | 사용자 피해를 줄인다 | forged token tail이 일부 남을 수 있다 | compromise window가 애매할 때 |
+| direct check 보강 | 즉시성 보완이 가능하다 | 중앙 dependency가 늘어난다 | self-contained token tail 완화 |
+| 긴 dual-publish | migration은 쉽다 | compromise 상황에서는 부적절하다 | 정기 rotation만 해당 |
+
+판단 기준은 이렇다.
+
+- 위조 가능 artifact가 무엇인지
+- compromise 시각의 신뢰도가 어느 정도인지
+- self-contained token tail이 얼마나 큰지
+- high-risk route를 빠르게 별도 통제할 수 있는지
+
+---
+
+## 꼬리질문
+
+> Q: compromise recovery가 정기 rotation과 다른 점은 무엇인가요?
+> 의도: planned cutover와 trust loss를 구분하는지 확인
+> 핵심: compromise는 이미 발급된 artifact의 신뢰 여부를 다시 판단해야 한다.
+
+> Q: signer만 멈추면 끝나나요?
+> 의도: signer stop과 verifier reject를 구분하는지 확인
+> 핵심: 아니다. verifier가 compromised key를 계속 신뢰하면 위조 토큰을 받아들일 수 있다.
+
+> Q: self-contained JWT는 왜 compromise recovery가 더 어려운가요?
+> 의도: local validation tail을 이해하는지 확인
+> 핵심: 이미 발급된 토큰이 중앙 확인 없이 계속 accept될 수 있기 때문이다.
+
+> Q: compromise 상황에서 old key를 JWKS에 다시 올리면 안 되는 이유는 무엇인가요?
+> 의도: cutover failure와 trust loss를 구분하는지 확인
+> 핵심: forged token도 함께 받아들이게 되므로 legitimate tail은 session/token revoke로 해결해야 한다.
+
+> Q: compromise suspected 시각이 불명확하면 어떻게 하나요?
+> 의도: 보수적 cutoff와 risk-tiered 대응을 생각하는지 확인
+> 핵심: safety margin을 둔 cutoff와 route risk 기반 회수를 같이 써야 한다.
+
+## 한 줄 정리
+
+Signing key compromise 대응의 핵심은 키를 바꾸는 것이 아니라, compromised key를 trust set에서 즉시 빼고 새 JWKS/trust bundle과 session/token 회수를 함께 굴려 어떤 signed artifact를 더 이상 신뢰하지 않을지 다시 정하는 것이다.

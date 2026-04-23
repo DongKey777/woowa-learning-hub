@@ -6,12 +6,24 @@
 
 > 관련 문서:
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+> - [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
+> - [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)
+> - [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)
+> - [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 > - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
 > - [Token Exchange / Impersonation Risks](./token-exchange-impersonation-risks.md)
 
-retrieval-anchor-keywords: PAR, pushed authorization request, JAR, JWT secured authorization request, OAuth, front-channel, back-channel, authorization request, request object, signed request, exact redirect
+retrieval-anchor-keywords: PAR, pushed authorization request, JAR, JWT secured authorization request, OAuth, front-channel, back-channel, authorization request, request object, signed request, exact redirect, oauth branch point, authorization request hardening branch, auth session token master note, browser auth master note, browser session master note, confidential client, token endpoint client auth, request hardening vs client auth, private_key_jwt, mTLS client auth
+
+---
+
+## 이 문서를 어디에 붙여 읽나
+
+- [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md), [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md), [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)에서 redirect 흐름은 맞지만 authorization request hardening이 필요할 때 내려오는 branch다.
+- 이후 browser hardening mainline으로 다시 합류하려면 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md) 다음 [Open Redirect Hardening](./open-redirect-hardening.md)과 browser/session hardening 묶음으로 이어 가면 된다.
+- PAR/JAR를 골라도 token endpoint에서 confidential client를 어떻게 증명할지는 남는다. back-channel client proof 분기는 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)로 이어진다.
 
 ---
 
@@ -83,6 +95,8 @@ JAR는 authorization request를 JWT로 서명한다.
 - PAR로 front-channel 노출을 줄인다
 
 둘 다 쓰면 복잡해지지만, 고보안 환경에서는 값어치가 있다.
+
+다만 PAR/JAR는 authorization request hardening이지 token endpoint client authentication의 대체가 아니다. confidential client라면 PAR submitter나 code exchanger가 `client_secret_basic`, `private_key_jwt`, mTLS 중 무엇으로 자신을 증명할지도 별도로 정해야 하며, 그 선택지는 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)에서 정리한다.
 
 ### 5. client 유형을 구분해야 한다
 
@@ -184,6 +198,10 @@ public String buildRequestObject(AuthRequest request) {
 > Q: PAR를 쓰면 redirect_uri 검증이 사라지나요?
 > 의도: 안전 장치가 대체가 아니라 보완임을 아는지 확인
 > 핵심: 아니다. exact match는 여전히 필요하다.
+
+> Q: PAR/JAR를 쓰면 client authentication 문제도 끝나나요?
+> 의도: request hardening과 back-channel client proof를 구분하는지 확인
+> 핵심: 아니다. PAR/JAR는 authorization request를 보호하고, token endpoint에서의 client auth 선택은 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)로 따로 이어진다.
 
 ## 한 줄 정리
 

@@ -2,8 +2,10 @@
 
 > 한 줄 요약: ON DELETE/UPDATE CASCADE는 편하지만, 부모 한 줄이 자식 수천 줄의 락과 IO를 함께 끌고 갈 수 있다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md), [Deadlock Case Study](./deadlock-case-study.md)
-Retrieval anchors: `foreign key cascade`, `ON DELETE CASCADE`, `cascade lock`, `lock amplification`, `referential integrity`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md), [Deadlock Case Study](./deadlock-case-study.md), [Soft Delete, Uniqueness, and Data Lifecycle Design](./soft-delete-uniqueness-indexing-lifecycle.md)
+retrieval-anchor-keywords: foreign key cascade, ON DELETE CASCADE, ON UPDATE CASCADE, cascade lock, lock amplification, referential integrity, parent delete child lock storm, child table lock propagation, foreign key delete blocking, cascade update cost
 
 ## 핵심 개념
 

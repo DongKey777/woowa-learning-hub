@@ -1,8 +1,27 @@
 # Spring Boot 자동 구성 (Auto-configuration)
 
 > 한 줄 요약: Spring Boot 자동 구성은 애플리케이션 컨텍스트에 필요한 기본 빈을 조건부로 채워 넣어, 개발자가 반복 설정 대신 도메인 코드에 집중하게 만드는 장치다.
+>
+> 문서 역할: 이 문서는 spring 카테고리 안에서 **Boot 자동 구성과 조건부 빈 등록의 primer**를 담당한다.
 
 **난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+> - [IoC 컨테이너와 DI](./ioc-di-container.md)
+> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+> - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
+> - [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)
+> - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
+
+retrieval-anchor-keywords: spring boot autoconfiguration, conditional bean registration, enable autoconfiguration, AutoConfiguration.imports, condition evaluation report, boot starter, bean override, spring application context, configuration vs autoconfiguration, @Configuration vs auto-configuration, proxyBeanMethods mental model, --debug first checklist, actuator conditions endpoint, @ConditionalOnMissingBean miss, boot default bean skipped
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 입문 mental model이 먼저 필요하면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)를 먼저 본다.
+- 처음 `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean` miss만 빠르게 잡고 싶다면 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)로 이어진다.
+- 조건 판단 디버깅은 [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)으로 이어진다.
+- startup phase와 bean graph는 [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md), [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)와 연결된다.
 
 ---
 

@@ -1,10 +1,23 @@
 # Database (데이터베이스)
 
+**난이도: 🔴 Advanced**
+
 > 작성자 : [박재용](https://github.com/ggjae), [서그림](https://github.com/Seogeurim), [윤가영](https://github.com/yoongoing), [이세명](https://github.com/3people), [장주섭](https://github.com/wntjq68), [정희재](https://github.com/Hee-Jae)
+
+> retrieval-anchor-keywords: database readme, database navigator, database primer, database survey, database catalog, database deep dive, database playbook, database runbook, database routing, database index guide, database quick start, database quick-start, database bridge entrypoint, database system design bridge entrypoint, database + system design route, database authority bridge entrypoint, identity / delegation / lifecycle route, database / security authority bridge, verification / shadowing / authority bridge, authority route parity, database + security + system design route, schema migration, cdc cqrs, read model, projection rebuild, dual read verification, historical backfill, replay safety, idempotency, replica lag, stale read, read-after-write, projection lag, old data after write, freshness cluster, failover freshness, promotion stale read, post failover stale read, topology cache stale, visibility window, old primary still serving reads, some pods old some new, session consistency, session guarantee, monotonic read, causal consistency, consistency token, session watermark, saw newer then older, same session sees older data, multi-tab stale read, cause before effect, system design bridge, projection freshness slo, read model cutover guardrail, overlap enforcement, PostgreSQL vs MySQL overlap, PostgreSQL vs MySQL isolation, postgres vs mysql isolation, postgresql repeatable read snapshot isolation, postgresql serializable ssi, postgresql serializable retry playbook, postgres serializable beginner, serializable snapshot isolation retry, ssi retry envelope, could not serialize access, mysql serializable locking read, isolation cheat sheet, isolation anomaly cheat sheet, dirty read non-repeatable read lost update write skew phantom, beginner isolation matrix, lost update guardrail, write skew guardrail, phantom guardrail, phantom-safe booking primer, booking overlap pattern primer, unique slot vs exclusion constraint vs guard row, unique-slot booking, exclusion-constraint booking, guard-row booking, overlap probe composite index, booking overlap index, interval predicate scan axis, composite index lock footprint, hold expiration predicate drift, reservation arbitration predicate drift, held confirmed expired lifecycle, booking blackout cleanup alignment, active overlap flag, expired unreleased drift runbook, deadline passed still blocking, release lag slo, post-expiry conflict, cleanup lag, active predicate lifecycle, active predicate alignment, capacity guard drift, admission check guard row reconciliation, active hold table split, live archive split, deleted_at blocking truth, expiry worker race, confirm expire race, row-lock finalization, version-column finalization, optimistic lock failure, version conflict, objectoptimisticlockingfailureexception, rollback only optimistic lock, 409 conflict optimistic lock, claim-path finalization, opportunistic release, guard row, ordered guard row upsert, pre-seeded guard row, guard creation deadlock, PostgreSQL on conflict guard row, MySQL on duplicate key guard row, serializable retry, serializable retry telemetry, sqlstate 40001, sqlstate 40P01, serializable whole transaction retry, retry budget, hot aggregate observability, reconciliation, minimum staffing, capacity invariant, multi-day booking, guard-row granularity, canonical lock ordering, booking deadlock, hot row contention, striped guard row, counter sharding, reservation ledger, room-type inventory, shared pool inventory, room_type_day guard, later unit assignment, pooled inventory ledger, room assignment after booking, assignment horizon, sell from pool assign later, hot path slot arbitration, booking arbitration choice, slot unique key, unique slot claim, resource-day guard row, hybrid fencing booking, reservation-local fence, booking ingress fence, slot unique vs guard row, authority transfer, decision parity, auth shadow divergence, deprovision tail, database security bridge, identity cutover, auth shadow evaluation, SCIM deprovision, SCIM disable but still access, backfill is green but access tail remains, backfill verification, slotization migration, interval-to-slot cutover, slot table backfill, double-booking migration, slotization precheck, legacy interval overlap query, slot rounding collision, rounded slot collapse, DST boundary precheck, ambiguous local time fold, nonexistent local time gap, slot calendar dimension, slot delta reschedule semantics, slot claim tombstone cleanup, slot release watermark, reschedule union lock slot claim, cleanup evidence, retirement evidence, decision log join key, audit evidence bundle
 
 <details>
 <summary>Table of Contents</summary>
 
+- [빠른 탐색](#빠른-탐색)
+- [역할별 라우팅 요약](#역할별-라우팅-요약)
+- [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey)
+- [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
+- [트랜잭션 경계 / 애플리케이션 브리지](#database-bridge-transaction-app)
+- [CDC / Outbox / Read Model Cutover 브리지](#database-bridge-cdc-cutover)
+- [Identity / Authority Transfer 브리지](#database-bridge-identity-authority)
+- [Retry / Idempotency / Replay 브리지](#database-bridge-retry-replay)
+- [현대 catalog](#현대-catalog)
 - [데이터베이스](#데이터베이스)
 - [실전 참고 자료](#실전-참고-자료)
 - [JDBC, JPA, MyBatis](#jdbc-jpa-mybatis)
@@ -23,17 +36,25 @@
 - [쿼리 튜닝 체크리스트](#쿼리-튜닝-체크리스트)
 - [SQL 조인과 쿼리 실행 순서](#sql-조인과-쿼리-실행-순서)
 - [Schema Migration, Partitioning, CDC, CQRS](#schema-migration-partitioning-cdc-cqrs)
+- [Multi-Tenant Table Design](#multi-tenant-table-design)
 - [온라인 스키마 변경 전략](#온라인-스키마-변경-전략)
+- [Authority Transfer / Security Bridge](#authority-transfer--security-bridge)
 - [느린 쿼리 분석 플레이북](#느린-쿼리-분석-플레이북)
 - [Redo Log, Undo Log, Checkpoint, Crash Recovery](#redo-log-undo-log-checkpoint-crash-recovery)
 - [Index Condition Pushdown, Filesort, Temporary Table](#index-condition-pushdown-filesort-temporary-table)
+- [Statistics, Histograms, and Cardinality Estimation](#statistics-histograms-and-cardinality-estimation)
 - [Replica Lag와 Read-after-Write](#replica-lag와-read-after-write)
 - [CDC, Debezium, Outbox, Binlog](#cdc-debezium-outbox-binlog)
+- [Queue / Claim Patterns](#queue--claim-patterns)
 - [Offset vs Seek Pagination](#offset-vs-seek-pagination)
 - [Write Skew와 Phantom Read 사례](#write-skew와-phantom-read-사례)
+- [Vacuum / Purge Debt](#vacuum--purge-debt)
+- [레거시 primer / reference](#레거시-primer--reference)
 - [정규화](#정규화)
 - [반정규화](#반정규화)
 - [정규화와 반정규화 트레이드오프](#정규화와-반정규화-트레이드오프)
+- [Summary Maintenance and Drift Repair](#summary-maintenance-and-drift-repair)
+- [Soft Delete와 Data Lifecycle](#soft-delete와-data-lifecycle)
 - [인덱스 (Index)](#인덱스-(index))
 - [트랜잭션(Transaction)과 교착상태](#트랜잭션transaction과-교착상태)
 - [NoSQL](#nosql)
@@ -42,25 +63,237 @@
 
 ---
 
+## 빠른 탐색
+
+이 `README`는 database category `navigator`다. 위쪽 `primer`와 아래 `추천 학습 흐름` survey로 진입하고, 중간 섹션들은 문제 축별 `deep dive catalog`, 즉시 대응은 `[playbook]` / `[runbook]` 문서로 내려가면 된다.
+
+### 🟢 Beginner 입문 문서 (신규)
+
+처음 DB를 공부하는 경우 아래 5편으로 시작한다:
+
+- [정규화 기초](./normalization-basics.md) — 1NF·2NF·3NF와 이상 현상 제거
+- [인덱스 기초](./index-basics.md) — 풀스캔 vs 인덱스 스캔, 쓰기 비용 트레이드오프
+- [NoSQL 기초](./nosql-basics.md) — Key-Value·Document·Column-family 유형과 RDB 비교
+- [SQL 조인 기초](./sql-join-basics.md) — INNER·LEFT·RIGHT·FULL OUTER JOIN 포함 범위
+- [커넥션 풀 기초](./connection-pool-basics.md) — 연결 재사용 원리, 풀 크기 설정 기준
+
+Cycle 2 추가 — 5편:
+
+- [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) — READ COMMITTED·REPEATABLE READ·SERIALIZABLE 4단계와 Dirty/Non-Repeatable/Phantom Read
+- [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) — 저수준 API vs ORM vs SQL 매퍼 차이
+- [기본 키와 외래 키 기초](./primary-foreign-key-basics.md) — PK 종류, FK 참조 무결성, ON DELETE 옵션
+- [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md) — COUNT·SUM·AVG, WHERE vs HAVING 실행 순서
+- [락 기초](./lock-basics.md) — 공유락·배타락, 낙관적·비관적 락, 데드락 입문
+
+- 전체 흐름 `survey`가 먼저 필요하면:
+  - [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey)
+  - [루트 README](../../README.md)
+- database `primer`부터 읽고 싶다면:
+  - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+  - [인덱스와 실행 계획](./index-and-explain.md)
+  - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+- 문제 축별 `deep dive catalog`에서 bucket을 먼저 고르려면:
+  - [트랜잭션 격리수준과 락](#트랜잭션-격리수준과-락)
+  - [인덱스와 실행 계획](#인덱스와-실행-계획)
+  - [Schema Migration, Partitioning, CDC, CQRS](#schema-migration-partitioning-cdc-cqrs)
+  - [Authority Transfer / Security Bridge](#authority-transfer--security-bridge)
+  - [Replica Lag와 Read-after-Write](#replica-lag와-read-after-write)
+  - [Vacuum / Purge Debt](#vacuum--purge-debt)
+- 넓은 지형을 먼저 훑는 `survey` 문서:
+  - [Real MySQL 8.0 레퍼런스](./real-mysql-8.0-reference.md)
+  - [트랜잭션 실전 시나리오](./transaction-case-studies.md)
+  - [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md)
+- [Database + System Design](../../rag/cross-domain-bridge-map.md#database--system-design) route를 기준으로 들어가려면:
+  - [Schema Migration, Partitioning, CDC, CQRS](#schema-migration-partitioning-cdc-cqrs)
+  - [CDC / Outbox / Read Model Cutover 브리지](#database-bridge-cdc-cutover)
+- [Database + Security + System Design](../../rag/cross-domain-bridge-map.md#database--security--system-design) route를 기준으로 들어가려면:
+  - [Authority Transfer / Security Bridge](#authority-transfer--security-bridge)
+  - [Identity / Authority Transfer 브리지](#database-bridge-identity-authority)
+  - [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle)
+  - [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge)
+  - [System Design: Verification / Shadowing / Authority Bridge](../system-design/README.md#system-design-verification-shadowing-authority-bridge)
+- 특정 `deep dive`로 바로 들어가려면:
+  - `stale read`, `read-after-write`, `projection lag`, `old data after write`, `방금 저장했는데 옛값`처럼 freshness symptom으로 들어오면 [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md), [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md), [CDC / Outbox / Read Model Cutover 브리지](#database-bridge-cdc-cutover)를 먼저 묶어 본다.
+  - `failover 뒤 어떤 화면은 새 값 어떤 화면은 옛값`, `promotion 후 일부 pod만 옛 topology`, `old primary still serving reads`, `topology cache stale`처럼 승격 이후 freshness incident로 보이면 [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), `[playbook]` [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md) 순으로 좁힌다.
+  - `authority transfer`, `SCIM deprovision`, `SCIM disable but still access`, `decision parity`, `auth shadow divergence`, `backfill is green but access tail remains`처럼 identity cutover symptom으로 들어오면 [Authority Transfer / Security Bridge](#authority-transfer--security-bridge), [Identity / Authority Transfer 브리지](#database-bridge-identity-authority), [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)를 먼저 붙인다.
+  - `maximumPoolSize`, `connectionTimeout`, `Connection is not available`, `borrow timeout`, `connection leak detection triggered`, `apparent connection leak detected`, `threads awaiting connection`처럼 Hikari 운영 alias로 들어오면 [HikariCP 튜닝](./hikari-connection-pool-tuning.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [JDBC `setNetworkTimeout`, Driver `socketTimeout`, and Pool Eviction Under Virtual Threads](../language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md) 순으로 본다.
+  - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md): dirty read, non-repeatable read, lost update, write skew, phantom을 isolation level과 guardrail 축으로 한 장에 비교한다.
+  - [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md): plain `SELECT`, locking read, `UPDATE`/`DELETE`가 같은 snapshot 규칙을 따른다고 착각할 때 PostgreSQL과 MySQL에서 어디가 어긋나는지 비교한다.
+  - [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md): `same row / different row / new row` 기억법으로 lost update, write skew, phantom을 같은 서비스 타임라인으로 구분한다.
+  - `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md): PostgreSQL SSI에서 왜 `40001`이 나는지, 어떤 service-layer 경계에서 whole-transaction retry를 걸어야 하는지 beginner 기준으로 정리한다.
+  - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md): 최소 인원, capacity oversell, overlap absence-check race를 사례별로 구분해 본다.
+  - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md): guard row, slotization, reservation ledger처럼 규칙을 저장 시점 enforcement로 내리는 방법을 정리한다.
+  - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): `unique-slot`, exclusion constraint, guard row를 booking overlap의 시간 모델, 엔진 적합성, 패배 요청 비용 기준으로 먼저 비교하는 primer다.
+  - [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md): capacity, quota, minimum staffing 같은 count/sum invariant에서 1차 차단, bounded retry, drift repair를 어떻게 조합할지 비교한다.
+  - `[playbook]` [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md): `40001`/`40P01`/timeout을 어떻게 분류하고, retry budget과 alert threshold를 minimum staffing, quota path에 어떻게 거는지 정리한다.
+  - [Active Predicate Alignment for Capacity Guards](./active-predicate-alignment-capacity-guards.md): expirable hold가 있는 capacity path에서 `expires_at`, `released_at`, soft-delete를 admission check, guard row, reconciliation scan에 어떻게 같은 계약으로 맞출지 정리한다.
+  - [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md): capacity path의 대표 guard row가 hotspot이 될 때 striped guard row, counter shard, ledger fallback으로 admission surface를 어떻게 재구성할지 정리한다.
+  - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md): multi-day 또는 multi-resource 예약에서 `(resource)` vs `(resource, day)` granularity, canonical lock ordering, reschedule deadlock control을 어떻게 정할지 다룬다.
+  - [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): pre-seeded guard row와 ordered upsert-plus-lock을 비교하고, plan-order drift와 guard creation deadlock을 엔진별로 정리한다.
+  - [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md): high-contention booking hot path에서 slot unique key, `resource-day` guard row, hybrid fencing 중 어디에 대기열을 만들지 비교한다.
+  - [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md): extend, shorten, move, cancel, expiry cleanup, admin override를 `old/new scope` union lock, active predicate, mutation idempotency로 어떻게 같은 전이 계약에 묶을지 정리한다.
+  - [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md): slot claim table에서 create/cancel/reschedule을 `old/new slot delta`, union lock, tombstone cleanup watermark로 어떻게 같은 계약에 묶을지 정리한다.
+  - [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md): `room_type_id + stay_day` pooled inventory에서 counter guard, ledger, later unit assignment를 어떤 층으로 나눌지 정리한다.
+  - [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md): `(room_id, start_at)` vs `(room_id, end_at)` vs active prefix가 overlap probe의 scan axis와 lock footprint를 어떻게 바꾸는지 정리한다.
+  - [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md): absence check, overlap probe, index-path assumption을 "`WHERE` 절이 아니라 chosen index path를 잠근다"는 관점으로 점검하는 practical checklist다.
+  - [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md): half-open interval, active predicate, migration precheck, conflict handling까지 포함해 overlap 제약을 설계한다.
+  - [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md): `REPEATABLE READ`에서 버티던 overlap check가 `READ COMMITTED`에서 왜 phantom을 다시 허용하는지와 대응 전략을 정리한다.
+  - [Hold Expiration Predicate Drift](./hold-expiration-predicate-drift.md): hold expiry job, soft delete, cleanup lag가 reads와 constraints의 active predicate를 어떻게 갈라놓는지 정리한다.
+  - [Active Predicate Drift in Reservation Arbitration](./active-predicate-drift-reservation-arbitration.md): `HELD`/`CONFIRMED`/`BLACKOUT`/`EXPIRED` lifecycle drift가 booking, blackout, cleanup path의 overlap conflict set을 어떻게 갈라놓는지와 canonical blocker predicate를 어떻게 맞출지 정리한다.
+  - [Expiry Worker Race Patterns](./expiry-worker-race-patterns.md): confirm callback, expiry worker, next claim path가 같은 hold를 finalize할 때 row lock, version column, claim-path finalization을 어떻게 나눌지 비교한다.
+  - `[runbook]` [Expired-Unreleased Drift Runbook](./expired-unreleased-drift-runbook.md): deadline이 지난 row가 여전히 active truth를 점유할 때 count·lag·false blocker scope를 어떻게 보고 batch repair로 복구할지 정리한다.
+  - [Active Hold Table Split Pattern](./active-hold-table-split-pattern.md): live hold row와 history row를 분리해 `deleted_at`이 blocking truth를 정의하지 못하게 하는 기준과 전이 패턴을 정리한다.
+  - [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md): PostgreSQL exclusion constraint와 MySQL slotization/next-key locking/guard row fallback을 비교한다.
+  - `[playbook]` [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md): legacy overlap, floor/ceil collapse, DST fold/gap을 cutover 전에 어떤 질의로 분리해 잡을지 정리한다.
+  - `[playbook]` [Slotization Migration and Backfill Playbook](./slotization-migration-backfill-playbook.md): continuous interval -> slot claim 전환에서 deterministic slot policy, shadow backfill, fenced cutover, rollback window를 어떻게 묶을지 다룬다.
+  - [Deadlock Case Study](./deadlock-case-study.md)
+  - [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
+  - [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md)
+- 운영 복구 순서가 먼저 필요한 `playbook` / `runbook`으로 가려면:
+  - `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+  - `[playbook]` [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+  - `[runbook]` [Expired-Unreleased Drift Runbook](./expired-unreleased-drift-runbook.md)
+  - `[runbook]` [gh-ost / pt-online-schema-change Cutover Precheck Runbook](./gh-ost-pt-osc-cutover-precheck-runbook.md)
+  - `[playbook]` [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md)
+  - `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)
+  - `[runbook]` [Vacuum / Purge / Freeze Risk Triage and Runbook Routing](./vacuum-purge-freeze-risk-runbook-routing.md)
+- cross-category bridge로 확장하려면:
+  - [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
+  - [트랜잭션 경계 / 애플리케이션 브리지](#database-bridge-transaction-app)
+  - [CDC / Outbox / Read Model Cutover 브리지](#database-bridge-cdc-cutover)
+  - [Identity / Authority Transfer 브리지](#database-bridge-identity-authority)
+  - [Retry / Idempotency / Replay 브리지](#database-bridge-retry-replay)
+- 문서 역할이 헷갈리면:
+  - [Navigation Taxonomy](../../rag/navigation-taxonomy.md)
+  - [Retrieval Anchor Keywords](../../rag/retrieval-anchor-keywords.md)
+
+## 역할별 라우팅 요약
+
+| 지금 필요한 것 | 문서 역할 | 먼저 갈 곳 |
+|---|---|---|
+| database 전체 흐름과 추천 순서 | `survey` | [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey), [루트 README](../../README.md) |
+| 트랜잭션 / 인덱스 / MVCC 기초 축 | `primer` | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [인덱스와 실행 계획](./index-and-explain.md), [MVCC, Replication, Sharding](./mvcc-replication-sharding.md) |
+| 문제 축별로 다음 문서를 고르기 | `catalog / navigator` | [현대 catalog](#현대-catalog) 아래 각 섹션 |
+| 장애 대응 순서나 검증 절차가 먼저 필요함 | `playbook` / `runbook` | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md), [Vacuum / Purge / Freeze Risk Triage and Runbook Routing](./vacuum-purge-freeze-risk-runbook-routing.md) |
+| 역할 라벨이나 검색 alias가 헷갈림 | `taxonomy` / `routing helper` | [Navigation Taxonomy](../../rag/navigation-taxonomy.md), [Retrieval Anchor Keywords](../../rag/retrieval-anchor-keywords.md) |
+
+## 추천 학습 흐름 (category-local survey)
+
+아래 흐름은 database 내부에서 `primer -> deep dive -> playbook`을 잇는 category-local survey다.
+
+### 1. Transaction / Locking / Invariant
+
+[트랜잭션 격리수준과 락](./transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) -> [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md) -> [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md) -> `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) -> [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md) -> [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md) -> [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) -> [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) -> [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md) -> [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md) -> [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md) -> [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md) -> [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md) -> [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md) -> [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md) -> [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md) -> [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md) -> [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md) -> [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md) -> `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+
+### 2. Query Plan / Index / Write Path
+
+[인덱스와 실행 계획](./index-and-explain.md) -> [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) -> [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md) -> [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md) -> [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) -> [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) -> [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) -> [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md) -> [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md) -> [Hot Updates, Secondary Index Churn, and Write-Path Contention](./hot-update-secondary-index-churn.md) -> `[playbook]` [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+
+### 3. Schema Migration / CDC / Replay
+
+[Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md) -> [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md) -> [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md) -> [Slotization Migration and Backfill Playbook](./slotization-migration-backfill-playbook.md) -> [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md) -> `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md) -> [Historical Backfill / Replay Platform](../system-design/historical-backfill-replay-platform-design.md)
+
+### 4. Replica / Failover / Freshness
+
+[MVCC, Replication, Sharding](./mvcc-replication-sharding.md) -> [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md) -> [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md) -> [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md) -> [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md) -> [Client Consistency Tokens](./client-consistency-tokens.md) -> [Causal Consistency Intuition](./causal-consistency-intuition.md) -> [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md) -> `[playbook]` [Replication Lag Forensics and Root-Cause Playbook](./replication-lag-forensics-root-cause-playbook.md) -> [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md) -> `[playbook]` [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md) -> [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
+
+### 5. Lifecycle / Cleanup / Drift
+
+[Soft Delete, Uniqueness, and Data Lifecycle Design](./soft-delete-uniqueness-indexing-lifecycle.md) -> [Hold Expiration Predicate Drift](./hold-expiration-predicate-drift.md) -> [Active Predicate Drift in Reservation Arbitration](./active-predicate-drift-reservation-arbitration.md) -> [Active Predicate Alignment for Capacity Guards](./active-predicate-alignment-capacity-guards.md) -> [Expiry Worker Race Patterns](./expiry-worker-race-patterns.md) -> `[runbook]` [Expired-Unreleased Drift Runbook](./expired-unreleased-drift-runbook.md) -> [Active Hold Table Split Pattern](./active-hold-table-split-pattern.md) -> [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md) -> `[runbook]` [Vacuum / Purge / Freeze Risk Triage and Runbook Routing](./vacuum-purge-freeze-risk-runbook-routing.md) -> `[playbook]` [Purge Backlog Remediation, Throttling, and Recovery Playbook](./purge-backlog-remediation-throttle-playbook.md)
+
+## 연결해서 보면 좋은 문서 (cross-category bridge)
+
+빠른 탐색에서는 이 구간의 subsection anchor로만 진입하고, 실제 외부 bridge 문서는 여기서 고른다.
+
+<a id="database-bridge-transaction-app"></a>
+### 트랜잭션 경계 / 애플리케이션 브리지
+
+- `dirty read`, `lost update`, `write skew`, `phantom` 같은 DB anomaly vocabulary에서 `@Transactional`, `rollback`, `self-invocation`, `REQUIRES_NEW` 쪽으로 올라갈 때 쓰는 beginner bridge다.
+- 가장 덜 흔들리는 기본 ladder는 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) -> [Database to Spring Transaction Master Note](../../master-notes/database-to-spring-transaction-master-note.md) -> [@Transactional 깊이 파기](../spring/transactional-deep-dive.md) -> [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md) -> [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md) -> `[playbook]` [Spring Transaction Debugging Playbook](../spring/spring-transaction-debugging-playbook.md) 순이다.
+- `readOnly`, isolation, read replica, routing datasource confusion까지 같이 보이면 [Spring Transaction Isolation / ReadOnly Pitfalls](../spring/spring-transaction-isolation-readonly-pitfalls.md), [Spring Routing Datasource: Read/Write Transaction Boundaries](../spring/spring-routing-datasource-read-write-transaction-boundaries.md)를 이어 붙인다.
+- 증상이 lock wait / deadlock / pool starvation이면 Spring annotation만 보지 말고 [Deadlock Case Study](./deadlock-case-study.md), `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [Connection Pool / Transaction Propagation / Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)로 옆 갈래를 먼저 탄다.
+
+<a id="database-bridge-cdc-cutover"></a>
+### CDC / Outbox / Read Model Cutover 브리지
+
+- `stale read`, `read-after-write`, `projection lag`, `old data after write` alias cluster가 topic-map 없이 곧바로 database README로 들어왔을 때 붙일 category-local bridge다.
+- CDC / outbox / read model cutover를 설계 언어로 확장하려면 [Read Model Cutover Guardrails](../design-pattern/read-model-cutover-guardrails.md), [Projection Freshness SLO Pattern](../design-pattern/projection-freshness-slo-pattern.md), [Change Data Capture / Outbox Relay](../system-design/change-data-capture-outbox-relay-design.md), [Dual-Read Comparison / Verification Platform](../system-design/dual-read-comparison-verification-platform-design.md)을 같이 본다.
+
+<a id="database-bridge-identity-authority"></a>
+### Identity / Authority Transfer 브리지
+
+- `authority transfer`, `SCIM deprovision`, `SCIM disable but still access`, `decision parity`, `auth shadow divergence` alias cluster의 database-side entrypoint다. security README에서는 같은 route를 `Identity / Delegation / Lifecycle`, system-design README에서는 `Database / Security Authority Bridge` -> `Verification / Shadowing / Authority Bridge`로 이어서 부른다.
+- authority transfer route를 category README bridge 기준으로 맞추려면 [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle), [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge), [System Design: Verification / Shadowing / Authority Bridge](../system-design/README.md#system-design-verification-shadowing-authority-bridge)를 함께 열어 둔다. database row parity -> security authority parity -> system-design retirement gate 순서의 handoff를 고정하는 entrypoint다.
+- authority transfer cutover를 database row parity 바깥까지 확장하려면 [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md), [System Design: Database / Security Identity Bridge Cutover 설계](../system-design/database-security-identity-bridge-cutover-design.md), [Security: Authorization Runtime Signals / Shadow Evaluation](../security/authorization-runtime-signals-shadow-evaluation.md), [Security: SCIM Deprovisioning / Session / AuthZ Consistency](../security/scim-deprovisioning-session-authz-consistency.md)를 같이 본다.
+
+<a id="database-bridge-retry-replay"></a>
+### Retry / Idempotency / Replay 브리지
+
+- retry / idempotency / replay 안전성을 한 축으로 묶으려면 [Retry, Timeout, Idempotency Master Note](../../master-notes/retry-timeout-idempotency-master-note.md), [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md), `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)을 이어 읽는 편이 좋다.
+- PostgreSQL `SERIALIZABLE`에서 `40001`을 service-layer whole-transaction retry로 어떻게 감싸야 하는지부터 보면 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)가 가장 빠르다.
+
+## 현대 catalog
+
+아래 구간은 순서대로 읽는 `survey`가 아니라 문제 축별 `deep dive catalog`다. mixed catalog에서 `[playbook]`, `[runbook]` 라벨은 step-oriented 운영 문서라는 뜻이고, 라벨이 없는 항목은 trade-off / failure-mode 중심 `deep dive`다.
+
 ## 데이터베이스
 
 ### 실전 참고 자료
 
 - [Real MySQL 8.0 레퍼런스](./real-mysql-8.0-reference.md)
-- [Real MySQL 8.0 원본 PDF](./materials/real-mysql-8.0.pdf)
-- [Real MySQL 8.0 검색용 추출본](./materials/real-mysql-8.0.txt)
+- [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 
 ### JDBC, JPA, MyBatis
 
-- [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
+- [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md): `jdbc vs jpa vs mybatis`, `orm vs sql mapper`, `hibernate vs jpa`, `@Transactional`, `EntityManager`, `flush`, `open session in view`, `connection pool exhaustion`처럼 접근 기술 설명에서 Spring 트랜잭션/영속성 컨텍스트/OSIV/pool primer로 갈라지는 용어 축을 먼저 정리하는 primer
+- [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md): `@Version`, `PESSIMISTIC_WRITE`, retry facade를 Spring service/repository 흐름으로 묶어 보여주는 application-layer guide
+- [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md): MySQL `1205`/`1213`, PostgreSQL `55P03`/`40P01`이 JDBC/Hibernate/JPA/Spring translator를 거치며 어떤 예외 이름으로 바뀌는지와 bounded retry 분류 기준을 함께 정리
+- [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md): `@Retryable`, self-invocation, outer `@Transactional`, `REQUIRES_NEW`, `UnexpectedRollbackException`, pool starvation이 한 묶음으로 꼬일 때 proxy boundary 기준으로 다시 정리하는 follow-up
 
 ### 트랜잭션 격리수준과 락
 
-- [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- [트랜잭션 격리수준과 락](./transaction-isolation-locking.md): transaction, ACID, dirty/non-repeatable/phantom read, `jdbc transaction isolation`, `@Transactional isolation`, `jpa optimistic/pessimistic lock`, `SELECT ... FOR UPDATE`를 한 번에 훑는 primer
+- [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md): dirty read, non-repeatable read, lost update, write skew, phantom을 isolation level과 guardrail confusion 축으로 한 장에 정리한 beginner entry
+- [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md): `READ COMMITTED`와 `REPEATABLE READ`가 관측 일관성에 어떤 차이를 만드는지 비교
+- [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md): `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`이 PostgreSQL과 MySQL에서 왜 같은 이름인데도 다른 직관을 만드는지 비교
+- `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md): PostgreSQL SSI에서 `40001`이 왜 정상 경쟁 결과인지, retry loop를 왜 `@Transactional` 바깥에 두어야 하는지 beginner 기준으로 정리
+- [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md): plain `SELECT`, locking read, `UPDATE`/`DELETE`가 PostgreSQL과 MySQL에서 같은 visibility 규칙을 따르지 않는다는 점을 portability 관점에서 정리
+- [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md): `same row / different row / new row` 기준으로 세 anomaly를 beginner 관점에서 한 번에 분리
+- [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md): InnoDB가 phantom을 줄이기 위해 row 바깥의 gap까지 어떻게 잠그는지 설명
+- [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md): absence check, overlap probe, index-path assumption이 언제 RR next-key에 기대도 되는지 검증하는 checklist
+- [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md): optimistic/pessimistic locking을 충돌 빈도와 retry 비용 기준으로 고르는 법
+- [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md): version column flush SQL, `SELECT ... FOR UPDATE` 매핑, retry boundary를 Spring facade/transactional service 기준으로 정리
+- [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md): deadlock과 lock timeout이 MyBatis/JDBC, Hibernate/JPA, Spring DAO 예외에서 서로 다르게 surface되는 이유와 `SQLSTATE/errno` 기준 bounded retry 분류를 정리
+- [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md): `@Version` 충돌이 `UPDATE ... WHERE version = ?` 실패에서 rollback-only transaction, `409 Conflict`, 사용자 안내문까지 어떻게 전파되는지 beginner 기준으로 단계별 설명
+- [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md): `@Retryable`이 fresh transaction per attempt를 보장하는 조건, self-invocation으로 advice가 사라지는 경우, `REQUIRES_NEW`가 retry 복구가 아니라 별도 commit이 되는 함정을 정리
+- [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
+- [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md)
+- [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md): `FOR UPDATE` / `FOR SHARE`가 `0 row`를 돌려줄 때 남는 보호가 logical nonexistence 전체가 아니라 scanned gap/next-key라는 점을 정리
+- [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): pre-seeded guard row와 ordered upsert-plus-lock을 비교하고, exact-PK lock 재획득이 왜 필요한지 정리
+- [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md): `room_type_id + stay_day` pooled inventory에서 sell-time day guard, ledger, later unit assignment를 어떤 invariant로 나눌지 정리
+- [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md): hot aggregate row를 striped guard row, counter shard, ledger projection으로 분산하는 판단 기준
+- [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md): slot unique key, `resource-day` guard row, hybrid fencing이 high-contention booking에서 각각 어떤 queue shape를 만드는지 비교
+- [Foreign Key Cascade Lock Surprises](./foreign-key-cascade-lock-surprises.md)
+- `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md)
+- [Savepoint + Lock Retention Incident Scenarios and Recovery Patterns](./savepoint-lock-retention-incident-scenarios.md)
+- [Aggregate Boundary vs Transaction Boundary](../design-pattern/aggregate-boundary-vs-transaction-boundary.md)
 
 ### 인덱스와 실행 계획
 
-- [인덱스와 실행 계획](./index-and-explain.md)
+- [인덱스와 실행 계획](./index-and-explain.md): `EXPLAIN type/key/rows/Extra`, `type = ALL`, `key = NULL` 같은 첫 해석 순서를 잡는 primer
+- [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md): `Using index`, `Using filesort`, `ORDER BY ... LIMIT`, left-prefix 같은 index shape 질문을 다루는 entry
+- [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md): MySQL `Using index`와 PostgreSQL `Index Only Scan`, `Heap Fetches`, visibility map처럼 "커버링 설계"와 "실제 heap/table 생략 실행"을 분리하는 entry
+- [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md): `Extra` 컬럼에 찍히는 `Using filesort`, `Using temporary`, `ICP`를 symptom 중심으로 해석하고, `type = ALL` / `key = NULL`이면 primer·checklist로 되돌리는 entry
+- [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md): `rows` 추정치 흔들림, `EXPLAIN ANALYZE` actual rows mismatch, stale stats 기반 plan drift를 읽고 `Using filesort` / `key = NULL` 주증상이면 다른 entry로 되돌리는 entry
+- [Optimizer Trace Reading](./optimizer-trace-reading.md): `EXPLAIN` 결과는 읽었는데 왜 full scan, `key = NULL`, `Using filesort` 같은 선택이 나왔는지 optimizer 내부 cost 판단으로 drill-down하는 entry
+- [Sort Buffer, Temporary Table, and Spill Behavior](./sort-buffer-temp-table-spill.md): `Using filesort`, `Using temporary`가 실제로 memory에서 끝나는지 disk spill로 번졌는지, `Created_tmp_disk_tables` / `Sort_merge_passes`로 보는 follow-up entry
+- [Temporary Table Engine Choice and Spill Behavior](./temp-table-engine-choice-spill-behavior.md): `Using temporary` 이후 internal temp table 경로와 disk fallback 조건을 분리하는 follow-up entry
+- [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md): booking overlap probe에서 composite index shape가 scan axis와 lock footprint를 어떻게 바꾸는지 정리
+- [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md)
+- [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md): `Using index`는 보이는데도 느리다, covering 때문에 index가 너무 넓어졌다, write amplification이나 buffer pool pressure가 커졌다는 follow-up을 다루는 entry
+- [Hot Updates, Secondary Index Churn, and Write-Path Contention](./hot-update-secondary-index-churn.md)
 
 ### B+Tree vs LSM-Tree
 
@@ -72,11 +305,14 @@
 
 ### MVCC, Replication, Sharding
 
-- [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+- [MVCC, Replication, Sharding](./mvcc-replication-sharding.md): `snapshot`, `replica lag`, `partitioning vs sharding`, `hot shard`처럼 자주 섞이는 용어를 primer로 먼저 푼다
 
 ### 트랜잭션 실전 시나리오
 
 - [트랜잭션 실전 시나리오](./transaction-case-studies.md)
+- [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md): shared scenario와 결정 맵으로 lost update, write skew, phantom을 먼저 분리하는 entry
+- [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
+- [Deadlock Case Study](./deadlock-case-study.md)
 
 ### Outbox, Saga, Eventual Consistency
 
@@ -85,26 +321,33 @@
 ### Deadlock Case Study
 
 - [Deadlock Case Study](./deadlock-case-study.md)
+- [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md): multi-day / multi-resource 예약에서 canonical lock ordering, union lock, retry 분리를 어떻게 설계할지 정리
+- [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): guard row를 미리 심는 경우와 런타임 생성하는 경우의 deadlock surface 차이를 비교
 
 ### JDBC 실전 코드 패턴
 
-- [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)
+- [JDBC 실전 코드 패턴](./jdbc-code-patterns.md): `prepared statement`, `generated keys`, `batch insert`, `autoCommit`, `commit/rollback`, `connection lifecycle`, `getConnection` / `close` 같은 raw JDBC 코드 패턴과 pool 반환 감각을 바로 보는 entry
 
 ### Connection Pool, Transaction Propagation, Bulk Write
 
-- [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+- [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md): `@Transactional propagation`, `REQUIRED vs REQUIRES_NEW`, `hikaricp pool exhausted`, `jpa long transaction`, `external call in transaction`, `connection borrow/return`, `close returns to pool`, `batch chunk commit` 같은 JDBC/JPA 운영 경계 entry
 
 ### HikariCP 튜닝
 
-- [HikariCP 튜닝](./hikari-connection-pool-tuning.md)
+- [HikariCP 튜닝](./hikari-connection-pool-tuning.md): `maximumPoolSize`, `connectionTimeout is not query timeout`, `getConnection` / borrow timeout, `Connection is not available`, `leakDetectionThreshold`, `connection leak detection triggered`, `apparent connection leak detected`, `pool exhaustion`, `threads awaiting connection` 같은 Hikari 운영 alias를 설정값/증상/오탐 구분으로 묶는 entry
 
 ### 멱등성 키와 중복 방지
 
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
+- [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
+- [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): `ON CONFLICT` / `ON DUPLICATE KEY UPDATE`를 guard creation과 canonical lock ordering 관점에서 비교
+- `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)
+- [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
+- [Token Misuse Detection / Replay Containment](../security/token-misuse-detection-replay-containment.md)
 
 ### 쿼리 튜닝 체크리스트
 
-- [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+- [쿼리 튜닝 체크리스트](./query-tuning-checklist.md): `type = ALL` vs `Using filesort` vs `rows` mismatch vs app bottleneck을 한 순서로 분리하는 triage entry
 
 ### SQL 조인과 쿼리 실행 순서
 
@@ -113,14 +356,56 @@
 ### Schema Migration, Partitioning, CDC, CQRS
 
 - [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md)
+- [Projection Rebuild, Backfill, and Cutover Pattern](../design-pattern/projection-rebuild-backfill-cutover-pattern.md)
+- [Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
+- [Event Upcaster Compatibility Patterns](../design-pattern/event-upcaster-compatibility-patterns.md)
+- [Change Data Capture / Outbox Relay](../system-design/change-data-capture-outbox-relay-design.md)
+- [Historical Backfill / Replay Platform](../system-design/historical-backfill-replay-platform-design.md)
+- [Zero-Downtime Schema Migration Platform](../system-design/zero-downtime-schema-migration-platform-design.md)
+- [Dual-Read Comparison / Verification Platform](../system-design/dual-read-comparison-verification-platform-design.md)
+- [Database / Security Identity Bridge Cutover 설계](../system-design/database-security-identity-bridge-cutover-design.md)
+- [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
+- `[playbook]` [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md)
+- `[playbook]` [Slotization Migration and Backfill Playbook](./slotization-migration-backfill-playbook.md)
+- [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md): slot claim table에서 create/cancel/reschedule delta, union lock, tombstone cleanup watermark를 어떻게 맞출지 정리
+- [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md)
+- `[playbook]` [CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook](./cdc-schema-evolution-compatibility-playbook.md)
+- [Destructive Schema Cleanup, Column Retirement, and Contract-Phase Safety](./destructive-schema-cleanup-column-retirement.md)
+
+### Multi-Tenant Table Design
+
+- [Multi-Tenant Table Design, Tenant-First Indexing, and Hotspot Control](./multi-tenant-tenant-id-index-topology.md)
+- [Multi-Tenant Statistics Skew, Plan Drift, and Query Isolation](./multi-tenant-stats-skew-plan-isolation.md)
+- `[playbook]` [Hot Tenant Split-Out, Routing, and Cutover Playbook](./tenant-split-out-routing-cutover-playbook.md)
 
 ### 온라인 스키마 변경 전략
 
 - [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
+- `[runbook]` [gh-ost / pt-online-schema-change Cutover Precheck Runbook](./gh-ost-pt-osc-cutover-precheck-runbook.md)
+- [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)
+- `[playbook]` [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md)
+- `[playbook]` [Slotization Migration and Backfill Playbook](./slotization-migration-backfill-playbook.md)
+- `[playbook]` [Index Maintenance Window, Rollout, and Fallback Playbook](./index-maintenance-window-rollout-playbook.md)
+- `[runbook]` [Metadata Lock Outage Triage, Cancel, and Recovery Runbook](./metadata-lock-outage-triage-cancel-recovery.md)
+
+### Authority Transfer / Security Bridge
+
+`authority transfer`, `SCIM deprovision`, `SCIM disable but still access`, `decision parity`, `auth shadow divergence`, `deprovision tail`이 같이 보이면 schema migration이 identity/session/authz authority 이전과 엮인 상황이다.
+row parity만으로는 승격을 닫을 수 없다.
+읽는 순서를 README bridge entrypoint 기준으로 맞추려면 위 [Identity / Authority Transfer 브리지](#database-bridge-identity-authority), [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle), [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge), [System Design: Verification / Shadowing / Authority Bridge](../system-design/README.md#system-design-verification-shadowing-authority-bridge)를 같이 본다.
+
+- [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)
+- [System Design: Database / Security Identity Bridge Cutover 설계](../system-design/database-security-identity-bridge-cutover-design.md)
+- [Security: SCIM Drift / Reconciliation](../security/scim-drift-reconciliation.md)
+- [Security: Authorization Runtime Signals / Shadow Evaluation](../security/authorization-runtime-signals-shadow-evaluation.md)
+- [Security: SCIM Deprovisioning / Session / AuthZ Consistency](../security/scim-deprovisioning-session-authz-consistency.md)
+- [System Design: Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
+- [Security: AuthZ Decision Logging Design](../security/authz-decision-logging-design.md)
+- [Security: Audit Logging for Auth / AuthZ Traceability](../security/audit-logging-auth-authz-traceability.md)
 
 ### 느린 쿼리 분석 플레이북
 
-- [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+- `[playbook]` [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 
 ### Redo Log, Undo Log, Checkpoint, Crash Recovery
 
@@ -128,15 +413,44 @@
 
 ### Index Condition Pushdown, Filesort, Temporary Table
 
-- [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+- [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md): `Using filesort`, `Using temporary`, `ICP`, `index exists but order by slow` 같은 EXPLAIN symptom을 맡고, `type = ALL` / `key = NULL`이면 [인덱스와 실행 계획](./index-and-explain.md)·[쿼리 튜닝 체크리스트](./query-tuning-checklist.md)로 다시 보내는 entry
+
+### Statistics, Histograms, and Cardinality Estimation
+
+- [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md): `rows estimate wrong`, `EXPLAIN ANALYZE actual rows mismatch`, `plan drift after deploy`, `stale statistics`, `histogram skew` 같은 통계 symptom을 맡고, `Using filesort` / `Using temporary` / `key = NULL` 주증상이면 primer·checklist·`Extra` entry로 다시 보내는 entry
 
 ### Replica Lag와 Read-after-Write
 
-- [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md)
+- `stale read`, `read-after-write`, `projection lag`, `old data after write`, `save succeeded but old value returned` 같은 freshness alias를 database 내부 read path로 먼저 좁히는 subsection이다.
+- [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md): `write succeeded read is stale`, `생성 직후 데이터 안 보임`, `replica delay after write`처럼 write 직후 freshness budget이 먼저 문제일 때 시작점
+- [Cache와 Replica가 갈라질 때의 Read Inconsistency](./cache-replica-split-read-inconsistency.md): `cache miss stale replica`, `cache invalidation vs replica lag`, `목록과 상세가 서로 다른 상태`처럼 stale source 분리부터 해야 할 때
+- [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md): `내가 바꾼 값이 안 보임`, `refresh after edit shows old value`, `recent write primary fallback`처럼 세션 단위 최신성 보장이 핵심일 때
+- [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md): `sometimes old sometimes new`, `retry changed result`, `pagination duplicates across replicas`처럼 replica selection 흔들림을 먼저 의심할 때
+- [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md): `saw newer then older`, `same session sees older data`, `read goes backward`처럼 freshness 다음 단계의 session-consistency 회귀를 설명할 때
+- [Client Consistency Tokens](./client-consistency-tokens.md): `multi-tab stale read`, `same account different device old data`, `X-Consistency-Token`처럼 서버 세션 밖으로 최신선을 운반해야 할 때
+- [Causal Consistency Intuition](./causal-consistency-intuition.md): `comment visible before post`, `payment visible before order`, `cause before effect`처럼 인과 순서까지 맞춰야 할 때
+- [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md): `freshness alert threshold`, `lag metric은 있는데 언제 primary fallback해야 하나`, `failover 전 lag routing 기준`처럼 steady-state 관측과 정책 경계가 핵심일 때
+- `[playbook]` [Replication Lag Forensics and Root-Cause Playbook](./replication-lag-forensics-root-cause-playbook.md)
+- [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md): `failover는 끝났는데 화면마다 값이 다름`, `old primary still serving reads`, `promotion 후 일부 요청만 옛 endpoint`처럼 승격 직후 read authority split을 설명할 때
+- `[playbook]` [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md): `some pods old some new`, `topology cache stale`, `DNS TTL after promotion`, `failover cache bust`처럼 invalidation / pinning / telemetry 액션이 바로 필요할 때
+- [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md): `새 primary에 실제로 최근 write가 없는지`, `write loss vs stale read`를 가를 때
 
 ### CDC, Debezium, Outbox, Binlog
 
 - [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md)
+- `[playbook]` [CDC Schema Evolution, Event Compatibility, and Expand-Contract Playbook](./cdc-schema-evolution-compatibility-playbook.md)
+- [CDC Backpressure, Binlog/WAL Retention, and Replay Safety](./cdc-backpressure-binlog-retention-replay.md)
+- `[playbook]` [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md)
+- `[runbook]` [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md)
+- [Replay / Repair Orchestration Control Plane](../system-design/replay-repair-orchestration-control-plane-design.md)
+- [Reconciliation Window / Cutoff Control](../system-design/reconciliation-window-cutoff-control-design.md)
+
+### Queue / Claim Patterns
+
+- [Queue Consumer Transaction Boundaries](./queue-consumer-transaction-boundaries.md)
+- [Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs](./queue-claim-skip-locked-fairness.md)
+- [Transactional Claim-Check와 Job Leasing](./transactional-claim-check-job-leasing.md)
+- [Expiry Worker Race Patterns](./expiry-worker-race-patterns.md): confirm callback, expiry worker, next claim path가 같은 hold를 finalize할 때 row lock, version column, claim-path finalization을 어떻게 조합할지 비교
 
 ### Offset vs Seek Pagination
 
@@ -144,11 +458,61 @@
 
 ### Write Skew와 Phantom Read 사례
 
-- [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
+- [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md): lost update까지 함께 놓고 `same row / different row / new row`로 anomaly 구분을 먼저 잡는 beginner entry
+- [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md): 부재 기반 판단이 어떻게 minimum staffing, capacity, overlap race로 이어지는지 사례 중심으로 정리
+- [Write Skew Detection과 Compensation Patterns](./write-skew-detection-compensation-patterns.md)
+- [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md): guard row, slotization, ledger로 range/set invariant를 저장 시점에 강제하는 패턴
+- [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): `unique-slot`, exclusion constraint, guard row를 booking overlap의 시간 모델, 엔진 제약, queue shape 기준으로 비교하는 빠른 entry
+- [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md): count/sum invariant에서 guard row, bounded retry, reconciliation을 언제 조합할지 결정하는 가이드
+- `[playbook]` [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md): serializable 보호를 쓰는 minimum staffing, quota path에서 retry budget, SQLSTATE 분류, hot key 알람을 어떻게 잡을지 정리
+- [Active Predicate Alignment for Capacity Guards](./active-predicate-alignment-capacity-guards.md): expirable hold가 있는 capacity path에서 `expires_at`, `released_at`, `deleted_at` 해석을 admission check, guard row, reconciliation scan에 똑같이 맞추는 contract
+- [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md): guard row 하나가 hotspot이 된 capacity path에서 striped budget, shard counter, ledger fallback을 어떻게 고를지 정리
+- [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md): `(resource)` vs `(resource, day)` guard scope, old/new scope union lock, multi-resource canonical ordering을 비교
+- [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md): bounded key space에서 pre-seed를 택할지, sparse key space에서 ordered upsert-plus-lock을 택할지 비교
+- [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md): slot unique key, `resource-day` guard row, hybrid fencing이 high-contention booking path에서 패배 요청을 어떻게 처리하는지 비교
+- [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md): extend, shorten, move, cancel, expiry cleanup, admin override를 reservation-local fence, `scope_delta`, union lock으로 묶는 전이 contract
+- [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md): slot claim table로 내려갔을 때 `scope_delta`를 create/cancel/reschedule delta, slot guard union lock, tombstone cleanup으로 어떻게 구체화할지 정리
+- [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md): room-type pooled inventory를 sell-time day guard, replay ledger, later `room_id + stay_day` assignment로 어떻게 분리할지 정리
+- [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md): overlap probe에서 equality prefix, `start_at`/`end_at` scan axis, active prefix가 lock footprint를 어떻게 바꾸는지 비교
+- [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md): absence check, overlap probe, index-path assumption을 one-page checklist로 묶어 RR next-key 가정을 검증한다
+- [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md): `FOR UPDATE` overlap probe가 왜 RC에서 empty-result phantom을 다시 허용하는지 설명
+- [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md): equality dimension, range boundary, active predicate, `23P01` 대응까지 포함한 overlap guardrail
+- [Hold Expiration Predicate Drift](./hold-expiration-predicate-drift.md): hold expiry, `released_at`, soft delete lag가 active predicate drift로 번지는 경로를 정리
+- [Active Predicate Drift in Reservation Arbitration](./active-predicate-drift-reservation-arbitration.md): `HELD`/`CONFIRMED`/`BLACKOUT`/`EXPIRED`를 booking, blackout, cleanup path가 같은 overlap conflict set으로 해석하게 만드는 contract
+- `[runbook]` [Expired-Unreleased Drift Runbook](./expired-unreleased-drift-runbook.md): deadline이 지난 expirable blocker를 count, lag bucket, false blocker scope, bounded batch repair로 운영 복구하는 절차
+- [Active Hold Table Split Pattern](./active-hold-table-split-pattern.md): active row 존재 여부를 blocking truth로 만들고 종료 row는 history로 보내는 split 기준과 transition contract를 정리
+- [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md): PostgreSQL은 exclusion constraint, MySQL은 slot row/next-key locking/guard row로 규칙을 어떻게 번역할지 정리
+- `[playbook]` [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md): cutover 전 overlap pair, rounding-only collision, DST fold/gap을 어떤 쿼리와 slot calendar로 가를지 정리
+- `[playbook]` [Slotization Migration and Backfill Playbook](./slotization-migration-backfill-playbook.md): interval predicate 기반 예약 모델을 slot claim table로 옮길 때 split-brain writer, catch-up lag, reschedule union lock을 어떻게 통제할지 정리
+
+### Vacuum / Purge Debt
+
+- `[runbook]` [Vacuum / Purge / Freeze Risk Triage and Runbook Routing](./vacuum-purge-freeze-risk-runbook-routing.md)
+- [Vacuum / Purge Debt Forensics and Symptom Map](./vacuum-purge-debt-forensics-symptom-map.md)
+- `[playbook]` [Autovacuum Freeze Debt, XID Age, and Wraparound Playbook](./autovacuum-freeze-debt-wraparound-playbook.md)
+- `[playbook]` [Purge Backlog Remediation, Throttling, and Recovery Playbook](./purge-backlog-remediation-throttle-playbook.md)
 
 ### 정규화와 반정규화 트레이드오프
 
 - [정규화와 반정규화 트레이드오프](./normalization-denormalization-tradeoffs.md)
+
+### Summary Maintenance and Drift Repair
+
+- [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
+- [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md)
+
+### Soft Delete와 Data Lifecycle
+
+- [Soft Delete, Uniqueness, and Data Lifecycle Design](./soft-delete-uniqueness-indexing-lifecycle.md)
+- [Hold Expiration Predicate Drift](./hold-expiration-predicate-drift.md): `deleted_at`과 `released_at`을 분리해 expiry cleanup lag가 active set 판단을 오염시키지 않게 하는 방법
+- [Active Predicate Drift in Reservation Arbitration](./active-predicate-drift-reservation-arbitration.md): `HELD`/`CONFIRMED`/`BLACKOUT`/`EXPIRED` lifecycle drift가 overlap arbitration까지 번지지 않게 booking, blackout, cleanup path를 같은 canonical blocker predicate로 맞추는 방법
+- [Active Predicate Alignment for Capacity Guards](./active-predicate-alignment-capacity-guards.md): capacity guard가 `expires_at`, `released_at`, soft-delete를 서로 다른 active predicate로 해석하지 않게 맞추는 admission/reconciliation contract
+- `[runbook]` [Expired-Unreleased Drift Runbook](./expired-unreleased-drift-runbook.md): deadline이 지난 row가 reads/constraints를 계속 막을 때 detection query, release-lag SLO, chunked repair 순서를 정리
+- [Active Hold Table Split Pattern](./active-hold-table-split-pattern.md): active hold와 archive/history를 분리해 `deleted_at` 없이 live uniqueness와 overlap truth를 유지하는 패턴
+
+## 레거시 primer / reference
+
+아래 구간은 전통적인 DB primer와 면접/교재형 reference 성격이 강한 본문이다.
 
 ### 데이터베이스 용어 정리
 
@@ -440,7 +804,7 @@ RDBMS는 테이블 기반(Table based) DBMS로, 테이블들의 집합으로 데
 
 아래의 자료에서 자세한 설명을 볼 수 있다.
 
-- 작성자 윤가영 | [데이터베이스와 Index](./materials/윤가영_database_&Index.pdf)
+- 작성자 윤가영 | [데이터베이스와 Index](./materials/윤가영_database_index.pdf)
 
 ---
 

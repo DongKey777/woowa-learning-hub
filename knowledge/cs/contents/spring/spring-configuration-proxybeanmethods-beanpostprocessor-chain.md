@@ -5,13 +5,15 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+> - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-call, 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 
-retrieval-anchor-keywords: configuration proxyBeanMethods, CGLIB configuration class, bean post processor, bean factory post processor, lifecycle callback, auto configuration, singleton semantics
+retrieval-anchor-keywords: configuration proxyBeanMethods, CGLIB configuration class, bean post processor, bean factory post processor, lifecycle callback, auto configuration, singleton semantics, configuration vs autoconfiguration, full configuration, lite configuration, method parameter injection bean, inter-bean reference, proxyBeanMethods beginner bridge
 
 ## 핵심 개념
 

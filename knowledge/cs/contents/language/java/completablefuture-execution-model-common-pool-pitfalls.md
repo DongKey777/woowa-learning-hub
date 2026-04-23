@@ -6,12 +6,14 @@
 
 > 관련 문서:
 > - [ForkJoinPool Work-Stealing](./forkjoinpool-work-stealing.md)
+> - [`CompletableFuture` `allOf`, `join`, Timeout, and Exception Handling Hazards](./completablefuture-allof-join-timeout-exception-handling-hazards.md)
+> - [`CompletableFuture.delayedExecutor`, Scheduler Hop, and Timer-Thread Hazards](./completablefuture-delayedexecutor-scheduler-hop-timer-thread-hazards.md)
 > - [Executor Sizing, Queue, Rejection Policy](./executor-sizing-queue-rejection-policy.md)
 > - [ThreadLocal Leaks and Context Propagation](./threadlocal-leaks-context-propagation.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 > - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
 
-> retrieval-anchor-keywords: CompletableFuture, common pool, default executor, async stage, thenApply, thenCompose, supplyAsync, runAsync, allOf, anyOf, blocking stage, starvation, ForkJoinPool, thread hopping, exceptional completion
+> retrieval-anchor-keywords: CompletableFuture, common pool, default executor, async stage, thenApply, thenCompose, supplyAsync, runAsync, allOf, anyOf, blocking stage, starvation, ForkJoinPool, thread hopping, exceptional completion, join hazard, timeout semantics, delayedExecutor, scheduler hop
 
 <details>
 <summary>Table of Contents</summary>
@@ -88,6 +90,7 @@ ForkJoinPool은 work-stealing에 강하지만 blocking에는 약하다.
 - `whenComplete`
 
 를 언제 쓰는지 분명해야 한다.
+`allOf`, `join`, timeout, partial failure를 어떻게 읽어야 하는지는 [CompletableFuture allOf, join, Timeout, and Exception Handling Hazards](./completablefuture-allof-join-timeout-exception-handling-hazards.md)에서 더 자세히 다룬다.
 
 ## 실전 시나리오
 

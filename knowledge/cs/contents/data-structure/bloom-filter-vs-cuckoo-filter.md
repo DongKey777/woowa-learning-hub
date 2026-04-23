@@ -6,10 +6,14 @@
 
 > 관련 문서:
 > - [Bloom Filter](./bloom-filter.md)
+> - [Cuckoo Filter](./cuckoo-filter.md)
+> - [Quotient Filter](./quotient-filter.md)
+> - [Xor Filter](./xor-filter.md)
+> - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
 > - [HashMap 내부 구조](./hashmap-internals.md)
 > - [LRU Cache Design](./lru-cache-design.md)
 
-> retrieval-anchor-keywords: bloom filter, cuckoo filter, membership filter, false positive, deletion, fingerprint, cuckoo hashing, approximate set, filter comparison, cache admission
+> retrieval-anchor-keywords: bloom filter, cuckoo filter, xor filter, membership filter, false positive, deletion, fingerprint, cuckoo hashing, approximate set, filter comparison, cache admission
 
 ## 핵심 개념
 

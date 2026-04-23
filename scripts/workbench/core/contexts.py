@@ -147,7 +147,13 @@ def _suggest_reviewer_candidates(
     return [item["reviewer"] for item in ranked[:3]], ranked[:5]
 
 
-def build_my_pr_context(repo: dict, db_path: Path, pr_number: int | None = None) -> dict:
+def build_my_pr_context(
+    repo: dict,
+    db_path: Path,
+    pr_number: int | None = None,
+    *,
+    learning_profile: dict | None = None,
+) -> dict:
     repo_name = repo["name"]
     repo_path = Path(repo["path"])
     git_context = read_git_context(repo_path)
@@ -172,7 +178,13 @@ def build_my_pr_context(repo: dict, db_path: Path, pr_number: int | None = None)
         topic_terms=topic_info["suggested_topics"],
         retrieval_path_hints=mission_map.get("retrieval_path_hints"),
     )
-    interpretation_info = build_candidate_interpretation(repo_name, "my-pr", focus_info, db_path=str(db_path))
+    interpretation_info = build_candidate_interpretation(
+        repo_name,
+        "my-pr",
+        focus_info,
+        db_path=str(db_path),
+        learning_profile=learning_profile,
+    )
     payload = {
         "context_type": "my-pr",
         "repo": repo_name,
@@ -273,6 +285,8 @@ def build_coach_context(
     prompt: str,
     pr_number: int | None = None,
     reviewer: str | None = None,
+    *,
+    learning_profile: dict | None = None,
 ) -> dict:
     repo_name = repo["name"]
     repo_path = Path(repo["path"])
@@ -299,7 +313,13 @@ def build_coach_context(
         topic_terms=inferred_topics["suggested_topics"],
         retrieval_path_hints=mission_map.get("retrieval_path_hints"),
     )
-    interpretation_info = build_candidate_interpretation(repo_name, "coach", focus_info, db_path=str(db_path))
+    interpretation_info = build_candidate_interpretation(
+        repo_name,
+        "coach",
+        focus_info,
+        db_path=str(db_path),
+        learning_profile=learning_profile,
+    )
     reviewer_candidates, reviewer_candidate_details = _suggest_reviewer_candidates(
         db_path,
         git_context["diff_files"],

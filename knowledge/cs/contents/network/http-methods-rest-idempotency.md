@@ -1,6 +1,15 @@
 # HTTP 메서드, REST, 멱등성
 
+**난이도: 🟡 Intermediate**
+
 > 신입 백엔드 개발자가 API 설계를 설명할 때 필요한 핵심 정리
+
+> 관련 문서:
+> - [gRPC vs REST](./grpc-vs-rest.md)
+> - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
+> - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
+
+retrieval-anchor-keywords: HTTP methods, REST, idempotency, safe method, GET POST PUT PATCH DELETE, resource design, retry safety, API semantics, idempotent request, RESTful API
 
 <details>
 <summary>Table of Contents</summary>
@@ -24,6 +33,17 @@
 - 어떤 메서드가 더 적절한지
 
 를 설명할 수 있어야 한다.
+
+### Retrieval Anchors
+
+- `HTTP methods`
+- `REST`
+- `idempotency`
+- `safe method`
+- `GET POST PUT PATCH DELETE`
+- `retry safety`
+- `API semantics`
+- `idempotent request`
 
 ---
 

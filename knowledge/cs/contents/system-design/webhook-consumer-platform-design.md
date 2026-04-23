@@ -2,12 +2,13 @@
 
 > 한 줄 요약: webhook consumer platform은 외부 벤더의 웹훅을 안정적으로 수신, 검증, 정렬, 재처리하는 역방향 이벤트 수집 시스템이다.
 
-retrieval-anchor-keywords: webhook consumer, inbound webhook, signature verification, replay defense, deduplication, inbox, ordering, dead letter queue, retry, event intake
+retrieval-anchor-keywords: webhook consumer, inbound webhook, signature verification, replay defense, deduplication, inbox, ordering, dead letter queue, retry, event intake, webhook idempotency, consumer dedup store
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Webhook Delivery Platform 설계](./webhook-delivery-platform-design.md)
+> - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 > - [Job Queue 설계](./job-queue-design.md)
 > - [Event Bus Control Plane 설계](./event-bus-control-plane-design.md)
 > - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
@@ -81,7 +82,7 @@ consumer는 반드시 다음을 확인해야 한다.
 - event id dedup
 - provider secret rotation
 
-이 부분은 [Webhook Delivery Platform 설계](./webhook-delivery-platform-design.md)와 [Webhook signature verification replay defense](../security/webhook-signature-verification-replay-defense.md)와 연결된다.
+이 부분은 [Webhook Delivery Platform 설계](./webhook-delivery-platform-design.md), [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md), [Webhook signature verification replay defense](../security/webhook-signature-verification-replay-defense.md)와 연결된다.
 
 ### 5. ordering과 reconciliation
 
@@ -201,4 +202,3 @@ public void handle(InboundWebhook request) {
 ## 한 줄 정리
 
 Webhook consumer platform은 외부 webhook을 안전하게 수신해 내부 이벤트로 정규화하고, 중복과 순서 문제를 흡수하는 역방향 이벤트 관문이다.
-

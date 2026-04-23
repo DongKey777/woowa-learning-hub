@@ -8,9 +8,15 @@
 
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+- [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+- [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md)
 - [트랜잭션 실전 시나리오](./transaction-case-studies.md)
 - [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
 - [B+Tree vs LSM-Tree](./bptree-vs-lsm-tree.md)
+- [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- [Multi-Tenant Statistics Skew, Plan Drift, and Query Isolation](./multi-tenant-stats-skew-plan-isolation.md)
+
+retrieval-anchor-keywords: slow query playbook, explain triage, explain analyze, explain symptom route, type all, key null, possible_keys empty, key_len, filtered, rows estimate wrong, rows examined high, explain analyze actual rows mismatch, using filesort, using temporary, plan drift, tenant stats skew, index not used, order by limit slow, connection pool starvation, lock wait, latch contention, api slow but db fast, app vs db bottleneck, backend performance debugging, 느린 쿼리 점검 순서, 실행 계획 트리아지
 
 ---
 
@@ -126,6 +132,7 @@ API latency > 500ms
 - 특정 user_id만 유독 큰가
 - hot key가 몰리는가
 - 통계가 오래돼 optimizer가 잘못된 계획을 고르는가
+- 특정 tenant 하나가 전체 분포를 흔들고 있지는 않은가
 
 필요하면 `ANALYZE TABLE` 같은 통계 갱신도 검토해야 한다.
 
@@ -205,6 +212,7 @@ rows sent
 lock wait time
 connection wait time
 replica lag
+tenant_id / tenant tier
 ```
 
 이 정보가 있어야 “느림”을 하나의 원인으로 착각하지 않는다.

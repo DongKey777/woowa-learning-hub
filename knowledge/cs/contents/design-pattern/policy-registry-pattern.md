@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Policy Registry 패턴은 여러 정책 객체를 키나 조건으로 등록해두고, 런타임에 적절한 정책을 선택하게 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Registry Pattern](./registry-pattern.md)

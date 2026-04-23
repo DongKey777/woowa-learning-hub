@@ -1,0 +1,209 @@
+# Spring `JdbcTemplate` and `SQLException` Translation
+
+> 한 줄 요약: Spring JDBC의 핵심 가치는 SQL 실행 편의보다, 벤더별 `SQLException`을 `DataAccessException` 계층으로 번역해 재시도와 에러 매핑 경계를 안정화하는 데 있다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring Routing DataSource Read/Write Transaction Boundaries](./spring-routing-datasource-read-write-transaction-boundaries.md)
+> - [Spring Resilience4j: Retry, CircuitBreaker, Bulkhead](./spring-resilience4j-retry-circuit-breaker-bulkhead.md)
+> - [Deadlock Case Study](../database/deadlock-case-study.md)
+
+retrieval-anchor-keywords: JdbcTemplate, SQLExceptionTranslator, DataAccessException, SQLErrorCodeSQLExceptionTranslator, SQLStateSQLExceptionTranslator, duplicate key, transient data access, integrity violation, jdbc exception translation
+
+## 핵심 개념
+
+순수 JDBC는 실패 시 보통 벤더별 `SQLException`을 던진다.
+
+문제는 이 예외가 다음 특징을 가진다는 점이다.
+
+- checked exception이라 코드가 쉽게 지저분해진다
+- 에러 코드와 SQL state가 DB 벤더마다 다르다
+- 같은 "중복 키"나 "데드락"이라도 분류 방식이 다를 수 있다
+
+Spring은 이 문제를 `SQLExceptionTranslator`와 `DataAccessException` 계층으로 완화한다.
+
+즉 `JdbcTemplate`의 핵심 가치는 단순 보일러플레이트 제거가 아니라, **DB 예외를 애플리케이션이 다루기 좋은 의미 계층으로 번역하는 것**이다.
+
+## 깊이 들어가기
+
+### 1. 예외 번역은 portability와 정책 분리를 돕는다
+
+애플리케이션 입장에서 중요한 질문은 보통 아래다.
+
+- 이 에러는 재시도 가능한가
+- 이 에러는 클라이언트에게 409 같은 business conflict로 보여야 하는가
+- 이 에러는 인프라 장애로 알림을 보내야 하는가
+
+하지만 raw `SQLException`만 보면 이 판단을 서비스 계층 여기저기서 벤더 코드로 나눠 써야 한다.
+
+Spring은 이를 `DataAccessException` 하위 타입으로 번역해, 앱이 벤더 코드보다 **의미 기반 분류**에 기대도록 돕는다.
+
+### 2. `JdbcTemplate`는 실행과 번역을 함께 책임진다
+
+`JdbcTemplate`는 callback 안에서 JDBC 리소스를 다루고, 실패하면 translator로 예외를 변환한다.
+
+대표 흐름은 아래와 비슷하다.
+
+```text
+SQL 실행
+-> SQLException 발생
+-> SQLExceptionTranslator가 vendor code / SQL state 분석
+-> DataAccessException 하위 타입으로 변환
+-> 호출자에게 runtime exception으로 전달
+```
+
+여기서 중요한 점은 `DataAccessException`이 runtime exception이라는 것이다.
+
+그래서 기본 `@Transactional` 롤백 규칙과도 자연스럽게 맞물린다.
+
+### 3. translator는 보통 error code 우선, 없으면 SQL state로 fallback한다
+
+대표 구현은 다음을 떠올리면 된다.
+
+- `SQLErrorCodeSQLExceptionTranslator`
+- `SQLStateSQLExceptionTranslator`
+
+즉 Spring은 DB 벤더별 에러 코드 매핑을 우선 활용하고, 부족하면 SQL state 기반 분류로 내려간다.
+
+이 덕분에 개발자는 MySQL, PostgreSQL, Oracle의 개별 숫자를 service 로직에 직접 박는 일을 줄일 수 있다.
+
+### 4. 예외 계층은 retry와 API mapping 경계를 나누는 데 유용하다
+
+실무에서 특히 자주 보는 타입 감각은 아래와 같다.
+
+- `DuplicateKeyException`: 중복 insert, 유니크 키 충돌
+- `DataIntegrityViolationException`: 제약 조건 위반
+- `TransientDataAccessException` 계열: 일시적 실패 가능성
+- 락/데드락 계열 예외: 재시도 후보가 될 수 있음
+
+물론 "transient니까 무조건 retry"는 아니다.
+
+하지만 적어도 raw SQL error code보다 **정책을 붙이기 쉬운 분류**가 생긴다.
+
+### 5. 너무 낮은 계층에서 예외를 다 삼키면 오히려 손해다
+
+repository 계층에서 무조건 `try/catch`로 잡아 로그만 남기고 `false`를 반환하면, 상위 계층은 중요한 정보를 잃는다.
+
+보통 더 나은 흐름은 아래다.
+
+- repository는 `DataAccessException`을 그대로 올리거나
+- 정말 business 의미가 명확할 때만 domain exception으로 바꾼다
+
+즉 translation의 목적은 예외를 숨기는 게 아니라, **의미를 보존한 채 상위 정책으로 전달하는 것**이다.
+
+### 6. raw JDBC를 직접 쓰면 번역 경계를 놓치기 쉽다
+
+직접 `DataSource.getConnection()`으로 작업해도 물론 가능하다.
+
+하지만 그 경우는 다음을 직접 챙겨야 한다.
+
+- resource close
+- exception translation
+- transaction participation
+
+즉 `JdbcTemplate`를 우회하면 "제어가 많아진다"기보다, **예외 의미와 트랜잭션 일관성을 스스로 책임져야 한다**.
+
+## 실전 시나리오
+
+### 시나리오 1: 유니크 키 충돌이 모두 500으로 응답된다
+
+DB 입장에서는 단순 중복 키지만, API 입장에서는 이미 존재하는 리소스일 수 있다.
+
+이때 `DuplicateKeyException`을 적절히 domain conflict로 매핑하면 계약이 훨씬 분명해진다.
+
+### 시나리오 2: 데드락이 났는데 retry가 전혀 안 걸린다
+
+락 충돌은 일시적 실패일 수 있다.
+
+하지만 raw `SQLException`을 직접 비교하거나, 너무 낮은 계층에서 예외를 숨기면 retry 정책이 붙을 자리가 사라진다.
+
+### 시나리오 3: 테스트에서는 괜찮은데 운영 DB만 다른 예외를 낸다
+
+DB 벤더가 바뀌면 에러 코드도 달라진다.
+
+Spring translation은 이런 차이를 완전히 없애진 못하지만, 서비스 계층이 벤더 코드에 직접 매여 있는 상황은 줄여 준다.
+
+### 시나리오 4: repository가 `false`만 반환해서 원인 추적이 어렵다
+
+이건 예외 번역의 장점을 스스로 지운 것이다.
+
+운영에서는 "실패했다"보다, **무슨 종류의 데이터 접근 실패였는지**가 중요하다.
+
+## 코드로 보기
+
+### `JdbcTemplate` 기본 사용
+
+```java
+public void saveOrder(Order order) {
+    jdbcTemplate.update(
+        "insert into orders(id, customer_id, status) values (?, ?, ?)",
+        order.getId(),
+        order.getCustomerId(),
+        order.getStatus().name()
+    );
+}
+```
+
+### 중복 키를 도메인 충돌로 매핑
+
+```java
+public void createUser(User user) {
+    try {
+        jdbcTemplate.update(
+            "insert into users(email, nickname) values (?, ?)",
+            user.getEmail(),
+            user.getNickname()
+        );
+    } catch (DuplicateKeyException ex) {
+        throw new UserAlreadyExistsException(user.getEmail(), ex);
+    }
+}
+```
+
+### 예외 분류를 상위 정책과 연결
+
+```java
+try {
+    orderRepository.reserve(order);
+} catch (TransientDataAccessException ex) {
+    throw new RetryableReservationException(ex);
+} catch (DataIntegrityViolationException ex) {
+    throw new InvalidOrderStateException(ex);
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| raw JDBC 직접 사용 | 세밀한 제어가 가능하다 | 번역/정리/트랜잭션 책임이 늘어난다 | 아주 특수한 최적화 |
+| `JdbcTemplate` | 예외 번역과 리소스 관리가 안정적이다 | ORM 수준 추상화는 없다 | SQL 중심 데이터 접근 |
+| 너무 이른 예외 매핑 | 상위 계층이 단순해 보인다 | 원인 정보와 retry 분류를 잃기 쉽다 | 아주 명확한 비즈니스 충돌만 |
+| `DataAccessException` 유지 | 정책 부착이 쉽다 | 상위 계층이 예외 의미를 알아야 한다 | 운영/재시도/에러 계약이 중요한 서비스 |
+
+핵심은 `JdbcTemplate`를 "JDBC 편의 도구"가 아니라, **DB 실패를 애플리케이션 정책에 연결하는 예외 번역 경계**로 보는 것이다.
+
+## 꼬리질문
+
+> Q: `JdbcTemplate`의 큰 장점이 보일러플레이트 제거만은 아닌 이유는 무엇인가?
+> 의도: exception translation 가치 이해 확인
+> 핵심: 벤더별 `SQLException`을 의미 있는 `DataAccessException` 계층으로 번역한다.
+
+> Q: `DataAccessException`이 runtime exception인 점은 왜 실무에서 유용한가?
+> 의도: 트랜잭션 롤백과의 연결 이해 확인
+> 핵심: 기본 `@Transactional` 롤백 규칙과 자연스럽게 맞물린다.
+
+> Q: 중복 키 예외를 너무 낮은 계층에서 `false`로 바꾸면 왜 손해인가?
+> 의도: 원인 보존과 정책 부착 이해 확인
+> 핵심: 상위 계층이 conflict/retry/알림 정책을 붙일 정보를 잃는다.
+
+> Q: raw JDBC를 직접 쓰면 무엇을 놓치기 쉬운가?
+> 의도: template abstraction의 실질 가치 확인
+> 핵심: 리소스 관리, 예외 번역, 트랜잭션 참여를 직접 챙겨야 한다.
+
+## 한 줄 정리
+
+Spring JDBC에서 중요한 것은 SQL 실행 자체보다, 벤더별 실패를 `DataAccessException`으로 번역해 retry와 API 에러 계약을 안정적으로 얹을 수 있게 만드는 것이다.

@@ -1,0 +1,7 @@
+---
+name: "woowa-coach-run"
+description: "Use when operating this repository as a Woowa mission coach. Start from coach-run, treat mission repos as read-only by default, and interpret state artifacts as the source of truth."
+---
+
+# Woowa Coach-Run Skill
+

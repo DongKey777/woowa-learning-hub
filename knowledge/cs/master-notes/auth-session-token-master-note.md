@@ -9,16 +9,20 @@
 - 먼저 이 노트로 세션, 쿠키, JWT, refresh token의 큰 그림을 잡는다.
 - 브라우저 위협 모델을 더 깊게 보고 싶으면 [Browser Session Security Master Note](./browser-session-security-master-note.md)를 이어서 본다.
 - 프론트엔드와 백엔드 경계 설계를 더 보고 싶으면 [Browser Auth Frontend Backend Master Note](./browser-auth-frontend-backend-master-note.md)를 이어서 본다.
+- 브라우저 callback이 없는 CLI / TV / 콘솔 login이면 [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)로 별도 분기한다.
+- authorization request hardening이 먼저면 [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)로 내려간 뒤 브라우저 hardening 흐름으로 복귀한다.
 - 서비스 간 identity와 trust boundary를 더 보고 싶으면 [Trust and Identity Master Note](./trust-and-identity-master-note.md)와 [Trust Boundary Proxy Master Note](./trust-boundary-proxy-master-note.md)를 이어서 본다.
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: session cookie, HttpOnly, SameSite, CSRF, JWT, refresh token rotation, bearer token, token revocation, session fixation, localStorage, PKCE, OIDC, logout, replay
+> retrieval-anchor-keywords: session cookie, HttpOnly, SameSite, CSRF, JWT, refresh token rotation, bearer token, token revocation, session fixation, localStorage, PKCE, OIDC, logout, replay, device code flow, browserless login, cross-device login, PAR, JAR, pushed authorization request, request object, authorization request hardening
 
 > related docs:
 > - [Authentication vs Authorization](../contents/security/authentication-vs-authorization.md)
 > - [JWT Deep Dive](../contents/security/jwt-deep-dive.md)
 > - [OAuth2 Authorization Code Grant](../contents/security/oauth2-authorization-code-grant.md)
+> - [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+> - [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 > - [OIDC ID Token / UserInfo Boundaries](../contents/security/oidc-id-token-userinfo-boundaries.md)
 > - [HTTP State, Session, Cache](../contents/network/http-state-session-cache.md)
 > - [CORS / SameSite / Preflight](../contents/security/cors-samesite-preflight.md)
@@ -103,7 +107,13 @@ Read with:
 
 - [JWT Deep Dive](../contents/security/jwt-deep-dive.md)
 - [OAuth2 Authorization Code Grant](../contents/security/oauth2-authorization-code-grant.md)
+- [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 - [OIDC ID Token / UserInfo Boundaries](../contents/security/oidc-id-token-userinfo-boundaries.md)
+
+Branch here when the client shape changes:
+
+- no browser callback, CLI / TV login, cross-device approval: [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+- need front-channel request hardening or signed request objects: [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 
 ### 4. Session is simpler when the server must control state
 

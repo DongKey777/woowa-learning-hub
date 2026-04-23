@@ -6,12 +6,14 @@
 
 > 관련 문서:
 > - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
+> - [Spring `ProblemDetail` Before-After Commit Matrix](./spring-problemdetail-before-after-commit-matrix.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
+> - [Spring `BasicErrorController`, `ErrorAttributes`, and Whitelabel Error Boundaries](./spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 > - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
 
-retrieval-anchor-keywords: ProblemDetail, error response design, RFC 9457, API error contract, status, title, detail, instance, type URI, exception mapping
+retrieval-anchor-keywords: ProblemDetail, error response design, RFC 9457, API error contract, status, title, detail, instance, type URI, exception mapping, BasicErrorController, ErrorAttributes
 
 ## 핵심 개념
 

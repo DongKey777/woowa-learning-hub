@@ -8,11 +8,30 @@
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 > - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
+> - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
+> - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [Spring Security `LogoutHandler` / `LogoutSuccessHandler` Boundaries](./spring-security-logout-handler-success-boundaries.md)
+> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+> - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [HTTP 메서드, REST, 멱등성](../network/http-methods-rest-idempotency.md)
+> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+
+retrieval-anchor-keywords: spring security, SecurityFilterChain, FilterChainProxy, SecurityContext, AuthenticationManager, AuthenticationProvider, AuthenticationEntryPoint, AccessDeniedHandler, SecurityContextRepository, SessionCreationPolicy, LogoutFilter, LogoutHandler, LogoutSuccessHandler, RequestCache, SavedRequest, cookie session spring security route, beginner auth bridge, hidden JSESSIONID, why login state is kept, session basics to spring security
 
 ---
+
+## 입문 브리지
+
+이 문서는 `Advanced`다. `cookie`, `session`, `JWT`, `stateless`가 아직 한 덩어리로 느껴지면 먼저 한 단계 물러나는 편이 안전하다.
+
+1. 전달 수단과 상태 저장 위치를 먼저 분리한다: [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+2. browser auth 선택지를 비교한다: [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+3. 그다음 현재 문서에서 `FilterChain`, `SecurityContext`, 인증/인가 흐름을 본다.
+4. 숨은 세션 생성과 persistence 경계까지 이어서 보려면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 내려간다.
 
 ## 핵심 개념
 

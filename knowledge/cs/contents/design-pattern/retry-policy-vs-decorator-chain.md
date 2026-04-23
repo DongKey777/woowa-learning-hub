@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Retry Policy는 재시도 규칙을 캡슐화하고, Decorator Chain은 호출에 기능을 층층이 덧씌운다. 둘을 섞으면 실패와 부가기능의 경계가 흐려진다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [데코레이터 vs 프록시](./decorator-vs-proxy.md)

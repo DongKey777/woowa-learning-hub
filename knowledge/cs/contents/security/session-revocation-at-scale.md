@@ -1,17 +1,43 @@
 # Session Revocation at Scale
 
 > 한 줄 요약: 세션 폐기는 단순 로그아웃 버튼이 아니라, 다수 인스턴스와 여러 토큰 종류에 걸쳐 일관되게 반영되어야 하는 분산 무효화 문제다.
+>
+> 문서 역할: 이 문서는 security 카테고리 안에서 **세션 무효화 모델과 revocation 전략**을 설명하는 deep dive다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+> - [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [Refresh Token Rotation / Reuse Detection](./refresh-token-rotation-reuse-detection.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
+> - [Session Quarantine / Partial Lockdown Patterns](./session-quarantine-partial-lockdown-patterns.md)
+> - [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
+> - [Session Inventory UX / Revocation Scope Design](./session-inventory-ux-revocation-scope-design.md)
+> - [Background Job Auth Context / Revalidation](./background-job-auth-context-revalidation.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
+> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
+> - [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [Spring Security `LogoutHandler` / `LogoutSuccessHandler` Boundaries](../spring/spring-security-logout-handler-success-boundaries.md)
+> - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
+> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+> - [Security README: Session / Boundary / Replay](./README.md#session--boundary--replay)
 
-retrieval-anchor-keywords: session revocation, logout, token invalidation, blacklist, revocation store, session version, fan-out invalidation, logout all devices, distributed session, stale token
+retrieval-anchor-keywords: session revocation, logout, token invalidation, blacklist, revocation store, session version, authz version, claim version, token version, fan-out invalidation, logout all devices, distributed session, stale token, revocation lag, session quarantine, security session bridge, session boundary replay bundle, security readme session bridge, logout still works, logout tail, revocation tail, old session still works after logout, role revoked but session still works, permission change session revoke, session freshness
+
+## 이 문서 다음에 보면 좋은 문서
+
+- session이 살아 있을 때 role, permission, tenant membership 변경을 초보자 눈높이로 먼저 정리하고 싶으면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)부터 보고 내려오면 된다.
+- `logout still works`, `logout tail`, `revocation tail`처럼 실제 tail symptom을 바로 해석해야 하면 [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)로 이어진다.
+- federated logout coherence는 [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)와 같이 보는 편이 좋다.
+- `login loop`, `hidden session mismatch`, `cookie는 있는데 session missing`처럼 browser/BFF translation 계층이 먼저 의심되면 [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md), [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 이어진다.
+- Spring logout local cleanup과 revoke plane 구분은 [Spring Security `LogoutHandler` / `LogoutSuccessHandler` Boundaries](../spring/spring-security-logout-handler-success-boundaries.md)에서 바로 연결된다.
+- 사용자-facing 세션 목록과 revoke 범위 naming은 [Session Inventory UX / Revocation Scope Design](./session-inventory-ux-revocation-scope-design.md)으로 이어진다.
+- 요청 이후 비동기 worker가 오래된 권한을 계속 써도 되는지는 [Background Job Auth Context / Revalidation](./background-job-auth-context-revalidation.md)에서 이어 볼 수 있다.
 
 ---
 
@@ -64,6 +90,9 @@ access token을 즉시 무효화하려고 blacklist를 두는 경우가 많다.
 - 권한 회수 시 version을 올린다
 
 토큰에 version을 넣고 요청 시 비교하면, 오래된 세션을 자연스럽게 끊을 수 있다.
+
+다만 실무에서는 `session_version` 하나만으로는 role revoke, tenant move, policy/cache stale을 세밀하게 가르기 어려워 `authz_version`, `tenant_version`, `refresh_family_version`까지 분리하는 경우가 많다.  
+이 분해 기준은 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)에서 따로 본다.
 
 ### 4. 여러 인스턴스에서 같은 결정을 해야 한다
 

@@ -7,11 +7,14 @@
 > 관련 문서:
 > - [AuthZ Decision Logging Design](./authz-decision-logging-design.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+> - [Authorization Graph Caching](./authorization-graph-caching.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
+> - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
+> - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 
-retrieval-anchor-keywords: PDP, PEP, policy decision point, policy enforcement point, authorization architecture, decision latency, enforcement, policy engine, sidecar, gateway, split policy
+retrieval-anchor-keywords: PDP, PEP, policy decision point, policy enforcement point, authorization architecture, decision latency, enforcement, policy engine, sidecar, gateway, split policy, relationship-based authz, graph snapshot version, tenant-scoped invalidation, tenant graph cache
 
 ---
 
@@ -71,6 +74,10 @@ PEP는 PDP의 결정을 집행하고, 필요하면 요청을 차단한다.
 - PDP와 PEP가 다른 policy version을 보면 안 된다
 - network failure 시 fail-open/fail-closed를 정해야 한다
 - cache stale이 있으면 잘못된 결정이 나온다
+
+relationship-based authz를 쓰면 mismatch 대상은 `policy version` 하나로 끝나지 않는다.  
+PDP는 graph snapshot/version을 판단 근거로 들고, PEP는 tenant-scoped invalidation token이나 cache bust가 실제 enforcement tier까지 전파됐는지 확인해야 한다.  
+delegated admin scope 변경이나 tenant ownership 이동처럼 edge가 바뀌는 순간은 [Authorization Graph Caching](./authorization-graph-caching.md), [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md), [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)을 같이 봐야 한다.
 
 ### 5. inline authorization와 중앙 정책의 균형
 

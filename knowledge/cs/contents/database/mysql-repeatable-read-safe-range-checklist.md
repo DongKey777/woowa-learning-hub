@@ -1,0 +1,208 @@
+# MySQL REPEATABLE READ Safe-Range Checklist
+
+> 한 줄 요약: InnoDB `REPEATABLE READ`에서 next-key/gap lock은 "`WHERE` 절 전체"가 아니라 **실제로 스캔한 인덱스 range**를 보호하므로, absence check, overlap probe, index-path assumption을 한 체크리스트로 검증해야 한다.
+
+**난이도: 🔴 Advanced**
+
+관련 문서:
+
+- [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md)
+- [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md)
+- [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md)
+- [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
+- [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md)
+- [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
+
+retrieval-anchor-keywords: mysql repeatable read safe range checklist, innodb safe range checklist, repeatable read absence check checklist, overlap probe checklist mysql, next-key lock checklist, gap lock checklist, index path assumption mysql, chosen index path lock footprint, empty result safe range, repeatable read overlap probe, absence check not predicate lock, explain data_locks checklist, mysql phantom-safe range, mysql range locking checklist, innodb scanned range vs where predicate
+
+## 핵심 개념
+
+`REPEATABLE READ`에서 "범위를 안전하게 잠갔다"는 말은 보통 과장이다.
+
+InnoDB가 실제로 제공하는 것은 대개 다음 셋의 교집합이다.
+
+1. locking read나 write statement가 실제로 잡은 락
+2. chosen index path가 스캔한 B-tree range
+3. 모든 writer가 공통으로 통과하는 arbitration surface
+
+즉 `WHERE` 절이 같다고 해서 같은 보호를 받는 것이 아니다.
+
+- `0 row`여도 scanned gap/next-key가 남을 수는 있다
+- 하지만 그것은 logical predicate 전체가 아니라 chosen index path 주변 보호다
+- overlap처럼 2차원 predicate는 한쪽 scan axis만 따라 잠그기 쉽다
+- writer path가 다르거나 plan이 바뀌면 `REPEATABLE READ`에서도 바로 샌다
+
+이 문서는 "지금 RR이니까 괜찮다"는 막연한 감각을 버리고, 어떤 range lock 가정이 실제로 통과 조건을 만족하는지 점검하는 checklist다.
+
+## 먼저 버릴 오해
+
+| 흔한 말 | 실제로 확인해야 할 것 |
+|---|---|
+| `FOR UPDATE`를 썼으니 `WHERE` 절이 잠겼다 | 어떤 인덱스를 어떤 방향으로 스캔했는지 |
+| `0 row`였으니 부재를 잠갔다 | successor 쪽 scanned gap만 남았는지, 아니면 거의 아무 보호도 없는지 |
+| 같은 SQL이면 항상 같은 lock footprint다 | 통계, optimizer, 복합 인덱스 shape가 바뀌지 않았는지 |
+| RR이면 overlap probe가 phantom-safe하다 | 모든 writer가 같은 probe와 같은 active predicate를 쓰는지 |
+| 적절한 인덱스만 있으면 overlap도 안전하다 | B-tree scan axis가 logical overlap 전체와 어긋나지 않는지 |
+
+핵심 문장으로 줄이면 이렇다.
+
+> safe-range는 predicate의 성질이 아니라, statement + index path + writer protocol의 합성 결과다.
+
+## 한 장 체크리스트
+
+| 체크 항목 | 통과 기준 | 실패 신호 | 다음 조치 |
+|---|---|---|---|
+| 1. locking statement인가 | `FOR UPDATE`, `FOR SHARE`, `UPDATE`, `DELETE`처럼 실제 row/gap lock을 만드는 문장이다 | plain `SELECT` 결과를 보고 "같은 트랜잭션 안이라 안전하다"고 믿는다 | locking read로 바꾸거나, constraint/guard row로 arbitration surface를 옮긴다 |
+| 2. chosen index path를 알고 있는가 | `EXPLAIN`으로 실제 접근 인덱스와 range axis를 확인했다 | `WHERE` 절만 보고 잠금 범위를 상상한다 | `EXPLAIN`, `optimizer_trace`, 필요 시 `FORCE INDEX` 검토 |
+| 3. equality prefix가 conflict identity와 맞는가 | `tenant_id`, `resource_id`, `active_flag`처럼 진짜 경쟁 단위가 prefix에 있다 | inactive/history까지 같이 스캔하거나 다른 resource가 같은 queue로 엮인다 | active truth를 prefix/generate column으로 올리거나 guard scope를 다시 잡는다 |
+| 4. 첫 range axis가 비즈니스 충돌 축과 맞는가 | `start_at` 또는 `end_at` 중 false positive가 더 적은 축을 의도적으로 골랐다 | overlap band 전체가 잠긴다고 믿는다 | `start`축과 `end`축의 false-positive/lock footprint를 따로 검증한다 |
+| 5. `0 row` 해석이 과장되지 않았는가 | "scanned gap 보조 보호" 정도로만 해석한다 | "부재 전체가 예약됐다"고 말한다 | exact duplicate는 `UNIQUE`, continuous overlap은 slot/guard row로 내린다 |
+| 6. 모든 writer가 같은 protocol을 타는가 | 신규 insert, reschedule, admin override, cleanup이 같은 probe 또는 같은 guard를 탄다 | 어떤 경로는 probe 후 insert, 다른 경로는 바로 insert/update 한다 | write path를 단일 protocol로 통일한다 |
+| 7. active predicate drift가 없는가 | `HELD`/`CONFIRMED`/`BLACKOUT`/`EXPIRED` 해석이 모든 경로에서 같다 | cleanup lag나 status 전이로 active set이 흔들린다 | `active_flag`, active table split, reconciliation을 검토한다 |
+| 8. isolation portability를 명시했는가 | RR 의존 코드를 문서화했고 RC 전환 시 깨질 지점을 안다 | RR 테스트만 통과하면 portable하다고 본다 | RC blind spot을 별도 테스트하고 fallback을 정한다 |
+| 9. 실제 lock footprint를 봤는가 | `performance_schema.data_locks`, lock wait, 재현 스크립트로 확인했다 | SQL 텍스트와 리뷰 코멘트만 보고 추측한다 | 두 세션 재현 + lock 관측을 남긴다 |
+
+위 표에서 하나라도 "아니다"가 나오면 그 range lock 가정은 설명 가능한 설계가 아니라 우연히 버티는 구현일 가능성이 높다.
+
+## 패턴 1. absence check 체크리스트
+
+가장 흔한 패턴은 이거다.
+
+```sql
+SELECT 1
+FROM user_email
+WHERE tenant_id = :tenant_id
+  AND email = :email
+FOR SHARE;
+-- 0 row면 INSERT
+```
+
+이 패턴은 **exact duplicate 보조 확인**으로는 쓸 수 있지만, 단독 보증으로 읽으면 위험하다.
+
+### 통과 조건
+
+- equality key가 실제 충돌 identity와 거의 같다
+- ordered index가 그 equality key를 그대로 탄다
+- 진짜 backstop은 결국 `UNIQUE(tenant_id, email)` 같은 제약이다
+- `0 row` 결과를 "successor gap이 좁게 남을 수 있다" 정도로만 해석한다
+
+### 바로 위험해지는 경우
+
+- `deleted_at IS NULL`, `status IN (...)` 같은 active predicate가 섞여 있다
+- soft delete나 lifecycle drift 때문에 "같은 email인데 지금은 inactive" 같은 상태가 존재한다
+- alias, normalized key, canonicalization이 app과 DB에서 다르다
+- RC에서도 똑같이 안전할 거라고 기대한다
+
+### 실무 판단
+
+- exact uniqueness는 locking read가 아니라 **제약조건**이 1차 수단이다
+- locking read는 duplicate error를 더 일찍 관측하는 보조 수단 정도로만 본다
+- "없으면 insert"가 range/set invariant로 커지는 순간 absence check를 다른 surface로 옮겨야 한다
+
+## 패턴 2. overlap probe 체크리스트
+
+예약 overlap probe는 보통 이렇게 생긴다.
+
+```sql
+SELECT id
+FROM booking
+WHERE resource_id = :resource_id
+  AND active_flag = 1
+  AND start_at < :requested_end
+  AND end_at > :requested_start
+FOR UPDATE;
+```
+
+여기서 RR next-key가 안전해 보이는 이유는 overlap predicate 자체가 잠겨서가 아니라, **chosen scan axis가 만든 range**가 우연히 실제 충돌 surface와 꽤 겹치기 때문이다.
+
+### 통과 조건
+
+- `resource_id`, `active_flag`처럼 경쟁 단위가 equality prefix에 있다
+- `(resource_id, active_flag, start_at)` 또는 `(resource_id, active_flag, end_at)` 중 어느 축이 scan axis인지 명확하다
+- 모든 writer가 insert 전 같은 probe를 수행한다
+- 기존 row가 status 변경으로 active set 안으로 들어오는 경로도 같은 protocol을 탄다
+- false-positive lock footprint를 운영에서 감당할 수 있다
+
+### 레드 플래그
+
+- `(resource_id, start_at)` 하나만 보고 "overlap 전체가 잠긴다"고 말한다
+- admin blackout, reschedule, expiry cleanup이 같은 probe를 타지 않는다
+- `active_flag` 없이 `status IN (...)`를 각 경로가 제각각 해석한다
+- `0 row`를 보고 "이 시간대 전체가 비었다"고 판단한 뒤 바로 insert한다
+- 오래된 history나 먼 미래 row를 과다 스캔해 lock wait가 커진다
+
+### 실무 판단
+
+- overlap probe는 "설명 가능한 임시 보호"이지, 엔진 독립적인 invariant surface가 아니다
+- discrete time이면 slotization이 더 직접적이다
+- continuous interval이고 writer path가 복잡하면 guard row/ledger가 더 설명 가능하다
+- RR next-key를 계속 쓸 거면 적어도 **scan axis, writer protocol, active predicate**를 문서화해야 한다
+
+## 패턴 3. index-path assumption 체크리스트
+
+InnoDB range safety는 결국 index path에 묶인다. 그래서 질문은 "인덱스가 있나"가 아니라 "정말 그 인덱스를 그 방식으로 타나"다.
+
+### 확인 순서
+
+1. `EXPLAIN`으로 실제 chosen index, access type, rows estimate를 본다
+2. equality prefix 뒤 첫 range가 무엇인지 적는다
+3. 다른 composite index가 생겼을 때 optimizer가 경로를 바꿀 수 있는지 본다
+4. `performance_schema.data_locks`나 blocking session으로 실제 lock footprint를 확인한다
+
+### 바로 의심해야 하는 신호
+
+- 같은 SQL인데 배포 후 lock wait 위치가 바뀌었다
+- `rows` 추정치가 흔들리고 plan drift가 자주 난다
+- active/inactive row 누적 때문에 원래 짧던 range가 점점 길어진다
+- secondary index 둘 중 어느 쪽을 타는지 통계 상태에 따라 달라진다
+
+### 실무 판단
+
+- safe-range assumption을 문서로 남길 때는 `WHERE` 절이 아니라 **chosen index path**를 적는다
+- "`(resource_id, active_flag, start_at)` 기준으로 `start_at < end` 방향 range scan을 기대한다"처럼 남겨야 한다
+- 이 문장이 흔들리는 순간 gap/next-key 기반 보장도 흔들린다
+
+## RR next-key에 계속 기대도 되는 경우와 접어야 하는 경우
+
+### 계속 기대도 되는 쪽
+
+- exact duplicate check에 가깝다
+- equality prefix가 명확하고 narrow하다
+- 모든 writer가 하나의 probe protocol을 강제한다
+- RC로 내릴 계획이 없고, lock footprint도 운영에서 감당 가능하다
+
+### 접는 편이 나은 쪽
+
+- overlap, capacity, quota처럼 range/set invariant다
+- active predicate가 lifecycle과 cleanup에 따라 자주 흔들린다
+- writer path가 여러 개고 일부는 direct insert/update다
+- index path가 plan drift에 민감하다
+- 엔진 portability나 RC 전환 가능성을 열어둬야 한다
+
+이 경우에는 보통 다음이 더 낫다.
+
+- exact duplicate: `UNIQUE`
+- discrete overlap: slot row + unique key
+- complex overlap/capacity: guard row, ledger, reconciliation
+
+## 운영에서 꼭 남겨야 할 증거
+
+체크리스트를 통과했다고 말하려면 문장보다 증거가 먼저 있어야 한다.
+
+- `EXPLAIN` 출력: chosen index, equality prefix, first range axis
+- 두 세션 재현 로그: `0 row` probe 후 concurrent insert/update가 실제로 어떻게 대기하는지
+- `performance_schema.data_locks` 또는 lock wait 캡처
+- RC 전환 테스트 결과: 어디서 blind spot이 열리는지
+- active predicate contract: 어떤 status가 blocker인지, cleanup과 probe가 같은 해석을 쓰는지
+
+이 증거가 없으면 "RR이라 안전하다"는 설명은 대부분 SQL 텍스트만 보고 만든 이야기다.
+
+## 관련 문서
+
+- [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md)
+- [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md)
+- [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md)
+- [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
+- [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md)

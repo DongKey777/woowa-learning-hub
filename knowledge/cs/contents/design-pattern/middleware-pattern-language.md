@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Middleware는 요청/응답 파이프라인 중간에 들어가 공통 관심사를 조합하는 패턴 언어다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기](./chain-of-responsibility-filters-interceptors.md)

@@ -1,5 +1,7 @@
 # SQL 조인과 쿼리 실행 순서
 
+**난이도: 🟡 Intermediate**
+
 > 단순 SQL 문법을 넘어, DB가 쿼리를 어떻게 이해하는지 설명하기 위한 문서
 
 <details>
@@ -14,6 +16,17 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+> retrieval-anchor-keywords:
+> - SQL join
+> - INNER JOIN
+> - LEFT JOIN
+> - RIGHT JOIN
+> - query execution order
+> - logical query processing
+> - GROUP BY HAVING
+> - subquery vs join
+> - 조인 실행 순서
 
 ## 왜 중요한가
 

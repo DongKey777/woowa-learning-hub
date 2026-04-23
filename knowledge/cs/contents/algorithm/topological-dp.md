@@ -1,24 +1,44 @@
 # Topological DP
 
 > 한 줄 요약: Topological DP는 DAG를 위상 순서로 훑으면서, 각 정점의 최적값을 선행 정점에서 전달받아 갱신하는 패턴이다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **DAG path optimization / dependency accumulation DP 패턴**을 설명하는 pattern deep dive다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Topological Sort Patterns](./topological-sort-patterns.md)
+> - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
 > - [Strongly Connected Components: Tarjan vs Kosaraju](./scc-tarjan-kosaraju.md)
 > - [그래프 관련 알고리즘](./graph.md)
 
-> retrieval-anchor-keywords: topological dp, dag dp, dependency dp, longest path dag, earliest finish time, build pipeline dp, indegree order, acyclic graph, task scheduling
+> retrieval-anchor-keywords: topological dp, dag dp, dag dynamic programming, dag shortest path, shortest path on dag, dag longest path, topological shortest path, topological longest path, path optimization on dag, dag relaxation, topological relaxation, dependency accumulation dp, weighted dependency graph dp, dependency graph minimum cost, dependency graph maximum cost, critical path, critical path method, cpm scheduling, earliest completion time, earliest finish time, build time accumulation, longest dependency chain, acyclic graph dp
+
+## 이 문서 다음에 보면 좋은 문서
+
+- DAG에서 실행 **순서만** 뽑으면 되는 문제라면 [Topological Sort Patterns](./topological-sort-patterns.md)로 가는 편이 정확하다.
+- DAG shortest path를 전체 shortest-path 선택 문제 안에서 비교하고 싶다면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)까지 같이 보는 편이 좋다.
+- 입력 그래프에 cycle이 섞일 수 있다면 [Strongly Connected Components: Tarjan vs Kosaraju](./scc-tarjan-kosaraju.md)로 넘어가서 DAG로 압축 가능한지 먼저 판단해야 한다.
+
+## 헷갈리기 쉬운 문제 경계
+
+| 질문 | 실제로 먼저 볼 문서 | 구분 포인트 |
+|---|---|---|
+| DAG에서 **실행 순서**만 구하면 되는가 | [Topological Sort Patterns](./topological-sort-patterns.md) | 출력이 order 하나면 위상 정렬 문제다 |
+| DAG에서 **최소/최대 비용, 누적 점수, 완료 시점**을 구하는가 | 이 문서 | 위상 순서는 계산 도구이고, 핵심은 DP/relaxation이다 |
+| DAG가 아니거나 일반 shortest path 선택까지 같이 물어보는가 | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | cycle, 음수 간선, all-pairs 여부까지 다시 봐야 한다 |
 
 ## 핵심 개념
 
 Topological DP는 방향 비순환 그래프(DAG)에서만 자연스럽게 쓸 수 있다.  
 위상 정렬 순서대로 노드를 처리하면, 선행 조건이 먼저 계산되기 때문이다.
 
+이 문서의 초점은 "순서를 만든다"가 아니라, 그 순서를 이용해 **값을 전달하고 최적화한다**는 점이다.
+
 대표적으로 다음 문제에 잘 맞는다.
 
 - DAG 최장 경로
+- DAG 최단 경로
 - 작업 완료 시점
 - 의존성 기반 누적 비용
 - 빌드/배포 단계별 최소 시간
@@ -71,7 +91,12 @@ DAG에서는 위상 정렬이 바로 그런 순서를 제공한다.
 사이클이 있으면 topological DP가 성립하지 않는다.  
 이 경우 SCC로 압축하거나 아예 문제 조건을 다시 봐야 한다.
 
-### 시나리오 4: 최단/최장
+### 시나리오 4: DAG shortest path와의 경계
+
+그래프가 DAG라고 해서 질문이 자동으로 위상 정렬 문제는 아니다.
+
+- 결과가 `정점 순서`면 위상 정렬
+- 결과가 `거리 배열`, `최적값`, `earliest finish time`이면 Topological DP
 
 가중치와 목적에 따라 max/min 갱신만 바뀔 뿐, 위상 순서 DP라는 틀은 같다.
 

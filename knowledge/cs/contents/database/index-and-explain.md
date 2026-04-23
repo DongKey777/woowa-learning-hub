@@ -1,10 +1,17 @@
 # 인덱스와 실행 계획
 
+**난이도: 🔴 Advanced**
+
 > 신입 백엔드 개발자가 성능 문제를 설명할 때 필요한 핵심 정리
+
+관련 문서: [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md), [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md), [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+retrieval-anchor-keywords: index basics, explain plan, explain columns, explain type key rows extra, possible_keys, key_len, filtered, using where, using filesort, type all, key null, index not used, explain symptom route, order by limit slow, sargable predicate, functional index, generated column, composite index, leftmost prefix, backend query tuning, 실행 계획 입문, explain 해석 순서, type all key null
 
 <details>
 <summary>Table of Contents</summary>
 
+- [이 문서가 답하는 질문](#이-문서가-답하는-질문)
+- [EXPLAIN symptom 빠른 라우트](#explain-symptom-빠른-라우트)
 - [왜 중요한가](#왜-중요한가)
 - [인덱스란](#인덱스란)
 - [B-Tree 인덱스](#b-tree-인덱스)
@@ -16,6 +23,22 @@
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+## 이 문서가 답하는 질문
+
+- `EXPLAIN`의 `type`, `key`, `rows`, `Extra`를 어떤 순서로 읽어야 하는가
+- 인덱스 자체가 안 맞는 경우와, 인덱스는 타지만 정렬/커버링이 어긋난 경우를 어떻게 구분하는가
+- 실행 계획을 읽은 뒤 다음으로 어느 문서로 이동해야 하는가
+
+## EXPLAIN symptom 빠른 라우트
+
+| 지금 보이는 신호 | 먼저 볼 문서 | 바로 이어서 볼 문서 |
+| --- | --- | --- |
+| `type = ALL`, `key = NULL`, `possible_keys`도 빈약함 | [인덱스와 실행 계획](./index-and-explain.md) | [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `ORDER BY ... LIMIT`를 붙이면 느려지거나 `Using filesort`가 보임 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `Using index`가 보이는데도 기대보다 느리거나 커버링 여부가 헷갈림 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md) |
+| `rows` 추정치가 실제와 다르게 보이거나 환경마다 plan이 흔들림 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| DB가 느린지, 앱 레이어가 느린지부터 애매함 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
 
 ## 왜 중요한가
 
@@ -88,6 +111,8 @@ SELECT * FROM orders WHERE created_at BETWEEN ... AND ...;
 WHERE LOWER(name) = 'donkey'
 ```
 
+이 경우는 일반 인덱스보다 generated column이나 functional index가 더 맞을 수 있다.
+
 ### 2. 앞부분이 고정되지 않은 LIKE
 
 ```sql
@@ -148,12 +173,27 @@ INDEX (team, status, created_at)
 
 를 확인할 수 있다.
 
+### 먼저 보는 순서
+
+1. `type`: full scan인지, range/index scan인지 먼저 본다.
+2. `key` / `possible_keys`: 후보 인덱스가 있었는지, 실제로 어떤 인덱스를 골랐는지 본다.
+3. `rows`: 얼마나 많은 row를 읽을 것으로 추정하는지 본다.
+4. `Extra`: `Using where`, `Using filesort`, `Using index` 같은 추가 신호를 읽는다.
+
+이 순서로 보면 "인덱스 자체가 없는가", "있는 인덱스를 안 탔는가", "탔지만 정렬/커버링이 새 병목인가"를 분리하기 쉽다.
+
 ### 왜 중요하나
 
 인덱스를 걸었다고 무조건 빨라지는 게 아니다.  
 실제로 DB가 그 인덱스를 사용할지 확인해야 한다.
 
 즉 **성능 문제는 감으로 보지 말고 실행 계획으로 확인**하는 습관이 중요하다.
+
+예를 들어:
+
+- `type = ALL`과 `key = NULL`이면 인덱스 설계나 predicate shape부터 다시 본다.
+- `key`는 잡혔는데 `Extra`에 `Using filesort`가 남으면 복합 인덱스 순서와 정렬 축을 다시 본다.
+- `rows` 추정치가 수상하면 통계와 cardinality estimation 문제를 의심한다.
 
 ---
 

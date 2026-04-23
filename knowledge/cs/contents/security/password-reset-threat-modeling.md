@@ -8,10 +8,11 @@
 > - [MFA / Step-Up Auth Design](./mfa-step-up-auth-design.md)
 > - [Rate Limiting vs Brute Force Defense](./rate-limiting-vs-brute-force-defense.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [One-Time Token Consumption Race / Burn-After-Read](./one-time-token-consumption-race-burn-after-read.md)
 > - [Secret Management, Rotation, Leak Patterns](./secret-management-rotation-leak-patterns.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 
-retrieval-anchor-keywords: password reset, account recovery, reset token, one-time link, email verification, step-up auth, brute force, reset abuse, account takeover, recovery flow
+retrieval-anchor-keywords: password reset, account recovery, reset token, one-time link, email verification, step-up auth, brute force, reset abuse, account takeover, recovery flow, burn after read, token consume race
 
 ---
 

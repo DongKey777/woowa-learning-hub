@@ -1,15 +1,27 @@
 # A* vs Dijkstra
 
 > 한 줄 요약: Dijkstra는 시작점 기준의 최단 경로를 보장하고, A*는 목표점까지의 추정 비용을 더해 더 똑똑하게 탐색을 줄인다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **goal-directed shortest path**와 **single-source shortest path**의 선택 경계를 정리하는 comparison deep dive다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
+> - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 > - [그래프 관련 알고리즘](./graph.md)
-> - [Greedy 알고리즘](./greedy.md)
+> - [알고리즘 기본](./basic.md#dfs와-bfs)
 
-> retrieval-anchor-keywords: A*, A star, heuristic search, admissible heuristic, consistent heuristic, pathfinding, best-first search, shortest path, routing, map search
+> retrieval-anchor-keywords: A*, A star, A-star, a-star, astar, A-star algorithm, a-star search, astar search, goal-directed shortest path, goal-directed pathfinding, goal-directed routing, point-to-point shortest path, point to point shortest path, single-pair shortest path, single pair shortest path, source-to-target routing, start-to-goal shortest path, start to goal shortest path, target-fixed shortest path, target fixed shortest path, fixed-target shortest path, fixed target shortest path, fixed-destination shortest path, fixed destination shortest path, destination-fixed shortest path, destination fixed shortest path, origin-destination shortest path, origin destination shortest path, one-source one-target shortest path, between two nodes shortest path, between two vertices shortest path, weighted point-to-point routing, weighted point to point routing, point-to-point weighted shortest path, point to point weighted shortest path, weighted single-pair routing, weighted single pair routing, source-to-target weighted routing, start-to-goal weighted routing, route planning, route-planning, weighted route planning, weighted pathfinding, weighted graph pathfinding, weighted navigation routing, weighted route search, navigation route planning, maze navigation, maze-navigation, maze pathfinding, grid navigation, grid pathfinding, minimum cost route between two nodes, minimum cost path between source and destination, route between two nodes with weights, cost-aware route planning, weight-based route planning, heuristic search, admissible heuristic, consistent heuristic, navigation routing, game AI pathfinding, 가중치 점대점 최단 경로, 점대점 가중치 라우팅, 가중치 경로 탐색, 가중치 길찾기, 가중치 기반 길찾기, 가중치 기반 경로 탐색, 두 정점 사이 최소 비용 경로, 출발점과 도착점 사이 최소 비용 경로, 출발점에서 도착점까지 최소 비용 경로, 한 점에서 한 점까지 최소 비용 경로, 목적지 고정 가중치 경로, 목표 지향 가중치 라우팅, 점대점 라우팅, 점대점 경로 탐색
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 시작점 하나 기준의 최단 경로 전체 선택표는 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)에서 바로 이어진다.
+- 희소 그래프, 0-1 BFS, Dial까지 포함한 실전 shortest-path 성능 선택은 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)에서 정리한다.
+- BFS부터 shortest path / MST / flow를 먼저 가르는 라우터는 [그래프 관련 알고리즘](./graph.md) 쪽이 더 넓다.
+- `goal-directed shortest path`, `point-to-point shortest path`, `target-fixed shortest path`처럼 목표 정점이 이미 고정된 phrasing이면 이 문서를 먼저 잡고, `single-source shortest path` / `all-pairs shortest path`가 핵심이면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)로 돌아가면 된다.
+- `weighted point-to-point routing`, `weighted route planning`, `minimum cost route between two nodes`, `가중치 길찾기`, `두 정점 사이 최소 비용 경로`처럼 가중치가 붙은 point-to-point phrasing도 먼저 이 문서에서 A*와 Dijkstra 경계를 잡고, 그래프 밀도나 0/1 가중치 분포가 더 중요해지면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)로 이어가면 된다.
+- `A-star`, `astar`, `route planning`, `route-planning`, `maze navigation`, `maze-navigation`, `maze pathfinding`처럼 표기가 흔들려도 목표 지점이 분명한 길찾기라면 먼저 이 문서로 모으고, 무가중치 미로의 `최소 칸 수` 문제면 [알고리즘 기본](./basic.md#dfs와-bfs)에서 BFS를 다시 확인하면 된다.
 
 ## 핵심 개념
 
@@ -20,7 +32,34 @@
 
 즉 A*는 "목표에 더 가까워 보이는 후보"를 우선시한다.
 
-실무에서는 지도 경로 탐색, 게임 NPC 이동, 라우팅 후보 탐색처럼 목표가 명확할 때 유리하다.
+질문의 모양으로 보면 A*는 `start -> goal`이 고정된 point-to-point shortest path에 가깝고, Dijkstra는 `start -> all` 형태의 single-source shortest path에 더 자연스럽다.
+
+특히 `weighted route planning`, `minimum cost route between two nodes`, `가중치 기반 경로 탐색`, `출발점과 도착점 사이 최소 비용 경로`처럼 wording에 `weighted`나 `minimum cost`가 섞여도 질문이 묻는 축이 `한 쌍의 출발점-도착점`이면 우선 이 비교 문서를 잡는 편이 recall이 빠르다.
+
+실무에서는 지도 route planning, maze navigation, 게임 NPC 이동, 라우팅 후보 탐색처럼 목표가 명확할 때 유리하다.
+
+## 헷갈리기 쉬운 shortest path 선택 경계
+
+| 질문 | 먼저 볼 문서 | 구분 포인트 |
+|---|---|---|
+| 출발점과 목표점이 모두 고정된 **goal-directed pathfinding**인가 | 이 문서 | heuristic으로 탐색을 유도할 수 있는지가 핵심이다 |
+| `weighted point-to-point routing`, `weighted route planning`, `가중치 길찾기`, `두 정점 사이 최소 비용 경로`처럼 **가중치가 있는 점대점 라우팅**인가 | 이 문서 → [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | 먼저 A* vs Dijkstra 경계를 잡고, 그다음 sparse/dense나 0/1 가중치 특수 케이스를 본다 |
+| `route planning`, `route-planning`, `maze navigation`, `maze-navigation`, `maze pathfinding`처럼 **길찾기/미로 탐색 phrasing**인가 | 이 문서 → [알고리즘 기본](./basic.md#dfs와-bfs) | goal-directed heuristic이 있으면 A*, 가중치가 없고 최소 칸 수만 묻는 미로면 BFS를 다시 본다 |
+| 시작점 하나에서 **모든 정점까지 거리**가 필요한가 | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | single-source shortest path 선택 문제다 |
+| 희소 그래프에서 양수 가중치 shortest path를 빠르게 풀어야 하나 | [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | adjacency list, PQ, 0-1 BFS, Dial까지 같이 본다 |
+| 가중치가 없거나 모두 같은 그래프인가 | [그래프 관련 알고리즘](./graph.md) | shortest path는 BFS부터 의심하는 편이 맞다 |
+| 음수 간선이나 음수 사이클 가능성이 있나 | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | A*보다 Bellman-Ford 계열 검토가 먼저다 |
+
+## Alias Normalization
+
+| canonical phrase | 같이 걸리기 쉬운 alias | 먼저 연결되는 선택 |
+|---|---|---|
+| `A*` | `A star`, `A-star`, `a-star`, `astar`, `A-star algorithm`, `a-star search`, `astar search` | 표기가 달라도 goal-directed shortest path 비교 문서로 normalize한다 |
+| `goal-directed shortest path` | `goal-directed routing`, `goal-directed pathfinding`, `heuristic route search`, `목표 지향 shortest path` | 목표 정점이 분명하고 heuristic으로 탐색을 유도할 수 있는지 먼저 본다 |
+| `point-to-point shortest path` | `point to point shortest path`, `single-pair shortest path`, `single pair shortest path`, `between two nodes shortest path`, `between two vertices shortest path`, `one-source one-target shortest path` | `start -> goal` 한 쌍이 고정된 shortest-path comparison으로 읽는다 |
+| `route planning` | `route-planning`, `navigation route planning`, `maze navigation`, `maze-navigation`, `maze pathfinding`, `grid navigation` | 목표가 고정된 길찾기면 이 문서로, 무가중치 미로 최단 경로면 [알고리즘 기본](./basic.md#dfs와-bfs) 쪽 BFS 경계도 같이 본다 |
+| `weighted point-to-point routing` | `weighted point to point routing`, `point-to-point weighted shortest path`, `weighted single-pair routing`, `source-to-target weighted routing`, `weighted route planning`, `minimum cost route between two nodes`, `route between two nodes with weights`, `가중치 점대점 최단 경로`, `가중치 길찾기`, `두 정점 사이 최소 비용 경로`, `출발점에서 도착점까지 최소 비용 경로` | 가중치가 있어도 질문의 본질이 `single-source table`이 아니라 `start -> goal` 한 쌍 비교인지 먼저 확인한다 |
+| `target-fixed shortest path` | `target fixed shortest path`, `fixed-target shortest path`, `fixed destination shortest path`, `destination-fixed shortest path`, `start-to-goal shortest path`, `origin-destination shortest path` | 전체 거리표가 아니라 고정된 목적지를 향하는 shortest-path phrasing로 normalize한다 |
 
 ## 깊이 들어가기
 
@@ -29,6 +68,7 @@
 Dijkstra는 간선 가중치가 음수가 없을 때, 가장 짧아 보이는 정점을 확정해도 나중에 더 짧아지지 않는다는 성질을 쓴다.
 
 그래서 시작점에서 모든 정점까지의 최단 거리를 안정적으로 구한다.
+A*와 비교하면 "목적지 하나를 겨냥해서 줄이는 탐색"보다 "거리 테이블 전체를 안전하게 만든다"는 성격이 더 강하다.
 
 ### 2. A*의 heuristic이 핵심이다
 
@@ -46,6 +86,8 @@ A*는 "정답이 있는 방향"을 더 빨리 파고든다.
 
 하지만 heuristic이 나쁘면 Dijkstra보다 별로일 수 있다.  
 즉 A*는 heuristic 품질에 크게 의존한다.
+
+`h(n)=0`이면 A*는 사실상 Dijkstra와 같은 우선순위 기준으로 수렴한다.
 
 ### 4. backend에서의 감각
 

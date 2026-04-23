@@ -8,6 +8,7 @@
 > - [Page Cache Thrash vs Direct I/O](./page-cache-thrash-vs-direct-io.md)
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
 > - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
+> - [posix_fadvise, madvise, Page Cache Hints](./posix-fadvise-madvise-page-cache-hints.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 > - [I/O Scheduler, blk-mq Basics](./io-scheduler-blk-mq-basics.md)
 

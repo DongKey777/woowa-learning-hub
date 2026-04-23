@@ -11,6 +11,16 @@
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
 - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+- [Online Backfill Consistency와 워터마크 전략](./online-backfill-consistency.md)
+- [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)
+- [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md)
+- [Destructive Schema Cleanup, Column Retirement, and Contract-Phase Safety](./destructive-schema-cleanup-column-retirement.md)
+- [Index Maintenance Window, Rollout, and Fallback Playbook](./index-maintenance-window-rollout-playbook.md)
+- [gh-ost / pt-online-schema-change Cutover Precheck Runbook](./gh-ost-pt-osc-cutover-precheck-runbook.md)
+- [Zero-Downtime Schema Migration Platform 설계](../system-design/zero-downtime-schema-migration-platform-design.md)
+- [Dual-Read Comparison / Verification Platform 설계](../system-design/dual-read-comparison-verification-platform-design.md)
+
+retrieval-anchor-keywords: online schema change, gh-ost, pt-online-schema-change, metadata lock, chunk copy, cutover, shadow table, generated column rollout, backfill verification, index maintenance window, cutover precheck
 
 ---
 
@@ -31,6 +41,7 @@
 
 - 수억 건 테이블에 컬럼 추가/타입 변경이 필요할 때
 - 인덱스를 추가하거나 재구성해야 할 때
+- generated column이나 파생 키를 점진적으로 도입해야 할 때
 - nullable/기본값/길이 변경이 서비스 영향 없이 되어야 할 때
 - 배포 창이 짧고 다운타임을 허용하기 어려울 때
 

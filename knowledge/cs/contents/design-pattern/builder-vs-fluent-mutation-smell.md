@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Builder는 객체를 안전하게 조립하는 도구지만, fluent setter가 기존 객체를 바꾸기 시작하면 결국 mutable mutation smell이 된다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [빌더 패턴](./builder-pattern.md)

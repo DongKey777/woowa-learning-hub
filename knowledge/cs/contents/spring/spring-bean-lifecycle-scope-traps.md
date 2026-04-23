@@ -5,12 +5,31 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+> - [Spring Request Scope Proxy Pitfalls](./spring-request-scope-proxy-pitfalls.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 
 ---
+
+> retrieval-anchor-keywords:
+> - Spring bean lifecycle
+> - bean scope traps
+> - singleton scope
+> - prototype scope
+> - request scope
+> - session scope
+> - scoped proxy
+> - ObjectProvider
+> - provider vs proxy
+> - prototype lookup timing
+> - request lookup timing
+> - @PostConstruct
+> - @PreDestroy
+> - bean 생명주기
+> - 스코프 함정
 
 ## 핵심 개념
 
@@ -124,7 +143,8 @@ public class OrderService {
 이 경우 `OrderService`가 만들어질 때 한 번만 주입된다.  
 원하는 건 “호출마다 새 인스턴스”인데 실제로는 “주입 시점 1회”다.
 
-해결은 `ObjectProvider`나 scoped proxy다.
+해결은 `ObjectProvider`나 scoped proxy다.  
+둘 다 짧은 수명의 bean을 singleton에 직접 고정하지 않는다는 점은 같지만, **실제 대상을 조회하는 시점**은 다르다.
 
 ### 시나리오 3: request scope를 비동기 작업에 넘겼다
 
@@ -167,6 +187,129 @@ public class RequestUserContext {
 프록시가 실제 request scope 객체를 대신한다.  
 이 방식은 편하지만, 원인을 숨길 수 있어서 남용하면 추적이 어려워진다.
 
+### `ObjectProvider`와 scoped proxy는 조회 시점이 다르다
+
+둘 다 "지금은 긴 수명의 singleton 안에 있지만, 실제 짧은 수명 bean은 나중에 찾는다"는 점은 같다.  
+차이는 **언제 그 lookup이 일어나는지 코드에서 드러나는가**다.
+
+| 비교 축 | `ObjectProvider` | scoped proxy |
+|---|---|---|
+| singleton에 주입되는 것 | provider 핸들 | proxy 객체 |
+| 실제 target 조회 시점 | `getObject()`를 호출하는 순간 | proxy 메서드를 호출하는 순간 |
+| 조회 시점 가시성 | 높다. 호출 코드가 직접 드러낸다 | 낮다. 호출자는 평범한 bean처럼 보인다 |
+| `prototype`에서의 감각 | "이번 작업에서 한 번 꺼내 로컬 변수로 재사용"이 쉽다 | 같은 필드처럼 보여도 메서드 호출마다 새 target이 풀릴 수 있다 |
+| `request`에서의 감각 | request가 살아 있을 때만 명시적으로 꺼낸다 | 요청마다 다른 target을 프록시 뒤에서 자동으로 연결한다 |
+
+#### prototype bean: provider는 조회 횟수, proxy는 호출 횟수가 기준이 된다
+
+```java
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class PrototypeTrace {
+    private final UUID id = UUID.randomUUID();
+
+    public UUID id() {
+        return id;
+    }
+}
+
+@Service
+public class CheckoutService {
+    private final ObjectProvider<PrototypeTrace> traceProvider;
+
+    public CheckoutService(ObjectProvider<PrototypeTrace> traceProvider) {
+        this.traceProvider = traceProvider;
+    }
+
+    public void checkout() {
+        PrototypeTrace trace = traceProvider.getObject();
+        log.info("first={}", trace.id());
+        log.info("second={}", trace.id());
+    }
+}
+```
+
+여기서는 `getObject()`를 한 번만 불렀으므로 `trace`는 같은 인스턴스다.  
+즉, 한 작업 단위 안에서 prototype을 한 번 꺼내 재사용하고 싶다면 provider 쪽이 더 직관적이다.
+
+```java
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class PrototypeTrace {
+    private final UUID id = UUID.randomUUID();
+
+    public UUID id() {
+        return id;
+    }
+}
+
+@Service
+public class CheckoutService {
+    private final PrototypeTrace trace;
+
+    public CheckoutService(PrototypeTrace trace) {
+        this.trace = trace;
+    }
+
+    public void checkout() {
+        log.info("first={}", trace.id());
+        log.info("second={}", trace.id());
+    }
+}
+```
+
+이 경우 `trace` 필드는 하나처럼 보이지만, shared proxy 뒤에서 method invocation마다 prototype target이 다시 풀린다.  
+그래서 prototype에서는 "한 번 조회해서 같은 인스턴스를 계속 쓴다"는 의도를 provider가 더 분명하게 드러낸다.
+
+#### request bean: 둘 다 현재 요청 target을 보지만, lookup을 숨기는 정도가 다르다
+
+```java
+@Component
+@RequestScope
+public class RequestUserContext {
+    private final UUID requestId = UUID.randomUUID();
+
+    public UUID requestId() {
+        return requestId;
+    }
+}
+
+@Service
+public class AuditService {
+    private final ObjectProvider<RequestUserContext> contextProvider;
+    private final RequestUserContext requestUserContext;
+
+    public AuditService(
+            ObjectProvider<RequestUserContext> contextProvider,
+            RequestUserContext requestUserContext
+    ) {
+        this.contextProvider = contextProvider;
+        this.requestUserContext = requestUserContext;
+    }
+
+    public UUID providerStyle() {
+        return contextProvider.getObject().requestId();
+    }
+
+    public UUID proxyStyle() {
+        return requestUserContext.requestId();
+    }
+}
+```
+
+`@RequestScope`는 기본적으로 scoped proxy를 만든다.  
+그래서 `requestUserContext` 필드에는 실제 request bean이 아니라 proxy가 들어가고, 메서드를 호출하는 순간 현재 요청의 target을 찾는다.
+
+반면 provider는 `getObject()` 호출 시점이 코드에 남는다.  
+같은 request 안에서는 둘 다 같은 request target을 보지만, request 밖에서 접근하면 둘 다 실패할 수 있다.
+
+정리하면 이렇다.
+
+- `ObjectProvider`: "지금 이 줄에서 lookup한다"는 의도를 드러낸다
+- scoped proxy: "평범한 의존성처럼 보이게 하되 lookup을 프록시 뒤로 숨긴다"
+- prototype에서는 provider가 작업 단위별 인스턴스 경계를 더 잘 보여 준다
+- request에서는 scoped proxy가 주입 코드를 단순하게 만들지만, 실제 조회 시점은 메서드 호출 순간이다
+
 ---
 
 ## 트레이드오프
@@ -197,6 +340,10 @@ public class RequestUserContext {
 > Q: prototype bean을 singleton에 넣으면 왜 매번 새 객체가 아니라고 보는가?
 > 의도: 주입 시점과 조회 시점 구분
 > 핵심: scope는 주입이 아니라 조회 방식과 함께 봐야 한다
+
+> Q: `ObjectProvider`와 scoped proxy를 둘 다 "지연 조회"라고만 보면 왜 부족한가?
+> 의도: 조회 시점 차이 이해 확인
+> 핵심: provider는 `getObject()` 시점, proxy는 메서드 호출 시점에 target을 푼다
 
 > Q: request scope를 async 작업에 넘길 때 왜 조심해야 하는가?
 > 의도: 요청 생명주기와 thread boundary 이해

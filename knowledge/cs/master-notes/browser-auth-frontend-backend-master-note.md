@@ -9,15 +9,20 @@
 - 먼저 [Auth, Session, Token Master Note](./auth-session-token-master-note.md)로 인증 저장/운반 구조를 잡는다.
 - 브라우저 자체 위협 모델은 [Browser Session Security Master Note](./browser-session-security-master-note.md)에서 보고,
 - 이 노트에서는 `SPA / BFF / 서버 렌더링` 같은 프론트-백엔드 경계 설계를 본다.
+- 브라우저 callback이 없는 CLI / TV / 콘솔 login이면 [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)로 분기한다.
+- authorization request 자체를 front-channel 밖으로 밀거나 서명해야 하면 [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)로 분기한다.
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: HttpOnly, SameSite, CSRF, CORS, OAuth2 code flow, PKCE, session cookie, localStorage, Authorization header, refresh token rotation, logout, browser auth, SPA, BFF
+> retrieval-anchor-keywords: HttpOnly, SameSite, CSRF, CORS, OAuth2 code flow, PKCE, OIDC login, ID token, UserInfo, external identity mapping, device code flow, browserless login, cross-device login, PAR, JAR, pushed authorization request, request object, session cookie, localStorage, Authorization header, refresh token rotation, logout, browser auth, SPA, BFF
 
 > related docs:
 > - [HTTP State, Session, Cache](../contents/network/http-state-session-cache.md)
 > - [CORS, SameSite, Preflight](../contents/security/cors-samesite-preflight.md)
 > - [OAuth2 Authorization Code Grant](../contents/security/oauth2-authorization-code-grant.md)
+> - [OIDC, ID Token, UserInfo](../contents/security/oidc-id-token-userinfo-boundaries.md)
+> - [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+> - [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 > - [JWT Deep Dive](../contents/security/jwt-deep-dive.md)
 > - [XSS / CSRF / Spring Security](../contents/security/xss-csrf-spring-security.md)
 > - [Spring Security Architecture](../contents/spring/spring-security-architecture.md)
@@ -73,6 +78,12 @@ The backend can then exchange code for tokens and decide how to persist state.
 Read with:
 
 - [OAuth2 Authorization Code Grant](../contents/security/oauth2-authorization-code-grant.md)
+- external IdP login에서 `ID token`과 `UserInfo`를 어디까지 신뢰하고 내부 세션/JWT 발급 전에 어떤 매핑 계층을 둘지는 [OIDC, ID Token, UserInfo](../contents/security/oidc-id-token-userinfo-boundaries.md)
+
+Branch here when the OAuth shape changes:
+
+- no browser callback, CLI / TV login, cross-device approval: [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+- front-channel request exposure or signed request requirement: [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 
 ### 4. JWT changes the storage burden, not the trust burden
 

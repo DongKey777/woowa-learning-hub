@@ -4,14 +4,27 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: temporary table engine, in-memory temp table, on-disk temp table, spill behavior, tmp_table_size, max_heap_table_size, internal temp table, TempTable engine
+retrieval-anchor-keywords: temporary table engine, in-memory temp table, on-disk temp table, spill behavior, internal temp table, TempTable engine, using temporary, using temporary using filesort, Created_tmp_tables, Created_tmp_disk_tables, temp table spill, group by temp table, distinct temp table, derived table materialization spill, tmp_table_size, max_heap_table_size, internal_tmp_mem_storage_engine, explain extra using temporary, rows are not huge but temp table spills, temp table disk fallback, 임시 테이블 엔진, 임시 테이블 spill
 
 ## 핵심 개념
 
 - 관련 문서:
   - [Sort Buffer, Temporary Table, and Spill Behavior](./sort-buffer-temp-table-spill.md)
   - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+  - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+  - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [Hash Join, Materialization, Join Buffer](./hash-join-materialization-join-buffer.md)
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 `Using temporary`가 보일 때 "임시 테이블이 생긴다"를 넘어서 **어떤 internal temp table 경로가 spill을 만들었는가**를 읽는 세부 entry다.
+
+| 보이는 신호 | 여기서 바로 보는 것 | 먼저 돌아갈 문서 |
+| --- | --- | --- |
+| `Using temporary`와 `Created_tmp_disk_tables`가 같이 문제로 보임 | memory temp table 한계, row width, disk fallback 조건 | [Sort Buffer, Temporary Table, and Spill Behavior](./sort-buffer-temp-table-spill.md) |
+| `Using filesort`가 주증상이고 temp table은 부차적임 | 정렬 경로와 인덱스 순서 해석 | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
+| `type = ALL`, `key = NULL`이라 temp table 이전에 스캔 폭이 과함 | 접근 경로와 sargability부터 재확인 | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `rows` 추정치나 plan drift 때문에 temp table 선택이 흔들림 | 통계와 cardinality 문제를 먼저 분리 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) |
 
 MySQL의 내부 temporary table은 `GROUP BY`, `DISTINCT`, 파생 테이블, 정렬 중간 결과 등을 위해 쓰인다.  
 이때 핵심은 "temp table을 쓰는가"가 아니라, **어떤 엔진으로 유지되다가 언제 disk spill이 되는가**다.

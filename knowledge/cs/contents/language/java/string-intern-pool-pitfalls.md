@@ -8,9 +8,10 @@
 > - [ClassLoader Memory Leak Playbook](./classloader-memory-leak-playbook.md)
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
+> - [`Locale.ROOT`, Case Mapping, and Unicode Normalization Pitfalls](./locale-root-case-mapping-unicode-normalization.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 
-> retrieval-anchor-keywords: String intern, string pool, canonical representation, string literal, `==`, equals, constant expression, pool lookup, deduplication, memory retention, class loader, canonicalization
+> retrieval-anchor-keywords: String intern, string pool, canonical representation, string literal, `==`, equals, constant expression, pool lookup, deduplication, memory retention, class loader, canonicalization, Locale.ROOT, Unicode normalization
 
 <details>
 <summary>Table of Contents</summary>
@@ -48,6 +49,9 @@
 
 예를 들어 리터럴 비교는 참이지만, 네트워크나 DB에서 읽어온 문자열은 별도 객체일 수 있다.  
 이 차이를 `==`가 아니라 `equals()`가 해결한다.
+
+다만 "보이는 글자가 같은가"와 "같은 문자열 객체인가"는 또 다른 문제다.  
+Unicode canonicalization이나 locale-sensitive case mapping은 [Locale.ROOT, Case Mapping, and Unicode Normalization Pitfalls](./locale-root-case-mapping-unicode-normalization.md)와 함께 보는 편이 정확하다.
 
 ### 2. pool은 전역 공유 자원처럼 봐야 한다
 

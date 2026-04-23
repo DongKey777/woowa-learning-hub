@@ -9,7 +9,11 @@
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 > - [Service Mesh, Sidecar Proxy](./service-mesh-sidecar-proxy.md)
+> - [Accept Queue, SYN Backlog, Listen Overflow](./accept-queue-syn-backlog-listen-overflow.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 > - [System Design](../system-design/README.md)
+
+retrieval-anchor-keywords: load balancer health check, readiness, liveness, flapping, slow start, false positive, false negative, warmup, fail_timeout, drain
 
 ---
 
@@ -29,6 +33,17 @@ Load balancer의 헬스체크는 "이 서버에게 트래픽을 보내도 되는
 - 잠깐 느린 서버를 죽은 것으로 오인한다
 - 플래핑(flapping)이 생긴다
 - 정상 서버가 필요 이상으로 배제된다
+
+### Retrieval Anchors
+
+- `load balancer health check`
+- `readiness`
+- `liveness`
+- `flapping`
+- `slow start`
+- `false positive`
+- `false negative`
+- `warmup`
 
 ---
 

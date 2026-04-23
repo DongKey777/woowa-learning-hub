@@ -10,6 +10,8 @@
 > - [Bloom Filter](./bloom-filter.md)
 > - [분산 캐시 설계](../system-design/distributed-cache-design.md)
 
+> retrieval-anchor-keywords: lru cache, least recently used, linkedhashmap, hashmap doubly linked list, cache eviction, access order, local cache, bounded cache, eviction policy, locality
+
 ## 핵심 개념
 
 LRU(Least Recently Used) 캐시는 "최근에 가장 덜 사용한 항목을 먼저 내보내는" 정책이다.

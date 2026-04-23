@@ -2,13 +2,19 @@
 
 > 한 줄 요약: Facade는 단순한 진입점을 제공할 뿐 아니라, 외부 시스템의 개념과 내부 도메인의 경계를 지키는 anti-corruption seam이 될 수 있다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+> - [Anti-Corruption Layer Operational Pattern](./anti-corruption-layer-operational-pattern.md)
+> - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
+> - [Adapter (어댑터) 패턴](./adapter.md)
+> - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [안티 패턴](./anti-pattern.md)
 > - [전략 패턴](./strategy-pattern.md)
+
+> retrieval-anchor-keywords: facade anti corruption seam, anti corruption seam, boundary translation, translation quarantine, concept quarantine, legacy concept quarantine, external term quarantine, domain language preservation, legacy integration seam, subsystem orchestration, workflow simplification seam, external model shielding, facade vs adapter, facade vs bridge, interface translation vs concept translation, provider-specific concept quarantine
 
 ---
 
@@ -23,13 +29,11 @@ backend에서 더 중요한 건, 이 Facade가 단순히 편의 API가 아니라
 - 레거시 응답 구조를 우리 시스템의 응답 모델로 정리
 - 여러 API 호출 순서를 내부 서비스가 알 필요 없게 감춘다
 
-### Retrieval Anchors
+### 질문 분기
 
-- `facade anti corruption seam`
-- `boundary translation`
-- `legacy integration`
-- `subsystem orchestration`
-- `domain language preservation`
+- `외부 용어를 내부 도메인 언어로 감춘다`, `legacy concept quarantine`, `boundary translation`, `호출 순서 정리`가 핵심이면 이 문서가 맞다.
+- `시그니처 mismatch`, `SDK wrapper`, `XML -> JSON`, `인터페이스를 맞춘다`가 핵심이면 [Adapter (어댑터) 패턴](./adapter.md)으로 간다.
+- `S3/GCS/local` 같은 구현 축과 `image/document` 같은 추상화 축을 독립적으로 늘리는 게 핵심이면 [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)로 간다.
 
 ---
 
@@ -55,6 +59,12 @@ Facade는 사용자가 알아야 할 복잡도를 줄이는 데 더 가깝다.
 - 기술 호환은 Adapter
 - 개념 정리와 경계 보호는 Facade
 - 둘을 함께 쓰면 anti-corruption layer가 된다
+
+Bridge는 또 다른 축이다.
+
+- 변화 축 분리와 구현 조합 폭발 억제는 Bridge
+- wire format, 메서드 시그니처 번역은 Adapter
+- 외부 개념을 내부 의미로 격리하고 호출 흐름을 정리하는 건 Facade seam
 
 ### 3. 경계를 못 지키면 레거시가 번진다
 
@@ -135,12 +145,14 @@ public class LegacyOrderFacade {
 |---|---|---|---|
 | 직접 호출 | 간단하다 | 외부 개념이 퍼진다 | 작은 연동 |
 | Adapter | 호환성이 좋아진다 | 의미 정리는 약하다 | 시그니처 차이 해결 |
-| Facade as seam | 경계 보호와 단순화가 된다 | 두꺼워질 수 있다 | 외부 시스템이 복잡할 때 |
+| Bridge | provider/abstraction 축을 분리한다 | 경계 번역까지 해결하진 않는다 | 구현 축과 추상화 축이 함께 늘 때 |
+| Facade as seam | 경계 보호와 단순화가 된다 | 두꺼워질 수 있다 | 외부 시스템이 복잡하고 용어 격리가 필요할 때 |
 
 판단 기준은 다음과 같다.
 
 - 호출 순서만 복잡하면 Facade
 - 인터페이스 변환이 핵심이면 Adapter
+- provider/abstraction 조합 폭발이 핵심이면 Bridge
 - 외부 용어가 내부로 침투하면 seam이 필요하다
 
 ---
@@ -162,4 +174,3 @@ public class LegacyOrderFacade {
 ## 한 줄 정리
 
 Facade는 복잡한 외부 시스템을 단순화할 뿐 아니라, 내부 도메인을 외부 개념으로부터 보호하는 경계가 될 수 있다.
-

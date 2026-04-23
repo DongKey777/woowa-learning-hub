@@ -1,6 +1,19 @@
 # Outbox, Saga, Eventual Consistency
 
+**난이도: 🔴 Advanced**
+
 > 트랜잭션 하나로 끝나지 않는 데이터 정합성을 다루는 실전 문서
+
+> 관련 문서:
+> - [Outbox Relay and Idempotent Publisher](../design-pattern/outbox-relay-idempotent-publisher.md)
+> - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
+> - [Spring EventListener, TransactionalEventListener, and Outbox](../spring/spring-eventlistener-transaction-phase-outbox.md)
+> - [Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md)
+> - [Historical Backfill / Replay Platform 설계](../system-design/historical-backfill-replay-platform-design.md)
+> - [Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
+> - [Projection Rebuild, Backfill, and Cutover Pattern](../design-pattern/projection-rebuild-backfill-cutover-pattern.md)
+
+retrieval-anchor-keywords: outbox pattern, saga pattern, eventual consistency, outbox relay, local transaction plus event, distributed consistency, compensating transaction, consumer idempotency, replay and retry, distributed transaction alternative
 
 <details>
 <summary>Table of Contents</summary>

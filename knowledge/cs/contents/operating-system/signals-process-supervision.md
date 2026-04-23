@@ -2,7 +2,17 @@
 
 > 한 줄 요약: 프로세스는 스스로 잘 죽고 잘 회수돼야 하며, signals와 supervisor를 모르면 운영 중 좀비와 유실이 늘어난다.
 
-> 관련 문서: [Linux 프로세스 상태 머신, Zombie, Orphan](./linux-process-state-zombie-orphan.md), [container, cgroup, namespace](./container-cgroup-namespace.md)
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
+> - [Linux 프로세스 상태 머신, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+> - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
+> - [container, cgroup, namespace](./container-cgroup-namespace.md)
+> - [eventfd, signalfd, Epoll Control-Plane Integration](./eventfd-signalfd-epoll-control-plane-integration.md)
+> - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
+
+> retrieval-anchor-keywords: signals, SIGTERM, SIGKILL, SIGCHLD, graceful shutdown, process supervision, PID 1, zombie reaping, signalfd, supervisor
 
 ## 핵심 개념
 
@@ -28,6 +38,7 @@
 - `SIGCHLD`: 자식 프로세스 종료 알림
 
 signal은 즉시 실행이 아니라, 적절한 시점에 handler가 호출되는 비동기 이벤트다.
+event loop 기반 서버에서는 이런 signal을 `signalfd`로 루프 안에서 처리하는 설계도 가능하다.
 
 ### 2. graceful shutdown
 

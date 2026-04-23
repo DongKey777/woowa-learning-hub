@@ -2,8 +2,20 @@
 
 > 한 줄 요약: replica lag는 측정하지 않으면 그냥 “가끔 늦는 것”처럼 보이고, 라우팅 SLO가 없으면 그 늦음을 사용자 경험으로 번역할 수 없다.
 
-관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
-Retrieval anchors: `replica lag observability`, `routing SLO`, `replication delay`, `freshness SLO`, `read routing metrics`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Cache와 Replica가 갈라질 때의 Read Inconsistency](./cache-replica-split-read-inconsistency.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Replication Lag Forensics and Root-Cause Playbook](./replication-lag-forensics-root-cause-playbook.md), [Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md), [Projection Freshness SLO Pattern](../design-pattern/projection-freshness-slo-pattern.md)
+retrieval-anchor-keywords: replica lag observability, routing SLO, replication delay, freshness SLO, read routing metrics, apply lag, transport lag, failover freshness, promotion stale read, topology cache stale, failover stale read, post failover stale read, old primary still serving reads, some pods old some new, topology version mismatch, failover routing threshold, cache miss stale replica, cache invalidation vs replica lag, mixed stale source
+
+## 빠른 증상 라우팅
+
+| 보이는 증상 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| failover와 무관하게 lag metric이 계속 커지고 primary fallback threshold를 정해야 한다 | 이 문서 | steady-state lag 관측과 freshness SLO를 설계하는 문제다 |
+| cache hit 때는 최신인데 miss 뒤에는 옛값이거나, endpoint마다 cache/replica source가 달라 보인다 | [Cache와 Replica가 갈라질 때의 Read Inconsistency](./cache-replica-split-read-inconsistency.md) | steady-state lag metric보다 stale source split을 먼저 가려야 한다 |
+| promotion 직후 같은 데이터가 요청마다 다르고 old primary나 stale replica를 읽는 것 같다 | [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md) | 승격 이후 읽기 기준점이 갈라지는 증상을 설명한다 |
+| `some pods old some new`, `topology cache stale`, `DNS TTL after promotion`처럼 invalidation과 pinning 액션이 바로 필요하다 | [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md) | visibility window를 줄이는 운영 playbook이 필요하다 |
+| stale read처럼 보이지만 새 primary에 최근 write가 실제로 없을 수도 있다 | [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md) | visibility 문제가 아니라 write loss / horizon gap일 수 있다 |
 
 ## 핵심 개념
 
@@ -60,6 +72,19 @@ lag가 큰 replica를 계속 읽으면:
 - 임계치 초과 시 자동 fallback
 
 이 연결이 없으면 관측은 대시보드에만 남는다.
+
+### 5. failover freshness incident와 steady-state lag incident를 구분해야 한다
+
+`stale read`라는 표면 증상만 보면 둘을 쉽게 섞는다.
+
+- failover 이벤트가 없고 lag metric이 실제로 상승한다
+  - 이 문서와 [Replication Lag Forensics and Root-Cause Playbook](./replication-lag-forensics-root-cause-playbook.md)으로 간다
+- promotion 직후 topology version, endpoint, DNS TTL이 서로 다르게 보인다
+  - [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md)으로 넘긴다
+- lag metric은 낮은데 일부 화면만 옛값을 보여 준다
+  - [Cache와 Replica가 갈라질 때의 Read Inconsistency](./cache-replica-split-read-inconsistency.md), topology cache / cache invalidation / session pinning 문제일 가능성이 크다
+
+즉 이 문서는 **lag를 측정하고 라우팅 정책으로 번역하는 진입점**이고, promotion 이후 topology-cache freshness incident는 옆 문서로 의도적으로 넘겨야 한다.
 
 ## 실전 시나리오
 

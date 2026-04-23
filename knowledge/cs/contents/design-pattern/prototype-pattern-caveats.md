@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Prototype 패턴은 객체를 복제해 빠르게 새 인스턴스를 만들게 하지만, 얕은 복사와 상태 공유가 쉽게 사고를 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [빌더 (Builder)](./builder-pattern.md)

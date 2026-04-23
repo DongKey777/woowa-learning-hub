@@ -10,6 +10,7 @@
 > - [DNS, CDN, HTTP/2, HTTP/3](./dns-cdn-websocket-http2-http3.md)
 > - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [HTTP/2 MAX_CONCURRENT_STREAMS, Pending Queue, Saturation](./http2-max-concurrent-streams-pending-queue-saturation.md)
 
 retrieval-anchor-keywords: connection reuse, coalescing, HTTP/2 origin coalescing, HTTP/3 connection reuse, multiplexing, authority, certificate SAN, shared connection, pooled connection
 

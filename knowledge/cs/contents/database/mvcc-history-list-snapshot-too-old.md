@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 오래 열린 트랜잭션은 과거를 읽게 해 주는 대신, undo를 쌓아 올려 전체 시스템의 숨통을 조인다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Redo Log, Undo Log, Checkpoint, Crash Recovery](./redo-log-undo-log-checkpoint-crash-recovery.md), [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
-Retrieval anchors: `history list length`, `undo log`, `purge lag`, `snapshot too old`, `consistent read`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Redo Log, Undo Log, Checkpoint, Crash Recovery](./redo-log-undo-log-checkpoint-crash-recovery.md), [MVCC, Replication, Sharding](./mvcc-replication-sharding.md), [Vacuum / Purge Debt Forensics and Symptom Map](./vacuum-purge-debt-forensics-symptom-map.md)
+retrieval-anchor-keywords: history list length, undo log, purge lag, snapshot too old, consistent read, vacuum debt, cleanup backlog
 
 ## 핵심 개념
 

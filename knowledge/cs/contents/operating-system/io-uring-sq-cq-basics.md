@@ -6,6 +6,8 @@
 
 > 관련 문서:
 > - [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)
+> - [io_uring Operational Hazards, Registered Resources, SQPOLL](./io-uring-operational-hazards-registered-resources-sqpoll.md)
+> - [io_uring CQ Overflow, Provided Buffers, IOWQ Worker Placement](./io-uring-cq-overflow-provided-buffers-iowq-placement.md)
 > - [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)
 > - [softirq, hardirq, Latency Server Debugging](./softirq-hardirq-latency-server-debugging.md)

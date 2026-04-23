@@ -1,0 +1,279 @@
+# Spring `@EventListener` vs `@TransactionalEventListener`: Timing, Ordering, Rollback
+
+> 한 줄 요약: Spring 내부 옵저버에서 중요한 차이는 "이벤트를 받느냐"가 아니라, **언제 실행되고 실패가 어느 트랜잭션 경계에 묶이느냐**다.
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [옵저버 (Observer)](./observer.md)
+> - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
+> - [Domain Events vs Integration Events](./domain-events-vs-integration-events.md)
+> - [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
+> - [Spring EventListener, TransactionalEventListener, and Outbox](../spring/spring-eventlistener-transaction-phase-outbox.md)
+> - [Spring `@EventListener` Ordering and Async Traps](../spring/spring-eventlistener-ordering-async-traps.md)
+> - [Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`](../spring/spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md)
+> - [Spring ApplicationEventMulticaster Internals](../spring/spring-applicationeventmulticaster-internals.md)
+
+retrieval-anchor-keywords: spring eventlistener vs transactionaleventlistener, observer pattern spring transaction timing, before commit after commit after rollback, spring listener ordering, rollback semantics, fallbackExecution, application event transaction phase, after commit requires new transaction, event listener commit boundary
+
+---
+
+## 이 문서는 언제 읽으면 좋은가
+
+- 같은 도메인 이벤트에 알림, 캐시 무효화, 감사 로그, 색인 갱신이 붙어 있는데 커밋 타이밍이 헷갈릴 때
+- `@Order`를 붙였는데도 리스너 실행 순서 감각이 맞지 않을 때
+- 롤백이 나면 어떤 리스너는 왜 실행되고 어떤 리스너는 왜 사라지는지 정리하고 싶을 때
+
+## 핵심 개념
+
+Spring에서 둘 다 "이벤트 리스너"로 보이지만 실행 계약은 다르다.
+
+- `@EventListener`
+  - 이벤트를 publish하는 호출 흐름 안에서 바로 반응한다.
+  - publish가 트랜잭션 안에서 일어나면 리스너도 그 흐름 안에 있다.
+  - 예외가 나면 현재 호출과 트랜잭션에 직접 영향을 줄 수 있다.
+- `@TransactionalEventListener`
+  - 이벤트를 즉시 처리하지 않고 현재 트랜잭션 phase에 맞춰 지연 실행한다.
+  - 기본 phase는 `AFTER_COMMIT`이다.
+  - 활성 트랜잭션이 없으면 기본적으로 버려지고, `fallbackExecution = true`일 때만 즉시 실행 쪽으로 내려온다.
+
+즉 선택 기준은 단순하다.
+
+- **지금 즉시 같은 호출 흐름에서 반응해야 하는가**
+- **커밋 성공이 확정된 뒤에만 반응해야 하는가**
+- **롤백일 때만 따로 처리해야 하는가**
+
+이 세 질문이 annotation 선택보다 먼저다.
+
+## 타이밍 매트릭스
+
+| 선택지 | 실제 실행 시점 | 원 트랜잭션과 관계 | 롤백 시 의미 | 트랜잭션이 없을 때 |
+|---|---|---|---|---|
+| `@EventListener` | publish 호출 중 즉시 | 같은 호출 흐름에 붙는다 | 리스너가 먼저 실행된 뒤 전체가 롤백될 수 있다 | 그대로 즉시 실행 |
+| `@TransactionalEventListener(BEFORE_COMMIT)` | 커밋 직전 | 아직 원 트랜잭션 안 | 예외면 커밋 자체를 막을 수 있다 | 기본적으로 실행 안 함 |
+| `@TransactionalEventListener(AFTER_COMMIT)` | 커밋 성공 직후 | 원 트랜잭션은 이미 끝났다 | 롤백이면 실행되지 않는다 | 기본적으로 실행 안 함 |
+| `@TransactionalEventListener(AFTER_ROLLBACK)` | 롤백 직후 | 원 트랜잭션은 실패로 종료 | 롤백 경로에서만 반응 | 기본적으로 실행 안 함 |
+| `@TransactionalEventListener(AFTER_COMPLETION)` | 커밋/롤백 종료 직후 | 종료 상태만 공통 처리 | 커밋/롤백 둘 다 받는다 | 기본적으로 실행 안 함 |
+
+가장 실무적인 차이는 이것이다.
+
+- `@EventListener`는 "지금 실행된다"
+- `@TransactionalEventListener`는 "지금 등록되고, phase 때 실행된다"
+
+그래서 같은 이벤트 타입을 받아도 **관찰 시점이 다르다.**
+
+## 순서 의미는 두 단계로 나뉜다
+
+### 1. phase가 큰 순서를 먼저 결정한다
+
+`@TransactionalEventListener`에서는 `@Order`보다 phase가 더 큰 축이다.
+
+- `BEFORE_COMMIT`은 커밋 전에 돈다
+- `AFTER_COMMIT`은 커밋 후에 돈다
+- `AFTER_ROLLBACK`은 롤백 후에만 돈다
+
+즉 `@Order(1)`인 `AFTER_COMMIT` 리스너가 `@Order(100)`인 `BEFORE_COMMIT` 리스너보다 먼저 돌 수는 없다.  
+먼저 **phase bucket**이 갈리고, 그 안에서 `@Order`가 미세 조정한다고 보는 편이 맞다.
+
+### 2. `@Order`는 같은 실행 파도 안에서만 의미가 강하다
+
+- `@EventListener`의 `@Order`는 같은 publish wave 안에서 리스너 호출 순서를 정한다.
+- `@TransactionalEventListener`의 `@Order`는 같은 transaction-completion bucket 안의 우선순위를 정한다.
+
+그래서 아래처럼 섞이면 총순서가 직관과 달라진다.
+
+```java
+@Component
+class OrderHandlers {
+
+    @Order(100)
+    @EventListener
+    void immediate(OrderPlaced event) {}
+
+    @Order(1)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void afterCommit(OrderPlaced event) {}
+}
+```
+
+이 경우 `afterCommit()`의 order 값이 더 작아도, 전체 시점은 `immediate()`가 먼저다.  
+이유는 둘이 같은 순서 비교 집합이 아니기 때문이다.
+
+## 롤백 semantics는 "예외 전파"와 "이미 일어난 side effect"를 같이 봐야 한다
+
+### 1. `@EventListener`는 롤백보다 먼저 side effect를 만들 수 있다
+
+```java
+@Transactional
+public void placeOrder(Order order) {
+    orderRepository.save(order);
+    publisher.publishEvent(new OrderPlaced(order.getId()));
+    validate(order); // 여기서 예외 가능
+}
+```
+
+여기서 `@EventListener`가 이메일이나 외부 webhook을 쏘면 다음이 가능하다.
+
+- 리스너는 이미 실행됐다
+- 이후 검증에서 예외가 터졌다
+- DB 트랜잭션은 롤백됐다
+- 외부 세계에는 "주문 완료"가 나가 버렸다
+
+그래서 `@EventListener`는 **롤백 이후에도 남는 외부 side effect**와 궁합이 약하다.
+
+### 2. `BEFORE_COMMIT`은 마지막 검증에는 맞지만 느린 I/O에는 약하다
+
+`BEFORE_COMMIT` 리스너가 예외를 던지면 commit을 막을 수 있다.  
+이건 "커밋 직전 최종 검증"에는 유용하지만, 외부 호출을 넣기 시작하면 트랜잭션이 길어진다.
+
+잘 맞는 예:
+
+- 같은 DB 안의 최종 검증
+- 커밋 직전 정책 점검
+- 로컬 메모리/메트릭 갱신 중 반드시 commit과 묶여야 하는 것
+
+덜 맞는 예:
+
+- 이메일, 푸시, HTTP 호출
+- 원격 캐시, 검색 인덱스, 메시지 브로커 publish
+
+### 3. `AFTER_COMMIT`은 정합성을 되돌리는 도구가 아니다
+
+`AFTER_COMMIT`은 "커밋 성공한 사실만 보고 반응"하는 데 좋다.  
+하지만 이 시점의 실패는 원 트랜잭션을 되돌리지 못한다.
+
+- 주문은 이미 커밋됨
+- 알림/색인/후속 발행만 실패할 수 있음
+- 따라서 retry, idempotency, observability가 필수다
+
+또 한 가지 자주 놓치는 점이 있다.
+
+`AFTER_COMMIT` 시점에는 트랜잭션이 이미 끝났으므로, 여기서 하는 추가 DB 변경을 **원 트랜잭션 연장선처럼 기대하면 안 된다.**  
+추가 쓰기가 필요하면 보통 새 트랜잭션을 열거나, 더 안정적으로는 원 트랜잭션 안에서 outbox를 저장해 두는 편이 낫다.
+
+### 4. `AFTER_ROLLBACK`과 `AFTER_COMPLETION`은 cleanup/telemetry 쪽에 가깝다
+
+- `AFTER_ROLLBACK`: 실패 경로 기록, 임시 자원 정리, local compensation trigger
+- `AFTER_COMPLETION`: commit/rollback 공통 cleanup
+
+이 둘은 **실패를 관찰하는 훅**이지, 신뢰성 있는 외부 전달 수단이 아니다.
+
+## 실전 선택 규칙
+
+### 1. 핵심 정책이면 직접 호출이나 `BEFORE_COMMIT`이 먼저다
+
+주 성공 여부를 결정하는 검증이라면 이벤트 fan-out보다 명시적 호출이 더 읽기 쉽다.  
+꼭 이벤트로 두더라도 `BEFORE_COMMIT`처럼 commit fate와 가까운 쪽이 낫다.
+
+### 2. 커밋 성공 이후 내부 후처리면 `AFTER_COMMIT`이 기본값이다
+
+예:
+
+- 캐시 무효화
+- 감사 로그 적재
+- 내부 read model 갱신
+
+단, 실패를 되돌릴 수 없으므로 재시도/멱등성 설계를 같이 둔다.
+
+### 3. 외부 전달 신뢰성이 중요하면 outbox까지 올라간다
+
+`AFTER_COMMIT`만으로는 다음을 모두 해결하지 못한다.
+
+- 프로세스가 커밋 직후 죽는 경우
+- 브로커 publish 실패
+- 재시도와 중복 제어
+
+그래서 외부 메시지 전달은 `@TransactionalEventListener(AFTER_COMMIT)`보다 **outbox 저장 + relay**가 더 강한 기본값인 경우가 많다.
+
+### 4. 트랜잭션 유무가 섞이면 `fallbackExecution`보다 경로 분리가 낫다
+
+`fallbackExecution = true`는 편하지만 의미를 섞는다.
+
+- 어떤 경로에서는 `AFTER_COMMIT`
+- 어떤 경로에서는 사실상 즉시 실행
+
+같은 리스너가 두 계약을 갖게 되므로, 중요한 side effect라면 리스너나 이벤트 경로를 분리하는 편이 더 명확하다.
+
+## 코드로 보기
+
+```java
+public record OrderPlaced(Long orderId) {}
+
+@Service
+class OrderService {
+    private final ApplicationEventPublisher publisher;
+
+    OrderService(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
+    }
+
+    @Transactional
+    public void place(Long orderId) {
+        // 주문 저장
+        publisher.publishEvent(new OrderPlaced(orderId));
+    }
+}
+
+@Component
+class OrderListeners {
+
+    @Order(1)
+    @EventListener
+    void warmLocalCache(OrderPlaced event) {
+        // publish 흐름 안에서 즉시 실행
+    }
+
+    @Order(1)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    void validateBeforeCommit(OrderPlaced event) {
+        // commit 직전 최종 검증
+    }
+
+    @Order(1)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void publishNotification(OrderPlaced event) {
+        // commit 성공 후 후처리
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
+    void auditRollback(OrderPlaced event) {
+        // rollback 경로 기록
+    }
+}
+```
+
+이 예제에서 기억할 점은 네 가지다.
+
+- `warmLocalCache()`는 publish 호출 안에서 바로 돈다.
+- `validateBeforeCommit()`는 commit 직전까지 지연된다.
+- `publishNotification()`은 commit 성공 뒤에만 돈다.
+- `auditRollback()`은 rollback일 때만 돈다.
+
+같은 `OrderPlaced`를 받아도 "같은 이벤트 처리"가 아니라 **서로 다른 시점 계약**이다.
+
+## 흔한 오해
+
+| 오해 | 실제로는 |
+|---|---|
+| `@Order`만 붙이면 모든 리스너에 전역 순서가 생긴다 | phase가 먼저고, `@Order`는 같은 bucket 안에서만 강하다 |
+| `AFTER_COMMIT`이면 실패해도 주문을 되돌릴 수 있다 | 이미 commit이 끝났으므로 후속 작업만 따로 실패한다 |
+| `@EventListener`도 트랜잭션 안에서 publish하면 안전하다 | 외부 side effect는 롤백보다 먼저 나갈 수 있다 |
+| `fallbackExecution = true`면 no-transaction 경로에서도 after-commit 의미를 유지한다 | 실제로는 phase 의미를 포기하고 즉시 실행으로 내려온다 |
+
+## 꼬리질문
+
+> Q: `@EventListener`와 `@TransactionalEventListener(AFTER_COMMIT)` 중 무엇이 더 "느슨한 결합"인가요?
+> 의도: 결합도와 실행 의미를 분리해 생각하는지 확인
+> 핵심: 결합도보다 먼저 timing/rollback contract가 다르다.
+
+> Q: 왜 `@Order`가 작은 `AFTER_COMMIT` 리스너가 일반 `@EventListener`보다 늦게 도나요?
+> 의도: order와 phase의 우선순위를 구분하는지 확인
+> 핵심: phase가 큰 타이밍을 먼저 정하고, `@Order`는 그 안에서만 비교된다.
+
+> Q: `AFTER_COMMIT`에서 DB를 또 수정하면 왜 기대와 다를 수 있나요?
+> 의도: commit 이후 자원 상태를 오해하지 않는지 확인
+> 핵심: 원 트랜잭션은 이미 끝났으므로 새 트랜잭션 경계를 의식해야 한다.
+
+## 한 줄 정리
+
+Spring 내부 옵저버에서 `@EventListener`는 "지금 같은 호출 흐름에서 반응", `@TransactionalEventListener`는 "트랜잭션 phase에 맞춰 반응"이므로, 순서와 롤백 의미는 `@Order`보다 **phase와 side effect 종류**가 먼저 결정한다.

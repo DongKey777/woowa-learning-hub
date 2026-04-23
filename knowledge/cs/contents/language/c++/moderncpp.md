@@ -1,5 +1,7 @@
 # Modern C++
 
+**난이도: 🟡 Intermediate**
+
 > 작성자 : [박재용](https://github.com/ggjae)
 
 본 자료는 작성자인 '박재용'의 개인 Repository의 글과 Effective Modern C++ 책을 재구성하여 작성되었습니다.  
@@ -102,14 +104,14 @@ void work()
 
 ```cpp
 std::find_if(container.begin(), container.end(),
-            [](int val) { return 0 < val && val < 10; });
+            [] (int val) { return 0 < val && val < 10; });
 ``` 
 
 
 ### 문법
 
 ```cpp
-[captures](parameters) -> return type { body }
+captures (parameters) -> return type { body }
 
 /*
 * captures: comma(,)로 구분된 캡처들이 들어갑니다. 캡쳐 부가 설명을 아래에 작성했습니다.
@@ -129,7 +131,7 @@ std::find_if(container.begin(), container.end(),
 ```cpp
 int main(){
     auto a = 5;
-    [&](){a = 3;cout<<a<<endl;}();
+    [&] (){a = 3;cout<<a<<endl;}();
 }
 ```
 
@@ -137,7 +139,7 @@ int main(){
 ```cpp
 int main(){
     auto a = 5;
-    auto func = [&](){a = 3;cout<<a<<endl;};
+    auto func = [&] (){a = 3;cout<<a<<endl;};
     func();
 }
 ```
@@ -145,7 +147,7 @@ int main(){
 ```cpp
 int main(){
     auto a = 5;
-    function<void()> func = [&](){a = 3;cout<<a<<endl;};
+    function<void()> func = [&] (){a = 3;cout<<a<<endl;};
     func();
 }
 ```
@@ -153,7 +155,7 @@ int main(){
 ```cpp
 auto a = 5;
 auto getLambda() {//C++14
-    return [&]() {a = 3;cout<<a<<endl;};
+    return [&] () {a = 3;cout<<a<<endl;};
 }
 int main(){
     auto func = getLambda();

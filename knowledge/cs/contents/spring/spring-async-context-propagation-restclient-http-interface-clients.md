@@ -6,12 +6,14 @@
 
 > 관련 문서:
 > - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)
+> - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](./spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
+> - [Spring `RequestContextHolder`, `ThreadLocal`, and Request Context Leakage Across Async Pools](./spring-requestcontextholder-threadlocal-leakage-async-pools.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Observability with Micrometer Tracing](./spring-observability-micrometer-tracing.md)
 > - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 
-retrieval-anchor-keywords: async context propagation, task decorator, security context, MDC, locale context, RestClient, HTTP interface client, @HttpExchange, proxy factory
+retrieval-anchor-keywords: async context propagation, task decorator, security context, MDC, locale context, RestClient, HTTP interface client, @HttpExchange, proxy factory, RequestContextHolder, threadlocal leak, executor overload
 
 ## 핵심 개념
 

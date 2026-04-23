@@ -6,12 +6,14 @@
 
 > 관련 문서:
 > - [Thundering Herd, Accept, Wakeup](./thundering-herd-accept-wakeup.md)
+> - [Listener Overload Thresholds and Accept Pause Policy](./listener-overload-thresholds-accept-pause-policy.md)
+> - [`tcp_abort_on_overflow`, Backlog Buffering, and Immediate Post-Accept Rejection](./tcp-abort-on-overflow-fast-fail-policy.md)
 > - [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
 > - [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)
 
-> retrieval-anchor-keywords: somaxconn, tcp_max_syn_backlog, listen backlog, accept queue, SYN queue, ListenOverflows, ListenDrops, ss -ltn, backlog saturation
+> retrieval-anchor-keywords: somaxconn, tcp_max_syn_backlog, listen backlog, effective backlog, accept queue, SYN queue, ListenOverflows, ListenDrops, ss -ltn, backlog saturation, listener overload, accept pause watermark, session-init queue, tcp_abort_on_overflow, backlog buffering, immediate post-accept rejection, accept overflow fast fail
 
 ## 핵심 개념
 
@@ -75,6 +77,8 @@ overflow는 종종 조용히 발생한다.
 - 그러나 sysctl 상한이 더 낮아 실제 효과가 없다
 
 이 때문에 앱 코드와 노드 설정을 같이 봐야 한다.
+
+또 한 가지 헷갈리기 쉬운 점은 overflow 이후 정책이다. backlog는 기본적으로 burst 회복 시간을 사는 완충재고, `tcp_abort_on_overflow`는 그 대기 대신 즉시 reset을 택하는 쪽이다. sustained session-init saturation에서 backlog buffering을 계속 믿을지, kernel fast fail이나 post-accept reject로 failure boundary를 옮길지는 [`tcp_abort_on_overflow`, Backlog Buffering, and Immediate Post-Accept Rejection](./tcp-abort-on-overflow-fast-fail-policy.md)에서 이어서 본다.
 
 ## 실전 시나리오
 

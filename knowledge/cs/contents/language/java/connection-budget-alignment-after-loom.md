@@ -1,0 +1,339 @@
+# Connection Budget Alignment After Loom
+
+> 한 줄 요약: virtual thread가 request-thread scarcity를 지운 뒤에는 `datasource` pool, DB safe concurrency, outbound HTTP bulkhead, request admission을 하나의 예산 원장으로 맞춰야 한다. 늘어난 것은 thread 수이지 connection, lock, upstream permit이 아니다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
+> - [Virtual Thread Framework Integration: Spring, JDBC, and `HttpClient`](./virtual-thread-spring-jdbc-httpclient-framework-integration.md)
+> - [Structured Fan-out With `HttpClient`](./structured-fanout-httpclient.md)
+> - [Remote Bulkhead Metrics Under Virtual Threads](./remote-bulkhead-metrics-under-virtual-threads.md)
+> - [JDBC Observability Under Virtual Threads](./jdbc-observability-under-virtual-threads.md)
+> - [Virtual Thread vs Reactive DB Observability](./virtual-thread-vs-reactive-db-observability.md)
+> - [Executor Sizing, Queue, Rejection Policy](./executor-sizing-queue-rejection-policy.md)
+> - [`Semaphore`, `CountDownLatch`, `CyclicBarrier`, and `Phaser` Coordination Semantics](./semaphore-countdownlatch-cyclicbarrier-phaser-coordination-semantics.md)
+> - [HikariCP 튜닝](../../database/hikari-connection-pool-tuning.md)
+> - [Transaction Boundary, Isolation, and Locking Decision Framework](../../database/transaction-boundary-isolation-locking-decision-framework.md)
+> - [Backpressure and Load Shedding Design](../../system-design/backpressure-and-load-shedding-design.md)
+
+> retrieval-anchor-keywords: connection budget alignment after loom, datasource pool sizing after virtual threads, DB concurrency budget after loom, outbound HTTP bulkhead budget, virtual thread capacity planning, request admission after loom, HikariCP after loom, pool size vs DB safe concurrency, remote concurrency cap, semaphore bulkhead after loom, per-upstream semaphore sizing, bulkhead saturation telemetry, permit contention, retry storm observability, upstream saturation telemetry, connection hold time budgeting, transaction hold time, little's law JDBC pool sizing, fan-out retry amplification, pool wait vs remote wait, hot row contention after loom, virtual thread request thread scarcity removal, jdbc capacity planning, outbound concurrency budgeting
+
+<details>
+<summary>Table of Contents</summary>
+
+- [핵심 개념](#핵심-개념)
+- [왜 Loom 이후 예산을 따로 잡으면 깨지기 쉬운가](#왜-loom-이후-예산을-따로-잡으면-깨지기-쉬운가)
+- [예산 원장: pool, DB, bulkhead는 다른 숫자다](#예산-원장-pool-db-bulkhead는-다른-숫자다)
+- [역산 방법: 총 요청 시간이 아니라 phase hold time으로 계산한다](#역산-방법-총-요청-시간이-아니라-phase-hold-time으로-계산한다)
+- [정렬 규칙: transaction 경계와 bulkhead를 먼저 고친다](#정렬-규칙-transaction-경계와-bulkhead를-먼저-고친다)
+- [실전 시나리오](#실전-시나리오)
+- [코드로 보기](#코드로-보기)
+- [관측 체크리스트](#관측-체크리스트)
+- [트레이드오프](#트레이드오프)
+- [꼬리질문](#꼬리질문)
+- [한 줄 정리](#한-줄-정리)
+
+</details>
+
+## 핵심 개념
+
+Loom 이후 가장 흔한 착시는 "thread를 거의 무한히 만들 수 있으니 요청 병렬도도 거의 thread 수로 결정된다"는 생각이다.  
+실제로 운영 상한을 정하는 것은 여전히 아래 자원들이다.
+
+- 동시에 빌릴 수 있는 JDBC connection 수
+- DB가 lock wait 폭발 없이 감당할 수 있는 active transaction/query 수
+- upstream별로 허용할 수 있는 outbound HTTP in-flight 수
+- 위 세 예산을 넘기기 전에 요청을 멈추는 admission cap
+
+즉 virtual thread는 blocking wait를 싸게 만들 뿐, downstream scarcity를 없애지 않는다.  
+그래서 capacity planning의 기본 단위도 "thread 몇 개?"가 아니라 "요청 한 개가 어느 phase에서 어떤 permit을 얼마나 오래 점유하나?"로 바뀐다.
+
+## 왜 Loom 이후 예산을 따로 잡으면 깨지기 쉬운가
+
+platform thread 시절에는 executor 크기가 부정확하더라도, request-thread scarcity가 어느 정도 자연스러운 상한으로 작동했다.  
+virtual thread에서는 그 상한이 약해지므로 queue가 더 비싼 곳으로 밀린다.
+
+- app 안쪽 thread pool queue 대신 `Hikari` pending acquire로 밀린다
+- DB active session과 row lock wait가 더 빨리 드러난다
+- upstream rate limit, `429`, connect timeout, remote semaphore wait가 앞단 증상이 된다
+
+이때 pool만 키우거나 bulkhead만 넓히면 병목이 사라지는 게 아니라 위치만 이동한다.
+
+- pool만 키우면 queue가 DB lock wait와 commit latency로 이동한다
+- bulkhead만 키우면 upstream retry storm와 `429`가 늘어난다
+- admission cap 없이 virtual thread만 늘리면 모든 wait가 "조용히" 길어져 p99만 악화된다
+
+즉 Loom 이후에는 executor sizing보다 **downstream budget alignment**가 먼저다.
+
+## 예산 원장: pool, DB, bulkhead는 다른 숫자다
+
+| 예산 | 무엇을 보호하나 | 흔한 오해 | 설계 포인트 |
+|---|---|---|---|
+| request admission | 전체 in-flight 요청 수 | virtual thread 수가 자연 cap 역할을 한다 | 가장 작은 downstream 예산 전에 요청을 멈춰야 한다 |
+| datasource pool size | 동시에 빌릴 수 있는 app-side connection 수 | `maxPoolSize == safe DB concurrency`다 | pool은 app 경계의 semaphore이고, DB safe concurrency와 1:1이 아닐 수 있다 |
+| DB safe concurrency | DB가 SLA 안에서 처리 가능한 active tx/query 수 | `max_connections`가 곧 운영 상한이다 | admin, batch, failover 여유와 hot row 경합을 빼고 잡아야 한다 |
+| outbound HTTP bulkhead | upstream별 in-flight call 수 | connection pool이 remote call도 간접 제어한다 | route/upstream별 permit과 retry cap을 따로 둬야 한다 |
+
+특히 `datasource` pool과 DB safe concurrency를 같은 숫자로 외워 두면 자주 틀린다.
+
+- pool size는 애플리케이션이 "빌릴 수 있는 연결 수"다
+- DB safe concurrency는 DB가 "동시에 감당할 수 있는 실제 일의 양"이다
+- 둘 다 cluster-wide budget에서 인스턴스별 share로 나눠 잡아야 한다
+
+출발점은 보통 다음처럼 잡는다.
+
+```text
+per_instance_pool <= floor((cluster_db_connection_budget - reserve_for_admin_batch_failover) / app_instances)
+per_instance_db_active_target <= floor((cluster_db_safe_active_budget - reserve_for_spikes) / app_instances)
+per_instance_http_bulkhead[upstream] <= floor((cluster_http_safe_inflight[upstream] - reserve_for_other_callers) / app_instances)
+```
+
+`maxPoolSize`를 DB share보다 크게 두는 것이 항상 틀린 것은 아니다.  
+하지만 이유 없는 oversubscription은 queue를 DB 안쪽으로 밀어 lock wait와 long transaction을 키우기 쉬우므로, Loom 도입 직후에는 보수적으로 맞춰 두는 편이 안전하다.
+
+## 역산 방법: 총 요청 시간이 아니라 phase hold time으로 계산한다
+
+virtual thread 환경에서는 총 request latency가 아니라 **자원을 실제로 점유한 시간**으로 예산을 역산해야 한다.
+
+핵심 공식은 단순하다.
+
+```text
+needed_db_concurrency ~= arrival_rate * connection_hold_seconds
+needed_http_permits[upstream] ~= arrival_rate * parallel_calls_per_request[upstream] * remote_wait_seconds * retry_factor
+```
+
+여기서 중요한 점은 다음 두 가지다.
+
+- `connection_hold_seconds`는 request 전체 시간이 아니라 connection을 빌린 뒤 반환할 때까지의 시간이다
+- `remote_wait_seconds`는 HTTP call 하나의 wall-clock wait이며, fan-out 폭과 retry 횟수에 곱해진다
+
+평균값만 보면 착시가 크므로 보통은 steady-state의 p95 또는 overload drill 구간으로 계산하는 편이 낫다.
+
+### 예시 역산
+
+가정:
+
+- app instance 4개
+- DB가 안전하게 감당하는 active transaction budget 48, reserve 8
+- partner API가 안전하게 받는 cluster-wide in-flight 60
+- checkout 요청 하나가 partner API 2개를 병렬 호출
+- 짧게 자른 DB phase의 connection hold p95는 40ms
+- partner API wait p95는 250ms
+
+그러면 대략 다음 share가 나온다.
+
+```text
+per_instance_pool ~= floor((48 - 8) / 4) = 10
+per_instance_partner_bulkhead ~= floor(60 / 4) = 15
+DB-limited RPS ~= 10 / 0.040 = 250
+HTTP-limited RPS ~= 15 / (2 * 0.250) = 30
+```
+
+이 경로의 실제 상한은 DB가 아니라 partner bulkhead 쪽이다.  
+즉 virtual thread가 아무리 많아도 이 경로는 인스턴스당 대략 30 RPS 이상에서 remote saturation이 먼저 온다.
+
+그런데 같은 흐름을 transaction 안에서 partner API 호출까지 묶으면 이야기가 달라진다.
+
+```text
+connection_hold_seconds ~= 0.040 + 0.250 = 0.290
+DB-limited RPS ~= 10 / 0.290 ~= 34
+```
+
+이제 HTTP wait가 DB budget까지 잡아먹으므로, 원래 HTTP bottleneck이던 경로가 거의 DB bottleneck처럼 변한다.  
+즉 Loom 이후 capacity bug의 핵심은 "thread가 많다"가 아니라 "phase를 잘못 겹쳐서 비싼 permit을 오래 쥔다"는 점이다.
+
+## 정렬 규칙: transaction 경계와 bulkhead를 먼저 고친다
+
+### 1. connection pool은 HTTP bulkhead 대용이 아니다
+
+connection pool이 꽉 찬 뒤에야 remote fan-out을 막는 설계는 늦다.  
+DB permit은 DB를 보호해야 하고, upstream 보호는 upstream별 bulkhead가 맡아야 한다.
+
+그래서 outbound budget은 보통 이렇게 분리한다.
+
+- upstream 또는 route 그룹별 `Semaphore`/bulkhead
+- logical call 기준의 small retry cap
+- parent deadline 안쪽의 per-attempt timeout
+
+### 2. remote wait는 transaction 밖으로 빼는 쪽이 기본값이다
+
+다음 패턴은 Loom 이후 더 위험해진다.
+
+```text
+BEGIN TX
+-> JDBC read/write
+-> remote HTTP wait
+-> JDBC write/commit
+```
+
+virtual thread는 이 코드를 "쉽게 실행"하게 해 줄 뿐, connection hold cost를 줄이지 않는다.  
+가능하면 다음 순서가 기본값이어야 한다.
+
+```text
+short TX for read
+-> remote HTTP wait under bulkhead
+-> short TX for final write
+```
+
+커밋 후 side effect라면 outbox나 `AFTER_COMMIT` 쪽이 더 안전하다.
+
+### 3. admission cap은 가장 작은 downstream share에서 시작한다
+
+요청 하나가 DB connection 1개와 partner call 2개를 동시에 쓸 수 있다면, 인스턴스당 admission 출발점은 대략 다음처럼 본다.
+
+```text
+admission_cap_per_instance <= min(
+  per_instance_pool / max_connections_held_by_one_request,
+  per_instance_partner_bulkhead / max_parallel_partner_calls_per_request
+)
+```
+
+virtual thread 도입 이후에도 이런 explicit cap이 없으면, wait는 thread가 아니라 pool과 bulkhead 뒤에서 숨어서 늘어난다.
+
+### 4. retry budget은 concurrency budget과 곱해진다
+
+`fan-out 4`, `parallel 2`, `maxAttempts 3`이면 요청 하나가 최악 12회의 outbound 시도를 만들 수 있다.  
+retry는 latency 보정 장치가 아니라 concurrency multiplier이므로, bulkhead와 분리해서 보면 안 된다.
+
+## 실전 시나리오
+
+### 시나리오 1: Loom 도입 후 `Hikari` pending이 먼저 튄다
+
+executor queue는 사라졌는데 `getConnection()` 대기가 늘었다면, "virtual thread가 느리다"가 아니라 request admission과 transaction hold budget이 downstream에 맞지 않는 것이다.
+
+- `holdMs`가 같이 늘면 transaction 경계가 넓다
+- `holdMs`는 안정적인데 DB lock wait가 늘면 hot row/lock order 문제가 먼저다
+- 둘 다 아니면 단순히 admission cap 없이 pool보다 많은 일을 밀어 넣고 있을 수 있다
+
+### 시나리오 2: outbound bulkhead를 키웠더니 DB 장애로 바뀐다
+
+partner API `429`를 줄이려고 bulkhead를 12에서 40으로 넓혔더니, 이제 checkout의 second write와 commit이 느려질 수 있다.  
+이 경우 remote 병목을 줄인 것이 아니라 더 많은 요청이 동시에 DB final phase에 도착하게 만든 것이다.
+
+즉 bulkhead 튜닝은 항상 다음과 같이 본다.
+
+- remote permit이 늘면 DB phase 동시 진입도 늘지 않는가
+- final write hot row를 더 세게 두드리지 않는가
+- retry 감소 없이 bulkhead만 키워 amplification을 만들지 않는가
+
+### 시나리오 3: pool을 늘렸는데 p99는 더 나빠진다
+
+pool을 16에서 48로 키우면 acquire timeout은 잠깐 줄 수 있다.  
+하지만 DB safe concurrency가 20 근처라면 queue가 pool 밖에서 안 보일 뿐, DB 안쪽 lock wait와 active session 증가로 옮겨간다.
+
+이때는 pool을 다시 줄이고:
+
+- transaction 경계를 짧게 자르고
+- hot key update를 줄이고
+- admission cap과 bulkhead를 tighter하게 맞추는 편이 낫다
+
+## 코드로 보기
+
+아래 예시는 virtual thread 환경에서도 request admission, partner bulkhead, 짧은 transaction 경계를 따로 두는 구조를 보여 준다.
+
+```java
+import java.time.Instant;
+import java.util.concurrent.Semaphore;
+import org.springframework.transaction.support.TransactionTemplate;
+
+final class CheckoutService {
+    private final Semaphore admission = new Semaphore(7, true);
+    private final Semaphore pricingBulkhead = new Semaphore(15, true);
+    private final TransactionTemplate txTemplate;
+    private final OrderRepository orderRepository;
+    private final PricingClient pricingClient;
+
+    CheckoutService(
+            TransactionTemplate txTemplate,
+            OrderRepository orderRepository,
+            PricingClient pricingClient) {
+        this.txTemplate = txTemplate;
+        this.orderRepository = orderRepository;
+        this.pricingClient = pricingClient;
+    }
+
+    Receipt checkout(long orderId, Instant deadline) throws Exception {
+        admission.acquire();
+        try {
+            OrderSnapshot snapshot = txTemplate.execute(status ->
+                    orderRepository.loadSnapshot(orderId));
+
+            Quote quote;
+            pricingBulkhead.acquire();
+            try {
+                quote = pricingClient.fetchQuote(orderId, deadline);
+            } finally {
+                pricingBulkhead.release();
+            }
+
+            return txTemplate.execute(status ->
+                    orderRepository.confirm(orderId, snapshot.version(), quote));
+        } finally {
+            admission.release();
+        }
+    }
+}
+```
+
+핵심은 세 가지다.
+
+- virtual thread 위에서도 request admission을 명시적으로 둔다
+- remote wait는 upstream별 bulkhead 아래에서만 일어나게 한다
+- DB read/write는 짧은 transaction 두 개로 잘라 connection hold를 줄인다
+
+## 관측 체크리스트
+
+| 신호 | 같이 볼 것 | 해석 |
+|---|---|---|
+| `Hikari` pending acquire 증가 | `holdMs`, DB active tx, lock wait | pool이 작다기보다 long transaction이나 DB hot spot이 원인일 수 있다 |
+| bulkhead wait 증가, `429` 증가 | pool active/idle, remote retry count | upstream budget이 현재 병목이고 DB는 아직 보호되고 있다 |
+| `holdMs >> sqlMs` | trace 상의 outbound HTTP 구간 | remote wait가 transaction 안에 섞였을 가능성이 크다 |
+| DB lock wait 증가 후 pool pending이 따라 오른다 | commit latency, blocker/waiter chain | queue가 pool이 아니라 DB 안쪽에서 시작됐다 |
+| admission reject 또는 shed 증가 | p99, downstream saturation | explicit backpressure가 작동 중인지, 아니면 cap이 너무 작은지 재평가한다 |
+
+관측의 초점은 "virtual thread가 몇 개인가"가 아니라 아래 타임라인이다.
+
+```text
+request admitted
+-> datasource acquire
+-> connection hold
+-> outbound bulkhead wait / remote wait
+-> commit / release
+```
+
+각 구간을 분리해 보지 않으면 pool, DB, HTTP budget이 어디서 깨지는지 보이지 않는다.
+
+특히 upstream permit contention과 retry amplification을 별도 metric으로 읽는 방법은 [Remote Bulkhead Metrics Under Virtual Threads](./remote-bulkhead-metrics-under-virtual-threads.md)에서 더 구체적으로 다룬다.
+
+## 트레이드오프
+
+| 선택 | 장점 | 리스크 | 언제 맞는가 |
+|---|---|---|---|
+| pool을 키운다 | burst에서 acquire timeout을 늦출 수 있다 | DB lock wait와 active session을 더 키울 수 있다 | DB safe concurrency 여유가 실제로 있을 때 |
+| upstream bulkhead를 줄인다 | remote 연쇄 장애를 막기 쉽다 | 해당 경로 throughput이 낮아질 수 있다 | partner API가 약하거나 rate limit이 엄격할 때 |
+| admission cap을 둔다 | latency debt를 앞단에서 끊는다 | reject/shed가 눈에 띈다 | SLA와 downstream 보호가 더 중요할 때 |
+| transaction을 쪼갠다 | connection hold와 lock hold를 줄인다 | 코드/일관성 설계가 복잡해진다 | remote wait나 큰 직렬화가 tx 안에 섞일 때 |
+| upstream별 개별 bulkhead를 둔다 | noisy neighbor를 막기 쉽다 | permit 운영이 복잡해진다 | 여러 partner를 동시에 호출하는 서비스일 때 |
+
+## 꼬리질문
+
+> Q: 왜 `maxPoolSize`를 virtual thread 수나 peak in-flight 요청 수에 맞추면 안 되나요?
+> 의도: thread 수와 downstream scarcity를 분리하는지 확인
+> 핵심: virtual thread는 싸지만 DB connection과 lock은 비싸므로, pool은 DB safe concurrency share에서 역산해야 한다
+
+> Q: DB safe concurrency와 `max_connections`를 왜 같은 숫자로 두면 위험한가요?
+> 의도: DB 운영 여유와 lock 경합 감각 확인
+> 핵심: `max_connections`는 hard ceiling일 뿐이고, 실제 SLA 안 safe zone은 그보다 훨씬 작을 수 있다
+
+> Q: HTTP bulkhead가 pool보다 작아도 괜찮나요?
+> 의도: 가장 작은 downstream share가 실제 상한이 된다는 점 이해 확인
+> 핵심: 괜찮다. 그 경우 현재 bottleneck은 remote 쪽이며, 오히려 DB를 보호하는 구조일 수 있다
+
+> Q: retry를 bulkhead 밖에서 돌리면 왜 위험한가요?
+> 의도: retry amplification과 concurrency multiplier 개념 확인
+> 핵심: permit 밖 재시도는 실제 in-flight를 숨기므로, remote saturation을 늦게 보게 만든다
+
+## 한 줄 정리
+
+Loom 이후 capacity planning의 기준은 thread 수가 아니라 `connection hold`, DB safe concurrency, upstream bulkhead, request admission이 같은 원장에 맞춰져 있는가다.

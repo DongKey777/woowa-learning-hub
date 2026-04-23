@@ -5,7 +5,11 @@
 **난이도: 🔴 Expert**
 
 > 관련 문서:
+> - [Aggregate Boundary vs Transaction Boundary](./aggregate-boundary-vs-transaction-boundary.md)
 > - [Unit of Work Pattern](./unit-of-work-pattern.md)
+> - [Aggregate Version and Optimistic Concurrency Pattern](./aggregate-version-optimistic-concurrency-pattern.md)
+> - [Aggregate Invariant Guard Pattern](./aggregate-invariant-guard-pattern.md)
+> - [Reference Other Aggregates by ID](./aggregate-reference-by-id.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
 > - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
@@ -24,10 +28,15 @@ Aggregate Root와 Unit of Work는 서로 다른 레벨의 개념이지만 backen
 ### Retrieval Anchors
 
 - `aggregate root`
+- `aggregate boundary`
 - `domain consistency boundary`
 - `transaction boundary`
+- `aggregate vs transaction boundary`
 - `unit of work relation`
 - `aggregate invariants`
+- `aggregate invariant guard`
+- `aggregate version`
+- `optimistic concurrency`
 
 ---
 
@@ -141,4 +150,3 @@ public void placeOrder(PlaceOrderCommand command) {
 ## 한 줄 정리
 
 Aggregate Root는 도메인 일관성 경계이고, Unit of Work는 그 변경을 하나의 트랜잭션으로 묶는 메커니즘이다.
-

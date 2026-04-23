@@ -2,7 +2,7 @@
 
 > 한 줄 요약: event bus control plane은 토픽, 권한, 보존 정책, 라우팅, 재처리 규칙을 중앙에서 관리하는 이벤트 인프라 제어 시스템이다.
 
-retrieval-anchor-keywords: event bus control plane, topic management, schema registry, retention policy, routing rule, consumer group, replay, dead letter queue, event governance, partition assignment
+retrieval-anchor-keywords: event bus control plane, topic management, schema registry, retention policy, routing rule, consumer group, replay, dead letter queue, event governance, partition assignment, backfill controller, consumer onboarding, control plane data plane, protocol version skew, capability gating
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,11 @@ retrieval-anchor-keywords: event bus control plane, topic management, schema reg
 > - [Config Distribution System 설계](./config-distribution-system-design.md)
 > - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
 > - [Webhook Delivery Platform 설계](./webhook-delivery-platform-design.md)
+> - [Change Data Capture / Outbox Relay 설계](./change-data-capture-outbox-relay-design.md)
+> - [Historical Backfill / Replay Platform 설계](./historical-backfill-replay-platform-design.md)
+> - [Control Plane / Data Plane Separation 설계](./control-plane-data-plane-separation-design.md)
+> - [Protocol Version Skew / Compatibility 설계](./protocol-version-skew-compatibility-design.md)
+> - [Capability Negotiation / Feature Gating 설계](./capability-negotiation-feature-gating-design.md)
 
 ## 핵심 개념
 
@@ -91,6 +96,7 @@ schema drift를 막지 않으면 consumer가 깨진다.
 - DLQ redrive
 
 replay는 강력하지만, 잘못 쓰면 duplicate storm이 된다.
+특히 신규 consumer bootstrap이나 대규모 reprocessing은 평소 publish 경로와 분리해, replay scope와 side effect suppression을 별도 control plane에서 다루는 편이 안전하다.
 
 ### 6. Partition assignment
 
@@ -110,6 +116,8 @@ control plane이 장애여도 data plane은 계속 돌아야 한다.
 - local cached policies
 - last-known-good configs
 - default retention/routing
+
+또한 replay와 backfill 작업은 control plane 장애 시 자동 확장되지 않도록 막아, 운영 중 잘못된 redrive가 전체 bus를 흔들지 않게 해야 한다.
 
 ## 실전 시나리오
 
@@ -198,4 +206,3 @@ public void createTopic(TopicSpec spec) {
 ## 한 줄 정리
 
 Event bus control plane은 topic, schema, retention, ACL, replay를 중앙에서 관리해 이벤트 플랫폼의 질서와 안전을 유지한다.
-

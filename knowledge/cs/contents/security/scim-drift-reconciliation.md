@@ -8,10 +8,14 @@
 > - [SCIM Provisioning Security](./scim-provisioning-security.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md)
+> - [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md)
+> - [AuthZ Decision Logging Design](./authz-decision-logging-design.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
+> - [System Design: Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
 
-retrieval-anchor-keywords: SCIM drift, reconciliation, identity sync, directory sync, diff, backfill, orphan account, entitlement reconciliation, deprovisioning lag, source of truth
+retrieval-anchor-keywords: SCIM drift, reconciliation, identity sync, directory sync, diff, backfill, orphan account, entitlement reconciliation, deprovisioning lag, source of truth, authz consistency, cleanup evidence, retirement evidence, decision log join key, audit evidence bundle, session store claim version cutover, reconciliation run id, directory event id
 
 ---
 
@@ -73,6 +77,26 @@ drift의 흔한 결과는 orphan account다.
 - 먼저 diff를 본다
 - 영향을 받는 계정을 집계한다
 - 큰 변경은 승인 후 반영한다
+
+### 6. reconciliation close는 session/claim retirement 입력이어야 한다
+
+reconciliation 결과를 "row diff가 0이다"로만 끝내면 cleanup 판단에 필요한 증거가 빠진다.
+authority transfer나 deprovision tail 정리에서는
+SCIM repair가 실제 access shutdown과 authz convergence까지 밀어 넣었는지 남겨야 한다.
+
+retirement gate에 넘길 최소 산출물:
+
+- `reconciliation_run_id`, `directory_event_id` 또는 snapshot version
+- 어떤 `subject_id` / `tenant_id` / membership version이 바뀌었는지
+- session / refresh revoke 요청 시각과 완료 signal
+- `last_access_after_deprovision`, `orphan_grant_remaining`
+- decision/audit evidence를 다시 찾을 `request_id` / `session_id` / `policy_version`
+
+이 산출물이 있어야 [Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)의 cleanup clock이
+"SCIM repair가 끝났는가"를 별도 증거로 받을 수 있고,
+[AuthZ Decision Logging Design](./authz-decision-logging-design.md),
+[Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)와 조인해
+"row는 고쳤지만 old allow가 왜 남았는가"를 재구성할 수 있다.
 
 ---
 

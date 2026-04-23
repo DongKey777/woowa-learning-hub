@@ -10,6 +10,8 @@
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+> - [Proxy Local Reply vs Upstream Error Attribution](../network/proxy-local-reply-vs-upstream-error-attribution.md)
 
 retrieval-anchor-keywords: filter, handlerinterceptor, controlleradvice, restcontrolleradvice, exceptionresolver, servlet filter, dispatcherservlet, request lifecycle, cross-cutting boundary
 

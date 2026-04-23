@@ -1,6 +1,19 @@
 # Java Collections 성능 감각
 
+**난이도: 🔴 Advanced**
+
 > 자료구조를 외우는 것보다, "언제 어떤 구현체가 느려지는가"를 빠르게 판단하기 위한 정리
+
+> 관련 문서:
+> - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
+> - [`ConcurrentHashMap` Compound Actions and Hot-Key Contention](./concurrenthashmap-compound-actions-hot-key-contention.md)
+> - [`ConcurrentSkipListMap`, `ConcurrentLinkedQueue`, and `CopyOnWriteArraySet` Trade-offs](./concurrentskiplistmap-concurrentlinkedqueue-copyonwritearrayset-tradeoffs.md)
+> - [`BlockingQueue`, `TransferQueue`, and `ConcurrentSkipListSet` Semantics](./blockingqueue-transferqueue-concurrentskiplistset-semantics.md)
+> - [`CopyOnWriteArrayList` Snapshot Iteration and Write Amplification](./copyonwritearraylist-snapshot-iteration-write-amplification.md)
+> - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+> - [Object Pooling Myths in the Modern JVM](./object-pooling-myths-modern-jvm.md)
+
+> retrieval-anchor-keywords: Java collections, HashMap, LinkedHashMap, TreeMap, ArrayList, LinkedList, collection performance, lookup pattern, insertion pattern, ordering, compareTo, equals, ConcurrentHashMap, hot key, ConcurrentSkipListMap, ConcurrentLinkedQueue, CopyOnWriteArraySet, BlockingQueue, TransferQueue, ConcurrentSkipListSet, CopyOnWriteArrayList, snapshot iteration, autoboxing, boxing overhead, wrapper collection
 
 <details>
 <summary>Table of Contents</summary>

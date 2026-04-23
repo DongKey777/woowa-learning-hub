@@ -2,6 +2,8 @@
 
 > 한 줄 요약: consistent hashing은 key 이동을 줄이는 분산 배치 기법이고, hot key 전략은 그 배치가 깨질 때를 버티는 운영 설계다.
 
+retrieval-anchor-keywords: consistent hashing, hot key, virtual node, ring, rebalancing, shard split, cache hotspot, partition movement, key remap, hot shard
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
@@ -9,6 +11,7 @@
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
 > - [분산 캐시 설계](./distributed-cache-design.md)
 > - [Rate Limiter 설계](./rate-limiter-design.md)
+> - [Shard Rebalancing / Partition Relocation 설계](./shard-rebalancing-partition-relocation-design.md)
 > - [MVCC, Replication, Sharding](../database/mvcc-replication-sharding.md)
 > - [B+Tree vs LSM-Tree](../database/bptree-vs-lsm-tree.md)
 
@@ -141,6 +144,8 @@ post:123:view_count -> sharded counter
 - 점진적 rebalancing
 - warm-up
 - read throttle
+
+실제로 상태를 많이 가진 shard라면 hash ring 변경만으로 끝나지 않고, snapshot copy와 ownership handoff까지 포함한 relocation 절차가 필요하다.
 
 ---
 

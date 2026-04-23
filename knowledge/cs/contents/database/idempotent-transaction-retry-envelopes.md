@@ -2,8 +2,10 @@
 
 > 한 줄 요약: retry는 반복 실행이 아니라, 같은 작업을 안전하게 다시 시도할 수 있게 감싸는 envelope 설계다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-Retrieval anchors: `retry envelope`, `idempotent retry`, `exception classifier`, `backoff policy`, `attempt budget`
+retrieval-anchor-keywords: retry envelope, idempotent retry, exception classifier, backoff policy, attempt budget
 
 ## 핵심 개념
 

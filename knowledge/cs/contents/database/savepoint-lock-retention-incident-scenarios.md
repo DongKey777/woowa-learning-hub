@@ -1,0 +1,184 @@
+# Savepoint + Lock Retention Incident Scenarios and Recovery Patterns
+
+> 한 줄 요약: savepoint를 잘못 쓴 운영 사고는 "부분 롤백은 성공했는데 왜 여전히 막히지?"라는 형태로 나타나며, 대응은 savepoint 자체보다 open transaction과 남은 lock surface를 줄이는 쪽에 가깝다.
+
+**난이도: 🔴 Advanced**
+
+관련 문서:
+
+- [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md)
+- [Savepoint와 Partial Rollback](./savepoint-partial-rollback.md)
+- [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- [Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs](./queue-claim-skip-locked-fairness.md)
+- [Metadata Lock Outage Triage, Cancel, and Recovery Runbook](./metadata-lock-outage-triage-cancel-recovery.md)
+
+retrieval-anchor-keywords: savepoint incident, lock retention incident, rollback to savepoint still blocking, savepoint outage, partial rollback recovery, backend transaction troubleshooting
+
+## 핵심 개념
+
+savepoint 자체는 문제가 아니다.  
+문제가 되는 건 보통 이 패턴이다.
+
+1. 큰 transaction 안에서 savepoint 사용
+2. 일부 단계 실패 후 rollback to savepoint
+3. 트랜잭션은 계속 열린 채 다음 단계 진행
+4. 다른 세션은 여전히 wait / starvation / MDL 대기를 겪음
+
+즉 운영 사고는 savepoint 문법이 아니라, **savepoint 뒤에도 계속 살아 있는 transaction**에서 나온다.
+
+## 깊이 들어가기
+
+### 1. incident의 대표 증상은 "부분 복구 성공 + 경합 지속"이다
+
+보통 로그에는:
+
+- 예외 처리됨
+- rollback to savepoint 성공
+- 비즈니스 흐름은 계속 진행
+
+처럼 보인다.
+
+하지만 DB 쪽에선:
+
+- blocker session 지속
+- insert starvation
+- lock wait timeout 증가
+- metadata usage 지속
+
+가 남을 수 있다.
+
+### 2. queue / claim 시나리오에서 가장 자주 보인다
+
+특히 위험한 패턴:
+
+- `FOR UPDATE`로 batch claim
+- 일부 item 처리 실패
+- savepoint로 일부만 되돌림
+- same transaction keeps running
+
+이러면 claimed range의 lock 의미는 여전히 살아 있고, 신규 worker/insert는 밀릴 수 있다.
+
+### 3. external I/O가 savepoint 뒤에 오면 문제는 더 커진다
+
+savepoint로 일부 DB 변경을 되돌린 뒤:
+
+- 외부 API 대기
+- 파일 처리
+- 네트워크 retry
+
+를 같은 transaction 안에서 계속 수행하면, "부분 롤백으로 가볍게 만든다"는 의도가 완전히 무너진다.
+
+### 4. recovery는 savepoint를 더 세밀하게 넣는 것이 아닐 때가 많다
+
+운영 완화책:
+
+- transaction 자체를 빨리 종료
+- 범위 claim과 후속 처리 분리
+- 실패 row는 별도 retry queue로 빼기
+- savepoint 구간을 더 짧은 pre-I/O 단계로 제한
+
+즉 incident recovery는 종종 **savepoint 사용량 증가가 아니라 transaction 축소**다.
+
+### 5. forensic에서는 blocker duration과 phase를 기록해야 한다
+
+필요한 질문:
+
+- rollback to savepoint 시점은 언제였나
+- 그 뒤 transaction은 얼마나 더 열려 있었나
+- 다른 세션이 기다린 lock 종류는 무엇인가
+- 실제로 어떤 phase가 longest hold time을 만들었나
+
+이 데이터를 남겨야 다음에 savepoint boundary를 제대로 자를 수 있다.
+
+### 6. runbook은 "continue"보다 "cut small and retry"를 권장하는 편이 낫다
+
+부분 롤백 후에도 같은 큰 tx를 유지하는 방식은:
+
+- reasoning이 어렵고
+- 경합 표면이 넓고
+- failure mode가 조용하다
+
+그래서 운영 runbook은 보통:
+
+- fail fast
+- smaller retry unit
+- shorter lock ownership
+
+쪽이 더 건강하다.
+
+## 실전 시나리오
+
+### 시나리오 1. batch claim 후 일부 row validation 실패
+
+savepoint로 되돌렸지만 batch-level transaction이 그대로 살아 있어 다음 claimers가 밀린다.
+
+대응:
+
+- batch size 축소
+- failed row를 별도 queue로 분리
+
+### 시나리오 2. 쿠폰/포인트 조합 처리 중 일부 단계 실패
+
+savepoint rollback 후 외부 결제 API를 계속 기다리면서 row lock이 오래 남는다.
+
+대응:
+
+- 외부 호출 이전에 transaction 종료
+- 필요한 상태만 저장 후 outbox로 분리
+
+### 시나리오 3. 운영자는 rollback이 됐는데 왜 timeout이 계속 나는지 혼란
+
+교훈:
+
+- rollback to savepoint는 트랜잭션 종료가 아니다
+- wait graph 기준으로 봐야 한다
+
+## 코드로 보기
+
+```text
+incident triage
+1. did rollback to savepoint happen?
+2. is the transaction still open?
+3. what lock/range is still blocking others?
+4. can we terminate this tx and retry in smaller units?
+```
+
+```sql
+SELECT trx_id, trx_started, trx_state, trx_query
+FROM information_schema.innodb_trx
+ORDER BY trx_started;
+```
+
+```text
+preferred recovery
+- end transaction
+- re-enqueue failed subunit
+- retry in smaller boundary
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|------|------|------|------|
+| 큰 tx + savepoint 계속 진행 | 코드 흐름이 한곳에 있다 | blocker가 오래 남을 수 있다 | 가능하면 피해야 함 |
+| 작은 tx + retry queue | 경합 표면이 줄어든다 | 상태 관리가 늘어난다 | 운영 안정성 우선 |
+| batch claim 유지 | throughput이 높을 수 있다 | starvation/lock retention 위험 | 낮은 경합일 때만 |
+| fail fast after partial rollback | blast radius가 작다 | 재시도 로직이 필요하다 | queue/worker 시스템 |
+
+## 꼬리질문
+
+> Q: savepoint incident에서 가장 먼저 확인할 것은 무엇인가요?
+> 의도: rollback 성공보다 open transaction 여부를 먼저 보는지 확인
+> 핵심: rollback to savepoint 이후에도 transaction이 열려 있으면 blocker가 계속 남을 수 있다
+
+> Q: 왜 savepoint를 더 많이 넣는 게 답이 아닐 수 있나요?
+> 의도: 문법 세분화와 lock surface 축소를 구분하는지 확인
+> 핵심: 문제는 savepoint 개수가 아니라 큰 transaction 자체일 수 있기 때문이다
+
+> Q: recovery에서 보통 어떤 방향이 더 낫나요?
+> 의도: continue보다 smaller retry unit을 선호하는지 확인
+> 핵심: 트랜잭션을 빨리 닫고 더 작은 단위로 재시도하는 편이 운영상 안전하다
+
+## 한 줄 정리
+
+savepoint 운영 사고의 핵심은 partial rollback 뒤에도 열린 transaction이 남는 데 있고, 회복은 savepoint를 더 쓰는 것보다 transaction을 더 빨리 닫고 재시도 단위를 줄이는 쪽이 보통 낫다.

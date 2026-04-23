@@ -2,6 +2,8 @@
 
 > 기본 개념을 한 번 돌린 뒤, 시니어 질문까지 버틸 수 있는 수준으로 올리기 위한 심화 학습 가이드
 
+> retrieval-anchor-keywords: advanced backend roadmap, 백엔드 심화 로드맵, senior prep study order, deep dive learning path, backend trade-off curriculum, system design prep, roadmap, survey
+
 ## 이 문서의 목표
 
 이 문서는 “신입 백엔드 로드맵”을 한 바퀴 돌린 뒤,
@@ -103,15 +105,15 @@
 
 추천 순서:
 
-1. [JVM, GC, JMM](./contents/language/java/4.md)
-2. [Java 동시성 유틸리티](./contents/language/java/5.md)
+1. [JVM, GC, JMM](./contents/language/java/jvm-gc-jmm-overview.md)
+2. [Java 동시성 유틸리티](./contents/language/java/java-concurrency-utilities.md)
 3. [Virtual Threads(Project Loom)](./contents/language/java/virtual-threads-project-loom.md)
-4. [ClassLoader, Exception 설계, equals/hashCode/compareTo](./contents/language/java/6.md)
+4. [ClassLoader, Exception 경계, 객체 계약](./contents/language/java/classloader-exception-boundaries-object-contracts.md)
 5. [Reflection, Generics, Annotations](./contents/language/java/reflection-generics-annotations.md)
 6. [Annotation Processing](./contents/language/java/annotation-processing.md)
 7. [Collections 성능 감각](./contents/language/java/collections-performance.md)
 8. [IO/NIO + Serialization/JSON Mapping](./contents/language/java/io-nio-serialization.md)
-9. [Optional / Stream / 불변 컬렉션 / 메모리 누수 패턴](./contents/language/java/7.md)
+9. [Optional / Stream / 불변 컬렉션 / 메모리 누수 패턴](./contents/language/java/optional-stream-immutable-collections-memory-leak-patterns.md)
 10. [G1 GC vs ZGC](./contents/language/java/g1-vs-zgc.md)
 11. [Reflection 비용과 대안](./contents/language/java/reflection-cost-and-alternatives.md)
 12. [제네릭 타입 소거와 우회 패턴](./contents/language/java/generic-type-erasure-workarounds.md)

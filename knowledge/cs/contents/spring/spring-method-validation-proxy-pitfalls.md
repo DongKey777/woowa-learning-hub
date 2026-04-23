@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+> - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)

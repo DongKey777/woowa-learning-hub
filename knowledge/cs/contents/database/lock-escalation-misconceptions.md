@@ -2,8 +2,10 @@
 
 > 한 줄 요약: lock escalation은 모든 DB에서 같은 방식으로 일어나지 않으며, row lock이 늘어난다고 자동으로 테이블 락으로 바뀐다고 생각하면 운영 판단이 틀어진다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md)
-Retrieval anchors: `lock escalation`, `table lock`, `row lock`, `lock granularity`, `escalation misconception`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md), [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md)
+retrieval-anchor-keywords: lock escalation, table lock, row lock, lock granularity, escalation misconception, savepoint lock retention
 
 ## 핵심 개념
 

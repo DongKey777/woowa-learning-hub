@@ -2,13 +2,16 @@
 
 > 한 줄 요약: 복잡한 객체 생성을 생성자 폭발 없이 단계적으로 조립하는 패턴이다.
 
-**난이도: 🟢 Basic**
+**난이도: 🟢 Beginner**
 
 > 관련 문서:
+> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [팩토리 (Factory)](./factory.md)
 > - [전략 (Strategy)](./strategy-pattern.md)
 > - [템플릿 메소드 (Template Method)](./template-method.md)
 > - [안티 패턴](./anti-pattern.md)
+
+retrieval-anchor-keywords: builder pattern, step by step object construction, builder vs constructor, builder vs factory, immutable object builder, when to use builder, beginner builder pattern
 
 ---
 

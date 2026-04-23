@@ -27,8 +27,11 @@ enforced at validation time).
 
 from __future__ import annotations
 
-import re
 from typing import Any
+
+from .answer_classifier import classify_drill_answer as _looks_like_drill_answer
+from .intent_tokens import CS_TOKENS as _CS_TOKENS
+from .intent_tokens import MISSION_TOKENS as _MISSION_TOKENS
 
 # Intent labels (also used inside coach-run.json.intent_decision).
 MISSION_ONLY = "mission_only"
@@ -47,98 +50,13 @@ VALID_INTENTS = {
     UNKNOWN,
 }
 
-_MISSION_TOKENS = {
-    # Korean
-    "pr", "리뷰", "리뷰어", "스레드", "코멘트", "브랜치", "커밋", "해결",
-    "답변", "답글", "내 pr", "내꺼", "내 코드", "내 미션", "미션",
-    # English
-    "pull request", "review", "reviewer", "thread", "unresolved",
-    "branch", "commit", "feedback", "comment",
-}
-
-_CS_TOKENS = {
-    # Korean
-    "개념", "이론", "원리", "차이", "왜", "무엇", "정의", "설명해",
-    "알려줘", "격리", "트랜잭션", "정규화", "인덱스", "캐시", "락",
-    "쓰레드", "동기화", "재시도", "타임아웃", "아키텍처", "패턴",
-    # English
-    "concept", "theory", "definition", "difference between", "explain",
-    "what is", "why does", "how does",
-}
-
-_DRILL_ANSWER_NEGATIVE_KEYWORDS = {
-    # presence of these words → prompt is asking, not answering
-    "뭐야", "어떻게", "왜", "알려줘", "설명해", "차이", "무엇", "what", "why", "how", "explain",
-}
-
-_TOKEN_RE = re.compile(r"[0-9A-Za-z가-힣]+")
-
 
 def _haystack(prompt: str) -> str:
     return (prompt or "").lower()
 
 
-def _count_substr_hits(haystack: str, tokens: set[str]) -> int:
+def _count_substr_hits(haystack: str, tokens: frozenset[str]) -> int:
     return sum(1 for t in tokens if t in haystack)
-
-
-def _tokenize(prompt: str) -> list[str]:
-    return [m.lower() for m in _TOKEN_RE.findall(prompt or "")]
-
-
-# ---------------------------------------------------------------------------
-# Drill-answer heuristic
-# ---------------------------------------------------------------------------
-
-def _looks_like_drill_answer(
-    prompt: str,
-    pending_drill: dict | None,
-) -> tuple[bool, dict]:
-    """Return (is_answer, signals) based on the 4-condition rule in the plan.
-
-    Conditions (3 of 4 required):
-      a. length ≥ 20 chars
-      b. no trailing question mark
-      c. lacks question-word keywords
-      d. token overlap with pending question ≥ threshold
-    """
-    signals: dict = {
-        "length_ok": False,
-        "not_question": False,
-        "no_question_word": False,
-        "token_overlap": 0.0,
-        "has_pending": pending_drill is not None,
-    }
-
-    if not pending_drill:
-        return False, signals
-
-    body = (prompt or "").strip()
-    if len(body) >= 20:
-        signals["length_ok"] = True
-    if not body.endswith("?") and not body.endswith("？"):
-        signals["not_question"] = True
-
-    haystack = _haystack(body)
-    if not any(kw in haystack for kw in _DRILL_ANSWER_NEGATIVE_KEYWORDS):
-        signals["no_question_word"] = True
-
-    pending_question = (pending_drill.get("question") or "") if pending_drill else ""
-    prompt_tokens = set(_tokenize(body))
-    question_tokens = set(_tokenize(pending_question))
-    if question_tokens:
-        overlap = len(prompt_tokens & question_tokens) / max(len(question_tokens), 1)
-        signals["token_overlap"] = round(overlap, 3)
-
-    satisfied = sum(
-        1
-        for k in ("length_ok", "not_question", "no_question_word")
-        if signals[k]
-    )
-    if signals["token_overlap"] >= 0.2:
-        satisfied += 1
-
-    return satisfied >= 3, signals
 
 
 # ---------------------------------------------------------------------------
@@ -224,8 +142,17 @@ def finalize(
     drill_offer: dict | None = None,
     drill_result: dict | None = None,
     verification_required_count: int = 0,
+    learner_state_coverage: str | None = None,
 ) -> dict[str, Any]:
-    """Lock the final intent_decision + block_plan for this turn."""
+    """Lock the final intent_decision + block_plan for this turn.
+
+    ``learner_state_coverage`` reflects ``learner_state.coverage`` at scan
+    time: ``"full"`` means every thread was processed within the budget,
+    ``"partial"`` means the scan hit caps and some threads were skipped.
+    When partial, any ``snapshot_block == "primary"`` is downgraded to
+    ``"supporting"`` so the AI session stops promoting an incomplete
+    snapshot as the canonical answer.
+    """
     pre_intent = pre_result.get("pre_intent", UNKNOWN)
     detected_intent = pre_intent  # finalize may refine below
 
@@ -268,12 +195,21 @@ def finalize(
     if drill_offer and block_plan["drill_block"] == "omit":
         block_plan["drill_block"] = "supporting"
 
+    # Partial-coverage downgrade: a snapshot built from a truncated scan
+    # should never be narrated as the primary answer.
+    coverage_downgraded = False
+    if learner_state_coverage == "partial" and block_plan["snapshot_block"] == "primary":
+        block_plan["snapshot_block"] = "supporting"
+        coverage_downgraded = True
+
     return {
         "detected_intent": detected_intent,
         "pre_intent": pre_intent,
         "cs_search_mode": pre_result.get("cs_search_mode"),
         "signals": pre_result.get("signals", {}),
         "block_plan": block_plan,
+        "coverage": learner_state_coverage,
+        "coverage_downgraded_snapshot": coverage_downgraded,
         "drill_in_turn": {
             "has_offer": drill_offer is not None,
             "has_result": drill_result is not None,

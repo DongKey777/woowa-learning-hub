@@ -1,10 +1,15 @@
 # 트랜잭션 실전 시나리오
 
+**난이도: 🔴 Advanced**
+
 > 트랜잭션을 정의로만 외우지 않고 실제 정합성 문제에 연결하기 위한 문서
+>
+> 문서 역할: 이 문서는 anomaly catalog라기보다, "어떤 작업을 같은 트랜잭션 경계에 묶어야 하나"를 빠르게 익히는 **survey 문서**다.
 
 <details>
 <summary>Table of Contents</summary>
 
+- [이 문서 다음에 볼 focused 문서](#이-문서-다음에-볼-focused-문서)
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
 - [시나리오 1. 중복 결제](#시나리오-1-중복-결제)
 - [시나리오 2. 재고 차감](#시나리오-2-재고-차감)
@@ -13,6 +18,15 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+retrieval-anchor-keywords: transaction case study, transaction boundary, idempotency key with transaction, inventory deduction race, optimistic lock vs pessimistic lock, atomic update, duplicate payment prevention, order creation consistency, consistency unit, transaction scenario interview
+
+## 이 문서 다음에 볼 focused 문서
+
+- write skew, phantom read 같은 anomaly 자체를 보려면 [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)를 본다.
+- 락 경합과 데드락 triage는 [Deadlock Case Study](./deadlock-case-study.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)로 내려간다.
+- 멱등성과 중복 요청 경계는 [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)에서 더 명확히 본다.
+- 부분 롤백과 저장 지점은 [Savepoint와 Partial Rollback](./savepoint-partial-rollback.md)으로 이어진다.
 
 ## 왜 이 문서가 필요한가
 

@@ -2,13 +2,79 @@
 
 > 한 줄 요약: 인덱스가 있어도 쿼리는 빠르지 않을 수 있다. MySQL이 어떤 조건을 인덱스 단계에서 걸러내고, 언제 정렬과 임시 테이블을 만들며, 왜 그 선택이 느려지는지를 읽을 수 있어야 한다.
 
-## 핵심 개념
+**난이도: 🔴 Advanced**
 
-- 관련 문서:
-  - [인덱스와 실행 계획](./index-and-explain.md)
-  - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
-  - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
-  - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
+> 관련 문서:
+> - [인덱스와 실행 계획](./index-and-explain.md)
+> - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+> - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+> - [Sort Buffer, Temporary Table, and Spill Behavior](./sort-buffer-temp-table-spill.md)
+> - [Temporary Table Engine Choice and Spill Behavior](./temp-table-engine-choice-spill-behavior.md)
+> - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
+> - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+>
+> retrieval-anchor-keywords:
+> - index condition pushdown
+> - ICP
+> - filesort
+> - temporary table
+> - using temporary
+> - using filesort
+> - using temporary using filesort
+> - covering index
+> - optimizer trace
+> - EXPLAIN extra
+> - EXPLAIN ANALYZE
+> - order by limit slow
+> - group by using temporary
+> - mysql explain extra using filesort
+> - mysql explain extra using temporary
+> - composite index but filesort
+> - index exists but order by slow
+> - index exists but group by slow
+> - icp not applied
+> - using index condition
+> - using index condition using where
+> - key used but using filesort
+> - key used but using temporary
+> - explain extra using index condition
+> - explain extra using filesort
+> - explain extra using temporary
+> - rows estimate looks fine but extra is bad
+> - group by distinct temporary table
+> - sort elimination failed
+> - explain symptom route filesort temporary
+> - 인덱스 있는데 정렬 느림
+> - 복합 인덱스인데 filesort
+> - key는 잡혔는데 filesort
+> - key는 잡혔는데 temporary
+> - extra 컬럼 해석
+> - explain extra filesort temporary
+> - rows는 괜찮은데 extra가 나쁨
+> - using temporary 왜 생김
+> - mysql 실행 계획 extra 해석
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `Extra` 컬럼을 더 기본부터 읽고 싶으면 [인덱스와 실행 계획](./index-and-explain.md)으로 먼저 내려가서 `type`, `rows`, `key`, `Extra`를 같이 본다.
+- `ORDER BY`, 커버링 인덱스, 복합 인덱스 순서가 왜 filesort를 줄이는지 이어서 보려면 [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)와 [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)가 바로 붙는다.
+- `Using filesort`, `Using temporary`가 실제로 memory에서 끝나는지 disk spill로 번졌는지까지 보고 싶다면 [Sort Buffer, Temporary Table, and Spill Behavior](./sort-buffer-temp-table-spill.md), [Temporary Table Engine Choice and Spill Behavior](./temp-table-engine-choice-spill-behavior.md)를 이어 읽는다.
+- 옵티마이저가 이상한 인덱스를 고르는 상황까지 들어가려면 [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)를, 실제 장애 대응 순서를 먼저 잡아야 하면 [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)을 본다.
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 `EXPLAIN`에서 접근 경로 자체보다 `Extra` 신호가 먼저 눈에 들어오는 상황을 맡는다.
+즉 "`key`는 잡혔는데 왜 여전히 느린가"를 설명하는 entry다.
+
+| 보이는 신호 | 여기서 바로 보는 것 | 먼저 돌아갈 문서 |
+| --- | --- | --- |
+| `key`는 잡혔는데 `Extra`에 `Using filesort`가 남음 | 정렬이 인덱스 순서로 끝나지 않는 이유, `ORDER BY`와 복합 인덱스 순서 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `Using temporary` 또는 `Using temporary; Using filesort`가 보임 | `GROUP BY`, `DISTINCT`, 조인 후 재배열 때문에 임시 테이블이 생기는 이유 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
+| `Using index condition`이 보이거나 ICP가 기대보다 약함 | 인덱스 단계 predicate pushdown, 선행 컬럼 선택도, 조건식 모양 | [인덱스와 실행 계획](./index-and-explain.md), [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) |
+| `type = ALL`, `key = NULL`, `possible_keys`도 빈약함 | 이 문서 범위보다 앞단의 접근 경로 문제 | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `rows` 추정치가 실제와 계속 다르거나 배포 후 plan drift가 남 | 통계와 cardinality estimation 문제 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) |
+
+## 핵심 개념
 
 이 문서는 MySQL 실행 계획에서 자주 보이는 세 가지 신호를 같이 읽는 방법을 다룬다.
 

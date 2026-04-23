@@ -2,8 +2,10 @@
 
 > 한 줄 요약: lease 갱신이 실패하면 단순 만료보다 더 위험한데, 오래된 worker가 자신이 여전히 주인이라고 착각할 수 있기 때문이다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md)
-Retrieval anchors: `stale lease`, `lease renewal failure`, `fencing`, `clock skew`, `renewal drift`
+retrieval-anchor-keywords: stale lease, lease renewal failure, fencing, clock skew, renewal drift
 
 ## 핵심 개념
 

@@ -1,6 +1,26 @@
 # 캐시, 메시징, 관측성 🟡 Intermediate
 
+**난이도: 🟡 Intermediate**
+
 > 시스템이 커지면 CRUD만으로 설명이 안 된다 -- 캐시는 성능, 메시징은 결합도, 관측성은 생존의 문제다.
+
+> 관련 문서:
+> - [Software Engineering README: 캐시, 메시징, 관측성](./README.md#캐시-메시징-관측성)
+> - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
+> - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
+> - [Production Readiness Review](./production-readiness-review.md)
+>
+> retrieval-anchor-keywords:
+> - cache observability
+> - messaging observability
+> - cache hit ratio
+> - cache miss
+> - consumer lag
+> - Kafka lag
+> - dead letter queue
+> - Prometheus alert
+> - 캐시 메트릭
+> - 관측성
 
 ## 핵심 개념
 

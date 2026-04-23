@@ -10,6 +10,9 @@
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [TCP Keepalive vs App Heartbeat](./tcp-keepalive-vs-app-heartbeat.md)
 > - [Nagle 알고리즘과 Delayed ACK](./nagle-delayed-ack-small-packet-latency.md)
+> - [Expect 100-continue, Proxy Request Buffering](./expect-100-continue-proxy-request-buffering.md)
+> - [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md)
+> - [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)
 
 retrieval-anchor-keywords: WebSocket proxy buffering, streaming latency, flush, chunked transfer, reverse proxy, SSE, low latency streaming, response buffering
 
@@ -76,6 +79,8 @@ app이 데이터를 써도 proxy가 flush하지 않으면 클라이언트는 못
 - 작은 메시지가 누적된다
 - latency가 늘어난다
 - ping/pong이나 heartbeat의 의미도 흐려진다
+
+proxy buffering이 꺼져 있어도 [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md)처럼 TLS termination hop의 record/flush 정책이 또 다른 지연층을 만들 수 있다.
 
 ### 4. buffering을 언제 꺼야 하나
 

@@ -10,6 +10,7 @@
 > - [Change Ownership Handoff Boundaries](./change-ownership-handoff-boundaries.md)
 > - [Contract Registry Governance](./contract-registry-governance.md)
 > - [API Lifecycle Stage Model](./api-lifecycle-stage-model.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
 
 > retrieval-anchor-keywords:
 > - ownership metadata
@@ -20,6 +21,7 @@
 > - discoverability
 > - stewardship
 > - operational directory
+> - lifecycle metadata
 
 ## 핵심 개념
 

@@ -10,6 +10,7 @@
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 > - [Schema Contract Evolution Across Services](./schema-contract-evolution-cross-service.md)
 > - [Event Schema Versioning and Compatibility](./event-schema-versioning-compatibility.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
 
 > retrieval-anchor-keywords:
 > - architectural fitness function
@@ -32,6 +33,7 @@
 - 서비스 간 계약이 깨지지 않았는가
 - 이벤트 스키마가 호환되는가
 - 특정 계층이 금지된 의존을 잡고 있지 않은가
+- 위험한 configuration key가 정책 없이 바뀌지 않았는가
 
 즉 fitness function은 아키텍처 품질을 측정하는 **지속적 테스트**다.
 
@@ -60,6 +62,7 @@ fitness function은 **구조가 아직 허용 가능한지** 본다.
 - 특정 레이어에서 DB 직접 접근 금지
 - event schema backward compatibility 확인
 - contract test 통과
+- config schema와 value range 확인
 
 사람 리뷰만으로는 시간이 지나면 흐려진다.
 

@@ -2,7 +2,19 @@
 
 > 한 줄 요약: 페이지네이션은 UI 문제처럼 보이지만, 대용량 DB에서는 정렬과 인덱스 접근 비용을 바꾸는 쿼리 설계 문제다.
 
+**난이도: 🟡 Intermediate**
+
 > 관련 문서: [인덱스와 실행 계획](./index-and-explain.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
+
+> retrieval-anchor-keywords:
+> - pagination
+> - offset pagination
+> - seek pagination
+> - keyset pagination
+> - cursor pagination
+> - LIMIT OFFSET
+> - deep pagination
+> - 스크롤 페이지네이션
 
 ## 핵심 개념
 

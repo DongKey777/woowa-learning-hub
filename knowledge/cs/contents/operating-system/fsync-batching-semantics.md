@@ -7,11 +7,13 @@
 > 관련 문서:
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
 > - [Dirty Page Ratios, Writeback Tuning](./dirty-page-ratios-writeback-tuning.md)
+> - [Fsync Tail Latency, Dirty Writeback, Backend Debugging](./fsync-tail-latency-dirty-writeback-debugging.md)
+> - [Rename Atomicity, Directory fsync, Crash Consistency](./rename-atomicity-directory-fsync-crash-consistency.md)
 > - [Page Cache Thrash vs Direct I/O](./page-cache-thrash-vs-direct-io.md)
 > - [I/O Scheduler, blk-mq Basics](./io-scheduler-blk-mq-basics.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 
-> retrieval-anchor-keywords: fsync batching, fdatasync, group commit, durability, write coalescing, journal commit, sync_file_range, WAL
+> retrieval-anchor-keywords: fsync batching, fdatasync, group commit, durability, write coalescing, journal commit, sync_file_range, WAL, fsync tail latency, group commit latency, backend durability
 
 ## 핵심 개념
 

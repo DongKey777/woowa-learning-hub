@@ -101,6 +101,67 @@ class BuildOfferTest(unittest.TestCase):
         self.assertEqual(offer["ttl_turns"], drill.DEFAULT_TTL_TURNS)
         self.assertIn("repository_boundary", offer["question"])
 
+    def test_expected_terms_includes_weak_tags(self) -> None:
+        unified = {
+            "reconciled": {"priority_focus": ["repository_boundary"]},
+            "coach_view": {},
+            "cs_view": {"weak_tags": ["practicality_markers", "depth_markers"]},
+        }
+        offer = drill.build_offer_if_due(
+            unified,
+            pre_intent="mission_only",
+            pending=None,
+            session_payload={"primary_topic": "repository"},
+        )
+        self.assertIsNotNone(offer)
+        self.assertIn("repository", offer["expected_terms"])
+        self.assertIn("practicality_markers", offer["expected_terms"])
+        self.assertIn("depth_markers", offer["expected_terms"])
+
+    def test_pick_focus_prefers_active_recency(self) -> None:
+        unified = {
+            "reconciled": {
+                "priority_focus": ["db_modeling", "repository_boundary"]
+            },
+            "coach_view": {
+                "recency_by_point": {
+                    "db_modeling": "dormant",
+                    "repository_boundary": "active",
+                }
+            },
+        }
+        offer = drill.build_offer_if_due(
+            unified, pre_intent="mission_only", pending=None
+        )
+        self.assertIsNotNone(offer)
+        self.assertEqual(offer["linked_learning_point"], "repository_boundary")
+
+    def test_pick_focus_keeps_first_when_no_recency(self) -> None:
+        unified = {
+            "reconciled": {
+                "priority_focus": ["db_modeling", "repository_boundary"]
+            },
+            "coach_view": {},
+        }
+        offer = drill.build_offer_if_due(
+            unified, pre_intent="mission_only", pending=None
+        )
+        self.assertEqual(offer["linked_learning_point"], "db_modeling")
+
+    def test_expected_terms_dedupes_weak_tag_matching_topic(self) -> None:
+        unified = {
+            "reconciled": {"priority_focus": ["repository_boundary"]},
+            "coach_view": {},
+            "cs_view": {"weak_tags": ["repository", "depth_markers"]},
+        }
+        offer = drill.build_offer_if_due(
+            unified,
+            pre_intent="mission_only",
+            pending=None,
+            session_payload={"primary_topic": "repository"},
+        )
+        self.assertEqual(offer["expected_terms"].count("repository"), 1)
+
 
 class ScorePendingAnswerTest(unittest.TestCase):
     def test_score_applies_expected_terms(self) -> None:

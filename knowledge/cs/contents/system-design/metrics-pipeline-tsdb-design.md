@@ -2,7 +2,7 @@
 
 > 한 줄 요약: metrics pipeline과 TSDB는 대규모 시계열 데이터를 수집, 집계, 보관, 조회해 운영 가시성을 제공하는 시스템이다.
 
-retrieval-anchor-keywords: metrics pipeline, tsdb, time series, cardinality, rollup, retention, scrape, ingest, downsampling, prometheus, observability
+retrieval-anchor-keywords: metrics pipeline, tsdb, time series, cardinality, rollup, retention, scrape, ingest, downsampling, prometheus, observability, trace exemplar, service latency, canary metric, guardrail dashboard, alert reevaluation, restated metric
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,10 @@ retrieval-anchor-keywords: metrics pipeline, tsdb, time series, cardinality, rol
 > - [Search 인덱싱 파이프라인 설계](./search-indexing-pipeline-design.md)
 > - [Distributed Cache 설계](./distributed-cache-design.md)
 > - [Multi-Region Active-Active 설계](./multi-region-active-active-design.md)
+> - [Distributed Tracing Pipeline 설계](./distributed-tracing-pipeline-design.md)
+> - [Automated Canary Analysis / Rollback Platform 설계](./automated-canary-analysis-rollback-platform-design.md)
+> - [Alert Re-Evaluation / Correction 설계](./alert-reevaluation-correction-design.md)
+> - [Dashboard Restatement UX 설계](./dashboard-restatement-ux-design.md)
 
 ## 핵심 개념
 
@@ -117,6 +121,7 @@ cardinality가 너무 높으면 TSDB가 사실상 로그 저장소가 된다.
 - 지난 24시간 error rate
 - 특정 region의 1시간 트렌드
 
+문제를 더 빨리 좁히려면 metric에서 exemplar나 trace link를 통해 느린 요청의 trace로 점프할 수 있어야 한다.
 TSDB는 시계열 범위 질의에 최적화되어야 하며, arbitrary join은 피하는 편이 낫다.
 
 ### 7. Alerting
@@ -216,4 +221,3 @@ public void observe(String metric, Map<String, String> labels, double value) {
 ## 한 줄 정리
 
 Metrics pipeline / TSDB는 high-cardinality 시계열 데이터를 효율적으로 수집하고 rollup해, 운영 판단과 알람을 가능하게 하는 인프라다.
-

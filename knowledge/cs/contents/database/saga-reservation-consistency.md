@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 예약은 확정이 아니라 홀드이며, Saga에서는 그 홀드를 언제 잡고 언제 풀지까지 정합성의 일부다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [트랜잭션 실전 시나리오](./transaction-case-studies.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `saga reservation`, `inventory hold`, `seat booking`, `compensation`, `reservation ttl`
+retrieval-anchor-keywords: saga reservation, inventory hold, seat booking, compensation, reservation ttl
 
 ## 핵심 개념
 

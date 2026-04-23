@@ -11,6 +11,8 @@
 > - [트랜잭션 실전 시나리오](../database/transaction-case-studies.md)
 > - [Outbox, Saga, Eventual Consistency](../software-engineering/outbox-inbox-domain-events.md)
 
+retrieval-anchor-keywords: Spring Batch chunk retry skip, chunk transaction boundary, batch retry limit, skip policy, batch timeout retry, deadlock retry batch, idempotent batch writer, restartability execution context, fault tolerant step, retry skip backoff
+
 ## 핵심 개념
 
 Spring Batch는 대량 데이터를 안전하게 처리하기 위한 프레임워크다.

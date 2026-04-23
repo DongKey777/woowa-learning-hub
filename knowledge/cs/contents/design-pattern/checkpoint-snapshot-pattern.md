@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Memento vs Event Sourcing](./memento-vs-event-sourcing.md)
 > - [Event Sourcing: 변경 이력을 진실의 원천으로 쓰는 패턴 언어](./event-sourcing-pattern-language.md)
+> - [Snapshot Versioning and Compatibility Pattern](./snapshot-versioning-compatibility-pattern.md)
 > - [Unit of Work Pattern](./unit-of-work-pattern.md)
 > - [State Machine Library vs State Pattern](./state-machine-library-vs-state-pattern.md)
 
@@ -29,6 +30,7 @@ Checkpoint는 replay 중간에 끊어둘 수 있는 기준점이다.
 - `state checkpoint`
 - `restore point`
 - `event replay shortcut`
+- `snapshot versioning`
 
 ---
 
@@ -134,4 +136,3 @@ Snapshot은 replay shortcut이고, checkpoint는 운영 전략이다.
 ## 한 줄 정리
 
 Checkpoint/Snapshot은 긴 이벤트 이력을 중간에서 접어 replay와 복원을 빠르게 만드는 전략이다.
-

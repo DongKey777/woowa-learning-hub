@@ -6,12 +6,15 @@
 
 > 관련 문서:
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [JWT Signature Verification Failure Playbook](./jwt-signature-verification-failure-playbook.md)
+> - [JWT / JWKS Outage Recovery / Failover Drills](./jwt-jwks-outage-recovery-failover-drills.md)
+> - [JWKS Rotation Cutover Failure / Recovery](./jwks-rotation-cutover-failure-recovery.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - [Key Rotation Runbook](./key-rotation-runbook.md)
 > - [Secret Scanning / Credential Leak Response](./secret-scanning-credential-leak-response.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 
-retrieval-anchor-keywords: JWK, JWKS, kid rollover, key rotation, cache invalidation, public key cache, signing key, verification key, rotation window, stale key, JWKS TTL
+retrieval-anchor-keywords: JWK, JWKS, kid rollover, kid miss, key rotation, cache invalidation, public key cache, signing key, verification key, rotation window, stale key, JWKS TTL, refresh storm, verification outage, stale-if-error, known-good key, cutover failure
 
 ---
 

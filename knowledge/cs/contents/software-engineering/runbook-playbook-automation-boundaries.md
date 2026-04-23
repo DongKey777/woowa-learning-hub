@@ -10,6 +10,8 @@
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
 > - [Feature Flags, Rollout, Dependency Management](./feature-flags-rollout-dependency-management.md)
 > - [Spring Transaction Debugging Playbook](../spring/spring-transaction-debugging-playbook.md)
+> - [Operational Readiness Drills and Change Safety](./operational-readiness-drills-and-change-safety.md)
+> - [Shadow Process Catalog and Retirement](./shadow-process-catalog-and-retirement.md)
 
 > retrieval-anchor-keywords:
 > - runbook
@@ -20,6 +22,7 @@
 > - safe automation
 > - response checklist
 > - operator decision
+> - readiness drill
 
 ## 핵심 개념
 
@@ -97,6 +100,7 @@ Runbook은 실제 실행 후 업데이트되어야 한다.
 - 명령어가 바뀌면 문서를 바꾼다
 - 실패 사례가 나오면 문서를 보강한다
 - 자동화로 전환되면 사람 절차를 줄인다
+- drill에서 막힌 지점이 있으면 readiness evidence를 갱신한다
 
 문서와 운영이 따로 놀면 runbook은 금방 낡는다.
 

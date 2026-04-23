@@ -10,6 +10,7 @@
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 > - [Dependency Governance and SBOM Policy](./dependency-governance-sbom-policy.md)
 > - [Service Bootstrap Governance](./service-bootstrap-governance.md)
+> - [Build vs Buy, Exit Cost, Integration Governance](./build-vs-buy-exit-cost-governance.md)
 
 > retrieval-anchor-keywords:
 > - shared library
@@ -85,6 +86,8 @@ platform service가 도메인 로직까지 떠안으면 모두 위험해진다.
 - migration path
 
 가 없으면 다시 결합이 커진다.
+
+외부 managed service를 사는 경우에도 이 질문은 그대로 남는다.
 
 ---
 

@@ -10,6 +10,10 @@
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
 > - [Change Ownership Handoff Boundaries](./change-ownership-handoff-boundaries.md)
+> - [Non-Functional Requirements as Budgets](./non-functional-requirements-budgeting.md)
+> - [Prototype, Spike, and Productionization Boundaries](./prototype-spike-productionization-boundaries.md)
+> - [Architectural Governance Operating Model](./architectural-governance-operating-model.md)
+> - [Architecture Council and Domain Stewardship Cadence](./architecture-council-domain-stewardship-cadence.md)
 
 > retrieval-anchor-keywords:
 > - architecture review
@@ -79,6 +83,7 @@
 - 계약/운영 영향은 있는가?
 - rollback 경로가 있는가?
 - ownership이 명확한가?
+- budget이나 graduation criteria가 있는가?
 
 ### 5. review는 피드백 루프여야 한다
 

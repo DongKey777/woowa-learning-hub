@@ -1,0 +1,185 @@
+# 불변 객체와 방어적 복사
+
+**난이도: 🔴 Advanced**
+
+> 자바에서 컬렉션과 객체를 안전하게 다루기 위한 기본 개념 정리
+
+> 관련 문서:
+> - [Language README](../README.md)
+> - [Record and Value Object Equality](./record-value-object-equality-basics.md)
+> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
+> - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
+> - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+> - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
+> - [Record Serialization Evolution](./record-serialization-evolution.md)
+> - [`Locale.ROOT`, Case Mapping, and Unicode Normalization Pitfalls](./locale-root-case-mapping-unicode-normalization.md)
+
+> retrieval-anchor-keywords: immutable object, defensive copy, shallow copy, deep copy, unmodifiableList, value object, canonicalization, invariant, mutable element, boundary protection, record shallow immutability, record mutable component, value object equality basics, java array clone, java Arrays.copyOf, java nested array deep copy, java array defensive copy
+
+<details>
+<summary>Table of Contents</summary>
+
+- [왜 중요한가](#왜-중요한가)
+- [불변 객체](#불변-객체)
+- [방어적 복사](#방어적-복사)
+- [얕은 복사와 깊은 복사](#얕은-복사와-깊은-복사)
+- [Collections.unmodifiableList](#collectionsunmodifiablelist)
+- [무엇을 선택해야 하나](#무엇을-선택해야-하나)
+- [추천 공식 자료](#추천-공식-자료)
+- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
+
+</details>
+
+## 왜 중요한가
+
+자바에서 객체를 외부에 노출할 때 실수하기 쉬운 문제가 있다.
+
+- 내부 리스트가 바깥에서 수정된다.
+- 컬렉션은 복사했는데 내부 요소 객체는 같이 바뀐다.
+- 의도치 않게 상태가 새어 나간다.
+
+이 문제를 이해하려면 불변 객체, 방어적 복사, 얕은/깊은 복사를 구분해야 한다.
+
+---
+
+## 불변 객체
+
+불변 객체(Immutable Object)는 **생성 이후 상태가 바뀌지 않는 객체**다.
+
+예:
+
+- `String`
+- `Integer`
+- `LocalDate`
+- 잘 설계된 `record`
+
+### 장점
+
+- 상태 추적이 쉽다.
+- 멀티스레드 환경에서 안전하다.
+- 사이드 이펙트를 줄인다.
+
+---
+
+## 방어적 복사
+
+방어적 복사는 **외부가 내부 상태를 직접 건드리지 못하게 복사본을 주는 것**이다.
+
+예:
+
+```java
+public List<Car> getCars() {
+    return new ArrayList<>(cars);
+}
+```
+
+이 코드는 리스트 자체를 복사해서 외부가 `add`, `remove`로 내부 리스트를 직접 바꾸지 못하게 한다.
+
+### 중요한 점
+
+방어적 복사는 **목적**이다.
+
+- 왜 복사하느냐? → 내부 상태 보호
+
+반면 얕은 복사/깊은 복사는 **방법**이다.
+
+---
+
+## 얕은 복사와 깊은 복사
+
+### 얕은 복사
+
+컬렉션이나 객체의 바깥 구조만 복사하고, 내부 요소는 같은 참조를 공유하는 방식이다.
+
+```java
+new ArrayList<>(cars)
+```
+
+이 경우 리스트는 새로 만들어지지만, 안의 `Car` 객체는 원본과 동일하다.
+
+즉 외부에서 `Car`를 바꾸면 원본도 같이 바뀔 수 있다.
+
+### 깊은 복사
+
+바깥 구조뿐 아니라 내부 요소 객체까지 새로 복사하는 방식이다.
+
+```java
+return cars.stream()
+        .map(car -> new Car(car.getName()))
+        .toList();
+```
+
+이 경우 외부가 받은 리스트의 요소를 바꿔도 원본에 영향이 없다.
+
+---
+
+## Collections.unmodifiableList
+
+`Collections.unmodifiableList(list)`는 **복사본이 아니라 읽기 전용 뷰**다.
+
+### 특징
+
+- 리스트 구조 수정은 막는다.
+  - `add`, `remove` 불가
+- 하지만 내부 요소가 가변이면 요소 수정은 막지 못한다.
+
+```java
+List<Car> view = Collections.unmodifiableList(cars);
+view.get(0).changeName("pobi"); // Car가 가변이면 가능
+```
+
+또한 원본 리스트가 바뀌면 `unmodifiableList`로 감싼 뷰도 같이 바뀐다.
+
+즉 `new ArrayList<>(cars)`와도 다르다.
+
+---
+
+## 무엇을 선택해야 하나
+
+### 내부 요소도 불변이라면
+
+- `unmodifiableList`
+- 얕은 복사
+
+만으로도 충분할 수 있다.
+
+### 내부 요소가 가변이라면
+
+- 깊은 복사
+또는
+- 요소 자체를 불변 객체로 만들기
+
+가 필요하다.
+
+### 보통 더 좋은 방향
+
+깊은 복사를 남발하기보다 **구성 요소를 애초에 불변 객체로 설계하는 쪽**이 더 선호된다.
+
+여기서 한 단계 더 나아간 설계가 value object다.  
+생성 시점 invariant와 canonicalization까지 잠그는 방식은 [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)에서 이어서 볼 수 있다.
+
+---
+
+## 추천 공식 자료
+
+- Oracle Collections Tutorial - List Interface: https://docs.oracle.com/javase/tutorial/collections/interfaces/list.html
+- Java Collection API: https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/Collection.html
+- Java Collections API - `Collections.unmodifiableList`: https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/util/Collections.html
+
+## 면접에서 자주 나오는 질문
+
+### Q. 얕은 복사와 방어적 복사는 같은 말인가요?
+
+- 아니다.
+- 방어적 복사는 내부 상태를 보호하려는 목적이고,
+- 얕은 복사/깊은 복사는 복사 방법이다.
+
+### Q. `Collections.unmodifiableList`는 방어적 복사인가요?
+
+- 복사라기보다 읽기 전용 뷰에 가깝다.
+- 리스트 구조 수정은 막지만 내부 요소가 가변이면 완전한 보호는 아니다.
+
+### Q. 불변성을 지키려면 항상 깊은 복사를 해야 하나요?
+
+- 내부 요소가 가변이라면 깊은 복사가 필요할 수 있다.
+- 하지만 보통은 요소 자체를 불변으로 설계하는 것이 더 좋은 해결책이다.

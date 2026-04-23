@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 여러 서비스가 관여하는 업무 흐름은 하나의 트랜잭션으로 묶지 말고, orchestration과 compensation으로 상태 전이를 관리해야 한다.
 
+retrieval-anchor-keywords: workflow orchestration, saga, compensation, state machine, approval workflow, human in the loop, repair campaign, long running operation, orchestration engine, timeout policy
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
@@ -11,6 +13,7 @@
 > - [Transaction 실전 시나리오](../database/transaction-case-studies.md)
 > - [멱등성 키와 중복 방지](../database/idempotency-key-and-deduplication.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](../network/connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [Replay / Repair Orchestration Control Plane 설계](./replay-repair-orchestration-control-plane-design.md)
 
 ---
 

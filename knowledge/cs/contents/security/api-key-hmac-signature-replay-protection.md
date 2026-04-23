@@ -9,9 +9,10 @@
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [Secret Rotation / Leak Patterns](./secret-management-rotation-leak-patterns.md)
+> - [Replay Store Outage / Degradation Recovery](./replay-store-outage-degradation-recovery.md)
 > - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
 
-retrieval-anchor-keywords: api key, HMAC, signed request, request signing, replay protection, nonce, timestamp, canonical string, constant-time compare, body hash, idempotency key
+retrieval-anchor-keywords: api key, HMAC, signed request, request signing, replay protection, nonce, timestamp, canonical string, constant-time compare, body hash, idempotency key, nonce store outage
 
 ---
 

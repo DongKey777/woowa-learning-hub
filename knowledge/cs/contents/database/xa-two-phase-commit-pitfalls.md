@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 2PC는 “둘 다 커밋하거나 둘 다 롤백”을 약속하지만, 실제 운영에서는 준비 상태가 오히려 가장 위험한 상태가 된다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md), [Idempotency Key and Deduplication](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `XA`, `two-phase commit`, `prepare`, `heuristic outcome`, `in-doubt transaction`
+retrieval-anchor-keywords: XA, two-phase commit, prepare, heuristic outcome, in-doubt transaction
 
 ## 핵심 개념
 

@@ -10,6 +10,9 @@
 > - [LB Connection Draining, Deployment Safe Close](./lb-connection-draining-deployment-safe-close.md)
 > - [TCP Reset Storms, Idle Reuse, Stale Sockets](./tcp-reset-storms-idle-reuse-stale-sockets.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)
+> - [Connection Pool Starvation, Stale Idle Reuse, Debugging](./connection-pool-starvation-stale-idle-reuse-debugging.md)
+> - [Spring WebClient Connection Pool and Timeout Tuning](../spring/spring-webclient-connection-pool-timeout-tuning.md)
 
 retrieval-anchor-keywords: HTTP keep-alive, connection pool, idle timeout, upstream timeout, stale socket, proxy timeout, origin keepalive, validation on borrow
 
@@ -85,6 +88,7 @@ pool에서 꺼낼 때 소켓이 살아 있는지 확인해야 한다.
 ### 5. 배포와 같이 보면
 
 draining 없이 서버를 내리면 keep-alive mismatch가 더 크게 보인다.
+또 request body를 다 안 읽고 early reject하는 경로가 있으면 [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)처럼 connection 재사용 자체가 더 민감해질 수 있다.
 
 ## 실전 시나리오
 

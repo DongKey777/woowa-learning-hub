@@ -2,7 +2,17 @@
 
 > 한 줄 요약: Modern Java 문법은 단순 문법 당근이 아니라, 도메인 모델을 덜 지저분하게 표현하기 위한 도구다.
 
-> 관련 문서: [자바 언어의 구조와 기본 문법](./1.md), [객체지향 핵심 원리](./2.md), [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
+> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
+> - [Record and Value Object Equality](./record-value-object-equality-basics.md)
+> - [Sealed Interfaces and Exhaustive Switch Design](./sealed-interfaces-exhaustive-switch-design.md)
+> - [Record/Sealed Hierarchy Evolution and Pattern Matching Compatibility](./record-sealed-hierarchy-evolution-pattern-matching-compatibility.md)
+> - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
+
+> retrieval-anchor-keywords: record, sealed class, pattern matching, DTO, value object, permits, exhaustive switch, hierarchy evolution, variant compatibility, record equals hashCode, record component equality, record shallow immutability
 
 ## 핵심 개념
 

@@ -8,7 +8,7 @@
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 > - [VarHandle, Unsafe, Atomics](./varhandle-unsafe-atomics.md)
 > - [Memory Barriers and VarHandle Fences](./memory-barriers-varhandle-fences.md)
-> - [Java Concurrent Utility Notes](./5.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
 
 > retrieval-anchor-keywords: volatile long, volatile double, atomicity, torn read, torn write, 64-bit atomic, JMM, visibility, ordering, data race, word tearing, happens-before
 

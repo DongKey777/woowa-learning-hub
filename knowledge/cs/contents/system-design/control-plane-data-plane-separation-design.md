@@ -1,0 +1,224 @@
+# Control Plane / Data Plane Separation 설계
+
+> 한 줄 요약: control plane과 data plane 분리는 정책 결정과 요청 처리 경로를 분리해, 운영 변경의 안전성과 런타임 처리 성능을 동시에 확보하는 시스템 설계 기본 원칙이다.
+
+retrieval-anchor-keywords: control plane, data plane, separation of concerns, policy distribution, last known good, control loop, runtime path, safety isolation, config propagation, failure domain separation, control plane fundamentals
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [시스템 설계 면접 프레임워크](./system-design-framework.md)
+> - [Config Distribution System 설계](./config-distribution-system-design.md)
+> - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
+> - [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)
+> - [Event Bus Control Plane 설계](./event-bus-control-plane-design.md)
+> - [Stateful Workload Placement / Failover Control Plane 설계](./stateful-workload-placement-failover-control-plane-design.md)
+> - [Service Mesh Control Plane 설계](./service-mesh-control-plane-design.md)
+> - [Global Traffic Failover Control Plane 설계](./global-traffic-failover-control-plane-design.md)
+
+## 핵심 개념
+
+많은 분산 시스템이 시간이 지나면 결국 같은 구조로 진화한다.
+
+- **control plane**: 정책을 만들고 바꾸고 배포한다
+- **data plane**: 실제 요청, 이벤트, 작업을 빠르게 처리한다
+
+이 둘을 섞으면 초기에는 단순해 보이지만, 운영이 커질수록 문제가 드러난다.
+
+- 정책 변경이 요청 지연에 직접 영향을 준다
+- 배포/롤백과 런타임 처리가 강하게 결합된다
+- 운영자 권한과 사용자 트래픽이 같은 경로를 공유한다
+- 장애가 한 번 나면 제어와 처리 둘 다 망가진다
+
+즉, 분리의 목적은 추상적 미학이 아니라 **안전한 변경과 빠른 처리의 충돌을 줄이는 것**이다.
+
+## 깊이 들어가기
+
+### 1. 왜 나누는가
+
+control plane과 data plane이 한 프로세스, 한 DB, 한 코드 경로 안에 섞여 있으면 다음과 같은 문제가 생긴다.
+
+- config write spike가 request latency를 망침
+- 정책 저장소 장애가 실시간 요청까지 막음
+- 운영자 실수가 바로 사용자 path에 반영됨
+- rollback이 어려워짐
+
+분리의 핵심 질문은 이것이다.
+
+- 변경 빈도는 낮지만 안전성이 중요한가
+- 처리 빈도는 높지만 지연이 중요한가
+
+대부분의 인프라는 둘 다 "예"이기 때문에 분리가 필요하다.
+
+### 2. Capacity Estimation
+
+예:
+
+- control plane 변경: 분당 수십~수백 건
+- data plane 평가/처리: 초당 수십만~수백만 건
+- config propagation 허용 지연: 수초
+- request latency 예산: 수 ms~수십 ms
+
+이 경우 두 경로를 같은 저장소와 동기 호출로 묶으면, 낮은 빈도의 제어 작업이 높은 빈도의 처리 경로를 망친다.
+
+봐야 할 숫자:
+
+- control write rate
+- config propagation delay
+- data plane cache hit ratio
+- stale snapshot ratio
+- control-to-data fan-out cost
+
+### 3. 일반적인 구조
+
+```text
+Admin / Automation
+  -> Control Plane API
+  -> Policy / Metadata Store
+  -> Publisher / Snapshot Builder
+  -> Runtime Cache / Local Snapshot
+  -> Data Plane Evaluator / Router / Worker
+```
+
+보통 control plane은 낮은 QPS, 강한 검증, 감사가 중요하고,
+data plane은 높은 QPS, 낮은 latency, graceful degradation이 중요하다.
+
+### 4. Last-known-good와 eventual propagation
+
+좋은 분리 구조에서 data plane은 control plane에 매 요청 의존하지 않는다.
+
+보통 다음을 가진다.
+
+- local snapshot
+- bounded staleness 허용
+- checksum / version
+- last-known-good fallback
+
+이 원칙이 없으면 control plane 장애가 바로 request path 장애로 번진다.
+
+### 5. 권한과 실패 도메인도 분리한다
+
+control plane은 운영자 권한과 승인 workflow를 가진다.
+data plane은 사용자 요청과 자동 평가를 다룬다.
+
+이 둘을 분리하면 다음이 쉬워진다.
+
+- 운영 권한 최소화
+- 감사 로그 분리
+- blast radius 축소
+- emergency freeze
+
+즉, 성능뿐 아니라 보안과 운영 책임도 분리된다.
+
+### 6. 언제 과하게 나누면 안 되는가
+
+항상 거대한 control plane을 만들라는 뜻은 아니다.
+
+초기 시스템에서는 다음이 더 중요할 수 있다.
+
+- 운영 복잡도 최소화
+- 구성 요소 수 제한
+- 단순한 rollback
+
+하지만 초기에도 최소한 개념적 분리는 해두는 편이 좋다.
+예를 들어 runtime이 직접 DB를 매번 읽지 않고 snapshot 캐시를 통해 읽게 만드는 것만으로도 큰 차이가 난다.
+
+### 7. 대표 예시
+
+이 카테고리의 여러 문서가 사실 같은 패턴을 공유한다.
+
+- feature flag: control plane은 flag 정의/승인, data plane은 request별 평가
+- API gateway: control plane은 route/policy 배포, data plane은 request 처리
+- service discovery: control plane은 endpoint 상태/정책, data plane은 pick/route
+- stateful placement: control plane은 desired placement와 failover policy, data plane은 실제 ownership 수행
+
+즉, control/data plane 분리는 개별 제품 기술이 아니라 분산 인프라 전반의 공통 설계 언어다.
+
+## 실전 시나리오
+
+### 시나리오 1: feature flag 시스템
+
+문제:
+
+- 매 요청마다 control DB를 읽으면 latency가 커진다
+
+해결:
+
+- flag snapshot을 CDN/local cache로 배포한다
+- data plane evaluator는 local snapshot으로만 판단한다
+
+### 시나리오 2: gateway route 변경
+
+문제:
+
+- 새 route를 빠르게 배포해야 하지만 request path는 멈추면 안 된다
+
+해결:
+
+- control plane이 새 route bundle을 versioned snapshot으로 배포한다
+- gateway는 last-known-good policy를 유지한다
+
+### 시나리오 3: stateful shard failover
+
+문제:
+
+- placement policy 계산은 복잡하지만 ownership 변경은 빠르게 이뤄져야 한다
+
+해결:
+
+- control plane이 desired state와 promotion policy를 결정한다
+- data plane은 fencing token과 routing version으로 ownership을 실행한다
+
+## 코드로 보기
+
+```pseudo
+function updatePolicy(change):
+  validated = validate(change)
+  store.save(validated)
+  publisher.publish(snapshotBuilder.build())
+
+function handleRequest(req):
+  snapshot = localCache.current()
+  decision = evaluator.evaluate(snapshot, req)
+  return execute(decision)
+```
+
+```java
+public Decision evaluate(RequestContext ctx) {
+    PolicySnapshot snapshot = snapshotCache.currentOrLastKnownGood();
+    return runtimeEvaluator.evaluate(snapshot, ctx);
+}
+```
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| Fully inline control+data | 단순하다 | 운영 변경이 런타임을 흔든다 | 작은 MVP |
+| Snapshot-based separation | 안전성과 성능 균형이 좋다 | propagation 지연이 있다 | 대부분의 실서비스 |
+| Strong remote control dependency | 최신성이 높다 | control 장애가 data path에 번질 수 있다 | 제한된 low-QPS 시스템 |
+| Rich control plane | 운영 유연성이 높다 | 정책/버전 관리가 복잡하다 | 플랫폼 인프라 |
+
+핵심은 control plane / data plane 분리가 "컴포넌트가 두 개"라는 뜻이 아니라 **변경 책임과 처리 책임을 अलग해 시스템을 더 안전하고 빠르게 만드는 설계 원칙**이라는 점이다.
+
+## 꼬리질문
+
+> Q: control plane과 data plane은 반드시 서로 다른 서비스여야 하나요?
+> 의도: 개념 분리와 배포 단위 차이 이해 확인
+> 핵심: 반드시 물리적으로 분리될 필요는 없지만, 최소한 책임과 실패 경계는 분리하는 편이 좋다.
+
+> Q: data plane이 stale snapshot을 써도 괜찮나요?
+> 의도: bounded staleness 감각 확인
+> 핵심: 많은 시스템은 짧은 stale을 허용하는 대신 런타임 안정성을 얻는다. 다만 도메인별 허용 범위를 명시해야 한다.
+
+> Q: control plane 장애가 왜 치명적일 수 있나요?
+> 의도: 의존성 설계 이해 확인
+> 핵심: runtime path가 control API에 동기 의존하면 낮은 QPS의 관리 시스템 장애가 전체 트래픽 장애로 커질 수 있다.
+
+> Q: 초기 시스템에도 이 패턴을 고려해야 하나요?
+> 의도: 실용적 적용 감각 확인
+> 핵심: 네, 다만 거대한 플랫폼보다 snapshot/cache/validation 같은 최소한의 분리부터 시작하는 편이 현실적이다.
+
+## 한 줄 정리
+
+Control plane / data plane separation은 정책 변경과 고QPS 처리 경로를 분리해, 안전한 운영 변경과 빠른 런타임 처리를 동시에 가능하게 하는 분산 시스템 기본 원칙이다.

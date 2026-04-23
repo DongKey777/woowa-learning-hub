@@ -25,9 +25,48 @@
     "confidence": { "enum": ["low", "medium", "high"] },
     "dominant_topics": { "type": "array" },
     "dominant_intents": { "type": "array" },
-    "dominant_learning_points": { "type": "array" },
-    "repeated_learning_points": { "type": "array" },
-    "underexplored_learning_points": { "type": "array" },
+    "dominant_learning_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["learning_point", "count", "weighted_count", "recency_status"],
+        "properties": {
+          "learning_point": { "type": "string" },
+          "label": { "type": ["string", "null"] },
+          "count": { "type": "integer" },
+          "weighted_count": { "type": "number" },
+          "confidence": { "enum": ["low", "medium", "high", null] },
+          "recency_status": { "enum": ["active", "cooling", "dormant"] }
+        }
+      }
+    },
+    "repeated_learning_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["learning_point", "count", "weighted_count", "recency_status"],
+        "properties": {
+          "learning_point": { "type": "string" },
+          "label": { "type": ["string", "null"] },
+          "count": { "type": "integer" },
+          "weighted_count": { "type": "number" },
+          "confidence": { "enum": ["low", "medium", "high", null] },
+          "recency_status": { "enum": ["active", "cooling", "dormant"] }
+        }
+      }
+    },
+    "underexplored_learning_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["learning_point", "count"],
+        "properties": {
+          "learning_point": { "type": "string" },
+          "label": { "type": ["string", "null"] },
+          "count": { "type": "integer" }
+        }
+      }
+    },
     "recent_learning_streak": { "type": ["object", "null"] },
     "repeated_question_patterns": { "type": "array" },
     "open_follow_up_queue": { "type": "array" },

@@ -13,12 +13,19 @@
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [JWK Rotation / Cache Invalidation / `kid` Rollover](./jwk-rotation-cache-invalidation-kid-rollover.md)
+> - [JWKS Rotation Cutover Failure / Recovery](./jwks-rotation-cutover-failure-recovery.md)
+> - [JWT Signature Verification Failure Playbook](./jwt-signature-verification-failure-playbook.md)
+> - [JWT / JWKS Outage Recovery / Failover Drills](./jwt-jwks-outage-recovery-failover-drills.md)
+> - [Signing Key Compromise Recovery Playbook](./signing-key-compromise-recovery-playbook.md)
 > - [DPoP / Token Binding Basics](./dpop-token-binding-basics.md)
+> - [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)
+> - [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
 > - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
 
-retrieval-anchor-keywords: JWT, claim set, signature validation, JWKS, key rotation, refresh token, revocation, token family, replay, cookie storage, localStorage, audience, issuer, kid, authorization context
+retrieval-anchor-keywords: JWT, JWT 처음 배우는데, JWT 입문자, JWT validation 입문 순서, beginner JWT primer, JWT intro kid issuer audience signature, JWT 기초 입문자, claim set, signature validation, signature verification failure, JWKS, key rotation, refresh token, revocation, token family, replay, cookie storage, localStorage, audience, issuer, kid, kid miss, authorization context, stale JWKS cache, token misuse, browser BFF boundary, proof of possession, key compromise
 
 ---
 

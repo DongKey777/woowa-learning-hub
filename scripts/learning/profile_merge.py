@@ -121,6 +121,8 @@ def _level_for(avg: float) -> str:
 
 
 def _coach_view(coach_profile: dict[str, Any]) -> dict[str, Any]:
+    recency_by_point: dict[str, str] = {}
+
     def _names(entries: list[dict]) -> list[str]:
         out: list[str] = []
         for e in entries or []:
@@ -128,15 +130,23 @@ def _coach_view(coach_profile: dict[str, Any]) -> dict[str, Any]:
                 label = e.get("label") or e.get("learning_point")
                 if label:
                     out.append(label)
+                    status = e.get("recency_status")
+                    if status and label not in recency_by_point:
+                        recency_by_point[label] = status
             elif isinstance(e, str):
                 out.append(e)
         return out
 
+    dominant = _names(coach_profile.get("dominant_learning_points") or [])
+    repeated = _names(coach_profile.get("repeated_learning_points") or [])
+    underexplored = _names(coach_profile.get("underexplored_learning_points") or [])
+
     return {
-        "dominant_points": _names(coach_profile.get("dominant_learning_points") or []),
-        "repeated_points": _names(coach_profile.get("repeated_learning_points") or []),
-        "underexplored_points": _names(coach_profile.get("underexplored_learning_points") or []),
+        "dominant_points": dominant,
+        "repeated_points": repeated,
+        "underexplored_points": underexplored,
         "confidence": coach_profile.get("confidence"),
+        "recency_by_point": recency_by_point,
     }
 
 

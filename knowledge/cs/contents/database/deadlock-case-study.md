@@ -1,6 +1,11 @@
 # Deadlock Case Study
 
+**난이도: 🔴 Advanced**
+
 > 데드락을 개념 정의가 아니라 실제 발생 원인과 대응 전략으로 보는 문서
+
+관련 문서: [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Transaction Timeout vs Lock Timeout](./transaction-timeout-vs-lock-timeout.md), [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
+retrieval-anchor-keywords: deadlock case study, lock ordering, mysql deadlock log 보고 lock ordering 어떻게 고쳐, mysql deadlock log lock ordering 고치는 법, mysql deadlock log, mysql deadlock log lock ordering fix, deadlock log 보고 lock ordering 고치는 법, mysql deadlock 고치는 법, deadlock retry, lock wait, wait graph, backend db incident, transaction deadlock, circular wait, innodb deadlock log, retryable database error, booking deadlock, multi-day booking deadlock, guard row canonical order
 
 <details>
 <summary>Table of Contents</summary>

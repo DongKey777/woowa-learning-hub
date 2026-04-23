@@ -6,12 +6,22 @@
 
 > 관련 문서:
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+> - [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)
+> - [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)
+> - [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
 
-retrieval-anchor-keywords: device code flow, device authorization, user code, verification URI, polling, OAuth, limited input device, phishing, one-time code, cross-device login
+retrieval-anchor-keywords: device code flow, device authorization, user code, verification URI, polling, OAuth, limited input device, phishing, one-time code, cross-device login, browserless oauth path, oauth branch point, auth session token master note, browser auth master note, browser session master note
+
+---
+
+## 이 문서를 어디에 붙여 읽나
+
+- [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)나 [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)에서 "브라우저 callback이 없다"가 명확해질 때 내려오는 branch다.
+- 브라우저 세션 hardening 자체가 목적이면 [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)로 돌아가고, 승인 뒤 토큰 보관/회수 전략은 [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)에서 다시 정리한다.
 
 ---
 

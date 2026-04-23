@@ -6,9 +6,12 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
-> - [응용 자료 구조](./advanced.md)
+> - [응용 자료 구조](./applied-data-structures-overview.md)
+> - [Balanced BST vs Unbalanced BST Primer](./balanced-bst-vs-unbalanced-bst-primer.md)
 > - [HashMap 내부 구조](./hashmap-internals.md)
 > - [Java Collections 성능 감각](../language/java/collections-performance.md)
+
+retrieval-anchor-keywords: TreeMap vs HashMap vs LinkedHashMap, sorted map vs hash map, LinkedHashMap LRU cache, floorKey ceilingKey subMap, insertion order map, access order map, red black tree map, balanced bst map, self balancing bst map, TreeMap internals, TreeMap red black tree, HashMap vs TreeMap performance, LinkedHashMap removeEldestEntry
 
 ---
 
@@ -45,7 +48,7 @@
 ### 2. `TreeMap`은 왜 정렬된 Map인가
 
 `TreeMap`은 해시 테이블이 아니라 **레드-블랙 트리** 기반이다.  
-그래서 key를 정렬 기준으로 유지하며 `O(log n)`으로 균형 있게 동작한다.
+plain BST처럼 삽입 순서에 따라 한쪽으로 무너지지 않도록 균형을 유지하므로, key를 정렬 기준으로 `O(log n)`에 가깝게 다룰 수 있다.
 
 쓸모가 분명한 API가 많다.
 

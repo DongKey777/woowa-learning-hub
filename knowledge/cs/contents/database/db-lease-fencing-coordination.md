@@ -2,8 +2,10 @@
 
 > 한 줄 요약: lease는 “누가 먼저 잡았는가”를 말해 주지만, fencing token만 있어야 “오래된 주체가 아직도 쓰지 못한다”를 막을 수 있다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Deadlock Case Study](./deadlock-case-study.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
-Retrieval anchors: `lease`, `fencing token`, `clock skew`, `GC pause`, `distributed lock`
+retrieval-anchor-keywords: lease, fencing token, clock skew, GC pause, distributed lock
 
 ## 핵심 개념
 

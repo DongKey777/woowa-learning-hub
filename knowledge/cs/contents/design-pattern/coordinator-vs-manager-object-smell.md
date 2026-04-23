@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Coordinator는 명확한 유스케이스 흐름을 조율하지만, Manager는 책임이 뭉개질 때 붙는 이름이 되기 쉽다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Saga / Coordinator](./saga-coordinator-pattern-language.md)

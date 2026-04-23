@@ -10,6 +10,9 @@
 > - [Migration Scorecards](./migration-scorecards.md)
 > - [Architecture Runway and Refactoring Window](./architecture-runway-refactoring-window.md)
 > - [Architectural Debt Interest Model](./architectural-debt-interest-model.md)
+> - [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md)
+> - [Migration Carrying Cost and Cost of Delay](./migration-carrying-cost-cost-of-delay.md)
+> - [Migration Stop-Loss and Scope Reduction Governance](./migration-stop-loss-scope-reduction-governance.md)
 
 > retrieval-anchor-keywords:
 > - migration funding
@@ -63,6 +66,7 @@ migration funding model은 이 문제를 풀기 위해:
 ### 3. funding은 release와 연결될 수 있다
 
 큰 전환은 release train 또는 정기 예산 사이클과 맞춰야 한다.
+여러 wave가 있을 때는 wave별 exit 기준과 병행 운영 비용을 같이 봐야 한다.
 
 ### 4. ROI를 단기 기능 가치로만 보면 안 된다
 

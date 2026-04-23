@@ -8,7 +8,12 @@
 > - [SSE, WebSocket, Polling](./sse-websocket-polling.md)
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [WebSocket Proxy Buffering, Streaming Latency](./websocket-proxy-buffering-streaming-latency.md)
+> - [TCP Zero Window, Persist Probe, Receiver Backpressure](./tcp-zero-window-persist-probe-receiver-backpressure.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
 > - [System Design](../system-design/README.md)
+
+retrieval-anchor-keywords: WebSocket heartbeat, backpressure, reconnect, slow consumer, ping pong, resume token, send queue, mobile reconnect, connection liveness, streaming session
 
 ---
 
@@ -23,6 +28,17 @@ WebSocket은 HTTP 업그레이드 후 장시간 양방향 통신을 제공한다
 - backpressure로 느린 소비자를 분리
 - reconnect 정책으로 네트워크 순간 단절을 흡수
 - 메시지 순서와 중복을 앱 레벨에서 보정
+
+### Retrieval Anchors
+
+- `WebSocket heartbeat`
+- `backpressure`
+- `reconnect`
+- `slow consumer`
+- `ping pong`
+- `resume token`
+- `send queue`
+- `connection liveness`
 
 ---
 

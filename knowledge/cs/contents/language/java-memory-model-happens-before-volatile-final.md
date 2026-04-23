@@ -1,6 +1,8 @@
 # Java Memory Model, Happens-Before, `volatile`, `final`
 
 > 한 줄 요약: `happens-before`는 "언제 보이는가"를 정하는 JMM의 핵심 규칙이고, `volatile`은 가시성/순서 보장, `final`은 생성 이후 안전한 게시(safe publication)의 기초가 된다.  
+
+**난이도: 🟡 Intermediate**
 > retrieval-anchor-keywords: happens-before, JMM, visibility, ordering, safe publication, volatile semantics, final field semantics, memory barrier, reordering, publication safety, data race, cache coherence
 
 ## 핵심 개념

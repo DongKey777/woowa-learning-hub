@@ -1,174 +1,235 @@
-
-
 # Observer(옵저버) 디자인 패턴
 
-> 작성자 : [장주섭](https://github.com/wntjq68) 
+> 한 줄 요약: 한 객체의 상태 변화를 여러 리스너에 전파하되, 기본이 같은 프로세스 안의 동기 fan-out이라는 점을 이해하고 써야 하는 패턴이다.
 
-## Observer 패턴 개요
+**난이도: 🟢 Beginner**
 
-옵저버 패턴(observer pattern)은 객체의 상태 변화를 관찰하는 관찰자들, 즉 옵저버들의 목록을 객체에 등록하여 상태 변화가 있을 때마다 메서드 등을 통해 객체가 직접 목록의 각 옵저버에게 통지하도록 하는 디자인 패턴이다. 주로 분산 이벤트 핸들링 시스템을 구현하는 데 사용된다. 발행/구독 모델로 알려져 있기도 하다.
+> 관련 문서:
+> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
+> - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
+> - [Observer Lifecycle Hygiene](./observer-lifecycle-hygiene.md)
+> - [Spring `@EventListener` vs `@TransactionalEventListener`: Timing, Ordering, Rollback](./spring-eventlistener-vs-transactionaleventlistener-timing.md)
+> - [Mediator vs Observer vs Pub/Sub](./mediator-vs-observer-vs-pubsub.md)
+> - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-출처: [wikipedia: 옵저버 패턴](https://ko.wikipedia.org/wiki/%EC%98%B5%EC%84%9C%EB%B2%84_%ED%8C%A8%ED%84%B4)
+retrieval-anchor-keywords: observer pattern, subject observer, state change notification, event listener pattern, when to use observer, observer vs direct call, observer vs pubsub, synchronous listener, ordering guarantee, failure boundary, spring observer transaction timing, fan-out after state change, beginner observer pattern, unsubscribe pattern, duplicate listener registration, observer lifecycle hygiene, event listener cleanup
 
- 이 말을 좀 더 구체적으로 풀어서 얘기하자면 Observer패턴을 사용하기 위한 객체 및 인터페이스로 **Observable**(주체)과 **Observer** 두 가지가 존재한다. 여기서 Observable객체는 상태가 변화 되는 주체이고 이러한 주체를 관찰하고 있는 것이 Observer이다. Observable은 하나 또는 여러 Observer를 등록하거나 해제할 수 있고 어떠한 상태 변화시 Observer들에 알릴 수 있다. 각각의 Observer들은 이러한 상태변화에 대해서 전달 받으면 각각의 알맞는 행동을 수행한다. 
+> 작성자 : [장주섭](https://github.com/wntjq68)
 
+---
 
+## 이 문서는 언제 읽으면 좋은가
 
-## Observer 패턴 장점
+- 주문 완료 후 알림, 메트릭, 캐시 무효화처럼 상태 변화 뒤에 여러 반응이 따라붙을 때
+- "직접 호출로 둘지, 옵저버로 나눌지, Pub/Sub까지 갈지"를 구분하고 싶을 때
+- 리스너가 늘면서 순서, 예외 전파, 테스트가 헷갈리기 시작할 때
 
-1. 한 객체의 변경사항을 참조하고 있는 다른 객체에서 실시간으로 변경사항을 전파 할 수 있다.
-2. 객체 간의 의존성을 제거함으로써 느슨한 결합으로 시스템이 유연해진다.
-   - 옵저버를 언제든 새로 추가 및 제거 가능하다.
-   - 새로운 형식의 옵저버라도 Observable(주체)를 변경할 필요 없다.
-   - Observable(주체)와 Observer는 독립적으로 재사용 가능하다.
+## 핵심 개념
 
+옵저버 패턴은 `Subject`가 자신의 상태 변화를 `Observer` 목록에 통지하는 구조다.  
+핵심은 "누가 반응할지"를 느슨하게 만드는 것이지, "실행 의미"를 없애는 것이 아니다.
 
+- 주체는 각 옵저버의 구체 구현보다 공통 인터페이스에 의존한다.
+- 새 반응을 추가할 때 주체의 핵심 로직을 크게 바꾸지 않아도 된다.
+- 하지만 주체는 여전히 옵저버 목록을 순회하며 직접 호출한다.
+- 그래서 고전 옵저버는 보통 **같은 프로세스 안의 동기 통지**에 가깝다.
 
-## Observer 패턴 단점
+이 마지막 점이 중요하다.  
+옵저버는 느슨한 결합을 주지만, **순서 보장과 실패 경계는 여전히 호출 체인에 남아 있는 경우가 많다.**
 
-1. observer를 필요한 시점 외에 제거하지 않으면 메모리 누수가 일어날 수 있다.
-2. 너무 빈번하게 사용하게 되면 상태 관리가 힘들 수 있다.
+## 먼저 세 가지 질문
 
+1. 후속 작업이 본 흐름과 반드시 같이 성공해야 하는가
+2. 반응들의 순서가 비즈니스 규칙인가
+3. 한 반응의 실패가 다른 반응과 주 흐름을 막아도 되는가
 
+이 질문에 답하면 직접 호출, 옵저버, Pub/Sub 중 어느 쪽이 더 자연스러운지 빠르게 갈린다.
 
-## Netflix 구독 예제 (Java)
+## 직접 호출 vs 옵저버 vs Pub/Sub 결정 표
 
- Observer 패턴을 이용한 Netflix구독 예제이다.
+| 비교 항목 | 직접 호출 | 옵저버 | Pub/Sub |
+|---|---|---|---|
+| 기본 구조 | 호출자가 대상 메서드를 명시적으로 호출 | 주체가 등록된 리스너 목록에 fan-out | 발행자와 구독자가 브로커나 topic으로 분리 |
+| 잘 맞는 경계 | 한 유스케이스 안의 핵심 협력 | 같은 프로세스 내부의 후속 반응 | 프로세스나 서비스 경계를 넘는 전파 |
+| 실행 시점 | 즉시, 보통 동기 | 보통 즉시, 보통 동기 | 대개 비동기 |
+| 순서 의미 | 코드에 순서가 명시된다 | 등록 순서나 프레임워크 규칙에 의존하기 쉽다 | 브로커, 파티션, 컨슈머 정책에 따름 |
+| 실패 경계 | 실패가 곧바로 호출자에 전파 | 리스너 예외가 발행자까지 전파되기 쉽다 | 발행 성공과 소비 성공이 분리될 수 있다 |
+| 추적과 디버깅 | 가장 쉽다 | 호출 체인이 길어질수록 흐려진다 | 운영 도구 없으면 더 어렵다 |
+| 대표 사례 | 결제 승인, 재고 차감, 핵심 도메인 규칙 | 알림, 감사 로그, 메트릭, 캐시 무효화 | 서비스 간 연동, 검색 인덱싱, 분석 파이프라인 |
 
- NetflixUser(Observer)는 Netflix(Observable)에 영화 또는 애니메이션이 업데이트 되는 것을 관찰 하고 있다. 만약 영화 또는 애니메이션이 업데이트 되면 Netflix(Observable)은 자신을 구독하고 있는 NetflixUser(Observer)에게 알려주고 NetflixUser(Observer)는 영화이냐 애니메이션이냐에 따라 각기 다른 로직을 수행하게 된다.
+빠른 규칙은 이렇다.
 
-### Netflix Class (Observable)
+- **핵심 정합성**이면 직접 호출을 먼저 본다.
+- **같은 프로세스 안의 부가 반응**이면 옵저버가 자연스럽다.
+- **독립 배포, 재시도, 운영 격리**가 필요하면 Pub/Sub까지 올라간다.
+
+## 깊이 들어가기
+
+### 1. 옵저버는 "직접 호출을 감춘 것"이 아니라 "직접 호출 fan-out을 구조화한 것"이다
+
+옵저버를 쓰면 주체가 구체 구현을 덜 알게 되므로 확장성이 좋아진다.  
+하지만 실행 자체는 여전히 메서드 호출일 수 있다.
+
+즉 아래 둘은 결합 구조가 다르지만, 실패 체인은 비슷할 수 있다.
+
+- `orderService.complete()` 안에서 `notificationService.send()`를 직접 부르는 구조
+- `order.complete()`가 등록된 `OrderListener`들을 순회하는 구조
+
+그래서 "이벤트로 뺐으니 분리됐다"라고 단정하면 안 된다.  
+**결합은 낮아져도 실패 경계는 그대로일 수 있다.**
+
+### 2. 순서가 정책이면 옵저버보다 명시적 흐름이 더 안전하다
+
+많은 초보자 실수는 "리스너 A가 먼저, B가 나중"이라는 사실을 암묵적으로 기대하는 것이다.
+
+예를 들어:
+
+- 포인트 적립 전에 주문 검증이 끝나야 한다
+- 감사 로그보다 재고 차감이 먼저 성공해야 한다
+- 캐시 무효화 전에 DB 커밋이 보장돼야 한다
+
+이런 경우 등록 순서나 프레임워크 기본 정렬에 기대면 fragile하다.
+
+- 순서가 필수면 직접 호출이나 명시적 orchestration이 더 읽기 쉽다.
+- 정말 옵저버를 유지해야 한다면 정렬 규칙을 코드와 문서에 **명시적 계약**으로 둬야 한다.
+- "어차피 리스트 순회니까 되겠지"는 운영 중 가장 쉽게 깨지는 가정이다.
+
+한 문장으로 요약하면:  
+**순서가 곧 정책이면 옵저버보다 직접 호출이 더 솔직한 경우가 많다.**
+
+### 3. 실패 경계를 먼저 정하지 않으면 부분 성공이 생긴다
+
+옵저버의 또 다른 함정은 실패 처리다.
+
+동기 옵저버에서는 흔히 이런 일이 생긴다.
+
+- 리스너 1은 성공했다
+- 리스너 2가 예외를 던졌다
+- 호출자는 전체가 실패했다고 본다
+
+그러면 이미 일어난 부가 효과와 호출자 관점의 실패가 충돌할 수 있다.  
+반대로 예외를 무시해 버리면 조용한 데이터 불일치가 생기기 쉽다.
+
+따라서 먼저 정해야 한다.
+
+- 리스너 실패를 주 흐름 실패로 볼 것인가
+- 실패한 리스너만 재시도할 것인가
+- 주 흐름과 분리된 내구성 있는 큐나 아웃박스로 넘길 것인가
+
+"실패가 분리돼야 한다"가 요구사항이면, 고전 옵저버만으로는 부족하고 Pub/Sub나 outbox 같은 별도 경계가 필요하다.
+
+### 4. 등록과 해제의 생명주기도 의식해야 한다
+
+옵저버는 구조가 가벼운 대신 관리 부주의가 바로 누수나 중복 실행으로 이어진다.
+
+- 더 이상 필요 없는 리스너를 해제하지 않으면 메모리 누수가 생길 수 있다.
+- 같은 리스너를 중복 등록하면 이벤트가 여러 번 처리될 수 있다.
+- UI, long-lived session, plugin 구조에서는 특히 lifecycle 관리가 중요하다.
+
+즉 옵저버는 "추가가 쉬운 패턴"이지만, **제거와 중복 방지까지 같이 설계해야 안전하다.**
+UI, plugin, long-lived process 맥락의 구체적인 unsubscribe / duplicate-registration 규칙은 [Observer Lifecycle Hygiene](./observer-lifecycle-hygiene.md)에서 따로 정리했다.
+
+## 옵저버가 잘 맞는 경우
+
+- 상태 변화 뒤에 붙는 후속 반응의 종류가 계속 늘어날 때
+- 주체는 단순하게 유지하고, 반응 로직을 별도 객체로 나누고 싶을 때
+- 약간의 fan-out 비용은 감수해도 같은 프로세스 안에서 바로 처리해도 될 때
+- 메트릭, 알림, 감사 로그처럼 본 흐름과 분리 가능한 내부 반응일 때
+
+## 옵저버가 덜 맞는 경우
+
+- 한 작업의 성공과 실패를 한 흐름에서 명확히 제어해야 할 때
+- 반응 순서가 곧 비즈니스 규칙일 때
+- 프로세스나 서비스 경계를 넘는 비동기 확장이 필요할 때
+- 재시도, 중복 제거, 장기 보관 같은 메시징 운영 요구가 이미 생긴 상태일 때
+
+## 코드로 보기
+
+### 1. 직접 호출로도 충분한 경우
 
 ```java
-public class Netflix implements Observable {
+public class OrderService {
+    private final PaymentService paymentService;
+    private final InventoryService inventoryService;
 
-	// 구독하고 있는 user 리스트
-    ArrayList<NetflixUser> userList;
+    public void complete(Order order) {
+        paymentService.capture(order);
+        inventoryService.reserve(order);
+    }
+}
+```
 
-    public Netflix() {
-        this.userList = new ArrayList<NetflixUser>();
+이 코드는 결합도는 더 높지만,  
+"결제 후 재고 예약"이라는 핵심 순서와 실패 전파가 코드에 그대로 드러난다.
+
+### 2. 옵저버로 후속 반응을 분리한 경우
+
+```java
+public interface OrderListener {
+    void onCompleted(Order order);
+}
+
+public class Order {
+    private final List<OrderListener> listeners = new ArrayList<>();
+
+    public void addListener(OrderListener listener) {
+        listeners.add(listener);
     }
 
-  	// movie를 update해주고 구독 중인 구독자에게 알림
-    public void updateMovie(String movie){ 
-      	// movie update code
-        notifyMovie(movie);
-    }
-
-	  // animation을 update해주고 구독 중인 구독자에게 알림
-    public void updateAnimation(String animation){
-      	// animation update code
-        notifyAnimation(animation);
-    }
-
-  	// 구독자 추가
-    @Override
-    public synchronized void addObserver(NetflixUser user) {
-        System.out.println(user.name + "가 Netflix를 구독하기 시작했습니다.");
-        userList.add(user);
-    }
-
-    // 구독자 삭제
-    @Override
-    public synchronized void deleteObserver(NetflixUser user) {
-        System.out.println(user.name + "가 Netflix를 구독 취소했습니다.");
-        userList.remove(user);
-    }
-  
-		// Movie가 update되었다고 구독자들에게 알림
-    @Override
-    public void notifyMovie(String content) {
-        for (NetflixUser user : userList) {
-            user.updateMovie(content);
+    public void complete() {
+        // 주문 상태 변경
+        for (OrderListener listener : listeners) {
+            listener.onCompleted(this);
         }
     }
+}
 
-  	// Animation이 update되었다고 구독자들에게 알림
+public class OrderNotificationListener implements OrderListener {
     @Override
-    public void notifyAnimation(String content) {
-        for (NetflixUser user : userList) {
-            user.updateAnimation(content);
-        }
+    public void onCompleted(Order order) {
+        System.out.println("주문 완료 알림 발송: " + order.id());
+    }
+}
+
+public class OrderMetricsListener implements OrderListener {
+    @Override
+    public void onCompleted(Order order) {
+        System.out.println("주문 완료 메트릭 적재: " + order.id());
     }
 }
 ```
 
+이 구조의 장점은 `Order`가 구체 후속 작업을 모르고도 여러 반응을 확장할 수 있다는 점이다.
 
+다만 이 예제도 기본은 동기 호출이다.
 
-### NetflixUser Class (Observer)
+- `OrderNotificationListener`가 실패하면 `complete()`도 실패로 끝날 수 있다.
+- 리스트 순회 순서에 의미를 싣는 순간 설계가 불안해진다.
+- 후속 작업이 많아지면 tracing과 테스트 전략을 같이 준비해야 한다.
 
-```java
-public class NetflixUser implements Observer {
-		// 구독자 이름
-    public String name;
+## 흔한 오해
 
-    public NetflixUser(String name){
-        this.name = name;
-    }
-		// movie update시 알림을 받음
-    @Override
-    public void updateMovie(String content) {
-        System.out.println(name+ " | 영화 : " + content +"가 업로드 되었습니다.");
-    }
+| 오해 | 실제로는 |
+|---|---|
+| 옵저버는 곧 Pub/Sub다 | 브로커 없이 같은 프로세스 안에서 직접 fan-out하는 경우가 많다 |
+| 이벤트로 빼면 실패가 분리된다 | 동기 옵저버라면 실패는 그대로 주 흐름에 얹힌다 |
+| 리스너가 많을수록 설계가 좋아진다 | 오히려 숨은 흐름과 추적 비용이 커질 수 있다 |
+| 등록 순서를 믿어도 된다 | 순서가 중요하면 명시적 계약이나 다른 구조가 필요하다 |
 
-  	// animation update시 알림을 받음
-    @Override
-    public void updateAnimation(String content) {
-        System.out.println(name+ " | 애니메이션 : " + content +"가 업로드 되었습니다.");
-    }
-}
-```
+## 꼬리질문
 
+> Q: 주문 완료 후 포인트 적립은 옵저버로 빼도 되는데, 결제 승인도 같이 빼면 안 되는 이유는 무엇인가요?
+> 의도: 핵심 정합성과 부가 반응을 구분하는지 확인한다.
+> 핵심: 결제 승인처럼 주 성공 경로를 결정하는 일은 직접 호출이 더 명확하다.
 
+> Q: 옵저버를 썼는데 왜 장애가 발행자까지 전파되나요?
+> 의도: 느슨한 결합과 느슨한 실패 경계를 혼동하지 않는지 확인한다.
+> 핵심: 구현이 동기 직접 호출이면 예외 전파도 같이 묶인다.
 
-### Main Class
+> Q: 리스너 순서에 의존하면 왜 위험한가요?
+> 의도: 등록 순서와 비즈니스 규칙을 구분하는지 확인한다.
+> 핵심: 숨은 순서 의존성은 리팩터링과 운영에서 가장 먼저 깨진다.
 
-```java
-public class Main {
+## 한 줄 정리
 
-    public static void main(String[] args) {
-        Netflix netflix = new Netflix();
-        NetflixUser user1 = new NetflixUser("user1");
-        NetflixUser user2 = new NetflixUser("user2");
-        NetflixUser user3 = new NetflixUser("user3");
-
-				// user1 이 구독을 시작 함
-      	netflix.addObserver(user1);
-
-        System.out.println("-------------------------------------------");
-
-				// netflix에 Dark Knight가 업데이트 됨
-        netflix.updateMovie("Dark Knight");
-
-        System.out.println("-------------------------------------------");
-
-      	// user2, user3 가 구독을 시작함
-        netflix.addObserver(user2);
-        netflix.addObserver(user3);
-
-        System.out.println("-------------------------------------------");
-
-      	// netflix에 Shutter Island가 업데이트 됨
-        netflix.updateMovie("Shutter Island");
-
-        System.out.println("-------------------------------------------");
-
-      	// user3가 구독을 취소함
-        netflix.deleteObserver(user3);
-
-        System.out.println("-------------------------------------------");
-
-      	// netflix에 짱구는 못말려14가 업데이트 됨
-        netflix.updateAnimation("짱구는 못말려14");
-    }
-}
-```
-
-
-
-### Result
-
-<p>
-<img src = "https://user-images.githubusercontent.com/22047374/126872520-12ed83c7-1bdf-427e-bba0-d1551c092eaf.png" width = 350px />
-</p>
-
+옵저버는 상태 변화 뒤의 여러 반응을 분리하는 데 좋지만, 기본은 같은 프로세스 안의 동기 fan-out이므로 순서와 실패 경계를 먼저 정하고 써야 한다.

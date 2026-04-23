@@ -6,6 +6,9 @@
 
 > 관련 문서:
 > - [Saga / Coordinator](./saga-coordinator-pattern-language.md)
+> - [Process Manager vs Saga Coordinator](./process-manager-vs-saga-coordinator.md)
+> - [Process Manager Deadlines and Timeouts](./process-manager-deadlines-timeouts.md)
+> - [Orchestration vs Choreography Failure Handling](./orchestration-vs-choreography-failure-handling.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기](./chain-of-responsibility-filters-interceptors.md)
 > - [State Machine Library vs State Pattern](./state-machine-library-vs-state-pattern.md)
@@ -27,7 +30,10 @@
 - `central coordinator`
 - `event driven workflow`
 - `distributed workflow design`
+- `process manager`
+- `time boundary ownership`
 - `service autonomy`
+- `retry ownership`
 
 ---
 
@@ -139,4 +145,3 @@ public class OrderPlacedListener {
 ## 한 줄 정리
 
 Orchestration은 중앙이 흐름을 지휘하고, Choreography는 서비스가 이벤트에 반응하며 자율적으로 맞춘다.
-

@@ -1,5 +1,7 @@
 # STL
 
+**난이도: 🟡 Intermediate**
+
 > 작성자 : [박재용](https://github.com/ggjae)
 
 - C++의 기본! STL이 무엇인지 이해하기

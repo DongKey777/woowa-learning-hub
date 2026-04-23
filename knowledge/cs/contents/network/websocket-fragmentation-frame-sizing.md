@@ -10,6 +10,7 @@
 > - [Nagle 알고리즘과 Delayed ACK](./nagle-delayed-ack-small-packet-latency.md)
 > - [MTU, PMTUD, ICMP Blackhole Path Diagnostics](./mtu-pmtud-icmp-blackhole-path-diagnostics.md)
 > - [Packet Loss, Jitter, Reordering Diagnostics](./packet-loss-jitter-reordering-diagnostics.md)
+> - [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md)
 
 retrieval-anchor-keywords: WebSocket fragmentation, frame sizing, message framing, continuation frame, control frame, latency, buffering, chunking, real-time stream
 

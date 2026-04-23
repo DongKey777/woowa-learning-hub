@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
+> - [memory.reclaim, Cgroup v2 Proactive Reclaim](./memory-reclaim-cgroup-v2-proactive-reclaim.md)
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 > - [kswapd vs Direct Reclaim, Latency](./kswapd-vs-direct-reclaim-latency.md)

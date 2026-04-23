@@ -2,8 +2,10 @@
 
 > 한 줄 요약: CAS는 충돌을 나중에 감지하고, pessimistic lock은 충돌을 미리 막는다.
 
-관련 문서: [Compare-and-Set와 Version Columns](./compare-and-set-version-columns.md), [Lost Update Detection Patterns](./lost-update-detection-patterns.md), [Advisory Locks와 Row Locks](./advisory-locks-vs-row-locks.md)
-Retrieval anchors: `compare and swap`, `pessimistic lock`, `optimistic lock`, `version column`, `select for update`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md), [Compare-and-Set와 Version Columns](./compare-and-set-version-columns.md), [Lost Update Detection Patterns](./lost-update-detection-patterns.md), [Advisory Locks와 Row Locks](./advisory-locks-vs-row-locks.md), [Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs](./queue-claim-skip-locked-fairness.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
+retrieval-anchor-keywords: compare and swap, pessimistic lock, optimistic lock, version column, select for update, skip locked, CAS vs pessimistic locking, lost update prevention, retry on version conflict, lock first or retry later
 
 ## 핵심 개념
 

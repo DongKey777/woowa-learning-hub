@@ -8,10 +8,11 @@
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
 > - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
+> - [Spring `FactoryBean` and `SmartInitializingSingleton` Extension Points](./spring-factorybean-smartinitializingsingleton-extension-points.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 
-retrieval-anchor-keywords: BeanFactoryPostProcessor, BeanPostProcessor, BeanDefinition, postProcessBeanFactory, postProcessBeforeInitialization, postProcessAfterInitialization, lifecycle hook, container extension point
+retrieval-anchor-keywords: BeanFactoryPostProcessor, BeanPostProcessor, BeanDefinition, postProcessBeanFactory, postProcessBeforeInitialization, postProcessAfterInitialization, lifecycle hook, container extension point, FactoryBean, SmartInitializingSingleton
 
 ## 핵심 개념
 

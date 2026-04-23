@@ -5,9 +5,14 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Adapter (어댑터) 패턴](./adapter.md)
 > - [데코레이터 vs 프록시](./decorator-vs-proxy.md)
-> - [전략 (Strategy)](./strategy-pattern.md)
+> - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+> - [Adapter Chaining Smells](./adapter-chaining-smells.md)
+> - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
 > - [안티 패턴](./anti-pattern.md)
+
+> retrieval-anchor-keywords: facade vs adapter vs proxy, wrapper pattern comparison, adapter vs facade, facade vs proxy, adapter vs proxy, interface translation, simplified entrypoint, call interception, wrapper pattern confusion, interface translation vs boundary architecture, gof wrapper patterns, 레거시 번역기, 호출 제어 패턴
 
 ---
 
@@ -26,6 +31,12 @@
 - Facade: "쓰기 편하게 묶자"
 - Adapter: "호환되게 바꾸자"
 - Proxy: "호출을 대신 받자"
+
+### 질문 분기
+
+- 외부 SDK나 레거시 인터페이스를 우리 인터페이스에 맞게 "번역"하는 게 핵심이면 [Adapter (어댑터) 패턴](./adapter.md)부터 본다.
+- controller, batch, DB, 외부 API 경계를 어떻게 자를지 고민 중이면 [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)으로 간다.
+- 어댑터가 여러 겹 쌓여 번역 파이프라인 냄새가 나면 [Adapter Chaining Smells](./adapter-chaining-smells.md)를 본다.
 
 ---
 

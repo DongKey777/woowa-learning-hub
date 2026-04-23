@@ -1,6 +1,25 @@
 # Java IO, NIO, Serialization, JSON Mapping
 
+**난이도: 🔴 Advanced**
+
 > 파일/네트워크 입출력과 객체 변환을 실전에서 읽고 판단하기 위한 정리
+
+> 관련 문서:
+> - [Serialization Compatibility and `serialVersionUID`](./serialization-compatibility-serial-version-uid.md)
+> - [`serialPersistentFields`, `readObjectNoData`, and Native Serialization Evolution Escape Hatches](./serialpersistentfields-readobjectnodata-evolution-escape-hatches.md)
+> - [Record Serialization Evolution](./record-serialization-evolution.md)
+> - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
+> - [BigDecimal `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps](./bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md)
+> - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
+> - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+> - [Enum Persistence, JSON, and Unknown Value Evolution](./enum-persistence-json-unknown-value-evolution.md)
+> - [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
+> - [`Instant`, `LocalDateTime`, `OffsetDateTime`, `ZonedDateTime` Boundary Design](./java-time-instant-localdatetime-boundaries.md)
+> - [`Locale.ROOT`, Case Mapping, and Unicode Normalization Pitfalls](./locale-root-case-mapping-unicode-normalization.md)
+> - [Charset, UTF-8 BOM, Malformed Input, and Decoder Policy](./charset-utf8-bom-malformed-input-decoder-policy.md)
+> - [Direct Buffer, Off-Heap, Native Memory Troubleshooting](./direct-buffer-offheap-memory-troubleshooting.md)
+
+> retrieval-anchor-keywords: Java IO, NIO, ByteBuffer, FileChannel, SocketChannel, blocking IO, non-blocking IO, serialization, native serialization, JSON mapping, Jackson, ObjectInputStream, ObjectOutputStream, BigDecimal JSON, canonical representation, precision loss, schema evolution, OffsetDateTime JSON, Unicode normalization, UTF-8 boundary, enum JSON mapping, unknown enum, NaN JSON, null vs missing field, primitive field default, serialPersistentFields, charset, BOM, malformed input
 
 <details>
 <summary>Table of Contents</summary>

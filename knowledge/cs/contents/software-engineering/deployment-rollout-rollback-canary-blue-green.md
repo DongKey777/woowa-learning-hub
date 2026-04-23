@@ -1,5 +1,7 @@
 # Deployment Rollout, Rollback, Canary, Blue-Green
 
+**난이도: 🟡 Intermediate**
+
 > 배포를 "코드를 올리는 행위"가 아니라 "변경을 안전하게 관찰 가능한 방식으로 흘리는 과정"으로 설명하는 문서
 
 <details>
@@ -17,6 +19,16 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+> retrieval-anchor-keywords:
+> - deployment rollout
+> - rollback
+> - canary deployment
+> - blue-green deployment
+> - rolling deployment
+> - release vs deploy
+> - progressive delivery
+> - 배포 전략
 
 ## 왜 배포 전략을 따로 생각해야 하는가
 

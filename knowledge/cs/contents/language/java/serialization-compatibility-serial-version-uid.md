@@ -6,11 +6,16 @@
 
 > 관련 문서:
 > - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
+> - [Serialization Proxy Pattern and Invariant Preservation](./serialization-proxy-pattern-invariant-preservation.md)
+> - [`serialPersistentFields`, `readObjectNoData`, and Native Serialization Evolution Escape Hatches](./serialpersistentfields-readobjectnodata-evolution-escape-hatches.md)
+> - [Record Serialization Evolution](./record-serialization-evolution.md)
+> - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+> - [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
 > - [ClassLoader Memory Leak Playbook](./classloader-memory-leak-playbook.md)
 > - [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 
-> retrieval-anchor-keywords: serialization compatibility, `serialVersionUID`, `Serializable`, `ObjectInputStream`, `ObjectOutputStream`, readObject, writeObject, default serialization, schema evolution, backward compatibility, forward compatibility, serial persistent fields, transient
+> retrieval-anchor-keywords: serialization compatibility, `serialVersionUID`, `Serializable`, `ObjectInputStream`, `ObjectOutputStream`, readObject, writeObject, default serialization, schema evolution, backward compatibility, forward compatibility, serial persistent fields, transient, value object invariant, null vs missing field, serialization proxy, writeReplace, readResolve, readObjectNoData, putFields, readFields
 
 <details>
 <summary>Table of Contents</summary>
@@ -68,10 +73,15 @@ serialization은 단순한 DTO 복사가 아니다.
 같은 hooks가 개입할 수 있다.  
 즉 포맷 호환성은 필드 목록뿐 아니라 클래스의 커스텀 로직에도 달려 있다.
 
+이 중 `serialPersistentFields`, `PutField`/`GetField`, `readObjectNoData()` 같은 escape hatch는 [serialPersistentFields, readObjectNoData, and Native Serialization Evolution Escape Hatches](./serialpersistentfields-readobjectnodata-evolution-escape-hatches.md)에서 더 자세히 다룬다.
+
 ### 3. `transient`는 계약의 일부다
 
 `transient` 필드는 직렬화 대상에서 빠진다.  
 그 자체는 단순해 보이지만, 복원 후 객체 불변식(invariant)을 다시 세워야 할 수 있다.
+
+이 감각은 value object에서 특히 중요하다.  
+정규화와 invariant를 생성 시점에 보장했다면 역직렬화 경로도 같은 의미를 회복해야 한다.
 
 예를 들어 다음 항목은 `transient`로 놓기 쉽다.
 

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Specification combinator library는 and, or, not 같은 조합 연산을 제공해 조건식을 재사용 가능한 라이브러리로 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Specification Pattern](./specification-pattern.md)

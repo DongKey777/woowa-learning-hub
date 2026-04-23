@@ -5,6 +5,7 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [프로세스와 스레드](./README.md#프로세스와-스레드)
 > - [프로세스 스케줄링](./README.md#프로세스-스케줄링)
 > - [컨텍스트 스위칭, 데드락, Lock-free](./context-switching-deadlock-lockfree.md)

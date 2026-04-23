@@ -10,6 +10,9 @@
 > - [Kill Switch Fast-Fail Ops](./kill-switch-fast-fail-ops.md)
 > - [Strangler Verification, Shadow Traffic Metrics](./strangler-verification-shadow-traffic-metrics.md)
 > - [Technical Debt Refactoring Timing](./technical-debt-refactoring-timing.md)
+> - [Lead Time, Change Failure, and Recovery Loop](./lead-time-change-failure-recovery-loop.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
+> - [Incident Feedback to Policy and Ownership Closure](./incident-feedback-policy-ownership-closure.md)
 
 > retrieval-anchor-keywords:
 > - incident review
@@ -34,6 +37,7 @@
 - kill switch 조건
 - runbook 내용
 - 테스트 케이스
+- 배포/변경 메트릭
 
 즉 인시던트 리뷰는 문서가 아니라 **운영 시스템의 입력**이어야 한다.
 

@@ -1,0 +1,149 @@
+# Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait
+
+> 한 줄 요약: `load average`가 높다는 사실만으로 scheduler contention으로 결론내리면 자주 틀리고, 먼저 CPU saturation, cgroup throttling, I/O wait를 갈라야 한다.
+>
+> 문서 역할: 이 문서는 `load average`를 처음 운영 신호로 읽을 때 세 갈래 원인을 1분 안에 분리하는 beginner bridge다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md)
+> - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+> - [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
+> - [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
+> - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
+> - [Scheduler Signals Example Walkthrough: `vmstat`, load average, `/proc/<pid>/sched`, `runqlat`](./scheduler-signals-example-walkthrough.md)
+
+> retrieval-anchor-keywords: load average triage, high load average triage, load average false positive, cpu saturation vs throttling, cgroup throttling vs cpu saturation, io wait vs cpu saturation, vmstat r b wa triage, cpu.stat nr_throttled, throttled_usec, cpu.pressure, io.pressure, scheduler contention false positive, high load average but low cpu
+
+## 핵심 개념
+
+`load average`는 "압력이 있다"는 신호지, "CPU scheduler가 병목이다"라는 판정문이 아니다.
+
+초보자가 가장 많이 헷갈리는 세 경우는 아래다.
+
+| 경우 | 실제로 막히는 곳 | 첫 신호 | 흔한 오해 |
+|---|---|---|---|
+| CPU saturation | runnable 태스크가 코어보다 많아 run queue가 길다 | `vmstat r` 상승, `wa` 낮음 | "그냥 스레드를 더 늘리면 된다" |
+| cgroup throttling | 태스크는 더 일하고 싶지만 cgroup CPU 예산이 먼저 바닥난다 | `cpu.stat`의 `nr_throttled`, `throttled_usec` 증가 | "노드 CPU가 100%가 아니니 scheduler 문제다" |
+| I/O wait | 디스크, 파일시스템, writeback, reclaim 쪽에서 태스크가 막힌다 | `vmstat b`/`wa`, `io.pressure` 상승 | "load average가 높으니 CPU만 보면 된다" |
+
+핵심은 이렇다.
+
+- CPU saturation은 실제 경쟁이다.
+- cgroup throttling은 정책으로 잘린 시간이다.
+- I/O wait는 CPU를 기다리는 것이 아니라 다른 자원 완료를 기다리는 상태다.
+
+세 경우 모두 `load average`를 올릴 수 있지만, 대응은 서로 다르다.
+
+## 1. 먼저 보는 1분 triage 순서
+
+```bash
+uptime
+vmstat 1
+cat /sys/fs/cgroup/cpu.stat 2>/dev/null
+cat /proc/pressure/cpu
+cat /proc/pressure/io
+```
+
+container/cgroup 안쪽이 궁금하면 `/proc/pressure/*` 대신 아래를 같이 본다.
+
+```bash
+cat /sys/fs/cgroup/cpu.pressure 2>/dev/null
+cat /sys/fs/cgroup/io.pressure 2>/dev/null
+```
+
+이 다섯 창을 이렇게 읽으면 된다.
+
+1. `uptime`
+   `load average`가 높다는 사실만 확인한다. 여기서는 아직 원인을 정하지 않는다.
+2. `vmstat 1`
+   `r`이 높은지, `b`/`wa`가 높은지 먼저 가른다.
+3. `cpu.stat`
+   quota 환경이면 `nr_throttled`, `throttled_usec`가 지금도 늘어나는지 본다.
+4. `cpu.pressure`
+   runnable인데 CPU를 못 받은 시간이 실제로 늘어나는지 본다.
+5. `io.pressure`
+   blocked I/O 쪽 stall이 함께 커지는지 본다.
+
+## 2. 세 갈래를 한눈에 구분하기
+
+| 질문 | CPU saturation | cgroup throttling | I/O wait |
+|---|---|---|---|
+| CPU는 실제로 바쁜가 | 대체로 바쁘다 | 노드 전체는 덜 바쁠 수 있다 | CPU보다 대기 시간이 더 크다 |
+| `vmstat 1`에서 먼저 보는 값 | `r` | `r`만으로는 애매할 수 있어 `cpu.stat`를 같이 본다 | `b`, `wa`, `bi/bo` |
+| 가장 직접적인 증거 | run queue pressure, `cpu.pressure` | `nr_throttled`, `throttled_usec` | `io.pressure`, 높은 `wa`, blocked task |
+| 잘못된 대응 | worker/thread만 더 늘림 | nice만 조정함 | CPU만 증설함 |
+
+짧은 판정 규칙:
+
+- `r`이 계속 높고 `wa`는 낮으며 `nr_throttled`가 조용하다 -> 먼저 CPU saturation을 의심한다.
+- 노드 CPU는 아직 여유 있어 보이는데 `nr_throttled`와 `throttled_usec`가 계속 오른다 -> 먼저 cgroup throttling을 의심한다.
+- `b`나 `wa`가 높고 `io.pressure`가 같이 오른다 -> 먼저 I/O wait을 의심한다.
+
+## 3. 왜 `load average`만 보면 쉽게 틀리는가
+
+`load average`는 runnable backlog만 세는 단순 run queue 카운터가 아니다.
+
+- runnable pressure가 높아도 올라간다
+- uninterruptible sleep 계열 대기가 많아도 올라간다
+- quota로 잘린 태스크가 있으면 "일이 밀린다"는 체감만 남고, 원인은 scheduler 자체가 아닐 수 있다
+
+그래서 `load average 높음 -> scheduler contention`으로 바로 가면 다음 실수를 자주 한다.
+
+- throttling인데 scheduler tuning부터 건드린다
+- I/O wait인데 CPU 코어 수부터 늘린다
+- run queue saturation인데 worker를 더 늘려 context switch만 키운다
+
+## 4. 초보자용 대응 방향
+
+### CPU saturation으로 보일 때
+
+- worker/thread 수가 코어 수 대비 과도하지 않은지 먼저 본다
+- `runqlat`, `/proc/<pid>/sched`, `cpu.pressure`로 queueing을 확인한다
+- CPU cost가 큰 hot path를 줄이거나, 정말 부족하면 코어를 늘린다
+
+### cgroup throttling으로 보일 때
+
+- `cpu.max`, `cpu.stat`부터 확인한다
+- nice보다 quota, period, workload 분리가 먼저다
+- 배치와 API가 같은 cgroup을 공유하면 분리부터 검토한다
+
+### I/O wait으로 보일 때
+
+- 디스크, writeback, reclaim, filesystem stall을 먼저 본다
+- `iostat`, `pidstat -d`, `io.pressure`로 다음 단계로 내려간다
+- CPU를 더 넣기 전에 왜 blocked task가 늘었는지 확인한다
+
+## 5. 헷갈리는 조합 두 가지
+
+### `load average`도 높고 `nr_throttled`도 높다
+
+이 경우는 "경쟁 + 정책 제한"이 겹친 상태일 수 있다. scheduler tuning만으로는 회복이 안 되고, quota를 먼저 확인해야 한다.
+
+### `wa`는 높지 않은데 서버는 blocked처럼 보인다
+
+`wa`는 힌트일 뿐이다. reclaim, filesystem wait, 특정 cgroup I/O stall은 `io.pressure`나 `b` 쪽에서 먼저 드러날 수 있다. `wa=0`만 보고 I/O 가능성을 완전히 지우면 안 된다.
+
+## 다음 문서
+
+- CPU saturation 쪽이면 [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+- quota/policy 쪽이면 [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
+- 수치 해석이 더 필요하면 [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
+- stall 시간을 실제로 보고 싶으면 [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
+- 샘플 출력까지 붙여 읽고 싶으면 [Scheduler Signals Example Walkthrough: `vmstat`, load average, `/proc/<pid>/sched`, `runqlat`](./scheduler-signals-example-walkthrough.md)
+
+## 꼬리질문
+
+> Q: `load average`가 코어 수보다 높으면 바로 CPU saturation인가요?
+> 핵심: 아니다. 먼저 `vmstat`, `cpu.stat`, PSI로 saturation, throttling, I/O wait를 갈라야 한다.
+
+> Q: 노드 CPU가 60%면 throttling은 아닌가요?
+> 핵심: 아니다. cgroup quota는 노드 여유와 별개로 그룹만 막을 수 있다.
+
+> Q: `vmstat r`이 낮으면 scheduler 문제를 지워도 되나요?
+> 핵심: 아니다. quota나 특정 cgroup 안쪽 pressure는 `cpu.stat`, `cpu.pressure`를 같이 봐야 한다.
+
+## 한 줄 정리
+
+`load average`는 병목 이름이 아니라 경보음이고, 초보자 triage의 첫 분기점은 "run queue saturation인가, quota throttling인가, 아니면 I/O wait인가"를 가르는 것이다.

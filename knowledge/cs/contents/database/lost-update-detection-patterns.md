@@ -2,8 +2,10 @@
 
 > 한 줄 요약: lost update는 “마지막 저장이 앞선 변경을 덮어버리는” 문제이고, 버전 검증이나 원자적 갱신으로 막아야 한다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `lost update`, `version check`, `optimistic locking`, `compare and swap`, `atomic update`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
+retrieval-anchor-keywords: lost update, version check, optimistic locking, compare and swap, atomic update, same row overwrite, lost update vs write skew
 
 ## 핵심 개념
 

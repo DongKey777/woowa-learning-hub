@@ -2,10 +2,13 @@
 
 > 한 줄 요약: Specification 패턴은 복잡한 조건문을 재사용 가능한 명세 객체로 분리해, 검색·검증·정책 판단을 조합 가능하게 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
+> - [Policy Object Pattern](./policy-object-pattern.md)
+> - [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
+> - [Query Object and Search Criteria Pattern](./query-object-search-criteria-pattern.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 > - [안티 패턴](./anti-pattern.md)
@@ -31,6 +34,11 @@ backend에서는 다음 상황에서 특히 유용하다.
 - `order search filter`
 - `eligibility rule`
 - `JPA Specification`
+- `specification vs query service`
+- `specification vs policy object`
+- `boolean specification`
+- `rich decision result`
+- `eligibility specification`
 
 ---
 
@@ -70,6 +78,20 @@ Specification은 단순히 코드 구조만이 아니다.
 - 성능상 어디까지 푸시다운할 것인가
 
 특히 JPA에서는 `Specification<T>`와 자연스럽게 연결된다.
+
+### 4. Specification은 rich decision을 대신하지 않는다
+
+명세가 규칙 평가 객체라는 이유로, 여기에 이유 코드나 수수료 계산까지 얹기 시작하면 패턴의 성격이 바뀐다.
+
+| 구분 | Specification | Policy Object |
+|---|---|---|
+| 반환 | `boolean` | decision/result object |
+| 잘하는 일 | 자격/필터/guard 조합 | 결정 설명, fee/reason/action 반환 |
+| 대표 소비자 | 검색, precondition, eligibility check | 서비스 흐름, 승인/환불 orchestration |
+| 흔한 오해 | `why`와 `how much`까지 넣으려 한다 | boolean 조합을 전부 혼자 품으려 한다 |
+
+Specification은 "통과했는가"를 고정하는 데 강하고,  
+Policy Object는 "그래서 무엇을 해야 하는가"를 정리하는 데 강하다.
 
 ---
 
@@ -161,6 +183,33 @@ public class OrderSpecifications {
 
 이 방식은 검색 조건이 늘어날수록 특히 강하다.
 
+### Policy Object로 넘기는 경계
+
+```java
+public class RefundEligibilitySpecification implements Specification<Order> {
+    @Override
+    public boolean isSatisfiedBy(Order order) {
+        return !order.isShipped() && order.daysSincePurchase() <= 7;
+    }
+}
+
+public record RefundDecision(boolean allowed, int fee, String reason) {}
+
+public class StandardRefundPolicy {
+    private final Specification<Order> eligibility = new RefundEligibilitySpecification();
+
+    public RefundDecision evaluate(Order order) {
+        if (!eligibility.isSatisfiedBy(order)) {
+            return new RefundDecision(false, 0, "NOT_ELIGIBLE");
+        }
+        return new RefundDecision(true, 1000, "STANDARD_FEE");
+    }
+}
+```
+
+여기서 boolean 조합은 Specification이 맡고,  
+이유/금액/후속 액션 같은 rich decision은 Policy Object가 맡는다.
+
 ---
 
 ## 트레이드오프
@@ -169,12 +218,14 @@ public class OrderSpecifications {
 |---|---|---|---|
 | `if` 문 | 가장 직관적이다 | 조건이 커지면 읽기 어렵다 | 규칙이 거의 없을 때 |
 | Specification | 조건을 조합할 수 있다 | 과하면 추상화가 무거워진다 | 필터 조합이 자주 바뀔 때 |
+| Policy Object | 판단 결과를 설명 가능한 형태로 돌려준다 | 단순 boolean 규칙에는 무겁다 | 이유/금액/다음 조치가 필요할 때 |
 | 전용 쿼리 객체 | DB 친화적이다 | 메모리 검증과 분리된다 | 검색이 핵심일 때 |
 
 판단 기준은 명확하다.
 
 - "행동"을 바꾸면 전략
 - "참/거짓 조건"을 조합하면 Specification
+- 이유/금액/후속 액션까지 돌려줘야 하면 Policy Object
 - DB 성능이 최우선이면 쿼리 설계를 먼저 본다
 
 ---
@@ -196,4 +247,3 @@ public class OrderSpecifications {
 ## 한 줄 정리
 
 Specification 패턴은 조건문을 조합 가능한 명세로 바꿔, backend의 검색과 검증 규칙을 재사용 가능하게 만든다.
-

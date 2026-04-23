@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 > - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)

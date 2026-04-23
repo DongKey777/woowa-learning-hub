@@ -10,6 +10,8 @@
 > - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
 > - [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)
 > - [BFF Boundaries and Client-Specific Aggregation](./bff-boundaries-client-specific-aggregation.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
+> - [Support SLA and Escalation Contracts](./support-sla-escalation-contracts.md)
 
 > retrieval-anchor-keywords:
 > - service ownership
@@ -20,6 +22,7 @@
 > - on-call ownership
 > - dependency map
 > - service registry
+> - service stage
 
 ## 핵심 개념
 
@@ -130,14 +133,17 @@ BFF를 분리하면 좋아 보이지만, 소유 경계가 없으면 공통 정�
 
 ## 코드로 보기
 
-```markdown
-Service: order-bff
-Owner: commerce-platform
-Domain: ordering
-On-call: #commerce-oncall
-Runbook: ./runbooks/order-bff.md
-ADR: ./adr/adr-014-bff-per-client.md
-Dependencies: order-service, payment-service, shipping-service
+```yaml
+service: order-bff
+owner: commerce-platform
+domain: ordering
+on_call: "#commerce-oncall"
+runbook_path: "./runbooks/order-bff.md"
+adr_path: "./adr/adr-014-bff-per-client.md"
+dependencies:
+  - order-service
+  - payment-service
+  - shipping-service
 ```
 
 이런 메타데이터가 실제 운영에서는 길을 만든다.

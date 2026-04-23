@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+> - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)

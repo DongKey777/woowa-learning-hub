@@ -10,6 +10,8 @@
 > - [Architecture Review Anti-Patterns](./architecture-review-anti-patterns.md)
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
 > - [Service Maturity Model](./service-maturity-model.md)
+> - [Prototype, Spike, and Productionization Boundaries](./prototype-spike-productionization-boundaries.md)
+> - [Platform Policy Ownership and Override Governance](./platform-policy-ownership-override-governance.md)
 
 > retrieval-anchor-keywords:
 > - golden path
@@ -48,6 +50,8 @@ escape hatch는 정당한 예외를 처리하는 공식 경로다.
 - regulatory requirement
 - high-throughput special case
 - experimental prototype
+
+experimental prototype 예외라면 만료 날짜와 productionization 조건이 같이 있어야 한다.
 
 ### 2. 예외는 승인 없이 열리면 안 된다
 

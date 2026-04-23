@@ -6,9 +6,17 @@
 
 > 관련 문서:
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [인증과 인가의 차이](../security/authentication-vs-authorization.md)
+> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+> - [OIDC Back-Channel Logout / Session Coherence](../security/oidc-backchannel-logout-session-coherence.md)
+> - [Spring Security `LogoutHandler` / `LogoutSuccessHandler` Boundaries](./spring-security-logout-handler-success-boundaries.md)
+> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+
+retrieval-anchor-keywords: Spring OAuth2 JWT integration, oauth2 login to app jwt, external access token vs app token, Spring Security OAuth2 login, AuthenticationSuccessHandler token issuance, OAuth2UserService user mapping, OidcClientInitiatedLogoutSuccessHandler, RP-initiated logout, stateless API after login, refresh token storage, cookie vs authorization header token delivery, provider token boundary, SavedRequest, RequestCache, login success redirect, SecurityContextRepository, SessionCreationPolicy, post-login session persistence, sid mapping, back-channel logout, federated session mapping
 
 ---
 
@@ -82,7 +90,34 @@ PKCE가 들어가면 코드 탈취 위험을 줄일 수 있다.
 이때 중요한 건 OAuth2 provider의 토큰을 그대로 내려주지 않는 것이다.  
 우리 서비스는 우리 서비스의 정책에 맞는 토큰을 발급해야 한다.
 
-### 4. 전달 방식의 선택
+같은 이유로 logout도 짝으로 봐야 한다.
+
+- login success handler는 provider identity를 우리 앱 session/token으로 번역한다
+- logout success handler는 local session 종료, provider logout redirect, refresh/token revoke를 어디까지 묶을지 드러낸다
+
+즉 "OAuth2 login은 성공 handler에서 끝났는데 logout은 cookie 삭제만 한다"는 식의 비대칭 설계가 자주 문제를 만든다.
+
+### 4. 로그인 성공 직후에는 세 가지 저장 경계를 분리해서 본다
+
+`oauth2Login()` 성공 직후에는 보통 세 가지가 거의 동시에 일어난다.
+
+- `SavedRequest`가 있으면 브라우저를 원래 URL로 돌려보낸다.
+- `SecurityContextRepository`가 현재 인증 결과를 다음 요청까지 유지할지 결정한다.
+- OIDC back-channel logout를 쓸 서비스라면 `(issuer, sid/sub)`와 local session id, refresh token family id, device id 매핑을 남긴다.
+
+셋 다 "로그인 성공 직후"라는 같은 타이밍을 공유하지만 역할은 다르다.
+
+- `SavedRequest`는 navigation memory다. 로그인 복귀가 끝나면 역할이 거의 끝난다.
+- `SecurityContextRepository`는 post-login persistence boundary다. 브라우저 세션을 유지할지, JWT 발급 뒤 매 요청 재검증으로 갈지 여기서 갈린다.
+- federated session mapping은 future revoke lookup이다. 나중에 back-channel `logout_token`이 왔을 때 무엇을 끊을지 찾기 위한 운영 상태다.
+
+그래서 saved request만으로 logout coherence를 설명하면 안 된다. 반대로 `sid` mapping만으로 post-login redirect UX를 설명해도 안 된다.
+
+또한 session fixation 보호나 `SessionCreationPolicy` 선택 때문에 local session id가 login 이후 바뀔 수 있다. `(issuer, sid/sub) -> local session id` 링크는 **최종 로그인 성공 시점**의 session id와 persistence 전략을 기준으로 저장하는 편이 안전하다.
+
+로그인 후 API 구간을 stateless JWT로 처리한다면, back-channel logout이 찾아야 하는 대상은 `HttpSessionSecurityContextRepository`가 아니라 refresh token store, session version row, BFF token cache일 수 있다.
+
+### 5. 전달 방식의 선택
 
 JWT를 클라이언트에 전달하는 방식은 크게 셋이다.
 
@@ -125,6 +160,19 @@ refresh token은 보통 저장/폐기 정책이 필요하다.
 즉, JWT를 쓴다고 해서 전부 무상태가 되는 게 아니다.  
 실제로는 refresh token과 블랙리스트 때문에 상태가 다시 생긴다.
 
+### 시나리오 4: back-channel logout은 들어오는데 어떤 브라우저 흐름만 다시 살아난다
+
+문제:
+
+- saved request 복귀 UX와 federated session mapping을 같은 저장소/개념으로 봤다
+- post-login persistence boundary는 stateless인데 logout lookup은 `HttpSession`만 찾고 있다
+
+대응:
+
+- redirect 이상은 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)로 먼저 분리한다
+- 인증 유지 경계는 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)에서 다시 확인한다
+- `sid`/`sub` 기준 revoke lookup은 [OIDC Back-Channel Logout / Session Coherence](../security/oidc-backchannel-logout-session-coherence.md) 기준으로 refresh family나 token cache까지 연결한다
+
 ---
 
 ## 코드로 보기
@@ -149,7 +197,7 @@ public class SecurityConfig {
 ```
 
 위 예시는 핵심 흐름만 보여준다.  
-실제 운영에서는 `oauth2Login()`의 state 저장 방식과 로그인 완료 후 JWT 발급 방식을 분리해서 생각해야 한다. `SessionCreationPolicy.STATELESS`는 보통 API 요청 처리 경계에 적용하고, 인증 코드 교환 구간은 별도의 state 저장 전략이 필요할 수 있다.
+실제 운영에서는 `oauth2Login()`의 state 저장 방식, `SavedRequest` 복귀, 로그인 완료 후 JWT 발급, back-channel logout용 `sid` 매핑 생성을 분리해서 생각해야 한다. `SessionCreationPolicy.STATELESS`는 보통 API 요청 처리 경계에 적용하고, 인증 코드 교환 구간은 별도의 state 저장 전략이 필요할 수 있다.
 
 ```java
 @Component

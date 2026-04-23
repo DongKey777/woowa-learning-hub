@@ -5,13 +5,27 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Session Fixation / Clickjacking / CSP](./session-fixation-clickjacking-csp.md)
+> - [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
+> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
 
-retrieval-anchor-keywords: signed cookie, server session, JWT, HttpOnly cookie, session store, CSRF, revocation, stateless auth, browser auth, session fixation, cookie auth
+retrieval-anchor-keywords: signed cookie, server session, JWT, HttpOnly cookie, session store, CSRF, revocation, stateless auth, browser auth, session fixation, cookie auth, session regeneration, federated login fixation, browser session coherence, login hardening path, browser auth primer, cookie session spring security route, beginner auth bridge, hidden JSESSIONID, why login state is kept
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `cookie`, `session`, `JWT` 기본 정의가 아직 헷갈리면 한 단계 뒤로 가서 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)부터 다시 읽는 편이 안전하다.
+- browser auth 선택지 비교를 Spring 요청 처리 흐름으로 연결하려면 [Spring Security 아키텍처](../spring/spring-security-architecture.md), [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 이어 가면 된다.
+- cookie/session hardening 관점의 fixation과 clickjacking 묶음은 [Session Fixation / Clickjacking / CSP](./session-fixation-clickjacking-csp.md)로 이어진다.
+- OAuth/OIDC callback 이후 session regeneration이 왜 필요한지는 [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)에서 더 구체적으로 볼 수 있다.
+- browser login hardening 문서를 cluster 형태로 다시 고르려면 [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)로 돌아가 redirect, fixation, storage 축을 한 번에 다시 잡으면 된다.
 
 ---
 

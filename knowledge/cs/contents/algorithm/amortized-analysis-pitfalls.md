@@ -1,13 +1,26 @@
 # Amortized Analysis Pitfalls
 
 > 한 줄 요약: 상각 분석은 평균처럼 보이지만, 실제 서비스에서는 순간 비용과 꼬리 지연을 함께 봐야 한다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **복잡도 해석 함정과 성능 감각**을 다루는 pattern deep dive다.
 
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
+> - [Union-Find Amortized Proof Intuition](./union-find-amortized-proof-intuition.md)
+> - [Monotone Deque Proof Intuition](./monotone-deque-proof-intuition.md)
 > - [HashMap 내부 구조](../data-structure/hashmap-internals.md)
 > - [LRU Cache Design](../data-structure/lru-cache-design.md)
+>
+> retrieval-anchor-keywords: amortized analysis, amortized O(1), average vs worst case, resize spike, rehash cost, dynamic array growth, tail latency, p99 latency, bursty cost, complexity pitfall
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 기본 복잡도 primer는 [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)로 되돌아가면 좋다.
+- 상각 증명이 실제로 왜 성립하는지 더 깊게 보려면 [Union-Find Amortized Proof Intuition](./union-find-amortized-proof-intuition.md)으로 이어지면 좋다.
+- 단조 덱처럼 "각 원소는 많아야 한 번 들어오고 한 번 나간다"는 직관은 [Monotone Deque Proof Intuition](./monotone-deque-proof-intuition.md)에서 이어진다.
+- 자료구조에서 실제 resize / rehash spike 사례를 보려면 [HashMap 내부 구조](../data-structure/hashmap-internals.md), [LRU Cache Design](../data-structure/lru-cache-design.md)으로 이어진다.
 
 ## 핵심 개념
 

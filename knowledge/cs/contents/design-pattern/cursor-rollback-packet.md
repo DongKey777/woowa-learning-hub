@@ -1,0 +1,260 @@
+# Cursor Rollback Packet
+
+> 한 줄 요약: projection rollback 뒤에는 traffic route만 old path로 되돌리는 것으로 끝나지 않고, 어떤 cursor version을 얼마 동안 받아줄지, 언제 `REISSUE`에서 `REJECT`로 전환할지, client가 어떻게 page 1부터 다시 시작할지를 하나의 rollback packet으로 고정해야 한다.
+
+**난이도: 🔴 Expert**
+
+> 관련 문서:
+> - [Cursor and Pagination Parity During Read-Model Migration](./cursor-pagination-parity-read-model-migration.md)
+> - [Strict Pagination Fallback Contracts](./strict-pagination-fallback-contracts.md)
+> - [Pinned Legacy Chain Risk Budget](./pinned-legacy-chain-risk-budget.md)
+> - [Cursor Compatibility Sampling for Cutover](./cursor-compatibility-sampling-cutover.md)
+> - [Dual-Read Pagination Parity Sample Packet Schema](./dual-read-pagination-parity-sample-packet-schema.md)
+> - [Normalization Version Rollout Playbook](./normalization-version-rollout-playbook.md)
+> - [Read Model Cutover Guardrails](./read-model-cutover-guardrails.md)
+> - [Rollback Window Exit Criteria](./projection-rollback-window-exit-criteria.md)
+
+retrieval-anchor-keywords: cursor rollback packet, rollback cursor ttl, projection rollback cursor version ttl, rollback cursor bridge ttl, rollback reject reason code, rollback restart reason code, client restart after rollback, projection rollback pagination restart, rollback cursor world reset, rollback cursor reissue reject, pinned chain rollback expiry, rollback epoch cursor contract, rollback cursor allowlist, rollback cursor cache clear, rollback restart expected, rollback page1 restart, rollback cursor reason mapping, projection rollback client contract, pinned legacy chain risk budget, rollback pinned chain zero ttl
+
+---
+
+## 핵심 개념
+
+projection rollback은 "새 projection 대신 old projection을 다시 기본값으로 serve한다"는 뜻이지만, paginated endpoint에서는 그것만으로 충분하지 않다.
+
+- rollback 직전까지 new projection이 발급한 cursor가 남아 있을 수 있다
+- mobile/web cache가 수 분에서 수 시간 뒤에 그 cursor를 다시 보낼 수 있다
+- strict list나 pinned chain은 page 2 이후 continuity 기대가 남아 있을 수 있다
+
+그래서 rollback 순간에는 **canonical cursor world를 다시 선언하는 packet**이 필요하다.  
+그 packet은 최소한 다음 네 질문에 답해야 한다.
+
+1. 지금부터 canonical인 cursor version/projection epoch은 무엇인가
+2. rollback 직전에 발급된 non-canonical cursor를 얼마 동안 `REISSUE`로 브리지할 것인가
+3. 브리지 종료 뒤 어떤 reason code로 `REJECT`할 것인가
+4. client는 page N continuation을 버리고 어떤 restart 동작을 해야 하는가
+
+### Retrieval Anchors
+
+- `cursor rollback packet`
+- `rollback cursor ttl`
+- `rollback cursor bridge ttl`
+- `rollback reject reason code`
+- `client restart after rollback`
+- `rollback cursor world reset`
+- `rollback page1 restart`
+- `rollback restart expected`
+- `pinned chain rollback expiry`
+- `rollback epoch cursor contract`
+
+---
+
+## 깊이 들어가기
+
+### 1. rollback packet은 route switch가 아니라 cursor world reset 선언이다
+
+rollback 때 필요한 건 "routing flag를 old projection으로 돌렸다"는 사실보다, **어느 cursor 세계를 다시 정답으로 볼지**를 명시하는 일이다.
+
+| 필드 | 의미 | 기본 추천 |
+|---|---|---|
+| `rollback_epoch` | 이번 rollback operation의 고유 식별자 | route switch commit 시각 또는 monotonic epoch |
+| `canonical_projection_id` | rollback 후 canonical read path | 복귀한 old projection ID |
+| `canonical_cursor_versions` | rollback 이후 `ACCEPT` 가능한 version 집합 | restored world가 원래 발급하던 version만 남김 |
+| `rollback_started_at` | TTL 계산의 기준 시각 | 모든 bridge TTL의 기준점 |
+| `bridge_policy_by_requested_version` | old/new/unknown cursor version별 verdict | version family마다 명시 |
+| `public_reason_code_map` | 외부 API code와 내부 reason 연결 | 기존 client 계약과 분리 관리 |
+| `client_restart_mode` | `REISSUE`/`REJECT`별 restart UX | one-shot restart 규칙을 포함 |
+
+핵심은 TTL을 cursor 발급 시각이 아니라 `rollback_started_at`에 묶는 것이다.  
+그렇지 않으면 오래 살아남은 client cache가 새 cursor world를 너무 오래 끌고 와 split-brain을 연장한다.
+
+### 2. rollback-time cursor TTL은 세 band로 나누는 편이 안전하다
+
+rollback 뒤의 cursor TTL은 "모두 24시간"처럼 하나의 숫자로 두면 해석이 흐려진다.  
+안전한 기본값은 아래 세 band다.
+
+| cursor family | rollback 직후 verdict | TTL 기준 | 기본 추천 | 왜 필요한가 |
+|---|---|---|---|---|
+| rollback 후 canonical world cursor | `ACCEPT` | endpoint의 정상 cursor TTL | 기존 endpoint TTL 유지. 예: `24h` | 이미 정답으로 복귀한 cursor world다 |
+| rollback 직전 candidate world cursor | `REISSUE` | `rollback_started_at + bridge_ttl` | 짧은 bridge만 허용. 예: `15m` | in-flight client에게 fresh restart 기회를 한 번 준다 |
+| pinned chain / mixed world / unknown epoch cursor | 즉시 `REJECT` | `0` | 기본 `0s` | page N continuity를 살리려다 split-brain을 늘리는 것을 막는다 |
+
+실무 기본값은 보통 다음과 같다.
+
+- `canonical_accept_ttl`: 원래 endpoint가 쓰던 TTL 그대로 유지
+- `rollback_bridge_ttl`: `10~15분`
+- `pinned_chain_ttl_after_rollback`: 기본 `0초`
+
+특히 `pinned_chain_ttl_after_rollback=0`이 중요한 이유는, rollback 순간부터 `PINNED_CHAIN_ACCEPT`가 사실상 retired projection에 대한 continuity 약속이 되기 때문이다.  
+rollback 뒤에는 page N continuation보다 **page 1 restart의 명시성**이 더 중요하다.
+
+### 3. requested version별 bridge policy를 packet에 고정해야 drift를 읽을 수 있다
+
+rollback packet은 "legacy cursor를 처리한다"가 아니라, **어느 requested version을 어떻게 다룰지**를 분리해서 적어야 한다.
+
+| requested cursor family | bridge TTL 안 | bridge TTL 후 | 기본 internal reason | 해석 |
+|---|---|---|---|---|
+| restored canonical version | `ACCEPT` | `ACCEPT` | 없음 | 정상 world |
+| rollback 직전 candidate version | `REISSUE` | `REJECT` | `ROLLBACK_RESTART_REQUIRED` -> `ROLLBACK_CURSOR_BRIDGE_EXPIRED` | 짧은 유예 뒤 hard cutoff |
+| older legacy version already deprecated | `REJECT` | `REJECT` | `ROLLBACK_CURSOR_VERSION_UNSUPPORTED` | rollback과 무관하게 비허용 |
+| mixed cursor world | `REJECT` | `REJECT` | `ROLLBACK_MIXED_CURSOR_WORLD` | boundary row를 계산할 기준이 모호 |
+| epoch/projection metadata 없는 cursor | `REJECT` | `REJECT` | `ROLLBACK_CURSOR_EPOCH_UNKNOWN` | 브리지 적용 가능 여부를 증명할 수 없음 |
+
+이 표를 문서화하지 않으면 다음 같은 false green이 생긴다.
+
+- 일부 노드는 candidate `v2`를 `REISSUE`하고 다른 노드는 `REJECT`
+- 일부 sort bucket만 `ACCEPT`가 남음
+- page 1은 restart 기반인데 dashboard는 compatibility green으로 오해함
+
+### 4. rejection reason code는 "왜 page 1부터 다시 시작해야 하는지"를 설명해야 한다
+
+rollback reason code는 단순한 에러 이름이 아니라 client restart contract의 일부다.  
+내부 reason과 외부 public code를 분리해서 보는 편이 안전하다.
+
+| internal reason | verdict | 언제 쓰나 | 기본 public code | client 해석 |
+|---|---|---|---|---|
+| `ROLLBACK_RESTART_REQUIRED` | `REISSUE` | candidate-world cursor가 bridge TTL 안에 들어왔을 때 | `INVALID_CURSOR` 유지 가능 | fresh canonical cursor로 한 번 restart하라는 뜻 |
+| `ROLLBACK_CURSOR_BRIDGE_EXPIRED` | `REJECT` | bridge TTL이 끝난 뒤 candidate cursor가 다시 왔을 때 | `INVALID_CURSOR` | cached cursor를 버리고 fresh query로 다시 시작 |
+| `ROLLBACK_CHAIN_PIN_EXPIRED` | `REJECT` | page N continuation이 retired pinned chain에 의존할 때 | `INVALID_CURSOR` | same-source continuation 약속이 종료됨 |
+| `ROLLBACK_QUERY_WORLD_MISMATCH` | `REJECT` | sort/null ordering/normalization world가 rollback 전후 달라졌을 때 | `INVALID_QUERY` 또는 기존 query code | cursor뿐 아니라 query contract도 다시 계산해야 함 |
+| `ROLLBACK_CURSOR_VERSION_UNSUPPORTED` | `REJECT` | allowlist 밖 version family | `INVALID_CURSOR` | 해당 cursor family는 더 이상 지원되지 않음 |
+| `ROLLBACK_CURSOR_EPOCH_UNKNOWN` | `REJECT` | cursor에 projection epoch/issued-world 정보가 없을 때 | `INVALID_CURSOR` | 안전하게 bridge할 근거가 없음 |
+| `ROLLBACK_MIXED_CURSOR_WORLD` | `REJECT` | old/new/reissued cursor가 같은 chain에 섞였을 때 | `INVALID_CURSOR` | single-world invariant 위반 |
+
+권장 원칙은 두 가지다.
+
+1. public code는 rollout 중 기존 `INVALID_CURSOR`/`INVALID_QUERY`를 유지하고, 운영 분석은 internal reason으로 더 세밀하게 본다.
+2. `REISSUE`와 `REJECT`를 같은 "invalid cursor" bucket에 묻지 말고, rollback window 동안 reason 분포를 따로 본다.
+
+### 5. client restart behavior는 `page N 재시도`가 아니라 `page 1 재시작`으로 고정하는 편이 안전하다
+
+rollback 뒤에는 continuation보다 restart가 정답이다.  
+client contract를 아래처럼 단순하게 두는 편이 사고가 적다.
+
+| 서버 verdict | client 동작 | 자동 재시도 한도 | UX 기본값 |
+|---|---|---|---|
+| `REISSUE` + `ROLLBACK_RESTART_REQUIRED` | 기존 cursor chain을 버리고, 같은 normalized query로 page 1부터 한 번만 silent restart | `rollback_epoch`당 1회 | 가능하면 무소음. metrics에는 `RESTART_EXPECTED` 기록 |
+| `REJECT` + `ROLLBACK_CURSOR_BRIDGE_EXPIRED` | endpoint/fingerprint의 cached cursor를 지우고 fresh query로 다시 시작 | 자동 1회 후 stop | 두 번째 실패면 explicit refresh CTA |
+| `REJECT` + `ROLLBACK_CHAIN_PIN_EXPIRED` | later-page continuation을 중단하고 첫 페이지로 이동 | 자동 0~1회 | "목록이 갱신되어 처음부터 다시 불러옵니다"처럼 경계가 드러나는 문구 |
+| `REJECT` + `ROLLBACK_QUERY_WORLD_MISMATCH` | filters/sort를 유지하되 query를 새 canonical world로 재정규화 | 자동 1회 | invalid filter면 query correction 또는 user-visible prompt |
+
+여기서 중요한 invariant는 다음과 같다.
+
+1. rollback 뒤에는 page depth를 보존하지 않는다. restart는 항상 page 1부터 시작한다.
+2. auto-restart는 `endpoint_id x fingerprint_bucket x rollback_epoch` 기준 한 번만 허용한다.
+3. restart는 query state를 보존할 수 있어도 cursor chain과 pinned source는 보존하지 않는다.
+4. background prefetch와 interactive infinite scroll 모두 같은 reason code를 써야 한다.
+
+### 6. rollback packet은 observability와 같은 vocabulary를 써야 한다
+
+rollback packet이 별도 언어를 쓰면 canary, primary verify, rollback window가 이어지지 않는다.  
+packet에는 최소한 아래 축이 남아야 한다.
+
+| 필드 | 왜 필요한가 |
+|---|---|
+| `requested_cursor_version` | 어떤 family가 rollback에 걸렸는지 본다 |
+| `emitted_cursor_version` | `REISSUE`가 실제로 어느 canonical version으로 유도했는지 본다 |
+| `rollback_epoch` | 서로 다른 rollback 이벤트를 섞지 않는다 |
+| `reason_code` | restart 원인을 분리해서 본다 |
+| `cursor_verdict_pair` | baseline/candidate/rollback verify가 같은 rollup을 쓴다 |
+| `continuity_outcome` | `RESTART_EXPECTED`와 진짜 `PASS`를 구분한다 |
+| `chain_route` | `ROLLBACK_REISSUE`, `ROLLBACK_REJECT`, `PRIMARY_PRIMARY`를 분리한다 |
+
+[Dual-Read Pagination Parity Sample Packet Schema](./dual-read-pagination-parity-sample-packet-schema.md)의 `cursor_verdict_pair`, `continuity_outcome`를 그대로 재사용하면, rollback window에서도 `RESTART_EXPECTED`와 `VERDICT_DRIFT`를 같은 지표 체계에서 읽을 수 있다.
+
+### 7. rollback packet 예시는 작아 보여도 TTL, reason, restart가 같이 있어야 한다
+
+```json
+{
+  "rollback_epoch": "orders.search/2026-04-14T09:30:00+09:00",
+  "canonical_projection_id": "orders_search_v1",
+  "canonical_cursor_versions": [1],
+  "canonical_cursor_ttl_seconds": 86400,
+  "rollback_bridge_ttl_seconds": 900,
+  "pinned_chain_ttl_after_rollback_seconds": 0,
+  "bridge_policy_by_requested_version": [
+    {
+      "requested_cursor_version": 2,
+      "verdict_before_bridge_expiry": "REISSUE",
+      "verdict_after_bridge_expiry": "REJECT",
+      "reason_before_bridge_expiry": "ROLLBACK_RESTART_REQUIRED",
+      "reason_after_bridge_expiry": "ROLLBACK_CURSOR_BRIDGE_EXPIRED",
+      "emitted_cursor_version": 1
+    }
+  ],
+  "client_restart_mode": {
+    "reissue": "SILENT_PAGE1_RESTART_ONCE",
+    "reject": "CLEAR_CURSOR_AND_RESTART_PAGE1_ONCE_THEN_CTA",
+    "max_auto_restarts_per_epoch": 1
+  }
+}
+```
+
+핵심은 세 값이 함께 있어야 한다는 점이다.
+
+- `rollback_bridge_ttl_seconds`
+- `reason_before/after_bridge_expiry`
+- `client_restart_mode`
+
+셋 중 하나라도 빠지면 server와 client가 서로 다른 복구 절차를 수행하게 된다.
+
+### 8. rollback 뒤 pinned chain을 살리고 싶다면 exception packet으로 다뤄야 한다
+
+간혹 "사용자 스크롤이 page 4에 있었으니 같은 chain을 잠깐만 살려 두자"는 요구가 나온다.  
+하지만 이는 일반 rollback packet이 아니라 exception packet에 가깝다.
+
+| 선택지 | 장점 | 단점 | 언제만 허용할까 |
+|---|---|---|---|
+| 기본 `pinned_chain_ttl=0` | 해석이 단순하고 split-brain이 짧다 | 사용자가 page 1로 되돌아갈 수 있다 | 대부분의 rollback 기본값 |
+| 매우 짧은 pinned bridge (`<=60s`) | in-flight page 2 한두 건을 흡수할 수 있다 | continuity 의미가 애매해지고 운영 복잡도가 급증 | explicit incident commander 승인 하의 예외 |
+| pinned chain 장시간 유지 | UX가 부드럽다 | rollback이 사실상 dual-pagination world 운영으로 변질된다 | 권장하지 않음 |
+
+rollback의 목적은 continuity 유지보다 **canonical world를 빠르게 하나로 줄이는 것**이다.  
+그래서 pinned chain 예외는 있어도 기본값이 되어서는 안 된다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: candidate `v2` cursor가 rollback 5분 뒤 다시 들어오는 경우
+
+- 현재 canonical world는 restored `v1`
+- `v2`는 bridge TTL `15m` 안이므로 `REISSUE`
+- response는 `ROLLBACK_RESTART_REQUIRED`와 `v1` cursor를 함께 보냄
+- client는 기존 chain을 버리고 page 1부터 한 번만 restart
+
+이 경우 parity/verification에서는 `continuity_outcome=RESTART_EXPECTED`가 맞다.
+
+### 시나리오 2: same `v2` cursor가 rollback 40분 뒤 다시 들어오는 경우
+
+- bridge TTL이 끝났으므로 `REJECT`
+- internal reason은 `ROLLBACK_CURSOR_BRIDGE_EXPIRED`
+- client는 cached cursor를 지우고 fresh query로 page 1부터 시작
+
+이때 계속 silent retry를 돌리면 loop가 되므로 `rollback_epoch`당 1회만 자동 재시도한다.
+
+### 시나리오 3: strict list가 page 3 continuation 중 rollback을 만나는 경우
+
+- previous chain은 candidate projection에 pinning되어 있었음
+- rollback 뒤에는 same-source continuation을 신뢰할 수 없음
+- `ROLLBACK_CHAIN_PIN_EXPIRED`로 `REJECT`
+- client는 page 3 유지 대신 page 1 restart 또는 explicit refresh CTA
+
+즉 rollback은 later-page continuity보다 single-world recovery를 우선한다.
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| rollback 즉시 전부 `REJECT` | 해석이 가장 단순하다 | in-flight client restart 충격이 크다 | client가 쉽게 refresh 가능한 내부 도구 |
+| 짧은 `REISSUE` bridge 후 `REJECT` | cache에 남은 cursor를 안전하게 흡수한다 | bridge TTL과 reason code 관리가 필요하다 | 일반적인 public paginated API 기본값 |
+| rollback 뒤에도 pinned continuation 허용 | UX 충격이 작다 | dual world가 길어지고 원인 추적이 어렵다 | 매우 제한된 incident 예외 |
+
+판단 기준은 다음과 같다.
+
+- rollback bridge TTL은 cursor 발급 시각이 아니라 rollback 시각에 묶는다
+- `REISSUE`는 compatibility 성공이 아니라 restart-based recovery라는 뜻으로 기록한다
+- reason code는 client restart 동작을 설명할 수 있어야 한다
+- rollback 뒤 later-page continuation보다 page 1 restart를 기본 계약으로 둔다

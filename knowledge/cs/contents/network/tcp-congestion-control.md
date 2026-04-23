@@ -9,6 +9,10 @@
 > - [TCP 와 UDP](./README.md#tcp-와-udp)
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [TCP Zero Window, Persist Probe, Receiver Backpressure](./tcp-zero-window-persist-probe-receiver-backpressure.md)
+> - [BBR vs CUBIC, Congestion Intuition](./bbr-vs-cubic-congestion-intuition.md)
+
+retrieval-anchor-keywords: TCP congestion control, cwnd, rwnd, slow start, AIMD, RTT, retransmission, queue buildup, bandwidth delay product, sender rate
 
 ---
 
@@ -23,6 +27,17 @@ TCP는 "안 끊기게 보내는 것"만이 아니라, **네트워크를 과하�
 - 재전송이 늘면 더 막힌다
 
 이 악순환을 끊는 게 혼잡 제어다.
+
+### Retrieval Anchors
+
+- `TCP congestion control`
+- `cwnd`
+- `rwnd`
+- `slow start`
+- `AIMD`
+- `RTT`
+- `retransmission`
+- `queue buildup`
 
 ---
 

@@ -10,6 +10,8 @@
 > - [RFC vs ADR Decision Flow](./rfc-vs-adr-decision-flow.md)
 > - [Service Ownership and Catalog Boundaries](./service-ownership-catalog-boundaries.md)
 > - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
+> - [Deprecation Enforcement, Tombstone, and Sunset Guardrails](./deprecation-enforcement-tombstone-guardrails.md)
+> - [Tombstone Response Template and Consumer Guidance](./tombstone-response-template-and-consumer-guidance.md)
 
 > retrieval-anchor-keywords:
 > - deprecation communication

@@ -10,6 +10,7 @@
 > - [Event Schema Versioning and Compatibility](./event-schema-versioning-compatibility.md)
 > - [API Lifecycle Stage Model](./api-lifecycle-stage-model.md)
 > - [Service Ownership and Catalog Boundaries](./service-ownership-catalog-boundaries.md)
+> - [Contract Drift Detection and Rollout Governance](./contract-drift-detection-rollout-governance.md)
 
 > retrieval-anchor-keywords:
 > - contract registry
@@ -20,6 +21,8 @@
 > - contract state
 > - change history
 > - governance workflow
+> - hidden consumer
+> - supported version range
 
 ## 핵심 개념
 

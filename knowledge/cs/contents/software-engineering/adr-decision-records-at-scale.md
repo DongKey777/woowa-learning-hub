@@ -10,6 +10,7 @@
 > - [Technical Debt Refactoring Timing](./technical-debt-refactoring-timing.md)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [API Versioning, Contract Testing, Anti-Corruption Layer](./api-versioning-contract-testing-anti-corruption-layer.md)
+> - [Decision Revalidation and Supersession Lifecycle](./decision-revalidation-supersession-lifecycle.md)
 
 > retrieval-anchor-keywords:
 > - ADR
@@ -108,6 +109,7 @@ ADR은 토론을 줄여 주지만, 검토를 없애지는 못한다.
 - 재검토 메모
 
 기록을 보존하되, 현재 선택이 무엇인지 분명히 해야 한다.
+이 문맥은 [Decision Revalidation and Supersession Lifecycle](./decision-revalidation-supersession-lifecycle.md)과 직접 연결된다.
 
 ---
 

@@ -1,15 +1,36 @@
 # Software Engineering (소프트웨어 공학)
 
+**난이도: 🔴 Advanced**
+
 > 작성자 : [장주섭](https://github.com/wntjq68), [이세명](https://github.com/3people)
 
 <details>
 <summary>Table of Contents</summary>
 
+- [빠른 탐색](#빠른-탐색)
+- [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
+- [레거시 primer](#레거시-primer)
+- [최신 설계 / 거버넌스 catalog](#최신-설계--거버넌스-catalog)
+- [보조 primer](#보조-primer)
 - [명령형 프로그래밍 vs 선언형 프로그래밍](#명령형-프로그래밍-vs-선언형-프로그래밍)
 - [함수형 프로그래밍](#함수형-프로그래밍)
 - [객체지향 프로그래밍](#객체지향-프로그래밍)
 - [SOLID Failure Patterns](#solid-failure-patterns)
+- [Architecture and Layering Fundamentals](#architecture-and-layering-fundamentals)
+- [Ports and Adapters Beginner Primer](#ports-and-adapters-beginner-primer)
+- [Message-Driven Adapter Example](#message-driven-adapter-example)
+- [Webhook and Broker Boundary Primer](#webhook-and-broker-boundary-primer)
+- [Hexagonal Testing Seams Primer](#hexagonal-testing-seams-primer)
+- [Inbound Adapter Test Slices Primer](#inbound-adapter-test-slices-primer)
+- [Inbound Adapter Testing Matrix](#inbound-adapter-testing-matrix)
+- [Outbox and Message Adapter Test Matrix](#outbox-and-message-adapter-test-matrix)
 - [Repository, DAO, Entity](#repository-dao-entity)
+- [Persistence Adapter Mapping Checklist](#persistence-adapter-mapping-checklist)
+- [Repository Fake Design Guide](#repository-fake-design-guide)
+- [Aggregate Persistence Mapping Pitfalls](#aggregate-persistence-mapping-pitfalls)
+- [Persistence Model Leakage Anti-Patterns](#persistence-model-leakage-anti-patterns)
+- [JPA Lazy Loading and N+1 Boundary Smells](#jpa-lazy-loading-and-n1-boundary-smells)
+- [Query Model Separation for Read-Heavy APIs](#query-model-separation-for-read-heavy-apis)
 - [API 설계와 예외 처리](#api-설계와-예외-처리)
 - [테스트 전략과 테스트 더블](#테스트-전략과-테스트-더블)
 - [캐시, 메시징, 관측성](#캐시-메시징-관측성)
@@ -26,15 +47,181 @@
 - [API Versioning, Contract Testing, Anti-Corruption Layer](#api-versioning-contract-testing-anti-corruption-layer)
 - [Anti-Corruption Layer Integration Patterns](#anti-corruption-layer-integration-patterns)
 - [API Contract Testing, Consumer-Driven](#api-contract-testing-consumer-driven)
+- [Contract Drift Detection and Rollout Governance](#contract-drift-detection-and-rollout-governance)
 - [Modular Monolith Boundary Enforcement](#modular-monolith-boundary-enforcement)
+- [Module API DTO Patterns](#module-api-dto-patterns)
+- [ArchUnit Brownfield Rollout Playbook](#archunit-brownfield-rollout-playbook)
+- [Shared Module Guardrails](#shared-module-guardrails)
 - [Feature Flag Cleanup and Expiration](#feature-flag-cleanup-and-expiration)
 - [Idempotency, Retry, Consistency Boundaries](#idempotency-retry-consistency-boundaries)
 - [Branch by Abstraction, Feature Flag, Strangler Fig](#branch-by-abstraction-feature-flag-strangler-fig)
+- [Technology Radar and Adoption Governance](#technology-radar-and-adoption-governance)
+- [Build vs Buy, Exit Cost, Integration Governance](#build-vs-buy-exit-cost-integration-governance)
+- [Configuration Governance and Runtime Safety](#configuration-governance-and-runtime-safety)
+- [Service Template Trade-offs](#service-template-trade-offs)
+- [Service Bootstrap Governance](#service-bootstrap-governance)
+- [Lead Time, Change Failure, and Recovery Loop](#lead-time-change-failure-and-recovery-loop)
+- [Data Migration Rehearsal, Reconciliation, Cutover](#data-migration-rehearsal-reconciliation-cutover)
+- [Team Cognitive Load and Boundary Design](#team-cognitive-load-and-boundary-design)
+- [Non-Functional Requirements as Budgets](#non-functional-requirements-as-budgets)
+- [Prototype, Spike, and Productionization Boundaries](#prototype-spike-and-productionization-boundaries)
+- [Migration Wave Governance and Decision Rights](#migration-wave-governance-and-decision-rights)
+- [Cross-Service NFR Budget Negotiation](#cross-service-nfr-budget-negotiation)
+- [Decision Revalidation and Supersession Lifecycle](#decision-revalidation-and-supersession-lifecycle)
+- [Operational Readiness Drills and Change Safety](#operational-readiness-drills-and-change-safety)
+- [Architectural Governance Operating Model](#architectural-governance-operating-model)
+- [Migration Carrying Cost and Cost of Delay](#migration-carrying-cost-and-cost-of-delay)
+- [Platform Control Plane and Delegation Boundaries](#platform-control-plane-and-delegation-boundaries)
+- [Platform Scorecards](#platform-scorecards)
+- [Service Portfolio Lifecycle Governance](#service-portfolio-lifecycle-governance)
+- [Architecture Council and Domain Stewardship Cadence](#architecture-council-and-domain-stewardship-cadence)
+- [Migration Stop-Loss and Scope Reduction Governance](#migration-stop-loss-and-scope-reduction-governance)
+- [Platform Policy Ownership and Override Governance](#platform-policy-ownership-and-override-governance)
+- [Service Split, Merge, and Absorb Evolution Framework](#service-split-merge-and-absorb-evolution-framework)
+- [Team APIs and Interaction Modes in Architecture](#team-apis-and-interaction-modes-in-architecture)
+- [Change Ownership Handoff Boundaries](#change-ownership-handoff-boundaries)
+- [Service Criticality Tiering and Control Intensity](#service-criticality-tiering-and-control-intensity)
+- [Service Deprecation and Sunset Lifecycle](#service-deprecation-and-sunset-lifecycle)
+- [Backward Compatibility Waivers and Consumer Exception Governance](#backward-compatibility-waivers-and-consumer-exception-governance)
+- [Consumer Exception Registry Templates](#consumer-exception-registry-templates)
+- [Consumer Exception Operating Model](#consumer-exception-operating-model)
+- [Deprecation Enforcement, Tombstone, and Sunset Guardrails](#deprecation-enforcement-tombstone-and-sunset-guardrails)
+- [Rollout Guardrail Profiles, Auto-Pause, and Manual Resume](#rollout-guardrail-profiles-auto-pause-and-manual-resume)
+- [Incident Feedback to Policy and Ownership Closure](#incident-feedback-to-policy-and-ownership-closure)
+- [Policy as Code Adoption Order and Sequencing](#policy-as-code-adoption-order-and-sequencing)
+- [Policy as Code Rollout and Adoption Stages](#policy-as-code-rollout-and-adoption-stages)
+- [Override Burn-Down and Exemption Debt](#override-burn-down-and-exemption-debt)
+- [Support SLA and Escalation Contracts](#support-sla-and-escalation-contracts)
+- [Shadow Process Detection Signals](#shadow-process-detection-signals)
+- [Shadow Process Catalog and Retirement](#shadow-process-catalog-and-retirement)
+- [Shadow Process Catalog Entry Schema](#shadow-process-catalog-entry-schema)
+- [Shadow Review Packet Template](#shadow-review-packet-template)
+- [Shadow Packet Automation Mapping](#shadow-packet-automation-mapping)
+- [Shadow Review Outcome Template](#shadow-review-outcome-template)
+- [Shadow Forum Escalation Rules](#shadow-forum-escalation-rules)
+- [Shadow Catalog Lifecycle States](#shadow-catalog-lifecycle-states)
+- [Shadow Catalog Review Cadence Profiles](#shadow-catalog-review-cadence-profiles)
+- [Shadow Lifecycle Scorecard Metrics](#shadow-lifecycle-scorecard-metrics)
+- [Temporary Hold Exit Criteria](#temporary-hold-exit-criteria)
+- [Manual Path Ratio Instrumentation](#manual-path-ratio-instrumentation)
+- [Mirror Lag SLA Calibration](#mirror-lag-sla-calibration)
+- [Shadow Candidate Promotion Thresholds](#shadow-candidate-promotion-thresholds)
+- [Threshold Override Governance](#threshold-override-governance)
+- [Shadow Promotion Snapshot Schema Fields](#shadow-promotion-snapshot-schema-fields)
+- [Break-Glass Path Segmentation](#break-glass-path-segmentation)
+- [Emergency Misclassification Signals](#emergency-misclassification-signals)
+- [Break-Glass Reentry Governance](#break-glass-reentry-governance)
+- [Shadow Retirement Proof Metrics](#shadow-retirement-proof-metrics)
+- [Shadow Retirement Scorecard Schema](#shadow-retirement-scorecard-schema)
+- [Shadow Catalog Reopen and Successor Rules](#shadow-catalog-reopen-and-successor-rules)
+- [Tombstone Response Template and Consumer Guidance](#tombstone-response-template-and-consumer-guidance)
+- [Policy Candidate Backlog Scoring and Priority](#policy-candidate-backlog-scoring-and-priority)
+- [Consumer Exception State Machine and Review Cadence](#consumer-exception-state-machine-and-review-cadence)
+- [Override Burn-Down Review Cadence and Scorecards](#override-burn-down-review-cadence-and-scorecards)
+- [Support Operating Models: Self-Service, Office Hours, On-Call](#support-operating-models-self-service-office-hours-on-call)
+- [Shadow Process Officialization and Absorption Criteria](#shadow-process-officialization-and-absorption-criteria)
+- [Consumer Exception Registry Quality and Automation](#consumer-exception-registry-quality-and-automation)
 - [애자일 개발 프로세스](#애자일-개발-프로세스)
 
 </details>
 
 ---
+
+> retrieval-anchor-keywords: software engineering readme, architecture navigator, governance catalog, ddd boundary, modular monolith, modular monolith starter guide, package rule, public module api, module api dto patterns, command query result dto, module boundary dto, safe module contract, aggregate boundary leak, internal package, architecture test starter, ArchUnit starter, ArchUnit brownfield rollout, fail-new-only gate, legacy violation baseline, architecture test allowlist, cycle detection, anti-corruption layer, rollout safety, nfr budget, production readiness, ownership model, refactoring timing, contract testing, shadow catalog schema, shadow review packet template, shadow packet automation mapping, catalog entry to packet row, shadow review outcome template, shadow decision record symmetry, shadow forum agenda, shadow forum escalation rules, local stewardship vs architecture council, blocked shadow escalation, shadow catalog state machine, shadow catalog review cadence profiles, shadow lifecycle scorecard metrics, lifecycle_state aging dashboard, blocked duration dashboard, hold expiry dashboard, retirement verification health, shadow escalation sla, verification pending metric freshness, temporary hold exit criteria, hold extension governance, manual path ratio instrumentation, mirror lag SLA calibration, manual breach classification, shadow candidate promotion thresholds, threshold override governance, workflow specific threshold override, threshold override expiry, threshold override approver matrix, shadow promotion snapshot schema fields, promotion threshold summary, break-glass path segmentation, emergency misclassification signals, incidentless break-glass, break-glass to shadow reclassification, break-glass to override backlog, overdue reentry debt, break-glass reentry governance, reentry slo, emergency mode exit governance, shadow retirement denominator split, official fallback visibility, shadow retirement proof metrics, shadow retirement scorecard schema, shadow catalog reopen rules, successor lineage preservation, lineage adjacency rules, verification pending rollback, verification window schema, verdict record schema, retirement exit signals, exception burndown, audit log coverage, platform scorecards, platform scorecard panel template, normal path health panel, break-glass visibility panel, governance spillover panel, architecture layering fundamentals, layered architecture beginner, clean architecture beginner, ports and adapters beginner, hexagonal architecture beginner, inbound outbound port, hexagonal folder layout, message-driven adapter example, http controller vs message consumer vs scheduled job, scheduled job inbound adapter, webhook vs broker consumer, webhook inbound adapter, webhook retry semantics, webhook acknowledgment semantics, http callback vs message broker consumer, broker ack nack retry, inbound adapter delivery semantics, inbound adapter test slice, controller slice test, message handler slice test, slice vs full integration test, inbound adapter testing matrix, controller consumer scheduler test matrix, scheduled job lock misfire test, scheduled job integration test, consumer ack retry dlq test, outbox test matrix, inbox dedup test, message adapter contract test, outbox unit integration contract test, hexagonal testing seam, use case unit test, fake outbound port, adapter integration test, repository entity separation, persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist, aggregate persistence mapping pitfalls, aggregate root mapping beginner, bidirectional association pitfall, owning side mappedBy beginner, cascade type all smell, orphanRemoval smell, private child lifecycle, persistence model leakage, jpa entity leakage, entity to dto separation, orm leakage anti-pattern, jpa lazy loading, n+1 query smell, fetch join boundary, lazy initialization exception, lazy loading api serialization, fetch join vs projection, osiv lazy loading, query model separation, read-heavy api, cqrs lite, dedicated query repository, list detail response model, software engineering cross-category bridge, hexagonal bridge, message-driven adapter bridge, persistence bridge, repository boundary bridge, job queue handoff, control plane vs layered architecture
+
+## 빠른 탐색
+
+이 `README`는 프로그래밍 패러다임 primer와 아키텍처/거버넌스 deep dive를 함께 모아 둔 **navigator 문서**다.
+
+- 🟢 Beginner 입문 문서 (Junior 로드맵 4단계):
+  - [SOLID 원칙 기초](./solid-principles-basics.md)
+  - [Service 계층 기초](./service-layer-basics.md)
+  - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+  - [예외 처리 기초](./exception-handling-basics.md)
+  - [테스트 전략 기초](./test-strategy-basics.md)
+
+- 기초 survey부터 읽고 싶다면:
+  - `명령형 프로그래밍 vs 선언형 프로그래밍`
+  - `함수형 프로그래밍`
+  - `객체지향 프로그래밍`
+  - `Architecture and Layering Fundamentals`
+  - `Ports and Adapters Beginner Primer`
+  - `Message-Driven Adapter Example`
+  - `Webhook and Broker Boundary Primer`
+  - `Hexagonal Testing Seams Primer`
+  - `Inbound Adapter Test Slices Primer`
+  - `Inbound Adapter Testing Matrix`
+  - `Outbox and Message Adapter Test Matrix`
+  - `Repository, DAO, Entity`
+  - `Persistence Adapter Mapping Checklist`
+  - `Repository Fake Design Guide`
+  - `Aggregate Persistence Mapping Pitfalls`
+  - `Persistence Model Leakage Anti-Patterns`
+  - `JPA Lazy Loading and N+1 Boundary Smells`
+  - `Query Model Separation for Read-Heavy APIs`
+  - `API 설계와 예외 처리`
+- 설계/경계 deep dive로 바로 들어가려면:
+  - `DDD, Hexagonal Architecture, Consistency Boundary`
+  - `DDD Bounded Context Failure Patterns`
+  - `Clean Architecture vs Layered Architecture, Modular Monolith`
+  - `Modular Monolith Boundary Enforcement`
+  - `Module API DTO Patterns`
+  - `ArchUnit Brownfield Rollout Playbook`
+  - `Shared Module Guardrails`
+  - `Domain Event, Outbox, Inbox`
+  - `Outbox and Message Adapter Test Matrix`
+  - `Idempotency, Retry, Consistency Boundaries`
+  - `API Versioning, Contract Testing, Anti-Corruption Layer`
+  - `Anti-Corruption Layer Integration Patterns`
+- 거버넌스/운영 모델 문서로 바로 들어가려면:
+  - `Technology Radar and Adoption Governance`
+  - `Build vs Buy, Exit Cost, Integration Governance`
+  - `Architectural Governance Operating Model`
+  - `Platform Scorecards`
+  - `Consumer Exception Operating Model`
+  - `Service Deprecation and Sunset Lifecycle`
+  - `Shadow Process Detection Signals`
+  - `Shadow Process Catalog and Retirement`
+  - `Shadow Process Catalog Entry Schema`
+  - `Shadow Review Packet Template`
+  - `Shadow Review Outcome Template`
+  - `Shadow Forum Escalation Rules`
+  - `Shadow Catalog Lifecycle States`
+  - `Shadow Catalog Review Cadence Profiles`
+  - `Temporary Hold Exit Criteria`
+  - `Manual Path Ratio Instrumentation`
+  - `Mirror Lag SLA Calibration`
+  - `Shadow Candidate Promotion Thresholds`
+  - `Threshold Override Governance`
+  - `Shadow Promotion Snapshot Schema Fields`
+  - `Emergency Misclassification Signals`
+  - `Break-Glass Reentry Governance`
+  - `Shadow Retirement Proof Metrics`
+  - `Shadow Retirement Scorecard Schema`
+  - `Shadow Catalog Reopen and Successor Rules`
+  - `Shadow Process Officialization and Absorption Criteria`
+  - `Override Burn-Down and Exemption Debt`
+  - `Override Burn-Down Review Cadence and Scorecards`
+  - `Service Portfolio Lifecycle Governance`
+  - `Operational Readiness Drills and Change Safety`
+  - `Change Ownership Handoff Boundaries`
+  - `Support SLA and Escalation Contracts`
+  - `Support Operating Models: Self-Service, Office Hours, On-Call`
+- cross-category bridge로 확장하려면:
+  - [연결해서 보면 좋은 문서 (cross-category bridge)](#연결해서-보면-좋은-문서-cross-category-bridge)
+- 보조 primer는 맨 아래 `애자일 개발 프로세스` 구간만 별도로 보면 된다.
+
+## 연결해서 보면 좋은 문서 (cross-category bridge)
+
+빠른 탐색에서는 software-engineering 내부 primer entrypoint만 남기고, adjacent-category handoff는 이 섹션에만 모아 둔다.
+
+- 구조 primer를 디자인 패턴 언어와 runtime plane으로 이어 읽으려면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md), [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md) 다음에 [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md), [Design Pattern: Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](../design-pattern/hexagonal-ports-pattern-language.md), [System Design: Control Plane / Data Plane Separation 설계](../system-design/control-plane-data-plane-separation-design.md)를 같이 보면 `layer`, `port`, `plane`이 서로 다른 질문에 답한다는 감각이 빨리 잡힌다.
+- 채널별 inbound adapter를 command lifecycle과 테스트 경계까지 함께 잡으려면 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md), [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md), [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md) 다음에 [Design Pattern: Command Handler Pattern](../design-pattern/command-handler-pattern.md), [Design Pattern: Process Manager Deadlines and Timeouts](../design-pattern/process-manager-deadlines-timeouts.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md), [System Design: Workflow Orchestration + Saga 설계](../system-design/workflow-orchestration-saga-design.md)를 이어서 본다.
+- persistence primer를 read-model boundary와 migration/cutover handoff로 확장하려면 [Repository, DAO, Entity](./repository-dao-entity.md), [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md), [Repository Fake Design Guide](./repository-fake-design-guide.md), [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) 다음에 [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md), [Design Pattern: Anti-Corruption Adapter Layering](../design-pattern/anti-corruption-adapter-layering.md), [System Design: Change Data Capture / Outbox Relay 설계](../system-design/change-data-capture-outbox-relay-design.md), [System Design: Zero-Downtime Schema Migration Platform 설계](../system-design/zero-downtime-schema-migration-platform-design.md)를 붙이면 aggregate 경계와 relay/cutover 경계가 한 줄로 연결된다.
+
+## 레거시 primer
+
+아래 구간은 소프트웨어 공학 입문과 패러다임 복습용 primer다.
 
 ## 프로그래밍 패러다임
 
@@ -176,15 +363,103 @@
 
 5. DIP(의존성 역전의 원칙 : Dependency Inversion Principle) : 자주 변화하는 구체적인 클래스 보다는 변화하기 어려운 인터페이스나 상위(추상) 클래스와 관계를 맺으라는 원칙
 
+## 최신 설계 / 거버넌스 catalog
+
+아래 구간은 최신 설계 선택지, 경계 설계, rollout, governance 문서를 모아 둔 catalog다.
+
 ## SOLID Failure Patterns
 
 - [SOLID Failure Patterns](./solid-failure-patterns.md)
 
 > 원칙을 외우는 대신, 각 원칙이 무너질 때 어떤 실패가 생기는지와 과하게 적용했을 때 어떤 비용이 생기는지 정리한 문서
 
+## Architecture and Layering Fundamentals
+
+- [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
+
+> layered / clean / modular monolith / DDD boundary / repository-entity separation을 한 번에 연결해 주는 입문 브리지 문서
+
+## Ports and Adapters Beginner Primer
+
+- [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+
+> hexagonal ports/adapters를 입문자 눈높이에서 풀고, inbound/outbound port와 간단한 폴더 구조를 clean architecture와 연결해 설명하는 후속 primer
+
+## Message-Driven Adapter Example
+
+- [Message-Driven Adapter Example](./message-driven-adapter-example.md)
+
+> HTTP controller, message consumer, scheduled job를 같은 hexagonal 모델 안의 inbound adapter로 비교하고, 채널별 차이는 응답/재시도/배치 처리 같은 adapter 관심사에 있다는 점을 짧게 정리한 primer
+
+## Webhook and Broker Boundary Primer
+
+- [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md)
+
+> webhook endpoint와 broker consumer를 같은 inbound adapter 축에 두고, 차이는 transport 종류보다 retry 주도권, idempotency key, acknowledgment semantics에서 갈린다는 점을 정리한 follow-up primer
+
+## Hexagonal Testing Seams Primer
+
+- [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+
+> hexagonal 경계를 테스트 seam으로 읽어, 유스케이스 unit test는 fake outbound port로 빠르게 검증하고 adapter integration test는 언제 필요한지 분리해 설명하는 후속 primer
+
+## Inbound Adapter Test Slices Primer
+
+- [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
+
+> controller/message handler 같은 inbound adapter test에서 port 경계까지만 보는 slice test와 실제 transaction, broker, security wiring까지 보는 full integration test를 언제 나눌지 설명하는 후속 primer
+
+## Inbound Adapter Testing Matrix
+
+- [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)
+
+> controller, message consumer, scheduled job를 같은 hexagonal inbound adapter로 두되 controller는 slice-heavy, consumer는 integration/contract-heavy, scheduler는 clock/lock-heavy portfolio가 필요하다는 follow-up matrix
+
+## Outbox and Message Adapter Test Matrix
+
+- [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
+
+> outbox/inbox와 message-driven adapter를 한 흐름으로 놓고, unit test는 결정 로직, integration test는 transaction/broker/dedup wiring, contract test는 event schema와 consumer 약속을 맡도록 분리하는 실전 매트릭스
+
 ## Repository, DAO, Entity
 
 - [Repository, DAO, Entity](./repository-dao-entity.md)
+
+## Persistence Adapter Mapping Checklist
+
+- [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+
+> repository port는 도메인 언어를 유지하고, JPA entity 매핑과 fetch/cascade 같은 ORM 세부는 persistence adapter 안에 묶어 두는 짧은 실전 체크리스트
+
+## Repository Fake Design Guide
+
+- [Repository Fake Design Guide](./repository-fake-design-guide.md)
+
+> repository fake를 in-memory JPA clone이 아니라 outbound port semantics를 재현하는 test adapter로 설계하고, `save()`/중복/조회 계약만 남겨 use case test로 persistence 세부가 새지 않게 하는 가이드
+
+## Aggregate Persistence Mapping Pitfalls
+
+- [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
+
+> 양방향 연관관계, `cascade`, `orphanRemoval`을 aggregate 규칙으로 오해할 때 생기는 초심자용 mapping 함정과 도메인 누수 신호를 정리한 primer
+
+## Persistence Model Leakage Anti-Patterns
+
+- [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
+
+> JPA `@Entity`가 API 응답, 애플리케이션 흐름, 도메인 규칙까지 침범할 때 생기는 leakage anti-pattern과 before/after 리팩토링 예시를 beginner 관점에서 정리한 문서
+
+## JPA Lazy Loading and N+1 Boundary Smells
+
+- [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
+
+> lazy loading 자체보다 엔티티가 API 경계를 넘어갈 때 왜 `LazyInitializationException`, 숨은 N+1, fetch join 남발이 한 묶음으로 나타나는지 beginner 예시로 설명한 primer
+
+## Query Model Separation for Read-Heavy APIs
+
+- [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+
+> 목록/상세 화면 때문에 write entity와 aggregate를 계속 늘리는 대신, 같은 DB 위에서도 query repository와 response model을 분리하는 CQRS-lite 도입 시점을 정리한 beginner primer
 
 ## API 설계와 예외 처리
 
@@ -250,9 +525,34 @@
 
 - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 
+## Contract Drift Detection and Rollout Governance
+
+- [Contract Drift Detection and Rollout Governance](./contract-drift-detection-rollout-governance.md)
+
 ## Modular Monolith Boundary Enforcement
 
 - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
+
+> `api` 패키지 공개 범위, `internal` 은닉 규칙, 가벼운 ArchUnit 테스트로 모듈 경계를 실전에서 강제하는 starter guide
+
+## Module API DTO Patterns
+
+- [Module API DTO Patterns](./module-api-dto-patterns.md)
+
+> 모듈 경계에서 command/query/result DTO와 domain object를 어떻게 구분할지, 그리고 안전한 계약과 위험한 계약이 무엇인지 주문-결제 예시로 설명하는 practical guide
+
+## ArchUnit Brownfield Rollout Playbook
+
+- [ArchUnit Brownfield Rollout Playbook](./archunit-brownfield-rollout-playbook.md)
+
+> legacy 위반이 이미 많은 모놀리스에서 ArchUnit을 `baseline freeze -> fail-new-only -> ratchet -> hard fail` 순서로 도입하고 allowlist/예외 부채를 관리하는 playbook
+
+
+## Shared Module Guardrails
+
+- [Shared Module Guardrails](./shared-module-guardrails.md)
+
+> `shared/common`을 기술적 공통 관심사와 명시적 shared kernel로만 좁히고, ownership, 입장 규칙, architecture lint로 도메인 덤프 공간을 막는 focused guide
 
 ## Feature Flag Cleanup and Expiration
 
@@ -266,13 +566,359 @@
 
 - [Branch by Abstraction, Feature Flag, Strangler Fig](./branch-by-abstraction-vs-feature-flag-vs-strangler.md)
 
+## Technology Radar and Adoption Governance
+
+- [Technology Radar and Adoption Governance](./technology-radar-adoption-governance.md)
+
+## Build vs Buy, Exit Cost, Integration Governance
+
+- [Build vs Buy, Exit Cost, Integration Governance](./build-vs-buy-exit-cost-governance.md)
+
+## Configuration Governance and Runtime Safety
+
+- [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
+
+## Service Template Trade-offs
+
+- [Service Template Trade-offs](./service-template-tradeoffs.md)
+
+> scaffold default, escape hatch, template drift를 어떤 운영 기록과 검증 지점에 같이 꽂아야 하는지 정리한 문서
+
+## Service Bootstrap Governance
+
+- [Service Bootstrap Governance](./service-bootstrap-governance.md)
+
+> bootstrap command, catalog registration, PRR gate까지 초기 생성 시점의 삽입 지점을 묶어 보는 문서
+
+## Lead Time, Change Failure, and Recovery Loop
+
+- [Lead Time, Change Failure, and Recovery Loop](./lead-time-change-failure-recovery-loop.md)
+
+## Data Migration Rehearsal, Reconciliation, Cutover
+
+- [Data Migration Rehearsal, Reconciliation, Cutover](./data-migration-rehearsal-reconciliation-cutover.md)
+
+## Team Cognitive Load and Boundary Design
+
+- [Team Cognitive Load and Boundary Design](./team-cognitive-load-boundary-design.md)
+
+## Non-Functional Requirements as Budgets
+
+- [Non-Functional Requirements as Budgets](./non-functional-requirements-budgeting.md)
+
+## Prototype, Spike, and Productionization Boundaries
+
+- [Prototype, Spike, and Productionization Boundaries](./prototype-spike-productionization-boundaries.md)
+
+## Migration Wave Governance and Decision Rights
+
+- [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md)
+
+## Cross-Service NFR Budget Negotiation
+
+- [Cross-Service NFR Budget Negotiation](./cross-service-nfr-budget-negotiation.md)
+
+## Decision Revalidation and Supersession Lifecycle
+
+- [Decision Revalidation and Supersession Lifecycle](./decision-revalidation-supersession-lifecycle.md)
+
+## Operational Readiness Drills and Change Safety
+
+- [Operational Readiness Drills and Change Safety](./operational-readiness-drills-and-change-safety.md)
+
+## Architectural Governance Operating Model
+
+- [Architectural Governance Operating Model](./architectural-governance-operating-model.md)
+
+## Migration Carrying Cost and Cost of Delay
+
+- [Migration Carrying Cost and Cost of Delay](./migration-carrying-cost-cost-of-delay.md)
+
+## Platform Control Plane and Delegation Boundaries
+
+- [Platform Control Plane and Delegation Boundaries](./platform-control-plane-delegation-boundaries.md)
+
+## Platform Scorecards
+
+- [Platform Scorecards](./platform-scorecards.md)
+
+> platform 채택률만 보는 표가 아니라 `normal_path_health`, `break_glass_visibility`, `governance_spillover`를 나란히 둬 panel별 owner와 drilldown을 분리하는 문서
+
+## Service Portfolio Lifecycle Governance
+
+- [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
+
+## Architecture Council and Domain Stewardship Cadence
+
+- [Architecture Council and Domain Stewardship Cadence](./architecture-council-domain-stewardship-cadence.md)
+
+## Migration Stop-Loss and Scope Reduction Governance
+
+- [Migration Stop-Loss and Scope Reduction Governance](./migration-stop-loss-scope-reduction-governance.md)
+
+## Platform Policy Ownership and Override Governance
+
+- [Platform Policy Ownership and Override Governance](./platform-policy-ownership-override-governance.md)
+
+## Service Split, Merge, and Absorb Evolution Framework
+
+- [Service Split, Merge, and Absorb Evolution Framework](./service-split-merge-absorb-evolution-framework.md)
+
+## Team APIs and Interaction Modes in Architecture
+
+- [Team APIs and Interaction Modes in Architecture](./team-apis-interaction-modes-architecture.md)
+
+## Change Ownership Handoff Boundaries
+
+- [Change Ownership Handoff Boundaries](./change-ownership-handoff-boundaries.md)
+
+> ownership 이전을 코드 전달이 아니라 support/on-call/runbook과 함께 넘기는 staged handoff와 anti-pattern 중심으로 정리한 문서
+
+## Service Criticality Tiering and Control Intensity
+
+- [Service Criticality Tiering and Control Intensity](./service-criticality-tiering-control-intensity.md)
+
+## Service Deprecation and Sunset Lifecycle
+
+- [Service Deprecation and Sunset Lifecycle](./service-deprecation-sunset-lifecycle.md)
+
+> deprecation을 단순 삭제가 아니라 consumer migration과 sunset exception의 retire-vs-absorb 판정까지 포함한 lifecycle로 정리한 문서
+
+## Backward Compatibility Waivers and Consumer Exception Governance
+
+- [Backward Compatibility Waivers and Consumer Exception Governance](./backward-compatibility-waiver-consumer-exception-governance.md)
+
+> compatibility waiver를 expiry/compensating control뿐 아니라 repeated waiver side path의 retire-vs-absorb 판정과 연결한 문서
+
+## Consumer Exception Registry Templates
+
+- [Consumer Exception Registry Templates](./consumer-exception-registry-templates.md)
+
+> registry row, waiver request, review packet, support guidance에 같은 필드를 재사용하는 template insertion point를 정리한 문서
+
+## Consumer Exception Operating Model
+
+- [Consumer Exception Operating Model](./consumer-exception-operating-model.md)
+
+> consumer exception을 registry, state machine, review cadence, automation quality gate로 묶고, repeated exception path를 retire할지 absorb할지 같은 언어로 판정하게 만드는 통합 operating model 문서
+
+## Deprecation Enforcement, Tombstone, and Sunset Guardrails
+
+- [Deprecation Enforcement, Tombstone, and Sunset Guardrails](./deprecation-enforcement-tombstone-guardrails.md)
+
+> warning, allowlist, tombstone guardrail을 waiver path와 묶고 sunset bypass를 retire할지 structured data를 absorb할지 구분하는 enforcement 문서
+
+## Rollout Guardrail Profiles, Auto-Pause, and Manual Resume
+
+- [Rollout Guardrail Profiles, Auto-Pause, and Manual Resume](./rollout-guardrail-profiles-auto-pause-resume.md)
+
+## Incident Feedback to Policy and Ownership Closure
+
+- [Incident Feedback to Policy and Ownership Closure](./incident-feedback-policy-ownership-closure.md)
+
+## Policy as Code Adoption Order and Sequencing
+
+- [Policy as Code Adoption Order and Sequencing](./policy-as-code-adoption-order-and-sequencing.md)
+
+> policy-as-code를 어떤 순서로 넓혀야 하는지, low-friction baseline에서 lifecycle and business guardrail로 넘어가는 adoption wave를 정리한 문서
+
+## Policy as Code Rollout and Adoption Stages
+
+- [Policy as Code Rollout and Adoption Stages](./policy-as-code-rollout-adoption-stages.md)
+
+## Override Burn-Down and Exemption Debt
+
+- [Override Burn-Down and Exemption Debt](./override-burn-down-and-exemption-debt.md)
+
+> override debt를 age와 repeated owner만이 아니라 exit condition, policy scope drift, governance health 관점으로 읽는 문서
+
+## Support SLA and Escalation Contracts
+
+- [Support SLA and Escalation Contracts](./support-sla-escalation-contracts.md)
+
+> support contract를 단일 응답 시간 표기가 아니라 first response, ownership acceptance, escalation ladder, handoff clock까지 포함한 운영 계약으로 설명한 문서
+
+## Shadow Process Detection Signals
+
+- [Shadow Process Detection Signals](./shadow-process-detection-signals.md)
+
+> repeated override, 사람 의존 승인, off-plane data store 같은 signal을 confidence와 intake 기준까지 포함해 shadow catalog 후보로 올리는 문서
+
+## Shadow Process Catalog and Retirement
+
+- [Shadow Process Catalog and Retirement](./shadow-process-catalog-and-retirement.md)
+
+> detection signal에서 catalog intake, retire/officialize/absorb 판정, override scorecard 연결까지 shadow retirement pipeline을 설명하는 문서
+
+## Shadow Process Catalog Entry Schema
+
+- [Shadow Process Catalog Entry Schema](./shadow-process-catalog-entry-schema.md)
+
+> signal evidence, target state, review forum, retirement tracking을 같은 catalog entry로 묶어 detection에서 종료까지 끊기지 않게 만드는 schema 문서
+
+## Shadow Review Packet Template
+
+- [Shadow Review Packet Template](./shadow-review-packet-template.md)
+
+> shadow catalog entry review에 필요한 최소 packet field와 `decision / execution-risk / verification` agenda section을 고정해 forum별 판단 흔들림을 줄이는 문서
+
+## Shadow Packet Automation Mapping
+
+- [Shadow Packet Automation Mapping](./shadow-packet-automation-mapping.md)
+
+> shadow catalog entry field를 review-packet row로 자동 투영할 때 section routing, required/optional fallback, quality gate를 고정하는 문서
+
+## Shadow Review Outcome Template
+
+- [Shadow Review Outcome Template](./shadow-review-outcome-template.md)
+
+> shadow review forum 결과를 `source_packet_ref`, `from_state -> to_state`, `field_updates`, `decision_owner`, `next_review_at`로 남겨 packet 입력과 state-transition 출력을 같은 계약으로 닫는 문서
+
+## Shadow Forum Escalation Rules
+
+- [Shadow Forum Escalation Rules](./shadow-forum-escalation-rules.md)
+
+> blocked shadow entry와 high-blast shared workaround를 local stewardship forum에 계속 둘지 architecture council로 올릴지 `blocked_duration`, `impacted_domains`, `affected_teams`, shared gate change threshold로 고정하는 문서
+
+## Shadow Catalog Lifecycle States
+
+- [Shadow Catalog Lifecycle States](./shadow-catalog-lifecycle-states.md)
+
+> detected, decision_pending, temporary_hold, blocked, verification_pending, retired를 분리해 shadow entry가 어디서 멈췄는지와 언제 진짜 종료되는지 보이게 만드는 state machine 문서
+
+## Shadow Catalog Review Cadence Profiles
+
+- [Shadow Catalog Review Cadence Profiles](./shadow-catalog-review-cadence-profiles.md)
+
+> `detected`, `temporary_hold`, `blocked`, `verification_pending` 상태별 기본 review frequency, owner expectation, escalation SLA를 묶어 shadow backlog 정체와 가짜 close를 줄이게 하는 운영 프로파일 문서
+
+## Shadow Lifecycle Scorecard Metrics
+
+- [Shadow Lifecycle Scorecard Metrics](./shadow-lifecycle-scorecard-metrics.md)
+
+> `lifecycle_state` aging, `blocked_duration`, hold expiry risk, retirement verification health를 같은 dashboard 언어로 묶어 shadow backlog 정체와 가짜 retirement를 같이 보이게 하는 문서
+
+## Temporary Hold Exit Criteria
+
+- [Temporary Hold Exit Criteria](./shadow-temporary-hold-exit-criteria.md)
+
+> `temporary_hold`가 언제 만료돼 resume_state로 복귀해야 하는지, 언제 bounded extension이 정당한지, repeated hold가 언제 absorb/officialize escalation 신호로 바뀌는지 concrete example로 정리한 문서
+
+## Manual Path Ratio Instrumentation
+
+- [Manual Path Ratio Instrumentation](./manual-path-ratio-instrumentation.md)
+
+> DM 승인, spreadsheet 상태 저장, off-plane artifact 사용을 request 단위 fact로 정규화해 manual_path_ratio와 shadow_candidate_count를 실제로 계산 가능하게 만드는 계측 문서
+
+## Mirror Lag SLA Calibration
+
+- [Mirror Lag SLA Calibration](./mirror-lag-sla-calibration.md)
+
+> approval, sheet, off-plane artifact별 `mirror_lag` band와 공통 breach class를 고정해 manual breach 분류를 팀 간 비교 가능한 scorecard 언어로 맞추는 문서
+
+## Shadow Candidate Promotion Thresholds
+
+- [Shadow Candidate Promotion Thresholds](./shadow-candidate-promotion-thresholds.md)
+
+> repeated manual-path bundle을 `observe / watchlist / promote / fast_track` tier와 confidence cap으로 나눠 shadow catalog intake 승격 시점을 고정하는 문서
+
+## Threshold Override Governance
+
+- [Threshold Override Governance](./threshold-override-governance.md)
+
+> `shadow_candidate` / `fast_track` / `mirror_breach` 같은 공통 threshold를 언제 workflow별로 덮어쓸 수 있는지, 누가 승인하고 `expires_at`, renewal cap, scorecard review로 어떻게 되돌리는지 정리한 문서
+
+## Shadow Promotion Snapshot Schema Fields
+
+- [Shadow Promotion Snapshot Schema Fields](./shadow-promotion-snapshot-schema-fields.md)
+
+> shadow catalog entry와 review packet에 `promotion_snapshot`, `promotion_tier`, `promotion_threshold_summary` 같은 최소 필드를 고정해 tier/confidence 판단 근거를 replay 가능하게 남기는 문서
+
+## Break-Glass Path Segmentation
+
+- [Break-Glass Path Segmentation](./break-glass-path-segmentation.md)
+
+> emergency와 break-glass workflow를 scorecard에서 계속 보이게 하면서도 normal manual_path_ratio와 shadow retirement proof hard-gate denominator를 오염시키지 않도록 path segment, denominator scope, fallback visibility sidecar를 분리하는 문서
+
+## Emergency Misclassification Signals
+
+- [Emergency Misclassification Signals](./emergency-misclassification-signals.md)
+
+> repeated emergency path가 hidden workflow인지, time-box를 놓친 override debt인지 signal rule로 갈라 shadow backlog와 override backlog로 재분류하는 문서
+
+## Break-Glass Reentry Governance
+
+- [Break-Glass Reentry Governance](./break-glass-reentry-governance.md)
+
+> authorized break-glass 이후 `reentry_slo`, ownership handoff, closeout audit field를 어떻게 강제해야 emergency mode가 semi-permanent override로 굳지 않는지 정리한 문서
+
+## Shadow Retirement Proof Metrics
+
+- [Shadow Retirement Proof Metrics](./shadow-retirement-proof-metrics.md)
+
+> `closed`와 `retired`를 분리하고, manual_path_ratio, exception burndown, audit-log coverage, recurrence, authoritative off-plane artifact 같은 hard gate를 어떤 threshold와 verification window로 봐야 하는지 정리한 문서
+
+## Shadow Retirement Scorecard Schema
+
+- [Shadow Retirement Scorecard Schema](./shadow-retirement-scorecard-schema.md)
+
+> shadow retirement hard gate, `verification_window`, `verdict_record`를 canonical YAML/JSON field set으로 고정해 proof 문서, catalog entry, lifecycle dashboard, review outcome example이 같은 key를 재사용하게 만드는 문서
+
+## Shadow Catalog Reopen and Successor Rules
+
+- [Shadow Catalog Reopen and Successor Rules](./shadow-catalog-reopen-and-successor-rules.md)
+
+> recurrence triage를 same-path/same-replacement/same-proof continuity로 가르고, active-state recurrence는 same-row rollback을 먼저 보며, successor가 필요할 때는 새 baseline과 adjacency-preserving predecessor/successor 링크를 append-only로 남기는 문서
+
+## Tombstone Response Template and Consumer Guidance
+
+- [Tombstone Response Template and Consumer Guidance](./tombstone-response-template-and-consumer-guidance.md)
+
+> error envelope, migration docs, support runbook, dashboard annotation에 tombstone contract를 어디에 꽂을지 정리한 문서
+
+## Policy Candidate Backlog Scoring and Priority
+
+- [Policy Candidate Backlog Scoring and Priority](./policy-candidate-backlog-scoring-and-priority.md)
+
+> policy 후보를 impact, readiness, friction, dependency unlock 기준으로 점수화해 adoption queue와 rollout next action을 정리하는 문서
+
+## Consumer Exception State Machine and Review Cadence
+
+- [Consumer Exception State Machine and Review Cadence](./consumer-exception-state-machine-review-cadence.md)
+
+## Override Burn-Down Review Cadence and Scorecards
+
+- [Override Burn-Down Review Cadence and Scorecards](./override-burndown-review-cadence-scorecards.md)
+
+> age bucket과 repeated owner뿐 아니라 manual path ratio, shadow candidate count까지 포함해 burn-down과 구조 개선을 같이 읽는 문서
+
+## Support Operating Models: Self-Service, Office Hours, On-Call
+
+- [Support Operating Models: Self-Service, Office Hours, On-Call](./support-operating-models-self-service-office-hours-oncall.md)
+
+> self-service, office hours, business-hours, on-call을 lane으로 나누고 cutover surge profile과 lane handoff 규칙까지 다루는 운영 모델 문서
+
+## Shadow Process Officialization and Absorption Criteria
+
+- [Shadow Process Officialization and Absorption Criteria](./shadow-process-officialization-absorption-criteria.md)
+
+> officialize, absorb, retire, hold를 적합성 테스트와 guardrail 기준으로 나누고 rollout/deprecation/migration worked example까지 붙여 판정 감각을 보강하는 문서
+
+## Consumer Exception Registry Quality and Automation
+
+- [Consumer Exception Registry Quality and Automation](./consumer-exception-registry-quality-automation.md)
+
 ---
+
+## 보조 primer
+
+아래 구간은 최신 catalog와 별개로 남아 있는 보조 primer 성격의 학습 자료다.
 
 ## 애자일 개발 프로세스
 
 아래의 자료에서 자세한 설명과 코드를 볼 수 있다.
 
-- 작성자 이세명 | [Agile Software Development](<./materials/CS_(Agile).pdf>)
+- 작성자 이세명 | [Agile Software Development](./materials/CS_Agile.pdf)
 - 작성자 정희재 | [eXtreme Programming(XP)](./eXtremeProgramming.md)
 
 ---

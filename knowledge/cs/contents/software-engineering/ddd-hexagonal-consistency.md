@@ -4,7 +4,10 @@
 
 **난이도: 🔴 Advanced**
 
+입문 설명과 간단한 폴더 구조 예시가 먼저 필요하다면 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)부터 읽고, 이 문서는 그다음에 경계와 정합성까지 확장해서 보는 편이 좋다.
+
 > 관련 문서:
+> - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 > - [DDD Bounded Context Failure Patterns](./ddd-bounded-context-failure-patterns.md)
 > - [Anti-Corruption Layer Integration Patterns](./anti-corruption-layer-integration-patterns.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
@@ -15,7 +18,9 @@
 > retrieval-anchor-keywords:
 > - DDD
 > - hexagonal architecture
+> - hexagonal architecture beginner
 > - ports and adapters
+> - ports and adapters primer
 > - bounded context
 > - aggregate
 > - consistency boundary

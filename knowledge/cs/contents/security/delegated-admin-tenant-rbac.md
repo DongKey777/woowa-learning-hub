@@ -7,11 +7,15 @@
 > 관련 문서:
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
+> - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+> - [Authorization Graph Caching](./authorization-graph-caching.md)
+> - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
+> - [Support Operator / Acting-on-Behalf-Of Controls](./support-operator-acting-on-behalf-of-controls.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 
-retrieval-anchor-keywords: delegated admin, tenant RBAC, scoped admin, tenant admin, sub-admin, cross-tenant, least privilege, admin delegation, role hierarchy, tenant isolation
+retrieval-anchor-keywords: delegated admin, tenant RBAC, scoped admin, tenant admin, sub-admin, cross-tenant, least privilege, admin delegation, role hierarchy, tenant isolation, acting on behalf of, support impersonation, relationship-based authz, graph snapshot version, tenant-scoped graph invalidation, delegated scope edge
 
 ---
 
@@ -51,6 +55,10 @@ role hierarchy만 두면 문제가 생긴다.
 - tenant 경계가 흐려진다
 
 그래서 권한은 `role + scope + tenant`로 본다.
+
+relationship-based authz나 authz graph를 쓰면 delegated admin grant/revoke는 edge 추가/삭제다.  
+그래서 tenant-scoped role 변경은 role table update로 끝나지 않고 graph snapshot/version bump, cache invalidation, negative tenant test까지 묶여야 한다.  
+운영 관점은 [Authorization Graph Caching](./authorization-graph-caching.md), [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md), [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)을 같이 보면 정리된다.
 
 ### 3. scoped admin은 최소 권한으로 만든다
 
@@ -111,6 +119,7 @@ tenant admin이 다른 tenant에 닿으면 안 된다.
 
 - tenant id를 모든 정책에 포함한다
 - IDOR/BOLA 검사를 더한다
+- delegated scope revoke 시 tenant-scoped graph invalidation을 같이 보낸다
 - cache key에 tenant를 넣는다
 
 ---

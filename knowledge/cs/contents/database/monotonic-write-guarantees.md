@@ -2,8 +2,10 @@
 
 > 한 줄 요약: monotonic write는 같은 세션의 쓰기가 순서대로 반영된다는 약속이고, 라우팅이 뒤집히면 이 약속이 쉽게 깨진다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
-Retrieval anchors: `monotonic write`, `session order`, `write ordering`, `causal consistency`, `write routing`
+retrieval-anchor-keywords: monotonic write, session order, write ordering, causal consistency, write routing
 
 ## 핵심 개념
 

@@ -5,6 +5,9 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Software Engineering README: 애자일 개발 프로세스](./README.md#애자일-개발-프로세스)
+> - [Agile Software Development 자료](./materials/CS_Agile.pdf)
+> - [Pair Programming and Code Review Trade-offs](./pair-programming-code-review-tradeoffs.md)
 > - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 > - [Release Trains vs Continuous Delivery](./release-trains-vs-continuous-delivery.md)
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
@@ -12,8 +15,12 @@
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 
 > retrieval-anchor-keywords:
+> - agile development
+> - agile software development
+> - agile process
 > - extreme programming
 > - XP
+> - scrum vs xp
 > - TDD
 > - pair programming
 > - small releases
@@ -21,6 +28,7 @@
 > - refactoring
 > - customer feedback
 > - iteration
+> - continuous feedback
 > - release cadence
 
 ## 핵심 개념

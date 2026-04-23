@@ -2,8 +2,10 @@
 
 > 한 줄 요약: snapshot pinning은 한 번 본 읽기 시점을 다음 조회에도 유지해서, 페이지나 단계가 바뀌어도 같은 세상을 보게 만드는 전략이다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [MVCC Read View and Consistent Read Internals](./mvcc-read-view-consistent-read-internals.md), [MVCC History List Growth와 Snapshot Too Old](./mvcc-history-list-snapshot-too-old.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
-Retrieval anchors: `snapshot pinning`, `read snapshot`, `consistent snapshot`, `export snapshot`, `page token`
+retrieval-anchor-keywords: snapshot pinning, read snapshot, consistent snapshot, export snapshot, page token
 
 ## 핵심 개념
 

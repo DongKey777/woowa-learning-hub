@@ -10,6 +10,9 @@
 > - [Deprecation Communication Playbook](./deprecation-communication-playbook.md)
 > - [Backward Compatibility Test Gates](./backward-compatibility-test-gates.md)
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
+> - [Deprecation Enforcement, Tombstone, and Sunset Guardrails](./deprecation-enforcement-tombstone-guardrails.md)
+> - [Tombstone Response Template and Consumer Guidance](./tombstone-response-template-and-consumer-guidance.md)
 
 > retrieval-anchor-keywords:
 > - API lifecycle

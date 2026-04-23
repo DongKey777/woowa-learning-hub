@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 이 저장소를 RAG에 넣을 때는 문서 구조, chunk 기준, 우선순위, citation 규칙이 이미 고정돼 있어야 한다.
 
+> retrieval-anchor-keywords: rag ready checklist, retrieval readiness, indexing checklist, chunking checklist, metadata checklist, citation checklist, query expansion guardrail, routing checklist, rag onboarding
+
 ## 무엇을 먼저 읽나
 
 - [RAG README](./rag/README.md)

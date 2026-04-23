@@ -8,7 +8,11 @@
 > - [안티 패턴](./anti-pattern.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 > - [전략 패턴](./strategy-pattern.md)
+> - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+> - [Template Hook Smells](./template-hook-smells.md)
+
+retrieval-anchor-keywords: god object, god class, god service, 거대 클래스, 비대한 서비스, manager object smell, blob anti pattern, spaghetti code smell, 스파게티 코드, golden hammer smell, 황금 망치, big ball of mud, pattern abuse
 
 ---
 
@@ -22,6 +26,12 @@
 
 셋은 서로 연결된다.  
 God Object는 보통 Spaghetti Code를 낳고, Golden Hammer는 그 상태를 더 악화시킨다.
+
+## 냄새-first 분기
+
+- 큰 서비스나 매니저 객체가 모든 흐름과 책임을 흡수한다면 이 문서를 먼저 본다.
+- 분기를 없앤다고 전략 클래스를 케이스별로 늘리기 시작했다면 [전략 폭발 냄새](./strategy-explosion-smell.md)로 바로 이어간다.
+- 공통 상위 클래스에 `beforeX`, `afterX`, `onError` 같은 훅이 계속 붙는다면 [Template Hook Smells](./template-hook-smells.md)로 이동한다.
 
 ---
 

@@ -11,6 +11,16 @@
 
 ---
 
+> retrieval-anchor-keywords:
+> - SOLID
+> - single responsibility violation
+> - open-closed violation
+> - liskov violation
+> - interface segregation
+> - dependency inversion
+> - SOLID 위반 패턴
+> - responsibility leak
+
 ## 핵심 개념
 
 SOLID는 “좋은 코드의 체크리스트”처럼 보이지만, 실전에서는 **깨지는 패턴을 미리 알아차리는 신호**에 가깝다.

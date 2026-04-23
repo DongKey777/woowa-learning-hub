@@ -7,9 +7,11 @@
 > 관련 문서:
 > - [Count-Min Sketch](./count-min-sketch.md)
 > - [HyperLogLog](./hyperloglog.md)
+> - [Approximate Counting for Rate Limiting and Observability](./approximate-counting-rate-limiting-observability.md)
+> - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
 > - [Top-k Streaming and Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
 
-> retrieval-anchor-keywords: count-min sketch vs hyperloglog, frequency vs cardinality, streaming sketch comparison, approximate analytics, hot keys, unique count, sketch tradeoff
+> retrieval-anchor-keywords: count-min sketch vs hyperloglog, frequency vs cardinality, streaming sketch comparison, approximate analytics, rate limiting, observability, hot keys, unique count, distinct users, sketch tradeoff
 
 ## 핵심 개념
 

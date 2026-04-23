@@ -1,11 +1,17 @@
 # 쿼리 튜닝 체크리스트
 
+**난이도: 🔴 Advanced**
+
 > 쿼리 튜닝은 감으로 하는 작업이 아니라, 확인 순서가 있는 검증 작업이다.
+
+관련 문서: [인덱스와 실행 계획](./index-and-explain.md), [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md), [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md), [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+retrieval-anchor-keywords: query tuning checklist, explain triage, explain analyze, type all, key null, rows estimate wrong, using filesort, using temporary, index not used, order by limit slow, sargable predicate, functional index, generated column, covering index, connection pool starvation, app vs db bottleneck, batch size tuning, 실행 계획 체크리스트, 쿼리 튜닝 순서
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [EXPLAIN symptom별 첫 라우트](#explain-symptom별-첫-라우트)
 - [먼저 확인할 것](#먼저-확인할-것)
 - [읽기 쿼리 체크리스트](#읽기-쿼리-체크리스트)
 - [쓰기 경계와 connection pool](#쓰기-경계와-connection-pool)
@@ -27,6 +33,16 @@
 - 느린 이유가 CPU, I/O, 락, 네트워크 중 무엇인지
 
 쿼리 튜닝은 SQL 한 줄을 고치는 일이 아니라, 병목의 원인을 좁혀가는 일이다.
+
+## EXPLAIN symptom별 첫 라우트
+
+| 보이는 신호 | 먼저 물어볼 질문 | 먼저 볼 문서 | 이어서 볼 문서 |
+| --- | --- | --- | --- |
+| `type = ALL`, `key = NULL` | 인덱스 자체가 없거나 predicate가 sargable 하지 않은가 | [인덱스와 실행 계획](./index-and-explain.md) | [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md) |
+| `Using filesort`, `ORDER BY ... LIMIT`에서 급격히 느려짐 | 정렬을 인덱스 순서로 끝낼 수 있는가 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
+| `Using index`가 보이는데도 체감 성능이 약함 | 커버링은 됐지만 row 수, index 폭, heap/table 접근이 남는가 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md), [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md) |
+| `rows` 추정치가 이상하거나 배포 후 plan이 흔들림 | 통계가 오래됐거나 데이터 skew가 커졌는가 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
+| DB query time은 짧은데 API latency는 김 | 진짜 병목이 connection pool, transaction boundary, 외부 호출인가 | [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md) | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
 
 ---
 
@@ -57,6 +73,8 @@
 - 컬럼에 함수 적용
 - 앞부분이 비어 있는 `LIKE`
 - 암묵적 타입 변환
+
+함수 적용이 꼭 필요한 조건이라면, 쿼리 rewrite가 가능한지 먼저 보고 그다음 generated column이나 functional index를 검토한다.
 
 ### 2. 필요한 컬럼만 읽는가
 

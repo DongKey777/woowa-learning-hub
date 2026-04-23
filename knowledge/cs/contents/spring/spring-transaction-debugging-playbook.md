@@ -1,15 +1,30 @@
 # Spring Transaction Debugging Playbook
 
 > 한 줄 요약: 트랜잭션 문제는 "안 된다"가 아니라, 프록시, 전파, 롤백, 커밋 시점 중 어디서 어긋났는지 찾아야 해결된다.
+>
+> 문서 역할: 이 문서는 spring 카테고리 안에서 **트랜잭션 장애 분석과 debugging 진입점**을 담당하는 deep dive다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
+> - [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](./spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
+> - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
+> - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+> - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 > - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
 > - [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md)
+
+retrieval-anchor-keywords: transaction debugging, transactional not applied, proxy transaction, self invocation, private method transaction, checked exception commit, rollbackFor, requires new partial commit, long transaction, lock wait, service layer transaction boundary
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 트랜잭션 기본 의미는 [@Transactional 깊이 파기](./transactional-deep-dive.md)로 되돌아가면 좋다.
+- service 경계와 ownership은 [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)로 이어진다.
+- persistence context 증상은 [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)에서 더 깊게 다룬다.
 
 ---
 

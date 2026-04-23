@@ -5,13 +5,16 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)
+> - [Swap-In, Reclaim, and Major Fault Path Primer](./swap-in-reclaim-fault-path-primer.md)
+> - [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
 > - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
 > - [mmap, sendfile, splice, zero-copy](./mmap-sendfile-splice-zero-copy.md)
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)
 
-> retrieval-anchor-keywords: major page fault, minor page fault, pgfault, pgmajfault, copy-on-write, demand paging, smaps_rollup, perf stat, mincore
+> retrieval-anchor-keywords: major page fault, minor page fault, pgfault, pgmajfault, copy-on-write, demand paging, page fault primer, anonymous page fault, file-backed page fault, reclaim-induced major fault, swapin major fault, page cache refault, cold-page refault, smaps_rollup, perf stat, mincore
 
 ## 핵심 개념
 

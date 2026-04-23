@@ -2,8 +2,10 @@
 
 > 한 줄 요약: primary가 바뀌는 순간에는 읽기 라우팅보다 write fencing이 더 중요하고, 옛 primary의 늦은 write를 반드시 막아야 한다.
 
-관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md)
-Retrieval anchors: `primary switch`, `write fencing`, `fencing epoch`, `stale primary`, `promotion cutover`
+**난이도: 🟡 Intermediate**
+
+관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
+retrieval-anchor-keywords: primary switch, write fencing, fencing epoch, stale primary, promotion cutover, visibility window, commit horizon
 
 ## 핵심 개념
 

@@ -1,40 +1,55 @@
 # 전략 패턴
 
-> 한 줄 요약: 바뀌는 알고리즘을 if-else에 묶어두지 않고, 교체 가능한 전략 객체로 분리하는 패턴이다.
+> 한 줄 요약: 같은 일을 하는 여러 구현 중 무엇을 쓸지 **호출자/설정이 런타임에 고르고**, `Context`는 그 구현을 전략 객체로 위임하는 패턴이다.
 
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
-> - [템플릿 메소드 패턴](./template-method.md)
+> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
+> - [Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)
+> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+> - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [팩토리 (Factory)](./factory.md)
-> - [안티 패턴](./anti-pattern.md)
+
+retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, strategy vs policy object, payment method strategy, lambda vs strategy, function vs strategy, strategy vs small function, function map vs strategy
 
 ---
 
 ## 핵심 개념
 
-전략 패턴(Strategy Pattern)은 **같은 목적을 수행하지만 구현이 다른 알고리즘을 분리**하는 패턴이다.  
-핵심은 "무엇을 할지"는 고정하고, "어떻게 할지"는 런타임에 바꿀 수 있게 만드는 것이다.
+전략 패턴(Strategy Pattern)은 **같은 목적을 수행하지만 구현이 다른 알고리즘을 교체 가능한 객체로 분리**하는 패턴이다.
+핵심은 "어떻게 할지"를 객체로 빼는 것만이 아니라, **어떤 구현을 쓸지 고르는 책임을 `Context` 밖으로 밀어내는 것**이다.
+
+보통 이 선택은 호출자, 설정, DI가 맡는다.
+`Context`는 "작업을 수행한다"는 흐름만 알고, "어떤 전략이 맞는가"는 직접 판단하지 않는다.
 
 이 패턴이 필요한 이유는 단순하다.
 
-- 분기문이 많아지면 읽기 어려워진다
-- 새로운 정책이 추가될 때 기존 코드를 계속 수정하게 된다
-- 테스트에서 특정 분기만 따로 검증하기 어려워진다
+- 요청/설정/테넌트에 따라 런타임에 다른 구현을 골라야 한다
+- 새로운 정책이 추가될 때 기존 큰 분기문을 계속 수정하고 싶지 않다
+- 구현마다 이름, 협력 객체, 테스트 경계를 독립적으로 두고 싶다
 
-즉 전략 패턴은 **if-else sprawl을 객체 분리로 치유하는 방법**이다.
+즉 전략 패턴은 **if-else sprawl을 객체 분리로 치유하면서, 선택 책임을 호출자 쪽으로 돌리는 방법**이다.
 
 ### 전략 패턴이 잘 맞는 경우
 
-- 할인 정책, 결제 수단, 정렬 기준처럼 선택지가 여러 개일 때
-- 같은 인터페이스를 통해 서로 다른 구현을 교체하고 싶을 때
-- 실행 시점에 전략을 바꿔야 할 때
+- 할인 정책, 결제 수단, 정렬 기준처럼 **같은 역할을 하는 선택지**가 여러 개일 때
+- 호출자/설정/DI가 **실행 시점에 어떤 구현을 쓸지 고르는 문제**일 때
+- 구현마다 협력 객체나 보조 로직이 붙고, 구현체별 테스트 경계가 필요할 때
 
 ### 전략 패턴이 덜 맞는 경우
 
 - 분기가 1~2개뿐이고 앞으로도 잘 안 바뀔 때
-- 알고리즘 자체가 거의 고정되어 있을 때
-- 상속으로 공통 골격을 먼저 잡는 편이 더 자연스러울 때
+- 계산식이 1~3줄 정도로 짧고 stateless라서 작은 함수나 `lambda`가 더 직접적일 때
+- `VipWeekendMobileStrategy`처럼 조건 조합마다 전략 클래스가 늘어나는 과사용 신호가 보일 때
+- 알고리즘 자체가 거의 고정되어 있고, 상속으로 공통 골격을 잡는 편이 더 자연스러울 때
+
+관련 경계를 같이 보면 더 빨리 정리된다.
+
+- 짧은 함수와의 경계는 [Strategy vs Function](./strategy-vs-function-chooser.md)
+- 고정 흐름과의 경계는 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- 전략 이름이 경우의 수를 설명하기 시작하면 [전략 폭발 냄새](./strategy-explosion-smell.md)
 
 ---
 
@@ -68,10 +83,10 @@ public class DiscountService {
 
 - `Strategy`: 교체 가능한 알고리즘의 공통 인터페이스
 - `ConcreteStrategy`: 실제 알고리즘 구현
-- `Context`: 전략을 사용해서 작업을 수행하는 객체
+- `Context`: 전달받은 전략을 사용해 작업을 수행하는 객체
 
-중요한 점은 `Context`가 구체 클래스가 아니라 **인터페이스**에 의존한다는 것이다.  
-이렇게 하면 새로운 전략을 추가해도 기존 흐름은 유지된다.
+중요한 점은 `Context`가 구체 클래스가 아니라 **인터페이스**에 의존하고,
+어떤 전략을 쓸지 직접 판단하지 않는다는 것이다. 선택은 호출자/설정/DI가 맡고 `Context`는 실행 흐름만 유지한다.
 
 ### 3. Template Method와의 차이
 
@@ -94,11 +109,16 @@ public class DiscountService {
 전략 패턴은 무조건 좋은 게 아니다.  
 함수가 한두 개뿐이면 `Function<T, R>` 같은 함수형 조합이 더 단순할 수 있다.
 
+`lambda`/작은 함수와 Strategy 타입 사이 경계를 짧게 잡고 싶다면
+[Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)를 같이 보면 된다.
+
 전략 패턴을 쓰면 생기는 비용:
 
 - 클래스 수가 늘어난다
 - 객체 생성을 관리해야 한다
 - 초보자에게 구조가 무거워 보일 수 있다
+
+전략 이름이 조건 조합을 그대로 담기 시작하면 [전략 폭발 냄새](./strategy-explosion-smell.md)를 의심해야 한다.
 
 즉 "if-else를 없애는 것"이 목적이 아니라, **변화 지점을 분리하는 것**이 목적이다.
 

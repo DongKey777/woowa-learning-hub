@@ -1,8 +1,12 @@
 # Replication Failover and Split Brain
 
+**난이도: 🔴 Advanced**
+
 > replica 장애가 났을 때 failover는 복구 전략이지만, 잘못하면 split brain으로 정합성을 깨뜨릴 수 있다.
 
-> 관련 문서: [MVCC, Replication, Sharding](./mvcc-replication-sharding.md), [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+> 관련 문서: [MVCC, Replication, Sharding](./mvcc-replication-sharding.md), [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
+
+retrieval-anchor-keywords: failover, split brain, stale primary, quorum, fencing, failover visibility, promotion safety, commit horizon, loss boundary
 
 <details>
 <summary>Table of Contents</summary>

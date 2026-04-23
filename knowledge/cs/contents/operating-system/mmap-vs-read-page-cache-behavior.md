@@ -5,13 +5,18 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)
+> - [MAP_SHARED vs MAP_PRIVATE Write Semantics](./mmap-map-shared-vs-map-private-write-semantics.md)
 > - [mmap, sendfile, splice, zero-copy](./mmap-sendfile-splice-zero-copy.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
+> - [mmap Shared, Truncate, SIGBUS, Coherency Pitfalls](./mmap-shared-truncate-sigbus-coherency-pitfalls.md)
+> - [mmap, msync, Hole Punching, File Replace Update Patterns](./mmap-msync-hole-punching-file-replace-update-patterns.md)
+> - [posix_fadvise, madvise, Page Cache Hints](./posix-fadvise-madvise-page-cache-hints.md)
 > - [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
 > - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
 
-> retrieval-anchor-keywords: mmap vs read, page cache, buffered I/O, page fault, readahead, cache hit, cache miss, access pattern, lazy loading
+> retrieval-anchor-keywords: mmap vs read, page cache, buffered I/O, page fault, demand paging, file-backed page fault, MAP_SHARED vs MAP_PRIVATE, shared mapping dirty page, private mapping COW, MAP_PRIVATE, readahead, cache hit, cache miss, access pattern, lazy loading
 
 ## 핵심 개념
 

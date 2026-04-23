@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 소비자 트랜잭션은 메시지 ack와 DB commit의 경계를 잘못 잡는 순간 중복과 유실을 동시에 만든다.
 
-관련 문서: [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
-Retrieval anchors: `queue consumer transaction`, `ack boundary`, `commit boundary`, `message processing`, `consumer retry`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs](./queue-claim-skip-locked-fairness.md)
+retrieval-anchor-keywords: queue consumer transaction, ack boundary, commit boundary, message processing, consumer retry, skip locked, queue claim
 
 ## 핵심 개념
 
@@ -28,6 +30,7 @@ Queue consumer는 메시지를 받고, 비즈니스 처리를 수행한 뒤, ack
 - 그 다음 메시지를 처리 완료로 알린다
 
 이 순서를 바꾸면 메시지 유실이 생길 수 있다.
+다만 claim 단계에서 `SKIP LOCKED`를 쓰는 경우, 처리 순서와 fairness는 별도 문제로 분리해서 봐야 한다.
 
 ### 2. 트랜잭션을 너무 크게 잡으면
 

@@ -12,6 +12,7 @@ retrieval-anchor-keywords: undo tablespace, undo truncation, purge debt, innodb_
   - [MVCC History List Growth와 Snapshot Too Old](./mvcc-history-list-snapshot-too-old.md)
   - [Change Buffer, Purge, History List Length](./change-buffer-purge-history-length.md)
   - [Redo Log, Undo Log, Checkpoint, Crash Recovery](./redo-log-undo-log-checkpoint-crash-recovery.md)
+  - [Vacuum / Purge Debt Forensics and Symptom Map](./vacuum-purge-debt-forensics-symptom-map.md)
 
 undo tablespace는 과거 버전과 rollback 정보를 저장하는 공간이다.  
 이 공간이 계속 커진다고 해서 곧바로 장애는 아니지만, purge가 늦고 truncate가 안 되면 운영 부담이 커진다.

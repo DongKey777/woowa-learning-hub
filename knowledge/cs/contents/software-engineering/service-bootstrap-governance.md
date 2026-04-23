@@ -7,18 +7,28 @@
 > 관련 문서:
 > - [Service Template Trade-offs](./service-template-tradeoffs.md)
 > - [Platform Paved Road Trade-offs](./platform-paved-road-tradeoffs.md)
+> - [Golden Path Escape Hatch Policy](./golden-path-escape-hatch-policy.md)
 > - [Service Maturity Model](./service-maturity-model.md)
 > - [Production Readiness Review](./production-readiness-review.md)
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
+> - [Technology Radar and Adoption Governance](./technology-radar-adoption-governance.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
+> - [Platform Control Plane and Delegation Boundaries](./platform-control-plane-delegation-boundaries.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
 
 > retrieval-anchor-keywords:
 > - service bootstrap
 > - bootstrap governance
+> - service creation checklist
+> - bootstrap pipeline
 > - default policy
 > - service scaffold
 > - ownership defaults
 > - observability defaults
 > - lifecycle defaults
+> - golden path bootstrap
+> - service catalog registration
+> - production readiness bootstrap
 > - service initialization
 
 ## 핵심 개념
@@ -35,6 +45,19 @@ bootstrap governance는 이 시점에 아래를 자동으로 요구한다.
 - deprecation plan placeholder
 
 즉 bootstrap은 단순 생성이 아니라 **운영 가능한 시작 상태를 강제하는 절차**다.
+
+---
+
+## Template Insertion Points
+
+bootstrap 기준은 generator 한 군데에만 넣으면 빠르게 빠진다. 보통 다음 네 곳에 나눠 심는 편이 낫다.
+
+- bootstrap command/output: owner, on-call, observability, release strategy 기본값을 생성한다.
+- repo-level checklist or ADR placeholder: 템플릿 예외와 선택한 운영 기본값을 기록한다.
+- service catalog registration: 팀, criticality, contact, template lineage를 등록한다.
+- PRR / policy gate: bootstrap 때 채워야 할 필드가 실제로 유지되는지 검증한다.
+
+즉 bootstrap governance의 삽입 지점은 **생성기, 등록 기록, 검증 게이트** 세 축으로 보는 편이 안전하다.
 
 ---
 
@@ -55,6 +78,8 @@ bootstrap governance는 이 시점에 아래를 자동으로 요구한다.
 - alert routing
 - ownership metadata
 - release strategy
+- standard stack choice
+- config validation default
 
 ### 3. governance는 생성 단계에서 시작해야 한다
 

@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 재시도는 실패를 지우는 장치가 아니라, 같은 실패를 안전하게 다시 만나는 방법을 설계하는 일이다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Deadlock Case Study](./deadlock-case-study.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `serialization failure`, `transaction retry`, `deadlock retry`, `backoff`, `idempotent retry`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Deadlock Case Study](./deadlock-case-study.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Serializable Retry Telemetry for Set Invariants](./serializable-retry-telemetry-set-invariants.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
+retrieval-anchor-keywords: serialization failure, transaction retry, deadlock retry, backoff, idempotent retry, sqlstate 40001, sqlstate 40P01, postgresql serializable retry, ssi retry, retry whole transaction, retry budget, serializable observability, optimistic locking retry, retry boundary optimistic lock, spring retry transaction boundary, @retryable @transactional, self invocation retry, requires_new retry pitfall
 
 ## 핵심 개념
 

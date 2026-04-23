@@ -2,7 +2,7 @@
 
 > 한 줄 요약: feature flag control plane은 기능 노출을 동적으로 제어하고, 점진 배포와 실험, 장애 격리를 안전하게 운영하는 정책 시스템이다.
 
-retrieval-anchor-keywords: feature flag control plane, rollout, kill switch, targeting, evaluation, bucketing, experimentation, flag cache, approval workflow, config sync
+retrieval-anchor-keywords: feature flag control plane, rollout, kill switch, targeting, evaluation, bucketing, experimentation, flag cache, approval workflow, config sync, progressive delivery, canary guardrail, automated canary
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,9 @@ retrieval-anchor-keywords: feature flag control plane, rollout, kill switch, tar
 > - [Config Distribution System 설계](./config-distribution-system-design.md)
 > - [Multi-tenant SaaS 격리 설계](./multi-tenant-saas-isolation-design.md)
 > - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
+> - [Traffic Shadowing / Progressive Cutover 설계](./traffic-shadowing-progressive-cutover-design.md)
+> - [Automated Canary Analysis / Rollback Platform 설계](./automated-canary-analysis-rollback-platform-design.md)
+> - [Control Plane / Data Plane Separation 설계](./control-plane-data-plane-separation-design.md)
 
 ## 핵심 개념
 
@@ -101,6 +104,7 @@ stable bucketing이 중요하다.
 
 롤아웃을 할 때는 오류율, latency, business metric을 같이 본다.  
 기능 자체가 좋아 보여도 p95가 망가지면 바로 되돌릴 수 있어야 한다.
+즉, flag는 "누구를 새 경로로 보낼지"를 정하는 도구이고, 실제 승격 안전성은 shadowing, tracing, canary guardrail과 함께 봐야 한다.
 
 ### 6. 승인과 감사
 
@@ -213,4 +217,3 @@ public boolean isEnabled(UserContext ctx, String flagKey) {
 ## 한 줄 정리
 
 Feature flag control plane은 변경 가능한 정책을 안전하게 배포하고 빠르게 평가해, 롤아웃과 실험, 장애 대응을 통합하는 시스템이다.
-

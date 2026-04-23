@@ -9,9 +9,12 @@
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - [API Key, HMAC Signed Request, Replay Protection](./api-key-hmac-signature-replay-protection.md)
 > - [Refresh Token Rotation / Reuse Detection](./refresh-token-rotation-reuse-detection.md)
+> - [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
+> - [Replay Store Outage / Degradation Recovery](./replay-store-outage-degradation-recovery.md)
+> - [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 
-retrieval-anchor-keywords: DPoP, token binding, proof-of-possession, JWK thumbprint, cnf claim, htm, htu, replay protection, bearer token, sender-constrained token
+retrieval-anchor-keywords: DPoP, token binding, proof-of-possession, JWK thumbprint, cnf claim, htm, htu, replay protection, bearer token, sender-constrained token, token misuse, proof replay, jti store outage, proof vs bearer
 
 ---
 

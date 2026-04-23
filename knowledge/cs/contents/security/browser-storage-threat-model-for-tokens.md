@@ -10,8 +10,13 @@
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
+> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
+> - [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
+> - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: browser storage, localStorage, sessionStorage, IndexedDB, HttpOnly cookie, token theft, XSS, CSRF, refresh token cookie, bearer token, storage threat model
+retrieval-anchor-keywords: browser storage, localStorage, sessionStorage, IndexedDB, HttpOnly cookie, token theft, XSS, CSRF, refresh token cookie, bearer token, storage threat model, token handler pattern, BFF session translation, server-side confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, browser server boundary catalog, security readme browser server boundary
 
 ---
 
@@ -84,6 +89,8 @@ HttpOnly cookie는 JS로 읽기 어렵다.
 - refresh token은 HttpOnly cookie
 
 이렇게 하면 access token 탈취 기간을 줄이면서, refresh token은 CSRF 경계를 같이 설계할 수 있다.
+
+다만 refresh token이나 code exchange를 브라우저 밖으로 옮기는 순간, 그 서버/BFF가 token endpoint에서 자신을 어떻게 증명할지도 따로 정해야 한다. 즉 storage 경계와 confidential client auth 경계는 다른 질문이며, follow-up은 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)로 이어진다.
 
 ### 5. memory-only도 만능은 아니다
 
@@ -201,6 +208,10 @@ export function setAccessToken(token) {
 > Q: access token과 refresh token을 같은 저장소에 넣어도 되나요?
 > 의도: 수명과 피해 범위를 분리하는지 확인
 > 핵심: 보통은 분리하고, refresh token은 더 엄격하게 다룬다.
+
+> Q: refresh token을 서버로 옮기면 browser storage 문제는 끝인가요?
+> 의도: storage 선택과 server-side client authentication을 분리하는지 확인
+> 핵심: 아니다. 브라우저 밖으로 옮긴 뒤에는 그 서버/BFF의 token endpoint auth 방식을 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)에서 이어 결정해야 한다.
 
 > Q: memory-only 저장은 왜 운영이 어려울 수 있나요?
 > 의도: UX와 복구 문제를 이해하는지 확인

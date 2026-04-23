@@ -2,8 +2,10 @@
 
 > 한 줄 요약: quorum은 “몇 개가 살아 있으면 안전한가”를 결정하는 규칙이고, 앱 팀은 그 규칙을 일관성 예산으로 이해해야 한다.
 
+**난이도: 🟢 Beginner**
+
 관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
-Retrieval anchors: `quorum`, `majority write`, `majority read`, `quorum intuition`, `consistency budget`
+retrieval-anchor-keywords: quorum, majority write, majority read, quorum intuition, consistency budget
 
 ## 핵심 개념
 

@@ -10,6 +10,9 @@
 > - [Production Readiness Review](./production-readiness-review.md)
 > - [Backward Compatibility Test Gates](./backward-compatibility-test-gates.md)
 > - [Golden Path Escape Hatch Policy](./golden-path-escape-hatch-policy.md)
+> - [Contract Drift Detection and Rollout Governance](./contract-drift-detection-rollout-governance.md)
+> - [Operational Readiness Drills and Change Safety](./operational-readiness-drills-and-change-safety.md)
+> - [Rollout Guardrail Profiles, Auto-Pause, and Manual Resume](./rollout-guardrail-profiles-auto-pause-resume.md)
 
 > retrieval-anchor-keywords:
 > - rollout approval
@@ -20,6 +23,10 @@
 > - launch approval
 > - risk review
 > - rollout governance
+> - rollout pause
+> - drift approval gate
+> - risk tier
+> - change safety
 
 ## 핵심 개념
 
@@ -35,6 +42,7 @@ rollout approval workflow는 "배포해도 되냐"를 묻는 절차가 아니다
 - rollback plan
 - owner/on-call readiness
 - customer communication
+- risk tier and drill evidence
 
 즉 approval workflow는 **배포를 통제하는 운영 게이트**다.
 
@@ -58,8 +66,9 @@ rollout approval workflow는 "배포해도 되냐"를 묻는 절차가 아니다
 1. 자동 gate 통과
 2. owner review
 3. PRR 확인
-4. canary 승인
-5. full rollout 승인
+4. risk tier 확인
+5. canary 승인
+6. full rollout 승인
 
 ### 3. 긴급 배포와 일반 배포를 구분해야 한다
 

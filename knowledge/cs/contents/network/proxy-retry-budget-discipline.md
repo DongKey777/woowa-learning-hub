@@ -10,6 +10,8 @@
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
 > - [TCP Reset Storms, Idle Reuse, Stale Sockets](./tcp-reset-storms-idle-reuse-stale-sockets.md)
 > - [gRPC Deadlines, Cancellation Propagation](./grpc-deadlines-cancellation-propagation.md)
+> - [Retry Storm Containment, Concurrency Limiter, Load Shedding](./retry-storm-containment-concurrency-limiter-load-shedding.md)
+> - [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](../spring/spring-mvc-async-deferredresult-callable-dispatch.md)
 
 retrieval-anchor-keywords: retry budget, proxy retry, budget exhaustion, backoff, jitter, amplification control, idempotency, upstream failover, request storm
 

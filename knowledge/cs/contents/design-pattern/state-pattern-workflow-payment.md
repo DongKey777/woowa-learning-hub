@@ -2,12 +2,15 @@
 
 > 한 줄 요약: 상태 패턴은 if-else로 흩어진 상태 전이를 객체로 끌어올려, 결제와 워크플로 같은 도메인 흐름을 명시적으로 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
+> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+> - [State Pattern vs State Machine Library vs Workflow Engine](./state-machine-library-vs-state-pattern.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [Command Pattern, Undo, Queue](./command-pattern-undo-queue.md)
+> - [Semantic Lock and Pending State Pattern](./semantic-lock-pending-state-pattern.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [안티 패턴](./anti-pattern.md)
 
@@ -33,8 +36,14 @@
 - `order payment state machine`
 - `workflow transition guard`
 - `state vs strategy`
+- `state vs policy object`
 - `pending authorized captured failed`
 - `backend domain workflow`
+- `pending state pattern`
+- `semantic lock`
+- `state pattern enough`
+- `local aggregate state`
+- `state machine library vs workflow engine`
 
 ---
 
@@ -191,13 +200,17 @@ public class PaymentWorkflowService {
 | `if-else` | 가장 단순하다 | 전이가 늘수록 깨진다 | 상태가 거의 없을 때 |
 | `enum + switch` | 상태가 보인다 | 규칙이 커지면 비대해진다 | 전이가 작고 고정적일 때 |
 | 상태 패턴 | 상태별 행위를 응집한다 | 클래스 수가 늘어난다 | 전이가 많고 규칙이 자주 바뀔 때 |
+| 상태 머신 라이브러리 | 이벤트/가드/전이 표를 읽기 쉽다 | durable timer/recovery는 따로 설계해야 한다 | 상태/이벤트 조합이 밀집할 때 |
 | 워크플로 엔진 | 복잡한 흐름을 표현한다 | 도입 비용이 크다 | 승인, 보상, 재시도까지 복잡할 때 |
 
 판단 기준은 간단하다.
 
 - 상태 전이가 도메인 규칙이면 상태 패턴을 먼저 본다
+- 전이 matrix가 복잡하지만 실행 ownership이 한 서비스 안에 있으면 상태 머신 라이브러리를 본다
 - 전이보다 계산식이 중요하면 전략을 본다
 - 흐름이 길고 외부 연동이 많으면 워크플로나 사가를 검토한다
+
+로컬 전이, 전이 표 관리, durable orchestration의 경계는 [State Pattern vs State Machine Library vs Workflow Engine](./state-machine-library-vs-state-pattern.md)에서 이어서 보면 된다.
 
 ---
 
@@ -218,4 +231,3 @@ public class PaymentWorkflowService {
 ## 한 줄 정리
 
 상태 패턴은 결제와 워크플로의 전이 규칙을 객체로 분리해, 잘못된 상태 변경을 코드 구조로 막는 패턴이다.
-

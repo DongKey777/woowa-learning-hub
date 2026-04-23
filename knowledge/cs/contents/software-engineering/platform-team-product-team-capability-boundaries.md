@@ -10,6 +10,9 @@
 > - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
 > - [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)
 > - [BFF Boundaries and Client-Specific Aggregation](./bff-boundaries-client-specific-aggregation.md)
+> - [Platform Control Plane and Delegation Boundaries](./platform-control-plane-delegation-boundaries.md)
+> - [Platform Policy Ownership and Override Governance](./platform-policy-ownership-override-governance.md)
+> - [Team APIs and Interaction Modes in Architecture](./team-apis-interaction-modes-architecture.md)
 
 > retrieval-anchor-keywords:
 > - platform team
@@ -51,6 +54,7 @@
 ### 2. 플랫폼 팀은 골든 패스를 제공해야 한다
 
 플랫폼 팀의 목표는 제품 팀이 반복적으로 겪는 마찰을 줄이는 것이다.
+이때 어디까지를 platform control plane이 맡고 어디부터를 제품 판단으로 남길지 경계를 명확히 해야 한다.
 
 예:
 

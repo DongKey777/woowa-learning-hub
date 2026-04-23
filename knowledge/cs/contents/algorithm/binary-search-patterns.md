@@ -1,12 +1,28 @@
 # Binary Search Patterns
 
 > 한 줄 요약: 이분 탐색은 "정렬된 배열에서 값 찾기"가 아니라, `조건이 처음 참이 되는 지점`을 빠르게 찾는 패턴이다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **단조 조건과 경계 탐색 설계**를 다루는 pattern deep dive다.
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서: [알고리즘 기본](./basic.md)
+> 관련 문서:
+> - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
+> - [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)
+> - [Sliding Window Patterns](./sliding-window-patterns.md)
+> - [두 포인터 (two-pointer)](./two-pointer.md)
+>
+> retrieval-anchor-keywords: binary search, lower bound, upper bound, first true, last false, parametric search, decision problem, monotonic predicate, monotone decision, feasibility check, answer space search, boundary search, lis lower_bound, lower_bound on tails, subsequence vs subarray, contiguous window feasibility, length feasibility check
 
 ---
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `lower_bound`가 실제로 어디에 쓰이는지 이어서 보려면 [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)이 가장 가깝다.
+- `subsequence`처럼 연속성이 없고 순서만 보존하면 되는 문제라면 [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)로 먼저 가는 편이 덜 헷갈린다.
+- 연속 구간을 점진적으로 줄이고 늘리는 문제라면 [Sliding Window Patterns](./sliding-window-patterns.md)과의 경계를 비교해 보면 좋다.
+- 정렬 배열의 양끝이나 서로 다른 두 위치를 좁혀 가는 문제라면 [두 포인터 (two-pointer)](./two-pointer.md)가 더 직접적이다.
+- 복잡도 감각과 Big-O 기준부터 다시 잡고 싶다면 [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)로 되돌아가면 된다.
 
 ## 핵심 개념
 
@@ -24,6 +40,19 @@
 
 이분 탐색의 핵심은 `정답 후보가 연속된 구간으로 정리된다`는 점이다.
 이 구간 성질이 깨지면 이분 탐색을 쓰면 안 된다.
+
+## 자주 헷갈리는 패턴 구분
+
+| 패턴 | 탐색 대상 | 질문 형태 | 강한 신호 |
+|---|---|---|---|
+| Binary Search | 값의 범위, 인덱스 경계, 정답 후보 공간 | "`x`가 가능한가?", "처음 참은 어디인가?" | 판정 결과가 `false ... true`처럼 한 번만 바뀐다 |
+| LIS | 순서를 유지한 부분 수열 최적화 | "건너뛰며 가장 긴 증가 수열을 만들 수 있는가?" | `subsequence`, `tails`, 증가 추세, 연속 조건이 없다 |
+| Sliding Window | 연속된 부분 배열 / 부분 문자열 | "현재 구간을 한 칸 밀며 갱신할 수 있는가?" | `subarray`, `substring`, 길이/합/빈도 조건이 같이 나온다 |
+| Two Pointer | 두 인덱스 사이의 관계 | "두 값을 비교하며 포인터를 줄이거나 늘릴 수 있는가?" | 정렬 배열, 양끝 포인터, pair sum, palindrome 같은 표현이 나온다 |
+
+- LIS의 `tails + binary search`는 이분 탐색을 "서브루틴"으로 쓰는 대표 예시다. 하지만 질문이 `subsequence`를 묻는다면 1차 라우팅은 [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)여야 한다.
+- `길이 L의 연속 구간 중 조건을 만족하는 것이 있는가?`처럼 보이면 바깥 패턴은 이분 탐색이고, 내부 판정 함수는 [Sliding Window Patterns](./sliding-window-patterns.md)일 수 있다.
+- 연속 구간 자체를 유지할 필요 없이 정렬 배열의 양끝에서 합이나 차이를 맞추는 문제면 [두 포인터 (two-pointer)](./two-pointer.md)가 더 자연스럽다.
 
 ---
 
@@ -184,4 +213,3 @@ public class ParametricSearch {
 ## 한 줄 정리
 
 이분 탐색은 정렬 배열만 보는 기술이 아니라, 단조성을 가진 조건에서 "처음 참이 되는 지점"을 빠르게 찾는 패턴이다.
-

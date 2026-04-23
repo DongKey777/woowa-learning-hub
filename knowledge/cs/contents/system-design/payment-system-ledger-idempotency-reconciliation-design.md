@@ -2,18 +2,20 @@
 
 > 한 줄 요약: 결제 시스템은 외부 PG 상태와 내부 원장을 동시에 맞춰야 하므로, auth/capture/refund 흐름, 멱등성, 원장, 재조정(reconciliation)을 한 덩어리로 설계해야 한다.
 
-retrieval-anchor-keywords: payment auth capture refund, ledger, transaction log, reconciliation, idempotency key, duplicate charge, partial refund, settlement, PG callback, chargeback
+retrieval-anchor-keywords: payment auth capture refund, ledger, transaction log, reconciliation, idempotency key, duplicate charge, partial refund, settlement, PG callback, chargeback, provider timeout recovery, replay-safe retry, reconciliation window, correction cutoff
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [HTTP 메서드, REST, 멱등성](../network/http-methods-rest-idempotency.md)
 > - [멱등성 키와 중복 방지](../database/idempotency-key-and-deduplication.md)
+> - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 > - [트랜잭션 실전 시나리오](../database/transaction-case-studies.md)
 > - [Outbox, Saga, Eventual Consistency](../software-engineering/outbox-inbox-domain-events.md)
 > - [Service-to-Service Auth: mTLS, JWT, SPIFFE](../security/service-to-service-auth-mtls-jwt-spiffe.md)
 > - [Retry, Circuit Breaker, Bulkhead](../spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md)
 > - [Redo Log, Undo Log, Checkpoint, Crash Recovery](../database/redo-log-undo-log-checkpoint-crash-recovery.md)
+> - [Reconciliation Window / Cutoff Control 설계](./reconciliation-window-cutoff-control-design.md)
 
 ## 핵심 개념
 
@@ -120,6 +122,7 @@ reconciliation은 가끔 하는 보정 작업이 아니라, 결제 시스템의 
 4. 보정도 ledger에 남긴다
 
 즉 reconciliation은 "원장 수정"이 아니라 **정정 원장 추가**에 가깝다.
+또한 어떤 시점의 숫자를 확정할지, late arrival를 언제 correction으로 넘길지는 reconciliation window 정책으로 별도 관리하는 편이 안전하다.
 
 ### 5. 멱등성은 결제 시스템의 생명선이다
 

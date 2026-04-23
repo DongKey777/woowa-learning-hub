@@ -7,7 +7,7 @@
 > 관련 문서:
 > - [Quick Sort](./sort.md)
 > - [Binary Search Patterns](./binary-search-patterns.md)
-> - [Greedy 알고리즘](./greedy.md)
+> - [탐욕 / Greedy 알고리즘 개요](./greedy.md)
 
 > retrieval-anchor-keywords: quickselect, randomized quickselect, deterministic selection, median of medians, kth element, selection algorithm, pivot, expected linear time, worst-case linear time
 

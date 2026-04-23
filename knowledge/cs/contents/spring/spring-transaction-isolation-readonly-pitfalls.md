@@ -7,6 +7,8 @@
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+> - [Spring Routing DataSource Read/Write Transaction Boundaries](./spring-routing-datasource-read-write-transaction-boundaries.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 > - [Spring Batch Chunk / Retry / Skip](./spring-batch-chunk-retry-skip.md)

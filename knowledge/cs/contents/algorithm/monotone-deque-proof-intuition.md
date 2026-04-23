@@ -9,12 +9,21 @@
 > - [Sliding Window Patterns](./sliding-window-patterns.md)
 > - [Amortized Analysis Pitfalls](./amortized-analysis-pitfalls.md)
 
-> retrieval-anchor-keywords: monotone deque, monotonic queue proof, sliding window maximum, amortized O(n), invariant, dominated element, candidate pruning, deque invariant, proof intuition
+> 문서 역할: 이 문서는 `sliding window maximum/minimum`의 구현서가 아니라, `왜 monotonic deque가 맞는가`, `왜 뒤에서 pop해도 되는가`, `왜 O(n)인가`를 설명하는 proof companion이다.
+>
+> retrieval-anchor-keywords: monotone deque, monotone deque proof, monotonic deque proof, monotonic queue proof, monotonic queue correctness, monotonic queue invariant, sliding window maximum proof, sliding window minimum proof, max in every window proof, min in every window proof, recent k maximum proof, recent k minimum proof, contiguous index window proof, window extrema proof, why pop from back safe, why monotonic queue O(n), amortized O(n), invariant, dominated element, candidate pruning, deque invariant, proof intuition, practical routing, monotonic queue guide, sliding window router, 단조 덱 증명, 단조 큐 증명, 단조 큐 정당성, 슬라이딩 윈도우 최대값 증명, 슬라이딩 윈도우 최소값 증명, 왜 뒤에서 pop 해도 되는가, 왜 O(n)인가
+
+## 빠른 라우팅
+
+- `sliding window maximum`, `window minimum`, `최근 k개 최대/최소`처럼 구현이나 문제 풀이 루트를 먼저 찾는다면 [Monotonic Queue and Stack](../data-structure/monotonic-queue-and-stack.md)부터 보는 편이 맞다.
+- `substring`, `minimum window`, `고정/가변 window`처럼 deque가 필요한지부터 헷갈리면 [Sliding Window Patterns](./sliding-window-patterns.md)에서 패턴 라우팅을 먼저 잡는다.
+- `meeting rooms`, `reservation overlap`, `calendar overlap count`처럼 독립 일정 interval의 겹침을 묻는다면 이 문서가 아니라 [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)이나 [Interval Greedy Patterns](./interval-greedy-patterns.md)로 가야 한다.
+- `monotonic queue proof`, `sliding window maximum proof`, `단조 덱 증명`, `왜 뒤에서 pop`, `왜 O(n)`처럼 정당성이나 상각 분석이 핵심이면 이 문서가 직접 라우트다. 구현 감각은 위 두 문서로 다시 연결해서 보완한다.
 
 ## 핵심 개념
 
 단조 덱은 슬라이딩 윈도우에서 최댓값/최솟값 후보를 유지할 때 쓰는 구조다.  
-이 문서는 구현보다 "왜 맞는가"에 집중한다.
+[Monotonic Queue and Stack](../data-structure/monotonic-queue-and-stack.md)가 구현과 자료구조 감각의 메인 가이드라면, 이 문서는 "왜 맞는가"만 떼어내 설명한다.
 
 증명 아이디어는 두 개로 요약된다.
 

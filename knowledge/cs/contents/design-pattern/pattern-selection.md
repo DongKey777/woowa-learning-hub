@@ -4,11 +4,16 @@
 
 > 한 줄 요약: 패턴 선택은 유명한 이름을 맞히는 게임이 아니라, 무엇이 바뀌는지와 어디서 경계를 잘라야 하는지 판단하는 일이다.
 
+**난이도: 🟡 Intermediate**
+>
+> 문서 역할: 이 문서는 개별 패턴을 깊게 설명하는 문서가 아니라, 어떤 축의 문제인지 먼저 분류하는 **survey / decision guide**다.
+
 이 문서는 패턴의 이름을 외우는 대신, **어떤 문제에 어떤 구조를 쓰는지**를 빠르게 판단하기 위한 실전 비교표다.
 
 <details>
 <summary>Table of Contents</summary>
 
+- [이 문서를 어떻게 쓸까](#이-문서를-어떻게-쓸까)
 - [문제를 먼저 본다](#문제를-먼저-본다)
 - [생성 축을 본다](#생성-축을-본다)
 - [행동 축을 본다](#행동-축을-본다)
@@ -21,7 +26,19 @@
 
 </details>
 
+> retrieval-anchor-keywords: pattern selection, design pattern decision guide, change axis, boundary first, what changes most, backend pattern map, classic adapter, gof adapter, adapter pattern vs ports and adapters, ports and adapters, hexagonal architecture, inbound outbound port, composition over inheritance, command undo queue
+
 ---
+
+## 이 문서를 어떻게 쓸까
+
+- 패턴 이름이 아니라 문제 축이 헷갈릴 때 이 문서를 먼저 본다.
+- 특정 축이 정해졌다면 각 섹션의 `관련 문서` 링크에서 focused deep dive로 내려간다.
+- 즉 이 문서는 `선택 가이드`, 개별 패턴 문서는 `심화 참고서` 역할로 읽는 편이 맞다.
+- `adapter pattern`이라고만 떠올랐는데 실제로는 외부 SDK/레거시 인터페이스 번역 문제라면 [Adapter (어댑터)](./adapter.md)부터 본다.
+- `port`, `inbound/outbound adapter`, `use case boundary`, `hexagonal architecture`가 같이 떠오르면 [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md), [Hexagonal Ports](./hexagonal-ports-pattern-language.md)부터 본다.
+- 상속을 유지할지 조합으로 바꿀지 고민이면 [Composition over Inheritance](./composition-over-inheritance-practical.md)와 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)을 같이 본다.
+- 실행 요청을 queue, retry, undo 대상으로 다루고 싶으면 [Command Pattern Undo Queue](./command-pattern-undo-queue.md)로 바로 내려간다.
 
 ## 문제를 먼저 본다
 
@@ -44,6 +61,17 @@
 - `boundary first`
 - `what changes most`
 - `backend pattern map`
+- `classic adapter`
+- `gof adapter`
+- `adapter pattern vs ports and adapters`
+- `ports and adapters`
+- `hexagonal architecture`
+- `inbound outbound port`
+- `adapter vs facade vs proxy`
+- `composition over inheritance`
+- `상속보다 조합`
+- `command undo queue`
+- `command vs event`
 
 ---
 
@@ -89,13 +117,16 @@
 - 판단 결과와 사유가 필요하면 Policy Object다.
 - 실행 요청 자체를 옮기고 싶으면 Command다.
 
+`Command`가 여기서 의미하는 것은 "실행 요청을 객체로 캡슐화해 나중에 다룰 수 있게 만드는가"다.  
+undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-pattern-undo-queue.md)로, command side 유스케이스 경계는 아래 `흐름 축`의 handler/bus 문서로 이어서 읽으면 된다.
+
 ### 관련 문서
 
 - [전략 패턴](./strategy-pattern.md)
 - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
 - [Specification Pattern](./specification-pattern.md)
 - [Policy Object Pattern](./policy-object-pattern.md)
-- [Command Pattern Undo Queue](./command-pattern-undo-queue.md)
+- [Command Pattern Undo Queue](./command-pattern-undo-queue.md) - 실행 요청을 객체로 다루는 primer
 
 ---
 
@@ -105,7 +136,7 @@
 
 | 선택지 | 목적 | 잘 맞는 상황 | 주의할 점 |
 |---|---|---|---|
-| Adapter | 인터페이스를 맞춘다 | 외부 SDK 통합 | 의미 정리는 못한다 |
+| Adapter (classic GoF) | 인터페이스를 맞춘다 | 외부 SDK 통합, 레거시 번역 | 경계 설계 자체를 대신하진 못한다 |
 | Facade | 복잡성을 숨긴다 | 서브시스템 단순화 | 내부 흐름이 가려진다 |
 | Proxy | 호출을 제어한다 | 인증, 캐시, 지연 로딩 | 실제 객체보다 더 복잡해질 수 있다 |
 | Decorator | 책임을 덧붙인다 | 로깅, 압축, 암호화 | 체인이 길어지면 추적이 어렵다 |
@@ -115,18 +146,22 @@
 
 ### 실전 판단
 
-- 인터페이스 변환이면 Adapter.
+- 메서드/시그니처 번역이면 classic GoF Adapter다.
 - 사용자가 알아야 할 복잡도를 줄이면 Facade.
 - 접근/호출을 제어하면 Proxy.
 - 책임을 덧붙이면 Decorator.
 - 두 변화 축을 분리하면 Bridge.
 - 트리 구조를 표현하면 Composite.
 - 구조는 고정하고 연산만 늘리면 Visitor.
+- `port`, `inbound/outbound adapter`, `hexagonal`이 같이 나오면 구조 축이 아니라 아래 `경계와 저장소 축`으로 내려가야 한다.
+- 기존 상속 구조를 유지할지 역할 조합으로 풀지 자체가 고민이면 [Composition over Inheritance](./composition-over-inheritance-practical.md)를 먼저 본다.
 
 ### 관련 문서
 
+- [Adapter (어댑터)](./adapter.md) - classic GoF adapter로 인터페이스 번역 문제를 먼저 분리하는 primer
 - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 - [데코레이터 vs 프록시](./decorator-vs-proxy.md)
+- [Composition over Inheritance](./composition-over-inheritance-practical.md) - 상속 vs 조합을 구조 축에서 다시 정리하는 primer
 - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
 - [Composite Pattern: 쿼리 트리와 규칙 트리를 조립하는 방법](./composite-query-rule-trees.md)
 - [Visitor Pattern Trade-offs](./visitor-pattern-tradeoffs.md)
@@ -163,7 +198,17 @@
 - [Middleware Pattern Language](./middleware-pattern-language.md)
 - [Command Handler Pattern](./command-handler-pattern.md)
 - [Command Bus Pattern](./command-bus-pattern.md)
+- [Aggregate Version and Optimistic Concurrency Pattern](./aggregate-version-optimistic-concurrency-pattern.md)
+- [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
 - [Saga / Coordinator](./saga-coordinator-pattern-language.md)
+- [Orchestration vs Choreography Failure Handling](./orchestration-vs-choreography-failure-handling.md)
+- [Process Manager vs Saga Coordinator](./process-manager-vs-saga-coordinator.md)
+- [Process Manager Deadlines and Timeouts](./process-manager-deadlines-timeouts.md)
+- [Process Manager State Store and Recovery Pattern](./process-manager-state-store-recovery.md)
+- [Human Approval and Manual Review Workflow Pattern](./human-approval-manual-review-workflow-pattern.md)
+- [Workflow Owner vs Participant Context](./workflow-owner-vs-participant-context.md)
+- [Reservation, Hold, and Expiry as a Consistency Seam](./reservation-hold-expiry-consistency-seam.md)
+- [Compensation vs Reconciliation Pattern](./compensation-vs-reconciliation-pattern.md)
 - [Orchestration vs Choreography Pattern Language](./orchestration-vs-choreography-pattern-language.md)
 
 ---
@@ -174,7 +219,7 @@
 
 | 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
 |---|---|---|---|
-| Ports and Adapters | 외부 기술과 도메인을 분리 | backend 핵심 유스케이스 | 경계만 있고 의미가 없으면 안 됨 |
+| Ports and Adapters (hexagonal) | 외부 기술과 도메인을 분리 | backend 핵심 유스케이스, inbound/outbound boundary | 단순 wrapper 문제까지 다 끌고 오면 과해진다 |
 | Repository | 도메인 컬렉션처럼 저장/조회 | aggregate 저장 | 쿼리와 규칙을 섞지 말 것 |
 | Unit of Work | 변경을 한 트랜잭션으로 묶는다 | 여러 엔티티 변경 | 저장 경계를 도메인과 헷갈리지 말 것 |
 | Facade / Anti-corruption seam | 외부 개념을 번역 | 레거시/외부 API 통합 | 단순화와 번역을 함께 생각 |
@@ -182,7 +227,8 @@
 
 ### 실전 판단
 
-- 도메인과 기술을 분리하려면 Ports and Adapters다.
+- 도메인과 기술을 분리하고 `port` 계약을 세우려면 Ports and Adapters (hexagonal)다.
+- generic `adapter pattern` 질문인데 실제로는 메서드 번역만 필요하면 위 `구조 축`의 classic GoF Adapter로 되돌아간다.
 - 저장소처럼 보이지만 조회가 복잡하면 Repository만으로 버티지 말고 query side를 본다.
 - 여러 변경을 한 번에 반영하면 Unit of Work를 떠올린다.
 - 외부 모델이 도메인을 오염시키면 anti-corruption seam이나 translation layer를 둔다.
@@ -190,13 +236,29 @@
 
 ### 관련 문서
 
-- [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+- [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md) - classic adapter와 hexagonal boundary를 먼저 분리해 주는 비교 문서
+- [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md) - inbound/outbound port naming과 boundary contract에 집중하는 보조 문서
 - [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
+- [Repository Boundary: Aggregate Persistence vs Read Model](./repository-boundary-aggregate-vs-read-model.md)
+- [Read Model Staleness and Read-Your-Writes](./read-model-staleness-read-your-writes.md)
+- [Projection Rebuild, Backfill, and Cutover Pattern](./projection-rebuild-backfill-cutover-pattern.md)
+- [Read Model Cutover Guardrails](./read-model-cutover-guardrails.md)
+- [Projection Lag Budgeting Pattern](./projection-lag-budgeting-pattern.md)
+- [Projection Freshness SLO Pattern](./projection-freshness-slo-pattern.md)
 - [Unit of Work Pattern](./unit-of-work-pattern.md)
 - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
 - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
 - [Anti-Corruption Translation Map Pattern](./anti-corruption-translation-map-pattern.md)
+- [Anti-Corruption Layer Operational Pattern](./anti-corruption-layer-operational-pattern.md)
+- [Anti-Corruption Contract Test Pattern](./anti-corruption-contract-test-pattern.md)
 - [Event Envelope Pattern](./event-envelope-pattern.md)
+- [Domain Event Translation Pipeline](./domain-event-translation-pipeline.md)
+- [Event Upcaster Compatibility Patterns](./event-upcaster-compatibility-patterns.md)
+- [Snapshot Versioning and Compatibility Pattern](./snapshot-versioning-compatibility-pattern.md)
+- [Tolerant Reader for Event Contracts](./tolerant-reader-event-contract-pattern.md)
+- [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
+- [Idempotent Consumer and Projection Dedup Pattern](./idempotent-consumer-projection-dedup-pattern.md)
+- [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
 
 ---
 

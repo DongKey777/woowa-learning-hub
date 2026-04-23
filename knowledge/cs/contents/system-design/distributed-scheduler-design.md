@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 분산 스케줄러는 시간을 기준으로 job을 배치하고, 중복 실행과 장애 전파를 막으면서 정해진 시점에 작업을 실행하는 시스템이다.
 
-retrieval-anchor-keywords: distributed scheduler, cron job, lease, leader election, delayed job, trigger, misfire, worker heartbeat, schedule drift, timezone, exactly once execution
+retrieval-anchor-keywords: distributed scheduler, cron job, lease, leader election, delayed job, trigger, misfire, worker heartbeat, schedule drift, timezone, exactly once execution, at-least-once execution, idempotent job, dedup run key, cutover orchestration, migration workflow
 
 **난이도: 🔴 Advanced**
 
@@ -12,7 +12,11 @@ retrieval-anchor-keywords: distributed scheduler, cron job, lease, leader electi
 > - [Job Queue 설계](./job-queue-design.md)
 > - [Workflow Orchestration + Saga 설계](./workflow-orchestration-saga-design.md)
 > - [Distributed Lock 설계](./distributed-lock-design.md)
+> - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 > - [Multi-Region Active-Active 설계](./multi-region-active-active-design.md)
+> - [Traffic Shadowing / Progressive Cutover 설계](./traffic-shadowing-progressive-cutover-design.md)
+> - [Zero-Downtime Schema Migration Platform 설계](./zero-downtime-schema-migration-platform-design.md)
+> - [Replay / Repair Orchestration Control Plane 설계](./replay-repair-orchestration-control-plane-design.md)
 
 ## 핵심 개념
 
@@ -137,6 +141,8 @@ Scheduler API
 - 완료 상태를 durable하게 저장한다
 - side effect는 외부 key로 dedup한다
 
+run key를 어떤 저장소에 얼마나 오래 보관할지, 그리고 retry를 replay-safe하게 만들지는 [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)와 같이 보면 더 선명해진다.
+
 예를 들어 알림, 정산, 리포트 배치는 중복 실행이 곧 장애로 이어질 수 있다.
 
 ## 실전 시나리오
@@ -233,4 +239,3 @@ public Instant nextRun(CronExpression cron, ZoneId zone, Instant now) {
 ## 한 줄 정리
 
 분산 스케줄러는 시간 기반 트리거를 안정적으로 배치하기 위해 lease, misfire policy, idempotency, failover를 함께 설계하는 시스템이다.
-

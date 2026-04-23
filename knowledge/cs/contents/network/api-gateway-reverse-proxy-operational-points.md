@@ -1,6 +1,25 @@
 # API Gateway, Reverse Proxy 운영 포인트
 
+**난이도: 🟡 Intermediate**
+
 > 프록시를 "중간 서버"로만 이해하면 운영에서 자주 놓치는 지점들을 정리한 문서
+
+> 관련 문서:
+> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
+> - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
+> - [Proxy Retry Budget Discipline](./proxy-retry-budget-discipline.md)
+> - [Forwarded / X-Forwarded-For / X-Real-IP 신뢰 경계](./forwarded-x-forwarded-for-x-real-ip-trust-boundary.md)
+> - [Expect 100-continue, Proxy Request Buffering](./expect-100-continue-proxy-request-buffering.md)
+> - [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)
+> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](./client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+> - [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)
+> - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
+> - [Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB](./vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md)
+> - [h2c, Cleartext Upgrade, Prior Knowledge, Routing](./h2c-cleartext-upgrade-prior-knowledge-routing.md)
+> - [TLS close_notify, FIN/RST, Truncation](./tls-close-notify-fin-rst-truncation.md)
+> - [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](../spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
+
+retrieval-anchor-keywords: API gateway, reverse proxy, proxy chain, timeout budget propagation, upstream timeout, rate limit, auth, forwarded headers, protocol bridge, request routing
 
 <details>
 <summary>Table of Contents</summary>
@@ -81,6 +100,9 @@
 - 응답을 받아서 클라이언트에 바로 흘려보낼지
 
 버퍼링은 안정성을 높이지만 메모리 사용량과 지연을 늘릴 수 있다.
+특히 대용량 업로드 API는 [Expect 100-continue, Proxy Request Buffering](./expect-100-continue-proxy-request-buffering.md)처럼 auth와 body 업로드 순서를 따로 봐야 한다.
+또 early reject를 쓸수록 [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)처럼 unread body 정리와 keep-alive 재사용 정책도 함께 설계해야 한다.
+응답 경로에서는 [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)처럼 gzip/brotli가 chunk cadence를 바꾸는 점도 같이 봐야 한다.
 
 ### 4. keep-alive와 connection pool을 신경 써야 한다
 
@@ -109,6 +131,7 @@
 - retry 횟수
 - 4xx/5xx 비율
 - request id 연동
+- client disconnect / `499` 비율과 backend cancel 전파 지연
 
 이 정보가 있어야 "어느 계층에서 늦었는지"를 구분할 수 있다.
 

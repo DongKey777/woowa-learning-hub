@@ -6,8 +6,11 @@
 
 > 관련 문서:
 > - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
+> - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
+> - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 > - [Spring Testcontainers Boundary Strategy](./spring-testcontainers-boundary-strategy.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring Transaction Synchronization Callbacks and `afterCommit` Pitfalls](./spring-transaction-synchronization-aftercommit-pitfalls.md)
 

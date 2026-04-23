@@ -2,6 +2,10 @@
 
 > 한 줄 요약: CFS는 CPU 시간을 "같이 나누는 것"이 아니라, `vruntime` 기준으로 상대적 공정성을 맞춰서 여러 워크로드의 체감 편차를 줄인다.
 
+**난이도: 🔴 Advanced**
+
+> retrieval-anchor-keywords: CFS, nice, vruntime, schedstat, scheduler fairness, run queue, weight, CPU fairness, wakeup latency, scheduling delay
+
 ## 핵심 개념
 
 리눅스의 `CFS(Completely Fair Scheduler)`는 각 태스크가 CPU를 얼마나 썼는지를 단순 누적 시간으로 보지 않고, `weight`를 반영한 가상 실행 시간(`vruntime`)으로 비교한다.
@@ -22,6 +26,8 @@
 - [Scheduler Fairness, Page Cache, File System Basics](./scheduler-fairness-page-cache.md)
 - [컨테이너, cgroup, namespace](./container-cgroup-namespace.md)
 - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
+- [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
+- [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)
 
 ## 깊이 들어가기
 

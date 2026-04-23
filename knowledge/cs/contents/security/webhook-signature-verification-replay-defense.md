@@ -7,11 +7,12 @@
 > 관련 문서:
 > - [API Key, HMAC Signed Request, Replay Protection](./api-key-hmac-signature-replay-protection.md)
 > - [Secret Management, Rotation, Leak Patterns](./secret-management-rotation-leak-patterns.md)
+> - [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
 > - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](../network/api-gateway-reverse-proxy-operational-points.md)
 
-retrieval-anchor-keywords: webhook signature, raw body, event id, idempotency, replay defense, provider secret, HMAC, timestamp window, delivery retry, constant-time compare
+retrieval-anchor-keywords: webhook signature, raw body, event id, idempotency, replay defense, provider secret, HMAC, timestamp window, delivery retry, constant-time compare, replay containment
 
 ---
 

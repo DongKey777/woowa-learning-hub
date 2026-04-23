@@ -23,12 +23,12 @@ top-level helpers — no direct path math. Pure stdlib.
 from __future__ import annotations
 
 import json
-import re
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from scripts.workbench.core.answer_classifier import classify_drill_answer
 from scripts.workbench.core.paths import repo_memory_dir
 
 from . import scoring
@@ -41,14 +41,6 @@ DEFAULT_TTL_TURNS = 3
 # at a time — a new offer cannot be generated while drill-pending.json is
 # live (either unanswered or still inside TTL). This is enforced in
 # build_offer_if_due via the ``pending`` argument.
-
-_DRILL_ANSWER_NEGATIVE_KEYWORDS = {
-    "뭐야", "어떻게", "왜", "알려줘", "설명해", "차이", "무엇",
-    "what", "why", "how", "explain",
-}
-
-_TOKEN_RE = re.compile(r"[0-9A-Za-z가-힣_]+")
-
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -108,53 +100,13 @@ def decrement_ttl(pending: dict | None) -> dict | None:
 
 
 # ---------------------------------------------------------------------------
-# Answer routing (4-condition)
+# Answer routing (4-condition) — delegates to answer_classifier so the rule
+# stays single-source. Kept as a thin wrapper because external callers
+# (coach_run, tests, docs) reference ``drill.route_answer``.
 # ---------------------------------------------------------------------------
 
-def _tokenize(text: str) -> list[str]:
-    return [m.lower() for m in _TOKEN_RE.findall(text or "")]
-
-
 def route_answer(prompt: str, pending: dict | None) -> tuple[bool, dict]:
-    """Decide whether ``prompt`` is an answer to ``pending``.
-
-    Returns (is_answer, signals). 3 of 4 conditions required:
-      a. length ≥ 20 chars
-      b. no trailing ? / ？
-      c. lacks question-word keywords
-      d. token overlap with pending question ≥ 0.2
-    """
-    signals = {
-        "length_ok": False,
-        "not_question": False,
-        "no_question_word": False,
-        "token_overlap": 0.0,
-        "has_pending": pending is not None,
-    }
-    if not pending:
-        return False, signals
-
-    body = (prompt or "").strip()
-    if len(body) >= 20:
-        signals["length_ok"] = True
-    if not body.endswith("?") and not body.endswith("？"):
-        signals["not_question"] = True
-    lower = body.lower()
-    if not any(kw in lower for kw in _DRILL_ANSWER_NEGATIVE_KEYWORDS):
-        signals["no_question_word"] = True
-
-    question_tokens = set(_tokenize(pending.get("question") or ""))
-    prompt_tokens = set(_tokenize(body))
-    if question_tokens:
-        overlap = len(prompt_tokens & question_tokens) / max(len(question_tokens), 1)
-        signals["token_overlap"] = round(overlap, 3)
-
-    satisfied = sum(
-        1 for k in ("length_ok", "not_question", "no_question_word") if signals[k]
-    )
-    if signals["token_overlap"] >= 0.2:
-        satisfied += 1
-    return satisfied >= 3, signals
+    return classify_drill_answer(prompt, pending)
 
 
 # ---------------------------------------------------------------------------
@@ -232,19 +184,41 @@ _DRILL_TEMPLATES_BY_CATEGORY = {
 _DEFAULT_TEMPLATE = "{focus}의 핵심 원리와 실제 적용 상황을 한 번 설명해 보세요."
 
 
+_RECENCY_RANK = {"active": 0, "cooling": 1, "dormant": 2}
+
+
+def _pick_by_recency(items: list[str], recency_by_point: dict[str, str]) -> str:
+    """Stable tiebreak: active > cooling > dormant, else first item.
+
+    List order is preserved when recency info is absent so callers without a
+    unified_profile still see the same deterministic first element.
+    """
+    if not recency_by_point:
+        return items[0]
+    ranked = sorted(
+        enumerate(items),
+        key=lambda pair: (
+            _RECENCY_RANK.get(recency_by_point.get(pair[1], ""), 3),
+            pair[0],
+        ),
+    )
+    return ranked[0][1]
+
+
 def _pick_focus(unified_profile: dict | None) -> str | None:
     if not unified_profile:
         return None
+    coach_view = unified_profile.get("coach_view") or {}
+    recency_by_point = coach_view.get("recency_by_point") or {}
     reconciled = unified_profile.get("reconciled") or {}
     for key in ("priority_focus", "empirical_only_gaps", "theoretical_only_gaps"):
         items = reconciled.get(key) or []
         if items:
-            return items[0]
-    coach_view = unified_profile.get("coach_view") or {}
+            return _pick_by_recency(items, recency_by_point)
     for key in ("repeated_points", "dominant_points", "underexplored_points"):
         items = coach_view.get(key) or []
         if items:
-            return items[0]
+            return _pick_by_recency(items, recency_by_point)
     return None
 
 
@@ -289,6 +263,15 @@ def build_offer_if_due(
     expected_terms: list[str] = []
     if (session_payload or {}).get("primary_topic"):
         expected_terms.append(session_payload["primary_topic"])
+
+    # Pull the learner's active weak_tags from cs_view so the next scoring
+    # pass can actually measure whether the recent gap was closed. Without
+    # this, expected_terms only echoes primary_topic and the feedback loop
+    # from drill scoring → next drill is blind to the previous weak axes.
+    cs_view = (unified_profile or {}).get("cs_view") or {}
+    for tag in cs_view.get("weak_tags") or []:
+        if tag and tag not in expected_terms:
+            expected_terms.append(tag)
 
     return {
         "drill_session_id": f"drill-{uuid.uuid4().hex[:12]}",

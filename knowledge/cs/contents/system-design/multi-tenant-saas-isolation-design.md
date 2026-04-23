@@ -11,8 +11,10 @@
 > - [Partition Pruning and Hot/Cold Data](../database/partition-pruning-hot-cold-data.md)
 > - [인증과 인가의 차이](../security/authentication-vs-authorization.md)
 > - [Modular Monolith Boundary Enforcement](../software-engineering/modular-monolith-boundary-enforcement.md)
+> - [Cell-Based Architecture / Blast Radius Isolation 설계](./cell-based-architecture-blast-radius-isolation-design.md)
+> - [Tenant Partition Strategy / Reassignment 설계](./tenant-partition-strategy-reassignment-design.md)
 
-> retrieval-anchor-keywords: multi-tenant, noisy neighbor, tenant isolation, shared schema, separate schema, separate database, rate limit, RBAC, data residency
+> retrieval-anchor-keywords: multi-tenant, noisy neighbor, tenant isolation, shared schema, separate schema, separate database, rate limit, RBAC, data residency, cell architecture, blast radius, tenant partition strategy
 
 ---
 

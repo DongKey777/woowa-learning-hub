@@ -5,10 +5,12 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
-> - [Java 동시성 유틸리티](./5.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
 > - [VarHandle, Unsafe, Atomics](./varhandle-unsafe-atomics.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
+
+retrieval-anchor-keywords: JCStress, concurrency testing harness, JMM outcome testing, race condition test, publication safety test, acceptable interesting forbidden outcome, atomicity visibility ordering, lost update concurrency test, OpenJDK jcstress, stress test memory model
 
 <details>
 <summary>Table of Contents</summary>
@@ -82,7 +84,7 @@ JCStress는 구현이 다음을 만족하는지 확인하는 데 강하다.
 JMM(Java Memory Model)을 모르면 결과 해석이 흔들린다.  
 예를 들어 "한 스레드가 쓴 값이 다른 스레드에 왜 안 보이지?"는 버그일 수도 있고, **허용된 reordering 결과**일 수도 있다.
 
-따라서 JCStress는 [JVM, GC, JMM](./4.md)와 같이 봐야 한다.
+따라서 JCStress는 [JVM, GC, JMM](./jvm-gc-jmm-overview.md)와 같이 봐야 한다.
 
 ### 4. 관측 가능한 결과를 정의한다
 

@@ -6,10 +6,13 @@
 
 > 관련 문서:
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
+> - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Cache-Control 실전](../network/cache-control-practical.md)
 > - [분산 캐시 설계](../system-design/distributed-cache-design.md)
+
+retrieval-anchor-keywords: Spring Cache abstraction, @Cacheable trap, cache key design, self invocation cacheable, cache invalidation, cache stale data, @CacheEvict, @CachePut, CacheManager boundary, transaction boundary with cache
 
 ---
 

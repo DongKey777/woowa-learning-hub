@@ -2,13 +2,17 @@
 
 > 한 줄 요약: Adapter chaining은 여러 변환을 얹어 호환성을 만들지만, 단계가 늘면 디버깅과 의미 추적이 어려워진다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Adapter (어댑터) 패턴](./adapter.md)
+> - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+> - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
 > - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
 > - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
+
+> retrieval-anchor-keywords: adapter chaining smell, adapter chain smell, chained adapters, multiple adapters, adapter layering smell, translation pipeline smell, multi-step conversion, double adapter, adapter over adapter, boundary translation stack, translator layering smell
 
 ---
 
@@ -21,13 +25,12 @@
 - 예외가 어느 층에서 생겼는지 모른다
 - 변환 책임이 분산된다
 
-### Retrieval Anchors
+### 질문 분기
 
-- `adapter chaining`
-- `adapter layering smell`
-- `translation pipeline`
-- `debugging complexity`
-- `multi-step conversion`
+- 인터페이스 하나만 맞추는 문제면 [Adapter (어댑터) 패턴](./adapter.md)으로 충분하다.
+- facade, adapter, proxy 중 무엇인지 헷갈리면 [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)부터 본다.
+- hexagonal 구조에서 port와 adapter 경계를 어디에 둘지 고민이면 [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)으로 간다.
+- 이미 `AAdapter -> BAdapter -> CAdapter`가 생겨 변환 위치가 안 보이면 이 문서가 맞다.
 
 ---
 
@@ -48,6 +51,8 @@
 
 핵심 번역은 translator로 모으고, 호출 순서는 facade나 orchestration으로 둔다.  
 성격이 다르면 같은 계층에 두지 않는다.
+
+중요한 건 "층이 많다" 자체가 아니라 "모든 층이 adapter라는 이름으로 뭉개졌느냐"다. port, facade, translator처럼 역할이 드러나면 healthy layering일 수 있지만, 전부 adapter로 겹치면 boundary architecture가 아니라 chaining smell에 가깝다.
 
 ---
 
@@ -128,4 +133,3 @@ PaymentFacade facade = new PaymentFacade(new PaymentTranslator(), new ExternalCl
 ## 한 줄 정리
 
 Adapter chaining은 호환성을 만들지만, 단계가 늘면 디버깅과 책임 추적이 어려워지는 냄새가 된다.
-

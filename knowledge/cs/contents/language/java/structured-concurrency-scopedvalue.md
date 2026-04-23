@@ -7,10 +7,13 @@
 > 관련 문서:
 > - [CompletableFuture Execution Model and Common Pool Pitfalls](./completablefuture-execution-model-common-pool-pitfalls.md)
 > - [CompletableFuture Cancellation Semantics](./completablefuture-cancellation-semantics.md)
+> - [Structured Fan-out With `HttpClient`](./structured-fanout-httpclient.md)
 > - [ThreadLocal Leaks and Context Propagation](./threadlocal-leaks-context-propagation.md)
+> - [`InheritableThreadLocal` vs `ScopedValue` Context Propagation Boundaries](./inheritablethreadlocal-vs-scopedvalue-context-propagation.md)
+> - [Virtual Thread Migration: Pinning, `ThreadLocal`, and Pool Boundary Strategy](./virtual-thread-migration-pinning-threadlocal-pool-boundaries.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 
-> retrieval-anchor-keywords: structured concurrency, StructuredTaskScope, ScopedValue, scope-bound context, cancellation propagation, virtual threads, async task group, structured lifetime, context propagation, preview API
+> retrieval-anchor-keywords: structured concurrency, StructuredTaskScope, ScopedValue, scope-bound context, cancellation propagation, virtual threads, async task group, structured lifetime, context propagation, preview API, InheritableThreadLocal, structured fan-out HttpClient, request-scoped task group
 
 <details>
 <summary>Table of Contents</summary>

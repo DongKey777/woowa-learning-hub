@@ -5,11 +5,14 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
-> - [Java 동시성 유틸리티](./5.md)
-> - [ClassLoader, Exception 설계, equals/hashCode/compareTo](./6.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
+> - [ABA Problem, `AtomicStampedReference`, and `AtomicMarkableReference`](./aba-problem-atomicstampedreference-markable-reference.md)
+> - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 > - [CPU 캐시, 코히어런시, 메모리 배리어](../../operating-system/cpu-cache-coherence-memory-barrier.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](../../operating-system/context-switching-deadlock-lockfree.md)
+
+> retrieval-anchor-keywords: VarHandle, Unsafe, atomics, CAS, compare and set, AtomicInteger, AtomicLong, ABA problem, AtomicStampedReference, memory ordering, low-level concurrency, fence
 
 ## 핵심 개념
 
@@ -73,6 +76,7 @@ public class Counter {
 `AtomicInteger` 같은 클래스는 결국 CAS를 숨겨 놓은 고수준 도구다.
 
 VarHandle은 이보다 더 저수준이며, 필요한 경우 acquire/release/opaque 같은 접근 모드를 다룰 수 있다.
+pointer-like state에서 ABA를 어떻게 읽어야 하는지는 [ABA Problem, AtomicStampedReference, and AtomicMarkableReference](./aba-problem-atomicstampedreference-markable-reference.md)에서 더 자세히 다룬다.
 
 ## 실전 시나리오
 

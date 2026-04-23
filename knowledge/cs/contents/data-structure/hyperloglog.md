@@ -5,11 +5,14 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Count-Min Sketch vs HyperLogLog](./count-min-vs-hyperloglog.md)
+> - [Approximate Counting for Rate Limiting and Observability](./approximate-counting-rate-limiting-observability.md)
+> - [HDR Histogram](./hdr-histogram.md)
+> - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
 > - [Bloom Filter](./bloom-filter.md)
 > - [Count-Min Sketch](./count-min-sketch.md)
-> - [Top-k Streaming and Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
 
-> retrieval-anchor-keywords: hyperloglog, HLL, cardinality estimation, distinct count, approximate distinct, register, leading zeros, streaming analytics, unique visitors, sketch
+> retrieval-anchor-keywords: hyperloglog, HLL, cardinality estimation, distinct count, approximate distinct, register, leading zeros, streaming analytics, observability, telemetry, high-cardinality metrics, unique visitors, sketch
 
 ## 핵심 개념
 

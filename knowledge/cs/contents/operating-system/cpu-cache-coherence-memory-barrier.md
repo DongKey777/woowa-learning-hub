@@ -7,7 +7,7 @@
 > 관련 문서:
 > - [false sharing, cache line](./false-sharing-cache-line.md)
 > - [CPU Affinity, IRQ Affinity, Core Locality](./cpu-affinity-irq-affinity-core-locality.md)
-> - [Scheduler Classes, nice, CPU Fairness](./scheduler-classes-nice-cpu-fairness.md)
+> - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
 > - [Workqueues, Kthreads, Debugging](./workqueues-kthreads-debugging.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 

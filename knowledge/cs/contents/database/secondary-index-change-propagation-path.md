@@ -10,6 +10,7 @@ retrieval-anchor-keywords: secondary index propagation, clustered index update, 
 
 - 관련 문서:
   - [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md)
+  - [Hot Updates, Secondary Index Churn, and Write-Path Contention](./hot-update-secondary-index-churn.md)
   - [Change Buffer Myths vs Reality](./change-buffer-myths-vs-reality.md)
   - [Clustered Primary Key Update Cost](./clustered-primary-key-update-cost.md)
   - [Redo Log, Undo Log, Checkpoint, Crash Recovery](./redo-log-undo-log-checkpoint-crash-recovery.md)

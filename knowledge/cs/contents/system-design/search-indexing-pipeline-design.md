@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 검색 인덱싱 파이프라인은 원본 데이터를 정규화하고 토큰화해 검색 엔진에 반영하는 지속적 데이터 처리 시스템이다.
 
-retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, tokenization, inverted index, refresh latency, reindex, schema evolution, backfill, dead letter queue, freshness
+retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, tokenization, inverted index, refresh latency, reindex, schema evolution, backfill, dead letter queue, freshness, alias cutover, cdc source, dual read verification
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,14 @@ retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, toke
 > - [Job Queue 설계](./job-queue-design.md)
 > - [Audit Log Pipeline 설계](./audit-log-pipeline-design.md)
 > - [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)
+> - [Change Data Capture / Outbox Relay 설계](./change-data-capture-outbox-relay-design.md)
+> - [Historical Backfill / Replay Platform 설계](./historical-backfill-replay-platform-design.md)
+> - [Zero-Downtime Schema Migration Platform 설계](./zero-downtime-schema-migration-platform-design.md)
+> - [Dual-Read Comparison / Verification Platform 설계](./dual-read-comparison-verification-platform-design.md)
+> - [Projection Rebuild, Backfill, and Cutover Pattern](../design-pattern/projection-rebuild-backfill-cutover-pattern.md)
+> - [Event Upcaster Compatibility Patterns](../design-pattern/event-upcaster-compatibility-patterns.md)
+> - [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](../language/java/json-null-missing-unknown-field-schema-evolution.md)
+> - [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](../database/cdc-gap-repair-reconciliation-playbook.md)
 
 ## 핵심 개념
 
@@ -91,6 +99,7 @@ CDC / Event Stream
 - reindex job 분리
 
 이런 구조가 없으면 운영 중 schema change가 곧 서비스 장애가 된다.
+source DB schema와 search document schema를 같이 바꾸는 경우에는 CDC payload 버전, application rollout, index alias 전환 순서를 함께 설계해야 한다.
 
 ### 5. Freshness와 consistency
 
@@ -115,6 +124,8 @@ CDC / Event Stream
 - reindex를 idempotent하게 만들어야 한다
 - alias를 통해 무중단 전환해야 한다
 - backfill이 live indexing을 방해하지 않아야 한다
+
+대규모 재색인은 사실상 replay 작업이므로 범위 지정, checkpoint, live path 보호 전략은 [Historical Backfill / Replay Platform 설계](./historical-backfill-replay-platform-design.md)와 거의 같은 문제다.
 
 ### 7. 장애와 DLQ
 
@@ -227,4 +238,3 @@ public IndexedDocument build(ChangeEvent event) {
 ## 한 줄 정리
 
 Search indexing pipeline은 원본 변경을 검색 가능한 형태로 지속 반영하고, freshness와 재처리, 스키마 진화를 함께 다루는 시스템이다.
-

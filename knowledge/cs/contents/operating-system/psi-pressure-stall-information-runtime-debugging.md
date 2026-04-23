@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+> - [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
 > - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)

@@ -386,7 +386,7 @@
 전문가 간 주제가 겹칠 때 반드시 **상호 참조**한다:
 
 ```markdown
-> 이 주제의 OS 관점 설명은 [컨텍스트 스위칭](./contents/operating-system/context-switching-deadlock-lockfree.md)을 참고하라.
+> 이 주제의 OS 관점 설명은 [컨텍스트 스위칭] (./contents/operating-system/context-switching-deadlock-lockfree.md)을 참고하라.
 ```
 
 ### 난이도 표기

@@ -10,6 +10,9 @@
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
 > - [MTU, Fragmentation, MSS, Blackhole](./mtu-fragmentation-mss-blackhole.md)
 > - [FIN, RST, Half-Close, EOF](./fin-rst-half-close-eof-semantics.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+> - [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md)
+> - [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)
 
 retrieval-anchor-keywords: Nagle algorithm, delayed ACK, TCP_NODELAY, small packet latency, coalescing, interactive traffic, request-response stall, TCP corking
 
@@ -120,6 +123,7 @@ TCP는 무작정 작은 세그먼트를 계속 보내면 비효율적이기 때�
 - 이미 상위 계층에서 충분히 배치하는 경우
 
 패킷을 덜 보내는 게 항상 좋은 것이 아니라, **어느 레벨에서 묶을지**가 중요하다.
+특히 TLS record coalescing이나 응답 압축이 함께 있으면 작은 write의 체감은 [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md), [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)와 같이 봐야 한다.
 
 ## 실전 시나리오
 

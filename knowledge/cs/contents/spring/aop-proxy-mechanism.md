@@ -5,14 +5,17 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
+> - [Spring Early Bean References and Circular Proxy Traps](./spring-early-bean-reference-circular-proxy-traps.md)
+> - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 > - [Spring Method Validation Proxy Pitfalls](./spring-method-validation-proxy-pitfalls.md)
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
 
-retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, JDK dynamic proxy, CGLIB, self-invocation, exposeProxy, AopContext, proxyBeanMethods
+retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, JDK dynamic proxy, CGLIB, self-invocation, exposeProxy, AopContext, proxyBeanMethods, early bean reference, circular dependency, proxy annotation matrix
 
 ---
 

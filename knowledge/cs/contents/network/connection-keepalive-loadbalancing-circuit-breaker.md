@@ -1,6 +1,19 @@
 # Connection Keep-Alive, Load Balancing, Circuit Breaker
 
+**난이도: 🔴 Advanced**
+
 > 연결 재사용, 분산, 차단은 따로 보는 개념처럼 보이지만 실제 장애는 이 셋이 엮여서 난다
+
+> 관련 문서:
+> - [HTTP Keep-Alive Timeout Mismatch: Deeper Cases](./http-keepalive-timeout-mismatch-deeper-cases.md)
+> - [gRPC Keepalive, GOAWAY, Max Connection Age](./grpc-keepalive-goaway-max-connection-age.md)
+> - [Accept Queue, SYN Backlog, Listen Overflow](./accept-queue-syn-backlog-listen-overflow.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
+> - [Proxy Retry Budget Discipline](./proxy-retry-budget-discipline.md)
+> - [Spring RestClient vs WebClient Lifecycle Boundaries](../spring/spring-restclient-vs-webclient-lifecycle-boundaries.md)
+> - [Spring WebClient Connection Pool and Timeout Tuning](../spring/spring-webclient-connection-pool-timeout-tuning.md)
+
+retrieval-anchor-keywords: connection keep-alive, load balancing, circuit breaker, connection pool, keepalive timeout, connection draining, retry amplification, stale socket, unhealthy upstream
 
 <details>
 <summary>Table of Contents</summary>
@@ -24,6 +37,17 @@
 - 장애 난 서버를 계속 호출해서 전체 자원을 소모한 경우
 
 그래서 keep-alive, load balancing, circuit breaker는 따로 외우기보다 **서로의 부작용을 줄이는 장치**로 보는 편이 좋다.
+
+### Retrieval Anchors
+
+- `connection keep-alive`
+- `load balancing`
+- `circuit breaker`
+- `connection pool`
+- `keepalive timeout`
+- `connection draining`
+- `retry amplification`
+- `stale socket`
 
 ---
 

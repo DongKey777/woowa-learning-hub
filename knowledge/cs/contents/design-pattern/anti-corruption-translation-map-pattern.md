@@ -2,9 +2,12 @@
 
 > 한 줄 요약: Translation Map은 외부 시스템의 코드와 상태값을 내부 도메인 언어로 고정 매핑해 모델 오염을 막는다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Bounded Context Relationship Patterns](./bounded-context-relationship-patterns.md)
+> - [Anti-Corruption Layer Operational Pattern](./anti-corruption-layer-operational-pattern.md)
+> - [Anti-Corruption Contract Test Pattern](./anti-corruption-contract-test-pattern.md)
 > - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
 > - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
 > - [Adapter (어댑터) 패턴](./adapter.md)
@@ -29,6 +32,8 @@ Translation Map은 그 코드들을 내부 언어로 한 번만 번역하는 표
 - `external code mapping`
 - `status code translation`
 - `domain enum mapping`
+- `published language`
+- `unknown code mapping`
 
 ---
 
@@ -141,4 +146,3 @@ Translation map은 anti-corruption layer의 가장 작은 단위다.
 ## 한 줄 정리
 
 Anti-corruption Translation Map은 외부 코드값을 내부 도메인 언어로 고정 번역해 모델 오염을 막는다.
-

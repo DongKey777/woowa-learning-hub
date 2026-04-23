@@ -1,5 +1,7 @@
 # Annotation Processing
 
+**난이도: 🟡 Intermediate**
+
 > 컴파일 타임에 코드를 생성하거나 검증하는 자바 메타프로그래밍 정리
 
 <details>

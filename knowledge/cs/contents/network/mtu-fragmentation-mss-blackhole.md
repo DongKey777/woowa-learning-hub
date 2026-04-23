@@ -9,6 +9,9 @@
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
+> - [HTTP Response Compression, Buffering, Streaming Trade-offs](./http-response-compression-buffering-streaming-tradeoffs.md)
+
+retrieval-anchor-keywords: MTU, fragmentation, MSS, PMTUD, blackhole, ICMP fragmentation needed, DF bit, tunnel overhead, path MTU, packet too big
 
 <details>
 <summary>Table of Contents</summary>
@@ -35,6 +38,17 @@ MTU 이슈는 평소에는 티가 잘 안 난다.
 그래서 MTU 문제는 종종 애플리케이션 문제, TLS 문제, 네트워크 불안정으로 오해된다.
 
 핵심은 **경로 중간에 있는 장비가 더 큰 패킷을 처리하지 못할 때 어떤 일이 벌어지는가**다.
+
+### Retrieval Anchors
+
+- `MTU`
+- `fragmentation`
+- `MSS`
+- `PMTUD`
+- `blackhole`
+- `ICMP fragmentation needed`
+- `tunnel overhead`
+- `path MTU`
 
 ---
 

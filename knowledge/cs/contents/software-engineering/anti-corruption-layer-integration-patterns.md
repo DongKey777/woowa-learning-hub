@@ -7,8 +7,12 @@
 > 관련 문서:
 > - [API Versioning, Contract Testing, Anti-Corruption Layer](./api-versioning-contract-testing-anti-corruption-layer.md)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
+> - [DDD Bounded Context Failure Patterns](./ddd-bounded-context-failure-patterns.md)
 > - [Monolith to MSA Failure Patterns](./monolith-to-msa-failure-patterns.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
+> - [Contract Drift Detection and Rollout Governance](./contract-drift-detection-rollout-governance.md)
+>
+> retrieval-anchor-keywords: anti corruption layer, ACL, translation layer, legacy integration, external DTO leak, domain contamination, contract drift, adapter translator facade, schema mismatch, boundary translation
 
 ## 핵심 개념
 
@@ -144,4 +148,3 @@ public class PaymentAcl {
 ## 한 줄 정리
 
 ACL은 외부 시스템을 믿지 못해서가 아니라, 내부 도메인을 외부 변화로부터 보호하기 위해 두는 경계다.
-

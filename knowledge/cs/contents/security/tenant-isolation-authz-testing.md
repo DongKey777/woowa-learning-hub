@@ -7,11 +7,13 @@
 > 관련 문서:
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
+> - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+> - [Authorization Graph Caching](./authorization-graph-caching.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 
-retrieval-anchor-keywords: tenant isolation, authz testing, cross-tenant access, security test, integration test, RBAC, BOLA, ownership, tenant boundary, negative test
+retrieval-anchor-keywords: tenant isolation, authz testing, cross-tenant access, security test, integration test, RBAC, BOLA, ownership, tenant boundary, negative test, relationship-based authz, graph snapshot version, tenant-scoped graph invalidation, delegated admin scope
 
 ---
 
@@ -68,6 +70,10 @@ authz testing은 이 경계가 코드, API, cache, BFF, admin tooling에서 모�
 - async export
 - webhook callback
 
+relationship-based authz를 쓰면 cache test는 decision TTL 확인으로 끝나지 않는다.  
+tenant ownership edge나 delegated admin scope가 바뀐 뒤 PDP snapshot과 각 PEP cache가 함께 수렴하는지까지 봐야 한다.  
+이 운영 경계는 [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)과 [Authorization Graph Caching](./authorization-graph-caching.md) 문맥이다.
+
 ### 5. test data design이 중요하다
 
 테스트는 실제로 구분되는 tenant와 resource를 만들어야 의미가 있다.
@@ -103,6 +109,7 @@ authz testing은 이 경계가 코드, API, cache, BFF, admin tooling에서 모�
 
 - policy version을 바꾸는 negative test를 넣는다
 - cache invalidation 후 거부되는지 본다
+- delegated admin revoke나 tenant ownership move 뒤 graph invalidation 전후를 모두 검증한다
 - stale decision을 metric으로 잡는다
 
 ---

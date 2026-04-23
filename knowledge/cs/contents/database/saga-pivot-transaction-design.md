@@ -2,8 +2,10 @@
 
 > 한 줄 요약: Saga의 pivot transaction은 되돌리기 어려운 경계선이라, 그 전과 후의 실패 처리 방식이 완전히 달라진다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [Saga Reservation Consistency와 예약 상태 전이](./saga-reservation-consistency.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-Retrieval anchors: `saga pivot`, `pivot transaction`, `compensation`, `forward recovery`, `irreversible step`
+retrieval-anchor-keywords: saga pivot, pivot transaction, compensation, forward recovery, irreversible step
 
 ## 핵심 개념
 

@@ -2,8 +2,10 @@
 
 > 한 줄 요약: version column은 DB에서 가장 실용적인 compare-and-set 도구이고, 읽기-수정-쓰기의 마지막 경합을 저장 시점에 잡아준다.
 
-관련 문서: [Lost Update Detection Patterns](./lost-update-detection-patterns.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
-Retrieval anchors: `compare and set`, `version column`, `optimistic lock`, `conditional update`, `write conflict`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Lost Update Detection Patterns](./lost-update-detection-patterns.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
+retrieval-anchor-keywords: compare and set, version column, optimistic lock, conditional update, write conflict, optimistic lock failure, update count 0, version mismatch
 
 ## 핵심 개념
 

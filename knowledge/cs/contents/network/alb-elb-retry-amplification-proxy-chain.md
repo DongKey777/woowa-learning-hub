@@ -10,6 +10,7 @@
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [TCP Reset Storms, Idle Reuse, Stale Sockets](./tcp-reset-storms-idle-reuse-stale-sockets.md)
+> - [Retry Storm Containment, Concurrency Limiter, Load Shedding](./retry-storm-containment-concurrency-limiter-load-shedding.md)
 
 retrieval-anchor-keywords: retry amplification, proxy chain, ALB, ELB, load balancer retry, upstream retry, tail latency, request duplication, circuit breaker, backoff
 

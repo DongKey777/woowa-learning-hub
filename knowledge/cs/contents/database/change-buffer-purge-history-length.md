@@ -13,6 +13,7 @@ retrieval-anchor-keywords: change buffer, insert buffer, purge, history list len
   - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
   - [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md)
   - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+  - [Vacuum / Purge Debt Forensics and Symptom Map](./vacuum-purge-debt-forensics-symptom-map.md)
 
 InnoDB에서 쓰기와 정리는 서로 반대 방향으로 움직이지 않는다.  
 오히려 쓰기를 빠르게 하려고 미뤄 둔 일이, 나중에 purge와 merge 비용으로 돌아온다.

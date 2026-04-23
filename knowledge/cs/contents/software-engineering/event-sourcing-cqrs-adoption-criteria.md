@@ -10,6 +10,8 @@
 > - [Monolith to MSA Failure Patterns](./monolith-to-msa-failure-patterns.md)
 > - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
 
+retrieval-anchor-keywords: event sourcing adoption criteria, cqrs adoption criteria, event store replay, projection rebuild, audit trail requirement, read model separation, event versioning cost, upcaster need, history as source of truth, cqrs when to use
+
 ## 핵심 개념
 
 Event Sourcing은 상태를 직접 저장하는 대신, **상태를 바꾸는 이벤트 자체를 저장**하는 방식이다.
@@ -159,4 +161,3 @@ public class OrderSummaryProjection {
 ## 한 줄 정리
 
 Event Sourcing과 CQRS는 "복잡한 도메인에서 변경 이력과 조회 최적화가 실제 가치가 될 때"만 선택해야 하는 도구다.
-

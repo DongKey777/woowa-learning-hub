@@ -372,6 +372,67 @@ def build_drill_result_block(
     }
 
 
+def _empty_follow_up_block() -> dict[str, Any]:
+    return {"markdown": None, "items": [], "reason": "none"}
+
+
+def build_follow_up_block(
+    learning_profile: dict[str, Any] | None,
+    *,
+    limit: int = 3,
+) -> dict[str, Any]:
+    """Surface ``memory/profile.json.open_follow_up_queue`` into the reply.
+
+    The queue is populated by ``memory._open_follow_ups`` every turn but had
+    no read path — this block is that read path. The AI session can paste
+    ``markdown`` verbatim as a ``## 지난 턴 후속 질문`` block.
+    """
+    if not learning_profile:
+        return _empty_follow_up_block()
+    queue = learning_profile.get("open_follow_up_queue") or []
+    if not queue:
+        return _empty_follow_up_block()
+
+    items: list[dict[str, Any]] = []
+    for raw in queue[:limit]:
+        if not isinstance(raw, dict):
+            continue
+        question = (raw.get("question") or "").strip()
+        if not question:
+            continue
+        items.append({
+            "question": question,
+            "created_at": raw.get("created_at"),
+            "prompt": raw.get("prompt"),
+            "learning_points": list(raw.get("learning_points") or []),
+        })
+    if not items:
+        return _empty_follow_up_block()
+
+    lines = ["## 지난 턴 후속 질문"]
+    for item in items:
+        created_at = item.get("created_at") or ""
+        date_part = created_at.split("T", 1)[0] if created_at else ""
+        header = f"- {item['question']}"
+        if date_part:
+            header += f" _(from {date_part})_"
+        lines.append(header)
+        points = item.get("learning_points") or []
+        if points:
+            lines.append(f"  - 관련 학습 포인트: {', '.join(points)}")
+        prompt = item.get("prompt")
+        if prompt:
+            clipped = " ".join(prompt.split())
+            if len(clipped) > 120:
+                clipped = clipped[:117].rstrip() + "..."
+            lines.append(f"  - 당시 질문: {clipped}")
+    return {
+        "markdown": "\n".join(lines),
+        "items": items,
+        "reason": "ready",
+    }
+
+
 def build_response_contract(
     snapshot: dict[str, Any] | None,
     execution_status: str,
@@ -380,6 +441,7 @@ def build_response_contract(
     intent_decision: dict[str, Any] | None = None,
     drill_offer: dict[str, Any] | None = None,
     drill_result: dict[str, Any] | None = None,
+    learning_profile: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Top-level entry — returns the full ``response_contract`` payload dict.
 
@@ -409,6 +471,7 @@ def build_response_contract(
         drill_result,
         applicability_hint=_hint_from_plan(block_plan, "drill_block", "omit"),
     )
+    follow_up_block = build_follow_up_block(learning_profile)
 
     return {
         "snapshot_block": snapshot_block,
@@ -416,4 +479,5 @@ def build_response_contract(
         "cs_block": cs_block,
         "drill_block": drill_block,
         "drill_result_block": drill_result_block,
+        "follow_up_block": follow_up_block,
     }

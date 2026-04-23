@@ -2,7 +2,7 @@
 
 > 한 줄 요약: API gateway control plane은 라우팅, 인증, rate limit, observability, 정책 배포를 중앙에서 관리하는 엣지 제어 시스템이다.
 
-retrieval-anchor-keywords: api gateway control plane, routing policy, authz, mTLS, rate limit, request transform, canary, api versioning, plugin policy, edge config
+retrieval-anchor-keywords: api gateway control plane, routing policy, authz, mTLS, rate limit, request transform, canary, api versioning, plugin policy, edge config, service discovery, edge observability, traffic shadowing, progressive cutover, canary analysis
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,12 @@ retrieval-anchor-keywords: api gateway control plane, routing policy, authz, mTL
 > - [Config Distribution System 설계](./config-distribution-system-design.md)
 > - [Feature Flag Control Plane 설계](./feature-flag-control-plane-design.md)
 > - [Multi-Region Active-Active 설계](./multi-region-active-active-design.md)
+> - [Service Discovery / Health Routing 설계](./service-discovery-health-routing-design.md)
+> - [Distributed Tracing Pipeline 설계](./distributed-tracing-pipeline-design.md)
+> - [Traffic Shadowing / Progressive Cutover 설계](./traffic-shadowing-progressive-cutover-design.md)
+> - [Automated Canary Analysis / Rollback Platform 설계](./automated-canary-analysis-rollback-platform-design.md)
+> - [Control Plane / Data Plane Separation 설계](./control-plane-data-plane-separation-design.md)
+> - [Service Mesh Control Plane 설계](./service-mesh-control-plane-design.md)
 
 ## 핵심 개념
 
@@ -27,6 +33,7 @@ gateway data plane이 따라야 할 정책을 배포한다.
 - observability tags
 
 즉, control plane은 엣지에서 동작하는 네트워크 정책의 진원지다.
+backend endpoint 집합과 health signal은 보통 gateway 바깥의 service discovery plane과 연결되므로, route 정책과 endpoint 선택 정책이 서로 어긋나지 않게 버전 관리해야 한다.
 
 ## 깊이 들어가기
 
@@ -91,6 +98,8 @@ Gateway가 수행하는 일:
 - upstream saturation
 - business metric
 
+실무에서는 canary 전에 shadow traffic으로 새 경로의 응답과 latency를 먼저 검증하는 편이 안전하다.
+
 ### 5. Tenant-aware edge policy
 
 멀티 테넌트 환경에서는 정책도 tenant-aware여야 한다.
@@ -123,6 +132,9 @@ gateway control plane이 죽어도 request path는 살아야 한다.
 - local policy cache
 - safe default routing
 - emergency bypass rules
+
+trace propagation이나 endpoint snapshot이 일시적으로 stale하더라도 request path 자체는 계속 살아 있어야 한다.
+또한 cutover guardrail이 흔들릴 때는 즉시 primary path로 복귀할 수 있는 abort switch가 필요하다.
 
 ## 실전 시나리오
 
@@ -209,4 +221,3 @@ public GatewayPolicy currentPolicy() {
 ## 한 줄 정리
 
 API gateway control plane은 라우팅과 인증, rate limit, canary, 관측성 정책을 중앙에서 배포하고 엣지에서 집행하는 시스템이다.
-

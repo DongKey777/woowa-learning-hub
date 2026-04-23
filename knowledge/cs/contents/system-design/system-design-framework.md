@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 모호한 요구사항을 숫자와 트레이드오프로 구체화해, 설계 선택의 이유를 설명하는 방법을 정리한다.
 
-retrieval-anchor-keywords: system design interview, requirements, capacity estimation, tradeoffs, bottleneck, failure modes, control plane, data plane, rollback, hot key
+retrieval-anchor-keywords: system design interview, requirements, capacity estimation, tradeoffs, bottleneck, failure modes, control plane, data plane, rollback, hot key, consistency, reconfiguration
 
 **난이도: 🔴 Advanced**
 
@@ -32,6 +32,7 @@ retrieval-anchor-keywords: system design interview, requirements, capacity estim
 | 6 | 왜 이 선택을 했는가? | 트레이드오프 설명 |
 
 > 관련 개념은 [Database](../database/README.md), [Network](../network/README.md), [Operating System](../operating-system/README.md) 문서와 함께 보면 연결이 더 잘 보인다.
+> control plane과 data plane을 어떻게 나눌지 감이 잘 안 오면 [Control Plane / Data Plane Separation](./control-plane-data-plane-separation-design.md)을 같이 보면 좋다.
 
 ---
 

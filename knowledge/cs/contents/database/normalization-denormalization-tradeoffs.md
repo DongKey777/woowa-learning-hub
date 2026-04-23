@@ -9,6 +9,10 @@
 > - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
 > - [B+Tree vs LSM-Tree](./bptree-vs-lsm-tree.md)
 > - [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
+> - [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
+> - [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md)
+
+retrieval-anchor-keywords: normalization, denormalization, summary table, read model, data duplication, incremental refresh, source of truth, backend tradeoff
 
 ---
 
@@ -68,6 +72,8 @@
 - 소스 오브 트루스가 어디인지 명확해야 한다
 
 이걸 모르면, 조회는 빨라졌는데 운영은 더 어려워진다.
+
+특히 summary table을 오래 운영하려면 refresh watermark, replay, late correction 전략이 같이 필요하다.
 
 ---
 

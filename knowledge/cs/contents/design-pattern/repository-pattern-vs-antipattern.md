@@ -2,13 +2,18 @@
 
 > 한 줄 요약: Repository는 도메인 컬렉션처럼 동작하는 저장소 추상화지만, 모든 데이터 접근을 한 클래스에 몰면 anti-pattern이 된다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Unit of Work Pattern](./unit-of-work-pattern.md)
 > - [Aggregate Root vs Unit of Work](./aggregate-root-vs-unit-of-work.md)
+> - [Reference Other Aggregates by ID](./aggregate-reference-by-id.md)
+> - [Repository Boundary: Aggregate Persistence vs Read Model](./repository-boundary-aggregate-vs-read-model.md)
+> - [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [안티 패턴](./anti-pattern.md)
+
+retrieval-anchor-keywords: repository pattern, repository antipattern, controller service repository 계층 책임, controller service repository layered responsibility, 계층 책임 분담, layered responsibility controller service repository, repository responsibilities, repository pattern vs antipattern, repository overload anti pattern, domain collection abstraction, repository fat anti pattern, generic crud repository smell
 
 ---
 
@@ -31,6 +36,10 @@ Repository는 DDD에서 **도메인 객체를 저장/조회하는 추상화**다
 - `domain collection abstraction`
 - `query leakage`
 - `persistence ignorance`
+- `aggregate id reference`
+- `repository boundary`
+- `read model boundary`
+- `repository query leakage`
 
 ---
 
@@ -160,4 +169,3 @@ Repository는 저장과 조회의 계약만 지키는 쪽이 안전하다.
 ## 한 줄 정리
 
 Repository는 도메인 저장소 추상화지만, 조회와 규칙이 몰리면 anti-pattern이 된다.
-

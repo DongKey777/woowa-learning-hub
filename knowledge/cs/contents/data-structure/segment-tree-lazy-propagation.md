@@ -6,12 +6,19 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
-> - [세그먼트 트리](./advanced.md)
+> - [세그먼트 트리](./applied-data-structures-overview.md#세그먼트-트리-indexed-tree--segment-tree)
+> - [Segment Tree Is Not BST or Heap](./segment-tree-not-bst-or-heap-bridge.md)
+> - [Fenwick Tree](./fenwick-tree.md)
+> - [Fenwick Tree vs Segment Tree](./fenwick-vs-segment-tree.md)
+> - [Fenwick and Segment Tree Operations Playbook](./fenwick-segment-tree-operations-playbook.md)
 > - [상각 분석과 복잡도 함정](../algorithm/amortized-analysis-pitfalls.md)
+
+> retrieval-anchor-keywords: segment tree lazy propagation, range update, range query, lazy propagation, interval assignment, quota adjustment, backend range aggregation, operational segment tree, bulk range update, tree pushdown, segment tree not bst or heap, range aggregation tree, segment tree vs bst, segment tree vs heap
 
 ## 핵심 개념
 
 세그먼트 트리는 구간 합/최솟값/최댓값 같은 질의를 빠르게 처리하는 자료구조다.  
+즉 `key`를 정렬해서 찾는 `BST`도 아니고, 가장 높은 우선순위 원소를 꺼내는 `heap`도 아니라, **구간 집계값을 저장하는 binary tree**다.
 lazy propagation은 여기에 **구간 갱신(update)** 을 효율적으로 추가하는 기법이다.
 
 - 질의(query): O(log n)

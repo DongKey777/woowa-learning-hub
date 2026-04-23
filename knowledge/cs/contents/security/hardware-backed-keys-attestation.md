@@ -9,9 +9,10 @@
 > - [Workload Identity / Long-Lived Service Account Keys](./workload-identity-vs-long-lived-service-account-keys.md)
 > - [Envelope Encryption / KMS Basics](./envelope-encryption-kms-basics.md)
 > - [mTLS Certificate Rotation / Trust Bundle Rollout](./mtls-certificate-rotation-trust-bundle-rollout.md)
+> - [Hardware Attestation Policy / Failure Recovery](./hardware-attestation-policy-failure-recovery.md)
 > - [Key Rotation Runbook](./key-rotation-runbook.md)
 
-retrieval-anchor-keywords: hardware-backed keys, attestation, TPM, Secure Enclave, HSM, key protection, non-exportable key, device attestation, platform attestation, hardware root of trust
+retrieval-anchor-keywords: hardware-backed keys, attestation, TPM, Secure Enclave, HSM, key protection, non-exportable key, device attestation, platform attestation, hardware root of trust, attestation policy, attestation recovery
 
 ---
 

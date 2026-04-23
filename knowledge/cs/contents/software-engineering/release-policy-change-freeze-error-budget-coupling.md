@@ -10,6 +10,10 @@
 > - [Kill Switch Fast-Fail Ops](./kill-switch-fast-fail-ops.md)
 > - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
 > - [Feature Flag Cleanup and Expiration](./feature-flag-cleanup-expiration.md)
+> - [Lead Time, Change Failure, and Recovery Loop](./lead-time-change-failure-recovery-loop.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
+> - [Operational Readiness Drills and Change Safety](./operational-readiness-drills-and-change-safety.md)
+> - [Rollout Guardrail Profiles, Auto-Pause, and Manual Resume](./rollout-guardrail-profiles-auto-pause-resume.md)
 
 > retrieval-anchor-keywords:
 > - change freeze
@@ -88,6 +92,7 @@ Freeze는 보통 다음 이유로 걸린다.
 - 주요 전환율
 - 알림 수
 - 재시도 증가
+- 최근 change failure rate
 
 하지만 수치만 보면 안 되는 경우도 있다.
 

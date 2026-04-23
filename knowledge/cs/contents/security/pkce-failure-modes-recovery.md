@@ -10,8 +10,15 @@
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: PKCE, code_verifier, code_challenge, S256, authorization code, public client, verifier loss, replay, redirect_uri, state, OAuth2, authorization server
+retrieval-anchor-keywords: PKCE, code_verifier, code_challenge, S256, authorization code, public client, verifier loss, replay, redirect_uri, state, OAuth2, authorization server, callback hardening, login completion hardening, verifier consume, post-login csrf token reset, BFF login completion, social login first post 403, state vs csrf token, browser server boundary catalog, security readme browser server boundary
+
+## 이 문서 다음에 보면 좋은 문서
+
+- PKCE가 Authorization Code 전체에서 정확히 어느 단계인지 다시 잡으려면 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)로 돌아가 flow 전체를 본다.
+- verifier consume 이후 cookie 기반 login completion과 후속 POST hardening으로 이어가려면 [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)로 이어진다.
+- 브라우저 hardening 문서를 cluster로 다시 고르려면 [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)에서 redirect, session regeneration, browser-visible credential 축을 함께 고르면 된다.
 
 ---
 
@@ -96,6 +103,22 @@ PKCE는 code 교환의 정당성을 높이고, state는 요청 연동과 CSRF를
 - server-side verifier 저장
 - client secret 추가 검증
 
+### 6. verifier 검증이 끝나도 login completion hardening은 남는다
+
+PKCE exchange 성공은 "code를 훔쳐도 token endpoint를 못 통과한다"는 뜻이지, 브라우저 login completion 전체가 끝났다는 뜻은 아니다.
+
+- `state`는 어떤 login 요청의 callback인지 묶는 값이다
+- PKCE는 callback에 들어온 code가 원래 verifier를 가진 흐름인지 확인한다
+- anti-CSRF token은 로그인 후 BFF/session cookie로 보내는 상태 변경 요청을 보호한다
+
+즉 social login callback success와 첫 번째 POST `/api/...` success는 다른 gate다.
+
+- callback 직후 session id를 재발급하지 않으면 익명 세션 continuation이 남는다
+- authenticated session 기준 CSRF secret을 다시 만들지 않으면 첫 mutation이 `403`으로 깨지거나, 반대로 검증이 느슨해질 수 있다
+- verifier는 1회성으로 consume하고, 실패는 안전한 restart UX로 돌려야 한다
+
+flow 전체 그림은 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md), post-login cookie/BFF hardening은 [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)로 이어 본다.
+
 ---
 
 ## 실전 시나리오
@@ -136,6 +159,19 @@ PKCE는 code 교환의 정당성을 높이고, state는 요청 연동과 CSRF를
 - provider 설정과 클라이언트 설정을 모두 점검한다
 - legacy client는 별도 migration 경로를 둔다
 
+### 시나리오 4: social login callback은 성공했는데 첫 POST가 `403`이거나 반대로 너무 느슨함
+
+문제:
+
+- verifier consume까지만 성공 처리하고 authenticated session 기준 CSRF secret을 다시 안 만들었다
+- 익명 단계 session/token을 그대로 재사용했다
+
+대응:
+
+- callback 성공 후 session id를 재발급한다
+- authenticated session 기준으로 CSRF token을 새로 발급한다
+- SPA는 새 token을 다시 bootstrap한 뒤 상태 변경 요청을 보낸다
+
 ---
 
 ## 코드로 보기
@@ -168,7 +204,8 @@ public TokenPair exchange(String code, String state, String flowId) {
 1. redirect_uri는 사전 등록된 exact value만 허용한다
 2. state는 흐름 연동용으로 사용한다
 3. code_verifier는 짧게 저장하고 callback 후 즉시 제거한다
-4. 실패 시 재인증 흐름을 명시적으로 제공한다
+4. callback 성공 후 session id와 CSRF secret을 재발급한다
+5. 실패 시 재인증 흐름을 명시적으로 제공한다
 ```
 
 ---

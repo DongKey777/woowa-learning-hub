@@ -1,15 +1,25 @@
 # Longest Increasing Subsequence Patterns
 
 > 한 줄 요약: LIS는 단순 길이 계산을 넘어서, 최적 부분구조와 이분 탐색을 결합해 순서 최적화 문제를 푸는 대표 패턴이다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **subsequence 최적화와 tails + binary search 연결**을 다루는 pattern deep dive다.
 
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
 > - [Binary Search Patterns](./binary-search-patterns.md)
+> - [Sliding Window Patterns](./sliding-window-patterns.md)
+> - [두 포인터 (two-pointer)](./two-pointer.md)
 > - [알고리즘 기본](./basic.md)
-> - [Rolling Hash / Rabin-Karp](./rolling-hash-rabin-karp.md)
 
-> retrieval-anchor-keywords: lis, longest increasing subsequence, patience sorting, binary search lis, subsequence dp, sequence optimization, increasing order, tails array, backtracking, variant patterns
+> retrieval-anchor-keywords: lis, longest increasing subsequence, 최장 증가 부분 수열, patience sorting, binary search lis, lower_bound on tails, subsequence dp, subsequence vs subarray, subsequence vs substring, non-contiguous subsequence, order preserving sequence, tails array, sequence optimization
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `lower_bound`와 경계 갱신 자체를 더 직접적으로 보고 싶다면 [Binary Search Patterns](./binary-search-patterns.md)로 이어지면 된다.
+- `subarray`, `substring`, `window`처럼 연속 구간이 문제의 핵심이면 [Sliding Window Patterns](./sliding-window-patterns.md)부터 보는 편이 맞다.
+- 정렬 배열의 양끝 관계나 pair sum처럼 "두 위치 조정" 문제가 먼저라면 [두 포인터 (two-pointer)](./two-pointer.md)가 더 직접적이다.
+- DP 기본기와 복원 감각을 다시 잡고 싶다면 [알고리즘 기본](./basic.md)으로 돌아가면 된다.
 
 ## 핵심 개념
 
@@ -21,6 +31,17 @@ LIS는 증가하는 부분 수열 중 가장 긴 것을 찾는 문제다.
 - O(n log n) tails + binary search
 
 실전에서는 길이만 묻는지, 실제 수열 복원이 필요한지에 따라 접근이 갈린다.
+
+## 자주 헷갈리는 패턴 구분
+
+| 패턴 | 유지하는 대상 | 대표 질문 | 강한 신호 |
+|---|---|---|---|
+| LIS | 순서를 유지한 채 건너뛸 수 있는 부분 수열 | "몇 개를 건너뛰며 가장 긴 증가 흐름을 만들 수 있는가?" | `subsequence`, 증가 수열, 순서 유지, 연속 조건이 없다 |
+| Sliding Window | 현재 연속 구간 `[left, right]` | "이 연속 구간을 밀며 답을 갱신할 수 있는가?" | `subarray`, `substring`, `window`, 최근 `k`개 |
+| Binary Search | 경계가 있는 후보 공간 또는 정렬된 `tails` 배열 | "`x`가 가능한가?", "`lower_bound` 위치는 어디인가?" | `first true`, `boundary`, `lower_bound`, `upper_bound` |
+
+- LIS의 `O(n log n)` 풀이가 이분 탐색을 쓰더라도, 문제의 본체는 "부분 수열 최적화"다. 먼저 LIS로 라우팅하고, 구현 최적화 단계에서 [Binary Search Patterns](./binary-search-patterns.md)을 연결하면 된다.
+- 문제에 `contiguous`, `subarray`, `substring`이 붙는 순간 LIS보다 [Sliding Window Patterns](./sliding-window-patterns.md) 쪽일 가능성이 훨씬 높다.
 
 ## 깊이 들어가기
 
@@ -72,6 +93,7 @@ LIS는 여러 응용이 있다.
 ### 시나리오 3: 오판
 
 연속 구간이 아니라 부분 수열이라는 점을 놓치면 슬라이딩 윈도우로 풀 수 있다고 착각하기 쉽다.
+중간 원소를 건너뛸 수 있으면 LIS 계열이고, 매 단계에서 하나를 빼고 하나를 넣는 연속 구간 관리가 가능해야만 sliding window다.
 
 ### 시나리오 4: 복원 필요
 

@@ -46,7 +46,7 @@ If the repo is newly cloned or the bootstrap state is unknown, run `repo-readine
 
 Read:
 
-- [coach-run.json](../state/repos/java-janggi/actions/coach-run.json)
+- [artifact catalog entry for `coach-run.json`](./artifact-catalog.md)
 
 before drilling into lower-level artifacts.
 

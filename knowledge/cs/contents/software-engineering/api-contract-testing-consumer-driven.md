@@ -9,6 +9,17 @@
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
 > - [Deployment, Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
 
+> retrieval-anchor-keywords:
+> - API contract testing
+> - consumer-driven contracts
+> - CDC test
+> - Pact
+> - Spring Cloud Contract
+> - provider verification
+> - consumer expectations
+> - contract broker
+> - 컨슈머 주도 계약
+
 ## 핵심 개념
 
 Contract testing은 API의 구조와 의미를 테스트로 고정하는 방식이다.

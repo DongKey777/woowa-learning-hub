@@ -10,8 +10,12 @@
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 > - [Secret Scanning / Credential Leak Response](./secret-scanning-credential-leak-response.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
+> - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - [AuthZ Decision Logging Design](./authz-decision-logging-design.md)
+> - [SCIM Drift / Reconciliation](./scim-drift-reconciliation.md)
+> - [System Design: Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
 
-retrieval-anchor-keywords: audit log, auth log, authz traceability, actor action resource, denied access, security event, immutable log, forensics, principal, correlation id, compliance
+retrieval-anchor-keywords: audit log, auth log, authz traceability, actor action resource, denied access, security event, immutable log, forensics, principal, correlation id, compliance, security telemetry, claim schema version, store generation, reconciliation run id, directory event id, cleanup evidence, retirement evidence, deprovision proof
 
 ---
 
@@ -76,7 +80,26 @@ audit log는 길게 보관하지만, credential을 포함하면 안 된다.
 
 이렇게 해야 허용/거부 경로를 재구성할 수 있다.
 
-### 5. immutable이 중요하다
+### 5. cleanup proof를 위해 lifecycle/decision join key를 남겨야 한다
+
+SCIM reconciliation 이후 old claim/store를 retire하려면
+"누가 아직 접근했는가"뿐 아니라
+"그 접근이 어느 directory change, 어느 session generation, 어느 policy decision과 연결됐는가"를 다시 조인할 수 있어야 한다.
+
+특히 authority transfer cleanup에서는 아래 키가 자주 필요하다.
+
+- `directory_event_id`, `reconciliation_run_id`
+- `session_id`, `refresh_family_id`
+- `claim_schema_version`, `store_generation`
+- `policy_version`, `authz_epoch`
+- `request_id`, `trace_id`
+
+이 필드는 하나의 거대한 audit row에 몰아넣으라는 뜻이 아니다.
+auth/authz event stream, reconciliation artifact, cutover gate artifact를 분리해도 되지만,
+적어도 [AuthZ Decision Logging Design](./authz-decision-logging-design.md)과
+[Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)가 요구하는 join key는 유지돼야 한다.
+
+### 6. immutable이 중요하다
 
 audit log는 삭제/수정이 쉬우면 의미가 없다.
 

@@ -9,6 +9,7 @@
 > - [Spring Resilience4j: Retry, CircuitBreaker, Bulkhead](./spring-resilience4j-retry-circuit-breaker-bulkhead.md)
 > - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [Spring `TransactionTemplate` and Programmatic Transaction Boundaries](./spring-transactiontemplate-programmatic-transaction-boundaries.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 
 retrieval-anchor-keywords: retryable, resilience4j, outbox relay worker, idempotent publish, poller, skip locked, poison message, circuit breaker, backoff, dead letter

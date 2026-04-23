@@ -7,11 +7,13 @@
 > 관련 문서:
 > - [Refresh Token Rotation / Reuse Detection](./refresh-token-rotation-reuse-detection.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Device / Session Graph Revocation Design](./device-session-graph-revocation-design.md)
 > - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
 
-retrieval-anchor-keywords: refresh token family, family invalidation, reuse detection, distributed revocation, session lineage, token graph, logout all devices, revocation propagation, token family id, replay containment
+retrieval-anchor-keywords: refresh token family, family invalidation, reuse detection, distributed revocation, session lineage, token graph, logout all devices, revocation propagation, token family id, replay containment, device session graph
 
 ---
 

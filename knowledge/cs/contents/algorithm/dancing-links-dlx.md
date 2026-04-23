@@ -7,7 +7,7 @@
 > 관련 문서:
 > - [Meet-in-the-Middle](./meet-in-the-middle.md)
 > - [Backtracking](./basic.md)
-> - [Greedy Algorithm](./greedy.md)
+> - [탐욕 / Greedy 알고리즘 개요](./greedy.md)
 
 > retrieval-anchor-keywords: dancing links, DLX, exact cover, algorithm x, backtracking, cover uncover, linked structure, sudoku exact cover, constraint search, reversible removal
 

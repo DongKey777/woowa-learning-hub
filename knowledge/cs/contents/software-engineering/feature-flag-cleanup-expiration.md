@@ -9,6 +9,15 @@
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
 > - [Technical Debt Refactoring Timing](./technical-debt-refactoring-timing.md)
 
+> retrieval-anchor-keywords:
+> - feature flag cleanup
+> - feature flag expiration
+> - flag debt
+> - flag sunset
+> - stale toggle
+> - flag lifecycle
+> - 토글 정리
+
 ## 핵심 개념
 
 피처 플래그는 기능을 즉시 켜고 끌 수 있게 해준다.

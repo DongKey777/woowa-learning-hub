@@ -6,12 +6,17 @@
 
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
+> - [Spring Transaction Propagation: `MANDATORY` / `SUPPORTS` / `NOT_SUPPORTED` Boundaries](./spring-transaction-propagation-mandatory-supports-not-supported-boundaries.md)
+> - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring `TransactionSynchronization` Ordering, Suspend / Resume, and Resource Binding](./spring-transactionsynchronization-ordering-suspend-resume-resource-binding.md)
+> - [Spring Routing DataSource Read/Write Transaction Boundaries](./spring-routing-datasource-read-write-transaction-boundaries.md)
 > - [Spring EventListener / TransactionalEventListener / Outbox](./spring-eventlistener-transaction-phase-outbox.md)
 > - [Spring Batch Chunk / Retry / Skip](./spring-batch-chunk-retry-skip.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 
-retrieval-anchor-keywords: propagation, nested transaction, requires new, savepoint, suspended transaction, rollback-only, connection pool exhaustion, audit log, partial commit
+retrieval-anchor-keywords: propagation, nested transaction, requires new, requires_new beginner route, savepoint, suspended transaction, rollback-only, connection pool exhaustion, audit log, partial commit, audit survives rollback, inner readOnly writer pool
 
 ## 핵심 개념
 

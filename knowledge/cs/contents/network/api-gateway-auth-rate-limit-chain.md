@@ -9,6 +9,11 @@
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [Load Balancer 헬스체크 실패 패턴](./load-balancer-healthcheck-failure-patterns.md)
 > - [Service Mesh, Sidecar Proxy](./service-mesh-sidecar-proxy.md)
+> - [Expect 100-continue, Proxy Request Buffering](./expect-100-continue-proxy-request-buffering.md)
+> - [Gateway Buffering vs Spring Early Reject](./gateway-buffering-vs-spring-early-reject.md)
+> - [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)
+
+retrieval-anchor-keywords: API gateway auth, rate limit chain, early reject, JWT validation, token bucket, tenant quota, request buffering, 401 vs 403 vs 429, gateway policy, auth before body, upload auth before body, spring early reject bridge
 
 <details>
 <summary>Table of Contents</summary>
@@ -40,6 +45,17 @@
 
 즉 이건 단순한 미들웨어 조합이 아니라 **정책 체인**이다.
 
+### Retrieval Anchors
+
+- `API gateway auth`
+- `rate limit chain`
+- `early reject`
+- `JWT validation`
+- `token bucket`
+- `tenant quota`
+- `request buffering`
+- `401 vs 403 vs 429`
+
 ---
 
 ## 체인의 기본 순서
@@ -61,6 +77,7 @@
 - 반대로 rate limit을 먼저 두면 익명 트래픽 폭주를 먼저 막을 수 있다
 
 그래서 실제 순서는 시스템 목적에 따라 조금 달라진다.
+대용량 업로드 API라면 auth를 빨리 끝내는 것만큼 [HTTP Request Body Drain, Early Reject, Keep-Alive Reuse](./http-request-body-drain-early-reject-keepalive-reuse.md)처럼 남은 body를 어떻게 정리할지도 중요하다.
 
 ### 중요한 건 일관성이다
 

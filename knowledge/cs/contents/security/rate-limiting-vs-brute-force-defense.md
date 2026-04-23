@@ -9,9 +9,10 @@
 > - [Rate Limiter Design](../system-design/rate-limiter-design.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [Password Storage: bcrypt / scrypt / Argon2](./password-storage-bcrypt-scrypt-argon2.md)
+> - [Abuse Throttling / Runtime Signals](./abuse-throttling-runtime-signals.md)
 > - [X-Forwarded-For / X-Real-IP trust boundary](../network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md)
 
-retrieval-anchor-keywords: rate limit, brute force, credential stuffing, login throttling, account lockout, bot defense, captcha, MFA, sliding window, token bucket, per-account limit, per-IP limit
+retrieval-anchor-keywords: rate limit, brute force, credential stuffing, login throttling, account lockout, bot defense, captcha, MFA, sliding window, token bucket, per-account limit, per-IP limit, abuse throttling, friction ladder
 
 ---
 

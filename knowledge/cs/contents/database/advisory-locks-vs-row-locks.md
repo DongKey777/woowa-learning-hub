@@ -2,8 +2,10 @@
 
 > 한 줄 요약: row lock은 데이터 자체를 보호하고, advisory lock은 데이터 밖의 “작업 순서”를 보호한다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Deadlock Case Study](./deadlock-case-study.md)
-Retrieval anchors: `advisory lock`, `row lock`, `coarse-grained lock`, `job serialization`, `metadata lock`
+retrieval-anchor-keywords: advisory lock, row lock, coarse-grained lock, job serialization, metadata lock
 
 ## 핵심 개념
 

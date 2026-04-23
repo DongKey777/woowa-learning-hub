@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 오래 도는 작업은 살아 있음을 알리는 heartbeat가 필요하지만, 그 heartbeat가 락 점유를 대신해 주지는 않는다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Transaction Timeout과 Lock Timeout](./transaction-timeout-vs-lock-timeout.md), [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md), [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md)
-Retrieval anchors: `transaction heartbeat`, `long-running job`, `lease renewal`, `heartbeat lock`, `job progress`
+retrieval-anchor-keywords: transaction heartbeat, long-running job, lease renewal, heartbeat lock, job progress
 
 ## 핵심 개념
 

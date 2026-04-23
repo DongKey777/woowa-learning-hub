@@ -9,9 +9,10 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [One-Time Token Consumption Race / Burn-After-Read](./one-time-token-consumption-race-burn-after-read.md)
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 
-retrieval-anchor-keywords: magic link, email login, one-time link, email token, replay, referrer leak, email forwarding, prefetch, phishing, login link, account recovery
+retrieval-anchor-keywords: magic link, email login, one-time link, email token, replay, referrer leak, email forwarding, prefetch, phishing, login link, account recovery, burn after read, consume race
 
 ---
 

@@ -5,8 +5,9 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [Java 동시성 유틸리티](./5.md)
-> - [JVM, GC, JMM](./4.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
+> - [`BlockingQueue`, `TransferQueue`, and `ConcurrentSkipListSet` Semantics](./blockingqueue-transferqueue-concurrentskiplistset-semantics.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 > - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
 
@@ -23,6 +24,8 @@
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+retrieval-anchor-keywords: ThreadPoolExecutor sizing, executor queue rejection policy, CallerRunsPolicy, AbortPolicy, queue saturation, backpressure via executor, bounded queue, thread pool overload, queue rejection semantics, executor latency debt
 
 ## 핵심 개념
 

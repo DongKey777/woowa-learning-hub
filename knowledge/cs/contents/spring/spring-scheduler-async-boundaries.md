@@ -8,8 +8,13 @@
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
+> - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](./spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
+> - [Spring Distributed Scheduling, Cron Drift, and Leader-Election Patterns](./spring-distributed-scheduling-cron-drift-leader-election-patterns.md)
 > - [Virtual Threads(Project Loom)](../language/java/virtual-threads-project-loom.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](../operating-system/context-switching-deadlock-lockfree.md)
+
+retrieval-anchor-keywords: scheduled async, @Scheduled, @Async, transaction thread boundary, SecurityContext propagation, MDC propagation, async executor, scheduler overlap, queue capacity, rejection policy, fixedRate, fixedDelay
 
 ## 핵심 개념
 

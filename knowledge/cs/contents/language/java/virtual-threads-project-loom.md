@@ -5,11 +5,16 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [Java 동시성 유틸리티](./5.md)
-> - [JVM, GC, JMM](./4.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
+> - [`InheritableThreadLocal` vs `ScopedValue` Context Propagation Boundaries](./inheritablethreadlocal-vs-scopedvalue-context-propagation.md)
+> - [Virtual Thread Migration: Pinning, `ThreadLocal`, and Pool Boundary Strategy](./virtual-thread-migration-pinning-threadlocal-pool-boundaries.md)
+> - [Virtual Thread Framework Integration: Spring, JDBC, and `HttpClient`](./virtual-thread-spring-jdbc-httpclient-framework-integration.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 > - [I/O 모델과 이벤트 루프](../../operating-system/io-models-and-event-loop.md)
 > - [시스템 콜과 User-Kernel Boundary](../../operating-system/syscall-user-kernel-boundary.md)
 > - [Spring MVC 요청 생명주기](../../spring/spring-mvc-request-lifecycle.md)
+
+> retrieval-anchor-keywords: virtual thread, Loom, carrier thread, pinning, mount unmount, blocking I/O, virtual thread migration, ThreadLocal, ScopedValue, per task executor, pool boundary, Spring, JDBC, HttpClient
 
 <details>
 <summary>Table of Contents</summary>
@@ -27,6 +32,8 @@
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+retrieval-anchor-keywords: Java virtual threads, Project Loom, carrier thread, pinning, mount unmount, blocking I/O with virtual threads, thread per request with loom, virtual thread scheduler, synchronized pinning, servlet vs reactive vs virtual threads
 
 ## 왜 중요한가
 

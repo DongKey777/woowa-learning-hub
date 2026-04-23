@@ -1,5 +1,7 @@
 # Repository, DAO, Entity
 
+**난이도: 🟡 Intermediate**
+
 > 신입 백엔드 개발자가 저장 계층을 설계할 때 자주 헷갈리는 개념 정리
 
 <details>
@@ -16,6 +18,15 @@
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+> 관련 문서:
+> - [Software Engineering README: Repository, DAO, Entity](./README.md#repository-dao-entity)
+> - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+> - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
+> - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+> - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
+>
+> retrieval-anchor-keywords: repository vs dao, repository boundary, persistence boundary, domain repository, dao table access, entity vs domain model, mapper rowmapper, aggregate persistence, repository abstraction, database access layer, persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist
 
 ## 왜 헷갈리는가
 
@@ -131,6 +142,8 @@ public record PieceEntity(
 ## Mapper와 RowMapper
 
 Mapper는 **DB row를 객체로 바꾸거나, 객체를 DB 저장 형태로 바꾸는 역할**을 한다.
+
+JPA adapter 안에서 domain object와 `@Entity`를 어디서 끊어야 할지 헷갈린다면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)를 같이 보면 좋다.
 
 예:
 

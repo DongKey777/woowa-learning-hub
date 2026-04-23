@@ -5,11 +5,17 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [응용 자료 구조 개요](./applied-data-structures-overview.md)
 > - [우선순위 기반 정렬 개념](../algorithm/sort.md)
 > - [Greedy 알고리즘](../algorithm/greedy.md)
 > - [LRU Cache Design](./lru-cache-design.md)
+> - [Hierarchical Timing Wheel](./hierarchical-timing-wheel.md)
+> - [Calendar Queue](./calendar-queue.md)
+> - [Radix Heap](./radix-heap.md)
+> - [Timing Wheel Variants and Selection](./timing-wheel-variants-and-selection.md)
+> - [Work-Stealing Deque](./work-stealing-deque.md)
 
-> retrieval-anchor-keywords: heap variants, binary heap, d-ary heap, pairing heap, min heap, max heap, priority queue, top-k, scheduler, decrease-key
+> retrieval-anchor-keywords: heap variants, binary heap, d-ary heap, pairing heap, radix heap, monotone priority queue, min heap, max heap, priority queue, top-k, scheduler, decrease-key
 
 ## 핵심 개념
 

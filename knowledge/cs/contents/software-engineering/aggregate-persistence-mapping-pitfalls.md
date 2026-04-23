@@ -1,0 +1,325 @@
+# Aggregate Persistence Mapping Pitfalls
+
+> 한 줄 요약: 양방향 연관관계, `cascade`, `orphanRemoval`은 aggregate 자체를 정의하는 규칙이 아니라 JPA 매핑을 돕는 옵션인데, 초심자는 이를 도메인 진실로 오해해 aggregate 설계가 ORM 사용 설명서처럼 변하기 쉽다.
+
+**난이도: 🟢 Beginner**
+
+<details>
+<summary>Table of Contents</summary>
+
+- [왜 여기서 자주 꼬이나](#왜-여기서-자주-꼬이나)
+- [한 장으로 구분하기](#한-장으로-구분하기)
+- [함정 1. 양방향 연관관계를 도메인 진실처럼 취급한다](#함정-1-양방향-연관관계를-도메인-진실처럼-취급한다)
+- [함정 2. `CascadeType.ALL`을 aggregate 설계와 같은 말로 착각한다](#함정-2-cascadetypeall을-aggregate-설계와-같은-말로-착각한다)
+- [함정 3. `orphanRemoval`을 비즈니스 삭제 규칙으로 착각한다](#함정-3-orphanremoval을-비즈니스-삭제-규칙으로-착각한다)
+- [함정 4. 영속성 편의 메서드가 도메인 API를 지배한다](#함정-4-영속성-편의-메서드가-도메인-api를-지배한다)
+- [초심자용 판단 순서](#초심자용-판단-순서)
+- [기억할 기준](#기억할-기준)
+
+</details>
+
+> 관련 문서:
+> - [Software Engineering README: Aggregate Persistence Mapping Pitfalls](./README.md#aggregate-persistence-mapping-pitfalls)
+> - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+> - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
+> - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
+> - [Repository, DAO, Entity](./repository-dao-entity.md)
+> - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
+> - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
+>
+> retrieval-anchor-keywords: aggregate persistence mapping pitfalls, aggregate root mapping beginner, bidirectional association pitfall, owning side mappedBy beginner, cascade type all smell, orphanRemoval smell, private child lifecycle, jpa aggregate persistence, entity helper method leak, domain model persistence leakage, managed entity collection diff, aggregate root child removal, bidirectional association domain leak, cascade is not aggregate design, orphan removal vs business delete
+
+## 왜 여기서 자주 꼬이나
+
+DDD를 처음 배우면 이렇게 이해하기 쉽다.
+
+- aggregate root가 내부 자식을 관리한다
+- root를 저장하면 자식도 같이 저장된다
+- root에서 자식을 빼면 자식도 사라질 수 있다
+
+그리고 JPA 예제를 보면 보통 이런 코드가 같이 따라온다.
+
+- 양방향 연관관계
+- `cascade = CascadeType.ALL`
+- `orphanRemoval = true`
+- `addChild()`, `removeChild()` 같은 편의 메서드
+
+초심자는 이 둘을 자연스럽게 같은 개념으로 합쳐 버린다.
+
+- "aggregate니까 양방향이어야 하나?"
+- "root가 저장을 책임지니까 `CascadeType.ALL`이 정답인가?"
+- "컬렉션에서 빼면 삭제되는 게 aggregate 규칙인가?"
+
+하지만 실제로는 질문이 다르다.
+
+- aggregate는 "무슨 규칙을 한 번에 지켜야 하지?"를 묻는다
+- JPA 매핑은 "FK를 누가 업데이트하고, 어떤 영속성 작업을 전파할까?"를 묻는다
+
+즉 aggregate는 **도메인 모델링 결정**이고, 양방향 연관관계와 `cascade`, `orphanRemoval`은 **persistence 구현 결정**이다.
+둘을 같은 것으로 취급하면 도메인 설명이 ORM 설정 설명으로 바뀐다.
+
+## 한 장으로 구분하기
+
+| 항목 | 답해야 하는 질문 | 도메인/aggregate 쪽 답 | JPA 매핑 쪽 답 | 섞였을 때 냄새 |
+|---|---|---|---|---|
+| aggregate boundary | 무엇이 함께 바뀌고 함께 검증되어야 하나 | 주문과 주문라인은 함께 검증한다 | `mappedBy`가 아니다 | "양방향이니까 한 aggregate"라고 설명한다 |
+| owning side | 어떤 객체가 FK를 업데이트하나 | 비즈니스 용어가 아님 | `OrderLineEntity.order`가 FK를 쓴다 | "주인이니까 더 중요한 도메인"이라고 오해한다 |
+| cascade | 어떤 영속성 작업을 전파하나 | 저장 규칙이 아니라 구현 선택 | `PERSIST`, `MERGE`, `REMOVE` 전파 여부 | `CascadeType.ALL`을 root 규칙처럼 쓴다 |
+| orphanRemoval | 컬렉션에서 빠진 자식 row를 삭제할까 | 삭제/보관/이력은 비즈니스 정책 | private child cleanup 여부 | 컬렉션 조작이 곧 삭제 API가 된다 |
+
+짧게 외우면 이렇다.
+
+- aggregate는 규칙 경계다
+- 양방향 연관관계는 탐색/FK 관리 경계다
+- cascade는 영속성 작업 전파 규칙이다
+- `orphanRemoval`은 row cleanup 전략이다
+
+## 함정 1. 양방향 연관관계를 도메인 진실처럼 취급한다
+
+가장 흔한 시작점은 "양방향이 더 완전한 모델"이라고 믿는 경우다.
+
+### Before
+
+```java
+@Entity
+public class OrderEntity {
+    @Id
+    private Long id;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineEntity> lines = new ArrayList<>();
+
+    public void addLine(OrderLineEntity line) {
+        lines.add(line);
+        line.setOrder(this);
+    }
+}
+
+@Entity
+public class OrderLineEntity {
+    @Id
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderEntity order;
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
+}
+```
+
+이 패턴 자체가 항상 틀린 것은 아니다.
+문제는 이 helper가 곧바로 도메인 API처럼 승격될 때다.
+
+- `setOrder()`가 비즈니스 행위처럼 보이기 시작한다
+- owning side, inverse side 설명이 도메인 설명을 대신한다
+- back-reference 유지가 목적이라 컬렉션/엔티티 helper가 공개 API가 된다
+- JSON 순환 참조, 프록시 초기화 같은 ORM 문제가 도메인 모델까지 따라온다
+
+`OrderLine`이 정말로 "부모 Order를 알아야 하는 도메인 규칙"이 아니라면, 이 back-reference는 JPA가 FK를 관리하기 위한 구현 세부일 뿐이다.
+
+### 더 안전한 기본값
+
+- 도메인 모델은 비즈니스 행위만 드러낸다
+- JPA entity는 필요하면 양방향으로 매핑하되, 그 사실을 도메인 설명으로 끌고 오지 않는다
+- 실제로 back-navigation이 꼭 필요하지 않다면 entity 매핑도 단방향부터 시작한다
+
+```java
+public final class Order {
+    private final List<OrderLine> lines = new ArrayList<>();
+
+    public void addLine(ProductId productId, int quantity, Money price) {
+        lines.add(new OrderLine(productId, quantity, price));
+    }
+}
+```
+
+이 도메인 설명에는 `mappedBy`, owning side, `setOrder()`가 없다.
+필요하다면 persistence adapter가 `Order -> OrderJpaEntity`로 번역하면서 양방향 관계를 맞춘다.
+
+## 함정 2. `CascadeType.ALL`을 aggregate 설계와 같은 말로 착각한다
+
+두 번째 함정은 "aggregate root가 자식을 책임지니까 `CascadeType.ALL`이 정답"이라고 생각하는 경우다.
+
+### Before
+
+```java
+@Entity
+public class OrderEntity {
+    @ManyToOne(cascade = CascadeType.ALL)
+    private MemberEntity member;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineEntity> lines = new ArrayList<>();
+}
+```
+
+여기서 `lines`는 private child일 수 있지만 `member`는 보통 공유 참조다.
+그런데 둘 다 `ALL`로 묶으면 이런 위험이 생긴다.
+
+- 주문 저장 시 transient `member`까지 같이 insert 하려 한다
+- 주문 삭제 시 회원 row까지 삭제 전파될 수 있다
+- "연관돼 있으니 다 같은 aggregate"라는 잘못된 감각이 생긴다
+
+핵심은 이 점이다.
+
+- aggregate root가 자식을 함께 검증한다고 해서 모든 연관관계에 `ALL`이 맞는 것은 아니다
+- cascade는 "저장/수정/삭제 전파를 어디까지 할지"라는 JPA 옵션일 뿐이다
+
+### 더 안전한 기본값
+
+- `CascadeType.ALL`을 습관처럼 붙이지 않는다
+- 공유 참조(`Member`, `Product`, 코드 테이블)는 cascade 없이 ID/참조만 연결하는 편이 안전하다
+- root가 독점적으로 관리하는 private child에만 필요한 전파를 선별해 둔다
+
+특히 초심자는 "`repository.save(order)`가 자식도 저장해야 한다"는 요구와 "`cascade = ALL`이 있어야 aggregate가 된다"는 말을 분리해서 이해해야 한다.
+전자는 use case 요구이고, 후자는 그 요구를 구현하는 여러 방법 중 하나다.
+
+repository adapter는 cascade 없이도 자식 row를 명시적으로 저장하거나, managed entity에 diff를 반영하는 방식으로 aggregate를 저장할 수 있다.
+
+## 함정 3. `orphanRemoval`을 비즈니스 삭제 규칙으로 착각한다
+
+세 번째 함정은 컬렉션에서 빠지는 순간을 곧바로 "도메인에서 삭제됐다"와 동일시하는 경우다.
+
+### Before
+
+```java
+@Entity
+public class CartEntity {
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItemEntity> items = new ArrayList<>();
+
+    public void removeItem(Long itemId) {
+        items.removeIf(item -> item.getId().equals(itemId));
+    }
+}
+```
+
+위 코드는 flush 시점에 빠진 row를 삭제하는 데는 편하다.
+하지만 이 동작이 항상 비즈니스 규칙과 같은 것은 아니다.
+
+- 정말 hard delete가 맞나
+- soft delete나 상태 전이가 필요한가
+- 자식이 다른 aggregate나 이력 테이블에서 참조될 수 있나
+- 나중에 복구/감사 추적이 필요한가
+
+이 질문이 남아 있다면 `orphanRemoval`은 구현 편의일 뿐, 도메인 삭제 정책이 아니다.
+
+### 언제 잘 맞나
+
+- 자식이 root 밖에서는 의미가 없는 private child다
+- 컬렉션에서 제거되는 순간 물리 삭제가 도메인 정책과도 일치한다
+- 이력/복구/공유 참조 요구가 없다
+
+### 언제 조심해야 하나
+
+- "삭제"보다 "취소", "비활성", "보관"이 맞는 도메인이다
+- 자식에게 독립 ID와 독립 생명주기가 있다
+- 나중에 다시 붙이거나 다른 곳에서 참조할 수 있다
+
+이 경우 도메인에서는 `remove()` 대신 명시적 상태 전이가 더 자연스럽다.
+
+```java
+public final class Subscription {
+    private SubscriptionStatus status;
+
+    public void cancel() {
+        this.status = SubscriptionStatus.CANCELED;
+    }
+}
+```
+
+즉 `orphanRemoval = true`는 "컬렉션에서 빠지면 row를 지워도 된다"는 persistence 결정이지, 모든 "자식 제거"를 표현하는 만능 도메인 규칙이 아니다.
+
+## 함정 4. 영속성 편의 메서드가 도메인 API를 지배한다
+
+위 세 가지가 섞이면 결국 aggregate API 자체가 영속성 컨텍스트 친화적으로 바뀐다.
+
+### Before
+
+```java
+@Entity
+public class OrderEntity {
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineEntity> lines = new ArrayList<>();
+
+    public void replaceLines(List<OrderLineEntity> newLines) {
+        lines.clear();
+        for (OrderLineEntity line : newLines) {
+            addLine(line);
+        }
+    }
+
+    private void addLine(OrderLineEntity line) {
+        lines.add(line);
+        line.setOrder(this);
+    }
+}
+```
+
+이 코드는 JPA 관점에서는 이해할 수 있다.
+managed collection diff와 orphan 처리를 한 번에 맞추기 쉽기 때문이다.
+
+하지만 도메인 관점에서는 어색하다.
+
+- "왜 주문 변경이 `clear()`와 재추가로 표현되지?"
+- "부분 수정 규칙은 어디서 검증하지?"
+- "라인 하나 삭제와 전체 교체가 같은 의미인가?"
+
+도메인 API가 영속성 편의 메서드 중심으로 굳으면, 비즈니스 행위보다 flush 결과를 맞추는 쪽이 더 중요해진다.
+
+### 더 나은 방향
+
+- 도메인에는 의도가 드러나는 메서드를 둔다
+- adapter/mapper가 managed entity diff와 back-reference 동기화를 맡는다
+
+```java
+public final class Order {
+    public void changeLineQuantity(ProductId productId, int quantity) {
+        OrderLine line = findLine(productId);
+        line.changeQuantity(quantity);
+    }
+
+    public void removeLine(ProductId productId) {
+        lines.removeIf(line -> line.sameProduct(productId));
+    }
+}
+```
+
+이후 persistence adapter가
+
+- 어떤 child entity를 남길지
+- 어떤 child entity를 새로 만들지
+- 어떤 child entity를 orphan 처리할지
+
+를 계산하면 된다.
+
+특히 "managed entity 컬렉션 diff 맞추기"는 도메인보다 adapter 책임에 가깝다.
+그 계산이 도메인 메서드 이름과 구조를 지배하기 시작하면 persistence leakage가 이미 진행 중이다.
+
+## 초심자용 판단 순서
+
+aggregate 저장 매핑이 헷갈릴 때는 아래 순서로 보면 덜 섞인다.
+
+1. 먼저 "무엇을 함께 검증하고 함께 바꿔야 하는가"로 aggregate를 정의한다.
+2. 그다음 "이 연관관계가 정말 양방향 탐색이 필요한가"를 묻고, 아니면 단방향부터 시작한다.
+3. `CascadeType.ALL`은 기본값으로 두지 말고, private child에만 필요한 전파만 고른다.
+4. `orphanRemoval`은 "컬렉션 제거 = 물리 삭제"가 도메인 정책과 일치할 때만 쓴다.
+5. child 컬렉션 동기화, back-reference 세팅, managed entity diff는 adapter/mapper 책임으로 밀어낸다.
+
+판단 중 설명이 자꾸 이런 식으로 흘러가면 경계가 섞인 것이다.
+
+- "주인이 누구니까 이게 더 중요한 도메인이다"
+- "ALL cascade라서 같은 aggregate다"
+- "컬렉션에서 빠지면 삭제되니까 그게 비즈니스 규칙이다"
+
+이 문장들은 대부분 도메인 설명이 아니라 JPA 설명이다.
+
+## 기억할 기준
+
+- aggregate는 비즈니스 규칙 경계이고, 양방향 연관관계는 FK 관리 방식이다
+- owning side는 "더 중요한 객체"가 아니라 "FK를 쓰는 쪽"일 뿐이다
+- `CascadeType.ALL`은 aggregate 정의가 아니라 영속성 작업 전파 옵션이다
+- `orphanRemoval`은 private child cleanup에 가깝지, 모든 삭제 정책의 정답이 아니다
+- 도메인 설명에 `mappedBy`, `cascade`, `orphanRemoval`이 자꾸 등장하면 persistence concern이 새고 있을 가능성이 크다

@@ -10,6 +10,12 @@
 > - [SSE, WebSocket, Polling](./sse-websocket-polling.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [gRPC Status, Trailers, Transport Error Mapping](./grpc-status-trailers-transport-error-mapping.md)
+> - [HTTP/2 RST_STREAM, GOAWAY, Streaming Failure Semantics](./http2-rst-stream-goaway-streaming-failure-semantics.md)
+> - [h2c, Cleartext Upgrade, Prior Knowledge, Routing](./h2c-cleartext-upgrade-prior-knowledge-routing.md)
+> - [h2c Operational Traps: Proxy Chain, Dev/Prod Drift](./h2c-operational-traps-proxy-chain-dev-prod.md)
+
+retrieval-anchor-keywords: gRPC vs REST, Protocol Buffers, unary RPC, streaming RPC, schema contract, HTTP/2 transport, browser compatibility, API design, metadata, observability
 
 ---
 
@@ -32,6 +38,17 @@ REST와 gRPC는 둘 다 "서비스가 서로 통신하는 방식"이지만 철�
 | 운영 친화성 | 높음 | 성숙한 인프라가 필요 |
 
 이 문서는 [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md)에서 설명한 "HTTP 의미"를 한 단계 확장한 내용이다.
+
+### Retrieval Anchors
+
+- `gRPC vs REST`
+- `Protocol Buffers`
+- `unary RPC`
+- `streaming RPC`
+- `schema contract`
+- `HTTP/2 transport`
+- `browser compatibility`
+- `metadata`
 
 ---
 

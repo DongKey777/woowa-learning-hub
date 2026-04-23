@@ -2,13 +2,21 @@
 
 > 한 줄 요약: 전략 패턴이 너무 많이 늘어날 때는 "유연해졌다"가 아니라 "변화 축을 잘못 쪼갰다"는 신호일 수 있다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
+> - [Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)
+> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+> - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
+> - [Specification Pattern: 조건식을 조합 가능한 도메인 규칙으로 만들기](./specification-pattern.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [안티 패턴](./anti-pattern.md)
+> - [God Object / Spaghetti / Golden Hammer](./god-object-spaghetti-golden-hammer.md)
+> - [Template Hook Smells](./template-hook-smells.md)
+
+retrieval-anchor-keywords: strategy explosion, strategy explosion smell, 전략 폭발, 전략 클래스 폭발, strategy overuse, too many strategy classes, one class per case smell, combinatorial class explosion, enum to class smell, if else moved into classes, policy matrix, golden hammer strategy, strategy collapse checklist, when not to use strategy, config table vs strategy, lambda vs strategy, simple branching vs strategy, decision table refactoring, rule table, strategy to policy object
 
 ---
 
@@ -24,13 +32,11 @@ backend에서 자주 보이는 냄새는 이런 형태다.
 - 팩토리가 전략을 너무 많이 조립한다
 - 조건문을 클래스 폭발로 옮겨 놓았다
 
-### Retrieval Anchors
+## 냄새-first 분기
 
-- `strategy explosion`
-- `enum to class smell`
-- `combinatorial behavior`
-- `policy matrix`
-- `too many strategy classes`
+- 거대한 서비스 하나가 조건과 외부 호출까지 모두 끌어안고 있다면 [God Object / Spaghetti / Golden Hammer](./god-object-spaghetti-golden-hammer.md)를 먼저 본다.
+- 전략으로 쪼갰지만 추상 상위 클래스와 `before/after` hook가 다시 늘어나면 [Template Hook Smells](./template-hook-smells.md)를 같이 본다.
+- `VipMobileWeekendDiscountStrategy`처럼 이름이 조건 조합 자체를 설명하기 시작하면 이 문서가 기준점이다.
 
 ---
 
@@ -67,6 +73,36 @@ backend에서 자주 보이는 냄새는 이런 형태다.
 - 상태 전이는 State로 바꾼다
 - 공통 파이프라인은 Template Method나 Chain으로 둔다
 - 독립 축은 작은 value object로 분리한다
+
+### 4. 전략을 접고 더 단순한 구조로 내려야 하는 순간
+
+전략 패턴을 없애는 기준은 "객체지향을 포기한다"가 아니라, **문제 크기에 맞는 표현으로 다시 축소한다**는 데 있다.
+
+#### Compact checklist
+
+- 새 구현체를 추가할 때 클래스보다 설정값 한 줄만 늘어난다면 `config table`이 먼저다.
+- 구현 차이가 메서드 본문 2~3줄짜리 계산식이나 매핑이라면 `lambda`/함수 맵이 먼저다.
+- 선택지가 2~3개뿐이고 호출 지점도 하나라면 단순 `if`/`switch`가 더 읽기 쉽다.
+- 호출자가 전략 타입을 몰라도 되고, 키 기반 lookup만 있으면 `registry + data row`로 충분할 수 있다.
+- 테스트가 "각 전략 클래스"보다 "입력 조합과 기대값 표"에 가까워지면 decision table 쪽이 맞다.
+- 전략 이름보다 `grade`, `channel`, `weekend` 같은 축 이름이 더 중요해지면 Policy/Specification 조합을 검토한다.
+
+#### 무엇으로 접을지 빠르게 고르기
+
+| 축소 후보 | 이런 신호가 보이면 | 예시 |
+|---|---|---|
+| Config table | 차이가 상수, 비율, 임계값뿐이다 | 등급별 할인율, 채널별 수수료 |
+| Lambda / 함수 맵 | 계산식은 짧지만 런타임 선택은 필요하다 | 배송 타입별 fee 계산, 포맷터 선택 |
+| Simple branching | 분기가 작고 지역적이며 거의 안 바뀐다 | `isTestUser` 예외, 2가지 화면 분기 |
+| Policy / Specification | 조합 규칙과 판정 이유가 중요하다 | 환불 가능 여부, 승인 규정, 프로모션 eligibility |
+
+작게 외우면 다음 순서로 본다.
+
+1. 값 차이만 있나? 그러면 config table.
+2. 짧은 동작 차이만 있나? 그러면 lambda.
+3. 분기가 매우 적고 지역적인가? 그러면 simple branching.
+4. 판정 이유와 조합 규칙이 중요한가? 그러면 Policy/Specification.
+5. 그래도 알고리즘 자체가 독립적으로 길고 교체 가능한가? 그때 Strategy.
 
 ---
 
@@ -154,6 +190,9 @@ public class DiscountPolicy {
 | 선택지 | 장점 | 단점 | 언제 선택하는가 |
 |---|---|---|---|
 | 전략 클래스 다수 | 교체는 쉽다 | 클래스가 급증한다 | 진짜로 독립적인 알고리즘일 때 |
+| Config table | 변경을 데이터처럼 다룬다 | 행 의미가 흐려지면 문맥이 약해진다 | 차이가 상수/매핑일 때 |
+| Lambda / 함수 맵 | 구현 수를 줄이고 선택은 유지한다 | 공통 생명주기와 상태가 커지면 약하다 | 계산식이 짧고 stateless일 때 |
+| 단순 분기 | 가장 직접적이고 읽기 쉽다 | 축이 늘면 금방 다시 비대해진다 | 분기가 적고 지역적일 때 |
 | 전략 + 팩토리 | 생성은 통제된다 | 팩토리가 비대해질 수 있다 | 전략 수가 적당할 때 |
 | 규칙/명세 조합 | 축을 다시 나눌 수 있다 | 설계가 조금 더 추상적이다 | 조건이 합성될 때 |
 | State/Chain/Template 전환 | 구조가 더 명확해진다 | 개념 전환이 필요하다 | 전략이 아니라 흐름 문제일 때 |
@@ -163,6 +202,7 @@ public class DiscountPolicy {
 - 전략이 "선택지"라면 유지한다
 - 전략이 "경우의 수"가 되면 의심한다
 - 이름에 조건이 붙기 시작하면 축 분해를 다시 한다
+- 전략을 제거해도 데이터 표와 짧은 함수로 읽힌다면 과한 추상화였을 가능성이 높다
 
 ---
 
@@ -183,4 +223,3 @@ public class DiscountPolicy {
 ## 한 줄 정리
 
 전략 폭발은 전략 패턴이 실패했다는 뜻이 아니라, 문제의 변화 축이 여러 개인데도 전략 하나로 억지로 풀고 있다는 경고다.
-

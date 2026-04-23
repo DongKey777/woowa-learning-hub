@@ -7,17 +7,34 @@
 > 관련 문서:
 > - [자료구조 정리](./README.md)
 > - [Sliding Window 패턴](../algorithm/sliding-window-patterns.md)
-> - [Deque](./advanced.md)
+> - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
+> - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
+> - [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)
+> - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
+> - [Deque](./applied-data-structures-overview.md#deque-덱)
+>
+> retrieval-anchor-keywords: monotonic queue, monotonic stack, monotonic deque, monotonic deque walkthrough, monotonic stack walkthrough, monotonic stack trace, monotonic queue walkthrough, sliding window maximum, sliding window minimum, sliding window maximum trace, sliding window minimum trace, plain deque to monotonic deque, max in every window, min in every window, recent k maximum, recent k minimum, contiguous index window extrema, array window extrema, next greater element, next greater element walkthrough, next smaller element, histogram largest rectangle, histogram largest rectangle walkthrough, deque max min, fixed-size window extrema, amortized O(n), window extrema, candidate pruning, monotonic deque vs schedule overlap, meeting rooms not monotonic deque, calendar overlap not monotonic deque
 
 ## 핵심 개념
 
 단조 스택(monotonic stack)과 단조 큐(monotonic queue)는 원소를 **오름차순 또는 내림차순으로 유지**하면서, 매 시점마다 최댓값/최솟값 후보만 남기는 구조다.
+여기서 window는 배열/스트림 위를 한 칸씩 미는 연속 인덱스 범위이고, 회의/예약처럼 독립 `start/end` 레코드 집합을 뜻하지 않는다.
 
 - 단조 증가 스택: 스택 top부터 아래로 갈수록 값이 증가하거나 감소하는 형태를 유지한다.
 - 단조 큐: 슬라이딩 윈도우에서 구간의 최댓값/최솟값을 O(1)에 가까운 비용으로 얻기 위해 사용한다.
 
 핵심은 "들어온 원소보다 쓸모없는 원소는 뒤에서 제거한다"는 점이다.  
 이렇게 하면 각 원소는 최대 한 번 들어오고 한 번 나가므로 전체 시간복잡도는 보통 O(n)이다.
+
+## 라우팅 힌트
+
+- 질문이 `substring`, `window sum`, `중복 없는 가장 긴 구간`처럼 빈도/개수/합 갱신이면 먼저 [Sliding Window 패턴](../algorithm/sliding-window-patterns.md)을 본다.
+- 질문이 `sliding window maximum walkthrough`, `단조 덱 trace`, `plain deque가 왜 안 되는가`처럼 손으로 추적하며 배우고 싶다면 [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)부터 본다.
+- 질문이 `deque vs heap`, `lazy deletion으로도 되나`, `왜 monotonic deque가 더 낫나`처럼 구조 선택이 먼저 막히면 [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)로 가면 된다.
+- 질문이 `next greater element walkthrough`, `오큰수 trace`, `histogram largest rectangle walkthrough`처럼 단조 스택을 손으로 추적하고 싶다면 [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)로 가면 된다.
+- 질문이 `sliding window maximum`, `sliding window minimum`, `최근 k개 중 최대/최소`처럼 윈도우 극값이면 이 문서가 더 직접적인 라우트다.
+- 질문이 `meeting rooms`, `reservation overlap`, `calendar booking count`처럼 일정 겹침/배정이면 [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md)이나 [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)로 가야 한다.
+- 핵심 차이는 윈도우 자체가 아니라 상태 구조다. 극값 문제는 `Map`보다 `deque`가 필요하다.
 
 ## 깊이 들어가기
 
@@ -56,6 +73,8 @@
 ### 시나리오 1: 슬라이딩 윈도우 최대값
 
 길이 k의 윈도우를 한 칸씩 밀면서 최대값을 구해야 한다면, 매번 O(k)로 훑는 방식은 O(nk)로 너무 느리다.
+이 문제는 sliding window라고만 보면 절반만 맞고, 실제 해결 핵심은 **monotonic deque 유지**다.
+같은 `window`라는 단어가 일정표 시간대나 회의 예약 겹침을 뜻한다면 이 문서가 아니라 algorithm 쪽 overlap 문서로 보내야 한다.
 
 단조 큐는 아래 규칙을 쓴다.
 

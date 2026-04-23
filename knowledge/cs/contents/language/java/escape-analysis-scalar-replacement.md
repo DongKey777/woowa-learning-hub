@@ -7,11 +7,12 @@
 > 관련 문서:
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
+> - [Escape Analysis, Stack Allocation, Benchmarking, and Object Reuse Misconceptions](./escape-analysis-stack-allocation-benchmark-misconceptions.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
 > - [VarHandle, Unsafe, Atomics](./varhandle-unsafe-atomics.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 
-> retrieval-anchor-keywords: escape analysis, scalar replacement, object allocation elimination, lock elision, NoEscape, ArgEscape, GlobalEscape, HotSpot, JIT, allocation pressure, GC pressure, defensive copy
+> retrieval-anchor-keywords: escape analysis, scalar replacement, object allocation elimination, lock elision, NoEscape, ArgEscape, GlobalEscape, HotSpot, JIT, allocation pressure, GC pressure, defensive copy, stack allocation myth, object reuse misconception
 
 <details>
 <summary>Table of Contents</summary>

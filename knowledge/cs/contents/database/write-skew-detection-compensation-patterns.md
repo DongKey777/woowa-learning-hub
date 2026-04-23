@@ -2,8 +2,10 @@
 
 > 한 줄 요약: write skew는 “충돌이 없어서” 더 위험하고, 막는 것만큼 나중에 감지해서 보상하는 설계가 중요하다.
 
-관련 문서: [Write Skew and Phantom Read Case Studies](./write-skew-phantom-read-case-studies.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
-Retrieval anchors: `write skew`, `invariant check`, `compensation`, `post-commit validation`, `saga repair`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Write Skew and Phantom Read Case Studies](./write-skew-phantom-read-case-studies.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md), [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md)
+retrieval-anchor-keywords: write skew, invariant check, compensation, post-commit validation, saga repair, phantom anomaly, range invariant, set invariant enforcement
 
 ## 핵심 개념
 

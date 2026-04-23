@@ -10,6 +10,9 @@
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 > - [kswapd vs Direct Reclaim, Latency](./kswapd-vs-direct-reclaim-latency.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
+> - [tmpfs, shmem, /dev/shm, Cgroup Memory Accounting](./tmpfs-shmem-cgroup-memory-accounting.md)
+> - [Workingset Refault, Page Cache Reclaim, Runtime Debugging](./workingset-refault-page-cache-reclaim-debugging.md)
+> - [memory.reclaim, Cgroup v2 Proactive Reclaim](./memory-reclaim-cgroup-v2-proactive-reclaim.md)
 
 > retrieval-anchor-keywords: memory.high, memory.max, memory events, throttling, reclaim, cgroup v2, soft limit, hard limit, memory pressure
 
@@ -69,6 +72,7 @@ cgroup v2에서 메모리 제어는 한 단계가 아니다. `memory.high`는 �
 - `memory.high`를 자주 넘는다
 - reclaim이 강해진다
 - PSI memory pressure가 먼저 튄다
+- tmpfs/shmem usage가 file cache를 같이 밀 수 있다
 
 진단:
 

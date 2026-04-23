@@ -2,13 +2,17 @@
 
 > 한 줄 요약: Bridge 패턴은 추상화와 구현을 분리해, 저장소 타입과 provider 종류가 서로 폭발하지 않게 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Adapter (어댑터) 패턴](./adapter.md)
+> - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 > - [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)
+> - [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)
 > - [안티 패턴](./anti-pattern.md)
+
+> retrieval-anchor-keywords: bridge pattern, 브릿지 패턴, provider abstraction, storage provider abstraction, provider matrix, abstraction implementation split, independent variation axis, implementation matrix explosion, class explosion by combination, storage backend swap, provider swap without api change, bridge vs adapter, bridge vs facade, provider abstraction vs interface translation, change axis separation
 
 ---
 
@@ -23,13 +27,11 @@ backend에서는 특히 storage, provider, transport 같은 축이 동시에 바
 - provider abstraction: image, document, backup
 - notification abstraction: email, sms, push
 
-### Retrieval Anchors
+### 질문 분기
 
-- `bridge pattern`
-- `abstraction implementation split`
-- `storage provider abstraction`
-- `provider matrix`
-- `independent extensibility`
+- `S3/GCS/local`, `image/document/backup`, `provider matrix`, `조합 폭발`, `같은 API로 구현체만 바꾼다`처럼 변화 축 분리가 핵심이면 이 문서가 맞다.
+- `시그니처 mismatch`, `legacy sdk wrapper`, `XML -> JSON`, `메서드 이름이 안 맞는다`가 핵심이면 [Adapter (어댑터) 패턴](./adapter.md)으로 간다.
+- `외부 용어 격리`, `legacy concept quarantine`, `boundary translation`, `호출 순서 정리`가 핵심이면 [Facade as Anti-Corruption Seam](./facade-anti-corruption-seam.md)으로 간다.
 
 ---
 
@@ -126,13 +128,14 @@ Bridge는 "저장 객체"와 "저장소 구현"의 결합을 늦춘다.
 |---|---|---|---|
 | 상속 조합 | 단순해 보인다 | 조합 폭발이 생긴다 | 축이 하나일 때 |
 | Bridge | 독립 확장이 가능하다 | 구조가 다소 추상적이다 | 두 축이 동시에 바뀔 때 |
-| Adapter | 기존 구현을 연결한다 | 구조 분리는 약하다 | 호환성 문제일 때 |
+| Adapter | 기존 구현을 연결한다 | 변화 축 분리는 약하다 | 시그니처/포맷 호환성 문제일 때 |
+| Facade as seam | 외부 개념을 내부 경계에서 정리한다 | orchestration이 두꺼워질 수 있다 | 외부 용어 격리와 흐름 정리가 필요할 때 |
 
 판단 기준은 다음과 같다.
 
 - 구현 축과 추상화 축이 둘 다 변하면 Bridge
-- 단순한 변환이면 Adapter
-- 경계 보호가 목표면 Port/Adapter 계층을 본다
+- 단순한 시그니처/포맷 변환이면 Adapter
+- 외부 용어 격리와 경계 보호가 목표면 Facade seam이나 ACL layering을 본다
 
 ---
 
@@ -153,4 +156,3 @@ Bridge는 "저장 객체"와 "저장소 구현"의 결합을 늦춘다.
 ## 한 줄 정리
 
 Bridge 패턴은 storage와 provider 같은 두 변화 축을 분리해 조합 폭발을 막는다.
-

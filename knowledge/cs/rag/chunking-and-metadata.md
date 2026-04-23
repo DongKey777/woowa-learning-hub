@@ -1,6 +1,15 @@
 # Chunking and Metadata
 
 > 한 줄 요약: `CS-study`는 파일 단위가 아니라, 제목과 섹션 단위로 잘라야 검색 품질이 안정적이다.
+>
+> 관련 문서:
+> - [RAG Design](./README.md)
+> - [Source Priority and Citation](./source-priority-and-citation.md)
+> - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
+> - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
+
+> retrieval-anchor-keywords: chunking metadata, section chunking, retrieval metadata guide, linked_paths metadata, asset qa linked paths, auxiliary asset filename audit, html asset path metadata, reverse-link maintenance route
 
 ## 기본 원칙
 
@@ -73,7 +82,7 @@ RAG에서는 이 구조를 그대로 활용하는 편이 좋다.
 - `contains_code`: 코드/쿼리 포함 여부
 - `contains_table`: 표 포함 여부
 - `retrieval_anchor_keywords`: 동의어, 약어, 증상, 에러 문자열, 도구 이름
-- `linked_paths`: 같은 질문에서 자주 같이 읽는 파일
+- `linked_paths`: 같은 질문에서 자주 같이 읽는 파일. repo-local `img/`·`code/`나 local HTML asset form이 들어간 chunk라면 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)도 같이 남겨 후속 filename/reverse-link QA route를 보존한다.
 - `source_priority`: 검색 우선순위 점수
 
 ## RAG에 맞는 청크 우선순위
@@ -90,6 +99,7 @@ RAG에서는 이 구조를 그대로 활용하는 편이 좋다.
 - 같은 개념이 여러 문서에 반복되면, 인용할 원문은 하나만 남기고 나머지는 링크 관계로 처리한다.
 - 문서 내부 링크는 chunk metadata의 `linked_paths`에 넣어 재탐색 힌트로 쓴다.
 - `retrieval-anchor-keywords` 줄이 있으면 metadata에 그대로 올려서 alias 확장에 쓴다.
+- repo-local `img/`·`code/` path나 local HTML asset form을 설명하는 chunk는 `linked_paths`에서 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)로 한 번 더 이어 두면 다음 link-maintenance wave가 adjacent QA note를 놓치지 않는다.
 - README는 개념의 정의보다 위치 안내 역할을 하므로 짧은 chunk로 유지한다.
 
 ## 한 줄 정리

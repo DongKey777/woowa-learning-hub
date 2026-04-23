@@ -7,9 +7,22 @@
 > 관련 문서:
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+> - [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md)
 > - [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
 > - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 > - [Load Balancer Healthcheck Failure Patterns](../network/load-balancer-healthcheck-failure-patterns.md)
+
+> retrieval-anchor-keywords:
+> - Spring observability
+> - Micrometer
+> - Micrometer Tracing
+> - distributed tracing
+> - metrics
+> - traces
+> - logs correlation
+> - OpenTelemetry
+> - trace context propagation
+> - 관측성
 
 ## 핵심 개념
 

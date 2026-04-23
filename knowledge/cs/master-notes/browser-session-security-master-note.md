@@ -8,6 +8,8 @@
 
 - 먼저 [Auth, Session, Token Master Note](./auth-session-token-master-note.md)로 세션/토큰/쿠키의 전체 구조를 잡는다.
 - 그 다음 이 노트에서 브라우저 위협 모델만 더 깊게 본다.
+- 브라우저 callback이 없는 CLI / TV / 콘솔 login이면 이 노트 대신 [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)로 분기한다.
+- browser redirect는 맞지만 authorization request hardening이 먼저면 [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)로 먼저 내려간다.
 
 집중 범위:
 
@@ -17,7 +19,7 @@
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: HttpOnly, SameSite, CSRF, XSS, clickjacking, CSP, session fixation, session rotation, refresh token rotation, browser session, session store, PKCE, OAuth2 code flow, logout
+> retrieval-anchor-keywords: HttpOnly, SameSite, CSRF, XSS, clickjacking, CSP, session fixation, session rotation, refresh token rotation, browser session, session store, PKCE, OAuth2 code flow, device code flow, browserless login, cross-device login, PAR, JAR, pushed authorization request, request object, authorization request hardening, logout
 
 > related docs:
 > - [HTTP State, Session, Cache](../contents/network/http-state-session-cache.md)
@@ -28,6 +30,8 @@
 > - [XSS / CSRF / Spring Security](../contents/security/xss-csrf-spring-security.md)
 > - [CORS, SameSite, Preflight](../contents/security/cors-samesite-preflight.md)
 > - [OAuth2 Authorization Code Grant](../contents/security/oauth2-authorization-code-grant.md)
+> - [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+> - [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 > - [PKCE Failure Modes Recovery](../contents/security/pkce-failure-modes-recovery.md)
 > - [Spring Security Architecture](../contents/spring/spring-security-architecture.md)
 > - [Authentication vs Authorization](../contents/security/authentication-vs-authorization.md)
@@ -94,6 +98,11 @@ That means rotation, session versioning, and server-side invalidation all matter
 If the browser gets an authorization code instead of raw tokens, the backend can keep more control over token issuance and storage.
 
 PKCE further reduces interception risk in code flow scenarios.
+
+Branch here when the flow no longer matches a browser session:
+
+- browserless or cross-device login: [OAuth Device Code Flow / Security Model](../contents/security/oauth-device-code-flow-security.md)
+- request signing or pushed authorization request before browser hardening: [OAuth PAR / JAR Basics](../contents/security/oauth-par-jar-basics.md)
 
 ## 실전 시나리오
 

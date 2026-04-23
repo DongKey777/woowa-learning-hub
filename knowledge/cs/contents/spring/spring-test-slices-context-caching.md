@@ -9,7 +9,13 @@
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
+> - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
+> - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
+> - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
 > - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
+
+retrieval-anchor-keywords: test slice, context cache, WebMvcTest, DataJpaTest, SpringBootTest, MockBean, DirtiesContext, DynamicPropertySource, TestEntityManager, flush clear test, test boundary, test configuration
 
 ---
 

@@ -7,7 +7,7 @@
 > 관련 문서:
 > - [Reflection, Generics, Annotations](./reflection-generics-annotations.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
-> - [ClassLoader, Exception 설계, equals/hashCode/compareTo](./6.md)
+> - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 > - [Java Collections 성능 감각](./collections-performance.md)
 
 <details>
@@ -23,6 +23,8 @@
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+retrieval-anchor-keywords: generic type erasure, TypeReference, super type token, Class<T> parameter, runtime generic type info, Java type erasure workaround, List<User> deserialization, type token pattern, generic factory limitation, PECS boundary
 
 ## 왜 필요한가
 

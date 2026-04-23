@@ -6,8 +6,26 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
+> - [Connectivity Question Router](./connectivity-question-router.md)
 > - [그래프 알고리즘](../algorithm/graph.md)
-> - [위상 정렬 패턴](../algorithm/topological-sort-patterns.md)
+> - [알고리즘 기본: DFS와 BFS](../algorithm/basic.md#dfs와-bfs)
+> - [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
+> - [Union-Find Component Metadata Walkthrough](./union-find-component-metadata-walkthrough.md)
+> - [Deletion-Aware Connectivity Bridge](./deletion-aware-connectivity-bridge.md)
+> - [DSU Rollback](../algorithm/dsu-rollback.md)
+> - [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
+
+> retrieval-anchor-keywords: union find, union-find, disjoint set union, DSU, disjoint set, path compression, union by rank, union by size, same set query, connectivity query, cycle detection, connected components merge, find parent root, parent array union find, network connectivity, friend network, kruskal union find, mst union find, union find component size, union find component count, dsu metadata, graph traversal vs union find, bfs vs union find, dfs vs union find, connectivity vs path query, reachable nodes traversal, edge deletion connectivity, dynamic connectivity basics, connected component yes no query, component representative, same-component router, connectivity question router, dsu rollback handoff, rollback union find, offline dynamic connectivity, fully dynamic connectivity, bridge edge deletion, cut edge connectivity, 서로소 집합, 유니온 파인드, 크루스칼, 최소 신장 트리, 그래프 탐색과 유니온 파인드 차이, 연결 여부 질의, 경로 복원, 같은 컴포넌트 라우터, 간선 삭제 연결성, 컴포넌트 크기 추적, 컴포넌트 개수 추적
+
+## 이 문서 다음에 보면 좋은 문서
+
+- `같은 컴포넌트인가?`, `경로 하나를 복원하라`, `최단 거리와 경로를 구하라`가 섞여 보이면 [Connectivity Question Router](./connectivity-question-router.md)에서 질문의 답 모양부터 먼저 분리하면 된다.
+- `같은 그룹인가?`를 넘어서 `이 그룹 크기는 몇인가?`, `전체 컴포넌트는 몇 개인가?`까지 손으로 따라가고 싶다면 [Union-Find Component Metadata Walkthrough](./union-find-component-metadata-walkthrough.md)가 가장 빠르다.
+- Kruskal에서 union-find가 실제로 어디에 끼는지 문제 풀이 맥락으로 보려면 [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)이 가장 직접적이다.
+- `O(alpha(n))` 감각과 path compression의 상각 효과를 더 깊게 보려면 [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)로 이어 가면 된다.
+- DFS/BFS와 union-find를 그래프 연결성 관점에서 나란히 비교하려면 [그래프 알고리즘](../algorithm/graph.md)을 같이 본다.
+- `같은 컴포넌트인가?`가 아니라 `어떤 경로로 가나?`, `지금 도달 가능한 정점을 모두 보여줘`처럼 실제 탐색이 필요한 질문이라면 [알고리즘 기본: DFS와 BFS](../algorithm/basic.md#dfs와-bfs)로 바로 넘어가는 편이 빠르다.
+- 간선 삭제가 섞일 때 왜 plain union-find가 깨지고 DSU rollback이나 다른 동적 연결성 기법으로 넘어가는지 짧게 연결해서 보고 싶다면 [Deletion-Aware Connectivity Bridge](./deletion-aware-connectivity-bridge.md)로 이어 가면 된다.
 
 ## 핵심 개념
 
@@ -32,15 +50,96 @@ Union-Find는 Disjoint Set Union(DSU)이라고도 부른다.
 
 - 사이클 탐지
 - 최소 신장 트리(Kruskal)
-- 동적 연결성 관리
+- 간선 추가 중심의 동적 연결성 관리
 - 친구 그룹, 조직 병합, 네트워크 분리 판단
 
-### 2. path compression
+### 2. 작은 그림으로 보는 연결성 질문의 경계
+
+연결성 문제라고 해서 항상 union-find가 정답은 아니다.  
+질문이 `같은 그룹인가?`인지, `어떻게 연결되는가?`인지 먼저 구분해야 한다.
+
+#### 예시 A: union-find만으로 충분한 경우
+
+간선이 **추가되기만** 하고, 질문도 **같은 컴포넌트인지 yes/no만 확인**하면 union-find가 가장 가볍다.
+
+```text
+초기 상태
+1   2   3   4   5
+
+union(1, 2)
+1 - 2   3   4   5
+
+union(2, 3)
+1 - 2 - 3   4   5
+
+union(4, 5)
+1 - 2 - 3   4 - 5
+```
+
+이 상태에서 묻는 질문이 아래 둘이라면 충분하다.
+
+- `1`과 `3`은 같은 그룹인가?
+- `2`와 `5`는 같은 그룹인가?
+
+union-find는 대표(root)만 비교하면 된다.
+
+- `find(1) == find(3)` 이면 연결
+- `find(2) != find(5)` 이면 비연결
+
+여기서는 `1 -> 2 -> 3`이라는 **실제 경로**를 몰라도 답할 수 있다.  
+그래서 전체 그래프를 다시 BFS/DFS로 훑을 이유가 없다.
+
+#### 예시 B: full traversal이 필요한 경우
+
+질문이 `연결되어 있나?`에서 `어떻게 연결되어 있나?`로 바뀌면 union-find만으로는 부족하다.
+
+```text
+1 - 2 - 3
+    |   |
+    4 - 5
+```
+
+이 그래프에서 아래 질문은 대표 비교만으로 답할 수 없다.
+
+- `1`에서 `5`까지 실제로 어떤 경로로 가나?
+- `2`에서 출발해서 방문 가능한 정점을 순서대로 보여줘
+
+union-find는 `1`과 `5`가 같은 컴포넌트라는 사실만 알려줄 뿐,  
+`1 -> 2 -> 4 -> 5` 같은 경로 정보나 방문 순서를 저장하지 않는다.
+
+이때는 인접한 정점을 따라가며 확인해야 하므로 BFS/DFS 같은 **full graph traversal**이 필요하다.
+
+#### 예시 C: 간선 삭제가 섞이면 union-find alone으로는 안 된다
+
+union-find는 **합치기**는 잘하지만, 한 번 합친 집합을 **다시 쪼개는 것**은 못 한다.
+
+```text
+삭제 전
+1 - 2 - 3 - 4
+
+간선 (2, 3) 삭제 후
+1 - 2   3 - 4
+```
+
+삭제 전에는 `1`과 `4`가 연결되어 있었지만, 삭제 후에는 아니다.  
+이 변화는 단순한 `union()`만으로 표현할 수 없어서 현재 그래프를 다시 탐색해야 한다.
+
+삭제가 왜 `split 지원 없음` 한 줄을 넘어서 `지운 간선이 bridge였는가`, `과거 상태를 되돌릴 수 있는가` 문제로 커지는지는 [Deletion-Aware Connectivity Bridge](./deletion-aware-connectivity-bridge.md)에서 짧게 이어서 볼 수 있다.
+
+초보자 기준으로는 이렇게 기억하면 된다.
+
+| 질문 형태 | 먼저 떠올릴 도구 | 이유 |
+|---|---|---|
+| 간선이 추가만 되고, `a`와 `b`가 같은 그룹인지 반복해서 묻는다 | Union-Find | 대표가 같은지만 빠르게 보면 된다 |
+| 실제 경로, 방문 순서, 도달 가능한 정점 목록이 필요하다 | BFS/DFS | 간선을 따라가며 직접 탐색해야 한다 |
+| 간선 삭제 후에도 지금 연결되어 있는지 물어본다 | BFS/DFS 재탐색 또는 더 복잡한 동적 연결성 구조 | union-find는 split을 지원하지 않는다 |
+
+### 3. path compression
 
 find를 수행할 때 루트를 찾는 경로상의 노드들을 모두 루트로 직접 연결한다.  
 이렇게 하면 다음 find가 훨씬 빨라진다.
 
-### 3. union by rank/size
+### 4. union by rank/size
 
 항상 작은 트리를 큰 트리에 붙여서 높이가 비정상적으로 커지는 것을 막는다.
 
@@ -55,7 +154,7 @@ union-find는 이 "같은 집합인지" 판단을 빠르게 해준다.
 
 ### 시나리오 2: 네트워크 연결 여부
 
-서버 간 링크를 추가/차단하면서 그룹이 분리되었는지 확인할 때 유용하다.
+서버 간 링크를 추가해 가면서 어느 서버들이 같은 네트워크 그룹인지 빠르게 확인할 때 유용하다.
 
 ## 코드로 보기
 
@@ -102,8 +201,8 @@ public class UnionFind {
 
 | 선택지 | 장점 | 단점 | 언제 선택하는가 |
 |---|---|---|---|
-| Union-Find | 구현이 간단하고 find/union이 매우 빠르다 | 집합 내부 순서나 경로 정보는 표현하기 어렵다 | 연결 여부, MST, 그룹 병합 |
-| BFS/DFS 매번 재탐색 | 직관적이다 | 반복 질의에 비싸다 | 한 번만 확인할 때 |
+| Union-Find | 구현이 간단하고 find/union이 매우 빠르다 | 집합 내부 순서나 실제 경로, 삭제 후 split은 표현하기 어렵다 | 간선 추가만 있는 연결 여부, MST, 그룹 병합 |
+| BFS/DFS 매번 재탐색 | 경로, 방문 순서, 도달 가능한 정점 목록을 바로 얻을 수 있다 | 반복 질의에 비싸다 | 실제 탐색 내용이 필요할 때, 삭제 후 연결성을 다시 확인할 때 |
 | 동적 그래프 구조 | 표현력이 높다 | 구현과 유지비가 크다 | 삽입/삭제가 복잡한 그래프 |
 
 ## 꼬리질문

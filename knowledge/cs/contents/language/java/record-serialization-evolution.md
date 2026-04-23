@@ -6,11 +6,16 @@
 
 > 관련 문서:
 > - [Serialization Compatibility and `serialVersionUID`](./serialization-compatibility-serial-version-uid.md)
+> - [Serialization Proxy Pattern and Invariant Preservation](./serialization-proxy-pattern-invariant-preservation.md)
 > - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
+> - [Record/Sealed Hierarchy Evolution and Pattern Matching Compatibility](./record-sealed-hierarchy-evolution-pattern-matching-compatibility.md)
 > - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
+> - [Enum Persistence, JSON, and Unknown Value Evolution](./enum-persistence-json-unknown-value-evolution.md)
+> - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+> - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Class Initialization Ordering](./class-initialization-ordering.md)
 
-> retrieval-anchor-keywords: record serialization, canonical constructor, serialization evolution, `serialVersionUID`, compact constructor, component change, serialization proxy, `readResolve`, immutability, schema compatibility
+> retrieval-anchor-keywords: record serialization, canonical constructor, serialization evolution, `serialVersionUID`, compact constructor, component change, serialization proxy, `readResolve`, immutability, schema compatibility, canonicalization, value object normalization, enum evolution, value object invariant, sealed hierarchy evolution
 
 <details>
 <summary>Table of Contents</summary>
@@ -18,7 +23,7 @@
 - [핵심 개념](#핵심-개념)
 - [깊이 들어가기](#깊이-들어가기)
 - [실전 시나리오](#실전-시나리오)
-- [코드로 보기](#코드로 보기)
+- [코드로 보기](#코드로-보기)
 - [트레이드오프](#트레이드오프)
 - [꼬리질문](#꼬리질문)
 - [한 줄 정리](#한-줄-정리)
@@ -55,6 +60,7 @@ compact constructor에서 정규화(normalization)를 넣을 수 있다.
 ### 4. serialization proxy가 더 안전할 수 있다
 
 record 자체를 포맷으로 바로 노출하기보다, serialization proxy를 두어 내부 구조 변화와 포맷을 분리하는 편이 안전할 수 있다.
+이 패턴은 [Serialization Proxy Pattern and Invariant Preservation](./serialization-proxy-pattern-invariant-preservation.md)에서 더 자세히 다룬다.
 
 ## 실전 시나리오
 

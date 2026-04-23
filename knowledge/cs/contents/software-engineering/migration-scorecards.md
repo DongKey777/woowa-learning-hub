@@ -10,6 +10,8 @@
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
 > - [Brownfield Strangler Org Model](./brownfield-strangler-org-model.md)
 > - [Backwards Compatibility Test Gates](./backward-compatibility-test-gates.md)
+> - [Data Migration Rehearsal, Reconciliation, Cutover](./data-migration-rehearsal-reconciliation-cutover.md)
+> - [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md)
 
 > retrieval-anchor-keywords:
 > - migration scorecard
@@ -20,6 +22,8 @@
 > - rollback readiness
 > - adoption progress
 > - migration risk
+> - migration wave
+> - wave exit criteria
 
 ## 핵심 개념
 
@@ -34,6 +38,7 @@ scorecard는 전환의 상태를 몇 개의 축으로 나눠, 준비도와 위�
 - rollback readiness
 - observability readiness
 - deprecated path usage
+- reconciliation diff rate
 
 즉 scorecard는 migration의 **건강검진표**다.
 
@@ -57,6 +62,7 @@ scorecard는 전환의 상태를 몇 개의 축으로 나눠, 준비도와 위�
 - shadow diff 높음 -> fix and recompare
 - consumer adoption 낮음 -> communication 강화
 - rollback readiness 낮음 -> runbook 보강
+- rehearsal 시간 초과 -> cutover plan 재설계
 
 ### 3. scorecard는 팀 간 공용 언어가 된다
 

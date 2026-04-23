@@ -8,8 +8,14 @@
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
+> - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
+> - [Service Mesh Local Reply, Timeout, Reset Attribution](./service-mesh-local-reply-timeout-reset-attribution.md)
+> - [Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh](./adaptive-concurrency-limiter-latency-signal-gateway-mesh.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 > - [System Design](../system-design/README.md)
+
+retrieval-anchor-keywords: service mesh, sidecar proxy, control plane, data plane, mTLS, traffic policy, local reply, retry policy, sidecar latency, observability
 
 ---
 
@@ -25,6 +31,17 @@
 
 이걸 애플리케이션 코드마다 직접 넣으면 규칙이 흩어진다.  
 서비스 메시는 이 공통 통신 책임을 프록시 레이어로 옮긴다.
+
+### Retrieval Anchors
+
+- `service mesh`
+- `sidecar proxy`
+- `control plane`
+- `data plane`
+- `mTLS`
+- `traffic policy`
+- `local reply`
+- `sidecar latency`
 
 ---
 
@@ -112,6 +129,8 @@ sidecar는 호출을 가로채기 때문에 다음을 쉽게 만든다.
 - 프록시가 죽으면 통신도 흔들릴 수 있다
 - 설정이 꼬이면 모든 서비스에 영향을 준다
 - 버전 불일치가 생기면 디버깅이 어려워진다
+
+특히 sidecar가 만드는 local reply와 reset은 [Service Mesh Local Reply, Timeout, Reset Attribution](./service-mesh-local-reply-timeout-reset-attribution.md), [Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB](./vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md)처럼 표면 증상 번역이 같이 있어야 해석이 빨라진다.
 
 그래서 운영 복잡도가 확실히 올라간다.
 

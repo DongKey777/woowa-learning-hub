@@ -9,6 +9,7 @@
 > - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 > - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
+> - [Spring Startup Hooks: `CommandLineRunner`, `ApplicationRunner`, `SmartLifecycle`, and Readiness Warmup](./spring-startup-runner-smartlifecycle-readiness-warmup.md)
 > - [Spring Observability with Micrometer Tracing](./spring-observability-micrometer-tracing.md)
 
 retrieval-anchor-keywords: actuator exposure, health endpoint, info endpoint, metrics endpoint, conditions endpoint, management port, exposure include exclude, endpoint security, operational surface

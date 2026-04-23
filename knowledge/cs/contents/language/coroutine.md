@@ -1,5 +1,7 @@
 # Coroutine
 
+**난이도: 🟡 Intermediate**
+
 > 작성자 : [박재용](https://github.com/ggjae)
 
 본 자료는 작성자인 '박재용'의 팀 Repository의 글과 유니티 교과서 책을 재구성하여 작성되었습니다. 다양한 언어(javascript, C++, Kotlin, C#)에서 코루틴을 사용하지만 예제는 C#에 국한된 설명으로 코루틴에 대한 이해를 도와줍니다.

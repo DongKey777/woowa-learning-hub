@@ -8,6 +8,7 @@
 > - [Monolith to MSA Failure Patterns](./monolith-to-msa-failure-patterns.md)
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
+> - [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md)
 > - [CDC, Debezium, Outbox, Binlog](../database/cdc-debezium-outbox-binlog.md)
 > - [Workflow Orchestration + Saga 설계](../system-design/workflow-orchestration-saga-design.md)
 
@@ -58,6 +59,7 @@ Client -> Gateway/Router -> New Service -> Legacy Service
 ### 2. cutover는 스위치가 아니라 상태 전이다
 
 cutover를 "트래픽 100% 전환"으로만 생각하면 위험하다.
+여러 consumer와 배치가 얽히면 cutover는 보통 migration wave governance의 마지막 단계 중 하나가 된다.
 
 실제 cutover에는 보통 아래가 포함된다.
 

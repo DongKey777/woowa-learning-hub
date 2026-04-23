@@ -1,5 +1,7 @@
 # Partition Pruning and Hot/Cold Data
 
+**난이도: 🟡 Intermediate**
+
 > 파티셔닝은 데이터를 나누는 기술이고, partition pruning은 그중 읽을 것만 골라내는 최적화다. hot/cold 데이터를 같이 다루면 체감 효과가 커진다.
 
 > 관련 문서: [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [인덱스와 실행 계획](./index-and-explain.md)
@@ -17,6 +19,15 @@
 - [꼬리질문](#꼬리질문)
 
 </details>
+
+> retrieval-anchor-keywords:
+> - partition pruning
+> - range partitioning
+> - hot cold data
+> - cold archive
+> - partition elimination
+> - time-series partition
+> - 핫콜드 데이터
 
 ## 왜 중요한가
 

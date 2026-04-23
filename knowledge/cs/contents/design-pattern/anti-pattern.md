@@ -1,5 +1,7 @@
 # 안티 패턴
 
+**난이도: 🔴 Advanced**
+
 > 작성자 : [정희재](https://github.com/Hee-Jae)
 
 본 자료는 '파이썬 디자인 패턴 2/e (Chetan Giridhar)' 책을 토대로 작성되었습니다. 따라서 모든 예시 코드에는 저자를 표시하는 `__author__ = 'Chetan'` 이 포함됩니다.
@@ -15,6 +17,15 @@
 - [디자인 패턴 과사용](#디자인-패턴-과사용)
 
 </details>
+
+> 관련 문서:
+> - [God Object / Spaghetti / Golden Hammer](./god-object-spaghetti-golden-hammer.md)
+> - [실전 패턴 선택 가이드](./pattern-selection.md)
+> - [전략 폭발 냄새](./strategy-explosion-smell.md)
+> - [Template Hook Smells](./template-hook-smells.md)
+> - [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
+
+retrieval-anchor-keywords: anti pattern, 안티 패턴, bad software design signals, spaghetti code, golden hammer, lava flow, copy paste programming, vendor lock in design, design pattern overuse, architecture anti pattern
 
 ---
 

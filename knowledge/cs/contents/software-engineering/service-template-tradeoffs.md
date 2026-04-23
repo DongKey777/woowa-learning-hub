@@ -6,18 +6,27 @@
 
 > 관련 문서:
 > - [Platform Paved Road Trade-offs](./platform-paved-road-tradeoffs.md)
+> - [Service Bootstrap Governance](./service-bootstrap-governance.md)
 > - [Platform Team, Product Team, and Business Capability Boundaries](./platform-team-product-team-capability-boundaries.md)
 > - [Service Maturity Model](./service-maturity-model.md)
+> - [Golden Path Escape Hatch Policy](./golden-path-escape-hatch-policy.md)
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 
 > retrieval-anchor-keywords:
 > - service template
+> - service scaffold
 > - scaffold
 > - starter kit
 > - boilerplate
 > - opinionated template
 > - template drift
+> - golden path template
+> - paved road scaffold
+> - service bootstrap
+> - new service checklist
+> - escape hatch
+> - template version
 > - developer experience
 > - platform scaffolding
 
@@ -36,6 +45,19 @@
 을 자동으로 제공한다.
 
 하지만 너무 많은 것을 미리 고정하면, 템플릿이 팀의 문제를 해결하는 대신 **문제를 숨기는 틀**이 된다.
+
+---
+
+## Template Insertion Points
+
+service template 관련 표준은 한 문서에만 적어 두면 drift를 막기 어렵다. 아래처럼 **삽입 지점**을 나눠 두는 편이 안정적이다.
+
+- scaffold/template README: 기본 stack, observability, deployment, escape hatch 조건을 남긴다.
+- bootstrap PR/checklist: owner, runtime 선택, template version, deviation reason을 기록한다.
+- service catalog metadata: 어떤 template 계열로 시작했는지와 예외 승인 여부를 남긴다.
+- PRR / fitness function: 템플릿 기본값에서 벗어난 항목을 검증 대상으로 끌어온다.
+
+즉 template는 생성기 안에만 있지 말고, **생성 시점 기록 + 운영 검증 지점**에 같이 꽂혀 있어야 한다.
 
 ---
 

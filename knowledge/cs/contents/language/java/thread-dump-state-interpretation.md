@@ -8,9 +8,11 @@
 > - [Safepoint and Stop-the-World Diagnostics](./safepoint-stop-the-world-diagnostics.md)
 > - [JFR Event Interpretation](./jfr-event-interpretation.md)
 > - [Executor Sizing, Queue, Rejection Policy](./executor-sizing-queue-rejection-policy.md)
+> - [`wait`/`notify`, `Condition`, Spurious Wakeup, and Lost Signal](./wait-notify-condition-spurious-wakeup-lost-signal.md)
+> - [`LockSupport.park`/`unpark` Permit Semantics and Coordination Pitfalls](./locksupport-park-unpark-permit-semantics.md)
 > - [JNI Native Call Overhead](./jni-native-call-overhead.md)
 
-> retrieval-anchor-keywords: thread dump, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, in native, monitor owner, lock contention, parked thread, native blocked, native waiting, thread state interpretation
+> retrieval-anchor-keywords: thread dump, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, in native, monitor owner, lock contention, parked thread, native blocked, native waiting, thread state interpretation, wait notify, Condition, lost signal, LockSupport, park, unpark, blocker
 
 <details>
 <summary>Table of Contents</summary>
@@ -57,6 +59,9 @@ busy loop, native spin, hot lock loop가 다 RUNNABLE로 보일 수 있다.
 
 대기 자체는 정상일 수 있다.  
 중요한 것은 "왜 여기서 멈춰 있는가"다.
+
+특히 `Object.wait()`나 `Condition.await()`가 보이면 predicate loop와 signal 규약이 맞는지 [wait/notify, Condition, Spurious Wakeup, and Lost Signal](./wait-notify-condition-spurious-wakeup-lost-signal.md)을 같이 보는 편이 좋다.
+`LockSupport.park()`가 보이면 permit가 남아 있었는지, blocker가 무엇인지, interrupt로 깼는지도 함께 봐야 한다.
 
 ### 4. in native는 JVM 밖 구간일 수 있다
 

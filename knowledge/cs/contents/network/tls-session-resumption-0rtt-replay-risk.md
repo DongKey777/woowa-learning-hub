@@ -10,6 +10,7 @@
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: TLS session resumption, session ticket, session cache, PSK, TLS 1.3, 0-RTT, early data, replay risk, handshake RTT
 

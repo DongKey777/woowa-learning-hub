@@ -6,12 +6,13 @@
 
 > 관련 문서:
 > - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
+> - [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 > - [kswapd vs Direct Reclaim, Latency](./kswapd-vs-direct-reclaim-latency.md)
 > - [vm.swappiness, Reclaim Behavior](./vm-swappiness-reclaim-behavior.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 
-> retrieval-anchor-keywords: vmstat, r, b, si, so, bi, bo, us, sy, id, wa, st, cs, free pages, runnable, swap in, swap out
+> retrieval-anchor-keywords: vmstat, r, b, si, so, bi, bo, us, sy, id, wa, st, cs, free pages, runnable, swap in, swap out, load average triage, vmstat r b wa triage
 
 ## 핵심 개념
 
@@ -27,6 +28,7 @@
 왜 중요한가:
 
 - CPU인지 메모리인지 I/O인지 빠르게 감을 잡을 수 있다
+- 높은 `load average`가 saturation인지 blocked wait인지 1차 분리를 할 수 있다
 - `vmstat`은 가장 빠른 1차 triage 도구다
 - PSI, perf, iostat로 넘어가기 전에 방향을 잡을 수 있다
 

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Visitor 패턴은 객체 구조는 고정하고 연산을 외부로 분리하지만, 구조가 자주 바뀌는 도메인에서는 오히려 비용이 커진다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)

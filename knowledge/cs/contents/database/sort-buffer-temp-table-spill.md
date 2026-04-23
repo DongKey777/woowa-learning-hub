@@ -4,15 +4,28 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: sort buffer, temporary table, spill, filesort, internal temp table, tmp_table_size, max_heap_table_size, sort_merge_passes, Created_tmp_disk_tables
+retrieval-anchor-keywords: sort buffer, temporary table, spill, filesort, using filesort, using temporary, using temporary using filesort, internal temp table, sort buffer spill, sort spill, group by spill, distinct spill, order by spill, sort_merge_passes, Created_tmp_tables, Created_tmp_disk_tables, tmp_table_size, max_heap_table_size, key used but still filesort, key used but temporary, explain extra using filesort, explain extra using temporary, rows are small but sort is slow, disk spill during order by, disk spill during group by, 정렬 spill, 임시 테이블 spill, filesort인데 왜 느린가
 
 ## 핵심 개념
 
 - 관련 문서:
   - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+  - [Temporary Table Engine Choice and Spill Behavior](./temp-table-engine-choice-spill-behavior.md)
   - [인덱스와 실행 계획](./index-and-explain.md)
+  - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
   - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 `Using filesort`, `Using temporary`를 봤을 때 "인덱스가 안 맞는다"에서 한 걸음 더 들어가 **메모리 경계와 disk spill**을 해석하는 follow-up entry다.
+
+| 보이는 신호 | 여기서 바로 보는 것 | 먼저 돌아갈 문서 |
+| --- | --- | --- |
+| `Using filesort`가 보이고 정렬 단계에서 갑자기 느려짐 | sort buffer, row width, sort pass, spill 여부 | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `Using temporary`와 `Created_tmp_disk_tables`가 같이 튐 | internal temp table이 memory에서 disk로 떨어지는 경계 | [Temporary Table Engine Choice and Spill Behavior](./temp-table-engine-choice-spill-behavior.md) |
+| `type = ALL`, `key = NULL`이라 정렬 이전에 읽는 row 수부터 과함 | spill 이전의 접근 경로 문제 | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `rows` 추정치와 actual rows가 어긋나서 sort 비용 계산이 흔들림 | spill보다 통계와 cardinality 해석이 먼저 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) |
 
 `ORDER BY`, `GROUP BY`, `DISTINCT`는 겉으로는 SQL 문법 문제처럼 보이지만,  
 실제로는 메모리 안에서 끝나느냐, 디스크로 spill 되느냐의 문제로 바뀐다.

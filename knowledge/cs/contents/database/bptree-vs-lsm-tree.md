@@ -6,8 +6,19 @@
 
 > 관련 문서:
 > - [인덱스와 실행 계획](./index-and-explain.md)
+> - [Clustered Index Locality](./clustered-index-locality.md)
+> - [B-Tree Latch Contention and Hot Pages](./btree-latch-contention-hot-pages.md)
 > - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
+> - [LSM-Friendly Index Structures](../data-structure/lsm-friendly-index-structures.md)
 > - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+
+> retrieval-anchor-keywords: b+tree vs lsm tree, btree vs lsm, b tree vs lsm, b+ tree, lsm tree, lsm-tree, write optimized storage engine, write heavy vs read heavy, compaction, sstable, memtable, flush, range scan, read amplification, write amplification, space amplification, rocksdb, leveldb, innodb, oltp index tradeoff, 범위 조회 인덱스, 쓰기 최적화 저장소
+
+## 이 문서 다음에 보면 좋은 문서
+
+- B+Tree 쪽에서 PK 정렬과 page locality 비용까지 이어서 보려면 [Clustered Index Locality](./clustered-index-locality.md)가 바로 붙는다.
+- LSM이 실제로 memtable, sparse index, Bloom filter를 어떻게 조합하는지 자료구조 관점으로 보려면 [LSM-Friendly Index Structures](../data-structure/lsm-friendly-index-structures.md)를 같이 본다.
+- 실제 SQL/EXPLAIN 문맥에서 B+Tree 인덱스 감각을 먼저 고정하고 싶다면 [인덱스와 실행 계획](./index-and-explain.md)으로 돌아가면 된다.
 
 ---
 

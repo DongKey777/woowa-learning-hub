@@ -7,9 +7,14 @@
 > 관련 문서:
 > - [gRPC vs REST](./grpc-vs-rest.md)
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
+> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
 > - [monotonic clock, wall clock, timeout, deadline](../operating-system/monotonic-clock-wall-clock-timeout-deadline.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
+> - [gRPC Keepalive, GOAWAY, Max Connection Age](./grpc-keepalive-goaway-max-connection-age.md)
+> - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](./client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
+> - [gRPC Status, Trailers, Transport Error Mapping](./grpc-status-trailers-transport-error-mapping.md)
+> - [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](../spring/spring-mvc-async-deferredresult-callable-dispatch.md)
 
 retrieval-anchor-keywords: gRPC deadline, cancellation propagation, grpc-timeout, Context, DEADLINE_EXCEEDED, CANCELLED, deadline budget, client disconnect, interceptor
 

@@ -13,6 +13,8 @@ retrieval-anchor-keywords: metadata lock, MDL, performance_schema.metadata_locks
   - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
   - [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md)
   - [Replication Failover and Split Brain](./replication-failover-split-brain.md)
+  - [Metadata Lock Outage Triage, Cancel, and Recovery Runbook](./metadata-lock-outage-triage-cancel-recovery.md)
+  - [gh-ost / pt-online-schema-change Cutover Precheck Runbook](./gh-ost-pt-osc-cutover-precheck-runbook.md)
 
 Metadata Lock(MDL)은 테이블 정의를 보호하는 락이다.  
 row를 보호하는 InnoDB 락과 목적이 다르다.

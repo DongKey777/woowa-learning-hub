@@ -8,10 +8,11 @@
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring `RequestContextHolder`, `ThreadLocal`, and Request Context Leakage Across Async Pools](./spring-requestcontextholder-threadlocal-leakage-async-pools.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 
-retrieval-anchor-keywords: request scope, scoped proxy, proxyMode, thread boundary, request attribute, WebApplicationContext, ObjectProvider, scope proxy, async request scope
+retrieval-anchor-keywords: request scope, scoped proxy, proxyMode, thread boundary, request attribute, WebApplicationContext, ObjectProvider, scope proxy, async request scope, RequestContextHolder, ThreadLocal leak
 
 ## 핵심 개념
 

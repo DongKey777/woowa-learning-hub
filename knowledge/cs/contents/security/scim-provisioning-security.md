@@ -8,10 +8,11 @@
 > - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
+> - [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md)
 > - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
 > - [Idor / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 
-retrieval-anchor-keywords: SCIM, provisioning, deprovisioning, identity sync, groups, entitlements, lifecycle management, IdP, JIT provisioning, SCIM token, user lifecycle
+retrieval-anchor-keywords: SCIM, provisioning, deprovisioning, identity sync, groups, entitlements, lifecycle management, IdP, JIT provisioning, SCIM token, user lifecycle, deprovision session revoke
 
 ---
 

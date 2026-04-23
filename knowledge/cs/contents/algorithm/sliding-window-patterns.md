@@ -1,16 +1,36 @@
 # Sliding Window Patterns
 
-> 한 줄 요약: 연속 구간을 유지하면서 조건을 만족하는 답을 찾는 문제를 푸는 대표 패턴이다.
+> 한 줄 요약: sliding window는 배열/문자열의 연속 인덱스 구간을 유지하면서 조건을 만족하는 답을 찾는 대표 패턴이다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **연속 구간 / two-pointer 계열 문제 해결 패턴**을 다루는 deep dive다.
 
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
 > - [두 포인터 (two-pointer)](./two-pointer.md)
+> - [Binary Search Patterns](./binary-search-patterns.md)
+> - [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)
+> - [Interval Greedy Patterns](./interval-greedy-patterns.md)
+> - [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
+> - [Monotonic Deque vs Heap for Window Extrema](../data-structure/monotonic-deque-vs-heap-for-window-extrema.md)
+>
+> retrieval-anchor-keywords: sliding window, fixed window, variable window, contiguous subarray, contiguous substring, contiguous index range, contiguous index interval, array interval scan, longest substring, minimum window substring, grow shrink window, frequency map, window sum, rolling window, k-length scan, recent k elements, recent k maximum, recent k minimum, subarray scan, window query, substring window, subarray vs subsequence, contiguous only, original order window, sliding window maximum, sliding window minimum, max in every window, min in every window, monotonic deque, monotonic queue, deque-based window state, window extrema, interval vs sliding window, interval scheduling vs sliding window, meeting rooms not sliding window, calendar overlap not sliding window, reservation schedule not window
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 포인터 이동 자체의 기본기는 [두 포인터 (two-pointer)](./two-pointer.md)로 이어진다.
+- 답의 범위에서 `가능/불가능` 경계를 찾는 문제는 [Binary Search Patterns](./binary-search-patterns.md)로 구분해서 보면 덜 헷갈린다.
+- 원소를 건너뛰어도 되는 순서 최적화라면 [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)로 라우팅해야 한다.
+- `meeting room`, `예약 충돌`, `erase overlap intervals`처럼 독립 interval 집합을 고르거나 지우는 문제는 [Interval Greedy Patterns](./interval-greedy-patterns.md) 쪽이 맞다.
+- `meeting rooms II`, `minimum meeting rooms`, `calendar overlap count`, `최대 동시성`처럼 동시 몇 개가 살아 있는지를 세야 하면 [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)으로 가야 한다.
+- 고정 길이 윈도우의 `max/min`처럼 합/빈도 대신 극값 후보를 유지해야 하면 [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md)으로 바로 넘어가는 편이 맞다.
+- 같은 `window extrema`라도 `왜 deque가 heap lazy deletion보다 기본값인지`, `duplicate/stale-entry 버그가 어디서 나는지`까지 한 번에 정리하려면 [Monotonic Deque vs Heap for Window Extrema](../data-structure/monotonic-deque-vs-heap-for-window-extrema.md)를 같이 보면 좋다.
 
 ## 핵심 개념
 
 슬라이딩 윈도우는 연속된 구간 `[left, right]`를 유지하면서 조건을 만족하도록 창을 밀어가는 방식이다.
+여기서 말하는 `window`나 `interval`은 배열/문자열의 contiguous index range를 뜻한다. 각 원소가 이미 `start/end`를 가진 일정 레코드라면 sliding window가 아니라 interval/sweep 계열을 먼저 의심해야 한다.
 
 주로 다음 문제에서 나온다.
 
@@ -20,6 +40,22 @@
 - 고정 길이 평균/최대값
 
 핵심은 매번 처음부터 다시 보지 않고, 이전 상태를 재사용하는 것이다.
+
+## 자주 헷갈리는 패턴 구분
+
+| 패턴 | 유지하는 상태 | 대표 질문 | 구분 포인트 |
+|---|---|---|---|
+| Sliding Window | 현재 연속 구간 `[left, right]` | "이 구간을 유지한 채 한 칸씩 갱신할 수 있는가?" | `subarray`, `substring`, 최근 `k`개처럼 연속성이 핵심이다 |
+| LIS | 순서를 유지한 부분 수열 | "중간 원소를 건너뛰며 증가 흐름을 최적화할 수 있는가?" | `subsequence`, 증가 수열, 연속 구간을 유지하지 않는다 |
+| Two Pointer | 두 위치의 상대 관계 | "두 포인터를 움직이며 합/거리/순서를 좁힐 수 있는가?" | 같은 구간을 유지하지 않아도 되면 sliding window보다 넓은 two-pointer다 |
+| Interval Greedy / Sweep | 독립 interval들의 선택 또는 타임라인 이벤트 | "몇 개를 안 겹치게 고를까?", "동시에 몇 개가 겹치나?" | `meeting`, `schedule`, `reservation`, `calendar overlap`이면 window보다 interval 문제다 |
+| Binary Search | 정답 후보 공간의 경계 | "`L` 길이가 가능한가?", "최소 가능한 값은?" | 조건이 단조적으로 바뀌면 answer space를 탐색한다 |
+
+- 중간 원소를 자유롭게 건너뛰어도 되면 sliding window가 아니라 [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md) 같은 subsequence 계열이다.
+- `최대 길이 L`을 직접 찾지 말고 "`길이 L`의 연속 구간이 존재하는가?"를 판정한다면, 내부 검사는 sliding window이고 바깥쪽 탐색은 [Binary Search Patterns](./binary-search-patterns.md)일 수 있다.
+- 정렬 배열의 양끝에서 `sum`, `difference`, `palindrome`처럼 두 값의 관계만 줄여 가면 되는 문제는 [두 포인터 (two-pointer)](./two-pointer.md) 쪽이 더 정확한 라우트다.
+- 각 원소가 이미 `start/end`를 가진 일정 레코드이고 끝점 기준 재정렬이나 겹침 제거가 핵심이면 [Interval Greedy Patterns](./interval-greedy-patterns.md)로 분리해야 한다.
+- `calendar overlap`, `room allocation`, `meeting schedule`처럼 시간표 레코드의 동시성을 묻는다면 [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)이 더 직접적이다.
 
 ## 깊이 들어가기
 
@@ -53,6 +89,19 @@
 
 문자열 문제는 보통 `freq` 배열이 가장 빠르다.
 
+### 4. 그런데 윈도우 최대/최소는 `freq`가 아니라 `deque` 상태다
+
+`window sum`, `문자 빈도`, `중복 개수`처럼 누적 가능한 상태는 `Map`이나 배열로 유지하기 쉽다.
+반대로 `길이 k마다 최댓값/최솟값`, `최근 k개 중 최대`, `각 구간의 extrema`는 현재 대표값이 창 밖으로 나갈 때 다음 후보를 즉시 알아야 한다.
+
+이때는 "윈도우를 민다"는 점만 sliding window이고, 실제 핵심 상태 구조는 `freq`가 아니라 **단조 deque**다.
+질문에 아래 표현이 보이면 [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md)으로 라우팅하는 편이 정확하다.
+
+- sliding window maximum / minimum
+- max/min in every subarray of size `k`
+- 최근 `k`개 중 최댓값/최솟값
+- 고정 길이 window extrema query
+
 ---
 
 ## 실전 시나리오
@@ -65,6 +114,7 @@
 ### 시나리오 2: 최근 요청 집계
 
 최근 5분 동안의 요청 수 같은 실시간 통계는 고정 크기 윈도우로 풀기 좋다.
+다만 이는 이벤트가 시간순으로 한 줄 스트림에 놓여 있을 때의 이야기이고, 이미 `start/end`가 정리된 예약 목록이라면 sweep line이나 interval greedy 쪽으로 보내야 한다.
 
 ---
 
@@ -99,7 +149,7 @@ public class SlidingWindow {
 
 | 선택지 | 장점 | 단점 | 언제 선택하는가 |
 |---|---|---|---|
-| Sliding Window | 연속 구간을 O(n)으로 처리 가능 | 조건 설계가 익숙하지 않으면 실수하기 쉽다 | substring, subarray, interval 문제 |
+| Sliding Window | 연속 구간을 O(n)으로 처리 가능 | 조건 설계가 익숙하지 않으면 실수하기 쉽다 | substring, subarray, 최근 `k`개 |
 | Prefix Sum | 구간 합 계산이 쉽다 | 조건에 따라 윈도우처럼 못 쓸 수 있다 | 합 기반의 빠른 질의 |
 | Brute Force | 구현이 쉽다 | 거의 항상 느리다 | 검증용 |
 | Deque | 윈도우 최대/최소에 강하다 | 개념이 더 복잡하다 | monotonic queue 문제 |

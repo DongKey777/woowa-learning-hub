@@ -7,9 +7,12 @@
 > 관련 문서:
 > - [Spring MVC vs WebFlux](./spring-webflux-vs-mvc.md)
 > - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)
+> - [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
 > - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 > - [gRPC vs REST](../network/grpc-vs-rest.md)
 > - [HTTP/2 Multiplexing과 HOL Blocking](../network/http2-multiplexing-hol-blocking.md)
+
+retrieval-anchor-keywords: WebClient vs RestTemplate, Spring HTTP client choice, reactive client vs blocking client, WebClient block trap, WebClient timeout retry, RestTemplate blocking I/O, fan-out HTTP client, Reactor Netty client, outbound HTTP backpressure, Spring WebClient filter observability
 
 ## 핵심 개념
 

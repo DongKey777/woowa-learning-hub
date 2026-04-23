@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
+> - [/proc/<pid>/fdinfo, Epoll Runtime Debugging](./proc-pid-fdinfo-epoll-runtime-debugging.md)
 > - [Thundering Herd, Accept, Wakeup](./thundering-herd-accept-wakeup.md)
 > - [TCP Backlog, somaxconn, Listen Queue](./tcp-backlog-somaxconn-listen-queue.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)

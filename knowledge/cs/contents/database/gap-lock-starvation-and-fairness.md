@@ -2,8 +2,10 @@
 
 > 한 줄 요약: gap lock은 범위를 보호하지만, 같은 범위를 오래 또는 자주 잡으면 새 insert가 계속 굶는 starvation이 생긴다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Deadlock Case Study](./deadlock-case-study.md)
-Retrieval anchors: `gap lock starvation`, `next-key lock fairness`, `insert intention lock`, `range lock`, `hot range`
+retrieval-anchor-keywords: gap lock starvation, next-key lock fairness, insert intention lock, range lock, hot range
 
 ## 핵심 개념
 

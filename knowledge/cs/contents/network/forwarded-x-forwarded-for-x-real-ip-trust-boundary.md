@@ -2,6 +2,10 @@
 
 > 한 줄 요약: 프록시 체인에서 "누가 요청했는가"를 추적하려면 헤더를 읽는 것보다, 어디까지를 신뢰할지 먼저 정해야 한다.
 
+**난이도: 🟡 Intermediate**
+
+retrieval-anchor-keywords: trust boundary, trusted proxy chain, X-Forwarded-For spoofing, Forwarded RFC 7239, X-Real-IP, proxy_add_x_forwarded_for, set_real_ip_from, real_ip_header, reverse proxy chain, load balancer chain
+
 ## 핵심 개념
 
 Reverse proxy, API gateway, load balancer가 앞단에 붙으면 애플리케이션은 더 이상 TCP peer IP 하나만 보면 안 된다. 대신 `Forwarded`, `X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Real-IP` 같은 헤더를 통해 원래 클라이언트 정보를 전달받는다.

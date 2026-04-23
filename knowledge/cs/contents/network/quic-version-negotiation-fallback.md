@@ -10,6 +10,7 @@
 > - [UDP Fragmentation, QUIC Packetization](./udp-fragmentation-quic-packetization.md)
 > - [Happy Eyeballs, Dual-Stack Racing](./happy-eyeballs-dual-stack-racing.md)
 > - [Packet Loss, Jitter, Reordering Diagnostics](./packet-loss-jitter-reordering-diagnostics.md)
+> - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 
 retrieval-anchor-keywords: QUIC version negotiation, fallback, HTTP/3 fallback, transport upgrade, UDP blocked, version negotiation packet, compatibility, browser fallback, alt-svc
 

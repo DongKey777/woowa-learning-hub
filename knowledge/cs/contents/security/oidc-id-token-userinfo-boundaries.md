@@ -10,6 +10,8 @@
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 
+retrieval-anchor-keywords: OIDC, OpenID Connect, ID token, UserInfo endpoint, id token vs access token, id token vs userinfo, nonce validation, claim normalization, external identity mapping, issuer audience nonce, authentication vs authorization boundary, external IdP trust boundary
+
 ---
 
 ## 핵심 개념

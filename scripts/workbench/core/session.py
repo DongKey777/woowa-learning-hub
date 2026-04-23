@@ -53,12 +53,25 @@ def start_session(
     repo_name = repo["name"]
     db_path = repo_archive_db(repo_name)
     resolved_memory = memory_context or load_learning_memory(repo_name)
+    learning_profile = resolved_memory.get("profile") if resolved_memory else None
 
     if mode == "coach":
         resolved_prompt = prompt or "이 PR 기준으로 지금 뭘 먼저 봐야 해?"
-        context = build_coach_context(repo, db_path, resolved_prompt, pr_number, reviewer)
+        context = build_coach_context(
+            repo,
+            db_path,
+            resolved_prompt,
+            pr_number,
+            reviewer,
+            learning_profile=learning_profile,
+        )
     else:
-        context = build_my_pr_context(repo, db_path, pr_number)
+        context = build_my_pr_context(
+            repo,
+            db_path,
+            pr_number,
+            learning_profile=learning_profile,
+        )
 
     context["learning_memory_summary"] = resolved_memory.get("summary", {})
     context["learning_memory_profile"] = resolved_memory.get("profile", {})

@@ -5,11 +5,14 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
 > - [Spring EventListener, TransactionalEventListener, and Outbox](./spring-eventlistener-transaction-phase-outbox.md)
 > - [Spring Transaction Synchronization Callbacks and `afterCommit` Pitfalls](./spring-transaction-synchronization-aftercommit-pitfalls.md)
 > - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)
+> - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 > - [Spring Delivery Reliability: `@Retryable`, Resilience4j, and Outbox Relay Worker Design](./spring-delivery-reliability-retryable-resilience4j-outbox-relay.md)
+> - [Spring ApplicationEventMulticaster Internals](./spring-applicationeventmulticaster-internals.md)
 
 retrieval-anchor-keywords: EventListener, async event listener, order annotation, transactional event listener, application event publisher, listener ordering, @Async, event phase, idempotency, event publication
 

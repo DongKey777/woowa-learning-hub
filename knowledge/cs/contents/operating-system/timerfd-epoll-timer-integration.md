@@ -8,6 +8,7 @@
 > - [Clocksource, Timer Resolution, Jitter](./clocksource-timer-resolution-jitter.md)
 > - [monotonic clock, wall clock, timeout, deadline](./monotonic-clock-wall-clock-timeout-deadline.md)
 > - [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)
+> - [eventfd, signalfd, Epoll Control-Plane Integration](./eventfd-signalfd-epoll-control-plane-integration.md)
 > - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
 > - [softirq, hardirq, Latency Server Debugging](./softirq-hardirq-latency-server-debugging.md)
 

@@ -1,10 +1,16 @@
 # 커버링 인덱스와 복합 인덱스 컬럼 순서
 
+**난이도: 🔴 Advanced**
+
 > 신입 백엔드 개발자가 조회 성능과 인덱스 설계를 설명할 때 필요한 핵심 정리
+>
+> 관련 문서: [인덱스와 실행 계획](./index-and-explain.md), [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md), [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md), [Pagination: Offset vs Seek](./pagination-offset-vs-seek.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
 
 <details>
 <summary>Table of Contents</summary>
 
+- [이 문서 다음에 보면 좋은 문서](#이-문서-다음에-보면-좋은-문서)
+- [이 문서가 맡는 EXPLAIN 범위](#이-문서가-맡는-explain-범위)
 - [왜 중요한가](#왜-중요한가)
 - [복합 인덱스란](#복합-인덱스란)
 - [왼쪽 접두어 규칙](#왼쪽-접두어-규칙)
@@ -16,6 +22,23 @@
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+retrieval-anchor-keywords: covering index, composite index ordering, composite index column order, leftmost prefix, left prefix rule, index column order, where order by limit index, using index, using filesort, extra using index, order by limit slow, index exists but order by slow, composite index but filesort, sort elimination, covering index vs index only scan, pagination index, recent orders index, 복합 인덱스 순서, 왼쪽 접두어 규칙, 커버링 인덱스, order by limit 인덱스, 정렬 느린 explain
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 커버링 인덱스와 index-only scan을 같은 말로 헷갈린다면 [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)으로 구분부터 고정하는 편이 좋다.
+- 조회 최적화 때문에 인덱스 폭이 커질 때 생기는 반대 비용은 [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)에서 이어 본다.
+- `WHERE + ORDER BY + LIMIT` 조합에 실제로 어떤 복합 인덱스를 둘지 pagination 패턴으로 연결하려면 [Pagination: Offset vs Seek](./pagination-offset-vs-seek.md)이 바로 붙는다.
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 "`EXPLAIN`을 읽었더니 이제 어떤 인덱스 모양이 필요한지"를 설명하는 문서다.
+즉 "인덱스가 왜 전혀 안 탔나"보다 "인덱스는 타는데 왜 정렬과 조회 폭이 아직 큰가"를 다룬다.
+
+- `key`는 잡혔는데 `Extra`에 `Using filesort`가 남는다: 복합 인덱스 컬럼 순서와 `ORDER BY` 축을 먼저 본다.
+- `Using index`가 보여도 기대보다 느리다: 커버링 여부, 인덱스 폭, 실제로 읽는 row 수를 같이 본다.
+- `type = ALL`, `key = NULL`, `rows`가 처음부터 과하게 크다: 이 문서보다 [인덱스와 실행 계획](./index-and-explain.md)이나 [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)로 돌아가서 sargability와 통계부터 분리한다.
 
 ## 왜 중요한가
 
@@ -212,8 +235,10 @@ ON orders (created_at, member_id, status);
 
 ## 관련 문서
 
+- [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)
+- [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
-- [Offset vs Seek Pagination](./pagination-offset-vs-seek.md)
+- [Pagination: Offset vs Seek](./pagination-offset-vs-seek.md)
 - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
 
 ---

@@ -2,8 +2,17 @@
 
 > 한 줄 요약: 사용자는 “방금 바꾼 값이 바로 보여야 한다”고 기대하고, 그 기대를 지키려면 읽기 라우팅에 세션 기억이 들어가야 한다.
 
-관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
-Retrieval anchors: `read-your-writes`, `session pinning`, `sticky session`, `monotonic read`, `primary fallback`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md), [Client Consistency Tokens](./client-consistency-tokens.md), [Causal Consistency Intuition](./causal-consistency-intuition.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
+retrieval-anchor-keywords: read-your-writes, read your writes, session pinning, session pinning ttl, sticky session, session affinity, primary pinning, recent write primary fallback, monotonic read, consistency token, causal token, own write not visible, refresh after edit shows old value, profile update not showing, same user sees stale data, my update disappeared after refresh, 수정 직후 새로고침 옛값, 내가 바꾼 값이 안 보임, 사용자 본인 변경 즉시 반영, recent write routing
+
+## 증상별 바로 가기
+
+- `내가 방금 수정한 값이 내 화면에 안 보인다`, `my update disappeared after refresh`처럼 같은 사용자 세션의 최신성 보장이 핵심이면 이 문서에서 session pinning, TTL, primary fallback을 본다.
+- `write 직후 전체적으로 stale하다`, `insert succeeded but row is still missing`처럼 replica lag 자체를 먼저 의심해야 하면 [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md)로 간다.
+- `새로고침마다 old/new가 번갈아 나온다`, `retry changed result`, `pagination order keeps flipping`처럼 요청별 라우팅이 흔들리면 [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)을 먼저 본다.
+- 세션 메모리보다 클라이언트 전달 토큰이 더 적합한 경우는 [Client Consistency Tokens](./client-consistency-tokens.md)에서 이어 본다.
 
 ## 핵심 개념
 

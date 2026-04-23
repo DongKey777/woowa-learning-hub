@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [팩토리 (Factory)](./factory.md)
+> - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
 > - [빌더 (Builder)](./builder-pattern.md)
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 

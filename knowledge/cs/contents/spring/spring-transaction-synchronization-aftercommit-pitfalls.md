@@ -7,11 +7,12 @@
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring EventListener, TransactionalEventListener, and Outbox](./spring-eventlistener-transaction-phase-outbox.md)
+> - [Spring `TransactionSynchronization` Ordering, Suspend / Resume, and Resource Binding](./spring-transactionsynchronization-ordering-suspend-resume-resource-binding.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring Delivery Reliability: `@Retryable`, Resilience4j, and Outbox Relay Worker Design](./spring-delivery-reliability-retryable-resilience4j-outbox-relay.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 
-retrieval-anchor-keywords: TransactionSynchronization, afterCommit, beforeCommit, afterCompletion, flush, transaction callback, resource binding, rollback-only, commit hook, synchronization manager
+retrieval-anchor-keywords: TransactionSynchronization, afterCommit, beforeCommit, afterCompletion, flush, transaction callback, resource binding, rollback-only, commit hook, synchronization manager, suspend, resume, ordering
 
 ## 핵심 개념
 

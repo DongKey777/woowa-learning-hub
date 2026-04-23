@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
 > - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
 > - [vm.max_map_count, mmap-heavy Apps](./vm-max-map-count-mmap-heavy-apps.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)

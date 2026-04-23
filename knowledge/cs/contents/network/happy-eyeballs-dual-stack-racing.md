@@ -10,6 +10,7 @@
 > - [SYN Retransmission, Handshake Timeout Behavior](./syn-retransmission-handshake-timeout.md)
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: Happy Eyeballs, dual-stack, IPv6 fallback, connection racing, address selection, RFC 8305, connect latency, v4/v6 preference
 

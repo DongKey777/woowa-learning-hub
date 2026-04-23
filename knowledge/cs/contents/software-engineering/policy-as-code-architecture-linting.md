@@ -10,6 +10,10 @@
 > - [Service Ownership and Catalog Boundaries](./service-ownership-catalog-boundaries.md)
 > - [ADRs and Decision Records at Scale](./adr-decision-records-at-scale.md)
 > - [Runbook, Playbook, Automation Boundaries](./runbook-playbook-automation-boundaries.md)
+> - [Architectural Governance Operating Model](./architectural-governance-operating-model.md)
+> - [Incident Feedback to Policy and Ownership Closure](./incident-feedback-policy-ownership-closure.md)
+> - [Policy as Code Rollout and Adoption Stages](./policy-as-code-rollout-adoption-stages.md)
+> - [Override Burn-Down and Exemption Debt](./override-burn-down-and-exemption-debt.md)
 
 > retrieval-anchor-keywords:
 > - policy as code
@@ -20,6 +24,9 @@
 > - CI gate
 > - PR check
 > - governance automation
+> - policy adoption
+> - shadow path
+> - override debt
 
 ## 핵심 개념
 

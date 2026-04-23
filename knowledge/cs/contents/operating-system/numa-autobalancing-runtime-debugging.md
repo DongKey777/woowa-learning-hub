@@ -7,6 +7,8 @@
 > 관련 문서:
 > - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
 > - [NUMA Production Debugging](./numa-production-debugging.md)
+> - [NUMA First-Touch, Remote Memory, Locality Debugging](./numa-first-touch-remote-memory-locality-debugging.md)
+> - [AutoNUMA vs Manual Locality Trade-offs](./autonuma-vs-manual-locality-tradeoffs.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 > - [THP, Huge Pages, TLB Latency](./thp-huge-pages-tlb-latency.md)
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)

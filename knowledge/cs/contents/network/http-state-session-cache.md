@@ -1,11 +1,31 @@
 # HTTP의 무상태성과 쿠키, 세션, 캐시
 
+**난이도: 🟡 Intermediate**
+
 > 신입 백엔드 개발자가 웹 요청의 상태 관리와 캐싱을 설명하기 위한 핵심 정리
+
+> 관련 문서:
+> - [Cache-Control 실전](./cache-control-practical.md)
+> - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+> - [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md)
+> - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+> - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+> - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
+> - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
+> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+> - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
+
+retrieval-anchor-keywords: HTTP stateless, cookie, session, JWT, HTTP cache, Set-Cookie, Cookie header, session id, browser state, browser cookie storage flow, JWT header vs cookie, personalization cache, login state, cookie session spring security route, beginner auth bridge, why login state is kept, hidden JSESSIONID, SessionCreationPolicy basics, browser auth primer route, session basics to SavedRequest, login loop starter, 401 302 bounce starter, login redirect primer, post-login original URL, cookie 있는데 다시 로그인, cookie는 있는데 session missing
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 중요한가](#왜-중요한가)
+- [다음 단계 브리지](#다음-단계-브리지)
 - [HTTP는 왜 Stateless인가](#http는-왜-stateless인가)
 - [쿠키](#쿠키)
 - [세션](#세션)
@@ -27,6 +47,39 @@
 - 캐시
 
 다.
+
+### Retrieval Anchors
+
+- `HTTP stateless`
+- `cookie`
+- `session`
+- `JWT`
+- `HTTP cache`
+- `Set-Cookie`
+- `session id`
+- `login state`
+
+---
+
+## 다음 단계 브리지
+
+기초 개념을 읽고 바로 Spring/security deep dive로 점프하면 `cookie`, `session`, `JWT`, `stateless`, `hidden JSESSIONID`가 같은 말처럼 섞이기 쉽다.
+아래 순서로 올라가면 안전하다.
+
+1. 브라우저가 `Set-Cookie`를 저장하고 `Cookie`나 `Authorization`으로 다시 보내는 장면부터 보기: [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+2. 상태를 누가 보관하는지 비교: [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+3. Spring Security가 요청 앞단에서 인증 상태를 어떻게 다루는지 보기: [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+4. browser login redirect, `302`, 숨은 `JSESSIONID`, 원래 URL 복귀가 한꺼번에 헷갈리면: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+5. 로그인 후 원래 URL 복귀나 `302` bounce가 꼬이면: [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
+6. `STATELESS`인데 `JSESSIONID`가 생기거나 다음 요청에서 다시 익명이 되면: [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+7. 브라우저는 로그인돼 보이는데 API만 loop를 돌거나 `cookie는 있는데 session missing`처럼 보이면: [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md) -> [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+
+증상별로 다시 고르면 더 빠르다.
+
+- `로그인 후 다시 /login으로 간다`, `SavedRequest 때문에 loop가 난다`: `RequestCache` / `SavedRequest`
+- `redirect 응답에도 cookie가 저장되나`, `왜 login 전에도 JSESSIONID가 보이지`: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `왜 숨은 JSESSIONID가 생기지`, `세션 안 쓰려는데 왜 stateful처럼 보이지`: `SecurityContextRepository` / `SessionCreationPolicy`
+- `cookie는 보이는데 서버는 세션을 못 찾는다`, `브라우저는 로그인돼 보이는데 API만 돈다`: browser/BFF translation -> BFF session store
 
 ---
 

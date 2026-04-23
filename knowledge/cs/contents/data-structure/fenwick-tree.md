@@ -6,10 +6,12 @@
 
 > 관련 문서:
 > - [Segment Tree Lazy Propagation](./segment-tree-lazy-propagation.md)
+> - [Fenwick Tree vs Segment Tree](./fenwick-vs-segment-tree.md)
+> - [Fenwick and Segment Tree Operations Playbook](./fenwick-segment-tree-operations-playbook.md)
 > - [자료구조 정리](./basic.md)
 > - [상각 분석과 복잡도 함정](../algorithm/amortized-analysis-pitfalls.md)
 
-> retrieval-anchor-keywords: fenwick tree, binary indexed tree, BIT, prefix sum, point update, range sum, lowbit, inversion count, frequency table, cumulative frequency
+> retrieval-anchor-keywords: fenwick tree, binary indexed tree, BIT, prefix sum, point update, range sum, lowbit, inversion count, frequency table, cumulative frequency, operational counter tree, bucket aggregation
 
 ## 핵심 개념
 

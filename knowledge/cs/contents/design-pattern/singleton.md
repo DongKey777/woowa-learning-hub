@@ -1,5 +1,7 @@
 # 싱글톤 (Singleton) 디자인 패턴
 
+**난이도: 🟡 Intermediate**
+
 > 작성자 : [정희재](https://github.com/Hee-Jae)
 
 본 자료는 '파이썬 디자인 패턴 2/e (Chetan Giridhar)' 책을 토대로 작성되었습니다. 따라서 모든 예시 코드에는 저자를 표시하는 `__author__ = 'Chetan'` 이 포함됩니다.

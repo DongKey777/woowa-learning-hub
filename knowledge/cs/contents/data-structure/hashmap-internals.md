@@ -6,8 +6,12 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
-> - [응용 자료 구조](./advanced.md)
+> - [응용 자료 구조](./applied-data-structures-overview.md)
+> - [Robin Hood Hashing](./robin-hood-hashing.md)
+> - [Cache-Aware Data Structure Layouts](./cache-aware-data-structure-layouts.md)
 > - [Java Collections 성능 감각](../language/java/collections-performance.md)
+
+retrieval-anchor-keywords: HashMap internals, hash collision handling, resize rehash cost, treeify threshold, equals hashCode contract, mutable key bug, bucket index calculation, Java HashMap performance, hash spread function, load factor threshold
 
 ---
 

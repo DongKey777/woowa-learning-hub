@@ -2,7 +2,7 @@
 
 > 한 줄 요약: backpressure and load shedding은 시스템이 감당할 수 있는 것만 받아들이고, 넘치는 부하는 우선순위에 따라 버리거나 늦추는 생존성 설계다.
 
-retrieval-anchor-keywords: backpressure, load shedding, graceful degradation, admission control, queue depth, saturation, bulkhead, overload protection, shed low priority, fail fast
+retrieval-anchor-keywords: backpressure, load shedding, graceful degradation, brownout, partial feature disablement, admission control, queue depth, saturation, bulkhead, overload protection, shed low priority, read-only mode, fail fast, retry amplification, overload telemetry, resilience experiment
 
 **난이도: 🔴 Advanced**
 
@@ -11,8 +11,12 @@ retrieval-anchor-keywords: backpressure, load shedding, graceful degradation, ad
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
 > - [Rate Limiter 설계](./rate-limiter-design.md)
 > - [Distributed Cache 설계](./distributed-cache-design.md)
+> - [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)
 > - [Job Queue 설계](./job-queue-design.md)
 > - [Streaming Analytics Pipeline 설계](./streaming-analytics-pipeline-design.md)
+> - [Distributed Tracing Pipeline 설계](./distributed-tracing-pipeline-design.md)
+> - [Failure Injection / Resilience Validation Platform 설계](./failure-injection-resilience-validation-platform-design.md)
+> - [Cell-Based Architecture / Blast Radius Isolation 설계](./cell-based-architecture-blast-radius-isolation-design.md)
 
 ## 핵심 개념
 
@@ -115,6 +119,7 @@ load shedding은 은밀해야 하지만, 관측은 명확해야 한다.
 - circuit breaker open ratio
 
 이 데이터는 [Metrics Pipeline / TSDB 설계](./metrics-pipeline-tsdb-design.md)와 [Streaming Analytics Pipeline 설계](./streaming-analytics-pipeline-design.md)로 흘러갈 수 있다.
+incident 때는 느린 hop을 빠르게 좁히기 위해 overload 신호와 trace exemplar를 연결해 보는 편이 유용하다.
 
 ## 실전 시나리오
 
@@ -206,4 +211,3 @@ public boolean shouldShed(Request req) {
 ## 한 줄 정리
 
 Backpressure and load shedding은 포화 신호를 읽고 저우선 부하를 줄여 핵심 경로와 시스템 생존성을 지키는 설계다.
-

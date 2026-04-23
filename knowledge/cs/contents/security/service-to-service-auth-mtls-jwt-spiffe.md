@@ -9,10 +9,12 @@
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [mTLS Client Auth vs Certificate-Bound Access Token](./mtls-client-auth-vs-certificate-bound-access-token.md)
+> - [Workload Identity / User Context Propagation Boundaries](./workload-identity-user-context-propagation-boundaries.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
 > - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
 
-retrieval-anchor-keywords: service-to-service auth, mTLS, SPIFFE, SPIRE, workload identity, JWT, service mesh, certificate rotation
+retrieval-anchor-keywords: service-to-service auth, mTLS, SPIFFE, SPIRE, workload identity, JWT, service mesh, certificate rotation, caller identity, user context propagation, certificate-bound token
 
 ---
 

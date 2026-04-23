@@ -4,7 +4,7 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: secondary index, write amplification, index maintenance cost, ANALYZE TABLE, statistics skew, persistent statistics, histogram, optimizer misestimate, page split
+retrieval-anchor-keywords: secondary index, write amplification, index maintenance cost, ANALYZE TABLE, statistics skew, persistent statistics, histogram, optimizer misestimate, page split, covering index width, leaf fanout
 
 ## 핵심 개념
 
@@ -13,6 +13,8 @@ retrieval-anchor-keywords: secondary index, write amplification, index maintenan
   - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
   - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+  - [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)
+  - [Multi-Tenant Statistics Skew, Plan Drift, and Query Isolation](./multi-tenant-stats-skew-plan-isolation.md)
 
 secondary index는 조회 성능을 높이는 대표 수단이지만, 모든 row 변경에 추가 비용을 붙인다.  
 그리고 옵티마이저는 그 비용을 대충 감이 아니라 통계로 계산한다.
@@ -38,6 +40,7 @@ INSERT/UPDATE/DELETE가 일어날 때 secondary index도 같이 갱신된다.
 - unique index면 중복 검사 비용 추가
 
 인덱스가 많을수록 읽기는 편해질 수 있지만, 쓰기에는 계속 세금이 붙는다.
+특히 커버링을 위해 key 폭을 넓힌 secondary index는 같은 개수라도 더 큰 세금을 붙인다.
 
 ### 2. change buffer가 있어도 공짜는 아니다
 

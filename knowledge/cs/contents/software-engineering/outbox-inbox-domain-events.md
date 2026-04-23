@@ -1,5 +1,7 @@
 # Domain Events, Outbox, Inbox
 
+**난이도: 🔴 Advanced**
+
 > 분산 시스템에서 “정확히 한 번처럼 보이게” 만들기 위한 이벤트 설계 정리
 
 <details>
@@ -14,6 +16,26 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+> 관련 문서:
+> - [Software Engineering README: Domain Event, Outbox, Inbox](./README.md#domain-event-outbox-inbox)
+> - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
+> - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
+> - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
+> - [Event Schema Versioning and Compatibility](./event-schema-versioning-compatibility.md)
+
+> retrieval-anchor-keywords:
+> - domain event
+> - integration event
+> - outbox pattern
+> - inbox pattern
+> - idempotent consumer
+> - eventual consistency
+> - event dispatch
+> - consistency boundary
+> - outbox inbox testing
+> - outbox producer contract
+> - inbox dedup test
 
 ## 왜 중요한가
 

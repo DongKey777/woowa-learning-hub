@@ -4,11 +4,18 @@
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: @Transactional, proxy, propagation, isolation level, flush, dirty checking, rollback, REQUIRES_NEW, connection pool starvation, deadlock, gap lock, next-key lock, transaction synchronization, outbox
+> retrieval-anchor-keywords: @Transactional, database to spring transaction, database spring transaction bridge, transaction isolation to @Transactional, transaction beginner ladder, transaction beginner side path, transactional not applied, self invocation, checked exception commit, rollback not working, rollback-only, rollback-only beginner route, REQUIRES_NEW, REQUIRES_NEW beginner route, readOnly beginner route, routing datasource confusion, partial commit beginner, proxy, propagation, isolation level, flush, dirty checking, connection pool starvation, deadlock, gap lock, next-key lock, transaction synchronization, outbox
 
 > related docs:
+> - [Isolation Anomaly Cheat Sheet](../contents/database/isolation-anomaly-cheat-sheet.md)
+> - [Lost Update vs Write Skew vs Phantom Timeline Guide](../contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md)
+> - [Transaction Boundary, Isolation, and Locking Decision Framework](../contents/database/transaction-boundary-isolation-locking-decision-framework.md)
+> - [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](../contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)
 > - [@Transactional Deep Dive](../contents/spring/transactional-deep-dive.md)
+> - [Spring Service-Layer Transaction Boundary Patterns](../contents/spring/spring-service-layer-transaction-boundary-patterns.md)
 > - [Spring Transaction Debugging Playbook](../contents/spring/spring-transaction-debugging-playbook.md)
+> - [Spring Transaction Isolation / ReadOnly Pitfalls](../contents/spring/spring-transaction-isolation-readonly-pitfalls.md)
+> - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](../contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md)
 > - [JDBC / JPA / MyBatis](../contents/database/jdbc-jpa-mybatis.md)
 > - [JDBC code patterns](../contents/database/jdbc-code-patterns.md)
 > - [Transaction Isolation and Locking](../contents/database/transaction-isolation-locking.md)
@@ -19,6 +26,30 @@
 > - [Topic Map](../rag/topic-map.md)
 > - [Cross-Domain Bridge Map](../rag/cross-domain-bridge-map.md)
 > - [Query Playbook](../rag/query-playbook.md)
+
+## 입문 브리지
+
+이 문서는 `Advanced`다.
+`dirty read`, `lost update`, `write skew`, `phantom`, `@Transactional`, `왜 안 롤백되지`, `왜 트랜잭션이 안 걸리지`가 아직 한 덩어리라면 아래 ladder로 올라오면 된다.
+
+1. `lock wait`, `deadlock`, `왜 안 롤백되지`, `왜 @Transactional이 안 먹지`가 먼저 섞여 보이면 가장 먼저 [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](../contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)로 DB wait 증거와 Spring proxy/rollback 착시를 가른다.
+2. DB anomaly vocabulary부터 맞춘다:
+   [Transaction Isolation and Locking](../contents/database/transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](../contents/database/isolation-anomaly-cheat-sheet.md) -> [Lost Update vs Write Skew vs Phantom Timeline Guide](../contents/database/lost-update-vs-write-skew-vs-phantom-timeline-guide.md)
+3. 같은 anomaly라도 어느 경계를 한 트랜잭션으로 묶을지 먼저 정한다:
+   [Transaction Boundary, Isolation, and Locking Decision Framework](../contents/database/transaction-boundary-isolation-locking-decision-framework.md)
+4. 그다음 "Spring이 그 경계를 어떻게 여닫는가"를 본다:
+   [@Transactional Deep Dive](../contents/spring/transactional-deep-dive.md) -> [Spring Service-Layer Transaction Boundary Patterns](../contents/spring/spring-service-layer-transaction-boundary-patterns.md)
+5. 여기까지가 beginner core ladder다. `REQUIRES_NEW`, rollback-only, readOnly, routing-datasource confusion은 처음부터 한 번에 섞지 말고 아래 follow-up branch로 늦춘다.
+6. 증상이 `audit는 남고 본 작업은 롤백`, `REQUIRES_NEW`, `partial commit`, `suspend/resume` 쪽이면:
+   [Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies](../contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md) -> [Spring `TransactionSynchronization` Ordering, Suspend / Resume, and Resource Binding](../contents/spring/spring-transactionsynchronization-ordering-suspend-resume-resource-binding.md)
+7. 증상이 `UnexpectedRollbackException`, `transaction marked rollback-only`, `catch 했는데 마지막에 터짐` 쪽이면:
+   [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](../contents/spring/spring-unexpectedrollback-rollbackonly-marker-traps.md) -> [Spring Transaction Debugging Playbook](../contents/spring/spring-transaction-debugging-playbook.md)
+8. 증상이 `readOnly면 안전한가`, `@Transactional isolation이 DB isolation과 어떻게 맞물리나`, `dirty checking`, `flush mode` 쪽이면:
+   [Spring Transaction Isolation / ReadOnly Pitfalls](../contents/spring/spring-transaction-isolation-readonly-pitfalls.md)
+9. 증상이 `inner readOnly인데 writer pool`, `reader route가 안 탄다`, `read/write split에서 왜 이상하게 보이나` 쪽이면:
+   [Spring Transaction Isolation / ReadOnly Pitfalls](../contents/spring/spring-transaction-isolation-readonly-pitfalls.md) -> [Spring Routing DataSource Read/Write Transaction Boundaries](../contents/spring/spring-routing-datasource-read-write-transaction-boundaries.md)
+10. 증상이 lock wait, deadlock, pool starvation 쪽이면 Spring annotation만 보지 말고 바로 DB/infra branch로 옆으로 샌다:
+   [Deadlock Case Study](../contents/database/deadlock-case-study.md) -> [Connection Pool / Transaction Propagation / Bulk Write](../contents/database/connection-pool-transaction-propagation-bulk-write.md) -> [Slow Query Analysis Playbook](../contents/database/slow-query-analysis-playbook.md)
 
 ## 핵심 개념
 

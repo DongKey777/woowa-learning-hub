@@ -1,0 +1,176 @@
+# io_uring Provided-Buffer Bid Leak, ENOBUFS, Recycle Diagnostics
+
+> 한 줄 요약: provided-buffer `bid leak`는 대개 커널이 버퍼를 잃어버린 메모리 누수가 아니라 userspace ownership ledger가 끊긴 상태다. `recv_multishot`에서 이를 진단하려면 CQE의 `IORING_CQE_F_BUFFER` / `IORING_CQE_F_MORE` / `IORING_CQE_F_BUF_MORE`, buffer-ring의 `available/head` 상태, 그리고 terminal `-ENOBUFS` CQE가 남기는 failure signature를 함께 맞춰 봐야 한다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [io_uring Provided Buffer Rings, Fixed Buffers, Memory Pressure](./io-uring-provided-buffers-fixed-buffers-memory-pressure.md)
+> - [io_uring Provided Buffer Exhaustion Observability Playbook](./io-uring-provided-buffer-exhaustion-observability-playbook.md)
+> - [io_uring fdinfo, PBUF status, ENOBUFS reconciliation playbook](./io-uring-fdinfo-pbuf-status-enobufs-reconciliation-playbook.md)
+> - [io_uring Provided Buffer Group Sharding by Payload Size, CPU Shard, NUMA Node](./io-uring-provided-buffer-group-sharding-size-cpu-numa.md)
+> - [io_uring recv bundle, recvmsg multishot, buffer-ring head recycling](./io-uring-recv-bundle-recvmsg-multishot-buffer-ring-head-recycling.md)
+> - [io_uring provided-buffer ring head resync after CQ overflow, partial drains, worker handoff](./io-uring-provided-buffer-ring-head-resync-cq-overflow-worker-handoff.md)
+> - [io_uring Multishot Cancel, Rearm, Drain, Shutdown](./io-uring-multishot-cancel-rearm-drain-shutdown.md)
+> - [io_uring Completion Observability Playbook](./io-uring-completion-observability-playbook.md)
+> - [io_uring CQ Overflow, Multishot, Provided Buffers, IOWQ Placement](./io-uring-cq-overflow-provided-buffers-iowq-placement.md)
+
+> retrieval-anchor-keywords: io_uring provided buffer bid leak, io_uring bid leak diagnostics, provided-buffer recycle leak, buffer id leak, bid leak, recv multishot ENOBUFS diagnostics, terminal ENOBUFS CQE, no F_BUFFER ENOBUFS, no F_MORE ENOBUFS, IORING_CQE_F_BUFFER, IORING_CQE_F_MORE, IORING_CQE_F_BUF_MORE, io_uring_buf_ring_available, io_uring_buf_ring_head, IORING_REGISTER_PBUF_STATUS, buffer ring state, cached head drift, app-owned bid ledger, partial tail slot, recv multishot failure signature, provided buffer exhaustion, IOU_PBUF_RING_INC, ENOBUFS churn, buffer group sharding, per-group ENOBUFS, refill contention, provided buffer head resync, worker handoff bid ledger, partial drain head resync
+
+## 핵심 개념
+
+여기서 말하는 `bid leak`는 "버퍼 메모리가 커널 안에서 사라졌다"보다, **앱이 어떤 `bid`를 누구 소유로 봐야 하는지 잃어버렸다**는 뜻에 가깝다.
+
+- `kernel-visible free`: 지금 ring에서 커널이 새로 집어갈 수 있는 entry다. `io_uring_buf_ring_available()`로 볼 수 있지만 inflight I/O가 있으면 시점값일 뿐이다.
+- `kernel-owned partial`: 마지막 CQE에 `IORING_CQE_F_BUF_MORE`가 남아 아직 같은 `bid`가 뒤 CQE를 받을 수 있는 상태다.
+- `app-owned`: `IORING_CQE_F_BUFFER`로 handed off 되었고 앱이 parse/dispatch/worker queue에서 아직 들고 있는 상태다.
+- `ready-to-readd`: 앱 처리는 끝났지만 아직 `io_uring_buf_ring_add()` / tail advance로 ring에 되돌리지 않은 상태다.
+- `lost`: 위 네 범주 어디에도 안 잡히는 `bid`다. 이때가 실제로 찾아야 할 recycle leak이다.
+
+핵심은 `-ENOBUFS` final CQE 자체에는 대개 `bid`가 실리지 않는다는 점이다. 따라서 진단은 항상 **직전 data CQE 패턴 + ring 상태 + 앱 ledger**를 합쳐서 해야 한다.
+
+## 깊이 들어가기
+
+### 1. 먼저 CQE flag 패턴으로 "정상처럼 보이는 누수"를 걷어낸다
+
+liburing man page와 테스트들이 보여 주는 recv multishot signature는 대체로 다음처럼 읽는다.
+
+| CQE 패턴 | 의미 | leak 판정 |
+|------|------|-----------|
+| `res > 0`, `F_BUFFER=1`, `F_MORE=1` | 정상 data CQE, multishot arm 생존 | 아직 판정 불가. 이후 recycle ledger를 본다 |
+| `res > 0`, `F_BUFFER=1`, `F_BUF_MORE=1` | incremental ring에서 같은 `bid`가 이어질 수 있음 | leak 아님. tail slot은 아직 kernel-owned |
+| `res == 0`, `F_BUFFER=1`, `F_BUF_MORE=1` | EOF여도 buffer가 완전히 소비되지 않음 | leak 아님. tail slot 조기 recycle 금지 |
+| `res == -ENOBUFS`, `F_BUFFER=0`, `F_MORE=0` | provided buffer를 더 못 구해 현재 multishot arm 종료 | final CQE 자체로 recycle할 `bid`는 없다 |
+| `res == -ECANCELED`, `F_MORE=0` | explicit cancel 또는 취소 경합 | exhaustion이 아니라 정책 종료 경로다 |
+
+특히 두 가지를 자주 오해한다.
+
+- 같은 `bid`가 반복해서 보이면 double-assign으로 오해한다.
+- `res == 0`이면 EOF니까 해당 slot을 곧바로 recycle해도 된다고 생각한다.
+
+하지만 incremental ring에서는 `IORING_CQE_F_BUF_MORE`가 켜져 있으면 둘 다 틀릴 수 있다. `read-inc-buf-more.c`는 `res == 0`에서도 `F_BUF_MORE`가 유지되는 경우를 검증한다. 즉 zero-length CQE만으로는 slot 종료를 선언할 수 없다.
+
+### 2. `-ENOBUFS`는 "이 generation이 끝났다"이지 "이전 bid들이 풀렸다"가 아니다
+
+`recv-multishot.c`의 `test_enobuf()`는 일부러 provided buffer를 2개만 주고 3번째 수신에서 `-ENOBUFS`를 만든다. 이때 마지막 CQE는:
+
+- `res == -ENOBUFS`
+- `IORING_CQE_F_BUFFER` 없음
+- `IORING_CQE_F_MORE` 없음
+
+형태를 가진다. 이 signature가 말해 주는 것은 다음뿐이다.
+
+- 현재 multishot recv arm은 끝났다.
+- final CQE 자체는 새 `bid`를 알려 주지 않는다.
+- 그러니 누락된 `bid`가 있는지는 **그 직전까지 handed off 된 `bid`들**을 따로 정산해야 한다.
+
+즉 `-ENOBUFS` 직후 바로 rearm해서 또 `-ENOBUFS`가 반복되면, 커널 버그보다 먼저 아래를 의심해야 한다.
+
+- app-owned `bid`가 아직 너무 많다
+- ready-to-readd 큐가 늦다
+- cancel/timeout/error branch에서 일부 `bid`를 ledger에 반영하지 않았다
+- `cached_head`가 drift해 잘못된 slot을 되돌리고 있다
+
+### 3. ring 상태는 `available` 하나로 보지 말고 `head + ledger`와 같이 본다
+
+`io_uring_buf_ring_available()`은 "현재 시점의 unconsumed entry 수"만 알려 준다. man page도 inflight I/O가 있으면 바로 stale해질 수 있다고 말한다. 그래서 진단 순서는 보통 아래처럼 가져간다.
+
+1. 새 recv rearm을 먼저 멈춘다.
+2. 필요하면 multishot recv를 cancel하고 `!IORING_CQE_F_MORE` terminal CQE까지 drain한다.
+3. 그 시점에 `io_uring_buf_ring_available()`를 읽는다.
+4. 가능하면 `IORING_REGISTER_PBUF_STATUS` 또는 `io_uring_buf_ring_head()` 계열로 kernel의 next-consume head를 읽어 로컬 `cached_head`와 비교한다.
+5. 앱 ledger에서 `app-owned`, `kernel-owned partial`, `ready-to-readd` 개수를 센다.
+
+진단식은 보통 이렇게 정리된다.
+
+```text
+ring_capacity
+  = kernel_visible_free
+  + app_owned
+  + partial_kernel_owned
+  + ready_to_readd
+  + lost_bids
+```
+
+여기서 중요한 분기:
+
+- `lost_bids == 0`이면 leak이 아니라 backlog 또는 pause 상태다.
+- `lost_bids > 0`이면 recycle branch 누락이나 ledger 손상이 있다.
+- `cached_head != kernel_head`가 크게 벌어져 있으면, 실제 leak보다 먼저 **head bookkeeping drift**를 의심해야 한다.
+
+`head`는 free count가 아니라 소비 순서를 설명한다. 반대로 `available`은 free count이지만 어느 `bid`가 빠졌는지는 말해 주지 않는다. 둘 중 하나만 보면 진단이 반쪽이 된다.
+
+### 4. failure signature로 root cause를 바로 좁힌다
+
+| 관측된 증상 | 같이 볼 신호 | 가장 흔한 해석 |
+|------|-------------|----------------|
+| 같은 `bid`가 여러 CQE에 반복 등장 | `F_BUF_MORE=1`, `kernel_head`가 tail slot에서 멈춤 | partial consumption 정상 동작 |
+| `available`이 거의 0, `app_owned`가 ring 대부분을 차지 | worker/parser backlog, terminal `-ENOBUFS` 뒤 즉시 rearm 실패 | leak보다 downstream retention/backpressure |
+| `available`은 낮은데 `app_owned + partial + ready`를 다 더해도 capacity가 안 맞음 | 특정 cancel/error/timeout branch 이후부터만 불일치 | 진짜 `bid` leak 가능성 높음 |
+| `available`은 회복됐는데 앱은 계속 같은 `bid`를 잃어버렸다고 판단 | `cached_head != kernel_head` | 로컬 head cache drift, slot 범위 계산 버그 |
+| `res == 0`인데도 slot이 안 돌아옴 | `F_BUF_MORE=1` 여부 | EOF가 아니라 partial tail 보존일 수 있음 |
+
+실전에서 헷갈리는 패턴 하나:
+
+- bundle recv에서 첫 `bid`만 보고 "나머지 contiguous slot이 유실됐다"고 오해할 수 있다.
+
+이 경우는 leak이라기보다 bundle 폭 복원 실패다. `res`와 `cached_head`로 contiguous slot 범위를 계산해야지, 첫 `bid` 하나만으로 누수 판정을 하면 안 된다.
+
+### 5. 가장 작은 instrumentation은 `bid` 상태 전이 하나면 충분하다
+
+복잡한 tracing보다 먼저, 각 `bid`마다 상태 전이를 한 줄로 남기면 대부분의 누수는 잡힌다.
+
+```text
+FREE
+ -> KERNEL_SELECTED
+ -> APP_OWNED
+ -> READY_TO_READD
+ -> FREE
+```
+
+여기에 두 개만 더 붙이면 좋다.
+
+- `PARTIAL_KERNEL_OWNED`: 마지막 CQE가 `F_BUF_MORE=1`인 상태
+- `TERMINAL_REASON`: `enobufs | peer_eof | cancel | positive_no_more`
+
+로그 최소셋:
+
+- `user_data`, `res`, decoded `flags`, decoded `bid`
+- `kernel_visible_free`, `kernel_head`, `cached_head`
+- `app_owned`, `partial_kernel_owned`, `ready_to_readd`
+- multishot arm 종료 이유별 카운터
+
+`-ENOBUFS`가 떴을 때 final CQE 하나만 찍지 말고, **직전 `F_BUFFER` CQE부터 마지막 `!F_MORE` CQE까지** 묶어서 남겨야 한다.
+
+## 운영 체크리스트
+
+- `-ENOBUFS` final CQE는 generation 종료 신호로 읽고, final CQE 자체에는 recycle할 `bid`가 없다고 가정한다.
+- `IORING_CQE_F_BUF_MORE`가 켜진 `bid`는 `res == 0`이어도 kernel-owned로 남겨 둔다.
+- `io_uring_buf_ring_available()`는 quiescent point에서만 증거로 쓰고, inflight 상태에서는 capacity 추정치로만 쓴다.
+- `cached_head`와 kernel이 보고하는 head가 다르면 leak 수사 전에 head resync부터 한다.
+- `capacity != free + app_owned + partial + ready`가 되는 순간의 branch를 찾으면 대부분의 bid leak이 드러난다.
+
+## 꼬리질문
+
+> Q: 같은 `bid`가 연속해서 나오면 버퍼가 중복 할당된 건가요?
+> 핵심: `F_BUF_MORE`가 켜져 있으면 보통 아니다. 같은 backing buffer의 남은 공간을 이어 쓰는 incremental consumption일 수 있다.
+
+> Q: `-ENOBUFS` final CQE에 `F_BUFFER`가 없으면 무엇을 recycle해야 하나요?
+> 핵심: final CQE 자체는 없다. 그 전에 `F_BUFFER`로 handed off 된 `bid`들을 ledger에서 정산해야 한다.
+
+> Q: `io_uring_buf_ring_available()`가 1 이상인데도 곧바로 `-ENOBUFS`가 날 수 있나요?
+> 핵심: 가능하다. 그 값은 조회 시점 snapshot이라 inflight consume이 있으면 바로 달라질 수 있으므로, pause/drain 없이 본 숫자는 확정 증거가 아니다.
+
+## 참고 소스
+
+- [`io_uring_prep_recv(3)` in liburing](https://github.com/axboe/liburing/blob/master/man/io_uring_prep_recv.3)
+- [`io_uring(7)` in liburing, CQE flag semantics](https://github.com/axboe/liburing/blob/master/man/io_uring.7)
+- [`io_uring_buf_ring_available(3)` in liburing](https://github.com/axboe/liburing/blob/master/man/io_uring_buf_ring_available.3)
+- [`io_uring_register(2)` in liburing, `IORING_REGISTER_PBUF_STATUS`](https://github.com/axboe/liburing/blob/master/man/io_uring_register.2)
+- [`test/recv-multishot.c` in liburing](https://github.com/axboe/liburing/blob/master/test/recv-multishot.c)
+- [`test/read-inc-buf-more.c` in liburing](https://github.com/axboe/liburing/blob/master/test/read-inc-buf-more.c)
+- [`test/recvsend_bundle-inc.c` in liburing](https://github.com/axboe/liburing/blob/master/test/recvsend_bundle-inc.c)
+
+## 한 줄 정리
+
+provided-buffer `bid leak`는 `-ENOBUFS` 하나로 판정하지 않는다. terminal CQE flag signature, `available/head`로 본 ring 상태, 그리고 앱의 `bid` ownership ledger를 reconcile해서 "정상 partial reuse", "head drift", "진짜 recycle leak"을 분리해야 한다.

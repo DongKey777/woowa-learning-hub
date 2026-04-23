@@ -2,8 +2,10 @@
 
 > 한 줄 요약: fencing token은 DB에만 저장하면 반쪽짜리고, 모든 write 경로와 재시도 경계에 같이 실어 보내야 효과가 있다.
 
+**난이도: 🟡 Intermediate**
+
 관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md), [Stale Lease Renewal Failure와 Fencing](./stale-lease-renewal-failure-fencing.md)
-Retrieval anchors: `fencing token propagation`, `epoch propagation`, `write guard`, `stale writer`, `token forwarding`
+retrieval-anchor-keywords: fencing token propagation, epoch propagation, write guard, stale writer, token forwarding
 
 ## 핵심 개념
 

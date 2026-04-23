@@ -2,11 +2,13 @@
 
 > 한 줄 요약: Command Handler 패턴은 입력 명령을 하나의 유스케이스로 받아 검증, 실행, 결과 반환을 한 흐름으로 묶는다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Command Pattern Undo Queue](./command-pattern-undo-queue.md)
 > - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
+> - [Aggregate Version and Optimistic Concurrency Pattern](./aggregate-version-optimistic-concurrency-pattern.md)
+> - [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
 > - [Unit of Work Pattern](./unit-of-work-pattern.md)
 > - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
 
@@ -32,6 +34,9 @@ Command Handler는 애플리케이션 서비스의 흔한 형태다.
 - `use case handler`
 - `validate execute persist`
 - `command side`
+- `expected version`
+- `stale command`
+- `intent rich command`
 
 ---
 
@@ -150,4 +155,3 @@ Command Handler는 유스케이스를 한 문장처럼 읽히게 만든다.
 ## 한 줄 정리
 
 Command Handler는 하나의 명령을 하나의 유스케이스로 처리하는 애플리케이션 계층 패턴이다.
-

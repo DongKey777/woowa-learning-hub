@@ -2,8 +2,10 @@
 
 > 한 줄 요약: read를 근거로 write할 때는, 그 read가 이미 stale일 수 있다는 사실을 전제로 다시 검증해야 한다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Cache와 Replica가 갈라질 때의 Read Inconsistency](./cache-replica-split-read-inconsistency.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
-Retrieval anchors: `write-after-read`, `stale read`, `read validate write`, `read dependency`, `recheck before write`
+retrieval-anchor-keywords: write-after-read, stale read, read validate write, read dependency, recheck before write
 
 ## 핵심 개념
 

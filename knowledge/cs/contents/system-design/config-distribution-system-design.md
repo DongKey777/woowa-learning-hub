@@ -2,7 +2,7 @@
 
 > 한 줄 요약: config distribution system은 서비스 설정을 빠르게 전파하고, 버전 관리와 안전한 롤백을 보장하는 중앙 제어 시스템이다.
 
-retrieval-anchor-keywords: config distribution, push pull hybrid, versioned config, snapshot, rollout, checksum, config cache, propagation delay, last known good, control plane
+retrieval-anchor-keywords: config distribution, push pull hybrid, versioned config, snapshot, rollout, checksum, config cache, propagation delay, last known good, control plane, endpoint routing, bootstrap config, control plane data plane separation, config rollback safety
 
 **난이도: 🔴 Advanced**
 
@@ -13,6 +13,9 @@ retrieval-anchor-keywords: config distribution, push pull hybrid, versioned conf
 > - [Distributed Cache 설계](./distributed-cache-design.md)
 > - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
 > - [Multi-tenant SaaS 격리 설계](./multi-tenant-saas-isolation-design.md)
+> - [Service Discovery / Health Routing 설계](./service-discovery-health-routing-design.md)
+> - [Control Plane / Data Plane Separation 설계](./control-plane-data-plane-separation-design.md)
+> - [Config Rollback Safety 설계](./config-rollback-safety-design.md)
 
 ## 핵심 개념
 
@@ -42,6 +45,7 @@ Config는 코드에 박아두기 어려운 운영 파라미터다.
 - region affinity
 
 코드 상수와 config를 구분하지 않으면 운영 중 변경이 불가능해진다.
+특히 endpoint routing과 regional failover 규칙은 service discovery 정책과 어긋나지 않도록 같은 버전 경계에서 관리하는 편이 안전하다.
 
 ### 2. Capacity Estimation
 
@@ -197,4 +201,3 @@ public ConfigSnapshot current() {
 ## 한 줄 정리
 
 Config distribution system은 안전한 버전 관리와 빠른 전파, 로컬 fallback을 통해 서비스 설정을 운영 가능한 형태로 유지하는 제어 평면이다.
-

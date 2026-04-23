@@ -5,6 +5,9 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [Software Engineering README: 테스트 전략과 테스트 더블](./README.md#테스트-전략과-테스트-더블)
+> - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+> - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 > - [Backward Compatibility Test Gates](./backward-compatibility-test-gates.md)
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
@@ -24,6 +27,8 @@
 > - stub
 > - fake
 > - contract test
+> - hexagonal testing seam
+> - fake outbound port
 
 ## 핵심 개념
 
@@ -76,6 +81,7 @@
 - Mock: 상호작용 검증
 
 중요한 건 이름 암기가 아니라 **어떤 의존성을 왜 대체하는가**다.
+Ports and Adapters 구조에서 이 질문을 더 좁히면 "유스케이스는 어떤 outbound port를 fake로 대체하고, 어떤 adapter는 통합 환경에서 검증해야 하는가"가 된다. 이 흐름은 [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)에서 이어서 다룬다.
 
 ### 4. Mock은 유용하지만 남발하면 설계를 망칠 수 있다
 

@@ -2,8 +2,10 @@
 
 > 한 줄 요약: duplicate suppression window는 같은 이벤트를 무한히 기억하지 않고, 일정 시간 동안만 중복을 막는 현실적인 dedup 전략이다.
 
+**난이도: 🟡 Intermediate**
+
 관련 문서: [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-Retrieval anchors: `duplicate suppression window`, `dedup window`, `ttl dedup`, `time bucket`, `duplicate suppression`
+retrieval-anchor-keywords: duplicate suppression window, dedup window, ttl dedup, time bucket, duplicate suppression
 
 ## 핵심 개념
 

@@ -10,6 +10,7 @@
 > - [Strangler Fig Migration, Contract, Cutover](./strangler-fig-migration-contract-cutover.md)
 > - [Architecture Runway and Refactoring Window](./architecture-runway-refactoring-window.md)
 > - [Anti-Corruption Layer Integration Patterns](./anti-corruption-layer-integration-patterns.md)
+> - [Service Split, Merge, and Absorb Evolution Framework](./service-split-merge-absorb-evolution-framework.md)
 
 > retrieval-anchor-keywords:
 > - brownfield modularization

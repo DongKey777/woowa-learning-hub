@@ -2,8 +2,10 @@
 
 > 한 줄 요약: DB 트랜잭션과 메시지 발행을 붙여도, end-to-end exactly-once가 자동으로 생기지는 않는다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md), [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `exactly once`, `at-least-once`, `outbox`, `idempotent consumer`, `queue retry`
+retrieval-anchor-keywords: exactly once, at-least-once, outbox, idempotent consumer, queue retry
 
 ## 핵심 개념
 

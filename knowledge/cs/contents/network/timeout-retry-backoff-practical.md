@@ -1,6 +1,24 @@
 # Timeout, Retry, Backoff 실전
 
+**난이도: 🟡 Intermediate**
+
 > 실무에서 요청 실패를 “운 좋게 한번 더 보내면 되겠지”로 처리하지 않기 위한 정리
+>
+> 문서 역할: 이 문서는 network 운영 cluster 안에서 **timeout / retry / backoff의 기본 의사결정**을 담당하는 survey형 deep dive다.
+
+> 관련 문서:
+> - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
+> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+> - [Proxy Retry Budget Discipline](./proxy-retry-budget-discipline.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
+> - [멱등성 키와 중복 방지](../database/idempotency-key-and-deduplication.md)
+> - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
+> - [JWT / JWKS Outage Recovery / Failover Drills](../security/jwt-jwks-outage-recovery-failover-drills.md)
+> - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)
+> - [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](../spring/spring-mvc-async-deferredresult-callable-dispatch.md)
+
+retrieval-anchor-keywords: timeout retry backoff, exponential backoff, jitter, retry storm, request timeout, connect timeout, deadline budget, retry budget, transient failure, fail-fast
 
 <details>
 <summary>Table of Contents</summary>
@@ -15,6 +33,12 @@
 
 </details>
 
+## 이 문서 다음에 보면 좋은 문서
+
+- 시간 분해 관측은 [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)로 이어진다.
+- hop별 남은 시간 전달은 [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)에서 더 깊게 다룬다.
+- proxy 자체 retry 정책은 [Proxy Retry Budget Discipline](./proxy-retry-budget-discipline.md)에서 이어서 본다.
+
 ## 왜 이 주제가 중요한가
 
 네트워크 요청은 생각보다 자주 실패한다.
@@ -26,6 +50,17 @@
 
 이때 중요한 건 "재시도하면 된다"가 아니라,
 **언제 끊고, 언제 다시 보내고, 얼마나 기다릴지**를 정하는 것이다.
+
+### Retrieval Anchors
+
+- `timeout retry backoff`
+- `exponential backoff`
+- `jitter`
+- `retry storm`
+- `request timeout`
+- `deadline budget`
+- `retry budget`
+- `fail-fast`
 
 ---
 

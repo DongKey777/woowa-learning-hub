@@ -6,10 +6,16 @@
 
 > 관련 문서:
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
+> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](./connection-keepalive-loadbalancing-circuit-breaker.md)
 > - [TCP 혼잡 제어](./tcp-congestion-control.md)
+> - [TCP Zero Window, Persist Probe, Receiver Backpressure](./tcp-zero-window-persist-probe-receiver-backpressure.md)
+> - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [System Design](../system-design/README.md)
+
+retrieval-anchor-keywords: connect timeout, read timeout, write timeout, request timeout, TLS handshake timeout, pool acquisition timeout, timeout budget, per-hop timeout
 
 ---
 
@@ -80,6 +86,7 @@ write timeout은 요청 바디를 보내는 중 상대가 너무 느리거나 �
 - 운영자가 장애 원인을 잘못 짚는다
 
 그래서 클라이언트 라이브러리와 proxy 설정은 분리해서 보는 편이 좋다.
+특히 `write timeout`은 [TCP Zero Window, Persist Probe, Receiver Backpressure](./tcp-zero-window-persist-probe-receiver-backpressure.md), `pool acquisition timeout`은 [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)와 같이 보면 진단이 빨라진다.
 
 ---
 

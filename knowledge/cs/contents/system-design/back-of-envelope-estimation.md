@@ -4,7 +4,7 @@
 
 retrieval-anchor-keywords: back-of-envelope estimation, DAU, QPS, storage estimate, bandwidth, peak multiplier, headroom, fan-out, retry amplification, hotset, capacity planning
 
-**난이도: 🟢 Basic**
+**난이도: 🟢 Beginner**
 
 관련 문서:
 

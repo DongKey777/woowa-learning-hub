@@ -1,17 +1,66 @@
 # Statistics, Histograms, and Cardinality Estimation
 
 > 한 줄 요약: 옵티마이저는 감으로 인덱스를 고르지 않고 통계로 고르기 때문에, 통계가 틀리면 좋은 인덱스도 나쁜 계획으로 보인다.
+>
+> 관련 문서:
+> - [인덱스와 실행 계획](./index-and-explain.md)
+> - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+> - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+> - [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md)
+> - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
+> - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
+>
+> retrieval-anchor-keywords:
+> - statistics
+> - histogram
+> - cardinality estimation
+> - persistent statistics
+> - selectivity
+> - ANALYZE TABLE
+> - optimizer cost model
+> - skewed distribution
+> - rows estimate wrong
+> - rows estimate too high
+> - rows estimate too low
+> - explain rows mismatch
+> - explain analyze actual rows
+> - optimizer misestimate
+> - stale statistics
+> - plan drift
+> - query plan changed after deploy
+> - wrong join order statistics
+> - wrong index choice statistics
+> - histogram skew
+> - tenant skew
+> - 데이터 분포 바뀌어서 실행 계획 달라짐
+> - rows 추정치 틀림
+> - 통계 오래됨
+> - analyze table 언제
+> - plan drift 왜 생김
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: statistics, histogram, cardinality estimation, persistent statistics, selectivity, ANALYZE TABLE, optimizer cost model, skewed distribution
+## 이 문서 다음에 보면 좋은 문서
+
+- `type`, `key`, `rows`, `Extra`를 어디서부터 읽어야 할지 아직 헷갈리면 [인덱스와 실행 계획](./index-and-explain.md)과 [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)로 먼저 돌아가는 편이 안전하다.
+- `Using filesort`, `Using temporary`, `ICP` 같은 `Extra` 신호 자체가 주증상이면 [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)에서 정렬 경로와 임시 테이블 이유를 먼저 분리한다.
+- skew가 특정 secondary index 유지 비용이나 write path와 같이 엮여 있으면 [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md)을 이어 본다.
+- 운영 중 즉시 triage 순서가 먼저 필요하면 [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)으로 내려간다.
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 "`EXPLAIN`은 읽었는데 왜 `rows` 추정치와 실제가 어긋나는가"를 설명하는 통계 entry다.
+즉 접근 경로의 문법보다 cardinality estimation과 plan drift를 먼저 해석할 때 붙는다.
+
+| 보이는 신호 | 여기서 바로 보는 것 | 먼저 돌아갈 문서 |
+| --- | --- | --- |
+| `rows` 추정치가 실제와 크게 다르거나 `EXPLAIN ANALYZE` actual rows가 튐 | cardinality estimation, selectivity, histogram, stale statistics | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md), [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md) |
+| 배포 후 SQL은 같은데 plan만 흔들림 | 데이터 분포 변화, `ANALYZE TABLE`, persistent statistics, skew | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md) |
+| `Using filesort`, `Using temporary`, `ICP`가 주증상이고 `rows` mismatch는 부차적임 | 이 문서보다 `Extra` 해석이 먼저 | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) |
+| `type = ALL`, `key = NULL`, predicate가 sargable 한지부터 의심됨 | 통계 이전의 접근 경로 문제 | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| DB time이 아니라 앱 레이어 병목일 수도 있음 | 통계 문제로 과잉 해석하지 말고 triage 순서 점검 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 
 ## 핵심 개념
-
-- 관련 문서:
-  - [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md)
-  - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
-  - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 
 옵티마이저는 "이 인덱스가 좋아 보인다"는 직감으로 실행 계획을 고르지 않는다.  
 통계와 비용 모델을 바탕으로 cardinality를 추정한다.

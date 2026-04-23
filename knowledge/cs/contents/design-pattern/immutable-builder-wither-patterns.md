@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Immutable Builder는 복잡한 객체 생성을 안정적으로 만들고, Wither는 불변 객체를 조금씩 바꿔 새 인스턴스를 만드는 패턴이다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [빌더 (Builder)](./builder-pattern.md)

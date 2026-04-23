@@ -2,12 +2,23 @@
 
 > 한 줄 요약: 한 세션 안에서는 시간이 뒤로 가지 않아야 하고, 그 약속을 지키려면 읽기 라우팅이 “가장 최근에 본 값”을 기억해야 한다.
 
-관련 문서: [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md)
-Retrieval anchors: `monotonic read`, `session guarantee`, `causal consistency`, `sticky read`, `version token`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Client Consistency Tokens](./client-consistency-tokens.md), [Causal Consistency Intuition](./causal-consistency-intuition.md)
+retrieval-anchor-keywords: monotonic reads, monotonic read, session guarantees, session guarantee, session consistency, session-consistent reads, read goes backward, saw newer then older, same session sees older data, refresh shows older value again, sticky read, sticky session read, version token, session watermark, causal consistency, monotonic read broken, 세션 일관성, 읽기가 뒤로 감, 방금 본 값보다 옛값, 새로고침했더니 더 옛값
+
+## 증상별 바로 가기
+
+- `write는 성공했는데 바로 안 보인다`, `save succeeded but old value returned`처럼 freshness 자체가 아직 확보되지 않았으면 [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md)와 [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)부터 본다.
+- `한 번 최신을 본 뒤 다시 옛값을 본다`, `saw newer then older`, `refresh shows older value again`처럼 같은 세션의 읽기가 뒤로 가면 이 문서에서 monotonic read와 session guarantee를 본다.
+- 서버 sticky session만으로 부족하고 탭/디바이스를 넘겨 같은 최신선을 운반해야 하면 [Client Consistency Tokens](./client-consistency-tokens.md)으로 이어 간다.
+- `원인보다 결과를 먼저 본다`, `comment visible before post`처럼 의미 순서까지 지켜야 하면 [Causal Consistency Intuition](./causal-consistency-intuition.md)을 같이 본다.
 
 ## 핵심 개념
 
 Monotonic read는 같은 사용자가 연속해서 읽을 때, 더 과거의 상태를 다시 보지 않도록 하는 보장이다.
+
+freshness entry 문서들이 "최신 write가 한 번이라도 보이느냐"를 다룬다면, monotonic read는 그다음 단계인 "한 번 본 최신선보다 뒤로 다시 떨어지지 않느냐"를 다룬다.
 
 왜 중요한가:
 
@@ -52,6 +63,7 @@ monotonic read는 다음 경로에서 특히 중요하다.
 
 이 방식은 read-your-writes보다 조금 넓다.  
 내가 쓴 것만 보는 게 아니라, **내가 이미 본 미래보다 뒤로 가지 않는 것**이 목표다.
+세션 메모리 대신 이 기준선을 클라이언트가 들고 다니게 하면 [Client Consistency Tokens](./client-consistency-tokens.md) 패턴이 된다.
 
 ### 4. 어디까지 강하게 할 것인가
 

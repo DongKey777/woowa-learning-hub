@@ -2,8 +2,10 @@
 
 > 한 줄 요약: claim-check는 큰 작업 본문을 안전하게 분리해 두고, job leasing은 그 작업을 한 worker만 처리하게 만든다.
 
-관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-Retrieval anchors: `claim-check`, `job leasing`, `payload reference`, `work claim`, `lease row`
+**난이도: 🔴 Advanced**
+
+관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md), [Queue Claim with `SKIP LOCKED`, Fairness, and Starvation Trade-offs](./queue-claim-skip-locked-fairness.md)
+retrieval-anchor-keywords: claim-check, job leasing, payload reference, work claim, lease row, skip locked, job ownership
 
 ## 핵심 개념
 

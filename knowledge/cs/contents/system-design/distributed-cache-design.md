@@ -2,17 +2,21 @@
 
 > 한 줄 요약: 단일 메모리 캐시를 넘어, 여러 노드에 캐시를 나누고 일관성과 성능을 동시에 관리하는 설계다.
 
-retrieval-anchor-keywords: distributed cache, cache-aside, write-through, write-behind, cache invalidation, hot key, stampede, admission policy, TTL jitter, local cache, distributed cache
+retrieval-anchor-keywords: distributed cache, cache-aside, write-through, write-behind, cache invalidation, hot key, stampede, admission policy, TTL jitter, local cache, distributed cache, cache rebalancing, shard relocation, cell isolation, cache prefill, receiver warmup
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
+> - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
 > - [Rate Limiter 설계](./rate-limiter-design.md)
 > - [인덱스와 실행 계획](../database/index-and-explain.md)
 > - [MVCC, Replication, Sharding](../database/mvcc-replication-sharding.md)
 > - [Cache-Control 실전](../network/cache-control-practical.md)
+> - [Shard Rebalancing / Partition Relocation 설계](./shard-rebalancing-partition-relocation-design.md)
+> - [Cell-Based Architecture / Blast Radius Isolation 설계](./cell-based-architecture-blast-radius-isolation-design.md)
+> - [Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계](./receiver-warmup-cache-prefill-write-freeze-cutover-design.md)
 
 ---
 
@@ -81,6 +85,8 @@ key -> hash(key) -> ring -> nearest node
 - 특정 key가 너무 뜨거우면 한 노드에 몰린다.
 - 노드 장애 시 cache miss가 급증한다.
 - 리밸런싱이 순간적으로 DB를 두드린다.
+
+즉, 해시 분배와 실제 shard relocation은 다른 문제다. metadata만 바꾸는 것과 상태를 warm-up하며 옮기는 것은 운영 난이도가 다르다.
 
 ### 3. 캐시 패턴
 

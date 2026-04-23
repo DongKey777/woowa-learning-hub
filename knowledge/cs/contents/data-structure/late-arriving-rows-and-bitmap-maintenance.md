@@ -1,0 +1,236 @@
+# Late-Arriving Rows and Bitmap Maintenance
+
+> 한 줄 요약: bitmap index 운영의 핵심은 bulk build 직후 압축률보다, late-arriving row·upsert·delete가 깨뜨린 run locality를 hot tier에서 얼마나 흡수하고 언제 compact/rebuild로 다시 정렬하느냐다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Row-Ordering and Bitmap Compression Playbook](./row-ordering-and-bitmap-compression-playbook.md)
+> - [Warehouse Sort-Key Co-Design for Bitmap Indexes](./warehouse-sort-key-co-design-for-bitmap-indexes.md)
+> - [Roaring Run Formation and Row Ordering](./roaring-run-formation-and-row-ordering.md)
+> - [Roaring Run-Churn Observability Guide](./roaring-run-churn-observability-guide.md)
+> - [Roaring Production Profiling Checklist](./roaring-production-profiling-checklist.md)
+> - [Compressed Bitmap Families: WAH, EWAH, CONCISE](./compressed-bitmap-families-wah-ewah-concise.md)
+> - [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
+> - [Bit-Sliced Bitmap Index](./bit-sliced-bitmap-index.md)
+
+> retrieval-anchor-keywords: late arriving rows bitmap, bitmap maintenance, bitmap compaction, bitmap rebuild, warehouse reclustering bitmap, upsert bitmap locality, delete bitmap fragmentation, late data row ordering drift, tombstone bitmap index, hot mutable bitmap tier, cold compacted bitmap tier, merge on read bitmap, copy on write bitmap, run locality maintenance, row ordering repair, bitmap delta merge, sort key drift bitmap, micro batch bitmap locality, row group rewrite bitmap, bitmap index upkeep, recluster vs rebuild bitmap
+
+## 핵심 개념
+
+bitmap index는 처음 만들 때만 보면 아주 예쁘다.  
+정렬된 bulk load 직후에는 값 band가 길고, run도 길고, row group hit spread도 작다.
+
+문제는 운영이 시작된 다음이다.
+
+- late-arriving row는 기존 band 바깥에서 뒤늦게 끼어든다
+- upsert는 보통 "한 row 수정"이 아니라 여러 bitmap의 `clear + set`을 만든다
+- delete/revoke는 긴 `1-run`에 구멍을 내서 run을 잘게 자른다
+- reclustering이 약하면 micro-batch 경계마다 locality가 따로 끊긴다
+
+그래서 유지보수 질문은 "`지금 cardinality가 얼마인가`"가 아니라 아래 네 가지다.
+
+1. locality 손상이 hot mutable 구간에만 몰려 있는가
+2. 현재 sort key가 여전히 query workload와 맞는가
+3. compact/recluster가 연속성을 되살릴 수 있는가
+4. 아니면 row ordering 자체가 틀어져 rebuild가 필요한가
+
+## 깊이 들어가기
+
+### 1. late-arriving row는 append가 아니라 out-of-order insert 비용이다
+
+warehouse가 `(country, status, event_date)`처럼 정렬돼 있다고 하자.  
+이때 `3일 전 KR 주문`이 늦게 도착하면 물리적으로는 대개 두 방식 중 하나가 된다.
+
+- 최신 delta segment 끝에 그냥 append한다
+- 기존 정렬 band 근처 row group을 다시 써서 끼워 넣는다
+
+둘 다 비용이 있다.
+
+| 처리 방식 | run locality 영향 | 운영 의미 |
+|---|---|---|
+| append-only delta | base bitmap은 깨끗하지만 late row가 별도 hot segment에 남아 query hit spread가 넓어진다 | write는 싸지만 delta 비중이 커지면 compact가 필요하다 |
+| local rewrite / copy-on-write | 기존 band 근처로 되돌릴 수 있지만 row group rewrite 비용이 생긴다 | 최근 파티션 위주라면 현실적인 절충안이다 |
+| global resort | 전체 row ordering을 다시 맞출 수 있다 | 가장 비싸지만 전역 drift에는 가장 확실하다 |
+
+즉 late-arriving row의 본질은 "값 하나 더 들어왔다"가 아니다.  
+**기존 sort order 관점에서 out-of-order membership가 새로 생겼다**는 점이 중요하다.
+
+### 2. upsert는 보통 한 bitmap이 아니라 여러 bitmap에 구멍과 덧칠을 남긴다
+
+logical upsert는 많은 경우 아래 두 동작으로 번역된다.
+
+1. 예전 값 bitmap에서 bit를 지운다
+2. 새 값 bitmap에 bit를 세운다
+
+예를 들어 `status=PENDING -> APPROVED` 업데이트는:
+
+- `PENDING` bitmap에는 hole punching을 만들고
+- `APPROVED` bitmap에는 새 patch를 붙인다
+
+만약 바뀌는 컬럼이 sort key와 강하게 연결돼 있으면 영향이 더 커진다.
+
+- 같은 sort band 안에서 일어난 upsert:
+  locality 훼손이 제한적이다
+- 자주 필터되는 low-cardinality 차원을 바꾸는 upsert:
+  두 값 band를 동시에 흐트러뜨린다
+- sort key 자체를 바꾸는 upsert:
+  사실상 row movement라서 source/destination 양쪽 locality를 다 건드린다
+
+bit-sliced bitmap도 예외가 아니다.
+
+- 작은 값 수정이라도 여러 slice bitmap의 `clear + set`이 일어난다
+- 특히 상위 비트가 바뀌면 slice-local run이 여러 층에서 동시에 깨질 수 있다
+
+따라서 upsert 경로는 "업데이트 수"보다 **어떤 band를 넘나드는가**로 봐야 한다.
+
+### 3. delete는 cardinality 감소보다 run fragmentation을 먼저 만든다
+
+delete나 revoke는 긴 `1-run`에 랜덤한 구멍을 뚫는 동작이다.
+
+- WAH/EWAH/CONCISE에서는 clean fill이 dirty literal로 바뀐다
+- Roaring에서는 run container가 bitmap이나 array로 식기 쉽다
+- row group hit spread는 그대로인데 run 수만 늘어 scan/repair 이득이 줄 수 있다
+
+운영에서는 hard delete보다 tombstone bitmap을 두는 경우가 많다.
+
+- 장점: write path가 단순하고 즉시성에 유리하다
+- 단점: query가 `base AND NOT tombstone` 같은 추가 combine을 계속 수행한다
+
+이 패턴은 짧게는 좋지만 오래 끌면 안 된다.  
+delete bitmap이 "예외 몇 개"가 아니라 **실질적인 두 번째 hot bitmap 층**이 되면 compact가 필요하다.
+
+### 4. reclustering은 공간 회수보다 locality 복구 작업에 가깝다
+
+compaction/reclustering을 단순히 "작은 파일 합치기"로 보면 판단이 늦어진다.  
+bitmap 관점에서 핵심은 아래 세 가지다.
+
+1. late row와 tombstone을 정리해 query hit spread를 줄이는가
+2. row group 경계를 줄여 run reset 빈도를 낮추는가
+3. sort key band를 다시 모아 bitmap run과 active chunk 수를 회복시키는가
+
+좋은 reclustering은:
+
+- 최신 delta를 cold base에 흡수하고
+- tombstone을 접어 넣고
+- 같은 band row를 다시 붙여 놓는다
+
+반대로 좋지 않은 reclustering은:
+
+- 너무 작은 window만 반복해서 재정렬하고
+- global ordering drift는 못 고친 채
+- rewrite 비용만 계속 낸다
+
+즉 compact 성공 여부는 bytes reclaimed보다 **run locality payoff**로 판단해야 한다.
+
+### 5. WAH family와 Roaring은 maintenance 민감도가 다르다
+
+| 관점 | WAH/EWAH/CONCISE | Roaring |
+|---|---|---|
+| 무엇이 깨지면 아픈가 | 긴 clean run이 dirty literal로 잘릴 때 | active chunk 수, run 수, `4096` 근처 경계 압력이 늘 때 |
+| late-arriving row 영향 | 전역 fill 지속성이 빠르게 약해진다 | hot delta와 기존 chunk spread가 늘어난다 |
+| delete 영향 | fill skip 이득이 빠르게 줄어든다 | `run -> bitmap`, `bitmap -> array` churn이 늘 수 있다 |
+| compact를 서둘러야 할 때 | fill/literal 비율이 hot window에서 눈에 띄게 악화될 때 | transition CPU, run fragmentation, active chunk spread가 query path를 잡아먹을 때 |
+| rebuild가 필요한 때 | sort key drift로 전역 run model이 무너졌을 때 | repeated compact 뒤에도 row ordering drift가 역사 구간 전반에 남을 때 |
+
+그래서 run-heavy warehouse bitmap은 delta/tombstone 층을 오래 방치하면 안 되고,  
+Roaring은 더 버티더라도 `관측 가능한 churn`이 계속 오르면 결국 같은 질문으로 돌아온다.
+
+### 6. compact와 rebuild를 가르는 실전 판단표
+
+아래는 절대 임계값보다 **손상 범위와 복구 가능성**을 기준으로 보는 편이 정확하다.
+
+| 관찰 신호 | 우선 액션 | 이유 |
+|---|---|---|
+| locality 손상이 최신 partition, mutable tier, delta segment에만 몰려 있다 | compact / partition-local recluster | sort key는 아직 유효하고, hot 구간만 다시 붙이면 회복될 가능성이 크다 |
+| tombstone/delete bitmap이 query path에서 무시 못 할 비중을 차지한다 | compact | delete 예외층을 base에 접어 넣어 run fragmentation과 extra combine을 줄여야 한다 |
+| compaction 직후에는 size/CPU/run 수가 눈에 띄게 좋아진다 | compact 주기 조정 | local repair가 실제로 먹히고 있다는 뜻이다 |
+| repeated compact 뒤에도 active chunk spread, row-group hit spread가 넓게 남는다 | rebuild 검토 | 문제는 파일 수가 아니라 row ordering 자체일 가능성이 높다 |
+| sort key나 주력 predicate가 바뀌어 기존 clustering이 workload와 안 맞는다 | rebuild | 예전 순서를 아무리 다듬어도 새 workload locality가 생기지 않는다 |
+| sort-key-changing upsert가 넓은 역사 구간에 누적된다 | rebuild 또는 대규모 repartition | source/destination band 손상이 전역적이면 부분 repair가 잘 안 먹는다 |
+
+compact는 "**현재 정렬 전략이 맞다**"는 전제에서 locality를 복구하는 작업이다.  
+rebuild는 "**정렬 전략 또는 row ordering 자체를 다시 정해야 한다**"는 상황에서 쓴다.
+
+### 7. 운영 패턴은 hot mutable tier와 cold compacted tier를 분리하는 편이 안전하다
+
+실무에서 자주 맞는 패턴은 다음과 같다.
+
+1. 최신 쓰기는 delta bitmap / tombstone bitmap / mutable segment에 받는다
+2. query는 `base + delta - tombstone`을 함께 읽는다
+3. 배치 compact가 delta와 tombstone을 cold base에 접어 넣으며 locality를 복구한다
+4. sort key drift가 전역화되면 그때 rebuild를 한다
+
+이 구조가 좋은 이유는:
+
+- write latency를 과도하게 희생하지 않고
+- late data를 흡수할 완충 지대를 두고
+- rebuild를 "매일 하는 일"이 아니라 "정말 필요할 때 하는 일"로 미룰 수 있기 때문이다
+
+핵심은 delta 계층을 영구화하지 않는 것이다.  
+delta가 작은 예외층일 때는 merge-on-read가 이득이지만,  
+delta가 hot path의 본체가 되면 이미 compact 시점을 놓친 것이다.
+
+## 실전 시나리오
+
+### 시나리오 1: append-friendly event warehouse + 소량의 late data
+
+`event_time` 기준으로 적재하지만 며칠 늦은 row가 계속 들어온다.  
+이 경우는 보통 최신 partition delta에 late row를 쌓고, 일 단위나 시간 단위 compact로 정렬을 복구하는 편이 맞다.
+
+전역 rebuild는:
+
+- late data가 과거 여러 partition에 넓게 퍼지거나
+- 주력 필터가 시간축이 아니라 차원 축으로 바뀌어서
+- 기존 sort key가 더 이상 locality를 못 만들 때
+
+그때 검토하면 된다.
+
+### 시나리오 2: audience bitmap에서 approve/revoke가 매우 잦다
+
+초기 build는 run-friendly하지만 revoke가 랜덤하게 들어오면 delete hole이 누적된다.
+
+- delete bitmap이 얇고 최근 chunk에 몰리면 compact로 충분하다
+- hot chunk 전반에서 `run -> bitmap` churn과 transition CPU가 커지면 compact 주기를 당긴다
+- 정책 변경으로 membership 자체가 계속 다른 band를 오간다면 rebuild보다 데이터 모델 분리가 먼저일 수도 있다
+
+### 시나리오 3: warehouse sort key 자체가 workload와 어긋난 경우
+
+예전에는 `event_time` 위주 질의였는데 이제는 `country, status` 필터가 대부분이라고 하자.  
+이 경우 compaction은 파일을 다듬을 뿐, 새 band locality를 만들어 주지 못한다.
+
+이때는 local compact를 반복하기보다:
+
+- 새 sort key 설계
+- repartition / recluster 전략 변경
+- bitmap 재생성
+
+을 묶어서 rebuild하는 편이 맞다.
+
+## 빠른 체크리스트
+
+bitmap maintenance 판단은 전체 cardinality보다 아래 질문으로 하는 편이 맞다.
+
+1. query hit가 예전보다 더 많은 row group과 chunk에 퍼졌는가
+2. delete/tombstone layer가 hot query CPU를 먹기 시작했는가
+3. compact 직후 run 수, active chunk 수, bytes가 실제로 회복되는가
+4. 손상이 hot tail에 국한되는가, 아니면 역사 구간 전반에 퍼졌는가
+5. 현재 sort key가 아직도 가장 자주 쓰는 predicate band를 만들고 있는가
+
+## 꼬리질문
+
+> Q: upsert가 row 하나 바꾸는 건데 왜 bitmap maintenance에서는 크게 보나요?
+> 의도: logical update와 physical bitmap patch를 구분하는지 확인
+> 핵심: 한 row update라도 여러 bitmap의 `clear + set`이 되고, sort band를 넘나들면 source/destination locality를 동시에 깨기 때문이다.
+
+> Q: tombstone bitmap을 오래 두면 왜 안 좋나요?
+> 의도: write-friendly delta와 read-friendly base의 차이를 이해하는지 확인
+> 핵심: 처음엔 예외층이지만, 비중이 커지면 query가 항상 추가 combine을 수행하고 run fragmentation도 숨겨지지 않기 때문이다.
+
+> Q: compact를 계속 하면 rebuild는 필요 없나요?
+> 의도: local repair와 global reorder를 구분하는지 확인
+> 핵심: 아니다. sort key drift나 전역 row ordering 붕괴라면 compact는 국소 복구일 뿐이고, 새 ordering을 만드는 rebuild가 필요하다.
+
+## 한 줄 정리
+
+late-arriving row와 mutable update가 있는 bitmap index 운영에서는, compact는 hot 구간 locality 복구 수단이고 rebuild는 sort key/row ordering 자체를 다시 맞추는 수단이다.

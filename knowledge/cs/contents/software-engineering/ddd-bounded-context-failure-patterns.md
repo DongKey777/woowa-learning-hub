@@ -8,7 +8,11 @@
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
 > - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
+> - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
+> - [Anti-Corruption Layer Integration Patterns](./anti-corruption-layer-integration-patterns.md)
 > - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
+>
+> retrieval-anchor-keywords: bounded context, context map, ubiquitous language, shared kernel, domain boundary, model contamination, distributed monolith, team boundary, anti-corruption layer, context split
 
 ---
 

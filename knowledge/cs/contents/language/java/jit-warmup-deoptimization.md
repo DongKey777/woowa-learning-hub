@@ -5,11 +5,13 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 > - [G1 GC vs ZGC](./g1-vs-zgc.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
 > - [CPU Cache, Coherence, Memory Barrier](../../operating-system/cpu-cache-coherence-memory-barrier.md)
+
+retrieval-anchor-keywords: JIT warmup, deoptimization, tiered compilation, method inlining for jit warmup, code cache jit warmup, profile pollution, deopt trigger, jit warmup tiered compilation inlining code cache profile pollution deopt trigger, HotSpot compilation, PrintCompilation, JFR compilation event, C1 C2, warmup latency spike, uncommon trap, polymorphic call site, JIT benchmark trap
 
 <details>
 <summary>Table of Contents</summary>

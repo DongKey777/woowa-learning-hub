@@ -1,27 +1,34 @@
 # Real MySQL 8.0 Reference
 
+**난이도: 🔴 Advanced**
+
+retrieval-anchor-keywords: Real MySQL 8.0, InnoDB internals reference, MySQL 8.0 architecture, transaction and locking reference, optimizer and explain reference, buffer pool undo redo log, metadata lock reference, histogram cost model, MySQL operations handbook, MySQL indexing and execution plan
+
 ## 개요
 
-- 원본 PDF: [materials/real-mysql-8.0.pdf](./materials/real-mysql-8.0.pdf)
-- 검색용 추출본: [materials/real-mysql-8.0.txt](./materials/real-mysql-8.0.txt)
+- 현재 저장소 연결 문서: [Database README](./README.md)
+- 함께 볼 주제: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- 함께 볼 주제: [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
+- 원본 자산 메모: `materials/real-mysql-8.0.pdf`, `materials/real-mysql-8.0.txt`
 - 분량: PDF 520페이지
 - 성격: SQL 입문서보다는 MySQL 서버 운영, InnoDB 내부 동작, 인덱스/옵티마이저, 실행 계획 해석에 초점을 둔 실전 참고서
 
-이 자료는 앞으로 이 저장소의 DB 참고 문서 기준점으로 사용한다. 빠른 검색은 추출본으로, 정확한 표/그림/예제 확인은 PDF 원본으로 보는 것이 좋다.
+이 자료는 앞으로 이 저장소의 DB 참고 문서 기준점으로 사용한다. 원본 자산이 함께 있을 때는 빠른 검색은 추출본으로, 정확한 표/그림/예제 확인은 PDF 원본으로 보는 것이 좋다.
 
 ## 사용 방법
 
-### 빠른 검색
+### 빠른 검색 (추출본이 함께 있을 때)
 
 ```bash
-rg -n "MVCC|REPEATABLE READ|버퍼 풀|B-Tree|keyring_file|SET PERSIST|히스토그램|옵티마이저" contents/database/materials/real-mysql-8.0.txt
+rg -n "MVCC|REPEATABLE READ|버퍼 풀|B-Tree|keyring_file|SET PERSIST|히스토그램|옵티마이저" knowledge/cs/contents/database/materials/real-mysql-8.0.txt
 ```
 
 ### 권장 사용 원칙
 
-1. 키워드 탐색은 `real-mysql-8.0.txt`에서 먼저 찾는다.
-2. 결과 위치를 확인한 뒤 예제, 도표, 문맥은 `real-mysql-8.0.pdf`에서 다시 본다.
-3. 추출본은 PDFKit 기반 텍스트 추출이라 일부 글자가 깨질 수 있으므로, 정확한 문장 인용이나 명령어 복사는 PDF 원본을 우선한다.
+1. `materials/real-mysql-8.0.txt`가 있으면 키워드 탐색은 추출본에서 먼저 찾는다.
+2. PDF 원본까지 같이 있으면 결과 위치를 확인한 뒤 예제, 도표, 문맥은 PDF에서 다시 본다.
+3. 원본 자산이 아직 없으면 이 레퍼런스 문서와 연결된 로컬 DB 노트를 먼저 본다.
+4. 추출본은 PDFKit 기반 텍스트 추출이라 일부 글자가 깨질 수 있으므로, 정확한 문장 인용이나 명령어 복사는 PDF 원본을 우선한다.
 
 ## 장별 구조
 
@@ -119,10 +126,11 @@ rg -n "MVCC|REPEATABLE READ|버퍼 풀|B-Tree|keyring_file|SET PERSIST|히스토
 
 ## 이 저장소와의 연결 포인트
 
-- 트랜잭션/잠금: [../../saju-dabang-CS/database/04-race-condition-locking.md](../../saju-dabang-CS/database/04-race-condition-locking.md)
-- 트랜잭션/멱등성: [../../saju-dabang-CS/database/02-transaction-idempotency.md](../../saju-dabang-CS/database/02-transaction-idempotency.md)
-- DB 개요: [../../saju-dabang-CS/database/README.md](../../saju-dabang-CS/database/README.md)
-- 기존 DB 요약: [README.md](./README.md)
+- 트랜잭션/잠금: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- 트랜잭션/경계 판단: [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
+- 트랜잭션/멱등성: [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
+- 인덱스/실행 계획: [인덱스와 실행 계획](./index-and-explain.md)
+- DB 개요: [Database README](./README.md)
 
 이 문서들은 문제 상황을 개념적으로 정리한 노트이고, `Real MySQL 8.0`은 MySQL 엔진 기준의 구체적인 근거 문서로 쓰면 좋다.
 

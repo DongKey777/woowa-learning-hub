@@ -11,6 +11,7 @@ REGISTRY_PATH = STATE_DIR / "repo-registry.json"
 PR_ARCHIVE_DIR = ROOT / "scripts" / "pr_archive"
 DEFAULT_SCHEMA_PATH = PR_ARCHIVE_DIR / "schema.sql"
 LEGACY_PR_DATASETS_DIR = STATE_DIR / "pr-datasets"
+ORCHESTRATOR_DIR = STATE_DIR / "orchestrator"
 
 
 def ensure_global_layout() -> None:
@@ -19,6 +20,12 @@ def ensure_global_layout() -> None:
     (STATE_DIR / "cache").mkdir(parents=True, exist_ok=True)
     if not REGISTRY_PATH.exists():
         REGISTRY_PATH.write_text(json.dumps({"repos": []}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def ensure_orchestrator_layout() -> Path:
+    ensure_global_layout()
+    ORCHESTRATOR_DIR.mkdir(parents=True, exist_ok=True)
+    return ORCHESTRATOR_DIR
 
 
 def repo_state_dir(repo_name: str) -> Path:

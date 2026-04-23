@@ -13,6 +13,8 @@
 > - [BBR vs CUBIC Congestion Intuition](./bbr-vs-cubic-congestion-intuition.md)
 > - [Happy Eyeballs, Dual-Stack Racing](./happy-eyeballs-dual-stack-racing.md)
 > - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
+> - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
+> - [h2c, Cleartext Upgrade, Prior Knowledge, Routing](./h2c-cleartext-upgrade-prior-knowledge-routing.md)
 
 retrieval-anchor-keywords: HTTP/3, QUIC, UDP, connection migration, HOL blocking, packet loss, latency, qpack, path validation, mobile network
 

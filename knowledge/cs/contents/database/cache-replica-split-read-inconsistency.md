@@ -2,8 +2,17 @@
 
 > 한 줄 요약: 캐시와 replica가 서로 다른 시점을 들고 있으면, 둘 중 어느 쪽을 읽어도 맞는 것 같지만 둘 다 틀릴 수 있다.
 
-관련 문서: [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Read Repair와 Failover Reconciliation](./read-repair-reconciliation-after-failover.md)
-Retrieval anchors: `cache replica split`, `stale cache`, `mixed source of truth`, `read inconsistency`, `cache invalidation`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Caching vs Read Replica Primer](../system-design/caching-vs-read-replica-primer.md), [Read Repair와 Failover Reconciliation](./read-repair-reconciliation-after-failover.md)
+retrieval-anchor-keywords: cache replica split, cache vs replica stale, cache invalidation vs replica lag, mixed stale source, mixed stale read, stale source disambiguation, cache miss stale replica, cache miss then old replica, stale cache after write, updated but old value from cache or replica, list detail mismatch after write, cache and replica disagree, cache replica freshness routing, mixed source of truth, read inconsistency, cache invalidation, stale cache, old data after write cache or replica, save succeeded but old value via cache miss, 캐시 미스 후 리플리카 옛값, 캐시 무효화 vs 리플리카 지연, 캐시와 리플리카 값 다름, 목록과 상세가 서로 다른 상태, 방금 저장했는데 캐시인지 리플리카인지 모르겠음
+
+## 증상별 바로 가기
+
+- `cache hit 때는 최신인데 miss 때는 옛값`, `cache miss then old replica`, `목록과 상세가 서로 다른 상태`처럼 cache와 replica가 서로 다른 시점을 들고 있는지 먼저 가려야 하면 이 문서에서 stale source split부터 본다.
+- `write는 성공했는데 어디서 읽어도 바로 옛값`, `save succeeded but old value returned`처럼 write 직후 freshness budget 자체가 핵심이면 [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md)로 바로 간다.
+- `lag metric은 낮은데 일부 endpoint나 cache miss path에서만 옛값`, `freshness alert은 조용한데 사용자만 stale read를 본다`처럼 관측과 체감이 어긋나면 [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md)와 함께 읽는다.
+- `내가 방금 바꾼 값이 내 세션에서만 유지돼야 한다`처럼 세션 보장이 핵심이면 [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)으로 먼저 이동한다.
 
 ## 핵심 개념
 
@@ -17,6 +26,10 @@ Retrieval anchors: `cache replica split`, `stale cache`, `mixed source of truth`
 - invalidation만으로는 항상 해결되지 않는다
 
 즉 문제는 캐시가 있느냐가 아니라, **어느 소스가 최신인지 라우팅이 알고 있느냐**다.
+
+중요한 점은 `stale read`라는 같은 표면 증상 아래에 서로 다른 root cause가 숨어 있다는 것이다.
+cache invalidation이 늦어도 옛값이 보이고, replica lag가 있어도 옛값이 보인다.
+둘을 함께 쓰는 구조에서는 `cache miss 뒤 stale replica 재사용` 같은 혼합 incident가 생긴다.
 
 ## 깊이 들어가기
 
@@ -38,16 +51,28 @@ replica도 lag 때문에 최신 값이 아닐 수 있다.
 
 둘 중 하나만 믿고 라우팅하면 오판이 생긴다.
 
-### 3. 해결 방향
+### 3. stale source를 먼저 가르는 질문
+
+| 먼저 확인할 질문 | cache stale 쪽 신호 | replica stale 쪽 신호 | mixed stale-source 쪽 신호 |
+|---|---|---|---|
+| cache hit과 miss 결과가 다른가 | hit일 때만 옛값이 남는다 | hit/miss와 무관하게 replica read가 늦다 | miss 뒤 replica가 더 옛값이라 결과가 뒤집힌다 |
+| lag metric이 실제로 높나 | 대체로 낮거나 무관하다 | 높다 | 낮거나 경계선인데 cache miss path에서만 증상이 커진다 |
+| 어떤 화면/endpoint가 특히 흔들리나 | 같은 entity라도 cache key 묶음이 다르다 | replica selection, read routing 정책 전체가 흔들린다 | 상세는 cache, 목록은 replica처럼 source가 화면별로 갈라진다 |
+| recent write 직후만 문제인가 | invalidation race가 있으면 그렇다 | read-after-write 경로에서 자주 터진다 | invalidate 후 replica fallback이 겹칠 때 특히 심해진다 |
+
+즉 `cache stale인지`, `replica stale인지`, `둘이 동시에 stale인지`를 먼저 나눠야 root cause가 빨리 좁혀진다.
+
+### 4. 해결 방향
 
 - 최근 write는 primary fallback
 - cache miss 시 replica 직행이 아니라 freshness 확인
 - version token으로 cache와 DB 버전 비교
 - invalidate 후 바로 read가 필요한 경로는 primary pinning
+- lag metric이 낮아도 cache miss -> replica fallback 경로는 별도 추적
 
 핵심은 캐시와 replica를 **서로 다른 stale source**로 본다는 점이다.
 
-### 4. read repair와의 차이
+### 5. read repair와의 차이
 
 read repair는 읽은 뒤 고치는 것이고, 이 문서의 핵심은 읽기 전에 소스를 선택하는 것이다.  
 둘은 같이 써야 한다.

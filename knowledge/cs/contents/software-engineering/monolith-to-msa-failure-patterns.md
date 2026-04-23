@@ -9,7 +9,10 @@
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
+> - [Service Split, Merge, and Absorb Evolution Framework](./service-split-merge-absorb-evolution-framework.md)
 > - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
+
+retrieval-anchor-keywords: monolith to msa migration, msa migration failure patterns, shared database anti pattern, distributed transaction migration, outbox inbox saga, service boundary failure, synchronous call chain amplification, migration observability, cutover failure mode, ownership boundary in migration
 
 ---
 

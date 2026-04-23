@@ -1,7 +1,29 @@
 # DNS, CDN, HTTP/2, HTTP/3
+
+**난이도: 🔴 Advanced**
 > 브라우저 주소창에 URL을 치는 순간부터 픽셀이 찍히기까지, 보이지 않는 인프라 계층을 이해하기 위한 문서
 
+> 관련 문서:
+> - [DNS TTL과 캐시 실패 패턴](./dns-ttl-cache-failure-patterns.md)
+> - [CDN Cache Key와 Invalidation](./cdn-cache-key-invalidation.md)
+> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+> - [HTTP/2, HTTP/3 Connection Reuse, Coalescing](./http2-http3-connection-reuse-coalescing.md)
+> - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
+
+retrieval-anchor-keywords: DNS CDN HTTP2 HTTP3, recursive resolver, authoritative DNS, cache hit, cache miss, HTTP/2 multiplexing, HTTP/3 QUIC, browser request path, TTFB, edge delivery
+
 ## 핵심 개념
+
+### Retrieval Anchors
+
+- `DNS CDN HTTP2 HTTP3`
+- `recursive resolver`
+- `authoritative DNS`
+- `cache hit`
+- `cache miss`
+- `HTTP/2 multiplexing`
+- `HTTP/3 QUIC`
+- `browser request path`
 
 ### DNS — 왜 첫 번째 병목인가
 

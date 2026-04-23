@@ -4,15 +4,24 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: covering index, index-only scan, Using index, visibility map, heap fetches, MVCC visibility, secondary index lookup, EXPLAIN ANALYZE
+retrieval-anchor-keywords: covering index, index-only scan, using index, using index vs index only scan, mysql using index vs postgresql index only scan, visibility map, heap fetches, heap fetches not zero, MVCC visibility, covering index but still heap fetches, covering index but still reads table, why heap fetches remain, using index but still table lookup, secondary index lookup, EXPLAIN ANALYZE, 커버링 인덱스와 index only scan 차이, using index 의미
+
+## 증상별 바로 가기
+
+- `Using index`와 `Index Only Scan`을 같은 뜻으로 읽고 있거나, MySQL `Extra`와 PostgreSQL plan node를 같은 신호로 해석하고 있다면 이 문서에서 용어부터 분리한다.
+- `covering index를 만들었는데 PostgreSQL에서 Heap Fetches가 남는다`, `visibility map 때문에 heap/table를 다시 읽는다` 같은 follow-up이면 이 문서에서 MVCC visibility와 vacuum 상태를 함께 본다.
+- `Using index`는 보이는데도 읽기 p95가 그대로이거나, 컬럼을 더 넣은 뒤 write가 무거워졌다면 [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)으로 이동한다.
+- `Using filesort`, `ORDER BY ... LIMIT`, left-prefix 문제가 먼저면 [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)로 돌아가서 인덱스 shape부터 다시 잡는다.
 
 ## 핵심 개념
 
 - 관련 문서:
   - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+  - [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)
   - [인덱스와 실행 계획](./index-and-explain.md)
   - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+  - [Autovacuum Freeze Debt, XID Age, and Wraparound Playbook](./autovacuum-freeze-debt-wraparound-playbook.md)
 
 커버링 인덱스와 index-only scan은 비슷하게 들리지만, 같은 문장이 아니다.
 
@@ -42,6 +51,7 @@ LIMIT 20;
 
 여기서 필요한 컬럼이 인덱스에 다 들어 있으면 `Using index`가 나타날 수 있다.  
 이건 테이블 접근을 줄인다는 의미에서 매우 중요하다.
+다만 커버링을 위해 컬럼을 계속 추가하면 leaf entry 폭이 커지고, write path와 cache residency 비용도 같이 늘어난다.
 
 ### 2. PostgreSQL index-only scan은 visibility 확인이 핵심이다
 

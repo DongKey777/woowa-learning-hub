@@ -7,8 +7,13 @@
 > 관련 문서:
 > - [Cache-Control 실전](./cache-control-practical.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+> - [Vary와 Content Negotiation 기초: 언어, 압축, 응답 variant](./vary-content-negotiation-basics-language-compression.md)
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
+> - [Compression, Cache, Vary, Accept-Encoding, Personalization](./compression-cache-vary-accept-encoding-personalization.md)
+> - [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)
 > - [System Design](../system-design/README.md)
+
+retrieval-anchor-keywords: CDN cache key, invalidation, purge, vary, Accept-Language cache key, content negotiation key, cache busting, query string cache, edge cache, personalized response, surrogate key, cache segmentation
 
 ---
 
@@ -23,6 +28,17 @@ CDN 캐시는 보통 다음 질문으로 결정된다.
 
 실무에서 캐시 사고는 대개 키 설계보다 무효화에서 터진다.  
 같은 URL인데 사용자/언어/권한/압축 여부가 다르면 같은 캐시를 쓰면 안 된다.
+
+### Retrieval Anchors
+
+- `CDN cache key`
+- `invalidation`
+- `purge`
+- `vary`
+- `cache busting`
+- `edge cache`
+- `surrogate key`
+- `cache segmentation`
 
 ---
 

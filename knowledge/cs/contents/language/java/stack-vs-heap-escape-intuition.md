@@ -6,11 +6,12 @@
 
 > 관련 문서:
 > - [Escape Analysis and Scalar Replacement](./escape-analysis-scalar-replacement.md)
+> - [Escape Analysis, Stack Allocation, Benchmarking, and Object Reuse Misconceptions](./escape-analysis-stack-allocation-benchmark-misconceptions.md)
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 > - [VarHandle, Unsafe, Atomics](./varhandle-unsafe-atomics.md)
 
-> retrieval-anchor-keywords: stack vs heap, escape analysis, stack allocation, heap allocation, scalar replacement, object lifetime, publication, allocation elimination, JIT, local variable, object identity
+> retrieval-anchor-keywords: stack vs heap, escape analysis, stack allocation, heap allocation, scalar replacement, object lifetime, publication, allocation elimination, JIT, local variable, object identity, stack allocation myth
 
 <details>
 <summary>Table of Contents</summary>

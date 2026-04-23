@@ -5,11 +5,14 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 > - [G1 GC vs ZGC](./g1-vs-zgc.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
+> - [`LockSupport.park`/`unpark` Permit Semantics and Coordination Pitfalls](./locksupport-park-unpark-permit-semantics.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 > - [OOM Heap Dump Playbook](./oom-heap-dump-playbook.md)
+
+> retrieval-anchor-keywords: JFR, JMC, Java Flight Recorder, Mission Control, lock contention, allocation rate, thread parking, park, blocker, socket read, GC pause, profiling, runtime event
 
 ## 핵심 개념
 

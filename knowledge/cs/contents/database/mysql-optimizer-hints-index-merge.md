@@ -12,6 +12,16 @@
 
 ---
 
+> retrieval-anchor-keywords:
+> - MySQL optimizer hints
+> - USE INDEX
+> - FORCE INDEX
+> - IGNORE INDEX
+> - index merge
+> - index_merge_intersect
+> - index_merge_union
+> - optimizer switch
+
 ## 핵심 개념
 
 MySQL 옵티마이저는 통계와 비용 모델을 바탕으로 실행 계획을 고른다. 대부분의 경우 이 선택이 맞지만, 항상 최선은 아니다.

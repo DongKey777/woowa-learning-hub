@@ -1,0 +1,240 @@
+# Trust Boundary Bypass / Detection Signals
+
+> 한 줄 요약: gateway, BFF, sidecar, internal auth proxy 같은 신뢰 경계는 한 번 설계했다고 끝나지 않고, direct-to-service path, unsigned internal header, missing mesh identity 같은 우회 경로가 실제로 열리는지 런타임 신호로 감시해야 한다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Gateway Auth Context Headers / Trust Boundary](./gateway-auth-context-header-trust-boundary.md)
+> - [Workload Identity / User Context Propagation Boundaries](./workload-identity-user-context-propagation-boundaries.md)
+> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
+> - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
+> - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - [Auth Incident Triage / Blast-Radius Recovery Matrix](./auth-incident-triage-blast-radius-recovery-matrix.md)
+
+retrieval-anchor-keywords: trust boundary bypass, gateway bypass detection, direct to service traffic, missing auth proxy, internal header spoofing detection, mesh identity missing, edge bypass, auth boundary signal, unexpected direct path, trust boundary observability
+
+---
+
+## 핵심 개념
+
+보안 아키텍처는 종종 이렇게 설명된다.
+
+- 브라우저는 반드시 BFF를 거친다
+- 외부 토큰 검증은 gateway에서만 한다
+- 내부 호출은 mTLS mesh를 통과한다
+
+하지만 운영에서 중요한 것은 설계 문장이 아니라 실제 런타임 경로다.
+
+즉 trust boundary는 "있다"가 아니라 "계속 우회되지 않고 있는가"를 감시해야 한다.
+
+---
+
+## 깊이 들어가기
+
+### 1. 우회는 종종 설정 drift에서 생긴다
+
+대표적인 원인:
+
+- 잘못 열린 ingress
+- debug endpoint 노출
+- sidecar injection 누락
+- internal ALB public exposure
+- auth proxy bypass route
+
+즉 boundary bypass는 공격만이 아니라 배포/설정 drift의 결과일 때가 많다.
+
+### 2. 경계별 정상 경로를 먼저 정의해야 이상을 본다
+
+예:
+
+- browser -> BFF only
+- external client -> gateway only
+- service -> service via mesh only
+- admin tool -> internal API with operator grant only
+
+이 기준이 없으면 "직접 service 호출"이 이상인지 정상인지 판단할 수 없다.
+
+### 3. signal은 존재/부재 둘 다 중요하다
+
+좋은 신호 예:
+
+- gateway를 거쳤다면 반드시 있어야 할 signed context 부재
+- mesh 환경인데 mTLS principal 부재
+- BFF route인데 browser cookie 없이 직접 internal audience token 사용
+- trusted header가 있는데 trusted source identity가 없음
+
+즉 "이상한 값"뿐 아니라 "있어야 할 증거가 없음"도 강한 신호다.
+
+### 4. direct path detection은 네트워크와 앱 양쪽에 있어야 한다
+
+네트워크 신호:
+
+- unexpected source IP/class
+- missing proxy hop
+- port exposure anomaly
+
+앱 신호:
+
+- route class 대비 missing signed context
+- impossible header combinations
+- internal-only audience token on public route
+
+한쪽만 보면 우회를 놓치기 쉽다.
+
+### 5. trust boundary bypass는 종종 기능 장애처럼 보인다
+
+예:
+
+- 일부 요청만 401/403이 난다
+- 어떤 고객만 특정 path에서 쿠키가 무시된다
+- 특정 pod만 caller principal이 없다
+
+운영자는 처음엔 일반 버그로 보지만, 사실은 bypass나 sidecar 누락일 수 있다.
+
+그래서 routing, workload identity, auth context를 같이 봐야 한다.
+
+### 6. detection signal은 route class와 environment를 태깅해야 한다
+
+필요한 차원:
+
+- route class: public, BFF, internal-only, admin
+- environment: prod/staging
+- gateway/mesh version
+- region/cluster
+
+그래야 rollout bug와 실제 우회를 구분할 수 있다.
+
+### 7. bypass suspicion이 잡히면 availability보다 trust 복구가 먼저일 수 있다
+
+예:
+
+- internal header spoofing 의심
+- public route에서 internal token 관찰
+- mesh principal missing
+
+이 경우:
+
+- 일부 route를 fail-closed
+- ingress를 즉시 닫음
+- signed context 검증을 강제
+
+같은 조치가 맞을 수 있다.
+
+### 8. shadow traffic와 canary에서도 경계 검증이 필요하다
+
+신규 라우트, canary pod, blue-green cutover에서 특히 잘 열린다.
+
+- canary만 auth proxy bypass
+- 일부 cluster만 sidecar 없음
+- shadow endpoint가 public reachable
+
+즉 경계 검증도 rollout checklist에 포함해야 한다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: internal-only service가 인터넷에서 직접 접근 가능해진다
+
+문제:
+
+- ingress drift로 gateway를 우회한다
+
+대응:
+
+- unexpected public source signal을 alert한다
+- service는 trusted source identity 없으면 즉시 fail-closed 한다
+- direct exposure inventory를 정기 점검한다
+
+### 시나리오 2: mesh 환경인데 일부 pod만 caller principal이 비어 있다
+
+문제:
+
+- sidecar injection 누락 또는 mesh config drift
+
+대응:
+
+- workload identity missing rate를 본다
+- 해당 pod cohort를 격리한다
+- principal 없는 요청은 내부 route에서 거부한다
+
+### 시나리오 3: BFF 뒤라 생각했는데 브라우저가 internal audience token으로 직접 API를 친다
+
+문제:
+
+- browser/server boundary가 깨졌다
+
+대응:
+
+- route class와 token audience 조합을 검증한다
+- internal audience token on public route를 high-severity signal로 올린다
+
+---
+
+## 코드로 보기
+
+### 1. boundary signal 개념
+
+```java
+public void validateBoundary(RequestContext request) {
+    if (request.routeClass() == RouteClass.INTERNAL_ONLY && !request.hasTrustedWorkloadIdentity()) {
+        throw new SecurityException("missing trusted workload identity");
+    }
+
+    if (request.routeClass() == RouteClass.PUBLIC && request.hasInternalAudienceToken()) {
+        signalLogger.highSeverity("internal_token_on_public_route", request);
+    }
+}
+```
+
+### 2. 운영 체크리스트
+
+```text
+1. 경계별 정상 경로와 필수 증거가 정의돼 있는가
+2. trusted header/context의 존재뿐 아니라 source identity도 검증하는가
+3. route class별 impossible combination signal을 수집하는가
+4. canary/blue-green 경로도 boundary 검증 대상에 포함하는가
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|--------|------|------|----------------|
+| 네트워크 perimeter만 신뢰 | 단순하다 | 설정 drift와 direct path에 취약하다 | 거의 피해야 한다 |
+| 앱 레벨 only 검증 | 세밀하다 | infra bypass를 늦게 볼 수 있다 | 작은 시스템 |
+| 네트워크 + 앱 이중 신호 | 우회 탐지가 강하다 | telemetry 설계가 복잡하다 | 대부분의 중대형 시스템 |
+| fail-open on missing boundary proof | 가용성은 좋다 | trust 경계가 무너진다 | 고위험 route에서는 피해야 한다 |
+
+판단 기준은 이렇다.
+
+- route class별 정상 경로가 문서화돼 있는가
+- trusted proof 부재를 고위험 신호로 올릴 수 있는가
+- rollout/canary 경로도 같은 경계를 지키는가
+- boundary suspicion 시 fail-closed할 route를 정해 뒀는가
+
+---
+
+## 꼬리질문
+
+> Q: trust boundary bypass는 왜 배포 버그와 공격이 섞여 보이나요?
+> 의도: threat와 drift를 함께 보는지 확인
+> 핵심: 잘못된 ingress, sidecar 누락, 공개 ALB 같은 운영 drift도 실제 우회 경로를 만들기 때문이다.
+
+> Q: "있어야 할 증거가 없음"이 왜 중요한 신호인가요?
+> 의도: negative signal을 이해하는지 확인
+> 핵심: trusted header source, mesh principal, signed context처럼 정상 경로의 증거 부재는 우회를 강하게 시사할 수 있다.
+
+> Q: BFF 구조에서도 boundary bypass를 봐야 하나요?
+> 의도: browser/server separation도 런타임 검증 대상인지 확인
+> 핵심: 그렇다. 브라우저가 internal audience token을 직접 사용하는 순간 구조 위반이자 강한 보안 신호다.
+
+> Q: canary 경로를 왜 별도로 봐야 하나요?
+> 의도: rollout 시 경계 붕괴 가능성을 이해하는지 확인
+> 핵심: 신규 경로나 일부 pod에만 auth proxy/sidecar 누락이 생기기 쉽기 때문이다.
+
+## 한 줄 정리
+
+신뢰 경계를 운영 가능하게 만드는 핵심은 gateway/BFF/mesh를 설계 문서에 적는 것이 아니라, 정상 경로의 필수 증거가 실제 런타임에서 빠지지 않는지 계속 감시하는 것이다.

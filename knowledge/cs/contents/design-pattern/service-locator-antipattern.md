@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Service Locator는 필요한 객체를 전역 조회하게 만들어 의존성을 숨기고 테스트와 추적을 어렵게 하는 안티 패턴이다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Registry Pattern](./registry-pattern.md)

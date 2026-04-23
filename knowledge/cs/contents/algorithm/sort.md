@@ -3,10 +3,22 @@
 > 작성자 : [장주섭](https://github.com/wntjq68), [이세명](https://github.com/3people)
 
 > 한 줄 요약: 정렬은 단순히 "순서를 맞추는 작업"이 아니라, 검색, 순위, 중복 제거, 범위 질의의 전처리 기반이 되는 핵심 패턴이다.
+>
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **대표 정렬 알고리즘 비교와 stable / unstable, comparison / non-comparison 구분**을 빠르게 잡는 primer다.
 
 **난이도: 🟡 Intermediate**
 
-> retrieval-anchor-keywords: sorting, insertion sort, selection sort, bubble sort, merge sort, quick sort, stable sort, unstable sort, comparison sort, counting sort, radix sort, heap sort, backend preprocessing
+> 관련 문서:
+> - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
+> - [Binary Search Patterns](./binary-search-patterns.md)
+> - [두 포인터 (two-pointer)](./two-pointer.md)
+> - [Interval Greedy Patterns](./interval-greedy-patterns.md)
+> - [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)
+> - [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)
+> - [Interval Tree](../data-structure/interval-tree.md)
+> - [Heap Variants](../data-structure/heap-variants.md)
+>
+> retrieval-anchor-keywords: sorting algorithm comparison, insertion sort, selection sort, bubble sort, merge sort, quick sort, heap sort, counting sort, radix sort, stable sort, unstable sort, in-place sort, comparison sort, non-comparison sort, merge sort vs quick sort, sorting as preprocessing, sorted array preprocessing, binary search preprocessing, start time sort, end time sort, interval preprocessing, interval comparator, merge intervals, insert interval, interval merge, batch interval merge, offline interval merge, event sort boundary
 
 <details>
 <summary>Table of Contents</summary>
@@ -23,6 +35,14 @@
 
 ---
 
+## 이 문서 다음에 보면 좋은 문서
+
+- 정렬된 배열에서 경계 탐색으로 이어지는 흐름은 [Binary Search Patterns](./binary-search-patterns.md)이 가장 가깝다.
+- 정렬 후 양끝 포인터나 pair 관계를 줄이는 문제는 [두 포인터 (two-pointer)](./two-pointer.md)와 함께 보면 연결이 선명해진다.
+- `merge intervals`, `insert interval`, `구간 병합`처럼 정렬 후 한 번 훑어 붙이는 문제는 아래 [정렬 전처리로 구간 문제 읽기](#정렬-전처리로-구간-문제-읽기)와 [Interval Greedy Patterns](./interval-greedy-patterns.md)을 같이 보면 경계가 빨리 잡힌다.
+- "무엇으로 정렬해야 최적이 되는가"가 핵심인 문제는 [Interval Greedy Patterns](./interval-greedy-patterns.md)로 이어진다.
+- heap sort를 우선순위 큐 관점에서 다시 보고 싶다면 [Heap Variants](../data-structure/heap-variants.md)가 좋다.
+
 정렬은 코딩테스트에서 가장 먼저 배우지만, 실무에서는 의외로 "정렬 그 자체"보다 "정렬을 왜 해야 하는가"가 더 중요하다.
 
 - 검색 결과를 순서대로 보여주기 위해
@@ -32,6 +52,22 @@
 
 즉 정렬은 단순한 알고리즘이 아니라, 더 큰 문제를 풀기 위한 전처리 단계다.  
 관련해서 [Binary Search Patterns](./binary-search-patterns.md), [Interval Greedy Patterns](./interval-greedy-patterns.md), [Topological Sort Patterns](./topological-sort-patterns.md)도 함께 보면 좋다.
+
+---
+
+## 정렬 전처리로 구간 문제 읽기
+
+구간 문제는 전부 "일단 정렬"처럼 보이지만, **무엇을 기준으로 정렬한 뒤 어떤 상태를 유지하느냐**에 따라 라우트가 완전히 달라진다.
+
+| 질문 표현 | 정렬 / 유지 상태 | 먼저 볼 문서 | 왜 여기서 갈리나 |
+|---|---|---|---|
+| `merge intervals`, `insert interval`, `구간 병합` | 시작점 기준 정렬 + 현재 merge tail | [Interval Greedy Patterns](./interval-greedy-patterns.md), [Disjoint Interval Set](../data-structure/disjoint-interval-set.md) | 비겹침 선택이 아니라 겹치는 구간을 합친다. 한 번만 처리하면 sort pass고, 계속 들어오면 disjoint set 쪽이다 |
+| `activity selection`, `erase overlap intervals`, `meeting rooms I` | 끝점 기준 정렬 + 마지막 선택 end | [Interval Greedy Patterns](./interval-greedy-patterns.md) | 미래 선택 공간을 최대화해야 해서 earliest-finish 기준이 핵심이다 |
+| `meeting rooms II`, `minimum meeting rooms`, `max concurrency` | 시작/끝 이벤트 정렬 + active count | [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md) | 어떤 interval을 남길지가 아니라 동시에 몇 개가 겹치는지를 센다 |
+| `calendar booking`, `online reservation insert`, `insert interval then query` | 정렬 결과를 매번 다시 만들지 않고 insert/query 상태 유지 | [Disjoint Interval Set](../data-structure/disjoint-interval-set.md), [Interval Tree](../data-structure/interval-tree.md) | 정적 batch가 아니라 동적 workload라서 "정렬 후 한 번 스캔"으로 끝나지 않는다 |
+
+- LeetCode식 `insert interval`처럼 새 구간 하나를 기존 목록에 넣고 **이번 입력에서만** merge하면 batch merge 쪽으로 읽는다.
+- 예약 API처럼 새 구간이 계속 들어오고 매번 `겹치나?`, `넣어도 되나?`를 물으면 정렬 문제가 아니라 자료구조 라우트로 넘긴다.
 
 ---
 
@@ -378,7 +414,7 @@ void swap(int[] arr, int i, int j) {
 정렬은 비교만으로 끝나지 않는다.  
 데이터 성질에 따라 비교하지 않고 더 빨리 정렬하는 방법도 있다.
 
-- [Heap Sort](./heap-variants.md) 개념은 우선순위 큐와 연결된다.
+- [Heap Sort](../data-structure/heap-variants.md) 개념은 우선순위 큐와 연결된다.
 - Radix Sort는 자리수 기반 정렬이다.
 - Counting Sort는 값의 범위가 작을 때 매우 빠르다.
 

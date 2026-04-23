@@ -1,0 +1,183 @@
+# Finite State Transducer
+
+> 한 줄 요약: Finite State Transducer(FST)는 공통 prefix와 suffix를 압축하면서 key에 값을 연결하는 정적 인덱스 구조로, 대용량 문자열 사전과 autocomplete 인덱스를 매우 작게 들고 가는 데 강하다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
+> - [Radix Tree](./radix-tree.md)
+> - [Adaptive Radix Tree](./adaptive-radix-tree.md)
+> - [LSM-Friendly Index Structures](./lsm-friendly-index-structures.md)
+
+> retrieval-anchor-keywords: finite state transducer, fst, compressed dictionary, automaton index, autocomplete index, minimal fst, static string index, prefix compression, term dictionary, memory efficient autocomplete
+
+## 핵심 개념
+
+Trie와 Radix Tree는 prefix 검색에 강하지만,  
+대규모 사전을 메모리에 오래 들고 있으면 노드와 포인터 오버헤드가 커진다.
+
+FST는 정렬된 문자열 집합을 기반으로  
+공통 prefix뿐 아니라 공통 suffix 상태도 합쳐 압축한다.
+
+게다가 단순 membership만이 아니라,  
+문자열에 대응하는 값이나 출력(output)까지 엣지/상태에 매달 수 있다.
+
+즉 FST는 **정적 문자열 사전용 compressed index**라고 보면 감이 빠르다.
+
+## 깊이 들어가기
+
+### 1. 왜 Trie보다 더 작을 수 있나
+
+Trie는 prefix 공유는 잘하지만, suffix 쪽 상태 중복은 많이 남는다.  
+예를 들어 비슷한 끝 구조를 가진 단어가 많아도 노드가 반복될 수 있다.
+
+FST는 결정적 유한 오토마톤을 최소화하는 방향으로  
+동일한 미래를 가진 상태를 합칠 수 있다.
+
+즉:
+
+- prefix 공유
+- state minimization
+- 필요시 output compression
+
+이 세 가지가 같이 작동해 정적 사전을 매우 작게 만들 수 있다.
+
+### 2. "정적"이라는 조건이 중요하다
+
+FST는 보통 build 단계가 무겁고, lookup 단계가 가볍다.
+
+- key 집합을 정렬한다
+- automaton을 최소화한다
+- output encoding을 붙인다
+
+따라서 online insert/delete가 많은 구조보다  
+read-mostly dictionary, segment term index, autocomplete lexicon에 더 맞는다.
+
+### 3. output을 싣는다는 점이 Trie와 다르다
+
+FSA는 membership만 본다면, FST는 transition과 state에 output을 붙일 수 있다.
+
+예:
+
+- term -> term ordinal
+- prefix -> completion metadata offset
+- string key -> value id
+
+그래서 단순 사전 여부를 넘어서  
+**compressed key-value dictionary**로 쓰이기 좋다.
+
+### 4. backend에서 어디에 맞나
+
+문자열 키 공간이 크고 read-heavy일수록 가치가 크다.
+
+- 검색엔진 term dictionary
+- autocomplete lexicon
+- spell-check dictionary
+- static route / config key dictionary
+
+HashMap으로도 exact lookup은 되지만,  
+prefix 탐색과 메모리 압축을 함께 노리기는 어렵다.
+
+### 5. 함정과 한계
+
+FST는 강력하지만 동적 구조가 아니다.
+
+- 빌드 파이프라인이 필요하다
+- update가 잦으면 재생성이 부담된다
+- 구현 난이도가 Trie보다 훨씬 높다
+
+즉 mutable in-memory index보다  
+immutable snapshot dictionary에 더 적합하다.
+
+## 실전 시나리오
+
+### 시나리오 1: autocomplete dictionary
+
+대량 검색어 사전을 메모리에 상주시켜야 하는데  
+Trie 포인터 오버헤드가 너무 크다면 FST가 강한 대안이 된다.
+
+### 시나리오 2: 검색 term dictionary
+
+term -> posting list offset 매핑처럼  
+정적 문자열 사전에 작은 값을 붙여 lookup할 때 잘 맞는다.
+
+### 시나리오 3: static config / route dictionary
+
+배포 시 만들어지는 읽기 전용 문자열 키 인덱스를  
+compact하게 들고 가야 한다면 효과적이다.
+
+### 시나리오 4: 부적합한 경우
+
+키가 수시로 추가/삭제되거나 mutation latency가 중요하면  
+Trie, Radix Tree, HashMap 쪽이 더 현실적이다.
+
+## 코드로 보기
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class FstSketch {
+    private static final class State {
+        private final Map<Character, State> transitions = new HashMap<>();
+        private boolean terminal;
+        private int output;
+    }
+
+    private final State root = new State();
+
+    public void insertSorted(String key, int output) {
+        State current = root;
+        for (char c : key.toCharArray()) {
+            current = current.transitions.computeIfAbsent(c, ignored -> new State());
+        }
+        current.terminal = true;
+        current.output = output;
+    }
+
+    public Integer lookup(String key) {
+        State current = root;
+        for (char c : key.toCharArray()) {
+            current = current.transitions.get(c);
+            if (current == null) {
+                return null;
+            }
+        }
+        return current.terminal ? current.output : null;
+    }
+}
+```
+
+이 코드는 FST가 아니라 trie-like sketch에 가깝다.  
+실제 FST의 핵심은 state minimization과 output factoring으로, build 단계가 lookup보다 훨씬 중요하다.
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| Finite State Transducer | 정적 문자열 사전을 매우 작게 압축하면서 lookup과 prefix 탐색을 지원할 수 있다 | build와 구현이 복잡하고 동적 업데이트에 약하다 | term dictionary, autocomplete lexicon, static key index |
+| Trie | prefix 검색이 직관적이다 | 포인터/노드 오버헤드가 크다 | 동적 prefix 구조 |
+| Radix Tree / ART | path compression과 in-memory lookup이 좋다 | 정적 최소화 수준 압축은 아니다 | mutable ordered prefix index |
+| HashMap | exact lookup이 단순하다 | prefix 탐색과 압축이 약하다 | exact key lookup만 중요할 때 |
+
+중요한 질문은 "문자열 인덱스가 정적 snapshot인가"다.  
+그 답이 yes면 FST가 매우 강력해진다.
+
+## 꼬리질문
+
+> Q: FST가 Trie보다 더 작은 이유는 무엇인가요?
+> 의도: prefix 공유를 넘어서 state minimization을 이해하는지 확인
+> 핵심: 공통 prefix뿐 아니라 동일한 미래를 가진 상태를 합쳐 더 많이 압축할 수 있기 때문이다.
+
+> Q: 왜 read-mostly dictionary에 잘 맞나요?
+> 의도: build-heavy / lookup-light 구조를 구분하는지 확인
+> 핵심: build 단계는 무겁지만 완성 후 lookup은 작고 빠르게 만들 수 있기 때문이다.
+
+> Q: term dictionary에서 왜 유용한가요?
+> 의도: 문자열 key와 payload 연결 감각 확인
+> 핵심: 문자열을 compact하게 저장하면서 posting list offset 같은 값을 붙여 lookup할 수 있기 때문이다.
+
+## 한 줄 정리
+
+Finite State Transducer는 정적 문자열 사전을 최소화된 오토마톤과 output encoding으로 압축해, 대규모 dictionary와 autocomplete 인덱스를 메모리 효율적으로 다루는 구조다.

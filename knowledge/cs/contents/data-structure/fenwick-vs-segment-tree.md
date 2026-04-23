@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Fenwick Tree (Binary Indexed Tree)](./fenwick-tree.md)
 > - [Segment Tree Lazy Propagation](./segment-tree-lazy-propagation.md)
+> - [Fenwick and Segment Tree Operations Playbook](./fenwick-segment-tree-operations-playbook.md)
 > - [Sparse Table](./sparse-table.md)
 
 > retrieval-anchor-keywords: fenwick tree vs segment tree, bit, range sum, point update, lazy propagation, query tradeoff, static vs dynamic, prefix sum, interval query, backend metrics

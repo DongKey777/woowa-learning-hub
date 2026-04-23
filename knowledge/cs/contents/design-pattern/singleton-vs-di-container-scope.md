@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 디자인 패턴 singleton은 전역 상태를 직접 통제하는 것이고, DI container singleton scope는 객체 생명주기를 컨테이너가 관리하는 것이다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [싱글톤 (Singleton) Java 구현 방법](./singleton-java.md)

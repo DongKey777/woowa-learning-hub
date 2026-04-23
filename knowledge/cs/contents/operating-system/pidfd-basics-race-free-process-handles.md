@@ -9,6 +9,7 @@
 > - [PID Namespace, Init Semantics](./pid-namespace-init-semantics.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 > - [signals, process supervision](./signals-process-supervision.md)
+> - [UNIX Domain Socket, FD Passing, Credentials](./unix-domain-socket-fd-passing-credentials.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
 
 > retrieval-anchor-keywords: pidfd, pidfd_open, pidfd_send_signal, PID reuse, race-free handle, process handle, pollable process, waitid

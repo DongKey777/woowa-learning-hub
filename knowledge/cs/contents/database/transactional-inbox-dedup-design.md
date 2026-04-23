@@ -2,8 +2,10 @@
 
 > 한 줄 요약: inbox는 “메시지를 받았는가”와 “처리했는가”를 분리해서, 재전달된 이벤트를 안전하게 한 번만 반영하게 해 준다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
-Retrieval anchors: `transactional inbox`, `dedup`, `consumer idempotency`, `message inbox table`, `processed event`
+retrieval-anchor-keywords: transactional inbox, dedup, consumer idempotency, message inbox table, processed event
 
 ## 핵심 개념
 

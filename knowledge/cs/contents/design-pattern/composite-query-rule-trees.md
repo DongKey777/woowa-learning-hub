@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Composite 패턴은 부분과 전체를 같은 인터페이스로 다뤄, 쿼리 트리와 규칙 트리를 재귀적으로 조합하게 만든다.
 
-**난이도: 🟠 Advanced**
+**난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [Specification Pattern](./specification-pattern.md)

@@ -1,6 +1,11 @@
 # 멱등성 키와 중복 방지
 
+**난이도: 🔴 Advanced**
+
 > 네트워크는 한 번만 보내도, 서버는 두 번 받을 수 있다. 이 문서는 그 차이를 다루기 위한 정리다.
+
+관련 문서: [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md), [Transactional Inbox와 Dedup 설계](./transactional-inbox-dedup-design.md), [Exactly-Once Myths in DB Queue](./exactly-once-myths-db-queue.md), [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md), [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md), [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md), [Replay / Repair Orchestration Control Plane 설계](../system-design/replay-repair-orchestration-control-plane-design.md), [Token Misuse Detection / Replay Containment](../security/token-misuse-detection-replay-containment.md), [Replay Store Outage / Degradation Recovery](../security/replay-store-outage-degradation-recovery.md), [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md), [Proxy Retry Budget Discipline](../network/proxy-retry-budget-discipline.md)
+retrieval-anchor-keywords: idempotency key, duplicate suppression, request hash, upsert, unique key arbitration, processed event table, retry safe API, cdc replay dedup, replay-safe consumer, repair window
 
 <details>
 <summary>Table of Contents</summary>
@@ -117,6 +122,7 @@ CREATE TABLE idempotency_keys (
 이 방식은 단순하다. 같은 키가 다시 들어오면 insert가 실패하므로 중복을 막을 수 있다.
 
 다만 실패했을 때 어떤 응답을 줄지, 이미 성공한 요청인지 어떻게 판별할지 정책이 필요하다.
+구현을 `upsert`로 단순화하더라도, "최초 값을 보존할지", "다른 payload면 충돌로 볼지" 같은 병합 규칙은 별도로 정해야 한다.
 
 ### 3. 상태 전이 기반 중복 방지
 
@@ -156,6 +162,19 @@ CREATE TABLE idempotency_keys (
 
 외부 호출은 가급적 트랜잭션 밖으로 빼고, DB에는 상태 전이만 남기는 편이 안전하다.
 
+### 5. replay는 API retry보다 훨씬 늦게 다시 온다
+
+HTTP 재시도는 보통 수초~수분 안에 끝나지만, CDC replay나 queue redrive는 몇 시간 또는 며칠 뒤에도 같은 작업을 다시 밀어 넣을 수 있다.
+
+그래서 replay-safe idempotency는 단순히 "중복 요청을 잠깐 막는다"보다 더 넓게 봐야 한다.
+
+- dedup 보존 기간이 binlog/WAL retention 및 repair window보다 짧지 않아야 한다
+- `processed_event`와 consumer checkpoint가 서로 어긋나지 않아야 한다
+- 같은 `event_id`라도 다른 repair run에서 재평가 중인지 알 수 있도록 `operation_id`나 `repair_run_id`를 남기는 편이 좋다
+- 외부 side effect는 API idempotency와 별도 key space를 가져야 한다
+
+즉 replay를 운영하는 시스템에서는 멱등성 저장소가 API middleware 부품이 아니라, **재처리와 복구를 견디는 운영 계약**이 된다.
+
 ---
 
 ## 체크리스트
@@ -166,6 +185,7 @@ CREATE TABLE idempotency_keys (
 - 요청 본문이 다르지만 키가 같은 경우를 어떻게 처리할 것인가?
 - 성공, 실패, 처리 중 상태를 구분할 것인가?
 - 멱등성 키 보존 기간은 얼마인가?
+- CDC replay나 DLQ redrive가 늦게 들어와도 dedup window가 충분한가?
 - 외부 시스템 호출을 트랜잭션 안에 넣고 있지 않은가?
 
 ---
@@ -176,4 +196,5 @@ CREATE TABLE idempotency_keys (
 - 중복 요청과 진짜 재처리를 어떻게 구분할 것인가?
 - 실패 응답도 저장해야 하는가?
 - 멱등성 키를 어디까지 보존할 것인가?
+- replay-safe consumer라면 dedup 기록과 checkpoint를 어떤 단위로 함께 검증할 것인가?
 - 외부 호출 실패 후 재시도 시 정합성을 어떻게 유지할 것인가?

@@ -6,10 +6,17 @@
 
 > 관련 문서:
 > - [Interval Tree](./interval-tree.md)
+> - [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md)
+> - [구간 / Interval Greedy 패턴](../algorithm/interval-greedy-patterns.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
-> - [Rate Limiter Algorithms](../algorithm/rate-limiter-algorithms.md)
 
-> retrieval-anchor-keywords: disjoint interval set, interval merge, non-overlapping ranges, range union, scheduling windows, booking conflicts, TreeMap intervals, canonical intervals, gap tracking
+> retrieval-anchor-keywords: disjoint interval set, interval set, insert interval, merge intervals, online interval merge, non-overlapping ranges, range union, canonical interval map, TreeMap intervals, floorKey ceilingKey, gap tracking, calendar booking i, booking feasibility, neighbor overlap check, reservation windows, interval canonicalization, 실시간 예약 가능 여부
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 새 interval이 들어올 때마다 "겹치는 게 있는가?"보다 "겹치는 것들을 찾아라"가 더 중요하면 [Interval Tree](./interval-tree.md)가 맞다.
+- interval이 한 번에 주어지고 최대 동시성만 세면 된다면 [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md)이 더 직접적이다.
+- interval을 한 번 정렬한 뒤 어떤 것을 남길지/버릴지가 핵심이면 [구간 / Interval Greedy 패턴](../algorithm/interval-greedy-patterns.md)으로 가야 한다.
 
 ## 핵심 개념
 
@@ -27,6 +34,9 @@ backend에서 자주 만나는 예:
 - 금지 구간/허용 구간 관리
 - IP allowlist/denylist 범위
 - 점유된 리소스 시간창 관리
+
+핵심은 겹치는 구간들의 **검색 결과를 풍부하게 반환하는 것**보다,  
+insert가 들어올 때마다 이웃 구간만 보고 canonical form을 유지하는 데 있다.
 
 ## 깊이 들어가기
 
@@ -55,7 +65,17 @@ backend에서 자주 만나는 예:
 - 합칠 대상만 빠르게 찾을 수 있다.
 - range policy를 구현하기 좋다.
 
-### 4. backend에서 중요한 이유
+### 4. Interval Tree와 어디서 갈리나
+
+둘 다 interval insert/query를 다루지만 관점이 다르다.
+
+- Disjoint Interval Set: merge, reject, gap lookup처럼 **정리된 상태 유지**가 핵심
+- Interval Tree: arbitrary overlap search, stabbing query처럼 **검색 질의**가 핵심
+
+그래서 `calendar booking I`, `insert interval`, `merge intervals` 같은 문제는 이 문서가 더 가깝고,  
+겹치는 구간 전체를 자주 찾거나 복잡한 overlap query가 반복되면 interval tree 쪽이 자연스럽다.
+
+### 5. backend에서 중요한 이유
 
 구간은 실제 서비스에서 시간, 범위, 버전, 권한에 대응한다.
 
@@ -66,7 +86,7 @@ backend에서 자주 만나는 예:
 
 ## 실전 시나리오
 
-### 시나리오 1: 예약 충돌 방지
+### 시나리오 1: Calendar Booking I / insert interval
 
 새 예약이 들어올 때 기존 구간과 겹치는지 확인하고, 겹치면 merge 또는 reject 정책을 적용한다.
 
@@ -123,8 +143,10 @@ public class DisjointIntervalSet {
 
 | 선택지 | 장점 | 단점 | 언제 선택하는가 |
 |---|---|---|---|
-| Disjoint Interval Set | 정리된 구간 상태를 유지한다 | 겹침 전체 목록 조회는 약할 수 있다 | merge 중심 구간 관리 |
-| Interval Tree | 겹치는 구간 탐색에 강하다 | 구현이 더 복잡하다 | overlap query 중심 |
+| Disjoint Interval Set | 정리된 구간 상태를 유지하고 gap lookup이 쉽다 | 겹침 전체 목록 조회는 약할 수 있다 | merge 중심 구간 관리, booking feasibility |
+| Interval Tree | 겹치는 구간 탐색에 강하다 | 구현이 더 복잡하다 | overlap query 중심, dynamic search |
+| Sweep Line | 최대 동시성 계산이 직관적이다 | insert/query마다 전체 재계산이 필요하다 | offline overlap count |
+| Interval Greedy | 선택/제거 문제에 최적이다 | 정리된 상태 유지에는 맞지 않는다 | interval scheduling, overlap removal |
 | 단순 리스트 | 직관적이다 | 구간이 많아지면 느리다 | 데이터가 작을 때 |
 
 ## 꼬리질문
@@ -136,6 +158,10 @@ public class DisjointIntervalSet {
 > Q: interval tree와 어떻게 다른가?
 > 의도: 목적 차이를 이해하는지 확인
 > 핵심: 하나는 정리된 저장, 다른 하나는 충돌 검색이다.
+
+> Q: sweep line과는 어떻게 다른가요?
+> 의도: offline batch 계산과 online state 유지 차이 확인
+> 핵심: sweep line은 한 번에 전체를 세는 계산이고, disjoint set은 insert마다 canonical state를 갱신한다.
 
 > Q: 왜 TreeMap과 궁합이 좋나?
 > 의도: 정렬된 구간 이웃 탐색을 이해하는지 확인

@@ -6,11 +6,13 @@
 
 > 관련 문서:
 > - [CompletableFuture Execution Model and Common Pool Pitfalls](./completablefuture-execution-model-common-pool-pitfalls.md)
+> - [`CompletableFuture` `allOf`, `join`, Timeout, and Exception Handling Hazards](./completablefuture-allof-join-timeout-exception-handling-hazards.md)
 > - [ForkJoinPool Work-Stealing](./forkjoinpool-work-stealing.md)
+> - [Thread Interruption and Cooperative Cancellation Playbook](./thread-interruption-cooperative-cancellation-playbook.md)
 > - [ThreadLocal Leaks and Context Propagation](./threadlocal-leaks-context-propagation.md)
 > - [Executor Sizing, Queue, Rejection Policy](./executor-sizing-queue-rejection-policy.md)
 
-> retrieval-anchor-keywords: CompletableFuture cancellation, cancel, CancellationException, exceptional completion, timeout, propagation, interrupt, completion stage, dependent stage, mayInterruptIfRunning, `completeExceptionally`
+> retrieval-anchor-keywords: CompletableFuture cancellation, cancel, CancellationException, exceptional completion, timeout, propagation, interrupt, InterruptedException, cooperative cancellation, completion stage, dependent stage, mayInterruptIfRunning, `completeExceptionally`
 
 <details>
 <summary>Table of Contents</summary>
@@ -21,7 +23,7 @@
 - [코드로 보기](#코드로-보기)
 - [트레이드오프](#트레이드오프)
 - [꼬리질문](#꼬리질문)
-- [한 줄 정리](#한-줄 정리)
+- [한 줄 정리](#한-줄-정리)
 
 </details>
 

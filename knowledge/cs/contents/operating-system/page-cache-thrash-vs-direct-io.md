@@ -8,10 +8,15 @@
 > - [Page Cache, Dirty Writeback, fsync](./page-cache-dirty-writeback-fsync.md)
 > - [mmap, sendfile, splice, zero-copy](./mmap-sendfile-splice-zero-copy.md)
 > - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
+> - [Buffered vs Direct I/O Mixing, Coherency Pitfalls](./buffered-vs-direct-io-mixing-coherency-pitfalls.md)
+> - [Direct I/O Alignment Checklist](./direct-io-alignment-checklist.md)
+> - [posix_fadvise, madvise, Page Cache Hints](./posix-fadvise-madvise-page-cache-hints.md)
 > - [NUMA, Page Replacement, Thrashing](./memory-management-numa-page-replacement-thrashing.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+> - [Workingset Refault, Page Cache Reclaim, Runtime Debugging](./workingset-refault-page-cache-reclaim-debugging.md)
+> - [Page Cache Active/Inactive Reclaim, Hot-Page Debugging](./page-cache-active-inactive-reclaim-debugging.md)
 
-> retrieval-anchor-keywords: page cache thrash, direct I/O, O_DIRECT, readahead, cache eviction, cache pollution, buffered I/O, storage workload, working set
+> retrieval-anchor-keywords: page cache thrash, direct I/O, O_DIRECT, readahead, cache eviction, cache pollution, buffered I/O, storage workload, working set, direct I/O alignment, direct I/O mixing
 
 ## 핵심 개념
 
@@ -71,6 +76,7 @@ direct I/O는 cache를 우회한다.
 - batch read가 page cache를 밀어낸다
 - API가 다시 디스크를 친다
 - readahead가 배치 패턴과 맞는다
+- `workingset` 계열 refault가 같이 늘 수 있다
 
 진단:
 

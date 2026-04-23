@@ -10,6 +10,9 @@
 > - [Policy as Code and Architecture Linting](./policy-as-code-architecture-linting.md)
 > - [Service Deprecation and Sunset Lifecycle](./service-deprecation-sunset-lifecycle.md)
 > - [On-Call Ownership Boundaries](./on-call-ownership-boundaries.md)
+> - [Technology Radar and Adoption Governance](./technology-radar-adoption-governance.md)
+> - [Lead Time, Change Failure, and Recovery Loop](./lead-time-change-failure-recovery-loop.md)
+> - [Service Portfolio Lifecycle Governance](./service-portfolio-lifecycle-governance.md)
 
 > retrieval-anchor-keywords:
 > - service maturity model
@@ -50,6 +53,7 @@
 - alert가 유효하다
 - contract test가 있다
 - rollout 정책이 있다
+- hold/retire 기술 사용량이 보인다
 
 ### 2. 단계 모델이 있어야 개선 우선순위를 정할 수 있다
 

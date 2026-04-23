@@ -2,7 +2,16 @@
 
 > 한 줄 요약: NUMA 환경에서는 CPU가 남아 보여도 메모리 원격 접근 때문에 서버가 느려질 수 있다.
 
-> 관련 문서: [CPU 캐시, 코히어런시, 메모리 배리어](./cpu-cache-coherence-memory-barrier.md), [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [CPU 캐시, 코히어런시, 메모리 배리어](./cpu-cache-coherence-memory-barrier.md)
+> - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
+> - [NUMA First-Touch, Remote Memory, Locality Debugging](./numa-first-touch-remote-memory-locality-debugging.md)
+> - [NUMA Auto Balancing, Runtime Debugging](./numa-autobalancing-runtime-debugging.md)
+> - [CPU Affinity, IRQ Affinity, Core Locality](./cpu-affinity-irq-affinity-core-locality.md)
+
+> retrieval-anchor-keywords: NUMA, production debugging, local memory, remote memory, first touch, numa_maps, numastat, locality, remote access, memory placement
 
 ## 핵심 개념
 

@@ -9,9 +9,11 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
 > - [Secret Management, Rotation, Leak Patterns](./secret-management-rotation-leak-patterns.md)
+> - [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
+> - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 
-retrieval-anchor-keywords: refresh token, rotation, reuse detection, token family, jti, revocation, sliding session, replay, bearer credential, refresh compromise
+retrieval-anchor-keywords: refresh token, rotation, reuse detection, token family, jti, revocation, sliding session, replay, bearer credential, refresh compromise, session hijack, misuse detection
 
 ---
 

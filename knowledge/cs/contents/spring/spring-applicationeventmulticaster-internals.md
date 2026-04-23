@@ -5,7 +5,9 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
 > - [Spring EventListener, TransactionalEventListener, and Outbox](./spring-eventlistener-transaction-phase-outbox.md)
+> - [Spring `@TransactionalEventListener` Outside Transactions and `fallbackExecution`](./spring-transactionaleventlistener-fallbackexecution-no-transaction-boundaries.md)
 > - [Spring `@EventListener` Ordering and Async Traps](./spring-eventlistener-ordering-async-traps.md)
 > - [Spring Transaction Synchronization Callbacks and `afterCommit` Pitfalls](./spring-transaction-synchronization-aftercommit-pitfalls.md)
 > - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)

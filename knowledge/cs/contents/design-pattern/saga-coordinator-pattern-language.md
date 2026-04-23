@@ -5,6 +5,17 @@
 **난이도: 🔴 Expert**
 
 > 관련 문서:
+> - [Aggregate Boundary vs Transaction Boundary](./aggregate-boundary-vs-transaction-boundary.md)
+> - [Unit of Work Pattern: 트랜잭션 경계 안에서 변경을 모으기](./unit-of-work-pattern.md)
+> - [Domain Events vs Integration Events](./domain-events-vs-integration-events.md)
+> - [Domain Event Translation Pipeline](./domain-event-translation-pipeline.md)
+> - [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
+> - [Orchestration vs Choreography Failure Handling](./orchestration-vs-choreography-failure-handling.md)
+> - [Compensation vs Reconciliation Pattern](./compensation-vs-reconciliation-pattern.md)
+> - [Process Manager vs Saga Coordinator](./process-manager-vs-saga-coordinator.md)
+> - [Process Manager Deadlines and Timeouts](./process-manager-deadlines-timeouts.md)
+> - [Workflow Owner vs Participant Context](./workflow-owner-vs-participant-context.md)
+> - [Reservation, Hold, and Expiry as a Consistency Seam](./reservation-hold-expiry-consistency-seam.md)
 > - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
 > - [Command Pattern, Undo, Queue](./command-pattern-undo-queue.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
@@ -30,8 +41,18 @@ Coordinator는 이 흐름을 중앙에서 오케스트레이션하는 역할을 
 - `saga coordinator`
 - `distributed workflow compensation`
 - `local transaction`
+- `distributed transaction boundary`
+- `cross aggregate workflow`
 - `orchestration vs choreography`
+- `process manager`
+- `integration event`
 - `outbox pattern`
+- `deadline workflow`
+- `reservation pattern`
+- `at least once publish`
+- `workflow owner`
+- `compensation vs reconciliation`
+- `retry ownership`
 
 ---
 
@@ -195,4 +216,3 @@ public class OrderPlacedListener {
 ## 한 줄 정리
 
 Saga와 Coordinator는 분산 환경에서 전역 트랜잭션 대신 단계별 실행과 보상을 설계하게 해주는 패턴 언어다.
-

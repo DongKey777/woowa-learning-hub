@@ -10,6 +10,8 @@
 > - [gRPC vs REST](./grpc-vs-rest.md)
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
+> - [h2c, Cleartext Upgrade, Prior Knowledge, Routing](./h2c-cleartext-upgrade-prior-knowledge-routing.md)
+> - [h2c Operational Traps: Proxy Chain, Dev/Prod Drift](./h2c-operational-traps-proxy-chain-dev-prod.md)
 
 retrieval-anchor-keywords: ALPN, protocol negotiation, h2, http/1.1, grpc, TLS handshake, routing mismatch, protocol fallback, ssl_preread
 

@@ -10,6 +10,7 @@
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
 > - [Resilience4j, Retry, Circuit Breaker, Bulkhead](../spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md)
 > - [API Design, Error Handling](./api-design-error-handling.md)
+> - [Configuration Governance and Runtime Safety](./configuration-governance-runtime-safety.md)
 
 > retrieval-anchor-keywords:
 > - kill switch
@@ -67,6 +68,8 @@ Kill switch는 문제가 났을 때 **기본적으로 끄는 쪽**으로 설계�
 - 별도 운영 채널
 - 저의존성 control plane
 - 읽기 전용 안전 상태
+
+즉 kill switch 자체도 configuration governance의 대상이다.
 
 ### 3. kill switch에는 대상이 여러 종류 있다
 

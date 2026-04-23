@@ -10,8 +10,12 @@
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md)
+> - [SCIM Drift / Reconciliation](./scim-drift-reconciliation.md)
+> - [System Design: Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
 
-retrieval-anchor-keywords: authz decision logging, decision reason, policy version, allow deny, PDP, PEP, traceability, resource owner, policy engine, security telemetry
+retrieval-anchor-keywords: authz decision logging, decision reason, policy version, allow deny, PDP, PEP, traceability, resource owner, policy engine, security telemetry, deny spike, decision metrics, shadow divergence, claim schema version, store generation, reconciliation run id, directory event id, cleanup evidence, retirement evidence, legacy parser hit
 
 ---
 
@@ -65,7 +69,25 @@ authz decision logging은 누가 어떤 자원에 어떤 동작을 하려 했고
 
 reason code가 있어야 공격 탐지와 정책 개선이 쉬워진다.
 
-### 3. log와 policy engine을 분리해야 한다
+### 3. cleanup / retirement 증거를 위해 cutover join key를 남긴다
+
+authority transfer나 claim-version cutover에서는 allow/deny만 남겨서는 부족하다.
+old session authority, old claim semantic, incomplete SCIM repair가 같은 증상으로 보일 수 있기 때문이다.
+
+retirement evidence에 자주 필요한 필드:
+
+- `claim_schema_version`
+- `store_generation`
+- `session_id`, `refresh_family_id`
+- `authz_epoch`, `revoke_before`
+- `directory_event_id`, `reconciliation_run_id`
+- `shadow_policy_version`, `legacy_parser_hit`
+
+이 키가 있어야 [SCIM Drift / Reconciliation](./scim-drift-reconciliation.md)에서 나온 lifecycle repair와
+[Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)의 cleanup gate를
+같은 allow/deny event 위에서 설명할 수 있다.
+
+### 4. log와 policy engine을 분리해야 한다
 
 권한 결정을 내리는 엔진과 기록하는 레이어는 분리한다.
 
@@ -75,7 +97,7 @@ reason code가 있어야 공격 탐지와 정책 개선이 쉬워진다.
 
 한 함수에서 전부 하면 테스트와 운영이 어려워진다.
 
-### 4. sensitive data는 기록하지 않는다
+### 5. sensitive data는 기록하지 않는다
 
 decision log는 강력하지만 위험할 수 있다.
 
@@ -86,7 +108,7 @@ decision log는 강력하지만 위험할 수 있다.
 
 필요한 식별자만 남긴다.
 
-### 5. deny와 allow 모두 기록할지 결정해야 한다
+### 6. deny와 allow 모두 기록할지 결정해야 한다
 
 모두 남기면 분석은 좋지만 비용이 든다.
 

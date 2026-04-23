@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 오래 걸린다고 다 같은 실패가 아니고, “쿼리가 느린 것”과 “락을 못 얻는 것”은 다른 문제로 다뤄야 한다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Deadlock Case Study](./deadlock-case-study.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
-Retrieval anchors: `transaction timeout`, `lock wait timeout`, `statement timeout`, `query timeout`, `spring transactional timeout`
+retrieval-anchor-keywords: transaction timeout, lock wait timeout, statement timeout, query timeout, spring transactional timeout
 
 ## 핵심 개념
 

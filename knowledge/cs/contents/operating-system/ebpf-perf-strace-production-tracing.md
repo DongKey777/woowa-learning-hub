@@ -1,6 +1,8 @@
 # eBPF, perf, strace, and Production Tracing
 
 > 한 줄 요약: 느린 장애를 풀려면 "무엇이 느린가"가 아니라 "어디에서 기다리는가"를 먼저 잡아야 한다.
+>
+> 문서 역할: 이 문서는 operating-system 운영 cluster 안에서 **실전 관측 도구와 runtime debugging 진입점**을 설명하는 deep dive다.
 
 **난이도: 🔴 Advanced**
 
@@ -8,10 +10,19 @@
 > - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 > - [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)
+> - [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
+> - [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)
+> - [Lock Contention, Futex Wait, Off-CPU Debugging](./lock-contention-futex-offcpu-debugging.md)
 > - [JFR and JMC Performance Playbook](../language/java/jfr-jmc-performance-playbook.md)
 > - [Spring Observability with Micrometer Tracing](../spring/spring-observability-micrometer-tracing.md)
 
 > retrieval-anchor-keywords: eBPF, perf, strace, flame graph, syscall latency, off-CPU, lock contention, production tracing
+
+## 이 문서 다음에 보면 좋은 문서
+
+- I/O wait 모델 자체는 [I/O Models and Event Loop](./io-models-and-event-loop.md), [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)와 같이 보면 좋다.
+- scheduler 지연은 [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md), [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)로 이어진다.
+- off-CPU와 lock 대기는 [Lock Contention, Futex Wait, Off-CPU Debugging](./lock-contention-futex-offcpu-debugging.md)에서 더 깊게 다룬다.
 
 ## 핵심 개념
 

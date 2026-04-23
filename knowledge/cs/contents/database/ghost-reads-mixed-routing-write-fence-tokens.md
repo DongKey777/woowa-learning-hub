@@ -2,8 +2,10 @@
 
 > 한 줄 요약: failover 직후 옛 경로와 새 경로가 섞이면 유령 같은 읽기/쓰기가 생기고, fence token이 있어야 늦은 주체를 막을 수 있다.
 
+**난이도: 🔴 Advanced**
+
 관련 문서: [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md)
-Retrieval anchors: `ghost read`, `mixed routing`, `write fence token`, `epoch token`, `stale route`
+retrieval-anchor-keywords: ghost read, mixed routing, write fence token, epoch token, stale route
 
 ## 핵심 개념
 

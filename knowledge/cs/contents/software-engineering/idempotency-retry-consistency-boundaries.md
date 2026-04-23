@@ -10,6 +10,8 @@
 > - [Cache, Messaging, Observability](./cache-message-observability.md)
 > - [System Design](../system-design/README.md)
 
+retrieval-anchor-keywords: idempotency retry boundary, retry consistency boundary, idempotency key, duplicate request suppression, timeout retry safety, partial success retry, consistency boundary, outbox with retry, exactly once myth, retry side effect control
+
 ## 핵심 개념
 
 재시도는 네트워크와 장애 현실을 받아들이는 방식이다.

@@ -1,0 +1,306 @@
+# Projection Rebuild, Backfill, and Cutover Pattern
+
+> 한 줄 요약: Projection rebuild/backfill/cutover는 읽기 모델을 새로 만들거나 다시 계산할 때, 운영 중인 시스템을 멈추지 않고 신뢰도와 추적성을 유지하며 전환하는 패턴이다.
+
+**난이도: 🔴 Expert**
+
+> 관련 문서:
+> - [Read Model Staleness and Read-Your-Writes](./read-model-staleness-read-your-writes.md)
+> - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
+> - [Read Model Cutover Guardrails](./read-model-cutover-guardrails.md)
+> - [Projection Rebuild Evidence Packet](./projection-rebuild-evidence-packet.md)
+> - [Canary Promotion Thresholds for Projection Cutover](./canary-promotion-thresholds-projection-cutover.md)
+> - [Rollback Window Exit Criteria](./projection-rollback-window-exit-criteria.md)
+> - [Projection Lag Budgeting Pattern](./projection-lag-budgeting-pattern.md)
+> - [Projection Freshness SLO Pattern](./projection-freshness-slo-pattern.md)
+> - [Event Upcaster Compatibility Patterns](./event-upcaster-compatibility-patterns.md)
+> - [Idempotent Consumer and Projection Dedup Pattern](./idempotent-consumer-projection-dedup-pattern.md)
+> - [Poison Event and Replay Failure Handling in Projection Rebuilds](./projection-rebuild-poison-event-replay-failure-handling.md)
+> - [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
+> - [Checkpoint / Snapshot Pattern](./checkpoint-snapshot-pattern.md)
+> - [Database: Schema Migration, Partitioning, CDC, CQRS](../database/schema-migration-partitioning-cdc-cqrs.md)
+> - [System Design: Historical Backfill / Replay Platform](../system-design/historical-backfill-replay-platform-design.md)
+> - [System Design: Dual-Read Comparison / Verification Platform](../system-design/dual-read-comparison-verification-platform-design.md)
+
+---
+
+## 핵심 개념
+
+read model은 한 번 만들고 끝나는 구조가 아니다.  
+실무에서는 자주 다시 만들어야 한다.
+
+- projection 버그 수정
+- 새 인덱스/집계 필드 추가
+- 이벤트 스키마 진화 반영
+- 저장소 교체나 성능 최적화
+
+이때 단순히 "처음부터 다시 돌리자"로 끝내면 운영 사고가 생긴다.
+
+- 오래 걸리는 backfill
+- cutover 중 stale/partial read
+- 신규 이벤트 유실
+- 새 projection과 기존 projection 불일치
+
+Projection rebuild/backfill/cutover 패턴은 이 전환을 **운영 절차가 있는 설계 문제**로 다룬다.
+
+### Retrieval Anchors
+
+- `projection rebuild`
+- `projection backfill`
+- `projection cutover`
+- `dual projection run`
+- `read model reindex`
+- `projection watermark`
+- `projection readiness checklist`
+- `projection rebuild evidence packet`
+- `tail catch-up gate`
+- `projection parity signoff`
+- `cutover proof packet`
+- `cutover approval checklist`
+- `post-readiness canary promotion`
+- `remaining error budget for cutover`
+- `rollback window exit criteria`
+- `old projection decommission`
+- `rollback command verification`
+- `replay safe projector`
+- `projection poison event quarantine`
+- `partial replay failure recovery`
+- `rebuild retry signoff`
+- `cutover rollback window`
+
+---
+
+## 깊이 들어가기
+
+### 1. rebuild는 데이터 일괄 재생이고, cutover는 사용자 경로 전환이다
+
+이 둘은 같은 작업이 아니다.
+
+- rebuild/backfill: 새 projection을 채운다
+- cutover: 조회 트래픽을 새 projection으로 돌린다
+
+많은 팀이 rebuild만 생각하고 cutover를 잊는다.  
+하지만 실제 사고는 cutover 순간에 더 자주 난다.
+
+### 2. dual run 없이 한 번에 바꾸면 관찰성이 약하다
+
+안전한 기본값은 보통 다음에 가깝다.
+
+- 새 projection을 별도 테이블/인덱스로 구축
+- 일정 기간 old/new를 병행 유지
+- 샘플 비교 또는 검증 쿼리 수행
+- readiness 기준을 넘으면 cutover
+
+이렇게 해야 새 projection이 "만들어졌다"와 "운영 준비가 됐다"를 구분할 수 있다.
+
+### 3. backfill 중에도 신규 이벤트는 계속 들어온다
+
+운영 시스템에서는 rebuild 동안 write traffic이 멈추지 않는다.
+
+- 과거 이벤트를 재생하는 동안
+- 현재 이벤트가 계속 append됨
+- relay와 consumer는 계속 움직임
+
+그래서 보통 두 단계가 필요하다.
+
+- history backfill
+- tail catch-up
+
+즉 특정 watermark까지 bulk replay하고, 이후부터는 live tail을 따라잡아 cutover readiness를 본다.
+
+### 4. cutover 기준은 완료율이 아니라 정합성 신호여야 한다
+
+다음 질문이 명확해야 한다.
+
+- 어느 offset/version까지 따라왔는가
+- old/new projection 비교 결과가 허용 범위 안인가
+- 미반영 건수는 몇 개인가
+- read-your-writes가 필요한 화면은 어떤 fallback이 있는가
+- 남은 error budget으로 canary와 rollback window를 버틸 수 있는가
+
+단순히 "배치가 끝났다"는 cutover 기준으로 약하다.
+
+### 5. rebuild는 이벤트 호환성 문제를 드러내는 좋은 검사기다
+
+replay/backfill 도중 다음이 튀어나오기 쉽다.
+
+- legacy event deserialize 실패
+- upcaster 누락
+- unknown enum
+- projection code의 비멱등성
+
+그래서 projection rebuild는 단순 운영 작업이 아니라 **이벤트 계약 건강검진** 역할도 한다.
+
+### 6. cutover approval은 readiness checklist로 고정해야 한다
+
+실무에서 자주 생기는 오판은 다음 둘이다.
+
+- backfill progress가 100%면 전환 가능하다고 보는 것
+- parity sample이 몇 번 맞았으니 바로 canary를 열어도 된다고 보는 것
+
+하지만 실제 cutover approval은 세 가지 축이 동시에 녹색이어야 한다.
+
+- tail catch-up: target watermark를 따라잡았는가
+- parity: old/new가 같은 의미의 결과를 내는가
+- remaining error budget: 전환 실험과 rollback window를 버틸 예산이 남았는가
+
+즉 rebuild readiness는 "채웠다"가 아니라 "따라잡았고, 비교했고, 실패해도 버틸 수 있다"를 뜻한다.
+
+그 다음 단계는 자동으로 primary가 아니라, readiness 이후 canary를 어떤 sample/dwell/rollback 기준으로 올릴지 정하는 일이다.  
+이 부분은 [Canary Promotion Thresholds for Projection Cutover](./canary-promotion-thresholds-projection-cutover.md)처럼 별도 승격 패킷으로 적어 두는 편이 운영적으로 더 선명하다.
+
+그리고 readiness/cutover 승인의 근거 자체를 어떤 필드와 artifact로 남길지는 [Projection Rebuild Evidence Packet](./projection-rebuild-evidence-packet.md)처럼 별도 approval packet으로 고정해 두는 편이 해석이 덜 흔들린다.
+
+---
+
+## Projection Rebuild Readiness Checklist
+
+cutover 직전에는 다음 체크리스트를 yes/no가 아니라 **승격 가능 여부를 정하는 운영 gate**로 본다.
+
+| Gate | 확인 질문 | 통과 신호 예시 | 왜 필요한가 |
+|---|---|---|---|
+| Replay boundary 고정 | 어느 offset/watermark까지 재생했는가 | `target_watermark`가 명시돼 있고 대상 파티션/샤드가 고정됨 | 기준점이 없으면 tail catch-up 완료 여부를 해석할 수 없다 |
+| History backfill 완료 | 과거 데이터 적재가 실제로 끝났는가 | 실패 shard 없음, poison event 격리 완료, 누락 partition 없음 | backfill 누락은 이후 parity mismatch를 만든다 |
+| Tail catch-up | live tail을 충분히 따라잡았는가 | `applied_watermark >= target_watermark`, backlog age가 cutover reserve 이하 | 배치 완료 후에도 신규 이벤트 유실/지연이 남을 수 있다 |
+| Parity 검증 | old/new 결과가 같은 의미를 보장하는가 | key field, 정렬, cursor, strict screen 샘플 mismatch가 허용치 이하 | row count만 같아도 UX는 달라질 수 있다 |
+| Freshness / fallback | strict path를 보호할 fallback이 준비됐는가 | strict 화면 fallback 경로 존재, fallback rate 정상 범위 | cutover 직후 read-your-writes regression을 막아야 한다 |
+| Remaining error budget | canary와 rollback window를 버틸 예산이 남았는가 | 최근 burn rate 안정, 잔여 budget이 승인 임계치 이상 | parity가 맞아도 예산이 없으면 전환 실험을 감당하지 못한다 |
+| Rollback readiness | old projection으로 즉시 되돌릴 수 있는가 | old path 유지, rollback command/runbook 검증, cursor 정책 고정 | latent bug는 full cutover 후에 드러나기 쉽다 |
+| Human sign-off | 누가 어떤 근거로 승격을 승인하는가 | owner, on-call, dashboard 링크, 승인 시각 기록 | cutover 판단이 사람마다 달라지는 일을 줄인다 |
+
+### 승인 규칙을 문장으로 고정하면 해석이 흔들리지 않는다
+
+다음처럼 승격 규칙을 한 줄로 적어 두는 편이 좋다.
+
+- canary 승인: `tail catch-up green AND parity green AND remaining error budget green`
+- full cutover 승인: `canary 안정화 AND fallback/rollback green`
+- cutover 보류: 위 조건 중 하나라도 미통과이거나 해석 불명
+
+이 규칙이 없으면 "backfill은 끝났는데 왜 못 올리냐"는 질문이 나올 때마다 팀이 다른 언어로 답하게 된다.
+그리고 full cutover 뒤 old projection 제거는 같은 승인에 섞지 말고, [Rollback Window Exit Criteria](./projection-rollback-window-exit-criteria.md)처럼 post-primary audit cadence와 final rollback verification까지 본 별도 gate로 다루는 편이 안전하다.
+
+여기서 특히 자주 흔들리는 부분은 poison event와 partial replay failure 처리다.  
+`history backfill complete`를 선언하기 전에 어떤 이벤트를 quarantine했고 어떤 shard/range를 last verified watermark부터 다시 돌렸는지까지 분명해야 한다.  
+이 운영 규칙은 [Poison Event and Replay Failure Handling in Projection Rebuilds](./projection-rebuild-poison-event-replay-failure-handling.md)처럼 별도 packet으로 고정해 두는 편이 안전하다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: 주문 검색 read model 재구축
+
+정렬 필드와 집계 컬럼을 새로 추가해야 한다면, 새 테이블에 backfill 후 old/new 결과를 비교하고 cutover한다.  
+기존 테이블을 바로 덮어쓰면 rollback 지점이 약해진다.
+
+### 시나리오 2: 신규 projection consumer 도입
+
+기존 consumer가 취약해 새 consumer를 다시 짜는 경우, 같은 이벤트 스트림을 dual-run 하며 output parity를 체크하는 편이 안전하다.
+
+### 시나리오 3: 이벤트 스키마 진화 후 재적재
+
+upcaster가 들어간 뒤 신규 projection을 다시 만드는 과정에서, 과거 이벤트까지 정상 해석되는지 확인할 수 있다.
+
+### 시나리오 4: backfill은 끝났지만 cutover 승인이 안 나는 경우
+
+재생 대상 offset까지는 다 채웠지만, live tail backlog age가 아직 높고 strict screen fallback rate도 올라가고 있다고 해 보자.
+
+- history backfill: 완료
+- tail catch-up: 미통과
+- parity: 일부 샘플만 확인
+- remaining error budget: 빠르게 소진 중
+
+이 경우 운영적으로는 "rebuild done"일 수 있어도 "cutover approved"는 아니다.  
+승격 전에 live tail을 더 따라잡고, parity 샘플을 늘리고, budget burn을 안정화해야 한다.
+
+---
+
+## 코드로 보기
+
+### rebuild job 감각
+
+```java
+public class OrderProjectionRebuildJob {
+    public void rebuildUntil(long targetOffset) {
+        eventStore.readFromBeginningUntil(targetOffset)
+            .forEach(orderProjectionProjector::apply);
+    }
+}
+```
+
+### catch-up and cutover readiness
+
+```java
+public record ProjectionCutoverReadiness(
+    long appliedWatermark,
+    long targetWatermark,
+    Duration backlogAge,
+    Duration allowedCatchUpLag,
+    double mismatchRate,
+    double maxMismatchRate,
+    double remainingBudgetRatio,
+    double minRemainingBudgetRatio,
+    boolean fallbackReady,
+    boolean rollbackReady
+) {
+    public boolean readyToCutover() {
+        return appliedWatermark >= targetWatermark
+            && backlogAge.compareTo(allowedCatchUpLag) <= 0
+            && mismatchRate <= maxMismatchRate
+            && remainingBudgetRatio >= minRemainingBudgetRatio
+            && fallbackReady
+            && rollbackReady;
+    }
+}
+```
+
+### dual read verify
+
+```java
+public class OrderProjectionVerifier {
+    public boolean matches(String orderId) {
+        return oldReadRepository.findById(orderId)
+            .equals(newReadRepository.findById(orderId));
+    }
+}
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|---|---|---|---|
+| 기존 projection 직접 덮어쓰기 | 구현이 빠르다 | rollback과 비교 검증이 어렵다 | 아주 작은 내부 시스템 |
+| 새 projection dual run 후 cutover | 안전성과 관찰성이 높다 | 저장소와 운영 비용이 늘어난다 | 사용자 영향이 큰 read model |
+| full stop 후 일괄 재구축 | 논리가 단순하다 | downtime과 data gap이 생길 수 있다 | 유지보수 창과 정지 허용이 명확할 때 |
+
+판단 기준은 다음과 같다.
+
+- cutover와 rebuild를 별도 문제로 본다
+- history backfill 후 tail catch-up을 계획한다
+- readiness checklist에 watermark, parity, fallback, remaining error budget을 함께 넣는다
+- cutover approval은 단일 배치 완료율이 아니라 여러 gate의 동시 통과로 본다
+
+---
+
+## 꼬리질문
+
+> Q: projection을 다시 만들 때 그냥 처음부터 끝까지 replay하고 바로 바꾸면 안 되나요?
+> 의도: rebuild와 cutover를 구분하는지 본다.
+> 핵심: 운영 중에는 신규 이벤트가 계속 들어오므로 tail catch-up과 검증이 필요하다.
+
+> Q: dual run은 왜 필요한가요?
+> 의도: 가시성과 rollback point의 중요성을 보는 질문이다.
+> 핵심: 새 projection이 실제로 old projection과 동등하거나 더 나은지 확인할 수 있기 때문이다.
+
+> Q: cutover readiness는 무엇으로 보나요?
+> 의도: 감이 아니라 운영 지표로 판단하는지 본다.
+> 핵심: applied watermark, tail catch-up lag, parity, fallback, remaining error budget 같은 신호를 함께 본다.
+
+> Q: backfill 완료율이 100%인데 왜 cutover를 막을 수 있나요?
+> 의도: rebuild done과 cutover approved를 분리하는지 본다.
+> 핵심: live tail을 못 따라잡았거나 parity가 약하거나 budget이 부족하면 승격을 보류해야 한다.
+
+## 한 줄 정리
+
+Projection rebuild/backfill/cutover는 읽기 모델 재구축을 배치 작업이 아니라 tail catch-up, parity, fallback, remaining error budget까지 묶어 cutover approval을 판단하는 운영 전환 패턴으로 다루게 해준다.

@@ -7,11 +7,15 @@
 > 관련 문서:
 > - [Secret Management, Rotation, Leak Patterns](./secret-management-rotation-leak-patterns.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
+> - [JWT Signature Verification Failure Playbook](./jwt-signature-verification-failure-playbook.md)
+> - [JWT / JWKS Outage Recovery / Failover Drills](./jwt-jwks-outage-recovery-failover-drills.md)
+> - [JWKS Rotation Cutover Failure / Recovery](./jwks-rotation-cutover-failure-recovery.md)
+> - [Signing Key Compromise Recovery Playbook](./signing-key-compromise-recovery-playbook.md)
 > - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
 > - [mTLS Certificate Rotation / Trust Bundle Rollout](./mtls-certificate-rotation-trust-bundle-rollout.md)
 > - [Secret Scanning / Credential Leak Response](./secret-scanning-credential-leak-response.md)
 
-retrieval-anchor-keywords: key rotation, runbook, dual validation, key version, grace window, revoke old key, JWKS, signing key, rotation incident, cutover, audit trail
+retrieval-anchor-keywords: key rotation, runbook, dual validation, key version, grace window, revoke old key, JWKS, signing key, rotation incident, cutover, audit trail, kid rollover, verification failure, rollback decision, failover drill, key compromise recovery
 
 ---
 

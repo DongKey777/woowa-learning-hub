@@ -10,6 +10,8 @@
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
+> - [Contract Drift Detection and Rollout Governance](./contract-drift-detection-rollout-governance.md)
+> - [Backward Compatibility Waivers and Consumer Exception Governance](./backward-compatibility-waiver-consumer-exception-governance.md)
 
 > retrieval-anchor-keywords:
 > - backward compatibility
@@ -20,6 +22,10 @@
 > - release gate
 > - regression guard
 > - semantic compatibility
+> - consumer matrix
+> - runtime drift signal
+> - compatibility waiver
+> - lagging consumer
 
 ## 핵심 개념
 

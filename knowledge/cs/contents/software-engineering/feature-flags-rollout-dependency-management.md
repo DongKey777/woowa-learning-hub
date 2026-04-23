@@ -1,5 +1,7 @@
 # Feature Flags, Rollout, Dependency Management
 
+**난이도: 🟡 Intermediate**
+
 > 운영 트랙에서 배포 리스크를 줄이고 변경을 안전하게 흘리는 방법을 정리한 문서
 
 <details>
@@ -12,6 +14,16 @@
 - [시니어 관점 질문](#시니어-관점-질문)
 
 </details>
+
+> retrieval-anchor-keywords:
+> - feature flags
+> - rollout strategy
+> - gradual rollout
+> - percentage rollout
+> - flag dependency
+> - dependent flag graph
+> - kill switch
+> - 롤아웃 전략
 
 ## 왜 중요한가
 

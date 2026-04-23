@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Union-Find Amortized Proof Intuition](./union-find-amortized-proof-intuition.md)
 > - [Union-Find Deep Dive](../data-structure/union-find-deep-dive.md)
+> - [Deletion-Aware Connectivity Bridge](../data-structure/deletion-aware-connectivity-bridge.md)
 > - [Mo's Algorithm Basics](./mo-algorithm-basics.md)
 
 > retrieval-anchor-keywords: dsu rollback, rollback union find, offline dynamic connectivity, undo union, stack changes, temporal queries, graph connectivity, backtracking union, reversible dsu

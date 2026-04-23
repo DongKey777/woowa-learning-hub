@@ -6,12 +6,15 @@
 
 > 관련 문서:
 > - [DPoP / Token Binding Basics](./dpop-token-binding-basics.md)
+> - [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)
 > - [Hardware-Backed Keys / Attestation](./hardware-backed-keys-attestation.md)
 > - [Anti-Automation / Device Fingerprint Caveats](./anti-automation-device-fingerprint-caveats.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - [Device / Session Graph Revocation Design](./device-session-graph-revocation-design.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
 
-retrieval-anchor-keywords: device binding, device-bound session, token binding, device key, device identity, cloned device, shared device, recovery, privacy, mobile device migration, key rotation
+retrieval-anchor-keywords: device binding, device-bound session, token binding, device key, device identity, cloned device, shared device, recovery, privacy, mobile device migration, key rotation, session graph
 
 ---
 

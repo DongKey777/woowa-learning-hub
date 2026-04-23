@@ -7,10 +7,11 @@
 > 관련 문서:
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [Escape Analysis and Scalar Replacement](./escape-analysis-scalar-replacement.md)
+> - [Escape Analysis, Stack Allocation, Benchmarking, and Object Reuse Misconceptions](./escape-analysis-stack-allocation-benchmark-misconceptions.md)
 > - [Class Initialization Ordering](./class-initialization-ordering.md)
 > - [JFR and JMC Performance Playbook](./jfr-jmc-performance-playbook.md)
 
-> retrieval-anchor-keywords: JMH, warmup, measurement iteration, dead-code elimination, constant folding, false sharing, Blackhole, fork, benchmark bias, microbenchmark, steady state, profiler interference
+> retrieval-anchor-keywords: JMH, warmup, measurement iteration, dead-code elimination, constant folding, false sharing, Blackhole, fork, benchmark bias, microbenchmark, steady state, profiler interference, escape analysis misconception
 
 <details>
 <summary>Table of Contents</summary>

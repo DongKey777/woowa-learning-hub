@@ -14,6 +14,9 @@
 > - [LB Connection Draining, Deployment Safe Close](./lb-connection-draining-deployment-safe-close.md)
 > - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
 > - [mTLS Handshake Failure Diagnosis](./mtls-handshake-failure-diagnosis.md)
+> - [TLS Record Sizing, Flush, Streaming Latency](./tls-record-sizing-flush-streaming-latency.md)
+> - [TLS close_notify, FIN/RST, Truncation](./tls-close-notify-fin-rst-truncation.md)
+> - [HTTP/2 RST_STREAM, GOAWAY, Streaming Failure Semantics](./http2-rst-stream-goaway-streaming-failure-semantics.md)
 
 retrieval-anchor-keywords: TLS handshake, load balancing, reverse proxy, TLS termination, SNI, ALPN, certificate chain, backend routing, connection reuse, client IP, proxy timeout
 

@@ -1,0 +1,195 @@
+# `BigDecimal` `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps
+
+> 한 줄 요약: `BigDecimal`의 함정은 돈 계산만이 아니다. `MathContext` precision, `stripTrailingZeros()`, scientific notation, `setScale(..., UNNECESSARY)`, division exactness를 혼동하면 수치 계약과 직렬화 표현이 조용히 흔들린다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [`BigDecimal` Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
+> - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
+> - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
+> - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
+
+> retrieval-anchor-keywords: BigDecimal MathContext, stripTrailingZeros, precision vs scale, scientific notation, toPlainString, setScale UNNECESSARY, divide exactness, canonicalization trap, decimal contract, BigDecimal serialization
+
+<details>
+<summary>Table of Contents</summary>
+
+- [핵심 개념](#핵심-개념)
+- [깊이 들어가기](#깊이-들어가기)
+- [실전 시나리오](#실전-시나리오)
+- [코드로 보기](#코드로-보기)
+- [트레이드오프](#트레이드오프)
+- [꼬리질문](#꼬리질문)
+- [한 줄 정리](#한-줄-정리)
+
+</details>
+
+## 핵심 개념
+
+`BigDecimal`에서 흔히 섞이는 개념은 이렇다.
+
+- precision
+- scale
+- rounding
+- representation
+
+이 넷은 서로 다르다.
+
+즉 `BigDecimal`을 "정확한 십진수"라고만 보면 안 되고,  
+"어떤 표현과 연산 정책을 가진 값"으로 읽어야 한다.
+
+## 깊이 들어가기
+
+### 1. `MathContext`는 scale이 아니라 precision 중심이다
+
+`MathContext`는 전체 유효 숫자 자릿수와 rounding mode를 다룬다.  
+즉 `setScale(2)`와는 목적이 다르다.
+
+문제는 이 둘을 혼동해서:
+
+- 내부 계산 precision
+- 외부 표시 scale
+
+을 한 정책으로 취급하는 것이다.
+
+그러면 계산 과정과 출력 과정이 섞여 결과 의미가 달라질 수 있다.
+
+### 2. `stripTrailingZeros()`는 canonicalization 만능 해답이 아니다
+
+많이들 `1.00`과 `1.0` 문제를 보고 `stripTrailingZeros()`를 떠올리지만,  
+이 메서드는 representation을 바꾸는 것이지 도메인 정책을 정하는 것이 아니다.
+
+주의점:
+
+- scale 정보가 사라질 수 있다
+- scientific notation처럼 보이는 표현이 나올 수 있다
+- "표현까지 의미가 있는 값"에는 부적합할 수 있다
+
+즉 canonicalization은 메서드 하나가 아니라 계약이다.
+
+### 3. `toString()`과 `toPlainString()`은 같은 출력이 아닐 수 있다
+
+`BigDecimal`을 문자열 key나 JSON 값으로 쓸 때 이 차이는 중요하다.
+
+- `toString()`은 scientific notation을 포함할 수 있다
+- `toPlainString()`은 평문 십진 표현을 더 유지한다
+
+문제는 팀 안에서 이 둘이 섞이면:
+
+- 캐시 키
+- signature input
+- 로그 비교
+- fixture snapshot
+
+이 서로 달라질 수 있다는 점이다.
+
+### 4. `RoundingMode.UNNECESSARY`는 validation 도구다
+
+이 모드는 "반올림이 필요하면 예외"를 의미한다.  
+즉 표현을 조정하는 도구이면서 동시에 입력 검증 도구다.
+
+예:
+
+- KRW 금액에 소수점이 들어오면 거부
+- 이미 정해진 scale이어야 하는 payload 검증
+
+즉 무조건 사용자 친화적인 반올림보다, 계약 위반을 빨리 드러내는 방향이 더 맞을 수 있다.
+
+### 5. divide exactness와 representation contract를 함께 봐야 한다
+
+`divide()`는 exact division이 안 되면 예외를 낼 수 있다.  
+그런데 많은 코드가:
+
+- 아무 scale을 준다
+- 임의 rounding mode를 준다
+- 왜 그 scale인지 문서화하지 않는다
+
+이렇게 끝난다.
+
+즉 divide 문제는 API 사용법이 아니라 output contract 문제다.
+
+## 실전 시나리오
+
+### 시나리오 1: 캐시 키가 `1E+3`와 `1000`으로 갈린다
+
+한 경로는 `toString()`, 다른 경로는 `toPlainString()`을 쓴다.  
+숫자 값은 같지만 representation key가 달라진다.
+
+### 시나리오 2: `stripTrailingZeros()` 후 기대하지 않던 표현이 나온다
+
+테스트에선 보기 좋았지만, 운영 로그나 JSON snapshot에서 scientific notation이 나타난다.
+
+### 시나리오 3: precision 제한이 필요한데 `setScale`만 건다
+
+scale은 맞췄지만 전체 유효 숫자 자릿수 제한은 안 걸려  
+예상보다 큰 값이 통과한다.
+
+### 시나리오 4: 입력 검증에서 반올림이 조용히 일어난다
+
+정해진 소수 자릿수여야 하는데 `HALF_UP`으로 그냥 맞춰버려  
+원래는 거부해야 할 입력이 silently accepted 된다.
+
+## 코드로 보기
+
+### 1. precision과 scale은 다른 문제
+
+```java
+BigDecimal value = new BigDecimal("123.456");
+BigDecimal scaled = value.setScale(2, java.math.RoundingMode.HALF_UP);
+BigDecimal precise = value.round(new java.math.MathContext(4, java.math.RoundingMode.HALF_UP));
+```
+
+### 2. `stripTrailingZeros()` 감각
+
+```java
+BigDecimal value = new BigDecimal("1000.00");
+BigDecimal stripped = value.stripTrailingZeros();
+```
+
+이후 문자열 표현은 팀이 기대하던 형태와 다를 수 있다.
+
+### 3. 계약 검증으로 `UNNECESSARY`
+
+```java
+BigDecimal normalized = raw.setScale(2, java.math.RoundingMode.UNNECESSARY);
+```
+
+scale이 안 맞으면 조용히 반올림하지 않고 실패시킨다.
+
+### 4. 문자열 계약은 한 방식으로 고정
+
+```java
+String key = value.toPlainString();
+```
+
+캐시/서명/로그 비교에선 representation 정책을 한 곳으로 고정하는 편이 안전하다.
+
+## 트레이드오프
+
+| 선택 | 장점 | 비용 |
+|---|---|---|
+| `setScale` 중심 | 표시 scale 제어가 단순하다 | precision 정책과 혼동하기 쉽다 |
+| `MathContext` 사용 | 유효 숫자 자릿수 계약을 표현하기 좋다 | display scale 문제를 해결하진 않는다 |
+| `stripTrailingZeros()` | 일부 비교/정규화에 도움이 된다 | representation 의미를 잃거나 예상 밖 표기를 만들 수 있다 |
+| `UNNECESSARY` 검증 | 계약 위반을 빨리 드러낸다 | 관대한 입력 보정은 못 한다 |
+
+핵심은 `BigDecimal` 조작 메서드를 값 보정 도구가 아니라 수치 계약 표현 도구로 보는 것이다.
+
+## 꼬리질문
+
+> Q: `MathContext`와 `setScale` 차이는 무엇인가요?
+> 핵심: 전자는 전체 유효 숫자 자릿수 중심이고, 후자는 소수점 scale 중심이다.
+
+> Q: `stripTrailingZeros()`를 항상 써도 되나요?
+> 핵심: 아니다. 표현 의미와 문자열 계약을 바꿀 수 있어 도메인 정책이 먼저 필요하다.
+
+> Q: `RoundingMode.UNNECESSARY`는 왜 유용한가요?
+> 핵심: 허용되지 않는 scale 입력을 조용히 보정하지 않고 바로 실패시켜 계약 위반을 드러내기 때문이다.
+
+> Q: `toString()`과 `toPlainString()`은 왜 구분하나요?
+> 핵심: scientific notation 포함 여부가 달라질 수 있어 캐시 키나 서명 문자열 계약에 직접 영향을 줄 수 있기 때문이다.
+
+## 한 줄 정리
+
+`BigDecimal` 함정의 핵심은 숫자 값보다 표현 계약이므로, `MathContext`, `stripTrailingZeros`, 문자열 출력 정책을 섞지 않고 명시적으로 고정해야 한다.

@@ -2,8 +2,10 @@
 
 > 한 줄 요약: failover가 끝난 뒤에는 읽기 경로를 바로잡는 것만큼, 이미 갈라진 데이터를 다시 맞추는 작업이 중요하다.
 
-관련 문서: [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
-Retrieval anchors: `read repair`, `reconciliation`, `failover recovery`, `divergence scan`, `version check`
+**난이도: 🟡 Intermediate**
+
+관련 문서: [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
+retrieval-anchor-keywords: read repair, reconciliation, failover recovery, divergence scan, version check, visibility window, commit horizon
 
 ## 핵심 개념
 

@@ -1,0 +1,318 @@
+# Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path
+
+> 한 줄 요약: `SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`는 모두 "브라우저가 이 cookie를 언제 저장하고, 언제 보내고, JS가 읽을 수 있는가"를 바꾸는 장치이고, CSRF와 직접 연결되는 축은 주로 `SameSite`다.
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+> - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+> - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+> - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
+> - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
+
+retrieval-anchor-keywords: SameSite HttpOnly Secure matrix, cookie attribute matrix, SameSite Lax Strict None, HttpOnly prevents document.cookie, Secure HTTPS-only cookie, Domain Path cookie scope, host-only cookie, domain cookie subdomain scope, Path is not security boundary, cookie csrf primer, ambient authority cookie, same-site vs cross-site cookie, beginner cookie security primer
+
+<details>
+<summary>Table of Contents</summary>
+
+- [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [먼저 한 줄로 구분하기](#먼저-한-줄로-구분하기)
+- [한 번에 보는 속성 매트릭스](#한-번에-보는-속성-매트릭스)
+- [`SameSite` 모드별 차이](#samesite-모드별-차이)
+- [`Domain`과 `Path`가 만드는 범위](#domain과-path가-만드는-범위)
+- [CSRF 관점에서 다시 보기](#csrf-관점에서-다시-보기)
+- [실전 기본값 예시](#실전-기본값-예시)
+- [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
+- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
+
+</details>
+
+## 왜 이 문서가 필요한가
+
+cookie를 설명할 때 아래 말들이 자주 한 덩어리로 섞인다.
+
+- "`HttpOnly`면 CSRF도 막히는가?"
+- "`Secure`면 안전한 cookie인가?"
+- "`SameSite=Lax`와 `Strict`는 실제로 언제 다르게 보이는가?"
+- "`Domain=example.com`과 안 쓰는 것의 차이는 무엇인가?"
+- "`Path=/api`면 다른 경로에서는 못 읽는가?"
+
+헷갈리는 이유는 간단하다.
+이 다섯 속성이 모두 cookie에 붙지만, **브라우저가 바꾸는 질문이 서로 다르기 때문**이다.
+
+- `SameSite`: cross-site 요청에도 이 cookie를 자동 전송할까?
+- `HttpOnly`: 브라우저 JS가 이 cookie 값을 읽을 수 있을까?
+- `Secure`: HTTPS가 아닐 때도 이 cookie를 보낼까?
+- `Domain`: 어느 host/subdomain에 이 cookie를 보낼까?
+- `Path`: 어느 URL path prefix에 이 cookie를 보낼까?
+
+### Retrieval Anchors
+
+- `SameSite HttpOnly Secure matrix`
+- `cookie attribute matrix`
+- `SameSite Lax Strict None`
+- `Domain Path cookie scope`
+- `host-only cookie`
+- `Path is not security boundary`
+- `cookie csrf primer`
+
+---
+
+## 먼저 한 줄로 구분하기
+
+가장 먼저 아래 한 줄씩만 고정하면 된다.
+
+- `SameSite`: **cross-site 자동 전송 여부**를 바꾼다
+- `HttpOnly`: **JS 읽기 가능 여부**를 바꾼다
+- `Secure`: **HTTP vs HTTPS 전송 가능 여부**를 바꾼다
+- `Domain`: **어느 host/subdomain까지 전송할지**를 바꾼다
+- `Path`: **어느 URL path까지 전송할지**를 바꾼다
+
+중요한 공통점도 있다.
+
+- 다섯 속성 모두 **브라우저의 cookie 취급 방식**을 바꾼다
+- 다섯 속성 모두 **서버 인증 로직 자체**를 바꾸지는 않는다
+- 브라우저가 cookie를 자동 전송하는 구조라면, 속성에 따라 범위와 조건만 달라질 뿐 "ambient credential"이라는 성격은 그대로 남는다
+
+즉 세션 인증이든 JWT-in-cookie든, 브라우저가 자동으로 보내는 한 cookie는 CSRF 논의 대상이 된다.
+
+---
+
+## 한 번에 보는 속성 매트릭스
+
+| 속성 | 브라우저가 실제로 바꾸는 것 | 직접 안 바꾸는 것 | CSRF 관점 |
+|---|---|---|---|
+| `SameSite` | same-site / cross-site 문맥에 따라 cookie 자동 전송을 제한한다 | JS 읽기 가능 여부, HTTPS 전용 여부 | 가장 직접적인 완화 장치다. cross-site 요청에 cookie가 안 실리면 CSRF가 크게 줄어든다 |
+| `HttpOnly` | `document.cookie` 같은 JS 경로에서 cookie 값을 못 읽게 한다 | 브라우저의 자동 전송 여부 | 직접적인 CSRF 방어가 아니다. 공격자가 cookie를 읽지 못해도 브라우저는 요청에 cookie를 붙일 수 있다 |
+| `Secure` | HTTPS 요청에서만 cookie를 보낸다 | JS 읽기 가능 여부, same-site 판단 | 직접적인 CSRF 방어는 아니다. 다만 평문 HTTP 누출을 줄이고 `SameSite=None`과 자주 같이 간다 |
+| `Domain` | cookie를 어느 host/subdomain에 붙일지 정한다 | cross-site 여부 판단 | 범위를 넓히면 cookie가 더 많은 subdomain으로 퍼져 blast radius가 커진다 |
+| `Path` | cookie를 어느 URL path prefix에 붙일지 정한다 | origin/site 구분, JS 격리 보장 | 일부 경로로의 자동 전송은 줄일 수 있지만, 단독 CSRF 방어선으로 보기 어렵다 |
+
+읽는 순서는 이렇게 잡으면 된다.
+
+1. 이 cookie가 원래 자동 전송되는 종류인가?
+2. `Domain` / `Path` / `Secure` 조건을 통과하는가?
+3. 요청이 same-site인가 cross-site인가?
+4. cross-site라면 `SameSite`가 막는가?
+5. 브라우저 JS가 값을 읽을 수 있는지는 `HttpOnly`로 따로 본다
+
+---
+
+## `SameSite` 모드별 차이
+
+`SameSite`는 "이 cookie를 cross-site 문맥에서도 보낼 것인가"를 다룬다.
+여기서 핵심은 `origin`이 아니라 **site**라는 점이다.
+
+- `https://app.example.com` -> `https://api.example.com`은 cross-origin일 수 있지만 same-site다
+- `https://app.example.com` -> `https://evil.com`은 cross-site다
+
+### 세 모드를 감각적으로 보면
+
+- `Strict`: same-site일 때만 보낸다
+- `Lax`: same-site 요청은 보내고, 일부 top-level navigation GET은 보낸다
+- `None`: cross-site에서도 보낸다. cross-site cookie가 필요할 때 쓰며 보통 `Secure`와 함께 간다
+
+### 자주 보는 요청 상황별 표
+
+| 요청 상황 | `Strict` | `Lax` | `None` | 설명 |
+|---|---|---|---|---|
+| 사용자가 이미 사이트 안에 있고 same-site 요청을 보냄 | 보냄 | 보냄 | 보냄 | 같은 site 안에서는 세 모드 모두 대체로 전송 가능하다 |
+| 외부 사이트에서 링크를 클릭해 `GET`으로 진입 | 안 보냄 | 보냄 | 보냄 | `Lax`는 이런 top-level navigation에는 비교적 관대하다 |
+| 외부 사이트가 자동으로 `POST` form을 제출 | 안 보냄 | 안 보냄 | 보냄 | 전형적인 CSRF 시나리오라 `Lax`와 `Strict`가 막는다 |
+| 외부 사이트가 `fetch`, `iframe`, `img`로 요청 | 안 보냄 | 안 보냄 | 보냄 | background cross-site 요청은 `Lax`도 막는 쪽으로 이해하면 된다 |
+| `app.example.com` 페이지가 `api.example.com`으로 `fetch(..., { credentials: "include" })` | 보냄 가능 | 보냄 가능 | 보냄 가능 | same-site라 `SameSite`는 통과할 수 있다. 대신 `credentials`, CORS, `Domain`이 별도 변수다 |
+
+정리하면:
+
+- `Strict`는 가장 보수적이다
+- `Lax`는 "일반 브라우징은 덜 깨고, 전형적인 cross-site POST/서브리소스 CSRF는 줄이자" 쪽이다
+- `None`은 cross-site 전송을 허용하므로, CSRF를 `SameSite`에 기대면 안 된다
+
+---
+
+## `Domain`과 `Path`가 만드는 범위
+
+`Domain`과 `Path`는 cookie를 **어디까지 보낼지** 정한다.
+둘 다 "범위(scope)" 속성이다.
+
+### 1. `Domain`을 생략하면 host-only cookie다
+
+```http
+Set-Cookie: session=abc; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+이 cookie를 `api.example.com`이 설정했다면:
+
+- `api.example.com` 요청에는 붙을 수 있다
+- `app.example.com` 요청에는 자동으로 안 붙는다
+
+즉 `Domain`을 생략하면 범위가 더 좁다.
+
+### 2. `Domain=example.com`을 주면 subdomain까지 퍼진다
+
+```http
+Set-Cookie: session=abc; Domain=example.com; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+이 경우 브라우저는 대체로 아래 요청에 cookie를 붙일 수 있다.
+
+- `https://example.com`
+- `https://app.example.com`
+- `https://api.example.com`
+
+이렇게 범위를 넓히면 편할 수는 있지만, 보안 관점에서는 신중해야 한다.
+
+- 더 많은 subdomain이 같은 cookie 범위 안으로 들어온다
+- 취약한 subdomain 하나가 전체 인증 범위의 약한 고리가 될 수 있다
+- same-site subdomain 구조에서는 `SameSite`만으로 경계를 세우기 어렵다
+
+그래서 특별히 subdomain 공유가 필요하지 않다면 **host-only가 기본값에 가깝다**고 생각하면 안전하다.
+
+### 3. `Path`는 URL path prefix 기준이다
+
+```http
+Set-Cookie: session=abc; Path=/admin; HttpOnly; Secure; SameSite=Lax
+```
+
+이 경우 브라우저는 대체로 아래 경로에 cookie를 붙인다.
+
+- `/admin`
+- `/admin/users`
+- `/admin/settings`
+
+그리고 이런 요청에는 안 붙인다.
+
+- `/`
+- `/api`
+- `/public`
+
+하지만 중요한 함정이 있다.
+
+- `Path`는 **전송 범위 조절**이지, 강한 보안 경계가 아니다
+- "같은 origin인데 path만 다르다"는 이유만으로 안전하게 분리된다고 보면 안 된다
+- 그래서 `Path=/admin`을 "admin 전용 보안장치"처럼 이해하면 틀린다
+
+즉 `Path`는 ambient cookie를 덜 넓게 보내는 데는 도움이 될 수 있지만, **CSRF나 XSS를 단독으로 막는 장치로 보면 안 된다**.
+
+---
+
+## CSRF 관점에서 다시 보기
+
+CSRF를 판단할 때는 질문을 아주 단순하게 줄이면 된다.
+
+> 공격자가 내 사이트가 아닌 곳에서 요청을 만들었을 때, 브라우저가 인증 cookie를 자동으로 붙이는가?
+
+이 질문에 속성별로 답하면 아래처럼 정리된다.
+
+### `SameSite`
+
+- 가장 직접적으로 CSRF를 바꾼다
+- cross-site 요청에서 cookie가 빠지면 공격자가 "내 브라우저의 로그인 상태"를 태워 보내기 어려워진다
+- `SameSite=None`이면 이 방어를 포기하는 쪽에 가깝다
+
+### `HttpOnly`
+
+- CSRF를 직접 막지 않는다
+- 공격자는 cookie 값을 읽지 않아도 브라우저가 대신 붙여 주기만 하면 요청을 보낼 수 있다
+- 대신 XSS가 났을 때 JS가 session cookie를 훔쳐 가는 위험은 낮춘다
+
+### `Secure`
+
+- CSRF를 직접 막지 않는다
+- 공격 요청이 HTTPS로 나가면 cookie는 여전히 붙을 수 있다
+- 역할은 "평문 HTTP로 흘러가지 않게" 하는 데 더 가깝다
+
+### `Domain`
+
+- 직접적인 CSRF 스위치는 아니다
+- 하지만 범위를 넓히면 더 많은 host/subdomain이 같은 cookie 범위를 공유하게 된다
+- 특히 same-site subdomain 구조에서는 "다 같은 site"라 `SameSite`만으로는 분리가 안 되므로, 과도한 `Domain` 확장은 위험하다
+
+### `Path`
+
+- 일부 경로로의 자동 전송을 줄일 수 있다
+- 하지만 공격 대상 경로가 그 path 안에 있으면 그대로 붙는다
+- 그래서 방어 보조선일 수는 있어도 핵심 CSRF 대책은 아니다
+
+### 한 줄 결론
+
+- **CSRF와 가장 직접적으로 연결되는 속성은 `SameSite`**
+- **`HttpOnly`는 주로 XSS 경감**
+- **`Secure`는 전송 채널 보호**
+- **`Domain` / `Path`는 scope 조절**
+
+---
+
+## 실전 기본값 예시
+
+### 1. 일반적인 same-site 세션 cookie
+
+```http
+Set-Cookie: session=...; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+이 조합이 주는 감각은 아래와 같다.
+
+- JS는 cookie 값을 직접 읽지 못한다
+- HTTPS에서만 전송된다
+- 외부 사이트의 전형적인 `POST`/`fetch` CSRF에는 덜 실린다
+- `Domain`을 생략하면 host-only라 범위도 넓지 않다
+
+### 2. cross-site 전송이 정말 필요한 cookie
+
+```http
+Set-Cookie: session=...; Path=/; HttpOnly; Secure; SameSite=None
+```
+
+이 경우는 이렇게 읽는다.
+
+- 브라우저가 cross-site 문맥에서도 cookie를 보낼 수 있다
+- 그래서 `SameSite` 기반 CSRF 완화는 기대하기 어렵다
+- 별도의 CSRF token, origin/referer 검증, BFF 경계 설계가 더 중요해진다
+
+핵심은 "필요한 만큼만 넓히기"다.
+
+- `Domain`은 정말 subdomain 공유가 필요할 때만
+- `Path`는 불필요한 경로 전송을 줄이는 정도로
+- `SameSite=None`은 cross-site 요구가 명확할 때만
+
+---
+
+## 자주 헷갈리는 포인트
+
+- `HttpOnly`여도 브라우저는 cookie를 요청에 자동 전송할 수 있다
+- `Secure`는 "암호화된 안전한 cookie"라는 뜻이 아니라 "HTTPS에서만 전송"에 더 가깝다
+- `SameSite`는 same-origin이 아니라 same-site 기준이다
+- `Domain`을 생략한 host-only cookie가 기본적으로 더 좁다
+- `Path`는 요청 범위를 줄이지만, 강한 보안 경계로 보면 안 된다
+- `SameSite=None`을 쓰면 cross-site cookie가 가능해지는 대신 CSRF surface가 커진다
+
+---
+
+## 면접에서 자주 나오는 질문
+
+### Q. `HttpOnly` cookie면 CSRF를 막을 수 있나요?
+
+- 아니다.
+- `HttpOnly`는 JS가 cookie 값을 읽는 것을 막을 뿐이고, 브라우저의 자동 전송은 그대로 일어날 수 있다.
+
+### Q. `Secure`와 `HttpOnly` 중 무엇이 CSRF와 더 직접 관련 있나요?
+
+- 둘 다 직접 축은 아니다.
+- CSRF와 가장 직접 연결되는 속성은 `SameSite`다.
+
+### Q. `Domain`을 생략한 cookie와 `Domain=example.com` cookie의 차이는 무엇인가요?
+
+- `Domain`을 생략하면 host-only라 설정한 정확한 host에만 붙는다.
+- `Domain=example.com`이면 subdomain까지 범위가 넓어진다.
+
+### Q. `Path=/admin`이면 다른 경로에서는 안전하다고 봐도 되나요?
+
+- 전송 범위는 줄어들지만, 보안 경계라고 보기는 어렵다.
+- CSRF/XSS 방어를 `Path`에 기대면 안 된다.
+
+### Q. `SameSite=Lax`는 언제 체감되나요?
+
+- 외부 사이트에서 자동 `POST`를 날리거나 background 요청을 보낼 때 cookie가 빠지는 쪽에서 많이 체감된다.
+- 반면 사용자가 링크를 클릭해 들어오는 top-level navigation은 비교적 덜 깨지게 동작한다.

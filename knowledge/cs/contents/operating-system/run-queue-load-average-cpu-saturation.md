@@ -2,7 +2,16 @@
 
 > 한 줄 요약: CPU가 바쁜지, 스레드가 막혔는지, 아니면 runnable 태스크가 쌓였는지를 구분해야 지연의 원인을 정확히 잡을 수 있다.
 
-> 관련 문서: [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md), [I/O 모델과 이벤트 루프](./io-models-and-event-loop.md)
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
+> - [I/O 모델과 이벤트 루프](./io-models-and-event-loop.md)
+> - [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
+> - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
+> - [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)
+
+> retrieval-anchor-keywords: run queue, load average, cpu saturation, runnable tasks, queueing delay, runqlat, context switch, CPU pressure, runnable latency, load average false positive, cpu saturation vs throttling
 
 ## 핵심 개념
 
@@ -41,16 +50,25 @@ Linux의 load average는 보통 `1m / 5m / 15m` 기준으로 관찰한다.
 - 캐시 locality가 깨진다
 - tail latency가 커진다
 
+이 상태를 더 직접적으로 보면 wakeup 이후 실제 실행까지의 지연, 즉 `runqlat` 분포가 두꺼워진다.
+
 즉 saturation은 CPU를 "더 쓰는" 문제가 아니라, 이미 쓰는 CPU를 더 잘게 나눠 쓰면서 생기는 병목이다.
 
-### 3. I/O wait과 CPU saturation을 구분해야 한다
+### 3. I/O wait, throttling, CPU saturation을 구분해야 한다
 
 load average가 높아도 원인이 다를 수 있다.
 
 - CPU saturation: runnable 태스크가 많음
+- cgroup throttling: 태스크는 더 일하고 싶지만 quota/runtime 예산이 먼저 바닥남
 - I/O saturation: 디스크/네트워크 대기 태스크가 많음
 
-이 둘을 구분하지 않으면 스레드를 늘리거나 CPU를 증설해도 개선되지 않는다.
+즉 high load average를 "scheduler contention" 하나로 뭉개면 쉽게 틀린다.
+
+- saturation인데 스레드를 늘리면 run queue와 context switch가 더 늘 수 있다
+- throttling인데 nice만 조정하면 quota 제한은 그대로 남는다
+- I/O wait인데 CPU를 먼저 늘리면 blocked task만 더 쌓일 수 있다
+
+세 갈래를 빠르게 나누는 초보자용 기준은 [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)에 따로 정리했다.
 
 ## 실전 시나리오
 

@@ -6,6 +6,16 @@
 
 `thundering herd`는 하나의 이벤트에 너무 많은 대기자가 동시에 반응하는 현상이다. 서버에서는 주로 `accept()` 대기, `epoll` 대기, 락 경쟁, 조건 변수 wakeup에서 나타난다.
 
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [TCP Backlog, somaxconn, Listen Queue](./tcp-backlog-somaxconn-listen-queue.md)
+> - [Socket Accept Queue, Kernel Diagnostics](./socket-accept-queue-kernel-diagnostics.md)
+> - [epoll Level-Triggered, Edge-Triggered, ONESHOT Wakeup Semantics](./epoll-level-edge-oneshot-wakeup-semantics.md)
+> - [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
+
+> retrieval-anchor-keywords: thundering herd, accept wakeup, wakeup storm, listen socket contention, EPOLLEXCLUSIVE, SO_REUSEPORT, wakeup cost, accept lock, herd mitigation
+
 - `accept`: 리스닝 소켓에서 새 연결을 받아오는 동작이다.
 - `wakeup`: 커널이 잠자던 스레드를 runnable 상태로 깨우는 일이다.
 - `thundering herd`: 여러 워커가 한 번에 깨어나서 결국 하나만 유효한 일을 하고 나머지는 낭비되는 상황이다.

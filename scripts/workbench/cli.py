@@ -30,6 +30,8 @@ from core.session import start_session, write_response_artifacts  # type: ignore
 from core.registry import find_repo, list_repos, upsert_repo  # type: ignore
 from core.schema_validation import validate_file, validate_payload  # type: ignore
 from core.shell import run_capture  # type: ignore
+from core.orchestrator import Orchestrator  # type: ignore
+from core.orchestrator_workers import fleet_status, run_supervisor_loop, run_worker_loop, start_fleet_background, stop_fleet  # type: ignore
 
 
 def cmd_bootstrap(_: argparse.Namespace) -> int:
@@ -509,6 +511,130 @@ def cmd_golden(args: argparse.Namespace) -> int:
     return 1 if payload.get("failed_count") else 0
 
 
+def _orchestrator() -> Orchestrator:
+    return Orchestrator()
+
+
+def cmd_orchestrator_init(_: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.run_once()
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_run_once(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.run_once(
+        low_water_mark=args.low_water_mark,
+        wave_size=args.wave_size,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_run_loop(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    return orchestrator.run_loop(
+        interval_seconds=args.interval_seconds,
+        low_water_mark=args.low_water_mark,
+        wave_size=args.wave_size,
+    )
+
+
+def cmd_orchestrator_start(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.start_background(
+        cli_script=Path(__file__).resolve(),
+        interval_seconds=args.interval_seconds,
+        low_water_mark=args.low_water_mark,
+        wave_size=args.wave_size,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_stop(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.request_stop(force=args.force)
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_status(_: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    print(json.dumps(orchestrator.status(), ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_queue(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.list_queue(
+        status_filter=args.status,
+        lane=args.lane,
+        limit=args.limit,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_claim(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.claim(
+        worker=args.worker,
+        limit=args.limit,
+        lease_seconds=args.lease_seconds,
+        lanes=args.lane,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_complete(args: argparse.Namespace) -> int:
+    orchestrator = _orchestrator()
+    payload = orchestrator.complete(
+        item_id=args.item_id,
+        worker=args.worker,
+        summary=args.summary,
+    )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_worker_loop(args: argparse.Namespace) -> int:
+    return run_worker_loop(
+        worker=args.worker,
+        lane=args.lane,
+        model=args.model,
+        idle_seconds=args.idle_seconds,
+        lease_seconds=args.lease_seconds,
+        timeout_seconds=args.timeout_seconds,
+    )
+
+
+def cmd_orchestrator_supervisor_loop(args: argparse.Namespace) -> int:
+    return run_supervisor_loop(
+        cli_script=Path(__file__).resolve(),
+        model=args.model,
+        interval_seconds=args.interval_seconds,
+    )
+
+
+def cmd_orchestrator_fleet_start(args: argparse.Namespace) -> int:
+    payload = start_fleet_background(cli_script=Path(__file__).resolve(), model=args.model)
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_fleet_status(_: argparse.Namespace) -> int:
+    print(json.dumps(fleet_status(), ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_orchestrator_fleet_stop(args: argparse.Namespace) -> int:
+    print(json.dumps(stop_fleet(force=args.force), ensure_ascii=False, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="woowa-learning-hub")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -657,6 +783,80 @@ def build_parser() -> argparse.ArgumentParser:
     golden_parser.add_argument("--fixtures")
     golden_parser.add_argument("--stop-on-failure", action="store_true")
     golden_parser.set_defaults(func=cmd_golden)
+
+    orchestrator_parser = subparsers.add_parser("orchestrator")
+    orchestrator_subparsers = orchestrator_parser.add_subparsers(dest="orchestrator_command", required=True)
+
+    orchestrator_init_parser = orchestrator_subparsers.add_parser("init")
+    orchestrator_init_parser.set_defaults(func=cmd_orchestrator_init)
+
+    orchestrator_run_once_parser = orchestrator_subparsers.add_parser("run-once")
+    orchestrator_run_once_parser.add_argument("--low-water-mark", type=int, default=2)
+    orchestrator_run_once_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_run_once_parser.set_defaults(func=cmd_orchestrator_run_once)
+
+    orchestrator_run_loop_parser = orchestrator_subparsers.add_parser("run-loop")
+    orchestrator_run_loop_parser.add_argument("--interval-seconds", type=int, default=45)
+    orchestrator_run_loop_parser.add_argument("--low-water-mark", type=int, default=2)
+    orchestrator_run_loop_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_run_loop_parser.set_defaults(func=cmd_orchestrator_run_loop)
+
+    orchestrator_start_parser = orchestrator_subparsers.add_parser("start")
+    orchestrator_start_parser.add_argument("--interval-seconds", type=int, default=45)
+    orchestrator_start_parser.add_argument("--low-water-mark", type=int, default=2)
+    orchestrator_start_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_start_parser.set_defaults(func=cmd_orchestrator_start)
+
+    orchestrator_stop_parser = orchestrator_subparsers.add_parser("stop")
+    orchestrator_stop_parser.add_argument("--force", action="store_true")
+    orchestrator_stop_parser.set_defaults(func=cmd_orchestrator_stop)
+
+    orchestrator_status_parser = orchestrator_subparsers.add_parser("status")
+    orchestrator_status_parser.set_defaults(func=cmd_orchestrator_status)
+
+    orchestrator_queue_parser = orchestrator_subparsers.add_parser("queue")
+    orchestrator_queue_parser.add_argument("--status", choices=["pending", "leased", "completed", "blocked"])
+    orchestrator_queue_parser.add_argument("--lane")
+    orchestrator_queue_parser.add_argument("--limit", type=int)
+    orchestrator_queue_parser.set_defaults(func=cmd_orchestrator_queue)
+
+    orchestrator_claim_parser = orchestrator_subparsers.add_parser("claim")
+    orchestrator_claim_parser.add_argument("--worker", required=True)
+    orchestrator_claim_parser.add_argument("--limit", type=int, default=1)
+    orchestrator_claim_parser.add_argument("--lease-seconds", type=int, default=1800)
+    orchestrator_claim_parser.add_argument("--lane", action="append")
+    orchestrator_claim_parser.set_defaults(func=cmd_orchestrator_claim)
+
+    orchestrator_complete_parser = orchestrator_subparsers.add_parser("complete")
+    orchestrator_complete_parser.add_argument("--worker", required=True)
+    orchestrator_complete_parser.add_argument("--item-id", required=True)
+    orchestrator_complete_parser.add_argument("--summary", required=True)
+    orchestrator_complete_parser.set_defaults(func=cmd_orchestrator_complete)
+
+    orchestrator_worker_loop_parser = orchestrator_subparsers.add_parser("worker-loop")
+    orchestrator_worker_loop_parser.add_argument("--worker", required=True)
+    orchestrator_worker_loop_parser.add_argument("--lane", required=True)
+    orchestrator_worker_loop_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_worker_loop_parser.add_argument("--idle-seconds", type=int, default=15)
+    orchestrator_worker_loop_parser.add_argument("--lease-seconds", type=int, default=2700)
+    orchestrator_worker_loop_parser.add_argument("--timeout-seconds", type=int, default=2700)
+    orchestrator_worker_loop_parser.set_defaults(func=cmd_orchestrator_worker_loop)
+
+    orchestrator_supervisor_loop_parser = orchestrator_subparsers.add_parser("supervisor-loop")
+    orchestrator_supervisor_loop_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_supervisor_loop_parser.add_argument("--interval-seconds", type=int, default=20)
+    orchestrator_supervisor_loop_parser.set_defaults(func=cmd_orchestrator_supervisor_loop)
+
+    orchestrator_fleet_start_parser = orchestrator_subparsers.add_parser("fleet-start")
+    orchestrator_fleet_start_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_fleet_start_parser.set_defaults(func=cmd_orchestrator_fleet_start)
+
+    orchestrator_fleet_status_parser = orchestrator_subparsers.add_parser("fleet-status")
+    orchestrator_fleet_status_parser.set_defaults(func=cmd_orchestrator_fleet_status)
+
+    orchestrator_fleet_stop_parser = orchestrator_subparsers.add_parser("fleet-stop")
+    orchestrator_fleet_stop_parser.add_argument("--force", action="store_true")
+    orchestrator_fleet_stop_parser.set_defaults(func=cmd_orchestrator_fleet_stop)
 
     return parser
 

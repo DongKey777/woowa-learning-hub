@@ -1,5 +1,7 @@
 # NUMA, Page Replacement, Thrashing
 
+**난이도: 🔴 Advanced**
+
 운영체제 면접에서 메모리 관리는 단순히 "페이지를 교체한다" 수준으로 끝나지 않는다. 실제 서버는 CPU 코어 수가 많아지고, 메모리 대역폭이 병목이 되며, NUMA 구조까지 고려해야 한다. 이 문서는 page replacement와 thrashing을 중심으로, 왜 메모리 압박이 서버 전체 지연으로 이어지는지까지 정리한다.
 
 <details>

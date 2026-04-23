@@ -1,0 +1,429 @@
+# Customer-Facing Support Access Notifications
+
+> 한 줄 요약: acting-on-behalf-of(AOBO)와 break-glass는 ordinary login 알림처럼 섞어 보여 주면 안 되며, 고객에게는 이유 범주, 범위, 시간, 종료 상태를 알리되 operator PII와 내부 incident 세부는 숨긴 privacy-safe projection이 필요하다.
+>
+> 문서 역할: 이 문서는 security 카테고리 안에서 **support AOBO / emergency access event를 고객 알림, 보안 타임라인, privacy-safe copy로 투영하는 방법**을 설명하는 deep dive다.
+
+**난이도: 🔴 Advanced**
+
+> 관련 문서:
+> - [Support Operator / Acting-on-Behalf-Of Controls](./support-operator-acting-on-behalf-of-controls.md)
+> - [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)
+> - [AOBO Start / End Event Contract](./aobo-start-end-event-contract.md)
+> - [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md)
+> - [Delivery Surface Policy for Support Access Alerts](./delivery-surface-policy-for-support-access-alerts.md)
+> - [Operator Tooling State Semantics / Safety Rails](./operator-tooling-state-semantics-safety-rails.md)
+> - [Session Inventory UX / Revocation Scope Design](./session-inventory-ux-revocation-scope-design.md)
+> - [AuthZ Kill Switch / Break-Glass Governance](./authz-kill-switch-break-glass-governance.md)
+> - [Audit Logging for Auth / AuthZ Traceability](./audit-logging-auth-authz-traceability.md)
+> - [AuthZ Decision Logging Design](./authz-decision-logging-design.md)
+> - [Auth Incident Triage / Blast-Radius Recovery Matrix](./auth-incident-triage-blast-radius-recovery-matrix.md)
+> - [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
+
+retrieval-anchor-keywords: customer-facing support access notifications, support access notification, support access email copy, support access push copy, support access in-app notification copy, support access inbox copy, support access security timeline, notification channel copy pattern, privacy safe notification copy, privacy safe email subject, privacy safe push notification, privacy safe in app copy, customer traceability event, customer traceability notification, case ref in notification, access group id in notification, acting on behalf notification, AOBO notification, break glass notification, emergency access notification, support access audience matrix, support access delivery surface, support access email vs inbox vs timeline, support access alternate verified channel, compromised mailbox support access alert, tenant admin notification, security contact notification, security timeline retention, delegated access timeline, customer security center support event, canonical security timeline event schema, aobo start end event contract, delegated support access end event schema, customer timeline close copy, access group id, case ref, timeline retention class, browser session coherence, session boundary bridge, ordinary session inventory vs support timeline
+
+## 이 문서 다음에 보면 좋은 문서
+
+- support AOBO grant와 operator 제어면 자체는 [Support Operator / Acting-on-Behalf-Of Controls](./support-operator-acting-on-behalf-of-controls.md)로 이어진다.
+- start/end pair, `case_ref`, `access_group_id`, `retention_class`를 어떻게 공통 schema로 묶을지는 [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)로 이어진다.
+- `support_access_started` / `support_access_ended` field contract와 customer timeline close rule은 [AOBO Start / End Event Contract](./aobo-start-end-event-contract.md)에서 먼저 고정하면 copy drift가 줄어든다.
+- B2C/B2B별 affected user, tenant admin, security contact routing 기준은 [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md)로 이어진다.
+- email, in-app inbox, security timeline, alternate verified channel을 mailbox trust 기준으로 고르는 규칙은 [Delivery Surface Policy for Support Access Alerts](./delivery-surface-policy-for-support-access-alerts.md)로 이어진다.
+- emergency override의 actor/scope/duration 제약은 [AuthZ Kill Switch / Break-Glass Governance](./authz-kill-switch-break-glass-governance.md)로 이어진다.
+- ordinary session inventory와 support access timeline을 어떻게 분리해 보일지는 [Session Inventory UX / Revocation Scope Design](./session-inventory-ux-revocation-scope-design.md)와 같이 봐야 한다.
+
+---
+
+## 핵심 개념
+
+support access와 break-glass는 내부적으로는 audit event지만, 고객에게는 그대로 raw log를 보여 주면 안 된다.
+
+고객-facing projection이 따로 필요한 이유:
+
+- 고객은 "누가 왜 내 계정이나 workspace에 접근했는가"를 이해해야 한다
+- dispute와 trust 회복을 위해 self-serve timeline이 필요하다
+- 하지만 operator 개인 정보, 내부 incident 코드, 탐지 로직은 그대로 노출하면 안 된다
+
+즉 필요한 것은 "감사 로그 복사본"이 아니라, 내부 증거와 연결되면서도 privacy-safe한 customer notification layer다.
+
+---
+
+## 깊이 들어가기
+
+### 1. support AOBO와 break-glass는 서로 다른 event type으로 보여야 한다
+
+고객 입장에서는 둘 다 "관리자 접근"처럼 보일 수 있지만 의미는 다르다.
+
+- support AOBO: 고객 요청 처리나 제한된 지원 작업
+- break-glass: 장애 복구나 보안 대응을 위한 긴급 예외 접근
+
+그래서 사용자 notification type도 분리하는 편이 안전하다.
+
+- `support_access_read`
+- `support_access_write`
+- `emergency_access_started`
+- `emergency_access_ended`
+
+나쁜 패턴:
+
+- 둘 다 `새 로그인 감지`
+- 둘 다 `관리자 작업이 있었습니다`
+- ordinary device session row와 동일한 템플릿 사용
+
+이렇게 만들면 사용자는 자기 로그인, 지원 대리 작업, 긴급 복구 접근을 구분할 수 없다.
+
+### 2. 고객에게 보여 줄 필드는 "traceability minimum set"으로 제한한다
+
+고객-facing 알림에는 최소한 아래 정보가 있으면 좋다.
+
+- event type: 지원 조회 / 지원 변경 / 긴급 복구 접근
+- affected scope: 어떤 계정, 어떤 workspace, 어떤 설정 영역인지
+- occurred at: 시작 시각
+- ended at 또는 expires at: 종료 시각 또는 예정 시각
+- reason category: 고객 요청 처리 / 계정 복구 / 서비스 복구 / 보안 대응
+- visible case reference: 고객이 이미 알고 있는 support request id 또는 case id
+- next action: 세션 검토, 비밀번호 변경, support 문의, admin review
+
+반대로 내부 전용으로 남겨야 하는 값:
+
+- operator 개인 이메일, 실명, 사번
+- 내부 ticket 전문, incident title, detection note
+- approval id 원문
+- 내부 source IP, device fingerprint, admin console path
+
+핵심은 고객이 사건을 재구성할 만큼은 보여 주되, 운영자와 내부 시스템을 공격 표면으로 노출하지 않는 것이다.
+
+### 3. notification center, email, security timeline은 역할이 다르다
+
+세 surface를 같은 것으로 보면 retention과 copy가 꼬인다.
+
+- email/push: 즉시 인지용
+- in-app notification center: 읽지 않은 보안 이벤트를 놓치지 않게 하는 inbox
+- security timeline: 나중에 다시 확인하고 dispute할 수 있는 self-serve evidence
+
+특히 break-glass는 timeline-only로 끝내면 안 되는 경우가 많다.
+
+- read-only AOBO: timeline 중심, 필요 시 inbox 동시 노출
+- write-capable AOBO: timeline + email/inbox
+- break-glass: timeline + email/inbox를 기본값으로 두고, B2B면 org admin/security contact까지 고려
+
+즉 delivery surface와 canonical review surface를 분리해야 한다.
+
+### 4. active access는 시작 알림만이 아니라 종료 상태까지 보여야 한다
+
+지원 접근은 "시작됨"만 보여 주고 끝내면 불안이 오래 남는다.
+
+좋은 projection은 아래 둘 중 하나다.
+
+- 하나의 timeline row에 `진행 중 -> 종료됨 -> 자동 만료됨` 상태를 업데이트
+- `started`와 `ended`를 별도 row로 기록하되 같은 access group id로 연결
+
+고객이 확인하고 싶은 것은 대개 이 세 가지다.
+
+- 언제 시작됐는가
+- 무엇을 할 수 있었는가
+- 지금도 열려 있는가
+
+특히 break-glass는 hard expiry 또는 revoke 완료 시점을 같이 보여 주는 편이 좋다.
+
+### 5. security timeline retention은 알림 보존과 분리해 설계해야 한다
+
+가장 흔한 실수는 email 또는 inbox retention을 security evidence retention처럼 취급하는 것이다.
+
+권장 baseline:
+
+- realtime email/push: 전달용, 장기 증거로 간주하지 않음
+- in-app notification inbox: 30~90일 수준의 unread/recent view
+- customer security timeline: access 종료 시점 기준 최소 90일
+- write-capable AOBO와 break-glass: 180일 이상 또는 admin export/감사 경로 제공
+- immutable internal audit log: 정책/규제 기준에 따라 그보다 더 길게 유지
+
+이렇게 나누는 이유:
+
+- 고객은 지원 개입 후 한참 뒤에도 이력을 다시 확인할 수 있어야 한다
+- support dispute, 청구 조정, 보안 review window는 inbox보다 길다
+- internal forensic retention은 customer UI보다 더 길고, 더 적은 사람만 접근해야 한다
+
+즉 customer timeline은 "너무 짧아도 안 되고, 내부 raw audit만큼 길고 자세울 필요도 없다."
+
+### 6. privacy-safe copy는 actor 개인이 아니라 역할과 범주를 말해야 한다
+
+copy는 상세할수록 좋은 것이 아니라, 오해와 과노출을 줄일 만큼 정확해야 한다.
+
+좋은 표현:
+
+- `지원팀이 고객 요청을 처리하기 위해 계정 설정을 확인했습니다.`
+- `지원팀이 고객 요청에 따라 MFA 설정을 재설정했습니다.`
+- `긴급 복구 절차에 따라 제한된 관리자 접근이 워크스페이스에 일시적으로 승인되었습니다.`
+
+피해야 할 표현:
+
+- `홍길동 상담사가 10.24.8.19에서 로그인했습니다.`
+- `INC-4271 authz fallback bypass 승인으로 관리자 루트 권한이 열렸습니다.`
+- `계정이 손상되었을 수 있으니 즉시 조치하세요.` 같은 미확정 공포 유발 문구
+
+노출할 reason도 free-form note보다 controlled taxonomy가 낫다.
+
+- 고객 요청 처리
+- 계정 복구 지원
+- 서비스 복구
+- 보안 대응
+
+### 7. read와 write를 같은 문장으로 뭉개면 안 된다
+
+`접근했습니다` 한 문장으로 끝내면 read-only inspection과 실제 변경이 구분되지 않는다.
+
+권장 구분:
+
+- read-only AOBO: `확인했습니다`, `검토했습니다`
+- write AOBO: `변경했습니다`, `재설정했습니다`, `복구했습니다`
+- break-glass: `일시적 긴급 접근이 승인되었습니다`, `복구 작업 후 종료되었습니다`
+
+단, 실제로 입증 가능한 범위만 써야 한다.
+
+- 설정 변경이 있었다면 어떤 설정 영역인지
+- 고객 데이터 열람이 없었다면 열람이 없었다고 단정하지 말고 scope 기준으로 설명
+- 복구를 위해 권한이 열렸다면 그 범위를 보여 주고, "전체 관리자 접근" 같은 과장 표현은 피한다
+
+### 8. email, push, in-app은 같은 사실을 다른 밀도로 써야 한다
+
+surface별 템플릿은 달라도, 고객이 보는 사건 의미는 같아야 한다.
+
+좋은 방법은 channel마다 별도 문장을 임의로 쓰는 것이 아니라, 먼저 하나의 `copy spine`을 고정하는 것이다.
+
+- event verb: `확인했습니다`, `재설정했습니다`, `긴급 접근이 승인되었습니다`, `종료되었습니다`
+- scope summary: 계정 설정, `MFA`, workspace billing/export, tenant security policy
+- reason category: 고객 요청 처리, 계정 복구 지원, 서비스 복구, 보안 대응
+- traceability key: `case_ref`, 필요 시 customer-visible `access_group_id`
+- status/time: 시작 시각, 종료 또는 예정 종료 시각, 현재 활성 여부
+- next action: 보안 타임라인, 세션 검토, tenant admin review, support 문의
+
+즉 email, push, in-app은 문장 길이만 달라져야지 사실관계가 달라지면 안 된다.
+
+| channel | 주된 역할 | 꼭 남길 것 | 줄여도 되는 것 | 특히 피할 것 |
+|---|---|---|---|---|
+| email | 상세 설명 + 사후 참고 | event verb, scope summary, reason category, `case_ref`, 시작/종료 상태, next action | 긴 내부 배경 설명 | operator 실명, 내부 incident code, source IP, 공포 유발 제목 |
+| push | 즉시 인지 | event verb, 가장 중요한 scope, 필요 시 `case_ref` 또는 status | 세부 이유 문장, 긴 후속 안내 | `관리자 접근`, `새 로그인` 같은 generic 문구 |
+| in-app inbox / notification center | unread 관리 + timeline 진입점 | stable title, status badge, `case_ref`, deep link | 긴 배경 설명, 중복 CTA | ordinary activity feed와 섞이는 제목 |
+
+channel 우선순위도 분명해야 한다.
+
+- email은 가장 설명력이 높지만, canonical truth는 아니다.
+- push는 가장 짧으므로 "새로운 사실"을 추가하지 말고 이미 정의된 spine을 압축만 해야 한다.
+- in-app inbox는 timeline으로 내려가기 전의 중간 surface라서 `status`, `case_ref`, deep link가 특히 중요하다.
+
+### 9. 같은 event bundle을 channel별로 압축하는 예시가 있어야 한다
+
+예를 들어 고객 요청으로 `MFA` 재설정이 수행된 write AOBO라면, 세 channel copy는 이렇게 맞춰지는 편이 안전하다.
+
+| channel | 좋은 copy 예시 | 왜 이 표현이 안전한가 |
+|---|---|---|
+| email subject | `[보안 알림] 지원팀이 고객 요청 #C-1842에 따라 MFA 설정을 재설정했습니다` | `지원팀`, `고객 요청`, `MFA 설정 재설정`이 모두 드러나고 operator PII는 없다 |
+| email body opener | `지원팀이 고객 요청 처리 과정에서 계정의 MFA 설정을 재설정했습니다. 이 작업은 2026-04-14 14:20 KST에 종료되었습니다.` | reason, scope, 종료 상태를 한 번에 설명한다 |
+| push title | `지원팀이 MFA 설정을 재설정했습니다` | write event를 `접근`으로 뭉개지 않는다 |
+| push body | `고객 요청 #C-1842 기준 · 보안 타임라인에서 확인하세요` | 짧지만 `case_ref`와 확인 경로를 남긴다 |
+| in-app title | `지원 변경 완료` | unread 목록에서 event 종류가 바로 보인다 |
+| in-app body | `MFA 설정 재설정 · 요청 #C-1842 · 14:20 종료` | scope, traceability, status를 compact하게 담는다 |
+
+핵심은 세 channel이 서로 다른 사건처럼 보이지 않는 것이다.
+
+- email이 `재설정했습니다`라고 했으면 push/in-app도 같은 write verb를 써야 한다.
+- email이 `종료되었습니다`라고 했으면 inbox badge도 `진행 중`이면 안 된다.
+- push 길이가 부족하면 reason을 줄이지, 갑자기 operator 이름이나 내부 ticket을 넣어 정보를 대체하면 안 된다.
+
+break-glass도 start/end pair를 같은 방식으로 맞춰야 한다.
+
+- start email/inbox/push는 `일시적 긴급 접근이 승인되었습니다`
+- end email/inbox/push는 `긴급 접근이 종료되었습니다` 또는 `자동 만료되었습니다`
+- 세 channel 모두 같은 `case_ref` 또는 visible reference를 써야 dispute 시 재구성이 쉽다
+
+### 10. channel별 금지어와 허용어를 따로 정해 두는 편이 운영에 강하다
+
+privacy-safe wording은 "무엇을 쓰지 말라"보다 "각 event class에서 어떤 동사를 허용하는가"를 먼저 정하는 편이 안정적이다.
+
+| event class | 권장 verb | 보조 정보 | 금지 패턴 |
+|---|---|---|---|
+| read-only AOBO | `확인했습니다`, `검토했습니다` | `고객 요청 #...`, `계정 설정`, `workspace 설정` | `로그인했습니다`, `접속했습니다`만 단독 사용 |
+| write AOBO | `변경했습니다`, `재설정했습니다`, `복구했습니다` | 변경된 영역, 종료 여부, 후속 행동 | `접근했습니다` 한 문장으로 뭉개기 |
+| break-glass start | `긴급 접근이 승인되었습니다`, `일시적 관리자 접근이 시작되었습니다` | 제한된 범위, 예정 종료 시각 | `루트 권한이 열렸습니다`, 내부 장애 코드 |
+| break-glass end | `긴급 접근이 종료되었습니다`, `자동 만료되었습니다`, `강제 종료되었습니다` | 종료 시각, timeline 확인 경로 | start와 구분되지 않는 generic `관리자 작업이 있었습니다` |
+
+운영 포인트:
+
+- push용 축약 문구도 email/in-app 허용어 집합에서만 줄인다.
+- channel마다 다른 writer가 copy를 만들더라도 같은 taxonomy 표를 봐야 drift가 줄어든다.
+- legal/compliance review도 raw 문자열 목록보다 event class별 허용어 표가 있을 때 빨라진다.
+
+### 11. user action path가 없으면 notification은 불신만 남긴다
+
+고객-facing 알림에는 다음 행동이 같이 있어야 한다.
+
+- `보안 타임라인 보기`
+- `현재 세션 검토`
+- `지원 문의`
+- `관리자에게 알리기`
+
+고객 요청으로 시작된 AOBO라 해도, 나중에 다시 확인할 경로가 없다면 분쟁 대응이 어려워진다.
+
+### 12. B2B에서는 end-user와 tenant admin의 visibility를 분리할 수 있다
+
+같은 event라도 누구에게 보여 줄지 다를 수 있다.
+
+- 개인 계정 문제 해결: affected user 중심
+- tenant-wide break-glass: workspace owner / security admin 중심
+- 특정 사용자 비밀번호 재설정: affected user + tenant admin 정책 기반
+
+핵심은 audience가 달라도 event taxonomy와 retention 기준은 공유하는 것이다.
+
+이때 구체적인 B2C/B2B audience matrix와 `affected user / tenant admin / security contact` 분기 기준은 [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md)에서 따로 정리하는 편이 좋다.
+
+---
+
+## 실전 시나리오
+
+### 시나리오 1: 고객 요청으로 read-only support inspection이 열렸다
+
+좋은 노출:
+
+- security timeline에 `지원 조회` event 생성
+- case id와 시작/종료 시각 표시
+- copy는 `지원팀이 고객 요청 #C-1842 처리를 위해 계정 설정을 확인했습니다`
+
+피해야 할 노출:
+
+- ordinary login alert 템플릿 사용
+- operator 실명과 내부 IP 노출
+
+### 시나리오 2: support가 고객 대신 MFA reset을 수행했다
+
+좋은 노출:
+
+- `지원 변경` event로 별도 분류
+- 무엇이 바뀌었는지 `MFA 설정 재설정` 수준으로 명시
+- 종료 후 `다음 로그인에서 다시 등록이 필요할 수 있습니다` 같은 후속 안내 제공
+
+피해야 할 노출:
+
+- read-only access와 동일한 `지원 접근이 있었습니다`
+- 종료 이벤트 없이 시작 이벤트만 남김
+
+### 시나리오 3: tenant outage 중 break-glass가 발급됐다
+
+좋은 노출:
+
+- workspace security timeline에 `긴급 복구 접근 시작`과 `긴급 복구 접근 종료`를 연결
+- reason category는 `서비스 복구`
+- copy는 `긴급 복구 절차에 따라 제한된 관리자 접근이 승인되었고 현재는 종료되었습니다`
+
+피해야 할 노출:
+
+- `새 관리자 로그인`
+- 내부 incident code, evaluator name, fallback path 노출
+
+---
+
+## 코드로 보기
+
+### 1. customer-facing event projection 예시
+
+```java
+public record CustomerSecurityEvent(
+        String eventType,
+        String audienceType,
+        String scopeSummary,
+        String visibleReasonCategory,
+        String visibleCaseRef,
+        Instant startedAt,
+        Instant endedAt,
+        String status,
+        String nextActionUrl
+) {
+}
+```
+
+### 2. internal audit와 external projection 분리 예시
+
+```java
+public record SupportAccessAuditEvent(
+        String operatorId,
+        String operatorSessionId,
+        String subjectUserId,
+        String tenantId,
+        String scope,
+        String approvalId,
+        String internalReason,
+        Instant startedAt,
+        Instant endedAt
+) {
+    public CustomerSecurityEvent toCustomerProjection() {
+        return new CustomerSecurityEvent(
+                scope.startsWith("break_glass") ? "emergency_access_started" : "support_access_write",
+                "affected_account",
+                summarizeScope(scope),
+                mapReason(internalReason),
+                visibleCaseRef(),
+                startedAt,
+                endedAt,
+                endedAt == null ? "active" : "ended",
+                "/settings/security/timeline"
+        );
+    }
+}
+```
+
+### 3. 운영 체크리스트
+
+```text
+1. support read, support write, break-glass start/end가 다른 customer event type으로 투영되는가
+2. timeline row가 시작/종료/현재 활성 상태를 모두 설명하는가
+3. notification inbox retention과 security timeline retention이 분리돼 있는가
+4. operator PII, approval id, internal incident detail이 customer copy에서 제거되는가
+5. email, push, in-app이 같은 event verb / `case_ref` / status를 공유하는가
+6. push가 새 사실을 추가하지 않고 email/timeline copy spine을 압축만 하는가
+7. 고객이 바로 확인하거나 문의할 next action이 포함되는가
+8. org admin과 affected user의 audience 정책이 정의돼 있는가
+```
+
+---
+
+## 트레이드오프
+
+| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+|--------|------|------|----------------|
+| generic `관리자 접근` 알림 | 구현이 단순하다 | AOBO와 break-glass 의미가 흐려진다 | 가능하면 피한다 |
+| event type을 support read/write/break-glass로 분리 | 고객 traceability가 좋아진다 | taxonomy와 copy 설계가 필요하다 | 보안 센터, support 개입이 있는 서비스 |
+| channel별 템플릿은 다르되 shared copy spine을 유지 | email/push/in-app 사이 의미 drift가 줄어든다 | copy bundle 관리와 review checklist가 필요하다 | multi-channel security notification을 운영하는 서비스 |
+| operator 실명 표시 | 설명이 직관적이다 | privacy/공격 표면이 커진다 | 일반적으로 피하고 법적 요구가 있을 때만 검토 |
+| 짧은 inbox retention만 제공 | 비용이 낮다 | dispute와 사후 review에 약하다 | 낮은 위험 서비스 |
+| timeline + 장기 audit 이원화 | 고객 self-serve와 forensic을 모두 만족한다 | projection 설계가 필요하다 | B2B, regulated, support-heavy 서비스 |
+
+판단 기준은 이렇다.
+
+- 고객이 ordinary login과 support/emergency access를 구분해야 하는가
+- read-only와 write access를 다른 copy로 표현할 수 있는가
+- customer-facing retention과 internal audit retention을 따로 운영할 수 있는가
+- privacy-safe copy taxonomy를 미리 정의했는가
+
+---
+
+## 꼬리질문
+
+> Q: 왜 support AOBO를 ordinary login notification처럼 보여 주면 안 되나요?
+> 의도: identity projection 차이를 이해하는지 확인
+> 핵심: actor 의미가 다르고, 고객이 자기 로그인과 지원 개입을 구분해야 하기 때문이다.
+
+> Q: break-glass notification에는 무엇을 꼭 보여 줘야 하나요?
+> 의도: emergency access의 최소 traceability 필드를 이해하는지 확인
+> 핵심: 이유 범주, 범위, 시작/종료 시각, 현재 종료 여부, 확인 경로가 필요하다.
+
+> Q: 왜 operator 실명과 approval id를 바로 보여 주지 않나요?
+> 의도: privacy-safe projection 필요성을 이해하는지 확인
+> 핵심: 고객 traceability에는 도움이 적고 운영자 privacy와 공격 표면만 늘릴 수 있기 때문이다.
+
+> Q: retention은 어느 surface를 기준으로 잡아야 하나요?
+> 의도: delivery와 evidence surface를 구분하는지 확인
+> 핵심: inbox나 email이 아니라 security timeline과 internal audit를 각각 따로 설계해야 한다.
+
+## 한 줄 정리
+
+support AOBO와 break-glass의 고객 알림은 raw audit를 복사하는 문제가 아니라, event type, 시작/종료 상태, 적절한 retention, privacy-safe copy를 갖춘 별도 보안 projection을 설계하는 문제다.

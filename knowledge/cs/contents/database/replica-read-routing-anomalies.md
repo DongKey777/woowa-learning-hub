@@ -2,8 +2,17 @@
 
 > 한 줄 요약: replica lag만 막아서는 부족하고, 요청이 어떤 replica로 흘러가느냐 자체가 일관성을 깨뜨릴 수 있다.
 
-관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
-Retrieval anchors: `read-after-write`, `session affinity`, `monotonic read`, `causal consistency`, `GTID`
+**난이도: 🔴 Advanced**
+
+관련 문서: [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md), [Causal Consistency Intuition](./causal-consistency-intuition.md), [Failover Promotion Read Divergence](./failover-promotion-read-divergence.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md)
+retrieval-anchor-keywords: replica read routing anomaly, replica routing anomaly, read routing anomaly, different replica different results, stale read after retry, refresh shows old then new, value flips between refreshes, inconsistent replica read, session consistency, monotonic read broken, read goes backward, sometimes old sometimes new, retry returns older data, pagination duplicates across replicas, pagination missing rows across replicas, connection pool replica switch, topology cache stale, failover read divergence, session affinity, causal consistency, GTID, 새로고침할 때마다 값 달라짐, 어떤 때는 최신 어떤 때는 옛값, 재시도 후 결과 바뀜, 페이지네이션 중복 누락
+
+## 증상별 바로 가기
+
+- `어떤 때는 최신, 어떤 때는 옛값`, `refresh shows old then new`, `retry returns older data`처럼 요청마다 결과가 흔들리면 이 문서에서 replica selection, retry path, topology cache 문제를 먼저 본다.
+- `write 직후 최신성이 안 맞는다`가 핵심이면 [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md)에서 lag budget과 primary fallback을 먼저 본다.
+- `내가 쓴 값이 내 세션에서 유지돼야 한다`가 핵심이면 [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)으로 바로 간다.
+- failover 직후 promotion, topology cache, stale primary 의심이면 [Failover Promotion Read Divergence](./failover-promotion-read-divergence.md)와 [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md)을 이어 본다.
 
 ## 핵심 개념
 

@@ -2,7 +2,11 @@
 
 > 한 줄 요약: Java 메모리 누수는 heap에만 생기지 않고, ClassLoader를 붙잡으면 redeploy 후에도 살아남는다.
 
-> 관련 문서: [JVM, GC, JMM](./4.md), [Reflection 비용과 대안](./reflection-cost-and-alternatives.md), [OOM Heap Dump Playbook](./oom-heap-dump-playbook.md)
+**난이도: 🔴 Expert**
+
+> 관련 문서: [JVM, GC, JMM](./jvm-gc-jmm-overview.md), [Reflection 비용과 대안](./reflection-cost-and-alternatives.md), [OOM Heap Dump Playbook](./oom-heap-dump-playbook.md)
+
+retrieval-anchor-keywords: ClassLoader leak, classloader memory leak, redeploy memory leak, ThreadLocal classloader leak, metaspace leak, webapp classloader retention, VM.classloader_stats, old ClassLoader not collected, dynamic proxy leak, application redeploy heap leak
 
 ## 핵심 개념
 

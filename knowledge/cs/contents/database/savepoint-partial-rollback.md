@@ -2,8 +2,10 @@
 
 > 한 줄 요약: savepoint는 트랜잭션 전체를 포기하지 않고, 실패한 중간 지점만 되감아 다시 시도하게 해 준다.
 
-관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [트랜잭션 실전 시나리오](./transaction-case-studies.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
-Retrieval anchors: `savepoint`, `partial rollback`, `nested transaction`, `retry substep`, `compensating step`
+**난이도: 🔴 Advanced**
+
+관련 문서: [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [트랜잭션 실전 시나리오](./transaction-case-studies.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md), [Savepoint + Lock Retention Incident Scenarios and Recovery Patterns](./savepoint-lock-retention-incident-scenarios.md)
+retrieval-anchor-keywords: savepoint, partial rollback, nested transaction, retry substep, compensating step, rollback to savepoint locks, savepoint edge case, savepoint incident
 
 ## 핵심 개념
 

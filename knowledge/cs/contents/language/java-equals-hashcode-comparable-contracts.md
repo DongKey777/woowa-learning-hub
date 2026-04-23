@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 같은 객체를 같은 객체로 인정하는 기준과 정렬 기준을 제대로 설계해야 `HashMap`, `HashSet`, `TreeMap`, `TreeSet`이 예측 가능하게 동작한다.
 
+**난이도: 🔴 Advanced**
+
 ## 핵심 개념
 
 이 주제는 단순히 "오버라이딩 규칙"을 외우는 문제가 아니다.  
@@ -47,16 +49,26 @@
 - `TreeSet`
 - `mutable key`
 - `BigDecimal`
+- `BigDecimal scale`
+- `scale-sensitive equality`
+- `money equality`
 - `JPA entity identity`
 - `natural ordering`
 - `comparison consistency`
+- `canonical representation`
+- `IntegerCache`
+- `wrapper equality`
+- `autoboxing`
 
 ### 관련 문서
 
 - [HashMap 내부 구조](../data-structure/hashmap-internals.md)
 - [Java Collections 성능 감각](./java/collections-performance.md)
+- [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./java/bigdecimal-money-equality-rounding-serialization-pitfalls.md)
+- [BigDecimal `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps](./java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md)
+- [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./java/autoboxing-integercache-null-unboxing-pitfalls.md)
 - [TreeMap, HashMap, LinkedHashMap 비교](../data-structure/treemap-vs-hashmap-vs-linkedhashmap.md)
-- [ClassLoader, Exception 설계, equals/hashCode/compareTo](./java/6.md)
+- [ClassLoader, Exception 경계, 객체 계약](./java/classloader-exception-boundaries-object-contracts.md)
 
 ## 깊이 들어가기
 
@@ -66,6 +78,9 @@
 반면 `equals`는 도메인 관점에서 같은 값인지 판단한다.
 
 예를 들어 주문 번호가 같은 두 `Order` 객체는, 서로 다른 인스턴스여도 같은 주문으로 볼 수 있다.
+
+이 차이는 wrapper type에서 더 자주 함정이 된다.  
+`Integer`나 `Long`의 `==`는 cache와 reference semantics 때문에 더 헷갈릴 수 있다.
 
 ### 2. `hashCode`는 왜 `equals`와 묶여 있나
 
@@ -123,6 +138,7 @@
 - `new BigDecimal("1.0").compareTo(new BigDecimal("1.00"))` -> `0`
 
 이 차이를 모르고 `Set`이나 `Map` 정렬 로직을 짜면, "왜 하나가 안 들어가지?" 같은 버그가 생긴다.
+여기에 `stripTrailingZeros()`, `toPlainString()`, `MathContext` 같은 표현 정책까지 섞이면 더 헷갈려진다. 자세한 함정은 [BigDecimal MathContext, stripTrailingZeros(), and Canonicalization Traps](./java/bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md)에서 이어서 볼 수 있다.
 
 ## 실전 시나리오
 

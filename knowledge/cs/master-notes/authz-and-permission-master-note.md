@@ -4,13 +4,16 @@
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: authorization, permission model, RBAC, ABAC, scope, ownership, principal, policy, privilege escalation, access control, tenant scope, admin scope, deny by default
+> retrieval-anchor-keywords: authorization, permission model, RBAC, ABAC, scope, ownership, principal, policy, privilege escalation, access control, tenant scope, admin scope, deny by default, stale authz cache, stale deny, grant but still denied, 403 after revoke, revoked admin still has access, permission cache stale, revocation tail
 
 > related docs:
 > - [인증과 인가의 차이](../contents/security/authentication-vs-authorization.md)
 > - [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
 > - [Permission Model Drift / AuthZ Graph Design](../contents/security/permission-model-drift-authz-graph-design.md)
 > - [Authorization Caching Staleness](../contents/security/authorization-caching-staleness.md)
+> - [AuthZ Cache Inconsistency / Runtime Debugging](../contents/security/authz-cache-inconsistency-runtime-debugging.md)
+> - [Auth Failure Response Contracts: `401` / `403` / `404`](../contents/security/auth-failure-response-401-403-404.md)
+> - [Revocation Propagation Lag / Debugging](../contents/security/revocation-propagation-lag-debugging.md)
 > - [멀티 테넌트 SaaS 격리 설계](../contents/system-design/multi-tenant-saas-isolation-design.md)
 > - [Query Playbook](../rag/query-playbook.md)
 > - [Cross-Domain Bridge Map](../rag/cross-domain-bridge-map.md)
@@ -55,9 +58,16 @@ Read with:
 
 If permission checks are cached, revocation and role changes must propagate quickly enough.
 
+If the symptom shows up as `403 after revoke`, `grant but still denied`, or `tenant-specific 403`,
+start by separating stale deny from concealment or response-contract drift.
+If the symptom is `allowed after revoke`, the same authz graph may still be correct while propagation is late.
+
 Read with:
 
 - [Authorization Caching Staleness](../contents/security/authorization-caching-staleness.md)
+- [AuthZ Cache Inconsistency / Runtime Debugging](../contents/security/authz-cache-inconsistency-runtime-debugging.md)
+- [Auth Failure Response Contracts: `401` / `403` / `404`](../contents/security/auth-failure-response-401-403-404.md)
+- [Revocation Propagation Lag / Debugging](../contents/security/revocation-propagation-lag-debugging.md)
 
 ### 5. Tenant scope is a permission boundary
 
@@ -83,7 +93,14 @@ Likely cause:
 - stale authorization cache
 - token TTL too long
 
-### 시나리오 3: tenant A can read tenant B data
+### 시나리오 3: `403 after revoke` or `grant but still denied`
+
+Likely cause:
+
+- negative cache or tenant-scoped cache key is stale
+- concealment `404` and real `403` drift are mixed in the response layer
+
+### 시나리오 4: tenant A can read tenant B data
 
 Likely cause:
 

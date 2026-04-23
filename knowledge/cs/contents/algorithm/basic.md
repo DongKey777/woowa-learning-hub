@@ -1,5 +1,7 @@
 # 알고리즘 기본
 
+**난이도: 🔴 Advanced**
+
 > 작성자 : [권혁진](https://github.com/KimKwon), [박재용](https://github.com/ggjae), [서그림](https://github.com/Seogeurim)
 
 <details>
@@ -18,6 +20,13 @@
 
 </details>
 
+> retrieval-anchor-keywords: algorithm basics, algorithm primer, time complexity, space complexity, big o notation, brute force, dfs, bfs, bfs shortest path, unweighted shortest path, unit weight shortest path, queue shortest path, edge count minimum, minimum move count, maze shortest path, level order shortest path, 무가중치 최단 경로, 최소 이동 횟수, 미로 최단 경로, backtracking, divide and conquer, greedy, greedy overview, greedy primer, 탐욕 개요, 그리디 개요, dynamic programming
+>
+> 관련 문서:
+> - [상각 분석과 복잡도 함정](./amortized-analysis-pitfalls.md)
+> - [이분 탐색 패턴](./binary-search-patterns.md)
+> - [그래프 관련 알고리즘](./graph.md)
+
 ---
 
 알고리즘은 **완전탐색**(**Brute-Force**, 모든 경우의 수를 탐색해보는 것)에서 시작한다. 이는 모든 경우의 수를 다 따져보기 때문에 강력하지만, 최대의 시간복잡도를 가지게 된다. 모든 경우의 수를 생각해보고 또한 시간복잡도를 줄일 수 있는 부분이 있다면 그러한 알고리즘을 생각해보고 그 알고리즘을 정확하게 코드로 구현할 수 있어야 한다. 좋은 코드를 짜기 위해서는 다음 과정의 연습이 필요하다.
@@ -25,6 +34,13 @@
 - 문제를 파악하고 알고리즘을 생각하기
 - 알고리즘의 공간복잡도와 시간복잡도를 계산하여 문제의 제약 조건 내에 수행될 수 있는 알고리즘인지 판단하기
 - 알고리즘을 빠르고 정확하게 구현하기 (연습만이 정답)
+
+## 이 문서 다음에 보면 좋은 문서
+
+- 복잡도 해석의 함정과 실무 감각까지 이어 보려면 [상각 분석과 복잡도 함정](./amortized-analysis-pitfalls.md)을 보면 좋다.
+- 정답 공간을 줄이는 탐색 패턴은 [이분 탐색 패턴](./binary-search-patterns.md)에서 이어진다.
+- DFS / BFS가 실제 그래프 문제 선택으로 확장되는 흐름은 [그래프 관련 알고리즘](./graph.md)에서 볼 수 있다.
+- BFS가 `unweighted shortest path`의 시작점이고 이후 weighted/DAG shortest path로 어떻게 갈리는지 보려면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)와 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)를 같이 보면 좋다.
 
 ## 시간복잡도와 공간복잡도
 
@@ -126,6 +142,15 @@ void bfs(int start) {
     }
 }
 ```
+
+#### BFS shortest-path handoff
+
+BFS는 간선 가중치가 없거나 모두 같을 때 레벨 순서 자체가 최단 거리다.
+즉 `bfs shortest path`, `unweighted shortest path`, `최소 이동 횟수`, `미로 최단 경로` 같은 질의는 이 섹션에서 시작하면 된다.
+
+- 무가중치 / DAG / weighted shortest path를 한 번에 비교하려면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)를 본다.
+- `0-1 BFS`, `deque shortest path`, `teleport cost = 0, walk cost = 1` 같은 희소 그래프 변형은 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)로 이어진다.
+- path vs MST vs topological sort vs flow처럼 그래프 문제 자체의 분기점이 헷갈리면 [그래프 관련 알고리즘](./graph.md#shortest-path-router-unweighted-vs-dag-vs-weighted)의 shortest-path router를 먼저 본다.
 
 ---
 
@@ -518,9 +543,11 @@ if (currentRow - rowNum == abs(colNum - board[rowNum]))
 
 ## 탐욕 알고리즘 (Greedy)
 
-> 자세한 설명 - 작성자 장주섭 | [Greedy Algorithm](./greedy.md)
+> 이 섹션은 `basic.md` 안의 greedy primer다.
+>
+> `greedy choice property`, `exchange argument`, `언제 greedy가 맞나`처럼 generic greedy overview와 proof vocabulary가 먼저 필요하면 [탐욕 / Greedy 알고리즘 개요](./greedy.md)로 바로 이동하면 된다.
 
-탐욕 알고리즘은 **최적해**를 구하는데 사용되는 근시안적인 방법이다. 최적화 문제(optimization)란 가능한 해들 중에서 가장 좋은 해를 찾는 문제이다. Greedy한 접근은 사람의 생각과 닮아 있다. **하나를 선택할 때마다 그 순간에 최적이라고 생각되는 것을 선택**하며, **한번 선택된 것은 번복하지 않는** 방식으로 진행하여 최종적인 해답에 도달하게 된다. 단, 최적해를 반드시 구한다는 보장이 없기 때문에 **증명 과정**이 필요하다.
+탐욕 알고리즘은 **매 단계에서 가장 좋아 보이는 선택을 고정해 가는** 설계 기법이다. 최적화 문제(optimization)는 가능한 해들 중 가장 좋은 해를 찾는 문제이고, greedy 접근은 그 순간의 국소 최적(local optimum)을 따라간다. 다만 **지금 최선**이 항상 **전체 최적(global optimum)** 으로 이어지는 것은 아니므로, 최적해를 보장하려면 반드시 **증명 과정**이 필요하다.
 
 > **최적해를 반드시 구한다는 보장이 없다.**
 >

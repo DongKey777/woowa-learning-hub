@@ -2,8 +2,10 @@
 
 > 한 줄 요약: 백필은 “한 번 복사하면 끝”이 아니라, 복사 중에 들어오는 변경까지 포함해 정합성을 맞추는 절차다.
 
-관련 문서: [온라인 스키마 변경 전략](./online-schema-change-strategies.md), [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md), [Idempotency Key and Deduplication](./idempotency-key-and-deduplication.md)
-Retrieval anchors: `backfill watermark`, `chunk copy`, `dual write`, `catch-up`, `validation`
+**난이도: 🔴 Advanced**
+
+관련 문서: [온라인 스키마 변경 전략](./online-schema-change-strategies.md), [CDC, Debezium, Outbox, Binlog](./cdc-debezium-outbox-binlog.md), [Idempotency Key and Deduplication](./idempotency-key-and-deduplication.md), [Online Backfill Verification, Drift Checks, and Cutover Gates](./online-backfill-verification-cutover-gates.md)
+retrieval-anchor-keywords: backfill watermark, chunk copy, dual write, catch-up, validation, checksum, sample diff, cutover gate
 
 ## 핵심 개념
 
@@ -111,6 +113,7 @@ SELECT COUNT(*) FROM user_profile_new;
 ```
 
 실무에서는 여기에 checksum, sample query, tombstone 처리까지 붙여야 안정적이다.
+그리고 실제 cutover 전에는 row count, bucket checksum, late write horizon, shadow read 비교 같은 승인 gate가 필요하다.
 
 ## 트레이드오프
 

@@ -5,11 +5,13 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JVM, GC, JMM](./4.md)
-> - [Java 동시성 유틸리티](./5.md)
+> - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
+> - [Java 동시성 유틸리티](./java-concurrency-utilities.md)
 > - [Virtual Threads(Project Loom)](./virtual-threads-project-loom.md)
 > - [CPU Cache, Coherence, Memory Barrier](../../operating-system/cpu-cache-coherence-memory-barrier.md)
 > - [Spring MVC vs WebFlux](../../spring/spring-webflux-vs-mvc.md)
+
+retrieval-anchor-keywords: G1 vs ZGC, Java GC choice, low latency GC, tail latency GC pause, STW pause, large heap GC, G1 pause target, ZGC short pause, allocation rate and live set, GC tuning decision
 
 ---
 

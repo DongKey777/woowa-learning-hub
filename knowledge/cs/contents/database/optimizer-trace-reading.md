@@ -4,15 +4,30 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: optimizer trace, trace reading, cost model, considered_execution_plans, chosen plan, range analysis, why this plan, optimizer decision
+retrieval-anchor-keywords: optimizer trace, trace reading, explain why this plan, explain result but why, why optimizer chose this plan, why full scan chosen, why key null, key null reason, why rows estimate wrong, explain actual rows mismatch reason, why filesort chosen, why temporary table chosen, cost model, considered_execution_plans, chosen plan, chosen_range_access_summary, range analysis, condition fanout filter, plan drift root cause, optimizer decision, query plan changed after analyze, 실행 계획 왜 이렇게 골랐나, explain 결과는 아는데 이유를 모르겠음, key null 이유, rows mismatch 이유
 
 ## 핵심 개념
 
 - 관련 문서:
+  - [인덱스와 실행 계획](./index-and-explain.md)
+  - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+  - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+  - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [Optimizer Switch Knobs and Plan Stability](./optimizer-switch-plan-stability-invisible-indexes.md)
   - [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md)
   - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
   - [Index Skip Scan Behavior](./index-skip-scan-behavior.md)
+
+## 이 문서가 맡는 EXPLAIN 범위
+
+이 문서는 "`type`, `key`, `rows`, `Extra`는 읽었는데 왜 그 계획이 골라졌는지 모르겠다"를 설명하는 optimizer 내부 근거 entry다.
+
+| 보이는 신호 | 여기서 바로 보는 것 | 먼저 돌아갈 문서 |
+| --- | --- | --- |
+| `rows` 추정치가 실제와 다르거나 배포 후 plan만 흔들리는데 "왜"가 안 풀림 | fanout, cost model, considered plan, chosen plan reason | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
+| `type = ALL`, `key = NULL`인데 인덱스가 있어 보여서 이유를 알고 싶음 | range access 탈락 이유, index dive/cost 비교, access path rejection | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| `Using filesort`, `Using temporary`가 남는데 왜 정렬 경로가 선택됐는지 궁금함 | order-preserving access vs sort cost 비교, materialization 선택 이유 | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
+| 아직 병목이 DB인지 앱인지, 통계인지 접근 경로인지도 모호함 | trace drill-down 전에 triage 순서를 먼저 고정 | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
 
 EXPLAIN은 결과를 보여준다.  
 optimizer trace는 그 결과에 도달하기까지의 고민 과정을 보여준다.
