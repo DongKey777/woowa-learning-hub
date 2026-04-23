@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import signal
+import shutil
 import subprocess
 import sys
 import time
@@ -96,6 +97,23 @@ def _fleet_status_path() -> Path:
 
 def _supervisor_pid_path() -> Path:
     return ensure_orchestrator_layout() / "fleet-supervisor.pid"
+
+
+def _worker_codex_home(worker: str) -> Path:
+    return ensure_orchestrator_layout() / "codex-home" / worker
+
+
+def _prepare_worker_codex_home(worker: str) -> Path:
+    codex_home = _worker_codex_home(worker)
+    codex_home.mkdir(parents=True, exist_ok=True)
+    (codex_home / "sessions").mkdir(parents=True, exist_ok=True)
+    source_home = Path.home() / ".codex"
+    for name in ("auth.json", "config.toml", "version.json"):
+        source = source_home / name
+        target = codex_home / name
+        if source.exists() and not target.exists():
+            shutil.copy2(source, target)
+    return codex_home
 
 
 def _load_json(path: Path, default: Any) -> Any:
@@ -271,11 +289,14 @@ def _run_codex_task(
     if output_path.exists():
         output_path.unlink()
     started_at = _utc_now()
+    env = os.environ.copy()
+    env["CODEX_HOME"] = str(_prepare_worker_codex_home(worker))
     result = subprocess.run(
         [
             "codex",
             "exec",
             "--ephemeral",
+            "--ignore-user-config",
             "--sandbox",
             "danger-full-access",
             "--dangerously-bypass-approvals-and-sandbox",
@@ -288,6 +309,7 @@ def _run_codex_task(
             prompt,
         ],
         cwd=str(ROOT),
+        env=env,
         capture_output=True,
         text=True,
         timeout=timeout_seconds,
