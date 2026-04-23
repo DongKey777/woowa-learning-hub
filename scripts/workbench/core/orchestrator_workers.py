@@ -189,6 +189,32 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
 - Use short comparison tables, concrete examples, and common-confusion bullets when useful.
 - Keep advanced failure modes or operator edge cases as links, not as the center of the new doc.
 """
+    qa_beginner_rules = ""
+    if lane == "qa-bridge":
+        qa_beginner_rules = """- Judge bridge quality through a beginner-first lens.
+- Verify primers lead to one safe next-step doc before any deep-dive or incident doc.
+- Prefer explicit primer -> follow-up -> deep-dive ladders over generic related-doc sprawl.
+"""
+    elif lane == "qa-anchor":
+        qa_beginner_rules = """- Judge anchor quality through a beginner-first lens.
+- Add beginner phrasing such as \"처음 배우는데\", \"큰 그림\", \"기초\", \"언제 쓰는지\" when it improves first-hit retrieval.
+- Prefer anchors that make primer docs win on introductory prompts before deep dives.
+"""
+    elif lane == "qa-link":
+        qa_beginner_rules = """- Judge link quality through a beginner-first lens.
+- Verify each primer has a clear next-step link and an obvious return path to the category README.
+- Prefer fixing misleading jumps into advanced docs over broad link cleanup.
+"""
+    elif lane == "qa-taxonomy":
+        qa_beginner_rules = """- Judge taxonomy quality through a beginner-first lens.
+- Make `primer`, `survey`, `deep dive`, `playbook`, and `recovery` roles explicit where they could be confused.
+- Prefer label clarity and entrypoint safety over catalog completeness.
+"""
+    elif lane == "qa-retrieval":
+        qa_beginner_rules = """- Judge retrieval quality through a beginner-first lens.
+- Prefer primer docs over deep dives for introductory prompts.
+- When possible, lock the behavior with golden fixtures, signal-rule assertions, or search regressions.
+"""
     return f"""You are {worker}, the persistent lane worker for {lane}.
 
 Work only inside:
@@ -209,6 +235,8 @@ Execution rules:
 - Keep changes scoped; do not drift into unrelated categories.
 - If this is a QA lane, make the smallest high-value fixes that reduce the named quality debt.
 {beginner_rules}- Final response must be JSON only with:
+- Summary should mention the beginner-facing quality improvement when this is a QA lane.
+{qa_beginner_rules}- Final response must be JSON only with:
 - summary: short worker-completion summary
 - changed_files: array of relative file paths you changed
 - next_candidates: array with 1 to 3 concise follow-up gaps worth queueing next for the same lane

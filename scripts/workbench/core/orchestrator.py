@@ -166,6 +166,33 @@ def _priority_with_beginner_bias(base_priority: int, title: str, goal: str, tags
     return priority
 
 
+def _is_beginner_quality_task(lane: str, title: str, goal: str, tags: list[str]) -> bool:
+    if not lane.startswith("qa-"):
+        return False
+    if _is_beginner_focused(title, goal, tags):
+        return True
+    return _text_has_any(
+        f"{title} {goal}",
+        (
+            "learning path",
+            "next-step",
+            "next step",
+            "entrypoint",
+            "entry point",
+            "primer",
+            "survey",
+            "deep dive",
+            "first-hit",
+            "first hit",
+            "junior",
+            "beginner",
+            "입문",
+            "기초",
+            "큰 그림",
+        ),
+    )
+
+
 def _live_lane_items(items: list[dict[str, Any]], lane: str) -> list[dict[str, Any]]:
     return [
         item
@@ -463,8 +490,8 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         "templates": [
             {
                 "title": "Beginner bridge debt",
-                "goal": "Scan and reduce missing beginner bridges between primer docs and deeper docs so juniors can climb from basics to advanced material safely.",
-                "tags": ["qa", "bridge", "beginner", "learning-path"],
+                "goal": "Scan and reduce missing beginner bridges between primer docs, follow-up docs, and deeper docs so juniors can climb from basics to advanced material without jumping straight into advanced incident or operator-only material.",
+                "tags": ["qa", "bridge", "beginner", "learning-path", "next-step", "entrypoint"],
             }
         ],
     },
@@ -474,8 +501,8 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         "templates": [
             {
                 "title": "Primer anchor coverage",
-                "goal": "Find beginner and primer docs with weak anchors, add retrieval-anchor-keywords, and make basic concept queries land reliably.",
-                "tags": ["qa", "anchor", "primer", "beginner", "retrieval"],
+                "goal": "Find beginner and primer docs with weak anchors, add beginner-phrased retrieval-anchor-keywords, and make first-question concept queries land on primers instead of deep dives.",
+                "tags": ["qa", "anchor", "primer", "beginner", "retrieval", "first-hit"],
             }
         ],
     },
@@ -485,8 +512,8 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         "templates": [
             {
                 "title": "Primer reverse-link hygiene",
-                "goal": "Keep broken links at zero and strengthen reverse links from primers and READMEs into the right next-step docs.",
-                "tags": ["qa", "link", "primer", "reverse-link", "readme"],
+                "goal": "Keep broken links at zero and strengthen reverse links from primers and READMEs into the right next-step docs, while also preserving a safe return path back to the category navigator for junior readers.",
+                "tags": ["qa", "link", "primer", "reverse-link", "readme", "next-step"],
             }
         ],
     },
@@ -496,8 +523,8 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         "templates": [
             {
                 "title": "Beginner taxonomy clarity",
-                "goal": "Reduce primer/survey/deep-dive mixing in README and navigator docs so junior readers can see the intended learning path clearly.",
-                "tags": ["qa", "taxonomy", "beginner", "readme", "navigation"],
+                "goal": "Reduce primer/survey/deep-dive/playbook mixing in README and navigator docs so junior readers can see the intended learning path clearly and do not mistake advanced incident docs for entrypoints.",
+                "tags": ["qa", "taxonomy", "beginner", "readme", "navigation", "labels"],
             }
         ],
     },
@@ -507,8 +534,8 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
         "templates": [
             {
                 "title": "Beginner query retrieval stabilization",
-                "goal": "Stabilize beginner/basic concept queries so primer docs win over deep dives when the question is introductory.",
-                "tags": ["qa", "retrieval", "beginner", "golden", "signal-rules"],
+                "goal": "Stabilize beginner/basic concept queries so primer docs win over deep dives when the question is introductory, and lock the behavior with golden fixtures or signal/search regressions.",
+                "tags": ["qa", "retrieval", "beginner", "golden", "signal-rules", "first-hit"],
             }
         ],
     },
@@ -1024,12 +1051,19 @@ class Orchestrator:
                 "README routing over jumping straight into advanced failure modes, and include "
                 "common confusions or decision tables when they help a junior reader."
             )
+        qa_suffix = ""
+        if _is_beginner_quality_task(item["lane"], item["title"], item["goal"], list(item.get("tags", []))):
+            qa_suffix = (
+                " QA success means more than fixing metadata: verify a junior reader can enter through a primer, "
+                "see the next safe step, and avoid mistaking deep dives or playbooks for entrypoints. Prefer fixes "
+                "that improve first-hit routing, beginner wording, and explicit primer -> follow-up -> deep-dive ladders."
+            )
         return (
             f"[{item['lane']}] {item['title']}\n"
             f"Goal: {item['goal']}\n"
             f"Tags: {tags}\n"
             "Do one coherent wave: add or deepen docs, strengthen related-doc links, add retrieval-anchor-keywords where missing, and update the relevant README index."
-            f"{beginner_suffix}"
+            f"{beginner_suffix}{qa_suffix}"
         )
 
     def run_once(
