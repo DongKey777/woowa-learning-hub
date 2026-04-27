@@ -604,16 +604,24 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
         # Lazy import — sentence-transformers loads only when needed
         # Match the existing pattern from coach_run.py (scripts.learning.*)
         from scripts.learning import integration  # type: ignore
+        from scripts.learning.rag import indexer as rag_indexer  # type: ignore
+        # Pre-build readiness with absolute corpus_root so cwd-independence holds.
+        # Default corpus_loader.DEFAULT_CORPUS_ROOT = Path("knowledge/cs") is
+        # relative to cwd; without this, calling bin/rag-ask from /tmp would
+        # compute an empty corpus hash → rag_ready=false → no hits.
+        index_root = ROOT / "state" / "cs_rag"
+        corpus_root = ROOT / "knowledge" / "cs"
+        readiness = rag_indexer.is_ready(index_root, corpus_root=corpus_root)
         try:
             result = integration.augment(
                 prompt=args.prompt,
                 cs_search_mode=decision.mode,
                 top_k=3 if decision.tier == 1 else 5,
                 experience_level=decision.experience_level,
-                index_root=ROOT / "state" / "cs_rag",
+                index_root=index_root,
                 learning_points=None,
                 topic_hints=None,
-                readiness=None,
+                readiness=readiness,
             )
         except Exception as exc:  # noqa: BLE001 — surface any failure as note
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
