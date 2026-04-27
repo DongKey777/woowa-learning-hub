@@ -29,6 +29,12 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 - `mission_only`면 인덱스 없이도 peer-only 응답 가능 (rebuild 생략).
 - `mixed` / `drill_answer`는 AI 판단.
 
+## Interactive Learning RAG Routing
+
+대화형 CS 학습 질문(미션 PR 코칭 외, 학습자가 개념을 묻거나 학습 테스트를 풀다 막혔을 때)에는 `bin/rag-ask "$prompt"`를 호출해 Tier 0~3을 결정한다. 매 응답 첫 줄에 `[RAG: tier-N — <reason>]` 헤더 표기, Tier 1+이면 답변 끝에 `참고:` 출처 인용. Tier 3이고 `blocked=false`면 `next_command` 별도 실행해 `bin/coach-run`으로 위임. 도구/빌드 질문(Tier 0)은 RAG 호출 없이 훈련 지식으로 답. 일반 dev 작업(학습 세션 외)에는 헤더 표기 안 함.
+
+상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
+
 ## Existing Coach Notes (상속)
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.

@@ -511,6 +511,130 @@ def cmd_golden(args: argparse.Namespace) -> int:
     return 1 if payload.get("failed_count") else 0
 
 
+def _check_archive_ready(repo: str) -> bool:
+    """Read state/repos/<repo>/archive/status.json — True iff bootstrap_state == 'ready'."""
+    status_path = ROOT / "state" / "repos" / repo / "archive" / "status.json"
+    if not status_path.exists():
+        return False
+    try:
+        data = json.loads(status_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return data.get("bootstrap_state") == "ready"
+
+
+def _resolve_upstream(repo: str) -> str | None:
+    """Look up upstream slug via find_repo(repo). Returns None if not registered."""
+    try:
+        from core.registry import find_repo  # type: ignore
+    except ImportError:
+        return None
+    try:
+        info = find_repo(repo)
+    except Exception:
+        return None
+    if not isinstance(info, dict):
+        return None
+    return info.get("upstream") or info.get("upstream_repo")
+
+
+def _check_open_pr_safely(upstream: str | None) -> bool:
+    """`gh pr list --repo <upstream> --author "@me" --state open --json number`.
+
+    Any failure (no upstream, gh missing, network down, JSON parse error) is
+    silently degraded to False so the router doesn't enter a phantom Tier 3.
+    """
+    if not upstream:
+        return False
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "list", "--repo", upstream, "--author", "@me",
+             "--state", "open", "--json", "number"],
+            capture_output=True, text=True, timeout=10, check=False,
+        )
+        if result.returncode != 0:
+            return False
+        items = json.loads(result.stdout or "[]")
+        return bool(items)
+    except (subprocess.TimeoutExpired, FileNotFoundError, json.JSONDecodeError):
+        return False
+
+
+def _build_repo_context(repo: str | None) -> dict | None:
+    """Build repo_context dict for interactive_rag_router.classify().
+
+    repo=None → return None (router treats as Tier 3 blocked).
+    Otherwise dict with archive_ready/has_open_pr/repo_name. All checks
+    read-only; gh failures degrade to has_open_pr=False.
+    """
+    if not repo:
+        return None
+    return {
+        "repo_name": repo,
+        "archive_ready": _check_archive_ready(repo),
+        "has_open_pr": _check_open_pr_safely(_resolve_upstream(repo)),
+    }
+
+
+def cmd_rag_ask(args: argparse.Namespace) -> int:
+    """Tier-based RAG router for learning sessions.
+
+    Returns one-line JSON: {decision, hits, next_command}.
+    - tier 0 / blocked: hits=null, next_command=null
+    - tier 1/2: hits = augment() result, next_command=null
+    - tier 3: hits=null, next_command = bin/coach-run absolute path
+    """
+    import shlex
+    from dataclasses import asdict
+
+    from core.interactive_rag_router import classify  # type: ignore
+
+    decision = classify(args.prompt, repo_context=_build_repo_context(args.repo))
+    out: dict = {
+        "decision": asdict(decision),
+        "hits": None,
+        "next_command": None,
+    }
+
+    if decision.tier == 0 or decision.blocked:
+        print(json.dumps(out, ensure_ascii=False))
+        return 0
+
+    if decision.tier in (1, 2):
+        # Lazy import — sentence-transformers loads only when needed
+        # Match the existing pattern from coach_run.py (scripts.learning.*)
+        from scripts.learning import integration  # type: ignore
+        try:
+            result = integration.augment(
+                prompt=args.prompt,
+                cs_search_mode=decision.mode,
+                top_k=3 if decision.tier == 1 else 5,
+                experience_level=decision.experience_level,
+                index_root=ROOT / "state" / "cs_rag",
+                learning_points=None,
+                topic_hints=None,
+                readiness=None,
+            )
+        except Exception as exc:  # noqa: BLE001 — surface any failure as note
+            out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
+        else:
+            out["hits"] = result
+        print(json.dumps(out, ensure_ascii=False))
+        return 0
+
+    if decision.tier == 3:
+        coach_run_path = str(ROOT / "bin" / "coach-run")
+        out["next_command"] = (
+            f"{coach_run_path} --repo {shlex.quote(args.repo or '')}"
+            f" --prompt {shlex.quote(args.prompt)}"
+        )
+        print(json.dumps(out, ensure_ascii=False))
+        return 0
+
+    print(json.dumps(out, ensure_ascii=False))
+    return 0
+
+
 def _orchestrator() -> Orchestrator:
     return Orchestrator()
 
@@ -726,6 +850,14 @@ def build_parser() -> argparse.ArgumentParser:
     coach_run_parser.add_argument("--force-sync", action="store_true")
     coach_run_parser.add_argument("--sync-limit", type=int)
     coach_run_parser.set_defaults(func=cmd_coach_run)
+
+    rag_ask_parser = subparsers.add_parser(
+        "rag-ask",
+        help="Tier-based RAG router for interactive learning sessions.",
+    )
+    rag_ask_parser.add_argument("prompt", help="Learner prompt to classify and answer.")
+    rag_ask_parser.add_argument("--repo", help="Optional onboarded repo name (for Tier 3 PR coaching).")
+    rag_ask_parser.set_defaults(func=cmd_rag_ask)
 
     next_action_parser = subparsers.add_parser("next-action")
     next_action_parser.add_argument("--repo", required=True)

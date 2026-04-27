@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Usage: bin/rag-ask "Spring Bean이 뭐야?" [--repo <name>]
+# Output: JSON {decision, hits, next_command}
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" rag-ask "$@"
