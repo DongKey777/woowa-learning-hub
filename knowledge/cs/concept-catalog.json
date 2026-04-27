@@ -1,0 +1,427 @@
+{
+  "schema_version": "v1",
+  "generated_at": "2026-04-27T07:26:57+00:00",
+  "generator": "scripts/learning/build_concept_catalog.py",
+  "concepts": {
+    "concept:spring/bean": {
+      "name": "Spring Bean",
+      "korean": "스프링 빈",
+      "aliases": [
+        "@component bean",
+        "bean",
+        "bean lifecycle",
+        "bean 등록",
+        "bean 라이프사이클",
+        "spring bean",
+        "스프링 빈"
+      ],
+      "stage": "spring-core",
+      "module_hint": "spring-core-1",
+      "prerequisites": [],
+      "related": [
+        "concept:spring/di",
+        "concept:spring/component-scan",
+        "concept:spring/ioc"
+      ]
+    },
+    "concept:spring/di": {
+      "name": "Dependency Injection",
+      "korean": "의존성 주입",
+      "aliases": [
+        "@autowired",
+        "constructor injection",
+        "dependency injection",
+        "di",
+        "field injection",
+        "setter injection",
+        "생성자 주입",
+        "의존성 주입"
+      ],
+      "stage": "spring-core",
+      "module_hint": "spring-core-1",
+      "prerequisites": [
+        "concept:spring/bean"
+      ],
+      "related": [
+        "concept:spring/ioc",
+        "concept:spring/component-scan"
+      ]
+    },
+    "concept:spring/ioc": {
+      "name": "Inversion of Control",
+      "korean": "제어의 역전",
+      "aliases": [
+        "applicationcontext",
+        "inversion of control",
+        "ioc",
+        "ioc container",
+        "ioc 컨테이너",
+        "제어의 역전"
+      ],
+      "stage": "spring-core",
+      "module_hint": "spring-core-1",
+      "prerequisites": [],
+      "related": [
+        "concept:spring/bean",
+        "concept:spring/di"
+      ]
+    },
+    "concept:spring/component-scan": {
+      "name": "Component Scan",
+      "korean": "컴포넌트 스캔",
+      "aliases": [
+        "@component",
+        "@componentscan",
+        "@controller",
+        "@repository",
+        "@service",
+        "component scan",
+        "stereotype",
+        "스테레오타입",
+        "컴포넌트 스캔"
+      ],
+      "stage": "spring-core",
+      "module_hint": "spring-core-2",
+      "prerequisites": [
+        "concept:spring/bean"
+      ],
+      "related": [
+        "concept:spring/di"
+      ]
+    },
+    "concept:spring/configuration": {
+      "name": "Configuration",
+      "korean": "스프링 설정",
+      "aliases": [
+        "@bean method",
+        "@configuration",
+        "java config",
+        "javaconfig",
+        "스프링 설정"
+      ],
+      "stage": "spring-core",
+      "module_hint": "spring-core-2",
+      "prerequisites": [
+        "concept:spring/bean"
+      ],
+      "related": [
+        "concept:spring/component-scan"
+      ]
+    },
+    "concept:spring/dispatcher-servlet": {
+      "name": "DispatcherServlet",
+      "korean": "디스패처 서블릿",
+      "aliases": [
+        "dispatcher servlet",
+        "dispatcherservlet",
+        "front controller",
+        "디스패처 서블릿",
+        "프론트 컨트롤러"
+      ],
+      "stage": "spring-mvc",
+      "module_hint": "spring-mvc-1",
+      "prerequisites": [
+        "concept:spring/bean"
+      ],
+      "related": [
+        "concept:spring/handler-mapping",
+        "concept:spring/handler-adapter"
+      ]
+    },
+    "concept:spring/handler-mapping": {
+      "name": "Handler Mapping",
+      "korean": "핸들러 매핑",
+      "aliases": [
+        "@getmapping",
+        "@postmapping",
+        "@requestmapping",
+        "handler mapping",
+        "handlermapping",
+        "requestmappinghandlermapping",
+        "핸들러 매핑"
+      ],
+      "stage": "spring-mvc",
+      "module_hint": "spring-mvc-1",
+      "prerequisites": [
+        "concept:spring/dispatcher-servlet"
+      ],
+      "related": [
+        "concept:spring/handler-adapter"
+      ]
+    },
+    "concept:spring/handler-adapter": {
+      "name": "Handler Adapter",
+      "korean": "핸들러 어댑터",
+      "aliases": [
+        "argument resolver",
+        "handler adapter",
+        "handleradapter",
+        "requestmappinghandleradapter",
+        "핸들러 어댑터"
+      ],
+      "stage": "spring-mvc",
+      "module_hint": "spring-mvc-2",
+      "prerequisites": [
+        "concept:spring/handler-mapping"
+      ],
+      "related": [
+        "concept:spring/view-resolver"
+      ]
+    },
+    "concept:spring/view-resolver": {
+      "name": "View Resolver",
+      "korean": "뷰 리졸버",
+      "aliases": [
+        "thymeleaf",
+        "view resolver",
+        "viewresolver",
+        "뷰 리졸버",
+        "뷰 처리"
+      ],
+      "stage": "spring-mvc",
+      "module_hint": "spring-mvc-3",
+      "prerequisites": [
+        "concept:spring/handler-adapter"
+      ],
+      "related": []
+    },
+    "concept:spring/exception-handler": {
+      "name": "Exception Handler",
+      "korean": "예외 처리",
+      "aliases": [
+        "@controlleradvice",
+        "@exceptionhandler",
+        "@restcontrolleradvice",
+        "exception handler",
+        "예외 처리",
+        "전역 예외"
+      ],
+      "stage": "spring-mvc",
+      "module_hint": "spring-mvc-4",
+      "prerequisites": [
+        "concept:spring/dispatcher-servlet"
+      ],
+      "related": []
+    },
+    "concept:spring/jdbc-template": {
+      "name": "JdbcTemplate",
+      "korean": "JdbcTemplate",
+      "aliases": [
+        "jdbc template",
+        "jdbctemplate",
+        "namedparameterjdbctemplate",
+        "rowmapper",
+        "데이터 접근"
+      ],
+      "stage": "spring-jdbc",
+      "module_hint": "spring-jdbc-1",
+      "prerequisites": [],
+      "related": [
+        "concept:spring/transactional"
+      ]
+    },
+    "concept:spring/transactional": {
+      "name": "Transactional",
+      "korean": "트랜잭션",
+      "aliases": [
+        "@transactional",
+        "isolation",
+        "propagation",
+        "rollback",
+        "savepoint",
+        "transaction",
+        "transactional",
+        "트랜잭션"
+      ],
+      "stage": "spring-jdbc",
+      "module_hint": "spring-jdbc-1",
+      "prerequisites": [
+        "concept:spring/jdbc-template"
+      ],
+      "related": [
+        "concept:spring/jpa-entity"
+      ]
+    },
+    "concept:spring/jpa-entity": {
+      "name": "JPA Entity",
+      "korean": "JPA 엔티티",
+      "aliases": [
+        "@entity",
+        "@generatedvalue",
+        "@id",
+        "@table",
+        "hibernate",
+        "jpa",
+        "jpa entity",
+        "엔티티"
+      ],
+      "stage": "spring-data-jpa",
+      "module_hint": "spring-data-jpa-1",
+      "prerequisites": [
+        "concept:spring/transactional"
+      ],
+      "related": [
+        "concept:spring/jpa-repository",
+        "concept:spring/jpa-relationship"
+      ]
+    },
+    "concept:spring/jpa-repository": {
+      "name": "JpaRepository",
+      "korean": "JpaRepository",
+      "aliases": [
+        "crudrepository",
+        "jpa repository",
+        "jparepository",
+        "query method",
+        "spring data jpa",
+        "쿼리 메서드"
+      ],
+      "stage": "spring-data-jpa",
+      "module_hint": "spring-data-jpa-1",
+      "prerequisites": [
+        "concept:spring/jpa-entity"
+      ],
+      "related": [
+        "concept:spring/jpa-relationship"
+      ]
+    },
+    "concept:spring/jpa-relationship": {
+      "name": "JPA Relationship",
+      "korean": "JPA 연관관계",
+      "aliases": [
+        "@manytomany",
+        "@manytoone",
+        "@onetomany",
+        "@onetoone",
+        "fetch type",
+        "lazy loading",
+        "연관관계",
+        "지연 로딩"
+      ],
+      "stage": "spring-data-jpa",
+      "module_hint": "spring-data-jpa-2",
+      "prerequisites": [
+        "concept:spring/jpa-entity"
+      ],
+      "related": []
+    },
+    "concept:spring/rest-client": {
+      "name": "RestClient",
+      "korean": "REST 클라이언트",
+      "aliases": [
+        "http interface",
+        "rest client",
+        "rest 클라이언트",
+        "restclient",
+        "resttemplate",
+        "webclient"
+      ],
+      "stage": "spring-http-client",
+      "module_hint": "spring-http-client-1",
+      "prerequisites": [],
+      "related": []
+    },
+    "concept:spring/spring-security": {
+      "name": "Spring Security",
+      "korean": "스프링 시큐리티",
+      "aliases": [
+        "authentication",
+        "authorization",
+        "filter chain",
+        "securityfilterchain",
+        "spring security",
+        "스프링 시큐리티",
+        "인가",
+        "인증"
+      ],
+      "stage": "spring-auth",
+      "module_hint": "spring-auth-1",
+      "prerequisites": [
+        "concept:spring/dispatcher-servlet"
+      ],
+      "related": []
+    }
+  },
+  "stages": {
+    "spring-core": {
+      "order": 1,
+      "concepts": [
+        "concept:spring/bean",
+        "concept:spring/di",
+        "concept:spring/ioc",
+        "concept:spring/component-scan",
+        "concept:spring/configuration"
+      ],
+      "modules": [
+        "spring-core-1",
+        "spring-core-2"
+      ]
+    },
+    "spring-mvc": {
+      "order": 2,
+      "concepts": [
+        "concept:spring/dispatcher-servlet",
+        "concept:spring/handler-mapping",
+        "concept:spring/handler-adapter",
+        "concept:spring/view-resolver",
+        "concept:spring/exception-handler"
+      ],
+      "modules": [
+        "spring-mvc-1",
+        "spring-mvc-2",
+        "spring-mvc-3",
+        "spring-mvc-4"
+      ]
+    },
+    "spring-jdbc": {
+      "order": 3,
+      "concepts": [
+        "concept:spring/jdbc-template",
+        "concept:spring/transactional"
+      ],
+      "modules": [
+        "spring-jdbc-1"
+      ]
+    },
+    "spring-data-jpa": {
+      "order": 4,
+      "concepts": [
+        "concept:spring/jpa-entity",
+        "concept:spring/jpa-repository",
+        "concept:spring/jpa-relationship"
+      ],
+      "modules": [
+        "spring-data-jpa-1",
+        "spring-data-jpa-2"
+      ]
+    },
+    "spring-http-client": {
+      "order": 5,
+      "concepts": [
+        "concept:spring/rest-client"
+      ],
+      "modules": [
+        "spring-http-client-1"
+      ]
+    },
+    "spring-auth": {
+      "order": 6,
+      "concepts": [
+        "concept:spring/spring-security"
+      ],
+      "modules": [
+        "spring-auth-1"
+      ]
+    }
+  },
+  "learning_point_aliases": {
+    "repository_boundary": "concept:spring/jpa-repository",
+    "responsibility_boundary": null,
+    "transaction_consistency": "concept:spring/transactional",
+    "db_modeling": "concept:spring/jpa-entity",
+    "reconstruction_mapping": "concept:spring/jpa-entity",
+    "testing_strategy": null,
+    "resource_lifecycle": null,
+    "auth_session": "concept:spring/spring-security"
+  }
+}

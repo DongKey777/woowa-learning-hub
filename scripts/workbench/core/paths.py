@@ -12,6 +12,7 @@ PR_ARCHIVE_DIR = ROOT / "scripts" / "pr_archive"
 DEFAULT_SCHEMA_PATH = PR_ARCHIVE_DIR / "schema.sql"
 LEGACY_PR_DATASETS_DIR = STATE_DIR / "pr-datasets"
 ORCHESTRATOR_DIR = STATE_DIR / "orchestrator"
+LEARNER_DIR = STATE_DIR / "learner"
 
 
 def ensure_global_layout() -> None:
@@ -81,3 +82,25 @@ def repo_profile_dir(repo_name: str) -> Path:
 
 def repo_memory_dir(repo_name: str) -> Path:
     return ensure_repo_layout(repo_name) / "memory"
+
+
+def ensure_learner_layout() -> Path:
+    ensure_global_layout()
+    LEARNER_DIR.mkdir(parents=True, exist_ok=True)
+    return LEARNER_DIR
+
+
+def learner_history_path() -> Path:
+    return LEARNER_DIR / "history.jsonl"
+
+
+def learner_profile_path() -> Path:
+    return LEARNER_DIR / "profile.json"
+
+
+def learner_summary_path() -> Path:
+    return LEARNER_DIR / "summary.json"
+
+
+def learner_identity_path() -> Path:
+    return LEARNER_DIR / "identity.json"

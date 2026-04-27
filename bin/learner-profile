@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/learner-profile show
+#   bin/learner-profile recompute
+#   bin/learner-profile clear [--yes]
+#   bin/learner-profile redact <substring>
+#   bin/learner-profile migrate-from-repos
+#   bin/learner-profile suggest                (Phase 4)
+#   bin/learner-profile set --experience-level <lvl>
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" learner-profile "$@"

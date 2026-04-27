@@ -643,6 +643,80 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_learner_profile(args: argparse.Namespace) -> int:
+    """Subactions for state/learner/* (show / recompute / clear / redact / set).
+
+    `migrate-from-repos` and `suggest` are stubs in this phase — they are
+    wired in later commits.
+    """
+    from core.learner_memory import (  # type: ignore
+        clear_learner_state,
+        default_profile,
+        load_learner_profile,
+        recompute_learner_profile,
+        redact_substring,
+    )
+    from core.paths import (  # type: ignore  # noqa: F401
+        learner_history_path,
+        learner_profile_path,
+        learner_summary_path,
+    )
+
+    sub = args.learner_profile_command
+    if sub == "show":
+        profile = load_learner_profile() or default_profile()
+        print(json.dumps(profile, ensure_ascii=False, indent=2))
+        return 0
+
+    if sub == "recompute":
+        profile = recompute_learner_profile()
+        print(json.dumps({"recomputed": True, "total_events": profile.get("total_events", 0)}, ensure_ascii=False))
+        return 0
+
+    if sub == "clear":
+        if not args.yes:
+            sys.stderr.write("This will delete state/learner/. Re-run with --yes to confirm.\n")
+            return 2
+        result = clear_learner_state()
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+
+    if sub == "redact":
+        result = redact_substring(args.needle)
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+
+    if sub == "set":
+        profile = load_learner_profile() or default_profile()
+        prefs = profile.setdefault("preferences", {})
+        if args.experience_level is not None:
+            prefs["experience_level"] = args.experience_level
+        if args.preferred_depth is not None:
+            prefs["preferred_depth"] = args.preferred_depth
+        if args.focus is not None:
+            prefs["focus"] = list(args.focus)
+        if args.skip_concept is not None:
+            prefs["skip_concepts"] = list(args.skip_concept)
+        from core.memory import _atomic_write  # type: ignore
+        _atomic_write(
+            learner_profile_path(),
+            json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        )
+        print(json.dumps({"updated": True, "preferences": prefs}, ensure_ascii=False))
+        return 0
+
+    if sub == "migrate-from-repos":
+        sys.stderr.write("migrate-from-repos is implemented in a later commit.\n")
+        return 2
+
+    if sub == "suggest":
+        sys.stderr.write("suggest is implemented in a later commit.\n")
+        return 2
+
+    sys.stderr.write(f"unknown learner-profile subcommand: {sub}\n")
+    return 2
+
+
 def _orchestrator() -> Orchestrator:
     return Orchestrator()
 
@@ -866,6 +940,41 @@ def build_parser() -> argparse.ArgumentParser:
     rag_ask_parser.add_argument("prompt", help="Learner prompt to classify and answer.")
     rag_ask_parser.add_argument("--repo", help="Optional onboarded repo name (for Tier 3 PR coaching).")
     rag_ask_parser.set_defaults(func=cmd_rag_ask)
+
+    learner_profile_parser = subparsers.add_parser(
+        "learner-profile",
+        help="Manage state/learner/ (history.jsonl + profile.json).",
+    )
+    learner_profile_subparsers = learner_profile_parser.add_subparsers(
+        dest="learner_profile_command", required=True
+    )
+
+    lp_show = learner_profile_subparsers.add_parser("show")
+    lp_show.set_defaults(func=cmd_learner_profile)
+
+    lp_recompute = learner_profile_subparsers.add_parser("recompute")
+    lp_recompute.set_defaults(func=cmd_learner_profile)
+
+    lp_clear = learner_profile_subparsers.add_parser("clear")
+    lp_clear.add_argument("--yes", action="store_true", help="Confirm destructive reset.")
+    lp_clear.set_defaults(func=cmd_learner_profile)
+
+    lp_redact = learner_profile_subparsers.add_parser("redact")
+    lp_redact.add_argument("needle", help="Substring to remove from history.")
+    lp_redact.set_defaults(func=cmd_learner_profile)
+
+    lp_set = learner_profile_subparsers.add_parser("set")
+    lp_set.add_argument("--experience-level", choices=["beginner", "intermediate", "advanced"])
+    lp_set.add_argument("--preferred-depth", choices=["low", "medium", "high"])
+    lp_set.add_argument("--focus", nargs="*")
+    lp_set.add_argument("--skip-concept", nargs="*")
+    lp_set.set_defaults(func=cmd_learner_profile)
+
+    lp_migrate = learner_profile_subparsers.add_parser("migrate-from-repos")
+    lp_migrate.set_defaults(func=cmd_learner_profile)
+
+    lp_suggest = learner_profile_subparsers.add_parser("suggest")
+    lp_suggest.set_defaults(func=cmd_learner_profile)
 
     next_action_parser = subparsers.add_parser("next-action")
     next_action_parser.add_argument("--repo", required=True)

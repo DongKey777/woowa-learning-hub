@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Learner Profile v3",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_type",
+    "learner_id",
+    "updated_at",
+    "total_events",
+    "experience_level",
+    "concepts",
+    "activity"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "v3"},
+    "profile_type": {"type": "string"},
+    "learner_id": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "total_events": {"type": "integer", "minimum": 0},
+    "experience_level": {
+      "type": "object",
+      "required": ["current", "confidence", "rolling_window", "evidence"],
+      "properties": {
+        "current": {"type": "string"},
+        "confidence": {"type": "string"},
+        "rolling_window": {"type": "string"},
+        "evidence": {"type": "array"}
+      }
+    },
+    "concepts": {
+      "type": "object",
+      "required": ["mastered", "uncertain", "underexplored", "encountered_count"],
+      "properties": {
+        "mastered": {"type": "array", "items": {"type": "object"}},
+        "uncertain": {"type": "array", "items": {"type": "object"}},
+        "underexplored": {"type": "array", "items": {"type": "object"}},
+        "encountered_count": {"type": "object"}
+      }
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "streak_days": {"type": "integer", "minimum": 0},
+        "last_active_at": {"type": ["string", "null"]},
+        "events_by_type": {"type": "object"},
+        "tier_distribution": {"type": "object"},
+        "modules_progress": {"type": "object"},
+        "current_module": {"type": ["string", "null"]},
+        "current_stage": {"type": ["string", "null"]}
+      }
+    },
+    "next_recommendations": {"type": "array"},
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "experience_level": {"type": ["string", "null"]},
+        "preferred_depth": {"type": ["string", "null"]},
+        "focus": {"type": "array"},
+        "skip_concepts": {"type": "array"}
+      }
+    }
+  }
+}

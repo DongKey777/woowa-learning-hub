@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Learner Event (flat)",
+  "type": "object",
+  "required": ["event_type", "event_id", "ts", "learner_id"],
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": ["rag_ask", "coach_run", "drill_answer", "test_result", "code_attempt"]
+    },
+    "event_id": {"type": "string", "minLength": 8},
+    "ts": {"type": "string", "minLength": 16},
+    "learner_id": {"type": "string", "minLength": 1},
+    "repo_context": {"type": ["string", "null"]},
+    "module_context": {"type": ["string", "null"]},
+    "concept_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "prompt": {"type": ["string", "null"]},
+    "question_fingerprint": {"type": ["string", "null"]},
+    "tier": {"type": ["integer", "null"]},
+    "rag_mode": {"type": ["string", "null"]},
+    "experience_level_inferred": {"type": ["string", "null"]},
+    "category_hits": {"type": "array", "items": {"type": "string"}},
+    "top_paths": {"type": "array", "items": {"type": "string"}},
+    "rag_ready": {"type": ["boolean", "null"]},
+    "blocked": {"type": ["boolean", "null"]},
+    "pr_number": {"type": ["integer", "null"]},
+    "primary_learning_points": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "learning_point_recommendations": {"type": "array"},
+    "had_negative_feedback": {"type": ["boolean", "null"]},
+    "summary": {},
+    "answer": {},
+    "follow_up_question": {},
+    "drill_session_id": {"type": ["string", "null"]},
+    "linked_learning_point": {"type": ["string", "null"]},
+    "total_score": {"type": ["number", "null"]},
+    "dimensions": {"type": "object"},
+    "weak_tags": {"type": "array"},
+    "module": {"type": ["string", "null"]},
+    "test_class": {"type": ["string", "null"]},
+    "test_method": {"type": ["string", "null"]},
+    "pass": {"type": ["boolean", "null"]},
+    "duration_ms": {"type": ["integer", "null"]},
+    "failure_message": {"type": ["string", "null"]},
+    "stack_trace_excerpt": {"type": ["string", "null"]},
+    "file_path": {"type": ["string", "null"]},
+    "diff_summary": {"type": ["string", "null"]},
+    "lines_added": {"type": ["integer", "null"]},
+    "lines_removed": {"type": ["integer", "null"]},
+    "linked_test": {"type": ["string", "null"]},
+    "source_path": {"type": ["string", "null"]},
+    "source_line": {"type": ["integer", "null"]},
+    "source_event_id": {"type": ["string", "null"]}
+  }
+}

@@ -1,0 +1,931 @@
+"""Single-source-of-truth memory for the learner across all activities.
+
+History stream: `state/learner/history.jsonl` — append-only event log with
+five `event_type`s (rag_ask, coach_run, drill_answer, test_result,
+code_attempt).
+
+Profile: `state/learner/profile.json` — derived view (rolling experience
+level, concept mastery/uncertainty/encounter counts, activity stats, next
+recommendations). Always re-derivable from the history stream.
+
+Validation strategy (peer AI #2): the `learner-event.schema.json` is a
+*flat* schema — common required fields only. Per-event-type required
+fields are enforced by `validate_learner_event()` here in Python because
+`schema_validation._validate` does not handle JSON-Schema `oneOf`. The
+dispatch table sits next to the call site so changes stay visible.
+
+Reuses `memory.py` primitives:
+  * `_append_with_lock(path, line: str)` for atomic JSONL append (caller
+    must serialize and add a newline)
+  * `_atomic_write(path, content: str)` for tempfile+rename writes
+  * `_question_fingerprint` for prompt normalization
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import re
+import subprocess
+from collections import Counter
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import Any, Iterable
+
+from .concept_catalog import (
+    extract_concept_ids,
+    infer_concepts_from_path,
+    infer_concepts_from_test,
+    lp_to_concept_id,
+)
+from .memory import _append_with_lock, _atomic_write, _question_fingerprint
+from .paths import (
+    ensure_learner_layout,
+    learner_history_path,
+    learner_identity_path,
+    learner_profile_path,
+    learner_summary_path,
+    LEARNER_DIR,
+)
+from .schema_validation import validate_payload
+
+LEARNER_PROFILE_SCHEMA_VERSION = "v3"
+HISTORY_ROLLING_WINDOW = 200
+
+# === Type-specific required fields enforced by Python dispatch ============
+EVENT_REQUIRED_FIELDS: dict[str, list[str]] = {
+    "rag_ask": ["prompt", "tier", "rag_mode", "concept_ids", "blocked"],
+    "coach_run": [
+        "pr_number",
+        "primary_learning_points",
+        "concept_ids",
+        "had_negative_feedback",
+    ],
+    "drill_answer": [
+        "drill_session_id",
+        "linked_learning_point",
+        "total_score",
+        "concept_ids",
+    ],
+    "test_result": ["module", "test_class", "test_method", "pass", "concept_ids"],
+    "code_attempt": ["file_path", "diff_summary", "concept_ids"],
+}
+
+VALID_EVENT_TYPES = frozenset(EVENT_REQUIRED_FIELDS)
+
+
+# === Privacy redaction ====================================================
+_EMAIL_RE = re.compile(
+    r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
+)
+_TOKEN_RE = re.compile(
+    r"(?<![A-Za-z0-9_])(?:sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{16,}|"
+    r"gho_[A-Za-z0-9]{16,}|xox[baprs]-[A-Za-z0-9-]{10,}|"
+    r"AKIA[0-9A-Z]{12,}|Bearer\s+[A-Za-z0-9_\-\.=]+)"
+)
+_PASSWORD_RE = re.compile(
+    r"(?i)(password|passwd|secret|api[_\-]?key)\s*[:=]\s*[^\s,;]+",
+)
+_REDACTED = "***REDACTED***"
+
+
+def _redact_text(text: str | None) -> str | None:
+    if not text:
+        return text
+    redacted = _PASSWORD_RE.sub(lambda m: f"{m.group(1)}={_REDACTED}", text)
+    redacted = _TOKEN_RE.sub(_REDACTED, redacted)
+    redacted = _EMAIL_RE.sub(_REDACTED, redacted)
+    return redacted
+
+
+def _redact_stack_trace(stack: str | None, *, max_lines: int = 5) -> str | None:
+    if not stack:
+        return None
+    lines = stack.splitlines()[:max_lines]
+    return _redact_text("\n".join(lines))
+
+
+def _redact_diff(summary: str | None, *, max_chars: int = 500) -> str | None:
+    redacted = _redact_text(summary)
+    if redacted and len(redacted) > max_chars:
+        return redacted[:max_chars] + "..."
+    return redacted
+
+
+# === Identity =============================================================
+def _git_config_email() -> str | None:
+    try:
+        output = subprocess.run(
+            ["git", "config", "user.email"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        value = (output.stdout or "").strip()
+        return value or None
+    except (FileNotFoundError, subprocess.SubprocessError):
+        return None
+
+
+def _gh_api_login() -> str | None:
+    try:
+        output = subprocess.run(
+            ["gh", "api", "user", "--jq", ".login"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        value = (output.stdout or "").strip()
+        return value or None
+    except (FileNotFoundError, subprocess.SubprocessError):
+        return None
+
+
+def _resolve_learner_id() -> str:
+    """Resolve learner_id with cache.
+
+    Priority: identity.json → WOOWA_LEARNER_ID → git config user.email →
+    `gh api user --jq .login` → "default". The first successful resolution
+    is cached in `state/learner/identity.json` so subsequent calls do not
+    shell out.
+    """
+    ensure_learner_layout()
+    cache_path = learner_identity_path()
+    if cache_path.exists():
+        try:
+            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+            value = cached.get("learner_id")
+            if value:
+                return value
+        except (json.JSONDecodeError, OSError):
+            pass
+    learner_id = os.environ.get("WOOWA_LEARNER_ID") or ""
+    if not learner_id:
+        learner_id = _git_config_email() or _gh_api_login() or "default"
+    try:
+        _atomic_write(
+            cache_path,
+            json.dumps({"learner_id": learner_id}, ensure_ascii=False) + "\n",
+        )
+    except OSError:
+        pass
+    return learner_id
+
+
+# === Time + identity helpers =============================================
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _parse_iso(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
+def _within(ts: str | None, *, days: int) -> bool:
+    parsed = _parse_iso(ts)
+    if parsed is None:
+        return False
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    return parsed >= cutoff
+
+
+def _deterministic_event_id(event: dict) -> str:
+    """SHA1 over (event_type, ts, identifying field). Stable across reruns
+    so migration can dedupe legacy entries."""
+    keys = [event.get("event_type", ""), event.get("ts", "")]
+    keys.append(
+        event.get("prompt")
+        or str(event.get("pr_number") or "")
+        or event.get("drill_session_id")
+        or event.get("file_path")
+        or f"{event.get('test_class', '')}.{event.get('test_method', '')}"
+        or ""
+    )
+    digest = hashlib.sha1("|".join(keys).encode("utf-8")).hexdigest()
+    return digest[:16]
+
+
+# === Schema validation ====================================================
+def validate_learner_event(event: dict) -> None:
+    """Per-event-type required-field enforcement.
+
+    Always called by `append_learner_event` before disk write, so callers
+    cannot accidentally pollute the stream by skipping it.
+    """
+    common = ["event_type", "event_id", "ts", "learner_id"]
+    for field in common:
+        if field not in event:
+            raise ValueError(f"missing required common field: {field}")
+    et = event.get("event_type")
+    if et not in VALID_EVENT_TYPES:
+        raise ValueError(f"unknown event_type: {et!r}")
+    for field in EVENT_REQUIRED_FIELDS[et]:
+        if field not in event:
+            raise ValueError(f"missing required field for {et}: {field}")
+    # Lightweight JSON Schema check — flat schema only validates
+    # common+optional types, not the per-type required map.
+    try:
+        validate_payload("learner-event", event)
+    except Exception as exc:  # noqa: BLE001
+        raise ValueError(f"learner-event schema validation failed: {exc}") from exc
+
+
+# === Append / read ========================================================
+def append_learner_event(event: dict[str, Any]) -> dict:
+    """Append `event` to history.jsonl with fcntl lock + schema validation.
+
+    Mutates `event` to ensure `ts`, `event_id` are populated. Returns the
+    finalized event.
+    """
+    ensure_learner_layout()
+    if "ts" not in event:
+        event["ts"] = _now_iso()
+    if "event_id" not in event:
+        event["event_id"] = _deterministic_event_id(event)
+    validate_learner_event(event)
+    line = json.dumps(event, ensure_ascii=False) + "\n"
+    _append_with_lock(learner_history_path(), line)
+    return event
+
+
+def _load_history(*, limit: int | None = None) -> list[dict]:
+    """Read history.jsonl. Tolerates corrupted lines (skips silently).
+
+    `limit=None` reads the full file; an int reads the last N entries
+    (rolling window for cheap recompute)."""
+    path = learner_history_path()
+    if not path.exists():
+        return []
+    out: list[dict] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        text = line.strip()
+        if not text:
+            continue
+        try:
+            out.append(json.loads(text))
+        except json.JSONDecodeError:
+            continue
+    if limit is not None and len(out) > limit:
+        return out[-limit:]
+    return out
+
+
+def load_learner_profile() -> dict | None:
+    """Return profile.json, recomputing lazily when history is newer.
+
+    Returns None when there is no history at all (cold-start case).
+    """
+    history_path = learner_history_path()
+    profile_path = learner_profile_path()
+    if not history_path.exists() or history_path.stat().st_size == 0:
+        return None
+    if (
+        not profile_path.exists()
+        or history_path.stat().st_mtime > profile_path.stat().st_mtime
+    ):
+        return recompute_learner_profile()
+    try:
+        return json.loads(profile_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return recompute_learner_profile()
+
+
+def recompute_learner_profile() -> dict:
+    """Rebuild summary + profile from the current history stream."""
+    ensure_learner_layout()
+    history = _load_history()
+    summary = _summarize_learner_history(history)
+    profile = _build_learner_profile(history, summary)
+    _atomic_write(
+        learner_summary_path(),
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+    )
+    _atomic_write(
+        learner_profile_path(),
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+    )
+    return profile
+
+
+def clear_learner_state() -> dict:
+    """Privacy reset — wipe the entire `state/learner/` directory."""
+    deleted: list[str] = []
+    if LEARNER_DIR.exists():
+        for child in sorted(LEARNER_DIR.iterdir()):
+            try:
+                if child.is_file():
+                    child.unlink()
+                else:
+                    for sub in child.rglob("*"):
+                        if sub.is_file():
+                            sub.unlink()
+                    child.rmdir()
+                deleted.append(child.name)
+            except OSError:
+                pass
+    return {"cleared": deleted}
+
+
+def redact_substring(needle: str) -> dict:
+    """Drop every history entry containing `needle`. Returns counts."""
+    if not needle:
+        return {"removed": 0, "kept": 0}
+    path = learner_history_path()
+    if not path.exists():
+        return {"removed": 0, "kept": 0}
+    kept_lines: list[str] = []
+    removed = 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        if needle in line:
+            removed += 1
+            continue
+        kept_lines.append(line)
+    _atomic_write(path, "\n".join(kept_lines) + ("\n" if kept_lines else ""))
+    recompute_learner_profile()
+    return {"removed": removed, "kept": len(kept_lines)}
+
+
+# === Event builders =======================================================
+def build_rag_ask_event(
+    *,
+    prompt: str,
+    tier: int,
+    mode: str | None,
+    experience_level: str | None,
+    rag_result: dict | None,
+    repo: str | None,
+    module: str | None,
+    learner_id: str,
+    blocked: bool,
+    catalog: dict,
+) -> dict:
+    redacted_prompt = _redact_text(prompt) or ""
+    return {
+        "event_type": "rag_ask",
+        "ts": _now_iso(),
+        "learner_id": learner_id,
+        "repo_context": repo,
+        "module_context": module,
+        "concept_ids": extract_concept_ids(prompt, catalog),
+        "prompt": redacted_prompt,
+        "question_fingerprint": _question_fingerprint(redacted_prompt),
+        "tier": int(tier),
+        "rag_mode": mode,
+        "experience_level_inferred": experience_level,
+        "category_hits": _extract_categories(rag_result),
+        "top_paths": _extract_top_paths(rag_result),
+        "rag_ready": _extract_rag_ready(rag_result),
+        "blocked": bool(blocked),
+    }
+
+
+def build_coach_run_event(
+    *,
+    session_payload: dict,
+    learner_id: str,
+    catalog: dict,
+) -> dict:
+    learning_points = list(session_payload.get("primary_learning_points") or [])
+    concept_ids = []
+    for lp in learning_points:
+        cid = lp_to_concept_id(lp, catalog)
+        if cid:
+            concept_ids.append(cid)
+    response = session_payload.get("response") or {}
+    return {
+        "event_type": "coach_run",
+        "ts": _now_iso(),
+        "learner_id": learner_id,
+        "repo_context": session_payload.get("repo"),
+        "module_context": None,
+        "pr_number": session_payload.get("current_pr", {}).get("number")
+        or session_payload.get("pr_number"),
+        "concept_ids": sorted(set(concept_ids)),
+        "had_negative_feedback": _detect_negative_feedback(session_payload),
+        "prompt": _redact_text(session_payload.get("prompt")),
+        "primary_learning_points": learning_points,
+        "learning_point_recommendations": _coach_recommendation_digest(
+            session_payload
+        ),
+        "summary": response.get("summary") or session_payload.get("summary"),
+        "answer": response.get("answer") or session_payload.get("answer"),
+        "follow_up_question": response.get("follow_up_question")
+        or session_payload.get("follow_up_question"),
+    }
+
+
+def build_drill_answer_event(
+    *,
+    drill_record: dict,
+    learner_id: str,
+    repo: str | None,
+    catalog: dict,
+) -> dict:
+    lp = drill_record.get("linked_learning_point")
+    concept_id = lp_to_concept_id(lp, catalog) if lp else None
+    return {
+        "event_type": "drill_answer",
+        "ts": drill_record.get("scored_at") or _now_iso(),
+        "learner_id": learner_id,
+        "repo_context": repo,
+        "module_context": None,
+        "concept_ids": [concept_id] if concept_id else [],
+        "drill_session_id": drill_record.get("drill_session_id"),
+        "linked_learning_point": lp,
+        "total_score": drill_record.get("total_score"),
+        "dimensions": drill_record.get("dimensions") or {},
+        "weak_tags": drill_record.get("weak_tags") or [],
+    }
+
+
+def build_test_result_event(
+    *,
+    junit_test: dict,
+    learner_id: str,
+    module: str | None,
+    catalog: dict,
+) -> dict:
+    test_class = junit_test.get("class") or ""
+    test_method = junit_test.get("name") or ""
+    failure = junit_test.get("failure")
+    passed = failure is None
+    stack = (failure or {}).get("stack_trace") if isinstance(failure, dict) else None
+    message = (failure or {}).get("message") if isinstance(failure, dict) else None
+    return {
+        "event_type": "test_result",
+        "ts": _now_iso(),
+        "learner_id": learner_id,
+        "repo_context": None,
+        "module_context": module,
+        "concept_ids": infer_concepts_from_test(test_class, test_method, module, catalog),
+        "module": module or "",
+        "test_class": test_class,
+        "test_method": test_method,
+        "pass": passed,
+        "duration_ms": junit_test.get("duration_ms"),
+        "failure_message": _redact_text(message) if not passed else None,
+        "stack_trace_excerpt": _redact_stack_trace(stack) if not passed else None,
+    }
+
+
+def build_code_attempt_event(
+    *,
+    file_path: str,
+    diff_summary: str,
+    lines_added: int,
+    lines_removed: int,
+    linked_test: str | None,
+    learner_id: str,
+    module: str | None,
+    catalog: dict,
+) -> dict:
+    return {
+        "event_type": "code_attempt",
+        "ts": _now_iso(),
+        "learner_id": learner_id,
+        "repo_context": None,
+        "module_context": module,
+        "concept_ids": infer_concepts_from_path(file_path, module, catalog),
+        "file_path": file_path,
+        "diff_summary": _redact_diff(diff_summary) or "",
+        "lines_added": int(lines_added or 0),
+        "lines_removed": int(lines_removed or 0),
+        "linked_test": linked_test,
+    }
+
+
+# === Internal helpers for builders =======================================
+def _extract_categories(rag_result: dict | None) -> list[str]:
+    if not isinstance(rag_result, dict):
+        return []
+    if "error" in rag_result:
+        return []
+    meta = rag_result.get("meta") or {}
+    cats = meta.get("cs_categories_hit")
+    if isinstance(cats, list):
+        return [str(c) for c in cats][:8]
+    bucket = rag_result.get("by_fallback_key") or {}
+    seen: list[str] = []
+    if isinstance(bucket, dict):
+        for hits in bucket.values():
+            if not isinstance(hits, list):
+                continue
+            for hit in hits:
+                cat = (hit or {}).get("category")
+                if cat and cat not in seen:
+                    seen.append(cat)
+    return seen[:8]
+
+
+def _extract_top_paths(rag_result: dict | None) -> list[str]:
+    if not isinstance(rag_result, dict) or "error" in rag_result:
+        return []
+    bucket = rag_result.get("by_fallback_key") or rag_result.get("by_learning_point") or {}
+    paths: list[str] = []
+    if isinstance(bucket, dict):
+        for hits in bucket.values():
+            if not isinstance(hits, list):
+                continue
+            for hit in hits:
+                p = (hit or {}).get("path")
+                if p and p not in paths:
+                    paths.append(p)
+    return paths[:6]
+
+
+def _extract_rag_ready(rag_result: dict | None) -> bool:
+    if not isinstance(rag_result, dict):
+        return False
+    if "error" in rag_result:
+        return False
+    return bool((rag_result.get("meta") or {}).get("rag_ready", True))
+
+
+def _coach_recommendation_digest(session_payload: dict) -> list[dict]:
+    out: list[dict] = []
+    for item in (session_payload.get("learning_point_recommendations") or [])[:5]:
+        primary = (item or {}).get("primary_candidate") or {}
+        out.append(
+            {
+                "learning_point": item.get("learning_point"),
+                "label": item.get("label"),
+                "primary_candidate_pr": primary.get("pr_number"),
+            }
+        )
+    return out
+
+
+_NEGATIVE_PHRASES = (
+    "rejected", "needs_changes", "needs changes",
+    "다시 봐", "수정 필요", "재요청", "rework",
+    "request changes", "request_changes",
+)
+
+
+def _detect_negative_feedback(session_payload: dict) -> bool:
+    """Best-effort signal: did the mentor flag this PR for changes?
+
+    Looks at any flat string fields and `mentor_comment_samples` text. False
+    by default — `coach_run` events without strong negatives stay clean.
+    """
+    flat = " ".join(
+        str(v) for v in [
+            session_payload.get("mentor_verdict"),
+            session_payload.get("review_state"),
+            session_payload.get("review_decision"),
+        ] if v
+    ).lower()
+    if any(phrase in flat for phrase in _NEGATIVE_PHRASES):
+        return True
+    samples = session_payload.get("mentor_comment_samples") or []
+    for sample in samples[:6]:
+        body = ((sample or {}).get("body") or "").lower()
+        if any(phrase in body for phrase in _NEGATIVE_PHRASES):
+            return True
+    return False
+
+
+# === Aggregation: summary + profile ======================================
+def _summarize_learner_history(history: list[dict]) -> dict:
+    by_type: Counter = Counter()
+    tier_dist: Counter = Counter()
+    blocked_count = 0
+    last_active: str | None = None
+    for event in history:
+        et = event.get("event_type")
+        by_type[et] += 1
+        if et == "rag_ask":
+            tier = event.get("tier")
+            if event.get("blocked"):
+                tier_dist["3_blocked"] += 1
+            elif tier is not None:
+                tier_dist[str(int(tier))] += 1
+            if event.get("blocked"):
+                blocked_count += 1
+        ts = event.get("ts")
+        if ts and (last_active is None or ts > last_active):
+            last_active = ts
+    return {
+        "schema_version": LEARNER_PROFILE_SCHEMA_VERSION,
+        "summary_type": "learner_summary",
+        "updated_at": _now_iso(),
+        "total_events": len(history),
+        "events_by_type": dict(by_type),
+        "tier_distribution": dict(tier_dist),
+        "blocked_count": blocked_count,
+        "last_active_at": last_active,
+    }
+
+
+def _experience_level_view(history: list[dict]) -> dict:
+    window = history[-20:]
+    beginner = sum(
+        1
+        for e in window
+        if e.get("event_type") == "rag_ask"
+        and e.get("experience_level_inferred") == "beginner"
+    )
+    test_events = [e for e in window if e.get("event_type") == "test_result"]
+    test_pass_rate: float | None = None
+    if test_events:
+        passes = sum(1 for e in test_events if e.get("pass"))
+        test_pass_rate = round(passes / len(test_events), 2)
+    if window and beginner / max(len(window), 1) >= 0.5:
+        current = "beginner"
+        confidence = "high" if beginner >= 6 else "medium"
+    elif beginner > 0:
+        current = "beginner"
+        confidence = "low"
+    else:
+        current = "unknown"
+        confidence = "low"
+    evidence: list[dict] = []
+    if beginner:
+        evidence.append(
+            {"signal": "BEGINNER_HINT 매치", "count": beginner, "from": "rag_ask"}
+        )
+    if test_pass_rate is not None:
+        evidence.append(
+            {
+                "signal": "test_result 통과율",
+                "value": f"{int(test_pass_rate * 100)}%",
+                "from": "test_result",
+            }
+        )
+    return {
+        "current": current,
+        "confidence": confidence,
+        "rolling_window": "last_20_events",
+        "evidence": evidence,
+    }
+
+
+def _events_for_concept(history: list[dict], concept_id: str) -> list[dict]:
+    return [
+        event
+        for event in history
+        if concept_id in (event.get("concept_ids") or [])
+    ]
+
+
+def _is_mastered(concept_id: str, history: list[dict]) -> tuple[bool, dict]:
+    drills = [
+        event
+        for event in _events_for_concept(history, concept_id)
+        if event.get("event_type") == "drill_answer"
+    ][-5:]
+    high_scores = sum(1 for e in drills if (e.get("total_score") or 0) >= 8)
+    pr_neg = any(
+        e.get("event_type") == "coach_run"
+        and e.get("had_negative_feedback")
+        and _within(e.get("ts"), days=7)
+        for e in _events_for_concept(history, concept_id)
+    )
+    test_events = [
+        event
+        for event in _events_for_concept(history, concept_id)
+        if event.get("event_type") == "test_result"
+    ]
+    last_test_pass = test_events[-1].get("pass") if test_events else None
+    mastered = (high_scores >= 2) and (not pr_neg) and (last_test_pass is not False)
+    return mastered, {
+        "drill_high_scores": high_scores,
+        "no_recent_pr_negative": not pr_neg,
+        "last_test_pass": last_test_pass,
+    }
+
+
+def _is_uncertain(concept_id: str, history: list[dict]) -> tuple[bool, dict]:
+    concept_events = _events_for_concept(history, concept_id)
+    asks_7d = sum(
+        1
+        for e in concept_events
+        if e.get("event_type") == "rag_ask" and _within(e.get("ts"), days=7)
+    )
+    drills_14d = [
+        e
+        for e in concept_events
+        if e.get("event_type") == "drill_answer" and _within(e.get("ts"), days=14)
+    ]
+    last_drill_score = drills_14d[-1].get("total_score") if drills_14d else None
+    low_drill = bool(drills_14d) and (drills_14d[-1].get("total_score") or 0) < 6
+    test_fail_7d = any(
+        e.get("event_type") == "test_result"
+        and not e.get("pass")
+        and _within(e.get("ts"), days=7)
+        for e in concept_events
+    )
+    uncertain = (asks_7d >= 3) or low_drill or test_fail_7d
+    return uncertain, {
+        "ask_count_7d": asks_7d,
+        "last_drill_score": last_drill_score,
+        "test_fail_recent": test_fail_7d,
+    }
+
+
+def _is_underexplored(
+    concept_id: str,
+    history: list[dict],
+    catalog: dict,
+    current_stage: str | None,
+) -> bool:
+    stages = catalog.get("stages") or {}
+    if not current_stage or current_stage not in stages:
+        return False
+    if concept_id not in (stages[current_stage].get("concepts") or []):
+        return False
+    return not any(
+        concept_id in (event.get("concept_ids") or []) for event in history
+    )
+
+
+def _activity_view(history: list[dict]) -> dict:
+    by_type: Counter = Counter(e.get("event_type") for e in history)
+    tier_dist: Counter = Counter()
+    modules: dict[str, dict] = {}
+    streak_dates: set[str] = set()
+    last_active: str | None = None
+    for event in history:
+        et = event.get("event_type")
+        if et == "rag_ask":
+            if event.get("blocked"):
+                tier_dist["3_blocked"] += 1
+            else:
+                tier = event.get("tier")
+                if tier is not None:
+                    tier_dist[str(int(tier))] += 1
+        ts = event.get("ts")
+        if ts:
+            streak_dates.add(ts[:10])
+            if last_active is None or ts > last_active:
+                last_active = ts
+        module = event.get("module_context") or event.get("module")
+        if module:
+            mod = modules.setdefault(
+                module,
+                {
+                    "turns": 0,
+                    "tests_passed": 0,
+                    "tests_failed": 0,
+                    "first_active": ts,
+                    "last_active": ts,
+                },
+            )
+            mod["turns"] += 1
+            if et == "test_result":
+                if event.get("pass"):
+                    mod["tests_passed"] += 1
+                else:
+                    mod["tests_failed"] += 1
+            if ts:
+                mod["last_active"] = ts
+                if mod.get("first_active") is None or ts < mod["first_active"]:
+                    mod["first_active"] = ts
+    for mod in modules.values():
+        total_tests = mod["tests_passed"] + mod["tests_failed"]
+        mod["completion_estimate"] = (
+            round(mod["tests_passed"] / total_tests, 2) if total_tests else 0.0
+        )
+    current_module = None
+    if last_active is not None:
+        for event in reversed(history):
+            mod = event.get("module_context") or event.get("module")
+            if mod:
+                current_module = mod
+                break
+    return {
+        "streak_days": _streak_from_dates(streak_dates),
+        "last_active_at": last_active,
+        "events_by_type": dict(by_type),
+        "tier_distribution": dict(tier_dist),
+        "modules_progress": modules,
+        "current_module": current_module,
+    }
+
+
+def _streak_from_dates(dates: Iterable[str]) -> int:
+    parsed = sorted(
+        {datetime.strptime(d, "%Y-%m-%d").date() for d in dates if d},
+        reverse=True,
+    )
+    if not parsed:
+        return 0
+    today = datetime.now(timezone.utc).date()
+    if (today - parsed[0]).days > 1:
+        return 0
+    streak = 1
+    cursor = parsed[0]
+    for d in parsed[1:]:
+        if (cursor - d).days == 1:
+            streak += 1
+            cursor = d
+        else:
+            break
+    return streak
+
+
+def _build_learner_profile(history: list[dict], summary: dict) -> dict:
+    catalog: dict
+    try:
+        from .concept_catalog import load_catalog as _load_catalog
+        catalog = _load_catalog()
+    except Exception:  # noqa: BLE001
+        catalog = {"concepts": {}, "stages": {}}
+    activity = _activity_view(history)
+    current_module = activity.get("current_module")
+    current_stage = None
+    if current_module:
+        for stage_id, stage in (catalog.get("stages") or {}).items():
+            if current_module in (stage.get("modules") or []):
+                current_stage = stage_id
+                break
+    encountered: Counter = Counter()
+    for event in history:
+        for cid in event.get("concept_ids") or []:
+            encountered[cid] += 1
+    mastered: list[dict] = []
+    uncertain: list[dict] = []
+    underexplored: list[dict] = []
+    seen_concepts: set[str] = set(encountered.keys())
+    if catalog.get("concepts"):
+        for concept_id in catalog["concepts"]:
+            seen_concepts.add(concept_id)
+    for concept_id in sorted(seen_concepts):
+        is_mastered, mastered_evidence = _is_mastered(concept_id, history)
+        is_uncertain, uncertain_evidence = _is_uncertain(concept_id, history)
+        if is_mastered:
+            mastered.append(
+                {
+                    "concept_id": concept_id,
+                    "evidence": mastered_evidence,
+                    "since": _now_iso()[:10],
+                }
+            )
+        if is_uncertain:
+            first_ts = next(
+                (
+                    e.get("ts")
+                    for e in history
+                    if concept_id in (e.get("concept_ids") or [])
+                ),
+                None,
+            )
+            uncertain.append(
+                {
+                    "concept_id": concept_id,
+                    "evidence": uncertain_evidence,
+                    "first_signal_at": first_ts,
+                }
+            )
+        if _is_underexplored(concept_id, history, catalog, current_stage):
+            underexplored.append(
+                {
+                    "concept_id": concept_id,
+                    "stage": current_stage,
+                    "reason": "current stage gap (haven't touched yet)",
+                }
+            )
+    activity["current_stage"] = current_stage
+    profile = {
+        "schema_version": LEARNER_PROFILE_SCHEMA_VERSION,
+        "profile_type": "learner_profile_v3",
+        "learner_id": _resolve_learner_id(),
+        "updated_at": _now_iso(),
+        "total_events": summary.get("total_events", len(history)),
+        "experience_level": _experience_level_view(history),
+        "concepts": {
+            "mastered": mastered,
+            "uncertain": uncertain,
+            "underexplored": underexplored,
+            "encountered_count": dict(encountered),
+        },
+        "activity": activity,
+        "next_recommendations": [],
+        "preferences": {
+            "experience_level": None,
+            "preferred_depth": None,
+            "focus": [],
+            "skip_concepts": [],
+        },
+    }
+    # `next_recommendations` is populated by `suggest_next` in a later phase.
+    return profile
+
+
+def default_profile() -> dict:
+    """Skeleton profile when no events have been recorded yet."""
+    return _build_learner_profile([], {"total_events": 0})
+
