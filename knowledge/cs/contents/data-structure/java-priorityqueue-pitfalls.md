@@ -12,7 +12,7 @@
 - [Comparator in TreeSet and TreeMap](../language/java/treeset-treemap-comparator-tie-breaker-basics.md)
 - [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
 
-retrieval-anchor-keywords: java priorityqueue pitfalls, priorityqueue tie breaker, priorityqueue stale entry, priorityqueue not sorted, priorityqueue duplicate priority order, priorityqueue insertion order misconception, priority queue stable order misconception, priority sequence tie breaker java, priorityqueue 동점 처리, priorityqueue 중복 우선순위, priorityqueue 삽입 순서 보장, priorityqueue 정렬 리스트 아님, priorityqueue basics, priorityqueue 뭐예요
+retrieval-anchor-keywords: java priorityqueue pitfalls, priorityqueue tie breaker, priorityqueue stale entry, priorityqueue not sorted, priorityqueue duplicate priority order, priorityqueue insertion order misconception, priority queue stable order misconception, priority sequence tie breaker java, priorityqueue 동점 처리, priorityqueue 중복 우선순위, priorityqueue 삽입 순서 보장, priorityqueue 정렬 리스트 아님, priorityqueue basics, priorityqueue 뭐예요, java priorityqueue pitfalls basics
 
 ## 빠른 진단 표
 

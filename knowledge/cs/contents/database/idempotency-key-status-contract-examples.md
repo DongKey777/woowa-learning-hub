@@ -14,7 +14,9 @@
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: idempotency key status contract examples, pending processing succeeded vocabulary alignment, processing succeeded replay hash mismatch, exact key duplicate detection response contract, duplicate key after fresh read api contract, same key same hash replay example, same key processing 202 example, same key different hash 409 example, idempotency response body example, idempotency status header example, replay response contract beginner, processing response contract beginner, hash mismatch conflict beginner, pending row recovery response, processing row takeover versus 202, 멱등키 상태 계약 예시, pending processing succeeded 용어 정렬, processing 응답 예시, replay 응답 예시, hash mismatch conflict 예시, exact key duplicate 응답 계약, duplicate 뒤 fresh read 응답, 같은 키 같은 해시 replay, 같은 키 처리중 202, 같은 키 다른 payload 409, pending row 복구 응답
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: idempotency key status contract examples, pending processing succeeded vocabulary alignment, processing succeeded replay hash mismatch, exact key duplicate detection response contract, duplicate key after fresh read api contract, same key same hash replay example, same key processing 202 example, same key different hash 409 example, idempotency response body example, idempotency status header example, replay response contract beginner, processing response contract beginner, hash mismatch conflict beginner, pending row recovery response, processing row takeover versus 202
 
 ## 먼저 멘탈모델
 
@@ -247,3 +249,7 @@ Idempotency-Status: CONFLICT
 - duplicate 뒤 분기 자체를 먼저 익히려면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - HTTP 선택을 `busy`/`already exists` 관점으로 다시 보면 [Duplicate Key vs Busy Response Mapping](./duplicate-key-vs-busy-response-mapping.md)
 - row 선점과 기존 row 재사용 흐름을 같이 보려면 [UNIQUE Claim + Existing-Row Reuse Primer](./unique-claim-existing-row-reuse-primer.md)
+
+## 한 줄 정리
+
+exact-key duplicate가 감지된 뒤에는 새로 처리하려 하지 말고, 기존 idempotency row를 다시 읽어 `PENDING`/`PROCESSING`/`SUCCEEDED` 역할을 먼저 맞춘 뒤, `PROCESSING`, replay, hash-mismatch conflict 셋 중 하나의 **응답 계약**으로 닫으면 된다.

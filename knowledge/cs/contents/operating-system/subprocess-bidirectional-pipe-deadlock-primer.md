@@ -18,7 +18,9 @@
 - [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00060, subprocess symptom first branch guide, subprocess comparison table, bidirectional pipe deadlock primer, subprocess bidirectional pipe deadlock, bidirectional pipe mental model, two-queue eof mental model, stdin=PIPE stdout=PIPE deadlock, subprocess stdin stdout deadlock, two way pipe deadlock, parent write then read deadlock, parent read before close stdin deadlock, child blocked writing stdout stops reading stdin, parent blocked writing stdin pipe, pipe capacity in both directions, pipe eof handshake, communicate input capture output, communicate style api, subprocess input output ordering, Python subprocess communicate input, ProcessBuilder stdin stdout deadlock, cat pipe deadlock, sort waits for eof deadlock, child waits for stdin eof, parent forgot stdin close, stdin eof primer handoff, bidirectional pipe self-check, 양방향 파이프 멘탈 모델, 작은 큐 두 개 eof 멘탈 모델, beginner handoff box, primer handoff box, subprocess primer flow, subprocess learning path, bidirectional pipe 다음 문서, 양방향 파이프 자가 점검, 두 방향 pipe 데드락, stdin stdout pipe 같이 쓰면 멈춤
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00060, subprocess symptom first branch guide, subprocess comparison table, bidirectional pipe deadlock primer, subprocess bidirectional pipe deadlock, bidirectional pipe mental model, two-queue eof mental model, stdin=pipe stdout=pipe deadlock, subprocess stdin stdout deadlock, two way pipe deadlock, parent write then read deadlock, parent read before close stdin deadlock, child blocked writing stdout stops reading stdin, beginner handoff box, subprocess bidirectional pipe deadlock primer basics
 
 ## Subprocess Primer Handoff
 

@@ -35,7 +35,9 @@ bulk 계약 자체를 먼저 잡고 싶다면 [True Bulk Contracts and Partial F
 - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
 - [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)
 
-retrieval-anchor-keywords: testing named bulk contracts, named bulk adapter test, chunk invariants test, item failure mapping test, receipt correlation test, bulk adapter contract testing, chunk submit result assertions, item failure result mapping, batch receipt correlation beginner, bulk partial failure test primer, run chunk item test boundary, settlement chunk adapter test, adapter receipt to item correlation, bulk contract test checklist, vendor response index mapping test, retry drift prevention test, sourceIndex to stable item id assertion
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: testing named bulk contracts, named bulk adapter test, chunk invariants test, item failure mapping test, receipt correlation test, bulk adapter contract testing, chunk submit result assertions, item failure result mapping, batch receipt correlation beginner, bulk partial failure test primer, run chunk item test boundary, settlement chunk adapter test, adapter receipt to item correlation, bulk contract test checklist, testing named bulk contracts basics
 
 ## 먼저 잡을 그림
 
@@ -187,6 +189,8 @@ void maps_partner_rejections_back_to_original_lines() {
 ```
 
 ### 3. receipt correlation test
+
+## 예시: 정산 chunk submit adapter (계속 2)
 
 ```java
 @Test

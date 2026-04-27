@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
@@ -15,7 +22,7 @@
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: spring authority mapping pitfalls, spring security authority mapping, spring security confusing 403, spring security valid jwt but 403, jwt authenticated but forbidden, jwt claim to authority mapping, JwtAuthenticationConverter 403, JwtGrantedAuthoritiesConverter 403, authorities claim mapping mismatch, scope claim mapping mismatch, roles claim mapping mismatch, groups claim mapping mismatch, ROLE_ prefix mismatch, SCOPE_ prefix mismatch, ROLE_/SCOPE_ mismatch, hasRole vs hasAuthority, hasRole 403, hasAuthority 403, granted authority mismatch, access denied after jwt auth, spring security access denied jwt, custom jwt converter loses scopes, custom jwt converter roles only, roles claim not mapped to ROLE_, scope claim not mapped to SCOPE_, authorityPrefix drift, authoritiesClaimName mismatch, valid token empty authorities, claim은 있는데 authority가 비어 있음, claim은 있는데 authority가 없음, authority가 비어 있음, spring method security 403 jwt, spring resource server authority debug
+retrieval-anchor-keywords: spring authority mapping pitfalls, spring security authority mapping, spring security confusing 403, spring security valid jwt but 403, jwt authenticated but forbidden, jwt claim to authority mapping, jwtauthenticationconverter 403, jwtgrantedauthoritiesconverter 403, authorities claim mapping mismatch, scope claim mapping mismatch, roles claim mapping mismatch, groups claim mapping mismatch, role_ prefix mismatch, spring authority mapping pitfalls basics, spring authority mapping pitfalls beginner
 
 ## 먼저 떠올릴 그림
 
@@ -58,6 +65,8 @@ retrieval-anchor-keywords: spring authority mapping pitfalls, spring security au
 | `hasAuthority('ROLE_ADMIN')`는 통과하는데 `hasRole('ADMIN')` 쪽만 실패, 혹은 반대 | prefix를 커스터마이즈했는데 annotation/DSL/test가 예전 규칙을 그대로 씀 | prefix를 한 군데만 바꾸고 전 구간이 같이 바뀐다고 착각함 | prefix 설정과 guard 문자열의 일치 여부 |
 
 핵심은 이것이다.
+
+## 먼저 15초 판별표 (계속 2)
 
 - JWT가 유효하다고 해서 필요한 authority가 생긴 것은 아니다.
 - authority가 있어도 guard가 다른 문자열을 찾으면 `403`이다.

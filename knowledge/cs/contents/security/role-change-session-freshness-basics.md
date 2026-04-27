@@ -16,7 +16,7 @@
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 - [Spring Security 기초](../spring/spring-security-basics.md)
 
-retrieval-anchor-keywords: role change session freshness, session freshness basics, role revoked but session still works, admin removed but still access, permission granted but still 403, stale claims, authz freshness basics, re-login after role change, authz version, session version, version bump pattern, role downgrade active session, 세션 권한 변경 뭐예요, beginner session freshness, 처음 배우는 세션 갱신, security symptom shortcut, session tail beginner route, grant freshness handoff, category return path, runtime-debugging handoff first, runtime debugging handoff first, freshness before runtime debugging, authz freshness runtime-debugging handoff, stale claim runtime-debugging handoff first, role change runtime-debugging handoff first
+retrieval-anchor-keywords: role change session freshness, session freshness basics, role revoked but session still works, admin removed but still access, permission granted but still 403, stale claims, authz freshness basics, re-login after role change, authz version, session version, version bump pattern, role downgrade active session, 세션 권한 변경 뭐예요, beginner session freshness, 처음 배우는 세션 갱신
 
 ## 빠른 복귀 링크
 
@@ -41,6 +41,9 @@ retrieval-anchor-keywords: role change session freshness, session freshness basi
 - `로그아웃했는데 계속 된다`, revoke tail, distributed invalidation 자체가 궁금하면 [Session Revocation at Scale](./session-revocation-at-scale.md)로 내려가면 된다.
 - 권한을 방금 줬는데도 `403`이 남는다면 cache deep dive로 바로 가지 말고 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)에서 claim refresh와 stale deny cleanup을 먼저 나눈다. 증상 row를 다시 고르고 싶으면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가면 된다.
 - role을 회수했는데 old allow가 남거나, grant primer를 읽은 뒤 cache branch가 맞다고 판단되면 [Authorization Caching / Staleness](./authorization-caching-staleness.md)에서 더 직접적으로 다룬다.
+
+## 이 문서 다음에 보면 좋은 문서 (계속 2)
+
 - deprovisioning, group removal, tenant membership 삭제까지 같이 묶어 보려면 [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md)로 이어진다.
 
 ---

@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
@@ -13,7 +20,7 @@
 > - 공식 기준: [Spring Boot Externalized Configuration - JSON Application Properties](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.json)
 > - 공식 기준: [Spring Boot Externalized Configuration - Binding Maps](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.maps)
 
-retrieval-anchor-keywords: spring application json primer, SPRING_APPLICATION_JSON, spring.application.json, plain env var vs spring application json, nested configuration env var spring boot, complex map key spring boot, relaxed binding shape loss, bracket notation map key, configurationproperties env json, map key slash dot env var, beginner property configuration primer
+retrieval-anchor-keywords: spring application json primer, spring_application_json, spring.application.json, plain env var vs spring application json, nested configuration env var spring boot, complex map key spring boot, relaxed binding shape loss, bracket notation map key, configurationproperties env json, map key slash dot env var, beginner property configuration primer, spring spring application json primer basics, spring spring application json primer beginner, spring spring application json primer intro, spring basics
 
 ## 핵심 개념
 
@@ -204,6 +211,8 @@ headers["X-Trace-Id"]
 
 이럴 때는 JSON key를 그대로 쓰는 편이 낫다.
 
+## 5. `SPRING_APPLICATION_JSON`을 prefer하는 대표 장면 (계속 2)
+
 ```bash
 SPRING_APPLICATION_JSON='{"app":{"routes":{"[/internal/**]":"admin"},"headers":{"[X-Trace-Id]":"trace-id"}}}'
 ```
@@ -283,3 +292,7 @@ beginner가 기억할 기준은 이것이다.
 - env var 이름을 직접 만들어야 하는 상황이면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)로 간다.
 - `SPRING_APPLICATION_JSON`이 일반 env var, profile, command-line과 충돌할 때 누가 최종 값을 이기는지 헷갈리면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)로 이어진다.
 - map key 보존과 binder 동작을 더 깊게 보려면 [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)로 이어진다.
+
+## 한 줄 정리
+
+값 하나 둘 바꾸는 정도면 일반 환경 변수가 더 단순하지만, nested object/list/map key처럼 이름 모양이 깨지기 쉬운 설정은 `SPRING_APPLICATION_JSON`으로 한 번에 넣는 편이 안전하다.

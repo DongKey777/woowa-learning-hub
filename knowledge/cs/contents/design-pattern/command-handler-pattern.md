@@ -11,7 +11,7 @@
 - [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
 - [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
 
-retrieval-anchor-keywords: command handler validation flow, request validator in command handler, aggregate invariant in command handler, policy object in command handler, command handler validation placement, layered validation command handler, where to put validation in handler, command handler beginner, handler validation order, request validator aggregate invariant policy object, 처음 배우는데 command handler, command handler 뭐예요
+retrieval-anchor-keywords: command handler validation flow, request validator in command handler, aggregate invariant in command handler, policy object in command handler, command handler validation placement, layered validation command handler, where to put validation in handler, command handler beginner, handler validation order, request validator aggregate invariant policy object, 처음 배우는데 command handler, command handler 뭐예요, command handler pattern basics, command handler pattern beginner, command handler pattern intro
 
 ---
 

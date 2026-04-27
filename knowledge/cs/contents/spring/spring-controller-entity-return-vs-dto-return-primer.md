@@ -15,7 +15,7 @@
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
 
-retrieval-anchor-keywords: controller entity return vs dto return, spring controller entity return primer, entity direct return jackson lazy loading, serialization time lazy loading, response serialization lazy loading, controller returns entity why bad, dto return beginner, lazy loading during json serialization, lazyinitializationexception controller response, osiv entity return response, jackson getter triggers query, restcontroller entity return beginner, controller 엔티티 반환 dto 반환, 직렬화 시점 lazy loading, 응답 직렬화 중 sql, controller에서 엔티티 반환하면 왜 안되나, 초급자 dto 반환 primer
+retrieval-anchor-keywords: controller entity return vs dto return, spring controller entity return primer, entity direct return jackson lazy loading, serialization time lazy loading, response serialization lazy loading, controller returns entity why bad, dto return beginner, lazy loading during json serialization, lazyinitializationexception controller response, osiv entity return response, jackson getter triggers query, restcontroller entity return beginner, controller 엔티티 반환 dto 반환, 직렬화 시점 lazy loading, 응답 직렬화 중 sql
 
 ## 먼저 mental model 한 줄
 
@@ -126,6 +126,8 @@ public class OrderController {
 ```
 
 이 흐름에서는 중요한 읽기가 service 안에서 끝난다.
+
+## 가장 단순한 예시 (계속 2)
 
 - 어떤 연관이 필요한지 service/repository에서 먼저 정한다
 - DTO 생성도 transaction 안에서 끝낸다

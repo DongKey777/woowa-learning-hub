@@ -13,7 +13,7 @@
 - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 - [Spring Data vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md)
 
-retrieval-anchor-keywords: dao vs query model, dao enough, dedicated query repository, read model beginner, query repository 언제 쓰는지, dao로 충분한 경우, 처음 배우는데 dao, 큰 그림 read model, 기초 cqrs lite, read-heavy path primer, list search dashboard query model, same db read model, beginner persistence abstraction, query model separation basics
+retrieval-anchor-keywords: dao vs query model, dao enough, dedicated query repository, read model beginner, query repository 언제 쓰는지, dao로 충분한 경우, 처음 배우는데 dao, 큰 그림 read model, 기초 cqrs lite, read-heavy path primer, list search dashboard query model, same db read model, beginner persistence abstraction, query model separation basics, dao vs query model entrypoint primer basics
 
 ## 핵심 개념
 

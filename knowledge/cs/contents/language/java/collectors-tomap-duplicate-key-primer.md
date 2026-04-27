@@ -12,7 +12,7 @@
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md)
 
-retrieval-anchor-keywords: language-java-00099, Collectors.toMap duplicate key beginner, java stream toMap duplicate key, java toMap IllegalStateException duplicate key, collect to map duplicate keys primer, java merge function beginner, stream toMap when use merge function, duplicate key while collecting map, java stream map collector duplicate handling, groupingBy vs toMap beginner, 자바 Collectors.toMap 중복 키, 자바 toMap duplicate key, 자바 stream map 수집 중복 키, 자바 merge function 언제 쓰나, 자바 groupingBy toMap 차이, 자바 map 하나의 키 하나의 값
+retrieval-anchor-keywords: language-java-00099, collectors.tomap duplicate key beginner, java stream tomap duplicate key, java tomap illegalstateexception duplicate key, collect to map duplicate keys primer, java merge function beginner, stream tomap when use merge function, duplicate key while collecting map, java stream map collector duplicate handling, groupingby vs tomap beginner, 자바 collectors.tomap 중복 키, 자바 tomap duplicate key, 자바 stream map 수집 중복 키, 자바 merge function 언제 쓰나, 자바 groupingby tomap 차이
 
 ## 먼저 잡는 멘탈 모델
 

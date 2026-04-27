@@ -14,7 +14,9 @@
 - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
 - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 
-retrieval-anchor-keywords: rollback-only vs checked exception, checked exception commit surprise, 예외 났는데 commit 됨, checked exception인데 왜 롤백 안 됨, unexpectedrollbackexception vs checked exception, rollback-only 마지막에 터짐, catch 했는데 commit 실패, checked exception commit beginner, rollbackFor beginner card, transaction marked rollback-only vs checked exception, transactional rollback default confusion, runtime exception rollback checked commit, beginner transaction surprise card
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: rollback-only vs checked exception, checked exception commit surprise, 예외 났는데 commit 됨, checked exception인데 왜 롤백 안 됨, unexpectedrollbackexception vs checked exception, rollback-only 마지막에 터짐, catch 했는데 commit 실패, checked exception commit beginner, rollbackfor beginner card, transaction marked rollback-only vs checked exception, transactional rollback default confusion, runtime exception rollback checked commit, beginner transaction surprise card, spring rollbackonly vs checked exception commit surprise card basics, spring rollbackonly vs checked exception commit surprise card beginner
 
 ## 먼저 mental model 한 줄
 

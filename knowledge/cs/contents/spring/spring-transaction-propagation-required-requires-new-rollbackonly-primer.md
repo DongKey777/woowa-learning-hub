@@ -18,7 +18,9 @@
 - [Spring EventListener / TransactionalEventListener / Outbox](./spring-eventlistener-transaction-phase-outbox.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: required requires_new primer, propagation beginner, rollback-only beginner, transactional propagation 입문, required vs requires_new 차이, nested vs requires_new beginner, savepoint beginner bridge, 왜 unexpectedrollbackexception 나요, transaction marked rollback-only beginner, audit log requires new, 주문 저장 감사 로그 분리, 같은 트랜잭션 참여, 독립 트랜잭션, partial commit beginner, catch 했는데 마지막에 터짐, rollback only primer, service layer transaction story, beginner propagation choices, required 기본값, requires_new 언제 쓰나, rollback-only meaning, propagation simple stories, nested savepoint limit concept, spring jpa nested caveat, transactional nested savepoint jdbc, jpa nested not behaving
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: required requires_new primer, propagation beginner, rollback-only beginner, transactional propagation 입문, required vs requires_new 차이, nested vs requires_new beginner, savepoint beginner bridge, 왜 unexpectedrollbackexception 나요, transaction marked rollback-only beginner, audit log requires new, 주문 저장 감사 로그 분리, 같은 트랜잭션 참여, 독립 트랜잭션, partial commit beginner, catch 했는데 마지막에 터짐
 
 ## 먼저 mental model 한 줄
 
@@ -123,6 +125,8 @@ public class CheckoutService {
 
 주의도 같이 기억해야 한다.
 
+## 가장 먼저 보는 서비스 레이어 이야기 3개 (계속 2)
+
 - `REQUIRES_NEW`는 "새 커밋"이면서 보통 "새 트랜잭션 자원"도 뜻한다.
 - 그래서 남발하면 흐름 추적이 어려워지고 커넥션 풀 부담도 생긴다.
 
@@ -224,6 +228,8 @@ checkout tx 시작
 - 특히 JPA 중심 코드에서는 "`NESTED`를 줬는데 왜 그냥 같은 트랜잭션처럼 보이지?"라는 느낌이 자주 나온다.
 
 초급자용 판단표:
+
+## 여기서 `NESTED`는 어떻게 다르게 봐야 하나 (계속 2)
 
 | 상황 | 먼저 가져갈 감각 |
 |---|---|

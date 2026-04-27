@@ -14,7 +14,9 @@
 - [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - [Map Value-Shape Drill](./map-value-shape-drill.md)
 
-retrieval-anchor-keywords: language-java-00111, stable id as map key primer, immutable id mutable entity map, java map key stable id beginner, mutable entity as map key bug, entity as map value id as key, map memberid member beginner, stable identifier hashmap design, immutable key mutable value java, java domain object map key design, map key should be immutable id, entity vs value object map key, mutable domain object lookup safe pattern, surrogate id map key beginner, natural key vs stable id java, business key map key caution, 자바 stable id map key, 자바 불변 id 가변 객체 map, 자바 엔티티를 key로 쓰지 말기, 자바 map key id value entity, 자바 mutable entity map 설계 기초, 자바 surrogate id natural key 비교
+- [카테고리 README](../README.md)
+
+retrieval-anchor-keywords: language-java-00111, stable id as map key primer, immutable id mutable entity map, java map key stable id beginner, mutable entity as map key bug, entity as map value id as key, map memberid member beginner, stable identifier hashmap design, immutable key mutable value java, java domain object map key design, map key should be immutable id, entity vs value object map key, mutable domain object lookup safe pattern, surrogate id map key beginner, natural key vs stable id java
 
 ## 먼저 잡을 멘탈 모델
 

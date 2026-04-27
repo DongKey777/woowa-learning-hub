@@ -16,7 +16,7 @@
 - [BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups](./bigdecimal-navigablemap-lookup-bridge.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 
-retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner, submap headmap tailmap beginner, java inclusive exclusive boundary primer, treeset subset inclusive exclusive, treemap submap inclusive exclusive, sortedset subset from inclusive to exclusive, sortedmap submap from inclusive to exclusive, headset exclusive default, tailset inclusive default, headmap exclusive default, tailmap inclusive default, navigableset subset boolean overload, navigablemap submap boolean overload, java range view beginner, treemap range query beginner, treeset range window primer, bracket mental model java range API, submap inclusive flag floor ceiling bridge, headmap tailmap floor ceiling mental model, bigdecimal submap scale boundary, exact match boundary include exclude java, range api boolean overload beginner bridge, descending set subset intuition, descending map submap intuition, descending view range boundary beginner, descendingset subset IllegalArgumentException confusion
+retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner, submap headmap tailmap beginner, java inclusive exclusive boundary primer, treeset subset inclusive exclusive, treemap submap inclusive exclusive, sortedset subset from inclusive to exclusive, sortedmap submap from inclusive to exclusive, headset exclusive default, tailset inclusive default, headmap exclusive default, tailmap inclusive default, navigableset subset boolean overload, navigablemap submap boolean overload, java range view beginner
 
 ## 먼저 잡을 멘탈 모델
 
@@ -239,6 +239,8 @@ System.out.println(desc.subMap(40, 20)); // {40=A, 30=B}
 ```
 
 초급자용 핵심은 이 한 줄이다.
+
+## follow-up: `descendingSet()` / `descendingMap()`에서는 range를 어떻게 읽나 (계속 2)
 
 > range API의 `from`/`to`는 "숫자상 작은 값에서 큰 값으로"가 아니라, **지금 보고 있는 정렬 줄에서 앞 경계와 뒤 경계**다.
 

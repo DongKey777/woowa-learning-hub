@@ -14,7 +14,9 @@
 - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 
-retrieval-anchor-keywords: spring 404 vs bean error, spring 405 vs bean wiring, 404 405 vs NoSuchBeanDefinitionException, 404 405 vs NoUniqueBeanDefinitionException, mapping error vs di error, request mapping vs bean wiring, controller mapping not found vs bean missing, request method not supported vs bean ambiguous, beginner spring troubleshooting order, spring first check order 404 bean, spring mvc mapping error before di, dispatcher servlet vs bean container confusion, no handler found vs no qualifying bean, 404 not found spring controller mapping, 405 method not allowed spring mapping, bean wiring confusion card
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: spring 404 vs bean error, spring 405 vs bean wiring, 404 405 vs nosuchbeandefinitionexception, 404 405 vs nouniquebeandefinitionexception, mapping error vs di error, request mapping vs bean wiring, controller mapping not found vs bean missing, request method not supported vs bean ambiguous, beginner spring troubleshooting order, spring first check order 404 bean, spring mvc mapping error before di, dispatcher servlet vs bean container confusion, no handler found vs no qualifying bean, 404 not found spring controller mapping, spring 404 405 vs bean wiring confusion card basics
 
 ## 먼저 mental model 한 줄
 

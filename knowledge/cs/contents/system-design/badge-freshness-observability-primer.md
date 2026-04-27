@@ -2,7 +2,7 @@
 
 > 한 줄 요약: unread badge 같은 count read model은 "얼마나 늦게 따라오나", "지금 cache 값이 얼마나 오래됐나", "나중에 얼마나 크게 보정되나"를 같이 봐야 초보자도 stale badge를 이벤트 유실과 구분할 수 있다.
 
-retrieval-anchor-keywords: badge freshness observability primer, unread badge observability, badge freshness metrics, count read model observability, projection lag metric, badge projection lag, cache age metric badge, badge cache age, correction delta metric, unread count correction delta, badge count correction, count projection observability, read model freshness observability, stale badge metrics, notification badge lag primer, count read model lag cache correction, projection watermark generated_at observability, badge stale triage starter, beginner badge observability, system-design-00075
+retrieval-anchor-keywords: badge freshness observability primer, unread badge observability, badge freshness metrics, count read model observability, projection lag metric, badge projection lag, cache age metric badge, badge cache age, correction delta metric, unread count correction delta, badge count correction, count projection observability, read model freshness observability, beginner badge observability, badge freshness observability primer basics
 
 **난이도: 🟢 Beginner**
 
@@ -13,6 +13,8 @@ retrieval-anchor-keywords: badge freshness observability primer, unread badge ob
 - [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 
@@ -129,6 +131,8 @@ correction delta는 recount나 repair job이 count를 얼마나 바꿨는지 보
 | 계산 결과 | `correction_delta = after_count - before_count` |
 
 초보자용 해석:
+
+## 세 메트릭을 어떻게 읽나 (계속 2)
 
 - 작은 delta가 드물게 생기면 projection의 자연스러운 늦음일 수 있다.
 - 큰 delta가 자주 생기면 read receipt 중복 처리, collapse 규칙, idempotency 누락 같은 구조 문제를 의심한다.

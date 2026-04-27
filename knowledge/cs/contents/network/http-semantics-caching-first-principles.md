@@ -14,7 +14,9 @@
 - [CDN 캐시 키와 무효화 전략](./cdn-cache-key-invalidation.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http semantics, http caching first principles, safe vs idempotent, browser cache vs server cache, browser cache vs server-side cache, shared cache basics, reverse proxy cache basics, CDN cache basics, conditional request first principles, cache-control primer, beginner http caching, beginner http semantics, GET POST cache semantics, 304 first principles, public private cache
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: http semantics, http caching first principles, safe vs idempotent, browser cache vs server cache, browser cache vs server-side cache, shared cache basics, reverse proxy cache basics, cdn cache basics, conditional request first principles, cache-control primer, beginner http caching, beginner http semantics, get post cache semantics, 304 first principles, public private cache
 
 <details>
 <summary>Table of Contents</summary>

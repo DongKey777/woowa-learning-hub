@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java array copy clone basics basics, java array copy clone basics beginner, java array copy clone basics intro, java basics, beginner java, 처음 배우는데 java array copy clone basics, java array copy clone basics 입문, java array copy clone basics 기초, what is java array copy clone basics, how to java array copy clone basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -306,6 +315,8 @@ public class ArrayCopyExample {
 ```
 
 이 예제에서 확인할 포인트는 다섯 가지다.
+
+## 코드로 한 번에 보기 (계속 2)
 
 - 변수 대입은 copy가 아니라 alias다
 - `clone()`은 같은 길이의 새 바깥 배열을 만든다

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: logout, revoke propagation, short-lived token은 "토큰을 어떻게 검증하나"보다 "이미 발급된 자격을 언제부터 어떻게 못 쓰게 만드나"의 문제를 다루며, token-based auth도 lifecycle control을 위해 결국 서버 상태를 필요로 한다.
 
-retrieval-anchor-keywords: session revocation basics, logout 뭐예요, logout propagation basics, forced logout basics, short-lived access token basics, short-lived token why, jwt logout basics, logout all devices basics, session version basics, refresh token basics, browser logout tail, mobile logout tail, beginner auth lifecycle, beginner system design auth
+retrieval-anchor-keywords: session revocation basics, logout 뭐예요, logout propagation basics, forced logout basics, short-lived access token basics, short-lived token why, jwt logout basics, logout all devices basics, session version basics, refresh token basics, browser logout tail, mobile logout tail, beginner auth lifecycle, beginner system design auth, session revocation basics basics
 
 **난이도: 🟢 Beginner**
 
@@ -160,20 +160,20 @@ user clicks logout
 
 ## 꼬리질문
 
-> Q: short-lived access token이면 왜 revoke store가 또 필요한가요?  
-> 의도: TTL과 lifecycle control을 구분하는지 확인  
+> Q: short-lived access token이면 왜 revoke store가 또 필요한가요?
+> 의도: TTL과 lifecycle control을 구분하는지 확인
 > 핵심: TTL은 피해 시간을 줄일 뿐이고, logout all devices나 refresh 차단은 서버 상태가 필요하다.
 
-> Q: JWT는 self-contained인데 왜 버전 체크를 붙이나요?  
-> 의도: 서명 검증과 최신 계정 상태 반영을 구분하는지 확인  
+> Q: JWT는 self-contained인데 왜 버전 체크를 붙이나요?
+> 의도: 서명 검증과 최신 계정 상태 반영을 구분하는지 확인
 > 핵심: 권한 변경, 계정 정지, 비밀번호 변경을 즉시 반영하려면 현재 서버 상태와 비교해야 한다.
 
-> Q: 브라우저 logout와 모바일 logout가 왜 다르게 느껴지나요?  
-> 의도: cookie/BFF 경계와 bearer token 경계를 구분하는지 확인  
+> Q: 브라우저 logout와 모바일 logout가 왜 다르게 느껴지나요?
+> 의도: cookie/BFF 경계와 bearer token 경계를 구분하는지 확인
 > 핵심: 브라우저는 session mapping과 downstream token translation이 있고, 모바일/API는 access token TTL과 refresh revoke가 더 직접적인 문제다.
 
-> Q: revoke propagation이 느린데 왜 모든 요청을 introspection하지 않나요?  
-> 의도: 즉시성, 비용, 가용성 trade-off를 이해하는지 확인  
+> Q: revoke propagation이 느린데 왜 모든 요청을 introspection하지 않나요?
+> 의도: 즉시성, 비용, 가용성 trade-off를 이해하는지 확인
 > 핵심: 고위험 경로만 direct check를 강화하고, 나머지는 short TTL과 eventual propagation으로 비용을 낮추는 경우가 많다.
 
 ## 한 줄 정리

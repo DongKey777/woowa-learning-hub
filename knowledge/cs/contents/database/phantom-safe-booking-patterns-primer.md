@@ -16,7 +16,9 @@
 - [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md)
 - [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md)
 
-retrieval-anchor-keywords: phantom-safe booking patterns, phantom-safe booking primer, booking overlap primer, unique-slot, unique slot, slot unique key, booking slot claim, exclusion-constraint, exclusion constraint, guard-row, guard row, double booking prevention, booking overlap design, overlap check pattern matrix, unique slot vs exclusion constraint vs guard row, exclusion constraint vs slot row, continuous interval vs discrete slot, discrete slot booking, continuous interval booking, PostgreSQL overlap constraint, MySQL booking guard
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: phantom-safe booking patterns, phantom-safe booking primer, booking overlap primer, unique-slot, unique slot, slot unique key, booking slot claim, exclusion-constraint, exclusion constraint, guard-row, guard row, double booking prevention, booking overlap design, phantom safe booking patterns primer basics, phantom safe booking patterns primer beginner
 
 ## 핵심 개념
 

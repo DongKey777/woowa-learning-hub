@@ -12,7 +12,9 @@
 - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
 - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
 
-retrieval-anchor-keywords: delayqueue remove cost, delayqueue remove o(n), heap arbitrary remove, heap head removal vs arbitrary remove, timer queue cancel remove cost, timer queue remove handle, timer queue equality caveat, scheduledfuture removeoncancelpolicy cost, removeOnCancelPolicy linear remove, delayqueue cancel by handle, delayqueue cancel by equals, heap middle delete timer, delayed task remove cost, stale entry vs remove timer, heap timer queue beginner primer, arbitrary remove not like poll heap, handle vs equality timer queue, generation equality timer queue
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: delayqueue remove cost, delayqueue remove o(n), heap arbitrary remove, heap head removal vs arbitrary remove, timer queue cancel remove cost, timer queue remove handle, timer queue equality caveat, scheduledfuture removeoncancelpolicy cost, removeoncancelpolicy linear remove, delayqueue cancel by handle, delayqueue cancel by equals, heap middle delete timer, delayed task remove cost, heap timer queue beginner primer, delayqueue remove cost primer basics
 
 ## 먼저 그림부터
 

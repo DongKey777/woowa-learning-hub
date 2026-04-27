@@ -13,7 +13,9 @@
 - [Replica Lag와 Read-after-Write 전략](./replica-lag-read-after-write-strategies.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: primary read after duplicate checklist, duplicate then not found, duplicate key then select null, winner row not visible after duplicate, stale snapshot after duplicate key, replica read after duplicate key, fresh winner lookup checklist, primary winner lookup, duplicate key read primary, duplicate after null select beginner, duplicate key row not found why, read after duplicate safely, same transaction snapshot stale duplicate, mysql duplicate then not found, mysql 1062 then row not found, primary fresh read winner row, read your writes duplicate key, 중복키 후 조회 null, duplicate 뒤 not found, primary fresh read 체크리스트, stale snapshot 때문에 winner 안 보임, replica lag 때문에 중복 후 안 보임, winner lookup 안전 절차
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: primary read after duplicate checklist, duplicate then not found, duplicate key then select null, winner row not visible after duplicate, stale snapshot after duplicate key, replica read after duplicate key, fresh winner lookup checklist, primary winner lookup, duplicate key read primary, duplicate after null select beginner, duplicate key row not found why, read after duplicate safely, same transaction snapshot stale duplicate, mysql duplicate then not found, mysql 1062 then row not found
 
 ## 먼저 멘탈모델 고정
 

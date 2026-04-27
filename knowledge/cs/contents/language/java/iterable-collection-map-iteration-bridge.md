@@ -12,7 +12,7 @@
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: iterable collection map 차이, iterable vs collection vs map, java interface hierarchy iterable collection map, map is not collection, for each iterable map iteration, java iterator basics, java entrySet keySet values 차이, collection iteration api beginner, map iteration beginner, collection api size add remove, iterable forEach beginner, 처음 배우는데 Iterable Collection Map 차이, Map은 Collection인가요, 자바 컬렉션 계층 구조, 자바 반복 API 기초
+retrieval-anchor-keywords: iterable collection map 차이, iterable vs collection vs map, java interface hierarchy iterable collection map, map is not collection, for each iterable map iteration, java iterator basics, java entryset keyset values 차이, collection iteration api beginner, map iteration beginner, collection api size add remove, iterable foreach beginner, 처음 배우는데 iterable collection map 차이, map은 collection인가요, 자바 컬렉션 계층 구조, 자바 반복 api 기초
 
 ## 먼저 잡는 멘탈 모델
 
@@ -101,3 +101,7 @@ for (Map.Entry<String, Integer> entry : scoreByUser.entrySet()) {
 | "List/Set/Map 첫 선택을 빠르게 고르고 싶어요" | [Java 컬렉션 프레임워크 입문](./java-collections-basics.md) |
 | "`Set` 중복 판단이 왜 이상해 보여요?" | [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md) |
 | "`Map`에서 floor/ceiling 같은 탐색은 언제 쓰죠?" | [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md) |
+
+## 한 줄 정리
+
+`Iterable`은 "반복할 수 있다"는 약속이고, `Collection`은 "원소 묶음" 인터페이스이며, `Map`은 key-value 사전이라 `Collection` 계층과 분리되어 있다.

@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
 > - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
@@ -12,7 +19,7 @@
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 
-retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object, lambda로 충분한가, 람다 vs 전략, 전략 vs 함수, 작은 함수 vs 전략, 작은 규칙 람다로 끝내도 되나요, strategy 처음 배우는데 lambda, strategy 처음 배우는데 큰 그림, strategy 언제 쓰는지 기초, function map vs strategy, function map으로 끝내도 되나요, Map<String, Function> vs Strategy, 함수 맵 vs 전략 객체, 함수 맵으로 충분한가, 작은 계산식 vs 전략 객체, 언제 lambda 쓰는지, 언제 strategy 쓰는지
+retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function object vs strategy, strategy vs small function, when lambda is enough, when to use strategy type, beginner strategy chooser, java lambda or strategy pattern, stateless function vs strategy class, function map vs strategy object, lambda로 충분한가, 람다 vs 전략, 전략 vs 함수, 작은 함수 vs 전략, strategy 처음 배우는데 lambda
 
 ---
 
@@ -84,10 +91,10 @@ retrieval-anchor-keywords: strategy vs function, lambda vs strategy, function ob
 
 ## 왜 초보자가 여기서 자주 헷갈리는가
 
-겉모양만 보면 함수도 "바꿔 끼우는 구현"이고 Strategy도 "바꿔 끼우는 구현"이다.  
+겉모양만 보면 함수도 "바꿔 끼우는 구현"이고 Strategy도 "바꿔 끼우는 구현"이다.
 그래서 "`lambda`도 결국 전략 아닌가요?"라는 질문이 자주 나온다.
 
-맞다. 작은 함수도 넓게 보면 전략처럼 쓸 수 있다.  
+맞다. 작은 함수도 넓게 보면 전략처럼 쓸 수 있다.
 하지만 설계 판단에서는 **표현 비용**을 같이 봐야 한다.
 
 - 함수는 싸게 도입할 수 있다
@@ -124,7 +131,7 @@ Map<String, IntUnaryOperator> feePolicies = Map.of(
 
 ### 3. 테스트도 입력-출력 표면 충분하다
 
-`grade -> discountRate` 같은 규칙은 테스트가 거의 표 형태다.  
+`grade -> discountRate` 같은 규칙은 테스트가 거의 표 형태다.
 이 경우 구현체별 테스트 클래스를 나누는 것보다 케이스 테이블이 더 자연스럽다.
 
 ---
@@ -215,7 +222,7 @@ public class VipDiscountStrategy implements DiscountStrategy {
 
 그래서 Strategy 타입이 자연스럽다.
 
-핵심은 "처음부터 Strategy여야 했다"가 아니다.  
+핵심은 "처음부터 Strategy여야 했다"가 아니다.
 **작게 시작했다가, 책임이 커질 때 Strategy로 올리는 것**도 좋은 설계다.
 
 ---
@@ -224,7 +231,7 @@ public class VipDiscountStrategy implements DiscountStrategy {
 
 ### 1. `if-else`를 없애려고 무조건 Strategy로 가는 것
 
-분기를 지운다고 설계가 좋아지는 것은 아니다.  
+분기를 지운다고 설계가 좋아지는 것은 아니다.
 분기 2개와 짧은 계산식이면 작은 함수가 더 나을 수 있다.
 
 ### 2. `lambda` 안에 협력과 예외 처리를 계속 쌓는 것
@@ -240,7 +247,7 @@ public class VipDiscountStrategy implements DiscountStrategy {
 
 ### 3. Strategy를 "클래스 수 늘리기"로만 이해하는 것
 
-Strategy의 가치는 클래스 개수가 아니라 **역할 이름과 교체 경계**를 분명히 하는 데 있다.  
+Strategy의 가치는 클래스 개수가 아니라 **역할 이름과 교체 경계**를 분명히 하는 데 있다.
 그래서 정말로 역할 경계가 없다면 굳이 만들지 않아도 된다.
 
 ---

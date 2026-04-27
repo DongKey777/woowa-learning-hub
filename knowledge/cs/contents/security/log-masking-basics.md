@@ -13,6 +13,8 @@
 - [Auth Observability Primer Bridge](./auth-observability-primer-bridge.md)
 - [Security 카테고리 README](./README.md#기본-primer)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: log masking basics, authorization header masking, bearer token masking, error log masking, log redaction primer, before after masking example, authorization header before after, exception log redaction, credential leak in logs, beginner security logging, token redaction, secret redaction, log sanitization, log masking beginner, 로그를 남길 때 어디까지 가려야 하나
 
 ## 핵심 개념
@@ -120,6 +122,8 @@ request_id=req-77aa upstream_request_id=up-91d0
 핵심은 "무엇이 틀렸는가"를 남기고, "다시 쓸 수 있는 값"은 지우는 것이다.
 
 같은 에러를 더 안전하게 옮기면 보통 이렇게 바뀐다.
+
+## Before / After 카드 (계속 2)
 
 | 로그 목적 | before | after |
 |---|---|---|

@@ -1,8 +1,17 @@
 # Wildcard Certificate vs Routing Boundary Primer
 
+
+> 한 줄 요약: Wildcard Certificate vs Routing Boundary Primer는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > wildcard certificate가 여러 host를 덮더라도 왜 CDN/LB 경계 때문에 일부 origin만 같은 connection을 공유해야 하는지, concrete CDN/LB examples로 설명하는 beginner primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
@@ -13,7 +22,7 @@
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 > - [SNI, Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: wildcard certificate, wildcard cert, wildcard cert coalescing, wildcard cert routing boundary, wildcard certificate routing boundary, same certificate different backend, same wildcard cert different backend, CDN wildcard certificate, load balancer wildcard certificate, routing boundary vs certificate scope, certificate scope vs routing boundary, connection sharing boundary, wildcard cert authority boundary, admin separate edge, same cert different Alt-Svc endpoint, same cert different LB policy, wildcard SAN not enough, 421 misdirected request wildcard cert, ORIGIN frame allowlist wildcard cert
+retrieval-anchor-keywords: wildcard certificate, wildcard cert, wildcard cert coalescing, wildcard cert routing boundary, wildcard certificate routing boundary, same certificate different backend, same wildcard cert different backend, cdn wildcard certificate, load balancer wildcard certificate, routing boundary vs certificate scope, certificate scope vs routing boundary, connection sharing boundary, wildcard cert authority boundary, wildcard cert routing boundary primer basics, wildcard cert routing boundary primer beginner
 
 <details>
 <summary>Table of Contents</summary>

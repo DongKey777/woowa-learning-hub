@@ -16,7 +16,9 @@
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00078, runtime shell option matrix, python shell true java processbuilder node child_process, shell option matrix, subprocess shell option comparison, python shell=True java ProcessBuilder node exec spawn, language shell wrapper comparison, direct spawn vs shell wrapper matrix, runtime subprocess shell primer, child_process shell true mental model, node exec vs execFile vs spawn, processbuilder sh -c mental model, processbuilder no shell option, python subprocess shell true mental model, cross language subprocess shell guide, junior runtime shell options, beginner handoff box, primer handoff box, shell wrapper matrix, language subprocess matrix, shell option bridge, argv vs shell string across languages, 쉘 옵션 비교표, 파이썬 자바 노드 서브프로세스 비교, shell true processbuilder exec 비교
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00078, runtime shell option matrix, python shell true java processbuilder node child_process, shell option matrix, subprocess shell option comparison, python shell=true java processbuilder node exec spawn, language shell wrapper comparison, direct spawn vs shell wrapper matrix, runtime subprocess shell primer, child_process shell true mental model, node exec vs execfile vs spawn, processbuilder sh -c mental model, processbuilder no shell option, beginner handoff box, runtime shell option matrix basics
 
 ## 먼저 잡는 멘탈 모델
 

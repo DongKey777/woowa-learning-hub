@@ -14,7 +14,7 @@
 - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 
-retrieval-anchor-keywords: bigdecimal construction policy beginner, new BigDecimal double vs string vs valueOf, bigdecimal input stability beginner, bigdecimal valueOf beginner bridge, bigdecimal string constructor beginner, new BigDecimal double pitfall beginner, java bigdecimal 생성 정책, 자바 bigdecimal double 생성자 피하기, 자바 bigdecimal valueOf 문자열 차이, 자바 bigdecimal 입력 경계, 자바 bigdecimal 초급 브리지
+retrieval-anchor-keywords: bigdecimal construction policy beginner, new bigdecimal double vs string vs valueof, bigdecimal input stability beginner, bigdecimal valueof beginner bridge, bigdecimal string constructor beginner, new bigdecimal double pitfall beginner, java bigdecimal 생성 정책, 자바 bigdecimal double 생성자 피하기, 자바 bigdecimal valueof 문자열 차이, 자바 bigdecimal 입력 경계, 자바 bigdecimal 초급 브리지, bigdecimal construction policy beginner bridge basics, bigdecimal construction policy beginner bridge beginner, bigdecimal construction policy beginner bridge intro, java basics
 
 ## 먼저 잡을 멘탈 모델
 

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Stateless app은 요청을 처리하는 작업대이고, database는 정답 저장소, cache는 빠른 복사본, queue는 나중에 처리할 일을 넘기는 줄이라고 보면 초보자용 큰 그림이 한 번에 잡힌다.
 
-retrieval-anchor-keywords: stateless backend cache database queue starter pack, stateless backend architecture primer, app cache db queue relationship, backend box mental model, source of truth vs cache, sync vs async backend basics, worker queue basics, stateless app cache database queue beginner, woowacourse backend architecture primer, curriculum foundation system design, beginner project architecture map, cache or queue first decision, request path mental model
+retrieval-anchor-keywords: stateless backend cache database queue starter pack, stateless backend architecture primer, app cache db queue relationship, backend box mental model, source of truth vs cache, sync vs async backend basics, worker queue basics, stateless app cache database queue beginner, woowacourse backend architecture primer, curriculum foundation system design, beginner project architecture map, cache or queue first decision, request path mental model, stateless backend cache database queue starter pack basics, stateless backend cache database queue starter pack beginner
 
 **난이도: 🟢 Beginner**
 
@@ -16,6 +16,8 @@ retrieval-anchor-keywords: stateless backend cache database queue starter pack, 
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
 - [system-design 카테고리 인덱스](./README.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 

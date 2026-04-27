@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Database to Spring Transaction Master Note](../../master-notes/database-to-spring-transaction-master-note.md)
 > - [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md)
@@ -17,7 +24,7 @@
 > - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 
-retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, db lock wait vs spring proxy, deadlock vs rollback-only, lock timeout vs transactional not applied, deadlock vs UnexpectedRollbackException, why transactional not applied vs deadlock, rollback not working vs lock wait, transaction marked rollback-only vs lock wait, self invocation vs deadlock, checked exception commit vs deadlock, lock wait timeout exceeded, deadlock found when trying to get lock, blocker waiter victim evidence, db wait graph first, rollback-only marker first triage
+retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, db lock wait vs spring proxy, deadlock vs rollback-only, lock timeout vs transactional not applied, deadlock vs unexpectedrollbackexception, why transactional not applied vs deadlock, rollback not working vs lock wait, transaction marked rollback-only vs lock wait, self invocation vs deadlock, checked exception commit vs deadlock, lock wait timeout exceeded, deadlock found when trying to get lock, blocker waiter victim evidence, spring db lock deadlock vs proxy rollback decision matrix basics
 
 ## 핵심 개념
 

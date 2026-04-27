@@ -12,7 +12,7 @@
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 
-retrieval-anchor-keywords: map value shape drill, java map value type practice, map single value list aggregate object, map k v beginner worksheet, map value design beginner, 자바 map value 뭐로 두지, 자바 map 값 타입 고르기, map 값 단일값 리스트 객체 선택, key는 같은데 값이 여러 개인 경우, map value record object beginner, map value shape exercise
+retrieval-anchor-keywords: map value shape drill, java map value type practice, map single value list aggregate object, map k v beginner worksheet, map value design beginner, 자바 map value 뭐로 두지, 자바 map 값 타입 고르기, map 값 단일값 리스트 객체 선택, key는 같은데 값이 여러 개인 경우, map value record object beginner, map value shape exercise, map value shape drill basics, map value shape drill beginner, map value shape drill intro, java basics
 
 ## 먼저 잡는 멘탈 모델
 
@@ -98,3 +98,7 @@ record MemberSummary(String name, String grade, int point) {}
 - `Map` 자체를 언제 고르는지부터 다시 잡으려면 [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
 - `Map`에서 key 존재 여부와 기본값 처리가 헷갈리면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - value를 꺼낸 뒤 반복 패턴까지 이어서 보려면 [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
+
+## 한 줄 정리
+
+`Map<K, V>`를 볼 때 "key는 정했는데 value를 무엇으로 둘지" 막히는 초보자를 위해, 요구 문장을 `단일값`/`리스트`/`집계객체`로 번역하는 후속 미니 드릴이다.

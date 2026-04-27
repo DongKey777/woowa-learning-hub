@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
@@ -12,7 +19,7 @@
 > - [Mediator vs Observer vs Pub/Sub](./mediator-vs-observer-vs-pubsub.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: observer pattern, subject observer, state change notification, event listener pattern, when to use observer, observer vs direct call, observer vs pubsub, synchronous listener, ordering guarantee, failure boundary, spring observer transaction timing, fan-out after state change, beginner observer pattern, unsubscribe pattern, duplicate listener registration, observer lifecycle hygiene, event listener cleanup
+retrieval-anchor-keywords: observer pattern, subject observer, state change notification, event listener pattern, when to use observer, observer vs direct call, observer vs pubsub, synchronous listener, ordering guarantee, failure boundary, spring observer transaction timing, fan-out after state change, beginner observer pattern, unsubscribe pattern, observer basics
 
 > 작성자 : [장주섭](https://github.com/wntjq68)
 
@@ -26,7 +33,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 
 ## 핵심 개념
 
-옵저버 패턴은 `Subject`가 자신의 상태 변화를 `Observer` 목록에 통지하는 구조다.  
+옵저버 패턴은 `Subject`가 자신의 상태 변화를 `Observer` 목록에 통지하는 구조다.
 핵심은 "누가 반응할지"를 느슨하게 만드는 것이지, "실행 의미"를 없애는 것이 아니다.
 
 - 주체는 각 옵저버의 구체 구현보다 공통 인터페이스에 의존한다.
@@ -34,7 +41,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 - 하지만 주체는 여전히 옵저버 목록을 순회하며 직접 호출한다.
 - 그래서 고전 옵저버는 보통 **같은 프로세스 안의 동기 통지**에 가깝다.
 
-이 마지막 점이 중요하다.  
+이 마지막 점이 중요하다.
 옵저버는 느슨한 결합을 주지만, **순서 보장과 실패 경계는 여전히 호출 체인에 남아 있는 경우가 많다.**
 
 ## 먼저 세 가지 질문
@@ -67,7 +74,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 
 ### 1. 옵저버는 "직접 호출을 감춘 것"이 아니라 "직접 호출 fan-out을 구조화한 것"이다
 
-옵저버를 쓰면 주체가 구체 구현을 덜 알게 되므로 확장성이 좋아진다.  
+옵저버를 쓰면 주체가 구체 구현을 덜 알게 되므로 확장성이 좋아진다.
 하지만 실행 자체는 여전히 메서드 호출일 수 있다.
 
 즉 아래 둘은 결합 구조가 다르지만, 실패 체인은 비슷할 수 있다.
@@ -75,7 +82,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 - `orderService.complete()` 안에서 `notificationService.send()`를 직접 부르는 구조
 - `order.complete()`가 등록된 `OrderListener`들을 순회하는 구조
 
-그래서 "이벤트로 뺐으니 분리됐다"라고 단정하면 안 된다.  
+그래서 "이벤트로 뺐으니 분리됐다"라고 단정하면 안 된다.
 **결합은 낮아져도 실패 경계는 그대로일 수 있다.**
 
 ### 2. 순서가 정책이면 옵저버보다 명시적 흐름이 더 안전하다
@@ -94,7 +101,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 - 정말 옵저버를 유지해야 한다면 정렬 규칙을 코드와 문서에 **명시적 계약**으로 둬야 한다.
 - "어차피 리스트 순회니까 되겠지"는 운영 중 가장 쉽게 깨지는 가정이다.
 
-한 문장으로 요약하면:  
+한 문장으로 요약하면:
 **순서가 곧 정책이면 옵저버보다 직접 호출이 더 솔직한 경우가 많다.**
 
 ### 3. 실패 경계를 먼저 정하지 않으면 부분 성공이 생긴다
@@ -107,7 +114,7 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 - 리스너 2가 예외를 던졌다
 - 호출자는 전체가 실패했다고 본다
 
-그러면 이미 일어난 부가 효과와 호출자 관점의 실패가 충돌할 수 있다.  
+그러면 이미 일어난 부가 효과와 호출자 관점의 실패가 충돌할 수 있다.
 반대로 예외를 무시해 버리면 조용한 데이터 불일치가 생기기 쉽다.
 
 따라서 먼저 정해야 한다.
@@ -125,6 +132,8 @@ retrieval-anchor-keywords: observer pattern, subject observer, state change noti
 - 더 이상 필요 없는 리스너를 해제하지 않으면 메모리 누수가 생길 수 있다.
 - 같은 리스너를 중복 등록하면 이벤트가 여러 번 처리될 수 있다.
 - UI, long-lived session, plugin 구조에서는 특히 lifecycle 관리가 중요하다.
+
+## 깊이 들어가기 (계속 2)
 
 즉 옵저버는 "추가가 쉬운 패턴"이지만, **제거와 중복 방지까지 같이 설계해야 안전하다.**
 UI, plugin, long-lived process 맥락의 구체적인 unsubscribe / duplicate-registration 규칙은 [Observer Lifecycle Hygiene](./observer-lifecycle-hygiene.md)에서 따로 정리했다.
@@ -159,7 +168,7 @@ public class OrderService {
 }
 ```
 
-이 코드는 결합도는 더 높지만,  
+이 코드는 결합도는 더 높지만,
 "결제 후 재고 예약"이라는 핵심 순서와 실패 전파가 코드에 그대로 드러난다.
 
 ### 2. 옵저버로 후속 반응을 분리한 경우

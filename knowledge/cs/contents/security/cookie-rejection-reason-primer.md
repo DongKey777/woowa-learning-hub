@@ -15,7 +15,7 @@
 - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: cookie rejection reason primer, devtools set-cookie blocked, blocked response cookies beginner, secure cookie blocked http, samesite none without secure, invalid domain attribute cookie, cookie path too narrow beginner, set-cookie 줬는데 저장이 안 됨, 로그인한 뒤 쿠키가 막힘, browser session beginner ladder return, return to browser session troubleshooting path, cookie rejection next step branch
+retrieval-anchor-keywords: cookie rejection reason primer, devtools set-cookie blocked, blocked response cookies beginner, secure cookie blocked http, samesite none without secure, invalid domain attribute cookie, cookie path too narrow beginner, set-cookie 줬는데 저장이 안 됨, 로그인한 뒤 쿠키가 막힘, browser session beginner ladder return, return to browser session troubleshooting path, cookie rejection next step branch, cookie rejection reason primer basics, cookie rejection reason primer beginner, cookie rejection reason primer intro
 retrieval-anchor-keywords: devtools cookie blocked reason secure, devtools cookie blocked reason samesite, devtools cookie blocked reason domain, devtools cookie blocked reason path, response cookie rejected vs request cookie excluded, cookie stored but not sent path mismatch, blocked response cookies filter, has blocked cookies devtools
 retrieval-anchor-keywords: cookie checklist set-cookie issues application cookies, devtools cookie exact columns blocked reason
 retrieval-anchor-keywords: samesite vs proxy 15 second check, devtools blocked reason sameSite vs proxy, blocked reason secure vs samesite branch, cookie blocked reason quick branch, devtools blocked cookie 15초 분기
@@ -373,6 +373,9 @@ beginner 관점에서는 "전송 범위를 나누는 스위치" 정도로 이해
 | HTTPS인데 login 뒤 redirect가 `http://...`로 바뀌거나 proxy 뒤에서만 깨진다 | `[follow-up]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) | `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 | external IdP callback, iframe, social login에서만 cookie가 안 붙는다 | `[follow-up]` [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md) | `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 | `Application > Cookies`에는 있는데 request `Cookie`는 비거나 `Domain`/`Path`가 더 수상하다 | `[follow-up]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) | `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+## follow-up 한 장 (계속 2)
+
 | `auth.example.com/callback` 뒤 첫 요청만 anonymous다 | `[follow-up]` [Subdomain Login Callback Boundaries](./subdomain-login-callback-boundaries.md) | `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 
 ## return to Browser / Session Troubleshooting Path

@@ -19,7 +19,7 @@
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: notification causal token walkthrough, notification click watermark check, causal token example, causal token what is, required watermark basics, notification deep link causal token, click notification stale source, 알림 눌렀는데 본문 없음, payment notification order stale, replica visible watermark check, cache reject on watermark, beginner causal token notification, notification refill watermark metadata, cache metadata after causal read
+retrieval-anchor-keywords: notification causal token walkthrough, notification click watermark check, causal token example, causal token what is, required watermark basics, notification deep link causal token, click notification stale source, 알림 눌렀는데 본문 없음, payment notification order stale, replica visible watermark check, cache reject on watermark, beginner causal token notification, notification refill watermark metadata, cache metadata after causal read, notification causal token walkthrough basics
 
 ---
 

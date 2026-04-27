@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: 이 문서는 auth observability 영역의 beginner `primer bridge`다. deep dive에 들어가기 전에 용어를 최소한으로 분리하고, 증상에 맞는 다음 문서를 고르는 입구 역할을 한다.
 
 > 관련 문서:
@@ -17,7 +24,7 @@
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 > - [Security README: 기본 primer](./README.md#기본-primer)
 
-retrieval-anchor-keywords: auth observability primer bridge, missing audit trail primer, missing-audit-trail primer, auth-signal-gap primer, auth telemetry gap beginner, decision log missing beginner, allow deny reason code missing, 401 403 spike no reason bucket, observability blind spot auth beginner, auth evidence basics, auth signal evidence separation, request state decision reason audit trail, beginner observability handoff, security symptom shortcut, category return path, 로그를 봤는데도 이유 모름, 장애를 분석해도 근거가 안 남음, 원인 찾으려고 로그를 뒤짐, runtime-debugging handoff first, runtime debugging handoff first, observability before runtime debugging, auth signal before runtime debugging, decision log runtime-debugging handoff first
+retrieval-anchor-keywords: auth observability primer bridge, missing audit trail primer, missing-audit-trail primer, auth-signal-gap primer, auth telemetry gap beginner, decision log missing beginner, allow deny reason code missing, 401 403 spike no reason bucket, observability blind spot auth beginner, auth evidence basics, auth signal evidence separation, request state decision reason audit trail, beginner observability handoff, security symptom shortcut, category return path
 
 ## 먼저 30초 mental model
 
@@ -75,3 +82,7 @@ retrieval-anchor-keywords: auth observability primer bridge, missing audit trail
 - 증상 라우팅을 다시 고르려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 - 보안 카테고리 primer 목록으로 돌아가려면 [Security README: 기본 primer](./README.md#기본-primer)
 - observability 관련 deep dive catalog를 다시 훑으려면 [Security README: 운영 / Incident catalog](./README.md#운영--incident-catalog), [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
+
+## 한 줄 정리
+
+`missing-audit-trail`이나 `auth-signal-gap`이 보일 때는 먼저 "요청 상태", "판단 근거", "감사 증적" 3칸을 분리한 뒤 deep dive로 내려가야 원인 축을 덜 헷갈린다.

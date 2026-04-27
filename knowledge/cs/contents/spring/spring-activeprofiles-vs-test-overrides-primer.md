@@ -6,13 +6,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 > - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](./spring-testing-basics.md)
 > - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
 
-retrieval-anchor-keywords: ActiveProfiles vs TestPropertySource, ActiveProfiles vs application-test.yml, spring test profile override beginner, application-test.yml not loaded, @ActiveProfiles test profile select, @TestPropertySource beginner, SpringBootTest properties beginner, WebMvcTest properties attribute, DataJpaTest properties attribute, application-test.yml override confusion, profile selection vs property override, spring test property source primer, spring test properties annotation vs file, test profile file loading, active profile does not set properties
+retrieval-anchor-keywords: activeprofiles vs testpropertysource, activeprofiles vs application-test.yml, spring test profile override beginner, application-test.yml not loaded, @activeprofiles test profile select, @testpropertysource beginner, springboottest properties beginner, webmvctest properties attribute, datajpatest properties attribute, application-test.yml override confusion, profile selection vs property override, spring test property source primer, spring test properties annotation vs file, test profile file loading, active profile does not set properties
 
 ## 핵심 개념
 

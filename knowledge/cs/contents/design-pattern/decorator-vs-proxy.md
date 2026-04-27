@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: decorator vs proxy basics, decorator vs proxy beginner, decorator vs proxy intro, design pattern basics, beginner design pattern, 처음 배우는데 decorator vs proxy, decorator vs proxy 입문, decorator vs proxy 기초, what is decorator vs proxy, how to decorator vs proxy
 > 관련 문서:
 > - [전략 (Strategy)](./strategy-pattern.md)
 > - [팩토리 (Factory)](./factory.md)
@@ -49,7 +58,7 @@ Client -> Wrapper -> Real Object
 
 ### 2. Spring에서의 프록시
 
-Spring AOP, `@Transactional`, `@Cacheable`은 대부분 프록시 기반이다.  
+Spring AOP, `@Transactional`, `@Cacheable`은 대부분 프록시 기반이다.
 즉 기능 자체보다 "호출 경계"를 잡는 것이 중요하다.
 
 이런 경우 프록시는 데코레이터와 비슷해 보이지만, 목적은 기능 조합이 아니라 **호출 제어**다.
@@ -82,12 +91,12 @@ Java의 `java.io` 계열에는 데코레이터 스타일 API가 많다.
 
 ### 시나리오 2: `@Transactional`이 동작하는 이유
 
-Spring은 메서드 호출을 프록시가 대신 받는다.  
+Spring은 메서드 호출을 프록시가 대신 받는다.
 이건 데코레이터처럼 보일 수 있지만 핵심은 기능 추가가 아니라 호출 통제다.
 
 ### 시나리오 3: 잘못된 적용
 
-아주 단순한 객체에 데코레이터를 여러 겹 쌓으면, 기능은 좋아 보여도 디버깅 난이도만 올라간다.  
+아주 단순한 객체에 데코레이터를 여러 겹 쌓으면, 기능은 좋아 보여도 디버깅 난이도만 올라간다.
 프록시도 마찬가지로, 호출 흐름이 숨겨지면 읽기 비용이 커진다.
 
 ---
@@ -140,6 +149,8 @@ sender.send("hello");
 ```
 
 ### 프록시 예시
+
+## 코드로 보기 (계속 2)
 
 ```java
 interface OrderService {
@@ -195,7 +206,7 @@ public void pay() {
 | 프록시 | 호출 제어를 일관되게 처리한다 | 흐름이 숨겨진다 | 인증, 권한, 트랜잭션, 캐시 |
 | 직접 호출 | 단순하다 | 중복 코드가 늘어난다 | 변경이 거의 없을 때 |
 
-데코레이터는 "기능의 조합"을, 프록시는 "경계의 제어"를 해결한다.  
+데코레이터는 "기능의 조합"을, 프록시는 "경계의 제어"를 해결한다.
 이 차이를 보면 어떤 상황에서 Spring AOP가 적합한지도 같이 보인다.
 
 ---

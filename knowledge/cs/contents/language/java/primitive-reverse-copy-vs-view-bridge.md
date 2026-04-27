@@ -13,7 +13,7 @@
 - [Primitive Array Descending Search Primer](./primitive-array-descending-binarysearch-primer.md)
 - [`descendingSet()` / `descendingMap()` View Mental Model](./descending-view-mental-model.md)
 
-retrieval-anchor-keywords: language-java-00134, primitive reverse copy vs view bridge, java primitive array reverse copy vs backward iteration, java int array reverse or iterate backwards, java primitive array descending view idea, java reverse array physically or just loop backwards, java int array reverse search mutation tradeoff, java primitive array reverse copy beginner, java backward iteration not reverse beginner, java reverse array before binarySearch mistake, java primitive array reverse in place vs copy, 자바 primitive 배열 뒤집기 vs 뒤에서부터 순회, 자바 int 배열 reverse copy 언제, 자바 배열 내림차순 보기만 필요할 때, 자바 배열 실제로 뒤집어야 하나, 자바 primitive 배열 검색과 reverse 주의
+retrieval-anchor-keywords: language-java-00134, primitive reverse copy vs view bridge, java primitive array reverse copy vs backward iteration, java int array reverse or iterate backwards, java primitive array descending view idea, java reverse array physically or just loop backwards, java int array reverse search mutation tradeoff, java primitive array reverse copy beginner, java backward iteration not reverse beginner, java reverse array before binarysearch mistake, java primitive array reverse in place vs copy, 자바 primitive 배열 뒤집기 vs 뒤에서부터 순회, 자바 int 배열 reverse copy 언제, 자바 배열 내림차순 보기만 필요할 때, 자바 배열 실제로 뒤집어야 하나
 
 ## 먼저 잡는 mental model
 

@@ -13,7 +13,7 @@
 - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - [Spring Bean Naming, Qualifier, and Rename Pitfalls Primer](../../spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 
-retrieval-anchor-keywords: comparator variable naming, java comparator name pattern, byname comparator, byscoredescthenname comparator, comparator readability beginner, named comparator reuse java, sort intent variable name, comparator desc then asc naming, comparator helper naming java, comparator extract variable beginner, 정렬 의도 변수명, comparator 이름 규칙 기초
+retrieval-anchor-keywords: comparator variable naming, java comparator name pattern, byname comparator, byscoredescthenname comparator, comparator readability beginner, named comparator reuse java, sort intent variable name, comparator desc then asc naming, comparator helper naming java, comparator extract variable beginner, 정렬 의도 변수명, comparator 이름 규칙 기초, comparator variable naming beginner primer basics, comparator variable naming beginner primer beginner, comparator variable naming beginner primer intro
 
 ## 핵심 개념
 

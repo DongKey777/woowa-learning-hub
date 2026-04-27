@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 > - [Spring Same-Location `.properties` vs YAML Precedence Primer](./spring-properties-vs-yaml-same-location-precedence-primer.md)
@@ -14,7 +21,7 @@
 > - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: spring external config precedence, external application properties, packaged vs external application yml, application yml inside jar outside jar, external application yml overrides jar, config data order spring boot, spring boot config data precedence, spring config location beginner, spring.config.location replace default locations, spring.config.additional-location add not replace, spring config import beginner, spring.config.import precedence, import relative vs fixed, optional:file config import, external profile overrides packaged profile, application-prod outside jar precedence, current directory config application yml, config subdirectory precedence, config data import relative path, spring config file precedence, multi-document application yml precedence, spring.config.activate.on-profile external config, spring 여러 문서 yml 우선순위, spring 외부 설정 파일 우선순위, jar 안 설정 jar 밖 설정, application yml 외부 파일 우선순위, spring config location import 차이
+retrieval-anchor-keywords: spring external config precedence, external application properties, packaged vs external application yml, application yml inside jar outside jar, external application yml overrides jar, config data order spring boot, spring boot config data precedence, spring config location beginner, spring.config.location replace default locations, spring.config.additional-location add not replace, spring config import beginner, spring.config.import precedence, import relative vs fixed, optional:file config import, external profile overrides packaged profile
 
 ## 핵심 개념
 
@@ -300,3 +307,7 @@ beginner 단계에서는 아래 한 줄로 정리해도 충분하다.
 - env var, command-line, test property까지 한 번에 넓혀 보려면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 - env var 이름 변환이 헷갈리면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 - property 값 때문에 조건부 bean이 왜 켜지거나 꺼지는지 보려면 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+
+## 한 줄 정리
+
+Spring Boot에서 jar 안 `application.yml`은 보통 **기본값**, jar 밖 `application.yml`은 보통 **환경별 override**로 생각하면 된다. `spring.config.location`은 "어디를 찾을지"를 바꾸는 스위치이고, `spring.config.import`는 "이 파일이 다른 파일도 읽게 하라"는 선언이다.

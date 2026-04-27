@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [시간복잡도 입문](../algorithm/time-complexity-intro.md)
 
-retrieval-anchor-keywords: hash table basics, 해시 테이블 입문, hash map basics, 해시맵이 뭐예요, hash function basics, collision basics, 해시 충돌이란, chaining open addressing, key value store basics, o(1) lookup, 해시 테이블 원리, beginner hash, hash collision handling, hashmap vs treemap beginner
+retrieval-anchor-keywords: hash table basics, 해시 테이블 입문, hash map basics, 해시맵이 뭐예요, hash function basics, collision basics, 해시 충돌이란, chaining open addressing, key value store basics, o(1) lookup, 해시 테이블 원리, beginner hash, hash collision handling, hashmap vs treemap beginner, hash table basics basics
 
 ## 핵심 개념
 

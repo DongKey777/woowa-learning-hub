@@ -22,6 +22,8 @@
 - [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: popen runtime wrapper mapping, popen pipe fd mapping, subprocess pipe mapping, communicate drain wait policy, capture_output mental model, stderr stdout merge, close_fds pass_fds mental model, pass_fds fd inheritance, shell true fd inheritance, child waits for stdin eof, flush is not eof, runtime wrapper file actions, high-level subprocess os mental model, popen 처음 배우는데, close_fds 뭐예요
 
 ## Subprocess Primer Handoff

@@ -25,7 +25,7 @@
 - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 
-retrieval-anchor-keywords: java language basics, java source bytecode jvm flow, jdk vs jvm beginner, java primitive vs reference, java data type basics, java type conversion promotion demotion, java cast overflow beginner, java variable scope basics, java field vs local variable initialization, java local variable not initialized compile error, java array basics, java control flow basics, java array equality copy sorting route, java array next step guide, java array compare false with ==, java copied original changed together, java sort changed original binarysearch wrong, java basics to class object instance, java syntax to oop bridge, java class object instance next doc, java class object instance beginner route, class object instance after java basics, 클래스 객체 인스턴스 다음 문서, 자바 문법 다음 객체지향, 자바 기초 다음 class object instance, 배열 비교 막힘 다음 문서, 배열 복사 같이 바뀜, 배열 정렬 후 binarySearch 이상, 자바 문법 기초, 자바 기초 문법 큰 그림, 처음 배우는데 자바 문법, 처음 배우는데 자바 큰 그림, 자바 실행 구조 기초, 자바 타입 기초, 자바 형변환 기초, 형변환 언제 쓰는지 기초, 자바 배열 기초, 자바 제어문 기초, 자바 배열 비교 복사 정렬 차이, 배열 다음 뭐 읽어야
+retrieval-anchor-keywords: java language basics, java source bytecode jvm flow, jdk vs jvm beginner, java primitive vs reference, java data type basics, java type conversion promotion demotion, java cast overflow beginner, java variable scope basics, java field vs local variable initialization, java local variable not initialized compile error, java array basics, java control flow basics, java array equality copy sorting route, java array next step guide, java array compare false with ==
 
 <details>
 <summary>Table of Contents</summary>
@@ -468,6 +468,8 @@ System.out.println(passedCount);
 - 메서드, 생성자, `this`, 반환값이 같이 헷갈리면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)으로 간다.
 - package / import / 파일 구조가 걸리면 [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)으로 바로 이동한다.
 - 배열은 "비교 / 복사 / 정렬-검색" 중 어디서 막혔는지 먼저 자르고 아래 표에서 고른다.
+
+## 다음 읽을 문서 (계속 2)
 
 | 지금 보이는 증상 | 먼저 읽을 문서 | 이 문서를 먼저 읽는 이유 |
 |---|---|---|

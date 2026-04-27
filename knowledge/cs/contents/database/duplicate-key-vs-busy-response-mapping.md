@@ -15,7 +15,9 @@
 - [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: duplicate key vs busy response mapping, duplicate key http response, lock timeout http response, deadlock http response, serialization failure http response, service layer outcome mapping, spring duplicatekeyexception response, mysql 1062 1205 1213 response, postgresql 23505 55P03 40P01 40001 response, beginner api error mapping db concurrency, already exists busy retryable http choice, duplicate key conflict or success, busy 429 503 choice, retryable internal retry http response, 중복키 busy 응답 매핑, 락 타임아웃 http 응답, 데드락 재시도 응답, serialization failure 응답 선택, 서비스 레이어 http 상태코드 브리지, 초급자 db 예외 응답 매핑, spring 예외 http 번역
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: duplicate key vs busy response mapping, duplicate key http response, lock timeout http response, deadlock http response, serialization failure http response, service layer outcome mapping, spring duplicatekeyexception response, mysql 1062 1205 1213 response, postgresql 23505 55p03 40p01 40001 response, beginner api error mapping db concurrency, already exists busy retryable http choice, duplicate key conflict or success, busy 429 503 choice, retryable internal retry http response, duplicate key vs busy response mapping basics
 
 ## 먼저 멘탈모델
 
@@ -158,3 +160,7 @@ retrieval-anchor-keywords: duplicate key vs busy response mapping, duplicate key
 - duplicate 뒤 fresh read 분기를 더 자세히 보면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - `busy`에서 `503`와 짧은 1회 retry를 어떻게 나누는지 보려면 [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - Spring/JPA 표면 예외와 root SQL 코드 차이를 보려면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
+
+## 한 줄 정리
+
+초보자는 DB 예외를 바로 HTTP로 번역하지 말고, 먼저 `already exists` / `busy` / `retryable` 서비스 라벨로 바꾼 뒤 그다음 `200`/`202`/`409`/`429`/`503` 같은 응답 선택으로 내려가면 덜 흔들린다.

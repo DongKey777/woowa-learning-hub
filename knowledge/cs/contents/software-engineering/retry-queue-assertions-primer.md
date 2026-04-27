@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: retry queue assertions primer basics, retry queue assertions primer beginner, retry queue assertions primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry queue assertions primer, retry queue assertions primer 입문, retry queue assertions primer 기초, what is retry queue assertions primer, how to retry queue assertions primer
 `ItemFailure`, `RetryCandidate`, `manual review`, `terminal failure`라는 이름을 이미 보고도 테스트를 어디서 시작해야 할지 막막하다면, 이 문서는 그 첫 묶음만 좁혀서 설명한다.
 [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)에서 `retryable`, `manual-review`, `permanent` 분류표를 먼저 잡았다면, 여기서는 그 분류가 테스트에서 어떤 assertion으로 보이는지 이어서 읽으면 된다.
 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)에서 failure mapping 자체를 봤다면, 여기서는 그다음 단계인 "실패를 다음 경로로 제대로 번역했는가"만 다룬다.

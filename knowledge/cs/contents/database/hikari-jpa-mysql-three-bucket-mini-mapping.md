@@ -14,7 +14,9 @@
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: hikari jpa mysql three bucket mapping, hikari mysql exception busy retryable already exists, connection is not available cannotacquirelockexception duplicate key 1062, hikaricp jpa mysql beginner exception table, mysql 1205 1213 1062 spring jpa cheat sheet, busy retryable already exists hikari jpa mysql, hikaricp timeout busy, cannotacquirelockexception retryable or busy, dataintegrityviolationexception duplicate key already exists, beginner db exception translator, 초보자 예외 번역표, hikari jpa mysql 예외 매핑표, busy retryable already exists 미니표, connection is not available busy, duplicate key already exists, deadlock retryable, 1062 already exists, 1213 retryable, 1205 busy
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: hikari jpa mysql three bucket mapping, hikari mysql exception busy retryable already exists, connection is not available cannotacquirelockexception duplicate key 1062, hikaricp jpa mysql beginner exception table, mysql 1205 1213 1062 spring jpa cheat sheet, busy retryable already exists hikari jpa mysql, hikaricp timeout busy, cannotacquirelockexception retryable or busy, dataintegrityviolationexception duplicate key already exists, beginner db exception translator, 초보자 예외 번역표, hikari jpa mysql 예외 매핑표, busy retryable already exists 미니표, connection is not available busy, duplicate key already exists
 
 ## 먼저 멘탈모델
 

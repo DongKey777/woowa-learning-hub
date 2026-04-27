@@ -13,7 +13,7 @@
 - [Quotient Filter](./quotient-filter.md)
 - [Reservoir Sampling](../algorithm/reservoir-sampling.md)
 
-retrieval-anchor-keywords: sketch filter selection, bloom vs cuckoo vs xor vs quotient, membership filter basics, approximate membership intro, beginner filter decision, exact vs approximate membership, deletion needed filter, memory first filter, static set filter, filter choice for beginners, prefilter vs exact lookup
+retrieval-anchor-keywords: sketch filter selection, bloom vs cuckoo vs xor vs quotient, membership filter basics, approximate membership intro, beginner filter decision, exact vs approximate membership, deletion needed filter, memory first filter, static set filter, filter choice for beginners, prefilter vs exact lookup, sketch filter selection playbook basics, sketch filter selection playbook beginner, sketch filter selection playbook intro, data structure basics
 
 ## 핵심 개념
 

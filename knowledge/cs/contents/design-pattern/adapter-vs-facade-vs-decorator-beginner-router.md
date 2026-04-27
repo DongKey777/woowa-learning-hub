@@ -12,7 +12,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [AOP와 프록시 메커니즘](../spring/aop-proxy-mechanism.md)
 
-retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern confusion, adapter vs facade vs decorator, 처음 배우는데 wrapper, 큰 그림 wrapper pattern, adapter facade decorator 차이, 언제 쓰는지 adapter facade decorator, 번역 vs 단순화 vs 기능추가, adapter냐 facade냐 decorator냐, facade adapter decorator quick check, wrapper 패턴 헷갈림, beginner wrapper router
+retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern confusion, adapter vs facade vs decorator, 처음 배우는데 wrapper, 큰 그림 wrapper pattern, adapter facade decorator 차이, 언제 쓰는지 adapter facade decorator, 번역 vs 단순화 vs 기능추가, adapter냐 facade냐 decorator냐, facade adapter decorator quick check, wrapper 패턴 헷갈림, beginner wrapper router, adapter vs facade vs decorator beginner router basics, adapter vs facade vs decorator beginner router beginner, adapter vs facade vs decorator beginner router intro
 
 ## 핵심 개념
 

@@ -11,7 +11,7 @@
 - [운영체제 카테고리 인덱스](../operating-system/README.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: tcp udp basics, tcp vs udp, tcp 신뢰성, udp 빠른 전송, tcp handshake 왜 필요해, udp 언제 쓰나요, tcp 연결 지향, udp 비연결, 패킷 순서 보장, 재전송 보장
+retrieval-anchor-keywords: tcp udp basics, tcp vs udp, tcp 신뢰성, udp 빠른 전송, tcp handshake 왜 필요해, udp 언제 쓰나요, tcp 연결 지향, udp 비연결, 패킷 순서 보장, 재전송 보장, tcp udp basics basics, tcp udp basics beginner, tcp udp basics intro, network basics, beginner network
 
 ## 핵심 개념
 

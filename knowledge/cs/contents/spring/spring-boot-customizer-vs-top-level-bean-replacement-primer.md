@@ -13,7 +13,7 @@
 - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
 - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 
-retrieval-anchor-keywords: boot customizer vs replace, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 webclient builder, webclient builder customizer, restclient builder customizer, customizer keeps boot defaults, top-level bean replacement ownership, shared builder owner, 공용 baseline vs 전용 client, 헤더 하나만 추가하고 싶어요
+retrieval-anchor-keywords: boot customizer vs replace, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 webclient builder, webclient builder customizer, restclient builder customizer, customizer keeps boot defaults, top-level bean replacement ownership, shared builder owner, 공용 baseline vs 전용 client, 헤더 하나만 추가하고 싶어요, spring boot customizer vs top level bean replacement primer basics, spring boot customizer vs top level bean replacement primer beginner, spring boot customizer vs top level bean replacement primer intro
 
 ## 먼저 mental model
 
@@ -102,6 +102,7 @@ public class JsonConfig {
 - after는 의도와 변경 범위가 더 잘 맞는다
 
 ## builder에서 바로 보는 before / after
+
 공통 헤더 하나를 추가하려는 장면도 구조는 같다.
 
 ```java

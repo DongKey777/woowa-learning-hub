@@ -13,7 +13,9 @@
 - [Repository, DAO, Entity](./repository-dao-entity.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mission review vocabulary primer, pr review glossary beginner, domain rule dto entity repository service validation transaction, 리뷰 용어 입문, 코드리뷰 용어 정리, 우테코 리뷰 용어, domain rule 뭐예요, service repository 차이, transaction 경계 입문, validation 위치, dto entity 구분 초심자
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mission review vocabulary primer, pr review glossary beginner, domain rule dto entity repository service validation transaction, 리뷰 용어 입문, 코드리뷰 용어 정리, 우테코 리뷰 용어, domain rule 뭐예요, service repository 차이, transaction 경계 입문, validation 위치, dto entity 구분 초심자, mission review vocabulary primer basics, mission review vocabulary primer beginner, mission review vocabulary primer intro, software engineering basics
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

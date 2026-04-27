@@ -20,6 +20,8 @@ retrieval-anchor-keywords: consistency idempotency async workflow foundations, s
 - [Workflow Orchestration / Saga 설계](./workflow-orchestration-saga-design.md)
 - [system-design 카테고리 인덱스](./README.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 ---
 
 ## 먼저 잡을 mental model

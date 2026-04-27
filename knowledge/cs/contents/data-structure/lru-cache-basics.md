@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [시간복잡도 입문](../algorithm/time-complexity-intro.md)
 
-retrieval-anchor-keywords: lru cache basics, 캐시 교체 정책 입문, lru란 무엇인가, least recently used, lru 구현 원리, 캐시 입문, cache eviction basics, hashmap linked list lru, 캐시가 뭐예요, lru beginner, cache capacity, 캐시 용량 초과, cache hit miss
+retrieval-anchor-keywords: lru cache basics, 캐시 교체 정책 입문, lru란 무엇인가, least recently used, lru 구현 원리, 캐시 입문, cache eviction basics, hashmap linked list lru, 캐시가 뭐예요, lru beginner, cache capacity, 캐시 용량 초과, cache hit miss, lru cache basics basics, lru cache basics beginner
 
 ## 핵심 개념
 

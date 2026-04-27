@@ -8,6 +8,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
@@ -15,7 +22,7 @@
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 
-retrieval-anchor-keywords: full configuration, lite configuration, full vs lite configuration example, proxyBeanMethods example, proxyBeanMethods decision map, proxyBeanMethods 30초 결정표, proxyBeanMethods false safe pattern, method parameter injection bean, @Bean self invocation, @Bean internal call, @Bean self call, inter-bean reference, configuration class enhancement, @Configuration proxyBeanMethods false, lite mode @Bean, full mode @Bean, auto configuration proxyBeanMethods false, bean self invocation config, proxyBeanMethods false not prototype, self invocation unmanaged object, self call unmanaged object, configuration self invocation trap, proxyBeanMethods assertSame, proxyBeanMethods assertNotSame, full lite test summary table, configuration self invocation test table, kotlin proxyBeanMethods false safe pattern, kotlin expression body bean, kotlin parameter injection bean, kotlin configuration expression body, java kotlin bean method comparison
+retrieval-anchor-keywords: full configuration, lite configuration, full vs lite configuration example, proxybeanmethods example, proxybeanmethods decision map, proxybeanmethods 30초 결정표, proxybeanmethods false safe pattern, method parameter injection bean, @bean self invocation, @bean internal call, @bean self call, inter-bean reference, configuration class enhancement, spring full vs lite configuration examples basics, spring full vs lite configuration examples beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -128,6 +135,7 @@ fun auditService(auditClock: AuditClock) = AuditService(auditClock)
 ---
 
 <a id="full-config-self-invocation"></a>
+
 ## 1. full configuration: self-invocation이 있어도 같은 Bean을 쓴다
 
 ```java
@@ -167,6 +175,7 @@ assertSame(
 ---
 
 <a id="lite-self-invocation-trap"></a>
+
 ## 2. lite configuration + self-invocation: 보기엔 같아도 다른 객체가 들어간다
 
 ```java
@@ -222,6 +231,7 @@ assertNotSame(
 ---
 
 <a id="lite-parameter-safe"></a>
+
 ## 3. lite configuration + method-parameter injection: proxy 없이도 안전하다
 
 ```java

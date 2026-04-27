@@ -1,7 +1,18 @@
 # SQL 조인과 쿼리 실행 순서
 
+
+> 한 줄 요약: SQL 조인과 쿼리 실행 순서는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
+
+retrieval-anchor-keywords: sql joins and query order basics, sql joins and query order beginner, sql joins and query order intro, database basics, beginner database, 처음 배우는데 sql joins and query order, sql joins and query order 입문, sql joins and query order 기초, what is sql joins and query order, how to sql joins and query order
 > 단순 SQL 문법을 넘어, DB가 쿼리를 어떻게 이해하는지 설명하기 위한 문서
 
 <details>
@@ -134,3 +145,7 @@ SQL을 작성하는 순서와 DB가 처리하는 논리 순서는 다르다.
 - `GROUP BY` 쿼리가 느릴 때 어디부터 의심해야 하는가?
 - 서브쿼리와 JOIN 중 무엇이 더 빠른지는 왜 단정할 수 없는가?
 - SQL을 읽기 쉽게 쓰는 것과 DB가 실행하기 좋은 것은 항상 같은가?
+
+## 한 줄 정리
+
+SQL 조인과 쿼리 실행 순서는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

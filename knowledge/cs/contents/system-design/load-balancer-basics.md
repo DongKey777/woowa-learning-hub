@@ -11,7 +11,7 @@
 - [HTTP/HTTPS 기초](../network/http-https-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load balancer 뭐예요, round robin 알고리즘, least connection, l4 l7 로드밸런서, health check 기초, 서버 부하 분산, 수평 확장 입문, beginner load balancing, 트래픽 분산, sticky session 기초
+retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load balancer 뭐예요, round robin 알고리즘, least connection, l4 l7 로드밸런서, health check 기초, 서버 부하 분산, 수평 확장 입문, beginner load balancing, 트래픽 분산, sticky session 기초, load balancer basics basics, load balancer basics beginner, load balancer basics intro
 
 ---
 

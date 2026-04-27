@@ -17,7 +17,9 @@
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: session vs process group primer, session process group basics, session process group mental model, controlling terminal mental model, job control basics, process group job control, controlling terminal basics, foreground process group, terminal foreground pgid, Ctrl-C process group, terminal generated signals, SIGINT foreground process group, SIGTSTP foreground process group, setpgid basics, setsid basics, setsid vs setpgid, process group vs session, session leader, process group leader, PGID SID TPGID, posix_spawn process group follow-up, POSIX_SPAWN_SETPGROUP, tcsetpgrp basics, daemon detach terminal basics, 세션 프로세스그룹 멘탈 모델, controlling terminal 멘탈 모델, session process group self-check, beginner handoff box, primer handoff box, session process group 다음 문서, 세션 프로세스그룹 자가 점검
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: session vs process group primer, session process group basics, session process group mental model, controlling terminal mental model, job control basics, process group job control, controlling terminal basics, foreground process group, terminal foreground pgid, ctrl-c process group, terminal generated signals, sigint foreground process group, sigtstp foreground process group, setpgid basics, setsid basics
 
 ## 먼저 잡는 멘탈 모델
 

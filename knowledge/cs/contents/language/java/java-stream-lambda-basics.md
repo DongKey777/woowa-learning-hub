@@ -16,7 +16,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Spring IoC 컨테이너와 DI](../../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: java stream basics, java lambda basics, 스트림 입문, 람다 입문, functional interface basics, java filter map reduce, stream pipeline beginner, java stream sorted comparator, stream sorted comparator chain, java list sort vs stream sorted, java sorted stream original list unchanged, stream toList vs collectors toList, java Stream.toList beginner, java Collectors.toList mutability, stream result mutability bridge, method reference basics, java 8 stream beginner, 스트림 어떻게 쓰나요, java lambda syntax, 람다식 처음, collector basics, 자바 스트림 람다 기초, 스트림 람다 처음 배우는데, 스트림 람다 큰 그림, filter map 언제 쓰는지, for문 대신 stream 언제 쓰는지, 람다식 언제 쓰는지 기초, 메서드 참조 언제 쓰는지, stream 파이프라인 기초, for to stream migration, loop to stream migration, for문 stream 변환 예제, for문을 stream으로 바꾸기, 같은 문제 for stream 비교, stream으로 옮길 때 기준, beginner stream next step, stream으로 바꾸면 뭐가 좋아요, stream 장점 뭐예요, loop vs stream beginner, 반복문 대신 스트림 기준, for문이 더 나은 경우, stream 써도 되는 시점
+retrieval-anchor-keywords: java stream basics, java lambda basics, 스트림 입문, 람다 입문, functional interface basics, java filter map reduce, stream pipeline beginner, java stream sorted comparator, stream sorted comparator chain, java list sort vs stream sorted, java sorted stream original list unchanged, stream tolist vs collectors tolist, java stream.tolist beginner, java collectors.tolist mutability, stream result mutability bridge
 
 ## 핵심 개념
 

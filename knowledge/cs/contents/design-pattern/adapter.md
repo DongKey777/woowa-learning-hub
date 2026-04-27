@@ -1,7 +1,18 @@
 # Adapter (어댑터) 패턴 🟢 Basic
 
+
+> 한 줄 요약: Adapter (어댑터) 패턴 🟢 Basic는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: adapter basics, adapter beginner, adapter intro, design pattern basics, beginner design pattern, 처음 배우는데 adapter, adapter 입문, adapter 기초, what is adapter, how to adapter
 > 호환되지 않는 인터페이스를 가진 객체들이 함께 동작할 수 있게 중간 번역기를 끼워 넣는 패턴
 
 > 관련 문서:

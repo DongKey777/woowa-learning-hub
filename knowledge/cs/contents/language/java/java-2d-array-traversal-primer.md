@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java 2d array traversal primer basics, java 2d array traversal primer beginner, java 2d array traversal primer intro, java basics, beginner java, 처음 배우는데 java 2d array traversal primer, java 2d array traversal primer 입문, java 2d array traversal primer 기초, what is java 2d array traversal primer, how to java 2d array traversal primer
 > 관련 문서:
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 반복문과 스코프 follow-up 입문](./java-loop-control-scope-follow-up-primer.md)

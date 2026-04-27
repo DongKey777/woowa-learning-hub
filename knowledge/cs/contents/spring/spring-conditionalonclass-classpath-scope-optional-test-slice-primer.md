@@ -6,13 +6,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 
-retrieval-anchor-keywords: ConditionalOnClass beginner, @ConditionalOnClass classpath trap, starter present auto-configuration missing, starter 있는데 bean 없음, same code different classpath, classpath difference bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, transitive optional dependency missing, testImplementation bean only in test, testRuntimeOnly bean only in test, WebMvcTest auto-configuration missing, DataJpaTest auto-configuration missing, slice vs full context auto-configuration, starter missing only in CI, starter missing only in prod, did not find required class, found required class, condition evaluation required class not found, positive matches classpath, negative matches classpath, condition report classpath example, conditions endpoint classpath example, WebMvcTest omission vs negative match, slice omission matrix, ConditionalOnClass negative match matrix, test slice report interpretation, auto configuration omitted from slice
+retrieval-anchor-keywords: conditionalonclass beginner, @conditionalonclass classpath trap, starter present auto-configuration missing, starter 있는데 bean 없음, same code different classpath, classpath difference bean missing, compileonly bean missing, provided dependency bean missing, optional dependency bean missing, transitive optional dependency missing, testimplementation bean only in test, testruntimeonly bean only in test, webmvctest auto-configuration missing, datajpatest auto-configuration missing, spring conditionalonclass classpath scope optional test slice primer basics
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -168,6 +175,8 @@ auto-configuration 후보는 보였다
 
 즉 이 지점에서는 bean 이름이나 주입 코드를 더 파기보다, 먼저 아래 셋을 본다.
 
+## 로그에서 바로 읽는 positive / negative 예시 (계속 2)
+
 - dependency scope가 local/test/prod에서 달라졌나?
 - starter가 기대하는 SDK/driver가 optional dependency였나?
 - test slice라서 full context와 다른 규칙으로 뜨고 있나?
@@ -259,6 +268,8 @@ auto-configuration 후보는 보였다
 
 초보자는 아래 표 하나만 기억해도 report를 훨씬 덜 헷갈린다.
 
+## 3. test slice 차이: 같은 starter인데도 다른 게임 규칙으로 뜬다 (계속 2)
+
 | 상황 | report에서 먼저 보이는 단서 | beginner 해석 | 첫 다음 행동 |
 |---|---|---|---|
 | `@WebMvcTest`라서 대상 auto-configuration이 애초에 slice에 안 들어옴 | target auto-configuration 이름이 report에 거의 안 보이거나, MVC 관련 것만 보임 | "classpath에서 class를 못 찾은 것"이 아니라 **이 테스트가 그 자동 구성을 평가할 판 자체가 아님** | 같은 증상을 `@SpringBootTest`에서도 재현되는지 먼저 본다 |
@@ -318,3 +329,7 @@ beginner 기준으로는 아래 순서면 충분하다.
 - 조건 실패를 실제 로그와 endpoint에서 읽는 법은 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)에서 이어진다.
 - starter bean 누락을 property, existing bean back-off, scan/import boundary까지 넓혀 분기하려면 [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)로 간다.
 - `@WebMvcTest`, `@DataJpaTest`가 왜 다른 경계인지부터 다시 잡고 싶으면 [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)로 이어진다.
+
+## 한 줄 정리
+
+starter가 build 파일에 있다는 사실과 `@ConditionalOnClass`가 **현재 실행 classpath**에서 요구 클래스를 찾는다는 사실은 다르다. dependency scope, optional dependency, test slice가 달라지면 같은 코드도 다른 auto-configuration 결과를 낸다.

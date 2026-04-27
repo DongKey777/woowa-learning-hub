@@ -14,7 +14,7 @@
 - [Spring CORS: Security vs MVC Ownership](../spring/spring-cors-security-vs-mvc-ownership.md)
 - [Spring Security Filter Chain Ordering](../spring/spring-security-filter-chain-ordering.md)
 
-retrieval-anchor-keywords: spring security options primer, spring security preflight options, spring security options permitAll, spring boot cors options 401, spring security options 403, preflight blocked by spring security, permit preflight without opening post, options request permit actual post authenticated, corsutils preflight request, requestMatchers options permitAll, http cors withDefaults, corsconfiguration source spring security, options 401 spring boot, options 403 spring boot, beginner spring security cors, spring security allow preflight only, options without weakening auth, csrf is not preflight fix
+retrieval-anchor-keywords: spring security options primer, spring security preflight options, spring security options permitall, spring boot cors options 401, spring security options 403, preflight blocked by spring security, permit preflight without opening post, options request permit actual post authenticated, corsutils preflight request, requestmatchers options permitall, http cors withdefaults, corsconfiguration source spring security, options 401 spring boot, beginner spring security cors, spring security options primer basics
 
 ## 먼저 잡을 mental model
 
@@ -48,6 +48,8 @@ Spring Security에서는 보통 두 가지를 같이 맞춘다.
 | preflight request만 `permitAll()` | 브라우저의 사전 확인만 통과시킨다 | `OPTIONS 401/403`이 나고 actual request가 안 간다 |
 
 Spring Security 6 기준으로 beginner에게 가장 설명하기 쉬운 모습은 아래다.
+
+## 가장 안전한 beginner 패턴 (계속 2)
 
 ```java
 import java.util.List;
@@ -86,7 +88,9 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+## 가장 안전한 beginner 패턴 (계속 3)
+
+UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
         return source;
     }

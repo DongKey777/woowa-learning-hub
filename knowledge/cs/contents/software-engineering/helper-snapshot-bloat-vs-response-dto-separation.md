@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: helper snapshot bloat vs response dto separation basics, helper snapshot bloat vs response dto separation beginner, helper snapshot bloat vs response dto separation intro, software engineering basics, beginner software engineering, 처음 배우는데 helper snapshot bloat vs response dto separation, helper snapshot bloat vs response dto separation 입문, helper snapshot bloat vs response dto separation 기초, what is helper snapshot bloat vs response dto separation, how to helper snapshot bloat vs response dto separation
 <details>
 <summary>Table of Contents</summary>
 
@@ -358,3 +367,7 @@ public record AdminOrderResponse(
 
 한 타입이 이 셋을 동시에 하려 하면 보통 이름만 helper일 뿐, 실제로는 screen DTO나 response DTO로 비대해진 상태다.
 그때는 거창한 리팩토링보다 **helper snapshot을 다이어트하고, 필요한 만큼만 query view/response DTO를 추가하는 것**이 가장 단순하다.
+
+## 한 줄 정리
+
+helper snapshot은 command가 판단할 재료를 모으는 타입이고, response DTO는 API가 외부에 약속하는 계약이다. helper snapshot에 화면 컬럼과 표시 규칙이 붙기 시작하면 query view를 하나 끼워서 책임을 나누는 편이 더 단순하다.

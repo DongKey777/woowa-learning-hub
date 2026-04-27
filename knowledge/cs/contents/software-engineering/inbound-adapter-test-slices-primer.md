@@ -34,7 +34,7 @@
 - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
 - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](../spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 
-retrieval-anchor-keywords: inbound adapter test slice, inbound adapter test slices primer, controller slice test, message handler slice test, slice vs full integration test, hexagonal inbound adapter test, web adapter slice test, request binding validation test, webmvctest first test checklist, controller input validation first test, 처음 배우는데 filter interceptor 때문에 controller test 헷갈림, filter interceptor basics before controller test, filter vs interceptor before controller test
+retrieval-anchor-keywords: inbound adapter test slice, inbound adapter test slices primer, controller slice test, message handler slice test, slice vs full integration test, hexagonal inbound adapter test, web adapter slice test, request binding validation test, webmvctest first test checklist, controller input validation first test, 처음 배우는데 filter interceptor 때문에 controller test 헷갈림, filter interceptor basics before controller test, filter vs interceptor before controller test, inbound adapter test slices primer basics, inbound adapter test slices primer beginner
 
 controller와 message handler 중심 설명에서 scheduled job까지 포함한 채널별 테스트 비율을 비교하고 싶다면 [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)를 이어서 보면 된다.
 

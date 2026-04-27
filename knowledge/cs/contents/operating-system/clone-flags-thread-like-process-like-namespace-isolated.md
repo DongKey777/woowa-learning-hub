@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: clone flags thread like process like namespace isolated basics, clone flags thread like process like namespace isolated beginner, clone flags thread like process like namespace isolated intro, operating system basics, beginner operating system, 처음 배우는데 clone flags thread like process like namespace isolated, clone flags thread like process like namespace isolated 입문, clone flags thread like process like namespace isolated 기초, what is clone flags thread like process like namespace isolated, how to clone flags thread like process like namespace isolated
 > 관련 문서:
 > - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 > - [프로세스와 스레드 기초](./process-thread-basics.md)
@@ -48,7 +57,7 @@
 | `CLONE_NEW*` | namespace view | PID/mount/net/user 같은 시야를 새로 만든다 | 부모와 같은 namespace를 본다 |
 | `CLONE_VFORK` | 부모 대기 방식 | parent가 child `execve()`/`_exit()`까지 멈춘다 | parent는 바로 계속 간다 |
 
-`CLONE_VFORK`는 **정체성**이 아니라 **부모를 얼마나 멈추는가**를 바꾸는 modifier다.  
+`CLONE_VFORK`는 **정체성**이 아니라 **부모를 얼마나 멈추는가**를 바꾸는 modifier다.
 즉 `CLONE_VFORK`가 있다고 해서 thread-like가 되지는 않는다.
 
 ## 1. 가장 process-like한 조합: `SIGCHLD`
@@ -131,7 +140,7 @@ flags = CLONE_VM | SIGCHLD
 - `CLONE_FS | SIGCHLD`: cwd/root/umask만 공유하는 child
 - `CLONE_VM | CLONE_VFORK | SIGCHLD`: parent를 잠깐 멈추는 `vfork()`-like child
 
-즉 `clone()`은 thread/process 둘 중 하나만 만드는 API가 아니라, **중간 hybrid를 만들 수 있는 low-level primitive**다.  
+즉 `clone()`은 thread/process 둘 중 하나만 만드는 API가 아니라, **중간 hybrid를 만들 수 있는 low-level primitive**다.
 그래도 실전 mental model은 `CLONE_THREAD` 유무를 첫 기준으로 두면 대부분 빠르게 정리된다.
 
 ## 4. namespace-isolated child는 "새 process + 새 시야"로 읽는다
@@ -181,7 +190,7 @@ namespace child
 | `CLONE_NEWUSER` with `CLONE_FS` | user namespace 생성과 FS state 공유를 같이 둘 수 없다 |
 | `CLONE_NEWIPC` with `CLONE_SYSVSEM` | 새 IPC namespace와 SysV semaphore undo 공유는 충돌한다 |
 
-이 표를 "조합 암기"보다 **정신 모델의 안전장치**로 쓰는 편이 좋다.  
+이 표를 "조합 암기"보다 **정신 모델의 안전장치**로 쓰는 편이 좋다.
 즉 namespace isolation과 thread grouping은 보통 서로 반대 방향의 설계라는 뜻이다.
 
 ## 6. trace에서 5초 만에 읽는 shortcut

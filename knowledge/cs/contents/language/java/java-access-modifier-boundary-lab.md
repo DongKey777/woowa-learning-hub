@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java access modifier boundary lab basics, java access modifier boundary lab beginner, java access modifier boundary lab intro, java basics, beginner java, 처음 배우는데 java access modifier boundary lab, java access modifier boundary lab 입문, java access modifier boundary lab 기초, what is java access modifier boundary lab, how to java access modifier boundary lab
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md) - `this`/`childRef`/`parentRef` follow-up 예제를 먼저 읽고 오면 아래 3문항 follow-up이 더 빨라진다
@@ -120,6 +129,8 @@ public class BetaSubVault extends Vault {
     }
 }
 ```
+
+## 패키지 분리 실습 코드 (계속 2)
 
 위 두 메서드는 primer의 "`this.points`/`childRef.points`는 되지만 `parentRef.points`는 안 된다"는 follow-up 예제를 그대로 옮긴 것이다.
 그래서 이 파일을 읽을 때는 "하위 클래스 자기 자신이나 같은 하위 클래스 계열 참조인가, 아니면 부모 타입 참조인가?"를 먼저 체크하면 된다.
@@ -265,3 +276,7 @@ System.out.println(baseRef.protectedPin);
 - 특히 `protected`의 `this`/`childRef`/`parentRef` 차이가 헷갈리면 primer의 [protected 3문항 follow-up](./java-access-modifiers-member-model-basics.md#protected-3문항-follow-up)부터 다시 본다
 - 패키지 경계 보강: [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)
 - 상속 문맥 보강: [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
+
+## 한 줄 정리
+
+`private`/package-private/`protected`를 "같은 클래스, 같은 패키지, 다른 패키지" 3개 경계에서 직접 확인하는 초소형 실행 실습이다.

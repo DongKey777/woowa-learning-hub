@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](../database/README.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dto vo entity 차이, dto 뭐예요, value object 설명, entity 설명, dto vs entity, dto vs vo, request dto response dto, jpa entity vs domain entity, 도메인 객체 차이, dto 왜 쓰나요, 입문 dto, beginner dto entity vo, request dto service command entity 흐름, request dto to command to entity, dto entity 변환 위치, service command 예시, controller dto service command entity save
+retrieval-anchor-keywords: dto vo entity 차이, dto 뭐예요, value object 설명, entity 설명, dto vs entity, dto vs vo, request dto response dto, jpa entity vs domain entity, 도메인 객체 차이, dto 왜 쓰나요, 입문 dto, beginner dto entity vo, request dto service command entity 흐름, request dto to command to entity, dto entity 변환 위치
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

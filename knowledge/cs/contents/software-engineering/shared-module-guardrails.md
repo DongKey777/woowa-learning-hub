@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: shared module guardrails basics, shared module guardrails beginner, shared module guardrails intro, software engineering basics, beginner software engineering, 처음 배우는데 shared module guardrails, shared module guardrails 입문, shared module guardrails 기초, what is shared module guardrails, how to shared module guardrails
 <details>
 <summary>Table of Contents</summary>
 

@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
 > - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
@@ -14,7 +21,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 
-retrieval-anchor-keywords: starter dependency map, starter vs autoconfiguration module, starter vs sdk driver, starter ownership beginner, spring starter ownership, spring starter dependency tree beginner, starter is not implementation, starter is not auto-configuration module, spring boot starter vs autoconfigure, spring-boot-autoconfigure vs starter, starter jar no classes beginner, starter dependency map primer, gradle runtimeOnly mysql connector, maven runtime mysql connector, starter plus driver beginner, starter plus sdk beginner, micrometer prometheus registry starter, actuator starter prometheus registry, classpath checks implementation class not starter, starter bean missing driver missing
+retrieval-anchor-keywords: starter dependency map, starter vs autoconfiguration module, starter vs sdk driver, starter ownership beginner, spring starter ownership, spring starter dependency tree beginner, starter is not implementation, starter is not auto-configuration module, spring boot starter vs autoconfigure, spring-boot-autoconfigure vs starter, starter jar no classes beginner, starter dependency map primer, gradle runtimeonly mysql connector, maven runtime mysql connector, starter plus driver beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 

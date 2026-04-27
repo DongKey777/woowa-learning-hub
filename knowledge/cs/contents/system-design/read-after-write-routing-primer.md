@@ -2,7 +2,7 @@
 
 > 한 줄 요약: read-after-write routing은 write 직후 읽기를 무심코 replica로 보내지 않고, primary fallback, session pinning, monotonic reads로 필요한 경로만 더 신선한 read path에 태우는 입문 설계 문서다.
 
-retrieval-anchor-keywords: read-after-write routing primer, primary fallback routing, session pinning primer, monotonic reads primer, read-after-write vs recent-write, recent-write vs min-version floor, write then read routing, order confirmation stale read, fallback headroom band, headroom 2.0x yellow routing card, 처음 배우는데 read-after-write 뭐예요, read-after-write basics
+retrieval-anchor-keywords: read-after-write routing primer, primary fallback routing, session pinning primer, monotonic reads primer, read-after-write vs recent-write, recent-write vs min-version floor, write then read routing, order confirmation stale read, fallback headroom band, headroom 2.0x yellow routing card, 처음 배우는데 read-after-write 뭐예요, read-after-write basics, read after write routing primer basics, read after write routing primer beginner, read after write routing primer intro
 
 **난이도: 🟢 Beginner**
 
@@ -294,6 +294,8 @@ beginner 운영 기준은 [Post-Write Stale Dashboard Primer](./post-write-stale
 | 다음 보호 장치 | pinning TTL, version floor 보강 | endpoint별 fallback 상한, 짧은 TTL, 분기점 재측정 | endpoint 범위 축소, 짧은 degrade/read-only, lag source 격리까지 같이 검토 |
 
 흔한 혼동:
+
+## 공통 반례 카드: 같은 stale 급증이어도 `headroom 1.4x (Red)`면 첫 판정이 달라진다 (계속 2)
 
 - `증상 급증 + Green headroom = 라우팅 점검 우선`이다. stale가 갑자기 커졌는데 primary 여유가 남아 있으면, 일단 recent-write/pinning 누락 route부터 찾는다.
 - `Yellow`는 "아직 괜찮다"가 아니라 "fix는 가능하지만 확대 폭을 매번 다시 재야 한다"는 구간이다.

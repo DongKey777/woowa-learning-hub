@@ -2,6 +2,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
+
 > 한 줄 요약: 같은 URL도 `normal reload`, `hard reload`, `empty cache and hard reload`에 따라 cache 신호가 달라지므로, 먼저 "기본선인지 강제 재요청인지 cache 비우기 실험인지"를 분리해서 본다.
 
 > 관련 문서:
@@ -11,7 +18,7 @@
 > - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
 > - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
 
-retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard reload, browser reload types, devtools reload cache, cache trace primer, chrome hard reload, edge hard reload, browser refresh vs hard refresh, empty cache hard reload meaning, 일반 새로고침 하드 새로고침 차이, 캐시 비우고 새로고침, beginner devtools reload guide
+retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard reload, browser reload types, devtools reload cache, cache trace primer, chrome hard reload, edge hard reload, browser refresh vs hard refresh, empty cache hard reload meaning, 일반 새로고침 하드 새로고침 차이, 캐시 비우고 새로고침, beginner devtools reload guide, browser devtools reload hard reload disable cache primer basics, browser devtools reload hard reload disable cache primer beginner
 
 <details>
 <summary>Table of Contents</summary>

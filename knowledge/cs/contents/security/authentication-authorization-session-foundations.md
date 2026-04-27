@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: 이 문서는 security 카테고리에서 browser page, SPA + BFF, bearer API 흐름을 한 장으로 먼저 연결하는 beginner `primer`다. authn / authz, session / cookie / JWT, login / logout, permission check가 따로따로 보일 때 가장 먼저 읽는 entrypoint로 쓴다.
 
 > 관련 문서:
@@ -17,7 +24,7 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, login logout permission check primer, browser api auth flow primer, browser api session flow, browser page auth flow, spa bff auth basics, api bearer token basics, session cookie jwt bff boundary, login state boundary primer, 인증 인가 세션 기초, 로그인 로그아웃 권한검사 기초, 브라우저 api 인증 흐름, 브라우저 bff 경계 입문, 세션 쿠키 jwt bff 차이, beginner auth route, beginner security auth route, security readme auth entrypoint, return to security README, one request auth timeline, login to authorization timeline example, 로그인했는데 403 왜, token valid but forbidden beginner, 인증은 됐는데 권한 실패, auth bug stage triage, auth debugging first step, principal 복원 실패, 인증 전달 실패 vs 인가 실패, 인증 성공 신호 vs 인가 성공 신호, token valid but still forbidden, login success not equal authorized, 로그인 됐는데 403, 로그인은 됐는데 왜 403, 토큰은 유효한데 403, 남의 주문 조회
+retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, login logout permission check primer, browser api auth flow primer, browser api session flow, browser page auth flow, spa bff auth basics, api bearer token basics, session cookie jwt bff boundary, login state boundary primer, 인증 인가 세션 기초, 로그인 로그아웃 권한검사 기초, 브라우저 api 인증 흐름, 브라우저 bff 경계 입문
 
 ## 이 문서 다음에 보면 좋은 문서
 

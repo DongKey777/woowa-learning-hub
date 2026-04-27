@@ -11,7 +11,9 @@
 - [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: password hashing basics, 비밀번호 저장 방법, 비밀번호 해시, why not encrypt password, plain text password danger, md5 sha256 password storage, bcrypt 왜 써야 하나, salt 이란, rainbow table 공격, password storage beginner, 비밀번호 평문 저장 위험, credential leak, security readme password primer, security beginner route, security primer next step, return to security README, 회원가입 만들 때 비밀번호 저장
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: password hashing basics, 비밀번호 저장 방법, 비밀번호 해시, why not encrypt password, plain text password danger, md5 sha256 password storage, bcrypt 왜 써야 하나, salt 이란, rainbow table 공격, password storage beginner, 비밀번호 평문 저장 위험, credential leak, security readme password primer, security beginner route, security primer next step
 
 ## 이 문서 다음에 보면 좋은 문서
 

@@ -78,6 +78,8 @@ retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, 
 이 문서는 Spring deep dive 전에 보는 primer다.
 초보자 기준 safe next doc은 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)다.
 
+## Spring deep dive 전에 고정할 safe next doc (계속 2)
+
 | 지금 막힌 말 | 먼저 고정할 safe next doc | 그다음 문서 |
 |---|---|---|
 | `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `redirect / navigation memory` branch를 고른다 | [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md) |

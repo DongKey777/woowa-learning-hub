@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: hashset mutable element removal drill basics, hashset mutable element removal drill beginner, hashset mutable element removal drill intro, java basics, beginner java, 처음 배우는데 hashset mutable element removal drill, hashset mutable element removal drill 입문, hashset mutable element removal drill 기초, what is hashset mutable element removal drill, how to hashset mutable element removal drill
 > 관련 문서:
 > - [Mutable Hash Keys Bridge](./mutable-hash-keys-hashset-hashmap-bridge.md)
 > - [Mutable Elements in HashSet and TreeSet Primer](./mutable-elements-hashset-treeset-primer.md)

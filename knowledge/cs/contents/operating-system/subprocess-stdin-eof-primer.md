@@ -17,7 +17,9 @@
 - [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00068, subprocess stdin eof primer, stdin eof primer, child waits for stdin eof, child blocked waiting for stdin, child waiting on read stdin pipe, parent keeps write end open, stdin pipe write end still open, close stdin to signal eof, subprocess stdin close semantics, flush is not eof, stdin pipe eof mental model, sort waits for eof, cat waiting for input end, child hangs waiting for input, parent forgot stdin close, helper keeps stdin pipe open, shell wrapper stdin eof, subprocess read blocks until eof, subprocess no output because stdin not closed, stdin write end leak, subprocess input completion signal, reverse case of pipe backpressure, write end open means no eof, beginner stdin eof mental model, 서브프로세스 stdin eof, stdin 안 닫아서 멈춤, write end 안 닫혀서 eof 안 옴, flush는 eof가 아님, 입력 끝 신호 close
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00068, subprocess stdin eof primer, stdin eof primer, child waits for stdin eof, child blocked waiting for stdin, child waiting on read stdin pipe, parent keeps write end open, stdin pipe write end still open, close stdin to signal eof, subprocess stdin close semantics, flush is not eof, stdin pipe eof mental model, sort waits for eof, beginner stdin eof mental model, subprocess stdin eof primer basics
 
 ## Subprocess Primer Handoff
 

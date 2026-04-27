@@ -15,7 +15,7 @@
 - `[deep dive]` [JWT 깊이 파기](./jwt-deep-dive.md)
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: session cookie jwt basics, 세션 쿠키 jwt 차이, 로그인 상태 유지, http stateless, 쿠키가 뭔가요, 세션이 뭔가요, jwt 입문, jsessionid, 서버 세션 vs jwt, 토큰 기반 인증, stateless auth, cookie session beginner, 왜 로그인이 유지되나요, security readme session primer, security beginner session route, login loop beginner bridge, browser session troubleshooting path, browser session troubleshooting safe next step, cookie exists but login loops, saved request beginner, browser session troubleshooting beginner, auth basics route, auth beginner route, security beginner route, security basics route, first-step session primer, security primer next step, return to security README, browser session primer ladder, primer bridge next step, primer bridge safe next step, browser session deep dive handoff, primer follow-up deep dive ladder, safe next step auth primer, safe next step browser session, auth session primer bridge
+retrieval-anchor-keywords: session cookie jwt basics, 세션 쿠키 jwt 차이, 로그인 상태 유지, http stateless, 쿠키가 뭔가요, 세션이 뭔가요, jwt 입문, jsessionid, 서버 세션 vs jwt, 토큰 기반 인증, stateless auth, cookie session beginner, 왜 로그인이 유지되나요, security readme session primer, security beginner session route
 
 ## 핵심 개념
 

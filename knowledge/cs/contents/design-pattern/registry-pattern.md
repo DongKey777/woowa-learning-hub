@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: registry pattern basics, registry pattern beginner, registry pattern intro, design pattern basics, beginner design pattern, 처음 배우는데 registry pattern, registry pattern 입문, registry pattern 기초, what is registry pattern, how to registry pattern
 > 관련 문서:
 > - [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
 > - [팩토리 (Factory)](./factory.md)
@@ -18,7 +27,7 @@
 
 ## 핵심 개념
 
-Registry는 **이름과 객체를 연결해 조회 가능하게 만드는 저장소**다.  
+Registry는 **이름과 객체를 연결해 조회 가능하게 만드는 저장소**다.
 팩토리가 객체를 만들고, Registry는 만들어진 객체를 찾는다.
 
 backend에서 흔히 이런 형태로 나타난다.
@@ -84,7 +93,7 @@ Registry가 모든 의존성을 숨기면 문제가 생긴다.
 
 ### 4. switch-heavy factory를 옮길 때는 Factory를 지우지 않는다
 
-실무에서 Registry를 배우는 계기는 종종 "거대한 switch factory를 줄이고 싶다"는 요구다.  
+실무에서 Registry를 배우는 계기는 종종 "거대한 switch factory를 줄이고 싶다"는 요구다.
 이때 흔한 오해는 Registry를 도입하면서 Factory를 없애고, 각 서비스가 Registry를 직접 뒤지게 만드는 것이다.
 
 더 안전한 경계는 아래와 같다.
@@ -94,7 +103,7 @@ Registry가 모든 의존성을 숨기면 문제가 생긴다.
 - 어떤 key를 쓸지 고르는 규칙은 selector/policy가 맡는다
 - 서비스는 Registry가 아니라 필요한 포트나 Factory를 생성자로 주입받는다
 
-즉 Registry는 **lookup을 데이터화하는 도구**이지,  
+즉 Registry는 **lookup을 데이터화하는 도구**이지,
 애플리케이션 전체 의존성을 꺼내 쓰는 전역 진입점이 아니다.
 
 ---

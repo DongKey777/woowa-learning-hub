@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java access modifier top level member mini quiz basics, java access modifier top level member mini quiz beginner, java access modifier top level member mini quiz intro, java basics, beginner java, 처음 배우는데 java access modifier top level member mini quiz, java access modifier top level member mini quiz 입문, java access modifier top level member mini quiz 기초, what is java access modifier top level member mini quiz, how to java access modifier top level member mini quiz
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java Top-level 타입 접근 제한자 브리지](./top-level-type-access-modifier-bridge.md)
@@ -91,3 +100,7 @@
 - top-level 규칙만 다시 1페이지로 정리: [Java Top-level 타입 접근 제한자 브리지](./top-level-type-access-modifier-bridge.md)
 - 멤버 접근 제한자 큰 그림 복습: [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 패키지/상속 경계까지 손검증: [Access Modifier Boundary Lab](./java-access-modifier-boundary-lab.md)
+
+## 한 줄 정리
+
+`private`/`protected`가 "항상 안 된다"가 아니라, **파일 최상단(top-level)에서는 안 되고 클래스 멤버에서는 될 수 있다**는 경계를 5문항 예측형으로 짧게 점검하는 beginner drill이다.

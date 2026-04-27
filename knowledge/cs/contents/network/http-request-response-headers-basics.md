@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle-basics.md)
 
-retrieval-anchor-keywords: http headers basics, 요청 헤더 뭐예요, 응답 헤더 뭐예요, content-type 이란, authorization 헤더, http 헤더 처음 배우는데, request response headers 입문, accept 헤더, 헤더가 왜 필요해요, beginner http headers
+retrieval-anchor-keywords: http headers basics, 요청 헤더 뭐예요, 응답 헤더 뭐예요, content-type 이란, authorization 헤더, http 헤더 처음 배우는데, request response headers 입문, accept 헤더, 헤더가 왜 필요해요, beginner http headers, http request response headers basics basics, http request response headers basics beginner, http request response headers basics intro, network basics, beginner network
 
 ## 핵심 개념
 

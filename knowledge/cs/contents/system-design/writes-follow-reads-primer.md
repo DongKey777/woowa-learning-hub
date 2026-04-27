@@ -19,7 +19,7 @@
 - [Aggregate Version and Optimistic Concurrency Pattern](../design-pattern/aggregate-version-optimistic-concurrency-pattern.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: writes-follow-reads primer, writes-follow-reads beginner, what is writes-follow-reads, stale write after read, version check after read, precondition check after read, write precondition primer, expected version write, if-match beginner, etag precondition basics, optimistic precondition write, optimistic concurrency beginner, lost update beginner, edit form stale save, cart version mismatch, conditional update intro, compare and set after read, 412 precondition failed, 409 vs 412 optimistic lock, 428 precondition required conditional write, 409 412 428 beginner, writes-follow-reads vs monotonic writes, precondition vs session write ordering
+retrieval-anchor-keywords: writes-follow-reads primer, writes-follow-reads beginner, what is writes-follow-reads, stale write after read, version check after read, precondition check after read, write precondition primer, expected version write, if-match beginner, etag precondition basics, optimistic precondition write, optimistic concurrency beginner, lost update beginner, edit form stale save, cart version mismatch
 
 ---
 
@@ -95,7 +95,6 @@ If-Match: "cart-v12"
 | Read-after-write | write 뒤 stale read | "내가 방금 쓴 값이 보이나?" |
 | Writes-follow-reads | stale read 기반 write | "내가 본 상태를 믿고 저장해도 되나?" |
 | Monotonic writes | write 순서 뒤집힘 | "내 write 두 개가 순서대로 적용되나?" |
-
 
 ## version check와 precondition check를 한 문장으로 구분하기
 

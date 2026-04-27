@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: nosql basics, nosql 이란, nosql vs rdb, document store beginner, key-value store beginner, 수평 확장 db, 스키마 유연성 db, nosql 언제 쓰나, mongodb redis cassandra beginner, nosql 뭐가 다른가요
+retrieval-anchor-keywords: nosql basics, nosql 이란, nosql vs rdb, document store beginner, key-value store beginner, 수평 확장 db, 스키마 유연성 db, nosql 언제 쓰나, mongodb redis cassandra beginner, nosql 뭐가 다른가요, nosql basics basics, nosql basics beginner, nosql basics intro, database basics, beginner database
 
 ## 핵심 개념
 

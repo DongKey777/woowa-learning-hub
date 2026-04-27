@@ -13,7 +13,7 @@
 - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 
-retrieval-anchor-keywords: java arrays method choice card, java arrays chooser beginner, java arrays toString equals copyOf sort binarySearch, java array which method to use, java arrays symptom first card, java array print compare copy sort search card, java Arrays.toString Arrays.equals Arrays.copyOf Arrays.sort Arrays.binarySearch beginner, 배열 메서드 선택 카드, 배열 출력 비교 복사 정렬 검색 선택표, 배열 뭐 써야 하지, Arrays.toString equals copyOf sort binarySearch 차이, beginner java arrays cheatsheet
+retrieval-anchor-keywords: java arrays method choice card, java arrays chooser beginner, java arrays tostring equals copyof sort binarysearch, java array which method to use, java arrays symptom first card, java array print compare copy sort search card, java arrays.tostring arrays.equals arrays.copyof arrays.sort arrays.binarysearch beginner, 배열 메서드 선택 카드, 배열 출력 비교 복사 정렬 검색 선택표, 배열 뭐 써야 하지, arrays.tostring equals copyof sort binarysearch 차이, beginner java arrays cheatsheet, java arrays method choice 30 second card basics, java arrays method choice 30 second card beginner, java arrays method choice 30 second card intro
 
 ## 먼저 잡는 멘탈 모델
 

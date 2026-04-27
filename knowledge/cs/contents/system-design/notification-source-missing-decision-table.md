@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 알림을 눌렀는데 원문, 주문, 댓글 같은 source가 안 보일 때는 모두 "stale"로 뭉개지 말고, stale read, deleted source, authorization filtering, async projection lag를 먼저 갈라야 대응이 빨라진다.
 
-retrieval-anchor-keywords: notification source missing decision table, notification click source missing, notification troubleshooting matrix, stale read vs deleted source vs authorization filtering, async projection lag after click, notification click 404 403, notification source gone, notification source hidden by authz, notification projection lag matrix, 알림 눌렀는데 원문 없음, 알림 클릭 후 404, 알림 클릭 후 권한 필터링, 알림 클릭 후 projection lag, beginner notification troubleshooting, system-design-00071
+retrieval-anchor-keywords: notification source missing decision table, notification click source missing, notification troubleshooting matrix, stale read vs deleted source vs authorization filtering, async projection lag after click, notification click 404 403, notification source gone, notification source hidden by authz, notification projection lag matrix, 알림 눌렀는데 원문 없음, 알림 클릭 후 404, 알림 클릭 후 권한 필터링, 알림 클릭 후 projection lag, beginner notification troubleshooting, notification source missing decision table basics
 
 **난이도: 🟢 Beginner**
 
@@ -156,3 +156,7 @@ source가 살아 있고 권한도 맞다면 이제 stale 계열을 본다.
 - [Notification Badge vs Source Freshness Primer](./notification-badge-vs-source-freshness-primer.md)
 - [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
 - [Tombstone Response Template and Consumer Guidance](../software-engineering/tombstone-response-template-and-consumer-guidance.md)
+
+## 한 줄 정리
+
+알림을 눌렀는데 원문, 주문, 댓글 같은 source가 안 보일 때는 모두 "stale"로 뭉개지 말고, stale read, deleted source, authorization filtering, async projection lag를 먼저 갈라야 대응이 빨라진다.

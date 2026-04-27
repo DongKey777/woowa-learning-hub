@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: 이 문서는 security 카테고리에서 `401/403/404` primer 다음에 여는 beginner `primer bridge`다. concealment `404`를 deep dive로 바로 단정하지 않고, beginner가 `없음 / 숨김 / stale` 세 갈래를 안전하게 고른 뒤 `[deep dive]`나 다른 `[primer bridge]`로 handoff하는 입구다.
 
 > 관련 문서:
@@ -18,7 +25,7 @@
 > - `[catalog]` [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 > - `[catalog]` [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 
-retrieval-anchor-keywords: concealment 404 primer, hidden 404 beginner, 404 missing vs hidden, concealment vs missing, tenant concealment, user owned 404, shared resource 403, stale deny 404, grant after 404, other tenant 404, idor 404 bridge, ownership concealment, ownership deny test, intentional 404 assertion, 403 404 test template
+retrieval-anchor-keywords: concealment 404 primer, hidden 404 beginner, 404 missing vs hidden, concealment vs missing, tenant concealment, user owned 404, shared resource 403, stale deny 404, grant after 404, other tenant 404, idor 404 bridge, ownership concealment, ownership deny test, intentional 404 assertion, concealment 404 entry cues basics
 
 ## 시작 전에: 이 문서의 역할
 
@@ -134,6 +141,7 @@ retrieval-anchor-keywords: concealment 404 primer, hidden 404 beginner, 404 miss
 | 방금 권한을 받고 새로고침했는데 여전히 `404`다 | `숨김`보다 `stale deny`를 먼저 본다 |
 
 <a id="idor-403-404-bridge"></a>
+
 ## IDOR에서 `403` vs `404`를 바로 고르는 브리지
 
 `남의 주문인데 왜 `403`이 아니라 `404`죠?` 같은 질문은 여기서 바로 끊어 읽으면 된다.

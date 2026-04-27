@@ -14,7 +14,7 @@
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: map.of map.ofentries map.copyof collections.unmodifiablemap difference, java map readonly immutable beginner, unmodifiablemap vs copyof, map.of vs map.ofentries readability, map.copyof snapshot beginner, read-only view vs immutable map java, 자바 map.of map.copyof 차이, 자바 map.ofentries 언제, 자바 unmodifiablemap 차이, 자바 읽기 전용 맵, 자바 불변 맵, 자바 map 복사본, 자바 맵 뷰와 스냅샷 차이
+retrieval-anchor-keywords: map.of map.ofentries map.copyof collections.unmodifiablemap difference, java map readonly immutable beginner, unmodifiablemap vs copyof, map.of vs map.ofentries readability, map.copyof snapshot beginner, read-only view vs immutable map java, 자바 map.of map.copyof 차이, 자바 map.ofentries 언제, 자바 unmodifiablemap 차이, 자바 읽기 전용 맵, 자바 불변 맵, 자바 map 복사본, 자바 맵 뷰와 스냅샷 차이, map of copyof unmodifiablemap readonly bridge basics, map of copyof unmodifiablemap readonly bridge beginner
 
 ## 먼저 잡는 멘탈 모델
 

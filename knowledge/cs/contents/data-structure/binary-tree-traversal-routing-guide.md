@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: binary tree traversal routing guide basics, binary tree traversal routing guide beginner, binary tree traversal routing guide intro, data structure basics, beginner data structure, 처음 배우는데 binary tree traversal routing guide, binary tree traversal routing guide 입문, binary tree traversal routing guide 기초, what is binary tree traversal routing guide, how to binary tree traversal routing guide
 > 관련 문서:
 > - [기본 자료 구조](./basic.md)
 > - [자료구조 정리](./README.md)
@@ -207,5 +216,5 @@ postorder:
 
 ## 한 줄 정리
 
-`preorder`는 부모 먼저, `inorder`는 BST 정렬 확인, `postorder`는 자식 결과 합성, `level-order`는 깊이별 관찰이다.  
+`preorder`는 부모 먼저, `inorder`는 BST 정렬 확인, `postorder`는 자식 결과 합성, `level-order`는 깊이별 관찰이다.
 트리 문제는 "현재 노드를 언제 처리해야 답이 자연스러운가"만 먼저 물어도 라우팅이 많이 쉬워진다.

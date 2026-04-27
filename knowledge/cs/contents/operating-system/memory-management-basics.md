@@ -14,7 +14,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: 메모리 관리 기초, virtual memory beginner, page table basics, heap vs stack, page fault basics, address space basics, lazy allocation basics, first touch memory, stack overflow vs oom, rss vs vsz, heap vs rss, memory basics self-check
+retrieval-anchor-keywords: 메모리 관리 기초, virtual memory beginner, page table basics, heap vs stack, page fault basics, address space basics, lazy allocation basics, first touch memory, stack overflow vs oom, rss vs vsz, heap vs rss, memory basics self-check, memory management basics basics, memory management basics beginner, memory management basics intro
 
 ## Self-check Primer Handoff
 

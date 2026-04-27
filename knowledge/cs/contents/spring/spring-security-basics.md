@@ -12,7 +12,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring security basics, spring security 입문, spring security filter chain beginner, 처음 배우는데 security filter chain, security filter chain 큰 그림, security filter chain 기초, security filter chain 언제 쓰는지, spring security 401 403 차이, spring security 로그인 흐름, spring security 세션 기초, spring security 뭐예요, httpsecurity 기초
+retrieval-anchor-keywords: spring security basics, spring security 입문, spring security filter chain beginner, 처음 배우는데 security filter chain, security filter chain 큰 그림, security filter chain 기초, security filter chain 언제 쓰는지, spring security 401 403 차이, spring security 로그인 흐름, spring security 세션 기초, spring security 뭐예요, httpsecurity 기초, spring security basics basics, spring security basics beginner, spring security basics intro
 
 ## 핵심 개념
 

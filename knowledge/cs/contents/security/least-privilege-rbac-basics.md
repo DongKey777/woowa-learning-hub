@@ -11,7 +11,7 @@
 - [Spring Security 기초](../spring/spring-security-basics.md)
 - [Security 카테고리 README](./README.md)
 
-retrieval-anchor-keywords: least privilege basics, rbac 기초, 역할 기반 접근 제어, 최소 권한 원칙이란, role based access control beginner, 권한 관리 입문, admin 권한 남용, 역할이란 뭔가요, rbac 왜 써요, permission vs role, spring security role, 권한 분리 기초, 권한을 나눠 주려면 어떻게 시작하나
+retrieval-anchor-keywords: least privilege basics, rbac 기초, 역할 기반 접근 제어, 최소 권한 원칙이란, role based access control beginner, 권한 관리 입문, admin 권한 남용, 역할이란 뭔가요, rbac 왜 써요, permission vs role, spring security role, 권한 분리 기초, 권한을 나눠 주려면 어떻게 시작하나, least privilege rbac basics basics, least privilege rbac basics beginner
 
 ## 빠른 복귀 링크
 

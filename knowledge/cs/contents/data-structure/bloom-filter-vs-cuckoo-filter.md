@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: bloom filter vs cuckoo filter basics, bloom filter vs cuckoo filter beginner, bloom filter vs cuckoo filter intro, data structure basics, beginner data structure, 처음 배우는데 bloom filter vs cuckoo filter, bloom filter vs cuckoo filter 입문, bloom filter vs cuckoo filter 기초, what is bloom filter vs cuckoo filter, how to bloom filter vs cuckoo filter
 > 관련 문서:
 > - [Bloom Filter](./bloom-filter.md)
 > - [Cuckoo Filter](./cuckoo-filter.md)

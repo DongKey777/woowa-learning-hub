@@ -1,8 +1,17 @@
 # Alt-Svc Cache Lifecycle Basics
 
+
+> 한 줄 요약: Alt-Svc Cache Lifecycle Basics는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > `Alt-Svc`가 첫 방문을 즉시 HTTP/3로 바꾸는 마법이 아니라, browser가 다음 새 connection에서 쓸 수 있는 H3 힌트를 cache하고 만료시키는 흐름이라는 점을 초급자 눈높이로 설명하는 primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 이 문서는 H3 `Alt-Svc` 초급 사다리의 **메인 엔트리**다. `Alt-Svc`가 왜 나중에 `421` 이야기로 이어지는지 먼저 짧게 붙이고 싶으면 [Alt-Svc To 421 Timeline Bridge](./alt-svc-to-421-timeline-bridge.md)부터 보고, lifecycle을 잡은 뒤 `ma`/scope/`421` 분기나 stale recovery로 내려가고 싶으면 아래 후속 문서로 이어가면 된다.
 
@@ -19,7 +28,7 @@
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 > - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 
-retrieval-anchor-keywords: Alt-Svc cache lifecycle, Alt-Svc cache warming, Alt-Svc expiry, Alt-Svc stale hint, stale Alt-Svc cache, first visit vs repeat visit H3, first request h2 next request h3, repeat visit HTTP/3, Alt-Svc ma max age, Alt-Svc cache invalidation, browser Alt-Svc cache, H3 cache warmup, Alt-Svc fallback, expired Alt-Svc fallback, stale h3 endpoint, junior Alt-Svc primer, same tab refresh still h2, repeat visit still h2 alt-svc, Alt-Svc cache vs connection reuse, Alt-Svc cache vs HTTP cache, warm cache new connection h3, stale Alt-Svc first request slow, why repeat visit still h2, alt-svc symptom triage, alt-svc quick routing, alt-svc ma scope 421 route, alt-svc stale recovery route, alt-svc devtools checklist, cold warm stale 5-step, h3 cold warm stale 판독, alt-svc beginner observability, DevTools Protocol Connection ID Remote Address, Alt-Svc DevTools screenshot, Alt-Svc 5-step screenshot, warm인데 h2 유지, warm cache h2 reuse, stale fallback mini quiz, alt-svc self-check, stale fallback 오판, warm h2 confusion, 회사망 집망 전환 stale hint, office wifi home wifi alt-svc lifecycle, network switch stale hint reuse, Alt-Svc clear, Alt-Svc clear vs ma=0, Alt-Svc invalidation basics, forced invalidation vs natural expiry, Alt-Svc ma 0 meaning, Alt-Svc clear beginner, alt-svc bridge main follow-up, alt-svc beginner ladder, alt-svc lifecycle main entry, alt-svc to 421 bridge route
+retrieval-anchor-keywords: alt-svc cache lifecycle, alt-svc cache warming, alt-svc expiry, alt-svc stale hint, stale alt-svc cache, first visit vs repeat visit h3, first request h2 next request h3, repeat visit http/3, alt-svc ma max age, alt-svc cache invalidation, browser alt-svc cache, h3 cache warmup, alt-svc fallback, why repeat visit still h2, alt-svc beginner observability
 
 > [!IMPORTANT]
 > 먼저 경계부터 잡자. `Alt-Svc` cache는 "다음 새 connection에서 H3를 시도할 힌트 메모"이고, HTTP response cache는 "응답 본문(HTML/이미지/json) 재사용"이다.
@@ -46,6 +55,8 @@ retrieval-anchor-keywords: Alt-Svc cache lifecycle, Alt-Svc cache warming, Alt-S
 
 <details>
 <summary>Table of Contents</summary>
+
+## 이 문서의 자리: 브리지 -> 메인 -> 후속 (계속 2)
 
 - [먼저 잡는 mental model](#먼저-잡는-mental-model)
 - [초급자 빠른 라우팅 (질문별 20초 분기)](#초급자-빠른-라우팅-질문별-20초-분기)
@@ -287,6 +298,8 @@ Alt-Svc: h3=":443"; ma=60
 
 입문 감각으로는:
 
+## warming, expiry, stale hint를 타임라인으로 보기 (계속 2)
+
 - warm cache가 있을 때: "전에 배운 H3 길이 아직 유효하니 먼저 시도"
 - expired cache일 때: "예전 메모는 낡았으니 기본 경로부터 다시 확인"
 
@@ -343,6 +356,8 @@ TCP+TLS로 fallback
         ↓
 ALPN 결과에 따라 H2/H1.1 사용
 ```
+
+## warming, expiry, stale hint를 타임라인으로 보기 (계속 3)
 
 운영자가 볼 때는 "가끔 첫 요청이 느리다", "특정 네트워크에서만 H3 비율이 낮다"처럼 보일 수 있다.
 이 더 깊은 운영 판독은 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)에서 다룬다.
@@ -521,6 +536,8 @@ HTTPS RR은 DNS에서 먼저 오는 힌트이고, `Alt-Svc`는 HTTP response 후
 특히 같은 URL이 `421 -> retry`처럼 두 줄로 보이면 [H3 Stale Alt-Svc 421 Recovery Primer](./h3-stale-alt-svc-421-recovery-primer.md)로 바로 넘어가면 초급자도 `낡은 힌트 교정`과 `앱 중복 호출`을 덜 섞는다.
 
 짧은 예시:
+
+## DevTools 5단계 체크리스트 (cold/warm/stale) (계속 2)
 
 - 첫 줄: `Protocol=h2`, response `Alt-Svc: h3=":443"; ma=86400`
 - 다음 새 connection: `Protocol=h3`

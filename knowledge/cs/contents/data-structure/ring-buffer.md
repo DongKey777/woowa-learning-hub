@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: ring buffer basics, ring buffer beginner, ring buffer intro, data structure basics, beginner data structure, 처음 배우는데 ring buffer, ring buffer 입문, ring buffer 기초, what is ring buffer, how to ring buffer
 > 관련 문서:
 > - [응용 자료 구조 개요](./applied-data-structures-overview.md)
 > - [Queue (큐)](./basic.md#queue-큐)
@@ -62,7 +71,7 @@ Ring Buffer는 보통 `head`와 `tail`만으로 상태를 표현한다.
 
 producer가 기다릴 수 있는지, 상류 전체를 늦출지까지 포함해 정책 축을 넓게 보고 싶다면 [Bounded Queue Policy Primer](./bounded-queue-policy-primer.md)로 이어서 읽으면 된다.
 
-로그나 센서 스트림처럼 최신값이 더 중요하면 overwrite가 맞고,  
+로그나 센서 스트림처럼 최신값이 더 중요하면 overwrite가 맞고,
 결제 이벤트처럼 유실이 치명적이면 reject나 backpressure가 맞다.
 
 ### 3. 왜 예측 가능성이 중요한가
@@ -87,6 +96,8 @@ Ring Buffer는 큐 이상의 의미가 있다.
 
 Ring Buffer를 볼 때는 "원형 배열인가?"보다 "어떤 운영 제약을 가장 먼저 만족해야 하나?"를 먼저 묻는 편이 정확하다.
 
+## 깊이 들어가기 (계속 2)
+
 | 시나리오 | 먼저 보는 축 | 기본 라우팅 | full/slow-path에서 먼저 고를 정책 | 다음 문서 |
 |---|---|---|---|---|
 | logging | burst 흡수, 최근 문맥 유지, flush thread 수 | producer가 여러 개면 `MPSC -> single flusher`, 하나면 plain ring도 충분 | 디버그 tail이면 `overwrite`/`reject`, 감사 로그면 ring을 staging으로만 두고 `backpressure`나 durable sink 필요 | [Bounded Queue Policy Primer](./bounded-queue-policy-primer.md), [Lock-Free MPSC Queue](./lock-free-mpsc-queue.md) |
@@ -95,6 +106,8 @@ Ring Buffer를 볼 때는 "원형 배열인가?"보다 "어떤 운영 제약을 
 | producer-consumer pipeline | producer/consumer cardinality, fan-out, stage dependency | `1:1`이면 SPSC, `N:1`이면 MPSC, `N:M`이면 bounded MPMC, stage barrier가 있으면 sequencer까지 본다 | 가장 느린 stage가 상류를 늦춰야 하면 `backpressure`, stage별 독립 handoff면 queue 분리가 우선 | [Lock-Free SPSC Ring Buffer](./lock-free-spsc-ring-buffer.md), [Bounded MPMC Queue](./bounded-mpmc-queue.md), [Sequencer-Based Ring Buffer Coordination](./sequencer-based-ring-buffer-coordination.md) |
 
 짧게 압축하면 이렇다.
+
+## 깊이 들어가기 (계속 3)
 
 - logging은 "최근 문맥을 살릴까, 절대 유실을 막을까"가 먼저다.
 - telemetry는 "여러 producer를 어떻게 fan-in할까"와 "drop을 어디서 계수할까"가 먼저다.

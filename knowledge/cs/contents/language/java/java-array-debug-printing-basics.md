@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java array debug printing basics basics, java array debug printing basics beginner, java array debug printing basics intro, java basics, beginner java, 처음 배우는데 java array debug printing basics, java array debug printing basics 입문, java array debug printing basics 기초, what is java array debug printing basics, how to java array debug printing basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)

@@ -11,7 +11,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [운영체제 프로세스 기초](../operating-system/README.md)
 
-retrieval-anchor-keywords: git workflow basics, git 브랜치 입문, 브랜치 머지 방법, git conflict 해소, feature branch 설명, git flow 처음 배우는데, pull request 뭐예요, rebase vs merge, git 협업 기초, main branch 전략, git 처음, beginner git
+retrieval-anchor-keywords: git workflow basics, git 브랜치 입문, 브랜치 머지 방법, git conflict 해소, feature branch 설명, git flow 처음 배우는데, pull request 뭐예요, rebase vs merge, git 협업 기초, main branch 전략, git 처음, beginner git, git workflow basics basics, git workflow basics beginner, git workflow basics intro
 
 ## 핵심 개념
 

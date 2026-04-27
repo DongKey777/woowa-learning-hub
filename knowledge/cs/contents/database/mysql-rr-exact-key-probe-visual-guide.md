@@ -18,7 +18,7 @@
 - [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql rr exact key probe, mysql repeatable read duplicate check, innodb next key duplicate check, exact key for update beginner, exact key for share beginner, duplicate insert race mysql, why rr worked then broke, read committed duplicate check mysql, chosen index path duplicate probe, mysql unique key vs next key, 0 row for share exact key, 왜 rr에서만 막혀요, mysql duplicate check basics
+retrieval-anchor-keywords: mysql rr exact key probe, mysql repeatable read duplicate check, innodb next key duplicate check, exact key for update beginner, exact key for share beginner, duplicate insert race mysql, why rr worked then broke, read committed duplicate check mysql, chosen index path duplicate probe, mysql unique key vs next key, 0 row for share exact key, 왜 rr에서만 막혀요, mysql duplicate check basics, mysql rr exact key probe visual guide basics, mysql rr exact key probe visual guide beginner
 
 ## 핵심 개념
 
@@ -84,6 +84,8 @@ next-key는 business 문장을 잠그지 않고 chosen index path를 따른다. 
 - 어떤 writer는 probe 후 insert하지만, 다른 writer는 바로 insert한다
 
 이 지점이 불안하면 말로 추측하지 말고 [EXPLAIN Checklist for Exact-Key Locking Reads](./explain-checklist-exact-key-locking-reads.md)부터 열어 `key`/`type`/`rows`가 정말 intended full unique-key path를 가리키는지 먼저 확인하는 편이 안전하다.
+
+## 상세 분해 (계속 2)
 
 그리고 실제 장애가 "`같은 key인데 왜 이번엔 안 줄 섰지?`"처럼 보인다면, index-path drift와 mixed write path를 한 번에 점검하는 [MySQL RR exact-key probe assumptions checklist](./mysql-rr-exact-key-probe-assumptions-checklist.md)로 바로 내려가면 된다.
 

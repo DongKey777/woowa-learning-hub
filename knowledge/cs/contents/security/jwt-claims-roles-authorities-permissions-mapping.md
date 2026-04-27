@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
@@ -20,7 +27,7 @@
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, JwtAuthenticationConverter, authorities claim mapping, hasRole vs hasAuthority, ROLE_ prefix, SCOPE_ prefix, scope vs permission, oauth scope vs audience vs permission, api audience vs scope vs permission, aud claim vs scope claim, role claim 403, spring security role claim mismatch, valid jwt but spring 403, valid token empty authorities, valid JWT route 403, hasRole hasAuthority mismatch beginner, ROLE prefix mismatch beginner, SCOPE prefix mismatch beginner, claims are not permissions, claims are not authorities, application permission source of truth, stale authority claim, stale authorities, role vs scope vs ownership, scope is not ownership, role is not ownership, security symptom shortcut, category return path, jwt는 valid한데 spring 403, 토큰은 유효한데 spring 403, spring route 403 role prefix, hasrole hasauthority 차이, role scope permission 차이, roles scope authority가 섞임, scope 있는데 403 spring, ROLE_ SCOPE_ mismatch, authority 비어 있음, valid jwt route 403 beginner, claim은 있는데 authority가 없음, claim authority permission 차이
+retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, jwtauthenticationconverter, hasrole hasauthority mismatch beginner, role prefix mismatch beginner
 
 ## 증상으로 바로 찾기
 
@@ -43,6 +50,9 @@ retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authori
 - JWT를 어디까지 신뢰하고 어떻게 검증해야 하는지가 먼저 궁금하면 [JWT 깊이 파기](./jwt-deep-dive.md)를 보면 된다.
 - 외부 IdP claim과 우리 앱 내부 user model 경계가 더 궁금하면 [OIDC ID Token / UserInfo Boundaries](./oidc-id-token-userinfo-boundaries.md)를 같이 보면 된다.
 - JWT는 valid한데 Spring route / method security에서만 `403`이 나는 식의 runtime mismatch를 바로 좁히고 싶으면 [Spring Authority Mapping Pitfalls](./spring-authority-mapping-pitfalls.md)를 이어 보면 된다.
+
+## 이 문서 다음에 보면 좋은 문서 (계속 2)
+
 - `ROLE_` prefix, `hasRole`, `hasAuthority`, `JwtAuthenticationConverter`가 실제 필터 체인에서 어떻게 맞물리는지는 [Spring Security Filter Chain](../spring/spring-security-filter-chain.md)으로 이어진다.
 - permission model이 커졌을 때 role/permission/graph/source-of-truth를 어떻게 분리할지는 [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)에서 더 깊게 본다.
 
@@ -301,6 +311,8 @@ public OrderResponse readOrder(String orderId) {
 
 하지만 이 요청의 최종 허용은 여기서 안 끝난다.
 `permissionService.requireOrderRead(orderId)` 안에서는 다시 볼 수 있다.
+
+## 실전 매핑 예시 (계속 2)
 
 - 이 주문이 `tenant_id=t-1`에 속하는가
 - support delegated session이 아직 유효한가

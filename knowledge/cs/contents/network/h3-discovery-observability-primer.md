@@ -13,7 +13,7 @@
 - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
 - [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
 
-retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix
+retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix, h3 discovery observability primer basics, h3 discovery observability primer beginner, h3 discovery observability primer intro
 
 ## Discovery vs Permission 용어 고정 박스
 
@@ -169,6 +169,8 @@ curl --http3 -sS -o /dev/null -w 'http_version=%{http_version}\n' "https://$DOMA
 ```
 
 초급자는 이 블록을 이렇게 읽으면 된다.
+
+## 1분 실습 카드: DevTools -> dig -> curl (계속 2)
 
 | 줄 | 무엇을 확인하나 | 안 바꿔도 되는 것 | 바꿔야 하는 것 |
 |---|---|---|---|
@@ -327,6 +329,8 @@ Alt-Svc: h3=":443"; ma=86400
 Alt-Svc: h3="edge.example.net:443"; ma=3600
 ```
 
+## DevTools에서 먼저 볼 것 (계속 2)
+
 이 경우 "이 origin의 H3 후보 endpoint가 `edge.example.net:443`일 수 있다" 정도로 읽는다.
 다만 이것도 다른 origin까지 자동 공유하라는 뜻은 아니다.
 
@@ -465,6 +469,8 @@ curl -v --alt-svc "$ALT_SVC_CACHE" -o /dev/null "https://$DOMAIN"
 - `/tmp/h3-altsvc.txt`에 h3 alternative service가 저장됐는가
 - 다음 command의 verbose log에서 alternative service를 쓰려는 흔적이 있는가
 
+## `curl`로 작은 trace 만들기 (계속 2)
+
 이 trace는 `Alt-Svc`가 "현재 response를 즉시 바꾸는 header"가 아니라 "다음 connection 후보를 cache하게 하는 힌트"라는 감각을 잡는 데 유용하다.
 
 ---
@@ -510,6 +516,8 @@ curl --http3 -sS -o /dev/null -w 'http_version=%{http_version}\n' "https://$DOMA
 | "HTTPS RR driven으로 보인다" | first clean request부터 H3, `dig HTTPS`에 `alpn=h3`, 이전 방문 cache 가능성 낮음 |
 | "둘 다 후보라 단정 어렵다" | response `Alt-Svc`와 DNS HTTPS RR `h3`가 모두 있음 |
 | "discovery는 있지만 H3 성공은 안 된다" | `Alt-Svc`/HTTPS RR은 보이는데 DevTools/curl protocol이 H2로 끝남 |
+
+## 판단 순서 (계속 2)
 
 체크리스트 하단 한 줄 라우팅: discovery 후속이면 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md), `421`/coalescing 후속이면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) -> [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md), 둘이 섞인 trace면 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)로 바로 분기한다.
 

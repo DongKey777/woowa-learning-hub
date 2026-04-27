@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [두 포인터 입문](../algorithm/two-pointer-intro.md)
 
-retrieval-anchor-keywords: linked list basics, 연결 리스트 입문, singly linked list, doubly linked list, 단방향 연결 리스트, 양방향 연결 리스트, node pointer, array vs linked list, 배열과 연결 리스트 차이, 연결 리스트가 뭐예요, linked list insert delete, head tail pointer beginner, null pointer linked list
+retrieval-anchor-keywords: linked list basics, 연결 리스트 입문, singly linked list, doubly linked list, 단방향 연결 리스트, 양방향 연결 리스트, node pointer, array vs linked list, 배열과 연결 리스트 차이, 연결 리스트가 뭐예요, linked list insert delete, head tail pointer beginner, null pointer linked list, linked list basics basics, linked list basics beginner
 
 ## 핵심 개념
 

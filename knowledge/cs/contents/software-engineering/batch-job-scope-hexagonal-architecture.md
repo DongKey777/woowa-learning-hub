@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: batch job scope hexagonal architecture basics, batch job scope hexagonal architecture beginner, batch job scope hexagonal architecture intro, software engineering basics, beginner software engineering, 처음 배우는데 batch job scope hexagonal architecture, batch job scope hexagonal architecture 입문, batch job scope hexagonal architecture 기초, what is batch job scope hexagonal architecture, how to batch job scope hexagonal architecture
 [30분 후속 분기표로 돌아가기](./common-confusion-wayfinding-notes.md#자주-헷갈리는-3개-케이스)
 
 [Message-Driven Adapter Example](./message-driven-adapter-example.md)에서 scheduled job도 inbound adapter라는 감각을 잡았다면, 이 문서는 그다음 질문인 "그 job이 기존 유스케이스를 `for` loop로 호출하면 충분한가, 아니면 배치 전용 application service가 필요한가"만 좁혀서 본다.
@@ -271,6 +280,8 @@ public final class MonthlySettlementBatchService
 
 이 구조가 맞는 이유:
 
+## 설계 예시 2: dedicated batch application service (계속 2)
+
 - `closingDate`, `runId`, `chunkSize`가 run 입력 계약이다
 - checkpoint 저장과 재개가 application layer 책임이다
 - item 단위 정산 규칙은 여전히 `SettleMerchantUseCase`가 지킨다
@@ -285,3 +296,7 @@ public final class MonthlySettlementBatchService
 - batch가 실제로는 run 단위 의미를 갖는데도 observability만 추가하면 된다고 착각한다
 
 한 문장으로 정리하면, scheduled job가 **같은 단건 유스케이스를 다른 타이밍으로 여는 것**이면 loop가 맞고, **batch run 자체의 입력 계약과 실패 의미가 생기면** dedicated batch-oriented application service가 맞다.
+
+## 한 줄 정리
+
+scheduled job가 기존 유스케이스를 반복 호출하는 thin inbound adapter로 끝나도 되는 경우는 "한 건 처리 의미"가 그대로 재사용될 때고, batch window, checkpoint, chunk, partial failure policy 자체가 application 의미가 되면 dedicated batch-oriented application service를 따로 둬야 한다.

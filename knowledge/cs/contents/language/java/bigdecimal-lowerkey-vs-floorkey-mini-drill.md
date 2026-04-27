@@ -13,7 +13,7 @@
 - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 - [BigDecimal Key 정책 30초 체크리스트](./bigdecimal-key-policy-30-second-checklist.md)
 
-retrieval-anchor-keywords: bigdecimal lowerkey floorkey mini drill, bigdecimal lowerKey floorKey exact match, bigdecimal 1.0 1.00 lower floor treemap, bigdecimal numerically equal different scale lowerKey, bigdecimal strict vs inclusive lookup drill, treemap bigdecimal lowerkey null floorkey same slot, navigablemap bigdecimal beginner prediction, 자바 bigdecimal lowerKey floorKey 차이, 자바 bigdecimal scale 다른 key 조회, 자바 strict inclusive lookup 연습
+retrieval-anchor-keywords: bigdecimal lowerkey floorkey mini drill, bigdecimal lowerkey floorkey exact match, bigdecimal 1.0 1.00 lower floor treemap, bigdecimal numerically equal different scale lowerkey, bigdecimal strict vs inclusive lookup drill, treemap bigdecimal lowerkey null floorkey same slot, navigablemap bigdecimal beginner prediction, 자바 bigdecimal lowerkey floorkey 차이, 자바 bigdecimal scale 다른 key 조회, 자바 strict inclusive lookup 연습, bigdecimal lowerkey vs floorkey mini drill basics, bigdecimal lowerkey vs floorkey mini drill beginner, bigdecimal lowerkey vs floorkey mini drill intro, java basics, beginner java
 
 ## 먼저 잡을 mental model
 

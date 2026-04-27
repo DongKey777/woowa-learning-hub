@@ -15,6 +15,8 @@
 - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 - [Spring `@Value` vs `@ConfigurationProperties` 환경값 읽기 가이드](./spring-value-vs-configurationproperties-env-guide.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: spring boot properties vs customizer vs bean replacement, boot customization ladder beginner, application yml vs customizer vs replace bean, spring boot customization levels, properties first customizer second replacement last, boot config knob beginner, application properties vs bean customization, objectmapper property vs customizer vs replacement, restclientcustomizer vs property vs bean replacement, webmvcconfigurer vs property vs replace bean, conditionalonmissingbean back off customization ladder, beginner boot settings decision guide, boot override escalation, 언제 properties 쓰고 언제 customizer 쓰나요, 언제 bean replacement 하나요
 
 ## 먼저 mental model

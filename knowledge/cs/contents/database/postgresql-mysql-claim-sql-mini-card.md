@@ -13,7 +13,9 @@
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: postgresql mysql claim sql mini card, insert on conflict do nothing on duplicate key comparison, idempotency claim sql beginner, same idempotency pattern postgres mysql, plain insert duplicate key vs do nothing vs on duplicate key, claim path beginner postgres mysql, on conflict do nothing 0 rows, on duplicate key update affected rows beginner, unique claim syntax comparison, first writer wins sql card, postgresql mysql upsert claim mini card, duplicate exception vs silent loser vs update branch, 멱등성 claim SQL 비교, insert do nothing on duplicate key 차이, postgres mysql claim path one page, beginner claim sql chooser
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: postgresql mysql claim sql mini card, insert on conflict do nothing on duplicate key comparison, idempotency claim sql beginner, same idempotency pattern postgres mysql, plain insert duplicate key vs do nothing vs on duplicate key, claim path beginner postgres mysql, on conflict do nothing 0 rows, on duplicate key update affected rows beginner, unique claim syntax comparison, first writer wins sql card, postgresql mysql upsert claim mini card, duplicate exception vs silent loser vs update branch, 멱등성 claim sql 비교, insert do nothing on duplicate key 차이, postgres mysql claim path one page
 
 ## 먼저 멘탈모델
 
@@ -201,3 +203,7 @@ ON DUPLICATE KEY UPDATE
 1. 세 문법 모두 목적은 "같은 key winner 하나"다.
 2. 차이는 loser 신호다: 예외, `0 rows`, update branch.
 3. 최종 응답은 SQL 문법이 아니라 fresh read + `request_hash` 비교로 닫는다.
+
+## 한 줄 정리
+
+같은 `idempotency_key`를 한 번만 선점하는 목적은 셋 다 같지만, 초보자는 `INSERT`는 **duplicate 예외**, PostgreSQL `ON CONFLICT DO NOTHING`은 **0-row loser 신호**, MySQL `ON DUPLICATE KEY UPDATE`는 **update branch 성공 신호**로 읽는다고 먼저 고정하면 덜 헷갈린다.

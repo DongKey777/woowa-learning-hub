@@ -13,7 +13,7 @@
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 - [Spring Data Repository vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md)
 
-retrieval-anchor-keywords: repository naming smells, repository method naming, repository name smell, dao naming smell, repository vs dao naming, domain language repository contract, sql shaped dao api, table shaped dao api, method name cue repository dao, repository method names beginner, repository naming beginner, repository 메서드 이름, repository 네이밍 냄새, dao 메서드 이름, dao 네이밍 냄새, 도메인 언어 repository, 테이블 중심 dao, sql 중심 dao, 처음 배우는데 repository 이름, 처음 배우는데 dao 이름, 큰 그림 repository dao naming, 기초 repository contract naming, 언제 쓰는지 repository 이름, spring data query method naming vs domain repository, select insert update naming smell, findById save delete repository cue
+retrieval-anchor-keywords: repository naming smells, repository method naming, repository name smell, dao naming smell, repository vs dao naming, domain language repository contract, sql shaped dao api, table shaped dao api, method name cue repository dao, repository method names beginner, repository naming beginner, repository 메서드 이름, repository 네이밍 냄새, dao 메서드 이름, dao 네이밍 냄새
 
 처음 배우는데 `OrderRepository` 안에 `insertOrderRow`, `selectOrdersJoinMember`, `updateOrderTableStatus` 같은 이름이 보이면 "이게 repository가 맞나?"라는 감각이 드는 편이 정상이다. 이 문서는 그 감각을 **메서드 이름 단서**만으로 빠르게 잡는 1페이지 primer다.
 

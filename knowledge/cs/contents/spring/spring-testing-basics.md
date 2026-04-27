@@ -12,7 +12,7 @@
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring testing basics, 스프링 테스트 처음, springboottest 입문, webmvctest 뭐예요, datajpatest 입문, 슬라이스 테스트 입문, mockmvc 입문, @mockbean 입문, spring 단위 테스트 vs 통합 테스트, spring test 빠르게 하는 법, spring test 컨텍스트 로드 느린 이유, mockito spring 입문
+retrieval-anchor-keywords: spring testing basics, 스프링 테스트 처음, springboottest 입문, webmvctest 뭐예요, datajpatest 입문, 슬라이스 테스트 입문, mockmvc 입문, @mockbean 입문, spring 단위 테스트 vs 통합 테스트, spring test 빠르게 하는 법, spring test 컨텍스트 로드 느린 이유, mockito spring 입문, spring testing basics basics, spring testing basics beginner, spring testing basics intro
 
 ## 핵심 개념
 

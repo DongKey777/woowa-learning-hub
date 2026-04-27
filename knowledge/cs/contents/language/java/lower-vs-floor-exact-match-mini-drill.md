@@ -12,7 +12,7 @@
 - [`descendingSet()` / `descendingMap()` View Mental Model](./descending-view-mental-model.md)
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
-retrieval-anchor-keywords: lower vs floor exact match drill, treemap lower floor exact key, treeset lower floor same value, navigablemap exact match worksheet, java lower floor beginner, java floor lower confusion, exact match lower floor difference, ordered map exact match drill, 자바 lower floor 차이, 자바 exact match 워크시트, 처음 배우는데 lower floor, 왜 lower는 자기 자신이 아닌가
+retrieval-anchor-keywords: lower vs floor exact match drill, treemap lower floor exact key, treeset lower floor same value, navigablemap exact match worksheet, java lower floor beginner, java floor lower confusion, exact match lower floor difference, ordered map exact match drill, 자바 lower floor 차이, 자바 exact match 워크시트, 처음 배우는데 lower floor, 왜 lower는 자기 자신이 아닌가, lower vs floor exact match mini drill basics, lower vs floor exact match mini drill beginner, lower vs floor exact match mini drill intro
 
 ## 먼저 잡을 mental model
 

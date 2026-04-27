@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
@@ -19,7 +26,7 @@
 > - [HTTPS와 TLS 기초](./https-tls-beginner.md)
 > - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: HTTPS, HSTS, MITM, certificate validation, TLS termination, downgrade attack, mixed content, secure cookie, X-Forwarded-Proto, certificate pinning, trust store, browser hardening, https beginner primer, hsts beginner handoff, return to security README
+retrieval-anchor-keywords: https, hsts, mitm, certificate validation, tls termination, downgrade attack, mixed content, secure cookie, x-forwarded-proto, certificate pinning, trust store, browser hardening, https beginner primer, hsts beginner handoff, return to security readme
 
 ---
 
@@ -121,6 +128,8 @@ HTTPS 페이지 안에서 HTTP 리소스를 불러오면 mixed content가 된다
 - 인증 code나 reset token이 query에 남지 않게 해야 한다
 
 그래서 [Open Redirect Hardening](./open-redirect-hardening.md)과 같이 보면 더 낫다.
+
+## 깊이 들어가기 (계속 2)
 
 ---
 

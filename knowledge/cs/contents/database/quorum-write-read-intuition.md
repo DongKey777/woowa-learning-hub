@@ -4,8 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
-retrieval-anchor-keywords: quorum, majority write, majority read, quorum intuition, consistency budget
+retrieval-anchor-keywords: quorum, majority write, majority read, quorum intuition, consistency budget, quorum write read intuition basics, quorum write read intuition beginner, quorum write read intuition intro, database basics, beginner database, 처음 배우는데 quorum write read intuition, quorum write read intuition 입문, quorum write read intuition 기초, what is quorum write read intuition, how to quorum write read intuition
 
 ## 핵심 개념
 
@@ -58,17 +65,17 @@ quorum은 다음을 이해하는 데 도움이 된다.
 
 ### 시나리오 1: 일부 replica가 뒤처져도 write를 확정해야 함
 
-quorum write가 있으면 일정 수 이상에 성공한 뒤에만 커밋한다.  
+quorum write가 있으면 일정 수 이상에 성공한 뒤에만 커밋한다.
 앱은 이 기준을 알고 retry와 timeout을 설계해야 한다.
 
 ### 시나리오 2: read가 자꾸 옛값을 보여줌
 
-단일 replica read만 믿으면 최신성을 보장하지 못할 수 있다.  
+단일 replica read만 믿으면 최신성을 보장하지 못할 수 있다.
 read quorum이나 primary fallback이 필요할 수 있다.
 
 ### 시나리오 3: 장애 중에 “성공인지 실패인지”가 애매함
 
-quorum 미달로 실패했는지, 일부만 반영됐는지 애매해질 수 있다.  
+quorum 미달로 실패했는지, 일부만 반영됐는지 애매해질 수 있다.
 이럴 때 멱등성과 재조회가 중요하다.
 
 ## 코드로 보기

@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 > - [Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기](./handler-registry-test-shape-supports-without-spring.md)
@@ -13,7 +20,7 @@
 > - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, Map<String Handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @Component name lookup smell, ApplicationContext getBean handler smell, injected registry vs service locator checklist, qualifier vs domain key, payment handler registry spring, event handler registry spring, bean collection injection boundary, channel to bean name confusion, channel -> bean name, channel bean mapping spring, channel routing domain key registry, notification channel handler registry, beginner channel handler map, channel key leak, runtime channel selector registry, 스프링 bean name map, 스프링 Map<String Handler> 주입, bean 이름으로 handler 찾기, 도메인 키 레지스트리, 결제수단 handler registry, bean 이름 누수, 컨테이너 이름 누수, 채널에서 bean 이름 만들기, channel 값으로 bean 이름 찾기, 알림 채널 handler 레지스트리, 처음 배우는데 채널 분기 큰 그림, 채널 분기 기초, channel registry 언제 쓰는지, supports 메서드 registry, service locator 드리프트, supports registry unit test, domain key registry test without spring, 스프링 없이 supports registry 테스트
+retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, map<string handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @component name lookup smell, applicationcontext getbean handler smell, injected registry vs service locator checklist, qualifier vs domain key, beginner channel handler map, 처음 배우는데 채널 분기 큰 그림
 
 ---
 
@@ -180,6 +187,8 @@ public class CheckoutService {
 ```
 
 이 구조에서 Spring bean 이름은 바깥으로 새지 않는다.
+
+## 좋은 예: handler가 자기 domain key를 말하게 한다 (계속 2)
 
 - `CardPaymentHandler` bean 이름은 바뀌어도 된다
 - 결제 분기 key는 `PaymentMethod.CARD`로 고정된다

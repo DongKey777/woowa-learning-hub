@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
 > - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
@@ -13,7 +20,7 @@
 > - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
 > - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
 
-retrieval-anchor-keywords: spring test slow context cache split, context cache split triage, MockBean cache split, SpringBootTest slow startup repeated context, TestPropertySource cache split, DynamicPropertySource cache split, DirtiesContext slow tests, WebMvcTest slice drift, DataJpaTest slice drift, slow spring test primer, context cache miss troubleshooting, test context reuse beginner, spring test startup repeated, mockbean property override dirtiescontext guide
+retrieval-anchor-keywords: spring test slow context cache split, context cache split triage, mockbean cache split, springboottest slow startup repeated context, testpropertysource cache split, dynamicpropertysource cache split, dirtiescontext slow tests, webmvctest slice drift, datajpatest slice drift, slow spring test primer, context cache miss troubleshooting, test context reuse beginner, spring test startup repeated, mockbean property override dirtiescontext guide, spring test context cache split triage guide basics
 
 ---
 
@@ -291,3 +298,7 @@ class OrderControllerTest {
 > Q: slice drift가 왜 문제인가?
 > 의도: 느림과 테스트 계약 모호화 연결 확인
 > 핵심: 원래 작고 빠른 slice가 애매한 준통합 테스트로 커지면 느리고 이해도 어려워진다.
+
+## 한 줄 정리
+
+Spring 테스트가 느릴 때는 "테스트 로직이 무겁다"보다 먼저 "거의 같은 컨텍스트를 여러 벌 다시 띄우고 있나"를 보고, 특히 `@MockBean`, property override, `@DirtiesContext`, slice drift 네 축부터 분리하면 원인이 빨리 보인다.

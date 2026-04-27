@@ -10,7 +10,7 @@
 - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: rate limiting basics, 속도 제한 입문, rate limit 뭐예요, throttling 기초, 429 too many requests, token bucket 개념, leaky bucket 개념, fixed window rate limit, api 호출 제한, rate limiting beginner, 요청 횟수 제한, ddos 방어 기초, 트래픽 제어 기초
+retrieval-anchor-keywords: rate limiting basics, 속도 제한 입문, rate limit 뭐예요, throttling 기초, 429 too many requests, token bucket 개념, leaky bucket 개념, fixed window rate limit, api 호출 제한, rate limiting beginner, 요청 횟수 제한, ddos 방어 기초, 트래픽 제어 기초, rate limiting basics basics, rate limiting basics beginner
 
 ---
 

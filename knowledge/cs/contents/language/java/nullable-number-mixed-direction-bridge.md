@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: nullable number mixed direction bridge basics, nullable number mixed direction bridge beginner, nullable number mixed direction bridge intro, java basics, beginner java, 처음 배우는데 nullable number mixed direction bridge, nullable number mixed direction bridge 입문, nullable number mixed direction bridge 기초, what is nullable number mixed direction bridge, how to nullable number mixed direction bridge
 > 관련 문서:
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 > - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)

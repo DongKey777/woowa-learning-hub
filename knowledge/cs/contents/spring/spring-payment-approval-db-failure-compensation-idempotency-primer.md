@@ -14,7 +14,7 @@
 - [Outbox, Saga, Eventual Consistency](../database/outbox-saga-eventual-consistency.md)
 - [트랜잭션 경계 체크리스트 카드](../database/transaction-boundary-external-io-checklist-card.md)
 
-retrieval-anchor-keywords: payment approval db failure compensation primer, external approval succeeded local transaction failed, spring payment compensation beginner, approve then db fail cancel payment, payment cancel idempotency beginner, transactional payment approval gap, rollback does not cancel payment, external approval local commit mismatch, payment compensation retry key, cancel api idempotency key, approval success db rollback beginner, spring payment approval compensation bridge, 결제 승인 후 db 실패, 결제 승인 후 취소 보상, 롤백으로 결제 취소 안됨, 승인 성공 후 저장 실패, 결제 멱등성 키 입문, 취소 api 멱등성, 승인 id 중복 방지, payment approval reconciliation beginner
+retrieval-anchor-keywords: payment approval db failure compensation primer, external approval succeeded local transaction failed, spring payment compensation beginner, approve then db fail cancel payment, payment cancel idempotency beginner, transactional payment approval gap, rollback does not cancel payment, external approval local commit mismatch, payment compensation retry key, cancel api idempotency key, approval success db rollback beginner, spring payment approval compensation bridge, 결제 승인 후 db 실패, 결제 승인 후 취소 보상, 롤백으로 결제 취소 안됨
 
 ## 먼저 mental model 한 줄
 
@@ -116,6 +116,8 @@ public class PaymentTxService {
 
 - 승인했다면 `cancel` 또는 `refund` API를 호출한다
 - 취소가 바로 안 되면 재시도 가능한 compensation task를 남긴다
+
+## 가장 안전한 초급자 기본 흐름 (계속 2)
 
 ```java
 public void compensateApprovalFailure(

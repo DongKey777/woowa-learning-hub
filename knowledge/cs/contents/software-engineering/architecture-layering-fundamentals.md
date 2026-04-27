@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: architecture layering fundamentals basics, architecture layering fundamentals beginner, architecture layering fundamentals intro, software engineering basics, beginner software engineering, 처음 배우는데 architecture layering fundamentals, architecture layering fundamentals 입문, architecture layering fundamentals 기초, what is architecture layering fundamentals, how to architecture layering fundamentals
 <details>
 <summary>Table of Contents</summary>
 
@@ -255,3 +264,7 @@ app/
 - Modular Monolith는 내부 모듈 경계 강화
 - DDD boundary는 비즈니스 언어와 규칙 경계 정리
 - Repository/Entity separation은 도메인과 저장 세부 분리
+
+## 한 줄 정리
+
+Layered Architecture, Clean Architecture, Modular Monolith, DDD boundary, Repository/Entity separation은 서로 경쟁하는 선택지가 아니라 서로 다른 설계 질문에 답하는 도구다.

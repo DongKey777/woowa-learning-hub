@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)
@@ -12,7 +19,7 @@
 > - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [팩토리 (Factory)](./factory.md)
 
-retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, strategy vs policy object, payment method strategy, lambda vs strategy, function vs strategy, strategy vs small function, function map vs strategy, caller chooses implementation, caller selects policy object, 호출자가 전략 선택, 호출자가 구현 선택, 호출자가 정책 선택, strategy object injection, object injection strategy, injected strategy object, strategy constructor injection, 객체 주입 전략 패턴, 전략 객체 주입, 주입받은 전략 객체, composition over inheritance strategy, inheritance vs composition strategy, 상속 vs 조합 전략, 상속보다 조합 전략, 부모 클래스 vs 전략 객체, 부모 클래스 상속 vs 객체 주입, abstract class vs injected strategy, 처음 배우는데 전략 패턴, 전략 패턴 큰 그림, 전략 패턴 언제 쓰는지
+retrieval-anchor-keywords: strategy pattern, runtime algorithm selection, runtime implementation selection, caller chooses strategy, caller owned strategy selection, context delegates to strategy, replace if else with strategy, when to use strategy, when not to use strategy, strategy overuse, strategy explosion smell, strategy vs template method, beginner strategy pattern, strategy vs state, 처음 배우는데 전략 패턴
 
 ---
 
@@ -81,7 +88,7 @@ public class DiscountService {
 }
 ```
 
-문제는 정책이 추가될 때마다 이 메서드가 계속 비대해진다는 점이다.  
+문제는 정책이 추가될 때마다 이 메서드가 계속 비대해진다는 점이다.
 이 구조는 "지금 당장 돌아가는 코드"는 만들지만, "정책이 자주 바뀌는 코드"에는 취약하다.
 
 ### 2. 전략 패턴의 구조
@@ -111,7 +118,7 @@ public class DiscountService {
 
 ### 4. 함수 하나로 충분한 경우도 있다
 
-전략 패턴은 무조건 좋은 게 아니다.  
+전략 패턴은 무조건 좋은 게 아니다.
 함수가 한두 개뿐이면 `Function<T, R>` 같은 함수형 조합이 더 단순할 수 있다.
 
 `lambda`/작은 함수와 Strategy 타입 사이 경계를 짧게 잡고 싶다면
@@ -125,6 +132,8 @@ public class DiscountService {
 
 전략 이름이 조건 조합을 그대로 담기 시작하면 [전략 폭발 냄새](./strategy-explosion-smell.md)를 의심해야 한다.
 
+## 깊이 들어가기 (계속 2)
+
 즉 "if-else를 없애는 것"이 목적이 아니라, **변화 지점을 분리하는 것**이 목적이다.
 
 ---
@@ -133,7 +142,7 @@ public class DiscountService {
 
 ### 시나리오 1: 결제 수단이 늘어난다
 
-처음에는 카드와 계좌이체만 있다가, 나중에는 간편결제와 포인트 결제가 추가된다.  
+처음에는 카드와 계좌이체만 있다가, 나중에는 간편결제와 포인트 결제가 추가된다.
 `if-else`로 처리하면 결제 로직과 분기 조건이 한 파일에 계속 쌓인다.
 
 전략 패턴으로 분리하면:
@@ -153,15 +162,15 @@ names.stream()
     .forEach(System.out::println);
 ```
 
-정렬 대상은 같지만 기준은 바뀔 수 있다.  
+정렬 대상은 같지만 기준은 바뀔 수 있다.
 정렬 기준을 객체로 넘기면 코드가 훨씬 유연해진다.
 
 ### 시나리오 3: Spring MVC에서 뷰를 바꾼다
 
-Spring은 내부적으로 전략 인터페이스를 많이 쓴다.  
+Spring은 내부적으로 전략 인터페이스를 많이 쓴다.
 예를 들어 `ViewResolver`는 같은 논리 뷰 이름을 JSP, Thymeleaf, JSON 응답 등으로 해석하는 전략 역할을 한다.
 
-프레임워크 입장에서는 "어떤 뷰를 쓸지"를 고정할 필요가 없고,  
+프레임워크 입장에서는 "어떤 뷰를 쓸지"를 고정할 필요가 없고,
 애플리케이션은 설정만 바꾸면 다른 전략을 선택할 수 있다.
 
 ---
@@ -225,10 +234,12 @@ public class ShippingService {
 }
 ```
 
-이 구조의 장점은 분기 로직과 계산 로직이 분리된다는 것이다.  
+이 구조의 장점은 분기 로직과 계산 로직이 분리된다는 것이다.
 새로운 배송 타입이 추가되면 새로운 클래스만 추가하면 된다.
 
 ### 3. 함수형 대안
+
+## 코드로 보기 (계속 2)
 
 전략이 아주 단순하면 함수형으로도 충분하다.
 
@@ -239,7 +250,7 @@ Map<String, IntUnaryOperator> strategies = Map.of(
 );
 ```
 
-단순한 정책이면 이 방식이 더 가볍다.  
+단순한 정책이면 이 방식이 더 가볍다.
 복잡한 상태나 여러 협력 객체가 필요해지는 순간 전략 클래스로 분리하는 편이 낫다.
 
 ---

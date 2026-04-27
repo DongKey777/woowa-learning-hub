@@ -13,7 +13,7 @@
 - [Spring Security 기초](../spring/spring-security-basics.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: oauth2 basics, oauth2가 뭔가요, oauth2 입문, 소셜 로그인 원리, 구글 로그인 어떻게 되나, access token 이란, authorization server beginner, resource owner, client credentials beginner, oauth2 흐름 쉽게, 위임 인증 개념, third party access, oauth basics route, auth basics route, auth beginner route, security beginner route, security basics route, first-step oauth primer, security readme oauth primer, oauth authorization code next step, oauth2 oidc social login primer, oauth2 vs oidc beginner, social login beginner handoff, oidc handoff primer, id token vs access token beginner, return to security README, 사용자 위임 데이터 조회 oauth, 사용자를 대신해 외부 api 호출, google calendar oauth 예시, google drive oauth 예시, api key vs oauth 첫 분기, consent screen 이후 뭐가 되나요, consent screen 다음 세션, 구글 로그인 후 우리 서비스 세션, 외부 토큰 내부 세션 차이, access token 과 session 차이, social login token session split
+retrieval-anchor-keywords: oauth2 basics, oauth2가 뭔가요, oauth2 입문, 소셜 로그인 원리, 구글 로그인 어떻게 되나, access token 이란, authorization server beginner, resource owner, client credentials beginner, oauth2 흐름 쉽게, 위임 인증 개념, third party access, oauth basics route, auth basics route, auth beginner route
 
 ## 핵심 개념
 

@@ -1,6 +1,15 @@
 # HTTP 메서드, REST, 멱등성
 
+
+> 한 줄 요약: HTTP 메서드, REST, 멱등성는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 신입 백엔드 개발자가 API 설계를 설명할 때 필요한 핵심 정리
 
@@ -9,7 +18,7 @@
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
 
-retrieval-anchor-keywords: HTTP methods, REST, idempotency, safe method, GET POST PUT PATCH DELETE, resource design, retry safety, API semantics, idempotent request, RESTful API
+retrieval-anchor-keywords: http methods, rest, idempotency, safe method, get post put patch delete, resource design, retry safety, api semantics, idempotent request, restful api, http methods rest idempotency basics, http methods rest idempotency beginner, http methods rest idempotency intro, network basics, beginner network
 
 <details>
 <summary>Table of Contents</summary>
@@ -160,3 +169,7 @@ REST는 단순히 URL 예쁘게 짓는 규칙이 아니다.
 ### Q. RESTful API란 무엇인가요?
 
 - 단순히 URL 모양이 아니라, 리소스와 HTTP 메서드 의미를 일관되게 사용해 상태를 표현하는 API라고 설명할 수 있다.
+
+## 한 줄 정리
+
+HTTP 메서드, REST, 멱등성는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

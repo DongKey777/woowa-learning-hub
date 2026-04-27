@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: map lookup debug equals hashcode compareto mini bridge basics, map lookup debug equals hashcode compareto mini bridge beginner, map lookup debug equals hashcode compareto mini bridge intro, java basics, beginner java, 처음 배우는데 map lookup debug equals hashcode compareto mini bridge, map lookup debug equals hashcode compareto mini bridge 입문, map lookup debug equals hashcode compareto mini bridge 기초, what is map lookup debug equals hashcode compareto mini bridge, how to map lookup debug equals hashcode compareto mini bridge
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)

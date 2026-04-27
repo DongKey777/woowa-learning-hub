@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: datasource proxy vs hibernate statistics query count batch primer basics, datasource proxy vs hibernate statistics query count batch primer beginner, datasource proxy vs hibernate statistics query count batch primer intro, software engineering basics, beginner software engineering, 처음 배우는데 datasource proxy vs hibernate statistics query count batch primer, datasource proxy vs hibernate statistics query count batch primer 입문, datasource proxy vs hibernate statistics query count batch primer 기초, what is datasource proxy vs hibernate statistics query count batch primer, how to datasource proxy vs hibernate statistics query count batch primer
 <details>
 <summary>Table of Contents</summary>
 
@@ -174,3 +183,7 @@ before / after로 더 짧게 정리하면 아래와 같다.
 - `IDENTITY`, `flush`, batch 설정이 왜 같이 흔들리는지 보려면: [JPA Batch Config Pitfalls](./jpa-batch-config-pitfalls.md)
 - 같은 insert 테스트가 `IDENTITY`와 `SEQUENCE`에서 왜 다르게 보이는지 보려면: [IDENTITY vs SEQUENCE Batch Verification Example](./identity-vs-sequence-batch-verification-example.md)
 - N+1 탐지 도구를 조금 더 넓게 비교하고 싶다면: [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
+
+## 한 줄 정리
+
+datasource-proxy/p6spy는 "JDBC로 실제 무엇이 나갔는가"를 잡는 바깥쪽 관찰기이고, Hibernate statistics는 "Hibernate가 내부적으로 몇 번 준비하고 몇 번 batch를 실행했는가"를 보여 주는 안쪽 계기판이다. 초심자는 둘 다 쿼리 확인 도구로 보지만, query-count와 batch 검증에서 답하는 질문이 다르다.

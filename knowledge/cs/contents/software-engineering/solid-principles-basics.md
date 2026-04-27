@@ -11,7 +11,7 @@
 - [design-pattern 카테고리 인덱스](../design-pattern/README.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: solid principles basics, solid 원칙 입문, single responsibility, open closed, liskov substitution, interface segregation, dependency inversion, srp 뭐예요, solid 5원칙 설명, 의존 역전 원칙, 인터페이스 분리 원칙, beginner solid, solid 왜 쓰나요
+retrieval-anchor-keywords: solid principles basics, solid 원칙 입문, single responsibility, open closed, liskov substitution, interface segregation, dependency inversion, srp 뭐예요, solid 5원칙 설명, 의존 역전 원칙, 인터페이스 분리 원칙, beginner solid, solid 왜 쓰나요, solid principles basics basics, solid principles basics beginner
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

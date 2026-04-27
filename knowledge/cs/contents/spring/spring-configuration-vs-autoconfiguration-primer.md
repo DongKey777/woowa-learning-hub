@@ -17,7 +17,9 @@
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 
-retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @bean difference, spring configuration beginner, boot auto configuration beginner, proxybeanmethods beginner, proxybeanmethods true false checklist, self-invocation internal call, self invocation vs parameter injection, self-invocation misconception table, full configuration vs lite configuration, @bean method call singleton, @conditionalonmissingbean mental model, boot default bean registration
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @bean difference, spring configuration beginner, boot auto configuration beginner, proxybeanmethods beginner, proxybeanmethods true false checklist, self-invocation internal call, self invocation vs parameter injection, self-invocation misconception table, full configuration vs lite configuration, @bean method call singleton, @conditionalonmissingbean mental model, boot default bean registration, spring configuration vs autoconfiguration primer basics, spring configuration vs autoconfiguration primer beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -209,6 +211,8 @@ public class AppConfig {
 
 탐지 카드에서 이 문서로 넘어오는 독자는 보통 "둘 다 `client()`를 쓰는데 뭐가 다르지?"에서 멈춘다.
 아래 표는 **호출 모양보다 호출 경로**가 핵심이라는 점만 빠르게 잡아 준다.
+
+## 4. `proxyBeanMethods`를 읽을 때 먼저 보는 표 (계속 2)
 
 | 비교 포인트 | self-invocation(내부 호출) + `proxyBeanMethods = true` | self-invocation(내부 호출) + `proxyBeanMethods = false` | 파라미터 주입 + `proxyBeanMethods = false` |
 |---|---|---|---|

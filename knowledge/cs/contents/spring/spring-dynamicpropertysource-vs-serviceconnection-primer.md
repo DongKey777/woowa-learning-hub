@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Testcontainers Boundary Strategy](./spring-testcontainers-boundary-strategy.md)
 > - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
@@ -14,7 +21,7 @@
 > - 공식 기준: [Spring Boot Testcontainers - Service Connections / Dynamic Properties](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html)
 > - 공식 기준: [Spring Framework Testing - Dynamic Property Sources](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/dynamic-property-sources.html)
 
-retrieval-anchor-keywords: DynamicPropertySource vs ServiceConnection, spring service connection beginner, testcontainers service connection, spring boot testcontainers property wiring, manual property wiring still necessary, service connection vs dynamic property source, JdbcConnectionDetails, connection details override, GenericContainer service connection name, custom app property testcontainers, spring boot 3.1 service connection
+retrieval-anchor-keywords: dynamicpropertysource vs serviceconnection, spring service connection beginner, testcontainers service connection, spring boot testcontainers property wiring, manual property wiring still necessary, service connection vs dynamic property source, jdbcconnectiondetails, connection details override, genericcontainer service connection name, custom app property testcontainers, spring boot 3.1 service connection, spring dynamicpropertysource vs serviceconnection primer basics, spring dynamicpropertysource vs serviceconnection primer beginner, spring dynamicpropertysource vs serviceconnection primer intro, spring basics
 
 ## 핵심 개념
 
@@ -164,6 +171,8 @@ class PaymentClientTest {
 
 이 값들은 서비스 연결 bean만으로는 해결되지 않는다.
 그래서 실제 테스트에서는 두 방식을 함께 쓰는 경우가 많다.
+
+## 4. `@DynamicPropertySource`가 아직 필요한 대표 상황 (계속 2)
 
 ```java
 @Testcontainers

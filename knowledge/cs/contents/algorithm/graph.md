@@ -113,6 +113,8 @@ retrieval-anchor-keywords: graph router, shortest path router, weighted shortest
 
 `weighted shortest path`라고 해도 질문이 `희소/밀집`, `adjacency list/matrix`, `O(E log V) vs O(V^2)`처럼 그래프 밀도와 표현 vocabulary로 들어오면 deep dive에 바로 떨어지기 전에 한 번 더 갈라두는 편이 빠르다.
 
+## Weighted Shortest Path Density Router: Sparse vs Dense (계속 2)
+
 | 질문 phrasing | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
 |---|---|---|
 | `sparse graph shortest path`, `graph density shortest path`, `sparse vs dense shortest path`, `adjacency list shortest path`, `priority queue dijkstra`, `routing cost on sparse network` | [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 양수 가중치 shortest path 안에서도 희소 그래프, PQ Dijkstra, 0-1 BFS, Dial 같은 density/weight-distribution 선택이 먼저 드러난다 |
@@ -131,6 +133,9 @@ retrieval-anchor-keywords: graph router, shortest path router, weighted shortest
 - `0-1 BFS`, `0/1 cost`, `deque shortest path`, `teleport shortest path`가 보이면 weighted shortest path 안에서도 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)로 바로 브리지한다.
 - `weighted shortest path` cluster 안에서는 `single-source shortest path` / `negative-edge shortest path` / `all-pairs shortest path`를 다시 나눠 Dijkstra, Bellman-Ford, Floyd-Warshall 쪽으로 보낸다.
 - `sparse graph shortest path` / `dense graph shortest path` / `adjacency list shortest path` / `adjacency matrix shortest path`처럼 그래프 밀도와 표현이 먼저 보이면 weighted shortest path 안에서도 [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense)를 한 번 더 거친다.
+
+## 빠른 판별 체크 (계속 2)
+
 - `dense`라는 말이 보여도 `negative-edge shortest path`나 `all-pairs shortest path`가 같이 나오면 그래프 밀도보다 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)의 큰 축이 우선이다.
 
 ## 빠른 판별 체크 2

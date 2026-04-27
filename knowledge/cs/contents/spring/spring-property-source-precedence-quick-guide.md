@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
@@ -21,7 +28,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: spring property source precedence, spring property source priority, spring boot externalized configuration beginner, application.yml override order, application-prod.yml precedence, profile file override application yml, multiple profile last wins, spring.profiles.active order, environment variable overrides yaml, command line args override env var, SPRING_APPLICATION_JSON precedence, spring application json priority, test property override, @SpringBootTest properties precedence, @TestPropertySource precedence, DynamicPropertySource precedence, test property cache split, test property source cache key, DynamicPropertySource DirtiesContext, why application.yml ignored, same key property override, packaged vs external application yml, external config file precedence, spring.config.location replace defaults, spring.config.import precedence, relaxed binding env var cheatsheet, env var property key mapping, dashed property env var, list property env var, map property env var, property source 우선순위, application yml 덮어쓰기, profile 설정 덮어쓰기, env var 설정 우선순위, command-line property 우선순위, test property 우선순위, 설정값이 왜 다르게 들어오지
+retrieval-anchor-keywords: spring property source precedence, spring property source priority, spring boot externalized configuration beginner, application.yml override order, application-prod.yml precedence, profile file override application yml, multiple profile last wins, spring.profiles.active order, environment variable overrides yaml, command line args override env var, spring_application_json precedence, spring application json priority, test property override, @springboottest properties precedence, why application.yml ignored
 
 ## 핵심 개념
 
@@ -50,6 +57,8 @@ Spring은 가장 위에 보이는 값 하나를 읽는다.
 - 환경 변수: `APP_MESSAGE=...`
 - command-line argument: `--app.message=...`
 - test property: `@SpringBootTest(properties = ...)`, `@TestPropertySource`, `@DynamicPropertySource`
+
+## 핵심 개념 (계속 2)
 
 Java system property, devtools global settings, config server 같은 확장 source는 여기서 중심으로 다루지 않는다. `SPRING_APPLICATION_JSON`은 일반 env var보다 위에서 동작하는 별도 source라서, 구조 보존이 왜 필요한지까지 같이 보고 싶다면 [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)으로 이어진다.
 packaged vs external `application.yml`, `spring.config.location`, `spring.config.import`처럼 file-level precedence를 따로 보고 싶다면 [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)로 이어진다.

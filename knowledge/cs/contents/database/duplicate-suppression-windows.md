@@ -4,12 +4,19 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Transactional Inbox와 Dedup Design](./transactional-inbox-dedup-design.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-retrieval-anchor-keywords: duplicate suppression window, dedup window, ttl dedup, time bucket, duplicate suppression
+retrieval-anchor-keywords: duplicate suppression window, dedup window, ttl dedup, time bucket, duplicate suppression, duplicate suppression windows basics, duplicate suppression windows beginner, duplicate suppression windows intro, database basics, beginner database, 처음 배우는데 duplicate suppression windows, duplicate suppression windows 입문, duplicate suppression windows 기초, what is duplicate suppression windows, how to duplicate suppression windows
 
 ## 핵심 개념
 
-모든 중복을 영원히 저장할 수는 없다.  
+모든 중복을 영원히 저장할 수는 없다.
 그래서 실무에서는 중복을 막는 기간을 정해 suppression window를 둔다.
 
 왜 중요한가:

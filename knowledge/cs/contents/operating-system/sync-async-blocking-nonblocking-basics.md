@@ -12,7 +12,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [TCP/UDP Basics](../network/tcp-udp-basics.md)
 
-retrieval-anchor-keywords: 동기 비동기 차이, 블로킹 논블로킹 차이, sync async beginner, blocking nonblocking beginner, synchronous asynchronous intro, 동기 비동기 뭐가 달라요, 블로킹이란, 비동기란, io blocking, async callback
+retrieval-anchor-keywords: 동기 비동기 차이, 블로킹 논블로킹 차이, sync async beginner, blocking nonblocking beginner, synchronous asynchronous intro, 동기 비동기 뭐가 달라요, 블로킹이란, 비동기란, io blocking, async callback, sync async blocking nonblocking basics basics, sync async blocking nonblocking basics beginner, sync async blocking nonblocking basics intro, operating system basics, beginner operating system
 
 ## 먼저 잡는 멘탈 모델
 

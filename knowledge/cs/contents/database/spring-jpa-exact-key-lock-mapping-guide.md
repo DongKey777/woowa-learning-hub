@@ -15,7 +15,7 @@
 - [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring jpa exact key lock, spring data jpa for update mysql exact key, jpa pessimistic write mysql next key, hibernate for share mysql, exact key probe spring repository, why jpa lock lost index path, derived query lock mysql beginner, jpa lower email for update problem, same repository method different sql path, spring duplicate check rr next key, jpa exact key basics, 왜 jpa 락인데 중복이 생겨요
+retrieval-anchor-keywords: spring jpa exact key lock, spring data jpa for update mysql exact key, jpa pessimistic write mysql next key, hibernate for share mysql, exact key probe spring repository, why jpa lock lost index path, derived query lock mysql beginner, jpa lower email for update problem, same repository method different sql path, spring duplicate check rr next key, jpa exact key basics, 왜 jpa 락인데 중복이 생겨요, spring jpa exact key lock mapping guide basics, spring jpa exact key lock mapping guide beginner, spring jpa exact key lock mapping guide intro
 
 ## 핵심 개념
 

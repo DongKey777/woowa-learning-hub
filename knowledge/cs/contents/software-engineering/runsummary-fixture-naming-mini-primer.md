@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: runsummary fixture naming mini primer basics, runsummary fixture naming mini primer beginner, runsummary fixture naming mini primer intro, software engineering basics, beginner software engineering, 처음 배우는데 runsummary fixture naming mini primer, runsummary fixture naming mini primer 입문, runsummary fixture naming mini primer 기초, what is runsummary fixture naming mini primer, how to runsummary fixture naming mini primer
 `RunSummary` status 테스트를 쓰기 시작하면 fixture 이름이 금방 흐려진다.
 `summary1()`, `failureCase()`, `duplicateCase()`처럼 짧게 만들면 테스트는 통과해도 "어떤 run 장면인지"를 다시 본문에서 해석해야 한다.
 이 문서는 초심자 기준으로 가장 자주 나오는 세 장면만 좁혀서, fixture 이름을 어떻게 붙이면 status 테스트가 읽기 쉬워지는지 설명한다.

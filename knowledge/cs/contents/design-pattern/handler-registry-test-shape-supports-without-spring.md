@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 > - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
@@ -13,7 +20,7 @@
 > - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
 > - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
 
-retrieval-anchor-keywords: handler registry test shape, supports registry test, supports based registry test, handler registry unit test without spring, spring handler registry unit test, no spring container registry test, no application context registry test, supports() registry test, supports method registry, registry bootstrap test, duplicate supports key test, missing handler key test, fail fast registry bootstrap test, spring collection injection registry test, list of handlers test, domain key registry test, payment handler registry test, fake handler registry test, stub handler registry test, registry lookup test without spring, registry constructor test, plain unit test registry, constructor only registry test, fake vs mock registry test, @SpringBootTest registry test, registry test slice, supports registry plain unit test, fake registry unit test, fake registry vs spring context test, fake registry vs service locator test, application context locator test, ApplicationContext getBean test smell, spring context based locator test, registry consumer test with fake registry, 스프링 없이 registry 테스트, 컨테이너 없이 handler registry 테스트, supports 기반 registry 테스트, handler registry 단위 테스트, registry bootstrap 검증 테스트, duplicate supports key, missing payment handler, fake handler vs mock handler, registry 테스트 mock vs fake, fake registry 단위 테스트, ApplicationContext getBean 테스트 냄새, 생성자 단위 테스트 registry
+retrieval-anchor-keywords: handler registry test shape, supports registry test, supports based registry test, handler registry unit test without spring, spring handler registry unit test, no spring container registry test, no application context registry test, supports() registry test, supports method registry, registry bootstrap test, duplicate supports key test, missing handler key test, fail fast registry bootstrap test, handler registry test shape supports without spring basics, handler registry test shape supports without spring beginner
 
 ---
 
@@ -288,6 +295,8 @@ void returns_registered_handler_for_domain_key() {
 
 이 테스트는 registry의 public 약속을 가장 직접적으로 보여 준다.
 
+## 먼저 써야 하는 3가지 테스트 (계속 2)
+
 - domain key로 찾는다
 - 같은 handler 인스턴스를 돌려준다
 - Spring bean name이나 `ApplicationContext`는 보이지 않는다
@@ -341,6 +350,8 @@ void returns_registered_handler_for_domain_key() {
 서비스 테스트로 올라가면 registry consumer 쪽은 작은 fake registry로도 충분히 읽을 수 있다.
 아래는 registry를 좁은 lookup 포트로 받는다는 가정의 가장 작은 예시다.
 
+## 작은 비교: fake registry 단위 테스트 vs Spring context locator 테스트 (계속 2)
+
 ```java
 interface PaymentHandlerLookup {
     PaymentHandler get(PaymentMethod method);
@@ -389,6 +400,8 @@ void checkout_service_uses_card_handler_from_fake_registry() {
 ### 2. Spring context locator 테스트 모양
 
 반대로 서비스가 직접 `ApplicationContext.getBean(...)`을 쓰면 테스트 shape도 달라진다.
+
+## 작은 비교: fake registry 단위 테스트 vs Spring context locator 테스트 (계속 3)
 
 ```java
 @SpringBootTest

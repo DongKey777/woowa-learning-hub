@@ -14,7 +14,7 @@
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 
-retrieval-anchor-keywords: login callback artifact cheat sheet, callback artifact glossary, state nonce login_state oauth_txn difference, social login callback artifacts beginner, callback success but app anonymous artifact split, callback cookie vs handoff code vs session cookie, shared session cookie vs one-time handoff code, login callback terms beginner, callback capture chooser link, callback to local session bridge, state mismatch which cookie beginner, oidc nonce vs oauth state beginner
+retrieval-anchor-keywords: login callback artifact cheat sheet, callback artifact glossary, state nonce login_state oauth_txn difference, social login callback artifacts beginner, callback success but app anonymous artifact split, callback cookie vs handoff code vs session cookie, shared session cookie vs one-time handoff code, login callback terms beginner, callback capture chooser link, callback to local session bridge, state mismatch which cookie beginner, oidc nonce vs oauth state beginner, login callback artifact cheat sheet basics, login callback artifact cheat sheet beginner, login callback artifact cheat sheet intro
 
 ## 먼저 잡는 mental model
 

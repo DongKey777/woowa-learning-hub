@@ -12,7 +12,9 @@
 - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
 - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md)
 
-retrieval-anchor-keywords: lost update vs write skew vs phantom, anomaly timeline guide, concurrency anomaly decision map, same row overwrite, different row invariant break, new row predicate race, beginner transaction anomaly, lost update write skew phantom difference, read modify write race, minimum staffing write skew, overlap check phantom, absence check insert race, version check, guard row, predicate lock
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: lost update vs write skew vs phantom, anomaly timeline guide, concurrency anomaly decision map, same row overwrite, different row invariant break, new row predicate race, beginner transaction anomaly, lost update write skew phantom difference, read modify write race, minimum staffing write skew, overlap check phantom, absence check insert race, version check, guard row, lost update vs write skew vs phantom timeline guide basics
 
 ## 핵심 개념
 
@@ -24,7 +26,7 @@ retrieval-anchor-keywords: lost update vs write skew vs phantom, anomaly timelin
 | write skew | "다른 row 상태를 보면 내 row만 바꿔도 된다" | 서로 다른 existing row를 각자 수정 | count/sum/minimum 같은 집합 규칙 | 다른 row |
 | phantom | "이 범위에는 아직 row가 없다" | predicate 범위에 새 row가 insert | 부재/범위 판단이 깨짐 | 새 row |
 
-초보자에게는 일단 `같은 row / 다른 row / 새 row`로 기억하면 구분이 빨라진다.  
+초보자에게는 일단 `같은 row / 다른 row / 새 row`로 기억하면 구분이 빨라진다.
 다만 실전에서는 capacity oversell처럼 write skew와 phantom-like insert race가 섞일 수 있으므로, 마지막에는 **어떤 불변식을 보호해야 하는지**로 다시 정리해야 한다.
 
 ## 하나의 공유 시나리오
@@ -113,12 +115,12 @@ retrieval-anchor-keywords: lost update vs write skew vs phantom, anomaly timelin
 
 ### 1. lost update와 write skew는 둘 다 stale read처럼 보인다
 
-둘 다 "옛값을 보고 결정했다"는 느낌이 있다.  
+둘 다 "옛값을 보고 결정했다"는 느낌이 있다.
 하지만 lost update는 **같은 row의 최종 저장이 충돌**하고, write skew는 **서로 다른 row는 멀쩡히 저장되는데 전체 규칙이 깨진다**.
 
 ### 2. write skew와 phantom은 둘 다 조회 후 판단 문제다
 
-둘 다 read-then-decide 안티패턴에서 나온다.  
+둘 다 read-then-decide 안티패턴에서 나온다.
 차이는 write skew가 주로 **existing row들의 조합 규칙**을 깨고, phantom은 **없다고 본 predicate 범위에 새 row가 생긴다**는 점이다.
 
 ### 3. 실전 버그는 이름이 섞여 보일 수 있다

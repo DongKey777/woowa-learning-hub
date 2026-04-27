@@ -12,7 +12,9 @@
 - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
 
-retrieval-anchor-keywords: striped guard row budgeting primer, striped guard row beginner, bucket local budget, local bucket budget, stable bucket selection, stable bucket id, release bookkeeping, guard row striping basics, move from single guard row, striped guard release, bucket allocation record, bucket headroom beginner, claim bucket mapping, room_type_day bucket budget, campaign bucket budget, striping primer, beginner concurrency budgeting, bucket rebalance beginner, guard stripe release drift
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: striped guard row budgeting primer, striped guard row beginner, bucket local budget, local bucket budget, stable bucket selection, stable bucket id, release bookkeeping, guard row striping basics, move from single guard row, striped guard release, bucket allocation record, bucket headroom beginner, claim bucket mapping, room_type_day bucket budget, campaign bucket budget
 
 ## 핵심 개념
 

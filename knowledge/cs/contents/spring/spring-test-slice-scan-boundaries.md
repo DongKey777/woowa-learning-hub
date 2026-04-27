@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
 > - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
@@ -13,7 +20,7 @@
 > - [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)
 > - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
-retrieval-anchor-keywords: test slice scan boundary, spring test slice beginner, WebMvcTest scan, WebMvcTest service not found, DataJpaTest scan, DataJpaTest service bean not found, SpringBootTest full context, test configuration boundary, TestConfiguration component scan, Import in slice test, slice vs full context, controller slice, repository slice, test slice misunderstanding
+retrieval-anchor-keywords: test slice scan boundary, spring test slice beginner, webmvctest scan, webmvctest service not found, datajpatest scan, datajpatest service bean not found, springboottest full context, test configuration boundary, testconfiguration component scan, import in slice test, slice vs full context, controller slice, repository slice, test slice misunderstanding, spring test slice scan boundaries basics
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -92,7 +99,7 @@ class OrderApplicationTest {
 
 실제로는 그렇지 않다.
 
-`@WebMvcTest`는 "웹 계층에 필요한 후보만 남긴 테스트 컨텍스트"다.  
+`@WebMvcTest`는 "웹 계층에 필요한 후보만 남긴 테스트 컨텍스트"다.
 즉 package가 같아도 아래는 기본으로 들어오지 않는다.
 
 - `@Service`
@@ -160,7 +167,7 @@ class OrderRepositoryTest {
 }
 ```
 
-여기서 더 헷갈리는 지점은, `@DataJpaTest`의 "scan"은 component scan 하나로 끝나지 않는다는 점이다.  
+여기서 더 헷갈리는 지점은, `@DataJpaTest`의 "scan"은 component scan 하나로 끝나지 않는다는 점이다.
 entity discovery와 repository discovery는 JPA 전용 경계를 따르므로, 이 축이 더 궁금하면 [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)로 이어서 보는 편이 빠르다.
 
 ---
@@ -188,7 +195,7 @@ class OrderControllerTest {
 }
 ```
 
-이 경우 `Clock`만 추가된 것이다.  
+이 경우 `Clock`만 추가된 것이다.
 애플리케이션 전체를 다시 scan한 것이 아니다.
 
 ### 2. imported config가 다시 scan을 시작하는 경우
@@ -207,7 +214,7 @@ class AppTestConfig {
 }
 ```
 
-이 설정은 helper bean 하나만 더한 게 아니라, test config가 다시 package scan을 시작한다.  
+이 설정은 helper bean 하나만 더한 게 아니라, test config가 다시 package scan을 시작한다.
 그러면 controller test에 service, repository, 다른 component가 들어오기 시작할 수 있다.
 
 같은 문제는 JPA slice에서도 생긴다.
@@ -249,7 +256,7 @@ com.example.order
 
 즉 slice에서는 package가 맞아도 bean 종류가 다르면 제외될 수 있다.
 
-이 점이 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)과 다른 부분이다.  
+이 점이 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)과 다른 부분이다.
 component scan 문서는 "base package 자체가 틀린 경우"를 다루고, 이 문서는 **base package가 맞아도 slice filter가 일부를 의도적으로 빼는 경우**를 다룬다.
 
 ---

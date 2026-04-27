@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [트리 기초](../data-structure/tree-basics.md)
 
-retrieval-anchor-keywords: 재귀 입문, 재귀 함수 기초, recursion beginner, recursion basics, base case 뭐예요, 종료 조건 재귀, stack overflow 재귀, call stack 재귀, 재귀 vs 반복문, 팩토리얼 재귀, 피보나치 재귀 문제, 재귀 언제 써요, beginner recursion algorithm
+retrieval-anchor-keywords: 재귀 입문, 재귀 함수 기초, recursion beginner, recursion basics, base case 뭐예요, 종료 조건 재귀, stack overflow 재귀, call stack 재귀, 재귀 vs 반복문, 팩토리얼 재귀, 피보나치 재귀 문제, 재귀 언제 써요, beginner recursion algorithm, recursion intro basics, recursion intro beginner
 
 ## 핵심 개념
 

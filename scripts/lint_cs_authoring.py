@@ -7,7 +7,8 @@ Usage::
 Exits 0 when every file passes, 1 otherwise. Designed to be cheap (stdlib only)
 so workers can run it in their own commit loop.
 
-Checks (all enforced by the contract in docs/cs-authoring-guide.md):
+Checks for Beginner/Intermediate notes (all enforced by the contract in
+docs/cs-authoring-guide.md):
 
 1. H1 on the first non-empty line
 2. ``> 한 줄 요약: ...`` blockquote in the first 10 lines
@@ -17,8 +18,9 @@ Checks (all enforced by the contract in docs/cs-authoring-guide.md):
 6. >= 5 H2 sections; each H2 body <= 1600 characters
 7. final H2 must be ``## 한 줄 정리``
 
-Only beginner-tier files are required to pass strict mode. Advanced/Expert
-files are skipped to avoid retrofitting 1,151 legacy docs.
+Only Beginner/Intermediate files are required to pass strict mode.
+Advanced/Expert files are skipped to avoid retrofitting legacy deep-dive docs
+into the beginner authoring template.
 """
 
 from __future__ import annotations
@@ -229,9 +231,15 @@ def lint_file(path: Path) -> tuple[list[str], list[str]]:
     except LintError as exc:
         return [str(exc)], []
 
+    try:
+        difficulty = _check_difficulty(lines)
+    except LintError as exc:
+        return [str(exc)], []
+    if difficulty in {"advanced", "expert"}:
+        return [], []
+
     for check in (
         lambda: _check_summary(lines, h1_idx),
-        lambda: _check_difficulty(lines),
         lambda: _check_related_docs(lines),
         lambda: _check_anchors(lines),
         lambda: _check_h2_sections(text),

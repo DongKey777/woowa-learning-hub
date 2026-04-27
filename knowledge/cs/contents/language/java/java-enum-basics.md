@@ -11,7 +11,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 예외 처리 기초](./java-exception-handling-basics.md)
 
-retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs 상수 정수, java enum switch, enum values ordinal, enum 상수 집합, beginner enum java, 열거형 사용법, java enum name ordinal, java 상태값 enum, enum 처음 배우는데, enum 큰 그림, enum 언제 쓰는지, 상태값 int 대신 enum, ordinal 쓰면 안되는 이유, enum name 저장 이유, switch enum 기초
+retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs 상수 정수, java enum switch, enum values ordinal, enum 상수 집합, beginner enum java, 열거형 사용법, java enum name ordinal, java 상태값 enum, enum 처음 배우는데, enum 큰 그림, enum 언제 쓰는지
 
 ## 핵심 개념
 
@@ -22,6 +22,12 @@ retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum
 입문자가 헷갈리는 지점은 enum도 클래스처럼 메서드와 필드를 가질 수 있다는 것이다. 단순 상수 이상이다.
 
 ## 한눈에 보기
+
+- `java enum basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 // 정수 상수 방식 (오류 가능성 있음)

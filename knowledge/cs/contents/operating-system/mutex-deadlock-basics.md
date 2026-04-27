@@ -11,7 +11,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: 뮤텍스란, 교착상태란, mutex beginner, deadlock beginner, 데드락이란, mutex lock unlock, critical section basics, race condition basics, 임계구역, deadlock conditions, 교착상태 발생 조건, 스레드 동기화 기초
+retrieval-anchor-keywords: 뮤텍스란, 교착상태란, mutex beginner, deadlock beginner, 데드락이란, mutex lock unlock, critical section basics, race condition basics, 임계구역, deadlock conditions, 교착상태 발생 조건, 스레드 동기화 기초, mutex deadlock basics basics, mutex deadlock basics beginner, mutex deadlock basics intro
 
 ## 먼저 잡는 멘탈 모델
 

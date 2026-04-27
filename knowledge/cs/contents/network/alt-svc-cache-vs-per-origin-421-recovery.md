@@ -15,7 +15,9 @@
 - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recovery, warm alt-svc but 421, h3 retry vs h2 fallback, 421 does not clear all alt-svc, alt-svc cache survives 421, per origin h3 misdirected request, h3 alternative service retry decision, fresh h3 after 421, h2 fallback after 421, same origin 421 new h3, same origin 421 h2 fallback, beginner alt-svc 421 bridge, alt-svc warm connection wrong origin, authority correction vs cache invalidation, per-origin recovery not global clear, h3 stale hint retry matrix, h3 421 browser decision table, 421 on one origin other origin still works
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recovery, warm alt-svc but 421, h3 retry vs h2 fallback, 421 does not clear all alt-svc, alt-svc cache survives 421, per origin h3 misdirected request, h3 alternative service retry decision, fresh h3 after 421, h2 fallback after 421, same origin 421 new h3, same origin 421 h2 fallback, beginner alt-svc 421 bridge, alt-svc warm connection wrong origin, alt svc cache vs per origin 421 recovery basics
 
 <details>
 <summary>Table of Contents</summary>

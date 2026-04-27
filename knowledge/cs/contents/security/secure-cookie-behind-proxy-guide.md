@@ -16,7 +16,7 @@
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop, X-Forwarded-Proto mismatch, login redirect becomes http, secure cookie not sent after redirect, proxy scheme drift beginner, wrong-scheme redirect chooser, browser sees https app sees http, load balancer https http mismatch, cookie stored but not sent chooser, browser session troubleshooting return path, browser session beginner ladder return
+retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop, x-forwarded-proto mismatch, login redirect becomes http, secure cookie not sent after redirect, proxy scheme drift beginner, wrong-scheme redirect chooser, browser sees https app sees http, load balancer https http mismatch, cookie stored but not sent chooser, browser session troubleshooting return path, browser session beginner ladder return, secure cookie behind proxy guide basics, secure cookie behind proxy guide beginner, secure cookie behind proxy guide intro
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -104,6 +104,8 @@ retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop,
 
 자주 헷갈리는 지점은 두 가지다.
 
+## 20초 chooser: cookie scope mismatch vs proxy scheme drift (계속 2)
+
 - `cookie가 저장됐다`와 `cookie가 다음 요청에 전송됐다`는 같은 말이 아니다.
 - `redirect가 http로 꺾인다`는 순간에는 cookie scope보다 proxy/scheme 전달 축이 더 강한 단서다.
 
@@ -129,6 +131,9 @@ proxy, cookie, redirect 이야기가 다시 한 덩어리로 섞이면 아래처
 | login 응답 `Location`이나 다음 요청 URL이 `http://...`로 꺾인다 | 이 문서에서 `X-Forwarded-Proto`와 trusted proxy 설정을 먼저 확인 | 정리되면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 다음 login-loop 갈래를 다시 고른다 |
 | redirect는 계속 HTTPS인데 external IdP/iframe/partner portal에서만 깨진다 | [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md) | 읽고 나면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가 browser/session primer 흐름에 다시 합류한다 |
 | redirect는 HTTPS인데 특정 host/path에서만 cookie가 안 붙는다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) | 읽고 나면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가 scope 다음 갈래를 다시 고른다 |
+
+## 막히면 여기로 돌아온다 (계속 2)
+
 | cookie도 실렸고 redirect도 정상인데 서버가 계속 anonymous로 본다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) | server/session 쪽 판단을 마치면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다 |
 | "`구글 로그인` 흐름 설명"과 "`왜 cookie가 안 붙는가`"가 한 문장처럼 섞인다 | [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)에서 OAuth2/OIDC/session 역할부터 다시 나눈다 | 읽고 나면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아가 cookie/proxy primer를 다시 고른다 |
 
@@ -357,6 +362,9 @@ proxy detour에서 원인을 확인했다면 Spring/프레임워크 설정 deep 
 - `http://`로 꺾이는 것보다 `Location`이나 OAuth `redirect_uri`의 host가 wrong origin으로 바뀌는 것이 핵심이면 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)에서 host preservation과 `X-Forwarded-Host`를 이어 본다.
 - redirect와 다음 요청 URL이 계속 `https://...`인데 external IdP callback, iframe, partner portal 경로에서만 깨지면 [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)로 분기한다.
 - redirect는 정상 HTTPS이고 request `Cookie` header도 실리는데 서버가 계속 anonymous로 보면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)에서 server session/BFF mapping 갈래로 다시 타거나 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 다음 갈래를 고른다.
+
+## 다음 단계 (계속 2)
+
 - 어디서 다시 읽어야 할지 잠깐 멈추면 초보자 기준 wording은 항상 `return to Browser / Session Troubleshooting Path`이고, category navigator 순서는 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)다.
 
 ## 한 줄 정리

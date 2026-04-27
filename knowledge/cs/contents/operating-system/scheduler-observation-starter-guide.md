@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: scheduler observation starter guide basics, scheduler observation starter guide beginner, scheduler observation starter guide intro, operating system basics, beginner operating system, 처음 배우는데 scheduler observation starter guide, scheduler observation starter guide 입문, scheduler observation starter guide 기초, what is scheduler observation starter guide, how to scheduler observation starter guide
 > 관련 문서:
 > - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 > - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
@@ -146,6 +155,8 @@ sudo runqlat-bpfcc -p <pid> 15
 6. 다섯 관측이 모두 scheduler 쪽을 가리킬 때만 더 깊은 문서로 내려간다.
 
 짧은 의사결정표로 보면 이렇다.
+
+## 5. 이 다섯 관측창을 읽는 가장 단순한 순서 (계속 2)
 
 | 관측 조합 | 더 그럴듯한 해석 | 다음 문서 |
 |---|---|---|

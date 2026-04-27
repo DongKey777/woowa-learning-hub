@@ -15,7 +15,7 @@
 - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 - [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
 
-retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scope check vs ownership check, scope is not ownership, object ownership primer, ownership test template, list endpoint ownership test, detail endpoint ownership test, multi-tenant ownership check, same user different tenant, tenant negative test, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 남의 주문 못 봄, 내 것만 되는데 남의 것은 안 됨
+retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scope check vs ownership check, scope is not ownership, object ownership primer, ownership test template, list endpoint ownership test, detail endpoint ownership test, multi-tenant ownership check, same user different tenant, tenant negative test, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 남의 주문 못 봄, 내 것만 되는데 남의 것은 안 됨, role vs scope vs ownership primer basics
 
 ## 먼저 고정할 첫 질문
 

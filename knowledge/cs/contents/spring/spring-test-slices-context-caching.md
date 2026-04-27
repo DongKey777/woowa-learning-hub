@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Boot 자동 구성](./spring-boot-autoconfiguration.md)
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
@@ -16,7 +23,7 @@
 > - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
 > - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
 
-retrieval-anchor-keywords: test slice, context cache, WebMvcTest, DataJpaTest, SpringBootTest, SpringBootTest properties, TestPropertySource, DynamicPropertySource, test property override, test property cache split, MockBean, DirtiesContext, TestEntityManager, flush clear test, test boundary, test configuration
+retrieval-anchor-keywords: test slice, context cache, webmvctest, datajpatest, springboottest, springboottest properties, testpropertysource, dynamicpropertysource, test property override, test property cache split, mockbean, dirtiescontext, testentitymanager, spring test slices context caching basics, spring test slices context caching beginner
 
 ---
 

@@ -13,7 +13,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [Java 제네릭 기초](../language/java/java-generics-basics.md)
 
-retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시, request dto builder, command builder, builder quick check, 빌더 10초, 빌더 30초 비교표, 빌더 1분 예시, 빌더 자주 헷갈리는 포인트, builder confusion points beginner, builder vs static factory beginner, builder micro check, static factory confusion check
+retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시, request dto builder, command builder, builder quick check
 
 ---
 

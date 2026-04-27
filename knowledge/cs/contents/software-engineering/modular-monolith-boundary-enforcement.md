@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: modular monolith boundary enforcement basics, modular monolith boundary enforcement beginner, modular monolith boundary enforcement intro, software engineering basics, beginner software engineering, 처음 배우는데 modular monolith boundary enforcement, modular monolith boundary enforcement 입문, modular monolith boundary enforcement 기초, what is modular monolith boundary enforcement, how to modular monolith boundary enforcement
 <details>
 <summary>Table of Contents</summary>
 

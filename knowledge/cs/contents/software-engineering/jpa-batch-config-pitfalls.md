@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: jpa batch config pitfalls basics, jpa batch config pitfalls beginner, jpa batch config pitfalls intro, software engineering basics, beginner software engineering, 처음 배우는데 jpa batch config pitfalls, jpa batch config pitfalls 입문, jpa batch config pitfalls 기초, what is jpa batch config pitfalls, how to jpa batch config pitfalls
 [30분 후속 분기표로 돌아가기](./common-confusion-wayfinding-notes.md#자주-헷갈리는-3개-케이스)
 
 <details>
@@ -282,6 +291,8 @@ public class OrderImportService {
 
 ### after
 
+## `saveAll` 포트 승격 오해: before / after (계속 2)
+
 ```java
 public interface OrderRepository {
     void save(Order order);
@@ -369,6 +380,8 @@ executing batch size: 20
 
 초심자에게 특히 유용한 포인트는 "무엇이 안 보이는지도 힌트"라는 점이다.
 
+## 배치가 실제로 적용됐는지 어떻게 확인하나 (계속 2)
+
 | 로그에서 본 장면 | 먼저 드는 의심 |
 |---|---|
 | `insert`만 길게 반복되고 batch 실행 흔적이 없다 | `IDENTITY`, 너무 잦은 `flush()`, batch 설정 누락 |
@@ -413,6 +426,8 @@ long preparedStatements = statistics.getPrepareStatementCount();
 | `batchExecutionCount > 0` | 적어도 batch가 한 번 이상 실제 실행됐다 |
 | `batchExecutionCount == 0` | 설정은 있어도 실제 전송은 batch가 아닐 수 있다 |
 | `prepareStatementCount`가 기대보다 너무 크다 | SQL이 잘게 나갔거나 같은 문장이 충분히 모이지 않았을 수 있다 |
+
+## 배치가 실제로 적용됐는지 어떻게 확인하나 (계속 3)
 
 여기서도 주의점은 같다.
 `batchExecutionCount > 0`이 곧 "항상 최적"을 뜻하지는 않는다.
@@ -467,6 +482,8 @@ class CouponIssueBatchWriterTest {
 
 더 욕심내고 싶어도 첫 테스트는 아래 선에서 멈추는 편이 좋다.
 
+## 배치가 실제로 적용됐는지 어떻게 확인하나 (계속 4)
+
 | 첫 테스트에서 해도 되는 것 | 아직 굳이 안 해도 되는 것 |
 |---|---|
 | `batchExecutionCount > 0` 확인 | 배치 실행 횟수를 너무 빡빡하게 `== 3`으로 고정 |
@@ -507,3 +524,7 @@ class CouponIssueBatchWriterTest {
 - `flush()`와 `clear()`는 영속성 컨텍스트 관리 규칙이지 도메인 규칙이 아니다
 - insert batch를 보고 있다면 ID 생성 전략을 먼저 확인하는 편이 빠르다
 - 진짜 batch 업무 개념이 없다면 port는 도메인 언어를 유지하고, JPA batch는 adapter 안에 숨기는 쪽이 안전하다
+
+## 한 줄 정리
+
+`hibernate.jdbc.batch_size`를 켰다고 자동으로 대량 저장이 빨라지는 것은 아니며, `flush` 타이밍, `IDENTITY` 키 생성 방식, 그리고 "이게 배치 업무 계약인가 아니면 ORM 최적화인가"를 분리해서 봐야 초심자가 덜 헷갈린다.

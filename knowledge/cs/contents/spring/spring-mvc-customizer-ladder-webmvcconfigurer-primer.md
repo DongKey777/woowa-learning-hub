@@ -16,7 +16,9 @@
 - [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)
 - [Spring CORS: Security vs MVC Ownership](./spring-cors-security-vs-mvc-ownership.md)
 
-retrieval-anchor-keywords: spring mvc customizer ladder, webmvcconfigurer primer, webmvcconfigurer vs bean replacement, mvc customizer vs core bean replace, addinterceptors addcorsmappings addformatters addargumentresolvers, extendmessageconverters vs configuremessageconverters, replace requestmappinghandleradapter, replace dispatcherservlet, beginner mvc customization, spring boot mvc tweak without replacing bean, web behavior tweaks spring mvc, handler interceptor cors formatter custom argument resolver, mvc extension point ladder, @EnableWebMvc caution boot, simple mvc tweak choose webmvcconfigurer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: spring mvc customizer ladder, webmvcconfigurer primer, webmvcconfigurer vs bean replacement, mvc customizer vs core bean replace, addinterceptors addcorsmappings addformatters addargumentresolvers, extendmessageconverters vs configuremessageconverters, replace requestmappinghandleradapter, replace dispatcherservlet, beginner mvc customization, spring boot mvc tweak without replacing bean, web behavior tweaks spring mvc, handler interceptor cors formatter custom argument resolver, mvc extension point ladder, @enablewebmvc caution boot, spring mvc customizer ladder webmvcconfigurer primer basics
 
 ## 먼저 mental model
 

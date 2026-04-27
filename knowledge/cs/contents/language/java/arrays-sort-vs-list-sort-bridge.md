@@ -15,7 +15,7 @@
 - [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
 - [Primitive Descending Array Sort Bridge](./primitive-descending-array-sort-bridge.md)
 
-retrieval-anchor-keywords: arrays sort vs list sort, java array sort list sort, java arrays sort list sort comparator, java object array sorting beginner, java list sorting beginner, java comparator reuse array list, java in place sort array list, 자바 arrays sort list sort 차이, 자바 배열 정렬 리스트 정렬, 자바 comparator 재사용 배열 리스트
+retrieval-anchor-keywords: arrays sort vs list sort, java array sort list sort, java arrays sort list sort comparator, java object array sorting beginner, java list sorting beginner, java comparator reuse array list, java in place sort array list, 자바 arrays sort list sort 차이, 자바 배열 정렬 리스트 정렬, 자바 comparator 재사용 배열 리스트, arrays sort vs list sort bridge basics, arrays sort vs list sort bridge beginner, arrays sort vs list sort bridge intro, java basics, beginner java
 
 ## 먼저 잡을 mental model
 

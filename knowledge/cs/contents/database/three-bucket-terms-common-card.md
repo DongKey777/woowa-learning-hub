@@ -13,7 +13,9 @@
 - [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: three bucket common terms card, already exists busy retryable glossary, already exists busy retryable primer, service outcome bucket vocabulary, duplicate key busy retryable terms, beginner bucket terms card, 3버킷 공통 용어 카드, already exists busy retryable 용어 카드, 서비스 결과 버킷 공통 언어, 중복 혼잡 재시도 용어 정리, beginner 예외 용어 번역 카드, duplicate key lock timeout deadlock terminology
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: three bucket common terms card, already exists busy retryable glossary, already exists busy retryable primer, service outcome bucket vocabulary, duplicate key busy retryable terms, beginner bucket terms card, 3버킷 공통 용어 카드, already exists busy retryable 용어 카드, 서비스 결과 버킷 공통 언어, 중복 혼잡 재시도 용어 정리, beginner 예외 용어 번역 카드, duplicate key lock timeout deadlock terminology, three bucket terms common card basics, three bucket terms common card beginner, three bucket terms common card intro
 
 ## 먼저 멘탈모델
 
@@ -59,3 +61,7 @@ retrieval-anchor-keywords: three bucket common terms card, already exists busy r
 - duplicate 경로와 lock 경로를 한 장 비교하고 싶으면 [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - service 코드에서 outcome mapper까지 보고 싶으면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - MySQL `1062`를 `already exists` / `busy`로 더 자세히 나누고 싶으면 [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
+
+## 한 줄 정리
+
+`already exists` / `busy` / `retryable`은 예외 이름을 외우는 카드가 아니라, "지금 서비스가 어떤 문장으로 답해야 하는가"를 먼저 맞추는 공통 언어다.

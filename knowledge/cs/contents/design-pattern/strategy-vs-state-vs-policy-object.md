@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
 > - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
@@ -11,13 +18,13 @@
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: strategy vs state, strategy vs policy object, state vs policy object, strategy state policy comparison, payment method vs payment status, refund policy object, workflow state transition, beginner pattern distinction, policy decision object, runtime algorithm selection vs domain rule
+retrieval-anchor-keywords: strategy vs state, strategy vs policy object, state vs policy object, strategy state policy comparison, payment method vs payment status, refund policy object, workflow state transition, beginner pattern distinction, policy decision object, runtime algorithm selection vs domain rule, strategy vs state vs policy object basics, strategy vs state vs policy object beginner, strategy vs state vs policy object intro, design pattern basics, beginner design pattern
 
 ---
 
 ## 핵심 개념
 
-세 패턴은 모두 "if-else를 객체로 분리한다"는 점 때문에 처음 보면 비슷해 보인다.  
+세 패턴은 모두 "if-else를 객체로 분리한다"는 점 때문에 처음 보면 비슷해 보인다.
 하지만 객체가 맡는 질문이 다르다.
 
 - Strategy: "어떤 방식으로 실행할까?"
@@ -106,7 +113,7 @@ public interface RefundPolicy {
 
 ### 1. Strategy와 Policy Object는 모양이 비슷하다
 
-둘 다 인터페이스 하나와 구현체 여러 개로 보일 수 있다.  
+둘 다 인터페이스 하나와 구현체 여러 개로 보일 수 있다.
 차이는 구조가 아니라 **이름이 설명하는 도메인 의미**에 있다.
 
 - `DiscountStrategy.calculate(price)`는 실행 방법을 바꾼다
@@ -116,7 +123,7 @@ public interface RefundPolicy {
 
 ### 2. State도 겉모양은 Strategy처럼 보인다
 
-State 역시 인터페이스와 구현 클래스로 나뉘기 때문에 Strategy와 비슷하게 보인다.  
+State 역시 인터페이스와 구현 클래스로 나뉘기 때문에 Strategy와 비슷하게 보인다.
 하지만 State는 호출자가 매번 고르는 객체라기보다, **객체가 자기 상태에 따라 스스로 바꾸는 객체**에 가깝다.
 
 - `shippingService`에 `ExpressStrategy`를 넣는 것: Strategy
@@ -124,7 +131,7 @@ State 역시 인터페이스와 구현 클래스로 나뉘기 때문에 Strategy
 
 ### 3. Policy Object가 상태 전이를 대신하지는 않는다
 
-`RefundPolicy`가 "환불 가능"을 판단할 수는 있어도, 주문이 `REQUESTED -> APPROVED -> REFUNDED`로 어떻게 움직이는지까지 설명하진 않는다.  
+`RefundPolicy`가 "환불 가능"을 판단할 수는 있어도, 주문이 `REQUESTED -> APPROVED -> REFUNDED`로 어떻게 움직이는지까지 설명하진 않는다.
 전이가 핵심이면 State나 워크플로 모델이 필요하다.
 
 ---

@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: lru cache design basics, lru cache design beginner, lru cache design intro, data structure basics, beginner data structure, 처음 배우는데 lru cache design, lru cache design 입문, lru cache design 기초, what is lru cache design, how to lru cache design
 > 관련 문서:
 > - [HashMap 내부 구조](./hashmap-internals.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
@@ -146,7 +155,9 @@ public class LruCache<K, V> {
         head.next = node;
     }
 
-    private static final class Node<K, V> {
+## 코드로 보기 (계속 2)
+
+private static final class Node<K, V> {
         K key;
         V value;
         Node<K, V> prev;

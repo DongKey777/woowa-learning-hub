@@ -10,7 +10,7 @@
 - [HTTP 메서드, REST, 멱등성](../network/http-methods-rest-idempotency.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: availability basics, sla 뭐예요, slo 입문, sli 기초, 가용성 계산, nines availability, 99.9 percent uptime, 장애 허용 시간, 서비스 수준 목표, sla slo sli 차이, 고가용성 입문, downtime 계산, beginner availability, error budget 기초
+retrieval-anchor-keywords: availability basics, sla 뭐예요, slo 입문, sli 기초, 가용성 계산, nines availability, 99.9 percent uptime, 장애 허용 시간, 서비스 수준 목표, sla slo sli 차이, 고가용성 입문, downtime 계산, beginner availability, error budget 기초, availability and sla basics basics
 
 ---
 

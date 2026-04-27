@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: message driven adapter example basics, message driven adapter example beginner, message driven adapter example intro, software engineering basics, beginner software engineering, 처음 배우는데 message driven adapter example, message driven adapter example 입문, message driven adapter example 기초, what is message driven adapter example, how to message driven adapter example
 <details>
 <summary>Table of Contents</summary>
 
@@ -258,3 +267,7 @@ scheduler도 본질은 같다.
 - "비동기니까 다른 아키텍처"라고 생각해 같은 도메인 규칙이 채널마다 갈라진다
 
 한 문장으로 다시 정리하면, HTTP controller, message consumer, scheduled job은 모두 **같은 hexagonal 모델 안에서 유스케이스로 들어오는 서로 다른 inbound adapter**다.
+
+## 한 줄 정리
+
+HTTP controller, message consumer, scheduled job는 모두 같은 유스케이스를 호출할 수 있는 inbound adapter이며, 차이는 비즈니스 로직이 아니라 진입 신호와 실패 처리 방식에 있다.

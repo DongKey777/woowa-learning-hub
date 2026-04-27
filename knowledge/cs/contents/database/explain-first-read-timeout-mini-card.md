@@ -14,7 +14,7 @@
 - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, rows key type mini card, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문
+retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, rows key type mini card, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문, explain first read timeout mini card basics, explain first read timeout mini card beginner, explain first read timeout mini card intro
 
 ## 먼저 멘탈모델
 

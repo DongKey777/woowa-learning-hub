@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic structure router quiz basics, monotonic structure router quiz beginner, monotonic structure router quiz intro, data structure basics, beginner data structure, 처음 배우는데 monotonic structure router quiz, monotonic structure router quiz 입문, monotonic structure router quiz 기초, what is monotonic structure router quiz, how to monotonic structure router quiz
 > 관련 문서:
 > - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md) - 이 퀴즈에서 `deque / stack` 분기를 헷갈렸을 때 바로 이어 보는 같은 입력 비교 복습
 > - [Min/PSE Mini Drill Path](./monotonic-deque-vs-stack-shared-input-drill.md#min-pse-mini-drill)
@@ -53,6 +62,8 @@
 | `회의 시작/종료 시간이 주어질 때 동시에 몇 개가 겹치는가` | `Neither` | 각 원소가 이미 `start/end`를 가진 **interval 레코드**라서 overlap counting이 핵심이다 | [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md) |
 
 짧게 외우면 이렇다.
+
+## 한 페이지 미니 답안표 (계속 2)
 
 - `문자/숫자 배열을 한 칸씩 밀며 중복/빈도/합을 관리`하면 `sliding window + map/freq`
 - `회의/예약처럼 시작과 끝이 따로 있는 일정 묶음`이면 `interval overlap`
@@ -131,6 +142,8 @@
 - 문제의 답이 `각 원소별 관계`가 아니라 `동시에 몇 개 겹치나`인가?
 헷갈렸다면: `Neither`라고만 묶지 말고 바로 옆의 `문자열에서 중복 없는 가장 긴 부분 문자열`과 비교해 본다. `left/right`로 배열 한 줄을 미는 문제면 [Sliding Window Patterns](../algorithm/sliding-window-patterns.md), `start/end` 일정이 겹치는지 세는 문제면 [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md)으로 갈라진다.
 
+## 6문항 라우터 퀴즈 (계속 2)
+
 4. 프롬프트: `매 초마다 최근 5초 이벤트의 최솟값을 출력하라.`
 답: `Deque` - 최근 k개 범위 유지와 만료 제거가 핵심이라 monotonic deque 라우트가 맞다.
 오답 셀프 체크 질문:
@@ -174,3 +187,7 @@
 - `최대/최소`라는 단어만 보고 deque로 가지 않는다: `최근 k개 범위`가 없으면 heap이나 정렬 기준 문제일 수 있다.
 - `stack`은 LIFO라서 쓰는 게 아니라 `pop 순간 답 확정`이라서 쓰는 경우가 많다.
 - `greater`와 `greater or equal`은 같은 말이 아니다: duplicate를 답으로 인정하는지가 달라진다.
+
+## 한 줄 정리
+
+문제 문장을 보고 `deque / stack / neither`를 10초 안에 고르고, `greater`와 `greater or equal`도 함께 구분하는 초급 6문항 퀴즈.

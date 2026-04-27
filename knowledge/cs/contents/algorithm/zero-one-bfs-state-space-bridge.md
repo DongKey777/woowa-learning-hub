@@ -13,7 +13,9 @@
 - [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 
-retrieval-anchor-keywords: 0-1 bfs state space bridge, zero one bfs state modeling, grid state space bfs, r c state modeling, row col state shortest path, key door bfs state, wall break count bfs state, facing direction bfs state, stateful grid shortest path, 3d visited bfs, 3d dist bfs, 0-1 bfs beginner state, 격자 상태 공간, r c state 모델링, 행 열 상태 모델링, 열쇠 문 bfs, 벽 부수기 횟수 bfs, 방향 상태 bfs, 3차원 visited, 3차원 dist, 상태 포함 최단 경로, 칸만으로 부족한 bfs, 0-1 bfs 상태 모델링
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs state space bridge, zero one bfs state modeling, grid state space bfs, r c state modeling, row col state shortest path, key door bfs state, wall break count bfs state, facing direction bfs state, stateful grid shortest path, 3d visited bfs, 3d dist bfs, 0-1 bfs beginner state, 격자 상태 공간, r c state 모델링, zero one bfs state space bridge basics
 
 ## 먼저 잡을 생각
 
@@ -203,3 +205,7 @@ state = ?
 - 격자 문제를 먼저 `0/1 비용` 관점으로 번역하는 감각은 [0-1 BFS grid-conversion primer](./zero-one-bfs-grid-conversion-primer.md)
 - `dist`와 `deque` 갱신 위치까지 이어서 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - `visited` 고정 습관이 왜 위험한지 짧은 반례로 보려면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
+
+## 한 줄 정리
+
+격자 최단 경로에서 같은 칸이라도 "열쇠 보유", "벽을 몇 번 부쉈는가", "현재 바라보는 방향"이 다르면 서로 다른 정점으로 봐야 한다.

@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic queue and stack basics, monotonic queue and stack beginner, monotonic queue and stack intro, data structure basics, beginner data structure, 처음 배우는데 monotonic queue and stack, monotonic queue and stack 입문, monotonic queue and stack 기초, what is monotonic queue and stack, how to monotonic queue and stack
 > 관련 문서:
 > - [자료구조 정리](./README.md)
 > - [Deque vs Stack Signal Card](./deque-vs-stack-signal-card.md)

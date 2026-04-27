@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java instance static factory methods primer basics, java instance static factory methods primer beginner, java instance static factory methods primer intro, java basics, beginner java, 처음 배우는데 java instance static factory methods primer, java instance static factory methods primer 입문, java instance static factory methods primer 기초, what is java instance static factory methods primer, how to java instance static factory methods primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
@@ -243,6 +252,8 @@ public final class EmailAddress {
 
 예를 들면 아래는 factory 쪽이 자연스럽다.
 
+## simple factory method는 언제 자연스러운가 (계속 2)
+
 - `Money.won(1000)`
 - `User.guest()`
 - `OrderId.from(raw)`
@@ -250,7 +261,7 @@ public final class EmailAddress {
 
 ### constructor와 factory는 언제 갈리나
 
-public constructor가 항상 나쁜 것은 아니다.  
+public constructor가 항상 나쁜 것은 아니다.
 다만 아래 상황에서는 factory가 더 읽기 쉽다.
 
 - 같은 타입을 여러 방식으로 만들 수 있을 때
@@ -315,6 +326,8 @@ public final class EmailRules {
 }
 ```
 
+## 한 번에 비교하는 코드 (계속 2)
+
 | 메서드 | 분류 | 이유 |
 |---|---|---|
 | `EmailAddress.of(raw)` | simple factory method | 문자열을 받아 `EmailAddress` 객체를 만든다 |
@@ -341,15 +354,15 @@ public final class EmailRules {
 
 한 가지 자연스러운 답은 아래와 같다.
 
-1. 인스턴스 메서드  
+1. 인스턴스 메서드
    `cart.isFreeShippingEligible()`
-2. `static` 유틸리티 메서드  
+2. `static` 유틸리티 메서드
    `UuidRules.looksLikeUuid(raw)`
-3. simple factory method  
+3. simple factory method
    `Temperature.ofCelsius(value)`
-4. simple factory method  
+4. simple factory method
    `User.guest()`
-5. 인스턴스 메서드  
+5. 인스턴스 메서드
    `order.canCancel()`
 
 이 연습의 핵심은 다음이다.
@@ -362,7 +375,7 @@ public final class EmailRules {
 
 ### `static`이면 더 간단하니 전부 `static`으로 만들고 싶어진다
 
-처음에는 그렇게 느껴지기 쉽다.  
+처음에는 그렇게 느껴지기 쉽다.
 하지만 객체 상태와 규칙을 계속 바깥으로 밀어내면, 결국 데이터를 들고 있는 타입은 비어 있고 로직은 utility class에 흩어진다.
 
 그 결과는 보통 다음처럼 나온다.
@@ -382,7 +395,7 @@ public final class EmailRules {
 
 ### public constructor와 public factory를 아무 이유 없이 둘 다 연다
 
-둘 다 열 수는 있지만, 생성 규칙이 두 군데로 갈라지면 초보자는 어느 쪽이 진짜 entrypoint인지 헷갈리기 쉽다.  
+둘 다 열 수는 있지만, 생성 규칙이 두 군데로 갈라지면 초보자는 어느 쪽이 진짜 entrypoint인지 헷갈리기 쉽다.
 검증/정규화가 중요하다면 constructor를 감추고 factory를 주 진입점으로 두는 편이 더 명확할 수 있다.
 
 ### utility class가 특정 도메인 타입을 계속 넘겨받는데 그대로 둔다

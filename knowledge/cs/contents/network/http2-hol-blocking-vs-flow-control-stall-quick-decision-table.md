@@ -14,7 +14,7 @@
 - [Request Deadline / Timeout Budget Primer](../system-design/request-deadline-timeout-budget-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decision table, hol blocking vs window_update, packet loss vs credit starvation, tcp hol vs h2 flow control, h2 stall routing beginner, stream stalled but connection alive, http/2가 느려져요, 처음 배우는데 h2 stall
+retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decision table, hol blocking vs window_update, packet loss vs credit starvation, tcp hol vs h2 flow control, h2 stall routing beginner, stream stalled but connection alive, http/2가 느려져요, 처음 배우는데 h2 stall, http2 hol blocking vs flow control stall quick decision table basics, http2 hol blocking vs flow control stall quick decision table beginner, http2 hol blocking vs flow control stall quick decision table intro, network basics, beginner network, 처음 배우는데 http2 hol blocking vs flow control stall quick decision table
 
 ## 먼저 잡는 그림
 

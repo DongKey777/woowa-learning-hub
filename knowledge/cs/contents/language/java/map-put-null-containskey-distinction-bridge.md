@@ -12,7 +12,7 @@
 - [TreeMap `put` 반환값 브리지: `null` vs 이전 값](./treemap-put-return-value-overwrite-bridge.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 
-retrieval-anchor-keywords: java map put null containsKey difference, hashmap put null previous value beginner, map put returns null but key exists, map put null distinguish containsKey, map previous value null vs missing key, treemap put null containsKey beginner, 자바 map put null 의미, 자바 hashmap put 반환값 null 구분, 자바 containsKey put 패턴, 맵 put null 기존 null 값 새 key 차이, map put previous value null missing key bridge
+retrieval-anchor-keywords: java map put null containskey difference, hashmap put null previous value beginner, map put returns null but key exists, map put null distinguish containskey, map previous value null vs missing key, treemap put null containskey beginner, 자바 map put null 의미, 자바 hashmap put 반환값 null 구분, 자바 containskey put 패턴, 맵 put null 기존 null 값 새 key 차이, map put previous value null missing key bridge, map put null containskey distinction bridge basics, map put null containskey distinction bridge beginner, map put null containskey distinction bridge intro, java basics
 
 ## 먼저 잡는 멘탈 모델
 

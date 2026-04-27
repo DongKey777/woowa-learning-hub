@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
 
-retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, serializable beginner, dirty read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, read uncommitted 설명, isolation 4단계 입문
+retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, serializable beginner, dirty read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, read uncommitted 설명, isolation 4단계 입문, transaction isolation basics basics, transaction isolation basics beginner, transaction isolation basics intro, database basics, beginner database
 
 ## 핵심 개념
 

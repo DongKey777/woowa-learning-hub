@@ -4,12 +4,19 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@DataJpaTest` Mental-Model Bridge: 런타임 트랜잭션 감각을 테스트에 그대로 옮기기](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 > - [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
 
-retrieval-anchor-keywords: DataJpaTest bulk update stale state, JPQL bulk update clear, persistence context stale entity test, DataJpaTest clear reload beginner, TestEntityManager clear bulk update, @Modifying clearAutomatically beginner, bulk update old value after findById, JPA bulk update persistence context bypass, junior JPA stale state primer
+retrieval-anchor-keywords: datajpatest bulk update stale state, jpql bulk update clear, persistence context stale entity test, datajpatest clear reload beginner, testentitymanager clear bulk update, @modifying clearautomatically beginner, bulk update old value after findbyid, jpa bulk update persistence context bypass, junior jpa stale state primer, spring datajpatest bulk update stale state mini guide basics, spring datajpatest bulk update stale state mini guide beginner, spring datajpatest bulk update stale state mini guide intro, spring basics, beginner spring, 처음 배우는데 spring datajpatest bulk update stale state mini guide
 
 ## 먼저 mental model 한 줄
 

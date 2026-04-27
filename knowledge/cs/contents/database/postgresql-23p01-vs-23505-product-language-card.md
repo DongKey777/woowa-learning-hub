@@ -13,7 +13,9 @@
 - [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: postgresql 23P01 vs 23505 card, exclusion violation vs unique violation beginner, overlap conflict vs exact duplicate, postgres product error language, 23P01 already booked, 23505 already exists, sqlstate 23P01 23505 mapping, beginner product wording duplicate overlap, exclusion conflict message, unique duplicate message, 예약 겹침 오류 문구, exact key 중복 vs overlap conflict, postgres 23P01 23505 차이, beginner sqlstate language card, product language mapping duplicate overlap
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: postgresql 23p01 vs 23505 card, exclusion violation vs unique violation beginner, overlap conflict vs exact duplicate, postgres product error language, 23p01 already booked, 23505 already exists, sqlstate 23p01 23505 mapping, beginner product wording duplicate overlap, exclusion conflict message, unique duplicate message, 예약 겹침 오류 문구, exact key 중복 vs overlap conflict, postgres 23p01 23505 차이, beginner sqlstate language card, product language mapping duplicate overlap
 
 ## 먼저 멘탈모델
 
@@ -130,3 +132,7 @@ EXCLUDE USING gist (
 - `23505` 뒤 winner row를 어떻게 다시 읽는지 보려면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - `23P01`을 왜 retryable보다 conflict로 닫는지 더 보려면 [PostgreSQL `23P01` Handling Note](./postgresql-23p01-handling-note.md)
 - overlap 자체를 exact-key와 다른 모델로 이해하려면 [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
+
+## 한 줄 정리
+
+`23505`는 보통 "같은 키가 이미 있다"이고, `23P01`은 보통 "같은 자원/시간대에 겹치는 점유가 이미 있다"라서 제품 문장도 `already exists`와 `conflict`로 나눠 말하는 편이 안전하다.

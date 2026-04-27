@@ -6,6 +6,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: process spawn api comparison basics, process spawn api comparison beginner, process spawn api comparison intro, operating system basics, beginner operating system, 처음 배우는데 process spawn api comparison, process spawn api comparison 입문, process spawn api comparison 기초, what is process spawn api comparison, how to process spawn api comparison
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)

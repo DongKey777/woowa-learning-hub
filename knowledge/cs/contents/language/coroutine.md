@@ -1,7 +1,18 @@
 # Coroutine
 
+
+> 한 줄 요약: Coroutine는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: coroutine basics, coroutine beginner, coroutine intro, java basics, beginner java, 처음 배우는데 coroutine, coroutine 입문, coroutine 기초, what is coroutine, how to coroutine
 > 작성자 : [박재용](https://github.com/ggjae)
 
 본 자료는 작성자인 '박재용'의 팀 Repository의 글과 유니티 교과서 책을 재구성하여 작성되었습니다. 다양한 언어(javascript, C++, Kotlin, C#)에서 코루틴을 사용하지만 예제는 C#에 국한된 설명으로 코루틴에 대한 이해를 도와줍니다.
@@ -23,10 +34,9 @@
 
 ![image](https://user-images.githubusercontent.com/22047551/128828164-fbf664c0-600c-42c7-b832-9f1b35c88709.png)
 
-
 ## Coroutine이 언제 쓰이는데?
 
-직접 누구나 이해할 수 있는 코드로 예시를 들어보겠다.  
+직접 누구나 이해할 수 있는 코드로 예시를 들어보겠다.
 예시1)
 ```cs
 void start(){
@@ -48,7 +58,7 @@ void startB(){
 
 위와는 다르게 **동시에 일어나는 것처럼 프로그램을 구현**하고 싶거나 **약속된 신호를 줬을 때 시작하는 비동기를 구현**할 때 코루틴을 사용한다.
 
-예시2)   
+예시2)
 코루틴의 공식문서에서는 한 오브젝트의 투명도를 완전히 투명해질 때까지 Fadeout시킬 때 코루틴을 사용하지 않으면 중간값은 시각적으로 알 수 없고 순간적으로 투명해지므로 코루틴을 이용하여 투명도를 설정할 것을 권장하고 있다. 아래 코드는 순식간에 투명도가 0으로 변해버린다.
 ```cs
 void Fade() {
@@ -90,7 +100,7 @@ IEnumerator Fade() {
 
 Background Task라는 점과 **비동기**로 일어나는 것처럼 보이는 부분에서는 공통점이 있어 보이지만 개념이 다르다. 코루틴은 특정 작업을 단계적으로 쪼개어 순차적으로 발생하게 만들고 메인 루틴과 **동시에 발생하지 않는다**는 큰 특징을 가지고 있다. 또한 가장 큰 차이점은 실제로 코루틴은 **병렬적으로 수행**되는 것이 아닌 **작업을 잘게 쪼개서 동시에 일어나는것처럼 보이게하는 멀티태스킹**과 비슷한 방법을 사용한다. 하지만 스레드의 경우는 **병렬 처리**를 중심으로 **하나의 프로그램에서 동시에 많은 일을 처리하게 된다.** 아래의 사진에서 더 이해를 도와줄것이다.
 
-![image](https://user-images.githubusercontent.com/22047551/129317126-ef247969-807b-4034-8c60-9b14b3a3e327.png) 
+![image](https://user-images.githubusercontent.com/22047551/129317126-ef247969-807b-4034-8c60-9b14b3a3e327.png)
 
 ## Coroutine의 사용 방법
 
@@ -122,7 +132,8 @@ IEnumerator startB(){
 데이터의 목록을 하나씩 넘겨줄 때 사용되는 인터페이스로, 코루틴은 호출한 함수와 서로 상호작용하며 진행하도록 설계되어 있다. 호출한 함수에게 데이터를 넘겨주고 쉰 후 데이터를 받아야 할 때 쉬고 있던 코루틴이 일어나서 다시 데이터를 받고, 넘겨주는 반복하는 구조로 동작하게 된다.
 
 ## yield란?
-프로그래밍 언어마다 해석의 차이점이 있을 수 있지만 C#의 yield 키워드는 호출자(Caller)에게 컬렉션 데이타를 하나씩 리턴할 때 사용한다. 
+
+프로그래밍 언어마다 해석의 차이점이 있을 수 있지만 C#의 yield 키워드는 호출자(Caller)에게 컬렉션 데이타를 하나씩 리턴할 때 사용한다.
 흔히 Enumerator(Iterator)라고 불리우는 이러한 기능은 집합적인 데이터셋으로부터 데이타를 하나씩 호출자에게 보내주는 역할을 한다. C++의 iterator(반복자)와 같은 개념이다.
 
 ## 다양한 yield return type
@@ -138,3 +149,7 @@ IEnumerator startB(){
 
 - yield return StartCoroutine(string name)
 > 다른 코루틴이 중단될때까지 대기
+
+## 한 줄 정리
+
+Coroutine는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

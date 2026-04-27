@@ -12,7 +12,7 @@
 - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
 - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 
-retrieval-anchor-keywords: blocking I/O primer, non-blocking I/O primer, request per thread, thread-per-request, request per thread beginner, thread pool basics, executor queue saturation, queue saturation basics, backpressure primer, java http thread pool, java server thread pool, tomcat thread pool basics, servlet thread waiting, worker thread blocking, slow downstream causes thread exhaustion, active threads max queue growing, latency rises before errors, why CPU is low but requests timeout, blocking vs nonblocking server model, request queue backpressure, 503 overload beginner, 429 overload beginner, caller runs backpressure intuition, thread pool is not speed boost, thread pool caps concurrency, queue depth mental model, java-http troubleshooting primer, server-side troubleshooting primer, blocking io backlog, beginner mental model, 멘탈 모델, 블로킹 I/O, 논블로킹 I/O, 요청당 스레드, 요청별 스레드, 스레드 풀 기초, 큐 포화, 백프레셔 기초, 자바 HTTP 서버 장애 기초
+retrieval-anchor-keywords: blocking i/o primer, non-blocking i/o primer, request per thread, thread-per-request, request per thread beginner, thread pool basics, executor queue saturation, queue saturation basics, backpressure primer, java http thread pool, java server thread pool, tomcat thread pool basics, servlet thread waiting, worker thread blocking, slow downstream causes thread exhaustion
 
 ## 먼저 잡는 멘탈 모델
 

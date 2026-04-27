@@ -13,7 +13,9 @@
 - [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql 1062 fresh read sequence diagram, duplicate key fresh read flow, mysql duplicate primary read replay busy conflict, 1062 duplicate key winner row diagram, duplicatekeyexception sequence diagram beginner, duplicate key primary fresh read visual, same key same hash replay same key different hash conflict, processing busy duplicate key, mysql 1062 after insert what next, duplicate key not blind retry, mysql duplicate key one page visual, 중복키 fresh read 시퀀스 다이어그램, mysql 1062 이후 뭐함, primary read 후 replay busy conflict, duplicate key winner row 재조회 그림, duplicate winner same hash different hash diagram, 1062 then select primary, winner row invisible stale read, duplicate key fresh read once retry, mysql idem replay busy conflict visual, 3버킷 duplicate 후 재분류, 3버킷 fresh read 분류, mysql duplicate then not found, 1062 then select null, stale snapshot after 1062, replica read after 1062
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql 1062 fresh read sequence diagram, duplicate key fresh read flow, mysql duplicate primary read replay busy conflict, 1062 duplicate key winner row diagram, duplicatekeyexception sequence diagram beginner, duplicate key primary fresh read visual, same key same hash replay same key different hash conflict, processing busy duplicate key, mysql 1062 after insert what next, duplicate key not blind retry, mysql duplicate key one page visual, 중복키 fresh read 시퀀스 다이어그램, mysql 1062 이후 뭐함, primary read 후 replay busy conflict, mysql 1062 fresh read mini sequence diagram basics
 
 ## 한 장으로 먼저 잡기
 
@@ -161,3 +163,7 @@ sequenceDiagram
 - 같은 흐름을 표와 코드로 더 짧게 보려면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - MySQL `1062`를 `already exists` / `busy` 축까지 넓혀 보려면 [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
 - duplicate 외 timeout/deadlock/`40001`까지 한 표로 보려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+
+## 한 줄 정리
+
+MySQL `1062 duplicate key`는 끝이 아니라 시작이다. `INSERT`를 다시 던지기보다 **primary/fresh read로 winner row를 확인해 `replay` / `busy` / `conflict`로 재분류**하는 것이 초보자 기본 흐름이다.

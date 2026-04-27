@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: treemap interval entry primer basics, treemap interval entry primer beginner, treemap interval entry primer intro, data structure basics, beginner data structure, 처음 배우는데 treemap interval entry primer, treemap interval entry primer 입문, treemap interval entry primer 기초, what is treemap interval entry primer, how to treemap interval entry primer
 > 관련 문서:
 > - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
 > - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
@@ -65,6 +74,8 @@
 - `floorEntry(10:30)` -> `10:30 -> [10:30, 11:00)`
 - `higherKey(10:30)` -> `13:00`
 - `higherEntry(10:30)` -> `13:00 -> [13:00, 14:00)`
+
+## 먼저 잡을 mental model (계속 2)
 
 즉 "`floor`는 exact match를 포함하나?", "`Entry`는 key 말고 value도 같이 주나?" 두 질문만 먼저 분리하면 API 이름이 훨씬 덜 섞인다.
 
@@ -155,6 +166,8 @@
 이건 "오전 안에서 **시작한** 예약"을 보는 질문에 잘 맞는다.
 
 ### 4. gap check: `11:00` 이후 첫 빈 시간대는?
+
+## 같은 캘린더로 한 번에 보기 (계속 2)
 
 - `floorEntry(11:00)` -> `10:30 -> [10:30, 11:00)`
 - `ceilingEntry(11:00)` -> `13:00 -> [13:00, 14:00)`

@@ -1,8 +1,17 @@
 # 421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough
 
+
+> 한 줄 요약: 421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > wildcard certificate 때문에 host 이름은 맞아 보여도 routing boundary가 다르면 왜 `421 Misdirected Request`가 나는지, Browser DevTools, `curl`, proxy log에서 초보자가 바로 잡아야 할 신호만 따라가는 mini-lab
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
@@ -12,7 +21,7 @@
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 > - [Browser DevTools `Protocol`, `Remote Address`, Connection Reuse 단서 입문](./browser-devtools-protocol-column-labels-primer.md)
 
-retrieval-anchor-keywords: 421 trace mini lab, wildcard cert 421, wildcard certificate 421 walkthrough, coalescing rejected 421, same cert different backend 421, devtools curl proxy log 421, beginner 421 walkthrough, wildcard cert connection reuse rejected, misdirected request mini lab, wrong connection wildcard cert
+retrieval-anchor-keywords: 421 trace mini lab, wildcard cert 421, wildcard certificate 421 walkthrough, coalescing rejected 421, same cert different backend 421, devtools curl proxy log 421, beginner 421 walkthrough, wildcard cert connection reuse rejected, misdirected request mini lab, wrong connection wildcard cert, 421 trace mini lab wildcard cert coalescing basics, 421 trace mini lab wildcard cert coalescing beginner, 421 trace mini lab wildcard cert coalescing intro, network basics, beginner network
 
 <details>
 <summary>Table of Contents</summary>

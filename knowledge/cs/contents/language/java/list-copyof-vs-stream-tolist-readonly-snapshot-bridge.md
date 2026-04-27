@@ -13,7 +13,7 @@
 - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md)
 
-retrieval-anchor-keywords: list.copyof vs stream.tolist, java list copyof vs stream tolist beginner, java readonly snapshot list, java unmodifiable list snapshot, java collection boundary copyof, java stream pipeline tolist, list copyof null elements, stream tolist null elements, 처음 배우는데 list.copyof, 자바 list.copyof tolist 차이, 자바 읽기 전용 리스트 스냅샷, 자바 copyof 방어적 복사, 자바 stream tolist 결과
+retrieval-anchor-keywords: list.copyof vs stream.tolist, java list copyof vs stream tolist beginner, java readonly snapshot list, java unmodifiable list snapshot, java collection boundary copyof, java stream pipeline tolist, list copyof null elements, stream tolist null elements, 처음 배우는데 list.copyof, 자바 list.copyof tolist 차이, 자바 읽기 전용 리스트 스냅샷, 자바 copyof 방어적 복사, 자바 stream tolist 결과, list copyof vs stream tolist readonly snapshot bridge basics, list copyof vs stream tolist readonly snapshot bridge beginner
 
 ## 먼저 잡을 mental model
 

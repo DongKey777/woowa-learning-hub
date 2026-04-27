@@ -11,7 +11,7 @@
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring exception handling basics, 스프링 예외 처리 처음, exceptionhandler 입문, controlleradvice 입문, restcontrolleradvice 뭐예요, 전역 예외 처리 입문, spring 오류 응답 통일 방법, 400 404 500 응답 만들기 spring, spring error response 입문, responseentityexceptionhandler 입문, spring 예외 잡는 법, spring 커스텀 예외 입문
+retrieval-anchor-keywords: spring exception handling basics, 스프링 예외 처리 처음, exceptionhandler 입문, controlleradvice 입문, restcontrolleradvice 뭐예요, 전역 예외 처리 입문, spring 오류 응답 통일 방법, 400 404 500 응답 만들기 spring, spring error response 입문, responseentityexceptionhandler 입문, spring 예외 잡는 법, spring 커스텀 예외 입문, spring exception handling basics basics, spring exception handling basics beginner, spring exception handling basics intro
 
 ## 핵심 개념
 

@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [그래프 기초](../data-structure/graph-basics.md)
 
-retrieval-anchor-keywords: 완전 탐색 입문, 완전 탐색 기초, brute force beginner, 모든 경우 탐색, 완탐 입문, exhaustive search beginner, 완전 탐색 언제 써요, 완탐 시간 초과 이유, 중첩 for문 완전 탐색, 순열 완전 탐색 입문, 조합 완전 탐색 입문, 완전 탐색 vs 그리디 입문, beginner brute force algorithm
+retrieval-anchor-keywords: 완전 탐색 입문, 완전 탐색 기초, brute force beginner, 모든 경우 탐색, 완탐 입문, exhaustive search beginner, 완전 탐색 언제 써요, 완탐 시간 초과 이유, 중첩 for문 완전 탐색, 순열 완전 탐색 입문, 조합 완전 탐색 입문, 완전 탐색 vs 그리디 입문, beginner brute force algorithm, brute force intro basics, brute force intro beginner
 
 ## 핵심 개념
 

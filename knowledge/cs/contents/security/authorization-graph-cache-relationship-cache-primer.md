@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
@@ -11,7 +18,7 @@
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 > - [Security README: 기본 primer](./README.md#기본-primer)
 
-retrieval-anchor-keywords: authorization graph cache primer, relationship cache primer, graph cache primer, authz graph cache primer, relationship edge cache primer, path cache primer, graph snapshot primer, graph cache beginner route, relationship cache beginner route, graph cache first step, relationship cache first step, graph cache next step, relationship cache next step, graph cache return path, authz tenant catalog return, stale deny graph cache primer, tenant-specific 403 graph cache primer, 권한 바꾼 후에도 403
+retrieval-anchor-keywords: authorization graph cache primer, relationship cache primer, graph cache primer, authz graph cache primer, relationship edge cache primer, path cache primer, graph snapshot primer, graph cache beginner route, relationship cache beginner route, graph cache first step, relationship cache first step, graph cache next step, relationship cache next step, graph cache return path, authz tenant catalog return
 
 ---
 

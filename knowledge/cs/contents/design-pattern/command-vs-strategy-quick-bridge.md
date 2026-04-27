@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [커맨드 패턴 기초](./command-pattern-basics.md)
 > - [전략 패턴 기초](./strategy-pattern-basics.md)
@@ -11,7 +18,7 @@
 > - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy beginner, execute method looks same command strategy, request object vs algorithm swap, queue command vs strategy beginner, undo retry command strategy, command execute strategy execute difference, 커맨드 vs 전략 차이, execute 모양이 비슷한데 차이, 실행 요청 저장 vs 알고리즘 교체, command strategy 초보자 비교, command or strategy first choice, execute 같은데 command strategy, command pattern vs strategy pattern beginner
+retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy beginner, execute method looks same command strategy, request object vs algorithm swap, queue command vs strategy beginner, undo retry command strategy, command execute strategy execute difference, 커맨드 vs 전략 차이, execute 모양이 비슷한데 차이, 실행 요청 저장 vs 알고리즘 교체, command strategy 초보자 비교, command or strategy first choice, execute 같은데 command strategy, command pattern vs strategy pattern beginner, command vs strategy quick bridge basics
 
 ---
 

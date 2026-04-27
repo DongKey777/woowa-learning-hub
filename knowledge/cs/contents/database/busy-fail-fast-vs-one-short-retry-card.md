@@ -14,7 +14,9 @@
 - [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry card, busy bucket retry policy beginner, lock timeout fail fast retry once, connection timeout busy retry once, busy should fail fast, busy short bounded retry, busy 재시도 기준 카드, busy 즉시 실패 짧은 재시도, 락 타임아웃 한 번 재시도, beginner busy bucket checklist, busy fast fail primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry card, busy bucket retry policy beginner, lock timeout fail fast retry once, connection timeout busy retry once, busy should fail fast, busy short bounded retry, busy 재시도 기준 카드, busy 즉시 실패 짧은 재시도, 락 타임아웃 한 번 재시도, beginner busy bucket checklist, busy fast fail primer, busy fail fast vs one short retry card basics, busy fail fast vs one short retry card beginner, busy fail fast vs one short retry card intro
 
 ## 먼저 멘탈모델
 
@@ -100,3 +102,7 @@ retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry c
 - `busy` / `retryable` / `already exists` 전체 번역표는 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - `busy`를 pool 대기와 lock 대기로 다시 나누려면 [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
 - retry를 메서드 안 while문이 아니라 바깥 envelope로 거는 이유는 [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
+
+## 한 줄 정리
+
+`busy`의 기본값은 무한 retry가 아니라 **빠른 실패**이고, "곧 풀릴 가능성이 높고 같은 요청을 한 번 더 확인하는 비용이 작다"는 조건일 때만 **짧은 1회 재시도**를 붙인다.

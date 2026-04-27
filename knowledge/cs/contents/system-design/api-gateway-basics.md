@@ -10,7 +10,7 @@
 - [API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: api gateway basics, api gateway 뭐예요, api gateway 입문, reverse proxy vs api gateway, gateway 역할, 인증 게이트웨이, 라우팅 기초, rate limiting gateway, api 관문, beginner api gateway, 백엔드 요청 흐름, gateway 와 로드밸런서 차이
+retrieval-anchor-keywords: api gateway basics, api gateway 뭐예요, api gateway 입문, reverse proxy vs api gateway, gateway 역할, 인증 게이트웨이, 라우팅 기초, rate limiting gateway, api 관문, beginner api gateway, 백엔드 요청 흐름, gateway 와 로드밸런서 차이, api gateway basics basics, api gateway basics beginner, api gateway basics intro
 
 ---
 

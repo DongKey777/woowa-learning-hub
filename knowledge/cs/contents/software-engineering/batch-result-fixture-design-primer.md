@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: batch result fixture design primer basics, batch result fixture design primer beginner, batch result fixture design primer intro, software engineering basics, beginner software engineering, 처음 배우는데 batch result fixture design primer, batch result fixture design primer 입문, batch result fixture design primer 기초, what is batch result fixture design primer, how to batch result fixture design primer
 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint` 같은 결과 타입 이름은 알겠는데 테스트 fixture를 어떻게 만들지 막막하다면, 이 문서는 그 첫 설계를 좁혀서 설명한다.
 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)에서 결과 타입 역할을 먼저 잡았다면, 여기서는 그 타입들을 테스트에서 **작게 재사용하면서도 도메인 의미를 숨기지 않는 방법**만 본다.
 더 넓은 결과 검증 질문은 [Batch Result Testing Checklist](./batch-result-testing-checklist.md), retry 후보 분류 assertion은 [Primer On Retry Queue Assertions](./retry-queue-assertions-primer.md), bulk 계약 경계 자체 테스트는 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)를 이어서 보면 된다.

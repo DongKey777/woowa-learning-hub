@@ -1,8 +1,17 @@
 # Alt-Svc To 421 Timeline Bridge
 
+
+> 한 줄 요약: Alt-Svc To 421 Timeline Bridge는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > 예전에 배운 `Alt-Svc`나 endpoint discovery 상태가 왜 한참 뒤 `HTTP/3 421 Misdirected Request`로 이어질 수 있는지, 초급자용 한 개 타임라인으로 이어 주는 bridge
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md)
@@ -14,7 +23,7 @@
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 > - [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
 
-retrieval-anchor-keywords: Alt-Svc to 421 timeline, stale discovery to 421, stale Alt-Svc timeline bridge, HTTP/3 421 timeline beginner, old endpoint hint later 421, discovery state to recovery, h3 stale hint retry timeline, alt-svc then 421 then 200, stale endpoint authority timeline, same URL 421 recovery bridge, HTTP/3 endpoint discovery stale, h3 wrong path after old Alt-Svc, beginner Alt-Svc 421 bridge, stale h3 endpoint learned yesterday, old discovery state fresh path retry, alt-svc cache later misdirected request, endpoint discovery to misdirected request, h3 421 fresh path timeline
+retrieval-anchor-keywords: alt-svc to 421 timeline, stale discovery to 421, stale alt-svc timeline bridge, http/3 421 timeline beginner, old endpoint hint later 421, discovery state to recovery, h3 stale hint retry timeline, alt-svc then 421 then 200, stale endpoint authority timeline, same url 421 recovery bridge, http/3 endpoint discovery stale, h3 wrong path after old alt-svc, beginner alt-svc 421 bridge, stale h3 endpoint learned yesterday, old discovery state fresh path retry
 
 ## 먼저 고정할 한 문장
 

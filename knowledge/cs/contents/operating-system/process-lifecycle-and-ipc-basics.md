@@ -21,7 +21,7 @@
 - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: process lifecycle basics, process lifecycle mental model, fork exec wait mental model, process creation mental model, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics, process exit reap, 프로세스 처음 배우는데, 프로세스 생명주기 뭐예요, 프로세스 생명주기 멘탈 모델, fork exec wait 멘탈 모델, beginner handoff box, primer handoff box, process lifecycle 다음 문서
+retrieval-anchor-keywords: process lifecycle basics, process lifecycle mental model, fork exec wait mental model, process creation mental model, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics
 
 ## 먼저 잡는 멘탈 모델
 

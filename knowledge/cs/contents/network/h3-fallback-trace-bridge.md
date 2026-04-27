@@ -1,8 +1,17 @@
 # H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기
 
+
+> 한 줄 요약: H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > H3 discovery 단서가 보일 때, 그다음 질문을 "`정말 H3를 시도했는가`"와 "`왜 최종 결과가 H2였는가`"로 좁혀 junior incident triage에 바로 쓰게 만드는 compact bridge
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
@@ -14,7 +23,7 @@
 > - [QUIC Version Negotiation, Fallback Behavior](./quic-version-negotiation-fallback.md)
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 
-retrieval-anchor-keywords: H3 fallback trace bridge, HTTP/3 fallback trace, discovery evidence to udp block, H3 to H2 attribution, junior h3 triage, Alt-Svc udp block checklist, HTTPS RR h2 fallback, browser h3 fallback evidence, h3 attempt evidence, no h3 not udp block, quic blocked h2 fallback, affected network only h2, discovery evidence fallback attribution, beginner http3 incident primer, h3 observability bridge, protocol fallback attribution, first h2 next h3 fallback trace, udp 443 blocked h3 symptoms, h3 fallback quick card, h2 fallback first read, udp block beginner check, quic connect timeout h2 fallback, no 421 h2 fallback, 421 vs quic timeout split, 421 없는 h2 fallback
+retrieval-anchor-keywords: h3 fallback trace bridge, http/3 fallback trace, discovery evidence to udp block, h3 to h2 attribution, junior h3 triage, alt-svc udp block checklist, https rr h2 fallback, browser h3 fallback evidence, h3 attempt evidence, no h3 not udp block, quic blocked h2 fallback, affected network only h2, discovery evidence fallback attribution, beginner http3 incident primer, udp block beginner check
 
 ## 먼저 고정할 한 문장
 

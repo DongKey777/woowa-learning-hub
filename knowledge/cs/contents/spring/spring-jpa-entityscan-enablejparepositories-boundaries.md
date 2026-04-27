@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 > - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
@@ -13,7 +20,7 @@
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 > - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
-retrieval-anchor-keywords: JPA scan boundary, EntityScan, EnableJpaRepositories, component scan vs entity scan, component scan vs repository scan, scanBasePackages no effect entity scan, scanBasePackages no effect repository scan, multi module JPA Spring Boot, Not a managed type, repository bean not found, NoSuchBeanDefinitionException repository, EntityManagerFactory entity package, auto configuration package, basePackageClasses JPA, marker class JPA scan
+retrieval-anchor-keywords: jpa scan boundary, entityscan, enablejparepositories, component scan vs entity scan, component scan vs repository scan, scanbasepackages no effect entity scan, scanbasepackages no effect repository scan, multi module jpa spring boot, not a managed type, repository bean not found, nosuchbeandefinitionexception repository, entitymanagerfactory entity package, auto configuration package, spring jpa entityscan enablejparepositories boundaries basics, spring jpa entityscan enablejparepositories boundaries beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -79,7 +86,7 @@ retrieval-anchor-keywords: JPA scan boundary, EntityScan, EnableJpaRepositories,
 
 셋 다 package 기반이지만, **같은 knob로 움직이지 않는다.**
 
-Boot 기본값만 쓸 때는 메인 애플리케이션 클래스 package를 기준으로 비슷하게 보일 수 있다.  
+Boot 기본값만 쓸 때는 메인 애플리케이션 클래스 package를 기준으로 비슷하게 보일 수 있다.
 하지만 한 축만 커스터마이즈하는 순간 경계가 쉽게 어긋난다.
 
 ---
@@ -112,7 +119,7 @@ public class ApiApplication {
 }
 ```
 
-이러면 `OrderQueryService`는 잡힐 수 있다.  
+이러면 `OrderQueryService`는 잡힐 수 있다.
 하지만 `OrderEntity`와 `OrderJpaRepository`는 여전히 별도 경계다.
 
 대표 증상:
@@ -164,6 +171,8 @@ public class ApiApplication {
 
 즉 repository bean이 살아도 `EntityManagerFactory`가 해당 entity를 모르면 JPA는 여전히 깨진다.
 
+## 가장 흔한 실패 패턴 (계속 2)
+
 ### 4. 별도 `JpaConfig`에 annotation을 옮기고, package 지정 없이 기본값에 기대 버린다
 
 이 함정은 생각보다 많다.
@@ -186,7 +195,7 @@ public class JpaConfig {
 }
 ```
 
-겉보기엔 "JPA 설정 전용 클래스로 분리했다"처럼 보인다.  
+겉보기엔 "JPA 설정 전용 클래스로 분리했다"처럼 보인다.
 하지만 package를 명시하지 않으면 annotation이 붙은 **그 설정 클래스 package** 기준으로 좁게 잡힐 수 있다.
 
 즉 `com.example.app.config.jpa` 아래엔 entity/repository가 없어서, 오히려 기본값보다 더 좁아질 수 있다.
@@ -224,7 +233,7 @@ multi-module은 module dependency와 package boundary가 자주 어긋난다.
 - classpath에는 클래스가 있다
 - 그래서 "Spring도 다 찾겠지"라고 생각한다
 
-하지만 Spring은 classpath 전체를 의미 기반으로 자동 분류하지 않는다.  
+하지만 Spring은 classpath 전체를 의미 기반으로 자동 분류하지 않는다.
 각 scan 메커니즘이 **자기 package 경계 안에서만** 후보를 찾는다.
 
 즉 multi-module의 핵심 오해는 다음 한 줄로 줄일 수 있다.
@@ -282,7 +291,7 @@ public class ApiApplication {
 
 ### 4. JPA 설정을 분리하더라도 package를 명시적으로 적는다
 
-전용 `JpaConfig`를 두는 것은 괜찮다.  
+전용 `JpaConfig`를 두는 것은 괜찮다.
 하지만 아래처럼 **기본값에 기대는 분리**는 위험하다.
 
 ```java

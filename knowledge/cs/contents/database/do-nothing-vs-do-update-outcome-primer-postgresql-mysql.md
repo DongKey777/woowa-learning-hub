@@ -14,7 +14,9 @@
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: do nothing vs do update primer, postgres on conflict do nothing returning 0 row, postgres on conflict do update returning row, mysql on duplicate key update affected rows, upsert return value beginner, created existing conflict in progress upsert, do nothing loser signal, do update merge signal, mysql affectedrows 1 2 0, client_found_rows on duplicate key, postgresql returning existing row confusion, duplicate key replay conflict beginner, upsert outcome primer, insert if absent return pattern, on conflict return value pattern, duplicate key service outcome, postgres mysql upsert result primer, same key retry outcome, fresh read after do nothing, do update does not mean created, affected rows does not mean business outcome
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: do nothing vs do update primer, postgres on conflict do nothing returning 0 row, postgres on conflict do update returning row, mysql on duplicate key update affected rows, upsert return value beginner, created existing conflict in progress upsert, do nothing loser signal, do update merge signal, mysql affectedrows 1 2 0, client_found_rows on duplicate key, postgresql returning existing row confusion, duplicate key replay conflict beginner, upsert outcome primer, insert if absent return pattern, on conflict return value pattern
 
 ## 먼저 잡을 멘탈모델
 

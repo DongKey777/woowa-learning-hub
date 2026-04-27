@@ -16,7 +16,7 @@
 - [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc jdbc di aop beginner bridge, mvc to jdbc confusion checklist, jdbc to di aop confusion checklist, mvc service repository transaction boundary beginner, controller service repository mental model, @transactional is aop beginner, transaction is not jdbc call, request is not transaction, controller opens transaction misconception, service owns transaction boundary beginner, proxy before deep dive, beginner spring ladder transition, mvc jdbc transaction di aop ladder, beginner handoff ladder, primer before deep dive, safe next step doc, 백엔드 사다리 전환 오해, mvc jdbc 트랜잭션 di aop 체크리스트, 컨트롤러 서비스 레포지토리 경계, 요청 처리와 트랜잭션 경계, 프록시 기반 transactional 입문, self invocation 전에 볼 문서, transactional 왜 안 먹지 초급
+retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc jdbc di aop beginner bridge, mvc to jdbc confusion checklist, jdbc to di aop confusion checklist, mvc service repository transaction boundary beginner, controller service repository mental model, @transactional is aop beginner, transaction is not jdbc call, request is not transaction, controller opens transaction misconception, service owns transaction boundary beginner, proxy before deep dive, beginner spring ladder transition, mvc jdbc transaction di aop ladder, beginner handoff ladder
 
 ## 먼저 한 줄 mental model
 
@@ -158,3 +158,7 @@ HTTP 요청
 ## 초급자용 마지막 한 줄
 
 막히는 지점이 보여도 바로 `REQUIRES_NEW`, isolation level, proxy internals로 내려가지 말고, 먼저 **"요청 처리냐, DB 호출이냐, 트랜잭션 경계냐, 프록시 적용이냐"**를 구분하면 사다리 전환에서 덜 흔들린다.
+
+## 한 줄 정리
+
+MVC에서 JDBC/트랜잭션으로, 다시 DI/AOP로 넘어갈 때는 "요청 처리", "DB 작업", "경계", "프록시"를 한 칸씩 분리해서 봐야 초반 deep dive 오진입을 줄일 수 있다.

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache는 같은 읽기를 아예 줄이는 전략이고 read replica는 DB 읽기 처리량을 늘리는 전략이며, 둘 다 stale 문제가 있지만 원인과 대응이 다르다는 점을 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scaling primer, cache invalidation basics, stale read basics, stale-if-error, cache-first read scaling, read replica basics, cache-aside vs read replica, read-after-write basics, read-after-write routing primer, replica lag basics, primary fallback, session pinning primer, read-only downgrade, session stickiness, strong read consistency, cache miss storm, mixed cache replica read path, dual stale source, cache miss stale replica, mixed cache replica freshness bridge, cache hit miss refill consistency, rejected hit observability, replica fallback reason, refill no-fill reason, beginner database scaling
+retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scaling primer, cache invalidation basics, stale read basics, stale-if-error, cache-first read scaling, read replica basics, cache-aside vs read replica, read-after-write basics, read-after-write routing primer, replica lag basics, primary fallback, session pinning primer, read-only downgrade
 
 **난이도: 🟢 Beginner**
 
@@ -127,6 +127,8 @@ write -> primary commit
 
 겉보기 증상은 비슷하다.
 
+## 깊이 들어가기 (계속 2)
+
 - 저장 직후 예전 값이 보인다
 - 새로고침할 때 값이 뒤집힌다
 - 목록과 상세가 서로 다른 상태를 보여 준다
@@ -182,6 +184,8 @@ read path:
 - cache invalidation도 봐야 한다
 - replica lag도 봐야 한다
 - source selection 규칙이 없으면 화면마다 값이 갈라질 수 있다
+
+## 깊이 들어가기 (계속 3)
 
 그래서 둘을 같이 둘수록 "무엇을 어디서 읽을지"를 더 엄격히 정해야 한다.
 이 mixed read path의 request-carried freshness context, hit/miss/refill bridge는 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)에서, rejected hit/fallback/no-fill 관측성은 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)에서, dual stale source와 source-selection/observability pitfall은 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 본다.
@@ -247,26 +251,26 @@ read path:
 
 짧게 답하면 이렇게 정리할 수 있다.
 
-> cache와 read replica는 둘 다 읽기 확장 수단이지만, cache는 같은 읽기를 재사용해 DB 요청 자체를 줄이고, read replica는 DB 복제본을 늘려 읽기 부하를 분산합니다.  
-> cache의 핵심 문제는 invalidation이고, read replica의 핵심 문제는 replication lag와 read-after-write입니다.  
+> cache와 read replica는 둘 다 읽기 확장 수단이지만, cache는 같은 읽기를 재사용해 DB 요청 자체를 줄이고, read replica는 DB 복제본을 늘려 읽기 부하를 분산합니다.
+> cache의 핵심 문제는 invalidation이고, read replica의 핵심 문제는 replication lag와 read-after-write입니다.
 > 그래서 hot read에는 cache가, 다양한 조회량 분산에는 replica가 잘 맞고, 최신성이 중요한 경로는 둘 다 맹신하지 말고 primary fallback을 둬야 합니다.
 
 ## 꼬리질문
 
-> Q: cache와 read replica는 둘 다 stale read를 만들 수 있는데 뭐가 다른가요?  
-> 의도: 같은 증상이라도 원인과 대응이 다름을 구분하는지 확인  
+> Q: cache와 read replica는 둘 다 stale read를 만들 수 있는데 뭐가 다른가요?
+> 의도: 같은 증상이라도 원인과 대응이 다름을 구분하는지 확인
 > 핵심: cache는 invalidation 문제, replica는 lag와 routing 문제다.
 
-> Q: read replica를 붙이면 캐시가 필요 없나요?  
-> 의도: read capacity와 repeated read elimination을 구분하는지 확인  
+> Q: read replica를 붙이면 캐시가 필요 없나요?
+> 의도: read capacity와 repeated read elimination을 구분하는지 확인
 > 핵심: 아니다. hot read를 없애는 데는 cache가 더 직접적일 수 있다.
 
-> Q: cache miss면 replica로 바로 보내면 되나요?  
-> 의도: miss를 최신성 보장으로 오해하지 않는지 확인  
+> Q: cache miss면 replica로 바로 보내면 되나요?
+> 의도: miss를 최신성 보장으로 오해하지 않는지 확인
 > 핵심: 최근 write 경로라면 primary fallback이 더 안전할 수 있다.
 
-> Q: 느린 SELECT가 많으면 cache와 replica 중 무엇부터 보나요?  
-> 의도: read scaling과 query tuning의 순서를 아는지 확인  
+> Q: 느린 SELECT가 많으면 cache와 replica 중 무엇부터 보나요?
+> 의도: read scaling과 query tuning의 순서를 아는지 확인
 > 핵심: 먼저 query/index를 보고, 그다음 반복 read면 cache, broad read capacity면 replica를 본다.
 
 ## 한 줄 정리

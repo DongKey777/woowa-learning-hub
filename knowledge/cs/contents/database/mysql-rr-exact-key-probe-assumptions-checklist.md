@@ -13,7 +13,9 @@
 - [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql rr exact key probe assumptions checklist, same key queue intuition breaks, index path drift duplicate check, mixed write path duplicate check, mysql repeatable read same key not queued, exact key probe checklist beginner, explain checklist same key path, duplicate precheck mixed writer, full unique key equality checklist, mysql rr path drift checklist, 왜 같은 키인데 안 막혀요, rr exact key 가정 체크리스트, 같은 key queue 착시, mixed write path locking read
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql rr exact key probe assumptions checklist, same key queue intuition breaks, index path drift duplicate check, mixed write path duplicate check, mysql repeatable read same key not queued, exact key probe checklist beginner, explain checklist same key path, duplicate precheck mixed writer, full unique key equality checklist, mysql rr path drift checklist, 왜 같은 키인데 안 막혀요, rr exact key 가정 체크리스트, 같은 key queue 착시, mixed write path locking read, mysql rr exact key probe assumptions checklist basics
 
 ## 핵심 개념
 
@@ -132,3 +134,7 @@ FOR SHARE;
 - RR exact-key probe가 왜 same-key queue처럼 보이는지 그림으로 다시 보려면 [MySQL RR exact-key probe visual guide](./mysql-rr-exact-key-probe-visual-guide.md)
 - duplicate correctness와 queueing 보조를 분리해서 잡으려면 [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
 - RC로 내리면 왜 이 직관이 더 빨리 깨지는지 보려면 [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md)
+
+## 한 줄 정리
+
+MySQL `REPEATABLE READ`에서 "같은 key면 줄이 선다"는 감각은 **같은 index path**와 **같은 write protocol**이 유지될 때만 맞다. 이 문서는 그 가정이 깨졌는지 빠르게 점검하는 beginner checklist다.

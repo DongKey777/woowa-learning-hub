@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
@@ -13,7 +20,7 @@
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 
-retrieval-anchor-keywords: @Primary vs bean override, @Primary vs bean definition overriding, primary vs overriding beginner, injection priority vs bean name collision, same type different bean names, same bean name collision, bean candidate selection vs definition override, BeanDefinitionOverrideException beginner, overriding disabled spring boot, primary cannot fix bean name collision, bean name conflict vs autowire conflict, NoUniqueBeanDefinitionException vs bean override, duplicate bean name vs multiple bean candidates, spring main allow bean definition overriding, primary not bean override, bean registration vs dependency injection
+retrieval-anchor-keywords: @primary vs bean override, @primary vs bean definition overriding, primary vs overriding beginner, injection priority vs bean name collision, same type different bean names, same bean name collision, bean candidate selection vs definition override, beandefinitionoverrideexception beginner, overriding disabled spring boot, primary cannot fix bean name collision, bean name conflict vs autowire conflict, nouniquebeandefinitionexception vs bean override, duplicate bean name vs multiple bean candidates, spring main allow bean definition overriding, primary not bean override
 
 ## 먼저 mental model
 

@@ -4,6 +4,16 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: mmap sendfile splice zero copy basics, mmap sendfile splice zero copy beginner, mmap sendfile splice zero copy intro, operating system basics, beginner operating system, 처음 배우는데 mmap sendfile splice zero copy, mmap sendfile splice zero copy 입문, mmap sendfile splice zero copy 기초, what is mmap sendfile splice zero copy, how to mmap sendfile splice zero copy
+
 ## 핵심 개념
 
 `zero-copy`는 말 그대로 "복사를 0번" 한다는 뜻이라기보다, 불필요한 사용자 공간 복사를 줄여 데이터 이동 비용을 낮추는 접근이다.
@@ -99,6 +109,8 @@
 - 페이지 캐시와 버퍼 관리 비용은 남아 있다
 
 그래서 진짜 질문은 "복사를 없앨 수 있나?"가 아니라 다음이다.
+
+## 깊이 들어가기 (계속 2)
 
 - 요청당 복사 횟수를 줄일 수 있는가
 - 복사 대신 page cache 재사용으로 바꿀 수 있는가

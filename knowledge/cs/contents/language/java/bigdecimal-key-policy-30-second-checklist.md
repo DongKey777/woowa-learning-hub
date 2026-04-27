@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: bigdecimal key policy 30 second checklist basics, bigdecimal key policy 30 second checklist beginner, bigdecimal key policy 30 second checklist intro, java basics, beginner java, 처음 배우는데 bigdecimal key policy 30 second checklist, bigdecimal key policy 30 second checklist 입문, bigdecimal key policy 30 second checklist 기초, what is bigdecimal key policy 30 second checklist, how to bigdecimal key policy 30 second checklist
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)

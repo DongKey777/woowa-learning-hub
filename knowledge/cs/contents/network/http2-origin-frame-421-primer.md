@@ -1,8 +1,17 @@
 # HTTP/2 ORIGIN Frame와 421 입문
 
+
+> 한 줄 요약: HTTP/2 ORIGIN Frame와 421 입문는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > ORIGIN frame으로 connection 재사용 범위를 미리 좁히고, `421 Misdirected Request`로 잘못 온 cross-origin reuse를 되돌리는 흐름을 beginner 관점에서 설명하는 follow-up primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 이 문서는 ORIGIN/`421` 주제의 **beginner-safe follow-up entry**다. `421`을 상태 코드 암기 문제로 보지 말고, 먼저 "잘못된 connection을 바로잡는 문서"로 읽으면 안전하다.
 >
@@ -22,7 +31,7 @@
 > - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) (main comparison primer)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, H3 421 recovery, Alt-Svc endpoint authority, 421 Misdirected Request, misdirected request retry, cross-origin connection reuse, narrow coalescing, reject coalescing, H2 coalescing guardrail, authoritative connection, connection context mismatch, same certificate different routing, ORIGIN frame allowlist, 421 troubleshooting trace, browser devtools 421, curl 421, 421 vs 403 vs 404, wrong h2 connection retry, browser 421 retry
+retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3 no origin frame, h3 coalescing without origin, h3 421 recovery, alt-svc endpoint authority, 421 misdirected request, misdirected request retry, cross-origin connection reuse, narrow coalescing, reject coalescing, h2 coalescing guardrail, http2 origin frame 421 primer basics, http2 origin frame 421 primer beginner
 
 <details>
 <summary>Table of Contents</summary>

@@ -2,9 +2,16 @@
 
 > 한 줄 요약: control plane과 data plane 분리는 정책 결정과 요청 처리 경로를 분리해, 운영 변경의 안전성과 런타임 처리 성능을 동시에 확보하는 시스템 설계 기본 원칙이다.
 
-retrieval-anchor-keywords: control plane, data plane, separation of concerns, policy distribution, last known good, control loop, runtime path, safety isolation, config propagation, failure domain separation, control plane fundamentals
+retrieval-anchor-keywords: control plane, data plane, separation of concerns, policy distribution, last known good, control loop, runtime path, safety isolation, config propagation, failure domain separation, control plane fundamentals, control plane data plane separation design basics, control plane data plane separation design beginner, control plane data plane separation design intro, system design basics
 
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
 
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
@@ -111,6 +118,8 @@ data plane은 사용자 요청과 자동 평가를 다룬다.
 즉, 성능뿐 아니라 보안과 운영 책임도 분리된다.
 
 ### 6. 언제 과하게 나누면 안 되는가
+
+## 깊이 들어가기 (계속 2)
 
 항상 거대한 control plane을 만들라는 뜻은 아니다.
 

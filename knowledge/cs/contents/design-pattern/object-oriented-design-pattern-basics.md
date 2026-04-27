@@ -23,7 +23,7 @@
 - [실전 패턴 선택 가이드](./pattern-selection.md)
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
 
-retrieval-anchor-keywords: object oriented design pattern basics, beginner design pattern guide, beginner pattern route map, design pattern reading order, design pattern route map, design pattern primer route, 객체지향 디자인 패턴 입문 순서, 디자인 패턴 입문 순서, 디자인 패턴 독서 순서, 디자인 패턴 큰 그림 순서, 처음 배우는데 디자인 패턴 순서, 처음 배우는데 객체지향 패턴 순서, 큰 그림 먼저 디자인 패턴, 기초 디자인 패턴 route map, 언제 쓰는지 디자인 패턴 기초, composition template strategy adapter route, composition template strategy adapter beginner route, 조합 템플릿 메소드 전략 어댑터 순서, 상속보다 조합 다음 템플릿 메소드 전략 어댑터, 디자인 패턴이 뭐예요, 패턴 처음 배우는데, when to use strategy, when to use factory, when to use observer, design pattern cheat sheet, 상속보다 조합, how to choose design pattern, why use design patterns, strategy vs template method, 객체지향 패턴 입문, 객체지향 큰 그림 다음 패턴, OOP 큰 그림 다음 패턴, 처음 배우는데 객체지향 패턴, 언제 어떤 패턴 쓰는지 기초, 템플릿 메소드 기초 먼저, template method basics first, hook method primer, abstract step primer, 처음 배우는데 hook method, 처음 배우는데 abstract step, 훅 메서드 기초, 추상 단계 기초, adapter quick entry, singleton quick entry, builder quick entry, factory basics quick entry, factory beginner chooser, factory selector resolver beginner, 팩토리 바로가기, 팩토리 입문 바로가기, 팩토리 초보자 링크, 어댑터 바로가기, 싱글톤 바로가기, 빌더 바로가기, object oriented basics crosslink, observer vs direct call beginner, observer vs pub sub beginner, direct call pub sub observer difference, 이벤트로 빼자 direct call observer pubsub, observer applicationevent beginner bridge
+retrieval-anchor-keywords: object oriented design pattern basics, beginner design pattern guide, beginner pattern route map, design pattern reading order, design pattern route map, design pattern primer route, 객체지향 디자인 패턴 입문 순서, 디자인 패턴 입문 순서, 디자인 패턴 독서 순서, 디자인 패턴 큰 그림 순서, 처음 배우는데 디자인 패턴 순서, 처음 배우는데 객체지향 패턴 순서, 큰 그림 먼저 디자인 패턴, 기초 디자인 패턴 route map, 언제 쓰는지 디자인 패턴 기초
 
 ---
 
@@ -81,6 +81,8 @@ retrieval-anchor-keywords: object oriented design pattern basics, beginner desig
 5. [어댑터 패턴 기초](./adapter-basics.md)에서 "외부 인터페이스 번역"은 앞의 세 패턴과 다른 축이라는 점을 마무리한다.
 
 ### 자주 섞이는 오해 빠르게 끊기
+
+## Beginner Route Map: 큰 그림 -> 조합 -> 템플릿 메소드 -> 전략 -> 어댑터 (계속 2)
 
 - 템플릿 메소드와 전략은 둘 다 "바뀌는 부분 분리"처럼 보이지만, 하나는 **부모가 흐름을 쥐는 상속**, 다른 하나는 **호출자가 고르는 조합**이다.
 - 어댑터는 전략처럼 "무엇을 할지"를 고르는 패턴이 아니다. **이미 있는 외부 인터페이스를 우리 모양으로 번역**하는 패턴이다.
@@ -399,6 +401,8 @@ OrderRequest request = OrderRequest.builder()
 
 - `Subject`가 observer 목록을 가진다
 - 상태 변화가 생기면 등록된 observer에게 알린다
+
+## 옵저버 패턴 (계속 2)
 
 ```java
 public interface OrderListener {

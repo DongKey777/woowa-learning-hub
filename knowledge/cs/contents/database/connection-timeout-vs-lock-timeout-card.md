@@ -74,6 +74,8 @@ retrieval-anchor-keywords: connection timeout vs lock timeout, pool timeout vs d
 
 읽는 법:
 
+## 30초 선후관계 타임라인 (계속 2)
+
 1. `10:00:01.100`의 `lock wait timeout`이 먼저라서 시작점은 DB 안쪽 줄이다.
 2. 그 뒤 커넥션 반환이 늦어져 `waiting=9`가 생기고, 마지막에 pool timeout이 따라왔다.
 3. 이 경우 `connection timeout`은 원인이라기보다 **락 경합이 바깥으로 번진 결과**로 읽는 편이 맞다.

@@ -15,7 +15,7 @@
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: subdomain callback handoff chooser, callback capture three traces, set-cookie location first app request, shared cookie vs handoff chooser, callback success but app first request anonymous, auth app subdomain chooser, callback trace capture bridge, one-time handoff branch, shared-domain cookie branch, social login callback anonymous chooser, app session handoff return path, oauth callback capture beginner, 처음 배우는 callback trace, 이거 뭐예요 callback handoff
+retrieval-anchor-keywords: subdomain callback handoff chooser, callback capture three traces, set-cookie location first app request, shared cookie vs handoff chooser, callback success but app first request anonymous, auth app subdomain chooser, callback trace capture bridge, one-time handoff branch, shared-domain cookie branch, social login callback anonymous chooser, app session handoff return path, oauth callback capture beginner, 처음 배우는 callback trace, 이거 뭐예요 callback handoff, subdomain callback handoff chooser basics
 
 ## 먼저 잡는 mental model
 

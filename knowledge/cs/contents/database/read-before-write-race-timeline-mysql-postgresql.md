@@ -15,7 +15,9 @@
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: read before write race, check then insert race, select then insert race, mysql vs postgresql duplicate race, mysql rc rr duplicate race, postgres rc rr duplicate race, unique vs upsert outcome, on conflict do nothing timeline, on duplicate key update timeline, check-before-insert primer, beginner duplicate race timeline, read-before-write race timeline, 없으면 insert race, 조회 후 insert 경쟁, mysql postgresql unique upsert 비교, rc rr duplicate timeline, check then act race database
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: read before write race, check then insert race, select then insert race, mysql vs postgresql duplicate race, mysql rc rr duplicate race, postgres rc rr duplicate race, unique vs upsert outcome, on conflict do nothing timeline, on duplicate key update timeline, check-before-insert primer, beginner duplicate race timeline, read-before-write race timeline, 없으면 insert race, 조회 후 insert 경쟁, read before write race timeline mysql postgresql basics
 
 ## 먼저 잡을 멘탈모델
 
@@ -188,6 +190,8 @@ UNIQUE (coupon_id, member_id);
 ### 4. MySQL `REPEATABLE READ`
 
 이 레벨은 초보자가 가장 오해하기 쉽다.
+
+## 엔진별 타임라인 (계속 2)
 
 - exact-key
 - full unique key equality

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java default package avoid bridge basics, java default package avoid bridge beginner, java default package avoid bridge intro, java basics, beginner java, 처음 배우는데 java default package avoid bridge, java default package avoid bridge 입문, java default package avoid bridge 기초, what is java default package avoid bridge, how to java default package avoid bridge
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java Top-level 타입 접근 제한자 브리지](./top-level-type-access-modifier-bridge.md)

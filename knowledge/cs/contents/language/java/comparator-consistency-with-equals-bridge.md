@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: comparator consistency with equals bridge basics, comparator consistency with equals bridge beginner, comparator consistency with equals bridge intro, java basics, beginner java, 처음 배우는데 comparator consistency with equals bridge, comparator consistency with equals bridge 입문, comparator consistency with equals bridge 기초, what is comparator consistency with equals bridge, how to comparator consistency with equals bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)

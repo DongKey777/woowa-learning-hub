@@ -14,7 +14,7 @@
 - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 - [가상 메모리 기초](../../operating-system/virtual-memory-basics.md)
 
-retrieval-anchor-keywords: java execution model basics, java source to bytecode, java jvm execution beginner, java class object instance difference, java static vs instance basics, java stack heap intuition, java reference variable basics, java object memory mental model, 자바 실행 모델 입문, 클래스 객체 인스턴스 차이, static instance 차이, stack heap 기초
+retrieval-anchor-keywords: java execution model basics, java source to bytecode, java jvm execution beginner, java class object instance difference, java static vs instance basics, java stack heap intuition, java reference variable basics, java object memory mental model, 자바 실행 모델 입문, 클래스 객체 인스턴스 차이, static instance 차이, stack heap 기초, java execution object memory mental model primer basics, java execution object memory mental model primer beginner, java execution object memory mental model primer intro
 
 ## 핵심 개념
 
@@ -109,6 +109,8 @@ Order second = new Order("dumpling", 1);
 실무에서는 object와 instance를 거의 비슷하게 쓰지만, 입문 단계에서는 **"class는 정의, object는 결과"** 로만 구분해도 충분하다.
 
 ### 3. `static` vs instance
+
+## 상세 분해 (계속 2)
 
 ```java
 class Order {

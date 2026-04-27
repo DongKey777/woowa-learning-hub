@@ -19,7 +19,7 @@
 - [Subprocess Management in Spring Batch and Schedulers](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00071, tty aware output capture patterns, subprocess capture patterns, stdout stderr separate pipes, stderr merged into stdout, merged stderr capture, pty capture basics, machine friendly logs, human friendly terminal replay, subprocess wrapper logging pattern, pipe capture vs pty capture, one stream transcript capture, isatty capture choice, json log capture subprocess, terminal replay beginner, ci log merge choice, stdout stderr transcript design
+retrieval-anchor-keywords: operating-system-00071, tty aware output capture patterns, subprocess capture patterns, stdout stderr separate pipes, stderr merged into stdout, merged stderr capture, pty capture basics, machine friendly logs, human friendly terminal replay, subprocess wrapper logging pattern, pipe capture vs pty capture, one stream transcript capture, isatty capture choice, json log capture subprocess, terminal replay beginner
 
 ## 먼저 잡는 멘탈 모델
 

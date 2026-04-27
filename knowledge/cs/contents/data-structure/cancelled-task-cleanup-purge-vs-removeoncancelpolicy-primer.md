@@ -12,7 +12,9 @@
 - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
 - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 
-retrieval-anchor-keywords: purge vs removeOnCancelPolicy, scheduledthreadpoolexecutor purge, scheduledthreadpoolexecutor removeoncancelpolicy, cancelled task cleanup, cancelled task retention, cancelled scheduled task queue cleanup, scheduledfuture cancel queue size, cancel true queue size unchanged, purge removes cancelled tasks, removeOnCancelPolicy immediate cleanup, scheduled executor cancelled task memory retention, stale scheduled task cleanup, delayed work queue cancelled entry, batch cleanup vs immediate cleanup, threadpoolexecutor purge, scheduled executor purge when to use, removeOnCancelPolicy when to use, beginner scheduled task cleanup, 취소된 task 정리, purge removeOnCancelPolicy 차이, cancel 성공인데 queue 안 줄어듦
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: purge vs removeoncancelpolicy, scheduledthreadpoolexecutor purge, scheduledthreadpoolexecutor removeoncancelpolicy, cancelled task cleanup, cancelled task retention, cancelled scheduled task queue cleanup, scheduledfuture cancel queue size, cancel true queue size unchanged, purge removes cancelled tasks, removeoncancelpolicy immediate cleanup, scheduled executor cancelled task memory retention, stale scheduled task cleanup, delayed work queue cancelled entry, beginner scheduled task cleanup, cancelled task cleanup purge vs removeoncancelpolicy primer basics
 
 ## 먼저 그림부터
 

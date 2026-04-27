@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: factory vs abstract factory vs builder basics, factory vs abstract factory vs builder beginner, factory vs abstract factory vs builder intro, design pattern basics, beginner design pattern, 처음 배우는데 factory vs abstract factory vs builder, factory vs abstract factory vs builder 입문, factory vs abstract factory vs builder 기초, what is factory vs abstract factory vs builder, how to factory vs abstract factory vs builder
 > 관련 문서:
 > - [팩토리 (Factory)](./factory.md)
 > - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)

@@ -15,7 +15,7 @@
 - [`List.copyOf(...)` vs `stream.toList()` 읽기 전용 스냅샷 브리지](./list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md)
 - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: list.copyof vs list.of vs collections.unmodifiablelist, java readonly list beginner, java list snapshot vs view, java immutable list factory, java defensive copy list, java list.of list.copyof difference, java readonly list basics, 처음 배우는데 읽기 전용 리스트, 자바 읽기 전용 리스트 차이, 자바 unmodifiablelist 차이, 자바 리스트 뷰와 복사본, 자바 상수 리스트
+retrieval-anchor-keywords: list.copyof vs list.of vs collections.unmodifiablelist, java readonly list beginner, java list snapshot vs view, java immutable list factory, java defensive copy list, java list.of list.copyof difference, java readonly list basics, 처음 배우는데 읽기 전용 리스트, 자바 읽기 전용 리스트 차이, 자바 unmodifiablelist 차이, 자바 리스트 뷰와 복사본, 자바 상수 리스트, list copyof listof unmodifiablelist beginner bridge basics, list copyof listof unmodifiablelist beginner bridge beginner, list copyof listof unmodifiablelist beginner bridge intro
 
 ## 먼저 잡는 멘탈 모델
 

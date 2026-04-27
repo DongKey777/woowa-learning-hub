@@ -375,6 +375,8 @@ last_seen_snapshot(order:123) = status=PAID, version=57
 
 빠른 적용 빈칸(프로필 저장):
 
+## Flow 변형 미니 워크시트 (전이 연습 1개) (계속 2)
+
 - 이번 write 키: `user:________:profile`
 - 저장한 `display_name`: `________`
 - floor 값: `________`

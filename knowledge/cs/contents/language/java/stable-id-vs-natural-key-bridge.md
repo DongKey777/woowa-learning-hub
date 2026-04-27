@@ -13,7 +13,7 @@
 - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - [Locale.ROOT, Unicode Normalization, and String Canonicalization](./locale-root-case-mapping-unicode-normalization.md)
 
-retrieval-anchor-keywords: language-java-00143, stable id vs natural key bridge, surrogate id vs business key java, natural key map key beginner, business key map key beginner, email as map key java, code as map key java, name as map key java, immutable surrogate id hashmap, business key canonicalization java, stable identifier vs natural key, java map key email change risk, java map key product code safe, java map key display name unsafe, java beginner id vs business key, map key uniqueness immutability normalization, value object key entity value java, 자바 surrogate id natural key, 자바 비즈니스 키 map key, 자바 이메일 key 안전한가, 자바 코드 key 안전한가, 자바 이름 key 위험, 자바 불변 id business key 비교, 자바 map key 기준 기초
+retrieval-anchor-keywords: language-java-00143, stable id vs natural key bridge, surrogate id vs business key java, natural key map key beginner, business key map key beginner, email as map key java, code as map key java, name as map key java, immutable surrogate id hashmap, business key canonicalization java, stable identifier vs natural key, java map key email change risk, java map key product code safe, java map key display name unsafe, java beginner id vs business key
 
 ## 먼저 잡을 멘탈 모델
 

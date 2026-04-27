@@ -14,7 +14,7 @@
 - [Union-Find Component Metadata Walkthrough](./union-find-component-metadata-walkthrough.md)
 - [Connectivity Question Router](./connectivity-question-router.md)
 
-retrieval-anchor-keywords: graph basics, 그래프 입문, 그래프가 뭐예요, vertex edge, directed undirected graph, adjacency list matrix, graph vs tree, 방향 무방향 그래프, 인접 리스트 행렬, 최소 이동 횟수, 최소 환승 횟수, path reconstruction graph, parent array path
+retrieval-anchor-keywords: graph basics, 그래프 입문, 그래프가 뭐예요, vertex edge, directed undirected graph, adjacency list matrix, graph vs tree, 방향 무방향 그래프, 인접 리스트 행렬, 최소 이동 횟수, 최소 환승 횟수, path reconstruction graph, parent array path, graph basics basics, graph basics beginner
 
 ## 핵심 개념
 

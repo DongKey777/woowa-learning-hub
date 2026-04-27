@@ -15,7 +15,7 @@
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [Job Queue 설계](../system-design/job-queue-design.md)
 
-retrieval-anchor-keywords: bulk idempotency keys for named contracts, named contract idempotency scope, run file chunk item idempotency, file-level idempotency key, batch file dedup beginner, same file uploaded twice, import file key vs run key, chunk retry idempotency scope, item side effect dedup key, named bulk contract beginner, what idempotency scope to choose, batch resume key primer, logical file contract idempotency, reupload vs rerun idempotency
+retrieval-anchor-keywords: bulk idempotency keys for named contracts, named contract idempotency scope, run file chunk item idempotency, file-level idempotency key, batch file dedup beginner, same file uploaded twice, import file key vs run key, chunk retry idempotency scope, item side effect dedup key, named bulk contract beginner, what idempotency scope to choose, batch resume key primer, logical file contract idempotency, reupload vs rerun idempotency, bulk idempotency keys for named contracts basics
 
 ## 핵심 개념
 

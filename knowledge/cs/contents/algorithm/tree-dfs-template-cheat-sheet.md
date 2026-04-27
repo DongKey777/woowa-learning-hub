@@ -11,7 +11,7 @@
 - [재귀 입문](./recursion-intro.md)
 - [DFS와 BFS 입문](./dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: tree dfs template cheat sheet, tree traversal template, preorder iterative recursive, inorder iterative recursive, postorder iterative recursive, binary tree dfs template, preorder inorder postorder code template, tree stack simulation, recursive vs iterative traversal, 트리 dfs 템플릿, 트리 순회 템플릿, 전위 순회 구현, 중위 순회 구현, 후위 순회 구현, 재귀 반복 스택 순회, preorder inorder postorder 치트시트
+retrieval-anchor-keywords: tree dfs template cheat sheet, tree traversal template, preorder iterative recursive, inorder iterative recursive, postorder iterative recursive, binary tree dfs template, preorder inorder postorder code template, tree stack simulation, recursive vs iterative traversal, 트리 dfs 템플릿, 트리 순회 템플릿, 전위 순회 구현, 중위 순회 구현, tree dfs template cheat sheet basics, tree dfs template cheat sheet beginner
 
 ## 먼저 한 문장으로 구분
 

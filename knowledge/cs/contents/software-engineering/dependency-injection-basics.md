@@ -11,7 +11,7 @@
 - [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dependency injection basics, di 기초, 의존성 주입 입문, ioc 컨테이너 입문, new 직접 생성 문제, 객체 외부 주입, 생성자 주입 기초, 필드 주입 vs 생성자 주입, di 왜 쓰나요, 테스트 의존성 교체, spring di 입문, beginner di
+retrieval-anchor-keywords: dependency injection basics, di 기초, 의존성 주입 입문, ioc 컨테이너 입문, new 직접 생성 문제, 객체 외부 주입, 생성자 주입 기초, 필드 주입 vs 생성자 주입, di 왜 쓰나요, 테스트 의존성 교체, spring di 입문, beginner di, dependency injection basics basics, dependency injection basics beginner, dependency injection basics intro
 
 ## 핵심 개념
 

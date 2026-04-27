@@ -13,7 +13,7 @@
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md)
 - [`LinkedHashSet` 순서+중복 제거 미니 브리지](./linkedhashset-order-dedup-mini-bridge.md)
 
-retrieval-anchor-keywords: set.of vs set.copyof vs collections.unmodifiableset, java readonly set beginner, java immutable set factory, unmodifiableset vs copyof, set.of duplicate exception beginner, set.copyof snapshot beginner, read-only view vs immutable set java, 처음 배우는데 읽기 전용 set, 자바 set.of 차이, 자바 불변 set, 자바 set 중복 제거 상수, what is set.of
+retrieval-anchor-keywords: set.of vs set.copyof vs collections.unmodifiableset, java readonly set beginner, java immutable set factory, unmodifiableset vs copyof, set.of duplicate exception beginner, set.copyof snapshot beginner, read-only view vs immutable set java, 처음 배우는데 읽기 전용 set, 자바 set.of 차이, 자바 불변 set, 자바 set 중복 제거 상수, what is set.of, set of copyof unmodifiableset readonly primer basics, set of copyof unmodifiableset readonly primer beginner, set of copyof unmodifiableset readonly primer intro
 
 ## 먼저 잡는 멘탈 모델
 

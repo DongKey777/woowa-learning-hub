@@ -16,7 +16,7 @@
 - [Aggregate Version and Optimistic Concurrency Pattern](../design-pattern/aggregate-version-optimistic-concurrency-pattern.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: write order vs precondition primer, monotonic writes vs version check, monotonic writes vs if-match, session write ordering vs expected version, per-session ordering vs precondition, checkout ordering vs cart version, admin policy edit version mismatch, order key vs optimistic concurrency, sequence number vs version column, idempotency key vs expected version, write sequence vs etag, monotonic writes beginner confusion, writes-follow-reads beginner confusion, checkout add coupon checkout ordering, admin settings stale save primer, per-session write ordering and precondition check, 409 412 428 conditional write bridge, precondition failed vs conflict beginner
+retrieval-anchor-keywords: write order vs precondition primer, monotonic writes vs version check, monotonic writes vs if-match, session write ordering vs expected version, per-session ordering vs precondition, checkout ordering vs cart version, admin policy edit version mismatch, order key vs optimistic concurrency, sequence number vs version column, idempotency key vs expected version, write sequence vs etag, monotonic writes beginner confusion, writes-follow-reads beginner confusion, checkout add coupon checkout ordering, admin settings stale save primer
 
 ---
 

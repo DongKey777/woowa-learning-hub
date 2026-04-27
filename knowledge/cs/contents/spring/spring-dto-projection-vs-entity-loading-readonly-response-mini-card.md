@@ -12,7 +12,7 @@
 - [Spring Data JPA 기초: Repository로 DB를 다루는 방법](./spring-data-jpa-basics.md)
 - [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
 
-retrieval-anchor-keywords: dto projection vs entity loading, jpql dto projection beginner, querydsl dto projection beginner, read only response dto projection, entity loading vs projection jpa, select new dto projection, querydsl constructor projection, spring jpa read model beginner, response dto no entity loading, projection 언제 쓰나, 엔티티 로딩 언제 쓰나, 읽기 전용 응답 projection, jpa dto projection primer
+retrieval-anchor-keywords: dto projection vs entity loading, jpql dto projection beginner, querydsl dto projection beginner, read only response dto projection, entity loading vs projection jpa, select new dto projection, querydsl constructor projection, spring jpa read model beginner, response dto no entity loading, projection 언제 쓰나, 엔티티 로딩 언제 쓰나, 읽기 전용 응답 projection, jpa dto projection primer, spring dto projection vs entity loading readonly response mini card basics, spring dto projection vs entity loading readonly response mini card beginner
 
 ## 먼저 mental model 한 줄
 

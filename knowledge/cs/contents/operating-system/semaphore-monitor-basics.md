@@ -11,7 +11,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: 세마포어란, 모니터란, semaphore basics, monitor basics, 세마포어 뮤텍스 차이, 세마포어 뭐예요, 모니터 뭐예요, wait notify 기초, counting semaphore beginner, java synchronized 기초
+retrieval-anchor-keywords: 세마포어란, 모니터란, semaphore basics, monitor basics, 세마포어 뮤텍스 차이, 세마포어 뭐예요, 모니터 뭐예요, wait notify 기초, counting semaphore beginner, java synchronized 기초, semaphore monitor basics basics, semaphore monitor basics beginner, semaphore monitor basics intro, operating system basics, beginner operating system
 
 ## 먼저 잡는 멘탈 모델
 

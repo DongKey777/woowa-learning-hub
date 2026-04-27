@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: timer priority policy split basics, timer priority policy split beginner, timer priority policy split intro, data structure basics, beginner data structure, 처음 배우는데 timer priority policy split, timer priority policy split 입문, timer priority policy split 기초, what is timer priority policy split, how to timer priority policy split
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)

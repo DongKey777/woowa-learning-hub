@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
+
+retrieval-anchor-keywords: spring bean lifecycle scope traps basics, spring bean lifecycle scope traps beginner, spring bean lifecycle scope traps intro, spring basics, beginner spring, 처음 배우는데 spring bean lifecycle scope traps, spring bean lifecycle scope traps 입문, spring bean lifecycle scope traps 기초, what is spring bean lifecycle scope traps, how to spring bean lifecycle scope traps
 > 관련 문서:
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
@@ -33,7 +42,7 @@
 
 ## 핵심 개념
 
-Spring Bean은 컨테이너가 만드는 객체다.  
+Spring Bean은 컨테이너가 만드는 객체다.
 중요한 건 “객체를 만든다”가 아니라, **언제 만들고, 어디까지 공유하고, 어떤 시점에 프록시로 바뀌는가**다.
 
 핵심 축은 세 가지다.
@@ -42,7 +51,7 @@ Spring Bean은 컨테이너가 만드는 객체다.
 2. 스코프: singleton, prototype, request, session, application
 3. 프록시: 실제 객체가 아니라 래퍼를 통해 호출이 가로채질 수 있음
 
-이 문서를 봐야 하는 이유는 단순하다.  
+이 문서를 봐야 하는 이유는 단순하다.
 Spring에서 가장 자주 나는 버그는 “Bean이 이상하다”가 아니라, **상태를 잘못 공유했거나 프록시가 안 타는 구조**이기 때문이다.
 
 ---
@@ -83,7 +92,7 @@ BeanDefinition 등록
 
 ### 3. 프록시는 scope와 생명주기를 더 헷갈리게 만든다
 
-`@Transactional`, `@Cacheable`, `@Async` 같은 기능은 프록시 기반이다.  
+`@Transactional`, `@Cacheable`, `@Async` 같은 기능은 프록시 기반이다.
 즉, Bean이 있어도 **호출 경로가 프록시를 지나지 않으면 적용되지 않는다.**
 
 대표적인 함정:
@@ -140,15 +149,15 @@ public class OrderService {
 }
 ```
 
-이 경우 `OrderService`가 만들어질 때 한 번만 주입된다.  
+이 경우 `OrderService`가 만들어질 때 한 번만 주입된다.
 원하는 건 “호출마다 새 인스턴스”인데 실제로는 “주입 시점 1회”다.
 
-해결은 `ObjectProvider`나 scoped proxy다.  
+해결은 `ObjectProvider`나 scoped proxy다.
 둘 다 짧은 수명의 bean을 singleton에 직접 고정하지 않는다는 점은 같지만, **실제 대상을 조회하는 시점**은 다르다.
 
 ### 시나리오 3: request scope를 비동기 작업에 넘겼다
 
-request scope는 요청 스레드와 강하게 묶인다.  
+request scope는 요청 스레드와 강하게 묶인다.
 비동기 큐로 넘긴 뒤 나중에 쓰려고 하면 값이 이미 사라져 있을 수 있다.
 
 이 문제는 [Spring Security 아키텍처](./spring-security-architecture.md)의 `SecurityContext` 스레드 로컬 모델과도 비슷하다.
@@ -184,12 +193,12 @@ public class RequestUserContext {
 }
 ```
 
-프록시가 실제 request scope 객체를 대신한다.  
+프록시가 실제 request scope 객체를 대신한다.
 이 방식은 편하지만, 원인을 숨길 수 있어서 남용하면 추적이 어려워진다.
 
 ### `ObjectProvider`와 scoped proxy는 조회 시점이 다르다
 
-둘 다 "지금은 긴 수명의 singleton 안에 있지만, 실제 짧은 수명 bean은 나중에 찾는다"는 점은 같다.  
+둘 다 "지금은 긴 수명의 singleton 안에 있지만, 실제 짧은 수명 bean은 나중에 찾는다"는 점은 같다.
 차이는 **언제 그 lookup이 일어나는지 코드에서 드러나는가**다.
 
 | 비교 축 | `ObjectProvider` | scoped proxy |
@@ -201,6 +210,8 @@ public class RequestUserContext {
 | `request`에서의 감각 | request가 살아 있을 때만 명시적으로 꺼낸다 | 요청마다 다른 target을 프록시 뒤에서 자동으로 연결한다 |
 
 #### prototype bean: provider는 조회 횟수, proxy는 호출 횟수가 기준이 된다
+
+## 코드로 보기 (계속 2)
 
 ```java
 @Component
@@ -229,7 +240,7 @@ public class CheckoutService {
 }
 ```
 
-여기서는 `getObject()`를 한 번만 불렀으므로 `trace`는 같은 인스턴스다.  
+여기서는 `getObject()`를 한 번만 불렀으므로 `trace`는 같은 인스턴스다.
 즉, 한 작업 단위 안에서 prototype을 한 번 꺼내 재사용하고 싶다면 provider 쪽이 더 직관적이다.
 
 ```java
@@ -258,10 +269,12 @@ public class CheckoutService {
 }
 ```
 
-이 경우 `trace` 필드는 하나처럼 보이지만, shared proxy 뒤에서 method invocation마다 prototype target이 다시 풀린다.  
+이 경우 `trace` 필드는 하나처럼 보이지만, shared proxy 뒤에서 method invocation마다 prototype target이 다시 풀린다.
 그래서 prototype에서는 "한 번 조회해서 같은 인스턴스를 계속 쓴다"는 의도를 provider가 더 분명하게 드러낸다.
 
 #### request bean: 둘 다 현재 요청 target을 보지만, lookup을 숨기는 정도가 다르다
+
+## 코드로 보기 (계속 3)
 
 ```java
 @Component
@@ -297,10 +310,10 @@ public class AuditService {
 }
 ```
 
-`@RequestScope`는 기본적으로 scoped proxy를 만든다.  
+`@RequestScope`는 기본적으로 scoped proxy를 만든다.
 그래서 `requestUserContext` 필드에는 실제 request bean이 아니라 proxy가 들어가고, 메서드를 호출하는 순간 현재 요청의 target을 찾는다.
 
-반면 provider는 `getObject()` 호출 시점이 코드에 남는다.  
+반면 provider는 `getObject()` 호출 시점이 코드에 남는다.
 같은 request 안에서는 둘 다 같은 request target을 보지만, request 밖에서 접근하면 둘 다 실패할 수 있다.
 
 정리하면 이렇다.
@@ -322,7 +335,7 @@ public class AuditService {
 | scoped proxy | 주입이 편하다 | 디버깅이 어렵다 | scope 객체를 singleton에 연결해야 할 때 |
 | provider 조회 | 의도가 명확하다 | 코드가 약간 장황하다 | scope 객체를 명시적으로 가져오고 싶을 때 |
 
-핵심 기준은 하나다.  
+핵심 기준은 하나다.
 **공유해도 되는 상태인지, 요청마다 분리해야 하는 상태인지 먼저 구분해야 한다.**
 
 ---

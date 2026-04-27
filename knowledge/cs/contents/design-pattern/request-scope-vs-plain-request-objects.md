@@ -14,7 +14,7 @@
 - [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: request scope vs request object, spring request scoped bean vs dto, requestscope bean vs requestbody dto, request scoped bean command object, binder created dto not bean, caller built command not bean, request dto plain object, spring di lifetime vs request data creation, request scope beginner, request object bean confusion, dto should not be request scoped bean, command object creation spring, request scoped context holder, method local request state, request dto command value object, 스프링 requestscope dto 차이, request dto bean 아님, command bean 아님, 요청 스코프 빈과 요청 객체 차이
+retrieval-anchor-keywords: request scope vs request object, spring request scoped bean vs dto, requestscope bean vs requestbody dto, request scoped bean command object, binder created dto not bean, caller built command not bean, request dto plain object, spring di lifetime vs request data creation, request scope beginner, request object bean confusion, dto should not be request scoped bean, command object creation spring, request scoped context holder, method local request state, request scope vs plain request objects basics
 
 ---
 
@@ -186,19 +186,19 @@ public record PlaceOrderCommand(
 
 ## 흔한 혼동
 
-- **"`@RequestScope`면 DTO에 서비스를 주입해도 되나요?"**  
+- **"`@RequestScope`면 DTO에 서비스를 주입해도 되나요?"**
   보통은 아니다. DTO는 입력을 담고, service가 DTO나 command를 받아 처리한다.
 
-- **"요청마다 새로 만들어지면 전부 request-scoped bean 아닌가요?"**  
+- **"요청마다 새로 만들어지면 전부 request-scoped bean 아닌가요?"**
   아니다. `new`, binder, static factory로 만들어지는 짧은 생명주기 객체도 많다.
 
-- **"`@RequestBody` 객체는 Spring이 만들었으니 bean인가요?"**  
+- **"`@RequestBody` 객체는 Spring이 만들었으니 bean인가요?"**
   일반적으로는 controller method argument다. container-managed collaborator와 구분해야 한다.
 
-- **"command가 비즈니스 행동 이름을 가지니 bean이어야 하지 않나요?"**  
+- **"command가 비즈니스 행동 이름을 가지니 bean이어야 하지 않나요?"**
   command는 대개 행동 자체가 아니라 행동에 필요한 입력이다. 행동은 handler/service bean이 맡는다.
 
-- **"request-scoped bean을 쓰면 parameter 전달을 줄일 수 있으니 좋은가요?"**  
+- **"request-scoped bean을 쓰면 parameter 전달을 줄일 수 있으니 좋은가요?"**
   숨은 입력이 늘면 테스트와 추적이 어려워진다. 단순한 값은 method parameter나 command에 남기는 편이 더 읽기 쉽다.
 
 ---

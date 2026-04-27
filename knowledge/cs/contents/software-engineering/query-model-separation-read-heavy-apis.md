@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: query model separation read heavy apis basics, query model separation read heavy apis beginner, query model separation read heavy apis intro, software engineering basics, beginner software engineering, 처음 배우는데 query model separation read heavy apis, query model separation read heavy apis 입문, query model separation read heavy apis 기초, what is query model separation read heavy apis, how to query model separation read heavy apis
 <details>
 <summary>Table of Contents</summary>
 
@@ -164,6 +173,8 @@ public record OrderSummaryResponse(
 
 처음엔 빨라 보이지만 곧 이런 냄새가 붙는다.
 
+## Before: write entity 하나로 목록과 상세를 모두 버틴다 (계속 2)
+
 - 주문 규칙을 담는 객체가 목록 컬럼 요구까지 같이 떠안는다
 - 목록과 상세가 서로 다른 조인 전략을 요구하면서 repository가 화면별 메서드 창고가 된다
 - 응답 필드 하나를 바꿀 때 엔티티와 쿼리 메서드까지 같이 흔들린다
@@ -173,6 +184,8 @@ public record OrderSummaryResponse(
 
 핵심은 거창한 이벤트 소싱이 아니다.
 같은 DB, 같은 애플리케이션 안에서도 읽기 경로만 분리할 수 있다.
+
+## After: CQRS-lite로 읽기 경로만 분리한다 (계속 2)
 
 ```java
 public interface OrderRepository {
@@ -237,6 +250,8 @@ public class OrderQueryService {
 }
 ```
 
+## After: CQRS-lite로 읽기 경로만 분리한다 (계속 3)
+
 이 구조에서 각 책임은 이렇게 나뉜다.
 
 - `OrderRepository`: aggregate를 읽고 저장하며 규칙 검증을 돕는다
@@ -275,3 +290,7 @@ public class OrderQueryService {
 - response model은 query model과 비슷해 보여도 외부 계약이라는 별도 변경 이유를 가진다
 - 같은 DB 위의 query 분리만으로도 충분한 경우가 많다
 - CQRS-lite의 출발점은 유행어가 아니라 "읽기 요구가 write model을 망가뜨리고 있는가"라는 질문이다
+
+## 한 줄 정리
+
+목록/상세 화면이 많아질수록 write entity나 aggregate 하나로 모든 읽기 요구를 버티기보다, 같은 DB 위에서도 query repository와 response model을 따로 두는 CQRS-lite가 더 단순할 때가 많다.

@@ -16,7 +16,7 @@
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring persistence context beginner, transaction mental model, transactional persistence context primer, flush commit difference beginner, lazy loading beginner, lazy initialization exception beginner, controller service repository transactional 어디, transactional 어디까지, service layer transaction boundary beginner, web service repository transaction boundary, jpa persistence context 큰 그림, 영속성 컨텍스트 큰 그림, 플러시 커밋 차이, 지연 로딩 입문, OSIV beginner, junior backend jpa transaction, beginner transaction round trip, spring request to transaction mental model, controller service repository jpa 흐름
+retrieval-anchor-keywords: spring persistence context beginner, transaction mental model, transactional persistence context primer, flush commit difference beginner, lazy loading beginner, lazy initialization exception beginner, controller service repository transactional 어디, transactional 어디까지, service layer transaction boundary beginner, web service repository transaction boundary, jpa persistence context 큰 그림, 영속성 컨텍스트 큰 그림, 플러시 커밋 차이, 지연 로딩 입문, osiv beginner
 
 ## 먼저 mental model 한 줄
 

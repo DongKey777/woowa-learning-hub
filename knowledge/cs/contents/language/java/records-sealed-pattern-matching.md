@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: records sealed pattern matching basics, records sealed pattern matching beginner, records sealed pattern matching intro, java basics, beginner java, 처음 배우는데 records sealed pattern matching, records sealed pattern matching 입문, records sealed pattern matching 기초, what is records sealed pattern matching, how to records sealed pattern matching
 > 관련 문서:
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [객체지향 핵심 원리](./object-oriented-core-principles.md)
@@ -32,7 +41,7 @@ record는 데이터 전달용 불변 객체를 짧게 선언하는 방식이다.
 
 ### 2. sealed class
 
-sealed class는 상속 가능한 타입을 제한한다.  
+sealed class는 상속 가능한 타입을 제한한다.
 도메인 상태가 제한적일 때 유용하다.
 
 ### 3. pattern matching

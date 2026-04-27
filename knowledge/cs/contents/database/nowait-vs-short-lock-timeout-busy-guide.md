@@ -13,7 +13,9 @@
 - [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - [database 첫걸음 브리지](./database-first-step-bridge.md)
 
-retrieval-anchor-keywords: nowait vs short lock timeout busy guide, nowait busy not automatic retry, short lock timeout busy response, insert-if-absent lock budget beginner, fail fast lock budget primer, nowait lock timeout same mental model, busy instead of retry insert-if-absent, short lock budget duplicate path, lock budget busy result, lock timeout budgeted fail fast, nowait short timeout retry policy, insert-if-absent busy result primer, nowait vs retryable difference, 짧은 락 예산 busy 가이드, nowait busy 응답, 짧은 lock timeout 자동 재시도 금지, insert-if-absent 락 예산, lock budget busy primer, beginner nowait timeout guide
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: nowait vs short lock timeout busy guide, nowait busy not automatic retry, short lock timeout busy response, insert-if-absent lock budget beginner, fail fast lock budget primer, nowait lock timeout same mental model, busy instead of retry insert-if-absent, short lock budget duplicate path, lock budget busy result, lock timeout budgeted fail fast, nowait short timeout retry policy, insert-if-absent busy result primer, nowait vs retryable difference, 짧은 락 예산 busy 가이드, beginner nowait timeout guide
 
 ## 먼저 멘탈모델
 
@@ -151,3 +153,7 @@ retrieval-anchor-keywords: nowait vs short lock timeout busy guide, nowait busy 
 - `busy` 자체의 fail-fast 기준을 더 짧게 보면 [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - `insert-if-absent` 전체 3버킷 표로 돌아가려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - Spring 예외 표면에서 `55P03` / `1205` / `40P01` / `40001`을 다시 나누려면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
+
+## 한 줄 정리
+
+`NOWAIT`와 짧은 `lock timeout`은 "곧 성공할지 모르는 실패"라기보다 "이 경로는 오래 기다리지 않겠다"는 **짧은 락 예산 선언**에 가깝기 때문에, `insert-if-absent`에서는 기본적으로 자동 retry 큐보다 `busy` 응답으로 닫는 편이 맞다.

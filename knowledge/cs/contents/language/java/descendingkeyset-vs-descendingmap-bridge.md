@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: descendingkeyset vs descendingmap bridge basics, descendingkeyset vs descendingmap bridge beginner, descendingkeyset vs descendingmap bridge intro, java basics, beginner java, 처음 배우는데 descendingkeyset vs descendingmap bridge, descendingkeyset vs descendingmap bridge 입문, descendingkeyset vs descendingmap bridge 기초, what is descendingkeyset vs descendingmap bridge, how to descendingkeyset vs descendingmap bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [`descendingSet()` / `descendingMap()` View Mental Model](./descending-view-mental-model.md)

@@ -12,7 +12,7 @@
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - [`subMap()` / `headMap()` / `tailMap()` Live View Primer](./treemap-range-view-live-window-primer.md)
 
-retrieval-anchor-keywords: language-java-00120, pollfirst polllast descending view semantics, descendingset pollFirst pollLast beginner, original vs descending pollFirst java, descendingSet pollFirst removes largest, descendingSet pollLast removes smallest, java pollFirst current view order, java pollLast current view order, treeset descending view mutation reflected, descending view is live pollFirst, treemap descendingMap pollFirstEntry semantics, java navigableset pollFirst descending beginner, 자바 descendingSet pollFirst pollLast, 자바 원본 descending view pollFirst 차이, 자바 pollFirst 는 현재 view 기준, 트리셋 내림차순 뷰 pollFirst 제거, descending view live mutation primer
+retrieval-anchor-keywords: language-java-00120, pollfirst polllast descending view semantics, descendingset pollfirst polllast beginner, original vs descending pollfirst java, descendingset pollfirst removes largest, descendingset polllast removes smallest, java pollfirst current view order, java polllast current view order, treeset descending view mutation reflected, descending view is live pollfirst, treemap descendingmap pollfirstentry semantics, java navigableset pollfirst descending beginner, 자바 descendingset pollfirst polllast, 자바 원본 descending view pollfirst 차이, 자바 pollfirst 는 현재 view 기준
 
 ## 먼저 잡을 멘탈 모델
 

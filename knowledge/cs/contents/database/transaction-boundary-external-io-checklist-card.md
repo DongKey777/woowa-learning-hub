@@ -16,7 +16,7 @@
 - [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: transaction boundary checklist card, external io inside transaction checklist, @Transactional external api review, transaction boundary code review card, beginner transaction review questions, PR comment one-liner transaction review, review comment tone card, question request block review tone, review comment tone selector, before after transaction boundary snippet, transaction boundary before after example, outbox before after snippet, spring transaction retry boundary example, spring retry facade tx service example, @retryable @transactional boundary split, fresh transaction per retry attempt, external io outside transaction spring, retry boundary outside transaction spring, 외부 io before after 예시, 스프링 트랜잭션 retry 경계 예시, retry 경계 분리 before after, 외부 io 분리 retry 분리 예시, 트랜잭션 경계 체크리스트 카드, 트랜잭션 안에 외부 io, 코드리뷰 트랜잭션 점검 질문 5개, PR 코멘트 1줄 예시, 리뷰 코멘트 톤 선택 카드, 질문형 요청형 차단형 코멘트, 리뷰 상황별 코멘트 톤, 커넥션 풀 고갈 트랜잭션 길이, 락 대기 외부 api 호출, 트랜잭션 경계 다음 retry 카드, 트랜잭션 경계 다음 idempotency 카드, beginner retry idempotency 연결표, http grpc 메시지 발행 파일 업로드 위험도 표, 외부 io 유형별 경계 분리 우선순위, transaction io risk matrix, external io risk priority table, transaction boundary exception rule, external io exception inside tx, 트랜잭션 안에 남겨도 되는 예외, 트랜잭션 경계 예외 기준, 결제 api 트랜잭션 코드리뷰, 파일 업로드 트랜잭션 코드리뷰, 이벤트 발행 트랜잭션 코드리뷰, before after pr comment mini scenario, payment api review comment before after, file upload review comment before after, event publish review comment before after, 결제 파일 업로드 이벤트 발행 미니 시나리오
+retrieval-anchor-keywords: transaction boundary checklist card, external io inside transaction checklist, @transactional external api review, transaction boundary code review card, beginner transaction review questions, pr comment one-liner transaction review, review comment tone card, question request block review tone, review comment tone selector, before after transaction boundary snippet, transaction boundary before after example, outbox before after snippet, spring transaction retry boundary example, spring retry facade tx service example, beginner retry idempotency 연결표
 
 ## 경계 체크 다음에 바로 보는 카드
 
@@ -69,6 +69,8 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 
 예외 기준은 "권장 패턴"이 아니라, 초보자가 과하게 다 쪼개는 오탐을 줄이기 위한 아주 좁은 허용선이다.
 
+## 코드리뷰 5문항 카드 (계속 2)
+
 | 번호 | 리뷰 질문 | `예`일 때 기본 액션 | 예외적으로 tx 안에 남겨도 되는 조건 | 실제 PR 코멘트 1줄 예시 |
 |---|---|---|---|---|
 | 1 | `@Transactional` 메서드 안에서 HTTP/gRPC/Redis/S3/메시지 브로커 같은 외부 호출을 기다리나? | 외부 I/O를 트랜잭션 밖으로 이동 가능한지 먼저 확인 | 호출이 사실상 짧은 조회성 확인이고, 앞뒤로 오래 잡는 row/range lock이 없으며, 실패해도 외부 부작용이 남지 않을 때만 예외로 본다. | `@Transactional` 경계 안에서 `paymentClient` 호출을 기다리고 있어, 외부 I/O를 경계 밖으로 분리할 수 있는지 확인 부탁드립니다. |
@@ -78,6 +80,8 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 5 | 느린 외부 호출이 lock wait, deadlock, pool timeout으로 번질 수 있는 경로가 보이나? | timeout/격리/락 순서보다 먼저 "트랜잭션 길이"부터 줄임 | 호출 p99가 매우 짧고 상한이 강하게 통제되며, 그 구간 동안 잡는 커넥션/락이 사실상 없다는 관측이 있을 때만 남겨도 되는 후보로 본다. | 외부 호출 지연 시 lock wait와 pool 대기가 함께 늘 수 있어, timeout 튜닝 전에 트랜잭션 길이 축소부터 검토 부탁드립니다. |
 
 ### 흔한 혼선 바로잡기
+
+## 코드리뷰 5문항 카드 (계속 3)
 
 - "외부 I/O가 빠르다"만으로는 예외가 아니다. 초보자 기준에서는 `빠르다`보다 `락 없이 짧게 끝나고 실패해도 외부 부작용이 남지 않는다`가 먼저다.
 - "같은 사내 서비스 호출"도 네트워크면 기본은 외부 I/O다. 같은 팀 서비스라고 해서 DB 트랜잭션 수명이 자동으로 같이 묶이지 않는다.
@@ -100,6 +104,8 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 
 ### 같은 5문항, 3가지 톤으로 말하기
 
+## 코멘트 톤 선택 카드 (계속 2)
+
 | 번호 | 질문형 | 요청형 | 차단형 |
 |---|---|---|---|
 | 1. 트랜잭션 안 외부 호출 대기 | `@Transactional` 안에서 `paymentClient` 호출을 기다리는 이유가 있을까요? 이 호출은 경계 밖으로 뺄 수 있는지 궁금합니다. | `@Transactional` 안 외부 호출 대기로 트랜잭션 길이가 늘어날 수 있어, `paymentClient` 호출의 경계 분리 검토 부탁드립니다. | 현재 `@Transactional` 안에서 외부 호출을 기다리고 있어 lock/pool 대기 전파 위험이 큽니다. 병합 전 경계 분리가 필요합니다. |
@@ -109,6 +115,8 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 5. 외부 지연이 lock/pool 문제로 번짐 | 이 외부 호출이 느려질 때 lock wait나 pool 대기로 이어질 가능성을 확인해 보셨을까요? timeout 조정보다 경계 축소가 먼저인지 궁금합니다. | 외부 호출 지연이 lock wait와 pool 대기로 번질 수 있어, timeout 튜닝 전에 트랜잭션 길이 축소를 우선 검토 부탁드립니다. | 현재 구조는 외부 지연이 DB 대기로 직접 번질 수 있습니다. timeout 조정보다 경계 축소가 선행되어야 하므로 병합 전 수정이 필요합니다. |
 
 ### 빠른 선택 예시
+
+## 코멘트 톤 선택 카드 (계속 3)
 
 | 리뷰 상황 | 추천 톤 | 이유 |
 |---|---|---|
@@ -169,6 +177,8 @@ public void placeOrder(Command cmd) {
 
 `2번 문항`은 "write 뒤에 브로커 ack를 기다리면서 다시 DB write까지 이어지나?"를 보는 질문이다.
 
+## 문항-행동 연결 미니 스니펫 (계속 2)
+
 ```java
 // before: DB write 뒤 브로커 발행을 기다린 뒤 다시 DB write
 @Transactional
@@ -218,6 +228,8 @@ outbox 쪽 설명을 더 보고 싶으면:
 
 하지만 실제로는 **무엇을 다시 실행할지**를 먼저 잘라야 한다.
 
+## 문항-행동 연결 미니 스니펫 (계속 3)
+
 ```java
 // before: 한 메서드가 DB write, 외부 승인, retry를 전부 같이 들고 있음
 @Service
@@ -240,6 +252,8 @@ public class PaymentService {
 
 - lock 충돌로 retry가 걸리면 `paymentClient.authorize(...)`까지 다시 호출될 수 있다
 - 외부 승인 대기 시간이 길어지면 DB 트랜잭션도 같이 길어진다
+
+## 문항-행동 연결 미니 스니펫 (계속 4)
 
 ```java
 // after: retry는 facade에서, DB 시도는 짧은 트랜잭션으로, 외부 I/O는 경계 밖으로 분리
@@ -291,6 +305,8 @@ public class PaymentTxService {
 | 코드리뷰 코멘트 포인트 | "retry가 외부 부작용까지 다시 치지 않나요?" | "retry 범위와 DB atomic attempt가 분리돼 있네요" |
 
 retry 경계를 더 자세히 보려면:
+
+## 문항-행동 연결 미니 스니펫 (계속 5)
 
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
@@ -347,6 +363,8 @@ public void confirmOrder(Long orderId, String paymentToken) {
 
 > 파일 전송 시간은 들쭉날쭉해서, 트랜잭션 안에 넣으면 "가끔 느린 요청"이 DB 병목으로 커지기 쉽다.
 
+## 실전 코드리뷰 미니 시나리오 3세트 (계속 2)
+
 ```java
 // before
 @Transactional
@@ -394,6 +412,8 @@ public void completeDelivery(Long orderId) {
     outboxRepository.enqueue("DeliveryCompleted", orderId);
 }
 ```
+
+## 실전 코드리뷰 미니 시나리오 3세트 (계속 3)
 
 | 구분 | PR 코멘트 |
 |---|---|

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: priorityblockingqueue timer misuse primer basics, priorityblockingqueue timer misuse primer beginner, priorityblockingqueue timer misuse primer intro, data structure basics, beginner data structure, 처음 배우는데 priorityblockingqueue timer misuse primer, priorityblockingqueue timer misuse primer 입문, priorityblockingqueue timer misuse primer 기초, what is priorityblockingqueue timer misuse primer, how to priorityblockingqueue timer misuse primer
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
@@ -20,7 +29,7 @@
 - `Priority`: deadline 순으로 잘 정렬될 것 같다
 - `Blocking`: 시간이 될 때까지 알아서 기다려 줄 것 같다
 
-하지만 실제 `Blocking`의 뜻은 보통 **"queue가 비어 있으면 기다린다"**에 가깝다.  
+하지만 실제 `Blocking`의 뜻은 보통 **"queue가 비어 있으면 기다린다"**에 가깝다.
 timer queue에 필요한 것은 **"head가 아직 미래 시각이면 기다린다"**는 계약이다.
 
 이 차이를 먼저 분리하면 거의 끝난다.
@@ -82,7 +91,7 @@ TimerTask task = queue.take(); // 10초 뒤가 아니라 "지금" 반환된다.
 | 정렬 층 | 가장 이른 deadline이 head인가 | 해결 |
 | 시간 층 | 아직 미래면 꺼내지 말고 기다리는가 | 미해결 |
 
-그래서 `PriorityBlockingQueue`는 **timer queue의 재료**는 될 수 있어도,  
+그래서 `PriorityBlockingQueue`는 **timer queue의 재료**는 될 수 있어도,
 그 자체로는 **완성된 timer semantics**가 아니다.
 
 여기서 오해가 자주 생긴다.
@@ -99,14 +108,14 @@ TimerTask task = queue.take(); // 10초 뒤가 아니라 "지금" 반환된다.
 - 자는 동안 더 이른 deadline이 들어오면 깨워야 한다
 - 너무 일찍 꺼낸 task를 다시 넣을지, 손에 들고 있을지 정해야 한다
 
-즉 "`PriorityBlockingQueue` 하나면 끝"이라고 생각하고 시작해도,  
+즉 "`PriorityBlockingQueue` 하나면 끝"이라고 생각하고 시작해도,
 결국은 `lock + condition + earlier-deadline wakeup`을 다시 구현하게 된다.
 
 이 지점이 바로 `DelayQueue`류 구조가 필요한 이유다.
 
 ## 4. 그럼 `PriorityBlockingQueue`는 언제 맞나
 
-`PriorityBlockingQueue`가 틀린 구조라는 뜻은 아니다.  
+`PriorityBlockingQueue`가 틀린 구조라는 뜻은 아니다.
 다만 **timer semantics를 바깥 runtime이 이미 책임질 때** 더 자연스럽다.
 
 예를 들면:
@@ -115,7 +124,7 @@ TimerTask task = queue.take(); // 10초 뒤가 아니라 "지금" 반환된다.
 - event loop가 자체 clock tick으로 expired task를 가져간다
 - 여러 스레드가 안전하게 "deadline 순 목록"만 공유하면 된다
 
-이 경우 `PriorityBlockingQueue`의 역할은 **thread-safe ordered container**다.  
+이 경우 `PriorityBlockingQueue`의 역할은 **thread-safe ordered container**다.
 timer 역할은 queue 바깥의 poll loop나 scheduler가 맡는다.
 
 ## 5. 무엇을 고르면 되나
@@ -145,5 +154,5 @@ timer 역할은 queue 바깥의 poll loop나 scheduler가 맡는다.
 
 ## 한 줄 정리
 
-`PriorityBlockingQueue`는 **안전한 priority queue**이고,  
+`PriorityBlockingQueue`는 **안전한 priority queue**이고,
 timer queue는 거기에 더해 **아직 미래인 head를 숨기는 시간 계약**이 필요하다.

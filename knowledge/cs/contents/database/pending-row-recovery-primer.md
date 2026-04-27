@@ -14,7 +14,9 @@
 - [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: pending row recovery primer, pending idempotency row takeover, stale processing row recovery, in progress versus takeover idempotency, lease heartbeat expiry recovery, pending row safe recovery beginner, pending row should stay processing, idempotency pending row liveness, processing row stale detection beginner, compare and swap takeover row, retry after pending row, pending row recovery checklist, pending row heartbeat primer, pending row lease primer, pending row takeover safety, 멱등성 pending row 복구, processing row takeover 기준, pending row stale 판단, in-progress 유지 vs takeover, heartbeat 만료 takeover, lease 만료 recovery, compare and swap 복구
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: pending row recovery primer, pending idempotency row takeover, stale processing row recovery, in progress versus takeover idempotency, lease heartbeat expiry recovery, pending row safe recovery beginner, pending row should stay processing, idempotency pending row liveness, processing row stale detection beginner, compare and swap takeover row, retry after pending row, pending row recovery checklist, pending row heartbeat primer, pending row lease primer, pending row takeover safety
 
 ## 먼저 멘탈모델
 

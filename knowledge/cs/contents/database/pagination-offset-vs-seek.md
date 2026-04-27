@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
+
+retrieval-anchor-keywords: pagination offset vs seek basics, pagination offset vs seek beginner, pagination offset vs seek intro, database basics, beginner database, 처음 배우는데 pagination offset vs seek, pagination offset vs seek 입문, pagination offset vs seek 기초, what is pagination offset vs seek, how to pagination offset vs seek
 > 관련 문서: [인덱스와 실행 계획](./index-and-explain.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 
 > retrieval-anchor-keywords:
@@ -18,7 +27,7 @@
 
 ## 핵심 개념
 
-`offset pagination`은 `LIMIT x OFFSET y` 방식이다.  
+`offset pagination`은 `LIMIT x OFFSET y` 방식이다.
 `seek pagination`은 마지막으로 본 키를 기준으로 다음 페이지를 찾는 방식이다.
 
 왜 중요한가:
@@ -60,7 +69,7 @@ offset pagination의 전형적인 증상이다.
 
 ### 시나리오 2: "다음 페이지"만 필요하다
 
-seek가 훨씬 적합하다.  
+seek가 훨씬 적합하다.
 cursor token을 전달하면 된다.
 
 ## 코드로 보기

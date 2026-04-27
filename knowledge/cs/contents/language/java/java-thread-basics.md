@@ -11,7 +11,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [컨텍스트 스위칭, 데드락, lock-free](../../operating-system/context-switching-deadlock-lockfree.md)
 
-retrieval-anchor-keywords: java thread basics, 스레드 입문, thread runnable beginner, synchronized 기초, 멀티스레드 입문, java 동기화 기초, race condition beginner, thread start run 차이, 스레드 만드는 법, java volatile 입문, synchronized method beginner, 공유 자원 보호 방법
+retrieval-anchor-keywords: java thread basics, 스레드 입문, thread runnable beginner, synchronized 기초, 멀티스레드 입문, java 동기화 기초, race condition beginner, thread start run 차이, 스레드 만드는 법, java volatile 입문, synchronized method beginner, 공유 자원 보호 방법, java thread basics basics, java thread basics beginner, java thread basics intro
 
 ## 핵심 개념
 
@@ -20,6 +20,12 @@ retrieval-anchor-keywords: java thread basics, 스레드 입문, thread runnable
 입문자가 헷갈리는 지점은 두 스레드가 같은 변수를 동시에 읽고 쓸 때 발생하는 문제다. 이를 **경쟁 조건(race condition)**이라 부르며, `synchronized` 키워드로 한 번에 하나의 스레드만 접근하도록 막아야 한다.
 
 ## 한눈에 보기
+
+- `java thread basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 Thread 생성 방법

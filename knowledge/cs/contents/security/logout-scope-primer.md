@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `primer bridge`
 >
 > 이 문서는 "로그아웃했는데 왜 다른 탭은 살아 있지?", "모든 기기 로그아웃과 refresh revoke가 같은 말 아닌가?", "BFF인데 cookie만 지우면 끝 아닌가?" 같은 질문을 처음 분리하는 entrypoint다.
@@ -19,7 +26,7 @@
 > - `[advanced]` [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)
 > - `[catalog]` [Security README: Browser / Session Coherence](./README.md#browser--session-coherence)
 
-retrieval-anchor-keywords: logout scope primer, single-device logout, logout all devices, current session logout, current device logout, session invalidation basics, refresh token revocation basics, logout scope difference, bff logout cleanup, server-side logout cleanup, cookie delete not enough, logout still works after logout, beginner logout revocation, logout current browser vs all devices, refresh revoke vs session revoke, bff cookie session revoke, server token cache cleanup, logout scope matrix, logout mental model, auth logout primer, security logout primer
+retrieval-anchor-keywords: logout scope primer, single-device logout, logout all devices, current session logout, current device logout, session invalidation basics, refresh token revocation basics, logout scope difference, bff logout cleanup, server-side logout cleanup, cookie delete not enough, logout still works after logout, beginner logout revocation, logout current browser vs all devices, refresh revoke vs session revoke
 
 ## 먼저 잡는 mental model
 
@@ -147,6 +154,8 @@ retrieval-anchor-keywords: logout scope primer, single-device logout, logout all
 
 즉 `현재 세션 logout`, `single-device logout`, `모든 기기 로그아웃`은 모두 session invalidation을 일으킬 수 있다.
 반대로 브라우저 cookie만 지우고 서버가 invalidation을 안 하면 반쪽 logout이 된다.
+
+## 용어를 정확히 나누기 (계속 2)
 
 ### 5. refresh token revocation
 

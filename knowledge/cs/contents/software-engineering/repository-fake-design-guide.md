@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: repository fake design guide basics, repository fake design guide beginner, repository fake design guide intro, software engineering basics, beginner software engineering, 처음 배우는데 repository fake design guide, repository fake design guide 입문, repository fake design guide 기초, what is repository fake design guide, how to repository fake design guide
 <details>
 <summary>Table of Contents</summary>
 
@@ -136,6 +145,8 @@ public interface OrderRepository {
 
 아래 fake는 port semantics만 메모리에서 재현하는 쪽에 가깝다.
 
+## 코드로 보기 (계속 2)
+
 ```java
 public interface OrderRepository {
     Optional<Order> findById(OrderId id);
@@ -182,7 +193,10 @@ final class FakeOrderRepository implements OrderRepository {
     ) {
         static StoredOrder from(Order order) {
             return new StoredOrder(
-                    order.id(),
+
+## 코드로 보기 (계속 3)
+
+order.id(),
                     order.orderNumber(),
                     order.shippingAddress(),
                     order.lines().stream()
@@ -219,6 +233,8 @@ final class FakeOrderRepository implements OrderRepository {
 3. 중복 주문번호처럼 port가 약속한 실패 semantics만 재현한다.
 
 그래서 use case test도 결과 중심으로 읽을 수 있다.
+
+## 코드로 보기 (계속 4)
 
 ```java
 @Test
@@ -290,3 +306,7 @@ repository fake가 아무리 좋아도 아래 항목은 별도 adapter integrati
 - fake는 port가 약속한 의미만 재현하고, ORM 메커니즘은 흉내 내지 않는다
 - `save()` 이후/이전 상태를 분명히 하려면 snapshot 저장과 새 객체 재구성이 유용하다
 - fake 설계가 지나치게 복잡하면 "테스트 더블이 약해서"가 아니라 "port가 persistence 세부를 담고 있어서"일 가능성이 크다
+
+## 한 줄 정리
+
+repository fake는 DB 없는 JPA 흉내가 아니라 outbound port 계약을 메모리에서 재현하는 test adapter여야 하고, 유스케이스 test는 그 계약만 의존해야 persistence 세부가 새지 않는다.

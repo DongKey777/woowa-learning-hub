@@ -5,6 +5,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic stack walkthrough basics, monotonic stack walkthrough beginner, monotonic stack walkthrough intro, data structure basics, beginner data structure, 처음 배우는데 monotonic stack walkthrough, monotonic stack walkthrough 입문, monotonic stack walkthrough 기초, what is monotonic stack walkthrough, how to monotonic stack walkthrough
 > 관련 문서:
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
@@ -200,6 +209,8 @@ for (int i = 0; i <= heights.length; i++) {
 
 ### previous 계열 공통 뼈대
 
+## 4. previous / next 경계 템플릿 카드 (계속 2)
+
 ```java
 Deque<Integer> stack = new ArrayDeque<>();
 int[] prev = new int[a.length];
@@ -323,6 +334,8 @@ for (int i = 0; i < a.length; i++) {
 
 - `previous`는 `현재 칸`을 채우는 문제라서 pop을 끝낸 뒤 남은 top을 읽는다.
 - `next`는 `예전 칸들`을 채우는 문제라서 현재 값이 들어올 때 pop된 원소들의 답이 된다.
+
+## 5.5. Previous-vs-Next 경계 미니 퀴즈 (계속 2)
 
 `previous/next`와 `strict/or-equal`을 한 장 표로 다시 보고 싶다면 [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)와 [Monotonic Strict-vs-Equal Translation Card](./monotonic-strict-vs-equal-translation-card.md)를 이어서 보면 된다.
 

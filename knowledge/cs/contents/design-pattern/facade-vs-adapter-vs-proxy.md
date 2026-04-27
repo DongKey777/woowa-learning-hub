@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: facade vs adapter vs proxy basics, facade vs adapter vs proxy beginner, facade vs adapter vs proxy intro, design pattern basics, beginner design pattern, 처음 배우는데 facade vs adapter vs proxy, facade vs adapter vs proxy 입문, facade vs adapter vs proxy 기초, what is facade vs adapter vs proxy, how to facade vs adapter vs proxy
 > 관련 문서:
 > - [Adapter (어댑터) 패턴](./adapter.md)
 > - [데코레이터 vs 프록시](./decorator-vs-proxy.md)
@@ -60,7 +69,7 @@ public class OrderFacade {
 }
 ```
 
-호출자는 내부 순서를 몰라도 된다.  
+호출자는 내부 순서를 몰라도 된다.
 중요한 건 기능을 바꾸는 것이 아니라, **사용성을 바꾸는 것**이다.
 
 ### 2. Adapter는 인터페이스를 맞춘다
@@ -98,6 +107,8 @@ Adapter는 "새 기능 추가"보다 "기존 자산 재활용"에 가깝다.
 
 Proxy는 접근 제어, 캐싱, 지연 로딩, 로깅 같은 부가 기능을 얹는다.
 
+## 깊이 들어가기 (계속 2)
+
 ```java
 public class CachedReportProxy implements ReportService {
     private final ReportService target;
@@ -113,7 +124,7 @@ public class CachedReportProxy implements ReportService {
 }
 ```
 
-Spring AOP나 `@Transactional`은 이 감각과 가깝다.  
+Spring AOP나 `@Transactional`은 이 감각과 가깝다.
 반면 Facade는 호출 제어가 아니라 흐름 정리에 더 가깝다.
 
 ---

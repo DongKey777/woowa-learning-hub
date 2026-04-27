@@ -11,7 +11,9 @@
 - [SQL 읽기와 관계형 모델링 기초](./sql-reading-relational-modeling-primer.md)
 - [기본 키와 외래 키 기초](./primary-foreign-key-basics.md)
 
-retrieval-anchor-keywords: left join where on 차이, left join filter placement, left join inner join처럼 동작, right table predicate where clause, on clause vs where clause, left join null filter, sql left join beginner, outer join collapsed to inner join, 조인 필터 위치, 오른쪽 테이블 조건 어디에 쓰나
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: left join where on 차이, left join filter placement, left join inner join처럼 동작, right table predicate where clause, on clause vs where clause, left join null filter, sql left join beginner, outer join collapsed to inner join, 조인 필터 위치, 오른쪽 테이블 조건 어디에 쓰나, left join filter placement primer basics, left join filter placement primer beginner, left join filter placement primer intro, database basics, beginner database
 
 ## 핵심 개념
 

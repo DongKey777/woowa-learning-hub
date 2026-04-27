@@ -18,7 +18,9 @@
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: signal mask vs disposition bridge, signal mask disposition mental model, blocked vs ignored mental model, blocked signal vs ignored signal, signal handler vs default action, signal disposition basics, fork exec signal inheritance, exec preserves signal mask, exec resets handlers, ignored signal preserved across exec, posix_spawn signal inheritance, posix_spawn setsigmask setsigdef, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, blocked signal child process, ignored signal child process, signal mask 멘탈 모델, disposition 멘탈 모델, beginner signal inheritance primer, beginner handoff box, primer handoff box, signal inheritance 다음 문서, blocked vs ignored 다음 단계
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: signal mask vs disposition bridge, signal mask disposition mental model, blocked vs ignored mental model, blocked signal vs ignored signal, signal handler vs default action, signal disposition basics, fork exec signal inheritance, exec preserves signal mask, exec resets handlers, ignored signal preserved across exec, posix_spawn signal inheritance, posix_spawn setsigmask setsigdef, posix_spawn_setsigmask, posix_spawn_setsigdef, beginner signal inheritance primer
 
 ## 먼저 잡는 멘탈 모델
 

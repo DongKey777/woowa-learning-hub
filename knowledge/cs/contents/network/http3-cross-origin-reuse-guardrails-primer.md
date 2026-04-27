@@ -1,8 +1,17 @@
 # HTTP/3 Cross-Origin Reuse Guardrails Primer
 
+
+> 한 줄 요약: HTTP/3 Cross-Origin Reuse Guardrails Primer는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > HTTP/3에서 H2의 `ORIGIN` frame 없이 cross-origin connection reuse를 어떻게 안전하게 다루는지, certificate scope, `Alt-Svc` endpoint authority, `421 Misdirected Request` 복구 순서로 설명하는 beginner follow-up primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
@@ -17,7 +26,7 @@
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: HTTP/3 cross-origin reuse guardrails, HTTP/3 no ORIGIN frame, H3 ORIGIN frame 없음, H3 coalescing without ORIGIN, HTTP/3 connection coalescing, cross-origin connection reuse, H3 certificate scope, certificate SAN reuse, wildcard certificate authority, Alt-Svc endpoint authority, alternative service authority, authoritative H3 endpoint, QUIC endpoint authority, 421 Misdirected Request H3, 421 retry recovery, Alt-Svc cache removal, wrong QUIC connection, beginner H3 coalescing primer, 421 troubleshooting trace, browser devtools 421, curl 421 misdirected request, wrong h3 connection retry, browser 421 retry, same url retried after 421, alt-svc scope vs reuse, cache scope vs connection reuse, who owns alt-svc hint vs who can share connection, reuse guardrail primer, scope primer handoff
+retrieval-anchor-keywords: http/3 cross-origin reuse guardrails, http/3 no origin frame, h3 origin frame 없음, h3 coalescing without origin, http/3 connection coalescing, cross-origin connection reuse, h3 certificate scope, certificate san reuse, wildcard certificate authority, alt-svc endpoint authority, alternative service authority, authoritative h3 endpoint, quic endpoint authority, beginner h3 coalescing primer, http3 cross origin reuse guardrails primer basics
 
 ## 헷갈리면 이 문장으로 먼저 가르기
 

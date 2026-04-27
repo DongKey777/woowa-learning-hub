@@ -16,7 +16,7 @@
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean public external call proxy, self invocation vs self injection
+retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean public external call proxy, self invocation vs self injection, spring aop basics basics, spring aop basics beginner, spring aop basics intro
 
 초급자용 공통 라우팅 한 줄:
 
@@ -101,6 +101,7 @@ public class OrderService {
 | [`new` 직접 생성 체크](#checklist-direct-new) | "분명 서비스 객체인데 왜 적용이 안 되죠?"가 먼저 보일 때 |
 
 <a id="checklist-this-method"></a>
+
 ## 1. 같은 클래스 안에서 `this.method()`로 호출했나?
 
 먼저 이렇게 기억하면 된다.
@@ -134,6 +135,7 @@ public class OrderService {
 - 초급 단계에서는 메서드를 다른 Bean으로 분리하는 편이 호출 경로, 책임 분리, 리팩터링 의도가 함께 드러난다.
 
 <a id="checklist-private-method"></a>
+
 ## 2. annotation을 `private` 메서드에 붙였나?
 
 이 질문은 "호출 경로"보다 먼저 "메서드 경계 자체가 프록시에 열려 있나?"를 보는 체크다.
@@ -154,6 +156,7 @@ public class OrderService {
 - 그다음 실제 호출이 프록시를 지나는지도 함께 확인한다.
 
 <a id="checklist-direct-new"></a>
+
 ## 3. 객체를 `new`로 직접 생성했나?
 
 이 질문은 "메서드 접근 제한자"보다 더 앞단, 즉 "그 객체가 Spring이 관리하는 Bean인가?"를 확인하는 체크다.
@@ -265,6 +268,8 @@ public class BillingService {
     }
 }
 ```
+
+## `@Cacheable`인데 DB를 매번 다시 읽는다면? 1분 확인 절차 (계속 2)
 
 ```java
 @Service

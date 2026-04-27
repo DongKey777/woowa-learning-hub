@@ -16,7 +16,7 @@
 - [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 - [SQL 읽기와 관계형 모델링 기초](../database/sql-reading-relational-modeling-primer.md)
 
-retrieval-anchor-keywords: browser request lifecycle basics, browser to server basics, url dns tcp tls http flow, url 입력 후 무슨 일이, dns lookup basics, tcp tls handshake basics, http request response basics, http status code basics, cookie session basics, set-cookie cookie flow, reverse proxy basics, keep-alive basics, 401 vs 403 basics, 502 vs 504 basics, network primer return path, network readme http flow entrypoint, network to spring request pipeline bridge, network to database sql primer bridge, beginner backend lane handoff
+retrieval-anchor-keywords: browser request lifecycle basics, browser to server basics, url dns tcp tls http flow, url 입력 후 무슨 일이, dns lookup basics, tcp tls handshake basics, http request response basics, http status code basics, cookie session basics, set-cookie cookie flow, reverse proxy basics, keep-alive basics, 401 vs 403 basics, 502 vs 504 basics, network primer return path
 
 ## 핵심 개념
 

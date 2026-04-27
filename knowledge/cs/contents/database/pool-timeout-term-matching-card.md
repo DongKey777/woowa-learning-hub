@@ -15,7 +15,9 @@
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: pool timeout term matching, timeout terminology card, connection timeout vs transaction timeout vs statement timeout vs lock wait timeout, borrow timeout, jdbc statement timeout, spring transaction timeout, innodb lock wait timeout, timeout confusion beginner, pool timeout 오해, lock wait timeout pool confusion, app wait vs db lock wait, app waiting vs db waiting, hot row timeout misunderstanding, lock wait timeout hot row beginner, 커넥션 타임아웃 트랜잭션 타임아웃 스테이트먼트 타임아웃 락웨이트 타임아웃 차이, app 대기 db lock 대기 구분, timeout 짝맞춤 카드
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: pool timeout term matching, timeout terminology card, connection timeout vs transaction timeout vs statement timeout vs lock wait timeout, borrow timeout, jdbc statement timeout, spring transaction timeout, innodb lock wait timeout, timeout confusion beginner, pool timeout 오해, lock wait timeout pool confusion, app wait vs db lock wait, app waiting vs db waiting, hot row timeout misunderstanding, lock wait timeout hot row beginner, 커넥션 타임아웃 트랜잭션 타임아웃 스테이트먼트 타임아웃 락웨이트 타임아웃 차이
 
 ## 먼저 멘탈모델
 

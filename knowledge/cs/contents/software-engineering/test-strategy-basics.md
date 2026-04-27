@@ -180,6 +180,8 @@ givenServerErrorContinues_whenChargeRequested_thenStopsAfterTotal3Attempts()
 - `retryTemplate.execute`처럼 구현 도구 이름을 테스트 이름에 넣기보다, `TIMEOUT이면 2번 재시도`처럼 정책 문장을 넣는 편이 초심자에게 훨씬 잘 읽힌다.
 - `예외가 나면 실패한다`는 이름은 너무 넓다. `TIMEOUT`, `429`, `5xx`처럼 분기 기준을 드러내야 리뷰 때 정책 누락을 빨리 찾는다.
 
+## 외부 API 재시도 테스트는 이름이 정책 카드가 되어야 한다 (계속 2)
+
 - retry 안전성 자체를 더 넓게 보려면 [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)에서 "언제 재시도가 위험해지는지"를 이어서 보면 된다.
 
 ## 실패 먼저 재현 -> 최소 테스트 1개 미니 시나리오

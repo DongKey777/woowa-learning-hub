@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic deque walkthrough basics, monotonic deque walkthrough beginner, monotonic deque walkthrough intro, data structure basics, beginner data structure, 처음 배우는데 monotonic deque walkthrough, monotonic deque walkthrough 입문, monotonic deque walkthrough 기초, what is monotonic deque walkthrough, how to monotonic deque walkthrough
 > 관련 문서:
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
@@ -128,6 +137,8 @@ plain deque의 front는 `현재 최댓값`이 아니라 `가장 먼저 들어온
 
 - 입력: `nums = [2, 2, 3]`, `k = 2`
 - 첫 window `[0..1]`의 최소값은 `2`
+
+## 4. 최대값 trace (계속 2)
 
 | 구현 | 첫 window `[0..1]` 뒤 deque | 첫 출력 |
 |---|---|---|

@@ -1,7 +1,18 @@
 # Annotation Processing
 
+
+> 한 줄 요약: Annotation Processing는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: annotation processing basics, annotation processing beginner, annotation processing intro, java basics, beginner java, 처음 배우는데 annotation processing, annotation processing 입문, annotation processing 기초, what is annotation processing, how to annotation processing
 > 컴파일 타임에 코드를 생성하거나 검증하는 자바 메타프로그래밍 정리
 
 <details>
@@ -174,3 +185,7 @@ public class HelloProcessor extends AbstractProcessor {
 - 생성 코드가 많아질수록 디버깅과 유지보수는 어떻게 달라지는가?
 - 프로세서가 빌드를 느리게 만들지 않으려면 어떤 기준을 가져야 하는가?
 - 어노테이션 기반 설계가 과해지는 지점은 어디인가?
+
+## 한 줄 정리
+
+Annotation Processing는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

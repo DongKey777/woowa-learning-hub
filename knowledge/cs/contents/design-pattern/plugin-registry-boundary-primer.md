@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Plugin Architecture: 기능을 꽂아 넣는 패턴 언어](./plugin-architecture-pattern-language.md)
 > - [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
@@ -12,7 +19,7 @@
 > - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin lookup narrow registry, plugin locator smell, plugin manager hidden dependency, plugin extension point registry, plugin registry beginner, plugin architecture registry boundary, plugin manager vs service locator, plugin host registry, plugin id lookup registry, application wide plugin locator smell, ApplicationContext plugin getBean smell, plugin registry composition root, plugin registry bootstrapping, 플러그인 레지스트리 경계, 플러그인 레지스트리 서비스 로케이터, 플러그인 조회 안티패턴, 플러그인 매니저 숨은 의존성, 플러그인 확장 지점 레지스트리, 플러그인 lookup beginner
+retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin lookup narrow registry, plugin locator smell, plugin manager hidden dependency, plugin extension point registry, plugin registry beginner, plugin architecture registry boundary, plugin manager vs service locator, plugin host registry, plugin id lookup registry, application wide plugin locator smell, applicationcontext plugin getbean smell, 플러그인 lookup beginner
 
 ---
 
@@ -107,6 +114,8 @@ public final class ReportPluginRegistry {
 - registry는 `ReportPlugin` 한 종류만 다룬다.
 - `AuditPort` 같은 다른 협력자는 registry에서 꺼내지 않고 별도로 주입받는다.
 - key는 Spring bean name이 아니라 host-plugin 계약인 `PluginId`다.
+
+## 좋은 예: host가 자기 plugin registry를 주입받는다 (계속 2)
 
 초보자 기준으로는 이것만 보면 된다.
 

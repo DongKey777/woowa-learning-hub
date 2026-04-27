@@ -17,7 +17,7 @@
 - `[cross-category bridge]` [Database README: Identity / Authority Transfer 브리지](../database/README.md#database-bridge-identity-authority)
 - `[system design]` [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge)
 
-retrieval-anchor-keywords: authority transfer vs revoke lag, authority transfer beginner bridge, revoke lag beginner bridge, still access after transfer, still access after revoke, authority transfer cleanup, authority transfer parity, revoke lag route split, backfill green but access tail remains, deprovision tail vs revoke lag, old owner removed but access still works, beginner authority transfer route
+retrieval-anchor-keywords: authority transfer vs revoke lag, authority transfer beginner bridge, revoke lag beginner bridge, still access after transfer, still access after revoke, authority transfer cleanup, authority transfer parity, revoke lag route split, backfill green but access tail remains, deprovision tail vs revoke lag, old owner removed but access still works, beginner authority transfer route, authority transfer vs revoke lag primer bridge basics, authority transfer vs revoke lag primer bridge beginner, authority transfer vs revoke lag primer bridge intro
 
 ## 시작 전에: 이 문서의 역할
 

@@ -12,7 +12,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: index basics, 인덱스란, db index beginner, full table scan, b-tree index beginner, primary index vs secondary index, 복합 인덱스 기초, 인덱스 쓰기 비용, 인덱스가 뭐예요, 쿼리 느릴 때 인덱스, db 인덱스 왜 필요해요, db 인덱스 처음 배우는데, 인덱스 어떻게 동작, 인덱스 큰 그림
+retrieval-anchor-keywords: index basics, 인덱스란, db index beginner, full table scan, b-tree index beginner, primary index vs secondary index, 복합 인덱스 기초, 인덱스 쓰기 비용, 인덱스가 뭐예요, 쿼리 느릴 때 인덱스, db 인덱스 왜 필요해요, db 인덱스 처음 배우는데, 인덱스 어떻게 동작, 인덱스 큰 그림, index basics basics
 
 ## 핵심 개념
 

@@ -14,7 +14,9 @@
 - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
 - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: money value object basics, java money type beginner, bigdecimal not enough money, currency plus amount value object, money scale policy beginner, java monetary amount primer, raw bigdecimal vs money, java value object money example, money currency rounding beginner, 자바 money value object, 자바 bigdecimal 돈 타입, 통화 금액 값 객체, 금액 스케일 정책 입문
+- [카테고리 README](../README.md)
+
+retrieval-anchor-keywords: money value object basics, java money type beginner, bigdecimal not enough money, currency plus amount value object, money scale policy beginner, java monetary amount primer, raw bigdecimal vs money, java value object money example, money currency rounding beginner, 자바 money value object, 자바 bigdecimal 돈 타입, 통화 금액 값 객체, 금액 스케일 정책 입문, money value object basics basics, money value object basics beginner
 
 ## 먼저 잡을 멘탈 모델
 

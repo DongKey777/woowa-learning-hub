@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: batch recovery runbook bridge basics, batch recovery runbook bridge beginner, batch recovery runbook bridge intro, software engineering basics, beginner software engineering, 처음 배우는데 batch recovery runbook bridge, batch recovery runbook bridge 입문, batch recovery runbook bridge 기초, what is batch recovery runbook bridge, how to batch recovery runbook bridge
 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)에서 per-item retry, retry queue, checkpoint를 구분했다면, 이 문서는 그다음 질문인 "그 정책을 운영자가 따라 할 runbook으로 어떻게 바꿀까"만 좁혀서 본다.
 실패 reason code를 `retryable`, `manual-review`, `permanent` 세 묶음으로 먼저 단순화하고 싶다면 [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)를 같이 보면 runbook의 분기 문장을 더 짧게 적기 쉽다.
 실제 결과 타입 이름이 필요하면 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)를 먼저 보고, 재실행 중복 부작용이 걱정되면 [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)를 같이 보면 된다.
@@ -188,7 +197,9 @@ rerun 뒤에 무엇을 확인할지도 runbook에 있어야 한다.
 아래처럼 다섯 줄만 채워도 초심자용 runbook 뼈대가 생긴다.
 
 ```markdown
+
 ## Batch Failure Recovery
+
 - Trigger: 어떤 alert/run summary를 보고 이 runbook을 시작하는가
 - First checks: runId, snapshotTime, latestCheckpoint, failed item/chunk, reasonCode
 - Stop now if: receipt 불일치, checkpoint 없음, snapshot drift, write 오염 징후
@@ -263,3 +274,7 @@ batch recovery runbook은 code policy를 사람이 따라 할 수 있게 바꾼 
 따라서 beginner에게는 한 문장만 먼저 잡아 주면 된다.
 
 **batch 복구는 rerun 버튼을 찾는 일이 아니라, 증거를 보고 안전한 다음 행동을 고르는 일이다.**
+
+## 한 줄 정리
+
+batch 실패 정책은 코드 안의 retry 규칙으로 끝나지 않고, 운영자가 어떤 상태를 확인하고 언제 멈추며 어떤 조건에서 다시 실행해도 되는지까지 runbook 언어로 연결돼야 한다.

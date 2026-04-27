@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - `[entrypoint]` [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
 > - `[primer]` [SameSite Login Callback Primer](./samesite-login-callback-primer.md)
@@ -16,7 +23,7 @@
 > - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: embedded login privacy primer, iframe login privacy primer, iframe login still fails after SameSite None Secure, third-party cookie privacy controls beginner, embedded login third-party cookie blocked, iframe session blocked by browser privacy, SameSite None Secure but iframe login fails, partner portal iframe login privacy controls, third-party cookie phaseout beginner, browser privacy iframe cookie failure, storage access iframe login beginner, third-party cookie blocked even with SameSite None, safari iframe login cookie blocked, firefox total cookie protection iframe login, chrome block third-party cookies iframe login, embedded auth privacy control mental model, iframe login works in top-level tab only, security readme browser session troubleshooting, privacy controls vs samesite beginner
+retrieval-anchor-keywords: embedded login privacy primer, iframe login privacy primer, iframe login still fails after samesite none secure, third-party cookie privacy controls beginner, embedded login third-party cookie blocked, iframe session blocked by browser privacy, samesite none secure but iframe login fails, partner portal iframe login privacy controls, third-party cookie phaseout beginner, browser privacy iframe cookie failure, storage access iframe login beginner, third-party cookie blocked even with samesite none, safari iframe login cookie blocked, firefox total cookie protection iframe login, chrome block third-party cookies iframe login
 retrieval-anchor-keywords: top-level login fallback iframe, popup redirect instead of iframe login, embedded auth blocked by browser policy, third-party cookie disabled symptom, privacy sandbox cookie blocking beginner, partitioned cookie mention beginner, chips embedded login follow-up, storage access api follow-up, iframe auth modern browser policy
 
 ## 이 문서가 필요한 장면

@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: interval greedy patterns basics, interval greedy patterns beginner, interval greedy patterns intro, algorithm basics, beginner algorithm, 처음 배우는데 interval greedy patterns, interval greedy patterns 입문, interval greedy patterns 기초, what is interval greedy patterns, how to interval greedy patterns
 > 관련 문서:
 > - [탐욕 / Greedy 알고리즘 개요](./greedy.md)
 > - [정렬 알고리즘](./sort.md)

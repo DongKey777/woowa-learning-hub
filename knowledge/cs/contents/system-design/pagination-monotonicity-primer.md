@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 페이지네이션에서 `min-version` floor는 "이미 본 row가 뒤로 가지 않게" 쓰는 장치이지, 현재 페이지 후보를 무작정 필터링해 page boundary를 깨뜨리는 장치가 아니다.
 
-retrieval-anchor-keywords: pagination monotonicity primer, pagination min-version floor, pagination min version floor, cursor pagination monotonic reads, page to page monotonicity, list pagination stale row reject, pagination hidden rows bug, pagination ordering with min-version, seek pagination min-version, page boundary monotonic guard, stable cursor with freshness floor, stale row suppress pagination, pagination floor candidate reject, page shrink because floor, offset pagination monotonicity, replica lag pagination list, cache pagination monotonic guard, beginner pagination consistency, page to page ordering floor, seen row version floor pagination, entity floor not page filter, pagination overlay patch suppress, system-design-00069
+retrieval-anchor-keywords: pagination monotonicity primer, pagination min-version floor, pagination min version floor, cursor pagination monotonic reads, page to page monotonicity, list pagination stale row reject, pagination hidden rows bug, pagination ordering with min-version, seek pagination min-version, page boundary monotonic guard, stable cursor with freshness floor, stale row suppress pagination, pagination floor candidate reject, beginner pagination consistency, pagination monotonicity primer basics
 
 **난이도: 🟢 Beginner**
 
@@ -14,6 +14,8 @@ retrieval-anchor-keywords: pagination monotonicity primer, pagination min-versio
 - [Search Hit Overlay Pattern](./search-hit-overlay-pattern.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 

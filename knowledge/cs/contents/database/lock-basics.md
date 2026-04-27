@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
 
-retrieval-anchor-keywords: database lock basics, 락 기초, 공유락 배타락 입문, shared lock exclusive lock 처음 배우는데, 낙관적 락 비관적 락 차이, optimistic pessimistic lock 입문, 락이 뭐예요, 데드락 기초, row lock table lock 입문, 잠금 기초
+retrieval-anchor-keywords: database lock basics, 락 기초, 공유락 배타락 입문, shared lock exclusive lock 처음 배우는데, 낙관적 락 비관적 락 차이, optimistic pessimistic lock 입문, 락이 뭐예요, 데드락 기초, row lock table lock 입문, 잠금 기초, lock basics basics, lock basics beginner, lock basics intro, database basics, beginner database
 
 ## 핵심 개념
 

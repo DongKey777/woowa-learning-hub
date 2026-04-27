@@ -17,7 +17,7 @@
 - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 - [Idempotency Key Status Contract Examples](../database/idempotency-key-status-contract-examples.md)
 
-retrieval-anchor-keywords: service layer external io primer, transactional external api beginner, after commit vs outbox beginner, spring service transaction external side effect, 외부 io 트랜잭션 밖, 커밋 후 알림, 결제 승인 트랜잭션 경계, outbox beginner spring, after_commit beginner spring, propagation external side effect, required requires_new external api, flush is not commit external api, jpa flush 외부 호출, 메시지 발행 outbox primer, beginner transaction boundary remote call, service layer side effect split, 주문 생성 결제 승인 트랜잭션 예시, external approval success db failure compensation, payment cancel compensation beginner, approval succeeded but local tx failed, payment idempotency retry bridge
+retrieval-anchor-keywords: service layer external io primer, transactional external api beginner, after commit vs outbox beginner, spring service transaction external side effect, 외부 io 트랜잭션 밖, 커밋 후 알림, 결제 승인 트랜잭션 경계, outbox beginner spring, after_commit beginner spring, propagation external side effect, required requires_new external api, flush is not commit external api, jpa flush 외부 호출, 메시지 발행 outbox primer, beginner transaction boundary remote call
 
 ## 먼저 mental model 한 줄
 
@@ -106,6 +106,8 @@ public class OrderTxService {
 - 핵심 DB 변경은 기본 `REQUIRED`로 각 짧은 tx 안에 묶는다.
 - 외부 결제 API 호출은 propagation 옵션으로 해결하지 않고 아예 tx 밖으로 뺀다.
 
+## 서비스 레이어에서 가장 흔한 3가지 예시 (계속 2)
+
 ### 예시 2. 주문 commit 뒤 이메일 발송이면 충분하다 -> `AFTER_COMMIT`
 
 이번에는 "주문이 실제로 저장된 뒤에만 이메일을 보내면 된다"는 상황이다.
@@ -159,6 +161,8 @@ public Long placeOrder(PlaceOrderCommand command) {
     return order.getId();
 }
 ```
+
+## 서비스 레이어에서 가장 흔한 3가지 예시 (계속 3)
 
 ```java
 public void relayPendingEvents() {

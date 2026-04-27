@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic duplicate rule micro drill basics, monotonic duplicate rule micro drill beginner, monotonic duplicate rule micro drill intro, data structure basics, beginner data structure, 처음 배우는데 monotonic duplicate rule micro drill, monotonic duplicate rule micro drill 입문, monotonic duplicate rule micro drill 기초, what is monotonic duplicate rule micro drill, how to monotonic duplicate rule micro drill
 > 관련 문서:
 > - [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
@@ -102,3 +111,7 @@ deque와 stack의 모양은 달라도, `equal을 남길지 지울지`를 먼저 
 2. 답이 `strict`인지 `or equal`인지
 
 이 두 줄이 정해지면 `<`/`<=`, `>`/`>=`는 거의 자동으로 따라온다.
+
+## 한 줄 정리
+
+monotonic deque/stack에서 `<` vs `<=`, `>` vs `>=`는 "같은 값이 나오면 이전 값을 남길지, 새 값을 남길지"를 정하는 규칙이다.

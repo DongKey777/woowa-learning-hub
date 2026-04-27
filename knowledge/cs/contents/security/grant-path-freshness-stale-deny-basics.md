@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
 > - `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)
@@ -20,7 +27,7 @@
 > - `[catalog]` [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
 > - `[catalog]` [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, cached 404 after grant, cached concealment 404 after grant, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, authz grant propagation, grant path cache invalidation, deny cache invalidation after grant, session claim stale after grant, jwt stale after role grant, support role granted still 403, tenant membership granted still 403, tenant-specific 403 after grant, re-login after permission grant, forced refresh after grant, grant convergence, grant path convergence, stale authorities after grant, security symptom shortcut, authz symptom table, category return path, beginner grant freshness route, stale deny 1 minute table, stale deny quick triage, claim stale cache stale tenant context stale, concealment 404 after grant triage, stale deny entry cue, grant path primer bridge entry, stale deny deep dive handoff, beginner stale deny route, grant freshness first-step bridge, grant path before graph cache, runtime-debugging handoff first, graph internals defer gate, actual request 확인, actual request gate, preflight vs actual request, 401 302 cors false positive, cors 아닌 403, redirect 아닌 403, options only auth confusion, 권한 준 뒤 stale deny, 권한 줬는데 concealment 404, grant 후 404 숨김, grant 후 403 계속, workspace visible but 403 bridge, stale deny vs tenant context, tenant context stale return handoff, tenant stale reciprocal handoff, role change but 403, role granted but session stale, workspace access granted but still denied, security readme return path, authz tenant main chain return, 권한 줬는데 아직도 403, 권한 줬는데 아직도 404, 권한 줬는데 계속 403, 권한 줬는데 계속 404, 권한 줬는데 왜 403, 권한 줬는데 왜 404, 권한 부여했는데 403, 권한 부여했는데 404, 권한 반영됐는데 403, 권한 반영됐는데 404, grant path vs revoke path, stale deny vs stale allow, grant route not revoke recovery, revoke recovery boundary, beginner grant revoke split, 증상별 바로 가기
+retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, cached 404 after grant, cached concealment 404 after grant, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, beginner grant freshness route
 
 ## 시작 전에: 이 문서의 역할과 입장 큐
 

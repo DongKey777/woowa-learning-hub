@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: treemap record containskey get name comparator drill basics, treemap record containskey get name comparator drill beginner, treemap record containskey get name comparator drill intro, java basics, beginner java, 처음 배우는데 treemap record containskey get name comparator drill, treemap record containskey get name comparator drill 입문, treemap record containskey get name comparator drill 기초, what is treemap record containskey get name comparator drill, how to treemap record containskey get name comparator drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Record-Comparator 60초 미니 드릴](./record-comparator-60-second-mini-drill.md)

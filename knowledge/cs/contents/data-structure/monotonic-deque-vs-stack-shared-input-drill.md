@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic deque vs stack shared input drill basics, monotonic deque vs stack shared input drill beginner, monotonic deque vs stack shared input drill intro, data structure basics, beginner data structure, 처음 배우는데 monotonic deque vs stack shared input drill, monotonic deque vs stack shared input drill 입문, monotonic deque vs stack shared input drill 기초, what is monotonic deque vs stack shared input drill, how to monotonic deque vs stack shared input drill
 > 관련 문서:
 > - [Monotonic Structure Router Quiz](./monotonic-structure-router-quiz.md) - 먼저 `deque / stack / neither`를 10초 분기하고 내려오고 싶을 때
 > - [Deque vs Stack Signal Card](./deque-vs-stack-signal-card.md)
@@ -217,6 +226,8 @@
 stack은 `언제 답을 쓰는가`만 보면 된다.
 `NGE`는 pop 순간 오른쪽 답을 쓰고, `PSE`는 pop 정리 뒤 남은 top을 왼쪽 답으로 읽는다.
 
+## Duplicate Add-On. 중복값 한 번 더 고정하기 (계속 2)
+
 | next greater element (NGE) | previous smaller element (PSE) |
 |---|---|
 | ```text
@@ -309,6 +320,8 @@ stack은 `언제 답을 쓰는가`만 보면 된다.
 
 ### 이 섹션을 다시 보면 좋은 경우
 
+## Mini Drill 2. 같은 입력으로 minimum + previous smaller (계속 2)
+
 - router quiz에서 `최근 k개 최소값`을 stack으로 골랐다면 여기서 `minimum deque` 트랙만 다시 읽는다.
 - router quiz에서 `이전 더 작은 값`을 deque로 골랐다면 여기서 `PSE stack` 트랙만 다시 읽는다.
 - 둘 다 헷갈리면 먼저 아래 한 줄만 다시 외운다: `window 답을 매번 읽으면 deque`, `각 index의 왼쪽/오른쪽 답을 확정하면 stack`
@@ -318,3 +331,7 @@ stack은 `언제 답을 쓰는가`만 보면 된다.
 - 덱 쪽을 더 자세히: [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
 - 스택 쪽을 더 자세히: [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)
 - 왜 O(n)인지 증명: [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
+
+## 한 줄 정리
+
+같은 입력을 두 번 풀어 보면, deque는 `window 극값`, stack은 `미해결 index 답 확정` 문제라는 차이가 바로 보인다.

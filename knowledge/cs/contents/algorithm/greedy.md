@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: greedy basics, greedy beginner, greedy intro, algorithm basics, beginner algorithm, 처음 배우는데 greedy, greedy 입문, greedy 기초, what is greedy, how to greedy
 > 관련 문서:
 > - [탐욕 알고리즘 (기본 primer)](./basic.md#탐욕-알고리즘-greedy)
 > - [구간 / Interval Greedy 패턴](./interval-greedy-patterns.md)

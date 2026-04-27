@@ -12,7 +12,7 @@
 - [Java 예외 처리 기초](./java-exception-handling-basics.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: for vs stream beginner, loop vs stream stop sign, for문 대신 stream 언제, stream으로 바꾸면 안 되는 경우, break stream 대체, 복합 누적 stream 말고 for, checked exception stream 람다, 처음 배우는데 stream 어디까지, beginner loop to stream guardrail, java stream overuse, stream stop sign note, stream보다 for가 더 안전한 경우
+retrieval-anchor-keywords: for vs stream beginner, loop vs stream stop sign, for문 대신 stream 언제, stream으로 바꾸면 안 되는 경우, break stream 대체, 복합 누적 stream 말고 for, checked exception stream 람다, 처음 배우는데 stream 어디까지, beginner loop to stream guardrail, java stream overuse, stream stop sign note, stream보다 for가 더 안전한 경우, for vs stream stop sign primer basics, for vs stream stop sign primer beginner, for vs stream stop sign primer intro
 
 ## 먼저 잡을 감각
 

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: circular queue vs ring buffer primer basics, circular queue vs ring buffer primer beginner, circular queue vs ring buffer primer intro, data structure basics, beginner data structure, 처음 배우는데 circular queue vs ring buffer primer, circular queue vs ring buffer primer 입문, circular queue vs ring buffer primer 기초, what is circular queue vs ring buffer primer, how to circular queue vs ring buffer primer
 > 관련 문서:
 > - [기본 자료 구조](./basic.md)
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
@@ -46,7 +55,7 @@
 0 -> 1 -> 2 -> 3 -> 4 -> 0 -> ...
 ```
 
-그래서 초보자가 느끼는 "이거 결국 같은 거 아닌가?"라는 감각 자체는 맞다.  
+그래서 초보자가 느끼는 "이거 결국 같은 거 아닌가?"라는 감각 자체는 맞다.
 실제로 **같은 구현 아이디어를 다른 문맥에서 부르는 경우가 많다.**
 
 ## 어디서 갈라지나
@@ -109,7 +118,7 @@
 
 특히 많이 헷갈리는 한 가지:
 
-> 원형 큐 문제의 `rear`는 "마지막 원소 위치"로 설명되는 경우가 많고,  
+> 원형 큐 문제의 `rear`는 "마지막 원소 위치"로 설명되는 경우가 많고,
 > ring buffer의 `tail`은 "다음에 쓸 위치"로 설명되는 경우가 많다.
 
 둘 다 맞는 모델이지만, **문서마다 정의가 조금씩 다를 수 있으니 먼저 정의를 확인**해야 한다.
@@ -125,16 +134,16 @@
 
 ## 자주 하는 오해
 
-1. `ring buffer = circular queue`라고 외우고 끝내면 문맥을 놓친다.  
+1. `ring buffer = circular queue`라고 외우고 끝내면 문맥을 놓친다.
 구현 뼈대는 비슷하지만, 질문이 묻는 포인트가 다르다.
 
-2. ring buffer는 항상 overwrite한다고 오해한다.  
+2. ring buffer는 항상 overwrite한다고 오해한다.
 아니다. reject, blocking, backpressure처럼 다른 정책도 많다.
 
-3. circular queue가 더 "기초적"이고 ring buffer가 완전히 다른 고급 구조라고 생각한다.  
+3. circular queue가 더 "기초적"이고 ring buffer가 완전히 다른 고급 구조라고 생각한다.
 실제로는 같은 원형 배열 아이디어를 다른 문제 축에서 설명하는 경우가 많다.
 
-4. ring buffer도 무조건 strict FIFO queue라고 생각한다.  
+4. ring buffer도 무조건 strict FIFO queue라고 생각한다.
 최신값 유지용 overwrite 정책을 쓰면, "가장 오래된 것을 반드시 보존한다"는 queue 감각은 약해질 수 있다.
 
 ## 다음 문서로 어떻게 이어질까
@@ -146,5 +155,5 @@
 
 ## 한 줄 정리
 
-`circular queue`는 **원형 배열 기반 FIFO 큐 구현**에 초점이 있고,  
+`circular queue`는 **원형 배열 기반 FIFO 큐 구현**에 초점이 있고,
 `ring buffer`는 **고정 크기 원형 버퍼를 시스템 제약 안에서 운영하는 방법**에 더 가깝다.

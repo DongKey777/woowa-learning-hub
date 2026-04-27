@@ -16,7 +16,7 @@
 - [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: factory selector resolver beginner, factory vs selector vs resolver, factory selector resolver 차이, selector naming entrypoint, selector naming first hit, selector 이름 뭐로 지어야 해, creation vs selection naming, 생성 vs 선택 네이밍, 생성 책임 vs 선택 책임, 생성이 아니면 factory 아님, 처음 배우는데 factory selector resolver, 처음 배우는데 selector naming, factory 이름 언제 쓰는지, selector 이름 언제 쓰는지
+retrieval-anchor-keywords: factory selector resolver beginner, factory vs selector vs resolver, factory selector resolver 차이, selector naming entrypoint, selector naming first hit, selector 이름 뭐로 지어야 해, creation vs selection naming, 생성 vs 선택 네이밍, 생성 책임 vs 선택 책임, 생성이 아니면 factory 아님, 처음 배우는데 factory selector resolver, 처음 배우는데 selector naming, factory 이름 언제 쓰는지, selector 이름 언제 쓰는지, factory selector resolver beginner entrypoint basics
 
 ---
 

@@ -24,7 +24,7 @@
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - [`Instant`, `LocalDateTime`, `OffsetDateTime`, `ZonedDateTime` Boundary Design](./java-time-instant-localdatetime-boundaries.md)
 
-retrieval-anchor-keywords: language-java-00062, navigablemap mental model, navigableset mental model, java navigablemap navigableset beginner, java treeset first last floor ceiling lower higher, java treemap firstkey lastkey floorkey ceilingkey lowerkey higherkey, java treemap floorentry ceilingentry lowerentry higherentry, floor ceiling comparator order, lower higher strict inclusive difference, reverse order floor ceiling worksheet, range lookup treemap beginner, empty treemap firstkey lastkey nosuchelementexception, empty treemap floor ceiling null, firstkey lastkey empty map warning, firstentry lastentry null empty treemap, firstentry vs firstkey bridge, 왜 lower와 floor가 다른가
+retrieval-anchor-keywords: language-java-00062, navigablemap mental model, navigableset mental model, java navigablemap navigableset beginner, java treeset first last floor ceiling lower higher, java treemap firstkey lastkey floorkey ceilingkey lowerkey higherkey, java treemap floorentry ceilingentry lowerentry higherentry, floor ceiling comparator order, lower higher strict inclusive difference, reverse order floor ceiling worksheet, range lookup treemap beginner, empty treemap firstkey lastkey nosuchelementexception, empty treemap floor ceiling null, firstkey lastkey empty map warning, firstentry lastentry null empty treemap
 
 <details>
 <summary>Table of Contents</summary>
@@ -106,6 +106,8 @@ retrieval-anchor-keywords: language-java-00062, navigablemap mental model, navig
 `firstEntry()`/`lastEntry()`와 `firstKey()`/`lastKey()`의 empty behavior만 따로 짧게 고정하고 싶다면 [`firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge](./firstentry-lastentry-vs-firstkey-lastkey-bridge.md)를 먼저 보고 돌아오면 된다.
 
 `null` 경계만 3문항으로 짧게 손예측해 보고 싶다면 [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)을 먼저 보고 돌아오면 된다.
+
+## 메서드 이름을 한 장으로 보기 (계속 2)
 
 range view인 `headSet`/`tailSet`/`subSet`, `headMap`/`tailMap`/`subMap` 결과를 먼저 손으로 맞혀 보고 싶다면 [Navigable Range API 미니 드릴](./navigable-range-api-mini-drill.md)부터 보는 편이 빠르다.
 
@@ -364,6 +366,9 @@ System.out.println(students.higher(query));  // Student[id=30, name=Sora]
 - `TreeSet`/`TreeMap`에서 comparator가 "같은 자리"까지 정한다는 감각을 이어서 보려면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - comparator를 직접 넘기지 않은 `TreeSet`/`TreeMap`의 `compareTo()` 기준을 보려면 [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 - 워크시트에서 본 이웃 질의를 예약 충돌 검사, gap check, 시간창 조회로 연결하고 싶다면 [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
+
+## 어떤 문서를 다음에 읽으면 좋은가 (계속 2)
+
 - 컬렉션 구현체 선택 감각을 넓히려면 [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 
 ## 한 줄 정리

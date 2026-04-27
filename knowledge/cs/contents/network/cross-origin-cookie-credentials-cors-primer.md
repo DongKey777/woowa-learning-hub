@@ -17,7 +17,7 @@
 - [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: cross-origin cookie primer, fetch credentials mode, same-origin vs same-site, cross-site cookie fetch, cors credentials cookie, set-cookie cross-origin fetch, request cookie header missing, options only vs actual request, cookie scope mismatch handoff, cookie scope vs cors chooser, browser session beginner ladder, beginner cors cookie next step
+retrieval-anchor-keywords: cross-origin cookie primer, fetch credentials mode, same-origin vs same-site, cross-site cookie fetch, cors credentials cookie, set-cookie cross-origin fetch, request cookie header missing, options only vs actual request, cookie scope mismatch handoff, cookie scope vs cors chooser, browser session beginner ladder, beginner cors cookie next step, cross origin cookie credentials cors primer basics, cross origin cookie credentials cors primer beginner, cross origin cookie credentials cors primer intro
 
 <details>
 <summary>Table of Contents</summary>
@@ -125,6 +125,8 @@ cookie 속성 자체의 의미가 먼저 헷갈리면 [Cookie Attribute Matrix: 
 | 어느 칸을 봐야 할지부터 헷갈린다 | [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md) | "지금 비교해야 할 칸이 어디인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 
 짧게 외우면 이것만 기억하면 된다.
+
+## 여기까지 이해했다면 다음 갈래 (계속 2)
 
 - [CORS 기초](../security/cors-basics.md): 요청은 갔는데 응답 읽기가 막힌다
 - [Preflight Debug Checklist](../security/preflight-debug-checklist.md): actual request가 아직 안 나갔다

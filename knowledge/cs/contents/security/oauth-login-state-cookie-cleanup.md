@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `follow-up primer`
 >
 > broad한 OAuth 입문 문서가 아니라, 이미 social login callback host/path migration을 했거나 `state mismatch`, callback loop, old callback cookie 잔존이 보인 뒤에 여는 문서다. `SameSite` 자체가 처음 헷갈리면 [SameSite Login Callback Primer](./samesite-login-callback-primer.md)를 먼저 보고, duplicate raw header나 old scope tombstone 설계가 핵심이면 이 문서로 내려온다.
@@ -18,7 +25,7 @@
 > - `[primer]` [Host Cookie Migration Primer](./host-cookie-migration-primer.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: oauth login state cookie cleanup, social login callback cookie cleanup, old login_state cookie cleanup, oauth callback host migration cookie cleanup, oauth callback path migration cookie cleanup, state mismatch after callback move, old oauth session cookie survives callback migration, social login callback migration primer, callback host changed old cookie remains, callback path changed old cookie remains, host-only login state cleanup, oauth cookie tombstone exact path, oauth cookie tombstone exact host, callback moved from auth.example.com to login.example.com, callback moved from /oauth2/callback to /login/oauth2/code, stale oauth transaction cookie, stale login_state causes callback loop, oauth state cookie migration, social login cookie cleanup beginner, callback cookie migration follow-up, browser session troubleshooting oauth callback cleanup
+retrieval-anchor-keywords: oauth login state cookie cleanup, social login callback cookie cleanup, old login_state cookie cleanup, oauth callback host migration cookie cleanup, oauth callback path migration cookie cleanup, state mismatch after callback move, old oauth session cookie survives callback migration, social login callback migration primer, callback host changed old cookie remains, callback path changed old cookie remains, host-only login state cleanup, oauth cookie tombstone exact path, oauth cookie tombstone exact host, social login cookie cleanup beginner, oauth login state cookie cleanup basics
 retrieval-anchor-keywords: oauth callback cookie path shadowing, callback session cookie old path, login_state cookie old path cleanup, auth callback rename cleanup, callback host cutover cookie cleanup, old callback cookie shadows new session, oauth callback duplicate cookie, stale callback transaction after social login deploy, old host cookie cannot be deleted from new host, cleanup old auth host cookie from callback, oauth migration cleanup matrix
 
 ## 왜 이 문서를 지금 여나

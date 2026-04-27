@@ -6,6 +6,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: basic basics, basic beginner, basic intro, data structure basics, beginner data structure, 처음 배우는데 basic, basic 입문, basic 기초, what is basic, how to basic
 > retrieval-anchor-keywords: data structure basics, beginner data structure, array basics, dynamic array, linked list basics, singly linked list, doubly linked list, array vs linked list, stack basics, lifo, queue basics, fifo, queue terminology, queue api terms, enqueue dequeue peek, front rear head tail, circular queue basics, ring buffer basics, circular queue vs ring buffer, deque basics, queue vs deque, priority queue vs queue, hash table basics, hash map basics, collision basics, heap basics, priority queue basics, min heap, max heap, tree basics, binary tree basics, binary search tree basics, bst basics, binary tree vs bst vs heap, binary tree traversal basics, preorder inorder postorder, level order traversal, tree traversal routing, graph basics, graph representation, adjacency list, adjacency matrix, edge list, union find basics, union-find basics, disjoint set union basics, DSU basics, connected components, cycle detection, backend data structure, tradeoff
 >
 > 관련 문서:
@@ -40,7 +49,7 @@
 
 ---
 
-자료구조는 **데이터를 어떤 모양으로 저장하고 어떤 연산을 빠르게 만들지 결정하는 설계**다.  
+자료구조는 **데이터를 어떤 모양으로 저장하고 어떤 연산을 빠르게 만들지 결정하는 설계**다.
 같은 데이터를 다뤄도, 무엇을 자주 하느냐에 따라 최적의 구조가 달라진다.
 
 - `index`로 바로 읽고 싶으면 `Array`
@@ -72,7 +81,7 @@
 
 ## Array (배열)
 
-배열은 같은 타입의 데이터를 **연속된 메모리 공간**에 저장하는 가장 기본적인 구조다.  
+배열은 같은 타입의 데이터를 **연속된 메모리 공간**에 저장하는 가장 기본적인 구조다.
 핵심 감각은 `index` 하나로 원하는 위치를 바로 찾을 수 있다는 점이다.
 
 - 잘 맞는 문제:
@@ -94,14 +103,14 @@ values[1] = 20;
 values[2] = 30;
 ```
 
-배열은 다른 구조의 기준점이기도 하다.  
+배열은 다른 구조의 기준점이기도 하다.
 힙은 배열 인덱스로 구현할 수 있고, 인접 행렬도 결국 2차원 배열이며, 많은 알고리즘의 보조 메모리가 배열이다.
 
 ---
 
 ## Linked List (연결 리스트)
 
-연결 리스트는 각 노드가 다음 노드(또는 이전 노드)의 참조를 들고 이어지는 구조다.  
+연결 리스트는 각 노드가 다음 노드(또는 이전 노드)의 참조를 들고 이어지는 구조다.
 배열처럼 연속 메모리에 있지 않아 random access는 느리지만, **이미 위치를 알고 있는 노드 주변을 수정하는 작업**에는 자연스럽다.
 
 - 잘 맞는 문제:
@@ -135,7 +144,7 @@ values[2] = 30;
 
 ## Stack (스택)
 
-스택은 마지막에 넣은 것이 먼저 나오는 **LIFO(Last In, First Out)** 구조다.  
+스택은 마지막에 넣은 것이 먼저 나오는 **LIFO(Last In, First Out)** 구조다.
 "가장 최근 작업부터 되돌리기"가 핵심인 흐름이면 스택을 먼저 떠올리면 된다.
 
 - 대표 연산:
@@ -160,14 +169,14 @@ values[2] = 30;
 - [Singly Linked List를 통해 구현한 Stack](./code/Stack/LinkedStack.java)
 - 위 코드 실행 : [StackExample.java](./code/Stack/StackExample.java)
 
-스택은 자료구조 자체보다도 **문제의 시간 흐름**을 읽는 힌트로 중요하다.  
+스택은 자료구조 자체보다도 **문제의 시간 흐름**을 읽는 힌트로 중요하다.
 예외 처리, 롤백, parser backtracking을 볼 때 "마지막 상태부터 되돌린다"면 스택 관점이 숨어 있는 경우가 많다.
 
 ---
 
 ## Queue (큐)
 
-큐는 먼저 들어온 것이 먼저 나오는 **FIFO(First In, First Out)** 구조다.  
+큐는 먼저 들어온 것이 먼저 나오는 **FIFO(First In, First Out)** 구조다.
 순서가 중요한 대기열이라면 가장 먼저 떠올릴 기본 구조다.
 
 - 대표 연산:
@@ -212,21 +221,23 @@ values[2] = 30;
 - [Singly Linked List를 통해 구현한 Queue](./code/Queue/LinkedQueue.java)
 - 위 코드 실행 : [QueueExample.java](./code/Queue/QueueExample.java)
 
-> Java에서 `Queue` 인터페이스는 `LinkedList`, `ArrayDeque`, `PriorityQueue` 같은 구현체와 함께 쓸 수 있다.  
+## Queue (큐) (계속 2)
+
+> Java에서 `Queue` 인터페이스는 `LinkedList`, `ArrayDeque`, `PriorityQueue` 같은 구현체와 함께 쓸 수 있다.
 > `FIFO queue`인지 `priority queue`인지 먼저 구분하는 습관이 중요하다.
 
 `queue`, `deque`, `priority queue`가 한꺼번에 나와 헷갈리면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)에서 `도착 순서`, `양쪽 끝 제어`, `우선순위` 기준으로 먼저 분리해 두면 이후 BFS, sliding window, heap 문제 라우팅이 훨씬 쉬워진다.
 
 `enqueue/dequeue`와 `front/rear/head/tail`이 한꺼번에 섞이면 [Circular Queue vs Ring Buffer Primer](./circular-queue-vs-ring-buffer-primer.md)에서 `queue API`, `원형 배열 구현`, `bounded buffer 운영`을 따로 분리해 보는 편이 빠르다. 시스템 쪽 정책과 예측 가능한 지연시간까지 보려면 [Ring Buffer](./ring-buffer.md)로 이어서 읽으면 된다.
 
-큐는 요청과 처리 사이의 완충재 역할도 한다.  
+큐는 요청과 처리 사이의 완충재 역할도 한다.
 백그라운드 작업 분배, 메시지 소비, rate limiter 앞단의 대기열에서 자주 보인다.
 
 ---
 
 ## Hash Table (해시 테이블)
 
-해시 테이블은 키를 해시값으로 바꿔 **버킷(bucket)** 을 빠르게 찾는 `key -> value` 구조다.  
+해시 테이블은 키를 해시값으로 바꿔 **버킷(bucket)** 을 빠르게 찾는 `key -> value` 구조다.
 Java의 `HashMap`이 가장 익숙한 예시다.
 
 - 잘 맞는 문제:
@@ -248,7 +259,7 @@ Java의 `HashMap`이 가장 익숙한 예시다.
 - "이 키의 값을 바로 찾고 싶은가?"
 - "순서는 필요 없고 exact lookup만 빠르면 되는가?"
 
-이 질문에 `yes`가 많으면 해시 테이블이 자연스럽다.  
+이 질문에 `yes`가 많으면 해시 테이블이 자연스럽다.
 정렬된 순서나 최근 사용 순서가 필요하면 [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)로 이어서 보면 된다.
 
 Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
@@ -260,7 +271,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
 
 ## Heap (힙)
 
-힙은 **가장 작은 값** 또는 **가장 큰 값**을 빠르게 꺼내기 위한 우선순위 구조다.  
+힙은 **가장 작은 값** 또는 **가장 큰 값**을 빠르게 꺼내기 위한 우선순위 구조다.
 보통 완전 이진 트리를 배열로 구현하며, 루트 하나만 확실하게 우선순위를 보장한다.
 
 - 잘 맞는 문제:
@@ -291,7 +302,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
 
 ## Tree (트리)
 
-트리는 부모-자식 관계를 가지는 계층 구조다.  
+트리는 부모-자식 관계를 가지는 계층 구조다.
 핵심은 **한 노드가 여러 자식을 가질 수 있지만, 부모는 보통 하나**라는 점이다.
 
 - 잘 맞는 문제:
@@ -314,7 +325,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
 
 ### Tree가 자연스러운 이유
 
-트리는 "누가 누구 아래에 있는가"를 표현할 때 가장 읽기 쉽다.  
+트리는 "누가 누구 아래에 있는가"를 표현할 때 가장 읽기 쉽다.
 그래서 문제 설명에 `하위`, `자식`, `폴더`, `상속`, `카테고리`, `부모 메뉴`가 나오면 트리를 먼저 의심하면 된다.
 
 더 나아가면 [Trie](./trie-prefix-search-autocomplete.md), [Fenwick Tree](./fenwick-tree.md), [Heavy-Light Decomposition](./heavy-light-decomposition.md)처럼 응용 구조로 확장된다.
@@ -323,7 +334,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
 
 ## Binary Tree (이진 트리)
 
-이진 트리는 각 노드가 최대 두 개의 자식을 갖는 트리다.  
+이진 트리는 각 노드가 최대 두 개의 자식을 갖는 트리다.
 왼쪽/오른쪽 자식을 구분하므로, 여러 기본 자료구조와 알고리즘의 기반이 된다.
 
 - 핵심 유형:
@@ -339,7 +350,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
   - "이진 트리"와 "이진 탐색 트리(BST)"는 다르다
   - 모든 이진 트리가 정렬 성질을 가지는 것은 아니다
 
-이진 트리는 직접 포인터로 연결해도 되고, 완전 이진 트리 성질을 활용해 배열 인덱스로 관리할 수도 있다.  
+이진 트리는 직접 포인터로 연결해도 되고, 완전 이진 트리 성질을 활용해 배열 인덱스로 관리할 수도 있다.
 힙이 대표적인 배열 기반 이진 트리 예시다.
 
 `binary tree`, `BST`, `heap`가 자꾸 섞이면 [Binary Tree vs BST vs Heap Bridge](./binary-tree-vs-bst-vs-heap-bridge.md)에서 `모양`, `정렬`, `우선순위` 축으로 먼저 분리한 뒤, heap이나 ordered tree 심화 문서로 넘어가는 편이 덜 헷갈린다.
@@ -350,7 +361,7 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
 
 ## Graph (그래프)
 
-그래프는 정점(vertex)과 간선(edge)으로 관계를 표현하는 구조다.  
+그래프는 정점(vertex)과 간선(edge)으로 관계를 표현하는 구조다.
 트리보다 일반적이어서 **사이클, 다대다 관계, 네트워크, 경로**를 자연스럽게 모델링한다.
 
 - 잘 맞는 문제:
@@ -384,14 +395,14 @@ Hash Table 입문 뒤에는 다음 흐름이 자연스럽다.
   - 순서를 구하나?
   - 최소 비용으로 모두 잇나?
 
-이 분기부터는 자료구조를 넘어 알고리즘 선택이 시작된다.  
+이 분기부터는 자료구조를 넘어 알고리즘 선택이 시작된다.
 [알고리즘 기본](../algorithm/basic.md#dfs와-bfs)에서 DFS/BFS를 보고, 이어서 [그래프 관련 알고리즘](../algorithm/graph.md)에서 shortest path, MST, topological sort, flow로 이어 가면 좋다.
 
 ---
 
 ## Union-Find (유니온-파인드)
 
-Union-Find는 서로소 집합(Disjoint Set Union, DSU)을 관리하는 구조다.  
+Union-Find는 서로소 집합(Disjoint Set Union, DSU)을 관리하는 구조다.
 핵심은 "**두 원소가 지금 같은 그룹인가?**"와 "**이 두 그룹을 합쳐도 되는가?**"를 빠르게 처리하는 것이다.
 
 - 대표 연산:

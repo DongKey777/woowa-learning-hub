@@ -11,7 +11,7 @@
 - [HTTP/HTTPS 기초](../network/http-https-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: stateless stateful basics, stateless 서비스 입문, stateful 뭐예요, 세션 서버 상태, jwt stateless, 서버 상태 저장, stateless api 기초, 서버 확장 상태 관리, beginner stateless, 외부 세션 저장, 무상태 서비스, stateless rest api
+retrieval-anchor-keywords: stateless stateful basics, stateless 서비스 입문, stateful 뭐예요, 세션 서버 상태, jwt stateless, 서버 상태 저장, stateless api 기초, 서버 확장 상태 관리, beginner stateless, 외부 세션 저장, 무상태 서비스, stateless rest api, stateless vs stateful basics basics, stateless vs stateful basics beginner, stateless vs stateful basics intro
 
 ---
 

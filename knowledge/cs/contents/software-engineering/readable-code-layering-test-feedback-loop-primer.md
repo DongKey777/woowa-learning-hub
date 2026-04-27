@@ -17,7 +17,9 @@
 - [코드 리뷰 기초](./code-review-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: readable code primer, readable code layering testing primer, 관심사 분리 입문, separation of concerns beginner, controller service repository responsibility, readable service method, unit vs integration test beginner, unit test integration test difference, refactor with tests loop, 테스트 피드백 루프, 테스트로 리팩토링 안전망, 우테코 코드 리뷰 가독성, 우테코 코드 리뷰 테스트, beginner readable code, beginner layering testing, red green refactor review loop, service test unit or integration, beginner layering testing mental model, first mission readability checklist, 30분 10분 분기 예시, beginner pr scenario mapping, 가독성 이슈 분기, 레이어 혼합 분기, 테스트 과잉 분기, pr review symptom branch table
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: readable code primer, readable code layering testing primer, 관심사 분리 입문, separation of concerns beginner, controller service repository responsibility, readable service method, unit vs integration test beginner, unit test integration test difference, refactor with tests loop, 테스트 피드백 루프, 테스트로 리팩토링 안전망, 우테코 코드 리뷰 가독성, 우테코 코드 리뷰 테스트, beginner readable code, beginner layering testing
 
 ## 핵심 개념
 
@@ -135,6 +137,8 @@ public OrderId place(CreateOrderCommand command) {
 
 이제 질문이 나뉜다.
 
+## before / after 짧은 예시로 보기 (계속 2)
+
 - Controller는 입력/응답에 집중한다.
 - Service는 유스케이스 조립에 집중한다.
 - `Order.place(...)`는 핵심 규칙에 집중한다.
@@ -238,6 +242,8 @@ public OrderId place(CreateOrderCommand command) {
 > "Service가 외부 시스템 세부 구현까지 너무 많이 알고 있어요."
 
 이 코멘트에서 중요한 것은 "Service가 두껍다"가 아니라, **유스케이스 조립과 외부 연동 세부가 같은 레이어에 섞였는가**다.
+
+## 30분에서 10분 분기로 넘어갈 때: 실제 PR 상황 3개 (계속 2)
 
 | 바로 보이는 증상 | 먼저 할 일 | 아직 미루는 일 |
 |---|---|---|

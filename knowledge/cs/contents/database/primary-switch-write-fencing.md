@@ -4,12 +4,19 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
-retrieval-anchor-keywords: primary switch, write fencing, fencing epoch, stale primary, promotion cutover, visibility window, commit horizon
+retrieval-anchor-keywords: primary switch, write fencing, fencing epoch, stale primary, promotion cutover, visibility window, commit horizon, primary switch write fencing basics, primary switch write fencing beginner, primary switch write fencing intro, database basics, beginner database, 처음 배우는데 primary switch write fencing, primary switch write fencing 입문, primary switch write fencing 기초
 
 ## 핵심 개념
 
-Primary switch는 기존 primary를 내리고 새 primary를 올리는 과정이다.  
+Primary switch는 기존 primary를 내리고 새 primary를 올리는 과정이다.
 이때 가장 위험한 것은 옛 primary가 늦게 살아나서 최신 write를 덮는 것이다.
 
 왜 중요한가:
@@ -55,19 +62,19 @@ write fencing이 없으면 마지막 write가 최신 상태를 망가뜨린다.
 
 ### 4. 읽기와 쓰기를 같이 보면 안 되는 이유
 
-read routing이 늦어도 문제지만, write fencing이 늦으면 더 큰 문제다.  
+read routing이 늦어도 문제지만, write fencing이 늦으면 더 큰 문제다.
 읽기는 다소 stale해도 회복할 수 있지만, 잘못된 write는 복구가 어렵다.
 
 ## 실전 시나리오
 
 ### 시나리오 1: failover 직후 옛 primary가 살아남
 
-쓰기 endpoint가 아직 옛 primary를 가리키면 최신 상태를 덮을 수 있다.  
+쓰기 endpoint가 아직 옛 primary를 가리키면 최신 상태를 덮을 수 있다.
 fencing이 필수다.
 
 ### 시나리오 2: promotion은 끝났는데 일부 worker가 옛 노드 사용
 
-라우팅이 완전히 바뀌지 않았고, stale worker가 write를 보낸다.  
+라우팅이 완전히 바뀌지 않았고, stale worker가 write를 보낸다.
 epoch 검증이 없으면 사고가 난다.
 
 ### 시나리오 3: 네트워크 분할 후 다시 합류

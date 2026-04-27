@@ -17,7 +17,9 @@
 - [Security README: Identity Lifecycle / Provisioning deep dive catalog](./README.md#identity-lifecycle--provisioning-deep-dive-catalog)
 - [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle)
 
-retrieval-anchor-keywords: identity lifecycle primer, provisioning primer, scim primer, scim beginner route, deprovision beginner route, user lifecycle basics, scim disable but still access primer, provisioning vs login, deprovision vs revoke, group removal still access, disable still access next step, 그룹 제거했는데 권한 남음
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: identity lifecycle primer, provisioning primer, scim primer, scim beginner route, deprovision beginner route, user lifecycle basics, scim disable but still access primer, provisioning vs login, deprovision vs revoke, group removal still access, disable still access next step, 그룹 제거했는데 권한 남음, identity lifecycle provisioning primer basics, identity lifecycle provisioning primer beginner, identity lifecycle provisioning primer intro
 
 카테고리로 돌아가기:
 

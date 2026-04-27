@@ -17,7 +17,7 @@
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: posix_spawn file actions basics, posix_spawn redirect basics, posix_spawn stdin redirect, posix_spawn stdout redirect, posix_spawn stderr redirect, posix_spawn dup2 mental model, posix_spawn_file_actions_adddup2, posix_spawn_file_actions_addopen, posix_spawn_file_actions_addclose, posix_spawn pipe redirection, posix_spawn cloexec basics, spawn file actions beginner, posix_spawn file actions self-check, beginner handoff box, primer handoff box, posix_spawn file actions 다음 문서, posix_spawn 파일액션 자가 점검
+retrieval-anchor-keywords: posix_spawn file actions basics, posix_spawn redirect basics, posix_spawn stdin redirect, posix_spawn stdout redirect, posix_spawn stderr redirect, posix_spawn dup2 mental model, posix_spawn_file_actions_adddup2, posix_spawn_file_actions_addopen, posix_spawn_file_actions_addclose, posix_spawn pipe redirection, posix_spawn cloexec basics, spawn file actions beginner, posix_spawn file actions self-check, beginner handoff box, primer handoff box
 
 ## 먼저 잡는 멘탈 모델
 

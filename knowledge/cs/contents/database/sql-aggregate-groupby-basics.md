@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: sql aggregate beginner, group by 처음 배우는데, count sum avg 입문, having 절 설명, group by 기초, sql 집계 함수 입문, 집계 함수가 뭐예요, select group by order, having vs where 차이, sql 통계 쿼리 입문
+retrieval-anchor-keywords: sql aggregate beginner, group by 처음 배우는데, count sum avg 입문, having 절 설명, group by 기초, sql 집계 함수 입문, 집계 함수가 뭐예요, select group by order, having vs where 차이, sql 통계 쿼리 입문, sql aggregate groupby basics basics, sql aggregate groupby basics beginner, sql aggregate groupby basics intro, database basics, beginner database
 
 ## 핵심 개념
 

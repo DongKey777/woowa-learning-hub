@@ -22,7 +22,7 @@
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [SQL 읽기와 관계형 모델링 기초](../database/sql-reading-relational-modeling-primer.md)
 
-retrieval-anchor-keywords: spring request pipeline beginner, spring bean container foundation, dispatcherservlet beginner, controller service repository roles, controller service repository 차이, spring mission structure, woowacourse backend spring structure, 우테코 백엔드 스프링 구조, spring bean registration vs di, component scan beginner, @SpringBootApplication scan beginner, configuration reading spring, application yml spring beginner, @ConfigurationProperties beginner, @Value beginner, spring request flow and bean container, spring 입문 한 장 그림, dispatcher servlet bean container relationship, spring primer return path, spring readme request pipeline entrypoint, spring to network http bridge, spring to database sql primer bridge, beginner backend lane handoff, spring request flow entry route, http mvc ioc di beginner bridge
+retrieval-anchor-keywords: spring request pipeline beginner, spring bean container foundation, dispatcherservlet beginner, controller service repository roles, controller service repository 차이, spring mission structure, woowacourse backend spring structure, 우테코 백엔드 스프링 구조, spring bean registration vs di, component scan beginner, @springbootapplication scan beginner, configuration reading spring, application yml spring beginner, @configurationproperties beginner, @value beginner
 
 ## 첫 읽기 엔트리 루트 (HTTP -> MVC -> IoC/DI)
 
@@ -47,6 +47,9 @@ retrieval-anchor-keywords: spring request pipeline beginner, spring bean contain
 - `application.yml` 값이 왜 기대와 다르게 들어오는지 먼저 가르려면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)로 넘어간다.
 - 단일 설정값 주입과 설정 객체 바인딩을 언제 나눌지 헷갈리면 [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)로 이어진다.
 - Bean이 아예 안 뜬다면 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)에서 scan 경계부터 본다.
+
+## 이 문서 다음에 보면 좋은 문서 (계속 2)
+
 - HTTP 요청 자체가 아직 흐리면 [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)으로 한 번 내려가 네트워크 단계부터 다시 맞춘다.
 - Repository/JPA 전에 SQL 관계 모델부터 안전하게 정리하려면 [SQL 읽기와 관계형 모델링 기초](../database/sql-reading-relational-modeling-primer.md)로 이어진다.
 

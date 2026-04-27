@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `follow-up primer`
 >
 > broad한 login-loop 첫 진입점이 아니라, 실패한 요청 raw `Cookie` header에 같은 이름이 실제로 중복 전송되었거나 [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md), [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)에서 `duplicate detour`가 확정됐을 때 여는 문서다.
@@ -19,7 +26,7 @@
 > - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, cookie name collision, same cookie name different path, same cookie name different domain, duplicate JSESSIONID, duplicate SESSION cookie, cookie header duplicate name, browser sends two cookies same name, stale cookie shadows new cookie, cookie path shadowing, cookie domain shadowing, wrong session cookie sent, wrong session cookie selected, login loop duplicate cookie, re-login loop duplicate cookie, cookie overwrite myth, last Set-Cookie does not always win, delete cookie exact path domain, auth cookie shadowing, callback login loop duplicate cookie, session cookie duplicate domain path, cookie scope collision, duplicate cookie follow-up primer, duplicate cookie detour, duplicate cookie after raw header proof, duplicate cookie return path, deduped cookie still login loop, duplicate cookie fixed but still anonymous, duplicate cookie fixed but cookie header missing, browser session troubleshooting path duplicate cookie, browser session beginner ladder duplicate cookie, cookie scope troubleshooting duplicate detour, duplicate cookie handoff primer, request header verification duplicate cookie, application vs network duplicate detour
+retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, cookie name collision, same cookie name different path, same cookie name different domain, duplicate jsessionid, cookie header duplicate name, browser sends two cookies same name, stale cookie shadows new cookie, cookie path shadowing, cookie domain shadowing, wrong session cookie sent, wrong session cookie selected, browser session beginner ladder duplicate cookie, duplicate cookie name shadowing basics
 retrieval-anchor-keywords: callback cookie same name as session, same name different role not duplicate, callback cookie role split
 
 ## 왜 이 문서를 지금 여나
@@ -244,6 +251,8 @@ duplicate detour를 끝냈으면 같은 login-loop primer path로 복귀하는 3
 
 - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)에서 duplicate detour로 들어왔으면, 이 문서에서 중복 여부를 정리한 뒤 `입문 -> 증상 분기 -> 카테고리 라우터` 순서로 위 사다리를 타고 돌아온다.
 
+## duplicate를 확인한 뒤 어디로 이어 가나 (계속 2)
+
 | duplicate를 본 뒤 남은 장면 | 이제 중심 원인 | 다음 한 걸음 |
 |---|---|---|
 | 실패한 요청의 raw `Cookie` header에서 같은 이름 중복이 사라졌는데 header 자체가 비었다 | duplicate보다 cookie 전송 범위 문제가 더 중심이다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
@@ -252,6 +261,8 @@ duplicate detour를 끝냈으면 같은 login-loop primer path로 복귀하는 3
 | 어느 갈래로 다시 가야 할지 헷갈린다 | symptom 기준으로 browser/session troubleshooting route를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 
 추가로 이것만 기억하면 된다.
+
+## duplicate를 확인한 뒤 어디로 이어 가나 (계속 3)
 
 - 이 문서가 끝내는 질문은 `중복이 있나?`다.
 - 다음 질문은 `Cookie` header가 비었나, 하나인데도 익명인가, redirect host/scheme이 꺾였나 중 하나다.

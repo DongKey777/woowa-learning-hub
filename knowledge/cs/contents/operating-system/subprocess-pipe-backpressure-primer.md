@@ -22,7 +22,7 @@
 - [HTTP Response Compression, Buffering, Streaming Trade-offs](../network/http-response-compression-buffering-streaming-tradeoffs.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: subprocess pipe backpressure primer, subprocess pipe backpressure, pipe backpressure mental model, child blocks writing stdout pipe, parent wait before read deadlock, sequential stdout stderr read deadlock, stdout pipe full, stderr pipe full, child stuck in write syscall, write blocks when pipe full, pipe backpressure 처음 배우는데, stdout stderr 안 읽으면 멈춤, subprocess pipe hang basics
+retrieval-anchor-keywords: subprocess pipe backpressure primer, subprocess pipe backpressure, pipe backpressure mental model, child blocks writing stdout pipe, parent wait before read deadlock, sequential stdout stderr read deadlock, stdout pipe full, stderr pipe full, child stuck in write syscall, write blocks when pipe full, pipe backpressure 처음 배우는데, stdout stderr 안 읽으면 멈춤, subprocess pipe hang basics, subprocess pipe backpressure primer basics, subprocess pipe backpressure primer beginner
 
 ## Subprocess Primer Handoff
 

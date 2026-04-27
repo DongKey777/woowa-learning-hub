@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
@@ -18,7 +25,7 @@
 > - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
 > - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 
-retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, actuator conditions when to use, debug vs actuator conditions, when to use debug first, when to use actuator conditions first, @ConditionalOnMissingBean miss, existing bean found, user bean wins, boot default bean skipped, auto-configuration first debug, why boot bean missing, starter bean not created, spring boot conditions report beginner route, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing vs false, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override, bean registration vs injection, existing bean found primary not fix, registration problem injection problem
+retrieval-anchor-keywords: conditionevaluationreport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, actuator conditions when to use, debug vs actuator conditions, when to use debug first, when to use actuator conditions first, @conditionalonmissingbean miss, existing bean found, user bean wins, boot default bean skipped
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -136,6 +143,8 @@ management:
 
 이 endpoint는 ConditionEvaluationReport 계열 정보를 HTTP로 보여 주는 진단 창구다.
 
+## 2. first-debug checklist (계속 2)
+
 - restart 없이 확인할 수 있다
 - 지금 떠 있는 profile / property / classpath 문맥을 본다
 - 같은 auto-configuration을 positive/negative match로 나눠 볼 수 있다
@@ -179,6 +188,8 @@ beginner가 가장 자주 헷갈리는 지점이다.
 | property 조건 실패 | 설정값이 기대와 다르다 | active profile, env var, test property |
 | web 조건 실패 | servlet/reactive/none 문맥이 다르다 | `spring.main.web-application-type`, starter 조합 |
 | 같은 코드인데 환경별 결과가 다르다 | profile/property/classpath 차이 가능성 | 로컬 vs CI vs 운영 설정 diff |
+
+## 2. first-debug checklist (계속 3)
 
 특히 `@ConditionalOnProperty`면 "`false`인가?"만 보지 말고 **missing / `havingValue` 불일치 / env var key 차이**를 나눠 보는 게 빠르다. 이 부분은 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)에서 바로 이어진다.
 

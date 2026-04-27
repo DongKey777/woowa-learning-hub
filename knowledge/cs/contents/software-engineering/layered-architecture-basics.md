@@ -15,7 +15,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [Spring Bean DI Basics](../spring/spring-bean-di-basics.md)
 
-retrieval-anchor-keywords: layered architecture basics, 계층형 아키텍처 입문, 레이어드 아키텍처 기초, controller service repository 구조, presentation layer, business layer, persistence layer, 계층 분리 이유, 3 tier architecture beginner, 레이어 의존 방향, 계층 왜 나누나요, beginner layered architecture, responsibility leakage example, controller fat anti pattern, clean layering before after, controller validation boundary, controller transaction boundary, service transaction orchestration, validation in controller vs service, order create inventory check example, 주문 생성 재고 확인 예시, controller service repository 주문 생성, 형식 검증 업무 규칙 트랜잭션 한 줄 요약, controller service validation transaction self check, self-check 상단 요약
+retrieval-anchor-keywords: layered architecture basics, 계층형 아키텍처 입문, 레이어드 아키텍처 기초, controller service repository 구조, presentation layer, business layer, persistence layer, 계층 분리 이유, 3 tier architecture beginner, 레이어 의존 방향, 계층 왜 나누나요, beginner layered architecture, responsibility leakage example, controller fat anti pattern, clean layering before after
 
 ## 먼저 보는 10초 기준
 
@@ -102,6 +102,8 @@ public OrderResponse create(@RequestBody OrderRequest req) {
 
 #### After: 주문 생성 흐름을 Controller Service Repository로 나눈 상태
 
+## 상세 분해 (계속 2)
+
 ```java
 // AFTER: 같은 주문 생성 시나리오를 Controller -> Service -> Repository로 분리
 @PostMapping("/orders")
@@ -147,6 +149,8 @@ before/after를 본 뒤에도 "그럼 after에서 Service가 어디까지 맡아
 
 ### 짧은 안티패턴 비교: Controller가 Repository 조회로 검증까지 하는 경우
 
+## 상세 분해 (계속 3)
+
 초심자가 특히 많이 하는 실수는 "중복 이메일 검사 정도는 간단하니까 Controller에서 Repository를 직접 조회해도 되지 않나?"라고 생각하는 것이다. 하지만 이 순간부터 검증 규칙이 HTTP 진입점에 묶인다.
 
 | 상태 | 코드 모양 | 왜 문제인가 |
@@ -188,6 +192,8 @@ class UserService {
 ```
 
 짧게 외우면:
+
+## 상세 분해 (계속 4)
 
 - `@Email`, 빈 문자열, JSON 형식 오류는 Controller
 - `이미 가입된 이메일인가?`처럼 조회가 필요한 업무 규칙은 Service/Domain

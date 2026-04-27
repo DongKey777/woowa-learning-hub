@@ -11,7 +11,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [design-pattern 카테고리 인덱스](../design-pattern/README.md)
 
-retrieval-anchor-keywords: clean code basics, 클린 코드 입문, 네이밍 규칙, 함수 크기 기준, 가독성 기초, 코드 가독성 뭐예요, 변수명 짓는 법, 매직 넘버 없애기, 클린 코드 처음 배우는데, 주석 쓰는 법, beginner clean code, 함수 하나의 일
+retrieval-anchor-keywords: clean code basics, 클린 코드 입문, 네이밍 규칙, 함수 크기 기준, 가독성 기초, 코드 가독성 뭐예요, 변수명 짓는 법, 매직 넘버 없애기, 클린 코드 처음 배우는데, 주석 쓰는 법, beginner clean code, 함수 하나의 일, clean code basics basics, clean code basics beginner, clean code basics intro
 
 ## 핵심 개념
 

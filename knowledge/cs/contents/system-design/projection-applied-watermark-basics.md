@@ -19,7 +19,7 @@
 - [Database: Incremental Summary Table Refresh and Watermark Discipline](../database/incremental-summary-table-refresh-watermark.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: projection applied watermark basics, applied watermark beginner, read model checkpoint basics, projection watermark row, required watermark vs applied watermark, read model watermark state, projector checkpoint beginner, applied watermark expose api, projection catch up marker, read model freshness compare, shard aware applied watermark, per shard checkpoint beginner, outbox token companion, applied watermark cache entry metadata, cache refill watermark persistence, system-design-00076
+retrieval-anchor-keywords: projection applied watermark basics, applied watermark beginner, read model checkpoint basics, projection watermark row, required watermark vs applied watermark, read model watermark state, projector checkpoint beginner, applied watermark expose api, projection catch up marker, read model freshness compare, shard aware applied watermark, per shard checkpoint beginner, outbox token companion, applied watermark cache entry metadata, cache refill watermark persistence
 
 ---
 

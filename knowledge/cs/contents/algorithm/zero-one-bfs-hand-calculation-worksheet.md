@@ -13,7 +13,9 @@
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 
-retrieval-anchor-keywords: 0-1 bfs worksheet, zero one bfs worksheet, 0-1 bfs hand calculation, zero one bfs hand trace, 0-1 bfs deque trace, 0-1 bfs dist trace, 0-1 bfs beginner walkthrough, 0-1 bfs worked example, 0-1 bfs step by step, 0-1 bfs manual simulation, 0-1 bfs deque state, 0-1 bfs dist update, 0-1 bfs stale entry, deque shortest path worksheet, deque shortest path trace, binary weight shortest path worksheet, teleport shortest path worksheet, 0/1 shortest path worksheet, 0-1 bfs 손계산, 0-1 bfs 추적, 0-1 bfs 덱 상태, 0-1 bfs 거리표 변화, 0-1 bfs 줄 단위 예제, 0-1 bfs 입문 예제, 덱 최단 경로 워크시트, 순간이동 최단 경로 손계산
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs worksheet, zero one bfs worksheet, 0-1 bfs hand calculation, zero one bfs hand trace, 0-1 bfs deque trace, 0-1 bfs dist trace, 0-1 bfs beginner walkthrough, 0-1 bfs worked example, 0-1 bfs step by step, 0-1 bfs manual simulation, 0-1 bfs deque state, 0-1 bfs dist update, 0-1 bfs stale entry, deque shortest path worksheet, 0-1 bfs 입문 예제
 
 ## 먼저 잡을 그림
 
@@ -152,3 +154,7 @@ S --(1)--> A --(1)--> C --(0)--> T
 - `visited`를 먼저 쓰면 왜 틀리는지 반례부터 보고 싶으면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - 실제 코드 뼈대에서 `dist`, `parent`, deque가 어디서 같이 움직이는지 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - `0-1 BFS`를 Dijkstra, Dial과 언제 구분해서 쓰는지 보려면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
+
+## 한 줄 정리
+
+`0-1 BFS`는 "비용이 그대로면 앞, 비용이 1 늘면 뒤"만 지키면서 `dist`와 deque를 같이 추적하면 손으로도 충분히 따라갈 수 있다.

@@ -17,7 +17,7 @@
 - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](../network/cross-origin-cookie-credentials-cors-primer.md)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: preflight debug checklist, options-only vs actual request, options 401 not auth, preflight failed actual request not sent, error path cors primer, beginner preflight primer, browser preflight error, 왜 options만 보이나요, devtools network 30초 예시, preflight 다음 어디로 가나
+retrieval-anchor-keywords: preflight debug checklist, options-only vs actual request, options 401 not auth, preflight failed actual request not sent, error path cors primer, beginner preflight primer, browser preflight error, 왜 options만 보이나요, devtools network 30초 예시, preflight 다음 어디로 가나, preflight debug checklist basics, preflight debug checklist beginner, preflight debug checklist intro, security basics, beginner security
 
 ## 먼저 10초 분기표
 
@@ -42,6 +42,8 @@ retrieval-anchor-keywords: preflight debug checklist, options-only vs actual req
 | `OPTIONS`는 해결됐는데도 cookie가 안 붙거나 login/session 문장이 남는다 | preflight보다 session/cookie branch가 앞에 선다 | [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md), [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md), [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 
 초보자용 stop rule:
+
+## 여기서 CORS 분석을 멈추는 순간 (계속 2)
 
 - actual request가 보이는 순간부터는 `OPTIONS` status를 붙잡고 있지 않는다.
 - `OPTIONS`가 해결된 뒤 남는 증상은 대개 auth, cookie, session, redirect branch다.

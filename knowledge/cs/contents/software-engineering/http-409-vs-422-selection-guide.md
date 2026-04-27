@@ -11,6 +11,8 @@
 - [예외 처리 기초](./exception-handling-basics.md)
 - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: 409 vs 422, http 409 conflict, http 422 unprocessable content, business rule violation status code, beginner status code guide, 업무 규칙 위반 상태 코드, 409 422 차이, conflict vs unprocessable content, duplicate reservation 409, invalid state transition 409, domain validation 422, semantic validation error, 상태 충돌 vs 의미 오류, 초심자 decision table, beginner error handling primer
 
 ## 먼저 잡는 한 줄 멘탈 모델
@@ -97,3 +99,7 @@ Content-Type: application/json
 
 - [API 설계와 예외 처리](./api-design-error-handling.md) - `@Valid`, `400`, `409` 분리와 에러 응답 포맷을 더 넓게 본다.
 - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md) - "업무 규칙"을 상태 코드 이전에 어떤 계약으로 표현할지 이어서 본다.
+
+## 한 줄 정리
+
+**같은 요청을 "상태만 바꿔서" 다시 보내면 성공할 수 있으면 `409`, 요청 내용 자체를 고쳐야 하면 `422`**로 먼저 생각하면 초심자 혼동이 크게 줄어든다.

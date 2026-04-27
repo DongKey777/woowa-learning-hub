@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
 > - [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
@@ -12,7 +19,7 @@
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 
-retrieval-anchor-keywords: password reset link wrong host, magic link wrong host, password reset host injection, magic link host injection, public origin guide, configured public origin vs request host, reset link behind proxy, email link internal hostname, x-forwarded-host reset link, host header injection email workflow, raw host vs public base url, reset link localhost production, magic link staging host production, tenant custom domain email link, password reset public origin beginner, email workflow public origin, link generation behind proxy, trusted forwarded host vs configured origin, host header poisoning reset link, account recovery wrong origin
+retrieval-anchor-keywords: password reset link wrong host, magic link wrong host, password reset host injection, magic link host injection, public origin guide, configured public origin vs request host, reset link behind proxy, email link internal hostname, x-forwarded-host reset link, host header injection email workflow, raw host vs public base url, reset link localhost production, magic link staging host production, password reset public origin beginner, password reset magic link public origin guide basics
 
 ## 왜 이 문서를 먼저 읽나
 

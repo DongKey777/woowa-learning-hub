@@ -11,7 +11,7 @@
 - [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 
-retrieval-anchor-keywords: java default method diamond conflict, java two interfaces same default method, java default method override conflict, java class inherits unrelated defaults, java duplicate default method compile error, class wins over interface default, more specific interface wins, interfacename.super syntax, 같은 default method 두 개, 인터페이스 default method 충돌 해결, implements 두 개 했더니 컴파일 에러, 처음 배우는데 default method 충돌 큰 그림, default method 충돌 뭐예요
+retrieval-anchor-keywords: java default method diamond conflict, java two interfaces same default method, java default method override conflict, java class inherits unrelated defaults, java duplicate default method compile error, class wins over interface default, more specific interface wins, interfacename.super syntax, 같은 default method 두 개, 인터페이스 default method 충돌 해결, implements 두 개 했더니 컴파일 에러, 처음 배우는데 default method 충돌 큰 그림, default method 충돌 뭐예요, interface default method diamond conflict basics basics, interface default method diamond conflict basics beginner
 
 <details>
 <summary>Table of Contents</summary>

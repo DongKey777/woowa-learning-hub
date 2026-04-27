@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: bulk helper ports vs query model separation basics, bulk helper ports vs query model separation beginner, bulk helper ports vs query model separation intro, software engineering basics, beginner software engineering, 처음 배우는데 bulk helper ports vs query model separation, bulk helper ports vs query model separation 입문, bulk helper ports vs query model separation 기초, what is bulk helper ports vs query model separation, how to bulk helper ports vs query model separation
 <details>
 <summary>Table of Contents</summary>
 
@@ -348,3 +357,7 @@ write repository는 aggregate 저장/복원 책임을 유지하고, query reposi
 - **목록/상세/검색이 무엇을 보여줄지 스스로 결정하는 것**이면 dedicated query repository가 더 안전하다.
 - helper snapshot이 화면 projection처럼 커지기 시작하면 "조금 더 참자"보다 "읽기 경계를 세우자"가 낫다.
 - 초심자 기준의 안전한 다음 단계는 보통 `같은 DB 위 query repository`이고, 별도 read store는 그 다음 문제다.
+
+## 한 줄 정리
+
+`findByIds` helper port는 "하나의 command/use case가 판단 재료를 한 번에 모으는" 도구이고, dedicated query repository/read model은 "읽기 화면 자체가 별도 제품"이 되었을 때 꺼내는 더 안전한 다음 단계다.

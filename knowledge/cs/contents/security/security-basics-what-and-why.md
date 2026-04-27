@@ -11,7 +11,7 @@
 - [네트워크 HTTP 상태·세션·캐시](../network/http-state-session-cache.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: security basics, 보안이 뭔가요, why security matters, cia triad beginner, confidentiality integrity availability, 인증 인가 기초, backend security intro, security 입문, what is security, 보안 왜 필요해요, security threat beginner, attack surface basics, security fundamental, security readme basic primer, security beginner route, beginner security route, security basics route, security beginner entrypoint, auth basics route, auth beginner route, first-step security primer, security primer next step, return to security README, 처음 보안 공부를 시작할 때
+retrieval-anchor-keywords: security basics, 보안이 뭔가요, why security matters, cia triad beginner, confidentiality integrity availability, 인증 인가 기초, backend security intro, security 입문, what is security, 보안 왜 필요해요, security threat beginner, attack surface basics, security fundamental, security readme basic primer, security beginner route
 
 ## 핵심 개념
 

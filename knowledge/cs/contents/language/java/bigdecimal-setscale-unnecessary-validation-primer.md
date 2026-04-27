@@ -14,7 +14,7 @@
 - [BigDecimal `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps](./bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md)
 - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 
-retrieval-anchor-keywords: bigdecimal setScale beginner, bigdecimal UNNECESSARY validation, bigdecimal input validation scale policy, bigdecimal setScale unnecessary primer, java bigdecimal scale validation beginner, java bigdecimal roundingmode unnecessary, 자바 bigdecimal setScale 검증, 자바 bigdecimal unnecessary 검증, 자바 bigdecimal 소수 자릿수 검증, 자바 bigdecimal 반올림 말고 검증, bigdecimal scale contract, bigdecimal reject extra decimals, bigdecimal payload decimal places validation
+retrieval-anchor-keywords: bigdecimal setscale beginner, bigdecimal unnecessary validation, bigdecimal input validation scale policy, bigdecimal setscale unnecessary primer, java bigdecimal scale validation beginner, java bigdecimal roundingmode unnecessary, 자바 bigdecimal setscale 검증, 자바 bigdecimal unnecessary 검증, 자바 bigdecimal 소수 자릿수 검증, 자바 bigdecimal 반올림 말고 검증, bigdecimal scale contract, bigdecimal reject extra decimals, bigdecimal payload decimal places validation, bigdecimal setscale unnecessary validation primer basics, bigdecimal setscale unnecessary validation primer beginner
 
 ## 먼저 잡을 멘탈 모델
 

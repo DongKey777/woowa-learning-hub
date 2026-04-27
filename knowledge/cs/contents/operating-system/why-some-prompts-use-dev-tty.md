@@ -16,7 +16,9 @@
 - [TTY-Aware Output Capture Patterns](./tty-aware-output-capture-patterns.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00072, why some prompts use dev tty, /dev/tty prompt, dev tty prompt, prompt ignores piped stdin, password prompt ignores stdin, confirmation prompt ignores stdin, why echo pipe does not answer prompt, stdin vs /dev/tty, controlling terminal basics, terminal prompt bypass stdin, password stdin alternative, confirmation non interactive option, yes flag vs tty prompt, askpass basics, password-stdin basics, interactive prompt terminal only, prompt reads from terminal not pipe, why cli still asks password, why cli still asks confirmation, why piped stdin is ignored, /dev/tty beginner, tty prompt mental model, beginner handoff box, primer handoff box, 왜 파이프로 넣었는데 프롬프트가 뜨지, 왜 stdin 무시하고 터미널을 읽지, 비밀번호 프롬프트 /dev/tty, 확인 프롬프트 터미널만 읽음, 파이프 stdin 무시
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00072, why some prompts use dev tty, /dev/tty prompt, dev tty prompt, prompt ignores piped stdin, password prompt ignores stdin, confirmation prompt ignores stdin, why echo pipe does not answer prompt, stdin vs /dev/tty, controlling terminal basics, terminal prompt bypass stdin, password stdin alternative, confirmation non interactive option, yes flag vs tty prompt, askpass basics
 
 ## 먼저 잡는 멘탈 모델
 

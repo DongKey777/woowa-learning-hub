@@ -15,7 +15,7 @@
 - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
 - [System Design Foundations](../system-design/system-design-foundations.md)
 
-retrieval-anchor-keywords: backend delivery observability primer, 운영 배포 감각, 로그는 남기는데 무엇을 지표로 보고 문제면 flag를 끌지 rollback할지, beginner observability primer, logs vs metrics beginner, feature flag vs deploy, rollout rollback beginner, incident response beginner, canary rollback starter, change safety beginner, backend operations primer, project stage backend delivery, observability entrypoint, feature flag rollout basics
+retrieval-anchor-keywords: backend delivery observability primer, 운영 배포 감각, 로그는 남기는데 무엇을 지표로 보고 문제면 flag를 끌지 rollback할지, beginner observability primer, logs vs metrics beginner, feature flag vs deploy, rollout rollback beginner, incident response beginner, canary rollback starter, change safety beginner, backend operations primer, project stage backend delivery, observability entrypoint, feature flag rollout basics, backend delivery observability foundations primer basics
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

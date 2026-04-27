@@ -2,7 +2,7 @@
 
 > 한 줄 요약: freshness context 자체는 요청 문맥으로 들고 가되, trace에는 `무엇을 읽었는지`와 `왜 그렇게 읽었는지`를 저카디널리티 decision attribute로 남겨야 초보자도 stale read를 추적할 수 있다.
 
-retrieval-anchor-keywords: trace attribute freshness read source bridge, freshness trace attributes, read source trace tag, stale read tracing, trace attribute bridge, low cardinality tracing, high cardinality tags, baggage vs span attribute, freshness context propagation, read source decision tracing, selected_source trace, fallback_reason trace, cache reject trace, primary fallback trace, recent_write min_version watermark trace, trace attribute enum design, observability beginner bridge, freshness routing observability trace
+retrieval-anchor-keywords: trace attribute freshness read source bridge, freshness trace attributes, read source trace tag, stale read tracing, trace attribute bridge, low cardinality tracing, high cardinality tags, baggage vs span attribute, freshness context propagation, read source decision tracing, selected_source trace, fallback_reason trace, cache reject trace, observability beginner bridge, trace attribute freshness read source bridge basics
 
 **난이도: 🟢 Beginner**
 

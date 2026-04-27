@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > Beginner Route: `[entrypoint]` [전략 패턴 기초](./strategy-pattern-basics.md) -> `[bridge]` 이 문서 -> `[deep dive]` [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
 
 > 관련 문서:
@@ -16,7 +23,7 @@
 > - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy object, growing strategy map smell, Map Key Strategy policy object, strategy collection vs policy object, behavior selector vs rule object, policy selector beginner, refund policy decision object, discount strategy map smell, strategy map rule explosion, strategy map beginner bridge, policy object beginner bridge, rule deserves policy object, rich decision result vs strategy result, strategy selector with policy object, policy registry beginner, behavior selector stays map, policy object shape beginner, selector vs evaluate beginner, selector stays but rule moves, Map of policy objects selector, 전략 맵 정책 객체, strategy map 커질 때, Map 으로 전략 고르기 정책 객체, 행동 선택기 vs 규칙 객체, 정책 객체 초급, 규칙 판정 객체, 환불 정책 decision, 할인 전략 맵 냄새, strategy map 에 if 가 늘어남, 선택기는 남기고 규칙만 정책 객체로, 정책 객체 모양, 행동 선택기 유지
+retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy object, growing strategy map smell, map key strategy policy object, strategy collection vs policy object, behavior selector vs rule object, policy selector beginner, refund policy decision object, discount strategy map smell, strategy map rule explosion, strategy map beginner bridge, policy object beginner bridge, rule deserves policy object, rich decision result vs strategy result, strategy selector with policy object
 
 ---
 
@@ -189,6 +196,8 @@ public final class VipDiscountStrategy implements DiscountStrategy {
 - 사용자에게 어떤 reason code를 보여 줄 것인가
 
 이때는 정책 객체가 더 읽기 쉽다.
+
+## Policy object가 필요해지는 예 (계속 2)
 
 ```java
 public interface DiscountPolicy {

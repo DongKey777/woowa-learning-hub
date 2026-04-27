@@ -17,7 +17,9 @@
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: explain checklist exact key locking read, explain duplicate precheck, mysql explain analyze duplicate precheck, explain analyze pre-check drift, explain unique key path check, mysql explain for update unique index, exact key explain beginner, full unique key equality explain, duplicate pre-check explain, chosen index path duplicate check, explain before trusting for update, for share explain checklist, jpa duplicate precheck explain, why locking read changed plan, explain key rows type duplicate check, exact-key locking read verification, explain checklist for update duplicate, explain locking read primer, 중복 사전조회 explain 체크리스트, exact key 락킹 리드 explain, full unique key 경로 확인, 유니크 키 경로 explain, explain analyze actual rows duplicate check
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: explain checklist exact key locking read, explain duplicate precheck, mysql explain analyze duplicate precheck, explain analyze pre-check drift, explain unique key path check, mysql explain for update unique index, exact key explain beginner, full unique key equality explain, duplicate pre-check explain, chosen index path duplicate check, explain before trusting for update, for share explain checklist, jpa duplicate precheck explain, why locking read changed plan, explain key rows type duplicate check
 
 ## 핵심 개념
 
@@ -167,6 +169,8 @@ beginner에게 `rows`는 아주 정교한 숫자보다 "좁은가, 넓은가"가
 - `Extra`에 정렬/임시 처리 신호가 눈에 띈다
   - duplicate pre-check 전용 query인지 다시 본다
 
+## beginner 체크리스트 (계속 2)
+
 핵심은 "`FOR UPDATE`/`FOR SHARE`가 붙었는가"보다 "lookup이 아직 단순한가"다.
 
 ## plain `EXPLAIN`이면 충분한 때 vs `EXPLAIN ANALYZE`가 아까운 때
@@ -198,6 +202,8 @@ beginner에게 `rows`는 아주 정교한 숫자보다 "좁은가, 넓은가"가
 1. `EXPLAIN`의 `key/type/rows`는 여전히 intended path처럼 보이는가
 2. `EXPLAIN ANALYZE`의 actual rows도 정말 작게 유지되는가
 3. estimate는 작았는데 actual rows만 커졌다면, "pre-check가 문서보다 넓게 읽는다"는 drift 후보로 본다
+
+## plain `EXPLAIN`이면 충분한 때 vs `EXPLAIN ANALYZE`가 아까운 때 (계속 2)
 
 즉 duplicate pre-check 검증은 보통 plain `EXPLAIN`으로 끝나고, `EXPLAIN ANALYZE`는 **estimate와 실제 체감이 엇갈릴 때만 꺼내는 2차 확인**으로 두면 beginner가 덜 흔들린다.
 

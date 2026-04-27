@@ -12,7 +12,7 @@
 - [Collection vs Collections vs Arrays 유틸리티 미니 브리지](./collection-vs-collections-vs-arrays-utility-mini-bridge.md)
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 
-retrieval-anchor-keywords: interface default vs static method, default method vs static method beginner, default method 언제 쓰는지, interface static method 언제 쓰는지, interface static method vs utility class, interface static method utility class 차이, 인터페이스 static 메서드 vs 유틸리티 클래스, 인터페이스 static 메서드 언제 쓰는지, utility class 언제 쓰는지, 정적 메서드 어디에 두나, interface 안에 둘지 utility class로 뺄지, interface private helper method, interface private method 언제 쓰는지, 처음 배우는데 default method와 static method 차이
+retrieval-anchor-keywords: interface default vs static method, default method vs static method beginner, default method 언제 쓰는지, interface static method 언제 쓰는지, interface static method vs utility class, interface static method utility class 차이, 인터페이스 static 메서드 vs 유틸리티 클래스, 인터페이스 static 메서드 언제 쓰는지, utility class 언제 쓰는지, 정적 메서드 어디에 두나, interface 안에 둘지 utility class로 뺄지, interface private helper method, interface private method 언제 쓰는지, 처음 배우는데 default method와 static method 차이, interface default vs static method primer basics
 
 <details>
 <summary>Table of Contents</summary>
@@ -135,6 +135,8 @@ public interface AlarmSender {
 
 - `sendIfValid(...)`: 구현체가 바로 쓰는 기본 동작
 - `isSendableMessage(...)`: 그 동작을 돕는 정적 규칙
+
+## 코드로 보는 `default`와 `static` (계속 2)
 
 즉 `default method`는 "행동 entrypoint", `static` method는 "옆에서 돕는 규칙/헬퍼"로 보면 이해가 빠르다.
 
@@ -261,6 +263,8 @@ public final class MessageTextUtils {
 이 `normalize(...)`는 `AlarmSender`만의 규칙이라기보다 다른 메시지 처리 코드도 같이 쓸 수 있는 일반 도구에 가깝다.
 
 처음 배우는 단계에서는 이렇게 외우면 충분하다.
+
+## interface `static` method와 별도 utility class는 언제 나누나 (계속 2)
 
 - **계약 옆에 붙는 작은 정적 규칙이면 interface `static`**
 - **인터페이스 밖에서도 재사용할 공용 정리 도구면 utility class**

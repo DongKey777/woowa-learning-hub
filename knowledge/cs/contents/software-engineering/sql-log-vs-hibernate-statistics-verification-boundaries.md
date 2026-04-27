@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: sql log vs hibernate statistics verification boundaries basics, sql log vs hibernate statistics verification boundaries beginner, sql log vs hibernate statistics verification boundaries intro, software engineering basics, beginner software engineering, 처음 배우는데 sql log vs hibernate statistics verification boundaries, sql log vs hibernate statistics verification boundaries 입문, sql log vs hibernate statistics verification boundaries 기초, what is sql log vs hibernate statistics verification boundaries, how to sql log vs hibernate statistics verification boundaries
 > 문서 역할: 이 문서는 JPA/Hibernate 테스트나 로컬 확인에서 `SQL 로그를 믿어도 되나?`, `statistics 숫자만 보면 충분한가?`를 초심자 기준으로 분리해 주는 작은 primer다. 성능 튜닝 전체보다 "어떤 질문에는 어떤 신호가 맞는가"를 먼저 잡는 데 집중한다.
 
 <details>
@@ -234,3 +243,7 @@ assertThat(statistics.getBatchExecutionCount()).isGreaterThan(0);
 - N+1이나 LAZY 초기화 문제처럼 "어디서 추가 쿼리가 생겼나"를 장면으로 읽고 싶다면: [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
 - datasource-proxy/p6spy 같은 JDBC capture와 Hibernate statistics를 query-count/batch 기준으로 나눠 보고 싶다면: [Datasource Proxy vs Hibernate Statistics Query Count and Batch Primer](./datasource-proxy-vs-hibernate-statistics-query-count-batch-primer.md)
 - persistence 관찰을 테스트 전략 안에서 어디에 둘지 먼저 고르고 싶다면: [Test Strategy Basics](./test-strategy-basics.md)
+
+## 한 줄 정리
+
+SQL 로그는 "무슨 문장이 실제로 나갔나"를 보여 주고, Hibernate statistics는 "그 실행이 몇 번 일어났나"를 숫자로 요약해 준다. 둘 중 하나만 보면 초심자는 저장 성공, batch 적용, 쿼리 개수 문제를 서로 같은 말로 착각하기 쉽다.

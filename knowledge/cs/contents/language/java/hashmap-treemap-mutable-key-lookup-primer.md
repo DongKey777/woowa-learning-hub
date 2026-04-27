@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: hashmap treemap mutable key lookup primer basics, hashmap treemap mutable key lookup primer beginner, hashmap treemap mutable key lookup primer intro, java basics, beginner java, 처음 배우는데 hashmap treemap mutable key lookup primer, hashmap treemap mutable key lookup primer 입문, hashmap treemap mutable key lookup primer 기초, what is hashmap treemap mutable key lookup primer, how to hashmap treemap mutable key lookup primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge](./hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md)
@@ -271,6 +280,8 @@ MemberKey{id=1, login=yuri}
 
 - lookup이 실패한다
 - iteration이나 `firstKey()` 결과가 현재 필드 값 기준 정렬처럼 보이지 않을 수 있다
+
+## `TreeMap`: 갈림길 기준이 바뀌면 조회가 길을 잃는다 (계속 2)
 
 이 원리는 `compareTo()`를 쓰는 natural ordering뿐 아니라, `new TreeMap<>(comparator)`처럼 custom `Comparator`를 넘긴 경우에도 똑같다.
 

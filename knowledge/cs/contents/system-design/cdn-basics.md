@@ -10,7 +10,7 @@
 - [Cache-Control 실전](../network/cache-control-practical.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: cdn basics, cdn 뭐예요, content delivery network 입문, cdn 동작 원리, edge server 개념, cdn 캐시, origin server cdn, cdn hit miss, 정적 파일 cdn, cdn invalidation 기초, 글로벌 배포 입문, beginner cdn, cdn 왜 쓰나요
+retrieval-anchor-keywords: cdn basics, cdn 뭐예요, content delivery network 입문, cdn 동작 원리, edge server 개념, cdn 캐시, origin server cdn, cdn hit miss, 정적 파일 cdn, cdn invalidation 기초, 글로벌 배포 입문, beginner cdn, cdn 왜 쓰나요, cdn basics basics, cdn basics beginner
 
 ---
 

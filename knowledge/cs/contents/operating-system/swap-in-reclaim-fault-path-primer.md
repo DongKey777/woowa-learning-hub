@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: swap in reclaim fault path primer basics, swap in reclaim fault path primer beginner, swap in reclaim fault path primer intro, operating system basics, beginner operating system, 처음 배우는데 swap in reclaim fault path primer, swap in reclaim fault path primer 입문, swap in reclaim fault path primer 기초, what is swap in reclaim fault path primer, how to swap in reclaim fault path primer
 > 관련 문서:
 > - [가상 메모리 기초](./virtual-memory-basics.md)
 > - [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)

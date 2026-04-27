@@ -18,7 +18,7 @@
 - [Template Hook Smells](./template-hook-smells.md)
 - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 
-retrieval-anchor-keywords: template method framework example, servlet lifecycle template method, httpservlet service doget dopost, onceperrequestfilter dofilterinternal shouldnotfilter, junit testcase runbare setup teardown, framework callback skeleton, dofilterinternal abstract step, shouldnotfilter hook, 처음 배우는데 framework template method, framework template method basics bridge
+retrieval-anchor-keywords: template method framework example, servlet lifecycle template method, httpservlet service doget dopost, onceperrequestfilter dofilterinternal shouldnotfilter, junit testcase runbare setup teardown, framework callback skeleton, dofilterinternal abstract step, shouldnotfilter hook, 처음 배우는데 framework template method, framework template method basics bridge, template method framework lifecycle examples basics, template method framework lifecycle examples beginner, template method framework lifecycle examples intro, design pattern basics, beginner design pattern
 
 ---
 

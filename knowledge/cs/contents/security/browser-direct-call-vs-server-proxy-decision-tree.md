@@ -12,7 +12,9 @@
 - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: 브라우저 직접 호출 vs 서버 프록시, 브라우저 직접 호출 vs 서버 대리 호출, cors 때문에 프론트에서 직접 호출, cors 때문에 bff, cors 때문에 proxy, api key browser or server, api key 프론트에 넣어도 되나, secret key 브라우저 금지, public key browser allowed, publishable key browser allowed, 서버 프록시 decision tree, bff decision tree, beginner api key cors, beginner browser proxy branch, 외부 api 직접 호출 여부, 프론트에서 외부 api 바로 호출, 브라우저에서 secret key 쓰면 안 되는 이유, server-side only meaning, do not expose in client 뜻, cors 에러인데 왜 서버 프록시, browser direct call quick decision, proxy or direct api call, browser third party api call beginner, backend for frontend beginner, bff beginner quick branch, 브라우저에서 호출하려고 할 때
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 브라우저 직접 호출 vs 서버 프록시, 브라우저 직접 호출 vs 서버 대리 호출, cors 때문에 프론트에서 직접 호출, cors 때문에 bff, cors 때문에 proxy, api key browser or server, api key 프론트에 넣어도 되나, secret key 브라우저 금지, public key browser allowed, publishable key browser allowed, 서버 프록시 decision tree, bff decision tree, beginner api key cors, beginner browser proxy branch, 외부 api 직접 호출 여부
 
 ## 먼저 잡을 mental model
 

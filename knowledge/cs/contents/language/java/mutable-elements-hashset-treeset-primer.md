@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: mutable elements hashset treeset primer basics, mutable elements hashset treeset primer beginner, mutable elements hashset treeset primer intro, java basics, beginner java, 처음 배우는데 mutable elements hashset treeset primer, mutable elements hashset treeset primer 입문, mutable elements hashset treeset primer 기초, what is mutable elements hashset treeset primer, how to mutable elements hashset treeset primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Mutable Element Pitfalls in List and Set](./mutable-element-pitfalls-list-set-primer.md)

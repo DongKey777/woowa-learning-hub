@@ -11,7 +11,7 @@
 - [알고리즘 기본: DFS와 BFS](../algorithm/basic.md#dfs와-bfs)
 - [Dijkstra, Bellman-Ford, Floyd-Warshall](../algorithm/dijkstra-bellman-ford-floyd-warshall.md)
 
-retrieval-anchor-keywords: connectivity question router, same component query, connected components query, 연결 요소 질의, connected yes no, actual path reconstruction, shortest path router, union find vs bfs, bfs parent reconstruction, minimum edges vs minimum cost, beginner graph basics, path reconstruction 뭐예요, 연결 여부 경로 복원 헷갈림, 처음 배우는 그래프 분기
+retrieval-anchor-keywords: connectivity question router, same component query, connected components query, 연결 요소 질의, connected yes no, actual path reconstruction, shortest path router, union find vs bfs, bfs parent reconstruction, minimum edges vs minimum cost, beginner graph basics, path reconstruction 뭐예요, 연결 여부 경로 복원 헷갈림, 처음 배우는 그래프 분기, connectivity question router basics
 
 ## 3줄 규칙 카드
 

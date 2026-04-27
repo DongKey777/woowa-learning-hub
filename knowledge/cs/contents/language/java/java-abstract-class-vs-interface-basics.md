@@ -18,7 +18,7 @@
 - [language 카테고리 인덱스 - Java primer](../README.md#java-primer)
 - [software-engineering repository-dao-entity](../../software-engineering/repository-dao-entity.md)
 
-retrieval-anchor-keywords: abstract class vs interface beginner, abstract class vs default method card, interface default method vs abstract class state, 추상 클래스 인터페이스 차이 입문, 처음 배우는데 추상 클래스 인터페이스 언제 쓰는지, 추상 클래스 인터페이스 10초 비교표, 공통 상태가 필요하면 추상 클래스, 기본 동작만 있으면 인터페이스, default method에 필드 못 넣나요, 인터페이스에 상태를 넣고 싶어요, extends vs implements beginner, 같은 default method 두 개 충돌
+retrieval-anchor-keywords: abstract class vs interface beginner, abstract class vs default method card, interface default method vs abstract class state, 추상 클래스 인터페이스 차이 입문, 처음 배우는데 추상 클래스 인터페이스 언제 쓰는지, 추상 클래스 인터페이스 10초 비교표, 공통 상태가 필요하면 추상 클래스, 기본 동작만 있으면 인터페이스, default method에 필드 못 넣나요, 인터페이스에 상태를 넣고 싶어요, extends vs implements beginner, 같은 default method 두 개 충돌, java abstract class vs interface basics basics, java abstract class vs interface basics beginner, java abstract class vs interface basics intro
 
 ## 핵심 개념
 
@@ -72,6 +72,8 @@ retrieval-anchor-keywords: abstract class vs interface beginner, abstract class 
 즉 "추상 클래스냐 인터페이스냐"를 묻다가도, 실제로는 "부모가 전체 순서를 고정해야 하는가" 질문이면 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)로 바로 이어서 보는 게 맞다.
 
 ### 템플릿 메소드 쪽 예시
+
+## 큰 그림: 상속, 조합, 템플릿 메소드와 연결하기 (계속 2)
 
 ```java
 abstract class AbstractImporter {

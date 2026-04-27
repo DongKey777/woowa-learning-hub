@@ -16,7 +16,9 @@
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: h3 stale alt-svc 421 recovery, stale Alt-Svc 421, stale alt-svc fresh path, stale h3 endpoint authority, h3 421 then success, same url 421 then 200 h3, old alt-svc wrong endpoint, misdirected request stale alt-svc, stale alternative service recovery, fresh path retry after 421, stale authority h3 primer, alt-svc endpoint moved 421, stale alt-svc beginner, first request 421 second request 200, h3 stale path recovery, stale alt-svc quick routing, h3 421 beginner triage, alt-svc follow-up routing table, 회사망 집망 전환 421, office wifi home wifi alt-svc stale hint, network switch stale alt-svc fallback recovery, stale hint reuse after network switch, duplicate call vs browser recovery, 중복 호출 vs 브라우저 recovery, 421 then 403, 421 then 404, 421 후 403, 421 후 404
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: h3 stale alt-svc 421 recovery, stale alt-svc 421, stale alt-svc fresh path, stale h3 endpoint authority, h3 421 then success, same url 421 then 200 h3, old alt-svc wrong endpoint, misdirected request stale alt-svc, stale alternative service recovery, fresh path retry after 421, stale authority h3 primer, alt-svc endpoint moved 421, stale alt-svc beginner, first request 421 second request 200, h3 421 beginner triage
 
 <details>
 <summary>Table of Contents</summary>

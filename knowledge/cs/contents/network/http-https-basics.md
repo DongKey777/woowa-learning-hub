@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [CORS 기초](../security/cors-basics.md)
 
-retrieval-anchor-keywords: http https basics, http vs https 차이, https 왜 써야 해요, tls란 뭔가요, ssl tls 입문, 암호화 통신 기초, https 인증서, 평문 암호화 차이, 브라우저 자물쇠 아이콘, beginner https
+retrieval-anchor-keywords: http https basics, http vs https 차이, https 왜 써야 해요, tls란 뭔가요, ssl tls 입문, 암호화 통신 기초, https 인증서, 평문 암호화 차이, 브라우저 자물쇠 아이콘, beginner https, http https basics basics, http https basics beginner, http https basics intro, network basics, beginner network
 
 ## 핵심 개념
 

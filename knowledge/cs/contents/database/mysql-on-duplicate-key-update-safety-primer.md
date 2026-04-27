@@ -12,7 +12,9 @@
 - [Duplicate Key vs Busy Response Mapping](./duplicate-key-vs-busy-response-mapping.md)
 - [Unique Claim 이후 Existing Row 재사용 Primer](./unique-claim-existing-row-reuse-primer.md)
 
-retrieval-anchor-keywords: mysql on duplicate key update primer, mysql upsert safety, on duplicate key update idempotency, same key different payload conflict, mysql idempotency key beginner, mysql upsert overwrite risk, duplicate key hides conflict, upsert no-op update, request hash conflict detection, mysql upsert beginner primer, mysql same request retry safe, mysql same key different value unsafe, mysql insert on duplicate key update payment example
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql on duplicate key update primer, mysql upsert safety, on duplicate key update idempotency, same key different payload conflict, mysql idempotency key beginner, mysql upsert overwrite risk, duplicate key hides conflict, upsert no-op update, request hash conflict detection, mysql upsert beginner primer, mysql same request retry safe, mysql same key different value unsafe, mysql insert on duplicate key update payment example, mysql on duplicate key update safety primer basics, mysql on duplicate key update safety primer beginner
 
 ## 먼저 멘탈모델
 
@@ -271,3 +273,7 @@ insert 시도
 - 멱등성 키 저장소 전체 설계를 보려면 [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - duplicate 이후 기존 row를 어떻게 재사용하는지 보려면 [Unique Claim 이후 Existing Row 재사용 Primer](./unique-claim-existing-row-reuse-primer.md)
 - lock 경합까지 포함한 upsert의 더 깊은 설명은 [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
+
+## 한 줄 정리
+
+`INSERT ... ON DUPLICATE KEY UPDATE`는 "같은 key면 한 줄만 남긴다"는 점에서는 편하지만, **같은 요청의 재시도**를 흡수할 때만 멱등성에 가깝고 **같은 key에 다른 payload가 들어온 충돌**까지 안전하게 해결해 주지는 않는다.

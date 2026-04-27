@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: webhook and broker boundary primer basics, webhook and broker boundary primer beginner, webhook and broker boundary primer intro, software engineering basics, beginner software engineering, 처음 배우는데 webhook and broker boundary primer, webhook and broker boundary primer 입문, webhook and broker boundary primer 기초, what is webhook and broker boundary primer, how to webhook and broker boundary primer
 채널 자체를 먼저 정리하고 싶다면 [Message-Driven Adapter Example](./message-driven-adapter-example.md), inbound adapter 테스트 경계를 같이 보고 싶다면 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)부터 읽고 이 문서는 그다음에 "webhook endpoint와 broker consumer는 무엇이 같고, 운영 의미가 어디서 갈라지는가"만 좁혀 보면 된다.
 
 <details>

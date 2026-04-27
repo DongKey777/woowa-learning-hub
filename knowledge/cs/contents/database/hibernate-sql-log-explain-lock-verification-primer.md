@@ -14,6 +14,8 @@
 - [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md)
 - [database 카테고리 인덱스](./README.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: hibernate sql log explain primer, spring jpa lock verification explain, mysql explain for update beginner, hibernate sql log index path verification, locking repository method explain check, spring data jpa for update explain checklist, hibernate logged sql mysql explain, pessimistic lock index path drift, for update repository method verification, beginner hibernate explain primer, 하이버네이트 sql 로그 explain 검증, 락킹 repository 메서드 explain 확인, mysql for update 인덱스 경로 검증, jpa 비관적 락 explain 보는 법, logged sql explain beginner
 
 ## 먼저 잡을 그림

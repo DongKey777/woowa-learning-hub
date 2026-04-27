@@ -28,7 +28,7 @@
 - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 - [Spring Data JPA 기초](../database/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: repository interface beginner, repository interface contract, repository interface vs implementation, repository implementation swap, repository port beginner, dao vs repository interface, spring data jpa repository interface, domain repository contract, repository adapter beginner, repository naming smell, persistence follow-up question guide, repository method naming beginner
+retrieval-anchor-keywords: repository interface beginner, repository interface contract, repository interface vs implementation, repository implementation swap, repository port beginner, dao vs repository interface, spring data jpa repository interface, domain repository contract, repository adapter beginner, repository naming smell, persistence follow-up question guide, repository method naming beginner, repository interface contract primer basics, repository interface contract primer beginner, repository interface contract primer intro
 
 처음 배우는데 "왜 `Repository`를 인터페이스로 두고 구현체를 갈아끼운다고 말하지?"가 제일 막힌다면, 이 문서를 큰 그림 entrypoint로 잡고 나서 [Repository, DAO, Entity](./repository-dao-entity.md)와 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)로 내려가면 된다.
 

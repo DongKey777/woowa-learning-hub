@@ -11,7 +11,7 @@
 - [운영체제 카테고리 인덱스](../operating-system/README.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: osi 7계층, osi layer basics, 네트워크 계층 모델, osi 모델이 뭐예요, 7계층 쉽게 설명, 물리 계층, 데이터링크 계층, 네트워크 계층, 전송 계층, 세션 계층, 표현 계층, 응용 계층, tcp ip 계층 모델
+retrieval-anchor-keywords: osi 7계층, osi layer basics, 네트워크 계층 모델, osi 모델이 뭐예요, 7계층 쉽게 설명, 물리 계층, 데이터링크 계층, 네트워크 계층, 전송 계층, 세션 계층, 표현 계층, 응용 계층, tcp ip 계층 모델, osi 7 layer basics basics, osi 7 layer basics beginner
 
 ## 핵심 개념
 

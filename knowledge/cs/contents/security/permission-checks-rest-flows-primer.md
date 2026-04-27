@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: 이 문서는 security 카테고리의 beginner `primer`다. `로그인 됐으니 호출 가능하다`, `유효한 토큰이면 객체도 열려야 한다` 같은 혼동을 REST endpoint 흐름 기준으로 자르는 entrypoint다.
 
 > 관련 문서:
@@ -18,7 +25,7 @@
 > - [PDP / PEP Boundaries Design](./pdp-pep-boundaries-design.md)
 > - [Security README: 기본 primer](./README.md#기본-primer)
 
-retrieval-anchor-keywords: permission checks in rest flows, rest authorization primer, rest object authorization beginner, valid token is not enough, valid login is not enough, login success but 403, token valid but 403, object-level authorization primer, object level authorization rest api, rest endpoint permission check order, role scope ownership tenant rest, role vs scope vs ownership vs tenant, rest flow authz ladder, endpoint authz ladder, post get patch delete permission checks, list endpoint tenant filter, create endpoint tenant ownership, update endpoint object permission, delete endpoint object authorization, route param ownership check, path variable authorization, same token different object 403, same token different tenant 403, scope is not ownership rest, role is not ownership rest, owner but still forbidden admin action, multi-tenant rest auth primer, tenant check primer rest api, object-level check after authn, object-level authorization beginner, beginner rest permission primer, beginner api authorization primer, authorization checks by endpoint pattern, endpoint pattern permission checks, create read update delete authorization, crud authorization beginner, resource ownership guard, service-layer authorization checklist, controller authz checklist, BOLA beginner rest route, IDOR rest flow beginner, 로그인 됐는데 왜 403, 유효한 토큰인데 왜 403, 내 것만 되는데 남의 것은 안 됨, 같은 토큰인데 어떤 id는 되고 어떤 id는 안 됨, scope 있는데 왜 남의 주문 못 봄, tenant 다르면 왜 403, owner인데 왜 delete 안 됨, rest 인가 체크 순서, api 권한 체크 순서, beginner authz rest flow
+retrieval-anchor-keywords: permission checks in rest flows, rest authorization primer, rest object authorization beginner, valid token is not enough, valid login is not enough, login success but 403, token valid but 403, object-level authorization primer, object level authorization rest api, rest endpoint permission check order, role scope ownership tenant rest, role vs scope vs ownership vs tenant, rest flow authz ladder, endpoint authz ladder, object-level authorization beginner
 
 ## 먼저 잡는 한 문장
 

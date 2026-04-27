@@ -22,7 +22,7 @@
 - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: java collections basics, list set map 입문, collection 선택 기준, list set map decision table, list set map requirement drill, requirement to type, arraylist linkedlist 차이, hashmap 입문, 컬렉션 프레임워크 기초, java collection framework beginner, java list 언제 쓰나, java set 중복 제거, java map key value, 컬렉션 어떤 걸 써야 하나요, collection interface beginner, java iterable basics, hashset equals hashCode beginner, treeset natural ordering, treemap compareTo key slot, navigablemap navigableset basics, java collection vs collections difference, java map is not collection, beginner collection selection flow, 처음 배우는데 List Set Map 차이, List Set Map 큰 그림, 자바 컬렉션 기초, ArrayList HashSet HashMap 언제 쓰는지, 컬렉션 처음 배우는데 뭐부터, Collection과 Collections 차이 기초, Map은 Collection인가요, 중복 제거는 Set, 순서 보장은 List, 키값 조회는 Map, linkedhashset beginner, java linkedhashset 언제 쓰나, 중복 제거 순서 유지 linkedhashset, list set linkedhashset 차이, 컬렉션 큰 그림, 자바 컬렉션 큰 그림, 처음 배우는데 컬렉션, 컬렉션 기초, 컬렉션 언제 쓰는지, 리스트 셋 맵 차이, list set map 차이, list set map 큰 그림, list set map 처음 배우는데, collection first reading, collection beginner route, beginner collection primer, list set map safe next step, java collections equality primer, java mutable key beginner, java collection update tradeoff beginner, 처음 배우는데 List Set Map 언제 쓰는지, 처음 배우는데 ArrayList HashSet HashMap 언제 쓰는지, List Set Map 언제 써야 하나, List Set Map 처음 선택, 처음 배우는데 리스트 셋 맵 언제 쓰는지, 자바 리스트 셋 맵 언제 쓰는지, list set map when to use beginner, arraylist hashset hashmap first choice, 자바 컬렉션 흔한 오해, 컬렉션 다음 단계, list set map confusion, collection confusion checklist, beginner collection next step, map은 collection인가요, collection vs collections confusion, arrays aslist fixed size confusion
+retrieval-anchor-keywords: java collections basics, list set map 입문, collection 선택 기준, list set map decision table, list set map requirement drill, requirement to type, arraylist linkedlist 차이, hashmap 입문, 컬렉션 프레임워크 기초, java collection framework beginner, java list 언제 쓰나, java set 중복 제거, java map key value, 컬렉션 어떤 걸 써야 하나요, collection interface beginner
 
 ## 핵심 개념
 
@@ -169,6 +169,8 @@ scoreByUser.put("alice", 95); // 같은 key라서 값 갱신
 - `Iterable`은 반복 약속이고 `Collection`은 원소 묶음 API다. 계층 자체가 헷갈리면 [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)을 먼저 보고 돌아오면 이해가 빠르다.
 
 헷갈릴 때는 아래처럼 먼저 분류하면 다음 문서로 덜 헤맨다.
+
+## 흔한 오해와 혼동 (계속 2)
 
 | 지금 막히는 포인트 | 먼저 기억할 한 줄 |
 |---|---|

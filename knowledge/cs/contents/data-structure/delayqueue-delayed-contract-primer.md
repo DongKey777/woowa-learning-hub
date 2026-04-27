@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: delayqueue delayed contract primer basics, delayqueue delayed contract primer beginner, delayqueue delayed contract primer intro, data structure basics, beginner data structure, 처음 배우는데 delayqueue delayed contract primer, delayqueue delayed contract primer 입문, delayqueue delayed contract primer 기초, what is delayqueue delayed contract primer, how to delayqueue delayed contract primer
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
@@ -77,6 +86,8 @@ final class ScheduledJob implements Delayed {
 
 여기서 기준은 단순하다.
 
+## 1. 정답 패턴은 같은 deadline 필드를 쓰는 것이다 (계속 2)
+
 - `deadlineNanos`가 더 작다 = 더 빨리 실행돼야 한다
 - `compareTo()`도 `deadlineNanos` 작은 task를 앞에 둔다
 - `getDelay()`도 `deadlineNanos - now`로 남은 시간을 계산한다
@@ -141,6 +152,8 @@ getDelay(A)     -> 0, 지금 꺼내도 됨
 `getDelay()`도 같은 deadline을 읽어서 "맞다, A는 지금 만료됐다"고 이어져야 한다.
 
 반대로 `compareTo()`가 deadline 대신 business priority를 보면 흐름이 끊긴다.
+
+## 2. 어긋난 구현은 "만료된 작업이 숨어 있는 queue"를 만든다 (계속 2)
 
 ```text
 mismatched fields
@@ -223,6 +236,8 @@ business priority가 필요하다고 해서 항상 잘못은 아니다.
 
 1. 같은 deadline에서 결과가 흔들리지 않게 하자
 2. 중요한 일부터 처리하자
+
+## 4. business priority는 어디에 넣어야 하나 (계속 2)
 
 1번은 comparator stability 문제고, 2번은 scheduler policy 문제다.
 같은 deadline 동점 처리를 안정적으로 만들고 싶다면 보통 `deadline -> sequence`를 먼저 둔다.

@@ -12,7 +12,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [Spring Testing Basics](../spring/spring-testing-basics.md)
 
-retrieval-anchor-keywords: refactoring basics, 리팩토링 기초, 코드 개선 입문, 외부 동작 유지, 코드 냄새 입문, 메서드 추출, 변수명 변경, 리팩토링 언제 하나요, 리팩토링 vs 기능 추가, 보이스카우트 규칙, beginner refactoring, 중복 코드 제거
+retrieval-anchor-keywords: refactoring basics, 리팩토링 기초, 코드 개선 입문, 외부 동작 유지, 코드 냄새 입문, 메서드 추출, 변수명 변경, 리팩토링 언제 하나요, 리팩토링 vs 기능 추가, 보이스카우트 규칙, beginner refactoring, 중복 코드 제거, refactoring basics basics, refactoring basics beginner, refactoring basics intro
 
 ## 핵심 개념
 

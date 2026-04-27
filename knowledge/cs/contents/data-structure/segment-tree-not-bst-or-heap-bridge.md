@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: segment tree not bst or heap bridge basics, segment tree not bst or heap bridge beginner, segment tree not bst or heap bridge intro, data structure basics, beginner data structure, 처음 배우는데 segment tree not bst or heap bridge, segment tree not bst or heap bridge 입문, segment tree not bst or heap bridge 기초, what is segment tree not bst or heap bridge, how to segment tree not bst or heap bridge
 > 관련 문서:
 > - [자료구조 정리](./README.md)
 > - [Binary Tree vs BST vs Heap Bridge](./binary-tree-vs-bst-vs-heap-bridge.md)
@@ -15,7 +24,7 @@
 
 ## 왜 자꾸 헷갈리나
 
-`segment tree`도 이름에 `tree`가 들어가고, 보통 이진 구조로 그리기 때문에 `BST`나 `heap`과 같은 부류로 묶어 외우기 쉽다.  
+`segment tree`도 이름에 `tree`가 들어가고, 보통 이진 구조로 그리기 때문에 `BST`나 `heap`과 같은 부류로 묶어 외우기 쉽다.
 하지만 세 구조는 **노드가 무엇을 의미하는지**부터 다르다.
 
 ## 세 구조를 한 번에 분리하면
@@ -34,7 +43,7 @@
 
 ## 세그먼트 트리는 왜 BST가 아닌가
 
-`BST`는 값 대소 관계로 왼쪽과 오른쪽이 갈린다.  
+`BST`는 값 대소 관계로 왼쪽과 오른쪽이 갈린다.
 반면 세그먼트 트리는 **인덱스 구간을 반으로 쪼개는 방식**으로 갈린다.
 
 예를 들어 배열 `[5, 1, 4, 3]`의 합 세그먼트 트리는 이렇게 생각한다.
@@ -47,7 +56,7 @@
  [0,0]=5 [1,1]=1 [2,2]=4 [3,3]=3
 ```
 
-여기서 루트 `13`은 어떤 key의 위치를 뜻하지 않는다.  
+여기서 루트 `13`은 어떤 key의 위치를 뜻하지 않는다.
 왼쪽 서브트리 값이 모두 `13`보다 작은 것도 아니고, 중위 순회를 해도 정렬 결과가 나오지 않는다.
 
 즉 세그먼트 트리는:
@@ -58,7 +67,7 @@
 
 ## 세그먼트 트리는 왜 heap도 아닌가
 
-`heap`은 루트가 전체 최소나 최대가 되도록 우선순위 규칙을 둔다.  
+`heap`은 루트가 전체 최소나 최대가 되도록 우선순위 규칙을 둔다.
 반면 세그먼트 트리의 루트는 보통 **전체 구간의 집계 결과**다.
 
 위 예시에서 루트 `13`은:
@@ -67,7 +76,7 @@
 - 최대값도 아니며
 - "다음에 뽑아야 할 원소"도 아니다
 
-부모-자식 관계도 `부모 <= 자식` 같은 우선순위 규칙이 아니라,  
+부모-자식 관계도 `부모 <= 자식` 같은 우선순위 규칙이 아니라,
 `부모 = merge(왼쪽 구간, 오른쪽 구간)` 규칙으로 연결된다.
 
 즉 세그먼트 트리는 `priority tree`가 아니라 **range aggregation tree**다.

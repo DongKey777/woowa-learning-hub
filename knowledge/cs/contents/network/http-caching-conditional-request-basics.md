@@ -15,7 +15,7 @@
 - [CDN 기초](../system-design/cdn-basics.md)
 - [CORS 기초](../security/cors-basics.md)
 
-retrieval-anchor-keywords: http caching basics, conditional request, cache-control, etag, last-modified, 304 not modified, if-none-match, cache revalidation, html vs app.js cache, static asset cache experiment, from disk cache vs 304, beginner http caching
+retrieval-anchor-keywords: http caching basics, conditional request, cache-control, etag, last-modified, 304 not modified, if-none-match, cache revalidation, html vs app.js cache, static asset cache experiment, from disk cache vs 304, beginner http caching, http caching conditional request basics basics, http caching conditional request basics beginner, http caching conditional request basics intro
 
 <details>
 <summary>Table of Contents</summary>

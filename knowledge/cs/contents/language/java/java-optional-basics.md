@@ -13,7 +13,7 @@
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 
-retrieval-anchor-keywords: java optional basics, optional 입문, nullpointerexception 방지, optional orelse beginner, optional ispresent beginner, optional 왜 쓰나요, optional 기초, java optional ifpresent, optional map filter beginner, null 대신 optional, 자바 옵셔널 입문, optional empty of ofnullable, 처음 배우는데 Optional, Optional 큰 그림, Optional 언제 쓰는지, Optional null 차이, Optional of ofNullable 차이, orElse orElseGet 차이, Optional get 쓰면 안 되는 이유, Optional 반환 타입 권장, Optional 필드에 쓰면 안 되는 이유, 값 없음 표현 기초
+retrieval-anchor-keywords: java optional basics, optional 입문, nullpointerexception 방지, optional orelse beginner, optional ispresent beginner, optional 왜 쓰나요, optional 기초, java optional ifpresent, optional map filter beginner, null 대신 optional, 자바 옵셔널 입문, optional empty of ofnullable, 처음 배우는데 optional, optional 큰 그림, optional 언제 쓰는지
 
 ## 핵심 개념
 
@@ -22,6 +22,12 @@ retrieval-anchor-keywords: java optional basics, optional 입문, nullpointerexc
 입문자가 헷갈리는 지점은 `Optional`이 만능 null 방어책이 아니라는 것이다. 반환 타입으로만 쓰는 것이 의도된 용도이며, 필드나 메서드 파라미터에 쓰면 오히려 코드가 복잡해진다.
 
 ## 한눈에 보기
+
+- `java optional basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 // null 직접 반환 방식 (NPE 위험)

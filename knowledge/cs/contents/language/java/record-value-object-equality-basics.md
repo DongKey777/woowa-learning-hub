@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: record value object equality basics basics, record value object equality basics beginner, record value object equality basics intro, java basics, beginner java, 처음 배우는데 record value object equality basics, record value object equality basics 입문, record value object equality basics 기초, what is record value object equality basics, how to record value object equality basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
@@ -163,6 +172,8 @@ System.out.println(seen.contains(key)); // false 가능
 ### 3. compact constructor의 정규화가 equality를 결정한다
 
 record는 compact constructor에서 validation과 canonicalization을 넣을 수 있다.
+
+## record equality에서 자주 놓치는 함정 (계속 2)
 
 ```java
 import java.util.Locale;
@@ -372,6 +383,8 @@ line.changeQuantity(2);
 System.out.println(lines.contains(line)); // false 가능
 ```
 
+## 코드로 비교하기 (계속 2)
+
 이 버그는 "mutable state를 equality/hashCode에 넣었다"는 점에서 생긴다.
 이럴 때는 record가 아니라 entity equality 정책을 따로 설계해야 한다.
 
@@ -427,6 +440,8 @@ raw.add("record");
 System.out.println(tags.values()); // [java, record]
 ```
 
+## 자주 묻는 질문: 배열, 가변 컬렉션, canonicalization (계속 2)
+
 초급자 기준 핵심은 "`values()` accessor가 복사본을 돌려주지 않는다"는 점이다.
 
 - `raw`를 바꾸면 record 안의 값도 같이 바뀐다
@@ -471,6 +486,8 @@ tags.values().add("oops");      // UnsupportedOperationException
 
 즉 `new BigDecimal("1.0")`과 `new BigDecimal("1.00")`은 숫자로는 같아 보여도 record 안에서는 다른 component로 남을 수 있다.
 이 질문은 컬렉션 동작과 canonicalization까지 함께 묶여서 자주 반복되므로, 별도 FAQ인 [Record component로 `BigDecimal`을 써도 되나요?](./record-bigdecimal-component-faq.md)에서 `HashSet`/`TreeSet` 차이와 생성 시 정규화 위치를 따로 이어서 보면 된다.
+
+## 자주 묻는 질문: 배열, 가변 컬렉션, canonicalization (계속 3)
 
 ### Q. compact constructor에서 복사나 정규화(canonicalization)를 해도 되나요?
 

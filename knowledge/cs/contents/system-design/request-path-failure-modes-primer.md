@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache, queue, app instance, database가 고장 났을 때 요청 경로가 어디서 먼저 흔들리고 어느 레이어가 충격을 먼저 흡수하는지 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: request path failure modes, cache outage primer, queue outage primer, app instance failure primer, database outage primer, failure absorption order, graceful degradation basics, read-only mode basics, stale-if-error basics, partial feature disablement, cache miss storm, queue backlog basics, app failover basics, database failover basics, timeout budget basics, request deadline basics, retry storm basics, beginner system design
+retrieval-anchor-keywords: request path failure modes, cache outage primer, queue outage primer, app instance failure primer, database outage primer, failure absorption order, graceful degradation basics, read-only mode basics, stale-if-error basics, partial feature disablement, cache miss storm, queue backlog basics, app failover basics, database failover basics, timeout budget basics
 
 **난이도: 🟢 Beginner**
 
@@ -135,6 +135,8 @@ later:
 outbox relay -> Queue -> Worker
 ```
 
+## 깊이 들어가기 (계속 2)
+
 이 패턴에서는 **DB outbox가 queue outage를 먼저 흡수**한다.
 반대로 outbox가 없고 enqueue가 필수라면, app boundary가 바로 실패를 사용자에게 드러낸다.
 
@@ -188,6 +190,8 @@ Client -> LB -> App -> Write request  -> DB 실패
 ```
 
 여기서 살아남는 경로는 제한적이다.
+
+## 깊이 들어가기 (계속 3)
 
 - 이미 cache에 있는 read는 잠깐 버틸 수 있다
 - read replica가 살아 있고 stale read 허용 범위가 있으면 일부 조회는 가능하다
@@ -248,27 +252,27 @@ Client -> LB -> App -> Write request  -> DB 실패
 
 짧게 답하면 아래 순서가 안전하다.
 
-> app instance 장애는 load balancer와 다른 replicas가 먼저 흡수합니다.  
-> cache 장애는 app이 DB fallback으로 우회하고 DB read path가 충격을 받습니다.  
-> queue 장애는 worker slowdown이면 queue가 backlog로 흡수하고, broker outage면 app이나 DB outbox가 대신 받아야 합니다.  
+> app instance 장애는 load balancer와 다른 replicas가 먼저 흡수합니다.
+> cache 장애는 app이 DB fallback으로 우회하고 DB read path가 충격을 받습니다.
+> queue 장애는 worker slowdown이면 queue가 backlog로 흡수하고, broker outage면 app이나 DB outbox가 대신 받아야 합니다.
 > database 장애는 일부 cached read만 버티고, 새로운 write와 cache miss는 거의 바로 실패하므로 가장 숨기기 어렵습니다.
 
 ## 꼬리질문
 
-> Q: cache 장애 때 app이 아니라 DB가 absorber라고 말하는 이유는 무엇인가요?  
-> 의도: control plane reaction과 실제 load absorber를 구분하는지 확인  
+> Q: cache 장애 때 app이 아니라 DB가 absorber라고 말하는 이유는 무엇인가요?
+> 의도: control plane reaction과 실제 load absorber를 구분하는지 확인
 > 핵심: app이 fallback을 결정하지만, 추가 read 비용은 결국 DB가 떠안기 때문이다.
 
-> Q: queue는 버퍼인데 왜 queue outage에서 바로 못 버티나요?  
-> 의도: worker slowdown과 broker outage를 구분하는지 확인  
+> Q: queue는 버퍼인데 왜 queue outage에서 바로 못 버티나요?
+> 의도: worker slowdown과 broker outage를 구분하는지 확인
 > 핵심: queue가 살아 있을 때만 버퍼 역할을 하고, queue 자체가 죽으면 producer 쪽 durable fallback이 필요하다.
 
-> Q: app instance 장애가 비교적 쉬운 이유는 무엇인가요?  
-> 의도: stateless replica의 의미를 이해하는지 확인  
+> Q: app instance 장애가 비교적 쉬운 이유는 무엇인가요?
+> 의도: stateless replica의 의미를 이해하는지 확인
 > 핵심: load balancer가 죽은 노드를 빼고 다른 replica가 같은 요청을 처리할 수 있기 때문이다.
 
-> Q: DB 장애를 cache로 완전히 가릴 수 없나요?  
-> 의도: source of truth와 cached snapshot의 차이를 구분하는지 확인  
+> Q: DB 장애를 cache로 완전히 가릴 수 없나요?
+> 의도: source of truth와 cached snapshot의 차이를 구분하는지 확인
 > 핵심: 이미 cache된 read만 잠깐 가능할 뿐, miss와 write는 여전히 authoritative DB가 필요하다.
 
 ## 한 줄 정리

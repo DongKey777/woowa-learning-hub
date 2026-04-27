@@ -16,7 +16,9 @@
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
 
-retrieval-anchor-keywords: 0-1 bfs dist vs visited, zero one bfs dist visited, 0-1 bfs counterexample, zero one bfs counterexample, 0-1 bfs beginner mistake, 0-1 bfs visited bug, 0-1 bfs relax first visit, 0-1 bfs parent update, deque shortest path visited, binary weight shortest path visited, teleport shortest path visited, 0/1 shortest path visited, 0/1 cost shortest path relax, 0-1 bfs mini card, 0-1 bfs quick review, 0-1 bfs dist array, 0-1 bfs visited array, 0-1 bfs equal distance, 0-1 bfs same distance no reinsertion, 0-1 bfs 반례, 0-1 bfs 초보 실수, 0-1 bfs visited 고정, 0-1 bfs dist 비교, 0-1 bfs relax, 0-1 bfs 부모 갱신, deque 최단 경로 반례, 순간이동 최단 경로 반례, 0-1 bfs 같은 거리 다시 넣기
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs dist vs visited, zero one bfs dist visited, 0-1 bfs counterexample, zero one bfs counterexample, 0-1 bfs beginner mistake, 0-1 bfs visited bug, 0-1 bfs relax first visit, 0-1 bfs parent update, deque shortest path visited, binary weight shortest path visited, teleport shortest path visited, 0/1 shortest path visited, 0/1 cost shortest path relax, 0-1 bfs mini card, zero one bfs dist vs visited counterexamples basics
 
 ## 먼저 한 문장으로 잡기
 
@@ -107,3 +109,7 @@ deque 안에 예전 후보가 남아 있어도 괜찮은지까지 바로 이어�
 - `parent[]`까지 포함한 경로 복원 감각은 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - `newDist == dist[next]`일 때 왜 보통 덱에 다시 넣지 않는지 보려면 [0-1 BFS equal-distance reinsert mini note](./zero-one-bfs-equal-distance-reinsert-mini-note.md)
 - `0-1 BFS`, `Dial`, `PQ Dijkstra`를 어떤 질문에서 고르는지는 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
+
+## 한 줄 정리
+
+`0-1 BFS`는 이름에 BFS가 들어가도 "처음 봤으니 visited로 고정"이 아니라 "`dist`가 더 줄어드나?"를 계속 보는 문제다.

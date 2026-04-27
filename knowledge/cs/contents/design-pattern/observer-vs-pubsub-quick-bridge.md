@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [옵저버 패턴 기초](./observer-basics.md)
 > - [옵저버 (Observer)](./observer.md)
@@ -12,7 +19,7 @@
 > - [Domain Events vs Integration Events](./domain-events-vs-integration-events.md)
 > - [Outbox Relay and Idempotent Publisher](./outbox-relay-idempotent-publisher.md)
 
-retrieval-anchor-keywords: observer vs pubsub quick bridge, observer vs pub-sub beginner, same process notification vs broker async propagation, 옵저버 vs pubsub 차이, 같은 프로세스 알림 vs 브로커 비동기 전파, observer same process fan-out, pubsub broker topic queue beginner, spring application event vs kafka beginner, observer not async, pubsub not same as observer, beginner event pattern comparison
+retrieval-anchor-keywords: observer vs pubsub quick bridge, observer vs pub-sub beginner, same process notification vs broker async propagation, 옵저버 vs pubsub 차이, 같은 프로세스 알림 vs 브로커 비동기 전파, observer same process fan-out, pubsub broker topic queue beginner, spring application event vs kafka beginner, observer not async, pubsub not same as observer, beginner event pattern comparison, observer vs pubsub quick bridge basics, observer vs pubsub quick bridge beginner, observer vs pubsub quick bridge intro, design pattern basics
 
 ---
 

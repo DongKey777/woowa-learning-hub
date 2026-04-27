@@ -14,7 +14,7 @@
 - [Ready Queue Starvation Primer](./ready-queue-starvation-primer.md)
 - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 
-retrieval-anchor-keywords: periodic scheduling drift vs backlog, scheduleatfixedrate vs schedulewithfixeddelay, fixed rate vs fixed delay beginner, periodic task overrun primer, scheduledexecutorservice overrun, fixed rate backlog mental model, fixed delay drift mental model, periodic rescheduling queue, overdue deadline debt, periodic catch up execution, what is scheduler drift, why fixed rate runs immediately, why fixed delay drifts, periodic task queue beginner, fixed rate vs fixed delay overrun primer, periodic overrun catch up, skip missed ticks, coalesce missed periods
+retrieval-anchor-keywords: periodic scheduling drift vs backlog, scheduleatfixedrate vs schedulewithfixeddelay, fixed rate vs fixed delay beginner, periodic task overrun primer, scheduledexecutorservice overrun, fixed rate backlog mental model, fixed delay drift mental model, periodic rescheduling queue, overdue deadline debt, periodic catch up execution, what is scheduler drift, why fixed rate runs immediately, why fixed delay drifts, periodic task queue beginner, fixed rate vs fixed delay overrun primer
 
 ## 먼저 감각부터
 

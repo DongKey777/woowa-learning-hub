@@ -15,7 +15,9 @@
 - [container, cgroup, namespace](./container-cgroup-namespace.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: qa-content-operating-system-00039, container fd pressure bridge, container fd limit confusion, EMFILE vs ENFILE container, host vs container fd pressure, container too many open files host looks fine, host file-nr container fd, file-max in container setup, RLIMIT_NOFILE container beginner, file-nr beginner bridge, container looks fine host fd pressure, kubernetes node fd pressure beginner, pod fd looks normal but host file table full, per-process fd limit vs host file table, container fd visibility confusion, 컨테이너 fd 한도 혼동, 컨테이너 EMFILE ENFILE 차이, 호스트 fd pressure, 컨테이너는 멀쩡한데 호스트가 fd 부족, 컨테이너 안에서는 정상인데 호스트 fd 부족, too many open files container host, beginner handoff box, primer handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: qa-content-operating-system-00039, container fd pressure bridge, container fd limit confusion, emfile vs enfile container, host vs container fd pressure, container too many open files host looks fine, host file-nr container fd, file-max in container setup, rlimit_nofile container beginner, file-nr beginner bridge, container looks fine host fd pressure, kubernetes node fd pressure beginner, pod fd looks normal but host file table full, per-process fd limit vs host file table, container fd visibility confusion
 
 ## 먼저 잡는 멘탈 모델
 

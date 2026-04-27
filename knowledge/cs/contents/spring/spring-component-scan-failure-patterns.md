@@ -18,7 +18,7 @@
 - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 
-retrieval-anchor-keywords: spring component scan failure, component scan boundary, springbootapplication package, scanbasepackages, scanbasepackageclasses, multi module component scan, missing stereotype annotation, nosuchbeandefinitionexception, profile conditional bean missing, condition evaluation report, starter bean missing faq, 처음 배우는데 bean 안 떠요, spring bean basics, component scan basics
+retrieval-anchor-keywords: spring component scan failure, component scan boundary, springbootapplication package, scanbasepackages, scanbasepackageclasses, multi module component scan, missing stereotype annotation, nosuchbeandefinitionexception, profile conditional bean missing, condition evaluation report, starter bean missing faq, 처음 배우는데 bean 안 떠요, spring bean basics, component scan basics, spring component scan failure patterns basics
 
 ## 이 문서 다음에 보면 좋은 문서
 

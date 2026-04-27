@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java array common confusion checklist basics, java array common confusion checklist beginner, java array common confusion checklist intro, java basics, beginner java, 처음 배우는데 java array common confusion checklist, java array common confusion checklist 입문, java array common confusion checklist 기초, what is java array common confusion checklist, how to java array common confusion checklist
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 반복문과 스코프 follow-up 입문](./java-loop-control-scope-follow-up-primer.md)

@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [레이어드 아키텍처 기초](../software-engineering/layered-architecture-basics.md)
 
-retrieval-anchor-keywords: normalization basics, 정규화란, 1nf 2nf 3nf, first normal form beginner, second normal form beginner, third normal form beginner, 테이블 설계 기초, 중복 제거 db, 이상 현상 beginner, beginner database normalization
+retrieval-anchor-keywords: normalization basics, 정규화란, 1nf 2nf 3nf, first normal form beginner, second normal form beginner, third normal form beginner, 테이블 설계 기초, 중복 제거 db, 이상 현상 beginner, beginner database normalization, normalization basics basics, normalization basics beginner, normalization basics intro, database basics, beginner database
 
 ## 핵심 개념
 

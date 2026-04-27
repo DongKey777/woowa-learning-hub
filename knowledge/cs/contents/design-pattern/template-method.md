@@ -17,7 +17,7 @@
 - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: template method deep dive, template method after basics, 처음 배우는데 템플릿 메소드 큰 그림, 기초 다음 템플릿 메소드, 부모가 흐름을 쥔다, 필수 빈칸 vs 선택 빈칸, hook method deep dive, abstract step deep dive, template method vs strategy quick check, 템플릿 메소드 선택 기준, fixed workflow inheritance, final template method, framework callback skeleton, template method deep dive after framework examples
+retrieval-anchor-keywords: template method deep dive, template method after basics, 처음 배우는데 템플릿 메소드 큰 그림, 기초 다음 템플릿 메소드, 부모가 흐름을 쥔다, 필수 빈칸 vs 선택 빈칸, hook method deep dive, abstract step deep dive, template method vs strategy quick check, 템플릿 메소드 선택 기준, fixed workflow inheritance, final template method, framework callback skeleton, template method deep dive after framework examples, template method basics
 
 ---
 

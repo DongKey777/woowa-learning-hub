@@ -13,7 +13,7 @@
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di, spring mvc to ioc di handoff, controller service wiring beginner route
+retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di, spring mvc to ioc di handoff
 
 ## 핵심 개념
 

@@ -10,7 +10,9 @@
 - [기본 자료 구조](./basic.md)
 - [자료구조 정리](./README.md)
 
-retrieval-anchor-keywords: array vs linked list, 배열 vs 연결 리스트, 배열과 연결 리스트 차이, when to use array, array linked list tradeoff, 인덱스 접근 vs 삽입 삭제, dynamic array basics, arraylist vs linkedlist java, 배열 선택 기준, 연결 리스트 선택 기준, beginner array, cache locality array, 순차 접근 vs 임의 접근
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: array vs linked list, 배열 vs 연결 리스트, 배열과 연결 리스트 차이, when to use array, array linked list tradeoff, 인덱스 접근 vs 삽입 삭제, dynamic array basics, arraylist vs linkedlist java, 배열 선택 기준, 연결 리스트 선택 기준, beginner array, cache locality array, 순차 접근 vs 임의 접근, array vs linked list basics, array vs linked list beginner
 
 ## 핵심 개념
 

@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: rolling hash rabin karp basics, rolling hash rabin karp beginner, rolling hash rabin karp intro, algorithm basics, beginner algorithm, 처음 배우는데 rolling hash rabin karp, rolling hash rabin karp 입문, rolling hash rabin karp 기초, what is rolling hash rabin karp, how to rolling hash rabin karp
 > 관련 문서:
 > - [문자열 처리 알고리즘](./string.md)
 > - [KMP vs Z Algorithm](./kmp-vs-z-algorithm.md)
@@ -13,7 +22,7 @@
 
 ## 핵심 개념
 
-Rolling Hash는 문자열의 구간 해시를 구하고, 다음 구간으로 이동할 때 계산을 재사용하는 기법이다.  
+Rolling Hash는 문자열의 구간 해시를 구하고, 다음 구간으로 이동할 때 계산을 재사용하는 기법이다.
 Rabin-Karp는 이 해시를 이용해 패턴 후보를 빠르게 찾는 문자열 매칭 방식이다.
 
 핵심 장점:

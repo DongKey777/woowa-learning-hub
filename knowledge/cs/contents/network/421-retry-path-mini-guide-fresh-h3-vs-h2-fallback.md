@@ -13,7 +13,9 @@
 - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 - [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
 
-retrieval-anchor-keywords: 421 retry path mini guide, 421 fresh h3 vs h2 fallback, h3 reuse 421 retry path, same h3 new connection after 421, h2 fallback after h3 421, fresh QUIC connection retry, browser 421 retry path, 421 after h3 reuse beginner, wrong h3 reuse then h2, wrong h3 reuse then fresh h3, 421 retry decision beginner, same url 421 then h3, same url 421 then h2, h3 misdirected request retry path, h3 421 fallback primer, alt-svc 421 retry route, beginner 421 fresh path, fresh h3 connection meaning, h3 retry path versus fallback
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 421 retry path mini guide, 421 fresh h3 vs h2 fallback, h3 reuse 421 retry path, same h3 new connection after 421, h2 fallback after h3 421, fresh quic connection retry, browser 421 retry path, 421 after h3 reuse beginner, wrong h3 reuse then h2, wrong h3 reuse then fresh h3, 421 retry decision beginner, same url 421 then h3, same url 421 then h2, h3 misdirected request retry path, h3 421 fallback primer
 
 ## 먼저 잡는 mental model
 

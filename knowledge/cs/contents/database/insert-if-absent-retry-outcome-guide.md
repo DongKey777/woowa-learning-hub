@@ -23,7 +23,7 @@
 - [System Design: Retry / Timeout / Idempotency Master Note](../system-design/retry-timeout-idempotency.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: insert-if-absent retry outcome, insert if absent retry guide, duplicate key vs lock wait, duplicate key vs lock timeout, insert-if-absent timeout vs duplicate, duplicate key already exists, lock timeout busy signal, deadlock whole transaction retry, serialization failure whole transaction retry, cannotacquirelockexception vs 40001, busy pool wait vs lock wait, beginner insert-if-absent guide
+retrieval-anchor-keywords: insert-if-absent retry outcome, insert if absent retry guide, duplicate key vs lock wait, duplicate key vs lock timeout, insert-if-absent timeout vs duplicate, duplicate key already exists, lock timeout busy signal, deadlock whole transaction retry, serialization failure whole transaction retry, cannotacquirelockexception vs 40001, busy pool wait vs lock wait, beginner insert-if-absent guide, insert if absent retry outcome guide basics, insert if absent retry outcome guide beginner, insert if absent retry outcome guide intro
 
 코드와 Spring 예외 bucket을 한 장 표로 먼저 붙이고 싶으면 [Spring Insert-if-Absent SQLSTATE Cheat Sheet](./spring-insert-if-absent-sqlstate-cheat-sheet.md)를 먼저 보면 `1062/23505/1205/55P03/1213/40P01/40001`과 `DuplicateKeyException`/`CannotAcquireLockException` 연결이 바로 보인다.
 
@@ -354,6 +354,8 @@ static SQLException findSql(Throwable ex) {
 
 아래는 같은 생각을 helper까지 붙여 한 파일로 옮긴 확장 버전이다.
 
+## 복붙용 `findSql(Throwable)` helper 마이크로 박스 (계속 2)
+
 ```java
 public enum ServiceOutcome {
     ALREADY_EXISTS,
@@ -398,6 +400,8 @@ public final class ServiceOutcomeMapper {
 ```
 
 서비스 메서드에서 붙이면 보통 이런 모양이 된다.
+
+## 복붙용 `findSql(Throwable)` helper 마이크로 박스 (계속 3)
 
 ```java
 public IssueCouponResult issue(CreateCouponCommand command) {

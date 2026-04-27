@@ -13,7 +13,7 @@
 - [Test Strategy Basics](./test-strategy-basics.md)
 - [Spring DataJpaTest Flush/Clear/Rollback Visibility Pitfalls](../spring/spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
-retrieval-anchor-keywords: batchexecutioncount assertion boundaries, batch execution count beginner, hibernate statistics batch test, batchexecutioncount stable assertion, executebatch count provider sensitive, jpa batch test what to assert, beginner batch verification primer, batch count exact number brittle, hibernate batch execution count primer, sql log vs statistics batch assertion, identity sequence batch assertion difference, datajpatest batch stats assertion
+retrieval-anchor-keywords: batchexecutioncount assertion boundaries, batch execution count beginner, hibernate statistics batch test, batchexecutioncount stable assertion, executebatch count provider sensitive, jpa batch test what to assert, beginner batch verification primer, batch count exact number brittle, hibernate batch execution count primer, sql log vs statistics batch assertion, identity sequence batch assertion difference, datajpatest batch stats assertion, batch execution count assertion boundaries primer basics, batch execution count assertion boundaries primer beginner, batch execution count assertion boundaries primer intro
 
 ## 핵심 개념
 

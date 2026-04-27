@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: comparator null reversal primer basics, comparator null reversal primer beginner, comparator null reversal primer intro, java basics, beginner java, 처음 배우는데 comparator null reversal primer, comparator null reversal primer 입문, comparator null reversal primer 기초, what is comparator null reversal primer, how to comparator null reversal primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)

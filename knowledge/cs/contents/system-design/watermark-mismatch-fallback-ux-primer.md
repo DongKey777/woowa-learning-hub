@@ -2,7 +2,7 @@
 
 > 한 줄 요약: `required_watermark > applied_watermark`라는 mismatch는 "틀린 값을 자신 있게 보여 주지 말라"는 신호이고, 초보자용 첫 대응은 `stale hit reject`, `processing placeholder`, `primary fallback` 세 가지 UX 중 하나로 단순하게 고르는 것이다.
 
-retrieval-anchor-keywords: watermark mismatch fallback ux primer, watermark mismatch ux, required watermark applied watermark fallback, stale hit rejection watermark, stale cache hit reject watermark, processing placeholder watermark mismatch, primary fallback watermark mismatch, watermark mismatch decision table, stale read placeholder beginner, read model lag user visible behavior, downstream read stale reject, required greater than applied, watermark mismatch user experience, watermark mismatch bridge beginner, consistency fallback ui primer, projection lag placeholder, watermark reject placeholder fallback, system-design-00078
+retrieval-anchor-keywords: watermark mismatch fallback ux primer, watermark mismatch ux, required watermark applied watermark fallback, stale hit rejection watermark, stale cache hit reject watermark, processing placeholder watermark mismatch, primary fallback watermark mismatch, watermark mismatch decision table, stale read placeholder beginner, read model lag user visible behavior, downstream read stale reject, required greater than applied, watermark mismatch user experience, watermark mismatch bridge beginner, consistency fallback ui primer
 
 **난이도: 🟢 Beginner**
 
@@ -16,6 +16,8 @@ retrieval-anchor-keywords: watermark mismatch fallback ux primer, watermark mism
 - [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
 - [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 

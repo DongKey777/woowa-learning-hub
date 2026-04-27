@@ -16,7 +16,7 @@
 - [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
 - [System Design: Job Queue 설계](../system-design/job-queue-design.md)
 
-retrieval-anchor-keywords: batch run result modeling, run summary example, chunk result example, retry candidate example, checkpoint type example, batch result type basics, batch status model beginner, 배치 결과 모델링 처음, chunk retry checkpoint intro, run summary what is, batch idempotency key boundaries, item-level idempotency key, chunk-level idempotency key, run-level idempotency key, terminal failure in batch result, terminal failure count summary, terminal failure vs retry backlog, batch terminal result modeling, terminal failure beginner primer
+retrieval-anchor-keywords: batch run result modeling, run summary example, chunk result example, retry candidate example, checkpoint type example, batch result type basics, batch status model beginner, 배치 결과 모델링 처음, chunk retry checkpoint intro, run summary what is, batch idempotency key boundaries, item-level idempotency key, chunk-level idempotency key, run-level idempotency key, terminal failure in batch result
 
 ## 핵심 개념
 
@@ -170,6 +170,8 @@ ChunkResult
 - `item-493`는 이번 정책상 종료된 실패다
 
 ### 자주 하는 혼동
+
+## 작은 follow-up: terminal failure는 retry backlog가 아니다 (계속 2)
 
 | 흔한 표현 | 왜 위험한가 | 더 안전한 표현 |
 |---|---|---|

@@ -12,7 +12,7 @@
 - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](../spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 - [Spring Security Filter Chain](../spring/spring-security-filter-chain.md)
 
-retrieval-anchor-keywords: filter vs interceptor beginner, servlet filter vs mvc interceptor, spring filter interceptor 차이, 필터 인터셉터 차이 기초, 필터는 언제 쓰고 인터셉터는 언제 쓰나요, 처음 배우는데 filter interceptor, filter interceptor 큰 그림, request before controller hook, controller 앞 공통 처리, servlet 입구 mvc 경계, jwt 전에 filter, 로그인 체크 interceptor confusion
+retrieval-anchor-keywords: filter vs interceptor beginner, servlet filter vs mvc interceptor, spring filter interceptor 차이, 필터 인터셉터 차이 기초, 필터는 언제 쓰고 인터셉터는 언제 쓰나요, 처음 배우는데 filter interceptor, filter interceptor 큰 그림, request before controller hook, controller 앞 공통 처리, servlet 입구 mvc 경계, jwt 전에 filter, 로그인 체크 interceptor confusion, servlet filter vs mvc interceptor beginner bridge basics, servlet filter vs mvc interceptor beginner bridge beginner, servlet filter vs mvc interceptor beginner bridge intro
 
 ## 먼저 멘탈 모델
 

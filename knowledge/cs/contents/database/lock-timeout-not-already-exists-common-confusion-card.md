@@ -14,7 +14,9 @@
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: lock timeout not already exists, lock timeout busy not winner, duplicate key already exists vs lock timeout, beginner lock timeout confusion card, busy vs already exists lock timeout, lock wait timeout not duplicate, 락 타임아웃 already exists 오해, lock timeout 바쁨 신호, 중복키와 락 타임아웃 차이, 공통 오해 카드, beginner timeout misunderstanding
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: lock timeout not already exists, lock timeout busy not winner, duplicate key already exists vs lock timeout, beginner lock timeout confusion card, busy vs already exists lock timeout, lock wait timeout not duplicate, 락 타임아웃 already exists 오해, lock timeout 바쁨 신호, 중복키와 락 타임아웃 차이, 공통 오해 카드, beginner timeout misunderstanding, lock timeout not already exists common confusion card basics, lock timeout not already exists common confusion card beginner, lock timeout not already exists common confusion card intro, database basics
 
 ## 먼저 멘탈모델
 
@@ -33,3 +35,12 @@ retrieval-anchor-keywords: lock timeout not already exists, lock timeout busy no
 - `busy`가 왜 기본은 fail fast이고, 언제 한 번만 짧게 retry할 수 있는지 보려면 [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - duplicate 경로와 lock 경로를 한 장 표로 비교하려면 [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - `insert-if-absent`에서 `busy` / `retryable` / `already exists`를 같이 고정하려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+
+## 빠른 확인 질문
+
+- 이 문서의 핵심 용어를 한 문장으로 설명할 수 있는가?
+- 실제 미션 코드에서 이 문제가 어디에 나타나는가?
+
+## 한 줄 정리
+
+`lock timeout`은 "이미 누가 만들었다"가 아니라 "기다리다 이번 시도를 끝냈다"에 더 가깝다.

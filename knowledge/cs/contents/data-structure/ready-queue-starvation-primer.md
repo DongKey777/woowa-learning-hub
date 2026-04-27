@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: ready queue starvation primer basics, ready queue starvation primer beginner, ready queue starvation primer intro, data structure basics, beginner data structure, 처음 배우는데 ready queue starvation primer, ready queue starvation primer 입문, ready queue starvation primer 기초, what is ready queue starvation primer, how to ready queue starvation primer
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)

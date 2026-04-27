@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: bigdecimal 1 0 vs 1 00 collections mini drill basics, bigdecimal 1 0 vs 1 00 collections mini drill beginner, bigdecimal 1 0 vs 1 00 collections mini drill intro, java basics, beginner java, 처음 배우는데 bigdecimal 1 0 vs 1 00 collections mini drill, bigdecimal 1 0 vs 1 00 collections mini drill 입문, bigdecimal 1 0 vs 1 00 collections mini drill 기초, what is bigdecimal 1 0 vs 1 00 collections mini drill, how to bigdecimal 1 0 vs 1 00 collections mini drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Beginner Drill Sheet: Equality vs Ordering](./equality-vs-ordering-beginner-drill-sheet.md)
@@ -106,3 +115,7 @@ System.out.println(map.get(new BigDecimal("1")));
 - 조회 전용: [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./bigdecimal-hashmap-treemap-lookup-mini-drill.md)
 - 개념 정리: [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 - 정렬 컬렉션 감각: [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+
+## 한 줄 정리
+
+`BigDecimal("1.0")`와 `BigDecimal("1.00")`는 hash 기준(`equals`)에서는 다르고 sorted 기준(`compareTo == 0`)에서는 같은 자리처럼 보일 수 있다.

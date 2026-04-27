@@ -12,7 +12,9 @@
 - [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - [DFS와 BFS 입문](./dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: state space visited vs dist, visited r c state vs dist r c state, 3d visited vs 3d dist, zero one bfs state dist, stateful shortest path visited dist, 0-1 bfs visited dist state card, 0-1 bfs beginner visited or dist, grid state visited enough, grid state dist safer, visited r c state enough, dist r c state safer, key door bfs visited, wall break bfs dist, direction state 0-1 bfs dist, 상태 공간 visited vs dist, visited r c state, dist r c state, 3차원 visited vs dist, 상태 포함 최단 경로 dist, 상태 공간 bfs visited, 0-1 bfs dist 안전, 방문배열 거리배열 구분
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: state space visited vs dist, visited r c state vs dist r c state, 3d visited vs 3d dist, zero one bfs state dist, stateful shortest path visited dist, 0-1 bfs visited dist state card, 0-1 bfs beginner visited or dist, grid state visited enough, grid state dist safer, visited r c state enough, dist r c state safer, key door bfs visited, wall break bfs dist, direction state 0-1 bfs dist, zero one bfs state visited vs dist starter card basics
 
 ## 먼저 감각부터
 
@@ -129,3 +131,7 @@ if (newDist < dist[nr][nc][nextState]) {
 - 상태를 왜 `(r, c, state)`로 키워야 하는지 먼저 잡으려면 [0-1 BFS State-Space Bridge](./zero-one-bfs-state-space-bridge.md)
 - `0/1` 비용으로 번역하는 감각이 먼저 필요하면 [0-1 BFS grid-conversion primer](./zero-one-bfs-grid-conversion-primer.md)
 - 첫 방문 고정이 왜 깨지는지 짧은 반례부터 보려면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
+
+## 한 줄 정리
+
+상태 공간이 보여도 간선 비용이 모두 같으면 `visited[r][c][state]`로 충분한 경우가 많고, `0/1` 비용이 섞이면 "처음 방문"보다 "더 싼 재도착"을 허용하는 `dist[r][c][state]`가 더 안전하다.

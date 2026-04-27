@@ -14,7 +14,9 @@
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00070, pty raw mode echo basics, pty raw mode, tty raw mode basics, terminal canonical mode basics, canonical mode vs raw mode, cooked mode vs raw mode, line discipline beginner, tty echo basics, echo off password prompt, shell raw mode, vim raw mode, full screen app tty mode, line oriented cli tty mode, enter key canonical mode, backspace canonical mode, control c raw mode, control c terminal mode, raw mode echo off, noncanonical mode beginner, termios beginner, pty interactive mode basics, shell behaves differently on pty, vim behaves differently on pty, why shell and vim act different on pty, terminal modes beginner, tty line buffering input, pty input handling basics, beginner handoff box, primer handoff box, pty raw canonical echo 다음 문서
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00070, pty raw mode echo basics, pty raw mode, tty raw mode basics, terminal canonical mode basics, canonical mode vs raw mode, cooked mode vs raw mode, line discipline beginner, tty echo basics, echo off password prompt, shell raw mode, vim raw mode, full screen app tty mode, line oriented cli tty mode, enter key canonical mode
 
 ## 먼저 잡는 멘탈 모델
 

@@ -955,7 +955,7 @@ def _run_completion_gates(
     commands: list[list[str]] = []
     lint_targets = _authoring_lint_targets(changed_files)
     if lint_targets:
-        commands.append([python, "scripts/lint_cs_authoring.py", "--quiet", *lint_targets])
+        commands.append([python, "scripts/lint_cs_authoring.py", "--strict", "--quiet", *lint_targets])
     for pytest_args in _rag_pytest_args(worker, lane, changed_files):
         commands.append([python, "-m", "pytest", *pytest_args, "-q"])
 

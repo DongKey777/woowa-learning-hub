@@ -12,7 +12,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC Controller 기초](../spring/spring-mvc-controller-basics.md)
 
-retrieval-anchor-keywords: websocket basics, 웹소켓이 뭔가요, http vs websocket, websocket 양방향 통신, 서버 push 입문, ws wss 차이, websocket upgrade 헤더, 실시간 통신 기초, 채팅 구현 방법, beginner websocket
+retrieval-anchor-keywords: websocket basics, 웹소켓이 뭔가요, http vs websocket, websocket 양방향 통신, 서버 push 입문, ws wss 차이, websocket upgrade 헤더, 실시간 통신 기초, 채팅 구현 방법, beginner websocket, websocket basics basics, websocket basics beginner, websocket basics intro, network basics, beginner network
 
 ## 핵심 개념
 

@@ -17,7 +17,7 @@
 - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 - [Amortized Analysis Pitfalls](../algorithm/amortized-analysis-pitfalls.md)
 
-retrieval-anchor-keywords: scheduledfuture cancellation bridge, scheduledfuture cancel stale entry, scheduledfuture stale ticket, scheduledfuture cancellation semantics, scheduledfuture cancel true, scheduledfuture cancel return value, cancel true queue still contains task, cancel true but queue size same, remove on cancel policy, removeOnCancelPolicy timeline, removeOnCancelPolicy false vs true, scheduled executor queue retention timeline, scheduled executor queue size cancelled tasks, scheduled executor purge, purge vs removeOnCancelPolicy, cancelled task cleanup, lazy cancellation mental model, lazy stale entry scheduled task, scheduled task cancel queue trade off, scheduledfuture user facing semantics, scheduledfuture internal queue model, what is scheduledfuture cancel, beginner scheduled executor cancellation, delayqueue invalidation, delayqueue style invalidation, executor cancel maps to delayqueue invalidate, stale ticket invalidation, cancel means invalidate ticket, delayqueue remove cost, heap arbitrary remove timer, removeOnCancelPolicy linear remove, 취소 성공인데 큐에 남음, stale ticket mental model, removeOnCancelPolicy 켜면 큐에서 바로 사라지나, scheduledfuture queue retention
+retrieval-anchor-keywords: scheduledfuture cancellation bridge, scheduledfuture cancel stale entry, scheduledfuture stale ticket, scheduledfuture cancellation semantics, scheduledfuture cancel true, scheduledfuture cancel return value, cancel true queue still contains task, cancel true but queue size same, remove on cancel policy, removeoncancelpolicy timeline, removeoncancelpolicy false vs true, scheduled executor queue retention timeline, scheduled executor queue size cancelled tasks, what is scheduledfuture cancel, beginner scheduled executor cancellation
 
 ## 먼저 그림부터
 
@@ -229,6 +229,8 @@ heap 계열 queue에서 head를 꺼내는 일과 queue 중간의 취소 대상�
 이 차이는 상각 관점으로도 읽을 수 있다.
 lazy 정책은 cleanup 비용을 나중 dequeue 시점으로 미루고, 즉시 제거 정책은 그 비용을 `cancel()` hot path로 당겨온다.
 이런 "언제 비용을 낼지" 감각이 더 필요하면 [Amortized Analysis Pitfalls](../algorithm/amortized-analysis-pitfalls.md)를 같이 보면 연결이 잘 된다.
+
+## `removeOnCancelPolicy`는 무엇을 바꾸나 (계속 2)
 
 | workload 신호 | 먼저 생각할 방향 |
 |---|---|

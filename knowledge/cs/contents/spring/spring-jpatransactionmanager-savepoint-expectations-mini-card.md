@@ -15,7 +15,7 @@
 - [Savepoint와 Partial Rollback](../database/savepoint-partial-rollback.md)
 - [JDBC · JPA · MyBatis](../database/jdbc-jpa-mybatis.md)
 
-retrieval-anchor-keywords: JpaTransactionManager nested beginner, jpa nested savepoint expectation, JpaTransactionManager savepoint caveat, nestedTransactionAllowed false jpa, JPA does not support nested transactions, persistence context savepoint mismatch, NESTED jpa beginner card, jpa nested rollback misconception, jdbc oriented thinking safer, savepoint only jdbc connection, entity manager cached objects nested, jpa savepoint primer, transactional nested jpa not behaving, spring jpa nested caveat beginner
+retrieval-anchor-keywords: jpatransactionmanager nested beginner, jpa nested savepoint expectation, jpatransactionmanager savepoint caveat, nestedtransactionallowed false jpa, jpa does not support nested transactions, persistence context savepoint mismatch, nested jpa beginner card, jpa nested rollback misconception, jdbc oriented thinking safer, savepoint only jdbc connection, entity manager cached objects nested, jpa savepoint primer, transactional nested jpa not behaving, spring jpa nested caveat beginner, spring jpatransactionmanager savepoint expectations mini card basics
 
 ## 먼저 mental model 한 줄
 

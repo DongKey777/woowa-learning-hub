@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: true bulk contracts partial failure results basics, true bulk contracts partial failure results beginner, true bulk contracts partial failure results intro, software engineering basics, beginner software engineering, 처음 배우는데 true bulk contracts partial failure results, true bulk contracts partial failure results 입문, true bulk contracts partial failure results 기초, what is true bulk contracts partial failure results, how to true bulk contracts partial failure results
 [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)에서 "bulk를 애플리케이션 계약으로 올려도 되는 순간"을 봤다면, 이 문서는 그다음 질문인 "그 bulk 계약을 어떤 이름과 결과 타입으로 표현해야 하는가"를 좁혀서 본다.
 `saveAll`/`sendAll` smell가 먼저 헷갈린다면 [saveAll/sendAll Port Smells and Safer Alternatives](./saveall-sendall-port-smells-safer-alternatives.md)를 먼저 보고 오면 된다.
 장애 후 재개, retry queue, checkpoint 정책 자체는 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)에서 이어서 다룬다.
@@ -216,6 +225,8 @@ public interface SettlementSubmitPort {
 
 결과 타입도 묶음과 item을 같이 설명해야 한다.
 
+## 예시: 정산 chunk 전송 (계속 2)
+
 ```java
 public record ChunkSubmitResult(
         SettlementRunId runId,
@@ -308,3 +319,7 @@ bulk 계약을 올리기 전에 아래 질문에 답해 본다.
 4. **adapter bulk 최적화와 application bulk 계약은 다른 문제다.**
 
 테스트 관점에서 이 계약을 어떻게 고정할지 이어서 보려면 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)를 보면 된다.
+
+## 한 줄 정리
+
+bulk가 실제 업무 단위라면 `List<T>`와 단순 count로 숨기지 말고, `SettlementFile`, `SettlementChunk`, `BulkSubmitResult`, `ItemFailure`처럼 입력 묶음과 결과 묶음을 이름 있는 타입으로 고정해야 한다.

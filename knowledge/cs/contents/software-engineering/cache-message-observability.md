@@ -1,7 +1,18 @@
 # 캐시, 메시징, 관측성 🟡 Intermediate
 
+
+> 한 줄 요약: 캐시, 메시징, 관측성 🟡 Intermediate는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: cache message observability basics, cache message observability beginner, cache message observability intro, software engineering basics, beginner software engineering, 처음 배우는데 cache message observability, cache message observability 입문, cache message observability 기초, what is cache message observability, how to cache message observability
 > 시스템이 커지면 CRUD만으로 설명이 안 된다 -- 캐시는 성능, 메시징은 결합도, 관측성은 생존의 문제다.
 
 > 관련 문서:
@@ -99,6 +110,8 @@ public void placeOrder(Order order) {
 - 후속 처리가 추가될 때마다 `placeOrder`를 수정해야 함
 
 #### 메시징에서 반드시 고려할 것
+
+## 깊이 들어가기 (계속 2)
 
 | 문제 | 설명 | 대응 |
 |------|------|------|
@@ -205,6 +218,8 @@ public class ProductService {
 ```
 
 ### 메트릭 기반 알림 설정 예시
+
+## 코드로 보기 (계속 2)
 
 ```yaml
 # Prometheus alert rule

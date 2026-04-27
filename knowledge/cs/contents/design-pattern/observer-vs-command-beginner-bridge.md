@@ -14,7 +14,9 @@
 - [Command Pattern, Undo, Queue 심화](./command-pattern-undo-queue.md)
 - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 
-retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer command difference, command vs observer beginner, event notification vs command request, 무엇이 일어났는지 vs 무엇을 실행할지, observer or command first choice, beginner pattern bridge, listener vs command object, notify vs execute, fan-out notification vs queued request
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer command difference, command vs observer beginner, event notification vs command request, 무엇이 일어났는지 vs 무엇을 실행할지, observer or command first choice, beginner pattern bridge, listener vs command object, notify vs execute, fan-out notification vs queued request, observer vs command beginner bridge basics, observer vs command beginner bridge beginner, observer vs command beginner bridge intro, design pattern basics
 
 ---
 

@@ -11,7 +11,9 @@
 - [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: sql injection basics, sql 인젝션이 뭐예요, preparedstatement 왜 써야 해요, 사용자 입력 쿼리 위험, 쿼리 조작 공격, beginner sql injection, sql injection prevention, parameterized query, sql injection example, database attack beginner, security readme sql injection primer, security beginner route, security primer next step, return to security README, 문자열 이어 붙여 쿼리 만들 때, sql query injection
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: sql injection basics, sql 인젝션이 뭐예요, preparedstatement 왜 써야 해요, 사용자 입력 쿼리 위험, 쿼리 조작 공격, beginner sql injection, sql injection prevention, parameterized query, sql injection example, database attack beginner, security readme sql injection primer, security beginner route, security primer next step, return to security readme, 문자열 이어 붙여 쿼리 만들 때
 
 ## 이 문서 다음에 보면 좋은 문서
 

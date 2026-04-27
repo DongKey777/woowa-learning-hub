@@ -12,7 +12,7 @@
 - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md)
 
-retrieval-anchor-keywords: immutable object java beginner, defensive copy basics, record defensive copy beginner, record constructor list copyof, record constructor array copy, collections unmodifiablelist view, final field vs immutable java, mutable vs immutable java, record shallow immutability, read only view vs snapshot java, 자바 record 생성자 복사, 자바 읽기 전용 뷰 차이
+retrieval-anchor-keywords: immutable object java beginner, defensive copy basics, record defensive copy beginner, record constructor list copyof, record constructor array copy, collections unmodifiablelist view, final field vs immutable java, mutable vs immutable java, record shallow immutability, read only view vs snapshot java, 자바 record 생성자 복사, 자바 읽기 전용 뷰 차이, java immutable object basics basics, java immutable object basics beginner, java immutable object basics intro
 
 ## 핵심 개념
 

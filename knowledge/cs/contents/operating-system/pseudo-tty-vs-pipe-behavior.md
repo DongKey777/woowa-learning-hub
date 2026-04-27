@@ -17,7 +17,9 @@
 - [signals, process supervision](./signals-process-supervision.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00056, pseudo tty vs pipe behavior, pseudo-tty vs pipe, pty vs pipe, pty buffering, tty detection buffering, isatty basics, isatty stdout stderr stdin, terminal detection colors prompts progress bar, pipe disables color, pty enables color, line buffering tty, full buffering pipe, pseudo terminal prompt behavior, pseudo terminal progress bar, spinner disappears in pipe, progress bar carriage return tty, prompt only on tty, cli interactive mode tty, stdout not a tty, stdin not a tty, stderr tty progress output, ansi color auto tty, --color auto tty detection, terminal-like device pty, master slave pty basics, pty vs pipe beginner, pipe capture vs pty capture, subprocess pty mental model, pseudo tty tutorial beginner, beginner handoff box, primer handoff box, pty vs pipe 다음 문서, tty detection 다음 단계
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00056, pseudo tty vs pipe behavior, pseudo-tty vs pipe, pty vs pipe, pty buffering, tty detection buffering, isatty basics, isatty stdout stderr stdin, terminal detection colors prompts progress bar, pipe disables color, pty enables color, line buffering tty, full buffering pipe, pseudo terminal prompt behavior, master slave pty basics
 
 ## 먼저 잡는 멘탈 모델
 

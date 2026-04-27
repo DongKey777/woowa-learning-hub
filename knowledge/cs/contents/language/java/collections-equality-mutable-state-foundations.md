@@ -21,7 +21,7 @@
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 
-retrieval-anchor-keywords: language-java-00109, collections equality mutable state foundations, java collections equality primer, java mutable key beginner, mutable hash key beginner, java map iteration update primer, java list set map equals hashCode comparable, beginner collection equality contract, java collection mission code primer, woowacourse backend collections primer, list set map choice equals hashCode compareTo, java set duplicate rule beginner, java map key mutation bug beginner, hashset mutable element bug, list contains false after mutation java, java remove during iteration beginner, java mutable state collection trap, java collection update tradeoff, 자바 컬렉션 equals hashCode compareTo 기초, 자바 컬렉션 가변 상태 함정, 자바 list set map 선택 기초, 자바 map key 변경 버그, 자바 hashset 원소 변경 함정, 자바 list contains remove 변경 함정, 자바 순회 중 삭제 기초, 자바 Set 중복 판단 기준, 자바 TreeMap compareTo 기초, 미션 코드 컬렉션 기초
+retrieval-anchor-keywords: language-java-00109, collections equality mutable state foundations, java collections equality primer, java mutable key beginner, mutable hash key beginner, java map iteration update primer, java list set map equals hashcode comparable, beginner collection equality contract, java collection mission code primer, woowacourse backend collections primer, list set map choice equals hashcode compareto, java set duplicate rule beginner, java map key mutation bug beginner, hashset mutable element bug, list contains false after mutation java
 
 ## 먼저 잡는 멘탈 모델
 

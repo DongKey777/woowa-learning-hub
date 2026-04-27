@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: null object pattern basics, null object pattern beginner, null object pattern intro, design pattern basics, beginner design pattern, 처음 배우는데 null object pattern, null object pattern 입문, null object pattern 기초, what is null object pattern, how to null object pattern
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
@@ -14,7 +23,7 @@
 
 ## 핵심 개념
 
-Null Object 패턴은 **null을 특별 취급하지 않도록 "아무 일도 하지 않는 객체"를 제공**하는 패턴이다.  
+Null Object 패턴은 **null을 특별 취급하지 않도록 "아무 일도 하지 않는 객체"를 제공**하는 패턴이다.
 핵심은 호출부가 `if (x != null)`에 매번 신경 쓰지 않게 만드는 것이다.
 
 backend에서는 다음과 같이 자주 쓰인다.
@@ -186,4 +195,3 @@ public class NoDiscountPolicy implements DiscountPolicy {
 ## 한 줄 정리
 
 Null Object 패턴은 null 체크를 줄이기 위해 기본 동작을 가진 빈 구현체를 넣는 패턴이다.
-

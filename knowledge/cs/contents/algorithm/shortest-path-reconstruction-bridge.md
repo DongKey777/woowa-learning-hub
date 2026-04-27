@@ -13,7 +13,9 @@
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - [그래프 관련 알고리즘](./graph.md)
 
-retrieval-anchor-keywords: shortest path reconstruction, path reconstruction beginner, bfs path reconstruction, dijkstra path reconstruction, 0-1 bfs path reconstruction, zero one bfs reconstruction, predecessor array, parent array shortest path, prev array, restore shortest path, reconstruct route after shortest path, bfs vs 0-1 bfs parent update, bfs first visit vs relax, 0-1 bfs relax update, zero one bfs relax, first visit fixed shortest path, 경로 복원, 최단 경로 복원, bfs 경로 복원, 0-1 bfs 경로 복원, 다익스트라 경로 복원, predecessor 배열, parent 배열, prev 배열, 부모 배열로 경로 찾기, bfs 처음 방문 고정, 0-1 bfs relax 갱신, bfs와 0-1 bfs 차이
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: shortest path reconstruction, path reconstruction beginner, bfs path reconstruction, dijkstra path reconstruction, 0-1 bfs path reconstruction, zero one bfs reconstruction, predecessor array, parent array shortest path, prev array, restore shortest path, reconstruct route after shortest path, bfs vs 0-1 bfs parent update, bfs first visit vs relax, 0-1 bfs relax update, bfs 처음 방문 고정
 
 ## 먼저 잡을 그림
 
@@ -134,6 +136,8 @@ for (next, cost) in adj[cur]
     parent[next] = cur
 ```
 
+## 0-1 BFS도 복원 규칙은 같다 (계속 2)
+
 ```text
 // 맞는 예시
 for (next, cost) in adj[cur]
@@ -219,3 +223,7 @@ reverse(path)
 - 어떤 최단 경로 알고리즘을 골라야 하는지 비교하려면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
 - `0-1 BFS`, `Dial`, 희소 그래프 변형까지 이어 보려면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - `deque`라는 단어 때문에 sliding window 쪽으로 새는지부터 먼저 막으려면 [Deque Router Example Pack](../data-structure/deque-router-example-pack.md)
+
+## 한 줄 정리
+
+BFS, 0-1 BFS, Dijkstra는 "거리를 구하는 방법"은 다르지만, 실제 경로를 복원할 때는 결국 `parent` 또는 `predecessor` 배열을 거꾸로 따라가면 된다.

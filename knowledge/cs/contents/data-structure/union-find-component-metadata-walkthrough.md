@@ -13,7 +13,7 @@
 - [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
 - [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
 
-retrieval-anchor-keywords: union find component size, union find component count, dsu metadata, connected components count dsu, component size query, size[find(x)] dsu, repeated union walkthrough, friend relation group count, network group count, 연결 요소 수, 친구 관계 그룹 수, 네트워크 그룹 수, union find metadata 뭐예요, 처음 배우는 union find metadata
+retrieval-anchor-keywords: union find component size, union find component count, dsu metadata, connected components count dsu, component size query, size[find(x)] dsu, repeated union walkthrough, friend relation group count, network group count, 연결 요소 수, 친구 관계 그룹 수, 네트워크 그룹 수, union find metadata 뭐예요, 처음 배우는 union find metadata, union find component metadata walkthrough basics
 
 ## 빠른 라우팅
 

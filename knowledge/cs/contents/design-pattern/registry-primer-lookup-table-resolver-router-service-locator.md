@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
@@ -13,7 +20,7 @@
 > - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: registry primer lookup table resolver router service locator, lookup table vs registry beginner, resolver vs registry beginner, router vs registry beginner, service locator vs registry beginner, registry service locator difference, lookup table resolver router service locator difference, registry pattern beginner, registry 큰 그림, registry 기초, registry 언제 쓰는지, registry 처음 배우는데, lookup table 처음 배우는데, resolver router registry 처음 배우는데, service locator 처음 배우는데, lookup table 큰 그림, resolver 큰 그림, router 큰 그림, service locator 큰 그림, keyed lookup primer, named handler lookup primer, handler registry beginner, payment handler registry beginner, route to registry pattern, route to service locator antipattern, service locator anti pattern beginner, hidden dependency lookup beginner, 전역 조회소 안티패턴, 레지스트리 룩업 테이블, lookup table 레지스트리 차이, resolver 레지스트리 차이, router 레지스트리 차이, service locator 레지스트리 차이, 라우터 리졸버 레지스트리 차이, 서비스 로케이터 안티패턴 기초
+retrieval-anchor-keywords: registry primer lookup table resolver router service locator, lookup table vs registry beginner, resolver vs registry beginner, router vs registry beginner, service locator vs registry beginner, registry service locator difference, lookup table resolver router service locator difference, registry pattern beginner, registry 큰 그림, registry 기초, registry 언제 쓰는지, registry 처음 배우는데, lookup table 처음 배우는데, resolver router registry 처음 배우는데, service locator 처음 배우는데
 retrieval-anchor-keywords: router vs selector naming, router vs dispatcher naming, request dispatch router handler mapping, handler mapping beginner, request routing naming bridge
 
 ---

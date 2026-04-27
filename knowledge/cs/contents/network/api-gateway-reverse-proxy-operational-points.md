@@ -1,6 +1,15 @@
 # API Gateway, Reverse Proxy 운영 포인트
 
+
+> 한 줄 요약: API Gateway, Reverse Proxy 운영 포인트는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 프록시를 "중간 서버"로만 이해하면 운영에서 자주 놓치는 지점들을 정리한 문서
 
@@ -19,7 +28,7 @@
 > - [TLS close_notify, FIN/RST, Truncation](./tls-close-notify-fin-rst-truncation.md)
 > - [Spring Request Lifecycle Timeout / Disconnect / Cancellation Bridges](../spring/spring-request-lifecycle-timeout-disconnect-cancellation-bridges.md)
 
-retrieval-anchor-keywords: API gateway, reverse proxy, proxy chain, timeout budget propagation, upstream timeout, rate limit, auth, forwarded headers, protocol bridge, request routing
+retrieval-anchor-keywords: api gateway, reverse proxy, proxy chain, timeout budget propagation, upstream timeout, rate limit, auth, forwarded headers, protocol bridge, request routing, api gateway reverse proxy operational points basics, api gateway reverse proxy operational points beginner, api gateway reverse proxy operational points intro, network basics, beginner network
 
 <details>
 <summary>Table of Contents</summary>
@@ -113,6 +122,8 @@ retrieval-anchor-keywords: API gateway, reverse proxy, proxy chain, timeout budg
 - 서버와 프록시 모두 socket 자원을 더 많이 쓴다
 
 그래서 보통 upstream 연결을 재사용한다. 다만 연결 재사용은 뒤쪽 서버가 바뀌었을 때 stale connection 문제가 생길 수 있어서 health check와 drain 정책이 같이 필요하다.
+
+## Reverse Proxy 운영 포인트 (계속 2)
 
 ### 5. WebSocket, SSE, streaming은 별도로 다뤄야 한다
 
@@ -218,3 +229,7 @@ retrieval-anchor-keywords: API gateway, reverse proxy, proxy chain, timeout budg
 ### Q. WebSocket을 프록시 뒤에서 운영할 때 주의점은 무엇인가요?
 
 - 장시간 연결, idle timeout, 연결 업그레이드, sticky session 필요 여부를 따로 봐야 한다.
+
+## 한 줄 정리
+
+API Gateway, Reverse Proxy 운영 포인트는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

@@ -1,8 +1,17 @@
 # IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)
 
+
+> 한 줄 요약: IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > Spring의 심장은 IoC 컨테이너다. 객체의 생성, 조립, 생명주기를 프레임워크가 제어하는 구조를 코드 레벨에서 해체한다.
 
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
 
 > 관련 문서:
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
@@ -16,7 +25,7 @@
 > - [Spring Early Bean References and Circular Proxy Traps](./spring-early-bean-reference-circular-proxy-traps.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: BeanDefinition, BeanFactory, ApplicationContext, BeanFactoryPostProcessor, BeanPostProcessor, autowire candidate, scope, circular dependency, constructor injection, bean overriding, condition evaluation report
+retrieval-anchor-keywords: beandefinition, beanfactory, applicationcontext, beanfactorypostprocessor, beanpostprocessor, autowire candidate, scope, circular dependency, constructor injection, bean overriding, condition evaluation report, ioc di container basics, ioc di container beginner, ioc di container intro, spring basics
 
 ---
 
@@ -107,6 +116,8 @@ XML                → XmlBeanDefinitionReader              → BeanDefinition
 
 여기에 더해, Spring Boot의 자동 구성과 조건부 등록은 이 생명주기 사이에 끼어든다.
 
+## 깊이 들어가기 (계속 2)
+
 - `ConditionEvaluationReport`는 어떤 정의가 왜 들어오고 빠지는지 설명한다.
 - `@ConfigurationProperties` 바인딩은 이후 설정 객체를 안정적으로 주입하는 데 쓰인다.
 - `ApplicationContext` refresh가 끝나기 전에 일부 Bean은 아직 완성되지 않았을 수 있다.
@@ -162,6 +173,8 @@ public class OrderService {
 ```
 
 **해결책 — Provider 패턴:**
+
+## 깊이 들어가기 (계속 3)
 
 ```java
 @Service
@@ -275,6 +288,8 @@ OrderService service = container.getBean(OrderService.class);
 이것이 Spring의 `DefaultListableBeanFactory`가 하는 일의 극도로 단순화된 버전이다. 실제 Spring은 여기에 BeanDefinition 파싱, BeanPostProcessor 체인, 스코프 관리, AOP 프록시 생성 등이 추가된다.
 
 ### 주입 방식 비교
+
+## 코드로 보기 (계속 2)
 
 ```java
 // 1. 생성자 주입 (권장)

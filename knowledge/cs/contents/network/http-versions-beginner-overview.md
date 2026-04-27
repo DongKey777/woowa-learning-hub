@@ -14,7 +14,9 @@
 - [TCP와 UDP 기초](./tcp-udp-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http version bridge guide, http versions beginner overview bridge, http version entrypoint guide, http 1.1 2 3 quick start, h1 h2 h3 first read routing, beginner http versions, http version comparison beginner, http version difference vs selection, http version branching table, browser chooses h2 or h3, alpn alt-svc entrypoint, alt-svc lifecycle handoff, first request h2 next request h3, http connection vs stream beginner, transport vs protocol primer, h3 fallback meaning beginner
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: http version bridge guide, http versions beginner overview bridge, http version entrypoint guide, http 1.1 2 3 quick start, h1 h2 h3 first read routing, beginner http versions, http version comparison beginner, http version difference vs selection, http version branching table, browser chooses h2 or h3, alpn alt-svc entrypoint, alt-svc lifecycle handoff, first request h2 next request h3, http connection vs stream beginner, transport vs protocol primer
 
 ## 이 문서의 역할
 

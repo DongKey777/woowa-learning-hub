@@ -4,8 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md), [Monotonic Write Guarantees](./monotonic-write-guarantees.md), [Client Consistency Tokens](./client-consistency-tokens.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
-retrieval-anchor-keywords: causal consistency, happens-before, session causality, session consistency, causal order, cause before effect, effect before cause, dependency token, causal token, read-your-writes, monotonic reads, monotonic writes, causal consistency vs strong consistency, causal consistency vs read-your-writes, comment visible before post, payment visible before order, role change seen without approval, saw effect before cause, 원인보다 결과가 먼저 보임, 인과 순서, 댓글만 먼저 보임, 결제만 먼저 보임
+retrieval-anchor-keywords: causal consistency, happens-before, session causality, session consistency, causal order, cause before effect, effect before cause, dependency token, causal token, read-your-writes, monotonic reads, monotonic writes, causal consistency vs strong consistency, causal consistency intuition basics, causal consistency intuition beginner
 
 ## 증상별 바로 가기
 

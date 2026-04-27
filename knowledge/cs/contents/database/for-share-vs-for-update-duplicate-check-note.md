@@ -14,7 +14,9 @@
 - [Spring/JPA Exact-Key Lock Mapping Guide](./spring-jpa-exact-key-lock-mapping-guide.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: for share vs for update duplicate check, mysql for share for update exact key, for share duplicate note, for update duplicate note, empty result for share vs for update, 0 row for share for update mysql, exact key duplicate precheck share update, for share for update difference beginner, select for share duplicate check, select for update duplicate check, mysql empty-result duplicate precheck, unique backstop for share for update, same key precheck share update, missing row share update same, 언제 for share 와 for update 가 갈리나, 중복 체크 for share for update 차이, 빈 결과에서 for share for update 차이, exact key 중복 검사 share update
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: for share vs for update duplicate check, mysql for share for update exact key, for share duplicate note, for update duplicate note, empty result for share vs for update, 0 row for share for update mysql, exact key duplicate precheck share update, for share for update difference beginner, select for share duplicate check, select for update duplicate check, mysql empty-result duplicate precheck, unique backstop for share for update, same key precheck share update, missing row share update same, 언제 for share 와 for update 가 갈리나
 
 ## 핵심 개념
 

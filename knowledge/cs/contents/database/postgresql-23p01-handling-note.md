@@ -15,7 +15,9 @@
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: postgresql 23P01 handling note, sqlstate 23P01 beginner, exclusion constraint error mapping, exclusion violation not retryable, postgres overlap conflict product error, already booked 23P01, exclusion constraint conflict translation, 23P01 conflict response, postgresql booking overlap error handling, overlap already exists not retry, exclusion constraint domain error, postgres 23P01 user message, beginner exclusion constraint retry confusion, 23P01 vs 40001 vs 40P01, postgres reservation overlap conflict
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: postgresql 23p01 handling note, sqlstate 23p01 beginner, exclusion constraint error mapping, exclusion violation not retryable, postgres overlap conflict product error, already booked 23p01, exclusion constraint conflict translation, 23p01 conflict response, postgresql booking overlap error handling, overlap already exists not retry, exclusion constraint domain error, postgres 23p01 user message, beginner exclusion constraint retry confusion, 23p01 vs 40001 vs 40p01, postgres reservation overlap conflict
 
 ## 먼저 멘탈모델
 
@@ -154,3 +156,7 @@ if ("40001".equals(sqlState) || "40P01".equals(sqlState)) {
 - exclusion constraint 자체가 언제 맞는 모델인지 먼저 고르고 싶으면 [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
 - active predicate, 반개구간, 운영 함정까지 같이 보고 싶으면 [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md)
 - `40001` retry envelope와 혼동이 남아 있으면 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
+
+## 한 줄 정리
+
+PostgreSQL `23P01`은 "이번 시도를 다시 해 보라"보다 "이미 다른 예약/구간이 먼저 자리를 차지했다"에 가까운 신호라서, 초보자는 generic retryable failure가 아니라 **제품의 conflict/이미 점유됨 오류**로 먼저 번역해야 한다.

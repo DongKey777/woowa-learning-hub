@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java array sorting searching basics basics, java array sorting searching basics beginner, java array sorting searching basics intro, java basics, beginner java, 처음 배우는데 java array sorting searching basics, java array sorting searching basics 입문, java array sorting searching basics 기초, what is java array sorting searching basics, how to java array sorting searching basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -150,6 +159,8 @@ System.out.println(Arrays.toString(names)); // [Mina, Jin, Ari]
 즉 `int[]`를 comparator로 바로 내림차순 정렬할 수는 없다.
 primitive 배열은 기본 오름차순으로 정렬한 뒤 직접 뒤집거나, `Integer[]` 같은 wrapper 배열을 써야 한다.
 
+## `Arrays.sort()` 기초 (계속 2)
+
 이 지점만 따로 짧게 다시 잡고 싶다면 [Primitive Descending Array Sort Bridge](./primitive-descending-array-sort-bridge.md)를 먼저 보면 된다.
 
 primitive 배열에서 "내림차순으로도 검색이 맞아야 한다"까지 같이 걸려 있다면,
@@ -205,6 +216,8 @@ System.out.println(Arrays.toString(students));
 | 객체 배열을 한 기준으로만 정렬하고 싶다 | `Arrays.sort(array, Comparator.comparing(...))` | 이 문서 계속 읽기 |
 | 객체 배열을 2개 이상 기준으로 정렬하고 싶다 | `Comparator.comparing(...).thenComparing(...)` | [Comparator Utility Patterns](./java-comparator-utility-patterns.md) |
 | primitive tie-breaker가 필요하다 | `comparingInt(...).thenComparingLong(...)` 같은 체인 | [Comparator Utility Patterns](./java-comparator-utility-patterns.md) |
+
+## 객체 배열 multi-key sort로 넘어가는 첫 다리 (계속 2)
 
 즉 배열 정렬 primer에서 "이제 `thenComparing`이 필요하다"는 감각이 생기면,
 다음 문서는 자연스럽게 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)다.
@@ -328,6 +341,8 @@ Comparator<Student> byScoreThenId =
                 .thenComparingLong(Student::id);
 ```
 
+## comparator precondition은 왜 중요할까 (계속 2)
+
 즉 comparator precondition은 단순히 "컴파일만 되면 된다"가 아니라,
 **정렬과 검색이 같은 질서(order)를 공유하도록 설계해야 한다**는 뜻이다.
 
@@ -409,7 +424,9 @@ public class ArraySortSearchExample {
                         .reversed()
                         .thenComparingLong(Student::id);
 
-        Arrays.sort(students, byScoreThenId);
+## 코드로 한 번에 보기 (계속 2)
+
+Arrays.sort(students, byScoreThenId);
         System.out.println(Arrays.toString(students));
 
         int studentIndex = Arrays.binarySearch(

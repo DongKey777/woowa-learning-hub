@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: deque router example pack basics, deque router example pack beginner, deque router example pack intro, data structure basics, beginner data structure, 처음 배우는데 deque router example pack, deque router example pack 입문, deque router example pack 기초, what is deque router example pack, how to deque router example pack
 > 관련 문서:
 > - [덱 기초](./deque-basics.md)
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)

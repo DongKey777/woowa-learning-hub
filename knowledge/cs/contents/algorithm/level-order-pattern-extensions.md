@@ -13,7 +13,7 @@
 - [Binary Tree Traversal Routing Guide](../data-structure/binary-tree-traversal-routing-guide.md)
 - [Queue vs Deque vs Priority Queue Primer](../data-structure/queue-vs-deque-vs-priority-queue-primer.md)
 
-retrieval-anchor-keywords: level order pattern extensions, tree bfs patterns, level order invariants, queue frontier invariant, zigzag traversal, zigzag level order, right side view, binary tree right side view, minimum depth bfs, complete binary tree check bfs, completeness check queue, level size boundary, tree level batching, 같은 깊이 처리, 레벨 순회 응용, 지그재그 순회, 오른쪽 뷰, 최소 깊이 bfs, 완전 이진 트리 검사, 큐 레벨 경계
+retrieval-anchor-keywords: level order pattern extensions, tree bfs patterns, level order invariants, queue frontier invariant, zigzag traversal, zigzag level order, right side view, binary tree right side view, minimum depth bfs, complete binary tree check bfs, completeness check queue, level size boundary, tree level batching, level order pattern extensions basics, level order pattern extensions beginner
 
 ---
 

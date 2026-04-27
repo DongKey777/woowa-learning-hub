@@ -12,7 +12,7 @@
 - [Spring MVC 컨트롤러 기초](../../spring/spring-mvc-controller-basics.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: filter vs map basics, java filter map difference, stream filter map beginner, filter map 언제 쓰는지, filter map 뭐가 다른가요, stream 조건 변환 차이, beginner stream decision card, for문 stream 변환 basics, filter 는 남기기, map 은 바꾸기, stream 처음 배우는데 filter map, what is filter vs map
+retrieval-anchor-keywords: filter vs map basics, java filter map difference, stream filter map beginner, filter map 언제 쓰는지, filter map 뭐가 다른가요, stream 조건 변환 차이, beginner stream decision card, for문 stream 변환 basics, filter 는 남기기, map 은 바꾸기, stream 처음 배우는데 filter map, what is filter vs map, stream filter vs map decision mini card basics, stream filter vs map decision mini card beginner, stream filter vs map decision mini card intro
 
 ## 핵심 개념
 

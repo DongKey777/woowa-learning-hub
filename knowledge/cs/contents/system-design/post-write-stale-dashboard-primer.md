@@ -2,7 +2,7 @@
 
 > 한 줄 요약: post-write stale dashboard는 write 직후 [stale window](./cross-primer-glossary-anchors.md#term-stale-window) 안에서 stale read가 실제로 보였는지, 그 read가 어느 source에서 왔는지, primary fallback이 늘어날 때 [headroom](./cross-primer-glossary-anchors.md#term-headroom)이 남는지를 한 화면으로 묶어 보는 초보자용 운영 대시보드 입문이다.
 
-retrieval-anchor-keywords: post-write stale dashboard primer, post-write stale dashboard basics, stale read dashboard, read source distribution dashboard, primary fallback headroom, fallback headroom green yellow red, headroom 2.0x yellow, headroom 1.4x red, remaining_safe_qps fallback_qps, stale peak multiplier, beginner consistency dashboard, display_name stale rate, paid pending screen regression, source mix mini cases
+retrieval-anchor-keywords: post-write stale dashboard primer, post-write stale dashboard basics, stale read dashboard, read source distribution dashboard, primary fallback headroom, fallback headroom green yellow red, headroom 2.0x yellow, headroom 1.4x red, remaining_safe_qps fallback_qps, stale peak multiplier, beginner consistency dashboard, display_name stale rate, paid pending screen regression, source mix mini cases, post write stale dashboard primer basics
 
 **난이도: 🟢 Beginner**
 
@@ -656,6 +656,9 @@ avg(primary_safe_qps_remaining) by (cluster)
 | `primary_fallback_total` | replica/cache 대신 primary 보호 경로로 간 건수이며 단위는 `requests`이고, 없으면 "fallback이 없었다"보다 **fallback 계수 미구현** 가능성을 먼저 본다. |
 | `fallback_headroom_ratio` | 현재 fallback 속도로 primary를 얼마나 더 버틸 수 있는지 나타내는 비율이며 단위는 `x 배`이고, 없으면 fallback 확대 판단을 미루고 **primary 보호를 보수적으로** 잡는다. |
 | `fallback_headroom_band` | headroom ratio를 `Green/Yellow/Red`로 묶은 해석 결과이며 단위는 `band`이고, 없으면 ratio 원값으로 직접 읽되 **Red 가능성을 배제하지 않는다**. |
+
+## 미니 부록: 신호 필드 정의를 1줄로 읽기 (계속 2)
+
 | `primary_safe_qps_remaining` | primary가 추가 fallback을 받기 전에 남은 안전 여유이며 단위는 `QPS`이고, 없으면 ratio 계산 근거가 약하므로 **capacity 판단 신뢰도 낮음**으로 표시한다. |
 
 ## 미니 부록 예시: 값이 보일 때 첫 해석을 붙인다

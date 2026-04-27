@@ -15,7 +15,7 @@
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 - `[rag bridge]` [Cross-Domain Bridge Map](../../rag/cross-domain-bridge-map.md)
 
-retrieval-anchor-keywords: duplicate cookie vs proxy login loop, same name cookie twice in request, request cookie duplicate name, location becomes http after login, secure cookie dropped after redirect, raw cookie header vs location chain, application cookies not enough duplicate proxy, 로그인 반복인데 쿠키가 두 개인지 모르겠다, 처음 배우는데 cookie header는 어디서 보나, 프록시 뒤에서만 로그인 반복, devtools duplicate cookie vs redirect chain, redirect chain http proof
+retrieval-anchor-keywords: duplicate cookie vs proxy login loop, same name cookie twice in request, request cookie duplicate name, location becomes http after login, secure cookie dropped after redirect, raw cookie header vs location chain, application cookies not enough duplicate proxy, 로그인 반복인데 쿠키가 두 개인지 모르겠다, 처음 배우는데 cookie header는 어디서 보나, 프록시 뒤에서만 로그인 반복, devtools duplicate cookie vs redirect chain, redirect chain http proof, duplicate cookie vs proxy login loop bridge basics, duplicate cookie vs proxy login loop bridge beginner, duplicate cookie vs proxy login loop bridge intro
 
 ## 왜 이 문서를 먼저 읽나
 

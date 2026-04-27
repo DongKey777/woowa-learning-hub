@@ -18,7 +18,7 @@
 - [Observability and Debugging Master Note](../../master-notes/observability-debugging-master-note.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00075, ci log merge behavior primer, ci stdout stderr merge, ci log ordering unstable, test runner stdout stderr merge, separate pipes merged transcript, global order unstable logs, stdout stderr timestamps sequence ids, ci console interleaving, github actions stdout stderr order, junit runner merged logs, child stdout stderr separate readers, per stream ordering only, line merge timing, log source field stdout stderr, monotonic timestamp logs, sequence id log ordering, merged transcript meaning preservation, flaky ci log order, redirect ordering in ci, stdout stderr transcript reconstruction, beginner ci logging primer, ci merged log sequence number, ci merged log timestamp strategy
+retrieval-anchor-keywords: operating-system-00075, ci log merge behavior primer, ci stdout stderr merge, ci log ordering unstable, test runner stdout stderr merge, separate pipes merged transcript, global order unstable logs, stdout stderr timestamps sequence ids, ci console interleaving, github actions stdout stderr order, junit runner merged logs, child stdout stderr separate readers, per stream ordering only, beginner ci logging primer, ci log merge behavior primer basics
 
 ## 먼저 잡는 멘탈 모델
 

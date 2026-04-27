@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: pollfirst polllast vs first last beginner bridge basics, pollfirst polllast vs first last beginner bridge beginner, pollfirst polllast vs first last beginner bridge intro, java basics, beginner java, 처음 배우는데 pollfirst polllast vs first last beginner bridge, pollfirst polllast vs first last beginner bridge 입문, pollfirst polllast vs first last beginner bridge 기초, what is pollfirst polllast vs first last beginner bridge, how to pollfirst polllast vs first last beginner bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)

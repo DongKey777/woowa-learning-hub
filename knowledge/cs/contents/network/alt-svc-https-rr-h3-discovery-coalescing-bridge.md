@@ -14,7 +14,7 @@
 - [Stale HTTPS RR H3 Fallback Primer](./stale-https-rr-h3-fallback-primer.md)
 - [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
 
-retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc
+retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc, alt svc https rr h3 discovery coalescing bridge basics, alt svc https rr h3 discovery coalescing bridge beginner, alt svc https rr h3 discovery coalescing bridge intro
 
 ## 헷갈리면 이 문장으로 먼저 가르기
 

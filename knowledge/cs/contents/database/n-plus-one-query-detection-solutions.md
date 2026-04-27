@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
+
+retrieval-anchor-keywords: n plus one query detection solutions basics, n plus one query detection solutions beginner, n plus one query detection solutions intro, database basics, beginner database, 처음 배우는데 n plus one query detection solutions, n plus one query detection solutions 입문, n plus one query detection solutions 기초, what is n plus one query detection solutions, how to n plus one query detection solutions
 > 관련 문서:
 > - [Spring Data JPA `save`, `persist`, `merge` State Transitions](../spring/spring-data-jpa-save-persist-merge-state-transitions.md)
 > - [JPA Dirty Checking, @Version, Cascade Trade-offs](../spring/jpa-dirty-checking-version-strategy.md)
@@ -80,6 +89,8 @@ List<Order> findAllWithCustomer();
 - 한계: **컬렉션 fetch join은 하나만 가능**하다. 두 개 이상 걸면 Cartesian product. Pagination(`LIMIT`)과 섞으면 Hibernate가 메모리에서 페이징해서 경고를 찍는다
 
 **`@EntityGraph`**
+
+## 깊이 들어가기 (계속 2)
 
 ```java
 @EntityGraph(attributePaths = {"customer", "lines"})

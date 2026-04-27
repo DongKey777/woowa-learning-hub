@@ -15,7 +15,9 @@
 - [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql overlap fallback beginner, mysql locking read overlap beginner, mysql select for update overlap not exclusion constraint, mysql overlap not direct substitute, postgresql exclusion constraint vs mysql locking read, when to use slot row, when to use guard row, mysql booking overlap primer, beginner booking overlap mysql, slot row vs guard row mysql, select for update overlap pitfall, mysql overlap fallback bridge, mysql double booking beginner, overlap query for update beginner, room_id start_at index beginner, room_id end_at index beginner, mysql overlap lock surface, mysql overlap scan path beginner
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql overlap fallback beginner, mysql locking read overlap beginner, mysql select for update overlap not exclusion constraint, mysql overlap not direct substitute, postgresql exclusion constraint vs mysql locking read, when to use slot row, when to use guard row, mysql booking overlap primer, beginner booking overlap mysql, slot row vs guard row mysql, select for update overlap pitfall, mysql overlap fallback bridge, mysql double booking beginner, overlap query for update beginner, room_id start_at index beginner
 
 ## 핵심 개념
 

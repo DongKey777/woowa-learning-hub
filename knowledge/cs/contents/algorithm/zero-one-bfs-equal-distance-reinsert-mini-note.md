@@ -12,7 +12,9 @@
 - [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 
-retrieval-anchor-keywords: 0-1 bfs equal distance, zero one bfs equal distance, 0-1 bfs equal-distance reinsert, zero one bfs reinsert same distance, 0-1 bfs newDist equals dist, 0-1 bfs newDist == dist, 0-1 bfs strict less than, 0-1 bfs duplicate equal cost, 0-1 bfs tie update, 0-1 bfs same distance no requeue, 0-1 bfs same distance no reinsert, deque shortest path equal distance, binary weight shortest path equal distance, 0-1 bfs beginner equality case, 0-1 bfs 초보 동거리 재삽입, 0-1 bfs 같은 거리 다시 넣기, 0-1 bfs newDist == dist[next], 0-1 bfs 엄격 부등호, 0-1 bfs 동점 갱신, 0-1 bfs 같은 비용 중복 처리, 0-1 bfs parent tie, 0-1 bfs 같은 거리 parent
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs equal distance, zero one bfs equal distance, 0-1 bfs equal-distance reinsert, zero one bfs reinsert same distance, 0-1 bfs newdist equals dist, 0-1 bfs newdist == dist, 0-1 bfs strict less than, 0-1 bfs duplicate equal cost, 0-1 bfs tie update, 0-1 bfs same distance no requeue, 0-1 bfs same distance no reinsert, deque shortest path equal distance, binary weight shortest path equal distance, 0-1 bfs beginner equality case, zero one bfs equal distance reinsert mini note basics
 
 ## 먼저 감각부터
 
@@ -108,3 +110,7 @@ B -> T 비용 1
 - 초보 구현에서 `dist`, `deque`, `parent` 순서를 같이 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - `visited` 대신 `dist` 비교가 필요한 이유를 반례로 먼저 보려면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - 같은 거리 후보에서 `parent[next]`를 왜 보통 안 바꾸는지 보려면 [0-1 BFS parent tie mini note](./zero-one-bfs-parent-tie-mini-note.md)
+
+## 한 줄 정리
+
+초보자용 `0-1 BFS`에서 `newDist == dist[next]`라면 보통 "더 좋아진 것"이 아니므로 덱에 다시 넣지 않고 `newDist < dist[next]`만 잡아도 충분하다.

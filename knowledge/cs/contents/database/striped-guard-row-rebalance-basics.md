@@ -13,7 +13,9 @@
 - [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: striped guard row rebalance basics, striped guard row refill basics, bucket budget refill beginner, bucket rebalance beginner, low frequency refill path, low frequency rebalance path, avoid global lock hot path, local budget only, refill worker primer, rebalance worker primer, striped guard slow path, budget transfer beginner, bucket headroom refill, guard row rebalance rules, striped guard no global lock, striped budget transfer order, hot path local budget, background refill concurrency
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: striped guard row rebalance basics, striped guard row refill basics, bucket budget refill beginner, bucket rebalance beginner, low frequency refill path, low frequency rebalance path, avoid global lock hot path, local budget only, refill worker primer, rebalance worker primer, striped guard slow path, budget transfer beginner, bucket headroom refill, guard row rebalance rules, striped guard no global lock
 
 ## 핵심 개념
 

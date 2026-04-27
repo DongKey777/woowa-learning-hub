@@ -22,7 +22,7 @@
 - [Aggregate Version and Optimistic Concurrency Pattern](../design-pattern/aggregate-version-optimistic-concurrency-pattern.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: monotonic writes ordering primer, monotonic writes beginner, monotonic writes 뭐예요, session policy implementation sketches, gateway app database write sequence, per-session write ordering, per-session ordering primer, session write sequence, session_write_seq, sequence number ordering primer, idempotency key vs sequence number, duplicate retry out of order write, same user write ordering, cart checkout write order, per-aggregate queue ordering, single writer queue beginner, fenced retry primer, write fence ordering, monotonic writes vs writes-follow-reads, monotonic writes vs version check, monotonic writes vs if-match, order key vs idempotency key, monotonic write guarantee, simple queue fence pattern
+retrieval-anchor-keywords: monotonic writes ordering primer, monotonic writes beginner, monotonic writes 뭐예요, session policy implementation sketches, gateway app database write sequence, per-session write ordering, per-session ordering primer, session write sequence, session_write_seq, sequence number ordering primer, idempotency key vs sequence number, duplicate retry out of order write, same user write ordering, cart checkout write order, per-aggregate queue ordering
 
 ---
 

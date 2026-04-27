@@ -13,7 +13,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Spring IoC 컨테이너와 DI](../../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: java generics basics, 제네릭 입문, type parameter java beginner, generic class basics, generic method basics, 타입 파라미터 기초, java wildcard basics, bounded type parameter, list string vs list object, 제네릭 왜 쓰나요, unchecked cast warning, java 타입 안전성 입문, 처음 배우는데 제네릭, 처음 배우는데 제네릭 왜 쓰는지, 제네릭 큰 그림, 제네릭 기초, 제네릭 언제 쓰는지, java generics when to use, List String 왜 쓰는지, List Object와 List String 차이, List<Object> vs List<String>, List<Object>와 List<String> 차이, 왜 List<String>은 List<Object>가 아닌가, List String은 Object 리스트 아닌가, 처음 배우는데 List Object vs List String, 제네릭 extends super 차이 기초, 와일드카드 extends super 언제 쓰는지, 캐스팅 없이 타입 안전성, 제네릭 T E K V 의미, 제네릭 타입 파라미터 이름 읽는 법, 제네릭 문법 처음 헷갈릴 때, 제네릭 초급 혼동, 제네릭 beginner confusion
+retrieval-anchor-keywords: java generics basics, 제네릭 입문, type parameter java beginner, generic class basics, generic method basics, 타입 파라미터 기초, java wildcard basics, bounded type parameter, list string vs list object, 제네릭 왜 쓰나요, unchecked cast warning, java 타입 안전성 입문, 처음 배우는데 제네릭, 처음 배우는데 제네릭 왜 쓰는지, 제네릭 큰 그림
 
 ## 핵심 개념
 
@@ -38,6 +38,12 @@ List<String> names = new ArrayList<>();
 ```
 
 ## 한눈에 보기
+
+- `java generics basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 제네릭 없이                     제네릭 사용

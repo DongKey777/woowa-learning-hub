@@ -11,7 +11,9 @@
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 
-retrieval-anchor-keywords: 0-1 bfs full path lexicographic, zero one bfs full path compare, 0-1 bfs parent number vs full path, 0-1 bfs lexicographic bridge, 0-1 bfs parent compare wrong, 0-1 bfs 전체 경로 사전순 비교, 0-1 bfs 부모 번호 비교 반례, 0-1 bfs 전체 경로 비교 반례, shortest path lexicographic full path, immediate parent compare counterexample, parent only tie break wrong, lexicographically smallest shortest path full path, beginner lexicographic path compare, 0-1 bfs tie break primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs full path lexicographic, zero one bfs full path compare, 0-1 bfs parent number vs full path, 0-1 bfs lexicographic bridge, 0-1 bfs parent compare wrong, 0-1 bfs 전체 경로 사전순 비교, 0-1 bfs 부모 번호 비교 반례, 0-1 bfs 전체 경로 비교 반례, shortest path lexicographic full path, immediate parent compare counterexample, parent only tie break wrong, lexicographically smallest shortest path full path, beginner lexicographic path compare, 0-1 bfs tie break primer, zero one bfs full path lexicographic bridge basics
 
 ## 먼저 감각부터
 
@@ -150,3 +152,7 @@ parent 비교
 - 사전순 tie-break가 왜 `newDist == dist[next]` 분기에서만 붙는지 보려면 [0-1 BFS lexicographic tie mini note](./zero-one-bfs-lexicographic-tie-mini-note.md)
 - 기본형에서는 왜 동점 부모를 보통 그대로 두는지 보려면 [0-1 BFS parent tie mini note](./zero-one-bfs-parent-tie-mini-note.md)
 - `parent` 배열로 경로를 복원하는 기본 감각부터 다시 잡으려면 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
+
+## 한 줄 정리
+
+`parent` 번호 비교는 마지막 한 칸만 보지만, 전체 경로 사전순 비교는 시작점부터 처음 갈라지는 칸을 보므로 두 기준은 쉽게 갈릴 수 있다.

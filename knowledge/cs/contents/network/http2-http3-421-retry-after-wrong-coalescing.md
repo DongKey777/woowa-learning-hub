@@ -21,7 +21,7 @@
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
-retrieval-anchor-keywords: 421 retry after wrong coalescing, wrong connection reuse, wrong h2 connection retry, wrong h3 connection retry, browser 421 retry, connection coalescing retry, devtools same url retried, new connection after 421, http/2 421 retry example, http/3 421 retry example, alt-svc wrong h3 reuse, 421 browser flow, 421이 왜 떠요, 같은 url이 두 번 떠요, 421 basics, 421 vs 304 devtools, same url 421 recovery vs 304 revalidation, network tab same url two rows, 421 recovery not cache revalidation, 304 revalidation not wrong connection, 421 post retry, 421 non idempotent retry, 421 free replay 아님, Chrome NetLog H3 421, NetLog retry decision, NetLog coalescing rejection
+retrieval-anchor-keywords: 421 retry after wrong coalescing, wrong connection reuse, wrong h2 connection retry, wrong h3 connection retry, browser 421 retry, connection coalescing retry, devtools same url retried, new connection after 421, http/2 421 retry example, http/3 421 retry example, alt-svc wrong h3 reuse, 421 browser flow, 421이 왜 떠요, 같은 url이 두 번 떠요, 421 basics
 
 <details>
 <summary>Table of Contents</summary>
@@ -139,6 +139,8 @@ retrieval-anchor-keywords: 421 retry after wrong coalescing, wrong connection re
 - 같은 URL이 두 줄이면 무조건 프런트 중복 호출이라고 단정한다.
 - `304`도 "다시 갔으니 retry"라고 부른다.
 - `421 -> 200` 장면을 cache hit처럼 말한다.
+
+## 같은 URL 두 줄일 때 421 recovery와 304 revalidation 먼저 가르기 (계속 2)
 
 이 문서는 `421 recovery`를 설명하는 entrypoint다.
 같은 URL trace에서 `304` 판독이 더 궁금하면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)를 먼저 같이 보면 된다.

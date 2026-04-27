@@ -15,6 +15,15 @@
 
 **난이도: 🟡 Intermediate**
 
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+## 5초 라우터 박스 (계속 2)
+
+retrieval-anchor-keywords: monotonic deque vs heap for window extrema basics, monotonic deque vs heap for window extrema beginner, monotonic deque vs heap for window extrema intro, data structure basics, beginner data structure, 처음 배우는데 monotonic deque vs heap for window extrema, monotonic deque vs heap for window extrema 입문, monotonic deque vs heap for window extrema 기초, what is monotonic deque vs heap for window extrema, how to monotonic deque vs heap for window extrema
 > 관련 문서:
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
@@ -24,6 +33,9 @@
 > - [Sliding Window Patterns](../algorithm/sliding-window-patterns.md)
 > - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
 >
+
+## 5초 라우터 박스 (계속 3)
+
 > retrieval-anchor-keywords: monotonic deque vs heap, monotonic deque vs priority queue, sliding window maximum heap, sliding window minimum heap, sliding window maximum lazy deletion, sliding window minimum lazy deletion, heap lazy deletion window extrema, monotonic deque window extrema, deque vs heap sliding window, recent k maximum heap, recent k minimum heap, fixed window extrema deque, fixed window extrema heap, window maximum priority queue, window minimum priority queue, stale heap entry sliding window, stale top cleanup, heap buried stale entry, lazy deletion duplicate bug, priority queue duplicate expiration, monotonic deque duplicate handling, duplicate stale entry comparison, deque duplicate stale entry table, window extrema duplicate handling, heap duplicate stale cleanup, monotonic deque duplicate example, sliding window duplicate max heap, sliding window duplicate max deque, window extrema data structure choice, sliding window max min choose deque heap, monotonic deque heap router, monotonic deque heap chooser, window extrema router box, deque heap one-line router, deque heap quick chooser, 단조 덱 vs 힙, 슬라이딩 윈도우 최대값 힙, 슬라이딩 윈도우 최소값 힙, lazy deletion 윈도우 극값, 우선순위 큐 stale entry, 덱 힙 선택 기준, 단조 덱 중복 stale entry 비교, 최근 k개 최대 최소 자료구조
 
 ## 빠른 선택 표

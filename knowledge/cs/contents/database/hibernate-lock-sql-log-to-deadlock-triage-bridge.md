@@ -13,6 +13,8 @@
 - [Transaction Timeout vs Lock Timeout](./transaction-timeout-vs-lock-timeout.md)
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: hibernate deadlock triage bridge, hibernate lock sql log blocker query, mysql deadlock blocker query beginner, spring jpa lock wait investigation, hibernate for update log to innodb status, mysql sys innodb_lock_waits beginner, deadlock victim sql to blocker sql, logged sql to blocker query bridge, spring cannotacquirelockexception blocker query, mysql 1213 1205 hibernate triage, 하이버네이트 락 sql 로그 데드락 조사, 하이버네이트 로그로 blocker 쿼리 찾기, mysql 데드락 blocker 쿼리 찾기 초급, spring jpa lock wait 조사 순서, for update 로그에서 deadlock 추적
 
 ## 먼저 잡을 그림
@@ -242,3 +244,7 @@ hypothesis=same row contention or lock ordering mismatch
 
 여기까지 되면 "로그만 봤다"에서 끝나지 않고, 실제 blocker query나 deadlock 상대 SQL까지 따라간 것이다.
 그다음의 lock ordering 수정, retry 정책, transaction 축소는 관련 문서로 넘기면 된다.
+
+## 한 줄 정리
+
+Hibernate lock SQL 로그는 "피해자 SQL"을 보여 주고, MySQL lock/deadlock 관찰은 "누가 막았는지"를 보여 준다. 초급자는 두 화면을 한 번에 보려 하지 말고 **같은 테이블·같은 key·같은 시각**으로 이어 붙이면 된다.

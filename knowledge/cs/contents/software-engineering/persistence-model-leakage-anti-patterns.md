@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: persistence model leakage anti patterns basics, persistence model leakage anti patterns beginner, persistence model leakage anti patterns intro, software engineering basics, beginner software engineering, 처음 배우는데 persistence model leakage anti patterns, persistence model leakage anti patterns 입문, persistence model leakage anti patterns 기초, what is persistence model leakage anti patterns, how to persistence model leakage anti patterns
 <details>
 <summary>Table of Contents</summary>
 
@@ -132,6 +141,8 @@ class OrderController {
 
 ### After
 
+## 안티패턴 1. JPA Entity를 API 응답으로 직접 반환 (계속 2)
+
 ```java
 public record OrderResponse(
         Long id,
@@ -242,6 +253,8 @@ public class ChangeOrderAddressService {
     }
 }
 ```
+
+## 안티패턴 2. 서비스와 도메인이 ORM 세부를 직접 안다 (계속 2)
 
 서비스는 흐름만 조합하고, 규칙은 도메인 객체가 책임진다.
 JPA 구현은 repository adapter 안으로 숨길 수 있다.
@@ -377,3 +390,7 @@ CRUD 초반에는 과한 분리가 필요 없지만, 화면 요구가 엔티티 
 - 연관관계 매핑 함정을 집중해서 보려면: [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
 - 읽기 모델 분리 시점을 더 구체적으로 보려면: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 - lazy loading/N+1 경계 냄새를 따로 정리하려면: [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
+
+## 한 줄 정리
+
+JPA `@Entity`를 API 응답, 애플리케이션 흐름, 도메인 규칙까지 한 번에 끌고 가면 처음엔 편해 보여도 변경 이유가 섞여 경계가 빠르게 무너진다.

@@ -12,7 +12,9 @@
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql rc duplicate check pitfall, mysql read committed duplicate race, rr downgrade duplicate error surge, read committed exact key precheck, mysql unique duplicate check beginner, why duplicate errors increase after read committed, mysql rr exact key rc downgrade, duplicate check felt safe under rr, read committed duplicate key retry increase, mysql exact-key duplicate check primer, 왜 rc로 내리니 duplicate 늘어남, mysql duplicate precheck beginner
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql rc duplicate check pitfall, mysql read committed duplicate race, rr downgrade duplicate error surge, read committed exact key precheck, mysql unique duplicate check beginner, why duplicate errors increase after read committed, mysql rr exact key rc downgrade, duplicate check felt safe under rr, read committed duplicate key retry increase, mysql exact-key duplicate check primer, 왜 rc로 내리니 duplicate 늘어남, mysql duplicate precheck beginner, mysql rc duplicate check pitfall note basics, mysql rc duplicate check pitfall note beginner, mysql rc duplicate check pitfall note intro
 
 ## 핵심 개념
 

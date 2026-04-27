@@ -15,7 +15,9 @@
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: per-key queue vs direct api primer, per-aggregate queue vs sync api, ordering in api contract, ordering in queue, single writer queue beginner, same aggregate ordering decision, cart ordering sync vs async, account command queue primer, aggregate queue why, direct api ordering when, queue ordering when, per-key queue beginner, direct api contract ordering, immediate response vs queued command, sync ordering vs per aggregate queue, order api vs command queue, junior ordering decision, aggregate command serialization primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: per-key queue vs direct api primer, per-aggregate queue vs sync api, ordering in api contract, ordering in queue, single writer queue beginner, same aggregate ordering decision, cart ordering sync vs async, account command queue primer, aggregate queue why, direct api ordering when, queue ordering when, per-key queue beginner, direct api contract ordering, immediate response vs queued command, sync ordering vs per aggregate queue
 
 ---
 

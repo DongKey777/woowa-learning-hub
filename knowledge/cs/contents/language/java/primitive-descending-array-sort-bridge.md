@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: primitive descending array sort bridge basics, primitive descending array sort bridge beginner, primitive descending array sort bridge intro, java basics, beginner java, 처음 배우는데 primitive descending array sort bridge, primitive descending array sort bridge 입문, primitive descending array sort bridge 기초, what is primitive descending array sort bridge, how to primitive descending array sort bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)

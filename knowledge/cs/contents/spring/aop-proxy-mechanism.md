@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](./spring-aop-basics.md)
 > - [Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다](./spring-self-invocation-transactional-only-misconception-primer.md)
@@ -17,7 +24,7 @@
 > - [Spring Method Validation Proxy Pitfalls](./spring-method-validation-proxy-pitfalls.md)
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
 
-retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, JDK dynamic proxy, jdk proxy, dynamic proxy, interface based proxy, proxy interface only, CGLIB, class based proxy, proxyTargetClass, final method proxy, final class proxy, self-invocation, this method proxy bypass, internal call proxy bypass, exposeProxy, AopContext, proxyBeanMethods, early bean reference, circular dependency, proxy annotation matrix, jdk proxy cglib difference, jdk dynamic proxy cglib 차이, 왜 transactional 안 먹지 프록시, 프록시 안 지나면 annotation 안 먹음
+retrieval-anchor-keywords: proxy, advisor, pointcut, advice, target source, jdk dynamic proxy, jdk proxy, dynamic proxy, interface based proxy, proxy interface only, cglib, class based proxy, proxytargetclass, 왜 transactional 안 먹지 프록시, aop proxy mechanism basics
 
 ---
 
@@ -128,6 +135,8 @@ Spring은 상황에 따라 두 가지 방식 중 하나를 쓴다.
 이게 self-invocation 문제다.
 
 같은 이유로 다음도 자주 헷갈린다.
+
+## 깊이 들어가기 (계속 2)
 
 - `@Transactional`
 - `@Cacheable`
@@ -289,6 +298,8 @@ public class OrderService {
 ### 3. advisor chain을 이해하기 위한 관점
 
 프록시는 최종적으로 여러 어드바이스를 순서대로 태울 수 있다.
+
+## 코드로 보기 (계속 2)
 
 - transaction advisor
 - cache advisor

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java access modifiers member model basics basics, java access modifiers member model basics beginner, java access modifiers member model basics intro, java basics, beginner java, 처음 배우는데 java access modifiers member model basics, java access modifiers member model basics 입문, java access modifiers member model basics 기초, what is java access modifiers member model basics, how to java access modifiers member model basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
@@ -376,6 +385,8 @@ class Other {
 ```
 
 필드로 보면 더 자주 헷갈린다. 핵심은 "다른 패키지에서는 하위 클래스 자기 자신(또는 그 하위 클래스 타입) 문맥으로만 접근 가능"이라는 점이다.
+
+## 초보자가 자주 하는 실수 (계속 2)
 
 ```java
 // package a

@@ -29,7 +29,7 @@
 - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 - [Spring Testcontainers Boundary Strategy](../spring/spring-testcontainers-boundary-strategy.md)
 
-retrieval-anchor-keywords: datajpatest db 차이, h2 postgres mismatch, h2 mysql mismatch, native query real db test, testcontainers jpa beginner, postgres function h2 error, flyway liquibase test schema mismatch, ddl auto migration mismatch, jsonb h2 mismatch, 처음 배우는데 h2로 충분한가, 언제 testcontainers로 옮기나
+retrieval-anchor-keywords: datajpatest db 차이, h2 postgres mismatch, h2 mysql mismatch, native query real db test, testcontainers jpa beginner, postgres function h2 error, flyway liquibase test schema mismatch, ddl auto migration mismatch, jsonb h2 mismatch, 처음 배우는데 h2로 충분한가, 언제 testcontainers로 옮기나, datajpatest db difference checklist basics, datajpatest db difference checklist beginner, datajpatest db difference checklist intro, software engineering basics
 
 ## 먼저 잡는 멘탈 모델
 

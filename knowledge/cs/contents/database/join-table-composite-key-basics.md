@@ -12,7 +12,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: join table basics, composite primary key beginner, many to many table design, n:m modeling intro, 연결 테이블이 뭐예요, 복합 기본 키 처음, surrogate key vs composite key, 다대다 모델링 기초, link table duplicate prevention, user role mapping beginner, enrollment table basics, 조인 테이블 왜 필요해요
+retrieval-anchor-keywords: join table basics, composite primary key beginner, many to many table design, n:m modeling intro, 연결 테이블이 뭐예요, 복합 기본 키 처음, surrogate key vs composite key, 다대다 모델링 기초, link table duplicate prevention, user role mapping beginner, enrollment table basics, 조인 테이블 왜 필요해요, join table composite key basics basics, join table composite key basics beginner, join table composite key basics intro
 
 ## 핵심 개념
 

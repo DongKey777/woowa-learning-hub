@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - `[follow-up]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
 > - `[follow-up]` [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
@@ -15,7 +22,7 @@
 > - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: forwarded header trust boundary, x-forwarded-proto spoofing, x-forwarded-for spoofing, trusted proxy only, proxy header beginner, forwarded header basics, client ip wrong behind proxy, redirect becomes http, secure cookie proxy mismatch, X-Forwarded-Host redirect, host preservation load balancer, post-login redirect wrong origin, oauth callback wrong origin, rate limit ip spoofing, internal ip allowlist bypass, why trust forwarded headers, forwarded header 헷갈림, 프록시 뒤로 옮긴 후 redirect가 이상함
+retrieval-anchor-keywords: forwarded header trust boundary, x-forwarded-proto spoofing, x-forwarded-for spoofing, trusted proxy only, proxy header beginner, forwarded header basics, client ip wrong behind proxy, redirect becomes http, secure cookie proxy mismatch, x-forwarded-host redirect, host preservation load balancer, post-login redirect wrong origin, oauth callback wrong origin, rate limit ip spoofing, internal ip allowlist bypass
 retrieval-anchor-keywords: primer follow-up catalog return ladder, trusted proxy safe next step, forwarded header return path, beginner proxy trust ladder
 
 ## primer -> follow-up -> catalog return ladder
@@ -123,6 +130,9 @@ X-Forwarded-Proto: https
 | login 직후 `Location`이나 OAuth `redirect_uri` host가 `app-internal`, `localhost`, staging으로 바뀐다 | `[follow-up]` [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md) | 읽고 나면 `[catalog]` [Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가 wrong-origin 다음 갈래를 다시 고른다 |
 | 이메일 password reset link나 magic link host가 `localhost`, internal DNS, 다른 tenant 도메인으로 간다 | `[follow-up]` [Password Reset, Magic Link, Public Origin Guide](./password-reset-magic-link-public-origin-guide.md) | 읽고 나면 `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다 |
 | gateway가 인증한 user/tenant 정보를 내부 header로 넘기는 설계를 파야 한다 | `[deep dive]` [Gateway Auth Context Headers / Trust Boundary](./gateway-auth-context-header-trust-boundary.md) | deep dive를 마치면 `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아와 추가 갈래가 필요한지 다시 본다 |
+
+## follow-up 한 장 + catalog return (계속 2)
+
 | client IP chain, `Forwarded` 표준 문법, `X-Real-IP`까지 내려가야 한다 | `[deep dive]` [Forwarded, X-Forwarded-For, X-Real-IP와 Trust Boundary](../network/forwarded-x-forwarded-for-x-real-ip-trust-boundary.md) | deep dive를 마치면 `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아와 추가 갈래가 필요한지 다시 본다 |
 | edge에서 strip/overwrite/append를 어디까지 보장해야 하는지 보고 싶다 | `[deep dive]` [Proxy Header Normalization Chain / Trust Boundary](../network/proxy-header-normalization-chain-trust-boundary.md) | deep dive를 마치면 `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아와 추가 갈래가 필요한지 다시 본다 |
 

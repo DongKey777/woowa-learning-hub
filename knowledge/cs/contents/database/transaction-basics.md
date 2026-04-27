@@ -15,7 +15,7 @@
 - [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
-retrieval-anchor-keywords: transaction basics, acid intro, commit rollback intro, atomicity for beginners, durability beginner, isolation beginner, transaction unit of work, what is transaction, savepoint basics, beginner db transaction, transaction to isolation bridge, atomicity vs isolation beginner, commit not enough concurrency, beginner isolation faq, 트랜잭션이 뭐예요, commit이 뭔가요, 격리수준 왜 배우나요
+retrieval-anchor-keywords: transaction basics, acid intro, commit rollback intro, atomicity for beginners, durability beginner, isolation beginner, transaction unit of work, what is transaction, savepoint basics, beginner db transaction, transaction to isolation bridge, atomicity vs isolation beginner, commit not enough concurrency, beginner isolation faq, 트랜잭션이 뭐예요
 
 ## 핵심 개념
 

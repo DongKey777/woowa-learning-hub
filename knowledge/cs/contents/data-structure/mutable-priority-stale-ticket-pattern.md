@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: mutable priority stale ticket pattern basics, mutable priority stale ticket pattern beginner, mutable priority stale ticket pattern intro, data structure basics, beginner data structure, 처음 배우는데 mutable priority stale ticket pattern, mutable priority stale ticket pattern 입문, mutable priority stale ticket pattern 기초, what is mutable priority stale ticket pattern, how to mutable priority stale ticket pattern
 > 관련 문서:
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 > - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)

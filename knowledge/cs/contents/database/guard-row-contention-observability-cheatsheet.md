@@ -16,7 +16,9 @@
 - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: guard row observability cheatsheet, guard-row contention observability, guard row lock wait vs duplicate key, guard row deadlock slow query difference, hot row observability beginner, same key wait metrics, guard row timeout logs, duplicate key vs lock wait metrics, deadlock vs guard row contention logs, slow query vs lock wait starter, room_type_day guard observability, campaign guard hot key signals, guard row same key concentration, lock wait duplicate deadlock slow query one page, 초급자 guard row 관측 치트시트, guard row 경합 관측, 같은 key 대기 로그, guard row lock wait duplicate key 구분, 데드락 느린 쿼리 구분, hot row observability 입문, guard-row first metrics, guard row dashboard starter, hot-key concentration panel, deadlock share panel
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: guard row observability cheatsheet, guard-row contention observability, guard row lock wait vs duplicate key, guard row deadlock slow query difference, hot row observability beginner, same key wait metrics, guard row timeout logs, duplicate key vs lock wait metrics, deadlock vs guard row contention logs, slow query vs lock wait starter, room_type_day guard observability, campaign guard hot key signals, guard row same key concentration, lock wait duplicate deadlock slow query one page, hot row observability 입문
 
 ## 먼저 멘탈모델
 

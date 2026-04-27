@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: identity vs sequence batch verification example basics, identity vs sequence batch verification example beginner, identity vs sequence batch verification example intro, software engineering basics, beginner software engineering, 처음 배우는데 identity vs sequence batch verification example, identity vs sequence batch verification example 입문, identity vs sequence batch verification example 기초, what is identity vs sequence batch verification example, how to identity vs sequence batch verification example
 <details>
 <summary>Table of Contents</summary>
 
@@ -255,3 +264,7 @@ void sequence_strategy_can_surface_batch_execution() {
 - `flush()`와 `clear()`가 테스트 의미를 어떻게 바꾸는지 같이 보고 싶다면: [DataJpaTest Flush/Clear Batch Checklist](./datajpatest-flush-clear-batch-checklist.md)
 - 이 테스트를 `@DataJpaTest`로 시작할지, 더 큰 통합 테스트로 올릴지 고르고 싶다면: [Test Strategy Basics](./test-strategy-basics.md)
 - JPA/영속성 주제에서 다음 질문을 어떻게 좁혀 갈지 보고 싶다면: [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
+
+## 한 줄 정리
+
+같은 insert 테스트라도 `IDENTITY`는 "먼저 넣고 키를 받는 흐름"이라 batch 검증이 약해지기 쉽고, `SEQUENCE`는 "키를 먼저 확보하고 모아 넣는 흐름"이라 같은 테스트에서 batch 실행 흔적이 더 잘 드러난다.

@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [로드밸런서 기초](../system-design/load-balancer-basics.md)
 
-retrieval-anchor-keywords: latency basics, bandwidth basics, throughput basics, 지연 뭐예요, 대역폭이란, 처리량 뭐예요, latency bandwidth throughput 차이, 네트워크 성능 입문, beginner network performance, 처음 배우는 latency
+retrieval-anchor-keywords: latency basics, bandwidth basics, throughput basics, 지연 뭐예요, 대역폭이란, 처리량 뭐예요, latency bandwidth throughput 차이, 네트워크 성능 입문, beginner network performance, 처음 배우는 latency, latency bandwidth throughput basics basics, latency bandwidth throughput basics beginner, latency bandwidth throughput basics intro, network basics, beginner network
 
 ## 핵심 개념
 

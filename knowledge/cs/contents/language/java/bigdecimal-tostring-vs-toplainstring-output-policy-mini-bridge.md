@@ -14,7 +14,7 @@
 - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
 
-retrieval-anchor-keywords: bigdecimal tostring vs toplainstring beginner, bigdecimal api boundary canonicalization, bigdecimal output policy beginner, bigdecimal scientific notation log json ui, bigdecimal plain string display policy, bigdecimal striptrailingzeros tostring, bigdecimal serialization display bridge, java bigdecimal 출력 정책, 자바 bigdecimal tostring toplainstring 차이, 자바 bigdecimal 정규화 후 출력, bigdecimal 지수표기 방지, bigdecimal plain string 출력
+retrieval-anchor-keywords: bigdecimal tostring vs toplainstring beginner, bigdecimal api boundary canonicalization, bigdecimal output policy beginner, bigdecimal scientific notation log json ui, bigdecimal plain string display policy, bigdecimal striptrailingzeros tostring, bigdecimal serialization display bridge, java bigdecimal 출력 정책, 자바 bigdecimal tostring toplainstring 차이, 자바 bigdecimal 정규화 후 출력, bigdecimal 지수표기 방지, bigdecimal plain string 출력, bigdecimal tostring vs toplainstring output policy mini bridge basics, bigdecimal tostring vs toplainstring output policy mini bridge beginner, bigdecimal tostring vs toplainstring output policy mini bridge intro
 
 ## 핵심 개념
 

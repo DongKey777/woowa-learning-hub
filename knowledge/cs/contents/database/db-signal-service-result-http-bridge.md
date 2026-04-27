@@ -13,7 +13,9 @@
 - [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: db signal service result http response bridge, database signal to service enum, service outcome enum http mapping, duplicate key busy retryable http response, db exception api response primer, database signal translation beginner, duplicate key 409 200 201 mapping, lock timeout 503 429 mapping, optimistic lock 409 conflict beginner, service layer result enum bridge, db signal to controller response, API response enum translation db, beginner database application bridge, spring controller advice concurrency mapping, @ControllerAdvice busy retryable conflict mapping, service concurrency label to http response, stable error response concurrency spring, problem detail concurrency mapping, 디비 신호 서비스 결과 enum, 디비 예외 http 응답 매핑, duplicate key busy retryable api 응답, 데이터베이스 신호 서비스 계층 브리지, DB 신호 컨트롤러 응답 번역, 컨트롤러 어드바이스 동시성 응답 매핑
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: db signal service result http response bridge, database signal to service enum, service outcome enum http mapping, duplicate key busy retryable http response, db exception api response primer, database signal translation beginner, duplicate key 409 200 201 mapping, lock timeout 503 429 mapping, optimistic lock 409 conflict beginner, service layer result enum bridge, db signal to controller response, api response enum translation db, beginner database application bridge, spring controller advice concurrency mapping, @controlleradvice busy retryable conflict mapping
 
 ## 먼저 잡을 멘탈모델
 
@@ -116,6 +118,8 @@ ResponseEntity<?> toResponse(IssueCouponResult result) {
 
 여기서 초보자가 먼저 읽어야 할 포인트는 두 가지다.
 
+## 가장 작은 예시 (계속 2)
+
 - `ALREADY_EXISTS`는 서비스 뜻이고, `200`/`409`는 API 계약이다
 - `BUSY`와 `RETRYABLE`은 둘 다 실패처럼 보이지만, 내부 동작은 다르다
 
@@ -166,6 +170,8 @@ public class ConcurrencyAdvice {
     }
 }
 ```
+
+## Spring `@ControllerAdvice`로 안정된 HTTP 응답 모양을 고정하는 가장 작은 예시 (계속 2)
 
 ### 3. 초보자 기준으로 먼저 읽을 포인트
 

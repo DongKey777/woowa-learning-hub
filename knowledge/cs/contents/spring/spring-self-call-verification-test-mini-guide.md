@@ -4,13 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검](./spring-legacy-configuration-bean-self-call-detection-card.md)
 > - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
 
-retrieval-anchor-keywords: spring self invocation verification test, spring self call verification test, assertsame assertnotsame self invocation, configuration bean self invocation test, proxybeanmethods false identity test, beginner self invocation junit template, bean self invocation quick verification, unmanaged object identity check, parameter injection same instance, spring lite configuration test template, kotlin self invocation test, kotlin bean parameter injection
+retrieval-anchor-keywords: spring self invocation verification test, spring self call verification test, assertsame assertnotsame self invocation, configuration bean self invocation test, proxybeanmethods false identity test, beginner self invocation junit template, bean self invocation quick verification, unmanaged object identity check, parameter injection same instance, spring lite configuration test template, kotlin self invocation test, kotlin bean parameter injection, spring self call verification test mini guide basics, spring self call verification test mini guide beginner, spring self call verification test mini guide intro
 
 ## 먼저 mental model 한 줄
 
@@ -106,6 +113,8 @@ class SelfCallBeforeFixTest {
 - `auditService().clock()`는 `AuditService` 안에 실제로 들어간 객체
 - 둘이 다르면 self-invocation이 plain Java 호출로 새 객체를 만들었다는 뜻
 
+## 가장 작은 테스트 템플릿 (계속 2)
+
 ### 2. 수정 후 확인: 파라미터 주입이면 `assertSame`
 
 ```java
@@ -200,6 +209,8 @@ class SelfCallBeforeFixKotlinTest {
 - 그래서 컨테이너 Bean과 실제 주입 객체가 달라질 수 있다
 
 ### 2. 수정 후 확인: Kotlin도 파라미터 주입이면 `assertSame`
+
+## Kotlin 복붙 예제: 읽는 규칙은 Java와 완전히 같다 (계속 2)
 
 ```kotlin
 import org.junit.jupiter.api.Assertions.assertSame
@@ -320,3 +331,7 @@ assertSame(managedDependency, actualDependency)    // 수정 후 확인
 4. 확인은 이 문서의 `assertSame` 템플릿으로 끝낸다.
 
 미니 점검이 끝났으면 바로 다음 문서로 [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)를 본다.
+
+## 한 줄 정리
+
+`@Configuration`의 `@Bean` self-invocation(내부 호출)이 의심되면, "컨테이너의 Bean"과 "실제로 주입된 객체"가 같은 인스턴스인지 `assertSame` / `assertNotSame`으로 먼저 확인하면 된다. Java와 Kotlin 모두 같은 질문으로 검증한다.

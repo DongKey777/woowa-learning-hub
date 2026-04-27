@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: queue vs deque vs priority queue primer basics, queue vs deque vs priority queue primer beginner, queue vs deque vs priority queue primer intro, data structure basics, beginner data structure, 처음 배우는데 queue vs deque vs priority queue primer, queue vs deque vs priority queue primer 입문, queue vs deque vs priority queue primer 기초, what is queue vs deque vs priority queue primer, how to queue vs deque vs priority queue primer
 > 관련 문서:
 > - [기본 자료 구조](./basic.md)
 > - [자료구조 정리](./README.md)

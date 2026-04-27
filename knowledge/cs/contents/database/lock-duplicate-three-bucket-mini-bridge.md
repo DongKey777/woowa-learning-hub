@@ -16,7 +16,9 @@
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: lock unique exception bridge, duplicate key lock timeout deadlock one page, busy retryable already exists lock duplicate, lock path duplicate path comparison, beginner exception mapping bridge, spring exception 3 bucket bridge, unique violation vs lock timeout vs deadlock, duplicate key already exists busy retryable one sheet, 락 예외 중복키 예외 비교, 락 경로 unique 경로 한 장 비교, already exists busy retryable 연결 문서, 초급자 예외 버킷 브리지, lock duplicate mini bridge, unique lock exception mental model
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: lock unique exception bridge, duplicate key lock timeout deadlock one page, busy retryable already exists lock duplicate, lock path duplicate path comparison, beginner exception mapping bridge, spring exception 3 bucket bridge, unique violation vs lock timeout vs deadlock, duplicate key already exists busy retryable one sheet, 락 예외 중복키 예외 비교, 락 경로 unique 경로 한 장 비교, already exists busy retryable 연결 문서, 초급자 예외 버킷 브리지, lock duplicate mini bridge, unique lock exception mental model, lock duplicate three bucket mini bridge basics
 
 ## 먼저 멘탈모델
 
@@ -92,3 +94,7 @@ retrieval-anchor-keywords: lock unique exception bridge, duplicate key lock time
 - duplicate-key 쪽을 더 자세히 보면 [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
 - lock 예외가 Spring/JPA에서 어떻게 보이는지 보면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - service-layer `createIfAbsent()`에 바로 붙이려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+
+## 한 줄 정리
+
+beginner는 lock 경로와 duplicate-key 경로를 따로 외우기보다, 먼저 `already exists` / `busy` / `retryable` 3버킷으로 번역한 뒤 "승자가 이미 있나, 아직 막혀 있나, 이번 시도만 버리면 되나"를 한 장에서 비교하면 된다.

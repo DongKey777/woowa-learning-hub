@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: java timer clock choice primer basics, java timer clock choice primer beginner, java timer clock choice primer intro, data structure basics, beginner data structure, 처음 배우는데 java timer clock choice primer, java timer clock choice primer 입문, java timer clock choice primer 기초, what is java timer clock choice primer, how to java timer clock choice primer
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)

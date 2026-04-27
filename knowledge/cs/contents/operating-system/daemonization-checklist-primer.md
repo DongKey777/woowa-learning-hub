@@ -16,7 +16,9 @@
 - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00062, daemonization checklist primer, daemonization after setsid, after setsid next step, daemon detach checklist, stdio redirection daemon, daemon stdin stdout stderr redirect, redirect stdio to /dev/null, daemon umask chdir, daemon chdir slash, daemon cwd checklist, daemon foreground vs background, no daemonize under systemd, systemd replaces daemonization, supervisor replaces daemonization, daemon double fork basics, setsid then redirect stdio, setsid then umask, setsid then chdir, daemon logging to supervisor, journald stdout stderr, kubernetes foreground process, 데몬화 체크리스트, setsid 다음 단계, 표준입출력 리다이렉션 데몬, umask chdir 왜 하는가, 데몬은 왜 foreground로 두나, beginner handoff box, primer handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00062, daemonization checklist primer, daemonization after setsid, after setsid next step, daemon detach checklist, stdio redirection daemon, daemon stdin stdout stderr redirect, redirect stdio to /dev/null, daemon umask chdir, daemon chdir slash, daemon cwd checklist, daemon foreground vs background, no daemonize under systemd, daemon double fork basics, umask chdir 왜 하는가
 
 ## 먼저 잡는 멘탈 모델
 

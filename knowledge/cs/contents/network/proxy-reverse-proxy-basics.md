@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [로드밸런서 기초](../system-design/load-balancer-basics.md)
 
-retrieval-anchor-keywords: proxy basics, reverse proxy basics, 프록시 뭐예요, 리버스 프록시 왜 써요, 포워드 프록시 차이, nginx 리버스 프록시 입문, 프록시 처음 배우는데, 클라이언트 서버 중간, beginner proxy, 서버 앞단
+retrieval-anchor-keywords: proxy basics, reverse proxy basics, 프록시 뭐예요, 리버스 프록시 왜 써요, 포워드 프록시 차이, nginx 리버스 프록시 입문, 프록시 처음 배우는데, 클라이언트 서버 중간, beginner proxy, 서버 앞단, proxy reverse proxy basics basics, proxy reverse proxy basics beginner, proxy reverse proxy basics intro, network basics, beginner network
 
 ## 핵심 개념
 

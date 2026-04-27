@@ -15,7 +15,7 @@
 - [Security README: Service / Delegation Boundaries](./README.md#service--delegation-boundaries-deep-dive-catalog)
 - [Policy Object Naming Primer](../design-pattern/policy-object-naming-primer.md)
 
-retrieval-anchor-keywords: support access alert router primer, support access notification primer, support access audience primer, support access email vs timeline vs inbox, support access alert 큰 그림, support access alert 기초, support access 알림은 누가 받는지, 지원 접근 알림은 누가 받는지, support access 알림은 언제 즉시 보내는지, support access 알림은 언제 timeline 쓰는지, support access 알림은 무엇 기준으로 나누는지, break glass 알림 누가 언제 받는지, mailbox compromise면 무엇 기준으로 surface 고르는지, 누구에게 먼저 알려야 하나
+retrieval-anchor-keywords: support access alert router primer, support access notification primer, support access audience primer, support access email vs timeline vs inbox, support access alert 큰 그림, support access alert 기초, support access 알림은 누가 받는지, 지원 접근 알림은 누가 받는지, support access 알림은 언제 즉시 보내는지, support access 알림은 언제 timeline 쓰는지, support access 알림은 무엇 기준으로 나누는지, break glass 알림 누가 언제 받는지, mailbox compromise면 무엇 기준으로 surface 고르는지, 누구에게 먼저 알려야 하나, support access alert router primer basics
 
 ## 10초 라우터
 

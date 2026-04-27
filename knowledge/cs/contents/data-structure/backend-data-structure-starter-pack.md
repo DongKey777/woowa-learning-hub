@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: backend data structure starter pack basics, backend data structure starter pack beginner, backend data structure starter pack intro, data structure basics, beginner data structure, 처음 배우는데 backend data structure starter pack, backend data structure starter pack 입문, backend data structure starter pack 기초, what is backend data structure starter pack, how to backend data structure starter pack
 > 관련 문서:
 > - [자료구조 정리](./README.md)
 > - [기본 자료 구조](./basic.md)

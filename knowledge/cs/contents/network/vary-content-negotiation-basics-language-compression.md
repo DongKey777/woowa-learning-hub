@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
+
 > 관련 문서:
 > - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 > - [Cache-Control 실전](./cache-control-practical.md)
@@ -11,7 +18,7 @@
 > - [Compression, Cache, Vary, Accept-Encoding, Personalization](./compression-cache-vary-accept-encoding-personalization.md)
 > - [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)
 
-retrieval-anchor-keywords: Vary basics, content negotiation basics, response variant, representation selection, language variant cache, compression variant cache, Accept-Language Vary, Accept-Encoding Vary, beginner vary primer, cache key by representation
+retrieval-anchor-keywords: vary basics, content negotiation basics, response variant, representation selection, language variant cache, compression variant cache, accept-language vary, accept-encoding vary, beginner vary primer, cache key by representation, vary content negotiation basics language compression basics, vary content negotiation basics language compression beginner, vary content negotiation basics language compression intro, network basics, beginner network
 
 <details>
 <summary>Table of Contents</summary>
@@ -302,3 +309,7 @@ shared cache에서 특히 중요하지만, cache가 있는 곳이라면 variant 
 ### Q. `Vary`가 있으면 항상 shared cache에 올려도 되나요?
 
 - 아니다. 공유 가능한 소수의 variant에는 유효하지만, 사용자별 personalization은 `private`/`no-store`가 먼저다.
+
+## 한 줄 정리
+
+같은 URL이라도 언어, 압축, 표현 형식이 달라질 수 있다. `Vary`는 서버가 어떤 request 헤더를 보고 응답 variant를 골랐는지 cache에 알려 주는 표지판이다.

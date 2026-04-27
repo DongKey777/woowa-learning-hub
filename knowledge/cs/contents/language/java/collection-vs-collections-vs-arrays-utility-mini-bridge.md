@@ -13,7 +13,7 @@
 - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 
-retrieval-anchor-keywords: collection vs collections vs arrays, java collection collections arrays 차이, Collection 인터페이스 Collections 유틸 Arrays 유틸, java beginner collection api vs utility class, Arrays.asList Collections.sort 차이, java list set map collection hierarchy basics, java arrays sort binarySearch basics, Arrays.asList fixed size list, Arrays.asList add remove unsupportedoperationexception, Arrays.asList vs List.of, Arrays.asList vs new ArrayList, 자바 Collection Collections Arrays 차이, 자바 컬렉션 유틸리티 클래스 차이, 처음 배우는데 Collection Collections Arrays, 자바 Arrays.asList 함정, Arrays.asList 고정 크기 리스트
+retrieval-anchor-keywords: collection vs collections vs arrays, java collection collections arrays 차이, collection 인터페이스 collections 유틸 arrays 유틸, java beginner collection api vs utility class, arrays.aslist collections.sort 차이, java list set map collection hierarchy basics, java arrays sort binarysearch basics, arrays.aslist fixed size list, arrays.aslist add remove unsupportedoperationexception, arrays.aslist vs list.of, arrays.aslist vs new arraylist, 자바 collection collections arrays 차이, 자바 컬렉션 유틸리티 클래스 차이, 처음 배우는데 collection collections arrays, 자바 arrays.aslist 함정
 
 ## 먼저 잡는 멘탈 모델
 

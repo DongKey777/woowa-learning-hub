@@ -16,6 +16,8 @@
 - [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)
 - [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: lifecycle vs session freshness vs authz cache, lifecycle freshness cache comparison, deprovision still access compare card, role changed but session still works compare, grant but only some pods 403 compare, beginner auth taxonomy split, lifecycle issue vs freshness issue vs cache issue, source of truth vs session claim vs authz cache, disable still access triage card, disable access shutdown mismatch, account-state tail, access tail after disable, stale claim vs stale cache vs lifecycle event, beginner security comparison card, access tail first split
 
 ## 이 문서의 역할

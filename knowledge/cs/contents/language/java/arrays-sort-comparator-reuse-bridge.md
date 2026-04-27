@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: arrays sort comparator reuse bridge basics, arrays sort comparator reuse bridge beginner, arrays sort comparator reuse bridge intro, java basics, beginner java, 처음 배우는데 arrays sort comparator reuse bridge, arrays sort comparator reuse bridge 입문, arrays sort comparator reuse bridge 기초, what is arrays sort comparator reuse bridge, how to arrays sort comparator reuse bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [`Arrays.sort(...)` vs `List.sort(...)` 브리지](./arrays-sort-vs-list-sort-bridge.md)

@@ -11,7 +11,7 @@
 - [Spring MVC vs WebFlux](./spring-webflux-vs-mvc.md)
 - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 
-retrieval-anchor-keywords: webclient vs resttemplate, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 resttemplate 뭐예요, resttemplate 언제 쓰는지, webclient 언제 써요, blocking vs reactive http client, webclient block trap, fan-out http client, 동기 http 클라이언트 입문, 스프링 http 클라이언트 큰 그림
+retrieval-anchor-keywords: webclient vs resttemplate, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 resttemplate 뭐예요, resttemplate 언제 쓰는지, webclient 언제 써요, blocking vs reactive http client, webclient block trap, fan-out http client, 동기 http 클라이언트 입문, 스프링 http 클라이언트 큰 그림, spring webclient vs resttemplate basics, spring webclient vs resttemplate beginner, spring webclient vs resttemplate intro
 
 ## resttemplate 다음에 restclient가 궁금하다면
 

@@ -12,7 +12,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: sql join basics, inner join 이란, left join 이란, right join 이란, 조인이 뭐예요, on 절 조인, 조인 결과 null, sql join beginner, 두 테이블 합치기, 카테시안 곱 주의
+retrieval-anchor-keywords: sql join basics, inner join 이란, left join 이란, right join 이란, 조인이 뭐예요, on 절 조인, 조인 결과 null, sql join beginner, 두 테이블 합치기, 카테시안 곱 주의, sql join basics basics, sql join basics beginner, sql join basics intro, database basics, beginner database
 
 ## 핵심 개념
 

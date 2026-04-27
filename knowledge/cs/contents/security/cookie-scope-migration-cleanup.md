@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `follow-up primer bridge`
 >
 > 첫 hop entrypoint가 아니라, 이미 `scope migration 뒤 old cookie cleanup이 막혔다`는 증거나 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md), [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md) 같은 primer/bridge에서 `old scope별 tombstone 설계`만 남았을 때 여는 문서다.
@@ -18,7 +25,7 @@
 > - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete cookie exact path domain, cookie tombstone exact domain path, cookie cleanup matrix, cookie path migration cleanup, cookie domain migration cleanup, move session cookie from /app to /, move session cookie from auth.example.com to example.com, stale cookie after scope migration, old cookie shadows new cookie, delete host-only cookie omit domain, host-only cookie cleanup, shared domain cookie cleanup, cookie scope cutover cleanup, cookie migration follow-up primer, session scope migration follow-up, duplicate cookie cleanup after deploy, logout old cookie survives, browser stale session after cookie migration, cookie tombstone follow-up primer, old scope tombstone handoff, cleanup matrix handoff
+retrieval-anchor-keywords: cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete cookie exact path domain, cookie tombstone exact domain path, cookie cleanup matrix, cookie path migration cleanup, cookie domain migration cleanup, move session cookie from /app to /, move session cookie from auth.example.com to example.com, stale cookie after scope migration, old cookie shadows new cookie, delete host-only cookie omit domain, cookie scope migration cleanup basics, cookie scope migration cleanup beginner
 
 ## 왜 이 문서를 지금 여나
 

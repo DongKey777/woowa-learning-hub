@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: binarysearch duplicate boundary primer basics, binarysearch duplicate boundary primer beginner, binarysearch duplicate boundary primer intro, java basics, beginner java, 처음 배우는데 binarysearch duplicate boundary primer, binarysearch duplicate boundary primer 입문, binarysearch duplicate boundary primer 기초, what is binarysearch duplicate boundary primer, how to binarysearch duplicate boundary primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
@@ -138,6 +147,8 @@ if (hit < 0) {
 반드시 `hit >= 0`인지 먼저 확인한다.
 
 ### 한 번에 전체 흐름 보기
+
+## 가장 쉬운 패턴: 찾은 위치에서 좌우 확장 (계속 2)
 
 ```java
 import java.util.Arrays;
@@ -287,6 +298,8 @@ static int upperBound(int[] numbers, int target) {
 사용할 때는 `upperBound(...)`가 "마지막 위치"가 아니라
 "마지막 위치 다음 칸"이라는 점만 조심하면 된다.
 
+## 좌우 확장에서 lower/upper bound helper로 넘어가기 (계속 2)
+
 ```java
 int[] numbers = {1, 2, 2, 2, 4, 7};
 
@@ -349,6 +362,8 @@ int last = afterLast - 1;              // 3
 ```
 
 ### 좌우 확장과 helper를 한 장으로 비교하면
+
+## 좌우 확장에서 lower/upper bound helper로 넘어가기 (계속 3)
 
 | 방식 | 먼저 떠올릴 질문 | 장점 | beginner 메모 |
 |---|---|---|---|

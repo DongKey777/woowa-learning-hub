@@ -2,7 +2,7 @@
 
 > 한 줄 요약: `recent-write`, `min-version`, `causal token`은 cache 앞에 왔다고 사라지면 안 되고, cache hit 판단, cache miss 뒤 source 선택, refill 허용 조건까지 같은 freshness context로 이어져야 한다.
 
-retrieval-anchor-keywords: mixed cache replica freshness bridge, cache hit miss refill consistency, cache hit reject reason, replica fallback reason, refill no-fill reason, recent-write min-version causal token, beginner mixed freshness, why stale after cache miss, why fallback reason is not enough, fallback headroom green red, recent-write recent_write mapping, min-version min_version mapping
+retrieval-anchor-keywords: mixed cache replica freshness bridge, cache hit miss refill consistency, cache hit reject reason, replica fallback reason, refill no-fill reason, recent-write min-version causal token, beginner mixed freshness, why stale after cache miss, why fallback reason is not enough, fallback headroom green red, recent-write recent_write mapping, min-version min_version mapping, mixed cache replica freshness bridge basics, mixed cache replica freshness bridge beginner, mixed cache replica freshness bridge intro
 
 **난이도: 🟢 Beginner**
 
@@ -128,6 +128,8 @@ mental model 문서에서는 사람이 읽기 쉬운 용어를 먼저 쓴다.
 | `causal token` / required watermark | `watermark` | 결과의 원인까지 같이 보여 줄 만큼 replica watermark가 따라오지 못했다 |
 
 외우는 법은 간단하다.
+
+## 세 힌트는 무엇을 비교하나 (계속 2)
 
 - 문서 설명에서는 `recent-write`, `min-version`, `causal token`처럼 읽기 쉬운 말을 쓴다.
 - 로그/메트릭 값은 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)와 맞춰 `recent_write`, `min_version`, `watermark`로 고정한다.

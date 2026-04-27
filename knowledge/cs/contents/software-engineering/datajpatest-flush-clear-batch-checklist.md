@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: datajpatest flush clear batch checklist basics, datajpatest flush clear batch checklist beginner, datajpatest flush clear batch checklist intro, software engineering basics, beginner software engineering, 처음 배우는데 datajpatest flush clear batch checklist, datajpatest flush clear batch checklist 입문, datajpatest flush clear batch checklist 기초, what is datajpatest flush clear batch checklist, how to datajpatest flush clear batch checklist
 `@DataJpaTest`를 이미 쓰고 있는데 batch 저장 루프나 bulk update 테스트가 "초록인데도 운영 감각과 다르다"면, 대개 새 개념이 부족한 것이 아니라 **무엇을 검증한 테스트인지 경계가 흐린 상태**다.
 이 문서는 초심자 기준으로 "`flush()`와 `clear()`를 넣으면 `@DataJpaTest`가 무엇을 더 검증하게 되나"만 짧게 연결해 준다.
 DB 종류 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md), JPA batch 설정 자체가 궁금하면 [JPA Batch Config Pitfalls](./jpa-batch-config-pitfalls.md)를 먼저 보면 된다.
@@ -215,3 +224,7 @@ assertThat(coupon.getStatus()).isEqualTo(EXPIRED);
 - H2와 실제 DB 차이 때문에 깨지는지부터 분류하고 싶다면: [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
 - 배치 설정과 `IDENTITY`, `batch_size`, `flush` 주기를 같이 보고 싶다면: [JPA Batch Config Pitfalls](./jpa-batch-config-pitfalls.md)
 - batch 결과 모델 자체를 어떻게 검증할지 이어 보고 싶다면: [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
+
+## 한 줄 정리
+
+batch성 저장이나 bulk update를 `@DataJpaTest`로 볼 때 `flush()`는 "SQL을 실제로 보내 보자", `clear()`는 "방금 메모리에 남은 상태를 내려놓자"에 가깝고, 둘을 빼면 테스트가 배치 동작보다 같은 영속성 컨텍스트만 확인하고 끝나기 쉽다.

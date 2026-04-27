@@ -11,7 +11,7 @@
 - [네트워크 HTTP 상태·세션·캐시](../network/http-state-session-cache.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: https tls beginner, https가 뭔가요, tls 기초, 자물쇠 아이콘, ssl tls 차이, http vs https, 인증서가 뭔가요, certificate authority beginner, tls handshake 쉽게, 도청 방지, 전송 암호화 입문, https 왜 써야 하나요, security readme https primer, security beginner route, security primer next step, return to security README, https로 바꾸는 이유
+retrieval-anchor-keywords: https tls beginner, https가 뭔가요, tls 기초, 자물쇠 아이콘, ssl tls 차이, http vs https, 인증서가 뭔가요, certificate authority beginner, tls handshake 쉽게, 도청 방지, 전송 암호화 입문, https 왜 써야 하나요, security readme https primer, security beginner route, security primer next step
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -30,6 +30,12 @@ TLS가 보장하는 것은 세 가지다.
 - **서버 신원 확인**: 브라우저가 "이 서버가 진짜 example.com인지" 확인한다.
 
 ## 한눈에 보기
+
+- `https tls beginner`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 클라이언트                  서버

@@ -18,7 +18,7 @@
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 
-retrieval-anchor-keywords: api key 기초, api 키가 뭐예요, api key 노출 위험, 환경변수에 api key 보관, api key vs oauth, 시크릿 하드코딩 안 되는 이유, beginner api key, api key rotation, api key 깃헙 노출, api 인증 기초, security readme api key primer, security beginner route, security primer next step, return to security README, api key vs session cookie, api key vs password, public frontend api key 위험, api key commit checklist, publishable key vs secret key, 프론트엔드 공개 키와 서버 시크릿 키 차이, api key 언제 쓰나, api key 대신 oauth 언제 쓰나, api key replay protection beginner, publishable key 안전 범위, secret key 서버 전용, 브라우저에 넣어도 되는 키 구분, api key quick decision, test key도 안전한가, sandbox key 노출 위험, 브라우저 직접 호출 vs 서버 대리 호출, 브라우저 직접 호출 vs 서버 프록시, cors 때문에 프론트에서 직접 호출, cors 때문에 브라우저에 api key 넣기, api key browser or server, api key first action checklist, api key 서버 대리 호출 예시, node express api key proxy, python fastapi api key proxy, spring api key proxy, 서버 대리 호출 배포 전 체크리스트, api key proxy deployment checklist, 환경변수 주입 체크, 로그 마스킹 체크, 에러 바디 필터링, outbound timeout, outbound retry, 내 서버 백그라운드 호출 api key, 서버 백그라운드 잡 api key, 사용자 위임 데이터 조회 oauth, google drive 데이터 조회 oauth, api key vs oauth 첫 분기, provider 문구 해석, public publishable client-side server-side only 차이, client side key safe?, server side only meaning, do not expose in client 뜻, 브라우저에 넣어도 되는 provider 키 문구, server proxy decision tree, bff decision tree, node fetch timeout, express fetch timeout, fastapi httpx timeout, spring webclient timeout, spring restclient timeout, 서버 대리 호출 timeout, connect timeout read timeout, timeout 어디에 거나, node fastapi spring timeout 비교, beginner outbound timeout table, api key anti pattern box, 프론트 직접 호출 금지, browser bundle devtools log exposure, 브라우저 번들 노출, devtools api key 노출, 로그에 api key 남음, api key 노출 경로
+retrieval-anchor-keywords: api key 기초, api 키가 뭐예요, api key 노출 위험, 환경변수에 api key 보관, api key vs oauth, 시크릿 하드코딩 안 되는 이유, beginner api key, api key rotation, api key 깃헙 노출, api 인증 기초, security readme api key primer, security beginner route, security primer next step, return to security readme, api key vs session cookie
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -95,6 +95,8 @@ retrieval-anchor-keywords: api key 기초, api 키가 뭐예요, api key 노출 
 
 ### 15초 판별 예시: 문구만 보고 어디까지 결론 내릴 수 있나
 
+## 30초 혼동 정리: publishable key vs secret key (계속 2)
+
 | 문서에서 본 문장 | 초보자 1차 결론 | 아직 추가로 확인할 것 |
 |---|---|---|
 | `Use this publishable key in your checkout page.` | checkout page 같은 브라우저 장면용 제한 키일 가능성이 높다 | 결제 승인/환불 같은 민감 API까지 이 키로 되는지 금지 목록 확인 |
@@ -119,6 +121,8 @@ retrieval-anchor-keywords: api key 기초, api 키가 뭐예요, api key 노출 
 - 셋 중 하나라도 없으면 server secret으로 보고 브라우저에 두지 않는다.
 
 헷갈릴 때는 이름보다 권한을 먼저 본다.
+
+## 30초 혼동 정리: publishable key vs secret key (계속 3)
 
 - "이 키가 노출돼도 피해 범위가 제한되는가?"가 `Yes`가 아니면 브라우저에 두지 않는다.
 - 문서에 `public`이라고 적혀 있어도, 실제로 서버급 권한이 붙어 있으면 서버 시크릿으로 취급한다.
@@ -293,6 +297,8 @@ ResponseEntity<String> proxy(@RequestBody String body) {
 
 ### 20초 복붙 안전 카드
 
+## timeout은 "프록시 코드"가 아니라 "HTTP 클라이언트"에 건다 (계속 2)
+
 | 내가 지금 보는 코드 | 먼저 던질 질문 | 빠른 수정 방향 |
 |---|---|---|
 | `await fetch(url)`만 있음 | `AbortController`나 timeout wrapper가 있나 | 없으면 전체 요청 제한부터 추가 |
@@ -332,6 +338,8 @@ app.post("/api/pay", async (req, res) => {
 ```
 
 - Python / FastAPI
+
+## timeout은 "프록시 코드"가 아니라 "HTTP 클라이언트"에 건다 (계속 3)
 
 ```py
 @app.post("/api/pay")

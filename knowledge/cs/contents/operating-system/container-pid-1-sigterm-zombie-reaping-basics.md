@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: container pid 1 sigterm zombie reaping basics basics, container pid 1 sigterm zombie reaping basics beginner, container pid 1 sigterm zombie reaping basics intro, operating system basics, beginner operating system, 처음 배우는데 container pid 1 sigterm zombie reaping basics, container pid 1 sigterm zombie reaping basics 입문, container pid 1 sigterm zombie reaping basics 기초, what is container pid 1 sigterm zombie reaping basics, how to container pid 1 sigterm zombie reaping basics
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)

@@ -1,8 +1,17 @@
 # Vendor Edge 421 Field Map
 
+
+> 한 줄 요약: Vendor Edge 421 Field Map는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > normalized `421 Misdirected Request` 예시를 Nginx, Envoy, managed edge 로그의 실제 필드 이름으로 번역해, 초보자가 "wrong connection/local reply" 단서를 로그에서 바로 찾도록 돕는 beginner primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
@@ -13,7 +22,7 @@
 > - [Vendor-Specific Proxy Symptom Translation: Nginx, Envoy, ALB](./vendor-specific-proxy-symptom-translation-nginx-envoy-alb.md)
 > - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
 
-retrieval-anchor-keywords: vendor edge 421 field map, nginx 421 log, envoy 421 log, misdirected_request field map, local reply 421, 421 upstream_status dash, 421 wrong connection log clues, authority sni mismatch 421, server_name mismatch 421, nginx host ssl_server_name 421, envoy response_code_details misdirected_request, envoy requested_server_name 421, managed edge 421 origin_status empty, 421 local reply vs upstream 421, 421 edge-generated vs origin-generated, 421 field translation, edge log 421 primer, beginner 421 vendor map, h3 421 vendor clue, coalescing rejection logs, edge route wrong authority
+retrieval-anchor-keywords: vendor edge 421 field map, nginx 421 log, envoy 421 log, misdirected_request field map, local reply 421, 421 upstream_status dash, 421 wrong connection log clues, authority sni mismatch 421, server_name mismatch 421, nginx host ssl_server_name 421, envoy response_code_details misdirected_request, envoy requested_server_name 421, managed edge 421 origin_status empty, beginner 421 vendor map, vendor edge 421 field map basics
 
 <details>
 <summary>Table of Contents</summary>
@@ -176,6 +185,8 @@ route_name=public-edge upstream_cluster=-
 ```
 
 초보자 판독:
+
+## 스택별로 어떻게 읽나 (계속 2)
 
 - Envoy가 wrong connection/local reply를 거의 직접 말해 주고 있다.
 - authority는 `admin`인데 route/SNI 문맥은 `public-edge/www`다.

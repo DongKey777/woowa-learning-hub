@@ -12,7 +12,7 @@
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 
-retrieval-anchor-keywords: linkedhashset beginner, java linkedhashset 언제 쓰나, linkedhashset order dedup, java 중복 제거 순서 유지, list set linkedhashset 차이, linkedhashset insertion order beginner, list vs set order dedup requirement, java ordered set beginner, linkedhashset mental model, 처음 배우는데 linkedhashset, 자바 linkedhashset 기초, 자바 중복 제거하면서 순서 유지, 순서 유지 중복 제거 컬렉션, list set linkedhashset 선택 기준
+retrieval-anchor-keywords: linkedhashset beginner, java linkedhashset 언제 쓰나, linkedhashset order dedup, java 중복 제거 순서 유지, list set linkedhashset 차이, linkedhashset insertion order beginner, list vs set order dedup requirement, java ordered set beginner, linkedhashset mental model, 처음 배우는데 linkedhashset, 자바 linkedhashset 기초, 자바 중복 제거하면서 순서 유지, 순서 유지 중복 제거 컬렉션, list set linkedhashset 선택 기준, linkedhashset order dedup mini bridge basics
 
 ## 먼저 잡는 멘탈 모델
 

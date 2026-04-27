@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: signals process supervision basics, signals process supervision beginner, signals process supervision intro, operating system basics, beginner operating system, 처음 배우는데 signals process supervision, signals process supervision 입문, signals process supervision 기초, what is signals process supervision, how to signals process supervision
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Session vs Process Group Primer](./session-vs-process-group-primer.md)

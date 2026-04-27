@@ -14,7 +14,9 @@
 - [Duplicate Key vs Busy Response Mapping](./duplicate-key-vs-busy-response-mapping.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: duplicate key vs serialization failure mini card, duplicate key already exists vs serialization failure retry, mysql 1062 vs postgres 40001 beginner, duplicate loser means winner exists, serialization loser means retry whole transaction, duplicate key fresh read vs serializable retry, postgresql serializable whole transaction retry, exact key duplicate not blind retry, duplicate key conflict replay processing, sqlstate 23505 vs 40001 beginner, insert if absent duplicate vs serialization failure, 중복키 직렬화 실패 차이, duplicate key 재조회 serialization failure 전체 재시도, 1062 40001 비교 카드, loser signal already exists vs retry, beginner transaction retry primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: duplicate key vs serialization failure mini card, duplicate key already exists vs serialization failure retry, mysql 1062 vs postgres 40001 beginner, duplicate loser means winner exists, serialization loser means retry whole transaction, duplicate key fresh read vs serializable retry, postgresql serializable whole transaction retry, exact key duplicate not blind retry, duplicate key conflict replay processing, sqlstate 23505 vs 40001 beginner, insert if absent duplicate vs serialization failure, 중복키 직렬화 실패 차이, duplicate key 재조회 serialization failure 전체 재시도, 1062 40001 비교 카드, loser signal already exists vs retry
 
 ## 먼저 멘탈모델
 
@@ -107,3 +109,7 @@ PostgreSQL `SERIALIZABLE`에서 두 요청이 같은 집합 규칙을 읽고 동
 1. `duplicate key`를 보면 "이미 있는 결과를 어떻게 해석할까?"를 먼저 묻는다.
 2. `serialization failure`를 보면 "이 시도를 통째로 다시 시작할 수 있게 감쌌나?"를 먼저 묻는다.
 3. 초보자 기본값은 `duplicate key -> fresh read`, `40001 -> whole transaction retry`다.
+
+## 한 줄 정리
+
+`duplicate key` loser는 보통 "이미 winner가 있다" 쪽이고, `serialization failure` loser는 "이번 시도 전체를 버리고 처음부터 다시 하라" 쪽이다.

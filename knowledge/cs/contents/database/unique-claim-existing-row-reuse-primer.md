@@ -16,7 +16,9 @@
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: unique claim existing row reuse, unique claim row first, existing row reuse primer, idempotency pending succeeded row reuse, duplicate key then select for update, unique first locking read later, idempotency key pending succeeded primer, unique constraint claim then observe existing row, same key pending row reuse, same key succeeded row replay, loser reads existing row, winner row reuse primer, unique claim pattern beginner, insert pending unique then reuse row, duplicate key existing row lock, select for update existing row only, locking read is not claim, for update after duplicate key, unique claim pending row, pending succeeded row observe reuse, idempotency claim row first, pending row recovery primer, pending row in progress versus takeover, unique 선점 후 기존 row 재사용, duplicate 후 existing row 재사용, pending row 재사용 primer, succeeded row replay primer, 같은 키 기존 row 관찰, 중복키 후 for update, unique claim locking read later, pending row 복구 primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: unique claim existing row reuse, unique claim row first, existing row reuse primer, idempotency pending succeeded row reuse, duplicate key then select for update, unique first locking read later, idempotency key pending succeeded primer, unique constraint claim then observe existing row, same key pending row reuse, same key succeeded row replay, loser reads existing row, winner row reuse primer, unique claim pattern beginner, insert pending unique then reuse row, unique claim existing row reuse primer basics
 
 ## 먼저 잡을 멘탈모델
 

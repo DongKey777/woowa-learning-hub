@@ -13,7 +13,7 @@
 - [Set 수정 중 순회 안전 가이드](./set-remove-during-iteration-safety-primer.md)
 - [Map 수정 중 순회 안전 가이드](./map-remove-during-iteration-safety-primer.md)
 
-retrieval-anchor-keywords: list remove during iteration, java list index shift, iterator remove list beginner, reverse index removal list, removeif list beginner, arraylist remove while iterating, for each list remove bug, concurrentmodificationexception list beginner, list 순회 중 삭제, 리스트 인덱스 밀림, 자바 list removeif 기초, 자바 iterator remove list
+retrieval-anchor-keywords: list remove during iteration, java list index shift, iterator remove list beginner, reverse index removal list, removeif list beginner, arraylist remove while iterating, for each list remove bug, concurrentmodificationexception list beginner, list 순회 중 삭제, 리스트 인덱스 밀림, 자바 list removeif 기초, 자바 iterator remove list, list remove during iteration index shift primer basics, list remove during iteration index shift primer beginner, list remove during iteration index shift primer intro
 
 ## 먼저 잡는 멘탈 모델
 

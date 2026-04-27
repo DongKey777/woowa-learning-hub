@@ -2,7 +2,7 @@
 
 > 한 줄 요약: client deadline, app budget, cache timeout, DB timeout을 계단처럼 맞춰야 느린 의존성이 partial failure에 머무르고 retry storm로 커지지 않는다.
 
-retrieval-anchor-keywords: request deadline primer, timeout budget primer, end-to-end deadline, client timeout budget, app timeout budget, cache timeout fallback, db timeout budget, partial failure, retry storm prevention, remaining budget, fail-fast ladder, deadline propagation basics, cache slow miss, db statement timeout, lock wait timeout, budget ladder, latency reliability primer
+retrieval-anchor-keywords: request deadline primer, timeout budget primer, end-to-end deadline, client timeout budget, app timeout budget, cache timeout fallback, db timeout budget, partial failure, retry storm prevention, remaining budget, fail-fast ladder, deadline propagation basics, cache slow miss, db statement timeout, request deadline timeout budget primer basics
 
 **난이도: 🟢 Beginner**
 
@@ -111,6 +111,8 @@ app이 해야 할 일:
 
 간단한 감각은 이렇다.
 
+## 깊이 들어가기 (계속 2)
+
 ```text
 remaining = client_deadline - now
 response_reserve = 100ms
@@ -170,6 +172,8 @@ DB partial failure는 완전 outage보다 더 흔하다.
 - DB timeout은 app deadline보다 짧다
 - 최근에 이미 budget을 많이 썼다면 DB call을 새로 시작하지 않는다
 - DB retry는 남은 budget과 멱등성이 둘 다 만족될 때만 허용한다
+
+## 깊이 들어가기 (계속 3)
 
 여기서 중요한 감각은 DB timeout이 단순 성능 파라미터가 아니라 **동시성 확산을 막는 보호선**이라는 점이다.
 

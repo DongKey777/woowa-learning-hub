@@ -15,7 +15,7 @@
 - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 - [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md)
 
-retrieval-anchor-keywords: abstract class vs interface injection beginner, abstract class or interface with di, abstract class vs injected strategy, template method vs strategy beginner, dependency injection easy to test, dependency injection runtime swap example, strategy test double injection, runtime replacement by injection, 추상 클래스냐 인터페이스+주입이냐, 추상 클래스면 다 템플릿 메소드인가, 비 템플릿 추상 클래스 예시, 부모가 흐름을 쥔다 호출자가 전략을 고른다
+retrieval-anchor-keywords: abstract class vs interface injection beginner, abstract class or interface with di, abstract class vs injected strategy, template method vs strategy beginner, dependency injection easy to test, dependency injection runtime swap example, strategy test double injection, runtime replacement by injection, 추상 클래스냐 인터페이스+주입이냐, 추상 클래스면 다 템플릿 메소드인가, 비 템플릿 추상 클래스 예시, 부모가 흐름을 쥔다 호출자가 전략을 고른다, abstract class vs interface injection bridge basics, abstract class vs interface injection bridge beginner, abstract class vs interface injection bridge intro
 
 ## 처음 배우는데 큰 그림
 

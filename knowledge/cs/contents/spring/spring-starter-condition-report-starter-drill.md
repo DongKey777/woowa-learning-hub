@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Starter Dependency Map 입문: starter, auto-configuration module, SDK/driver는 누가 소유하나](./spring-starter-dependency-map-primer.md)
 > - [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
@@ -13,7 +20,7 @@
 > - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 
-retrieval-anchor-keywords: starter condition report drill, spring starter to condition evaluation report, spring-boot-starter-data-jpa positive negative match, DataSourceAutoConfiguration beginner drill, JPA starter report walkthrough, starter dependency report mapping, starter added but negative match, DataSourceAutoConfiguration did not match property, DataSourceAutoConfiguration did not find class driver, spring starter report beginner example, condition evaluation report positive negative beginner, mysql connector runtimeOnly starter drill, jpa starter conditions walkthrough
+retrieval-anchor-keywords: starter condition report drill, spring starter to condition evaluation report, spring-boot-starter-data-jpa positive negative match, datasourceautoconfiguration beginner drill, jpa starter report walkthrough, starter dependency report mapping, starter added but negative match, datasourceautoconfiguration did not match property, datasourceautoconfiguration did not find class driver, spring starter report beginner example, condition evaluation report positive negative beginner, mysql connector runtimeonly starter drill, jpa starter conditions walkthrough, spring starter condition report starter drill basics, spring starter condition report starter drill beginner
 
 ## 핵심 개념
 

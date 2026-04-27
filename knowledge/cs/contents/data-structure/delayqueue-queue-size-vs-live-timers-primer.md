@@ -15,7 +15,9 @@
 - [Cancelled Task Cleanup: `purge()` vs `removeOnCancelPolicy`](./cancelled-task-cleanup-purge-vs-removeoncancelpolicy-primer.md)
 - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 
-retrieval-anchor-keywords: delayqueue size live timers, delayqueue queue size overcount, delayqueue stale entry monitoring, delayqueue lazy cancellation metrics, scheduled executor queue size cancelled tasks, queue size not live work, delayqueue observability beginner, timer queue retention, stale timer count, cancelled timer queue size, removeOnCancelPolicy queue size, purge queue size, delayqueue monitoring examples, live scheduled work vs queue entries, delayqueue reschedule stale ticket count, queue size inflated by cancelled tasks, timeout churn metrics, delayqueue backlog interpretation, beginner timer observability
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: delayqueue size live timers, delayqueue queue size overcount, delayqueue stale entry monitoring, delayqueue lazy cancellation metrics, scheduled executor queue size cancelled tasks, queue size not live work, delayqueue observability beginner, timer queue retention, stale timer count, cancelled timer queue size, removeoncancelpolicy queue size, purge queue size, delayqueue monitoring examples, live scheduled work vs queue entries, beginner timer observability
 
 ## 먼저 그림부터
 

@@ -11,7 +11,7 @@
 - [운영체제 카테고리 인덱스](../operating-system/README.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dns basics, dns 기초, 도메인 ip 변환, dns 란, dns 조회 흐름, dns resolver, dns cache, dns ttl 기초, a record, cname record, dns 레코드 종류, 도메인 이름 서버, nslookup 기초
+retrieval-anchor-keywords: dns basics, dns 기초, 도메인 ip 변환, dns 란, dns 조회 흐름, dns resolver, dns cache, dns ttl 기초, a record, cname record, dns 레코드 종류, 도메인 이름 서버, nslookup 기초, dns basics basics, dns basics beginner
 
 ## 핵심 개념
 

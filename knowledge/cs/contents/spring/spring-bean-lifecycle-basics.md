@@ -12,7 +12,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton scope basics, bean scope beginner, prototype bean basics, spring bean 언제 만들어지나, spring bean created when, spring initialization callback, spring destroy callback, spring bean 생성 순서
+retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton scope basics, bean scope beginner, prototype bean basics, spring bean 언제 만들어지나, spring bean created when, spring initialization callback, spring destroy callback, spring bean 생성 순서, spring bean lifecycle basics basics, spring bean lifecycle basics beginner
 
 ## 핵심 개념
 

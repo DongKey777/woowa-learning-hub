@@ -12,7 +12,7 @@
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring data jpa basics, 스프링 jpa 처음, jparepository 입문, spring data jpa 왜 써요, repository 인터페이스 입문, 쿼리 메서드 뭐예요, findby 메서드 입문, @entity 입문, spring jpa beginner primer, crud repository 입문, jpql 처음, spring jpa 설정 없이 쿼리 만드는법, spring data repository vs domain repository, jparepository vs domain repository, 처음 배우는데 repository가 두개, spring data repository 큰 그림
+retrieval-anchor-keywords: spring data jpa basics, 스프링 jpa 처음, jparepository 입문, spring data jpa 왜 써요, repository 인터페이스 입문, 쿼리 메서드 뭐예요, findby 메서드 입문, @entity 입문, spring jpa beginner primer, crud repository 입문, jpql 처음, spring jpa 설정 없이 쿼리 만드는법, spring data repository vs domain repository, jparepository vs domain repository, 처음 배우는데 repository가 두개
 
 ## 핵심 개념
 

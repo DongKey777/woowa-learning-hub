@@ -18,6 +18,12 @@
 
 관련 문서:
 
+- [Spring Persistence / Transaction Mental Model Primer](./spring-persistence-transaction-web-service-repository-primer.md)
+- [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
+- [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md)
+
+## 다음 단계: 내부 호출 증상에서 어디로 갈까 (계속 2)
+
 - [Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기](./spring-persistence-transaction-web-service-repository-primer.md)
 - [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](./spring-aop-basics.md)
 - [Spring Mini Card: rollback-only 실패 vs checked exception인데 commit된 것처럼 보이는 놀람](./spring-rollbackonly-vs-checked-exception-commit-surprise-card.md)
@@ -28,7 +34,7 @@
 - [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: transactional basics, @transactional 입문, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional annotation how it works, spring proxy transaction, begin commit rollback spring, transactional method beginner, transactional rollback default, unchecked exception rollback, checked exception rollback, @transactional readonly, spring transaction 기초, transactional 내부 호출, transactional proxy bypass, this method transactional 안됨, self invocation transactional beginner, 왜 transactional 안 먹지, aop proxy routing card, service layer 2 patterns, transactional internal call fix, caller worker pattern, facade worker pattern, 다음 단계 self invocation 매트릭스, transactional self invocation bridge, transactional beginner round trip, transactional 30초 체크, transactional self check, transactional checked exception mini check, transactional private method mini check, transactional internal call mini check, private method transactional 안됨, checked exception rollback 안됨, transactional beginner confusion, private vs internal call transactional, private vs self invocation transactional, 접근 제한자 vs 내부 호출 비교, transactional private internal difference, transactional before after example, private transactional before after, self invocation transactional before after, this method transactional example, rollback-only vs checked exception, checked exception commit surprise, 예외 났는데 commit 됨
+retrieval-anchor-keywords: transactional basics, @transactional 입문, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional annotation how it works, spring proxy transaction, begin commit rollback spring, transactional method beginner, transactional rollback default, unchecked exception rollback, checked exception rollback, @transactional readonly, spring transaction 기초, transactional 내부 호출, transactional proxy bypass
 
 초급자용 공통 라우팅 한 줄:
 
@@ -130,6 +136,8 @@ public class OrderService {
 
 #### 2. 내부 호출 문제: 호출 경로를 바꾼다
 
+## `private` 문제와 내부 호출 문제를 한눈에 구분하기 (계속 2)
+
 ```java
 // before
 @Service
@@ -228,6 +236,8 @@ public class OrderService {
 ### 2패턴 선택 빠른 기준
 
 `@Transactional 기초`와 `Service-Layer` 문서는 아래 같은 질문으로 고른다.
+
+## 증상 라우팅 카드 (내부 호출/프록시 우회) (계속 2)
 
 | 질문 | `Yes`면 고를 패턴 | 이유 |
 |---|---|---|

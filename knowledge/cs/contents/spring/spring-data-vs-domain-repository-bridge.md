@@ -14,7 +14,7 @@
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring data repository vs domain repository, spring data vs domain repository bridge, jparepository vs domain repository, jparepository vs repository interface, domain repository contract, spring data repository interface beginner, repository가 두 개, repository interface 두 개, 처음 배우는데 repository가 두개, spring repository 큰 그림, spring repository 언제 쓰는지, framework repository vs domain contract, persistence adapter repository, hexagonal repository spring, clean architecture repository spring, spring data adapter repository, infrastructure repository spring, application repository contract, jpa repository 구현체 아님, jpa repository를 바로 서비스에 붙여도 되나요, domain repository bridge primer
+retrieval-anchor-keywords: spring data repository vs domain repository, spring data vs domain repository bridge, jparepository vs domain repository, jparepository vs repository interface, domain repository contract, spring data repository interface beginner, repository가 두 개, repository interface 두 개, 처음 배우는데 repository가 두개, spring repository 큰 그림, spring repository 언제 쓰는지, framework repository vs domain contract, persistence adapter repository, hexagonal repository spring, clean architecture repository spring
 
 ## 처음 배우는데 30초 큰 그림
 

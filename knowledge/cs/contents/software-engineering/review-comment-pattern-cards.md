@@ -14,7 +14,9 @@
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: review comment pattern cards, review feedback cards beginner, service가 너무 비대함, controller가 일을 너무 많이 함, validation 위치가 섞여 있음, dto entity 경계 모호, 리뷰 문장 해석 카드, 첫 수정 체크리스트, review feedback translation beginner, 우테코 리뷰 문장 해석, service too big checklist, fat service beginner, fat controller beginner, review comment first fix, beginner review feedback router, common review sentence meaning, 리뷰 코멘트 번역표, 책임 분리 체크리스트
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: review comment pattern cards, review feedback cards beginner, service가 너무 비대함, controller가 일을 너무 많이 함, validation 위치가 섞여 있음, dto entity 경계 모호, 리뷰 문장 해석 카드, 첫 수정 체크리스트, review feedback translation beginner, 우테코 리뷰 문장 해석, service too big checklist, fat service beginner, fat controller beginner, review comment first fix, beginner review feedback router
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

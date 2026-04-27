@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
@@ -13,7 +20,7 @@
 > - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: spring @value vs @configurationproperties, spring env guide beginner, single env var vs grouped config, spring property binding choice, spring env var one value, spring env var grouped properties, configurationproperties beginner primer, @value beginner env, grouped configuration bean, env var binding mental model, app payment timeout base url api key, spring config object vs single property, when to move from @value to configurationproperties
+retrieval-anchor-keywords: spring @value vs @configurationproperties, spring env guide beginner, single env var vs grouped config, spring property binding choice, spring env var one value, spring env var grouped properties, configurationproperties beginner primer, @value beginner env, grouped configuration bean, env var binding mental model, app payment timeout base url api key, spring config object vs single property, when to move from @value to configurationproperties, spring value vs configurationproperties env guide basics, spring value vs configurationproperties env guide beginner
 
 ## 핵심 개념
 

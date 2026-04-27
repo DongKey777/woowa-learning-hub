@@ -17,7 +17,7 @@
 - [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
 - [Shortest Path Reconstruction Bridge](../algorithm/shortest-path-reconstruction-bridge.md)
 
-retrieval-anchor-keywords: union find, union-find basics, disjoint set union, dsu basics, same component query, connectivity yes no, union find vs bfs, actual path reconstruction, path compression, kruskal union find, 유니온 파인드, 서로소 집합, 유니온 파인드 뭐예요, 처음 배우는 union find
+retrieval-anchor-keywords: union find, union-find basics, disjoint set union, dsu basics, same component query, connectivity yes no, union find vs bfs, actual path reconstruction, path compression, kruskal union find, 유니온 파인드, 서로소 집합, 유니온 파인드 뭐예요, 처음 배우는 union find, union find deep dive basics
 
 ## 이 문서 다음에 보면 좋은 문서
 

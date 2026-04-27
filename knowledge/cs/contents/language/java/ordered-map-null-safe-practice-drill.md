@@ -12,7 +12,7 @@
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
-retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, lowerentry null when, higherentry null when, ordered map boundary card beginner, treemap predict null before answer, java ordered map null practice, java treemap boundary lookup drill, java floorEntry ceilingEntry beginner worksheet, 자바 ordered map null 연습 카드, 자바 treemap null non null 예측, 자바 floorEntry ceilingEntry 경계 예제, 초보자 ordered map null safe
+retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, lowerentry null when, higherentry null when, ordered map boundary card beginner, treemap predict null before answer, java ordered map null practice, java treemap boundary lookup drill, java floorentry ceilingentry beginner worksheet, 자바 ordered map null 연습 카드, 자바 treemap null non null 예측, 자바 floorentry ceilingentry 경계 예제
 
 ## 먼저 잡을 mental model
 

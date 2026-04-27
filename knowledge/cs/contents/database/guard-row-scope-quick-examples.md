@@ -11,7 +11,9 @@
 - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
 - [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md)
 
-retrieval-anchor-keywords: guard row scope quick examples, resource guard row, resource day guard row, pooled inventory guard row, room booking guard key, room_type_day guard beginner, guard row booking examples, guard key scope primer, resource vs resource day, pooled inventory booking example, beginner booking guard row, primary key guard examples
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: guard row scope quick examples, resource guard row, resource day guard row, pooled inventory guard row, room booking guard key, room_type_day guard beginner, guard row booking examples, guard key scope primer, resource vs resource day, pooled inventory booking example, beginner booking guard row, primary key guard examples, guard row scope quick examples basics, guard row scope quick examples beginner, guard row scope quick examples intro
 
 ## 먼저 잡을 그림
 

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: priorityblockingqueue cancellation stale entry mini bridge basics, priorityblockingqueue cancellation stale entry mini bridge beginner, priorityblockingqueue cancellation stale entry mini bridge intro, java basics, beginner java, 처음 배우는데 priorityblockingqueue cancellation stale entry mini bridge, priorityblockingqueue cancellation stale entry mini bridge 입문, priorityblockingqueue cancellation stale entry mini bridge 기초, what is priorityblockingqueue cancellation stale entry mini bridge, how to priorityblockingqueue cancellation stale entry mini bridge
 > 관련 문서:
 > - [Priority Update Patterns](./priority-update-patterns-treeset-treemap-priorityqueue-bridge.md)
 > - [Thread Interruption and Cooperative Cancellation Playbook](./thread-interruption-cooperative-cancellation-playbook.md)
@@ -96,7 +105,10 @@ public final class TaskInbox {
             if (state == null) {
                 continue; // 이미 사라진 task
             }
-            if (!state.active()) {
+
+## 초보자 기본 예시 (계속 2)
+
+if (!state.active()) {
                 continue; // 취소된 뒤 남아 있던 stale entry
             }
             if (state.version() != entry.version()) {

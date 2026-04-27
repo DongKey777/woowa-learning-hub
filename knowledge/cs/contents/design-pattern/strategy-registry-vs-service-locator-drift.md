@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [전략 패턴 기초](./strategy-pattern-basics.md)
 > - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
@@ -12,7 +19,7 @@
 > - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: strategy registry vs service locator drift, strategy lookup helper smell, strategy selector service locator, strategy registry service locator beginner, Map<Key Strategy> service locator smell, strategy registry narrow selector, strategy lookup helper global locator, PaymentStrategyRegistry service locator drift, DiscountStrategySelector vs ServiceLocator, strategy collection hidden dependency lookup, global strategy registry smell, strategy registry drift note, 전략 레지스트리 서비스 로케이터, 전략 조회 helper 냄새, 전략 selector service locator, 전략 registry 전역 lookup, 좁은 strategy selector, 전역 전략 조회소 냄새, 숨은 의존성 전략 조회, beginner strategy registry smell
+retrieval-anchor-keywords: strategy registry vs service locator drift, strategy lookup helper smell, strategy selector service locator, strategy registry service locator beginner, map<key strategy> service locator smell, strategy registry narrow selector, strategy lookup helper global locator, paymentstrategyregistry service locator drift, discountstrategyselector vs servicelocator, strategy collection hidden dependency lookup, global strategy registry smell, strategy registry drift note, 전략 레지스트리 서비스 로케이터, 전략 조회 helper 냄새, beginner strategy registry smell
 
 ---
 

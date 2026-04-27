@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache hit을 버린 이유, replica watermark miss 때문에 primary로 fallback한 이유, 읽은 값을 cache에 다시 채우지 않은 이유를 로그와 메트릭으로 설명할 수 있게 만드는 입문 문서다.
 
-retrieval-anchor-keywords: rejected hit observability primer, rejected cache hit logging, cache hit reject reason, rejected_hit_reason, primary fallback reason, fallback_reason recent_write min_version replica_lag unknown, cache watermark reject reason, fallback headroom band, refill no-fill decision, no_fill_reason checklist, cache hit miss refill observability, unknown fallback cleanup, 처음 배우는데 rejected hit 뭐예요, rejected hit basics
+retrieval-anchor-keywords: rejected hit observability primer, rejected cache hit logging, cache hit reject reason, rejected_hit_reason, primary fallback reason, fallback_reason recent_write min_version replica_lag unknown, cache watermark reject reason, fallback headroom band, refill no-fill decision, no_fill_reason checklist, cache hit miss refill observability, unknown fallback cleanup, 처음 배우는데 rejected hit 뭐예요, rejected hit basics, rejected hit observability primer basics
 
 **난이도: 🟢 Beginner**
 

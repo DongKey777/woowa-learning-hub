@@ -11,7 +11,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [운영체제 I/O 모델](../operating-system/README.md)
 
-retrieval-anchor-keywords: logging strategy basics, 로깅 기초, 로그 레벨 설명, slf4j 입문, debug info warn error, 로그 어디에 찍어요, 로그 처음 배우는데, 구조화 로그, 로깅 뭐예요, 로그 레벨 선택, beginner logging, application log
+retrieval-anchor-keywords: logging strategy basics, 로깅 기초, 로그 레벨 설명, slf4j 입문, debug info warn error, 로그 어디에 찍어요, 로그 처음 배우는데, 구조화 로그, 로깅 뭐예요, 로그 레벨 선택, beginner logging, application log, logging strategy basics basics, logging strategy basics beginner, logging strategy basics intro
 
 ## 핵심 개념
 

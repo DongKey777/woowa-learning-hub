@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: money equality policy mini drill basics, money equality policy mini drill beginner, money equality policy mini drill intro, java basics, beginner java, 처음 배우는데 money equality policy mini drill, money equality policy mini drill 입문, money equality policy mini drill 기초, what is money equality policy mini drill, how to money equality policy mini drill
 > 관련 문서:
 > - [Money Value Object Basics](./money-value-object-basics.md)
 > - [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
@@ -128,3 +137,7 @@ System.out.println(prices.get(Money.of("KRW", "10")));
 - raw `BigDecimal` 비교부터 다시: [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
 - 조회 관점 확장: [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./bigdecimal-hashmap-treemap-lookup-mini-drill.md)
 - 설계 관점 확장: [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+
+## 한 줄 정리
+
+raw `BigDecimal` key는 scale 차이 때문에 `10.0`과 `10.00`을 다르게 볼 수 있지만, `Money` value object는 "통화 + 정규화된 금액" 정책으로 set/map 동작을 더 도메인답게 고정할 수 있다.

@@ -17,7 +17,9 @@
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: cache acceptance rules for causal reads, cache acceptance causal reads, causal read cache hit check, causal token cache hit miss refill, cache hit accept rule causal token, cache miss causal routing, cache refill causal guard, required watermark cache acceptance, notification token cache check, watermark-aware cache hit reject, stale cache after notification click, effect before cause cache bridge, beginner causal cache bridge, cache refill no-fill causal token, causal token metadata cache entry, causal read accept reject rules, persisted watermark metadata cache hit, applied watermark cache entry
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: cache acceptance rules for causal reads, cache acceptance causal reads, causal read cache hit check, causal token cache hit miss refill, cache hit accept rule causal token, cache miss causal routing, cache refill causal guard, required watermark cache acceptance, notification token cache check, watermark-aware cache hit reject, stale cache after notification click, effect before cause cache bridge, beginner causal cache bridge, cache refill no-fill causal token, cache acceptance rules for causal reads basics
 
 ---
 

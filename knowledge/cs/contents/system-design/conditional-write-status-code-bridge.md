@@ -13,7 +13,7 @@
 - [Strong vs Weak ETag: validator 정밀도와 cache correctness](../network/strong-vs-weak-etag-validator-precision-cache-correctness.md)
 - [409 vs 422 선택 기준 짧은 가이드](../software-engineering/http-409-vs-422-selection-guide.md)
 
-retrieval-anchor-keywords: conditional write status code bridge, 409 vs 412 vs 428, conditional write beginner, if-match status code, precondition required vs precondition failed, optimistic concurrency status code, stale save status code, etag mismatch 412, missing if-match 428, conflict after latest read 409, conditional patch api guide, write precondition response code, http conditional write primer, beginner conditional update table, optimistic lock 409 412 428, lost update api status code, expected version mismatch code, precondition header missing code, stale cart save 412, policy edit if-match 428, latest state still conflict 409
+retrieval-anchor-keywords: conditional write status code bridge, 409 vs 412 vs 428, conditional write beginner, if-match status code, precondition required vs precondition failed, optimistic concurrency status code, stale save status code, etag mismatch 412, missing if-match 428, conflict after latest read 409, conditional patch api guide, write precondition response code, http conditional write primer, beginner conditional update table, optimistic lock 409 412 428
 
 ---
 

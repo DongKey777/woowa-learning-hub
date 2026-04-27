@@ -2,7 +2,7 @@
 
 > 한 줄 요약: TTL, delete-on-write, write-through, versioned keys, stampede-safe refresh를 "언제 옛 값을 버리고 어떻게 다시 채울지" 관점에서 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, cache ttl basics, ttl cache primer, delete on write cache, cache aside invalidation, write through cache basics, versioned keys cache, cache key versioning, cache stampede basics, single flight cache refresh, request coalescing cache, stale while revalidate basics, refresh ahead cache, ttl jitter basics, stale refill from replica, invalidate then stale replica, beginner cache consistency, cache invalidation decision tree, delete-on-write vs write-through, stale window vs miss storm, cache invalidation mental model, source cache user clocks, invalidation symptom routing
+retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, cache ttl basics, ttl cache primer, delete on write cache, cache aside invalidation, write through cache basics, versioned keys cache, cache key versioning, cache stampede basics, single flight cache refresh, request coalescing cache, stale while revalidate basics, refresh ahead cache, ttl jitter basics
 
 **난이도: 🟢 Beginner**
 
@@ -19,6 +19,8 @@ retrieval-anchor-keywords: cache invalidation primer, cache invalidation pattern
 - [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)
 - [분산 캐시 설계](./distributed-cache-design.md)
 - [Cache Admission Policy 설계](./cache-admission-policy-design.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 
@@ -194,6 +196,8 @@ delete-on-write는 단순하지만,
 
 ### 3. write-through는 "다음 read를 덜 흔들리게" 만드는 대신 write를 무겁게 만든다
 
+## 깊이 들어가기 (계속 2)
+
 write-through는 새 값을 저장할 때 cache도 바로 같은 값으로 갱신하는 방식이다.
 
 ```text
@@ -269,6 +273,8 @@ product:42:v18
 
 간단한 시나리오:
 
+## 깊이 들어가기 (계속 3)
+
 - `product:42` 상세 페이지가 초당 수천 번 읽힌다
 - TTL이 60초다
 - 60초가 되는 순간 수백 요청이 한꺼번에 miss를 본다
@@ -328,6 +334,8 @@ stale-while-revalidate for short grace window
 | hot key가 많고 만료 순간이 위험하다 | stampede-safe refresh | 원본 보호가 먼저다 |
 
 많은 서비스의 실제 조합 예시는 이렇다.
+
+## 깊이 들어가기 (계속 4)
 
 - 프로필/설정: `delete-on-write + TTL + single-flight`
 - 관리자 설정 화면: `write-through + TTL`

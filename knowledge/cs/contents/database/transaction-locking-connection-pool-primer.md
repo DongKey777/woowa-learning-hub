@@ -17,7 +17,7 @@
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: transaction locking connection pool primer, transaction boundary beginner, isolation locking uniqueness beginner, deadlock intuition beginner, connection pool before jdbc jpa, request to db flow beginner, unique vs lock beginner, long transaction connection pool exhaustion, lock wait to pool timeout bridge, transactional external api call pitfall, external api inside transaction pool timeout, hikaricp active pending connection bridge
+retrieval-anchor-keywords: transaction locking connection pool primer, transaction boundary beginner, isolation locking uniqueness beginner, deadlock intuition beginner, connection pool before jdbc jpa, request to db flow beginner, unique vs lock beginner, long transaction connection pool exhaustion, lock wait to pool timeout bridge, transactional external api call pitfall, external api inside transaction pool timeout, hikaricp active pending connection bridge, transaction locking connection pool primer basics, transaction locking connection pool primer beginner, transaction locking connection pool primer intro
 
 ## 먼저 큰 그림
 

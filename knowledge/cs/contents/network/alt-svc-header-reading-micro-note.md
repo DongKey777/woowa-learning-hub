@@ -1,8 +1,17 @@
 # Alt-Svc Header Reading Micro-Note
 
+
+> 한 줄 요약: Alt-Svc Header Reading Micro-Note는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > `Alt-Svc: h3=":443"; ma=86400` 같은 값을 처음 봤을 때, "이건 H3를 다음 새 연결에서 시도해도 된다는 짧은 메모"라고 읽게 만드는 beginner bridge
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md)
@@ -10,7 +19,7 @@
 > - [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md)
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 
-retrieval-anchor-keywords: Alt-Svc header reading, Alt-Svc value reading, how to read Alt-Svc h3 443, Alt-Svc h3=":443" meaning, Alt-Svc ma meaning beginner, alt-svc header cheat sheet, alt-svc micro note, alt-svc first read, alternative service header beginner, h3 :443 same host meaning, alt-svc clear meaning beginner
+retrieval-anchor-keywords: alt-svc header reading, alt-svc value reading, how to read alt-svc h3 443, alt-svc h3=":443" meaning, alt-svc ma meaning beginner, alt-svc header cheat sheet, alt-svc micro note, alt-svc first read, alternative service header beginner, h3 :443 same host meaning, alt-svc clear meaning beginner, alt svc header reading micro note basics, alt svc header reading micro note beginner, alt svc header reading micro note intro, network basics
 
 ## 먼저 잡는 mental model
 

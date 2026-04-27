@@ -13,7 +13,7 @@
 - [Collection vs Collections vs Arrays 유틸리티 미니 브리지](./collection-vs-collections-vs-arrays-utility-mini-bridge.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 
-retrieval-anchor-keywords: list sort vs collections sort, java list sort collections sort, java list sort beginner, java collections sort beginner, java list in place sort, java collections sort natural ordering, java list sort null natural ordering, java comparator reuse list sort, 자바 list sort collections sort 차이, 자바 list sort null 의미, 자바 리스트 제자리 정렬, 자바 정렬 호출 선택
+retrieval-anchor-keywords: list sort vs collections sort, java list sort collections sort, java list sort beginner, java collections sort beginner, java list in place sort, java collections sort natural ordering, java list sort null natural ordering, java comparator reuse list sort, 자바 list sort collections sort 차이, 자바 list sort null 의미, 자바 리스트 제자리 정렬, 자바 정렬 호출 선택, list sort vs collections sort mini bridge basics, list sort vs collections sort mini bridge beginner, list sort vs collections sort mini bridge intro
 
 ## 먼저 잡을 mental model
 

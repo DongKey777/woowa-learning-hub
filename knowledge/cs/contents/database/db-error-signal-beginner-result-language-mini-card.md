@@ -15,7 +15,9 @@
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait timeout deadlock one page, beginner db error translation, duplicate key beginner meaning, lock wait timeout beginner meaning, deadlock beginner meaning, already exists busy retryable one page, db error to user result language, duplicate key lock timeout deadlock result table, 초급자 db 오류 신호 표, duplicate key lock wait timeout deadlock 분류표, 이미 있음 지금 막힘 이번 시도만 다시, 중복 키 락 대기 타임아웃 데드락 한 장, beginner database error card
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait timeout deadlock one page, beginner db error translation, duplicate key beginner meaning, lock wait timeout beginner meaning, deadlock beginner meaning, already exists busy retryable one page, db error to user result language, duplicate key lock timeout deadlock result table, 초급자 db 오류 신호 표, duplicate key lock wait timeout deadlock 분류표, 이미 있음 지금 막힘 이번 시도만 다시, 중복 키 락 대기 타임아웃 데드락 한 장, beginner database error card, db error signal beginner result language mini card basics
 
 ## 먼저 멘탈모델
 
@@ -63,3 +65,7 @@ retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait ti
 | `lock wait timeout`을 자꾸 `이미 있음`처럼 읽게 된다 | [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md) |
 | `deadlock`과 `lock timeout`을 한 예외 이름에서 분리 못 하겠다 | [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md) |
 | 실제 DB 운영 신호까지 더 파고들어야 한다 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+
+## 한 줄 정리
+
+`duplicate key` / `lock wait timeout` / `deadlock`은 모두 "DB 에러"처럼 보이지만, 초보자 기본 해석은 각각 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 먼저 나누면 된다.

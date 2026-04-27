@@ -18,7 +18,7 @@
 - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: samesite login callback primer, same-origin same-site cross-site login primer, social login same-site vs same-origin, external idp callback samesite, iframe login samesite beginner, auth.example.com app.example.com same-site, sibling subdomain not cross-site, samesite 뭐예요
+retrieval-anchor-keywords: samesite login callback primer, same-origin same-site cross-site login primer, social login same-site vs same-origin, external idp callback samesite, iframe login samesite beginner, auth.example.com app.example.com same-site, sibling subdomain not cross-site, samesite 뭐예요, samesite login callback primer basics, samesite login callback primer beginner, samesite login callback primer intro, security basics, beginner security, 처음 배우는데 samesite login callback primer, samesite login callback primer 입문
 retrieval-anchor-keywords: callback cookie vs app session cookie, same-site handoff vs cross-site callback, social login local session bridge, browser session troubleshooting return path, callback cookie role split, one-time callback cookie vs main session cookie, 처음 배우는데 samesite callback
 retrieval-anchor-keywords: external idp iframe sibling subdomain chooser, callback next step one doc, cross-site vs same-site handoff, beginner callback return to readme, same-site callback mental model
 

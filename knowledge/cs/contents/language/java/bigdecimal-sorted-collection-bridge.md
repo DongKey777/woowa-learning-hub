@@ -20,7 +20,7 @@
 - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - [TreeMap vs HashMap vs LinkedHashMap](../../data-structure/treemap-vs-hashmap-vs-linkedhashmap.md)
 
-retrieval-anchor-keywords: bigdecimal compareto equals, bigdecimal hashset treeset treemap, java bigdecimal collection behavior, bigdecimal 1.0 1.00 difference, bigdecimal equals scale, bigdecimal compareto scale ignored, bigdecimal hashset duplicate, bigdecimal treeset duplicate, bigdecimal treemap overwrite, bigdecimal sorted collection surprise, bigdecimal sorted set duplicate, bigdecimal sorted map overwrite, bigdecimal compareTo equals mismatch, bigdecimal hashset contains false, why bigdecimal equals false, beginner bigdecimal collections, sorted collection bigdecimal surprise, bigdecimal hashmap get null, bigdecimal treemap get success, compareto equals mismatch lookup, bigdecimal normalization policy, bigdecimal key policy checklist, bigdecimal map key rule, stripTrailingZeros policy, bigdecimal double constructor pitfall, bigdecimal comparator tie breaker, bigdecimal value then scale comparator, bigdecimal custom comparator distinct scale
+retrieval-anchor-keywords: bigdecimal compareto equals, bigdecimal hashset treeset treemap, java bigdecimal collection behavior, bigdecimal 1.0 1.00 difference, bigdecimal equals scale, bigdecimal compareto scale ignored, bigdecimal hashset duplicate, bigdecimal treeset duplicate, bigdecimal treemap overwrite, bigdecimal sorted collection surprise, bigdecimal sorted set duplicate, bigdecimal sorted map overwrite, bigdecimal compareto equals mismatch, why bigdecimal equals false, beginner bigdecimal collections
 
 ## 핵심 개념
 

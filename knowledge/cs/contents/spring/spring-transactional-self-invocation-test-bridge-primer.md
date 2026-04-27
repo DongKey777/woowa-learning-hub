@@ -12,7 +12,7 @@
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [JDBC / JPA / MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: transactional self invocation test bridge, transactional self invocation verification test, transactional self invocation behavior test, transactional self invocation identity test misconception, bean self call vs transactional self invocation, assertsame not enough transactional self invocation, transaction active self invocation test, transactionsynchronizationmanager self invocation test, beginner transactional proxy self invocation test, beginner transactional self invocation primer, bean self call identity vs transactional behavior, transactional proxy bypass verification
+retrieval-anchor-keywords: transactional self invocation test bridge, transactional self invocation verification test, transactional self invocation behavior test, transactional self invocation identity test misconception, bean self call vs transactional self invocation, assertsame not enough transactional self invocation, transaction active self invocation test, transactionsynchronizationmanager self invocation test, beginner transactional proxy self invocation test, beginner transactional self invocation primer, bean self call identity vs transactional behavior, transactional proxy bypass verification, spring transactional self invocation test bridge primer basics, spring transactional self invocation test bridge primer beginner, spring transactional self invocation test bridge primer intro
 
 ## 먼저 mental model 한 줄
 

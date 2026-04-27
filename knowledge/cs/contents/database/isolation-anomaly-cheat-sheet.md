@@ -13,7 +13,9 @@
 - [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md)
 - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md)
 
-retrieval-anchor-keywords: isolation anomaly cheat sheet, dirty read matrix, non-repeatable read matrix, lost update matrix, write skew matrix, phantom matrix, dirty read non-repeatable read lost update write skew phantom, beginner isolation anomaly table, isolation level guardrail confusion, repeatable read write skew, version column lost update, select for update phantom, unique constraint overlap, guard row write skew
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: isolation anomaly cheat sheet, dirty read matrix, non-repeatable read matrix, lost update matrix, write skew matrix, phantom matrix, dirty read non-repeatable read lost update write skew phantom, beginner isolation anomaly table, isolation level guardrail confusion, repeatable read write skew, version column lost update, select for update phantom, unique constraint overlap, guard row write skew, isolation anomaly cheat sheet basics
 
 ## 핵심 개념
 
@@ -41,7 +43,7 @@ retrieval-anchor-keywords: isolation anomaly cheat sheet, dirty read matrix, non
 | write skew | 서로 다른 row는 각각 성공했지만 count/sum/minimum 규칙이 깨짐 | 가능 | 가능 | 가능 | 대체로 차단 | guard row, counter row, conditional update, serializable retry |
 | phantom | "없다"고 본 범위에 새 row가 끼어들거나 결과 집합이 달라짐 | 가능 | 가능 | 엔진/패턴 의존 | 대체로 차단 | `UNIQUE`/exclusion, slotization, predicate-safe locking |
 
-이 표는 beginner용 portable mental model이다.  
+이 표는 beginner용 portable mental model이다.
 실제 `READ UNCOMMITTED`, `REPEATABLE READ`, `SERIALIZABLE` 체감은 엔진마다 다르므로, PostgreSQL과 MySQL 차이는 [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md)로 이어서 확인한다.
 
 핵심 해석:
@@ -49,6 +51,8 @@ retrieval-anchor-keywords: isolation anomaly cheat sheet, dirty read matrix, non
 - dirty read와 non-repeatable read는 주로 **읽기 관측** 문제다
 - lost update는 **같은 row overwrite** 문제다
 - write skew와 phantom은 **집합/범위 불변식** 문제다
+
+## 먼저 보는 compact matrix (계속 2)
 
 즉 뒤로 갈수록 isolation 이름보다 **충돌 지점을 어디에 만들 것인가**가 더 중요해진다.
 

@@ -16,7 +16,7 @@
 - [Pipeline vs Chain of Responsibility](./pipeline-vs-chain-of-responsibility.md)
 - [실전 패턴 선택 가이드](./pattern-selection.md)
 
-retrieval-anchor-keywords: spring filter vs handlerinterceptor, onceperrequestfilter template method, filter vs onceperrequestfilter, filter chain vs template method, handlerinterceptor chain of responsibility, onceperrequestfilter is a filter base class, dofilterinternal shouldnotfilter, prehandle short circuit, onceperrequestfilter beginner route, filter interceptor onceperrequestfilter comparison, template basics before onceperrequestfilter, 처음 배우는데 onceperrequestfilter
+retrieval-anchor-keywords: spring filter vs handlerinterceptor, onceperrequestfilter template method, filter vs onceperrequestfilter, filter chain vs template method, handlerinterceptor chain of responsibility, onceperrequestfilter is a filter base class, dofilterinternal shouldnotfilter, prehandle short circuit, onceperrequestfilter beginner route, filter interceptor onceperrequestfilter comparison, template basics before onceperrequestfilter, 처음 배우는데 onceperrequestfilter, template method vs filter interceptor chain basics, template method vs filter interceptor chain beginner, template method vs filter interceptor chain intro
 
 ---
 

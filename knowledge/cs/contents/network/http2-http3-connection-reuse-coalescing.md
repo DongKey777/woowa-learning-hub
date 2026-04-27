@@ -1,8 +1,17 @@
 # HTTP/2와 HTTP/3 Connection Coalescing 입문
 
+
+> 한 줄 요약: HTTP/2와 HTTP/3 Connection Coalescing 입문는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > 이미 열린 H2/H3 연결을 언제 다른 origin까지 같이 쓸 수 있는지, 브라우저와 서버가 각각 무엇을 만족해야 하는지부터 잡는 beginner primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 이 문서는 coalescing 주제의 **beginner-safe follow-up entry**다. 아직 `origin`과 `connection` 차이, H1/H2/H3 큰 그림이 헷갈리면 아래 문서로 먼저 돌아가고 다시 들어오는 편이 안전하다.
 >
@@ -26,7 +35,7 @@
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 > - [Connection Reuse vs Service Discovery Churn](./connection-reuse-vs-service-discovery-churn.md)
 
-retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, cross-origin connection reuse, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, wildcard cert routing boundary, routing boundary, same certificate different backend, CDN wildcard certificate, load balancer wildcard certificate, HTTP/2 ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, Alt-Svc endpoint authority, 421 misdirected request, misdirected request retry, Alt-Svc connection reuse, HTTPS RR coalescing, SVCB coalescing, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection, 421 troubleshooting trace, 421 vs 403 vs 404, wrong connection failure, browser 421 retry, wrong coalescing retry, same url retried after 421
+retrieval-anchor-keywords: http/2 connection coalescing, http/3 connection coalescing, origin coalescing, connection reuse across origins, cross-origin connection reuse, multiple origins same connection, certificate san reuse, subjectaltname, wildcard certificate, wildcard cert routing boundary, routing boundary, same certificate different backend, cdn wildcard certificate, http2 http3 connection reuse coalescing basics, http2 http3 connection reuse coalescing beginner
 
 <details>
 <summary>Table of Contents</summary>

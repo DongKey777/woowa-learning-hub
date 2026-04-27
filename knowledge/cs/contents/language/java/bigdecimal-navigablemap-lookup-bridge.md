@@ -15,7 +15,7 @@
 - [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./bigdecimal-hashmap-treemap-lookup-mini-drill.md)
 - [BigDecimal Key 정책 30초 체크리스트](./bigdecimal-key-policy-30-second-checklist.md)
 
-retrieval-anchor-keywords: bigdecimal navigablemap lookup bridge, bigdecimal floorkey ceilingkey treemap, bigdecimal range lookup scale difference, bigdecimal 1.0 1 treemap floor ceiling, bigdecimal submap headmap tailmap compareto equals, bigdecimal numerically equal different scale treemap, bigdecimal tree map same slot range query, 자바 bigdecimal floorkey ceilingkey, 자바 bigdecimal submap 범위 조회, 자바 bigdecimal scale 다른데 treemap 조회됨, 자바 bigdecimal navigablemap beginner
+retrieval-anchor-keywords: bigdecimal navigablemap lookup bridge, bigdecimal floorkey ceilingkey treemap, bigdecimal range lookup scale difference, bigdecimal 1.0 1 treemap floor ceiling, bigdecimal submap headmap tailmap compareto equals, bigdecimal numerically equal different scale treemap, bigdecimal tree map same slot range query, 자바 bigdecimal floorkey ceilingkey, 자바 bigdecimal submap 범위 조회, 자바 bigdecimal scale 다른데 treemap 조회됨, 자바 bigdecimal navigablemap beginner, bigdecimal navigablemap lookup bridge basics, bigdecimal navigablemap lookup bridge beginner, bigdecimal navigablemap lookup bridge intro, java basics
 
 ## 먼저 잡을 mental model
 

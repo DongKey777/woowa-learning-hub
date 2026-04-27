@@ -17,7 +17,7 @@
 - [Graph Basics](./graph-basics.md)
 - [data-structure 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: backend complexity algorithm foundations, backend junior algorithm foundation, big o starter pack backend, woowacourse backend algorithm basics, binary search bfs dfs beginner backend, 정렬 이분탐색 bfs dfs 뭐부터, 백엔드 알고리즘 패턴 기초, 우테코 백엔드 알고리즘 입문, 자료구조에서 알고리즘으로 넘어가기
+retrieval-anchor-keywords: backend complexity algorithm foundations, backend junior algorithm foundation, big o starter pack backend, woowacourse backend algorithm basics, binary search bfs dfs beginner backend, 정렬 이분탐색 bfs dfs 뭐부터, 백엔드 알고리즘 패턴 기초, 우테코 백엔드 알고리즘 입문, 자료구조에서 알고리즘으로 넘어가기, complexity and algorithm pattern foundations backend juniors basics, complexity and algorithm pattern foundations backend juniors beginner, complexity and algorithm pattern foundations backend juniors intro, data structure basics, beginner data structure, 처음 배우는데 complexity and algorithm pattern foundations backend juniors
 
 ## 먼저 잡을 mental model
 

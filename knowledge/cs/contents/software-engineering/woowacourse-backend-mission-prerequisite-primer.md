@@ -23,7 +23,7 @@
 - [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md) - 첫 PR 뒤 선택 확장
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mission prerequisite primer, 우테코 백엔드 미션 선행지식, backend mission first reading, 처음 백엔드 미션 뭐부터, controller service repository beginner, dto vo entity beginner, service repository mental model, java oop before spring, jpa before backend mission, spring first route, beginner backend mission primer, woowacourse backend learning ladder, backend curriculum foundation, java to http to mvc ladder, mvc before transaction, jdbc transaction before aop, backend beginner safe next step, backend primer ladder, readme bridge ladder, category readme handoff, java http mvc jdbc di aop system design bridge, backend 4 lane primer bridge, beginner first 4 lane route, java http mvc persistence beginner route, 4레인 프라이머, 초심자 백엔드 4단계
+retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mission prerequisite primer, 우테코 백엔드 미션 선행지식, backend mission first reading, 처음 백엔드 미션 뭐부터, controller service repository beginner, dto vo entity beginner, service repository mental model, java oop before spring, jpa before backend mission, spring first route, beginner backend mission primer, woowacourse backend learning ladder, backend curriculum foundation, java to http to mvc ladder
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -43,6 +43,8 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 4. 저장 경계 레인 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | [Database README](../database/README.md) |
 
 ### 4레인 다음에만 여는 선택 확장
+
+## README 브리지 사다리 (계속 2)
 
 - `DI / AOP`가 궁금해도 먼저 MVC와 저장 경계를 한 번 읽은 뒤 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) -> [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) 순으로 간다.
 - system design은 첫 구현 전에 메인 레인으로 올리지 말고, 한 요청이 `controller -> service -> repository`까지 읽힌 뒤 [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md)으로 넓힌다.
@@ -81,6 +83,9 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 2. HTTP / web basics | 웹 요청은 메서드, 상태 코드, 헤더를 가진 메시지 흐름이다 | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) | `SavedRequest`, filter chain, proxy timeout deep dive |
 | 3. MVC | 요청은 `DispatcherServlet`을 지나 controller -> service -> repository로 흐른다 | [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md) | `HandlerMethodArgumentResolver`, MVC lifecycle deep dive |
 | 4. JDBC / transactions | 저장 기술은 도메인 바깥 도구이고, 트랜잭션은 DB 변경을 한 덩어리로 묶는 경계다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | `MVCC`/lock anomaly 고급 비교, `@Transactional` 심화 |
+
+## 우테코 백엔드 안전 사다리 (계속 2)
+
 | 5. DI / AOP | 컨테이너가 객체를 조립하고, 프록시가 횡단 관심사를 덧씌운다 | [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) | [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) | self-invocation, propagation, rollback-only deep dive |
 | 6. System design | 한 요청 흐름을 app / cache / DB / queue 박스로 넓혀 본다 | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md) | [System Design Foundations](../system-design/system-design-foundations.md) | 대규모 cutover, control plane, 복잡한 distributed incident 문서 |
 
@@ -167,6 +172,9 @@ return new PointResponse(member.id(), member.balance());
 - HTTP 요청과 Spring 연결이 막히면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)로 웹 요청의 큰 그림을 먼저 잡고, [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) 다음에 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)로 넘어간다.
 - MVC까지는 읽었는데 "저장은 어디서 하고 트랜잭션은 왜 필요하지?"가 막히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) 순으로 먼저 본다.
 - 4레인을 한 바퀴 돈 뒤에야 "Spring이 객체를 어떻게 조립하고 부가 기능을 붙이지?"를 확장 질문으로 올려 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) -> [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) 순으로 올라간다.
+
+## 안전한 다음 단계 (계속 2)
+
 - "이제 구조는 알겠는데 좀 더 정리된 경계가 보고 싶다"면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md) 다음에 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)로 넘어간다.
 - "이제 웹/DB/Spring 한 요청 흐름은 보이는데 시스템 전체 박스 그림이 없다"면 바로 분산 설계 심화로 점프하지 말고, 4레인 복습 후 [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md)으로 먼저 넓힌다.
 

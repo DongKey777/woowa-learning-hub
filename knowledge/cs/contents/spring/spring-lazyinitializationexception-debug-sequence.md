@@ -14,7 +14,7 @@
 - [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: lazyinitializationexception debug sequence, lazy initialization exception beginner, jpa lazy loading debug order, transaction boundary lazy loading, dto mapping lazy initialization, osiv lazy initialization check, spring jpa lazy exception 어디서, lazy loading controller service boundary, open session in view beginner, lazy loading debug checklist, 왜 lazyinitializationexception 나지, 초급자 lazy loading 디버깅
+retrieval-anchor-keywords: lazyinitializationexception debug sequence, lazy initialization exception beginner, jpa lazy loading debug order, transaction boundary lazy loading, dto mapping lazy initialization, osiv lazy initialization check, spring jpa lazy exception 어디서, lazy loading controller service boundary, open session in view beginner, lazy loading debug checklist, 왜 lazyinitializationexception 나지, 초급자 lazy loading 디버깅, spring lazyinitializationexception debug sequence basics, spring lazyinitializationexception debug sequence beginner, spring lazyinitializationexception debug sequence intro
 
 ## 핵심 개념
 

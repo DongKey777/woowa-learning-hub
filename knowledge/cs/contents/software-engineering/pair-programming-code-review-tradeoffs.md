@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: pair programming code review tradeoffs basics, pair programming code review tradeoffs beginner, pair programming code review tradeoffs intro, software engineering basics, beginner software engineering, 처음 배우는데 pair programming code review tradeoffs, pair programming code review tradeoffs 입문, pair programming code review tradeoffs 기초, what is pair programming code review tradeoffs, how to pair programming code review tradeoffs
 > 관련 문서:
 > - [eXtreme Programming (XP)](./eXtremeProgramming.md)
 > - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)

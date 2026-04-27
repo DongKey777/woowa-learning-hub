@@ -14,7 +14,9 @@
 - [Tenant Partition Strategy / Reassignment 설계](./tenant-partition-strategy-reassignment-design.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: shard aware watermark scope primer, outbox id not comparable across shards, commit lsn not globally comparable, per shard watermark beginner, watermark scope beginner, shard watermark ordering scope, outbox id across shards, cdc position across shards, safe watermark scope choice, projection checkpoint per shard, shard local ordering, watermark scope vs global order, beginner sharding consistency primer, system-design-00077
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: shard aware watermark scope primer, outbox id not comparable across shards, commit lsn not globally comparable, per shard watermark beginner, watermark scope beginner, shard watermark ordering scope, outbox id across shards, cdc position across shards, safe watermark scope choice, projection checkpoint per shard, shard local ordering, watermark scope vs global order, beginner sharding consistency primer, system-design-00077, shard aware watermark scope primer basics
 
 ---
 

@@ -15,7 +15,9 @@
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring insert-if-absent sqlstate cheat sheet, spring sqlstate mysql postgresql duplicate timeout deadlock serialization, insert-if-absent exception bucket card, mysql 1062 1205 1213 spring, postgres 23505 55P03 40P01 40001 spring, duplicatekeyexception cannotacquirelockexception deadlockloser cannotserializetransactionexception, spring jdbc jpa sqlstate quick map, junior sqlstate primer, insert-if-absent retry bucket map, spring db code to exception bucket, sqlstate cheat sheet beginner, spring 예외 버킷 치트시트, insert-if-absent sqlstate 정리, mysql postgres sqlstate spring 매핑, duplicate timeout deadlock serialization 한 장 표
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: spring insert-if-absent sqlstate cheat sheet, spring sqlstate mysql postgresql duplicate timeout deadlock serialization, insert-if-absent exception bucket card, mysql 1062 1205 1213 spring, postgres 23505 55p03 40p01 40001 spring, duplicatekeyexception cannotacquirelockexception deadlockloser cannotserializetransactionexception, spring jdbc jpa sqlstate quick map, junior sqlstate primer, insert-if-absent retry bucket map, spring db code to exception bucket, sqlstate cheat sheet beginner, spring 예외 버킷 치트시트, insert-if-absent sqlstate 정리, mysql postgres sqlstate spring 매핑, spring insert if absent sqlstate cheat sheet basics
 
 ## 먼저 멘탈모델
 

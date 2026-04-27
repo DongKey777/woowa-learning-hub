@@ -16,7 +16,7 @@
 - [Inventory Reservation System Design](../system-design/inventory-reservation-system-design.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: exclusion constraint vs slot row, exact key vs interval overlap, booking overlap beginner, postgresql overlap chooser, slot row chooser, continuous interval vs discrete slot, overlap not duplicate key, booking overlap exact key 아님, continuous time truth, discrete time truth, exclusion constraint intro, slotization basics, reservation overlap what to use, double booking prevention beginner, stay day slot row, arbitrary duration overlap
+retrieval-anchor-keywords: exclusion constraint vs slot row, exact key vs interval overlap, booking overlap beginner, postgresql overlap chooser, slot row chooser, continuous interval vs discrete slot, overlap not duplicate key, booking overlap exact key 아님, continuous time truth, discrete time truth, exclusion constraint intro, slotization basics, reservation overlap what to use, double booking prevention beginner, stay day slot row
 
 MySQL에서 `SELECT ... FOR UPDATE`가 PostgreSQL exclusion constraint의 direct substitute인지부터 헷갈리면 [MySQL Overlap Fallback Beginner Bridge](./mysql-overlap-fallback-beginner-bridge.md)를 먼저 보고 오는 편이 좋다.
 
@@ -150,6 +150,8 @@ slot row를 처음 도입하는 팀이라면, DDL보다 먼저 `[start, end)`, r
 
 - continuous interval이 truth면 exclusion constraint가 더 직접적이다
 - discrete slot이 truth면 slot row가 더 직접적이다
+
+## 상세 분해 (계속 2)
 
 capacity가 2 이상이거나 later assignment, pooled inventory까지 함께 다뤄야 하면 둘만으로는 설명이 부족할 수 있다. 그런 경우는 guard row나 ledger 쪽으로 넘어간다.
 

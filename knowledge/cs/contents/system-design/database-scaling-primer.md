@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 초보자가 "DB가 느리다"에서 바로 sharding으로 뛰지 않고, index -> primary/replica -> read-write split -> partitioning -> sharding 순서로 어떤 문제를 푸는지 잡는 입문 문서다.
 
-retrieval-anchor-keywords: database scaling primer, primary replica basics, read write split, indexing basics, query tuning before sharding, read scaling, write scaling, replica lag, read after write, primary fallback, session stickiness, strong read consistency, partitioning vs sharding, shard key basics, hot partition detection, single primary limit, hot table, beginner database scaling
+retrieval-anchor-keywords: database scaling primer, primary replica basics, read write split, indexing basics, query tuning before sharding, read scaling, write scaling, replica lag, read after write, primary fallback, session stickiness, strong read consistency, partitioning vs sharding, shard key basics, hot partition detection
 
 **난이도: 🟢 Beginner**
 
@@ -110,6 +110,8 @@ GET /products     -> replica
 GET /orders/123   -> 경우에 따라 primary fallback
 ```
 
+## 깊이 들어가기 (계속 2)
+
 이때 초보자가 놓치기 쉬운 점은 `split`의 본질이 DB 구조가 아니라 **라우팅 정책**이라는 것이다.
 
 대표 정책:
@@ -184,6 +186,8 @@ partitioning이 주는 이점:
 
 하지만 partitioning이 자동으로 해결하지 않는 것도 분명하다.
 
+## 깊이 들어가기 (계속 3)
+
 - 단일 primary write 한계가 그대로일 수 있다
 - partition key 선택이 나쁘면 특정 partition만 뜨거워질 수 있다
 - cross-partition query는 여전히 비쌀 수 있다
@@ -236,6 +240,8 @@ replication이 "같은 데이터 복제"라면, sharding은 "데이터 자체를
 ### 8. 보통은 이런 순서로 커진다
 
 주문 서비스가 커지는 과정을 단순화하면 아래와 같다.
+
+## 깊이 들어가기 (계속 4)
 
 1. 초기에는 단일 primary만 둔다.
 2. 주문 목록이 느려져 `(user_id, created_at)` 같은 인덱스를 보강한다.

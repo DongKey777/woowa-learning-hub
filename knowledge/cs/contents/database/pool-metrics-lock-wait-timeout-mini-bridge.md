@@ -16,7 +16,9 @@
 - [Transaction Timeout과 Lock Timeout](./transaction-timeout-vs-lock-timeout.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: pool metrics mini bridge, active idle awaiting meaning, threads awaiting connection, hikaricp active idle pending, lock wait timeout pool confusion, pool exhaustion vs lock contention, connection timeout vs lock wait timeout, lock contention entrypoint, hot row identification starter, pool log timeline example, threads awaiting connection log example, lock wait timeout log timeline, lock wait timeout timeline walkthrough, 커넥션 풀 지표 읽기, active idle awaiting 해석, lock wait timeout 오해, 락 경합 시작점 찾기, hot row 식별 입문, DB 좌석 비유, pool 대기 vs 락 대기 구분, 로그 타임라인 해석 예시, threads awaiting connection 로그 읽기, lock wait timeout 로그 읽기, first failure timeline, 무엇이 먼저 터졌는지, timeout 사건 타임라인
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: pool metrics mini bridge, active idle awaiting meaning, threads awaiting connection, hikaricp active idle pending, lock wait timeout pool confusion, pool exhaustion vs lock contention, connection timeout vs lock wait timeout, lock contention entrypoint, hot row identification starter, pool log timeline example, threads awaiting connection log example, lock wait timeout log timeline, lock wait timeout timeline walkthrough, hot row 식별 입문, pool metrics lock wait timeout mini bridge basics
 
 ## 먼저 멘탈모델
 
@@ -107,6 +109,8 @@ com.zaxxer.hikari.pool.HikariPool : HikariPool-1 - Pool stats (total=20, active=
 ```
 
 ### 타임라인을 5단계로 읽기
+
+## 실제형 로그 타임라인 1세트 (계속 2)
 
 | 시각 | 보이는 로그 | 초보자 해석 |
 |---|---|---|

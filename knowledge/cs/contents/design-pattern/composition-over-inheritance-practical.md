@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [전략 (Strategy)](./strategy-pattern.md)
 > - [템플릿 메소드](./template-method.md)
@@ -12,7 +19,7 @@
 > - [Template Hook Smells](./template-hook-smells.md)
 > - [안티 패턴](./anti-pattern.md)
 
-retrieval-anchor-keywords: composition over inheritance, favor composition over inheritance, 상속보다 조합, fragile base class, inheritance rigidity, lsp violation, behavior injection, strategy via composition, template method tradeoff, penguin bird inheritance smell
+retrieval-anchor-keywords: composition over inheritance, favor composition over inheritance, 상속보다 조합, fragile base class, inheritance rigidity, lsp violation, behavior injection, strategy via composition, template method tradeoff, penguin bird inheritance smell, composition over inheritance practical basics, composition over inheritance practical beginner, composition over inheritance practical intro, design pattern basics, beginner design pattern
 
 ---
 
@@ -46,7 +53,7 @@ public class Penguin extends Bird {
 }
 ```
 
-이 구조는 읽는 사람을 속인다.  
+이 구조는 읽는 사람을 속인다.
 `Penguin`은 `Bird`를 상속하지만 날 수 없다. 즉 LSP를 깨기 쉽다.
 
 ### 2. 조합은 역할을 분리한다
@@ -81,7 +88,7 @@ public class Animal {
 
 ### 3. 상속이 필요한 순간도 있다
 
-상속이 항상 나쁜 건 아니다.  
+상속이 항상 나쁜 건 아니다.
 `template method`처럼 공통 골격이 안정적이고, 일부 단계만 바뀌는 경우에는 상속이 더 자연스럽다.
 
 핵심은 "재사용"이 아니라 **변경 축**이다.
@@ -92,12 +99,12 @@ public class Animal {
 
 ### 시나리오 1: 결제 정책
 
-결제 수단, 할인 정책, 적립 정책은 상속보다 전략/조합이 맞다.  
+결제 수단, 할인 정책, 적립 정책은 상속보다 전략/조합이 맞다.
 정책이 독립적으로 바뀌기 때문이다.
 
 ### 시나리오 2: HTTP 요청 래핑
 
-압축, 로깅, 재시도는 데코레이터처럼 조합하는 편이 낫다.  
+압축, 로깅, 재시도는 데코레이터처럼 조합하는 편이 낫다.
 부모 클래스를 점점 복잡하게 만드는 것보다 안전하다.
 
 ### 시나리오 3: 도메인 공통 골격

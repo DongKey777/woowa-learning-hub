@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: delayqueue repeating task primer basics, delayqueue repeating task primer beginner, delayqueue repeating task primer intro, data structure basics, beginner data structure, 처음 배우는데 delayqueue repeating task primer, delayqueue repeating task primer 입문, delayqueue repeating task primer 기초, what is delayqueue repeating task primer, how to delayqueue repeating task primer
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)

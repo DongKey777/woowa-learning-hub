@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
@@ -16,7 +23,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - 공식 기준: [Spring Boot Externalized Configuration - Binding From Environment Variables](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.environment-variables)
 
-retrieval-anchor-keywords: spring relaxed binding env var cheatsheet, relaxed binding environment variables, Spring Boot env var mapping, property key to environment variable, dotted property env var, dashed property env var, list property env var, map property env var, dotted dashed list map beginner, kebab case env var spring boot, property path segment env var, environment variable key mismatch, env var mismatch bean missing, app push notification env var, APP_PUSHNOTIFICATION_ENABLED, APP_CLIENTS_0_BASEURL, APP_TENANTS_ADMIN_BASEURL, MY_SERVICE_0_OTHER, SPRING_MAIN_LOGSTARTUPINFO, SPRING_APPLICATION_JSON, spring application json primer, @ConfigurationProperties env var binding, ConditionalOnProperty env var mismatch, beginner property configuration primer
+retrieval-anchor-keywords: spring relaxed binding env var cheatsheet, relaxed binding environment variables, spring boot env var mapping, property key to environment variable, dotted property env var, dashed property env var, list property env var, map property env var, dotted dashed list map beginner, kebab case env var spring boot, property path segment env var, environment variable key mismatch, env var mismatch bean missing, app push notification env var, beginner property configuration primer
 
 ## 핵심 개념
 
@@ -365,3 +372,7 @@ app.clients[0].name -> APP_CLIENTS_0_NAME
 - 같은 key가 env var로 잘 들어왔는데도 파일/profile/command-line/test property 중 누가 최종 값을 덮었는지 헷갈리면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)로 간다.
 - env var 이름이 틀려서 `@ConditionalOnProperty` 조건이 missing처럼 보이는 상황이면 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)로 이어진다.
 - list/map을 Java 설정 객체로 묶는 전체 파이프라인이 필요하면 [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)로 이어진다.
+
+## 한 줄 정리
+
+Spring Boot 환경 변수 이름은 "property key를 대문자 underscore 이름으로 옮긴 것"이지만, `.`은 `_`로 바꾸고 `-`는 제거한다. list index는 `_0_`처럼 감싸고, map key는 단순 소문자 key부터 안전하게 시작한다.

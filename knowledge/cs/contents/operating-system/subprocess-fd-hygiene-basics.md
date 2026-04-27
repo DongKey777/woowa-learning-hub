@@ -22,7 +22,7 @@
 - [signals, process supervision](./signals-process-supervision.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: subprocess fd hygiene basics, subprocess symptom first branch guide, subprocess comparison table, subprocess pipe redirection, subprocess stdout redirect, subprocess stdin redirect, stdout buffering after redirect, child output delayed pipe, fd wiring vs stdio buffering, popen runtime wrapper mapping, popen pipe fd mapping, subprocess PIPE mapping, pipe redirection basics, dup2 redirect basics, close-on-exec basics, exec fd leak, leaked pipe eof, pipe2 o_cloexec, dup2 stdin stdout stderr, close_fds mental model, subprocess spawn api fd hygiene, fork exec pipe eof, posix_spawn file actions basics, shell wrapper descriptor leak, shell wrapper quoting boundary, close_fds pass_fds mental model, pass_fds fd inheritance, subprocess fd hygiene self-check, beginner handoff box, primer handoff box, subprocess primer flow, subprocess learning path, subprocess fd hygiene 다음 문서, 서브프로세스 fd 자가 점검, fd hygiene 처음 배우는데, 서브프로세스 뭐예요, lsof FIFO subprocess, lsof deleted 뜻, lsof REG IPv4 FIFO
+retrieval-anchor-keywords: subprocess fd hygiene basics, subprocess symptom first branch guide, subprocess comparison table, subprocess pipe redirection, subprocess stdout redirect, subprocess stdin redirect, stdout buffering after redirect, child output delayed pipe, fd wiring vs stdio buffering, popen runtime wrapper mapping, popen pipe fd mapping, subprocess pipe mapping, pipe redirection basics, dup2 redirect basics, close-on-exec basics
 
 ## Subprocess Primer Handoff
 
@@ -94,6 +94,8 @@ parent
 즉 API 선택은 표현 방식의 차이이고, hygiene 기본 원칙은 같다.
 
 다만 `shell=True`, `sh -c`, shell script wrapper처럼 shell이 한 겹 끼면 "fd가 target에 직접 가는가, shell에도 먼저 보이는가"라는 boundary가 추가된다. 이 감각은 [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)에서 따로 떼어 읽는 편이 쉽다.
+
+## spawn API 선택이 바꾸는 것: hygiene를 어디에 적는가 (계속 2)
 
 stdout/stderr redirect 배선은 맞는데 parent가 출력을 늦게 받는다면 fd 문제가 아니라 child stdio buffering일 수 있다. 이 차이는 [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)에서 따로 분리해 읽는 편이 안전하다.
 

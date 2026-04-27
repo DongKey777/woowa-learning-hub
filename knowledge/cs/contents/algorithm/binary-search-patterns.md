@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: binary search patterns basics, binary search patterns beginner, binary search patterns intro, algorithm basics, beginner algorithm, 처음 배우는데 binary search patterns, binary search patterns 입문, binary search patterns 기초, what is binary search patterns, how to binary search patterns
 > 관련 문서:
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
 > - [Longest Increasing Subsequence Patterns](./longest-increasing-subsequence-patterns.md)

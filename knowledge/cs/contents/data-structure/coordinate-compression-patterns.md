@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: coordinate compression patterns basics, coordinate compression patterns beginner, coordinate compression patterns intro, data structure basics, beginner data structure, 처음 배우는데 coordinate compression patterns, coordinate compression patterns 입문, coordinate compression patterns 기초, what is coordinate compression patterns, how to coordinate compression patterns
 > 관련 문서:
 > - [Fenwick Tree (Binary Indexed Tree)](./fenwick-tree.md)
 > - [Sparse Table](./sparse-table.md)
@@ -63,7 +72,7 @@ Coordinate compression은 값의 절대 크기는 버리고 순서만 보존해 
 
 ### 시나리오 3: 오판
 
-정확한 원래 값이 필요한 경우에는 압축만으로는 부족하다.  
+정확한 원래 값이 필요한 경우에는 압축만으로는 부족하다.
 매핑 테이블을 같이 유지해야 한다.
 
 ## 코드로 보기

@@ -15,7 +15,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [Spring AOP 기초](../spring/spring-aop-basics.md)
 
-retrieval-anchor-keywords: observer pattern basics, 옵저버 패턴 기초, 옵저버 패턴이 뭔가요, observer pattern beginner, 이벤트 알림 패턴, 상태 변화 알리기, subscribe notify pattern, subject observer, 옵저버 리스너 차이, event listener beginner, 옵저버 패턴 예시, beginner observer, observer quick check, observer beginner quick check, 옵저버 패턴 10초, 옵저버 패턴 30초 비교표, 옵저버 패턴 1분 예시, 옵저버 자주 헷갈리는 포인트, observer confusion points beginner, observer vs command, 옵저버 vs 커맨드, notification vs request, observer micro check beginner, 옵저버 미니 오해 점검, 옵저버 3문항 점검, direct call vs observer quick check, observer vs pubsub quick check, observer vs pub-sub beginner, same process notification vs broker async propagation, observer lifecycle hygiene route, unsubscribe duplicate listener beginner, observer memory leak route, spring event listener timing route, eventlistener vs transactionaleventlistener beginner, observer 다음 문서, 옵저버 다음 읽기, 옵저버 lifecycle hygiene, 스프링 이벤트 리스너 타이밍
+retrieval-anchor-keywords: observer pattern basics, 옵저버 패턴 기초, 옵저버 패턴이 뭔가요, observer pattern beginner, 이벤트 알림 패턴, 상태 변화 알리기, subscribe notify pattern, subject observer, 옵저버 리스너 차이, event listener beginner, 옵저버 패턴 예시, beginner observer, observer quick check, observer beginner quick check, 옵저버 패턴 10초
 
 ---
 

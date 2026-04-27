@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [팩토리 (Factory)](./factory.md)
 > - [팩토리 패턴 기초](./factory-basics.md)
@@ -14,7 +21,7 @@
 > - [Singleton vs DI Container Scope](./singleton-vs-di-container-scope.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: factory vs di container, spring bean factory method, handwritten factory vs @Bean, framework wiring factory example, dependency injection wiring vs runtime factory, conditional bean vs manual factory, payment handler map injection, applicationcontext getbean service locator, beginner spring factory, di container wiring beginner, request dto bean, command object not bean, builder vs di container
+retrieval-anchor-keywords: factory vs di container, spring bean factory method, handwritten factory vs @bean, framework wiring factory example, dependency injection wiring vs runtime factory, conditional bean vs manual factory, payment handler map injection, applicationcontext getbean service locator, beginner spring factory, di container wiring beginner, request dto bean, command object not bean, builder vs di container, factory vs di container wiring basics, factory vs di container wiring beginner
 
 ---
 
@@ -102,6 +109,8 @@ public class BillingService {
 - 의존성이 생성자 시그니처에 드러난다
 - 테스트에서 필요한 의존성만 바꿔 주입하기 쉽다
 - 프레임워크가 생명주기와 wiring을 관리한다
+
+## 예시 1: 손으로 서비스 wiring 하던 factory는 컨테이너로 옮긴다 (계속 2)
 
 여기서 `@Bean` 메서드는 여전히 "factory method"다.
 차이는 **앱 전역 wiring의 소유권을 프레임워크에 넘겼다**는 점이다.
@@ -213,6 +222,8 @@ public class PaymentHandlerFactory {
     }
 }
 ```
+
+## 예시 3: 런타임 선택은 컨테이너가 대신하지 않는다 (계속 2)
 
 ```java
 @Service

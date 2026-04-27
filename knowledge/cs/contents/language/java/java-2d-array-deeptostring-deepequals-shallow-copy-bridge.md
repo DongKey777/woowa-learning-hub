@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java 2d array deeptostring deepequals shallow copy bridge basics, java 2d array deeptostring deepequals shallow copy bridge beginner, java 2d array deeptostring deepequals shallow copy bridge intro, java basics, beginner java, 처음 배우는데 java 2d array deeptostring deepequals shallow copy bridge, java 2d array deeptostring deepequals shallow copy bridge 입문, java 2d array deeptostring deepequals shallow copy bridge 기초, what is java 2d array deeptostring deepequals shallow copy bridge, how to java 2d array deeptostring deepequals shallow copy bridge
 > 관련 문서:
 > - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
 > - [Java 2차원 배열 순회 입문](./java-2d-array-traversal-primer.md)
@@ -90,6 +99,8 @@ public class TwoDimensionalArrayBridge {
 - `Arrays.equals(original, sameValues)`는 row 배열 reference를 비교해서 `false`가 된다
 - `Arrays.deepEquals(original, sameValues)`는 row 안의 값까지 비교해서 `true`가 된다
 - `original.clone()`은 바깥 배열은 새로 만들지만 `original[0]`과 `shallowCopy[0]`은 같은 row를 공유한다
+
+## 한 예제로 같이 보기 (계속 2)
 
 즉 마지막 변경이 원본에도 반영되는 이유는 "2차원 배열이라서 특별한 버그가 생긴 것"이 아니라, **row 배열이 공유된 shallow copy**이기 때문이다.
 

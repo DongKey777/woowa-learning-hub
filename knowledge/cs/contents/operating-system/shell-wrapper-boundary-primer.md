@@ -18,7 +18,7 @@
 - [입력값 검증 기초](../security/input-validation-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: shell wrapper boundary primer, shell=true mental model, python subprocess shell true, sh -c extra process, shell quoting boundary, fd inheritance shell wrapper, pipe eof shell wrapper, shell true eof delay, shell wrapper fd leak illusion, shell command wrapper 뭐예요, quoting 처음 배우는데, direct spawn vs shell wrapper
+retrieval-anchor-keywords: shell wrapper boundary primer, shell=true mental model, python subprocess shell true, sh -c extra process, shell quoting boundary, fd inheritance shell wrapper, pipe eof shell wrapper, shell true eof delay, shell wrapper fd leak illusion, shell command wrapper 뭐예요, quoting 처음 배우는데, direct spawn vs shell wrapper, shell wrapper boundary primer basics, shell wrapper boundary primer beginner, shell wrapper boundary primer intro
 
 ## 먼저 잡는 멘탈 모델
 

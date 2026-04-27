@@ -13,7 +13,7 @@
 - [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
 - [Navigable Range API 미니 드릴](./navigable-range-api-mini-drill.md)
 
-retrieval-anchor-keywords: language-java-00122, firstEntry lastEntry vs firstKey lastKey, treemap empty firstEntry null, treemap empty firstKey exception, lastEntry lastKey empty treemap, java treemap entry null vs key exception, firstEntry null firstKey NoSuchElementException, TreeMap beginner empty bridge, firstKey lastKey firstEntry lastEntry difference, 자바 treemap firstEntry firstKey 차이, 빈 TreeMap firstEntry null, 빈 TreeMap firstKey 예외
+retrieval-anchor-keywords: language-java-00122, firstentry lastentry vs firstkey lastkey, treemap empty firstentry null, treemap empty firstkey exception, lastentry lastkey empty treemap, java treemap entry null vs key exception, firstentry null firstkey nosuchelementexception, treemap beginner empty bridge, firstkey lastkey firstentry lastentry difference, 자바 treemap firstentry firstkey 차이, 빈 treemap firstentry null, 빈 treemap firstkey 예외, firstentry lastentry vs firstkey lastkey bridge basics, firstentry lastentry vs firstkey lastkey bridge beginner, firstentry lastentry vs firstkey lastkey bridge intro
 
 ## 먼저 잡을 mental model
 

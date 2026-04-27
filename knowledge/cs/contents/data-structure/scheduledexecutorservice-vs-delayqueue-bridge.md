@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue bridge basics, scheduledexecutorservice vs delayqueue bridge beginner, scheduledexecutorservice vs delayqueue bridge intro, data structure basics, beginner data structure, 처음 배우는데 scheduledexecutorservice vs delayqueue bridge, scheduledexecutorservice vs delayqueue bridge 입문, scheduledexecutorservice vs delayqueue bridge 기초, what is scheduledexecutorservice vs delayqueue bridge, how to scheduledexecutorservice vs delayqueue bridge
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
@@ -273,6 +282,8 @@ worker:            run1                run2
 
 여기서는 `t=13`에 다시 넣는 순간 기준이 "이번 실행이 끝난 시각"이라서
 다음 deadline이 `23초`, 그다음은 `36초`처럼 실행 시간만큼 뒤로 밀린다.
+
+## fixed rate vs fixed delay를 timeline으로 따라가 보기 (계속 2)
 
 ### 한 표로 다시 보면
 

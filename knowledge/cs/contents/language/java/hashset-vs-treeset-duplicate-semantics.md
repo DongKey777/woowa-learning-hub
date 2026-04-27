@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: hashset vs treeset duplicate semantics basics, hashset vs treeset duplicate semantics beginner, hashset vs treeset duplicate semantics intro, java basics, beginner java, 처음 배우는데 hashset vs treeset duplicate semantics, hashset vs treeset duplicate semantics 입문, hashset vs treeset duplicate semantics 기초, what is hashset vs treeset duplicate semantics, how to hashset vs treeset duplicate semantics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)

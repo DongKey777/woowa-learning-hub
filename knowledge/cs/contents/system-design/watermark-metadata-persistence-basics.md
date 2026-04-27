@@ -15,7 +15,9 @@
 - [Shard-Aware Watermark Scope Primer](./shard-aware-watermark-scope-primer.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: watermark metadata persistence basics, cache entry watermark metadata, cache refill watermark metadata, applied watermark cache entry, required watermark cache hit check, outbox watermark to cache metadata, cache causal hit metadata, refill metadata enables later hit check, watermark aware cache refill beginner, cache metadata persistence primer, causal cache metadata design, outbox projection cache bridge, cache entry observed watermark, cache metadata scope watermark, beginner watermark cache bridge, system-design-00081
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: watermark metadata persistence basics, cache entry watermark metadata, cache refill watermark metadata, applied watermark cache entry, required watermark cache hit check, outbox watermark to cache metadata, cache causal hit metadata, refill metadata enables later hit check, watermark aware cache refill beginner, cache metadata persistence primer, causal cache metadata design, outbox projection cache bridge, cache entry observed watermark, cache metadata scope watermark, beginner watermark cache bridge
 
 ---
 

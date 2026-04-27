@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 목록, 상세, 검색 화면이 서로 다른 cache/replica/search index를 읽더라도 세션이 본 `min-version` floor를 함께 들고 다니면 `PAID -> PENDING`처럼 값이 뒤로 가는 경험을 막을 수 있다.
 
-retrieval-anchor-keywords: list detail monotonicity bridge, list detail search min-version floor, list detail search min version, min-version floor, min_version floor, monotonic guard, monotonic guard alias, monotonic guard beginner, 역행 방지 하한선, 역행 방지 하한선 별칭, value regression across pages, list detail mismatch, search detail consistency, search result stale after detail, detail newer than list, order list detail search monotonic reads, per entity freshness floor, session min version bridge, seen version floor, row version floor, beginner monotonic screens, cache replica search read path consistency, paid to pending regression, stale status after detail, system-design-00056, read-after-write vs monotonic reads, per-session floor not global consistency, monotonic screen regression triage, candidate lower than floor accepted, candidate less than floor mistake, stale candidate accepted mistake, candidate floor compare beginner confusion
+retrieval-anchor-keywords: list detail monotonicity bridge, list detail search min-version floor, list detail search min version, min-version floor, min_version floor, monotonic guard, monotonic guard alias, monotonic guard beginner, 역행 방지 하한선, 역행 방지 하한선 별칭, value regression across pages, list detail mismatch, search detail consistency, search result stale after detail, beginner monotonic screens
 
 **난이도: 🟢 Beginner**
 
@@ -19,6 +19,8 @@ retrieval-anchor-keywords: list detail monotonicity bridge, list detail search m
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [Search Indexing Pipeline 설계](./search-indexing-pipeline-design.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 
@@ -246,6 +248,8 @@ search hit candidate
 
 이 hit은 검색 결과에서 빠르게 나온 값이지만, 이 세션에는 너무 오래됐다.
 그래서 검색 서비스나 BFF는 아래 중 하나를 고른다.
+
+## 주문 하나로 보는 concrete example (계속 2)
 
 - source-of-truth에서 주문 `123`을 다시 읽어 hit을 overlay한다
 - index가 따라올 때까지 그 hit의 오래된 status를 숨기거나 "갱신 중" 상태로 둔다

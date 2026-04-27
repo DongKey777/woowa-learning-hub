@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: testing strategy and test doubles basics, testing strategy and test doubles beginner, testing strategy and test doubles intro, software engineering basics, beginner software engineering, 처음 배우는데 testing strategy and test doubles, testing strategy and test doubles 입문, testing strategy and test doubles 기초, what is testing strategy and test doubles, how to testing strategy and test doubles
 > 관련 문서:
 > - [Software Engineering README: 테스트 전략과 테스트 더블](./README.md#테스트-전략과-테스트-더블)
 > - [테스트 전략 기초](./test-strategy-basics.md)

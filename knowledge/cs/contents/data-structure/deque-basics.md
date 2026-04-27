@@ -12,7 +12,7 @@
 - [자료구조 정리](./README.md)
 - [두 포인터 입문](../algorithm/two-pointer-intro.md)
 
-retrieval-anchor-keywords: deque basics, double ended queue, 덱 입문, 덱이 뭐예요, deque vs queue vs stack, arraydeque java, addfirst addlast, 양방향 큐 설명, 덱과 스택 차이, 덱과 큐 차이, beginner deque, deque sliding window, plain deque, plain deque simulation, deque router, 일반 덱, 덱 라우팅
+retrieval-anchor-keywords: deque basics, double ended queue, 덱 입문, 덱이 뭐예요, deque vs queue vs stack, arraydeque java, addfirst addlast, 양방향 큐 설명, 덱과 스택 차이, 덱과 큐 차이, beginner deque, deque sliding window, plain deque, plain deque simulation, deque router
 
 ## 핵심 개념
 

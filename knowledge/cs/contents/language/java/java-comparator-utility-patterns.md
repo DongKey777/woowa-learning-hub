@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java comparator utility patterns basics, java comparator utility patterns beginner, java comparator utility patterns intro, java basics, beginner java, 처음 배우는데 java comparator utility patterns, java comparator utility patterns 입문, java comparator utility patterns 기초, what is java comparator utility patterns, how to java comparator utility patterns
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -170,6 +179,8 @@ Comparator<Student> byGradePrimitive =
 
 ### boxing이 언제 의미 있고, 언제 무시해도 되나
 
+## `comparingInt`, `comparingLong`, `comparingDouble`: primitive 필드 follow-up (계속 2)
+
 | 상황 | 초보자용 추천 | 왜 이렇게 보면 되나 |
 |---|---|---|
 | `int`/`long`/`double` 필드를 큰 컬렉션에서 자주 정렬한다 | `comparingInt`/`Long`/`Double` 우선 | boxing을 줄이는 방향이라 성능 감각상 자연스럽다 |
@@ -290,6 +301,8 @@ Comparator<StudentRank> byGradeThenAverageScore =
 
 여기서 중요한 감각은 하나다.
 
+## `thenComparingInt`, `thenComparingLong`, `thenComparingDouble`: primitive tie-breaker shortcut (계속 2)
+
 - 1차 기준이 primitive shortcut이었으면 2차 기준도 같은 방식으로 계속 붙일 수 있다
 - 첫 기준이 `comparing(...)`였더라도 2차 기준은 `thenComparingInt`/`Long`/`Double`로 붙일 수 있다
 - 즉 "primitive tie-breaker니까 다시 verbose lambda로 풀어써야 하나?"라고 생각할 필요가 없다
@@ -379,6 +392,8 @@ Comparator<Student> wholeChainReversed =
 `reversed()`는 "지금까지 만든 comparator"를 뒤집는다.
 그래서 `thenComparingInt`/`Long`/`Double`과 섞을 때는 "어느 시점까지 만든 규칙을 뒤집었는가"를 같이 읽어야 한다.
 
+## `reversed`: 정렬 방향 뒤집기 (계속 2)
+
 | 코드 | 읽는 결과 |
 |---|---|
 | `Comparator.comparingInt(StudentRank::grade).reversed().thenComparingInt(StudentRank::classNumber)` | 학년 내림차순, 같은 학년이면 반 번호 오름차순 |
@@ -406,6 +421,8 @@ Comparator<StudentRank> gradeDescAverageDesc =
 ```
 
 반대로 아래 코드는 전체 체인을 뒤집기 때문에 읽는 결과가 다르다.
+
+## `reversed`: 정렬 방향 뒤집기 (계속 3)
 
 ```java
 Comparator<StudentRank> wholeChainDesc =
@@ -490,6 +507,9 @@ System.out.println(students);
 - `a.thenComparing(b).reversed()`는 전체 체인을 뒤집는다. `a.reversed().thenComparing(b)`와 다르다.
 - `nullsFirst`와 `nullsLast`는 "`null`을 어디에 둘지"를 정하는 도구다. 문자열 사전순 자체를 바꾸는 도구는 아니다.
 - `List.of(...)`는 `null`을 허용하지 않는다. `null` 예제는 `Arrays.asList(...)`나 별도 `ArrayList`로 만들어야 한다.
+
+## 초보자가 자주 헷갈리는 지점 (계속 2)
+
 - `TreeSet`이나 `TreeMap`에 comparator를 넣을 때는 `thenComparing`으로 tie-breaker를 충분히 넣지 않으면 서로 다른 객체가 같은 원소나 같은 key처럼 보일 수 있다. 이 부분은 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md), [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md), [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)에서 이어서 보면 된다.
 
 ## 코드로 한 번에 보기
@@ -537,7 +557,10 @@ public class ComparatorUtilityPatternsExample {
                         .reversed()
                         .thenComparing(Student::name)
         );
-        System.out.println(students);
+
+## 코드로 한 번에 보기 (계속 2)
+
+System.out.println(students);
 
         students = new ArrayList<>(List.of(
                 new Student("Mina", 2, "Nora"),
@@ -590,6 +613,9 @@ public class ComparatorUtilityPatternsExample {
 - 같은 comparator chain을 `List.sort(...)`와 `stream.sorted(...)` 양쪽에 어떻게 재사용하는지 보고 싶다면 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
 - stream pipeline의 `sorted(comparator)` 위치까지 넓게 연결하고 싶다면 [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 - boxing/unboxing 자체를 더 정확히 보고 싶다면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+
+## 어떤 문서를 다음에 읽으면 좋은가 (계속 2)
+
 - `double` 정렬에서 정밀도나 `NaN`까지 같이 떠오른다면 [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 
 ## 한 줄 정리

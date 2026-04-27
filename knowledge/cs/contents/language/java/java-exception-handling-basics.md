@@ -13,7 +13,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Spring MVC 요청 생명주기](../../spring/README.md)
 
-retrieval-anchor-keywords: java exception basics, try catch finally beginner, checked unchecked exception, throws throw beginner, exception handling intro, java 예외처리 입문, nullpointerexception beginner, runtimeexception beginner, exception hierarchy java, what is exception java, 예외 종류 입문, java exception class hierarchy, 예외 처리 처음 배우는데, 예외 처리 큰 그림, try catch finally 순서, throw throws 차이, throw catch 언제 쓰는지, checked unchecked 차이 기초, checked unchecked 언제 처리, 자바 예외 기초 언제 쓰는지, NPE 왜 나는지 기초, 처음 배우는데 try catch, try catch 기초, 처음 배우는데 checked unchecked 차이, 언제 throws 쓰는지, exception primer, checked exception 언제 쓰는지, unchecked exception 언제 쓰는지, checked unchecked 언제 쓰는지, 예외를 언제 던지나, 예외를 언제 잡아야 하나, throw throws catch 차이 기초, checked exception vs runtime exception beginner, IOException checked exception 왜 쓰나, IllegalArgumentException 언제 쓰나, 자바 checked unchecked 선택 기준
+retrieval-anchor-keywords: java exception basics, try catch finally beginner, checked unchecked exception, throws throw beginner, exception handling intro, java 예외처리 입문, nullpointerexception beginner, runtimeexception beginner, exception hierarchy java, what is exception java, 예외 종류 입문, java exception class hierarchy, 예외 처리 처음 배우는데, 예외 처리 큰 그림, try catch finally 순서
 
 ## 핵심 개념
 
@@ -129,6 +129,8 @@ if (age < 0) {
 |---|---|
 | 잘못된 요청값, 잘못된 상태, 도메인 규칙 위반 | `RuntimeException` 상속 custom exception |
 | 호출자가 반드시 재시도/대체 경로를 고민해야 하는 외부 실패 계약 | checked exception 검토 |
+
+## 상세 분해 (계속 2)
 
 Spring 애플리케이션에서는 도메인/검증 예외를 `RuntimeException` 계열로 두고, 바깥의 `@ControllerAdvice`에서 HTTP 응답으로 바꾸는 흐름을 많이 쓴다. 그래서 beginner가 "실무에서 checked를 아예 안 쓰나?"라고 느낄 수 있는데, 정확히는 외부 라이브러리나 JDK의 checked 예외를 경계에서 받아 의미 있는 unchecked/domain 예외로 번역하는 경우가 많다.
 

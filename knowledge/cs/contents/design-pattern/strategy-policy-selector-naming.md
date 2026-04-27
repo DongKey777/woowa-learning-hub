@@ -18,7 +18,7 @@
 - [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: strategy vs policy selector naming, factory 보다 selector, factory 보다 resolver, 생성이 아니면 factory 아님, raw input 해석 vs 후보 선택, 문자열 enum 변환 resolver, 코드값 해석 resolver, 해석 다음 선택, 뜻이 정해진 뒤 selector, selector naming beginner bridge, selector naming follow up, selector 이름 뭐로 지어야 해, 처음 배우는데 resolver selector 차이, 처음 배우는데 selector naming
+retrieval-anchor-keywords: strategy vs policy selector naming, factory 보다 selector, factory 보다 resolver, 생성이 아니면 factory 아님, raw input 해석 vs 후보 선택, 문자열 enum 변환 resolver, 코드값 해석 resolver, 해석 다음 선택, 뜻이 정해진 뒤 selector, selector naming beginner bridge, selector naming follow up, selector 이름 뭐로 지어야 해, 처음 배우는데 resolver selector 차이, 처음 배우는데 selector naming, strategy policy selector naming basics
 
 ---
 

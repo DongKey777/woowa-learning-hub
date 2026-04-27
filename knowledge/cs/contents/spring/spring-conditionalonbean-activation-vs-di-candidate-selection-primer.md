@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
@@ -14,7 +21,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 
-retrieval-anchor-keywords: @ConditionalOnBean activation vs DI candidate selection, ConditionalOnBean does not choose bean, ConditionalOnBean vs @Primary, ConditionalOnBean vs @Qualifier, condition passes but autowire ambiguous, ConditionalOnBean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but NoUniqueBeanDefinitionException, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, ConditionalOnBean positive match ambiguous dependency, beginner ConditionalOnBean primer, spring conditional activation boundary, ConditionalOnBean debug output, ConditionalOnBean actuator conditions, ConditionalOnBean positive match negative match
+retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean vs @primary, conditionalonbean vs @qualifier, condition passes but autowire ambiguous, conditionalonbean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but nouniquebeandefinitionexception, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, conditionalonbean positive match ambiguous dependency, beginner conditionalonbean primer, spring conditional activation boundary, conditionalonbean debug output, spring conditionalonbean activation vs di candidate selection primer basics
 
 ## 먼저 mental model
 
@@ -232,6 +239,8 @@ Actuator `conditions`도 읽는 법은 같다. 형식은 JSON이지만 초보자
   }
 }
 ```
+
+## `--debug`와 Actuator `conditions`에서는 이렇게 보인다 (계속 2)
 
 ```json
 {

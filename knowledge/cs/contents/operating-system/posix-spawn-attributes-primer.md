@@ -18,7 +18,9 @@
 - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: posix_spawn attributes primer, posix_spawnattr basics, posix_spawnattr_t mental model, posix_spawnattr_setflags, POSIX_SPAWN_SETPGROUP, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, posix_spawn process group basics, posix_spawn signal mask basics, posix_spawn signal default basics, posix_spawn attrs vs file actions, spawn attributes beginner, process group ctrl c child launch, signal mask child launch basics, posix_spawn attrs session process group, setsid setpgid follow-up, blocked signal vs ignored signal, signal mask vs disposition follow-up, posix_spawn attributes self-check, beginner handoff box, primer handoff box, posix_spawn attributes 다음 문서, posix_spawn 속성 자가 점검
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: posix_spawn attributes primer, posix_spawnattr basics, posix_spawnattr_t mental model, posix_spawnattr_setflags, posix_spawn_setpgroup, posix_spawn_setsigmask, posix_spawn_setsigdef, posix_spawn process group basics, posix_spawn signal mask basics, posix_spawn signal default basics, posix_spawn attrs vs file actions, spawn attributes beginner, process group ctrl c child launch, signal mask child launch basics, posix_spawn attrs session process group
 
 ## 먼저 잡는 멘탈 모델
 

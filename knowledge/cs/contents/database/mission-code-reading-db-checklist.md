@@ -14,7 +14,7 @@
 - [Spring `@Transactional` 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mission code reading db checklist, backend mission db review checklist, transaction boundary access technology index checklist, 미션 코드 독해 db 체크리스트, 리뷰 전 db 점검표, 트랜잭션 경계 접근기술 인덱스 5분, jpa jdbc mybatis 확인 순서, 초급 db 코드리뷰 체크리스트, repository mapper entity manager 확인, explain before review, transactional repository index beginner
+retrieval-anchor-keywords: mission code reading db checklist, backend mission db review checklist, transaction boundary access technology index checklist, 미션 코드 독해 db 체크리스트, 리뷰 전 db 점검표, 트랜잭션 경계 접근기술 인덱스 5분, jpa jdbc mybatis 확인 순서, 초급 db 코드리뷰 체크리스트, repository mapper entity manager 확인, explain before review, transactional repository index beginner, mission code reading db checklist basics, mission code reading db checklist beginner, mission code reading db checklist intro, database basics
 
 ## 먼저 큰 그림
 

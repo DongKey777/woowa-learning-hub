@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Observer(옵저버) 디자인 패턴](./observer.md)
 > - [옵저버 vs Pub-Sub: 처음 읽을 때 바로 잡는 짧은 다리](./observer-vs-pubsub-quick-bridge.md)
@@ -23,7 +30,7 @@
 > - [Event Bus Control Plane 설계](../system-design/event-bus-control-plane-design.md)
 > - [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
 
-retrieval-anchor-keywords: observer vs pubsub, observer vs pubsub beginner, same process notification vs broker async propagation, Spring ApplicationEvent, application event listener, synchronous vs asynchronous event, event ordering, event failure propagation, transactional event listener boundary, eventlistener vs transactionaleventlistener, after commit after rollback, event-driven decoupling, duplicate event handling, event publish subscribe semantics, listener lifecycle, unsubscribe cleanup, duplicate listener registration, plugin event listener teardown
+retrieval-anchor-keywords: observer vs pubsub, observer vs pubsub beginner, same process notification vs broker async propagation, spring applicationevent, application event listener, synchronous vs asynchronous event, event ordering, event failure propagation, transactional event listener boundary, eventlistener vs transactionaleventlistener, after commit after rollback, event-driven decoupling, duplicate event handling, event publish subscribe semantics, observer pubsub application events basics
 
 ---
 

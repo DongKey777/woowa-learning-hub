@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `primer`
 >
 > `Domain=example.com` session cookie를 `__Host-` host-only cookie로 바꾸려는데 "배포 후 stale auth state가 남지 않게 어떻게 옮기나"가 첫 질문일 때 여는 entrypoint다. duplicate cookie raw header가 이미 잡혔거나 old scope tombstone 설계만 남았다면 [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md)으로 바로 내려간다.
@@ -20,7 +27,7 @@
 > - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: __Host- cookie migration primer, __Host cookie migration, host-only cookie migration primer, shared-domain session to __Host cookie, Domain example.com to __Host, parent-domain cookie to host-only cookie, host-prefixed session migration, __Host session stale auth state, __Host cookie logout cleanup, __Host cookie cutover, __Host cookie duplicate shadowing, shared cookie to app-local session, host-only session migration beginner, cookie migration without stale auth, __Host prefix beginner, __Host cookie subdomain migration, auth.example.com app.example.com __Host migration, old shared cookie cleanup after __Host, __Host cookie primer, host-only cutover primer
+retrieval-anchor-keywords: __host- cookie migration primer, __host cookie migration, host-only cookie migration primer, shared-domain session to __host cookie, domain example.com to __host, parent-domain cookie to host-only cookie, host-prefixed session migration, __host session stale auth state, __host cookie logout cleanup, __host cookie cutover, __host cookie duplicate shadowing, shared cookie to app-local session, host-only session migration beginner, cookie migration without stale auth, __host prefix beginner
 retrieval-anchor-keywords: __Host- cookie no Domain Path=/ Secure, __Host cookie cannot be shared across subdomains, __Host cookie handoff pattern, shared-domain cookie retirement, parent-domain cookie tombstone, stale shared session after host-only migration, logout old shared cookie survives, __Host migration safe rollout, __Host cookie devtools checklist
 
 ## 먼저 잡을 mental model
@@ -288,3 +295,7 @@ Set-Cookie: session=; Domain=example.com; Path=/; Max-Age=0; Expires=Thu, 01 Jan
 - 이미 raw `Cookie` header에 old/new가 같이 보이면 [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)
 - `auth -> app` 구조 자체를 shared cookie로 볼지 handoff로 볼지 헷갈리면 [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md)
 - `Application`에는 보이는데 요청에 안 붙는다면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+
+## 한 줄 정리
+
+`__Host-` cookie는 "더 안전한 shared-domain cookie"가 아니라 **한 host에만 묶인 host-only cookie**다. 그래서 migration 핵심은 prefix를 붙이는 것보다, old shared-domain session을 어떻게 끊고 각 host의 새 로그인 상태를 어떻게 만들지 분리하는 데 있다.

@@ -36,7 +36,9 @@ batch 테스트를 쓰다 보면 금방 이런 갈림길이 온다.
 - [Readable Code Layering Test Feedback Loop Primer](./readable-code-layering-test-feedback-loop-primer.md)
 - [Refactoring Basics](./refactoring-basics.md)
 
-retrieval-anchor-keywords: batch fixture builder vs factory smells, batch test data builder decision, fixture factory smell beginner, named fixture vs builder, small fixture vs object mother, batch helper smell readable code, when to use test builder, batch testing helper design, fixture factory anti pattern, readable batch test fixture, thin builder over named fixtures, batch result builder beginner, fixture helper smell primer, batch test readable code, builder justified by variation, object mother smell batch, test fixture refactoring beginner, batch helper decision table, named fixture first, builder second
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: batch fixture builder vs factory smells, batch test data builder decision, fixture factory smell beginner, named fixture vs builder, small fixture vs object mother, batch helper smell readable code, when to use test builder, batch testing helper design, fixture factory anti pattern, readable batch test fixture, thin builder over named fixtures, batch result builder beginner, fixture helper smell primer, batch test readable code, builder justified by variation
 
 ## 먼저 잡을 그림
 

@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [템플릿 메소드 첫 질문 라우터: `hook method`, `abstract step`, `template method vs strategy`](./template-method-query-router-beginner.md)
@@ -11,7 +18,7 @@
 > - [Policy Object vs Strategy Map: 커지는 전략 맵을 규칙 객체로 올릴 때](./policy-object-vs-strategy-map-beginner-bridge.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: beginner primer template, design pattern beginner primer template, quick check skeleton, confusion box skeleton, beginner bridge template, primer writing guide, beginner doc checklist, quick-check section template, common confusion section template, first read template pattern docs, pattern primer skeleton, example box title standard, comparison table title standard, 1분 예시 제목 규칙, 30초 비교표 제목 규칙, 초보자 프라이머 템플릿, 입문 문서 템플릿, quick check 템플릿, confusion box 템플릿, 자주 헷갈리는 포인트 박스, 헷갈림 박스 스켈레톤, beginner primer 작성법, 디자인 패턴 입문 문서 작성, beginner bridge skeleton
+retrieval-anchor-keywords: beginner primer template, design pattern beginner primer template, quick check skeleton, confusion box skeleton, beginner bridge template, primer writing guide, beginner doc checklist, quick-check section template, common confusion section template, first read template pattern docs, pattern primer skeleton, example box title standard, comparison table title standard, 1분 예시 제목 규칙, 30초 비교표 제목 규칙
 
 ---
 
@@ -83,6 +90,7 @@ beginner primer에서는 아래 네 줄을 기본 라벨로 통일해 둔다.
 문항 수는 3개를 기본으로 두는 편이 가장 읽기 쉽다.
 
 ```md
+
 ## Quick-Check
 
 아래 3문항 중 2개 이상이 "예"면 이 문서를 먼저 읽으면 된다.
@@ -105,6 +113,7 @@ Confusion Box는 glossary가 아니라 오해를 교정하는 작은 박스다.
 아래처럼 box 스타일 문장으로도 쓸 수 있다.
 
 ```md
+
 ## Confusion Box
 
 > 자주 헷갈리는 포인트

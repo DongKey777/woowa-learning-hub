@@ -14,7 +14,7 @@
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 - [Java Optional 입문](./java-optional-basics.md)
 
-retrieval-anchor-keywords: java map get null containsKey getOrDefault difference, map get returns null missing key null value, hashmap null value beginner, map containsKey 언제 쓰나, map getOrDefault 언제 쓰나, key 없음 null 값 차이, 자바 map get null 의미, 자바 map containsKey getOrDefault 차이, 자바 hashmap null 처리 기초, map null safety beginner, keySet get null confusion, map iteration null beginner
+retrieval-anchor-keywords: java map get null containskey getordefault difference, map get returns null missing key null value, hashmap null value beginner, map containskey 언제 쓰나, map getordefault 언제 쓰나, key 없음 null 값 차이, 자바 map get null 의미, 자바 map containskey getordefault 차이, 자바 hashmap null 처리 기초, map null safety beginner, keyset get null confusion, map iteration null beginner, map get null containskey getordefault primer basics, map get null containskey getordefault primer beginner, map get null containskey getordefault primer intro
 
 ## 먼저 잡는 멘탈 모델
 

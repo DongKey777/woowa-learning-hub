@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `JdbcTemplate` and `SQLException` Translation](./spring-jdbctemplate-sqlexception-translation.md)
 > - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
@@ -13,7 +20,7 @@
 > - [Spring `@Transactional` Basics](./spring-transactional-basics.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 
-retrieval-anchor-keywords: spring template class beginner, spring template 클래스 입문, spring template 큰 그림, 스프링 템플릿 클래스 뭐예요, 스프링 template 언제 쓰는지, 처음 배우는데 JdbcTemplate 뭐예요, 처음 배우는데 RestTemplate 뭐예요, TransactionTemplate 언제 쓰는지, template callback pattern, template method pattern spring, 반복 코드 감싸기, 준비 정리 예외처리 공통화, jdbc template beginner, resttemplate beginner, transactiontemplate beginner, 기초 spring template 비교
+retrieval-anchor-keywords: spring template class beginner, spring template 클래스 입문, spring template 큰 그림, 스프링 템플릿 클래스 뭐예요, 스프링 template 언제 쓰는지, 처음 배우는데 jdbctemplate 뭐예요, 처음 배우는데 resttemplate 뭐예요, transactiontemplate 언제 쓰는지, template callback pattern, template method pattern spring, 반복 코드 감싸기, 준비 정리 예외처리 공통화, jdbc template beginner, resttemplate beginner, transactiontemplate beginner
 
 ## 처음 배우는데 헷갈릴 때: 큰 그림 30초
 

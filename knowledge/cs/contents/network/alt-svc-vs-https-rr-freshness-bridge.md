@@ -1,8 +1,17 @@
 # Alt-Svc vs HTTPS RR Freshness Bridge
 
+
+> 한 줄 요약: Alt-Svc vs HTTPS RR Freshness Bridge는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > DNS의 `HTTPS` RR TTL과 HTTP 응답의 `Alt-Svc` `ma`가 서로 다른 시간축으로 움직일 수 있다는 점을, "`첫 방문`은 DNS 힌트, `반복 방문`은 브라우저 메모 후보"라는 감각으로 이어 주는 beginner bridge
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
@@ -13,7 +22,7 @@
 > - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 > - [DNS TTL Cache Failure Patterns](./dns-ttl-cache-failure-patterns.md)
 
-retrieval-anchor-keywords: Alt-Svc vs HTTPS RR freshness, HTTPS RR TTL vs Alt-Svc ma, H3 first visit repeat visit freshness, DNS hint lifetime vs HTTP hint lifetime, Alt-Svc ma disagreement, HTTPS RR cache lifetime, first visit H3 repeat visit H3, stale Alt-Svc fresh DNS, fresh Alt-Svc stale DNS, H3 selection time axis, DNS H3 hint TTL, Alt-Svc max age H3, first visit DNS repeat visit Alt-Svc, HTTPS RR lifetime bridge, H3 discovery freshness bridge, browser H3 warm repeat visit, first request h3 repeat request h3, DNS TTL vs Alt-Svc ma beginner
+retrieval-anchor-keywords: alt-svc vs https rr freshness, https rr ttl vs alt-svc ma, h3 first visit repeat visit freshness, dns hint lifetime vs http hint lifetime, alt-svc ma disagreement, https rr cache lifetime, first visit h3 repeat visit h3, stale alt-svc fresh dns, fresh alt-svc stale dns, h3 selection time axis, dns h3 hint ttl, alt-svc max age h3, first visit dns repeat visit alt-svc, dns ttl vs alt-svc ma beginner, alt svc vs https rr freshness bridge basics
 
 <details>
 <summary>Table of Contents</summary>

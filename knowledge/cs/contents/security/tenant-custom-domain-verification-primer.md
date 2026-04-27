@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Password Reset, Magic Link, Public Origin Guide](./password-reset-magic-link-public-origin-guide.md)
 > - [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
@@ -13,7 +20,7 @@
 > - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 > - [Customer-Facing Support Access Notifications](./customer-facing-support-access-notifications.md)
 
-retrieval-anchor-keywords: tenant custom domain verification, custom domain auth email, tenant redirect domain safety, verified custom domain mapping, domain ownership proof, tenant domain TXT verification, tenant domain CNAME verification, multi-tenant custom domain beginner, auth email custom domain selection, magic link tenant domain, password reset tenant domain, redirect domain allowlist, domain takeover prevention, stale verified domain, pending domain verification, verified domain status, tenant public origin mapping, custom domain onboarding auth, tenant-specific public origin, verified callback domain, domain registry auth flow
+retrieval-anchor-keywords: tenant custom domain verification, custom domain auth email, tenant redirect domain safety, verified custom domain mapping, domain ownership proof, tenant domain txt verification, tenant domain cname verification, multi-tenant custom domain beginner, auth email custom domain selection, magic link tenant domain, password reset tenant domain, redirect domain allowlist, domain takeover prevention, stale verified domain, tenant custom domain verification primer basics
 
 ## 먼저 잡는 mental model
 

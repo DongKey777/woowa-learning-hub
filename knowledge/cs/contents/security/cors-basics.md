@@ -15,7 +15,7 @@
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 
-retrieval-anchor-keywords: cors 기초, cors가 뭐예요, cross origin 오류, cors 에러 브라우저, preflight란 무엇인가, access-control-allow-origin, same origin policy beginner, cors allow headers, cors 해결 방법, beginner cors, credentials include cookie not sent, Access-Control-Allow-Credentials beginner, fetch credentials vs cors, security readme cors primer, security beginner route, security primer next step, return to security README, request cookie missing vs response blocked by cors, cookie header empty cors error, request sent but response blocked cors, actual request cookie missing, cors response blocked beginner, OPTIONS-only actual request, options only vs actual request, actual request가 있는가, OPTIONS-only인가 actual request가 있는가, options 401 actual request 없음, preflight 먼저 actual request 나중, fetch로 호출했더니 cors 에러
+retrieval-anchor-keywords: cors 기초, cors가 뭐예요, cross origin 오류, cors 에러 브라우저, preflight란 무엇인가, access-control-allow-origin, same origin policy beginner, cors allow headers, cors 해결 방법, beginner cors, credentials include cookie not sent, access-control-allow-credentials beginner, fetch credentials vs cors, security readme cors primer, security beginner route
 
 ## 이 문서 다음에 보면 좋은 문서
 

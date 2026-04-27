@@ -13,7 +13,9 @@
 - [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
 - [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md)
 
-retrieval-anchor-keywords: postgresql exact key precheck contrast, same explain not same lock behavior, explain confidence postgresql vs mysql, postgresql exact key no gap lock, postgres exact key pre check beginner, mysql next key vs postgres row lock, exact key explain portability, exact key probe portability card, why postgres explain is not mysql gap lock, postgresql unique probe no next key, empty result exact key postgres, exact key pre-check contrast card, explain good but no queue postgres, same explain different locking engine, postgresql absence check exact key, postgresql no mysql style next key
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: postgresql exact key precheck contrast, same explain not same lock behavior, explain confidence postgresql vs mysql, postgresql exact key no gap lock, postgres exact key pre check beginner, mysql next key vs postgres row lock, exact key explain portability, exact key probe portability card, why postgres explain is not mysql gap lock, postgresql unique probe no next key, empty result exact key postgres, exact key pre-check contrast card, explain good but no queue postgres, same explain different locking engine, postgresql absence check exact key
 
 ## 먼저 잡을 그림
 

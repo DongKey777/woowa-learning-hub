@@ -1,7 +1,18 @@
 # API 설계와 예외 처리 🟡 Intermediate
 
+
+> 한 줄 요약: API 설계와 예외 처리 🟡 Intermediate는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: api design error handling basics, api design error handling beginner, api design error handling intro, software engineering basics, beginner software engineering, 처음 배우는데 api design error handling, api design error handling 입문, api design error handling 기초, what is api design error handling, how to api design error handling
 > 좋은 API는 호출자가 소스코드를 읽지 않아도 실패 이유를 알 수 있는 API다.
 
 > 관련 문서:
@@ -101,6 +112,8 @@ public class OrderService {
 글로벌 핸들러 → 예상치 못한 예외를 안전한 응답으로 변환
 ```
 
+## 깊이 들어가기 (계속 2)
+
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -148,6 +161,8 @@ public class GlobalExceptionHandler {
 | Service/Domain | 업무 규칙을 만족하는가? | 이미 탈퇴한 회원인지, 중복 신청인지, 재고가 충분한지 | `409 Conflict`, `422`, `404` 등 |
 
 ### 자주 섞이는 판단 3개: before / after
+
+## 깊이 들어가기 (계속 3)
 
 아래 3개는 초심자가 "이것도 `@Valid`로 하면 되나?" 하고 가장 자주 헷갈리는 예시다.
 
@@ -197,6 +212,8 @@ public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest request) {
 | 형식 검증 | `quantity`가 1 이상인가? | Controller DTO |
 | 업무 규칙 검증 | 지금 창고 재고로 주문 가능한가? | Service/Domain |
 
+## 깊이 들어가기 (계속 4)
+
 ```java
 // before: 재고 규칙까지 웹 계층이 직접 판단
 @PostMapping("/orders")
@@ -236,6 +253,8 @@ public ResponseEntity<Void> create(@Valid @RequestBody OrderRequest request) {
 |---|---|---|
 | 형식 검증 | `reservationAt`가 ISO 날짜시간 형식인가? | Controller DTO |
 | 업무 규칙 검증 | 지금 시점 기준으로 이미 지난 시간인가? | Service/Domain |
+
+## 깊이 들어가기 (계속 5)
 
 ```java
 // before: 현재 시간 비교 규칙을 Controller가 직접 가짐
@@ -287,6 +306,8 @@ public record SignUpRequest(
     String nickname
 ) {}
 ```
+
+## 깊이 들어가기 (계속 6)
 
 ```java
 @RestController
@@ -341,6 +362,8 @@ public class DuplicateEmailException extends BusinessException {
 }
 ```
 
+## 깊이 들어가기 (계속 7)
+
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -381,6 +404,8 @@ public class GlobalExceptionHandler {
 - `errors[]`는 "어느 필드가 왜 실패했는지"를 한 칸씩 펼쳐 보여준다.
 
 즉, `400` 응답은 **한 문장 요약 + 필드별 상세 목록**으로 읽으면 된다.
+
+## 깊이 들어가기 (계속 8)
 
 ```json
 {
@@ -450,6 +475,8 @@ mockMvc.perform(post("/members")
 
 ### 흔한 혼동: `400` 한 건인데 왜 에러가 여러 개인가
 
+## 깊이 들어가기 (계속 9)
+
 - HTTP 상태 코드는 요청 전체 결과가 실패했다는 뜻이라서 `400` 하나만 내려간다.
 - 하지만 실패 원인은 여러 필드에 동시에 있을 수 있어서 `errors[]`는 여러 개일 수 있다.
 - 그래서 "응답 하나 안에 필드 에러 여러 개"는 이상한 게 아니라, 사용자가 한 번에 수정할 정보를 모아 주는 형태다.
@@ -496,6 +523,8 @@ POST /members
   - 아니다. 빈 문자열, 길이, 숫자 범위처럼 **HTTP 요청만 보고 바로 걸러낼 수 있는 형식 오류**는 Controller DTO에서 먼저 막는 편이 응답도 단순하고 테스트도 쉽다.
 
 ### 도메인 예외 vs 인프라 예외
+
+## 깊이 들어가기 (계속 10)
 
 | 구분 | 도메인 예외 | 인프라 예외 |
 |------|-----------|-----------|

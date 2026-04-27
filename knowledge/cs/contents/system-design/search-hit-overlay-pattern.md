@@ -2,7 +2,7 @@
 
 > 한 줄 요약: search index는 후보를 빨리 찾고, fresher row/detail store는 상위 hit의 몇 개 필드만 안전하게 덮어쓰는 식으로 합치면 모든 search read를 primary read로 바꾸지 않고도 stale 검색 결과를 줄일 수 있다.
 
-retrieval-anchor-keywords: search hit overlay pattern, stale search hit overlay, search stale row patch, stale search result patch, search freshness overlay, top k hydrate overlay, ranked ids then hydrate, search result hydration pattern, search result patching, search hit enrichment freshness, search detail consistency, search hit stale after update, search result older than detail, search index lag overlay, search ranking keep but fields refresh, primary read avoidance search, selective hydrate search results, top n overlay search, safe search overlay beginner, search row detail overlay, search hit version check, overlay only display fields, do not rerank from primary, ranking from index freshness from row store, search result patch after index lag
+retrieval-anchor-keywords: search hit overlay pattern, stale search hit overlay, search stale row patch, stale search result patch, search freshness overlay, top k hydrate overlay, ranked ids then hydrate, search result hydration pattern, search result patching, search hit enrichment freshness, search detail consistency, search hit stale after update, search result older than detail, safe search overlay beginner, search hit overlay pattern basics
 
 **난이도: 🟢 Beginner**
 

@@ -16,7 +16,9 @@
 - [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: causal watermark propagation sketches, causal token watermark propagation, required watermark propagation sketch, observed watermark propagation beginner, notification after read watermark carry, event driven read watermark carry, gateway app database watermark pseudo code, gateway app db causal token pseudo code, notification required watermark session context, event signal causal token app flow, successful causal read observed watermark, watermark handoff after notification click, beginner causal propagation code example, system-design-00088
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: causal watermark propagation sketches, causal token watermark propagation, required watermark propagation sketch, observed watermark propagation beginner, notification after read watermark carry, event driven read watermark carry, gateway app database watermark pseudo code, gateway app db causal token pseudo code, notification required watermark session context, event signal causal token app flow, successful causal read observed watermark, watermark handoff after notification click, beginner causal propagation code example, system-design-00088, causal watermark propagation sketches basics
 
 ---
 
@@ -146,6 +148,8 @@ function getOrderDetail(request):
 
 app이 하는 일은 두 가지다.
 
+## Sketch 1. notification click에서 상세 read 열기 (계속 2)
+
 - 들어온 `required_watermark`를 repository가 이해할 수 있는 read policy로 바꾼다
 - 성공 응답이 준 `observed_watermark`와 `version`으로 세션 기준선을 더 높인다
 
@@ -237,6 +241,8 @@ function read(userId, policy):
 
   return patchOrAccept(page, policy.minVersion)
 ```
+
+## Sketch 2. 성공한 상세 read 뒤 목록/검색으로 이어 주기 (계속 2)
 
 여기서는 `required_watermark`와 `min_version`이 같이 움직인다.
 

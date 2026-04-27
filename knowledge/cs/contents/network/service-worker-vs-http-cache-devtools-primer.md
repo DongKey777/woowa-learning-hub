@@ -13,7 +13,7 @@
 - [Browser DevTools 새로고침 분기표: normal reload, hard reload, `Disable cache`](./browser-devtools-reload-hard-reload-disable-cache-primer.md)
 - [CDN 기초](../system-design/cdn-basics.md)
 
-retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, from serviceworker, service worker vs memory cache, service worker vs disk cache, service worker vs 304, who served the body, devtools service worker triage, service worker cache 뭐예요, 처음 배우는 service worker cache
+retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, from serviceworker, service worker vs memory cache, service worker vs disk cache, service worker vs 304, who served the body, devtools service worker triage, service worker cache 뭐예요, 처음 배우는 service worker cache, service worker vs http cache devtools primer basics, service worker vs http cache devtools primer beginner
 
 <details>
 <summary>Table of Contents</summary>
@@ -239,6 +239,8 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 
 첫 판독:
 
+## 짧은 예시 (계속 2)
+
 - 둘 다 "같은 URL 재방문"이지만 질문이 다르다.
 - `from ServiceWorker`가 보인 순간에는 먼저 "이번 body를 Service Worker가 건넸나?"를 본다.
 - `304`가 보인 순간에는 먼저 "이번엔 서버 재검증까지 갔나?"를 본다.
@@ -293,6 +295,8 @@ Service Worker는 여러 선택을 할 수 있다.
 그래서 Application 탭에서 Cache Storage key를 봤다고 해서, 이번 Network row가 곧바로 그 entry를 썼다고 자동 확정되지는 않는다.
 
 ### `304`와 `from ServiceWorker`를 같은 줄에서 읽으면 질문이 섞인다
+
+## 자주 헷갈리는 포인트 (계속 2)
 
 `304`는 서버 재검증 결과이고, `from ServiceWorker`는 브라우저 앱 계층 개입 여부다.
 둘을 같은 bucket으로 묶으면 "누가 응답했는가"와 "서버에 다시 물어봤는가"를 동시에 놓친다.

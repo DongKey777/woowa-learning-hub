@@ -11,7 +11,7 @@
 - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http 무상태성, stateless http, http stateless 란, 상태 유지 방법, 로그인 상태 어떻게 유지해요, 쿠키 세션 왜 필요해요, http 요청 독립, stateless vs stateful, 상태없는 프로토콜, 세션 필요한 이유
+retrieval-anchor-keywords: http 무상태성, stateless http, http stateless 란, 상태 유지 방법, 로그인 상태 어떻게 유지해요, 쿠키 세션 왜 필요해요, http 요청 독립, stateless vs stateful, 상태없는 프로토콜, 세션 필요한 이유, http stateless state management basics basics, http stateless state management basics beginner, http stateless state management basics intro, network basics, beginner network
 
 ## 핵심 개념
 

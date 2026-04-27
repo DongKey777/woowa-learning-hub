@@ -15,7 +15,7 @@
 - [`Stream.toList()` vs `Collectors.toList()` Result Mutability Bridge](./stream-tolist-vs-collectors-tolist-mutability-bridge.md)
 - [`List.copyOf(...)` vs `stream.toList()` 읽기 전용 스냅샷 브리지](./list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md)
 
-retrieval-anchor-keywords: language-java-00115, collection update strategy primer, java collection update strategy beginner, in place mutation vs removeIf, copy and replace java collection, stream to new collection beginner, java mission refactor collection choice, woowacourse backend collection refactor, list update strategy primer, mutable state collection refactor, removeIf 언제 쓰나, in place mutation 언제 쓰나, copy and replace 언제 쓰나, stream toList 언제 쓰나, 자바 컬렉션 수정 전략, 자바 컬렉션 변경 방식 비교, 자바 removeIf 기초, 자바 복사 후 교체 기초, 자바 스트림 새 컬렉션 만들기, 미션 코드 컬렉션 리팩터링
+retrieval-anchor-keywords: language-java-00115, collection update strategy primer, java collection update strategy beginner, in place mutation vs removeif, copy and replace java collection, stream to new collection beginner, java mission refactor collection choice, woowacourse backend collection refactor, list update strategy primer, mutable state collection refactor, removeif 언제 쓰나, in place mutation 언제 쓰나, copy and replace 언제 쓰나, stream tolist 언제 쓰나, 자바 컬렉션 수정 전략
 
 ## 먼저 잡는 멘탈 모델
 

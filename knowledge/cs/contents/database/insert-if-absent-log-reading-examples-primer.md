@@ -14,7 +14,9 @@
 - [DB 입문 오류 신호 미니카드](./db-error-signal-beginner-result-language-mini-card.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: insert-if-absent log reading examples, duplicate timeout deadlock 40001 log primer, sqlstate log reading beginner, insert if absent first action, duplicate key timeout deadlock serialization logs, mysql 1062 1205 1213 log example, postgres 23505 55P03 40P01 40001 log example, beginner database log snippets, spring log sqlstate primer, junior log first action duplicate timeout deadlock, insert-if-absent 로그 읽기 예시, 중복 타임아웃 데드락 40001 로그, sqlstate 초급자 로그 해석, first action duplicate timeout deadlock 40001
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: insert-if-absent log reading examples, duplicate timeout deadlock 40001 log primer, sqlstate log reading beginner, insert if absent first action, duplicate key timeout deadlock serialization logs, mysql 1062 1205 1213 log example, postgres 23505 55p03 40p01 40001 log example, beginner database log snippets, spring log sqlstate primer, junior log first action duplicate timeout deadlock, insert-if-absent 로그 읽기 예시, 중복 타임아웃 데드락 40001 로그, sqlstate 초급자 로그 해석, first action duplicate timeout deadlock 40001, insert if absent log reading examples primer basics
 
 ## 먼저 잡을 멘탈모델
 
@@ -181,3 +183,7 @@ could not execute statement
 - `deadlock`과 `40001`을 보면 먼저 whole-transaction retry
 
 이 세 줄만 고정해도 `insert-if-absent` 로그를 읽을 때 "중복인데 왜 retry하지?", "`40001`이 왜 deadlock이 아니지?" 같은 흔한 혼동을 크게 줄일 수 있다.
+
+## 한 줄 정리
+
+`insert-if-absent` 장애 로그를 보면 초보자는 "원인 분석"보다 먼저 **첫 액션**을 고정하면 덜 흔들린다. `duplicate`는 winner 확인, `timeout`은 blocker 확인, `deadlock`과 `40001`은 새 트랜잭션 재시도부터 시작한다.

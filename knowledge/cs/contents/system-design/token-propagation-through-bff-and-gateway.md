@@ -16,7 +16,9 @@
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: token propagation through bff and gateway, causal token propagation, deep link header propagation causal token, gateway bff causal token, cache acceptance token survives hops, notification deep link token lost, gateway drops causal header, bff loses required watermark, internal hop freshness context, source read before cache acceptance, beginner causal token propagation, x causal token header, required watermark through gateway, deep link to source read propagation, system-design-00080
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: token propagation through bff and gateway, causal token propagation, deep link header propagation causal token, gateway bff causal token, cache acceptance token survives hops, notification deep link token lost, gateway drops causal header, bff loses required watermark, internal hop freshness context, source read before cache acceptance, beginner causal token propagation, x causal token header, required watermark through gateway, deep link to source read propagation, token propagation through bff and gateway basics
 
 ---
 
@@ -158,6 +160,8 @@ BFF는 browser/session 서버일 수 있고, 모바일용 aggregation 서버일 
 > 들어온 freshness contract를 downstream fan-out 전체에 다시 싣는다.
 
 예를 들어 주문 상세 화면을 만들기 위해 주문 서비스와 배송 서비스 두 곳을 부른다면, BFF는 둘 다에 같은 기준선을 전달해야 한다.
+
+## hop마다 무슨 일을 해야 하나 (계속 2)
 
 ```pseudo
 function bffGetOrderPage(request):

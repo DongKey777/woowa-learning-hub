@@ -18,7 +18,7 @@
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: duplicatekeyexception fresh read classifier, duplicate key winner row recheck, primary read after duplicate key, same key same hash replay, same key different hash 409 conflict, duplicate key processing status, duplicate key blind retry, duplicate key why not retry insert, duplicate key means someone already wrote, duplicate then not found, stale snapshot duplicate key, replica read after duplicate, duplicate 뒤 어떻게 함
+retrieval-anchor-keywords: duplicatekeyexception fresh read classifier, duplicate key winner row recheck, primary read after duplicate key, same key same hash replay, same key different hash 409 conflict, duplicate key processing status, duplicate key blind retry, duplicate key why not retry insert, duplicate key means someone already wrote, duplicate then not found, stale snapshot duplicate key, replica read after duplicate, duplicate 뒤 어떻게 함, duplicate key fresh read classifier mini card basics, duplicate key fresh read classifier mini card beginner
 
 이 카드를 "`duplicate 뒤 무엇을 읽는가`" 관점에서 더 넓게 보면 [UNIQUE Claim + Existing-Row Reuse Primer](./unique-claim-existing-row-reuse-primer.md)가 바로 이어진다.
 

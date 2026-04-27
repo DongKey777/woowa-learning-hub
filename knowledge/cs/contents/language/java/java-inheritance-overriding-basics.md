@@ -19,7 +19,7 @@
 - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
 - [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
 
-retrieval-anchor-keywords: java inheritance basics, java overriding basics, java dynamic dispatch basics, inheritance next read order beginner, 상속 기초, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 언제 쓰는지, 상속 다음 추상 클래스 인터페이스, inheritance to design pattern beginner route, design pattern beginner route, 처음 배우는데 상속 다음 디자인 패턴 어디부터, 상속 다음 조합 패턴 기초
+retrieval-anchor-keywords: java inheritance basics, java overriding basics, java dynamic dispatch basics, inheritance next read order beginner, 상속 기초, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 언제 쓰는지, 상속 다음 추상 클래스 인터페이스, inheritance to design pattern beginner route, design pattern beginner route, 처음 배우는데 상속 다음 디자인 패턴 어디부터, 상속 다음 조합 패턴 기초, java inheritance overriding basics basics, java inheritance overriding basics beginner, java inheritance overriding basics intro
 
 <details>
 <summary>Table of Contents</summary>

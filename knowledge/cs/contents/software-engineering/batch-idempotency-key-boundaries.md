@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: batch idempotency key boundaries basics, batch idempotency key boundaries beginner, batch idempotency key boundaries intro, software engineering basics, beginner software engineering, 처음 배우는데 batch idempotency key boundaries, batch idempotency key boundaries 입문, batch idempotency key boundaries 기초, what is batch idempotency key boundaries, how to batch idempotency key boundaries
 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)에서 retry queue, chunk summary, checkpoint를 봤다면, 이 문서는 그다음 질문인 "재시도할 때 어떤 idempotency key를 써야 하는가"만 좁혀서 본다.
 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint` 같은 결과 이름은 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)를 같이 보면 된다.
 이 key 경계를 operator의 rerun 판단과 runbook 절차로 연결해 보고 싶다면 [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)를 이어서 보면 된다.
@@ -183,3 +192,7 @@ batch idempotency key를 고를 때는 먼저 key 이름을 짓지 말고 질문
 
 retry-safe batch recovery는 세 질문을 같은 저장소나 같은 타입으로 구현하라는 뜻이 아니다.
 세 질문을 **서로 다른 경계로 설명할 수 있어야 한다**는 뜻이다.
+
+## 한 줄 정리
+
+retry-safe batch recovery는 "한 item의 중복", "한 chunk의 중복", "한 run의 중복"을 같은 key 하나로 뭉치지 않고 서로 다른 idempotency 경계로 나눌 때 안전해진다.

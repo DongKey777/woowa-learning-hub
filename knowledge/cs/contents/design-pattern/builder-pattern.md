@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [빌더 패턴 기초 (Builder Pattern Basics)](./builder-pattern-basics.md)
@@ -14,7 +21,7 @@
 > - [템플릿 메소드 (Template Method)](./template-method.md)
 > - [안티 패턴](./anti-pattern.md)
 
-retrieval-anchor-keywords: builder pattern, step by step object construction, builder vs constructor, builder vs factory, builder vs setter, immutable object builder, build method validation, when to use builder, beginner builder pattern, fluent builder mutation smell, lombok builder confusion, builder pattern mental model, builder 선택 기준, builder decision checklist, build 검증 예시, builder required field validation, constructor parameter order confusion
+retrieval-anchor-keywords: builder pattern, step by step object construction, builder vs constructor, builder vs factory, builder vs setter, immutable object builder, build method validation, when to use builder, beginner builder pattern, fluent builder mutation smell, lombok builder confusion, builder pattern mental model, builder 선택 기준, builder decision checklist, builder pattern basics
 
 ---
 
@@ -123,6 +130,8 @@ public Order build() {
 ### 4. Lombok `@Builder`
 
 Lombok은 보일러플레이트를 줄여준다.
+
+## 깊이 들어가기 (계속 2)
 
 ```java
 @Builder

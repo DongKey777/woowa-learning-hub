@@ -14,7 +14,7 @@
 - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 - [Idempotency Keys and Safe HTTP Retries](../language/java/httpclient-idempotency-keys-safe-http-retries.md)
 
-retrieval-anchor-keywords: 421 non idempotent retry, 421 POST retry, 421 free replay 아님, 421 side effect request, 421 misdirected request idempotency, 421 retry guardrail, 421 unsafe replay, 421 post duplicate order, 421 payment retry, 421 idempotency key, 421 beginner primer, wrong connection retry vs business retry, 421 should not replay POST, 421 멱등성, 421 재시도 가드레일
+retrieval-anchor-keywords: 421 non idempotent retry, 421 post retry, 421 free replay 아님, 421 side effect request, 421 misdirected request idempotency, 421 retry guardrail, 421 unsafe replay, 421 post duplicate order, 421 payment retry, 421 idempotency key, 421 beginner primer, wrong connection retry vs business retry, 421 should not replay post, 421 멱등성, http 421 non idempotent retry guardrail primer basics
 
 <details>
 <summary>Table of Contents</summary>

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java package import boundary basics basics, java package import boundary basics beginner, java package import boundary basics intro, java basics, beginner java, 처음 배우는데 java package import boundary basics, java package import boundary basics 입문, java package import boundary basics 기초, what is java package import boundary basics, how to java package import boundary basics
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -300,6 +309,8 @@ public class Main {
 ```
 
 이 예시에서 초보자가 봐야 할 핵심은 다음이다.
+
+## 코드로 한 번에 보기 (계속 2)
 
 - `Order`, `OrderService`는 다른 package에서 써야 하므로 `public`이다.
 - `OrderValidator`는 `com.example.order` 내부 구현이라 package-private이다.

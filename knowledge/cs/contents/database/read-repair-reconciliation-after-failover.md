@@ -4,12 +4,19 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md), [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
-retrieval-anchor-keywords: read repair, reconciliation, failover recovery, divergence scan, version check, visibility window, commit horizon
+retrieval-anchor-keywords: read repair, reconciliation, failover recovery, divergence scan, version check, visibility window, commit horizon, read repair reconciliation after failover basics, read repair reconciliation after failover beginner, read repair reconciliation after failover intro, database basics, beginner database, 처음 배우는데 read repair reconciliation after failover, read repair reconciliation after failover 입문, read repair reconciliation after failover 기초
 
 ## 핵심 개념
 
-Read repair는 읽을 때 divergence를 발견하고 바로잡는 패턴이다.  
+Read repair는 읽을 때 divergence를 발견하고 바로잡는 패턴이다.
 Failover reconciliation은 failover 이후 이미 생긴 불일치를 배치나 검사로 정리하는 작업이다.
 
 왜 중요한가:
@@ -65,12 +72,12 @@ failover 직후에는 한 번의 read repair로는 부족할 수 있다.
 
 ### 시나리오 1: failover 후 검색 결과와 DB 상태가 다름
 
-DB는 정상인데 검색 인덱스가 옛 상태면, 사용자는 데이터가 사라진 것으로 느낀다.  
+DB는 정상인데 검색 인덱스가 옛 상태면, 사용자는 데이터가 사라진 것으로 느낀다.
 이때 reconciliation job으로 search index를 다시 맞춰야 한다.
 
 ### 시나리오 2: 캐시가 오래된 주문 상태를 품고 있음
 
-failover 전 읽은 캐시가 살아있으면, 새 primary와 다른 상태를 보여준다.  
+failover 전 읽은 캐시가 살아있으면, 새 primary와 다른 상태를 보여준다.
 read repair가 필요하다.
 
 ### 시나리오 3: 일부 레코드만 옛 primary에 남아 있음

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java comparable comparator basics basics, java comparable comparator basics beginner, java comparable comparator basics intro, java basics, beginner java, 처음 배우는데 java comparable comparator basics, java comparable comparator basics 입문, java comparable comparator basics 기초, what is java comparable comparator basics, how to java comparable comparator basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -280,6 +289,8 @@ System.out.println(Comparator.comparing(Student::name).compare(a, b)); // 0
 
 `BigDecimal`은 대표적인 예외 사례다.
 
+## Comparator 일관성 체크 카드 (계속 2)
+
 ```java
 System.out.println(new BigDecimal("1.0").compareTo(new BigDecimal("1.00")) == 0); // true
 System.out.println(new BigDecimal("1.0").equals(new BigDecimal("1.00"))); // false
@@ -339,7 +350,9 @@ public class ComparableComparatorExample {
         System.out.println(fixed.size()); // 2
     }
 
-    private record Student(long id, String name, int grade, int score) {}
+## 코드로 한 번에 보기 (계속 2)
+
+private record Student(long id, String name, int grade, int score) {}
 
     private record Version(int major, int minor) implements Comparable<Version> {
         @Override
@@ -383,6 +396,9 @@ public class ComparableComparatorExample {
 - "`TreeSet`/`TreeMap`에서 이름만 같은데 하나가 사라진 것처럼 보인다"면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - "정렬된 컬렉션에 넣은 뒤 필드를 바꿨더니 조회와 순서가 이상해졌다"면 [Mutable Fields Inside Sorted Collections](./treeset-treemap-mutable-comparator-fields-primer.md)
 - "`HashSet`과 `TreeSet` 결과 차이를 성능 감각까지 같이 묶어 보고 싶다"면 [Java Collections 성능 감각](./collections-performance.md)
+
+## 어떤 문서를 다음에 읽으면 좋은가 (계속 2)
+
 - "`BigDecimal`은 숫자가 같은데 왜 `equals()`와 `compareTo()`가 다르게 나오지?" 싶다면 [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 - "`equals`, `hashCode`, `Comparable` 계약을 좀 더 엄밀하게 확인하고 싶다"면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 

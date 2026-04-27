@@ -10,7 +10,7 @@
 - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: circuit breaker basics, 서킷 브레이커 입문, circuit breaker 뭐예요, open half-open closed 상태, 연쇄 장애 방지, cascading failure 기초, 장애 격리 패턴, fallback 기초, 외부 서비스 장애 처리, beginner circuit breaker, resilience4j 기초, fail fast pattern, 복구 대기 패턴
+retrieval-anchor-keywords: circuit breaker basics, 서킷 브레이커 입문, circuit breaker 뭐예요, open half-open closed 상태, 연쇄 장애 방지, cascading failure 기초, 장애 격리 패턴, fallback 기초, 외부 서비스 장애 처리, beginner circuit breaker, resilience4j 기초, fail fast pattern, 복구 대기 패턴, circuit breaker basics basics, circuit breaker basics beginner
 
 ---
 

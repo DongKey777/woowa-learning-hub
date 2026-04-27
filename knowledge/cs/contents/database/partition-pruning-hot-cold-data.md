@@ -1,7 +1,18 @@
 # Partition Pruning and Hot/Cold Data
 
+
+> 한 줄 요약: Partition Pruning and Hot/Cold Data는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
+
+retrieval-anchor-keywords: partition pruning hot cold data basics, partition pruning hot cold data beginner, partition pruning hot cold data intro, database basics, beginner database, 처음 배우는데 partition pruning hot cold data, partition pruning hot cold data 입문, partition pruning hot cold data 기초, what is partition pruning hot cold data, how to partition pruning hot cold data
 > 파티셔닝은 데이터를 나누는 기술이고, partition pruning은 그중 읽을 것만 골라내는 최적화다. hot/cold 데이터를 같이 다루면 체감 효과가 커진다.
 
 > 관련 문서: [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md), [인덱스와 실행 계획](./index-and-explain.md)

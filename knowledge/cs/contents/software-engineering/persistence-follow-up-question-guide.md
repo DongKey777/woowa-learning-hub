@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: persistence follow up question guide basics, persistence follow up question guide beginner, persistence follow up question guide intro, software engineering basics, beginner software engineering, 처음 배우는데 persistence follow up question guide, persistence follow up question guide 입문, persistence follow up question guide 기초, what is persistence follow up question guide, how to persistence follow up question guide
 <details>
 <summary>Table of Contents</summary>
 
@@ -75,6 +84,8 @@
 이 한 질문에 대한 답만 고르면 다음 문서가 정해진다.
 
 ### 빠른 보조 표
+
+## 한 질문씩 내려가는 결정표 (계속 2)
 
 | 지금 눈에 먼저 들어오는 신호 | 먼저 읽을 문서 | 바로 이어 읽을 문서 |
 |---|---|---|
@@ -155,3 +166,7 @@ public class OrderService {
 - 읽기 분리가 막히면 `DAO vs Query Model`
 - 매핑이 막히면 `Mapping Checklist`
 - ORM 누수가 보이면 `Leakage Anti-Patterns`
+
+## 한 줄 정리
+
+처음 영속성 문서를 읽다가 막히면 용어를 더 외우기보다, "지금 막힌 질문이 저장 계약인지, 이름 냄새인지, 읽기 분리인지, JPA 매핑인지, ORM 누수인지"를 먼저 골라 다음 문서를 정하면 훨씬 빠르다.

@@ -12,7 +12,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [AOP와 프록시 메커니즘](../spring/aop-proxy-mechanism.md)
 
-retrieval-anchor-keywords: decorator pattern basics, proxy pattern basics, 데코레이터 패턴, 프록시 패턴, decorator vs proxy beginner, wrapper pattern, 기능 추가 래퍼, 접근 제어 대리자, spring aop proxy, 데코레이터가 뭔가요, 프록시가 뭔가요, decorator proxy difference, beginner wrapper patterns, 로깅 데코레이터, 데코레이터 프록시 10초, 데코레이터 프록시 30초 비교표, 데코레이터 프록시 1분 예시, decorator proxy quick check, wrapper quick check beginner, 데코레이터 프록시 자주 헷갈리는 포인트, decorator proxy confusion points, decorator proxy micro check, wrapper confusion micro check, 데코레이터 프록시 미니 점검, wrapper pattern confusion beginner
+retrieval-anchor-keywords: decorator pattern basics, proxy pattern basics, 데코레이터 패턴, 프록시 패턴, decorator vs proxy beginner, wrapper pattern, 기능 추가 래퍼, 접근 제어 대리자, spring aop proxy, 데코레이터가 뭔가요, 프록시가 뭔가요, decorator proxy difference, beginner wrapper patterns, 로깅 데코레이터, 데코레이터 프록시 10초
 
 ---
 

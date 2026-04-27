@@ -219,6 +219,7 @@ class CompletionGateTest(unittest.TestCase):
                 [
                     "python",
                     "scripts/lint_cs_authoring.py",
+                    "--strict",
                     "--quiet",
                     "knowledge/cs/contents/database/transaction-basics.md",
                 ]

@@ -6,6 +6,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
 > - [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)
@@ -20,7 +27,7 @@
 > - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old, role revoked but old authorities remain, old authorities remain stale, stale authorities after role change, stale authority propagation, permission revoke propagation, role grant propagation, authz freshness propagation, jwt session cache revoke timeline, stale allow after revoke, stale deny after grant, session claim stale after permission change, refresh after role change, re-login after permission change, authz version revoke, claim snapshot stale, security symptom shortcut, session tail beginner route, grant freshness handoff, category return path
+retrieval-anchor-keywords: claim freshness after permission changes, permission change propagation, role change jwt session cache revocation, permission changed but jwt still old, role revoked but old authorities remain, old authorities remain stale, stale authorities after role change, stale authority propagation, permission revoke propagation, role grant propagation, authz freshness propagation, jwt session cache revoke timeline, stale allow after revoke, session tail beginner route, claim freshness after permission changes basics
 
 ## 빠른 복귀 링크
 
@@ -138,6 +145,8 @@ decision cache가 `subject + action`만 key로 쓰고 `authz_version`을 안 보
 
 role 회수, user disable, logout-all, refresh family revoke 같은 이벤트는 revoke plane을 탄다.
 여기서 자주 생기는 오해는 이것이다.
+
+## 왜 JWT, session, cache, revocation을 따로 봐야 하나 (계속 2)
 
 - revoke API가 성공했다
 - 그러니 old authority는 끝났다

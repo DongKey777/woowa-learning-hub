@@ -16,7 +16,7 @@
 - [Java Binary Compatibility and Runtime Linkage Errors](./java-binary-compatibility-linkage-errors.md)
 - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) - "부모가 흐름을 고정하고 자식이 일부 단계만 채운다" 축을 바로 이어서 보는 follow-up primer
 
-retrieval-anchor-keywords: interface default method primer, interface contract vs evolution, interface abstract method vs default method, default method when to use, default method keeps old implementations working, template method vs default method beginner, 부모가 흐름을 쥔다 vs 계약을 진화시킨다, 부모 흐름 고정 vs 인터페이스 계약 진화, 인터페이스 default method 기초, 인터페이스 계약 vs 진화, default method와 추상 메서드 차이, default method와 추상 클래스 차이, 처음 배우는데 default method 큰 그림, default method는 왜 생겼나요
+retrieval-anchor-keywords: interface default method primer, interface contract vs evolution, interface abstract method vs default method, default method when to use, default method keeps old implementations working, template method vs default method beginner, 부모가 흐름을 쥔다 vs 계약을 진화시킨다, 부모 흐름 고정 vs 인터페이스 계약 진화, 인터페이스 default method 기초, 인터페이스 계약 vs 진화, default method와 추상 메서드 차이, default method와 추상 클래스 차이, 처음 배우는데 default method 큰 그림, default method는 왜 생겼나요, interface default method contract evolution primer basics
 
 <details>
 <summary>Table of Contents</summary>

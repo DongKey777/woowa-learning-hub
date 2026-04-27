@@ -15,7 +15,9 @@
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 
-retrieval-anchor-keywords: unexpectedrollbackexception mini debugging card, rollback-only checklist, transaction marked rollback-only checklist, catch 했는데 마지막에 터짐, swallow exception transaction, catch and continue transactional, rollback only detection beginner, unexpectedrollbackexception beginner, rollback-only signal card, commit 시점에 터짐 why, audit save then unexpectedrollbackexception, same transaction continue after failure, rollback-only vs checked exception, checked exception commit surprise 비교
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: unexpectedrollbackexception mini debugging card, rollback-only checklist, transaction marked rollback-only checklist, catch 했는데 마지막에 터짐, swallow exception transaction, catch and continue transactional, rollback only detection beginner, unexpectedrollbackexception beginner, rollback-only signal card, commit 시점에 터짐 why, audit save then unexpectedrollbackexception, same transaction continue after failure, rollback-only vs checked exception, checked exception commit surprise 비교, spring unexpectedrollbackexception mini debugging card basics
 
 ## 먼저 mental model 한 줄
 

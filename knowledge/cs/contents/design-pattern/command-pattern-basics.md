@@ -13,7 +13,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [Spring AOP 기초](../spring/spring-aop-basics.md)
 
-retrieval-anchor-keywords: command pattern basics, 커맨드 패턴 기초, 커맨드 패턴이 뭔가요, command pattern beginner, 요청을 객체로, undo redo pattern, 실행 취소 패턴, 작업 큐 패턴, invoker receiver command, 커맨드 패턴 예시, beginner command pattern, 요청 캡슐화, command quick check, command beginner quick check, 커맨드 패턴 10초, 커맨드 패턴 30초 비교표, 커맨드 패턴 1분 예시, 커맨드 자주 헷갈리는 포인트, command confusion points beginner, observer vs command, 옵저버 vs 커맨드, request vs notification, command micro check beginner, 커맨드 미니 오해 점검, 커맨드 3문항 점검, command vs strategy quick check, command vs direct call quick check, command vs strategy beginner, execute method command strategy difference, 실행 요청 저장 vs 알고리즘 교체
+retrieval-anchor-keywords: command pattern basics, 커맨드 패턴 기초, 커맨드 패턴이 뭔가요, command pattern beginner, 요청을 객체로, undo redo pattern, 실행 취소 패턴, 작업 큐 패턴, invoker receiver command, 커맨드 패턴 예시, beginner command pattern, 요청 캡슐화, command quick check, command beginner quick check, 커맨드 패턴 10초
 
 ---
 

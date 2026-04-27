@@ -2,7 +2,7 @@
 
 > 한 줄 요약: notification badge는 요약 숫자라 조금 stale할 수 있어도, inbox row는 사용자가 이미 본 row version 아래로 내려가면 안 되고, 그 row를 눌러 들어간 source 상세는 row가 전제로 한 원인을 이어서 보여 줘야 한다.
 
-retrieval-anchor-keywords: notification inbox row monotonicity primer, notification inbox row monotonicity, inbox row version floor, notification row version floor, notification row min-version floor, notification row min version floor, notification inbox monotonic reads, badge summary row detail bridge, badge summary row source detail, notification badge inbox row source detail, notification unread count row regression, clicked notification source detail monotonicity, notification row causal token bridge, notification row floor after click, notification row stale after detail, inbox row stale after click, notification list row regression, notification row patch overlay suppress, row summary badge detail consistency, system-design-00074
+retrieval-anchor-keywords: notification inbox row monotonicity primer, notification inbox row monotonicity, inbox row version floor, notification row version floor, notification row min-version floor, notification row min version floor, notification inbox monotonic reads, badge summary row detail bridge, badge summary row source detail, notification badge inbox row source detail, notification unread count row regression, clicked notification source detail monotonicity, notification row causal token bridge, notification inbox row monotonicity primer basics, notification inbox row monotonicity primer beginner
 
 **난이도: 🟢 Beginner**
 
@@ -15,6 +15,8 @@ retrieval-anchor-keywords: notification inbox row monotonicity primer, notificat
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 
@@ -201,6 +203,8 @@ GET /orders/123
 ```
 
 즉 clicked source detail은 두 질문을 함께 본다.
+
+## badge, row, detail을 한 흐름으로 이어 보기 (계속 2)
 
 | 질문 | 왜 필요한가 |
 |---|---|

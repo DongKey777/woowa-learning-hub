@@ -13,7 +13,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: java string basics, string 불변성 입문, string equals beginner, string vs stringbuilder, 문자열 비교 방법, java string 입문, string 왜 equals 써야 하나요, string pool beginner, 자바 문자열 기초, string concatenation beginner, stringbuilder 언제 써야 하나, string immutable beginner
+retrieval-anchor-keywords: java string basics, string 불변성 입문, string equals beginner, string vs stringbuilder, 문자열 비교 방법, java string 입문, string 왜 equals 써야 하나요, string pool beginner, 자바 문자열 기초, string concatenation beginner, stringbuilder 언제 써야 하나, string immutable beginner, java string basics basics, java string basics beginner, java string basics intro
 
 ## 핵심 개념
 
@@ -22,6 +22,12 @@ Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(
 입문자가 가장 자주 저지르는 실수 두 가지가 있다. 첫째, `==`로 문자열 내용을 비교하는 것. 둘째, 반복문 안에서 `+`로 문자열을 이어 붙이는 것. 두 실수 모두 결과가 잘못되거나 성능이 나빠진다.
 
 ## 한눈에 보기
+
+- `java string basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
+- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
+- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+
+## 코드로 보는 예시
 
 ```
 String a = "hello";

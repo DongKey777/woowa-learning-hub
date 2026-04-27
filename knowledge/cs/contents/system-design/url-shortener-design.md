@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
+
+retrieval-anchor-keywords: url shortener design basics, url shortener design beginner, url shortener design intro, system design basics, beginner system design, 처음 배우는데 url shortener design, url shortener design 입문, url shortener design 기초, what is url shortener design, how to url shortener design
 ---
 
 ## 핵심 개념
@@ -128,6 +137,8 @@ GET /spring
 1. 리다이렉트는 바로 응답한다.
 2. 클릭 이벤트는 비동기 큐로 보낸다.
 3. 소비자가 집계 테이블을 갱신한다.
+
+## 깊이 들어가기 (계속 2)
 
 이 구조는 [outbox/inbox와 이벤트 기반 설계](../software-engineering/outbox-inbox-domain-events.md)와도 연결된다.
 
@@ -276,6 +287,8 @@ public class UrlShortenService {
 ```
 
 ### 코드 3: 리다이렉트 경로의 기본 형태
+
+## 코드로 보기 (계속 2)
 
 ```java
 @RestController

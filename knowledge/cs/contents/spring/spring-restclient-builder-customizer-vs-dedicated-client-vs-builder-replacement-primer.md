@@ -12,7 +12,7 @@
 - [Spring RestClient vs WebClient Lifecycle Boundaries](./spring-restclient-vs-webclient-lifecycle-boundaries.md)
 - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 
-retrieval-anchor-keywords: restclient beginner primer, resttemplate to restclient, resttemplate migration first step, restclient 뭐예요, 처음 배우는데 restclient, restclient 언제 쓰는지, restclient builder customizer, 언제 커스터마이징하는지, 전용 restclient bean 언제 만들어요, restclient builder 교체, 동기 http client 큰 그림, builder vs template
+retrieval-anchor-keywords: restclient beginner primer, resttemplate to restclient, resttemplate migration first step, restclient 뭐예요, 처음 배우는데 restclient, restclient 언제 쓰는지, restclient builder customizer, 언제 커스터마이징하는지, 전용 restclient bean 언제 만들어요, restclient builder 교체, 동기 http client 큰 그림, builder vs template, spring restclient builder customizer vs dedicated client vs builder replacement primer basics, spring restclient builder customizer vs dedicated client vs builder replacement primer beginner, spring restclient builder customizer vs dedicated client vs builder replacement primer intro
 
 ## resttemplate에서 restclient로 옮기려면 먼저
 

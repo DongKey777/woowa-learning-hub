@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [힙 기초](../data-structure/heap-basics.md)
 
-retrieval-anchor-keywords: 그리디 입문, 그리디 알고리즘 기초, greedy beginner, greedy algorithm basics, 탐욕 알고리즘 입문, 매 단계 최선 선택, greedy 언제 쓰나요, greedy vs dp 입문, 거스름돈 그리디, 동전 문제 그리디, 탐욕 선택이 뭐예요, 그리디 함정 입문, beginner greedy choice
+retrieval-anchor-keywords: 그리디 입문, 그리디 알고리즘 기초, greedy beginner, greedy algorithm basics, 탐욕 알고리즘 입문, 매 단계 최선 선택, greedy 언제 쓰나요, greedy vs dp 입문, 거스름돈 그리디, 동전 문제 그리디, 탐욕 선택이 뭐예요, 그리디 함정 입문, beginner greedy choice, greedy intro basics, greedy intro beginner
 
 ## 핵심 개념
 

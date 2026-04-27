@@ -4,8 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [Replication Failover and Split Brain](./replication-failover-split-brain.md), [Replica Lag and Read-after-write Strategies](./replica-lag-read-after-write-strategies.md), [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md), [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md), [Commit Horizon After Failover, Loss Boundaries, and Verification](./commit-horizon-after-failover-verification.md)
-retrieval-anchor-keywords: promotion, read divergence, stale primary, write fencing, topology cache, visibility window, topology invalidation, commit horizon, post promotion stale read, failover freshness split, old primary still serving reads, some pods old some new, stale endpoint after promotion, dns ttl failover stale read, topology cache stale after promotion, promotion visibility lag
+retrieval-anchor-keywords: promotion, read divergence, stale primary, write fencing, topology cache, visibility window, topology invalidation, commit horizon, post promotion stale read, failover freshness split, old primary still serving reads, some pods old some new, stale endpoint after promotion, failover promotion read divergence basics, failover promotion read divergence beginner
 
 ## 빠른 증상 라우팅
 
@@ -18,7 +25,7 @@ retrieval-anchor-keywords: promotion, read divergence, stale primary, write fenc
 
 ## 핵심 개념
 
-Failover promotion은 replica를 새 primary로 승격하는 과정이다.  
+Failover promotion은 replica를 새 primary로 승격하는 과정이다.
 그런데 승격 자체보다 더 자주 깨지는 것은, 승격 전후에 생기는 **읽기 경로의 분기**다.
 
 왜 중요한가:
@@ -33,7 +40,7 @@ Failover promotion은 replica를 새 primary로 승격하는 과정이다.
 
 ### 1. promotion 직후 왜 read divergence가 생기는가
 
-승격이 완료되면 새 primary는 쓰기를 받기 시작한다.  
+승격이 완료되면 새 primary는 쓰기를 받기 시작한다.
 하지만 애플리케이션과 캐시는 즉시 바뀌지 않을 수 있다.
 
 - 커넥션 풀은 옛 topology를 잠시 유지한다
@@ -45,7 +52,7 @@ Failover promotion은 replica를 새 primary로 승격하는 과정이다.
 
 ### 2. stale primary가 더 위험한 경우
 
-옛 primary가 read-only로 잘 잠겼다면 그나마 낫다.  
+옛 primary가 read-only로 잘 잠겼다면 그나마 낫다.
 하지만 read-only 전환이 늦으면 문제가 더 복잡해진다.
 
 - 옛 primary가 최신 쓰기를 보지 못한 채 읽힌다
@@ -62,11 +69,11 @@ Failover promotion은 replica를 새 primary로 승격하는 과정이다.
 - replica 목록
 - read/write endpoint 매핑
 
-failover 후 이 캐시가 늦게 갱신되면, 앱은 이미 전환된 줄 알고 옛 서버를 계속 읽는다.  
+failover 후 이 캐시가 늦게 갱신되면, 앱은 이미 전환된 줄 알고 옛 서버를 계속 읽는다.
 그래서 장애 대응에서는 DB 전환과 함께 앱 캐시 무효화가 필요하다.
 
-lag metric이 낮다고 안심하면 안 되는 이유도 여기에 있다.  
-promotion 이후에는 replica apply delay가 아니라 **topology cache stale** 때문에 read divergence가 길어질 수 있다.  
+lag metric이 낮다고 안심하면 안 되는 이유도 여기에 있다.
+promotion 이후에는 replica apply delay가 아니라 **topology cache stale** 때문에 read divergence가 길어질 수 있다.
 이런 경우 운영 액션은 [Replica Lag Observability와 Routing SLO](./replica-lag-observability-routing-slo.md)보다 [Failover Visibility Window, Topology Cache, and Freshness Playbook](./failover-visibility-window-topology-cache-playbook.md)에 더 가깝다.
 
 ### 4. 읽기 다이버전스를 줄이는 방법
@@ -82,17 +89,17 @@ promotion 이후에는 replica apply delay가 아니라 **topology cache stale**
 
 ### 시나리오 1: 새 primary 승격 후 관리자 화면이 서로 다른 값을 보여줌
 
-승격은 끝났지만 일부 앱은 옛 replica 목록을 사용한다.  
+승격은 끝났지만 일부 앱은 옛 replica 목록을 사용한다.
 관리자는 목록과 상세에서 다른 상태를 보고 혼란을 겪는다.
 
 ### 시나리오 2: read-only 전환이 늦은 옛 primary
 
-옛 primary가 잠깐이라도 읽기 경로에 남아 있으면, 사용자는 “데이터가 두 갈래로 갈라졌다”고 느낀다.  
+옛 primary가 잠깐이라도 읽기 경로에 남아 있으면, 사용자는 “데이터가 두 갈래로 갈라졌다”고 느낀다.
 이때는 fencing과 라우팅 동시 전환이 필요하다.
 
 ### 시나리오 3: DNS TTL이 길어 failover가 늦게 반영됨
 
-새 endpoint로 바뀌었는데도 클라이언트가 옛 IP를 계속 바라보면, 승격 이후에도 read divergence가 지속된다.  
+새 endpoint로 바뀌었는데도 클라이언트가 옛 IP를 계속 바라보면, 승격 이후에도 read divergence가 지속된다.
 이건 DB 문제가 아니라 트래픽 전환 문제다.
 
 ## 코드로 보기

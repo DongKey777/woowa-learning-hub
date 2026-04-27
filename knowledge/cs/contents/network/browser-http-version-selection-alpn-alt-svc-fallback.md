@@ -360,6 +360,8 @@ QUIC 경로가 열리면 handshake 안에서 다시 protocol id를 맞춘다.
 
 핵심은 이 한 줄이다.
 
+## 자주 보는 타임라인 (계속 2)
+
 - `Alt-Svc`는 보통 `첫 요청` 응답에서 배우고, `다음 새 연결(재요청)`에서 영향이 보인다.
 
 ---
@@ -423,6 +425,8 @@ QUIC 경로가 열리면 handshake 안에서 다시 protocol id를 맞춘다.
 
 - 아직 QUIC/UDP 경로를 못 써서 H3가 fallback됐을 수 있다
 - 브라우저가 보수적으로 계속 H2를 선택했을 수 있다
+
+## DevTools first-visit 3단계 체크리스트 (계속 2)
 
 이 경우 lifecycle 쪽 confusion이면 [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md), 관측 절차 자체가 더 필요하면 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)로 이어서 보면 된다.
 

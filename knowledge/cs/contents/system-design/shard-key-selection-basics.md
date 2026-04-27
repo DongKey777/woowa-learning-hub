@@ -2,7 +2,7 @@
 
 > 한 줄 요약: partition key와 shard key는 "무슨 엔티티 이름을 고를까"가 아니라, 어떤 읽기/쓰기 경로를 함께 묶고 시간이 지나도 얼마나 고르게 퍼질지를 정하는 설계 선택이다.
 
-retrieval-anchor-keywords: shard key selection basics, partition key basics, choosing shard key, choosing partition key, hot partition detection, hot shard early warning, tenant_id sharding pitfall, user_id sharding pitfall, access pattern first, key skew, scatter gather basics, resharding cost, beginner sharding
+retrieval-anchor-keywords: shard key selection basics, partition key basics, choosing shard key, choosing partition key, hot partition detection, hot shard early warning, tenant_id sharding pitfall, user_id sharding pitfall, access pattern first, key skew, scatter gather basics, resharding cost, beginner sharding, shard key selection basics basics, shard key selection basics beginner
 
 **난이도: 🟢 Beginner**
 
@@ -168,7 +168,7 @@ function evaluateKey(candidate):
        and require(escape)
 ```
 
-이 pseudo code의 핵심은 "가장 유명한 ID"를 고르는 것이 아니라,  
+이 pseudo code의 핵심은 "가장 유명한 ID"를 고르는 것이 아니라,
 `locality`, `skew`, `escape hatch`를 같이 본다는 점이다.
 
 ## 트레이드오프

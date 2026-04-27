@@ -2,7 +2,7 @@
 
 > 한 줄 요약: read-after-write consistency는 "방금 쓴 값을 바로 다시 읽을 수 있는가"의 문제이며, replica lag, primary fallback, session stickiness, strong read consistency가 어떤 제품 흐름에 필요한지 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: read-after-write consistency basics, read-after-write 뭐예요, replica lag basics, primary fallback, session stickiness, recent-write pinning, strong read consistency basics, stale read after write, write then read stale, order status freshness, payment confirmation consistency, beginner consistency, 방금 쓴 값 안 보여요, how to read after write
+retrieval-anchor-keywords: read-after-write consistency basics, read-after-write 뭐예요, replica lag basics, primary fallback, session stickiness, recent-write pinning, strong read consistency basics, stale read after write, write then read stale, order status freshness, payment confirmation consistency, beginner consistency, 방금 쓴 값 안 보여요, how to read after write, read after write consistency basics basics
 
 **난이도: 🟢 Beginner**
 
@@ -187,26 +187,26 @@ function read(key, session, endpoint):
 
 짧게 답하면 이렇게 정리할 수 있다.
 
-> read-after-write consistency는 사용자가 방금 쓴 값을 바로 다시 읽을 수 있게 하는 문제입니다.  
-> read replica를 쓰면 replica lag 때문에 이 보장이 깨질 수 있어서, 실무에서는 모든 읽기를 강하게 만들기보다 최신성이 중요한 흐름만 primary fallback이나 recent-write session stickiness로 보호합니다.  
+> read-after-write consistency는 사용자가 방금 쓴 값을 바로 다시 읽을 수 있게 하는 문제입니다.
+> read replica를 쓰면 replica lag 때문에 이 보장이 깨질 수 있어서, 실무에서는 모든 읽기를 강하게 만들기보다 최신성이 중요한 흐름만 primary fallback이나 recent-write session stickiness로 보호합니다.
 > 특히 결제, 재고, 권한처럼 틀렸을 때 비용이 큰 경로는 strong read consistency가 더 중요하고, 검색이나 피드처럼 약간 stale해도 되는 경로는 replica나 cache를 유지하는 식으로 나눕니다.
 
 ## 꼬리질문
 
-> Q: read-after-write consistency와 strong consistency는 같은 말인가요?  
-> 의도: session-level 보장과 global 보장의 차이 이해 확인  
+> Q: read-after-write consistency와 strong consistency는 같은 말인가요?
+> 의도: session-level 보장과 global 보장의 차이 이해 확인
 > 핵심: read-after-write는 주로 "내가 방금 쓴 값을 내가 다시 읽는가"에 가깝고, strong consistency는 더 넓은 읽기 보장이다.
 
-> Q: session stickiness와 sticky session은 왜 다르죠?  
-> 의도: routing affinity의 대상 구분 확인  
+> Q: session stickiness와 sticky session은 왜 다르죠?
+> 의도: routing affinity의 대상 구분 확인
 > 핵심: 전자는 DB freshness를 위한 recent-write pinning이고, 후자는 app 인스턴스 메모리 세션 유지를 위한 load balancer 정책이다.
 
-> Q: 모든 write 뒤에 primary fallback을 두면 안전하지 않나요?  
-> 의도: selective consistency 감각 확인  
+> Q: 모든 write 뒤에 primary fallback을 두면 안전하지 않나요?
+> 의도: selective consistency 감각 확인
 > 핵심: 안전성은 높아지지만 primary 부하가 커져 read scaling 이점을 잃을 수 있다.
 
-> Q: 어떤 제품 흐름부터 strong read를 검토해야 하나요?  
-> 의도: 도메인별 위험도 분류 확인  
+> Q: 어떤 제품 흐름부터 strong read를 검토해야 하나요?
+> 의도: 도메인별 위험도 분류 확인
 > 핵심: 금전, 재고, 권한, 중복 실행 위험처럼 stale이 실제 사고로 이어지는 흐름부터 본다.
 
 ## 한 줄 정리

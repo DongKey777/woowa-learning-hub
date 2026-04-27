@@ -17,7 +17,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring boot autoconfiguration basics, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, auto-configuration 입문, @springbootapplication 역할 입문, @enableautoconfiguration beginner, spring boot starter 뭐예요, 자동 빈 등록 입문, conditional bean 입문, spring.factories 입문, spring boot 설정 안 해도 되는 이유, classpath condition beginner, boot customizer beginner, objectmapper customizer beginner, webclient builder customizer beginner, customizer vs replace bean, proxyBeanMethods 30초 결정표, proxyBeanMethods self-call 금지, @Configuration proxyBeanMethods false self-call 금지, auto-configuration parameter injection pattern, conditionevaluationreport beginner, --debug first check, spring boot bean missing debug, auto-configuration checklist beginner
+retrieval-anchor-keywords: spring boot autoconfiguration basics, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, auto-configuration 입문, @springbootapplication 역할 입문, @enableautoconfiguration beginner, spring boot starter 뭐예요, 자동 빈 등록 입문, conditional bean 입문, spring.factories 입문, spring boot 설정 안 해도 되는 이유, classpath condition beginner, boot customizer beginner, objectmapper customizer beginner, webclient builder customizer beginner
 
 ## 핵심 개념
 
@@ -132,6 +132,8 @@ public class JacksonConfig {
 ```
 
 이 방식은 Boot가 조립하는 기본 `ObjectMapper` 생성 흐름을 유지한 채 필요한 옵션만 추가한다. 반대로 `ObjectMapper` 자체를 `@Bean`으로 등록하면 자동 구성의 기본 bean은 `@ConditionalOnMissingBean` 때문에 물러설 수 있다.
+
+## 실무에서 쓰는 모습 (계속 2)
 
 즉 초보자 기준으로는 이렇게 기억하면 된다.
 

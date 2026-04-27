@@ -13,7 +13,7 @@
 - [Map 수정 중 순회 안전 가이드](./map-remove-during-iteration-safety-primer.md)
 - [Mutable Element Pitfalls in List and Set](./mutable-element-pitfalls-list-set-primer.md)
 
-retrieval-anchor-keywords: set remove during iteration, set iterator remove, set removeif beginner, set foreach remove bug, concurrentmodificationexception set beginner, hashset remove while iterating, treeset remove while iterating, java set 순회 중 삭제, 자바 set removeif 기초, 자바 set iterator remove, 자바 foreach set remove 실수, set 수정 중 순회 안전
+retrieval-anchor-keywords: set remove during iteration, set iterator remove, set removeif beginner, set foreach remove bug, concurrentmodificationexception set beginner, hashset remove while iterating, treeset remove while iterating, java set 순회 중 삭제, 자바 set removeif 기초, 자바 set iterator remove, 자바 foreach set remove 실수, set 수정 중 순회 안전, set remove during iteration safety primer basics, set remove during iteration safety primer beginner, set remove during iteration safety primer intro
 
 ## 먼저 잡는 멘탈 모델
 

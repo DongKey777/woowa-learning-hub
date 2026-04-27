@@ -14,7 +14,7 @@
 - [design-pattern 카테고리 인덱스](../design-pattern/README.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: oop design basics, 객체지향 설계 입문, 캡슐화 기초, 상속 기초, 다형성 기초, 추상화 기초, 객체지향 4원칙, 책임과 역할, 객체 협력 기초, encapsulation beginner, polymorphism beginner, 객체지향 뭐예요, beginner oop, 메시지 기반 협력, 객체지향 큰 그림, OOP 큰 그림, 처음 배우는데 객체지향 설계, 객체지향 설계 기초 큰 그림, 객체지향 설계 언제 쓰는지, 객체지향 큰 그림 다음 상속 언제 쓰는지, 상속 언제 쓰는지 다음 추상 클래스 인터페이스, 기초 OOP 설계
+retrieval-anchor-keywords: oop design basics, 객체지향 설계 입문, 캡슐화 기초, 상속 기초, 다형성 기초, 추상화 기초, 객체지향 4원칙, 책임과 역할, 객체 협력 기초, encapsulation beginner, polymorphism beginner, 객체지향 뭐예요, beginner oop, 메시지 기반 협력, 객체지향 큰 그림
 
 ## 핵심 개념
 

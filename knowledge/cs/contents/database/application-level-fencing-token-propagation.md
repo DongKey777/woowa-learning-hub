@@ -4,12 +4,19 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+
 관련 문서: [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md), [Ghost Reads와 Mixed Routing Write Fence Tokens](./ghost-reads-mixed-routing-write-fence-tokens.md), [Stale Lease Renewal Failure와 Fencing](./stale-lease-renewal-failure-fencing.md)
-retrieval-anchor-keywords: fencing token propagation, epoch propagation, write guard, stale writer, token forwarding
+retrieval-anchor-keywords: fencing token propagation, epoch propagation, write guard, stale writer, token forwarding, application level fencing token propagation basics, application level fencing token propagation beginner, application level fencing token propagation intro, database basics, beginner database, 처음 배우는데 application level fencing token propagation, application level fencing token propagation 입문, application level fencing token propagation 기초, what is application level fencing token propagation, how to application level fencing token propagation
 
 ## 핵심 개념
 
-Fencing token은 누가 최신 주체인지 나타내는 단조 증가 값이다.  
+Fencing token은 누가 최신 주체인지 나타내는 단조 증가 값이다.
 하지만 토큰을 발급만 하고 애플리케이션 경로에 전달하지 않으면 stale write를 막지 못한다.
 
 왜 중요한가:
@@ -43,7 +50,7 @@ Fencing token은 누가 최신 주체인지 나타내는 단조 증가 값이다
 
 ### 3. 재시도와 토큰
 
-재시도는 같은 토큰을 유지해야 할 수도 있고, 새로운 epoch로 승격해야 할 수도 있다.  
+재시도는 같은 토큰을 유지해야 할 수도 있고, 새로운 epoch로 승격해야 할 수도 있다.
 핵심은 “재시도 = 무조건 같은 값”이 아니라, **재시도 중에도 stale인지 판단할 수 있어야 한다**는 것이다.
 
 ### 4. 감사 로그와 토큰
@@ -57,7 +64,7 @@ Fencing token은 누가 최신 주체인지 나타내는 단조 증가 값이다
 
 ### 시나리오 1: 서비스 간 호출에서 토큰이 빠짐
 
-상위 서비스는 새 epoch를 받았지만 하위 서비스는 옛 토큰으로 write한다.  
+상위 서비스는 새 epoch를 받았지만 하위 서비스는 옛 토큰으로 write한다.
 이 경우 stale write가 막히지 않는다.
 
 ### 시나리오 2: 메시지 재처리 시 옛 토큰이 재사용됨
@@ -89,7 +96,7 @@ WHERE id = 1
   AND fencing_token < 42;
 ```
 
-토큰은 “있다”보다 “전파된다”가 중요하다.  
+토큰은 “있다”보다 “전파된다”가 중요하다.
 어디 한 군데라도 빠지면 stale write 방어가 무너진다.
 
 ## 트레이드오프

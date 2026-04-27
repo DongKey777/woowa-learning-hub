@@ -13,7 +13,9 @@
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: cache hit miss session policy bridge, recent-write min-version cache bridge, recent write min version hit miss refill, cache hit accept miss fallback refill write-back, session policy through cache, session hint survives cache hit, session hint survives cache miss, cache refill session policy, beginner cache freshness bridge, recent-write cache accept rule, min-version cache accept rule, recent-write primary fallback, min-version replica fallback, cache hit reject recent write, cache hit reject min version, cache refill no-fill beginner, session policy hint envelope cache, system-design-00089
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: cache hit miss session policy bridge, recent-write min-version cache bridge, recent write min version hit miss refill, cache hit accept miss fallback refill write-back, session policy through cache, session hint survives cache hit, session hint survives cache miss, cache refill session policy, beginner cache freshness bridge, recent-write cache accept rule, min-version cache accept rule, recent-write primary fallback, min-version replica fallback, cache hit reject recent write, cache refill no-fill beginner
 
 ---
 

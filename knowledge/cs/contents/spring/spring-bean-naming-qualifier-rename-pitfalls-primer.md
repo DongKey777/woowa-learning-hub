@@ -14,7 +14,7 @@
 - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 - [Bean Name vs Domain Key Lookup](../design-pattern/bean-name-vs-domain-key-lookup.md)
 
-retrieval-anchor-keywords: spring bean naming, bean rename pitfall, default bean name, bean alias, qualifier string rename, router vs qualifier confusion, resource vs qualifier, name driven injection, type driven injection, kotlin bean rename, nosuchbeandefinitionexception, 처음 배우는데 bean 이름이 왜 바뀌어요, qualifier 문자열이 왜 깨져요
+retrieval-anchor-keywords: spring bean naming, bean rename pitfall, default bean name, bean alias, qualifier string rename, router vs qualifier confusion, resource vs qualifier, name driven injection, type driven injection, kotlin bean rename, nosuchbeandefinitionexception, 처음 배우는데 bean 이름이 왜 바뀌어요, qualifier 문자열이 왜 깨져요, spring bean naming qualifier rename pitfalls primer basics, spring bean naming qualifier rename pitfalls primer beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -371,6 +371,8 @@ public class BillingService {
 그래서 parameter rename만 해도 해석 결과가 달라질 수 있다.
 
 beginner 기준으로는 아래만 기억하면 된다.
+
+## 5. rename 때 실제로 어디서 깨지는가 (계속 2)
 
 - 문자열 `@Qualifier`만 rename 함정이 아니다
 - **기본 bean 이름 + 파라미터명 일치**도 숨어 있는 이름 계약이 될 수 있다

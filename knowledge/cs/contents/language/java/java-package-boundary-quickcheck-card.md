@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java package boundary quickcheck card basics, java package boundary quickcheck card beginner, java package boundary quickcheck card intro, java basics, beginner java, 처음 배우는데 java package boundary quickcheck card, java package boundary quickcheck card 입문, java package boundary quickcheck card 기초, what is java package boundary quickcheck card, how to java package boundary quickcheck card
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)

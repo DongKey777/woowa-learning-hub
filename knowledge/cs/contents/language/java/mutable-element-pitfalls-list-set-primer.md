@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: mutable element pitfalls list set primer basics, mutable element pitfalls list set primer beginner, mutable element pitfalls list set primer intro, java basics, beginner java, 처음 배우는데 mutable element pitfalls list set primer, mutable element pitfalls list set primer 입문, mutable element pitfalls list set primer 기초, what is mutable element pitfalls list set primer, how to mutable element pitfalls list set primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)

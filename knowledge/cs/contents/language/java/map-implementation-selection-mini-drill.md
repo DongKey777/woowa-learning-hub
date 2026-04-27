@@ -12,7 +12,7 @@
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java map implementation practice, java ordered map choice beginner, hashmap linkedhashmap treemap difference drill, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, 처음 배우는데 map 구현체 선택, beginner map choice worksheet
+retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java map implementation practice, java ordered map choice beginner, hashmap linkedhashmap treemap difference drill, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, map implementation selection mini drill basics, map implementation selection mini drill beginner, map implementation selection mini drill intro, java basics
 
 ## 먼저 잡는 멘탈 모델
 

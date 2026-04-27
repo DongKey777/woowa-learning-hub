@@ -19,7 +19,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [팩토리 패턴 기초](../design-pattern/factory-basics.md)
 
-retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, dependency injection basics, component scan basics, spring proxy intuition, constructor injection, qualifier annotation basics, primary annotation basics, collection injection, objectprovider basics, springbootapplication basics, 스프링 빈 처음, beginner spring bean, intro spring di
+retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, dependency injection basics, component scan basics, spring proxy intuition, constructor injection, qualifier annotation basics, primary annotation basics, collection injection, objectprovider basics, springbootapplication basics, 스프링 빈 처음, beginner spring bean, intro spring di, spring bean di basics basics
 
 ---
 

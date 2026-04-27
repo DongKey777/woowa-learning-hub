@@ -22,7 +22,7 @@
 - [Page Table Overhead, Memory Footprint](./page-table-overhead-memory-footprint.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: process vs thread, syscall vs context switch, rss vs vsz, virtual memory basics, stack vs heap, context switch basics, scheduler basics, address space basics, run queue basics, page fault basics, process state transition basics, running ready blocked example, os fundamentals self check, 운영체제 기초 자가 점검
+retrieval-anchor-keywords: process vs thread, syscall vs context switch, rss vs vsz, virtual memory basics, stack vs heap, context switch basics, scheduler basics, address space basics, run queue basics, page fault basics, process state transition basics, running ready blocked example, os fundamentals self check, 운영체제 기초 자가 점검, process thread virtual memory context switch scheduler basics basics
 
 ## Self-check Primer Handoff
 

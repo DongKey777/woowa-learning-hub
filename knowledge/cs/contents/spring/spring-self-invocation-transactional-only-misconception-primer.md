@@ -14,7 +14,7 @@
 - [JDBC / JPA / MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: self invocation primer, transactional only misconception, transactional만 문제 오해, self invocation 공통 오해, proxy bypass beginner, internal call proxy bypass, this method transactional async cacheable, transactional async cacheable 공통 규칙, self invocation 1페이지 카드, why transactional not applied beginner, why async not async self invocation, 프록시 안 지나면 annotation 안 먹음
+retrieval-anchor-keywords: self invocation primer, transactional only misconception, transactional만 문제 오해, self invocation 공통 오해, proxy bypass beginner, internal call proxy bypass, this method transactional async cacheable, transactional async cacheable 공통 규칙, self invocation 1페이지 카드, why transactional not applied beginner, why async not async self invocation, 프록시 안 지나면 annotation 안 먹음, spring self invocation transactional only misconception primer basics, spring self invocation transactional only misconception primer beginner, spring self invocation transactional only misconception primer intro
 
 ## 먼저 mental model 한 줄
 

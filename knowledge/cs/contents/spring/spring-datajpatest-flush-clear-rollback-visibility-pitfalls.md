@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기](./spring-persistence-transaction-web-service-repository-primer.md)
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
@@ -12,7 +19,7 @@
 > - [Spring Transactional Test Rollback Misconceptions](./spring-transactional-test-rollback-misconceptions.md)
 > - [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
 
-retrieval-anchor-keywords: DataJpaTest beginner, DataJpaTest mental model bridge, DataJpaTest flush clear rollback, save and find illusion, persistence context test trap, TestEntityManager beginner, repository test DB visibility, transactional test rollback beginner, DataJpaTest stale state, bulk update clear test, junior JPA test primer, flush commit difference test, rollback test vs commit path, commit visible behavior test, DataJpaTest enough when, SpringBootTest commit verification beginner, after commit test beginner
+retrieval-anchor-keywords: datajpatest beginner, datajpatest mental model bridge, datajpatest flush clear rollback, save and find illusion, persistence context test trap, testentitymanager beginner, repository test db visibility, transactional test rollback beginner, datajpatest stale state, bulk update clear test, junior jpa test primer, flush commit difference test, rollback test vs commit path, commit visible behavior test, datajpatest enough when
 
 ## 먼저 mental model 한 줄
 

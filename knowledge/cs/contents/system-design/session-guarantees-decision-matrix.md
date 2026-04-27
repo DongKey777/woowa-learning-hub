@@ -20,7 +20,7 @@
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [Design Pattern: Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
 
-retrieval-anchor-keywords: session guarantees decision matrix, session guarantee policy bundle, session policy implementation sketches, gateway app db session hints, list-detail-search monotonicity, list detail monotonicity bridge, list detail search min-version floor, read-after-write monotonic reads writes-follow-reads monotonic writes, writes-follow-reads beginner, monotonic writes beginner, monotonic writes ordering primer, session write sequence primer, idempotency key vs sequence number, monotonic writes vs version check, product flow consistency matrix, checkout session consistency, profile edit session guarantee, cart checkout monotonic writes, edit form if-match writes-follow-reads, per-session write ordering, per-session consistency policy, beginner session consistency, read your writes monotonic writes decision
+retrieval-anchor-keywords: session guarantees decision matrix, session guarantee policy bundle, session policy implementation sketches, gateway app db session hints, list-detail-search monotonicity, list detail monotonicity bridge, list detail search min-version floor, read-after-write monotonic reads writes-follow-reads monotonic writes, writes-follow-reads beginner, monotonic writes beginner, monotonic writes ordering primer, session write sequence primer, idempotency key vs sequence number, monotonic writes vs version check, product flow consistency matrix
 
 ---
 

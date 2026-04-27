@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [연결 리스트 기초](../data-structure/linked-list-basics.md)
 
-retrieval-anchor-keywords: 두 포인터 입문, two pointer beginner, 투 포인터 기초, 배열 두 인덱스, 합이 k인 두 수, 정렬된 배열 탐색 입문, left right pointer, 포인터 좁히기, sliding window vs two pointer 차이, 연속 구간 아닌 두 원소, 투포인터 언제 써요, beginner two pointer algorithm, 중복 없는 쌍 찾기
+retrieval-anchor-keywords: 두 포인터 입문, two pointer beginner, 투 포인터 기초, 배열 두 인덱스, 합이 k인 두 수, 정렬된 배열 탐색 입문, left right pointer, 포인터 좁히기, sliding window vs two pointer 차이, 연속 구간 아닌 두 원소, 투포인터 언제 써요, beginner two pointer algorithm, 중복 없는 쌍 찾기, two pointer intro basics, two pointer intro beginner
 
 ## 핵심 개념
 

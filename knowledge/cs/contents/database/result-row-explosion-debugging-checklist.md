@@ -13,6 +13,8 @@
 - [조인 테이블과 복합 키 기초](./join-table-composite-key-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 retrieval-anchor-keywords: result row explosion, duplicated rows after join, join duplicates checklist, sql duplicate rows debugging, join cardinality debugging, group by intent checklist, uniqueness assumption broken, one-to-many join duplicate, many-to-many row explosion, why join returns duplicates, sql row count suddenly increased, beginner join debugging, duplicate rows after left join, row multiplication after join, join result too many rows
 
 ## 핵심 개념

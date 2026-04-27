@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
+
 > 관련 문서:
 > - `[category]` [Network README](./README.md#network-네트워크)
 > - `[primer]` [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
@@ -17,7 +24,7 @@
 > - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
 > - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
 
-retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow, Set-Cookie to Cookie, browser cookie storage rules, browser automatic cookie sending, session cookie vs persistent cookie, cookie domain path secure samesite, HttpOnly Secure SameSite basics, SameSite HttpOnly Secure matrix, cookie attribute matrix, Domain Path cookie scope, host-only cookie, JSESSIONID browser flow, hidden JSESSIONID route, login request response auth primer, login redirect primer, 302 login flow, SavedRequest beginner bridge, JWT Authorization header, Bearer token browser flow, JWT in cookie, authorization bearer vs cookie, cookie-based auth primer, beginner auth bridge, why login state is kept, fetch credentials cookie, same-origin vs same-site, cross-origin cookie fetch, why cookie not sent on fetch, browser session primer route, browser session primer ladder, primer bridge next step, browser session deep dive handoff, stored cookie vs sent cookie header, cookie stored not sent, application cookie vs network cookie header, cookie scope mismatch handoff, cookie scope beginner guide
+retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow, set-cookie to cookie, browser cookie storage rules, browser automatic cookie sending, session cookie vs persistent cookie, cookie domain path secure samesite, httponly secure samesite basics, samesite httponly secure matrix, cookie attribute matrix, domain path cookie scope, host-only cookie, jsessionid browser flow, hidden jsessionid route, savedrequest beginner bridge
 
 <details>
 <summary>Table of Contents</summary>

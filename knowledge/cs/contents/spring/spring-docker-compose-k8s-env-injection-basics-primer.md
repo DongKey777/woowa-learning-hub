@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
@@ -16,7 +23,7 @@
 > - 공식 기준: [Docker Compose - Variable interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/)
 > - 공식 기준: [Kubernetes - Configure a Pod to Use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
 
-retrieval-anchor-keywords: spring docker compose kubernetes env injection basics, spring property key compose kubernetes bridge, spring env var naming vs platform injection, docker compose spring environment variables, kubernetes spring configmap env basics, APP_PAYMENT_BASEURL, app.payment.base-url, compose .env interpolation vs container environment, kubernetes env valueFrom configMapKeyRef, kubernetes envFrom configmap spring boot, spring beginner configuration primer, docker compose env_file spring boot, configmap key vs env var name, container process environment spring boot
+retrieval-anchor-keywords: spring docker compose kubernetes env injection basics, spring property key compose kubernetes bridge, spring env var naming vs platform injection, docker compose spring environment variables, kubernetes spring configmap env basics, app_payment_baseurl, app.payment.base-url, compose .env interpolation vs container environment, kubernetes env valuefrom configmapkeyref, kubernetes envfrom configmap spring boot, spring beginner configuration primer, docker compose env_file spring boot, configmap key vs env var name, container process environment spring boot, spring docker compose k8s env injection basics primer basics
 
 ## 핵심 개념
 
@@ -251,6 +258,8 @@ spec:
 
 즉 `envFrom`을 쓸 때는 ConfigMap key 자체를 Spring용 env var 이름으로 만들어 두는 편이 단순하다.
 
+## 4. Kubernetes에서는 `ConfigMap key`와 `env name`을 분리해서 봐야 한다 (계속 2)
+
 아래처럼 key를 `payment.base-url`로 두고 `envFrom`만 쓰면, 초보자는 "ConfigMap에 값이 있는데 왜 Spring이 못 읽지?"라는 혼란을 겪기 쉽다. Kubernetes 공식 문서도 `envFrom`에서는 ConfigMap key가 Pod 안 env var 이름이 되며, env var 이름으로 유효하지 않은 key는 skip되고 이벤트에 기록된다고 설명한다.
 
 그래서 Spring relaxed binding과 바로 맞추려면 `APP_PAYMENT_BASEURL`처럼 env-var-friendly key를 쓰는 쪽이 안전하다.
@@ -345,3 +354,7 @@ Pod의 `env`/`envFrom` wiring이 있어야 한다.
 - env var 이름 변환 규칙 자체가 헷갈리면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)로 간다.
 - env var가 맞게 들어왔는데도 최종 값이 다르면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property`](./spring-property-source-precedence-quick-guide.md)로 이어진다.
 - nested object/list/map이라서 env var 이름 만들기가 너무 불편하면 [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)으로 간다.
+
+## 한 줄 정리
+
+Spring 설정 문제가 보일 때는 먼저 **Spring이 기대하는 canonical property key**를 적고, 그다음 **플랫폼이 실제로 컨테이너 process environment에 어떤 env var를 넣었는지**를 분리해서 보면 된다.

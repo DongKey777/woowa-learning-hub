@@ -13,7 +13,7 @@
 - [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: fetch join vs entitygraph beginner, dto read mini card, fetch join entitygraph decision card, jpa dto read fetch plan, entitygraph 언제 쓰나, fetch join 언제 쓰나, dto 조회 연관 로딩, lazy loading dto fetch join entitygraph, spring jpa beginner fetch plan, repository entitygraph primer
+retrieval-anchor-keywords: fetch join vs entitygraph beginner, dto read mini card, fetch join entitygraph decision card, jpa dto read fetch plan, entitygraph 언제 쓰나, fetch join 언제 쓰나, dto 조회 연관 로딩, lazy loading dto fetch join entitygraph, spring jpa beginner fetch plan, repository entitygraph primer, spring fetch join vs entitygraph dto read mini card basics, spring fetch join vs entitygraph dto read mini card beginner, spring fetch join vs entitygraph dto read mini card intro, spring basics, beginner spring
 
 ## 먼저 mental model 한 줄
 

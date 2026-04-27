@@ -12,7 +12,7 @@
 - [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http 메서드 기초, rest api 기초, http method 뭐가 있나요, get post put delete 차이, 멱등성이 뭐예요, idempotent 뜻, safe method 뜻, rest 란, rest api 설계 입문, 리소스 기반 api, http method beginner, http to spring mvc beginner route, http method spring controller mapping entry
+retrieval-anchor-keywords: http 메서드 기초, rest api 기초, http method 뭐가 있나요, get post put delete 차이, 멱등성이 뭐예요, idempotent 뜻, safe method 뜻, rest 란, rest api 설계 입문, 리소스 기반 api, http method beginner, http to spring mvc beginner route, http method spring controller mapping entry, http methods rest idempotency basics basics, http methods rest idempotency basics beginner
 
 ## 핵심 개념
 

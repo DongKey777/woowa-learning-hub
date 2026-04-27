@@ -22,7 +22,7 @@
 - [Java Module System Runtime Boundaries](./java-module-system-runtime-boundaries.md)
 - [ClassLoader Delegation Edge Cases](./classloader-delegation-edge-cases.md)
 
-retrieval-anchor-keywords: abstract class interface deep dive, abstract class interface primer first, abstract class interface beginner route, abstract class interface basics first, abstract class interface when to use beginner, 처음 배우는데 추상 클래스 인터페이스 차이, 추상 클래스 인터페이스 큰 그림, 추상 클래스 인터페이스 기초 먼저, 추상 클래스 인터페이스 언제 쓰는지, 추상 클래스 인터페이스 입문 먼저, stateful base class, contract evolution, template method design boundary, composition before template method beginner route
+retrieval-anchor-keywords: abstract class interface deep dive, abstract class interface primer first, abstract class interface beginner route, abstract class interface basics first, abstract class interface when to use beginner, 처음 배우는데 추상 클래스 인터페이스 차이, 추상 클래스 인터페이스 큰 그림, 추상 클래스 인터페이스 기초 먼저, 추상 클래스 인터페이스 언제 쓰는지, 추상 클래스 인터페이스 입문 먼저, stateful base class, contract evolution, template method design boundary, composition before template method beginner route, abstract class vs interface basics
 
 <details>
 <summary>Table of Contents</summary>

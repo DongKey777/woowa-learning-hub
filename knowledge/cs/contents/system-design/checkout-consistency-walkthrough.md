@@ -2,7 +2,7 @@
 
 > 한 줄 요약: checkout에서는 `cart version check`, `idempotency key`, `read-after-write confirmation`이 각각 다른 사고를 막고, 셋을 한 흐름으로 이어야 "중복 결제도 없고 방금 주문도 바로 보이는" 경험을 만들 수 있다.
 
-retrieval-anchor-keywords: checkout consistency walkthrough, checkout consistency beginner, cart version check checkout, cart version mismatch checkout, idempotency key checkout, duplicate checkout retry, read after write order confirmation, checkout stale confirmation, order placed but not visible, cart version if-match checkout, expected version cart checkout, checkout duplicate submit, checkout timeout retry safe, checkout confirmation primary fallback, checkout consistency end to end, beginner checkout flow consistency, system-design-00084
+retrieval-anchor-keywords: checkout consistency walkthrough, checkout consistency beginner, cart version check checkout, cart version mismatch checkout, idempotency key checkout, duplicate checkout retry, read after write order confirmation, checkout stale confirmation, order placed but not visible, cart version if-match checkout, expected version cart checkout, checkout duplicate submit, checkout timeout retry safe, checkout confirmation primary fallback, beginner checkout flow consistency
 
 **난이도: 🟢 Beginner**
 
@@ -161,6 +161,8 @@ GET /orders/9001 -> stale replica read
 - 결제가 실패했나?
 - 버튼이 안 눌렸나?
 - 다시 결제해야 하나?
+
+## 단계별로 끊어 보기 (계속 2)
 
 그래서 checkout 직후 confirmation read는 일반 목록 조회보다 더 신선한 경로가 필요하다.
 

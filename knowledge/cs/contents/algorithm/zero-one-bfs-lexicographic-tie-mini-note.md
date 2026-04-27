@@ -13,7 +13,9 @@
 - [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 
-retrieval-anchor-keywords: 0-1 bfs lexicographic tie, zero one bfs lexicographic path, 0-1 bfs 사전순 경로, 0-1 bfs equal distance lexicographic, 0-1 bfs same distance lexicographic parent, 0-1 bfs parent tie break lexicographic, lexicographically smallest shortest path 0-1 bfs, shortest path lexicographic tie break, 0-1 bfs newDist == dist lexicographic, 0-1 bfs 동점 사전순, 0-1 bfs parent 비교, 0-1 bfs 작은 경로 선택, 0-1 bfs equal cost path order, 0-1 bfs tie break beginner, 0-1 bfs hand trace lexicographic, 0-1 bfs worked example lexicographic tie, 0-1 bfs where tie break fires, 0-1 bfs deque dist parent trace, 0-1 bfs parent table trace, immediate parent compare counterexample, 0-1 bfs parent number only wrong, 전체 경로 사전순 반례, 부모 번호만 비교 반례
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs lexicographic tie, zero one bfs lexicographic path, 0-1 bfs 사전순 경로, 0-1 bfs equal distance lexicographic, 0-1 bfs same distance lexicographic parent, 0-1 bfs parent tie break lexicographic, lexicographically smallest shortest path 0-1 bfs, shortest path lexicographic tie break, 0-1 bfs newdist == dist lexicographic, 0-1 bfs 동점 사전순, 0-1 bfs parent 비교, 0-1 bfs 작은 경로 선택, 0-1 bfs equal cost path order, 0-1 bfs tie break beginner, zero one bfs lexicographic tie mini note basics
 
 ## 먼저 감각부터
 
@@ -163,6 +165,8 @@ step 3이 이 문서의 핵심이다.
 
 그래서 실제 흐름은 이렇게 읽으면 된다.
 
+## tie 장면 한 페이지 손추적 표 (계속 2)
+
 ```text
 step 2:
     3을 먼저 처리해서 4를 처음 기록
@@ -293,3 +297,7 @@ elif newDist == dist[next]:
 - 같은 거리 후보를 왜 보통 재삽입하지 않는지 보려면 [0-1 BFS equal-distance reinsert mini note](./zero-one-bfs-equal-distance-reinsert-mini-note.md)
 - deque와 `dist`를 줄 단위로 손으로 따라가는 감각부터 잡으려면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 - `dist`, `parent`, `deque`의 기본 뼈대를 먼저 코드로 보고 싶다면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
+
+## 한 줄 정리
+
+최단 거리만 맞으면 되는 기본형과 달리, "사전순으로 더 작은 경로"까지 요구되면 `newDist == dist[next]`일 때도 어떤 부모가 더 앞서는지 비교하는 추가 규칙이 필요하다.

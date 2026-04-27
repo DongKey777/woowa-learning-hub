@@ -14,7 +14,9 @@
 - [signals, process supervision](./signals-process-supervision.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oomkilled, app log killed meaning, kubernetes oomkilled meaning, memory.events oom_kill beginner, cgroup memory events primer, oom beginner mental model, oom 표기 해석, killed 로그 의미, oomkilled 뜻, memory.events 읽는 법 입문, 메모리 한도 초과 멘탈 모델, cgroup oom beginner bridge, normal exit vs killed, signal stop vs oom kill, exit code 137 beginner, sigterm vs oomkilled, killed terminated exited 차이, beginner handoff box, primer handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oomkilled, app log killed meaning, kubernetes oomkilled meaning, memory.events oom_kill beginner, cgroup memory events primer, oom beginner mental model, oom 표기 해석, killed 로그 의미, oomkilled 뜻, memory.events 읽는 법 입문, 메모리 한도 초과 멘탈 모델, cgroup oom beginner bridge, normal exit vs killed, signal stop vs oom kill
 
 ## 먼저 잡는 멘탈 모델
 
@@ -89,3 +91,7 @@ retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oo
 > - "`SIGTERM`/`SIGKILL` 같은 일반 종료와 무엇이 다른지"를 더 보려면: [signals, process supervision](./signals-process-supervision.md)
 > - "`memory.high`와 `memory.max`가 어떻게 다른지"까지 이어서 보려면: [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
 > - 메모리 primer부터 다시 잡고 싶으면: [메모리 관리 기초](./memory-management-basics.md)
+
+## 한 줄 정리
+
+앱 로그의 `Killed`, Kubernetes의 `OOMKilled`, cgroup의 `memory.events`는 "메모리 한도에 부딪혀 커널이 프로세스를 정리했다"는 같은 사건을 서로 다른 높이에서 보여 주는 표지판이다.

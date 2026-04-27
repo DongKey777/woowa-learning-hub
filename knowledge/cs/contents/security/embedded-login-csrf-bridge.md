@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - `[entrypoint]` [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
 > - `[entrypoint]` [Embedded Login Privacy Primer](./iframe-login-privacy-controls-primer.md)
@@ -12,7 +19,7 @@
 > - `[deep dive]` [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: embedded login csrf bridge, iframe login csrf beginner, cross-site cookie csrf minimum expectation, SameSite None csrf bridge, embedded login first post 403, iframe cookie csrf token, social login callback success first post 403 beginner, cross-site session cookie state changing request, embedded auth csrf minimum checklist, cookie auto sent csrf beginner, partner portal iframe csrf primer, browser auto credential csrf bridge, cross-site cookie opened now what csrf, embedded login csrf mental model
+retrieval-anchor-keywords: embedded login csrf bridge, iframe login csrf beginner, cross-site cookie csrf minimum expectation, samesite none csrf bridge, embedded login first post 403, iframe cookie csrf token, social login callback success first post 403 beginner, cross-site session cookie state changing request, embedded auth csrf minimum checklist, cookie auto sent csrf beginner, partner portal iframe csrf primer, browser auto credential csrf bridge, cross-site cookie opened now what csrf, embedded login csrf mental model, embedded login csrf bridge basics
 
 ## 왜 이 문서가 필요한가
 

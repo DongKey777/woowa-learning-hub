@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotone deque proof intuition basics, monotone deque proof intuition beginner, monotone deque proof intuition intro, algorithm basics, beginner algorithm, 처음 배우는데 monotone deque proof intuition, monotone deque proof intuition 입문, monotone deque proof intuition 기초, what is monotone deque proof intuition, how to monotone deque proof intuition
 > 관련 문서:
 > - [Monotonic Queue and Stack](../data-structure/monotonic-queue-and-stack.md)
 > - [Sliding Window Patterns](./sliding-window-patterns.md)
@@ -22,7 +31,7 @@
 
 ## 핵심 개념
 
-단조 덱은 슬라이딩 윈도우에서 최댓값/최솟값 후보를 유지할 때 쓰는 구조다.  
+단조 덱은 슬라이딩 윈도우에서 최댓값/최솟값 후보를 유지할 때 쓰는 구조다.
 [Monotonic Queue and Stack](../data-structure/monotonic-queue-and-stack.md)가 구현과 자료구조 감각의 메인 가이드라면, 이 문서는 "왜 맞는가"만 떼어내 설명한다.
 
 증명 아이디어는 두 개로 요약된다.
@@ -48,7 +57,7 @@
 
 최댓값을 구하는 단조 감소 덱을 예로 들자.
 
-새 원소 `x`가 들어왔는데 덱 뒤의 원소 `y`보다 크거나 같다면,  
+새 원소 `x`가 들어왔는데 덱 뒤의 원소 `y`보다 크거나 같다면,
 `y`는 앞으로 어떤 윈도우에서도 `x`보다 먼저 답이 될 수 없다.
 
 이유:
@@ -85,17 +94,17 @@ while pop이 많아 보여도 전체 비용은 O(n)이다.
 
 ### 시나리오 2: 최소값도 같은 논리
 
-최소값을 구할 때는 단조 증가 덱을 쓰면 된다.  
+최소값을 구할 때는 단조 증가 덱을 쓰면 된다.
 증명 구조는 똑같고 부호만 바뀐다.
 
 ### 시나리오 3: 오판
 
-단조 덱은 "정렬된 덱"이 아니다.  
+단조 덱은 "정렬된 덱"이 아니다.
 중간 원소를 임의로 찾는 자료구조가 아니라, 극값 후보를 압축하는 구조다.
 
 ### 시나리오 4: 구현 버그
 
-윈도우 밖 원소 제거를 늦게 하거나, 비교 연산을 잘못 쓰면 불변식이 깨진다.  
+윈도우 밖 원소 제거를 늦게 하거나, 비교 연산을 잘못 쓰면 불변식이 깨진다.
 증명이 맞아도 코드가 틀릴 수 있는 대표 케이스다.
 
 ## 코드로 보기

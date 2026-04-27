@@ -12,7 +12,7 @@
 - [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: input validation basics, 입력값 검증이 뭐예요, 서버사이드 검증 왜 필요해요, validation vs sanitization, bean validation, 클라이언트 검증만 하면 안 되나요, beginner input validation, allowlist vs blocklist, 입력 필터링 기초, 검증 누락 위험, security readme input validation primer, security beginner route, security primer next step, return to security README, 폼을 보낸 뒤 서버 검증 실패, request payload validation
+retrieval-anchor-keywords: input validation basics, 입력값 검증이 뭐예요, 서버사이드 검증 왜 필요해요, validation vs sanitization, bean validation, 클라이언트 검증만 하면 안 되나요, beginner input validation, allowlist vs blocklist, 입력 필터링 기초, 검증 누락 위험, security readme input validation primer, security beginner route, security primer next step, return to security readme, 폼을 보낸 뒤 서버 검증 실패
 
 ## 이 문서 다음에 보면 좋은 문서
 

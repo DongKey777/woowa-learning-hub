@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: bigdecimal hashset treeset contains mini drill basics, bigdecimal hashset treeset contains mini drill beginner, bigdecimal hashset treeset contains mini drill intro, java basics, beginner java, 처음 배우는데 bigdecimal hashset treeset contains mini drill, bigdecimal hashset treeset contains mini drill 입문, bigdecimal hashset treeset contains mini drill 기초, what is bigdecimal hashset treeset contains mini drill, how to bigdecimal hashset treeset contains mini drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
@@ -87,3 +96,7 @@ System.out.println(tree.contains(new BigDecimal("1.00")));
 - map 조회까지 확장: [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./bigdecimal-hashmap-treemap-lookup-mini-drill.md)
 - 중복/덮어쓰기까지 확장: [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
 - 개념 정리: [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
+
+## 한 줄 정리
+
+`BigDecimal("1.0")`를 넣어 두고 `BigDecimal("1")`로 `contains`를 하면, `HashSet`은 못 찾을 수 있고 `TreeSet`은 찾을 수 있다.

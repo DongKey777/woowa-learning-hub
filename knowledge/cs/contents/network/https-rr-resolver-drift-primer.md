@@ -1,8 +1,17 @@
 # HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나
 
+
+> 한 줄 요약: HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > 브라우저 DoH, OS resolver, terminal `dig`가 같은 host의 `HTTPS` RR/SVCB를 서로 다르게 보여 줄 때, 먼저 "`누가 누구에게 물었는가`"부터 분리하게 만드는 beginner primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
@@ -12,7 +21,7 @@
 > - [DNS TTL Cache Failure Patterns](./dns-ttl-cache-failure-patterns.md)
 > - [DNS 기초](./dns-basics.md)
 
-retrieval-anchor-keywords: HTTPS RR resolver drift, browser DoH vs dig, OS resolver vs browser resolver, HTTPS RR SVCB mismatch, browser secure DNS answer differs, dig HTTPS different from browser, why dig and browser disagree, resolver path drift, DoH resolver drift, HTTPS RR cache drift, SVCB different answer, browser DoH OS dig primer, same host different HTTPS RR, split horizon HTTPS RR, HTTPS RR TTL drift, resolver comparison checklist, dig bypasses browser cache, dig bypasses OS cache, browser secure DNS mismatch, H3 DNS hint disagreement
+retrieval-anchor-keywords: https rr resolver drift, browser doh vs dig, os resolver vs browser resolver, https rr svcb mismatch, browser secure dns answer differs, dig https different from browser, why dig and browser disagree, resolver path drift, doh resolver drift, https rr cache drift, svcb different answer, browser doh os dig primer, same host different https rr, split horizon https rr, https rr resolver drift primer basics
 
 <details>
 <summary>Table of Contents</summary>

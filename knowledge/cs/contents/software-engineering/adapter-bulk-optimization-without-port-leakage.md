@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: adapter bulk optimization without port leakage basics, adapter bulk optimization without port leakage beginner, adapter bulk optimization without port leakage intro, software engineering basics, beginner software engineering, 처음 배우는데 adapter bulk optimization without port leakage, adapter bulk optimization without port leakage 입문, adapter bulk optimization without port leakage 기초, what is adapter bulk optimization without port leakage, how to adapter bulk optimization without port leakage
 <details>
 <summary>Table of Contents</summary>
 
@@ -288,6 +297,8 @@ class PartnerWelcomeMailAdapter implements WelcomeMailSender {
 - 한 item 실패가 다른 item의 성공 의미를 흐리지 않는다
 - retry와 idempotency key가 port의 per-item 약속과 맞는다
 
+## 안전한 모양 3: HTTP bulk endpoint는 adapter가 per-item 결과로 번역한다 (계속 2)
+
 이 조건을 지킬 수 없으면 adapter 최적화로 숨기기 어렵다.
 그때는 bulk를 application 계약으로 올릴지 검토해야 한다.
 
@@ -355,3 +366,7 @@ class PartnerWelcomeMailAdapter implements WelcomeMailSender {
 - 이름 붙인 bulk 계약을 어떤 테스트 축으로 고정할지 보려면: [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
 - HTTP bulk 응답을 item 결과로 매핑하려면: [HTTP Coalescing Failure Mapping](./http-coalescing-failure-mapping.md)
 - persistence 경계 점검을 같이 하려면: [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+
+## 한 줄 정리
+
+`saveAll`, JDBC batch, HTTP bulk endpoint는 adapter 안에서 사용할 수 있지만, application port는 여전히 "한 주문 저장", "한 알림 전송"처럼 item 단위와 도메인 언어를 유지해야 한다.

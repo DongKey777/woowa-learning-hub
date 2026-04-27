@@ -1,7 +1,18 @@
 # 싱글톤 (Singleton) 디자인 패턴
 
+
+> 한 줄 요약: 싱글톤 (Singleton) 디자인 패턴는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: singleton basics, singleton beginner, singleton intro, design pattern basics, beginner design pattern, 처음 배우는데 singleton, singleton 입문, singleton 기초, what is singleton, how to singleton
 > 작성자 : [정희재](https://github.com/Hee-Jae)
 
 본 자료는 '파이썬 디자인 패턴 2/e (Chetan Giridhar)' 책을 토대로 작성되었습니다. 따라서 모든 예시 코드에는 저자를 표시하는 `__author__ = 'Chetan'` 이 포함됩니다.
@@ -42,7 +53,7 @@ class Singleton(object):
       if not hasattr(cls, 'instance'):
         cls.instance = super(Singleton, cls).__new__(cls)
       return cls.instance
-    
+
 s = Singleton()
 print("Object created", s)
 
@@ -62,18 +73,18 @@ Object created <__main__.Singleton object at 0x1005c12b0>
 인스턴스가 꼭 필요한 상황일 때 초기화를 한다. 사용할 수 있는 리소스가 제한적일 때 사용하는 방식이다.
 
 ```python
-__author__ = 'Chetan'   
+__author__ = 'Chetan'
 
 class Singleton:
 
     __instance = None
-    
+
     def __init__(self):
         if not Singleton.__instance:
             print(" __init__ method called..")
         else:
             print("Instance already created:", self.getInstance())
-    
+
     @classmethod
     def getInstance(cls):
         if not cls.__instance:
@@ -81,10 +92,15 @@ class Singleton:
         return cls.__instance
 
 s = Singleton()
+
 ## 클래스는 초기화 되었지만 아직 객체는 생성되지 않았다.
+
 print("Object created", Singleton.getInstance())
+
 ## 객체를 생성했다.
+
 s1 = Singleton()
+
 ## 객체는 이미 생성되었다.
 
 ''' <실행 결과>
@@ -118,7 +134,7 @@ import sys
 
 ### 모노스테이트 싱글톤 예시
 ```python
-__author__ = 'Chetan'   
+__author__ = 'Chetan'
 
 class Borg:
     __shared_state = {}
@@ -133,9 +149,12 @@ b.x = 3
 
 print("Borg Object 'b': ", b)
 print("Borg Object 'b1': ", b1)
+
 ## b와 b1은 서로 다른 객체다.
+
 print("Object State 'b':", b.__dict__)
 print("Object State 'b1':", b1.__dict__)
+
 ## 그러나 서로 state를 공유한다.
 
 ''' <실행 결과>
@@ -150,7 +169,6 @@ Object State 'b1': {'x': 3}
 
 메타클래스는 클래스의 클래스다. 즉 클래스는 자신의 메타클래스의 인스턴스다. 클래스는 메타클래스가 정의한다.
 
-
 **class A** 구문으로 클래스를 생성하면 파이썬은 **A = type(name, bases, dict)** 를 실행한다. 이미 정의된 메타클래스가 있다면 파이썬은 **A = MetaKls(name, bases, dict)** 를 실행해 클래스를 생성한다.
 
 - `name` :  클래스명
@@ -163,14 +181,14 @@ Object State 'b1': {'x': 3}
 __author__ = 'Chetan'
 
 class MyInt(type):
-    
+
     def __call__(cls, *args, **kwds):
         print("***** Here's My int *****", args)
         print("Now do whatever you want with these objects...")
         return type.__call__(cls, *args, **kwds)
 
 class int(metaclass=MyInt):
-    
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -194,11 +212,13 @@ Now do whatever you want with these objects...
 
 ### 메타클래스를 사용한 싱글톤 패턴 구현
 
+## 싱글톤과 메타클래스 (계속 2)
+
 ```python
 __author__ = 'Chetan'
 
 class MetaSingleton(type):
-    
+
     _instances = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -230,7 +250,7 @@ __author__ = 'Chetan'
 
 import sqlite3
 class MetaSingleton(type):
-    
+
     _instances = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -270,22 +290,22 @@ Database Objects DB2 <sqlite3.Cursor object at 0x1005d9c00>
 __author__ = 'Chetan'
 
 class HealthCheck:
-    
+
     _instance = None
     def __new__(cls, *args, **kwargs):
         if not HealthCheck._instance:
             HealthCheck._instance = super(HealthCheck, cls).__new__(cls, *args, **kwargs)
         return HealthCheck._instance
-    
+
     def __init__(self):
         self._servers = []
-    
+
     def addServer(self):
         self._servers.append("Server 1")
         self._servers.append("Server 2")
         self._servers.append("Server 3")
         self._servers.append("Server 4")
-    
+
     def changeServer(self):
         self._servers.pop()
         self._servers.append("Server 5")
@@ -327,3 +347,7 @@ Checking  Server 5
 - 전역 변수의 값이 실수로 변경된 것을 모르고 애플리케이션에서 사용될 수 있다.
 - 같은 객체에 대한 여러 참조자가 생길 수 있다. 싱글톤은 한 개의 객체만을 만들기 때문에 같은 객체에 대한 여러 개의 참조자가 생긴다.
 - 전역 변수에 종속적인 모든 클래스 간 상호관계가 복잡해진다. 전역 변수 수정이 의도치 않게 다른 클래스에도 영향을 줄 수 있다.
+
+## 한 줄 정리
+
+싱글톤 (Singleton) 디자인 패턴는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

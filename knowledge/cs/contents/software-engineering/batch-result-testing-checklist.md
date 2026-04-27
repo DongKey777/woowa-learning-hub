@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: batch result testing checklist basics, batch result testing checklist beginner, batch result testing checklist intro, software engineering basics, beginner software engineering, 처음 배우는데 batch result testing checklist, batch result testing checklist 입문, batch result testing checklist 기초, what is batch result testing checklist, how to batch result testing checklist
 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)에서 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint`를 역할별로 나눴다면, 이 문서는 그다음 질문인 "그 결과들을 어떻게 테스트해야 하나"에 답한다.
 특정 테스트 프레임워크 문법은 일부러 빼고, 어떤 언어와 어떤 test runner를 쓰든 그대로 옮길 수 있는 체크리스트만 남긴다.
 named bulk 계약 자체의 adapter 테스트가 궁금하면 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md), 실패 정책과 운영 복구 흐름을 먼저 잡고 싶다면 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md), [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)를 이어서 보면 된다.
@@ -143,6 +152,8 @@ batch 결과 모델은 보통 실행이 길어질수록 중요해진다.
 - 이 status가 "새 run 생성"을 말하는가, 아니면 "기존 run 재사용"을 말하는가
 
 ### 초심자용 status assertion 예시
+
+## 1. RunSummary 체크리스트 (계속 2)
 
 ```text
 given requestedItems=100, failedItems=0, retryCandidateCount=0
@@ -292,6 +303,8 @@ fixture를 만들다 giant helper 때문에 테스트 뜻이 흐려지기 시작
 3. **item 재처리에서도 이미 끝난 부작용을 다시 만들지 않는다.**
 
 ### 장면별로 무엇을 준비하면 되나
+
+## 복구 테스트 매트릭스 (계속 2)
 
 | 장면 | 준비 데이터 | 확인할 결과 타입 |
 |---|---|---|

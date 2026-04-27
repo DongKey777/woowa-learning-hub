@@ -16,7 +16,9 @@
 - [container PID 1, SIGTERM, zombie reaping basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00065, /proc pid status signal fields primer, /proc/<pid>/status signal debug, SigBlk SigIgn SigCgt SigPnd, blocked vs ignored signal debug, procfs signal mask disposition, signal fields beginner, signal triage primer, SigBlk meaning, SigIgn meaning, SigCgt meaning, SigPnd meaning, signal pending bitmap, blocked signal pending, ignored signal proc status, custom handler proc status, grep SigBlk SigIgn SigCgt SigPnd, proc status signal diagnosis, /proc status 시그널 필드, 시그널 block ignore 구분, 시그널 pending 진단, beginner handoff box, primer handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00065, /proc pid status signal fields primer, /proc/<pid>/status signal debug, sigblk sigign sigcgt sigpnd, blocked vs ignored signal debug, procfs signal mask disposition, signal fields beginner, signal triage primer, sigblk meaning, sigign meaning, sigcgt meaning, sigpnd meaning, signal pending bitmap, blocked signal pending, beginner handoff box
 
 ## 먼저 잡는 멘탈 모델
 

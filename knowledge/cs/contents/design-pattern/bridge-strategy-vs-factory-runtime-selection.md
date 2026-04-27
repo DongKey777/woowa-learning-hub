@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 > - [전략 패턴 기초](./strategy-pattern-basics.md)
@@ -14,7 +21,7 @@
 > - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection strategy factory, behavior axis vs creation axis, policy selection not factory, runtime policy chooser, junior factory confusion, strategy selection beginner, strategy vs policy selector naming, selector resolver registry strategy vs factory, factory creates strategy, factory creates gateway client, bridge two change axes, behavior selection vs object creation, strategy vs factory beginner, bridge strategy factory payment example, payment policy selector not factory, runtime behavior selection pattern, provider axis vs policy axis, strategy registry selector, two axis explosion bridge
+retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection strategy factory, behavior axis vs creation axis, policy selection not factory, runtime policy chooser, junior factory confusion, strategy selection beginner, strategy vs policy selector naming, selector resolver registry strategy vs factory, factory creates strategy, factory creates gateway client, bridge two change axes, behavior selection vs object creation, strategy vs factory beginner, bridge strategy factory payment example
 
 ---
 

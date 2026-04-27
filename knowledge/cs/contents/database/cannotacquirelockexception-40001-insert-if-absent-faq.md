@@ -13,7 +13,9 @@
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelockexception postgres 40001 difference, insert-if-absent faq, cannotacquirelockexception retryable or busy, 40001 deadlock or serialization failure, beginner lock exception faq, spring exception sqlstate faq, insert-if-absent cannotacquirelockexception guide, sqlstate 40001 beginner, postgresql 40001 retryable faq, cannotacquirelockexception timeout deadlock difference, busy vs retryable faq, cannotacquirelockexception 오해, 40001 오해, insert-if-absent 혼동 faq, spring 락 예외 40001 차이
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelockexception postgres 40001 difference, insert-if-absent faq, cannotacquirelockexception retryable or busy, 40001 deadlock or serialization failure, beginner lock exception faq, spring exception sqlstate faq, insert-if-absent cannotacquirelockexception guide, sqlstate 40001 beginner, postgresql 40001 retryable faq, cannotacquirelockexception timeout deadlock difference, busy vs retryable faq, cannotacquirelockexception 오해, 40001 오해, insert-if-absent 혼동 faq
 
 ## 먼저 멘탈모델
 
@@ -94,6 +96,8 @@ retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelo
 
 초보자 기억법:
 
+## FAQ (계속 2)
+
 - `duplicate key` -> winner read
 - `40001` / deadlock -> transaction retry
 - timeout -> busy 분리
@@ -116,3 +120,7 @@ retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelo
 - service-layer 코드 스니펫까지 바로 보려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - Spring/JPA 예외 surface 차이를 더 자세히 보려면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - PostgreSQL SSI와 `40001` 배경을 보려면 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
+
+## 한 줄 정리
+
+`CannotAcquireLockException`은 "락 문제처럼 보인다"는 Spring 표면 이름일 뿐이고, PostgreSQL `40001`은 deadlock이 아니라 serialization failure라서 `insert-if-absent`에서는 **예외 이름보다 DB 신호를 먼저 `busy` / `retryable`로 번역**해야 덜 헷갈린다.

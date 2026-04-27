@@ -14,7 +14,9 @@
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: database first step bridge, database beginner bridge, transaction jdbc jpa mybatis index order, backend mission database first read, db 입문 순서, 트랜잭션 jdbc jpa mybatis 인덱스 순서, 백엔드 미션 데이터베이스 첫걸음, database starter route, database beginner route
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: database first step bridge, database beginner bridge, transaction jdbc jpa mybatis index order, backend mission database first read, db 입문 순서, 트랜잭션 jdbc jpa mybatis 인덱스 순서, 백엔드 미션 데이터베이스 첫걸음, database starter route, database beginner route, database first step bridge basics, database first step bridge beginner, database first step bridge intro, database basics, beginner database, 처음 배우는데 database first step bridge
 
 ## 먼저 큰 그림
 

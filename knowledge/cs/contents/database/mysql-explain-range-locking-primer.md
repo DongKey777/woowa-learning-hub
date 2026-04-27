@@ -14,7 +14,9 @@
 - [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
 
-retrieval-anchor-keywords: mysql explain range locking primer, explain overlap query beginner, explain range locking read, explain for update range scan, mysql overlap explain primer, beginner explain gap lock, explain rows type range for update, exact key vs range explain, overlap query explain checklist, mysql explain wider access path, range lock beginner, explain next-key beginner, for update range explain, mysql explain overlap lock footprint
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: mysql explain range locking primer, explain overlap query beginner, explain range locking read, explain for update range scan, mysql overlap explain primer, beginner explain gap lock, explain rows type range for update, exact key vs range explain, overlap query explain checklist, mysql explain wider access path, range lock beginner, explain next-key beginner, for update range explain, mysql explain overlap lock footprint, mysql explain range locking primer basics
 
 ## 핵심 개념
 

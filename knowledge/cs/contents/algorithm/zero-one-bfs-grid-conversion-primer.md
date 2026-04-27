@@ -14,7 +14,9 @@
 - [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 
-retrieval-anchor-keywords: 0-1 bfs grid primer, zero one bfs grid modeling, 0-1 bfs beginner modeling, 0-1 bfs maze teleport wall break, 0-1 bfs grid conversion, 0-1 bfs problem translation, grid shortest path 0 1 cost, grid shortest path deque, binary weight grid shortest path, teleport maze shortest path, wall break shortest path, free move paid move shortest path, maze modeling 0-1 bfs, teleport modeling deque shortest path, wall break modeling 0-1 bfs, 0-1 bfs state space grid, 0-1 bfs r c state, 0-1 bfs 입문 모델링, 0-1 bfs 격자 변환, 0-1 bfs 문제 해석, 미로 순간이동 벽부수기 0-1 bfs, 격자 최단 경로 0/1 비용, 덱 최단 경로 모델링, 순간이동 최단 경로 모델링, 벽 부수기 최단 경로 모델링, 격자 상태 공간 0-1 bfs
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs grid primer, zero one bfs grid modeling, 0-1 bfs beginner modeling, 0-1 bfs maze teleport wall break, 0-1 bfs grid conversion, 0-1 bfs problem translation, grid shortest path 0 1 cost, grid shortest path deque, binary weight grid shortest path, teleport maze shortest path, wall break shortest path, free move paid move shortest path, maze modeling 0-1 bfs, teleport modeling deque shortest path, 0-1 bfs 입문 모델링
 
 ## 먼저 잡을 생각
 
@@ -192,3 +194,7 @@ retrieval-anchor-keywords: 0-1 bfs grid primer, zero one bfs grid modeling, 0-1 
 - `visited[r][c][state]`와 `dist[r][c][state]`를 언제 갈라야 하는지 바로 보고 싶으면 [State-space visited vs dist starter card](./zero-one-bfs-state-visited-vs-dist-starter-card.md)
 - `visited` 대신 왜 `dist` 비교가 핵심인지 반례부터 보고 싶으면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - 코드에서 `dist`, `parent`, deque가 어디서 같이 움직이는지 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
+
+## 한 줄 정리
+
+미로, 순간이동, 벽 한 칸 부수기처럼 말이 달라도 "이동 하나마다 드는 비용이 0 또는 1인가?"로 바꾸면 `0-1 BFS` 문제인지 먼저 판별할 수 있다.

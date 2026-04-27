@@ -14,7 +14,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: strategy map vs registry, map<string, strategy> beginner, map<string, strategy> registry인가요, map<string, strategy> selector인가요, 처음 배우는데 strategy map 큰 그림, strategy map 언제 쓰는지, strategy collection vs plain registry, 행동 교체 vs keyed lookup, 전략 맵 vs 레지스트리, 전략 컬렉션 vs 레지스트리, 등록된 것을 찾아온다 vs 어떻게 처리할지 고른다, strategy selector registry 차이
+retrieval-anchor-keywords: strategy map vs registry, map<string, strategy> beginner, strategy> registry인가요, strategy> selector인가요, 처음 배우는데 strategy map 큰 그림, strategy map 언제 쓰는지, strategy collection vs plain registry, 행동 교체 vs keyed lookup, 전략 맵 vs 레지스트리, 전략 컬렉션 vs 레지스트리, 등록된 것을 찾아온다 vs 어떻게 처리할지 고른다, strategy selector registry 차이, strategy map vs registry primer basics, strategy map vs registry primer beginner
 
 ---
 

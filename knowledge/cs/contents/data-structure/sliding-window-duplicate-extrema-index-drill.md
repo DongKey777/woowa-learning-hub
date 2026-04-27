@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: sliding window duplicate extrema index drill basics, sliding window duplicate extrema index drill beginner, sliding window duplicate extrema index drill intro, data structure basics, beginner data structure, 처음 배우는데 sliding window duplicate extrema index drill, sliding window duplicate extrema index drill 입문, sliding window duplicate extrema index drill 기초, what is sliding window duplicate extrema index drill, how to sliding window duplicate extrema index drill
 > 관련 문서:
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
 > - [Monotonic Duplicate Rule Micro-Drill](./monotonic-duplicate-rule-micro-drill.md)
@@ -101,3 +110,7 @@ window는 두 개다.
 2. 그래서 equal을 `남길지` `pop할지`
 
 이 두 줄이 정해지면 sliding-window max/min의 duplicate tie-break는 거의 끝난다.
+
+## 한 줄 정리
+
+sliding-window max/min에서 duplicate가 나오면 값은 같아도 `대표 index`는 달라질 수 있으므로, 먼저 `왼쪽 tie-break`인지 `오른쪽 tie-break`인지부터 정한다.

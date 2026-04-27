@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [그래프 기초](../data-structure/graph-basics.md)
 
-retrieval-anchor-keywords: 백트래킹 입문, 백트래킹 기초, backtracking beginner, 가지치기 입문, pruning 기초, backtracking vs brute force, 재귀 백트래킹, n-queen 입문, 순열 조합 백트래킹, visited 배열 백트래킹, 되돌아가기 탐색, beginner backtracking algorithm, 백트래킹 언제 써요
+retrieval-anchor-keywords: 백트래킹 입문, 백트래킹 기초, backtracking beginner, 가지치기 입문, pruning 기초, backtracking vs brute force, 재귀 백트래킹, n-queen 입문, 순열 조합 백트래킹, visited 배열 백트래킹, 되돌아가기 탐색, beginner backtracking algorithm, 백트래킹 언제 써요, backtracking intro basics, backtracking intro beginner
 
 ## 핵심 개념
 

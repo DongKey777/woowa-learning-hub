@@ -13,7 +13,9 @@
 - [Stable ID as Map Key Primer](./stable-id-map-key-primer.md)
 - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 
-retrieval-anchor-keywords: language-java-00110, hashmap vs linkedhashmap vs treemap key contract bridge, hashmap linkedhashmap treemap comparison beginner, hashmap linkedhashmap treemap lookup rule, hashmap linkedhashmap treemap iteration order, hashmap linkedhashmap treemap immutable key, linkedhashmap lookup equals hashcode, treemap lookup compareto comparator, map implementation key contract bridge, java map key contract beginner, java map iteration order comparison, java hashmap linkedhashmap treemap 차이, 자바 hashmap linkedhashmap treemap 비교, 자바 map 조회 규칙, 자바 map 반복 순서 차이, 자바 map immutable key, 자바 treemap compareto comparator key, 자바 linkedhashmap insertion order lookup, 자바 map key는 왜 불변이어야 하나, beginner map key contract primer
+- [카테고리 README](../README.md)
+
+retrieval-anchor-keywords: language-java-00110, hashmap vs linkedhashmap vs treemap key contract bridge, hashmap linkedhashmap treemap comparison beginner, hashmap linkedhashmap treemap lookup rule, hashmap linkedhashmap treemap iteration order, hashmap linkedhashmap treemap immutable key, linkedhashmap lookup equals hashcode, treemap lookup compareto comparator, map implementation key contract bridge, java map key contract beginner, java map iteration order comparison, java hashmap linkedhashmap treemap 차이, 자바 hashmap linkedhashmap treemap 비교, 자바 map 조회 규칙, 자바 map 반복 순서 차이
 
 ## 먼저 잡는 멘탈 모델
 

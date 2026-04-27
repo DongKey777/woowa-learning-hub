@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: delayqueue vs priorityqueue timer pitfalls basics, delayqueue vs priorityqueue timer pitfalls beginner, delayqueue vs priorityqueue timer pitfalls intro, data structure basics, beginner data structure, 처음 배우는데 delayqueue vs priorityqueue timer pitfalls, delayqueue vs priorityqueue timer pitfalls 입문, delayqueue vs priorityqueue timer pitfalls 기초, what is delayqueue vs priorityqueue timer pitfalls, how to delayqueue vs priorityqueue timer pitfalls
 > 관련 문서:
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
@@ -173,6 +182,8 @@ stale entry 사고방식과 거의 같다. 다만 timer queue에서는 stale 기
 Java `ScheduledExecutorService`를 쓰는 중이라면 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)에서 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`를 먼저 잡으면 된다. 직접 timer queue를 만드는 지점만 입문자용 mental model로 보고 싶다면 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket`, `cancelled flag`, `generation` 흐름을 따로 잡고 돌아오면 된다.
 
 정리하면 이렇다.
+
+## 5. cancellation과 stale entry trade-off는 둘 다 남는다 (계속 2)
 
 - `DelayQueue`는 "언제 깨울 것인가" 문제를 줄여 준다
 - cancellation-heavy workload에서는 stale entry 정책을 여전히 설계해야 한다

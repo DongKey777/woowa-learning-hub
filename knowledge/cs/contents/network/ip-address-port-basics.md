@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [로드밸런서 기초](../system-design/load-balancer-basics.md)
 
-retrieval-anchor-keywords: ip address basics, port basics, ip 주소 뭔가요, 포트 번호 뭔가요, ip와 포트 차이, 소켓이란 뭔가요, ipv4 ipv6 입문, well-known port, 8080 포트가 뭐예요, beginner ip port socket
+retrieval-anchor-keywords: ip address basics, port basics, ip 주소 뭔가요, 포트 번호 뭔가요, ip와 포트 차이, 소켓이란 뭔가요, ipv4 ipv6 입문, well-known port, 8080 포트가 뭐예요, beginner ip port socket, ip address port basics basics, ip address port basics beginner, ip address port basics intro, network basics, beginner network
 
 ## 핵심 개념
 

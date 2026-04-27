@@ -12,7 +12,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [Spring Testing Basics](../spring/spring-testing-basics.md)
 
-retrieval-anchor-keywords: code review basics, 코드 리뷰 기초, pr 리뷰 기초, pull request review beginner, 리뷰 어떻게 하나요, 리뷰 받는 법, 코드 리뷰 목적, nit 댓글, 리뷰 코멘트 종류, 리뷰 두려움 해소, beginner code review, 코드 리뷰 왜 하나요, 변경 크기 리뷰
+retrieval-anchor-keywords: code review basics, 코드 리뷰 기초, pr 리뷰 기초, pull request review beginner, 리뷰 어떻게 하나요, 리뷰 받는 법, 코드 리뷰 목적, nit 댓글, 리뷰 코멘트 종류, 리뷰 두려움 해소, beginner code review, 코드 리뷰 왜 하나요, 변경 크기 리뷰, code review basics basics, code review basics beginner
 
 ## 핵심 개념
 

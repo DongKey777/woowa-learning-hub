@@ -16,7 +16,9 @@
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - [DFS와 BFS 입문](./dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: 0-1 bfs implementation template, zero one bfs template, 0-1 bfs java template, 0-1 bfs python template, 0-1 bfs dist deque parent, zero one bfs dist deque parent, 0-1 bfs beginner template, 0-1 bfs relax template, 0-1 bfs parent update template, 0-1 bfs deque push front back, 0-1 bfs code skeleton, 0-1 bfs checklist, 0-1 bfs equal distance, 0-1 bfs newDist == dist, 0-1 bfs same distance no reinsertion, 0-1 bfs 구현 템플릿, 0-1 bfs 자바 템플릿, 0-1 bfs 파이썬 템플릿, 0-1 bfs dist 갱신, 0-1 bfs deque 갱신, 0-1 bfs parent 갱신, 0-1 bfs relax 위치, 0-1 bfs 초보 템플릿, 0-1 bfs 실수 체크, 0-1 bfs 같은 거리 다시 넣기, 0-1 bfs parent tie, 0-1 bfs 같은 거리 parent, 0-1 bfs lexicographic tie, 0-1 bfs 사전순 경로
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs implementation template, zero one bfs template, 0-1 bfs java template, 0-1 bfs python template, 0-1 bfs dist deque parent, zero one bfs dist deque parent, 0-1 bfs beginner template, 0-1 bfs relax template, 0-1 bfs parent update template, 0-1 bfs deque push front back, 0-1 bfs code skeleton, 0-1 bfs checklist, 0-1 bfs equal distance, 0-1 bfs newdist == dist, zero one bfs implementation mistake check template basics
 
 ## 먼저 외울 규칙 3개
 
@@ -194,3 +196,7 @@ visited[next] = true
 - 줄 단위 deque 변화와 오래된 항목 처리까지 보고 싶으면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 - `parent[]`로 경로를 실제 복원하는 흐름은 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - `0-1 BFS`와 Dijkstra를 언제 고르는지는 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
+
+## 한 줄 정리
+
+`0-1 BFS` 구현에서 초보자가 가장 많이 틀리는 위치는 `dist`, `deque`, `parent` 갱신 순서다.

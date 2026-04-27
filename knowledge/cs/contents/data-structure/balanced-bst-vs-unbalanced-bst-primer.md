@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: balanced bst vs unbalanced bst primer basics, balanced bst vs unbalanced bst primer beginner, balanced bst vs unbalanced bst primer intro, data structure basics, beginner data structure, 처음 배우는데 balanced bst vs unbalanced bst primer, balanced bst vs unbalanced bst primer 입문, balanced bst vs unbalanced bst primer 기초, what is balanced bst vs unbalanced bst primer, how to balanced bst vs unbalanced bst primer
 > 관련 문서:
 > - [기본 자료 구조](./basic.md)
 > - [Binary Tree vs BST vs Heap Bridge](./binary-tree-vs-bst-vs-heap-bridge.md)
@@ -22,7 +31,7 @@
 
 즉 초보자가 자주 놓치는 점은 이것이다.
 
-> `BST`라는 이름만으로는 `O(log n)`이 보장되지 않는다.  
+> `BST`라는 이름만으로는 `O(log n)`이 보장되지 않는다.
 > `BST` 규칙은 값의 대소 관계만 보장하고, **트리 모양**은 자동으로 고쳐주지 않는다.
 
 ## plain BST가 왜 `O(n)`까지 무너지나
@@ -75,14 +84,14 @@ balanced BST는 plain BST 위에 **높이를 관리하는 규칙**을 더 붙인
 여기서 중요한 개념은 **회전(rotation)** 이다.
 
 트리가 한쪽으로 쏠리면 일부 부모/자식 관계를 돌려서 높이를 낮춘다.
-즉 balanced BST는 "`BST`가 망가지지 않게" 하는 게 아니라,  
+즉 balanced BST는 "`BST`가 망가지지 않게" 하는 게 아니라,
 **`BST` 규칙은 유지한 채 모양만 다시 다듬는 구조**다.
 
 ## skip list는 왜 같이 언급되나
 
 skip list는 트리는 아니지만, 실제로는 **같은 ordered set/map 문제**를 푼다.
 
-plain BST가 무너지는 이유는 지름길이 없어 경로가 너무 길어지기 때문이다.  
+plain BST가 무너지는 이유는 지름길이 없어 경로가 너무 길어지기 때문이다.
 skip list는 여러 레벨의 "지름길 포인터"를 만들어 평균 경로 길이를 줄인다.
 
 ```text
@@ -96,7 +105,7 @@ Level 0: 1 - 2 - 3 - 4 - 5
 - balanced BST: 회전으로 높이를 관리
 - skip list: 확률적 레벨로 지름길을 만든다
 
-둘 다 `search / insert / delete`를 평균 또는 보장 기준으로 `O(log n)` 근처에 붙잡으려는 시도다.  
+둘 다 `search / insert / delete`를 평균 또는 보장 기준으로 `O(log n)` 근처에 붙잡으려는 시도다.
 차이는 "트리 재균형"을 쓰느냐, "다단계 링크"를 쓰느냐에 있다.
 
 ## `TreeMap` 같은 구조는 무엇을 고쳐서 쓰는가
@@ -134,19 +143,19 @@ Level 0: 1 - 2 - 3 - 4 - 5
 
 ## 자주 하는 오해
 
-1. "`BST`니까 자동으로 빠르다"  
+1. "`BST`니까 자동으로 빠르다"
 아니다. 빠른 정도는 `BST` 여부보다 **높이**에 달려 있다.
 
-2. "balanced BST는 `BST`와 다른 별도 구조다"  
+2. "balanced BST는 `BST`와 다른 별도 구조다"
 아니다. `BST` 규칙은 그대로 두고, 균형 규칙을 추가한 것이다.
 
-3. "skip list는 트리가 아니니 대체재가 아니다"  
+3. "skip list는 트리가 아니니 대체재가 아니다"
 아니다. ordered set/map라는 같은 문제를 다른 방식으로 푼다.
 
-4. "`TreeMap`은 그냥 plain BST를 라이브러리로 감싼 것이다"  
+4. "`TreeMap`은 그냥 plain BST를 라이브러리로 감싼 것이다"
 아니다. self-balancing tree를 써서 높이 붕괴를 막는다.
 
 ## 한 줄 정리
 
-plain `BST`는 **정렬 규칙만** 있고 높이 보장은 없어서 `O(n)`까지 무너질 수 있다.  
+plain `BST`는 **정렬 규칙만** 있고 높이 보장은 없어서 `O(n)`까지 무너질 수 있다.
 balanced BST, skip list, `TreeMap` 계열은 그 약점을 서로 다른 방식으로 보완해 ordered 연산을 계속 빠르게 유지한다.

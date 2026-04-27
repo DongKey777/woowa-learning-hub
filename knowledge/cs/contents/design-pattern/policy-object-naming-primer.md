@@ -14,7 +14,9 @@
 - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: policy object naming primer, policy vs strategy vs specification, rule object naming beginner, when to name policy, when to name strategy, when to name specification, factory vs policy strategy specification, rule object not factory, decision object naming, boolean rule naming, algorithm object naming, policy object beginner naming, specification beginner naming, strategy beginner naming, beginner naming guide policy strategy specification, naming primer for rule object, policy strategy specification factory 차이, 정책 객체 네이밍, policy strategy specification 차이, 규칙 객체 이름 붙이기, 조건 객체 이름 specification, 실행 방식 객체 이름 strategy, 판정 규칙 객체 이름 policy, factory 로 다 부르지 않기, 만들지 않으면 factory 아님, 정책 전략 명세 차이
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: policy object naming primer, policy vs strategy vs specification, rule object naming beginner, when to name policy, when to name strategy, when to name specification, factory vs policy strategy specification, rule object not factory, decision object naming, boolean rule naming, algorithm object naming, policy object beginner naming, specification beginner naming, strategy beginner naming, beginner naming guide policy strategy specification
 
 ---
 

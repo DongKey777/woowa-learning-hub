@@ -15,7 +15,9 @@
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00077, shell builtins vs external commands primer, shell builtin vs external command, shell syntax vs argv, direct argv launch basics, when shell is required, subprocess shell needed or not, shell built in command, cd export source alias builtin, pipe redirection needs shell, argv vs shell syntax, sh -c when needed, external executable direct spawn, subprocess list vs shell string, shell syntax primer, builtins change shell state, shell required mental model, shell builtin mental model, external command mental model, beginner handoff box, primer handoff box, shell command 구분, 쉘이 꼭 필요한 경우, argv로 바로 실행 가능한 경우
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00077, shell builtins vs external commands primer, shell builtin vs external command, shell syntax vs argv, direct argv launch basics, when shell is required, subprocess shell needed or not, shell built in command, cd export source alias builtin, pipe redirection needs shell, argv vs shell syntax, sh -c when needed, external executable direct spawn, subprocess list vs shell string, beginner handoff box
 
 ## 먼저 잡는 멘탈 모델
 

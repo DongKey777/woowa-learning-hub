@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: equality vs ordering beginner drill sheet basics, equality vs ordering beginner drill sheet beginner, equality vs ordering beginner drill sheet intro, java basics, beginner java, 처음 배우는데 equality vs ordering beginner drill sheet, equality vs ordering beginner drill sheet 입문, equality vs ordering beginner drill sheet 기초, what is equality vs ordering beginner drill sheet, how to equality vs ordering beginner drill sheet
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
@@ -205,3 +214,7 @@ System.out.println(tree.size());
 - 컬렉션별 중복 규칙: [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - natural ordering 확장: [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 - comparator 설계 확장: [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+
+## 한 줄 정리
+
+`equals()`와 `compareTo()`를 "같은지 판단"과 "순서 판단"으로 분리해, `HashSet`/`TreeSet`/`TreeMap` 결과를 실행 전에 먼저 예측해 보는 초급 연습 시트다.

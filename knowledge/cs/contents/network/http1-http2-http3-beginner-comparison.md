@@ -1,6 +1,15 @@
 # HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교
 
+
+> 한 줄 요약: HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 브라우저가 한 페이지를 그릴 때 여러 리소스를 가져오는 방식을 `연결 수`, `동시 전송`, `손실 전파` 관점으로 먼저 비교하는 beginner primer
 >
@@ -16,7 +25,7 @@
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 > - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: HTTP/1.1 vs HTTP/2 vs HTTP/3, beginner HTTP version comparison, HTTP version main comparison primer, HTTP version overview bridge, HTTP version mental model, H1 H2 H3 difference, connection reuse vs multiplexing, TCP HOL vs QUIC streams, why HTTP/3 QUIC, browser loads many resources, browser protocol negotiation basics, HTTP version routing, H1 H2 H3 misconception card, HTTP version quick check, HTTP/2 is not always faster, HTTP/3 is not always best, H2 multiplexing vs H3 QUIC, ALPN Alt-Svc next reading order, HTTP version to Alt-Svc cache lifecycle, beginner HTTP version follow-up path, http connection vs stream beginner, transport vs protocol primer, h3 fallback meaning beginner
+retrieval-anchor-keywords: http/1.1 vs http/2 vs http/3, beginner http version comparison, http version main comparison primer, http version overview bridge, http version mental model, h1 h2 h3 difference, connection reuse vs multiplexing, tcp hol vs quic streams, why http/3 quic, browser loads many resources, browser protocol negotiation basics, http version routing, h1 h2 h3 misconception card, http version quick check, http/2 is not always faster
 
 <details>
 <summary>Table of Contents</summary>

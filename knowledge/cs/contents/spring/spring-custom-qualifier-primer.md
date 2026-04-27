@@ -15,7 +15,7 @@
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: custom qualifier, custom @qualifier, bean name string qualifier, role annotation qualifier, 고정 wiring qualifier, 역할 annotation, 같은 역할 bean 고정 주입, qualifier 반복되면 custom qualifier, bean 이름 계약 vs 역할 계약, 요청마다 선택 아님, nouniquebeandefinitionexception qualifier, custom qualifier not working, 처음 배우는데 qualifier가 반복돼요, custom qualifier 뭐예요
+retrieval-anchor-keywords: custom qualifier, custom @qualifier, bean name string qualifier, role annotation qualifier, 고정 wiring qualifier, 역할 annotation, 같은 역할 bean 고정 주입, qualifier 반복되면 custom qualifier, bean 이름 계약 vs 역할 계약, 요청마다 선택 아님, nouniquebeandefinitionexception qualifier, custom qualifier not working, 처음 배우는데 qualifier가 반복돼요, custom qualifier 뭐예요, spring custom qualifier primer basics
 
 ## 1분 비교 카드
 

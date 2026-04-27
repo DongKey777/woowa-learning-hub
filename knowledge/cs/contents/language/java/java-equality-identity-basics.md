@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java equality identity basics basics, java equality identity basics beginner, java equality identity basics intro, java basics, beginner java, 처음 배우는데 java equality identity basics, java equality identity basics 입문, java equality identity basics 기초, what is java equality identity basics, how to java equality identity basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -329,6 +338,8 @@ public class EqualityExample {
 ```
 
 이 예제에서 확인할 포인트는 네 가지다.
+
+## 코드로 한 번에 보기 (계속 2)
 
 - 기본형은 `==`가 값 비교다.
 - 참조형은 `==`가 identity 비교다.

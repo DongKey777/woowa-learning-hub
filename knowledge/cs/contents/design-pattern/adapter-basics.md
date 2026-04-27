@@ -12,7 +12,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [소프트웨어 공학 카테고리 인덱스](../software-engineering/README.md)
 
-retrieval-anchor-keywords: adapter pattern basics, 어댑터 패턴, adapter pattern beginner, 인터페이스 변환, legacy api adapter, 외부 라이브러리 연결, adapter vs wrapper, adapter vs facade, adapter vs decorator, 어댑터가 뭔가요, interface translation, incompatible interface, 기존 코드 바꾸지 않고, object adapter class adapter, adapter pattern example, external sdk translation, adapter beginner checklist, adapter quick check, adapter beginner quick check, 어댑터 패턴 10초, 어댑터 패턴 30초 비교표, 어댑터 패턴 1분 예시, adapter example box, adapter comparison table, adapter 언제 쓰나, adapter not facade not decorator, translation boundary adapter, 어댑터 자주 헷갈리는 포인트, adapter confusion points beginner, adapter facade confusion check, adapter micro check beginner
+retrieval-anchor-keywords: adapter pattern basics, 어댑터 패턴, adapter pattern beginner, 인터페이스 변환, legacy api adapter, 외부 라이브러리 연결, adapter vs wrapper, adapter vs facade, adapter vs decorator, 어댑터가 뭔가요, interface translation, incompatible interface, 기존 코드 바꾸지 않고, object adapter class adapter, adapter pattern example
 
 ---
 

@@ -15,7 +15,7 @@
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: callback cookie name splitter, callback cookie vs duplicate cookie, callback cookie same name as session, callback cookie vs app session cookie, same name different role, callback 400 loop, app first request anonymous, social login handoff cookie confusion, callback verification cookie vs main session cookie, auth callback session name collision, 왜 같은 이름인데 역할이 달라, 왜 callback은 되는데 app은 anonymous, beginner callback cookie primer, raw cookie header duplicate name
+retrieval-anchor-keywords: callback cookie name splitter, callback cookie vs duplicate cookie, callback cookie same name as session, callback cookie vs app session cookie, same name different role, callback 400 loop, app first request anonymous, social login handoff cookie confusion, callback verification cookie vs main session cookie, auth callback session name collision, 왜 같은 이름인데 역할이 달라, 왜 callback은 되는데 app은 anonymous, beginner callback cookie primer, raw cookie header duplicate name, callback cookie name splitter basics
 
 > 초보자 20초 route box:
 > - social login callback은 성공했는데 `auth -> app` handoff 뒤 첫 요청이 anonymous라면 먼저 [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md)에서 shared cookie 기대인지 handoff 기대인지 고른다.

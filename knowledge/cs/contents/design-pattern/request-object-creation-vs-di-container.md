@@ -16,7 +16,7 @@
 - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: request dto vs di container, command object creation, value object creation beginner, builder vs spring bean, request object constructor or builder, static factory for dto, request scope vs request object, spring request scoped bean vs dto, binder created dto not bean, caller built command not bean, request body dto not bean, 요청 객체를 빈으로 만들면 안 되나요, 스프링 빈으로 dto 만들면 안 되나, what is container managed object, beginner request object creation, request command value object basics, builder vs requestscope bean
+retrieval-anchor-keywords: request dto vs di container, command object creation, value object creation beginner, builder vs spring bean, request object constructor or builder, static factory for dto, request scope vs request object, spring request scoped bean vs dto, binder created dto not bean, caller built command not bean, request body dto not bean, 요청 객체를 빈으로 만들면 안 되나요, 스프링 빈으로 dto 만들면 안 되나, what is container managed object, beginner request object creation
 
 ---
 
@@ -98,13 +98,13 @@ command는 의도를 담고, value object는 값 규칙을 담는다.
 
 ## 흔한 오해와 함정
 
-- **"`@RequestScope`면 request 객체도 bean으로 만들면 되지 않나요?"**  
+- **"`@RequestScope`면 request 객체도 bean으로 만들면 되지 않나요?"**
   scope는 생명주기 설정일 뿐이다. 누가 값을 채우는지, 어디서 검증을 잠그는지는 여전히 별도 문제다. 이 혼동만 따로 자르려면 [Request Scope vs Plain Request Objects](./request-scope-vs-plain-request-objects.md)를 보면 된다.
-- **"`@RequestBody`로 만들어지면 bean 아닌가요?"**  
+- **"`@RequestBody`로 만들어지면 bean 아닌가요?"**
   보통은 바인딩 결과일 뿐, 서비스 간 협력을 위한 container-managed bean과는 다르다.
-- **"builder를 쓰면 DI 없이도 다 해결되나요?"**  
+- **"builder를 쓰면 DI 없이도 다 해결되나요?"**
   아니다. builder는 데이터 조립용이다. `Clock`, `Policy`, `Repository` 같은 협력자는 여전히 service 쪽에 주입하는 편이 낫다.
-- **"작은 DTO도 전부 builder로 만들어야 하나요?"**  
+- **"작은 DTO도 전부 builder로 만들어야 하나요?"**
   아니다. 필드가 적으면 생성자나 record가 더 간단하다. builder는 옵션이 많을 때만 꺼내면 된다. 이 판단 기준은 [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md)에서 더 짧게 볼 수 있다.
 
 ---

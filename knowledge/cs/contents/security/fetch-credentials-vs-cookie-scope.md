@@ -20,7 +20,7 @@
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: fetch credentials vs cookie scope, same-origin vs same-site fetch, origin vs site basics, credentials include cookie missing, request cookie header empty, cookie stored but not sent, cors response blocked, cookie scope vs cors chooser, application vs network cookie check, cookie 있는데 다시 로그인, beginner fetch cookie primer, browser session troubleshooting return path
+retrieval-anchor-keywords: fetch credentials vs cookie scope, same-origin vs same-site fetch, origin vs site basics, credentials include cookie missing, request cookie header empty, cookie stored but not sent, cors response blocked, cookie scope vs cors chooser, application vs network cookie check, cookie 있는데 다시 로그인, beginner fetch cookie primer, browser session troubleshooting return path, fetch credentials vs cookie scope basics, fetch credentials vs cookie scope beginner, fetch credentials vs cookie scope intro
 
 ## Application vs Network 15초 미니 체크
 

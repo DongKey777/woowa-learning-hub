@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: heap vs priority queue vs ordered map beginner bridge basics, heap vs priority queue vs ordered map beginner bridge beginner, heap vs priority queue vs ordered map beginner bridge intro, data structure basics, beginner data structure, 처음 배우는데 heap vs priority queue vs ordered map beginner bridge, heap vs priority queue vs ordered map beginner bridge 입문, heap vs priority queue vs ordered map beginner bridge 기초, what is heap vs priority queue vs ordered map beginner bridge, how to heap vs priority queue vs ordered map beginner bridge
 > 관련 문서:
 > - [힙 기초](./heap-basics.md)
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: cache hit path와 replica miss path가 각각 다른 stale window를 가지면 `cache miss == fresh read`가 깨지므로, source-selection 규칙과 by-source observability를 같이 설계해야 한다.
 
-retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica read path pitfalls, dual stale sources, dual stale source, cache miss stale replica, stale refill from replica, cache and replica both stale, cache hit newer than miss, invalidation exposes stale replica, mixed read path source selection, source selection rules, freshness routing rules, recent-write pinning with cache, cache boundary pinning, read path source tagging, cache replica observability, rejected hit observability, cache hit reject reason, replica fallback reason, refill no-fill reason, by-source freshness metrics, cache age vs replica lag, post-write stale read ratio, list detail source mismatch, miss path observability, version tagged cache fill, cache replica routing policy, recent write min version causal token, freshness bridge, intermediate freshness design
+retrieval-anchor-keywords: mixed cache replica read path, mixed cache+replica read path pitfalls, dual stale sources, dual stale source, cache miss stale replica, stale refill from replica, cache and replica both stale, cache hit newer than miss, invalidation exposes stale replica, mixed read path source selection, source selection rules, freshness routing rules, recent-write pinning with cache, mixed cache replica read path pitfalls basics, mixed cache replica read path pitfalls beginner
 
 **난이도: 🟡 Intermediate**
 
@@ -73,6 +73,8 @@ mixed path에서는 miss path 자체가 별도의 freshness decision이다.
 
 ### 2. 초보자가 가장 자주 놓치는 pitfall
 
+## 깊이 들어가기 (계속 2)
+
 | pitfall | 실제로 벌어지는 일 | 사용자 증상 | 왜 오래 숨어 있나 |
 |---|---|---|---|
 | cache miss를 fresh read로 착각 | miss가 나도 replica가 lagging이면 옛값을 읽는다 | hit 때는 최신인데 miss 때는 예전 값이 나온다 | hit ratio가 높을 때는 miss path가 자주 안 보여서 늦게 드러난다 |
@@ -96,6 +98,8 @@ mixed path에서 가장 중요한 설계는 "어떤 source가 더 빠른가"가 
 5. replica 결과를 cache에 다시 채울 때도 동일한 contract를 만족하는지 확인한다.
 
 아주 단순한 예시는 이렇다.
+
+## 깊이 들어가기 (계속 3)
 
 ```pseudo
 function readEntity(key, ctx):
@@ -136,6 +140,8 @@ function readEntity(key, ctx):
 
 아래 규칙은 intermediate 수준에서 가장 효과가 크다.
 
+## 깊이 들어가기 (계속 4)
+
 | 운영 규칙 | 왜 필요한가 | 보통의 구현 |
 |---|---|---|
 | freshness class 분리 | 모든 GET을 같은 기준으로 읽으면 과하거나 약하다 | `strict`, `recent-write-sensitive`, `stale-ok` 같은 endpoint class |
@@ -151,6 +157,8 @@ function readEntity(key, ctx):
 mixed path에서 `cache hit ratio`와 `average replica lag`만 보는 것은 거의 항상 부족하다.
 
 실제로 필요한 신호는 다음 쪽에 가깝다.
+
+## 깊이 들어가기 (계속 5)
 
 | 관측 신호 | 왜 필요한가 | 예시 태그/지표 |
 |---|---|---|
@@ -179,6 +187,8 @@ trace나 structured log에도 최소한 아래는 남기는 편이 좋다.
 replica lag 평균이 낮다고 mixed path가 안전한 것은 아니다.
 
 대표적인 이유:
+
+## 깊이 들어가기 (계속 6)
 
 - 최신성 민감 endpoint는 평균이 아니라 tail lag에 노출된다
 - cache가 대부분의 요청을 흡수하면 miss path sample이 너무 작아 aggregate metric에 묻힌다

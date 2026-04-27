@@ -13,7 +13,9 @@
 - [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
 
-retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isolation, postgresql read committed, postgresql repeatable read, postgresql serializable, postgresql serializable retry playbook, sqlstate 40001, mysql read committed, mysql repeatable read, mysql serializable, snapshot isolation vs next-key lock, postgresql serializable ssi, mysql serializable locking read, engine-specific isolation cheat sheet, beginner isolation comparison, read committed engine difference, repeatable read engine difference, serializable retry vs blocking
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isolation, postgresql read committed, postgresql repeatable read, postgresql serializable, postgresql serializable retry playbook, sqlstate 40001, mysql read committed, mysql repeatable read, mysql serializable, snapshot isolation vs next-key lock, postgresql serializable ssi, mysql serializable locking read, beginner isolation comparison, postgresql vs mysql isolation cheat sheet basics
 
 ## 핵심 개념
 
@@ -23,7 +25,7 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 2. "없음"이나 범위를 믿고 쓰는 경로를 row lock이 아니라 **predicate 자체**까지 보호해 주나?
 3. `SERIALIZABLE`이 주로 **retry를 요구하는 optimistic 계열**인가, 아니면 **더 많은 잠금과 대기**를 만드는 lock-heavy 계열인가?
 
-이 질문에 대한 답이 PostgreSQL과 MySQL에서 다르다.  
+이 질문에 대한 답이 PostgreSQL과 MySQL에서 다르다.
 그래서 "우리 DB에서 `REPEATABLE READ`면 괜찮았다"는 말은 엔진 이름이 빠지면 불완전한 설명이다.
 
 ## 먼저 보는 치트 시트
@@ -52,7 +54,7 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 
 > `SELECT ... FOR UPDATE`를 했으니 "없음"도 잠겼겠지?
 
-`READ COMMITTED`의 InnoDB에서는 이 가정이 틀릴 수 있다.  
+`READ COMMITTED`의 InnoDB에서는 이 가정이 틀릴 수 있다.
 기존 row는 잠가도, 아직 없는 row가 들어올 gap은 막지 못해 overlap check나 "비어 있으면 insert" 경로가 phantom에 취약해진다.
 
 ### 2. `REPEATABLE READ`: PostgreSQL은 snapshot 쪽, MySQL은 next-key locking 체감이 더 강하다
@@ -79,6 +81,8 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 - 그래서 어떤 absence-check가 MySQL RR에서는 꽤 잘 버티는 것처럼 보일 수 있다
 
 중요한 함정:
+
+## 격리수준별로 왜 다르게 느껴지나 (계속 2)
 
 - 이 안전성은 "추상적인 predicate 전체"가 아니라 **실제로 스캔한 index range**에 묶인다
 - 인덱스 prefix, access path, mixed write path가 달라지면 같은 논리 규칙도 깨질 수 있다
@@ -158,7 +162,7 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 1. `SELECT ... FOR UPDATE`로 겹치는 예약이 없는지 확인
 2. 결과가 없으면 insert
 
-이 패턴이 MySQL에서 버텼다면, 실제로는 RR의 next-key locking과 인덱스 경로 덕을 봤을 가능성이 있다.  
+이 패턴이 MySQL에서 버텼다면, 실제로는 RR의 next-key locking과 인덱스 경로 덕을 봤을 가능성이 있다.
 같은 코드를 PostgreSQL RR로 옮기면 "repeated read는 안정적"이어도 absence-check 자체는 자동으로 잠기지 않는다.
 
 즉 포팅 포인트는 SQL 문법이 아니라 **arbitration surface를 무엇으로 만들지**다.

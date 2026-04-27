@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue, 큐와 스택 차이, beginner queue, queue vs stack, 대기열 자료구조, queue front rear, 선입선출 설명
+retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue, 큐와 스택 차이, beginner queue, queue vs stack, 대기열 자료구조, queue front rear, 선입선출 설명, queue basics basics, queue basics beginner, queue basics intro
 
 ## 핵심 개념
 

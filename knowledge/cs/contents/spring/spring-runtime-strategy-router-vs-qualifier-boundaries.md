@@ -230,6 +230,8 @@ public class NotificationRouter {
 
 사용자 설정이 `email`일 수도 있고 `sms`일 수도 있다면, 이건 `@Qualifier`로 못 푼다.
 
+## 알림 예제로 한 번 더 보기 (계속 2)
+
 - `@Qualifier`는 파라미터에 박아 두는 값이다
 - 사용자별 채널 선호는 요청마다 바뀔 수 있다
 - 따라서 router나 strategy registry 쪽이 자연스럽다

@@ -16,7 +16,7 @@
 - [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md) - 처음 배우는데 디자인 패턴 route를 어디서 시작할지 막히면 조합 -> 패턴 기초 route map으로 이어 주는 beginner entrypoint
 - [객체지향 설계 기초](../../software-engineering/oop-design-basics.md)
 
-retrieval-anchor-keywords: object oriented core principles, oop big picture, java oop beginner route, 객체지향 큰 그림, 객체지향 처음 배우는데, 객체지향 읽는 순서, oop to design pattern beginner route, design pattern beginner route, design pattern route map, 처음 배우는데 디자인 패턴 어디부터, 객체지향 큰 그림 다음 상속 언제 쓰는지, 상속 조합 패턴 기초 순서
+retrieval-anchor-keywords: object oriented core principles, oop big picture, java oop beginner route, 객체지향 큰 그림, 객체지향 처음 배우는데, 객체지향 읽는 순서, oop to design pattern beginner route, design pattern beginner route, design pattern route map, 처음 배우는데 디자인 패턴 어디부터, 객체지향 큰 그림 다음 상속 언제 쓰는지, 상속 조합 패턴 기초 순서, object oriented core principles basics, object oriented core principles beginner, object oriented core principles intro
 
 <details>
 <summary>Table of Contents</summary>

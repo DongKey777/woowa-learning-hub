@@ -6,6 +6,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
@@ -14,7 +21,7 @@
 > - [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)
 > - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
 
-retrieval-anchor-keywords: spring boot autoconfiguration, conditional bean registration, enable autoconfiguration, AutoConfiguration.imports, condition evaluation report, boot starter, bean override, spring application context, configuration vs autoconfiguration, @Configuration vs auto-configuration, proxyBeanMethods mental model, --debug first checklist, actuator conditions endpoint, @ConditionalOnMissingBean miss, boot default bean skipped
+retrieval-anchor-keywords: spring boot autoconfiguration, conditional bean registration, enable autoconfiguration, autoconfiguration.imports, condition evaluation report, boot starter, bean override, spring application context, configuration vs autoconfiguration, @configuration vs auto-configuration, proxybeanmethods mental model, --debug first checklist, actuator conditions endpoint, spring boot autoconfiguration basics, spring boot autoconfiguration beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -41,7 +48,7 @@ retrieval-anchor-keywords: spring boot autoconfiguration, conditional bean regis
 2. 사용자가 이미 같은 타입의 Bean을 직접 등록했는가?
 3. 웹 애플리케이션인가, 배치 애플리케이션인가, 리액티브 애플리케이션인가?
 
-이 기준을 통과한 것만 실제 Bean으로 등록된다.  
+이 기준을 통과한 것만 실제 Bean으로 등록된다.
 즉, 자동 구성은 마법이 아니라 **조건부 Bean 등록 시스템**이다.
 
 `IoC 컨테이너` 관점의 배경은 [IoC 컨테이너와 DI](./ioc-di-container.md)를 먼저 보면 이해가 빠르다.
@@ -78,7 +85,7 @@ Boot 3 계열에서는 주로 아래 파일이 기준이다.
 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 ```
 
-이 파일에 나열된 자동 구성 클래스들이 후보가 된다.  
+이 파일에 나열된 자동 구성 클래스들이 후보가 된다.
 실제 등록은 `AutoConfigurationImportSelector`가 담당하고, 이 과정에서 조건을 다시 평가한다.
 
 흐름을 단순화하면 이렇다.
@@ -92,7 +99,7 @@ META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
       -> 통과한 설정만 Bean 등록
 ```
 
-Boot 2.x 시절에는 `spring.factories`가 더 중심적이었고, Boot 3에서는 더 명시적인 자동 구성 메타데이터로 이동했다.  
+Boot 2.x 시절에는 `spring.factories`가 더 중심적이었고, Boot 3에서는 더 명시적인 자동 구성 메타데이터로 이동했다.
 실무에서는 “어떤 버전의 Boot를 쓰는가”에 따라 디버깅 포인트가 달라진다.
 
 ### 3. 조건부 등록의 핵심 어노테이션
@@ -109,6 +116,8 @@ Boot 2.x 시절에는 `spring.factories`가 더 중심적이었고, Boot 3에서
 
 예를 들어 JDBC 스타터는 `DataSource` 관련 클래스가 있고, 사용자가 직접 `DataSource`를 안 만들었을 때 기본 구현을 제공한다.
 
+## 깊이 들어가기 (계속 2)
+
 ### 4. 왜 자동 구성이 필요한가
 
 자동 구성이 없으면 모든 프로젝트에서 반복적으로 아래를 직접 써야 한다.
@@ -120,12 +129,12 @@ Boot 2.x 시절에는 `spring.factories`가 더 중심적이었고, Boot 3에서
 - `ViewResolver`
 - `RestTemplateBuilder` / `WebClient.Builder`
 
-이런 설정은 “한 번만 쓰는 코드”가 아니라, 수십 개 프로젝트에서 반복되는 보일러플레이트다.  
+이런 설정은 “한 번만 쓰는 코드”가 아니라, 수십 개 프로젝트에서 반복되는 보일러플레이트다.
 Boot는 이 반복을 줄이고, 사용자가 정말 바꾸고 싶은 부분만 오버라이드하게 만든다.
 
 ### 5. Override와 Customization의 원리
 
-자동 구성은 사용자의 Bean보다 우선하지 않는다.  
+자동 구성은 사용자의 Bean보다 우선하지 않는다.
 대부분의 자동 구성은 `@ConditionalOnMissingBean`을 사용하기 때문에, 사용자가 같은 타입의 Bean을 직접 등록하면 Boot 기본값이 빠진다.
 
 즉, 커스터마이징의 핵심은 “자동 구성과 싸우는 것”이 아니라, **내 Bean을 더 먼저 등록해서 기본값을 대체하는 것**이다.
@@ -149,7 +158,7 @@ public class JacksonConfig {
 }
 ```
 
-이 경우 Boot의 기본 `ObjectMapper` 대신 내 Bean이 들어가야 한다.  
+이 경우 Boot의 기본 `ObjectMapper` 대신 내 Bean이 들어가야 한다.
 그런데 `@Bean` 이름 충돌, `@Primary` 설정, 혹은 조건부 구성 타이밍 때문에 의도와 다르게 보일 수 있다.
 
 확인 순서:
@@ -168,7 +177,7 @@ public class JacksonConfig {
 - `DispatcherServlet` 관련 클래스가 클래스패스에 존재하는가
 - 내 프로젝트가 web 환경으로 시작했는가
 
-즉, “스타터를 넣었다”는 사실만으로 모든 Bean이 무조건 생기는 게 아니다.  
+즉, “스타터를 넣었다”는 사실만으로 모든 Bean이 무조건 생기는 게 아니다.
 조건이 맞아야 자동 구성이 활성화된다.
 
 ### 시나리오 3: 커스텀 starter를 만들고 싶은 경우
@@ -222,7 +231,7 @@ public class CustomWebConfig implements WebMvcConfigurer {
 }
 ```
 
-Boot의 기본 MVC 설정 위에 내 설정을 얹는 방식이다.  
+Boot의 기본 MVC 설정 위에 내 설정을 얹는 방식이다.
 자동 구성은 “기본값 제공”, 개발자는 “의미 있는 부분만 변경”이 목표다.
 
 ### 디버깅용 출력 예시
@@ -253,8 +262,8 @@ ApplicationRunner runner(ApplicationContext context) {
 | 수동 설정 | 동작이 명확하고 통제가 쉽다 | 중복 코드가 늘고 유지보수가 무거워진다 | 특수한 요구사항이 있는 경우 |
 | 커스텀 starter | 조직 표준을 재사용할 수 있다 | 초기에 구조 설계가 필요하다 | 여러 서비스에서 같은 기본값을 쓸 때 |
 
-자동 구성은 무조건 좋은 게 아니다.  
-프로젝트가 작고 설정 포인트가 거의 없으면, 오히려 수동 설정이 더 이해하기 쉬울 수 있다.  
+자동 구성은 무조건 좋은 게 아니다.
+프로젝트가 작고 설정 포인트가 거의 없으면, 오히려 수동 설정이 더 이해하기 쉬울 수 있다.
 반대로 서비스가 커질수록 자동 구성은 “표준화된 시작점”으로 강해진다.
 
 ---

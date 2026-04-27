@@ -12,7 +12,7 @@
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [`List.copyOf()` vs `Stream.toList()` Read-Only Snapshot Bridge](./list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md)
 
-retrieval-anchor-keywords: java array to list conversion primer, java array list conversion entrypoint, arrays aslist vs list of vs arraylist, array alias copy list conversion, java array to mutable list, java array to readonly list, arrays aslist alias beginner, new arraylist arrays aslist copy beginner, list of vs arrays aslist beginner, 배열 리스트 변환 입문, 배열을 리스트로 바꿀 때 뭐 쓰지, arrays aslist list of 차이, 배열 alias copy list 변환, 자바 배열 리스트 변환 큰 그림, 배열과 리스트 같이 바뀜, 배열을 수정 가능한 리스트로 바꾸기, 배열을 읽기 전용 리스트로 바꾸기, beginner array list router
+retrieval-anchor-keywords: java array to list conversion primer, java array list conversion entrypoint, arrays aslist vs list of vs arraylist, array alias copy list conversion, java array to mutable list, java array to readonly list, arrays aslist alias beginner, new arraylist arrays aslist copy beginner, list of vs arrays aslist beginner, 배열 리스트 변환 입문, 배열을 리스트로 바꿀 때 뭐 쓰지, arrays aslist list of 차이, 배열 alias copy list 변환, 자바 배열 리스트 변환 큰 그림, 배열과 리스트 같이 바뀜
 
 ## 먼저 잡는 멘탈 모델
 

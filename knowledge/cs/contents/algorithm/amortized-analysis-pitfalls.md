@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: amortized analysis pitfalls basics, amortized analysis pitfalls beginner, amortized analysis pitfalls intro, algorithm basics, beginner algorithm, 처음 배우는데 amortized analysis pitfalls, amortized analysis pitfalls 입문, amortized analysis pitfalls 기초, what is amortized analysis pitfalls, how to amortized analysis pitfalls
 > 관련 문서:
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
 > - [Union-Find Amortized Proof Intuition](./union-find-amortized-proof-intuition.md)

@@ -4,13 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md)
 > - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
 
-retrieval-anchor-keywords: spring legacy self invocation detection card, spring legacy self-call detection card, configuration bean self invocation, configuration bean internal call, configuration bean self call, @Configuration @Bean self-invocation, @Configuration @Bean self-call, proxyBeanMethods false self invocation, proxyBeanMethods false internal call, proxyBeanMethods false self call, rg bean self invocation pattern, spring review checklist self invocation, spring review checklist self call, lite configuration unmanaged object, spring true false check, spring beginner self-check quiz, parameter injection safe pattern, assertSame assertNotSame self invocation verification, assertSame assertNotSame self call verification, spring self invocation test guide, spring self call test guide, kotlin bean detection, kotlin top-level bean function, kotlin fun bean rg, kotlin file level bean function, kotlin configuration class detection
+retrieval-anchor-keywords: spring legacy self invocation detection card, spring legacy self-call detection card, configuration bean self invocation, configuration bean internal call, configuration bean self call, @configuration @bean self-invocation, @configuration @bean self-call, proxybeanmethods false self invocation, proxybeanmethods false internal call, proxybeanmethods false self call, rg bean self invocation pattern, spring review checklist self invocation, spring review checklist self call, spring beginner self-check quiz, spring legacy configuration bean self call detection card basics
 
 ## 먼저 mental model 한 줄
 
@@ -108,6 +115,8 @@ Kotlin은 파일 top-level 함수가 있을 수 있어서, "설정 클래스 안
 fun auditClock() = AuditClock()
 ```
 
+## Kotlin에서 `rg`가 놓치기 쉬운 포인트 (계속 2)
+
 이런 파일은 프로젝트 규칙상 드물 수 있지만, lane QA 목적에서는 **놓치지 않는 쪽**이 더 중요하다.
 처음엔 `*.kt` 전체에서 `@Bean fun`을 모은 뒤, 그다음에 `@Configuration`/`object`/class 문맥을 좁히는 편이 안전하다.
 
@@ -187,3 +196,7 @@ class SafeConfig {
   - 자주 틀리는 이유: 실행 성공을 곧 설정 안전성으로 오해해서, 후처리/AOP/lifecycle이 빠진 "조용한 오작동"은 바로 눈에 안 보인다는 점을 놓친다.
 
 미니 점검이 끝났으면 바로 다음 순서로 [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md) -> [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)를 본다.
+
+## 한 줄 정리
+
+`@Configuration`에서 `@Bean` 메서드가 다른 `@Bean` 메서드를 직접 호출하면, 특히 `proxyBeanMethods = false`일 때 컨테이너가 관리하지 않는 객체가 섞일 수 있다. 이 카드는 self-invocation(내부 호출) 후보를 `rg`로 빠르게 좁히고 리뷰에서 바로 확인할 체크를 제공한다.

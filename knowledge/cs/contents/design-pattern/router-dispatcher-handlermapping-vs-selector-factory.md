@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 > - [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
@@ -12,7 +19,7 @@
 > - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: request dispatch naming, router vs selector naming, dispatcher vs selector naming, handler mapping vs selector, handler mapping vs factory, router dispatcher handlermapping beginner, request router naming beginner, request dispatcher naming beginner, spring dispatcher servlet handler mapping naming, DispatcherServlet HandlerMapping RouterFunction naming, handler selector factory smell, request routing vs strategy selector, handler lookup not factory, request dispatch not factory, controller dispatch naming, URL route handler mapping difference, router dispatcher handlermapping 차이, 라우터 셀렉터 차이, 디스패처 셀렉터 차이, 핸들러매핑 팩토리 차이, 요청 디스패치 이름 짓기
+retrieval-anchor-keywords: request dispatch naming, router vs selector naming, dispatcher vs selector naming, handler mapping vs selector, handler mapping vs factory, router dispatcher handlermapping beginner, request router naming beginner, request dispatcher naming beginner, spring dispatcher servlet handler mapping naming, dispatcherservlet handlermapping routerfunction naming, handler selector factory smell, request routing vs strategy selector, handler lookup not factory, request dispatch not factory, controller dispatch naming
 
 ---
 

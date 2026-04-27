@@ -15,7 +15,7 @@
 - [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: sql reading basics, select join group by beginner, relational modeling beginner, pk fk cardinality basics, sql 처음 배우는데, 테이블 관계가 헷갈려요, select 읽는 순서, group by 왜 쓰는지, normalization tradeoff beginner, one to many database, join 결과가 왜 늘어나요, beginner relational database primer, database primer return path, database readme quick navigation, sql primer next step spring bridge, woowacourse backend database foundation primer
+retrieval-anchor-keywords: sql reading basics, select join group by beginner, relational modeling beginner, pk fk cardinality basics, sql 처음 배우는데, 테이블 관계가 헷갈려요, select 읽는 순서, group by 왜 쓰는지, normalization tradeoff beginner, one to many database, join 결과가 왜 늘어나요, beginner relational database primer, database primer return path, database readme quick navigation, sql primer next step spring bridge
 
 ## 핵심 개념
 

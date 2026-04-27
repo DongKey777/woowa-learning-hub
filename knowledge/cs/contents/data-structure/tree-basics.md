@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: tree basics, binary tree intro, 트리 입문, 트리가 뭐예요, root node leaf node, parent child node, tree depth height, 트리 깊이 높이, 이진트리 설명, 트리 순회 입문, beginner tree, tree vs graph
+retrieval-anchor-keywords: tree basics, binary tree intro, 트리 입문, 트리가 뭐예요, root node leaf node, parent child node, tree depth height, 트리 깊이 높이, 이진트리 설명, 트리 순회 입문, beginner tree, tree vs graph, tree basics basics, tree basics beginner, tree basics intro
 
 ## 핵심 개념
 

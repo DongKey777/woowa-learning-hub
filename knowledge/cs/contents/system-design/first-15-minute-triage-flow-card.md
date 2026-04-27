@@ -2,7 +2,7 @@
 
 > 한 줄 요약: `fallback_reason`를 봤을 때 바로 어느 dashboard panel부터 열지와 첫 15분 안에 어떤 한 문장으로 상황을 정리할지를 한 화면으로 묶어 둔 초보자용 연결 카드다.
 
-retrieval-anchor-keywords: first 15 minute triage flow card, first 15-minute triage flow card, starter matrix to dashboard panel, fallback reason first dashboard panel, first response dashboard opener, rejected hit starter matrix bridge, stale dashboard first panel, symptom path capacity triage card, recent_write first panel, min_version first panel, replica_lag first panel, watermark first panel, replica_error first panel, beginner first response triage, one screen triage flowchart, starter action to dashboard bridge, qa-content-system-design-00030
+retrieval-anchor-keywords: first 15 minute triage flow card, first 15-minute triage flow card, starter matrix to dashboard panel, fallback reason first dashboard panel, first response dashboard opener, rejected hit starter matrix bridge, stale dashboard first panel, symptom path capacity triage card, recent_write first panel, min_version first panel, replica_lag first panel, watermark first panel, replica_error first panel, beginner first response triage, first 15 minute triage flow card basics
 
 **난이도: 🟢 Beginner**
 
@@ -15,6 +15,8 @@ retrieval-anchor-keywords: first 15 minute triage flow card, first 15-minute tri
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
 - [Dashboard Restatement UX 설계](./dashboard-restatement-ux-design.md)
 - [system-design 카테고리 인덱스](./README.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 
@@ -76,7 +78,10 @@ alert / log / trace에서 fallback_reason 또는 rejected_hit_reason를 봄
       - Capacity 먼저 흔들림 -> "보호 동작은 있지만 primary headroom이 먼저 위험합니다."
             |
             v
-   4. 아직 열지 않을 것
+
+## 한 화면 flow card (계속 2)
+
+4. 아직 열지 않을 것
       - 사용자-facing correction 설명이 필요할 때만 Dashboard Restatement UX로 간다
       - 첫 15분에는 deep dive보다 첫 panel 선택을 먼저 끝낸다
 ```
@@ -156,3 +161,7 @@ selected_source=primary
 - 왜 `recent_write`와 `min_version`이 같은 stale라도 다른 대응으로 이어지는지 보려면 [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - 용어가 `recent-write`인지 `recent_write`인지 헷갈리면 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - 사용자 공지나 corrected badge까지 설계해야 하면 [Dashboard Restatement UX 설계](./dashboard-restatement-ux-design.md)
+
+## 한 줄 정리
+
+`fallback_reason`를 봤을 때 바로 어느 dashboard panel부터 열지와 첫 15분 안에 어떤 한 문장으로 상황을 정리할지를 한 화면으로 묶어 둔 초보자용 연결 카드다.

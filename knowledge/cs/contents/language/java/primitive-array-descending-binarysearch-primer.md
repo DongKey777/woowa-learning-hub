@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: primitive array descending binarysearch primer basics, primitive array descending binarysearch primer beginner, primitive array descending binarysearch primer intro, java basics, beginner java, 처음 배우는데 primitive array descending binarysearch primer, primitive array descending binarysearch primer 입문, primitive array descending binarysearch primer 기초, what is primitive array descending binarysearch primer, how to primitive array descending binarysearch primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)

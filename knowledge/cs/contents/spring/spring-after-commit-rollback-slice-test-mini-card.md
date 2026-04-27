@@ -11,7 +11,9 @@
 - [Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기](./spring-service-layer-external-io-after-commit-outbox-primer.md)
 - [Spring EventListener / TransactionalEventListener / Outbox](./spring-eventlistener-transaction-phase-outbox.md)
 
-retrieval-anchor-keywords: after commit test beginner, TransactionalEventListener AFTER_COMMIT test, DataJpaTest after commit, rollback based slice test, transactional event listener rollback test, commit visible test beginner, TestTransaction after commit, slice test commit path, after commit listener not called test, beginner after commit primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: after commit test beginner, transactionaleventlistener after_commit test, datajpatest after commit, rollback based slice test, transactional event listener rollback test, commit visible test beginner, testtransaction after commit, slice test commit path, after commit listener not called test, beginner after commit primer, spring after commit rollback slice test mini card basics, spring after commit rollback slice test mini card beginner, spring after commit rollback slice test mini card intro, spring basics, beginner spring
 
 ## 먼저 mental model 한 줄
 

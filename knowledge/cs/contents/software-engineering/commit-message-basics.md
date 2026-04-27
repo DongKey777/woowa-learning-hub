@@ -12,7 +12,7 @@
 - [클린 코드 기초](./clean-code-basics.md)
 - [Java 언어 기초](../language/java/java-language-basics.md)
 
-retrieval-anchor-keywords: commit message basics, 커밋 메시지 입문, conventional commits, 커밋 컨벤션 처음 배우는데, git commit 메시지 어떻게 써요, feat fix chore 차이, 커밋 메시지 뭐예요, 좋은 커밋 작성법, commit message format, 커밋 타입 설명, beginner commit, 이력 추적
+retrieval-anchor-keywords: commit message basics, 커밋 메시지 입문, conventional commits, 커밋 컨벤션 처음 배우는데, git commit 메시지 어떻게 써요, feat fix chore 차이, 커밋 메시지 뭐예요, 좋은 커밋 작성법, commit message format, 커밋 타입 설명, beginner commit, 이력 추적, commit message basics basics, commit message basics beginner, commit message basics intro
 
 ## 핵심 개념
 

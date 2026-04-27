@@ -12,7 +12,9 @@
 - [0-1 BFS equal-distance reinsert mini note](./zero-one-bfs-equal-distance-reinsert-mini-note.md)
 - [State-space visited vs dist starter card](./zero-one-bfs-state-visited-vs-dist-starter-card.md)
 
-retrieval-anchor-keywords: 0-1 bfs stale entry, zero one bfs stale entry, stale deque entry, outdated deque item, old deque entry harmless, A@1 A@0 zero one bfs, deque duplicate vertex 0-1 bfs, stale pop skip 0-1 bfs, stale distance entry, old reservation ticket analogy, 0-1 bfs duplicate deque safe, 0-1 bfs outdated node card, 0-1 bfs beginner stale entry, 0-1 bfs deque old entry, deque same node twice, 0-1 bfs 왜 A@1 남아도 되나, 0-1 bfs 오래된 항목, 오래된 deque 항목, A@1 A@0, dist 줄어든 뒤 옛 항목, stale pop 건너뛰기, 0-1 bfs 중복 항목 안전, 0-1 bfs 덱에 같은 정점 두 번
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 0-1 bfs stale entry, zero one bfs stale entry, stale deque entry, outdated deque item, old deque entry harmless, a@1 a@0 zero one bfs, deque duplicate vertex 0-1 bfs, stale pop skip 0-1 bfs, stale distance entry, old reservation ticket analogy, 0-1 bfs duplicate deque safe, 0-1 bfs outdated node card, 0-1 bfs beginner stale entry, 0-1 bfs deque old entry, 0-1 bfs 왜 a@1 남아도 되나
 
 ## 먼저 그림부터
 
@@ -112,3 +114,7 @@ for nxt, cost in graph[cur]:
 - 같은 예시를 step 표로 다시 보고 싶으면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 - 왜 첫 방문 고정이 아니라 `dist` 비교가 핵심인지 보려면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - 실제 코드에서 `dist`, `deque`, `parent`가 어디서 같이 움직이는지 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
+
+## 한 줄 정리
+
+deque 안에 `A@1`이 남아 있어도 이미 `A@0`으로 `dist[A]`가 줄었다면, 오래된 항목은 "틀린 답"이 아니라 그냥 건너뛰면 되는 옛 예약표다.

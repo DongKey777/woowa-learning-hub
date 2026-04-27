@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: fixed rate vs fixed delay overrun primer basics, fixed rate vs fixed delay overrun primer beginner, fixed rate vs fixed delay overrun primer intro, data structure basics, beginner data structure, 처음 배우는데 fixed rate vs fixed delay overrun primer, fixed rate vs fixed delay overrun primer 입문, fixed rate vs fixed delay overrun primer 기초, what is fixed rate vs fixed delay overrun primer, how to fixed rate vs fixed delay overrun primer
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Periodic Task Cancellation Bridge](./periodic-task-cancellation-bridge.md)

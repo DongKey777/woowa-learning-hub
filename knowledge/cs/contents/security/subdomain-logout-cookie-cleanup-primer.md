@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `primer`
 >
 > 팀이 subdomain 간 shared parent-domain cookie를 줄이고, `auth.example.com -> app.example.com` handoff 뒤 각 app이 자기 session을 갖는 구조로 옮길 때 "logout 후 왜 다른 subdomain에서는 아직 로그인처럼 보이나"를 처음 설명하는 entrypoint다.
@@ -19,7 +26,7 @@
 > - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: subdomain logout cookie cleanup primer, parent-domain cookie logout cleanup, shared cookie to app-local session logout, auth.example.com logout app.example.com still logged in, subdomain logout stale cookie, logout tombstone cleanup beginner, app-local session handoff logout, shared session retirement logout, logout old Domain example.com cookie, host-only session plus shared cookie cleanup, logout after cookie scope migration, subdomain cookie tombstone primer, app local session logout old shared cookie survives, logout one-time handoff model, auth app subdomain logout primer, logout cleanup matrix subdomain, parent-domain cookie stale login tail, subdomain session handoff logout cleanup, logout current app session plus old cookie tombstone, logout migration beginner
+retrieval-anchor-keywords: subdomain logout cookie cleanup primer, parent-domain cookie logout cleanup, shared cookie to app-local session logout, auth.example.com logout app.example.com still logged in, subdomain logout stale cookie, logout tombstone cleanup beginner, app-local session handoff logout, shared session retirement logout, logout old domain example.com cookie, host-only session plus shared cookie cleanup, logout after cookie scope migration, subdomain cookie tombstone primer, app local session logout old shared cookie survives, logout one-time handoff model, logout migration beginner
 retrieval-anchor-keywords: __Host-session logout old shared cookie, app_session logout shared session cleanup, sibling subdomain logout confusion, why logout from one subdomain does not log out another, logout browser cookie cleanup vs server session revoke
 
 ## 먼저 잡는 mental model
@@ -240,3 +247,7 @@ handoff 모델이라면 꼭 bug는 아니다.
 - shared parent-domain cookie를 `__Host-`나 host-only 구조로 옮기는 큰 그림이 먼저 필요하면 [__Host- Cookie Migration Primer](./host-cookie-migration-primer.md)를 본다.
 - `auth` callback과 `app` handoff 구조 자체가 헷갈리면 [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md), [Subdomain Login Callback Boundaries](./subdomain-login-callback-boundaries.md)로 돌아간다.
 - federated logout, refresh family, session coherence까지 넓어지면 [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)로 내려간다.
+
+## 한 줄 정리
+
+`Domain=example.com` shared cookie 구조에서 app-local session handoff 구조로 옮길 때 logout은 "지금 app session 삭제"만으로 끝나지 않는다. **현재 host의 새 session 종료 + 옛 parent-domain cookie tombstone + 서버 쪽 old session 무효화**를 같이 봐야 stale login tail을 줄일 수 있다.

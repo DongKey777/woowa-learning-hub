@@ -2,7 +2,7 @@
 
 > 한 줄 요약: client, app, worker가 각자 재시도를 시작하면 하나의 느린 장애가 여러 겹의 동시 시도로 증폭되고, bounded queue와 load shedding은 그 증폭을 잘라 blast radius를 제한한다.
 
-retrieval-anchor-keywords: retry amplification primer, retry storm containment, client retry, app retry, worker retry, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, stale work drop, fail-fast overload, admission control primer
+retrieval-anchor-keywords: retry amplification primer, retry storm containment, client retry, app retry, worker retry, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, retry amplification and backpressure primer basics, retry amplification and backpressure primer beginner
 
 **난이도: 🟢 Beginner**
 
@@ -16,11 +16,13 @@ retrieval-anchor-keywords: retry amplification primer, retry storm containment, 
 - [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md)
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
 ---
 
 ## 핵심 개념
 
-retry 자체는 나쁜 것이 아니다.  
+retry 자체는 나쁜 것이 아니다.
 문제는 **각 레이어가 서로를 모른 채 동시에 retry**할 때다.
 
 - client는 timeout이 나서 다시 보낸다
@@ -38,7 +40,7 @@ logical request 1개
   = 최대 12개 시도
 ```
 
-중요한 것은 총 횟수보다 **겹쳐서 살아 있는 시도 수**다.  
+중요한 것은 총 횟수보다 **겹쳐서 살아 있는 시도 수**다.
 첫 시도가 아직 끝나지 않았는데 다음 시도가 들어오면, 같은 장애가 더 큰 장애로 자란다.
 
 즉 이 문서의 핵심은 두 가지다.
@@ -61,12 +63,12 @@ logical request 1개
 | app/service | cache miss, DB timeout, downstream 5xx | 남은 budget 없이 blind retry | 오래된 시도와 새 시도가 겹침 |
 | worker/queue | provider error, ack 누락, visibility timeout 만료 | 오래된 job을 무한 적재 | backlog와 redelivery storm |
 
-즉 retry amplification은 "client가 많이 누른다" 정도가 아니라,  
+즉 retry amplification은 "client가 많이 누른다" 정도가 아니라,
 **각 레이어의 안전장치가 서로 합쳐져 폭주 경로가 되는 현상**이다.
 
 ### 2. 왜 느린 장애가 더 위험한가
 
-완전 outage라면 많은 요청이 빠르게 실패한다.  
+완전 outage라면 많은 요청이 빠르게 실패한다.
 반대로 부분 장애는 요청이 오래 살아남아서 더 위험하다.
 
 예:
@@ -103,6 +105,8 @@ logical request 1개
 queue는 burst를 흡수하는 도구지만, 무한 버퍼가 되면 장애 증폭기가 된다.
 
 unbounded queue의 문제:
+
+## 깊이 들어가기 (계속 2)
 
 - 처리할 수 없는 low-value job이 계속 쌓인다
 - 오래된 work가 최신 work보다 먼저 자원을 먹는다
@@ -146,7 +150,7 @@ fail-fast on low-value work
   -> core path만 보존
 ```
 
-즉 shedding은 "아무거나 버린다"가 아니라  
+즉 shedding은 "아무거나 버린다"가 아니라
 **핵심 경로를 살리기 위해 어떤 work를 포기할지 미리 정한 정책**이다.
 
 ### 5. retry budget의 owner를 하나로 줄여야 한다
@@ -164,6 +168,8 @@ fail-fast on low-value work
 
 실전 규칙:
 
+## 깊이 들어가기 (계속 3)
+
 1. 같은 hop의 retry owner는 가능하면 한 군데만 둔다.
 2. remaining budget이 full attempt cost보다 작으면 retry하지 않는다.
 3. idempotency가 없는 write는 retry보다 recover-first를 우선한다.
@@ -171,7 +177,7 @@ fail-fast on low-value work
 
 ### 6. queue는 depth만이 아니라 age로도 잘라야 한다
 
-queue depth만 보면 "많이 쌓였는가"만 보게 된다.  
+queue depth만 보면 "많이 쌓였는가"만 보게 된다.
 하지만 outage containment에는 **oldest age**가 더 중요할 때가 많다.
 
 이유:
@@ -195,7 +201,7 @@ queue depth만 보면 "많이 쌓였는가"만 보게 된다.
 
 ### 7. 관측도 logical request 기준으로 봐야 한다
 
-retry storm 때는 HTTP request count만 보면 착시가 생긴다.  
+retry storm 때는 HTTP request count만 보면 착시가 생긴다.
 같은 논리 요청이 여러 attempt로 부풀어 있기 때문이다.
 
 그래서 가능하면 `operation_id` 또는 trace 기준으로 본다.
@@ -309,7 +315,7 @@ public boolean accept(Job job, OverloadSignal signal) {
 | load shedding | 핵심 경로를 보호 | 비핵심 기능이 사라진다 | partial failure가 번질 때 |
 | DLQ / expired drop | backlog tail을 줄인다 | 운영 판단이 필요하다 | 늦은 작업 가치가 낮을 때 |
 
-핵심은 retry를 많이 하는 것이 회복력이 아니라,  
+핵심은 retry를 많이 하는 것이 회복력이 아니라,
 **언제 retry를 멈추고 언제 work를 버릴지 정하는 것이 회복력**이라는 점이다.
 
 ---

@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: singleton java basics, singleton java beginner, singleton java intro, design pattern basics, beginner design pattern, 처음 배우는데 singleton java, singleton java 입문, singleton java 기초, what is singleton java, how to singleton java
 > 관련 문서:
 > - [싱글톤 (Singleton)](./singleton.md)
 > - [싱글톤 vs DI 컨테이너 스코프](./singleton-vs-di-container-scope.md)
@@ -103,6 +112,8 @@ public final class HolderConfig {
 
 ### 4. double-checked locking은 volatile이 핵심이다
 
+## 깊이 들어가기 (계속 2)
+
 ```java
 public final class DclConfig {
     private static volatile DclConfig instance;
@@ -136,7 +147,7 @@ public enum EnumConfig {
 }
 ```
 
-enum singleton은 serialization과 reflection에 상대적으로 안전하다.  
+enum singleton은 serialization과 reflection에 상대적으로 안전하다.
 다만 타입이 enum이어야 하므로 유연성은 떨어질 수 있다.
 
 ---

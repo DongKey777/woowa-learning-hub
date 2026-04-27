@@ -15,7 +15,9 @@
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: session policy implementation sketches, session policy hint propagation, gateway app database hint propagation, gateway app db pseudo code, recent-write min-version write-sequence, recent write min version write seq, session hint envelope, session context propagation, freshness hint propagation, write sequence propagation beginner, beginner session guarantee code example, gateway repository database routing
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: session policy implementation sketches, session policy hint propagation, gateway app database hint propagation, gateway app db pseudo code, recent-write min-version write-sequence, recent write min version write seq, session hint envelope, session context propagation, freshness hint propagation, write sequence propagation beginner, beginner session guarantee code example, gateway repository database routing, session policy implementation sketches basics, session policy implementation sketches beginner, session policy implementation sketches intro
 
 ---
 
@@ -154,6 +156,8 @@ function read(key, policy):
   return primary.queryCart(key)
 ```
 
+## Sketch 1. recent-write + min-version read path (계속 2)
+
 여기서 database layer가 session policy 이름 전체를 알 필요는 없다.
 필요한 것은 아래 두 조건뿐이다.
 
@@ -218,6 +222,8 @@ function updateCartQty(request):
 ```
 
 app의 역할은 `write-sequence`를 DB까지 **그대로 끌고 내려가고**, 성공 시 다음 read를 위한 힌트도 같이 올려 보내는 것이다.
+
+## Sketch 2. write-sequence mutation path (계속 2)
 
 ### Database / Repository
 

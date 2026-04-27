@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: java timer vs scheduledexecutorservice vs delayqueue router basics, java timer vs scheduledexecutorservice vs delayqueue router beginner, java timer vs scheduledexecutorservice vs delayqueue router intro, data structure basics, beginner data structure, 처음 배우는데 java timer vs scheduledexecutorservice vs delayqueue router, java timer vs scheduledexecutorservice vs delayqueue router 입문, java timer vs scheduledexecutorservice vs delayqueue router 기초, what is java timer vs scheduledexecutorservice vs delayqueue router, how to java timer vs scheduledexecutorservice vs delayqueue router
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)

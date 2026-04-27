@@ -15,7 +15,7 @@
 - [데이터베이스 인덱스 기초](../database/index-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: caching basics, 캐시 입문, cache 뭐예요, cache hit miss 기초, redis 기초, ttl 캐시, 캐시 무효화 입문, read through cache aside, 캐시 레이어 기초, beginner caching, 데이터베이스 캐시, 캐시 전략 입문, 성능 최적화 캐시, source of truth vs cache copy, stale read beginner, cache when to use
+retrieval-anchor-keywords: caching basics, 캐시 입문, cache 뭐예요, cache hit miss 기초, redis 기초, ttl 캐시, 캐시 무효화 입문, read through cache aside, 캐시 레이어 기초, beginner caching, 데이터베이스 캐시, 캐시 전략 입문, 성능 최적화 캐시, source of truth vs cache copy, stale read beginner
 
 ---
 

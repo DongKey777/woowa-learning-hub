@@ -12,7 +12,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 
-retrieval-anchor-keywords: primary key basics, foreign key basics, pk fk 입문, 기본키 외래키 처음 배우는데, pk fk 차이, 기본키가 뭐예요, 외래키 제약 설명, surrogate key natural key, 참조 무결성 기초, db 관계 키 입문
+retrieval-anchor-keywords: primary key basics, foreign key basics, pk fk 입문, 기본키 외래키 처음 배우는데, pk fk 차이, 기본키가 뭐예요, 외래키 제약 설명, surrogate key natural key, 참조 무결성 기초, db 관계 키 입문, primary foreign key basics basics, primary foreign key basics beginner, primary foreign key basics intro, database basics, beginner database
 
 ## 핵심 개념
 

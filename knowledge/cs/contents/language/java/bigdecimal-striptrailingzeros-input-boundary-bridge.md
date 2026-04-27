@@ -16,7 +16,7 @@
 - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
 - [BigDecimal `MathContext`, `stripTrailingZeros()`, and Canonicalization Traps](./bigdecimal-mathcontext-striptrailingzeros-canonicalization-traps.md)
 
-retrieval-anchor-keywords: bigdecimal striptrailingzeros beginner, java bigdecimal normalization beginner, bigdecimal input boundary policy, bigdecimal canonicalization entrypoint, bigdecimal 1.0 1.00 normalization, stripTrailingZeros toPlainString policy, bigdecimal beginner bridge, bigdecimal boundary contract, bigdecimal normalize at input, bigdecimal scale meaning beginner, bigdecimal input normalization checklist, bigdecimal key policy checklist, bigdecimal boundary policy example, bigdecimal normalize once at input, bigdecimal setScale vs stripTrailingZeros beginner, bigdecimal api boundary canonicalization, bigdecimal collection key canonicalization
+retrieval-anchor-keywords: bigdecimal striptrailingzeros beginner, java bigdecimal normalization beginner, bigdecimal input boundary policy, bigdecimal canonicalization entrypoint, bigdecimal 1.0 1.00 normalization, striptrailingzeros toplainstring policy, bigdecimal beginner bridge, bigdecimal boundary contract, bigdecimal normalize at input, bigdecimal scale meaning beginner, bigdecimal input normalization checklist, bigdecimal key policy checklist, bigdecimal boundary policy example, bigdecimal normalize once at input, bigdecimal setscale vs striptrailingzeros beginner
 
 ## 먼저 잡을 멘탈 모델
 

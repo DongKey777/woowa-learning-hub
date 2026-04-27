@@ -4,13 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Beginner Primer 작성 템플릿: 30초 비교표 + 1분 예시 박스 스켈레톤](./beginner-primer-template.md)
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: primer scope manifest, beginner primer manifest, primer vs bridge vs checklist, beginner lint manifest, primer scope marker, true beginner primer list, beginner entrypoint manifest, design pattern primer manifest, first read primer manifest, primer scope taxonomy, beginner primer lint, filename heuristic replacement, primer classification manifest, 초보자 프라이머 매니페스트, primer scope 구분, primer bridge checklist 차이, lint용 primer 목록, 초보자 entrypoint manifest
+retrieval-anchor-keywords: primer scope manifest, beginner primer manifest, primer vs bridge vs checklist, beginner lint manifest, primer scope marker, true beginner primer list, beginner entrypoint manifest, design pattern primer manifest, first read primer manifest, primer scope taxonomy, beginner primer lint, filename heuristic replacement, primer classification manifest, 초보자 프라이머 매니페스트, primer scope 구분
 
 ---
 
@@ -51,6 +58,8 @@ retrieval-anchor-keywords: primer scope manifest, beginner primer manifest, prim
 아래 manifest block을 우선 기준으로 쓴다.
 새 beginner 문서를 추가할 때도 먼저 이 표에 넣으면, lint가 filename heuristic 없이 분류할 수 있다.
 
+## lint가 읽을 분류 계약 (계속 2)
+
 ```yaml
 primer-scope-manifest:
   version: 1
@@ -83,7 +92,10 @@ primer-scope-manifest:
     factory-selector-resolver-beginner-entrypoint.md: beginner-entrypoint-router
     template-method-query-router-beginner.md: beginner-entrypoint-router
     policy-object-vs-strategy-map-beginner-bridge.md: beginner-bridge
-    observer-vs-command-beginner-bridge.md: beginner-bridge
+
+## lint가 읽을 분류 계약 (계속 3)
+
+observer-vs-command-beginner-bridge.md: beginner-bridge
     abstract-class-vs-interface-injection-bridge.md: beginner-bridge
     request-object-creation-vs-di-container.md: beginner-bridge
     request-scope-vs-plain-request-objects.md: beginner-bridge

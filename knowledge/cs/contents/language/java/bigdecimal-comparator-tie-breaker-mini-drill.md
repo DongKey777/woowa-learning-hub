@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: bigdecimal comparator tie breaker mini drill basics, bigdecimal comparator tie breaker mini drill beginner, bigdecimal comparator tie breaker mini drill intro, java basics, beginner java, 처음 배우는데 bigdecimal comparator tie breaker mini drill, bigdecimal comparator tie breaker mini drill 입문, bigdecimal comparator tie breaker mini drill 기초, what is bigdecimal comparator tie breaker mini drill, how to bigdecimal comparator tie breaker mini drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: record comparator 60 second mini drill basics, record comparator 60 second mini drill beginner, record comparator 60 second mini drill intro, java basics, beginner java, 처음 배우는데 record comparator 60 second mini drill, record comparator 60 second mini drill 입문, record comparator 60 second mini drill 기초, what is record comparator 60 second mini drill, how to record comparator 60 second mini drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Record and Value Object Equality](./record-value-object-equality-basics.md)
@@ -168,3 +177,7 @@ mental model은 짧다.
 - 워크시트 확장판: [Beginner Drill Sheet: Equality vs Ordering](./equality-vs-ordering-beginner-drill-sheet.md)
 - 컬렉션별 중복 규칙: [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - tie-breaker 감각 확장: [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+
+## 한 줄 정리
+
+`record`의 자동 `equals()`와 name-only `Comparator`가 서로 다른 기준을 쓰면, 같은 두 객체를 넣어도 `HashSet`/`TreeSet`/`TreeMap` 결과가 갈릴 수 있다.

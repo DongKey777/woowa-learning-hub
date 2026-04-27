@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: tlb page table walk bridge basics, tlb page table walk bridge beginner, tlb page table walk bridge intro, operating system basics, beginner operating system, 처음 배우는데 tlb page table walk bridge, tlb page table walk bridge 입문, tlb page table walk bridge 기초, what is tlb page table walk bridge, how to tlb page table walk bridge
 > 관련 문서:
 > - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 > - [가상 메모리 기초](./virtual-memory-basics.md)

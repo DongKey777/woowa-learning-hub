@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: monotonic strict vs equal translation card basics, monotonic strict vs equal translation card beginner, monotonic strict vs equal translation card intro, data structure basics, beginner data structure, 처음 배우는데 monotonic strict vs equal translation card, monotonic strict vs equal translation card 입문, monotonic strict vs equal translation card 기초, what is monotonic strict vs equal translation card, how to monotonic strict vs equal translation card
 > 관련 문서:
 > - [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)
 > - [Monotonic Duplicate Rule Micro-Drill](./monotonic-duplicate-rule-micro-drill.md)
@@ -69,3 +78,7 @@
 `equal을 답으로 인정하나?`, `동점이면 왼쪽을 남기나 오른쪽을 남기나?`
 
 이 한 줄이 정해지면 pop 조건은 거의 표에서 바로 나온다.
+
+## 한 줄 정리
+
+monotonic 문제에서 문장 속 `first greater`, `greater or equal`, `leftmost max`, `rightmost min`은 거의 바로 pop 조건으로 번역된다.

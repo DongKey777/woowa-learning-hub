@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: nullable enum comparator bridge basics, nullable enum comparator bridge beginner, nullable enum comparator bridge intro, java basics, beginner java, 처음 배우는데 nullable enum comparator bridge, nullable enum comparator bridge 입문, nullable enum comparator bridge 기초, what is nullable enum comparator bridge, how to nullable enum comparator bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -254,6 +263,8 @@ Comparator<Task> byBusinessPriorityNullLast =
 - `priorityRank`가 있으므로 "왜 이 순서인가?"가 선언 순서와 분리되어 읽힌다.
 
 ### 왜 `ordinal()`보다 명시적 rank가 더 낫나
+
+## 업무 우선순위가 선언 순서와 다를 때 (계속 2)
 
 초보자는 가끔 `BLOCKED`를 먼저 보내려고 `ordinal()` 계산을 비틀고 싶어질 수 있다.
 하지만 business priority는 선언 순서와 다른 별도 규칙이므로, rank를 따로 적는 편이 더 안전하다.

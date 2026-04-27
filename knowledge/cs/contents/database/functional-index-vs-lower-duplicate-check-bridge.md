@@ -14,7 +14,9 @@
 - [기본 키와 외래 키 기초](./primary-foreign-key-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: functional index lower email duplicate check, mysql lower email unique index beginner, case insensitive email duplicate bridge, normalized email exact key index, lower function breaks index path, mysql functional index beginner, generated column email normalized, unique lower email mysql, lower email for update problem, case insensitive key duplicate check, lower email exact key bridge, mysql email normalization index primer, why lower email misses plain unique index, 이메일 lower 중복 체크 인덱스, 대소문자 무시 이메일 중복 검사, 정규화 이메일 unique 인덱스, functional index vs lower duplicate check
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: functional index lower email duplicate check, mysql lower email unique index beginner, case insensitive email duplicate bridge, normalized email exact key index, lower function breaks index path, mysql functional index beginner, generated column email normalized, unique lower email mysql, lower email for update problem, case insensitive key duplicate check, lower email exact key bridge, mysql email normalization index primer, why lower email misses plain unique index, 이메일 lower 중복 체크 인덱스, 대소문자 무시 이메일 중복 검사
 
 ## 핵심 개념
 

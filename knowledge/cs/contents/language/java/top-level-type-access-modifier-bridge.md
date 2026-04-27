@@ -15,7 +15,7 @@
 - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
 - [Access Modifier Boundary Lab](./java-access-modifier-boundary-lab.md)
 
-retrieval-anchor-keywords: java top-level access modifier bridge, java top-level type public package-private, java top-level class interface enum record, java top-level protected private compile error, java one public top-level type per file, java public top-level type file name rule, java package-private top-level helper, java public interface enum record file name, java top-level type card, java top-level type quick card, java source file type rule, top-level type basics, top-level type beginner, java top-level vs member private protected, java top-level member mini quiz bridge, 처음 배우는데 top-level 타입, 자바 top-level 접근 제한자, 자바 top-level class interface enum record, 자바 top-level private protected 불가, 자바 public 타입 파일명 규칙, 자바 top-level 타입 한눈 카드, 자바 top-level member 구분
+retrieval-anchor-keywords: java top-level access modifier bridge, java top-level type public package-private, java top-level class interface enum record, java top-level protected private compile error, java one public top-level type per file, java public top-level type file name rule, java package-private top-level helper, java public interface enum record file name, java top-level type card, java top-level type quick card, java source file type rule, top-level type basics, top-level type beginner, java top-level vs member private protected, java top-level member mini quiz bridge
 
 ## 먼저 잡는 멘탈 모델
 

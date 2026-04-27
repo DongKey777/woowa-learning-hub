@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 > - [생성자 vs 정적 팩토리 메서드 vs Factory 패턴](./constructor-vs-static-factory-vs-factory-pattern.md)
@@ -18,7 +25,7 @@
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
 > - [Service Locator Antipattern](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: factory pattern, object creation boundary, runtime implementation selection, factory overuse, when not to use factory, factory vs constructor, factory vs static factory method, factory vs builder, factory vs registry, switch factory smell, beginner factory pattern, constructor vs static factory vs factory pattern, java static factory naming, of from valueOf parse getInstance newInstance, factory vs di container, spring bean factory method, handwritten factory vs @Bean, framework wiring vs runtime factory
+retrieval-anchor-keywords: factory pattern, object creation boundary, runtime implementation selection, factory overuse, when not to use factory, factory vs constructor, factory vs static factory method, factory vs builder, factory vs registry, switch factory smell, beginner factory pattern, constructor vs static factory vs factory pattern, java static factory naming, of from valueof parse getinstance newinstance, factory basics
 
 ---
 
@@ -43,7 +50,7 @@ retrieval-anchor-keywords: factory pattern, object creation boundary, runtime im
 - 사실상 "찾기"가 핵심이라 Registry가 더 자연스러울 때
 - 옵션이 많은 한 객체를 읽기 좋게 조립해야 해서 Builder가 맞을 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"생성 규칙이 바뀌는가?"가 핵심이면 Factory를 보고, 아니면 더 단순한 대안을 먼저 본다.**
 
 ---
@@ -63,14 +70,14 @@ retrieval-anchor-keywords: factory pattern, object creation boundary, runtime im
 
 ### 1. Factory는 "모든 생성"이 아니라 "바뀌는 생성"을 숨긴다
 
-초보자가 가장 많이 하는 오해는 `new`가 보이면 전부 Factory로 감싸야 한다고 생각하는 것이다.  
+초보자가 가장 많이 하는 오해는 `new`가 보이면 전부 Factory로 감싸야 한다고 생각하는 것이다.
 하지만 아래 코드는 굳이 팩토리가 필요 없다.
 
 ```java
 Money money = new Money("KRW", 1000);
 ```
 
-값 객체가 단순하고 생성 규칙이 안정적이면 직접 생성이 가장 읽기 쉽다.  
+값 객체가 단순하고 생성 규칙이 안정적이면 직접 생성이 가장 읽기 쉽다.
 Factory는 "그냥 생성"이 아니라 **생성 규칙이 퍼지면 아픈 곳**에 둬야 한다.
 
 ### 2. Factory보다 단순한 대안이 먼저일 때가 많다
@@ -83,7 +90,7 @@ Factory는 "그냥 생성"이 아니라 **생성 규칙이 퍼지면 아픈 곳*
 | Registry | 이미 만들어진 구현을 키로 찾아 쓸 때 | 생성보다 lookup이 핵심이다 |
 | DI 컨테이너 | 애플리케이션 wiring이 핵심일 때 | 수동 팩토리보다 조립 책임이 선명하다 |
 
-핵심은 "Factory가 더 멋져 보이는가"가 아니라  
+핵심은 "Factory가 더 멋져 보이는가"가 아니라
 **지금 문제를 가장 적은 구조로 풀 수 있는가**다.
 
 ### 3. 정적 팩토리 메서드와 Factory 패턴은 같은 말이 아니다
@@ -113,7 +120,9 @@ Factory는 "그냥 생성"이 아니라 **생성 규칙이 퍼지면 아픈 곳*
 - 행동 교체가 핵심이면 [전략 패턴](./strategy-pattern.md)
 - 애플리케이션 조립이 핵심이면 DI 컨테이너
 
-즉 switch를 없애는 게 목적이 아니라  
+## 깊이 들어가기 (계속 2)
+
+즉 switch를 없애는 게 목적이 아니라
 **생성, 선택, 행동의 책임을 다시 분리하는 것**이 목적이다.
 
 ---
@@ -130,7 +139,7 @@ Factory는 "그냥 생성"이 아니라 **생성 규칙이 퍼지면 아픈 곳*
 
 ### 시나리오 2: 애매한 경우, 테스트 픽스처
 
-테스트 데이터 생성 helper를 팩토리라고 부르기도 하지만, 실제 문제는 "복잡한 한 객체를 읽기 좋게 조립"하는 일일 수 있다.  
+테스트 데이터 생성 helper를 팩토리라고 부르기도 하지만, 실제 문제는 "복잡한 한 객체를 읽기 좋게 조립"하는 일일 수 있다.
 이 경우는 [빌더 패턴](./builder-pattern.md)이나 fixture helper가 더 맞을 수 있다.
 
 즉 이름이 Factory여도 패턴으로서의 Factory라고 단정하면 안 된다.
@@ -151,7 +160,7 @@ UserSummary summary = UserSummaryFactory.create(name, level);
 
 ### 시나리오 4: Factory가 틀린 문제인 경우, 결제 정책 판단
 
-카드, 포인트, 쿠폰 조합에 따라 "어떤 정책을 적용할지"가 핵심이면 그건 생성 문제가 아니다.  
+카드, 포인트, 쿠폰 조합에 따라 "어떤 정책을 적용할지"가 핵심이면 그건 생성 문제가 아니다.
 이 경우 `PaymentPolicyFactory` 같은 이름으로 정책 판단을 몰아넣기보다 [전략 패턴](./strategy-pattern.md)이나 [Policy Object Pattern](./policy-object-pattern.md)이 더 자연스럽다.
 
 ---
@@ -213,6 +222,8 @@ client.upload(file);
 ```
 
 ### 4. switch가 계속 커지면 Registry-backed factory를 본다
+
+## 코드로 보기 (계속 2)
 
 ```java
 public class StorageClientFactory {

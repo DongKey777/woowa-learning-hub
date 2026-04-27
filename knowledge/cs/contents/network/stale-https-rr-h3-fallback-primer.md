@@ -1,8 +1,17 @@
 # Stale HTTPS RR H3 Fallback Primer
 
+
+> 한 줄 요약: Stale HTTPS RR H3 Fallback Primer는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > DNS `HTTPS` RR/SVCB cache가 예전 H3 endpoint를 아직 가리키지만, 서버가 `421`을 줄 틈도 없이 QUIC/H3 시도 단계에서 조용히 실패하고 브라우저가 H2/H1.1이나 새 path로 회복하는 beginner primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
@@ -13,7 +22,7 @@
 > - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 
-retrieval-anchor-keywords: stale HTTPS RR H3 fallback, stale SVCB H3 fallback, cached HTTPS RR outdated H3 path, stale DNS H3 hint no 421, stale HTTPS record fallback, stale SVCB no 421, old H3 endpoint from DNS cache, HTTPS RR cached edge moved, QUIC fail before 421, no 421 silent fallback, browser H3 fallback stale DNS, first h3 attempt then h2 without 421, stale https rr beginner primer, stale svcb beginner, outdated h3 endpoint dns cache, h3 discovery stale dns, DNS HTTPS RR path moved, h3 retry without 421, stale DNS hint fresh fallback, cached service binding old edge
+retrieval-anchor-keywords: stale https rr h3 fallback, stale svcb h3 fallback, cached https rr outdated h3 path, stale dns h3 hint no 421, stale https record fallback, stale svcb no 421, old h3 endpoint from dns cache, https rr cached edge moved, quic fail before 421, no 421 silent fallback, browser h3 fallback stale dns, first h3 attempt then h2 without 421, stale https rr beginner primer, stale svcb beginner, outdated h3 endpoint dns cache
 
 <details>
 <summary>Table of Contents</summary>

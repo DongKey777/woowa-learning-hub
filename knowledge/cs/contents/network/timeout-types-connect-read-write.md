@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
+
 > 관련 문서:
 > - [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)
 > - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
@@ -15,7 +22,7 @@
 > - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 > - [System Design](../system-design/README.md)
 
-retrieval-anchor-keywords: connect timeout, read timeout, write timeout, request timeout, TLS handshake timeout, pool acquisition timeout, timeout budget, per-hop timeout
+retrieval-anchor-keywords: connect timeout, read timeout, write timeout, request timeout, tls handshake timeout, pool acquisition timeout, timeout budget, per-hop timeout, timeout types connect read write basics, timeout types connect read write beginner, timeout types connect read write intro, network basics, beginner network, 처음 배우는데 timeout types connect read write, timeout types connect read write 입문
 
 ---
 

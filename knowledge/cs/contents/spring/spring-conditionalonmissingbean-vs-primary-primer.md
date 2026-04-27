@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 > - [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)
@@ -15,7 +22,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
 
-retrieval-anchor-keywords: @ConditionalOnMissingBean vs @Primary, ConditionalOnMissingBean primary confusion, primary is not auto configuration override, primary does not restore boot bean, auto-configuration back-off vs bean selection, bean registration vs dependency injection, boot default bean skipped existing bean, user bean wins boot default, ConditionalOnMissingBean back off, existing bean found primary ignored, spring boot default bean missing primary, bean candidate selection vs conditional bean registration, beginner spring boot bean choice, @Primary injection priority, @ConditionalOnMissingBean miss
+retrieval-anchor-keywords: @conditionalonmissingbean vs @primary, conditionalonmissingbean primary confusion, primary is not auto configuration override, primary does not restore boot bean, auto-configuration back-off vs bean selection, bean registration vs dependency injection, boot default bean skipped existing bean, user bean wins boot default, conditionalonmissingbean back off, existing bean found primary ignored, spring boot default bean missing primary, bean candidate selection vs conditional bean registration, beginner spring boot bean choice, @primary injection priority, spring conditionalonmissingbean vs primary primer basics
 
 ## 먼저 mental model
 

@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: longest increasing subsequence patterns basics, longest increasing subsequence patterns beginner, longest increasing subsequence patterns intro, algorithm basics, beginner algorithm, 처음 배우는데 longest increasing subsequence patterns, longest increasing subsequence patterns 입문, longest increasing subsequence patterns 기초, what is longest increasing subsequence patterns, how to longest increasing subsequence patterns
 > 관련 문서:
 > - [Binary Search Patterns](./binary-search-patterns.md)
 > - [Sliding Window Patterns](./sliding-window-patterns.md)

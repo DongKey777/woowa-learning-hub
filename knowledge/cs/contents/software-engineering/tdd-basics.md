@@ -11,7 +11,7 @@
 - [software-engineering 카테고리 인덱스](./README.md)
 - [spring 테스트 기초](../spring/README.md)
 
-retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, tdd 사이클, 테스트 주도 개발 기초, beginner tdd, tdd intro
+retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, tdd 사이클, 테스트 주도 개발 기초, beginner tdd, tdd intro, tdd basics basics, tdd basics beginner, tdd basics intro
 
 ## 핵심 개념
 

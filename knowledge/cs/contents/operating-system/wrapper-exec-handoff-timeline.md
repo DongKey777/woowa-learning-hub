@@ -15,7 +15,9 @@
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 
-retrieval-anchor-keywords: operating-system-00076, wrapper exec handoff timeline, exec app "$@" primer, shell wrapper exec handoff, entrypoint exec handoff, container entrypoint exec why, shell script exec app, exec replaces shell, extra pid wrapper, pid signal fd confusion, shell wrapper pid confusion, shell wrapper signal forwarding, shell wrapper fd holder, container entrypoint pid 1 exec, docker entrypoint exec app "$@", wrapper script last exec, beginner exec handoff, entrypoint handoff timeline, wrapper child vs exec replace, exec handoff timeline, 쉘 wrapper exec, 엔트리포인트 exec 이유, exec app "$@" 왜 쓰나, 추가 pid 제거, 시그널 전달 꼬임, fd eof 안 옴 wrapper
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00076, wrapper exec handoff timeline, exec app "$@" primer, shell wrapper exec handoff, entrypoint exec handoff, container entrypoint exec why, shell script exec app, exec replaces shell, extra pid wrapper, pid signal fd confusion, shell wrapper pid confusion, shell wrapper signal forwarding, shell wrapper fd holder, container entrypoint pid 1 exec, beginner exec handoff
 
 ## 먼저 잡는 멘탈 모델
 

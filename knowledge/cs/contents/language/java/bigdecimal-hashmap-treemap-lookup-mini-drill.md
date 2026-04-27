@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: bigdecimal hashmap treemap lookup mini drill basics, bigdecimal hashmap treemap lookup mini drill beginner, bigdecimal hashmap treemap lookup mini drill intro, java basics, beginner java, 처음 배우는데 bigdecimal hashmap treemap lookup mini drill, bigdecimal hashmap treemap lookup mini drill 입문, bigdecimal hashmap treemap lookup mini drill 기초, what is bigdecimal hashmap treemap lookup mini drill, how to bigdecimal hashmap treemap lookup mini drill
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
@@ -89,3 +98,7 @@ System.out.println(tree.get(new BigDecimal("1")));
 - 확장 드릴: [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
 - 개념 정리: [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 - 범위 조회까지 연결: [BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups](./bigdecimal-navigablemap-lookup-bridge.md)
+
+## 한 줄 정리
+
+`BigDecimal("1.0")`를 넣어 두고 `BigDecimal("1")`로 조회하면, `HashMap`은 못 찾을 수 있고 `TreeMap`은 찾을 수 있다.

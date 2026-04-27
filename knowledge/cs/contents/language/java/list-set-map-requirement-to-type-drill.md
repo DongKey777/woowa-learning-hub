@@ -12,7 +12,7 @@
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 
-retrieval-anchor-keywords: list set map requirement drill, java list set map practice, requirement to type classification, java collection selection exercise, list set map worksheet beginner, list set map decision habit, 처음 배우는데 list set map 고르기, 자바 컬렉션 요구사항 분류 연습, 자바 list set map 문제, 순서 중복 키값 판단 연습, list set map first read practice, linkedhashset beginner, 중복 제거 순서 유지 linkedhashset, list set linkedhashset 선택 기준, collection choice faq, collection choice misread, collection requirement wording faq, 순서 단어 없음 collection, key 암시 표현 map, 코드별 값 map, id 넣으면 찾기 map, 이미 본 id set, 최근 목록 list, beginner collection faq
+retrieval-anchor-keywords: list set map requirement drill, java list set map practice, requirement to type classification, java collection selection exercise, list set map worksheet beginner, list set map decision habit, 처음 배우는데 list set map 고르기, 자바 컬렉션 요구사항 분류 연습, 자바 list set map 문제, 순서 중복 키값 판단 연습, list set map first read practice, linkedhashset beginner, 중복 제거 순서 유지 linkedhashset, list set linkedhashset 선택 기준, collection choice faq
 
 ## 먼저 잡는 멘탈 모델
 
@@ -133,6 +133,8 @@ retrieval-anchor-keywords: list set map requirement drill, java list set map pra
 | "정렬해서 보여 준다" | `TreeSet`, `TreeMap` |
 | "순서는 중요하지 않다" | `HashSet`, `HashMap` |
 
+## 자주 틀리는 문장 패턴 FAQ (계속 2)
+
 즉 인터페이스는 `List`/`Set`/`Map`으로 먼저 고르고,
 순서 보장 방식까지 요구되면 그다음 구현체를 고른다.
 
@@ -157,3 +159,7 @@ retrieval-anchor-keywords: list set map requirement drill, java list set map pra
 - `Map`의 `get()`/`containsKey()` 선택이 헷갈리면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - `Map` 반복 습관을 바로 교정하려면 [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 - `Iterable`/`Collection`/`Map` 관계가 헷갈리면 [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
+
+## 한 줄 정리
+
+문제 문장을 보고 `List`, `Set`, `Map` 중 무엇을 먼저 떠올려야 하는지 짧게 훈련하는 초급 분류 드릴이다.

@@ -5,6 +5,15 @@
 > 한 줄 요약: 패턴 선택은 유명한 이름을 맞히는 게임이 아니라, 무엇이 바뀌는지와 어디서 경계를 잘라야 하는지 판단하는 일이다.
 
 **난이도: 🟡 Intermediate**
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
+
+retrieval-anchor-keywords: pattern selection basics, pattern selection beginner, pattern selection intro, design pattern basics, beginner design pattern, 처음 배우는데 pattern selection, pattern selection 입문, pattern selection 기초, what is pattern selection, how to pattern selection
 >
 > 문서 역할: 이 문서는 개별 패턴을 깊게 설명하는 문서가 아니라, 어떤 축의 문제인지 먼저 분류하는 **survey / decision guide**다.
 
@@ -42,7 +51,7 @@
 
 ## 문제를 먼저 본다
 
-실전에서는 "이 패턴이 유명하다"보다 **무엇이 자주 바뀌는지**를 먼저 봐야 한다.  
+실전에서는 "이 패턴이 유명하다"보다 **무엇이 자주 바뀌는지**를 먼저 봐야 한다.
 같은 모양의 코드라도 변경 이유가 다르면 선택해야 할 구조가 달라진다.
 
 - 알고리즘이 바뀌는가
@@ -77,7 +86,7 @@
 
 ## 생성 축을 본다
 
-생성 문제는 객체를 어떻게 만들지의 문제다.  
+생성 문제는 객체를 어떻게 만들지의 문제다.
 이 축은 팩토리, 빌더, 싱글톤, Registry와 자주 연결된다.
 
 | 선택지 | 핵심 아이디어 | 잘 맞는 상황 | 주의할 점 |
@@ -117,7 +126,7 @@
 - 판단 결과와 사유가 필요하면 Policy Object다.
 - 실행 요청 자체를 옮기고 싶으면 Command다.
 
-`Command`가 여기서 의미하는 것은 "실행 요청을 객체로 캡슐화해 나중에 다룰 수 있게 만드는가"다.  
+`Command`가 여기서 의미하는 것은 "실행 요청을 객체로 캡슐화해 나중에 다룰 수 있게 만드는가"다.
 undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-pattern-undo-queue.md)로, command side 유스케이스 경계는 아래 `흐름 축`의 handler/bus 문서로 이어서 읽으면 된다.
 
 ### 관련 문서
@@ -193,6 +202,8 @@ undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-patt
 
 ### 관련 문서
 
+## 흐름 축을 본다 (계속 2)
+
 - [책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기](./chain-of-responsibility-filters-interceptors.md)
 - [Pipeline vs Chain of Responsibility](./pipeline-vs-chain-of-responsibility.md)
 - [Middleware Pattern Language](./middleware-pattern-language.md)
@@ -236,6 +247,8 @@ undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-patt
 
 ### 관련 문서
 
+## 경계와 저장소 축을 본다 (계속 2)
+
 - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md) - classic adapter와 hexagonal boundary를 먼저 분리해 주는 비교 문서
 - [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md) - inbound/outbound port naming과 boundary contract에 집중하는 보조 문서
 - [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
@@ -253,6 +266,9 @@ undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-patt
 - [Anti-Corruption Contract Test Pattern](./anti-corruption-contract-test-pattern.md)
 - [Event Envelope Pattern](./event-envelope-pattern.md)
 - [Domain Event Translation Pipeline](./domain-event-translation-pipeline.md)
+
+## 경계와 저장소 축을 본다 (계속 3)
+
 - [Event Upcaster Compatibility Patterns](./event-upcaster-compatibility-patterns.md)
 - [Snapshot Versioning and Compatibility Pattern](./snapshot-versioning-compatibility-pattern.md)
 - [Tolerant Reader for Event Contracts](./tolerant-reader-event-contract-pattern.md)
@@ -310,3 +326,7 @@ undo/history/job queue 쪽 입문은 [Command Pattern Undo Queue](./command-patt
 6. 패턴이 디버깅을 어렵게 만들면 경계가 잘못 잘렸을 수 있다.
 
 한 줄로 정리하면, **패턴은 복잡도를 줄이기 위한 도구이지 복잡도를 전시하는 장식이 아니다.**
+
+## 한 줄 정리
+
+패턴 선택은 유명한 이름을 맞히는 게임이 아니라, 무엇이 바뀌는지와 어디서 경계를 잘라야 하는지 판단하는 일이다.

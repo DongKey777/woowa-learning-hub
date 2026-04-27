@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: periodic overrun catch up primer basics, periodic overrun catch up primer beginner, periodic overrun catch up primer intro, data structure basics, beginner data structure, 처음 배우는데 periodic overrun catch up primer, periodic overrun catch up primer 입문, periodic overrun catch up primer 기초, what is periodic overrun catch up primer, how to periodic overrun catch up primer
 > 관련 문서:
 > - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)
 > - [Periodic Scheduling Drift vs Backlog Primer](./periodic-scheduling-drift-vs-backlog-primer.md)

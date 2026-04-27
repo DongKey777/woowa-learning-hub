@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: java parameter passing pass by value side effects primer basics, java parameter passing pass by value side effects primer beginner, java parameter passing pass by value side effects primer intro, java basics, beginner java, 처음 배우는데 java parameter passing pass by value side effects primer, java parameter passing pass by value side effects primer 입문, java parameter passing pass by value side effects primer 기초, what is java parameter passing pass by value side effects primer, how to java parameter passing pass by value side effects primer
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
@@ -276,6 +285,8 @@ update(base);
 - `3`
 
 이유:
+
+## 손으로 추적하는 작은 연습 (계속 2)
 
 1. 처음 `counter.add(2)`는 원래 객체를 mutation하므로 `base`가 보는 값도 `3`이 된다.
 2. 그다음 `counter = new Counter(100)`은 local parameter만 새 객체를 보게 만든다.

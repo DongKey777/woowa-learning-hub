@@ -12,7 +12,7 @@
 - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 - [추상 클래스 vs 인터페이스와 DI 브리지: 상속 선택과 주입 선택을 섞지 않기](../design-pattern/abstract-class-vs-interface-injection-bridge.md)
 
-retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, found 2 selection rule problem, nouniquebeandefinitionexception log one line, primary qualifier collection checklist, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, primary qualifier collection guide
+retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, found 2 selection rule problem, nouniquebeandefinitionexception log one line, primary qualifier collection checklist, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, primary qualifier collection guide, spring di exception quick triage basics
 
 ## rename 의심이면 여기서 바로 갈라 타기
 

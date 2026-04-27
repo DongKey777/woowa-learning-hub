@@ -1,6 +1,15 @@
 # Browser Cache Toggles vs Alt-Svc DNS Cache Primer
 
+
+> 한 줄 요약: Browser Cache Toggles vs Alt-Svc DNS Cache Primer는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > DevTools `Disable cache`, 새 profile, 기존 connection 종료가 왜 서로 다른 H3 discovery 결과를 만드는지, "무슨 cache를 비웠는가"와 "새 connection이 정말 생겼는가" 관점으로 설명하는 beginner primer
 
@@ -13,7 +22,7 @@
 > - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 > - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
 
-retrieval-anchor-keywords: disable cache vs fresh profile, disable cache vs close connections, alt-svc cache primer, dns cache primer browser, h3 discovery different results, disable cache not alt-svc cache, disable cache not dns cache, close connections h3 discovery, fresh profile alt-svc clean test, fresh profile dns cache clean test, browser cache toggle h3, browser cache vs alt-svc vs dns cache, http cache vs alt-svc cache vs dns cache, devtools disable cache h3 confusion, why h3 appears only after closing connections, why fresh profile changes h3, why disable cache not enough h3 test, browser live connection reuse h2 h3, alt-svc dns cache observability, beginner h3 test setup, junior alt-svc cache observability, 새 프로필 disable cache 차이, 연결 종료 후 h3, alt-svc 캐시와 dns 캐시 차이, disable cache가 h3를 안 바꾸는 이유
+retrieval-anchor-keywords: disable cache vs fresh profile, disable cache vs close connections, alt-svc cache primer, dns cache primer browser, h3 discovery different results, disable cache not alt-svc cache, disable cache not dns cache, close connections h3 discovery, fresh profile alt-svc clean test, fresh profile dns cache clean test, browser cache toggle h3, browser cache vs alt-svc vs dns cache, http cache vs alt-svc cache vs dns cache, why h3 appears only after closing connections, why fresh profile changes h3
 
 <details>
 <summary>Table of Contents</summary>
@@ -205,3 +214,7 @@ H3 discovery 실험을 덜 헷갈리게 하려면 아래 순서가 안전하다.
 - DNS HTTPS RR와 `Alt-Svc`를 더 직접 비교하려면 [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
 - browser와 `dig` 결과가 왜 엇갈리는지 보려면 [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 - DevTools만으로 모호할 때는 [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
+
+## 한 줄 정리
+
+Browser Cache Toggles vs Alt-Svc DNS Cache Primer는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

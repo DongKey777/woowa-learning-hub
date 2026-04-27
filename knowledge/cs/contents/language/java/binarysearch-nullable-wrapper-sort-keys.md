@@ -17,7 +17,7 @@
 - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md): comparator 바깥에서 wrapper `null`/unboxing 오류까지 같이 의심될 때
 - [Language README](../README.md): 더 큰 Java 학습 경로에서 위치를 다시 잡고 싶을 때
 
-retrieval-anchor-keywords: language-java-00089, java nullable wrapper binarysearch, java arrays sort binarysearch same comparator, java binarysearch comparator mismatch, java binarysearch tie breaker probe object, java integer array nullslast binarysearch, java lower bound upper bound nullable array, java binarysearch negative result insertion point, java sort works but search fails, java binarysearch basics nullable wrapper, java object array equal range comparator, java comparator equal range tie breaker, java lower bound priority range object array, java binarysearch primary key block beginner, 자바 nullable wrapper 정렬 검색, 자바 정렬은 되는데 검색이 안 맞음, 자바 같은 comparator로 정렬 검색, 자바 binarysearch tie breaker probe, 자바 binarysearch 왜 헷갈리나, 자바 객체 배열 같은 priority 구간 찾기, 자바 comparator tie breaker 범위 찾기
+retrieval-anchor-keywords: language-java-00089, java nullable wrapper binarysearch, java arrays sort binarysearch same comparator, java binarysearch comparator mismatch, java binarysearch tie breaker probe object, java integer array nullslast binarysearch, java lower bound upper bound nullable array, java binarysearch negative result insertion point, java sort works but search fails, java binarysearch basics nullable wrapper, java object array equal range comparator, java comparator equal range tie breaker, java lower bound priority range object array, java binarysearch primary key block beginner, 자바 nullable wrapper 정렬 검색
 
 <details>
 <summary>Table of Contents</summary>
@@ -327,6 +327,8 @@ Arrays.sort(tasks, byPriorityThenTitleThenId);
 
 정렬 뒤 순서는 다음처럼 읽힌다.
 
+## tie-breaker가 있어도 1차 key 구간은 찾을 수 있다 (계속 2)
+
 | index | task |
 |---|---|
 | `0` | `new Task(20L, "Auth bug", 1)` |
@@ -529,6 +531,9 @@ int lastNull = afterLastNull - 1;                               // 6
 - `first true`, `lower_bound`, `upper_bound`를 더 일반적인 경계 탐색 패턴으로 넓혀 보고 싶다면 [Binary Search Patterns](../algorithm/binary-search-patterns.md)
 - 같은 comparator를 list 정렬과 stream 정렬에 재사용하는 감각까지 이어서 보려면 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
 - wrapper unboxing 함정을 comparator 밖까지 넓혀 보고 싶다면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+
+## 어떤 문서를 다음에 읽으면 좋은가 (계속 2)
+
 - `compare(...) == 0`이 collection 중복 규칙까지 어떻게 바꾸는지 이어서 보고 싶다면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 
 ## 한 줄 정리

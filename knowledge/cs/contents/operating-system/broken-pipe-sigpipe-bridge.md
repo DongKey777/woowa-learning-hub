@@ -17,7 +17,7 @@
 - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00069, broken pipe sigpipe bridge, broken pipe beginner, sigpipe beginner, epipe beginner, reader disappeared first pipe, child writes to closed pipe, pipe reader closed writer behavior, no readers on pipe write, broken pipe vs backpressure, sigpipe vs epipe, brokenpipeerror subprocess, child dies on sigpipe, yes head sigpipe, write to closed stdout pipe, subprocess parent closes stdout pipe, 파이프 broken pipe, 시그파이프 기초, reader 먼저 종료, 닫힌 파이프에 write, epipe와 sigpipe 차이, broken pipe vs eof, broken pipe mental model, primer handoff box, beginner handoff box
+retrieval-anchor-keywords: operating-system-00069, broken pipe sigpipe bridge, broken pipe beginner, sigpipe beginner, epipe beginner, reader disappeared first pipe, child writes to closed pipe, pipe reader closed writer behavior, no readers on pipe write, broken pipe vs backpressure, sigpipe vs epipe, brokenpipeerror subprocess, child dies on sigpipe, yes head sigpipe, write to closed stdout pipe
 
 ## Subprocess Primer Handoff
 

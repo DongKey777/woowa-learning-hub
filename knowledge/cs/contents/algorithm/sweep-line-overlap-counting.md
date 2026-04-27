@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: sweep line overlap counting basics, sweep line overlap counting beginner, sweep line overlap counting intro, algorithm basics, beginner algorithm, 처음 배우는데 sweep line overlap counting, sweep line overlap counting 입문, sweep line overlap counting 기초, what is sweep line overlap counting, how to sweep line overlap counting
 > 관련 문서:
 > - [구간 / Interval Greedy 패턴](./interval-greedy-patterns.md)
 > - [정렬 알고리즘](./sort.md)
@@ -125,7 +134,7 @@ meeting rooms 류는 min-heap으로도 자주 푼다.
 sweep line은 대개 interval 집합이 이미 주어졌거나, 전체를 다시 계산해도 되는 batch 상황에서 빛난다.
 새 예약이 들어올 때마다 매번 이벤트 배열을 다시 만들고 정렬하는 방식은 online API에는 과하다.
 
-그런 workload는 [Interval Tree](../data-structure/interval-tree.md)나 [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)처럼  
+그런 workload는 [Interval Tree](../data-structure/interval-tree.md)나 [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)처럼
 insert와 query를 함께 감당하는 자료구조로 분리해서 보는 편이 맞다.
 
 ---

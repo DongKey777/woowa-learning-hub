@@ -13,7 +13,9 @@
 - [Timeout 에러코드 매핑 미니카드](./timeout-errorcode-mapping-mini-card.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: timeout log timeline checklist, first failure timeout timeline, which timeout happened first, connection timeout lock timeout order, statement timeout timeline card, lock wait timeout first check, timeout incident timeline checklist, beginner timeout incident card, 타임아웃 로그 타임라인 체크리스트, 무엇이 먼저 터졌는지, 어떤 timeout이 먼저였는지, 로그 시간순 판별, connection timeout lock timeout 순서, statement timeout 먼저 확인, 락웨이트 타임아웃 선행, timeout 사건 초보자 체크리스트
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: timeout log timeline checklist, first failure timeout timeline, which timeout happened first, connection timeout lock timeout order, statement timeout timeline card, lock wait timeout first check, timeout incident timeline checklist, beginner timeout incident card, 타임아웃 로그 타임라인 체크리스트, 무엇이 먼저 터졌는지, 어떤 timeout이 먼저였는지, 로그 시간순 판별, connection timeout lock timeout 순서, statement timeout 먼저 확인, timeout log timeline first failure checklist card basics
 
 ## 먼저 멘탈모델
 
@@ -95,6 +97,8 @@ retrieval-anchor-keywords: timeout log timeline checklist, first failure timeout
 이 패턴이면 시작점은 pool/점유 시간 축일 가능성이 높다.
 
 ### 5. 첫 신호 기준으로 다음 문서를 고른다
+
+## 로그 타임라인 5단계 체크리스트 (계속 2)
 
 | 첫 신호 | 다음 문서 | 이유 |
 |---|---|---|

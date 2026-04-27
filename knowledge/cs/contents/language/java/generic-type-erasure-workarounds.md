@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
 > 관련 문서:
 > - [Reflection, Generics, Annotations](./reflection-generics-annotations.md)
 > - [Reflection 비용과 대안](./reflection-cost-and-alternatives.md)
@@ -24,7 +31,7 @@
 
 </details>
 
-retrieval-anchor-keywords: generic type erasure, TypeReference, super type token, Class<T> parameter, runtime generic type info, Java type erasure workaround, List<User> deserialization, type token pattern, generic factory limitation, PECS boundary
+retrieval-anchor-keywords: generic type erasure, typereference, super type token, class<t> parameter, runtime generic type info, java type erasure workaround, list<user> deserialization, type token pattern, generic factory limitation, pecs boundary, generic type erasure workarounds basics, generic type erasure workarounds beginner, generic type erasure workarounds intro, java basics, beginner java
 
 ## 왜 필요한가
 
@@ -35,7 +42,7 @@ retrieval-anchor-keywords: generic type erasure, TypeReference, super type token
 - `List<String>`과 `List<Integer>`를 런타임에 구분하기 어려움
 - `instanceof List<String>` 불가
 
-문제는 프레임워크와 직렬화, 리플렉션, 메시지 처리에서 **런타임 타입 정보가 꼭 필요**하다는 점이다.  
+문제는 프레임워크와 직렬화, 리플렉션, 메시지 처리에서 **런타임 타입 정보가 꼭 필요**하다는 점이다.
 그래서 우회 패턴을 알아야 한다.
 
 ## 타입 소거가 남기는 것
@@ -48,7 +55,7 @@ names.add("kim");
 String first = names.get(0);
 ```
 
-실제로는 `Object` 경로와 캐스팅이 섞인다.  
+실제로는 `Object` 경로와 캐스팅이 섞인다.
 그래서 타입 정보가 필요한 API는 별도로 넘겨야 한다.
 
 ### 자주 막히는 지점
@@ -124,17 +131,17 @@ public void copy(List<? extends Number> src, List<? super Number> dest) {
 List<User> users = objectMapper.readValue(json, List.class);
 ```
 
-이 코드는 `List<LinkedHashMap>`이 될 수 있다.  
+이 코드는 `List<LinkedHashMap>`이 될 수 있다.
 해결은 `TypeReference<List<User>>`를 넘기는 것이다.
 
 ### 시나리오 2: 제네릭 팩토리에서 캐스팅이 흩어짐
 
-캐스팅을 여러 곳에 두면, 실패가 늦게 터지고 원인이 분산된다.  
+캐스팅을 여러 곳에 두면, 실패가 늦게 터지고 원인이 분산된다.
 가능하면 경계에서 한 번만 복구하고, 내부는 강타입으로 유지한다.
 
 ### 시나리오 3: 공통 저장소가 타입을 잃음
 
-`Map<String, Object>`는 편하지만, 결국 downcast 지옥이 온다.  
+`Map<String, Object>`는 편하지만, 결국 downcast 지옥이 온다.
 타입별 서브맵이나 `Class<T>` 키를 함께 두는 편이 낫다.
 
 ## 코드로 보기

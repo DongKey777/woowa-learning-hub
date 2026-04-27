@@ -26,7 +26,9 @@
 - [Pool 지표 읽기 미니 브리지](./pool-metrics-lock-wait-timeout-mini-bridge.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: unique vs locking read, duplicate primer, unique constraint vs select for update, duplicate key vs lock timeout, duplicate key deadlock serialization failure, connection timeout deadlock duplicate key mapping, connection timeout busy retryable already exists, service layer failure translation table, already exists busy retryable mapping, winner already exists conflict busy comparison, duplicate winner comparison table, winner row already exists conflict busy primer, duplicate fresh read conflict mapping, insert-if-absent outcome language, select then insert duplicate race, locking read duplicate check, pre-probe queueing, exact duplicate primer, insert if absent unique, duplicate key handling beginner, for update duplicate check, duplicate prevention vs queueing, select for update duplicate handling, duplicate key exception vs retry, 3버킷 결정표, three bucket decision table, already exists busy retryable decision table, insert-if-absent 3버킷 앵커, 3버킷 표, 3버킷 번역표, 중복 방지 primer, unique 제약 vs 락킹 리드, duplicate key 와 lock timeout 차이, deadlock serialization failure 재시도, connection timeout busy 매핑, already exists busy retryable 번역, winner already exists conflict busy 용어 교차표, 없으면 insert duplicate race, select 후 insert 중복 방지, unique vs locking read comparison, duplicate primer comparison section, 3버킷 가이드 복귀 링크, unique hard gate locking read queue, read before write race, check then insert race, mysql postgresql duplicate timeline
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: unique vs locking read, duplicate primer, unique constraint vs select for update, duplicate key vs lock timeout, duplicate key deadlock serialization failure, connection timeout deadlock duplicate key mapping, connection timeout busy retryable already exists, service layer failure translation table, already exists busy retryable mapping, winner already exists conflict busy comparison, duplicate winner comparison table, winner row already exists conflict busy primer, duplicate fresh read conflict mapping, duplicate key handling beginner, unique vs locking read duplicate primer basics
 
 ## 핵심 개념
 
@@ -104,6 +106,8 @@ retrieval-anchor-keywords: unique vs locking read, duplicate primer, unique cons
 
 헷갈릴 때 한 줄 규칙:
 
+## 용어 교차표: `winner` / `already exists` / `conflict` / `busy` (계속 2)
+
 - `winner`를 봤다고 항상 바로 `409 conflict`는 아니다.
 - `already exists`와 `409 conflict`는 같은 층의 말이 아니다.
 - `busy`는 "이미 졌다"가 아니라 "아직 판단 보류"에 가깝다.
@@ -170,6 +174,8 @@ retrieval-anchor-keywords: unique vs locking read, duplicate primer, unique cons
 - `deadlock`/`serialization failure` -> `retryable` (내부 bounded retry 후에도 실패하면 `busy` 또는 정책 오류로 반환)
 
 자주 생기는 혼동 3개:
+
+## 초급자 결과 언어 고정표 (계속 2)
 
 - `lock timeout`은 winner 확정 신호가 아니다. 그래서 `already exists`로 번역하지 않는다.
 - `deadlock`은 "충돌이 있었음"이지 "중복이 확정됨"이 아니다. 그래서 `retryable`이다.

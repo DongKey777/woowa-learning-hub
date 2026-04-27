@@ -469,6 +469,9 @@ CORS와 cookie scope는 다른 문제다.
 - callback cookie 이름이 같아 보여서 "이게 callback용인지 app session용인지"부터 흔들리면 [Callback Cookie Name Splitter](./callback-cookie-name-splitter.md)로 한 칸 올라간 뒤, 같은 anchor인 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 복귀한다.
 - cookie/session/JWT 자체가 아직 섞여 보이면 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)부터 다시 맞춘다.
 - cross-site credential, `fetch`, preflight까지 같이 얽히면 [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)로 먼저 분리한 뒤 [CORS, SameSite, Preflight](./cors-samesite-preflight.md)로 내려간다.
+
+## 다음 단계 (계속 2)
+
 - cookie는 실제로 실리는데 server-side에서만 세션이 끊기면 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)을 본다.
 
 ## 한 줄 정리

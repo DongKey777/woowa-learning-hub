@@ -13,7 +13,7 @@
 - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
 - [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
 
-retrieval-anchor-keywords: permission model bridge, authn to authz bridge, authz 4-step gate, role scope ownership primer bridge, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 거부, 남의 주문 조회, 내 것만 되는데 남의 것은 안 됨, ownership gate, response code handoff
+retrieval-anchor-keywords: permission model bridge, authn to authz bridge, authz 4-step gate, role scope ownership primer bridge, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 거부, 남의 주문 조회, 내 것만 되는데 남의 것은 안 됨, ownership gate, response code handoff, permission model bridge authn to role scope ownership basics, permission model bridge authn to role scope ownership beginner, permission model bridge authn to role scope ownership intro, security basics
 
 ## 먼저 고정할 첫 질문
 

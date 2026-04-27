@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
@@ -14,7 +21,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 
-retrieval-anchor-keywords: ConditionalOnProperty pitfalls, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing bean, feature flag bean missing, conditional bean missing because property absent, property missing vs false, property source precedence, application yml override order, profile file override, env var key mismatch, application yml vs environment variable property, command-line property override, test property override, starter bean missing property flag, bean missing in CI because property override, relaxed binding env var cheatsheet, APP_PUSHNOTIFICATION_ENABLED, dashed property env var mismatch, spring conditional bean beginner, havingValue true matchIfMissing true, condition evaluation report ConditionalOnProperty, did not find property, found different value in property, matchIfMissing report example
+retrieval-anchor-keywords: conditionalonproperty pitfalls, @conditionalonproperty havingvalue, @conditionalonproperty matchifmissing, property missing bean, feature flag bean missing, conditional bean missing because property absent, property missing vs false, property source precedence, application yml override order, profile file override, env var key mismatch, application yml vs environment variable property, command-line property override, spring conditional bean beginner, spring conditionalonproperty havingvalue matchifmissing pitfalls primer basics
 
 ## 핵심 개념
 
@@ -264,6 +271,8 @@ SmsConfig#smsSender:
 
 즉 report 한 줄만 봐도 아래 셋을 바로 나눌 수 있다.
 
+## 5. ConditionEvaluationReport에서 바로 읽는 짧은 스니펫 (계속 2)
+
 | report 표현 | 먼저 붙일 라벨 |
 |---|---|
 | `did not find property` | key missing |
@@ -321,3 +330,7 @@ SmsConfig#smsSender:
 - report 문구 구조를 더 깊게 보고 싶으면 [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)로 이어진다.
 - starter bean 누락을 property/classpath/back-off/scan boundary까지 같이 가르고 싶으면 [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)로 이어진다.
 - 지금 증상이 `NoSuchBeanDefinitionException`로만 보인다면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)에서 scan 누락과 conditional 탈락을 먼저 분리한다.
+
+## 한 줄 정리
+
+`@ConditionalOnProperty`는 "property가 있는가, 값이 기대와 같은가, 없으면 missing을 허용할까"를 순서대로 보므로, missing property와 `false`, 환경별 key/value 차이를 분리해야 bean 누락 원인이 보인다.

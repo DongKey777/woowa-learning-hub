@@ -6,6 +6,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: load average triage cpu saturation cgroup throttling io wait basics, load average triage cpu saturation cgroup throttling io wait beginner, load average triage cpu saturation cgroup throttling io wait intro, operating system basics, beginner operating system, 처음 배우는데 load average triage cpu saturation cgroup throttling io wait, load average triage cpu saturation cgroup throttling io wait 입문, load average triage cpu saturation cgroup throttling io wait 기초, what is load average triage cpu saturation cgroup throttling io wait, how to load average triage cpu saturation cgroup throttling io wait
 > 관련 문서:
 > - [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
 > - [operating-system 카테고리 인덱스](./README.md)

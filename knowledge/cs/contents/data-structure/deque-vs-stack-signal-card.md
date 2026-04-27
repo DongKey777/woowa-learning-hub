@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: deque vs stack signal card basics, deque vs stack signal card beginner, deque vs stack signal card intro, data structure basics, beginner data structure, 처음 배우는데 deque vs stack signal card, deque vs stack signal card 입문, deque vs stack signal card 기초, what is deque vs stack signal card, how to deque vs stack signal card
 > 관련 문서:
 > - [Deque Basics](./deque-basics.md)
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
@@ -81,3 +90,7 @@ window를 만들 때마다 그 순간의 답을 읽는다.
 ## 마지막 한 줄
 
 `매 window마다 읽는 답`이면 deque, `각 index가 나중에 답을 받는 구조`면 stack부터 본다.
+
+## 한 줄 정리
+
+`window 답을 매번 읽는 문제`면 보통 deque이고, `각 index의 답이 나중에 확정되는 문제`면 보통 stack이다.

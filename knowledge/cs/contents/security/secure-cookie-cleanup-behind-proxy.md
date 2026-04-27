@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 문서 역할: `primer bridge`
 >
 > 이미 `cookie cleanup이 안 먹는다`, `logout 후에도 old cookie가 남는다`, `migration tombstone을 보냈는데 DevTools에서 그대로 보인다` 같은 증거가 잡혔을 때, 이것이 **정말 tombstone scope 불일치인지** 아니면 **proxy / HTTPS 전달 불일치인지** 먼저 가르는 bridge다.
@@ -17,7 +24,7 @@
 > - `[primer]` [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md)
 > - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: secure cookie cleanup behind proxy, cookie cleanup behind proxy, secure tombstone behind proxy, cookie tombstone secure delivery, bad tombstone vs secure delivery, logout cookie cleanup behind proxy, secure cookie delete not working proxy, max-age 0 secure cookie proxy, expires delete cookie https proxy, cookie cleanup seems ignored behind alb, cookie tombstone not applied behind nginx, stale secure cookie after logout proxy, secure logout cookie remains proxy, cookie migration cleanup proxy mismatch, X-Forwarded-Proto tombstone, secure cookie delete looks broken, secure cookie cleanup http redirect, old cookie not deleted behind load balancer, tombstone delivered over http, beginner cookie cleanup proxy guide
+retrieval-anchor-keywords: secure cookie cleanup behind proxy, cookie cleanup behind proxy, secure tombstone behind proxy, cookie tombstone secure delivery, bad tombstone vs secure delivery, logout cookie cleanup behind proxy, secure cookie delete not working proxy, max-age 0 secure cookie proxy, expires delete cookie https proxy, cookie cleanup seems ignored behind alb, cookie tombstone not applied behind nginx, stale secure cookie after logout proxy, secure logout cookie remains proxy, beginner cookie cleanup proxy guide, secure cookie cleanup behind proxy basics
 retrieval-anchor-keywords: cookie deleted locally but still visible, logout clears cookie locally not in prod, secure cookie logout works local fails prod, bad tombstone vs wrong scheme redirect, host-only cookie tombstone vs secure redirect mismatch, tombstone exact domain path vs secure delivery issue
 
 ## 왜 이 문서를 먼저 읽나

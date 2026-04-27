@@ -13,7 +13,9 @@
 - [Domain Events vs Integration Events](./domain-events-vs-integration-events.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: event vs command naming primer, OrderCompletedEvent CancelOrderCommand, event naming past fact, command naming future request, event vs command beginner naming, 이벤트 커맨드 네이밍, event command 이름 차이, 과거 사실 vs 미래 요청, event는 이미 일어난 일, command는 실행 요청, 주문 완료 이벤트 이름, 주문 취소 커맨드 이름, OrderCancelledEvent vs CancelOrderCommand, facts vs requests naming, happened vs do this naming, event suffix command suffix beginner, event command confusion naming
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: event vs command naming primer, ordercompletedevent cancelordercommand, event naming past fact, command naming future request, event vs command beginner naming, 이벤트 커맨드 네이밍, event command 이름 차이, 과거 사실 vs 미래 요청, event는 이미 일어난 일, command는 실행 요청, 주문 완료 이벤트 이름, 주문 취소 커맨드 이름, ordercancelledevent vs cancelordercommand, facts vs requests naming, event suffix command suffix beginner
 
 ---
 

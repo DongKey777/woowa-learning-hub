@@ -11,7 +11,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Database Lock Basics](../database/lock-basics.md)
 
-retrieval-anchor-keywords: 가상 메모리란, virtual memory basics, 가상 주소 물리 주소 차이, page fault 기초, 페이징 기초, 가상 메모리 뭐예요, 주소 공간 독립, mmu 기초, 가상 메모리 beginner, paging intro
+retrieval-anchor-keywords: 가상 메모리란, virtual memory basics, 가상 주소 물리 주소 차이, page fault 기초, 페이징 기초, 가상 메모리 뭐예요, 주소 공간 독립, mmu 기초, 가상 메모리 beginner, paging intro, virtual memory basics basics, virtual memory basics beginner, virtual memory basics intro, operating system basics, beginner operating system
 
 ## 먼저 잡는 멘탈 모델
 

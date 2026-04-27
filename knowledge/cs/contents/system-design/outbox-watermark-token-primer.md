@@ -18,7 +18,7 @@
 - [Design Pattern: Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: outbox watermark token primer, outbox commit metadata token, commit lsn consistency token, outbox required watermark, downstream read watermark, what is outbox watermark, beginner consistency token, cdc outbox downstream read, read model watermark basics, outbox commit sequence token, shard aware watermark scope, outbox id across shards, outbox watermark cache metadata, refill metadata persistence, cache applied watermark bridge, 방금 이벤트 왔는데 조회는 stale, system-design-00059
+retrieval-anchor-keywords: outbox watermark token primer, outbox commit metadata token, commit lsn consistency token, outbox required watermark, downstream read watermark, what is outbox watermark, beginner consistency token, cdc outbox downstream read, read model watermark basics, outbox commit sequence token, shard aware watermark scope, outbox id across shards, outbox watermark cache metadata, refill metadata persistence, cache applied watermark bridge
 
 ---
 

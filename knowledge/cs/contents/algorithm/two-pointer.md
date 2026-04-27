@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: two pointer basics, two pointer beginner, two pointer intro, algorithm basics, beginner algorithm, 처음 배우는데 two pointer, two pointer 입문, two pointer 기초, what is two pointer, how to two pointer
 > 관련 문서:
 > - [정렬 알고리즘](./sort.md)
 > - [Sliding Window Patterns](./sliding-window-patterns.md)
@@ -59,6 +68,8 @@
 | LIS / Subsequence Optimization | 원소를 건너뛰며 순서를 보존한다 | "몇 개를 skip 하며 가장 좋은 subsequence를 고를 수 있는가?" | `subsequence`, `skip allowed`, `tails`, `lower_bound`, 증가 수열 |
 | Binary Search | 정답 후보 공간의 경계를 찾는다 | "`x`가 가능한가?", "처음 참은 어디인가?" | monotonic predicate, answer space, feasibility check |
 
+## 자주 헷갈리는 패턴 구분 (계속 2)
+
 - sliding window는 two-pointer의 한 하위 패턴이다. 모든 sliding window는 two-pointer지만, 모든 two-pointer가 sliding window는 아니다.
 - `pair`, `sum`, `difference`, `palindrome`, `left/right`처럼 "두 값의 관계"를 줄이는 표현이 먼저 보이면 contiguous window보다 two-pointer 쪽이 더 정확하다.
 - `길이 k`의 모든 구간에서 `max/min`을 묻는다면 포인터 이동 자체보다 극값 후보 만료 관리가 본질이라 [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md)으로 라우팅해야 한다.
@@ -111,6 +122,8 @@
 
 정렬된 배열에서 opposite-direction two-pointer는 보통 O(n)이다.
 하지만 정렬이 필요하면 전체 시간복잡도는 정렬 비용까지 포함해 O(n log n)이 된다.
+
+## 깊이 들어가기 (계속 2)
 
 즉 "정렬 안 된 배열에서도 two-pointer니까 O(n)"이라고 보면 오판하기 쉽다.
 

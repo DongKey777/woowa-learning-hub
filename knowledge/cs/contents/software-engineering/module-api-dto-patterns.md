@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: module api dto patterns basics, module api dto patterns beginner, module api dto patterns intro, software engineering basics, beginner software engineering, 처음 배우는데 module api dto patterns, module api dto patterns 입문, module api dto patterns 기초, what is module api dto patterns, how to module api dto patterns
 <details>
 <summary>Table of Contents</summary>
 

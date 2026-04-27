@@ -15,7 +15,9 @@
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: 3버킷 결정 트리, three bucket decision tree, already exists busy retryable, exception signal to service action, duplicate key lock timeout deadlock serialization failure, connection timeout busy mapping, beginner retry classifier, insert-if-absent decision card, service outcome bucket card, duplicate busy retryable mini card, 예외 신호 버킷 기본 동작, duplicate key busy retryable 표, 락 타임아웃 데드락 재시도 분류, mysql 1062 1205 1213, postgresql 23505 55P03 40P01 40001, root sql code 3 bucket card, duplicate key root code, deadlock root code beginner
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 3버킷 결정 트리, three bucket decision tree, already exists busy retryable, exception signal to service action, duplicate key lock timeout deadlock serialization failure, connection timeout busy mapping, beginner retry classifier, insert-if-absent decision card, service outcome bucket card, duplicate busy retryable mini card, 예외 신호 버킷 기본 동작, duplicate key busy retryable 표, 락 타임아웃 데드락 재시도 분류, mysql 1062 1205 1213, deadlock root code beginner
 
 ## 먼저 멘탈모델
 
@@ -88,3 +90,7 @@ root code까지 같이 외우는 가장 짧은 줄:
 - 신호별 설명을 더 보고 싶으면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - Spring/JPA 예외 이름이 왜 섞여 보이는지 알고 싶으면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - `connection timeout`과 `lock timeout`을 먼저 분리하고 싶으면 [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
+
+## 한 줄 정리
+
+예외 이름을 길게 외우기보다, 먼저 `already exists` / `busy` / `retryable` 3버킷으로 번역하면 기본 동작이 빨라진다.

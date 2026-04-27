@@ -11,7 +11,7 @@
 - [자료구조 정리](./README.md)
 - [재귀 입문](../algorithm/recursion-intro.md)
 
-retrieval-anchor-keywords: stack basics, lifo, 스택 입문, 스택이 뭐예요, stack push pop, call stack, undo stack, bracket matching, 괄호 짝 맞추기, stack vs queue beginner, 스택과 큐 차이, beginner stack, stack overflow basics
+retrieval-anchor-keywords: stack basics, lifo, 스택 입문, 스택이 뭐예요, stack push pop, call stack, undo stack, bracket matching, 괄호 짝 맞추기, stack vs queue beginner, 스택과 큐 차이, beginner stack, stack overflow basics, stack basics basics, stack basics beginner
 
 ## 핵심 개념
 

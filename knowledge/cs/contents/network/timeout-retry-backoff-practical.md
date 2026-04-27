@@ -1,6 +1,15 @@
 # Timeout, Retry, Backoff 실전
 
+
+> 한 줄 요약: Timeout, Retry, Backoff 실전는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 실무에서 요청 실패를 “운 좋게 한번 더 보내면 되겠지”로 처리하지 않기 위한 정리
 >
@@ -18,7 +27,7 @@
 > - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)
 > - [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](../spring/spring-mvc-async-deferredresult-callable-dispatch.md)
 
-retrieval-anchor-keywords: timeout retry backoff, exponential backoff, jitter, retry storm, request timeout, connect timeout, deadline budget, retry budget, transient failure, fail-fast
+retrieval-anchor-keywords: timeout retry backoff, exponential backoff, jitter, retry storm, request timeout, connect timeout, deadline budget, retry budget, transient failure, fail-fast, timeout retry backoff practical basics, timeout retry backoff practical beginner, timeout retry backoff practical intro, network basics, beginner network
 
 <details>
 <summary>Table of Contents</summary>
@@ -198,3 +207,7 @@ Backoff는 **retry 간격을 점점 늘리는 전략**이다.
 ### Q. retry는 항상 좋은가요?
 
 - 아니다. 잘못된 요청이나 부작용이 있는 요청에 retry를 넣으면 중복 처리와 장애 확산을 만들 수 있다.
+
+## 한 줄 정리
+
+Timeout, Retry, Backoff 실전는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

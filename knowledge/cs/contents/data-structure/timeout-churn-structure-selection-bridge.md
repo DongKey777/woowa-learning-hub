@@ -14,7 +14,9 @@
 - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 - [Hierarchical Timing Wheel](./hierarchical-timing-wheel.md)
 
-retrieval-anchor-keywords: scheduledthreadpoolexecutor vs delayqueue vs timing wheel, timeout churn structure selection, many long-delay timeouts cancelled, cancellation heavy timer queue, long delay timeout cancellation, scheduledthreadpoolexecutor long delay cancel, delayqueue long delay cancel, timing wheel long delay cancel, timer churn beginner, java timeout structure choice, heap timer queue vs timing wheel, delayed timeout cancellation retention, removeOnCancelPolicy timeout churn, long delay cancelled task retention, timeout scheduler selection table, beginner timer structure bridge, scheduled thread pool executor vs delayqueue vs hashed wheel timer, idle timeout churn, rpc timeout cancellation structure
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: scheduledthreadpoolexecutor vs delayqueue vs timing wheel, timeout churn structure selection, many long-delay timeouts cancelled, cancellation heavy timer queue, long delay timeout cancellation, scheduledthreadpoolexecutor long delay cancel, delayqueue long delay cancel, timing wheel long delay cancel, timer churn beginner, java timeout structure choice, heap timer queue vs timing wheel, delayed timeout cancellation retention, removeoncancelpolicy timeout churn, long delay cancelled task retention, beginner timer structure bridge
 
 ## 먼저 그림부터
 

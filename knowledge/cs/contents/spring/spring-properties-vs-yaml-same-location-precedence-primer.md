@@ -6,13 +6,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 > - [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
 > - [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
 
-retrieval-anchor-keywords: spring properties vs yaml precedence, spring same location properties yml, application.properties vs application.yml same folder, application.properties overrides application.yml, properties takes precedence over yml same location, properties takes precedence over yaml same location, spring mixed format config gotcha, spring boot config format precedence, application-prod.properties vs application-prod.yml, same location same key properties wins, spring recommended one config format, spring properties yaml coexist confusion, spring properties yaml merge behavior, spring 설정 파일 format 혼용, application properties yml 우선순위, 같은 위치 properties yaml, spring mixed-format gotcha
+retrieval-anchor-keywords: spring properties vs yaml precedence, spring same location properties yml, application.properties vs application.yml same folder, application.properties overrides application.yml, properties takes precedence over yml same location, properties takes precedence over yaml same location, spring mixed format config gotcha, spring boot config format precedence, application-prod.properties vs application-prod.yml, same location same key properties wins, spring recommended one config format, spring properties yaml coexist confusion, spring properties yaml merge behavior, spring properties vs yaml same location precedence primer basics, spring properties vs yaml same location precedence primer beginner
 
 ## 핵심 개념
 
@@ -163,3 +170,7 @@ profile이 맞아서 둘 다 후보가 되면,
 "YAML을 고쳤는데 값이 안 바뀐다"면
 같은 위치의 .properties에서 같은 key를 먼저 찾는다.
 ```
+
+## 한 줄 정리
+
+같은 위치에 `application.properties`와 `application.yml`(또는 `application.yaml`)이 함께 있으면 Spring Boot는 둘 다 후보로 보되, **같은 key가 겹칠 때는 `.properties` 쪽 값을 우선**한다.

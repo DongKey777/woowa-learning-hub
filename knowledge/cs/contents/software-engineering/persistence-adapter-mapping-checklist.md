@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: persistence adapter mapping checklist basics, persistence adapter mapping checklist beginner, persistence adapter mapping checklist intro, software engineering basics, beginner software engineering, 처음 배우는데 persistence adapter mapping checklist, persistence adapter mapping checklist 입문, persistence adapter mapping checklist 기초, what is persistence adapter mapping checklist, how to persistence adapter mapping checklist
 [30분 후속 분기표로 돌아가기](./common-confusion-wayfinding-notes.md#자주-헷갈리는-3개-케이스)
 
 <details>
@@ -192,3 +201,7 @@ class JpaOrderRepositoryAdapter implements OrderRepository {
 - 연관관계/cascade 함정을 더 자세히 보려면: [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
 - batch 최적화를 경계 밖으로 유지하려면: [Adapter Bulk Optimization Without Port Leakage](./adapter-bulk-optimization-without-port-leakage.md)
 - 읽기 요구 때문에 모델이 부풀 때는: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+
+## 한 줄 정리
+
+domain object와 JPA entity를 같은 모델로 밀어붙이지 말고, repository port는 도메인 언어를 유지한 채 persistence adapter가 매핑과 ORM 세부를 바깥에서 감싸는지 점검하는 짧은 체크리스트다.

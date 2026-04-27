@@ -11,7 +11,9 @@
 - [HTTPS / HSTS / MITM 심화](./https-hsts-mitm.md)
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: 대칭키 비대칭키 차이, symmetric asymmetric encryption beginner, 암호화 기초, 공개키 개인키 뭔가요, rsa aes 차이, 암호화 복호화 입문, 키 배포 문제, 암호화가 뭐예요, https 암호화 원리, beginner encryption basics, security readme encryption primer, security beginner route, security primer next step, return to security README, 키를 주고받으려면 어떻게 하지, symmetric key asymmetric key
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: 대칭키 비대칭키 차이, symmetric asymmetric encryption beginner, 암호화 기초, 공개키 개인키 뭔가요, rsa aes 차이, 암호화 복호화 입문, 키 배포 문제, 암호화가 뭐예요, https 암호화 원리, beginner encryption basics, security readme encryption primer, security beginner route, security primer next step, return to security readme, 키를 주고받으려면 어떻게 하지
 
 ## 이 문서 다음에 보면 좋은 문서
 

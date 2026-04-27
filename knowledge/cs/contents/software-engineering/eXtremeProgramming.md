@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: extremeprogramming basics, extremeprogramming beginner, extremeprogramming intro, software engineering basics, beginner software engineering, 처음 배우는데 extremeprogramming, extremeprogramming 입문, extremeprogramming 기초, what is extremeprogramming, how to extremeprogramming
 > 관련 문서:
 > - [Software Engineering README: 애자일 개발 프로세스](./README.md#애자일-개발-프로세스)
 > - [Agile Software Development 자료](./materials/CS_Agile.pdf)

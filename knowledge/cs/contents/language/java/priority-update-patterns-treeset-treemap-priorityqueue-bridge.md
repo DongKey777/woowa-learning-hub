@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: priority update patterns treeset treemap priorityqueue bridge basics, priority update patterns treeset treemap priorityqueue bridge beginner, priority update patterns treeset treemap priorityqueue bridge intro, java basics, beginner java, 처음 배우는데 priority update patterns treeset treemap priorityqueue bridge, priority update patterns treeset treemap priorityqueue bridge 입문, priority update patterns treeset treemap priorityqueue bridge 기초, what is priority update patterns treeset treemap priorityqueue bridge, how to priority update patterns treeset treemap priorityqueue bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Mutable Fields Inside Sorted Collections](./treeset-treemap-mutable-comparator-fields-primer.md)
@@ -208,6 +217,8 @@ QueueEntry pollLive() {
 
 priority 변경이 드물고 entry reference를 직접 들고 있다면 `remove(entry)` 후 `offer(updated)`도 가능하다.
 하지만 beginner 기본값으로는 "새 entry + stale skip"이 더 덜 헷갈린다.
+
+## `PriorityQueue` 계열: in-place update보다 새 entry 추가가 기본 (계속 2)
 
 `PriorityBlockingQueue`까지 같이 보는 초보자라면, cancel 때문에 생기는 duplicate entry와 stale skip 감각을 [`PriorityBlockingQueue` Cancellation/Update Mini Bridge](./priorityblockingqueue-cancellation-stale-entry-mini-bridge.md)에서 바로 이어 보면 된다.
 

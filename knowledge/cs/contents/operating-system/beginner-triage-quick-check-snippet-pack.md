@@ -15,7 +15,7 @@
 - [인터럽트 기초](./interrupt-basics.md)
 - [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
 
-retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, symptom first routing, slow response first check, oom first check, too many open files first check, interrupt signal first check, beginner self-check route, primer review route, quick observation mental model, what to check first, basics triage route
+retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, symptom first routing, slow response first check, oom first check, too many open files first check, interrupt signal first check, beginner self-check route, primer review route, quick observation mental model, what to check first, basics triage route, beginner triage quick check snippet pack basics, beginner triage quick check snippet pack beginner, beginner triage quick check snippet pack intro
 
 ## 먼저 잡는 멘탈 모델
 
@@ -162,6 +162,7 @@ cat /proc/pressure/cpu /proc/pressure/io
 - `free -h`는 호스트 상태, `memory.current`/`memory.max`는 cgroup 상태다. 둘은 같은 숫자가 아니다.
 
 ## cgroup 파일 이름 호환성 메모
+
 호환성 메모는 파일 이름보다 역할을 맞추는 데 목적이 있다.
 
 | 보고 싶은 역할 | cgroup v2 파일 | cgroup v1에서 자주 보이는 이름 |

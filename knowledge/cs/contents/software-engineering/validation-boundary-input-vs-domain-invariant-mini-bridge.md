@@ -11,7 +11,7 @@
 - [Layered Validation Pattern: 입력, 도메인, 정책을 층별로 검증하기](../design-pattern/layered-validation-pattern.md)
 - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 
-retrieval-anchor-keywords: validation boundary mini bridge, input validation vs domain invariant beginner, 형식 검증 vs 도메인 불변식, 요청 검증 도메인 규칙 차이, validation boundary card, dto validation vs invariant, @valid vs domain invariant, beginner validation invariant bridge, 입력 검증 경계 입문, 도메인 불변식 입문 브리지
+retrieval-anchor-keywords: validation boundary mini bridge, input validation vs domain invariant beginner, 형식 검증 vs 도메인 불변식, 요청 검증 도메인 규칙 차이, validation boundary card, dto validation vs invariant, @valid vs domain invariant, beginner validation invariant bridge, 입력 검증 경계 입문, 도메인 불변식 입문 브리지, validation boundary input vs domain invariant mini bridge basics, validation boundary input vs domain invariant mini bridge beginner, validation boundary input vs domain invariant mini bridge intro, software engineering basics, beginner software engineering
 
 ## 먼저 멘탈 모델
 

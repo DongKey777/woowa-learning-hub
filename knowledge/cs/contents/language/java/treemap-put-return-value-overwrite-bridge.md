@@ -13,7 +13,7 @@
 - [TreeMap 조회 전용 미니 드릴: `containsKey()` / `get()` with `record` key and name-only comparator](./treemap-record-containskey-get-name-comparator-drill.md)
 - [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
 
-retrieval-anchor-keywords: treemap put return value, java treemap put returns previous value, treemap put null 의미, treemap overwrite previous value, treemap put 덮어쓰기 반환값, map put 이전 값 반환, treemap compareTo 0 overwrite, beginner treemap put confusion, java map put returns old value, treemap put size unchanged overwrite, compare zero same key slot put return, treemap comparator zero previous value, treemap compareTo 0 put old value
+retrieval-anchor-keywords: treemap put return value, java treemap put returns previous value, treemap put null 의미, treemap overwrite previous value, treemap put 덮어쓰기 반환값, map put 이전 값 반환, treemap compareto 0 overwrite, beginner treemap put confusion, java map put returns old value, treemap put size unchanged overwrite, compare zero same key slot put return, treemap comparator zero previous value, treemap compareto 0 put old value, treemap put return value overwrite bridge basics, treemap put return value overwrite bridge beginner
 
 ## 먼저 잡는 멘탈 모델
 

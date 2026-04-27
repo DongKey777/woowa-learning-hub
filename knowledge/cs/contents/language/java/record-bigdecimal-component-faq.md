@@ -13,7 +13,7 @@
 - [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
 - [Money Value Object Basics](./money-value-object-basics.md)
 
-retrieval-anchor-keywords: record bigdecimal faq, record component bigdecimal, record bigdecimal equals, record bigdecimal hashset, record bigdecimal treeset, record bigdecimal canonicalization, record bigdecimal 1.0 1.00, bigdecimal value object record, java record money faq, java record bigdecimal beginner, bigdecimal scale equality record, striptrailingzeros record money
+retrieval-anchor-keywords: record bigdecimal faq, record component bigdecimal, record bigdecimal equals, record bigdecimal hashset, record bigdecimal treeset, record bigdecimal canonicalization, record bigdecimal 1.0 1.00, bigdecimal value object record, java record money faq, java record bigdecimal beginner, bigdecimal scale equality record, striptrailingzeros record money, record bigdecimal component faq basics, record bigdecimal component faq beginner, record bigdecimal component faq intro
 
 ## 먼저 잡을 멘탈 모델
 

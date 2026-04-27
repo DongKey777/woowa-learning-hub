@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: nullable wrapper comparator bridge basics, nullable wrapper comparator bridge beginner, nullable wrapper comparator bridge intro, java basics, beginner java, 처음 배우는데 nullable wrapper comparator bridge, nullable wrapper comparator bridge 입문, nullable wrapper comparator bridge 기초, what is nullable wrapper comparator bridge, how to nullable wrapper comparator bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -87,6 +96,8 @@ Comparator를 막 배우면 보통 이런 식으로 기억한다.
 
 짧게 코드로 같이 보면 차이가 더 또렷하다.
 
+## primitive tie-breaker에서 nullable wrapper follow-up로 넘어가기 (계속 2)
+
 ```java
 import java.util.Comparator;
 
@@ -119,6 +130,8 @@ Comparator<Job> byQueueThenReviewScore =
 ```
 
 이 네 줄을 초보자 감각으로 묶으면 다음처럼 기억하면 된다.
+
+## primitive tie-breaker에서 nullable wrapper follow-up로 넘어가기 (계속 3)
 
 - primitive tie-breaker는 `thenComparingInt`/`Long`/`Double` shortcut으로 바로 이어 간다
 - `Integer`/`Long`/`Double`이지만 `null`이 올 수 있으면 method 이름보다 `nullsFirst`/`nullsLast`가 먼저 눈에 들어와야 한다
@@ -263,6 +276,8 @@ System.out.println(memoByCandidate.get(new Candidate(99L, "Ghost", null))); // s
 ```
 
 같은 comparator인데 결과가 이렇게 갈린다.
+
+## `TreeSet`/`TreeMap`에서는 `null`끼리도 같은 자리일 수 있다 (계속 2)
 
 | 위치 | 결과 | 초보자용 해석 |
 |---|---|---|

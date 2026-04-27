@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Cookie Failure Three-Way Splitter](./cookie-failure-three-way-splitter.md)
 > - [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md)
@@ -12,7 +19,7 @@
 > - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 > - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: cookie devtools field checklist, cookie 1 minute checklist, devtools cookie checklist beginner, set-cookie application cookies request cookie compare, cookie troubleshooting columns to compare, devtools cookie compare domain path samesite secure, response set-cookie vs application cookies vs request cookie, blocked set-cookie application request cookie checklist, cookie name domain path compare, cookie beginner devtools quick check, browser cookie first minute checklist, network application issues cookie checklist, cookie headers to compare beginner, 쿠키가 있는데도 요청에 안 감
+retrieval-anchor-keywords: cookie devtools field checklist, cookie 1 minute checklist, devtools cookie checklist beginner, set-cookie application cookies request cookie compare, cookie troubleshooting columns to compare, devtools cookie compare domain path samesite secure, response set-cookie vs application cookies vs request cookie, blocked set-cookie application request cookie checklist, cookie name domain path compare, cookie beginner devtools quick check, browser cookie first minute checklist, network application issues cookie checklist, cookie headers to compare beginner, 쿠키가 있는데도 요청에 안 감, cookie devtools field checklist primer basics
 retrieval-anchor-keywords: request url cookie name domain path samesite secure httponly expires, issues blocked reason cookie, request headers cookie compare, response headers set-cookie compare
 
 ## 먼저 잡을 mental model
@@ -84,3 +91,7 @@ cookie 디버깅 첫 질문은 복잡하지 않다.
 | request `Cookie`는 있는데 브라우저는 still anonymous | [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md) 또는 server/session 복원 갈래 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
 
 이 checklist로도 갈래가 안 서면 먼저 [Cookie Failure Three-Way Splitter](./cookie-failure-three-way-splitter.md)로 돌아가서 `blocked` / `stored but not sent` / `sent but anonymous`를 다시 고른다.
+
+## 한 줄 정리
+
+cookie 디버깅 첫 1분은 "브라우저가 받았나, 저장했나, 보냈나"를 같은 cookie 이름 기준으로 `Set-Cookie` 한 줄, `Application` 한 줄, request `Cookie` 한 줄만 비교하면 된다.

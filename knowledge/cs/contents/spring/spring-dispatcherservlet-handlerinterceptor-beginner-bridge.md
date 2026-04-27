@@ -16,7 +16,7 @@
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dispatcherservlet 처음 배우는데, handlerinterceptor 처음 배우는데, spring mvc 처음 배우는데, spring mvc 큰 그림, spring mvc 기초, spring mvc 생명주기 전에 볼 문서, handlermapping handleradapter 차이, mvc basics before lifecycle, 인터셉터 뭐예요, dispatcherservlet 뭐예요, mvc primer before deep dive, beginner first-hit mvc primer, dispatcherservlet 언제 쓰는지, handlerinterceptor 언제 쓰는지
+retrieval-anchor-keywords: dispatcherservlet 처음 배우는데, handlerinterceptor 처음 배우는데, spring mvc 처음 배우는데, spring mvc 큰 그림, spring mvc 기초, spring mvc 생명주기 전에 볼 문서, handlermapping handleradapter 차이, mvc basics before lifecycle, 인터셉터 뭐예요, dispatcherservlet 뭐예요, mvc primer before deep dive, beginner first-hit mvc primer, dispatcherservlet 언제 쓰는지, handlerinterceptor 언제 쓰는지, spring dispatcherservlet handlerinterceptor beginner bridge basics
 
 ## 먼저 큰 그림
 

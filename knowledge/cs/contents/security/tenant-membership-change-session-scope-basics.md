@@ -17,7 +17,7 @@
 - `[primer]` [Spring Security 기초](../spring/spring-security-basics.md)
 - `[catalog]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: tenant membership change, tenant context stale, active tenant stale, workspace switch 403, old workspace still visible, 현재 workspace와 tenant 목록이 왜 다르지, tenant context 뭐예요, current tenant context, tenant membership list, active workspace vs membership list, tenant selector hint, stale tenant session
+retrieval-anchor-keywords: tenant membership change, tenant context stale, active tenant stale, workspace switch 403, old workspace still visible, 현재 workspace와 tenant 목록이 왜 다르지, tenant context 뭐예요, current tenant context, tenant membership list, active workspace vs membership list, tenant selector hint, stale tenant session, tenant membership change session scope basics basics, tenant membership change session scope basics beginner, tenant membership change session scope basics intro
 
 카테고리로 돌아가기:
 
@@ -50,6 +50,8 @@ tenant 문맥 질문은 초보자가 `403`, `404`, `권한 줬는데 still deny`
 |---|---|---|
 | `권한을 방금 줬는데 still 403`처럼 grant는 끝났는데 deny가 남는 경우 | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) | [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md) |
 | tenant/team/org 이동 뒤 old 데이터가 보이거나 old tenant 접근이 남는 경우 | [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md) | [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md), [Session Revocation at Scale](./session-revocation-at-scale.md) |
+
+## 이 문서 다음에 보면 좋은 문서 (계속 2)
 
 - role/permission 변경과 같은 큰 그림을 먼저 잡고 싶으면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)부터 보면 된다.
 - `role`, `scope`, `ownership`, `tenant`가 각각 다른 질문이라는 점이 아직 헷갈리면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)를 먼저 붙이면 된다.

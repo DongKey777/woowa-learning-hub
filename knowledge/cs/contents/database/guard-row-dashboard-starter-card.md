@@ -12,7 +12,9 @@
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 - [Busy: Fail-Fast vs One Short Retry Card](./busy-fail-fast-vs-one-short-retry-card.md)
 
-retrieval-anchor-keywords: guard row dashboard starter, guard-row dashboard starter card, guard row 3 panel dashboard, guard row wait panel, hot key concentration panel, deadlock share panel, guard row observability thresholds, beginner guard row dashboard, guard row p95 wait threshold, top1 key concentration threshold, deadlock share threshold, room_type_day dashboard card, campaign guard dashboard, same key concentration dashboard, hot row starter thresholds, guard row panel starter bands, guard row wait hot key deadlock dashboard, guard row metrics first dashboard, guard-row observability primer card
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: guard row dashboard starter, guard-row dashboard starter card, guard row 3 panel dashboard, guard row wait panel, hot key concentration panel, deadlock share panel, guard row observability thresholds, beginner guard row dashboard, guard row p95 wait threshold, top1 key concentration threshold, deadlock share threshold, room_type_day dashboard card, campaign guard dashboard, same key concentration dashboard, guard row dashboard starter card basics
 
 ## 먼저 멘탈모델
 
@@ -93,6 +95,8 @@ starter 해석:
 
 중요한 점:
 
+## 패널별 뜻 (계속 2)
+
 - wait time이 높아도 deadlock share가 낮으면, 문제 중심은 보통 **긴 queue**다
 - wait time이 중간이어도 deadlock share가 높으면, 문제 중심은 보통 **ordering drift**다
 
@@ -161,3 +165,7 @@ deadlock_share_on_guard_path = 8%
 - wait/duplicate/deadlock/slow query를 먼저 구분하고 싶다면 → [Guard-Row Contention Observability Cheatsheet](./guard-row-contention-observability-cheatsheet.md)
 - "이 key가 너무 뜨거운가?"를 구조적으로 읽고 싶다면 → [Guard Row Hot-Row Symptoms Primer](./guard-row-hot-row-symptoms-primer.md)
 - single hot row를 stripe로 쪼갤 때의 첫 규칙을 보고 싶다면 → [Striped Guard Row Budgeting Primer](./striped-guard-row-budgeting-primer.md)
+
+## 한 줄 정리
+
+guard-row 경로의 첫 대시보드는 "얼마나 오래 기다리나", "대기가 몇 개 key에 몰리나", "그 대기 중 deadlock 비중이 얼마나 되나"라는 세 질문만 한 화면에 두면 시작할 수 있다.

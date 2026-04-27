@@ -11,7 +11,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 
-retrieval-anchor-keywords: jdbc jpa mybatis beginner, jdbc 기초, jpa 입문, mybatis 처음 배우는데, orm 기초, sql mapper 기초, jdbc vs jpa 차이, jpa가 뭐예요, mybatis 설명, java db 연결 입문
+retrieval-anchor-keywords: jdbc jpa mybatis beginner, jdbc 기초, jpa 입문, mybatis 처음 배우는데, orm 기초, sql mapper 기초, jdbc vs jpa 차이, jpa가 뭐예요, mybatis 설명, java db 연결 입문, jdbc jpa mybatis basics basics, jdbc jpa mybatis basics beginner, jdbc jpa mybatis basics intro, database basics, beginner database
 
 ## 핵심 개념
 

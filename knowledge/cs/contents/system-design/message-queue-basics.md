@@ -15,7 +15,7 @@
 - [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: message queue basics, 메시지 큐 입문, message queue 뭐예요, producer consumer 기초, kafka 기초, rabbitmq 기초, 비동기 처리 입문, 느슨한 결합, 서비스 디커플링, beginner message queue, 큐 처리 흐름, 메시지 브로커 기초, pub sub 기초, sync vs async queue decision, queue insert not business completion, at least once delivery beginner
+retrieval-anchor-keywords: message queue basics, 메시지 큐 입문, message queue 뭐예요, producer consumer 기초, kafka 기초, rabbitmq 기초, 비동기 처리 입문, 느슨한 결합, 서비스 디커플링, beginner message queue, 큐 처리 흐름, 메시지 브로커 기초, pub sub 기초, sync vs async queue decision, queue insert not business completion
 
 ---
 

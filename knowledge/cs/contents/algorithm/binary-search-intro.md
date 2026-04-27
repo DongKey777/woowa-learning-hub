@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [트리 기초](../data-structure/tree-basics.md)
 
-retrieval-anchor-keywords: binary search intro, 이분 탐색 입문, 이진 탐색 기초, binary search beginner, 이분 탐색이 뭐예요, 정렬된 배열 탐색, log n 탐색, lo hi mid, binary search lo hi, lower bound beginner, upper bound beginner, 경계 이분 탐색, off by one binary search, binary search loop condition
+retrieval-anchor-keywords: binary search intro, 이분 탐색 입문, 이진 탐색 기초, binary search beginner, 이분 탐색이 뭐예요, 정렬된 배열 탐색, log n 탐색, lo hi mid, binary search lo hi, lower bound beginner, upper bound beginner, 경계 이분 탐색, off by one binary search, binary search loop condition, binary search intro basics
 
 ## 핵심 개념
 

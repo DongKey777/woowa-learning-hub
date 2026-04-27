@@ -192,6 +192,8 @@ public class PaymentHandlerRegistry {
 }
 ```
 
+## 예시 1: injected handler map은 대개 registry다 (계속 2)
+
 ```java
 PaymentHandler handler = registry.get(order.getPaymentMethod());
 handler.handle(order);

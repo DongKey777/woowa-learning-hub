@@ -11,7 +11,7 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: singleton pattern, singleton basics, 싱글톤 패턴, 인스턴스 하나, 전역 객체 패턴, when to use singleton, singleton problem, singleton test difficulty, singleton hidden state, global state smell, 싱글톤이 뭔가요, 싱글톤 단점, beginner singleton, singleton quick check, 싱글톤 10초, 싱글톤 30초 비교표, 싱글톤 1분 예시, 싱글톤 자주 헷갈리는 포인트, singleton beginner confusion points, singleton vs bean scope beginner, singleton vs spring bean, singleton micro check, bean scope confusion check, singleton common confusion
+retrieval-anchor-keywords: singleton pattern, singleton basics, 싱글톤 패턴, 인스턴스 하나, 전역 객체 패턴, when to use singleton, singleton problem, singleton test difficulty, singleton hidden state, global state smell, 싱글톤이 뭔가요, 싱글톤 단점, beginner singleton, singleton quick check, 싱글톤 10초
 
 ---
 

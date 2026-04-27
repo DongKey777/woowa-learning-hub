@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 로드밸런서, stateless app, cache, database, queue가 각각 어떤 병목을 줄이고 왜 함께 쓰이는지 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: system design foundations, load balancer basics, cache basics, database basics, queue basics, stateless app, stateless service, horizontal scaling intuition, vertical scaling, scale out, source of truth, primary replica, background worker, sticky session, external session store, token-based auth, stateless sessions primer, request path failure modes, failure absorption basics, cache outage basics, queue outage basics, app instance failure basics, database outage basics, cache hit miss, async processing, beginner system design, system design beginner route, first 30 minutes system design, 시스템 디자인 처음 배우는데, 시스템 디자인 큰 그림, 로드밸런서 캐시 DB 큐 언제 쓰는지, 박스 역할 큰 그림, system design basics first
+retrieval-anchor-keywords: system design foundations, load balancer basics, cache basics, database basics, queue basics, stateless app, stateless service, horizontal scaling intuition, vertical scaling, scale out, source of truth, primary replica, background worker, sticky session, external session store
 
 **난이도: 🟢 Beginner**
 
@@ -118,6 +118,8 @@ stateless app은 "상태가 아예 없다"는 뜻이 아니다.
 
 예를 들면:
 
+## 깊이 들어가기 (계속 2)
+
 - 로그인 세션은 외부 session store나 signed token에 둔다.
 - 업로드 파일은 로컬 디스크가 아니라 object storage에 둔다.
 - 주문 상태는 앱 메모리가 아니라 database에 기록한다.
@@ -186,6 +188,8 @@ database는 대개 시스템의 source of truth다.
 3. index와 query를 먼저 고칠 수 있는가
 4. 그래도 안 되면 partitioning이나 sharding이 필요한가
 
+## 깊이 들어가기 (계속 3)
+
 즉, DB 확장은 "서버만 더 붙이면 끝"이 아니라 데이터 모델과 정합성 비용을 같이 봐야 한다.
 
 ### 6. Queue는 어떤 문제에 쓰나
@@ -240,6 +244,8 @@ queue는 모든 작업을 빠르게 만드는 도구가 아니다.
 - DB scaling은 가장 비싸고 위험하다
 
 그래서 많은 시스템이 "LB + stateless app + cache + DB + queue" 조합으로 시작한다.
+
+## 깊이 들어가기 (계속 4)
 
 ### 8. 한 번에 그림으로 이해하기
 

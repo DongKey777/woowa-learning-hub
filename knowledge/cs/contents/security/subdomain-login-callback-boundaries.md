@@ -14,7 +14,7 @@
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
 
-retrieval-anchor-keywords: subdomain login callback boundaries, callback succeeded but app anonymous, auth.example.com cookie not sent to app.example.com, one-time handoff app-local session, shared parent-domain session, callback 302 but first app request anonymous, app_session after callback, cookie scope mismatch beginner, return to chooser from callback boundaries, return to security readme from subdomain callback, 처음 배우는데 callback 뒤에 왜 다시 로그인하나요, callback handoff basics
+retrieval-anchor-keywords: subdomain login callback boundaries, callback succeeded but app anonymous, auth.example.com cookie not sent to app.example.com, one-time handoff app-local session, shared parent-domain session, callback 302 but first app request anonymous, app_session after callback, cookie scope mismatch beginner, return to chooser from callback boundaries, return to security readme from subdomain callback, 처음 배우는데 callback 뒤에 왜 다시 로그인하나요, callback handoff basics, subdomain login callback boundaries basics, subdomain login callback boundaries beginner, subdomain login callback boundaries intro
 
 > 초보자 20초 route box:
 > - 아직 `shared cookie` 기대인지 `one-time handoff` 기대인지도 모르겠으면 먼저 [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md)로 올라간다.
@@ -296,6 +296,8 @@ Cookie: app_session=app999
 
 특히 handoff 모델이라면 app가 다음 중 하나를 해야 한다.
 
+## 무엇을 먼저 확인하면 되나 (계속 2)
+
 - local session id 발급
 - local principal/session store 기록
 - 필요하면 CSRF token 재발급
@@ -338,6 +340,8 @@ advanced redirect 검증과 allowlist hardening은 [Open Redirect Hardening](./o
 | `SameSite`, iframe, external IdP callback 쪽이 더 의심된다 | cross-site branch로 옮긴다 | [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 
 핵심은 이것이다.
+
+## beginner 복귀 사다리 (계속 2)
 
 - 이 문서에서 한 갈래를 확인한 뒤에도 초보자 복귀점은 같은 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)다.
 - broad category 위치를 다시 잡고 싶을 때만 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 한 칸 위로 올라간다.

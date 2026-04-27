@@ -19,7 +19,7 @@
 - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: samesite none cross-site login primer, samesite none secure login primer, samesite=none external idp cookie, samesite=none iframe login cookie, external idp callback cookie missing, partner portal iframe login loop, embedded login cookie blocked, social login cookie blocked samesite, 처음 배우는데 samesite none, samesite none 뭐예요
+retrieval-anchor-keywords: samesite none cross-site login primer, samesite none secure login primer, samesite=none external idp cookie, samesite=none iframe login cookie, external idp callback cookie missing, partner portal iframe login loop, embedded login cookie blocked, social login cookie blocked samesite, 처음 배우는데 samesite none, samesite none 뭐예요, samesite none cross site login primer basics, samesite none cross site login primer beginner, samesite none cross site login primer intro, security basics, beginner security
 retrieval-anchor-keywords: samesite none vs x-forwarded-proto, samesite vs x-forwarded-proto, external idp vs proxy cookie mismatch, iframe login vs proxy mismatch, secure cookie proxy mismatch vs samesite, browser cross-site cookie send rule, partner iframe session cookie beginner, federated login cookie not sent beginner, security readme browser session troubleshooting
 retrieval-anchor-keywords: login redirect becomes http after login, secure cookie not sent after http redirect, oauth vs oidc vs cookie confusion, social login cookie behavior confusion, social login mental model return, oidc cookie confusion beginner, iframe login still fails after samesite none secure, third-party cookie privacy controls iframe login, embedded login privacy controls beginner
 retrieval-anchor-keywords: primer follow-up catalog return ladder, safe next step before deep dive, browser session beginner ladder return, cross-site login safe next step, proxy vs samesite follow-up, beginner primer bridge ladder, 처음 배우는데 samesite none, samesite none 뭐예요
@@ -128,6 +128,9 @@ CSRF, CORS, callback hardening은 분기가 끝난 뒤에만 내려간다.
 | `SameSite=None; Secure`까지 이미 맞췄는데 iframe 안에서만 계속 실패하고 새 탭에서는 된다 | [Embedded Login Privacy Primer](./iframe-login-privacy-controls-primer.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 | 증상 문장에 "`auth.example.com/callback`은 성공인데 `app.example.com` 첫 요청이 anonymous" 또는 "`auth.example.com` cookie가 `app.example.com`에 안 간다"가 들어 있다 | [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md) | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
 | `fetch credentials`, CORS, cookie scope까지 같이 섞인다 | [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+## 막히면 여기로 돌아온다 (계속 2)
+
 | social login인데 "`구글 로그인` 흐름 설명"과 "브라우저가 cookie를 왜 안 보내는가"가 같이 헷갈린다 | [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)에서 역할을 먼저 분리한 뒤 다시 내려온다 | [Security README: 기본 primer](./README.md#기본-primer) |
 
 ---

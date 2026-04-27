@@ -1,7 +1,18 @@
 # Feature Flags, Rollout, Dependency Management
 
+
+> 한 줄 요약: Feature Flags, Rollout, Dependency Management는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: feature flags rollout dependency management basics, feature flags rollout dependency management beginner, feature flags rollout dependency management intro, software engineering basics, beginner software engineering, 처음 배우는데 feature flags rollout dependency management, feature flags rollout dependency management 입문, feature flags rollout dependency management 기초, what is feature flags rollout dependency management, how to feature flags rollout dependency management
 > 운영 트랙에서 배포 리스크를 줄이고 변경을 안전하게 흘리는 방법을 정리한 문서
 
 <details>
@@ -126,3 +137,6 @@ Dependency Management는 외부 라이브러리와 내부 모듈의 의존성을
 - 롤아웃 성공/실패를 판단할 지표는 무엇인가?
 - 의존성을 최신으로 유지하는 것과 안정적으로 유지하는 것의 균형은 무엇인가?
 
+## 한 줄 정리
+
+Feature Flags, Rollout, Dependency Management는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

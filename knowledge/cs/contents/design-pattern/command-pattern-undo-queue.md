@@ -4,6 +4,13 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Command Handler Pattern](./command-handler-pattern.md)
 > - [Command Bus Pattern](./command-bus-pattern.md)
@@ -12,7 +19,7 @@
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [안티 패턴](./anti-pattern.md)
 
-retrieval-anchor-keywords: command pattern, command object, undo redo command, command queue, command history stack, invoker receiver, retryable job command, text editor undo, queued work item, command vs event
+retrieval-anchor-keywords: command pattern, command object, undo redo command, command queue, command history stack, invoker receiver, retryable job command, text editor undo, queued work item, command vs event, command pattern undo queue basics, command pattern undo queue beginner, command pattern undo queue intro, design pattern basics, beginner design pattern
 
 ---
 

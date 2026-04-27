@@ -1,7 +1,18 @@
 # Algorithm (알고리즘)
 
+
+> 한 줄 요약: Algorithm (알고리즘)는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: readme basics, readme beginner, readme intro, algorithm basics, beginner algorithm, 처음 배우는데 readme, readme 입문, readme 기초, what is readme, how to readme
 > retrieval-anchor-keywords: algorithm readme, algorithm navigator, algorithm primer, algorithm to data structure bridge, data structure mini prompt pack handoff, beginner routing bridge, queue deque heap terminology bridge, queue vs deque vs priority queue handoff, beginner queue deque heap split, time complexity, nested loop complexity, double for loop complexity, 이중 for문 시간복잡도, 이중 for문 무조건 o(n^2), amortized analysis, binary search pattern, sliding window, contiguous index interval, interval greedy, interval scheduling, merge intervals, insert interval, interval merge, batch interval merge, start time sort, end time sort, sweep line, sweep-line, line sweep, meeting room, meeting rooms i, meeting rooms ii, meeting rooms 2, minimum meeting rooms, max concurrency, peak concurrency, overlap counting, room allocation, minimum number of platforms, hotel booking possible, car pooling, calendar overlap, overlap removal, reservation scheduling, dynamic interval query boundary, online interval insert boundary, calendar booking routing, my calendar routing, interval tree handoff, disjoint interval set handoff, window vs interval scheduling, calendar overlap not sliding window, greedy algorithm overview, greedy overview, greedy primer, greedy choice, greedy choice property, optimal substructure, exchange argument, when greedy works, when greedy fails, 탐욕 알고리즘 개요, 그리디 알고리즘 개요, 탐욕 선택 속성, 최적 부분 구조, two-pointer, lis, longest increasing subsequence, subsequence vs subarray, contiguous subarray, monotonic predicate, answer space search, graph algorithm, graph problem router, path vs tree vs order vs flow, connectivity router, same component query, same set query, connected yes no, component size count query, union find connectivity, shortest path, shortest path router, shortest path cluster, unweighted vs dag vs weighted shortest path, weighted shortest path, positive weighted shortest path, weighted shortest path router, graph density shortest path, sparse graph shortest path, dense graph shortest path, sparse vs dense shortest path, adjacency list shortest path, adjacency matrix shortest path, sparse weighted shortest path, dense weighted shortest path, edge density shortest path, bfs shortest path, unweighted shortest path, maze shortest path, maze navigation, maze-navigation, maze pathfinding, minimum move count, dag shortest path, shortest path on dag, point-to-point shortest path, point to point shortest path, weighted point-to-point routing, route planning, route-planning, weighted route planning, minimum cost route between two nodes, 가중치 길찾기, 두 정점 사이 최소 비용 경로, single-pair shortest path, single pair shortest path, source-to-target routing, goal-directed shortest path, goal-directed pathfinding, target-fixed shortest path, target fixed shortest path, fixed-target shortest path, fixed destination shortest path, start-to-goal shortest path, origin-destination shortest path, graph pathfinding, pathfinding router, heuristic search, negative edge, all pairs shortest path, 0-1 bfs, zero one bfs, binary weight shortest path, binary edge weight shortest path, 0/1 cost shortest path, deque shortest path, shortest path with deque, free paid edge shortest path, teleport shortest path, portal shortest path, warp shortest path, teleport cost 0 walk cost 1, 순간이동 최단 경로, minimum spanning tree, MST, mst entry, mst router, mst interview question, prim vs kruskal interview, shortest path tree vs mst, shortest path vs mst interview, disconnected graph mst, minimum spanning forest edge case, connect all nodes minimum cost, connect all cities minimum cost, connect all points minimum cost, minimum cost to connect all nodes, minimum cost to connect all points, network wiring minimum cost, cycle-free minimum cost, prim vs kruskal, mst algorithm choice, which mst algorithm, dense graph mst, sparse graph mst, prim adjacency list heap, prim heap implementation, lazy prim, eager prim, decrease key prim, prim adjacency matrix dense graph, prim o(v^2), complete graph prim, cost matrix mst, minimum spanning forest, shortest path vs mst, union find mst, union find, 최소 신장 트리 면접 질문, 최소 신장 포레스트, MST와 최단 경로 차이, 끊어진 그래프 MST, 같은 컴포넌트 질문, 연결 여부 yes no, 같은 그룹인가, 컴포넌트 크기 질문, 컴포넌트 개수 질문, 유니온 파인드 연결성, 프림 인접 리스트 힙, 프림 우선순위 큐 구현, 프림 인접 행렬, 프림 O(V^2), 완전 그래프 MST, topological sort, network flow, max flow, max throughput, throughput maximization, throughput optimization, bottleneck capacity, bottleneck edge, bottleneck link, bandwidth bottleneck, min cut, minimum cut, cut capacity, flow cut theorem, bipartite matching, maximum matching, assignment problem, job assignment, worker task assignment, matching to flow reduction, weighted matching, weighted bipartite matching, minimum cost bipartite matching, cost-aware matching, cost aware matching, minimum assignment, minimum cost assignment, cost matrix assignment, cheapest assignment, cheapest matching, optimal assignment, min-cost max-flow, mcmf, minimum cost flow, transportation problem, transport problem, minimum cost transportation, shipping cost minimization, supply demand allocation, hungarian algorithm, hungarian, kuhn munkres, linear assignment, linear sum assignment, minimum weight perfect matching, 1:1 weighted matching, bitmask dp, assignment dp, small-n assignment, small-n exact assignment, one worker one job small n, cost matrix small n, n <= 20 assignment, popcount assignment, subset-state optimization, held-karp, tsp dp, A*, A star, A-star, a-star, astar, graph decision tree, dependency ordering, string algorithm, 병목, 네트워크 병목, 최소 컷, 최소 절단, 절단 용량, 최대 처리량
 
 ## 빠른 탐색
@@ -9,6 +20,8 @@
 이 `README`는 알고리즘 **입문 프라이머**와 pattern / comparison deep dive가 함께 있는 **navigator 문서**다.
 
 - 알고리즘보다 먼저 "배열/맵/큐/힙 중 어디서 시작하지?"가 막히면 [초미니 실전 프롬프트 팩](../data-structure/applied-data-structures-overview.md#초미니-실전-프롬프트-팩)에서 10초 라우트를 먼저 잡고 다시 내려오면 된다.
+
+## 빠른 탐색 (계속 2)
 
 - 복잡도와 탐색 기본기를 먼저 잡고 싶다면:
   - [시간복잡도와 공간복잡도](basic.md#시간복잡도와-공간복잡도)
@@ -25,7 +38,10 @@
   - [Shortest Path Router: Unweighted vs DAG vs Weighted](graph.md#shortest-path-router-unweighted-vs-dag-vs-weighted) (legacy graph 입문 프라이머 라우터, same canonical single-source/all-pairs/negative-edge vocabulary as the comparison deep dive)
   - [Minimum Spanning Tree: Prim vs Kruskal](minimum-spanning-tree-prim-vs-kruskal.md)
   - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md) (unweighted vs DAG vs weighted router, negative-edge/single-source/all-pairs query anchors, A* handoff)
-  - [A* vs Dijkstra](a-star-vs-dijkstra.md) (goal-directed shortest path, A-star/astar alias, route-planning, maze-navigation, point-to-point shortest path, target-fixed routing)
+
+## 빠른 탐색 (계속 3)
+
+- [A* vs Dijkstra](a-star-vs-dijkstra.md) (goal-directed shortest path, A-star/astar alias, route-planning, maze-navigation, point-to-point shortest path, target-fixed routing)
   - [Sparse Graph Shortest Paths](sparse-graph-shortest-paths.md) (graph density phrasing, single-source weighted shortest path, route-planning to A* handoff, PQ Dijkstra, 0-1 BFS, 0/1 cost shortest path, Dial)
   - [위상 정렬 패턴](topological-sort-patterns.md)
   - [네트워크 플로우 직관](network-flow-intuition.md)
@@ -37,7 +53,10 @@
   - [분리 집합(Union Find)과 크루스칼(Kruskal) 알고리즘](graph.md#분리-집합Union-Find과-크루스칼Kruskal-알고리즘)
 - `prim adjacency list heap`, `lazy prim`, `decrease-key 없는 prim`, `priority queue duplicate edge`, `prim adjacency matrix`, `dense graph prim`, `prim O(V^2)`, `complete graph mst`처럼 Prim 구현 디테일이 먼저 보이면:
   - [Minimum Spanning Tree: Prim vs Kruskal](minimum-spanning-tree-prim-vs-kruskal.md) (Prim heap vs matrix follow-up note 포함)
-  - [Heap Variants](../data-structure/heap-variants.md)
+
+## 빠른 탐색 (계속 4)
+
+- [Heap Variants](../data-structure/heap-variants.md)
 - `unweighted shortest path`, `bfs shortest path`, `최소 이동 횟수`, `미로 최단 경로`처럼 BFS alias가 먼저 보이면:
   - [DFS와 BFS](basic.md#dfs와-bfs) (BFS shortest-path 입문 프라이머, unweighted shortest-path handoff)
   - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md)
@@ -49,6 +68,9 @@
   - [A* vs Dijkstra](a-star-vs-dijkstra.md)
   - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md)
   - [Sparse Graph Shortest Paths](sparse-graph-shortest-paths.md)
+
+## 빠른 탐색 (계속 5)
+
 - `sparse graph shortest path`, `dense graph shortest path`, `adjacency list shortest path`, `adjacency matrix shortest path`, `graph density shortest path`, `single-source shortest path on sparse graph`처럼 그래프 밀도/표현이 먼저 보이면:
   - [Weighted Shortest Path Density Router: Sparse vs Dense](graph.md#weighted-shortest-path-density-router-sparse-vs-dense)
   - [Sparse Graph Shortest Paths](sparse-graph-shortest-paths.md)
@@ -67,7 +89,10 @@
   - [Bitmask DP](bitmask-dp.md)
 - `small-n assignment`, `assignment dp`, `cost matrix small n`, `one worker one job n <= 20`, `dp[mask][last]`, `visit all nodes once`처럼 상태 압축/순서 의존성이 먼저 보이면:
   - [Bitmask DP](bitmask-dp.md)
-  - [Hungarian Algorithm Intuition](hungarian-algorithm-intuition.md)
+
+## 빠른 탐색 (계속 6)
+
+- [Hungarian Algorithm Intuition](hungarian-algorithm-intuition.md)
   - [Min-Cost Max-Flow Intuition](min-cost-max-flow-intuition.md)
 - `optimal assignment`, `hungarian algorithm`, `linear assignment`, `minimum weight perfect matching`, `1:1 weighted matching`처럼 exact cost matrix 배정이라면:
   - [Hungarian Algorithm Intuition](hungarian-algorithm-intuition.md)
@@ -85,6 +110,9 @@
   - [그래프 문제 Decision Router](graph.md#그래프-문제-decision-router)
   - [네트워크 플로우 직관](network-flow-intuition.md)
   - [Min-Cost Max-Flow Intuition](min-cost-max-flow-intuition.md)
+
+## 빠른 탐색 (계속 7)
+
 - 그래프에서 "경로 vs 트리 vs 순서 vs 용량"을 구분하고 싶다면:
   - [그래프 문제 Decision Router](graph.md#그래프-문제-decision-router)
   - [Minimum Spanning Tree: Prim vs Kruskal](minimum-spanning-tree-prim-vs-kruskal.md)
@@ -108,7 +136,10 @@
 - `merge intervals`, `insert interval`, `구간 병합`, `겹치는 구간 합치기`처럼 정렬 후 한 번 훑어 merge하면 되는 batch 문제라면:
   - [정렬 알고리즘](sort.md#정렬-전처리로-구간-문제-읽기)
   - [구간 / Interval Greedy 패턴](interval-greedy-patterns.md)
-  - [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)
+
+## 빠른 탐색 (계속 8)
+
+- [Disjoint Interval Set](../data-structure/disjoint-interval-set.md)
 - `meeting rooms II`, `minimum meeting rooms`, `강의실 배정`, `max concurrency`, `calendar overlap count`, `peak concurrent users`처럼 동시 몇 개가 겹치는지가 핵심이라면:
   - [Sweep Line Overlap Counting](sweep-line-overlap-counting.md)
   - [Heap Variants](../data-structure/heap-variants.md)
@@ -128,7 +159,10 @@
 - `pair sum`, `two sum sorted`, `difference`, `palindrome`, `left/right`, `container with most water`처럼 두 위치 관계를 줄이는 scan이라면:
   - [두 포인터 (two-pointer)](two-pointer.md)
   - [슬라이딩 윈도우 패턴](sliding-window-patterns.md)
-  - [Longest Increasing Subsequence Patterns](longest-increasing-subsequence-patterns.md)
+
+## 빠른 탐색 (계속 9)
+
+- [Longest Increasing Subsequence Patterns](longest-increasing-subsequence-patterns.md)
 - `monotonic predicate`와 `contiguous window`를 먼저 구분하고 싶다면:
   - [이분 탐색 패턴](binary-search-patterns.md)
   - [슬라이딩 윈도우 패턴](sliding-window-patterns.md)
@@ -202,6 +236,9 @@
   - [Topological DP](topological-dp.md) (DAG shortest/longest path, dependency accumulation, critical path scheduling)
 - [Longest Increasing Subsequence Patterns](longest-increasing-subsequence-patterns.md) (subsequence optimization, tails + lower_bound, subsequence vs subarray)
 - [두 포인터 (two-pointer)](two-pointer.md) (pair relation scan, same-direction / opposite-direction, contiguous index scan, schedule interval boundary)
+
+## 알고리즘 응용 (계속 2)
+
 - [슬라이딩 윈도우 패턴](sliding-window-patterns.md) (substring/subarray, fixed or variable window, `sum/count` window vs `max/min` deque branch, contiguous index interval, not schedule overlap)
 - [Monotonic Queue / Stack](../data-structure/monotonic-queue-and-stack.md) (sliding window maximum/minimum, deque-based window state, contiguous index extrema)
 - [Deque Router Example Pack](../data-structure/deque-router-example-pack.md) (plain deque vs monotonic deque vs 0-1 BFS quick split)
@@ -210,6 +247,9 @@
 - [구간 / Interval Greedy 패턴](interval-greedy-patterns.md) (activity selection, erase overlap intervals, minimum arrows, end-time sort, meeting rooms I boundary)
 - [Sweep Line Overlap Counting](sweep-line-overlap-counting.md) (meeting rooms II, minimum meeting rooms, railway platform, hotel booking possible, event sweep, heap boundary)
 - [최단 경로 알고리즘 비교](dijkstra-bellman-ford-floyd-warshall.md) (unweighted vs DAG vs weighted router, negative-edge/single-source/all-pairs query anchors, A* handoff)
+
+## 알고리즘 응용 (계속 3)
+
 - [Topological DP](topological-dp.md) (DAG path optimization, topological relaxation, earliest finish time, critical path)
 - [A* vs Dijkstra](a-star-vs-dijkstra.md) (goal-directed shortest path, A-star/astar alias, route-planning, maze-navigation, weighted point-to-point routing, target-fixed/source-to-target routing)
 - [Sparse Graph Shortest Paths](sparse-graph-shortest-paths.md) (graph density phrasing, single-source weighted shortest path, route-planning to A* handoff, PQ Dijkstra, 0-1 BFS, 0/1 cost, deque/teleport-style shortest path, Dial)
@@ -285,6 +325,8 @@
 
 <!-- MST -->
 
+## 질의응답 (계속 2)
+
 <details>
 <summary>MST(Minimum Spanning Tree)를 구하는 알고리즘에 대해 설명하고, 각각 어떤 상황에서 사용하는 것이 적절한지 설명해 주세요.</summary>
 <p>
@@ -308,6 +350,8 @@
 <details>
 <summary>Minimum Spanning Tree를 찾기 위한 프림 알고리즘의 동작원리 또는 특징에 대해 설명해주세요</summary>
 <p>
+
+## 질의응답 (계속 3)
 
 1. 시작 정점 하나를 현재 트리 집합으로 잡고, 그 집합에서 바깥으로 나가는 간선 중 최소 비용 간선을 선택해 트리를 확장합니다.
 2. 즉 Prim은 "현재 트리의 frontier를 넓혀 가는 방식"이지, 시작점에서 다른 정점까지의 거리를 갱신하는 shortest path 알고리즘이 아닙니다.
@@ -350,6 +394,8 @@
 <p>
 
 (방법 1)
+
+## 질의응답 (계속 4)
 
 1. 출발 노드 S에서 모든 노드들까지의 최단 거리를 저장하는 배열 D를 초기화한다.
 2. 방문하지 않은 노드 중에서 최단 거리가 가장 짧은 노드를 선택한다. (D 배열 검사)
@@ -410,6 +456,8 @@
 <summary> KMP 알고리즘에 대해 설명해주세요. </summary>
 <p>
 
+## 질의응답 (계속 5)
+
 Kunth, Morris, Prett이 만든 알고리즘이라서 각 이름의 앞자리를 따서 KMP라고 지어졌습니다. 문자열이 불일치할 때 그 다음 문자부터 다시 탐색을 시작하는 것이 아니라 지금까지 일치했던 정보들을 버리지 말고 재사용 함으로써 몇칸 정도는 건너 뛰어서 탐색하자는 아이디어에서 알고리즘이 탄생했습니다. 접두사와 접미사 정보를 가지고 문자열을 점프해가며 탐색하는데, Naive한 문자열 탐색 알고리즘이 O(NM)의 시간복잡도를 갖는 반면에 KMP알고리즘은 O(N+M)의 시간복잡도를 갖습니다.
 
 </p>
@@ -462,6 +510,8 @@ Kunth, Morris, Prett이 만든 알고리즘이라서 각 이름의 앞자리를 
 
 ---
 
+## 질의응답 (계속 6)
+
 <!-- 투포인터 -->
 <details>
 <summary> <strong>투포인터</strong>라는 알고리즘 문제 해결 전략이 있습니다. 어떤 알고리즘이고 주로 어떤 문제를 해결하는데 사용되나요?</summary>
@@ -471,3 +521,7 @@ Kunth, Morris, Prett이 만든 알고리즘이라서 각 이름의 앞자리를 
 
 </p>
 </details>
+
+## 한 줄 정리
+
+Algorithm (알고리즘)는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

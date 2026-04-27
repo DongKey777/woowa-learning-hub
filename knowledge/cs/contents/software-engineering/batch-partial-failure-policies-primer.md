@@ -42,7 +42,7 @@ bulk가 실제 업무 단위라서 run/chunk/file 입력 타입과 partial failu
 - [Runbook, Playbook, Automation Boundaries](./runbook-playbook-automation-boundaries.md)
 - [System Design: Job Queue 설계](../system-design/job-queue-design.md)
 
-retrieval-anchor-keywords: batch partial failure policy, batch retry queue primer, chunk summary retry queue checkpoint, per-item retry vs checkpoint resume, batch checkpoint resume beginner, batch failure recovery policy, run summary retry policy, batch result testing checklist, batch recovery runbook bridge, batch idempotency key boundaries, true bulk contract, item failure result, batch partial failure 뭐예요, 처음 배우는데 batch retry queue
+retrieval-anchor-keywords: batch partial failure policy, batch retry queue primer, chunk summary retry queue checkpoint, per-item retry vs checkpoint resume, batch checkpoint resume beginner, batch failure recovery policy, run summary retry policy, batch result testing checklist, batch recovery runbook bridge, batch idempotency key boundaries, true bulk contract, item failure result, batch partial failure 뭐예요, 처음 배우는데 batch retry queue, batch partial failure policies primer basics
 
 ## 왜 이 primer가 필요한가
 

@@ -13,7 +13,7 @@
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity 한눈에
+retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity 한눈에, repository dao entity basics, repository dao entity intro, software engineering basics
 
 처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결한다.
 

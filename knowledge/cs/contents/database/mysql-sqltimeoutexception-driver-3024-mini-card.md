@@ -12,7 +12,7 @@
 - [JDBC `setNetworkTimeout`, Driver `socketTimeout`, and Pool Eviction Under Virtual Threads](../language/java/jdbc-network-timeout-driver-socket-timeout-pool-eviction.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mysql sqltimeoutexception 3024, driver timeout vs mysql timeout, mysql query execution interrupted 3024, sqltimeoutexception what is, mysql statement timeout beginner, jdbc query timeout vs socket timeout, driver socket timeout mysql, mysql max execution time exceeded, timeout surface signal primer, mysql timeout 뭐예요
+retrieval-anchor-keywords: mysql sqltimeoutexception 3024, driver timeout vs mysql timeout, mysql query execution interrupted 3024, sqltimeoutexception what is, mysql statement timeout beginner, jdbc query timeout vs socket timeout, driver socket timeout mysql, mysql max execution time exceeded, timeout surface signal primer, mysql timeout 뭐예요, mysql sqltimeoutexception driver 3024 mini card basics, mysql sqltimeoutexception driver 3024 mini card beginner, mysql sqltimeoutexception driver 3024 mini card intro, database basics, beginner database
 
 ## 먼저 멘탈모델
 

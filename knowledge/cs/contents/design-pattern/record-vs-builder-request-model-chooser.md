@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [요청 객체 생성 vs DI 컨테이너](./request-object-creation-vs-di-container.md)
 > - [빌더 패턴 기초](./builder-pattern-basics.md)
@@ -11,7 +18,7 @@
 > - [Query Object and Search Criteria Pattern](./query-object-search-criteria-pattern.md)
 > - [Builder vs Fluent Mutation Smell](./builder-vs-fluent-mutation-smell.md)
 
-retrieval-anchor-keywords: record vs builder request model, request dto record or builder, query object record or builder, request object static factory chooser, request dto constructor or builder, small dto stay record, when to use builder for request dto, when to use static factory for query object, beginner request model chooser, beginner dto creation guide, record vs builder beginner, request record builder static factory, query criteria builder or record, 요청 모델 record builder 선택, 요청 dto builder 언제 쓰나, 작은 dto는 record로 두기, query object 정적 팩토리, 요청 객체 생성자 vs 빌더, request model primer, request query object primer
+retrieval-anchor-keywords: record vs builder request model, request dto record or builder, query object record or builder, request object static factory chooser, request dto constructor or builder, small dto stay record, when to use builder for request dto, when to use static factory for query object, beginner request model chooser, beginner dto creation guide, record vs builder beginner, request record builder static factory, query criteria builder or record, 요청 모델 record builder 선택, 요청 dto builder 언제 쓰나
 
 ---
 
@@ -251,13 +258,13 @@ CouponQuery query = CouponQuery.builder()
 
 ## 자주 헷갈리는 질문
 
-- **"필드가 4개만 넘어가면 무조건 builder인가요?"**  
+- **"필드가 4개만 넘어가면 무조건 builder인가요?"**
   아니다. 필드 수보다 호출부가 한눈에 읽히는지가 더 중요하다. 4~5개여도 모두 필수이고 의미가 분명하면 `record`가 더 낫다.
-- **"검증이 있으면 record를 못 쓰나요?"**  
+- **"검증이 있으면 record를 못 쓰나요?"**
   아니다. 작은 모델이면 `record`에 compact constructor나 정적 팩토리를 붙여도 된다. 검증이 있다는 이유만으로 builder가 필요한 것은 아니다.
-- **"`@Builder`를 붙이면 나중에 편하니 그냥 기본값으로 쓰면 안 되나요?"**  
+- **"`@Builder`를 붙이면 나중에 편하니 그냥 기본값으로 쓰면 안 되나요?"**
   보통은 과하다. 작은 요청 DTO까지 전부 builder로 시작하면 문서와 코드가 함께 무거워진다.
-- **"query object는 원래 복잡하니 builder가 기본 아닌가요?"**  
+- **"query object는 원래 복잡하니 builder가 기본 아닌가요?"**
   아니다. 작은 검색 조건은 `record` + 정적 팩토리로도 충분하다. 정말 옵션 조합이 많아질 때 builder를 꺼내면 된다.
 
 ---

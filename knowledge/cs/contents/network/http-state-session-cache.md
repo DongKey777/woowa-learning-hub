@@ -1,6 +1,15 @@
 # HTTP의 무상태성과 쿠키, 세션, 캐시
 
+
+> 한 줄 요약: HTTP의 무상태성과 쿠키, 세션, 캐시는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 신입 백엔드 개발자가 웹 요청의 상태 관리와 캐싱을 설명하기 위한 핵심 정리
 
@@ -19,7 +28,7 @@
 > - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
 > - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
 
-retrieval-anchor-keywords: HTTP stateless, cookie, session, JWT, HTTP cache, Set-Cookie, Cookie header, session id, browser state, browser cookie storage flow, JWT header vs cookie, personalization cache, login state, cookie session spring security route, beginner auth bridge, why login state is kept, hidden JSESSIONID, SessionCreationPolicy basics, browser auth primer route, session basics to SavedRequest, login loop starter, 401 302 bounce starter, login redirect primer, post-login original URL, cookie 있는데 다시 로그인, cookie는 있는데 session missing
+retrieval-anchor-keywords: http stateless, cookie, session, jwt, http cache, set-cookie, cookie header, session id, browser state, browser cookie storage flow, jwt header vs cookie, personalization cache, login state, beginner auth bridge, why login state is kept
 
 <details>
 <summary>Table of Contents</summary>
@@ -38,7 +47,7 @@ retrieval-anchor-keywords: HTTP stateless, cookie, session, JWT, HTTP cache, Set
 
 ## 왜 중요한가
 
-백엔드 개발자는 로그인 상태를 유지해야 하고, 응답 속도도 신경 써야 한다.  
+백엔드 개발자는 로그인 상태를 유지해야 하고, 응답 속도도 신경 써야 한다.
 이때 자주 나오는 개념이
 
 - HTTP의 무상태성
@@ -75,6 +84,8 @@ retrieval-anchor-keywords: HTTP stateless, cookie, session, JWT, HTTP cache, Set
 7. 브라우저는 로그인돼 보이는데 API만 loop를 돌거나 `cookie는 있는데 session missing`처럼 보이면: [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md) -> [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
 
 증상별로 다시 고르면 더 빠르다.
+
+## 다음 단계 브리지 (계속 2)
 
 - `로그인 후 다시 /login으로 간다`, `SavedRequest 때문에 loop가 난다`: `RequestCache` / `SavedRequest`
 - `redirect 응답에도 cookie가 저장되나`, `왜 login 전에도 JSESSIONID가 보이지`: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
@@ -181,7 +192,7 @@ HTTP는 기본적으로 **이전 요청을 기억하지 않는 프로토콜**이
 
 ### 주의
 
-개인화된 응답은 캐시 전략을 조심해야 한다.  
+개인화된 응답은 캐시 전략을 조심해야 한다.
 로그인 사용자별 응답을 잘못 캐시하면 정보가 섞일 수 있다.
 
 ---
@@ -216,3 +227,7 @@ HTTP는 기본적으로 **이전 요청을 기억하지 않는 프로토콜**이
 ### Q. 캐시를 왜 사용하나요?
 
 - 응답 속도를 높이고 서버 부하를 줄이기 위해 사용한다.
+
+## 한 줄 정리
+
+HTTP의 무상태성과 쿠키, 세션, 캐시는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.

@@ -18,7 +18,9 @@
 - [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: subprocess symptom first branch guide, subprocess symptom mental model, subprocess hang mental model, subprocess comparison table, fd hygiene vs backpressure vs bidirectional deadlock, subprocess first doc to read, subprocess hang triage primer, stdout pipe full vs eof hang, stdin pipe stdout pipe deadlock, child waits for stdin eof, parent forgot stdin close, subprocess stdin eof branch, subprocess symptom map, subprocess branch guide, subprocess beginner guide, 서브프로세스 멈춤 멘탈 모델, 서브프로세스 분기 멘탈 모델, pipe eof 안 옴, wait 먼저 read 나중 멈춤, stdin pipe stdout pipe 같이 쓰면 멈춤, stdin 안 닫아서 멈춤, subprocess 어디부터 읽지, primer handoff box, beginner handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: subprocess symptom first branch guide, subprocess symptom mental model, subprocess hang mental model, subprocess comparison table, fd hygiene vs backpressure vs bidirectional deadlock, subprocess first doc to read, subprocess hang triage primer, stdout pipe full vs eof hang, stdin pipe stdout pipe deadlock, child waits for stdin eof, parent forgot stdin close, subprocess stdin eof branch, subprocess symptom map, subprocess beginner guide, beginner handoff box
 
 ## 먼저 잡는 멘탈 모델
 
@@ -41,6 +43,9 @@ subprocess 멈춤은 한 종류가 아니다. 초보자는 먼저 아래 셋을 
 | stdout은 잘 읽는데 실패할 때만 가끔 멈춘다 | stderr도 같이 drain하고 있나 | [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md) | 장애 경로에서 stderr가 먼저 꽉 차는 경우가 흔하다 |
 | `stdin.write()` 후 `flush()`까지 했는데 결과가 안 온다 | child가 EOF를 받아야 결과를 내는 타입인가 | [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md) | `flush()`는 EOF가 아니고, 일부 child는 `close(stdin)` 뒤에만 반응한다 |
 | parent가 read end를 먼저 닫은 뒤 child가 갑자기 죽거나 `BrokenPipeError`/`EPIPE`가 보인다 | reader가 사라진 뒤 writer가 계속 쓰고 있나 | [Broken Pipe and `SIGPIPE` Bridge](./broken-pipe-sigpipe-bridge.md) | pipe full이 아니라 "더 받을 쪽이 없음"이므로 `SIGPIPE`/`EPIPE`로 surface가 바뀐다 |
+
+## 한눈에 고르는 비교표 (계속 2)
+
 | shell wrapper나 helper를 끼운 뒤에만 EOF/리스너 누수가 이상해진다 | 원치 않는 fd가 `exec()` 경계를 넘어갔나 | [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md) | `CLOEXEC`, `close_fds`, `pass_fds` 축을 먼저 봐야 한다 |
 
 ## 30초 분기 규칙
@@ -87,3 +92,7 @@ subprocess 멈춤은 한 종류가 아니다. 초보자는 먼저 아래 셋을 
 > - "`stdin=PIPE`와 `stdout=PIPE`를 같이 쓰면 왜 순서가 중요하지?"를 보면: [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md)
 > - "`입력을 다 보낸 것 같은데 왜 child가 stdin EOF를 못 받지?`"를 보면: [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md)
 > - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
+
+## 한 줄 정리
+
+subprocess가 "멈춘다"처럼 보여도 원인은 `fd 누수`, `출력 pipe backpressure`, `양방향 read/write 순서`로 갈리므로, 먼저 증상 모양으로 문서를 고르면 초반 분기가 빨라진다.

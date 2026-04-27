@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: treeset treemap comparator tie breaker basics basics, treeset treemap comparator tie breaker basics beginner, treeset treemap comparator tie breaker basics intro, java basics, beginner java, 처음 배우는데 treeset treemap comparator tie breaker basics, treeset treemap comparator tie breaker basics 입문, treeset treemap comparator tie breaker basics 기초, what is treeset treemap comparator tie breaker basics, how to treeset treemap comparator tie breaker basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -219,6 +228,8 @@ System.out.println(badges.size());  // 1
 즉 "점수 내림차순 + 페널티 오름차순"처럼 방향이 섞여 있어도, **끝까지 구분하는 필드가 없으면 distinctness는 사라질 수 있다.**
 
 반대로 둘을 다른 선수로 남기고 싶다면 마지막에 안정적인 tie-breaker를 하나 더 붙인다.
+
+## mixed-direction tie-breaker도 distinctness를 바꾼다 (계속 2)
 
 ```java
 Comparator<Player> byScoreDescPenaltyAscThenId =

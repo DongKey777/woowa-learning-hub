@@ -14,7 +14,9 @@
 - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00061, shell job-control command bridge, shell job control commands, shell job control mental model, shell job table mental model, jobs fg bg nohup disown basics, jobs builtin vs ps, jobs -l pgid, fg bg tpgid, foreground process group shell command, background job controlling terminal, nohup vs disown, nohup not setsid, disown not detach, shell job table basics, PGID SID TPGID TTY beginner, shell builtin job control primer, 잡컨트롤 멘탈 모델, shell bookkeeping vs kernel structure, shell job control self-check, beginner handoff box, primer handoff box, shell job control 다음 문서, 잡컨트롤 자가 점검, job control commands 처음 배우는데
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: operating-system-00061, shell job-control command bridge, shell job control commands, shell job control mental model, shell job table mental model, jobs fg bg nohup disown basics, jobs builtin vs ps, jobs -l pgid, fg bg tpgid, foreground process group shell command, background job controlling terminal, nohup vs disown, nohup not setsid, disown not detach, shell job table basics
 
 ## 먼저 잡는 멘탈 모델
 
@@ -150,6 +152,8 @@ nohup sleep 300 &
 ### 5. `disown %1`
 
 `disown`은 bash/zsh에서 자주 보는 shell builtin이다.
+
+## 작은 그림으로 보면 (계속 2)
 
 ```text
 disown %1

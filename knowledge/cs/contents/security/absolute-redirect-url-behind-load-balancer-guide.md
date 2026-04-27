@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
 > 관련 문서:
 > - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
 > - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
@@ -17,7 +24,7 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
 
-retrieval-anchor-keywords: absolute redirect URL behind load balancer, absolute redirect behind proxy, X-Forwarded-Host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, callback URL flips to internal host, callback URL flips to localhost, callback URL flips to staging host, Location header wrong host, Location header internal hostname, app builds http internal redirect, external origin vs internal origin, public origin behind proxy, reverse proxy absolute URL building, load balancer host mismatch, proxy host mismatch beginner, spring forwarded header host, express trust proxy host, ingress x-forwarded-host, absolute URL builder proxy, host header preservation beginner, return URL wrong domain after login, password reset link wrong host, magic link wrong host, public base URL behind proxy, callback URL internal hostname, oauth callback internal host, wrong origin after social login, alb preserve host header, nginx proxy_set_header host, absolute URL source of truth, wrong origin vs open redirect, redirect troubleshooting order, absolute redirect beginner checklist, relative redirect works but absolute fails, relative redirect vs absolute redirect behind proxy, wrong origin 5 minute checklist, proxy public origin restore, wrong origin vs secure cookie mismatch, redirect 문제 원인 분리표, forwarded host trust quick check, login-loop primer ladder return path, return to login redirect hidden jsessionid savedrequest primer, browser session beginner ladder return, wrong origin redirect shortcut, wrong scheme vs wrong origin, post-login redirect internal host vs http
+retrieval-anchor-keywords: absolute redirect url behind load balancer, absolute redirect behind proxy, x-forwarded-host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, callback url flips to internal host, proxy host mismatch beginner, host header preservation beginner
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -256,6 +263,8 @@ OAuth에서 `redirect_uri`는 보안 경계다.
 "대충 같은 서비스"가 아니라, 등록된 scheme/host/path와 정확히 맞아야 한다.
 
 ### 4. 공격자가 host를 주장할 수도 있음
+
+## 어디서 깨지나 (계속 2)
 
 `X-Forwarded-Host`는 유용하지만, 아무 요청에서나 믿으면 위험하다.
 클라이언트도 같은 이름의 header를 직접 보낼 수 있기 때문이다.

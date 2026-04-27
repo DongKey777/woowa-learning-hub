@@ -13,7 +13,7 @@
 - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 
-retrieval-anchor-keywords: language-java-00129, priority only range search follow up, java priority only range search comparator tie breaker, java primary key block binary search, java comparator prefix range search beginner, java lower bound upper bound primary comparator key, java priority title id comparator range, java binary search one key with tie breakers, java first last range by primary comparator, java object array primary key range search, java prefix comparator safe range search, java title only comparator unsafe range search, 자바 priority 범위 찾기 tie breaker, 자바 1차 key 범위 검색, 자바 comparator prefix range search, 자바 binary search tie breaker 구간 찾기
+retrieval-anchor-keywords: language-java-00129, priority only range search follow up, java priority only range search comparator tie breaker, java primary key block binary search, java comparator prefix range search beginner, java lower bound upper bound primary comparator key, java priority title id comparator range, java binary search one key with tie breakers, java first last range by primary comparator, java object array primary key range search, java prefix comparator safe range search, java title only comparator unsafe range search, 자바 priority 범위 찾기 tie breaker, 자바 1차 key 범위 검색, priority only range search follow up basics
 
 ## 왜 이 follow-up이 필요한가
 

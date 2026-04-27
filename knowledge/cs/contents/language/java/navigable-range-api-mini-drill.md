@@ -12,7 +12,7 @@
 - [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
 - [`descendingSet()` / `descendingMap()` View Mental Model](./descending-view-mental-model.md)
 
-retrieval-anchor-keywords: language-java-00118, navigable range api mini drill, headset tailset subset headmap tailmap submap worksheet, treeset treemap range prediction beginner, java range view predict output before run, java headset tailset subset beginner drill, java headmap tailmap submap beginner drill, sortedset sortedmap range worksheet, navigableset navigablemap boundary exercise, 시작 포함 끝 제외 연습, 자바 headset tailset subset 결과 예측, 자바 headmap tailmap submap 결과 예측, 트리셋 트리맵 range api 워크시트, 자바 정렬 컬렉션 범위 뷰 연습
+retrieval-anchor-keywords: language-java-00118, navigable range api mini drill, headset tailset subset headmap tailmap submap worksheet, treeset treemap range prediction beginner, java range view predict output before run, java headset tailset subset beginner drill, java headmap tailmap submap beginner drill, sortedset sortedmap range worksheet, navigableset navigablemap boundary exercise, 시작 포함 끝 제외 연습, 자바 headset tailset subset 결과 예측, 자바 headmap tailmap submap 결과 예측, 트리셋 트리맵 range api 워크시트, 자바 정렬 컬렉션 범위 뷰 연습, navigable range api mini drill basics
 
 ## 먼저 잡을 멘탈 모델
 

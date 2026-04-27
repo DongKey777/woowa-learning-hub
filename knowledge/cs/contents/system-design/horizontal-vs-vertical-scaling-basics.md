@@ -11,7 +11,7 @@
 - [운영체제 프로세스와 스레드 기초](../operating-system/process-thread-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: horizontal vertical scaling basics, 수평 확장 수직 확장 입문, scale out scale up 차이, 서버 확장 방법, 트래픽 급증 대응, stateless 수평 확장, 수직 확장 한계, beginner scaling, 인스턴스 추가, 스케일 아웃 기초, 클라우드 확장 전략, 확장성 입문
+retrieval-anchor-keywords: horizontal vertical scaling basics, 수평 확장 수직 확장 입문, scale out scale up 차이, 서버 확장 방법, 트래픽 급증 대응, stateless 수평 확장, 수직 확장 한계, beginner scaling, 인스턴스 추가, 스케일 아웃 기초, 클라우드 확장 전략, 확장성 입문, horizontal vs vertical scaling basics basics, horizontal vs vertical scaling basics beginner, horizontal vs vertical scaling basics intro
 
 ---
 

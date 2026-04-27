@@ -13,7 +13,7 @@
 - [`Collectors.toMap(...)` Duplicate Key Primer](./collectors-tomap-duplicate-key-primer.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 
-retrieval-anchor-keywords: language-java-00100, java groupingBy beginner, stream groupingBy result shape, Collectors.groupingBy Map List primer, java group by list map, groupingBy output how to read, java stream group bucket mental model, groupingBy counting mapping beginner, java grouped pipeline result transform, stream groupingBy vs toMap beginner, 자바 groupingBy 기초, 자바 stream groupingBy 결과 모양, 자바 groupingBy Map List, 자바 그룹핑 결과 읽기, 자바 groupingBy counting mapping, 자바 stream 묶기 결과 해석, groupingBy 초보자 프라이머
+retrieval-anchor-keywords: language-java-00100, java groupingby beginner, stream groupingby result shape, collectors.groupingby map list primer, java group by list map, groupingby output how to read, java stream group bucket mental model, groupingby counting mapping beginner, java grouped pipeline result transform, stream groupingby vs tomap beginner, 자바 groupingby 기초, 자바 stream groupingby 결과 모양, 자바 groupingby map list, 자바 그룹핑 결과 읽기, 자바 groupingby counting mapping
 
 ## 먼저 잡는 멘탈 모델
 

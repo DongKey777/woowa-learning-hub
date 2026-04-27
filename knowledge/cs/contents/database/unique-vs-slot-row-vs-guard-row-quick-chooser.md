@@ -14,7 +14,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
-retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absent, insert-if-absent pattern, duplicate insert race, unique constraint chooser, guard row chooser, slot row vs unique, exact key conflict, absence check beginner, 중복 insert 막기, 없으면 insert 어떻게, beginner insert race
+retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absent, insert-if-absent pattern, duplicate insert race, unique constraint chooser, guard row chooser, slot row vs unique, exact key conflict, absence check beginner, 중복 insert 막기, 없으면 insert 어떻게, beginner insert race, unique vs slot row vs guard row quick chooser basics, unique vs slot row vs guard row quick chooser beginner
 
 ## 핵심 개념
 

@@ -13,7 +13,7 @@
 - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 - [시간복잡도 입문](../../algorithm/time-complexity-intro.md)
 
-retrieval-anchor-keywords: java loop scope primer, java while infinite loop beginner, java while infinite loop why, java break continue difference, java nested loop break scope, java loop trace worksheet, java hand trace loop table, java trace table beginner, loop trace table beginner, hand execution code beginner, while state update missing, while 안 끝나요, while 계속 돌아요, while 무한 루프 왜 생김, 중첩 루프 break 어디까지, 코드 손으로 추적하는 법, 루프 표로 푸는 법, trace table 그리는 법, 코드 드라이런 표, 반복문 손추적 표, 반복문 trace table, array index loop beginner bridge, java array iteration index mistake, java for array length beginner, java i less than length beginner, java array index off by one, java 2d array nested loop beginner, java row col nested loop java, 배열 인덱스 순회 실수, 배열 반복문 입문 연결, i less than length 왜, for문 <= 언제 틀림, for문 <= 왜 틀림, for문 less than equal 언제 에러, 배열 length까지 돌면 왜 에러, 배열 끝까지 도는데 왜 에러, i <= arr.length 왜 안됨, i < arr.length 차이, 2차원 배열 중첩 반복문 기초, row col 반복문 입문, for문 말고 stream 언제 씀, 반복문 대신 스트림 언제, loop vs stream beginner, break continue 있으면 stream 안 쓰나요, 스트림으로 바꾸기 전 반복문 기준
+retrieval-anchor-keywords: java loop scope primer, java while infinite loop beginner, java while infinite loop why, java break continue difference, java nested loop break scope, java loop trace worksheet, java hand trace loop table, java trace table beginner, loop trace table beginner, hand execution code beginner, while state update missing, while 안 끝나요, while 계속 돌아요, while 무한 루프 왜 생김, 중첩 루프 break 어디까지
 
 <details>
 <summary>Table of Contents</summary>
@@ -310,6 +310,8 @@ for (int i = 0; i < 3; i++) {
 
 짧은 비교:
 
+## 초보자 혼동 포인트 (계속 2)
+
 | 표현 | 뜻 | 배열 길이 3일 때 마지막 `i` |
 |---|---|---|
 | `i < arr.length` | `i`가 `3`이 되기 전에 멈춤 | `2` |
@@ -360,6 +362,8 @@ for (int i = 0; i < scores.length; i++) {
 - 배열 실수: 값 비교와 같은 배열 비교를 섞음, 정렬이 원본을 바꾼다는 점을 놓침
 
 그래서 증상별로 다음 문서를 고르면 된다.
+
+## 배열 인덱스 순회로 바로 붙이는 beginner bridge (계속 2)
 
 | 지금 막히는 질문 | 먼저 갈 문서 | 이유 |
 |---|---|---|

@@ -13,7 +13,7 @@
 - [Security README 기본 primer 묶음](./README.md#기본-primer)
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 
-retrieval-anchor-keywords: api key vs oauth, api key vs client credentials, oauth client credentials beginner, user delegated oauth, server to server oauth, oauth 사용자 위임, client credentials가 뭐예요, 서버 서버 oauth 차이, 언제 api key 쓰나, 언제 client credentials 쓰나, oauth 비교표, access token vs api key, 외부 api 붙이려는데 뭐 써야 하나, 사용자 데이터 호출이 왜 안 맞지
+retrieval-anchor-keywords: api key vs oauth, api key vs client credentials, oauth client credentials beginner, user delegated oauth, server to server oauth, oauth 사용자 위임, client credentials가 뭐예요, 서버 서버 oauth 차이, 언제 api key 쓰나, 언제 client credentials 쓰나, oauth 비교표, access token vs api key, 외부 api 붙이려는데 뭐 써야 하나, 사용자 데이터 호출이 왜 안 맞지, api key vs oauth vs client credentials primer basics
 
 ## 핵심 개념
 

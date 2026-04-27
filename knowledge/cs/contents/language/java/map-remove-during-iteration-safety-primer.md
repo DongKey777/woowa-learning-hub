@@ -13,7 +13,7 @@
 - [Map `entry.setValue(...)` vs `put/remove(...)`: 값 수정과 구조 변경 미니 브리지](./map-entry-setvalue-vs-put-remove-structural-change-bridge.md)
 - [`ConcurrentHashMap` Compound Actions and Hot-Key Contention](./concurrenthashmap-compound-actions-hot-key-contention.md)
 
-retrieval-anchor-keywords: java map remove during iteration, java concurrentmodificationexception beginner, iterator.remove map example, map entryset removeif example, for each map.remove bug, map 순회 중 삭제, concurrentmodificationexception 원인, iterator remove 사용법, removeif map entryset, map 수정 중 순회 안전, 자바 map 순회 삭제 do dont, map entryset iterator remove beginner, map remove while iterating java, map.remove in for each don't
+retrieval-anchor-keywords: java map remove during iteration, java concurrentmodificationexception beginner, iterator.remove map example, map entryset removeif example, for each map.remove bug, map 순회 중 삭제, concurrentmodificationexception 원인, iterator remove 사용법, removeif map entryset, map 수정 중 순회 안전, 자바 map 순회 삭제 do dont, map entryset iterator remove beginner, map remove while iterating java, map.remove in for each don't, map remove during iteration safety primer basics
 
 ## 먼저 잡는 멘탈 모델
 

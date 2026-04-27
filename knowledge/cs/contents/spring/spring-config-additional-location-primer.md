@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
@@ -207,3 +214,7 @@ beginner의 기본값: additional-location
 운영 배포에서 공통 jar 기본값 + 환경별 override가 목적이라면, `spring.config.location`보다 먼저 떠올릴 만한 옵션이다.
 
 `spring.config.location`, 기본 탐색 위치, `spring.config.import`까지 한 장으로 같이 정리하고 싶다면 [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)로 이어서 보면 된다.
+
+## 한 줄 정리
+
+beginner가 "jar 안 기본 설정은 그대로 두고, 운영/개발 환경 파일만 위에 덮고 싶다"면 `spring.config.location`보다 `spring.config.additional-location`이 더 안전한 출발점이다.

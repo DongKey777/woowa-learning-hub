@@ -12,7 +12,9 @@
 - [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: io failure signal mapping card, http 5xx timeout grpc deadline exceeded broker ack failure, busy retryable already processed, network failure to service outcome, ack timeout duplicate side effect, idempotency first-read card, timeout does not mean retry, deadline exceeded maybe committed, broker ack lost maybe published, beginner io retry mapping, I/O 실패신호 매핑 카드, HTTP 5xx timeout gRPC deadline exceeded 브로커 ack 실패, busy retryable already-processed 번역, 응답 유실 처리 완료 가능성, 멱등성 재시도 초급 카드
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: io failure signal mapping card, http 5xx timeout grpc deadline exceeded broker ack failure, busy retryable already processed, network failure to service outcome, ack timeout duplicate side effect, idempotency first-read card, timeout does not mean retry, deadline exceeded maybe committed, broker ack lost maybe published, beginner io retry mapping, i/o 실패신호 매핑 카드, http 5xx timeout grpc deadline exceeded 브로커 ack 실패, busy retryable already-processed 번역, 응답 유실 처리 완료 가능성, io failure signal three bucket mapping card basics
 
 ## 먼저 멘탈모델
 
@@ -89,3 +91,7 @@ retrieval-anchor-keywords: io failure signal mapping card, http 5xx timeout grpc
 - 왜 외부 I/O를 긴 트랜잭션 안에 두면 timeout 해석이 더 어려워지는지 보려면 [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md)
 - idem key와 결과 재조회 패턴을 보려면 [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
 - broker 중복 전달을 더 넓게 보려면 [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
+
+## 한 줄 정리
+
+HTTP timeout, gRPC `DEADLINE_EXCEEDED`, broker ack 실패는 "에러 이름"보다 먼저 `busy` / `retryable` / `already-processed`로 번역해야 다음 동작이 덜 흔들린다.

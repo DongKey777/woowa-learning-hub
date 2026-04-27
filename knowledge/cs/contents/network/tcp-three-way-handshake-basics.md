@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [로드밸런서 기초](../system-design/load-balancer-basics.md)
 
-retrieval-anchor-keywords: tcp three way handshake, syn syn-ack ack, tcp 연결 맺기, 3-way handshake 뭔가요, tcp handshake 순서, 왜 3번 교환하나요, tcp 연결 확립, handshake latency, tcp 세션 수립, beginner tcp connection
+retrieval-anchor-keywords: tcp three way handshake, syn syn-ack ack, tcp 연결 맺기, 3-way handshake 뭔가요, tcp handshake 순서, 왜 3번 교환하나요, tcp 연결 확립, handshake latency, tcp 세션 수립, beginner tcp connection, tcp three way handshake basics basics, tcp three way handshake basics beginner, tcp three way handshake basics intro, network basics, beginner network
 
 ## 핵심 개념
 

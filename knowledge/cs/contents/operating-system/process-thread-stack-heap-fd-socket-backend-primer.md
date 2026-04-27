@@ -16,7 +16,9 @@
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: process thread stack heap fd socket primer, backend request mental model, process vs thread stack vs heap, file descriptor vs socket beginner, 서버 요청 처리 기초, 프로세스 스레드 스택 힙 파일 디스크립터 소켓, 스택 힙 fd 소켓 차이, 스레드 힙 공유, 소켓은 fd인가, spring boot process thread heap socket, woowacourse backend os primer
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: process thread stack heap fd socket primer, backend request mental model, process vs thread stack vs heap, file descriptor vs socket beginner, 서버 요청 처리 기초, 프로세스 스레드 스택 힙 파일 디스크립터 소켓, 스택 힙 fd 소켓 차이, 스레드 힙 공유, 소켓은 fd인가, spring boot process thread heap socket, woowacourse backend os primer, process thread stack heap fd socket backend primer basics, process thread stack heap fd socket backend primer beginner, process thread stack heap fd socket backend primer intro, operating system basics
 
 ## 먼저 잡는 멘탈 모델
 

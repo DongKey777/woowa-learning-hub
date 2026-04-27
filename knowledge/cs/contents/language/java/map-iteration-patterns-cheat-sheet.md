@@ -12,7 +12,7 @@
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 
-retrieval-anchor-keywords: java map iteration cheat sheet, map entrySet keySet values 차이, entrySet vs keySet performance, java map for each beginner, map 반복문 기초, entrySet do dont 예시, keySet values 언제 쓰나, map key value iteration beginner, 처음 배우는데 map 순회, hashmap 반복 패턴, inefficient map iteration, map get in loop smell, keySet get null confusion, map null handling during iteration, containsKey getOrDefault iteration bridge
+retrieval-anchor-keywords: java map iteration cheat sheet, map entryset keyset values 차이, entryset vs keyset performance, java map for each beginner, map 반복문 기초, entryset do dont 예시, keyset values 언제 쓰나, map key value iteration beginner, 처음 배우는데 map 순회, hashmap 반복 패턴, inefficient map iteration, map get in loop smell, keyset get null confusion, map null handling during iteration, containskey getordefault iteration bridge
 
 ## 먼저 잡는 멘탈 모델
 
@@ -117,3 +117,7 @@ scores.values().forEach(System.out::println);
 - value only: `values()`
 
 "둘 다 쓰면 `entrySet()`"만 확실히 기억하면 첫 시도 실패를 크게 줄일 수 있다.
+
+## 한 줄 정리
+
+`Map` 반복의 기본값은 `entrySet()`이다. key/value가 둘 다 필요하면 한 번에 꺼내고, 필요한 쪽만 볼 때만 `keySet()` 또는 `values()`를 고른다.

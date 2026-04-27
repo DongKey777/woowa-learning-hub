@@ -4,13 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 
-retrieval-anchor-keywords: kotlin configurationproperties detection primer, kotlin configurationproperties data class, kotlin constructor binding detection, configurationproperties registration point, configurationpropertiesscan enableconfigurationproperties kotlin, bean missing configurationproperties kotlin, grep configurationproperties kotlin, data class properties scan, constructor binding grep miss, beginner configurationproperties registration note
+retrieval-anchor-keywords: kotlin configurationproperties detection primer, kotlin configurationproperties data class, kotlin constructor binding detection, configurationproperties registration point, configurationpropertiesscan enableconfigurationproperties kotlin, bean missing configurationproperties kotlin, grep configurationproperties kotlin, data class properties scan, constructor binding grep miss, beginner configurationproperties registration note, spring kotlin configurationproperties detection primer basics, spring kotlin configurationproperties detection primer beginner, spring kotlin configurationproperties detection primer intro, spring basics, beginner spring
 
 ## 먼저 mental model 한 줄
 

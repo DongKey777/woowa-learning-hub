@@ -4,6 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+
+
+retrieval-anchor-keywords: linux process state zombie orphan basics, linux process state zombie orphan beginner, linux process state zombie orphan intro, operating system basics, beginner operating system, 처음 배우는데 linux process state zombie orphan, linux process state zombie orphan 입문, linux process state zombie orphan 기초, what is linux process state zombie orphan, how to linux process state zombie orphan
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [프로세스와 스레드](./README.md#프로세스와-스레드)
@@ -31,10 +40,10 @@
 - 좀비는 죽었는데 기록이 남아 있다
 - 고아는 살아 있는데 보호자가 바뀐다
 
-리눅스에서는 프로세스가 종료될 때 커널이 즉시 흔적을 완전히 지우지 않는다.  
+리눅스에서는 프로세스가 종료될 때 커널이 즉시 흔적을 완전히 지우지 않는다.
 부모 프로세스가 자식의 종료 상태를 읽을 기회를 주기 위해, 최소한의 종료 정보는 잠시 남겨 둔다. 그게 좀비다.
 
-고아 프로세스는 보통 `init` 또는 `systemd` 같은 1번 프로세스가 입양한다.  
+고아 프로세스는 보통 `init` 또는 `systemd` 같은 1번 프로세스가 입양한다.
 그래서 고아 자체는 보통 문제라기보다, 부모 종료 타이밍과 정리 책임이 꼬였다는 신호로 본다.
 
 ## 깊이 들어가기
@@ -55,7 +64,7 @@ fork() -> runnable -> running -> exit() -> zombie -> wait() -> fully reaped
 
 ### 2. 왜 좀비가 생기는가
 
-좀비는 메모리를 계속 차지하는 프로세스가 아니다.  
+좀비는 메모리를 계속 차지하는 프로세스가 아니다.
 대신 커널의 프로세스 테이블 엔트리와 PID를 점유한다.
 
 즉 좀비가 많아지면 생기는 문제는 다음과 같다.
@@ -78,7 +87,7 @@ parent exits
   -> init/systemd adopts child
 ```
 
-그래서 고아 자체는 정상적인 커널 동작이다.  
+그래서 고아 자체는 정상적인 커널 동작이다.
 문제는 고아가 의도치 않게 생기는 구조, 즉 부모-자식 생명주기 설계가 불안정하다는 점이다.
 
 ### 4. backend 개발자가 알아야 하는 이유
@@ -90,7 +99,7 @@ parent exits
 - 컨테이너 안에서 PID 1이 시그널과 자식 회수를 제대로 처리하지 않음
 - 프로세스 풀을 직접 관리하다가 종료 누락이 발생함
 
-특히 Java/Spring 백엔드에서는 직접 `fork()`를 자주 쓰지 않아도,  
+특히 Java/Spring 백엔드에서는 직접 `fork()`를 자주 쓰지 않아도,
 빌드 툴, 이미지 처리, ffmpeg, Python helper, shell script 같은 외부 프로세스를 띄우는 순간 같은 문제가 생길 수 있다.
 
 ### 5. wait/reaping의 역할
@@ -109,12 +118,14 @@ int status;
 waitpid(pid, &status, 0);
 ```
 
-`wait()`를 호출하지 않으면 자식은 좀비로 남는다.  
+`wait()`를 호출하지 않으면 자식은 좀비로 남는다.
 반대로 부모가 비정상 종료하면 자식은 고아가 되고, 커널이 재부모한다.
 
 ### 6. PID 1의 의미
 
 컨테이너 환경에서 특히 중요한 점은 PID 1이다.
+
+## 깊이 들어가기 (계속 2)
 
 - PID 1은 자식 회수 책임이 더 크다
 - PID 1이 시그널 처리를 제대로 안 하면 종료가 비정상적으로 느려질 수 있다

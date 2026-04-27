@@ -8,6 +8,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: topological sort patterns basics, topological sort patterns beginner, topological sort patterns intro, algorithm basics, beginner algorithm, 처음 배우는데 topological sort patterns, topological sort patterns 입문, topological sort patterns 기초, what is topological sort patterns, how to topological sort patterns
 > 관련 문서:
 > - [그래프](./graph.md)
 > - [Topological DP](./topological-dp.md)

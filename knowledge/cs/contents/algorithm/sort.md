@@ -8,6 +8,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: sort basics, sort beginner, sort intro, algorithm basics, beginner algorithm, 처음 배우는데 sort, sort 입문, sort 기초, what is sort, how to sort
 > 관련 문서:
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
 > - [Binary Search Patterns](./binary-search-patterns.md)
@@ -50,7 +59,7 @@
 - 중복을 제거하고 그룹화하기 위해
 - 구간 질의를 쉽게 하기 위해
 
-즉 정렬은 단순한 알고리즘이 아니라, 더 큰 문제를 풀기 위한 전처리 단계다.  
+즉 정렬은 단순한 알고리즘이 아니라, 더 큰 문제를 풀기 위한 전처리 단계다.
 관련해서 [Binary Search Patterns](./binary-search-patterns.md), [Interval Greedy Patterns](./interval-greedy-patterns.md), [Topological Sort Patterns](./topological-sort-patterns.md)도 함께 보면 좋다.
 
 ---
@@ -73,7 +82,7 @@
 
 ## Insertion Sort (삽입정렬)
 
-삽입정렬은 앞에서부터 보면서 현재 원소를 이미 정렬된 부분에 끼워 넣는 방식이다.  
+삽입정렬은 앞에서부터 보면서 현재 원소를 이미 정렬된 부분에 끼워 넣는 방식이다.
 작은 데이터, 거의 정렬된 데이터, 온라인 입력에 강하다.
 
 ### Example
@@ -133,7 +142,7 @@ void insertionSort(int[] arr) {
 
 ## Selection Sort (선택정렬)
 
-선택정렬은 매번 최솟값을 골라 앞에 두는 방식이다.  
+선택정렬은 매번 최솟값을 골라 앞에 두는 방식이다.
 단순하지만 비교 횟수가 많아 실전에서는 잘 안 쓴다.
 
 ### Example
@@ -192,7 +201,7 @@ void selectionSort(int[] list) {
 
 ## Bubble Sort (거품정렬)
 
-거품정렬은 인접한 두 원소를 계속 비교해 큰 값을 뒤로 보내는 방식이다.  
+거품정렬은 인접한 두 원소를 계속 비교해 큰 값을 뒤로 보내는 방식이다.
 가장 교육적인 정렬이지만, 실무에서는 거의 사용하지 않는다.
 
 ### Example
@@ -249,7 +258,7 @@ void bubbleSort(int[] arr) {
 
 ## Merge Sort (합병정렬)
 
-합병정렬은 분할 정복의 대표격이다.  
+합병정렬은 분할 정복의 대표격이다.
 항상 `O(n log n)`을 보장하고 안정 정렬이 가능하다는 점이 강점이다.
 
 ### Example
@@ -309,14 +318,14 @@ void merge(int[] arr, int start, int mid, int end) {
 
 ### backend angle
 
-대규모 로그를 정렬하거나, 외부 저장소에서 chunk를 병합할 때 merge sort의 사고방식이 그대로 쓰인다.  
+대규모 로그를 정렬하거나, 외부 저장소에서 chunk를 병합할 때 merge sort의 사고방식이 그대로 쓰인다.
 결국 "나누고, 정렬하고, 합친다"는 구조는 분산 처리에도 잘 맞는다.
 
 ---
 
 ## Quick Sort (퀵정렬)
 
-퀵정렬은 pivot을 기준으로 작은 값과 큰 값을 나누며 재귀적으로 정렬하는 방식이다.  
+퀵정렬은 pivot을 기준으로 작은 값과 큰 값을 나누며 재귀적으로 정렬하는 방식이다.
 평균적으로 매우 빠르고, in-place라서 실무 구현에서도 자주 본다.
 
 ### Example
@@ -379,7 +388,7 @@ void swap(int[] arr, int i, int j) {
 
 ### backend angle
 
-정렬 라이브러리나 데이터 프레임의 내부 구현에서 quicksort류의 partition 사고방식은 매우 중요하다.  
+정렬 라이브러리나 데이터 프레임의 내부 구현에서 quicksort류의 partition 사고방식은 매우 중요하다.
 실무에서는 median-of-three, random pivot, introsort처럼 최악 케이스 완화 전략을 같이 고려한다.
 
 ---
@@ -404,14 +413,14 @@ void swap(int[] arr, int i, int j) {
 
 ### backend angle
 
-실무에서 중요한 건 "이론상 최악"뿐 아니라 "데이터 분포"다.  
+실무에서 중요한 건 "이론상 최악"뿐 아니라 "데이터 분포"다.
 로그처럼 거의 정렬된 입력, 랜덤 입력, 중복이 많은 입력에 따라 성능 체감이 달라진다.
 
 ---
 
 ## Heap, Radix, Counting Sort
 
-정렬은 비교만으로 끝나지 않는다.  
+정렬은 비교만으로 끝나지 않는다.
 데이터 성질에 따라 비교하지 않고 더 빨리 정렬하는 방법도 있다.
 
 - [Heap Sort](../data-structure/heap-variants.md) 개념은 우선순위 큐와 연결된다.

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: timer vocabulary delay timeout deadline dueat bridge basics, timer vocabulary delay timeout deadline dueat bridge beginner, timer vocabulary delay timeout deadline dueat bridge intro, data structure basics, beginner data structure, 처음 배우는데 timer vocabulary delay timeout deadline dueat bridge, timer vocabulary delay timeout deadline dueat bridge 입문, timer vocabulary delay timeout deadline dueat bridge 기초, what is timer vocabulary delay timeout deadline dueat bridge, how to timer vocabulary delay timeout deadline dueat bridge
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)

@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: retry reason taxonomy primer basics, retry reason taxonomy primer beginner, retry reason taxonomy primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry reason taxonomy primer, retry reason taxonomy primer 입문, retry reason taxonomy primer 기초, what is retry reason taxonomy primer, how to retry reason taxonomy primer
 retry 정책을 처음 잡을 때 가장 흔한 실수는 reason code 이름을 많이 만드는 것이다.
 초심자에게 더 중요한 일은 이름 개수보다 **다음 행동이 섞이지 않게 묶는 것**이다.
 이 문서는 beginner-safe 기준으로 `retryable`, `manual-review`, `permanent` 세 그룹만 먼저 설명한다.

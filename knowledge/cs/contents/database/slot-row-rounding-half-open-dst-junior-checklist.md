@@ -12,7 +12,9 @@
 - [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md)
 - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
 
-retrieval-anchor-keywords: slot row junior checklist, slot row rounding checklist, half-open interval beginner, slot row dst pitfall, slotization beginner primer, slot row before adoption, slot rounding floor ceil, local time fold gap, slot row timezone checklist, rounded slot collision beginner, slot row adjacent booking, [start end) booking, beginner slotization guardrails
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: slot row junior checklist, slot row rounding checklist, half-open interval beginner, slot row dst pitfall, slotization beginner primer, slot row before adoption, slot rounding floor ceil, local time fold gap, slot row timezone checklist, rounded slot collision beginner, slot row adjacent booking, [start end) booking, beginner slotization guardrails, slot row rounding half open dst junior checklist basics, slot row rounding half open dst junior checklist beginner
 
 ## 핵심 개념
 

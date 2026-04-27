@@ -1,8 +1,17 @@
 # Chrome NetLog H3 421 Drilldown: DevTools로 부족할 때 Coalescing Rejection과 Retry Decision 읽기
 
+
+> 한 줄 요약: Chrome NetLog H3 421 Drilldown: DevTools로 부족할 때 Coalescing Rejection과 Retry Decision 읽기는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > DevTools에서 같은 URL 두 줄만으로는 확신이 서지 않을 때, Chrome NetLog를 이용해 "`첫 H3 시도가 어떤 connection 문맥에서 거절됐는지`, `브라우저가 왜 새 connection retry로 넘어갔는지`"를 beginner 관점에서 짧게 확인하는 follow-up primer
 
 **난이도: 🟢 Beginner**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
@@ -12,7 +21,7 @@
 > - [H3 Stale Alt-Svc 421 Recovery Primer](./h3-stale-alt-svc-421-recovery-primer.md)
 > - [Browser DevTools `Protocol`, `Remote Address`, Connection Reuse 단서 입문](./browser-devtools-protocol-column-labels-primer.md)
 
-retrieval-anchor-keywords: Chrome NetLog H3 421, chrome net-export 421 misdirected request, NetLog coalescing rejection, NetLog retry decision, h3 421 netlog primer, DevTools insufficient 421, same URL two rows not enough, QUIC connection retry NetLog, H3 coalescing rejection evidence, browser retry decision trace, net-export wrong connection reuse, Chrome H3 retry proof, 421 after wrong coalescing netlog, H3 misdirected request capture, beginner Chrome NetLog primer, netlog same url retry, netlog quic session change, netlog 421 then retry, chrome://net-export http3 421
+retrieval-anchor-keywords: chrome netlog h3 421, chrome net-export 421 misdirected request, netlog coalescing rejection, netlog retry decision, h3 421 netlog primer, devtools insufficient 421, same url two rows not enough, quic connection retry netlog, h3 coalescing rejection evidence, browser retry decision trace, net-export wrong connection reuse, chrome h3 retry proof, 421 after wrong coalescing netlog, beginner chrome netlog primer, chrome netlog h3 421 drilldown basics
 
 <details>
 <summary>Table of Contents</summary>

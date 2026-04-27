@@ -15,7 +15,9 @@
 - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [pidfd Basics: Race-Free Process Handles](./pidfd-basics-race-free-process-handles.md)
 
-retrieval-anchor-keywords: sigchld ignore vs waitpid, sigchld default vs sig_ign, sigchld default behavior, sigchld zombie basics, sigchld ignore zombie, sa_nocldwait basics, waitpid expectation sigchld, explicit sig_ign vs default sigchld, child auto reap basics, child reap mental model, process supervision beginner, zombie reap beginner bridge, sigchld 기본 동작, sigchld 무시, sig_ign 좀비, sa_nocldwait, waitpid 기대치, child reaping basics, beginner handoff box, primer handoff box
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: sigchld ignore vs waitpid, sigchld default vs sig_ign, sigchld default behavior, sigchld zombie basics, sigchld ignore zombie, sa_nocldwait basics, waitpid expectation sigchld, explicit sig_ign vs default sigchld, child auto reap basics, child reap mental model, process supervision beginner, zombie reap beginner bridge, sigchld 기본 동작, sigchld 무시, sig_ign 좀비
 
 ## 먼저 잡는 멘탈 모델
 

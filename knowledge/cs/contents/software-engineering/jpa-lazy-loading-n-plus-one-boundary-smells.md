@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: jpa lazy loading n plus one boundary smells basics, jpa lazy loading n plus one boundary smells beginner, jpa lazy loading n plus one boundary smells intro, software engineering basics, beginner software engineering, 처음 배우는데 jpa lazy loading n plus one boundary smells, jpa lazy loading n plus one boundary smells 입문, jpa lazy loading n plus one boundary smells 기초, what is jpa lazy loading n plus one boundary smells, how to jpa lazy loading n plus one boundary smells
 <details>
 <summary>Table of Contents</summary>
 
@@ -133,6 +142,8 @@ class OrderController {
 
 ### After
 
+## 냄새 1. API가 엔티티를 직접 직렬화한다 (계속 2)
+
 ```java
 public interface OrderRepository {
     Order getDetail(OrderId id);
@@ -194,6 +205,8 @@ class OrderController {
 - `fetch join`은 repository adapter 안에 있다
 - API는 `OrderResponse`만 반환한다
 
+## 냄새 1. API가 엔티티를 직접 직렬화한다 (계속 3)
+
 즉 "어떤 연관관계를 미리 읽어 와야 하는가"는 persistence boundary가 결정하고, "어떤 필드를 외부에 보여줄까"는 API boundary가 결정한다.
 
 ## 냄새 2. 서비스 흐름이 LAZY 조회 타이밍에 기대기 시작한다
@@ -246,6 +259,8 @@ public class OrderSummaryService {
 - 아니면 API 목록 화면에 필요한 숫자만 만들려는가
 
 목록 화면이라면 projection이 더 단순할 때가 많다.
+
+## 냄새 2. 서비스 흐름이 LAZY 조회 타이밍에 기대기 시작한다 (계속 2)
 
 ```java
 public record MemberOrderSummaryRow(
@@ -351,3 +366,7 @@ List<OrderEntity> findAllForApi();
 - 엔티티를 API 응답으로 직접 반환하는 순간 직렬화, ORM 프록시, API 계약이 한 덩어리가 된다
 - OSIV는 문제를 해결하기보다, 같은 경계 냄새를 **예외 대신 숨은 쿼리**로 보이게 만들 때가 많다
 - "어떤 데이터를 지금 읽어 와야 하지?"는 adapter/query model이 결정하고, "무슨 규칙을 지켜야 하지?"는 domain이 결정하게 두는 편이 덜 아프다
+
+## 한 줄 정리
+
+`LAZY` 자체가 문제라기보다, JPA 엔티티를 API와 애플리케이션 경계 밖으로 그대로 흘려보낼 때 직렬화와 화면 요구가 프록시를 건드리며 `LazyInitializationException`, 숨은 N+1, fetch join 남발이 함께 나타난다.

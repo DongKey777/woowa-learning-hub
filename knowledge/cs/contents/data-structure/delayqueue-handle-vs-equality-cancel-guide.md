@@ -14,7 +14,9 @@
 - [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
 - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 
-retrieval-anchor-keywords: delayqueue handle vs equals cancel, delayqueue exact handle removal, delayqueue equals removal, priorityqueue equals remove timer, heap backed timer queue cancel guide, delayed task cancel handle, delayed task cancel equals, exact ticket cancel delayqueue, equal object cancel timer queue, stale ticket equals confusion, generation timer cancel equality, reschedule remove wrong entry, delayqueue duplicate logical task, priority queue cancellation beginner, timer queue handle equality difference, heap timer queue exact reservation, heap timer queue logical equality, cancel one scheduled entry vs one logical task, delayqueue remove same task id, delayqueue cancel junior guide
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: delayqueue handle vs equals cancel, delayqueue exact handle removal, delayqueue equals removal, priorityqueue equals remove timer, heap backed timer queue cancel guide, delayed task cancel handle, delayed task cancel equals, exact ticket cancel delayqueue, equal object cancel timer queue, stale ticket equals confusion, generation timer cancel equality, reschedule remove wrong entry, delayqueue duplicate logical task, priority queue cancellation beginner, delayqueue handle vs equality cancel guide basics
 
 ## 먼저 그림부터
 

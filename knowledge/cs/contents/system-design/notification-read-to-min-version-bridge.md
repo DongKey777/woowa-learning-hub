@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 알림을 눌러 source 상세를 성공적으로 읽었다면 그 순간을 "끝"으로 보면 안 되고, 세션의 `min-version`이나 응답 metadata를 올려서 다음 목록/상세/검색 화면도 그 값 아래로 내려가지 않게 이어 줘야 한다.
 
-retrieval-anchor-keywords: notification read to min-version bridge, notification source read session floor, notification click raises min version, successful notification read response metadata, response metadata min version, causal token to monotonic bridge, notification detail then list stale, notification open then list goes backward, notification source success should update session, notification response watermark propagation, detail success then list pending, paid notification list pending, comment notification thread list stale, beginner causal monotonic bridge, system-design-00072
+retrieval-anchor-keywords: notification read to min-version bridge, notification source read session floor, notification click raises min version, successful notification read response metadata, response metadata min version, causal token to monotonic bridge, notification detail then list stale, notification open then list goes backward, notification source success should update session, notification response watermark propagation, detail success then list pending, paid notification list pending, comment notification thread list stale, beginner causal monotonic bridge, notification read to min version bridge basics
 
 **난이도: 🟢 Beginner**
 
@@ -15,6 +15,8 @@ retrieval-anchor-keywords: notification read to min-version bridge, notification
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [Session Policy Implementation Sketches](./session-policy-implementation-sketches.md)
+
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
 

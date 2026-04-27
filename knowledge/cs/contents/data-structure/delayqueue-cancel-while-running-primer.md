@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+
+
+retrieval-anchor-keywords: delayqueue cancel while running primer basics, delayqueue cancel while running primer beginner, delayqueue cancel while running primer intro, data structure basics, beginner data structure, 처음 배우는데 delayqueue cancel while running primer, delayqueue cancel while running primer 입문, delayqueue cancel while running primer 기초, what is delayqueue cancel while running primer, how to delayqueue cancel while running primer
 > 관련 문서:
 > - [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)
 > - [Periodic Task Cancellation Bridge](./periodic-task-cancellation-bridge.md)

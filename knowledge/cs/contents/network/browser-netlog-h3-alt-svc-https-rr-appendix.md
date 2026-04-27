@@ -1,8 +1,17 @@
 # Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인
 
+
+> 한 줄 요약: Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
 > DevTools만으로는 모호할 때 Chrome/Edge 계열 browser NetLog로 "`이 H3가 Alt-Svc cache 때문이었는지`, `이번 capture 안에서 HTTPS RR 흔적이 있었는지`"를 짧게 확인하는 advanced follow-up appendix
 
 **난이도: 🟡 Intermediate**
+
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
 > 관련 문서:
 > - [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
@@ -11,7 +20,7 @@
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 
-retrieval-anchor-keywords: browser NetLog h3 appendix, Chrome net-export Alt-Svc cache, Edge net-export HTTPS RR, NetLog Alt-Svc mapping, NetLog H3 discovery verification, NetLog HTTPS RR hint, browser net-export h3, Alt-Svc cache confirmation netlog, HTTPS RR confirmation netlog, net-export alt-svc, net-export https rr, Chromium NetLog h3, DevTools inconclusive H3, beginner follow-up netlog
+retrieval-anchor-keywords: browser netlog h3 appendix, chrome net-export alt-svc cache, edge net-export https rr, netlog alt-svc mapping, netlog h3 discovery verification, netlog https rr hint, browser net-export h3, alt-svc cache confirmation netlog, https rr confirmation netlog, net-export alt-svc, net-export https rr, chromium netlog h3, devtools inconclusive h3, beginner follow-up netlog, browser netlog h3 alt svc https rr appendix basics
 
 ## 먼저 잡는 mental model
 

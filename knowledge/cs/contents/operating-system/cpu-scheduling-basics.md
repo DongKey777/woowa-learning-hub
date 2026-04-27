@@ -12,7 +12,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: cpu scheduling beginner, cpu 스케줄링 기초, process scheduling basics, round robin basics, fcfs scheduling, preemptive scheduling, time slice basics, ready queue basics, response time vs turnaround time, run queue basics, cpu scheduling self check, 스케줄링 자가 점검
+retrieval-anchor-keywords: cpu scheduling beginner, cpu 스케줄링 기초, process scheduling basics, round robin basics, fcfs scheduling, preemptive scheduling, time slice basics, ready queue basics, response time vs turnaround time, run queue basics, cpu scheduling self check, 스케줄링 자가 점검, cpu scheduling basics basics, cpu scheduling basics beginner, cpu scheduling basics intro
 
 ## Self-check Primer Handoff
 

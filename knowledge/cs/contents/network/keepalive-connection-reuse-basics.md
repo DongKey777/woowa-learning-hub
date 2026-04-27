@@ -11,7 +11,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [커넥션 풀 기초](../database/connection-pool-basics.md)
 
-retrieval-anchor-keywords: keep-alive basics, http 커넥션 재사용, tcp 연결 재사용, keep-alive 뭐예요, connection reuse 입문, http 연결 유지, 왜 연결을 끊지 않아요, http/1.1 persistent connection, beginner keep-alive, 처음 배우는 커넥션 재사용
+retrieval-anchor-keywords: keep-alive basics, http 커넥션 재사용, tcp 연결 재사용, keep-alive 뭐예요, connection reuse 입문, http 연결 유지, 왜 연결을 끊지 않아요, http/1.1 persistent connection, beginner keep-alive, 처음 배우는 커넥션 재사용, keepalive connection reuse basics basics, keepalive connection reuse basics beginner, keepalive connection reuse basics intro, network basics, beginner network
 
 ## 핵심 개념
 

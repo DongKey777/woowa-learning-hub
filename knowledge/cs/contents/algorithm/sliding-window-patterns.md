@@ -6,6 +6,15 @@
 
 **난이도: 🟡 Intermediate**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: sliding window patterns basics, sliding window patterns beginner, sliding window patterns intro, algorithm basics, beginner algorithm, 처음 배우는데 sliding window patterns, sliding window patterns 입문, sliding window patterns 기초, what is sliding window patterns, how to sliding window patterns
 > 관련 문서:
 > - [두 포인터 (two-pointer)](./two-pointer.md)
 > - [Binary Search Patterns](./binary-search-patterns.md)

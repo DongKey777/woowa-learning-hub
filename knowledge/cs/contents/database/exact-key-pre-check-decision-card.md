@@ -14,7 +14,9 @@
 - [PostgreSQL Exact-Key Pre-Check Contrast Card](./postgresql-exact-key-precheck-contrast-card.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: exact key pre check decision card, unique only vs locking precheck vs skip precheck, mysql duplicate precheck chooser, exact key insert if absent chooser, when to skip precheck, when to add locking read precheck, unique only beginner, select for update before insert beginner, duplicate precheck decision table, exact key duplicate check card, mysql unique locking primer, 중복 사전조회 결정 카드, unique만 쓰는 경우, pre-check 생략 기준, locking pre-check 추가 기준, exact key 없으면 insert 판단표, mysql duplicate check chooser
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+
+retrieval-anchor-keywords: exact key pre check decision card, unique only vs locking precheck vs skip precheck, mysql duplicate precheck chooser, exact key insert if absent chooser, when to skip precheck, when to add locking read precheck, unique only beginner, select for update before insert beginner, duplicate precheck decision table, exact key duplicate check card, mysql unique locking primer, 중복 사전조회 결정 카드, unique만 쓰는 경우, pre-check 생략 기준, locking pre-check 추가 기준
 
 ## 먼저 잡을 그림
 

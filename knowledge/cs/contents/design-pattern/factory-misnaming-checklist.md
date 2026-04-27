@@ -4,6 +4,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 > - [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
@@ -11,7 +18,7 @@
 > - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: factory misnaming checklist, create free factory, factory without create, factory naming smell checklist, code review factory name, refactoring discussion factory rename, selector vs factory review checklist, registry vs factory review checklist, resolver vs factory review checklist, create 없는 factory, factory 이름 오해 체크리스트, factory 이름 잘못 붙였는지, 생성 없는 factory, code review에서 factory 이름, refactor에서 factory rename, chooses not creates, lookup not creation, resolves not creates, existing object not factory, injected map not factory, handler factory misnaming, payment policy factory smell, beginner factory naming checklist
+retrieval-anchor-keywords: factory misnaming checklist, create free factory, factory without create, factory naming smell checklist, code review factory name, refactoring discussion factory rename, selector vs factory review checklist, registry vs factory review checklist, resolver vs factory review checklist, create 없는 factory, factory 이름 오해 체크리스트, factory 이름 잘못 붙였는지, 생성 없는 factory, beginner factory naming checklist, factory misnaming checklist basics
 
 ---
 

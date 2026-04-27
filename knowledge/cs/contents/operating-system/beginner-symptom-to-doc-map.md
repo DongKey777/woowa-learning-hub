@@ -17,7 +17,7 @@
 - [인터럽트 기초](./interrupt-basics.md)
 - [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
 
-retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, command first quick check, slow response first triage, oom first triage, too many open files first triage, interrupt confusion primer, syscall vs context switch confusion, process vs thread confusion, 운영체제 증상 라우팅, 증상별 관찰 명령, 운영체제 빠른 점검 루트 점프
+retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, command first quick check, slow response first triage, oom first triage, too many open files first triage, interrupt confusion primer, syscall vs context switch confusion, process vs thread confusion, 운영체제 증상 라우팅, 증상별 관찰 명령, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
 
 ## 먼저 잡는 멘탈 모델
 
@@ -71,6 +71,9 @@ retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner sym
 |---|---|---|---|---|
 | "`시스템 콜`과 `컨텍스트 스위치`가 같은 말처럼 느껴짐" | [시스템 콜 기초](./syscall-basics.md), [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md) | [command-first](./beginner-triage-quick-check-snippet-pack.md#syscall-vs-context-switch-command-first) | [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md), [Lock Contention, Futex, Off-CPU Debugging](./lock-contention-futex-offcpu-debugging.md) | "`커널에 요청하는 경계`(syscall)와 `누가 CPU를 쓰는지`(스케줄링)를 분리" |
 | "`프로세스`와 `스레드` 차이가 계속 섞임" | [프로세스와 스레드 기초](./process-thread-basics.md), [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md) | [command-first](./beginner-triage-quick-check-snippet-pack.md#process-vs-thread-command-first) | [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md), [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md) | "격리 단위(프로세스) vs 실행 단위(스레드)"를 먼저 고정 |
+
+## 증상별 1차 라우팅: 개념 혼동 (계속 2)
+
 | 인터럽트/시그널/예외가 섞여서 헷갈림 | [인터럽트 기초](./interrupt-basics.md), [signals, process supervision](./signals-process-supervision.md) | [command-first](./beginner-triage-quick-check-snippet-pack.md#interrupt-command-first) | [softirq, hardirq, latency, server debugging](./softirq-hardirq-latency-server-debugging.md), [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md) | "비동기 인터럽트"와 "동기 예외/트랩"을 먼저 분리 |
 
 ## 작은 예시: "서버가 느려요"에서 시작할 때

@@ -6,6 +6,13 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../database/transaction-basics.md)
+
 > 관련 문서:
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
@@ -14,7 +21,7 @@
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 
-retrieval-anchor-keywords: @ConditionalOnSingleCandidate vs @Primary, ConditionalOnSingleCandidate activation condition, ConditionalOnSingleCandidate is not injection priority, single candidate can be determined, autowiring would succeed, primary candidate condition, boot auto configuration activation vs injection, ConditionalOnSingleCandidate multiple beans primary bean, DataSource ConditionalOnSingleCandidate primer, JdbcTemplateAutoConfiguration single candidate, primary does not activate auto configuration, condition positive but qualifier injection different, beginner spring conditional single candidate, spring autoconfiguration candidate selection boundary
+retrieval-anchor-keywords: @conditionalonsinglecandidate vs @primary, conditionalonsinglecandidate activation condition, conditionalonsinglecandidate is not injection priority, single candidate can be determined, autowiring would succeed, primary candidate condition, boot auto configuration activation vs injection, conditionalonsinglecandidate multiple beans primary bean, datasource conditionalonsinglecandidate primer, jdbctemplateautoconfiguration single candidate, primary does not activate auto configuration, condition positive but qualifier injection different, beginner spring conditional single candidate, spring autoconfiguration candidate selection boundary, spring conditionalonsinglecandidate vs primary primer basics
 
 ## 먼저 mental model
 

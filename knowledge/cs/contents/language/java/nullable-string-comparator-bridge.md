@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: nullable string comparator bridge basics, nullable string comparator bridge beginner, nullable string comparator bridge intro, java basics, beginner java, 처음 배우는데 nullable string comparator bridge, nullable string comparator bridge 입문, nullable string comparator bridge 기초, what is nullable string comparator bridge, how to nullable string comparator bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)

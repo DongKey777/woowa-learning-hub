@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](../README.md)
+- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+
+
+retrieval-anchor-keywords: marker interface vs capability method bridge basics, marker interface vs capability method bridge beginner, marker interface vs capability method bridge intro, java basics, beginner java, 처음 배우는데 marker interface vs capability method bridge, marker interface vs capability method bridge 입문, marker interface vs capability method bridge 기초, what is marker interface vs capability method bridge, how to marker interface vs capability method bridge
 > 관련 문서:
 > - [Language README](../README.md)
 > - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)

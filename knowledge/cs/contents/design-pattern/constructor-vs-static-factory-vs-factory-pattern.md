@@ -4,13 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+
 > 관련 문서:
 > - [팩토리 (Factory)](./factory.md)
 > - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
 > - [빌더 (Builder)](./builder-pattern.md)
 > - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 
-retrieval-anchor-keywords: constructor vs static factory vs factory pattern, 생성자 vs 정적 팩토리 메서드, java static factory naming, static factory method naming, of from valueOf parse getInstance newInstance, constructor or static factory, static factory vs factory pattern, factory pattern vs constructor, when to use constructor, when to use static factory method, java object creation chooser, effective java static factory, beginner creation pattern
+retrieval-anchor-keywords: constructor vs static factory vs factory pattern, 생성자 vs 정적 팩토리 메서드, java static factory naming, static factory method naming, of from valueof parse getinstance newinstance, constructor or static factory, static factory vs factory pattern, factory pattern vs constructor, when to use constructor, when to use static factory method, java object creation chooser, effective java static factory, beginner creation pattern, constructor vs static factory vs factory pattern basics, constructor vs static factory vs factory pattern beginner
 
 ---
 
@@ -67,7 +74,7 @@ retrieval-anchor-keywords: constructor vs static factory vs factory pattern, 생
 
 ## 왜 자꾸 헷갈리는가
 
-세 방식 모두 결국 객체를 만든다.  
+세 방식 모두 결국 객체를 만든다.
 그래서 겉으로는 전부 "생성 방법"처럼 보인다.
 
 하지만 설계 초점은 다르다.
@@ -187,7 +194,7 @@ JDK도 이 방식을 많이 쓴다.
 - 어떤 구현을 반환하는지 선택 규칙이 너무 커진다
 - 서비스 객체의 숨은 의존성을 static 메서드 안에 감춘다
 
-특히 Spring 환경에서는 `UserService.create()` 같은 static 생성기로 의존성을 숨기기보다, 보통 constructor injection이 더 낫다.  
+특히 Spring 환경에서는 `UserService.create()` 같은 static 생성기로 의존성을 숨기기보다, 보통 constructor injection이 더 낫다.
 의존성이 생성자에 보이는 편이 wiring과 테스트 경계가 분명하기 때문이다.
 
 ---
@@ -257,6 +264,8 @@ client.upload(path);
 
 ### Factory 패턴이 과해지는 신호
 
+## 3. Factory 패턴: 호출부에서 구현 선택과 생성 책임을 뗀다 (계속 2)
+
 - 실제로는 구현이 하나뿐이다
 - 단순 DTO 생성까지 전부 factory로 감싼다
 - 선택보다 lookup이나 정책 판단이 더 큰 문제다
@@ -268,7 +277,7 @@ client.upload(path);
 
 이 둘은 자주 같이 등장한다.
 
-예를 들어 `StorageClientFactory.create(config)`는 **factory 객체를 만드는 정적 팩토리 메서드**일 수 있다.  
+예를 들어 `StorageClientFactory.create(config)`는 **factory 객체를 만드는 정적 팩토리 메서드**일 수 있다.
 또는 `PaymentClient.of(provider)`가 내부에서 구현을 선택하면 API 모양은 정적 팩토리지만 책임은 작은 factory 역할을 한다.
 
 그래서 구분 기준은 이름이 아니라 다음이다.
@@ -282,7 +291,7 @@ client.upload(path);
 
 ## Java 정적 팩토리 이름 가이드
 
-정적 팩토리의 장점은 이름이다.  
+정적 팩토리의 장점은 이름이다.
 그래서 `create()`를 기계적으로 붙이기보다, **왜 이 객체를 지금 이렇게 만드는지**를 이름에 넣는 편이 좋다.
 
 | 의도 | 추천 이름 | Java 예시 | 메모 |

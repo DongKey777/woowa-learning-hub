@@ -22,7 +22,7 @@
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
 
-retrieval-anchor-keywords: java oop primer, java class object instance basics, java primitive vs reference type, java oop beginner route, 객체지향 기초, 클래스 객체 인스턴스 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, oop to design pattern beginner route, design pattern beginner route, 처음 배우는데 디자인 패턴 어디부터
+retrieval-anchor-keywords: java oop primer, java class object instance basics, java primitive vs reference type, java oop beginner route, 객체지향 기초, 클래스 객체 인스턴스 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, oop to design pattern beginner route, design pattern beginner route, 처음 배우는데 디자인 패턴 어디부터, java types class object oop basics basics, java types class object oop basics beginner, java types class object oop basics intro
 
 <details>
 <summary>Table of Contents</summary>
@@ -71,6 +71,8 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 첫 읽기 경로를 한 줄로 줄이면 이렇다.
 **이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)**
 템플릿 메소드는 그 다음에 "상속을 좁게 허용하는 예외"로 보면 덜 헷갈린다.
+
+## 처음 읽는 순서 (계속 2)
 
 처음 배우는데 "디자인 패턴은 어디부터 보지?"가 바로 나오면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)를 같이 본다. 이 문서에서 잡은 큰 그림을 그대로 이어서 **객체지향 핵심 원리 -> 상속보다 조합 -> 패턴 기초** route로 연결해 주는 beginner route map이다.
 

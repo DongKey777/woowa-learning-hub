@@ -4,6 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
+
+관련 문서:
+
+- [카테고리 README](./README.md)
+- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+
+
+retrieval-anchor-keywords: bulk port vs per item use case tradeoffs basics, bulk port vs per item use case tradeoffs beginner, bulk port vs per item use case tradeoffs intro, software engineering basics, beginner software engineering, 처음 배우는데 bulk port vs per item use case tradeoffs, bulk port vs per item use case tradeoffs 입문, bulk port vs per item use case tradeoffs 기초, what is bulk port vs per item use case tradeoffs, how to bulk port vs per item use case tradeoffs
 <details>
 <summary>Table of Contents</summary>
 
@@ -301,3 +310,7 @@ public interface PartnerSettlementBulkPort {
 3. **run/chunk/file이 비즈니스 입력이 되면 bulk port를 애플리케이션 계약으로 올린다.**
 
 bulk port를 이미 올린 뒤 초심자 테스트를 어디서 시작할지 찾는다면 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)로 이어가면 된다.
+
+## 한 줄 정리
+
+성능이 걱정된다고 곧바로 bulk port를 노출하기보다, 먼저 "애플리케이션이 정말 묶음 단위로 생각해야 하는가"를 보고, 아니라면 per-item 유스케이스를 유지한 채 조회 경로나 adapter 최적화만 묶는 편이 더 안전하다.

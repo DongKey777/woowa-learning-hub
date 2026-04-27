@@ -12,7 +12,7 @@
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [Collection Update Strategy Primer](./collection-update-strategy-primer.md)
 
-retrieval-anchor-keywords: map entry setvalue vs put remove, java structural modification map beginner, entry.setvalue iteration safe, map put remove during iteration, java map 값 수정 구조 변경, hashmap structural change beginner, map entry value overwrite, java map 순회 중 값 수정, entryset setvalue vs put, map remove concurrentmodificationexception, beginner map update distinction, java map overwrite vs insert
+retrieval-anchor-keywords: map entry setvalue vs put remove, java structural modification map beginner, entry.setvalue iteration safe, map put remove during iteration, java map 값 수정 구조 변경, hashmap structural change beginner, map entry value overwrite, java map 순회 중 값 수정, entryset setvalue vs put, map remove concurrentmodificationexception, beginner map update distinction, java map overwrite vs insert, map entry setvalue vs put remove structural change bridge basics, map entry setvalue vs put remove structural change bridge beginner, map entry setvalue vs put remove structural change bridge intro
 
 ## 먼저 잡는 멘탈 모델
 
