@@ -758,6 +758,13 @@ def cmd_learn_test(args: argparse.Namespace) -> int:
     failed = len(junit_tests) - passed
     recorded = 0
 
+    # When --path is given without --module, infer the module from the
+    # results dir so concept attribution + module_context still work.
+    inferred_module = args.module
+    if inferred_module is None:
+        from core.concept_catalog import infer_module_from_path  # type: ignore
+        inferred_module = infer_module_from_path(str(results_dir))
+
     if not args.no_record:
         try:
             from core.concept_catalog import load_catalog  # type: ignore
@@ -773,7 +780,7 @@ def cmd_learn_test(args: argparse.Namespace) -> int:
                     event = build_test_result_event(
                         junit_test=test,
                         learner_id=learner_id,
-                        module=args.module,
+                        module=inferred_module,
                         catalog=catalog,
                     )
                     append_learner_event(event)
@@ -785,7 +792,7 @@ def cmd_learn_test(args: argparse.Namespace) -> int:
 
     print(json.dumps(
         {
-            "module": args.module,
+            "module": inferred_module,
             "results_dir": str(results_dir),
             "scanned": len(junit_tests),
             "recorded": recorded,

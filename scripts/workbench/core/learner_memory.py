@@ -398,21 +398,32 @@ def build_coach_run_event(
     learner_id: str,
     catalog: dict,
 ) -> dict:
+    # Real session payloads only carry `learning_point_recommendations` (see
+    # scripts/workbench/core/session.py). Some fixtures and direct-API
+    # callers pass `primary_learning_points` instead — accept both so PR
+    # coach events actually populate concept_ids in production.
     learning_points = list(session_payload.get("primary_learning_points") or [])
+    if not learning_points:
+        learning_points = [
+            item.get("learning_point")
+            for item in session_payload.get("learning_point_recommendations") or []
+            if isinstance(item, dict) and item.get("learning_point")
+        ]
     concept_ids = []
     for lp in learning_points:
         cid = lp_to_concept_id(lp, catalog)
         if cid:
             concept_ids.append(cid)
     response = session_payload.get("response") or {}
+    current_pr = session_payload.get("current_pr") or {}
+    pr_number = current_pr.get("number") or session_payload.get("pr_number")
     return {
         "event_type": "coach_run",
         "ts": _now_iso(),
         "learner_id": learner_id,
         "repo_context": session_payload.get("repo"),
         "module_context": None,
-        "pr_number": session_payload.get("current_pr", {}).get("number")
-        or session_payload.get("pr_number"),
+        "pr_number": pr_number,
         "concept_ids": sorted(set(concept_ids)),
         "had_negative_feedback": _detect_negative_feedback(session_payload),
         "prompt": _redact_text(session_payload.get("prompt")),
@@ -578,23 +589,36 @@ _NEGATIVE_PHRASES = (
 def _detect_negative_feedback(session_payload: dict) -> bool:
     """Best-effort signal: did the mentor flag this PR for changes?
 
-    Looks at any flat string fields and `mentor_comment_samples` text. False
-    by default — `coach_run` events without strong negatives stay clean.
+    Real session payloads keep review state nested under `current_pr` and
+    `pr_report_evidence`, while some fixtures pass it as flat top-level
+    fields. We sweep both. False by default — coach_run events without
+    strong negatives stay clean (mastery rule then has to actively prove
+    a positive signal to mark a concept mastered).
     """
-    flat = " ".join(
-        str(v) for v in [
-            session_payload.get("mentor_verdict"),
-            session_payload.get("review_state"),
-            session_payload.get("review_decision"),
-        ] if v
-    ).lower()
+    current_pr = session_payload.get("current_pr") or {}
+    evidence = session_payload.get("pr_report_evidence") or {}
+    flat_sources = [
+        session_payload.get("mentor_verdict"),
+        session_payload.get("review_state"),
+        session_payload.get("review_decision"),
+        current_pr.get("review_decision"),
+        current_pr.get("review_state"),
+        current_pr.get("merge_state_status"),
+        evidence.get("review_decision"),
+    ]
+    flat = " ".join(str(v) for v in flat_sources if v).lower()
     if any(phrase in flat for phrase in _NEGATIVE_PHRASES):
         return True
-    samples = session_payload.get("mentor_comment_samples") or []
-    for sample in samples[:6]:
-        body = ((sample or {}).get("body") or "").lower()
-        if any(phrase in body for phrase in _NEGATIVE_PHRASES):
-            return True
+    sample_buckets = [
+        session_payload.get("mentor_comment_samples") or [],
+        evidence.get("mentor_comment_samples") or [],
+        (evidence.get("review_threads") or []),
+    ]
+    for bucket in sample_buckets:
+        for sample in (bucket or [])[:8]:
+            body = ((sample or {}).get("body") or "").lower()
+            if any(phrase in body for phrase in _NEGATIVE_PHRASES):
+                return True
     return False
 
 
