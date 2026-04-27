@@ -740,8 +740,11 @@ def cmd_learner_profile(args: argparse.Namespace) -> int:
         return 0
 
     if sub == "migrate-from-repos":
-        sys.stderr.write("migrate-from-repos is implemented in a later commit.\n")
-        return 2
+        from core.learner_memory import migrate_from_repos  # type: ignore
+        from core.paths import STATE_DIR  # type: ignore
+        result = migrate_from_repos(STATE_DIR / "repos")
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
 
     if sub == "suggest":
         sys.stderr.write("suggest is implemented in a later commit.\n")

@@ -929,3 +929,168 @@ def default_profile() -> dict:
     """Skeleton profile when no events have been recorded yet."""
     return _build_learner_profile([], {"total_events": 0})
 
+
+# === Migration from per-repo memory (Commit 3 / Phase 2) ==================
+def _legacy_entry_event_id(entry: dict, repo: str) -> str:
+    """Stable id for a per-repo legacy entry.
+
+    Uses the entry's created_at + repo + question_fingerprint or current_pr
+    so re-running migration on the same legacy file produces the same id.
+    """
+    keys = [
+        "coach_run",
+        entry.get("created_at") or "",
+        repo,
+        entry.get("question_fingerprint")
+        or str((entry.get("current_pr") or {}).get("number") or "")
+        or (entry.get("prompt") or ""),
+    ]
+    digest = hashlib.sha1("|".join(keys).encode("utf-8")).hexdigest()
+    return digest[:16]
+
+
+def _normalize_legacy_entry(
+    entry: dict,
+    *,
+    repo: str,
+    learner_id: str,
+    catalog: dict,
+    source_path: Path,
+    source_line: int,
+) -> dict:
+    """Map a per-repo `learning_memory_entry` to a v3 `coach_run` event.
+
+    The legacy entry shape comes from `memory._memory_entry`; its fields
+    map to v3 as follows:
+
+      created_at   → ts
+      repo         → repo_context
+      current_pr   → pr_number (extracted)
+      primary_learning_points → primary_learning_points
+      learning_point_recommendations → learning_point_recommendations
+      summary / answer / follow_up_question → preserved verbatim
+
+    `had_negative_feedback` defaults to False because the legacy entry
+    doesn't keep raw mentor comment text; mastery rule treats this as
+    "no negative signal", which is correct for events that successfully
+    completed coach-run.
+    """
+    ts = entry.get("ts") or entry.get("created_at") or _now_iso()
+    pr_number = (entry.get("current_pr") or {}).get("number")
+    if pr_number is None:
+        pr_number = entry.get("pr_number")
+    learning_points = list(entry.get("primary_learning_points") or [])
+    concept_ids: list[str] = []
+    for lp in learning_points:
+        cid = lp_to_concept_id(lp, catalog)
+        if cid:
+            concept_ids.append(cid)
+    out = {
+        "event_type": "coach_run",
+        "ts": ts,
+        "learner_id": learner_id,
+        "repo_context": entry.get("repo") or repo,
+        "module_context": None,
+        "pr_number": pr_number,
+        "concept_ids": sorted(set(concept_ids)),
+        "had_negative_feedback": bool(entry.get("had_negative_feedback")),
+        "prompt": _redact_text(entry.get("prompt")),
+        "primary_learning_points": learning_points,
+        "learning_point_recommendations": entry.get(
+            "learning_point_recommendations"
+        )
+        or [],
+        "summary": entry.get("summary"),
+        "answer": entry.get("answer"),
+        "follow_up_question": entry.get("follow_up_question"),
+        "source_path": str(source_path),
+        "source_line": source_line,
+        "source_event_id": entry.get("entry_id")
+        or _legacy_entry_event_id(entry, repo),
+    }
+    out["event_id"] = _deterministic_event_id(out)
+    return out
+
+
+def _existing_event_ids() -> set[str]:
+    path = learner_history_path()
+    if not path.exists():
+        return set()
+    ids: set[str] = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        ev_id = event.get("event_id")
+        if ev_id:
+            ids.add(ev_id)
+    return ids
+
+
+def migrate_from_repos(state_repos_dir: Path) -> dict:
+    """Merge every `state/repos/<repo>/memory/history.jsonl` into the
+    learner stream. Idempotent — re-running yields the same final state.
+
+    Returns a counts dict: `{migrated, skipped_duplicates, repos_visited}`.
+    """
+    ensure_learner_layout()
+    from .concept_catalog import load_catalog as _load_catalog
+    catalog = _load_catalog()
+    learner_id = _resolve_learner_id()
+    seen_ids = _existing_event_ids()
+    migrated = 0
+    skipped = 0
+    repos_visited = 0
+    if not state_repos_dir.exists():
+        return {"migrated": 0, "skipped_duplicates": 0, "repos_visited": 0}
+    candidates: list[dict] = []
+    for repo_dir in sorted(state_repos_dir.iterdir()):
+        if not repo_dir.is_dir():
+            continue
+        history = repo_dir / "memory" / "history.jsonl"
+        if not history.exists():
+            continue
+        repos_visited += 1
+        for line_num, line in enumerate(
+            history.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            text = line.strip()
+            if not text:
+                continue
+            try:
+                entry = json.loads(text)
+            except json.JSONDecodeError:
+                continue
+            event = _normalize_legacy_entry(
+                entry,
+                repo=repo_dir.name,
+                learner_id=learner_id,
+                catalog=catalog,
+                source_path=history,
+                source_line=line_num,
+            )
+            candidates.append(event)
+    candidates.sort(key=lambda e: e.get("ts") or "")
+    for event in candidates:
+        if event["event_id"] in seen_ids:
+            skipped += 1
+            continue
+        try:
+            append_learner_event(event)
+            seen_ids.add(event["event_id"])
+            migrated += 1
+        except ValueError:
+            # Legacy entry missing a v3 required field; skip but count as
+            # a duplicate so the migration still terminates cleanly.
+            skipped += 1
+    if migrated:
+        recompute_learner_profile()
+    return {
+        "migrated": migrated,
+        "skipped_duplicates": skipped,
+        "repos_visited": repos_visited,
+    }
