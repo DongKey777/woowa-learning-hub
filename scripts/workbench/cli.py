@@ -813,6 +813,233 @@ def _parse_junit_duration_ms(value: str | None) -> int | None:
         return None
 
 
+def cmd_learn_drill(args: argparse.Namespace) -> int:
+    """Standalone drill workflow for the learner stream.
+
+    Subactions:
+      offer   — pick an uncertain concept (or `--concept ID`), build a drill
+                question, save it as `state/learner/drill-pending.json`
+      answer  — read pending drill, score the supplied answer, append a
+                drill_answer event, clear pending
+      status  — print the current pending drill (or "no pending")
+      cancel  — clear pending without scoring
+    """
+    sub = args.drill_command
+    if sub == "offer":
+        return _drill_offer(args)
+    if sub == "answer":
+        return _drill_answer(args)
+    if sub == "status":
+        return _drill_status(args)
+    if sub == "cancel":
+        return _drill_cancel(args)
+    sys.stderr.write(f"unknown learn-drill subcommand: {sub}\n")
+    return 2
+
+
+def _drill_offer(args: argparse.Namespace) -> int:
+    import hashlib
+    from datetime import datetime, timezone
+
+    from core.concept_catalog import load_catalog  # type: ignore
+    from core.learner_memory import (  # type: ignore
+        default_profile,
+        load_learner_profile,
+    )
+    from core.paths import learner_drill_pending_path  # type: ignore
+
+    pending_path = learner_drill_pending_path()
+    if pending_path.exists() and not args.force:
+        sys.stderr.write(
+            "drill-pending.json이 이미 있습니다. 기존 drill 먼저 답하거나 "
+            "`bin/learn-drill cancel`로 취소하세요. 강제 발행은 --force.\n"
+        )
+        return 2
+
+    catalog = load_catalog()
+    profile = load_learner_profile() or default_profile()
+    concept_id = args.concept or _pick_uncertain_concept_id(profile)
+    if not concept_id:
+        sys.stderr.write(
+            "추천할 uncertain concept이 없어요. `--concept concept:spring/<name>` 명시해 주세요.\n"
+        )
+        return 2
+
+    concept = (catalog.get("concepts") or {}).get(concept_id)
+    if not concept:
+        sys.stderr.write(f"unknown concept_id: {concept_id}\n")
+        return 2
+
+    name = concept.get("name") or concept_id
+    korean = concept.get("korean")
+    display_name = f"{name} ({korean})" if korean else name
+    question = (
+        f"{display_name}이 무엇이고, 왜 그렇게 동작하며, 실제 코드에서 어떻게 "
+        f"사용되는지 자기 말로 설명해 보세요. 최소 3-4문장 이상으로요."
+    )
+    expected_terms = _drill_expected_terms(concept)
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    sid_seed = f"{concept_id}|{now}".encode("utf-8")
+    drill_session_id = f"learner-drill-{hashlib.sha1(sid_seed).hexdigest()[:12]}"
+    offer = {
+        "drill_session_id": drill_session_id,
+        "concept_id": concept_id,
+        "linked_learning_point": concept_id,
+        "question": question,
+        "expected_terms": expected_terms,
+        "source_doc": None,
+        "created_at": now,
+        "ttl_turns": 5,
+    }
+    pending_path.parent.mkdir(parents=True, exist_ok=True)
+    pending_path.write_text(
+        json.dumps(offer, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(json.dumps(
+        {
+            "drill_session_id": drill_session_id,
+            "concept_id": concept_id,
+            "question": question,
+            "pending_path": str(pending_path),
+        },
+        ensure_ascii=False, indent=2,
+    ))
+    return 0
+
+
+def _drill_answer(args: argparse.Namespace) -> int:
+    from datetime import datetime, timezone
+
+    from core.concept_catalog import load_catalog  # type: ignore
+    from core.learner_memory import (  # type: ignore
+        _resolve_learner_id,
+        append_learner_event,
+        build_drill_answer_event,
+    )
+    from core.paths import learner_drill_pending_path  # type: ignore
+    from scripts.learning import drill as drill_module  # type: ignore
+
+    pending_path = learner_drill_pending_path()
+    if not pending_path.exists():
+        sys.stderr.write(
+            "pending drill이 없어요. `bin/learn-drill offer` 먼저 실행하세요.\n"
+        )
+        return 2
+    try:
+        pending = json.loads(pending_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        sys.stderr.write(f"drill-pending.json 파싱 실패: {exc}\n")
+        return 2
+
+    answer = args.answer or sys.stdin.read()
+    if not answer or not answer.strip():
+        sys.stderr.write("답변이 비어있어요. --answer 인자 또는 stdin으로 답을 넣어 주세요.\n")
+        return 2
+
+    drill_result = drill_module.score_pending_answer(answer, pending)
+    drill_result["scored_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    if "linked_learning_point" not in drill_result:
+        drill_result["linked_learning_point"] = pending.get("linked_learning_point")
+
+    catalog = load_catalog()
+    learner_id = _resolve_learner_id()
+    concept_id = pending.get("concept_id") or pending.get("linked_learning_point")
+    drill_record_for_event = dict(drill_result)
+    drill_record_for_event["linked_learning_point"] = concept_id
+    event = build_drill_answer_event(
+        drill_record=drill_record_for_event,
+        learner_id=learner_id,
+        repo=None,
+        catalog=catalog,
+    )
+    # build_drill_answer_event uses lp_to_concept_id; for canonical concept_ids
+    # passed directly, preserve them so the learner stream sees a concrete tag.
+    if concept_id and concept_id.startswith("concept:") and concept_id not in event["concept_ids"]:
+        event["concept_ids"] = sorted(set(event["concept_ids"]) | {concept_id})
+    append_learner_event(event)
+
+    pending_path.unlink()
+
+    print(json.dumps(
+        {
+            "drill_session_id": drill_result.get("drill_session_id"),
+            "concept_id": concept_id,
+            "total_score": drill_result["total_score"],
+            "level": drill_result["level"],
+            "dimensions": drill_result["dimensions"],
+            "weak_tags": drill_result["weak_tags"],
+            "improvement_notes": drill_result.get("improvement_notes", []),
+        },
+        ensure_ascii=False, indent=2,
+    ))
+    return 0
+
+
+def _drill_status(args: argparse.Namespace) -> int:
+    from core.paths import learner_drill_pending_path  # type: ignore
+    pending_path = learner_drill_pending_path()
+    if not pending_path.exists():
+        print(json.dumps({"pending": False}, ensure_ascii=False))
+        return 0
+    pending = json.loads(pending_path.read_text(encoding="utf-8"))
+    print(json.dumps(
+        {
+            "pending": True,
+            "drill_session_id": pending.get("drill_session_id"),
+            "concept_id": pending.get("concept_id"),
+            "question": pending.get("question"),
+            "ttl_turns": pending.get("ttl_turns"),
+            "created_at": pending.get("created_at"),
+        },
+        ensure_ascii=False, indent=2,
+    ))
+    return 0
+
+
+def _drill_cancel(args: argparse.Namespace) -> int:
+    from core.paths import learner_drill_pending_path  # type: ignore
+    pending_path = learner_drill_pending_path()
+    if pending_path.exists():
+        pending_path.unlink()
+        print(json.dumps({"cancelled": True}, ensure_ascii=False))
+    else:
+        print(json.dumps({"cancelled": False, "reason": "no pending"}, ensure_ascii=False))
+    return 0
+
+
+def _pick_uncertain_concept_id(profile: dict) -> str | None:
+    """첫 번째 uncertain concept을 반환 (drill 미수행 우선)."""
+    uncertain = (profile.get("concepts") or {}).get("uncertain") or []
+    # drill_score가 None인 것 우선
+    for entry in uncertain:
+        evidence = entry.get("evidence") or {}
+        if evidence.get("last_drill_score") is None:
+            return entry.get("concept_id")
+    if uncertain:
+        return uncertain[0].get("concept_id")
+    return None
+
+
+def _drill_expected_terms(concept: dict) -> list[str]:
+    """concept의 aliases + name + korean에서 짧은 영문 토큰 + 한글 키워드 추출.
+
+    scoring._score_accuracy가 token-set과 비교하니 짧고 distinctive한 표현
+    위주로 5~8개. 너무 많으면 coverage 임계가 낮아져 4점 받기 쉬워짐.
+    """
+    candidates: set[str] = set()
+    for alias in concept.get("aliases") or []:
+        normalized = alias.strip().lower()
+        if 2 <= len(normalized) <= 24:
+            candidates.add(normalized)
+    name = (concept.get("name") or "").strip().lower()
+    if name:
+        candidates.add(name)
+    korean = (concept.get("korean") or "").strip()
+    if korean:
+        candidates.add(korean)
+    return sorted(candidates)[:8]
+
+
 def cmd_learn_record_code(args: argparse.Namespace) -> int:
     """Record a single `code_attempt` event for a learner code edit.
 
@@ -1202,6 +1429,29 @@ def build_parser() -> argparse.ArgumentParser:
     learn_test_parser.add_argument("--path", help="Explicit path to a build/test-results/test directory.")
     learn_test_parser.add_argument("--no-record", action="store_true")
     learn_test_parser.set_defaults(func=cmd_learn_test)
+
+    learn_drill_parser = subparsers.add_parser(
+        "learn-drill",
+        help="Standalone drill workflow (offer / answer / status / cancel).",
+    )
+    learn_drill_subparsers = learn_drill_parser.add_subparsers(
+        dest="drill_command", required=True
+    )
+
+    drill_offer_p = learn_drill_subparsers.add_parser("offer", help="Pick a concept and create a drill question.")
+    drill_offer_p.add_argument("--concept", help="Explicit concept_id (e.g. concept:spring/di).")
+    drill_offer_p.add_argument("--force", action="store_true", help="Overwrite an existing pending drill.")
+    drill_offer_p.set_defaults(func=cmd_learn_drill)
+
+    drill_answer_p = learn_drill_subparsers.add_parser("answer", help="Score the pending drill answer.")
+    drill_answer_p.add_argument("answer", nargs="?", help="Answer text (or pipe via stdin).")
+    drill_answer_p.set_defaults(func=cmd_learn_drill)
+
+    drill_status_p = learn_drill_subparsers.add_parser("status", help="Show pending drill or 'no pending'.")
+    drill_status_p.set_defaults(func=cmd_learn_drill)
+
+    drill_cancel_p = learn_drill_subparsers.add_parser("cancel", help="Discard pending drill without scoring.")
+    drill_cancel_p.set_defaults(func=cmd_learn_drill)
 
     learn_record_code_parser = subparsers.add_parser(
         "learn-record-code",

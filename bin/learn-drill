@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/learn-drill offer [--concept concept:spring/di] [--force]
+#   bin/learn-drill answer "내가 작성한 답변"
+#   bin/learn-drill status
+#   bin/learn-drill cancel
+#
+# Standalone drill workflow on the v3 learner stream. Picks an uncertain
+# concept (or the explicit one), scores a 4-dimension answer, appends a
+# drill_answer event, and clears pending.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" learn-drill "$@"

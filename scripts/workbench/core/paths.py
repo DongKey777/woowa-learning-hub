@@ -104,3 +104,7 @@ def learner_summary_path() -> Path:
 
 def learner_identity_path() -> Path:
     return LEARNER_DIR / "identity.json"
+
+
+def learner_drill_pending_path() -> Path:
+    return LEARNER_DIR / "drill-pending.json"
