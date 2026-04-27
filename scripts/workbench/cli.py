@@ -592,13 +592,36 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
     from dataclasses import asdict
 
     from core.interactive_rag_router import classify  # type: ignore
+    try:
+        from core.learner_memory import (  # type: ignore
+            build_learner_context,
+            load_learner_profile,
+        )
+        learner_profile = load_learner_profile()
+    except Exception:
+        learner_profile = None
+        build_learner_context = None  # type: ignore[assignment]
 
-    decision = classify(args.prompt, repo_context=_build_repo_context(args.repo))
+    decision = classify(
+        args.prompt,
+        repo_context=_build_repo_context(args.repo),
+        learner_profile=learner_profile,
+    )
     out: dict = {
         "decision": asdict(decision),
         "hits": None,
         "next_command": None,
+        "learner_context": None,
     }
+    if build_learner_context is not None and learner_profile is not None:
+        try:
+            out["learner_context"] = build_learner_context(
+                learner_profile,
+                prompt=args.prompt,
+                decision=out["decision"],
+            )
+        except Exception:
+            out["learner_context"] = None
 
     if decision.tier in (1, 2) and not decision.blocked:
         # Lazy import — sentence-transformers loads only when needed

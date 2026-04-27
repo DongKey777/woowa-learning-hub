@@ -61,6 +61,19 @@ Role:
 
 전체 명세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
+## Adaptive Response (v3 closed loop)
+
+`bin/rag-ask` 출력의 `learner_context`가 `null`이 아닐 때 **반드시** 다음을 충족시켜 답변을 작성한다:
+
+- `response_hints.must_skip_explanations_of`에 적힌 concept_id의 기본 정의를 반복하지 않는다 (예: `concept:spring/bean`이 mastered면 "Bean이란 컨테이너가…" 도입 생략).
+- `response_hints.must_include_phrases`의 표현을 답변 본문에 포함한다 (예: 4번째 반복 질문이면 "4번째 질문이야" 인지 표시 → 학습자에게 시스템이 자기를 기억하고 있음을 체감시킴).
+- 응답 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. `header_required_tags` 항목이 모두 surface 되어야 한다.
+- `response_hints.must_offer_next_action`이 채워져 있으면 답변 마지막에 자연 문장으로 제안한다 (예: "다음 턴에 DI drill 한 번 풀어볼까?").
+
+이 규약은 `tests/unit/test_personalization_loop.py`로 검증된다. AGENTS 규약만 의존하지 않는 testable contract — `learner_context`가 의도대로 동작하지 않으면 회귀 테스트가 실패한다.
+
+`learner_context`가 null인 경우(cold start, profile 없음) 일반 v2.2 답변 톤으로 진행. 학습자가 `RAG로 깊게` 같은 override를 명시하면 그쪽이 우선.
+
 ## Execution Status Contract
 
 `coach-run.json` expresses state through `execution_status`:

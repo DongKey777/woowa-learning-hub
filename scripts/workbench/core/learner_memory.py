@@ -930,6 +930,133 @@ def default_profile() -> dict:
     return _build_learner_profile([], {"total_events": 0})
 
 
+# === Adaptive Response — learner_context (v3 closed loop) =================
+def build_learner_context(
+    profile: dict | None,
+    *,
+    prompt: str | None = None,
+    decision: dict | None = None,
+    catalog: dict | None = None,
+) -> dict | None:
+    """Compute the per-turn `learner_context` block for `bin/rag-ask`.
+
+    Returns None when the profile is missing or has no usable signal
+    (cold-start). When returned, AI sessions must consume `response_hints`
+    so the response actually adapts — see `docs/learner-memory.md` and
+    the AGENTS.md / CLAUDE.md adaptive response rule.
+    """
+    if not profile:
+        return None
+    if (profile.get("total_events") or 0) == 0:
+        return None
+    catalog = catalog or {}
+    if not catalog:
+        try:
+            from .concept_catalog import load_catalog as _load_catalog
+            catalog = _load_catalog()
+        except Exception:
+            catalog = {}
+    concepts = profile.get("concepts") or {}
+    mastered = list(concepts.get("mastered") or [])
+    uncertain = list(concepts.get("uncertain") or [])
+    underexplored = list(concepts.get("underexplored") or [])
+    activity = profile.get("activity") or {}
+    current_module = activity.get("current_module")
+    current_stage = activity.get("current_stage")
+    prompt_concepts: set[str] = set()
+    if prompt:
+        try:
+            from .concept_catalog import extract_concept_ids as _extract
+            prompt_concepts = set(_extract(prompt, catalog))
+        except Exception:
+            prompt_concepts = set()
+
+    skip_basics_for: list[str] = sorted({
+        c.get("concept_id") for c in mastered if c.get("concept_id") in prompt_concepts
+    } - {None})
+    deepen_for: list[str] = sorted({
+        c.get("concept_id") for c in uncertain if c.get("concept_id") in prompt_concepts
+    } - {None})
+
+    suggested_depth = "medium"
+    if deepen_for:
+        suggested_depth = "deep"
+    elif decision and decision.get("tier") == 1 and not skip_basics_for:
+        suggested_depth = "shallow"
+
+    next_recommendations = list(profile.get("next_recommendations") or [])
+    next_rec = next_recommendations[0] if next_recommendations else None
+    if next_rec is None and deepen_for:
+        next_rec = {
+            "type": "drill",
+            "value": deepen_for[0],
+            "reason": "uncertain — drill recommended",
+            "priority": 0.85,
+        }
+
+    must_include_phrases: list[str] = []
+    for cid in deepen_for:
+        evidence = next(
+            (e for e in uncertain if e.get("concept_id") == cid), {}
+        ).get("evidence", {})
+        ask_count = evidence.get("ask_count_7d") or 0
+        if ask_count >= 3:
+            must_include_phrases.append(f"{ask_count}번째 질문이야")
+            break
+    must_skip_explanations_of = list(skip_basics_for)
+    header_required_tags: list[str] = []
+    if skip_basics_for:
+        header_required_tags.append(
+            "skip-basics(" + ",".join(c.split("/")[-1] for c in skip_basics_for) + ")"
+        )
+    if deepen_for:
+        header_required_tags.append(
+            "deepen(" + ",".join(c.split("/")[-1] for c in deepen_for) + ")"
+        )
+    must_offer_next_action = (
+        f"{next_rec['type']}:{next_rec['value']}" if next_rec else None
+    )
+
+    return {
+        "experience_level": profile.get("experience_level") or {},
+        "current_module": current_module,
+        "current_stage": current_stage,
+        "module_progress": (activity.get("modules_progress") or {}).get(current_module)
+        if current_module
+        else None,
+        "mastered_concepts": [
+            {"id": c.get("concept_id"), "evidence": c.get("evidence")}
+            for c in mastered
+        ],
+        "uncertain_concepts": [
+            {
+                "id": c.get("concept_id"),
+                "ask_count_7d": (c.get("evidence") or {}).get("ask_count_7d"),
+                "guidance": "asked frequently — go deeper, surface common misconceptions",
+            }
+            for c in uncertain
+        ],
+        "underexplored_in_current_stage": [
+            {"id": c.get("concept_id"), "reason": c.get("reason")}
+            for c in underexplored
+        ],
+        "skip_basics_for": skip_basics_for,
+        "deepen_for": deepen_for,
+        "tie_to_module": current_module,
+        "suggested_depth": suggested_depth,
+        "next_recommendation": next_rec,
+        "response_hints": {
+            "must_include_phrases": must_include_phrases,
+            "must_skip_explanations_of": must_skip_explanations_of,
+            "header_required_tags": header_required_tags,
+            "must_offer_next_action": must_offer_next_action,
+        },
+    }
+
+
+
+
+
 # === Migration from per-repo memory (Commit 3 / Phase 2) ==================
 def _legacy_entry_event_id(entry: dict, repo: str) -> str:
     """Stable id for a per-repo legacy entry.

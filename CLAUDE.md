@@ -35,6 +35,17 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
+## Adaptive Response (v3 closed loop)
+
+`bin/rag-ask` 출력에 `learner_context`가 들어 있으면 (cold-start가 아닐 때) **무시하지 말고** 다음 규약을 따른다:
+
+- `response_hints.must_skip_explanations_of` 안의 concept_id에 해당하는 기본 정의 반복 금지 (학습자가 이미 mastered).
+- `response_hints.must_include_phrases`의 표현(예: "4번째 질문이야") 본문에 포함 — 시스템이 학습자를 기억하고 있다는 체감 신호.
+- 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. 빠진 태그가 있으면 회귀 테스트 실패.
+- `response_hints.must_offer_next_action`이 있으면 답변 끝에 자연스럽게 surface (예: "다음 턴에 DI drill 한 번 풀어볼까?").
+
+이 규약은 testable — `tests/unit/test_personalization_loop.py`가 `build_learner_context()`의 출력을 검증한다. `learner_context`가 null이면 v2.2 톤 그대로 진행하고, override 키워드가 들어오면 override가 우선.
+
 ## Existing Coach Notes (상속)
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.
 - Never coach from reviewer comment text alone. Before `coach-run`, directly read the learner's branches, open PRs on upstream, and the actual files cited by reviewer comments. See the **Learner State Assessment** step in `docs/agent-operating-contract.md`.

@@ -39,6 +39,9 @@ class RouterDecision:
     experience_level: str | None        # "beginner" | None
     override_active: bool               # True if a user override matched
     blocked: bool = False               # True when tier=3 but preconditions unmet
+    promoted_by_profile: bool = False   # v3: tier was raised because the
+                                        # learner has asked about this concept
+                                        # before (closed-loop signal)
 
 
 # === 1. Definition signals (Tier 1 trigger — ANDed with domain) ===
@@ -207,16 +210,37 @@ def _missing_tier3_preconditions(repo_context: dict | None) -> list[str]:
     return missing
 
 
-def classify(prompt: str, *, repo_context: dict | None = None) -> RouterDecision:
+def classify(
+    prompt: str,
+    *,
+    repo_context: dict | None = None,
+    learner_profile: dict | None = None,
+) -> RouterDecision:
     """Classify a learning-session prompt into Tier 0~3.
 
     repo_context shape (all optional fields):
         {"repo_name": str, "archive_ready": bool, "has_open_pr": bool}
 
-    Caller is responsible for populating repo_context (e.g., via gh pr list,
-    archive/status.json read). Router does NOT do disk/network I/O itself.
+    `learner_profile` (v3) is the persisted learner profile loaded by
+    `bin/rag-ask`. When passed, three closed-loop rules apply (in order):
+
+      1. Rolling experience_level (`high` confidence) overrides the
+         prompt-only `BEGINNER_HINTS` lookup — a learner who has been
+         flagged beginner across 20 turns shouldn't lose that just because
+         this single prompt sounds advanced.
+      2. Repeated uncertain concept (≥3 asks in 7d) promotes a Tier 1
+         "domain + definition" hit to Tier 2 with `promoted_by_profile=True`.
+         Stops the "the learner asked Bean five times and we keep giving
+         the same shallow answer" failure mode.
+      3. Cold start: when profile is None or has < 3 events, the router
+         falls back to the v2.2 prompt-only behavior.
+
+    Router still does NOT do disk/network I/O itself — `learner_profile`
+    must be loaded by the caller.
     """
-    level = infer_experience_level(prompt)
+    profile_level = _profile_experience_level(learner_profile)
+    inferred_level = infer_experience_level(prompt)
+    level = profile_level or inferred_level
 
     # --- Stage 1: override short-circuit ---
     override = _check_override(prompt)
@@ -295,6 +319,16 @@ def classify(prompt: str, *, repo_context: dict | None = None) -> RouterDecision
 
     # --- Stage 6: Tier 1 (definition + domain) ---
     if has_domain and has_definition:
+        # v3 closed-loop: if the learner has been asking about a concept
+        # mentioned here ≥3 times in the last 7 days (uncertain), promote
+        # to Tier 2 so the answer goes deeper.
+        if _profile_concept_repeated(learner_profile, prompt):
+            return RouterDecision(
+                tier=2, mode="full",
+                reason="domain + definition signal · profile uncertain (repeated 7d)",
+                experience_level=level, override_active=False,
+                promoted_by_profile=True,
+            )
         return RouterDecision(
             tier=1, mode="cheap", reason="domain + definition signal",
             experience_level=level, override_active=False,
@@ -305,3 +339,40 @@ def classify(prompt: str, *, repo_context: dict | None = None) -> RouterDecision
         tier=0, mode=None, reason="no learning-domain signal",
         experience_level=level, override_active=False,
     )
+
+
+# === v3 profile helpers (cold-start safe) ================================
+def _profile_experience_level(profile: dict | None) -> str | None:
+    """Return the rolling experience level if confidence is high enough."""
+    if not profile:
+        return None
+    exp = profile.get("experience_level") or {}
+    if exp.get("confidence") in ("high", "medium") and exp.get("current") == "beginner":
+        return "beginner"
+    return None
+
+
+def _profile_concept_repeated(profile: dict | None, prompt: str) -> bool:
+    """True iff ANY uncertain concept_id matches this prompt and the
+    profile has enough events to trust the signal (cold-start: <3 events
+    falls through to v2.2 behavior)."""
+    if not profile:
+        return False
+    if (profile.get("total_events") or 0) < 3:
+        return False
+    uncertain = (profile.get("concepts") or {}).get("uncertain") or []
+    if not uncertain:
+        return False
+    try:
+        from .concept_catalog import (  # local import to avoid bootstrap cycles
+            extract_concept_ids,
+            load_catalog,
+        )
+        catalog = load_catalog()
+    except Exception:  # noqa: BLE001 — router stays usable without catalog
+        return False
+    prompt_concepts = set(extract_concept_ids(prompt, catalog))
+    if not prompt_concepts:
+        return False
+    uncertain_ids = {entry.get("concept_id") for entry in uncertain}
+    return bool(prompt_concepts & uncertain_ids)
