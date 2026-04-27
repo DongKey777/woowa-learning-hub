@@ -5,7 +5,9 @@
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
+> - [가상 메모리 기초](./virtual-memory-basics.md)
 > - [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)
+> - [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
 > - [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 > - [vm.swappiness, Reclaim Behavior](./vm-swappiness-reclaim-behavior.md)
 > - [kswapd vs Direct Reclaim, Latency](./kswapd-vs-direct-reclaim-latency.md)
@@ -15,7 +17,7 @@
 > - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 > - [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
 
-> retrieval-anchor-keywords: swap-in primer, reclaim fault path, major fault under memory pressure, reclaim-induced major fault, swapin major fault, anonymous page swapin, page cache refault, cold-page refault, hot-page churn, workingset_refault_file, workingset_activate_file, pswpin, pswpout, pgmajfault, pgscan, pgsteal, allocstall, direct reclaim on page fault, fault debt
+> retrieval-anchor-keywords: swap-in primer, reclaim fault path, major fault under memory pressure, reclaim-induced major fault, swapin major fault, anonymous page swapin, page cache refault, cold-page refault, hot-page churn, workingset_refault_file, workingset_activate_file, pswpin, pswpout, pgmajfault, pgscan, pgsteal, allocstall, direct reclaim on page fault, fault debt, virtual memory follow-up, beginner handoff box, reclaim handoff, major fault learning path, 가상 메모리 다음 문서
 
 ## 핵심 개념
 
@@ -221,6 +223,15 @@ pgmajfault rises alone during startup
 | 핵심 cgroup의 working set 보호 | hot-page churn 감소 | 다른 그룹 압박 증가 | API 보호 우선 |
 | batch와 API 분리 | file refault 간섭 감소 | 운영 복잡도 증가 | mixed workload |
 | startup prewarm | cold major fault 감소 | 메모리와 I/O를 앞당겨 쓴다 | 첫 요청 지연 민감 |
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "가상 메모리 입문 뒤에 major fault가 왜 느려지는지"를 먼저 짧게 복습하려면: [Demand Paging and Page Fault Primer](./demand-paging-page-fault-primer.md)
+> - "reclaim 전 단계 말고 TLB/page table 쪽 주소 변환 경로도 이어서 보고 싶다"면: [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
+> - "runtime에서 major/minor, reclaim, swap counter를 실제로 읽는 법"으로 내려가려면: [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+> - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 꼬리질문
 

@@ -4,17 +4,29 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [인증과 인가의 차이](./authentication-vs-authorization.md)
-> - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
-> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-> - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+관련 문서:
+
+- [XSS와 CSRF 기초](./xss-csrf-basics.md)
+- [인증과 인가의 차이](./authentication-vs-authorization.md)
+- [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
+- [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+- [[survey] Security README: 기본 primer](./README.md#기본-primer)
+- [[catalog] Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
+
+retrieval-anchor-keywords: xss csrf spring security, spring security csrf, spring security xss headers, csrf filter spring security, xss csrf 차이 spring, beginner return to xss csrf primer, security readme xss csrf follow-up, csrf token spring filter, csp header spring security, return to security readme, spring security csrf가 뭐예요, 처음 배우는데 spring security csrf
+
+## 이 문서로 들어오기 전에 먼저 고를 복귀 경로
+
+- `[return]` Spring filter 설정보다 XSS/CSRF 차이부터 다시 잡고 싶으면 [XSS와 CSRF 기초](./xss-csrf-basics.md)로 올라간다.
+- `[return]` beginner primer 전체에서 다시 고르고 싶으면 [[survey] Security README: 기본 primer](./README.md#기본-primer)로 돌아간다.
+- `[return]` 증상 문장으로 다시 branch를 고르고 싶으면 [[catalog] Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아간다.
 
 ---
 
 ## 핵심 개념
 
-`XSS`는 공격자의 스크립트가 피해자 브라우저에서 실행되는 취약점이다.  
+`XSS`는 공격자의 스크립트가 피해자 브라우저에서 실행되는 취약점이다.
 `CSRF`는 피해자의 인증 상태를 이용해 의도치 않은 요청을 보내는 취약점이다.
 
 정리하면:
@@ -46,7 +58,7 @@
 
 ### 3. CSRF 방어
 
-CSRF는 cookie-based authentication에서 특히 중요하다.  
+CSRF는 cookie-based authentication에서 특히 중요하다.
 브라우저가 자동으로 쿠키를 보내기 때문에, 악성 사이트가 사용자의 의사와 무관한 요청을 유도할 수 있다.
 
 Spring Security에서는 보통 다음을 함께 쓴다.
@@ -62,7 +74,7 @@ Spring Security에서는 보통 다음을 함께 쓴다.
 - JWT를 localStorage에 저장: XSS에 매우 취약하다
 - JWT를 cookie에 저장: CSRF 방어가 다시 중요해진다
 
-즉 "JWT니까 CSRF가 필요 없다"는 말은 틀리기 쉽다.  
+즉 "JWT니까 CSRF가 필요 없다"는 말은 틀리기 쉽다.
 저장 방식과 전송 방식까지 같이 봐야 한다.
 
 ---
@@ -107,8 +119,8 @@ Spring Security에서는 보통 다음을 함께 쓴다.
 
 ### 시나리오 4: CORS와 CSRF를 혼동함
 
-CORS는 브라우저가 다른 origin 응답을 읽는 걸 통제한다.  
-CSRF는 브라우저가 자동으로 보내는 요청을 악용하는 문제다.  
+CORS는 브라우저가 다른 origin 응답을 읽는 걸 통제한다.
+CSRF는 브라우저가 자동으로 보내는 요청을 악용하는 문제다.
 둘은 다르다.
 
 ---

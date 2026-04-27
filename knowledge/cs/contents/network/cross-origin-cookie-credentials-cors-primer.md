@@ -4,22 +4,27 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
-> - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
-> - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-> - [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
-> - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
-> - [CORS Credential Pitfalls / Allowlist Design](../security/cors-credential-pitfalls-allowlist.md)
-> - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
+관련 문서:
 
-retrieval-anchor-keywords: cross-origin cookie primer, fetch credentials mode, credentials same-origin include omit, same-origin vs same-site, cross-origin same-site cookie, cross-site cookie fetch, CORS credentials cookie, Access-Control-Allow-Credentials, Access-Control-Allow-Origin exact origin, Set-Cookie cross-origin fetch, subdomain cookie fetch, app.example.com api.example.com cookie, why cookie not sent on fetch, why Set-Cookie not stored cross origin, same-site not same-origin, cross-site cookie SameSite None Secure, SameSite Lax Strict None matrix, cookie attribute matrix, Domain Path cookie scope
+- [Network README](./README.md#network-네트워크)
+- [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+- [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
+- [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md)
+- [CORS 기초](../security/cors-basics.md)
+- [Preflight Debug Checklist](../security/preflight-debug-checklist.md)
+- [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
+- [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)
+- [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)
+
+retrieval-anchor-keywords: cross-origin cookie primer, fetch credentials mode, same-origin vs same-site, cross-site cookie fetch, cors credentials cookie, set-cookie cross-origin fetch, request cookie header missing, options only vs actual request, cookie scope mismatch handoff, cookie scope vs cors chooser, browser session beginner ladder, beginner cors cookie next step
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
 - [먼저 `origin`과 `site`를 구분하자](#먼저-origin과-site를-구분하자)
+- [여기까지 이해했다면 다음 갈래](#여기까지-이해했다면-다음-갈래)
 - [`fetch.credentials`는 무엇을 바꾸나](#fetchcredentials는-무엇을-바꾸나)
 - [CORS는 무엇을 바꾸나](#cors는-무엇을-바꾸나)
 - [한 번에 보는 판단 순서](#한-번에-보는-판단-순서)
@@ -93,6 +98,37 @@ cookie 속성 자체의 의미가 먼저 헷갈리면 [Cookie Attribute Matrix: 
 
 - `SameSite`는 `site`를 본다
 - CORS와 `credentials: "same-origin"`은 `origin`을 본다
+
+## 10초 chooser: cookie scope vs CORS vs `credentials`
+
+이 입문 문서는 세 단어의 경계를 먼저 잡는 지도다. 아래 표에서 증거를 고른 뒤, 필요한 follow-up primer로 한 칸만 내려가면 된다.
+
+| 지금 먼저 보이는 장면 | 먼저 보는 질문 | 다음 문서 |
+|---|---|---|
+| actual request는 있는데 request `Cookie` header가 비어 있다 | "`include`가 빠졌나, 아니면 cookie scope가 안 맞나?" | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) |
+| request `Cookie`는 실렸는데 콘솔이 CORS 에러를 말한다 | "응답을 JS가 읽을 수 있나?" | [CORS 기초](../security/cors-basics.md) |
+| `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | "실제 요청이 아직 출발했나?" | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) |
+| 용어는 알겠는데 다음 branch를 다시 고르고 싶다 | "지금 symptom 기준 return path가 있나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+
+짧게 외우면 `request Cookie 비어 있음`은 cookie scope/`credentials` 갈래, `request Cookie 있음 + CORS 콘솔 에러`는 응답 읽기 갈래다. category로 다시 올라가려면 [Network README](./README.md#network-네트워크)와 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)를 같이 본다.
+
+## 여기까지 이해했다면 다음 갈래
+
+여기까지 읽고 나면 beginner가 다음으로 가장 많이 막히는 지점은 "이제 무엇을 더 봐야 하지?"다.
+아래 한눈표만 보면 세 문서 차이를 먼저 고정할 수 있다.
+
+| 지금 DevTools에서 먼저 보이는 장면 | 먼저 볼 문서 | 이 문서가 답하는 질문 | 읽고 나면 복귀 |
+|---|---|---|---|
+| actual request는 보이는데 콘솔이 CORS 에러를 말한다 | [CORS 기초](../security/cors-basics.md) | "응답을 JS가 읽을 수 있나?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | "실제 요청이 아직 출발했나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| actual request는 있는데 request `Cookie` header가 비어 있다 | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) | "`include`와 cookie scope 중 어디서 막혔나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| 어느 칸을 봐야 할지부터 헷갈린다 | [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md) | "지금 비교해야 할 칸이 어디인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+
+짧게 외우면 이것만 기억하면 된다.
+
+- [CORS 기초](../security/cors-basics.md): 요청은 갔는데 응답 읽기가 막힌다
+- [Preflight Debug Checklist](../security/preflight-debug-checklist.md): actual request가 아직 안 나갔다
+- [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md): actual request는 갔지만 request `Cookie`가 비었다
 
 ---
 
@@ -372,6 +408,34 @@ include를 켠다
 
 - cookie가 실제 저장되었는가
 - 저장됐더라도 대상 domain/path가 요청 URL과 맞는가
+
+## request `Cookie` header를 봤다면 같은 자리로 복귀
+
+이 문서에서 초보자가 꼭 고정해야 할 return path는 하나다.
+request `Cookie` header를 확인한 뒤에는 branch가 갈려도 다시 같은 beginner entrypoint로 돌아온 뒤 필요하면 troubleshooting anchor로 한 칸 더 내려간다.
+
+| request `Cookie` header 체크 결과 | 바로 다음 문서 | 복귀할 같은 anchor |
+|---|---|---|
+| actual request 자체가 없다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| actual request는 있는데 `Cookie` header가 비어 있다 | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| request `Cookie`는 실렸는데 login HTML fallback, `302 -> /login`, anonymous가 남는다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| request `Cookie`는 실렸는데 JS만 CORS 에러로 응답을 못 읽는다 | [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+
+짧은 기억 문장:
+
+- request `Cookie`가 비면 `전송` branch를 읽고 다시 beginner ladder로 돌아온다
+- request `Cookie`가 있으면 `복원` 또는 `응답 읽기` branch를 읽고 다시 beginner ladder로 돌아온다
+
+## login-loop alias로 들어왔을 때 safe next step
+
+`cookie 있는데 다시 로그인`, `hidden session mismatch`, `saved request bounce` 같은 별칭으로 들어왔다면 아래처럼 먼저 분기한다.
+
+| 먼저 보이는 증거 | beginner 기준 해석 | 다음 한 걸음 |
+|---|---|---|
+| request `Cookie` header가 비어 있다 | `cookie-not-sent` branch | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) -> [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| request `Cookie`는 실렸는데 `302 -> /login`이나 login HTML fallback이 남는다 | `server-mapping-missing` 또는 redirect branch | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) -> [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `OPTIONS`만 실패하고 actual 요청이 없다 | preflight/CORS branch | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) |
+| 갈래를 잃었다 | category 라우터로 복귀 | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
 
 ---
 

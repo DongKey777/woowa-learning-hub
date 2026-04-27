@@ -4,24 +4,34 @@
 
 **난이도: 🟢 Beginner**
 
+> 이 문서는 coalescing 주제의 **beginner-safe follow-up entry**다. 아직 `origin`과 `connection` 차이, H1/H2/H3 큰 그림이 헷갈리면 아래 문서로 먼저 돌아가고 다시 들어오는 편이 안전하다.
+>
+> | 지금 상태 | 먼저 읽을 문서 | 이 문서로 돌아오는 타이밍 |
+> |---|---|---|
+> | `origin` 자체가 아직 낯설다 | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md) | `scheme + host + port` 감각을 잡은 뒤 |
+> | H1/H2/H3 차이부터 다시 잡아야 한다 | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | "여러 origin이 왜 한 연결을 같이 쓰지?"가 궁금해졌을 때 |
+> | 버전 선택 흐름은 아는데 `공유 범위`가 헷갈린다 | 이 문서 | `reuse`와 `coalescing`을 구분하려는 지금 |
+
 > 관련 문서:
-> - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
-> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+> - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) (main comparison primer)
+> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) (selection follow-up primer)
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 > - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
 > - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 > - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 > - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
+> - [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 > - [Connection Reuse vs Service Discovery Churn](./connection-reuse-vs-service-discovery-churn.md)
 
-retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, cross-origin connection reuse, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, wildcard cert routing boundary, routing boundary, same certificate different backend, CDN wildcard certificate, load balancer wildcard certificate, HTTP/2 ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, Alt-Svc endpoint authority, 421 misdirected request, misdirected request retry, Alt-Svc connection reuse, HTTPS RR coalescing, SVCB coalescing, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection, 421 troubleshooting trace, 421 vs 403 vs 404, wrong connection failure
+retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coalescing, origin coalescing, connection reuse across origins, cross-origin connection reuse, multiple origins same connection, certificate SAN reuse, subjectAltName, wildcard certificate, wildcard cert routing boundary, routing boundary, same certificate different backend, CDN wildcard certificate, load balancer wildcard certificate, HTTP/2 ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, Alt-Svc endpoint authority, 421 misdirected request, misdirected request retry, Alt-Svc connection reuse, HTTPS RR coalescing, SVCB coalescing, same IP edge, authority, authoritative server, browser coalescing rules, shared H2 connection, shared H3 connection, 421 troubleshooting trace, 421 vs 403 vs 404, wrong connection failure, browser 421 retry, wrong coalescing retry, same url retried after 421
 
 <details>
 <summary>Table of Contents</summary>
 
+- [먼저 보는 20초 입장권](#먼저-보는-20초-입장권)
 - [왜 헷갈리나](#왜-헷갈리나)
 - [먼저 잡는 mental model](#먼저-잡는-mental-model)
 - [용어를 짧게 정리하면](#용어를-짧게-정리하면)
@@ -34,6 +44,19 @@ retrieval-anchor-keywords: HTTP/2 connection coalescing, HTTP/3 connection coale
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+## 먼저 보는 20초 입장권
+
+이 문서는 아래 한 문장으로 시작하면 덜 헷갈린다.
+
+- `reuse`는 "같은 origin이 기존 연결을 다시 쓰는 일"
+- `coalescing`은 "다른 origin도 조건이 맞으면 같은 연결에 같이 태우는 일"
+
+| 질문 | 지금 문서가 맞나 | 이유 |
+|---|---|---|
+| "`www`와 `static`이 왜 연결 하나를 같이 쓰지?" | 맞다 | coalescing의 첫 질문이다 |
+| "`421`이 왜 나왔지?" | 거의 맞다 | 큰 흐름은 여기서 보고, 상세 복구는 [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)으로 간다 |
+| "`HTTP/3가 왜 빠를 수 있지?`" | 아직 아니다 | 먼저 버전 비교나 [HTTP/3와 QUIC 실전 트레이드오프](./http3-quic-practical-tradeoffs.md) 쪽이 맞다 |
 
 ## 왜 헷갈리나
 

@@ -7,6 +7,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Logout Scope Primer](./logout-scope-primer.md)
 > - [Device / Session Graph Revocation Design](./device-session-graph-revocation-design.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
@@ -26,6 +27,7 @@ retrieval-anchor-keywords: session inventory ux, revocation scope design, logout
 ## 이 문서 다음에 보면 좋은 문서
 
 - revoke 대상 모델 자체는 [Device / Session Graph Revocation Design](./device-session-graph-revocation-design.md)로 이어진다.
+- `현재 세션`, `이 기기`, `모든 기기`, `refresh family` 용어를 초보자 눈높이에서 먼저 자르고 싶으면 [Logout Scope Primer](./logout-scope-primer.md)를 먼저 붙이고 내려오면 된다.
 - 실제 분산 무효화 메커니즘은 [Session Revocation at Scale](./session-revocation-at-scale.md)로 이어진다.
 - revoke 이후 `requested`, `in_progress`, `fully_blocked_confirmed` status payload 의미는 [Revocation Propagation Status Contract](./revocation-propagation-status-contract.md)에서 따로 고정한다.
 - "로그아웃됨" 표시가 언제 안전한지의 tail 문제는 [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)과 같이 봐야 한다.

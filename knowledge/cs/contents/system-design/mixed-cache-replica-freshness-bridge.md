@@ -2,17 +2,22 @@
 
 > 한 줄 요약: `recent-write`, `min-version`, `causal token`은 cache 앞에 왔다고 사라지면 안 되고, cache hit 판단, cache miss 뒤 source 선택, refill 허용 조건까지 같은 freshness context로 이어져야 한다.
 
-retrieval-anchor-keywords: mixed cache replica freshness bridge, mixed cache+replica freshness bridge, cache hit miss refill consistency, rejected hit observability, cache hit reject reason, replica fallback reason, refill no-fill reason, recent-write min-version causal token, recent write min version causal token, list detail search min-version floor, list detail monotonicity bridge, freshness context bridge, cache hit accept rule, cache miss routing rule, cache refill guard, refill no-fill on stale replica, recent-write survives cache miss, min-version survives cache hit, causal token through cache, required watermark cache replica, beginner mixed freshness, cache replica consistency bridge, cache replica session guarantees, cache hit miss refill beginner
+retrieval-anchor-keywords: mixed cache replica freshness bridge, cache hit miss refill consistency, cache hit reject reason, replica fallback reason, refill no-fill reason, recent-write min-version causal token, beginner mixed freshness, why stale after cache miss, why fallback reason is not enough, fallback headroom green red, recent-write recent_write mapping, min-version min_version mapping
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [Cache Hit/Miss Session Policy Bridge](./cache-hit-miss-session-policy-bridge.md)
 - [Notification Causal Token Walkthrough](./notification-causal-token-walkthrough.md)
+- [Watermark Metadata Persistence Basics](./watermark-metadata-persistence-basics.md)
 - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
+- [Pagination Monotonicity Primer](./pagination-monotonicity-primer.md)
+- [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
@@ -33,6 +38,11 @@ retrieval-anchor-keywords: mixed cache replica freshness bridge, mixed cache+rep
 - `recent-write`: 방금 쓴 값이 바로 사라지지 않게 하는 힌트
 - `min-version`: 내가 이미 본 최신선보다 뒤로 가지 않게 하는 힌트
 - `causal token`: 먼저 본 결과의 원인도 같이 보이게 하는 힌트
+
+`recent-write`와 `min-version`만 먼저 좁혀서 hit accept, miss fallback, refill write-back에 연결해 보고 싶다면 [Cache Hit/Miss Session Policy Bridge](./cache-hit-miss-session-policy-bridge.md)가 더 짧은 entrypoint다.
+
+용어 먼저:
+[recent-write](./cross-primer-glossary-anchors.md#term-recent-write), [min-version floor](./cross-primer-glossary-anchors.md#term-min-version-floor), [stale window](./cross-primer-glossary-anchors.md#term-stale-window), [headroom](./cross-primer-glossary-anchors.md#term-headroom)을 먼저 보고 오면 이 문서의 hit/miss/refill 판단이 더 빨리 읽힌다.
 
 cache가 앞에 붙는 순간 흔히 생기는 버그는 이렇다.
 
@@ -88,6 +98,8 @@ satisfies ctx  fails ctx
 - cache miss도 같은 힌트로 source를 골라야 한다
 - refill도 "아무 값이나 다시 cache에 넣는 단계"가 아니다
 
+특히 refill은 "값 저장"만이 아니라 다음 hit 검사를 위한 metadata persistence 단계이기도 하다. 이 부분만 따로 beginner 관점으로 잇는 문서는 [Watermark Metadata Persistence Basics](./watermark-metadata-persistence-basics.md)다.
+
 ---
 
 ## 세 힌트는 무엇을 비교하나
@@ -103,6 +115,23 @@ satisfies ctx  fails ctx
 - `recent-write`는 종종 "숫자 비교"보다 **안전 경로를 강제하는 신호**로 쓰인다
 - `min-version`은 cache와 replica 둘 다 검사할 수 있는 가장 단순한 기준선이다
 - `causal token`은 entity version보다 넓은 dependency를 들고 다닐 때 유용하다
+
+### 초보자용 용어 맞춤표: 개념 이름과 reason enum은 다르게 생길 수 있다
+
+mental model 문서에서는 사람이 읽기 쉬운 용어를 먼저 쓴다.
+하지만 로그나 메트릭의 `fallback_reason`은 보통 `snake_case` enum으로 남긴다.
+
+| mental model에서 읽는 말 | `fallback_reason`/로그 필드에서 쓰는 값 | 초보자용 한 줄 |
+|---|---|---|
+| `recent-write` | `recent_write` | 방금 쓴 직후라 replica 대신 더 안전한 경로를 택했다 |
+| `min-version` | `min_version` | replica가 내가 이미 본 기준선보다 아직 뒤에 있다 |
+| `causal token` / required watermark | `watermark` | 결과의 원인까지 같이 보여 줄 만큼 replica watermark가 따라오지 못했다 |
+
+외우는 법은 간단하다.
+
+- 문서 설명에서는 `recent-write`, `min-version`, `causal token`처럼 읽기 쉬운 말을 쓴다.
+- 로그/메트릭 값은 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)와 맞춰 `recent_write`, `min_version`, `watermark`로 고정한다.
+- 초보자에게는 "용어가 두 개"보다 "설명용 이름 + 기록용 enum"으로 보는 편이 덜 헷갈린다.
 
 ---
 
@@ -134,7 +163,7 @@ POST /orders/123/pay -> primary commit success
 session/request context
 - recent_write_until(order:123) = now + 3s
 - min_version(order:123) = 42
-- causal_token = payment_confirmed@9001
+- causal_token = order_paid@9001
 ```
 
 이제 같은 사용자가 바로 주문 화면으로 간다.
@@ -271,6 +300,23 @@ function satisfies(obj, ctx):
 - `refill은 성능 최적화 단계일 뿐`도 틀리다. stale replica 값을 refill하면 incident를 길게 끈다.
 - `recent-write`만 있으면 끝난다고 생각하기 쉽다. 여러 화면을 오가면 `min-version`이 같이 필요하고, 알림이나 비동기 결과를 따라가면 `causal token`도 필요하다.
 - `causal token`은 event system에서만 쓴다고 오해하기 쉽다. "결과를 먼저 봤다면 원인도 같이 보여야 하는" 화면 이동에도 유용하다.
+- `fallback_reason=recent_write`를 보고 새로운 개념이라고 느끼기 쉽다. 이 문서의 `recent-write`를 로그용 enum으로 적은 같은 뜻이다.
+- `fallback_reason=watermark`를 "causal token과 다른 이야기"로 읽기 쉽다. 초보자 문서에서는 개념 설명을 위해 `causal token`이라고 쓰고, observability 문서에서는 기록용 이름으로 `watermark`라고 고정한다.
+
+---
+
+## 같은 fallback이어도 Green/Red 해석은 다르다
+
+이 문서는 먼저 "왜 hit를 버렸고 왜 replica 대신 primary로 갔는가"를 설명한다.
+하지만 shared 카드에서 같은 `fallback_reason=min_version`이 보여도, primary headroom이 `Green`인지 `Red`인지에 따라 다음 질문은 달라진다.
+
+| headroom 상태 | 여기서 먼저 읽을 말 | 다음 문서에서 이어 볼 말 |
+|---|---|---|
+| `Green` | freshness contract를 지키려고 fallback했다 | 왜 특정 route에서 reject/fallback이 덜 잡혔는지 |
+| `Red` | freshness contract는 지켰지만 primary 보호가 급해졌다 | 이 fallback을 더 늘려도 primary가 버티는지 |
+
+초보자용 한 줄: `reason이 맞다`와 `운영상 안전하다`는 같은 판단이 아니다.
+그래서 `Green vs Red`가 보이는 shared 카드는 이 문서의 hit/miss/refill mental model로 먼저 읽고, 바로 다음에 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)의 headroom 카드로 넘어가면 연결이 가장 자연스럽다.
 
 ---
 
@@ -286,3 +332,9 @@ function satisfies(obj, ctx):
 이 여섯 개가 있으면 beginner 단계에서 가장 흔한 "cache 앞에서 consistency 정책이 끊기는 문제"를 크게 줄일 수 있다.
 
 hit reject, fallback reason, refill no-fill을 먼저 관측성 언어로 잡고 싶다면 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)를 보고, 더 깊게는 by-source observability, stale refill incident, cold-path failover 문제를 [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)에서 이어서 보면 된다.
+
+---
+
+## 한 줄 정리
+
+mixed cache+replica 경로에서는 `recent-write`, `min-version`, `causal token`으로 hit, miss, refill을 같은 기준으로 판단하고, 운영 해석은 headroom의 `Green/Red` 구분까지 이어서 봐야 한다.

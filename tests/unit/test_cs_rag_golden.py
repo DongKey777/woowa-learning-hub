@@ -26,9 +26,48 @@ import json
 import unittest
 from pathlib import Path
 
-from scripts.learning.rag import indexer
+from scripts.learning.rag import corpus_loader, indexer, signal_rules
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
+_PROJECTION_BEGINNER_CONTRAST_QUERY_IDS = (
+    "projection_freshness_intro_primer_vs_guardrail_compare",
+    "projection_freshness_intro_primer_vs_rebuild_playbook_compare",
+    "projection_freshness_intro_primer_vs_guardrail_and_rebuild_triad",
+    "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+    "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+    "projection_freshness_intro_fully_korean_primer_vs_guardrail_compare",
+    "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+    "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+    "projection_freshness_intro_primer_vs_slo_lag_budget_compare",
+    "projection_freshness_intro_korean_only_primer_vs_slo_lag_budget_compare",
+    "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+    "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+    "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback",
+    "projection_freshness_intro_korean_rollback_window_vs_korean_transaction_rollback",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+    "projection_freshness_intro_full_korean_old_value_visible_rollback_compare",
+    "projection_freshness_intro_full_korean_saved_not_visible_rollback_compare",
+    "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+    "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+    "projection_freshness_intro_cutover_safety_vs_failover_visibility_different",
+    "projection_freshness_intro_mixed_cutover_safety_vs_failover_visibility_compare",
+    "projection_freshness_intro_full_korean_cutover_safety_vs_failover_visibility_compare",
+    "projection_freshness_intro_cutover_safety_vs_failover_rollback_compare",
+    "projection_freshness_intro_vs_failover_compare",
+    "projection_freshness_intro_vs_failover_visibility_compare",
+    "projection_freshness_intro_vs_failover_visibility_alias_compare",
+    "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+    "projection_freshness_intro_vs_stateful_failover_placement_compare",
+    "projection_freshness_intro_vs_failover_verification_compare",
+    "projection_freshness_intro_failover_visibility_vs_write_loss_verification_compare",
+    "projection_freshness_intro_cutover_safety_vs_key_rotation_rollback_compare",
+)
+_FAILOVER_DIVERGENCE_BEGINNER_ALIAS_QUERY_IDS = (
+    "failover_stale_primary_beginner_alias",
+    "failover_old_primary_read_beginner_alias",
+    "failover_promotion_read_divergence_beginner_alias",
+)
 
 
 def _load_fixture_payload() -> dict:
@@ -41,6 +80,46 @@ def _load_readiness_contract() -> dict[str, str]:
     return payload.get("_meta", {}).get("live_readiness_contract", {})
 
 
+def _load_beginner_prompt_language_contracts() -> dict[str, dict[str, object]]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("beginner_prompt_language_contracts", {})
+
+
+def _load_generic_crud_negative_projection_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("generic_crud_negative_projection_contracts", {})
+
+
+def _load_stable_full_mode_fixture_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("stable_full_mode_fixture_queries", {})
+
+
+def _load_projection_symptom_only_primer_family_batch_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("projection_symptom_only_primer_family_batch", {})
+
+
+def _load_projection_symptom_only_search_regression_sweep_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("projection_symptom_only_search_regression_sweep", {})
+
+
+def _load_projection_korean_failover_visibility_contrast_sweep_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("projection_korean_failover_visibility_contrast_sweep", {})
+
+
+def _load_stateful_failover_beginner_contrast_sweep_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("stateful_failover_beginner_contrast_sweep", {})
+
+
+def _load_live_readiness_diagnostics_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("live_readiness_diagnostics", {})
+
+
 def _full_mode_index_ready() -> bool:
     try:
         return indexer.is_ready(indexer.DEFAULT_INDEX_ROOT).state == "ready"
@@ -50,6 +129,39 @@ def _full_mode_index_ready() -> bool:
 
 def _describe_hash(value: str | None) -> str:
     return value or "missing"
+
+
+def _non_indexed_markdown_paths(
+    corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
+) -> list[str]:
+    root = Path(corpus_root)
+    indexed_paths = {chunk.path for chunk in corpus_loader.iter_corpus(root)}
+    extra_paths: list[str] = []
+    for md_path in sorted(root.rglob("*.md")):
+        relpath = md_path.relative_to(root).as_posix()
+        if relpath not in indexed_paths:
+            extra_paths.append(relpath)
+    return extra_paths
+
+
+def _live_readiness_stale_diagnostic() -> str:
+    contract = _load_live_readiness_diagnostics_contract()
+    extra_paths = _non_indexed_markdown_paths()
+    if not extra_paths:
+        return ""
+    sample = ", ".join(extra_paths[:3])
+    scope_summary = contract.get(
+        "scope_summary",
+        "knowledge/cs 해시 범위와 실제 인덱싱 범위가 다릅니다.",
+    )
+    rebuild_note = contract.get(
+        "rebuild_note",
+        "Rebuild alone will not clear a stale report while those out-of-index markdown files keep changing.",
+    )
+    return (
+        f" {scope_summary} Non-indexed markdown files still counted by the live hash: "
+        f"{len(extra_paths)} total ({sample}). {rebuild_note}"
+    )
 
 
 def _require_live_full_mode_readiness(
@@ -83,6 +195,7 @@ def _require_live_full_mode_readiness(
             f"corpus-hash={_describe_hash(report.corpus_hash)}, "
             f"manifest-hash={_describe_hash(report.index_manifest_hash)}."
         )
+        detail += _live_readiness_stale_diagnostic()
     raise AssertionError(
         f"CS RAG index is not fresh enough for golden verification "
         f"(state={report.state}, reason={report.reason}).{detail} {rationale} "
@@ -98,6 +211,381 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertEqual(contract.get("stale"), "fail")
         self.assertEqual(contract.get("corrupt"), "fail")
         self.assertIn("golden regressions", contract.get("rationale", ""))
+
+    def test_live_readiness_diagnostics_explain_hash_scope_drift(self) -> None:
+        contract = _load_live_readiness_diagnostics_contract()
+        extra_paths = _non_indexed_markdown_paths()
+
+        self.assertIn("knowledge/cs/contents", contract.get("scope_summary", ""))
+        rebuild_note = contract.get("rebuild_note", "")
+        self.assertIn("Rebuild alone", rebuild_note)
+        self.assertIn("flip back to stale immediately", rebuild_note)
+        self.assertTrue(extra_paths)
+        self.assertTrue(
+            any(not path.startswith("contents/") for path in extra_paths),
+            "live readiness diagnostics should keep at least one out-of-index culprit visible",
+        )
+        self.assertIn("Non-indexed markdown files", _live_readiness_stale_diagnostic())
+
+    def test_stable_full_mode_fixture_queries_track_beginner_primer_paths(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_stable_full_mode_fixture_contract()
+
+        self.assertIn("concurrent corpus churn", contract.get("description", ""))
+        query_contracts = contract.get("queries", {})
+        self.assertTrue(query_contracts)
+
+        for query_id, query_contract in query_contracts.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("max_rank"), 1)
+                self.assertTrue(
+                    query.get("experience_level") == "beginner"
+                    or "처음 배우는데" in query["prompt"]
+                    or "입문자" in query["prompt"]
+                )
+                companion_paths = query_contract.get("companion_paths", [])
+                self.assertTrue(companion_paths)
+                self.assertNotIn(query["expected_path"], companion_paths)
+                self.assertGreaterEqual(query_contract.get("companion_max_rank", 0), 2)
+
+    def test_projection_freshness_beginner_contrast_queries_keep_beginner_rank_one_contract(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        for query_id in _PROJECTION_BEGINNER_CONTRAST_QUERY_IDS:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                self.assertEqual(
+                    queries_by_id[query_id].get("experience_level"),
+                    "beginner",
+                )
+                self.assertEqual(queries_by_id[query_id].get("max_rank"), 1)
+
+    def test_projection_freshness_beginner_navigator_bridge_query_keeps_neighbor_contract(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        self.assertIn(
+            "projection_freshness_beginner_navigator_bridge_overview_neighbors",
+            queries_by_id,
+        )
+        query = queries_by_id["projection_freshness_beginner_navigator_bridge_overview_neighbors"]
+        self.assertEqual(query.get("experience_level"), "beginner")
+        self.assertEqual(
+            query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(query.get("require_all_companion_paths"))
+        self.assertEqual(query.get("companion_max_rank"), 3)
+        self.assertEqual(query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_beginner_staleness_overview_neighbors",
+            queries_by_id,
+        )
+        staleness_overview_query = queries_by_id[
+            "projection_freshness_beginner_staleness_overview_neighbors"
+        ]
+        self.assertEqual(staleness_overview_query.get("experience_level"), "beginner")
+        self.assertIn("staleness overview doc", staleness_overview_query["prompt"])
+        self.assertIn("nearby docs", staleness_overview_query["prompt"])
+        self.assertIn("CQRS 전체 overview 말고", staleness_overview_query["prompt"])
+        self.assertEqual(
+            staleness_overview_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+
+        self.assertIn(
+            "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection",
+            queries_by_id,
+        )
+        overview_docs_query = queries_by_id[
+            "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection"
+        ]
+        self.assertEqual(overview_docs_query.get("experience_level"), "beginner")
+        self.assertIn("overview docs", overview_docs_query["prompt"])
+        self.assertIn("nearby sibling docs", overview_docs_query["prompt"])
+        self.assertIn("broad CQRS survey routes 말고", overview_docs_query["prompt"])
+        self.assertEqual(
+            overview_docs_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            overview_docs_query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(overview_docs_query.get("require_all_companion_paths"))
+        self.assertEqual(overview_docs_query.get("companion_max_rank"), 3)
+        self.assertEqual(overview_docs_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_beginner_entrypoint_bridge_siblings",
+            queries_by_id,
+        )
+        entrypoint_bridge_query = queries_by_id[
+            "projection_freshness_beginner_entrypoint_bridge_siblings"
+        ]
+        self.assertEqual(entrypoint_bridge_query.get("experience_level"), "beginner")
+        self.assertIn("entrypoint primer", entrypoint_bridge_query["prompt"])
+        self.assertIn("bridge docs", entrypoint_bridge_query["prompt"])
+        self.assertIn("linked sibling docs", entrypoint_bridge_query["prompt"])
+        self.assertIn("broad CQRS survey routes 말고", entrypoint_bridge_query["prompt"])
+        self.assertEqual(
+            entrypoint_bridge_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            entrypoint_bridge_query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(entrypoint_bridge_query.get("require_all_companion_paths"))
+        self.assertEqual(entrypoint_bridge_query.get("companion_max_rank"), 3)
+        self.assertEqual(entrypoint_bridge_query.get("max_rank"), 1)
+        self.assertEqual(
+            staleness_overview_query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(staleness_overview_query.get("require_all_companion_paths"))
+        self.assertEqual(staleness_overview_query.get("companion_max_rank"), 3)
+        self.assertEqual(staleness_overview_query.get("max_rank"), 1)
+
+    def test_failover_divergence_beginner_alias_queries_keep_sibling_playbook_visible(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        for query_id in _FAILOVER_DIVERGENCE_BEGINNER_ALIAS_QUERY_IDS:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(
+                    query["expected_path"],
+                    "contents/database/failover-promotion-read-divergence.md",
+                )
+
+    def test_projection_symptom_only_primer_family_batch_contract_tracks_beginner_queries(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_projection_symptom_only_primer_family_batch_contract()
+
+        description = contract.get("description", "")
+        self.assertIn("Symptom-only beginner projection prompts", description)
+        self.assertIn("top", description)
+        query_ids = contract.get("query_ids", [])
+        canonical_query_ids = contract.get("canonical_query_ids", [])
+        family_paths = contract.get("family_paths", [])
+        canonical_primer_path = contract.get("canonical_primer_path")
+
+        self.assertGreaterEqual(len(query_ids), 3)
+        self.assertTrue(set(canonical_query_ids).issubset(set(query_ids)))
+        self.assertEqual(
+            canonical_primer_path,
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertIn(canonical_primer_path, family_paths)
+        self.assertGreaterEqual(contract.get("family_top_k", 0), 3)
+        self.assertGreaterEqual(contract.get("min_family_hits", 0), 2)
+        self.assertGreaterEqual(contract.get("canonical_max_rank", 0), 3)
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query["expected_path"], canonical_primer_path)
+                self.assertTrue(query_id.startswith("projection_freshness_symptom_only_"))
+
+    def test_projection_symptom_only_search_regression_sweep_tracks_small_beginner_batch(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_projection_symptom_only_search_regression_sweep_contract()
+
+        self.assertIn("small beginner-safe projection sweep", contract.get("description", ""))
+        query_ids = contract.get("query_ids", [])
+        family_paths = contract.get("family_paths", [])
+        primer_path = contract.get("primer_path")
+
+        self.assertGreaterEqual(len(query_ids), 4)
+        self.assertEqual(
+            primer_path,
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertIn(primer_path, family_paths)
+        self.assertEqual(contract.get("family_top_k"), 3)
+        self.assertEqual(contract.get("primer_max_rank"), 3)
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query["expected_path"], primer_path)
+                self.assertTrue(query_id.startswith("projection_freshness_symptom_only_"))
+
+    def test_projection_korean_failover_visibility_contrast_sweep_tracks_non_english_beginner_query(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_projection_korean_failover_visibility_contrast_sweep_contract()
+
+        self.assertIn("Korean-only beginner contrast prompts", contract.get("description", ""))
+        query_ids = contract.get("query_ids", [])
+        primer_path = contract.get("primer_path")
+        companion_path = contract.get("companion_path")
+
+        self.assertEqual(
+            primer_path,
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            companion_path,
+            "contents/database/failover-visibility-window-topology-cache-playbook.md",
+        )
+        self.assertEqual(contract.get("primer_max_rank"), 1)
+        self.assertEqual(contract.get("companion_max_rank"), 3)
+        self.assertTrue(query_ids)
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query["expected_path"], primer_path)
+                self.assertEqual(query.get("companion_paths"), [companion_path])
+                self.assertEqual(query.get("companion_max_rank"), 3)
+
+    def test_stateful_failover_beginner_contrast_sweep_tracks_specific_sibling_order(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_stateful_failover_beginner_contrast_sweep_contract()
+
+        self.assertIn("stateful failover placement doc ahead", contract.get("description", ""))
+        query_ids = contract.get("query_ids", [])
+        primary_path = contract.get("primary_path")
+        companion_path = contract.get("companion_path")
+
+        self.assertEqual(
+            primary_path,
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+        )
+        self.assertEqual(
+            companion_path,
+            "contents/system-design/global-traffic-failover-control-plane-design.md",
+        )
+        self.assertEqual(contract.get("primary_max_rank"), 1)
+        self.assertEqual(contract.get("companion_max_rank"), 3)
+        self.assertTrue(query_ids)
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query["expected_path"], primary_path)
+                self.assertEqual(query.get("companion_paths"), [companion_path])
+                self.assertEqual(query.get("max_rank"), 1)
+                self.assertEqual(query.get("companion_max_rank"), 3)
+
+    def test_korean_only_beginner_projection_primer_prompts_avoid_english_primer_vocab(
+        self,
+    ) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contracts = _load_beginner_prompt_language_contracts()
+
+        self.assertIn("korean_only_projection_freshness_primer_prompts", contracts)
+        contract = contracts["korean_only_projection_freshness_primer_prompts"]
+        query_ids = contract.get("query_ids", [])
+        forbidden_terms = contract.get("forbidden_terms", [])
+
+        self.assertTrue(query_ids)
+        self.assertEqual(
+            forbidden_terms,
+            ["primer", "guardrail", "read model freshness", "read-your-writes"],
+        )
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                for term in forbidden_terms:
+                    self.assertNotIn(term, query["prompt"])
+
+        self.assertIn("korean_only_failover_visibility_contrast_primer_prompts", contracts)
+        failover_contract = contracts["korean_only_failover_visibility_contrast_primer_prompts"]
+        failover_query_ids = failover_contract.get("query_ids", [])
+        failover_forbidden_terms = failover_contract.get("forbidden_terms", [])
+
+        self.assertEqual(
+            failover_forbidden_terms,
+            ["projection freshness", "failover", "visibility", "window", "read-your-writes"],
+        )
+
+        for query_id in failover_query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                for term in failover_forbidden_terms:
+                    self.assertNotIn(term, query["prompt"])
+
+    def test_generic_korean_crud_prompts_are_locked_away_from_projection_primer(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        contract = _load_generic_crud_negative_projection_contract()
+
+        self.assertIn("Generic Korean CRUD prompts", contract.get("description", ""))
+        forbidden_path = contract.get("forbidden_path")
+        query_ids = contract.get("query_ids", [])
+
+        self.assertEqual(
+            forbidden_path,
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertTrue(query_ids)
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertNotEqual(query["expected_path"], forbidden_path)
+                self.assertLessEqual(query.get("max_rank", 99), 3)
+                self.assertFalse(
+                    any(
+                        term in query["prompt"]
+                        for term in ("읽기 모델", "예전 값", "옛값", "반영", "새로고침")
+                    )
+                )
 
     def test_payment_ledger_idempotency_prompt_is_tracked_explicitly(self) -> None:
         payload = _load_fixture_payload()
@@ -266,6 +754,8 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
 
         self.assertIn("java_future_completablefuture_intro_overview", queries_by_id)
         java_future_query = queries_by_id["java_future_completablefuture_intro_overview"]
+        self.assertIn("Java 동시성을 처음 배우는데", java_future_query["prompt"])
+        self.assertIn("관계", java_future_query["prompt"])
         self.assertIn("처음 배우는데", java_future_query["prompt"])
         self.assertIn("ExecutorService", java_future_query["prompt"])
         self.assertIn("Callable", java_future_query["prompt"])
@@ -275,6 +765,23 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "contents/language/java/java-concurrency-utilities.md",
         )
         self.assertEqual(java_future_query.get("max_rank"), 1)
+
+        self.assertIn("jwt_basics", queries_by_id)
+        jwt_basics_query = queries_by_id["jwt_basics"]
+        self.assertIn("세션 쿠키", jwt_basics_query["prompt"])
+        self.assertIn("로그인 상태", jwt_basics_query["prompt"])
+        self.assertEqual(
+            jwt_basics_query["expected_path"],
+            "contents/security/session-cookie-jwt-basics.md",
+        )
+        self.assertEqual(
+            jwt_basics_query.get("acceptable_paths"),
+            [
+                "contents/security/authentication-authorization-session-foundations.md",
+                "contents/network/cookie-session-jwt-browser-flow-primer.md",
+            ],
+        )
+        self.assertEqual(jwt_basics_query.get("max_rank"), 3)
 
         self.assertIn("jwt_intro_validation_basics", queries_by_id)
         jwt_query = queries_by_id["jwt_intro_validation_basics"]
@@ -365,6 +872,440 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         )
         self.assertEqual(primer_vs_guardrail_query.get("max_rank"), 1)
 
+        self.assertIn(
+            "projection_freshness_intro_primer_vs_rebuild_playbook_compare",
+            queries_by_id,
+        )
+        primer_vs_rebuild_query = queries_by_id[
+            "projection_freshness_intro_primer_vs_rebuild_playbook_compare"
+        ]
+        self.assertIn("stale read", primer_vs_rebuild_query["prompt"])
+        self.assertIn("read-your-writes primer", primer_vs_rebuild_query["prompt"])
+        self.assertIn(
+            "projection rebuild backfill cutover playbook",
+            primer_vs_rebuild_query["prompt"],
+        )
+        self.assertEqual(
+            primer_vs_rebuild_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(primer_vs_rebuild_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_primer_vs_guardrail_and_rebuild_triad",
+            queries_by_id,
+        )
+        triad_query = queries_by_id[
+            "projection_freshness_intro_primer_vs_guardrail_and_rebuild_triad"
+        ]
+        self.assertIn("stale read", triad_query["prompt"])
+        self.assertIn("read-your-writes primer", triad_query["prompt"])
+        self.assertIn("read model cutover guardrails", triad_query["prompt"])
+        self.assertIn("projection rebuild backfill cutover playbook", triad_query["prompt"])
+        self.assertEqual(
+            triad_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(triad_query.get("experience_level"), "beginner")
+        self.assertEqual(triad_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+            queries_by_id,
+        )
+        korean_primer_vs_guardrail_query = queries_by_id[
+            "projection_freshness_intro_korean_only_primer_vs_guardrail_compare"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", korean_primer_vs_guardrail_query["prompt"])
+        self.assertIn("예전 값이 보여", korean_primer_vs_guardrail_query["prompt"])
+        self.assertIn("쓴 직후 읽기", korean_primer_vs_guardrail_query["prompt"])
+        self.assertIn("전환 안전 구간", korean_primer_vs_guardrail_query["prompt"])
+        self.assertIn("운영 안전 규칙", korean_primer_vs_guardrail_query["prompt"])
+        self.assertIn("비교", korean_primer_vs_guardrail_query["prompt"])
+        self.assertNotIn("primer", korean_primer_vs_guardrail_query["prompt"])
+        self.assertNotIn("stale read", korean_primer_vs_guardrail_query["prompt"])
+        self.assertNotIn("read-your-writes", korean_primer_vs_guardrail_query["prompt"])
+        self.assertNotIn("read model freshness", korean_primer_vs_guardrail_query["prompt"])
+        self.assertNotIn("guardrail", korean_primer_vs_guardrail_query["prompt"])
+        self.assertEqual(
+            korean_primer_vs_guardrail_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_primer_vs_guardrail_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+            queries_by_id,
+        )
+        korean_primer_vs_rebuild_query = queries_by_id[
+            "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare"
+        ]
+        self.assertIn("저장했는데도 예전 값이 보여서", korean_primer_vs_rebuild_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장", korean_primer_vs_rebuild_query["prompt"])
+        self.assertIn(
+            "프로젝션 재빌드 백필 컷오버 안내",
+            korean_primer_vs_rebuild_query["prompt"],
+        )
+        self.assertEqual(
+            korean_primer_vs_rebuild_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_primer_vs_rebuild_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_fully_korean_primer_vs_guardrail_compare",
+            queries_by_id,
+        )
+        fully_korean_guardrail_query = queries_by_id[
+            "projection_freshness_intro_fully_korean_primer_vs_guardrail_compare"
+        ]
+        self.assertIn("읽기 모델 최신성을 처음 배우는데", fully_korean_guardrail_query["prompt"])
+        self.assertIn("예전 값이 보여서", fully_korean_guardrail_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기 보장 설명", fully_korean_guardrail_query["prompt"])
+        self.assertIn("전환 안전 구간 안내", fully_korean_guardrail_query["prompt"])
+        self.assertIn("운영 안전 규칙", fully_korean_guardrail_query["prompt"])
+        self.assertIn("비교", fully_korean_guardrail_query["prompt"])
+        self.assertNotRegex(fully_korean_guardrail_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            fully_korean_guardrail_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(fully_korean_guardrail_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            queries_by_id,
+        )
+        fully_korean_rebuild_query = queries_by_id[
+            "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare"
+        ]
+        self.assertIn("읽기 모델 최신성을 처음 배우는데", fully_korean_rebuild_query["prompt"])
+        self.assertIn("저장했는데도 예전 값이 보여서", fully_korean_rebuild_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기 보장 설명", fully_korean_rebuild_query["prompt"])
+        self.assertIn("프로젝션 재빌드 백필 컷오버 안내", fully_korean_rebuild_query["prompt"])
+        self.assertIn("운영 복구 문서", fully_korean_rebuild_query["prompt"])
+        self.assertIn("비교", fully_korean_rebuild_query["prompt"])
+        self.assertNotRegex(fully_korean_rebuild_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            fully_korean_rebuild_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(fully_korean_rebuild_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+            queries_by_id,
+        )
+        korean_phrase_only_query = queries_by_id[
+            "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", korean_phrase_only_query["prompt"])
+        self.assertIn("방금 저장했는데도 예전 값이 보여", korean_phrase_only_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장 설명", korean_phrase_only_query["prompt"])
+        self.assertIn("전환 안전 구간 안내", korean_phrase_only_query["prompt"])
+        self.assertIn("기초 설명", korean_phrase_only_query["prompt"])
+        self.assertIn("비교", korean_phrase_only_query["prompt"])
+        self.assertNotIn("primer", korean_phrase_only_query["prompt"])
+        self.assertNotIn("stale read", korean_phrase_only_query["prompt"])
+        self.assertNotIn("read-your-writes", korean_phrase_only_query["prompt"])
+        self.assertNotIn("read model freshness", korean_phrase_only_query["prompt"])
+        self.assertNotIn("guardrail", korean_phrase_only_query["prompt"])
+        self.assertEqual(
+            korean_phrase_only_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_phrase_only_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_list_refresh_lag_primer",
+            queries_by_id,
+        )
+        symptom_only_query = queries_by_id[
+            "projection_freshness_symptom_only_list_refresh_lag_primer"
+        ]
+        self.assertIn("목록 새로고침이 느리고", symptom_only_query["prompt"])
+        self.assertIn("이전 화면 상태", symptom_only_query["prompt"])
+        self.assertNotIn("read-your-writes", symptom_only_query["prompt"])
+        self.assertNotIn("CQRS", symptom_only_query["prompt"])
+        self.assertEqual(
+            symptom_only_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            symptom_only_query.get("companion_paths"),
+            ["contents/design-pattern/projection-lag-budgeting-pattern.md"],
+        )
+        self.assertEqual(symptom_only_query.get("companion_max_rank"), 3)
+        self.assertEqual(symptom_only_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_old_screen_state_primer",
+            queries_by_id,
+        )
+        mixed_symptom_query = queries_by_id[
+            "projection_freshness_symptom_only_old_screen_state_primer"
+        ]
+        self.assertIn("list refresh lag", mixed_symptom_query["prompt"])
+        self.assertIn("old screen state", mixed_symptom_query["prompt"])
+        self.assertIn("read model cutover guardrails", mixed_symptom_query["prompt"])
+        self.assertNotIn("read-your-writes", mixed_symptom_query["prompt"])
+        self.assertNotIn("stale read", mixed_symptom_query["prompt"])
+        self.assertEqual(
+            mixed_symptom_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(mixed_symptom_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_beginner_navigator_bridge_overview_neighbors",
+            queries_by_id,
+        )
+        navigator_bridge_query = queries_by_id[
+            "projection_freshness_beginner_navigator_bridge_overview_neighbors"
+        ]
+        self.assertIn("읽기 모델 projection", navigator_bridge_query["prompt"])
+        self.assertIn("예전 값이 왜 보이는지", navigator_bridge_query["prompt"])
+        self.assertIn("개요 문서", navigator_bridge_query["prompt"])
+        self.assertIn("주변 형제 문서", navigator_bridge_query["prompt"])
+        self.assertIn("CQRS 전체 survey 말고", navigator_bridge_query["prompt"])
+        self.assertEqual(
+            navigator_bridge_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            navigator_bridge_query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(navigator_bridge_query.get("require_all_companion_paths"))
+        self.assertEqual(navigator_bridge_query.get("companion_max_rank"), 3)
+        self.assertEqual(navigator_bridge_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_beginner_navigator_bridge_overview_neighbors_cqrs_overview_rejection",
+            queries_by_id,
+        )
+        navigator_bridge_overview_rejection_query = queries_by_id[
+            "projection_freshness_beginner_navigator_bridge_overview_neighbors_cqrs_overview_rejection"
+        ]
+        self.assertIn("옆 형제 문서", navigator_bridge_overview_rejection_query["prompt"])
+        self.assertIn("CQRS 전체 개요 말고", navigator_bridge_overview_rejection_query["prompt"])
+        self.assertEqual(
+            navigator_bridge_overview_rejection_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            navigator_bridge_overview_rejection_query.get("companion_paths"),
+            [
+                "contents/design-pattern/read-model-cutover-guardrails.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(
+            navigator_bridge_overview_rejection_query.get("require_all_companion_paths")
+        )
+        self.assertEqual(
+            navigator_bridge_overview_rejection_query.get("companion_max_rank"), 3
+        )
+        self.assertEqual(navigator_bridge_overview_rejection_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_detail_updated_list_card_stale",
+            queries_by_id,
+        )
+        detail_list_split_query = queries_by_id[
+            "projection_freshness_symptom_only_detail_updated_list_card_stale"
+        ]
+        self.assertIn("상세는 바뀌었는데", detail_list_split_query["prompt"])
+        self.assertIn("목록 카드만 예전 값", detail_list_split_query["prompt"])
+        self.assertNotRegex(detail_list_split_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            detail_list_split_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(detail_list_split_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+            queries_by_id,
+        )
+        detail_screen_split_query = queries_by_id[
+            "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value"
+        ]
+        self.assertIn("상세 화면은 바뀌었는데", detail_screen_split_query["prompt"])
+        self.assertIn("리스트 카드만 이전 값", detail_screen_split_query["prompt"])
+        self.assertIn("저장 직후", detail_screen_split_query["prompt"])
+        self.assertNotRegex(detail_screen_split_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            detail_screen_split_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(detail_screen_split_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_detail_updated_list_old_value",
+            queries_by_id,
+        )
+        detail_list_old_value_query = queries_by_id[
+            "projection_freshness_symptom_only_detail_updated_list_old_value"
+        ]
+        self.assertIn("상세는 바뀌었는데", detail_list_old_value_query["prompt"])
+        self.assertIn("목록은 예전 값", detail_list_old_value_query["prompt"])
+        self.assertNotIn("카드", detail_list_old_value_query["prompt"])
+        self.assertNotRegex(detail_list_old_value_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            detail_list_old_value_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(detail_list_old_value_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_delete_still_visible_in_list",
+            queries_by_id,
+        )
+        delete_list_query = queries_by_id[
+            "projection_freshness_symptom_only_delete_still_visible_in_list"
+        ]
+        self.assertIn("삭제는 성공했는데", delete_list_query["prompt"])
+        self.assertIn("목록에 계속 남아", delete_list_query["prompt"])
+        self.assertIn("처음 배우는 사람 기준", delete_list_query["prompt"])
+        self.assertEqual(
+            delete_list_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(delete_list_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_symptom_only_delete_still_visible_in_search",
+            queries_by_id,
+        )
+        delete_search_query = queries_by_id[
+            "projection_freshness_symptom_only_delete_still_visible_in_search"
+        ]
+        self.assertIn("삭제했는데 검색 결과", delete_search_query["prompt"])
+        self.assertIn("검색 결과나 목록", delete_search_query["prompt"])
+        self.assertIn("입문자 기준", delete_search_query["prompt"])
+        self.assertEqual(
+            delete_search_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(delete_search_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_primer_vs_slo_lag_budget_compare",
+            queries_by_id,
+        )
+        primer_vs_slo_budget_query = queries_by_id[
+            "projection_freshness_intro_primer_vs_slo_lag_budget_compare"
+        ]
+        self.assertIn("stale read", primer_vs_slo_budget_query["prompt"])
+        self.assertIn("read-your-writes primer", primer_vs_slo_budget_query["prompt"])
+        self.assertIn("projection freshness SLO", primer_vs_slo_budget_query["prompt"])
+        self.assertIn("projection lag budget", primer_vs_slo_budget_query["prompt"])
+        self.assertEqual(
+            primer_vs_slo_budget_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            primer_vs_slo_budget_query.get("companion_paths"),
+            [
+                "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(primer_vs_slo_budget_query.get("require_all_companion_paths"))
+        self.assertEqual(primer_vs_slo_budget_query.get("companion_max_rank"), 3)
+        self.assertEqual(primer_vs_slo_budget_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+            queries_by_id,
+        )
+        fully_korean_slo_budget_query = queries_by_id[
+            "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", fully_korean_slo_budget_query["prompt"])
+        self.assertIn("저장했는데 예전 값이 보여", fully_korean_slo_budget_query["prompt"])
+        self.assertIn("읽기 모델 최신성", fully_korean_slo_budget_query["prompt"])
+        self.assertIn("서비스 수준 목표", fully_korean_slo_budget_query["prompt"])
+        self.assertIn("반영 지연 예산", fully_korean_slo_budget_query["prompt"])
+        self.assertIn("비교", fully_korean_slo_budget_query["prompt"])
+        self.assertNotRegex(fully_korean_slo_budget_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            fully_korean_slo_budget_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            fully_korean_slo_budget_query.get("companion_paths"),
+            [
+                "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(fully_korean_slo_budget_query.get("require_all_companion_paths"))
+        self.assertEqual(fully_korean_slo_budget_query.get("companion_max_rank"), 3)
+        self.assertEqual(fully_korean_slo_budget_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_only_primer_vs_slo_lag_budget_compare",
+            queries_by_id,
+        )
+        korean_only_slo_budget_query = queries_by_id[
+            "projection_freshness_intro_korean_only_primer_vs_slo_lag_budget_compare"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", korean_only_slo_budget_query["prompt"])
+        self.assertIn("최신성 SLO", korean_only_slo_budget_query["prompt"])
+        self.assertIn("지연 예산", korean_only_slo_budget_query["prompt"])
+        self.assertEqual(
+            korean_only_slo_budget_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(
+            korean_only_slo_budget_query.get("companion_paths"),
+            [
+                "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "contents/design-pattern/projection-lag-budgeting-pattern.md",
+            ],
+        )
+        self.assertTrue(korean_only_slo_budget_query.get("require_all_companion_paths"))
+        self.assertEqual(korean_only_slo_budget_query.get("companion_max_rank"), 3)
+        self.assertEqual(korean_only_slo_budget_query.get("max_rank"), 1)
+
+        for query_id in (
+            "projection_freshness_intro_primer_vs_slo_lag_budget_compare",
+            "projection_freshness_intro_korean_only_primer_vs_slo_lag_budget_compare",
+            "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+        ):
+            expanded = signal_rules.expand_query(queries_by_id[query_id]["prompt"])
+            self.assertIn("projection freshness slo pattern", expanded)
+            self.assertIn("projection lag budgeting pattern", expanded)
+            self.assertNotIn("replica lag", expanded)
+            self.assertNotIn("read replica delay", expanded)
+            self.assertNotIn("primary fallback", expanded)
+
+        self.assertIn(
+            "projection_freshness_advanced_slo_tuning_without_beginner_cues",
+            queries_by_id,
+        )
+        advanced_slo_query = queries_by_id[
+            "projection_freshness_advanced_slo_tuning_without_beginner_cues"
+        ]
+        self.assertIn("projection freshness SLO tuning", advanced_slo_query["prompt"])
+        self.assertIn("consumer backlog budget", advanced_slo_query["prompt"])
+        self.assertIn("projection watermark gap", advanced_slo_query["prompt"])
+        self.assertIn("read-your-writes exception budget", advanced_slo_query["prompt"])
+        self.assertEqual(
+            advanced_slo_query["expected_path"],
+            "contents/design-pattern/projection-freshness-slo-pattern.md",
+        )
+        self.assertEqual(
+            advanced_slo_query.get("acceptable_paths"),
+            ["contents/design-pattern/projection-lag-budgeting-pattern.md"],
+        )
+        self.assertEqual(advanced_slo_query.get("max_rank"), 1)
+
         self.assertIn("projection_freshness_intro_rollback_window_noise_guard", queries_by_id)
         rollback_query = queries_by_id["projection_freshness_intro_rollback_window_noise_guard"]
         self.assertIn("rollback window", rollback_query["prompt"])
@@ -408,6 +1349,24 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         )
         self.assertEqual(korean_contrast_query.get("max_rank"), 1)
 
+        self.assertIn(
+            "projection_freshness_intro_korean_rollback_window_vs_korean_transaction_rollback",
+            queries_by_id,
+        )
+        full_korean_contrast_query = queries_by_id[
+            "projection_freshness_intro_korean_rollback_window_vs_korean_transaction_rollback"
+        ]
+        self.assertIn("롤백 윈도우", full_korean_contrast_query["prompt"])
+        self.assertIn("트랜잭션 롤백", full_korean_contrast_query["prompt"])
+        self.assertNotIn("rollback window", full_korean_contrast_query["prompt"])
+        self.assertNotIn("transaction rollback", full_korean_contrast_query["prompt"])
+        self.assertIn("차이", full_korean_contrast_query["prompt"])
+        self.assertEqual(
+            full_korean_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(full_korean_contrast_query.get("max_rank"), 1)
+
         synonym_cases = {
             "projection_freshness_intro_rollback_window_transaction_rollback_distinguish": "구분",
             "projection_freshness_intro_rollback_window_transaction_rollback_confusion": "헷갈림",
@@ -419,6 +1378,119 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 synonym_query = queries_by_id[query_id]
                 self.assertIn("rollback window", synonym_query["prompt"])
                 self.assertIn("transaction rollback", synonym_query["prompt"])
+                self.assertIn(cue, synonym_query["prompt"])
+                self.assertIn("stale read", synonym_query["prompt"])
+                self.assertIn("read-your-writes", synonym_query["prompt"])
+                self.assertEqual(
+                    synonym_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(synonym_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "transaction_rollback_window_korean_contrast_without_primer_cue",
+            queries_by_id,
+        )
+        db_contrast_query = queries_by_id[
+            "transaction_rollback_window_korean_contrast_without_primer_cue"
+        ]
+        self.assertIn("rollback window", db_contrast_query["prompt"])
+        self.assertIn("트랜잭션 롤백", db_contrast_query["prompt"])
+        self.assertNotIn("experience_level", db_contrast_query)
+        self.assertEqual(
+            db_contrast_query["expected_path"],
+            "contents/database/transaction-isolation-locking.md",
+        )
+        self.assertEqual(
+            db_contrast_query.get("acceptable_paths"),
+            ["contents/database/transaction-boundary-isolation-locking-decision-framework.md"],
+        )
+        self.assertEqual(db_contrast_query.get("max_rank"), 2)
+
+        self.assertIn(
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+            queries_by_id,
+        )
+        full_korean_beginner_query = queries_by_id[
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare"
+        ]
+        self.assertIn("읽기 모델 최신성", full_korean_beginner_query["prompt"])
+        self.assertIn("롤백 윈도우", full_korean_beginner_query["prompt"])
+        self.assertIn("트랜잭션 롤백", full_korean_beginner_query["prompt"])
+        self.assertIn("예전 값이 보이고", full_korean_beginner_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기", full_korean_beginner_query["prompt"])
+        self.assertEqual(
+            full_korean_beginner_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(full_korean_beginner_query.get("experience_level"), "beginner")
+        self.assertEqual(full_korean_beginner_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+            queries_by_id,
+        )
+        full_korean_distinguish_query = queries_by_id[
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish"
+        ]
+        self.assertIn("읽기 모델 최신성", full_korean_distinguish_query["prompt"])
+        self.assertIn("롤백 윈도우", full_korean_distinguish_query["prompt"])
+        self.assertIn("트랜잭션 롤백", full_korean_distinguish_query["prompt"])
+        self.assertIn("어떻게 구분해야 해?", full_korean_distinguish_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기 보장", full_korean_distinguish_query["prompt"])
+        self.assertNotRegex(full_korean_distinguish_query["prompt"], r"[A-Za-z]")
+        self.assertEqual(
+            full_korean_distinguish_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(full_korean_distinguish_query.get("experience_level"), "beginner")
+        self.assertEqual(full_korean_distinguish_query.get("max_rank"), 1)
+
+        full_korean_operational_contrast_cases = {
+            "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare": (
+                "장애 전환 되돌리기"
+            ),
+            "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare": (
+                "키 교체 되돌리기"
+            ),
+        }
+        for query_id, contrast_phrase in full_korean_operational_contrast_cases.items():
+            with self.subTest(query_id=query_id):
+                operational_contrast_query = queries_by_id[query_id]
+                self.assertIn("읽기 모델 최신성", operational_contrast_query["prompt"])
+                self.assertIn("전환 안전 구간", operational_contrast_query["prompt"])
+                self.assertIn(contrast_phrase, operational_contrast_query["prompt"])
+                self.assertIn("예전 값이 보이고", operational_contrast_query["prompt"])
+                self.assertIn("방금 쓴 값 읽기 보장", operational_contrast_query["prompt"])
+                self.assertNotRegex(operational_contrast_query["prompt"], r"[A-Za-z]")
+                self.assertEqual(
+                    operational_contrast_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(
+                    operational_contrast_query.get("experience_level"), "beginner"
+                )
+                self.assertEqual(operational_contrast_query.get("max_rank"), 1)
+
+        korean_synonym_cases = {
+            "projection_freshness_intro_korean_rollback_window_transaction_rollback_compare": (
+                "비교"
+            ),
+            "projection_freshness_intro_korean_rollback_window_transaction_rollback_distinguish": (
+                "구분"
+            ),
+            "projection_freshness_intro_korean_rollback_window_transaction_rollback_confusion": (
+                "헷갈림"
+            ),
+        }
+        for query_id, cue in korean_synonym_cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                synonym_query = queries_by_id[query_id]
+                self.assertIn("롤백 윈도우", synonym_query["prompt"])
+                self.assertIn("트랜잭션 롤백", synonym_query["prompt"])
+                self.assertNotIn("rollback window", synonym_query["prompt"])
+                self.assertNotIn("transaction rollback", synonym_query["prompt"])
                 self.assertIn(cue, synonym_query["prompt"])
                 self.assertIn("stale read", synonym_query["prompt"])
                 self.assertIn("read-your-writes", synonym_query["prompt"])
@@ -451,6 +1523,101 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         )
         self.assertEqual(saved_not_visible_query.get("max_rank"), 1)
 
+        compact_beginner_cases = {
+            "projection_freshness_intro_korean_old_value_only_visible": "옛값만 보여",
+            "projection_freshness_intro_korean_list_not_changing_compact": "목록이 안 바뀜",
+            "projection_freshness_intro_korean_recent_write_not_visible_compact": "방금 쓴 값이 안 보임",
+        }
+        for query_id, prompt in compact_beginner_cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                symptom_query = queries_by_id[query_id]
+                self.assertEqual(symptom_query["prompt"], prompt)
+                self.assertEqual(
+                    symptom_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(symptom_query.get("experience_level"), "beginner")
+                self.assertEqual(symptom_query.get("max_rank"), 1)
+
+        self.assertIn("projection_freshness_intro_korean_cache_confusion", queries_by_id)
+        cache_confusion_query = queries_by_id["projection_freshness_intro_korean_cache_confusion"]
+        self.assertIn("방금 저장했는데도 예전 값이 보여", cache_confusion_query["prompt"])
+        self.assertIn("캐시 때문인가요", cache_confusion_query["prompt"])
+        self.assertEqual(
+            cache_confusion_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(cache_confusion_query.get("max_rank"), 1)
+
+        self.assertIn("projection_freshness_intro_korean_write_read_mismatch", queries_by_id)
+        write_read_mismatch_query = queries_by_id[
+            "projection_freshness_intro_korean_write_read_mismatch"
+        ]
+        self.assertIn("저장은 됐는데 조회가 달라", write_read_mismatch_query["prompt"])
+        self.assertEqual(
+            write_read_mismatch_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(write_read_mismatch_query.get("max_rank"), 1)
+
+        self.assertIn("projection_freshness_intro_korean_stale_list_after_update", queries_by_id)
+        stale_list_query = queries_by_id[
+            "projection_freshness_intro_korean_stale_list_after_update"
+        ]
+        self.assertIn("수정했는데 목록은 그대로야", stale_list_query["prompt"])
+        self.assertEqual(
+            stale_list_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(stale_list_query.get("max_rank"), 1)
+
+        no_jargon_symptom_cases = {
+            "projection_freshness_symptom_only_no_jargon_list_stuck": [
+                "목록이 바로 안 바뀌고",
+                "예전 화면이 잠깐 보여",
+                "큰 그림부터",
+            ],
+            "projection_freshness_symptom_only_no_jargon_delayed_screen": [
+                "새로고침 전까지 이전 상태가 보이고",
+                "화면 반영이 한참 늦어",
+                "입문자 기준",
+            ],
+        }
+        jargon_tokens = ("read model", "read-your-writes", "projection", "읽기 모델")
+        for query_id, cues in no_jargon_symptom_cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                symptom_query = queries_by_id[query_id]
+                for cue in cues:
+                    self.assertIn(cue, symptom_query["prompt"])
+                for jargon in jargon_tokens:
+                    self.assertNotIn(jargon, symptom_query["prompt"])
+                self.assertEqual(
+                    symptom_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(symptom_query.get("experience_level"), "beginner")
+                self.assertEqual(symptom_query.get("max_rank"), 1)
+
+        fixture_anchor_cases = {
+            "projection_freshness_intro_korean_query_old_data": "저장 직후 조회하면 예전 데이터가 보임",
+            "projection_freshness_intro_korean_list_not_refreshing": "저장 직후 목록 최신화가 안 됨",
+            "projection_freshness_intro_korean_list_still_same": "저장했는데 목록이 그대로",
+            "projection_freshness_intro_korean_old_list_on_screen": "수정했는데 화면엔 예전 목록이 보여",
+            "projection_freshness_intro_korean_screen_update_late": "저장한 뒤 화면 반영이 늦음",
+        }
+        for query_id, cue in fixture_anchor_cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                symptom_query = queries_by_id[query_id]
+                self.assertIn(cue, symptom_query["prompt"])
+                self.assertEqual(
+                    symptom_query["expected_path"],
+                    "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                )
+                self.assertEqual(symptom_query.get("max_rank"), 1)
+
         self.assertIn(
             "projection_freshness_intro_cutover_safety_failover_rollback_noise_guard",
             queries_by_id,
@@ -466,6 +1633,319 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "contents/design-pattern/read-model-staleness-read-your-writes.md",
         )
         self.assertEqual(failover_noise_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", failover_noise_query)
+
+        self.assertIn(
+            "projection_freshness_intro_cutover_safety_vs_failover_visibility_different",
+            queries_by_id,
+        )
+        failover_contrast_query = queries_by_id[
+            "projection_freshness_intro_cutover_safety_vs_failover_visibility_different"
+        ]
+        self.assertIn("cutover safety window", failover_contrast_query["prompt"])
+        self.assertIn("failover visibility window", failover_contrast_query["prompt"])
+        self.assertIn("다른지", failover_contrast_query["prompt"])
+        self.assertEqual(
+            failover_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(failover_contrast_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", failover_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_cutover_safety_vs_failover_rollback_compare",
+            queries_by_id,
+        )
+        failover_rollback_contrast_query = queries_by_id[
+            "projection_freshness_intro_cutover_safety_vs_failover_rollback_compare"
+        ]
+        self.assertIn("cutover safety window", failover_rollback_contrast_query["prompt"])
+        self.assertIn("failover rollback", failover_rollback_contrast_query["prompt"])
+        self.assertIn("비교", failover_rollback_contrast_query["prompt"])
+        self.assertEqual(
+            failover_rollback_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(failover_rollback_contrast_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", failover_rollback_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard",
+            queries_by_id,
+        )
+        korean_key_rotation_noise_query = queries_by_id[
+            "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", korean_key_rotation_noise_query["prompt"])
+        self.assertIn("전환 안전 윈도우", korean_key_rotation_noise_query["prompt"])
+        self.assertIn("예전 값이 보이고", korean_key_rotation_noise_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장", korean_key_rotation_noise_query["prompt"])
+        self.assertIn("key rotation rollback", korean_key_rotation_noise_query["prompt"])
+        self.assertIn("큰 그림부터", korean_key_rotation_noise_query["prompt"])
+        self.assertEqual(
+            korean_key_rotation_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_key_rotation_noise_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", korean_key_rotation_noise_query)
+
+        self.assertIn(
+            "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard",
+            queries_by_id,
+        )
+        full_korean_key_rotation_noise_query = queries_by_id[
+            "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard"
+        ]
+        self.assertIn("읽기 모델 최신성을 처음 배우는데", full_korean_key_rotation_noise_query["prompt"])
+        self.assertIn("전환 안전 윈도우", full_korean_key_rotation_noise_query["prompt"])
+        self.assertIn("예전 값이 보이고", full_korean_key_rotation_noise_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기 보장", full_korean_key_rotation_noise_query["prompt"])
+        self.assertIn("키 교체 되돌리기", full_korean_key_rotation_noise_query["prompt"])
+        self.assertIn("큰 그림부터", full_korean_key_rotation_noise_query["prompt"])
+        self.assertEqual(
+            full_korean_key_rotation_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(full_korean_key_rotation_noise_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", full_korean_key_rotation_noise_query)
+
+        self.assertIn("projection_freshness_intro_vs_failover_compare", queries_by_id)
+        generic_failover_contrast_query = queries_by_id[
+            "projection_freshness_intro_vs_failover_compare"
+        ]
+        self.assertIn("projection freshness", generic_failover_contrast_query["prompt"])
+        self.assertIn("failover", generic_failover_contrast_query["prompt"])
+        self.assertIn("비교", generic_failover_contrast_query["prompt"])
+        self.assertEqual(
+            generic_failover_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(generic_failover_contrast_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", generic_failover_contrast_query)
+
+        self.assertIn("projection_freshness_intro_vs_failover_visibility_compare", queries_by_id)
+        visibility_contrast_query = queries_by_id[
+            "projection_freshness_intro_vs_failover_visibility_compare"
+        ]
+        self.assertIn("projection freshness", visibility_contrast_query["prompt"])
+        self.assertIn("failover visibility window", visibility_contrast_query["prompt"])
+        self.assertIn("차이", visibility_contrast_query["prompt"])
+        self.assertEqual(
+            visibility_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(visibility_contrast_query.get("max_rank"), 1)
+        self.assertEqual(
+            visibility_contrast_query.get("companion_paths"),
+            ["contents/database/failover-visibility-window-topology-cache-playbook.md"],
+        )
+        self.assertEqual(visibility_contrast_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", visibility_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_vs_failover_visibility_alias_compare",
+            queries_by_id,
+        )
+        visibility_alias_query = queries_by_id[
+            "projection_freshness_intro_vs_failover_visibility_alias_compare"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", visibility_alias_query["prompt"])
+        self.assertIn("projection freshness", visibility_alias_query["prompt"])
+        self.assertIn("failover visibility", visibility_alias_query["prompt"])
+        self.assertNotIn("failover visibility window", visibility_alias_query["prompt"])
+        self.assertEqual(
+            visibility_alias_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(visibility_alias_query.get("max_rank"), 1)
+        self.assertEqual(
+            visibility_alias_query.get("companion_paths"),
+            ["contents/database/failover-visibility-window-topology-cache-playbook.md"],
+        )
+        self.assertEqual(visibility_alias_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", visibility_alias_query)
+
+        self.assertIn(
+            "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+            queries_by_id,
+        )
+        korean_visibility_alias_query = queries_by_id[
+            "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare"
+        ]
+        self.assertIn("읽기 모델 최신성을 처음 배우는데", korean_visibility_alias_query["prompt"])
+        self.assertIn("투영 최신성", korean_visibility_alias_query["prompt"])
+        self.assertIn("장애 전환 뒤 읽기 보임 구간", korean_visibility_alias_query["prompt"])
+        self.assertIn("저장 직후엔 예전 값", korean_visibility_alias_query["prompt"])
+        self.assertIn("옛 주 서버", korean_visibility_alias_query["prompt"])
+        self.assertNotIn("failover", korean_visibility_alias_query["prompt"])
+        self.assertNotIn("visibility", korean_visibility_alias_query["prompt"])
+        self.assertNotIn("window", korean_visibility_alias_query["prompt"])
+        self.assertEqual(
+            korean_visibility_alias_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_visibility_alias_query.get("max_rank"), 1)
+        self.assertEqual(
+            korean_visibility_alias_query.get("companion_paths"),
+            ["contents/database/failover-visibility-window-topology-cache-playbook.md"],
+        )
+        self.assertEqual(korean_visibility_alias_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", korean_visibility_alias_query)
+
+        self.assertIn(
+            "projection_freshness_intro_full_korean_cutover_safety_vs_failover_visibility_compare",
+            queries_by_id,
+        )
+        korean_visibility_contrast_query = queries_by_id[
+            "projection_freshness_intro_full_korean_cutover_safety_vs_failover_visibility_compare"
+        ]
+        self.assertIn("읽기 모델 최신성", korean_visibility_contrast_query["prompt"])
+        self.assertIn("전환 안전 윈도우", korean_visibility_contrast_query["prompt"])
+        self.assertIn("failover visibility window", korean_visibility_contrast_query["prompt"])
+        self.assertIn("차이", korean_visibility_contrast_query["prompt"])
+        self.assertIn("예전 값이 보이고", korean_visibility_contrast_query["prompt"])
+        self.assertIn("방금 쓴 값 읽기 보장", korean_visibility_contrast_query["prompt"])
+        self.assertEqual(
+            korean_visibility_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_visibility_contrast_query.get("max_rank"), 1)
+        self.assertEqual(
+            korean_visibility_contrast_query.get("companion_paths"),
+            ["contents/database/failover-visibility-window-topology-cache-playbook.md"],
+        )
+        self.assertEqual(korean_visibility_contrast_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", korean_visibility_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_vs_stateful_failover_placement_compare",
+            queries_by_id,
+        )
+        stateful_contrast_query = queries_by_id[
+            "projection_freshness_intro_vs_stateful_failover_placement_compare"
+        ]
+        self.assertIn("projection freshness", stateful_contrast_query["prompt"])
+        self.assertIn("stateful failover placement", stateful_contrast_query["prompt"])
+        self.assertIn("차이", stateful_contrast_query["prompt"])
+        self.assertEqual(
+            stateful_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(stateful_contrast_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", stateful_contrast_query)
+
+        self.assertIn(
+            "stateful_failover_beginner_compare_vs_global_failover_control_plane",
+            queries_by_id,
+        )
+        stateful_vs_global_query = queries_by_id[
+            "stateful_failover_beginner_compare_vs_global_failover_control_plane"
+        ]
+        self.assertIn("global traffic failover", stateful_vs_global_query["prompt"])
+        self.assertIn(
+            "stateful workload placement failover control plane",
+            stateful_vs_global_query["prompt"],
+        )
+        self.assertIn("leader placement", stateful_vs_global_query["prompt"])
+        self.assertIn("placement budget", stateful_vs_global_query["prompt"])
+        self.assertEqual(stateful_vs_global_query.get("experience_level"), "beginner")
+        self.assertEqual(
+            stateful_vs_global_query["expected_path"],
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+        )
+        self.assertEqual(stateful_vs_global_query.get("max_rank"), 1)
+        self.assertEqual(
+            stateful_vs_global_query.get("companion_paths"),
+            ["contents/system-design/global-traffic-failover-control-plane-design.md"],
+        )
+        self.assertEqual(stateful_vs_global_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", stateful_vs_global_query)
+
+        self.assertIn(
+            "stateful_failover_beginner_korean_compare_vs_global_failover",
+            queries_by_id,
+        )
+        korean_stateful_vs_global_query = queries_by_id[
+            "stateful_failover_beginner_korean_compare_vs_global_failover"
+        ]
+        self.assertIn("전역 트래픽 우회", korean_stateful_vs_global_query["prompt"])
+        self.assertIn("상태 있는 워크로드 배치", korean_stateful_vs_global_query["prompt"])
+        self.assertIn("regional evacuation", korean_stateful_vs_global_query["prompt"])
+        self.assertIn("shard owner", korean_stateful_vs_global_query["prompt"])
+        self.assertIn("leader placement", korean_stateful_vs_global_query["prompt"])
+        self.assertIn("placement budget", korean_stateful_vs_global_query["prompt"])
+        self.assertEqual(korean_stateful_vs_global_query.get("experience_level"), "beginner")
+        self.assertEqual(
+            korean_stateful_vs_global_query["expected_path"],
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+        )
+        self.assertEqual(korean_stateful_vs_global_query.get("max_rank"), 1)
+        self.assertEqual(
+            korean_stateful_vs_global_query.get("companion_paths"),
+            ["contents/system-design/global-traffic-failover-control-plane-design.md"],
+        )
+        self.assertEqual(korean_stateful_vs_global_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", korean_stateful_vs_global_query)
+
+        self.assertIn("failover_visibility_alias", queries_by_id)
+        visibility_alias_doc_query = queries_by_id["failover_visibility_alias"]
+        self.assertIn("failover visibility", visibility_alias_doc_query["prompt"])
+        self.assertNotIn("visibility window", visibility_alias_doc_query["prompt"])
+        self.assertIn("topology cache divergence", visibility_alias_doc_query["prompt"])
+        self.assertEqual(
+            visibility_alias_doc_query["expected_path"],
+            "contents/database/failover-visibility-window-topology-cache-playbook.md",
+        )
+        self.assertEqual(visibility_alias_doc_query.get("max_rank"), 3)
+        self.assertNotIn("acceptable_paths", visibility_alias_doc_query)
+
+        self.assertIn(
+            "projection_freshness_intro_vs_failover_verification_compare",
+            queries_by_id,
+        )
+        verification_contrast_query = queries_by_id[
+            "projection_freshness_intro_vs_failover_verification_compare"
+        ]
+        self.assertIn("projection freshness", verification_contrast_query["prompt"])
+        self.assertIn("failover verification", verification_contrast_query["prompt"])
+        self.assertIn("차이", verification_contrast_query["prompt"])
+        self.assertEqual(
+            verification_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(verification_contrast_query.get("max_rank"), 1)
+        self.assertEqual(
+            verification_contrast_query.get("companion_paths"),
+            ["contents/database/commit-horizon-after-failover-verification.md"],
+        )
+        self.assertEqual(verification_contrast_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", verification_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_failover_visibility_vs_write_loss_verification_compare",
+            queries_by_id,
+        )
+        mixed_failover_contrast_query = queries_by_id[
+            "projection_freshness_intro_failover_visibility_vs_write_loss_verification_compare"
+        ]
+        self.assertIn("failover visibility window", mixed_failover_contrast_query["prompt"])
+        self.assertIn("stale read", mixed_failover_contrast_query["prompt"])
+        self.assertIn("write loss audit", mixed_failover_contrast_query["prompt"])
+        self.assertIn("verify", mixed_failover_contrast_query["prompt"])
+        self.assertEqual(
+            mixed_failover_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(mixed_failover_contrast_query.get("max_rank"), 1)
+        self.assertEqual(
+            mixed_failover_contrast_query.get("companion_paths"),
+            [
+                "contents/database/failover-visibility-window-topology-cache-playbook.md",
+                "contents/database/commit-horizon-after-failover-verification.md",
+            ],
+        )
+        self.assertEqual(mixed_failover_contrast_query.get("companion_max_rank"), 4)
+        self.assertNotIn("acceptable_paths", mixed_failover_contrast_query)
 
         self.assertIn(
             "projection_freshness_intro_cutover_safety_key_rotation_noise_guard",
@@ -482,6 +1962,158 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "contents/design-pattern/read-model-staleness-read-your-writes.md",
         )
         self.assertEqual(key_rotation_noise_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_cutover_safety_vs_key_rotation_rollback_compare",
+            queries_by_id,
+        )
+        key_rotation_contrast_query = queries_by_id[
+            "projection_freshness_intro_cutover_safety_vs_key_rotation_rollback_compare"
+        ]
+        self.assertIn("cutover safety window", key_rotation_contrast_query["prompt"])
+        self.assertIn("key rotation rollback", key_rotation_contrast_query["prompt"])
+        self.assertIn("비교", key_rotation_contrast_query["prompt"])
+        self.assertEqual(
+            key_rotation_contrast_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(key_rotation_contrast_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", key_rotation_contrast_query)
+
+        self.assertIn(
+            "projection_freshness_intro_mixed_cutover_safety_failover_key_rotation_noise_guard",
+            queries_by_id,
+        )
+        mixed_operational_noise_query = queries_by_id[
+            "projection_freshness_intro_mixed_cutover_safety_failover_key_rotation_noise_guard"
+        ]
+        self.assertIn("읽기 모델을 처음 배우는데", mixed_operational_noise_query["prompt"])
+        self.assertIn("cutover safety window", mixed_operational_noise_query["prompt"])
+        self.assertIn("stale reads", mixed_operational_noise_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장", mixed_operational_noise_query["prompt"])
+        self.assertIn("failover rollback", mixed_operational_noise_query["prompt"])
+        self.assertIn("key rotation rollback", mixed_operational_noise_query["prompt"])
+        self.assertIn("운영 키워드", mixed_operational_noise_query["prompt"])
+        self.assertIn("큰 그림부터", mixed_operational_noise_query["prompt"])
+        self.assertEqual(
+            mixed_operational_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(mixed_operational_noise_query.get("max_rank"), 1)
+        self.assertEqual(mixed_operational_noise_query.get("top3_category"), "design-pattern")
+        self.assertNotIn("acceptable_paths", mixed_operational_noise_query)
+
+        self.assertIn(
+            "projection_freshness_intro_korean_cutover_safety_failover_noise_guard",
+            queries_by_id,
+        )
+        korean_cutover_noise_query = queries_by_id[
+            "projection_freshness_intro_korean_cutover_safety_failover_noise_guard"
+        ]
+        self.assertIn("전환 안전 구간", korean_cutover_noise_query["prompt"])
+        self.assertIn("예전 값이 보이고", korean_cutover_noise_query["prompt"])
+        self.assertIn("failover rollback", korean_cutover_noise_query["prompt"])
+        self.assertEqual(
+            korean_cutover_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(korean_cutover_noise_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_transliterated_cutover_safety_zone_failover_noise_guard",
+            queries_by_id,
+        )
+        transliterated_cutover_noise_query = queries_by_id[
+            "projection_freshness_intro_transliterated_cutover_safety_zone_failover_noise_guard"
+        ]
+        self.assertIn("컷오버 안전 구간", transliterated_cutover_noise_query["prompt"])
+        self.assertIn("예전 값이 보이고", transliterated_cutover_noise_query["prompt"])
+        self.assertIn("failover rollback", transliterated_cutover_noise_query["prompt"])
+        self.assertEqual(
+            transliterated_cutover_noise_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(transliterated_cutover_noise_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_mixed_korean_english_cutover_safety_stale_reads",
+            queries_by_id,
+        )
+        mixed_cutover_stale_reads_query = queries_by_id[
+            "projection_freshness_intro_mixed_korean_english_cutover_safety_stale_reads"
+        ]
+        self.assertIn("cutover safety window", mixed_cutover_stale_reads_query["prompt"])
+        self.assertIn("stale reads", mixed_cutover_stale_reads_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장", mixed_cutover_stale_reads_query["prompt"])
+        self.assertEqual(
+            mixed_cutover_stale_reads_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(mixed_cutover_stale_reads_query.get("max_rank"), 1)
+
+        self.assertIn(
+            "projection_freshness_intro_spaced_transliterated_cutover_safety_window_key_rotation_noise_guard",
+            queries_by_id,
+        )
+        spaced_transliterated_cutover_query = queries_by_id[
+            "projection_freshness_intro_spaced_transliterated_cutover_safety_window_key_rotation_noise_guard"
+        ]
+        self.assertIn("컷 오버 안전 윈도우", spaced_transliterated_cutover_query["prompt"])
+        self.assertIn("예전 값이 보이고", spaced_transliterated_cutover_query["prompt"])
+        self.assertIn("key rotation rollback", spaced_transliterated_cutover_query["prompt"])
+        self.assertEqual(
+            spaced_transliterated_cutover_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(spaced_transliterated_cutover_query.get("max_rank"), 1)
+
+    def test_beginner_read_after_write_symptom_query_is_tracked_explicitly(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        self.assertIn("read_after_write_korean_saved_but_old_value_visible", queries_by_id)
+        symptom_query = queries_by_id["read_after_write_korean_saved_but_old_value_visible"]
+        self.assertEqual(symptom_query["prompt"], "저장했는데 옛값이 보인다")
+        self.assertEqual(
+            symptom_query["expected_path"],
+            "contents/database/replica-lag-read-after-write-strategies.md",
+        )
+        self.assertEqual(symptom_query.get("experience_level"), "beginner")
+        self.assertEqual(symptom_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", symptom_query)
+
+        self.assertIn("read_after_write_korean_cache_vs_replica_confusion", queries_by_id)
+        disambiguation_query = queries_by_id["read_after_write_korean_cache_vs_replica_confusion"]
+        self.assertIn("캐시인지 리플리카인지 모르겠음", disambiguation_query["prompt"])
+        self.assertEqual(
+            disambiguation_query["expected_path"],
+            "contents/database/replica-lag-read-after-write-strategies.md",
+        )
+        self.assertEqual(disambiguation_query.get("experience_level"), "beginner")
+        self.assertEqual(disambiguation_query.get("max_rank"), 1)
+        self.assertNotIn("acceptable_paths", disambiguation_query)
+
+    def test_korean_cqrs_beginner_synonym_query_tracks_schema_survey_as_companion_only(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        self.assertIn("projection_freshness_intro_korean_synonyms", queries_by_id)
+        synonym_query = queries_by_id["projection_freshness_intro_korean_synonyms"]
+        self.assertIn("CQRS 읽기 모델을 처음 배우는데", synonym_query["prompt"])
+        self.assertIn("롤백 윈도우", synonym_query["prompt"])
+        self.assertIn("쓴 직후 읽기 보장", synonym_query["prompt"])
+        self.assertEqual(synonym_query.get("experience_level"), "beginner")
+        self.assertEqual(
+            synonym_query["expected_path"],
+            "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        )
+        self.assertEqual(synonym_query.get("max_rank"), 1)
+        self.assertEqual(
+            synonym_query.get("companion_paths"),
+            ["contents/database/schema-migration-partitioning-cdc-cqrs.md"],
+        )
+        self.assertEqual(synonym_query.get("companion_max_rank"), 3)
+        self.assertNotIn("acceptable_paths", synonym_query)
 
     def test_java_direct_sibling_queries_are_tracked_explicitly(self) -> None:
         payload = _load_fixture_payload()
@@ -622,7 +2254,9 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertIn("mysql_deadlock_lock_ordering", queries_by_id)
         deadlock_query = queries_by_id["mysql_deadlock_lock_ordering"]
         self.assertIn("MySQL deadlock log", deadlock_query["prompt"])
+        self.assertIn("wait graph", deadlock_query["prompt"])
         self.assertIn("lock ordering", deadlock_query["prompt"])
+        self.assertEqual(deadlock_query["learning_points"], [])
         self.assertEqual(
             deadlock_query["expected_path"],
             "contents/database/deadlock-case-study.md",
@@ -717,6 +2351,136 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             schema_query.get("acceptable_paths", []),
         )
         self.assertEqual(schema_query.get("max_rank"), 3)
+
+    def test_beginner_curriculum_foundation_primer_queries_are_tracked_explicitly(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+
+        cases = {
+            "beginner_spring_dispatcherservlet_primer": {
+                "prompt_terms": ["DispatcherServlet", "처음 배우는데", "bean 컨테이너"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_network_keepalive_primer": {
+                "prompt_terms": ["keep-alive", "처음 배우는데", "connection reuse"],
+                "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+            },
+            "beginner_database_connection_pool_primer": {
+                "prompt_terms": ["connection pool", "처음 배우는데", "왜 필요한지"],
+                "expected_path": "contents/database/connection-pool-basics.md",
+            },
+            "beginner_spring_transactional_basics": {
+                "prompt_terms": ["@Transactional", "처음 배우는데", "동작 원리"],
+                "expected_path": "contents/spring/spring-transactional-basics.md",
+            },
+            "beginner_spring_di_vs_ioc_primer": {
+                "prompt_terms": ["DI vs IoC", "처음 배우는데", "스프링 기준"],
+                "expected_path": "contents/spring/spring-ioc-di-basics.md",
+            },
+            "beginner_session_vs_jwt_primer": {
+                "prompt_terms": ["세션이랑 JWT", "처음 배우는데", "로그인 흐름"],
+                "expected_path": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            "beginner_dispatcherservlet_shortform_lockin": {
+                "prompt_terms": ["DispatcherServlet", "뭐야"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_dispatcher_servlet_spacing_shortform_lockin": {
+                "prompt_terms": ["Dispatcher Servlet", "뭐야"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_dispatcher_servlet_lowercase_shortform_lockin": {
+                "prompt_terms": ["dispatcher servlet", "뭐야"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_dispatcherservlet_colloquial_shortform_lockin": {
+                "prompt_terms": ["DispatcherServlet", "뭔데"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_transactional_shortform_lockin": {
+                "prompt_terms": ["@Transactional", "뭐야"],
+                "expected_path": "contents/spring/spring-transactional-basics.md",
+            },
+            "beginner_transactional_colloquial_shortform_lockin": {
+                "prompt_terms": ["@Transactional", "뭔데"],
+                "expected_path": "contents/spring/spring-transactional-basics.md",
+            },
+            "beginner_transactional_english_shortform_lockin": {
+                "prompt_terms": ["What is", "@Transactional"],
+                "expected_path": "contents/spring/spring-transactional-basics.md",
+            },
+            "beginner_di_vs_ioc_shortform_lockin": {
+                "prompt_terms": ["DI vs IoC", "차이가 뭐야"],
+                "expected_path": "contents/spring/spring-ioc-di-basics.md",
+            },
+            "beginner_di_vs_ioc_colloquial_shortform_lockin": {
+                "prompt_terms": ["DI vs IoC", "차이가 뭔데"],
+                "expected_path": "contents/spring/spring-ioc-di-basics.md",
+            },
+            "beginner_keepalive_shortform_lockin": {
+                "prompt_terms": ["keep-alive", "뭐야"],
+                "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+            },
+            "beginner_keepalive_colloquial_shortform_lockin": {
+                "prompt_terms": ["keep-alive", "뭔데"],
+                "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+            },
+            "beginner_keep_alive_spacing_shortform_lockin": {
+                "prompt_terms": ["keep alive", "뭐야"],
+                "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+            },
+            "beginner_connection_pool_shortform_lockin": {
+                "prompt_terms": ["connection pool", "뭐야"],
+                "expected_path": "contents/database/connection-pool-basics.md",
+            },
+            "beginner_connection_pool_colloquial_shortform_lockin": {
+                "prompt_terms": ["connection pool", "뭔데"],
+                "expected_path": "contents/database/connection-pool-basics.md",
+            },
+            "beginner_connection_pooling_shortform_lockin": {
+                "prompt_terms": ["connection pooling", "뭐야"],
+                "expected_path": "contents/database/connection-pool-basics.md",
+            },
+            "beginner_di_and_ioc_shortform_lockin": {
+                "prompt_terms": ["DI와 IoC", "차이가 뭐야"],
+                "expected_path": "contents/spring/spring-ioc-di-basics.md",
+            },
+            "beginner_session_vs_jwt_shortform_lockin": {
+                "prompt_terms": ["세션이랑 JWT", "차이가 뭐야"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+            "beginner_session_vs_jwt_colloquial_shortform_lockin": {
+                "prompt_terms": ["세션이랑 JWT", "차이가 뭔데"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+            "beginner_session_vs_jwt_english_shortform_lockin": {
+                "prompt_terms": ["session vs JWT", "difference"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+            "beginner_session_vs_jwt_cookie_login_state_lockin": {
+                "prompt_terms": ["JWT가 쿠키", "로그인 상태"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+            "beginner_session_vs_jwt_login_persistence_colloquial_lockin": {
+                "prompt_terms": ["JWT랑 쿠키", "로그인 유지"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+            "beginner_session_vs_jwt_cookie_login_state_english_lockin": {
+                "prompt_terms": ["JWT", "stay logged in", "cookies"],
+                "expected_path": "contents/security/session-cookie-jwt-basics.md",
+            },
+        }
+
+        for query_id, case in cases.items():
+            with self.subTest(query_id=query_id):
+                self.assertIn(query_id, queries_by_id)
+                query = queries_by_id[query_id]
+                for term in case["prompt_terms"]:
+                    self.assertIn(term, query["prompt"])
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query["expected_path"], case["expected_path"])
+                self.assertEqual(query.get("max_rank"), 1)
+                self.assertNotIn("acceptable_paths", query)
 
     def test_curated_high_frequency_sibling_paths_are_explicitly_tracked(self) -> None:
         payload = _load_fixture_payload()
@@ -845,6 +2609,269 @@ class CsRagGoldenQueries(unittest.TestCase):
                     f"(best match {matched_path}) "
                     f"but ranked #{rank} in {paths}"
                 )
+            companion_paths = q.get("companion_paths") or []
+            if companion_paths:
+                ranked_companions = [
+                    (path, paths.index(path) + 1) for path in companion_paths if path in paths
+                ]
+                require_all_companion_paths = bool(q.get("require_all_companion_paths"))
+                if require_all_companion_paths and len(ranked_companions) != len(companion_paths):
+                    missing_companions = [
+                        path for path in companion_paths if path not in {match[0] for match in ranked_companions}
+                    ]
+                    failures.append(
+                        f"{q['id']}: expected every companion path in {companion_paths} "
+                        f"within top-{self.top_k} but missing {missing_companions} from {paths}"
+                    )
+                    continue
+                if not ranked_companions:
+                    failures.append(
+                        f"{q['id']}: expected companion path in {companion_paths} "
+                        f"within top-{self.top_k} {paths}"
+                    )
+                else:
+                    companion_max_rank = int(q.get("companion_max_rank", self.top_k))
+                    if require_all_companion_paths:
+                        for companion_path, companion_rank in ranked_companions:
+                            if companion_rank > companion_max_rank:
+                                failures.append(
+                                    f"{q['id']}: expected companion path {companion_path} within "
+                                    f"top-{companion_max_rank} but ranked #{companion_rank} in {paths}"
+                                )
+                            if rank >= companion_rank:
+                                failures.append(
+                                    f"{q['id']}: expected primary path {matched_path} to stay ahead of "
+                                    f"companion {companion_path} but saw ranks #{rank} and "
+                                    f"#{companion_rank} in {paths}"
+                                )
+                    else:
+                        companion_path, companion_rank = min(
+                            ranked_companions,
+                            key=lambda item: item[1],
+                        )
+                        if companion_rank > companion_max_rank:
+                            failures.append(
+                                f"{q['id']}: expected companion path in {companion_paths} "
+                                f"within top-{companion_max_rank} "
+                                f"(best match {companion_path}) but ranked #{companion_rank} in {paths}"
+                            )
+                        if rank >= companion_rank:
+                            failures.append(
+                                f"{q['id']}: expected primary path {matched_path} to stay ahead of "
+                                f"companion {companion_path} but saw ranks #{rank} and #{companion_rank} "
+                                f"in {paths}"
+                            )
+            top3_category = q.get("top3_category")
+            if top3_category:
+                top_categories = [hit.get("category") for hit in hits[:3]]
+                if len(top_categories) < 3 or any(category != top3_category for category in top_categories):
+                    failures.append(
+                        f"{q['id']}: expected top-3 categories to stay {top3_category} "
+                        f"but saw {top_categories} for {paths[:3]}"
+                    )
+        if failures:
+            self.fail("\n".join(failures))
+
+    def test_projection_symptom_only_batch_keeps_beginner_primer_family_visible(self) -> None:
+        queries_by_id = {query["id"]: query for query in self.queries}
+        contract = _load_projection_symptom_only_primer_family_batch_contract()
+        family_paths = set(contract.get("family_paths") or [])
+        canonical_query_ids = set(contract.get("canonical_query_ids") or [])
+        canonical_primer_path = contract.get("canonical_primer_path")
+        canonical_max_rank = int(contract.get("canonical_max_rank", self.top_k))
+        family_top_k = int(contract.get("family_top_k", 3))
+        min_family_hits = int(contract.get("min_family_hits", 2))
+        failures: list[str] = []
+
+        for query_id in contract.get("query_ids", []):
+            q = queries_by_id[query_id]
+            hits = self.searcher.search(
+                q["prompt"],
+                learning_points=q.get("learning_points") or None,
+                top_k=self.top_k,
+                experience_level=q.get("experience_level"),
+            )
+            paths = [hit["path"] for hit in hits]
+            top_family_hits = [path for path in paths[:family_top_k] if path in family_paths]
+            if len(top_family_hits) < min_family_hits:
+                failures.append(
+                    f"{query_id}: expected at least {min_family_hits} primer-family hits in "
+                    f"top-{family_top_k} but saw {top_family_hits} within {paths[:family_top_k]}"
+                )
+            if not paths or paths[0] not in family_paths:
+                failures.append(
+                    f"{query_id}: expected top hit to stay inside the beginner primer family "
+                    f"but saw {paths[:1]} from {paths}"
+                )
+            if query_id in canonical_query_ids:
+                if canonical_primer_path not in paths:
+                    failures.append(
+                        f"{query_id}: expected canonical primer {canonical_primer_path} "
+                        f"within top-{self.top_k} but saw {paths}"
+                    )
+                    continue
+                rank = paths.index(canonical_primer_path) + 1
+                if rank > canonical_max_rank:
+                    failures.append(
+                        f"{query_id}: expected canonical primer {canonical_primer_path} within "
+                        f"top-{canonical_max_rank} but ranked #{rank} in {paths}"
+                    )
+
+        if failures:
+            self.fail("\n".join(failures))
+
+    def test_projection_symptom_only_search_regression_sweep_keeps_primer_in_top_family(
+        self,
+    ) -> None:
+        queries_by_id = {query["id"]: query for query in self.queries}
+        contract = _load_projection_symptom_only_search_regression_sweep_contract()
+        family_paths = set(contract.get("family_paths") or [])
+        primer_path = contract.get("primer_path")
+        family_top_k = int(contract.get("family_top_k", 3))
+        primer_max_rank = int(contract.get("primer_max_rank", family_top_k))
+        failures: list[str] = []
+
+        for query_id in contract.get("query_ids", []):
+            q = queries_by_id[query_id]
+            hits = self.searcher.search(
+                q["prompt"],
+                learning_points=q.get("learning_points") or None,
+                top_k=self.top_k,
+                experience_level=q.get("experience_level"),
+            )
+            paths = [hit["path"] for hit in hits]
+            top_family_paths = [path for path in paths[:family_top_k] if path in family_paths]
+            if not top_family_paths:
+                failures.append(
+                    f"{query_id}: expected beginner primer family hit in top-{family_top_k} "
+                    f"but saw {paths[:family_top_k]}"
+                )
+            if primer_path not in paths:
+                failures.append(
+                    f"{query_id}: expected primer {primer_path} within top-{self.top_k} "
+                    f"but saw {paths}"
+                )
+                continue
+            primer_rank = paths.index(primer_path) + 1
+            if primer_rank > primer_max_rank:
+                failures.append(
+                    f"{query_id}: expected primer {primer_path} within top-{primer_max_rank} "
+                    f"but ranked #{primer_rank} in {paths}"
+                )
+
+        if failures:
+            self.fail("\n".join(failures))
+
+    def test_projection_korean_failover_visibility_contrast_sweep_keeps_primer_first(
+        self,
+    ) -> None:
+        queries_by_id = {query["id"]: query for query in self.queries}
+        contract = _load_projection_korean_failover_visibility_contrast_sweep_contract()
+        primer_path = contract.get("primer_path")
+        companion_path = contract.get("companion_path")
+        primer_max_rank = int(contract.get("primer_max_rank", self.top_k))
+        companion_max_rank = int(contract.get("companion_max_rank", self.top_k))
+        failures: list[str] = []
+
+        for query_id in contract.get("query_ids", []):
+            q = queries_by_id[query_id]
+            hits = self.searcher.search(
+                q["prompt"],
+                learning_points=q.get("learning_points") or None,
+                top_k=self.top_k,
+                experience_level=q.get("experience_level"),
+            )
+            paths = [hit["path"] for hit in hits]
+
+            if primer_path not in paths:
+                failures.append(
+                    f"{query_id}: expected primer {primer_path} within top-{self.top_k} but saw {paths}"
+                )
+                continue
+
+            primer_rank = paths.index(primer_path) + 1
+            if primer_rank > primer_max_rank:
+                failures.append(
+                    f"{query_id}: expected primer {primer_path} within top-{primer_max_rank} "
+                    f"but ranked #{primer_rank} in {paths}"
+                )
+
+            if companion_path not in paths:
+                failures.append(
+                    f"{query_id}: expected failover companion {companion_path} within top-{self.top_k} "
+                    f"but saw {paths}"
+                )
+                continue
+
+            companion_rank = paths.index(companion_path) + 1
+            if companion_rank > companion_max_rank:
+                failures.append(
+                    f"{query_id}: expected failover companion {companion_path} within top-{companion_max_rank} "
+                    f"but ranked #{companion_rank} in {paths}"
+                )
+            if primer_rank >= companion_rank:
+                failures.append(
+                    f"{query_id}: expected primer {primer_path} ahead of failover companion "
+                    f"{companion_path} but saw ranks #{primer_rank} and #{companion_rank} in {paths}"
+                )
+
+        if failures:
+            self.fail("\n".join(failures))
+
+    def test_stateful_failover_beginner_contrast_sweep_keeps_stateful_doc_ahead_of_global(
+        self,
+    ) -> None:
+        queries_by_id = {query["id"]: query for query in self.queries}
+        contract = _load_stateful_failover_beginner_contrast_sweep_contract()
+        primary_path = contract.get("primary_path")
+        companion_path = contract.get("companion_path")
+        primary_max_rank = int(contract.get("primary_max_rank", self.top_k))
+        companion_max_rank = int(contract.get("companion_max_rank", self.top_k))
+        failures: list[str] = []
+
+        for query_id in contract.get("query_ids", []):
+            q = queries_by_id[query_id]
+            hits = self.searcher.search(
+                q["prompt"],
+                learning_points=q.get("learning_points") or None,
+                top_k=self.top_k,
+                experience_level=q.get("experience_level"),
+            )
+            paths = [hit["path"] for hit in hits]
+
+            if primary_path not in paths:
+                failures.append(
+                    f"{query_id}: expected stateful primary {primary_path} within top-{self.top_k} "
+                    f"but saw {paths}"
+                )
+                continue
+
+            primary_rank = paths.index(primary_path) + 1
+            if primary_rank > primary_max_rank:
+                failures.append(
+                    f"{query_id}: expected stateful primary {primary_path} within top-{primary_max_rank} "
+                    f"but ranked #{primary_rank} in {paths}"
+                )
+
+            if companion_path not in paths:
+                failures.append(
+                    f"{query_id}: expected global failover sibling {companion_path} within top-{self.top_k} "
+                    f"but saw {paths}"
+                )
+                continue
+
+            companion_rank = paths.index(companion_path) + 1
+            if companion_rank > companion_max_rank:
+                failures.append(
+                    f"{query_id}: expected global failover sibling {companion_path} within top-{companion_max_rank} "
+                    f"but ranked #{companion_rank} in {paths}"
+                )
+            if primary_rank >= companion_rank:
+                failures.append(
+                    f"{query_id}: expected stateful sibling {primary_path} ahead of generic global sibling "
+                    f"{companion_path} but saw ranks #{primary_rank} and #{companion_rank} in {paths}"
+                )
+
         if failures:
             self.fail("\n".join(failures))
 

@@ -4,20 +4,30 @@
 
 **난이도: 🟢 Beginner**
 
+> 이 문서는 ORIGIN/`421` 주제의 **beginner-safe follow-up entry**다. `421`을 상태 코드 암기 문제로 보지 말고, 먼저 "잘못된 connection을 바로잡는 문서"로 읽으면 안전하다.
+>
+> | 지금 상태 | 먼저 읽을 문서 | 이 문서로 돌아오는 타이밍 |
+> |---|---|---|
+> | `connection coalescing` 자체가 아직 낯설다 | [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) | "`같이 쓸 수는 있다`는 건 알겠는데 어디까지 허용하지?"가 궁금해졌을 때 |
+> | HTTP 버전 큰 그림부터 다시 잡아야 한다 | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | H2/H3 차이 감각을 다시 잡은 뒤 |
+> | "`421`이 403/404와 왜 다른지"가 궁금하다 | 이 문서 | connection 문맥과 retry 흐름을 같이 보려는 지금 |
+
 > 관련 문서:
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 > - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
 > - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 > - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
-> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
-> - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
+> - [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
+> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) (selection follow-up primer)
+> - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) (main comparison primer)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, H3 421 recovery, Alt-Svc endpoint authority, 421 Misdirected Request, misdirected request retry, cross-origin connection reuse, narrow coalescing, reject coalescing, H2 coalescing guardrail, authoritative connection, connection context mismatch, same certificate different routing, ORIGIN frame allowlist, 421 troubleshooting trace, browser devtools 421, curl 421, 421 vs 403 vs 404
+retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3 no ORIGIN frame, H3 coalescing without ORIGIN, H3 421 recovery, Alt-Svc endpoint authority, 421 Misdirected Request, misdirected request retry, cross-origin connection reuse, narrow coalescing, reject coalescing, H2 coalescing guardrail, authoritative connection, connection context mismatch, same certificate different routing, ORIGIN frame allowlist, 421 troubleshooting trace, browser devtools 421, curl 421, 421 vs 403 vs 404, wrong h2 connection retry, browser 421 retry
 
 <details>
 <summary>Table of Contents</summary>
 
+- [먼저 보는 20초 입장권](#먼저-보는-20초-입장권)
 - [왜 이 follow-up이 필요한가](#왜-이-follow-up이-필요한가)
 - [먼저 잡는 mental model](#먼저-잡는-mental-model)
 - [ORIGIN과 421를 한 표로 보면](#origin과-421를-한-표로-보면)
@@ -29,6 +39,19 @@ retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+## 먼저 보는 20초 입장권
+
+이 문서는 아래 두 문장을 먼저 잡고 읽으면 된다.
+
+- `ORIGIN`은 "이 H2 connection을 어디까지 같이 써도 되는지 미리 좁히는 힌트"
+- `421`은 "그 선을 넘은 요청은 다른 connection으로 다시 와라"라는 거절 신호
+
+| 지금 질문 | 먼저 떠올릴 한 줄 | 다음 이동 |
+|---|---|---|
+| "`421`이 나오면 서버가 고장난 건가?" | 아니다. 보통은 wrong connection 신호다 | 상세 복구는 [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md) |
+| "`ORIGIN`은 인증서를 대신하나?" | 아니다. cert를 대체하지 않고 재사용 범위를 좁힌다 | 본문 `ORIGIN frame은 무엇을 하냐`로 이어 읽기 |
+| "H3에도 ORIGIN frame이 있나?" | 없다. H3는 다른 guardrail을 본다 | [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md) |
 
 ## 왜 이 follow-up이 필요한가
 
@@ -135,6 +158,10 @@ retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3
 
 `421 Misdirected Request`는 "리소스가 없다"가 아니라 **이 요청이 잘못된 connection으로 왔다**에 가깝다.
 
+초급자용으로는 이 한 줄도 같이 기억하면 된다.
+
+- `421`은 앱 권한/리소스 결과를 직접 말하는 status라기보다, 먼저 connection/authority 문맥을 다시 보게 만드는 신호다
+
 서버가 아래처럼 판단할 때 쓴다.
 
 - 이 target URI는 이 서버가 authoritative하게 답할 수 있는 범위가 아니다
@@ -143,7 +170,7 @@ retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3
 즉 초보자 감각으로는:
 
 - `404`: 맞는 서버에 갔는데 그 리소스가 없다
-- `403`: 맞는 서버에 갔는데 거절당했다
+- `403`: 맞는 서버에 갔는데 app 권한/정책으로 거절당했다
 - `421`: 아예 **이 connection으로 오면 안 되는 요청**이었다
 
 | status | 뜻 | 다음 동작 감각 |
@@ -267,6 +294,7 @@ retrieval-anchor-keywords: HTTP/2 ORIGIN frame, ORIGIN frame, Origin Set, HTTP/3
 
 - `500`류처럼 "서버가 망가졌다"보다
 - "이 요청은 다른 connection으로 보내라"에 더 가깝다
+- 그래서 beginner triage에서는 app 권한/리소스 오류보다 connection 문맥을 먼저 보는 편이 안전하다
 
 ### ORIGIN은 일반 HTTP header인가
 

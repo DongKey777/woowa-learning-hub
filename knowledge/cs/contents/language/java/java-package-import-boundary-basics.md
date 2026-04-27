@@ -5,19 +5,22 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
-> - [Language README](../README.md)
+> - [Language README: Java primer](../README.md#java-primer)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 > - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+> - [Java 패키지 경계 퀵체크 카드](./java-package-boundary-quickcheck-card.md)
+> - [Java default package 회피 브리지](./java-default-package-avoid-bridge.md)
 > - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 > - [Java module system runtime boundaries](./java-module-system-runtime-boundaries.md)
 
-> retrieval-anchor-keywords: java package basics, java import basics, java package import boundary basics, java package declaration, java import declaration, java source file structure, java public class file name rule, java top level class file convention, java one public class per file, java package private boundary basics, java default package avoid, java same package no import, java.lang no import, java wildcard import subpackage, java import does not change access, java package private beginner design, java helper class package private, java package naming basics, java beginner package structure
+> retrieval-anchor-keywords: java package basics, java import basics, java package import boundary basics, java package declaration, java import declaration, java source file structure, java public class file name rule, java top level class file convention, java one public class per file, java package private boundary basics, java default package avoid, java same package no import, java.lang no import, java wildcard import subpackage, java import does not change access, java package private beginner design, java helper class package private, java package naming basics, java beginner package structure, java package boundary quick check, java same package subclass non subclass, java protected package boundary, 자바 패키지 임포트 기초, 자바 package import 기초, 처음 배우는데 package import, 자바 package 왜 쓰는지, 자바 import 언제 쓰는지, import 언제 생략하는지, import 안 해도 되는 경우, 자바 public class 파일명 규칙, 자바 소스 파일 구조 기초, package private 경계 기초, package-private 언제 쓰는지 기초, default package 피하는 이유, 같은 패키지 import 생략, 자바 패키지 경계 퀵체크
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [먼저 보는 패키지 경계 퀵체크](#먼저-보는-패키지-경계-퀵체크)
 - [package는 무엇을 나누나](#package는-무엇을-나누나)
 - [파일, 디렉터리, top-level 클래스 규칙](#파일-디렉터리-top-level-클래스-규칙)
 - [import는 이름을 줄여 주지만 접근 권한은 바꾸지 않는다](#import는-이름을-줄여-주지만-접근-권한은-바꾸지-않는다)
@@ -39,12 +42,24 @@ Java 입문자는 클래스를 여러 파일로 나누기 시작하는 순간부
 - 클래스 파일 이름은 왜 `public class` 이름과 같아야 하나?
 - helper 클래스를 일단 `public`으로 열어 두는 게 편하지 않나?
 
-이 질문들은 사실 따로 떨어져 있지 않다.  
+이 질문들은 사실 따로 떨어져 있지 않다.
 핵심은 **"어떤 이름공간에 두고, 어디까지 공개하며, 다른 패키지에서 무엇을 직접 보게 할 것인가"** 를 함께 정하는 데 있다.
+
+## 먼저 보는 패키지 경계 퀵체크
+
+처음엔 긴 규칙보다 아래 한 장으로 보면 된다.
+
+| 보는 관점 | 먼저 물을 질문 | 초보자 기억법 |
+|---|---|---|
+| same package | package 선언이 정확히 같은가 | `private`만 아니면 대체로 된다 |
+| different package + subclass | 같은 package는 아니지만 상속한 클래스 내부인가 | `protected`까지는 열릴 수 있다 |
+| different package + non-subclass | 둘 다 아니면 | 사실상 `public`만 본다 |
+
+이 카드가 익숙하지 않다면 [Java 패키지 경계 퀵체크 카드](./java-package-boundary-quickcheck-card.md)에서 10초 판단표와 예시를 먼저 보고 오는 편이 빠르다.
 
 ## package는 무엇을 나누나
 
-`package`는 단순히 파일을 정리하는 폴더 이름이 아니다.  
+`package`는 단순히 파일을 정리하는 폴더 이름이 아니다.
 Java에서 package는 최소한 다음 두 역할을 동시에 가진다.
 
 - 클래스 이름 충돌을 줄이는 이름공간(namespace)
@@ -56,7 +71,7 @@ Java에서 package는 최소한 다음 두 역할을 동시에 가진다.
 package com.example.order;
 ```
 
-이 선언은 "이 파일의 top-level 타입들은 `com.example.order` 소속이다"라는 뜻이다.  
+이 선언은 "이 파일의 top-level 타입들은 `com.example.order` 소속이다"라는 뜻이다.
 일반적인 프로젝트 구조에서는 디렉터리도 같은 구조로 맞춘다.
 
 ```text
@@ -78,7 +93,7 @@ src/main/java/com/example/order/OrderService.java
 - `com.example.order`
 - `com.example.order.internal`
 
-위 둘은 "비슷해 보이는 이름"일 뿐, **서로 다른 package**다.  
+위 둘은 "비슷해 보이는 이름"일 뿐, **서로 다른 package**다.
 즉 `com.example.order`의 package-private 타입은 `com.example.order.internal`에서 바로 쓸 수 없다.
 
 package 경계는 "폴더가 비슷한가"가 아니라 **package 선언이 정확히 같은가**로 결정된다.
@@ -120,7 +135,7 @@ public class OrderService {
 
 ### top-level 클래스에 쓸 수 있는 접근 수준은 제한적이다
 
-top-level 타입은 `public` 또는 package-private만 가능하다.  
+top-level 타입은 `public` 또는 package-private만 가능하다.
 즉 파일 최상단 클래스에 `private`나 `protected`를 붙일 수는 없다.
 
 이 규칙은 초보자 설계에서 중요하다.
@@ -130,7 +145,7 @@ top-level 타입은 `public` 또는 package-private만 가능하다.
 
 ## import는 이름을 줄여 주지만 접근 권한은 바꾸지 않는다
 
-`import`는 "다른 package의 타입을 짧은 이름으로 쓰게 해 주는 문법"이다.  
+`import`는 "다른 package의 타입을 짧은 이름으로 쓰게 해 주는 문법"이다.
 중요한 점은 **가시성(visibility)을 넓혀 주는 기능이 아니라는 것**이다.
 
 ### 언제 import가 필요하고, 언제 필요하지 않은가
@@ -176,7 +191,7 @@ import java.util.*;
 
 ### 이름 충돌이 나면 fully qualified name이 필요할 수 있다
 
-서로 다른 package에 같은 simple name이 있으면 import만으로는 모호해질 수 있다.  
+서로 다른 package에 같은 simple name이 있으면 import만으로는 모호해질 수 있다.
 이럴 때는 한쪽을 fully qualified name으로 써서 구분한다.
 
 ### `import static`은 가능하지만 초보자 단계에서는 절제해서 쓴다
@@ -185,12 +200,12 @@ import java.util.*;
 import static java.lang.Math.max;
 ```
 
-이 문법은 static 멤버를 클래스 이름 없이 쓰게 해 주지만, 처음에는 출처를 흐리기 쉽다.  
+이 문법은 static 멤버를 클래스 이름 없이 쓰게 해 주지만, 처음에는 출처를 흐리기 쉽다.
 입문 단계에서는 일반 `import`를 먼저 확실히 익히는 편이 낫다.
 
 ## package-private 경계가 초보자 설계에 주는 영향
 
-초보자 코드는 종종 "일단 다 `public`으로 열어 두고 나중에 정리"로 흐른다.  
+초보자 코드는 종종 "일단 다 `public`으로 열어 두고 나중에 정리"로 흐른다.
 하지만 Java에서는 처음부터 경계를 조금만 의식해도 클래스 구조가 훨씬 깔끔해진다.
 
 ### 기본 분리 기준
@@ -217,7 +232,7 @@ import static java.lang.Math.max;
 
 ### 초보자용 package 설계 감각
 
-처음부터 큰 아키텍처를 만들 필요는 없다.  
+처음부터 큰 아키텍처를 만들 필요는 없다.
 대신 다음 질문으로 충분하다.
 
 - 이 타입을 다른 package에서 직접 생성하거나 호출해야 하나?
@@ -296,17 +311,17 @@ public class Main {
 
 ### package를 폴더 정리 용도만으로 본다
 
-Java에서 package는 단순 정리 단위가 아니라 접근 경계다.  
+Java에서 package는 단순 정리 단위가 아니라 접근 경계다.
 특히 package-private을 이해하려면 "같은 package인가"를 먼저 봐야 한다.
 
 ### subpackage도 같은 package라고 생각한다
 
-`com.example.order`와 `com.example.order.internal`은 다른 package다.  
+`com.example.order`와 `com.example.order.internal`은 다른 package다.
 이름이 길게 이어져 보여도 package-private 경계는 공유되지 않는다.
 
 ### `import`만 하면 아무 클래스나 쓸 수 있다고 생각한다
 
-아니다. `import`는 이름을 줄여 줄 뿐이다.  
+아니다. `import`는 이름을 줄여 줄 뿐이다.
 `private`, package-private, `protected` 같은 접근 규칙을 우회하지 못한다.
 
 ### wildcard import가 하위 package까지 포함한다고 생각한다
@@ -319,8 +334,9 @@ Java에서 package는 단순 정리 단위가 아니라 접근 경계다.
 
 ### default package를 가볍게 쓴다
 
-학습용 단일 파일 예제에서는 돌아갈 수 있지만, 실제 프로젝트로 가면 import와 구조화가 빠르게 불편해진다.  
+학습용 단일 파일 예제에서는 돌아갈 수 있지만, 실제 프로젝트로 가면 import와 구조화가 빠르게 불편해진다.
 입문 단계부터 package 선언을 붙이는 습관이 더 낫다.
+이 지점을 파일명 규칙 다음 단계 브리지로 짧게 이어 보고 싶다면 [Java default package 회피 브리지](./java-default-package-avoid-bridge.md)를 보면 된다.
 
 ## 빠른 체크리스트
 
@@ -336,6 +352,8 @@ Java에서 package는 단순 정리 단위가 아니라 접근 경계다.
 
 - Java 소스 파일 구조와 기본 문법을 더 넓게 다시 보고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - 클래스, 객체, 인터페이스 같은 기본 타입 모델과 연결해서 보고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- same package / subclass / non-subclass를 10초 표로 먼저 판단하고 싶다면 [Java 패키지 경계 퀵체크 카드](./java-package-boundary-quickcheck-card.md)
+- default package를 왜 실제 코드에서 빨리 벗어나야 하는지 짧게 잇고 싶다면 [Java default package 회피 브리지](./java-default-package-avoid-bridge.md)
 - `public`/`private`/`protected`/package-private 차이를 멤버 모델까지 이어서 보고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 메서드와 생성자를 어떤 클래스를 외부에 노출할지라는 관점과 함께 연습하고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - package보다 한 단계 큰 런타임 경계인 module system까지 이어 보고 싶다면 [Java module system runtime boundaries](./java-module-system-runtime-boundaries.md)

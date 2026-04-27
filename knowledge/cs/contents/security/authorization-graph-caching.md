@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md)
 > - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)
@@ -16,12 +17,47 @@
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
 retrieval-anchor-keywords: authorization graph cache, authorization graph caching, graph cache, relationship-based access control, relationship cache, relationship edge cache, path cache, edge cache, authz graph, invalidation, policy version, graph snapshot, graph snapshot cache, graph snapshot drift, graph snapshot version mismatch, authz runtime debug, auth shadow divergence, tenant graph, shortest path authz, tenant-scoped graph invalidation, delegated admin invalidation
+retrieval-anchor-keywords: authorization graph cache deep dive entry cue, graph cache beginner handoff, stale deny primer bridge to graph cache deep dive, graph cache next step, graph cache return path, authz tenant catalog return, grant path first graph cache later, runtime debugging before graph internals, graph cache escalation gate, graph snapshot evidence gate, relationship cache beginner safe route
 
 ---
 
+## 시작 전에: 이 문서의 역할과 입장 큐
+
+- 이 문서는 `deep dive`다. relationship/path cache, snapshot version, invalidation fan-out을 설계 관점으로 다룬다.
+- 이 문서는 `primer`가 아니다. `authorization graph cache`/`relationship cache` 용어가 먼저 막히면 `[primer]` [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md)로 간다.
+- 이 문서는 `survey`도 아니다. authz cache/tenant 문서 전체에서 다음 갈래를 다시 고르려면 `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 돌아간다.
+- `grant 후 403`/`cached 404 after grant`/`tenant-specific 403`를 처음 분해하는 단계라면 먼저 `[primer bridge]` [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)로 간다.
+- pod/tenant별 allow/deny 불일치, cache key 누락, version drift를 운영 증거로 좁히는 중이라면 graph internals보다 먼저 `[playbook]` 성격의 `[deep dive]` [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)으로 간다.
+- 이 문서는 대응 절차 중심 `recovery` 문서가 아니다. 장애 복구 순서보다 "graph cache를 설계할 때 왜 깨지는가"를 설명하는 문서다.
+
+### 30초 return path
+
+먼저 외워 둘 기본값은 간단하다.
+`grant path`와 `runtime debugging`이 먼저이고, graph cache internals는 나중이다.
+
+| 지금 내 상태 | 먼저 볼 역할 | 먼저 갈 문서 | 이 문서를 바로 열어도 되는가 |
+|---|---|---|---|
+| `권한 줬는데 아직 403/404`를 처음 설명해야 함 | `primer bridge` | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) | 아직 이르다 |
+| pod/tenant마다 allow/deny가 다르고 로그 키를 대조 중 | `playbook`에 가까운 runtime debugging | [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) | 대체로 아직 이르다 |
+| 이미 `graph snapshot version`, `relationship edge`, `tenant-scoped invalidation`이 증거로 잡힘 | `deep dive` | 이 문서 | 이제 적절하다 |
+
+다음 셋 중 하나라도 "아직 아니다"라면 이 문서보다 앞 문서로 돌아간다.
+
+- 응답 의미를 이미 구분했다: `403`인지 concealment `404`인지 안다.
+- stale 위치를 이미 좁혔다: grant path, cache key, version drift 중 어디가 의심되는지 말할 수 있다.
+- graph 증거가 있다: `graph snapshot/version/edge invalidation` 같은 단어가 로그나 설계에서 실제로 보인다.
+
+| 나는 어디서 왔나 | 이 문서에서 먼저 볼 구간 | 다음 문서 |
+|---|---|---|
+| `[primer bridge]`에서 stale deny를 분리한 직후 | `2. path cache는 위험도가 높다` + `3. versioned graph snapshot이 유용하다` | `[deep dive]` [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md) |
+| `[playbook]`에 가까운 runtime debugging에서 graph snapshot/version mismatch가 이미 잡힘 | `3. versioned graph snapshot이 유용하다` + `4. invalidation fan-out` | `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md) |
+| delegated revoke/tenant ownership move 뒤 graph invalidation이 의심됨 | `4. invalidation fan-out` + `실전 시나리오 2, 3` | `[deep dive]` [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md), `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md) |
+
+- graph cache 문서를 읽은 뒤에는 `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 돌아가 다음 갈래를 고른다.
+
 ## 핵심 개념
 
-authorization graph는 user, group, tenant, resource, role 사이의 관계를 그래프로 보는 모델이다.  
+authorization graph는 user, group, tenant, resource, role 사이의 관계를 그래프로 보는 모델이다.
 이 그래프를 매번 계산하면 비쌀 수 있으므로 캐시를 둘 수 있다.
 
 하지만 graph cache는 일반 cache보다 더 민감하다.
@@ -75,7 +111,7 @@ role 변경 하나가 여러 decision을 무효화할 수 있다.
 - tenant ownership
 - delegated admin scope
 
-특히 delegated admin grant/revoke는 tenant-scoped admin edge 여러 개를 동시에 바꿀 수 있어서 [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md) 같은 scope model과 같이 설계해야 한다.  
+특히 delegated admin grant/revoke는 tenant-scoped admin edge 여러 개를 동시에 바꿀 수 있어서 [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md) 같은 scope model과 같이 설계해야 한다.
 이 invalidation이 빠졌을 때 cross-tenant leak 여부를 확인하는 마지막 안전망은 [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)이다.
 
 ### 5. graph cache는 그래프 엔진과 결합해야 한다

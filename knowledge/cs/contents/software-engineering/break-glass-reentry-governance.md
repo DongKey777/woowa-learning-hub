@@ -33,6 +33,10 @@
 > - break glass closeout evidence
 > - emergency fallback timebox
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Break-Glass Reentry Governance](./README.md#break-glass-reentry-governance)
+> - 다음 단계: [Shadow Retirement Proof Metrics](./shadow-retirement-proof-metrics.md)
+
 ## 핵심 개념
 
 authorized break-glass는 "켰다"에서 끝나는 절차가 아니다.

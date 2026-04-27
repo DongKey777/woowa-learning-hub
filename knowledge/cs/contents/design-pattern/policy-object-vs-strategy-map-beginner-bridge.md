@@ -4,6 +4,8 @@
 
 **난이도: 🟢 Beginner**
 
+> Beginner Route: `[entrypoint]` [전략 패턴 기초](./strategy-pattern-basics.md) -> `[bridge]` 이 문서 -> `[deep dive]` [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
+
 > 관련 문서:
 > - [전략 패턴 기초](./strategy-pattern-basics.md)
 > - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
@@ -14,7 +16,7 @@
 > - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy object, growing strategy map smell, Map Key Strategy policy object, strategy collection vs policy object, behavior selector vs rule object, policy selector beginner, refund policy decision object, discount strategy map smell, strategy map rule explosion, strategy map beginner bridge, policy object beginner bridge, rule deserves policy object, rich decision result vs strategy result, strategy selector with policy object, policy registry beginner, 전략 맵 정책 객체, strategy map 커질 때, Map 으로 전략 고르기 정책 객체, 행동 선택기 vs 규칙 객체, 정책 객체 초급, 규칙 판정 객체, 환불 정책 decision, 할인 전략 맵 냄새, strategy map 에 if 가 늘어남
+retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy object, growing strategy map smell, Map Key Strategy policy object, strategy collection vs policy object, behavior selector vs rule object, policy selector beginner, refund policy decision object, discount strategy map smell, strategy map rule explosion, strategy map beginner bridge, policy object beginner bridge, rule deserves policy object, rich decision result vs strategy result, strategy selector with policy object, policy registry beginner, behavior selector stays map, policy object shape beginner, selector vs evaluate beginner, selector stays but rule moves, Map of policy objects selector, 전략 맵 정책 객체, strategy map 커질 때, Map 으로 전략 고르기 정책 객체, 행동 선택기 vs 규칙 객체, 정책 객체 초급, 규칙 판정 객체, 환불 정책 decision, 할인 전략 맵 냄새, strategy map 에 if 가 늘어남, 선택기는 남기고 규칙만 정책 객체로, 정책 객체 모양, 행동 선택기 유지
 
 ---
 
@@ -47,6 +49,25 @@ retrieval-anchor-keywords: policy object vs strategy map, strategy map to policy
 
 핵심은 자료구조가 아니다.
 `Map<Key, Something>`을 쓰더라도, 그 `Something`이 **단순 실행 방식**인지 **도메인 판정 규칙**인지가 더 중요하다.
+
+---
+
+## 먼저 이 4문장만 확인하면 된다
+
+아직 헷갈리면 아래 네 문장을 순서대로 보면 된다.
+
+1. key 하나로 누구를 고를지만 정하면 끝나는가
+2. lookup 뒤에 모두 같은 행동을 바로 실행하는가
+3. 호출자가 금액 말고도 이유, 허용 여부, 다음 액션까지 함께 필요로 하는가
+4. 새 요구사항이 "새 방식 추가"보다 "예외 규칙 추가"에 더 가까운가
+
+판단은 이렇게 하면 된다.
+
+- 1, 2가 "그렇다"면 strategy map으로 남겨도 되는 경우가 많다.
+- 3, 4가 "그렇다"면 rule 자체를 policy object로 올리는 편이 읽기 쉽다.
+
+즉 "map을 버릴까?"부터 고민할 필요는 없다.
+먼저 **지금 커지고 있는 것이 selector인지, rule인지**를 보면 된다.
 
 ---
 
@@ -84,6 +105,39 @@ public final class PaymentStrategySelector {
 - 새 항목은 "새 결제 방식"을 추가한다는 뜻이다.
 
 즉 이 코드는 "규칙을 판정한다"보다 "실행 방식을 고른다"에 가깝다.
+
+---
+
+## 맵이 커져도 그대로 selector로 남겨도 되는 경우
+
+초보자가 가장 자주 오해하는 지점이 이것이다.
+`Map<Key, Strategy>`가 커진다고 해서 무조건 policy object로 바꿔야 하는 것은 아니다.
+
+예를 들어 지역별 환불 규정이 다를 수 있다.
+그렇더라도 selector의 역할이 아래처럼 단순하면 map은 그대로 둬도 된다.
+
+```java
+public final class RefundPolicySelector {
+    private final Map<Region, RefundPolicy> policies;
+
+    public RefundPolicy select(Region region) {
+        RefundPolicy policy = policies.get(region);
+        if (policy == null) {
+            throw new IllegalArgumentException("unsupported region: " + region);
+        }
+        return policy;
+    }
+}
+```
+
+여기서 map이 하는 일은 여전히 단순하다.
+
+- `Region` key로 알맞은 후보를 고른다.
+- selector 자신은 환불 가능 여부를 판정하지 않는다.
+- 복잡한 규칙은 각 `RefundPolicy` 안으로 들어간다.
+
+즉 map의 크기보다 더 중요한 것은 **map 안에 규칙 판정이 새어 들어오는가**다.
+selector가 selector 역할에 머물면, 큰 map도 충분히 건강할 수 있다.
 
 ---
 
@@ -167,6 +221,15 @@ public final class VipDiscountPolicy implements DiscountPolicy {
 - `int` 하나보다 `DiscountDecision`이 금액과 이유를 함께 전한다.
 - 테스트 이름도 `coupon_already_applied_returns_zero_discount`처럼 규칙 문장에 가까워진다.
 
+여기서 중요한 포인트는 "전략 맵이 커졌다"가 아니다.
+더 정확히는 **전략 안쪽의 rule이 도메인 판정 언어를 요구하기 시작했다**는 것이다.
+
+- `discountAmount(...)` 하나로는 의도가 부족하다.
+- `0`이라는 숫자만으로는 왜 0인지 설명이 안 된다.
+- 호출자는 계산 결과뿐 아니라 판정 이유도 함께 써야 한다.
+
+이 순간이 "selector는 그대로 두고, rule을 policy object shape로 올릴 때"다.
+
 ---
 
 ## 전략 맵을 유지할지 묻는 체크리스트
@@ -198,26 +261,34 @@ public final class VipDiscountPolicy implements DiscountPolicy {
 
 ---
 
+## 가장 작은 리팩터링 순서
+
+처음부터 큰 추상화를 다시 짤 필요는 없다.
+보통은 아래 순서가 가장 안전하다.
+
+| 단계 | 유지하는 것 | 바꾸는 것 |
+|---|---|---|
+| 1 | 기존 `Map<Key, Strategy>` selector | 전략 구현 안의 큰 규칙 묶음을 찾는다 |
+| 2 | selector의 key lookup | `int`, `boolean` 같은 반환값을 `Decision` 객체로 바꾼다 |
+| 3 | selector의 선택 책임 | `calculate(...)`보다 `evaluate(...)`처럼 판정 이름을 드러낸다 |
+| 4 | 바깥 호출 흐름 | reason code, allowed, next action 같은 결과를 소비하게 만든다 |
+
+짧게 말하면 이렇다.
+
+- **selector는 남겨도 된다**
+- **rule이 policy object shape로 바뀌면 된다**
+
+즉 "strategy map vs policy object"를 완전 교체 관계로 보기보다,
+"어느 층이 selector이고 어느 층이 rule인가"를 다시 나누는 쪽이 초보자에게 더 정확한 그림이다.
+
+---
+
 ## 둘은 같이 쓸 수도 있다
 
 초보자가 자주 놓치는 부분은 이것이다.
 strategy map과 policy object는 반드시 둘 중 하나만 고르는 관계가 아니다.
 
-예를 들어 지역별 환불 규정이 다르면 이렇게 둘을 조합할 수 있다.
-
-```java
-public final class RefundPolicySelector {
-    private final Map<Region, RefundPolicy> policies;
-
-    public RefundPolicy select(Region region) {
-        RefundPolicy policy = policies.get(region);
-        if (policy == null) {
-            throw new IllegalArgumentException("unsupported region: " + region);
-        }
-        return policy;
-    }
-}
-```
+예를 들어 위의 `RefundPolicySelector`처럼 지역 key로 policy를 고른 뒤, 실제 판정은 policy object가 맡게 할 수 있다.
 
 ```java
 RefundPolicy policy = refundPolicySelector.select(order.region());

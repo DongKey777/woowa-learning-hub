@@ -9,16 +9,18 @@
 관련 문서:
 
 - [posix_spawn Attributes Primer](./posix-spawn-attributes-primer.md)
+- [/proc/<pid>/status Signal Fields Debugging Primer](./proc-pid-status-signal-fields-debugging-primer.md)
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 - [signals, process supervision](./signals-process-supervision.md)
+- [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)
 - [Session vs Process Group Primer](./session-vs-process-group-primer.md)
 - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: signal mask vs disposition bridge, blocked signal vs ignored signal, signal handler vs default action, signal disposition basics, fork exec signal inheritance, exec preserves signal mask, exec resets handlers, ignored signal preserved across exec, posix_spawn signal inheritance, posix_spawn setsigmask setsigdef, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, blocked signal child process, ignored signal child process, beginner signal inheritance primer
+retrieval-anchor-keywords: signal mask vs disposition bridge, signal mask disposition mental model, blocked vs ignored mental model, blocked signal vs ignored signal, signal handler vs default action, signal disposition basics, fork exec signal inheritance, exec preserves signal mask, exec resets handlers, ignored signal preserved across exec, posix_spawn signal inheritance, posix_spawn setsigmask setsigdef, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, blocked signal child process, ignored signal child process, signal mask 멘탈 모델, disposition 멘탈 모델, beginner signal inheritance primer, beginner handoff box, primer handoff box, signal inheritance 다음 문서, blocked vs ignored 다음 단계
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 먼저 signal에는 서로 다른 두 질문이 있다.
 
@@ -36,7 +38,7 @@ retrieval-anchor-keywords: signal mask vs disposition bridge, blocked signal vs 
 | default | signal별 기본 동작을 쓴다 | "모든 signal이 종료"라고 착각 |
 | handler | 프로그램이 등록한 함수를 실행한다 | "`exec()` 뒤에도 남는다"라고 착각 |
 
-엄밀히는 signal mask는 thread별, signal disposition은 process-wide 성질이다.  
+엄밀히는 signal mask는 thread별, signal disposition은 process-wide 성질이다.
 beginner 단계에서는 "child나 새 프로그램이 어떤 signal 상태로 시작하는가"를 보는 정도로 충분하다.
 
 ## API 경계에서 한 번에 보기
@@ -72,7 +74,7 @@ child: SIGINT blocked copy
 new program: still SIGINT blocked
 ```
 
-그래서 `Ctrl-C`에 바로 반응하지 않는다면 handler 문제가 아니라 **mask를 풀지 않은 문제**일 수 있다.  
+그래서 `Ctrl-C`에 바로 반응하지 않는다면 handler 문제가 아니라 **mask를 풀지 않은 문제**일 수 있다.
 `posix_spawn()`에서는 child initial mask를 empty set으로 주고 `POSIX_SPAWN_SETSIGMASK`를 켜면 이 혼동을 줄일 수 있다.
 
 ## 예제 2: ignored도 `exec()` 뒤에 남을 수 있다
@@ -91,7 +93,7 @@ SIGPIPE ignored
 still ignored
 ```
 
-이때는 `mask` 문제가 아니라 **disposition을 default로 돌릴지**의 문제다.  
+이때는 `mask` 문제가 아니라 **disposition을 default로 돌릴지**의 문제다.
 `posix_spawn()`에서는 `spawn_sigdefault`에 해당 signal을 넣고 `POSIX_SPAWN_SETSIGDEF`를 켜는 쪽을 본다.
 
 ## 예제 3: handler는 `fork()`까지만 복사되고 `exec()`에서 끊긴다
@@ -110,7 +112,7 @@ child before exec: same custom handler
 worker after exec: SIGTERM back to default
 ```
 
-`exec()`는 프로그램 이미지를 갈아끼우므로 예전 프로그램의 handler 함수 주소를 계속 쓸 수 없다.  
+`exec()`는 프로그램 이미지를 갈아끼우므로 예전 프로그램의 handler 함수 주소를 계속 쓸 수 없다.
 worker가 custom shutdown을 원하면 worker 코드가 스스로 handler를 다시 설치해야 한다.
 
 ## `posix_spawn()`에서 고르는 knob
@@ -126,7 +128,7 @@ worker가 custom shutdown을 원하면 worker 코드가 스스로 handler를 다
 - `SETSIGMASK`는 blocked/unblocked 문제다.
 - `SETSIGDEF`는 ignored/default 문제다.
 - 둘은 서로 대체제가 아니다.
-- `SIGCHLD` ignored 상태는 `posix_spawn()` 문맥에서 예외 규정이 있으므로 child reaping 설계가 중요하면 [signals, process supervision](./signals-process-supervision.md)으로 이어서 본다.
+- `SIGCHLD` ignored 상태는 child reaping 기대치를 바꿀 수 있으므로, default `SIGCHLD`와 명시적 `SIG_IGN`이 왜 다른지 보려면 [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)로 이어서 본다.
 
 ## 자주 섞이는 오해
 
@@ -145,6 +147,17 @@ worker가 custom shutdown을 원하면 worker 코드가 스스로 handler를 다
 
 > Q: `posix_spawn()`에서 child가 깨끗한 signal 상태로 시작하게 하려면 무엇을 보나요?
 > 핵심: blocked/unblocked는 `POSIX_SPAWN_SETSIGMASK`, ignore/default는 `POSIX_SPAWN_SETSIGDEF`를 본다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "`/proc/<pid>/status`에서 `SigBlk`/`SigIgn`/`SigCgt`/`SigPnd`를 실제 디버깅 표지판으로 읽고 싶다면": [/proc/<pid>/status Signal Fields Debugging Primer](./proc-pid-status-signal-fields-debugging-primer.md)
+> - "`posix_spawnattr_t`에서 process group과 signal knob를 한 장으로 다시 정리"하고 싶다면: [posix_spawn Attributes Primer](./posix-spawn-attributes-primer.md)
+> - "`Ctrl-C`가 어느 프로세스들에 가는지"를 session/job-control 그림으로 잇고 싶다면: [Session vs Process Group Primer](./session-vs-process-group-primer.md)
+> - "shutdown, reaping, supervision에서 signal을 어떻게 다루는지"를 운영 관점으로 보려면: [signals, process supervision](./signals-process-supervision.md)
+> - "`SIGCHLD` 기본 상태와 명시적 `SIG_IGN`이 왜 같은 뜻이 아닌지"를 child reaping 기준으로 묶고 싶다면: [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)
+> - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 한 줄 정리
 

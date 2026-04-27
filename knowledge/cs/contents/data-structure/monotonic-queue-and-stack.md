@@ -6,15 +6,29 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
+> - [Deque vs Stack Signal Card](./deque-vs-stack-signal-card.md)
 > - [Deque Router Example Pack](./deque-router-example-pack.md)
 > - [Sliding Window 패턴](../algorithm/sliding-window-patterns.md)
+> - [Monotonic Duplicate Rule Micro-Drill](./monotonic-duplicate-rule-micro-drill.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
 > - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
 > - [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)
+> - [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)
+> - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md)
 > - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
 > - [Deque](./applied-data-structures-overview.md#deque-덱)
 >
-> retrieval-anchor-keywords: monotonic queue, monotonic stack, monotonic deque, monotonic deque walkthrough, monotonic stack walkthrough, monotonic stack trace, monotonic queue walkthrough, sliding window maximum, sliding window minimum, sliding window maximum trace, sliding window minimum trace, plain deque to monotonic deque, monotonic deque vs 0-1 bfs, max in every window, min in every window, recent k maximum, recent k minimum, contiguous index window extrema, array window extrema, next greater element, next greater element walkthrough, next smaller element, histogram largest rectangle, histogram largest rectangle walkthrough, deque max min, fixed-size window extrema, amortized O(n), window extrema, candidate pruning, monotonic deque vs schedule overlap, meeting rooms not monotonic deque, calendar overlap not monotonic deque
+> retrieval-anchor-keywords: monotonic queue, monotonic stack, monotonic deque, monotonic deque walkthrough, monotonic stack walkthrough, monotonic stack trace, monotonic queue walkthrough, monotonic deque vs stack drill, shared input monotonic structures, deque vs stack decision, deque vs stack signal card, window answer read, index answer finalize, window expiration vs pop answer finalization, sliding window maximum, sliding window minimum, sliding window maximum trace, sliding window minimum trace, plain deque to monotonic deque, monotonic deque vs 0-1 bfs, max in every window, min in every window, recent k maximum, recent k minimum, contiguous index window extrema, array window extrema, next greater element, next greater element walkthrough, next smaller element, histogram largest rectangle, histogram largest rectangle walkthrough, deque max min, fixed-size window extrema, amortized O(n), window extrema, candidate pruning, monotonic deque duplicate handling, monotonic stack duplicate handling, monotonic operator boundary, monotonic duplicate rule drill, monotonic duplicate micro drill, monotonic less than vs less than equal, monotonic greater than vs greater than equal, monotonic beginner bridge, monotonic mental model, monotonic queue stack beginner, monotonic deque vs schedule overlap, meeting rooms not monotonic deque, calendar overlap not monotonic deque, 단조 덱 스택 비교 드릴, 단조 구조 공통 입력 비교, 단조 연산자 경계, 단조 큐 스택 입문, 단조 큐 스택 멘탈 모델, window 답 읽기, index 답 확정, 단조 덱 스택 신호 카드
+
+## 초급 5줄 멘탈 모델
+
+> 1. 단조 구조는 "좋은 후보만 줄 세워 남기는 필터"라고 먼저 생각하면 된다.
+> 2. 단조 스택은 `오른쪽에서 더 큰/작은 값이 나타나는 순간` 답이 확정되는 문제에 잘 맞는다.
+> 3. 단조 큐(보통 deque)는 `최근 k칸 window 안의 최대/최소`를 계속 물어보는 문제에 잘 맞는다.
+> 4. 새 값이 들어오면 뒤쪽의 약한 후보를 지우고, 범위를 벗어난 값은 앞쪽에서 버린다.
+> 5. 그래서 맨 앞(front)이나 맨 위(top)만 보면 지금 답 후보가 바로 보인다.
+
+예를 들어 `4, 2, 5`로 window 최대를 본다면 `5`가 들어오는 순간 `4`와 `2`는 더 이상 최대 후보가 아니어서 뒤에서 지운다.
 
 ## 핵심 개념
 
@@ -24,7 +38,7 @@
 - 단조 증가 스택: 스택 top부터 아래로 갈수록 값이 증가하거나 감소하는 형태를 유지한다.
 - 단조 큐: 슬라이딩 윈도우에서 구간의 최댓값/최솟값을 O(1)에 가까운 비용으로 얻기 위해 사용한다.
 
-핵심은 "들어온 원소보다 쓸모없는 원소는 뒤에서 제거한다"는 점이다.  
+핵심은 "들어온 원소보다 쓸모없는 원소는 뒤에서 제거한다"는 점이다.
 이렇게 하면 각 원소는 최대 한 번 들어오고 한 번 나가므로 전체 시간복잡도는 보통 O(n)이다.
 
 ## 라우팅 힌트
@@ -34,6 +48,7 @@
 - 질문이 `plain deque`, `monotonic deque`, `0-1 BFS`를 먼저 가르고 싶다면 [Deque Router Example Pack](./deque-router-example-pack.md)에서 세 갈래를 먼저 자르면 된다.
 - 질문이 `deque vs heap`, `lazy deletion으로도 되나`, `왜 monotonic deque가 더 낫나`처럼 구조 선택이 먼저 막히면 [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)로 가면 된다.
 - 질문이 `next greater element walkthrough`, `오큰수 trace`, `histogram largest rectangle walkthrough`처럼 단조 스택을 손으로 추적하고 싶다면 [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)로 가면 된다.
+- 질문이 `deque를 써야 하나 stack을 써야 하나`, `같은 입력으로 둘 차이를 먼저 보고 싶다`면 [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md)로 시작하면 된다.
 - 질문이 `sliding window maximum`, `sliding window minimum`, `최근 k개 중 최대/최소`처럼 윈도우 극값이면 이 문서가 더 직접적인 라우트다.
 - 질문이 `meeting rooms`, `reservation overlap`, `calendar booking count`처럼 일정 겹침/배정이면 [Sweep Line Overlap Counting](../algorithm/sweep-line-overlap-counting.md)이나 [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)로 가야 한다.
 - 핵심 차이는 윈도우 자체가 아니라 상태 구조다. 극값 문제는 `Map`보다 `deque`가 필요하다.
@@ -56,10 +71,10 @@
 
 ### 2. 스택과 큐의 차이
 
-단조 스택은 보통 "다음 큰 수"처럼 한 번 훑는 문제에 맞고,  
+단조 스택은 보통 "다음 큰 수"처럼 한 번 훑는 문제에 맞고,
 단조 큐는 "고정 길이 구간"을 이동시키는 슬라이딩 윈도우에 맞다.
 
-큐는 front에서만 오래된 원소를 제거하고,  
+큐는 front에서만 오래된 원소를 제거하고,
 스택은 top에서만 후보를 제거한다.
 
 ### 3. 시간복잡도 감각
@@ -86,7 +101,7 @@
 
 ### 시나리오 2: 다음 큰 수
 
-배열을 왼쪽에서 오른쪽으로 보면서, 현재 값보다 작은 값은 앞으로도 답이 될 수 없다.  
+배열을 왼쪽에서 오른쪽으로 보면서, 현재 값보다 작은 값은 앞으로도 답이 될 수 없다.
 이때 단조 스택은 작은 후보를 밀어내고, 다음 더 큰 값이 등장했을 때 바로 답을 확정한다.
 
 ## 코드로 보기

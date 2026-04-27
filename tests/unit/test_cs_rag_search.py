@@ -28,6 +28,26 @@ from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, searcher, signal_rules
 
+GOLDEN_FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
+
+
+def _load_golden_fixture_payload() -> dict:
+    with GOLDEN_FIXTURE_PATH.open(encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def _load_golden_fixture_query(query_id: str) -> dict:
+    payload = _load_golden_fixture_payload()
+    for query in payload.get("queries", []):
+        if query.get("id") == query_id:
+            return query
+    raise KeyError(f"unknown CS RAG golden query fixture: {query_id}")
+
+
+def _load_stable_full_mode_fixture_contract() -> dict[str, object]:
+    payload = _load_golden_fixture_payload()
+    return payload.get("_meta", {}).get("stable_full_mode_fixture_queries", {})
+
 
 def _chunk(
     doc_id: str,
@@ -83,6 +103,17 @@ FIXTURES = [
         (
             "transaction isolation level 과 MVCC, phantom read, non-repeatable read, deadlock 을 "
             "설명하는 기초 문서다."
+        ),
+    ),
+    _chunk(
+        "c1",
+        "contents/database/read-committed-vs-repeatable-read-anomalies.md",
+        "Read Committed와 Repeatable Read의 이상 현상 비교",
+        "database",
+        "Beginner anomaly overview",
+        (
+            "read committed, repeatable read, phantom read, non-repeatable read 같은 이상 현상을 "
+            "입문자 큰 그림으로 먼저 비교하고 optimistic lock 전에 anomaly vocabulary 를 맞춘다."
         ),
     ),
     _chunk(
@@ -152,6 +183,28 @@ FIXTURES = [
         ),
     ),
     _chunk(
+        "e1",
+        "contents/network/keepalive-connection-reuse-basics.md",
+        "Keep-Alive and Connection Reuse Basics",
+        "network",
+        "HTTP connection reuse beginner primer",
+        (
+            "keep-alive connection reuse basics 문서는 persistent connection, idle timeout, "
+            "TCP 연결 재사용, keep-alive 큰 그림을 입문자 관점으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "e2",
+        "contents/network/http2-http3-connection-reuse-coalescing.md",
+        "HTTP/2, HTTP/3 Connection Reuse and Coalescing",
+        "network",
+        "Cross-origin reuse deep dive",
+        (
+            "http2 http3 connection reuse coalescing 문서는 authority coalescing, origin frame, "
+            "alt-svc, 421 retry, connection pooling policy 같은 운영 심화 주제를 다룬다."
+        ),
+    ),
+    _chunk(
         "f",
         "contents/system-design/backpressure-and-load-shedding-design.md",
         "Backpressure and Load Shedding 설계",
@@ -171,6 +224,28 @@ FIXTURES = [
         (
             "idempotency key 와 request deduplication 은 POST 중복 요청 방지, request fingerprint, "
             "dedup store, TTL, duplicate suppression 을 함께 설명하는 기초 문서다."
+        ),
+    ),
+    _chunk(
+        "f4",
+        "contents/database/connection-pool-basics.md",
+        "Connection Pool Basics",
+        "database",
+        "Why connection pools exist",
+        (
+            "connection pool basics 는 db connection reuse, hikari cp, connection timeout, "
+            "pool exhaustion 을 처음 배우는 백엔드 학습자 기준으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "f5",
+        "contents/database/transaction-locking-connection-pool-primer.md",
+        "Transaction Locking and Connection Pool Primer",
+        "database",
+        "Operational lock/pool interplay",
+        (
+            "transaction locking connection pool primer 는 long transaction, lock wait timeout, "
+            "pool starvation, retry storm, connection leak triage 같은 운영 문제를 다룬다."
         ),
     ),
     _chunk(
@@ -208,6 +283,44 @@ FIXTURES = [
         ),
     ),
     _chunk(
+        "g1",
+        "contents/security/authentication-authorization-session-foundations.md",
+        "Authentication, Authorization, and Session Foundations",
+        "security",
+        "Authentication and authorization foundations",
+        (
+            "authentication authorization session foundations 문서는 로그인 흐름, "
+            "authentication, authorization, session vs jwt, stateful session 과 "
+            "stateless token 차이를 백엔드 입문자 기준으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "g1a",
+        "contents/security/session-cookie-jwt-basics.md",
+        "세션·쿠키·JWT 기초",
+        "security",
+        "Session cookie JWT basics",
+        (
+            "session cookie jwt basics 문서는 cookie session jwt browser flow, http "
+            "stateless login state, jsessionid, server session vs jwt, login state "
+            "persistence, why login stays, stay signed in, browser remembers my login, "
+            "keep me signed in, and token based authentication 를 입문자 기준으로 "
+            "설명한다."
+        ),
+    ),
+    _chunk(
+        "g1b",
+        "contents/network/http-state-session-cache.md",
+        "HTTP State Session Cache",
+        "network",
+        "HTTP stateless basics",
+        (
+            "http state session cache 문서는 http stateless request response, cookie, "
+            "session, cache, browser cache, server cache, and why http itself does not "
+            "remember prior requests 를 설명한다."
+        ),
+    ),
+    _chunk(
         "h",
         "contents/security/jwt-signature-verification-failure-playbook.md",
         "JWT Signature Verification Failure Playbook",
@@ -228,6 +341,96 @@ FIXTURES = [
             "@Transactional 은 controller 나 repository 가 아니라 application service layer "
             "boundary 에 두고 self invocation 을 피하며 remote call 은 가능하면 transaction "
             "밖으로 빼야 한다."
+        ),
+    ),
+    _chunk(
+        "i1",
+        "contents/spring/spring-transactional-basics.md",
+        "Spring Transactional Basics",
+        "spring",
+        "Transactional beginner primer",
+        (
+            "spring transactional basics 문서는 transactional annotation basics, spring proxy "
+            "transaction, rollback 기본 규칙을 입문자 큰 그림으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "i2",
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+        "Spring Request Pipeline and Bean Container Foundations",
+        "spring",
+        "DispatcherServlet beginner primer",
+        (
+            "dispatcher servlet beginner primer 는 요청 흐름, bean container foundation, "
+            "controller service repository roles 를 처음 배우는 학습자 관점으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "i2a",
+        "contents/spring/spring-mvc-controller-basics.md",
+        "Spring MVC Controller Basics",
+        "spring",
+        "Controller mapping deep dive",
+        (
+            "spring mvc controller basics 는 handler mapping, argument resolver, response body, "
+            "exception resolver, view resolver 를 중심으로 controller 계층을 자세히 설명한다."
+        ),
+    ),
+    _chunk(
+        "i3",
+        "contents/spring/spring-ioc-di-basics.md",
+        "Spring IoC and DI Basics",
+        "spring",
+        "IoC/DI beginner comparison",
+        (
+            "spring ioc di basics 문서는 inversion of control, dependency injection, 객체 생성 "
+            "책임 위임을 비교하며 DI vs IoC 차이를 입문자 기준으로 정리한다."
+        ),
+    ),
+    _chunk(
+        "i4",
+        "contents/spring/spring-transaction-propagation-deep-dive.md",
+        "Spring Transaction Propagation Deep Dive",
+        "spring",
+        "Propagation and nested boundary",
+        (
+            "transaction propagation deep dive 문서는 required requires_new nested propagation, "
+            "self invocation trap, remote call boundary 를 운영 관점으로 분석한다."
+        ),
+    ),
+    _chunk(
+        "i5",
+        "contents/spring/spring-bean-definition-overriding-semantics.md",
+        "Spring Bean Definition Overriding Semantics",
+        "spring",
+        "Bean resolution deep dive",
+        (
+            "bean definition overriding semantics 문서는 bean override collision, @Primary, "
+            "@Qualifier, conditional bean activation 충돌 사례를 심화로 다룬다."
+        ),
+    ),
+    _chunk(
+        "i6",
+        "contents/spring/spring-rollbackonly-vs-checked-exception-commit-surprise-card.md",
+        "Spring RollbackOnly vs Checked Exception Commit Surprise Card",
+        "spring",
+        "Operational incident primer",
+        (
+            "rollback incident primer operational triage card 는 rollbackOnly, "
+            "unexpectedRollbackException, checked exception commit surprise, transaction "
+            "rollback, isolation, commit failure 를 한 카드에 묶어 운영 사고처럼 소개한다."
+        ),
+    ),
+    _chunk(
+        "i7",
+        "contents/spring/spring-unexpectedrollbackexception-mini-debugging-card.md",
+        "Spring UnexpectedRollbackException Mini Debugging Card",
+        "spring",
+        "Rollback debugging card",
+        (
+            "unexpectedRollbackException mini debugging card 는 rollback incident, debugging, "
+            "triage, operational card, rollback-only 표시, transaction rollback, isolation, "
+            "commit failure 를 빠르게 훑는 Spring 운영 문서다."
         ),
     ),
     _chunk(
@@ -259,11 +462,50 @@ FIXTURES = [
         "design-pattern",
         "Projection lag and freshness budget",
         (
-            "CQRS read model staleness, projection lag, read-your-writes, freshness budget, eventual "
-            "consistency UX 계약을 다룬다.\n\n"
-            "retrieval-anchor-keywords: 읽기 모델 최신성, 읽기 모델 지연, "
-            "방금 저장했는데 안 보여, 저장했는데 옛값이 보임, 예전 값이 보임, "
-            "쓴 직후 읽기 보장, 방금 쓴 값 읽기, 오래된 값 조회"
+            "한 줄 모델: write model 은 먼저 성공하고 read model 은 projection lag 만큼 "
+            "뒤따라온다. 그래서 저장 직후 조회에서는 방금 쓴 값 대신 예전 데이터나 예전 목록이 "
+            "잠깐 보일 수 있다.\n\n"
+            "CQRS read model staleness, read model freshness, projection lag, read-your-writes, "
+            "freshness budget, eventual consistency UX 계약을 다루는 입문 primer 다.\n\n"
+            "입문 체크포인트: 저장 직후 목록 최신화가 안 됨, 저장했는데 목록이 그대로, 수정했는데 "
+            "화면엔 예전 목록이 보여, 저장한 뒤 화면 반영이 늦음, 저장 직후 조회하면 예전 데이터가 "
+            "보임, 저장은 됐는데 조회가 달라, 수정했는데 목록은 그대로야.\n\n"
+            "자주 헷갈리는 비교: rollback window 와 transaction rollback 차이, rollback "
+            "window vs transaction rollback 구분, 롤백 윈도우와 트랜잭션 롤백 헷갈림.\n\n"
+            "관련 문서: Read Model Cutover Guardrails, Projection Freshness SLO Pattern\n\n"
+            "retrieval-anchor-keywords: 읽기 모델 최신성, 읽기 모델 지연, 읽기 모델 반영 지연, "
+            "read model freshness, 방금 저장했는데 안 보여, 저장 직후 조회, 저장 직후 목록 "
+            "최신화가 안 됨, 저장했는데 목록이 그대로, 수정했는데 화면엔 예전 목록이 보여, "
+            "저장한 뒤 화면 반영이 늦음, 저장했는데 옛값이 보임, 예전 값이 보임, 예전 데이터가 "
+            "보임, 저장은 됐는데 조회가 달라, 수정했는데 목록은 그대로야, rollback window, "
+            "transaction rollback, 롤백 윈도우, 트랜잭션 롤백, "
+            "차이, 구분, 헷갈림, 쓴 직후 읽기 보장, 방금 쓴 값 읽기, 오래된 값 조회"
+        ),
+    ),
+    _chunk(
+        "l1",
+        "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+        "Session Pinning vs Version-Gated Strict Reads",
+        "design-pattern",
+        "Strict-read routing mental model",
+        (
+            "session pinning vs version gated strict reads primer 는 session pinning strict read "
+            "와 expected version strict read, watermark gated strict read 차이가 뭐야 같은 "
+            "입문 질문에 답한다. actor scoped pinning, cross screen read your writes, strict "
+            "screen routing window 를 큰 그림으로 먼저 비교하고 cutover guardrails 나 "
+            "fallback contract 같은 운영 playbook 전에 읽는 bridge 문서다."
+        ),
+    ),
+    _chunk(
+        "l2",
+        "contents/design-pattern/strict-read-fallback-contracts.md",
+        "Strict Read Fallback Contracts",
+        "design-pattern",
+        "Fallback ownership and routing",
+        (
+            "strict read fallback contracts 문서는 strict screen fallback, fallback ownership, "
+            "fallback routing, fallback rate contract, watermark gated fallback, version gated "
+            "fallback, write model fallback, cutover fallback 같은 운영 playbook 주제를 다룬다."
         ),
     ),
     _chunk(
@@ -347,7 +589,8 @@ FIXTURES = [
         (
             "schema migration, partitioning, cdc, cqrs 를 한 번에 훑는 survey 문서다. broad "
             "survey routing 으로 schema evolution compatibility, cdc outbox, projection rebuild, "
-            "read cutover, cutover guardrail 을 연결한다."
+            "read cutover, cutover guardrail 을 연결한다. beginner cqrs survey routing 에서만 "
+            "read model freshness 와 projection overview 를 짧게 연결한다."
         ),
     ),
     _chunk(
@@ -976,6 +1219,21 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, primer_doc, decision_doc)
         self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
 
+    def test_beginner_transaction_anomaly_primer_query_prefers_anomaly_doc_over_locking_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "트랜잭션 격리 수준이랑 locking 을 처음 배우는데 optimistic/pessimistic lock 전에 "
+            "read committed, repeatable read, phantom read 같은 이상 현상 큰 그림부터 설명해줘",
+            top_k=4,
+        )
+
+        anomaly_doc = "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+        locking_primer = "contents/database/transaction-isolation-locking.md"
+        self.assert_path_rank_at_most(hits, anomaly_doc, 1)
+        self.assert_ranks_ahead(hits, anomaly_doc, locking_primer)
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
+
     def test_lock_only_intro_query_prefers_primer_doc_over_decision_framework(self) -> None:
         hits = self._search(
             "optimistic/pessimistic lock 을 처음 배우는데 언제 쓰는지 말고 큰 그림부터 설명해줘",
@@ -1001,6 +1259,148 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, primer_doc, read_view_doc)
         self.assert_ranks_ahead(hits, primer_doc, undo_doc)
         self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
+
+    def test_database_focused_transaction_rollback_query_prefers_transaction_primer_over_projection_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "트랜잭션 롤백이 왜 필요한지와 isolation level 에서 dirty read, phantom read 를 어떻게 막는지 설명해줘",
+            top_k=5,
+        )
+
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        projection_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+
+        self.assert_path_rank_at_most(hits, tx_doc, 1)
+        if projection_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, tx_doc, projection_doc)
+        else:
+            self.assertNotIn(projection_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_transaction_rollback_incident_primer_query_stays_in_database_family(self) -> None:
+        hits = self._search(
+            "transaction rollback incident primer 를 beginner 관점에서 설명해줘",
+            learning_points=["transaction_consistency"],
+            top_k=5,
+        )
+
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, tx_doc, 1)
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
+
+    def test_empty_learning_points_matches_none_for_beginner_transaction_primer_query(self) -> None:
+        prompt = (
+            "트랜잭션 격리 수준이랑 locking 을 처음 배우는데 optimistic pessimistic lock 전에 "
+            "read committed repeatable read phantom read 큰 그림부터 설명해줘"
+        )
+
+        none_hits = self._search(prompt, learning_points=None, top_k=5)
+        empty_hits = self._search(prompt, learning_points=[], top_k=5)
+
+        anomaly_doc = "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assertEqual(
+            [hit["path"] for hit in empty_hits[:3]],
+            [hit["path"] for hit in none_hits[:3]],
+        )
+        self.assertEqual(
+            [hit["category"] for hit in empty_hits[:3]],
+            [hit["category"] for hit in none_hits[:3]],
+        )
+        self.assert_path_rank_at_most(empty_hits, anomaly_doc, 1)
+        self.assert_path_rank_at_most(empty_hits, tx_doc, 2)
+        self.assertTrue(all(hit["category"] == "database" for hit in empty_hits[:3]), empty_hits[:3])
+
+    def test_commit_failure_rollback_incident_primer_keeps_spring_operational_cards_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "commit failure rollback incident primer 를 beginner 관점에서 설명해줘",
+            learning_points=["transaction_consistency"],
+            top_k=5,
+        )
+
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        spring_doc = (
+            "contents/spring/spring-rollbackonly-vs-checked-exception-commit-surprise-card.md"
+        )
+
+        self.assert_path_rank_at_most(hits, tx_doc, 1)
+        self.assertNotIn(spring_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:4]), hits[:4])
+
+    def test_transaction_anomaly_incident_primer_query_keeps_spring_operational_cards_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "dirty read phantom read rollback incident primer 를 beginner 큰 그림으로 설명해줘",
+            learning_points=["transaction_consistency"],
+            top_k=5,
+        )
+
+        anomaly_doc = "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        deadlock_doc = "contents/database/deadlock-case-study.md"
+
+        self.assert_path_rank_at_most(hits, anomaly_doc, 2)
+        self.assert_path_rank_at_most(hits, tx_doc, 2)
+        self.assertNotIn(deadlock_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
+
+    def test_dirty_read_incident_primer_query_stays_on_database_anomaly_primers(
+        self,
+    ) -> None:
+        hits = self._search(
+            "dirty read incident primer 를 beginner 관점에서 설명해줘",
+            learning_points=["transaction_consistency"],
+            top_k=5,
+        )
+
+        anomaly_doc = "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+        spring_doc = "contents/spring/spring-transactional-basics.md"
+
+        self.assert_path_rank_at_most(hits, anomaly_doc, 2)
+        spring_ranked_paths = [hit["path"] for hit in hits]
+        if spring_doc in spring_ranked_paths:
+            self.assert_ranks_ahead(hits, anomaly_doc, spring_doc)
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:4]), hits[:4])
+
+    def test_phantom_read_isolation_incident_primer_query_keeps_database_family_ahead_of_spring(
+        self,
+    ) -> None:
+        hits = self._search(
+            "phantom read isolation incident primer 를 beginner 관점에서 설명해줘",
+            learning_points=["transaction_consistency"],
+            top_k=5,
+        )
+
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        anomaly_doc = "contents/database/read-committed-vs-repeatable-read-anomalies.md"
+        spring_doc = "contents/spring/spring-transactional-basics.md"
+
+        self.assert_path_rank_at_most(hits, tx_doc, 1)
+        self.assert_path_rank_at_most(hits, anomaly_doc, 2)
+        self.assertNotIn(spring_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
+
+    def test_mixed_rollback_window_and_korean_transaction_rollback_without_primer_cue_keeps_db_docs_ahead_of_projection_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "rollback window 랑 트랜잭션 롤백 차이가 뭐야",
+            top_k=5,
+        )
+
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        decision_doc = "contents/database/transaction-boundary-isolation-locking-decision-framework.md"
+        projection_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+
+        self.assert_path_rank_at_most(hits, tx_doc, 2)
+        self.assert_path_rank_at_most(hits, decision_doc, 2)
+        self.assert_ranks_ahead(hits, tx_doc, projection_doc)
+        self.assert_ranks_ahead(hits, decision_doc, projection_doc)
 
     def test_gap_lock_query_prefers_database_locking_doc(self) -> None:
         hits = self._search(
@@ -1091,6 +1491,288 @@ class CsRagSearchTest(unittest.TestCase):
         playbook_doc = "contents/security/jwt-signature-verification-failure-playbook.md"
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, playbook_doc)
+
+    def test_dispatcherservlet_shortform_query_prefers_beginner_request_pipeline_primer(self) -> None:
+        hits = self._search(
+            "DispatcherServlet 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_dispatcher_servlet_spacing_variant_prefers_beginner_request_pipeline_primer(self) -> None:
+        hits = self._search(
+            "Dispatcher Servlet 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_dispatcher_servlet_lowercase_variant_prefers_beginner_request_pipeline_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "dispatcher servlet 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_keepalive_shortform_query_prefers_connection_reuse_primer_over_coalescing_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "HTTP keep-alive 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/network/keepalive-connection-reuse-basics.md"
+        deep_dive_doc = "contents/network/http2-http3-connection-reuse-coalescing.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_keep_alive_spacing_shortform_query_prefers_connection_reuse_primer_over_coalescing_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "HTTP keep alive 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/network/keepalive-connection-reuse-basics.md"
+        deep_dive_doc = "contents/network/http2-http3-connection-reuse-coalescing.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_connection_pool_shortform_query_prefers_pool_basics_over_locking_operational_doc(
+        self,
+    ) -> None:
+        hits = self._search(
+            "connection pool 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/database/connection-pool-basics.md"
+        deep_dive_doc = "contents/database/transaction-locking-connection-pool-primer.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_connection_pooling_shortform_query_prefers_pool_basics_over_locking_operational_doc(
+        self,
+    ) -> None:
+        hits = self._search(
+            "connection pooling 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/database/connection-pool-basics.md"
+        deep_dive_doc = "contents/database/transaction-locking-connection-pool-primer.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_shortform_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "@Transactional 이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_shortform_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What is @Transactional?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_plain_alias_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What is transactional in Spring?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_plain_alias_meaning_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What does transactional mean in Spring?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_short_alias_without_question_words_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "transactional in spring",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_token_pair_alias_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "spring transactional",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_why_use_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "Why use @Transactional?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transactional_english_propagation_query_prefers_propagation_deep_dive_over_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What does propagation mean in @Transactional?",
+            top_k=4,
+        )
+
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        self.assert_path_rank_at_most(hits, deep_dive_doc, 1)
+        self.assert_ranks_ahead(hits, deep_dive_doc, primer_doc)
+
+    def test_di_vs_ioc_shortform_query_prefers_ioc_di_basics_over_bean_override_semantics(
+        self,
+    ) -> None:
+        hits = self._search(
+            "DI vs IoC 차이가 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-ioc-di-basics.md"
+        deep_dive_doc = "contents/spring/spring-bean-definition-overriding-semantics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_di_and_ioc_shortform_query_prefers_ioc_di_basics_over_bean_override_semantics(
+        self,
+    ) -> None:
+        hits = self._search(
+            "DI와 IoC 차이가 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-ioc-di-basics.md"
+        deep_dive_doc = "contents/spring/spring-bean-definition-overriding-semantics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_session_vs_jwt_shortform_query_prefers_session_cookie_jwt_primer_over_auth_foundation_and_jwt_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "세션이랑 JWT 차이가 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/security/session-cookie-jwt-basics.md"
+        auth_foundation_doc = "contents/security/authentication-authorization-session-foundations.md"
+        deep_dive_doc = "contents/security/jwt-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+        http_state_doc = "contents/network/http-state-session-cache.md"
+        if http_state_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
+
+    def test_session_vs_jwt_english_shortform_query_prefers_session_cookie_jwt_primer_over_auth_foundation_and_jwt_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "session vs JWT what is the difference?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/security/session-cookie-jwt-basics.md"
+        auth_foundation_doc = "contents/security/authentication-authorization-session-foundations.md"
+        deep_dive_doc = "contents/security/jwt-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+        http_state_doc = "contents/network/http-state-session-cache.md"
+        if http_state_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
+
+    def test_cookie_login_state_colloquial_queries_prefer_session_cookie_jwt_primer_over_auth_foundation_and_jwt_deep_dive(
+        self,
+    ) -> None:
+        prompts = (
+            "JWT랑 쿠키 둘 다 로그인 유지에 쓰는 거야?",
+            "왜 쿠키 있으면 로그인 안 풀려?",
+            "Why do cookies keep me signed in?",
+            "브라우저가 로그인 기억하는 건 세션이야 JWT야?",
+            "Why am I still logged in when the browser remembers my cookie?",
+        )
+
+        primer_doc = "contents/security/session-cookie-jwt-basics.md"
+        auth_foundation_doc = "contents/security/authentication-authorization-session-foundations.md"
+        deep_dive_doc = "contents/security/jwt-deep-dive.md"
+        http_state_doc = "contents/network/http-state-session-cache.md"
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(
+                    prompt,
+                    top_k=4,
+                )
+
+                self.assert_path_rank_at_most(hits, primer_doc, 1)
+                self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
+                self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+                if http_state_doc in [hit["path"] for hit in hits]:
+                    self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
 
     def test_timeout_query_prefers_retry_budget_doc(self) -> None:
         hits = self._search(
@@ -1256,6 +1938,57 @@ class CsRagSearchTest(unittest.TestCase):
             "contents/design-pattern/read-model-staleness-read-your-writes.md",
             1,
         )
+
+    def test_additional_korean_read_model_symptom_queries_use_primer_doc_anchors_without_signal_expansion(
+        self,
+    ) -> None:
+        prompts = {
+            "query_old_data": "저장 직후 조회하면 예전 데이터가 보임",
+            "list_not_refreshing": "저장 직후 목록 최신화가 안 됨",
+            "list_still_same": "저장했는데 목록이 그대로",
+            "screen_shows_old_list": "수정했는데 화면엔 예전 목록이 보여",
+            "update_visible_late": "저장한 뒤 화면 반영이 늦음",
+            "write_read_mismatch": "저장은 됐는데 조회가 달라",
+            "updated_but_list_stale": "수정했는데 목록은 그대로야",
+        }
+
+        with mock.patch.object(
+            signal_rules,
+            "expand_query",
+            side_effect=lambda prompt, topic_hints=None: searcher._fallback_tokens(prompt),
+        ):
+            for cue, prompt in prompts.items():
+                with self.subTest(cue=cue):
+                    hits = self._search(prompt, top_k=3)
+                    self.assert_path_rank_at_most(
+                        hits,
+                        "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                        1,
+                    )
+
+    def test_generic_korean_crud_list_update_prompt_avoids_projection_staleness_primer(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("generic_crud_korean_list_read_but_update_fails")
+        hits = self._search(query["prompt"], top_k=5)
+
+        primer_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        candidate_paths = [query["expected_path"], *query.get("acceptable_paths", [])]
+        top_paths = [hit["path"] for hit in hits[:3]]
+
+        self.assertTrue(any(path in top_paths for path in candidate_paths), hits)
+        self.assertNotIn(primer_doc, top_paths)
+
+    def test_generic_korean_crud_api_difference_prompt_prefers_beginner_layering_docs(self) -> None:
+        query = _load_golden_fixture_query("generic_crud_korean_update_vs_read_api_difference")
+        hits = self._search(query["prompt"], top_k=5)
+
+        primer_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        candidate_paths = [query["expected_path"], *query.get("acceptable_paths", [])]
+        top_paths = [hit["path"] for hit in hits[:3]]
+
+        self.assertTrue(any(path in top_paths for path in candidate_paths), hits)
+        self.assertNotIn(primer_doc, top_paths)
 
     def test_event_upcaster_query_prefers_compatibility_doc(self) -> None:
         hits = self._search(
@@ -1563,7 +2296,7 @@ class CsRagSearchTest(unittest.TestCase):
         hits = self._search(
             "Loom 이후 datasource pool sizing, DB safe concurrency, outbound HTTP bulkhead "
             "예산을 어떻게 맞춰?",
-            top_k=5,
+            top_k=7,
         )
 
         budget_doc = "contents/language/java/connection-budget-alignment-after-loom.md"
@@ -1926,6 +2659,170 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
         self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
+    def test_projection_beginner_navigator_bridge_query_surfaces_neighbor_docs_before_cqrs_survey(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 개요 문서랑 주변 형제 문서를 같이 보고 싶어. CQRS 전체 survey 말고 projection 큰 그림부터 보고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+        cqrs_survey_doc = "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 4)
+        top_paths = [hit["path"] for hit in hits]
+        if cqrs_survey_doc in top_paths:
+            self.assert_ranks_ahead(hits, guardrail_doc, cqrs_survey_doc)
+            self.assert_ranks_ahead(hits, lag_budget_doc, cqrs_survey_doc)
+        else:
+            self.assertNotIn(cqrs_survey_doc, top_paths)
+
+    def test_projection_beginner_staleness_overview_query_surfaces_neighbor_docs_before_cqrs_survey(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 projection 을 처음 배우는데 stale read 때문에 예전 값이 왜 보이는지 "
+            "staleness overview doc 이랑 nearby docs 를 같이 보고 싶어. CQRS 전체 "
+            "overview 말고 projection 큰 그림부터 보고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+        cqrs_survey_doc = "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 4)
+        top_paths = [hit["path"] for hit in hits]
+        if cqrs_survey_doc in top_paths:
+            self.assert_ranks_ahead(hits, guardrail_doc, cqrs_survey_doc)
+            self.assert_ranks_ahead(hits, lag_budget_doc, cqrs_survey_doc)
+        else:
+            self.assertNotIn(cqrs_survey_doc, top_paths)
+
+    def test_projection_beginner_overview_docs_sibling_docs_query_surfaces_neighbor_docs_before_cqrs_survey(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 overview docs 랑 "
+            "nearby sibling docs 를 같이 보고 싶어. broad CQRS survey routes "
+            "말고 projection 큰 그림부터 보고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+        cqrs_survey_doc = "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 4)
+        top_paths = [hit["path"] for hit in hits]
+        if cqrs_survey_doc in top_paths:
+            self.assert_ranks_ahead(hits, guardrail_doc, cqrs_survey_doc)
+            self.assert_ranks_ahead(hits, lag_budget_doc, cqrs_survey_doc)
+        else:
+            self.assertNotIn(cqrs_survey_doc, top_paths)
+
+    def test_projection_beginner_entrypoint_bridge_query_surfaces_neighbor_docs_before_cqrs_survey(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 entrypoint primer "
+            "랑 bridge docs, linked sibling docs 를 같이 보고 싶어. broad CQRS "
+            "survey routes 말고 projection 큰 그림부터 보고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+        cqrs_survey_doc = "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 4)
+        top_paths = [hit["path"] for hit in hits]
+        if cqrs_survey_doc in top_paths:
+            self.assert_ranks_ahead(hits, guardrail_doc, cqrs_survey_doc)
+            self.assert_ranks_ahead(hits, lag_budget_doc, cqrs_survey_doc)
+        else:
+            self.assertNotIn(cqrs_survey_doc, top_paths)
+
+    def test_introductory_session_pinning_vs_expected_version_query_keeps_strict_read_primer_first(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query(
+            "strict_read_intro_session_pinning_vs_expected_version"
+        )
+        hits = self._search(query["prompt"], top_k=5)
+
+        primer_doc = query["expected_path"]
+        fallback_doc = "contents/design-pattern/strict-read-fallback-contracts.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        paths = [hit["path"] for hit in hits]
+
+        self.assert_path_rank_at_most(hits, primer_doc, int(query.get("max_rank", 1)))
+        self.assert_ranks_ahead(hits, primer_doc, fallback_doc)
+        if guardrail_doc in paths:
+            self.assert_ranks_ahead(hits, primer_doc, guardrail_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_session_pinning_vs_watermark_gate_query_keeps_strict_read_primer_first(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query(
+            "strict_read_intro_session_pinning_vs_watermark_gate"
+        )
+        hits = self._search(query["prompt"], top_k=5)
+
+        primer_doc = query["expected_path"]
+        fallback_doc = "contents/design-pattern/strict-read-fallback-contracts.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        paths = [hit["path"] for hit in hits]
+
+        self.assert_path_rank_at_most(hits, primer_doc, int(query.get("max_rank", 1)))
+        self.assert_ranks_ahead(hits, primer_doc, fallback_doc)
+        if guardrail_doc in paths:
+            self.assert_ranks_ahead(hits, primer_doc, guardrail_doc)
+        self.assertEqual(hits[0]["category"], "design-pattern")
+
+    def test_introductory_session_pinning_vs_version_gated_queries_keep_strict_read_primer_ahead_of_playbooks_and_auth_noise(
+        self,
+    ) -> None:
+        fallback_doc = "contents/design-pattern/strict-read-fallback-contracts.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        auth_doc = "contents/security/authentication-authorization-session-foundations.md"
+        session_cookie_doc = "contents/security/session-cookie-jwt-basics.md"
+
+        for query_id in (
+            "strict_read_intro_session_pinning_vs_version_gated_playbook_contrast",
+            "strict_read_intro_session_pinning_vs_version_gated_shortform",
+        ):
+            with self.subTest(query_id=query_id):
+                query = _load_golden_fixture_query(query_id)
+                hits = self._search(query["prompt"], top_k=5)
+                paths = [hit["path"] for hit in hits]
+                primer_doc = query["expected_path"]
+
+                self.assert_path_rank_at_most(hits, primer_doc, int(query.get("max_rank", 1)))
+                self.assert_ranks_ahead(hits, primer_doc, fallback_doc)
+                if guardrail_doc in paths:
+                    self.assert_ranks_ahead(hits, primer_doc, guardrail_doc)
+                if auth_doc in paths:
+                    self.assert_ranks_ahead(hits, primer_doc, auth_doc)
+                if session_cookie_doc in paths:
+                    self.assert_ranks_ahead(hits, primer_doc, session_cookie_doc)
+                self.assertEqual(hits[0]["category"], "design-pattern")
+
     def test_introductory_projection_primer_vs_guardrail_compare_query_keeps_primer_first(
         self,
     ) -> None:
@@ -1936,10 +2833,167 @@ class CsRagSearchTest(unittest.TestCase):
 
         overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
         guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
 
         self.assert_path_rank_at_most(hits, overview_doc, 1)
         self.assert_path_rank_at_most(hits, guardrail_doc, 3)
         self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        if visibility_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, guardrail_doc, visibility_doc)
+
+    def test_introductory_projection_primer_vs_rebuild_playbook_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, projection rebuild backfill cutover playbook 를 같이 비교해서 보고 싶어. 입문자는 운영 playbook 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        rebuild_doc = "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        if rebuild_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
+        self.assertEqual(hits[0]["category"], "design-pattern")
+
+    def test_introductory_projection_fully_korean_primer_vs_guardrail_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 예전 값이 보여서 헷갈려. 방금 쓴 값 읽기 보장 설명이랑 전환 안전 구간 안내를 같이 비교해서 보고 싶어. 입문자는 운영 안전 규칙 전에 어떤 기초 설명부터 봐야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        if visibility_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, guardrail_doc, visibility_doc)
+
+    def test_introductory_projection_fully_korean_primer_vs_rebuild_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 저장했는데도 예전 값이 보여서 헷갈려. 방금 쓴 값 읽기 보장 설명이랑 프로젝션 재빌드 백필 컷오버 안내를 같이 비교해서 보고 싶어. 입문자는 운영 복구 문서 전에 어떤 기초 설명부터 봐야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        rebuild_doc = "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        if rebuild_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
+        self.assertEqual(hits[0]["category"], "design-pattern")
+
+    def test_introductory_projection_primer_vs_guardrail_and_rebuild_triad_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, read model cutover guardrails, projection rebuild backfill cutover playbook 를 같이 비교해서 보고 싶어. 입문자는 운영 문서 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        rebuild_doc = "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        if guardrail_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        if rebuild_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
+        self.assertEqual(hits[0]["category"], "design-pattern")
+
+    def test_introductory_projection_korean_only_primer_vs_guardrail_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장과 전환 안전 구간 문서를 같이 비교해서 보고 싶어. 입문자는 운영 안전 규칙 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_projection_korean_phrase_only_primer_vs_guardrail_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 방금 저장했는데도 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장 설명이랑 전환 안전 구간 안내를 같이 비교해서 보고 싶어. 입문자는 운영 문서 전에 어떤 기초 설명부터 봐야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, guardrail_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_projection_korean_only_primer_vs_rebuild_backfill_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 저장했는데도 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장 설명이랑 프로젝션 재빌드 백필 컷오버 안내를 같이 비교해서 보고 싶어. 입문자는 운영 복구 문서 전에 어떤 기초 설명부터 봐야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        rebuild_doc = "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        if rebuild_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, rebuild_doc)
+        self.assertEqual(hits[0]["category"], "design-pattern")
+
+    def test_introductory_projection_primer_vs_slo_lag_budget_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer를 먼저 보고, projection freshness SLO 문서랑 projection lag budget 문서를 같이 비교하고 싶어. 입문자는 SLO 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        slo_doc = "contents/design-pattern/projection-freshness-slo-pattern.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, slo_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, slo_doc)
+        self.assert_ranks_ahead(hits, overview_doc, lag_budget_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_introductory_projection_fully_korean_primer_vs_slo_lag_budget_compare_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 예전 값이 보여서 헷갈려. 예전 값이 보이는 기초 설명이랑 최신성 서비스 수준 목표, 반영 지연 허용 범위 문서를 같이 비교해서 보고 싶어. 입문자는 운영 목표 전에 뭐부터 이해해야 해?",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        slo_doc = "contents/design-pattern/projection-freshness-slo-pattern.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, slo_doc, 3)
+        self.assert_path_rank_at_most(hits, lag_budget_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, slo_doc)
+        self.assert_ranks_ahead(hits, overview_doc, lag_budget_doc)
         self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
     def test_introductory_projection_rollback_window_query_keeps_transaction_isolation_noise_out_of_top3(
@@ -1989,6 +3043,21 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, tx_doc, 5)
         self.assert_ranks_ahead(hits, overview_doc, tx_doc)
 
+    def test_introductory_projection_korean_rollback_window_vs_korean_transaction_rollback_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, tx_doc, 5)
+        self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
     def test_introductory_projection_rollback_contrast_synonym_queries_keep_primer_first(
         self,
     ) -> None:
@@ -2017,6 +3086,65 @@ class CsRagSearchTest(unittest.TestCase):
                 self.assert_path_rank_at_most(hits, overview_doc, 1)
                 self.assert_path_rank_at_most(hits, tx_doc, 5)
                 self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_introductory_projection_korean_rollback_contrast_synonym_queries_keep_primer_first(
+        self,
+    ) -> None:
+        prompts = {
+            "비교": (
+                "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 을 "
+                "같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "구분": (
+                "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 을 "
+                "어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "헷갈림": (
+                "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 "
+                "헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘"
+            ),
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assert_path_rank_at_most(hits, tx_doc, 5)
+                self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_introductory_projection_full_korean_rollback_contrast_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기가 흔들리는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, tx_doc, 5)
+        self.assert_ranks_ahead(hits, overview_doc, tx_doc)
+
+    def test_introductory_projection_full_korean_rollback_distinguish_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백을 어떻게 구분해야 해? 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, tx_doc, 5)
+        self.assert_ranks_ahead(hits, overview_doc, tx_doc)
 
     def test_korean_projection_freshness_synonym_query_keeps_primer_first(self) -> None:
         prompts = {
@@ -2050,11 +3178,422 @@ class CsRagSearchTest(unittest.TestCase):
                     hits[:3],
                 )
 
+    def test_korean_projection_freshness_beginner_synonym_query_ranks_primer_ahead_of_schema_survey(
+        self,
+    ) -> None:
+        hits = self._search(
+            "CQRS 읽기 모델을 처음 배우는데 롤백 윈도우 때문에 예전 값이 보임. "
+            "쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        survey_doc = "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertIn(survey_doc, [hit["path"] for hit in hits])
+        self.assert_ranks_ahead(hits, overview_doc, survey_doc)
+
+    def test_symptom_only_projection_refresh_lag_queries_keep_primer_first(self) -> None:
+        prompts = {
+            "korean_only": (
+                "저장했는데 목록 새로고침이 느리고 이전 화면 상태가 한동안 남아 있어. "
+                "처음 배우는 사람 기준으로 큰 그림부터 설명해줘"
+            ),
+            "mixed_terms": (
+                "저장 직후 list refresh lag 때문에 old screen state 가 남아 보여. "
+                "운영 문서 전에 왜 이런지 기초부터 알고 싶어"
+            ),
+            "app_screen_delay_variant": (
+                "앱에서 수정했는데 화면이 늦게 바뀌고 예전 목록이 남아 있어. 왜 이래?"
+            ),
+            "screen_update_delay_symptom_only": (
+                "모바일에서 화면 업데이트가 늦고 목록이 한참 뒤에 바뀌어. 왜 이런 거야?"
+            ),
+            "screen_update_delay_jiyeon_variant": (
+                "모바일에서 저장했는데 화면 업데이트 지연 때문에 예전 목록이 남아 있어. 왜 이래?"
+            ),
+            "pull_to_refresh_variant": (
+                "앱에서 pull to refresh 해야 바뀐 값이 보여. 리스트 갱신이 늦어."
+            ),
+            "swipe_refresh_once_variant": (
+                "앱에서 당겨서 새로고침 한 번 해야 최신 화면으로 바뀌어. 왜 이렇게 늦어?"
+            ),
+            "swipe_refresh_shortform_variant": (
+                "앱에서 스와이프 새로고침해야 목록이 갱신돼. 왜 바로 안 보여?"
+            ),
+            "swipe_refresh_transliterated_variant": (
+                "모바일에서 스와이프 리프레시 해야 화면이 따라와. 왜 바로 반영 안 돼?"
+            ),
+            "swipe_refresh_after_gesture_variant": (
+                "앱에서 스와이프 새로고침하고 나서야 바뀐 값이 보여. 왜 바로 안 보여?"
+            ),
+            "swipe_refresh_pull_down_variant": (
+                "앱에서 새로고침 쓸어내리고 나서야 새 값이 떠. 왜 바로 반영 안 돼?"
+            ),
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
+                self.assert_path_rank_at_most(hits, guardrail_doc, 5)
+                self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+                self.assertTrue(
+                    all(hit["category"] == "design-pattern" for hit in hits[:3]),
+                    hits[:3],
+                )
+
+    def test_beginner_stale_list_queries_prefer_lag_budget_companion_over_repository_boundary_doc(
+        self,
+    ) -> None:
+        prompts = {
+            "refresh_lag": (
+                "읽기 모델을 처음 배우는데 저장했는데 목록 새로고침이 느리고 이전 화면 상태가 "
+                "한동안 남아 있어. 왜 이런지 큰 그림부터 설명해줘"
+            ),
+            "detail_list_split": (
+                "상세는 바뀌었는데 목록은 예전 값이야. 처음 배우는 사람 기준으로 왜 이런지 "
+                "큰 그림부터 설명해줘"
+            ),
+        }
+
+        primer_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        lag_budget_doc = "contents/design-pattern/projection-lag-budgeting-pattern.md"
+        repository_doc = "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, primer_doc, 1)
+                self.assert_path_rank_at_most(hits, lag_budget_doc, 3)
+                self.assert_ranks_ahead(hits, lag_budget_doc, repository_doc)
+
+    def test_projection_cached_screen_after_save_golden_query_keeps_primer_first_without_http_cache_noise(
+        self,
+    ) -> None:
+        http_cache_doc = "contents/network/http-state-session-cache.md"
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+        query_ids = (
+            "projection_freshness_intro_korean_cached_screen_after_save",
+            "projection_freshness_symptom_only_mobile_screen_delay",
+            "projection_freshness_symptom_only_mobile_screen_update_delay_variant",
+            "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_shortform_variant",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant",
+            "projection_freshness_symptom_only_mobile_app_screen_delay_variant",
+            "projection_freshness_symptom_only_mobile_pull_to_refresh_variant",
+            "projection_freshness_symptom_only_no_jargon_cached_screen",
+            "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+            "projection_freshness_symptom_only_no_jargon_cached_screen_compact",
+        )
+
+        for query_id in query_ids:
+            with self.subTest(query_id=query_id):
+                query = _load_golden_fixture_query(query_id)
+                hits = self._search(query["prompt"], top_k=5)
+
+                overview_doc = query["expected_path"]
+                self.assert_path_rank_at_most(hits, overview_doc, int(query.get("max_rank", 1)))
+                self.assertNotIn(http_cache_doc, [hit["path"] for hit in hits[:3]])
+                self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_vs_failover_queries_keep_primer_first_and_failover_signal_visible(
+        self,
+    ) -> None:
+        prompts = {
+            "compare": (
+                "read model freshness 를 처음 배우는데 projection freshness 랑 "
+                "failover 차이를 같이 비교해서 보고 싶어. stale read 랑 "
+                "read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "different": (
+                "read model freshness 를 처음 배우는데 projection freshness 랑 "
+                "failover 가 어떻게 다른지 같이 보고 싶어. stale read 랑 "
+                "read-your-writes 큰 그림부터 설명해줘"
+            ),
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assert_path_rank_at_most(hits, failover_doc, 3)
+                self.assert_ranks_ahead(hits, overview_doc, failover_doc)
+
+    def test_introductory_projection_vs_failover_visibility_query_keeps_primer_first_with_visibility_companion(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 projection freshness 랑 failover visibility window 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, visibility_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+        self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_vs_failover_visibility_alias_query_keeps_primer_first_with_visibility_companion(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 projection freshness 랑 failover visibility 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, visibility_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+        self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_vs_stateful_failover_placement_query_keeps_primer_first_with_stateful_companion(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 projection freshness 랑 stateful failover placement 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        stateful_doc = (
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+        )
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, stateful_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, stateful_doc)
+        self.assert_ranks_ahead(hits, stateful_doc, global_failover_doc)
+
+    def test_korean_only_projection_vs_stateful_failover_placement_queries_keep_primer_first(
+        self,
+    ) -> None:
+        prompts = (
+            "읽기 모델 최신성을 처음 배우는데 투영 최신성이랑 상태 저장 워크로드 장애 전환 배치가 어떻게 다른지 같이 알고 싶어. 왜 저장 직후엔 예전 값이 남고 상태 저장 서비스는 장애 때 어느 복제본을 올릴지 따로 고민하는지 큰 그림부터 설명해줘",
+            "입문자 기준으로 읽기 모델 최신성이랑 상태 저장 서비스 리더 배치, 배치 예산 판단이 뭐가 다른지 비교해줘. 저장 직후 예전 값이 보이는 문제와 장애 전환 때 리더를 어디에 둘지 고민하는 문제를 큰 그림부터 알고 싶어",
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        stateful_doc = (
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+        )
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=5)
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assert_path_rank_at_most(hits, stateful_doc, 3)
+                self.assert_ranks_ahead(hits, overview_doc, stateful_doc)
+                self.assert_ranks_ahead(hits, stateful_doc, global_failover_doc)
+
+    def test_introductory_projection_vs_failover_verification_query_keeps_primer_first_without_jwt_playbook_noise(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 projection freshness 랑 failover verification 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/database/commit-horizon-after-failover-verification.md"
+        jwt_doc = "contents/security/jwt-signature-verification-failure-playbook.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, failover_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, failover_doc)
+        self.assertNotIn(jwt_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_failover_visibility_vs_write_loss_verification_query_keeps_beginner_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 failover visibility window 에서 stale read 가 보일 수 있다는 말이랑 write loss audit 로 verify 해야 한다는 말을 같이 들었어. 뭐가 다른지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        verification_doc = "contents/database/commit-horizon-after-failover-verification.md"
+        jwt_doc = "contents/security/jwt-signature-verification-failure-playbook.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, visibility_doc, 4)
+        self.assert_path_rank_at_most(hits, verification_doc, 4)
+        self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+        self.assert_ranks_ahead(hits, overview_doc, verification_doc)
+        self.assertNotIn(jwt_doc, [hit["path"] for hit in hits[:4]])
+
     def test_introductory_projection_cutover_safety_window_keeps_failover_noise_out_of_top3(
         self,
     ) -> None:
         hits = self._search(
             "read model freshness 를 처음 배우는데 cutover safety window 동안 stale read 랑 read-your-writes 를 어떻게 이해해야 해? failover rollback 같은 운영 얘기 전에 큰 그림부터 알고 싶어",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_cutover_safety_vs_failover_visibility_queries_keep_primer_first(
+        self,
+    ) -> None:
+        prompts = {
+            "compare": (
+                "read model freshness 를 처음 배우는데 cutover safety window 랑 failover "
+                "visibility window 차이를 같이 비교해서 보고 싶어. stale read 랑 "
+                "read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "different": (
+                "read model freshness 를 처음 배우는데 cutover safety window 랑 failover "
+                "visibility window 가 어떻게 다른지 같이 보고 싶어. stale read 랑 "
+                "read-your-writes 큰 그림부터 설명해줘"
+            ),
+            "distinguish": (
+                "read model freshness 를 처음 배우는데 cutover safety window 랑 failover "
+                "visibility window 를 구별해서 보고 싶어. stale read 랑 "
+                "read-your-writes 큰 그림부터 설명해줘"
+            ),
+        }
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        for cue, prompt in prompts.items():
+            with self.subTest(cue=cue):
+                hits = self._search(prompt, top_k=5)
+
+                self.assert_path_rank_at_most(hits, overview_doc, 1)
+                self.assert_path_rank_at_most(hits, visibility_doc, 3)
+                self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+                self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+
+    def test_mixed_language_projection_cutover_safety_vs_failover_visibility_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 cutover safety window vs failover visibility window 를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, visibility_doc, 3)
+        self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+        self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+
+    def test_full_korean_projection_cutover_safety_vs_failover_visibility_query_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 전환 안전 윈도우 랑 failover visibility window 차이를 같이 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, visibility_doc, 3)
+        self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+        self.assert_ranks_ahead(hits, overview_doc, visibility_doc)
+
+    def test_korean_projection_cutover_safety_window_keeps_failover_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 전환 안전 구간 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 깨지는지 알고 싶어. failover rollback 같은 운영 얘기 전에 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_full_korean_projection_cutover_safety_vs_failover_rollback_compare_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 전환 안전 구간이랑 장애 전환 되돌리기 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_transliterated_projection_cutover_safety_zone_keeps_failover_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 컷오버 안전 구간 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 깨지는지 알고 싶어. failover rollback 같은 운영 얘기 전에 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_projection_cutover_safety_shortform_question_keeps_primer_first(self) -> None:
+        hits = self._search(
+            "컷오버 안전 구간 뭐야",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertNotIn(failover_doc, [hit["path"] for hit in hits[:3]])
+        if guardrail_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_mixed_korean_english_projection_cutover_safety_window_keeps_failover_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 cutover safety window 동안 stale reads 가 보이고 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 알고 싶어. failover rollback 같은 운영 얘기는 잠깐 빼고",
             top_k=5,
         )
 
@@ -2070,6 +3609,60 @@ class CsRagSearchTest(unittest.TestCase):
     ) -> None:
         hits = self._search(
             "read model freshness 를 처음 배우는데 cutover safety window 와 rollback window 때문에 stale read 가 왜 생기는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        security_docs = {
+            "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
+            "contents/security/key-rotation-runbook.md",
+            "contents/security/jwks-rotation-cutover-failure-recovery.md",
+        }
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertFalse(security_docs & {hit["path"] for hit in hits[:3]}, hits[:3])
+
+    def test_spaced_transliterated_projection_cutover_safety_window_keeps_key_rotation_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 컷 오버 안전 윈도우 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 흔들리는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        security_docs = {
+            "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
+            "contents/security/key-rotation-runbook.md",
+            "contents/security/jwks-rotation-cutover-failure-recovery.md",
+        }
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertFalse(security_docs & {hit["path"] for hit in hits[:3]}, hits[:3])
+
+    def test_full_korean_projection_cutover_safety_vs_key_rotation_rollback_compare_keeps_primer_first(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델 최신성을 처음 배우는데 전환 안전 구간이랑 키 교체 되돌리기 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        security_docs = {
+            "contents/security/jwk-rotation-cache-invalidation-kid-rollover.md",
+            "contents/security/key-rotation-runbook.md",
+            "contents/security/jwks-rotation-cutover-failure-recovery.md",
+        }
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assertFalse(security_docs & {hit["path"] for hit in hits[:3]}, hits[:3])
+
+    def test_korean_projection_cutover_safety_window_keeps_key_rotation_noise_out_of_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "읽기 모델을 처음 배우는데 전환 안전 윈도우 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 흔들리는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고 큰 그림부터 설명해줘",
             top_k=5,
         )
 
@@ -2228,6 +3821,51 @@ class CsRagSearchTest(unittest.TestCase):
             [hit["path"] for hit in hits[:5]],
         )
 
+    def test_failover_visibility_alias_query_keeps_visibility_doc_within_top3(self) -> None:
+        hits = self._search(
+            "failover visibility 때문에 stale primary 랑 topology cache divergence 가 왜 생기는지 알고 싶어",
+            top_k=5,
+        )
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/failover-visibility-window-topology-cache-playbook.md",
+            3,
+        )
+        self.assertIn(
+            "contents/database/failover-promotion-read-divergence.md",
+            [hit["path"] for hit in hits[:5]],
+        )
+
+    def test_failover_divergence_beginner_alias_queries_keep_divergence_doc_ahead_of_visibility_playbook(
+        self,
+    ) -> None:
+        visibility_doc = "contents/database/failover-visibility-window-topology-cache-playbook.md"
+        divergence_doc = "contents/database/failover-promotion-read-divergence.md"
+        global_failover_doc = "contents/system-design/global-traffic-failover-control-plane-design.md"
+
+        for query_id in (
+            "failover_stale_primary_beginner_alias",
+            "failover_old_primary_read_beginner_alias",
+            "failover_promotion_read_divergence_beginner_alias",
+        ):
+            with self.subTest(query_id=query_id):
+                query = _load_golden_fixture_query(query_id)
+                hits = self._search(query["prompt"], top_k=5)
+
+                self.assert_path_rank_at_most(
+                    hits,
+                    divergence_doc,
+                    int(query.get("max_rank", 1)),
+                )
+                self.assert_path_rank_at_most(
+                    hits,
+                    visibility_doc,
+                    int(query.get("companion_max_rank", 4)),
+                )
+                self.assert_ranks_ahead(hits, divergence_doc, visibility_doc)
+                self.assertNotIn(global_failover_doc, [hit["path"] for hit in hits[:3]])
+
     def test_failover_commit_horizon_query_keeps_verification_doc_within_top3(self) -> None:
         hits = self._search(
             "commit horizon after failover verification 을 어떻게 해야 하지?",
@@ -2376,6 +4014,116 @@ class CsRagSearchTest(unittest.TestCase):
         self.assertTrue(hits, "fallback pool should still produce hits")
         self.assertTrue(debug.get("category_filter_fallback"))
         self.assertEqual(debug.get("allowed_categories"), ["nonexistent-category"])
+
+
+class CsRagFullModeFixturePathTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls._tmpdir = tempfile.TemporaryDirectory()
+        cls.tmp = Path(cls._tmpdir.name)
+        CsRagSearchTest._build_fixture_index(cls.tmp)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls._tmpdir.cleanup()
+
+    def _row_id_for_path(self, path: str) -> int:
+        conn = indexer.open_readonly(self.tmp)
+        try:
+            cur = conn.execute("SELECT id FROM chunks WHERE path = ?", (path,))
+            row = cur.fetchone()
+        finally:
+            conn.close()
+        self.assertIsNotNone(row, f"fixture path missing from local index: {path}")
+        return int(row[0])
+
+    def _dense_hits_for_paths(self, paths: list[str]) -> list[tuple[int, float]]:
+        # Keep the primer path in the dense pool alongside its nearby companion
+        # docs so this remains a deterministic full-mode fixture smoke rather
+        # than a live-index-dependent ranking test.
+        return [
+            (self._row_id_for_path(path), 1.0 - (rank * 0.01))
+            for rank, path in enumerate(paths)
+        ]
+
+    def assert_path_rank_at_most(
+        self,
+        hits: list[dict],
+        path: str,
+        max_rank: int,
+    ) -> None:
+        paths = [hit["path"] for hit in hits]
+        self.assertIn(path, paths, f"expected {path} in hits {paths}")
+        rank = paths.index(path) + 1
+        self.assertLessEqual(
+            rank,
+            max_rank,
+            f"expected {path} within top-{max_rank}, got rank #{rank} in {paths}",
+        )
+
+    def assert_ranks_ahead(
+        self,
+        hits: list[dict],
+        winner: str,
+        loser: str,
+    ) -> None:
+        paths = [hit["path"] for hit in hits]
+        self.assertIn(winner, paths, f"missing winner {winner} in {paths}")
+        self.assertIn(loser, paths, f"missing loser {loser} in {paths}")
+        self.assertLess(
+            paths.index(winner),
+            paths.index(loser),
+            f"expected {winner} ahead of {loser}, got {paths}",
+        )
+
+    def test_stable_full_mode_fixture_queries_keep_primer_ahead_of_companion_docs(
+        self,
+    ) -> None:
+        contract = _load_stable_full_mode_fixture_contract()
+        query_contracts = contract.get("queries", {})
+        self.assertTrue(query_contracts)
+
+        for query_id, query_contract in query_contracts.items():
+            with self.subTest(query_id=query_id):
+                query = _load_golden_fixture_query(query_id)
+                companion_paths = list(query_contract.get("companion_paths", []))
+                dense_paths = [query["expected_path"], *companion_paths]
+                with mock.patch.object(
+                    searcher,
+                    "_dense_search",
+                    return_value=self._dense_hits_for_paths(dense_paths),
+                ) as dense_search:
+                    hits = searcher.search(
+                        query["prompt"],
+                        learning_points=query.get("learning_points") or None,
+                        mode="full",
+                        index_root=self.tmp,
+                        top_k=max(
+                            5,
+                            int(query_contract.get("companion_max_rank", 5)),
+                        ),
+                        use_reranker=False,
+                        experience_level=query.get("experience_level"),
+                    )
+
+                dense_search.assert_called_once()
+                self.assertTrue(hits, f"expected fixture hits for {query_id}")
+                self.assert_path_rank_at_most(
+                    hits,
+                    query["expected_path"],
+                    int(query.get("max_rank", 1)),
+                )
+                for companion_path in companion_paths:
+                    self.assert_path_rank_at_most(
+                        hits,
+                        companion_path,
+                        int(query_contract.get("companion_max_rank", 5)),
+                    )
+                    self.assert_ranks_ahead(
+                        hits,
+                        query["expected_path"],
+                        companion_path,
+                    )
 
 
 if __name__ == "__main__":

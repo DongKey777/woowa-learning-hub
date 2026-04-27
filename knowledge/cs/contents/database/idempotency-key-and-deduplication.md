@@ -4,8 +4,8 @@
 
 > 네트워크는 한 번만 보내도, 서버는 두 번 받을 수 있다. 이 문서는 그 차이를 다루기 위한 정리다.
 
-관련 문서: [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md), [Transactional Inbox와 Dedup 설계](./transactional-inbox-dedup-design.md), [Exactly-Once Myths in DB Queue](./exactly-once-myths-db-queue.md), [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md), [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md), [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md), [Replay / Repair Orchestration Control Plane 설계](../system-design/replay-repair-orchestration-control-plane-design.md), [Token Misuse Detection / Replay Containment](../security/token-misuse-detection-replay-containment.md), [Replay Store Outage / Degradation Recovery](../security/replay-store-outage-degradation-recovery.md), [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md), [Proxy Retry Budget Discipline](../network/proxy-retry-budget-discipline.md)
-retrieval-anchor-keywords: idempotency key, duplicate suppression, request hash, upsert, unique key arbitration, processed event table, retry safe API, cdc replay dedup, replay-safe consumer, repair window
+관련 문서: [PENDING Row Recovery Primer](./pending-row-recovery-primer.md), [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md), [MySQL `ON DUPLICATE KEY UPDATE` Safety Primer](./mysql-on-duplicate-key-update-safety-primer.md), [Transactional Inbox와 Dedup 설계](./transactional-inbox-dedup-design.md), [Exactly-Once Myths in DB Queue](./exactly-once-myths-db-queue.md), [CDC Replay Verification, Idempotency, and Acceptance Runbook](./cdc-replay-verification-idempotency-runbook.md), [CDC Gap Repair, Reconciliation, and Rebuild Boundaries](./cdc-gap-repair-reconciliation-playbook.md), [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md), [Replay / Repair Orchestration Control Plane 설계](../system-design/replay-repair-orchestration-control-plane-design.md), [Token Misuse Detection / Replay Containment](../security/token-misuse-detection-replay-containment.md), [Replay Store Outage / Degradation Recovery](../security/replay-store-outage-degradation-recovery.md), [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md), [Proxy Retry Budget Discipline](../network/proxy-retry-budget-discipline.md)
+retrieval-anchor-keywords: idempotency key, duplicate suppression, request hash, upsert, unique key arbitration, processed event table, retry safe API, cdc replay dedup, replay-safe consumer, repair window, pending row recovery, processing row takeover, idempotency lease heartbeat
 
 <details>
 <summary>Table of Contents</summary>
@@ -79,6 +79,26 @@ retrieval-anchor-keywords: idempotency key, duplicate suppression, request hash,
 
 둘이 항상 같은 것은 아니다. 같은 주문에 대해 여러 결제 시도가 있을 수 있고, 반대로 같은 결제 시도는 여러 번 재전송될 수 있다.
 
+## 상태 이름을 먼저 고정하자
+
+초보자 문서에서 가장 자주 섞이는 단어가 `PENDING`, `PROCESSING`, `SUCCESS`/`SUCCEEDED`다.
+
+이 저장소에서는 beginner 기준으로 아래처럼 읽으면 헷갈림이 줄어든다.
+
+| 이름 | 어디에서 쓰나 | 초보자 해석 |
+|---|---|---|
+| `PENDING` | idempotency row 저장 상태 | 선점은 끝났지만 최종 성공 결과는 아직 저장 전 |
+| `PROCESSING` | 중복 요청에 대한 API 응답 표현 | 기존 `PENDING` row가 아직 살아 있어서 새 실행을 막는 안내 |
+| `SUCCEEDED` | idempotency row 저장 상태 | 같은 key의 최종 성공 결과가 이미 저장됨 |
+
+짧은 흐름은 이렇다.
+
+- 첫 winner는 보통 row를 `PENDING`으로 만든다
+- 뒤 요청은 그 `PENDING` row를 보고 `PROCESSING` 또는 `in-progress` 응답을 받을 수 있다
+- 최종 성공이 저장되면 row는 `SUCCEEDED`가 되고, 같은 요청 재전송에는 replay 응답을 준다
+
+아래 예시도 이 용어에 맞춰 읽는 편이 beginner에게 가장 덜 헷갈린다.
+
 ---
 
 ## 중복 방지 구현 패턴
@@ -130,10 +150,10 @@ CREATE TABLE idempotency_keys (
 
 예:
 
-- `PENDING -> SUCCESS`
+- `PENDING -> SUCCEEDED`
 - `PENDING -> FAILED`
 
-이미 `SUCCESS`인 요청은 다시 성공 처리하지 않는다.
+이미 `SUCCEEDED`인 요청은 다시 성공 처리하지 않는다.
 
 이 방식은 단순한 중복 방지 이상으로, 도메인 상태를 명확히 관리할 때 유용하다.
 
@@ -143,12 +163,12 @@ CREATE TABLE idempotency_keys (
 
 ### 1. 요청 본문이 달라졌는데 키만 같다
 
-같은 `idem_key`로 다른 금액이나 다른 주문을 보내면 위험하다.  
+같은 `idem_key`로 다른 금액이나 다른 주문을 보내면 위험하다.
 그래서 보통 `request_hash`를 함께 저장하고, 같은 키인데 본문이 달라지면 거절한다.
 
 ### 2. 성공 응답만 캐시하고 실패는 무시한다
 
-실패도 의미가 있다. 예를 들어 외부 결제사 timeout 후 내부는 성공했을 수 있다. 그래서 단순 성공/실패보다 `PROCESSING`, `SUCCESS`, `FAILED` 같은 상태가 필요하다.
+실패도 의미가 있다. 예를 들어 외부 결제사 timeout 후 내부는 성공했을 수 있다. 그래서 단순 성공/실패보다 `PENDING`, `SUCCEEDED`, `FAILED` 같은 저장 상태와, 필요하면 호출자에게 보여 주는 `PROCESSING` 응답 표현을 함께 설계해야 한다.
 
 ### 3. TTL이 없다
 

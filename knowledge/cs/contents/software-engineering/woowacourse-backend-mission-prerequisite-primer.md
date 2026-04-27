@@ -1,0 +1,181 @@
+# 우테코 백엔드 미션 선행 개념 입문
+
+> 한 줄 요약: 우테코 백엔드 미션 전에는 모든 프레임워크 기능을 외우기보다, 입력을 받아 규칙을 적용하고 저장/응답으로 연결하는 흐름과 `Service`/`Repository`/`DTO`/`Entity`의 역할 구분을 먼저 잡는 편이 안전하다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [루트 README - Woowacourse Backend Beginner Ladder](../../README.md#woowacourse-backend-beginner-ladder)
+- [Junior Backend Roadmap - 우테코 백엔드 안전 사다리 동기화](../../JUNIOR-BACKEND-ROADMAP.md#우테코-백엔드-안전-사다리-동기화)
+- [자바 언어의 구조와 기본 문법](../language/java/java-language-basics.md)
+- [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)
+- [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
+- [Service 계층 기초](./service-layer-basics.md)
+- [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+- [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
+- [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
+- [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
+- [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) - 4레인 뒤 선택 확장
+- [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) - 4레인 뒤 선택 확장
+- [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md) - 첫 PR 뒤 선택 확장
+- [software-engineering 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mission prerequisite primer, 우테코 백엔드 미션 선행지식, backend mission first reading, 처음 백엔드 미션 뭐부터, controller service repository beginner, dto vo entity beginner, service repository mental model, java oop before spring, jpa before backend mission, spring first route, beginner backend mission primer, woowacourse backend learning ladder, backend curriculum foundation, java to http to mvc ladder, mvc before transaction, jdbc transaction before aop, backend beginner safe next step, backend primer ladder, readme bridge ladder, category readme handoff, java http mvc jdbc di aop system design bridge, backend 4 lane primer bridge, beginner first 4 lane route, java http mvc persistence beginner route, 4레인 프라이머, 초심자 백엔드 4단계
+
+## 먼저 잡는 한 줄 멘탈 모델
+
+미션 선행 학습의 핵심은 기술 백과사전이 아니라, **입력 -> 규칙 -> 조립 -> 저장/응답 흐름을 끊기지 않게 읽는 연습**이다.
+
+## README 브리지 사다리
+
+category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 안전하다.
+초심자 기준 첫 바퀴는 **4레인만 먼저 고정**하는 편이 안전하다.
+핵심은 한 단계마다 `primer -> 다음 한 걸음 -> README 복귀`를 끝낸 뒤 다음 레인으로 넘어가는 것이다.
+
+| 레인 | primer | 다음 한 걸음 | README 복귀 |
+|---|---|---|---|
+| 1. Java 객체 레인 | [자바 언어의 구조와 기본 문법](../language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | [Language README](../language/README.md) |
+| 2. HTTP 요청 레인 | [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) | [Network README](../network/README.md) |
+| 3. MVC 흐름 레인 | [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초](../spring/spring-mvc-controller-basics.md) | [Spring README](../spring/README.md) |
+| 4. 저장 경계 레인 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | [Database README](../database/README.md) |
+
+### 4레인 다음에만 여는 선택 확장
+
+- `DI / AOP`가 궁금해도 먼저 MVC와 저장 경계를 한 번 읽은 뒤 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) -> [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) 순으로 간다.
+- system design은 첫 구현 전에 메인 레인으로 올리지 말고, 한 요청이 `controller -> service -> repository`까지 읽힌 뒤 [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md)으로 넓힌다.
+
+## 핵심 개념
+
+처음 미션을 보면 해야 할 일이 너무 많아 보인다.
+하지만 입문 단계에서는 기술 목록보다 **코드가 어떤 흐름으로 읽히는가**를 먼저 잡는 편이 훨씬 중요하다.
+
+우테코 백엔드 미션에서 반복되는 중심 질문은 대체로 네 가지다.
+
+- 입력을 어떤 객체로 바꿀 것인가
+- 규칙은 어느 객체가 책임질 것인가
+- 여러 객체를 누가 조립할 것인가
+- 저장 또는 응답은 어떤 모양으로 내보낼 것인가
+
+즉 "Spring을 얼마나 많이 아느냐"보다, **입력 -> 도메인 규칙 -> 조립 -> 저장/응답** 흐름을 설명할 수 있는지가 선행 감각이다.
+
+## before / after 한눈 비교
+
+| 상태 | 학습 접근 | 결과 |
+|---|---|---|
+| before: 기능/프레임워크부터 확장 | AOP, 트랜잭션 내부 동작, 고급 매핑을 먼저 탐색 | 용어는 늘지만 미션 코드 읽기 속도가 잘 오르지 않는다 |
+| after: 흐름 중심 최소 사다리 | Java -> HTTP -> MVC -> 저장/트랜잭션 -> DI/AOP 순으로 한 단계씩 고정 | 코드에서 입력/규칙/저장 책임이 보이고 첫 구현 실수가 줄어든다 |
+
+## 우테코 백엔드 안전 사다리
+
+이 문서의 핵심은 "많이 읽기"가 아니라 **안전한 순서로 한 걸음씩 올라가기**다.
+
+처음부터 `@Transactional` 심화, AOP 프록시 내부 구조, system design 면접 문서를 열면 용어는 늘어나지만 손에 잡히는 그림은 오히려 흐려지기 쉽다.
+우테코 백엔드 입문에서는 아래 사다리를 먼저 고정하는 편이 안전하다.
+
+| 단계 | 먼저 잡을 mental model | 첫 문서 | 안전한 다음 한 걸음 | 아직 서두르지 않을 것 |
+|---|---|---|---|---|
+| 1. Java basics | "객체는 상태와 행동을 가진다"는 감각 | [자바 언어의 구조와 기본 문법](../language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | Spring annotation 이름 암기 |
+| 2. HTTP / web basics | 웹 요청은 메서드, 상태 코드, 헤더를 가진 메시지 흐름이다 | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) | `SavedRequest`, filter chain, proxy timeout deep dive |
+| 3. MVC | 요청은 `DispatcherServlet`을 지나 controller -> service -> repository로 흐른다 | [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md) | `HandlerMethodArgumentResolver`, MVC lifecycle deep dive |
+| 4. JDBC / transactions | 저장 기술은 도메인 바깥 도구이고, 트랜잭션은 DB 변경을 한 덩어리로 묶는 경계다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) | `MVCC`/lock anomaly 고급 비교, `@Transactional` 심화 |
+| 5. DI / AOP | 컨테이너가 객체를 조립하고, 프록시가 횡단 관심사를 덧씌운다 | [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) | [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) | self-invocation, propagation, rollback-only deep dive |
+| 6. System design | 한 요청 흐름을 app / cache / DB / queue 박스로 넓혀 본다 | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md) | [System Design Foundations](../system-design/system-design-foundations.md) | 대규모 cutover, control plane, 복잡한 distributed incident 문서 |
+
+짧게 외우면 이 순서다.
+
+`Java 객체` -> `HTTP 요청` -> `MVC 흐름` -> `DB 저장/트랜잭션` -> `DI/AOP/@Transactional` -> `시스템 박스 그림`
+
+## 한눈에 보기
+
+| 지금 막히는 질문 | 먼저 잡을 mental model | 바로 읽을 primer | 아직 미뤄도 되는 것 |
+|---|---|---|---|
+| 클래스, 객체, 인스턴스가 아직 흐릿하다 | 상태와 행동이 한 객체 안에 모인다는 감각 | [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | 복잡한 디자인 패턴 이름 |
+| `Controller`, `Service`, `Repository`가 왜 나뉘는지 모르겠다 | 입력, 유스케이스 조립, 저장을 다른 책임으로 본다 | [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md), [Service 계층 기초](./service-layer-basics.md) | hexagonal 세부 용어 |
+| `DTO`, `VO`, `Entity`가 다 비슷해 보인다 | 전달 포맷, 값 의미, 식별자 추적은 다른 질문이다 | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) | JPA 고급 매핑 옵션 |
+| JPA를 모르면 미션을 못 할 것 같다 | 저장 기술은 도메인 바깥의 도구다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | flush, dirty checking, N+1 심화 |
+| HTTP 요청이 컨트롤러와 어떻게 연결되는지 막막하다 | 요청의 의도와 응답 흐름을 구분한다 | [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md), [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) | Spring 내부 확장 포인트 전부 |
+
+이 표의 목적은 "다 알아야 시작한다"가 아니라, **막힌 지점에 맞는 한 장짜리 primer로 바로 내려가는 것**이다.
+
+## 미션 코드를 읽는 기본 흐름
+
+미션 형태가 콘솔이든 웹이든, 처음엔 아래 흐름으로 읽으면 된다.
+
+```text
+입력
+  -> 입력 검증/변환
+  -> 도메인 규칙 실행
+  -> 유스케이스 조립
+  -> 저장 또는 응답 변환
+```
+
+이 흐름을 미션 장면에 맞춰 바꾸면 다음처럼 보인다.
+
+| 미션 장면 | 입력 | 중심 규칙 | 바깥 기술 |
+|---|---|---|---|
+| 콘솔/도메인 미션 | 문자열, 숫자, 명령 | 객체 상태 변화, 검증, 계산 | 파서, 출력 포맷 |
+| Spring 웹 미션 | HTTP 요청 DTO | 유스케이스 조립, 도메인 규칙 | Controller, JSON, Repository |
+| DB 연결 미션 | Repository 호출 | 저장 전후 불변식 확인 | JDBC, JPA, MyBatis |
+
+핵심은 바깥 기술이 달라도 중심 규칙은 같은 축으로 읽힌다는 점이다.
+
+## 작은 예시로 묶어 보기
+
+아래처럼 "포인트 적립" 기능을 상상하면 역할이 빠르게 보인다.
+
+```java
+Point point = new Point(request.amount());
+Member member = memberRepository.findById(request.memberId());
+member.add(point);
+memberRepository.save(member);
+return new PointResponse(member.id(), member.balance());
+```
+
+이 짧은 흐름을 beginner 기준으로 읽으면 다음과 같다.
+
+| 코드 조각 | 역할 | 먼저 떠올릴 개념 |
+|---|---|---|
+| `request.amount()` | 바깥 입력을 읽는다 | DTO는 전달 포맷 |
+| `new Point(...)` | 의미 있는 값으로 감싼다 | VO는 값의 의미와 검증 |
+| `member.add(point)` | 상태를 바꾸는 규칙을 실행한다 | 도메인 객체가 자기 상태를 책임진다 |
+| `memberRepository.save(member)` | 저장을 위임한다 | Repository는 저장 계약 |
+| `new PointResponse(...)` | 응답 모양으로 바꾼다 | 응답 DTO는 바깥 계약 |
+
+즉 미션 코드에서 먼저 봐야 하는 것은 "어떤 프레임워크가 자동으로 해 주는가"보다, **어떤 줄이 입력, 규칙, 저장, 응답 역할을 맡는가**다.
+
+## 흔한 오해와 함정
+
+- "JPA를 아직 모르니 백엔드 미션을 시작하면 안 된다"라고 생각하기 쉽다.
+  - 더 안전한 기준은 저장 기술보다 `Repository`가 왜 필요한지 먼저 설명할 수 있는가다.
+- "`Service`가 모든 `if`와 `for`를 가져가야 객체지향이다"라고 오해하기 쉽다.
+  - `Service`는 조립과 흐름을 맡고, 상태 변화 규칙은 가능한 한 도메인 객체 안에 두는 편이 읽기 쉽다.
+- "`Entity`를 그대로 API 응답으로 내보내도 된다"라고 생각하기 쉽다.
+  - 처음엔 편하지만 DB 구조와 API 계약이 묶여 변경 비용이 커진다.
+- "콘솔 미션과 Spring 미션은 완전히 다른 공부"라고 느끼기 쉽다.
+  - 실제로는 입력 채널만 달라지고, 객체 책임 분리와 도메인 규칙이라는 중심축은 같다.
+- "인터페이스를 많이 만들수록 좋은 설계"라고 외우기 쉽다.
+  - 입문 단계에서는 모든 추상화보다, 변경이 예상되는 경계를 한두 군데 정확히 자르는 편이 낫다.
+
+## 안전한 다음 단계
+
+- 클래스/객체/상태 변화가 아직 흐릿하면 [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)부터 읽고, 그다음 [Service 계층 기초](./service-layer-basics.md)로 넘어간다.
+- `Controller -> Service -> Repository` 흐름이 막히면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 큰 그림을 잡고, 바로 [Service 계층 기초](./service-layer-basics.md)에서 유스케이스 조립 역할을 본다.
+- `DTO`, `VO`, `Entity`가 뒤섞이면 [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)를 먼저 보고, 저장 계층까지 이어서 보려면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)를 붙인다.
+- HTTP 요청과 Spring 연결이 막히면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)로 웹 요청의 큰 그림을 먼저 잡고, [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) 다음에 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)로 넘어간다.
+- MVC까지는 읽었는데 "저장은 어디서 하고 트랜잭션은 왜 필요하지?"가 막히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) -> [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) 순으로 먼저 본다.
+- 4레인을 한 바퀴 돈 뒤에야 "Spring이 객체를 어떻게 조립하고 부가 기능을 붙이지?"를 확장 질문으로 올려 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) -> [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) -> [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](../spring/spring-transactional-basics.md) 순으로 올라간다.
+- "이제 구조는 알겠는데 좀 더 정리된 경계가 보고 싶다"면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md) 다음에 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)로 넘어간다.
+- "이제 웹/DB/Spring 한 요청 흐름은 보이는데 시스템 전체 박스 그림이 없다"면 바로 분산 설계 심화로 점프하지 말고, 4레인 복습 후 [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md)으로 먼저 넓힌다.
+
+## 면접/시니어 질문 미리보기
+
+- "왜 `Service`와 도메인 객체의 책임을 나누나요?" — 유스케이스 조립과 상태 규칙이 섞이면 변경 이유가 한곳에 몰리기 때문이다.
+- "왜 `DTO`와 `Entity`를 분리하나요?" — API 계약과 저장 구조의 변경 이유가 다르기 때문이다.
+- "왜 `Repository`가 JPA를 직접 드러내지 않게 하나요?" — 안쪽 코드가 저장 기술보다 도메인 의미에 의존하게 만들기 위해서다.
+
+## 한 줄 정리
+
+우테코 백엔드 미션 선행 감각은 프레임워크 기능 암기보다, 입력에서 규칙을 거쳐 저장/응답으로 이어지는 흐름과 객체 책임 분리를 먼저 설명할 수 있는 상태다.

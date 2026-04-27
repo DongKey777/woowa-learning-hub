@@ -5,18 +5,19 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
-> - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
-> - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
-> - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
-> - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
-> - [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
-> - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
-> - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-> - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
-> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - `[category]` [Network README](./README.md#network-네트워크)
+> - `[primer]` [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+> - `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+> - `[primer]` [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
+> - `[primer]` [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+> - `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+> - `[primer handoff]` [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
+> - `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+> - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+> - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+> - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
 
-retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow, Set-Cookie to Cookie, browser cookie storage rules, browser automatic cookie sending, session cookie vs persistent cookie, cookie domain path secure samesite, HttpOnly Secure SameSite basics, SameSite HttpOnly Secure matrix, cookie attribute matrix, Domain Path cookie scope, host-only cookie, JSESSIONID browser flow, hidden JSESSIONID route, login request response auth primer, login redirect primer, 302 login flow, SavedRequest beginner bridge, JWT Authorization header, Bearer token browser flow, JWT in cookie, authorization bearer vs cookie, cookie-based auth primer, beginner auth bridge, why login state is kept, fetch credentials cookie, same-origin vs same-site, cross-origin cookie fetch, why cookie not sent on fetch
+retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow, Set-Cookie to Cookie, browser cookie storage rules, browser automatic cookie sending, session cookie vs persistent cookie, cookie domain path secure samesite, HttpOnly Secure SameSite basics, SameSite HttpOnly Secure matrix, cookie attribute matrix, Domain Path cookie scope, host-only cookie, JSESSIONID browser flow, hidden JSESSIONID route, login request response auth primer, login redirect primer, 302 login flow, SavedRequest beginner bridge, JWT Authorization header, Bearer token browser flow, JWT in cookie, authorization bearer vs cookie, cookie-based auth primer, beginner auth bridge, why login state is kept, fetch credentials cookie, same-origin vs same-site, cross-origin cookie fetch, why cookie not sent on fetch, browser session primer route, browser session primer ladder, primer bridge next step, browser session deep dive handoff, stored cookie vs sent cookie header, cookie stored not sent, application cookie vs network cookie header, cookie scope mismatch handoff, cookie scope beginner guide
 
 <details>
 <summary>Table of Contents</summary>
@@ -121,6 +122,17 @@ Content-Type: application/json
 - 쿠키는 **HTTP 요청에 실리는 운반 수단**이다
 - 쿠키 값이 꼭 세션 ID일 필요는 없다
 - 쿠키 안에 JWT가 들어갈 수도 있고, 테마 설정값이 들어갈 수도 있다
+
+초보자 메모:
+
+| 지금 확인하는 것 | 질문 | 같은가? |
+|---|---|---|
+| 브라우저가 cookie를 저장했는가 | `Set-Cookie`를 받고 `Application > Cookies`에 보이는가 | 아니다 |
+| 그 요청에 cookie가 실제로 실렸는가 | `Network` 탭 request `Cookie` header에 보이는가 | 아니다 |
+
+- `저장됨`과 `전송됨`은 **서로 다른 체크**다.
+- login 직후 cookie가 저장돼 보여도, 다음 요청의 `Cookie` header는 `Domain`/`Path`/`SameSite` 때문에 비어 있을 수 있다.
+- 이 분기를 바로 따라가려면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)를 먼저 본다.
 
 또한 쿠키는 크게 두 종류로 많이 나눈다.
 
@@ -372,3 +384,8 @@ JWT를 cookie에 담고 서버가 매 요청 token만 검증하면, transport는
 ## 한 줄 정리
 
 cookie는 브라우저의 저장/전송 수단이고, session은 서버 상태 저장 방식이며, JWT는 토큰 형식이다. 브라우저 요청에서 이 셋이 만나는 지점은 결국 "`Set-Cookie`로 저장되고 `Cookie`나 `Authorization`으로 어떻게 다시 실리느냐"다.
+
+다음 단계:
+
+- cookie가 저장은 됐는데 다음 요청에 안 보인다면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)로 바로 이어 본다.
+- browser/session 입문 경로 전체로 돌아가려면 [Network README](./README.md#network-네트워크)에서 primer ladder를 다시 고른다.

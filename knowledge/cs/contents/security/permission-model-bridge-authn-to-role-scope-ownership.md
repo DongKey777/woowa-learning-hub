@@ -1,0 +1,148 @@
+# Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기
+
+> 한 줄 요약: 인증(authn)으로 `누구인지`를 확인한 뒤, 실제 허용 판단은 `role/permission`, `scope`, `ownership` 세 축을 함께 통과해야 한다. 그래서 `유효한 토큰인데 403`, `scope 있는데 왜 거부` 같은 질문을 한 장에서 바로 다음 primer로 넘길 수 있다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [인증과 인가의 차이](./authentication-vs-authorization.md)
+- [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
+- [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)
+- [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
+- [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+- [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
+
+retrieval-anchor-keywords: permission model bridge, authn to authz bridge, authz 4-step gate, role scope ownership primer bridge, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 거부, 남의 주문 조회, 내 것만 되는데 남의 것은 안 됨, ownership gate, response code handoff
+
+## 먼저 고정할 첫 질문
+
+첫 질문은 `로그인 됐는데 왜 403이지?`다. 이 문서는 그 질문을 `role/permission -> scope -> ownership/context` 4단계 gate로 바로 자른 뒤, 필요한 다음 primer로 넘기는 bridge다.
+
+## 시작 전에: 이 문서의 역할
+
+- 이 문서는 `primer bridge`다. `인증은 됐는데 왜 403인가`를 role/scope/ownership 축으로 먼저 쪼개는 entrypoint다.
+- 이 문서는 `survey`가 아니다. security 전체 입문 루트를 다시 고르려면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아간다.
+- 이 문서는 `deep dive`/`runtime debugging` 문서가 아니다. 이미 cache key, concealment policy, tenant drift 증거를 모으는 단계라면 해당 deep dive로 바로 handoff한다.
+- 이 문서는 `playbook`/`recovery`도 아니다. 운영 대응 절차가 필요하면 incident/recovery 쪽 문서를 본다.
+
+## 왜 이 문서가 필요한가
+
+초급자 혼동은 보통 여기서 생긴다.
+
+- `로그인 됐는데 왜 403이지?`
+- `scope=orders.read인데 왜 남의 주문은 못 보죠?`
+- `내 것만 되는데 남의 것은 왜 안 되죠?`
+- `owner인데 왜 관리자 작업은 못 하죠?`
+
+핵심은 간단하다.
+
+인증은 출입증 발급이고, 인가는 문마다 잠금 규칙이 다르다.
+
+- 인증(authn): 출입증을 발급한다.
+- 인가(authz): 이 문을 지금 열어도 되는지 따로 판단한다.
+
+즉 로그인 성공은 시작점이지, 모든 권한의 종착점이 아니다.
+
+---
+
+## 증상으로 먼저 고르는 20초 왕복표
+
+처음에는 용어보다 질문 문장을 같은 축에 올려두는 편이 덜 헷갈린다.
+
+| 지금 떠오르는 말 | 먼저 고정할 질문 | 여기서 바로 보는 칸 | 다음 왕복 |
+|---|---|---|---|
+| `로그인 됐는데 왜 403이지?`, `토큰은 유효한데 403이네` | `인증은 끝났고, 어느 authz gate가 막는가?` | 아래 `먼저 한 장으로 보는 4단계` | 응답 코드 해석을 같이 맞추려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) -> 축 설명을 더 보면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `scope 있는데 왜 거부되지?`, `scope 있는데 왜 남의 주문을 못 봐?`, `내 것만 되는데 남의 것은 안 됨` | `API 호출 권한(scope)과 객체 접근 권한(ownership)은 같은가?` | 아래 `한 요청 예시: 주문 상세 조회` | 객체 관계까지 표로 다시 보면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `남의 주문이 403인지 404인지 헷갈림` | `객체 deny를 바깥에 어떻게 번역할까?` | 아래 4단계의 `Ownership/Context gate` | 바깥 응답 의미는 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+
+짧게 기억하면 이 문서는 `왜 막혔는지 순서`를 잡고, 응답 코드는 `401/403/404` primer가, role/scope/ownership 차이는 다음 primer가 맡는다.
+
+---
+
+## 먼저 한 장으로 보는 4단계
+
+| 단계 | 서버가 묻는 질문 | 통과 예시 | 실패 시 흔한 응답 |
+|---|---|---|---|
+| 1. AuthN | `너 누구야?` | 세션/JWT 검증 성공 | `401` |
+| 2. Role/Permission gate | `이 기능군에 들어올 자격이 있나?` | `ROLE_USER`, `order.read` 있음 | `403` |
+| 3. Scope gate (토큰 위임일 때) | `이 토큰이 이 API 호출을 위임받았나?` | `scope=orders.read` 포함 | `403` |
+| 4. Ownership/Context gate | `이 특정 객체를 지금 이 주체가 다뤄도 되나?` | 본인 주문, 같은 tenant, 위임 관계 충족 | `403` 또는 concealment `404` |
+
+짧게 외우면 아래 순서다.
+
+```text
+authenticated
+AND feature gate(role/permission)
+AND delegated gate(scope, if exists)
+AND object gate(ownership/tenant/context)
+```
+
+## `유효한 토큰인데 403`를 20초 안에 읽는 표
+
+이 bridge는 auth failure guide와 같은 어휘를 쓴다.
+
+| 들고 온 문장 | 먼저 고정할 뜻 | 바로 넘길 다음 문서 |
+|---|---|---|
+| `유효한 토큰인데 403` | authn은 통과했고 authz gate 중 하나가 막는다 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `scope 있는데 왜 거부` | scope는 API 진입 범위일 뿐, ownership/context까지 대신하지 않는다 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `남의 주문이 왜 404` | object gate deny를 concealment policy가 외부 `404`로 감쌀 수 있다 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+
+한 줄 정리:
+
+- `401`을 넘겼다고 바로 허용은 아니다.
+- `유효한 토큰` 다음에 `role/permission -> scope -> ownership/context`를 다시 본다.
+
+---
+
+## 한 요청 예시: 주문 상세 조회
+
+요청: `GET /orders/123`
+
+1. 로그인/토큰 검증 성공 -> `누구인지` 확인됨
+2. `order.read` 같은 기능 권한 확인
+3. delegated token이면 `orders.read` scope 확인
+4. 마지막으로 주문 `123`이 본인 주문인지(또는 허용된 지원 관계인지) 확인
+
+여기서 4단계를 빼면 바로 IDOR/BOLA로 이어진다.
+
+즉 `orders.read`는 보통 `주문 조회 API를 부를 수 있음`이지,
+`모든 주문 객체를 읽을 수 있음`이 아니다.
+
+초보자 질문은 아래 둘도 먼저 `로그인 됐는데 왜 403이지?`로 접어 두면 분기가 빨라진다.
+
+- `유효한 토큰인데 왜 403이에요?`
+- `scope 있는데 왜 남의 주문은 거부돼요?`
+
+답은 둘 다 같다. authn 통과 뒤에도 object gate가 남아 있기 때문이다.
+
+---
+
+## 자주 섞이는 오해 5개
+
+1. 로그인 성공이면 인가도 끝난다.
+2. role이 있으면 그 role 관련 객체를 전부 볼 수 있다.
+3. scope가 있으면 앱 내부 객체 정책도 자동 통과한다.
+4. owner면 role/scope 없이 민감 action도 된다.
+5. 셋 중 하나만 통과하면 된다.
+
+현실은 보통 반대다. 하나의 요청에서 여러 gate를 같이 통과해야 안전하다.
+
+---
+
+## 카테고리 복귀 경로
+
+- security beginner primer를 다시 고르려면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아가면 된다.
+- authz 관련 증상표에서 `grant했는데 still 403`, `tenant-specific 403`, `concealment 404` 같은 다음 분기를 다시 찾으려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)를 본다.
+
+## 이 문서 다음에 어디로 가면 좋은가
+
+- authn/authz/principal/session 축이 아직 흐리면: [인증과 인가의 차이](./authentication-vs-authorization.md)
+- role/scope/ownership 차이를 표와 예시로 더 보고 싶으면: [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
+- `scope`와 `audience`까지 섞이면: [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)
+- 객체 단위 취약점으로 바로 연결해서 보고 싶으면: [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
+- 응답 코드(`401/403/404`) 해석을 정리하려면: [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+
+## 한 줄 정리
+
+`인증 성공`은 출발점이고, 실제 허용은 `기능 자격(role/permission) + 위임 범위(scope) + 객체 관계(ownership/context)`를 함께 확인해야 끝난다.

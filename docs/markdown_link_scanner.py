@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import html
 import re
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
 FENCE_RE = re.compile(r"^\s*```(?P<lang>[A-Za-z0-9_-]*)")
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 REFERENCE_LINK_RE = re.compile(r"^\s*\[[^\]\n]+\]:\s*(.+?)\s*$")
+HEADING_RE = re.compile(r"^(#{1,6})\s+(?P<title>.+?)\s*$")
+EXPLICIT_ANCHOR_RE = re.compile(r"""<a\s+id=["']([^"']+)["']\s*>\s*</a>""", re.IGNORECASE)
+HTML_TAG_RE = re.compile(r"""<(?P<tag>[A-Za-z0-9:-]+)\b(?P<attrs>[^>]*)>""")
+HTML_ATTR_RE = re.compile(
+    r"""\b(?P<attr>[A-Za-z_:][-A-Za-z0-9_:.]*)=["'](?P<value>[^"']*)["']""",
+    re.IGNORECASE,
+)
 SIMPLE_QUOTED_TITLE_RE = re.compile(
     r"""^(?P<target>\S+)(?:\s+(?:"[^"]*"|'[^']*'))\s*$"""
 )
+LOCAL_ASSET_HTML_ATTRS = ("href", "poster", "src", "srcset")
+LOCAL_ASSET_HTML_TAGS = ("a", "audio", "img", "source", "track", "video")
 
 
 @dataclass(frozen=True)
@@ -23,6 +34,20 @@ class MarkdownLine:
 @dataclass(frozen=True)
 class MarkdownTarget:
     kind: str
+    raw_target: str
+
+
+@dataclass(frozen=True)
+class MarkdownAnchor:
+    anchor: str
+    label: str
+    line_number: int
+
+
+@dataclass(frozen=True)
+class HtmlTarget:
+    tag: str
+    attr: str
     raw_target: str
 
 
@@ -177,6 +202,52 @@ def iter_markdown_targets(
     return targets
 
 
+def iter_html_targets(
+    line: str,
+    *,
+    attrs: tuple[str, ...] = LOCAL_ASSET_HTML_ATTRS,
+    tags: tuple[str, ...] | None = None,
+) -> list[HtmlTarget]:
+    allowed_attrs = {attr.lower() for attr in attrs}
+    allowed_tags = None if tags is None else {tag.lower() for tag in tags}
+    targets: list[HtmlTarget] = []
+    seen: set[tuple[str, str, str]] = set()
+
+    for tag_match in HTML_TAG_RE.finditer(line):
+        tag = tag_match.group("tag").lower()
+        if allowed_tags is not None and tag not in allowed_tags:
+            continue
+
+        for attr_match in HTML_ATTR_RE.finditer(tag_match.group("attrs")):
+            attr = attr_match.group("attr").lower()
+            if attr not in allowed_attrs:
+                continue
+
+            raw_value = attr_match.group("value")
+            raw_targets = (
+                [
+                    candidate.strip().split(None, 1)[0]
+                    for candidate in raw_value.split(",")
+                    if candidate.strip()
+                ]
+                if attr == "srcset"
+                else [raw_value]
+            )
+
+            for raw_target in raw_targets:
+                key = (tag, attr, raw_target)
+                if key in seen:
+                    continue
+                seen.add(key)
+                targets.append(HtmlTarget(tag=tag, attr=attr, raw_target=raw_target))
+
+    return targets
+
+
+def iter_local_asset_html_targets(line: str) -> list[HtmlTarget]:
+    return iter_html_targets(line, attrs=LOCAL_ASSET_HTML_ATTRS, tags=LOCAL_ASSET_HTML_TAGS)
+
+
 def normalize_target(raw_target: str) -> str:
     target = raw_target.strip()
     if target.startswith("<"):
@@ -189,3 +260,65 @@ def normalize_target(raw_target: str) -> str:
         return title_match.group("target")
 
     return target
+
+
+def normalize_heading_title(title: str) -> str:
+    text = html.unescape(title)
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = re.sub(r"[*_~]", "", text)
+    return text.strip()
+
+
+def slugify_heading(title: str) -> str:
+    slug_chars: list[str] = []
+
+    for char in normalize_heading_title(title).lower():
+        if char.isspace():
+            slug_chars.append("-")
+            continue
+
+        category = unicodedata.category(char)
+        if category[0] in {"L", "N"} or char in {"-", "_"}:
+            slug_chars.append(char)
+
+    return "".join(slug_chars).strip("-")
+
+
+def collect_markdown_anchors(path: Path) -> dict[str, MarkdownAnchor]:
+    anchors: dict[str, MarkdownAnchor] = {}
+    slug_counts: dict[str, int] = {}
+
+    for markdown_line in iter_prose_lines(path):
+        line_number = markdown_line.line_number
+        line = markdown_line.text
+
+        for explicit_anchor in EXPLICIT_ANCHOR_RE.findall(line):
+            anchors.setdefault(
+                explicit_anchor,
+                MarkdownAnchor(
+                    anchor=explicit_anchor,
+                    label=f"explicit anchor `{explicit_anchor}`",
+                    line_number=line_number,
+                ),
+            )
+
+        heading_match = HEADING_RE.match(line)
+        if heading_match is None:
+            continue
+
+        title = normalize_heading_title(heading_match.group("title"))
+        base_slug = slugify_heading(title)
+        if not base_slug:
+            continue
+
+        suffix = slug_counts.get(base_slug, 0)
+        anchor = base_slug if suffix == 0 else f"{base_slug}-{suffix}"
+        slug_counts[base_slug] = suffix + 1
+        anchors.setdefault(
+            anchor,
+            MarkdownAnchor(anchor=anchor, label=title, line_number=line_number),
+        )
+
+    return anchors

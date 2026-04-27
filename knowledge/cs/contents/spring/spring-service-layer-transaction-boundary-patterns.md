@@ -5,6 +5,10 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring Self-Invocation / Proxy Annotation Matrix](./spring-self-invocation-proxy-annotation-matrix.md)
+> - [AOP 기초](./spring-aop-basics.md)
+> - [Spring `@Transactional` 기초](./spring-transactional-basics.md)
+> - [Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기](./spring-service-layer-external-io-after-commit-outbox-primer.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies](./spring-transaction-propagation-nested-requires-new-case-studies.md)
@@ -15,7 +19,7 @@
 > - [Aggregate Boundary vs Transaction Boundary](../design-pattern/aggregate-boundary-vs-transaction-boundary.md)
 > - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](../network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
 
-retrieval-anchor-keywords: service layer transaction boundary, application service, use case transaction, transactional placement, @transactional service layer 어디, @transactional 위치, controller service repository transactional 어디 둬야, transactional service layer remote call, controller transaction, repository transaction, self invocation, remote call in transaction, outbox, mandatory propagation
+retrieval-anchor-keywords: service layer transaction boundary, application service, use case transaction, transactional placement, @transactional service layer 어디, @transactional 위치, controller service repository transactional 어디 둬야, transactional service layer remote call, controller transaction, repository transaction, self invocation, transactional self invocation fix, 프록시 우회 수정 패턴, 빈 분리 transactional, facade worker pattern, facade worker transactional, transactional internal call 2 patterns, same class transactional fix, caller worker pattern, this method transactional fix, beginner transaction boundary bridge, remote call in transaction, outbox, mandatory propagation, 프록시 우회 체크리스트, transactional 30초 진단 카드, 증상 원인 패턴 선택, this 호출 transactional 안됨
 
 ---
 
@@ -31,6 +35,142 @@ retrieval-anchor-keywords: service layer transaction boundary, application servi
 - 하위 서비스가 제각각 트랜잭션을 열기 시작하면 커밋 단위가 유스케이스가 아니라 구현 세부사항에 종속된다.
 
 즉, `@Transactional`의 기본 위치는 "DB를 가장 많이 건드리는 클래스"가 아니라 **업무적으로 같이 성공하거나 같이 실패해야 하는 메서드**다.
+
+### 초급자용 먼저 잡는 그림
+
+처음에는 이렇게만 보면 된다.
+
+- `@Transactional`이 안 먹는 증상: 호출 경로가 프록시 정문을 지났는지 본다.
+- 어디에 붙여야 할지 헷갈림: "이 유스케이스를 대표하는 메서드가 무엇인가"를 먼저 찾는다.
+
+## 초급자 왕복 링크
+
+이 문서는 "패턴 선택" 문서다. 막히는 위치에 따라 아래처럼 왕복하면 된다.
+
+| 지금 막히는 지점 | 먼저 돌아갈 문서 | 이 문서에서 다시 볼 위치 |
+|---|---|---|
+| AOP 용어가 아직 추상적이다 | [AOP 기초](./spring-aop-basics.md) | 아래 [`초급 빠른 수정: 내부 호출 프록시 우회 2패턴`](#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
+| `@Transactional` begin/commit/rollback 그림이 먼저 필요하다 | [Spring `@Transactional` 기초](./spring-transactional-basics.md) | 아래 [`초급 빠른 수정: 내부 호출 프록시 우회 2패턴`](#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
+| 패턴 이름은 알겠는데 왜 필요한지 다시 헷갈린다 | [AOP 기초의 `Bean + public + external call(proxy)` 체크](./spring-aop-basics.md#초급자용-3단계-왕복-라우트) | 이 문서의 30초 진단 카드 |
+
+| 지금 질문 | 먼저 보는 한 줄 답 |
+|---|---|
+| "`this.save()`가 왜 안 되지?" | 같은 Bean 내부 호출이라 프록시를 안 탔다 |
+| "`@Transactional`은 어디에 두지?" | 유스케이스를 설명하는 서비스 메서드가 기본 자리다 |
+| "두 문제를 같이 고치려면?" | 아래 2패턴에서 호출 구조와 경계 소유자를 같이 정리한다 |
+
+## 30초 진단 카드: 프록시 우회 증상 -> 원인 -> 2패턴 선택
+
+이 섹션은 "왜 안 되지?"를 30초 안에 자르기 위한 카드다.
+
+`@Transactional 기초`에서 쓰는 용어와 여기서 쓰는 용어를 그대로 맞춘다.
+
+- 증상이 `this.save()`/같은 클래스 내부 호출이면: 전파 옵션보다 먼저 프록시 우회 여부를 본다.
+- 원인은 대부분 하나다: 트랜잭션이 틀린 게 아니라 호출이 프록시 정문을 안 지났다.
+- 선택은 두 가지면 충분하다: 작은 구조 수정인지, 유스케이스 경계 재정리인지부터 고른다.
+
+| 지금 보이는 증상 | 가장 먼저 의심할 원인 | 먼저 고를 패턴 |
+|---|---|---|
+| `@Transactional`을 붙였는데 트랜잭션 로그가 안 잡히는 것 같다 | 같은 클래스 내부 호출이라 프록시를 우회했다 | 빈 분리(Caller/Worker) |
+| `public`으로 바꿨는데도 그대로다 | 접근 제한자보다 호출 경로가 여전히 `this`다 | 빈 분리(Caller/Worker) |
+| 주문 생성, 재고 차감처럼 여러 작업이 섞여서 "누가 커밋 주인인지" 모호하다 | 트랜잭션 경계 소유자가 한 메서드로 모이지 않았다 | Facade-Worker 분리 |
+
+### 2패턴 선택 빠른 기준
+
+| 질문 | `Yes`면 고를 패턴 | 이유 |
+|---|---|---|
+| 지금 문제는 사실상 `this.write()` 한 군데인가? | 빈 분리(Caller/Worker) | 가장 작은 변경으로 프록시 경로를 복구한다 |
+| 주문 생성, 재고 차감처럼 여러 하위 작업을 한 유스케이스로 묶는 대표 메서드가 필요한가? | Facade-Worker 분리 | 커밋 경계 소유자를 대표 메서드 1곳으로 모은다 |
+
+자주 하는 오해:
+
+- `REQUIRES_NEW`를 붙이면 프록시 우회가 해결되는 것이 아니다.
+- `private`를 `public`으로만 바꾸고 같은 클래스에서 계속 부르면 증상은 그대로일 수 있다.
+- 두 패턴 모두 핵심은 "애노테이션 추가"가 아니라 "프록시를 지나는 호출 구조 복구"다.
+
+---
+
+## 초급 빠른 수정: 내부 호출 프록시 우회 2패턴
+
+> [`@Transactional 기초`](./spring-transactional-basics.md)에서 "내부 호출 증상"을 보고 넘어왔다면 이 섹션만 먼저 읽으면 된다.
+> AOP 프록시 감각이 흐려졌다면 [`AOP 기초`](./spring-aop-basics.md#초급자용-3단계-왕복-라우트)로 한 칸 돌아가도 된다.
+
+먼저 감각만 잡으면 간단하다.
+
+- `@Transactional`은 "메서드에 글자 붙이기"가 아니라 "프록시를 거쳐 호출되어야 발동"하는 규칙이다.
+- 같은 클래스 안에서 `this.method()`로 부르면 프록시를 우회하므로 트랜잭션이 안 걸릴 수 있다.
+- 이때는 전파 옵션을 만지기 전에 호출 구조를 먼저 고친다.
+
+| 패턴 | 언제 쓰나 | 바꾸는 방법 | 한 줄 체크 |
+|---|---|---|---|
+| 빈 분리(Caller/Worker) | 기존 서비스 내부에서 `this.write()`를 호출 중일 때 | 쓰기 메서드를 별도 `@Service`로 분리하고, 기존 서비스가 주입받아 호출 | 호출이 `this`가 아니라 `otherBean.write()`인가? |
+| Facade-Worker 분리 | 한 유스케이스에서 여러 하위 작업을 묶고 싶을 때 | Facade가 `@Transactional` 경계를 소유하고 Worker들은 그 경계 안에서 동작 | 커밋 의미가 Facade 메서드 1개로 설명되는가? |
+
+### 어떤 패턴부터 고를까
+
+| 지금 보이는 코드 | 권장 시작점 | 이유 |
+|---|---|---|
+| 한 클래스 안에서 `this.write()`만 문제다 | 빈 분리(Caller/Worker) | 가장 작은 변경으로 프록시 경로를 복구한다 |
+| 여러 서비스 호출이 섞여 있고 "누가 커밋 주인인지" 애매하다 | Facade-Worker 분리 | 트랜잭션 경계를 유스케이스 1곳으로 모은다 |
+
+초급자에게는 이렇게 외우는 편이 빠르다.
+
+- 빈 분리: "문제 메서드를 다른 집으로 옮겨 정문으로 다시 들어가게 한다"
+- Facade-Worker: "유스케이스 대표 메서드 1개가 커밋 주인이다"
+
+<a id="pattern-caller-worker"></a>
+### 패턴 1) 빈 분리(Caller/Worker)
+
+```java
+@Service
+public class OrderFacade {
+    private final OrderWriter orderWriter;
+
+    public OrderFacade(OrderWriter orderWriter) {
+        this.orderWriter = orderWriter;
+    }
+
+    public void place() {
+        orderWriter.write(); // Bean -> Proxy -> @Transactional
+    }
+}
+
+@Service
+public class OrderWriter {
+    @Transactional
+    public void write() {
+        // DB write
+    }
+}
+```
+
+<a id="pattern-facade-worker"></a>
+### 패턴 2) Facade-Worker 분리
+
+```java
+@Service
+public class CheckoutFacade {
+    private final OrderWorker orderWorker;
+    private final InventoryWorker inventoryWorker;
+
+    public CheckoutFacade(OrderWorker orderWorker, InventoryWorker inventoryWorker) {
+        this.orderWorker = orderWorker;
+        this.inventoryWorker = inventoryWorker;
+    }
+
+    @Transactional
+    public void checkout() {
+        orderWorker.create();
+        inventoryWorker.decrease();
+    }
+}
+```
+
+자주 헷갈리는 포인트:
+
+- Worker에도 `@Transactional`을 중복으로 붙이면 경계 소유자가 흐려진다. 기본은 Facade 한 곳부터 시작한다.
+- `private @Transactional`로는 해결되지 않는다. 호출 경로가 프록시를 타지 않기 때문이다.
+- `REQUIRES_NEW`는 "내부 호출 우회 수정" 도구가 아니라 "독립 커밋" 선택이다.
 
 ---
 
@@ -110,6 +250,8 @@ controller
 - DB 상태 변경까지만 트랜잭션으로 묶고, 외부 호출은 커밋 후 수행
 - `@TransactionalEventListener(AFTER_COMMIT)` 사용
 - 더 신뢰성이 필요하면 outbox 패턴 사용
+
+초급자 예시부터 빠르게 보고 싶다면 [외부 I/O는 트랜잭션 밖으로, `AFTER_COMMIT` vs Outbox](./spring-service-layer-external-io-after-commit-outbox-primer.md)를 먼저 본 뒤 이 문서로 돌아오는 편이 덜 헷갈린다.
 
 ### 5. 프록시 기반 제약은 placement mistake를 만든다
 

@@ -24,8 +24,9 @@
 > - [전략 폭발 냄새](./strategy-explosion-smell.md)
 > - [Template Hook Smells](./template-hook-smells.md)
 > - [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
+> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: anti pattern, 안티 패턴, bad software design signals, spaghetti code, golden hammer, lava flow, copy paste programming, vendor lock in design, design pattern overuse, architecture anti pattern
+retrieval-anchor-keywords: anti pattern, 안티 패턴, bad software design signals, spaghetti code, golden hammer, lava flow, copy paste programming, vendor lock in design, design pattern overuse, architecture anti pattern, hidden dependency anti pattern, global lookup anti pattern, service locator anti pattern, ApplicationContext getBean anti pattern, ApplicationContext.getBean anti pattern, 스프링 getBean 안티패턴, 전역 조회소 안티패턴
 
 ---
 
@@ -50,7 +51,7 @@ retrieval-anchor-keywords: anti pattern, 안티 패턴, bad software design sign
 ---
 
 ## 소프트웨어 개발 안티 패턴
-보통 애플리케이션이나 프로젝트 개발을 시작할 때 코드 구조부터 설계한다. 제품 설계와 디자인, 사용 패턴 등을 생각해 결정한다.  
+보통 애플리케이션이나 프로젝트 개발을 시작할 때 코드 구조부터 설계한다. 제품 설계와 디자인, 사용 패턴 등을 생각해 결정한다.
 개발이 진행될수록 최초의 코드 구조에서 벗어나게 되는 원인은 다음과 같다.
 1. 개발이 진행되면서 개발자의 사고력이 높아진다.
 2. 고객의 피드백에 따라 사용 패턴이 바뀐다.

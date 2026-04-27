@@ -32,6 +32,10 @@
 > - scorecard schema version
 > - last verdict record
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Retirement Scorecard Schema](./README.md#shadow-retirement-scorecard-schema)
+> - 다음 단계: [Shadow Catalog Reopen and Successor Rules](./shadow-catalog-reopen-and-successor-rules.md)
+
 ## 핵심 개념
 
 shadow retirement 문서가 많아질수록 같은 사실을 다른 이름으로 적는 문제가 생긴다.

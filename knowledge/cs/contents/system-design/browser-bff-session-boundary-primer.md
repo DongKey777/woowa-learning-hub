@@ -2,18 +2,48 @@
 
 > 한 줄 요약: 브라우저는 보통 cookie session과 BFF를 통해 로그인 상태를 전달하고, 모바일/API는 bearer token을 직접 보내는 경우가 많아서 같은 인증이라도 상태 위치, 위협 모델, 운영 방식이 달라진다.
 
-retrieval-anchor-keywords: browser bff session boundary primer, cookie session, session cookie, opaque session cookie, browser auth path, mobile auth path, api token flow, bearer token flow, BFF token translation, backend for frontend auth, browser cookie vs mobile token, browser auth vs api auth, server-side refresh token, downstream token exchange, browser session boundary, session to token translation, auth path primer, browser logout tail, BFF logout mapping, session revocation basics, beginner system design auth
+retrieval-anchor-keywords: browser bff session boundary primer, cookie session, session cookie, opaque session cookie, browser auth path, mobile auth path, api token flow, bearer token flow, BFF token translation, backend for frontend auth, browser cookie vs mobile token, browser auth vs api auth, server-side refresh token, downstream token exchange, browser session boundary, session to token translation, auth path primer, browser logout tail, BFF logout mapping, session revocation basics, beginner system design auth, browser bff primer bridge, system design session boundary primer bridge, browser bff deep dive handoff, bff session recovery ladder, primer primer bridge deep dive ladder, browser session three-way symptom split, savedrequest loop cookie-missing server-anonymous, session store deep dive entry gate, browser session troubleshooting path, browser session troubleshooting safe next step, auth session primer bridge, safe next step browser session
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [Stateless Sessions Primer](./stateless-sessions-primer.md)
-- [Session Revocation Basics](./session-revocation-basics.md)
-- [Session Store Design at Scale](./session-store-design-at-scale.md)
-- [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-- [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
-- [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
+- `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+- `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+- `[primer bridge]` [Auth Session Troubleshooting Bridge (`SavedRequest loop` / `cookie-missing` / `server-anonymous`)](./README.md#system-design-auth-session-troubleshooting-bridge)
+- `[primer]` [Stateless Sessions Primer](./stateless-sessions-primer.md)
+- `[primer]` [Session Revocation Basics](./session-revocation-basics.md)
+- `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
+- `[deep dive]` [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
+- `[deep dive]` [Session Store Design at Scale](./session-store-design-at-scale.md)
+- `[recovery]` [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+
+---
+
+## 20초 트리아지 결정표
+
+browser/session bridge 문서에서 공통으로 쓰는 mini decision matrix다. 초보자는 이 표로 `기억 -> 전송 -> 조회`를 먼저 고정하고, 이 문서는 세 번째 branch에서만 잡는다.
+
+| 지금 먼저 보이는 신호 | 먼저 읽는 뜻 | safe next step |
+|---|---|---|
+| `302 + Location: /login`, login 직후 원래 URL 복귀가 꼬임, `SavedRequest`가 의심됨 | `기억 / redirect` branch다 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+| `Application > Cookies`에는 값이 있는데 같은 실패 요청의 request `Cookie` header가 비어 있음 | `전송 / cookie-missing` branch다. `cookie-not-sent`는 retrieval alias다 | [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
+| request `Cookie` header는 붙어 있는데도 raw `401` 또는 `302 -> /login`이 반복됨 | `조회 / server-anonymous` branch다 | 이 문서 |
+
+## 막히면 여기로 돌아오기: Beginner 3단계 사다리
+
+초보자용 mental model은 `기억 -> 전송 -> 조회`다.
+session-store 문서로 바로 내려가지 말고 먼저 증상을 세 갈래로 고정한다.
+
+| 단계 | 문서 | 지금 확정할 것 |
+|---|---|---|
+| 1. primer | [Browser BFF Session Boundary Primer](./browser-bff-session-boundary-primer.md) | browser cookie와 BFF token translation의 큰 그림 |
+| 2. primer bridge | [Auth Session Troubleshooting Bridge](./README.md#system-design-auth-session-troubleshooting-bridge) | `SavedRequest loop`(기억) / `cookie-missing`(전송) / `server-anonymous`(조회) 중 어디인지 |
+| 3. deep dive | [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md), [Session Store Design at Scale](./session-store-design-at-scale.md) | 2단계에서 `server-anonymous` 증거가 잡혔을 때만 session-store로 내려가기 |
+
+`SavedRequest loop`로 확정되면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) 순서로 간다. 이때 browser/session 계열의 `safe next step`은 security README의 [Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)에서 초보자 branch 이름을 먼저 맞춘 뒤 [Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 넘어가는 것이다.
+`cookie-missing`으로 확정되면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)를 먼저 본다.
+`server-anonymous`로 확정되면 [Stateless Sessions Primer](./stateless-sessions-primer.md)로 돌아가 local session 복원과 downstream token translation을 먼저 다시 맞춘다.
 
 ---
 
@@ -204,20 +234,20 @@ Browser session cookie
 
 ## 꼬리질문
 
-> Q: BFF의 token translation은 정확히 무엇을 뜻하나요?  
-> 의도: browser session과 downstream bearer token을 같은 것으로 착각하지 않는지 확인  
+> Q: BFF의 token translation은 정확히 무엇을 뜻하나요?
+> 의도: browser session과 downstream bearer token을 같은 것으로 착각하지 않는지 확인
 > 핵심: 브라우저가 보낸 session reference를 서버가 받아 provider/downstream token 호출로 바꾸는 것이다.
 
-> Q: 왜 브라우저는 mobile처럼 bearer token만 직접 쓰지 않나요?  
-> 의도: browser boundary와 credential exposure 차이를 이해하는지 확인  
+> Q: 왜 브라우저는 mobile처럼 bearer token만 직접 쓰지 않나요?
+> 의도: browser boundary와 credential exposure 차이를 이해하는지 확인
 > 핵심: 가능은 하지만 token을 브라우저 JS/storage 경계에 더 노출하게 되고, BFF는 이를 서버 뒤로 숨길 수 있다.
 
-> Q: cookie session이면 stateless app tier를 못 만드나요?  
-> 의도: app memory session과 external session store를 구분하는지 확인  
+> Q: cookie session이면 stateless app tier를 못 만드나요?
+> 의도: app memory session과 external session store를 구분하는지 확인
 > 핵심: session을 외부 store에 두면 app tier는 충분히 stateless하게 운영할 수 있다.
 
-> Q: mobile/API token flow는 revoke를 어떻게 처리하나요?  
-> 의도: bearer token도 lifecycle state를 요구한다는 점을 아는지 확인  
+> Q: mobile/API token flow는 revoke를 어떻게 처리하나요?
+> 의도: bearer token도 lifecycle state를 요구한다는 점을 아는지 확인
 > 핵심: refresh rotation, version check, introspection, revocation store 같은 서버 상태가 필요하다.
 
 ## 한 줄 정리

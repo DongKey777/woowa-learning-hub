@@ -28,6 +28,10 @@
 > - decision row verification row mapping
 > - catalog to packet automation
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Packet Automation Mapping](./README.md#shadow-packet-automation-mapping)
+> - 다음 단계: [Shadow Review Outcome Template](./shadow-review-outcome-template.md)
+
 ## 핵심 개념
 
 shadow review packet이 늘 손으로 작성되면 같은 catalog entry도 작성자마다 다른 요약, 다른 빈칸 처리, 다른 urgency를 갖게 된다.

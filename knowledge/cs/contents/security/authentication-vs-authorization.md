@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+> - [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
 > - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
 > - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
@@ -17,12 +18,13 @@
 > - [Security README 기본 primer 묶음](./README.md#기본-primer)
 > - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
 
-retrieval-anchor-keywords: authentication vs authorization, authn vs authz, principal meaning, principal vs user, principal vs session, permission model basics, role vs permission, subject resource action, login vs access control, session basics, session vs token vs oauth, authenticated but forbidden, owner check, claim vs authority, 401 403 404, session revocation basics, authorization boundary, role change while logged in, permission change active session, session freshness basics, security readme auth primer, security basic primer authn authz, auth basics route, auth beginner route, security beginner route, security basics route, first-step auth primer, security primer next step, return to security README
+retrieval-anchor-keywords: authentication vs authorization, authn vs authz, authn/authz primer, authn / authz primer, authn/authz boundary, authn / authz boundary, authn authz beginner primer, 인증과 인가 primer, 인증과 인가 기본 primer, authn은 이해했는데 why 403, authn은 이해했는데 왜 403인지, authn / authz 경계가 섞일 때, principal meaning, principal vs user, principal vs session, principal session permission model primer, permission model basics, role vs permission, subject resource action, login vs access control, session basics, session vs token vs oauth, authenticated but forbidden, owner check, claim vs authority, 401 403 404, session revocation basics, authorization boundary, role change while logged in, permission change active session, session freshness basics, permission model bridge 전에 읽는 primer, security README 기본 primer 묶음, security readme auth primer, security basic primer authn authz, auth basics route, auth beginner route, security beginner route, security basics route, first-step auth primer, security primer next step, return to security README, 로그인 됐는데 403, 로그인은 됐는데 왜 403, 인증은 됐는데 403, 토큰은 유효한데 403, 남의 주문 조회
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - security beginner route 안에서 다른 입문 문서를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
 - 방금 잡은 authn / authz 차이를 HTTP 상태 코드로 바로 연결하려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)를 바로 이어서 보면 된다.
+- authn 이후 permission model로 넘어갈 때 role/scope/ownership 축이 갑자기 섞이면 [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)로 한 번 연결하고 가면 좋다.
 - 로그인한 상태에서 role, permission, tenant membership이 바뀌면 무엇이 달라져야 하는지 초보자 관점으로 바로 이어 보려면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)를 보면 된다.
 - 인증 상태를 세션, signed cookie, JWT 중 어디에 둘지는 [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)에서 비교할 수 있다.
 - 권한 모델이 커졌을 때 role, permission, relationship cache가 왜 꼬이는지는 [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)로 이어진다.

@@ -8,6 +8,7 @@ retrieval-anchor-keywords: distributed tracing, spans, trace context, head sampl
 
 > 관련 문서:
 > - [Metrics Pipeline / TSDB 설계](./metrics-pipeline-tsdb-design.md)
+> - [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
 > - [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md)
 > - [API Gateway Control Plane 설계](./api-gateway-control-plane-design.md)
 > - [Service Discovery / Health Routing 설계](./service-discovery-health-routing-design.md)

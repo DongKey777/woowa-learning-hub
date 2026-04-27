@@ -6,12 +6,20 @@
 
 관련 문서:
 
-- [SQL 인젝션: PreparedStatement를 넘어서](./sql-injection-beyond-preparedstatement.md)
-- [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
-- [security 카테고리 인덱스](./README.md)
-- [Spring Bean DI 기초](../spring/spring-bean-di-basics.md)
+- [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
+- [SQL 인젝션 기초](./sql-injection-basics.md)
+- [XSS와 CSRF 기초](./xss-csrf-basics.md)
+- [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: input validation basics, 입력값 검증이 뭐예요, 서버사이드 검증 왜 필요해요, validation vs sanitization, bean validation, 클라이언트 검증만 하면 안 되나요, beginner input validation, allowlist vs blocklist, 입력 필터링 기초, 검증 누락 위험
+retrieval-anchor-keywords: input validation basics, 입력값 검증이 뭐예요, 서버사이드 검증 왜 필요해요, validation vs sanitization, bean validation, 클라이언트 검증만 하면 안 되나요, beginner input validation, allowlist vs blocklist, 입력 필터링 기초, 검증 누락 위험, security readme input validation primer, security beginner route, security primer next step, return to security README, 폼을 보낸 뒤 서버 검증 실패, request payload validation
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security 입문 문서 안에서 다른 primer를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
+- "검증을 빼먹으면 DB 쪽에서 무슨 일이 생기나"를 가장 바로 체감하려면 [SQL 인젝션 기초](./sql-injection-basics.md)를 이어서 보면 된다.
+- validation과 escaping/sanitization을 자꾸 같은 일로 읽게 되면 [XSS와 CSRF 기초](./xss-csrf-basics.md)에서 출력 시 방어와 요청 위조 방어를 분리해 보면 된다.
+- "`형식 검증`과 `도메인 규칙`을 같은 검증으로 읽게 된다"면 [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)로 먼저 경계를 짧게 잡고 오는 편이 빠르다.
 
 ## 핵심 개념
 
@@ -52,6 +60,7 @@ Spring에서는 Bean Validation 어노테이션으로 형식 검증을 선언적
 - **"프론트엔드에서 했으니까 서버는 생략해도 된다"** → 공격자는 Postman·curl로 프론트엔드를 완전히 우회해 직접 서버에 요청한다. 서버 검증은 선택이 아니다.
 - **"null 체크만 해도 충분하다"** → 빈 문자열, 공백만 가득한 문자열, 아주 긴 문자열 등 null이 아니지만 비정상인 입력이 많다. `@NotBlank`, 길이 제한, 패턴 검증을 함께 써야 한다.
 - **"검증은 컨트롤러에서만 하면 된다"** → 컨트롤러는 형식 검증, 서비스는 비즈니스 규칙 검증을 나눠 처리하는 것이 일반적이다. 비즈니스 규칙을 컨트롤러에 몰아넣으면 유지보수가 어려워진다.
+- **"`@Valid`만 붙이면 도메인도 안전하다"** → `@Valid`는 요청 경계에서 빠르게 걸러 주지만, 다른 진입점에서는 우회될 수 있다. 최종 규칙은 도메인 안쪽에서도 지켜야 한다. 이 경계는 [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)에서 짧게 다시 볼 수 있다.
 
 ## 실무에서 쓰는 모습
 

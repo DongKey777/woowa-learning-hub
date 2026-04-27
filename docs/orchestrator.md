@@ -73,24 +73,34 @@ This starts:
 
 - the queue/background orchestrator
 - a supervisor loop
-- 15 local worker processes
+- 30 local worker processes
 
 Each worker process repeatedly does:
 
-1. wait for a lane-safe claim
+1. wait for a write-scope-safe claim
 2. run `codex exec` non-interactively against the claimed task
-3. write docs / links / anchors inside its owned lane
+3. follow its worker profile (`role`, `mode`, `target_paths`, `write_scopes`, `quality_gates`)
 4. call `bin/orchestrator complete`
 5. claim the next task
 
 If a worker exits, the supervisor starts it again. This is the persistent execution layer that the queue alone does not provide.
+
+The current 30-worker fleet is a quality-repair profile, not an expansion profile:
+
+- 21 QA workers for category docs, primer contracts, anchors, and link ladders
+- 6 RAG workers for ranking regressions, signal rules, golden fixtures, and index readiness
+- 3 ops/release workers for queue control and release gates
+
+See [orchestrator-30-worker-fleet.md](orchestrator-30-worker-fleet.md) for the full profile contract.
 
 ## Design Notes
 
 - The orchestrator is honest about scope:
   - it persists and rotates work
   - it does not pretend to generate content without an actual worker
-- Backlog is lane-based:
-  - content lanes for CS categories
-  - quality lanes for bridge debt / anchors / links / taxonomy / retrieval
+- Backlog is lane-based, but execution is write-scope protected:
+  - content lanes still express broad CS categories
+  - the active quality fleet claims only QA/RAG/Ops lanes
+  - write scopes prevent conflicting writers from editing the same ownership surface
+  - `fix` workers repair existing lint/retrieval debt instead of creating new docs
 - Queue items are intentionally high-level enough to support repeated waves without becoming brittle one-off prompts.

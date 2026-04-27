@@ -28,6 +28,10 @@
 > - dm waiver retire
 > - deprecation bypass cleanup
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Deprecation Enforcement, Tombstone, and Sunset Guardrails](./README.md#deprecation-enforcement-tombstone-and-sunset-guardrails)
+> - 다음 단계: [Tombstone Response Template and Consumer Guidance](./tombstone-response-template-and-consumer-guidance.md)
+
 ## 핵심 개념
 
 deprecation communication만 잘해도 혼란은 줄일 수 있다.

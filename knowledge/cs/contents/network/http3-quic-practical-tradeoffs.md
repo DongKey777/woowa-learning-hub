@@ -4,6 +4,14 @@
 
 **난이도: 🔴 Advanced**
 
+> 이 문서는 QUIC 운영 판단을 위한 **advanced deep dive**다. beginner라면 여기서 바로 시작하지 말고, 먼저 아래 safe-entry 문서로 진입한 뒤 다시 오는 편이 이해 비용이 낮다.
+>
+> | 지금 상태 | 먼저 읽을 문서 | 이 문서로 돌아오는 타이밍 |
+> |---|---|---|
+> | H1/H2/H3 큰 그림부터 헷갈린다 | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | "`H3가 왜 QUIC까지 끌고 오지?`"가 궁금해졌을 때 |
+> | 브라우저가 왜 H3를 쓰거나 포기하는지 먼저 보고 싶다 | [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) | `Alt-Svc`, `fallback`, UDP 차단 감각을 잡은 뒤 |
+> | "`HTTP/3가 항상 더 빠르나?`"부터 확인하고 싶다 | 이 문서 | 성능 이득과 운영 비용을 같이 비교하려는 지금 |
+
 > 관련 문서:
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [QUIC Connection Migration, Path Change](./quic-connection-migration-path-change.md)
@@ -21,6 +29,7 @@ retrieval-anchor-keywords: HTTP/3, QUIC, UDP, connection migration, HOL blocking
 <details>
 <summary>Table of Contents</summary>
 
+- [시작 전 30초 안전 가이드](#시작-전-30초-안전-가이드)
 - [핵심 개념](#핵심-개념)
 - [깊이 들어가기](#깊이-들어가기)
 - [실전 시나리오](#실전-시나리오)
@@ -30,6 +39,16 @@ retrieval-anchor-keywords: HTTP/3, QUIC, UDP, connection migration, HOL blocking
 - [한 줄 정리](#한-줄-정리)
 
 </details>
+
+## 시작 전 30초 안전 가이드
+
+이 문서는 "HTTP/3가 좋다/나쁘다"를 판정하는 글이 아니라, **어떤 조건에서 이득이 보이고 어떤 비용이 따라오는지**를 나누는 글이다.
+
+| 먼저 답할 질문 | 초보자용 짧은 답 | 더 궁금하면 |
+|---|---|---|
+| HTTP/3가 왜 등장했나 | TCP 기반 대기 전파를 더 줄이려는 방향이다 | [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) |
+| HTTP/3가 항상 더 빠른가 | 아니다. UDP 경로와 운영 환경이 맞아야 한다 | 이 문서 `왜 "항상 더 빠른" 게 아닌가` |
+| 이 문서가 너무 깊게 느껴지면? | 먼저 beginner 비교/선택 문서로 돌아간다 | 위 safe-entry 표 참고 |
 
 ## 핵심 개념
 

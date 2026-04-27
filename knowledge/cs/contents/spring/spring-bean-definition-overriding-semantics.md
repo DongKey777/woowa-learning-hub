@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
@@ -31,6 +32,8 @@ Spring은 같은 이름의 Bean definition이 생길 때 어떻게 할지 결정
 
 - 이름 충돌: definition override 문제
 - 타입 충돌: injection candidate 문제
+
+초보자용 비교가 먼저 필요하면 [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)를 먼저 보고 다시 돌아오는 편이 읽기 쉽다.
 
 ### 2. Boot는 기본적으로 안전 쪽으로 간다
 

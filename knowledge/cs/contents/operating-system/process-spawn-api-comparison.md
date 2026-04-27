@@ -18,11 +18,11 @@
 > - [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)
 > - [pidfd Basics: Race-Free Process Handles](./pidfd-basics-race-free-process-handles.md)
 
-> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement, spawn api fd hygiene, posix_spawn fd inheritance basics, fork exec signal inheritance, signal mask vs disposition bridge
+> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement, spawn api fd hygiene, posix_spawn fd inheritance basics, fork exec signal inheritance, signal mask vs disposition bridge, beginner handoff box, primer handoff box, process spawn comparison 다음 문서, subprocess api 다음 단계
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
-이 다섯 이름이 자주 섞이는 이유는 모두 "프로그램을 띄우는 것처럼 보이는" 주변에 있기 때문이다.  
+이 다섯 이름이 자주 섞이는 이유는 모두 "프로그램을 띄우는 것처럼 보이는" 주변에 있기 때문이다.
 하지만 mental model은 먼저 두 질문으로 자르는 편이 훨씬 쉽다.
 
 1. **새 child/task가 생기는가**
@@ -60,7 +60,7 @@ shell process
   -> child는 더 이상 shell 코드가 아니라 python 프로그램이 된다
 ```
 
-즉 "새 child를 만든다"는 일은 `fork()` 쪽이 하고,  
+즉 "새 child를 만든다"는 일은 `fork()` 쪽이 하고,
 "그 child를 다른 프로그램으로 바꾼다"는 일은 `exec()` 쪽이 한다.
 
 이 차이를 놓치면 아래 API들도 다 흐려진다.
@@ -99,7 +99,7 @@ if (pid == 0) {
 
 ## 3. `vfork()`: 일반 child라기보다 `exec()` 전용 대기실에 가깝다
 
-`vfork()`를 그냥 "더 빠른 `fork()`"라고 외우면 바로 헷갈린다.  
+`vfork()`를 그냥 "더 빠른 `fork()`"라고 외우면 바로 헷갈린다.
 beginner mental model은 이쪽이 더 안전하다.
 
 - child는 생긴다
@@ -107,7 +107,7 @@ beginner mental model은 이쪽이 더 안전하다.
 - child는 부모의 주소 공간을 잠깐 빌려 쓰는 것처럼 봐야 한다
 - 그래서 child가 마음대로 메모리를 건드리거나 일반 함수 흐름을 오래 타는 모델로 이해하면 안 된다
 
-즉 `vfork()`는 "새 child를 만든 뒤 마음껏 child 코드를 실행"하는 API가 아니라,  
+즉 `vfork()`는 "새 child를 만든 뒤 마음껏 child 코드를 실행"하는 API가 아니라,
 **"곧바로 `exec()`로 넘어갈 child를 아주 짧게 준비시키는 특수 경로"**에 가깝다.
 
 초보자가 `strace`에서 `vfork()`를 봤을 때는 이렇게 읽으면 충분하다.
@@ -129,7 +129,7 @@ beginner mental model은 이쪽이 더 안전하다.
 - 호출자는 child 쪽에서 할 수 있는 준비를 제한된 방식으로 전달한다
 - 목적은 "외부 프로그램 실행"이지 "child 안에서 임의의 코드를 길게 수행"하는 것이 아니다
 
-즉 `posix_spawn()`은 `fork()`와 `exec()`를 각각 따로 생각하기보다,  
+즉 `posix_spawn()`은 `fork()`와 `exec()`를 각각 따로 생각하기보다,
 **"새 프로그램 launch를 요청하는 고수준 API"**로 보는 편이 정확하다.
 
 중요한 점은 구현 세부사항과 계약을 분리하는 것이다.
@@ -174,7 +174,7 @@ clone() = 공유 범위를 직접 조립하는 저수준 생성 도구
 - container / namespace runtime
 - 프로세스처럼도, thread처럼도 보일 수 있는 Linux task 모델
 
-즉 초보자가 `clone()`을 읽을 때는 "이게 곧 일반 subprocess API"라고 보기보다,  
+즉 초보자가 `clone()`을 읽을 때는 "이게 곧 일반 subprocess API"라고 보기보다,
 **Linux 내부 모델과 런타임 구현을 이해하기 위한 lower-level primitive**로 보는 편이 맞다.
 
 ## 6. 상황별로 무엇을 먼저 떠올리면 좋은가
@@ -187,7 +187,7 @@ clone() = 공유 범위를 직접 조립하는 저수준 생성 도구
 | trace에서 `vfork()`가 보인다 | "`exec()` 직전 특수 fast path" | 일반 child 실행 모델로 과해석하지 않는 편이 안전하다 |
 | thread / container / namespace 같은 Linux runtime 내부를 본다 | `clone()` | 공유 범위를 낮은 수준에서 고르는 문제다 |
 
-실무에서는 런타임이나 라이브러리가 이들을 섞어서 쓸 수 있다.  
+실무에서는 런타임이나 라이브러리가 이들을 섞어서 쓸 수 있다.
 그래도 해석 순서는 단순하다.
 
 1. 새 child/task가 생겼는가
@@ -223,6 +223,15 @@ clone() = 공유 범위를 직접 조립하는 저수준 생성 도구
 
 > Q: `clone()`이 trace에 보이면 무조건 새 프로세스인가요?
 > 핵심: 아니다. 어떤 공유 flag를 썼는지에 따라 thread처럼 보일 수도 있고, process-like task처럼 보일 수도 있다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "`posix_spawn()`에서 fd redirect가 child 쪽에서 어떻게 적용되는지"를 바로 잇고 싶다면: [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
+> - "`blocked signal`과 `ignored signal`이 launch 경계에서 왜 다르게 남는지"가 궁금하면: [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)
+> - "`clone()`이 thread처럼도 process처럼도 보이는 이유"를 더 또렷하게 보려면: [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)
+> - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 한 줄 정리
 

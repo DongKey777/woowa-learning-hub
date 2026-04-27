@@ -11,9 +11,47 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 
-retrieval-anchor-keywords: singleton pattern, singleton basics, 싱글톤 패턴, 인스턴스 하나, 전역 객체 패턴, when to use singleton, singleton problem, singleton test difficulty, singleton hidden state, global state smell, 싱글톤이 뭔가요, 싱글톤 단점, beginner singleton
+retrieval-anchor-keywords: singleton pattern, singleton basics, 싱글톤 패턴, 인스턴스 하나, 전역 객체 패턴, when to use singleton, singleton problem, singleton test difficulty, singleton hidden state, global state smell, 싱글톤이 뭔가요, 싱글톤 단점, beginner singleton, singleton quick check, 싱글톤 10초, 싱글톤 30초 비교표, 싱글톤 1분 예시, 싱글톤 자주 헷갈리는 포인트, singleton beginner confusion points, singleton vs bean scope beginner, singleton vs spring bean, singleton micro check, bean scope confusion check, singleton common confusion
 
 ---
+
+<a id="singleton-quick-entry"></a>
+
+## 빠른 진입: 10초/30초/1분
+
+처음 읽을 때는 `10초 질문 -> 30초 비교표 -> 1분 예시`만 먼저 보고, 뒤에서 상세 개념을 붙인다.
+
+### 10초 질문
+
+- 앱 전체에서 "정말 하나여야만" 하는 자원인가?
+- 테스트에서 교체(mock/fake) 가능한 구조를 유지할 수 있는가?
+- `getInstance()` 직접 호출보다 DI 컨테이너로 같은 목적을 더 안전하게 달성할 수 없는가?
+
+### 30초 비교표: Singleton / Static Utility / Spring Singleton Bean
+
+| 선택지 | 핵심 질문 | 초보자용 한 줄 |
+|---|---|---|
+| Singleton (`getInstance`) | 인스턴스 상태를 하나로 공유해야 하는가 | "객체 하나를 코드에서 직접 꺼내 쓴다" |
+| Static Utility | 상태 없이 함수만 묶는가 | "객체 없이 정적 함수만 쓴다" |
+| Spring Singleton Bean | 전역 공유 + 테스트 교체가 필요한가 | "컨테이너가 수명을 관리한다" |
+
+### 1분 예시: 설정 로더
+
+```java
+public final class AppConfig {
+    private static final AppConfig INSTANCE = new AppConfig();
+    private AppConfig() {}
+    public static AppConfig getInstance() { return INSTANCE; }
+}
+```
+
+코드는 간단하지만, 호출부가 `AppConfig.getInstance()`에 직접 묶이면 테스트 대체가 어려워진다. 같은 목적이면 DI 주입으로 풀 수 있는지 먼저 본다.
+
+### 자주 헷갈리는 포인트 3개
+
+- `인스턴스가 하나`와 `상태가 안전하다`는 다르다. 싱글톤이어도 내부 상태가 가변이면 동시성 문제가 생길 수 있다.
+- `Spring Singleton Bean`과 GoF 싱글톤은 다르다. 전자는 컨테이너가 관리하고, 후자는 코드가 `getInstance()`에 직접 묶인다.
+- "어디서든 접근 가능"은 장점이자 비용이다. 테스트 격리와 의존성 가시성이 급격히 나빠질 수 있다.
 
 ## 핵심 개념
 
@@ -85,6 +123,34 @@ public class AppConfig {
 > Q: 멀티스레드 환경에서 싱글톤을 안전하게 만들려면 어떻게 하는가?
 > 의도: 동시성 기본 감각이 있는지 확인한다.
 > 핵심: Enum 싱글톤 또는 정적 홀더 패턴이 가장 간단하다.
+
+## 3문항 미니 오해 점검
+
+짧게 답해도 된다. 핵심은 "이름이 비슷한데 무엇이 다른지"를 바로 구분하는 것이다.
+
+| 문항 | 헷갈리는 포인트 | 한 줄 정답 기준 |
+|---|---|---|
+| 1 | Singleton vs Spring Bean singleton scope | 전자는 코드가 직접 하나를 쥐고, 후자는 컨테이너가 생명주기를 관리한다 |
+| 2 | Singleton vs Static Utility | 전자는 상태를 가진 객체 하나를 공유할 수 있고, 후자는 보통 상태 없는 정적 함수 묶음이다 |
+| 3 | Singleton vs "앱에서 하나만 쓰는 객체" | 실제로 하나만 쓰인다고 해서 모두 싱글톤 패턴은 아니다. DI bean 하나일 수도 있다 |
+
+### Q1. `@Service` 기본 bean 하나면 GoF Singleton을 쓴 것인가?
+
+- 정답: 아니다.
+- 왜: Spring이 singleton scope로 관리하는 bean일 뿐, 코드가 `getInstance()`로 직접 전역 접근을 강제한 것은 아니다.
+- 같이 보면 좋은 문서: [싱글톤 vs DI 컨테이너 스코프](./singleton-vs-di-container-scope.md)
+
+### Q2. `Math.max()` 같은 정적 유틸 메서드 모음도 Singleton인가?
+
+- 정답: 보통 아니다.
+- 왜: 싱글톤은 "객체 인스턴스 하나"가 핵심이고, 정적 유틸은 아예 객체를 만들지 않고 함수를 직접 호출하는 쪽에 가깝다.
+- 기억법: "객체 하나 공유"면 Singleton 쪽, "상태 없는 함수 모음"이면 Static Utility 쪽이다.
+
+### Q3. 설정 객체를 앱 전체에서 하나만 쓰더라도, 바로 Singleton으로 박아야 하나?
+
+- 정답: 바로 그렇지는 않다.
+- 왜: 같은 목적을 Spring singleton bean이나 생성자 주입으로 더 테스트 가능하게 풀 수 있으면 그쪽이 보통 더 낫다.
+- 체크 질문: "정말 `getInstance()`가 필요한가, 아니면 컨테이너가 하나를 관리하면 충분한가?"
 
 ## 한 줄 정리
 

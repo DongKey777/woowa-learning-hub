@@ -8,22 +8,26 @@
 
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [Strong vs Weak ETag: validator 정밀도와 cache correctness](./strong-vs-weak-etag-validator-precision-cache-correctness.md)
+- [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 - [CDN 기초](../system-design/cdn-basics.md)
 - [CORS 기초](../security/cors-basics.md)
 
-retrieval-anchor-keywords: http caching basics, conditional request, cache-control, etag, last-modified, 304 not modified, if-none-match, cache revalidation, freshness, 캐싱이 뭐예요, beginner http caching, 처음 배우는 캐시
+retrieval-anchor-keywords: http caching basics, conditional request, cache-control, etag, last-modified, 304 not modified, if-none-match, cache revalidation, html vs app.js cache, static asset cache experiment, from disk cache vs 304, beginner http caching
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 중요한가](#왜-중요한가)
 - [한 번에 보는 전체 흐름](#한-번에-보는-전체-흐름)
+- [왜 첫 실험은 HTML보다 `app.js`/`main.css`가 쉬운가](#왜-첫-실험은-html보다-appjsmaincss가-쉬운가)
 - [Cache-Control은 무엇을 정하나](#cache-control은-무엇을-정하나)
 - [ETag와 Last-Modified는 무엇을 하나](#etag와-last-modified는-무엇을-하나)
 - [조건부 요청은 어떻게 오가나](#조건부-요청은-어떻게-오가나)
 - [304 Not Modified는 무엇을 의미하나](#304-not-modified는-무엇을-의미하나)
+- [304와 프로토콜 fallback은 다른 질문이다 (bridge)](#304와-프로토콜-fallback은-다른-질문이다-bridge)
 - [브라우저와 서버는 각자 무엇을 하나](#브라우저와-서버는-각자-무엇을-하나)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [한 줄 정리](#한-줄-정리)
@@ -63,6 +67,34 @@ HTTP 캐시는 단순히 "응답을 저장한다"로 끝나지 않는다.
 - `Cache-Control`: 이 응답을 얼마나 오래 그냥 써도 되는지
 - `ETag`, `Last-Modified`: 다시 확인할 때 무엇을 비교할지
 - `304 Not Modified`: 서버가 "기존 사본 그대로 써도 된다"고 답하는 방식
+
+처음 읽을 때 가장 헷갈리는 `from disk cache`와 `304`는 이 두 칸만 먼저 나눠도 된다.
+
+| 장면 | 서버 왕복 | validator 사용 | body는 어디서 옴 |
+|---|---|---|---|
+| `from memory cache` / `from disk cache` | 보통 없음 | 보통 없음 | 브라우저가 저장해 둔 사본 |
+| `304 Not Modified` | 있음 | 있음 (`If-None-Match`, `If-Modified-Since`) | 브라우저가 저장해 둔 사본 |
+
+---
+
+## 왜 첫 실험은 HTML보다 `app.js`/`main.css`가 쉬운가
+
+초급자 첫 캐시 실험은 "같은 URL을 반복 요청했을 때 뭐가 바뀌는지"를 보는 일이다. 이때는 로그인 상태, 개인화, 서버 템플릿 변화가 섞이기 쉬운 HTML보다 정적 파일이 더 단순하다.
+
+| 첫 실험 대상 | 초급자에게 어떻게 보이나 | 첫 실험용 적합도 |
+|---|---|---|
+| `index.html` 같은 HTML | redirect, cookie, 로그인 상태, SSR 템플릿 변화가 섞여 `200`/`304` 이유가 여러 갈래로 보일 수 있다 | 보통 |
+| `app.js`, `main.css` 같은 정적 리소스 | 같은 URL을 반복 호출하기 쉽고, body 변화 유무가 단순해서 `from disk cache`나 `304`를 읽기 쉽다 | 높음 |
+
+즉 "HTML은 캐시가 안 된다"가 아니라, **첫 관찰 대상을 더 조용한 정적 파일로 고르자**는 뜻이다.
+
+가장 쉬운 순서는 이렇다.
+
+1. DevTools `Network`를 열고 `Disable cache`를 끈다.
+2. `app.js` 또는 `main.css` 한 개를 고른다.
+3. `normal reload`를 두세 번 하며 `200 -> from disk cache` 또는 `200 -> 304` 변화를 본다.
+
+HTML은 그다음 단계에서 "문서도 같은 원리로 캐시되지만 주변 조건이 더 많다"는 비교 대상으로 보면 된다.
 
 ---
 
@@ -241,11 +273,41 @@ Content-Type: text/html; charset=UTF-8
 입문 단계에서 꼭 기억할 점:
 
 - `304`는 리다이렉트가 아니다
+- `304`는 캐시 재검증 결과이지, HTTP 버전 fallback/downgrade 신호가 아니다 (헷갈리면 [304와 프로토콜 fallback은 다른 질문이다 (bridge)](#304와-프로토콜-fallback은-다른-질문이다-bridge))
 - 보통 response body가 없다
 - 브라우저가 이미 갖고 있던 body를 재사용한다
 - 네트워크 왕복은 있었지만, body 전체를 다시 받지는 않는다
 
 즉 `304`의 핵심 가치는 "다시 다운로드하지 않아도 되는지"를 확인하는 데 있다.
+
+---
+
+## 304와 프로토콜 fallback은 다른 질문이다 (bridge)
+
+먼저 한 줄로 구분하면:
+
+- `304`는 "같은 리소스 본문을 다시 받을지"를 묻는 **캐시 재검증** 신호다.
+- protocol fallback/downgrade는 "이번 요청을 HTTP/3 대신 HTTP/2(또는 HTTP/1.1)로 보낼지"를 묻는 **전송 경로** 신호다.
+
+| 질문 | 대표 신호 |
+| --- | --- |
+| 본문을 다시 다운로드할까? | `ETag`/`If-None-Match`, `Last-Modified`/`If-Modified-Since`, `304` |
+| 어떤 HTTP 버전으로 연결할까? | `Alt-Svc`, ALPN, UDP 차단 여부, H2/H1 fallback |
+
+즉 `304`가 보여도 "프로토콜이 내려갔다"는 뜻은 아니다. 프로토콜 fallback 판단은 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)에서 따로 본다.
+
+같은 browsing session 안에서도 두 판단은 독립적으로 일어날 수 있다.
+
+| 시점 | 브라우저가 결정하는 것 | 결과 |
+| --- | --- | --- |
+| 첫 방문 | 아직 캐시 사본이 없고, 서버가 H2로 응답 | `200 OK over h2` + `ETag: "v1"` 저장 |
+| 같은 탭에서 1분 뒤 재방문 | 이번엔 H3가 가능해서 H3로 연결, 하지만 리소스는 안 바뀜 | `304 Not Modified over h3`, body는 기존 캐시 재사용 |
+
+이 예시의 핵심은 이렇다.
+
+- `h2 -> h3`는 "어느 전송 경로로 갈까?"에 대한 답이다.
+- `200 -> 304`는 "본문을 다시 받을까?"에 대한 답이다.
+- 그래서 같은 세션에서 **프로토콜은 바뀌어도 캐시 재검증 결과는 그대로 `304`일 수 있다.**
 
 ---
 
@@ -285,6 +347,18 @@ Content-Type: text/html; charset=UTF-8
 
 - body는 브라우저가 자기 캐시에서 꺼낸다
 - `304` 응답 자체는 보통 매우 작다
+
+### `from disk cache`와 `304`는 같은 말이 아니다
+
+- 둘 다 최종 body는 브라우저 캐시에서 꺼내 쓸 수 있다
+- 하지만 `from disk cache`는 보통 서버에 안 간다
+- `304`는 validator를 들고 서버에 다시 확인한 뒤 기존 body를 재사용한다
+
+### `304`가 H2에서 보이다가 다음엔 H3에서 보여도 이상한 것이 아니다
+
+- 같은 브라우징 세션에서도 첫 요청은 `h2`, 다음 요청은 `h3`가 될 수 있다
+- 그와 별개로 리소스가 안 바뀌면 두 번째 요청은 `304`가 될 수 있다
+- 즉 `304`는 캐시 판정이고, `h2`/`h3`는 연결 판정이다
 
 ### `Last-Modified`만으로는 세밀한 변경을 놓칠 수 있다
 

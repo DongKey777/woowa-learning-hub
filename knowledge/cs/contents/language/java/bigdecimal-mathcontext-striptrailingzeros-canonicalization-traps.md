@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [BigDecimal `setScale()` 검증 입문: `RoundingMode.UNNECESSARY`를 입력 정책으로 보기](./bigdecimal-setscale-unnecessary-validation-primer.md)
 > - [`BigDecimal` Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
@@ -36,14 +37,14 @@
 
 이 넷은 서로 다르다.
 
-즉 `BigDecimal`을 "정확한 십진수"라고만 보면 안 되고,  
+즉 `BigDecimal`을 "정확한 십진수"라고만 보면 안 되고,
 "어떤 표현과 연산 정책을 가진 값"으로 읽어야 한다.
 
 ## 깊이 들어가기
 
 ### 1. `MathContext`는 scale이 아니라 precision 중심이다
 
-`MathContext`는 전체 유효 숫자 자릿수와 rounding mode를 다룬다.  
+`MathContext`는 전체 유효 숫자 자릿수와 rounding mode를 다룬다.
 즉 `setScale(2)`와는 목적이 다르다.
 
 문제는 이 둘을 혼동해서:
@@ -57,7 +58,7 @@
 
 ### 2. `stripTrailingZeros()`는 canonicalization 만능 해답이 아니다
 
-많이들 `1.00`과 `1.0` 문제를 보고 `stripTrailingZeros()`를 떠올리지만,  
+많이들 `1.00`과 `1.0` 문제를 보고 `stripTrailingZeros()`를 떠올리지만,
 이 메서드는 representation을 바꾸는 것이지 도메인 정책을 정하는 것이 아니다.
 
 주의점:
@@ -86,7 +87,7 @@
 
 ### 4. `RoundingMode.UNNECESSARY`는 validation 도구다
 
-이 모드는 "반올림이 필요하면 예외"를 의미한다.  
+이 모드는 "반올림이 필요하면 예외"를 의미한다.
 즉 표현을 조정하는 도구이면서 동시에 입력 검증 도구다.
 
 예:
@@ -98,7 +99,7 @@
 
 ### 5. divide exactness와 representation contract를 함께 봐야 한다
 
-`divide()`는 exact division이 안 되면 예외를 낼 수 있다.  
+`divide()`는 exact division이 안 되면 예외를 낼 수 있다.
 그런데 많은 코드가:
 
 - 아무 scale을 준다
@@ -113,7 +114,7 @@
 
 ### 시나리오 1: 캐시 키가 `1E+3`와 `1000`으로 갈린다
 
-한 경로는 `toString()`, 다른 경로는 `toPlainString()`을 쓴다.  
+한 경로는 `toString()`, 다른 경로는 `toPlainString()`을 쓴다.
 숫자 값은 같지만 representation key가 달라진다.
 
 ### 시나리오 2: `stripTrailingZeros()` 후 기대하지 않던 표현이 나온다
@@ -122,12 +123,12 @@
 
 ### 시나리오 3: precision 제한이 필요한데 `setScale`만 건다
 
-scale은 맞췄지만 전체 유효 숫자 자릿수 제한은 안 걸려  
+scale은 맞췄지만 전체 유효 숫자 자릿수 제한은 안 걸려
 예상보다 큰 값이 통과한다.
 
 ### 시나리오 4: 입력 검증에서 반올림이 조용히 일어난다
 
-정해진 소수 자릿수여야 하는데 `HALF_UP`으로 그냥 맞춰버려  
+정해진 소수 자릿수여야 하는데 `HALF_UP`으로 그냥 맞춰버려
 원래는 거부해야 할 입력이 silently accepted 된다.
 
 ## 코드로 보기

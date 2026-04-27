@@ -6,6 +6,7 @@
 
 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)에서 retry queue, chunk summary, checkpoint를 봤다면, 이 문서는 그다음 질문인 "재시도할 때 어떤 idempotency key를 써야 하는가"만 좁혀서 본다.
 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint` 같은 결과 이름은 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)를 같이 보면 된다.
+이 key 경계를 operator의 rerun 판단과 runbook 절차로 연결해 보고 싶다면 [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)를 이어서 보면 된다.
 멱등성과 consistency boundary 자체를 깊게 보려면 [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)로 이어서 내려가면 된다.
 
 <details>
@@ -26,6 +27,7 @@
 > - [Software Engineering README: Batch Idempotency Key Boundaries](./README.md#batch-idempotency-key-boundaries)
 > - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
 > - [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
+> - [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)
 > - [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)
 > - [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
 > - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
@@ -48,6 +50,7 @@
 > - idempotency key scope beginner
 > - partial failure idempotency
 > - batch run duplicate suppression
+> - batch recovery runbook bridge
 
 ## 왜 이 primer가 필요한가
 

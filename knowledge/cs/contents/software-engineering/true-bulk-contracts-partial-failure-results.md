@@ -35,6 +35,7 @@ run/chunk/item idempotency key 경계가 필요하면 [Batch Idempotency Key Bou
 > - [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)
 > - [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
 > - [Adapter Bulk Optimization Without Port Leakage](./adapter-bulk-optimization-without-port-leakage.md)
+> - [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
 > - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
 > - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 >
@@ -55,6 +56,7 @@ run/chunk/item idempotency key 경계가 필요하면 [Batch Idempotency Key Bou
 > - settlement chunk result
 > - partial success count smell
 > - list based bulk contract smell
+> - named bulk contract test primer
 > - batch idempotency key boundaries
 > - chunk-level idempotency key
 > - run-level idempotency key
@@ -304,3 +306,5 @@ bulk 계약을 올리기 전에 아래 질문에 답해 본다.
 2. **입력 타입은 왜 같은 묶음인지와 어디서 다시 시작할지를 보여 줘야 한다.**
 3. **결과 타입은 count만이 아니라 실패 item, reason, retry decision을 담아야 한다.**
 4. **adapter bulk 최적화와 application bulk 계약은 다른 문제다.**
+
+테스트 관점에서 이 계약을 어떻게 고정할지 이어서 보려면 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)를 보면 된다.

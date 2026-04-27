@@ -4,15 +4,28 @@
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [Spring MVC vs WebFlux](./spring-webflux-vs-mvc.md)
-> - [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md)
-> - [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
-> - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
-> - [gRPC vs REST](../network/grpc-vs-rest.md)
-> - [HTTP/2 Multiplexing과 HOL Blocking](../network/http2-multiplexing-hol-blocking.md)
+관련 문서:
+- [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)
+- [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `RestClient.Builder`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)
+- [Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나](./spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md)
+- [Spring MVC vs WebFlux](./spring-webflux-vs-mvc.md)
+- [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 
-retrieval-anchor-keywords: WebClient vs RestTemplate, Spring HTTP client choice, reactive client vs blocking client, WebClient block trap, WebClient timeout retry, RestTemplate blocking I/O, fan-out HTTP client, Reactor Netty client, outbound HTTP backpressure, Spring WebClient filter observability
+retrieval-anchor-keywords: webclient vs resttemplate, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 resttemplate 뭐예요, resttemplate 언제 쓰는지, webclient 언제 써요, blocking vs reactive http client, webclient block trap, fan-out http client, 동기 http 클라이언트 입문, 스프링 http 클라이언트 큰 그림
+
+## resttemplate 다음에 restclient가 궁금하다면
+
+이 문서는 `resttemplate`와 `webclient`를 비교하는 문서라서, `restclient` migration 질문까지 한 번에 해결하려고 읽으면 첫 분기가 섞일 수 있다.
+
+- "`resttemplate` 다음에 동기 호출은 뭘 써요?"처럼 묻는다면 먼저 [Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나](./spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md)로 가서 `restclient` 큰 그림을 잡는다.
+- "`reactive`로 넘어가야 하나요?"가 질문이라면 이 문서에서 `webclient`와 `resttemplate`를 비교한다.
+- `restclient`와 `webclient`의 lifecycle 차이까지 보려면 마지막에 [Spring RestClient vs WebClient Lifecycle Boundaries](./spring-restclient-vs-webclient-lifecycle-boundaries.md)로 넘긴다.
+
+## 이 문서 전에 큰 그림이 필요하면
+
+- "`RestTemplate`가 어떤 종류의 `Template`인지"부터 짧게 잡고 싶다면 [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)을 먼저 본다.
+- "`RestTemplateBuilder`와 `WebClient.Builder`를 언제 만지지?"가 더 가까운 질문이면 [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `RestClient.Builder`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)로 먼저 가는 편이 빠르다.
+- "`RestTemplate` 다음에 `RestClient`가 언제 쓰이는지"를 먼저 잡고 싶다면 [Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나](./spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md)로 먼저 간다.
 
 ## 핵심 개념
 
@@ -24,6 +37,15 @@ retrieval-anchor-keywords: WebClient vs RestTemplate, Spring HTTP client choice,
 즉, RestTemplate은 단순성이 장점이고, WebClient는 확장성과 조합성이 장점이다.
 
 중요한 점은 WebClient를 써도 `block()`을 남발하면 장점이 사라진다는 것이다.
+
+초보자 기준으로는 질문 축을 먼저 나누면 덜 헷갈린다.
+
+| 지금 헷갈리는 질문 | 먼저 볼 축 |
+|---|---|
+| "`RestTemplate`와 `WebClient` 중 무엇을 쓰지?" | client 실행 모델 비교: blocking vs reactive |
+| "`RestTemplateBuilder`나 `WebClient.Builder`는 언제 커스터마이징하지?" | builder 변경 범위 비교: 공용 baseline vs 전용 client vs owner 교체 |
+
+즉 client 종류를 고르는 질문과 builder를 어디까지 만질지 묻는 질문은 같은 축이 아니다.
 
 ## 깊이 들어가기
 

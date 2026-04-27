@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 > - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
+> - [Container FD Pressure Bridge: `EMFILE`, `ENFILE`, Host vs Container](./container-fd-pressure-emfile-enfile-bridge.md)
 > - [시스템 콜과 User-Kernel Boundary](./syscall-user-kernel-boundary.md)
 > - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 > - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
@@ -15,7 +16,7 @@
 > - [Virtual Threads(Project Loom)](../language/java/virtual-threads-project-loom.md)
 > - [Spring Boot 자동 구성](../spring/spring-boot-autoconfiguration.md)
 
-> retrieval-anchor-keywords: container, cgroup, namespace, pid namespace, mount namespace, network namespace, capability, cgroup v2, PID 1, container isolation, overlayfs, tmpfs
+> retrieval-anchor-keywords: container, cgroup, namespace, pid namespace, mount namespace, network namespace, capability, cgroup v2, PID 1, container isolation, overlayfs, tmpfs, container fd pressure, host shared kernel resource, host vs container fd limit
 
 ---
 

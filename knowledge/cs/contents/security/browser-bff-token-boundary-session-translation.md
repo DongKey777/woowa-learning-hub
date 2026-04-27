@@ -5,24 +5,22 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
-> - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
-> - [OAuth PAR / JAR Basics](./oauth-par-jar-basics.md)
-> - [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
-> - [OAuth Device Code Flow / Security Model](./oauth-device-code-flow-security.md)
-> - [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)
-> - [Step-Up Session Coherence / Auth Assurance](./step-up-session-coherence-auth-assurance.md)
-> - [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md)
-> - [Gateway Auth Context Headers / Trust Boundary](./gateway-auth-context-header-trust-boundary.md)
-> - [Session Revocation at Scale](./session-revocation-at-scale.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-> - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
-> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
+> - `[primer bridge]` [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)
+> - `[primer bridge]` [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+> - `[primer bridge]` [Logout Scope Primer](./logout-scope-primer.md)
+> - `[deep dive]` [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+> - `[deep dive]` [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
+> - `[deep dive]` [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
+> - `[deep dive]` [OAuth PAR / JAR Basics](./oauth-par-jar-basics.md)
+> - `[deep dive]` [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
+> - `[deep dive]` [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)
+> - `[deep dive]` [Step-Up Session Coherence / Auth Assurance](./step-up-session-coherence-auth-assurance.md)
+> - `[deep dive]` [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - `[deep dive]` [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
+> - `[recovery]` [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md)
 
-retrieval-anchor-keywords: BFF token handler pattern, browser server token boundary, session translation, server-side token storage, opaque browser session, refresh token on server, SPA BFF auth, token handler, downstream token cache, browser to backend boundary, elevated session, step-up session, session store outage, PAR, JAR, pushed authorization request, request object, device code flow, cross-device login, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token vs UserInfo, claim normalization, external identity mapping, issuer subject mapping, browser server boundary catalog, security readme browser server boundary
+retrieval-anchor-keywords: BFF token handler pattern, browser server token boundary, session translation, server-side token storage, opaque browser session, refresh token on server, SPA BFF auth, token handler, downstream token cache, browser to backend boundary, elevated session, step-up session, session store outage, PAR, JAR, pushed authorization request, request object, device code flow, cross-device login, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token vs UserInfo, claim normalization, external identity mapping, issuer subject mapping, browser server boundary catalog, security readme browser server boundary, browser bff primer bridge, session translation deep dive, bff session recovery route, browser session route ladder
 
 ---
 
@@ -146,7 +144,7 @@ BFF는 이 문제를 줄이기 위해 브라우저에는 session reference만 �
 
 ### 6. provider claim과 local session state를 그대로 일치시킨다고 생각하면 위험하다
 
-IdP claim은 로그인 사실과 일부 profile 정보에 가깝다.  
+IdP claim은 로그인 사실과 일부 profile 정보에 가깝다.
 우리 앱의 로컬 권한, tenant membership, feature entitlement와는 다를 수 있다.
 
 BFF는 보통 여기서 normalization 계층을 둔다.

@@ -7,13 +7,14 @@
 관련 문서:
 
 - [I/O Models and Event Loop](./io-models-and-event-loop.md)
+- [Blocking I/O, 스레드 풀, 백프레셔 입문](./blocking-io-thread-pool-backpressure-primer.md)
 - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 - [operating-system 카테고리 인덱스](./README.md)
 - [TCP/UDP Basics](../network/tcp-udp-basics.md)
 
 retrieval-anchor-keywords: 동기 비동기 차이, 블로킹 논블로킹 차이, sync async beginner, blocking nonblocking beginner, synchronous asynchronous intro, 동기 비동기 뭐가 달라요, 블로킹이란, 비동기란, io blocking, async callback
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 신입 개발자가 가장 혼동하는 쌍이다. "동기 = 블로킹"이고 "비동기 = 논블로킹"이라 외우는 경우가 많은데, 이 두 쌍은 **서로 다른 축**이다.
 
@@ -72,6 +73,15 @@ httpClient.getAsync(url)
 - **비동기 논블로킹**: 스레드가 DB 응답을 기다리지 않고 다른 요청을 처리하다가 콜백으로 결과를 받는다. 적은 스레드로 더 많은 요청을 소화한다.
 
 Spring WebFlux, Node.js, Vert.x 같은 비동기 프레임워크가 이 방식을 사용한다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "왜 blocking I/O가 thread pool 포화와 queue saturation으로 이어지는지"를 서버 관점에서 보고 싶으면: [Blocking I/O, 스레드 풀, 백프레셔 입문](./blocking-io-thread-pool-backpressure-primer.md)
+> - "이벤트 루프가 실제로 어떻게 도는지"가 궁금하면: [I/O Models and Event Loop](./io-models-and-event-loop.md)
+> - "epoll의 wakeup 규칙까지 보고 싶다"면: [epoll level/edge/oneshot wakeup semantics](./epoll-level-edge-oneshot-wakeup-semantics.md)
+> - "파이프/프로세스 경계에서 왜 막히는지"가 궁금하면: [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
 
 ## 더 깊이 가려면
 

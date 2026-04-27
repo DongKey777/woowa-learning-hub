@@ -23,7 +23,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.learning.rag import indexer
+from scripts.learning.rag import corpus_loader, indexer
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
 
@@ -46,11 +46,49 @@ def _load_readiness_contract() -> dict[str, str]:
     return payload.get("_meta", {}).get("live_readiness_contract", {})
 
 
+def _load_live_readiness_diagnostics_contract() -> dict[str, object]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("live_readiness_diagnostics", {})
+
+
 def _full_mode_index_ready() -> bool:
     try:
         return indexer.is_ready(indexer.DEFAULT_INDEX_ROOT).state == "ready"
     except Exception:
         return False
+
+
+def _non_indexed_markdown_paths(
+    corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
+) -> list[str]:
+    root = Path(corpus_root)
+    indexed_paths = {chunk.path for chunk in corpus_loader.iter_corpus(root)}
+    extra_paths: list[str] = []
+    for md_path in sorted(root.rglob("*.md")):
+        relpath = md_path.relative_to(root).as_posix()
+        if relpath not in indexed_paths:
+            extra_paths.append(relpath)
+    return extra_paths
+
+
+def _live_readiness_stale_diagnostic() -> str:
+    contract = _load_live_readiness_diagnostics_contract()
+    extra_paths = _non_indexed_markdown_paths()
+    if not extra_paths:
+        return ""
+    sample = ", ".join(extra_paths[:3])
+    scope_summary = contract.get(
+        "scope_summary",
+        "knowledge/cs 해시 범위와 실제 인덱싱 범위가 다릅니다.",
+    )
+    rebuild_note = contract.get(
+        "rebuild_note",
+        "Rebuild alone will not clear a stale report while those out-of-index markdown files keep changing.",
+    )
+    return (
+        f" {scope_summary} Non-indexed markdown files still counted by the live hash: "
+        f"{len(extra_paths)} total ({sample}). {rebuild_note}"
+    )
 
 
 def _require_live_full_mode_readiness(
@@ -73,9 +111,13 @@ def _require_live_full_mode_readiness(
     if contract.get(report.state, "fail") == "skip":
         raise unittest.SkipTest(f"CS RAG index not built — run {next_command}")
 
+    detail = ""
+    if report.state == "stale":
+        detail = _live_readiness_stale_diagnostic()
+
     raise AssertionError(
         f"CS RAG index is not fresh enough for integration smoke verification "
-        f"(state={report.state}, reason={report.reason}). "
+        f"(state={report.state}, reason={report.reason}).{detail} "
         "Stale or corrupt indexes can hide full-mode augment regressions after "
         "corpus churn; only a genuinely missing first-run index may skip. "
         f"Next step: {next_command}"
@@ -90,6 +132,21 @@ class CsRagAugmentReadinessGuardContract(unittest.TestCase):
         self.assertEqual(contract.get("stale"), "fail")
         self.assertEqual(contract.get("corrupt"), "fail")
         self.assertIn("Stale or corrupt indexes", contract.get("rationale", ""))
+
+    def test_live_readiness_diagnostics_explain_hash_scope_drift(self) -> None:
+        contract = _load_live_readiness_diagnostics_contract()
+        extra_paths = _non_indexed_markdown_paths()
+
+        self.assertIn("knowledge/cs/contents", contract.get("scope_summary", ""))
+        rebuild_note = contract.get("rebuild_note", "")
+        self.assertIn("Rebuild alone", rebuild_note)
+        self.assertIn("flip back to stale immediately", rebuild_note)
+        self.assertTrue(extra_paths)
+        self.assertTrue(
+            any(not path.startswith("contents/") for path in extra_paths),
+            "live readiness diagnostics should keep at least one out-of-index culprit visible",
+        )
+        self.assertIn("Non-indexed markdown files", _live_readiness_stale_diagnostic())
 
     def test_missing_index_remains_skippable(self) -> None:
         report = indexer.ReadinessReport(
@@ -374,10 +431,8 @@ class AugmentAgainstRealIndex(unittest.TestCase):
     ) -> None:
         fixture = _load_fixture_query("tx_intro_isolation_locking_primer")
         prompt = fixture["prompt"]
-        primer_paths = {
-            fixture["expected_path"],
-            "contents/database/transaction-isolation-locking.md",
-        }
+        anomaly_doc = fixture["expected_path"]
+        locking_primer = "contents/database/transaction-isolation-locking.md"
         decision_doc = (
             "contents/database/transaction-boundary-isolation-locking-decision-framework.md"
         )
@@ -407,10 +462,197 @@ class AugmentAgainstRealIndex(unittest.TestCase):
         )
         self.assertTrue(all(hit["category"] == "database" for hit in hits[:3]), hits[:3])
         paths = [hit["path"] for hit in hits]
-        self.assertTrue(primer_paths & set(paths[:2]), paths[:2])
+        self.assertEqual(paths[0], anomaly_doc, paths)
+        self.assertIn(locking_primer, paths[:3], paths[:3])
+        self.assertLess(paths.index(anomaly_doc), paths.index(locking_primer), paths)
         if decision_doc in paths:
-            primer_rank = min(paths.index(path) for path in primer_paths if path in paths)
-            self.assertLess(primer_rank, paths.index(decision_doc), paths)
+            self.assertLess(paths.index(anomaly_doc), paths.index(decision_doc), paths)
+
+    def test_empty_learning_points_matches_none_for_beginner_transaction_fallback_family(
+        self,
+    ) -> None:
+        prompt = _load_fixture_query("tx_intro_isolation_locking_primer")["prompt"]
+
+        none_result = self._augment(
+            prompt=prompt,
+            learning_points=None,
+            cs_search_mode="full",
+            top_k=5,
+        )
+        empty_result = self._augment(
+            prompt=prompt,
+            learning_points=[],
+            cs_search_mode="full",
+            top_k=5,
+        )
+
+        none_keys = list(none_result["by_fallback_key"])
+        empty_keys = list(empty_result["by_fallback_key"])
+
+        self.assertEqual(none_keys, ["database:transaction_anomaly_patterns"])
+        self.assertEqual(empty_keys, none_keys)
+        self.assertEqual(
+            empty_result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
+        self.assertEqual(empty_result["by_learning_point"], {})
+
+        none_paths = [hit["path"] for hit in none_result["by_fallback_key"][none_keys[0]][:3]]
+        empty_paths = [hit["path"] for hit in empty_result["by_fallback_key"][empty_keys[0]][:3]]
+        self.assertEqual(empty_paths, none_paths)
+        self.assertEqual(empty_result["cs_categories_hit"], none_result["cs_categories_hit"])
+
+    def test_cs_only_beginner_projection_vs_transaction_rollback_compare_keeps_freshness_primer_first(
+        self,
+    ) -> None:
+        fixture = _load_fixture_query(
+            "projection_freshness_intro_rollback_window_vs_transaction_rollback"
+        )
+        prompt = fixture["prompt"]
+        overview_doc = fixture["expected_path"]
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        result = self._augment(
+            prompt=prompt,
+            learning_points=None,
+            cs_search_mode="full",
+            top_k=5,
+        )
+
+        self.assertTrue(result["meta"]["rag_ready"])
+        self.assertEqual(result["by_learning_point"], {})
+        self.assertEqual(
+            result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
+        self.assertEqual(
+            list(result["by_fallback_key"]),
+            ["design-pattern:projection_freshness"],
+        )
+        hits = result["by_fallback_key"]["design-pattern:projection_freshness"]
+        self.assertTrue(
+            hits,
+            "expected real-index hits for beginner projection freshness contrast bucket",
+        )
+        paths = [hit["path"] for hit in hits]
+        self.assertEqual(paths[0], overview_doc)
+        self.assertIn(tx_doc, paths, paths)
+        self.assertLess(paths.index(overview_doc), paths.index(tx_doc), paths)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_cs_only_beginner_projection_vs_korean_transaction_rollback_compare_keeps_freshness_primer_first(
+        self,
+    ) -> None:
+        fixture = _load_fixture_query(
+            "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback"
+        )
+        prompt = fixture["prompt"]
+        overview_doc = fixture["expected_path"]
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        result = self._augment(
+            prompt=prompt,
+            learning_points=None,
+            cs_search_mode="full",
+            top_k=5,
+        )
+
+        self.assertTrue(result["meta"]["rag_ready"])
+        self.assertEqual(result["by_learning_point"], {})
+        self.assertEqual(
+            result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
+        self.assertEqual(
+            list(result["by_fallback_key"]),
+            ["design-pattern:projection_freshness"],
+        )
+        hits = result["by_fallback_key"]["design-pattern:projection_freshness"]
+        self.assertTrue(
+            hits,
+            "expected real-index hits for beginner Korean projection freshness contrast bucket",
+        )
+        paths = [hit["path"] for hit in hits]
+        self.assertEqual(paths[0], overview_doc)
+        self.assertIn(tx_doc, paths, paths)
+        self.assertLess(paths.index(overview_doc), paths.index(tx_doc), paths)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_cs_only_beginner_full_korean_projection_vs_transaction_rollback_compare_keeps_freshness_primer_first(
+        self,
+    ) -> None:
+        fixture = _load_fixture_query(
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare"
+        )
+        prompt = fixture["prompt"]
+        overview_doc = fixture["expected_path"]
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        result = self._augment(
+            prompt=prompt,
+            learning_points=None,
+            cs_search_mode="full",
+            top_k=5,
+        )
+
+        self.assertTrue(result["meta"]["rag_ready"])
+        self.assertEqual(result["by_learning_point"], {})
+        self.assertEqual(
+            result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
+        self.assertEqual(
+            list(result["by_fallback_key"]),
+            ["design-pattern:projection_freshness"],
+        )
+        hits = result["by_fallback_key"]["design-pattern:projection_freshness"]
+        self.assertTrue(
+            hits,
+            "expected real-index hits for fully Korean beginner projection freshness contrast bucket",
+        )
+        paths = [hit["path"] for hit in hits]
+        self.assertEqual(paths[0], overview_doc)
+        self.assertIn(tx_doc, paths, paths)
+        self.assertLess(paths.index(overview_doc), paths.index(tx_doc), paths)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
+
+    def test_cs_only_beginner_full_korean_projection_rollback_distinguish_keeps_freshness_primer_first(
+        self,
+    ) -> None:
+        fixture = _load_fixture_query(
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish"
+        )
+        prompt = fixture["prompt"]
+        overview_doc = fixture["expected_path"]
+        tx_doc = "contents/database/transaction-isolation-locking.md"
+
+        result = self._augment(
+            prompt=prompt,
+            learning_points=None,
+            cs_search_mode="full",
+            top_k=5,
+        )
+
+        self.assertTrue(result["meta"]["rag_ready"])
+        self.assertEqual(result["by_learning_point"], {})
+        self.assertEqual(
+            result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
+        self.assertEqual(
+            list(result["by_fallback_key"]),
+            ["design-pattern:projection_freshness"],
+        )
+        hits = result["by_fallback_key"]["design-pattern:projection_freshness"]
+        self.assertTrue(
+            hits,
+            "expected real-index hits for fully Korean beginner rollback distinguish bucket",
+        )
+        paths = [hit["path"] for hit in hits]
+        self.assertEqual(paths[0], overview_doc)
+        self.assertIn(tx_doc, paths, paths)
+        self.assertLess(paths.index(overview_doc), paths.index(tx_doc), paths)
+        self.assertTrue(all(hit["category"] == "design-pattern" for hit in hits[:3]), hits[:3])
 
 
 if __name__ == "__main__":

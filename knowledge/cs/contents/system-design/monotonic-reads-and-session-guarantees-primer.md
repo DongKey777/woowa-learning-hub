@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Session Policy Implementation Sketches](./session-policy-implementation-sketches.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Session Guarantees Decision Matrix](./session-guarantees-decision-matrix.md)
@@ -19,7 +20,7 @@
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [Design Pattern: Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
 
-retrieval-anchor-keywords: monotonic reads and session guarantees primer, monotonic reads primer, monotonic reads 뭐예요, session guarantees primer, session guarantee 차이, session guarantees decision matrix, list detail monotonicity bridge, list detail mismatch, list detail search min-version floor, value regression across pages, read-after-write vs monotonic reads vs causal consistency, read-your-writes vs monotonic reads, session guarantees vs causal consistency, writes-follow-reads beginner, monotonic writes beginner, monotonic reads routing example, causal consistency routing example, recent write flag min version causal token, saw newer then older, cause before effect routing, per-session consistency basics, beginner consistency guarantees, session pinning vs monotonic reads, session policy bundle
+retrieval-anchor-keywords: monotonic reads and session guarantees primer, monotonic reads primer, monotonic reads 뭐예요, session guarantees primer, session guarantee 차이, session guarantees decision matrix, session policy implementation sketches, gateway app database hint propagation, list detail monotonicity bridge, list detail mismatch, list detail search min-version floor, value regression across pages, read-after-write vs monotonic reads vs causal consistency, read-after-write vs monotonic guard, monotonic guard vs read-after-write, monotonic guard beginner, monotonic guard 뜻, min-version floor vs read-after-write, read-your-writes vs monotonic reads, session guarantees vs causal consistency, writes-follow-reads beginner, monotonic writes beginner, monotonic reads routing example, causal consistency routing example, recent write flag min version causal token, saw newer then older, cause before effect routing, per-session consistency basics, beginner consistency guarantees, session pinning vs monotonic reads, session policy bundle, read-after-write monotonic confusion, monotonic causal confusion, consistency wrong answer examples
 
 ---
 
@@ -55,6 +56,17 @@ retrieval-anchor-keywords: monotonic reads and session guarantees primer, monoto
 - causal consistency는 "결과를 봤다면 원인도 같이 보이느냐"를 묻는다
 - session guarantees는 "이 흐름에 어떤 질문들을 같이 묶을까"를 묻는다
 
+## 10초 혼동 방지: `read-after-write` vs `monotonic guard`
+
+먼저 두 용어를 "보호하는 기준선"만으로 자르면 초보자 혼동이 줄어든다.
+
+| 헷갈리는 두 말 | 한 줄 차이 | 주문 예시 |
+|---|---|---|
+| `read-after-write` | **내가 방금 쓴 write**가 바로 보이게 하는 보장 | 주문 생성 직후 상세에서 새 주문이 보여야 한다 |
+| `monotonic guard` | **내가 이미 본 값보다 뒤로 가지 않게** 막는 하한선 | 상세에서 `PAID`를 본 뒤 목록이 다시 `PENDING`으로 내려가면 안 된다 |
+
+`monotonic guard`는 보통 [`List-Detail Monotonicity Bridge`](./list-detail-monotonicity-bridge.md)에서 설명하는 `min-version floor`, `역행 방지 하한선`과 같은 뜻으로 보면 된다.
+
 ---
 
 ## 한눈에 비교
@@ -72,6 +84,25 @@ retrieval-anchor-keywords: monotonic reads and session guarantees primer, monoto
 - monotonic reads는 "내가 본 최신선" 기준
 - causal consistency는 "원인-결과 순서" 기준
 - session guarantees는 "보장 조합" 기준
+
+---
+
+## 자주 나오는 1문장 오답 카드
+
+첫 회독에서는 아래 오답이 특히 자주 나온다.
+한 문장씩 틀린 이유를 같이 붙여 두면 구분이 빨라진다.
+
+| 오답 한 문장 | 왜 틀렸는가 | 올바른 바로잡기 |
+|---|---|---|
+| `read-after-write만 있으면 상세에서 본 PAID가 목록에서 PENDING으로 내려가는 문제도 막을 수 있다` | 여기서 문제는 `내가 방금 쓴 값`이 아니라 `내가 이미 본 값보다 뒤로 감`이다 | 상세에서 본 값을 목록에서도 유지하려면 read-after-write보다 monotonic reads가 먼저 맞다 |
+| `monotonic reads는 결국 내가 방금 쓴 값을 다시 보는 보장이다` | monotonic reads는 write가 없어도 성립한다 | 내가 쓴 직후 옛값이 보이면 read-after-write, 이미 본 값보다 뒤로 가면 monotonic reads로 나눈다 |
+| `monotonic reads와 causal consistency는 둘 다 순서 보장이니 같은 말이다` | monotonic은 `내가 본 최신선의 하한`, causal은 `결과가 보였다면 원인도 보여야 함`을 본다 | 알림을 눌렀는데 원문이 없으면 monotonic보다 causal consistency로 보는 쪽이 정확하다 |
+
+빠르게 외우려면 이렇게 잡으면 된다.
+
+- `내 write`가 기준이면 read-after-write
+- `내가 본 선`이 기준이면 monotonic reads
+- `결과가 먼저 보인 사건`이면 causal consistency
 
 ---
 

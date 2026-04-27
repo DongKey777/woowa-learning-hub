@@ -11,7 +11,7 @@
 - [Spring IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 - [Security 카테고리 README](./README.md)
 
-retrieval-anchor-keywords: secrets management basics, api 키 코드에 넣으면, git에 비밀번호, env 환경변수 기초, dotenv 란, application.properties 보안, 시크릿 관리 입문, vault 이란, 민감정보 관리 beginner, credential 노출, 설정 파일 보안, secrets in code danger
+retrieval-anchor-keywords: secrets management basics, api 키 코드에 넣으면, git에 비밀번호, env 환경변수 기초, application.properties 보안, 시크릿 관리 입문, vault 이란, 민감정보 관리 beginner, credential 노출, 설정 파일 보안, secrets in code danger, 코드를 올린 뒤 비밀이 노출됨, secret manager vs env, secrets primer next step, return to security readme
 
 ## 핵심 개념
 
@@ -36,6 +36,13 @@ String apiKey = "sk-1234abcd...";
 | Vault (HashiCorp) | 오픈소스 시크릿 중앙 관리 | 대규모 운영 환경 |
 
 `.env` 파일은 반드시 `.gitignore`에 추가해서 Git에 커밋되지 않게 한다.
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security primer 묶음에서 다른 첫 문서를 다시 고르고 싶으면 [Security 카테고리 README](./README.md#기본-primer)로 돌아가면 된다.
+- `외부 API를 호출할 때 이 값이 API 키인지, OAuth인지`가 먼저 헷갈리면 [API 키 기초](./api-key-basics.md)로 이어 가면 된다.
+- `로그나 에러 응답에 시크릿이 그대로 남는지`가 걱정되면 [로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나](./log-masking-basics.md)를 바로 붙여 보면 된다.
+- `저장`이 아니라 `회전·누출 대응·무중단 전환`이 궁금해졌다면 [시크릿 관리·로테이션·누출 패턴](./secret-management-rotation-leak-patterns.md)으로 올라가면 된다.
 
 ## 상세 분해
 

@@ -7,6 +7,7 @@
 관련 문서:
 
 - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
+- [LEFT JOIN 필터 위치 입문서](./left-join-filter-placement-primer.md)
 - [인덱스 기초](./index-basics.md)
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
@@ -86,8 +87,11 @@ LEFT JOIN order o ON m.id = o.member_id
 WHERE o.id IS NULL;
 ```
 
+**(3) `LEFT JOIN` 조건 위치 주의** — 오른쪽 테이블 조건을 `WHERE`에 두면 `NULL` row가 탈락해 결과가 `INNER JOIN`처럼 좁아질 수 있다. "오른쪽에서 어떤 행을 붙일지"가 목적이면 `ON`에 두는 편이 안전하다.
+
 ## 더 깊이 가려면
 
+- `LEFT JOIN`에서 `ON`과 `WHERE`를 어디에 둘지 헷갈리면 → [LEFT JOIN 필터 위치 입문서](./left-join-filter-placement-primer.md)
 - 조인 알고리즘(Nested Loop, Hash, Sort-Merge)과 실행 계획에서 조인 비용 읽기 → [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 - 조인 속도에 영향을 주는 인덱스 설계 → [인덱스 기초](./index-basics.md)
 

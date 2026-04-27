@@ -8,6 +8,7 @@
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [초심자 30초 결정 흐름](#초심자-30초-결정-흐름)
 - [먼저 세 가지 질문으로 고르기](#먼저-세-가지-질문으로-고르기)
 - [한 장으로 보는 선택 기준](#한-장으로-보는-선택-기준)
 - [Command DTO를 쓰는 경우](#command-dto를-쓰는-경우)
@@ -16,7 +17,9 @@
 - [안전한 계약과 위험한 계약](#안전한-계약과-위험한-계약)
 - [Before: aggregate를 모듈 API 밖으로 노출한다](#before-aggregate를-모듈-api-밖으로-노출한다)
 - [After: command/query/result DTO로 계약을 좁힌다](#after-commandqueryresult-dto로-계약을-좁힌다)
+- [자주 헷갈리는 지점](#자주-헷갈리는-지점)
 - [리뷰 체크리스트](#리뷰-체크리스트)
+- [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
 - [꼬리질문](#꼬리질문)
 
 </details>
@@ -30,7 +33,7 @@
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 > - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 >
-> retrieval-anchor-keywords: module api dto patterns, module boundary dto, command query result dto, command dto, query dto, result dto, public module api, module contract, module facade dto, domain object boundary, aggregate boundary leak, entity boundary leak, safe contract unsafe contract, modular monolith api package, shared kernel value object, cross-module contract, boundary language, order payment module api
+> retrieval-anchor-keywords: module api dto patterns, module boundary dto, command query result dto, command dto, query dto, result dto, public module api, module contract, module facade dto, domain object boundary, aggregate boundary leak, entity boundary leak, safe contract unsafe contract, modular monolith api package, shared kernel value object, cross-module contract, boundary language, order payment module api, beginner dto decision flow, command dto vs patch dto, query result snapshot contract, module api common confusion
 
 ## 왜 이 문서가 필요한가
 
@@ -53,6 +56,18 @@
 - **도메인 규칙과 행위**는 소유 모듈 안의 domain object가 맡는다
 
 즉 "객체를 덜 만들자"보다 **변경 이유를 경계에서 끊자**가 더 중요하다.
+
+## 초심자 30초 결정 흐름
+
+처음 설계할 때는 용어보다 "상대 모듈이 원하는 것"만 먼저 본다.
+
+| 상대 모듈이 원하는 것 | 첫 선택 | 이유 |
+|---|---|---|
+| "이 작업을 수행해 줘" | `Command DTO` | 의도만 전달하고 내부 규칙은 소유 모듈이 지킨다 |
+| "현재 상태를 알려 줘" | `Query DTO` + `Result DTO` | 조회 스냅샷만 계약으로 고정한다 |
+| "모든 모듈이 같은 의미로 쓰는 작은 값" | 작은 불변 value object | primitive 오염보다 의미가 선명하다 |
+
+즉 초심자 기준 기본값은 "aggregate를 넘긴다"가 아니라 "`의도/조회/공유값`을 분리한다"다.
 
 ## 먼저 세 가지 질문으로 고르기
 
@@ -346,6 +361,17 @@ public record MarkOrderPaidResult(
 
 즉 DTO를 쓰는 목적은 "레이어를 늘리기"가 아니라 **소유 모듈의 내부 진화를 외부 호출자에게서 분리하기**다.
 
+## 자주 헷갈리는 지점
+
+- "내부 호출이면 entity를 넘겨도 되지 않나?"
+  - 내부 호출이어도 모듈 경계면 외부 계약이다. 같은 코드베이스와 같은 모듈은 다르다.
+- "DTO가 많아지면 오히려 복잡해지지 않나?"
+  - DTO 수보다 변경 충돌이 줄어드는지가 핵심이다. 보통 호출자-피호출자 동시 수정 횟수가 줄면 이득이다.
+- "`UpdateXxxCommand` 하나에 nullable 필드를 몰아두면 유연하지 않나?"
+  - 유연해 보이지만 유스케이스 의도가 사라져 patch 포맷이 된다. `CancelOrderCommand`, `ChangeAddressCommand`처럼 의도별 분리가 안전하다.
+- "Result DTO 대신 aggregate를 반환하면 재사용이 쉬운 것 아닌가?"
+  - 재사용보다 권한 과다 노출이 먼저 온다. caller가 domain method를 호출해야 한다면 경계가 잘못 설계된 신호다.
+
 ## 리뷰 체크리스트
 
 - 이 타입은 상대 모듈에게 **의도**를 전달하나, 아니면 내부 구조를 노출하나?
@@ -354,6 +380,13 @@ public record MarkOrderPaidResult(
 - `Command DTO`가 use case 이름을 갖고 있는가, 아니면 범용 patch 포맷처럼 보이는가?
 - 공유하는 domain type이 있다면 정말 작은 불변 value object/shared kernel인가?
 - caller가 이 반환 객체를 받아 domain method를 계속 호출해야 한다면, 경계 설계가 잘못된 것은 아닌가?
+
+## 다음에 이어서 볼 문서
+
+- 모듈 공개 범위를 코드로 강제하려면: [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
+- shared kernel을 어디까지 허용할지 좁히려면: [Shared Module Guardrails](./shared-module-guardrails.md)
+- 읽기 모델이 비대해지기 시작했다면: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+- entity/ORM 세부가 API로 새면: [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 
 ## 꼬리질문
 

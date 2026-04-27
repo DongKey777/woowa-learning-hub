@@ -29,6 +29,10 @@
 > - compatibility allowlist absorb
 > - exception capability gap
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Backward Compatibility Waivers and Consumer Exception Governance](./README.md#backward-compatibility-waivers-and-consumer-exception-governance)
+> - 다음 단계: [Consumer Exception Operating Model](./consumer-exception-operating-model.md)
+
 ## 핵심 개념
 
 호환성 governance는 "깨지면 안 된다"로 끝나지 않는다.

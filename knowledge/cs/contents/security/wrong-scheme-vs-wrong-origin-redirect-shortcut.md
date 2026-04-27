@@ -1,0 +1,133 @@
+# Wrong-Scheme vs Wrong-Origin Redirect Shortcut
+
+> 한 줄 요약: 로그인 뒤 redirect가 이상할 때는 먼저 `scheme이 틀린가`와 `host/origin이 틀린가`를 분리한다. `http://...`로 꺾이면 `Secure` cookie / proxy 경로를 먼저 보고, host가 `app-internal`/staging으로 바뀌면 absolute redirect host 복원 경로를 먼저 본다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- `[primer]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+- `[primer]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
+- `[primer]` [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
+- `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+- `[primer bridge]` [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md)
+- `[primer]` [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
+- `[cross-category bridge]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
+- `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+
+retrieval-anchor-keywords: wrong scheme vs wrong origin redirect, login redirect becomes http, redirect location http instead of https, redirect location internal hostname, app-internal redirect after login, secure cookie not sent after redirect http, redirect chain http proof, location header first check, raw cookie duplicate not redirect mismatch, 로그인 뒤 왜 http로 가나, 처음 배우는데 location 헤더를 어디서 보나, wrong host after login, security readme return path, browser session beginner ladder return, browser session troubleshooting return
+
+## 왜 이 문서를 먼저 읽나
+
+초보자는 로그인 뒤 redirect가 꼬이면 아래 둘을 한 문제처럼 묶기 쉽다.
+
+- `Location: http://app.example.com/...`
+- `Location: https://app-internal:8080/...`
+
+하지만 둘은 질문이 다르다.
+
+| 먼저 보이는 것 | 실제 질문 | 안전한 다음 문서 |
+|---|---|---|
+| host는 맞는데 `http://...`로 내려온다 | 앱이 원래 HTTPS 요청을 못 복원했나? | `[primer]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+| `https://`인데 host가 `app-internal`, `localhost`, staging으로 바뀐다 | 앱이 public host/origin 대신 내부 host를 기준으로 absolute URL을 만들었나? | `[primer]` [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md) |
+
+핵심 mental model:
+
+- `scheme` 문제는 주로 `Secure` cookie 재전송과 연결된다.
+- `host/origin` 문제는 주로 absolute redirect, callback URL, `redirect_uri` 생성과 연결된다.
+- 둘 다 proxy header 복원 실패에서 시작할 수 있지만, beginner는 **어느 칸이 먼저 틀렸는지**부터 잘라야 덜 헷갈린다.
+
+## 15초 분기표
+
+| 로그인 직후 가장 먼저 확인할 것 | 이렇게 보이면 | 먼저 갈 문서 |
+|---|---|---|
+| `Location`의 `scheme` | `http://app.example.com/...` | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+| `Location`의 `host` | `https://app-internal:8080/...`, `https://staging.example.com/...` | [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md) |
+| 다음 요청 URL | 실제 navigation이 `http://...`로 간다 | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+| 실패한 요청 raw `Cookie` header | redirect는 정상인데 `SESSION=old; SESSION=new`처럼 같은 이름이 두 번 보인다 | [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md) |
+| 실패한 요청의 `Cookie` header | redirect는 정상인데 `Cookie`가 비어 있다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
+
+한 줄 규칙:
+
+- `http://...`가 보이면 host 분석보다 먼저 `scheme mismatch`를 본다.
+- `https://...`인데 host만 틀리면 `Secure` cookie보다 absolute redirect host 복원을 먼저 본다.
+- redirect chain이 정상인데 raw `Cookie` header에 같은 이름이 두 번 보이면 redirect 문서에 머물지 말고 duplicate bridge로 간다.
+- redirect가 정상인데 request `Cookie` header가 비면 이 문서에서 멈추지 말고 cookie scope로 간다.
+
+## 한 번에 가고 한 번에 돌아오는 사다리
+
+이 shortcut의 역할은 원인을 끝까지 파는 것이 아니라, **다음 한 장**만 고르게 만드는 것이다.
+
+| 여기서 보인 첫 단서 | 지금 바로 읽을 follow-up | 다 읽고 돌아올 한 자리 |
+|---|---|---|
+| `Location`이나 다음 요청 URL이 `http://...`다 | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| `https://...`인데 host가 `app-internal`, `localhost`, staging으로 바뀐다 | [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| 다음 문서를 읽고도 branch 이름이 다시 흐려졌다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) | 여기서 primer 한 장만 다시 고른다 |
+
+한 줄 기억:
+
+- `wrong scheme`이면 `Secure Cookie Behind Proxy Guide` 한 장만 읽고 README로 복귀한다.
+- `wrong origin`이면 `Absolute Redirect URL Behind Load Balancer Guide` 한 장만 읽고 README로 복귀한다.
+- follow-up 문서 안에서 더 깊은 proxy/header 문서가 보여도, beginner는 먼저 README 복귀 자리부터 잃지 않는 편이 안전하다.
+
+## 같은 로그인 실패처럼 보여도 브라우저가 겪는 일은 다르다
+
+| 장면 | 브라우저에서 실제로 생기는 일 | beginner가 기억할 포인트 |
+|---|---|---|
+| wrong scheme | 브라우저가 `http://...`로 이동해 `Secure` cookie를 안 보낸다 | `Secure` cookie 문제처럼 보이지만 시작점은 proxy scheme 복원 실패다 |
+| wrong origin | 브라우저가 내부 host/staging host로 이동하거나 OAuth provider가 callback을 거절한다 | cookie보다 먼저 absolute URL source of truth가 틀렸다 |
+
+## 짧은 예시 2개
+
+### 1. wrong scheme
+
+```http
+POST /login
+< 302 Found
+< Location: http://app.example.com/dashboard
+< Set-Cookie: SESSION=abc; Secure; HttpOnly
+```
+
+이 다음 브라우저는 `http://app.example.com/dashboard`로 이동한다.
+그러면 `Secure` cookie는 다음 요청에 안 붙고, 서버는 다시 anonymous처럼 본다.
+
+safe next step:
+
+- [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
+
+### 2. wrong origin
+
+```http
+POST /login
+< 302 Found
+< Location: https://app-internal:8080/dashboard
+```
+
+이 장면은 `Secure` cookie 자체보다, 앱이 public host가 아니라 내부 host를 기준으로 URL을 만든 쪽이 더 가깝다.
+
+safe next step:
+
+- [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
+
+## 가장 흔한 혼동
+
+- `http://...`도 origin 문제 아닌가요?
+  - 맞다. 하지만 beginner triage에서는 `Secure` cookie 재전송이 바로 깨지므로 `scheme` 갈래를 먼저 떼어 보는 편이 안전하다.
+- host가 틀리면 무조건 open redirect 아닌가요?
+  - 아니다. 내부 host/staging host/`localhost`로 바뀌는 장면은 대개 user input 반사가 아니라 public origin 복원 실패다.
+- 둘 다 같이 틀릴 수 있나요?
+  - 가능하다. `http://app-internal:8080/...`처럼 둘 다 틀리면 `scheme`과 `host`를 모두 복원해야 하지만, 읽기 순서는 여전히 `scheme` -> `host`가 안전하다.
+
+## 한 줄 정리
+
+1. [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)으로 login loop 공통 언어를 맞춘다.
+2. [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)에서 redirect symptom을 `cookie-not-sent`/redirect mismatch/`server-mapping-missing`으로 가볍게 자른다.
+3. redirect `Location`이 `http://...`면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)로 간다.
+4. redirect `Location` host가 internal/staging/`localhost`면 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)로 간다.
+5. 두 문서 모두 읽었는데 `X-Forwarded-*`를 어디까지 믿어야 할지 헷갈리면 [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)로 한 칸만 더 내려간다.
+
+갈래를 다시 잃으면:
+
+- [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+- `primer`부터 다시 잡고 싶으면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)

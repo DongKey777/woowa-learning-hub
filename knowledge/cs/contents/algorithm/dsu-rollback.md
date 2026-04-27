@@ -10,11 +10,11 @@
 > - [Deletion-Aware Connectivity Bridge](../data-structure/deletion-aware-connectivity-bridge.md)
 > - [Mo's Algorithm Basics](./mo-algorithm-basics.md)
 
-> retrieval-anchor-keywords: dsu rollback, rollback union find, offline dynamic connectivity, undo union, stack changes, temporal queries, graph connectivity, backtracking union, reversible dsu
+> retrieval-anchor-keywords: dsu rollback, rollback union find, rollback union-find, union-find undo, unionfind rollback, dsu with rollback, offline dynamic connectivity, undo union, stack changes, temporal queries, graph connectivity, connected components with deletions, connectivity after edge deletion, backtracking union, reversible dsu, 유니온 파인드 롤백, 유니온파인드 롤백, 되돌리기 유니온 파인드, 간선 삭제 연결성 dsu
 
 ## 핵심 개념
 
-DSU Rollback은 union 연산의 변경을 스택에 저장해 두고,  
+DSU Rollback은 union 연산의 변경을 스택에 저장해 두고,
 필요할 때 이전 상태로 되돌린다.
 
 이 방식은 삭제가 섞인 연결성 문제를 오프라인으로 풀 때 유용하다.

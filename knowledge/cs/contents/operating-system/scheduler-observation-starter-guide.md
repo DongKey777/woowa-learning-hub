@@ -13,11 +13,11 @@
 > - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
 > - [Cgroup CPU Throttling, Quota, Runtime Debugging](./cgroup-cpu-throttling-quota-runtime-debugging.md)
 
-> retrieval-anchor-keywords: scheduler observation starter guide, scheduler observability beginner, run queue reading, load average reading, vmstat r meaning, proc pid sched reading, /proc/PID/sched starter, /proc/schedstat starter, schedstat beginner, when to move to /proc/schedstat, per-CPU imbalance beginner, per-CPU imbalance safe reading, cpu hotspot safe reading, runqlat starter, wakeup to run latency, scheduler triage, runnable backlog, cpu saturation checklist, scheduler debugging first five minutes
+> retrieval-anchor-keywords: scheduler observation starter guide, scheduler observability beginner, run queue reading, load average reading, vmstat r meaning, proc pid sched reading, /proc/PID/sched starter, /proc/schedstat starter, schedstat beginner, when to move to /proc/schedstat, per-CPU imbalance beginner, per-CPU imbalance safe reading, cpu hotspot safe reading, runqlat starter, wakeup to run latency, scheduler triage, runnable backlog, cpu saturation checklist, scheduler debugging first five minutes, beginner handoff box, primer handoff box, scheduler observation 다음 문서
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
-scheduler basics를 읽고 나면 가장 먼저 막히는 지점은 "그래서 운영에서는 뭘 보면 되나요?"다.  
+scheduler basics를 읽고 나면 가장 먼저 막히는 지점은 "그래서 운영에서는 뭘 보면 되나요?"다.
 이때 다섯 가지 관측창을 한 묶음으로 보면 된다.
 
 | 관측창 | 먼저 답하는 질문 | 초보자가 자주 헷갈리는 지점 |
@@ -190,6 +190,14 @@ sudo runqlat-bpfcc -p <pid> 15
 
 > Q: `runqlat`를 먼저 보는 게 좋지 않나요?
 > 핵심: 분포는 강력하지만 범위를 좁히기 어렵다. 초보자는 `load average`와 `r`로 넓게 보고, `/proc/<pid>/sched`로 대상을 좁히고, 필요할 때만 `/proc/schedstat`로 CPU 쏠림을 확인한 뒤 `runqlat`를 보는 편이 해석 실수가 적다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "`load average`가 높을 때 CPU saturation, throttling, I/O wait를 먼저 가르자"면: [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md)
+> - "`/proc/<pid>/sched`와 `/proc/schedstat`를 더 실제 필드로 읽고 싶다면": [schedstat, /proc/<pid>/sched, Runtime Debugging](./schedstat-proc-sched-runtime-debugging.md)
+> - "`runqlat` histogram이 tail latency와 어떻게 이어지는지" 보려면: [Scheduler Wakeup Latency, runqlat, Queueing Debugging](./scheduler-wakeup-latency-runqlat-debugging.md)
 
 ## 한 줄 정리
 

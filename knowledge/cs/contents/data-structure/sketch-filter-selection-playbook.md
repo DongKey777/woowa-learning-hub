@@ -1,152 +1,116 @@
 # Sketch and Filter Selection Playbook
 
-> 한 줄 요약: sketch/filter 선택은 "무슨 이름이 유명한가"가 아니라 membership, frequency, cardinality, heavy hitters, percentile 중 어떤 질문에 답해야 하는지로 갈린다.
+> 한 줄 요약: Bloom, Cuckoo, Xor, Quotient는 모두 "정답기"가 아니라 membership 선필터이고, 초보자는 `정답 필요 여부 -> 삭제 필요 여부 -> 메모리 우선 여부` 3축만 먼저 보면 된다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Bloom Filter vs Cuckoo Filter](./bloom-filter-vs-cuckoo-filter.md)
-> - [Count-Min Sketch vs HyperLogLog](./count-min-vs-hyperloglog.md)
-> - [DDSketch](./ddsketch.md)
-> - [Space-Saving Heavy Hitters](./space-saving-heavy-hitters.md)
+관련 문서:
 
-> retrieval-anchor-keywords: sketch filter selection, bloom vs cuckoo vs xor vs quotient, count-min vs hyperloglog, ddsketch vs kll vs t-digest, heavy hitter structure, approximate data structure decision guide, telemetry sketch choice, probabilistic filter choice, backend observability structure
+- [Bloom Filter vs Cuckoo Filter](./bloom-filter-vs-cuckoo-filter.md)
+- [Bloom Filter](./bloom-filter.md)
+- [Cuckoo Filter](./cuckoo-filter.md)
+- [Xor Filter](./xor-filter.md)
+- [Quotient Filter](./quotient-filter.md)
+- [Reservoir Sampling](../algorithm/reservoir-sampling.md)
+
+retrieval-anchor-keywords: sketch filter selection, bloom vs cuckoo vs xor vs quotient, membership filter basics, approximate membership intro, beginner filter decision, exact vs approximate membership, deletion needed filter, memory first filter, static set filter, filter choice for beginners, prefilter vs exact lookup
 
 ## 핵심 개념
 
-근사 자료구조는 서로 대체재처럼 보이지만, 실제로는 질문이 다르다.
+이 문서는 sketch 전체를 다루기보다, 초보자가 membership filter를 고를 때 처음 묻는 세 질문만 정리한다.
 
-- membership: 있나 없나
-- frequency: 얼마나 자주 나왔나
-- cardinality: 서로 다른 개수가 몇 개인가
-- heavy hitters: 가장 시끄러운 상위 key가 누구인가
-- percentile: 분위수가 얼마인가
+- `정답이 바로 필요하다`면 이 문서의 네 구조가 아니라 `HashSet`, DB index 같은 exact 경로를 본다.
+- `없으면 빨리 버리면 된다`면 Bloom, Cuckoo, Xor, Quotient 같은 선필터를 고른다.
 
-즉 "메모리를 적게 쓰는 구조"라는 공통점만으로 고르면 거의 항상 틀린다.
+즉 첫 질문은 "누가 더 고급 구조인가?"가 아니라 "이 경로가 정답 경로인가, 선필터 경로인가?"다.
+초급 규칙으로는 아래 세 줄만 먼저 기억해도 된다.
 
-## 질문별 선택
+| 질문 | yes | no |
+|---|---|---|
+| 정답이 바로 필요한가? | 필터 말고 exact set | 다음 질문으로 |
+| 삭제가 필요한가? | Cuckoo Filter | 다음 질문으로 |
+| 메모리를 특히 아껴야 하나? | Xor Filter | Bloom Filter부터 |
 
-### 1. membership filter
+Quotient Filter는 이 세 줄로 충분하지 않을 때 보는 "보충 선택지"다.
+즉 초반 기본값은 Bloom, 삭제가 있으면 Cuckoo, 정적 집합에서 메모리가 특히 중요하면 Xor로 먼저 자른다.
 
-질문:
+## 한눈에 보기
 
-- 없는 key를 빨리 걸러내고 싶은가
-- 집합이 동적인가
-- 삭제가 필요한가
+| 먼저 묻는 질문 | yes면 | no면 |
+|---|---|---|
+| 정답이 바로 필요한가? | exact set / DB lookup | 다음 질문으로 |
+| 삭제가 필요한가? | Cuckoo Filter | 다음 질문으로 |
+| 집합이 거의 안 바뀌고 메모리가 특히 중요한가? | Xor Filter | Bloom Filter부터 |
 
-대체로:
+한 문장으로 줄이면 이렇다.
 
-- [Bloom Filter](./bloom-filter.md): 가장 단순한 기본값
-- [Cuckoo Filter](./cuckoo-filter.md): 삭제/동적 운영
-- [Xor Filter](./xor-filter.md): 정적 집합, 매우 compact
-- [Quotient Filter](./quotient-filter.md): locality와 compactness를 같이 볼 때
+- 정답 필요: 필터 말고 exact
+- 삭제 필요: Cuckoo 우선
+- 메모리 최우선 + 정적 집합: Xor 우선
+- 그 외 기본값: Bloom
+- Bloom이 너무 단순하고 locality까지 보고 싶으면 Quotient 검토
 
-### 2. frequency / hot key
+## 첫 분기표
 
-질문:
+| 정답 필요 | 삭제 필요 | 메모리 우선 | 먼저 볼 선택지 | 이유 |
+|---|---|---|---|---|
+| yes | - | - | exact set | 확률 오답이 허용되지 않는다 |
+| no | yes | no | Cuckoo Filter | 삭제와 재삽입이 자연스럽다 |
+| no | no | yes | Xor Filter | 정적 집합에서 매우 compact하다 |
+| no | no | no | Bloom Filter | 가장 단순한 기본값이다 |
+| no | no | no(단, locality도 중요) | Quotient Filter | Bloom보다 좁은 구간 scan 감각을 기대할 수 있다 |
 
-- 임의 key 빈도를 묻는가
-- top offender 자체를 알고 싶은가
+`메모리 우선`은 "같은 역할이면 몇 MB라도 더 줄이고 싶다"는 뜻이다.
+`locality`는 lookup 때 여기저기 흩어진 비트를 찍기보다, 비교적 가까운 구간을 읽는 감각을 뜻한다.
+초보자라면 Quotient를 첫 선택으로 두기보다 "Bloom으로 충분한가?"를 먼저 보는 편이 안전하다.
 
-대체로:
+## 다른 sketch로 갈 때
 
-- [Count-Min Sketch](./count-min-sketch.md): point query frequency
-- [Space-Saving Heavy Hitters](./space-saving-heavy-hitters.md): top-k heavy hitter 후보
+이 문서의 네 구조는 전부 `membership` 질문용이다.
+질문이 바뀌면 구조도 바로 바뀐다.
 
-둘은 경쟁이라기보다 보완 관계인 경우가 많다.
-
-### 3. distinct count
-
-질문:
-
-- 고유 사용자/고유 tenant 수를 대략 알고 싶은가
-
-대체로:
-
-- [HyperLogLog](./hyperloglog.md): cardinality 추정의 기본 선택지
-
-### 4. percentile / latency distribution
-
-질문:
-
-- histogram이 필요한가
-- 상대 오차가 중요한가
-- tail percentile을 특히 잘 보고 싶은가
-- rank error 관점으로 봐도 되는가
-
-대체로:
-
-- [HDR Histogram](./hdr-histogram.md): bucket histogram + percentile
-- [DDSketch](./ddsketch.md): relative value error 설명이 쉬움
-- [KLL Sketch](./kll-sketch.md): compact rank-summary
-- [t-Digest](./t-digest.md): tail percentile 표현에 강함
-
-## 선택 프레임
-
-| 운영 질문 | 유력 후보 |
+| 질문 | 가야 할 구조 |
 |---|---|
-| "이 key는 아예 없나?" | Bloom / Cuckoo / Xor / Quotient |
-| "이 key가 얼마나 자주 보였나?" | Count-Min Sketch |
-| "지금 가장 noisy한 key는 누구인가?" | Space-Saving |
-| "고유 개수는 몇 개인가?" | HyperLogLog |
-| "p99는 얼마인가?" | HDR / DDSketch / KLL / t-Digest |
+| "이 key가 있나 없나?" | Bloom / Cuckoo / Xor / Quotient |
+| "이 key가 몇 번 나왔나?" | [Count-Min Sketch](./count-min-sketch.md) |
+| "서로 다른 개수는 몇 개인가?" | [HyperLogLog](./hyperloglog.md) |
+| "p99는 얼마인가?" | [DDSketch](./ddsketch.md), [KLL Sketch](./kll-sketch.md) |
 
-## 자주 하는 실수
+초보자가 자주 틀리는 지점은 Bloom과 HyperLogLog를 둘 다 "메모리 아끼는 구조"로만 보고 같은 줄에 세우는 것이다.
+하지만 하나는 membership, 다른 하나는 cardinality다.
 
-### 1. Bloom Filter로 cardinality를 구하려고 함
+## 흔한 오해와 함정
 
-Bloom은 membership filter다.  
-고유 개수 추정은 HLL 계열이 더 맞다.
+- `mightContain=true`를 정답으로 받아들이면 안 된다. 네 구조 모두 exact path 앞의 선필터다.
+- 삭제가 없는데도 무조건 Cuckoo로 시작할 필요는 없다. 단순성이 더 중요하면 Bloom이 더 낫다.
+- 메모리가 중요하다고 항상 Xor를 고르면 안 된다. 집합이 자주 바뀌면 build 부담이 커진다.
+- Quotient는 "Bloom의 상위호환"이 아니다. locality 장점 대신 구현 복잡도가 올라간다.
+- "메모리 우선"과 "정답 필요"를 섞어 읽으면 안 된다. 메모리를 아끼고 싶어도 정답이 필요하면 필터가 아니라 exact 구조다.
 
-### 2. Count-Min Sketch로 top offender를 바로 뽑으려 함
+가장 안전한 초급 규칙은 "삭제 없으면 Bloom부터, 삭제 있으면 Cuckoo부터, 정적 집합 메모리 최우선이면 Xor 검토"다.
 
-CMS는 임의 key point query에는 강하지만,  
-상위 ranking은 Space-Saving 같은 후보 구조가 더 직접적이다.
+## 실무에서 쓰는 모습
 
-### 3. percentile 요구에 HLL이나 CMS를 들이댐
+예를 들어 "로그인 차단 토큰이 blacklist에 있나"를 빠르게 앞단에서 거른다고 해보자.
 
-cardinality와 frequency는 percentile 문제가 아니다.  
-latency distribution은 quantile sketch/histogram이 필요하다.
+| 상황 | 추천 출발점 |
+|---|---|
+| 차단 규칙이 자주 바뀌고 만료도 많다 | Cuckoo Filter |
+| 배포 때만 목록이 바뀌고 조회가 대부분이다 | Xor Filter |
+| 일단 가장 단순하게 선필터를 붙이고 싶다 | Bloom Filter |
+| Bloom보다 locality까지 같이 보고 싶다 | Quotient Filter |
 
-### 4. 정적 집합에 Bloom만 씀
+어느 경우든 `필터가 있다 = 차단 확정`은 아니다.
+최종 판단은 blacklist DB, exact set, 원본 저장소가 맡아야 한다.
 
-정적 immutable segment prefilter라면  
-Xor Filter가 더 compact할 수 있다.
+## 더 깊이 가려면
 
-## 운영 시나리오
-
-### 시나리오 1: rate limiting + observability
-
-- suspicious key 추정: Count-Min Sketch
-- top noisy key 대시보드: Space-Saving
-- exact enforcement: Redis/exact counter
-
-### 시나리오 2: large segment lookup
-
-- negative lookup prefilter: Xor/Bloom
-- block selection: sparse index/fence pointer
-
-### 시나리오 3: latency telemetry
-
-- histogram dashboard: HDR
-- relative error percentile: DDSketch
-- tail percentile 집중: t-Digest
-- compact summary merge: KLL
-
-## 꼬리질문
-
-> Q: 근사 자료구조 선택에서 가장 먼저 확인할 질문은 무엇인가요?
-> 의도: 이름이 아니라 질의 유형으로 고르는지 확인
-> 핵심: membership, frequency, cardinality, heavy hitter, percentile 중 무엇을 묻는지다.
-
-> Q: 왜 Count-Min과 Space-Saving을 같이 쓸 수 있나요?
-> 의도: point query와 ranking 문제를 분리하는지 확인
-> 핵심: 하나는 임의 key 빈도 추정, 다른 하나는 상위 후보 유지에 강하기 때문이다.
-
-> Q: percentile 구조를 고를 때 무엇을 더 따져야 하나요?
-> 의도: quantile sketch 사이의 차이를 운영 요구와 연결하는지 확인
-> 핵심: histogram 필요 여부, tail 강조 여부, 상대 오차/순위 오차 중 무엇을 설명할지다.
+- 삭제와 rolling window 쪽은 [Cuckoo Filter](./cuckoo-filter.md)
+- 가장 단순한 기본형은 [Bloom Filter](./bloom-filter.md)
+- 정적 집합 압축은 [Xor Filter](./xor-filter.md)
+- locality 중심 비교는 [Quotient Filter](./quotient-filter.md)
+- membership 말고 스트림 샘플링으로 질문이 바뀌면 [Reservoir Sampling](../algorithm/reservoir-sampling.md)
 
 ## 한 줄 정리
 
-sketch/filter 선택은 구조 이름 암기가 아니라, backend가 지금 어떤 질의를 빠르고 싸게 해야 하는지부터 분해하는 문제다.
+membership 선필터 첫 선택은 `정답 필요 여부 -> 삭제 필요 여부 -> 메모리 우선 여부` 순서로 자르면 Bloom, Cuckoo, Xor, Quotient가 훨씬 덜 헷갈린다.

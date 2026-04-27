@@ -52,6 +52,10 @@
 > - predecessor successor link
 > - reopen history
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Process Catalog Entry Schema](./README.md#shadow-process-catalog-entry-schema)
+> - 다음 단계: [Shadow Review Packet Template](./shadow-review-packet-template.md)
+
 ## 핵심 개념
 
 shadow process catalog entry는 "이런 우회가 있다"를 적는 메모가 아니다.

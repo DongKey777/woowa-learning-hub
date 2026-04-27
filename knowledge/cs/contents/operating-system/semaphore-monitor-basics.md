@@ -13,7 +13,7 @@
 
 retrieval-anchor-keywords: 세마포어란, 모니터란, semaphore basics, monitor basics, 세마포어 뮤텍스 차이, 세마포어 뭐예요, 모니터 뭐예요, wait notify 기초, counting semaphore beginner, java synchronized 기초
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 뮤텍스는 "딱 1명만 들어올 수 있는 화장실"이다. 세마포어는 "N명까지 들어올 수 있는 주차장"이다. 모니터는 "자바의 `synchronized` 블록처럼 언어가 제공하는 안전한 방"이다.
 
@@ -72,6 +72,14 @@ retrieval-anchor-keywords: 세마포어란, 모니터란, semaphore basics, moni
 Java의 `BlockingQueue` 구현(예: `LinkedBlockingQueue`)은 내부에 `ReentrantLock` + 두 개의 `Condition`(notEmpty, notFull)을 사용해 모니터 패턴을 구현한다. 큐가 꽉 차면 `put()`이 `notFull.await()`로 대기하고, 빠지면 `notFull.signal()`로 깨운다.
 
 DB 커넥션 풀도 카운팅 세마포어 패턴이다. 최대 연결 수를 초과하는 요청은 세마포어 `wait()`에서 블록된다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "동기화 원시 도구를 한 표로 비교"하려면: [futex, mutex, semaphore, spinlock](./futex-mutex-semaphore-spinlock.md)
+> - "실서비스에서 락 대기 시간을 추적"하려면: [lock contention, futex wait, off-CPU 디버깅](./lock-contention-futex-offcpu-debugging.md)
+> - "`wait/notify` 설계가 깨질 때 패턴"을 보려면: [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 
 ## 더 깊이 가려면
 

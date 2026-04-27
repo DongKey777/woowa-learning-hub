@@ -19,13 +19,21 @@
 > - [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md)
 > - [Security README: Incident / Recovery / Trust](./README.md#incident--recovery--trust)
 
-retrieval-anchor-keywords: auth observability, authentication SLI, authorization telemetry, auth SLO, JWKS metrics, token verification metrics, 401 spike alerting, revocation lag, auth dashboards, security telemetry, decision metrics, identity error budget, shadow evaluation, replay store outage, trust boundary bypass, session store outage, security observability bridge, incident observability bundle, security readme observability bridge
+retrieval-anchor-keywords: auth observability, authentication SLI, authorization telemetry, auth SLO, JWKS metrics, token verification metrics, 401 spike alerting, revocation lag, auth dashboards, security telemetry, decision metrics, identity error budget, shadow evaluation, replay store outage, trust boundary bypass, session store outage, security observability bridge, incident observability bundle, security readme observability bridge, beginner fallback observability, auth observability beginner fallback, observability primer return path, security readme return anchor
+
+## Beginner Fallback
+
+이 문서는 운영 관측 설계를 깊게 다룬다. beginner라면 metric taxonomy를 바로 늘리기 전에 먼저 `signal -> decision -> audit` 3칸 mental model부터 고정하는 편이 안전하다.
+
+- 첫 입구로 되돌아가려면 [Auth Observability Primer Bridge](./auth-observability-primer-bridge.md)
+- security primer 묶음으로 한 단계 올라가려면 [Security README: 기본 primer](./README.md#기본-primer)
+- observability 관련 갈래를 다시 고르려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기), [Security README: 운영 / Incident catalog](./README.md#운영--incident-catalog)
 
 ---
 
 ## 핵심 개념
 
-인증 장애를 "로그인 안 됨" 한 줄로만 보면 복구가 늦어진다.  
+인증 장애를 "로그인 안 됨" 한 줄로만 보면 복구가 늦어진다.
 인증/인가는 단계가 많고, 각 단계마다 다른 장애 모드와 다른 지표가 필요하다.
 
 대표 단계:
@@ -50,7 +58,7 @@ retrieval-anchor-keywords: auth observability, authentication SLI, authorization
 - audit log: 나중에 누가 무엇을 했는지 증명
 - operational telemetry: 지금 어디가 망가졌는지 탐지
 
-audit log가 있다고 해서 운영 대시보드가 되는 것은 아니다.  
+audit log가 있다고 해서 운영 대시보드가 되는 것은 아니다.
 반대로 metric만 있다고 forensic이 되는 것도 아니다.
 
 ### 2. 401 수치 하나로는 아무것도 구분되지 않는다

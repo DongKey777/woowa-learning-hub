@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Software Engineering README: API Versioning, Contract Testing, Anti-Corruption Layer](./README.md#api-versioning-contract-testing-anti-corruption-layer)
 > - [API Versioning, Contract Testing, Anti-Corruption Layer](./api-versioning-contract-testing-anti-corruption-layer.md)
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 > - [Strangler Fig Migration, Contract, Cutover](./strangler-fig-migration-contract-cutover.md)
@@ -168,3 +169,8 @@ consumer migration의 핵심은 "새 계약을 공개했다"가 아니라 **소�
 ## 한 줄 정리
 
 Consumer migration playbook은 계약 adoption의 순서, 검증, 복구를 정해 소비자 전환을 안전하게 끝내는 운영 설계다.
+
+## 다음 읽기
+
+- 다음 한 걸음: [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md) - 소비자별 adoption 계획을 전체 wave 승인과 pause 권한에 어떻게 연결할지 이어서 볼 수 있다.
+- README로 돌아가기: [Software Engineering README](./README.md#api-versioning-contract-testing-anti-corruption-layer) - consumer adoption을 읽은 뒤 다시 versioning, contract, ACL 묶음으로 복귀하는 링크다.

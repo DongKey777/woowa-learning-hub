@@ -1,0 +1,120 @@
+# Command vs Strategy: `execute()`가 비슷해 보여도 먼저 자르는 짧은 다리
+
+> 한 줄 요약: 둘 다 `execute()` 같은 모양을 가질 수 있지만, **커맨드는 실행 요청을 담아 저장/전달하는 쪽**이고 **전략은 알고리즘을 바꿔 끼우는 쪽**이다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [커맨드 패턴 기초](./command-pattern-basics.md)
+> - [전략 패턴 기초](./strategy-pattern-basics.md)
+> - [옵저버 vs 커맨드: 처음 선택을 줄이는 1페이지 브리지](./observer-vs-command-beginner-bridge.md)
+> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+> - [실전 패턴 선택 가이드](./pattern-selection.md)
+
+retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy beginner, execute method looks same command strategy, request object vs algorithm swap, queue command vs strategy beginner, undo retry command strategy, command execute strategy execute difference, 커맨드 vs 전략 차이, execute 모양이 비슷한데 차이, 실행 요청 저장 vs 알고리즘 교체, command strategy 초보자 비교, command or strategy first choice, execute 같은데 command strategy, command pattern vs strategy pattern beginner
+
+---
+
+## 먼저 잡는 멘탈 모델
+
+- 커맨드: "이 작업을 실행해라." 이 요청을 객체로 들고 다닌다.
+- 전략: "이 계산을 어떤 방식으로 할까?" 방법 자체를 바꿔 끼운다.
+
+처음엔 `execute()`라는 메서드 이름을 잊고, 아래 두 질문만 먼저 보면 된다.
+
+1. 이 객체를 큐에 넣거나, 나중에 다시 실행하거나, 실행 이력을 남기고 싶은가
+2. 아니면 지금 실행은 하되, 내부 계산 방법만 갈아끼우고 싶은가
+
+첫 질문이면 커맨드 쪽, 둘째 질문이면 전략 쪽이다.
+
+## 30초 비교표
+
+| 질문 | Command | Strategy |
+|---|---|---|
+| 중심 관심사 | 실행 요청을 저장/전달/재실행 | 알고리즘이나 규칙을 교체 |
+| `execute()` 느낌 | "이 일을 해라" | "이 방식으로 계산해라" |
+| 잘 붙는 단어 | queue, undo, retry, invoker | policy, algorithm, selector, context |
+| 누가 고르나 | invoker가 나중에 실행할 수 있다 | 호출자/설정/DI가 구현을 고른다 |
+| 대표 예 | 주문 취소 작업 큐 | 할인 계산 방식 교체 |
+
+핵심은 메서드 이름이 아니라 **왜 객체를 분리했는가**다.
+
+## 1분 예시
+
+같은 결제 도메인이라도 질문이 다르면 패턴도 달라진다.
+
+### 예시 1. 결제 취소 작업을 큐에 넣기
+
+```java
+queue.add(new CancelPaymentCommand(paymentId));
+```
+
+- 아직 실행되지 않은 요청이다.
+- 워커가 나중에 `execute()`를 호출할 수 있다.
+- 실패하면 재시도하거나 이력을 남길 수 있다.
+
+이건 커맨드 쪽이다.
+
+### 예시 2. 카드 수수료 계산 방식을 바꾸기
+
+```java
+fee = feeStrategy.calculate(payment);
+```
+
+- 지금 바로 계산한다.
+- 카드/계좌이체/간편결제마다 계산 방법만 다르다.
+- 큐 적재나 undo보다 "어떤 공식이 맞는가"가 중요하다.
+
+이건 전략 쪽이다.
+
+## 자주 헷갈리는 포인트 4개
+
+### 1. 둘 다 `execute()`면 같은 패턴 아닌가요?
+
+아니다. `execute()`는 겉모양일 뿐이다.
+
+- 커맨드는 "실행 요청"을 표현하려고 `execute()`를 둔다.
+- 전략은 "교체 가능한 행동"을 표현하려고 `execute()`나 `apply()`를 둘 수 있다.
+
+이름보다 **객체가 들고 있는 의미**를 봐야 한다.
+
+### 2. 전략도 객체 하나로 감싸니까 커맨드 아닌가요?
+
+전략 객체는 보통 "지금 어떤 방법을 쓸지"를 고르는 데 쓰인다.
+커맨드 객체는 보통 "이 요청을 저장해 두었다가 누군가 실행"하는 데 쓰인다.
+
+즉 둘 다 객체지만, 하나는 **방법**, 다른 하나는 **요청**에 더 가깝다.
+
+### 3. 커맨드에도 내부 알고리즘이 있으면 전략 아닌가요?
+
+커맨드 안에 세부 계산이 조금 들어갈 수는 있다.
+그래도 핵심 문제가 큐, retry, 실행 시점 분리라면 여전히 커맨드다.
+
+반대로 전략 안에 상태가 조금 있어도, 핵심 문제가 알고리즘 교체라면 전략이다.
+
+### 4. 같이 쓸 수도 있나요?
+
+그렇다. 자주 같이 쓴다.
+
+예를 들어 `RefundCommand`가 실행될 때 내부에서 `RefundPolicyStrategy`를 사용해 환불 수수료를 계산할 수 있다.
+
+- 바깥 문제: 환불 요청을 저장하고 워커가 실행한다 → Command
+- 안쪽 문제: 환불 금액 계산 공식을 고른다 → Strategy
+
+## 아주 짧은 선택 루틴
+
+- 큐, undo, retry, 예약 실행이 먼저 보이면 → Command
+- 할인/수수료/정렬/검증 방식 교체가 먼저 보이면 → Strategy
+- 객체가 "나중에 실행될 요청"처럼 보이면 → Command
+- 객체가 "이번에 쓸 계산법"처럼 보이면 → Strategy
+
+## 다음 읽기
+
+- 커맨드 쪽 예시를 더 보고 싶으면 [커맨드 패턴 기초](./command-pattern-basics.md)
+- 전략 쪽 예시를 더 보고 싶으면 [전략 패턴 기초](./strategy-pattern-basics.md)
+- 전략과 템플릿 메소드가 섞이면 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- "알림"까지 섞이면 [옵저버 vs 커맨드: 처음 선택을 줄이는 1페이지 브리지](./observer-vs-command-beginner-bridge.md)
+
+## 한 줄 정리
+
+`execute()` 모양이 비슷해도, **실행 요청을 저장해 들고 다니면 Command**, **계산 방법을 바꿔 끼우면 Strategy**로 먼저 자르면 초반 혼동을 크게 줄일 수 있다.

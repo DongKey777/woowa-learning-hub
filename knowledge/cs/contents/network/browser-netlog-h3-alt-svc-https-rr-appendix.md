@@ -1,0 +1,112 @@
+# Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인
+
+> DevTools만으로는 모호할 때 Chrome/Edge 계열 browser NetLog로 "`이 H3가 Alt-Svc cache 때문이었는지`, `이번 capture 안에서 HTTPS RR 흔적이 있었는지`"를 짧게 확인하는 advanced follow-up appendix
+
+**난이도: 🟡 Intermediate**
+
+> 관련 문서:
+> - [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
+> - [Chrome NetLog H3 421 Drilldown: DevTools로 부족할 때 Coalescing Rejection과 Retry Decision 읽기](./chrome-netlog-h3-421-drilldown.md)
+> - [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md)
+> - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+
+retrieval-anchor-keywords: browser NetLog h3 appendix, Chrome net-export Alt-Svc cache, Edge net-export HTTPS RR, NetLog Alt-Svc mapping, NetLog H3 discovery verification, NetLog HTTPS RR hint, browser net-export h3, Alt-Svc cache confirmation netlog, HTTPS RR confirmation netlog, net-export alt-svc, net-export https rr, Chromium NetLog h3, DevTools inconclusive H3, beginner follow-up netlog
+
+## 먼저 잡는 mental model
+
+이 appendix의 질문은 두 개뿐이다.
+
+- browser가 **이미 기억하던 `Alt-Svc` 메모** 때문에 H3를 택했는가
+- browser가 **이번 capture 안의 DNS 단계**에서 HTTPS RR/SVCB 힌트를 봤는가
+
+DevTools는 주로 "결과로 `h3`가 붙었는가"를 보여 준다.
+NetLog는 그보다 한 단계 뒤로 들어가 **browser 내부 메모와 host resolver 흐름**을 보게 해 준다.
+
+## 이 문서가 필요한 순간
+
+아래 둘 중 하나면 이 appendix로 온다.
+
+| 상황 | DevTools만으로 부족한 이유 |
+|---|---|
+| 첫 요청부터 바로 `h3`라서 `Alt-Svc` cache인지 HTTPS RR인지 헷갈린다 | response 이전에 이미 배운 힌트가 있었는지 보기 어렵다 |
+| response에 `Alt-Svc`도 있고 DNS에서도 `HTTPS` record가 보여 단일 원인을 못 고르겠다 | 두 입력이 browser 안에서 실제로 쓰였는지 분리 확인이 필요하다 |
+
+입문 결론은 여전히 먼저 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)에서 만든다.
+이 문서는 그 결론이 모호할 때만 쓰는 짧은 후속 확인 카드다.
+
+## 3단계 capture
+
+Chrome/Edge 계열에서는 보통 `chrome://net-export/` 또는 `edge://net-export/`에서 capture를 만든다.
+
+1. 가능하면 새 profile 또는 시크릿 창에 가까운 깨끗한 조건을 만든다.
+2. NetLog recording을 시작한다.
+3. 문제 request를 재현한 뒤 logging을 멈춘다.
+
+핵심은 **reproduce 전에 logging을 켜는 것**이다.
+그래야 "이미 있던 `Alt-Svc` 메모"와 "이번 DNS 흔적"을 같은 capture에서 볼 수 있다.
+
+## NetLog에서 먼저 볼 두 군데
+
+### 1. `Alt-Svc` 메모가 이미 있었는지
+
+Chromium NetLog는 HTTP server properties 쪽에 `Alt-Svc` mapping 상태를 함께 내보낸다.
+
+찾는 감각:
+
+- export 파일이나 viewer에서 target host를 검색한다
+- `alt svc`, `alternative service`, `HTTP_STREAM_JOB_CONTROLLER_ALT_SVC_FOUND` 같은 문자열이 보이는지 본다
+- capture 시작 시점 근처에 target origin의 `Alt-Svc` mapping이 이미 보이면 "`response보다 먼저 기억이 있었다`" 쪽으로 기운다
+
+초급자식 해석:
+
+| 보인 흔적 | 읽는 법 |
+|---|---|
+| request보다 앞선 시점에 target host용 `Alt-Svc` mapping이 이미 있다 | browser가 이전 방문에서 배운 힌트를 들고 시작했을 가능성이 높다 |
+| 이번 request response 뒤에 `ALT_SVC_FOUND` 계열 흔적이 처음 생긴다 | 이번 응답이 다음 새 연결용 힌트를 심은 쪽에 가깝다 |
+
+### 2. 이번 capture 안에서 HTTPS RR/SVCB 흔적이 있었는지
+
+Chromium NetLog는 host resolver와 DNS 관련 이벤트/상태를 남긴다.
+브라우저 버전에 따라 세부 필드명은 달라질 수 있으므로, exact field name보다 **host resolver 구간에서 `HTTPS`/`SVCB`/`alpn`/target host**를 같이 찾는 방식이 안전하다.
+
+찾는 감각:
+
+- target host의 `HOST_RESOLVER`/DNS 관련 이벤트를 찾는다
+- 같은 구간에 `HTTPS` 또는 `SVCB` record 흔적이 있는지 본다
+- `alpn=h3` 또는 그에 준하는 HTTPS RR 내용이 보이면 DNS discovery 입력이 실제 capture 안에 있었다고 읽는다
+
+초급자식 해석:
+
+| 보인 흔적 | 읽는 법 |
+|---|---|
+| target host DNS 구간에 HTTPS RR/SVCB와 `h3` ALPN 흔적이 있다 | browser가 DNS 단계에서 H3 힌트를 본 근거가 있다 |
+| target host DNS 구간은 보이지만 HTTPS RR/SVCB 흔적이 없다 | 이 capture만 놓고는 DNS 기반 H3 힌트 증거가 약하다 |
+| DNS 구간 자체가 거의 안 보인다 | cache hit, 기존 resolver 상태, 재현 조건 부족 때문에 단정하지 않는다 |
+
+## 가장 짧은 판독 순서
+
+1. DevTools에서 먼저 `Protocol`, response `Alt-Svc`, `dig HTTPS`까지 본다.
+2. 여전히 모호하면 NetLog에서 target host의 `Alt-Svc` mapping 흔적을 찾는다.
+3. 같은 capture에서 host resolver의 HTTPS RR/SVCB 흔적을 찾는다.
+4. 둘을 함께 보고 "무엇이 있었는지"만 확정하고, "무엇이 최종 선택 원인이었는지"는 과하게 단정하지 않는다.
+
+## 30초 결론 표
+
+| NetLog 관찰 | 안전한 결론 |
+|---|---|
+| capture 시작부터 target host의 `Alt-Svc` mapping이 이미 있다, HTTPS RR 흔적은 약하다 | "`Alt-Svc` cache가 이미 있었을 가능성이 높다" |
+| target host DNS 구간에 HTTPS RR/SVCB `h3` 흔적이 있다, 사전 `Alt-Svc` mapping은 뚜렷하지 않다 | "이번 capture 안에서 DNS HTTPS RR 입력이 있었던 근거가 있다" |
+| 둘 다 보인다 | "둘 다 후보 입력이다. 단일 원인으로 단정하지 않는다" |
+| 둘 다 안 보인다 | "capture 범위나 cache 상태가 부족하다. 무증거를 부정 증거로 쓰지 않는다" |
+
+## 자주 하는 오해
+
+- NetLog에 `Alt-Svc` 흔적이 보인다고 이번 response가 즉시 `h3`로 바뀐 것은 아니다.
+- HTTPS RR 흔적이 보인다고 QUIC/UDP path 성공까지 증명된 것은 아니다.
+- NetLog에 원하는 흔적이 없다고 기능이 없었다고 단정하면 안 된다.
+  capture 시작 시점, 기존 cache, browser version 차이 때문에 빠질 수 있다.
+
+## 한 줄 정리
+
+DevTools가 "`무슨 결과가 났는지`"를 보는 도구라면, NetLog appendix는 "`browser가 시작할 때 어떤 `Alt-Svc` 메모를 들고 있었는지`, `이번 DNS 단계에서 HTTPS RR 흔적이 있었는지`"를 확인하는 짧은 후속 카드다.

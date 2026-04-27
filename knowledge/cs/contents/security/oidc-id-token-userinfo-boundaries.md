@@ -5,12 +5,22 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)
+> - [OAuth2 기초](./oauth2-basics.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: OIDC, OpenID Connect, ID token, UserInfo endpoint, id token vs access token, id token vs userinfo, nonce validation, claim normalization, external identity mapping, issuer audience nonce, authentication vs authorization boundary, external IdP trust boundary
+retrieval-anchor-keywords: OIDC, OpenID Connect, ID token, UserInfo endpoint, id token vs access token, id token vs userinfo, nonce validation, claim normalization, external identity mapping, issuer audience nonce, authentication vs authorization boundary, external IdP trust boundary, oauth2 oidc social login primer, oauth2 vs oidc beginner, social login oidc handoff, google login oidc beginner, id token vs access token beginner, security readme oidc return path, return to security README
+
+## 이 문서 다음에 보면 좋은 문서
+
+- social login 질문인데 OAuth2, OIDC, `access token`, `id token`, internal session 역할이 아직 섞이면 [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)로 먼저 돌아가는 편이 낫다.
+- OAuth2의 delegated access 용어가 아직 낯설면 [OAuth2 기초](./oauth2-basics.md)로 돌아가 access token, scope, authorization server부터 다시 잡으면 된다.
+- `code`, `state`, PKCE, callback hardening 흐름이 궁금하면 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)로 이어 가면 된다.
+- beginner route를 다시 고르려면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
 
 ---
 

@@ -11,7 +11,7 @@
 - [algorithm 카테고리 인덱스](./README.md)
 - [해시 테이블 기초](../data-structure/hash-table-basics.md)
 
-retrieval-anchor-keywords: time complexity intro, big o notation beginner, 시간복잡도 입문, 빅오 표기법이 뭐예요, o(n) o(n^2) 차이, 복잡도 감각, algorithm complexity primer, worst case complexity, o(log n) 의미, 시간복잡도 계산 방법, loop complexity, 중첩 루프 복잡도, beginner algorithm complexity
+retrieval-anchor-keywords: time complexity intro, big o notation beginner, 시간복잡도 입문, 빅오 표기법이 뭐예요, o(n) o(n^2) 차이, 복잡도 감각, algorithm complexity primer, worst case complexity, o(log n) 의미, 시간복잡도 계산 방법, loop complexity, nested loop complexity, double for loop complexity, 중첩 루프 복잡도, 이중 for문 시간복잡도, 이중 for문 무조건 o(n^2), 중첩 for문 시간복잡도, beginner algorithm complexity
 
 ## 핵심 개념
 

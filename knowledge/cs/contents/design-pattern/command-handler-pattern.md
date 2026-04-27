@@ -1,157 +1,98 @@
-# Command Handler Pattern: 명령을 유스케이스 단위로 처리하기
+# Command Handler Pattern: 검증을 어디에 두는가
 
-> 한 줄 요약: Command Handler 패턴은 입력 명령을 하나의 유스케이스로 받아 검증, 실행, 결과 반환을 한 흐름으로 묶는다.
+> 한 줄 요약: Command Handler는 검증을 한곳에 몰아넣는 클래스가 아니라, request validator, policy object, aggregate invariant를 순서대로 연결하는 유스케이스 흐름이다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Command Pattern Undo Queue](./command-pattern-undo-queue.md)
-> - [CQRS: Command와 Query를 분리하는 패턴 언어](./cqrs-command-query-separation-pattern-language.md)
-> - [Aggregate Version and Optimistic Concurrency Pattern](./aggregate-version-optimistic-concurrency-pattern.md)
-> - [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
-> - [Unit of Work Pattern](./unit-of-work-pattern.md)
-> - [Ports and Adapters vs GoF 패턴](./ports-and-adapters-vs-classic-patterns.md)
+관련 문서:
+- [Layered Validation Pattern](./layered-validation-pattern.md)
+- [Aggregate Invariant Guard Pattern](./aggregate-invariant-guard-pattern.md)
+- [Policy Object Pattern](./policy-object-pattern.md)
+- [Invariant-Preserving Command Model](./invariant-preserving-command-model.md)
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
 
----
-
-## 핵심 개념
-
-Command Handler는 애플리케이션 서비스의 흔한 형태다.  
-입력 Command 하나를 받아 그 유스케이스를 처리한다.
-
-- validate input
-- load aggregate
-- execute business rule
-- persist change
-- return result
-
-즉 "명령 객체를 받는 서비스"를 뜻한다.
-
-### Retrieval Anchors
-
-- `command handler`
-- `application command`
-- `use case handler`
-- `validate execute persist`
-- `command side`
-- `expected version`
-- `stale command`
-- `intent rich command`
+retrieval-anchor-keywords: command handler validation flow, request validator in command handler, aggregate invariant in command handler, policy object in command handler, command handler validation placement, layered validation command handler, where to put validation in handler, command handler beginner, handler validation order, request validator aggregate invariant policy object, 처음 배우는데 command handler, command handler 뭐예요
 
 ---
 
-## 깊이 들어가기
+## 처음 읽는다면 20초 멘탈 모델
 
-### 1. Command와 Handler를 분리하면 읽기 쉬워진다
+Command Handler를 "검증을 다 하는 큰 서비스"로 보면 금방 헷갈린다.
+더 쉬운 그림은 **세 문을 순서대로 지나가는 안내자**다.
 
-Command는 무엇을 할지, Handler는 어떻게 처리할지에 가깝다.
+| 문 | 맡는 질문 | 보통 두는 곳 |
+|---|---|---|
+| 입력 문 | 요청 모양이 맞는가 | request validator |
+| 정책 문 | 지금 이 상황에서 허용되는가 | policy object |
+| 도메인 문 | 이 상태 변화가 정말 가능한가 | aggregate 내부 invariant |
 
-- Command: 데이터 캡슐
-- Handler: 실행 로직
+핵심은 "검증이 몇 개냐"가 아니라 **실패 의미가 다른 문을 섞지 않는 것**이다.
 
-### 2. 단순 서비스보다 경계가 선명하다
+## 1페이지 배치 카드
 
-Handler는 보통 한 유스케이스에 대응한다.
-
-- PlaceOrderCommandHandler
-- CancelOrderCommandHandler
-- ApprovePaymentCommandHandler
-
-이 구조는 CQRS와 잘 맞는다.
-
-### 3. 과하면 service explosion이 될 수 있다
-
-유스케이스가 잘게 쪼개지는 건 좋지만, 너무 작은 handler만 남으면 흐름이 분산된다.
-
----
-
-## 실전 시나리오
-
-### 시나리오 1: 주문 생성
-
-명령을 받아 주문 aggregate를 로드하고 저장하는 흐름에 적합하다.
-
-### 시나리오 2: 결제 승인
-
-외부 응답을 처리하고 상태를 전이시킬 때도 자연스럽다.
-
-### 시나리오 3: 배치 요청 처리
-
-스케줄러가 command를 만들어 handler를 호출하는 구조가 잘 맞는다.
-
----
-
-## 코드로 보기
-
-### Command
-
-```java
-public record PlaceOrderCommand(Long userId, List<Long> itemIds) {}
-```
-
-### Handler
-
-```java
-@Service
-public class PlaceOrderCommandHandler {
-    private final OrderRepository repository;
-
-    public OrderId handle(PlaceOrderCommand command) {
-        Order order = Order.place(command.userId(), command.itemIds());
-        repository.save(order);
-        return order.getId();
-    }
-}
-```
-
-### Controller
-
-```java
-@RestController
-public class OrderController {
-    private final PlaceOrderCommandHandler handler;
-
-    @PostMapping("/orders")
-    public OrderId place(@RequestBody PlaceOrderRequest request) {
-        return handler.handle(request.toCommand());
-    }
-}
-```
-
-Command Handler는 유스케이스를 한 문장처럼 읽히게 만든다.
-
----
-
-## 트레이드오프
-
-| 선택지 | 장점 | 단점 | 언제 선택하는가 |
+| handler 흐름 | 여기 두는 것 | 이유 | 여기 두지 않는 것 |
 |---|---|---|---|
-| 단일 service | 단순하다 | 메서드가 섞이기 쉽다 | 작은 시스템 |
-| Command Handler | 유스케이스가 선명하다 | 클래스 수가 늘어난다 | 명령 중심 시스템 |
-| 이벤트 핸들러 | 비동기 확장이 쉽다 | 순서/정합성이 약하다 | 발생 후 반응 |
+| 1. command 받기 | request validator | 비어 있는 값, 형식, 범위 같은 입력 오류를 빨리 막는다 | 주문 상태 전이 규칙 |
+| 2. aggregate 조회 | repository load | 정책 판단이나 상태 전이에 필요한 현재 상태를 가져온다 | dto 형식 검사 |
+| 3. 실행 가능성 판단 | policy object | 회원 등급, 시간대, 한도처럼 외부 조건이 섞인 판정을 분리한다 | aggregate 내부 컬렉션 변경 |
+| 4. 상태 변경 실행 | aggregate method + invariant guard | "이미 배송된 주문은 취소 불가" 같은 즉시 일관성을 aggregate가 직접 지킨다 | 외부 api 조회 로직 |
+| 5. 저장/반환 | repository save, result mapping | 유스케이스를 마무리한다 | 새 비즈니스 규칙 추가 |
 
-판단 기준은 다음과 같다.
+짧게 외우면 이 순서다.
 
-- 입력 하나가 유스케이스 하나면 handler가 좋다
-- 읽기와 쓰기를 구분할 때 command handler가 자연스럽다
-- 명령 객체와 결과 객체를 분리하면 테스트가 쉬워진다
+`request validator -> policy object -> aggregate invariant`
 
----
+## 1분 예시
 
-## 꼬리질문
+```java
+public record CancelOrderCommand(Long orderId, Long actorId, String reason) {}
 
-> Q: Command Handler와 Application Service는 같은가요?
-> 의도: 이름보다 역할을 구분하는지 확인한다.
-> 핵심: 거의 같은 감각이지만 command 중심이면 handler라는 이름이 더 명확하다.
+public final class CancelOrderHandler {
+    private final CancelOrderValidator validator;
+    private final OrderRepository orderRepository;
+    private final CancellationPolicy cancellationPolicy;
 
-> Q: handler가 너무 많아지면 문제인가요?
-> 의도: 과도한 쪼개기를 경계하는지 확인한다.
-> 핵심: 너무 작으면 흐름을 파악하기 어려워진다.
+    public void handle(CancelOrderCommand command) {
+        validator.validate(command);
 
-> Q: CQRS에서 handler가 중요한 이유는 무엇인가요?
-> 의도: command side의 경계를 이해하는지 확인한다.
-> 핵심: 쓰기 유스케이스를 명확히 분리하기 때문이다.
+        Order order = orderRepository.get(command.orderId());
+        CancellationDecision decision =
+            cancellationPolicy.evaluate(order, command.actorId());
+
+        order.cancel(decision, command.reason());
+        orderRepository.save(order);
+    }
+}
+```
+
+```java
+public final class Order {
+    public void cancel(CancellationDecision decision, String reason) {
+        if (status == OrderStatus.SHIPPED) {
+            throw new IllegalStateException("already shipped");
+        }
+        if (!decision.allowed()) {
+            throw new PolicyViolationException(decision.reasonCode());
+        }
+        status = OrderStatus.CANCELLED;
+        cancelReason = reason;
+    }
+}
+```
+
+여기서 역할은 이렇게 나뉜다.
+
+- `validator`: `orderId`가 비었는지, `reason` 길이가 맞는지 본다.
+- `cancellationPolicy`: 취소 가능 시간, 권한, 수수료 같은 운영 규칙을 계산한다.
+- `order.cancel(...)`: 현재 주문 상태가 정말 취소 가능한지 마지막으로 지킨다.
+
+## 자주 헷갈리는 포인트
+
+- request validator가 있다고 aggregate invariant가 없어지는 것은 아니다. 입력이 정상이어도 현재 상태 전이는 실패할 수 있다.
+- policy object가 있다고 handler가 비어야 하는 것은 아니다. handler는 여전히 순서를 조립한다.
+- aggregate가 정책 객체 없이 모든 규칙을 다 알 필요는 없다. 외부 정보가 필요한 판정은 policy object 쪽이 더 자연스럽다.
+- handler에서 `if`를 몇 줄 썼다는 이유만으로 나쁜 것은 아니다. **형식 검증, 정책 판정, 상태 전이 규칙이 한 덩어리로 섞일 때**가 더 위험하다.
 
 ## 한 줄 정리
 
-Command Handler는 하나의 명령을 하나의 유스케이스로 처리하는 애플리케이션 계층 패턴이다.
+Command Handler 안의 검증 배치는 "입력은 validator, 상황 판정은 policy, 상태 일관성은 aggregate"로 나누면 가장 덜 헷갈린다.

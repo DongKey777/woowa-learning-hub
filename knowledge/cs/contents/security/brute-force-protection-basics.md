@@ -11,7 +11,7 @@
 - [네트워크 HTTP 메서드·REST·멱등성](../network/http-methods-rest-idempotency.md)
 - [Security 카테고리 README](./README.md)
 
-retrieval-anchor-keywords: brute force protection basics, 브루트포스 공격, 로그인 반복 시도, account lockout, 계정 잠금, login throttling beginner, 비밀번호 대입 공격, captcha 왜 쓰나요, mfa 기초, credential stuffing 이란, 로그인 실패 횟수 제한, brute force beginner
+retrieval-anchor-keywords: brute force protection basics, 브루트포스 공격, 로그인 반복 시도, account lockout, 계정 잠금, login throttling beginner, 비밀번호 대입 공격, captcha 왜 쓰나요, mfa 기초, credential stuffing 이란, 로그인 실패 횟수 제한, brute force beginner, 로그인 엔드포인트 공격, 여러 번 로그인 시도한 뒤 막힘, 로그인 시도를 계속했더니 잠김
 
 ## 핵심 개념
 

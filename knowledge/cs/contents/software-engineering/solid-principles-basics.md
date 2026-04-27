@@ -13,6 +13,17 @@
 
 retrieval-anchor-keywords: solid principles basics, solid 원칙 입문, single responsibility, open closed, liskov substitution, interface segregation, dependency inversion, srp 뭐예요, solid 5원칙 설명, 의존 역전 원칙, 인터페이스 분리 원칙, beginner solid, solid 왜 쓰나요
 
+## 먼저 잡는 한 줄 멘탈 모델
+
+SOLID는 원칙 이름 암기표가 아니라, **"변경 이유를 한곳에 모으기 위한 분리 체크리스트"**다.
+
+## before / after 한눈 비교
+
+| 상태 | 코드 신호 | 결과 |
+|---|---|---|
+| before: 책임이 섞인 설계 | 하나의 서비스가 검증/저장/알림/정책 분기까지 모두 처리 | 작은 요구 변경도 여러 곳 동시 수정이 필요해진다 |
+| after: SOLID 기준 분리 | 규칙(도메인), 유스케이스 조합(서비스), 저장 구현(리포지토리/어댑터)을 나눔 | 정책 추가나 저장소 교체 시 수정 범위가 줄고 테스트가 빨라진다 |
+
 ## 핵심 개념
 
 SOLID는 객체지향 설계에서 자주 쓰는 다섯 가지 원칙의 머릿글자다.

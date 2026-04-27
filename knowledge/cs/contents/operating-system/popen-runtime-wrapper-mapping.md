@@ -8,7 +8,12 @@
 
 관련 문서:
 
+- [Runtime Shell Option Matrix](./runtime-shell-option-matrix.md)
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+- [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
+- [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md)
+- [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md)
+- [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)
 - [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)
 - [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
@@ -17,9 +22,17 @@
 - [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: popen runtime wrapper mapping, popen mental model, popen pipe fd mapping, popen stdout pipe, popen stdin pipe, language subprocess options, subprocess PIPE mapping, Python subprocess close_fds, close_fds pass_fds mental model, pass_fds fd inheritance, child fd inheritance wrapper, shell true fd inheritance, runtime wrapper file actions, high-level subprocess OS mental model, popen 처음 배우는데, close_fds 뭐예요, pass_fds 뭐예요
+retrieval-anchor-keywords: popen runtime wrapper mapping, popen pipe fd mapping, subprocess pipe mapping, communicate drain wait policy, capture_output mental model, stderr stdout merge, close_fds pass_fds mental model, pass_fds fd inheritance, shell true fd inheritance, child waits for stdin eof, flush is not eof, runtime wrapper file actions, high-level subprocess os mental model, popen 처음 배우는데, close_fds 뭐예요
 
-## 핵심 개념
+## Subprocess Primer Handoff
+
+> **이 문서는 subprocess 입문 흐름의 4단계다**
+>
+> - 바로 앞 문서: [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md)에서 양방향 pipe ordering을 먼저 잡는다
+> - 지금 문서의 질문: "`PIPE`, `close_fds`, `pass_fds`, `shell=True`가 OS 그림으로는 각각 뭘 뜻하지?"
+> - 다음 문서: [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)에서 shell이 한 겹 끼는 순간 parser/process/fd 경계가 어떻게 늘어나는지 잇는다
+
+## 먼저 잡는 멘탈 모델
 
 먼저 용어보다 그림을 잡자.
 
@@ -67,6 +80,7 @@ parent
 - stdout과 stderr를 따로 세밀하게 다루려면 `popen()`보다 풍부한 subprocess API가 필요하다
 
 shell quoting, command injection, process group 같은 주제는 중요하지만 이 문서의 중심은 아니다. 여기서는 "pipe와 fd 연결을 wrapper가 대신 적어 준다"는 감각만 고정한다.
+`shell=True`가 만드는 extra parser/process boundary를 따로 떼어 보고 싶다면 [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)를 바로 이어서 보면 된다.
 
 ## wrapper 옵션을 OS 작업으로 번역하기
 
@@ -77,13 +91,15 @@ shell quoting, command injection, process group 같은 주제는 중요하지만
 | `stdin=PIPE` | parent -> child 방향 pipe를 만들고 child fd `0`에 read end를 붙인다 | parent가 child에게 입력을 쓴다 |
 | `stdout=PIPE` | child -> parent 방향 pipe를 만들고 child fd `1`에 write end를 붙인다 | parent가 child 출력을 읽는다 |
 | `stderr=PIPE` | 별도 pipe를 만들고 child fd `2`에 write end를 붙인다 | stderr를 stdout과 따로 읽는다 |
+| `capture_output=True` | `stdout=PIPE`, `stderr=PIPE`를 한 번에 켠 shorthand다 | 결과를 모아 받되 둘 다 drain 책임이 생긴다 |
 | `stderr=STDOUT` | child fd `2`를 fd `1`과 같은 대상으로 붙인다 | 에러도 stdout 쪽으로 합친다 |
 | `stdout=file` | child fd `1`을 파일 fd로 `dup2()`하거나 spawn file action으로 연다 | child 출력이 파일로 간다 |
 | `DEVNULL` | `/dev/null`을 열어 child fd `0/1/2` 중 하나에 붙인다 | 입력은 빈값처럼, 출력은 버림처럼 다룬다 |
 | `close_fds=True` | child에 의도하지 않은 fd를 남기지 않는다 | 기본값은 "닫고, 예외만 남긴다" |
 | `close_fds=False` | close-on-exec가 꺼진 fd가 child까지 남을 수 있다 | 편해 보이지만 leak 위험이 커진다 |
 | `pass_fds=(fd,)` | `0/1/2` 외에 특정 fd를 명시적으로 child에 남긴다 | fd handoff다. 데이터 복사가 아니다 |
-| `shell=True` | target program 앞에 shell process가 한 겹 생긴다 | fd 정책은 shell에도 먼저 적용된다 |
+| `communicate()` | parent가 stdout/stderr drain, optional stdin write, `wait()`를 한 흐름으로 묶는다 | "다 쓴 뒤 읽고 마지막에 기다림" 순서를 wrapper가 대신 조율한다 |
+| `shell=True` | target program 앞에 shell parser/process가 한 겹 생긴다 | fd 정책은 shell에도 먼저 적용되고 quoting 규칙도 shell 기준이 된다 |
 
 핵심은 `PIPE` 계열과 fd 상속 옵션을 섞지 않는 것이다.
 
@@ -130,6 +146,8 @@ Python 객체가 먼저 보이지만 실제 boundary는 OS fd다.
 - `p.stdout.read(...)`는 parent가 pipe read end에서 읽는 것이다
 - child는 Python 객체를 보는 것이 아니라 fd `0/1/2`를 본다
 
+그래서 `stdin=PIPE`와 `stdout=PIPE`를 동시에 줬다면 이제 남는 질문은 "parent가 언제 쓰고, 언제 읽고, 언제 닫는가"다. 그 순서가 틀리면 pipe capacity나 EOF 대기 때문에 멈출 수 있다. 전체 ordering은 [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md)에서, "입력을 다 보냈는데 write end가 안 닫혀 child가 EOF를 못 보는 경우"는 [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md)에서 따로 다룬다.
+
 ## `close_fds`와 `pass_fds`를 같이 읽기
 
 초보자에게 가장 안전한 기본값은 이것이다.
@@ -155,6 +173,26 @@ subprocess.Popen(
 - 그 외 listener, temp file, admin socket은 child로 새지 않게 막는다
 
 `pass_fds`는 데이터를 복사해 주는 옵션이 아니다. child도 같은 열린 파일, socket, pipe endpoint를 가리키는 fd를 받는 것이다. 그래서 offset, socket state, pipe EOF 같은 lifecycle 감각이 같이 따라온다.
+
+## 증상별로 wrapper 옵션 먼저 고르기
+
+runtime wrapper 문서에 처음 들어올 때는 옵션 이름보다 "지금 무엇을 줄이려는가"로 붙는 편이 쉽다.
+
+| 지금 보이는 증상/목표 | 먼저 떠올릴 옵션/호출 | 이 옵션이 하는 일 | 그래도 이어서 볼 문서 |
+|---|---|---|---|
+| `wait()`나 `run()`이 가끔 안 끝나고 stdout/stderr를 둘 다 모아야 한다 | `communicate()` | 두 pipe를 실행 중에 drain하고 마지막 wait까지 한 흐름으로 묶는다 | [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md) |
+| "결과만 한 번에 받고 싶다"가 목표라 `capture_output=True`를 쓰려 한다 | `capture_output=True` | 사실상 `stdout=PIPE`, `stderr=PIPE` shorthand라 둘 다 pipe backpressure 규칙을 그대로 가진다 | [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md) |
+| stderr는 따로 안 봐도 되고 실패 로그 때문에 가끔 멈추는 것만 줄이고 싶다 | `stderr=STDOUT` | stderr를 stdout 쪽으로 합쳐 한 stream만 drain하면 되게 만든다 | [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md) |
+| child가 parent의 listener/socket/temp fd를 괜히 들고 가는 것 같다 | `close_fds=True` | `0/1/2`와 명시한 예외 외에는 child 상속을 막는다 | [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md) |
+| 반대로 child가 control socket 하나는 꼭 받아야 한다 | `pass_fds=(fd,)` | 닫는 기본 정책은 유지하면서 필요한 fd만 예외로 남긴다 | [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md) |
+
+자주 쓰는 한 줄 기억법:
+
+- `communicate()`: 읽기와 기다리기를 같이 묶는다
+- `capture_output=True`: 편한 축약형이지만 실제로는 stdout/stderr 둘 다 pipe다
+- `stderr=STDOUT`: stderr를 stdout 쪽 한 줄기로 합친다
+- `close_fds=True`: 기본은 닫고, 예외만 남긴다
+- `pass_fds=(fd,)`: 기본은 닫되, 이 fd만 넘긴다
 
 ## `popen()`과 runtime wrapper가 숨기는 것
 
@@ -185,18 +223,36 @@ wrapper는 편하지만 아래 네 가지를 없애지는 않는다.
 
 ### 4. `shell=True`면 fd 문제가 단순해지나요?
 
-보통 반대다. shell process가 한 겹 더 생기므로 fd가 shell에도 먼저 보일 수 있다. 기본 close policy를 더 명확히 해야 한다.
+보통 반대다. shell process가 한 겹 더 생기므로 fd가 shell에도 먼저 보일 수 있다. 기본 close policy를 더 명확히 해야 한다. quoting boundary와 extra process 감각은 [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)에서 따로 분리해 볼 수 있다.
 
 ### 5. 출력이 늦게 보이면 `close_fds` 문제인가요?
 
 항상 그렇지는 않다. EOF가 안 오면 fd leak나 pipe end close를 먼저 보고, 줄 단위 출력이 늦게 보이면 [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)의 stdio buffering을 따로 본다.
 
-## 이 문서 다음에 보면 좋은 문서
+## 지금 증상으로 다음 문서 고르기
 
-- child에 남길 fd와 닫을 fd의 기본 규칙을 더 잡으려면 [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
-- `posix_spawn()`이 `dup2()` / `close()`를 file actions로 표현하는 방식을 보려면 [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
-- fd 연결은 맞는데 child 출력이 늦게 보이면 [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)
-- `exec()` 경계에서 fd leak가 왜 생기는지 더 깊게 보려면 [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
+wrapper 옵션 이름은 이해했는데 실제 증상과 아직 잘 안 붙는다면 아래처럼 고르면 된다.
+
+| 지금 막힌 질문 | 먼저 갈 문서 | 이유 |
+|---|---|---|
+| "`capture_output=True`나 `communicate()`를 써도 왜 결국 pipe 규칙을 알아야 하지?" | [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md) | 편한 API 이름이 붙어도 kernel pipe를 drain해야 한다는 사실은 그대로다 |
+| "`close_fds`, `pass_fds`가 실제로 어디를 닫고 어디를 남기지?" | [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md) | wrapper 옵션을 "누가 어떤 fd를 계속 들고 있나" 관점으로 다시 고정한다 |
+| "`stdout=PIPE`만 걸었는데 왜 child가 안 끝나지?" | [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md) | pipe가 작은 대기열이라 parent가 제때 안 읽으면 child `write()`가 막힐 수 있음을 보여 준다 |
+| "`stdin=PIPE`와 `stdout=PIPE`를 같이 썼더니 왜 순서가 꼬이지?" | [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md) | 쓰기, 읽기, stdin close 순서가 두 방향 pipe와 EOF 대기를 어떻게 꼬이게 하는지 분리해 준다 |
+| "`flush()`까지 했는데 왜 child가 입력 종료를 모른 채 기다리지?" | [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md) | `write()`/`flush()`와 `close()`가 child에 주는 신호가 다르다는 점을 분리해 준다 |
+| "`shell=True`가 왜 갑자기 quoting/fd 문제를 늘리지?" | [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md) | wrapper 앞에 shell이라는 추가 경계가 하나 더 생긴다는 점을 따로 잡아 준다 |
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "`close_fds` / `pass_fds`가 결국 누가 어떤 fd를 계속 들고 있느냐의 문제라는 점"을 다시 잡으려면: [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+> - "Python `shell=True`, Java `ProcessBuilder`, Node `exec()`/`spawn({ shell: true })`를 같은 OS 그림으로 맞추고 싶다면": [Runtime Shell Option Matrix](./runtime-shell-option-matrix.md)
+> - "`stdout=PIPE`, `stderr=PIPE`인데 왜 child가 `write()`에서 멈추지?"를 먼저 풀려면: [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
+> - "`stdin=PIPE`와 `stdout=PIPE`를 같이 잡으면 왜 순서가 더 중요하지?"를 이어서 보려면: [Bidirectional Pipe Deadlock Primer](./subprocess-bidirectional-pipe-deadlock-primer.md)
+> - "`flush()`는 했는데 왜 child가 EOF를 못 받아 계속 읽기 대기하지?"를 떼어 보려면: [Subprocess Stdin EOF Primer](./subprocess-stdin-eof-primer.md)
+> - "`shell=True`가 extra process boundary를 어떻게 추가하지?"를 떼어 보려면: [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)
+> - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 한 줄 정리
 

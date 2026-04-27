@@ -2,16 +2,29 @@
 
 > 한 줄 요약: 고정 길이 sliding-window 최대/최소는 보통 monotonic deque가 기본값이고, heap + lazy deletion은 더 일반적인 우선순위 큐 패턴을 재사용해야 할 때 쓰는 차선책이다.
 
+## 5초 라우터 박스
+
+| 신호 | 먼저 떠올릴 구조 | 한 줄 이유 |
+|---|---|---|
+| `recent k`, `window max/min`처럼 **고정 길이 window extrema 하나**를 묻는다 | **monotonic deque** | 이 문제는 후보만 남기면 돼서 더 직접적이다 |
+| 나가는 원소가 항상 **가장 오래된 값**이다 | **monotonic deque** | front expiry 규칙 하나로 만료를 바로 처리할 수 있다 |
+| `O(n)` 한 번 순회 감각이 필요하다 | **monotonic deque** | 각 index가 많아야 한 번 들어오고 한 번 빠진다 |
+| 이미 `PriorityQueue` 흐름에 익숙해서 그 틀을 그대로 쓰고 싶다 | **heap + lazy deletion** | 구현은 익숙하지만 stale cleanup 비용을 같이 감수한다 |
+| duplicate가 많아서 `같은 값인데 누가 만료됐지?`가 걱정된다 | **monotonic deque 쪽이 더 읽기 쉽다** | heap은 값이 아니라 `index`로 stale 여부를 계속 추적해야 한다 |
+| `median`, `top-k`, 임의 삭제처럼 **max/min 하나보다 더 많은 순서 정보**가 필요하다 | **heap/BST/다른 구조 검토** | monotonic deque는 extrema 하나에 특화된 도구다 |
+
 **난이도: 🟡 Intermediate**
 
 > 관련 문서:
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
+> - [Monotonic Duplicate Rule Micro-Drill](./monotonic-duplicate-rule-micro-drill.md)
+> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 > - [Sliding Window Patterns](../algorithm/sliding-window-patterns.md)
 > - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
 >
-> retrieval-anchor-keywords: monotonic deque vs heap, monotonic deque vs priority queue, sliding window maximum heap, sliding window minimum heap, sliding window maximum lazy deletion, sliding window minimum lazy deletion, heap lazy deletion window extrema, monotonic deque window extrema, deque vs heap sliding window, recent k maximum heap, recent k minimum heap, fixed window extrema deque, fixed window extrema heap, window maximum priority queue, window minimum priority queue, stale heap entry sliding window, stale top cleanup, heap buried stale entry, lazy deletion duplicate bug, priority queue duplicate expiration, monotonic deque duplicate handling, window extrema data structure choice, sliding window max min choose deque heap, 단조 덱 vs 힙, 슬라이딩 윈도우 최대값 힙, 슬라이딩 윈도우 최소값 힙, lazy deletion 윈도우 극값, 우선순위 큐 stale entry, 덱 힙 선택 기준, 최근 k개 최대 최소 자료구조
+> retrieval-anchor-keywords: monotonic deque vs heap, monotonic deque vs priority queue, sliding window maximum heap, sliding window minimum heap, sliding window maximum lazy deletion, sliding window minimum lazy deletion, heap lazy deletion window extrema, monotonic deque window extrema, deque vs heap sliding window, recent k maximum heap, recent k minimum heap, fixed window extrema deque, fixed window extrema heap, window maximum priority queue, window minimum priority queue, stale heap entry sliding window, stale top cleanup, heap buried stale entry, lazy deletion duplicate bug, priority queue duplicate expiration, monotonic deque duplicate handling, duplicate stale entry comparison, deque duplicate stale entry table, window extrema duplicate handling, heap duplicate stale cleanup, monotonic deque duplicate example, sliding window duplicate max heap, sliding window duplicate max deque, window extrema data structure choice, sliding window max min choose deque heap, monotonic deque heap router, monotonic deque heap chooser, window extrema router box, deque heap one-line router, deque heap quick chooser, 단조 덱 vs 힙, 슬라이딩 윈도우 최대값 힙, 슬라이딩 윈도우 최소값 힙, lazy deletion 윈도우 극값, 우선순위 큐 stale entry, 덱 힙 선택 기준, 단조 덱 중복 stale entry 비교, 최근 k개 최대 최소 자료구조
 
 ## 빠른 선택 표
 
@@ -26,6 +39,23 @@
 
 - **고정 길이 window의 max/min 하나면 deque가 정답 쪽에 가깝다.**
 - **heap은 "할 수는 있지만, 덜 특화된 구조"라서 lazy deletion 함정까지 함께 따라온다.**
+
+## 0. 먼저 잡는 그림: 둘 다 `max`를 구하지만, 버리는 타이밍이 다르다
+
+초급자는 아래 한 줄로 먼저 나누면 덜 헷갈린다.
+
+- **deque는 지금 window에서 아직 쓸모 있는 후보만 앞뒤에서 바로 정리한다.**
+- **heap은 일단 넣고, 맨 위에 올라왔을 때 stale인지 검사하며 늦게 치운다.**
+
+| 구조 | 새 값이 들어올 때 | 오래된 값이 window를 벗어날 때 | duplicate를 볼 때 먼저 생각할 것 |
+|---|---|---|---|
+| monotonic deque | back에서 약한 후보를 즉시 제거 | front가 만료됐으면 즉시 제거 | `같은 값이면 이전 값을 남길지, 새 값을 남길지` |
+| heap + lazy deletion | 일단 heap에 넣음 | top에 올라왔을 때만 제거 가능 | `값이 아니라 index로 stale 여부를 구분` |
+
+즉 duplicate 때문에 헷갈릴 때도 질문은 둘이다.
+
+1. 같은 값 둘 중 누가 대표로 남는가?
+2. 이미 window 밖으로 나간 복사본을 언제 치우는가?
 
 ## 1. 왜 monotonic deque가 기본값인가
 
@@ -105,6 +135,31 @@ for (int i = 0; i < nums.length; i++) {
 - duplicate와 expiration을 값만으로 관리하면 바로 틀린다.
 - "정답 읽기 전 cleanup" 순서를 빼먹으면 expired max/min을 그대로 출력한다.
 
+## 2.5 duplicate와 stale entry를 한 표로 보면
+
+예시: `nums = [5, 5, 4]`, `k = 2`
+
+- window 1: `[5(index 0), 5(index 1)]`
+- window 2: `[5(index 1), 4(index 2)]`
+
+정답 값은 둘 다 `[5, 5]`다.
+하지만 **"같은 5 둘을 어떻게 들고 가는지"**가 deque와 heap에서 다르다.
+
+| 상황 | monotonic deque | heap + lazy deletion | 초급자 체크포인트 |
+|---|---|---|---|
+| 새 `5(index 1)`가 들어온다 | `<=` 규칙이면 기존 `5(index 0)`를 back에서 바로 제거한다. `<` 규칙이면 둘 다 남길 수 있다 | 둘 다 heap에 들어간다 | deque는 duplicate 대표를 미리 정하고, heap은 일단 둘 다 쌓는다고 생각하면 쉽다 |
+| 다음 window로 넘어가며 `index 0`이 만료된다 | front가 `index 0`이면 즉시 제거된다. `<=` 규칙을 썼다면 애초에 남아 있지 않을 수도 있다 | `index 0`이 top이면 그때 제거된다. top이 아니면 heap 안에 더 남아 있을 수 있다 | deque는 만료를 바로 반영하고, heap은 top일 때만 청소한다 |
+| `값이 5`라는 사실만 보면 | 어떤 `5`가 남았는지 index로 추적 가능하다 | 값만 보면 `index 0`의 5와 `index 1`의 5를 구분할 수 없다 | duplicate가 있는 순간 `value only` 코드는 위험 신호다 |
+| stale entry가 바닥에 묻힐 수 있나 | 아니다. deque 길이는 window 후보만 유지한다 | 가능하다. 정답과 무관한 오래된 entry가 top 아래에 쌓일 수 있다 | heap에서 `정답은 맞는데 메모리/복잡도 감각이 틀리는` 이유가 여기 있다 |
+
+같은 입력을 beginner 관점에서 더 짧게 말하면:
+
+- **deque**: "누가 대표 5인지 먼저 정하고, 만료되면 바로 뺀다."
+- **heap**: "5를 둘 다 넣어 두고, 맨 위에 올라온 복사본만 그때그때 치운다."
+
+그래서 duplicate가 많은 입력일수록 deque 쪽이 더 읽기 쉽다고 느끼는 학습자가 많다.
+stale entry 규칙이 `top cleanup` 한 곳에만 몰려 있지 않고, `front expiry + back dominance` 두 규칙으로 눈에 보이게 분리되기 때문이다.
+
 ## 3. 언제 heap 쪽이 그래도 낫나
 
 고정 길이 window max/min만 보면 deque가 더 좋다.
@@ -153,6 +208,7 @@ duplicate 비교는 특히 자주 헷갈린다.
 
 - 최대값 deque에서 `nums[dq.back] <= nums[i]`를 쓰면 **새로운 동점 값이 기존 동점 값을 대체**한다.
 - `nums[dq.back] < nums[i]`를 쓰면 **동점 둘 다 유지**한다.
+- heap에서는 둘 다 그냥 들어가므로, duplicate 규칙보다 **어느 index가 stale인지**를 먼저 추적해야 한다.
 
 둘 다 정답은 맞을 수 있다.
 하지만 어떤 규칙을 쓸지 정한 뒤 만료 reasoning까지 그 규칙에 맞춰 일관되게 써야 한다.

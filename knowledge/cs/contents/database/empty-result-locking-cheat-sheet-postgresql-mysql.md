@@ -15,7 +15,7 @@
 - [Inventory Reservation System Design](../system-design/inventory-reservation-system-design.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: empty result locking cheat sheet, 0 row for update, select for update zero rows, select for update basics, for update 처음 배우는데, 0 row for update 뭐예요, absence check for update, missing row lock myth, postgresql select for update empty result, mysql select for update empty result, postgres absence check race, mysql gap lock zero rows, 없으면 insert race, 빈 결과 for update
+retrieval-anchor-keywords: empty result locking cheat sheet, 0 row for update, select for update zero rows, select for update basics, for update 처음 배우는데, 0 row for update 뭐예요, absence check for update, missing row lock myth, postgresql select for update empty result, mysql select for update empty result, postgres absence check race, mysql gap lock zero rows, for update race timeline, 없으면 insert race, 빈 결과 for update
 
 ## 핵심 개념
 
@@ -25,7 +25,7 @@ retrieval-anchor-keywords: empty result locking cheat sheet, 0 row for update, s
 - "지금은 없다"는 부재를 믿고 insert 하는 문제
 - 시간대나 조건 집합 같은 범위를 비워 둔 채 insert 하는 문제
 
-`FOR UPDATE`가 가장 잘 맞는 것은 첫 번째다.  
+`FOR UPDATE`가 가장 잘 맞는 것은 첫 번째다.
 두 번째와 세 번째는 `0 row`가 나오는 순간 엔진별 차이가 커진다.
 
 - PostgreSQL: `0 row`면 보통 잠근 row가 없다
@@ -35,6 +35,16 @@ retrieval-anchor-keywords: empty result locking cheat sheet, 0 row for update, s
 초보자용 기억법은 이 한 문장이다.
 
 > `FOR UPDATE`는 "없는 것"을 잠그는 기능이 아니라, 기본적으로 "읽어 낸 것"을 잠그는 기능이다.
+
+## 30초 문제 분류 카드
+
+| 지금 하려는 일 | `0 row FOR UPDATE`에 기대도 되나 | 기본 해법 |
+|---|---|---|
+| 기존 주문 row 1개를 한 명만 수정 | 예 (row가 있으면) | `FOR UPDATE` |
+| "없으면 insert" exact duplicate 방지 | 아니오 | `UNIQUE`/PK/upsert |
+| "겹치는 예약 없음" overlap 방지 | 아니오 | exclusion constraint / slot row / guard row |
+
+이 표에서 두 번째, 세 번째에 해당하면 lock 문법보다 먼저 "충돌 truth를 어디에 저장할지"를 정한다.
 
 ## 한눈에 보기
 
@@ -67,6 +77,19 @@ retrieval-anchor-keywords: empty result locking cheat sheet, 0 row for update, s
 
 앞쪽이면 `FOR UPDATE`가 맞고, 뒤쪽이면 다른 저장 surface가 필요할 가능성이 크다.
 
+## 30초 타임라인: 왜 race가 생기나
+
+`SELECT ... FOR UPDATE`가 `0 row`를 반환한 두 트랜잭션은 둘 다 "잠근 대상 없음" 상태로 다음 단계로 갈 수 있다.
+
+| 시점 | 트랜잭션 T1 | 트랜잭션 T2 |
+|---|---|---|
+| t1 | `SELECT ... FOR UPDATE -> 0 rows` |  |
+| t2 |  | `SELECT ... FOR UPDATE -> 0 rows` |
+| t3 | `INSERT` 시도 | `INSERT` 시도 |
+| t4 | (제약 없으면 둘 다 성공 가능) | (제약 없으면 둘 다 성공 가능) |
+
+그래서 exact duplicate 경로의 핵심은 lock이 아니라 write 시점 충돌(`UNIQUE`)이다.
+
 ## 예제 1. "없으면 insert" exact duplicate 체크
 
 ```sql
@@ -89,7 +112,7 @@ COMMIT;
 
 - PostgreSQL `READ COMMITTED` / `REPEATABLE READ`: absence 자체를 잠그지 못하므로 둘 다 `INSERT`까지 갈 수 있다
 - MySQL `READ COMMITTED`: 마찬가지로 새 insert를 막는다고 기대하면 안 된다
-- MySQL `REPEATABLE READ`: 같은 indexed key probe에서는 막히는 것처럼 보일 수 있지만, 설계 핵심으로 삼기엔 너무 엔진 의존적이다
+- MySQL `REPEATABLE READ`: 같은 indexed key probe에서는 막히는 것처럼 보일 수 있지만, 설계 핵심으로 삼기엔 엔진 의존성이 크다
 
 이 경우 beginner-safe 정답은 row lock이 아니라 제약조건이다.
 
@@ -143,11 +166,16 @@ FOR UPDATE;
 - PostgreSQL `SERIALIZABLE`이면 retry 코드가 필요 없다
   - 아니다. 안전성은 abort + retry 계약으로 나온다
 
+## 다음 단계 라우팅
+
+- exact duplicate(`없으면 insert`)를 먼저 닫아야 하면 -> [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
+- overlap/예약 충돌 모델을 고르려면 -> [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
+- PostgreSQL에서 absence를 직렬화하고 싶으면 -> [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
+- MySQL에서 empty-result gap footprint를 더 자세히 보려면 -> [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+
 ## 더 깊이 가려면
 
-- [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md): MySQL에서 `0 row` 뒤에 남는 gap/next-key footprint를 더 자세히 본다
 - [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md): 왜 RC 전환 후 같은 코드가 갑자기 새는지 이어서 본다
-- [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md): overlap을 slot row, exclusion constraint, guard row 중 무엇으로 바꿀지 고른다
 - [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md): 이 차이가 애플리케이션 transaction boundary와 어떻게 이어지는지 연결한다
 - [Inventory Reservation System Design](../system-design/inventory-reservation-system-design.md): 예약/재고 시스템에서 absence check를 어떤 arbitration surface로 바꾸는지 큰 그림을 본다
 

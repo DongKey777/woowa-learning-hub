@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Software Engineering README: DDD Bounded Context Failure Patterns](./README.md#ddd-bounded-context-failure-patterns)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 > - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
 > - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
@@ -178,3 +179,8 @@ public class PaymentFacade {
 ## 한 줄 정리
 
 바운디드 컨텍스트는 도메인 용어를 분리하는 게 아니라, 서로 다른 변화가 서로를 망치지 않도록 책임 경계를 자르는 기술이다.
+
+## 다음 읽기
+
+- 다음 한 걸음: [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md) - 컨텍스트 경계를 코드 패키지와 테스트 규칙으로 어떻게 지키는지 바로 이어서 볼 수 있다.
+- README로 돌아가기: [Software Engineering README](./README.md#ddd-bounded-context-failure-patterns) - 이 문서가 catalog에서 어디에 놓이는지와 인접 설계 문서를 다시 찾기 쉽다.

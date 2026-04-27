@@ -31,6 +31,10 @@
 > - low volume high risk threshold tuning
 > - break glass threshold segmentation
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Threshold Override Governance](./README.md#threshold-override-governance)
+> - 다음 단계: [Shadow Promotion Snapshot Schema Fields](./shadow-promotion-snapshot-schema-fields.md)
+
 ## 핵심 개념
 
 [Shadow Candidate Promotion Thresholds](./shadow-candidate-promotion-thresholds.md)의 공통 default는 팀마다 다른 해석을 줄이고 scorecard 비교 가능성을 유지하기 위한 것이다.

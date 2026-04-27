@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-label="Illustrative DevTools Network capture for Alt-Svc lifecycle with Protocol, Connection ID, and Remote Address columns highlighted">
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .panel { fill: #101826; stroke: #334155; stroke-width: 1.2; }
+      .toolbar { fill: #182234; }
+      .header { fill: #1d293d; }
+      .sidebar { fill: #0f172a; stroke: #334155; stroke-width: 1; }
+      .grid { stroke: #334155; stroke-width: 1; }
+      .txt { fill: #e2e8f0; font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .small { fill: #cbd5e1; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .muted { fill: #94a3b8; font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .head { fill: #f8fafc; font-size: 14px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .chip { fill: #0f172a; stroke: #475569; stroke-width: 1; }
+      .chiptext { fill: #e2e8f0; font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .hl-protocol { fill: rgba(45, 212, 191, 0.14); stroke: #14b8a6; stroke-width: 2; }
+      .hl-conn { fill: rgba(129, 140, 248, 0.14); stroke: #6366f1; stroke-width: 2; }
+      .hl-remote { fill: rgba(244, 114, 182, 0.14); stroke: #ec4899; stroke-width: 2; }
+      .hl-status { fill: rgba(251, 191, 36, 0.14); stroke: #f59e0b; stroke-width: 2; }
+      .num1 { fill: #f59e0b; }
+      .num2 { fill: #14b8a6; }
+      .num3 { fill: #6366f1; }
+      .num4 { fill: #ec4899; }
+      .num5 { fill: #22c55e; }
+      .numtxt { fill: #0b1020; font-size: 12px; font-weight: 800; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+      .note { fill: #111827; stroke: #475569; stroke-width: 1; }
+      .kicker { fill: #93c5fd; font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1440" height="900"/>
+  <rect class="panel" x="40" y="36" width="1360" height="812" rx="12" ry="12"/>
+  <rect class="toolbar" x="40" y="36" width="1360" height="46" rx="12" ry="12"/>
+  <text class="txt" x="64" y="65">DevTools Network - Alt-Svc lifecycle example capture</text>
+
+  <rect class="chip" x="64" y="96" width="160" height="28" rx="7" ry="7"/>
+  <text class="chiptext" x="80" y="114">GET /index.html</text>
+  <rect class="chip" x="232" y="96" width="142" height="28" rx="7" ry="7"/>
+  <text class="chiptext" x="248" y="114">Preserve log on</text>
+  <rect class="chip" x="382" y="96" width="176" height="28" rx="7" ry="7"/>
+  <text class="chiptext" x="398" y="114">Filter: origin=shop</text>
+
+  <rect class="header" x="64" y="142" width="932" height="44"/>
+  <rect class="sidebar" x="1014" y="142" width="352" height="482" rx="8" ry="8"/>
+
+  <line class="grid" x1="64" y1="186" x2="996" y2="186"/>
+  <line class="grid" x1="64" y1="236" x2="996" y2="236"/>
+  <line class="grid" x1="64" y1="286" x2="996" y2="286"/>
+  <line class="grid" x1="64" y1="336" x2="996" y2="336"/>
+  <line class="grid" x1="64" y1="386" x2="996" y2="386"/>
+
+  <line class="grid" x1="314" y1="142" x2="314" y2="386"/>
+  <line class="grid" x1="394" y1="142" x2="394" y2="386"/>
+  <line class="grid" x1="546" y1="142" x2="546" y2="386"/>
+  <line class="grid" x1="690" y1="142" x2="690" y2="386"/>
+  <line class="grid" x1="852" y1="142" x2="852" y2="386"/>
+  <line class="grid" x1="996" y1="142" x2="996" y2="386"/>
+
+  <text class="head" x="82" y="169">Name</text>
+  <text class="head" x="332" y="169">Status</text>
+  <text class="head" x="412" y="169">Protocol</text>
+  <text class="head" x="564" y="169">Connection ID</text>
+  <text class="head" x="708" y="169">Remote Address</text>
+  <text class="head" x="870" y="169">Time</text>
+
+  <text class="txt" x="82" y="219">GET /</text>
+  <text class="txt" x="332" y="219">200</text>
+  <text class="txt" x="412" y="219">h2</text>
+  <text class="txt" x="564" y="219">118</text>
+  <text class="txt" x="708" y="219">203.0.113.10:443</text>
+  <text class="txt" x="870" y="219">96 ms</text>
+
+  <text class="txt" x="82" y="269">GET /styles.css</text>
+  <text class="txt" x="332" y="269">200</text>
+  <text class="txt" x="412" y="269">h2</text>
+  <text class="txt" x="564" y="269">118</text>
+  <text class="txt" x="708" y="269">203.0.113.10:443</text>
+  <text class="txt" x="870" y="269">21 ms</text>
+
+  <text class="txt" x="82" y="319">GET /</text>
+  <text class="txt" x="332" y="319">200</text>
+  <text class="txt" x="412" y="319">h3</text>
+  <text class="txt" x="564" y="319">207</text>
+  <text class="txt" x="708" y="319">198.51.100.25:443</text>
+  <text class="txt" x="870" y="319">71 ms</text>
+
+  <text class="txt" x="82" y="369">GET /</text>
+  <text class="txt" x="332" y="369">200</text>
+  <text class="txt" x="412" y="369">h2</text>
+  <text class="txt" x="564" y="369">305</text>
+  <text class="txt" x="708" y="369">203.0.113.10:443</text>
+  <text class="txt" x="870" y="369">143 ms</text>
+
+  <rect class="hl-protocol" x="400" y="142" width="138" height="244" rx="8" ry="8"/>
+  <rect class="hl-conn" x="552" y="142" width="130" height="244" rx="8" ry="8"/>
+  <rect class="hl-remote" x="698" y="142" width="146" height="244" rx="8" ry="8"/>
+
+  <rect class="hl-status" x="1028" y="208" width="324" height="124" rx="8" ry="8"/>
+  <text class="head" x="1046" y="180">Headers</text>
+  <text class="small" x="1046" y="218">Request URL: https://shop.example.com/</text>
+  <text class="small" x="1046" y="248">Status Code: 200</text>
+  <text class="small" x="1046" y="278">Response Headers:</text>
+  <text class="small" x="1064" y="306">Alt-Svc: h3=":443"; ma=86400</text>
+
+  <text class="small" x="1046" y="362">Why this side panel matters</text>
+  <text class="muted" x="1046" y="390">Step 1 and step 4 need the response header too.</text>
+  <text class="muted" x="1046" y="414">Protocol alone cannot tell warm vs expired.</text>
+  <text class="muted" x="1046" y="454">Read the rows in time order:</text>
+  <text class="muted" x="1064" y="480">row 1 = cold start</text>
+  <text class="muted" x="1064" y="504">row 2 = same H2 connection reuse</text>
+  <text class="muted" x="1064" y="528">row 3 = warm cache on new H3 connection</text>
+  <text class="muted" x="1064" y="552">row 4 = later H2 again, check expired/stale</text>
+
+  <circle cx="340" cy="418" r="12" class="num1"/><text class="numtxt" x="336" y="422">1</text>
+  <text class="small" x="360" y="423">첫 row: `Protocol=h2`이고 headers에 `Alt-Svc`가 있으면 cold -&gt; warm 준비</text>
+
+  <circle cx="340" cy="456" r="12" class="num2"/><text class="numtxt" x="336" y="460">2</text>
+  <text class="small" x="360" y="461">row 2: `Connection ID=118`이 같으면 기존 H2 reuse다. warm 실패로 단정하지 않는다.</text>
+
+  <circle cx="340" cy="494" r="12" class="num3"/><text class="numtxt" x="336" y="498">3</text>
+  <text class="small" x="360" y="499">row 3: 새 `Connection ID=207`과 `Protocol=h3`가 함께 나오면 warm cache가 힘을 쓴 장면이다.</text>
+
+  <circle cx="340" cy="532" r="12" class="num4"/><text class="numtxt" x="336" y="536">4</text>
+  <text class="small" x="360" y="537">`Remote Address` 변화는 보조 증거다. 바뀌면 읽기 쉽지만, 안 바뀌어도 판독이 틀린 것은 아니다.</text>
+
+  <circle cx="340" cy="570" r="12" class="num5"/><text class="numtxt" x="336" y="574">5</text>
+  <text class="small" x="360" y="575">나중 row가 다시 `h2`면 expired/stale 후보로 읽고, 새 `Alt-Svc`와 네트워크 변화를 같이 확인한다.</text>
+
+  <rect class="note" x="64" y="646" width="1302" height="160" rx="10" ry="10"/>
+  <text class="txt" x="88" y="680">Beginner reading rule</text>
+  <text class="kicker" x="88" y="712">Protocol = main clue / Connection ID = strongest proof for reuse vs new connection / Remote Address = supporting clue</text>
+  <text class="small" x="88" y="744">This is an illustrative capture for the 5-step checklist in Alt-Svc lifecycle docs. Real browser layouts can vary.</text>
+  <text class="small" x="88" y="772">If you need DNS-side discovery proof too, pair this with the H3 Discovery Observability primer.</text>
+  <text class="muted" x="88" y="800">qa-content-network-00043</text>
+</svg>

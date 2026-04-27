@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring MVC Customizer Ladder 입문: `WebMvcConfigurer`로 덧붙이고, core MVC bean 교체는 마지막에 둔다](./spring-mvc-customizer-ladder-webmvcconfigurer-primer.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 > - [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md)

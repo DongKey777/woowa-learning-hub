@@ -12,6 +12,7 @@
 - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+- [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)
 - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [signals, process supervision](./signals-process-supervision.md)
@@ -20,9 +21,9 @@
 - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: process lifecycle basics, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics, process exit reap, 프로세스 처음 배우는데, 프로세스 생명주기 뭐예요
+retrieval-anchor-keywords: process lifecycle basics, process lifecycle mental model, fork exec wait mental model, process creation mental model, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics, process exit reap, 프로세스 처음 배우는데, 프로세스 생명주기 뭐예요, 프로세스 생명주기 멘탈 모델, fork exec wait 멘탈 모델, beginner handoff box, primer handoff box, process lifecycle 다음 문서
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 운영체제 입문을 읽고 나면 다음 질문이 자연스럽게 나온다.
 
@@ -31,8 +32,8 @@ retrieval-anchor-keywords: process lifecycle basics, fork exec basics, fork exec
 - zombie와 orphan은 왜 다른가
 - 부모/자식 프로세스는 무엇으로 통신하는가
 
-이 네 질문은 사실 하나의 흐름이다.  
-프로세스는 생성되고, 필요하면 자식을 만들고, 새 프로그램으로 갈아타고, 통신하고, 종료 후 회수된다.  
+이 네 질문은 사실 하나의 흐름이다.
+프로세스는 생성되고, 필요하면 자식을 만들고, 새 프로그램으로 갈아타고, 통신하고, 종료 후 회수된다.
 이 생명주기 전체를 같이 봐야 runtime 문서와 subprocess 버그를 덜 헷갈린다.
 
 ## 한눈에 보는 전체 흐름
@@ -152,12 +153,12 @@ parent exit()
   -> init/systemd adopts it
 ```
 
-따라서 orphan이 곧 zombie는 아니다.  
+따라서 orphan이 곧 zombie는 아니다.
 오히려 둘은 "부모-자식 관계에서 무엇이 먼저 끝났는가"가 다른 상태다.
 
 ## 4. `waitpid()`와 `SIGCHLD`: 종료를 알아채고 회수하는 방법
 
-자식이 종료되면 부모는 그 사실을 알고 정리해야 한다.  
+자식이 종료되면 부모는 그 사실을 알고 정리해야 한다.
 여기서 자주 같이 등장하는 것이 `SIGCHLD`와 `waitpid()`다.
 
 - `SIGCHLD`: 자식 종료를 부모에게 알려 주는 signal
@@ -168,6 +169,7 @@ parent exit()
 - `SIGCHLD`는 "자식이 끝났음"을 알리는 신호다
 - 실제 회수는 `waitpid()` 같은 호출이 담당한다
 - signal을 받았다고 자동으로 zombie가 사라지는 것은 아니다
+- `SIGCHLD`의 기본 상태와 명시적 `SIG_IGN`은 같은 뜻으로 읽으면 안 된다. 이 차이를 한 장으로 다시 보고 싶다면 [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)를 이어서 보면 된다.
 
 초보자 실수는 보통 다음 둘 중 하나다.
 
@@ -176,7 +178,7 @@ parent exit()
 
 ## 5. IPC는 "관계"와 "payload"에 맞춰 고른다
 
-부모/자식 프로세스가 같이 일하려면 IPC가 필요하다.  
+부모/자식 프로세스가 같이 일하려면 IPC가 필요하다.
 여기서 핵심은 "IPC가 하나만 있는가"가 아니라, **무엇을 전달하느냐에 따라 도구가 달라진다**는 점이다.
 
 | 상황 | 보통 먼저 보는 선택지 | 왜 맞는가 | 주의할 점 |
@@ -226,6 +228,13 @@ parent exit()
 > 핵심: 보통은 아니다. pipe는 단방향으로 이해하고, 양방향이면 두 개의 pipe나 `socketpair`를 먼저 떠올리면 된다.
 
 ## 이 문서 다음에 보면 좋은 문서
+
+> **Beginner handoff box**
+>
+> - "subprocess의 stdout/stderr redirect, pipe EOF, close-on-exec를 바로 잇고 싶다면": [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
+> - "`fork()` 뒤 copy-on-write가 실제 비용으로 언제 드러나는지" 보려면: [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
+> - "`SIGCHLD` 기본 상태, `SIG_IGN`, `SA_NOCLDWAIT`, `waitpid()` 기대치"를 한 번에 정리하고 싶다면: [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)
+> - "container PID 1과 종료/reaping 기대치까지 연결"하려면: [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 
 - subprocess의 stdout/stderr redirect, pipe EOF, close-on-exec 기본 규칙이 필요하면 [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - 메모리 복제와 copy-on-write 비용이 궁금하면 [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)

@@ -4,15 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
-> - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
-> - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
-> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
-> - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
+관련 문서:
 
-retrieval-anchor-keywords: injected registry vs service locator checklist, explicit constructor injection registry, hidden dependency lookup checklist, service locator drift, strategy registry service locator drift, strategy lookup helper smell, strategy selector service locator smell, handler registry service locator smell, ApplicationContext getBean handler smell, BeanFactory getBean handler registry, narrow typed registry, global lookup smell, registry constructor injection, dependency injection registry checklist, service locator vs dependency injection beginner, service locator hidden dependency, Map<String Object> service locator, registry vs service locator 처음 배우는데, 주입된 registry service locator, 생성자 주입 registry, 숨은 의존성 lookup, handler registry 체크리스트, ApplicationContext getBean smell, 서비스 로케이터 드리프트, 레지스트리 DI 체크리스트
+- [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+- [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
+- [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
+- [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](../spring/spring-bean-di-basics.md)
+
+retrieval-anchor-keywords: injected registry vs service locator checklist, beanfactory.getbean, applicationcontext.getbean, objectprovider.getifavailable, objectprovider.getobject, getbean smell, hidden dependency lookup, 처음 배우는데 getbean, getbean으로 구현체 찾기, bean name 문자열 lookup, registry vs service locator, service locator drift, constructor injection checklist, 언제 objectprovider 쓰는지, payment handler registry
 
 ---
 
@@ -39,6 +39,41 @@ retrieval-anchor-keywords: injected registry vs service locator checklist, expli
 | key가 무엇인가 | `PaymentMethod`, `OrderStatus` 같은 domain key | bean name 문자열, class 이름, 임의 문자열 |
 | 테스트는 어떻게 하나 | fake registry나 fake handler를 생성자에 넣는다 | 전역 registry나 Spring context를 준비해야 한다 |
 | 실패는 언제 드러나나 | registry 생성/검증 시점에 빠르게 드러난다 | 특정 요청 경로에서 늦게 터지기 쉽다 |
+
+---
+
+## 10초 판단 순서 (코드 리뷰용)
+
+용어가 헷갈리면 아래 세 줄만 확인해도 대부분 분리된다.
+
+1. 생성자만 보고 이 클래스의 협력자를 말할 수 있는가?
+2. 조회 key가 `PaymentMethod` 같은 domain 값인가, bean name 문자열인가?
+3. 요청 처리 본문에 `getBean(...)`, static locator, `Map<String, Object>` 조회가 있는가?
+
+빠른 판정 규칙:
+
+- 1이 "예"이고 3이 "아니오"면 injected registry 쪽이다.
+- 1이 "아니오"이거나 3이 "예"면 service locator drift를 먼저 의심한다.
+
+초심자 오검색도 같은 기준으로 자르면 된다.
+
+- `beanfactory.getbean(...)`을 봤다면: "컨테이너를 런타임 조회소로 쓰는가?"를 먼저 본다.
+- `objectprovider.getifavailable()`을 봤다면: "optional 협력자를 주입받는가, 메서드 안에서 매번 찾는가?"를 먼저 본다.
+
+---
+
+## 1분 적용 예시: 결제 수단 하나 추가할 때
+
+`POINT` 결제를 새로 붙인다고 가정하면 두 접근의 차이가 더 명확해진다.
+
+| 비교 항목 | Injected registry | Service locator drift |
+|---|---|---|
+| 서비스 클래스 수정 | 보통 없음 (`handlers.get(method)` 유지) | bean name 조합 규칙 수정이 섞이기 쉽다 |
+| 새 구현 연결 위치 | registry bootstrap 한 곳(중복/누락 검증 포함) | 각 서비스 메서드의 `getBean` 호출 경로 |
+| 실패 시점 | 시작 시점 또는 registry 검증 시점 | 특정 요청이 해당 분기를 탈 때 런타임 |
+| 리뷰 포인트 | domain key와 handler 매핑 | 문자열 규칙/컨테이너 이름 의존성 |
+
+즉 초보자 기준으로는 "`새 결제 수단 추가 diff`가 어디에 모이느냐"를 보면 거의 판별된다.
 
 ---
 
@@ -155,6 +190,16 @@ public class CheckoutService {
 
 ---
 
+## 자주 헷갈리는 포인트
+
+- **"lookup이 있으면 다 service locator 아닌가요?"**: 아니다. 조회 자체가 문제가 아니라, 조회 범위가 넓고 의존성이 숨는지가 핵심이다.
+- **"`Map<String, Handler>` 주입이면 바로 안티 패턴인가요?"**: 아니다. bootstrap 입력으로 받고 domain key map으로 변환하면 괜찮다.
+- **"Spring이 알아서 주입했으니 `ApplicationContext`를 써도 괜찮지 않나요?"**: 요청 처리 경로에서 직접 `getBean`하면 의존성 은닉이 다시 생긴다.
+- **"registry 클래스 이름이 있으면 안전한가요?"**: 아니다. 내부가 `get(Class<?>)`, `get(String)` 범용 조회소로 커지면 이름만 registry일 수 있다.
+- **"plugin registry도 결국 locator 아닌가요?"**: plugin host가 자기 plugin 타입 범위 안에서만 id lookup을 하면 registry다. 앱 전역 의존성을 꺼내기 시작하면 locator drift다.
+
+---
+
 ## 애매한 경우 정리
 
 | 코드 모양 | 판단 |
@@ -176,6 +221,21 @@ public class CheckoutService {
 5. `getBean`, static locator, `Map<String, Object>`가 요청 처리 경로에 있는가?
 
 다섯 질문 중 1, 4가 "아니오"이고 5가 "예"라면 service locator drift를 먼저 의심한다.
+
+## 드리프트가 보일 때 최소 복구 순서
+
+1. 서비스 본문의 `getBean`/전역 lookup 호출을 제거하고, 필요한 협력자 타입을 생성자에 노출한다.
+2. bean name 문자열 분기를 domain key(`PaymentMethod`, `OrderStatus` 등) 분기로 바꾼다.
+3. duplicate/missing key 검증을 registry bootstrap 한 곳으로 모은다.
+
+복구가 애매하면 [Bean Name vs Domain Key Lookup](./bean-name-vs-domain-key-lookup.md)과 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)를 바로 이어서 보면 된다.
+
+## 다음 학습 경로 (막히는 지점별)
+
+- bean name 문자열을 domain key로 어떻게 바꿀지 막히면: [Bean Name vs Domain Key Lookup](./bean-name-vs-domain-key-lookup.md)
+- wiring/lookup/create가 한 클래스에 섞여 보이면: [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)
+- 전략 맵 helper가 전역 lookup으로 커지는지 헷갈리면: [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
+- 이미 locator smell이 커져 영향 분석이 필요하면: [Service Locator Antipattern](./service-locator-antipattern.md)
 
 ## 한 줄 정리
 

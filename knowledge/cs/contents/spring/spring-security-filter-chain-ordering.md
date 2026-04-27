@@ -4,17 +4,26 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring Security 아키텍처](./spring-security-architecture.md)
-> - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-> - [Spring `OncePerRequestFilter` Async / Error Dispatch Traps](./spring-onceperrequestfilter-async-error-dispatch-traps.md)
-> - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
-> - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
-> - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
-> - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
+관련 문서:
 
-retrieval-anchor-keywords: SecurityFilterChain, filter order, OncePerRequestFilter, UsernamePasswordAuthenticationFilter, BearerTokenAuthenticationFilter, DelegatingFilterProxy, CORS, CSRF, exception translation filter, AuthenticationEntryPoint, AccessDeniedHandler, async dispatch filter, error dispatch filter
+- [Spring Security 기초: 인증과 인가의 흐름 잡기](./spring-security-basics.md)
+- [Spring Security 아키텍처](./spring-security-architecture.md)
+- [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
+- [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+- [Spring `OncePerRequestFilter` Async / Error Dispatch Traps](./spring-onceperrequestfilter-async-error-dispatch-traps.md)
+- [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
+- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+- [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+
+retrieval-anchor-keywords: security filter chain ordering, spring security filter chain ordering, 처음 배우는데 security filter chain, security filter chain 뭐예요, security filter order, filter order 401 403, jwt filter order, cors csrf auth order, exception translation filter order, onceperrequestfilter order, delegatingfilterproxy, securityfilterchain
+
+## 입문 브리지
+
+`security filter chain`을 처음 배우는데 아직 큰 그림이 안 잡혔다면 이 문서보다 [Spring Security 기초: 인증과 인가의 흐름 잡기](./spring-security-basics.md)를 먼저 본다.
+
+- 기초 문서에서 먼저 잡을 질문: "보안 필터 묶음이 컨트롤러보다 왜 먼저 도는가?"
+- 이 문서로 다시 올라올 질문: "그래서 어느 필터가 먼저 돌고, 그 순서가 401/403을 어떻게 바꾸는가?"
 
 ## 핵심 개념
 

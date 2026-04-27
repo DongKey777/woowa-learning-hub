@@ -4,15 +4,17 @@
 >
 > 관련 문서:
 > - [RAG Design](./README.md)
+> - [RAG Design: QA Check Order Matrix](./README.md#qa-check-order-matrix)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
 > - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)
 > - [Local Asset Existence Lint](./local-asset-existence-lint.md)
 > - [Asset Filename Outlier Sweep](./asset-filename-outlier-sweep.md)
 > - [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)
+> - [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)
 > - [Fence False-Link Precheck](./fence-false-link-precheck.md)
 > - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
 
-> retrieval-anchor-keywords: asset filename lint, punctuation-heavy asset filename, local asset path qa, markdown asset link lint, scanner-safe asset path, repo-local asset filename check, image filename lint, pdf filename lint, lowercase image extension, lowercase pdf extension, mixed-case extension, uppercase png, uppercase pdf, markdown link scanner, code path lint, markdown review precheck, reverse-link asset hygiene, html asset link lint, local a href lint, srcset asset lint, local asset existence lint, missing local asset target
+> retrieval-anchor-keywords: asset filename lint, punctuation-heavy asset filename, local asset path qa, markdown asset link lint, scanner-safe asset path, repo-local asset filename check, image filename lint, pdf filename lint, lowercase image extension, lowercase pdf extension, mixed-case extension, uppercase png, uppercase pdf, markdown link scanner, code path lint, markdown review precheck, reverse-link asset hygiene, html asset link lint, local a href lint, srcset asset lint, poster asset lint, video poster lint, audio src lint, track src lint, local asset existence lint, missing local asset target, stale asset reverse-link sweep, asset rename safe workflow, rename-safe asset hygiene, old basename grep
 
 ## 언제 돌리나
 
@@ -36,8 +38,9 @@ python docs/asset_filename_lint.py knowledge/cs/contents/network/README.md docs
 
 - prose 영역의 markdown inline link / image target
 - prose 영역의 reference-style link target
-- markdown 안 HTML `src` / `href`가 가리키는 repo-local asset path
+- markdown 안 HTML `src` / `href` / `poster`가 가리키는 repo-local asset path
 - HTML `srcset`의 candidate URL (`1x`, `2x`, `800w` descriptor는 떼고 URL만 검사)
+- `<video>`, `<audio>`, `<track>` 같은 media tag의 local asset target도 같은 규칙으로 본다
 - nested parentheses와 angle-bracket target도 shared markdown parser 기준으로 읽는다
 - directory segment의 공백, 괄호, `&`, `#`, `%`, `?`, 쉼표 같은 scanner-hostile 문자
 - filename stem의 extra `.`와 image/PDF 확장자의 대문자·mixed-case 사용
@@ -50,15 +53,16 @@ python docs/asset_filename_lint.py knowledge/cs/contents/network/README.md docs
 - 실제 파일이 없는 unresolved local asset target 자체는 [Local Asset Existence Lint](./local-asset-existence-lint.md) 범위다.
 - markdown link 유무와 무관한 repo-local PDF/image 전체 basename sweep은 [Asset Filename Outlier Sweep](./asset-filename-outlier-sweep.md) 범위다.
 
-즉, 현재 lint는 local asset 기준으로 `<img src>`, `<a href>`, `<source src>`, `srcset` candidate URL까지 한 번에 훑는다. 외부 URL과 `#anchor`는 계속 범위 밖이다.
+즉, 현재 lint는 local asset 기준으로 `<img src>`, `<a href>`, `<source src>`, `<video poster|src>`, `<audio src>`, `<track src>`, `srcset` candidate URL까지 한 번에 훑는다. 외부 URL과 `#anchor`는 계속 범위 밖이다.
 
 ## 실패했을 때 고치는 순서
 
 1. asset basename이나 directory segment를 scanner-safe 형태로 바꾼다.
-2. 같은 턴에 markdown link나 HTML `src` / `href` / `srcset`도 함께 갱신한다.
+2. 같은 턴에 markdown link나 HTML `src` / `href` / `poster` / `srcset`도 함께 갱신한다.
 3. rename 뒤에는 `python docs/asset_filename_lint.py`를 다시 돌린다.
 4. target 자체가 missing인지도 `python docs/local_asset_existence_lint.py`로 함께 확인한다.
-5. linked asset 전체 존재 여부와 broader path 묶음은 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md) 기준으로 한 번 더 본다.
+5. rename wave였다면 old basename이 `knowledge/cs/`와 `docs/`에 남았는지 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md) 순서로 바로 닫는다.
+6. linked asset 전체 존재 여부와 broader path 묶음은 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md) 기준으로 한 번 더 본다.
 
 ## 출력 해석
 
@@ -79,8 +83,16 @@ knowledge/cs/contents/network/README.md:236: html-asset -> img/thread-state-diag
 - [Local Asset Existence Lint](./local-asset-existence-lint.md)는 "path가 실제로 존재하느냐"를 보고, 이 lint는 "존재하는 path 이름이 scanner-safe하냐"를 본다.
 - broken-link report는 "존재하느냐"를 말하지만, filename이 scanner-safe한지는 따로 말해 주지 않는다.
 - manual audit note만 두면 review 직전에 빠르게 회귀를 막기 어렵다.
+- rename 직후에는 scanner-safe rename을 끝내도 old basename inbound link가 남을 수 있어서 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)까지 이어야 rename-safe workflow가 닫힌다.
 - shared parser를 [Local Asset Existence Lint](./local-asset-existence-lint.md), [Fence False-Link Precheck](./fence-false-link-precheck.md), [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md)와 같이 써서 target 집합 자체는 맞추고, 여기서는 filename hygiene만 더 본다.
 - 이 lint는 "링크는 살아 있어도 path가 QA에 불리한가"를 먼저 걸러서 rename wave를 더 작게 만든다.
+
+## 다음 단계와 돌아가기
+
+- check 시작점이 헷갈리면 [RAG Design: QA Check Order Matrix](./README.md#qa-check-order-matrix)에서 `README` reverse-link 점검과 asset rename 후속 순서를 먼저 고른다.
+- rename 전 후보만 빨리 걸러야 하면 여기서 시작한 뒤 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)으로 old basename 잔존 link를 닫는다.
+- `contents/**`에서 실제로 링크된 `img/`·`code/`·local HTML asset form까지 넓혀 보고 싶으면 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)로 이어 간다.
+- QA note index로 돌아가려면 [RAG Design](./README.md)를 다시 본다.
 
 ## 한 줄 정리
 

@@ -1,0 +1,179 @@
+# Authority Transfer vs Revoke Lag Primer Bridge
+
+> 한 줄 요약: `authority transfer`는 source of truth, parity, cleanup owner를 맞추는 변화 관리 질문이고, `revoke lag`는 old session/token/cache가 아직 요청을 받아 주는 runtime incident 질문이므로 같은 "still access" 문장으로 들어와도 먼저 분리해야 한다.
+>
+> 문서 역할: 이 문서는 authority transfer와 revoke lag를 초보자 눈높이에서 가르는 **primer bridge**다. cutover/parity/cleanup 질문을 authz-cache incident와 섞지 않게 입구를 고정한다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- `[primer]` [Identity Lifecycle / Provisioning Primer](./identity-lifecycle-provisioning-primer.md)
+- `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+- `[primer bridge]` [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)
+- `[deep dive]` [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md)
+- `[deep dive]` [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
+- `[catalog]` [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
+- `[cross-category bridge]` [Database README: Identity / Authority Transfer 브리지](../database/README.md#database-bridge-identity-authority)
+- `[system design]` [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge)
+
+retrieval-anchor-keywords: authority transfer vs revoke lag, authority transfer beginner bridge, revoke lag beginner bridge, still access after transfer, still access after revoke, authority transfer cleanup, authority transfer parity, revoke lag route split, backfill green but access tail remains, deprovision tail vs revoke lag, old owner removed but access still works, beginner authority transfer route
+
+## 시작 전에: 이 문서의 역할
+
+- 이 문서는 `primer bridge`다. authority transfer와 revoke lag를 같은 장애로 뭉개지 않게 첫 분기를 만든다.
+- 이 문서는 `survey`가 아니다. security 전체 지형은 [Security README](./README.md)를 먼저 본다.
+- 이 문서는 `deep dive`가 아니다. cache key, regional lag, graph invalidation 증거를 이미 모았다면 심화 문서로 바로 가면 된다.
+- 이 문서는 `playbook`이나 `recovery`도 아니다. 실시간 incident 대응 순서가 먼저면 revocation/playbook 쪽으로 넘어간다.
+
+짧게 기억하면:
+
+- `authority transfer` = "무엇을 옮기고, 무엇을 닫고, 어느 증거로 cleanup을 확인할까?"
+- `revoke lag` = "왜 old 요청이 아직 받아들여지지?"
+
+## 먼저 15초 mental model
+
+| 지금 더 가까운 질문 | 이 문장이 뜻하는 것 | 먼저 갈 역할 |
+|---|---|---|
+| `권한 소스는 옮겼는데 cleanup/parity를 어떻게 닫지?` | authority transfer | `[primer bridge]` 이 문서 -> `[cross-category bridge]` authority route |
+| `revoke했는데 old session/token이 아직 된다` | revoke lag | `[primer]` freshness -> `[deep dive]` revocation route |
+
+한 문장으로 줄이면:
+
+- authority transfer는 `새 경로를 정식 권한 근거로 만들고 old 경로를 retire하는 일`이다.
+- revoke lag는 `retire하기로 한 old 권한이 runtime에서 아직 살아 있는 일`이다.
+
+## 용어를 먼저 짧게 분리하기
+
+| 용어 | 초보자용 뜻 | 여기서 바로 섞기 쉬운 말 |
+|---|---|---|
+| `authority transfer` | 권한 근거를 old owner/path에서 new owner/path로 넘기고 cleanup evidence까지 맞추는 작업 | 단순 revoke |
+| `revoke lag` | revoke는 요청했지만 old session/token/cache가 잠깐 더 받아들여지는 상태 | transfer parity 문제 |
+| `parity` | new path와 old path가 같은 허용/거부를 내는지 확인하는 것 | revoke 완료 |
+| `cleanup` | old row, old claim, old delegated grant, old cache를 retire하는 것 | runtime debugging |
+
+핵심 분리:
+
+- `authority transfer`는 보통 migration, SCIM lifecycle, delegated access cleanup, ownership move처럼 **변경 관리** 문맥에서 나온다.
+- `revoke lag`는 logout, disable, family revoke, authz cache tail처럼 **runtime acceptance tail** 문맥에서 나온다.
+
+## 같은 "still access"라도 질문이 다르다
+
+| 보이는 문장 | 실제로 먼저 묻는 질문 | 더 가까운 route |
+|---|---|---|
+| `backfill is green but access tail remains` | data parity는 끝났는데 security runtime tail이 남았나 | authority transfer |
+| `SCIM disable했는데 still access` | 계정 상태 변경 이후 cleanup owner와 evidence가 맞나 | authority transfer에서 시작 |
+| `logout still works` | revoke 이후 마지막 accept가 언제 끝나나 | revoke lag |
+| `revoked admin still has access` | old allow가 token/session/cache에서 얼마나 남나 | revoke lag |
+| `권한 이전 후 특정 tenant만 403/allow가 다르다` | transfer parity인가, cache incident인가 | authority transfer 먼저, runtime mismatch면 handoff |
+
+## beginner-safe splitter
+
+### authority transfer로 먼저 가야 할 때
+
+- old source와 new source가 둘 다 언급된다
+- `backfill`, `cutover`, `parity`, `cleanup evidence`, `retirement evidence` 같은 단어가 나온다
+- `누가 owner인가`, `어느 문서가 canonical source인가`를 먼저 정해야 한다
+- 질문의 중심이 "왜 아직 허용되나"보다 "언제 old path를 닫아도 되나"에 있다
+
+### revoke lag로 먼저 가야 할 때
+
+- logout, disable, revoke API 호출 시점이 분명하다
+- `still works`, `last accepted`, `몇 분 뒤에야 막힌다`처럼 시간 tail이 핵심이다
+- session/token/cache/region fan-out이 바로 의심된다
+- cleanup owner보다 `runtime acceptance`와 `propagation`이 중심이다
+
+## 두 route를 섞으면 왜 헷갈리나
+
+초보자는 아래 둘을 한 문장으로 묶기 쉽다.
+
+1. `권한을 옮겼는데 old path cleanup이 아직 안 닫힘`
+2. `revoke했는데 old token이 몇 분 더 먹힘`
+
+둘 다 `old access가 남아 있다`처럼 보이기 때문이다. 하지만 중심 질문은 다르다.
+
+| 축 | authority transfer | revoke lag |
+|---|---|---|
+| 중심 질문 | `무엇을 canonical authority로 삼나?` | `왜 old 요청이 아직 통과하나?` |
+| 주된 owner | lifecycle / cutover / cleanup owner | auth/session/runtime owner |
+| 먼저 필요한 증거 | parity, shadow, cleanup evidence | last accepted after revoke, cache/TTL/fan-out evidence |
+| 보통 이어지는 역할 | `[cross-category bridge]`, `[system design]`, `[deep dive]` lifecycle | `[deep dive]`, `[playbook]`, `[recovery]` revocation |
+
+## 아주 짧은 예시 3개
+
+### 1. `SCIM disable했는데 still access`
+
+첫 질문:
+
+- disable row는 끝났는데 session/authz cleanup owner가 아직 안 닫힌 것인가?
+
+안전한 다음 문서:
+
+- `[primer]` [Identity Lifecycle / Provisioning Primer](./identity-lifecycle-provisioning-primer.md)
+- `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+- `[primer bridge]` [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)
+
+이 문장은 beginner 기준으로 revoke lag보다 authority transfer/lifecycle route에서 먼저 여는 편이 안전하다.
+
+### 2. `logout still works`
+
+첫 질문:
+
+- revoke requested 뒤 마지막 accept가 언제 끝났는가?
+
+안전한 다음 문서:
+
+- `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+- `[deep dive]` [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
+
+이 문장은 cleanup/parity보다 revoke lag가 중심이다.
+
+### 3. `backfill is green but access tail remains`
+
+첫 질문:
+
+- data parity는 green인데 security runtime access tail이 별도로 남았는가?
+
+안전한 다음 문서:
+
+- `[cross-category bridge]` [Database README: Identity / Authority Transfer 브리지](../database/README.md#database-bridge-identity-authority)
+- `[cross-category bridge]` [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle)
+
+이 문장은 revoke button timing보다 authority transfer cleanup gate를 먼저 보는 편이 맞다.
+
+## 자주 하는 오해
+
+- `still access`가 보이면 무조건 revoke incident다.
+- revoke lag를 설명하는 metrics만 있으면 transfer cleanup evidence도 충분하다.
+- transfer parity가 끝나면 runtime session/cache tail도 자동으로 끝난다.
+- delegated access cleanup과 logout propagation은 같은 runbook으로 닫아도 된다.
+
+위 네 문장은 모두 아니다. transfer는 owner/parity/cleanup의 문제이고, revoke lag는 runtime acceptance tail의 문제다.
+
+## 다음 handoff를 고르는 짧은 표
+
+| 지금 질문 | 다음 문서 역할 | 먼저 볼 문서 |
+|---|---|---|
+| source of truth 이전, backfill, shadow, retirement evidence가 중심이다 | `[cross-category bridge]` | [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle) |
+| session/claim/cache가 왜 stale한지 먼저 알고 싶다 | `[primer]` / `[primer bridge]` | [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md), [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md) |
+| revoke 이후 시간 tail과 acceptance evidence가 중심이다 | `[deep dive]` | [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md) |
+| cutover owner, rollback gate, cleanup contract를 설계해야 한다 | `[system design]` | [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge) |
+
+## 다음 단계와 복귀 경로
+
+첫 deep dive handoff를 탄 뒤에도 beginner 기준의 return path를 같이 잡아 두면 transfer 질문이 runtime incident로 새는 것을 막을 수 있다.
+
+| 첫 handoff | 바로 이어서 확인할 것 | 복귀할 category ladder |
+|---|---|---|
+| [SCIM Deprovisioning / Session / AuthZ Consistency](./scim-deprovisioning-session-authz-consistency.md) | lifecycle cleanup owner와 access tail을 같은 질문으로 보고 있는지 | [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle) |
+| [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md) | old accept의 마지막 시점이 revoke lag인지, transfer parity 누락인지 | [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기) |
+| [System Design: Database / Security Authority Bridge](../system-design/README.md#system-design-database-security-authority-bridge) | canonical source, cleanup gate, rollback owner를 설계 질문으로 다시 묶고 있는지 | [Security README: Identity / Delegation / Lifecycle](./README.md#identity--delegation--lifecycle) |
+
+짧은 규칙:
+
+- `cleanup evidence`와 `last accepted after revoke`가 한 문장에 같이 나오면 ladder로 한 번 돌아가 authority transfer인지 revoke lag인지 다시 고른다.
+- deep dive를 읽고도 질문이 `누가 owner인가`로 남으면 identity ladder로, 질문이 `왜 아직 통과하나`로 남으면 symptom ladder로 복귀한다.
+
+## 한 줄 정리
+
+authority transfer는 `권한 근거를 어디로 옮기고 어떻게 cleanup을 닫을지`를 묻는 bridge이고, revoke lag는 `old 권한이 runtime에서 왜 아직 살아 있는지`를 묻는 deep-dive 축이다. beginner route에서는 이 둘을 먼저 갈라야 cleanup/parity 질문이 authz-cache incident로 잘못 내려가지 않는다.

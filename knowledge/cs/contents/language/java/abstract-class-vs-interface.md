@@ -6,22 +6,29 @@
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
-> - [Sealed Interfaces and Exhaustive Switch Design](./sealed-interfaces-exhaustive-switch-design.md)
-> - [Java Binary Compatibility and Runtime Linkage Errors](./java-binary-compatibility-linkage-errors.md)
-> - [Java Module System Runtime Boundaries](./java-module-system-runtime-boundaries.md)
-> - [ClassLoader Delegation Edge Cases](./classloader-delegation-edge-cases.md)
+관련 문서:
 
-> retrieval-anchor-keywords: abstract class, interface, default method, multiple inheritance, template method, stateful base class, contract, sealed interface, evolution, capability, inheritance boundary, binary compatibility, default method evolution, AbstractMethodError, interface vs abstract class basics, Java beginner interface basics
+- [Language README](../README.md)
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - 처음 배우는데 큰 그림과 "언제 쓰는지"부터 잡아야 하면 먼저 보는 beginner primer
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) - beginner handoff는 추상 클래스/인터페이스 다음에 조합을 먼저 고정할 때 보는 primer
+- [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) - 조합 기본값 뒤에도 부모가 흐름을 쥐는 경우를 좁혀 보는 follow-up primer
+- [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md) - 템플릿 메소드 다음에 상속 skeleton과 전략 주입을 같은 축으로 비교하는 follow-up primer
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md)
+- [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md) - 이 deep dive에서 `default method` 분기가 궁금해질 때 붙는 다음 primer
+- [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
+- [Sealed Interfaces and Exhaustive Switch Design](./sealed-interfaces-exhaustive-switch-design.md)
+- [Java Binary Compatibility and Runtime Linkage Errors](./java-binary-compatibility-linkage-errors.md)
+- [Java Module System Runtime Boundaries](./java-module-system-runtime-boundaries.md)
+- [ClassLoader Delegation Edge Cases](./classloader-delegation-edge-cases.md)
+
+retrieval-anchor-keywords: abstract class interface deep dive, abstract class interface primer first, abstract class interface beginner route, abstract class interface basics first, abstract class interface when to use beginner, 처음 배우는데 추상 클래스 인터페이스 차이, 추상 클래스 인터페이스 큰 그림, 추상 클래스 인터페이스 기초 먼저, 추상 클래스 인터페이스 언제 쓰는지, 추상 클래스 인터페이스 입문 먼저, stateful base class, contract evolution, template method design boundary, composition before template method beginner route
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 다시 생각해봐야 하나](#왜-다시-생각해봐야-하나)
+- [처음 배우는 질문이면 여기부터](#처음-배우는-질문이면-여기부터)
 - [추상 클래스](#추상-클래스)
 - [인터페이스](#인터페이스)
 - [차이점과 선택 기준](#차이점과-선택-기준)
@@ -35,9 +42,25 @@
 
 ## 왜 다시 생각해봐야 하나
 
+처음 배우는 질문에서는 `추상 클래스는 공통 상태/흐름`, `인터페이스는 계약/역할`까지만 잡아도 충분하다. 이 문서는 그 다음 단계에서 "왜 같은 표를 봤는데 실전 선택은 더 어려워지는가"를 설명하는 long-form bridge다.
+
 Java의 추상 클래스와 인터페이스는 오랫동안 기본 문법처럼 보였지만, 현대 Java에서는 record, sealed interface, default method, module boundary까지 같이 봐야 설계 판단이 더 정확해진다.
 
 즉 이 주제는 단순 암기가 아니라 **어떤 경계를 타입이 책임질 것인가**를 묻는 문제다.
+
+## 처음 배우는 질문이면 여기부터
+
+처음 배우는데 `추상 클래스와 인터페이스 차이`, `언제 쓰는지`, `큰 그림`, `기초`를 찾는 상태라면 이 문서보다 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)을 먼저 보는 편이 맞다. 검색도 원래 이 primer가 먼저 잡히는 편이 맞고, 이 문서는 그 다음에 "예외와 경계"를 붙이는 역할이다.
+
+이 문서는 입문 비교표를 다시 설명하는 문서가 아니라, 아래처럼 **입문 다음 단계의 설계 guardrail**을 정리한다.
+
+| 지금 질문 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| "기초로 차이만 빨리 알고 싶다" | [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) | 공통 상태/흐름 vs 계약/조합을 먼저 잡아준다 |
+| "`default method`가 인터페이스 본질인가?" | [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md) | 계약과 진화 전략을 같은 층위로 섞지 않게 해준다 |
+| "sealed interface까지 같이 봐야 하나?" | [Sealed Interfaces and Exhaustive Switch Design](./sealed-interfaces-exhaustive-switch-design.md) | 타입 집합을 닫는 문제를 따로 분리해서 본다 |
+
+짧게 말해, **입문 검색은 primer가 먹고 이 문서는 deep dive가 먹는 구조**가 맞다.
 
 ## 추상 클래스
 
@@ -58,7 +81,7 @@ Java의 추상 클래스와 인터페이스는 오랫동안 기본 문법처럼 
 
 ### runtime 관점
 
-추상 클래스는 단순 코드 재사용이 아니라 호출 경로를 통제하는 수단이다.  
+추상 클래스는 단순 코드 재사용이 아니라 호출 경로를 통제하는 수단이다.
 공통 상태를 가진 base class는 JIT/GC 관점에서도 객체 layout과 initialization order에 영향을 줄 수 있다.
 
 ## 인터페이스
@@ -95,12 +118,12 @@ Java의 추상 클래스와 인터페이스는 오랫동안 기본 문법처럼 
 
 ### 공통 기능의 차이
 
-공통 동작이 많고 상태를 공유해야 하면 추상 클래스가 유리하다.  
+공통 동작이 많고 상태를 공유해야 하면 추상 클래스가 유리하다.
 계약만 필요하고 구현은 다양한 경우 인터페이스가 유리하다.
 
 ### 확장성의 차이
 
-인터페이스는 다중 구현이 가능하므로 조합이 쉽다.  
+인터페이스는 다중 구현이 가능하므로 조합이 쉽다.
 추상 클래스는 상속 계층이 깊어지면 coupling이 커진다.
 
 ### 실무 판단 기준
@@ -110,6 +133,8 @@ Java의 추상 클래스와 인터페이스는 오랫동안 기본 문법처럼 
 - 향후 구현체가 여러 개로 늘어날 가능성이 있는가
 - API 안정성과 binary compatibility를 얼마나 중요하게 보는가
 
+입문 단계에서는 여기서 멈춰도 충분하지만, 이 문서는 그 다음 질문인 "`default method` 추가가 기존 구현체와 바이너리 호환성에 어떤 영향을 주는가", "sealed interface로 구현 집합을 닫을 때 확장 경계를 어떻게 둘 것인가"까지 이어지는 판단을 다룬다.
+
 ## 실전 시나리오
 
 ### 시나리오 1: 상태와 동작을 같이 묶고 싶다
@@ -118,17 +143,17 @@ Java의 추상 클래스와 인터페이스는 오랫동안 기본 문법처럼 
 
 ### 시나리오 2: 여러 구현체를 외부에 노출한다
 
-인터페이스가 더 잘 맞는다.  
+인터페이스가 더 잘 맞는다.
 특히 plugin, SPI, test double, mock이 필요할 때 그렇다.
 
 ### 시나리오 3: 타입 집합을 닫고 싶다
 
-sealed interface가 더 현대적일 수 있다.  
+sealed interface가 더 현대적일 수 있다.
 관련해서 [Sealed Interfaces and Exhaustive Switch Design](./sealed-interfaces-exhaustive-switch-design.md)를 같이 보면 좋다.
 
 ### 시나리오 4: 구현 변경이 잦다
 
-인터페이스는 default method와 module boundary로 evolution 전략을 짤 수 있다.  
+인터페이스는 default method와 module boundary로 evolution 전략을 짤 수 있다.
 추상 클래스는 public inheritance contract가 더 강하게 묶인다.
 
 ## 코드로 보기

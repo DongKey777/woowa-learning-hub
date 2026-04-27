@@ -59,6 +59,12 @@ knowledge/cs/rag/source-priority-and-citation.md:82: inline-link in fence(markdo
 - shared parser를 써 두면 asset/readme check가 이해하는 markdown target 범위와 fence precheck 범위가 크게 어긋나지 않는다.
 - 그래서 수정 순서를 `fence hygiene -> broken-link validation`으로 고정하기 쉽다.
 
+## 다음 단계와 돌아가기
+
+- rename wave에서 fenced example 정리가 끝났다면 다음 단계로 [Asset Filename Lint](./asset-filename-lint.md)를 이어서 새 asset path 이름이 scanner-safe한지 확인한다.
+- rename 뒤 old basename/path 잔존 link까지 닫아야 하면 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)으로 이어 간다.
+- QA note index로 돌아가려면 [RAG Design](./README.md)를 다시 본다.
+
 ## 한 줄 정리
 
 broken-link reporting 전에 fence false-link precheck를 먼저 돌리면, literal markdown 예시 때문에 생기는 link/reverse-link noise를 훨씬 빨리 줄일 수 있다.

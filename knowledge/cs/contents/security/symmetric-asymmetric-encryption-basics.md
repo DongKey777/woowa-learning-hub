@@ -7,11 +7,17 @@
 관련 문서:
 
 - [봉투 암호화와 KMS 기초](./envelope-encryption-kms-basics.md)
+- [HTTPS와 TLS 기초](./https-tls-beginner.md)
 - [HTTPS / HSTS / MITM 심화](./https-hsts-mitm.md)
-- [security 카테고리 인덱스](./README.md)
-- [HTTP와 HTTPS 기초](../network/http-https-basics.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: 대칭키 비대칭키 차이, symmetric asymmetric encryption beginner, 암호화 기초, 공개키 개인키 뭔가요, rsa aes 차이, 암호화 복호화 입문, 키 배포 문제, 암호화가 뭐예요, https 암호화 원리, beginner encryption basics
+retrieval-anchor-keywords: 대칭키 비대칭키 차이, symmetric asymmetric encryption beginner, 암호화 기초, 공개키 개인키 뭔가요, rsa aes 차이, 암호화 복호화 입문, 키 배포 문제, 암호화가 뭐예요, https 암호화 원리, beginner encryption basics, security readme encryption primer, security beginner route, security primer next step, return to security README, 키를 주고받으려면 어떻게 하지, symmetric key asymmetric key
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security 입문 문서 안에서 다른 primer를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
+- TLS 핸드셰이크 안에서 대칭키와 비대칭키가 어떻게 같이 쓰이는지 다시 browser 관점으로 보고 싶으면 [HTTPS와 TLS 기초](./https-tls-beginner.md)를 먼저 붙이면 읽기 쉽다.
+- 데이터 키, KMS, envelope encryption처럼 실무 키 관리 패턴으로 바로 이어 가려면 [봉투 암호화와 KMS 기초](./envelope-encryption-kms-basics.md)를 보면 된다.
 
 ## 핵심 개념
 

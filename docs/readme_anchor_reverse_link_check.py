@@ -3,14 +3,13 @@ from __future__ import annotations
 
 import argparse
 import difflib
-import html
-import re
 import sys
-import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
 from markdown_link_scanner import (
+    MarkdownAnchor,
+    collect_markdown_anchors,
     iter_markdown_files,
     iter_markdown_targets,
     iter_prose_lines,
@@ -20,16 +19,7 @@ from markdown_link_scanner import (
 DEFAULT_SCAN_PATHS = ("knowledge/cs/contents",)
 REPO_ROOT = Path.cwd().resolve()
 CONTENTS_ROOT = (REPO_ROOT / "knowledge/cs/contents").resolve(strict=False)
-HEADING_RE = re.compile(r"^(#{1,6})\s+(?P<title>.+?)\s*$")
-EXPLICIT_ANCHOR_RE = re.compile(r"""<a\s+id=["']([^"']+)["']\s*>\s*</a>""", re.IGNORECASE)
 IGNORED_PREFIXES = ("http://", "https://", "mailto:")
-
-
-@dataclass(frozen=True)
-class AnchorDef:
-    anchor: str
-    label: str
-    line_number: int
 
 
 @dataclass(frozen=True)
@@ -37,7 +27,7 @@ class StaleReverseLink:
     line_number: int
     raw_target: str
     anchor: str
-    suggestion: AnchorDef | None
+    suggestion: MarkdownAnchor | None
 
 
 @dataclass(frozen=True)
@@ -86,64 +76,6 @@ def is_category_doc(path: Path) -> bool:
     return len(relative.parts) >= 2 and (resolved.parent / "README.md").is_file()
 
 
-def normalize_heading_title(title: str) -> str:
-    text = html.unescape(title)
-    text = re.sub(r"`([^`]*)`", r"\1", text)
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-    text = re.sub(r"<[^>]+>", "", text)
-    text = re.sub(r"[*_~]", "", text)
-    return text.strip()
-
-
-def slugify_heading(title: str) -> str:
-    slug_chars: list[str] = []
-
-    for char in normalize_heading_title(title).lower():
-        if char.isspace():
-            slug_chars.append("-")
-            continue
-
-        category = unicodedata.category(char)
-        if category[0] in {"L", "N"} or char in {"-", "_"}:
-            slug_chars.append(char)
-
-    return "".join(slug_chars).strip("-")
-
-
-def collect_readme_anchors(path: Path) -> dict[str, AnchorDef]:
-    anchors: dict[str, AnchorDef] = {}
-    slug_counts: dict[str, int] = {}
-    for markdown_line in iter_prose_lines(path):
-        line_number = markdown_line.line_number
-        line = markdown_line.text
-
-        for explicit_anchor in EXPLICIT_ANCHOR_RE.findall(line):
-            anchors.setdefault(
-                explicit_anchor,
-                AnchorDef(
-                    anchor=explicit_anchor,
-                    label=f"explicit anchor `{explicit_anchor}`",
-                    line_number=line_number,
-                ),
-            )
-
-        heading_match = HEADING_RE.match(line)
-        if heading_match is None:
-            continue
-
-        title = normalize_heading_title(heading_match.group("title"))
-        base_slug = slugify_heading(title)
-        if not base_slug:
-            continue
-
-        suffix = slug_counts.get(base_slug, 0)
-        anchor = base_slug if suffix == 0 else f"{base_slug}-{suffix}"
-        slug_counts[base_slug] = suffix + 1
-        anchors.setdefault(anchor, AnchorDef(anchor=anchor, label=title, line_number=line_number))
-
-    return anchors
-
-
 def resolve_target_path(target: str, source_path: Path) -> tuple[Path, str | None] | None:
     lowered = target.lower()
     if not target or lowered.startswith(IGNORED_PREFIXES) or target.startswith("#"):
@@ -164,7 +96,7 @@ def resolve_target_path(target: str, source_path: Path) -> tuple[Path, str | Non
     return resolved_path, anchor
 
 
-def suggest_anchor(anchor: str, anchors: dict[str, AnchorDef]) -> AnchorDef | None:
+def suggest_anchor(anchor: str, anchors: dict[str, MarkdownAnchor]) -> MarkdownAnchor | None:
     match = difflib.get_close_matches(anchor, list(anchors), n=1, cutoff=0.55)
     if not match:
         return None
@@ -178,7 +110,7 @@ def scan_file(path: Path) -> Finding | None:
     readme_path = path.parent / "README.md"
 
     readme_resolved = readme_path.resolve(strict=False)
-    anchor_defs = collect_readme_anchors(readme_path)
+    anchor_defs = collect_markdown_anchors(readme_path)
     stale_links: list[StaleReverseLink] = []
     found_same_readme_anchor = False
     for markdown_line in iter_prose_lines(path):

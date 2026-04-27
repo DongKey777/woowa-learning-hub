@@ -7,7 +7,11 @@
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+> - [`Arrays.sort`, `List.sort`, `stream.sorted` Comparator Reuse Bridge](./arrays-sort-comparator-reuse-bridge.md)
+> - [Comparator Reversed Scope Primer](./comparator-reversed-scope-primer.md)
+> - [Comparator Null Reversal Primer](./comparator-null-reversal-primer.md)
 > - [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
+> - [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 > - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
@@ -17,7 +21,7 @@
 > - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
 > - [Floating-Point Precision, `NaN`, `Infinity`, and Serialization Pitfalls](./floating-point-precision-nan-infinity-serialization-pitfalls.md)
 
-> retrieval-anchor-keywords: comparator utility patterns, java comparator comparing, java comparator comparingint, java comparator comparinglong, java comparator comparingdouble, java comparingInt vs comparing, java comparingLong vs comparing, java comparingDouble vs comparing, java comparator primitive specialization, java comparator primitive shortcut, java comparator boxing overhead, java comparator boxing matters, java comparator boxing ignore, java comparator thenComparing, java comparator thenComparingInt, java comparator thenComparingLong, java comparator thenComparingDouble, java primitive tie breaker comparator, java comparator primitive tie breaker, java comparator tie breaker lambda, java comparator reversed, java comparator nullsFirst, java comparator nullsLast, java comparator chaining beginner, java list sort comparator practice, java stream sorted comparator, java list sort vs stream sorted, java primitive field sort comparator, java nullable field sorting java, java wrapper field comparator, java Integer wrapper comparator, java Long wrapper comparator, java Double wrapper comparator, beginner comparator examples
+> retrieval-anchor-keywords: comparator utility patterns, java comparator comparing, java comparator comparingint, java comparator comparinglong, java comparator comparingdouble, java comparingInt vs comparing, java comparingLong vs comparing, java comparingDouble vs comparing, java comparator primitive specialization, java comparator primitive shortcut, java comparator boxing overhead, java comparator boxing matters, java comparator boxing ignore, java comparator thenComparing, java comparator thenComparingInt, java comparator thenComparingLong, java comparator thenComparingDouble, java primitive tie breaker comparator, java comparator primitive tie breaker, java comparator tie breaker lambda, java comparator reversed, java comparator reversed placement, java thenComparingInt reversed placement, java thenComparingLong reversed placement, java thenComparingDouble reversed placement, java mixed direction comparator chain, java primitive descending tie breaker, java grade desc id asc comparator, java nullsFirst, java comparator nullsLast, java comparator null reversal, java nullsLast reversed vs reverseOrder, java comparator chaining beginner, java arrays sort comparator chain, java Arrays.sort thenComparing, java object array multi key sort comparator, java beginner multi key sort comparator, java list sort comparator practice, java stream sorted comparator, java list sort vs stream sorted, java primitive field sort comparator, java nullable field sorting java, java wrapper field comparator, java Integer wrapper comparator, java Long wrapper comparator, java Double wrapper comparator, java nullable String comparator, java String.CASE_INSENSITIVE_ORDER nullsLast, beginner comparator examples
 
 <details>
 <summary>Table of Contents</summary>
@@ -30,6 +34,7 @@
 - [`thenComparing`: 동점일 때 다음 기준 붙이기](#thencomparing-동점일-때-다음-기준-붙이기)
 - [`thenComparingInt`, `thenComparingLong`, `thenComparingDouble`: primitive tie-breaker shortcut](#thencomparingint-thencomparinglong-thencomparingdouble-primitive-tie-breaker-shortcut)
 - [`reversed`: 정렬 방향 뒤집기](#reversed-정렬-방향-뒤집기)
+- [primitive tie-breaker와 mixed-direction chain](#primitive-tie-breaker와-mixed-direction-chain)
 - [`nullsFirst`, `nullsLast`: `null` 위치 먼저 정하기](#nullsfirst-nullslast-null-위치-먼저-정하기)
 - [초보자가 자주 헷갈리는 지점](#초보자가-자주-헷갈리는-지점)
 - [코드로 한 번에 보기](#코드로-한-번에-보기)
@@ -74,6 +79,11 @@
 - 담당 멘토가 없는 학생(`null`)은 맨 뒤로 보내고 싶다 -> `nullsLast`
 
 이렇게 보면 각 메서드는 새로운 개념이 아니라 "정렬 규칙 조립 부품"이다.
+
+이 감각은 `List.sort(...)`에서만 쓰는 것이 아니다.
+
+- `Arrays.sort(objectArray, comparator)`에도 같은 comparator chain을 그대로 넣을 수 있다
+- 배열 primer에서 "점수순, 같으면 이름순" 같은 multi-key sort가 막혔다면 이 문서를 바로 다음 단계로 읽으면 된다
 
 ## 한 장 요약 표
 
@@ -194,9 +204,11 @@ Comparator<Student> byGradePrimitive =
 
 ## `thenComparing`: 동점일 때 다음 기준 붙이기
 
+배열 정렬 primer에서 본 "`score` 오름차순, 같으면 `name` 오름차순" 예시를 `Student[]`나 `List<Student>`에 옮기면, 그 "같으면 한 번 더 비교"를 코드로 적는 자리가 바로 `thenComparing`이다.
+
 정렬하다 보면 1차 기준만으로는 부족한 경우가 많다.
 
-예를 들어 학년순으로 정렬하면 같은 학년 학생이 여러 명 생긴다.  
+예를 들어 학년순으로 정렬하면 같은 학년 학생이 여러 명 생긴다.
 이럴 때 `thenComparing`으로 2차 기준을 붙인다.
 
 ```java
@@ -309,7 +321,7 @@ Comparator<StudentRank> fluent =
 
 ## `reversed`: 정렬 방향 뒤집기
 
-`comparing` 기본 방향은 오름차순이다.  
+`comparing` 기본 방향은 오름차순이다.
 내림차순이 필요하면 `reversed()`를 붙인다.
 
 ```java
@@ -362,9 +374,49 @@ Comparator<Student> wholeChainReversed =
 - "첫 기준만 뒤집고 싶다"면 그 기준 직후에 `reversed()`
 - "전체 순서를 통째로 뒤집고 싶다"면 맨 끝에 `reversed()`
 
+### primitive tie-breaker와 mixed-direction chain
+
+`reversed()`는 "지금까지 만든 comparator"를 뒤집는다.
+그래서 `thenComparingInt`/`Long`/`Double`과 섞을 때는 "어느 시점까지 만든 규칙을 뒤집었는가"를 같이 읽어야 한다.
+
+| 코드 | 읽는 결과 |
+|---|---|
+| `Comparator.comparingInt(StudentRank::grade).reversed().thenComparingInt(StudentRank::classNumber)` | 학년 내림차순, 같은 학년이면 반 번호 오름차순 |
+| `Comparator.comparingInt(StudentRank::grade).reversed().thenComparingLong(StudentRank::studentId)` | 학년 내림차순, 같은 학년이면 학생 번호 오름차순 |
+| `Comparator.comparingInt(StudentRank::grade).reversed().thenComparingDouble(StudentRank::averageScore)` | 학년 내림차순, 같은 학년이면 평균 점수 오름차순 |
+| `Comparator.comparingInt(StudentRank::grade).thenComparingLong(StudentRank::studentId).reversed()` | 학년도 학생 번호도 함께 뒤집힌 전체 내림차순 |
+
+짧게 기억하면 이렇다.
+
+- 앞에서 한 번 `reversed()`를 했더라도, 그 뒤에 붙는 `thenComparingInt`/`Long`/`Double`은 기본이 오름차순이다.
+- 즉 `grade`만 내림차순이고 primitive tie-breaker는 오름차순인 mixed-direction chain은 `reversed()` 뒤에 shortcut을 그대로 붙이면 된다.
+- primitive tie-breaker 자체도 내림차순으로 만들고 싶다면 shortcut 끝에 `reversed()`를 붙이는 것이 아니라 `thenComparing(Comparator.comparingInt(...).reversed())`처럼 범위를 좁혀야 한다.
+- 같은 패턴으로 `int`는 `comparingInt`, `long`은 `comparingLong`, `double`은 `comparingDouble`을 `thenComparing(...)` 안에 넣어 뒤집으면 된다.
+
+예를 들어 "학년은 높은 순, 같은 학년이면 평균 점수도 높은 순"이라면 이렇게 쓴다.
+
+```java
+Comparator<StudentRank> gradeDescAverageDesc =
+        Comparator.comparingInt(StudentRank::grade)
+                .reversed()
+                .thenComparing(
+                        Comparator.comparingDouble(StudentRank::averageScore)
+                                .reversed()
+                );
+```
+
+반대로 아래 코드는 전체 체인을 뒤집기 때문에 읽는 결과가 다르다.
+
+```java
+Comparator<StudentRank> wholeChainDesc =
+        Comparator.comparingInt(StudentRank::grade)
+                .thenComparingDouble(StudentRank::averageScore)
+                .reversed();
+```
+
 ## `nullsFirst`, `nullsLast`: `null` 위치 먼저 정하기
 
-정렬 대상에 `null`이 섞이면 규칙을 먼저 정해야 한다.  
+정렬 대상에 `null`이 섞이면 규칙을 먼저 정해야 한다.
 안 그러면 비교 도중 예외가 나거나 의도가 불분명해진다.
 
 가장 단순한 예시는 `String` 리스트다.
@@ -434,6 +486,7 @@ System.out.println(students);
 - `thenComparing`은 2차 기준이 아니라 "1차 기준이 같을 때만 쓰는 기준"이다.
 - `thenComparingInt`/`Long`/`Double`도 똑같이 "앞 기준이 같을 때만" 동작한다. 첫 비교를 건너뛰는 별도 정렬이 아니다.
 - 첫 기준이 `comparing(Student::name)`처럼 object comparator여도, 다음 기준은 `thenComparingInt(Student::grade)`처럼 primitive shortcut으로 섞어 쓸 수 있다.
+- `Comparator.comparingInt(...).reversed().thenComparingInt(...)`는 "첫 기준만 내림차순, tie-breaker는 오름차순"이다. 뒤의 primitive tie-breaker까지 내림차순으로 만들고 싶다면 `thenComparing(Comparator.comparingInt(...).reversed())`처럼 따로 감싸야 한다.
 - `a.thenComparing(b).reversed()`는 전체 체인을 뒤집는다. `a.reversed().thenComparing(b)`와 다르다.
 - `nullsFirst`와 `nullsLast`는 "`null`을 어디에 둘지"를 정하는 도구다. 문자열 사전순 자체를 바꾸는 도구는 아니다.
 - `List.of(...)`는 `null`을 허용하지 않는다. `null` 예제는 `Arrays.asList(...)`나 별도 `ArrayList`로 만들어야 한다.
@@ -528,6 +581,8 @@ public class ComparatorUtilityPatternsExample {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - `Comparable`과 `Comparator`의 큰 그림을 먼저 다시 묶고 싶다면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+- `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()` 차이만 작게 집중해서 보고 싶다면 [Comparator Reversed Scope Primer](./comparator-reversed-scope-primer.md)
+- nullable `String` sort key에서 `String.CASE_INSENSITIVE_ORDER`, `nullsLast`, tie-breaker를 함께 읽고 싶다면 [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 - `Integer`/`Long`/`Double` wrapper 필드가 있을 때 `nullsFirst`/`nullsLast`를 어떤 감각으로 붙여야 하는지 좁혀 보고 싶다면 [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 - 배열 정렬과 comparator precondition을 같이 보고 싶다면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 - 정렬된 컬렉션에서 comparator가 중복 판단에 어떻게 연결되는지 보려면 [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)

@@ -1,0 +1,302 @@
+# Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`
+
+> 한 줄 요약: Spring Boot에서 jar 안 `application.yml`은 보통 **기본값**, jar 밖 `application.yml`은 보통 **환경별 override**로 생각하면 된다. `spring.config.location`은 "어디를 찾을지"를 바꾸는 스위치이고, `spring.config.import`는 "이 파일이 다른 파일도 읽게 하라"는 선언이다.
+>
+> 문서 역할: 이 문서는 spring 카테고리 안에서 packaged vs external `application.yml`, 기본 config 탐색 위치, `spring.config.location`, `spring.config.import`의 precedence를 beginner가 한 장 mental model과 짧은 예제로 구분하는 **beginner external config primer**를 담당한다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+> - [Spring Same-Location `.properties` vs YAML Precedence Primer](./spring-properties-vs-yaml-same-location-precedence-primer.md)
+> - [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
+> - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+> - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
+> - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
+
+retrieval-anchor-keywords: spring external config precedence, external application properties, packaged vs external application yml, application yml inside jar outside jar, external application yml overrides jar, config data order spring boot, spring boot config data precedence, spring config location beginner, spring.config.location replace default locations, spring.config.additional-location add not replace, spring config import beginner, spring.config.import precedence, import relative vs fixed, optional:file config import, external profile overrides packaged profile, application-prod outside jar precedence, current directory config application yml, config subdirectory precedence, config data import relative path, spring config file precedence, multi-document application yml precedence, spring.config.activate.on-profile external config, spring 여러 문서 yml 우선순위, spring 외부 설정 파일 우선순위, jar 안 설정 jar 밖 설정, application yml 외부 파일 우선순위, spring config location import 차이
+
+## 핵심 개념
+
+초보자 기준으로는 용어보다 아래 mental model을 먼저 잡는 편이 빠르다.
+
+```text
+jar 안 파일 = 앱이 들고 온 기본 노트
+jar 밖 파일 = 배포 환경이 위에 덧붙인 메모
+spring.config.location = 어떤 노트를 찾을지 선반 자체를 바꾸기
+spring.config.import = 지금 읽는 노트에 다른 노트 한 장 더 끼워 넣기
+```
+
+같은 key가 여러 곳에 있으면 Spring Boot는 그 값을 합치지 않는다.
+현재 precedence에서 더 높은 곳의 값 하나가 최종 값이 된다.
+
+이 문서는 config server나 외부 secret store 자체를 설명하지 않는다.
+파일 기반 external config와 `spring.config.location`/`spring.config.import`의 관계만 다룬다.
+
+---
+
+## 1. packaged vs external `application.yml`은 누가 이기나
+
+Spring Boot reference 기준으로 config data 파일 쪽 큰 순서는 이렇게 보면 된다.
+
+| 낮음 -> 높음 | 파일 | 예시 | 같은 key가 있으면 |
+|---|---|---|---|
+| 1 | packaged 기본 파일 | jar 안 `application.yml` | 가장 기본값 역할 |
+| 2 | packaged profile 파일 | jar 안 `application-prod.yml` | packaged 기본 파일을 덮는다 |
+| 3 | external 기본 파일 | `./application.yml`, `./config/application.yml` | packaged 파일들을 덮는다 |
+| 4 | external profile 파일 | `./config/application-prod.yml` | external 기본 파일까지 덮는다 |
+
+여기서 beginner가 자주 놀라는 지점은 이것이다.
+
+```text
+profile 파일이면 무조건 더 세다
+!=
+외부 파일보다도 항상 세다
+```
+
+아니다. Spring Boot는 **profile 여부보다 external 위치 여부를 더 높게** 본다.
+
+예를 들어 `prod` profile이 active이고 값이 아래처럼 있다고 하자.
+
+| 위치 | 값 |
+|---|---|
+| jar 안 `application.yml` | `app.message=jar-base` |
+| jar 안 `application-prod.yml` | `app.message=jar-prod` |
+| jar 밖 `./config/application.yml` | `app.message=ext-base` |
+| jar 밖 `./config/application-prod.yml` | `app.message=ext-prod` |
+
+이때 최종 값은 `ext-prod`다.
+
+- external profile 파일이 있으면 그 값이 가장 높다
+- external profile 파일이 없고 external 기본 파일만 있어도 `ext-base`가 `jar-prod`보다 높다
+
+즉 "jar 안 profile 파일까지 만들었는데 왜 배포 서버 값이 이기지?"라는 질문의 답은 대개 이 한 줄이다.
+
+**배포 환경 바깥 파일이 jar 안 기본값 위에 덮어쓰도록 설계되어 있기 때문이다.**
+
+---
+
+## 2. 기본 탐색 경로는 어떻게 생각하면 되나
+
+Spring Boot는 기본적으로 아래 위치에서 `application.properties` / `application.yaml`을 찾는다.
+
+| 범주 | 위치 |
+|---|---|
+| classpath | classpath root, classpath `/config` |
+| external | 현재 디렉터리, 현재 디렉터리의 `config/`, `config/*/` 바로 아래 하위 디렉터리 |
+
+핵심은 아래 두 줄이다.
+
+- classpath 쪽은 보통 jar 안 기본 설정
+- external 쪽은 보통 실행 환경 override
+
+예를 들어 jar 안에 이 파일이 있고:
+
+```yaml
+# src/main/resources/application.yml
+app:
+  feature-x:
+    enabled: false
+```
+
+배포 디렉터리의 `./config/application.yml`에 이 파일이 있으면:
+
+```yaml
+app:
+  feature-x:
+    enabled: true
+```
+
+별도 옵션 없이 `java -jar app.jar`로 실행해도 최종 값은 보통 `true`다.
+기본 탐색 경로에서 external 파일이 jar 안 파일보다 높은 쪽에 있기 때문이다.
+
+같은 위치에 `.properties`와 YAML이 함께 있으면 `.properties`가 우선한다는 점도 같이 기억하면 좋다. 다만 이것은 "같은 location의 겹치는 key" 기준 이야기다. 혼합 format 착시를 따로 짧게 보고 싶다면 [Spring Same-Location `.properties` vs YAML Precedence Primer](./spring-properties-vs-yaml-same-location-precedence-primer.md)로 이어진다.
+
+---
+
+## 3. `spring.config.location`은 "찾는 곳"을 바꾸는 스위치다
+
+`spring.config.location`은 보통 command-line, system property, environment variable로 준다.
+Spring Boot가 **어떤 config 파일을 읽을지 아주 이른 시점에** 결정해야 하기 때문이다.
+
+먼저 mental model부터 잡으면 된다.
+
+```text
+기본 탐색 선반을 그대로 쓸까?
+-> 아니고 내가 지정한 선반만 볼게
+```
+
+핵심 규칙은 세 가지다.
+
+| 규칙 | 의미 |
+|---|---|
+| `spring.config.location`은 기본 위치를 대체한다 | "여기도 보라"가 아니라 "이 위치들로 바꿔라"에 가깝다 |
+| 여러 location은 정의 순서대로 처리된다 | 뒤에 적은 location이 앞의 값을 덮을 수 있다 |
+| directory location은 `/`로 끝내는 편이 안전하다 | Boot가 `application` 이름과 profile 변형을 붙여 탐색한다 |
+
+예를 들어:
+
+```text
+java -jar app.jar --spring.config.location=optional:file:./ops/
+```
+
+이렇게 실행하면 beginner 감각으로는 이렇게 이해하면 된다.
+
+- 이제 기본 classpath / `./config/` 탐색을 그대로 쓰지 않는다
+- `./ops/` 아래에서 `application.yml`, `application-prod.yml` 같은 이름을 찾는다
+- jar 안 `application.yml`도 자동으로 계속 읽힐 거라고 기대하면 안 된다
+
+반대로:
+
+```text
+java -jar app.jar \
+  --spring.config.location=optional:classpath:/,optional:file:./ops/
+```
+
+이렇게 classpath와 external location을 둘 다 직접 넣으면:
+
+- classpath 쪽 기본값도 고려되고
+- 뒤에 적은 `./ops/` 쪽 값이 같은 key를 덮을 수 있다
+
+초보자에게 가장 중요한 오해 정리 하나만 더 붙이면 이렇다.
+
+```text
+spring.config.location = 여기도 추가
+```
+
+이건 대개 틀린 생각이다.
+정말 "기본 위치는 유지하고 여기를 더 보라"가 목적이면 `spring.config.additional-location` 쪽 사고방식이 맞다.
+
+---
+
+## 4. `spring.config.import`는 "이 파일이 다른 파일도 읽게" 하는 선언이다
+
+`spring.config.import`는 보통 `application.yml` 안에 적는다.
+
+```yaml
+spring:
+  config:
+    import: "optional:file:./ops.yml"
+
+app:
+  message: jar-default
+```
+
+그리고 `./ops.yml`이 아래처럼 있으면:
+
+```yaml
+app:
+  message: ops-override
+```
+
+최종 `app.message`는 `ops-override`다.
+Spring Boot는 import된 파일을 **그 선언을 담은 파일 바로 아래에 끼워 넣듯이** 처리하고, import된 값이 importing file보다 우선한다.
+
+여기서 `spring.config.location`과 감각이 다르다.
+
+| 항목 | `spring.config.location` | `spring.config.import` |
+|---|---|---|
+| 역할 | 탐색 위치 자체를 정한다 | 현재 파일이 추가 파일을 끌어온다 |
+| 선언 위치 | 보통 CLI / env / system property | 보통 `application.yml` 안 |
+| precedence 감각 | 뒤에 적은 location이 앞의 location을 덮을 수 있다 | import된 파일이 importing file보다 높다 |
+| 기본 위치와의 관계 | 기본 위치를 대체한다 | 현재 파일 기준으로 추가 문서를 끼워 넣는다 |
+
+중요한 뉘앙스는 이것이다.
+
+- import된 파일은 **import를 선언한 그 파일보다 높다**
+- 하지만 그보다 나중에 로드되는 더 높은 source가 있으면 그쪽이 또 덮을 수 있다
+
+즉 `spring.config.import`는 "절대 최상위로 올린다"가 아니라 **"현재 문서 바로 위에 한 장 더 올린다"**에 가깝다.
+
+여러 import를 한 줄에 적을 수도 있다.
+
+```yaml
+spring:
+  config:
+    import: "optional:file:./base.yml,optional:file:./override.yml"
+```
+
+이 경우에는 뒤쪽 import인 `override.yml`이 앞쪽 `base.yml`보다 높다.
+
+---
+
+## 5. relative import와 fixed import를 너무 어렵게 생각하지 말자
+
+Spring Boot reference는 import location을 크게 두 가지로 본다.
+
+| 종류 | 예시 | 해석 |
+|---|---|---|
+| fixed import | `file:./ops.yml`, `classpath:/defaults.yml` | 어디서 선언하든 같은 위치를 본다 |
+| import relative | `core/core.yml` | 이 import를 선언한 파일 기준 상대 경로로 본다 |
+
+예를 들어 `/demo/application.yml`이:
+
+```yaml
+spring:
+  config:
+    import: "optional:core/core.yml"
+```
+
+을 선언하면 `/demo/core/core.yml`을 찾는다.
+그리고 그 `core.yml`이 다시:
+
+```yaml
+spring:
+  config:
+    import: "optional:extra/extra.yml"
+```
+
+을 선언하면 `/demo/core/extra/extra.yml`을 찾는다.
+
+초보자 기준으로는 이 정도만 기억하면 충분하다.
+
+- `file:` / `classpath:` / `/`로 시작하면 보통 fixed
+- 그런 prefix가 없으면 보통 선언 파일 기준 relative
+- `optional:`은 경로가 fixed인지 relative인지 판단할 때 기준이 아니다
+
+---
+
+## 6. 어떤 도구를 고르면 되나
+
+| 상황 | 먼저 떠올릴 것 | 이유 |
+|---|---|---|
+| jar 안 기본값은 유지하고, 서버별 값만 바꾸고 싶다 | 기본 external `application.yml` | 가장 단순한 override 경로다 |
+| 기본 탐색 경로 자체를 다른 폴더들로 바꾸고 싶다 | `spring.config.location` | 검색 선반을 통째로 바꾸는 도구다 |
+| 현재 `application.yml`이 다른 파일도 읽게 하고 싶다 | `spring.config.import` | 파일 조합을 선언하는 도구다 |
+| 기본 위치는 유지하고 한 군데만 더 보고 싶다 | `spring.config.additional-location` | `location`과 달리 add 성격이다 |
+
+beginner 단계에서는 아래 한 줄로 정리해도 충분하다.
+
+```text
+기본값 vs 배포 override = external application.yml
+탐색 위치 교체 = spring.config.location
+현재 파일에 추가 문서 삽입 = spring.config.import
+```
+
+---
+
+## 흔한 오해
+
+### 1. jar 안 `application-prod.yml`이면 jar 밖 `application.yml`보다 항상 세다
+
+아니다. config data 순서에서는 external 위치가 packaged 위치보다 높다.
+
+### 2. `spring.config.location`은 기본 위치에 "추가"만 한다
+
+아니다. 기본 동작은 대체에 가깝다. 추가가 목적이면 `spring.config.additional-location`이 더 맞다.
+
+### 3. `spring.config.import`를 선언하면 그 파일이 무조건 전체 최상위가 된다
+
+아니다. import된 파일은 importing file보다 높지만, 더 나중에 오는 다른 higher source가 있으면 다시 덮일 수 있다.
+
+### 4. location/import 파일이 없으면 그냥 무시된다
+
+기본은 아니다. 없을 수도 있는 경로라면 `optional:`을 붙여야 startup failure를 피하기 쉽다.
+
+---
+
+## 다음에 이어서 볼 문서
+
+- env var, command-line, test property까지 한 번에 넓혀 보려면 [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- env var 이름 변환이 헷갈리면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+- property 값 때문에 조건부 bean이 왜 켜지거나 꺼지는지 보려면 [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)

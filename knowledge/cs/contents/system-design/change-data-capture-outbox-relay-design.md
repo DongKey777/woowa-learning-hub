@@ -4,12 +4,13 @@
 >
 > 문서 역할: 이 문서는 migration / replay / cutover cluster 안에서 **데이터 이동과 relay 경계**를 맡는 deep dive다.
 
-retrieval-anchor-keywords: change data capture, cdc, outbox relay, dual write, binlog tailing, outbox table, relay worker, ordering key, snapshot catchup, idempotent consumer, exactly-once illusion, single writer migration bridge
+retrieval-anchor-keywords: change data capture, cdc, outbox relay, dual write, binlog tailing, outbox table, relay worker, ordering key, snapshot catchup, idempotent consumer, exactly-once illusion, single writer migration bridge, outbox watermark token, commit metadata consistency token, downstream read watermark
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
+> - [Outbox Watermark Token Primer](./outbox-watermark-token-primer.md)
 > - [Event Bus Control Plane 설계](./event-bus-control-plane-design.md)
 > - [Search Indexing Pipeline 설계](./search-indexing-pipeline-design.md)
 > - [Billing Usage Metering System 설계](./billing-usage-metering-system-design.md)
@@ -21,6 +22,7 @@ retrieval-anchor-keywords: change data capture, cdc, outbox relay, dual write, b
 
 ## 이 문서 다음에 보면 좋은 설계
 
+- outbox row의 commit metadata를 downstream read consistency token으로 넘기는 가장 단순한 입문 연결은 [Outbox Watermark Token Primer](./outbox-watermark-token-primer.md)에서 먼저 잡을 수 있다.
 - bootstrap / 재처리 운영은 [Historical Backfill / Replay Platform 설계](./historical-backfill-replay-platform-design.md)로 이어진다.
 - schema 호환성과 계약 phase는 [Zero-Downtime Schema Migration Platform 설계](./zero-downtime-schema-migration-platform-design.md)와 같이 보는 편이 좋다.
 - dual-write 회피와 authority transfer는 [Dual-Write Avoidance / Migration Bridge 설계](./dual-write-avoidance-migration-bridge-design.md)로 이어진다.

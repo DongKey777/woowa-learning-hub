@@ -24,6 +24,10 @@
 > - policy lifecycle
 > - platform rule owner
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Platform Policy Ownership and Override Governance](./README.md#platform-policy-ownership-and-override-governance)
+> - 다음 단계: [Override Burn-Down and Exemption Debt](./override-burn-down-and-exemption-debt.md)
+
 ## 핵심 개념
 
 플랫폼 정책은 보통 "금지 규칙"으로 보이지만, 실제 운영에서는 다음이 더 중요하다.

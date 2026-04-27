@@ -8,17 +8,23 @@
 <summary>Table of Contents</summary>
 
 - [왜 초심자에게 자주 생기나](#왜-초심자에게-자주-생기나)
+- [초심자 1분 멘탈 모델](#초심자-1분-멘탈-모델)
 - [문제를 한 장으로 보기](#문제를-한-장으로-보기)
 - [안티패턴 1. JPA Entity를 API 응답으로 직접 반환](#안티패턴-1-jpa-entity를-api-응답으로-직접-반환)
 - [안티패턴 2. 서비스와 도메인이 ORM 세부를 직접 안다](#안티패턴-2-서비스와-도메인이-orm-세부를-직접-안다)
 - [안티패턴 3. 조회 최적화 요구가 도메인 모델을 망가뜨린다](#안티패턴-3-조회-최적화-요구가-도메인-모델을-망가뜨린다)
+- [증상별 첫 처방](#증상별-첫-처방)
 - [리팩토링을 시작하는 신호](#리팩토링을-시작하는-신호)
+- [자주 헷갈리는 지점](#자주-헷갈리는-지점)
 - [초심자용 분리 순서](#초심자용-분리-순서)
 - [기억할 기준](#기억할-기준)
+- [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
 
 </details>
 
 > 관련 문서:
+> - [Software Engineering README: Persistence Model Leakage Anti-Patterns](./README.md#persistence-model-leakage-anti-patterns)
+> - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 > - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
 > - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
@@ -29,7 +35,7 @@
 > - [API 설계와 예외 처리](./api-design-error-handling.md)
 > - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 >
-> retrieval-anchor-keywords: persistence model leakage, JPA entity leakage, entity leakage anti-pattern, domain model vs persistence model, entity to dto separation, orm leakage, lazy loading api response, repository adapter mapping, beginner jpa boundary, persistence boundary smell, persistence adapter mapping checklist, aggregate persistence mapping pitfalls, bidirectional association domain leak, cascade type all smell, orphanRemoval smell, domain object to jpa entity, jpa entity mapper checklist, lazy initialization exception, n+1 query smell, fetch join boundary, entity serialization smell, query repository separation, read-heavy api query model, list detail response model
+> retrieval-anchor-keywords: persistence model leakage, JPA entity leakage, entity leakage anti-pattern, domain model vs persistence model, entity to dto separation, orm leakage, lazy loading api response, repository adapter mapping, beginner jpa boundary, persistence boundary smell, persistence adapter mapping checklist, aggregate persistence mapping pitfalls, bidirectional association domain leak, cascade type all smell, orphanRemoval smell, domain object to jpa entity, jpa entity mapper checklist, lazy initialization exception, n+1 query smell, fetch join boundary, entity serialization smell, query repository separation, read-heavy api query model, list detail response model, beginner persistence separation order, entity api response smell, service entity setxxx smell, persistence follow-up question guide, ORM 누수 다음 문서
 
 ## 왜 초심자에게 자주 생기나
 
@@ -55,6 +61,17 @@
 - API 모델은 화면 요구사항, 응답 필드, 직렬화 정책 때문에 바뀐다
 
 한 객체가 이 세 변경 이유를 모두 떠안으면 작은 수정도 여러 층에 퍼진다.
+
+## 초심자 1분 멘탈 모델
+
+이 문서는 "모델 3개를 1개로 쓰면 왜 힘들어지는가"를 빠르게 구분하는 용도다.
+
+- 도메인 모델: 규칙을 설명한다
+- persistence 모델: 저장 방식을 설명한다
+- API 모델: 외부에 보여 줄 모양을 설명한다
+
+세 모델의 질문이 다르면, 코드도 분리하는 쪽이 유지보수 비용이 낮다.
+초심자 기준으로는 "패턴 이름"보다 "무엇 때문에 자주 바뀌는가"를 먼저 보자.
 
 ## 문제를 한 장으로 보기
 
@@ -299,6 +316,17 @@ CRUD 초반에는 과한 분리가 필요 없지만, 화면 요구가 엔티티 
 - 목록 API와 상세 API가 같은 엔티티를 억지로 공유하면 query model을 검토한다
 - `fetch join` 최적화 요구가 도메인 객체 설계를 밀어내기 시작하면 읽기 경로를 따로 둔다
 
+## 증상별 첫 처방
+
+| 증상 | 첫 처방 |
+|---|---|
+| 컨트롤러가 `Entity`를 직접 반환한다 | 응답 DTO를 먼저 분리한다 |
+| 서비스가 `entity.setXxx()`로 규칙을 구현한다 | 규칙을 도메인 메서드로 옮기고 서비스는 흐름 조합만 맡긴다 |
+| 목록/상세 요구로 엔티티 필드가 계속 증가한다 | query repository 또는 읽기 DTO 경로를 별도 분리한다 |
+| 팀 대화가 규칙보다 `LAZY`/`flush` 중심이다 | ORM 세부를 adapter로 밀어내고 port 언어를 다시 도메인 타입으로 고정한다 |
+
+한 번에 다 바꾸기보다, 가장 자주 깨지는 증상 하나를 먼저 고치는 방식이 초심자에게 안전하다.
+
 ## 리팩토링을 시작하는 신호
 
 아래 신호가 두세 개 이상 보이면 persistence model leakage를 의심해 볼 만하다.
@@ -309,6 +337,17 @@ CRUD 초반에는 과한 분리가 필요 없지만, 화면 요구가 엔티티 
 - 도메인 설명보다 `fetch = LAZY`, `cascade`, `orphanRemoval` 논의가 더 자주 나온다
 - API 변경 때문에 테이블 매핑 클래스가 자주 수정된다
 - 양방향 연관관계와 직렬화 문제를 우회하는 코드가 많아진다
+
+## 자주 헷갈리는 지점
+
+- "작은 서비스인데 분리까지 필요한가?"
+  - 서비스 규모보다 변경 이유가 핵심이다. API 응답 변경이 엔티티 변경을 강제하기 시작하면 이미 분리 타이밍이다.
+- "Entity를 도메인처럼 써도 테스트만 잘 하면 되지 않나?"
+  - 테스트 수보다 결합 위치가 더 중요하다. ORM/직렬화 세부가 유스케이스 테스트에 새면 리팩토링 비용이 커진다.
+- "분리하면 코드가 늘어나서 생산성이 떨어지지 않나?"
+  - 초기 파일 수는 늘어도, 변경 영향 범위가 줄어 유지보수 속도는 보통 개선된다.
+- "항상 CQRS처럼 크게 쪼개야 하나?"
+  - 아니다. 먼저 API DTO 분리와 repository 경계 고정 같은 작은 단계부터 시작하면 충분하다.
 
 ## 초심자용 분리 순서
 
@@ -331,3 +370,10 @@ CRUD 초반에는 과한 분리가 필요 없지만, 화면 요구가 엔티티 
 - API contract와 persistence mapping은 바뀌는 이유가 다르다
 - 도메인 규칙은 ORM 세부보다 비즈니스 언어로 읽혀야 한다
 - 분리의 출발점은 거창한 패턴 이름보다 "무엇이 무엇 때문에 자주 바뀌는가"다
+
+## 다음에 이어서 볼 문서
+
+- repository 경계를 체크리스트로 바로 점검하려면: [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+- 연관관계 매핑 함정을 집중해서 보려면: [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
+- 읽기 모델 분리 시점을 더 구체적으로 보려면: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+- lazy loading/N+1 경계 냄새를 따로 정리하려면: [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)

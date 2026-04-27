@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 > - [DNS, CDN, HTTP/2, HTTP/3](./dns-cdn-websocket-http2-http3.md)
 > - [DNS TTL Cache Failure Patterns](./dns-ttl-cache-failure-patterns.md)
 > - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
@@ -80,7 +81,7 @@ DoH는 이 질의를 HTTPS 안으로 넣어 보호한다.
 - 로그 기반 추적
 - 자산 제어
 
-DoH가 클라이언트에서 직접 외부 resolver로 나가면, 이런 제어가 우회될 수 있다.  
+DoH가 클라이언트에서 직접 외부 resolver로 나가면, 이런 제어가 우회될 수 있다.
 그래서 기업은 자체 DoH endpoint를 두거나, 허용 resolver만 쓰게 하거나, 아예 정책을 다시 설계해야 한다.
 
 ### 4. bootstrap 문제가 왜 생기나
@@ -101,7 +102,7 @@ DoH도 resolver가 필요하다.
 - 외부 사용자는 public IP를 써야 한다
 - DoH가 외부 resolver만 보게 하면 내부 이름 해석이 꼬일 수 있다
 
-그래서 기업 환경에서는 DoH가 단순히 "더 안전한 DNS"가 아니다.  
+그래서 기업 환경에서는 DoH가 단순히 "더 안전한 DNS"가 아니다.
 **정책과 이름 공간을 어떻게 나눌지**의 문제다.
 
 ## 실전 시나리오

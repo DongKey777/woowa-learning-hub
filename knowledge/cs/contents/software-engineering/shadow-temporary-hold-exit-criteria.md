@@ -35,6 +35,10 @@
 > - parked shadow path
 > - temporary hold governance
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Temporary Hold Exit Criteria](./README.md#temporary-hold-exit-criteria)
+> - 다음 단계: [Shadow Process Officialization and Absorption Criteria](./shadow-process-officialization-absorption-criteria.md)
+
 ## 핵심 개념
 
 `temporary_hold`는 결정 회피용 parking lot가 아니다.

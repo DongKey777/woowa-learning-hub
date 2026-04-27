@@ -44,6 +44,10 @@
 > - reopen after recurrence
 > - successor after recurrence
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Retirement Proof Metrics](./README.md#shadow-retirement-proof-metrics)
+> - 다음 단계: [Shadow Retirement Scorecard Schema](./shadow-retirement-scorecard-schema.md)
+
 ## 핵심 개념
 
 shadow process에서 가장 흔한 착시는 "티켓을 닫았으니 정리됐다"는 판단이다.

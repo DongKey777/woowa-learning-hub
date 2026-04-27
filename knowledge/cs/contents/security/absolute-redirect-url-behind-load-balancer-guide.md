@@ -5,15 +5,38 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
+> - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
 > - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+> - [Wrong-Scheme vs Wrong-Origin Redirect Shortcut](./wrong-scheme-vs-wrong-origin-redirect-shortcut.md)
+> - [Password Reset, Magic Link, Public Origin Guide](./password-reset-magic-link-public-origin-guide.md)
+> - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
+> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 > - [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
 > - [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
 > - [Open Redirect Hardening](./open-redirect-hardening.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: absolute redirect URL behind load balancer, absolute redirect behind proxy, X-Forwarded-Host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, callback URL flips to internal host, callback URL flips to localhost, callback URL flips to staging host, Location header wrong host, Location header internal hostname, app builds http internal redirect, external origin vs internal origin, public origin behind proxy, reverse proxy absolute URL building, load balancer host mismatch, proxy host mismatch beginner, spring forwarded header host, express trust proxy host, ingress x-forwarded-host, absolute URL builder proxy, host header preservation beginner, return URL wrong domain after login, password reset link wrong host, magic link wrong host
+retrieval-anchor-keywords: absolute redirect URL behind load balancer, absolute redirect behind proxy, X-Forwarded-Host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, callback URL flips to internal host, callback URL flips to localhost, callback URL flips to staging host, Location header wrong host, Location header internal hostname, app builds http internal redirect, external origin vs internal origin, public origin behind proxy, reverse proxy absolute URL building, load balancer host mismatch, proxy host mismatch beginner, spring forwarded header host, express trust proxy host, ingress x-forwarded-host, absolute URL builder proxy, host header preservation beginner, return URL wrong domain after login, password reset link wrong host, magic link wrong host, public base URL behind proxy, callback URL internal hostname, oauth callback internal host, wrong origin after social login, alb preserve host header, nginx proxy_set_header host, absolute URL source of truth, wrong origin vs open redirect, redirect troubleshooting order, absolute redirect beginner checklist, relative redirect works but absolute fails, relative redirect vs absolute redirect behind proxy, wrong origin 5 minute checklist, proxy public origin restore, wrong origin vs secure cookie mismatch, redirect 문제 원인 분리표, forwarded host trust quick check, login-loop primer ladder return path, return to login redirect hidden jsessionid savedrequest primer, browser session beginner ladder return, wrong origin redirect shortcut, wrong scheme vs wrong origin, post-login redirect internal host vs http
+
+## 이 문서 다음에 보면 좋은 문서
+
+- Spring deep dive 전에 login-loop 기준점을 다시 맞추려면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) -> [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) 순서로 먼저 복귀한다.
+- `Location` host는 맞는데 `http://`로만 내려오거나 `Secure` cookie가 안 붙으면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)로 넘어간다.
+- 브라우저 redirect는 정상인데 이메일 reset link나 magic link host만 틀리면 [Password Reset, Magic Link, Public Origin Guide](./password-reset-magic-link-public-origin-guide.md)에서 configured public origin 기준을 먼저 본다.
+- `X-Forwarded-*`를 어디까지 믿어야 하는지 불안하면 [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)로 trusted proxy 경계를 먼저 고정한다.
+- `next=https://evil.example`처럼 사용자 입력 redirect가 그대로 반사되면 [Open Redirect Hardening](./open-redirect-hardening.md)을 먼저 본다.
+- browser login loop인데 `Location` host/scheme은 정상이라면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)나 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)로 분기한다.
+- 다시 전체 경로를 고르고 싶으면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가면 된다.
+
+## 이 문서의 한 걸음 복귀 경로
+
+이 문서는 `wrong-origin` detour를 끝내는 자리이지, category map을 대체하는 문서는 아니다.
+
+| 여기까지 읽고 난 뒤 상태 | 바로 돌아갈 자리 |
+|---|---|
+| host/origin 문제라는 건 알겠는데 다음 symptom branch를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| primer부터 다시 읽어야 할 만큼 browser/session 문장이 다시 섞였다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
 
 ## 이 문서를 먼저 읽는 이유
 
@@ -29,6 +52,40 @@ retrieval-anchor-keywords: absolute redirect URL behind load balancer, absolute 
 앱이 **바깥 사용자가 접속한 origin**을 모르고, **내부 proxy hop 주소**를 자기 주소라고 착각해서 생기는 경우가 많다.
 
 ---
+
+## 초보자 5분 점검 순서
+
+복잡한 설정을 보기 전에 아래 순서로 좁히면 대부분 빠르게 분기된다.
+
+1. login 응답 `Location`이 public origin인지 먼저 본다.
+2. OAuth라면 authorization request의 `redirect_uri`가 등록값과 exact match인지 본다.
+3. app이 본 `Host`/`X-Forwarded-Host`/`X-Forwarded-Proto`를 같은 로그 라인에서 묶어 본다.
+4. absolute URL 생성 소스가 request 값인지, 설정된 public base URL인지 확인한다.
+5. relative redirect(`/dashboard`)는 되는데 absolute callback만 깨지면 host 복원/고정 URL 축부터 본다.
+
+| 1차 관찰 | 먼저 의심할 축 | 다음 문서 |
+|---|---|---|
+| `Location` host만 internal/staging으로 틀림 | host 복원 실패 (`Host`/`X-Forwarded-Host`) | [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md) |
+| `Location`이 `http://`로 내려옴 | scheme 복원 실패 (`X-Forwarded-Proto`) | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+| 상대 redirect는 정상, OAuth/email link만 틀림 | absolute URL source of truth 오류 | 이 문서의 `absolute URL은 무엇을 기준으로 만들어야 하나` 섹션 |
+
+## 20초 혼동 분리표: 비슷해 보이지만 다른 문제
+
+| 겉증상 | 실제 중심 원인 | 먼저 볼 문서 |
+|---|---|---|
+| 로그인 후 다른 host로 튐 | public origin 복원 실패 또는 absolute URL builder 기준 오류 | 이 문서 |
+| 같은 host인데 `http://`로 내려오고 `Secure` cookie가 안 붙음 | scheme 복원 실패 (`X-Forwarded-Proto`) | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+| `next=https://evil.example`처럼 사용자 입력 URL로 튐 | user-supplied redirect validation 부족 | [Open Redirect Hardening](./open-redirect-hardening.md) |
+
+## detour에서 복귀하는 browser/session primer ladder
+
+absolute redirect detour에서 원인을 확인했다면, Spring/프록시 설정 상세로 내려가기 전에 아래 사다리로 다시 공통 symptom 기준을 맞춘다.
+
+| 단계 | 왜 이 단계로 복귀하나 | 링크 |
+|---|---|---|
+| 1. `primer` | login redirect와 `SavedRequest`가 남기는 상태를 다시 고정 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| 2. `primer bridge` | `401`/`302`/login HTML fallback을 한 표에서 같은 기준으로 분기 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| 3. `catalog` | 다음 symptom 갈래를 category navigator에서 안전하게 재선택 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 
 ## 가장 단순한 mental model
 
@@ -56,6 +113,26 @@ retrieval-anchor-keywords: absolute redirect URL behind load balancer, absolute 
 | `https://staging.example.com/dashboard` | `https://staging.example.com` |
 
 path가 같아도 scheme, host, port 중 하나가 바뀌면 다른 origin이다.
+
+---
+
+## 한 요청에서 주소가 네 번 보일 수 있다
+
+초보자가 가장 헷갈리는 지점은 "도대체 어느 주소가 진짜냐"다.
+proxy 뒤에서는 한 요청에 아래 값들이 동시에 등장할 수 있다.
+
+| 이름 | 예시 | 누가 들고 있나 | 언제 써야 하나 |
+|---|---|---|---|
+| public origin | `https://app.example.com` | 브라우저, 사용자, OAuth provider 등록값 | 사용자가 실제로 돌아와야 하는 주소 |
+| raw app host | `app-internal:8080` | 앱이 proxy 뒤에서 직접 본 내부 요청 | 내부 라우팅 확인용일 뿐, public URL 생성 기준으로 쓰면 위험 |
+| forwarded host/proto | `app.example.com`, `https` | trusted proxy가 앱에 전달한 값 | 현재 요청의 public origin을 복원할 때 |
+| configured public base URL | `https://app.example.com` | 앱 설정, 환경변수, tenant/domain allowlist | email link, reset link, 고정 callback처럼 보안 민감한 absolute URL 생성 시 |
+
+핵심은 "값이 많다"가 아니라 "용도가 다르다"다.
+
+- 내부 hop을 설명하는 값과, 사용자가 실제로 보는 값은 다를 수 있다.
+- absolute URL builder가 raw app host를 집으면 wrong origin이 된다.
+- absolute URL builder가 trusted forwarded 값이나 configured public base URL을 집어야 public origin으로 돌아간다.
 
 ---
 
@@ -222,6 +299,26 @@ X-Forwarded-Proto: https
 
 ---
 
+## absolute URL은 무엇을 기준으로 만들어야 하나
+
+모든 absolute URL을 request `Host` 하나로 만들려고 하면 자주 깨진다.
+용도에 따라 source of truth를 나누면 훨씬 덜 흔들린다.
+
+| 장면 | 우선 기준 | 왜 이 기준이 낫나 |
+|---|---|---|
+| login 후 같은 사이트 내부 화면으로 이동 | relative redirect (`/dashboard`) | 현재 browser origin을 그대로 유지하므로 host 재구성이 필요 없다 |
+| 지금 들어온 요청의 tenant/domain 기준 callback URL 생성 | trusted proxy가 준 `Host` 보존 또는 `X-Forwarded-Host` + `X-Forwarded-Proto` | 현재 요청의 public origin을 복원해야 하기 때문 |
+| OAuth provider에 등록된 고정 callback | 설정된 public callback URL 또는 environment별 allowlist | provider exact match가 필요하고, raw request host에 흔들리면 안 된다 |
+| password reset / magic link / email link | 설정된 public base URL 또는 검증된 tenant 도메인 설정 | out-of-band 링크는 현재 request host보다 설정값이 더 안전하다 |
+
+짧게 기억하면 이렇다.
+
+- **같은 브라우저 안에서 바로 이동**이면 relative redirect를 먼저 생각한다.
+- **현재 요청의 공개 도메인을 복원**해야 하면 trusted forwarded 정보를 본다.
+- **메일, 외부 provider, 고정 callback**처럼 보안 민감한 absolute URL이면 configured public base URL이나 allowlist를 먼저 본다.
+
+---
+
 ## 먼저 10초 판별표
 
 | 지금 보이는 현상 | 더 가까운 원인 | 먼저 확인할 것 |
@@ -231,6 +328,39 @@ X-Forwarded-Proto: https
 | `http://app.example.com`으로만 바뀜 | scheme mismatch가 더 큼 | `X-Forwarded-Proto`, [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
 | host가 요청마다 이상하게 바뀜 | `Host` / `X-Forwarded-Host`를 외부 입력처럼 받고 있을 수 있음 | edge가 incoming forwarded header를 strip/overwrite하는지 |
 | `Location: /dashboard`는 괜찮은데 absolute callback만 깨짐 | 상대 redirect는 현재 origin을 보존하지만 absolute URL builder가 틀림 | callback/base URL 생성 로직 |
+
+---
+
+## 60초 분기: 이 문서가 맞는 문제인지 먼저 가르기
+
+| 지금 보이는 장면 | 더 가능성 높은 원인 | 먼저 볼 문서 |
+|---|---|---|
+| login 응답 `Location`의 host 자체가 틀리다 | public origin 복원/absolute URL builder 문제 | 이 문서를 계속 본다 |
+| `Location` host는 맞는데 user 입력 `next`로 외부 도메인 이동 | redirect destination 검증 누락 | [Open Redirect Hardening](./open-redirect-hardening.md) |
+| `Location` host/scheme은 정상인데 로그인 직후 다시 anonymous | cookie scope/session 복원 문제 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md), [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| external IdP callback 구간에서만 깨진다 | cross-site cookie 또는 proxy scheme 인식 문제 | [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md), [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) |
+
+## 초보자 실수 패턴 3개와 즉시 수정 포인트
+
+| 자주 하는 실수 | 왜 깨지나 | 바로 고칠 포인트 |
+|---|---|---|
+| absolute URL을 매번 request `Host`에서 조립 | proxy 뒤 내부 host가 들어와 wrong origin이 된다 | 내부 이동은 relative redirect를 우선하고, 외부 callback/link는 configured public URL 기준으로 만든다 |
+| `X-Forwarded-Proto`만 보고 host는 안 본다 | `https`는 맞아도 host가 내부값이면 여전히 실패한다 | `X-Forwarded-Proto`와 `X-Forwarded-Host`를 한 세트로 검증한다 |
+| forwarded header를 모든 요청에서 신뢰 | client가 헤더를 주장하면 spoofing으로 이어질 수 있다 | edge에서 strip/overwrite하고 앱은 trusted proxy에서 온 값만 해석한다 |
+
+---
+
+## 30초 concrete example: 왜 로컬은 되는데 운영에서 깨질까
+
+같은 코드라도 "앱이 어느 host를 자기 주소로 읽었는지"에 따라 결과가 달라진다.
+
+| 환경 | 앱이 읽은 값 | 앱이 만든 `Location` | 결과 |
+|---|---|---|---|
+| 로컬 단일 서버 | `http://localhost:8080` | `http://localhost:8080/dashboard` | 정상처럼 보임 |
+| 운영 + LB (host 보존/forwarded 해석 누락) | `http://app-internal:8080` | `http://app-internal:8080/dashboard` | 브라우저가 wrong origin으로 이동 |
+| 운영 + LB (public origin 복원 정상) | `https://app.example.com` | `https://app.example.com/dashboard` | 정상 |
+
+그래서 "로컬에서는 되는데 운영만 깨진다"는 증상 자체가 proxy 경계에서 public origin 복원 실패 신호인 경우가 많다.
 
 ---
 
@@ -332,6 +462,12 @@ absolute URL은 scheme뿐 아니라 host와 port도 필요하다.
 - 앱이 어떤 proxy를 신뢰할지 제한하는가
 - direct app port가 외부에 노출되어 있지 않은가
 - public base URL이 환경별로 정확한가
+
+### 6. "`PUBLIC_BASE_URL` 하나면 멀티테넌트도 충분한가요?"
+
+대개 아니다.
+tenant별 도메인을 쓰는 서비스라면 "요청 tenant와 허용 도메인 매핑"을 검증해 URL을 생성해야 한다.
+고정 base URL 하나를 재사용하면 tenant 간 wrong origin 이동이나 callback mismatch가 생길 수 있다.
 
 ---
 

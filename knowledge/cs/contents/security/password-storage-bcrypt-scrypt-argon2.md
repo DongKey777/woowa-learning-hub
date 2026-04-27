@@ -9,12 +9,23 @@
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
 > - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
+> - [비밀번호 저장 기초: 왜 해시를 써야 하나](./password-hashing-basics.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
+
+retrieval-anchor-keywords: password storage deep dive, bcrypt scrypt argon2, password hashing advanced, password hashing beginner handoff, password primer return path, return to security README
+
+---
+
+## 처음 읽는다면
+
+- 아직 "왜 평문 저장이 안 되는가", "왜 SHA-256만으로는 부족한가"가 먼저 헷갈리면 [비밀번호 저장 기초: 왜 해시를 써야 하나](./password-hashing-basics.md)를 먼저 읽는 편이 좋다.
+- 다른 security primer로 돌아가려면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 복귀하면 된다.
 
 ---
 
 ## 핵심 개념
 
-비밀번호는 복구 가능한 형태로 저장하면 안 된다.  
+비밀번호는 복구 가능한 형태로 저장하면 안 된다.
 중요한 건 "원문을 알아내는 것"이 아니라 "입력한 값이 같은지 확인하는 것"이다.
 
 그래서 비밀번호 저장은 다음 원칙을 따른다.
@@ -39,7 +50,7 @@
 
 ### 1. 해시와 암호화는 다르다
 
-암호화는 복호화가 가능하지만, 비밀번호는 복호화가 가능하면 안 된다.  
+암호화는 복호화가 가능하지만, 비밀번호는 복호화가 가능하면 안 된다.
 그래서 평문을 되돌리는 구조가 아니라, 입력값을 다시 같은 방식으로 계산해 비교한다.
 
 ```text
@@ -85,22 +96,22 @@
 
 ### 시나리오 1: DB가 유출됐다
 
-빠른 SHA-256만 저장했다면 오프라인 대입 공격에 매우 취약하다.  
+빠른 SHA-256만 저장했다면 오프라인 대입 공격에 매우 취약하다.
 반대로 `argon2id` + salt + 적절한 work factor면 공격 비용이 급격히 올라간다.
 
 ### 시나리오 2: 모든 사용자가 같은 비밀번호를 썼다
 
-salt가 없으면 해시가 동일하게 나와서 재사용 여부가 바로 드러난다.  
+salt가 없으면 해시가 동일하게 나와서 재사용 여부가 바로 드러난다.
 salt가 있으면 같은 비밀번호도 서로 다른 해시가 된다.
 
 ### 시나리오 3: 로그인만 느려진다고 work factor를 낮춤
 
-로그인 지연은 줄지만 공격자도 더 빨라진다.  
+로그인 지연은 줄지만 공격자도 더 빨라진다.
 운영에서는 latency budget과 공격 비용을 같이 봐야 한다.
 
 ### 시나리오 4: 비밀번호를 되찾아야 한다고 요구함
 
-복구 가능한 암호화를 쓰고 싶어지는 순간이 있지만, 비밀번호는 그 대상이 아니다.  
+복구 가능한 암호화를 쓰고 싶어지는 순간이 있지만, 비밀번호는 그 대상이 아니다.
 재설정 흐름을 만들어야지 복구를 설계하면 안 된다.
 
 ---

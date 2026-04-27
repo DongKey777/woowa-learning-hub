@@ -16,14 +16,23 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+> - [HTTPS와 TLS 기초](./https-tls-beginner.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: HTTPS, HSTS, MITM, certificate validation, TLS termination, downgrade attack, mixed content, secure cookie, X-Forwarded-Proto, certificate pinning, trust store, browser hardening
+retrieval-anchor-keywords: HTTPS, HSTS, MITM, certificate validation, TLS termination, downgrade attack, mixed content, secure cookie, X-Forwarded-Proto, certificate pinning, trust store, browser hardening, https beginner primer, hsts beginner handoff, return to security README
+
+---
+
+## 처음 읽는다면
+
+- HTTPS/TLS 자체가 아직 낯설면 이 문서보다 먼저 [HTTPS와 TLS 기초](./https-tls-beginner.md)에서 "암호화된 전송"과 "인증서 검증" mental model을 잡는 편이 안전하다.
+- 다른 입문 문서로 돌아가고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 복귀하면 된다.
 
 ---
 
 ## 핵심 개념
 
-HTTPS는 HTTP 위에 TLS를 얹은 것이다.  
+HTTPS는 HTTP 위에 TLS를 얹은 것이다.
 주요 목표는 다음 세 가지다.
 
 - 기밀성: 중간에서 내용을 읽지 못하게 한다
@@ -76,7 +85,7 @@ HSTS는 브라우저에게 "이 도메인은 무조건 HTTPS로만 접근하라"
 
 ### 3. TLS termination
 
-로드밸런서나 reverse proxy에서 TLS를 종료하는 경우가 많다.  
+로드밸런서나 reverse proxy에서 TLS를 종료하는 경우가 많다.
 이때는 내부 구간도 믿는지, 끝까지 암호화할지 판단해야 한다.
 
 - 외부 노출 구간은 HTTPS
@@ -119,7 +128,7 @@ HTTPS 페이지 안에서 HTTP 리소스를 불러오면 mixed content가 된다
 
 ### 시나리오 1: HTTP 링크를 눌러 로그인 페이지로 들어감
 
-다운그레이드된 HTTP로 가면 초기 요청이 노출될 수 있다.  
+다운그레이드된 HTTP로 가면 초기 요청이 노출될 수 있다.
 HSTS는 이런 습관적 HTTP 접근을 줄이는 데 유용하다.
 
 ### 시나리오 2: 프록시 뒤에서 secure cookie가 누락됨
@@ -137,12 +146,12 @@ HSTS는 이런 습관적 HTTP 접근을 줄이는 데 유용하다.
 
 ### 시나리오 3: self-signed cert를 운영 환경에서 허용함
 
-개발 편의를 위해 예외를 넣었다가 운영에 남는 경우가 있다.  
+개발 편의를 위해 예외를 넣었다가 운영에 남는 경우가 있다.
 이건 사실상 MITM 방어를 포기하는 것이다.
 
 ### 시나리오 4: 브라우저는 HTTPS인데 내부 API는 평문
 
-외부는 안전해 보여도 내부망 트래픽이 평문이면 전체 위협 모델이 약해진다.  
+외부는 안전해 보여도 내부망 트래픽이 평문이면 전체 위협 모델이 약해진다.
 최소한 민감 경로는 내부도 암호화를 고려해야 한다.
 
 ---

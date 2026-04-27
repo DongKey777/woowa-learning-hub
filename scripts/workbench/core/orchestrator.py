@@ -155,6 +155,26 @@ def _normalize_candidate_tags(title: str, goal: str, tags: list[str]) -> list[st
     return normalized
 
 
+def _matches_claim_tags(item: dict[str, Any], claim_tags: list[str] | None) -> bool:
+    if not claim_tags:
+        return True
+    haystack = " ".join(
+        [
+            str(item.get("title", "")),
+            str(item.get("goal", "")),
+            " ".join(str(tag) for tag in item.get("tags", [])),
+            str(item.get("base_title", "")),
+            str(item.get("lane", "")),
+        ]
+    ).lower()
+    return any(str(tag).strip().lower() in haystack for tag in claim_tags if str(tag).strip())
+
+
+def _lease_write_scopes(item: dict[str, Any]) -> set[str]:
+    raw_scopes = item.get("lease_write_scopes") or item.get("write_scopes") or []
+    return {str(scope).strip() for scope in raw_scopes if str(scope).strip()}
+
+
 def _priority_with_beginner_bias(base_priority: int, title: str, goal: str, tags: list[str], *, source: str) -> int:
     priority = int(base_priority)
     if _is_beginner_focused(title, goal, tags):
@@ -1235,6 +1255,7 @@ class Orchestrator:
         candidates: list[dict[str, Any]],
         *,
         source: str,
+        pending_cap: int | None = None,
         now: datetime | None = None,
     ) -> list[str]:
         with self._locked():
@@ -1250,6 +1271,13 @@ class Orchestrator:
                     continue
                 if self._candidate_exists(items, lane, title):
                     continue
+                if pending_cap is not None and len(_live_lane_items(items, lane)) >= pending_cap:
+                    self._append_history(
+                        "queue.enqueue_skipped",
+                        {"lane": lane, "title": title, "source": source, "reason": "pending_cap", "pending_cap": pending_cap},
+                        now=current,
+                    )
+                    break
                 item = self._make_adaptive_item(lane, title, goal, tags, planner, current, source=source)
                 items.append(item)
                 created.append(item["item_id"])
@@ -1331,6 +1359,7 @@ class Orchestrator:
                 item["status"] = QUEUE_PENDING
                 item["lease_owner"] = None
                 item["lease_expires_at"] = None
+                item["lease_write_scopes"] = []
                 item["updated_at"] = _isoformat(now)
                 changed = True
                 self._append_history(
@@ -1346,6 +1375,14 @@ class Orchestrator:
         pending = [item for item in items if item.get("status") == QUEUE_PENDING]
         pending.sort(key=lambda entry: (-int(entry["priority"]), entry["created_at"], entry["item_id"]))
         selected: list[dict[str, Any]] = []
+        if wave_size <= 0:
+            wave = {
+                "wave_id": f"wave-{now.strftime('%Y%m%d%H%M%S')}",
+                "created_at": _isoformat(now),
+                "items": selected,
+            }
+            _write_json(self.wave_path, wave)
+            return wave
         seen_lanes: set[str] = set()
         for item in pending:
             if item["lane"] in seen_lanes:
@@ -1417,16 +1454,19 @@ class Orchestrator:
         *,
         low_water_mark: int = DEFAULT_LOW_WATER_MARK,
         wave_size: int = DEFAULT_WAVE_SIZE,
+        refresh_backlog: bool = True,
         now: datetime | None = None,
     ) -> dict[str, Any]:
         with self._locked():
             current = now or _utc_now()
             items = self._release_expired_leases(self.load_queue(), now=current)
             planner = self.load_planner()
-            items = self._refresh_backlog(items, planner, low_water_mark=low_water_mark, now=current)
+            if refresh_backlog:
+                items = self._refresh_backlog(items, planner, low_water_mark=low_water_mark, now=current)
             items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
             self.save_queue(items)
-            self.save_planner(planner)
+            if refresh_backlog:
+                self.save_planner(planner)
             wave = self._build_wave(items, wave_size=wave_size, now=current)
             summary, lane_summary = self._queue_summary(items)
             status = self.load_status()
@@ -1458,12 +1498,22 @@ class Orchestrator:
         limit: int = 1,
         lease_seconds: int = DEFAULT_LEASE_SECONDS,
         lanes: list[str] | None = None,
+        write_scopes: list[str] | None = None,
+        claim_tags: list[str] | None = None,
+        refresh_backlog: bool = True,
         now: datetime | None = None,
     ) -> dict[str, Any]:
         with self._locked():
             current = now or _utc_now()
-            self.run_once(now=current)
+            self.run_once(
+                now=current,
+                refresh_backlog=refresh_backlog,
+                wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+            )
             items = self.load_queue()
+            normalized_write_scopes = [scope for scope in (write_scopes or []) if str(scope).strip()]
+            if self._write_scope_has_foreign_lease(normalized_write_scopes, worker, items=items):
+                return {"worker": worker, "claimed": []}
             lane_filter = set(lanes or [])
             suggested_ids = {
                 item["item_id"]
@@ -1473,6 +1523,7 @@ class Orchestrator:
                 item
                 for item in items
                 if item.get("status") == QUEUE_PENDING and (not lane_filter or item["lane"] in lane_filter)
+                and _matches_claim_tags(item, claim_tags)
             ]
             candidates.sort(
                 key=lambda entry: (
@@ -1487,17 +1538,27 @@ class Orchestrator:
                 item["status"] = QUEUE_LEASED
                 item["lease_owner"] = worker
                 item["lease_expires_at"] = _isoformat(current + timedelta(seconds=lease_seconds))
+                item["lease_write_scopes"] = normalized_write_scopes
                 item["updated_at"] = _isoformat(current)
                 item["attempts"] = int(item.get("attempts", 0)) + 1
                 item["wave_count"] = int(item.get("wave_count", 0)) + 1
                 claimed.append(self._wave_view(item))
                 self._append_history(
                     "queue.claim",
-                    {"item_id": item["item_id"], "lane": item["lane"], "worker": worker},
+                    {
+                        "item_id": item["item_id"],
+                        "lane": item["lane"],
+                        "worker": worker,
+                        "write_scopes": normalized_write_scopes,
+                    },
                     now=current,
                 )
             self.save_queue(items)
-            self.run_once(now=current)
+            self.run_once(
+                now=current,
+                refresh_backlog=refresh_backlog,
+                wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+            )
             return {"worker": worker, "claimed": claimed}
 
     def complete(
@@ -1506,6 +1567,7 @@ class Orchestrator:
         worker: str,
         summary: str,
         *,
+        refresh_backlog: bool = True,
         now: datetime | None = None,
     ) -> dict[str, Any]:
         with self._locked():
@@ -1521,6 +1583,7 @@ class Orchestrator:
             target["status"] = QUEUE_COMPLETED
             target["lease_owner"] = None
             target["lease_expires_at"] = None
+            target["lease_write_scopes"] = []
             target["completion_summary"] = summary
             target["completed_at"] = _isoformat(current)
             target["updated_at"] = _isoformat(current)
@@ -1530,7 +1593,11 @@ class Orchestrator:
                 {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": summary},
                 now=current,
             )
-            self.run_once(now=current)
+            self.run_once(
+                now=current,
+                refresh_backlog=refresh_backlog,
+                wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+            )
             return {"item_id": item_id, "worker": worker, "status": "completed"}
 
     def requeue(
@@ -1539,6 +1606,7 @@ class Orchestrator:
         worker: str,
         reason: str,
         *,
+        refresh_backlog: bool = True,
         now: datetime | None = None,
         blocked: bool = False,
     ) -> dict[str, Any]:
@@ -1555,6 +1623,7 @@ class Orchestrator:
             target["status"] = QUEUE_BLOCKED if blocked else QUEUE_PENDING
             target["lease_owner"] = None
             target["lease_expires_at"] = None
+            target["lease_write_scopes"] = []
             target["updated_at"] = _isoformat(current)
             target["completion_summary"] = reason
             self.save_queue(items)
@@ -1563,7 +1632,11 @@ class Orchestrator:
                 {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": reason},
                 now=current,
             )
-            self.run_once(now=current)
+            self.run_once(
+                now=current,
+                refresh_backlog=refresh_backlog,
+                wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+            )
             return {"item_id": item_id, "worker": worker, "status": target["status"]}
 
     def worker_leased_item(self, worker: str) -> dict[str, Any] | None:
@@ -1578,7 +1651,34 @@ class Orchestrator:
             for item in self.load_queue()
         )
 
-    def release_worker_leases(self, worker: str, reason: str, *, now: datetime | None = None) -> list[str]:
+    def _write_scope_has_foreign_lease(
+        self,
+        write_scopes: list[str],
+        worker: str,
+        *,
+        items: list[dict[str, Any]],
+    ) -> bool:
+        requested = {str(scope).strip() for scope in write_scopes if str(scope).strip()}
+        if not requested:
+            return False
+        return any(
+            item.get("status") == QUEUE_LEASED
+            and item.get("lease_owner") != worker
+            and bool(requested & _lease_write_scopes(item))
+            for item in items
+        )
+
+    def write_scope_has_foreign_lease(self, write_scopes: list[str], worker: str) -> bool:
+        return self._write_scope_has_foreign_lease(write_scopes, worker, items=self.load_queue())
+
+    def release_worker_leases(
+        self,
+        worker: str,
+        reason: str,
+        *,
+        refresh_backlog: bool = True,
+        now: datetime | None = None,
+    ) -> list[str]:
         with self._locked():
             current = now or _utc_now()
             items = self.load_queue()
@@ -1588,6 +1688,7 @@ class Orchestrator:
                     item["status"] = QUEUE_PENDING
                     item["lease_owner"] = None
                     item["lease_expires_at"] = None
+                    item["lease_write_scopes"] = []
                     item["updated_at"] = _isoformat(current)
                     item["completion_summary"] = reason
                     released.append(item["item_id"])
@@ -1598,7 +1699,11 @@ class Orchestrator:
                     )
             if released:
                 self.save_queue(items)
-                self.run_once(now=current)
+                self.run_once(
+                    now=current,
+                    refresh_backlog=refresh_backlog,
+                    wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                )
             return released
 
     def list_queue(self, *, status_filter: str | None = None, lane: str | None = None, limit: int | None = None) -> dict[str, Any]:

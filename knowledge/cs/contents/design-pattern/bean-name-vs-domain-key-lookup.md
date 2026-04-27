@@ -6,17 +6,18 @@
 
 > 관련 문서:
 > - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+> - [Handler Registry Test Shape: `supports()` 기반 registry를 Spring 없이 단위 테스트하기](./handler-registry-test-shape-supports-without-spring.md)
 > - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
 > - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
 > - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
 > - [Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성](./factory-vs-di-container-wiring.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, Map<String Handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @Component name lookup smell, ApplicationContext getBean handler smell, injected registry vs service locator checklist, qualifier vs domain key, payment handler registry spring, event handler registry spring, bean collection injection boundary, 스프링 bean name map, 스프링 Map<String Handler> 주입, bean 이름으로 handler 찾기, 도메인 키 레지스트리, 결제수단 handler registry, bean 이름 누수, 컨테이너 이름 누수, supports 메서드 registry, service locator 드리프트
+retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, Map<String Handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name leak, container naming leak, @Component name lookup smell, ApplicationContext getBean handler smell, injected registry vs service locator checklist, qualifier vs domain key, payment handler registry spring, event handler registry spring, bean collection injection boundary, channel to bean name confusion, channel -> bean name, channel bean mapping spring, channel routing domain key registry, notification channel handler registry, beginner channel handler map, channel key leak, runtime channel selector registry, 스프링 bean name map, 스프링 Map<String Handler> 주입, bean 이름으로 handler 찾기, 도메인 키 레지스트리, 결제수단 handler registry, bean 이름 누수, 컨테이너 이름 누수, 채널에서 bean 이름 만들기, channel 값으로 bean 이름 찾기, 알림 채널 handler 레지스트리, 처음 배우는데 채널 분기 큰 그림, 채널 분기 기초, channel registry 언제 쓰는지, supports 메서드 registry, service locator 드리프트, supports registry unit test, domain key registry test without spring, 스프링 없이 supports registry 테스트
 
 ---
 
-## 먼저 머릿속 그림
+## 처음 배우는데 먼저 보는 큰 그림
 
 Spring이 `Map<String, PaymentHandler>`를 주입해 주면 처음에는 편해 보인다.
 
@@ -41,11 +42,30 @@ PaymentMethod.CARD -> card handler
 
 ---
 
+## `channel -> bean name` 혼동 1분 교정
+
+처음 배우는데 가장 자주 섞이는 문장은 아래 두 개다.
+
+- `"channel이 SMS니까 smsHandler bean을 찾으면 되죠?"`
+- `"그냥 bean 이름을 채널 이름 규칙으로 맞추면 되는 거 아닌가요?"`
+
+여기서 핵심은 "channel은 도메인 입력값"이고 "bean name은 컨테이너 내부 식별자"라는 점이다.
+
+```text
+channel(EMAIL/SMS/KAKAO) -> domain key registry lookup -> handler 실행
+bean name -> Spring 내부 wiring 식별
+```
+
+즉 channel 분기를 언제 쓰는지 질문이 나오면, 답은 bean name 문자열 규칙이 아니라 domain key registry다.
+
+---
+
 ## 30초 판단표
 
 | 상황 | 그대로 `Map<String, Handler>`를 써도 되나 | 이유 |
 |---|---|---|
 | 설정/부트스트랩 코드에서 bean 목록을 읽는다 | 가능 | 컨테이너 wiring을 다루는 코드라 bean name이 자연스럽다 |
+| 요청의 `channel` 값(`EMAIL`, `SMS`, `KAKAO`)으로 handler를 고른다 | 감싸야 한다 | channel은 도메인 key다. bean name 문자열 조합 대신 domain-key registry를 조회해야 한다 |
 | 서비스가 `order.paymentMethod()`로 handler를 고른다 | 감싸야 한다 | 서비스의 분기 기준은 bean name이 아니라 domain key다 |
 | bean 이름을 `cardPaymentHandler`에서 `creditCardPaymentHandler`로 바꿨더니 결제가 깨진다 | 이미 누수다 | 리팩터링 이름 변경이 도메인 동작을 바꾸면 경계가 섞였다 |
 | `ApplicationContext.getBean(name)`을 여러 서비스에서 호출한다 | 피한다 | 명시적 주입이 사라지고 service locator smell로 간다 |
@@ -200,18 +220,19 @@ registry를 만드는 bootstrap 입력으로만 쓴다.
 
 입문 단계에서는 먼저 `supports()` 메서드를 추천한다.
 도메인 key가 Java 타입으로 보이고, IDE 리팩터링과 테스트가 쉽기 때문이다.
+`supports()` 기반 registry를 실제로 어떻게 Spring 없이 단위 테스트할지는 [Handler Registry Test Shape](./handler-registry-test-shape-supports-without-spring.md)에서 이어서 보면 된다.
 
 ---
 
 ## 흔한 오해
 
-- **"`Map<String, Handler>`를 주입받으면 Spring이 registry를 만들어 준 것 아닌가요?"**  
+- **"`Map<String, Handler>`를 주입받으면 Spring이 registry를 만들어 준 것 아닌가요?"**
   모양은 registry-like lookup이 맞다. 하지만 key가 bean name이면 아직 domain registry는 아니다.
-- **"bean name을 도메인 이름과 똑같이 맞추면 괜찮지 않나요?"**  
+- **"bean name을 도메인 이름과 똑같이 맞추면 괜찮지 않나요?"**
   작은 예제에서는 된다. 하지만 이름 변경, `@Component("...")`, profile별 bean 교체가 들어오면 도메인 규칙이 컨테이너 naming에 묶인다.
-- **"`@Qualifier`도 문자열인데 이것도 전부 나쁜가요?"**  
+- **"`@Qualifier`도 문자열인데 이것도 전부 나쁜가요?"**
   아니다. wiring을 고정하려는 설정 코드에서는 자연스럽다. 문제는 요청마다 바뀌는 domain key를 `@Qualifier`나 bean name 문자열로 흉내 내는 것이다.
-- **"그럼 registry가 factory인가요?"**  
+- **"그럼 registry가 factory인가요?"**
   아니다. 위 예시는 이미 만들어진 handler를 찾으므로 registry다. 새 객체를 만드는 책임이 붙으면 [Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)에서 이어서 구분하면 된다.
 
 ---

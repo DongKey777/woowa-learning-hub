@@ -7,8 +7,10 @@
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
+> - [Mutable Elements in HashSet and TreeSet Primer](./mutable-elements-hashset-treeset-primer.md)
 > - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 > - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
+> - [Priority Update Patterns](./priority-update-patterns-treeset-treemap-priorityqueue-bridge.md)
 > - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 > - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
@@ -291,7 +293,7 @@ if (owner != null) {
 | priority 순위가 필요하지만 값도 자주 바뀜 | remove-before-mutate-add를 한 곳에 캡슐화 |
 | key 자체가 값 객체에 가까움 | immutable key를 새로 만들어 교체 |
 
-## 초보자가 자주 헷갈리는 지점
+## 초보자 혼동 포인트
 
 - "객체 reference는 같은데 왜 못 찾나?" `TreeSet`/`TreeMap` 조회는 reference identity가 아니라 comparator 경로를 따라간다.
 - "`toString()`에는 바뀐 값이 보이는데?" 객체 필드는 바뀌었다. 다만 트리 안의 node 위치가 자동으로 바뀐 것은 아니다.

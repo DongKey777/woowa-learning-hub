@@ -2,21 +2,27 @@
 
 > 한 줄 요약: 책임 연쇄 패턴은 요청을 여러 처리자에 통과시키며, 인증·로깅·검증·차단 같은 공통 관심사를 파이프라인으로 분리한다.
 
+처음 읽는데 `Filter`와 `HandlerInterceptor`가 한 덩어리로 섞인다면, 이 primer에 바로 들어오기보다 [Servlet Filter vs MVC Interceptor Beginner Bridge](../software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge.md)에서 "`request` 입구를 다루는가, `controller` 주변을 다루는가"만 먼저 나누고 돌아오면 덜 헷갈린다.
+
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
-> - [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](./template-method-framework-lifecycle-examples.md)
-> - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
-> - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
-> - [실전 패턴 선택 가이드](./pattern-selection.md)
-> - [안티 패턴](./anti-pattern.md)
+관련 문서:
+
+- [Servlet Filter vs MVC Interceptor Beginner Bridge](../software-engineering/servlet-filter-vs-mvc-interceptor-beginner-bridge.md)
+- [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](./template-method-vs-filter-interceptor-chain.md)
+- [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](./template-method-framework-lifecycle-examples.md)
+- [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
+- [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
+- [실전 패턴 선택 가이드](./pattern-selection.md)
+- [안티 패턴](./anti-pattern.md)
+
+retrieval-anchor-keywords: chain of responsibility filter interceptor, servlet filter chain, handlerinterceptor chain, request short circuit, authentication authorization logging pipeline, filter vs interceptor beginner, servlet filter vs mvc interceptor, spring filter interceptor chain, onceperrequestfilter chain wrapper, request pipeline pattern, 처음 배우는데 책임 연쇄, 책임 연쇄 패턴 뭐예요
 
 ---
 
 ## 핵심 개념
 
-책임 연쇄 패턴(Chain of Responsibility)은 **요청을 여러 처리자에게 순서대로 넘기면서 각 처리자가 자신의 책임만 수행하는 구조**다.  
+책임 연쇄 패턴(Chain of Responsibility)은 **요청을 여러 처리자에게 순서대로 넘기면서 각 처리자가 자신의 책임만 수행하는 구조**다.
 핵심은 "하나의 거대한 서비스 메서드"를 여러 단계로 쪼개는 것이다.
 
 backend에서 가장 자주 보이는 형태는 다음과 같다.
@@ -64,7 +70,7 @@ backend에서 가장 자주 보이는 형태는 다음과 같다.
 
 Filter는 더 바깥쪽, Interceptor는 더 안쪽이라고 보면 된다.
 
-자주 섞이는 이름 하나를 더 분리하면, `OncePerRequestFilter`는 `Filter`와 같은 레벨의 별도 체인이 아니다.  
+자주 섞이는 이름 하나를 더 분리하면, `OncePerRequestFilter`는 `Filter`와 같은 레벨의 별도 체인이 아니다.
 filter chain 안에 들어가는 **필터 구현용 base class**이고, 그 내부 확장 방식은 [템플릿 메소드](./template-method-vs-filter-interceptor-chain.md)에 더 가깝다.
 
 ### 3. 실패를 어디서 끊을지가 중요하다
@@ -95,9 +101,9 @@ rate limit, IP 차단, 헤더 정규화, trace id 주입은 체인으로 넣기 
 
 ---
 
-## 코드로 보기
+## 직접 구현 예시
 
-### 직접 구현한 체인
+체인을 직접 만들면 "다음 단계로 넘길지 말지"가 어디서 결정되는지 바로 보인다.
 
 ```java
 public interface RequestHandler {
@@ -139,7 +145,9 @@ public class LoggingHandler extends AbstractRequestHandler {
 }
 ```
 
-### Spring Filter 예시
+## Spring Filter 예시
+
+Servlet `Filter`는 요청을 더 바깥에서 보고, 필요하면 다음 단계로 넘기지 않고 바로 끊을 수 있다.
 
 ```java
 @Component
@@ -156,7 +164,9 @@ public class TraceIdFilter extends OncePerRequestFilter {
 }
 ```
 
-### Spring Interceptor 예시
+## Spring Interceptor 예시
+
+`HandlerInterceptor`는 컨트롤러 실행 전후를 다루고, `preHandle()` 반환값으로 계속/중단을 정한다.
 
 ```java
 @Component

@@ -9,57 +9,40 @@ outbound port를 `List` 기반 bulk 계약으로 올릴지 고민 중이라면 [
 bulk가 실제 업무 단위라서 run/chunk/file 입력 타입과 partial failure result 타입을 설계해야 한다면 [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)를 follow-up으로 보면 된다.
 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint`처럼 결과 모델 이름을 어떻게 나눌지 예시가 필요하면 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)를 같이 보면 된다.
 실패 후 재시도할 때 item/chunk/run idempotency key를 어디에 둘지 헷갈리면 [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)를 이어서 보면 된다.
+정책을 읽은 뒤 바로 테스트로 옮기고 싶다면 [Primer On Retry Queue Assertions](./retry-queue-assertions-primer.md)에서 실패 분류를 작은 assertion으로 잠그고, 이어서 [Batch Result Testing Checklist](./batch-result-testing-checklist.md)에서 run/chunk/retry/checkpoint 전체를 확인하는 순서가 beginner practice loop로 가장 짧다.
+이 정책 결정을 실제 operator runbook 단계, stop condition, safe rerun checklist로 옮기는 후속 문서는 [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)다.
 멱등성, exactly-once 착시, 저장 경계까지 깊게 들어가려면 [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)로 내려가면 된다.
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 primer가 필요한가](#왜-이-primer가-필요한가)
-- [먼저 한 장면으로 이해하기](#먼저-한-장면으로-이해하기)
+- [먼저 잡는 한 줄 멘탈 모델](#먼저-잡는-한-줄-멘탈-모델)
+- [before / after 한눈 비교](#before--after-한눈-비교)
 - [세 가지 정책 레벨](#세-가지-정책-레벨)
 - [1. pure per-item retry면 충분한 경우](#1-pure-per-item-retry면-충분한-경우)
 - [2. chunk summary와 retry queue가 필요한 경우](#2-chunk-summary와-retry-queue가-필요한-경우)
 - [3. checkpoint까지 필요한 경우](#3-checkpoint까지-필요한-경우)
 - [짧은 비교 표](#짧은-비교-표)
 - [예시: 같은 batch가 어떻게 커지는가](#예시-같은-batch가-어떻게-커지는가)
-- [자주 하는 오해](#자주-하는-오해)
+- [beginner practice loop](#beginner-practice-loop)
+- [흔한 오해와 함정](#흔한-오해와-함정)
 - [기억할 기준](#기억할-기준)
+- [한 줄 정리](#한-줄-정리)
 
 </details>
 
-> 관련 문서:
-> - [Software Engineering README: Batch Partial Failure Policies Primer](./README.md#batch-partial-failure-policies-primer)
-> - [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
-> - [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
-> - [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)
-> - [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
-> - [saveAll/sendAll Port Smells and Safer Alternatives](./saveall-sendall-port-smells-safer-alternatives.md)
-> - [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)
-> - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
-> - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
-> - [Runbook, Playbook, Automation Boundaries](./runbook-playbook-automation-boundaries.md)
-> - [Production Readiness Review](./production-readiness-review.md)
->
-> retrieval-anchor-keywords:
-> - batch partial failure policy
-> - batch retry queue primer
-> - chunk summary retry queue checkpoint
-> - per-item retry vs checkpoint resume
-> - batch chunk summary
-> - partial failure handling in batch
-> - batch checkpoint resume beginner
-> - batch retry queue vs rerun whole batch
-> - chunk-level batch result
-> - batch failure recovery policy
-> - run summary retry policy
-> - batch idempotency key boundaries
-> - item-level idempotency key
-> - chunk-level idempotency key
-> - run-level idempotency key
-> - true bulk contract
-> - bulk result type
-> - item failure result
-> - beginner batch operations primer
+관련 문서:
+
+- [Software Engineering README: Batch Partial Failure Policies Primer](./README.md#batch-partial-failure-policies-primer)
+- [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
+- [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
+- [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
+- [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)
+- [Runbook, Playbook, Automation Boundaries](./runbook-playbook-automation-boundaries.md)
+- [System Design: Job Queue 설계](../system-design/job-queue-design.md)
+
+retrieval-anchor-keywords: batch partial failure policy, batch retry queue primer, chunk summary retry queue checkpoint, per-item retry vs checkpoint resume, batch checkpoint resume beginner, batch failure recovery policy, run summary retry policy, batch result testing checklist, batch recovery runbook bridge, batch idempotency key boundaries, true bulk contract, item failure result, batch partial failure 뭐예요, 처음 배우는데 batch retry queue
 
 ## 왜 이 primer가 필요한가
 
@@ -79,7 +62,7 @@ bulk가 실제 업무 단위라서 run/chunk/file 입력 타입과 partial failu
 이 질문이 생기면 더 이상 per-item retry만으로는 설명이 부족하다.
 이때 필요한 것이 chunk summary, retry queue, checkpoint다.
 
-## 먼저 한 장면으로 이해하기
+## 먼저 잡는 한 줄 멘탈 모델
 
 가장 쉬운 판단 기준은 이것이다.
 
@@ -97,6 +80,13 @@ bulk가 실제 업무 단위라서 run/chunk/file 입력 타입과 partial failu
 - chunk summary는 **이번 chunk에서 무슨 일이 있었는지 남기는 영수증**
 - retry queue는 **main run에서 빼낸 실패 item의 다음 경로**
 - checkpoint는 **main run을 어디서 다시 시작할지 정하는 저장 지점**
+
+## before / after 한눈 비교
+
+| 상태 | 운영 질문 | 결과 |
+|---|---|---|
+| before: 실패 item만 다시 돌리면 된다고 봄 | "실패한 id만 모으면 충분하지 않나?" | run 진행률, 실패 분류, 안전한 재개 지점 설명이 비어 운영 대화가 꼬인다 |
+| after: run/chunk/item 경계를 나눔 | "이번 run 영수증, 실패 backlog, 재개 지점 중 무엇이 필요한가?" | summary, retry queue, checkpoint를 상황별로 골라 batch 의미를 명확히 말할 수 있다 |
 
 ## 세 가지 정책 레벨
 
@@ -245,7 +235,23 @@ checkpoint는 "실패 item만 다시 처리"와 다른 문제를 푼다.
 - 실패 분류와 후속 경로가 필요하면 summary + queue
 - run 자체를 이어 가야 하면 checkpoint 추가
 
-## 자주 하는 오해
+## beginner practice loop
+
+정책 문서를 읽고 바로 손을 움직이려면 아래 순서가 가장 짧다.
+
+| 순서 | 먼저 볼 것 | 왜 이 순서가 beginner에게 쉬운가 |
+|---|---|---|
+| 1 | 이 문서에서 `per-item retry`, `retry queue`, `checkpoint`를 구분한다 | 어떤 실패를 어디로 보낼지 말로 설명할 수 있어야 한다 |
+| 2 | [Primer On Retry Queue Assertions](./retry-queue-assertions-primer.md)에서 `retryable`, `manual review`, `terminal failure` assertion을 잠근다 | 실패 분류가 실제 테스트에서 어디로 보이는지 바로 확인할 수 있다 |
+| 3 | [Batch Result Testing Checklist](./batch-result-testing-checklist.md)에서 `RunSummary`, `ChunkResult`, `RetryCandidate`, `Checkpoint`를 함께 검증한다 | item 분류 테스트를 run/chunk 결과 검증으로 자연스럽게 넓힐 수 있다 |
+
+짧게 기억하면 이렇다.
+
+- 정책 primer는 "무엇을 나눌지"를 정한다.
+- retry queue primer는 "실패를 어디로 보낼지"를 잠근다.
+- batch result checklist는 "run 전체 영수증이 맞는지"를 확인한다.
+
+## 흔한 오해와 함정
 
 - "retry queue가 있으면 checkpoint는 필요 없다"
   - 아니다. retry queue는 실패 item의 후속 경로이고, checkpoint는 main run 재개 지점이다.
@@ -266,3 +272,7 @@ checkpoint는 "실패 item만 다시 처리"와 다른 문제를 푼다.
 2. **이번 chunk에서 무슨 일이 있었는지 남겨야 하면 chunk summary가 필요하다.**
 3. **실패 item을 main run과 다른 속도로 다뤄야 하면 retry queue가 필요하다.**
 4. **중간부터 안전하게 이어서 시작해야 하면 checkpoint가 필요하다.**
+
+## 한 줄 정리
+
+Batch partial failure 정책의 핵심은 "재시도 로직을 늘리는 것"이 아니라, run 영수증과 실패 backlog와 재개 지점을 언제 분리해야 하는지 먼저 구분하는 것이다.

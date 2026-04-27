@@ -9,13 +9,14 @@
 > - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
+> - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
 > - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 > - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
 > - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 > - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
 > - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
 
-retrieval-anchor-keywords: test slice, context cache, WebMvcTest, DataJpaTest, SpringBootTest, MockBean, DirtiesContext, DynamicPropertySource, TestEntityManager, flush clear test, test boundary, test configuration
+retrieval-anchor-keywords: test slice, context cache, WebMvcTest, DataJpaTest, SpringBootTest, SpringBootTest properties, TestPropertySource, DynamicPropertySource, test property override, test property cache split, MockBean, DirtiesContext, TestEntityManager, flush clear test, test boundary, test configuration
 
 ---
 
@@ -35,7 +36,7 @@ Spring 테스트의 핵심은 두 가지다.
 - `@JsonTest`: JSON serialization 중심
 - `@SpringBootTest`: 거의 전체 컨텍스트
 
-이 문서를 읽어야 하는 이유는 명확하다.  
+이 문서를 읽어야 하는 이유는 명확하다.
 테스트가 느리고, 불안정하고, 리팩터링에 약하다면 단순히 mock을 늘릴 문제가 아니라, **컨텍스트 구성 자체를 재설계해야 하기 때문**이다.
 
 ---
@@ -75,12 +76,14 @@ class OrderControllerTest {
 
 ### 2. Context Caching은 왜 중요한가
 
-Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.  
+Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 즉, 테스트 클래스마다 무조건 다시 올리는 것이 아니라, 컨텍스트 구성이 같으면 재사용할 수 있다.
 
 문제는 아래와 같은 상황에서 캐시가 깨진다는 점이다.
 
 - `@MockBean` 구성이 테스트마다 다름
+- `@SpringBootTest(properties = ...)` 값이 테스트마다 다름
+- `@TestPropertySource` file/inline 구성이 테스트마다 다름
 - `@DynamicPropertySource` 값이 달라짐
 - `@DirtiesContext`를 남발함
 - 불필요한 `@SpringBootTest`를 여러 곳에서 씀
@@ -117,12 +120,12 @@ Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 
 ### 시나리오 2: `@MockBean`을 많이 쓰다 보니 리팩터링이 무서워졌다
 
-테스트가 구현 세부사항에 묶이면, 클래스 이름만 바꿔도 테스트가 흔들린다.  
+테스트가 구현 세부사항에 묶이면, 클래스 이름만 바꿔도 테스트가 흔들린다.
 이 경우 mock 자체보다, **테스트의 경계가 잘못 잡힌 것**일 가능성이 크다.
 
 ### 시나리오 3: Security가 붙은 컨트롤러 테스트가 너무 복잡하다
 
-`@WebMvcTest`에 `Spring Security`가 섞이면 인증/인가 필터 설정이 추가된다.  
+`@WebMvcTest`에 `Spring Security`가 섞이면 인증/인가 필터 설정이 추가된다.
 이때 실제 인증이 필요한지, 아니면 `@WithMockUser`로 충분한지 구분해야 한다.
 
 이 주제는 [Spring Security 아키텍처](./spring-security-architecture.md)와 같이 보면 이해가 빠르다.
@@ -174,7 +177,7 @@ class BTest {
 }
 ```
 
-겉보기에는 같아 보여도, 설정이 조금씩 다르면 캐시가 쪼개진다.  
+겉보기에는 같아 보여도, 설정이 조금씩 다르면 캐시가 쪼개진다.
 특히 테스트마다 다른 property, mock, profile을 넣는 습관이 있으면 컨텍스트 재사용이 잘 안 된다.
 
 ---

@@ -8,11 +8,14 @@
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+> - [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
+> - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
+> - [배열 vs `List` 변환 엔트리 프라이머](./array-to-list-conversion-entrypoint-primer.md)
 > - [Java Array Equality Basics](./java-array-equality-basics.md)
 > - [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 
-> retrieval-anchor-keywords: java array copy basics, java array clone basics, java array assignment vs copy, java array assignment vs clone, java array assignment alias, java clone vs Arrays.copyOf, java array `clone` basics, java `Arrays.copyOf` basics, java array shallow copy, java nested array shallow copy, java nested array deep copy, java 2d array clone shallow copy, java matrix copy java, java array defensive copy, java beginner array copy
+> retrieval-anchor-keywords: java array copy basics, java array clone basics, java array assignment vs copy, java array assignment vs clone, java array assignment alias, java clone vs Arrays.copyOf, java array `clone` basics, java `Arrays.copyOf` basics, java array shallow copy, java nested array shallow copy, java nested array deep copy, java 2d array clone shallow copy, java matrix copy java, java array defensive copy, java beginner array copy, 자바 배열 복사 기초, 배열 대입 복사 차이, 배열 shallow copy deep copy 차이, 배열 복사 처음 배우는데, 배열 복사 큰 그림, clone 과 copyOf 차이 기초, clone copyOf 언제 쓰는지, 2차원 배열 깊은 복사 방법, 중첩 배열 복사 기초, 배열 참조 공유 왜 같이 바뀜, 배열 한쪽 바꾸면 다른 쪽도 바뀜, array copy changed together
 
 <details>
 <summary>Table of Contents</summary>
@@ -49,6 +52,13 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 
 이 문서는 그 차이를 초보자 관점에서 한 번에 정리한다.
 
+먼저 축을 나누면 더 빠르다.
+
+- 아직 "공유 문제인지 비교 문제인지"부터 헷갈리면 [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)를 먼저 본다.
+- `[I@...`처럼 출력이 이상하면 복사보다 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)를 먼저 본다.
+- 값은 비슷해 보이는데 `==`나 `equals()` 결과가 기대와 다르면 복사보다 [Java Array Equality Basics](./java-array-equality-basics.md) 쪽이 더 가깝다.
+- "한쪽 수정이 다른 쪽에도 전파된다"가 핵심 증상이면 이 문서가 맞다.
+
 ## 먼저 결론: 대입 vs `clone()` vs `Arrays.copyOf()`
 
 | 표현 | 새 바깥 배열을 만드나 | 길이를 바꿀 수 있나 | 중첩 배열의 안쪽 row는 공유하나 | 언제 가장 먼저 떠올리면 좋은가 |
@@ -79,10 +89,10 @@ System.out.println(assigned[0]); // 99
 System.out.println(original == assigned); // true
 ```
 
-여기서 `assigned`는 복사본이 아니라 `original`의 alias다.  
+여기서 `assigned`는 복사본이 아니라 `original`의 alias다.
 즉 두 변수가 같은 배열 객체를 가리킨다.
 
-이 규칙은 1차원, 2차원, 객체 배열 모두 똑같다.  
+이 규칙은 1차원, 2차원, 객체 배열 모두 똑같다.
 복사본이 필요하다면 `clone()`이나 `Arrays.copyOf()` 같은 명시적 복사 도구를 써야 한다.
 
 ## `clone()`은 같은 길이의 새 배열을 만든다
@@ -100,10 +110,10 @@ System.out.println(cloned[0]);   // 99
 System.out.println(original == cloned); // false
 ```
 
-이 경우 `original`과 `cloned`는 서로 다른 배열이다.  
+이 경우 `original`과 `cloned`는 서로 다른 배열이다.
 그래서 `int[]` 같은 1차원 primitive 배열에서는 흔히 기대하는 "독립된 복사본"처럼 보인다.
 
-하지만 `clone()`이 복사하는 것은 바깥 배열의 칸이다.  
+하지만 `clone()`이 복사하는 것은 바깥 배열의 칸이다.
 칸 안에 들어 있는 값이 다시 참조형이면, 그 참조 자체를 복사할 뿐이다.
 
 즉 `String[]`, `Member[]`, `int[][]` 같은 경우에는 "배열 칸"은 새로 생겨도, 안쪽 객체나 안쪽 배열은 공유될 수 있다.
@@ -138,7 +148,7 @@ System.out.println(Arrays.toString(longer));   // [10, 20, 30, 0, 0]
 - 앞부분만 잘라서 복사하고 싶다
 - 더 큰 배열을 만들고 기존 값을 옮기고 싶다
 
-다만 중요한 점은 `Arrays.copyOf()`도 중첩 배열에서는 shallow copy라는 것이다.  
+다만 중요한 점은 `Arrays.copyOf()`도 중첩 배열에서는 shallow copy라는 것이다.
 바깥 배열은 새로 생기지만 안쪽 배열까지 자동으로 복제되지는 않는다.
 
 ## 중첩 배열에서는 왜 shallow copy가 될까
@@ -157,7 +167,7 @@ System.out.println(original == shallow);     // false
 System.out.println(original[0] == shallow[0]); // true
 ```
 
-여기서 바깥 배열은 달라졌지만, 첫 번째 row는 같은 배열을 함께 가리킨다.  
+여기서 바깥 배열은 달라졌지만, 첫 번째 row는 같은 배열을 함께 가리킨다.
 그래서 안쪽 row를 수정하면 원본도 영향을 받는다.
 
 ```java
@@ -205,7 +215,7 @@ System.out.println(deep[0][0]);     // 99
 
 이 경우에는 바깥 배열과 안쪽 row 배열까지 각각 새로 만들어서 `int[][]` 기준으로는 deep copy가 된다.
 
-하지만 여기에도 한 단계 더 생각할 점이 있다.  
+하지만 여기에도 한 단계 더 생각할 점이 있다.
 만약 `Member[][]`처럼 안쪽 row 안에 가변 객체가 들어 있다면, row만 복사해도 `Member` 객체 참조는 여전히 공유된다.
 
 즉 deep copy는 "무조건 한 번에 되는 마법 API"가 아니라, **어디까지 독립시킬지 구조를 보고 직접 정하는 작업**이다.
@@ -221,7 +231,7 @@ System.out.println(deep[0][0]);     // 99
 int[] copied = original;
 ```
 
-이 코드는 새 배열을 만들지 않는다.  
+이 코드는 새 배열을 만들지 않는다.
 복사본이 아니라 alias다.
 
 ### 2. `clone()`을 중첩 배열 deep copy라고 생각한다
@@ -230,12 +240,12 @@ int[] copied = original;
 int[][] cloned = original.clone();
 ```
 
-이 코드는 바깥 배열만 새로 만든다.  
+이 코드는 바깥 배열만 새로 만든다.
 안쪽 row는 그대로 공유한다.
 
 ### 3. `Arrays.copyOf()`면 안쪽 배열까지 자동으로 복사된다고 생각한다
 
-`Arrays.copyOf(matrix, matrix.length)`도 `clone()`과 같은 수준의 shallow copy다.  
+`Arrays.copyOf(matrix, matrix.length)`도 `clone()`과 같은 수준의 shallow copy다.
 중첩 구조를 완전히 분리하려면 row를 따로 복사해야 한다.
 
 ### 4. 길이를 늘린 `Arrays.copyOf()`의 빈 칸이 쓰레기 값일 거라고 생각한다

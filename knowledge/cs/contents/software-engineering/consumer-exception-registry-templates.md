@@ -31,6 +31,10 @@
 > - consumer support registry
 > - exception record
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Consumer Exception Registry Templates](./README.md#consumer-exception-registry-templates)
+> - 다음 단계: [Consumer Exception State Machine and Review Cadence](./consumer-exception-state-machine-review-cadence.md)
+
 ## 핵심 개념
 
 consumer exception은 대부분 "임시"로 시작하지만, 표준 기록이 없으면 permanent tribal knowledge가 된다.

@@ -20,7 +20,17 @@
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, JwtAuthenticationConverter, authorities claim mapping, hasRole vs hasAuthority, ROLE_ prefix, SCOPE_ prefix, scope vs permission, oauth scope vs audience vs permission, api audience vs scope vs permission, aud claim vs scope claim, role claim 403, spring security role claim mismatch, valid jwt but spring 403, valid token empty authorities, valid JWT route 403, hasRole hasAuthority mismatch beginner, ROLE prefix mismatch beginner, SCOPE prefix mismatch beginner, claims are not permissions, claims are not authorities, application permission source of truth, stale authority claim, stale authorities, role vs scope vs ownership, scope is not ownership, role is not ownership, security symptom shortcut, category return path
+retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authorities mapping, jwt claims roles authorities permissions mapping, claim vs authority vs permission, role vs authority spring security, spring grantedauthority, granted authority, jwt role claim, scope claim, permissions claim, external idp group mapping, jwt to grantedauthority, JwtAuthenticationConverter, authorities claim mapping, hasRole vs hasAuthority, ROLE_ prefix, SCOPE_ prefix, scope vs permission, oauth scope vs audience vs permission, api audience vs scope vs permission, aud claim vs scope claim, role claim 403, spring security role claim mismatch, valid jwt but spring 403, valid token empty authorities, valid JWT route 403, hasRole hasAuthority mismatch beginner, ROLE prefix mismatch beginner, SCOPE prefix mismatch beginner, claims are not permissions, claims are not authorities, application permission source of truth, stale authority claim, stale authorities, role vs scope vs ownership, scope is not ownership, role is not ownership, security symptom shortcut, category return path, jwt는 valid한데 spring 403, 토큰은 유효한데 spring 403, spring route 403 role prefix, hasrole hasauthority 차이, role scope permission 차이, roles scope authority가 섞임, scope 있는데 403 spring, ROLE_ SCOPE_ mismatch, authority 비어 있음, valid jwt route 403 beginner, claim은 있는데 authority가 없음, claim authority permission 차이
+
+## 증상으로 바로 찾기
+
+아래처럼 검색하거나 질문이 들어오면 이 문서가 첫 primer다.
+
+| 지금 보이는 말 | 먼저 분리할 질문 | 다음 문서 |
+|---|---|---|
+| `JWT는 valid한데 Spring route/method security에서만 403` | claim이 authority로 제대로 매핑됐나 | 실제 converter/prefix 디버깅은 [Spring Authority Mapping Pitfalls](./spring-authority-mapping-pitfalls.md) |
+| `roles`, `scope`, `ROLE_`, `hasRole`, `hasAuthority`가 한 문장처럼 섞임 | 개념 layer와 Spring 표현 layer를 같은 말로 읽고 있나 | `aud`/`scope`/app permission 축까지 같이 정리하려면 [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md) |
+| `scope는 있는데 왜 403이지`, `claim은 있는데 authority가 비어 있음` | claim, authority, 최종 permission 중 어디서 끊겼나 | ownership/object rule까지 섞이면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -55,6 +65,12 @@ retrieval-anchor-keywords: jwt claims vs authorities, claims vs roles vs authori
 - role은 `묶음 개념`이다.
 - authority는 `Spring 표현`이다.
 - permission은 `비즈니스 허용 규칙`이다.
+
+입문자용으로 더 짧게 외우면 이렇다.
+
+- claim은 `토큰 안 원재료`
+- authority는 `Spring이 읽는 문자열`
+- permission은 `서비스가 최종 허용하는 행동`
 
 ---
 

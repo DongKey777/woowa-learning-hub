@@ -20,34 +20,26 @@
 
 </details>
 
-> 관련 문서:
-> - [Software Engineering README: Inbound Adapter Test Slices Primer](./README.md#inbound-adapter-test-slices-primer)
-> - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
-> - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
-> - [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)
-> - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
-> - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
-> - [API 설계와 예외 처리](./api-design-error-handling.md)
-> - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
->
-> retrieval-anchor-keywords:
-> - inbound adapter test slice
-> - inbound adapter test slices primer
-> - controller slice test
-> - message handler slice test
-> - slice vs full integration test
-> - hexagonal inbound adapter test
-> - primary adapter testing
-> - web adapter slice test
-> - controller adapter integration test
-> - message consumer integration test
-> - scheduled job adapter test
-> - controller consumer scheduler test matrix
-> - request binding validation test
-> - message ack retry integration test
-> - use case port boundary test
+관련 문서:
+
+- [Software Engineering README: Inbound Adapter Test Slices Primer](./README.md#inbound-adapter-test-slices-primer)
+- [테스트 전략 기초](./test-strategy-basics.md)
+- [Servlet Filter vs MVC Interceptor Beginner Bridge](./servlet-filter-vs-mvc-interceptor-beginner-bridge.md)
+- [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+- [Message-Driven Adapter Example](./message-driven-adapter-example.md)
+- [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)
+- [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+- [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
+- [API 설계와 예외 처리](./api-design-error-handling.md)
+- [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
+- [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](../spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
+
+retrieval-anchor-keywords: inbound adapter test slice, inbound adapter test slices primer, controller slice test, message handler slice test, slice vs full integration test, hexagonal inbound adapter test, web adapter slice test, request binding validation test, webmvctest first test checklist, controller input validation first test, 처음 배우는데 filter interceptor 때문에 controller test 헷갈림, filter interceptor basics before controller test, filter vs interceptor before controller test
 
 controller와 message handler 중심 설명에서 scheduled job까지 포함한 채널별 테스트 비율을 비교하고 싶다면 [Inbound Adapter Testing Matrix](./inbound-adapter-testing-matrix.md)를 이어서 보면 된다.
+
+`테스트 전략 기초`의 30초 자가진단에서 `Controller 입력 검증/응답 포맷 변경`을 골랐다면, 이 문서는 그 다음 질문인 "`@WebMvcTest`로 어디까지 보고 어디서 멈출까?"를 바로 이어서 설명하는 역링크다.
+처음 배우는데 `filter`와 `interceptor`부터 헷갈려 controller 테스트 초점이 흐린다면, 깊은 Spring 문서로 바로 내려가기 전에 [Servlet Filter vs MVC Interceptor Beginner Bridge](./servlet-filter-vs-mvc-interceptor-beginner-bridge.md)로 먼저 큰 그림을 고정하고 돌아오면 된다.
 
 ## 왜 이 follow-up이 필요한가
 

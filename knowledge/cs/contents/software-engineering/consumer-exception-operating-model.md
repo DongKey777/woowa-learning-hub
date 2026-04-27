@@ -30,6 +30,10 @@
 > - sunset extension governance
 > - waiver control plane absorb
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Consumer Exception Operating Model](./README.md#consumer-exception-operating-model)
+> - 다음 단계: [Consumer Exception Registry Quality and Automation](./consumer-exception-registry-quality-automation.md)
+
 ## 핵심 개념
 
 consumer exception 운영이 무너지는 방식은 대개 비슷하다.

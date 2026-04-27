@@ -4,15 +4,106 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [인증과 인가의 차이](./authentication-vs-authorization.md)
-> - [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
-> - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
-> - [JWT 깊이 파기](./jwt-deep-dive.md)
-> - [BFF Boundaries and Client-Specific Aggregation](../software-engineering/bff-boundaries-client-specific-aggregation.md)
-> - [Multi-tenant SaaS Isolation Design](../system-design/multi-tenant-saas-isolation-design.md)
+관련 문서:
 
-retrieval-anchor-keywords: IDOR, BOLA, broken object level authorization, broken access control, object ownership, resource id, path parameter, tenant isolation, horizontal privilege escalation, ownership check primer, scope is not ownership, role is not ownership, role vs scope vs ownership
+- [인증과 인가의 차이](./authentication-vs-authorization.md)
+- [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+- [Concealment `404` Entry Cues](./concealment-404-entry-cues.md)
+- [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
+- [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
+- [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)
+- [Multi-tenant SaaS Isolation Design](../system-design/multi-tenant-saas-isolation-design.md)
+
+retrieval-anchor-keywords: idor basics, bola basics, broken object level authorization, object ownership check, tenant isolation authz, same user different tenant, 같은 사용자 다른 tenant, 왜 403 이 아니라 404, 없는 줄 알았는데 남의 리소스, scope is not ownership, own resource wrong tenant, concealment 404
+
+---
+
+## 1분 브리지: Ownership 누락이 왜 바로 취약점인가
+
+먼저 이렇게 생각하면 쉽다.
+
+- `role`은 "무슨 종류의 사용자냐"
+- `scope`는 "토큰에 어떤 API 작업 권한이 있냐"
+- `ownership`은 "지금 이 객체가 정말 네 것이냐"
+
+IDOR/BOLA는 보통 앞의 두 칸은 통과했는데, 마지막 ownership 확인이 빠져서 터진다.
+
+| 체크 항목 | 통과해도 남는 빈칸 |
+|--------|----------------|
+| role 확인 (`USER`, `ADMIN`) | `USER`끼리 서로 남의 주문을 볼 수 있는지 못 막음 |
+| scope 확인 (`orders.read`) | "주문 읽기 가능"일 뿐 "아무 주문이나 가능"은 아님 |
+| ownership 확인 (`order.owner_id == me`) | 이 검사가 있어야 객체 단위 접근이 닫힘 |
+
+짧은 예시:
+
+- `/orders/1001`은 내 주문, `/orders/1002`는 남의 주문
+- 내 토큰에 `orders.read`가 있어도 `1002.owner_id != myUserId`면 거부해야 한다
+- 이 한 줄 검증이 빠지면 "ID만 바꿔 남의 데이터 조회"가 바로 IDOR다
+
+같은 사용자라도 tenant가 다르면 같은 실수가 난다. 예를 들어 사용자 A가 tenant A와 tenant B 둘 다 속해 있을 때, tenant A 화면에서 tenant B의 자기 주문 ID를 넣으면 `owner_id == me`만으로는 통과시키면 안 된다. beginner 관점에서 이 감각이 아직 약하면 먼저 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)의 `같은 사용자, 다른 tenant` 미니 케이스로 ownership과 tenant를 같이 묶어 보고, 다시 이 문서의 `30초 분기표`로 돌아와 `403`과 concealment `404`를 고정하면 된다.
+
+헷갈리기 쉬운 포인트:
+
+- "로그인됨"은 신원 확인이지 객체 소유 증명이 아니다
+- "scope 있음"은 기능 권한이지 리소스 소유권 증명이 아니다
+- 따라서 ownership 누락은 부가 위험이 아니라 직접 취약점이다
+
+## 초보자 출발 문장: `없는 줄 알았는데 남의 리소스였다`
+
+이 문서로 들어오는 초보자 표현은 보통 전문 용어보다 먼저 이렇게 나온다.
+
+- `404라서 없는 줄 알았는데 다른 사람 계정으로는 열려요`
+- `내 계정에서는 없는데 owner는 보인대요`
+- `없는 줄 알았는데 사실 남의 주문이었어요`
+
+이 문장을 IDOR/BOLA 관점으로 바꾸면 뜻은 단순하다.
+
+| 초보자 표현 | 실제로 의심해야 하는 것 |
+|---|---|
+| `없는 줄 알았는데 owner는 연다` | 객체는 존재하고, 내 요청만 ownership/tenant 정책에서 막혔을 수 있다 |
+| `없다고 나오는데 관리자/운영 문맥에서는 보인다` | 외부에는 concealment `404`, 내부 판단은 ownership mismatch일 수 있다 |
+| `scope도 있고 로그인도 됐다` | authn/scope를 통과해도 ownership 누락 또는 ownership deny는 별개다 |
+
+즉 `없는 줄 알았는데 남의 리소스였다`는 보통 "정말 없는 객체"가 아니라 "객체는 있는데 내 문맥에서는 숨겨졌거나 거부됐다"는 쪽 단서다.
+
+- 아직 `진짜 없음 / 숨김 404 / stale deny` 세 갈래를 못 가르겠다면 이 문서로 바로 깊게 내려가기 전에 `[primer bridge]` [Concealment `404` Entry Cues](./concealment-404-entry-cues.md)에서 먼저 beginner용 분기를 고정하는 편이 안전하다.
+
+---
+
+## 30초 분기표: IDOR에서 `403` vs 의도적 `404`
+
+먼저 mental model을 아주 짧게 고정한다.
+
+- `검사는 항상 ownership/tenant 정책으로 한다`
+- `응답코드 선택은 정보 노출 정책으로 한다`
+
+즉 `404`를 고른다고 ownership 검사가 사라지는 것이 아니다. 내부적으로는 "남의 리소스라 deny"를 이미 알아낸 뒤, 바깥에 그 존재를 숨길지 결정하는 것이다.
+
+| 질문 | `예`면 더 가까운 기본값 | 이유 |
+|---|---|---|
+| 사용자가 그 리소스의 존재를 알아도 되는가 | `403` | 이미 존재를 아는 협업/관리 화면이면 "권한은 없지만 대상은 존재"를 알려도 정책상 문제가 적다 |
+| 리소스 존재 자체가 민감한가 | 의도적 `404` | `내 주문`, `내 메시지`, `내 파일`처럼 user-owned/private 리소스는 존재 노출이 곧 정보 누출이 될 수 있다 |
+| 클라이언트가 "존재함 vs 권한없음"을 구분해야 다음 행동이 가능한가 | `403` | 권한 요청, 관리자 문의, 승인 흐름으로 이어져야 하면 `403`이 더 실용적이다 |
+| 외부에는 숨기되 내부 운영자는 정확한 deny 이유를 알아야 하는가 | 의도적 `404` + 내부 로그는 실제 deny reason 기록 | 외부 응답과 내부 감사/디버깅 정보는 분리할 수 있다 |
+
+초보자용 한 줄 결정:
+
+- `협업/관리/공유 자원`이면 기본 `403`
+- `내 것만 보여야 하는 private 자원`이면 기본 `404`
+
+짧은 예시:
+
+| 요청 상황 | 내부 판단 | 외부 응답 권장 |
+|---|---|---|
+| 내가 속한 팀 문서인데 `edit` 권한만 없음 | 대상 존재를 이미 알아도 됨 | `403` |
+| `/orders/1002`가 남의 개인 주문 | 존재 자체를 숨기는 편이 안전 | 의도적 `404` |
+| tenant A 사용자가 tenant B invoice를 조회 | cross-tenant 존재 노출을 막고 싶음 | 의도적 `404` |
+
+헷갈리기 쉬운 포인트:
+
+- `404`는 "정말 없음"과 "있지만 숨김"이 외부에서 같게 보이도록 만드는 선택일 수 있다.
+- `403`을 쓴다고 IDOR가 해결되는 것은 아니다. 핵심은 먼저 ownership/tenant 검사를 실제로 하는 것이다.
+- `404` concealment를 쓰더라도 내부 로그에는 `ownership_mismatch`, `tenant_mismatch` 같은 실제 deny reason을 남겨야 운영이 가능하다.
 
 ---
 

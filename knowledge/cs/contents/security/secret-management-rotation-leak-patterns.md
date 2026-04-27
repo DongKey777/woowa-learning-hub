@@ -9,6 +9,17 @@
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
 > - [System Design 면접 프레임워크](../system-design/system-design-framework.md)
+> - [시크릿 관리 기초: API 키와 비밀번호를 코드에 넣으면 안 되는 이유](./secrets-management-basics.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
+
+retrieval-anchor-keywords: secret management deep dive, rotation leak patterns, secrets beginner handoff, secrets management primer return, credential leak rotation basics, return to security README
+
+---
+
+## 처음 읽는다면
+
+- 아직 "시크릿을 왜 코드 밖으로 빼야 하는가" 단계라면 [시크릿 관리 기초: API 키와 비밀번호를 코드에 넣으면 안 되는 이유](./secrets-management-basics.md)부터 보고 이 문서로 올라오는 편이 이해가 빠르다.
+- 다른 security primer로 돌아가려면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 복귀하면 된다.
 
 ---
 

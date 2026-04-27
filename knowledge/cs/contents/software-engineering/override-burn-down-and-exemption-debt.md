@@ -23,6 +23,10 @@
 > - debt burn down
 > - override closure
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Override Burn-Down and Exemption Debt](./README.md#override-burn-down-and-exemption-debt)
+> - 다음 단계: [Override Burn-Down Review Cadence and Scorecards](./override-burndown-review-cadence-scorecards.md)
+
 ## 핵심 개념
 
 override는 예외적이어야 하지만, 실제 조직에서는 점점 쌓인다.

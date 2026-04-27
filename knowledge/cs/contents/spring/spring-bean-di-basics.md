@@ -8,6 +8,7 @@
 
 관련 문서:
 
+- [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
@@ -369,7 +370,7 @@ public class OrderService {
 }
 ```
 
-외부에서 프록시를 통해 `saveOrder()`를 부르면 트랜잭션이 걸릴 수 있다.  
+외부에서 프록시를 통해 `saveOrder()`를 부르면 트랜잭션이 걸릴 수 있다.
 하지만 같은 클래스 안에서 `saveOrder()`를 직접 부르면 프록시를 우회할 수 있다.
 
 초보자 기준 한 줄 감각은 이거다.

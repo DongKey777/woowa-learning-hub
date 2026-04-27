@@ -1,34 +1,60 @@
 # OAuth Device Code Flow / Security Model
 
-> 한 줄 요약: Device Code Flow는 브라우저가 없는 기기를 위한 OAuth 흐름이지만, 코드 노출, phishing, polling, user verification을 같이 설계해야 안전하다.
+> 한 줄 요약: Device Code Flow는 브라우저가 없는 기기를 위한 OAuth 흐름이다. 로그인 창 redirect를 붙이는 대신, 다른 기기에서 승인하고 현재 기기는 polling으로 기다린다.
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)
-> - [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)
-> - [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)
-> - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
-> - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
-> - [JWT 깊이 파기](./jwt-deep-dive.md)
-> - [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
+관련 문서:
+- [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+- [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)
+- [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)
+- [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)
+- [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
+- [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
+- [JWT 깊이 파기](./jwt-deep-dive.md)
+- [OIDC, ID Token, UserInfo](./oidc-id-token-userinfo-boundaries.md)
+- [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+- [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
 
-retrieval-anchor-keywords: device code flow, device authorization, user code, verification URI, polling, OAuth, limited input device, phishing, one-time code, cross-device login, browserless oauth path, oauth branch point, auth session token master note, browser auth master note, browser session master note
+retrieval-anchor-keywords: device code flow, cli login oauth, tv login oauth, user code phishing, verification uri, wrong verification url, expired user code, slow_down error, authorization_pending, over aggressive polling, browserless login basics, device authorization, cross-device login, device code flow 뭐예요
 
 ---
 
 ## 이 문서를 어디에 붙여 읽나
 
+- 질문이 `CLI 로그인`, `터미널 로그인`, `TV에서 코드 입력`, `브라우저 없는 기기 로그인`이면 이 문서가 첫 출발점이다. 이 경우 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)나 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)을 먼저 읽지 않는다.
 - [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)나 [Browser Auth Frontend Backend Master Note](../../master-notes/browser-auth-frontend-backend-master-note.md)에서 "브라우저 callback이 없다"가 명확해질 때 내려오는 branch다.
-- 브라우저 세션 hardening 자체가 목적이면 [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)로 돌아가고, 승인 뒤 토큰 보관/회수 전략은 [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)에서 다시 정리한다.
+- 브라우저 세션 hardening 자체가 목적이면 [Browser Session Security Master Note](../../master-notes/browser-session-security-master-note.md)로 돌아가고, security 카테고리에서 다른 OAuth branch를 다시 고르려면 [Security README: OAuth / Browser / BFF](./README.md#2-oauth--browser--bff)로 복귀한다.
+- 승인 뒤 토큰 보관/회수 전략은 [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)에서 다시 정리한다.
+
+---
+
+## 30초 분기: 이 문서가 맞는 질문인가
+
+먼저 이 한 문장으로 갈라 보면 된다.
+
+> "지금 로그인하려는 주체가 자기 브라우저 callback을 직접 받을 수 있는가?"
+
+| 질문 모습 | 먼저 읽을 문서 | 이유 |
+|---|---|---|
+| `CLI에서 로그인해야 해요`, `TV 화면에 코드가 뜨고 휴대폰으로 승인해요`, `브라우저가 없는 장비예요` | 이 문서 | 현재 기기는 브라우저 redirect를 끝까지 처리하지 못하고, 다른 기기 승인 + polling이 핵심이기 때문이다. |
+| `구글 로그인 callback이 왜 이 URL로 와요`, `redirect_uri`, `PKCE`, `BFF`, `session cookie`가 문제예요 | [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md) | 브라우저 redirect와 callback hardening이 중심이기 때문이다. |
+
+브라우저가 없는 장면에서 browser redirect 문서를 먼저 읽으면 `redirect_uri`, `SavedRequest`, `BFF cookie` 쪽으로 사고가 끌려간다. Device Code Flow는 출발점부터 다르다.
 
 ---
 
 ## 핵심 개념
 
-Device Code Flow는 TV, CLI, 콘솔, IoT처럼 브라우저 입력이 어려운 기기에서 사용자를 인증할 때 쓰는 OAuth 흐름이다.  
-기기는 짧은 `device_code`와 사람이 입력할 `user_code`를 얻고, 사용자는 다른 브라우저에서 verification URI에 들어가 승인한다.
+Device Code Flow는 TV, CLI, 콘솔, IoT처럼 브라우저 입력이 어려운 기기에서 사용자를 인증할 때 쓰는 OAuth 흐름이다.
+
+가장 쉬운 mental model은 이렇다.
+
+- 지금 로그인하려는 기기는 "로그인 창을 끝까지 처리하는 곳"이 아니다
+- 사용자는 휴대폰이나 PC 브라우저에서 승인한다
+- 원래 기기는 "승인이 끝났는지 물어보며 기다리는 쪽"이다
+
+즉 기기는 짧은 `device_code`와 사람이 입력할 `user_code`를 얻고, 사용자는 다른 브라우저에서 verification URI에 들어가 승인한다.
 
 이 흐름의 핵심은 편의가 아니라 제약된 입력 환경을 안전하게 다루는 것이다.
 
@@ -37,6 +63,51 @@ Device Code Flow는 TV, CLI, 콘솔, IoT처럼 브라우저 입력이 어려운 
 - 기기는 토큰 endpoint를 polling한다
 
 즉 device code flow는 "브라우저 없는 기기용 authorization code"에 가깝지만, 공격면이 다르다.
+
+### Authorization Code Grant와 무엇이 다른가
+
+| 항목 | Authorization Code Grant | Device Code Flow |
+|---|---|---|
+| 로그인 UI가 열리는 곳 | 같은 브라우저 세션 안 | 다른 기기 브라우저 |
+| 핵심 연결 방식 | `redirect_uri` callback | `user_code` + verification page |
+| 현재 기기의 역할 | callback을 받고 세션을 이어감 | 승인 완료를 polling으로 기다림 |
+| 초보자가 먼저 보는 문제 | redirect URI, PKCE, session fixation | phishing, verification origin, polling interval |
+
+다음 한 걸음:
+
+- polling/backoff와 code 남용 방어가 궁금하면 이 문서의 아래 `polling은 rate limit과 결합해야 한다`부터 이어 읽는다.
+- 브라우저 callback hardening이 실제 문제였던 경우 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)로 이동한다.
+- 다른 security branch를 다시 고르려면 [Security README: Browserless / Cross-Device Login](./README.md#2-c-branch-point-browserless--cross-device-login)으로 돌아간다.
+
+---
+
+## CLI 로그인 증상 빠른 표
+
+처음 배우는데 CLI login이 막히면 에러 이름보다 "지금 눈앞에서 무슨 일이 보이냐"로 고르는 편이 빠르다.
+
+| 보이는 증상 | 보통 뜻 | 먼저 할 일 | 다음 step |
+|---|---|---|---|
+| `Code expired`, `expired_token`, `만료된 코드`가 뜬다 | `user_code`나 `device_code`의 TTL이 끝났다. 승인 화면을 오래 열어 두었거나 CLI가 너무 늦게 poll했다. | 새 device flow를 다시 시작하고, 화면에 새 `user_code`가 떴는지 확인한다. 예전 코드를 재사용하지 않는다. | polling 만료 동작은 이 문서의 [`polling은 rate limit과 결합해야 한다`](#3-polling은-rate-limit과-결합해야-한다)로 이어 읽고, category 분기로 돌아가려면 [Security README: Browserless / Cross-Device Login](./README.md#2-c-branch-point-browserless--cross-device-login)으로 복귀한다. |
+| 브라우저에서 코드를 넣었는데 "없는 페이지", 다른 회사 로그인 화면, 철자가 다른 URL이 나온다 | verification URI를 잘못 열었거나 피싱 페이지일 수 있다. Device Code Flow의 핵심 위험이 여기다. | CLI가 보여준 `verification_uri`와 브라우저 주소창 origin이 정확히 같은지 다시 본다. 북마크나 검색 결과로 들어가지 않는다. | verification origin 확인 포인트는 이 문서의 [`가장 큰 위험은 user_code phishing이다`](#2-가장-큰-위험은-user_code-phishing이다)로 이어 읽는다. |
+| CLI가 곧바로 반복 에러를 뿜거나 `slow_down`이 나온다 | polling 간격이 너무 짧다. 서버가 아직 승인 대기 중인데 과하게 재시도하고 있다. | CLI가 서버가 준 interval을 따르는지 보고, `slow_down`을 받으면 대기 시간을 늘린다. 승인 전에는 busy loop를 돌리지 않는다. | poll/backoff 설계는 이 문서의 [`polling은 rate limit과 결합해야 한다`](#3-polling은-rate-limit과-결합해야-한다)와 [Rate Limiting vs Brute Force Defense](./rate-limiting-vs-brute-force-defense.md)로 이어진다. |
+
+이 표는 "증상으로 branch 고르기"용이다.
+
+---
+
+## 승인했는데도 CLI가 계속 기다리면
+
+`authorization_pending`이 반복되면 이것부터 확인한다.
+
+- 같은 로그인 시도에서 받은 최신 `device_code`를 poll하고 있는지 본다.
+- 승인 직후 한두 번의 pending은 정상일 수 있다.
+- CLI를 재시작했다면 예전 flow를 버리고 새 flow 하나만 남긴다.
+
+다음 step:
+
+- token 저장/후속 세션 연결이 궁금하면 [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)로 넘어간다.
+- browser callback 문제가 실제 원인이면 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)로 분기한다.
+- 원리 자체를 잡고 싶으면 바로 아래 `깊이 들어가기`부터 읽는다.
 
 ---
 

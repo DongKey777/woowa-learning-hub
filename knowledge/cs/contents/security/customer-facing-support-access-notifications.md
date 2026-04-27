@@ -7,6 +7,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Support Access Alert Router Primer](./support-access-alert-router-primer.md)
 > - [Support Operator / Acting-on-Behalf-Of Controls](./support-operator-acting-on-behalf-of-controls.md)
 > - [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)
 > - [AOBO Start / End Event Contract](./aobo-start-end-event-contract.md)
@@ -23,6 +24,9 @@
 retrieval-anchor-keywords: customer-facing support access notifications, support access notification, support access email copy, support access push copy, support access in-app notification copy, support access inbox copy, support access security timeline, notification channel copy pattern, privacy safe notification copy, privacy safe email subject, privacy safe push notification, privacy safe in app copy, customer traceability event, customer traceability notification, case ref in notification, access group id in notification, acting on behalf notification, AOBO notification, break glass notification, emergency access notification, support access audience matrix, support access delivery surface, support access email vs inbox vs timeline, support access alternate verified channel, compromised mailbox support access alert, tenant admin notification, security contact notification, security timeline retention, delegated access timeline, customer security center support event, canonical security timeline event schema, aobo start end event contract, delegated support access end event schema, customer timeline close copy, access group id, case ref, timeline retention class, browser session coherence, session boundary bridge, ordinary session inventory vs support timeline
 
 ## 이 문서 다음에 보면 좋은 문서
+
+- support access 알림에서 audience row와 channel row가 아직 섞여 보이면 [Support Access Alert Router Primer](./support-access-alert-router-primer.md)로 먼저 올라가서 작은 decision table을 보고 다시 내려오면 된다.
+- customer-facing wording을 deep dive 전체 대신 먼저 짧게 맞추고 싶으면 같은 primer의 [Email / Inbox / Timeline Wording Cheat Sheet](./support-access-alert-router-primer.md#email--inbox--timeline-wording-cheat-sheet)에서 `read-only / write / break-glass` 한 줄만 먼저 고르면 된다.
 
 - support AOBO grant와 operator 제어면 자체는 [Support Operator / Acting-on-Behalf-Of Controls](./support-operator-acting-on-behalf-of-controls.md)로 이어진다.
 - start/end pair, `case_ref`, `access_group_id`, `retention_class`를 어떻게 공통 schema로 묶을지는 [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)로 이어진다.

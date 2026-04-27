@@ -11,6 +11,7 @@
 > 관련 문서:
 > - [그래프](./graph.md)
 > - [알고리즘 기본](./basic.md#dfs와-bfs)
+> - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 > - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 > - [A* vs Dijkstra](./a-star-vs-dijkstra.md)
 > - [Topological DP](./topological-dp.md)
@@ -20,6 +21,7 @@
 ## 이 문서 다음에 보면 좋은 문서
 
 - 가중치가 없거나 모두 같아서 BFS shortest path가 먼저라면 [알고리즘 기본](./basic.md#dfs와-bfs)에서 BFS 레벨 탐색을 먼저 확인하면 좋다.
+- 실제 경로를 `parent` / `predecessor` 배열로 복원하는 감각을 짧게 잡으려면 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)를 먼저 보면 좋다.
 - 그래프 기본기와 표현은 [그래프](./graph.md)에서 먼저 확인하면 좋다.
 - DAG shortest path나 위상 정렬 기반 완화가 핵심이면 [Topological DP](./topological-dp.md)를 먼저 보고, "순서 문제"와의 경계는 [Topological Sort Patterns](./topological-sort-patterns.md)로 같이 확인하면 좋다.
 - 희소 그래프에서 `0-1 BFS`, `zero-one BFS`, `Dial`, `bucket-shortest-path`, `PQ Dijkstra`까지 같이 보고 싶다면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)로 이어지면 좋다.

@@ -14,7 +14,7 @@
 > - [mmap vs read, Page Cache Behavior](./mmap-vs-read-page-cache-behavior.md)
 > - [Page Table Overhead, Memory Footprint](./page-table-overhead-memory-footprint.md)
 
-> retrieval-anchor-keywords: demand paging primer, page fault primer, virtual memory bridge, page fault basics, major vs minor page fault, copy-on-write primer, COW page fault, mmap page fault, anonymous page, file-backed page, first touch, lazy allocation, lazy loading, page cache hit fault, page cache miss fault, zero-fill-on-demand, MAP_PRIVATE, fork first write, demand-zero page
+> retrieval-anchor-keywords: demand paging primer, page fault primer, virtual memory bridge, page fault basics, major vs minor page fault, copy-on-write primer, COW page fault, mmap page fault, anonymous page, file-backed page, first touch, lazy allocation, lazy loading, page cache hit fault, page cache miss fault, zero-fill-on-demand, MAP_PRIVATE, fork first write, demand-zero page, beginner handoff box, primer handoff box, demand paging 다음 문서
 
 ## 핵심 개념
 
@@ -116,7 +116,7 @@ buf[0] = 1;
 - 필요한 페이지가 이미 page cache에 있다: minor fault
 - page cache에 없고 저장장치에서 읽어와야 한다: major fault
 
-즉 file-backed라고 해서 항상 major는 아니다.  
+즉 file-backed라고 해서 항상 major는 아니다.
 핵심은 "그 페이지가 이미 메모리에 있느냐"다.
 
 ### 3. `fork()` 뒤 첫 write: copy-on-write
@@ -137,7 +137,7 @@ if (pid == 0) {
 - 커널이 새 private page를 만들어 복제한 뒤
 - write 가능하게 바꾸는 과정
 
-이 역시 보통 **minor fault**다.  
+이 역시 보통 **minor fault**다.
 그래서 COW는 "fault는 났지만 디스크는 안 읽는" 대표 사례다.
 
 ### 4. `MAP_PRIVATE mmap()`의 첫 write
@@ -151,7 +151,7 @@ if (pid == 0) {
 
 ## 4. minor vs major: "중요도"가 아니라 "서비스 경로" 차이다
 
-`minor`와 `major`는 "가벼운 문제 / 심각한 문제" 구분이 아니다.  
+`minor`와 `major`는 "가벼운 문제 / 심각한 문제" 구분이 아니다.
 정확히는 **fault를 처리하는 데 디스크 I/O가 필요했는가**에 더 가깝다.
 
 | 상황 | 보통 fault 종류 | 이유 |
@@ -172,7 +172,7 @@ if (pid == 0) {
 
 ## 5. `mmap()`이 이 주제의 핵심 bridge인 이유
 
-가상 메모리 입문만 보면 page fault는 추상적으로 느껴질 수 있다.  
+가상 메모리 입문만 보면 page fault는 추상적으로 느껴질 수 있다.
 `mmap()`은 이 추상 개념을 실전 코드와 바로 연결해 준다.
 
 `read()`와 `mmap()`의 차이를 아주 단순하게 보면:
@@ -214,6 +214,14 @@ mmap()
 ### "`mmap()`은 디스크 읽기를 없애 준다"
 
 아니다. 읽기를 없애는 게 아니라, **시스템 콜 시점의 I/O를 접근 시점 fault로 이동**시키는 경우가 많다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "가상 메모리 큰 그림을 다시 고정"하려면: [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+> - "TLB miss, page table walk, fault 경계"를 더 또렷하게 보려면: [TLB and Page Table Walk Bridge](./tlb-page-table-walk-bridge.md)
+> - "minor/major fault를 운영 지표로 읽는 법"으로 내려가려면: [Major, Minor Page Faults, Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
 
 ## 7. 이 다음에 어디로 이어 읽으면 좋은가
 

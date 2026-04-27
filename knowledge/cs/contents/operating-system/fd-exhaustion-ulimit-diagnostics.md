@@ -10,9 +10,43 @@
 > - [Thundering Herd, Accept, Wakeup](./thundering-herd-accept-wakeup.md)
 > - [TCP Backlog, somaxconn, Listen Queue](./tcp-backlog-somaxconn-listen-queue.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
+> - [Container FD Pressure Bridge: `EMFILE`, `ENFILE`, Host vs Container](./container-fd-pressure-emfile-enfile-bridge.md)
 > - [epoll, kqueue, io_uring](./epoll-kqueue-io-uring.md)
 
-> retrieval-anchor-keywords: ulimit -n, RLIMIT_NOFILE, EMFILE, ENFILE, file-max, file-nr, lsof, /proc/pid/fd, too many open files
+> retrieval-anchor-keywords: ulimit -n, RLIMIT_NOFILE, EMFILE, ENFILE, file-max, file-nr, lsof, /proc/pid/fd, too many open files, fd quick check, fd triage table, EMFILE ENFILE quick triage, file-nr high meaning, open files what to suspect, container fd pressure, host vs container fd, container EMFILE ENFILE, host file-nr container
+
+## 먼저 잡는 멘탈 모델
+
+초급자는 fd 고갈을 "파일을 너무 많이 열었다"로만 외우기 쉽지만, 실제로는 **새 번호표를 더 못 받는 상태**로 보는 편이 빠르다.
+
+- 프로세스가 자기 번호표 상자를 다 쓰면 `EMFILE`
+- 머신 전체가 번호표를 거의 다 쓰면 `ENFILE`
+- 그래서 quick-check 다음 질문은 항상 "어느 상자가 찼나?"가 된다
+
+## Quick-check 다음 1분 판독표
+
+아래 표는 `ulimit -n`, `cat /proc/<pid>/limits`, `ls /proc/<pid>/fd | wc -l`, `cat /proc/sys/fs/file-nr`, `lsof -p <pid>`를 이미 한 번 본 뒤에 쓰는 빠른 분기표다.
+
+| 높게 나온 값 | 먼저 의심할 것 | 왜 그렇게 보나 | 다음 확인 |
+|---|---|---|---|
+| `ls /proc/<pid>/fd | wc -l` 값이 `Max open files`에 바짝 붙음 | 프로세스별 fd leak, connection spike, close 누락 | 해당 프로세스의 번호표 상자가 거의 찼다는 뜻이다 | `lsof -p <pid>`로 `IPv4/IPv6/REG/FIFO` 비중 확인 |
+| `file-nr`의 첫 값이 `fs.file-max`에 바짝 붙음 | 시스템 전체 fd pressure, 여러 프로세스/컨테이너 동시 증가 | 한 프로세스가 아니라 노드 전체 file handle 풀이 차고 있을 수 있다 | 어떤 프로세스들이 fd를 많이 들고 있는지 상위 프로세스 분포 확인 |
+| `lsof -p <pid>`에서 `IPv4`/`IPv6`가 유난히 많음 | 연결 수 급증, keep-alive 적체, 소켓 close 지연 | 열린 객체 대부분이 네트워크 소켓이라는 뜻이다 | `ss -tanp`로 연결 상태와 누적 방향 확인 |
+| `lsof -p <pid>`에서 `REG`가 유난히 많음 | 로그 파일/임시 파일/파일 핸들 close 누락 | 일반 파일 fd가 오래 남아 있다는 신호다 | 회전 로그, temp file, 파일 스트림 종료 코드 확인 |
+| `lsof`에 `(deleted)` 파일이 많이 보임 | 삭제된 로그 파일을 프로세스가 계속 잡고 있음 | 파일은 지워졌지만 fd가 살아 있어 공간과 fd를 계속 점유한다 | 로그 로테이션 후 재오픈/close 경로 확인 |
+
+작은 예시:
+
+| 관찰 | 첫 해석 |
+|---|---|
+| `/proc/1234/fd` 개수 49,000, `Max open files` 50,000 | 우선 `EMFILE` 쪽을 의심한다. 프로세스 leak 또는 소켓 적체 가능성이 크다. |
+| `file-nr` 1,900,000, `fs.file-max` 2,000,000 | 노드 전체 `ENFILE` 위험 구간에 가깝다. 특정 앱 하나보다 시스템 분포를 같이 봐야 한다. |
+
+헷갈리기 쉬운 포인트:
+
+- `EMFILE`은 "이 프로세스가 꽉 찼다"는 뜻이지, 시스템 전체가 바로 꽉 찼다는 뜻은 아니다.
+- `ENFILE`은 "노드 전체가 위험하다"에 가깝다. 컨테이너 안 관찰값만 보고 놓치기 쉽다.
+- 값이 높다고 바로 leak으로 단정하면 안 된다. 배포 직후 트래픽 spike나 keep-alive 적체도 같은 모양을 만들 수 있다.
 
 ## 핵심 개념
 

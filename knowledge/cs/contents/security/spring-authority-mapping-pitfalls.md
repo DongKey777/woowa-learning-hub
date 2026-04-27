@@ -1,6 +1,6 @@
 # Spring Authority Mapping Pitfalls
 
-> 한 줄 요약: Spring Security에서 JWT 검증은 성공했는데 `403`이 뜬다면, 대개 토큰 자체보다 `claim -> GrantedAuthority` 매핑과 `hasRole` / `hasAuthority` 문자열 계약이 어긋난 것이다.
+> 한 줄 요약: Spring Security에서 JWT 검증은 성공했는데 `403`이 뜬다면, 대개 `claim은 있는데 authority가 비어 있음` 또는 `ROLE_/SCOPE_ mismatch`처럼 `claim -> GrantedAuthority` 매핑과 `hasRole` / `hasAuthority` 문자열 계약이 어긋난 것이다.
 
 **난이도: 🟡 Intermediate**
 
@@ -15,7 +15,24 @@
 > - [Security README: 기본 primer](./README.md#기본-primer)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: spring authority mapping pitfalls, spring security authority mapping, spring security confusing 403, spring security valid jwt but 403, jwt authenticated but forbidden, jwt claim to authority mapping, JwtAuthenticationConverter 403, JwtGrantedAuthoritiesConverter 403, authorities claim mapping mismatch, scope claim mapping mismatch, roles claim mapping mismatch, groups claim mapping mismatch, ROLE_ prefix mismatch, SCOPE_ prefix mismatch, hasRole vs hasAuthority, hasRole 403, hasAuthority 403, granted authority mismatch, access denied after jwt auth, spring security access denied jwt, custom jwt converter loses scopes, custom jwt converter roles only, roles claim not mapped to ROLE_, scope claim not mapped to SCOPE_, authorityPrefix drift, authoritiesClaimName mismatch, valid token empty authorities, spring method security 403 jwt, spring resource server authority debug
+retrieval-anchor-keywords: spring authority mapping pitfalls, spring security authority mapping, spring security confusing 403, spring security valid jwt but 403, jwt authenticated but forbidden, jwt claim to authority mapping, JwtAuthenticationConverter 403, JwtGrantedAuthoritiesConverter 403, authorities claim mapping mismatch, scope claim mapping mismatch, roles claim mapping mismatch, groups claim mapping mismatch, ROLE_ prefix mismatch, SCOPE_ prefix mismatch, ROLE_/SCOPE_ mismatch, hasRole vs hasAuthority, hasRole 403, hasAuthority 403, granted authority mismatch, access denied after jwt auth, spring security access denied jwt, custom jwt converter loses scopes, custom jwt converter roles only, roles claim not mapped to ROLE_, scope claim not mapped to SCOPE_, authorityPrefix drift, authoritiesClaimName mismatch, valid token empty authorities, claim은 있는데 authority가 비어 있음, claim은 있는데 authority가 없음, authority가 비어 있음, spring method security 403 jwt, spring resource server authority debug
+
+## 먼저 떠올릴 그림
+
+입문자 기준으로는 이렇게만 먼저 잡으면 된다.
+
+```text
+토큰 claim이 있다
+-> Spring이 claim을 authority 문자열로 바꾼다
+-> guard가 그 authority 문자열을 비교한다
+```
+
+여기서 많이 깨지는 첫 문장이 바로 두 가지다.
+
+- `claim은 있는데 authority가 비어 있음`
+- `ROLE_/SCOPE_ mismatch`
+
+즉 JWT 안에 재료가 보여도, Spring이 만든 authority가 비어 있거나 guard가 다른 prefix를 찾으면 결과는 `403`이다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -34,7 +51,8 @@ retrieval-anchor-keywords: spring authority mapping pitfalls, spring security au
 | 겉으로 보이는 현상 | 실제로 자주 깨지는 계약 | 왜 헷갈리는가 | 먼저 볼 것 |
 |---|---|---|---|
 | JWT 서명 검증은 통과했는데 `@PreAuthorize("hasRole('ADMIN')")`가 `403` | authority는 `ADMIN`인데 guard는 `ROLE_ADMIN`을 기대함 | 로그인은 됐으니 role도 자동으로 읽혔다고 착각함 | 실제 `Authentication#getAuthorities()` 값 |
-| token에 `scope=orders.read`가 있는데 `hasAuthority('orders.read')`가 `403` | Spring이 보는 authority는 보통 `SCOPE_orders.read` | claim 문자열과 authority 문자열을 같은 말로 읽음 | scope claim이 어떤 prefix로 authority가 됐는지 |
+| `claim은 있는데 authority가 비어 있음`처럼 `roles`, `groups`, `scope`는 보이는데 guard는 계속 `403` | converter가 그 claim을 실제 authority로 안 올렸거나, custom converter가 기존 authority를 지움 | claim이 보이면 Spring authority도 자동으로 생긴다고 착각함 | 실제 `Authentication#getAuthorities()`가 비어 있는지부터 확인 |
+| token에 `scope=orders.read`가 있는데 `hasAuthority('orders.read')`가 `403`, 즉 `ROLE_/SCOPE_ mismatch`가 의심됨 | Spring이 보는 authority는 보통 `SCOPE_orders.read` | claim 문자열과 authority 문자열을 같은 말로 읽음 | scope claim이 어떤 prefix로 authority가 됐는지 |
 | custom `JwtAuthenticationConverter`를 넣은 뒤 scope 기반 endpoint가 전부 `403` | custom converter가 기존 scope 매핑을 덮어써서 `SCOPE_...` authority가 사라짐 | roles 추가만 했다고 생각했는데 default behavior를 교체함 | custom converter가 merge인지 replace인지 |
 | `roles`, `groups` claim은 보이는데 `hasRole`은 계속 `403` | 현재 converter가 custom role claim을 authority로 올리지 않음 | claim이 있으면 Spring도 바로 role로 본다고 생각함 | converter가 어떤 claim 이름을 읽는지 |
 | `hasAuthority('ROLE_ADMIN')`는 통과하는데 `hasRole('ADMIN')` 쪽만 실패, 혹은 반대 | prefix를 커스터마이즈했는데 annotation/DSL/test가 예전 규칙을 그대로 씀 | prefix를 한 군데만 바꾸고 전 구간이 같이 바뀐다고 착각함 | prefix 설정과 guard 문자열의 일치 여부 |
@@ -114,7 +132,7 @@ JwtAuthenticationConverter jwtAuthenticationConverter() {
 
 ---
 
-## 2. claim은 있는데 authority는 없다
+## 2. `claim은 있는데 authority가 비어 있음`
 
 `roles`, `groups`, `authorities` claim이 토큰에 보인다고 해서 Spring이 그 이름을 자동으로 business role로 해석하는 것은 아니다.
 
@@ -156,9 +174,9 @@ JwtAuthenticationConverter jwtAuthenticationConverter() {
 
 ---
 
-## 4. `ROLE_`와 `SCOPE_`는 보통 다른 축이다
+## 4. `ROLE_/SCOPE_ mismatch`는 보통 prefix 계약 문제다
 
-실무에서 이 둘을 섞어 읽기 시작하면 디버깅이 어려워진다.
+실무에서 `ROLE_`와 `SCOPE_`를 섞어 읽기 시작하면 디버깅이 어려워진다.
 
 - `ROLE_ADMIN`은 보통 coarse role gate다.
 - `SCOPE_orders.read`는 보통 delegated API scope다.

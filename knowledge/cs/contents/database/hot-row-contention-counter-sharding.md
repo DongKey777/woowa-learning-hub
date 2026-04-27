@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Striped Guard Row Budgeting Primer](./striped-guard-row-budgeting-primer.md)
 - [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md)
 - [Guard Row vs Serializable Retry vs Reconciliation for Set Invariants](./guard-row-vs-serializable-vs-reconciliation-set-invariants.md)
 - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
@@ -14,8 +15,9 @@
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md)
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- [Database + System Design 브리지 맵](../../rag/cross-domain-bridge-map.md#database--system-design)
 
-retrieval-anchor-keywords: hot row contention, guard row hotspot, striped guard rows, guard row sharding, counter sharding, capacity hotspot mitigation, quota hotspot, reservation ledger fallback, append-only ledger, sharded guard counter, hot aggregate row, striped admission control, bucket rebalance, flash sale quota contention
+retrieval-anchor-keywords: hot row contention, guard row hotspot, striped guard rows, guard row sharding, counter sharding, capacity hotspot mitigation, quota hotspot, reservation ledger fallback, append-only ledger, sharded guard counter, hot aggregate row, striped admission control, bucket rebalance, hot row 뭐예요, 처음 배우는데 같은 key만 기다려요
 
 ## 핵심 개념
 
@@ -103,6 +105,8 @@ WHERE campaign_id = :campaign_id
 
 ## 2. striped guard row: admission surface를 쪼개기
 
+아직 "정말 같은 guard key가 반복해서 줄을 세우는 상황인가?"가 먼저 헷갈린다면 striping 설계로 내려가기 전에 [Guard Row Hot-Row Symptoms Primer](./guard-row-hot-row-symptoms-primer.md)에서 증상부터 확인하는 편이 안전하다.
+
 striped guard row의 핵심은 **storage를 나누는 것보다 승인 대기열을 나누는 것**이다.
 
 ```sql
@@ -136,10 +140,12 @@ WHERE campaign_id = :campaign_id
 - `bucket_id = crc32(reservation_id) % 16`
 - `bucket_id = stay_day_slot % 16`
 
-release나 cancel이 다른 bucket으로 가면 summary drift가 아니라 즉시 corruption이 된다.  
+release나 cancel이 다른 bucket으로 가면 summary drift가 아니라 즉시 corruption이 된다.
 그래서 detail row나 ledger에 `bucket_id`를 함께 저장하는 편이 안전하다.
 
-### 2. 각 bucket은 로컬 budget을 가져야 exact admission이 된다
+이 세 규칙을 beginner 관점에서 짧게 먼저 잡고 싶다면 [Striped Guard Row Budgeting Primer](./striped-guard-row-budgeting-primer.md)를 먼저 읽는 편이 좋다.
+
+## 2-1. bucket-local budget으로 exact admission 유지
 
 `SUM(reserved_qty)`를 매번 다시 세면서 bucket 하나만 update하면 bucket 수만 늘어난 단일 guard row일 뿐이다.
 
@@ -151,7 +157,7 @@ exact invariant를 유지하려면:
 
 즉 striped guard row는 "global total을 매 요청 계산"이 아니라 **bucket-local headroom**으로 승인한다.
 
-### 3. hot path에서 bucket fan-out을 작게 유지해야 한다
+### hot path fan-out은 작게 유지한다
 
 요청 하나가 16개 bucket을 전부 훑으면 기다림만 여러 row로 번진다.
 
@@ -163,7 +169,7 @@ exact invariant를 유지하려면:
 
 모든 bucket을 매번 합산/잠금하는 것은 striped guard row의 이점을 거의 없앤다.
 
-### budget rebalance는 낮은 빈도의 별도 프로토콜로 다룬다
+## 2-2. budget rebalance는 hot path 밖으로 분리한다
 
 bucket 간 capacity가 치우치면 budget 이동이 필요할 수 있다.
 
@@ -184,7 +190,7 @@ WHERE campaign_id = :campaign_id
   AND bucket_id IN (:src_bucket_id, :dst_bucket_id);
 ```
 
-rebalancing을 hot write path에 붙이면 다시 중앙 조정이 병목이 된다.  
+rebalancing을 hot write path에 붙이면 다시 중앙 조정이 병목이 된다.
 가능하면 낮은 빈도의 refill worker나 운영 루틴으로 분리한다.
 
 ## 3. counter sharding: 쓰기 fan-out을 읽기 fan-in으로 바꾸기
@@ -269,7 +275,7 @@ ledger fallback이 주는 장점:
 2. `counter shard + ledger projection`
 3. `ledger + tokenized unit/slot claim`
 
-첫 번째 조합이 가장 흔하다.  
+첫 번째 조합이 가장 흔하다.
 guard bucket이 실시간 admission을 맡고, ledger가 repair와 audit source가 된다.
 
 ## 무엇을 고를지 빠르게 정리하면

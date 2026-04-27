@@ -6,17 +6,19 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
-> - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
-> - [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)
-> - [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)
-> - [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+관련 문서:
 
-retrieval-anchor-keywords: spring component scan failure, component scan boundary, package layout, @SpringBootApplication package, scanBasePackages, scanBasePackageClasses, custom component scan, multi module component scan, missing stereotype annotation, NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException, NoSuch vs NoUniqueBeanDefinitionException, UnsatisfiedDependencyException, bean not found, ambiguous bean vs missing bean, controller not mapped, default package spring boot, @Import vs component scan, scanBasePackages vs @Import, shared module boundary, library module bean registration, package root mismatch, spring bean discovery, component scan vs EntityScan, component scan vs EnableJpaRepositories, JPA scan boundary, repository bean not found, Not a managed type
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
+- [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
+- [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)
+- [Spring Startup / Bean Graph Debugging](./spring-startup-bean-graph-debugging-playbook.md)
+- [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)
+- [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
+
+retrieval-anchor-keywords: spring component scan failure, component scan boundary, springbootapplication package, scanbasepackages, scanbasepackageclasses, multi module component scan, missing stereotype annotation, nosuchbeandefinitionexception, profile conditional bean missing, condition evaluation report, starter bean missing faq, 처음 배우는데 bean 안 떠요, spring bean basics, component scan basics
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -30,18 +32,37 @@ retrieval-anchor-keywords: spring component scan failure, component scan boundar
 
 ---
 
+## 먼저 10초 역분기
+
+`bean이 안 떴다 = 무조건 scan 실패`로 보면 초반에 자주 헤맨다. 먼저 아래 둘 중 어디에 가까운지 가른다.
+
+| 먼저 보는 질문 | component scan 쪽 | `@Profile`/conditional 쪽 |
+|---|---|---|
+| 언제 깨지는가? | 로컬, 테스트, 운영 어디서나 비슷하게 깨진다 | 특정 profile, 특정 테스트 슬라이스, CI/운영에서만 깨진다 |
+| 코드에서 먼저 볼 것 | `@SpringBootApplication` 위치, `scanBasePackages`, stereotype annotation | `@Profile`, `@ConditionalOnProperty`, `@ConditionalOnClass`, `@ConditionalOnBean` |
+| 바로 이어갈 문서 | 이 문서 | [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md), [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md), [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ](./spring-starter-added-but-bean-missing-faq.md) |
+
+짧게 말하면 이렇다.
+
+- package 구조나 annotation이 처음부터 어긋나 있으면 scan 누락일 가능성이 크다.
+- package와 annotation은 멀쩡한데 환경마다 결과가 달라지면 scan보다 실행 조건 탈락을 먼저 의심한다.
+
+예를 들어 `dev`에서는 뜨는데 `prod`에서만 안 뜨는 bean은, beginner가 가장 많이 scan 문제로 오해하는 케이스다. 이런 경우는 이 문서를 끝까지 읽기보다 condition 문서로 먼저 넘어가는 편이 더 빠르다.
+
 ## 핵심 개념
 
 component scan 실패는 대개 "Spring이 이상하다"가 아니라 아래 셋 중 하나다.
 
-1. **scan 시작점이 잘못됐다**  
+1. **scan 시작점이 잘못됐다**
    `@SpringBootApplication`이 놓인 패키지가 너무 깊거나, custom scan 설정이 너무 좁다.
-2. **scan 대상이 아니다**  
+2. **scan 대상이 아니다**
    클래스가 classpath에 있어도 stereotype annotation이 없으면 Bean 후보가 아니다.
-3. **module 경계와 package 경계를 혼동했다**  
+3. **module 경계와 package 경계를 혼동했다**
    Gradle/Maven module dependency가 있다고 해서 자동으로 scan 범위에 들어오지 않는다.
 
 즉 component scan은 "모든 코드를 훑는 기능"이 아니라, **정해진 package boundary 안에서 Bean 후보를 수집하는 규칙**이다.
+
+## 헷갈리기 쉬운 첫 분기
 
 여기서 초보자가 먼저 잡아야 할 분기는 하나다.
 
@@ -55,10 +76,10 @@ component scan 실패는 대개 "Spring이 이상하다"가 아니라 아래 셋
 - package와 annotation이 틀렸으면 component scan 쪽이다
 - package와 annotation은 맞는데 특정 환경에서만 bean이 사라지면 `@Profile`/conditional 쪽일 가능성이 더 크다
 
-즉 `NoSuchBeanDefinitionException`라고 해서 항상 이 문서의 범위는 아니다.  
+즉 `NoSuchBeanDefinitionException`라고 해서 항상 이 문서의 범위는 아니다.
 scan 경계가 멀쩡해 보이면 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md)나 [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ](./spring-starter-added-but-bean-missing-faq.md)로 바로 넘어가는 편이 빠르다.
 
-### 먼저 이 오해부터 버린다
+## 먼저 이 오해부터 버린다
 
 | 흔한 오해 | 실제 동작 |
 |---|---|
@@ -78,9 +99,7 @@ scan 경계가 멀쩡해 보이면 [Spring Boot Condition Evaluation Report 첫 
 
 ---
 
-## 공통 실패 패턴
-
-### 1. `@SpringBootApplication`이 너무 깊은 패키지에 있다
+## 1. `@SpringBootApplication`이 너무 깊은 패키지에 있다
 
 가장 흔한 실수다.
 
@@ -93,7 +112,7 @@ com.example
           └── Application
 ```
 
-`Application`이 `com.example.bootstrap.app`에 있으면 기본 scan 범위는 그 하위 패키지다.  
+`Application`이 `com.example.bootstrap.app`에 있으면 기본 scan 범위는 그 하위 패키지다.
 즉 `com.example.order.OrderService`는 sibling package라서 잡히지 않는다.
 
 대표 증상:
@@ -115,7 +134,7 @@ com.example
 
 `scanBasePackages`로 임시 봉합할 수는 있지만, 애플리케이션 전체가 하나의 package root를 공유한다면 구조를 바로잡는 편이 더 단순하다.
 
-### 2. custom `scanBasePackages`가 기본 범위를 더 좁혀 버렸다
+## 2. custom `scanBasePackages`가 기본 범위를 더 좁혀 버렸다
 
 처음엔 잘 동작했는데, 특정 설정을 추가한 뒤 일부 Bean만 사라지는 경우가 있다.
 
@@ -125,7 +144,7 @@ public class Application {
 }
 ```
 
-이 설정은 "api만 보고 싶다"는 뜻에 가깝다.  
+이 설정은 "api만 보고 싶다"는 뜻에 가깝다.
 `com.example.service`, `com.example.infra`가 sibling이면 scan에서 빠진다.
 
 문제가 되는 이유:
@@ -150,7 +169,7 @@ public class Application {
 }
 ```
 
-### 3. multi-module 구조인데 package root가 서로 달라 scan이 끊긴다
+## 3. multi-module 구조인데 package root가 서로 달라 scan이 끊긴다
 
 multi-module에서 자주 나오는 오해는 "dependency를 추가했으니 component scan도 넘어간다"는 생각이다.
 
@@ -160,7 +179,7 @@ core module  -> com.example.core.OrderService
 infra module -> com.example.infra.JpaOrderRepository
 ```
 
-`Application`이 `com.example.app`에 있으면 기본 scan은 `com.example.app..*`이다.  
+`Application`이 `com.example.app`에 있으면 기본 scan은 `com.example.app..*`이다.
 `com.example.core`, `com.example.infra`는 sibling이라서 자동으로 잡히지 않는다.
 
 여기서 선택지는 세 갈래다.
@@ -173,7 +192,7 @@ infra module -> com.example.infra.JpaOrderRepository
 
 즉 multi-module의 핵심은 "scan을 더 크게 열기"가 아니라, **이 module을 app 내부 코드처럼 볼지, library처럼 가져올지 먼저 결정하는 것**이다.
 
-### 4. stereotype annotation이 빠져 있어서 scan 후보가 아니다
+## 4. stereotype annotation이 빠져 있어서 scan 후보가 아니다
 
 패키지 위치는 맞는데도 Bean이 안 잡히면, 다음으로 볼 것은 annotation이다.
 
@@ -187,7 +206,7 @@ public class OrderService {
 }
 ```
 
-이 클래스는 package 안에 있어도 Bean 후보가 아니다.  
+이 클래스는 package 안에 있어도 Bean 후보가 아니다.
 아래 둘 중 하나가 필요하다.
 
 ```java
@@ -220,7 +239,7 @@ public class OrderConfig {
 - **내 concrete class면** stereotype annotation
 - **외부 객체거나 생성 로직이 중요하면** `@Bean`
 
-### 5. default package를 쓰거나 package 선언이 제각각이다
+## 5. default package를 쓰거나 package 선언이 제각각이다
 
 package 선언 없이 `Application`을 default package에 두는 것은 피해야 한다.
 
@@ -231,7 +250,7 @@ public class Application {
 }
 ```
 
-이 경우 scan이 지나치게 넓어지거나 예측하기 어려워진다.  
+이 경우 scan이 지나치게 넓어지거나 예측하기 어려워진다.
 Spring Boot 문맥에서도 default package는 권장되지 않는다.
 
 이 패턴의 문제:
@@ -280,3 +299,7 @@ Spring Boot 문맥에서도 default package는 권장되지 않는다.
 > Q: class가 같은 package에 있는데도 주입이 안 되는 가장 흔한 이유는 무엇인가?
 > 의도: stereotype annotation 누락 확인
 > 핵심: package 안에 있어도 Bean 후보 annotation이나 `@Bean` 등록이 없으면 scan되지 않는다.
+
+## 한 줄 정리
+
+component scan 문서는 `package 경계와 annotation이 틀린 경우`를 다루고, package/annotation은 맞는데 환경마다 bean이 사라지면 `@Profile`/conditional 분기 문서로 먼저 넘어가는 것이 빠르다.

@@ -6,6 +6,11 @@
 
 > 관련 문서:
 > - [Software Engineering README: API 설계와 예외 처리](./README.md#api-설계와-예외-처리)
+> - [계층형 아키텍처 기초](./layered-architecture-basics.md)
+> - [Service 계층 기초](./service-layer-basics.md)
+> - [예외 처리 기초](./exception-handling-basics.md)
+> - [409 vs 422 선택 기준 짧은 가이드](./http-409-vs-422-selection-guide.md)
+> - [테스트 전략 기초](./test-strategy-basics.md)
 > - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 > - [API Versioning, Contract Testing, Anti-Corruption Layer](./api-versioning-contract-testing-anti-corruption-layer.md)
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
@@ -20,6 +25,18 @@
 > - error code taxonomy
 > - exception to API translation
 > - 예외 처리 설계
+> - @Valid
+> - bean validation
+> - controller validation
+> - service validation
+> - 입력 검증 vs 업무 규칙 검증
+> - 형식 검증
+> - 업무 규칙 검증
+> - 400 vs 409
+> - 409 vs 422
+> - MethodArgumentNotValidException
+> - field error array
+> - validation error response example
 
 ## 핵심 개념
 
@@ -104,6 +121,379 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+### `@Valid`와 업무 규칙 검증은 왜 나누나
+
+먼저 멘탈 모델부터 잡자.
+
+- **Controller의 검증**은 "이 요청이 API 문 앞을 통과할 형식인가?"를 본다.
+- **Service의 검증**은 "형식은 맞지만, 지금 이 요청을 실제로 처리해도 되는가?"를 본다.
+
+짧게 비유하면 이렇다.
+
+- Controller는 **입장권 검사대**다. 이름이 비었는지, 날짜 형식이 맞는지, 숫자가 숫자인지 본다.
+- Service/Domain은 **매장 운영 규칙**이다. 이미 품절인지, 중복 예약인지, 지금 주문 가능한 시간인지 본다.
+
+둘을 섞으면 흔히 이런 문제가 생긴다.
+
+- Controller가 비대해져서 HTTP 요청 처리 코드와 업무 규칙이 뒤엉킨다.
+- 같은 서비스가 배치, 스케줄러, 다른 API에서도 호출될 때 규칙 검사가 빠진다.
+- `400 Bad Request`와 `409 Conflict`를 구분하기 어려워진다.
+
+짧게 비교하면 이렇다.
+
+| 어디서 검증하나 | 질문 | 예시 | 실패 시 흔한 응답 |
+|------|------|------|------|
+| Controller + `@Valid` | 요청 모양이 맞는가? | 이메일 형식, 필수값 누락, 문자열 길이 | `400 Bad Request` |
+| Service/Domain | 업무 규칙을 만족하는가? | 이미 탈퇴한 회원인지, 중복 신청인지, 재고가 충분한지 | `409 Conflict`, `422`, `404` 등 |
+
+### 자주 섞이는 판단 3개: before / after
+
+아래 3개는 초심자가 "이것도 `@Valid`로 하면 되나?" 하고 가장 자주 헷갈리는 예시다.
+
+#### 1. 회원 가입: 이메일 모양 vs 이미 가입된 이메일
+
+| 구분 | 질문 | 두어야 할 곳 |
+|---|---|---|
+| 형식 검증 | `abc`가 이메일처럼 생겼는가? | Controller DTO |
+| 업무 규칙 검증 | `hello@example.com`이 이미 가입돼 있는가? | Service/Domain |
+
+```java
+// before: 형식 검증과 상태 조회를 Controller에서 섞음
+@PostMapping
+public ResponseEntity<Void> signUp(@RequestBody SignUpRequest request) {
+    if (!request.email().contains("@")) {
+        throw new BadRequestException("이메일 형식 오류");
+    }
+    if (memberRepository.existsByEmail(request.email())) {
+        throw new BadRequestException("이미 가입된 이메일");
+    }
+    memberService.signUp(request.email(), request.password(), request.nickname());
+    return ResponseEntity.status(201).build();
+}
+```
+
+```java
+// after: 모양은 DTO에서, 상태 기반 규칙은 Service에서 분리
+public record SignUpRequest(
+    @Email String email,
+    @Size(min = 8, max = 20) String password,
+    @NotBlank String nickname
+) {}
+
+@PostMapping
+public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest request) {
+    memberService.signUp(request.email(), request.password(), request.nickname());
+    return ResponseEntity.status(201).build();
+}
+```
+
+`이미 가입된 이메일`은 문자열 모양이 아니라 **저장된 회원 상태를 조회해야 알 수 있는 규칙**이라서 Service/Domain 쪽이다.
+
+#### 2. 주문 생성: 수량이 0인지 vs 재고가 충분한지
+
+| 구분 | 질문 | 두어야 할 곳 |
+|---|---|---|
+| 형식 검증 | `quantity`가 1 이상인가? | Controller DTO |
+| 업무 규칙 검증 | 지금 창고 재고로 주문 가능한가? | Service/Domain |
+
+```java
+// before: 재고 규칙까지 웹 계층이 직접 판단
+@PostMapping("/orders")
+public ResponseEntity<Void> create(@RequestBody OrderRequest request) {
+    if (request.quantity() < 1) {
+        throw new BadRequestException("수량은 1 이상");
+    }
+    Product product = productRepository.findById(request.productId())
+        .orElseThrow(() -> new NotFoundException("상품 없음"));
+    if (product.stock() < request.quantity()) {
+        throw new BadRequestException("재고 부족");
+    }
+    orderService.create(request.productId(), request.quantity());
+    return ResponseEntity.status(201).build();
+}
+```
+
+```java
+// after: 웹 계층은 숫자 범위만, 재고 판단은 서비스/도메인으로 이동
+public record OrderRequest(
+    @NotNull Long productId,
+    @Min(1) int quantity
+) {}
+
+@PostMapping("/orders")
+public ResponseEntity<Void> create(@Valid @RequestBody OrderRequest request) {
+    orderService.create(request.productId(), request.quantity());
+    return ResponseEntity.status(201).build();
+}
+```
+
+`재고 부족`은 요청 JSON만 보고는 알 수 없다. **현재 재고 상태**를 읽어야 하므로 업무 규칙 검증이다.
+
+#### 3. 예약 생성: 날짜 형식 오류 vs 이미 지난 시간 예약
+
+| 구분 | 질문 | 두어야 할 곳 |
+|---|---|---|
+| 형식 검증 | `reservationAt`가 ISO 날짜시간 형식인가? | Controller DTO |
+| 업무 규칙 검증 | 지금 시점 기준으로 이미 지난 시간인가? | Service/Domain |
+
+```java
+// before: 현재 시간 비교 규칙을 Controller가 직접 가짐
+@PostMapping("/reservations")
+public ResponseEntity<Void> reserve(@RequestBody ReservationRequest request) {
+    LocalDateTime reservationAt = LocalDateTime.parse(request.reservationAt());
+    if (reservationAt.isBefore(LocalDateTime.now())) {
+        throw new BadRequestException("지난 시간으로는 예약할 수 없습니다.");
+    }
+    reservationService.reserve(reservationAt, request.partySize());
+    return ResponseEntity.status(201).build();
+}
+```
+
+```java
+// after: 파싱/형식은 DTO에 맡기고, "지금 예약 가능한가"는 서비스에서 판단
+public record ReservationRequest(
+    @NotNull LocalDateTime reservationAt,
+    @Min(1) int partySize
+) {}
+
+@PostMapping("/reservations")
+public ResponseEntity<Void> reserve(@Valid @RequestBody ReservationRequest request) {
+    reservationService.reserve(request.reservationAt(), request.partySize());
+    return ResponseEntity.status(201).build();
+}
+```
+
+`지난 시간 예약 불가`는 단순 형식 검사가 아니다. **현재 시각과 운영 규칙**이 함께 들어가므로 서비스/도메인 규칙에 가깝다.
+
+### 예시: 회원 가입에서 형식 검증과 업무 규칙 검증 분리
+
+아래 예시는 초심자가 가장 자주 헷갈리는 지점을 보여준다.
+
+- `@Valid`는 "이메일 모양, 비밀번호 길이" 같은 **입력 형식**을 본다.
+- 서비스는 "이미 가입한 이메일인지" 같은 **업무 규칙**을 본다.
+
+```java
+public record SignUpRequest(
+    @NotBlank(message = "이메일은 필수입니다.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
+    String email,
+
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하여야 합니다.")
+    String password,
+
+    @NotBlank(message = "닉네임은 필수입니다.")
+    String nickname
+) {}
+```
+
+```java
+@RestController
+@RequestMapping("/members")
+public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @PostMapping
+    public ResponseEntity<MemberResponse> signUp(@Valid @RequestBody SignUpRequest request) {
+        Member member = memberService.signUp(
+            request.email(),
+            request.password(),
+            request.nickname()
+        );
+        return ResponseEntity.status(201)
+            .body(new MemberResponse(member.getId(), member.getEmail(), member.getNickname()));
+    }
+}
+```
+
+```java
+@Service
+public class MemberService {
+
+    private final MemberRepository memberRepository;
+
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    public Member signUp(String email, String password, String nickname) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException(email);
+        }
+
+        Member member = Member.create(email, password, nickname);
+        return memberRepository.save(member);
+    }
+}
+```
+
+```java
+public class DuplicateEmailException extends BusinessException {
+    public DuplicateEmailException(String email) {
+        super("DUPLICATE_EMAIL", "이미 가입된 이메일입니다: " + email);
+    }
+}
+```
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+        List<FieldErrorMessage> errors = e.getBindingResult().getFieldErrors().stream()
+            .map(error -> new FieldErrorMessage(
+                error.getField(),
+                error.getDefaultMessage(),
+                error.getRejectedValue()
+            ))
+            .toList();
+
+        return ResponseEntity.badRequest()
+            .body(new ErrorResponse(
+                "INVALID_INPUT",
+                "요청 형식이 올바르지 않습니다.",
+                errors
+            ));
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException e) {
+        return ResponseEntity.status(409)
+            .body(new ErrorResponse("DUPLICATE_EMAIL", e.getMessage()));
+    }
+}
+```
+
+초심자는 여기서 `MethodArgumentNotValidException` 이름보다 먼저, **"요청 DTO 검증이 실패하면 Spring이 필드별 오류 목록을 모아서 400으로 넘겨준다"**고 이해하면 된다.
+
+### `MethodArgumentNotValidException` 400 응답은 어떻게 읽나
+
+멘탈 모델은 단순하다.
+
+- `message`는 "요청 전체가 왜 실패했는지"를 한 줄로 설명한다.
+- `errors[]`는 "어느 필드가 왜 실패했는지"를 한 칸씩 펼쳐 보여준다.
+
+즉, `400` 응답은 **한 문장 요약 + 필드별 상세 목록**으로 읽으면 된다.
+
+```json
+{
+  "code": "INVALID_INPUT",
+  "message": "요청 형식이 올바르지 않습니다.",
+  "errors": [
+    {
+      "field": "email",
+      "message": "이메일 형식이 올바르지 않습니다.",
+      "rejectedValue": "hello"
+    },
+    {
+      "field": "password",
+      "message": "비밀번호는 8자 이상 20자 이하여야 합니다.",
+      "rejectedValue": "1234"
+    },
+    {
+      "field": "nickname",
+      "message": "닉네임은 필수입니다.",
+      "rejectedValue": ""
+    }
+  ]
+}
+```
+
+위 응답을 읽는 순서는 보통 이렇다.
+
+| 먼저 볼 곳 | 왜 먼저 보나 | 예시 해석 |
+|---|---|---|
+| `code` | 클라이언트가 공통 분기하기 쉽다 | `INVALID_INPUT`이면 검증 실패 공통 처리 |
+| `message` | 화면/로그에 한 줄 요약을 주기 쉽다 | "요청 형식이 올바르지 않습니다." |
+| `errors[]` | 어떤 입력칸을 고쳐야 하는지 바로 보인다 | `email`, `password`, `nickname` 각각 수정 |
+
+자바 타입도 단순하게 두면 초심자가 읽기 쉽다.
+
+```java
+public record ErrorResponse(
+    String code,
+    String message,
+    List<FieldErrorMessage> errors
+) {}
+
+public record FieldErrorMessage(
+    String field,
+    String message,
+    Object rejectedValue
+) {}
+```
+
+테스트에서 자주 보는 검증 포인트도 이 구조와 같다.
+
+```java
+mockMvc.perform(post("/members")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "email": "hello",
+              "password": "1234",
+              "nickname": ""
+            }
+            """))
+    .andExpect(status().isBadRequest())
+    .andExpect(jsonPath("$.code").value("INVALID_INPUT"))
+    .andExpect(jsonPath("$.errors[0].field").value("email"))
+    .andExpect(jsonPath("$.errors[0].message").value("이메일 형식이 올바르지 않습니다."));
+```
+
+### 흔한 혼동: `400` 한 건인데 왜 에러가 여러 개인가
+
+- HTTP 상태 코드는 요청 전체 결과가 실패했다는 뜻이라서 `400` 하나만 내려간다.
+- 하지만 실패 원인은 여러 필드에 동시에 있을 수 있어서 `errors[]`는 여러 개일 수 있다.
+- 그래서 "응답 하나 안에 필드 에러 여러 개"는 이상한 게 아니라, 사용자가 한 번에 수정할 정보를 모아 주는 형태다.
+
+### 흔한 혼동: `errors[]`가 있으면 서비스 규칙 위반도 여기에 담나
+
+- 보통 아니다. `errors[]`는 DTO 형식 검증 실패처럼 **요청 본문 자체를 바로 고칠 수 있는 항목**에 잘 맞는다.
+- 중복 이메일, 재고 부족처럼 상태 조회가 필요한 규칙은 별도 비즈니스 예외 응답으로 두는 편이 읽기 쉽다.
+- 그래서 beginner 기준으로는 `errors[] = 입력칸 교정 목록`, `409/422 메시지 = 업무 규칙 실패`라고 구분해 두면 덜 헷갈린다.
+
+응답도 성격이 다르다.
+
+```http
+POST /members
+```
+
+```json
+// 형식 오류: 이메일 모양이 잘못됨
+{
+  "code": "INVALID_INPUT",
+  "message": "요청 형식이 올바르지 않습니다."
+}
+```
+
+```json
+// 업무 규칙 오류: 이미 가입된 이메일
+{
+  "code": "DUPLICATE_EMAIL",
+  "message": "이미 가입된 이메일입니다: hello@example.com"
+}
+```
+
+### 흔한 오해
+
+- `@Valid`만 붙이면 검증이 끝난다고 생각하기 쉽다.
+  - 아니다. `@Valid`는 주로 요청 DTO의 형식과 기본 제약을 확인한다.
+- "중복 이메일"도 입력 검증 아닌가요?
+  - 아니다. 문자열 모양이 아니라 시스템의 현재 상태를 조회해야 하므로 업무 규칙 검증에 가깝다.
+- "과거 날짜 예약 불가"는 날짜 형식 검증 아닌가요?
+  - 아니다. `2026-04-24T10:00`처럼 형식이 맞아도, 지금 시각이나 영업 규칙에 따라 막힐 수 있으므로 업무 규칙 검증이다.
+- 그럼 도메인 규칙도 Controller에서 미리 검사하면 더 빠르지 않나?
+  - 진입점마다 중복되기 쉽다. 같은 규칙이 `API`, `batch`, `admin tool`에서 모두 필요하면 서비스/도메인에 있어야 안전하다.
+- 그럼 Service에만 다 넣으면 되나요?
+  - 아니다. 빈 문자열, 길이, 숫자 범위처럼 **HTTP 요청만 보고 바로 걸러낼 수 있는 형식 오류**는 Controller DTO에서 먼저 막는 편이 응답도 단순하고 테스트도 쉽다.
 
 ### 도메인 예외 vs 인프라 예외
 

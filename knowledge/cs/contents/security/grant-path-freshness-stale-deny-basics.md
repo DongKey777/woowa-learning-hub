@@ -2,33 +2,88 @@
 
 > 한 줄 요약: 권한을 방금 부여해 source of truth에서는 allow가 맞아도, 현재 요청이 보는 session/JWT claim과 deny cache가 아직 옛 상태면 `403`이 계속 나올 수 있으므로 `grant -> claim refresh -> cache invalidation -> 재평가`가 한 경로로 맞물려야 한다.
 
-**난이도: 🟡 Intermediate**
+**난이도: 🟢 Beginner**
 
 > 관련 문서:
-> - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
-> - [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)
-> - [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
-> - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
-> - [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
-> - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
-> - [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)
-> - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
-> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
-> - [Security README: 기본 primer](./README.md#기본-primer)
-> - [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
-> - [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
+> - `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+> - `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)
+> - `[primer]` [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
+> - `[primer]` [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+> - `[deep dive]` [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
+> - `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+> - `[deep dive]` [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)
+> - `[deep dive]` [Authorization Graph Caching](./authorization-graph-caching.md)
+> - `[deep dive]` [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)
+> - `[deep dive]` [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
+> - `[catalog]` [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
+> - `[catalog]` [Security README: 기본 primer](./README.md#기본-primer)
+> - `[catalog]` [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+> - `[catalog]` [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, authz grant propagation, grant path cache invalidation, deny cache invalidation after grant, session claim stale after grant, jwt stale after role grant, support role granted still 403, tenant membership granted still 403, re-login after permission grant, forced refresh after grant, grant convergence, grant path convergence, stale authorities after grant, security symptom shortcut, authz symptom table, category return path, beginner grant freshness route, 증상별 바로 가기
+retrieval-anchor-keywords: grant path freshness, stale deny basics, permission granted still 403, newly granted permission still forbidden, new role still 403, grant but still denied, stale deny after grant, fresh grant stale deny, cached 404 after grant, cached concealment 404 after grant, 403 until claim refresh, 403 until cache invalidation, claim refresh after grant, permission grant propagation, authz grant propagation, grant path cache invalidation, deny cache invalidation after grant, session claim stale after grant, jwt stale after role grant, support role granted still 403, tenant membership granted still 403, tenant-specific 403 after grant, re-login after permission grant, forced refresh after grant, grant convergence, grant path convergence, stale authorities after grant, security symptom shortcut, authz symptom table, category return path, beginner grant freshness route, stale deny 1 minute table, stale deny quick triage, claim stale cache stale tenant context stale, concealment 404 after grant triage, stale deny entry cue, grant path primer bridge entry, stale deny deep dive handoff, beginner stale deny route, grant freshness first-step bridge, grant path before graph cache, runtime-debugging handoff first, graph internals defer gate, actual request 확인, actual request gate, preflight vs actual request, 401 302 cors false positive, cors 아닌 403, redirect 아닌 403, options only auth confusion, 권한 준 뒤 stale deny, 권한 줬는데 concealment 404, grant 후 404 숨김, grant 후 403 계속, workspace visible but 403 bridge, stale deny vs tenant context, tenant context stale return handoff, tenant stale reciprocal handoff, role change but 403, role granted but session stale, workspace access granted but still denied, security readme return path, authz tenant main chain return, 권한 줬는데 아직도 403, 권한 줬는데 아직도 404, 권한 줬는데 계속 403, 권한 줬는데 계속 404, 권한 줬는데 왜 403, 권한 줬는데 왜 404, 권한 부여했는데 403, 권한 부여했는데 404, 권한 반영됐는데 403, 권한 반영됐는데 404, grant path vs revoke path, stale deny vs stale allow, grant route not revoke recovery, revoke recovery boundary, beginner grant revoke split, 증상별 바로 가기
+
+## 시작 전에: 이 문서의 역할과 입장 큐
+
+- 이 문서는 `primer bridge`다. `grant가 반영됐는지`와 `cache가 낡았는지`를 초보자 눈높이로 먼저 분리한다.
+- 이 문서는 `survey`/`deep dive`/`playbook`/`recovery`가 아니다. 운영 장애 절차보다 "어느 축에서 막혔는지"를 안전하게 고르는 입구다.
+- 역할이 헷갈리면 이렇게 기억하면 된다: `survey`(큰 흐름 선택) -> `primer`/`primer bridge`(초기 분기) -> `deep dive`(원인 축 파고들기) -> `playbook`/`recovery`(실시간 대응).
+
+## grant path와 revoke path를 먼저 끊는 20초 표
+
+같은 freshness 질문처럼 보여도 beginner는 먼저 `아직 거부된다`와 `아직 허용된다`를 나눠야 한다.
+
+| 지금 들은 문장 | 먼저 읽는 뜻 | 여기 문서인가 | 다음 역할 |
+|---|---|---|---|
+| `권한 줬는데 아직도 403/404` | grant 뒤 stale deny | 예 | `primer bridge` -> `deep dive` |
+| `로그아웃했는데 아직 된다`, `role을 뺐는데 아직 admin API가 된다` | revoke 뒤 stale allow | 아니오 | `[primer bridge]` [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md) -> `[deep dive]` [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md) |
+| `revoke 이후 지금 status를 어떻게 보여 주나`, `requested/in_progress/fully_blocked_confirmed 뜻이 뭐지` | operator revoke status / incident recovery | 아니오 | `[deep dive]` [Revocation Propagation Status Contract](./revocation-propagation-status-contract.md) |
+
+한 줄 기준:
+
+- `grant path`는 "새 allow가 아직 안 열렸다"를 다룬다.
+- `revoke path`는 "old allow가 아직 안 닫혔다"를 다룬다.
+- revoke status/recovery 문서는 beginner stale deny 입구가 아니라, revoke incident를 이미 잡은 뒤에 여는 follow-up이다.
+
+## 먼저 거는 한 줄 gate
+
+`stale deny`/`tenant-specific 403`/`cached 404 after grant`로 읽기 전에, DevTools Network에서 `OPTIONS`만 실패했는지와 actual `GET`/`POST`가 실제로 보이는지를 먼저 확인한다. actual request가 없으면 이 문서보다 `[primer]` [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)와 `[primer bridge]` [Preflight Debug Checklist](./preflight-debug-checklist.md) 쪽이 더 안전한 시작점이다.
+
+| 지금 들어온 문장 | 여기서 시작해도 되나 | 다음 handoff |
+|---|---|---|
+| `권한을 방금 줬는데 still 403` | 예. 단, actual request의 `403`인지 먼저 확인한다 | [Authorization Caching / Staleness](./authorization-caching-staleness.md) |
+| `권한 줬는데 아직도 403` | 예. 초보자 질문을 그대로 받는 entry다 | 아래 `claim stale / cache stale / tenant context stale` 표부터 읽는다 |
+| `grant 직후 cached 404 after grant처럼 보인다` | 예. 단, 진짜 missing이 아니라 concealment `404`인지 먼저 확인한다 | 아래 `stale 403 vs cached concealment 404` 비교표부터 읽는다 |
+| `tenant마다 403이 다르고 cached 404도 섞인다` | 예. 단, `OPTIONS`/redirect/CORS 오진이 아니라 actual request 결과인지 먼저 자른다 | [Authorization Caching / Staleness](./authorization-caching-staleness.md) -> [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) |
+| 이미 cache key/provenance를 찍고 pod/region drift를 분석 중이다 | 아니오. 이 문서는 스킵 가능 | [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 
-- 증상 문장을 다시 고르거나 cache deep dive로 내려가기 전에 branch를 확인하려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 `권한을 방금 줬는데 still 403` row와 `stale deny가 남거나 특정 tenant에서만 403` row를 비교하면 된다.
+- 증상 문장을 다시 고르거나 cache deep dive로 내려가기 전에 branch를 확인하려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 `권한을 방금 줬는데 still 403` row와 `stale deny/tenant-specific 403/cached 404 after grant` row를 비교하면 된다.
 - role/permission 변경과 session freshness의 큰 그림을 먼저 잡고 싶으면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)로 바로 이어 가면 된다.
 - 새 tenant membership이나 workspace access를 받은 뒤에도 `403`이 남는 쪽이 더 가깝다면 [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)를 같이 보면 된다.
 - claim, role, authority, permission이라는 단어가 섞여 있으면 [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)를 먼저 붙이는 편이 읽기 쉽다.
 - `authz_version`, `session_version`, `tenant_version`을 어떻게 나눠 bump할지 궁금하면 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)로 이어 가면 된다.
-- 이 표에서 cache/concealment branch가 맞다고 확인한 뒤 stale deny와 negative cache를 실제 운영 문제로 더 깊게 보고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)를 이어 보면 된다.
+- 이 표에서 cache/concealment branch가 맞다고 확인한 뒤 stale deny, tenant-specific `403`, `cached 404 after grant`를 실제 운영 문제로 더 깊게 보고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)를 이어 보면 된다.
 - self-contained JWT라서 즉시 반영이 어려운지, introspection이라 다음 요청에 더 빨리 반영 가능한지 비교하려면 [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)를 붙이면 된다.
+
+## AuthZ / Tenant main chain으로 되돌아가는 안전한 복귀표
+
+이 문서는 `403/404 detour` 뒤에 한 번 거치는 `[primer bridge]`다. 여기서 축을 골랐다면 아래처럼 다시 main chain에 붙는다.
+
+| 이 문서에서 막 고른 축 | 바로 이어서 볼 문서 | role cue |
+|---|---|---|
+| `claim stale`가 제일 그럴듯함 | `[primer]` [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md) | 큰 그림 primer 복귀 |
+| `tenant context stale`가 더 가깝다 | `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) | tenant branch로 옮겨 타는 bridge |
+| `cached 403` 또는 `cached concealment 404`로 좁혀졌다 | `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md) | cache deep dive 진입 |
+| pod/route/region별 runtime evidence를 이미 모았다 | `[deep dive]` [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) | runtime-debugging handoff |
+| graph snapshot/version/edge invalidation 증거가 이미 있다 | `[deep dive]` [Authorization Graph Caching](./authorization-graph-caching.md) | graph internals deep dive |
+| 다음 갈래 자체를 다시 고르고 싶다 | `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog) | main survey 복귀 |
+
+짧게 기억하면:
+
+- 이 문서의 기본 출구는 `runtime before graph`다.
+- tenant 문맥 질문이면 stale-deny deep dive보다 tenant bridge로 먼저 옮겨 탄다.
+- 분기 자체가 다시 넓어지면 survey anchor로 복귀한다.
 
 ---
 
@@ -38,13 +93,89 @@ retrieval-anchor-keywords: grant path freshness, stale deny basics, permission g
 |---|---|---|---|
 | admin console이나 DB에서 role/permission grant 완료 | session/JWT claim | 계속 `403`, 재로그인 뒤 해결되는 것처럼 보임 | claim/session refresh 또는 새 token 재발급 |
 | claim은 새로 받아 옴 | deny/decision cache | 일부 pod, 일부 tenant, 일부 route만 계속 `403` | grant event로 negative/decision cache 무효화 |
-| membership grant 완료 | active tenant/workspace context | UI에는 새 workspace가 보이는데 API는 `403` | backend active context refresh 후 재평가 |
+| membership grant 완료 | active tenant/workspace context | UI에는 새 workspace가 보이는데 API는 `403` 또는 concealment `404` | backend active context refresh 후 재평가 |
 | coarse role grant 완료 | step-up, ownership, extra policy precondition | 목록은 보이는데 민감 POST만 `403` | 최근 인증, ownership 확인, policy 재평가 |
 
 이 문서의 핵심은 두 줄이다.
 
 - `grant가 저장됐다`와 `요청이 새 allow를 본다`는 같은 이벤트가 아니다.
 - 새 권한이 열리려면 `fresh claim/context`와 `stale deny cleanup`이 둘 다 끝나야 한다.
+
+| 사용자가 자주 하는 말 | 초보자용 첫 해석 |
+|---|---|
+| `권한 줬는데 아직도 403` | 새 권한은 저장됐지만 현재 claim이나 deny cache는 아직 옛 상태일 수 있다 |
+| `권한 줬는데 아직도 404` | 진짜 `not found`가 아니라 concealment `404` 또는 tenant context stale일 수 있다 |
+| `권한 줬는데 동료는 되고 나는 안 돼` | 사용자별 claim stale 또는 사용자별 negative cache일 수 있다 |
+
+## 10초 선행 확인: actual request가 맞나
+
+이 문서는 actual request가 서버까지 간 뒤 나온 `403`/concealment `404`를 읽는 문서다. 초보자는 status 숫자보다 먼저 `actual request 존재 여부`를 고정해야 `401`/`302`/CORS 오진을 덜 한다.
+
+| Network에서 먼저 본 것 | 지금 붙일 라벨 | 여기 문서를 계속 읽나 | 더 안전한 다음 문서 |
+|---|---|---|---|
+| `OPTIONS`만 있고 actual `GET`/`POST`가 없다 | preflight/CORS | 아니오 | `[primer bridge]` [Preflight Debug Checklist](./preflight-debug-checklist.md) |
+| actual request 대신 `/login` `302`나 HTML redirect만 보인다 | authn/redirect | 아니오 | `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| actual `GET`/`POST`가 있고 그 request가 `401`이다 | authn 부족 또는 session miss | 아니오 | `[primer]` [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+| actual `GET`/`POST`가 있고 그 request가 `403` 또는 concealment `404`다 | authz freshness/cached deny 후보 | 예 | 이 문서 계속 읽기 |
+
+한 줄 기억법:
+
+- actual request가 없으면 stale deny가 아니라 preflight/redirect 문제일 가능성이 더 크다.
+- actual request가 있어도 `401`이면 grant freshness보다 authn/session 쪽을 먼저 본다.
+- actual request의 `403`/`404`일 때만 stale deny/tenant context/cache stale 축으로 내려간다.
+
+## 30초 비교표: stale `403` vs cached concealment `404`
+
+초보자 기준으로는 status 숫자 자체보다 "이 응답이 무엇을 뜻하는가"와 "다음에 어느 문서로 넘길 것인가"를 같이 묶어 기억하는 편이 안전하다.
+
+| 지금 보이는 응답 | 초보자용 의미 | 이 문서에서 먼저 확인할 것 | 다음 문서 기준 |
+|---|---|---|---|
+| stale `403` | 서버가 "지금 요청은 아직 deny로 평가된다"를 그대로 보여 준다. grant는 저장됐어도 claim/session/cache가 옛 상태일 수 있다 | 재로그인이나 token refresh 뒤 풀리는지, 일부 pod/route만 남는지, tenant context가 옛 값인지 | claim/cache freshness를 더 파야 하면 `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md)로 간다 |
+| cached concealment `404` | 진짜 `not found`가 아니라 "원래는 숨김 정책으로 가리던 deny 결론이 cache에 남아 아직 404처럼 보인다"일 수 있다 | grant 직후에만 `404`가 남는지, 다른 사용자/tenant에서는 보이는지, concealment policy가 있는 route인지 | concealment와 stale deny를 함께 분해하려면 `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md)부터 보고, ownership/IDOR 경계가 더 중요하면 `[deep dive]` [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)로 간다 |
+
+한 줄 분기:
+
+- `403`은 "deny가 드러난 상태"로 읽고 freshness 경로를 먼저 본다.
+- concealment `404`는 "없음"으로 단정하지 말고, grant 직후라면 cached concealment 가능성을 먼저 확인한다.
+
+## 먼저 잡는 한 문장 mental model
+
+권한 부여 직후 남는 `403`이나 concealment `404`는 보통 `권한이 없어서`라기보다 `요청이 아직 옛 스냅샷을 보고 있어서` 생긴다.
+
+- `claim stale`: 현재 session/JWT가 새 권한을 아직 모른다.
+- `cache stale`: 시스템이 예전 deny 또는 concealment 결론을 아직 재사용한다.
+- `tenant context stale`: 권한은 생겼지만 현재 요청의 tenant/workspace 문맥이 옛 값이다.
+
+초보자 기본값은 "allow를 우회할 방법"을 찾는 대신 "지금 어느 스냅샷이 낡았는가"를 먼저 고르는 것이다.
+
+## 1분 진단표: claim stale / cache stale / tenant context stale
+
+| 1분 안에 보이는 신호 | 가장 먼저 의심할 것 | 왜 그렇게 보이나 | 첫 대응 |
+|---|---|---|---|
+| 재로그인하거나 token refresh 뒤 바로 풀린다 | `claim stale` | 현재 session/JWT claim이 로그인 시점 snapshot이라 새 role/permission을 아직 모른다 | claim/session refresh, 새 token 재발급 |
+| 같은 계정인데 일부 pod, 일부 route, 일부 tenant에서만 계속 `403` 또는 concealment `404`가 남는다 | `cache stale` | old deny, decision cache, concealment cache가 grant 전 결론을 계속 재사용한다 | grant event 기준 cache invalidation, deny TTL 점검 |
+| UI에서는 새 workspace/tenant가 보이는데 들어가면 `403` 또는 concealment `404`가 난다 | `tenant context stale` | picker는 바뀌었지만 backend `activeTenantId`나 membership snapshot은 옛 문맥이다 | active tenant/workspace refresh, membership 재평가 |
+
+작은 예시:
+
+| 상황 | 보통 더 가까운 원인 |
+|---|---|
+| `새 역할을 줬는데 로그아웃/로그인 후에만 됨` | `claim stale` |
+| `A tenant는 되는데 B tenant만 still 404` | `tenant context stale` 또는 `tenant-scoped cache stale` |
+| `동료는 되는데 내 요청만 한동안 계속 403` | `claim stale` 또는 사용자별 negative cache |
+
+## Tenant Context Stale로 다시 넘겨야 하는 경우
+
+`grant 후 403`으로 들어왔어도 아래 문장이 더 가깝다면 cache deep dive로 바로 내려가지 말고 tenant branch로 먼저 옮겨 탄다.
+
+| 지금 더 자주 보이는 문장 | 여기서 붙일 초보자 해석 | 다음 한 장 |
+|---|---|---|
+| `새 workspace는 보이는데 들어가면 403` | grant 누락보다 `activeTenantId`나 membership snapshot이 옛 값일 가능성이 더 크다 | `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) |
+| `A tenant는 되는데 B tenant만 still 404` | 진짜 missing보다 `tenant context stale` 또는 tenant-scoped concealment cache일 수 있다 | `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) |
+| `tenant 바꾸고 나서 old workspace 흔적이 남는다` | 권한 문자열보다 현재 tenant 문맥 refresh 문제가 중심이다 | `[primer bridge]` [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) |
+
+- tenant bridge로 갔다가도 `old deny cache`가 더 중심이라고 확인되면 다시 이 문서로 돌아와 `stale deny cleanup`과 [Authorization Caching / Staleness](./authorization-caching-staleness.md) 쪽으로 내려가면 된다.
+- 갈래가 다시 헷갈리면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)에서 `grant했는데 still 403` row와 `tenant 이동/추가/제거` row를 다시 비교한다.
 
 ## 증상표로 한 번 되돌아가기
 
@@ -54,6 +185,21 @@ retrieval-anchor-keywords: grant path freshness, stale deny basics, permission g
 |---|---|---|
 | 권한이나 tenant membership을 방금 받았는데 현재 session이 새 상태를 못 보는 것 같다 | 이 문서의 `claim/session refresh`와 `active context refresh` | [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md), [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md) |
 | 특정 tenant, pod, route에서만 old deny 또는 cached `404`가 남는다 | 이 문서의 `stale deny cleanup` | [Authorization Caching / Staleness](./authorization-caching-staleness.md), [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md) |
+
+---
+
+## Graph Cache Escalation Gate (beginner-safe)
+
+한 줄 mental model: `grant 후 403`은 보통 claim/context/cache 수렴 문제이고, graph internals는 runtime 불일치 증거가 잡힌 뒤에만 연다.
+
+| 지금 관찰한 신호 | 이 단계의 문서 역할 | 다음 handoff |
+|---|---|---|
+| `권한을 방금 줬는데 still 403`, `cached 404 after grant` | `primer bridge`에서 축 분리 | [Authorization Caching / Staleness](./authorization-caching-staleness.md) -> [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) |
+| pod/region/tenant마다 allow/deny가 흔들리고 cache provenance를 이미 수집함 | `deep dive` runtime debugging | [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md) |
+| `graph snapshot version drift`, `relationship edge invalidation miss`처럼 graph 증거가 명확함 | `deep dive` graph internals | [Authorization Graph Caching](./authorization-graph-caching.md) |
+| 실시간 장애 복구 순서가 먼저 필요함 | `playbook`/`recovery` | [Security README: 운영 / Incident catalog](./README.md#운영--incident-catalog) |
+
+초보자 기본값은 "runtime-debugging handoff 먼저, graph 내부는 명확한 증거가 있을 때만"이다.
 
 ---
 
@@ -141,6 +287,17 @@ grant 전에는 정상적으로 deny였고, 그 deny를 캐시했을 수 있다.
 
 즉 `로그아웃 후 다시 로그인하면 된다`가 임시 증상 가리기일 수는 있어도,
 근본적으로는 grant path 전체가 수렴해야 한다.
+
+## 자주 헷갈리는 포인트
+
+- `403`이면 무조건 권한 모델이 틀린 것:
+  꼭 그렇지는 않다. grant는 맞지만 현재 claim이나 cache가 낡아서 `403`이 남을 수 있다.
+- concealment `404`면 리소스가 진짜 없는 것:
+  권한 concealment 정책을 쓰는 경로에서는 stale deny가 `404`처럼 보일 수 있다. grant 직후라면 `not found`와 `cached concealment`를 같이 의심한다.
+- tenant selector가 바뀌었으니 backend도 새 tenant를 본다:
+  아니다. selector는 UI 상태일 수 있고, backend active context는 별도 refresh가 필요하다.
+- 재로그인으로 풀렸으니 cache 문제는 아니다:
+  claim stale만 있던 경우도 있지만, refresh와 동시에 cache miss가 나서 풀린 것일 수도 있다. `재로그인 후 해결`만으로 원인을 단정하지 않는다.
 
 ---
 

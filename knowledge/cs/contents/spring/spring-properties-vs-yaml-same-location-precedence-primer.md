@@ -1,0 +1,165 @@
+# Spring Same-Location `.properties` vs YAML Precedence Primer
+
+> 한 줄 요약: 같은 위치에 `application.properties`와 `application.yml`(또는 `application.yaml`)이 함께 있으면 Spring Boot는 둘 다 후보로 보되, **같은 key가 겹칠 때는 `.properties` 쪽 값을 우선**한다.
+>
+> 문서 역할: 이 문서는 spring 카테고리 안에서 같은 location에 `.properties`와 YAML 파일이 함께 있을 때의 precedence와 "둘이 merge될까, 파일 전체가 덮일까?" 같은 beginner 혼동을 짧은 예제로 정리하는 **beginner mixed-format primer**를 담당한다.
+
+**난이도: 🟢 Beginner**
+
+> 관련 문서:
+> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+> - [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
+> - [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
+
+retrieval-anchor-keywords: spring properties vs yaml precedence, spring same location properties yml, application.properties vs application.yml same folder, application.properties overrides application.yml, properties takes precedence over yml same location, properties takes precedence over yaml same location, spring mixed format config gotcha, spring boot config format precedence, application-prod.properties vs application-prod.yml, same location same key properties wins, spring recommended one config format, spring properties yaml coexist confusion, spring properties yaml merge behavior, spring 설정 파일 format 혼용, application properties yml 우선순위, 같은 위치 properties yaml, spring mixed-format gotcha
+
+## 핵심 개념
+
+beginner는 먼저 이 두 줄만 잡으면 된다.
+
+```text
+같은 위치에 .properties와 YAML이 같이 있어도 둘 다 읽을 수 있다.
+하지만 같은 key가 겹치면 .properties 값이 위에 올라온다.
+```
+
+여기서 "같은 위치"는 보통 이런 뜻이다.
+
+- `./config/application.properties` 와 `./config/application.yml`
+- classpath의 `application.properties` 와 `application.yaml`
+- `./config/application-prod.properties` 와 `./config/application-prod.yml`
+
+즉 아무 `.properties`나 아무 YAML보다 무조건 세다는 뜻이 아니라,
+**같은 search location 안의 같은 이름 슬롯에서 format이 겹칠 때** `.properties`를 더 높게 본다고 이해하면 된다.
+
+---
+
+## 1. 가장 흔한 착시
+
+아래 파일이 같은 디렉터리에 있다고 하자.
+
+```properties
+# application.properties
+app.name=props-name
+server.port=8081
+```
+
+```yaml
+# application.yml
+app:
+  name: yaml-name
+feature:
+  beta: true
+```
+
+이때 최종값은 이렇게 읽으면 된다.
+
+| key | 최종값 | 이유 |
+|---|---|---|
+| `app.name` | `props-name` | 같은 key가 두 파일에 모두 있으므로 `.properties`가 이긴다 |
+| `server.port` | `8081` | `.properties`에만 있다 |
+| `feature.beta` | `true` | YAML에만 있으므로 YAML 값이 그대로 남는다 |
+
+핵심은 이것이다.
+
+```text
+.properties가 YAML "파일 전체"를 지워 버리는 것이 아니다.
+겹치는 key에서만 더 높은 값을 준다.
+```
+
+그래서 beginner가 자주 하는 오해를 바로잡으면:
+
+- `application.properties`가 있으면 `application.yml`이 아예 무시된다 -> 보통 이렇게 단순하게 보면 안 된다
+- 둘이 파일 단위로 완전히 merge된다 -> key 단위로 최종값이 결정된다고 보는 편이 안전하다
+
+---
+
+## 2. profile 파일도 같은 감각으로 본다
+
+base 파일뿐 아니라 profile 파일도 비슷하다.
+
+예를 들어 `prod` profile이 active이고 아래 파일이 같은 위치에 있으면:
+
+```properties
+# application-prod.properties
+app.banner=props-prod
+```
+
+```yaml
+# application-prod.yml
+app:
+  banner: yaml-prod
+  region: ap-northeast-2
+```
+
+최종값은 아래처럼 된다.
+
+| key | 최종값 |
+|---|---|
+| `app.banner` | `props-prod` |
+| `app.region` | `ap-northeast-2` |
+
+즉 beginner 기준으로는 이렇게 기억하면 충분하다.
+
+```text
+profile이 맞아서 둘 다 후보가 되면,
+그 안에서도 같은 key는 .properties가 YAML보다 높다.
+```
+
+---
+
+## 3. 자주 헷갈리는 비교 세 가지
+
+| 비교 | 맞는 이해 |
+|---|---|
+| `application.properties` vs `application.yml` 같은 위치 | 겹치는 key는 `.properties` 우선 |
+| jar 안 `application.properties` vs jar 밖 `application.yml` | format보다 location precedence를 먼저 본다 |
+| `application.yml` vs `application-prod.yml` | format보다 profile-specific precedence를 먼저 본다 |
+
+여기서 중요한 beginner 포인트는 **format precedence가 모든 규칙을 이기는 것이 아니라는 점**이다.
+
+예를 들어:
+
+- jar 안 `application.properties`
+- jar 밖 `application.yml`
+
+이 둘이 있으면 "`.properties`니까 jar 안 파일이 무조건 이기겠지"라고 생각하기 쉽다.
+하지만 이 경우에는 **external location 쪽이 더 높은 레벨**이므로 jar 밖 YAML이 더 중요할 수 있다.
+
+즉 판단 순서는 보통 이렇게 잡는 편이 덜 헷갈린다.
+
+1. 먼저 어느 location이 더 높은가
+2. 그 안에서 profile-specific 파일인가
+3. 그 위치와 슬롯이 같다면 `.properties`와 YAML 중 누가 더 높은가
+
+---
+
+## 4. 왜 Spring Boot가 한 format 통일을 권하나
+
+초보자가 mixed-format에서 자주 잃어버리는 것은 문법이 아니라 **"지금 값을 누가 이겼는지" 추적 감각**이다.
+
+특히 아래 상황이 자주 문제를 만든다.
+
+- 예전에 `application.yml`을 쓰다가 누군가 급하게 `application.properties`를 추가했다
+- base는 YAML인데 profile 파일만 `.properties`로 만들었다
+- 외부 override 파일은 `.properties`, jar 안 기본 파일은 YAML이라서 읽는 사람이 format 규칙과 location 규칙을 같이 추적해야 한다
+
+그래서 팀 차원에서는 보통 한 애플리케이션 안에서 format을 통일하는 편이 안전하다.
+
+---
+
+## 5. beginner용 빠른 점검표
+
+설정값이 기대와 다를 때는 아래 네 줄부터 확인하면 된다.
+
+1. 같은 폴더에 `application.properties`와 `application.yml`이 둘 다 있는가
+2. 같은 key가 두 파일에 동시에 있는가
+3. profile 파일까지 포함해 같은 슬롯의 `.properties`가 하나 더 있는가
+4. 사실 format 문제가 아니라 외부 파일, env var, command-line이 더 높은 source는 아닌가
+
+마지막 한 줄만 기억해도 실수가 많이 줄어든다.
+
+```text
+"YAML을 고쳤는데 값이 안 바뀐다"면
+같은 위치의 .properties에서 같은 key를 먼저 찾는다.
+```

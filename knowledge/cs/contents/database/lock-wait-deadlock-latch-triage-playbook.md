@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Hibernate Lock SQL Log to Deadlock Triage Bridge](./hibernate-lock-sql-log-to-deadlock-triage-bridge.md)
 - [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](../spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)
 - [Deadlock Case Study](./deadlock-case-study.md)
 - [Metadata Lock and DDL Blocking](./metadata-lock-ddl-blocking.md)
@@ -30,8 +31,10 @@ retrieval-anchor-keywords: lock wait triage, deadlock debugging, metadata lock, 
 - metadata lock
 - page latch contention
 
-이 넷은 모두 "기다린다"는 증상으로 보이지만, 진단 질문과 해결책은 다르다.  
+이 넷은 모두 "기다린다"는 증상으로 보이지만, 진단 질문과 해결책은 다르다.
 그래서 첫 대응은 튜닝이 아니라 **대기 유형 분류**다.
+
+초급자라면 이 문서로 바로 들어오기보다, 애플리케이션 Hibernate 로그에서 blocker query나 deadlock 상대 SQL까지 연결하는 [Hibernate Lock SQL Log to Deadlock Triage Bridge](./hibernate-lock-sql-log-to-deadlock-triage-bridge.md)를 먼저 보고 오는 편이 덜 헷갈린다.
 
 ## 깊이 들어가기
 
@@ -64,7 +67,7 @@ lock wait가 단순 직선 대기라면, deadlock은 원형 대기다.
 - A가 B를 기다리고
 - B가 A를 기다린다
 
-DB는 보통 한쪽을 죽여 풀어 준다.  
+DB는 보통 한쪽을 죽여 풀어 준다.
 따라서 운영에서는 "느리다"보다 "갑자기 deadlock error가 튄다"로 보이는 경우가 많다.
 
 핵심 대응은:

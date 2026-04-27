@@ -6,7 +6,11 @@
 
 관련 문서:
 
+- [Causal Watermark Propagation Sketches](./causal-watermark-propagation-sketches.md)
+- [Token Propagation Through BFF and Gateway](./token-propagation-through-bff-and-gateway.md)
+- [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)
 - [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
+- [Watermark Metadata Persistence Basics](./watermark-metadata-persistence-basics.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [Notification 시스템 설계](./notification-system-design.md)
@@ -15,7 +19,7 @@
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: notification causal token walkthrough, notification click watermark check, causal token example, causal token what is, required watermark basics, notification deep link causal token, click notification stale source, 알림 눌렀는데 본문 없음, payment notification order stale, replica visible watermark check, cache reject on watermark, beginner causal token notification
+retrieval-anchor-keywords: notification causal token walkthrough, notification click watermark check, causal token example, causal token what is, required watermark basics, notification deep link causal token, click notification stale source, 알림 눌렀는데 본문 없음, payment notification order stale, replica visible watermark check, cache reject on watermark, beginner causal token notification, notification refill watermark metadata, cache metadata after causal read
 
 ---
 
@@ -82,6 +86,7 @@ notification payload는 보통 이런 느낌이다.
 
 사용자가 알림을 누른 뒤 `GET /orders/123`가 token 없이 들어가면, backend는 그냥 평소 cache/replica 경로를 타기 쉽다.
 그래서 causal token은 **notification payload에만 머물면 소용없고, 클릭 뒤 read request까지 같이 가야 한다.**
+이때 deep link -> gateway -> BFF -> service hop에서 header/context로 어떻게 이어지는지를 한 번에 보고 싶다면 [Token Propagation Through BFF and Gateway](./token-propagation-through-bff-and-gateway.md)를 같이 보면 된다.
 
 ---
 
@@ -132,6 +137,14 @@ function openFromNotification(key, causalToken):
 | 승인 완료 알림 -> 권한 화면 | `approval_done@550` | 권한 확인 API도 같은 token이나 version floor를 이어 받음 |
 
 즉, notification causal token은 "알림 화면 한 번만 맞추는 꼼수"가 아니라, **세션의 다음 read가 어디까지는 따라와야 하는지 알려 주는 시작점**이 된다.
+gateway/app/database 관점의 pseudo code로 이 propagation을 한 번에 붙여 보고 싶다면 [Causal Watermark Propagation Sketches](./causal-watermark-propagation-sketches.md)를 같이 보면 된다.
+그리고 상세 응답을 cache에 다시 넣을 때 watermark metadata를 같이 남겨야 다음 hit도 이 기준선을 재검사할 수 있다. 이 refill persistence 자체는 [Watermark Metadata Persistence Basics](./watermark-metadata-persistence-basics.md)에서 따로 정리한다.
+
+여기서 초보자가 자주 놓치는 다음 단계가 하나 더 있다.
+
+- source read가 성공해 `status=PAID, version=42`를 봤다면, 그 응답은 세션의 새 `min-version floor` 후보가 된다.
+- 즉 `required_watermark`로 상세 입장을 성공시킨 뒤, 성공 응답의 `version`/metadata로 목록·검색 역행까지 막아야 한다.
+- 이 연결을 따로 설명한 문서는 [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)다.
 
 advanced 단계에서는 이 기준선이 region별 watermark, fan-out lag, cross-region fallback으로 커진다.
 하지만 beginner 단계에서는 click 이후 cache/replica/primary가 같은 숫자를 비교한다는 그림만 잡아도 충분하다.
@@ -141,6 +154,7 @@ advanced 단계에서는 이 기준선이 region별 watermark, fan-out lag, cros
 ## 더 깊이 가려면
 
 - [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
+- [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [Notification 시스템 설계](./notification-system-design.md)

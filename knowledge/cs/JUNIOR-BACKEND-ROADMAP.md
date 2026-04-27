@@ -2,7 +2,7 @@
 
 > 신입 백엔드 개발자 기준으로 CS-study를 어떤 순서로 공부할지 정리한 가이드
 
-> retrieval-anchor-keywords: junior backend roadmap, 신입 백엔드 로드맵, beginner backend study order, backend learning path, cs study sequence, foundational curriculum, backend starter guide, roadmap, survey
+> retrieval-anchor-keywords: junior backend roadmap, 신입 백엔드 로드맵, beginner backend study order, backend learning path, cs study sequence, foundational curriculum, backend starter guide, roadmap, survey, backend mission prerequisite, 우테코 백엔드 미션 선행지식, backend mission first reading, woowacourse backend learning ladder, 우테코 백엔드 안전 사다리, java http mvc jdbc transaction di aop system design 순서, backend beginner safe next step
 
 ## 목표
 
@@ -13,6 +13,26 @@
 - 어떤 문서를 같이 읽으면 좋은지
 
 를 빠르게 정리하기 위해 만들었다.
+
+미션 기준으로 "어디까지 먼저 알아야 시작할 수 있지?"가 막막하면
+[우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md)부터 보고,
+이 로드맵을 따라가면 된다.
+
+## 우테코 백엔드 안전 사다리 동기화
+
+우테코 백엔드 입문자는 아래 6단계를 먼저 고정한 뒤, 그 다음에 운영체제/알고리즘/심화 트랙으로 확장하는 편이 안전하다.
+이 섹션은 category README 사이 점프를 줄이기 위한 `primer -> follow-up -> deep dive` 최소 사다리다.
+
+| 단계 | primer | 안전한 다음 한 걸음 | deep dive는 나중에 |
+|---|---|---|---|
+| 1. Java basics | [자바 언어의 구조와 기본 문법](./contents/language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](./contents/language/java/java-types-class-object-oop-basics.md) | language runtime/concurrency catalog |
+| 2. HTTP / web basics | [HTTP 요청-응답 기본 흐름](./contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](./contents/network/http-methods-rest-idempotency-basics.md) | proxy timeout, 499, coalescing deep dive |
+| 3. MVC | [Spring 요청 파이프라인과 Bean Container 기초](./contents/spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초](./contents/spring/spring-mvc-controller-basics.md) | HandlerMethod resolver, async lifecycle |
+| 4. JDBC / transactions | [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](./contents/database/transaction-isolation-basics.md) | isolation anomaly / lock 심화 |
+| 5. DI / AOP | [IoC와 DI 기초](./contents/spring/spring-ioc-di-basics.md) | [AOP 기초](./contents/spring/spring-aop-basics.md) -> [@Transactional 기초](./contents/spring/spring-transactional-basics.md) | rollback-only, propagation, self-invocation 트랩 |
+| 6. System design | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./contents/system-design/stateless-backend-cache-database-queue-starter-pack.md) | [System Design Foundations](./contents/system-design/system-design-foundations.md) | cutover/control-plane incident 설계 |
+
+짧게 외우면 `Java -> HTTP/web -> MVC -> JDBC/transactions -> DI/AOP -> system design`이다.
 
 ## 1단계. 자바 언어 감각 잡기
 

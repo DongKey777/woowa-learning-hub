@@ -1,10 +1,12 @@
 # Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries
 
-> 한 줄 요약: `Filter`, `HandlerInterceptor`, `@ControllerAdvice`는 모두 요청을 가로채지만, 서블릿/핸들러/예외 처리라는 서로 다른 층에서 책임이 갈린다.
+> 한 줄 요약: 처음 배우는데 `filter vs interceptor`가 헷갈리면 "`Filter`는 서블릿 입구, `HandlerInterceptor`는 컨트롤러 앞뒤, `@ControllerAdvice`는 예외 응답"이라는 큰 그림부터 잡으면 된다.
 
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
+> - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
@@ -13,7 +15,20 @@
 > - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 > - [Proxy Local Reply vs Upstream Error Attribution](../network/proxy-local-reply-vs-upstream-error-attribution.md)
 
-retrieval-anchor-keywords: filter, handlerinterceptor, controlleradvice, restcontrolleradvice, exceptionresolver, servlet filter, dispatcherservlet, request lifecycle, cross-cutting boundary
+retrieval-anchor-keywords: filter vs interceptor, spring filter vs interceptor, spring filter interceptor 차이, 필터 인터셉터 차이, 필터와 인터셉터 차이, 처음 배우는데 필터 인터셉터, filter interceptor 큰 그림, 필터 인터셉터 큰 그림, filter interceptor 기초, 필터 인터셉터 기초, filter interceptor 언제 쓰는지, 필터 인터셉터 언제 쓰는지, filter interceptor beginner route, filter interceptor controlleradvice 차이, controlleradvice 차이, servlet filter, handlerinterceptor, controlleradvice, restcontrolleradvice, exceptionresolver, dispatcherservlet, request lifecycle, cross-cutting boundary
+
+## 먼저 큰 그림
+
+처음에는 세 칸으로만 나눠도 충분하다.
+
+| 구성요소 | 아주 짧은 역할 | 처음 배우는 기준에서 먼저 떠올릴 질문 |
+|---|---|---|
+| `Filter` | 서블릿 요청이 Spring MVC로 들어오기 전에 앞단에서 거른다 | "요청 자체를 초입에서 막아야 하나?" |
+| `HandlerInterceptor` | 컨트롤러 실행 전후에 공통 작업을 붙인다 | "컨트롤러 주변에서 로그/검사/메타데이터를 다뤄야 하나?" |
+| `@ControllerAdvice` | 컨트롤러에서 나온 예외를 HTTP 응답으로 바꾼다 | "실패 응답 모양을 통일해야 하나?" |
+
+처음 배우는데 헷갈리는 이유는 셋 다 "중간에서 뭔가 공통 작업을 한다"로 보이기 때문이다.
+하지만 beginner 기준 핵심은 "같아 보이는 공통 처리라도 **막는 위치와 책임이 다르다**"는 점이다.
 
 ## 핵심 개념
 
@@ -32,6 +47,12 @@ retrieval-anchor-keywords: filter, handlerinterceptor, controlleradvice, restcon
 - 응답 포맷 표준화
 
 핵심은 "무엇을 막을 것인가"와 "어느 층에서 막을 것인가"를 분리하는 것이다.
+
+## 처음 많이 하는 혼동
+
+- `Filter`와 `HandlerInterceptor`를 둘 다 "컨트롤러 전에 실행되는 훅"으로만 기억해서 같은 자리라고 착각하기 쉽다.
+- `@ControllerAdvice`도 전역 처리라서 filter/interceptor와 같은 축이라고 느끼기 쉽지만, 실제 책임은 "요청 차단"이 아니라 "예외 응답 통일"이다.
+- 인증, async dispatch, security chain까지 한꺼번에 열어 버리면 초반 비교 질문이 깊은 운영 문맥에 묻히기 쉽다. 처음에는 세 칸 비교를 먼저 끝내고, 필요할 때만 async/security 문서로 내려가는 편이 안전하다.
 
 ## 깊이 들어가기
 

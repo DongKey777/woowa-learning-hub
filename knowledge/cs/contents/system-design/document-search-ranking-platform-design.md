@@ -9,6 +9,7 @@ retrieval-anchor-keywords: document search ranking, enterprise search, ACL filte
 > 관련 문서:
 > - [Search 시스템 설계](./search-system-design.md)
 > - [Search 인덱싱 파이프라인 설계](./search-indexing-pipeline-design.md)
+> - [Search Hit Overlay Pattern](./search-hit-overlay-pattern.md)
 > - [Tenant-aware Search Architecture 설계](./tenant-aware-search-architecture-design.md)
 > - [Knowledge Search / RAG Platform 설계](./knowledge-search-rag-platform-design.md)
 > - [Experimentation / A/B Testing Platform 설계](./experimentation-ab-testing-platform-design.md)
@@ -16,7 +17,7 @@ retrieval-anchor-keywords: document search ranking, enterprise search, ACL filte
 
 ## 핵심 개념
 
-문서 검색은 단순한 full-text query가 아니다.  
+문서 검색은 단순한 full-text query가 아니다.
 실전에서는 아래를 함께 설계해야 한다.
 
 - 권한 필터와 문서 가시성
@@ -51,7 +52,7 @@ retrieval-anchor-keywords: document search ranking, enterprise search, ACL filte
 - 초당 2,000 search query
 - refresh lag 1분 이하
 
-문서 검색은 retrieval latency와 index freshness 둘 다 중요하다.  
+문서 검색은 retrieval latency와 index freshness 둘 다 중요하다.
 단순 DB 검색으로는 사용자 기대치를 만족하기 어렵다.
 
 봐야 할 숫자:
@@ -206,4 +207,3 @@ public List<SearchResult> search(SearchRequest req) {
 ## 한 줄 정리
 
 Document search/ranking platform은 권한 필터, 하이브리드 검색, reranking, snippet, freshness를 결합한 엔터프라이즈 문서 검색 시스템이다.
-

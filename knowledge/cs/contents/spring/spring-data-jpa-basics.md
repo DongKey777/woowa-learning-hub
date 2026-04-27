@@ -7,11 +7,12 @@
 관련 문서:
 
 - [JPA Dirty Checking / Version Strategy](./jpa-dirty-checking-version-strategy.md)
+- [Spring Data Repository vs Domain Repository Bridge](./spring-data-vs-domain-repository-bridge.md)
 - [JDBC, JPA, MyBatis](../database/jdbc-jpa-mybatis.md)
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring data jpa basics, 스프링 jpa 처음, jparepository 입문, spring data jpa 왜 써요, repository 인터페이스 입문, 쿼리 메서드 뭐예요, findby 메서드 입문, @entity 입문, spring jpa beginner primer, crud repository 입문, jpql 처음, spring jpa 설정 없이 쿼리 만드는법
+retrieval-anchor-keywords: spring data jpa basics, 스프링 jpa 처음, jparepository 입문, spring data jpa 왜 써요, repository 인터페이스 입문, 쿼리 메서드 뭐예요, findby 메서드 입문, @entity 입문, spring jpa beginner primer, crud repository 입문, jpql 처음, spring jpa 설정 없이 쿼리 만드는법, spring data repository vs domain repository, jparepository vs domain repository, 처음 배우는데 repository가 두개, spring data repository 큰 그림
 
 ## 핵심 개념
 
@@ -55,6 +56,9 @@ findByEmail(email) → SELECT * FROM member WHERE email = ?
 
 **오해 3: `JpaRepository`를 구현 클래스로 만들어야 한다**
 인터페이스로 선언만 하면 Spring Data JPA가 런타임에 프록시 구현체를 만들어준다. 구현 클래스를 직접 작성할 필요가 없다.
+
+**오해 4: `JpaRepository`가 곧 도메인 Repository다**
+작은 앱에서는 바로 써도 되지만, 설계상으로는 `JpaRepository`는 프레임워크 쪽 도구이고 도메인 repository 계약은 별도로 둘 수 있다. 이 큰 그림은 [Spring Data Repository vs Domain Repository Bridge](./spring-data-vs-domain-repository-bridge.md)에서 먼저 분리해 보면 덜 헷갈린다.
 
 ## 실무에서 쓰는 모습
 

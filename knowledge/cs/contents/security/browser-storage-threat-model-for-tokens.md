@@ -5,24 +5,39 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [JWT 깊이 파기](./jwt-deep-dive.md)
-> - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
-> - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
-> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
-> - [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
-> - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
+> - `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
+> - `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md)
+> - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+> - `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+> - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+> - `[follow-up]` [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+> - `[deep dive]` [JWT 깊이 파기](./jwt-deep-dive.md)
+> - `[deep dive]` [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
+> - `[deep dive]` [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
+> - `[deep dive]` [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+> - `[deep dive]` [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
+> - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
+> - `[deep dive]` [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)
+> - `[deep dive]` [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
+> - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+> - `[catalog]` [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: browser storage, localStorage, sessionStorage, IndexedDB, HttpOnly cookie, token theft, XSS, CSRF, refresh token cookie, bearer token, storage threat model, token handler pattern, BFF session translation, server-side confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, browser server boundary catalog, security readme browser server boundary
+retrieval-anchor-keywords: browser storage, localStorage, sessionStorage, IndexedDB, HttpOnly cookie, token theft, XSS, CSRF, refresh token cookie, bearer token, storage threat model, token handler pattern, BFF session translation, server-side confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, browser server boundary catalog, security readme browser server boundary, browser session troubleshooting path, browser session troubleshooting safe next step, primer follow-up deep dive ladder, primer bridge deep dive ladder, beginner auth storage entrypoint, safe next step before deep dive, auth storage primer bridge
+retrieval-anchor-keywords: when to stop and branch auth storage, login loop stop and branch, beginner login loop return path, auth storage login loop beginner warning, login loop primer bridge return, auth storage deep dive stop here, login loop before storage deep dive, cookie header missing before storage, safe next step login loop, browser session primer bridge return
 
 ---
 
+> **When to stop and branch**
+>
+> - 이 문서는 `storage` 설계 비교용 `deep dive`다. 지금 증상이 `로그인 직후 다시 /login`, `cookie는 보이는데 또 로그인`, `SavedRequest`/redirect loop 라면 여기서 더 내려가지 말고 beginner route로 먼저 돌아간다.
+> - 가장 안전한 순서는 `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)다. 이 route가 storage deep dive 전에 밟는 `safe next step`이다.
+> - 그 route에서 `request Cookie` header가 실제로 비는 것으로 보이면 이 문서가 아니라 `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)를 먼저 본다.
+> - `request Cookie`는 실리는데도 browser-visible token / cookie / BFF storage trade-off를 설계해야 할 때만 이 문서로 돌아온다.
+
 ## 핵심 개념
 
-브라우저에 token을 어디에 저장할지는 단순한 구현 디테일이 아니다.  
+브라우저에 token을 어디에 저장할지는 단순한 구현 디테일이 아니다.
 그 선택은 누가 token을 읽을 수 있는지, 누가 자동으로 보낼 수 있는지, 탈취 후 재사용이 얼마나 쉬운지를 결정한다.
 
 대표적인 저장소는 다음과 같다.

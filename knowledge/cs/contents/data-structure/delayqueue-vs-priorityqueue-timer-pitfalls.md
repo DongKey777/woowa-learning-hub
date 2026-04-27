@@ -8,13 +8,13 @@
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
-> - [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)
+> - [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
 > - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
 > - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 > - [Heap Variants](./heap-variants.md)
 > - [Concurrent Skip List Internals](./concurrent-skiplist-internals.md)
 >
-> retrieval-anchor-keywords: delayqueue vs priorityqueue, delayqueue vs priority queue, java delayqueue, java delay queue, java timer queue, java delayed task scheduler, plain priorityqueue timer, priorityqueue timer pitfalls, priorityblockingqueue vs delayqueue, priorityblockingqueue timer misuse, priorityblockingqueue timer queue, delayed work queue java, delayed executor java, cancellation stale entry timer, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, timer cancellation heap, reschedule stale entry, delayqueue cancellation, delayqueue reschedule, stale timer ticket, generation token scheduler, delayed task blocking queue, delayed head only, delayed scheduler wakeup, java timer workload heap
+> retrieval-anchor-keywords: delayqueue vs priorityqueue, delayqueue vs priority queue, java delayqueue, java delay queue, java timer queue, java delayed task scheduler, plain priorityqueue timer, priorityqueue timer pitfalls, priorityblockingqueue vs delayqueue, priorityblockingqueue timer misuse, priorityblockingqueue timer queue, delayed work queue java, delayed executor java, cancellation stale entry timer, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, timer cancellation heap, reschedule stale entry, delayqueue cancellation, delayqueue reschedule, stale timer ticket, generation token scheduler, delayed task blocking queue, delayed head only, delayed scheduler wakeup, java timer workload heap, stable order priority queue, priority sequence tie breaker, duplicate priority fifo, same priority insertion order
 
 ## 빠른 선택표
 
@@ -25,7 +25,7 @@
 | thread-safe priority queue는 필요하지만, 만료 시점까지 기다릴 필요는 없다 | `PriorityBlockingQueue` | 동시성만 보강하면 된다 |
 | 등록/취소 churn이 매우 크고 tick 근사 expiry를 허용한다 | `Timing Wheel` | stale entry와 heap churn을 더 싸게 누를 수 있다 |
 
-핵심은 "`PriorityQueue`냐 `DelayQueue`냐"보다  
+핵심은 "`PriorityQueue`냐 `DelayQueue`냐"보다
 "정렬만 필요하냐, 만료 시점까지 기다리는 계약도 필요하냐"다.
 
 ## 1. plain `PriorityQueue`는 deadline 정렬까지만 해 준다
@@ -37,7 +37,7 @@
 - 아직 이르면 `wait`/`park`/`condition.awaitNanos()`로 잔다
 - 시간이 되면 `poll()`해서 실행한다
 
-여기까지는 가능하다.  
+여기까지는 가능하다.
 문제는 **timer semantics의 절반을 직접 구현해야 한다**는 점이다.
 
 - `PriorityQueue` 자체는 thread-safe가 아니다
@@ -70,7 +70,7 @@
 - deadline이 되면 깨어남
 - 가장 먼저 만료된 작업 하나를 즉시 실행
 
-이 패턴은 retry scheduler, lease expiry, timeout executor처럼  
+이 패턴은 retry scheduler, lease expiry, timeout executor처럼
 "정렬"보다 "`언제 깨울 것인가`"가 중요한 작업에서 차이가 크게 난다.
 
 ## 3. Java timer workload에서 `DelayQueue`를 먼저 고르는 경우
@@ -85,7 +85,7 @@
 
 ### retry / backoff / timeout 관리
 
-재시도 시각, timeout 시각처럼 deadline 중심으로 움직이는 작업은  
+재시도 시각, timeout 시각처럼 deadline 중심으로 움직이는 작업은
 `DelayQueue`의 "expired head only" 계약과 잘 맞는다.
 
 특히 아래 요구가 있으면 plain `PriorityQueue`보다 이득이 크다.
@@ -96,7 +96,7 @@
 
 ### 구현 실수 비용이 큰 경우
 
-학습용 코드나 서비스 초기 구현에서는 자료구조 오버헤드보다  
+학습용 코드나 서비스 초기 구현에서는 자료구조 오버헤드보다
 `lost wakeup`, `남은 시간 재계산 누락`, `미래 task를 너무 일찍 poll` 같은 버그가 더 치명적일 수 있다.
 
 이때는 `DelayQueue`가 "정답에 가까운 기본 계약"을 준다.
@@ -110,8 +110,31 @@
 - scheduler thread가 외부 clock interrupt에 맞춰 주기적으로 돈다
 - deadline 정렬은 필요하지만 `take()` 같은 blocking API는 오히려 맞지 않는다
 
-즉 `PriorityQueue`는 "timer queue의 재료"로는 좋지만,  
+즉 `PriorityQueue`는 "timer queue의 재료"로는 좋지만,
 "Java delayed executor 완성품"으로 쓰기에는 부족한 경우가 많다.
+
+## 4.5 non-timer에서 "같은 priority는 입력 순서 유지"가 요구될 때
+
+여기서 질문을 한 번 분리하면 덜 헷갈린다.
+
+- timer가 핵심인가? -> `DelayQueue`/timer 문서 축
+- non-timer stable-order가 핵심인가? -> `(priority, sequence)` 축
+
+즉 "동일 priority에서 FIFO처럼 안정 순서가 필요"한 요구는
+`DelayQueue`를 고를 이유가 아니라, comparator 설계 문제다.
+
+| 요구 | 기본 패턴 |
+|---|---|
+| priority가 낮을수록 먼저 | `priority ASC` |
+| 같은 priority면 먼저 들어온 것 먼저 | `sequence ASC` |
+
+간단 예시:
+
+`A(p=1, seq=10)`, `B(p=1, seq=11)`, `C(p=0, seq=12)`
+-> poll 순서: `C -> A -> B`
+
+Java 코드에서 바로 쓰는 형태는 [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)의 `(priority, sequence)` tie-breaker를 보면 된다.
+이 문서는 timer(wait/wakeup) 함정, 해당 문서는 stable-order(comparator) 함정을 다룬다고 보면 구분이 쉽다.
 
 ## 5. cancellation과 stale entry trade-off는 둘 다 남는다
 
@@ -119,7 +142,7 @@
 
 > `DelayQueue`를 쓰면 cancellation도 자동으로 싸질까?
 
-그렇지는 않다. `DelayQueue`는 **waiting semantics**를 개선해 주지만,  
+그렇지는 않다. `DelayQueue`는 **waiting semantics**를 개선해 주지만,
 arbitrary cancellation 자체를 마법처럼 cheap하게 만들지는 않는다.
 
 실무에서 흔한 패턴은 두 가지다.
@@ -143,11 +166,11 @@ Java timer workload에서는 **reschedule** 때문에 stale entry가 더 자주 
 - 새 deadline으로 새 entry를 넣고
 - 이전 entry는 stale로 취급해야 한다
 
-이 패턴은 [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)의  
-stale entry 사고방식과 거의 같다. 다만 timer queue에서는 stale 기준이  
+이 패턴은 [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)의
+stale entry 사고방식과 거의 같다. 다만 timer queue에서는 stale 기준이
 `dist`나 `visited`가 아니라 `cancelled`, `generation`, `latestDeadline` 쪽으로 바뀐다.
 
-Java `ScheduledExecutorService`를 쓰는 중이라면 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)에서 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`를 먼저 잡으면 된다. 직접 timer queue를 만드는 지점만 입문자용 mental model로 보고 싶다면 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket`, `cancelled flag`, `generation` 흐름을 따로 잡고 돌아오면 된다.
+Java `ScheduledExecutorService`를 쓰는 중이라면 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)에서 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`를 먼저 잡으면 된다. 직접 timer queue를 만드는 지점만 입문자용 mental model로 보고 싶다면 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket`, `cancelled flag`, `generation` 흐름을 따로 잡고 돌아오면 된다.
 
 정리하면 이렇다.
 

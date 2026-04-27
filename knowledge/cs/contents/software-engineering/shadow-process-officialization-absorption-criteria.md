@@ -42,6 +42,10 @@
 > - temporary hold exit criteria
 > - hold escalate absorb officialize
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Process Officialization and Absorption Criteria](./README.md#shadow-process-officialization-and-absorption-criteria)
+> - 다음 단계: [Override Burn-Down and Exemption Debt](./override-burn-down-and-exemption-debt.md)
+
 ## 핵심 개념
 
 shadow process를 발견하면 보통 instinct는 "없애자"다.

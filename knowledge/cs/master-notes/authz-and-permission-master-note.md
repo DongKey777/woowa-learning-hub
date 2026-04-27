@@ -4,19 +4,27 @@
 
 **Difficulty: Advanced**
 
-> retrieval-anchor-keywords: authorization, permission model, RBAC, ABAC, scope, ownership, principal, policy, privilege escalation, access control, tenant scope, admin scope, deny by default, stale authz cache, stale deny, grant but still denied, 403 after revoke, revoked admin still has access, permission cache stale, revocation tail
+> retrieval-anchor-keywords: authorization, permission model, RBAC, ABAC, scope, ownership, principal, policy, privilege escalation, access control, tenant scope, admin scope, deny by default, stale authz cache, stale deny, grant but still denied, 403 after revoke, revoked admin still has access, permission cache stale, revocation tail, beginner authz route, authz primer route, security readme return path, authz category return path, master note return path, role scope ownership bridge, grant freshness bridge
 
 > related docs:
-> - [인증과 인가의 차이](../contents/security/authentication-vs-authorization.md)
-> - [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
-> - [Permission Model Drift / AuthZ Graph Design](../contents/security/permission-model-drift-authz-graph-design.md)
-> - [Authorization Caching Staleness](../contents/security/authorization-caching-staleness.md)
-> - [AuthZ Cache Inconsistency / Runtime Debugging](../contents/security/authz-cache-inconsistency-runtime-debugging.md)
-> - [Auth Failure Response Contracts: `401` / `403` / `404`](../contents/security/auth-failure-response-401-403-404.md)
-> - [Revocation Propagation Lag / Debugging](../contents/security/revocation-propagation-lag-debugging.md)
-> - [멀티 테넌트 SaaS 격리 설계](../contents/system-design/multi-tenant-saas-isolation-design.md)
-> - [Query Playbook](../rag/query-playbook.md)
-> - [Cross-Domain Bridge Map](../rag/cross-domain-bridge-map.md)
+> - [primer] [인증과 인가의 차이](../contents/security/authentication-vs-authorization.md)
+> - [primer bridge] [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](../contents/security/permission-model-bridge-authn-to-role-scope-ownership.md)
+> - [primer] [Role vs Scope vs Ownership Primer](../contents/security/role-vs-scope-vs-ownership-primer.md)
+> - [primer] [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](../contents/security/auth-failure-response-401-403-404.md)
+> - [primer bridge] [Claim Freshness After Permission Changes](../contents/security/claim-freshness-after-permission-changes.md)
+> - [primer bridge] [Grant Path Freshness and Stale Deny Basics](../contents/security/grant-path-freshness-stale-deny-basics.md)
+> - [deep dive] [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
+> - [deep dive] [Permission Model Drift / AuthZ Graph Design](../contents/security/permission-model-drift-authz-graph-design.md)
+> - [deep dive] [Authorization Caching / Staleness](../contents/security/authorization-caching-staleness.md)
+> - [deep dive] [AuthZ Cache Inconsistency / Runtime Debugging](../contents/security/authz-cache-inconsistency-runtime-debugging.md)
+> - [deep dive] [Revocation Propagation Lag / Debugging](../contents/security/revocation-propagation-lag-debugging.md)
+> - [deep dive] [멀티 테넌트 SaaS 격리 설계](../contents/system-design/multi-tenant-saas-isolation-design.md)
+> - [survey] [Security README: 기본 primer](../contents/security/README.md#기본-primer)
+> - [catalog] [Security README: AuthZ / Tenant / Response Contracts deep dive catalog](../contents/security/README.md#authz--tenant--response-contracts-deep-dive-catalog)
+> - [navigator] [Master Notes Index](./README.md)
+> - [navigator] [CS Root README](../README.md)
+> - [tool] [Query Playbook](../rag/query-playbook.md)
+> - [map] [Cross-Domain Bridge Map](../rag/cross-domain-bridge-map.md)
 
 ## 핵심 개념
 

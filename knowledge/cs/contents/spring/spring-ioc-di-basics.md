@@ -8,10 +8,12 @@
 
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Spring Bean과 DI 기초](./spring-bean-di-basics.md)
+- [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
+- [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di
+retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di, spring mvc to ioc di handoff, controller service wiring beginner route
 
 ## 핵심 개념
 
@@ -83,10 +85,24 @@ public class OrderService {
 
 `OrderService`는 `OrderRepository`가 `MemoryOrderRepository`인지 `JpaOrderRepository`인지 알 필요가 없다. 컨테이너가 적절한 구현체를 결정해서 주입한다.
 
+## 요청 흐름과 연결해서 이해하기
+
+IoC/DI 문서를 따로 외우지 말고, 아래 한 장으로 붙여 읽으면 덜 헷갈린다.
+
+```text
+HTTP 요청 (예: GET /orders/1)
+-> DispatcherServlet 이 OrderController 메서드로 라우팅
+-> OrderController 가 OrderService 호출
+-> OrderService 안의 orderRepository는 컨테이너가 이미 주입해 둔 Bean
+```
+
+핵심은 "요청은 MVC가 받고, 객체 연결은 DI가 맡는다"는 분리다.
+
 ## 더 깊이 가려면
 
 - Bean 후보 선택, `@Primary`, `@Qualifier`, `ObjectProvider` 등 주입 전략 세부 내용은 [IoC 컨테이너와 DI](./ioc-di-container.md)와 [Spring Bean과 DI 기초](./spring-bean-di-basics.md)에서 이어서 본다.
 - 저장소 레이어에서 DI가 어떻게 쓰이는지는 [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)를 같이 보면 연결이 명확해진다.
+- HTTP 메서드와 컨트롤러 매핑부터 다시 올라오려면 [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) -> [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md) -> 이 문서 순서로 본다.
 
 ## 면접/시니어 질문 미리보기
 

@@ -38,6 +38,10 @@
 > - shadow process portfolio heatmap
 > - shadow retirement scorecard schema
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Lifecycle Scorecard Metrics](./README.md#shadow-lifecycle-scorecard-metrics)
+> - 다음 단계: [Shadow Candidate Promotion Thresholds](./shadow-candidate-promotion-thresholds.md)
+
 ## 핵심 개념
 
 shadow catalog의 건강도는 총 entry 수 한 줄로 읽으면 거의 항상 오판한다.

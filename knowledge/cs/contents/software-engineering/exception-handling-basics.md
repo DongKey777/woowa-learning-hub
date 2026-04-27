@@ -7,11 +7,23 @@
 관련 문서:
 
 - [API 설계와 예외 처리](./api-design-error-handling.md)
+- [409 vs 422 선택 기준 짧은 가이드](./http-409-vs-422-selection-guide.md)
 - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 - [Spring IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: exception handling basics, 예외 처리 입문, checked unchecked exception, custom exception, 비즈니스 예외, 시스템 예외, 예외 어디서 잡나요, try catch 기초, global exception handler, 예외 계층 설계, runtime exception 차이, 예외 왜 쓰나요
+retrieval-anchor-keywords: exception handling basics, 예외 처리 입문, checked unchecked exception, custom exception, 비즈니스 예외, 시스템 예외, 예외 어디서 잡나요, try catch 기초, global exception handler, 예외 계층 설계, runtime exception 차이, 예외 왜 쓰나요, 409 vs 422, conflict vs unprocessable content, 업무 규칙 위반 상태 코드
+
+## 먼저 잡는 한 줄 멘탈 모델
+
+예외 처리는 `많이 catch`가 아니라, **"어디서 던지고 어디서 공통 처리할지"를 계층별로 고정하는 계약 설계**다.
+
+## before / after 한눈 비교
+
+| 상태 | 코드 신호 | 결과 |
+|---|---|---|
+| before: 예외 처리 위치가 제각각 | Controller/Service/Repository마다 임의 `try-catch`와 응답 생성 | API 에러 포맷이 흔들리고 원인 추적이 어려워진다 |
+| after: 처리 경계가 정해진 상태 | Service/Domain이 의미 있는 예외를 던지고 `@RestControllerAdvice`가 공통 처리 | 응답 일관성과 로깅 기준이 맞춰져 디버깅이 쉬워진다 |
 
 ## 핵심 개념
 

@@ -7,13 +7,23 @@
 > 관련 문서:
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 > - [Wildcard Certificate vs Routing Boundary Primer](./wildcard-cert-routing-boundary-primer.md)
+> - [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md)
+> - [H3 Stale Alt-Svc 421 Recovery Primer](./h3-stale-alt-svc-421-recovery-primer.md)
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 > - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 > - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+> - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
+> - [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: HTTP/3 cross-origin reuse guardrails, HTTP/3 no ORIGIN frame, H3 ORIGIN frame 없음, H3 coalescing without ORIGIN, HTTP/3 connection coalescing, cross-origin connection reuse, H3 certificate scope, certificate SAN reuse, wildcard certificate authority, Alt-Svc endpoint authority, alternative service authority, authoritative H3 endpoint, QUIC endpoint authority, 421 Misdirected Request H3, 421 retry recovery, Alt-Svc cache removal, wrong QUIC connection, beginner H3 coalescing primer, 421 troubleshooting trace, browser devtools 421, curl 421 misdirected request
+retrieval-anchor-keywords: HTTP/3 cross-origin reuse guardrails, HTTP/3 no ORIGIN frame, H3 ORIGIN frame 없음, H3 coalescing without ORIGIN, HTTP/3 connection coalescing, cross-origin connection reuse, H3 certificate scope, certificate SAN reuse, wildcard certificate authority, Alt-Svc endpoint authority, alternative service authority, authoritative H3 endpoint, QUIC endpoint authority, 421 Misdirected Request H3, 421 retry recovery, Alt-Svc cache removal, wrong QUIC connection, beginner H3 coalescing primer, 421 troubleshooting trace, browser devtools 421, curl 421 misdirected request, wrong h3 connection retry, browser 421 retry, same url retried after 421, alt-svc scope vs reuse, cache scope vs connection reuse, who owns alt-svc hint vs who can share connection, reuse guardrail primer, scope primer handoff
+
+## 헷갈리면 이 문장으로 먼저 가르기
+
+- 질문이 "`이미 열린 connection을 다른 origin에도 같이 써도 되나`"면 이 문서에서 certificate scope, endpoint authority, `421`을 본다.
+- 질문이 "`이 힌트가 어느 origin의 메모인가`"면 [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md)로 간다.
+- 질문이 "`그 H3 endpoint를 어디서 배웠나`"면 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)로 간다.
 
 <details>
 <summary>Table of Contents</summary>
@@ -60,6 +70,13 @@ retrieval-anchor-keywords: HTTP/3 cross-origin reuse guardrails, HTTP/3 no ORIGI
 ## 먼저 잡는 mental model
 
 HTTP/3 cross-origin reuse는 "빠른 길을 같이 쓰되, 그 길이 정말 그 목적지까지 책임질 수 있는지 확인하는 문제"다.
+
+여기서 일부 초급자가 섞는 "`scope`"는 cache scope와 같은 뜻이 아니다.
+
+- cache scope는 "누가 이 `Alt-Svc` 힌트를 배웠는가"를 묻는다
+- reuse guardrail은 "이미 열린 connection에 누구를 같이 태워도 되는가"를 묻는다
+
+즉 scope는 메모의 소유자이고, reuse는 공유 허가다.
 
 입문용으로는 세 문장만 먼저 기억하면 된다.
 
@@ -265,6 +282,8 @@ Alt-Svc: h3="edge.example.net:443"; ma=86400
 ## 다음에 이어서 볼 문서
 
 - 전체 coalescing 조건부터 다시 보려면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- `ma`, cache scope, `421`이 reuse 결정을 어떻게 묶는지 짧게 다시 잡으려면 [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md)
+- stale `Alt-Svc`나 예전 authority 때문에 첫 H3 요청이 `421` 뒤 fresh path에서 성공하는 장면은 [H3 Stale Alt-Svc 421 Recovery Primer](./h3-stale-alt-svc-421-recovery-primer.md)
 - H3 endpoint discovery와 permission 차이를 다시 보려면 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 - H2의 `ORIGIN` frame과 `421` 조합을 보려면 [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 - certificate와 hostname routing mismatch를 운영 관점으로 보려면 [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)

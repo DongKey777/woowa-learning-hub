@@ -5,6 +5,9 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [템플릿 메소드 패턴 기초](../design-pattern/template-method-basics.md)
+> - [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](../design-pattern/template-method-framework-lifecycle-examples.md)
+> - [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](../design-pattern/template-method-vs-filter-interceptor-chain.md)
 > - [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](./spring-mvc-async-deferredresult-callable-dispatch.md)
 > - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
@@ -14,7 +17,20 @@
 > - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](../network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
 > - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 
-retrieval-anchor-keywords: OncePerRequestFilter, async dispatch, error dispatch, shouldNotFilterAsyncDispatch, shouldNotFilterErrorDispatch, DispatcherType, servlet redispatch, filter duplicate execution, jwt filter async
+retrieval-anchor-keywords: OncePerRequestFilter, async dispatch, error dispatch, shouldNotFilterAsyncDispatch, shouldNotFilterErrorDispatch, DispatcherType, servlet redispatch, filter duplicate execution, jwt filter async, onceperrequestfilter template method, onceperrequestfilter template method example, onceperrequestfilter template method beginner route, servlet filter template method example, servlet template method spring, 처음 배우는데 onceperrequestfilter, onceperrequestfilter 큰 그림, onceperrequestfilter 기초 route, filter chain vs template method spring, template basics before onceperrequestfilter deep dive
+
+## 먼저 큰 그림부터 자를 질문
+
+처음 배우는데 `OncePerRequestFilter`가 템플릿 메소드 예시로 먼저 보였다면 dispatch 함정 문서부터 읽기보다 [템플릿 메소드 패턴 기초](../design-pattern/template-method-basics.md) -> [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](../design-pattern/template-method-framework-lifecycle-examples.md) -> [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](../design-pattern/template-method-vs-filter-interceptor-chain.md) 순서가 더 빠르다.
+
+이 문서는 그 다음 단계인 **async/error redispatch 정책과 운영 디버깅**을 다루는 deep dive다.
+
+| 지금 막힌 질문 | 먼저 볼 문서 | 이 문서가 필요한 순간 |
+|---|---|---|
+| `템플릿 메소드가 뭐지`, `왜 상속하지` | [템플릿 메소드 패턴 기초](../design-pattern/template-method-basics.md) | 패턴은 알았고 dispatch별 차이를 보고 싶을 때 |
+| `HttpServlet` / `OncePerRequestFilter`가 왜 예시인지 큰 그림이 궁금하다 | [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](../design-pattern/template-method-framework-lifecycle-examples.md) | filter chain과 redispatch 정책까지 내려가야 할 때 |
+| `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`가 섞여 보인다 | [Spring `Filter`, `HandlerInterceptor`, `OncePerRequestFilter`: 템플릿 메소드 vs 책임 연쇄](../design-pattern/template-method-vs-filter-interceptor-chain.md) | dispatch type 때문에 실제 로그/동작이 흔들리는 이유를 보고 싶을 때 |
+| async/error dispatch에서 로그가 두 번 찍히거나 빠져 보인다 | 이 문서 | 원인 파악 뒤 related deep dive로 확장할 때 |
 
 ## 핵심 개념
 
@@ -27,6 +43,9 @@ retrieval-anchor-keywords: OncePerRequestFilter, async dispatch, error dispatch,
 - 예외 흐름의 `ERROR` dispatch
 
 즉 `OncePerRequestFilter`의 핵심은 "HTTP 요청 객체 전체 생애 동안 절대 한 번"이 아니라, **어떤 dispatch를 대상으로 중복을 막을지에 대한 계약**이다.
+
+패턴 입문 질문과 redispatch 디버깅 질문을 섞지 않는 것이 중요하다.
+전자는 위 primer/bridge에서 큰 그림을 잡고, 이 문서는 **dispatch policy** 자체를 해석할 때 쓴다.
 
 이걸 놓치면 흔한 혼란이 생긴다.
 

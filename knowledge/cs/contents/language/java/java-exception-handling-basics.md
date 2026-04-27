@@ -7,11 +7,13 @@
 관련 문서:
 
 - [try-with-resources와 Suppressed Exception](./try-with-resources-suppressed-exceptions.md)
+- [Java Optional 입문](./java-optional-basics.md)
 - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](../../spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 - [language 카테고리 인덱스](../README.md)
 - [Spring MVC 요청 생명주기](../../spring/README.md)
 
-retrieval-anchor-keywords: java exception basics, try catch finally beginner, checked unchecked exception, throws throw beginner, exception handling intro, java 예외처리 입문, nullpointerexception beginner, runtimeexception beginner, exception hierarchy java, what is exception java, 예외 종류 입문, java exception class hierarchy
+retrieval-anchor-keywords: java exception basics, try catch finally beginner, checked unchecked exception, throws throw beginner, exception handling intro, java 예외처리 입문, nullpointerexception beginner, runtimeexception beginner, exception hierarchy java, what is exception java, 예외 종류 입문, java exception class hierarchy, 예외 처리 처음 배우는데, 예외 처리 큰 그림, try catch finally 순서, throw throws 차이, throw catch 언제 쓰는지, checked unchecked 차이 기초, checked unchecked 언제 처리, 자바 예외 기초 언제 쓰는지, NPE 왜 나는지 기초, 처음 배우는데 try catch, try catch 기초, 처음 배우는데 checked unchecked 차이, 언제 throws 쓰는지, exception primer, checked exception 언제 쓰는지, unchecked exception 언제 쓰는지, checked unchecked 언제 쓰는지, 예외를 언제 던지나, 예외를 언제 잡아야 하나, throw throws catch 차이 기초, checked exception vs runtime exception beginner, IOException checked exception 왜 쓰나, IllegalArgumentException 언제 쓰나, 자바 checked unchecked 선택 기준
 
 ## 핵심 개념
 
@@ -19,7 +21,17 @@ retrieval-anchor-keywords: java exception basics, try catch finally beginner, ch
 
 입문자가 자주 헷갈리는 지점은 "예외를 던진다(throw)"와 "예외를 잡는다(catch)"를 섞어 이해하는 것이다. 던지는 쪽은 문제를 발견한 코드이고, 잡는 쪽은 그 문제를 처리하는 코드다.
 
+처음에는 "예외를 어디서 해결해야 하지?"보다 "문제를 발견한 곳과 사용자에게 보여 줄 곳이 다를 수 있다"는 큰 그림을 먼저 잡는 편이 낫다. 문제를 발견한 메서드는 `throw`나 `throws`로 신호를 올리고, 더 바깥쪽 계층이 `catch`로 복구하거나 메시지/응답으로 바꾼다.
+
 ## 한눈에 보기
+
+예외를 처음 배우는데 헷갈리면 아래 3칸만 먼저 고정하면 된다.
+
+| 질문 | 먼저 떠올릴 답 | 한 줄 기억 |
+|---|---|---|
+| `throw`는 언제 쓰나? | 지금 이 위치에서는 더 진행하면 안 될 때 | "문제를 발견한 곳이 신호를 올린다" |
+| `catch`는 언제 쓰나? | 여기서 복구하거나 사용자-facing 결과로 바꿀 수 있을 때 | "처리 책임이 있는 곳이 잡는다" |
+| `throws`는 언제 쓰나? | 이 메서드에서 처리하지 않고 호출자에게 넘길 때 | "지금은 안 잡고 위로 위임한다" |
 
 ```
 Throwable
@@ -35,6 +47,30 @@ Throwable
 
 - **Checked 예외**: 컴파일러가 `try-catch` 또는 `throws` 선언을 강제한다.
 - **Unchecked 예외**: `RuntimeException` 하위. 처리 강제 없음.
+
+처음 배우는 기준으로는 "외부 자원 실패처럼 호출자가 대비해야 하는가?"면 checked를, "코드 사용법이 잘못되었거나 프로그래밍 오류인가?"면 unchecked를 먼저 떠올리면 된다. 즉 checked/unchecked는 "얼마나 무서운가"보다 "누가 이 실패 가능성을 미리 알고 있어야 하나"에 가깝다.
+
+## checked/unchecked 언제 쓰는지 30초 분기
+
+처음 배우는데 가장 헷갈리는 질문은 "둘 다 예외면 언제 뭘 써야 하지?"다. 아래처럼 먼저 나누면 큰 그림이 잡힌다.
+
+| 질문 | `yes`면 먼저 떠올릴 쪽 | 이유 |
+|---|---|---|
+| 파일, 네트워크, 외부 시스템처럼 정상 코드여도 실패할 수 있나? | checked | 호출자도 실패 대비 코드를 준비해야 한다 |
+| 메서드를 잘못 호출했거나 잘못된 상태를 만든 버그에 가깝나? | unchecked | 호출자는 복구보다 코드 수정이 우선이다 |
+| 이 메서드를 쓰는 사람이 "실패 가능성"을 API에서 바로 봐야 하나? | checked | `throws`로 계약을 드러내기 좋다 |
+| 매 호출마다 `catch`를 강제하면 오히려 사용성이 나빠지나? | unchecked | 흔한 프로그래밍 오류는 계약보다 가드와 테스트가 낫다 |
+
+### 빠른 예시
+
+| 상황 | 더 어울리는 예외 | 왜 그렇게 보나 |
+|---|---|---|
+| 파일 읽기 | `IOException` | 파일 없음, 권한 없음 같은 외부 실패를 호출자도 알아야 한다 |
+| 사용자 입력 검증 | `IllegalArgumentException` | 잘못된 값을 넘긴 호출자가 코드를 고쳐야 한다 |
+| 필수 객체가 `null` | `NullPointerException` 또는 사전 검증 | 정상 흐름 실패라기보다 버그 신호에 가깝다 |
+| DB/HTTP 호출 결과를 서비스에서 다른 에러 응답으로 바꾸기 | 안쪽은 `throw`/바깥은 `catch` | 발견한 곳과 사용자-facing 처리 위치가 다를 수 있다 |
+
+입문 단계에서는 "checked는 복구 가능한 실패", "unchecked는 프로그래밍 오류"라고 약간 단순화해서 잡아도 된다. 실무에서는 경계가 더 섬세하지만, retrieval 관점에서는 이 분기만 알아도 첫 질문 대부분을 해결할 수 있다.
 
 ## 상세 분해
 
@@ -74,6 +110,28 @@ if (age < 0) {
 
 조건 검증 실패 등 특정 상황에서 직접 예외를 만들어 던진다.
 
+### checked vs unchecked를 어디서 나누나
+
+| 구분 | checked exception | unchecked exception |
+|---|---|---|
+| 컴파일러 강제 | 있음 | 없음 |
+| beginner 감각 | "대비를 요구하는 실패" | "코드 사용/상태가 잘못된 실패" |
+| 자주 보는 예 | `IOException` | `NullPointerException`, `IllegalArgumentException` |
+| 처음 읽을 때 질문 | "호출자가 복구 전략을 알아야 하나?" | "호출자가 코드를 잘못 쓴 것인가?" |
+
+이 표는 절대 규칙이 아니라 첫 분기표다. 입문 단계에서는 "checked는 무조건 좋은 것", "unchecked는 무조건 나쁜 것"처럼 외우기보다 책임을 어디에 둘지 보는 것이 더 중요하다.
+
+### 커스텀 예외를 만든다면
+
+처음 배우는데 직접 예외 클래스를 만들 상황이라면 아래처럼 생각하면 된다.
+
+| 만들고 싶은 상황 | 보통 시작점 |
+|---|---|
+| 잘못된 요청값, 잘못된 상태, 도메인 규칙 위반 | `RuntimeException` 상속 custom exception |
+| 호출자가 반드시 재시도/대체 경로를 고민해야 하는 외부 실패 계약 | checked exception 검토 |
+
+Spring 애플리케이션에서는 도메인/검증 예외를 `RuntimeException` 계열로 두고, 바깥의 `@ControllerAdvice`에서 HTTP 응답으로 바꾸는 흐름을 많이 쓴다. 그래서 beginner가 "실무에서 checked를 아예 안 쓰나?"라고 느낄 수 있는데, 정확히는 외부 라이브러리나 JDK의 checked 예외를 경계에서 받아 의미 있는 unchecked/domain 예외로 번역하는 경우가 많다.
+
 ## 흔한 오해와 함정
 
 **오해 1: `finally`는 return이 있어도 실행된다**
@@ -85,6 +143,18 @@ if (age < 0) {
 **오해 3: `throws`는 예외를 처리한다**
 `throws`는 처리가 아니라 위임이다. 결국 어딘가에서 잡거나 프로그램이 종료된다.
 
+**오해 4: `try-catch`를 많이 쓰면 안전하다**
+작은 메서드마다 `catch`를 넣는다고 좋은 것이 아니다. 복구도 못 하면서 로그만 찍고 삼키면 실제 원인을 더 찾기 어려워진다.
+
+**오해 5: checked/unchecked는 "중요도" 차이다**
+둘의 핵심은 중요도가 아니라 처리 계약이다. checked는 "호출자도 이 실패 가능성을 알아야 한다"에 가깝고, unchecked는 "호출자가 코드를 바로잡아야 한다"에 가깝다.
+
+**오해 6: checked가 항상 더 좋은 설계다**
+호출자마다 똑같은 `try-catch`만 반복하게 만들면 오히려 API 사용성이 나빠질 수 있다. "호출자가 정말 다른 복구를 할 수 있는가?"를 먼저 봐야 한다.
+
+**오해 7: unchecked는 절대 catch하면 안 된다**
+`IllegalArgumentException` 같은 예외를 컨트롤러 바깥 경계에서 잡아 400 응답으로 바꾸는 것은 흔한 패턴이다. 핵심은 "아무 데서나 잡는 것"이 아니라 "책임 있는 경계에서 잡는 것"이다.
+
 ## 실무에서 쓰는 모습
 
 가장 흔한 패턴은 서비스 계층에서 도메인 예외를 던지고, 컨트롤러 또는 글로벌 핸들러에서 응답 형태로 변환하는 흐름이다.
@@ -95,9 +165,18 @@ if (age < 0) {
 
 이 흐름을 이해하려면 예외가 call stack을 타고 올라가는 원리를 먼저 잡아야 한다.
 
+Spring 쪽 경계를 더 보고 싶다면 [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](../../spring/spring-mvc-filter-interceptor-controlleradvice-boundaries.md)에서 "`@ControllerAdvice`는 예외 응답 계약을 맡는 자리"라는 연결을 바로 이어서 볼 수 있다.
+
+초급자 기준 mental model은 아래 한 줄로 충분하다.
+
+1. 안쪽 코드가 문제를 발견한다.
+2. 같은 층에서 복구할 수 없으면 `throw`/`throws`로 올린다.
+3. 바깥 계층에서 `catch` 후 로그, 메시지, HTTP 응답 같은 바깥 언어로 바꾼다.
+
 ## 더 깊이 가려면
 
 - 자원 자동 반납 패턴은 [try-with-resources와 Suppressed Exception](./try-with-resources-suppressed-exceptions.md)
+- `null`과 예외를 언제 나눌지 감각은 [Java Optional 입문](./java-optional-basics.md)
 - Spring에서 예외가 응답으로 변환되는 과정은 [Spring README](../../spring/README.md)
 
 ## 면접/시니어 질문 미리보기

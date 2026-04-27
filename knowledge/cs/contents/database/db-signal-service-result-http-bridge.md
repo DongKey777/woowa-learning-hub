@@ -1,0 +1,245 @@
+# DB 신호 -> 서비스 결과 enum -> HTTP 응답 브리지
+
+> 한 줄 요약: beginner는 DB 예외를 곧바로 HTTP 상태코드로 붙이지 말고, 먼저 service-layer 결과 enum으로 번역한 뒤 API 응답으로 내보내면 중복·혼잡·재시도 판단이 훨씬 덜 흔들린다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md)
+- [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+- [Hikari/JPA/MySQL 예외 3버킷 미니 매핑표](./hikari-jpa-mysql-three-bucket-mini-mapping.md)
+- [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md)
+- [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
+- [database 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: db signal service result http response bridge, database signal to service enum, service outcome enum http mapping, duplicate key busy retryable http response, db exception api response primer, database signal translation beginner, duplicate key 409 200 201 mapping, lock timeout 503 429 mapping, optimistic lock 409 conflict beginner, service layer result enum bridge, db signal to controller response, API response enum translation db, beginner database application bridge, spring controller advice concurrency mapping, @ControllerAdvice busy retryable conflict mapping, service concurrency label to http response, stable error response concurrency spring, problem detail concurrency mapping, 디비 신호 서비스 결과 enum, 디비 예외 http 응답 매핑, duplicate key busy retryable api 응답, 데이터베이스 신호 서비스 계층 브리지, DB 신호 컨트롤러 응답 번역, 컨트롤러 어드바이스 동시성 응답 매핑
+
+## 먼저 잡을 멘탈모델
+
+초보자는 `duplicate key`나 `deadlock`을 보자마자 바로 `409`, `500` 같은 HTTP 코드로 점프하기 쉽다.
+하지만 중간에 **서비스 결과 enum** 한 층을 두면 해석이 훨씬 쉬워진다.
+
+1. DB/JPA/Spring 신호를 읽는다
+2. service-layer 결과 enum으로 번역한다
+3. controller/API가 HTTP 응답으로 바꾼다
+
+짧게 말하면:
+
+- DB 신호는 "무슨 일이 있었나"
+- 서비스 enum은 "우리 서비스는 이 상황을 뭐라고 부르나"
+- HTTP 응답은 "API 계약상 어떻게 말하나"
+
+즉 `duplicate key -> 409`처럼 바로 묶지 말고,
+`duplicate key -> ALREADY_EXISTS -> 200/201/409 중 계약에 맞는 응답` 순서로 생각하는 편이 안전하다.
+
+## 30초 연결표
+
+| DB/JPA/Spring 신호 | 먼저 붙일 서비스 결과 enum | API에서 자주 나가는 응답 | 초보자 해석 |
+|---|---|---|---|
+| `duplicate key`, MySQL `1062` | `ALREADY_EXISTS` | `200 OK`, `201 Created`, `409 Conflict` 중 계약에 맞게 선택 | 이미 같은 key winner가 있다 |
+| `lock timeout`, MySQL `1205`, PostgreSQL `55P03` | `BUSY` | `503 Service Unavailable` 또는 `429 Too Many Requests` | 지금은 막혀 있어 결과를 확정 못 했다 |
+| `deadlock`, MySQL `1213`, PostgreSQL `40P01` | `RETRYABLE` | 보통 내부 bounded retry 후, 예산 소진 시 `503` | 이번 시도만 깨졌다 |
+| serialization failure, PostgreSQL `40001` | `RETRYABLE` | 보통 내부 bounded retry 후, 예산 소진 시 `503` | 새 트랜잭션으로 처음부터 다시 |
+| optimistic lock 예외 (`@Version`) | `CONFLICT` | `409 Conflict` | 다른 사용자가 먼저 바꿨다 |
+
+핵심은 이 표다.
+
+- DB 신호와 HTTP 코드는 1:1 매핑이 아니다.
+- **서비스 enum이 가운데 번역층**이다.
+- 같은 `ALREADY_EXISTS`라도 API 계약에 따라 `200`, `201`, `409`가 달라질 수 있다.
+
+## 왜 enum 층이 필요한가
+
+아래 두 질문을 분리하기 위해서다.
+
+| 질문 | 담당 층 |
+|---|---|
+| "DB에서는 무슨 일이 있었나?" | DB/JPA/Spring 신호 |
+| "우리 서비스는 이 상황을 어떤 결과로 취급하나?" | service enum |
+| "클라이언트에게는 어떤 상태코드와 body로 보여 주나?" | controller/API |
+
+이 층을 섞으면 흔히 이런 문제가 생긴다.
+
+- repository에서 바로 `ResponseEntity`를 만들기 시작한다
+- `DuplicateKeyException`을 무조건 `409`로 박아 버린다
+- `40001`과 `1205`를 둘 다 "재시도"로만 묶어 `busy`와 `retryable` 차이를 잃는다
+
+## 가장 작은 예시
+
+쿠폰 발급 API가 `(coupon_id, user_id)`를 한 번만 허용한다고 하자.
+
+### service 결과 enum
+
+```java
+public enum IssueCouponResult {
+    CREATED,
+    ALREADY_EXISTS,
+    BUSY,
+    RETRYABLE,
+    CONFLICT
+}
+```
+
+### service 계층 번역
+
+```java
+IssueCouponResult issueOnce(IssueCouponCommand command) {
+    try {
+        repository.insert(command.couponId(), command.userId(), command.payloadHash());
+        return IssueCouponResult.CREATED;
+    } catch (DuplicateKeyException e) {
+        return IssueCouponResult.ALREADY_EXISTS;
+    } catch (CannotAcquireLockException e) {
+        return IssueCouponResult.BUSY;
+    } catch (DeadlockLoserDataAccessException e) {
+        return IssueCouponResult.RETRYABLE;
+    } catch (ObjectOptimisticLockingFailureException e) {
+        return IssueCouponResult.CONFLICT;
+    }
+}
+```
+
+### controller/API 번역
+
+```java
+ResponseEntity<?> toResponse(IssueCouponResult result) {
+    return switch (result) {
+        case CREATED -> ResponseEntity.status(201).body(Map.of("code", "CREATED"));
+        case ALREADY_EXISTS -> ResponseEntity.ok(Map.of("code", "ALREADY_ISSUED"));
+        case BUSY -> ResponseEntity.status(503).body(Map.of("code", "TRY_AGAIN_SHORTLY"));
+        case RETRYABLE -> ResponseEntity.status(503).body(Map.of("code", "RETRY_EXHAUSTED"));
+        case CONFLICT -> ResponseEntity.status(409).body(Map.of("code", "PAYLOAD_CONFLICT"));
+    };
+}
+```
+
+여기서 초보자가 먼저 읽어야 할 포인트는 두 가지다.
+
+- `ALREADY_EXISTS`는 서비스 뜻이고, `200`/`409`는 API 계약이다
+- `BUSY`와 `RETRYABLE`은 둘 다 실패처럼 보이지만, 내부 동작은 다르다
+
+## Spring `@ControllerAdvice`로 안정된 HTTP 응답 모양을 고정하는 가장 작은 예시
+
+앞의 `switch`는 개념 설명용이고, Spring API에서는 보통 **service가 동시성 결과 label을 던지고 `@ControllerAdvice`가 공통 응답 모양을 고정**하는 편이 덜 흔들린다.
+
+### 1. service가 던지는 작은 예외
+
+```java
+public final class ConcurrencyFailure extends RuntimeException {
+
+    private final IssueCouponResult result;
+
+    public ConcurrencyFailure(IssueCouponResult result, String message) {
+        super(message);
+        this.result = result;
+    }
+
+    public IssueCouponResult result() {
+        return result;
+    }
+}
+```
+
+### 2. `@ControllerAdvice`에서 label -> HTTP를 한 곳에서 매핑
+
+```java
+@RestControllerAdvice
+public class ConcurrencyAdvice {
+
+    @ExceptionHandler(ConcurrencyFailure.class)
+    ResponseEntity<Map<String, Object>> handle(ConcurrencyFailure ex) {
+        return switch (ex.result()) {
+            case ALREADY_EXISTS -> ResponseEntity.status(409).body(body("ALREADY_EXISTS", ex.getMessage()));
+            case BUSY -> ResponseEntity.status(503).body(body("BUSY", "잠시 후 다시 시도해 주세요."));
+            case RETRYABLE -> ResponseEntity.status(503).body(body("RETRY_EXHAUSTED", "재시도 예산을 모두 사용했습니다."));
+            case CONFLICT -> ResponseEntity.status(409).body(body("CONFLICT", ex.getMessage()));
+            case CREATED -> ResponseEntity.status(500).body(body("UNEXPECTED_STATE", "controller에서 CREATED 예외를 받으면 안 됩니다."));
+        };
+    }
+
+    private Map<String, Object> body(String code, String message) {
+        return Map.of(
+                "code", code,
+                "message", message
+        );
+    }
+}
+```
+
+### 3. 초보자 기준으로 먼저 읽을 포인트
+
+| 포인트 | 왜 중요한가 |
+|---|---|
+| `@ControllerAdvice`가 HTTP 모양을 한 곳에서 고정한다 | controller마다 `409`/`503` body가 달라지는 drift를 줄인다 |
+| service는 `BUSY`, `RETRYABLE`, `CONFLICT` 같은 **서비스 언어**만 고른다 | DB 예외 이름이나 Spring 예외 이름을 controller까지 끌고 오지 않는다 |
+| `BUSY`와 `RETRYABLE`을 둘 다 `503`으로 내보내더라도 `code`는 분리한다 | HTTP 상태는 같아도 클라이언트/운영 지표 해석은 다르게 유지할 수 있다 |
+
+초보자용 기억법:
+
+- status는 "HTTP 계약"
+- body의 `code`는 "서비스 결과 이름"
+- DB 예외 이름은 가능하면 advice 바깥으로 숨긴다
+
+## 같은 duplicate도 응답이 갈릴 수 있다
+
+`duplicate key`를 받았다고 항상 `409 Conflict`가 정답은 아니다.
+
+| 장면 | 서비스 결과 enum | 자주 쓰는 HTTP 응답 | 이유 |
+|---|---|---|---|
+| 같은 요청을 멱등 재전송했고, 기존 결과를 그대로 재사용 가능 | `ALREADY_EXISTS` | `200 OK` | "이미 처리된 같은 요청"으로 보는 계약 |
+| 처음 성공한 요청에 대한 재조회처럼 다루고 싶음 | `ALREADY_EXISTS` | `201 Created` 또는 `200 OK` | 팀 계약에 따라 최초 생성 의미를 유지할 수 있음 |
+| 같은 key를 다른 payload로 재사용해서 도메인 충돌 | `CONFLICT` 또는 `ALREADY_EXISTS` 내부 세부분기 | `409 Conflict` | winner는 있지만 내 요청 의미와 다름 |
+
+beginner 기본 규칙:
+
+- **같은 의미의 재전송**이면 `ALREADY_EXISTS` 쪽
+- **같은 key지만 다른 의미**면 `CONFLICT` 쪽
+- 그래서 duplicate 하나만 보고 바로 `409`를 박지 않는다
+
+## `BUSY`와 `RETRYABLE`은 왜 나눠야 하나
+
+둘 다 "이번 호출은 바로 성공하지 못함"처럼 보이지만 다음 동작이 다르다.
+
+| 서비스 결과 enum | 뜻 | 내부 기본 동작 | API 기본 톤 |
+|---|---|---|---|
+| `BUSY` | 아직 남의 작업이 끝나지 않았거나 줄이 막혔다 | 즉시 실패, 짧은 1회 retry, blocker 분석 중 하나 | "지금은 혼잡합니다" |
+| `RETRYABLE` | 이번 attempt만 무효다 | 새 트랜잭션으로 bounded retry | "일시 실패로 재시도했지만 끝내 못 끝냈습니다" |
+
+초보자용 한 줄 기억법:
+
+- `BUSY`는 "아직 결론을 못 봄"
+- `RETRYABLE`은 "이번 시도를 버리고 다시"
+
+## 자주 헷갈리는 지점
+
+- `already exists`는 HTTP 상태코드 이름이 아니다. service enum 이름이다.
+- `DuplicateKeyException`은 곧바로 controller 용어가 아니다. 먼저 service 결과로 번역한다.
+- `40001`과 `1205`는 둘 다 혼잡처럼 보여도 같은 enum으로 고정하면 운영 판단이 흐려질 수 있다.
+- repository가 API 응답 모양까지 알기 시작하면 재사용성이 급격히 떨어진다.
+
+## 초보자용 안전한 기본값
+
+처음 설계할 때는 아래처럼 시작하면 덜 흔들린다.
+
+| 상황 | service enum 기본값 | HTTP 기본값 |
+|---|---|---|
+| 새로 생성 성공 | `CREATED` | `201` |
+| 같은 의미의 duplicate | `ALREADY_EXISTS` | `200` |
+| 락/풀 혼잡으로 지금 결론 못 냄 | `BUSY` | `503` |
+| deadlock / `40001` retry 예산 소진 | `RETRYABLE` | `503` |
+| optimistic lock / 다른 payload 충돌 | `CONFLICT` | `409` |
+
+이 표는 절대 규칙이 아니라 **beginner 기본 출발점**이다.
+정답은 DB가 아니라 API 계약이 결정한다.
+
+## 어디까지를 이 문서에서 보고, 어디부터 다음 문서로 가나
+
+- 3버킷 용어부터 먼저 고정하고 싶으면 [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md)
+- `duplicate key` / `1205` / `1213` / `40001`을 더 자세히 분류하려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+- Hikari/JPA/MySQL 표면 예외명을 짧은 표로 먼저 보고 싶으면 [Hikari/JPA/MySQL 예외 3버킷 미니 매핑표](./hikari-jpa-mysql-three-bucket-mini-mapping.md)
+- optimistic locking이 왜 `409 conflict` 쪽으로 가기 쉬운지 흐름을 보고 싶으면 [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md)
+
+## 한 줄 정리
+
+DB 신호를 바로 HTTP로 던지지 말고 `DB 신호 -> service 결과 enum -> HTTP 응답` 3단으로 끊어 보면, beginner도 duplicate·busy·retryable·conflict를 같은 언어로 안정적으로 설명할 수 있다.

@@ -7,13 +7,21 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
+> - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
+> - [Spring Docker Compose and Kubernetes Env Injection Basics: property 이름과 플랫폼 주입 실수 분리하기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
+> - [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)
+> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+> - [Spring Same-Location `.properties` vs YAML Precedence Primer](./spring-properties-vs-yaml-same-location-precedence-primer.md)
+> - [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
+> - [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
+> - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
 > - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: spring property source precedence, spring property source priority, spring boot externalized configuration beginner, application.yml override order, application-prod.yml precedence, profile file override application yml, multiple profile last wins, spring.profiles.active order, environment variable overrides yaml, command line args override env var, test property override, @SpringBootTest properties precedence, @TestPropertySource precedence, DynamicPropertySource precedence, why application.yml ignored, same key property override, relaxed binding env var cheatsheet, env var property key mapping, dashed property env var, list property env var, map property env var, property source 우선순위, application yml 덮어쓰기, profile 설정 덮어쓰기, env var 설정 우선순위, command-line property 우선순위, test property 우선순위, 설정값이 왜 다르게 들어오지
+retrieval-anchor-keywords: spring property source precedence, spring property source priority, spring boot externalized configuration beginner, application.yml override order, application-prod.yml precedence, profile file override application yml, multiple profile last wins, spring.profiles.active order, environment variable overrides yaml, command line args override env var, SPRING_APPLICATION_JSON precedence, spring application json priority, test property override, @SpringBootTest properties precedence, @TestPropertySource precedence, DynamicPropertySource precedence, test property cache split, test property source cache key, DynamicPropertySource DirtiesContext, why application.yml ignored, same key property override, packaged vs external application yml, external config file precedence, spring.config.location replace defaults, spring.config.import precedence, relaxed binding env var cheatsheet, env var property key mapping, dashed property env var, list property env var, map property env var, property source 우선순위, application yml 덮어쓰기, profile 설정 덮어쓰기, env var 설정 우선순위, command-line property 우선순위, test property 우선순위, 설정값이 왜 다르게 들어오지
 
 ## 핵심 개념
 
@@ -25,7 +33,7 @@ Spring은 가장 위에 보이는 값 하나를 읽는다.
 아래쪽 값은 사라진 게 아니라, 더 높은 값에 가려진 것이다.
 ```
 
-예를 들어 `app.message`가 네 곳에 있으면 Spring은 값을 네 개 합치지 않는다.  
+예를 들어 `app.message`가 네 곳에 있으면 Spring은 값을 네 개 합치지 않는다.
 현재 실행에서 가장 높은 source의 `app.message` 하나만 보인다.
 
 그래서 설정 문제를 볼 때 질문은 이것이다.
@@ -43,7 +51,9 @@ Spring은 가장 위에 보이는 값 하나를 읽는다.
 - command-line argument: `--app.message=...`
 - test property: `@SpringBootTest(properties = ...)`, `@TestPropertySource`, `@DynamicPropertySource`
 
-Java system property, `SPRING_APPLICATION_JSON`, devtools global settings, config server 같은 확장 source는 여기서 중심으로 다루지 않는다.
+Java system property, devtools global settings, config server 같은 확장 source는 여기서 중심으로 다루지 않는다. `SPRING_APPLICATION_JSON`은 일반 env var보다 위에서 동작하는 별도 source라서, 구조 보존이 왜 필요한지까지 같이 보고 싶다면 [Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간](./spring-spring-application-json-primer.md)으로 이어진다.
+packaged vs external `application.yml`, `spring.config.location`, `spring.config.import`처럼 file-level precedence를 따로 보고 싶다면 [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)로 이어진다.
+같은 위치에서 `application.properties`와 `application.yml`을 함께 둬서 헷갈리는 mixed-format 문제는 [Spring Same-Location `.properties` vs YAML Precedence Primer](./spring-properties-vs-yaml-same-location-precedence-primer.md)로 이어진다.
 
 ---
 
@@ -129,7 +139,7 @@ app:
 APP_MESSAGE=env
 ```
 
-테스트 안에서 `app.message`는 보통 `test`다.  
+테스트 안에서 `app.message`는 보통 `test`다.
 테스트 annotation의 property가 env var와 config 파일보다 위에 있기 때문이다.
 
 그래서 beginner가 자주 겪는 착시는 이것이다.
@@ -144,7 +154,7 @@ APP_MESSAGE=env
 
 ## 3. profile 파일은 "profile이 켜졌을 때만" 후보가 된다
 
-`application-prod.yml`은 파일명이 prod라고 해서 항상 읽히는 override가 아니다.  
+`application-prod.yml`은 파일명이 prod라고 해서 항상 읽히는 override가 아니다.
 `prod` profile이 active일 때만 의미가 있다.
 
 ```yaml
@@ -165,7 +175,7 @@ app:
     enabled: true
 ```
 
-이 상태에서 active profile이 `local`이면 `application-prod.yml`의 `app.cache.enabled=true`는 후보가 아니다.  
+이 상태에서 active profile이 `local`이면 `application-prod.yml`의 `app.cache.enabled=true`는 후보가 아니다.
 최종 값은 기본 파일의 `false` 쪽으로 남을 수 있다.
 
 반대로 command-line으로 profile을 바꾸면:
@@ -189,7 +199,7 @@ java -jar app.jar --spring.profiles.active=prod
 java -jar app.jar --spring.profiles.active=prod,blue
 ```
 
-이 경우 같은 key가 `application-prod.yml`과 `application-blue.yml`에 모두 있으면 뒤쪽 profile인 `blue` 쪽 값이 더 위에 있다고 보면 된다.  
+이 경우 같은 key가 `application-prod.yml`과 `application-blue.yml`에 모두 있으면 뒤쪽 profile인 `blue` 쪽 값이 더 위에 있다고 보면 된다.
 beginner 단계에서는 "active profile 목록에서 오른쪽에 있는 profile이 같은 key를 더 나중에 덮을 수 있다" 정도만 기억하면 충분하다.
 
 ---
@@ -251,7 +261,7 @@ java -jar app.jar --app.message=cli
 
 최종 값은 `cli`다.
 
-다만 모든 command-line 문자열이 property가 되는 것은 아니다.  
+다만 모든 command-line 문자열이 property가 되는 것은 아니다.
 Spring Boot가 property로 올리는 것은 `--app.message=cli` 같은 option argument다.
 
 ```text
@@ -286,7 +296,7 @@ app:
 java -jar app.jar --spring.profiles.active=local
 ```
 
-최종 값은 `true`다.  
+최종 값은 `true`다.
 `application-local.yml`이 기본 `application.yml`을 덮었기 때문이다.
 
 그런데 CI에서 이렇게 실행된다면:
@@ -296,7 +306,7 @@ APP_SMS_ENABLED=false
 java -jar app.jar --spring.profiles.active=local
 ```
 
-최종 값은 `false`다.  
+최종 값은 `false`다.
 환경 변수가 profile 파일보다 높아서 `application-local.yml`의 `true`를 덮기 때문이다.
 
 여기에 command-line까지 붙으면:
@@ -306,7 +316,7 @@ APP_SMS_ENABLED=false
 java -jar app.jar --spring.profiles.active=local --app.sms.enabled=true
 ```
 
-최종 값은 다시 `true`다.  
+최종 값은 다시 `true`다.
 command-line argument가 env var보다 높기 때문이다.
 
 이제 `@ConditionalOnProperty(prefix = "app.sms", name = "enabled", havingValue = "true")` bean이 뜨거나 빠지는 이유도 같이 보인다.
@@ -355,12 +365,12 @@ command-line argument가 env var보다 높기 때문이다.
 
 ### 2. `application.yml`에 있는 값은 env var가 없을 때만 쓴다
 
-대체로 맞지만, profile 파일이 active이면 profile 파일도 기본 파일보다 높다.  
+대체로 맞지만, profile 파일이 active이면 profile 파일도 기본 파일보다 높다.
 즉 `application.yml`은 가장 먼저 깔리는 기본값에 가깝다.
 
 ### 3. env var를 넣었으니 profile 파일 값은 절대 못 쓴다
 
-같은 key라면 env var가 이긴다.  
+같은 key라면 env var가 이긴다.
 하지만 env var 이름이 다른 key로 들어갔거나, profile 파일 key와 canonical key가 다르면 덮어쓰지 못한다.
 
 ### 4. 테스트에서 운영과 같은 property 우선순위가 적용된다

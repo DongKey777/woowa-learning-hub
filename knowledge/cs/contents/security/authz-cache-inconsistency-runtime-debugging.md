@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [Authorization Graph Caching](./authorization-graph-caching.md)
 > - [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)
@@ -14,10 +15,45 @@
 > - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
 > - [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
 > - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
 retrieval-anchor-keywords: authz cache inconsistency, authorization cache debugging, stale decision cache, negative cache bug, policy version drift, graph snapshot drift, stale graph snapshot, authz graph version drift, authorization graph caching, cache key omission, tenant cache mixup, authz runtime debug, cache provenance, negative cache case study, stale deny, grant but still denied, tenant-specific 403, only one tenant 403, cross-tenant 403, tenant-only 404, inconsistent 401 404, 401 404 flip, authn authz drift, concealment drift, cached 404 after grant
+retrieval-anchor-keywords: authz cache debug entry cue, advanced authz debugging jump-in, stale deny runtime debugging gate, beginner fallback to grant path primer bridge, runtime debug vs deep dive, authz cache next step, authz cache return path, authz tenant catalog return, runtime debugging beginner safe route
 
 ---
+
+## 시작 전에: 이 문서의 역할과 입장 큐
+
+- 이 문서는 `deep dive` 중에서도 runtime `debugging` 중심 문서다. pod/tenant/request pair를 비교하면서 증거를 좁힐 때 읽는다.
+- 이 문서는 `primer`가 아니다. `grant했는데 아직 403/404`를 처음 설명하는 단계라면 먼저 `[primer bridge]` [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)로 간다.
+- 이 문서는 cache 구조를 처음 배우는 `deep dive 입문`도 아니다. `authorization graph cache`/`relationship cache` 용어부터 정리해야 하면 먼저 `[primer]` [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md), 그다음 `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md)로 간다.
+- 이 문서는 `survey`도 아니다. authz cache/tenant 문서 전체에서 다음 갈래를 다시 고르려면 `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 돌아간다.
+- 이 문서는 `recovery` runbook도 아니다. 실시간 복구 순서보다 "어느 cache layer가 어긋났는지"를 증거로 고정하는 데 초점을 둔다.
+
+### 30초 return path
+
+먼저 외워 둘 기본값은 간단하다.
+`grant path`와 `cache 구조`를 먼저 정리했고, 이제 `runtime evidence`를 맞추는 단계일 때 이 문서가 맞다.
+
+| 지금 내 상태 | 먼저 볼 역할 | 먼저 갈 문서 | 이 문서를 바로 열어도 되는가 |
+|---|---|---|---|
+| `권한 줬는데 아직 403/404`를 처음 설명해야 함 | `primer bridge` | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) | 아직 이르다 |
+| `graph cache`, `relationship cache`, `negative cache` 용어가 아직 헷갈림 | `primer` -> `deep dive 입문` | [Authorization Graph Cache / Relationship Cache Primer](./authorization-graph-cache-relationship-cache-primer.md) -> [Authorization Caching / Staleness](./authorization-caching-staleness.md) | 대체로 아직 이르다 |
+| 이미 pod/tenant/request pair 차이와 cache provenance를 대조 중 | `runtime debugging deep dive` | 이 문서 | 이제 적절하다 |
+
+다음 셋 중 하나라도 "아직 아니다"라면 이 문서보다 앞 문서로 돌아간다.
+
+- 응답 의미를 이미 구분했다: `403`인지 concealment `404`인지 안다.
+- stale 위치를 이미 좁혔다: grant path, cache key, negative cache 중 어디가 의심되는지 말할 수 있다.
+- 비교 증거가 있다: same actor 다른 pod, same resource 다른 tenant, invalidation 전후 request pair 중 하나를 잡았다.
+
+| 나는 어디서 왔나 | 이 문서에서 먼저 볼 구간 | 다음 문서 |
+|---|---|---|
+| `[primer bridge]`에서 stale deny를 막 분리했다 | `4. runtime debugging에는 cache provenance가 필요하다` + `7. debugging은 request pair 비교가 유용하다` | `[deep dive]` [Authorization Caching / Staleness](./authorization-caching-staleness.md), `[deep dive]` [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md) |
+| `[primer]`/`[deep dive 입문]`에서 cache key, version drift 개념을 막 정리했다 | `2. cache key omission은 아주 흔한 사고다` + `5. partial invalidation은 조용한 tail을 만든다` | `[deep dive]` [Authorization Graph Caching](./authorization-graph-caching.md) |
+| 이미 운영 로그에서 pod/tenant별 allow/deny 차이를 잡았다 | `실전 시나리오 1-3` + `운영 체크리스트` | `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./authorization-runtime-signals-shadow-evaluation.md), `[deep dive]` [AuthZ Decision Logging Design](./authz-decision-logging-design.md) |
+
+- runtime debugging 문서를 읽은 뒤에는 `[survey]` [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 돌아가 다음 갈래를 고른다.
 
 ## 핵심 개념
 
@@ -230,6 +266,13 @@ public record DecisionProvenance(
 > Q: purge만이 항상 답인가요?
 > 의도: 다른 복구 레버를 아는지 확인
 > 핵심: 아니다. direct recompute, negative cache disable, old evaluator fallback이 더 안전할 수 있다.
+
+## 다음 단계와 복귀 경로
+
+- cache 구조와 trade-off를 다시 정리하고 싶으면 [Authorization Caching / Staleness](./authorization-caching-staleness.md)
+- graph/relationship cache 쪽 증거를 더 파고들고 싶으면 [Authorization Graph Caching](./authorization-graph-caching.md)
+- negative cache 실전 사례를 이어서 보고 싶으면 [AuthZ Negative Cache Failure Case Study](./authz-negative-cache-failure-case-study.md)
+- authz cache 말고 다른 보안 증상 갈래를 다시 고르고 싶으면 [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog), [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 
 ## 한 줄 정리
 

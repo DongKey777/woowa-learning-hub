@@ -2,14 +2,19 @@
 
 > 한 줄 요약: Layered Validation은 형식 검증, 도메인 불변식, 정책 판정을 한 번에 섞지 않고 층별로 나눠 책임을 분리하는 패턴 언어다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [Specification Pattern](./specification-pattern.md)
-> - [Policy Object Pattern](./policy-object-pattern.md)
-> - [책임 연쇄 패턴: 필터와 인터셉터로 요청 파이프라인 만들기](./chain-of-responsibility-filters-interceptors.md)
-> - [Command Handler Pattern](./command-handler-pattern.md)
-> - [안티 패턴](./anti-pattern.md)
+관련 문서:
+- [Aggregate Invariant Guard Pattern](./aggregate-invariant-guard-pattern.md)
+- [Specification Pattern](./specification-pattern.md)
+- [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
+- [Policy Object Pattern](./policy-object-pattern.md)
+- [Policy Object vs Strategy Map](./policy-object-vs-strategy-map-beginner-bridge.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [Command Handler Pattern](./command-handler-pattern.md)
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
+
+retrieval-anchor-keywords: layered validation, input validation, domain validation, policy validation, validation rule replacement, 검증 규칙 교체, validation template strategy, specification vs policy object validation, validation response code, 400 403 409 validation, validation layers beginner, invariant guard, policy decision response, validation 뭐예요, 처음 배우는데 validation
 
 ---
 
@@ -23,6 +28,36 @@
 
 이 층을 섞으면 에러 메시지도, 책임도, 테스트도 흐려진다.
 
+## 처음 읽는다면 30초 멘탈 모델
+
+처음에는 검증을 "큰 문 하나"보다 **세 겹 문**으로 떠올리면 덜 헷갈린다.
+
+| 문 | 막는 대상 | 보통 어디에서 보나 |
+|---|---|---|
+| 입력 문 | 비어 있는 값, 잘못된 형식, 길이 초과 | DTO, request validator |
+| 도메인 문 | 말이 안 되는 상태 변화, 불변식 위반 | aggregate, entity, value object |
+| 정책 문 | 지금은 허용하지 않는 운영 규칙 | policy object, application service |
+
+즉 "검증이 많다"는 말은 if문이 길다는 뜻보다, **실패 의미가 다른 문이 섞였을 수 있다**는 신호에 가깝다.
+
+## 검증 구조를 고를 때 10초 카드
+
+Layered Validation 문서를 보다가 "`검증 흐름`은 고정인데 `규칙 세트`만 바뀌는 것 같은데?"라는 느낌이 들면 아래처럼 자르면 된다.
+
+| 지금 보이는 문제 | 먼저 떠올릴 구조 | 바로 이어서 볼 문서 |
+|---|---|---|
+| `필수값 확인 -> 도메인 생성 -> 정책 판정` 순서를 흔들면 안 된다 | 템플릿 메소드 쪽 고정 흐름 | [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) |
+| 국가/상품/파트너마다 다른 검증 규칙을 갈아 끼워야 한다 | 전략 쪽 교체 규칙 | [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) |
+| 둘 다 보인다. 순서는 고정인데 규칙만 갈아 낀다 | 템플릿 메소드 + 전략 함께 사용 | [템플릿 메소드 vs 전략](./template-method-vs-strategy.md#초미니-상황-카드-결제리포트검증) |
+| 정책 단계에서 "조건 조합"으로 끝낼지 "판정 결과"까지 돌려줄지 헷갈린다 | 아래 `Specification vs Policy Object` 선택표 | [Specification Pattern](./specification-pattern.md), [Policy Object Pattern](./policy-object-pattern.md) |
+| 정책 규칙이 검색 조건처럼 퍼지면서 어디까지 명세로 둘지 헷갈린다 | 도메인 규칙과 조회 계약 경계 확인 | [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md) |
+
+짧게 외우면 다음 한 줄이면 충분하다.
+
+- **검증 순서를 지키는 문제면 템플릿 쪽**
+- **검증 규칙을 바꿔 끼우는 문제면 전략 쪽**
+- **실패 의미를 분리하는 문제면 Layered Validation 쪽**
+
 ### Retrieval Anchors
 
 - `layered validation`
@@ -30,6 +65,8 @@
 - `validation tiers`
 - `invariant enforcement`
 - `cross-cutting validation`
+- `validation template strategy`
+- `검증 파이프라인 템플릿 전략`
 
 ---
 
@@ -54,6 +91,67 @@
 ### 3. Specification과 Policy Object가 잘 맞는다
 
 조건 조합이 많으면 Specification, 결과와 사유가 필요하면 Policy Object가 유용하다.
+
+## 정책 검증에서 `Specification`과 `Policy Object`를 고르는 30초 표
+
+Layered Validation까지는 이해했는데 정책 검증 단계에서 다시 막히는 경우가 많다.
+이때는 "`통과했는가`만 필요하냐, `왜 안 되는가`까지 같이 넘겨야 하냐"부터 보면 된다.
+
+| 질문 | Specification 쪽 | Policy Object 쪽 |
+|---|---|---|
+| 호출자가 바로 알고 싶은 것 | 통과/실패 | 허용 여부 + 이유 + 금액 + 다음 액션 |
+| 반환 모양 | `boolean` | `Decision`, `Reason`, `Fee` 같은 결과 객체 |
+| 강한 상황 | 조건을 `AND`/`OR`/`NOT`으로 조합해야 한다 | 거절 사유 코드나 수수료를 그대로 응답/흐름에 써야 한다 |
+| 호출자 다음 일 | 통과 후 처리를 다시 조립한다 | 반환값을 그대로 보여 주거나 다음 단계로 넘긴다 |
+| 초보자 한 줄 기억법 | "조건표" | "판정표" |
+
+## 1분 예시: 주문 취소 검증
+
+아래처럼 "배송 전이고, 7일 이내인가?"만 묻는다면 Specification으로 충분하다.
+
+```java
+public interface Specification<T> {
+    boolean isSatisfiedBy(T candidate);
+}
+
+Specification<Order> cancellable =
+    order -> !order.isShipped() && order.daysSincePurchase() <= 7;
+```
+
+반대로 API나 서비스가 "왜 취소가 안 되는지"까지 바로 알아야 하면 Policy Object가 더 자연스럽다.
+
+```java
+public record CancellationDecision(boolean allowed, String reasonCode, int fee) {}
+
+public final class CancellationPolicy {
+    public CancellationDecision evaluate(Order order) {
+        if (order.isShipped()) {
+            return new CancellationDecision(false, "ALREADY_SHIPPED", 0);
+        }
+        if (order.daysSincePurchase() > 7) {
+            return new CancellationDecision(false, "WINDOW_EXPIRED", 0);
+        }
+        return new CancellationDecision(true, "OK", 1000);
+    }
+}
+```
+
+## 자주 헷갈리는 지점
+
+- Specification을 쓴다고 정책 검증이 아닌 것은 아니다. 정책 단계 안에서도 boolean 조합이 핵심이면 Specification이 맞다.
+- Policy Object가 더 "고급 패턴"이라서 쓰는 것이 아니다. 호출자가 rich decision을 바로 써야 할 때 쓰는 것이다.
+- 둘 중 하나만 강요할 필요도 없다. 조건 조합은 Specification으로 두고, 최종 판정은 Policy Object가 감싸도 된다.
+
+## 검증 문서에서 템플릿/전략 문서로 넘어가는 기준
+
+Layered Validation은 "`무엇을 분리해야 하는가`"를 설명하는 문서다.
+반면 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)은 "`그 분리를 코드 구조로 어떻게 담을까`"를 고르는 문서다.
+
+특히 아래처럼 읽으면 왕복이 자연스럽다.
+
+- "입력 -> 도메인 -> 정책" 순서를 고정하고 싶다: 템플릿 메소드 후보
+- 정책 단계 안에서 국가/상품군별 규칙을 바꿔 끼우고 싶다: 전략 후보
+- 입력/도메인/정책 실패를 한 문장으로 뭉개고 있다: 다시 Layered Validation로 돌아와 층을 먼저 자른다
 
 ---
 
@@ -113,9 +211,46 @@ public interface OrderPolicy {
 validator.validate(request);
 Order order = Order.place(request);
 if (!policy.canPlace(order, context)) {
-    throw new IllegalStateException("policy rejected");
+    throw new PolicyViolationException("coupon expired for this member grade");
 }
 ```
+
+## 응답 계약으로 보기
+
+### 실패별 응답 의미 비교
+
+처음 읽을 때는 "어느 문에서 막혔는지"와 "클라이언트가 무엇을 고쳐야 하는지"를 같이 보면 덜 헷갈린다.
+
+| 실패 층 | 보통 응답 코드 | 예시 메시지 | 클라이언트가 이해할 의미 |
+|---|---|---|---|
+| 입력 검증 실패 | `400 Bad Request` | `userId is required` | 요청 형식 자체가 잘못됐다. 먼저 입력을 고쳐 다시 보낸다. |
+| 도메인 검증 실패 | `409 Conflict` | `cannot add item to a closed order` | 형식은 맞지만 현재 주문 상태와 충돌한다. 상태를 바꾸거나 다른 행동을 해야 한다. |
+| 정책 검증 실패 | `403 Forbidden` 또는 `409 Conflict` | `coupon expired for this member grade` | 시스템 정책상 지금은 허용되지 않는다. 권한/등급/기간/한도를 확인해야 한다. |
+
+중요한 점은 숫자 자체보다 **실패 의미를 층별로 안정적으로 분리하는 것**이다.
+팀마다 도메인 실패를 `422`로, 정책 실패를 사유 코드가 있는 `403`으로 내릴 수도 있다.
+
+### 예시: 예외를 층별로 나눠 응답에 매핑하기
+
+```java
+public ResponseEntity<?> placeOrder(PlaceOrderRequest request) {
+    try {
+        validator.validate(request);                    // 입력 검증
+        Order order = Order.place(request);            // 도메인 검증
+        policy.validate(order, context);               // 정책 검증
+        return ResponseEntity.ok().build();
+    } catch (InputValidationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (DomainRuleViolationException e) {
+        return ResponseEntity.status(409).body(e.getMessage());
+    } catch (PolicyViolationException e) {
+        return ResponseEntity.status(403).body(e.getMessage());
+    }
+}
+```
+
+이 예시의 핵심은 "검증을 많이 한다"가 아니라,
+"**실패 이유가 다르면 응답 계약도 다르게 보인다**"를 코드로 드러내는 데 있다.
 
 ---
 
@@ -152,4 +287,3 @@ if (!policy.canPlace(order, context)) {
 ## 한 줄 정리
 
 Layered Validation은 형식, 도메인, 정책 검증을 분리해 실패 의미와 책임 경계를 명확하게 하는 패턴 언어다.
-

@@ -8,6 +8,8 @@
 
 > 관련 문서:
 > - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+> - [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)
+> - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
@@ -36,8 +38,12 @@ retrieval-anchor-keywords: @ConditionalOnMissingBean vs @Primary, ConditionalOnM
 - `@ConditionalOnMissingBean`: **만들지 말지**를 정한다
 - `@Primary`: **이미 만들어진 것 중 무엇을 넣을지**를 정한다
 
-그래서 `@Primary`를 붙였는데 Boot 기본 bean이 "다시 생기지 않는" 것은 정상이다.  
+그래서 `@Primary`를 붙였는데 Boot 기본 bean이 "다시 생기지 않는" 것은 정상이다.
 `@Primary`는 등록 여부가 아니라 주입 우선순위만 바꾼다.
+
+여기에 "같은 bean 이름 충돌"까지 같이 섞여 있다면 [Spring `@Primary` vs Bean Override Primer: 주입 우선순위와 bean 이름 충돌은 다른 문제다](./spring-primary-vs-bean-override-primer.md)에서 override/name collision 축을 먼저 분리하는 편이 빠르다.
+
+같은 시간축 분리를 `@ConditionalOnBean`까지 확장하고 싶다면 [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)를 바로 이어서 보면 된다.
 
 ---
 
@@ -97,7 +103,7 @@ public class AppMailConfig {
 3. 이미 `MailSender` bean이 있으므로 `defaultMailSender`는 등록되지 않는다.
 4. `@Primary`는 `customMailSender`가 등록된 뒤의 주입 우선순위일 뿐이다.
 
-즉 이 상황에서 `@Primary`는 "Boot 기본값과 내 bean 중 내 bean을 고른다"가 아니다.  
+즉 이 상황에서 `@Primary`는 "Boot 기본값과 내 bean 중 내 bean을 고른다"가 아니다.
 Boot 기본값은 애초에 back off되어 후보 목록에 없다.
 
 ---
@@ -134,7 +140,7 @@ public class NoticeService {
 }
 ```
 
-이때는 `smtpMailSender`와 `sesMailSender`가 모두 등록되어 있으므로, Spring이 단일 후보를 골라야 한다.  
+이때는 `smtpMailSender`와 `sesMailSender`가 모두 등록되어 있으므로, Spring이 단일 후보를 골라야 한다.
 그래서 `@Primary`가 붙은 `sesMailSender`가 기본으로 선택된다.
 
 여기서의 질문은 auto-configuration back-off가 아니라 **주입 후보 선택**이다.
@@ -169,7 +175,7 @@ public class NoticeService {
 | 특정 주입 지점은 반드시 다른 구현체여야 한다 | 그 주입 지점에 `@Qualifier`를 붙인다. |
 | Boot 기본 설정 전체를 갈아엎고 싶지는 않고 일부 설정만 바꾸고 싶다 | top-level bean 교체보다 Boot가 제공하는 customizer bean이 있는지 먼저 찾는다. |
 
-마지막 줄은 `ObjectMapper`, `WebClient.Builder`, MVC 설정에서 자주 중요하다.  
+마지막 줄은 `ObjectMapper`, `WebClient.Builder`, MVC 설정에서 자주 중요하다.
 전체 bean을 교체하면 `@ConditionalOnMissingBean` 때문에 Boot 기본 구성 묶음이 빠질 수 있으니, 단순 옵션 변경인지 전체 교체인지 먼저 나눈다.
 
 ---

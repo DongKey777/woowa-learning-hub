@@ -11,12 +11,15 @@
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+- [Notification Badge vs Source Freshness Primer](./notification-badge-vs-source-freshness-primer.md)
+- [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
+- [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Notification 시스템 설계](./notification-system-design.md)
 - [Mobile Push Notification Pipeline Design](./mobile-push-notification-pipeline-design.md)
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: causal consistency notification primer, notification to source flow, notification click source missing, notification click watermark check, tap notification but source missing, 알림 눌렀는데 본문 없음, effect before cause notification, cause before effect notification, causal consistency vs stale read, causal token notification, required watermark notification, comment notification source read, payment notification order detail, beginner causal consistency, what is causal consistency notification
+retrieval-anchor-keywords: causal consistency notification primer, notification to source flow, notification click source missing, notification click watermark check, notification causal consistency basics, 알림 눌렀는데 본문 없음, effect before cause notification, cause before effect notification, causal consistency vs stale read, causal token notification, required watermark notification, comment notification source read, payment notification order detail, causal consistency 뭐예요, notification stale headroom
 
 ---
 
@@ -24,6 +27,7 @@ retrieval-anchor-keywords: causal consistency notification primer, notification 
 
 초보자가 이 주제를 stale read와 자주 헷갈리는 이유는 겉보기 증상이 비슷하기 때문이다.
 둘 다 "기대한 데이터가 안 보인다"처럼 보인다.
+처음 배우는데 `왜 알림을 눌렀는데 댓글이 없어요?`, `뭐예요, 조금 stale한 거랑 다른 건가요?` 같은 질문이 바로 여기서 나온다.
 
 하지만 질문이 다르다.
 
@@ -141,12 +145,37 @@ function openFromNotification(key, causalToken):
 
 ---
 
+## 숫자 언어도 같은 카드로 읽는다
+
+causal notification primer도 숫자 해석은 따로 만들지 않는 편이 좋다.
+초보자는 `정말 stale가 튀었나`와 `그 대응을 primary가 버티나`를 같은 카드 언어로 반복해서 보는 편이 덜 헷갈린다.
+
+| 숫자 질문 | 여기서의 뜻 | 같은 카드로 이어 읽을 문서 |
+|---|---|---|
+| `stale peak multiplier`가 큰가 | 알림 click 뒤 source stale이 baseline보다 얼마나 튀었는가 | [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md) |
+| `fallback headroom ratio`가 충분한가 | causal fallback을 더 밀어도 primary가 버틸 여유가 남았는가 | [Read-After-Write Routing Primer](./read-after-write-routing-primer.md) |
+| 같은 stale 급증인데 왜 대응이 달라지나 | reject/fallback reason과 primary 보호를 같이 봐야 하는가 | [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md) |
+
+빠른 연결:
+
+- Green 카드부터 보려면 [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)의 `fallback headroom band`와 `공통 미니 예시 카드`를 먼저 본다.
+- 같은 숫자를 notification routing 판단으로 옮기려면 [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)의 `headroom 2.0x (Yellow) 중간 카드`를 붙여 읽는다.
+- 같은 stale 급증이어도 headroom이 `1.4x (Red)`면 해석이 바뀐다는 반례는 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)의 `공통 반례 카드`가 가장 직접적이다.
+
+초보자용 한 줄:
+
+> 알림 click에서 원인이 안 보이는지 보는 언어는 `stale`, 그 보호를 계속 밀 수 있는지 보는 언어는 `headroom`이다. 같은 숫자 카드를 반복해서 읽어야 notification cluster 안에서 판단 말이 흔들리지 않는다.
+
+---
+
 ## 더 깊이 가려면
 
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
 - [Notification Causal Token Walkthrough](./notification-causal-token-walkthrough.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Notification Badge vs Source Freshness Primer](./notification-badge-vs-source-freshness-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+- [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
 - [Notification 시스템 설계](./notification-system-design.md)
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 

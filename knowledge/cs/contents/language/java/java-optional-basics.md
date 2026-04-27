@@ -9,9 +9,11 @@
 - [Optional / Stream / 불변 컬렉션 / 메모리 누수 패턴](./optional-stream-immutable-collections-memory-leak-patterns.md)
 - [Java 예외 처리 기초](./java-exception-handling-basics.md)
 - [language 카테고리 인덱스](../README.md)
+- [Java 제네릭 입문](./java-generics-basics.md)
+- [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
 
-retrieval-anchor-keywords: java optional basics, optional 입문, nullpointerexception 방지, optional orelse beginner, optional ispresent beginner, optional 왜 쓰나요, optional 기초, java optional ifpresent, optional map filter beginner, null 대신 optional, 자바 옵셔널 입문, optional empty of ofnullable
+retrieval-anchor-keywords: java optional basics, optional 입문, nullpointerexception 방지, optional orelse beginner, optional ispresent beginner, optional 왜 쓰나요, optional 기초, java optional ifpresent, optional map filter beginner, null 대신 optional, 자바 옵셔널 입문, optional empty of ofnullable, 처음 배우는데 Optional, Optional 큰 그림, Optional 언제 쓰는지, Optional null 차이, Optional of ofNullable 차이, orElse orElseGet 차이, Optional get 쓰면 안 되는 이유, Optional 반환 타입 권장, Optional 필드에 쓰면 안 되는 이유, 값 없음 표현 기초
 
 ## 핵심 개념
 

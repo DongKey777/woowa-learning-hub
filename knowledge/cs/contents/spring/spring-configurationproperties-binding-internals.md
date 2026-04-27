@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Kotlin `@ConfigurationProperties` 탐지 보조 노트: data class와 등록 포인트를 같이 찾는 법](./spring-kotlin-configurationproperties-detection-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md)

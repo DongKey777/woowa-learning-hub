@@ -1,30 +1,78 @@
 # Role vs Scope vs Ownership Primer
 
-> 한 줄 요약: `role check`, OAuth `scope check`, `ownership check`는 모두 인가에 속하지만 서로 다른 질문에 답한다. 셋을 분리해야 `scope=orders.read`를 "모든 주문 읽기"로 오해하거나, role만 보고 IDOR를 놓치는 실수를 줄일 수 있다.
+> 한 줄 요약: `role check`, OAuth `scope check`, `ownership check`는 모두 인가에 속하지만 서로 다른 질문에 답한다. 셋을 분리해야 `유효한 토큰인데 왜 403인지`, `scope=orders.read`인데 왜 남의 주문은 거부되는지를 같은 어휘로 설명할 수 있다.
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [인증과 인가의 차이](./authentication-vs-authorization.md)
-> - [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)
-> - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
-> - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
-> - [Delegated Admin / Tenant RBAC](./delegated-admin-tenant-rbac.md)
-> - [Security README: 기본 primer](./README.md#기본-primer)
-> - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
+관련 문서:
 
-retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scope check vs ownership check, oauth scope vs role, scope is not ownership, role is not ownership, resource ownership check primer, object ownership primer, object-level authorization beginner, role scope ownership difference, orders.read does not mean every order, support role but not every ticket, beginner authz primer, oauth scope primer, scope vs audience vs permission, audience is not scope, ownership check before IDOR, object access rule basics
+- [인증과 인가의 차이](./authentication-vs-authorization.md)
+- [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
+- [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
+- [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)
+- [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+- [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
+- [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)
+- [System Design: Auth Session Troubleshooting Bridge](../system-design/README.md#system-design-auth-session-troubleshooting-bridge)
+
+retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scope check vs ownership check, scope is not ownership, object ownership primer, ownership test template, list endpoint ownership test, detail endpoint ownership test, multi-tenant ownership check, same user different tenant, tenant negative test, 로그인 됐는데 왜 403, 유효한 토큰인데 403, scope 있는데 왜 남의 주문 못 봄, 내 것만 되는데 남의 것은 안 됨
+
+## 먼저 고정할 첫 질문
+
+첫 질문은 `로그인 됐는데 왜 403이지?`다. 이 primer는 그 질문을 `기능 입장권(role)`, `API 위임 범위(scope)`, `객체 관계(ownership/context)` 세 갈래로 빠르게 자른다.
+
+## 먼저 잡는 한 문장
+
+`로그인 됐는데 왜 403이지?`는 보통 "로그인은 맞다. 그런데 무엇을 할 수 있는지, 어느 범위까지 허용됐는지, 이 객체가 누구 것인지 중 하나가 안 맞는다"로 읽으면 된다.
+
+## 10초 분기표: role vs scope vs ownership
+
+먼저 복잡한 용어보다 질문 문장으로 자르면 빠르다.
+
+| 지금 보이는 말 | 10초 판단 | 가장 먼저 의심할 축 | 바로 확인할 질문 |
+|---|---|---|---|
+| `관리자 페이지가 안 열려요`, `버튼 자체가 403이에요` | 기능군 입장권이 없을 수 있다 | role / permission | `이 기능 영역에 들어올 role/authority가 있나?` |
+| `토큰은 유효한데 API가 403이에요`, `scope 있는데도 막혀요` | API 호출 위임 범위가 안 맞을 수 있다 | scope | `이 token이 이 API action을 호출하도록 scope를 받았나?` |
+| `내 것만 되고 남의 것은 안 돼요`, `주문 123은 안 열려요` | 특정 객체 관계가 안 맞을 수 있다 | ownership / tenant / context | `이 객체가 내 것인가, 같은 tenant인가, 위임 관계 안인가?` |
+
+짧게 외우면 이렇다.
+
+- role: `이 기능 구역에 들어갈 수 있나`
+- scope: `이 토큰으로 이 API를 불러도 되나`
+- ownership: `지금 이 객체가 내 범위 안인가`
+
+## 다음 읽기
+
+- 첫 질문 `로그인 됐는데 왜 403이지?`를 authn -> role/scope/ownership 순서로 한 번 더 붙이고 싶으면 [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)로 이어 가면 된다.
+- `권한을 방금 줬는데 still 403`처럼 freshness 쪽 증상이 더 강하면 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)로 옮겨 타면 된다.
+- `같은 사용자 다른 tenant`, `workspace 바꿨는데 왜 403인지`가 더 가깝다면 [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)로 먼저 분기하면 된다.
+- `같은 사용자, 다른 tenant`가 왜 IDOR/BOLA 초입 감각인지까지 바로 붙이고 싶으면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md#1분-브리지-ownership-누락이-왜-바로-취약점인가)로 돌아가 early example부터 읽으면 된다.
+- 분기 자체를 다시 고르고 싶으면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아가면 된다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - authn / authz / principal / session 자체가 아직 섞이면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 먼저 돌아가면 된다.
+- authn에서 role/scope/ownership으로 넘어가는 연결 고리가 약하면 [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)를 먼저 보고 다시 내려오면 된다.
 - `roles`, `scope`, `ROLE_`, `hasRole`, `hasAuthority` 같은 문자열 층위가 더 헷갈리면 [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)로 이어 가면 된다.
 - OAuth에서 scope가 왜 생기고 누가 주는지 흐름 자체를 다시 잡고 싶으면 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)를 보면 된다.
 - OAuth `scope`, token `audience`, 내부 app permission이 모두 같은 "권한"처럼 들리면 [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)으로 이어 가면 된다.
 - "남의 주문 ID를 넣었을 때 왜 ownership check가 핵심인가?"를 바로 이어서 보려면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)로 내려가면 된다.
 - 바깥 응답을 `403`으로 줄지 concealment `404`로 줄지까지 같이 정리하려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)를 이어 보면 된다.
+
+---
+
+## 증상으로 먼저 잡는 20초 비교
+
+용어가 아니라 증상 문장으로 먼저 들어오면 아래처럼 읽으면 된다.
+
+| 들고 온 질문 | 사실상 헷갈리는 축 | 먼저 볼 곳 | 바로 이어서 갈 곳 |
+|---|---|---|---|
+| `로그인 됐는데 왜 403이지?` | 인증 이후의 authz gate | 아래 `먼저 15초 구분표` | 순서를 한 장으로 다시 보면 [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) |
+| `유효한 토큰인데 왜 403이야?` | `401`을 지난 뒤 role/scope/ownership 중 어디서 막히는가 | 아래 `먼저 15초 구분표` | 응답 코드 의미를 같이 고정하려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+| `scope 있는데 왜 남의 주문을 못 봐?`, `scope 있는데 왜 거부돼?` | scope와 ownership | 아래 `예시 1` | 객체 단위 취약점까지 이어서 보면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md) |
+| `내 것만 되는데 남의 것은 안 됨` | ownership과 tenant/context | 아래 `예시 1`, `미니 케이스` | 바깥 응답이 `403`인지 숨김 `404`인지 정리하려면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+
+한 줄로 줄이면 이 문서는 `무엇이 다른 축인지`를 설명하고, bridge 문서는 `어느 순서로 보아야 하는지`, `401/403/404` primer는 `겉으로 어떤 코드로 보이는지`를 맡는다.
 
 ---
 
@@ -36,6 +84,20 @@ retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scop
 | OAuth scope check | `이 토큰이 이 API 범위를 호출하도록 위임됐나?` | authorization server가 넣은 `scope` claim | 토큰이 `orders.read`를 가져도 어떤 주문까지 읽는지는 모른다 |
 | Ownership check | `이 주체가 지금 이 객체에 접근해도 되나?` | 서비스 DB, authz graph, resource metadata | 기본 action 자격이나 delegated scope가 없으면 owner여도 바로 허용되면 안 된다 |
 
+### `로그인 됐는데 왜 403이지?`를 더 빨리 자르는 비교표
+
+| 구분 축 | 보통 떠오르는 화면/문장 | 허용되면 되는 일 | 그래도 아직 모르는 것 |
+|---|---|---|---|
+| Role | `admin 메뉴가 안 열림`, `support 화면 403` | 기능 영역 진입 | 어떤 개별 주문/티켓/문서까지 되는지는 모른다 |
+| Scope | `token은 valid한데 API 403`, `orders.read 있어요` | API action 호출 | 어떤 객체 ID까지 허용인지, tenant가 맞는지는 모른다 |
+| Ownership | `내 주문은 되는데 남의 주문은 안 됨`, `같은 사용자지만 다른 workspace라 안 됨` | 특정 객체 접근 | 기능 진입 role이나 delegated scope가 있는지는 모른다 |
+
+초보자는 보통 아래처럼 문장을 바꾸면 바로 분기된다.
+
+- `무슨 기능에 들어가려다 막혔나?` -> role 쪽
+- `무슨 API를 부르려다 막혔나?` -> scope 쪽
+- `어느 객체 ID를 넣었을 때만 막히나?` -> ownership 쪽
+
 핵심은 한 줄이다.
 
 - role은 `기능 묶음`
@@ -43,6 +105,22 @@ retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scop
 - ownership은 `특정 객체와의 관계`
 
 셋은 같은 단어가 아니라, 보통 한 요청 안에서 같이 써야 하는 서로 다른 축이다.
+
+## 먼저 고정할 한 문장: `유효한 토큰`은 `허용된 요청`이 아니다
+
+auth failure guide와 같은 순서로 읽으면 덜 헷갈린다.
+
+| 지금 이미 통과한 것 | 아직 남은 질문 | 그래서 나올 수 있는 증상 |
+|---|---|---|
+| 토큰 검증 성공, 세션 살아 있음 | 필요한 role/permission이 있는가 | `유효한 토큰인데 403` |
+| role/permission도 있음 | 이 token scope가 이 API action을 위임받았는가 | `scope 빠져서 403` |
+| scope도 있음 | 이 특정 주문/티켓/문서가 내 범위 안인가 | `scope 있는데 왜 거부되지?`, `남의 주문이라 403/404` |
+
+짧게 읽으면 아래와 같다.
+
+- `유효한 토큰`은 authn 통과 소식이다.
+- `허용된 요청`은 그다음 authz gate들을 모두 통과했다는 뜻이다.
+- 그래서 `유효한 토큰인데 403`은 모순이 아니라 자연스러운 authz 증상이다.
 
 ---
 
@@ -91,6 +169,93 @@ AND resource ownership or tenant/context rule
 
 이 ownership / relation check가 빠지면 바로 IDOR/BOLA 쪽 사고로 이어진다.
 
+초보자 질문으로 바꾸면 이 예시는 거의 항상 아래 둘 중 하나다.
+
+- `scope 있는데 왜 남의 주문은 안 돼요?`
+- `내 것만 되는데 남의 것은 왜 안 돼요?`
+
+둘 다 답은 같다. `orders.read`는 API 진입 범위이고, 특정 주문이 `내 범위 안`인지까지 대신해 주지 않는다.
+
+auth failure guide와 같은 문장으로 다시 쓰면 이렇게 된다.
+
+- `scope 있음`은 보통 `401`이 아니라는 뜻이다.
+- 그래도 `남의 주문`이면 ownership/context gate에서 `403` 또는 concealment `404`가 날 수 있다.
+
+## 예시 1-보강: list API도 `내 것만` 보여야 한다
+
+detail endpoint만 막아도 충분하다고 생각하기 쉽지만, list endpoint도 같은 규칙을 따라야 한다.
+
+| endpoint | 잘못된 구현에서 생기는 일 | 최소 확인 질문 |
+|---|---|---|
+| `GET /orders/1002` | 남의 주문 상세가 열린다 | `남의 주문 ID면 거부되는가?` |
+| `GET /orders` | 남의 주문이 목록에 섞여 나온다 | `내 주문만 남고, 남의 주문은 응답에 아예 없는가?` |
+
+즉 beginner 테스트 문장으로는 아래 두 줄이 같이 있어야 한다.
+
+- `남의 주문 상세는 거부된다`
+- `주문 목록은 내 주문만 보인다`
+
+## 미니 케이스: multi-tenant에서는 ownership만 보면 왜 비나
+
+먼저 아주 짧게 고정하면 이렇다.
+
+- ownership은 `이 객체가 내 것인가`
+- tenant check는 `이 요청이 지금 이 tenant 문맥 안의 것인가`
+- multi-tenant에서는 둘 다 맞아야 안전하다
+
+즉 beginner 관점에서는 `owner 맞음`으로 끝내지 말고 `owner 맞음 AND tenant 맞음`으로 읽으면 된다.
+
+| 요청 상황 | ownership만 보면 | tenant까지 같이 보면 | 왜 문제인가 |
+|---|---|---|---|
+| 사용자 A가 tenant A의 자기 주문 조회 | 허용 | 허용 | 정상 케이스 |
+| 사용자 A가 tenant B의 남의 주문 조회 | 거부 | 거부 | ownership에서도 막힌다 |
+| 같은 사용자 A가 tenant A와 tenant B 둘 다 속해 있고, tenant A 화면에서 tenant B의 자기 주문 ID를 넣음 | 허용될 수 있음 | 거부 | "내 주문"이어도 현재 tenant 문맥과 다르면 cross-tenant 누출이 된다 |
+
+초보자가 많이 헷갈리는 지점:
+
+- `owner가 나니까 괜찮다`는 single-tenant 감각이다.
+- multi-tenant에서는 `내 데이터`여도 `지금 선택한 workspace/tenant 데이터`가 아닐 수 있다.
+- 그래서 조회 조건도 보통 `findById(orderId)`보다 `findByTenantIdAndId(activeTenantId, orderId)` 쪽이 더 안전하다.
+
+### 흔한 오해를 10초 문장으로 고치기
+
+| 자주 하는 말 | 더 정확한 말 |
+|---|---|
+| `로그인 됐는데 왜 막혀요?` | `로그인은 됐고, role/scope/ownership 중 어느 gate가 막는지 봐야 해요.` |
+| `scope가 있으니 다 읽을 수 있죠?` | `scope는 API 호출 범위고, 객체 범위는 ownership/context가 따로 봐요.` |
+| `내 주문이면 어느 tenant 화면에서든 열려도 되죠?` | `multi-tenant에서는 owner여도 현재 tenant 문맥이 다르면 거부돼야 해요.` |
+
+## 최소 negative test 브리지
+
+ownership과 tenant isolation이 같이 붙는 초보자용 최소 패턴은 "남의 것"만 막는 테스트 하나로 끝내지 않는 것이다.
+
+| 먼저 넣을 테스트 | 왜 필요한가 |
+|---|---|
+| `남의 주문 ID는 거부된다` | ownership 누락을 잡는다 |
+| `같은 사용자라도 다른 tenant 주문 ID는 거부된다` | tenant 문맥 누락을 잡는다 |
+
+가장 작은 mental model은 아래 한 줄이다.
+
+```text
+allow = owner AND activeTenant matches
+```
+
+예를 들어 사용자 A가 tenant A와 tenant B에 모두 속해 있어도, tenant A 화면에서 tenant B 주문 ID를 넣으면 거부돼야 한다. 이 케이스가 빠지면 "내 주문은 맞지만 지금 tenant는 아님"이라는 누출을 놓치기 쉽다.
+
+이 예시를 IDOR/BOLA 언어로 한 번 더 붙이고 싶으면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md#1분-브리지-ownership-누락이-왜-바로-취약점인가)의 초반 same-user cross-tenant 문단으로 바로 올라가면 된다.
+
+```java
+@Test
+void rejectsOwnOrderFromAnotherTenantContext() {
+    Order orderInTenantB = fixture.orderOwnedBy(userA, TENANT_B);
+
+    assertThatThrownBy(() -> api.getOrder(userA.withActiveTenant(TENANT_A), orderInTenantB.id()))
+        .isInstanceOf(AccessDeniedException.class);
+}
+```
+
+처음에는 이 한 케이스만 있어도 충분하다. 더 넓은 suite는 [Tenant Isolation / AuthZ Testing](./tenant-isolation-authz-testing.md)으로 이어서 보면 된다.
+
 ---
 
 ## 예시 2: `ROLE_SUPPORT`가 있어도 모든 티켓을 보면 안 되는 이유
@@ -125,6 +290,87 @@ ownership check를 "최종 만능 키"처럼 생각해도 틀린다.
 
 즉 ownership은 주로 `이 객체가 누구 것인가`를 묻고,
 role/scope는 `이 종류의 행동 자체가 허용되는가`를 묻는다.
+
+---
+
+## 최소 테스트 패턴: ownership 누락을 어떻게 빨리 잡나
+
+mental model은 단순하다.
+
+- `내 요청은 통과한다`만 테스트하면 부족하다.
+- 반드시 `남의 객체 요청은 거부된다`를 같이 테스트해야 ownership 누락을 잡을 수 있다.
+
+실무에서는 보통 아래 두 칸이면 시작점으로 충분하다.
+
+| 어디를 막나 | 최소로 확인할 질문 | 왜 필요한가 |
+|---|---|---|
+| 컨트롤러 테스트 | `로그인한 다른 사용자`가 이 endpoint를 치면 `403` 또는 의도적 `404`가 나는가 | 웹 진입점에서 object-level deny가 실제 응답으로 보이는지 확인 |
+| 목록 조회 테스트 | `로그인한 사용자`가 list endpoint를 쳤을 때 남의 객체가 응답에 섞이지 않는가 | detail은 막았는데 list filter를 빼먹는 누락을 빨리 잡음 |
+| 서비스 테스트 | 서비스 메서드가 `owner mismatch`에서 예외를 던지는가 | 컨트롤러 바깥에서 재사용돼도 ownership 검사가 빠지지 않게 고정 |
+
+### 컨트롤러 레이어 최소 예시
+
+```java
+@Test
+void 다른_사용자의_주문_ID로_조회하면_거부된다() throws Exception {
+    given(orderQueryService.getOrder(OTHER_USER_ID, 1002L))
+        .willThrow(new AccessDeniedException("forbidden"));
+
+    mockMvc.perform(get("/orders/1002").with(user("alice").roles("USER")))
+        .andExpect(status().isForbidden());
+}
+```
+
+여기서 중요한 점은 `정상 사용자 요청 200`보다 `다른 사용자 요청 거부`다.
+
+- `내 주문 조회 성공`
+- `남의 주문 조회 거부`
+
+이 두 테스트가 한 쌍으로 있어야 ownership 구멍을 빨리 본다.
+
+## list endpoint 최소 테스트도 같이 둔다
+
+```java
+@Test
+void 목록_조회에서는_내_주문만_보인다() throws Exception {
+    given(orderQueryService.getOrders(MY_USER_ID))
+        .willReturn(List.of(myOrder1, myOrder2));
+
+    mockMvc.perform(get("/orders").with(user("alice").roles("USER")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[*].ownerId").value(everyItem(is(MY_USER_ID.intValue()))));
+}
+```
+
+핵심은 `목록이 열린다`보다 `남의 데이터가 섞이지 않는다`를 assertion으로 박는 것이다.
+
+## 서비스 레이어에서도 ownership을 고정한다
+
+```java
+@Test
+void owner가_아니면_주문_조회가_거부된다() {
+    Order order = new Order(1002L, OWNER_USER_ID);
+    given(orderRepository.findById(1002L)).willReturn(Optional.of(order));
+
+    assertThatThrownBy(() -> orderService.getOrder(OTHER_USER_ID, 1002L))
+        .isInstanceOf(AccessDeniedException.class);
+}
+```
+
+이 테스트는 특히 아래 실수를 잡는 데 좋다.
+
+- 컨트롤러에서는 체크했는데 다른 진입점에서 서비스를 직접 호출함
+- repository가 객체를 찾아온 뒤 `ownerId == me` 비교를 빼먹음
+- role/scope 확인만 있고 object ownership 확인이 없음
+
+### 초보자가 자주 놓치는 포인트
+
+- `200 테스트`만 있으면 안 된다. ownership 검증 누락은 보통 `거부 케이스 부재`에서 숨어 버린다.
+- `ADMIN 성공`만 테스트하면 안 된다. 진짜 위험한 건 `일반 사용자 A가 사용자 B 객체를 읽는가`다.
+- detail API만 보면 안 된다. list endpoint에는 `내 것만 보인다`, detail/update/delete에는 `남의 객체는 거부된다`를 같이 붙여야 한다.
+- multi-tenant면 여기서 한 칸 더 가야 한다. `내 객체지만 다른 tenant면 거부된다`도 같이 넣어야 tenant 누락을 잡는다.
+
+더 깊게 보려면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)로 이어 가면 된다.
 
 ---
 

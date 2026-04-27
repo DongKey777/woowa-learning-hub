@@ -4,16 +4,15 @@
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
-> - [Heap Variants](./heap-variants.md)
-> - [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)
-> - [Monotonic Deque vs Heap for Window Extrema](./monotonic-deque-vs-heap-for-window-extrema.md)
-> - [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
-> - [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
-> - [Top-k Streaming / Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
->
-> retrieval-anchor-keywords: java priorityqueue pitfalls, java priority queue pitfalls, java priorityqueue, java priority queue, priorityqueue comparator direction, priorityqueue max heap java, priorityqueue min heap default, priorityqueue tie breaker, priorityqueue tiebreaker, priorityqueue stale entry, priorityqueue stale entries, priorityqueue decrease key, priorityqueue mutable key, priorityqueue not sorted, priorityqueue iteration order, priorityqueue iterator order, heap is not sorted list, dijkstra stale entry java, prim stale entry java, java heap comparator overflow, priorityqueue kth largest min heap java, priorityqueue median two heaps java, priorityqueue heap direction java, 우선순위 큐 비교자 방향, 자바 priorityqueue 함정, 자바 우선순위 큐 함정, priorityqueue 동점 처리, stale entry 다익스트라, priorityqueue 정렬 리스트 아님, priorityqueue 순회 순서, priorityqueue decrease-key 없음, 자바 kth largest 힙 방향, 자바 median 두 힙
+관련 문서:
+- [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [Heap Variants](./heap-variants.md)
+- [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)
+- [Mutable Priority Stale Ticket Pattern](./mutable-priority-stale-ticket-pattern.md)
+- [Comparator in TreeSet and TreeMap](../language/java/treeset-treemap-comparator-tie-breaker-basics.md)
+- [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
+
+retrieval-anchor-keywords: java priorityqueue pitfalls, priorityqueue tie breaker, priorityqueue stale entry, priorityqueue not sorted, priorityqueue duplicate priority order, priorityqueue insertion order misconception, priority queue stable order misconception, priority sequence tie breaker java, priorityqueue 동점 처리, priorityqueue 중복 우선순위, priorityqueue 삽입 순서 보장, priorityqueue 정렬 리스트 아님, priorityqueue basics, priorityqueue 뭐예요
 
 ## 빠른 진단 표
 
@@ -27,7 +26,7 @@
 
 ## 1. 기본값은 min-heap이다
 
-Java `PriorityQueue`의 기본 정렬 방향은 natural order다.  
+Java `PriorityQueue`의 기본 정렬 방향은 natural order다.
 즉 숫자는 **작은 값이 먼저**, 문자열은 **사전순으로 앞선 값이 먼저** 나온다.
 
 ```java
@@ -52,36 +51,64 @@ PriorityQueue<Task> byLargestScore =
 
 그래서 Java에서는 `Integer.compare`, `Long.compare`, `Comparator.comparingInt`처럼 방향이 드러나는 비교식을 쓰는 편이 안전하다.
 
-추가로 `top k largest` 류 문제는 이름만 보고 max-heap을 고르기 쉽지만, 실제로는 **크기 `k`짜리 min-heap**을 유지하는 쪽이 더 흔하다.  
+추가로 `top k largest` 류 문제는 이름만 보고 max-heap을 고르기 쉽지만, 실제로는 **크기 `k`짜리 min-heap**을 유지하는 쪽이 더 흔하다.
 루트에 "`현재 top-k 중 가장 약한 후보`"를 두어 새 값과 빠르게 비교하기 위해서다.
 `kth-largest`, `streaming top-k`, `median`에서 이 방향 감각이 자꾸 헷갈리면 [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)로 바로 이어 보면 흐름이 정리된다.
 
 ## 2. 동점은 stable하지 않다
 
-`PriorityQueue`는 "더 우선인 원소를 먼저 꺼낸다"만 보장하지, **같은 priority끼리 삽입 순서를 보존한다**고 약속하지 않는다.
+`PriorityQueue`는 "줄 전체를 정렬해 두는 구조"가 아니라 "**머리 1개만 가장 우선**"인 구조다.
+그래서 **중복 priority**가 있으면, 같은 priority 안쪽 순서는 자동으로 stable하지 않다.
 
-예를 들어 "priority가 높을수록 먼저 처리하되, 같으면 먼저 들어온 작업부터"라는 요구가 있으면 tie-breaker를 직접 넣어야 한다.
+짧게 손으로 따라가 보면 오해가 빨리 풀린다.
+
+여기서는 **숫자가 작을수록 더 높은 우선순위**라고 가정하자.
+즉 `3`이 `5`보다 먼저 나오는 min-heap 예시다.
+
+| 넣은 순서 | 작업 | priority |
+|---|---|---|
+| 1 | A | 5 |
+| 2 | B | 5 |
+| 3 | C | 3 |
+
+`priority`만 비교하면 `poll()` 첫 번째는 C로 고정이지만, 그다음 A/B 순서는 보장되지 않는다.
+
+| comparator | 가능한 `poll()` 결과 예시 |
+|---|---|
+| `priority` only | `C -> A -> B` 또는 `C -> B -> A` |
+| `(priority ASC, sequence ASC)` | `C -> A -> B` (동점이면 먼저 들어온 순서 고정) |
+
+즉 요구사항이 "priority가 같으면 먼저 들어온 작업부터"라면 `(priority, sequence)`를 **한 쌍의 정렬 키**로 만들어야 한다.
+
+> 바로 붙여 넣는 시작 스니펫:
+> ```java
+> record Job(int priority, long sequence) {}
+> PriorityQueue<Job> pq = new PriorityQueue<>(
+>     Comparator.<Job>comparingInt(Job::priority)
+>         .thenComparingLong(Job::sequence)
+> );
+> ```
+> `priority`가 작으면 먼저 나오고, 같으면 `sequence`가 작은 작업이 먼저 나온다.
 
 ```java
+record Job(int priority, long sequence, String name) {}
+
 Comparator<Job> byPriorityThenSequence =
-    Comparator.<Job>comparingInt(job -> job.priority)
-        .reversed()
-        .thenComparingLong(job -> job.sequence);
+    Comparator.<Job>comparingInt(Job::priority)
+        .thenComparingLong(Job::sequence);
 
 PriorityQueue<Job> pq = new PriorityQueue<>(byPriorityThenSequence);
 ```
 
-핵심은 이렇다.
+초급자 common confusion:
 
-- priority만 비교하면 같은 priority 내부 순서는 구현 세부에 기대게 된다.
-- stable order가 문제 요구면 `timestamp`, `sequence`, `id` 같은 secondary key를 같이 비교해야 한다.
-- tie-breaker가 없으면 테스트는 우연히 통과해도, 다른 입력에서 순서가 흔들릴 수 있다.
-
-즉 `PriorityQueue`는 "동점까지 알아서 정리된 정렬 컨테이너"가 아니다.
+- "같은 priority면 삽입 순서가 자동 유지된다" -> 보장되지 않는다.
+- "내 로컬 JDK에서 우연히 그렇게 나왔으니 항상 맞다" -> 입력/heap shape가 바뀌면 깨질 수 있다.
+- "stable order가 필요하면 queue 종류를 바꿔야 한다" -> 대개는 comparator에 `sequence` tie-breaker를 추가하면 충분하다.
 
 ## 3. `PriorityQueue`는 sorted list가 아니다
 
-heap이 보장하는 것은 **루트가 최우선 원소**라는 사실뿐이다.  
+heap이 보장하는 것은 **루트가 최우선 원소**라는 사실뿐이다.
 나머지 원소는 부분 순서만 맞고, 전체가 정렬된 배열처럼 나열되지는 않는다.
 
 그래서 아래 기대는 틀리다.

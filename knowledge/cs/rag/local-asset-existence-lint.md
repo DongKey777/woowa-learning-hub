@@ -12,7 +12,7 @@
 > - [Fence False-Link Precheck](./fence-false-link-precheck.md)
 > - [Retrieval Anchor Keywords](./retrieval-anchor-keywords.md)
 
-> retrieval-anchor-keywords: local asset existence lint, unresolved local asset target, missing local asset target lint, repo-local asset existence check, markdown asset existence lint, html asset existence lint, broken asset path qa, missing image target, missing pdf target, missing code path target, local a href existence lint, srcset existence lint, reverse-link existence check, stale asset target lint
+> retrieval-anchor-keywords: local asset existence lint, unresolved local asset target, missing local asset target lint, repo-local asset existence check, markdown asset existence lint, html asset existence lint, broken asset path qa, missing image target, missing pdf target, missing code path target, local a href existence lint, srcset existence lint, poster attr existence lint, video poster missing target, audio src existence lint, track src existence lint, reverse-link existence check, stale asset target lint
 
 ## 언제 돌리나
 
@@ -37,8 +37,9 @@ python docs/local_asset_existence_lint.py knowledge/cs/contents/database docs
 
 - prose 영역의 markdown inline link / image target
 - prose 영역의 reference-style link target
-- markdown 안 HTML `src` / `href`가 가리키는 repo-local asset path
+- markdown 안 HTML `src` / `href` / `poster`가 가리키는 repo-local asset path
 - HTML `srcset`의 candidate URL (`1x`, `2x`, `800w` descriptor는 떼고 URL만 검사)
+- `<video>`, `<audio>`, `<track>` 같은 media tag의 local asset target도 같은 규칙으로 본다
 - nested parentheses와 angle-bracket target도 shared markdown parser 기준으로 읽는다
 - 실제 파일이 존재하지 않는 non-Markdown local target
 
@@ -52,7 +53,7 @@ python docs/local_asset_existence_lint.py knowledge/cs/contents/database docs
 ## 실패했을 때 고치는 순서
 
 1. 실제로 살아 있어야 하는 asset path가 무엇인지 먼저 확인한다.
-2. asset이 옮겨졌다면 markdown link, image link, HTML `src` / `href` / `srcset`을 같은 턴에 모두 새 path로 갱신한다.
+2. asset이 옮겨졌다면 markdown link, image link, HTML `src` / `href` / `poster` / `srcset`을 같은 턴에 모두 새 path로 갱신한다.
 3. asset이 지워진 것이 맞다면 reference 자체를 삭제하거나 대체 근거로 바꾼다.
 4. `python docs/local_asset_existence_lint.py`를 다시 돌린다.
 5. path는 살아 있지만 문자셋이나 확장자 규칙이 불안하면 [Asset Filename Lint](./asset-filename-lint.md)를 이어서 돌린다.
@@ -77,6 +78,12 @@ Restore the asset or update every inbound reference, then rerun this lint.
 - [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)는 rename triage와 old basename grep 흐름까지 같이 설명하는 rename-focused 문서이고, 여기서는 generic pre-review gate로 바로 돌릴 수 있게 이름을 분리했다.
 - shared parser를 [Fence False-Link Precheck](./fence-false-link-precheck.md), [README Anchor Reverse-Link Check](./readme-anchor-reverse-link-check.md)와 같이 쓰므로 "어떤 markdown target을 읽었는가"는 맞추고, 여기서는 existence만 따로 본다.
 
+## 다음 단계와 돌아가기
+
+- filename 자체가 scanner-safe한지도 같이 보고 싶으면 [Asset Filename Lint](./asset-filename-lint.md)로 바로 이어 간다.
+- asset rename 직후 old path inbound reference까지 묶어 보고 싶으면 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md)을 본다.
+- QA note index로 돌아가려면 [RAG Design](./README.md)를 다시 본다.
+
 ## 한 줄 정리
 
-filename hygiene와 별개로, markdown/HTML이 가리키는 repo-local asset target이 실제로 존재하는지도 lint로 따로 고정해 두는 편이 안전하다.
+filename hygiene와 별개로, markdown/HTML이 가리키는 repo-local asset target이 실제로 존재하는지도 `poster`와 media tag까지 포함해 lint로 따로 고정해 두는 편이 안전하다.

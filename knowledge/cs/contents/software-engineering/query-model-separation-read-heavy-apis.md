@@ -20,13 +20,15 @@
 
 > 관련 문서:
 > - [Software Engineering README: Query Model Separation for Read-Heavy APIs](./README.md#query-model-separation-for-read-heavy-apis)
+> - [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
+> - [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md)
 > - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 > - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
 > - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
 > - [Event Sourcing, CQRS Adoption Criteria](./event-sourcing-cqrs-adoption-criteria.md)
 >
-> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model
+> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model, helper snapshot bloat, helper snapshot vs response dto, command support data, dao vs query model, query repository 언제 쓰는지
 
 ## 왜 헷갈리는가
 

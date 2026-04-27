@@ -5,6 +5,8 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [해시 테이블 기초](./hash-table-basics.md)
+> - [응용 자료 구조 개요](./applied-data-structures-overview.md)
 > - [Bloom Filter](./bloom-filter.md)
 > - [Bloom Filter vs Cuckoo Filter](./bloom-filter-vs-cuckoo-filter.md)
 > - [Quotient Filter](./quotient-filter.md)
@@ -12,11 +14,25 @@
 > - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
 > - [Cuckoo Hashing](./cuckoo-hashing.md)
 
-> retrieval-anchor-keywords: cuckoo filter, approximate membership, fingerprint bucket, deletion, cuckoo hashing, false positive, load factor, eviction chain, cache admission, idempotency key filter
+> retrieval-anchor-keywords: cuckoo filter, approximate membership, exact membership, exact vs approximate membership, exact path vs prefilter, 정답 경로, 선필터, fingerprint bucket, deletion, cuckoo hashing, false positive, load factor, eviction chain, cache admission, idempotency key filter
+
+## 먼저 고르는 법
+
+> `decision box`
+> - 정답이 바로 필요하면 Cuckoo Filter가 아니라 `HashSet/HashMap` 같은 exact 경로로 간다.
+> - Cuckoo Filter도 Bloom Filter와 마찬가지로 "정답기"가 아니라 앞단 선필터다.
+> - `mightContain=true`면 통과 후보일 뿐이고, 최종 판단은 DB·캐시·exact set이 맡는다.
+> - 삭제나 만료가 자주 필요하면 Bloom보다 Cuckoo Filter 쪽이 자연스럽다.
+> - 결제, 권한, 중복 차단처럼 false positive도 비용이 큰 경로에는 단독 사용하지 않는다.
+
+| 질문 | 먼저 고를 축 |
+|---|---|
+| "정말 존재하나요?" | exact membership: `HashSet/HashMap`, DB unique/index |
+| "삭제 가능한 선필터가 필요한가요?" | approximate prefilter: `Cuckoo Filter` |
 
 ## 핵심 개념
 
-Cuckoo Filter는 "원소 전체"를 저장하지 않고, 짧은 fingerprint만 bucket에 저장한다.  
+Cuckoo Filter는 "원소 전체"를 저장하지 않고, 짧은 fingerprint만 bucket에 저장한다.
 각 원소는 두 후보 bucket 중 하나에 들어가고, 자리가 없으면 기존 fingerprint를 밀어내며 재배치한다.
 
 핵심 감각은 이렇다.
@@ -27,11 +43,14 @@ Cuckoo Filter는 "원소 전체"를 저장하지 않고, 짧은 fingerprint만 b
 
 따라서 아주 단순한 구조는 아니지만, **삭제 가능한 membership filter**가 필요할 때 매력적이다.
 
+자주 생기는 오해는 "삭제가 되니까 exact set 비슷하다"라고 보는 것이다.
+삭제 가능성은 좋아졌지만, 여전히 역할은 **정답 경로 앞의 approximate filter**다.
+
 ## 깊이 들어가기
 
 ### 1. 왜 fingerprint만 저장하나
 
-전체 key를 저장하면 HashSet에 가까워져 메모리 이점이 줄어든다.  
+전체 key를 저장하면 HashSet에 가까워져 메모리 이점이 줄어든다.
 그래서 보통 해시값의 일부 비트만 떼어 fingerprint로 둔다.
 
 - 공간을 아낀다
@@ -47,20 +66,20 @@ Cuckoo Filter는 "원소 전체"를 저장하지 않고, 짧은 fingerprint만 b
 - `i1 = hash(key)`
 - `i2 = i1 XOR hash(fingerprint)`
 
-fingerprint만 있더라도 다른 후보 위치를 다시 계산할 수 있다.  
+fingerprint만 있더라도 다른 후보 위치를 다시 계산할 수 있다.
 이 성질 덕분에 bucket에서 fingerprint를 하나 뽑아 다른 후보 bucket으로 밀어내는 relocation이 가능하다.
 
 ### 3. 삭제가 왜 자연스러운가
 
-Bloom Filter는 비트 하나를 여러 원소가 공유해 삭제가 어렵다.  
+Bloom Filter는 비트 하나를 여러 원소가 공유해 삭제가 어렵다.
 Cuckoo Filter는 bucket 안에 fingerprint "항목"이 따로 있으므로, 찾은 fingerprint를 지우면 된다.
 
-물론 완전히 정확한 삭제는 아니다.  
+물론 완전히 정확한 삭제는 아니다.
 동일 fingerprint 충돌 가능성은 있지만, 실무적으로는 삭제 가능한 approximate set이라는 장점이 크다.
 
 ### 4. 삽입 실패와 rehash를 받아들여야 한다
 
-load factor가 높아질수록 relocation chain이 길어질 수 있다.  
+load factor가 높아질수록 relocation chain이 길어질 수 있다.
 정해진 횟수 안에 자리를 못 찾으면 삽입 실패로 보고 재구성(rebuild)이나 확장을 해야 한다.
 
 즉 Cuckoo Filter는 다음을 관리해야 한다.
@@ -76,22 +95,22 @@ load factor가 높아질수록 relocation chain이 길어질 수 있다.
 
 ### 시나리오 1: 만료되는 idempotency key 전방 필터
 
-짧은 기간 동안 중복 요청을 걸러내되, 기간이 지나면 제거해야 한다면  
+짧은 기간 동안 중복 요청을 걸러내되, 기간이 지나면 제거해야 한다면
 Cuckoo Filter가 Bloom Filter보다 더 자연스럽다.
 
 ### 시나리오 2: cache admission / negative cache 보호
 
-잠깐 등장했다 사라지는 key를 전방 필터링할 때는  
+잠깐 등장했다 사라지는 key를 전방 필터링할 때는
 삭제와 재구성이 쉬운 쪽이 운영상 편하다.
 
 ### 시나리오 3: rolling window replay protection
 
-최근 N분간 본 token이나 request key를 approximate하게 기억하고,  
+최근 N분간 본 token이나 request key를 approximate하게 기억하고,
 window 만료 시 제거하고 싶다면 Cuckoo Filter가 잘 맞는다.
 
 ### 시나리오 4: 부적합한 경우
 
-정확 membership이 필요하거나, 삽입 실패 처리 자체가 부담이면  
+정확 membership이 필요하거나, 삽입 실패 처리 자체가 부담이면
 HashSet이나 Bloom Filter + 다른 만료 전략이 더 단순할 수 있다.
 
 ## 코드로 보기
@@ -197,7 +216,7 @@ public class CuckooFilter {
 }
 ```
 
-이 구현은 개념 설명용이다.  
+이 구현은 개념 설명용이다.
 실전에서는 resize, stash, hash 품질, load factor 임계치까지 함께 설계해야 한다.
 
 ## 트레이드오프

@@ -1,23 +1,25 @@
 # Java 상속과 오버라이딩 기초
 
-> 한 줄 요약: `extends`, method overriding vs overloading, `@Override`, dynamic dispatch를 작은 클래스 예제로 묶어 입문자가 "상속은 타입 관계, 오버라이딩은 재정의, 실제 메서드 선택은 런타임 객체가 결정한다"는 흐름을 잡도록 돕는 primer다.
+> 한 줄 요약: `extends`, method overriding vs overloading, `@Override`, dynamic dispatch를 작은 클래스 예제로 묶어 처음 배우는 사람이 "상속을 언제 쓰는지" 큰 그림부터 "실제 메서드가 왜 이렇게 선택되는지" 기초까지 한 번에 연결하도록 돕는 primer다.
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
-> - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
-> - [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
-> - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
-> - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
-> - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
-> - [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
+관련 문서:
 
-> retrieval-anchor-keywords: java inheritance basics, java overriding basics, java overloading vs overriding, java extends basics, java @override basics, java dynamic dispatch basics, runtime polymorphism basics, java super constructor basics, parent child class basics, 상속 기초, 처음 배우는데 상속, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 기초, composition over inheritance beginner, template method vs strategy beginner
+- [Language README - Java primer](../README.md#java-primer)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) - 클래스/객체 기초에서 객체지향 큰 그림으로 올라오기 전 출발점을 다시 잡는 primer
+- [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
+- [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
+- [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md) - 상속을 보기 전에 OOP 큰 그림과 "상속이 좁은 도구"라는 감각을 먼저 잡는 바로 이전 primer
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - "상속 언제 쓰는지"를 잡은 직후 "공통 흐름을 부모가 쥘지, 계약을 인터페이스로 열지"를 나누는 beginner handoff
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) - 상속을 배운 직후 코드 재사용과 타입 관계를 분리해 보는 follow-up primer
+- [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md) - 처음 배우는데 상속 다음 디자인 패턴을 어디서 시작할지 막히면 조합 -> 패턴 기초 route map으로 이어 주는 beginner entrypoint
+- [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
+- [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
+
+retrieval-anchor-keywords: java inheritance basics, java overriding basics, java dynamic dispatch basics, inheritance next read order beginner, 상속 기초, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 언제 쓰는지, 상속 다음 추상 클래스 인터페이스, inheritance to design pattern beginner route, design pattern beginner route, 처음 배우는데 상속 다음 디자인 패턴 어디부터, 상속 다음 조합 패턴 기초
 
 <details>
 <summary>Table of Contents</summary>
@@ -50,6 +52,8 @@ Java 입문자가 상속과 다형성에서 자주 막히는 지점은 문법보
 - overriding은 부모 메서드를 자식이 같은 시그니처로 다시 정의하는 것이다.
 - overloading은 이름은 같지만 parameter 목록이 다른 메서드를 여는 것이다.
 - overridden instance method는 런타임의 실제 객체를 기준으로 선택된다.
+
+그리고 beginner retrieval 관점에서는 이 문서가 `처음 배우는데 상속 언제 쓰는지`, `상속 큰 그림`, `상속 기초`를 한 질문형으로 묶는 공통 primer entrypoint다. 첫 질문이 어느 쪽으로 들어와도, **객체지향 큰 그림 -> 상속 -> 추상 클래스/인터페이스 -> 조합** 순서로 다시 정렬하면 같은 체인으로 수렴한다.
 
 ## `extends`로 부모와 자식을 연결하기
 
@@ -140,7 +144,7 @@ public class Dog extends Animal {
 - `public void speak()`는 부모의 `speak()`를 다시 정의한 것이므로 overriding이다.
 - `public void speak(int times)`는 parameter가 다르므로 overloading이다.
 
-즉 "이름이 같다"만으로 overriding이라고 말하면 안 된다.  
+즉 "이름이 같다"만으로 overriding이라고 말하면 안 된다.
 부모 메서드와 **이름과 parameter 목록이 같아야** overriding이다.
 
 반대로 return type만 바꿔서는 overloading이 되지 않는다.
@@ -185,7 +189,7 @@ public class Dog extends Animal {
 }
 ```
 
-`speek()`처럼 이름을 잘못 쓰거나 parameter를 다르게 적으면, `@Override`가 없는 경우 초보자는 "재정의한 줄 알았는데 사실은 새 메서드를 하나 더 만든 상태"가 되기 쉽다.  
+`speek()`처럼 이름을 잘못 쓰거나 parameter를 다르게 적으면, `@Override`가 없는 경우 초보자는 "재정의한 줄 알았는데 사실은 새 메서드를 하나 더 만든 상태"가 되기 쉽다.
 그래서 실무에서는 overriding하는 메서드에 `@Override`를 거의 습관처럼 붙인다.
 
 ## dynamic dispatch를 손으로 추적하기
@@ -248,12 +252,12 @@ Nabi meows
 
 ### `extends`는 코드 복사가 아니다
 
-상속은 부모-자식 타입 관계를 만드는 것이다.  
+상속은 부모-자식 타입 관계를 만드는 것이다.
 부모 설계를 자식이 그대로 안고 가므로, 공통 기능 재사용이 편한 대신 결합도도 커진다.
 
 ### 이름이 같다고 모두 overriding은 아니다
 
-parameter 목록이 다르면 overloading이다.  
+parameter 목록이 다르면 overloading이다.
 `speak()`와 `speak(int times)`는 이름이 같아도 다른 개념이다.
 
 ### `@Override`는 선택이 아니라 안전장치에 가깝다
@@ -266,12 +270,12 @@ parameter 목록이 다르면 overloading이다.
 
 ### field와 static method는 instance method overriding처럼 동작하지 않는다
 
-입문 단계에서는 "런타임에 갈아끼워지는 것은 overridden instance method"라고 먼저 기억하면 된다.  
+입문 단계에서는 "런타임에 갈아끼워지는 것은 overridden instance method"라고 먼저 기억하면 된다.
 field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 
 ### `private` 메서드는 override 대상이 아니다
 
-자식이 직접 볼 수 없는 멤버는 같은 의미의 overriding 대상이 되지 않는다.  
+자식이 직접 볼 수 없는 멤버는 같은 의미의 overriding 대상이 되지 않는다.
 그래서 overriding은 보통 상속받아 접근 가능한 instance method를 중심으로 이해하면 된다.
 
 ### 상속을 배웠다면 다음으로 볼 큰 그림
@@ -286,14 +290,14 @@ field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 
+큰 그림 기준 기본 route는 **[객체지향 핵심 원리](./object-oriented-core-principles.md) -> 이 문서 -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)** 다.
+
 - 클래스, 객체, 인터페이스, 추상 클래스까지 OOP 지도를 먼저 잡고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-- parameter, return type, method overloading을 더 기초부터 다시 묶어 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - method overloading과 method overriding의 차이만 짧게 다시 고정하고 싶다면 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - `super(...)`, constructor chaining, 초기화 순서를 같이 이해하고 싶다면 [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
 - `protected`, `final`, `static` 같은 멤버 규칙과 함께 상속 경계를 보고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-- 처음 배우는데 "상속을 언제 쓰는지", "상속보다 조합이 왜 자주 나오나"가 궁금하다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) -> [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) -> [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md) 순서로 읽으면 설계 선택까지 자연스럽게 이어진다
-- 상속, 다형성, 추상화를 조금 더 넓은 OOP 문맥에서 다시 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
-- 추상 클래스와 인터페이스를 언제 나눠 써야 하는지 더 정확히 보고 싶다면 [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
+- 처음 배우는데 "상속 다음 디자인 패턴은 어디부터?"가 붙으면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)에서 **상속보다 조합 -> 패턴 기초** route map부터 타면 된다
+- 추상 클래스와 인터페이스를 언제 나눠 써야 하는지 beginner 흐름으로 바로 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 
 ## 한 줄 정리
 

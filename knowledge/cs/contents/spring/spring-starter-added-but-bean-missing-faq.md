@@ -9,26 +9,36 @@
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
+> - [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)
 > - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 > - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
 > - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
 > - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 > - [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)
+> - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
+> - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
 
-retrieval-anchor-keywords: starter added but bean missing, starter bean not created, spring starter bean missing, starter added no bean, why starter bean not created, spring boot starter bean missing, classpath condition fail, ConditionalOnClass miss, ConditionalOnClass classpath trap, dependency scope bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, test slice auto-configuration missing, ConditionalOnProperty false, ConditionalOnProperty havingValue, ConditionalOnProperty matchIfMissing, env var mismatch bean missing, relaxed binding env var cheatsheet, dashed property env var mismatch, ConditionalOnMissingBean back off, existing bean found, bean override rule, allow-bean-definition-overriding, @Primary is not override, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override, component scan boundary, scan import boundary, starter configuration not loaded, starter added but bean not created faq
+retrieval-anchor-keywords: starter added but bean missing, starter bean not created, spring starter bean missing, starter added no bean, why starter bean not created, spring boot starter bean missing, classpath condition fail, ConditionalOnClass miss, ConditionalOnClass classpath trap, dependency scope bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, test slice auto-configuration missing, WebMvcTest starter bean missing, DataJpaTest starter bean missing, WebMvcTest bean not found starter, DataJpaTest bean not found starter, test slice bean missing faq, ConditionalOnProperty false, ConditionalOnProperty havingValue, ConditionalOnProperty matchIfMissing, env var mismatch bean missing, relaxed binding env var cheatsheet, dashed property env var mismatch, ConditionalOnMissingBean back off, existing bean found, existing bean vs ambiguous bean, bean exists but boot backed off, bean candidate duplication, ambiguous bean, NoUniqueBeanDefinitionException, found 2 beans, DataSourceAutoConfiguration log example, JacksonAutoConfiguration log example, ConditionEvaluationReport example, did not match did not find property spring datasource url, report phrase router, condition report phrase next step, classpath property back off router, did not find class next step, did not find property next step, found beans of type next step, @Primary is not override, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override, customizer vs bean replacement, objectmapper customizer bean missing, objectmapper direct bean back off, webclientcustomizer bean missing, webclient builder replacement back off, component scan boundary, scan import boundary, starter configuration not loaded, starter added but bean not created faq
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - `@Configuration`과 Boot auto-configuration의 큰 그림이 먼저 필요하면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)로 간다.
+- starter dependency 한 줄을 positive/negative match 예시와 바로 연결해 보고 싶으면 [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)을 먼저 본다.
 - 조건 평가를 실제로 보는 첫 진입점은 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)다.
 - "`@Primary`를 붙였는데 왜 Boot 기본 bean은 안 돌아오지?"처럼 back-off와 주입 우선순위가 섞이면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 간다.
+- "`ObjectMapper` 옵션 하나 바꿨는데 왜 기본 bean 로그가 사라졌지?"처럼 customizer와 직접 bean 등록이 섞이면 [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)로 간다.
+- "`existing bean`이 떠서 기본 bean이 물러난 건지, 아니면 `found 2`처럼 후보가 많아 주입이 애매한 건지"부터 나누고 싶으면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md), [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)로 이어진다.
 - classpath 조건이 왜 환경마다 달라지는지 scope/optional/test slice 기준으로 먼저 나누고 싶으면 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)로 간다.
 - property 조건은 보이는데 운영 env var 이름이 맞는지부터 의심되면 [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md)에서 dotted/dashed/list/map 변환을 먼저 맞춘다.
 - "누가 기존 bean으로 간주됐는가"를 더 정확히 보려면 [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)로 이어진다.
 - 내 설정 클래스나 shared module 자체가 안 읽힌 것 같으면 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md), [Spring `scanBasePackages` vs `@Import` vs Boot Auto-configuration 선택 기준](./spring-scanbasepackages-vs-import-autoconfiguration-selection.md)으로 넘어간다.
+- `@WebMvcTest`나 `@DataJpaTest`에서만 starter bean이 안 보이면 full context 문제가 아니라 slice 경계 문제일 수 있으니 [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md), [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)로 바로 이어간다.
 
 ---
 
@@ -41,7 +51,7 @@ retrieval-anchor-keywords: starter added but bean missing, starter bean not crea
 - Boot 기본 bean은 흔히 `@ConditionalOnMissingBean`이라서 **이미 비슷한 bean이 있으면 물러난다**.
 - starter가 붙어도 **내 `@Configuration`/`@Component`는 scan/import 경계 밖이면 여전히 안 읽힌다**.
 
-즉 "`starter`를 넣었다"는 말만으로는 원인을 못 정한다.  
+즉 "`starter`를 넣었다"는 말만으로는 원인을 못 정한다.
 실제 질문은 아래처럼 바뀌어야 한다.
 
 1. auto-configuration이 classpath 조건에서 탈락했나?
@@ -84,6 +94,192 @@ starter 추가 = auto-configuration 후보 등록 + 조건 평가 시작
 
 핵심은 "`bean이 없다`"를 한 문장으로 끝내지 말고, **조건 실패 / property off / back-off / scan miss** 중 어디인지 먼저 가르는 것이다.
 
+## report 문구를 바로 다음 행동으로 바꾸는 phrase router
+
+조건 report를 처음 보면 문장이 길어서 멈추기 쉽다.
+초반에는 문장 전체를 해석하려 하지 말고, **눈에 띄는 phrase 하나를 다음 행동 하나에 연결**하면 된다.
+
+| report에서 먼저 잡을 phrase | beginner 해석 | 바로 할 다음 행동 | 연결 문서 |
+|---|---|---|---|
+| `@ConditionalOnClass did not find required class` | starter는 들어왔지만 필요한 라이브러리나 웹 스택이 classpath에 없다 | dependency scope, optional/provided 설정, test slice 때문에 빠진 클래스가 없는지 본다 | [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md) |
+| `did not find property '...'` | 기능 스위치나 필수 설정값이 아직 안 들어왔다 | `application.yml`, active profile, env var 이름이 실제 키로 바인딩됐는지 확인한다 | [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md), [Spring Relaxed Binding Env Var Cheatsheet: dotted, dashed, list, map key 바꾸기](./spring-relaxed-binding-env-var-cheatsheet.md) |
+| `found beans of type ...` 또는 `@ConditionalOnMissingBean did not match` | Boot가 고장 난 게 아니라 이미 같은 역할 bean이 있어서 기본값이 물러났다 | 내 `@Bean`, `@Import`, test config, 다른 starter가 먼저 같은 타입을 만들었는지 찾는다 | [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md), [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md) |
+
+아주 짧게 외우면 아래처럼 된다.
+
+- `did not find class` -> classpath 확인
+- `did not find property` -> profile/env/property 확인
+- `found beans of type` -> 기존 bean 선점 확인
+
+이 표는 beginner용 첫 라우터다.
+문장이 더 길어 보여도, 처음엔 **class / property / existing bean** 세 갈래로만 자르면 충분하다.
+
+## 먼저 갈라야 하는 두 증상: `existing bean` vs `ambiguous bean`
+
+초보자는 둘 다 "`bean 때문에 꼬였다`"로 읽기 쉽지만, 실제 질문이 다르다.
+
+| 먼저 보이는 신호 | 뜻 | 지금 막힌 단계 | 첫 대응 |
+|---|---|---|---|
+| condition report에 `@ConditionalOnMissingBean` miss, `existing bean`, `found bean 'foo'` | 이미 다른 bean이 있어서 **Boot 기본 bean이 아예 생성되지 않음** | 등록 단계 | 내 `@Bean`, 다른 starter, test config 중 누가 선점했는지 찾는다 |
+| startup 예외에 `NoUniqueBeanDefinitionException`, `expected single matching bean`, `found 2` | bean들은 생성됐지만 **주입할 대상을 하나로 못 고름** | 주입 단계 | `@Primary`, `@Qualifier`, `List<T>`/`Map<String, T>` 중 맞는 선택 규칙을 정한다 |
+
+한 줄로 줄이면 이렇다.
+
+- `existing bean`: **Boot 기본값이 물러난 상황**
+- `ambiguous bean`: **후보는 있는데 어느 것을 넣을지 못 정한 상황**
+
+즉 `existing bean`은 "`왜 starter 기본 bean이 안 생겼지?`"에 가깝고, `ambiguous bean`은 "`bean은 생겼는데 왜 주입에서 터지지?`"에 가깝다.
+
+자주 헷갈리는 포인트도 같이 본다.
+
+- `existing bean`은 auto-configuration report에서 먼저 보이는 경우가 많다.
+- `ambiguous bean`은 보통 예외 메시지 끝의 `found 2`, `found 3`로 드러난다.
+- `@Primary`는 `ambiguous bean` 쪽 해법이지, `existing bean` 때문에 빠진 Boot 기본 bean을 되살리는 스위치는 아니다.
+
+## beginner가 자주 만나는 실제 장면: customizer는 덧칠, 직접 bean 등록은 back-off 신호
+
+초보자는 아래 두 코드를 둘 다 "`Jackson 설정을 조금 바꾼다`"로 읽기 쉽다.
+하지만 Boot 입장에서는 의미가 다르다.
+
+| 내가 한 일 | Boot가 읽는 의미 | 실제로 보일 수 있는 증상 |
+|---|---|---|
+| `Jackson2ObjectMapperBuilderCustomizer` 추가 | Boot 기본 `ObjectMapper` 조립은 유지하고 옵션만 덧칠 | 기본 `ObjectMapper`는 계속 Boot 쪽에서 만들어지고, customizer가 그 위에 적용된다 |
+| `@Bean ObjectMapper` 직접 등록 | 이미 `ObjectMapper`가 있으니 Boot 기본 `ObjectMapper`는 `@ConditionalOnMissingBean`으로 back off | condition report에 `found beans of type 'ObjectMapper'`가 찍히고 Boot 기본 bean이 안 보인다 |
+
+핵심 mental model은 한 줄이다.
+
+```text
+customizer = 기존 Boot 조립에 옵션 추가
+직접 bean 등록 = 같은 역할 bean을 먼저 선점해서 Boot 기본값을 물러나게 할 수 있음
+```
+
+### 예시 1. customizer를 쓴 경우
+
+```java
+@Configuration
+public class JsonConfig {
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> builder.failOnUnknownProperties(false);
+    }
+}
+```
+
+이 경우 beginner는 이렇게 읽으면 된다.
+
+- `ObjectMapper`를 내가 직접 만든 것이 아니다
+- Boot 기본 조립은 그대로 있다
+- 그래서 "`starter 넣었는데 기본 `ObjectMapper`가 왜 안 보이지?`" 같은 질문과는 거리가 있다
+
+### 예시 2. `ObjectMapper`를 직접 등록한 경우
+
+```java
+@Configuration
+public class JsonConfig {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().findAndRegisterModules();
+    }
+}
+```
+
+이 경우에는 질문이 달라진다.
+
+- "Jackson 설정을 조금 바꿨다"가 아니라 **`ObjectMapper` 생성 책임을 내가 가져왔다**
+- Boot auto-configuration은 "`이미 `ObjectMapper`가 있네`"라고 읽고 물러날 수 있다
+- 그래서 condition report에 `@ConditionalOnMissingBean` miss나 `found beans of type 'ObjectMapper'`가 보이면 정상적인 back-off 해석이 먼저다
+
+처음엔 아래처럼 짧게 외우면 충분하다.
+
+| 보이는 증상 | beginner 해석 | 먼저 볼 문서 |
+|---|---|---|
+| customizer bean만 추가했는데도 기본 `ObjectMapper`가 그대로 있음 | 이상이 아니라 의도된 동작이다 | [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md) |
+| `ObjectMapper`를 직접 등록했더니 Boot 기본 bean 관련 match가 사라짐 | 직접 등록한 bean 때문에 auto-configuration이 back off했을 가능성이 크다 | [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md) |
+
+`WebClient.Builder`도 감각은 같다.
+
+- `WebClientCustomizer`: Boot가 만든 shared builder에 기본 헤더나 filter를 덧칠
+- `@Bean WebClient.Builder`: shared builder owner를 직접 가져가서 Boot 기본 흐름이 back off될 수 있음
+
+즉 starter를 넣은 뒤 "`내가 옵션만 추가한 건지, 같은 타입 bean을 먼저 등록한 건지`"를 먼저 갈라야 `@ConditionalOnMissingBean` back-off를 실제 증상과 연결할 수 있다.
+
+## 로그 한 토막을 표에 연결해 읽는 법
+
+초보자에게 가장 중요한 감각은 "`report 문장 한 줄`을 보면 `30초 분기표`의 어느 칸인지 바로 떠오르는 것"이다.
+
+먼저 아주 짧게 연결하면 이렇다.
+
+| 로그에서 먼저 보이는 문장 | 표에서 연결할 칸 | beginner 해석 |
+|---|---|---|
+| `did not match` + `did not find property 'spring.datasource.url'` | property off / 필수 설정 없음 | starter는 올라왔지만 DataSource 조건이 아직 완성되지 않았다 |
+| `@ConditionalOnMissingBean ... found beans of type 'ObjectMapper' objectMapper` | back-off / existing bean | Boot가 Jackson 기본값을 못 만든 게 아니라 이미 사용자 bean이 있어서 물러났다 |
+
+### 예시 1. `DataSourceAutoConfiguration`이 property 조건에서 멈춘 경우
+
+아래처럼 `--debug`에서 한 토막이 보였다고 하자.
+
+```text
+DataSourceAutoConfiguration:
+   Did not match:
+      - @ConditionalOnProperty (spring.datasource.url) did not find property 'spring.datasource.url' (OnPropertyCondition)
+```
+
+이 로그를 처음 읽을 때는 길게 해석하지 말고 세 줄만 붙이면 된다.
+
+| 로그 조각 | 바로 붙이는 해석 | 다음 행동 |
+|---|---|---|
+| `DataSourceAutoConfiguration` | 지금 추적하는 target auto-configuration이 맞다 | 다른 클래스 말고 이 블록을 계속 본다 |
+| `Did not match` | Boot가 고장 난 게 아니라 **조건이 false**다 | classpath보다 property 쪽을 먼저 본다 |
+| `did not find property 'spring.datasource.url'` | starter는 있어도 DB 연결 정보가 없어 DataSource를 안 만들었다 | `application.yml`, profile, env var에 `spring.datasource.url`이 실제로 들어왔는지 확인한다 |
+
+즉 이 예시는 "`bean이 왜 없지?`"보다 **"`property 조건에서 멈췄구나`**"로 읽으면 된다.
+
+### 예시 2. `JacksonAutoConfiguration`이 기존 `ObjectMapper`를 보고 물러난 경우
+
+이번에는 아래 같은 토막을 보자.
+
+```text
+JacksonAutoConfiguration.JacksonObjectMapperConfiguration#jacksonObjectMapper:
+   Did not match:
+      - @ConditionalOnMissingBean (types: com.fasterxml.jackson.databind.ObjectMapper; SearchStrategy: all)
+        found beans of type 'com.fasterxml.jackson.databind.ObjectMapper' objectMapper (OnBeanCondition)
+```
+
+이 로그는 `DataSourceAutoConfiguration` 예시와 질문이 다르다.
+
+| 로그 조각 | 바로 붙이는 해석 | 다음 행동 |
+|---|---|---|
+| `Did not match` | 겉보기에는 똑같이 negative match다 | 하지만 이유가 property/classpath가 아니라 bean 존재 조건인지 본다 |
+| `@ConditionalOnMissingBean` | Boot 기본값은 "없을 때만" 만든다 | 누가 먼저 `ObjectMapper`를 등록했는지 찾는다 |
+| `found beans of type ... objectMapper` | 이미 사용자 또는 다른 설정이 `ObjectMapper`를 올렸다 | 내 `@Bean`, test config, 다른 starter 중 선점 경로를 확인한다 |
+
+즉 이 예시는 "`Jackson`이 안 떠서 실패"가 아니라 **"기본 `ObjectMapper`는 의도적으로 back off 했다"**에 가깝다.
+
+자주 하는 오해도 같이 끊어 두면 좋다.
+
+- `DataSourceAutoConfiguration` 예시는 property 칸에 넣는다. `@Primary`와는 무관하다.
+- `JacksonAutoConfiguration` 예시는 existing bean/back-off 칸에 넣는다. 여기서도 `@Primary`는 빠진 기본 bean을 되살리지 못한다.
+- 둘 다 `Did not match`로 시작해도, **뒤에 따라오는 조건 문장**이 실제 분기 기준이다.
+
+## 미니 카드: `@WebMvcTest`와 `@DataJpaTest`에서 starter bean이 빠져 보이는 대표 장면
+
+초보자가 가장 많이 헷갈리는 지점은 "`starter`를 넣었는데 왜 테스트에서만 bean이 안 보이지?"다.
+이때는 production app 전체가 아니라 **test slice가 일부 auto-configuration과 bean 종류만 허용한다**는 점부터 떠올리면 된다.
+
+| 테스트 어노테이션 | 초보자가 기대하는 것 | 실제로 자주 빠지는 것 | 왜 그렇게 보이나 | 첫 대응 |
+|---|---|---|---|---|
+| `@WebMvcTest` | `spring-boot-starter-web`이나 security starter를 넣었으니 service/client/helper bean도 같이 보일 것 | `@Service`, `@Repository`, 외부 API client, 일반 `@Component`, 일부 custom starter bean | MVC slice는 controller와 web 관련 bean 중심으로만 컨텍스트를 자른다 | controller 계약만 볼 테스트인지 확인하고, 필요한 협력자는 `@MockBean` 또는 좁은 `@Import`로 넣는다 |
+| `@DataJpaTest` | `spring-boot-starter-data-jpa`를 넣었으니 service나 웹 쪽 starter bean도 같이 보일 것 | `@Service`, MVC/security bean, 일반 application service, web starter bean | JPA slice는 entity/repository/JPA infra만 남기고 나머지 레이어를 뺀다 | repository/JPA 검증이 목적이면 그대로 두고, service까지 봐야 하면 `@SpringBootTest` 또는 다른 테스트 경계로 올린다 |
+
+짧게 외우면 아래 한 줄이다.
+
+- `@WebMvcTest`는 "web 관련 bean만 남긴다"
+- `@DataJpaTest`는 "JPA 관련 bean만 남긴다"
+
+즉 slice 테스트에서 starter bean이 빠진 것처럼 보여도, 먼저 "`조건 실패`"보다 **"`이 bean이 원래 이 slice에 포함되는 종류인가`"**를 본다.
+
 ---
 
 ## 자주 묻는 질문
@@ -116,11 +312,28 @@ spring.main.web-application-type=none
 
 이 구분을 등록 단계와 주입 단계로 짧게 다시 잡고 싶다면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)를 바로 이어서 본다.
 
+### Q2-1. `ObjectMapper` 옵션만 바꾸려 했는데 왜 starter 기본 bean 로그가 사라지나?
+
+대개 `customizer`가 아니라 **같은 타입 bean을 직접 등록했기 때문**이다.
+
+- `Jackson2ObjectMapperBuilderCustomizer`는 Boot 기본 조립을 유지한다
+- 반면 `@Bean ObjectMapper`는 Boot가 보기엔 "`이미 `ObjectMapper` 있음`"이 된다
+- 그래서 `@ConditionalOnMissingBean`이 붙은 기본 `ObjectMapper` 경로는 back off될 수 있다
+
+처음에는 이렇게 구분하면 된다.
+
+| 내가 원한 것 | 보통 더 맞는 선택 |
+|---|---|
+| Boot 기본 JSON 조립은 유지하고 옵션만 조금 바꾸기 | `Jackson2ObjectMapperBuilderCustomizer` |
+| `ObjectMapper` 생성 규칙 자체를 내가 직접 책임지기 | `@Bean ObjectMapper` 직접 등록 |
+
+같은 패턴을 `WebClient.Builder`까지 한 번에 묶고 싶다면 [Spring Boot Customizer vs Top-Level Bean 교체 입문: `ObjectMapper`, `WebClient.Builder`는 언제 덧칠하고 언제 갈아끼울까](./spring-boot-customizer-vs-top-level-bean-replacement-primer.md)를 이어서 본다.
+
 ### Q3. `spring.main.allow-bean-definition-overriding=true`를 켜면 해결되나?
 
 대개 아니다.
 
-이 설정은 **같은 bean name 정의 충돌을 허용할지**에 가깝다.  
+이 설정은 **같은 bean name 정의 충돌을 허용할지**에 가깝다.
 반면 starter bean 누락의 흔한 원인은 아래 둘이다.
 
 - 조건 실패로 auto-configuration이 애초에 실행되지 않음
@@ -135,7 +348,7 @@ starter와 component scan은 다른 경로다.
 - starter auto-configuration은 metadata를 통해 import 된다
 - 내 앱의 `@Configuration`/`@Component`는 여전히 scan 또는 `@Import`가 필요하다
 
-따라서 shared module에 설정 클래스를 만들어 놓고 "starter를 넣었으니 소비자 앱이 알아서 scan하겠지"라고 기대하면 자주 빗나간다.  
+따라서 shared module에 설정 클래스를 만들어 놓고 "starter를 넣었으니 소비자 앱이 알아서 scan하겠지"라고 기대하면 자주 빗나간다.
 이 경우는 broad scan보다 `@Import` 또는 starter-style auto-configuration 계약이 더 맞을 수 있다.
 
 ### Q5. 다른 환경에서는 되는데 테스트나 CI에서만 bean이 사라진다
@@ -145,6 +358,14 @@ starter와 component scan은 다른 경로다.
 - test slice가 전체 auto-configuration을 안 올릴 수 있다
 - test property가 feature를 껐을 수 있다
 - dependency scope나 optional dependency 차이로 classpath가 달라질 수 있다
+
+특히 초반에는 "`starter`가 빠졌다"와 "`slice가 원래 그 bean 종류를 제외했다`"를 분리해야 한다.
+
+| 장면 | 먼저 붙일 해석 | 바로 다음 확인 |
+|---|---|---|
+| `@WebMvcTest`에서 service나 custom starter helper가 없음 | 대개 starter 고장보다 MVC slice 경계다 | [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)에서 slice 포함 대상부터 본다 |
+| `@DataJpaTest`에서 service/web/security bean이 없음 | 대개 JPA slice가 레이어를 잘랐다 | repository/JPA 확인이 목적이 맞는지 보고, 아니면 test 종류를 다시 고른다 |
+| CI에서만 `did not find class`가 뜸 | slice가 아니라 dependency scope/classpath diff일 수 있다 | [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)로 간다 |
 
 이 경우는 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)에서 scope / optional / slice를 먼저 분리하면 빠르다.
 

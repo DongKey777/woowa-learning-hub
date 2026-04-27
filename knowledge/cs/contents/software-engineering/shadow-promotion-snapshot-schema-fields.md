@@ -27,6 +27,10 @@
 > - fast track promotion evidence
 > - shadow intake projection
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Promotion Snapshot Schema Fields](./README.md#shadow-promotion-snapshot-schema-fields)
+> - 다음 단계: [Break-Glass Path Segmentation](./break-glass-path-segmentation.md)
+
 ## 핵심 개념
 
 [Shadow Candidate Promotion Thresholds](./shadow-candidate-promotion-thresholds.md)가 승격 규칙을 정의해도, 실제 catalog entry와 review packet에 그 판단 흔적이 안 남으면 forum은 다음 질문을 다시 감으로 풀게 된다.

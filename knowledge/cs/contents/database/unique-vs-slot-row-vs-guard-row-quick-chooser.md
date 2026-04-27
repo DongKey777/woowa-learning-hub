@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Guard Row Scope Quick Examples](./guard-row-scope-quick-examples.md)
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
 - [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md)
@@ -47,22 +48,22 @@ retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absen
 
 ## 먼저 이렇게 고른다
 
-1. **같음을 한 key로 바로 쓸 수 있나?**  
-   예: `idempotency_key`, `email`, `user_id + coupon_id`  
+1. **같음을 한 key로 바로 쓸 수 있나?**
+   예: `idempotency_key`, `email`, `user_id + coupon_id`
    이 질문에 yes면 `UNIQUE`가 1순위다.
 
-2. **범위를 작은 bucket 집합으로 안정적으로 펼칠 수 있나?**  
-   예: 30분 회의실, 1박 숙박, 좌석-일자 예약  
+2. **범위를 작은 bucket 집합으로 안정적으로 펼칠 수 있나?**
+   예: 30분 회의실, 1박 숙박, 좌석-일자 예약
    이 질문에 yes면 slot row가 보통 guard row보다 단순하다.
 
-3. **overlap, capacity, reschedule, expiry 같은 전이 경로를 같이 묶어야 하나?**  
+3. **overlap, capacity, reschedule, expiry 같은 전이 경로를 같이 묶어야 하나?**
    이 질문에 yes면 guard row를 먼저 본다.
 
 여전히 설계가 `SELECT` 후 `INSERT`에 기대고 있다면, 아직 충돌 surface를 제대로 정하지 않은 상태일 가능성이 크다.
 
 ## `UNIQUE` constraint가 맞는 경우
 
-`UNIQUE`는 가장 단순한 선택지다.  
+`UNIQUE`는 가장 단순한 선택지다.
 "같은 의미의 row는 하나만 존재해야 한다"를 exact key로 바로 표현할 수 있을 때 쓴다.
 
 예:
@@ -87,7 +88,7 @@ retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absen
 
 ## slot row가 맞는 경우
 
-slot row는 fuzzy한 부재 체크를 "여러 개의 exact key 충돌"로 바꾸는 방법이다.  
+slot row는 fuzzy한 부재 체크를 "여러 개의 exact key 충돌"로 바꾸는 방법이다.
 한 문장으로 줄이면 **한 번의 애매한 insert-if-absent를 여러 번의 정확한 insert-if-absent로 펼치는 방식**이다.
 
 예:
@@ -145,35 +146,37 @@ guard row는 "진짜 점유 row" 자체라기보다 **충돌 가능한 writer를
 
 ## 실무에서 쓰는 모습
 
-시나리오 1. **중복 결제 요청 방지**  
+시나리오 1. **중복 결제 요청 방지**
 같은 `idempotency_key`는 딱 한 번만 성공해야 한다. 이 경우는 `UNIQUE`가 가장 직선적이다. 중복 요청은 기존 결과를 재사용하면 된다.
 
-시나리오 2. **30분 단위 회의실 예약**  
+시나리오 2. **30분 단위 회의실 예약**
 `10:00~11:00` 예약은 `10:00`, `10:30` 두 slot claim으로 펼친다. 경쟁은 각 slot의 `UNIQUE` 충돌에서 난다. 이 경우 slot row가 자연스럽다.
 
-시나리오 3. **숙박 재고 + 연장/취소/만료 처리**  
+시나리오 3. **숙박 재고 + 연장/취소/만료 처리**
 판매 시점에는 `room_type_id + stay_day` 재고를 보고, 나중에는 연장·취소·expiry가 같은 날짜 범위를 흔든다. 이 경우는 guard row로 먼저 줄 세운 뒤 실제 active row를 갱신하는 편이 설명 가능하다.
 
 ## 더 깊이 가려면
 
+- interval overlap에서 PostgreSQL exclusion constraint와 slot row만 따로 고르고 싶다면 → [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
 - `UNIQUE`와 `upsert` 충돌 비용을 더 보고 싶다면 → [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - booking overlap에서 slot row와 guard row를 더 넓게 비교하려면 → [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
+- guard row key를 `resource`, `resource + day`, pooled inventory로 빠르게 구분하려면 → [Guard Row Scope Quick Examples](./guard-row-scope-quick-examples.md)
 - guard row 생성 순서와 엔진 차이를 보려면 → [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md)
 - high-contention 환경에서 slot row와 guard row의 queue shape 차이를 보려면 → [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md)
 - API replay-safe 설계까지 넓히려면 → [Idempotency Key Store / Dedup Window / Replay-Safe Retry](../system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
 ## 면접/시니어 질문 미리보기
 
-> Q: 왜 `SELECT` 후 `INSERT`가 위험한가요?  
-> 의도: 부재 기반 판단이 왜 race에 취약한지 설명할 수 있는지 확인  
+> Q: 왜 `SELECT` 후 `INSERT`가 위험한가요?
+> 의도: 부재 기반 판단이 왜 race에 취약한지 설명할 수 있는지 확인
 > 핵심: 두 트랜잭션이 같은 "없음"을 동시에 볼 수 있기 때문이다. 그래서 read result가 아니라 write-time 충돌 surface가 필요하다.
 
-> Q: `UNIQUE`와 guard row 중 무엇이 더 강한가요?  
-> 의도: 도구를 서열로 보지 않고 문제 모양에 맞춰 설명하는지 확인  
+> Q: `UNIQUE`와 guard row 중 무엇이 더 강한가요?
+> 의도: 도구를 서열로 보지 않고 문제 모양에 맞춰 설명하는지 확인
 > 핵심: 더 강한 쪽이 따로 있는 게 아니다. exact key면 `UNIQUE`가 가장 단순하고, exact key로 못 내리는 규칙이면 guard row가 더 맞다.
 
-> Q: slot row는 언제 guard row보다 좋은가요?  
-> 의도: discrete bucket 모델의 장단점을 아는지 확인  
+> Q: slot row는 언제 guard row보다 좋은가요?
+> 의도: discrete bucket 모델의 장단점을 아는지 확인
 > 핵심: 시간/재고를 작은 exact key 집합으로 안정적으로 펼칠 수 있을 때다. 이 경우 duplicate key 기반 설명이 lock queue보다 더 단순해진다.
 
 ## 한 줄 정리

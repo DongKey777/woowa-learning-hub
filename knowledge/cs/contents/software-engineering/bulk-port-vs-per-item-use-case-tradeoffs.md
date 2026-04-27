@@ -28,6 +28,7 @@
 > - [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
 > - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
 > - [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)
+> - [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
 > - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
@@ -55,6 +56,7 @@
 > - saveAll port smell
 > - findByIds port hexagonal
 > - bulk api boundary
+> - bulk contract test next step
 
 ## 왜 이 주제가 헷갈리는가
 
@@ -297,3 +299,5 @@ public interface PartnerSettlementBulkPort {
 1. **행위가 한 건이면 유스케이스도 한 건으로 남긴다.**
 2. **조회 fan-out만 문제면 bulk helper port부터 본다.**
 3. **run/chunk/file이 비즈니스 입력이 되면 bulk port를 애플리케이션 계약으로 올린다.**
+
+bulk port를 이미 올린 뒤 초심자 테스트를 어디서 시작할지 찾는다면 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)로 이어가면 된다.

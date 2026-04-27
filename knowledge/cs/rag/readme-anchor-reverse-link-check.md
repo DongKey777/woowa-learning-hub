@@ -4,6 +4,7 @@
 >
 > 관련 문서:
 > - [RAG Design](./README.md)
+> - [RAG Design: QA Check Order Matrix](./README.md#qa-check-order-matrix)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
 > - [Navigation Taxonomy](./navigation-taxonomy.md)
 > - [Shared Markdown Link Scanner](./shared-markdown-link-scanner.md)
@@ -74,6 +75,13 @@ knowledge/cs/contents/security/example.md -> knowledge/cs/contents/security/READ
 - README restructure 뒤에도 sibling markdown 파일 자체는 그대로 있으므로, stale slug가 review에서 늦게 드러난다.
 - quick-start/bridge overlap lint는 README 내부 ownership을 보지만, 이번 check는 개별 문서가 category navigator로 **되돌아가는 path**를 본다.
 - shared parser를 asset/fence check와 같이 쓰므로, 여기서는 "같은 markdown target을 읽되 README anchor drift만 따로 본다"는 경계가 더 분명해진다.
+
+## 다음 단계와 돌아가기
+
+- check 시작점이 헷갈리면 [RAG Design: QA Check Order Matrix](./README.md#qa-check-order-matrix)에서 category return-path 우선인지 asset rename 후속인지 먼저 고른다.
+- beginner primer가 category return path와 다음 안전한 follow-up을 둘 다 보여 주는지까지 묶어 보려면 [Primer Link Contract Lint](./primer-link-contract-lint.md)로 이어 간다.
+- 같은 wave에서 local asset rename도 함께 있었다면 새 path hygiene는 [Asset Filename Lint](./asset-filename-lint.md), old basename 잔존 link는 [Stale Asset Reverse-Link Sweep](./stale-asset-reverse-link-sweep.md) 순서로 이어 간다.
+- QA note index로 돌아가려면 [RAG Design](./README.md)를 다시 본다.
 
 ## 한 줄 정리
 

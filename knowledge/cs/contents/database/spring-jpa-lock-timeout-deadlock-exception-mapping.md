@@ -1,11 +1,26 @@
 # MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑
 
-> 한 줄 요약: lock timeout과 deadlock은 DB에서는 서로 다른 신호이고, Spring에서는 `CannotAcquireLockException` 하나로 뭉개져 보일 수도 있어서 **top-level 예외 이름만 보지 말고 `SQLSTATE/errno + 번역 경로(JDBC vs Hibernate/JPA)`까지 같이 봐야** bounded retry를 안전하게 설계할 수 있다.
+> 한 줄 요약: 이 문서는 `busy` / `retryable` 1차 분류를 끝낸 뒤 읽는 확장판이다. lock timeout과 deadlock은 DB에서는 서로 다른 신호이고, Spring에서는 `CannotAcquireLockException` 하나로 뭉개져 보일 수도 있어서 **top-level 예외 이름만 보지 말고 `SQLSTATE/errno + 번역 경로(JDBC vs Hibernate/JPA)`까지 같이 봐야** bounded retry를 안전하게 설계할 수 있다.
+
+초급자용 먼저 한 줄: `already exists`는 이미 승자가 정해진 경우이고, `busy`는 아직 승자가 안 바뀐 채 이번 시도가 기다리다 끝난 경우다.
 
 **난이도: 🔴 Advanced**
 
+처음 보는 초급자라면 이 문서부터 읽지 말고 아래 두 장으로 1차 분류를 끝낸 뒤 돌아오는 편이 덜 헷갈린다.
+
+1. [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md)
+2. [Spring `CannotAcquireLockException`에서 root SQL 코드 먼저 읽는 초간단 카드](./spring-cannotacquirelockexception-root-sql-code-card.md)
+
+이 문서는 그다음 단계에서 "`왜 같은 deadlock이 JPA에서는 다른 예외 이름으로 보이지?`"를 설명하는 확장 문서다.
+
 관련 문서:
 
+- [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md)
+- [Spring `CannotAcquireLockException`에서 root SQL 코드 먼저 읽는 초간단 카드](./spring-cannotacquirelockexception-root-sql-code-card.md)
+- [Timeout 에러코드 매핑 미니카드](./timeout-errorcode-mapping-mini-card.md)
+- [`CannotAcquireLockException` / `40001` 혼동 FAQ](./cannotacquirelockexception-40001-insert-if-absent-faq.md)
+- [`NOWAIT`와 짧은 `lock timeout`은 왜 자동 retry보다 `busy`에 더 가깝게 볼까?](./nowait-vs-short-lock-timeout-busy-guide.md)
+- [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
@@ -13,7 +28,27 @@
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 
-retrieval-anchor-keywords: mysql 1205 spring, mysql 1213 spring, postgres 55P03 spring, postgres 40P01 spring, lock timeout exception mapping, deadlock exception mapping, cannotacquirelockexception, deadlockloserdataaccessexception, pessimisticlockexception, locktimeoutexception, hibernate lockacquisitionexception, spring jpa deadlock retry, spring lock timeout retry classification, sqlstate 55P03, sqlstate 40P01, sqlstate 40001 mysql deadlock, sqlstate 40001 postgres serialization, bounded retry lock timeout, bounded retry deadlock
+retrieval-anchor-keywords: spring jpa exception mapping, mysql 1205 1213 spring, postgres 55p03 40p01 40001 spring, cannotacquirelockexception classifier, deadlockloserdataaccessexception, pessimisticlockexception, hibernate lockacquisitionexception, lock timeout deadlock mapping, sqlstate errno retry classification, three bucket exception mapping, busy vs retryable spring, beginner bridge after mini card
+
+## 초급자용 30초 분류표 (DB 신호 -> 서비스 결과 3버킷)
+
+먼저 "예외 이름" 대신 **DB 신호(SQLSTATE/errno)** 를 보고 아래 3버킷으로만 나누면 시작이 쉽다.
+여기서 멈춰도 1차 분류는 충분하고, 아래의 JDBC/Hibernate/JPA 번역 차이는 필요할 때만 이어서 읽으면 된다.
+
+| DB 신호(대표) | 서비스 결과 버킷 | 기본 응답/처리 | 한 줄 기억법 |
+|---|---|---|---|
+| MySQL `1213`, PostgreSQL `40P01` | `retryable` | 동일 요청 재시도(짧은 backoff, 보통 2~3회) | 충돌로 희생자(transaction)가 뽑힌 경우 |
+| MySQL `1205`, PostgreSQL `55P03` | `busy` | 즉시 무한 재시도 금지, 혼잡/락 대기 원인 점검 | 지금은 줄이 길어서 못 들어감 |
+| PostgreSQL `40001` | `retryable` | deadlock과 분리 집계하고 재시도(2~3회) | deadlock이 아니라 serialization 충돌 |
+
+주의: `already exists`는 이 문서의 lock/deadlock 범위 바깥(주로 unique 충돌)이다.
+중복 생성 경로까지 한 번에 묶고 싶으면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)를 먼저 본다.
+
+### 가장 흔한 혼동 3가지
+
+- `CannotAcquireLockException` 하나만 보고 retry 여부를 결정하면 오분류가 난다
+- PostgreSQL `40001`을 deadlock으로 분류하면 틀린다 (`40P01`이 deadlock)
+- lock timeout(`1205`/`55P03`)은 retry 신호라기보다 혼잡 신호일 때가 많다
 
 ## 핵심 개념
 
@@ -86,7 +121,7 @@ Hibernate dialect는 보통 다음처럼 나눈다.
 
 즉 **JPA에서는 `LockTimeoutException` vs `PessimisticLockException`이 중요한 구분**이고, **Spring에서는 다시 `CannotAcquireLockException` vs `PessimisticLockingFailureException`으로 보일 수 있다**.
 
-다만 이 JPA 구분을 그대로 "같은 transaction을 계속 써도 된다"로 받아들이면 위험하다.  
+다만 이 JPA 구분을 그대로 "같은 transaction을 계속 써도 된다"로 받아들이면 위험하다.
 특히 PostgreSQL `55P03` 계열은 JPA top-level이 `LockTimeoutException`으로 보여도 실제 DB transaction block은 이미 에러 상태일 수 있어서, Spring service code에서는 **현재 attempt를 버리고 바깥 retry envelope로 나가는 편**이 안전하다.
 
 ### 2. deadlock 계열
@@ -141,6 +176,8 @@ lock timeout은 "지금 줄이 너무 길다"는 신호일 때가 많다.
 - path가 애초에 `NOWAIT` 또는 짧은 local lock timeout으로 "대기 대신 빨리 실패"를 의도했다
 - command가 idempotent하거나 중복 부작용이 없다
 - retry budget이 작다: 보통 1~2회, 짧은 jitter
+
+이 의도를 "짧은 lock budget" 관점에서 더 짧게 설명한 beginner 문서는 [`NOWAIT`와 짧은 `lock timeout`은 왜 자동 retry보다 `busy`에 더 가깝게 볼까?](./nowait-vs-short-lock-timeout-busy-guide.md)다.
 
 반대로 일반적인 OLTP request에서 우연히 `1205`/`55P03`가 보인다면 먼저 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 가는 편이 맞다.
 

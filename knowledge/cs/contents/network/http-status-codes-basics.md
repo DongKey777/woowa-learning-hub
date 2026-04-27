@@ -7,12 +7,13 @@
 관련 문서:
 
 - [HTTP 메서드, REST, 멱등성 기초](./http-methods-rest-idempotency-basics.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 - [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
 - [HTTP와 HTTPS 기초](./http-https-basics.md)
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle-basics.md)
 
-retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 404 뭔가요, 500 에러 왜 나요, http 응답 코드 입문, 2xx 3xx 4xx 5xx 차이, 상태 코드 처음 배우는데, 200 ok, 201 created, beginner status code, 421 vs 403 vs 404, 421 misdirected request
+retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 404 뭔가요, 500 에러 왜 나요, http 응답 코드 입문, 2xx 3xx 4xx 5xx 차이, 상태 코드 처음 배우는데, 200 ok, 201 created, beginner status code, 421 vs 403 vs 404, 421 misdirected request, 421 wrong connection, 421 beginner, misdirected request primer
 
 ## 핵심 개념
 
@@ -26,6 +27,32 @@ retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 40
 | 3xx | 리다이렉션 | 301 Moved Permanently, 302 Found, 304 Not Modified |
 | 4xx | 클라이언트 오류 | 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found |
 | 5xx | 서버 오류 | 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable |
+
+## 먼저 바로잡을 한 가지: `421`은 `403/404`와 다르다
+
+처음 상태 코드를 배우면 `421`도 4xx니까 "`403`이나 `404`의 변형이겠지"라고 보기 쉽다. 하지만 초급 감각으로는 아래처럼 나누면 덜 헷갈린다.
+
+- `403`: 맞는 서버에 갔지만 권한 때문에 막힘
+- `404`: 맞는 서버에 갔지만 찾는 자원이 없음
+- `421`: 요청이 애초에 잘못된 connection 또는 authority 문맥에 실림
+
+즉 `421`은 "이 URL이 틀렸나?"보다 "이 요청이 잘못된 문으로 들어왔나?"를 먼저 의심하게 만드는 코드다.
+
+| 코드 | 초보자용 한 줄 뜻 | 첫 확인 포인트 |
+|---|---|---|
+| `403 Forbidden` | 이 서버는 맞지만 네 권한으로는 안 됨 | 로그인, 권한, 역할 |
+| `404 Not Found` | 이 서버는 맞지만 그 경로/자원이 없음 | URL path, resource id |
+| `421 Misdirected Request` | 이 요청은 이 연결로 처리하면 안 됨 | `Host`/`:authority`, connection 재사용, `421 -> 200/403` 재시도 흔적 |
+
+작은 예시:
+
+- `GET /admin/users`가 `403`이면 보통 "관리자 권한이 없구나"에 가깝다.
+- 같은 URL이 먼저 `421`, 바로 다음 줄에 `200` 또는 `403`이면 보통 "처음엔 잘못된 connection에 실렸고, 다시 보낸 뒤에 실제 결과가 나왔구나"에 가깝다.
+
+더 자세한 trace 읽기는 아래 문서로 바로 이어진다.
+
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 
 ## 상세 분해
 
@@ -51,6 +78,7 @@ retrieval-anchor-keywords: http status codes basics, 상태 코드 뭐예요, 40
 ## 흔한 오해와 함정
 
 - 401과 403을 혼동한다. 401은 "누구냐"를 모르는 상태, 403은 "누군지 알지만 허용 안 함"이다.
+- 421도 그냥 "URL 틀림"이라고 오해한다. `421`은 같은 4xx라도 경로보다 connection/authority 문맥을 먼저 다시 봐야 한다.
 - 200만 성공이라고 생각하지만, 201·204도 성공이다. REST API에서는 생성·삭제 후 응답 코드를 올바르게 설정해야 클라이언트가 결과를 해석할 수 있다.
 - 5xx가 나오면 클라이언트 코드를 고쳐야 한다고 오해한다. 5xx는 서버 쪽 문제다. 서버 로그를 봐야 원인을 찾을 수 있다.
 
@@ -60,6 +88,8 @@ Spring Boot REST 컨트롤러에서 `@ResponseStatus(HttpStatus.CREATED)`를 붙
 
 ## 더 깊이 가려면
 
+- [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md) — `421`이 왜 "wrong connection" 신호인지 beginner follow-up
+- [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md) — DevTools와 curl에서 `421 -> 403/404/200`를 읽는 첫 실전 문서
 - [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md) — 메서드별 예상 상태 코드 패턴
 - [network 카테고리 인덱스](./README.md) — 다음 단계 주제 탐색
 

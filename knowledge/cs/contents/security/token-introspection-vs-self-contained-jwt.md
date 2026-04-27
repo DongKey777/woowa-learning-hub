@@ -4,15 +4,28 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [JWT 깊이 파기](./jwt-deep-dive.md)
-> - [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [Service-to-Service Auth: mTLS, JWT, SPIFFE](./service-to-service-auth-mtls-jwt-spiffe.md)
-> - [API Gateway auth / rate limit chain](../network/api-gateway-auth-rate-limit-chain.md)
-> - [인증과 인가의 차이](./authentication-vs-authorization.md)
+관련 문서:
 
-retrieval-anchor-keywords: token introspection, self-contained JWT, opaque token, JWKS, revocation, jwt version claim, authz version, permission version, audience, auth server, gateway, latency, offline validation, circuit breaker, token cache
+- [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+- [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+- [JWT 깊이 파기](./jwt-deep-dive.md)
+- [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)
+- [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)
+- [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
+- [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+- [API Gateway auth / rate limit chain](../network/api-gateway-auth-rate-limit-chain.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
+- [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
+
+retrieval-anchor-keywords: token introspection, self-contained jwt, opaque token, jwks, revocation, authz version, latency, offline validation, token cache, introspection beginner handoff, jwt freshness primer return, security readme return path, safe next step before token introspection
+
+---
+
+## 처음 읽는다면
+
+- `JWT` 구조 자체가 아직 흐리면 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md) -> [JWT 깊이 파기](./jwt-deep-dive.md) 순서로 먼저 올라온 뒤, 마지막에 이 문서에서 `로컬 검증 vs 중앙 확인` 비교만 붙이는 편이 안전하다.
+- 지금 증상이 `권한을 방금 바꿨는데 아직 옛 권한으로 동작한다`, `re-login을 요구해야 하나`처럼 freshness 판단에 가깝다면 [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)나 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)에서 먼저 symptom branch를 고른다.
+- 이 비교 문서가 아직 너무 이르게 느껴지면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가 entrypoint를 다시 잡고, authz/session propagation 문서까지 함께 다시 고르려면 [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)로 복귀하면 된다.
 
 ---
 

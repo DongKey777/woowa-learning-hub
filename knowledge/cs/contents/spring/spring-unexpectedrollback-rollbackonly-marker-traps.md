@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Mini Debugging Card for `UnexpectedRollbackException`](./spring-unexpectedrollbackexception-mini-debugging-card.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies](./spring-transaction-propagation-nested-requires-new-case-studies.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
@@ -16,6 +17,8 @@ retrieval-anchor-keywords: UnexpectedRollbackException, rollback-only, transacti
 ## 핵심 개념
 
 `UnexpectedRollbackException`은 이름 때문에 "예상 못 한 롤백"처럼 느껴진다.
+
+초급자가 먼저 짧은 symptom-to-cause 카드가 필요하면 [Mini Debugging Card for `UnexpectedRollbackException`](./spring-unexpectedrollbackexception-mini-debugging-card.md)부터 보고 이 문서로 내려오면 된다.
 
 하지만 Spring 관점에서 보면 대개 전혀 갑작스럽지 않다.
 

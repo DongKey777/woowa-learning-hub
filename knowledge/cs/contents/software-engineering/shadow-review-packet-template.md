@@ -35,6 +35,10 @@
 > - forum decision packet
 > - shadow review template
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Review Packet Template](./README.md#shadow-review-packet-template)
+> - 다음 단계: [Shadow Packet Automation Mapping](./shadow-packet-automation-mapping.md)
+
 ## 핵심 개념
 
 shadow catalog entry schema가 잘 정의돼 있어도 review forum이 매번 다른 필드를 보고 판단하면 결과는 들쭉날쭉해진다.

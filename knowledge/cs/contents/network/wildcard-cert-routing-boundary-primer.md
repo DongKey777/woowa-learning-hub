@@ -8,6 +8,7 @@
 > - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 > - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 > - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
+> - [421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough](./421-trace-mini-lab-wildcard-cert-coalescing.md)
 > - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 > - [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 > - [SNI, Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
@@ -269,6 +270,7 @@ retrieval-anchor-keywords: wildcard certificate, wildcard cert, wildcard cert co
 
 - wildcard cert와 connection coalescing 전체 감각을 먼저 넓히려면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 - H2에서 allow-list를 더 명시적으로 좁히는 방법은 [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
+- wildcard cert가 맞는데도 실제 trace에서 왜 `421`이 나는지 3면 비교로 짧게 보려면 [421 Trace Mini-Lab: Wildcard Cert Coalescing Rejection Walkthrough](./421-trace-mini-lab-wildcard-cert-coalescing.md)
 - H3에서 `Alt-Svc` endpoint authority와 `421` recovery까지 이어 보려면 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 - discovery 단계와 coalescing 단계를 분리해서 보고 싶다면 [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
 - TLS terminator와 host routing이 실제로 어떻게 어긋나는지는 [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md), [SNI, Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)

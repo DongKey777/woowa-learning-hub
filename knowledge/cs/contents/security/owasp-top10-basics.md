@@ -12,7 +12,7 @@
 - [네트워크 HTTP 메서드·REST·멱등성](../network/http-methods-rest-idempotency.md)
 - [Security 카테고리 README](./README.md)
 
-retrieval-anchor-keywords: owasp top 10 basics, owasp가 뭔가요, 웹 취약점 목록, 보안 취약점 입문, injection attack beginner, broken access control, 인젝션 공격이란, 접근 제어 실패, security misconfiguration, 웹 보안 처음 배우기, owasp 개요, top 10 vulnerability
+retrieval-anchor-keywords: owasp top 10 basics, owasp가 뭔가요, 웹 취약점 목록, 보안 취약점 입문, injection attack beginner, broken access control, 인젝션 공격이란, 접근 제어 실패, security misconfiguration, 웹 보안 처음 배우기, owasp 개요, top 10 vulnerability, 취약점부터 어디서 봐야 하나, owasp category, 웹 보안 공부를 시작할 때
 
 ## 핵심 개념
 

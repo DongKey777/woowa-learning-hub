@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+> - [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
 > - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
 > - [QUIC Version Negotiation, Fallback Behavior](./quic-version-negotiation-fallback.md)
 > - [ALPN Negotiation Failure, Routing Mismatch](./alpn-negotiation-failure-routing-mismatch.md)
@@ -36,6 +37,8 @@ HTTP/3 도입 뒤 실제 사용자 경로는 종종 다음처럼 움직인다.
 - H2 또는 H1로 조용히 downgrade
 
 문제는 이 downgrade가 대개 사용자에게는 "조금 느린 것"으로만 보인다는 점이다.
+
+초급 triage에서 discovery evidence와 UDP block attribution 사이를 먼저 짧게 연결해야 하면 [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)를 먼저 본 뒤 이 문서로 돌아오면 된다.
 
 ### Retrieval Anchors
 

@@ -9,9 +9,10 @@
 > - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 > - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+> - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 > - [객체지향 핵심 원리](./object-oriented-core-principles.md)
 
-> retrieval-anchor-keywords: java overloading vs overriding, java overload override difference, java method overloading basics, java method overriding basics, java compile time vs runtime method selection, java parent reference child object method call, java polymorphism beginner example, java inheritance practice example, java same method name different parameter, java same signature override, java @Override basics, java dynamic dispatch beginner, java overload argument list, java override runtime dispatch
+> retrieval-anchor-keywords: java overloading vs overriding, java overload override difference, java method overloading basics, java method overriding basics, java compile time vs runtime method selection, java parent reference child object method call, java polymorphism beginner example, java inheritance practice example, java same method name different parameter, java same signature override, java @Override basics, java dynamic dispatch beginner, java overload argument list, java override runtime dispatch, 자바 오버로딩 오버라이딩 차이, 처음 배우는데 오버로딩 오버라이딩, 메서드 이름 같은데 왜 다르게 동작하나요, 자바 @Override 왜 쓰나요, 부모 타입 자식 객체 메서드 호출, 컴파일 타임 런타임 메서드 선택 차이, 오버로딩 언제 쓰는지 기초, 오버라이딩 언제 쓰는지 기초
 
 <details>
 <summary>Table of Contents</summary>
@@ -108,7 +109,7 @@ public class Dog extends Animal {
 - `Dog.speak()`와 `Dog.speak(String)`는 부모의 같은 시그니처 메서드를 다시 정의하므로 overriding이다.
 - `Dog.speak(int)`는 부모에 같은 시그니처가 없으므로 overriding이 아니라 새로운 overload다.
 
-즉 `Dog` 안에는 overriding과 overloading이 동시에 들어 있다.  
+즉 `Dog` 안에는 overriding과 overloading이 동시에 들어 있다.
 그래서 초보자는 "`Dog` 클래스 안에 있으니 다 overriding"처럼 읽지 말고, **각 메서드가 부모와 시그니처가 같은지**부터 봐야 한다.
 
 ## 메서드 선택을 2단계로 읽기
@@ -187,7 +188,7 @@ dog.speak(2);
 - `animal.speak(2)` 컴파일 에러
 - `dog.speak(2)` 컴파일됨
 
-핵심은 "`실제 객체가 Dog니까 `animal.speak(2)`도 되겠지"라고 읽으면 안 된다는 점이다.  
+핵심은 "`실제 객체가 Dog니까 `animal.speak(2)`도 되겠지"라고 읽으면 안 된다는 점이다.
 overloading 후보를 찾을 때는 먼저 **변수 타입 `Animal`** 을 본다.
 
 ### 연습 3. `@Override`가 왜 필요한가
@@ -213,12 +214,12 @@ public class Dog extends Animal {
 
 ### 이름이 같다고 모두 overriding은 아니다
 
-같은 이름이어도 parameter 목록이 다르면 overloading이다.  
+같은 이름이어도 parameter 목록이 다르면 overloading이다.
 상속 관계 안에 있다고 해서 자동으로 overriding이 되지 않는다.
 
 ### return type만 바꿔서는 overloading이 되지 않는다
 
-Java는 메서드 호출을 구분할 때 parameter 목록을 본다.  
+Java는 메서드 호출을 구분할 때 parameter 목록을 본다.
 return type만 다르게 두는 것은 허용되지 않는다.
 
 ### 변수 타입과 실제 객체 타입의 역할을 섞으면 안 된다
@@ -237,6 +238,7 @@ return type만 다르게 두는 것은 허용되지 않는다.
 - parameter, return type, method overloading을 더 기초부터 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - `extends`, `super(...)`, dynamic dispatch를 상속 관점에서 더 길게 읽고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
 - 클래스, 객체, 추상화, 다형성까지 OOP 지도를 넓히고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- overloading/overriding 뒤에 "상속 vs 조합, 추상 클래스 vs 인터페이스를 언제 쓰는지"까지 이어 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 - 상속과 다형성을 더 넓은 설계 원리로 연결하고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
 
 ## 한 줄 정리

@@ -4,20 +4,22 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [전략 패턴](./strategy-pattern.md)
-> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
-> - [Specification Pattern](./specification-pattern.md)
-> - [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
-> - [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
-> - [Domain Service vs Pattern Abuse](./domain-service-vs-pattern-abuse.md)
-> - [안티 패턴](./anti-pattern.md)
+관련 문서:
+- [Layered Validation Pattern](./layered-validation-pattern.md)
+- [전략 패턴](./strategy-pattern.md)
+- [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+- [Specification Pattern](./specification-pattern.md)
+- [Specification vs Query Service Boundary](./specification-vs-query-service-boundary.md)
+- [상태 패턴: 워크플로와 결제 상태를 코드로 모델링하기](./state-pattern-workflow-payment.md)
+- [Domain Service vs Pattern Abuse](./domain-service-vs-pattern-abuse.md)
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
+- [안티 패턴](./anti-pattern.md)
 
 ---
 
 ## 핵심 개념
 
-Policy Object는 도메인 규칙을 담은 객체다.  
+Policy Object는 도메인 규칙을 담은 객체다.
 전략과 비슷하지만, 더 자주 **판단/결정/허용 여부**를 표현한다.
 
 backend에서 정책 객체가 잘 맞는 곳은 다음과 같다.
@@ -27,20 +29,7 @@ backend에서 정책 객체가 잘 맞는 곳은 다음과 같다.
 - 회원 혜택 적용 기준
 - 주문 취소 수수료 계산
 
-### Retrieval Anchors
-
-- `policy object pattern`
-- `business rule object`
-- `decision object`
-- `refund policy`
-- `pricing policy`
-- `policy object vs strategy`
-- `policy object vs state`
-- `policy object vs specification`
-- `boolean specification`
-- `rich decision result`
-- `decision result object`
-- `rule evaluation object`
+retrieval-anchor-keywords: policy object pattern, 검증 규칙 교체, validation rule replacement, business rule object, decision object, refund policy, pricing policy, policy object vs strategy, policy object vs state, policy object vs specification, boolean specification, rich decision result, 처음 배우는데 policy object, policy object 뭐예요
 
 ---
 
@@ -50,6 +39,12 @@ backend에서 정책 객체가 잘 맞는 곳은 다음과 같다.
 
 전략은 알고리즘 교체에, 정책은 규칙 판단에 더 가깝다.
 
+검증 문서에서 넘어왔다면 짧게 이렇게 기억하면 된다.
+
+- "`검증 규칙 교체`인데 허용/거절 이유까지 바로 내려야 한다"면 Policy Object 쪽
+- 규칙을 통과/실패로만 조합하면 되는 경우는 [Specification Pattern](./specification-pattern.md) 쪽
+- 입력 검증, 도메인 검증, 정책 검증의 실패 의미를 먼저 자르고 싶다면 [Layered Validation Pattern](./layered-validation-pattern.md)을 먼저 본다
+
 | 구분 | 전략 패턴 | Policy Object |
 |---|---|---|
 | 초점 | 행동 방식 | 규칙과 판정 |
@@ -58,7 +53,7 @@ backend에서 정책 객체가 잘 맞는 곳은 다음과 같다.
 
 ### 2. 정책은 도메인 언어를 드러낸다
 
-`if (days < 7 && paid && !shipped)` 같은 코드는 조건식일 뿐이다.  
+`if (days < 7 && paid && !shipped)` 같은 코드는 조건식일 뿐이다.
 `RefundPolicy.canRefund(order)`는 도메인 언어다.
 
 ### 3. 정책 객체는 테스트 단위가 좋다
@@ -81,7 +76,7 @@ backend에서 정책 객체가 잘 맞는 곳은 다음과 같다.
 | 호출자 부담 | 통과/실패 이후 해석을 다시 조립해야 한다 | 결과를 그대로 소비하면 된다 |
 | 대표 예 | 환불 대상자인가 | 환불 가능 여부와 수수료는 얼마인가 |
 
-`RefundEligibleSpecification`이 `true`를 돌려줘도 수수료, 거절 사유, 안내 문구는 아직 없다.  
+`RefundEligibleSpecification`이 `true`를 돌려줘도 수수료, 거절 사유, 안내 문구는 아직 없다.
 그 정보를 호출자가 다시 계산해야 한다면, 규칙은 결국 다른 곳으로 다시 흩어진다.
 
 ---
@@ -148,7 +143,7 @@ public class RefundService {
 }
 ```
 
-### Specification과의 경계
+## Specification과의 경계
 
 ```java
 public class RefundEligibleSpecification implements Specification<Order> {

@@ -7,13 +7,19 @@
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
+> - [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
+> - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
-> - [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)
+> - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)
+> - [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)
+> - [Periodic Scheduling Drift vs Backlog Primer](./periodic-scheduling-drift-vs-backlog-primer.md)
+> - [Periodic Task Cancellation Bridge](./periodic-task-cancellation-bridge.md)
+> - [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
 > - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
 > - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
 > - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 >
-> retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduledexecutorservice delay queue, scheduledthreadpoolexecutor delayed work queue, java scheduled executor data structure, schedule runnable after delay, scheduleAtFixedRate scheduleWithFixedDelay, fixed rate vs fixed delay queue mental model, scheduled future cancel, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, delayed task queue mental model, delay-aware priority queue, deadline ticket queue, deadline heap, expired head, hidden future task, not one sleeping thread per task, scheduler worker waits for earliest deadline, executor queue bridge beginner, timer cancellation stale entry, timer reschedule stale entry, beginner scheduler queue, java timer queue beginner, 스케줄드 executor delayqueue, 자바 스케줄러 자료구조, 지연 작업 큐
+> retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduledexecutorservice delay queue, scheduledthreadpoolexecutor delayed work queue, java scheduled executor data structure, schedule runnable after delay, scheduleAtFixedRate scheduleWithFixedDelay, fixed rate vs fixed delay queue mental model, fixed rate timeline trace, fixed delay timeline trace, periodic task re-enqueue, periodic deadline requeue, repeating task requeue, self rescheduling job, stale periodic ticket, scheduleAtFixedRate timeline, scheduleWithFixedDelay timeline, scheduled future cancel, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, delayed task queue mental model, delay-aware priority queue, deadline ticket queue, deadline heap, expired head, hidden future task, not one sleeping thread per task, scheduler worker waits for earliest deadline, executor queue bridge beginner, timer cancellation stale entry, timer reschedule stale entry, beginner scheduler queue, java timer queue beginner, fixed rate vs fixed delay overrun primer, 스케줄드 executor delayqueue, 자바 스케줄러 자료구조, 지연 작업 큐, fixed rate vs fixed delay 타임라인, 주기 작업 재등록, scheduled executor nanoTime, currentTimeMillis vs nanoTime scheduler, java timer clock choice, deadlineNanos
 
 ## 먼저 그림부터
 
@@ -25,14 +31,15 @@ scheduler.schedule(job, 3, TimeUnit.SECONDS);
 
 하지만 자료구조 관점에서는 이렇게 보면 쉽다.
 
-1. 지금 시각에 `3초`를 더해 **실행 가능 시각(deadline)** 을 만든다.
+1. 지금 시각에 `3초 delay`를 더해 **실행 가능 시각(deadline)** 을 만든다.
 2. `job`을 deadline이 붙은 ticket으로 감싼다.
 3. ticket들을 deadline이 빠른 순서로 queue에 넣는다.
 4. worker는 queue head만 보고, 아직 시간이 안 됐으면 기다린다.
 5. head의 시간이 되면 꺼내서 실행한다.
 
-즉 핵심은 "스레드가 3초 동안 무작정 자는 것"이 아니라  
+즉 핵심은 "스레드가 3초 동안 무작정 자는 것"이 아니라
 **deadline이 붙은 작업들이 delay-aware queue에서 차례를 기다린다**는 감각이다.
+여기서 `delay`, `deadline`, `dueAt`, `timeout`이 한꺼번에 섞여 보인다면 [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)에서 단어 층부터 먼저 나누고, "그 deadline을 어떤 시계로 저장하나"가 막히면 [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)로 이어가면 된다.
 
 ## DelayQueue에서 executor로 한 단계 올려 보기
 
@@ -54,7 +61,7 @@ schedule(...) 호출
   -> executor가 Runnable/Callable 실행
 ```
 
-초보자에게 중요한 연결은 "JVM 내부 클래스 이름"이 아니다.  
+초보자에게 중요한 연결은 "JVM 내부 클래스 이름"이 아니다.
 `DelayQueue`에서 배운 **가장 이른 deadline만 head가 되고, head가 아직 미래면 worker가 기다린다**는 규칙이 scheduler queue를 이해하는 발판이 된다는 점이다.
 
 | `DelayQueue`에서 본 개념 | scheduled executor에서 떠올릴 대응물 |
@@ -74,14 +81,14 @@ schedule(...) 호출
 | `ScheduledExecutorService` | delayed task를 실행해 주는 서비스 API | thread pool, `Future`, cancellation, periodic scheduling |
 | `DelayQueue` | 시간이 된 원소만 꺼낼 수 있는 queue | deadline ordering, `take()` blocking, `Delayed` contract |
 
-그래서 보통 애플리케이션 코드는 직접 `DelayQueue`를 만지기보다  
+그래서 보통 애플리케이션 코드는 직접 `DelayQueue`를 만지기보다
 `ScheduledExecutorService`를 쓰는 편이 자연스럽다.
 
 다만 내부 감각은 `DelayQueue`와 닮아 있다.
 
 > "작업 실행 API는 executor이고, 작업 대기 규칙은 delay-aware priority queue다."
 
-JDK의 `ScheduledThreadPoolExecutor`는 public `DelayQueue`를 그대로 노출하는 구조는 아니지만,  
+JDK의 `ScheduledThreadPoolExecutor`는 public `DelayQueue`를 그대로 노출하는 구조는 아니지만,
 작업을 deadline 순으로 보관하고 만료된 head만 실행 가능하게 보는 mental model은 같다.
 
 ## `schedule()` 한 번을 queue 동작으로 풀어보기
@@ -125,15 +132,15 @@ queue mental model에서는 대략 이렇게 정렬된다.
 | C | now + 3초 | B 뒤 |
 | A | now + 5초 | C 뒤 |
 
-worker는 A와 C를 보며 각각 따로 잠들 필요가 없다.  
+worker는 A와 C를 보며 각각 따로 잠들 필요가 없다.
 head인 B의 delay만 보고 1초 정도 기다린 뒤 B를 꺼낸다. 그 다음 head는 C가 되고, 다시 C의 남은 시간만 기다린다.
 
-이 그림 때문에 scheduled executor queue는 "예약된 작업마다 sleep 중인 스레드가 하나씩 있다"가 아니라  
+이 그림 때문에 scheduled executor queue는 "예약된 작업마다 sleep 중인 스레드가 하나씩 있다"가 아니라
 "deadline 순서 queue와 worker가 협력한다"로 이해하는 편이 안전하다.
 
 ## `DelayQueue`로 보면 이런 모양이다
 
-직접 scheduler를 만들라는 뜻은 아니다.  
+직접 scheduler를 만들라는 뜻은 아니다.
 다만 `ScheduledExecutorService` 밑의 자료구조 감각을 잡기 위한 축소 모델은 이렇게 생겼다.
 
 ```java
@@ -178,7 +185,7 @@ while (true) {
 }
 ```
 
-중요한 점은 `take()`가 "queue에 원소가 있으면 바로 반환"이 아니라는 것이다.  
+중요한 점은 `take()`가 "queue에 원소가 있으면 바로 반환"이 아니라는 것이다.
 **head의 deadline이 아직 미래라면 원소가 있어도 기다린다.**
 
 이 차이가 [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)의 핵심 오해와 이어진다.
@@ -193,13 +200,15 @@ while (true) {
 | `scheduleAtFixedRate(job, initialDelay, period, unit)` | 이전 예정 시각에 `period`를 더해 다시 enqueue | 일정한 박자를 유지하려고 함 |
 | `scheduleWithFixedDelay(job, initialDelay, delay, unit)` | 실행이 끝난 시각에 `delay`를 더해 다시 enqueue | 작업 사이 간격을 유지하려고 함 |
 
-반복 작업도 특별한 마법이라기보다,  
+반복 작업도 특별한 마법이라기보다,
 한 번 실행한 뒤 새 deadline으로 ticket을 다시 넣는다고 생각하면 이해가 쉽다.
 
 차이는 "다음 deadline의 기준이 무엇인가"다.
 
 - fixed rate: 원래 박자표에 맞춘다.
 - fixed delay: 이번 실행이 끝난 뒤부터 쉰다.
+
+overrun이 났을 때 `fixed-rate`가 backlog처럼 보이고 `fixed-delay`가 drift로 보이는 차이를 한 문서에서 묶어 보고 싶다면 [Periodic Scheduling Drift vs Backlog Primer](./periodic-scheduling-drift-vs-backlog-primer.md)를 바로 이어서 보면 된다.
 
 예를 들어 period/delay가 10초이고 작업 실행에 3초가 걸렸다면 이렇게 느끼면 된다.
 
@@ -210,9 +219,89 @@ while (true) {
 
 둘 다 "반복 전용 스레드가 계속 돈다"기보다, 실행 후 새 deadline ticket을 다시 예약하는 mental model로 읽으면 된다.
 
+## fixed rate vs fixed delay를 timeline으로 따라가 보기
+
+먼저 이 문장 하나만 잡고 시작하면 된다.
+
+- 둘 다 "한 번 실행한 뒤 다음 deadline ticket을 다시 queue에 넣는다."
+- `fixed rate`는 `이전 예정 시각 + period`를 다음 deadline으로 잡는다.
+- `fixed delay`는 `이번 실행 종료 시각 + delay`를 다음 deadline으로 잡는다.
+
+가정은 단순하게 두자.
+
+- worker는 1개다.
+- `initialDelay = 10초`
+- `period = 10초` 또는 `delay = 10초`
+- 매 실행은 정확히 3초 걸린다.
+
+### `scheduleAtFixedRate()` trace
+
+| 시각 | queue / worker에서 보이는 일 |
+|---|---|
+| `t=0` | 첫 ticket이 `deadline=10`으로 queue에 들어간다 |
+| `t=10` | worker가 head를 꺼내 1회차 실행을 시작한다 |
+| `t=13` | 1회차가 끝난다. 다음 ticket을 `deadline=20`으로 다시 queue에 넣는다 |
+| `t=20` | 2회차 실행을 시작한다 |
+| `t=23` | 2회차가 끝난다. 다음 ticket을 `deadline=30`으로 다시 queue에 넣는다 |
+
+```text
+fixed rate
+time:    0 -------- 10 --- 13 ------- 20 --- 23 ------- 30
+queue:   ticket@10      ticket@20         ticket@30
+worker:            run1             run2
+```
+
+핵심은 `t=13`에 다시 넣을 때도 "방금 끝났으니 23초"가 아니라
+"원래 박자표의 다음 칸인 20초"를 deadline으로 잡는다는 점이다.
+
+### `scheduleWithFixedDelay()` trace
+
+| 시각 | queue / worker에서 보이는 일 |
+|---|---|
+| `t=0` | 첫 ticket이 `deadline=10`으로 queue에 들어간다 |
+| `t=10` | worker가 head를 꺼내 1회차 실행을 시작한다 |
+| `t=13` | 1회차가 끝난다. 다음 ticket을 `deadline=23`으로 다시 queue에 넣는다 |
+| `t=23` | 2회차 실행을 시작한다 |
+| `t=26` | 2회차가 끝난다. 다음 ticket을 `deadline=36`으로 다시 queue에 넣는다 |
+
+```text
+fixed delay
+time:    0 -------- 10 --- 13 ---------- 23 --- 26 ---------- 36
+queue:   ticket@10      ticket@23            ticket@36
+worker:            run1                run2
+```
+
+여기서는 `t=13`에 다시 넣는 순간 기준이 "이번 실행이 끝난 시각"이라서
+다음 deadline이 `23초`, 그다음은 `36초`처럼 실행 시간만큼 뒤로 밀린다.
+
+### 한 표로 다시 보면
+
+| 기준 | `scheduleAtFixedRate` | `scheduleWithFixedDelay` |
+|---|---|---|
+| 다음 deadline 계산 기준 | 이전 예정 시각 | 이번 실행 종료 시각 |
+| 1회차 종료가 `t=13`일 때 다음 ticket | `deadline=20` | `deadline=23` |
+| queue가 기억하는 리듬 | `10, 20, 30, ...` | `10, 23, 36, ...` |
+| 초보자용 느낌 | "원래 박자 유지" | "실행 사이 쉬는 간격 유지" |
+
+### 작업이 느려지면 차이가 더 또렷해진다
+
+같은 설정에서 1회차가 12초 걸려 `t=22`에 끝났다고 하자.
+
+| API | 1회차 종료 직후 다시 넣는 deadline | worker가 느끼는 다음 실행 |
+|---|---|---|
+| `scheduleAtFixedRate` | `deadline=20` | 이미 시간이 지난 ticket이라 거의 바로 다음 실행 후보가 된다 |
+| `scheduleWithFixedDelay` | `deadline=32` | 끝난 뒤 10초를 더 쉰 다음 실행한다 |
+
+이 한 장면만 기억하면 된다.
+
+- `fixed rate`: 늦더라도 박자표를 따라가려 한다.
+- `fixed delay`: 방금 끝난 실행 뒤에 쉬는 시간을 보장하려 한다.
+
+직접 `DelayQueue` 반복 작업을 만들 때 이 계산을 어떤 ticket 재등록 코드로 옮겨야 하는지, 그리고 그 과정에서 stale-ticket 버그가 어디서 생기는지까지 붙여 보고 싶다면 [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)로 이어서 보면 된다.
+
 ## 이 bridge가 뜻하지 않는 것
 
-이 문서는 `ScheduledExecutorService`의 JVM 내부 구현을 외우자는 문서가 아니다.  
+이 문서는 `ScheduledExecutorService`의 JVM 내부 구현을 외우자는 문서가 아니다.
 입문 단계에서는 아래 경계만 잡으면 충분하다.
 
 | 오해 | 더 안전한 이해 |
@@ -221,7 +310,7 @@ while (true) {
 | delay가 짧으면 business priority가 높다는 뜻이다 | delay는 실행 가능 시각이고, priority 정책은 별도 관심사다 |
 | 등록된 작업마다 sleeping thread가 필요하다 | queue head의 가장 이른 deadline을 기준으로 worker가 기다린다고 보면 된다 |
 | 반복 실행은 queue와 별개인 특수 기능이다 | 다음 deadline을 계산해 다시 예약하는 흐름으로 보면 된다 |
-| cancel하면 queue 구조 문제가 모두 사라진다 | 취소/재예약에는 stale ticket 정책이 남을 수 있고, Java에서는 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)에서 `removeOnCancelPolicy`까지 같이 보면 된다 |
+| cancel하면 queue 구조 문제가 모두 사라진다 | 취소/재예약에는 stale ticket 정책이 남을 수 있고, Java에서는 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)에서 `removeOnCancelPolicy`까지 같이 보면 된다 |
 
 ## 언제 무엇을 쓰면 되나
 
@@ -245,9 +334,11 @@ while (true) {
 5. `scheduleAtFixedRate()`와 `scheduleWithFixedDelay()`가 같은 반복 실행이라고 생각한다.
 6. deadline 필드를 queue 안에서 바꾸면 heap 순서도 자동으로 바뀐다고 생각한다.
 
-특히 6번은 heap 계열에서 흔한 함정이다.  
+특히 6번은 heap 계열에서 흔한 함정이다.
 deadline이 바뀌면 보통 새 ticket을 넣고, 예전 ticket은 cancellation/stale 정책으로 처리한다.
-Java API 관점의 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`가 먼저 궁금하면 [ScheduledFuture Cancellation Stale Entries](./scheduledfuture-cancel-stale-entries.md)를 보고, 직접 timer ticket을 설계하는 감각은 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket` 단위로 잡으면 된다. 구조 선택 비교는 [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)에서 더 깊게 보면 된다.
+Java API 관점의 `ScheduledFuture.cancel()`과 `removeOnCancelPolicy`가 먼저 궁금하면 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)를 보고, 직접 timer ticket을 설계하는 감각은 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)에서 `ticket` 단위로 잡으면 된다. 구조 선택 비교는 [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)에서 더 깊게 보면 된다.
+`ScheduledExecutorService`의 periodic API를 직접 `DelayQueue` self-rescheduling 코드로 번역하고 싶다면 [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)가 바로 다음 단계다.
+clock 선택 자체가 먼저 걸리면 [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)에서 "벽시계 vs 스톱워치" 비유로 다시 보면 된다.
 
 ## 면접형 한 문장
 

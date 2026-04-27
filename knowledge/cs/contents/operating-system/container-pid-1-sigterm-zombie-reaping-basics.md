@@ -12,6 +12,7 @@
 > - [signals, process supervision](./signals-process-supervision.md)
 > - [container, cgroup, namespace](./container-cgroup-namespace.md)
 > - [PID Namespace, Init Semantics](./pid-namespace-init-semantics.md)
+> - [Wrapper `exec` Handoff Timeline](./wrapper-exec-handoff-timeline.md)
 > - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 
 > retrieval-anchor-keywords: PID 1 container basics, container PID 1, docker PID 1, container SIGTERM, docker stop SIGTERM, graceful shutdown in container, zombie reaping basics, container zombie reaping, child reaping expectation, waitpid container, SIGCHLD container, shell form CMD, exec form CMD, exec entrypoint, entrypoint exec, init wrapper, tini, dumb-init, PID 1 signal forwarding, orphan adoption in container, 컨테이너 PID 1, 컨테이너 SIGTERM, 좀비 회수, 시그널 전달
@@ -47,7 +48,7 @@
 - 달라지는 것은 "어떤 PID가 보이느냐"와 "누가 PID 1이 되느냐"다
 - runtime이나 orchestrator는 보통 컨테이너 안의 PID 1을 컨테이너 생명주기의 기준점으로 본다
 
-그래서 process lifecycle basics를 이미 이해했다면, 컨테이너에서 새로 배우는 것은 많지 않다.  
+그래서 process lifecycle basics를 이미 이해했다면, 컨테이너에서 새로 배우는 것은 많지 않다.
 기존 개념 위에 "`PID 1에 책임이 몰린다`"는 규칙 하나를 덧붙이면 된다.
 
 ## 2. 컨테이너 PID 1에 기대하는 세 가지
@@ -59,7 +60,7 @@
 - 앱이 PID 1이면 앱이 직접 `SIGTERM`을 처리해야 한다
 - shell wrapper가 PID 1이면 wrapper가 앱에 signal을 넘겨줘야 한다
 
-즉 "앱이 실행 중"이라는 사실만으로는 부족하다.  
+즉 "앱이 실행 중"이라는 사실만으로는 부족하다.
 "앱이 PID 1인가, 아니면 PID 1이 앱으로 signal을 전달하는가"를 같이 봐야 한다.
 
 ### 2) in-flight 작업을 정리해야 한다
@@ -83,7 +84,7 @@
 - 부모가 `waitpid()`로 종료 상태를 읽어야 fully reaped 된다
 - 부모가 먼저 죽어 orphan이 생기면 PID 1 쪽이 재부모/회수 책임을 떠안게 된다
 
-그래서 PID 1이 child tree를 가진다면 signal 처리만으로는 충분하지 않다.  
+그래서 PID 1이 child tree를 가진다면 signal 처리만으로는 충분하지 않다.
 reaping 루프 또는 init wrapper까지 같이 생각해야 한다.
 
 ## 3. shutdown 경로를 텍스트로 그리면
@@ -111,7 +112,7 @@ stop request
   -> force kill
 ```
 
-핵심은 "컨테이너가 안 죽는다"가 추상적 현상이 아니라,  
+핵심은 "컨테이너가 안 죽는다"가 추상적 현상이 아니라,
 대개 `signal forwarding 누락` 또는 `waitpid() 누락` 중 하나라는 점이다.
 
 ## 4. 자주 터지는 함정
@@ -126,8 +127,8 @@ CMD python app.py
 CMD ["python", "app.py"]
 ```
 
-shell-form은 편해 보이지만 signal 전달과 종료 책임이 shell에 남는다.  
-entrypoint 스크립트가 꼭 필요하다면 마지막에 `exec`로 앱을 치환하는 편이 낫다.
+shell-form은 편해 보이지만 signal 전달과 종료 책임이 shell에 남는다.
+entrypoint 스크립트가 꼭 필요하다면 마지막에 `exec`로 앱을 치환하는 편이 낫다. 이때 왜 extra PID, signal forwarding, fd holder가 같이 줄어드는지는 [Wrapper `exec` Handoff Timeline](./wrapper-exec-handoff-timeline.md)에서 timeline으로 바로 이어 볼 수 있다.
 
 ```sh
 #!/bin/sh
@@ -142,7 +143,7 @@ exec python app.py
 - shell script wrapper 사용
 - worker를 별도 프로세스로 띄우는 구조
 
-이때 앱이 PID 1이면 앱 자신이 회수해야 하고,  
+이때 앱이 PID 1이면 앱 자신이 회수해야 하고,
 복잡한 트리라면 `tini`, `dumb-init`, supervisor 같은 init 역할을 두는 편이 안전하다.
 
 ### 함정 3: "앱이 PID 1이면 무조건 안 좋다"로 외운다
@@ -152,7 +153,7 @@ exec python app.py
 - 앱이 직접 PID 1이어도 `SIGTERM`을 처리하고 자식 회수를 제대로 하면 된다
 - 반대로 앱이 PID 1이 아니어도 wrapper가 signal forwarding/reaping을 못 하면 종료가 꼬인다
 
-즉 중요한 것은 "누가 PID 1인가" 자체보다,  
+즉 중요한 것은 "누가 PID 1인가" 자체보다,
 "PID 1이 shutdown과 reaping 책임을 실제로 수행하는가"다.
 
 ## 5. 관찰 체크리스트

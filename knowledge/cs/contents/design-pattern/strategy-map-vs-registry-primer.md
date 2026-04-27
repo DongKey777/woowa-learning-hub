@@ -4,18 +4,17 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [전략 패턴 기초](./strategy-pattern-basics.md)
-> - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
-> - [전략 (Strategy)](./strategy-pattern.md)
-> - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [Strategy vs Function: lambda로 충분한가, 전략 타입이 필요한가](./strategy-vs-function-chooser.md)
-> - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
-> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
-> - [디자인 패턴 카테고리 인덱스](./README.md)
+관련 문서:
 
-retrieval-anchor-keywords: strategy map vs registry, strategy collection vs plain registry, keyed lookup vs behavior swapping, Map<Key, Strategy> beginner, strategy selector registry, registry lookup only, behavior swap map, plain registry primer, strategy map mental model, registry keyed lookup, strategy registry difference, strategy collection beginner, registry not strategy, strategy map beginner, keyed lookup beginner, strategy registry vs service locator drift, strategy lookup helper smell, strategy selector service locator smell, strategy vs policy selector naming, policy selector vs factory, selector resolver registry strategy vs factory, 행동 교체 vs keyed lookup, 전략 맵 vs 레지스트리, 전략 컬렉션 vs 레지스트리, 전략 선택 맵, 단순 조회 레지스트리, Map 으로 전략 고르기, Map 으로 lookup만 하기, strategy map 이건 registry 인가요, strategy collection 처음 배우는데, registry lookup 큰 그림
+- [전략 패턴 기초](./strategy-pattern-basics.md)
+- [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
+- [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
+- [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
+- [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+- [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: strategy map vs registry, map<string, strategy> beginner, map<string, strategy> registry인가요, map<string, strategy> selector인가요, 처음 배우는데 strategy map 큰 그림, strategy map 언제 쓰는지, strategy collection vs plain registry, 행동 교체 vs keyed lookup, 전략 맵 vs 레지스트리, 전략 컬렉션 vs 레지스트리, 등록된 것을 찾아온다 vs 어떻게 처리할지 고른다, strategy selector registry 차이
 
 ---
 
@@ -24,6 +23,7 @@ retrieval-anchor-keywords: strategy map vs registry, strategy collection vs plai
 아래 질문이 나오면 이 비교 노트를 먼저 보면 된다.
 
 - "`Map<PaymentMethod, PaymentStrategy>`도 결국 registry 아닌가요?"
+- "`Map<String, Strategy>`인데 이걸 registry라고 불러야 해요, selector라고 불러야 해요?"
 - "코드는 `get()`으로 꺼내는데 왜 strategy라고 부르죠?"
 - "같은 `Map` 모양인데 어떤 때는 행동 교체고 어떤 때는 단순 lookup인지 헷갈립니다"
 - "리뷰에서 strategy map, strategy registry, plain registry라는 말이 섞여서 나온다"
@@ -57,6 +57,7 @@ retrieval-anchor-keywords: strategy map vs registry, strategy collection vs plai
 | 꺼낸 뒤 보통 무엇을 하나 | 같은 메서드를 바로 실행한다 | 읽어 오거나 다른 곳에 넘긴다 |
 | 새 항목을 추가하는 이유 | 새로운 처리 방식이 생겼다 | 새로운 key나 리소스가 생겼다 |
 | 떠올릴 이름 | `Strategy`, `Policy`, `Selector` | `Registry`, `Catalog`, `Resolver` |
+| 처음 배우는데 한마디로 | "어떻게 처리할지 고른다" | "등록된 것을 찾아온다" |
 
 한 문장으로 다시 정리하면:
 
@@ -151,7 +152,7 @@ return strategy.pay(order);
 - **자료구조 층**: `Map`으로 lookup하니 registry 같은 모양이 있다
 - **설계 의도 층**: 꺼낸 뒤 같은 `pay(...)`를 실행하니 strategy selection이 핵심이다
 
-그래서 "이건 registry다"와 "이건 strategy다"가 둘 다 부분적으로 맞을 수 있다.  
+그래서 "이건 registry다"와 "이건 strategy다"가 둘 다 부분적으로 맞을 수 있다.
 더 정확한 표현은 보통 이것이다.
 
 - `Map`은 **strategy를 찾는 lookup 메커니즘**
@@ -184,6 +185,8 @@ return strategy.pay(order);
   - 아니다. strategy를 고르는 과정이 `get()` 모양일 수 있다. 중요한 것은 꺼낸 뒤 같은 역할의 행동을 실행하는지다.
 - **"registry 값도 메서드를 가지면 바로 strategy인가요?"**
   - 아니다. 값이 메서드를 가진다고 끝이 아니다. 그 값들이 같은 행동 계약을 공유하고, 교체 대상인지가 핵심이다.
+- **"`Map<String, Strategy>`면 이름을 `Registry`로 해야 하나요, `Selector`로 해야 하나요?"**
+  - 문자열 key로 꺼내더라도 호출자가 기대하는 public 책임이 "어떤 전략을 실행할지 골라 준다"면 `Selector` 쪽이 더 직접적이다. 그냥 등록된 전략 객체를 찾아 돌려주는 도구만 드러내고 싶다면 `Registry`라고 부를 수 있다.
 - **"둘 중 하나만 맞아야 하나요?"**
   - 아니다. registry가 strategy selection을 구현하는 도구로 들어갈 수 있다. 질문 층위를 섞지 않는 것이 중요하다.
 
@@ -192,6 +195,7 @@ return strategy.pay(order);
 ## 다음에 이어서 보면 좋은 문서
 
 - strategy 자체를 처음부터 다시 보고 싶다면 [전략 패턴 기초](./strategy-pattern-basics.md)
+- `Map<String, Strategy>` 이름을 `Selector`/`Registry` 중 무엇으로 둘지 더 직접적으로 정리하려면 [Map-backed 클래스 네이밍 체크리스트](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
 - `Map<String, Handler>`가 factory인지 registry인지 헷갈리면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)
 - strategy lookup helper가 전역 조회소처럼 커지는 냄새는 [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 - registry를 전역 조회로 오남용하는 위험은 [Service Locator Antipattern](./service-locator-antipattern.md)에서 이어서 보면 된다

@@ -34,6 +34,10 @@
 > - retirement verification metric
 > - break glass scorecard panel
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Override Burn-Down Review Cadence and Scorecards](./README.md#override-burn-down-review-cadence-and-scorecards)
+> - 다음 단계: [Shadow Process Detection Signals](./shadow-process-detection-signals.md)
+
 ## 핵심 개념
 
 override burn-down은 "정리하자"라고 말하는 것으로는 잘 안 된다.

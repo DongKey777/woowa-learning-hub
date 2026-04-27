@@ -4,21 +4,57 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Union-Find Deep Dive](./union-find-deep-dive.md)
-> - [기본 자료 구조](./basic.md#union-find-유니온-파인드)
-> - [그래프 알고리즘](../algorithm/graph.md)
-> - [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
-> - [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
->
-> retrieval-anchor-keywords: union find component size, union find component count, DSU metadata, disjoint set metadata, union find size array, union find connected components count, redundant union count unchanged, repeated union walkthrough, connectivity union trace, component size query, number of components union find, union by size metadata, group size after union, friend network component size, network cluster count, same set metadata, union find beginner walkthrough, union-find size example, union-find count example, componentCount dsu, size[find(x)] dsu, union find metadata tutorial, 유니온 파인드 컴포넌트 크기, 유니온 파인드 그룹 크기, 유니온 파인드 컴포넌트 개수, 서로소 집합 메타데이터, union 중 컴포넌트 수, 중복 union count 유지
+관련 문서:
+
+- [Connectivity Question Router](./connectivity-question-router.md)
+- [Union-Find Deep Dive](./union-find-deep-dive.md)
+- [기본 자료 구조](./basic.md#union-find-유니온-파인드)
+- [그래프 알고리즘](../algorithm/graph.md)
+- [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)
+- [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
+
+retrieval-anchor-keywords: union find component size, union find component count, dsu metadata, connected components count dsu, component size query, size[find(x)] dsu, repeated union walkthrough, friend relation group count, network group count, 연결 요소 수, 친구 관계 그룹 수, 네트워크 그룹 수, union find metadata 뭐예요, 처음 배우는 union find metadata
 
 ## 빠른 라우팅
 
+- 질문이 `연결되어 있나요?`에서 끝나는지, `그 그룹 크기는요? 전체 그룹은요?`까지 가는지 먼저 헷갈리면 [Connectivity Question Router](./connectivity-question-router.md)에서 답 모양을 먼저 고른 뒤 이 문서로 오면 된다.
 - `같은 그룹인가?`만 아니라 `이 그룹 크기가 몇인가?`, `전체 그룹이 몇 개 남았나?`까지 같이 추적하고 싶다면 이 문서가 바로 맞다.
 - union-find 자체의 역할과 BFS/DFS 경계를 먼저 정리하고 싶다면 [Union-Find Deep Dive](./union-find-deep-dive.md)를 먼저 본다.
 - `왜 거의 O(1)처럼 보이는가`가 궁금하면 [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)로 이어 가면 된다.
 - Kruskal 문맥에서 `merged 되었는가`만 필요한 경우는 [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)이 더 직접적이다.
+
+## 15초 진입 체크
+
+| 질문 문장 | 이 문서가 맞나 | 이유 |
+|---|---|---|
+| `1과 9가 같은 그룹인가요?` | 경우에 따라 | yes/no만 필요하면 일반 union-find 문서만으로 충분하다 |
+| `1이 속한 그룹 크기는 몇인가요?` | 예 | `size[find(x)]` 메타데이터가 핵심이다 |
+| `지금 전체 그룹이 몇 개인가요?` | 예 | `componentCount`를 추적해야 한다 |
+| `1에서 9까지 실제 경로를 출력해 주세요` | 아니오 | DSU 메타데이터가 아니라 BFS/DFS 경로 복원 문제다 |
+
+## 초보 별칭 한 번에 번역
+
+문제 문장이 용어 대신 생활 표현으로 와도, 아래처럼 `무엇을 세는가`만 번역하면 같은 문서로 모인다.
+
+| 이렇게 말해도 | 실제로 보는 값 | 이 문서에서 잡는 포인트 |
+|---|---|---|
+| `친구 관계가 몇 그룹으로 나뉘어 있나요?` | `componentCount()` | 전체 그룹 수를 줄여 가는 문제다 |
+| `지금 네트워크 그룹이 몇 개 남았나요?` | `componentCount()` | 연결될 때마다 그룹 수가 `1`씩 줄 수 있다 |
+| `연결 요소 수를 계속 물어봐요` | `componentCount()` | `connected components count`를 메타데이터로 들고 간다 |
+| `3번이 속한 친구 묶음은 몇 명인가요?` | `componentSize(3)` | `size[find(3)]`를 읽어야 한다 |
+
+짧게 말하면 `친구 관계`, `네트워크 그룹`, `연결 요소 수`는 표현만 다르고, 이 문서에서는 결국 `그룹 크기`와 `전체 그룹 수` 메타데이터를 관리하는 같은 종류의 질문이다.
+
+## 먼저 잡는 mental model
+
+union-find를 "그룹 대표 연락처"라고 생각하면 메타데이터가 훨씬 덜 헷갈린다.
+
+- `parent[x]`: `x`가 따라가야 할 대표 경로
+- `size[root]`: 대표가 들고 있는 그룹 인원수
+- `components`: 현재 전체 그룹 개수
+
+핵심은 `union(a, b)` 호출 자체가 아니라 **실제로 합쳐졌는지(`merged`)**다.
+합쳐지지 않았다면 `size`, `components`는 그대로여야 한다.
 
 ## 문제 설정
 
@@ -35,6 +71,14 @@
 
 - `size[root]`: 루트가 대표하는 컴포넌트 크기
 - `components`: 현재 전체 컴포넌트 개수
+
+입문자가 처음 구현할 때는 아래 매핑을 옆에 두고 시작하는 편이 안전하다.
+
+| 문제에서 묻는 값 | 실제로 읽는 값 | 흔한 실수 |
+|---|---|---|
+| `same(a, b)` | `find(a) == find(b)` | parent를 한 칸만 보고 끝내기 |
+| `componentSize(x)` | `size[find(x)]` | `size[x]`를 바로 읽기 |
+| `componentCount()` | `components` 필드 | union 호출 횟수로 세기 |
 
 ## 1. 어떤 값이 언제 바뀌나
 
@@ -151,6 +195,12 @@ public class UnionFindWithMetadata {
 - `size`는 보통 **루트에만 의미 있는 값**이라고 생각하는 편이 안전하다.
 - `componentSize(x)`를 구현할 때 `size[x]`를 바로 읽지 말고 `size[find(x)]`를 읽는다.
 - path compression이 일어나도 `size`는 루트 기준으로만 관리하면 된다.
+
+## 6. 다음 단계 라우팅
+
+- 연결성 질문 자체의 분기(`yes/no` vs 경로 복원 vs 최단 경로)가 헷갈리면: [Connectivity Question Router](./connectivity-question-router.md)
+- 간선 삭제까지 들어오는 동적 연결성으로 확장하려면: [Deletion-Aware Connectivity Bridge](./deletion-aware-connectivity-bridge.md), [DSU Rollback](../algorithm/dsu-rollback.md)
+- `왜 거의 O(1)`인지 증명 관점으로 이어 가려면: [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)
 
 ## 한 줄 정리
 

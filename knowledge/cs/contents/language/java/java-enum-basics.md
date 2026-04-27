@@ -11,7 +11,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 예외 처리 기초](./java-exception-handling-basics.md)
 
-retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs 상수 정수, java enum switch, enum values ordinal, enum 상수 집합, beginner enum java, 열거형 사용법, java enum name ordinal, java 상태값 enum
+retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs 상수 정수, java enum switch, enum values ordinal, enum 상수 집합, beginner enum java, 열거형 사용법, java enum name ordinal, java 상태값 enum, enum 처음 배우는데, enum 큰 그림, enum 언제 쓰는지, 상태값 int 대신 enum, ordinal 쓰면 안되는 이유, enum name 저장 이유, switch enum 기초
 
 ## 핵심 개념
 

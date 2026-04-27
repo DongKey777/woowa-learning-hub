@@ -6,8 +6,10 @@
 
 > 관련 문서:
 > - [Language README](../README.md)
+> - [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./map-lookup-debug-equals-hashcode-compareto-mini-bridge.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 > - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+> - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 > - [Mutable Fields Inside Sorted Collections](./treeset-treemap-mutable-comparator-fields-primer.md)
 > - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
@@ -15,7 +17,7 @@
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
-> retrieval-anchor-keywords: natural ordering in treeset and treemap, java treeset natural ordering duplicate, java treemap natural ordering replace value, java treemap compareTo same key, java compareTo tree set map surprise, comparable compareTo duplicate surprise, no comparator treeset treemap, new TreeSet natural ordering, new TreeMap natural ordering, compareTo 0 same element, compareTo 0 same key slot, sorted collection natural ordering duplicate, sorted map natural ordering value replacement, beginner comparable sorted collections, navigableset natural ordering lookup, navigablemap natural ordering lookup, first last floor ceiling compareTo order, mutable compareTo field treeset treemap
+> retrieval-anchor-keywords: natural ordering in treeset and treemap, java treeset natural ordering duplicate, java treemap natural ordering replace value, java treemap compareTo same key, java compareTo tree set map surprise, comparable compareTo duplicate surprise, no comparator treeset treemap, new TreeSet natural ordering, new TreeMap natural ordering, compareTo 0 same element, compareTo 0 same key slot, sorted collection natural ordering duplicate, sorted map natural ordering value replacement, beginner comparable sorted collections, navigableset natural ordering lookup, navigablemap natural ordering lookup, first last floor ceiling compareTo order, mutable compareTo field treeset treemap, bigdecimal sorted collection surprise, bigdecimal compareTo equals mismatch
 
 <details>
 <summary>Table of Contents</summary>

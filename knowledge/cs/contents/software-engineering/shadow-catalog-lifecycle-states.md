@@ -40,6 +40,10 @@
 > - blocker escalation forum
 > - shadow successor entry
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Catalog Lifecycle States](./README.md#shadow-catalog-lifecycle-states)
+> - 다음 단계: [Shadow Catalog Review Cadence Profiles](./shadow-catalog-review-cadence-profiles.md)
+
 ## 핵심 개념
 
 shadow catalog entry는 `decision = retire | absorb | officialize | temporary_hold`만 적는다고 끝나지 않는다.

@@ -11,6 +11,8 @@
       "contents/database/engine-fallbacks-overlap-enforcement.md",
       "contents/system-design/payment-system-ledger-idempotency-reconciliation-design.md",
       "contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md",
+      "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+      "contents/design-pattern/strict-read-fallback-contracts.md",
       "contents/design-pattern/read-model-cutover-guardrails.md",
       "contents/language/java/classloader-memory-leak-playbook.md",
       "contents/language/java/jit-warmup-deoptimization.md",
@@ -22,6 +24,320 @@
       "stale": "fail",
       "corrupt": "fail",
       "rationale": "Stale or corrupt indexes can hide full-mode golden regressions after corpus churn; only a genuinely missing first-run index may skip."
+    },
+    "live_readiness_diagnostics": {
+      "scope_summary": "The live readiness hash currently walks all markdown under knowledge/cs, while the index only ingests knowledge/cs/contents.",
+      "rebuild_note": "Rebuild alone will not clear a stale report when root docs, master-notes, or rag notes change outside the indexed contents tree; a fresh rebuild can flip back to stale immediately if that out-of-index markdown churns again. Beginner-safe fixture checks should remain the trust anchor until the hash scope is aligned."
+    },
+    "stable_full_mode_fixture_queries": {
+      "description": "Deterministic full-mode fixture checks that stay runnable even when the shared live index is stale during concurrent corpus churn. Introductory prompts must keep the primer doc ahead of the deeper companion docs while still surfacing those companion paths nearby.",
+    "queries": {
+      "beginner_transactional_english_plain_alias_lockin": {
+        "companion_paths": [
+          "contents/spring/spring-transaction-propagation-deep-dive.md"
+        ],
+        "companion_max_rank": 4
+      },
+      "java_future_completablefuture_intro_overview": {
+        "companion_paths": [
+          "contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+          "contents/language/java/executor-sizing-queue-rejection-policy.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "projection_freshness_intro_primer_vs_guardrail_and_rebuild_triad": {
+          "companion_paths": [
+            "contents/design-pattern/read-model-cutover-guardrails.md",
+            "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"
+          ],
+          "companion_max_rank": 5
+        },
+        "strict_read_intro_session_pinning_vs_expected_version": {
+          "companion_paths": [
+            "contents/design-pattern/strict-read-fallback-contracts.md",
+            "contents/design-pattern/read-model-cutover-guardrails.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "strict_read_intro_session_pinning_vs_watermark_gate": {
+          "companion_paths": [
+            "contents/design-pattern/strict-read-fallback-contracts.md",
+            "contents/design-pattern/read-model-cutover-guardrails.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "strict_read_intro_session_pinning_vs_version_gated_playbook_contrast": {
+          "companion_paths": [
+            "contents/design-pattern/strict-read-fallback-contracts.md",
+            "contents/design-pattern/read-model-cutover-guardrails.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "strict_read_intro_session_pinning_vs_version_gated_shortform": {
+          "companion_paths": [
+            "contents/design-pattern/strict-read-fallback-contracts.md",
+            "contents/design-pattern/read-model-cutover-guardrails.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "projection_freshness_intro_vs_failover_visibility_compare": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_intro_full_korean_cutover_safety_vs_failover_visibility_compare": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_intro_failover_visibility_vs_write_loss_verification_compare": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md",
+            "contents/database/commit-horizon-after-failover-verification.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "failover_stale_primary_beginner_alias": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "failover_old_primary_read_beginner_alias": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "failover_promotion_read_divergence_beginner_alias": {
+          "companion_paths": [
+            "contents/database/failover-visibility-window-topology-cache-playbook.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare": {
+          "companion_paths": [
+            "contents/design-pattern/projection-freshness-slo-pattern.md",
+            "contents/design-pattern/projection-lag-budgeting-pattern.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_intro_full_korean_projection_vs_stateful_failover_placement_compare": {
+          "companion_paths": [
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare": {
+          "companion_paths": [
+            "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_beginner_navigator_bridge_overview_neighbors": {
+          "companion_paths": [
+            "contents/design-pattern/read-model-cutover-guardrails.md",
+            "contents/design-pattern/projection-lag-budgeting-pattern.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection": {
+          "companion_paths": [
+            "contents/design-pattern/read-model-cutover-guardrails.md",
+            "contents/design-pattern/projection-lag-budgeting-pattern.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_beginner_entrypoint_bridge_siblings": {
+          "companion_paths": [
+            "contents/design-pattern/read-model-cutover-guardrails.md",
+            "contents/design-pattern/projection-lag-budgeting-pattern.md"
+          ],
+          "companion_max_rank": 3
+        },
+        "projection_freshness_beginner_staleness_overview_neighbors": {
+          "companion_paths": [
+            "contents/design-pattern/read-model-cutover-guardrails.md",
+            "contents/design-pattern/projection-lag-budgeting-pattern.md"
+          ],
+          "companion_max_rank": 3
+        }
+      }
+    },
+    "projection_symptom_only_primer_family_batch": {
+      "description": "Symptom-only beginner projection prompts should keep the read-after-write primer family clustered at the top instead of drifting into unrelated docs. The canonical primer may not always be rank #1, but the top family should stay beginner-safe and the canonical primer should remain visible for the strongest projection symptom cues.",
+      "query_ids": [
+        "projection_freshness_symptom_only_list_refresh_lag_primer",
+        "projection_freshness_symptom_only_old_screen_state_primer",
+        "projection_freshness_symptom_only_no_jargon_list_stuck",
+        "projection_freshness_symptom_only_mobile_screen_delay",
+        "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant"
+      ],
+      "canonical_query_ids": [
+        "projection_freshness_symptom_only_list_refresh_lag_primer",
+        "projection_freshness_symptom_only_old_screen_state_primer",
+        "projection_freshness_symptom_only_no_jargon_list_stuck"
+      ],
+      "canonical_primer_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "canonical_max_rank": 4,
+      "family_top_k": 3,
+      "min_family_hits": 2,
+      "family_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md",
+        "contents/system-design/post-write-stale-dashboard-primer.md",
+        "contents/system-design/beginner-consistency-self-check-worksheet.md",
+        "contents/system-design/list-detail-monotonicity-bridge.md",
+        "contents/database/replica-lag-read-after-write-strategies.md",
+        "contents/database/cache-replica-split-read-inconsistency.md",
+        "contents/database/read-your-writes-session-pinning.md",
+        "contents/database/replica-read-routing-anomalies.md"
+      ]
+    },
+    "projection_symptom_only_search_regression_sweep": {
+      "description": "A small beginner-safe projection sweep should keep symptom-only prompts anchored to the read-model staleness primer family instead of drifting toward unrelated operational docs.",
+      "query_ids": [
+        "projection_freshness_symptom_only_list_refresh_lag_primer",
+        "projection_freshness_symptom_only_no_jargon_list_stuck",
+        "projection_freshness_symptom_only_mobile_screen_delay",
+        "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_lag"
+      ],
+      "primer_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "primer_max_rank": 3,
+      "family_top_k": 3,
+      "family_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md",
+        "contents/system-design/post-write-stale-dashboard-primer.md",
+        "contents/system-design/list-detail-monotonicity-bridge.md",
+        "contents/system-design/beginner-consistency-self-check-worksheet.md"
+      ]
+    },
+    "projection_korean_failover_visibility_contrast_sweep": {
+      "description": "Korean-only beginner contrast prompts about projection freshness versus failover visibility wording should keep the primer first while the failover visibility playbook stays nearby.",
+      "query_ids": [
+        "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare"
+      ],
+      "primer_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "primer_max_rank": 1,
+      "companion_path": "contents/database/failover-visibility-window-topology-cache-playbook.md",
+      "companion_max_rank": 3
+    },
+    "projection_korean_stateful_failover_placement_contrast_sweep": {
+      "description": "Korean-only beginner contrast prompts about projection freshness versus stateful failover placement should keep the primer first while the stateful placement playbook stays nearby.",
+      "query_ids": [
+        "projection_freshness_intro_full_korean_projection_vs_stateful_failover_placement_compare",
+        "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare"
+      ],
+      "primer_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "primer_max_rank": 1,
+      "companion_path": "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+      "companion_max_rank": 3
+    },
+    "stateful_failover_beginner_contrast_sweep": {
+      "description": "Beginner sibling contrast prompts that mention both global failover and stateful placement should keep the stateful failover placement doc ahead of the generic global failover control-plane sibling.",
+      "query_ids": [
+        "stateful_failover_beginner_compare_vs_global_failover_control_plane",
+        "stateful_failover_beginner_korean_compare_vs_global_failover"
+      ],
+      "primary_path": "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+      "primary_max_rank": 1,
+      "companion_path": "contents/system-design/global-traffic-failover-control-plane-design.md",
+      "companion_max_rank": 3
+    },
+    "beginner_prompt_language_contracts": {
+      "korean_only_projection_freshness_primer_prompts": {
+        "description": "Korean-only beginner primer prompts should keep the learner-facing wording in Korean even when the retrieval intent still targets projection freshness primer coverage.",
+        "query_ids": [
+          "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+          "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+          "projection_freshness_intro_fully_korean_primer_vs_guardrail_compare",
+          "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+          "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+          "projection_freshness_cutover_safety_shortform_anchor",
+          "projection_freshness_symptom_only_detail_updated_list_card_stale",
+          "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+          "projection_freshness_symptom_only_detail_updated_list_old_value",
+        "projection_freshness_symptom_only_mobile_screen_delay",
+        "projection_freshness_symptom_only_mobile_screen_update_delay_variant",
+        "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+        "projection_freshness_symptom_only_mobile_app_screen_delay_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_shortform_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
+        "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant",
+        "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+        "projection_freshness_symptom_only_no_jargon_cached_screen_compact",
+        "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+          "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+          "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+          "projection_freshness_intro_full_korean_old_value_visible_rollback_compare",
+          "projection_freshness_intro_full_korean_saved_not_visible_rollback_compare",
+          "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+          "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+          "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard"
+        ],
+        "forbidden_terms": [
+          "primer",
+          "guardrail",
+          "read model freshness",
+          "read-your-writes"
+        ]
+      },
+      "korean_only_failover_visibility_contrast_primer_prompts": {
+        "description": "Korean-only beginner failover visibility contrast prompts should avoid falling back to English visibility wording while still anchoring the primer first.",
+        "query_ids": [
+          "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare"
+        ],
+        "forbidden_terms": [
+          "projection freshness",
+          "failover",
+          "visibility",
+          "window",
+          "read-your-writes"
+        ]
+      },
+      "korean_only_stateful_failover_placement_contrast_primer_prompts": {
+        "description": "Korean-only beginner stateful failover placement contrast prompts should stay fully learner-facing in Korean while anchoring the projection primer first.",
+        "query_ids": [
+          "projection_freshness_intro_full_korean_projection_vs_stateful_failover_placement_compare",
+          "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare"
+        ],
+        "forbidden_terms": [
+          "projection freshness",
+          "stateful",
+          "failover",
+          "placement",
+          "read-your-writes"
+        ]
+      }
+    },
+    "generic_crud_negative_projection_contracts": {
+      "description": "Generic Korean CRUD prompts without freshness cues should bridge beginners toward API or service-layer responsibility primers instead of over-routing to the read-model staleness primer.",
+      "forbidden_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "query_ids": [
+        "generic_crud_korean_update_vs_read_api_difference",
+        "generic_crud_korean_list_read_vs_update_boundary",
+        "generic_crud_korean_list_read_but_update_fails"
+      ]
     }
   },
   "queries": [
@@ -112,7 +428,7 @@
     },
     {
       "id": "java_future_completablefuture_intro_overview",
-      "prompt": "Future CompletableFuture 를 처음 배우는데 ExecutorService Callable CountDownLatch 큰 그림부터 정리해줘",
+      "prompt": "Java 동시성을 처음 배우는데 Future CompletableFuture 와 ExecutorService Callable CountDownLatch 관계를 큰 그림부터 정리해줘",
       "learning_points": [],
       "expected_path": "contents/language/java/java-concurrency-utilities.md",
       "max_rank": 1
@@ -175,9 +491,14 @@
     },
     {
       "id": "jwt_basics",
-      "prompt": "JWT 토큰이 뭐고 세션이랑 뭐가 달라?",
+      "prompt": "JWT 토큰이 뭐고 세션 쿠키로 로그인 상태를 유지하는 거랑 뭐가 달라?",
       "learning_points": [],
-      "expected_path": "contents/security/jwt-deep-dive.md"
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "acceptable_paths": [
+        "contents/security/authentication-authorization-session-foundations.md",
+        "contents/network/cookie-session-jwt-browser-flow-primer.md"
+      ],
+      "max_rank": 3
     },
     {
       "id": "jwt_intro_validation_basics",
@@ -282,8 +603,8 @@
     },
     {
       "id": "mysql_deadlock_lock_ordering",
-      "prompt": "MySQL deadlock log 보고 lock ordering 을 어떻게 고쳐?",
-      "learning_points": ["transaction_consistency"],
+      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
+      "learning_points": [],
       "expected_path": "contents/database/deadlock-case-study.md",
       "max_rank": 1
     },
@@ -352,6 +673,42 @@
       "prompt": "Controller Service Repository 계층 책임을 어떻게 나누지",
       "learning_points": ["responsibility_boundary"],
       "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
+    },
+    {
+      "id": "generic_crud_korean_update_vs_read_api_difference",
+      "prompt": "회원 수정 API와 조회 API 차이가 뭐야",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "acceptable_paths": [
+        "contents/spring/spring-mvc-controller-basics.md",
+        "contents/design-pattern/repository-pattern-vs-antipattern.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "generic_crud_korean_list_read_vs_update_boundary",
+      "prompt": "회원 목록 조회 API는 알겠는데 수정 API는 어디 책임이 달라?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+      "acceptable_paths": [
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "max_rank": 3
+    },
+    {
+      "id": "generic_crud_korean_list_read_but_update_fails",
+      "prompt": "목록 조회는 되는데 수정이 안 돼",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+      "acceptable_paths": [
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "max_rank": 3
     },
     {
       "id": "unit_of_work",
@@ -611,20 +968,423 @@
       "id": "projection_freshness_intro_before_cutover_playbooks",
       "prompt": "read model freshness 를 처음 배우는데 read model cutover guardrails 나 projection rebuild backfill cutover playbook 전에 stale read 랑 read-your-writes 큰 그림부터 알고 싶어",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "strict_read_intro_session_pinning_vs_expected_version",
+      "prompt": "session pinning strict read 와 expected version strict read 차이가 뭐야? cutover guardrail이나 fallback contract 전에 먼저 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+      "acceptable_paths": [
+        "contents/design-pattern/strict-read-fallback-contracts.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
+      "max_rank": 1
+    },
+    {
+      "id": "strict_read_intro_session_pinning_vs_watermark_gate",
+      "prompt": "watermark gated strict read 랑 session pinning strict read 차이가 뭐야? strict read fallback contract 나 read model cutover guardrails 전에 먼저 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+      "acceptable_paths": [
+        "contents/design-pattern/strict-read-fallback-contracts.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
+      "max_rank": 1
+    },
+    {
+      "id": "strict_read_intro_session_pinning_vs_version_gated_playbook_contrast",
+      "prompt": "session pinning 이랑 version-gated strict read 차이가 뭐야? strict read fallback contract 나 read model cutover guardrails 같은 운영 playbook 전에 입문 그림부터 먼저 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+      "acceptable_paths": [
+        "contents/design-pattern/strict-read-fallback-contracts.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
+      "max_rank": 1
+    },
+    {
+      "id": "strict_read_intro_session_pinning_vs_version_gated_shortform",
+      "prompt": "세션 피닝이랑 version gated strict read 는 뭐가 달라? fallback contract 나 cutover guardrails 전에 먼저 이해하고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+      "acceptable_paths": [
+        "contents/design-pattern/strict-read-fallback-contracts.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
+      "max_rank": 1
+    },
+    {
+      "id": "strict_read_fallback_contract_intro",
+      "prompt": "strict read fallback contract 를 처음 배우는데 fallback policy 와 degraded read contract 를 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/strict-read-fallback-contracts.md",
+      "acceptable_paths": [
+        "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md",
+        "contents/design-pattern/read-model-cutover-guardrails.md"
+      ],
       "max_rank": 1
     },
     {
       "id": "projection_freshness_intro_primer_vs_guardrail_compare",
       "prompt": "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, read model cutover guardrails 를 같이 비교해서 보고 싶어. 입문자는 guardrail 전에 뭐부터 이해해야 해?",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_primer_vs_rebuild_playbook_compare",
+      "prompt": "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, projection rebuild backfill cutover playbook 를 같이 비교해서 보고 싶어. 입문자는 운영 playbook 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_primer_vs_guardrail_and_rebuild_triad",
+      "prompt": "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer, read model cutover guardrails, projection rebuild backfill cutover playbook 를 같이 비교해서 보고 싶어. 입문자는 운영 문서 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+      "prompt": "읽기 모델을 처음 배우는데 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장과 전환 안전 구간 문서를 같이 비교해서 보고 싶어. 입문자는 운영 안전 규칙 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델을 처음 배우는데 저장했는데도 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장 설명이랑 프로젝션 재빌드 백필 컷오버 안내를 같이 비교해서 보고 싶어. 입문자는 운영 복구 문서 전에 어떤 기초 설명부터 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_fully_korean_primer_vs_guardrail_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 예전 값이 보여서 헷갈려. 방금 쓴 값 읽기 보장 설명이랑 전환 안전 구간 안내를 같이 비교해서 보고 싶어. 입문자는 운영 안전 규칙 전에 어떤 기초 설명부터 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 저장했는데도 예전 값이 보여서 헷갈려. 방금 쓴 값 읽기 보장 설명이랑 프로젝션 재빌드 백필 컷오버 안내를 같이 비교해서 보고 싶어. 입문자는 운영 복구 문서 전에 어떤 기초 설명부터 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+      "prompt": "읽기 모델을 처음 배우는데 방금 저장했는데도 예전 값이 보여서 헷갈려. 쓴 직후 읽기 보장 설명이랑 전환 안전 구간 안내를 같이 비교해서 보고 싶어. 입문자는 운영 문서 전에 어떤 기초 설명부터 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_cutover_safety_shortform_anchor",
+      "prompt": "컷오버 안전 구간 뭐야",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_list_refresh_lag_primer",
+      "prompt": "읽기 모델을 처음 배우는데 저장했는데 목록 새로고침이 느리고 이전 화면 상태가 한동안 남아 있어. 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_old_screen_state_primer",
+      "prompt": "처음 배우는 사람 기준으로 저장 직후 list refresh lag 때문에 old screen state 가 남아 보여. read model cutover guardrails 같은 운영 문서 전에 어떤 기초 개념부터 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_beginner_navigator_bridge_overview_neighbors",
+      "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 개요 문서랑 주변 형제 문서를 같이 보고 싶어. CQRS 전체 survey 말고 projection 큰 그림부터 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+    "id": "projection_freshness_beginner_navigator_bridge_overview_neighbors_cqrs_overview_rejection",
+    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 개요 문서랑 옆 형제 문서를 같이 보고 싶어. CQRS 전체 개요 말고 projection 큰 그림부터 보고 싶어",
+    "learning_points": [],
+    "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+    "require_all_companion_paths": true,
+    "companion_max_rank": 3,
+    "max_rank": 1
+  },
+  {
+    "id": "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection",
+    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 overview docs 랑 nearby sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
+    "learning_points": [],
+    "experience_level": "beginner",
+    "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+    "companion_paths": [
+      "contents/design-pattern/read-model-cutover-guardrails.md",
+      "contents/design-pattern/projection-lag-budgeting-pattern.md"
+    ],
+    "require_all_companion_paths": true,
+    "companion_max_rank": 3,
+    "max_rank": 1
+  },
+  {
+    "id": "projection_freshness_beginner_entrypoint_bridge_siblings",
+    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 entrypoint primer 랑 bridge docs, linked sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
+    "learning_points": [],
+    "experience_level": "beginner",
+    "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+    "companion_paths": [
+      "contents/design-pattern/read-model-cutover-guardrails.md",
+      "contents/design-pattern/projection-lag-budgeting-pattern.md"
+    ],
+    "require_all_companion_paths": true,
+    "companion_max_rank": 3,
+    "max_rank": 1
+  },
+  {
+    "id": "projection_freshness_beginner_staleness_overview_neighbors",
+    "prompt": "읽기 모델 projection 을 처음 배우는데 stale read 때문에 예전 값이 왜 보이는지 staleness overview doc 이랑 nearby docs 를 같이 보고 싶어. CQRS 전체 overview 말고 projection 큰 그림부터 보고 싶어",
+    "learning_points": [],
+    "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_no_jargon_list_stuck",
+      "prompt": "저장하고 나서 목록이 바로 안 바뀌고 예전 화면이 잠깐 보여. 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_no_jargon_delayed_screen",
+      "prompt": "수정 저장했는데 새로고침 전까지 이전 상태가 보이고 화면 반영이 한참 늦어. 입문자 기준으로 무슨 개념부터 보면 돼?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_detail_updated_list_card_stale",
+      "prompt": "상세는 바뀌었는데 목록 카드만 예전 값이 보여. 처음 배우는 사람 기준으로 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+      "prompt": "상세 화면은 바뀌었는데 리스트 카드만 이전 값이 남아 있어. 저장 직후 왜 이런지 입문자 기준으로 알고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_detail_updated_list_old_value",
+      "prompt": "상세는 바뀌었는데 목록은 예전 값이야. 처음 배우는 사람 기준으로 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_screen_delay",
+      "prompt": "모바일에서 수정 저장했는데 화면 반영이 늦고 예전 목록이 한동안 남아 있어. 처음 배우는 사람 기준으로 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_screen_update_delay_variant",
+      "prompt": "모바일에서 화면 업데이트가 늦고 목록이 한참 뒤에 바뀌어. 왜 이런 거야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+      "prompt": "모바일에서 저장했는데 화면 업데이트 지연 때문에 예전 목록이 남아 있어. 왜 이래?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+      "prompt": "모바일에서 저장은 됐는데 당겨서 새로고침해야 새 값이 보여. swipe refresh 없이는 리스트가 늦게 갱신돼. 입문자 기준으로 먼저 어떤 개념을 보면 돼?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+      "prompt": "앱에서 당겨서 새로고침 한 번 해야 최신 화면으로 바뀌어. 왜 이렇게 늦어?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_shortform_variant",
+      "prompt": "앱에서 스와이프 새로고침해야 목록이 갱신돼. 왜 바로 안 보여?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
+      "prompt": "모바일에서 스와이프 리프레시 해야 화면이 따라와. 왜 바로 반영 안 돼?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
+      "prompt": "앱에서 스와이프 새로고침하고 나서야 바뀐 값이 보여. 왜 바로 안 보여?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant",
+      "prompt": "앱에서 새로고침 쓸어내리고 나서야 새 값이 떠. 왜 바로 반영 안 돼?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_app_screen_delay_variant",
+      "prompt": "앱에서 수정했는데 화면이 늦게 바뀌고 예전 목록이 남아 있어. 왜 이래?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_mobile_pull_to_refresh_variant",
+      "prompt": "앱에서 pull to refresh 해야 바뀐 값이 보여. 리스트 갱신이 늦어.",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_delete_still_visible_in_list",
+      "prompt": "삭제는 성공했는데 목록에 계속 남아 보여. 처음 배우는 사람 기준으로 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+      "prompt": "삭제했는데 검색 결과나 목록에 아직 남아 있어. 입문자 기준으로 왜 이럴 수 있는지 먼저 알고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_primer_vs_slo_lag_budget_compare",
+      "prompt": "read model freshness 를 처음 배우는데 stale read 랑 read-your-writes primer를 먼저 보고, projection freshness SLO 문서랑 projection lag budget 문서를 같이 비교하고 싶어. 입문자는 SLO 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/projection-freshness-slo-pattern.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_only_primer_vs_slo_lag_budget_compare",
+      "prompt": "읽기 모델을 처음 배우는데 예전 값이 보여서 헷갈려. 예전 값이 보이는 기초 설명이랑 최신성 SLO, 지연 예산 문서를 같이 비교해서 보고 싶어. 입문자는 운영 목표 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/projection-freshness-slo-pattern.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+      "prompt": "읽기 모델을 처음 배우는데 저장했는데 예전 값이 보여서 헷갈려. 읽기 모델 최신성 기초 설명을 먼저 보고, 서비스 수준 목표와 반영 지연 예산을 같이 비교하고 싶어. 입문자는 운영 목표 전에 뭐부터 이해해야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/projection-freshness-slo-pattern.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
       "max_rank": 1
     },
     {
       "id": "projection_freshness_intro_rollback_window_noise_guard",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 때문에 stale read 랑 read-your-writes 큰 그림이 더 헷갈려",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -632,6 +1392,7 @@
       "id": "projection_freshness_intro_rollback_window_vs_transaction_rollback",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -639,6 +1400,15 @@
       "id": "projection_freshness_intro_rollback_window_vs_korean_transaction_rollback",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_rollback_window_vs_korean_transaction_rollback",
+      "prompt": "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -646,6 +1416,7 @@
       "id": "projection_freshness_intro_rollback_window_transaction_rollback_distinguish",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 을 어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -653,6 +1424,7 @@
       "id": "projection_freshness_intro_rollback_window_transaction_rollback_confusion",
       "prompt": "read model freshness 를 처음 배우는데 rollback window 랑 transaction rollback 헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -660,20 +1432,267 @@
       "id": "projection_freshness_intro_rollback_window_transaction_rollback_vs",
       "prompt": "read model freshness 를 처음 배우는데 rollback window vs transaction rollback 이 뭐가 다른지 모르겠어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_rollback_window_transaction_rollback_compare",
+      "prompt": "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 을 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_rollback_window_transaction_rollback_distinguish",
+      "prompt": "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 을 어떻게 구분해야 해? stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_rollback_window_transaction_rollback_confusion",
+      "prompt": "read model freshness 를 처음 배우는데 롤백 윈도우 랑 트랜잭션 롤백 헷갈림이 있어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기가 흔들리는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백을 어떻게 구분해야 해? 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_old_value_visible_rollback_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백이 헷갈려. 예전 값이 보여. 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_saved_not_visible_rollback_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 롤백 윈도우랑 트랜잭션 롤백이 헷갈려. 방금 저장했는데 안 보여. 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 전환 안전 구간이랑 장애 전환 되돌리기 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 전환 안전 구간이랑 키 교체 되돌리기 차이를 같이 비교해서 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "transaction_rollback_window_korean_contrast_without_primer_cue",
+      "prompt": "rollback window 랑 트랜잭션 롤백 차이가 뭐야",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-locking.md",
+      "acceptable_paths": [
+        "contents/database/transaction-boundary-isolation-locking-decision-framework.md"
+      ],
+      "max_rank": 2
     },
     {
       "id": "projection_freshness_intro_korean_synonyms",
       "prompt": "CQRS 읽기 모델을 처음 배우는데 롤백 윈도우 때문에 예전 값이 보임. 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
-      "max_rank": 1
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/schema-migration-partitioning-cdc-cqrs.md"
+      ],
+      "companion_max_rank": 3
     },
     {
       "id": "projection_freshness_intro_korean_saved_not_visible",
       "prompt": "읽기 모델을 처음 배우는데 방금 저장했는데 안 보여. 왜 옛값이 보여? 큰 그림부터 설명해줘",
       "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_old_value_only_visible",
+      "prompt": "옛값만 보여",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_list_not_changing_compact",
+      "prompt": "목록이 안 바뀜",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_recent_write_not_visible_compact",
+      "prompt": "방금 쓴 값이 안 보임",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "read_after_write_korean_saved_but_old_value_visible",
+      "prompt": "저장했는데 옛값이 보인다",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/replica-lag-read-after-write-strategies.md",
+      "max_rank": 1
+    },
+    {
+      "id": "read_after_write_korean_cache_vs_replica_confusion",
+      "prompt": "방금 저장했는데 캐시인지 리플리카인지 모르겠음. 입문자 기준으로 어디부터 구분해서 봐야 해?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/replica-lag-read-after-write-strategies.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_cache_confusion",
+      "prompt": "읽기 모델을 처음 배우는데 방금 저장했는데도 예전 값이 보여. 캐시 때문인가요? 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_mixed_korean_english_cache_confusion",
+      "prompt": "읽기 모델을 처음 배우는데 saved but old data, is it cache? 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_cached_screen_after_save",
+      "prompt": "저장했는데 화면이 캐시된 것처럼 안 바뀌어. 처음 배우는 사람 기준으로 왜 이런지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_no_jargon_cached_screen",
+      "prompt": "저장하고 나서 화면이 캐시된 것처럼 보여. 왜 이런지 초보자 기준으로 먼저 알고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+      "prompt": "저장했는데 화면이 계속 그대로라 캐시된 것처럼 보여",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_symptom_only_no_jargon_cached_screen_compact",
+      "prompt": "저장 후 화면이 캐시된 것처럼 보여",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_write_read_mismatch",
+      "prompt": "읽기 모델을 처음 배우는데 저장은 됐는데 조회가 달라. 왜 방금 쓴 값이 바로 안 읽히는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_stale_list_after_update",
+      "prompt": "읽기 모델을 처음 배우는데 수정했는데 목록은 그대로야. 왜 목록이 바로 안 바뀌는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_stale_list_companion_preference",
+      "prompt": "읽기 모델을 처음 배우는데 수정했는데 목록은 그대로야. 왜 목록이 바로 안 바뀌는지 큰 그림부터 설명해주고, 다음으로는 projection lag budget 문서와 repository boundary 문서 중 뭐를 먼저 같이 보면 좋은지도 궁금해",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/projection-lag-budgeting-pattern.md",
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_query_old_data",
+      "prompt": "읽기 모델을 처음 배우는데 저장 직후 조회하면 예전 데이터가 보임. 왜 방금 쓴 값이 바로 안 읽히는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_list_not_refreshing",
+      "prompt": "읽기 모델을 처음 배우는데 저장 직후 목록 최신화가 안 됨. 왜 목록이 바로 안 바뀌는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_list_still_same",
+      "prompt": "읽기 모델을 처음 배우는데 저장했는데 목록이 그대로야. 왜 방금 바꾼 내용이 목록에 안 보이는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_old_list_on_screen",
+      "prompt": "읽기 모델을 처음 배우는데 수정했는데 화면엔 예전 목록이 보여. 왜 화면 반영이 늦는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_korean_screen_update_late",
+      "prompt": "읽기 모델을 처음 배우는데 저장한 뒤 화면 반영이 늦음. 왜 방금 쓴 값이 바로 안 보이는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -681,6 +1700,172 @@
       "id": "projection_freshness_intro_cutover_safety_failover_rollback_noise_guard",
       "prompt": "read model freshness 를 처음 배우는데 cutover safety window 동안 stale read 랑 read-your-writes 를 어떻게 이해해야 해? failover rollback 같은 운영 얘기 전에 큰 그림부터 알고 싶어",
       "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_cutover_safety_vs_failover_visibility_different",
+      "prompt": "read model freshness 를 처음 배우는데 cutover safety window 랑 failover visibility window 가 어떻게 다른지 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_mixed_cutover_safety_vs_failover_visibility_compare",
+      "prompt": "읽기 모델을 처음 배우는데 cutover safety window vs failover visibility window 를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_cutover_safety_vs_failover_visibility_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 전환 안전 윈도우 랑 failover visibility window 차이를 같이 보고 싶어. 왜 예전 값이 보이고 방금 쓴 값 읽기 보장이 흔들리는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_cutover_safety_vs_failover_rollback_compare",
+      "prompt": "read model freshness 를 처음 배우는데 cutover safety window 랑 failover rollback 을 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_vs_failover_compare",
+      "prompt": "read model freshness 를 처음 배우는데 projection freshness 랑 failover 차이를 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_vs_failover_visibility_compare",
+      "prompt": "read model freshness 를 처음 배우는데 projection freshness 랑 failover visibility window 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_vs_failover_visibility_alias_compare",
+      "prompt": "읽기 모델을 처음 배우는데 projection freshness 랑 failover visibility 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 투영 최신성이랑 장애 전환 뒤 읽기 보임 구간이 어떻게 다른지 같이 알고 싶어. 왜 저장 직후엔 예전 값이 남고 장애 전환 뒤엔 옛 주 서버를 읽을 수 있는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_vs_stateful_failover_placement_compare",
+      "prompt": "read model freshness 를 처음 배우는데 projection freshness 랑 stateful failover placement 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_projection_vs_stateful_failover_placement_compare",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 투영 최신성이랑 상태 저장 워크로드 장애 전환 배치가 어떻게 다른지 같이 알고 싶어. 왜 저장 직후엔 예전 값이 남고 상태 저장 서비스는 장애 때 어느 복제본을 올릴지 따로 고민하는지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare",
+      "prompt": "입문자 기준으로 읽기 모델 최신성이랑 상태 저장 서비스 리더 배치, 배치 예산 판단이 뭐가 다른지 비교해줘. 저장 직후 예전 값이 보이는 문제와 장애 전환 때 리더를 어디에 둘지 고민하는 문제를 큰 그림부터 알고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/system-design/stateful-workload-placement-failover-control-plane-design.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_vs_failover_verification_compare",
+      "prompt": "read model freshness 를 처음 배우는데 projection freshness 랑 failover verification 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/commit-horizon-after-failover-verification.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "projection_freshness_intro_failover_visibility_vs_write_loss_verification_compare",
+      "prompt": "read model freshness 를 처음 배우는데 failover visibility window 에서 stale read 가 보일 수 있다는 말이랑 write loss audit 로 verify 해야 한다는 말을 같이 들었어. 뭐가 다른지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md",
+        "contents/database/commit-horizon-after-failover-verification.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "projection_freshness_intro_korean_cutover_safety_failover_noise_guard",
+      "prompt": "읽기 모델을 처음 배우는데 전환 안전 구간 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 깨지는지 알고 싶어. failover rollback 같은 운영 얘기 전에 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_transliterated_cutover_safety_zone_failover_noise_guard",
+      "prompt": "읽기 모델을 처음 배우는데 컷오버 안전 구간 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 깨지는지 알고 싶어. failover rollback 같은 운영 얘기 전에 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_mixed_korean_english_cutover_safety_stale_reads",
+      "prompt": "읽기 모델을 처음 배우는데 cutover safety window 동안 stale reads 가 보이고 쓴 직후 읽기 보장이 왜 깨지는지 큰 그림부터 알고 싶어. failover rollback 같은 운영 얘기는 잠깐 빼고",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -688,6 +1873,48 @@
       "id": "projection_freshness_intro_cutover_safety_key_rotation_noise_guard",
       "prompt": "read model freshness 를 처음 배우는데 cutover safety window 와 rollback window 때문에 stale read 가 왜 생기는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고",
       "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_mixed_cutover_safety_failover_key_rotation_noise_guard",
+      "prompt": "읽기 모델을 처음 배우는데 cutover safety window 동안 stale reads 가 보이고 쓴 직후 읽기 보장이 왜 깨지는지 알고 싶어. failover rollback 이나 key rotation rollback 같은 운영 키워드는 잠깐 빼고 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1,
+      "top3_category": "design-pattern"
+    },
+    {
+      "id": "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard",
+      "prompt": "읽기 모델을 처음 배우는데 전환 안전 윈도우 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 흔들리는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard",
+      "prompt": "읽기 모델 최신성을 처음 배우는데 전환 안전 윈도우 동안 예전 값이 보이고 방금 쓴 값 읽기 보장이 왜 흔들리는지 알고 싶어. 키 교체 되돌리기 같은 운영 얘기는 잠깐 빼고 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_spaced_transliterated_cutover_safety_window_key_rotation_noise_guard",
+      "prompt": "읽기 모델을 처음 배우는데 컷 오버 안전 윈도우 동안 예전 값이 보이고 쓴 직후 읽기 보장이 왜 흔들리는지 알고 싶어. key rotation rollback 같은 운영 얘기는 잠깐 빼고 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_intro_cutover_safety_vs_key_rotation_rollback_compare",
+      "prompt": "read model freshness 를 처음 배우는데 cutover safety window 랑 key rotation rollback 을 같이 비교해서 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "max_rank": 1
     },
@@ -704,6 +1931,16 @@
       "learning_points": [],
       "expected_path": "contents/design-pattern/projection-freshness-slo-pattern.md",
       "max_rank": 3
+    },
+    {
+      "id": "projection_freshness_advanced_slo_tuning_without_beginner_cues",
+      "prompt": "projection freshness SLO tuning 에서 freshness SLI, lag breach policy, consumer backlog budget, projection watermark gap, read-your-writes exception budget 를 어떻게 묶어?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+      "acceptable_paths": [
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "max_rank": 1
     },
     {
       "id": "projection_lag_budgeting",
@@ -776,6 +2013,30 @@
       "max_rank": 3
     },
     {
+      "id": "stateful_failover_beginner_compare_vs_global_failover_control_plane",
+      "prompt": "failover 를 처음 배우는데 global traffic failover 랑 stateful workload placement failover control plane 차이를 같이 보고 싶어. regional evacuation 보다 leader placement 랑 placement budget 이 왜 따로 필요한지 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/system-design/global-traffic-failover-control-plane-design.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
+      "id": "stateful_failover_beginner_korean_compare_vs_global_failover",
+      "prompt": "장애 전환을 처음 배우는데 전역 트래픽 우회랑 상태 있는 워크로드 배치 장애 전환이 어떻게 다른지 헷갈려. regional evacuation 보다 shard owner, leader placement, placement budget 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/system-design/global-traffic-failover-control-plane-design.md"
+      ],
+      "companion_max_rank": 3
+    },
+    {
       "id": "failover_visibility_window",
       "prompt": "failover visibility window 동안 stale primary 와 topology cache divergence 를 어떻게 줄이지?",
       "learning_points": [],
@@ -788,6 +2049,50 @@
       "learning_points": [],
       "expected_path": "contents/database/failover-visibility-window-topology-cache-playbook.md",
       "max_rank": 3
+    },
+    {
+      "id": "failover_visibility_alias",
+      "prompt": "failover visibility 때문에 stale primary 랑 topology cache divergence 가 왜 생기는지 알고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/failover-visibility-window-topology-cache-playbook.md",
+      "max_rank": 3
+    },
+    {
+      "id": "failover_stale_primary_beginner_alias",
+      "prompt": "stale primary 가 뭐야? failover 뒤에 왜 예전 primary 를 읽어?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/failover-promotion-read-divergence.md",
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "failover_old_primary_read_beginner_alias",
+      "prompt": "old primary read 가 왜 생겨? failover 뒤 읽기가 갈라지는 이유를 초보자 기준으로 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/failover-promotion-read-divergence.md",
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "failover_promotion_read_divergence_beginner_alias",
+      "prompt": "promotion read divergence 가 뭐야? failover 후 왜 어떤 요청은 옛값을 읽어?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/failover-promotion-read-divergence.md",
+      "companion_paths": [
+        "contents/database/failover-visibility-window-topology-cache-playbook.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
     },
     {
       "id": "failover_commit_horizon_verification",
@@ -833,6 +2138,270 @@
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-ioc-di-basics.md",
       "max_rank": 3
+    },
+    {
+      "id": "beginner_spring_dispatcherservlet_primer",
+      "prompt": "DispatcherServlet 이 뭐야? 처음 배우는데 요청 흐름이랑 bean 컨테이너 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_spring_transactional_basics",
+      "prompt": "@Transactional 이 뭐야? 처음 배우는데 동작 원리 큰 그림부터 설명해줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_spring_di_vs_ioc_primer",
+      "prompt": "DI vs IoC 차이가 뭐야? 처음 배우는데 스프링 기준으로 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_network_keepalive_primer",
+      "prompt": "HTTP keep-alive 가 뭐야? 처음 배우는데 connection reuse 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_database_connection_pool_primer",
+      "prompt": "connection pool 이 뭐야? 처음 배우는데 왜 필요한지 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_primer",
+      "prompt": "세션이랑 JWT 차이가 뭐야? 처음 배우는데 로그인 흐름 관점으로 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/authentication-authorization-session-foundations.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_dispatcherservlet_shortform_lockin",
+      "prompt": "DispatcherServlet 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_dispatcher_servlet_spacing_shortform_lockin",
+      "prompt": "Dispatcher Servlet 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_dispatcher_servlet_lowercase_shortform_lockin",
+      "prompt": "dispatcher servlet 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_dispatcherservlet_colloquial_shortform_lockin",
+      "prompt": "DispatcherServlet 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_transactional_shortform_lockin",
+      "prompt": "@Transactional 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_transactional_colloquial_shortform_lockin",
+      "prompt": "@Transactional 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_transactional_english_shortform_lockin",
+      "prompt": "What is @Transactional?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_transactional_english_plain_alias_lockin",
+      "prompt": "What is transactional in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_di_vs_ioc_shortform_lockin",
+      "prompt": "DI vs IoC 차이가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_di_vs_ioc_colloquial_shortform_lockin",
+      "prompt": "DI vs IoC 차이가 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_keepalive_shortform_lockin",
+      "prompt": "HTTP keep-alive 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_keepalive_colloquial_shortform_lockin",
+      "prompt": "HTTP keep-alive 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_keep_alive_spacing_shortform_lockin",
+      "prompt": "HTTP keep alive 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_connection_pool_shortform_lockin",
+      "prompt": "connection pool 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_connection_pool_colloquial_shortform_lockin",
+      "prompt": "connection pool 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_connection_pooling_shortform_lockin",
+      "prompt": "connection pooling 이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_di_and_ioc_shortform_lockin",
+      "prompt": "DI와 IoC 차이가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_shortform_lockin",
+      "prompt": "세션이랑 JWT 차이가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_colloquial_shortform_lockin",
+      "prompt": "세션이랑 JWT 차이가 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_english_shortform_lockin",
+      "prompt": "session vs JWT what is the difference?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_cookie_login_state_lockin",
+      "prompt": "JWT가 쿠키랑 뭐가 다른데? 로그인 상태는 왜 유지돼?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_login_persistence_colloquial_lockin",
+      "prompt": "JWT랑 쿠키 둘 다 로그인 유지에 쓰는 거야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_session_vs_jwt_cookie_login_state_english_lockin",
+      "prompt": "If JWT exists, why do I still stay logged in with cookies?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_cookie_login_state_no_jwt_korean_lockin",
+      "prompt": "왜 쿠키 있으면 로그인 안 풀려?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_cookie_login_state_no_jwt_english_lockin",
+      "prompt": "Why do cookies keep me signed in?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_cookie_browser_remembers_login_korean_lockin",
+      "prompt": "브라우저가 로그인 기억하는 건 세션이야 JWT야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_cookie_browser_remembers_login_english_lockin",
+      "prompt": "Why am I still logged in when the browser remembers my cookie?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/security/session-cookie-jwt-basics.md",
+      "max_rank": 1
     },
     {
       "id": "beginner_network_tcp_udp_intro",

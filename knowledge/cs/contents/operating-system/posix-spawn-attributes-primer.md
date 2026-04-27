@@ -18,9 +18,9 @@
 - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: posix_spawn attributes primer, posix_spawnattr basics, posix_spawnattr_t mental model, posix_spawnattr_setflags, POSIX_SPAWN_SETPGROUP, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, posix_spawn process group basics, posix_spawn signal mask basics, posix_spawn signal default basics, posix_spawn attrs vs file actions, spawn attributes beginner, process group ctrl c child launch, signal mask child launch basics, posix_spawn attrs session process group, setsid setpgid follow-up, blocked signal vs ignored signal, signal mask vs disposition follow-up
+retrieval-anchor-keywords: posix_spawn attributes primer, posix_spawnattr basics, posix_spawnattr_t mental model, posix_spawnattr_setflags, POSIX_SPAWN_SETPGROUP, POSIX_SPAWN_SETSIGMASK, POSIX_SPAWN_SETSIGDEF, posix_spawn process group basics, posix_spawn signal mask basics, posix_spawn signal default basics, posix_spawn attrs vs file actions, spawn attributes beginner, process group ctrl c child launch, signal mask child launch basics, posix_spawn attrs session process group, setsid setpgid follow-up, blocked signal vs ignored signal, signal mask vs disposition follow-up, posix_spawn attributes self-check, beginner handoff box, primer handoff box, posix_spawn attributes 다음 문서, posix_spawn 속성 자가 점검
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 `posix_spawn()`를 처음 볼 때는 설정이 둘로 쪼개져 있어 어색하다.
 
@@ -70,7 +70,7 @@ attrs        = child의 process 상태를 어떻게 시작시킬까
 
 ## `posix_spawnattr_t`는 어떻게 읽으면 되나
 
-`posix_spawnattr_t`는 opaque 설정 객체라서 안쪽 구조를 들여다보는 타입이 아니다.  
+`posix_spawnattr_t`는 opaque 설정 객체라서 안쪽 구조를 들여다보는 타입이 아니다.
 beginner 단계에서는 아래 3단계만 기억하면 충분하다.
 
 1. `posix_spawnattr_init()`으로 빈 설정을 만든다
@@ -139,7 +139,7 @@ signal mask는 "그 signal이 존재하지 않는다"가 아니라 **"지금 당
 - signal-safe section
 - library 내부 critical section
 
-이런 경로에서 spawn하면 child도 그 block 상태를 이어받는 것이 당연할 수 있다.  
+이런 경로에서 spawn하면 child도 그 block 상태를 이어받는 것이 당연할 수 있다.
 그런데 beginner가 원하는 건 보통 "새 프로그램은 깔끔한 signal 시작 상태"다.
 
 이럴 때 `posix_spawnattr_setsigmask()` + `POSIX_SPAWN_SETSIGMASK`로 child의 initial mask를 명시한다.
@@ -156,7 +156,7 @@ signal mask는 "그 signal이 존재하지 않는다"가 아니라 **"지금 당
 
 ## beginner가 같이 알아두면 좋은 3번: signal defaults
 
-`signal mask`만 알면 반쯤 맞고 반쯤 틀린다.  
+`signal mask`만 알면 반쯤 맞고 반쯤 틀린다.
 왜냐하면 "block 여부"와 "받았을 때 무엇을 할지"는 다르기 때문이다.
 
 `posix_spawnattr_setsigdefault()` + `POSIX_SPAWN_SETSIGDEF`는 child에서 특정 signal을 **기본 동작으로 되돌리는** 용도다.
@@ -248,7 +248,7 @@ posix_spawn_file_actions_destroy(&actions);
 - leaked fd across `exec()`
 - stdout/stderr redirect
 
-이 문제들은 여전히 `file actions`, `O_CLOEXEC`, parent/child `close()` 규칙 쪽이다.  
+이 문제들은 여전히 `file actions`, `O_CLOEXEC`, parent/child `close()` 규칙 쪽이다.
 `attrs`는 그걸 대신해 주지 않는다.
 
 ## 어떤 순서로 이해하면 좋은가
@@ -262,6 +262,29 @@ posix_spawn_file_actions_destroy(&actions);
 5. blocked signal과 ignored/default/handler 차이가 아직 섞이면 [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)로 내려가 "mask 문제인지 disposition 문제인지"부터 분리한다
 6. session, process group, controlling terminal, `setsid()`, `setpgid()`가 섞이면 [Session vs Process Group Primer](./session-vs-process-group-primer.md)로 bridge를 건다
 7. signal 운영 감각을 더 넓히려면 [signals, process supervision](./signals-process-supervision.md)로 내려간다
+
+## Self-check (자가 점검 4문항)
+
+아래 질문은 시험이 아니라, 지금 이해한 축을 말로 꺼내 보고 다음 문서를 고르기 위한 점검이다. 먼저 짧게 답해 보고, 막히면 바로 아래 `힌트`만 확인해 보자.
+
+1. `attrs`가 다루는 축(process group/signal 시작 상태)과 `file actions`가 다루는 축(fd 배선)을 분리해 설명할 수 있는가?
+   힌트: `attrs`는 "어떤 실행 문맥으로 띄울지", `file actions`는 "입출력 선을 어떻게 꽂을지"를 정한다.
+2. `setpgroup`/`setsigmask` 같은 setter 호출만으로는 부족하고 대응 flag를 켜야 적용된다는 규칙을 기억하는가?
+   힌트: 값만 적어 두면 안 되고 "이 값을 실제로 써라"는 플래그까지 켜야 spawn 때 반영된다.
+3. `signal mask`와 `signal disposition(ignore/default/handler)`이 다른 상태라는 점을 launch 문제에서 구분할 수 있는가?
+   힌트: mask는 "지금 받지 않기", disposition은 "받으면 어떻게 행동할지"라서 같은 신호 문제라도 층위가 다르다.
+4. "`Ctrl-C` 전달 경로를 바꾸는 문제(process group)"와 "`신호를 받았을 때 child의 시작 상태 문제(mask/default)`"를 다른 질문으로 나눠 디버깅할 수 있는가?
+   힌트: 신호가 아예 누구에게 가는지와, 도착한 뒤 child가 어떻게 반응하는지는 따로 떼어 봐야 헷갈리지 않는다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "이제 `Ctrl-C`/foreground job 쪽 그림으로 넘어가고 싶으면": [Session vs Process Group Primer](./session-vs-process-group-primer.md)
+> - "shell에서 `jobs`/`fg`/`bg`/`nohup`이 실제로 무엇을 바꾸는지 바로 보고 싶으면": [Shell Job-Control Command Bridge](./shell-job-control-command-bridge.md)
+> - "`mask`와 `ignore/default/handler` 차이를 launch 경계에서 더 정확히 보고 싶으면": [Signal Mask vs Disposition Bridge: `fork()`, `exec()`, `posix_spawn()`](./signal-mask-vs-disposition-fork-exec-posix-spawn.md)
+> - "launch API 전체 그림에서 `posix_spawn()` 위치를 다시 잡고 싶으면": [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
+> - 운영체제 입문 primer 묶음으로 돌아가려면: [Operating System README - 입문 primer](./README.md#입문-primer)
 
 ## 한 줄 정리
 

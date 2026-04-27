@@ -4,19 +4,30 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
-> - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
-> - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
-> - [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
-> - [Spring WebClient Connection Pool and Timeout Tuning](./spring-webclient-connection-pool-timeout-tuning.md)
-> - [Spring SecurityContext Propagation Across Async and Reactive Boundaries](./spring-securitycontext-propagation-async-reactive-boundaries.md)
-> - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
-> - [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](../network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
-> - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](../network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
-> - [Connection Keep-Alive, Load Balancing, Circuit Breaker](../network/connection-keepalive-loadbalancing-circuit-breaker.md)
+관련 문서:
 
-retrieval-anchor-keywords: RestClient, WebClient, lifecycle boundaries, blocking client, reactive client, request execution, exchange filters, client connector, outbound HTTP
+- [Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나](./spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md)
+- [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)
+- [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
+- [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+- [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
+- [Spring Reactive-Blocking Bridge: `block()`, `boundedElastic`, and Boundary Traps](./spring-reactive-blocking-bridge-boundedelastic-block-traps.md)
+- [Spring WebClient Connection Pool and Timeout Tuning](./spring-webclient-connection-pool-timeout-tuning.md)
+- [Spring SecurityContext Propagation Across Async and Reactive Boundaries](./spring-securitycontext-propagation-async-reactive-boundaries.md)
+- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+- [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](../network/timeout-budget-propagation-proxy-gateway-service-hop-chain.md)
+- [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](../network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
+- [Connection Keep-Alive, Load Balancing, Circuit Breaker](../network/connection-keepalive-loadbalancing-circuit-breaker.md)
+
+retrieval-anchor-keywords: restclient vs webclient, resttemplate to restclient next step, restclient migration next doc, blocking vs reactive http client, restclient lifecycle, webclient lifecycle, restclient 뭐예요, webclient 뭐예요, 처음 배우는데 restclient webclient 차이, 동기냐 리액티브냐, restclient deep dive before primer, reactive client vs blocking client
+
+## 이 문서 전에 먼저 보면 좋은 entrypoint
+
+이 문서는 lifecycle deep dive라서, 처음 배우는데 `restclient` 자체가 아직 낯설다면 바로 여기로 오면 용어가 먼저 쏟아질 수 있다.
+
+- `resttemplate`에서 `restclient`로 옮기는 중이라면 먼저 [Spring `RestClient.Builder` 입문 브리지: `RestClientCustomizer`, 전용 `RestClient` bean, builder 교체는 언제 고르나](./spring-restclient-builder-customizer-vs-dedicated-client-vs-builder-replacement-primer.md)로 가서 "`restclient`를 언제 쓰는지"부터 잡는다.
+- `resttemplate`가 원래 어떤 종류의 도구였는지 큰 그림이 먼저 필요하면 [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)을 먼저 본다.
+- 그 다음에야 이 문서에서 blocking lifecycle과 reactive lifecycle 차이를 비교하면 된다.
 
 ## 핵심 개념
 

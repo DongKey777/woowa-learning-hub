@@ -6,12 +6,37 @@
 
 관련 문서:
 
+- [Controller / Service / Repository before 예시 - 주문 생성 로직이 Controller에 몰린 상태](./layered-architecture-basics.md#before-주문-생성-로직이-controller에-몰린-상태)
+- [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
+- [Controller가 Repository 조회로 검증까지 하는 안티패턴 before/after](./layered-architecture-basics.md#짧은-안티패턴-비교-controller가-repository-조회로-검증까지-하는-경우)
+- [계층형 아키텍처 기초 - Controller 검증/트랜잭션 경계 self-check](./layered-architecture-basics.md#controller-검증트랜잭션-경계-self-check-3문항)
+- [도메인 불변식을 계약처럼 다루기](./domain-invariants-as-contracts.md)
 - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
+- [테스트 전략 기초 - 첫 테스트 선택표](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준)
 - [API 설계와 예외 처리](./api-design-error-handling.md)
 - [Spring IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: service layer basics, 서비스 계층 입문, service class 역할, 서비스 레이어 뭐하는 곳, controller vs service 차이, service 비즈니스 로직, service god class, 서비스 클래스 너무 커져요, application service, domain service 차이, 서비스 레이어 입문, beginner service layer
+retrieval-anchor-keywords: service layer basics, 서비스 계층 입문, 서비스 레이어 뭐하는 곳, controller vs service 차이, service validation boundary, service transaction boundary, service 테스트 어디서 시작, service unit test integration test 선택, 서비스 첫 테스트 선택, 주문 생성 재고 차감 서비스 예시, 서비스 변경 테스트 시작점, 서비스 변경 무조건 통합테스트, service 흔한 오해, 얇은 controller 오해, 저장 세부를 service가 아는 경우
+
+## 먼저 잡는 한 줄 멘탈 모델
+
+Service는 "많이 아는 계층"이 아니라, **입력/저장 세부를 제외하고 유스케이스 순서와 트랜잭션 경계를 조립하는 계층**이다.
+
+## 읽고 바로 다음 한 걸음
+
+Service 책임이 어느 정도 감으로 잡혔다면, 다음 질문은 거의 항상 같다. **"이 Service 변경을 어떤 첫 테스트로 잠글까?"**
+
+아래처럼 바로 이어 읽으면 된다.
+
+| 지금 막 잡힌 질문 | 다음 문서 | 먼저 볼 행/섹션 |
+|---|---|---|
+| 계산 규칙이 바뀌었다 | [테스트 전략 기초](./test-strategy-basics.md) | [첫 테스트 선택표의 `계산식/검증 로직 변경`](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준) |
+| Service가 여러 저장/호출 순서를 바꿨다 | [테스트 전략 기초](./test-strategy-basics.md) | [첫 테스트 선택표의 `트랜잭션 경계/여러 컴포넌트 협력 흐름 변경`](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준) |
+| Controller까지 같이 바뀌었다 | [테스트 전략 기초](./test-strategy-basics.md) | [30초 자가진단 카드](./test-strategy-basics.md#30초-자가진단-카드-4문항-yesno) |
+
+- 짧게 외우면: `규칙`이 중심이면 unit test, `협력/롤백`이 중심이면 integration test부터 본다.
+- Controller, Service, Test를 같은 주문 예시로 한 번에 잇고 싶다면 `계층형 아키텍처 기초 -> Service 계층 기초 -> 테스트 전략 기초` 순서가 beginner 동선이다.
 
 ## 핵심 개념
 
@@ -22,6 +47,8 @@ Service 계층은 Layered Architecture에서 Controller(입력층)와 Repository
 - Controller는 HTTP 요청을 받아 Service를 호출하고, 응답을 반환하는 역할이다.
 - Repository는 데이터를 읽고 쓰는 역할이다.
 - Service는 그 사이에서 어떤 순서로, 어떤 규칙을 지키며 도메인 객체와 저장소를 조합할지 결정한다.
+
+처음 Service 책임을 읽은 뒤 바로 "그럼 이 변경은 unit test로 볼까, integration test로 볼까?"가 궁금해지면 [테스트 전략 기초의 첫 테스트 선택표](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준)로 바로 이동하면 된다. 예를 들어 Service에서 계산 규칙만 바뀌면 단위 테스트부터, 트랜잭션 경계나 여러 협력 흐름이 바뀌면 통합 테스트부터 보는 식이다.
 
 입문자가 헷갈리는 지점은 "어떤 코드가 Service에 있어야 하고, 어떤 코드가 Domain에 있어야 하는가"다.
 
@@ -55,6 +82,136 @@ Repository  ← 저장, 조회
 
 경계를 지키지 않으면 비즈니스 로직이 Controller로 새거나, 저장 기술이 Service에 노출된다.
 
+## before / after 한눈 비교
+
+아래 표는 [계층형 아키텍처 기초의 before/after 코드](./layered-architecture-basics.md#작은-beforeafter-코드-스케치)와 같은 **주문 생성 + 재고 확인/차감** 시나리오를 기준으로 읽으면 가장 덜 헷갈린다.
+
+| 상태 | 코드 신호 | 결과 |
+|---|---|---|
+| before: 책임 혼합 | 주문 생성 시 Controller가 `수량은 1 이상` 검사, 재고 확인, 주문 저장까지 직접 처리 | 웹 진입점이 바뀌면 같은 규칙을 다시 써야 하고, 주문 저장/재고 차감 원자성도 흩어진다 |
+| after: 책임 분리 | Controller는 요청만 받고, Service가 `수량 검증 -> 재고 확인 -> 재고 차감 -> 주문 저장` 순서를 조립 | 같은 주문 생성 규칙을 웹/배치에서 재사용하기 쉽고 트랜잭션 경계도 한곳에 모인다 |
+
+## 같은 시나리오로 보는 역할 분담
+
+처음 읽을 때는 "Service가 뭘 추가로 하는가?"를 추상적으로 외우기보다, 같은 주문 생성 예시를 계층별로 잘라 보는 편이 빠르다.
+
+| 계층 | 주문 생성 시 무엇을 하나 | 이 예시에서 하지 않는 일 |
+|---|---|---|
+| Controller | `OrderRequest`를 받고 `orderService.createOrder(...)`를 호출 | 재고 부족 판단, 트랜잭션 시작, SQL 실행 |
+| Service | 수량 검증, 재고 확인, 재고 차감과 주문 저장 순서 결정, 트랜잭션 관리 | HTTP 상태 코드 결정, JSON 파싱 |
+| Repository | `orders` 저장, `inventory` 조회/차감 | "재고가 부족하면 주문 불가" 같은 업무 규칙 판단 |
+
+## Service와 Domain 규칙 위치 짧은 before / after
+
+처음엔 "업무 규칙이면 전부 Service에 두면 되나?"라고 생각하기 쉽다. 더 쉬운 기준은 이렇다: **한 도메인 객체가 스스로 지켜야 하는 규칙이면 Domain, 그 규칙을 실행하기 위한 조회 순서와 저장 순서 조합이면 Service**다.
+
+```java
+// before: 규칙이 Service 안에 뭉쳐 있어 Order가 빈 껍데기처럼 남는다
+class OrderService {
+    void placeOrder(Product product, int quantity) {
+        if (quantity < 1) {
+            throw new IllegalArgumentException("수량은 1 이상");
+        }
+        Order order = new Order(product, quantity);
+        orderRepository.save(order);
+    }
+}
+
+// after: Order가 자기 규칙을 지키고, Service는 흐름만 조립한다
+class Order {
+    Order(Product product, int quantity) {
+        if (quantity < 1) {
+            throw new IllegalArgumentException("수량은 1 이상");
+        }
+        this.product = product;
+        this.quantity = quantity;
+    }
+}
+
+class OrderService {
+    void placeOrder(Product product, int quantity) {
+        Order order = new Order(product, quantity);
+        orderRepository.save(order);
+    }
+}
+```
+
+이 예시에서 `수량은 1 이상`은 `Order`가 혼자서도 항상 지켜야 하는 규칙이므로 Domain으로 옮기는 편이 자연스럽다. 반대로 "재고를 조회하고, 부족하면 실패시키고, 성공하면 주문 저장까지 같이 묶는다"는 흐름은 여러 객체와 저장소를 조합하므로 Service에 남는다.
+
+## 왕복 학습 루트 (before/after 예시 기준)
+
+처음에는 "Service가 정확히 뭘 해야 하지?"보다 "책임이 섞였을 때 코드가 어떻게 나빠지는지"를 먼저 보는 편이 빠르다.
+
+| 지금 궁금한 질문 | 먼저 볼 문서 | 다시 돌아올 문서 |
+|---|---|---|
+| Controller에 규칙/저장이 섞이면 뭐가 문제인지 감이 안 온다 | [계층형 아키텍처 기초의 작은 before/after 코드 스케치](./layered-architecture-basics.md#작은-beforeafter-코드-스케치) | [Service 계층 기초](./service-layer-basics.md) |
+| after 코드에서 Service 책임을 어디까지 잡아야 할지 애매하다 | [Service 계층 기초](./service-layer-basics.md) | [흔한 오해와 함정](./service-layer-basics.md#흔한-오해와-함정) |
+
+## 검증/트랜잭션 경계 quick sync
+
+이 문서의 기준은 [계층형 아키텍처 기초의 Controller 검증/트랜잭션 경계 self-check](./layered-architecture-basics.md#controller-검증트랜잭션-경계-self-check-3문항)와 같다. 헷갈리면 아래 표를 먼저 보고, 더 자세한 자가진단은 원문으로 이동하면 된다.
+
+| 질문 | 기본 위치 | 이유 |
+|---|---|---|
+| `null`, 빈 문자열, JSON 형식, `@Valid` 같은 요청 형식 검사는 어디에 둘까? | Controller | HTTP 요청을 해석하는 단계이기 때문이다. |
+| 주문 생성에서 "수량은 1 이상", "재고가 부족하면 주문할 수 없다" 같은 업무 규칙 검증은 어디에 둘까? | Service 또는 Domain | 웹 말고 배치/메시지 소비자에서도 같은 규칙을 재사용해야 하기 때문이다. |
+| 회원가입에서 `existsByEmail(...)`처럼 Repository 조회가 필요한 중복 검사 규칙은 어디에 둘까? | Service 또는 Domain | 조회가 들어가더라도 여전히 업무 규칙이며, Controller에 두면 다른 진입점에서 중복 구현된다. |
+| 주문 저장과 재고 차감이 같이 성공/실패해야 하면 어디에 트랜잭션을 둘까? | Service | 유스케이스 전체의 원자성을 한곳에서 조율해야 하기 때문이다. |
+
+짧게 외우면 이렇다.
+
+- 입력 형식 검사는 Controller
+- 여러 진입점에서 공통인 업무 규칙은 Service/Domain
+- 같이 성공하거나 같이 실패해야 하는 경계는 Service 트랜잭션
+- Repository 조회가 필요한 중복 검사는 "조회가 있다"가 아니라 "규칙 재사용이 필요하다"를 기준으로 Service 쪽에 둔다
+
+## Service 변경이면 첫 테스트를 어디서 시작할까
+
+먼저 이렇게 잡으면 된다. **Service 코드가 바뀌었다고 항상 Service 통합 테스트부터 시작하는 것은 아니다.** 바뀐 것이 "규칙"이면 unit test부터, 바뀐 것이 "여러 협력과 트랜잭션 연결"이면 integration test부터 보는 편이 빠르다.
+
+| Service 변경 유형 | 먼저 볼 테스트 | 왜 여기서 시작하나 | 아주 작은 예시 1개 |
+|---|---|---|---|
+| 계산식/상태 전이 규칙 변경 | unit test | 핵심 위험이 비즈니스 규칙 자체에 있다 | `OrderService`에서 VIP 할인율을 `10% -> 15%`로 바꿨다면, `최종 금액 계산`을 단위 테스트로 먼저 고정한다. |
+| Repository 조회를 포함한 업무 판단 추가 | unit test | 조회 결과에 따라 어떤 결정을 내리는지가 먼저 중요하다 | `existsByEmail(...)` 결과가 `true`면 가입을 막도록 바꿨다면, fake repository로 `중복 이메일이면 예외`를 먼저 검증한다. |
+| 저장 순서/트랜잭션 경계 변경 | integration test | 롤백과 실제 협력 흐름은 붙여 봐야 드러난다 | 주문 저장 뒤 재고 차감을 하던 흐름을 `재고 차감 -> 주문 저장`으로 바꿨다면, 실패 시 둘 다 롤백되는지 통합 테스트로 먼저 확인한다. |
+| 외부 시스템 호출이 끼어든 오케스트레이션 변경 | integration test부터 1개, 필요 시 unit test 추가 | wiring과 실제 연결 순서가 깨질 위험이 크다 | 결제 승인 후 주문 확정으로 바꿨다면, `PaymentClient -> OrderRepository` 흐름이 실제 빈 연결에서 이어지는지 통합 테스트 1개를 먼저 둔다. |
+
+헷갈리면 이렇게 자르면 된다.
+
+- "값을 어떻게 계산하고 판단하나?"가 중심이면 unit test
+- "여러 저장/호출이 같이 성공하거나 실패하나?"가 중심이면 integration test
+- 둘 다 바뀌면 더 싼 테스트 1개를 먼저 잠그고, 그다음 통합 테스트 1개를 추가한다
+
+주문 생성 시나리오로 더 짧게 붙이면 아래처럼 생각하면 된다.
+
+| 주문 생성에서 바뀐 장면 | 먼저 쓰는 테스트 | 왜 먼저 이걸 고르나 |
+|---|---|---|
+| `수량은 1 이상`, `VIP 할인 15%`처럼 주문 생성 규칙만 바뀜 | unit test | 주문 객체/서비스 계산 규칙이 맞는지만 바로 확인하면 되기 때문이다. |
+| `재고 차감 후 주문 저장`, `실패 시 둘 다 롤백`처럼 연결 순서가 바뀜 | integration test | Repository, 트랜잭션, 롤백이 실제로 함께 동작하는지 붙여 봐야 알 수 있기 때문이다. |
+
+더 넓은 선택표가 필요하면 [테스트 전략 기초의 첫 테스트 선택표](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준)로 이어서 보면 된다.
+
+## 자주 하는 오해 FAQ: "Service를 바꿨으면 무조건 `@SpringBootTest` 아닌가요?"
+
+아니다. **Service라는 파일을 건드렸는지보다, 그 변경이 검증하려는 위험이 무엇인지**가 먼저다.
+
+짧은 멘탈 모델은 이렇다.
+
+- `규칙이 틀릴 위험`을 먼저 잡고 싶으면 unit test
+- `빈 연결/트랜잭션/롤백이 틀릴 위험`을 먼저 잡고 싶으면 `@SpringBootTest`
+
+| 바뀐 장면 | 첫 테스트 | 이유 |
+|---|---|---|
+| 할인율 계산식만 `10% -> 15%`로 바뀜 | unit test | 핵심 위험이 계산 규칙 자체라서 전체 컨텍스트를 띄울 필요가 없다 |
+| 주문 저장과 재고 차감을 같은 트랜잭션으로 묶는 순서가 바뀜 | `@SpringBootTest` | 실제 빈 협력, 트랜잭션 전파, 롤백은 붙여 봐야 보인다 |
+
+예를 들어 `OrderService`에서 `quantity < 1`이면 예외를 던지도록 바꿨다면, 처음 잠가야 하는 것은 `0개 주문은 실패한다`는 규칙이다. 이때 `@SpringBootTest`부터 열면 DB 설정, 보안, 빈 로딩 같은 주변 요인 때문에 **왜 실패했는지**가 흐려질 수 있다.
+
+반대로 `orderRepository.save()`와 `inventoryRepository.decrease()`의 호출 순서, 트랜잭션 경계, 롤백 여부를 바꿨다면 unit test만으로는 부족하다. 이때는 `@SpringBootTest` 통합 테스트 1개로 "붙였을 때 깨지는지"를 먼저 확인하는 편이 맞다.
+
+- 한 줄로 외우면: `Service 변경`은 레이어 이름이고, `unit test vs @SpringBootTest`는 검증하려는 위험의 종류다.
+- 바로 다음 선택표가 필요하면 [테스트 전략 기초](./test-strategy-basics.md#service-문서에서-넘어왔다면-먼저-이렇게-본다)의 `Service에서 바뀐 것` 표로 이어서 보면 된다.
+
 ## 상세 분해
 
 **Service가 담당하는 것**
@@ -77,18 +234,65 @@ Repository  ← 저장, 조회
 
 입문 단계에서는 구분이 불명확해도 괜찮다. "비즈니스 규칙이 도메인 객체 하나에 들어가지 않을 때"를 도메인 서비스로 분리한다는 감각을 잡으면 충분하다.
 
+## 짧은 오해 교정: Controller가 얇아도 Service 경계는 흐릴 수 있다
+
+초심자가 자주 놓치는 기준은 이것이다. **Controller가 한 줄이어도, Service가 `어떻게 저장되는지`까지 알면 아직 역할이 덜 분리된 상태**다.
+
+| 장면 | 겉보기 | 실제 문제 |
+|---|---|---|
+| before | Controller는 얇다. `service.create()`만 호출한다. | Service가 `saveAndFlush()`, JPA Entity 생성, `flush()` 타이밍 같은 저장 세부를 직접 안다. |
+| after | Controller도 얇다. 여전히 `service.create()`만 호출한다. | Service는 "주문을 저장한다"만 말하고, JPA/ORM 세부는 Repository(또는 persistence adapter) 안으로 감춘다. |
+
+```java
+// before: Controller는 얇지만 Service가 저장 구현 세부를 안다
+@PostMapping("/orders")
+void create(@RequestBody CreateOrderRequest request) {
+    orderService.create(request.productId(), request.quantity());
+}
+
+class OrderService {
+    void create(Long productId, int quantity) {
+        OrderJpaEntity entity = new OrderJpaEntity(productId, quantity);
+        orderJpaRepository.saveAndFlush(entity);
+    }
+}
+```
+
+```java
+// after: Controller는 여전히 얇고, Service는 유스케이스만 조립한다
+@PostMapping("/orders")
+void create(@RequestBody CreateOrderRequest request) {
+    orderService.create(request.productId(), request.quantity());
+}
+
+class OrderService {
+    void create(Long productId, int quantity) {
+        Order order = new Order(productId, quantity);
+        orderRepository.save(order);
+    }
+}
+```
+
+- before의 문제는 "Controller가 두꺼워서"가 아니라, Service가 `OrderJpaEntity`, `saveAndFlush()` 같은 저장 기술 언어를 직접 말한다는 점이다.
+- after의 핵심은 Service가 `주문을 저장한다`는 유스케이스만 표현하고, JPA/ORM 세부는 Repository 안에 남겨 두는 것이다.
+- 헷갈리면 이렇게 자르면 된다: Controller는 `어떻게 요청을 받는지`, Service는 `무슨 유스케이스를 실행하는지`, Repository는 `어떻게 저장하는지`를 안다.
+
 ## 흔한 오해와 함정
 
 - Service에 모든 로직을 넣다 보면 God Class가 된다. 도메인 객체가 스스로 처리할 수 있는 규칙은 도메인 안에 두는 편이 좋다.
 - Controller에서 `if` 분기로 비즈니스 로직을 처리하면, 같은 로직을 CLI나 배치에서 쓸 때 중복이 생긴다. Service가 중심이 되어야 재사용이 가능하다.
 - Repository를 Service 없이 Controller에서 직접 호출하면, 트랜잭션 경계가 흐릿해지고 비즈니스 규칙이 Controller에 흩어진다.
+- "Controller를 얇게 만들면 끝"이라고 오해하기 쉽다. Controller가 얇아도 Service가 저장 세부 구현까지 알면 경계는 여전히 흐릿하다. 바로 위의 [짧은 오해 교정 예시](./service-layer-basics.md#짧은-오해-교정-controller가-얇아도-service-경계는-흐릴-수-있다)를 먼저 보고, 더 넓은 흐름은 [계층형 아키텍처 before/after 예시](./layered-architecture-basics.md#작은-beforeafter-코드-스케치)로 돌아가 책임 분리를 다시 확인한다.
+- "검증은 다 Controller에서 먼저 하면 안전하다"고 생각하기 쉽다. 하지만 업무 규칙 검증까지 Controller에 몰아두면 다른 진입점이 같은 규칙을 다시 구현하게 된다. 기준이 흔들리면 [계층형 아키텍처 기초의 self-check](./layered-architecture-basics.md#controller-검증트랜잭션-경계-self-check-3문항)로 다시 맞춘다.
+- "`existsBy...` 같은 Repository 조회는 어차피 DB를 보니 Controller에서 빨리 막아도 된다"고 생각하기 쉽다. 하지만 중복 이메일/이미 등록된 주문 번호 같은 규칙은 HTTP 입력 형식이 아니라 유스케이스 규칙이다. 짧은 before/after는 [계층형 아키텍처 기초의 안티패턴 비교](./layered-architecture-basics.md#짧은-안티패턴-비교-controller가-repository-조회로-검증까지-하는-경우)로 다시 확인하면 된다.
+- "Service에 규칙이 조금만 있어도 잘못"이라고 오해하기 쉽다. 규칙 자체를 Domain이 지키더라도, 그 규칙을 어느 순서로 호출하고 어떤 저장 작업과 묶을지는 Service 책임이다. Domain 불변식 감각이 더 필요하면 [도메인 불변식을 계약처럼 다루기](./domain-invariants-as-contracts.md)로 이어서 보면 된다.
 
 ## 실무에서 쓰는 모습
 
 주문 생성 유스케이스를 예로 들면:
 
 1. Controller가 `CreateOrderRequest`를 받아 `CreateOrderCommand`로 변환해 Service를 호출한다.
-2. Service는 재고 확인(`InventoryService`), 주문 생성(`Order.create()`), 저장(`OrderRepository.save()`)을 순서대로 수행하고 트랜잭션을 관리한다.
+2. Service는 "수량은 1 이상"을 확인하고, 재고를 조회해 부족하면 실패시킨 뒤, 재고 차감과 주문 저장을 같은 트랜잭션 안에서 수행한다.
 3. 성공 시 `OrderId`를 반환하면 Controller가 `201 Created` 응답을 만든다.
 
 이 흐름에서 Controller는 HTTP 세부를, Service는 유스케이스 순서를, Domain은 규칙을 각자 책임진다.

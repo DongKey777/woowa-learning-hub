@@ -2,10 +2,33 @@
 
 > 한 줄 요약: HTTP/2 멀티플렉싱이 있어도 `WINDOW_UPDATE`가 늦거나 connection window가 고갈되면 stream은 조용히 멈추고, 운영자는 이를 네트워크 불안정으로 오해하기 쉽다.
 
+## 60초 입문 브리지
+
+먼저 이렇게 생각하면 된다. HTTP/2의 window는 "지금 더 보내도 되는 데이터 예산"이다. 수신자가 데이터를 읽으면 그만큼 `WINDOW_UPDATE`로 예산을 다시 돌려주고, 예산이 0에 가까워지면 연결은 살아 있어도 데이터 흐름만 멈출 수 있다.
+
+| 처음 잡을 그림 | 뜻 | 초보자가 자주 하는 오해 |
+|---|---|---|
+| `stream window` | 한 stream이 쓸 수 있는 개인 예산 | 그 stream만 느린데 네트워크 전체가 느리다고 본다 |
+| `connection window` | 같은 H2 연결 전체가 같이 쓰는 공용 예산 | 작은 요청도 함께 멈출 수 있다는 점을 놓친다 |
+| `WINDOW_UPDATE` | "읽었으니 더 보내도 된다"는 credit 반환 | ACK나 재전송 신호로 오해한다 |
+
+stall을 볼 때 첫 오해는 "응답이 안 오니 패킷 손실이겠지"다. 하지만 flow control stall은 손실이 없어도 생긴다. 수신 애플리케이션이 천천히 읽거나, 프록시가 버퍼링하거나, 디코딩/GC 때문에 credit 반환이 늦어져도 송신자는 그냥 기다린다.
+
+첫 확인 포인트는 복잡하지 않다.
+
+- stream은 이미 열렸는데 DATA가 더 이상 안 오는가
+- `WINDOW_UPDATE`가 늦거나 connection/stream window가 거의 0인가
+- 같은 connection의 다른 작은 요청도 같이 느려졌는가
+
+이 셋 중 둘 이상이 맞으면 "네트워크 장애"만 보지 말고 H2 flow control부터 의심하는 편이 빠르다. `SETTINGS_MAX_CONCURRENT_STREAMS`와의 차이는 아래 본문에서 자세히 정리한다.
+
+`HOL blocking`과 헷갈리면 먼저 [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)에서 첫 갈림길만 잡고 다시 내려오면 된다.
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
+> - [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)
 > - [HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup](./http2-upload-early-reject-rst-stream-flow-control-cleanup.md)
 > - [gRPC Deadlines, Cancellation Propagation](./grpc-deadlines-cancellation-propagation.md)
 > - [HTTP/2, HTTP/3 Connection Reuse, Coalescing](./http2-http3-connection-reuse-coalescing.md)
@@ -14,11 +37,12 @@
 > - [WebSocket Proxy Buffering, Streaming Latency](./websocket-proxy-buffering-streaming-latency.md)
 > - [Packet Loss, Jitter, Reordering Diagnostics](./packet-loss-jitter-reordering-diagnostics.md)
 
-retrieval-anchor-keywords: HTTP/2 flow control, WINDOW_UPDATE, connection window, stream window, SETTINGS_INITIAL_WINDOW_SIZE, SETTINGS_MAX_CONCURRENT_STREAMS, stalled stream, gRPC streaming, backpressure, receive window, discarded DATA after reset, RST_STREAM flow control, upload reject connection window
+retrieval-anchor-keywords: HTTP/2 flow control, WINDOW_UPDATE, connection window, stream window, flow control beginner bridge, window credit mental model, stalled stream, stalled but connection alive, gRPC streaming, backpressure, receive window, SETTINGS_INITIAL_WINDOW_SIZE, SETTINGS_MAX_CONCURRENT_STREAMS, discarded DATA after reset, RST_STREAM flow control, upload reject connection window
 
 <details>
 <summary>Table of Contents</summary>
 
+- [60초 입문 브리지](#60초-입문-브리지)
 - [핵심 개념](#핵심-개념)
 - [깊이 들어가기](#깊이-들어가기)
 - [실전 시나리오](#실전-시나리오)
@@ -74,7 +98,7 @@ HTTP/2에는 TCP와 별도의 flow control이 있다.
 - HTTP/2 connection-level credit starvation만으로
 - shared connection latency가 나빠질 수 있다
 
-large upload early reject도 여기에 걸린다.  
+large upload early reject도 여기에 걸린다.
 `RST_STREAM`으로 한 stream을 끊었더라도 reset 전에 이미 날아오던 DATA는 connection window를 잠깐 더 점유할 수 있어서, discard/credit accounting이 느리면 sibling stream이 같이 stall된다.
 
 ### 3. `SETTINGS_MAX_CONCURRENT_STREAMS`와 flow control은 다르다

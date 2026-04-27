@@ -2,17 +2,22 @@
 
 > 한 줄 요약: 목록, 상세, 검색 화면이 서로 다른 cache/replica/search index를 읽더라도 세션이 본 `min-version` floor를 함께 들고 다니면 `PAID -> PENDING`처럼 값이 뒤로 가는 경험을 막을 수 있다.
 
-retrieval-anchor-keywords: list detail monotonicity bridge, list detail search min-version floor, list detail search min version, min-version floor, min_version floor, value regression across pages, list detail mismatch, search detail consistency, search result stale after detail, detail newer than list, order list detail search monotonic reads, per entity freshness floor, session min version bridge, seen version floor, row version floor, beginner monotonic screens, cache replica search read path consistency, system-design-00056
+retrieval-anchor-keywords: list detail monotonicity bridge, list detail search min-version floor, list detail search min version, min-version floor, min_version floor, monotonic guard, monotonic guard alias, monotonic guard beginner, 역행 방지 하한선, 역행 방지 하한선 별칭, value regression across pages, list detail mismatch, search detail consistency, search result stale after detail, detail newer than list, order list detail search monotonic reads, per entity freshness floor, session min version bridge, seen version floor, row version floor, beginner monotonic screens, cache replica search read path consistency, paid to pending regression, stale status after detail, system-design-00056, read-after-write vs monotonic reads, per-session floor not global consistency, monotonic screen regression triage, candidate lower than floor accepted, candidate less than floor mistake, stale candidate accepted mistake, candidate floor compare beginner confusion
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)
+- [Cross-Primer Glossary Anchors](./cross-primer-glossary-anchors.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
+- [Pagination Monotonicity Primer](./pagination-monotonicity-primer.md)
 - [Session Guarantees Decision Matrix](./session-guarantees-decision-matrix.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
+- [Search Hit Overlay Pattern](./search-hit-overlay-pattern.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
+- [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [Search Indexing Pipeline 설계](./search-indexing-pipeline-design.md)
 
 ---
@@ -24,6 +29,7 @@ retrieval-anchor-keywords: list detail monotonicity bridge, list detail search m
 > 사용자가 한 화면에서 더 새 값을 봤다면, 다음 화면은 그 값보다 오래된 값을 보여 주면 안 된다.
 
 `min-version floor`는 이 약속을 위한 작은 메모다.
+이 문서에서는 같은 뜻의 별칭으로 `monotonic guard`, 한국어로 `역행 방지 하한선`도 함께 쓴다.
 예를 들어 사용자가 주문 상세에서 `order:123 version=42, status=PAID`를 봤다면 세션은 이렇게 기억한다.
 
 ```text
@@ -33,6 +39,78 @@ last_seen_snapshot(order:123) = status=PAID
 
 이 값은 "모든 주문이 version 42 이상이어야 한다"는 뜻이 아니다.
 **이미 본 주문 `123`만 최소 42 아래로 내려가지 말자**는 per-entity floor다.
+
+---
+
+## 초보자 mental model: 세 문장으로 기억하기
+
+- 상세에서 더 새 값을 봤다면, 목록/검색은 그보다 낮은 version을 채택하면 안 된다.
+- 그래서 세 화면이 같은 `min-version floor`를 공유해야 한다.
+- floor보다 낮은 후보를 만나면 "버리기(reject) + 고치기(patch/overlay)"를 한 세트로 실행한다.
+
+## 가장 흔한 혼동: `recent-write`와 무엇이 다른가
+
+먼저 질문 하나로 가르면 쉽다.
+
+| 지금 보이는 증상 | 먼저 떠올릴 용어 | 왜 이쪽인가 |
+|---|---|---|
+| 방금 저장했는데 바로 다음 read에서 새 값이 안 보인다 | [`recent-write`](./cross-primer-glossary-anchors.md#term-recent-write) | write 직후에 더 신선한 read path를 잠깐 고르는 문제다 |
+| 상세에서 `PAID(v42)`를 봤는데 목록/검색이 `PENDING(v40)`으로 내려간다 | [`min-version floor`](./cross-primer-glossary-anchors.md#term-min-version-floor) | 이미 본 값 아래로 후퇴하지 않게 floor를 들고 다니는 문제다 |
+
+짧게 외우면:
+
+- [`recent-write`](./cross-primer-glossary-anchors.md#term-recent-write) = "방금 쓴 값 보호"
+- [`min-version floor`](./cross-primer-glossary-anchors.md#term-min-version-floor) = "이미 본 값 역행 방지"
+  즉 `monotonic guard`, `역행 방지 하한선`과 같은 말이다.
+
+둘이 함께 필요한 경우도 있지만, 이 문서의 중심은 두 번째다.
+
+## floor 미달 후보 처리: 세 가지 중 하나만 고르기
+
+초보자 단계에서는 floor 미달 후보를 만났을 때 매번 새 전략을 만들지 말고 아래 3개 중 하나를 고르는 것이 안전하다.
+
+| 처리 방식 | 사용자에게 보이는 결과 | 먼저 고를 때 기준 |
+|---|---|---|
+| `row patch` | 잠깐 늦더라도 최신 row로 교정되어 보임 | 상세 정확도가 우선이고 row 수가 적을 때 |
+| `last-seen overlay` | 이미 본 값(`PAID`)을 잠깐 유지 | 짧은 lag를 UX에서 부드럽게 숨기고 싶을 때 |
+| `suppress + 갱신 중` | 오래된 row를 잠시 숨기거나 상태 라벨 표시 | 검색/목록 대량 결과에서 patch 비용이 클 때 |
+
+중요한 점은 어떤 방식을 골라도 공통으로 `candidate.version < floor` 후보는 그대로 채택하지 않는다는 것이다.
+
+## 오답 예시 2개: 이 답이면 바로 다시 고치기
+
+짧게 보면 아래 두 답은 초보자가 가장 자주 내는 오답이다.
+
+| 오답 답변 | 왜 틀렸나 | 최소 수정 |
+|---|---|---|
+| "`candidate.version=40`, `floor=42`지만 cache hit이니까 일단 보여 준다" | floor 비교가 깨져서 사용자가 `PAID -> PENDING` 역행을 그대로 본다 | hit라도 reject하고 `row patch`, `last-seen overlay`, `suppress` 중 하나를 고른다 |
+| "검색 hit이 floor보다 낮으면 그 row만 예외로 통과시키고 나중에 index가 따라오길 기다린다" | "예외 1개쯤"이 실제 제품에서는 가장 눈에 띄는 혼동이 된다 | 오래된 hit은 그대로 채택하지 말고 status 숨김/overlay/source 재조회로 바꾼다 |
+
+---
+
+## 비슷한 용어와의 경계 먼저 잡기
+
+초보자가 가장 자주 헷갈리는 지점은 "read-after-write면 충분한가?"다.
+아래처럼 깨지는 순간과 최소 해법을 분리하면 용어가 훨씬 선명해진다.
+
+| 주제 | 깨졌다고 느끼는 순간 | beginner용 최소 해법 | 다음 문서 |
+|---|---|---|---|
+| read-after-write | 내가 방금 쓴 값이 바로 옛값으로 보인다 | [`recent-write`](./cross-primer-glossary-anchors.md#term-recent-write) 요청에 pinning/fallback을 건다 | [Read-After-Write Routing Primer](./read-after-write-routing-primer.md) |
+| list-detail monotonicity | 상세에서 `PAID`를 봤는데 목록/검색이 `PENDING`으로 되돌아간다 | per-entity [`min-version floor`](./cross-primer-glossary-anchors.md#term-min-version-floor) 공유 + stale 후보 reject/patch (`monotonic guard`, `역행 방지 하한선`) | 이 문서 |
+| 전역 강한 일관성 | 모든 사용자, 모든 화면에서 즉시 같은 값을 요구한다 | beginner 범위를 넘는다. 먼저 세션 단위 floor부터 적용한다 | [Session Guarantees Decision Matrix](./session-guarantees-decision-matrix.md) |
+
+## 언제는 이 브리지가 과한가
+
+모든 화면에 floor를 넣어야 하는 것은 아니다.
+아래 조건이면 먼저 단순한 read-after-write 라우팅만으로 시작해도 충분할 수 있다.
+
+| 상황 | 왜 과할 수 있나 | 먼저 쓸 최소 해법 |
+|---|---|---|
+| write 직후 같은 상세 화면만 다시 조회한다 | list/search 역행 경로가 실제로 거의 없다 | [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)의 recent-write pinning |
+| 목록/검색이 "최신 상태"보다 "대략적 진행률" 용도다 | 값 역행이 UX 사고로 이어질 확률이 낮다 | 짧은 TTL + 상태 라벨(예: 갱신 중) |
+| 이미 단일 source-of-truth 경로만 읽는다 | 화면마다 source가 달라지는 문제가 작다 | floor 도입 전 reject/fallback 관측부터 추가 |
+
+판단 기준은 기술적 완성도가 아니라, **사용자가 실제로 `앞에서 본 값이 뒤로 가는 경험`을 겪는지**다.
 
 ---
 
@@ -116,6 +194,10 @@ ctx.remember_snapshot(order:123, status=PAID)
 floor는 낮추지 않는다.
 이미 `42`를 봤는데 나중에 `40`을 봤다고 `40`으로 덮으면 보장이 사라진다.
 
+알림 deep link로 들어온 상세도 예외가 아니다.
+notification click이 causal token으로 상세 입장을 성공시켰다면, 그 성공 응답 역시 같은 방식으로 `ctx.raise_min_version(order:123, 42)`를 올려야 이후 목록/검색이 역행하지 않는다.
+이 연결만 따로 따라가고 싶다면 [Notification Read to Min-Version Bridge](./notification-read-to-min-version-bridge.md)를 보면 된다.
+
 ### 2. 목록 화면이 오래된 row를 거절한다
 
 목록 cache에는 아직 예전 row가 있다.
@@ -174,6 +256,17 @@ search hit candidate
 
 ---
 
+## 1분 진단표: 어디서 floor가 끊겼는지 찾기
+
+| 보이는 증상 | 첫 확인 포인트 | 가장 작은 임시 대응 |
+|---|---|---|
+| 상세는 최신인데 목록만 역행한다 | 목록 row가 `min_version(entity)` 검사 없이 채택되는지 | 해당 row만 patch하거나 last-seen snapshot 유지 |
+| 페이지를 넘길수록 row 수가 줄거나 일부 row가 사라진다 | stale row를 reject한 뒤 replacement를 더 읽는지, cursor를 accepted row 기준으로 잇는지 | per-entity floor로 줄이고 추가 scan으로 page를 채운다 |
+| 상세/목록은 최신인데 검색만 역행한다 | search hit에 동일 floor 비교가 들어갔는지 | stale hit overlay 또는 suppress |
+| 같은 계정인데 새 탭/재로그인 후 역행이 반복된다 | floor 저장 위치(session/token/BFF)와 TTL이 화면 전환을 버티는지 | server-side session store 또는 signed token으로 floor 전달 경계 고정 |
+
+---
+
 ## 가장 작은 구현 모양
 
 처음부터 거대한 consistency framework를 만들 필요는 없다.
@@ -221,11 +314,17 @@ beginner 설계에서는 아래 중 하나로 충분하다.
 
 ## 흔한 혼동
 
-- `min-version=42`는 모든 목록 row가 42 이상이어야 한다는 뜻이 아니다. `order:123`처럼 이미 본 entity에만 적용하는 floor다.
+- `min-version=42`는 모든 목록 row가 42 이상이어야 한다는 뜻이 아니다. `order:123`처럼 이미 본 entity에만 적용하는 floor다. 이 floor를 `monotonic guard`, `역행 방지 하한선`이라고 불러도 같은 뜻이다.
+- "`read-after-write`를 붙였으니 list/detail 역행도 자동으로 해결된다"는 오해가 흔하다. write 직후 보호는 [`recent-write`](./cross-primer-glossary-anchors.md#term-recent-write), 화면 역행 방지는 [`min-version floor`](./cross-primer-glossary-anchors.md#term-min-version-floor)로 따로 본다.
 - search index가 늦는다고 모든 검색을 primary로 보내야 하는 것은 아니다. 이미 본 entity의 stale hit만 guard하면 된다.
 - 목록 정렬, 총 개수, facet count까지 완벽히 최신으로 맞추는 문제는 별도다. 여기서는 사용자가 이미 본 row의 값이 뒤로 가지 않는 것부터 막는다.
 - read-after-write만으로는 충분하지 않을 수 있다. 사용자가 write하지 않았더라도 상세에서 더 새 값을 본 뒤 목록/검색에서 과거 값을 보면 regression이다.
 - cache hit이나 search hit은 "빠른 후보"일 뿐이다. `min-version` floor를 못 맞추면 그 세션에서는 채택하면 안 된다.
+- "`candidate < floor`인데 cache hit이니까 괜찮다"는 오답이다. hit 여부보다 floor 비교가 먼저다.
+- "`candidate < floor`인 검색 결과 한 건쯤은 그냥 통과"도 오답이다. 초보자 단계에서는 예외를 만들기보다 `patch / overlay / suppress` 셋 중 하나로 통일하는 편이 안전하다.
+- `min-version`을 모든 기기/모든 세션 전역 보장으로 이해하면 구현이 과해진다. beginner 단계에서는 같은 세션의 최근 entity만 보호해도 효과가 크다.
+- 상세에서 올린 floor를 목록/검색 요청으로 전달하지 않으면 각 화면이 로컬 캐시 기준으로 채택해 같은 역행이 반복된다.
+- `row patch`가 항상 정답은 아니다. 검색 대량 페이지에서는 `overlay`나 `suppress`가 비용/지연 면에서 더 현실적일 수 있다.
 
 ---
 
@@ -239,6 +338,16 @@ beginner 설계에서는 아래 중 하나로 충분하다.
 - `rejected_candidate_reason=min_version` 같은 낮은 cardinality 관측 신호를 남기는가
 
 더 깊게 들어가려면 cache/replica hit-miss-refill 전체에 freshness context를 이어 붙이는 [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)와, 거절/우회 이유를 로그와 메트릭으로 남기는 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)를 보면 된다.
+
+## 다음으로 이어 읽기
+
+| 지금 막힌 지점 | 다음 문서 | 이유 |
+|---|---|---|
+| `min-version`, `recent-write`, `watermark` 중 무엇을 써야 할지 모르겠다 | [Session Guarantees Decision Matrix](./session-guarantees-decision-matrix.md) | 힌트별 보장 범위와 비용을 한 표에서 비교할 수 있다 |
+| cache/replica hit-miss-refill 전체로 floor를 확장하고 싶다 | [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md) | read path 전 구간에서 동일 freshness context를 유지하는 방법을 본다 |
+| stale 후보 거절이 실제로 얼마나 발생하는지 보이지 않는다 | [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md) | reject/fallback reason을 운영 지표로 남기는 기준을 잡는다 |
+| 검색 인덱스 지연 자체를 줄이고 싶다 | [Search Indexing Pipeline 설계](./search-indexing-pipeline-design.md) | indexing lag, backfill, replay 관점으로 원인을 줄인다 |
+| 역행은 줄었는데 fallback 비용이 감당되는지 모르겠다 | [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md) | stale 감소와 primary headroom을 함께 본다 |
 
 ## 한 줄 정리
 

@@ -1,0 +1,194 @@
+# 0-1 BFS grid-conversion primer
+
+> 한 줄 요약: 미로, 순간이동, 벽 한 칸 부수기처럼 말이 달라도 "이동 하나마다 드는 비용이 0 또는 1인가?"로 바꾸면 `0-1 BFS` 문제인지 먼저 판별할 수 있다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [DFS와 BFS 입문](./dfs-bfs-intro.md)
+- [0-1 BFS State-Space Bridge](./zero-one-bfs-state-space-bridge.md)
+- [State-space visited vs dist starter card](./zero-one-bfs-state-visited-vs-dist-starter-card.md)
+- [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
+- [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
+- [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)
+- [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
+
+retrieval-anchor-keywords: 0-1 bfs grid primer, zero one bfs grid modeling, 0-1 bfs beginner modeling, 0-1 bfs maze teleport wall break, 0-1 bfs grid conversion, 0-1 bfs problem translation, grid shortest path 0 1 cost, grid shortest path deque, binary weight grid shortest path, teleport maze shortest path, wall break shortest path, free move paid move shortest path, maze modeling 0-1 bfs, teleport modeling deque shortest path, wall break modeling 0-1 bfs, 0-1 bfs state space grid, 0-1 bfs r c state, 0-1 bfs 입문 모델링, 0-1 bfs 격자 변환, 0-1 bfs 문제 해석, 미로 순간이동 벽부수기 0-1 bfs, 격자 최단 경로 0/1 비용, 덱 최단 경로 모델링, 순간이동 최단 경로 모델링, 벽 부수기 최단 경로 모델링, 격자 상태 공간 0-1 bfs
+
+## 먼저 잡을 생각
+
+초보자는 `0-1 BFS`를 코드가 아니라 번역 문제로 먼저 보면 편하다.
+
+- 칸이나 상태를 **정점**
+- 이동 규칙을 **간선**
+- 그 이동이 공짜면 **비용 0**
+- 그 이동에 행동 1번이 들면 **비용 1**
+
+즉 문제를 읽고 가장 먼저 할 질문은 이것이다.
+
+> "이 문제의 모든 이동 비용을 0 아니면 1로만 적을 수 있나?"
+
+답이 `예`이면 `0-1 BFS` 후보가 된다.
+
+## 한눈에 보는 변환 표
+
+| 문제에서 보이는 말 | 보통의 해석 | 간선 비용 |
+|---|---|---|
+| 그냥 한 칸 이동 | 행동 1번 필요 | `1` |
+| 순간이동, 포털, 워프 | 추가 행동 없이 바로 이동 | `0` |
+| 벽이 아니면 이동 가능 | 빈 칸으로 한 번 이동 | `1` |
+| 벽 한 칸 부수기 | "부순다"는 비용이 1번 듦 | `1` |
+| 스위치를 이미 켠 상태면 문 통과 | 조건 만족 후 공짜 이동 | `0` |
+
+표면 단어보다 중요한 건 "정말로 0 또는 1만 나오나"다.
+`teleport`, `portal`, `wall break`는 자주 등장하는 포장일 뿐이다.
+
+## 왜 BFS가 아니라 0-1 BFS인가
+
+일반 BFS는 모든 간선 비용이 같을 때만 맞다.
+
+예를 들어 아래처럼 섞이면 이미 "같은 한 걸음"이 아니다.
+
+- 걷기 = `1`
+- 순간이동 = `0`
+
+이때는 "몇 번 이동했는가"보다 "총 비용이 얼마인가"를 봐야 한다.
+그래서 큐 대신 deque를 써서:
+
+- 비용 `0` 이동은 앞에 넣고
+- 비용 `1` 이동은 뒤에 넣는다
+
+이 규칙을 구현 단계에서 자세히 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)으로 이어지면 된다.
+
+## 예제 1: 미로 + 순간이동
+
+문제 말:
+
+> 상하좌우 이동은 1초가 걸리고, 같은 문자 포털끼리 순간이동은 0초가 걸린다.
+
+이걸 그래프로 바꾸면:
+
+| 요소 | 그래프 해석 |
+|---|---|
+| 각 칸 `(r, c)` | 정점 하나 |
+| 인접한 빈 칸으로 이동 | 비용 `1` 간선 |
+| 같은 포털 문자 칸으로 이동 | 비용 `0` 간선 |
+
+핵심 번역은 이것뿐이다.
+
+```text
+걷기 = 1
+포털 = 0
+=> 0/1 가중치 최단 경로
+=> 0-1 BFS 후보
+```
+
+초보자가 많이 틀리는 지점은 "포털도 이동했으니 1 아닌가?"다.
+문제에서 시간이 안 든다고 했으면, 간선 비용은 이동 횟수가 아니라 **문제의 비용 정의**를 따라야 한다.
+
+## 예제 2: 벽 한 칸 부수기
+
+문제 말:
+
+> 빈 칸은 그냥 지나가고, 벽 칸은 부수면서 들어갈 수 있다.
+
+여기서 먼저 확인할 것은 "벽을 몇 번까지 부술 수 있는가"다.
+
+### 경우 A. 벽을 부수는 비용만 중요하다
+
+예를 들어:
+
+> 빈 칸 이동 비용은 0, 벽을 부수고 들어가면 비용 1
+
+이 해석이면 그대로 `0-1 BFS`다.
+
+| 이동 | 비용 |
+|---|---|
+| 빈 칸 진입 | `0` |
+| 벽 칸 진입(부수기) | `1` |
+
+### 경우 B. 걷기도 1, 벽도 1이면
+
+이 경우는 사실 모든 이동 비용이 거의 같은 쪽이라, 보통은 상태를 포함한 BFS가 더 자연스럽다.
+
+예를 들어:
+
+> 한 칸 이동마다 1초, 단 벽은 한 번만 부술 수 있다.
+
+이 문제의 핵심은 `0/1 비용`보다 "`벽을 이미 부쉈는가`라는 상태"일 수 있다.
+즉 `0-1 BFS`를 무조건 쓰는 게 아니라, **비용 정의와 상태 정의를 분리해서 봐야 한다.**
+
+이 분리를 열쇠, 벽 부수기 횟수, 방향 상태까지 한 번에 묶어 보려면 [0-1 BFS State-Space Bridge](./zero-one-bfs-state-space-bridge.md)로 이어지면 된다.
+
+## 예제 3: 방향 전환 비용
+
+문제 말:
+
+> 같은 방향으로 계속 가면 비용 0, 방향을 바꾸면 비용 1
+
+이 경우 정점은 "칸"만으로 부족하다.
+"현재 어디에 있는가"와 함께 "어느 방향을 보고 있는가"도 상태에 들어가야 한다.
+
+| 상태 | 의미 |
+|---|---|
+| `(r, c, dir)` | `(r, c)`에 있고 현재 방향이 `dir` |
+
+간선 비용은:
+
+- 같은 방향 유지 = `0`
+- 방향 변경 = `1`
+
+즉 `0-1 BFS`는 격자에서 자주 쓰이지만, 정점이 꼭 "칸 하나"라는 뜻은 아니다.
+격자 문제에서도 **칸 + 추가 상태**를 정점으로 잡는 경우가 많다.
+
+## 초보자용 판별 루틴
+
+문제를 읽을 때 아래 4줄만 체크하면 된다.
+
+1. 무엇을 정점으로 볼까: 칸인가, 칸+상태인가
+2. 가능한 이동은 무엇인가
+3. 각 이동 비용이 정말 `0` 또는 `1`인가
+4. 목표가 최소 횟수인지, 최소 비용인지
+
+이 네 줄이 정리되면 구현 전에 대부분 방향이 결정된다.
+
+## BFS / 0-1 BFS / Dijkstra 빠른 비교
+
+| 알고리즘 | 간선 비용 | 초보자용 신호 |
+|---|---|---|
+| BFS | 전부 동일 | "모든 이동이 1칸 = 1비용" |
+| 0-1 BFS | `0` 또는 `1`만 존재 | "공짜 이동 + 유료 이동"이 섞임 |
+| Dijkstra | 0 이상 일반 가중치 | `2`, `5`, `10` 같은 비용도 나옴 |
+
+`0-1 BFS`와 Dijkstra 전체 선택 감각은 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)에서 더 넓게 이어진다.
+
+## 자주 헷갈리는 포인트
+
+- "격자니까 BFS겠지"부터 시작하면 자주 틀린다. 먼저 비용을 본다.
+- `teleport`라는 단어만 보고 무조건 `0-1 BFS`는 아니다. 텔레포트 비용이 `2`면 Dijkstra 쪽이다.
+- 벽 부수기 문제도 전부 `0-1 BFS`는 아니다. 비용보다 상태 수가 핵심인 문제가 많다.
+- 열쇠, 벽 횟수, 방향처럼 "같은 칸이어도 미래가 달라지는 정보"가 있으면 `(r, c)` 대신 `(r, c, state)`를 정점으로 봐야 한다.
+- 상태를 붙였다고 바로 `dist`가 필요한 것은 아니다. 비용이 전부 같으면 `visited[r][c][state]`로 충분한 경우도 있고, `0/1`이 섞이면 `dist[r][c][state]`가 더 안전하다.
+- `0-1 BFS`라고 해도 `visited`를 BFS처럼 첫 방문에 고정하면 틀릴 수 있다. 이 반례는 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)에 따로 정리돼 있다.
+
+## 구현 전에 마지막으로 적을 메모
+
+종이에 아래 한 줄만 적고 시작해도 도움이 된다.
+
+```text
+정점 = ?
+0 비용 이동 = ?
+1 비용 이동 = ?
+```
+
+이 세 칸이 비어 있으면 아직 구현 단계로 들어가면 안 된다.
+반대로 이 세 칸이 채워졌다면, 그다음은 deque 규칙과 `dist` 갱신만 따라가면 된다.
+
+## 다음 연결
+
+- deque와 `dist`를 손으로 먼저 따라가고 싶으면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
+- 격자 칸만으로 부족해지는 상태 모델링 감각을 붙이고 싶으면 [0-1 BFS State-Space Bridge](./zero-one-bfs-state-space-bridge.md)
+- `visited[r][c][state]`와 `dist[r][c][state]`를 언제 갈라야 하는지 바로 보고 싶으면 [State-space visited vs dist starter card](./zero-one-bfs-state-visited-vs-dist-starter-card.md)
+- `visited` 대신 왜 `dist` 비교가 핵심인지 반례부터 보고 싶으면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
+- 코드에서 `dist`, `parent`, deque가 어디서 같이 움직이는지 보려면 [0-1 BFS 구현 실수 체크 템플릿](./zero-one-bfs-implementation-mistake-check-template.md)

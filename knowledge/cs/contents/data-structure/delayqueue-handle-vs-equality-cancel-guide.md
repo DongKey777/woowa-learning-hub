@@ -1,0 +1,191 @@
+# DelayQueue Handle Vs Equality Cancel Guide
+
+> 한 줄 요약: heap-backed timer queue에서 exact handle 취소는 "그때 넣은 바로 그 예약 하나"를 겨냥하고, `equals()` 기반 취소는 "지금 queue 안에서 같다고 보이는 아무 예약 하나"를 찾으려 하므로, reschedule과 stale ticket이 섞이면 의미도 결과도 달라진다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [DelayQueue Remove Cost Primer](./delayqueue-remove-cost-primer.md)
+- [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
+- [DelayQueue Queue Size vs Live Timers Primer](./delayqueue-queue-size-vs-live-timers-primer.md)
+- [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
+- [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
+- [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
+- [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
+
+retrieval-anchor-keywords: delayqueue handle vs equals cancel, delayqueue exact handle removal, delayqueue equals removal, priorityqueue equals remove timer, heap backed timer queue cancel guide, delayed task cancel handle, delayed task cancel equals, exact ticket cancel delayqueue, equal object cancel timer queue, stale ticket equals confusion, generation timer cancel equality, reschedule remove wrong entry, delayqueue duplicate logical task, priority queue cancellation beginner, timer queue handle equality difference, heap timer queue exact reservation, heap timer queue logical equality, cancel one scheduled entry vs one logical task, delayqueue remove same task id, delayqueue cancel junior guide
+
+## 먼저 그림부터
+
+타이머 queue를 "알람 종이 상자"라고 생각하면 쉽다.
+
+- exact handle은 **내 손에 들고 있는 바로 그 종이**다.
+- `equals()` 기반 제거는 **상자 안에서 비슷하게 생긴 종이 하나를 찾는 것**에 가깝다.
+
+초보자에게 가장 중요한 문장은 이것이다.
+
+> timer queue에서는 "같은 작업"과 "같은 예약 entry"가 다를 수 있다.
+
+예를 들어 작업 `A`를 두 번 예약하면 queue 안에는 종이 두 장이 들어갈 수 있다.
+
+- `A` 10초 뒤 실행
+- `A` 30초 뒤 다시 실행
+
+이때 둘 다 논리적으로는 "작업 A"지만, queue 입장에서는 서로 다른 예약 entry다.
+
+## 빠른 선택표
+
+| 지금 하고 싶은 일 | 더 안전한 기본값 | 이유 |
+|---|---|---|
+| 방금 예약한 그 timer 하나만 취소 | exact handle/reference | 어떤 entry를 없앨지 모호하지 않다 |
+| 같은 `taskId`의 예전 예약이 여러 개 남을 수 있음 | handle 또는 `generation` 검사 | `equals()`만으로는 old/new를 구분하기 어렵다 |
+| cancel hot path를 가볍게 유지 | lazy cancel + stale skip | queue 중간 제거를 매번 강제하지 않아도 된다 |
+| "작업 A 전체"를 무효화하고 싶음 | queue 밖 최신성 상태(`generation`, registry) | heap 안 객체 비교만으로는 정책을 표현하기 부족하다 |
+
+핵심은 "무엇을 지울지"와 "어떻게 찾을지"를 따로 보는 것이다.
+
+## exact handle 제거는 무엇이 다른가
+
+exact handle은 보통 schedule 시점에 받은 참조다.
+
+```java
+TimerTicket ticket = scheduler.schedule("A", 10, TimeUnit.SECONDS);
+ticket.cancel();
+```
+
+이 감각은 "작업 A를 취소"보다 더 좁다.
+
+- "그때 생성한 바로 그 ticket"
+- "그 예약 한 건"
+- "같아 보이는 다른 ticket 말고 이 객체"
+
+그래서 reschedule이 있는 시스템에서는 exact handle이 먼저 안전하다.
+
+| handle 취소가 잘 맞는 상황 | 이유 |
+|---|---|
+| 같은 logical task가 여러 번 예약될 수 있다 | old/new ticket을 분리할 수 있다 |
+| schedule 호출마다 별도 취소권을 주고 싶다 | 호출자가 자기 예약만 취소할 수 있다 |
+| duplicate deadline이나 동일 `taskId`가 흔하다 | 동등성 충돌보다 identity가 덜 모호하다 |
+
+다만 여기서 초보자가 한 번 더 오해한다.
+
+> handle이 exact하다고 해서 제거 비용도 자동으로 싸지는 것은 아니다.
+
+heap-backed queue는 head 제거에는 강하지만, queue 중간의 임의 entry 제거는 여전히 탐색 비용이 붙을 수 있다.
+즉 handle은 **정확한 대상 지정**에 강하고, 성능은 별도 문제다.
+
+## `equals()` 기반 제거는 무엇을 의미하나
+
+`queue.remove(x)` 같은 형태를 보면 초보자는 자주 이렇게 읽는다.
+
+> "내가 넣었던 그 객체를 지우는 거겠지."
+
+하지만 `equals()` 기반 제거는 더 넓은 질문이다.
+
+- queue 안에서 `x.equals(entry)`가 참인 entry가 있는가
+- 있다면 그중 하나를 제거할 수 있는가
+
+즉 이것은 identity보다 **동등성 규칙**에 의존한다.
+
+| `equals()`가 무엇을 보나 | 생기는 의미 |
+|---|---|
+| `taskId`만 봄 | 같은 작업으로 보이는 아무 예약이나 같다고 친다 |
+| `taskId + deadline`을 봄 | 같은 작업의 같은 시각 예약만 같다고 친다 |
+| `generation`까지 봄 | "같은 예약 entry" 쪽에 더 가까워진다 |
+| 기본 `Object.equals()` | 사실상 exact reference와 비슷해진다 |
+
+즉 `equals()` 기반 제거가 위험한 이유는 API 이름이 아니라,
+**동등성 정의가 queue 정책과 어긋날 수 있기 때문**이다.
+
+## 왜 timer queue에서 특히 더 헷갈리나
+
+일반적인 set/map보다 timer queue가 더 까다로운 이유는 reschedule 때문이다.
+
+예를 들어 이런 상황을 보자.
+
+| ticket | taskId | generation | deadline |
+|---|---|---:|---:|
+| old | `A` | 1 | 10초 |
+| new | `A` | 2 | 30초 |
+
+그리고 `equals()`가 `taskId`만 본다고 하자.
+
+그러면 `old.equals(new)`도 참이 된다.
+이 상태에서 `queue.remove(new TimerTicket("A"))`처럼 접근하면 초보자가 기대하는 의미와 실제 의미가 갈라진다.
+
+| 초보자가 기대한 것 | 실제로 일어날 수 있는 것 |
+|---|---|
+| "30초짜리 최신 예약을 지운다" | 10초짜리 old ticket만 지워질 수 있다 |
+| "작업 A 전체를 취소한다" | queue 안 A ticket 하나만 지워지고 다른 A는 남을 수 있다 |
+| "A가 없으면 아무 일도 없다" | stale ticket 하나가 우연히 매치되어 제거될 수 있다 |
+
+즉 timer queue에서는 "`같은 logical task`"와 "`같은 scheduled entry`"를 분리하지 않으면 혼란이 생긴다.
+
+## 가장 흔한 혼동 3가지
+
+### 1. "동일 `taskId`면 같은 예약 아닌가요?"
+
+아니다. 같은 작업이더라도 예약 시각과 세대가 다르면 다른 entry다.
+
+### 2. "handle 취소면 무조건 `O(log n)` 아닌가요?"
+
+아니다. exact handle은 대상을 분명하게 해 주지만, heap 내부 위치까지 공짜로 알려 주지는 않는다.
+
+### 3. "`equals()`가 같으면 어느 걸 지워도 상관없지 않나요?"
+
+reschedule이 있으면 그렇지 않다.
+old ticket을 지워야 하는데 new ticket을 지우거나, 반대로 stale만 지우고 최신 예약을 남길 수 있다.
+
+## beginner용 판단 순서
+
+1. 먼저 "지우고 싶은 것이 예약 한 건인지, 작업 전체 정책인지"를 구분한다.
+2. 예약 한 건이면 exact handle을 기본값으로 둔다.
+3. 작업 전체 정책이면 queue 바깥의 registry나 `generation` 상태를 같이 설계한다.
+4. `equals()`를 쓴다면 어떤 필드를 같다고 보는지 표로 적어 본다.
+
+이 순서를 거치면 "`remove`가 왜 기대와 다르게 동작하지?"라는 혼란을 많이 줄일 수 있다.
+
+## 실무 감각: 왜 lazy cancel이 자주 나오나
+
+timer 시스템은 보통 cancel과 reschedule이 많다.
+이때 매번 `equals()`로 queue 중간을 뒤져 정확히 제거하려 하면 의미와 비용이 같이 꼬이기 쉽다.
+
+그래서 자주 쓰는 패턴은 이것이다.
+
+- schedule 때 새 ticket을 넣는다
+- old ticket은 즉시 안 빼도 된다
+- queue 밖에서 `latestGeneration` 또는 `cancelled` 상태를 관리한다
+- worker가 head로 올라온 ticket이 stale면 버린다
+
+이 패턴은 "무엇이 최신 예약인가"를 queue 바깥 상태로 분리한다.
+그래서 `equals()` 하나에 모든 정책을 우겨 넣지 않아도 된다.
+
+## 작은 비교 예시
+
+| 방식 | cancel 요청 의미 | beginner에게 생기기 쉬운 실수 |
+|---|---|---|
+| `ticket.cancel()` | 그 ticket 하나 취소 | 비용까지 자동 최적화된다고 오해 |
+| `queue.remove(ticket)` + identity 성격 | 그 ticket 하나 제거 시도 | queue가 index도 안다고 오해 |
+| `queue.remove(new TimerTicket("A"))` | `equals()`상 같은 A 하나 제거 시도 | old/new generation 구분이 사라짐 |
+| `latestGeneration.put("A", 3)` | 이제 generation 3만 유효 | queue 안 stale ticket이 남을 수 있음을 잊음 |
+
+## 자주 하는 오해
+
+1. handle 취소와 `equals()` 기반 제거는 결과가 거의 같다고 생각한다.
+2. `taskId`만 같으면 old/new 예약을 구분할 필요가 없다고 생각한다.
+3. exact handle이 있으면 heap 제거 비용도 head pop처럼 싸질 것이라고 생각한다.
+4. `queue.remove(x)`는 같은 entry를 모두 지운다고 생각한다.
+5. stale ticket이 남아 있어도 correctness와 observability에 영향이 없다고 생각한다.
+
+## 다음 문서로 이어가기
+
+- heap-backed queue에서 왜 arbitrary `remove`가 head removal과 비용 모양이 다른지 보려면 [DelayQueue Remove Cost Primer](./delayqueue-remove-cost-primer.md)
+- cancel/reschedule과 `generation` stale skip 패턴을 같이 보려면 [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
+- cancelled/stale ticket이 queue size 해석을 왜 흐리는지 보려면 [DelayQueue Queue Size vs Live Timers Primer](./delayqueue-queue-size-vs-live-timers-primer.md)
+- `ScheduledFuture.cancel()` 쪽 mental model로 옮겨 가려면 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
+
+## 한 줄 정리
+
+heap-backed timer queue에서 exact handle 취소는 "이 예약 하나"를 겨냥하고, `equals()` 기반 제거는 "같다고 보이는 예약 하나"를 찾으려 한다.
+reschedule과 stale ticket이 있는 시스템에서는 둘을 같은 의미로 보면 잘못된 entry를 지우거나, 지웠다고 믿고 최신 예약을 남기는 실수가 생긴다.

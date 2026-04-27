@@ -1,0 +1,100 @@
+# Map Value-Shape Drill
+
+> 한 줄 요약: `Map<K, V>`를 볼 때 "key는 정했는데 value를 무엇으로 둘지" 막히는 초보자를 위해, 요구 문장을 `단일값`/`리스트`/`집계객체`로 번역하는 후속 미니 드릴이다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [language 카테고리 인덱스](../README.md)
+- [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+- [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
+- [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
+- [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
+
+retrieval-anchor-keywords: map value shape drill, java map value type practice, map single value list aggregate object, map k v beginner worksheet, map value design beginner, 자바 map value 뭐로 두지, 자바 map 값 타입 고르기, map 값 단일값 리스트 객체 선택, key는 같은데 값이 여러 개인 경우, map value record object beginner, map value shape exercise
+
+## 먼저 잡는 멘탈 모델
+
+`Map`은 보통 "key로 서랍을 찾고, 그 서랍 안에 무엇을 넣을지 정하는 일"이다.
+
+- 한 key에 값이 하나면 `단일값`
+- 한 key에 값이 여러 개면 `리스트`
+- 한 key에 함께 움직이는 정보 묶음이 있으면 `집계객체`
+
+여기서 핵심은 "`Map`을 쓸지"보다 "`V`가 어떤 모양이어야 요구를 덜 비틀까"를 먼저 보는 것이다.
+
+## 10초 비교표
+
+| 요구 신호 | 먼저 떠올릴 `V` 모양 | 예시 |
+|---|---|---|
+| "회원 id -> 닉네임", "상품 코드 -> 재고 수량" | `단일값` | `Map<String, String>`, `Map<String, Integer>` |
+| "회원 id -> 주문 목록", "태그 -> 게시글 목록" | `리스트` | `Map<Long, List<Order>>` |
+| "회원 id -> 이름+등급+포인트", "상품 id -> 가격+재고+상태" | `집계객체` | `Map<Long, MemberSummary>`, `Map<String, ProductStock>` |
+
+## 아주 짧은 예시
+
+```java
+Map<String, Integer> stockBySku = new HashMap<>();
+Map<Long, List<String>> tagsByPostId = new HashMap<>();
+Map<Long, MemberSummary> summaryByMemberId = new HashMap<>();
+
+record MemberSummary(String name, String grade, int point) {}
+```
+
+- 재고 수량처럼 값이 하나면 `단일값`
+- 게시글 태그처럼 여러 개가 달리면 `리스트`
+- 이름/등급/포인트처럼 함께 읽는 정보면 `집계객체`
+
+## 미니 드릴
+
+아래 요구 문장을 읽고 `단일값` / `리스트` / `집계객체` 중 하나를 적어 보자.
+
+| 번호 | 요구 문장 | 내 답 |
+|---|---|---|
+| 1 | 회원 id를 넣으면 현재 포인트 한 개만 바로 찾고 싶다. |  |
+| 2 | 주문 번호마다 배송 상태 이력 여러 개를 시간순으로 보관한다. |  |
+| 3 | 상품 코드로 가격, 재고 수량, 판매 상태를 함께 꺼내야 한다. |  |
+| 4 | 사용자명으로 마지막 로그인 시각 하나만 조회한다. |  |
+| 5 | 카테고리 id마다 노출할 상품 id 목록을 유지한다. |  |
+| 6 | 사번으로 이름, 부서, 입사일을 한 번에 보여 준다. |  |
+| 7 | 에러 코드별 기본 안내 문구 하나만 관리한다. |  |
+| 8 | 학생 id별 제출 파일 경로 여러 개를 저장한다. |  |
+| 9 | 주문 id별 총금액만 빠르게 조회하면 된다. |  |
+| 10 | 매장 id별 주소, 영업시간, 전화번호를 같이 보여 준다. |  |
+
+## 정답
+
+| 번호 | 정답 | 이유(한 줄) |
+|---|---|---|
+| 1 | `단일값` | 포인트 하나만 필요 |
+| 2 | `리스트` | 한 주문에 상태 이력이 여러 개 붙음 |
+| 3 | `집계객체` | 가격/재고/상태가 함께 움직이는 묶음 |
+| 4 | `단일값` | 시각 하나 조회 |
+| 5 | `리스트` | 카테고리마다 상품 id 여러 개 |
+| 6 | `집계객체` | 이름/부서/입사일을 한 번에 읽음 |
+| 7 | `단일값` | 코드별 문구 하나 |
+| 8 | `리스트` | 학생별 제출 파일 여러 개 |
+| 9 | `단일값` | 총금액 하나만 필요 |
+| 10 | `집계객체` | 주소/영업시간/전화번호가 한 묶음 |
+
+## 초보자가 자주 헷갈리는 포인트
+
+- 값이 여러 개인데 `Map<K, V>`에 단일값만 두면 새 값이 들어올 때 이전 값이 덮어써진다.
+- 값이 여러 필드인데 `Map<K, String>` 하나에 `"name,grade,point"`처럼 욱여넣기 시작하면 읽기와 수정이 금방 어려워진다.
+- `Map<K, List<V>>`가 필요하다고 해서 "중복 제거"까지 자동으로 해결되지는 않는다.
+- 값 목록에서 중복까지 막아야 하면 `List` 대신 `Set` 계열이 더 맞을 수 있다.
+- `집계객체`는 거창한 말이 아니다. 초보자 기준에서는 `record`나 작은 DTO처럼 "함께 읽는 값 묶음"이라고 이해하면 충분하다.
+
+## 빠른 선택 체크
+
+- key마다 값 하나면 `Map<K, V>`
+- key마다 값 여러 개면 `Map<K, List<V>>`
+- key마다 여러 속성을 함께 다루면 `Map<K, SomeRecord>`
+- "문자열 하나로 대충 합쳐 넣기"가 떠오르면 집계객체 후보를 먼저 다시 본다
+
+## 다음 단계
+
+- `Map` 자체를 언제 고르는지부터 다시 잡으려면 [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
+- `Map`에서 key 존재 여부와 기본값 처리가 헷갈리면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
+- value를 꺼낸 뒤 반복 패턴까지 이어서 보려면 [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)

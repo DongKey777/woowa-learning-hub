@@ -1,11 +1,12 @@
 """is_ready() × integration.augment() degrade path coverage."""
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from scripts.learning import integration
-from scripts.learning.rag import indexer
+from scripts.learning.rag import corpus_loader, indexer
 
 
 class IsReadyTest(unittest.TestCase):
@@ -40,6 +41,139 @@ class IsReadyTest(unittest.TestCase):
             # state may be 'ready' or 'stale' depending on hash comparison,
             # but must never be 'missing' when files exist.
             self.assertNotEqual(report.state, "missing")
+
+    def test_non_indexed_markdown_churn_can_flip_live_readiness_back_to_stale(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "knowledge" / "cs"
+            index_root = root / "state" / "cs_rag"
+            contents_root = corpus_root / "contents" / "design-pattern"
+            contents_root.mkdir(parents=True)
+            index_root.mkdir(parents=True)
+
+            primer_path = contents_root / "read-model-staleness.md"
+            primer_path.write_text(
+                "# Read model staleness\n\n## Primer\n\n"
+                "same indexed content that is long enough to survive the minimum "
+                "chunk-size filter for readiness debugging coverage.",
+                encoding="utf-8",
+            )
+            meta_path = corpus_root / "README.md"
+            meta_path.write_text("# Corpus notes\n\nfirst pass", encoding="utf-8")
+
+            sqlite_path, dense_path, manifest_path = indexer._paths(index_root)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, corpus_loader.load_corpus(corpus_root))
+            finally:
+                conn.close()
+            dense_path.touch()
+
+            initial_hash = corpus_loader.corpus_hash(corpus_root)
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": initial_hash,
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            ready_report = indexer.is_ready(index_root, corpus_root)
+            indexed_paths_before = [chunk.path for chunk in corpus_loader.iter_corpus(corpus_root)]
+            self.assertEqual(ready_report.state, "ready")
+            self.assertEqual(
+                indexed_paths_before,
+                ["contents/design-pattern/read-model-staleness.md"],
+            )
+
+            meta_path.write_text("# Corpus notes\n\nsecond pass", encoding="utf-8")
+
+            stale_report = indexer.is_ready(index_root, corpus_root)
+            indexed_paths_after = [chunk.path for chunk in corpus_loader.iter_corpus(corpus_root)]
+            churned_hash = corpus_loader.corpus_hash(corpus_root)
+
+            self.assertEqual(indexed_paths_after, indexed_paths_before)
+            self.assertEqual(stale_report.state, "stale")
+            self.assertEqual(stale_report.reason, "corpus_changed")
+            self.assertEqual(stale_report.index_manifest_hash, initial_hash)
+            self.assertEqual(stale_report.corpus_hash, churned_hash)
+            self.assertNotEqual(churned_hash, initial_hash)
+            self.assertEqual(stale_report.next_command, "bin/cs-index-build")
+
+    def test_rebuild_can_flip_back_to_stale_immediately_when_non_indexed_markdown_changes_again(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "knowledge" / "cs"
+            index_root = root / "state" / "cs_rag"
+            contents_root = corpus_root / "contents" / "design-pattern"
+            contents_root.mkdir(parents=True)
+            index_root.mkdir(parents=True)
+
+            (contents_root / "read-model-staleness.md").write_text(
+                "# Read model staleness\n\n## Primer\n\n"
+                "same indexed content that is long enough to survive the minimum "
+                "chunk-size filter for readiness debugging coverage.",
+                encoding="utf-8",
+            )
+            meta_path = corpus_root / "README.md"
+            meta_path.write_text("# Corpus notes\n\nbefore rebuild", encoding="utf-8")
+
+            sqlite_path, dense_path, manifest_path = indexer._paths(index_root)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, corpus_loader.load_corpus(corpus_root))
+            finally:
+                conn.close()
+            dense_path.touch()
+
+            first_hash = corpus_loader.corpus_hash(corpus_root)
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": first_hash,
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(indexer.is_ready(index_root, corpus_root).state, "ready")
+
+            meta_path.write_text("# Corpus notes\n\nafter rebuild", encoding="utf-8")
+            rebuild_hash = corpus_loader.corpus_hash(corpus_root)
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": rebuild_hash,
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(indexer.is_ready(index_root, corpus_root).state, "ready")
+
+            meta_path.write_text("# Corpus notes\n\nchanged again right away", encoding="utf-8")
+
+            flipped_report = indexer.is_ready(index_root, corpus_root)
+            self.assertEqual(flipped_report.state, "stale")
+            self.assertEqual(flipped_report.reason, "corpus_changed")
+            self.assertEqual(flipped_report.index_manifest_hash, rebuild_hash)
+            self.assertNotEqual(flipped_report.corpus_hash, rebuild_hash)
 
 
 class IntegrationAugmentDegradeTest(unittest.TestCase):

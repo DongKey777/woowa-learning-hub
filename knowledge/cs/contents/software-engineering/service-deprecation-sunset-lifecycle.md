@@ -30,6 +30,10 @@
 > - deprecation extension governance
 > - sunset allowlist absorb
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Service Deprecation and Sunset Lifecycle](./README.md#service-deprecation-and-sunset-lifecycle)
+> - 다음 단계: [Deprecation Enforcement, Tombstone, and Sunset Guardrails](./deprecation-enforcement-tombstone-guardrails.md)
+
 ## 핵심 개념
 
 서비스 deprecation은 "없애자"가 아니다.

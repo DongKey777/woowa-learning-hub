@@ -21,6 +21,7 @@
 
 관련 문서:
 
+- [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md)
 - [컨테이너, cgroup, namespace](./container-cgroup-namespace.md)
 - [Page Replacement, Clock vs LRU](./page-replacement-clock-vs-lru.md)
 - [Scheduler Fairness, Page Cache, File System Basics](./scheduler-fairness-page-cache.md)

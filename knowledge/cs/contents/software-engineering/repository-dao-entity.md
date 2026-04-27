@@ -1,250 +1,124 @@
 # Repository, DAO, Entity
 
-**난이도: 🟡 Intermediate**
+> 한 줄 요약: 같은 주문 생성 예시로 보면 `Repository`는 "주문을 저장해 달라"는 창구이고, `DAO`는 SQL 실행 도구, `Entity`는 DB에 맞춘 저장 모양이다.
 
-> 신입 백엔드 개발자가 저장 계층을 설계할 때 자주 헷갈리는 개념 정리
+**난이도: 🟢 Beginner**
 
-<details>
-<summary>Table of Contents</summary>
+관련 문서:
+- [Software Engineering README: Repository, DAO, Entity](./README.md#repository-dao-entity)
+- [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
+- [Service 계층 기초](./service-layer-basics.md)
+- [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
+- [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
+- [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-- [왜 헷갈리는가](#왜-헷갈리는가)
-- [Repository](#repository)
-- [DAO](#dao)
-- [Entity](#entity)
-- [Mapper와 RowMapper](#mapper와-rowmapper)
-- [언제 무엇을 둘까](#언제-무엇을-둘까)
-- [작은 프로젝트에서의 추천 구조](#작은-프로젝트에서의-추천-구조)
-- [추천 참고 자료](#추천-참고-자료)
-- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
+retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity 한눈에
 
-</details>
+처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결한다.
 
-> 관련 문서:
-> - [Software Engineering README: Repository, DAO, Entity](./README.md#repository-dao-entity)
-> - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
-> - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
-> - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
-> - [Clean Architecture vs Layered Architecture, Modular Monolith](./clean-architecture-layered-modular-monolith.md)
->
-> retrieval-anchor-keywords: repository vs dao, repository boundary, persistence boundary, domain repository, dao table access, entity vs domain model, mapper rowmapper, aggregate persistence, repository abstraction, database access layer, persistence adapter mapping checklist, domain object to jpa entity, jpa entity mapper checklist
+## 먼저 잡는 한 줄 멘탈 모델
 
-## 왜 헷갈리는가
+서비스는 "주문을 저장해 주세요"라고 부탁하고, 저장 계층 내부는 그 부탁을 **Repository -> DAO -> Entity** 흐름으로 DB 친화적인 모양으로 바꿔 처리한다고 보면 된다.
 
-저장 계층을 처음 설계할 때는 보통 이런 이름이 한꺼번에 등장한다.
+- `Repository`: 서비스가 보는 저장 창구
+- `DAO`: 테이블과 SQL을 다루는 손발
+- `Entity`: DB 컬럼에 맞춘 저장 상자
+- `Mapper`: 도메인 객체와 저장 상자를 바꾸는 번역기
 
-- Repository
-- DAO
-- Entity
-- Mapper
+## 한 표로 먼저 보기
 
-문제는 이름은 익숙한데, **무슨 기준으로 나누는지**가 헷갈린다는 점이다.
+| 용어 | 먼저 떠올릴 질문 | 주로 쓰는 말투 | 작은 기억 문장 |
+|---|---|---|---|
+| Repository | "이 유스케이스가 무엇을 저장하지?" | 주문, 회원, 결제 같은 도메인 말투 | "주문 저장 창구" |
+| DAO | "어떤 SQL을 실행하지?" | `insert`, `select`, `update` 같은 테이블 말투 | "row를 읽고 쓰는 도구" |
+| Entity | "DB에 어떤 모양으로 넣지?" | `order_id`, `status` 같은 컬럼 말투 | "저장용 상자" |
+| Mapper | "객체를 어디서 바꾸지?" | `toEntity`, `toDomain` 같은 변환 말투 | "번역기" |
 
-핵심은 다음처럼 구분하면 된다.
+초심자는 아래 네 줄만 먼저 잡아도 충분하다.
 
-- **Repository**: 도메인 객체 관점
-- **DAO**: 테이블/SQL 관점
-- **Entity**: DB 저장 형태 관점
-- **Mapper**: DB row ↔ 객체 변환 관점
+| 문장 | 더 가까운 대상 |
+|---|---|
+| `orderRepository.save(order)` | Repository |
+| `INSERT INTO orders ...` | DAO |
+| `OrderEntity(orderId, status, totalAmount)` | Entity |
+| `mapper.toEntity(order)` | Mapper |
 
----
+## 같은 주문 생성 시나리오로 이어 보기
 
-## Repository
+[계층형 아키텍처 기초](./layered-architecture-basics.md)에서 본 주문 생성 흐름을 저장 책임 기준으로 다시 보면 이렇게 읽힌다.
 
-Repository는 **도메인 객체를 저장하고 조회하는 창구**다.
+| 위치 | 같은 예시에서 하는 일 | 이 문서에서 볼 포인트 |
+|---|---|---|
+| Controller | 요청을 받는다 | 저장 세부를 모른다 |
+| Service | 재고 확인 후 `orderRepository.save(order)`를 호출한다 | "무엇을 저장할지"만 말한다 |
+| Repository 구현체 | `orderDao.insert(mapper.toEntity(order))` | 저장 기술을 조립한다 |
+| DAO | `orders` 테이블에 `INSERT`를 날린다 | SQL과 row 접근을 맡는다 |
+| Entity | `order_id`, `status`, `total_amount`를 담는다 | DB 모양에 맞춘다 |
 
-예를 들어 장기 게임이면 이렇게 말하는 쪽에 가깝다.
+즉 같은 주문 생성 예시라도, 계층 문서에서는 "Controller/Service/Repository를 왜 나누는가"가 중심이고, 여기서는 **Repository 아래에서 저장 책임이 어떻게 더 쪼개지는가**가 중심이다.
 
-```java
-gameRepository.save(game);
-JanggiGame game = gameRepository.findById(id);
-```
-
-즉 Repository는
-
-- “게임을 저장한다”
-- “게임을 불러온다”
-
-처럼 **도메인 언어로 말하는 계층**이다.
-
-### 특징
-
-- 도메인 중심
-- 저장소 구현 세부사항을 감춘다
-- DB가 바뀌어도 바깥 사용 코드는 덜 흔들린다
-
----
-
-## DAO
-
-DAO(Data Access Object)는 **DB 테이블에 직접 접근하는 객체**다.
-
-예:
-
-- `GameDao`
-- `PieceDao`
-
-이 객체들은 보통
-
-- SQL 실행
-- insert / update / delete / select
-- `ResultSet` 읽기
-
-를 담당한다.
-
-즉 DAO는 **테이블 중심**이다.
-
-### Repository와의 차이
-
-- Repository는 “게임 저장/조회”
-- DAO는 “games 테이블 insert/update”
-
-즉 DAO가 더 세부적이다.
-
----
-
-## Entity
-
-Entity는 여기서 **DB에 저장하기 쉬운 데이터 모양**이라고 보면 된다.
-
-예를 들어 도메인 객체가
-
-- `JanggiGame`
-- `Board`
-- `Piece`
-- `Position`
-
-처럼 연결되어 있어도, DB는 row 형태를 좋아한다.
-
-그래서 이런 식의 객체를 둘 수 있다.
+## 작은 주문 저장 코드 예시
 
 ```java
-public record PieceEntity(
-        long gameId,
-        int x,
-        int y,
-        String name,
-        String team
-) {
+public interface OrderRepository {
+    void save(Order order);
+}
+
+@Component
+class JdbcOrderRepository implements OrderRepository {
+    private final OrderDao orderDao;
+    private final OrderEntityMapper mapper;
+
+    @Override
+    public void save(Order order) {
+        orderDao.insert(mapper.toEntity(order));
+    }
 }
 ```
 
-즉 Entity는 **도메인 그 자체라기보다 DB 저장용 형태**에 가깝다.
+이 코드에서 초심자가 볼 핵심은 세 가지다.
 
-### 주의
+- `Service`는 `OrderDao` 대신 `OrderRepository`를 의존한다.
+- Repository 구현체가 DAO와 Mapper를 조립해 저장 기술 세부를 숨긴다.
+- `Entity`는 도메인 의미 전체보다 DB 저장 모양에 더 가깝다.
 
-프레임워크에 따라 `Entity`라는 말이 다르게 쓰일 수 있다.
+## 각 용어를 짧게 풀기
 
-- JPA에서는 `@Entity`가 붙은 ORM 엔티티를 말함
-- JDBC 문맥에서는 그냥 DB row용 객체를 뜻할 수도 있음
+`Repository`는 도메인 언어로 저장을 부탁받는 계약이다. `DAO`는 SQL과 테이블 접근을 직접 담당하는 구현 도구다. `Entity`는 DB에 저장하기 쉬운 납작한 데이터 모양이고, `Mapper`는 도메인 객체와 이 저장 모양을 서로 바꾼다.
 
----
+그래서 `saveOrder`, `findById`는 Repository 말투에 가깝고, `insertOrderRow`, `selectOrders`는 DAO 말투에 더 가깝다. `@Entity`와 도메인 객체를 같은 것으로 단정하면 헷갈리기 쉬우므로, 저장 편의 모양인지 도메인 규칙 객체인지 먼저 구분하는 편이 안전하다.
 
-## Mapper와 RowMapper
+## 언제 어디까지 나누면 되나
 
-Mapper는 **DB row를 객체로 바꾸거나, 객체를 DB 저장 형태로 바꾸는 역할**을 한다.
+| 상황 | 시작 구조 | 이유 |
+|---|---|---|
+| CRUD가 작고 단순하다 | `Repository` 중심 | 흐름 이해가 먼저다 |
+| SQL이 길어지고 테이블별 접근이 선명하다 | `Repository + DAO` | 도메인 말투와 SQL 말투를 분리하기 쉽다 |
+| 도메인 객체와 DB 모양 차이가 크다 | `Repository + DAO + Entity + Mapper` | 변환 책임을 분리해야 누수를 줄이기 쉽다 |
+| 조회 화면 요구가 커진다 | 별도 query model 검토 | 저장 계약과 읽기 화면 요구를 섞지 않기 쉽다 |
 
-JPA adapter 안에서 domain object와 `@Entity`를 어디서 끊어야 할지 헷갈린다면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)를 같이 보면 좋다.
+작은 프로젝트에서는 보통 `Repository` 하나로 시작해도 충분하다. 구조가 커질수록 DAO, Entity, Mapper를 하나씩 꺼내는 편이 초심자에게 더 자연스럽다.
 
-예:
+## 자주 하는 혼동
 
-- `GameEntityMapper`
-- `PieceEntityMapper`
-- `RowMapper`
+- "Repository와 DAO는 같은 말 아닌가요?"
+  - 둘 다 저장소처럼 보이지만, Repository는 도메인 관점이고 DAO는 테이블/SQL 관점이다.
+- "Entity가 곧 도메인 객체 아닌가요?"
+  - 항상 그렇지 않다. 저장용 모양과 규칙 중심 객체는 다를 수 있다.
+- "작은 프로젝트인데 다 나눠야 하나요?"
+  - 아니다. Repository 하나로 시작하고 필요할 때만 더 쪼개면 된다.
+- "조회가 복잡해지면 DAO 메서드만 늘리면 되나요?"
+  - 화면 중심 읽기가 커지면 [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)로 분리 판단을 보는 편이 낫다.
 
-### 왜 필요하나
+## 다음에 읽을 문서
 
-저장 계층에서 자주 하는 일은 결국 이거다.
+- "왜 Repository를 인터페이스 계약으로 두는지"가 더 궁금하면: [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+- "지금 막힌 질문부터 고르고 싶으면": [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
+- "메서드 이름만 봐도 Repository와 DAO를 구분하고 싶으면": [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
+- "도메인 객체와 JPA Entity를 어디서 나눌지"가 궁금하면: [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+- "읽기 모델 분리까지 이어서 보고 싶으면": [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-- `ResultSet` -> Entity
-- Entity -> Domain
-- Domain -> Entity
+## 한 줄 정리
 
-이 변환 책임을 별도 클래스로 두면 역할이 선명해진다.
-
----
-
-## 언제 무엇을 둘까
-
-### Repository만으로 충분한 경우
-
-- 프로젝트가 작다
-- 저장 대상이 많지 않다
-- SQL이 단순하다
-
-이 경우에는 Repository 하나에서
-
-- SQL 작성
-- 매핑
-- 저장/조회
-
-를 같이 해도 된다.
-
-### DAO까지 나누는 게 좋은 경우
-
-- 테이블이 여러 개다
-- 저장/조회 SQL이 길다
-- 저장소 코드가 커진다
-- 테이블별 책임을 분리하고 싶다
-
-### Entity/Mapper가 필요한 경우
-
-- 도메인 객체와 DB 저장 형태가 많이 다르다
-- 변환 코드가 길어진다
-- DB 변경이 도메인으로 새는 걸 줄이고 싶다
-
----
-
-## 작은 프로젝트에서의 추천 구조
-
-신입 수준의 작은 프로젝트에서는 보통 이 정도면 충분하다.
-
-### 1단계
-
-- `Repository`
-
-하나만 둔다.
-
-### 2단계
-
-필요하면
-
-- `Repository + DAO`
-
-로 나눈다.
-
-### 3단계
-
-더 복잡해지면
-
-- `Repository + DAO + Entity + Mapper`
-
-까지 간다.
-
-즉 처음부터 모든 계층을 다 만들 필요는 없다.
-
----
-
-## 추천 참고 자료
-
-- Martin Fowler - Repository: https://martinfowler.com/eaaCatalog/repository.html
-- Martin Fowler - Data Mapper: https://martinfowler.com/eaaCatalog/dataMapper.html
-- Martin Fowler - Gateway: https://martinfowler.com/eaaCatalog/gateway.html
-
-## 면접에서 자주 나오는 질문
-
-### Q. Repository와 DAO의 차이는 무엇인가요?
-
-- Repository는 도메인 객체를 저장/조회하는 관점의 계층이다.
-- DAO는 DB 테이블과 SQL 중심의 저수준 접근 계층이다.
-- DAO가 더 세부적이라고 볼 수 있다.
-
-### Q. Entity는 왜 필요한가요?
-
-- 도메인 객체와 DB row의 모양이 다를 수 있기 때문이다.
-- DB 저장용 형태를 따로 두면 도메인 변경을 줄이고 매핑 책임도 분리할 수 있다.
-
-### Q. 항상 DAO와 Entity를 모두 둬야 하나요?
-
-- 아니다.
-- 규모가 작고 SQL이 단순하면 Repository 하나로도 충분하다.
-- 구조가 커질 때 점진적으로 나누는 것이 더 자연스럽다.
+같은 주문 생성 예시에서 `Service`는 `Repository`에 저장을 부탁하고, Repository 아래에서 `DAO`와 `Entity`가 SQL 실행과 저장 모양을 맡는다고 기억하면 첫 구분은 충분하다.

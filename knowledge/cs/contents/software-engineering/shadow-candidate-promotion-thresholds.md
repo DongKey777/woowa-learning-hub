@@ -39,6 +39,10 @@
 > - workflow threshold expiry
 > - mirror breach calibration
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Candidate Promotion Thresholds](./README.md#shadow-candidate-promotion-thresholds)
+> - 다음 단계: [Threshold Override Governance](./threshold-override-governance.md)
+
 ## 핵심 개념
 
 `manual_path_ratio`와 `shadow_candidate_count`는 같은 사실을 다른 높이에서 본다.

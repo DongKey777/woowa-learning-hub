@@ -1,5 +1,17 @@
 # 그래프 관련 알고리즘
 
+> 한 줄 요약: 그래프 문제를 보면 먼저 연결성, 최단 경로, MST, 위상 정렬, flow 중 무엇을 묻는지부터 가르는 라우터 문서다.
+
+**난이도: 🟡 Intermediate**
+
+retrieval-anchor-keywords: graph router, shortest path router, weighted shortest path, unweighted shortest path, dag shortest path, mst router, topological sort, dsu vs bfs, same group vs actual path, 그래프 라우터, 최단 경로, 최소 비용 경로, 연결성 질문, 처음 배우는데, 뭐예요
+
+관련 문서:
+- [Connectivity Question Router](../data-structure/connectivity-question-router.md)
+- [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
+- [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md)
+- [Network Flow Intuition](./network-flow-intuition.md)
+
 > 작성자 : [서그림](https://github.com/Seogeurim), [정희재](https://github.com/Hee-Jae)
 
 <details>
@@ -16,38 +28,26 @@
 
 </details>
 
-> 한 줄 요약: 이 문서는 legacy graph primer에서 들어오는 질문을 shortest path / MST / topological sort / flow로 먼저 분기시키는 entrypoint다.
-
-**난이도: 🟡 Intermediate**
->
 > 문서 역할: 이 문서는 algorithm 카테고리 안에서 **graph basics primer + routing entrypoint** 역할을 한다.
->
-> retrieval-anchor-keywords: graph basics, graph primer, legacy graph primer, graph algorithm primer, graph algorithm guide, graph algorithm choice, graph problem router, graph decision tree, which graph algorithm to use, shortest path, shortest path primer, shortest path cluster, shortest path decision tree, unweighted vs dag vs weighted shortest path, shortest path router, weighted shortest path, positive weighted shortest path, sparse graph shortest path, dense graph shortest path, sparse vs dense shortest path, graph density shortest path, edge density shortest path, adjacency list shortest path, adjacency matrix shortest path, sparse weighted shortest path, dense weighted shortest path, sparse graph routing, dense graph routing, matrix dijkstra, O(V^2) dijkstra, priority queue dijkstra, 0-1 bfs, zero one bfs, 0/1 cost shortest path, binary edge weight shortest path, deque shortest path, shortest path with deque, teleport shortest path, portal shortest path, warp shortest path, teleport cost 0 walk cost 1, dag shortest path, shortest path on dag, topological shortest path, pathfinding router, graph pathfinding, route finding, point-to-point shortest path, point to point shortest path, source-to-target routing, goal-directed pathfinding, heuristic pathfinding, A*, A star, astar, single-source shortest path, single source shortest path, single-source routing, start-to-all routing, routing table shortest path, single pair shortest path, all-pairs shortest path, all pairs shortest path, pairwise shortest path, distance matrix shortest path, bfs shortest path, unweighted shortest path, unit weight shortest path, maze shortest path, dijkstra, bellman ford, floyd warshall, negative-edge shortest path, negative edge, negative weight shortest path, negative cycle, shortest path vs MST, minimum spanning tree, MST, minimum spanning forest, connect all nodes minimum cost, kruskal, prim, prim vs kruskal, union find, disjoint set, dense graph mst, sparse graph mst, topological sort, topological ordering, DAG ordering, dependency graph, build order, course schedule, prerequisite graph, path vs tree vs order vs flow, network flow, max flow, maximum throughput, throughput maximization, throughput optimization, bottleneck, bottleneck edge, bottleneck link, bottleneck capacity, capacity bottleneck, bandwidth bottleneck, min cut, minimum cut, cut capacity, flow cut theorem, flow vs shortest path, bipartite matching, job assignment, matching reduction, 그래프 기본, 그래프 프라이머, 그래프 알고리즘 선택, 최단 경로, 경로 탐색, 길찾기, 점대점 최단 경로, 목표 지향 탐색, 가중치 최단 경로, 양수 가중치 최단 경로, 그래프 밀도 최단 경로, 희소 그래프 최단 경로, 밀집 그래프 최단 경로, 인접 리스트 최단 경로, 인접 행렬 최단 경로, 순간이동 최단 경로, 텔레포트 최단 경로, 포털 최단 경로, 워프 최단 경로, DAG 최단 경로, 무가중치 최단 경로, 단일 시작점 최단 경로, 모든 쌍 최단 경로, 음수 간선 최단 경로, 최소 신장 트리, 프림 알고리즘, 크루스칼 알고리즘, 위상 정렬, 선후 관계, 의존성 그래프, 빌드 순서, 선수 과목, 최대 처리량, 병목, 병목 간선, 병목 링크, 네트워크 병목, 최소 컷, 최소 절단, 절단 용량
->
-> 관련 문서:
-> - [알고리즘 기본](./basic.md#dfs와-bfs)
-> - [Connectivity Question Router](../data-structure/connectivity-question-router.md)
-> - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
-> - [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md)
-> - [A* vs Dijkstra](./a-star-vs-dijkstra.md)
-> - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
-> - [Topological DP](./topological-dp.md)
-> - [위상 정렬 패턴](./topological-sort-patterns.md)
-> - [Union-Find Amortized Proof Intuition](./union-find-amortized-proof-intuition.md)
-> - [Network Flow Intuition](./network-flow-intuition.md)
-> - [Hungarian Algorithm Intuition](./hungarian-algorithm-intuition.md)
 
 ---
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - `same-component`, `connected yes/no`, `경로 하나 복원`, `최단 경로` phrasing가 한데 섞이면 [Connectivity Question Router](../data-structure/connectivity-question-router.md)에서 먼저 답의 모양을 `yes/no vs actual path vs minimum`으로 가르는 편이 빠르다.
+- `same component query`, `same set query`, `connected yes/no`, `connected components`, `connected component count`, `union-find`, `dsu`, `유니온파인드`, `서로소 집합`, `같은 그룹인가`, `컴포넌트 크기`, `컴포넌트 개수`처럼 DSU 초보 phrasing가 먼저 보이면 [Connectivity Question Router](../data-structure/connectivity-question-router.md)로 바로 가서 `yes/no vs size/count vs actual path vs minimum path`를 먼저 고르는 편이 빠르다.
 - `unweighted shortest path`, `bfs shortest path`, `최소 칸 수`, `미로 최단 경로`처럼 무가중치 shortest path가 먼저면 [알고리즘 기본](./basic.md#dfs와-bfs)에서 BFS 레벨 탐색을 먼저 보는 편이 빠르다.
 - `dag shortest path`, `topological shortest path`, `의존성 그래프 최소 비용`처럼 DAG 위 path optimization이 핵심이면 [Topological DP](./topological-dp.md)와 [위상 정렬 패턴](./topological-sort-patterns.md)을 같이 보면 좋다.
 - `weighted shortest path`, `single-source shortest path`, `single-source routing`, `all-pairs shortest path`, `negative-edge shortest path`처럼 가중치 shortest path 선택 기준이 핵심이면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)로 이어지면 좋다.
+
+## shortest path 브리지 문서
+
 - `sparse graph shortest path`, `dense graph shortest path`, `adjacency list shortest path`, `adjacency matrix shortest path`, `graph density shortest path`처럼 그래프 밀도/표현이 먼저 보이면 아래의 [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense)를 한 번 거친 뒤, 희소 그래프 쪽은 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md), 밀집 그래프 쪽은 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)로 가면 된다.
 - `0-1 BFS`, `0/1 cost shortest path`, `deque shortest path`, `teleport shortest path`, `portal shortest path`, `warp shortest path`, `순간이동 최단 경로`처럼 특수 weighted shortest-path phrasing이면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)로 바로 보내는 편이 빠르다. 대개 `0 edge + 1 edge` 모델인지 먼저 확인하면 된다.
 - `pathfinding`, `point-to-point shortest path`, `goal-directed routing`, `A*`처럼 목표 정점이 또렷한 질문이면 [A* vs Dijkstra](./a-star-vs-dijkstra.md)로 이어지면 좋다.
+
+## shortest path 밖의 그래프 문서
+
 - `build order`, `course schedule`, `dependency ordering`처럼 DAG 순서 문제를 따로 분리해서 보고 싶다면 [위상 정렬 패턴](./topological-sort-patterns.md)이 가장 직접적이다.
 - `MST`, `minimum spanning tree`, `Prim vs Kruskal`, `모든 정점을 최소 비용으로 연결` 같은 질문이면 [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md)로 먼저 가는 편이 더 직접적이다.
 - `optimal assignment`, `linear assignment`, `1:1 weighted matching`, `cost matrix assignment`처럼 exact 배정이 핵심이면 [Hungarian Algorithm Intuition](./hungarian-algorithm-intuition.md)부터 확인하는 편이 정확하다.
@@ -57,29 +57,50 @@
 ## 그래프 문제 Decision Router
 
 그래프 문제는 먼저 답의 모양을 구분하면 길을 잃지 않는다.
-`path 하나`, `tree 하나`, `order 하나`, `flow 양` 중 무엇을 묻는지 먼저 보면 된다.
+`same-group yes/no`, `path 하나`, `tree 하나`, `order 하나`, `flow 양` 중 무엇을 묻는지 먼저 보면 된다.
+
+> 초보자 빠른 비교:
+> - `같은 그룹인가?`만 묻는다 -> DSU(Union-Find)
+> - `1에서 7까지 실제로 어떻게 가나?`를 묻는다 -> BFS/DFS + `parent`
+> - DSU는 연결 여부를 빠르게 확인하지만 `1 -> 3 -> 7` 같은 실제 경로는 주지 못한다.
 
 | 문제에서 먼저 확인할 질문 | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
 |---|---|---|
+| `같은 컴포넌트인가?`, `same set`, `connected yes/no`, `component size/count`처럼 연결성 확인이 먼저인가 | [Connectivity Question Router](../data-structure/connectivity-question-router.md), [분리 집합(Union Find)과 크루스칼(Kruskal) 알고리즘](#분리-집합Union-Find과-크루스칼Kruskal-알고리즘) | 답의 모양이 `yes/no` 또는 `size/count`면 shortest path보다 DSU 계열 분기가 먼저다 |
 | 한 정점에서 다른 정점까지 **최소 비용 / 최단 거리**를 구하나 | [Shortest Path Router: Unweighted vs DAG vs Weighted](#shortest-path-router-unweighted-vs-dag-vs-weighted), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 핵심이 path cost 최소화다. 그 안에서 `unweighted shortest path` / `DAG shortest path` / `weighted shortest path`를 먼저 가르고, weighted shortest path면 `sparse vs dense`를 한 번 더 나눈다. 목표 정점이 또렷하면 A*까지 다시 갈라진다 |
 | 그래프의 모든 정점을 **사이클 없이 최소 비용으로 연결**해야 하나 | [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md) | shortest path가 아니라 minimum spanning tree다 |
 | DAG에서 **선후 관계를 만족하는 순서**만 구하면 되나 | [위상 정렬 패턴](./topological-sort-patterns.md) | dependency ordering 문제다 |
+
+## 그래프 문제 Decision Router: 배정과 flow
+
+| 문제에서 먼저 확인할 질문 | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
+|---|---|---|
 | 정사각 `cost matrix`의 **1:1 최소 비용 배정 / optimal assignment**인가 | [Hungarian Algorithm Intuition](./hungarian-algorithm-intuition.md), [Min-Cost Max-Flow Intuition](./min-cost-max-flow-intuition.md) | 순수 assignment matrix면 Hungarian이 먼저고, capacity/supply 제약까지 붙으면 min-cost max-flow로 확장된다 |
 | 간선에 `capacity`가 있거나 `max throughput` / `bottleneck` / `min cut` / bipartite matching / job assignment처럼 **총 얼마나 많이 보낼 수 있나, 어디가 전체 처리량을 막나**를 묻나 | [Network Flow Intuition](./network-flow-intuition.md) | shortest path가 아니라 throughput, bottleneck, min cut, residual graph, unit-capacity reduction이 핵심이다 |
 
-### Shortest Path Router: Unweighted vs DAG vs Weighted
+## Shortest Path Router: Unweighted vs DAG vs Weighted
 
-| 질문 phrasing | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
-|---|---|---|
-| `unweighted shortest path`, `bfs shortest path`, `최소 칸 수`, `최소 이동 횟수`, `미로 최단 경로` | [알고리즘 기본](./basic.md#dfs와-bfs), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 가중치가 없거나 모두 같으면 BFS 레벨 탐색이 곧 최단 거리다 |
-| `DAG shortest path`, `shortest path on DAG`, `topological shortest path`, `acyclic shortest path`, `의존성 그래프 최소 비용` | [Topological DP](./topological-dp.md), [위상 정렬 패턴](./topological-sort-patterns.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 위상 정렬은 계산 순서이고, 문제 자체는 shortest path다. DAG라면 음수 간선이 있어도 위상 순서 완화가 가능하다 |
-| `weighted shortest path`, `positive weighted shortest path`, `양수 가중치 shortest path`, `single-source shortest path`, `routing cost`, `graph density shortest path`, `sparse graph shortest path`, `dense graph shortest path` | [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md), [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | weighted shortest path cluster의 기본 진입점이다. 음수 간선이 없으면 Dijkstra 계열이 기본이고, 밀도/표현 phrasing이 보이면 sparse vs dense를 한 번 더 나눠 deep dive로 보낸다 |
-| `0-1 BFS`, `0/1 cost shortest path`, `binary edge weight shortest path`, `deque shortest path`, `teleport shortest path`, `portal shortest path`, `warp shortest path`, `순간이동 최단 경로` | [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | weighted shortest path 안에서도 가중치 분포가 바로 드러난 케이스다. teleport-style query라도 본질이 `0 edge + 1 edge`면 0-1 BFS bridge가 가장 직접적이다 |
-| `negative-edge shortest path`, `negative edge`, `negative cycle`, `arbitrage` | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | weighted shortest path 안에서도 음수 간선과 음수 사이클 검출 여부가 핵심이다 |
-| `all-pairs shortest path`, `all pairs shortest path`, `distance matrix shortest path`, `모든 정점 쌍 최단 거리` | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 시작점 하나가 아니라 전체 쌍을 한 번에 다뤄야 한다 |
-| `pathfinding`, `point-to-point shortest path`, `source-to-target routing`, `goal-directed route`, `A*`, `heuristic search` | [A* vs Dijkstra](./a-star-vs-dijkstra.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 목표 정점이 분명한 shortest path cluster 안에서는 A*와 Dijkstra를 다시 비교해야 한다 |
+| 질문 phrasing | 자연어 질문 예시 | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
+|---|---|---|---|
+| `unweighted shortest path`, `bfs shortest path`, `최소 칸 수`, `최소 이동 횟수`, `미로 최단 경로` | `이 미로에서 목표 지점까지 최소 이동 횟수는 몇 번이야?` | [알고리즘 기본](./basic.md#dfs와-bfs), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 가중치가 없거나 모두 같으면 BFS 레벨 탐색이 곧 최단 거리다 |
+| `DAG shortest path`, `shortest path on DAG`, `topological shortest path`, `acyclic shortest path`, `의존성 그래프 최소 비용` | `선행 작업 순서를 지키면서 목표 지점까지 가는 최소 비용은 얼마야?` | [Topological DP](./topological-dp.md), [위상 정렬 패턴](./topological-sort-patterns.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 위상 정렬은 계산 순서이고, 문제 자체는 shortest path다. DAG라면 음수 간선이 있어도 위상 순서 완화가 가능하다 |
 
-#### Shortest Path Alias Normalization
+## Shortest Path Router: weighted와 0-1 BFS
+
+| 질문 phrasing | 자연어 질문 예시 | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
+|---|---|---|---|
+| `weighted shortest path`, `positive weighted shortest path`, `양수 가중치 shortest path`, `single-source shortest path`, `routing cost`, `graph density shortest path`, `sparse graph shortest path`, `dense graph shortest path` | `출발점에서 목표 지점까지 가는 최소 비용 경로를 찾고 싶어.` | [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md), [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | weighted shortest path cluster의 기본 진입점이다. 음수 간선이 없으면 Dijkstra 계열이 기본이고, 밀도/표현 phrasing이 보이면 sparse vs dense를 한 번 더 나눠 deep dive로 보낸다 |
+| `0-1 BFS`, `0/1 cost shortest path`, `binary edge weight shortest path`, `deque shortest path`, `teleport shortest path`, `portal shortest path`, `warp shortest path`, `순간이동 최단 경로` | `걷기는 1초, 순간이동은 0초일 때 목표 지점까지 가장 빨리 가려면?` | [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | weighted shortest path 안에서도 가중치 분포가 바로 드러난 케이스다. teleport-style query라도 본질이 `0 edge + 1 edge`면 0-1 BFS bridge가 가장 직접적이다 |
+
+## Shortest Path Router: 음수 간선, 전체 쌍, 길찾기
+
+| 질문 phrasing | 자연어 질문 예시 | 먼저 갈 문서 | 왜 그 문서가 맞는가 |
+|---|---|---|---|
+| `negative-edge shortest path`, `negative edge`, `negative cycle`, `arbitrage` | `보상 간선까지 있을 때 목표 지점까지 최소 비용이 음수로 계속 줄어드는지 알고 싶어.` | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | weighted shortest path 안에서도 음수 간선과 음수 사이클 검출 여부가 핵심이다 |
+| `all-pairs shortest path`, `all pairs shortest path`, `distance matrix shortest path`, `모든 정점 쌍 최단 거리` | `모든 지점끼리의 최소 비용을 한 번에 표로 만들고 싶어.` | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 시작점 하나가 아니라 전체 쌍을 한 번에 다뤄야 한다 |
+| `pathfinding`, `point-to-point shortest path`, `source-to-target routing`, `goal-directed route`, `A*`, `heuristic search` | `현재 위치에서 목표 지점까지 빨리 가는 길을 바로 찾고 싶어.` | [A* vs Dijkstra](./a-star-vs-dijkstra.md), [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md) | 목표 정점이 분명한 shortest path cluster 안에서는 A*와 Dijkstra를 다시 비교해야 한다 |
+
+## Shortest Path Alias Normalization
 
 | canonical phrase | 같이 걸리기 쉬운 alias | 먼저 연결되는 선택 |
 |---|---|---|
@@ -88,7 +109,7 @@
 | `negative-edge shortest path` | `negative edge`, `negative weight shortest path`, `negative cycle`, `arbitrage`, `음수 간선 최단 경로` | Bellman-Ford 또는 DAG shortest path |
 | `route planning` | `pathfinding`, `point-to-point shortest path`, `source-to-target routing`, `goal-directed route`, `heuristic search` | 목표 정점이 고정된 길찾기면 [A* vs Dijkstra](./a-star-vs-dijkstra.md), 아니면 `single-source` / `all-pairs` 축을 다시 본다 |
 
-#### Weighted Shortest Path Density Router: Sparse vs Dense
+## Weighted Shortest Path Density Router: Sparse vs Dense
 
 `weighted shortest path`라고 해도 질문이 `희소/밀집`, `adjacency list/matrix`, `O(E log V) vs O(V^2)`처럼 그래프 밀도와 표현 vocabulary로 들어오면 deep dive에 바로 떨어지기 전에 한 번 더 갈라두는 편이 빠르다.
 
@@ -98,8 +119,9 @@
 | `dense graph shortest path`, `adjacency matrix shortest path`, `complete graph shortest path`, `dense weighted shortest path`, `matrix dijkstra`, `O(V^2) dijkstra` | [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md), [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | 밀집 그래프에서는 희소 그래프 최적화보다 `single-source vs all-pairs`, `negative-edge`, `O(V^2)` 행렬 감각이 더 큰 분기다. 필요하면 그다음 sparse-vs-dense 세부 선택으로 내려간다 |
 | `0-1 BFS`, `zero one bfs`, `0/1 cost shortest path`, `deque shortest path`, `teleport shortest path`, `portal shortest path`, `warp shortest path`, `Dial`, `bucket shortest path`, `small integer shortest path` | [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md) | 희소 weighted shortest path의 특수 가중치 분포 질문이라 전용 변형을 먼저 잡는 편이 빠르다. teleport-style query라도 `0 cost edge / 1 cost edge`면 여기로 보낸다 |
 
-### 빠른 판별 체크
+## 빠른 판별 체크
 
+- `같은 그룹인지 yes/no만` 묻거나 `컴포넌트 크기/개수`가 같이 나오면 shortest path 전에 [Connectivity Question Router](../data-structure/connectivity-question-router.md)로 먼저 보낸다.
 - 간선 값이 비용(cost)이면 shortest path / MST 쪽이고, 용량(capacity)이면 flow 쪽이다.
 - `bottleneck`, `min cut`, `minimum cut`, `cut capacity`, `어디가 병목인가`가 나오고 대상이 **전체 네트워크 처리량**이면 shortest path가 아니라 flow / min-cut 쪽이다.
 - "모든 정점을 연결"이면 MST, "한 점에서 다른 점까지 간다"면 shortest path를 먼저 의심한다.
@@ -110,6 +132,9 @@
 - `weighted shortest path` cluster 안에서는 `single-source shortest path` / `negative-edge shortest path` / `all-pairs shortest path`를 다시 나눠 Dijkstra, Bellman-Ford, Floyd-Warshall 쪽으로 보낸다.
 - `sparse graph shortest path` / `dense graph shortest path` / `adjacency list shortest path` / `adjacency matrix shortest path`처럼 그래프 밀도와 표현이 먼저 보이면 weighted shortest path 안에서도 [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense)를 한 번 더 거친다.
 - `dense`라는 말이 보여도 `negative-edge shortest path`나 `all-pairs shortest path`가 같이 나오면 그래프 밀도보다 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)의 큰 축이 우선이다.
+
+## 빠른 판별 체크 2
+
 - `pathfinding`, `point-to-point`, `goal-directed`, `navigation route` 같은 phrasing은 shortest path cluster 안에서 [A* vs Dijkstra](./a-star-vs-dijkstra.md)로 다시 갈라진다.
 - 음수 간선 또는 음수 사이클 검출이 나오면 `negative-edge shortest path`로 normalize해서 Bellman-Ford를 먼저 확인한다.
 - 모든 쌍의 최단 거리가 필요하면 `all-pairs shortest path`, 시작점 하나 기준이면 `single-source shortest path`로 normalize해 Dijkstra / Bellman-Ford를 우선 비교한다.
@@ -125,7 +150,7 @@
 최단 경로 문제란, 가중 그래프에서 간선의 가중치의 합이 최소가 되는 경로를 찾는 문제이다. 최단 경로 문제는 다음과 같은 유형들이 있다.
 
 - 단일 출발 (single-source) 최단 경로 : 어떤 하나의 정점에서 출발하여 나머지 모든 정점까지의 최단 경로를 찾는다.
-- 단일 도착 (single-destination) 최단 경로 : 모든 정점에서 출발하여 어떤 하나의 정점까지의 최단 경로를 찾는다.  
+- 단일 도착 (single-destination) 최단 경로 : 모든 정점에서 출발하여 어떤 하나의 정점까지의 최단 경로를 찾는다.
   _(그래프 내의 간선들을 뒤집으면 단일 출발 최단 경로 문제로 바뀔 수 있다.)_
 - 단일 쌍 (single-pair) 최단 경로 : 어떤 정점 v에서 v'로 가는 최단 경로를 찾는다.
 - 전체 쌍 (all-pair) 최단 경로 : 모든 정점 쌍들 사이의 최단 경로를 찾는다.
@@ -175,7 +200,7 @@
 1. 출발점에 대하여 D 배열을 초기화할 때 `D[S] = 0`을 해준다. 이와 동시에 힙에 노드 정보(번호, 거리 : `[S, 0]`)를 넣어준다.
 2. 힙에서 맨 위에 있는 노드 I를 꺼낸다.
 3. 만일 꺼낸 노드 I의 거리 정보가 현재 D[I]보다 크다면 이미 방문한 노드일 것이므로 무시한다.
-4. I를 대상으로 다익스트라 알고리즘을 수행하는데, D 배열이 갱신될 경우 그 노드 정보를 힙에 넣는다.  
+4. I를 대상으로 다익스트라 알고리즘을 수행하는데, D 배열이 갱신될 경우 그 노드 정보를 힙에 넣는다.
    (D[J] = D[I] + W 로 갱신될 경우 힙에 노드 J(`[J, D[J]]`)를 삽입한다.)
 5. 힙에 노드가 없을 때까지 반복한다.
 
@@ -308,3 +333,7 @@ Kruskal 알고리즘 구현 ▶️ [KruskalTest.java](./code/KruskalTest.java)
 
 위상 정렬은 선후 관계를 만족하는 순서를 찾는 그래프 패턴이다.
 선수 과목, 빌드 순서, 작업 의존성, 배포 순서를 볼 때 가장 먼저 떠올려야 한다.
+
+## 한 줄 정리
+
+그래프 문제는 "연결만 확인하는가, 최단 경로를 구하는가, 모두를 최소 비용으로 잇는가, 순서를 정하는가, 총 처리량을 따지는가"를 먼저 가르면 다음 문서와 알고리즘이 훨씬 빨리 보인다.

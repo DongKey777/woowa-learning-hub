@@ -39,6 +39,10 @@
 > - temporary hold exit criteria
 > - blocked shadow process
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Process Catalog and Retirement](./README.md#shadow-process-catalog-and-retirement)
+> - 다음 단계: [Shadow Process Catalog Entry Schema](./shadow-process-catalog-entry-schema.md)
+
 ## 핵심 개념
 
 시스템에 공식 문서, policy, runbook이 있어도 실제 운영은 종종 다른 곳에서 돌아간다.

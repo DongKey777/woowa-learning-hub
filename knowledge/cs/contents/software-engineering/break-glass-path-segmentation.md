@@ -38,6 +38,10 @@
 > - break glass owner handoff
 > - unauthorized break glass detection
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Break-Glass Path Segmentation](./README.md#break-glass-path-segmentation)
+> - 다음 단계: [Break-Glass Reentry Governance](./break-glass-reentry-governance.md)
+
 ## 핵심 개념
 
 break-glass는 "수동이라서 다 나쁜 경로"가 아니라, **평시 기본 경로가 아닌 비상 모드**다.

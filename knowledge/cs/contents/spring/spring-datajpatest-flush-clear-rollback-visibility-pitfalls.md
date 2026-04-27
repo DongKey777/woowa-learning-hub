@@ -1,45 +1,109 @@
-# Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls
+# Spring `@DataJpaTest` Mental-Model Bridge: 런타임 트랜잭션 감각을 테스트에 그대로 옮기기
 
-> 한 줄 요약: `@DataJpaTest`는 빠르고 유용하지만 기본 트랜잭션과 persistence context가 DB 현실을 일부 가려 주므로, flush/clear 없이 쓰면 제약 조건·bulk update·매핑 오류를 늦게 보게 될 수 있다.
+> 한 줄 요약: 런타임에서 "지금 메모리 상태를 보는가, DB에 실제 반영된 상태를 보는가"를 구분하듯, `@DataJpaTest`에서도 `flush`, `clear`, rollback 경계를 구분해야 save-and-find 착시에 덜 속는다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
 > 관련 문서:
-> - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
-> - [Spring Transactional Test Rollback Misconceptions](./spring-transactional-test-rollback-misconceptions.md)
+> - [Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기](./spring-persistence-transaction-web-service-repository-primer.md)
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
+> - [Spring `@DataJpaTest` Bulk Update Stale-State Mini Guide](./spring-datajpatest-bulk-update-stale-state-mini-guide.md)
+> - [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](./spring-after-commit-rollback-slice-test-mini-card.md)
+> - [Spring Transactional Test Rollback Misconceptions](./spring-transactional-test-rollback-misconceptions.md)
 > - [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md)
-> - [Spring Testcontainers Boundary Strategy](./spring-testcontainers-boundary-strategy.md)
 
-retrieval-anchor-keywords: DataJpaTest, TestEntityManager, flush clear test, repository test visibility, transactional rollback test, JPA slice stale state, persistence context illusion, constraint violation test
+retrieval-anchor-keywords: DataJpaTest beginner, DataJpaTest mental model bridge, DataJpaTest flush clear rollback, save and find illusion, persistence context test trap, TestEntityManager beginner, repository test DB visibility, transactional test rollback beginner, DataJpaTest stale state, bulk update clear test, junior JPA test primer, flush commit difference test, rollback test vs commit path, commit visible behavior test, DataJpaTest enough when, SpringBootTest commit verification beginner, after commit test beginner
 
-## 핵심 개념
+## 먼저 mental model 한 줄
 
-`@DataJpaTest`는 repository와 JPA 매핑을 빠르게 검증하기에 아주 좋다.
+초급자는 `@DataJpaTest`를 이렇게 보면 덜 헷갈린다.
 
-하지만 기본적으로 다음 전제를 가진다.
+```text
+런타임 service 트랜잭션 안에서
+엔티티 변경은 먼저 persistence context에 잡히고
+필요할 때 flush로 SQL이 나가고
+트랜잭션이 끝나면 commit 또는 rollback 된다
 
-- 테스트 메서드가 트랜잭션 안에서 실행되기 쉽다
-- 끝나면 롤백된다
-- 같은 persistence context가 테스트 전체에 걸쳐 살아 있을 수 있다
+@DataJpaTest도 거의 같은 그림인데
+기본값이 "테스트 끝나면 rollback"이라서
+"다시 조회했으니 DB를 확인했다"는 착시가 더 쉽게 생긴다
+```
 
-그래서 자주 생기는 오해는 이렇다.
+핵심 문장은 이것 하나면 충분하다.
 
-- "다시 조회했으니 DB까지 확인한 거겠지"
-- "예외가 안 났으니 제약 조건도 문제 없겠지"
-- "bulk update 결과를 바로 읽었으니 최신 상태겠지"
+**`@DataJpaTest`는 운영과 다른 세계가 아니라, rollback이 붙은 작은 트랜잭션 실험실이다.**
 
-실제로는 그렇지 않을 수 있다.
+## 런타임 감각을 테스트로 번역하면
 
-`@DataJpaTest`의 핵심 함정은 느린 것이 아니라, **managed state가 DB 현실을 잠시 가려 줄 수 있다는 점**이다.
+| 런타임에서 보는 질문 | `@DataJpaTest`에서 같은 질문 |
+|---|---|
+| 지금 객체만 바뀐 건가, DB SQL까지 나간 건가? | `flush()` 전인가 후인가? |
+| 지금 보는 값이 같은 persistence context의 managed 상태인가? | `clear()` 없이 다시 조회한 값인가? |
+| 최종 commit 뒤 다른 곳에서 볼 수 있는 결과인가? | 테스트 종료 rollback 전에만 보이는 값인가? |
 
-## 깊이 들어가기
+즉 `@DataJpaTest`에서 헷갈리는 이유는 새 개념이 많아서가 아니다.
+런타임에서 이미 있던 트랜잭션 규칙을 테스트에서 잠깐 잊기 쉽기 때문이다.
 
-### 1. repository 테스트에서도 메모리 상태와 DB 상태를 구분해야 한다
+## 가장 흔한 착시 3개
 
-같은 트랜잭션 안에서 저장 후 곧바로 조회하면, DB를 새로 읽었다기보다 같은 persistence context의 managed 엔티티를 다시 본 것일 수 있다.
+### 1. save 후 바로 find 했으니 DB 검증까지 끝났다고 느낀다
 
-즉 다음 테스트는 의도보다 약할 수 있다.
+```java
+Order order = orderRepository.save(new Order("PAID"));
+Order found = orderRepository.findById(order.getId()).orElseThrow();
+```
+
+이 코드는 유효한 기본 테스트다. 다만 초급자가 여기서 곧바로 "DB까지 정상"이라고 결론 내리면 너무 빨리 간 것이다.
+
+왜냐하면 `found`가 다음일 수 있기 때문이다.
+
+- 같은 트랜잭션 안의 같은 persistence context가 들고 있던 managed 엔티티
+- flush 전이라 아직 SQL로 강하게 검증되지 않은 상태
+
+짧게 말하면, **다시 조회했어도 아직 "메모리 재확인"에 더 가까울 수 있다.**
+
+### 2. 예외가 안 났으니 제약 조건도 괜찮다고 느낀다
+
+unique, foreign key, not null 같은 제약은 보통 실제 SQL이 나갈 때 더 분명해진다.
+
+그래서 아래 테스트는 의도보다 약할 수 있다.
+
+```java
+userRepository.save(new User("a@test.com"));
+userRepository.save(new User("a@test.com"));
+```
+
+이 순간에 바로 예외가 안 났다고 해서, DB 제약이 안전하다고 단정하면 안 된다.
+초급자 기준으로는 **"예외 검증을 하고 싶으면 flush로 SQL 시점을 앞으로 당긴다"**고 기억하면 된다.
+
+### 3. bulk update 뒤 다시 읽었으니 최신 상태라고 느낀다
+
+bulk update는 DB를 직접 건드렸는데, 현재 persistence context는 예전 엔티티를 계속 들고 있을 수 있다.
+
+그래서 다음처럼 보일 수 있다.
+
+- update count는 맞다
+- 그런데 다시 읽은 엔티티 상태는 옛값 같다
+
+이때 JPA가 틀린 게 아니라, **테스트가 아직 같은 persistence context 안에서만 돌고 있는 것**일 수 있다.
+
+## `flush`, `clear`, rollback을 초급자 언어로 다시 묶기
+
+| 개념 | 초급자용 해석 | `@DataJpaTest`에서 언제 떠올리나 |
+|---|---|---|
+| `flush()` | "이제 SQL 한번 보내 보자" | 제약 조건, insert/update SQL, DB 반응을 빨리 보고 싶을 때 |
+| `clear()` | "지금 들고 있는 managed 상태를 내려놓자" | save-and-find 착시, bulk update stale state를 끊고 싶을 때 |
+| rollback | "테스트가 끝나면 대부분 되돌린다" | commit 이후 효과까지 검증하는 테스트가 아니라는 점을 확인할 때 |
+
+짧게 외우면 이렇다.
+
+- `flush`는 DB와 동기화 타이밍을 당긴다.
+- `clear`는 메모리 착시를 걷어낸다.
+- rollback은 테스트 격리를 돕지만 commit 검증을 대신하지 않는다.
+
+## 제일 작은 브리지 예제
+
+### 1. save-and-find 기본형
 
 ```java
 @DataJpaTest
@@ -48,121 +112,20 @@ class OrderRepositoryTest {
     @Autowired OrderRepository orderRepository;
 
     @Test
-    void saveAndFind() {
+    void save_and_find() {
         Order order = orderRepository.save(new Order("PAID"));
+
         Order found = orderRepository.findById(order.getId()).orElseThrow();
+
         assertThat(found.getStatus()).isEqualTo("PAID");
     }
 }
 ```
 
-이 테스트는 기본 동작 확인에는 좋지만,
+이 테스트가 틀렸다는 뜻은 아니다.
+이 테스트가 강하게 보장하는 것은 "repository 기본 흐름" 쪽이고, "DB 현실까지 충분히 드러냈다"는 쪽은 아니다.
 
-- 실제 flush 시 SQL이 잘 나가는지
-- DB 제약 조건이 통과하는지
-- clear 후에도 조회 결과가 맞는지
-
-까지는 충분히 검증하지 못할 수 있다.
-
-### 2. flush는 DB 제약과 SQL 타이밍을 앞당겨 드러낸다
-
-`@DataJpaTest`에서 중요한 버그 중 일부는 commit 시점까지 숨어 있다.
-
-- unique constraint 위반
-- foreign key 위반
-- not null 위반
-- SQL 생성 문제
-
-이런 경우 테스트 중간에 flush를 넣으면 문제를 더 빨리 드러낼 수 있다.
-
-```java
-orderRepository.save(order);
-testEntityManager.flush();
-```
-
-핵심은 flush가 테스트를 "느리게 만드는 옵션"이 아니라, **실제 DB 상호작용을 더 명확하게 드러내는 장치**라는 점이다.
-
-### 3. clear는 managed illusion을 걷어낸다
-
-bulk update나 dirty checking이 얽히면, 같은 persistence context 안에서 다시 읽는 것만으로는 stale state를 발견하기 어렵다.
-
-이때 clear가 유용하다.
-
-```java
-testEntityManager.flush();
-testEntityManager.clear();
-```
-
-이후 조회는 현재 메모리의 managed 객체가 아니라, DB에서 다시 읽어 온 상태에 더 가까워진다.
-
-즉 repository 테스트에서 clear는 "메모리 초기화"가 아니라, **진짜 DB 가시성을 보려는 의도적 경계 설정**이다.
-
-### 4. bulk update와 native query는 특히 flush/clear 감각이 중요하다
-
-JPQL bulk update나 native SQL은 current persistence context와 엇갈리기 쉽다.
-
-테스트에서 이를 바로 읽으면 다음이 생길 수 있다.
-
-- 업데이트 count는 맞는데 엔티티 상태는 예전처럼 보임
-- native insert 후 조회가 기대와 다르게 보임
-
-이 경우는 JPA가 틀린 게 아니라, 테스트가 아직 **같은 persistence context 안에 갇혀 있는 것**일 수 있다.
-
-### 5. rollback 기본값은 편하지만 commit 기반 검증을 약하게 만든다
-
-`@DataJpaTest`의 기본 롤백은 테스트 격리에 좋다.
-
-하지만 commit 이후에만 드러나는 문제에는 약하다.
-
-- DB trigger / commit hook
-- after-commit side effect
-- 실제 트랜잭션 경계 밖에서 보이는 결과
-
-이런 종류는 `@DataJpaTest`만으로 충분하지 않을 수 있다.
-
-즉 중요한 질문은 "`@DataJpaTest`가 되느냐"가 아니라, **검증하려는 현상이 rollback 이전에 드러나는 종류인가**다.
-
-### 6. slice가 적합한 문제와 아닌 문제를 구분해야 한다
-
-`@DataJpaTest`가 잘 맞는 것:
-
-- repository query
-- entity mapping
-- cascade/orphan removal 일부
-- flush 시 제약 조건
-
-`@DataJpaTest`만으로는 약한 것:
-
-- 실제 복제 지연/락 경합
-- 여러 transaction manager 경계
-- after-commit 비동기 후속 처리
-- 운영 DB 전용 동작
-
-이 경우는 Testcontainers나 더 넓은 integration test가 맞을 수 있다.
-
-## 실전 시나리오
-
-### 시나리오 1: 테스트는 통과하는데 운영에서 unique 제약이 터진다
-
-테스트가 flush 없이 끝나 실제 SQL 시점을 충분히 보지 못했을 수 있다.
-
-### 시나리오 2: bulk update 테스트가 이상하게 옛값을 읽는다
-
-업데이트가 실패한 게 아니라, persistence context가 stale 상태일 수 있다.
-
-flush/clear 후 다시 읽어 봐야 한다.
-
-### 시나리오 3: repository 테스트에서 `save()`가 잘 되는 것 같은데 실제 update 의도는 잘못됐다
-
-같은 persistence context 안에서 managed state만 보고 있어 merge/persist 경로 오해가 숨었을 수 있다.
-
-### 시나리오 4: `@DataJpaTest`로 after-commit 동작까지 검증하려 한다
-
-기본 rollback과 slice 경계 때문에 그 계약은 충분히 보지 못할 수 있다.
-
-## 코드로 보기
-
-### flush로 제약 조건 확인
+### 2. flush를 넣어 DB 반응을 앞으로 당기기
 
 ```java
 @DataJpaTest
@@ -172,7 +135,7 @@ class UserRepositoryTest {
     @Autowired TestEntityManager testEntityManager;
 
     @Test
-    void duplicateEmailFailsOnFlush() {
+    void duplicate_email_fails_on_flush() {
         userRepository.save(new User("a@test.com"));
         userRepository.save(new User("a@test.com"));
 
@@ -182,7 +145,13 @@ class UserRepositoryTest {
 }
 ```
 
-### clear 후 재조회
+초급자 해석은 단순하다.
+
+- `save()` 두 번은 아직 "변경을 모아 둔 상태"일 수 있다
+- `flush()`는 "이제 DB에 물어보자"에 가깝다
+- 그래서 제약 조건 예외를 더 이른 시점에 볼 수 있다
+
+### 3. clear를 넣어 DB 재조회 의미를 분명하게 만들기
 
 ```java
 testEntityManager.flush();
@@ -191,42 +160,93 @@ testEntityManager.clear();
 Order reloaded = orderRepository.findById(orderId).orElseThrow();
 ```
 
-### bulk update 후 stale state 제거
+초급자 기준으로 `clear()`는 "초기화 버튼"보다 아래 의미로 이해하는 편이 좋다.
 
-```java
-orderRepository.bulkExpire(today);
-testEntityManager.clear();
-```
+**"이제부터는 방금 메모리에 들고 있던 객체 말고, 다시 읽은 결과를 보자."**
 
-## 트레이드오프
+## 언제 어떤 패턴을 쓰면 되나
 
-| 선택지 | 장점 | 단점 | 언제 선택하는가 |
-|---|---|---|---|
-| 기본 `@DataJpaTest`만 사용 | 빠르고 단순하다 | DB 현실이 일부 가려질 수 있다 | 기본 repository 계약 |
-| flush 추가 | 제약 조건과 SQL 시점을 빨리 본다 | 테스트가 조금 더 장황해진다 | insert/update 검증 |
-| flush + clear 추가 | DB 재조회 의미가 분명해진다 | 보일러플레이트가 늘어난다 | stale state, bulk update 검증 |
-| 더 넓은 통합 테스트 | 실제와 가깝다 | 느리고 비용이 크다 | commit 이후 효과나 운영 DB 특성이 중요할 때 |
+| 테스트 목적 | 추천 기본값 |
+|---|---|
+| repository 메서드가 대체로 동작하는지 빠르게 확인 | 기본 `@DataJpaTest` |
+| unique / FK / not null 같은 제약을 테스트 중간에 확인 | `save` 후 `flush()` |
+| bulk update 뒤 옛값 착시를 피하고 싶음 | `flush()` 후 `clear()` 또는 최소 `clear()` |
+| commit 이후에만 보이는 효과를 확인 | `@DataJpaTest`만으로 충분한지 다시 점검 |
 
-핵심은 `@DataJpaTest`를 믿지 말라는 게 아니라, **무엇이 persistence context 착시이고 무엇이 실제 DB 검증인지 의식적으로 분리하라**는 것이다.
+여기서 중요한 건 "무조건 flush/clear를 넣어라"가 아니다.
+**무엇을 검증하려는지에 맞춰 경계를 하나씩 드러내라**는 것이다.
+
+## 초급자용 비교 카드: 언제 `@DataJpaTest` rollback으로 충분하고, 언제 더 넓혀야 하나
+
+먼저 아주 짧게 자르면 이렇다.
+
+- "같은 트랜잭션 안에서 repository와 매핑이 맞는가?"를 보면 `@DataJpaTest`가 먼저다.
+- "commit이 끝난 뒤 다른 경계에서 보이는 결과인가?"를 보면 더 넓은 테스트를 고려한다.
+
+| 확인하려는 것 | 기본 선택 | 이유 |
+|---|---|---|
+| 엔티티 매핑, repository query, 제약 조건 flush 시점 | `@DataJpaTest` | 같은 트랜잭션 안 검증이면 충분한 경우가 많다 |
+| save 후 재조회, bulk update 후 stale state 제거 | `@DataJpaTest` + 필요 시 `flush/clear` | persistence context 착시를 벗기면 목적에 맞다 |
+| 서비스 메서드가 여러 repository를 함께 묶는지 | 더 넓은 서비스 통합 테스트 검토 | repository slice만으로는 유스케이스 경계가 다 안 보일 수 있다 |
+| `afterCommit`, 이벤트 발행, outbox 적재 후 relay, 별도 트랜잭션 효과 | commit-visible 경로가 보이는 더 넓은 테스트 | rollback 기본값 테스트로는 "커밋 후 세계"를 직접 못 본다 |
+| 다른 트랜잭션/다른 스레드/외부 소비자가 볼 결과 | commit-visible 경로가 보이는 더 넓은 테스트 | "테스트 안에서 보였다"와 "커밋 뒤 남는다"는 다르다 |
+
+초급자는 아래 질문 두 개로 먼저 자르면 된다.
+
+1. 지금 확인하려는 결과가 **테스트 트랜잭션 안에서만 보이면 충분한가?**
+2. 아니면 **commit이 끝난 뒤 다른 경계에서도 보여야 정답인가?**
+
+2번이면 `@DataJpaTest`를 버리라는 뜻이 아니다.
+보통은 `@DataJpaTest`로 repository 감각을 먼저 검증하고, commit-visible 위험이 큰 경로만 더 넓은 테스트로 보강하면 된다.
+
+### 빠른 예시
+
+| 상황 | 어디까지면 충분한가 |
+|---|---|
+| 이메일 unique 제약이 flush 시점에 터지는지 확인 | `@DataJpaTest`로 충분한 경우가 많다 |
+| 주문 저장 후 `AFTER_COMMIT` 이벤트로 메일 발송/아웃박스 릴레이가 이어지는지 확인 | commit-visible 경로를 보는 더 넓은 테스트가 필요하다 |
+| JPQL bulk update 후 조회 착시를 없애고 싶은지 확인 | `@DataJpaTest`에서 `clear()`까지 보면 충분한 경우가 많다 |
+| 서비스 유스케이스가 commit 후 다른 트랜잭션에서 바로 읽히는지 확인 | 더 넓은 테스트가 맞다 |
+
+## 자주 하는 오해
+
+- "`findById()`를 다시 했으니 무조건 DB를 새로 읽었다"가 아니다.
+- "`flush()` 했으니 commit까지 끝났다"가 아니다.
+- "`@DataJpaTest`는 rollback하니까 운영과 너무 달라서 쓸모없다"가 아니다.
+- "`@DataJpaTest`가 통과했으니 after-commit 동작도 안전하다"가 아니다.
+
+`@DataJpaTest`는 여전히 아주 유용하다.
+다만 초급자는 이 테스트를 **"DB와 완전히 분리된 가짜 환경"**으로 보지 말고, **"rollback이 걸린 트랜잭션 안에서 persistence context 착시가 더 잘 보이는 환경"**으로 보는 편이 훨씬 정확하다.
+
+## 어디로 이어서 보면 좋나
+
+| 지금 막히는 질문 | 다음 문서 |
+|---|---|
+| "`flush`와 commit 차이를 더 정확히 알고 싶다" | [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md) |
+| "bulk update 뒤에 왜 옛값처럼 보이는지 예제로 보고 싶다" | [Spring `@DataJpaTest` Bulk Update Stale-State Mini Guide](./spring-datajpatest-bulk-update-stale-state-mini-guide.md) |
+| "`AFTER_COMMIT`은 왜 이 테스트만으로 다 못 보나" | [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](./spring-after-commit-rollback-slice-test-mini-card.md) |
+| "`@Transactional` 큰 그림부터 다시 잡고 싶다" | [Spring Persistence / Transaction Mental Model Primer](./spring-persistence-transaction-web-service-repository-primer.md) |
+| "테스트 rollback이 왜 만능이 아닌가" | [Spring Transactional Test Rollback Misconceptions](./spring-transactional-test-rollback-misconceptions.md) |
+| "`save`, `persist`, `merge`가 헷갈린다" | [Spring Data JPA `save`, JPA `persist`, and `merge` State Transitions](./spring-data-jpa-save-persist-merge-state-transitions.md) |
 
 ## 꼬리질문
 
-> Q: `@DataJpaTest`에서 save 후 바로 조회한 값이 왜 DB 검증과 같지 않을 수 있는가?
-> 의도: managed state vs DB state 구분 확인
-> 핵심: 같은 persistence context의 managed 엔티티를 다시 본 것일 수 있기 때문이다.
+> Q: `@DataJpaTest`에서 save 후 바로 다시 조회한 값은 왜 DB 검증과 완전히 같지 않을 수 있는가?
+> 의도: managed state와 DB state 구분 확인
+> 핵심: 같은 persistence context가 들고 있던 managed 엔티티를 다시 본 것일 수 있기 때문이다.
 
-> Q: repository 테스트에 flush를 넣는 이유는 무엇인가?
+> Q: repository 테스트에 `flush()`를 넣는 가장 실용적인 이유는 무엇인가?
 > 의도: SQL 시점과 제약 조건 검증 이해 확인
-> 핵심: 실제 DB 상호작용과 제약 조건 오류를 더 이른 시점에 드러내기 위해서다.
+> 핵심: 실제 DB 반응과 제약 조건 오류를 테스트 중간에 더 빨리 드러내기 위해서다.
 
-> Q: clear는 어떤 착시를 걷어내는가?
-> 의도: stale state 인식 확인
-> 핵심: 메모리에 남아 있는 managed 상태를 끊고 DB 재조회 의미를 분명하게 만든다.
+> Q: `clear()`를 넣으면 무엇이 달라지나?
+> 의도: persistence context 착시 제거 확인
+> 핵심: 메모리에 남아 있던 managed 상태를 끊고, 다시 읽은 결과의 의미를 더 분명하게 만든다.
 
-> Q: `@DataJpaTest`만으로 after-commit 동작을 충분히 보기 어려운 이유는 무엇인가?
-> 의도: slice 한계 이해 확인
-> 핵심: 기본 트랜잭션/롤백 경계가 commit 이후 계약을 약하게 만들 수 있기 때문이다.
+> Q: `@DataJpaTest`의 기본 rollback이 편리하면서도 한계가 있는 이유는 무엇인가?
+> 의도: 테스트 격리와 commit 검증 한계 구분 확인
+> 핵심: 테스트 격리에는 좋지만 commit 이후에만 드러나는 효과를 대신 검증해 주지는 않기 때문이다.
 
 ## 한 줄 정리
 
-좋은 `@DataJpaTest`는 save-and-find가 아니라, 필요한 순간 flush/clear를 써서 persistence context 착시와 실제 DB 검증을 분리해 내는 테스트다.
+좋은 `@DataJpaTest`는 "save하고 다시 읽어도 맞네"에서 멈추지 않고, 필요할 때 `flush`, `clear`, rollback 경계를 드러내서 런타임 트랜잭션 감각과 테스트 해석을 연결해 주는 테스트다.

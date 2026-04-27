@@ -9,19 +9,24 @@
 > 관련 문서:
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+> - [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)
+> - [Spring `@ConditionalOnSingleCandidate` vs `@Primary` Primer: activation 조건과 주입 우선순위는 다르다](./spring-conditionalonsinglecandidate-vs-primary-primer.md)
 > - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
 > - [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)
 > - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
 
-retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, @ConditionalOnMissingBean miss, existing bean found, user bean wins, boot default bean skipped, auto-configuration first debug, why boot bean missing, starter bean not created, spring boot conditions report beginner route, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing vs false, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override
+retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluation report checklist, boot condition report first debug, --debug first checklist, debug=true, actuator conditions endpoint, conditions endpoint beginner, actuator conditions when to use, debug vs actuator conditions, when to use debug first, when to use actuator conditions first, @ConditionalOnMissingBean miss, existing bean found, user bean wins, boot default bean skipped, auto-configuration first debug, why boot bean missing, starter bean not created, spring boot conditions report beginner route, @ConditionalOnProperty havingValue, @ConditionalOnProperty matchIfMissing, property missing vs false, @ConditionalOnMissingBean vs @Primary, primary is not auto-configuration override, bean registration vs injection, existing bean found primary not fix, registration problem injection problem
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - `@Configuration`과 Boot auto-configuration의 큰 그림이 아직 흐리면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)를 먼저 본다.
 - 자동 구성 자체의 동작 원리를 더 넓게 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
+- starter dependency 하나를 report의 positive/negative match에 직접 연결해서 감을 잡고 싶으면 [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)을 먼저 같이 본다.
 - report에서 `existing bean found`를 봤는데 `@Primary`와 무엇이 다른지 헷갈리면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.
+- report에 `found bean ...` 또는 `did not find any beans ...`가 보여도 그게 곧 주입 후보 선택까지 끝났다는 뜻은 아니라는 점은 [Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다](./spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md)에서 바로 이어서 분리한다.
 - report 구조와 조건 종류를 더 깊게 파고들려면 [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)으로 이어진다.
 - `conditions` endpoint를 운영에서 어떻게 안전하게 열지 고민되면 [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)를 같이 본다.
 
@@ -34,6 +39,11 @@ retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluat
 - Boot auto-configuration은 항상 조건부다.
 - `--debug`와 Actuator `conditions`는 그 조건 평가를 가장 빨리 보여 주는 창구다.
 - `@ConditionalOnMissingBean`이 막혔다면 "Boot가 고장 났다"보다 **"이미 같은 역할의 Bean이 있었다"** 쪽이 더 흔하다.
+
+처음 선택 기준도 어렵게 잡을 필요 없다.
+
+- **지금 앱을 다시 띄워도 되면 `--debug`부터** 본다.
+- **이미 떠 있는 앱을 유지한 채 현재 상태를 봐야 하면 `/actuator/conditions`부터** 본다.
 
 즉, 증상을 이렇게 바꿔 말하면 된다.
 
@@ -54,14 +64,27 @@ retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluat
 
 반대로 아래라면 다른 문서가 더 먼저다.
 
-- 내 `@Configuration`이나 `@Component`가 아예 로드되지 않는다.  
+- 내 `@Configuration`이나 `@Component`가 아예 로드되지 않는다.
   이 경우는 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md) 쪽이 더 가깝다.
-- startup 전체가 `BeanCreationException`, binding failure, circular reference로 무너진다.  
+- startup 전체가 `BeanCreationException`, binding failure, circular reference로 무너진다.
   이 경우는 [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)로 올라간다.
 
 ---
 
 ## 2. first-debug checklist
+
+### 0. 무엇을 먼저 열지 10초 만에 고른다
+
+초급자 기준 첫 분기는 아래 한 줄이면 충분하다.
+
+**"다시 띄워도 되면 `--debug`, 이미 떠 있는 상태를 그대로 봐야 하면 `/actuator/conditions`."**
+
+| 먼저 볼 도구 | 이런 상황이면 먼저 쓴다 | beginner가 얻는 이점 |
+|---|---|---|
+| `--debug` | 로컬 실행, 테스트 재실행, CI 재현처럼 재시작이 쉬움 | 설정 추가 없이 가장 빨리 조건 report를 본다 |
+| `/actuator/conditions` | 이미 떠 있는 서버, 운영 profile, 재시작이 부담됨 | 지금 살아 있는 앱의 현재 조건 상태를 restart 없이 본다 |
+
+둘 다 결국 같은 계열의 조건 평가를 보는 창구지만, **차이는 "앱을 다시 띄워도 되느냐"**에 가깝다.
 
 ### 1. 타깃 Bean과 자동 구성 이름을 먼저 적는다
 
@@ -69,9 +92,9 @@ retrieval-anchor-keywords: ConditionEvaluationReport beginner, condition evaluat
 
 처음에는 아래 두 개만 적으면 충분하다.
 
-- 찾고 싶은 Bean 타입 또는 이름  
+- 찾고 싶은 Bean 타입 또는 이름
   예: `ObjectMapper`, `DataSource`, `TaskExecutor`
-- 의심되는 auto-configuration 클래스  
+- 의심되는 auto-configuration 클래스
   예: `JacksonAutoConfiguration`, `DataSourceAutoConfiguration`
 
 이렇게 적어 두면 `--debug`를 켰을 때 어디를 찾아야 하는지가 바로 생긴다.
@@ -117,6 +140,8 @@ management:
 - 지금 떠 있는 profile / property / classpath 문맥을 본다
 - 같은 auto-configuration을 positive/negative match로 나눠 볼 수 있다
 
+즉, `--debug`가 **"지금 다시 띄워서 로그로 본다"** 쪽이라면, `conditions`는 **"지금 떠 있는 상태를 HTTP로 본다"** 쪽이다.
+
 다만 이건 운영 내부 정보다. 외부 공개용 endpoint로 취급하면 안 되고, exposure와 security를 같이 설계해야 한다. 이 부분은 [Spring Actuator Exposure and Security](./spring-actuator-exposure-security.md)와 연결된다.
 
 ### 4. `@ConditionalOnMissingBean` miss면 기존 Bean부터 찾는다
@@ -141,6 +166,8 @@ beginner가 가장 자주 헷갈리는 지점이다.
 4. 다른 starter나 library가 등록한 Bean
 
 핵심은 **Boot 기본값이 빠진 것 자체가 오류인지, 내가 의도한 override인지 먼저 판단하는 것**이다.
+
+> 경고: report가 `existing bean found`처럼 **등록 단계** 이유를 보여 줄 때는 `@Primary`가 해결책이 아니다. `@Primary`는 bean이 이미 등록된 뒤 **주입 단계**에서 기본 후보를 고르는 규칙이다.
 
 ### 5. 기존 Bean이 아니라면 네 가지를 확인한다
 
@@ -223,12 +250,20 @@ public class CustomJsonConfig {
 
 ### 3. "`--debug`를 켰는데 로그가 너무 많아서 못 읽겠다"
 
-그래서 타깃 Bean과 auto-configuration 이름을 먼저 적어 두는 것이다.  
+그래서 타깃 Bean과 auto-configuration 이름을 먼저 적어 두는 것이다.
 처음엔 report 전체를 읽지 말고 `JacksonAutoConfiguration` 같은 한 클래스만 따라간다.
 
-### 4. "Bean이 안 뜨니 무조건 auto-configuration 문제다"
+### 4. "`--debug`와 `conditions` 중 뭐가 더 정답인가?"
 
-내 설정 클래스가 scan/import 범위 밖이면 auto-configuration 이전 문제다.  
+둘 중 하나가 항상 더 좋지는 않다.
+핵심은 기능 차이보다 **진입 타이밍 차이**다.
+
+- 재시작 가능: `--debug`가 보통 먼저다
+- 재시작 부담 큼: `conditions`가 보통 먼저다
+
+### 5. "Bean이 안 뜨니 무조건 auto-configuration 문제다"
+
+내 설정 클래스가 scan/import 범위 밖이면 auto-configuration 이전 문제다.
 그럴 때는 component scan 문서나 startup playbook이 더 맞다.
 
 ## 꼬리질문
@@ -240,6 +275,10 @@ public class CustomJsonConfig {
 > Q: Actuator `conditions`는 언제 특히 유용한가?
 > 의도: restart 없이 보는 진단 창구 이해 확인
 > 핵심: 운영 profile이나 재시작이 어려운 환경에서 현재 조건 평가를 보고 싶을 때다.
+
+> Q: `--debug`와 `/actuator/conditions` 중 무엇을 먼저 고르면 되나?
+> 의도: 초반 진입 타이밍 기준 확인
+> 핵심: 앱을 다시 띄워도 되면 `--debug`, 현재 떠 있는 앱을 유지해야 하면 `/actuator/conditions`다.
 
 > Q: `@ConditionalOnMissingBean` miss는 보통 무엇을 뜻하는가?
 > 의도: missing-bean 조건의 실제 의미 확인

@@ -1,0 +1,271 @@
+# Cookie Scope Migration Cleanup
+
+> 한 줄 요약: session cookie scope를 옮길 때는 새 cookie를 발급하는 일과 옛 cookie를 지우는 일이 별개다. old cookie마다 **원래 `Domain`/host-only 방식과 `Path`를 정확히 맞춘 expired `Set-Cookie`**를 따로 보내야 stale cookie shadowing을 끊을 수 있다.
+
+**난이도: 🟢 Beginner**
+
+> 문서 역할: `follow-up primer bridge`
+>
+> 첫 hop entrypoint가 아니라, 이미 `scope migration 뒤 old cookie cleanup이 막혔다`는 증거나 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md), [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md) 같은 primer/bridge에서 `old scope별 tombstone 설계`만 남았을 때 여는 문서다.
+
+> 관련 문서:
+> - `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+> - `[follow-up primer]` [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)
+> - `[follow-up primer]` [OAuth Login State Cookie Cleanup](./oauth-login-state-cookie-cleanup.md)
+> - `[primer]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
+> - `[primer bridge]` [Secure Cookie Cleanup Behind Proxy](./secure-cookie-cleanup-behind-proxy.md)
+> - `[primer bridge]` [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
+> - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+> - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+
+retrieval-anchor-keywords: cookie scope migration cleanup, session cookie migration cleanup, expire old cookies exact domain path, delete cookie exact path domain, cookie tombstone exact domain path, cookie cleanup matrix, cookie path migration cleanup, cookie domain migration cleanup, move session cookie from /app to /, move session cookie from auth.example.com to example.com, stale cookie after scope migration, old cookie shadows new cookie, delete host-only cookie omit domain, host-only cookie cleanup, shared domain cookie cleanup, cookie scope cutover cleanup, cookie migration follow-up primer, session scope migration follow-up, duplicate cookie cleanup after deploy, logout old cookie survives, browser stale session after cookie migration, cookie tombstone follow-up primer, old scope tombstone handoff, cleanup matrix handoff
+
+## 왜 이 문서를 지금 여나
+
+이 문서는 broad한 login-loop entrypoint가 아니다.
+먼저 아래 둘 중 하나가 이미 잡혀 있을 때 연다.
+
+- 새 cookie는 생겼는데 old cookie cleanup header를 어떤 scope로 보내야 할지 막혔다
+- raw `Cookie` header 중복이나 `Application > Cookies`의 old row 잔존을 보고, 이제 `old scope별 tombstone` 설계만 남았다
+
+초보자가 session scope migration에서 자주 보는 장면은 이렇다.
+
+- 배포 후 새 cookie는 잘 생겼다
+- 그런데 특정 host나 특정 route에서만 다시 `/login`으로 튄다
+- `Application > Cookies`에는 old/new cookie가 둘 다 남아 있다
+- 팀에서는 "새 cookie로 덮어쓴 줄 알았는데 왜 old cookie가 남지?"라고 묻는다
+
+여기서 핵심 오해는 이것이다.
+
+- **scope를 바꾸는 것**과
+- **옛 scope를 청소하는 것**은
+- 브라우저 입장에서 같은 작업이 아니다
+
+즉 새 cookie를 한 번 더 발급했다고 old cookie가 자동으로 사라지지 않는다.
+
+---
+
+## 가장 중요한 mental model
+
+cookie migration은 "주소 변경"이 아니라 "새 출입증 발급 + 옛 출입증 회수"로 생각하면 쉽다.
+
+- 새 출입증을 발급해도 옛 출입증은 자동 반납되지 않는다
+- 브라우저는 "이 old cookie가 이제 obsolete인지"를 스스로 추론하지 않는다
+- 서버가 **old cookie 하나마다 정확한 회수 지시**를 보내야 한다
+
+여기서 회수 지시가 expired `Set-Cookie`다. 실무에서는 `Max-Age=0`과 과거 `Expires`를 같이 넣는 tombstone header를 많이 쓴다.
+
+핵심 한 줄:
+
+- **new cookie 1개 + old scope별 tombstone N개**
+
+---
+
+## 먼저 10초 cleanup 판별표
+
+| 지금 보이는 현상 | 보통 뜻하는 것 | 먼저 할 일 |
+|---|---|---|
+| `Path=/app`에서 `/`로 넓혔는데 `/app/*`에서만 loop | old `Path=/app` cookie가 남아 있다 | old `Path=/app` tombstone 추가 |
+| `auth.example.com` host-only cookie를 `Domain=example.com`으로 옮겼는데 `auth`에서만 꼬임 | host-only old cookie를 못 지웠다 | `auth.example.com`에서 `Domain` 없이 tombstone 발급 |
+| logout/cleanup을 했는데 old cookie가 그대로 보임 | delete header의 `Domain`/`Path`가 old cookie와 안 맞았다 | old cookie row의 정확한 scope 다시 확인 |
+| `Cookie: session=...; session=...`가 계속 보임 | 새 cookie가 문제가 아니라 old cookie cleanup이 실패했다 | old scope별 tombstone을 하나씩 보강 |
+
+---
+
+## 무엇이 "정확히 같아야" 하나
+
+cookie 삭제는 "이름만 같으면 지운다"가 아니다.
+
+| 항목 | old cookie와 맞춰야 하나 | 이유 |
+|---|---|---|
+| `name` | 예 | 어떤 cookie를 지울지 식별한다 |
+| `Path` | 예 | 다른 path cookie는 그대로 남을 수 있다 |
+| `Domain` 값 | 예 | shared-domain cookie라면 old domain 값과 같아야 한다 |
+| host-only 여부 | 예 | old cookie가 `Domain` 없이 만들어졌다면 삭제도 `Domain` 없이, 같은 host에서 해야 한다 |
+| `Secure` / `HttpOnly` / `SameSite` | identity key는 아님 | 하지만 `Secure` cookie 정리는 HTTPS 응답이 필요하고, `HttpOnly` cookie는 보통 서버가 지워야 한다 |
+
+초보자용 기억 문장:
+
+- `Path=/` 새 cookie는 old `Path=/app` cookie를 자동으로 지우지 않는다
+- `Domain=example.com` tombstone은 host-only `auth.example.com` cookie를 지우지 못한다
+
+---
+
+## 가장 흔한 예시 1: `Path` migration
+
+예전에는 `/app` 아래에서만 session을 썼고, 지금은 사이트 전체 `/`로 넓힌다고 하자.
+
+### old cookie
+
+```http
+Set-Cookie: session=old123; Path=/app; HttpOnly; Secure; SameSite=Lax
+```
+
+### new cookie
+
+```http
+Set-Cookie: session=new999; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+여기서 new cookie만 보내면 old cookie는 남을 수 있다.
+
+### 같이 보내야 하는 cleanup tombstone
+
+```http
+Set-Cookie: session=; Path=/app; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax
+```
+
+핵심은 `Path=/app`를 그대로 맞추는 것이다.
+
+이 예시 detour에서 cleanup scope를 정리했다면 다음 symptom 분기는 다시 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)에서 고른다.
+
+---
+
+## 가장 흔한 예시 2: host-only -> shared domain migration
+
+예전 login host가 `auth.example.com`이고, old cookie가 host-only였다고 하자.
+즉 원래 응답에는 `Domain`이 없었다.
+
+### old cookie
+
+```http
+Set-Cookie: session=old123; Path=/; HttpOnly; Secure
+```
+
+이 old cookie는 사실상 `auth.example.com` host-only cookie다.
+
+이제 새 구조에서 subdomain 공용으로 바꾸려고 한다.
+
+### new cookie
+
+```http
+Set-Cookie: session=new999; Domain=example.com; Path=/; HttpOnly; Secure
+```
+
+이때 흔한 실수는 old cookie도 이렇게 지우려는 것이다.
+
+```http
+Set-Cookie: session=; Domain=example.com; Path=/; Max-Age=0
+```
+
+이건 shared-domain cookie cleanup일 뿐이고, **host-only old cookie cleanup이 아니다.**
+
+### host-only old cookie를 지우는 올바른 방식
+
+`https://auth.example.com/...` 응답에서:
+
+```http
+Set-Cookie: session=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure
+```
+
+중요한 점은 두 가지다.
+
+- `Domain`을 쓰지 않는다
+- old cookie를 만든 그 host에서 응답해야 한다
+
+즉 `app.example.com` 응답만으로는 `auth.example.com` host-only cookie를 정리할 수 없다.
+
+host-only tombstone까지 확인했다면 browser/session 분기 복귀점은 동일하게 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)다.
+
+---
+
+## 한 번에 여러 old scope를 치우는 cleanup matrix
+
+scope migration에서는 old cookie가 하나가 아닐 수 있다.
+
+| 정리할 old cookie | 필요한 tombstone | 어디서 보내야 하나 |
+|---|---|---|
+| host-only on `auth.example.com`, `Path=/` | `Domain` 없이 `Path=/`, `Max-Age=0` | `auth.example.com` 응답 |
+| `Domain=example.com`, `Path=/app` | `Domain=example.com; Path=/app; Max-Age=0` | `example.com`을 domain-match하는 host 응답 |
+| `Domain=example.com`, `Path=/` | `Domain=example.com; Path=/; Max-Age=0` | `example.com`을 domain-match하는 host 응답 |
+
+여기서 중요한 실전 규칙:
+
+- **old scope 하나당 tombstone 하나**
+- wildcard delete 같은 것은 없다
+- 하나라도 빠지면 그 old cookie는 계속 남을 수 있다
+
+---
+
+## rollout 때 가장 안전한 패턴
+
+1. old `Set-Cookie` 기록과 DevTools를 보고 현재 남아 있는 old scope를 inventory한다.
+2. 새 session cookie를 원하는 new scope로 발급한다.
+3. 같은 응답에서 old scope별 tombstone을 모두 같이 보낸다.
+4. login 성공 응답, session refresh 응답, logout 응답처럼 자주 타는 경로에 cleanup을 잠시 유지한다.
+5. `Application > Cookies`와 실패 요청의 raw `Cookie` header에서 old row와 duplicate name이 사라졌는지 확인한다.
+
+짧은 예시는 아래처럼 생긴다.
+
+```http
+Set-Cookie: session=new999; Domain=example.com; Path=/; HttpOnly; Secure; SameSite=Lax
+Set-Cookie: session=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax
+Set-Cookie: session=; Domain=example.com; Path=/app; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax
+```
+
+---
+
+## 자주 하는 오해
+
+### 1. "새 cookie를 발급했으니 old cookie는 덮어써졌겠지"
+
+아니다.
+
+- old와 new의 `Domain`/`Path`가 다르면 공존할 수 있다
+- 그래서 migration 뒤 duplicate cookie shadowing이 바로 생긴다
+
+### 2. "`Domain=example.com`이면 `auth.example.com` old cookie도 지워지겠지"
+
+아니다.
+
+- old cookie가 host-only였다면 deletion도 host-only여야 한다
+- 즉 old cookie를 만든 host에서 `Domain` 없이 expired `Set-Cookie`를 보내야 한다
+
+### 3. "`Path=/` tombstone이면 더 넓으니까 `/app`도 같이 지워지겠지"
+
+아니다.
+
+- old `Path=/app` cookie는 `Path=/app` tombstone이 필요하다
+
+### 4. "`HttpOnly`인데 프런트에서 `document.cookie`로 지우면 되지 않나"
+
+보통 안전한 경로가 아니다.
+
+- `HttpOnly` cookie는 JS에서 다루지 못한다
+- session cookie cleanup은 서버 response의 `Set-Cookie`로 하는 편이 맞다
+
+### 5. "`Secure`는 삭제와 상관없지 않나"
+
+identity key는 아니지만 전달 조건에는 영향을 준다.
+
+- `Secure` cookie cleanup은 HTTPS 응답에서 보내는 편이 안전하다
+- login 직후 `http://...` redirect로 꺾이면 tombstone 자체가 적용되지 않거나 다음 요청 검증이 어긋날 수 있다
+
+---
+
+## 확인은 어디서 하나
+
+| 어디서 보나 | 확인할 질문 |
+|---|---|
+| login/refresh/logout 응답의 `Set-Cookie` | new cookie와 old-scope tombstone이 같이 내려왔나 |
+| `Application > Cookies` | old row가 정말 사라졌나 |
+| 실패했던 요청의 raw `Cookie` header | `session=...; session=...` 중복이 없어졌나 |
+
+중요한 순서는 이것이다.
+
+- `Set-Cookie`를 봐서 cleanup 의도를 확인하고
+- 저장 상태를 보고
+- 마지막으로 실제 요청 header에서 duplicate가 사라졌는지 본다
+
+---
+
+## 다음 단계
+
+- 이미 같은 이름 cookie가 여러 줄 남아 있다면 [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)에서 왜 특정 route만 loop가 나는지 먼저 분리한다.
+- `Application` 탭에는 cookie가 보이는데 request `Cookie` header는 비면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 돌아가 `Domain`, `Path`, `SameSite` mismatch를 다시 확인한다.
+- cleanup header를 보냈는데 proxy/LB 뒤에서만 적용이 이상하면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)에서 `Secure` cookie와 `X-Forwarded-Proto` 경계를 먼저 점검한다.
+- "`old scope별 tombstone이 틀린 건지`, `proxy 뒤 HTTPS 전달이 틀린 건지`를 먼저 가르고 싶으면 [Secure Cookie Cleanup Behind Proxy](./secure-cookie-cleanup-behind-proxy.md)에서 beginner용 분기표부터 본다.
+
+## 한 줄 정리
+
+session cookie scope migration의 cleanup은 "새 cookie를 만든다"가 아니라 "old cookie마다 exact scope tombstone을 보낸다"가 핵심이다. 특히 old cookie가 host-only였다면 `Domain`을 쓰지 않고 원래 host에서 지워야 stale cookie를 확실히 끊을 수 있다.

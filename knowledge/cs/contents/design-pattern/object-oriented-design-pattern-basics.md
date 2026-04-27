@@ -6,15 +6,24 @@
 
 관련 문서:
 
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
 - [전략 패턴](./strategy-pattern.md)
-- [템플릿 메소드 패턴](./template-method.md)
+- [템플릿 메소드 패턴 기초](./template-method-basics.md)
+- [템플릿 메소드 패턴 심화](./template-method.md)
+- [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
+- [팩토리 패턴 기초](./factory-basics.md)
 - [팩토리 (Factory)](./factory.md)
 - [빌더 (Builder)](./builder-pattern.md)
+- [어댑터 패턴 기초](./adapter-basics.md#adapter-quick-entry)
+- [싱글톤 패턴 기초](./singleton-basics.md#singleton-quick-entry)
+- [빌더 패턴 기초](./builder-pattern-basics.md#builder-quick-entry)
+- [옵저버 패턴 기초](./observer-basics.md)
 - [옵저버 (Observer)](./observer.md)
+- [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 - [실전 패턴 선택 가이드](./pattern-selection.md)
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
 
-retrieval-anchor-keywords: object oriented design pattern basics, beginner design pattern guide, 디자인 패턴이 뭐예요, 패턴 처음 배우는데, when to use strategy, when to use factory, when to use observer, design pattern cheat sheet, 상속보다 조합, how to choose design pattern, why use design patterns, strategy vs template method
+retrieval-anchor-keywords: object oriented design pattern basics, beginner design pattern guide, beginner pattern route map, design pattern reading order, design pattern route map, design pattern primer route, 객체지향 디자인 패턴 입문 순서, 디자인 패턴 입문 순서, 디자인 패턴 독서 순서, 디자인 패턴 큰 그림 순서, 처음 배우는데 디자인 패턴 순서, 처음 배우는데 객체지향 패턴 순서, 큰 그림 먼저 디자인 패턴, 기초 디자인 패턴 route map, 언제 쓰는지 디자인 패턴 기초, composition template strategy adapter route, composition template strategy adapter beginner route, 조합 템플릿 메소드 전략 어댑터 순서, 상속보다 조합 다음 템플릿 메소드 전략 어댑터, 디자인 패턴이 뭐예요, 패턴 처음 배우는데, when to use strategy, when to use factory, when to use observer, design pattern cheat sheet, 상속보다 조합, how to choose design pattern, why use design patterns, strategy vs template method, 객체지향 패턴 입문, 객체지향 큰 그림 다음 패턴, OOP 큰 그림 다음 패턴, 처음 배우는데 객체지향 패턴, 언제 어떤 패턴 쓰는지 기초, 템플릿 메소드 기초 먼저, template method basics first, hook method primer, abstract step primer, 처음 배우는데 hook method, 처음 배우는데 abstract step, 훅 메서드 기초, 추상 단계 기초, adapter quick entry, singleton quick entry, builder quick entry, factory basics quick entry, factory beginner chooser, factory selector resolver beginner, 팩토리 바로가기, 팩토리 입문 바로가기, 팩토리 초보자 링크, 어댑터 바로가기, 싱글톤 바로가기, 빌더 바로가기, object oriented basics crosslink, observer vs direct call beginner, observer vs pub sub beginner, direct call pub sub observer difference, 이벤트로 빼자 direct call observer pubsub, observer applicationevent beginner bridge
 
 ---
 
@@ -27,8 +36,55 @@ retrieval-anchor-keywords: object oriented design pattern basics, beginner desig
 - `new`가 많아서 생성 구조를 정리하고 싶은데 빌더와 팩토리를 구분 못 할 때
 - "이벤트로 빼자"는 말이 나왔는데 옵저버인지 Pub/Sub인지 직접 호출인지 정리가 안 될 때
 
-핵심 질문은 하나다.  
+핵심 질문은 하나다.
 **무엇이 가장 자주 바뀌는가?**
+
+---
+
+## Beginner Route Map: 큰 그림 -> 조합 -> 템플릿 메소드 -> 전략 -> 어댑터
+
+처음 배우는데 패턴 이름을 한꺼번에 외우려 하면 금방 섞인다.
+이 문서는 아래 순서로 읽을 때 가장 덜 헷갈리게 설계했다.
+
+| 순서 | 먼저 잡을 큰 그림 | 지금 던질 질문 | 먼저 볼 문서 |
+|---|---|---|---|
+| 1 | 패턴은 "유명한 이름"이 아니라 바뀌는 축을 자르는 도구다 | 무엇이 자주 바뀌는가? | 이 문서 |
+| 2 | 기본값은 상속보다 조합이다 | 부모 클래스를 만들기 전에 객체를 들고 와도 되나? | [상속보다 조합 기초](./composition-over-inheritance-basics.md) |
+| 3 | 상속을 써도 되는 좁은 예외는 있다 | 부모가 흐름을 끝까지 쥐어야 하나? | [템플릿 메소드 패턴 기초](./template-method-basics.md) |
+| 4 | 규칙을 갈아끼우는 문제는 전략으로 본다 | 호출자/설정/DI가 이번 규칙을 고르나? | [전략 패턴 기초](./strategy-pattern-basics.md) |
+| 5 | 외부 세계와 모양이 안 맞으면 번역 경계를 세운다 | 외부 SDK/레거시 인터페이스를 우리 코드 모양에 맞춰야 하나? | [어댑터 패턴 기초](./adapter-basics.md) |
+
+짧게 외우면 이렇다.
+
+- 조합: 기본값
+- 템플릿 메소드: 부모가 흐름을 쥐는 좁은 예외
+- 전략: 교체 규칙을 객체로 분리
+- 어댑터: 외부 인터페이스를 번역해 연결
+
+### 왜 이 순서가 beginner에게 안전한가
+
+| 바로 외우려는 패턴 이름 | 먼저 고정해야 덜 헷갈리는 것 |
+|---|---|
+| 템플릿 메소드 | "상속이 기본값이 아니다"는 감각 |
+| 전략 | "규칙 교체"와 "흐름 고정"은 다른 문제라는 감각 |
+| 어댑터 | "행동 선택"이 아니라 "인터페이스 번역"이라는 감각 |
+
+즉 처음 배우는데는 `패턴 A 정의`를 외우기보다,
+**조합을 기본으로 잡고 -> 상속 예외를 템플릿 메소드로 좁히고 -> 교체 규칙은 전략으로 빼고 -> 외부 연결은 어댑터로 자른다**는 route map이 더 오래 남는다.
+
+### 1장짜리 읽기 순서
+
+1. 이 문서에서 "무엇이 바뀌는가" 큰 그림을 먼저 잡는다.
+2. [상속보다 조합 기초](./composition-over-inheritance-basics.md)에서 `부모 클래스냐 전략 객체냐` 첫 갈림길을 익힌다.
+3. [템플릿 메소드 패턴 기초](./template-method-basics.md)에서 "부모가 흐름을 쥔다"를 한 번 고정한다.
+4. [전략 패턴 기초](./strategy-pattern-basics.md)에서 "호출자가 전략을 고른다"를 템플릿과 대비해 익힌다.
+5. [어댑터 패턴 기초](./adapter-basics.md)에서 "외부 인터페이스 번역"은 앞의 세 패턴과 다른 축이라는 점을 마무리한다.
+
+### 자주 섞이는 오해 빠르게 끊기
+
+- 템플릿 메소드와 전략은 둘 다 "바뀌는 부분 분리"처럼 보이지만, 하나는 **부모가 흐름을 쥐는 상속**, 다른 하나는 **호출자가 고르는 조합**이다.
+- 어댑터는 전략처럼 "무엇을 할지"를 고르는 패턴이 아니다. **이미 있는 외부 인터페이스를 우리 모양으로 번역**하는 패턴이다.
+- 조합은 패턴 이름 하나가 아니라, 뒤의 템플릿 메소드/전략을 고를 때 기준점이 되는 기본 설계 감각이다.
 
 ---
 
@@ -49,6 +105,28 @@ retrieval-anchor-keywords: object oriented design pattern basics, beginner desig
 - 상태 변화가 여러 후속 동작으로 퍼져야 한다면 `옵저버`
 
 이렇게 보면 다섯 패턴은 "유명한 이름 모음"이 아니라 서로 다른 문제 축을 다루는 도구다.
+
+---
+
+## 빠른 연결: 다음 질문이 바로 떠오르면
+
+이 문서를 읽다가 "그럼 이건 어디로 바로 들어가야 하지?"가 생기면 아래 링크로 바로 점프하면 된다.
+
+| 지금 떠오른 질문 | 바로 갈 문서 | 왜 이 문서로 가면 좋은가 |
+|---|---|---|
+| "이게 진짜 팩토리 문제인지, selector/resolver 네이밍 문제인지부터 헷갈린다" | [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md) | 생성 책임인지 선택/해석 책임인지 30초 안에 먼저 잘라 준다 |
+| "객체 생성 책임을 언제 팩토리로 모아야 하는지부터 짧게 보고 싶다" | [팩토리 패턴 기초](./factory-basics.md) | `10초 질문 -> 30초 비교표 -> 1분 예시`로 팩토리 첫 판단 기준을 바로 잡아 준다 |
+| "외부 SDK나 레거시 API 모양이 우리 코드와 안 맞는데?" | [어댑터 패턴 기초 빠른 진입](./adapter-basics.md#adapter-quick-entry) | `10초 질문 -> 30초 비교표 -> 1분 예시`로 번역 책임을 먼저 잡아 준다 |
+| "인스턴스를 하나만 써야 한다는 말이 나오는데 싱글톤인가?" | [싱글톤 패턴 기초 빠른 진입](./singleton-basics.md#singleton-quick-entry) | Singleton / Static Utility / Spring Bean 차이를 바로 비교해 준다 |
+| "생성자 인자가 너무 많아서 객체 만들기가 읽기 어렵다" | [빌더 패턴 기초 빠른 진입](./builder-pattern-basics.md#builder-quick-entry) | Constructor / Static Factory / Builder 선택을 초보자 눈높이에서 바로 자른다 |
+
+짧게 외우면 이렇다.
+
+- 인터페이스를 맞춰 붙이는 문제면 `어댑터`
+- 생성 책임인지 네이밍 문제인지부터 헷갈리면 `Factory vs Selector vs Resolver`
+- 생성 책임을 짧게 확인하고 싶으면 `팩토리 패턴 기초`
+- 객체를 하나만 공유해도 되는지 먼저 의심해야 하면 `싱글톤`
+- 한 객체를 단계적으로 읽기 좋게 조립하는 문제면 `빌더`
 
 ---
 
@@ -125,7 +203,7 @@ public class OrderService {
 - 함수 하나로 충분한 작은 계산식일 때
 - 공통 순서를 강하게 보장해야 할 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"규칙을 갈아끼우는 문제"면 전략을 먼저 본다.**
 
 ---
@@ -147,6 +225,10 @@ public class OrderService {
 - 상위 클래스가 전체 흐름을 가진다
 - 하위 클래스가 일부 단계를 구현한다
 - 필요하면 hook 메서드로 선택적 확장을 둔다
+
+처음 배우는데 `hook method`/`abstract step` 용어가 낯설면 심화로 바로 가지 말고
+[템플릿 메소드 패턴 기초](./template-method-basics.md)에서 큰 그림을 먼저 잡은 뒤
+[템플릿 메소드 패턴 심화](./template-method.md)로 내려가면 된다.
 
 ```java
 public abstract class ReportExporter {
@@ -174,7 +256,7 @@ public abstract class ReportExporter {
 - 상속 계층이 계속 늘어날 때
 - 단계마다 필요한 협력 객체가 달라 조합이 더 자연스러울 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"순서는 고정, 단계만 다름"이면 템플릿 메소드가 맞다.**
 
 ---
@@ -220,7 +302,7 @@ public class PaymentClientFactory {
 - 팩토리 안에 비즈니스 규칙이 계속 들어와 비대해질 때
 - 사실상 "찾아오기"가 핵심이라 registry가 더 자연스러울 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"만드는 책임을 호출부에서 숨기고 싶다"면 팩토리를 본다.**
 
 ---
@@ -264,7 +346,7 @@ OrderRequest request = OrderRequest.builder()
 - 항상 같은 세팅으로만 만들어지는 객체일 때
 - `setter` 체이닝처럼 보이지만 실제로는 mutable 객체를 마구 수정하는 API일 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"한 객체를 읽기 좋게 조립"하는 문제가 핵심이면 빌더다.**
 
 ---
@@ -280,6 +362,38 @@ OrderRequest request = OrderRequest.builder()
 - 로그/메트릭 수집
 
 핵심은 **"변화 통지"를 분리하는 것**이다.
+
+### 빠른 연결: "직접 호출이면 안 되나?"가 바로 떠오를 때
+
+처음엔 셋이 다 비슷해 보인다.
+하지만 머릿속에서는 아래처럼 먼저 자르면 된다.
+
+- `Direct Call`: 지금 이 일을 **바로 시켜야** 한다
+- `Observer`: 같은 프로세스 안에서 **알려만 주고 여러 반응을 붙이고 싶다**
+- `Pub/Sub`: 브로커를 사이에 두고 **멀리 퍼뜨리거나 비동기로 흘려보내고 싶다**
+
+| 상황 | 먼저 떠올릴 선택 | 이유 |
+|---|---|---|
+| 결제 승인 후 재고 차감이 반드시 함께 끝나야 한다 | `Direct Call` | 핵심 성공 경로라서 호출 순서와 실패 전파를 바로 보기가 쉽다 |
+| 주문 완료 후 이메일, Slack, 로그를 붙이고 싶다 | `Observer` | 주문 서비스는 "주문 완료"만 알리고 반응자는 나중에 늘릴 수 있다 |
+| 주문 완료를 다른 서비스에도 전달해야 한다 | `Pub/Sub` | 같은 메모리 안의 listener가 아니라 브로커/토픽 경계가 필요하다 |
+
+짧은 멘탈 모델:
+
+- direct call은 `지금 너 해`
+- observer는 `나 끝났어, 듣는 사람 반응해`
+- pub-sub는 `이 소식을 버스에 올릴게, 필요한 쪽이 가져가`
+
+자주 헷갈리는 포인트:
+
+- Subject가 listener를 `for`문으로 부르면 direct call처럼 보여도, **구체 대상 하나를 꼭 집어 호출하는 1:1 요청**과는 문제 축이 다르다.
+- Observer는 입문 단계에서 **대개 같은 프로세스 내부 알림**으로 생각하면 된다. 브로커, 적재, 재시도, 소비자 그룹이 나오면 Pub/Sub 쪽 질문이다.
+- "이벤트로 빼자"가 항상 더 좋은 설계는 아니다. **핵심 정합성**이면 먼저 direct call로 단순하게 유지하는 편이 안전하다.
+
+바로 이어서 읽기:
+
+- [옵저버 패턴 기초](./observer-basics.md) — `10초 질문 -> 30초 비교표 -> 1분 예시`로 옵저버 첫 판단 기준을 빠르게 잡는다
+- [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md) — direct call을 넘어서 Spring 이벤트와 브로커 경계까지 이어서 정리한다
 
 ### 머릿속 그림
 
@@ -315,7 +429,7 @@ public class OrderService {
 - 누가 무엇을 듣고 있는지 추적하기 너무 어려워질 때
 - 브로커 기반 비동기 분산 전파가 필요한데 단순 옵저버로 뭉뚱그릴 때
 
-한 문장 규칙:  
+한 문장 규칙:
 **"상태 변화에 여러 반응이 붙는다"면 옵저버를, "핵심 흐름"이면 직접 호출을 먼저 본다.**
 
 ---
@@ -326,6 +440,7 @@ public class OrderService {
 
 - 전략: 알고리즘 전체를 바꾼다
 - 템플릿 메소드: 알고리즘 순서는 고정하고 일부 단계만 바꾼다
+- `hook method`/`abstract step`이 처음이면 [템플릿 메소드 패턴 기초](./template-method-basics.md)부터 본다
 
 빠른 판별:
 
@@ -357,11 +472,33 @@ public class OrderService {
 ## 초보자용 읽기 순서
 
 1. 이 문서로 다섯 패턴의 문제 축을 먼저 잡는다.
-2. [전략 패턴](./strategy-pattern.md)과 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)로 행동 패턴 차이를 익힌다.
+2. [템플릿 메소드 패턴 기초](./template-method-basics.md)로 `hook method`/`abstract step` 기초를 먼저 잡고, [템플릿 메소드 패턴 심화](./template-method.md) -> [전략 패턴](./strategy-pattern.md) -> [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) 순서로 행동 패턴 차이를 익힌다.
 3. [팩토리 (Factory)](./factory.md), [빌더 (Builder)](./builder-pattern.md), [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)로 생성 축을 본다.
 4. [옵저버 (Observer)](./observer.md)와 [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)로 통지 구조를 본다.
 5. 마지막에 [실전 패턴 선택 가이드](./pattern-selection.md)로 넓은 비교표를 다시 읽는다.
 6. 그다음 자주 갈라지는 세 갈래는 [Composition over Inheritance](./composition-over-inheritance-practical.md), [Adapter (어댑터)](./adapter.md), [Command Pattern Undo Queue](./command-pattern-undo-queue.md)다.
+
+---
+
+## Quick-Check
+
+다섯 패턴을 처음 본 뒤 아래 질문이 바로 갈리면 큰 그림은 잡힌 것이다.
+
+| 질문 | 먼저 떠올릴 패턴 | 왜 |
+|---|---|---|
+| 같은 목적의 규칙을 바꿔 끼우는가? | `전략` | 행동 교체가 중심이다 |
+| 순서는 고정이고 단계만 다르게 채우는가? | `템플릿 메소드` | 부모가 흐름을 쥔다 |
+| 어떤 구현을 만들지 숨기고 싶은가? | `팩토리` | 생성 책임을 한 곳에 모은다 |
+| 한 객체를 읽기 좋게 단계적으로 조립하는가? | `빌더` | 옵션/필수값 조립이 중심이다 |
+| 상태 변화에 여러 반응이 느슨하게 붙는가? | `옵저버` | 후속 반응 연결이 중심이다 |
+
+## Confusion Box
+
+| 헷갈리는 쌍 | 먼저 던질 질문 | 빠른 기준 |
+|---|---|---|
+| 전략 vs 템플릿 메소드 | "규칙 교체인가, 흐름 고정인가?" | 교체면 `전략`, 고정이면 `템플릿 메소드` |
+| 팩토리 vs 빌더 | "무엇을 만들지 숨기나, 하나를 어떻게 조립하나?" | 구현 선택이면 `팩토리`, 조립이면 `빌더` |
+| 옵저버 vs 직접 호출 | "후속 반응인가, 핵심 성공 경로인가?" | 느슨한 반응이면 `옵저버`, 핵심 흐름이면 직접 호출 |
 
 ---
 

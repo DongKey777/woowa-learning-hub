@@ -6,25 +6,100 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
-> - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)
-> - [IoC 컨테이너와 DI](./ioc-di-container.md)
-> - [Spring Multiple Transaction Managers and Qualifier Boundaries](./spring-multiple-transaction-managers-qualifier-boundaries.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
+관련 문서:
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
+- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+- [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)
+- [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [IoC 컨테이너와 DI](./ioc-di-container.md)
+- [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: custom qualifier, custom @Qualifier, qualifier annotation, bean name string qualifier, semantic qualifier, qualifier meta annotation, @Qualifier bean name vs custom annotation, spring qualifier beginner, NoUniqueBeanDefinitionException qualifier, role based bean selection, bean candidate selection, @Primary vs custom qualifier, @Primary vs @Qualifier vs collection injection, qualifier typo runtime, bean rename safe injection, runtime strategy selection, router pattern, Map<String, Bean> router, runtime dispatch vs qualifier
+retrieval-anchor-keywords: custom qualifier, custom @qualifier, bean name string qualifier, role annotation qualifier, 고정 wiring qualifier, 역할 annotation, 같은 역할 bean 고정 주입, qualifier 반복되면 custom qualifier, bean 이름 계약 vs 역할 계약, 요청마다 선택 아님, nouniquebeandefinitionexception qualifier, custom qualifier not working, 처음 배우는데 qualifier가 반복돼요, custom qualifier 뭐예요
+
+## 1분 비교 카드
+
+처음엔 구현체 이름보다 **무엇을 기준으로 고르는지**만 보면 된다.
+
+| 항목 | `@Qualifier("beanName")` | 커스텀 qualifier |
+|---|---|---|
+| 기준 | bean 이름 문자열 | 역할 annotation |
+| 코드가 말하는 것 | "이 이름의 bean" | "이 역할의 bean" |
+| 초반에 편한 상황 | 한 주입 지점에서 한 번만 정확히 찍을 때 | 같은 역할 선택이 여러 주입 지점에 반복될 때 |
+| 먼저 흔들리는 지점 | bean rename, 문자열 오타 | annotation 선언/부착 누락 |
+| 예시 | `@Qualifier("kakaoPaymentClient")` | `@MainGateway` |
+| 한 줄 기억법 | 이름 계약 | 역할 계약 |
+
+헷갈리면 이렇게 자른다.
+
+- bean 이름을 직접 말하고 있으면 문자열 `@Qualifier`
+- "메인 결제", "쓰기 DB"처럼 역할을 말하고 있으면 커스텀 qualifier
+- 요청마다 선택이 바뀌면 둘 다 아니라 router 쪽이다
+
+## 먼저 용어를 한국어로 바꿔 읽기
+
+이 문서는 영어 용어가 자주 보이므로, 초반에는 아래처럼 읽어도 충분하다.
+
+| 문서에서 보이는 말 | 처음엔 이렇게 읽어도 된다 | 여기서 뜻하는 것 |
+|---|---|---|
+| disambiguation | 후보 하나로 좁히기 | 같은 타입 bean이 여러 개일 때 하나를 콕 집는 일 |
+| injection-time | 주입할 때, 앱이 뜰 때 | Spring이 bean 연결을 정하는 시점 |
+| runtime router / runtime dispatch | 실행 중 선택, 요청마다 고르기 | 요청 값에 따라 코드가 직접 구현체를 고르는 흐름 |
+
+한 줄 감각: **항상 같은 bean을 미리 꽂아 두는 문제면 qualifier, 요청마다 바뀌면 router**다.
+
+## 먼저 확인: 이런 실패 증상이면 이 문서로 오면 된다
+
+처음엔 "bean 이름을 더 외워야 하나?"보다, **지금 실패가 이름 계약 문제인지/역할 계약 문제인지**만 먼저 가르면 된다.
+
+| 지금 보이는 실패/불편 증상 | 이 문서로 오면 좋은가 | 처음에 잡을 포인트 |
+|---|---|---|
+| [`NoUniqueBeanDefinitionException`이 나고 `@Qualifier("...")`가 여기저기 늘어난다`](./spring-di-exception-quick-triage.md#ambiguous-bean-path) | 예 | [`found 2` 계열인지 먼저 확인](./spring-di-exception-quick-triage.md#ambiguous-bean-path)하고, 맞다면 문자열 반복을 역할 annotation 하나로 묶을 타이밍인지 본다 |
+| bean/class/method rename 이후 문자열 `@Qualifier`가 연쇄로 깨진다 | 예 | bean 이름 계약을 역할 계약으로 올릴 시점인지 점검 |
+| [`주문마다/요청마다` 다른 구현체를 골라야 한다](./spring-runtime-strategy-router-vs-qualifier-boundaries.md#runtime-router-path) | 아니오 | [`고정 wiring`이 아니라 `실행 중 router` 문제인지](./spring-runtime-strategy-router-vs-qualifier-boundaries.md#runtime-router-path) 먼저 자른다 |
+| [후보 bean이 원래 1개인데 갑자기 못 찾는다 (`NoSuchBeanDefinitionException`)](./spring-di-exception-quick-triage.md#missing-bean-path) | 부분적 | [`scan 누락 vs 조건 탈락`](./spring-di-exception-quick-triage.md#missing-bean-path)부터 분리하고, 그다음 qualifier를 본다 |
+
+한 줄 기준: **항상 같은 대상을 고정 주입**하면 이 문서, **요청마다 선택이 바뀌면** router 문서로 간다.
+
+## 먼저 갈림길: 여기서 끝내고 다음 문서로 가야 하는 경우
+
+아래 두 경우는 이 문서를 길게 읽기보다 갈림길만 잡고 바로 옮기는 편이 빠르다.
+
+- `"주문마다"`, `"요청마다"` 구현체가 달라지면 커스텀 qualifier보다 **실행 중 선택(runtime dispatch)** 문제다.
+- 후보 자체가 안 뜨는 `NoSuchBeanDefinitionException`이면 qualifier보다 `scan`/조건 등록부터 먼저 본다.
+
+한 줄 분기: **반복된 고정 선택이면 custom qualifier, 호출마다 달라지는 선택이면 router, 후보 자체가 없으면 등록 경로부터 본다.**
+
+> 역방향 안내:
+> `bean 이름 rename` 뒤에 문자열 `@Qualifier("...")`가 같이 흔들린다면 이 문서보다 먼저 [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)에서 이름 계약부터 분리한다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - 후보 선택의 기본 감각이 먼저 필요하면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)를 먼저 본다.
 - `@Primary`, 문자열 `@Qualifier`, `List<T>`/`Map<String, T>`를 먼저 빠르게 나누고 싶다면 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)를 먼저 본다.
 - 문자열 qualifier가 실제 bean 이름 규칙, alias, rename과 어떻게 얽히는지부터 분리하고 싶다면 [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)를 먼저 본다.
-- 호출마다 달라지는 runtime router와 injection-time qualifier 경계를 따로 보고 싶다면 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 이어진다.
+- 호출마다 달라지는 실행 중 router와 주입할 때 qualifier 경계를 따로 보고 싶다면 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 이어진다.
 - BeanDefinition과 후보 해석 규칙을 더 깊게 보려면 [IoC 컨테이너와 DI](./ioc-di-container.md)로 이어진다.
 - qualifier가 transaction manager 경계 계약으로 커지는 사례는 [Spring Multiple Transaction Managers and Qualifier Boundaries](./spring-multiple-transaction-managers-qualifier-boundaries.md)에서 본다.
+
+---
+
+## 먼저 큰 그림: "qualifier를 또 붙여야 하나?"가 반복될 때
+
+처음 배우는데 같은 질문이 반복되면, 보통 아래 둘 중 하나다.
+
+- 같은 역할을 여러 주입 지점에 반복해서 고정하고 싶은가
+- 요청마다 선택 자체가 달라지는가
+
+이 문서는 첫 번째를 다룬다. 두 번째는 같은 문제가 아니라 **실행 중 router 경계 문제**다.
+
+| 반복되는 질문 | 지금 문서(커스텀 qualifier) | 다음 문서(router 경계) |
+|---|---|---|
+| `@Qualifier` 문자열이 서비스마다 반복돼요 | 역할 annotation으로 고정 wiring 계약을 묶는다 | 해당 없음 |
+| `주문마다`, `요청마다` PG/채널이 바뀌어요 | 해당 없음 | [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 이동 |
+| `고정 wiring`, `역할 annotation`, `요청마다 선택`이 한꺼번에 헷갈려요 | "항상 같은 역할을 미리 꽂는가?"부터 정리 | "호출마다 다시 고르는가?"를 router 문서에서 정리 |
+
+한 줄 기준: **"항상 같은 선택"은 qualifier, "매 호출마다 달라지는 선택"은 router**다.
 
 ---
 
@@ -41,6 +116,23 @@ retrieval-anchor-keywords: custom qualifier, custom @Qualifier, qualifier annota
 - 커스텀 qualifier는 역할, 용도, 정책 이름에 더 가깝다
 
 즉, `@Qualifier("kakaoPaymentClient")`는 "카카오용 bean을 달라"보다 "이 이름의 bean을 달라"에 가깝고, 커스텀 annotation은 그 반대다.
+
+---
+
+## 30초 선택 플로우
+
+처음엔 아래 3단계로 빠르게 정하면 된다.
+
+1. 같은 타입 후보가 여러 개인가?
+2. 이번 한 번만 특정 구현을 고르면 되나?
+3. 같은 선택 의미가 여러 주입 지점에 반복되나?
+
+| 답 | 선택 | 이유 |
+|---|---|---|
+| 1번이 아니오 | qualifier 불필요 | 후보 충돌이 없다 |
+| 1번 예, 2번 예 | 문자열 `@Qualifier("beanName")` | 일회성 명시 선택이면 충분 |
+| 1번 예, 3번 예 | 커스텀 qualifier | 역할 계약을 재사용한다 |
+| 요청마다 선택이 바뀜 | qualifier 대신 router/map | 주입할 때 문제가 아니라 실행 중 선택 문제다 |
 
 ---
 
@@ -69,13 +161,22 @@ public class RefundService {
 - bean 이름이 이미 충분히 명확하다
 - 아직 "역할 이름"보다 "구현체 이름"이 더 자연스럽다
 
-즉, **일회성 disambiguation**이면 문자열 qualifier도 과하지 않다.
+즉, **한 번만 후보를 좁히는 선택(disambiguation)** 이면 문자열 qualifier도 과하지 않다.
 
 ---
 
 ## 2. 언제 커스텀 qualifier annotation으로 올려야 하는가
 
 문자열 대신 커스텀 qualifier를 고려할 시점은 아래 셋 중 하나가 보일 때다.
+
+| 지금 코드에서 보이는 신호 | 문자열 `@Qualifier("...")` 유지 | 커스텀 qualifier로 올리기 |
+|---|---|---|
+| 같은 문자열이 붙는 곳 수 | 1곳 또는 거의 1곳 | 여러 서비스/생성자에 반복 |
+| 코드가 말하는 대상 | "이 bean 이름"이 더 자연스럽다 | "이 역할"이 더 자연스럽다 |
+| rename 때 흔들리는 범위 | 주입 지점 1~2곳만 같이 고치면 끝난다 | rename 때 문자열 추적이 번거롭다 |
+| 내가 줄이고 싶은 위험 | 일회성 후보 선택 누락 | 문자열 오타, 복붙, 의미 분산 |
+
+한 줄 기준: **같은 문자열을 여러 주입 지점에서 반복 설명하기 시작하면, bean 이름 계약을 역할 계약으로 올릴 타이밍**이다.
 
 ### 2-1. 같은 선택 규칙이 여러 주입 지점에 반복된다
 
@@ -226,11 +327,11 @@ beginner 기준으로는 이렇게 외우면 된다.
 | 주입 지점이 하나뿐이다 | 문자열 `@Qualifier` 또는 `@Primary` | 계약이 아직 작다 |
 | bean 이름 자체가 도메인 용어다 | 문자열 `@Qualifier`도 충분 | 의미 손실이 적다 |
 | 같은 역할이 여러 서비스에 반복된다 | 커스텀 qualifier | 의미를 한 곳에 모은다 |
-| 요청 값에 따라 런타임에 구현체를 고른다 | qualifier보다 registry/map | injection 시점 문제가 아니다 |
+| 요청 값에 따라 런타임에 구현체를 고른다 | qualifier보다 registry/map | 주입할 때 문제가 아니다 |
 
 특히 마지막 줄이 중요하다.
 
-`@Qualifier`는 **컨테이너가 주입할 때** 후보를 고르는 장치다.  
+`@Qualifier`는 **컨테이너가 주입할 때** 후보를 고르는 장치다.
 요청 파라미터에 따라 매번 다른 구현체를 고르는 문제라면 `Map<String, PaymentClient>`나 별도 router가 더 맞다. 이 경계는 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)에서 예제로 이어진다.
 
 ---
@@ -255,6 +356,27 @@ beginner 기준으로는 이렇게 외우면 된다.
 
 사용자 입력에 따라 PG사를 바꾸는 문제는 커스텀 qualifier보다 strategy registry 문제다.
 
+`"qualifier를 또 추가하면 되지 않나?"`가 반복되면 거의 항상 이 케이스다.
+이때는 같은 주제 심화가 아니라 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 문서를 전환하는 편이 빠르다.
+
+### 7-4. 커스텀 annotation을 만들었는데 후보 선택에 반영되지 않는다
+
+아래 두 실수가 초반에 가장 흔하다.
+
+- custom annotation에 `@Qualifier` meta-annotation을 빠뜨렸다
+- Bean 정의 쪽에는 붙였는데 주입 지점(파라미터/필드)에는 붙이지 않았다
+
+커스텀 qualifier는 "예쁜 라벨"이 아니라 **후보 매칭 규칙**이다.
+그래서 annotation 선언과 사용 위치를 둘 다 맞춰야 의미가 생긴다.
+
+---
+
+## 역방향 안내와 다음 읽기 라우팅
+
+- `NoUniqueBeanDefinitionException`이 먼저면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)부터 본다.
+- 문자열 qualifier rename 충돌이 먼저면 [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)로 바로 이어간다.
+- 요청별 동적 선택이 필요하면 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)으로 이동한다.
+
 ---
 
 ## 꼬리질문
@@ -272,7 +394,7 @@ beginner 기준으로는 이렇게 외우면 된다.
 > 핵심: `@Primary`는 기본값이고, 커스텀 qualifier는 의도를 명시한다.
 
 > Q: 요청 값에 따라 구현체를 바꾸는 문제에도 커스텀 qualifier가 답인가?
-> 의도: injection 시점과 runtime dispatch를 구분하는지 확인
+> 의도: 주입할 때와 실행 중 선택을 구분하는지 확인
 > 핵심: 아니다. 그때는 registry나 router 쪽이 더 맞다.
 
 ---

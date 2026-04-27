@@ -1,72 +1,99 @@
-# HTTP 버전 비교 입문: HTTP/1.1, HTTP/2, HTTP/3
+# HTTP 버전 비교 시작 가이드 (3분 브리지)
 
-> 한 줄 요약: HTTP/1.1은 요청 하나씩 처리하고, HTTP/2는 한 연결에서 여러 요청을 동시에 처리하며, HTTP/3는 UDP 기반 QUIC으로 연결 오버헤드를 줄였다.
+> 한 줄 요약: 이 문서는 빠른 방향 잡기용이고, 실제 첫 학습 엔트리는 `HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교`다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) (main comparison primer)
+- [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) (selection follow-up)
+- [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md) (H3 lifecycle primer)
 - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [TCP와 UDP 기초](./tcp-udp-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http version comparison beginner, http 1.1 vs http 2, http 3 quic 입문, http 버전 차이 뭔가요, 멀티플렉싱이 뭔가요, http2 장점, http3 왜 빨라요, 연결 하나에 여러 요청, http 버전 기초, beginner http versions
+retrieval-anchor-keywords: http version bridge guide, http versions beginner overview bridge, http version entrypoint guide, http 1.1 2 3 quick start, h1 h2 h3 first read routing, beginner http versions, http version comparison beginner, http version difference vs selection, http version branching table, browser chooses h2 or h3, alpn alt-svc entrypoint, alt-svc lifecycle handoff, first request h2 next request h3, http connection vs stream beginner, transport vs protocol primer, h3 fallback meaning beginner
 
-## 핵심 개념
+## 이 문서의 역할
 
-HTTP는 버전이 올라갈수록 같은 네트워크 연결을 더 효율적으로 쓰는 방향으로 발전했다. 입문자가 헷갈리는 지점은 "버전마다 URL도 바뀌고 코드도 다 바꿔야 하냐"는 오해다. HTTP/2, HTTP/3를 써도 애플리케이션 코드는 거의 그대로다. 버전 협상은 브라우저와 서버 사이에서 자동으로 이뤄진다.
+`HTTP 버전 비교`로 진입할 때 "버전 차이"를 보려는 건지, "브라우저가 왜 그 버전을 골랐는지"를 보려는 건지 먼저 갈라 주는 문서다.
 
-## 한눈에 보기
+| 문서 | 역할 | 언제 읽나 |
+|---|---|---|
+| 이 문서 (`http-versions-beginner-overview`) | 3분 브리지 | 지금 당장 큰 그림과 다음 문서를 고를 때 |
+| [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | 메인 beginner primer | 실제 첫 학습을 시작할 때 |
 
-| 항목 | HTTP/1.1 | HTTP/2 | HTTP/3 |
+## 먼저 고르는 분기표
+
+같은 `HTTP 버전` 주제라도 질문 종류가 다르면 먼저 읽을 문서가 달라진다.
+
+| 지금 헷갈리는 것 | 먼저 읽을 문서 | 왜 여기로 가나 |
+|---|---|---|
+| `H1/H2/H3가 뭐가 다른지`부터 모르겠다 | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | 버전별 연결 방식, 멀티플렉싱, 손실 영향 차이를 한 번에 잡기 좋다 |
+| `왜 어떤 요청은 H2고 어떤 요청은 H3인지`가 헷갈린다 | [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) | 브라우저의 선택 과정, 첫 요청과 다음 새 연결 차이, fallback을 설명한다 |
+| `첫 요청은 H2인데 다음 새 연결은 H3` 또는 `repeat visit인데 아직 H2`가 헷갈린다 | [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md) | `Alt-Svc`가 이번 응답을 즉시 바꾸는 것이 아니라 다음 새 connection의 힌트로 warm/expiry/stale lifecycle을 만든다는 점을 먼저 잡아 준다 |
+| 아직 질문을 정확히 못 정했다 | 이 문서를 3분만 읽고 위 둘 중 하나로 이동 | 먼저 큰 그림을 잡고 나면 헷갈림이 `차이`인지 `선택`인지 분리된다 |
+
+## 먼저 잡는 mental model
+
+HTTP 버전 변화는 "더 최신"보다 **연결을 더 효율적으로 쓰는 방향**으로 이해하면 쉽다.
+
+- 여기서 `연결(connection)`은 HTTP/1.1에서는 주로 TCP 연결, HTTP/3에서는 QUIC 연결을 뜻한다.
+- `stream`은 HTTP/2와 HTTP/3에서 **한 연결 안에 들어가는 요청/응답 흐름 한 개**를 뜻한다.
+- `transport`는 그 연결의 바닥 운반 수단이다. 이 문서에서는 HTTP/1.1, HTTP/2의 바닥은 TCP, HTTP/3의 바닥은 QUIC(UDP 위)이라고 잡으면 된다.
+- `fallback`은 "그냥 H2가 보였다"가 아니라, **H3를 시도했지만 못 써서 H2/H1.1로 조용히 내려간 경우**를 말한다.
+
+- HTTP/1.1: 병렬성을 주로 연결 수로 확보
+- HTTP/2: 한 TCP 연결에서 멀티플렉싱
+- HTTP/3: 멀티플렉싱을 QUIC(UDP) 위로 올려 손실 전파를 더 줄임
+
+초급자 한 줄 기억법:
+
+- `연결`은 큰 길
+- `stream`은 그 길 안의 차선
+- `transport`는 그 길 바닥 재질
+- `fallback`은 H3 길을 시도했다가 H2/H1.1 길로 돌아서는 것
+
+## 30초 비교표
+
+| 질문 | HTTP/1.1 | HTTP/2 | HTTP/3 |
 |---|---|---|---|
-| 전송 단위 | 텍스트 | 바이너리 프레임 | 바이너리 프레임 |
-| 동시 요청 | 연결당 1개 (파이프라이닝은 제한적) | 단일 연결 멀티플렉싱 | 단일 연결 멀티플렉싱 |
-| 기반 프로토콜 | TCP | TCP | UDP (QUIC) |
-| 헤더 압축 | 없음 | HPACK | QPACK |
-| 연결 수립 | TCP + TLS | TCP + TLS | QUIC (1-RTT/0-RTT) |
+| 브라우저 병렬성 확보 방식 | 여러 TCP 연결 | 한 TCP 연결 멀티플렉싱 | 한 QUIC 연결 멀티플렉싱 |
+| 손실 영향 감각 | 연결 단위로 대기 전파 | TCP 기반 대기 영향이 남음 | 스트림 영향 분리가 더 유리 |
+| 입문 한 줄 | 여러 길을 많이 연다 | 한 길을 효율적으로 쓴다 | 한 길 유지 + 손실 전파를 더 줄인다 |
 
-## 상세 분해
+## 용어를 먼저 맞추는 20초 표
 
-### HTTP/1.1 — 요청 하나씩
+이 3분 브리지와 메인 primer는 아래 뜻으로 용어를 통일해서 쓴다.
 
-HTTP/1.1은 기본적으로 요청 하나를 보내고 응답을 받은 뒤 다음 요청을 보낸다. 여러 요청을 동시에 처리하려면 브라우저가 도메인당 여러 TCP 연결을 열어야 했다. 헤더를 매 요청마다 텍스트로 전송해서 중복이 많다. 가장 오래됐지만 아직도 많은 곳에서 동작한다.
-
-### HTTP/2 — 멀티플렉싱
-
-하나의 TCP 연결에서 여러 요청/응답이 동시에 오가는 **멀티플렉싱**이 핵심이다. 요청마다 번호가 붙은 프레임 단위로 전송되므로, 순서를 기다리지 않아도 된다. 헤더를 HPACK으로 압축해 중복을 줄인다. 단, TCP 수준에서 패킷이 유실되면 그 뒤 패킷 전체가 기다리는 HOL blocking 문제가 있다.
-
-### HTTP/3 — UDP 기반 QUIC
-
-TCP 대신 UDP 위에서 QUIC 프로토콜을 쓴다. TCP handshake + TLS handshake를 QUIC이 하나로 통합해 연결 수립 속도가 빠르다. 패킷 유실이 발생해도 다른 스트림에 영향을 주지 않아 TCP의 HOL blocking을 피한다. 아직 서버·클라이언트 양쪽이 지원해야 하고, 방화벽 등에서 UDP를 막는 환경이 있어 HTTP/2로 자동 폴백되는 경우도 있다.
+| 용어 | 이 문서에서의 뜻 | 바로 떠올릴 그림 |
+|---|---|---|
+| `연결(connection)` | 브라우저와 서버 사이에 실제로 잡힌 TCP 또는 QUIC 연결 | 큰 길 |
+| `stream` | HTTP/2, HTTP/3에서 한 연결 안에 함께 흐르는 요청/응답 한 묶음 | 차선 |
+| `transport` | HTTP 아래에서 데이터를 옮기는 바닥 계층. 여기서는 TCP 또는 QUIC | 길 바닥 |
+| `fallback` | H3 시도 실패 뒤 H2/H1.1로 조용히 내려가는 것 | H3 길을 못 써서 우회 |
 
 ## 흔한 오해와 함정
 
-- HTTP/2, HTTP/3를 쓰면 코드를 다시 짜야 한다고 오해하는 경우가 있다. 실제로는 서버 설정(Nginx, Spring Boot) 변경이 주이고, 애플리케이션 코드는 거의 바뀌지 않는다.
-- "HTTP/2가 항상 HTTP/1.1보다 빠르다"는 것도 오해다. 요청 수가 적거나 네트워크 상태가 좋으면 차이가 미미하거나 HTTP/1.1이 더 나을 수도 있다.
-- HTTP/3는 현재 대부분의 주요 브라우저에서 지원하지만, 기업 내부 방화벽 환경에서는 UDP가 막혀 있어 HTTP/2로 자동 다운그레이드된다.
+- 이 문서만 읽고 끝내도 된다고 생각하기 쉽다.
+  - 아니다. 이 문서는 방향 안내용이다. 본문 학습은 아래 메인 primer에서 시작한다.
+- `Protocol=h2`만 봤는데 바로 `fallback`이라고 부르기 쉽다.
+  - 아직은 "최종 결과가 H2였다"만 말하는 편이 안전하다. 실제 fallback은 H3 시도 흔적까지 봐야 한다.
+- HTTP/2, HTTP/3를 쓰면 앱 코드를 전부 다시 짜야 한다고 오해하기 쉽다.
+  - 보통은 아니다. 버전 협상은 주로 브라우저/서버/프록시 레이어가 담당한다.
+- HTTP/3가 언제나 가장 빠르다고 단정하기 쉽다.
+  - 회사망 UDP 제한, 경로 특성 때문에 실제로는 H2 fallback이 자주 보인다.
 
-## 실무에서 쓰는 모습
+## 다음 읽기 (권장 순서)
 
-Spring Boot 단독으로는 기본 HTTP/1.1이다. Nginx 앞단을 두고 `http2` 지시어를 켜면 브라우저-Nginx 구간은 HTTP/2가 되고, Nginx-Spring Boot 내부 구간은 HTTP/1.1이나 HTTP/2를 선택할 수 있다. 대규모 서비스에서는 CDN(CloudFront, Cloudflare)이 자동으로 HTTP/3을 협상해주는 경우도 많다.
+1. [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) - 메인 beginner primer
+2. [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) - 브라우저가 실제로 어떤 버전을 고르는지
+3. [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) - 왜 H2에도 TCP HOL 이슈가 남는지
 
-## 더 깊이 가려면
-
-- [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) — HTTP/2의 멀티플렉싱 동작 원리와 병목 지점 상세
-- [network 카테고리 인덱스](./README.md) — 다음 단계 주제 탐색
-
-## 면접/시니어 질문 미리보기
-
-**Q. HTTP/1.1과 HTTP/2의 핵심 차이는?**
-HTTP/2는 멀티플렉싱을 지원해서 하나의 TCP 연결로 여러 요청/응답을 동시에 처리한다. HTTP/1.1은 요청 하나씩 처리하거나 도메인당 여러 연결을 열어야 했다.
-
-**Q. HTTP/3는 왜 UDP를 쓰나요?**
-TCP의 HOL blocking 문제를 근본적으로 해결하기 위해서다. UDP 위의 QUIC은 스트림 단위로 패킷 유실을 독립적으로 처리해서 다른 요청이 영향을 받지 않는다.
-
-**Q. 멀티플렉싱이 없으면 어떤 문제가 생기나요?**
-여러 리소스(JS, CSS, 이미지)를 요청할 때 순서를 기다려야 하거나, 브라우저가 도메인당 여러 TCP 연결을 열어야 한다. 연결 생성 비용과 서버 부하가 증가한다.
+더 넓은 주제 탐색은 [network 카테고리 인덱스](./README.md)에서 이어간다.
 
 ## 한 줄 정리
 
-HTTP는 1.1 → 2 → 3로 가면서 단일 연결에서 더 많은 요청을 효율적으로 처리하는 방향으로 발전했다.
+이 문서는 HTTP 버전 비교의 빠른 브리지이고, 실제 입문 학습 엔트리는 `http1-http2-http3-beginner-comparison.md`다.

@@ -5,32 +5,30 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
-> - [Session Revocation at Scale](./session-revocation-at-scale.md)
-> - [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
-> - [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)
-> - [Auth Incident Triage / Blast-Radius Recovery Matrix](./auth-incident-triage-blast-radius-recovery-matrix.md)
-> - [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
-> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-> - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
-> - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+> - `[primer bridge]` [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)
+> - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
+> - `[deep dive]` [Session Revocation at Scale](./session-revocation-at-scale.md)
+> - `[deep dive]` [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)
+> - `[deep dive]` [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)
+> - `[deep dive]` [Auth Observability: SLI / SLO / Alerting](./auth-observability-sli-slo-alerting.md)
+> - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+> - `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
+> - `[deep dive]` [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: BFF session store outage, session cache outage, browser cookie but session missing, token cache outage, BFF degradation, session translation outage, browser server auth outage, BFF auth recovery, session store failover, login loop, 302 login loop, 401 302 bounce, hidden session mismatch, cookie still there but session missing, browser looks logged in but api loops, browser server boundary catalog, security readme browser server boundary
+retrieval-anchor-keywords: BFF session store outage, session cache outage, browser cookie but session missing, token cache outage, BFF degradation, session translation outage, browser server auth outage, BFF auth recovery, session store failover, login loop, 302 login loop, 401 302 bounce, hidden session mismatch, cookie still there but session missing, browser looks logged in but api loops, browser server boundary catalog, security readme browser server boundary, browser bff recovery route, session translation recovery ladder, primer bridge to recovery, cookie-not-sent vs server-mapping-missing, cookie-missing vs server-anonymous, server-mapping-missing recovery, cookie-not-sent recovery split
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- `cookie-not-sent`(초보자 표기 `cookie-missing`)처럼 cookie 전송 단계가 먼저 의심되면 이 문서로 바로 들어오지 말고 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)에서 request `Cookie` header가 실제로 비어 있는지부터 분리한다.
+- `server-mapping-missing`(초보자 표기 `server-anonymous`), `hidden session mismatch`, `cookie는 있는데 session missing`, `브라우저는 로그인돼 보이는데 API만 돈다`처럼 cookie는 왔는데 서버 복원이 실패하는 갈래라면 [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md) -> [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md) -> [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) 순서로 보고 이 recovery 문서를 붙인다.
 - `login loop`, `401 -> 302` bounce, saved-request bounce처럼 redirect 복귀 자체가 꼬이면 [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)에서 먼저 분리한다.
-- `hidden session mismatch`, `cookie는 있는데 session missing`, `브라우저는 로그인돼 보이는데 API만 돈다` 같은 질의는 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md), [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)와 같이 보면 translation 계층과 server session ownership을 같이 좁힐 수 있다.
 - `logout still works`, `logout tail`, `revocation tail`처럼 실제 revoke propagation이 남는 증상이라면 [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md), [Session Revocation at Scale](./session-revocation-at-scale.md)로 바로 이어진다.
 
 ---
 
 ## 핵심 개념
 
-BFF 기반 인증에서 브라우저가 가진 것은 보통 cookie reference뿐이다.  
+BFF 기반 인증에서 브라우저가 가진 것은 보통 cookie reference뿐이다.
 실제 인증 상태는 서버 쪽 session store와 token cache에 있다.
 
 그래서 이 구조의 장애는 독특하다.
@@ -47,7 +45,7 @@ BFF 기반 인증에서 브라우저가 가진 것은 보통 cookie reference뿐
 
 ### 1. cookie 존재와 session 유효성은 별개다
 
-브라우저는 opaque cookie를 계속 보낼 수 있다.  
+브라우저는 opaque cookie를 계속 보낼 수 있다.
 하지만 다음 중 하나라도 깨지면 실제 인증은 무너진다.
 
 - session store lookup 실패

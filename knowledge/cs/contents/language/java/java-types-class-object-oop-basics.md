@@ -4,27 +4,33 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Language README](../README.md)
-> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
-> - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
-> - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
-> - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
-> - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
-> - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
-> - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
-> - [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-> - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+관련 문서:
 
-> retrieval-anchor-keywords: java beginner oop, java oop primer, java class object instance basics, java primitive vs reference type, java interface vs abstract class basics, java inheritance basics, java overriding basics, java dynamic dispatch basics, 객체지향 기초, oop 큰 그림, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, 상속 vs 조합 기초, template method basics, template method vs strategy beginner
+- [Language README](../README.md)
+- [자바 언어의 구조와 기본 문법](./java-language-basics.md)
+- [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+- [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) - 객체지향 큰 그림 다음에 "상속 언제 쓰는지"를 `extends`와 dynamic dispatch로 좁혀 보는 다음 primer
+- [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
+- [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md) - 클래스/객체 감각을 OOP 큰 그림으로 먼저 묶고, 그다음 "상속 언제 쓰는지"로 넘어가게 만드는 첫 handoff primer
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - OOP 큰 그림과 상속 primer를 지난 뒤 "공통 흐름을 부모가 쥘지, 계약을 인터페이스로 열지"를 beginner 기준으로 나누는 다음 handoff primer
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
+- [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md) - 처음 배우는데 디자인 패턴을 어디부터 읽을지 막히면 조합 -> 패턴 기초 route map으로 이어 주는 beginner entrypoint
+- [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
+- [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
+- [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
+- [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+
+retrieval-anchor-keywords: java oop primer, java class object instance basics, java primitive vs reference type, java oop beginner route, 객체지향 기초, 클래스 객체 인스턴스 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, oop to design pattern beginner route, design pattern beginner route, 처음 배우는데 디자인 패턴 어디부터
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [처음 읽는 순서](#처음-읽는-순서)
+- [먼저 잡을 mental model](#먼저-잡을-mental-model)
+- [클래스/객체/인스턴스 3단계 브리지](#클래스객체인스턴스-3단계-브리지)
 - [기본형과 참조형](#기본형과-참조형)
 - [클래스, 객체, 인스턴스](#클래스-객체-인스턴스)
 - [인터페이스와 추상 클래스](#인터페이스와-추상-클래스)
@@ -48,6 +54,63 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 - 캡슐화, 상속, 다형성, 추상화는 코드에서 어떻게 보일까?
 
 이 문서는 위 질문을 한 번에 연결해 주는 `primer` 역할을 한다. 세부 문법이나 심화 설계는 관련 문서로 확장하고, 여기서는 초보자가 먼저 잡아야 할 최소한의 개념 지도를 정리한다.
+
+## 처음 읽는 순서
+
+처음 배우는데 OOP 큰 그림이 한 번에 안 잡히면, 문서를 따로따로 외우기보다 **"타입과 객체 이해 -> OOP 큰 그림 연결 -> 상속 이해 -> 추상 클래스/인터페이스 구분 -> 조합 우선 판단"** 순서로 보면 된다.
+
+| 지금 막히는 질문 | 먼저 읽을 문서 | 이 문서가 하는 일 |
+|---|---|---|
+| "클래스, 객체, 타입이 대체 뭐지?" | 이 문서 | 기본형/참조형, 클래스/객체, OOP 핵심 용어를 한 번에 묶는다 |
+| "클래스/객체는 알겠는데 OOP 큰 그림은 왜 필요한가?" | [객체지향 핵심 원리](./object-oriented-core-principles.md) | 클래스/객체 감각을 캡슐화, 추상화, 상속, 다형성으로 연결한다 |
+| "`extends`가 코드 복사랑 뭐가 다르지?" | [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) | is-a 관계, overriding, dynamic dispatch를 먼저 분리한다 |
+| "`@Override`와 overloading 이름이 왜 헷갈리지?" | [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) | compile-time 선택과 runtime 선택을 분리한다 |
+| "추상 클래스와 인터페이스는 언제 나누지?" | [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) | 부모가 공통 흐름을 쥐는지, 계약을 열어 두는지로 자른다 |
+| "재사용하려면 일단 상속해야 하나?" | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) | 코드 재사용과 설계 결합을 분리하고, 조합을 기본값으로 잡는다 |
+
+첫 읽기 경로를 한 줄로 줄이면 이렇다.
+**이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)**
+템플릿 메소드는 그 다음에 "상속을 좁게 허용하는 예외"로 보면 덜 헷갈린다.
+
+처음 배우는데 "디자인 패턴은 어디부터 보지?"가 바로 나오면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)를 같이 본다. 이 문서에서 잡은 큰 그림을 그대로 이어서 **객체지향 핵심 원리 -> 상속보다 조합 -> 패턴 기초** route로 연결해 주는 beginner route map이다.
+
+## 먼저 잡을 mental model
+
+처음 배우는데 클래스, 객체, 인스턴스가 한꺼번에 나오면 아래 네 칸만 먼저 기억해도 큰 그림이 잡힌다.
+
+| 말 | 처음엔 이렇게 기억 | 코드에서 보이는 모습 |
+|---|---|---|
+| 클래스 | 객체를 만들기 위한 틀 | `class Student { ... }` |
+| 객체 | 실행 중 실제로 만들어진 대상 | `new Student("jane", 20)` |
+| 인스턴스 | "어느 클래스에서 만들어졌는가"를 강조한 객체 | "`student`는 `Student`의 인스턴스" |
+| 참조 변수 | 객체를 가리키는 손잡이 | `Student student` |
+
+처음엔 이 세 문장으로 충분하다.
+
+- `Student`는 클래스 이름이다.
+- `Student student;`는 참조 변수 선언일 뿐, 아직 객체를 만들지 않았다.
+- `student = new Student("jane", 20);`가 실행되어야 비로소 객체가 생기고, 그 객체를 `student`가 가리킨다.
+
+## 클래스/객체/인스턴스 3단계 브리지
+
+처음 배우는데 `Student student = new Student("jane", 20);` 한 줄이 복잡하면, 선언과 생성을 분리해서 보면 훨씬 덜 헷갈린다.
+
+| 단계 | 코드 | 실제로 일어나는 일 | 처음 배우는데 체크할 포인트 |
+|---|---|---|---|
+| 1 | `class Student { ... }` | `Student`라는 타입(설계도)을 정의 | 이 단계에서는 객체가 아직 없다 |
+| 2 | `Student student;` | `Student` 객체를 가리킬 참조 변수만 준비 | 변수 선언만으로는 객체가 안 생긴다 |
+| 3 | `student = new Student("jane", 20);` | 새 객체를 만들고 변수에 연결 | 이때가 인스턴스화(객체 생성) 순간이다 |
+
+```java
+class Student { ... }      // 1) 타입 정의
+Student student;           // 2) 참조 변수 선언 (객체 없음)
+student = new Student(...);// 3) 객체 생성 + 참조 연결
+```
+
+처음엔 아래 두 줄만 기억하면 된다.
+
+- `=` 왼쪽은 "어떤 타입을 가리킬지"를 말하고, 오른쪽 `new`는 "실제 객체를 만드는 동작"이다.
+- "객체(object)"와 "인스턴스(instance)"는 입문 단계에서는 거의 같은 말로 써도 된다. 다만 "Student의 인스턴스"처럼 출처를 강조할 때 인스턴스를 쓴다.
 
 ## 기본형과 참조형
 
@@ -140,6 +203,16 @@ Student student = new Student("jane", 20);
 
 실무와 면접에서는 두 용어를 거의 비슷하게 쓰지만, 초보자에게는 "클래스는 설계도, 객체는 만들어진 결과"로 구분해 두면 충분하다.
 
+### 코드에서 헷갈리기 쉬운 세 조각
+
+| 코드 조각 | 무엇인가 | 처음 배우는데 자주 하는 착각 |
+|---|---|---|
+| `Student` | 클래스 이름 | 객체 이름이라고 생각 |
+| `student` | 참조 변수 이름 | 객체 자체가 변수 안에 통째로 들어 있다고 생각 |
+| `new Student("jane", 20)` | 새 객체를 만드는 표현식 | 선언만 해도 객체가 생긴다고 생각 |
+
+즉 `Student student = new Student("jane", 20);`는 "클래스 `Student`로 객체 하나를 만들고, 참조 변수 `student`가 그 객체를 가리키게 한다"는 뜻이다.
+
 ### 생성자는 객체의 시작 상태를 정한다
 
 생성자는 객체가 만들어질 때 호출된다.
@@ -148,7 +221,7 @@ Student student = new Student("jane", 20);
 Student student = new Student("jane", 20);
 ```
 
-이 문장에서 생성자는 `"jane"`과 `20`을 받아 `Student`의 시작 상태를 정한다.  
+이 문장에서 생성자는 `"jane"`과 `20`을 받아 `Student`의 시작 상태를 정한다.
 즉 "생성자"는 단순 문법이 아니라 **객체가 잘못된 상태로 태어나지 않게 하는 첫 번째 규칙**이다.
 
 ## 인터페이스와 추상 클래스
@@ -262,7 +335,7 @@ public class VipMember extends Member {
 }
 ```
 
-단, 상속은 문법이 가능하다고 바로 쓰는 것이 아니다.  
+단, 상속은 문법이 가능하다고 바로 쓰는 것이 아니다.
 `VipMember is a Member`처럼 **논리적인 is-a 관계**가 자연스러울 때 사용해야 한다.
 
 ### 4. 다형성
@@ -274,7 +347,7 @@ DiscountPolicy policy = new FixedDiscountPolicy();
 int discounted = policy.discount(10000);
 ```
 
-여기서 중요한 점은 호출하는 쪽이 `FixedDiscountPolicy`의 내부 구현을 몰라도 된다는 것이다.  
+여기서 중요한 점은 호출하는 쪽이 `FixedDiscountPolicy`의 내부 구현을 몰라도 된다는 것이다.
 즉 다형성은 "구현 교체를 쉽게 만드는 구조"다.
 
 ## 코드로 한 번에 보기
@@ -342,12 +415,12 @@ public class VipMember extends Member {
 
 ### `==`와 `.equals()`는 같은 비교가 아니다
 
-기본형은 보통 `==`로 값 비교를 하지만, 참조형은 같은 객체를 가리키는지와 내용이 같은지를 구분해야 한다.  
+기본형은 보통 `==`로 값 비교를 하지만, 참조형은 같은 객체를 가리키는지와 내용이 같은지를 구분해야 한다.
 예를 들어 `String` 내용 비교는 보통 `.equals()`를 사용한다.
 
 ### `new`를 쓸 때마다 항상 다른 객체가 만들어진다
 
-`new Student(...)`를 호출하면 새 객체가 생성된다.  
+`new Student(...)`를 호출하면 새 객체가 생성된다.
 반면 `Student b = a;`는 새 객체 생성이 아니라 참조 복사다.
 
 ### 인터페이스는 "가벼운 클래스"가 아니다
@@ -360,7 +433,7 @@ public class VipMember extends Member {
 
 ### 상속보다 조합이 더 나을 때도 많다
 
-상속은 강한 결합을 만들 수 있다.  
+상속은 강한 결합을 만들 수 있다.
 공통 기능 공유보다 역할 조합이 더 중요하면 인터페이스와 필드 조합이 더 자연스러울 수 있다.
 
 ### 처음 배우는데 "상속을 언제 쓰는지" 헷갈리면
@@ -377,13 +450,11 @@ public class VipMember extends Member {
 
 - 변수, 제어문, 배열, 형변환까지 문법을 먼저 다지고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - 메서드, 생성자, parameter, return type, overloading을 한 클래스 흐름으로 묶어 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- 클래스/객체/인스턴스 차이를 캡슐화, 추상화, 상속, 다형성 큰 그림으로 이어서 보고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
 - `extends`, overriding, `@Override`, dynamic dispatch를 작은 예제로 이어 보고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
-- 처음 배우는데 "상속을 언제 쓰는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) -> [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) -> [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md) 순서로 보면 큰 그림이 빨리 잡힌다
+- 처음 배우는데 "상속을 언제 쓰는지", "추상 클래스와 인터페이스를 어디서 나누는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) 순서가 가장 안전하다
 - 접근 제한자, `static`, `final`을 클래스 모델과 함께 잡고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-- 클래스/객체/캡슐화/상속/다형성을 조금 더 길게 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
-- 인터페이스와 추상 클래스의 차이를 더 정확히 판단하고 싶다면 [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
-- 객체 불변성과 방어적 복사까지 이어서 보고 싶다면 [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-- wrapper 타입이 API payload 의미에 어떤 영향을 주는지 보고 싶다면 [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+- 처음 배우는데 디자인 패턴을 어디부터 볼지 막히면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)에서 **상속보다 조합 -> 패턴 기초** route map부터 타면 된다
 
 ## 한 줄 정리
 

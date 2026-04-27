@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Software Engineering README: Strangler Fig Migration, Contract, Cutover](./README.md#strangler-fig-migration-contract-cutover)
 > - [Monolith to MSA Failure Patterns](./monolith-to-msa-failure-patterns.md)
 > - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
 > - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
@@ -295,3 +296,8 @@ assertThat(response.body())
 ## 한 줄 정리
 
 Strangler Fig migration은 레거시를 한 번에 교체하는 대신, contract testing과 canary, shadow traffic, rollback 경로를 활용해 기능과 데이터를 점진적으로 신규 시스템으로 옮기는 전환 전략이다.
+
+## 다음 읽기
+
+- 다음 한 걸음: [Data Migration Rehearsal, Reconciliation, Cutover](./data-migration-rehearsal-reconciliation-cutover.md) - 라우팅 전환 다음으로 가장 자주 막히는 데이터 cutover 판단을 이어서 볼 수 있다.
+- README로 돌아가기: [Software Engineering README](./README.md#strangler-fig-migration-contract-cutover) - rollout, versioning, governance 인접 문서로 복귀하는 길이다.

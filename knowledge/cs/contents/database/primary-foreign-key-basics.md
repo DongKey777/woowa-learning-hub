@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [조인 테이블과 복합 키 기초](./join-table-composite-key-basics.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [정규화 기초](./normalization-basics.md)
 - [database 카테고리 인덱스](./README.md)
@@ -66,6 +67,7 @@ customers(customer_id PK, name)
 
 ## 더 깊이 가려면
 
+- 연결 테이블, 복합 PK, surrogate key 선택 기준을 초급자 관점에서 다시 보려면 → [조인 테이블과 복합 키 기초](./join-table-composite-key-basics.md)
 - 인덱스와 PK의 관계, 클러스터드 vs 논클러스터드 → [인덱스와 실행 계획](./index-and-explain.md)
 - 테이블 설계 시 PK 선택이 정규화와 어떻게 연결되는지 → [정규화 기초](./normalization-basics.md)
 

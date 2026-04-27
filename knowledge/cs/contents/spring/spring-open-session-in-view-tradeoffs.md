@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
+> - [Lazy Loading to DTO Mapping Checklist](./spring-lazy-loading-dto-mapping-checklist.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)

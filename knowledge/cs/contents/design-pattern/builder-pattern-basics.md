@@ -13,9 +13,47 @@
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [Java 제네릭 기초](../language/java/java-generics-basics.md)
 
-retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시, request dto builder, command builder
+retrieval-anchor-keywords: builder pattern basics, 빌더 패턴 기초, 빌더 패턴이 뭔가요, builder pattern beginner, 생성자 인자 많을 때, 생성자 대신 빌더, lombok builder, 빌더 패턴 언제 쓰나, 객체 생성 빌더, telescoping constructor 문제, beginner builder, 빌더 패턴 예시, request dto builder, command builder, builder quick check, 빌더 10초, 빌더 30초 비교표, 빌더 1분 예시, 빌더 자주 헷갈리는 포인트, builder confusion points beginner, builder vs static factory beginner, builder micro check, static factory confusion check
 
 ---
+
+<a id="builder-quick-entry"></a>
+
+## 빠른 진입: 10초/30초/1분
+
+처음 읽을 때는 `10초 질문 -> 30초 비교표 -> 1분 예시`로 "빌더가 필요한 순간"만 먼저 잡는다.
+
+### 10초 질문
+
+- 생성자 인자가 많아 위치 실수를 자주 내는가?
+- 선택 필드 조합이 늘어나서 생성자/정적 팩토리 오버로드가 복잡해졌는가?
+- `build()`에서 필수값 검증을 한 번에 모아야 하는가?
+
+### 30초 비교표: Constructor / Static Factory / Builder
+
+| 선택지 | 핵심 질문 | 초보자용 한 줄 |
+|---|---|---|
+| Constructor | 필드가 적고 의미가 명확한가 | "짧고 단순하면 생성자가 제일 읽기 쉽다" |
+| Static Factory | 이름 있는 생성 의도가 필요한가 | "`of/from` 같은 이름으로 의미를 드러낸다" |
+| Builder | 필드가 많고 선택 조합이 많은가 | "초안 채우듯 단계적으로 조립한다" |
+
+### 1분 예시: 주문 요청 조립
+
+```java
+OrderRequest req = OrderRequest.builder()
+    .customerId(1L)
+    .quantity(2)
+    .payMethod("CARD")
+    .build();
+```
+
+`new OrderRequest(1L, 2, "CARD", false, null, ...)`처럼 인자 위치를 기억할 필요가 없어서 첫 읽기와 리뷰가 쉬워진다.
+
+### 자주 헷갈리는 포인트 3개
+
+- 체이닝 문법이 있다고 다 빌더는 아니다. 핵심은 "복잡한 생성 조립 + `build()` 시점 검증"이다.
+- 빌더를 쓴다고 자동으로 불변 객체가 되지 않는다. 완성 객체의 setter/가변 필드 여부를 따로 확인해야 한다.
+- 필드가 2~3개인 단순 객체까지 빌더로 시작하면 오히려 노이즈가 늘 수 있다. 생성자/정적 팩토리가 더 읽기 쉬운지 먼저 본다.
 
 ## 핵심 개념
 
@@ -83,6 +121,34 @@ Spring에서는 `UriComponentsBuilder.fromHttpUrl(...).queryParam(...).build()` 
 > Q: 빌더 패턴이 팩토리 패턴과 다른 점은?
 > 의도: 생성 패턴 간 차이를 설명하는지 확인한다.
 > 핵심: 팩토리는 어떤 타입을 만들지 결정하고, 빌더는 복잡한 객체를 단계별로 조립하는 데 집중한다.
+
+## 3문항 미니 오해 점검
+
+짧게 판단해 본다. 핵심은 "생성"이라는 공통점보다 "무엇을 편하게 만들려는가"를 보는 것이다.
+
+| 문항 | 헷갈리는 포인트 | 한 줄 정답 기준 |
+|---|---|---|
+| 1 | Builder vs Static Factory | 이름 있는 한 번 생성이면 static factory, 단계적 조립이면 builder |
+| 2 | Builder vs Constructor | 필드가 적고 단순하면 constructor, 선택 조합이 많으면 builder |
+| 3 | Builder vs Fluent Setter | 체이닝 문법만으로는 builder가 아니다. `build()`로 완성하는 생성 흐름이 있어야 한다 |
+
+### Q1. `Money.of(currency, amount)`도 Builder인가?
+
+- 정답: 아니다. 보통 static factory다.
+- 왜: 한 번의 호출로 완성 객체를 바로 반환하고, 중간 조립 단계가 없다.
+- 기억법: `of/from/valueOf`처럼 "이름 있는 즉시 생성"이면 static factory 쪽이다.
+
+### Q2. 필드 2~3개짜리 단순 DTO도 무조건 Builder가 더 좋은가?
+
+- 정답: 아니다.
+- 왜: 이런 경우는 생성자나 static factory가 더 짧고 읽기 쉽다. builder는 선택 필드와 조합이 늘어날 때 가치가 커진다.
+- 같이 보면 좋은 문서: [요청 모델에서 record로 끝낼까, 정적 팩토리/빌더로 올릴까](./record-vs-builder-request-model-chooser.md)
+
+### Q3. `.name(...).age(...).save()`처럼 메서드 체이닝이면 Builder인가?
+
+- 정답: 꼭 그렇지 않다.
+- 왜: 체이닝은 문법 모양일 뿐이다. builder는 "초안을 모으고 `build()`에서 완성 객체를 만든다"가 핵심이다.
+- 체크 질문: "이 체이닝의 끝이 완성 객체 생성인가, 아니면 그냥 상태 변경 API인가?"
 
 ## 한 줄 정리
 

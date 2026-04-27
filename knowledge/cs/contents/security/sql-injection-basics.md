@@ -7,11 +7,17 @@
 관련 문서:
 
 - [SQL 인젝션: PreparedStatement를 넘어서](./sql-injection-beyond-preparedstatement.md)
-- [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
-- [security 카테고리 인덱스](./README.md)
-- [Spring Bean DI 기초](../spring/spring-bean-di-basics.md)
+- [입력값 검증 기초](./input-validation-basics.md)
+- [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: sql injection basics, sql 인젝션이 뭐예요, preparedstatement 왜 써야 해요, 사용자 입력 쿼리 위험, 쿼리 조작 공격, beginner sql injection, sql injection prevention, parameterized query, sql injection example, database attack beginner
+retrieval-anchor-keywords: sql injection basics, sql 인젝션이 뭐예요, preparedstatement 왜 써야 해요, 사용자 입력 쿼리 위험, 쿼리 조작 공격, beginner sql injection, sql injection prevention, parameterized query, sql injection example, database attack beginner, security readme sql injection primer, security beginner route, security primer next step, return to security README, 문자열 이어 붙여 쿼리 만들 때, sql query injection
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security 입문 문서 안에서 다른 primer를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
+- "입력 검증을 했는데도 왜 SQL 인젝션을 따로 막아야 하지?"가 헷갈리면 [입력값 검증 기초](./input-validation-basics.md)를 같이 보면 validation과 파라미터 바인딩의 역할이 분리된다.
+- ORM, 동적 정렬, native query처럼 PreparedStatement 바깥의 함정을 더 보려면 [SQL 인젝션: PreparedStatement를 넘어서](./sql-injection-beyond-preparedstatement.md)로 이어 가면 된다.
 
 ## 핵심 개념
 

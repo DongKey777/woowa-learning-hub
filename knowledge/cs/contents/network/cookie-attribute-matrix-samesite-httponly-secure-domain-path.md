@@ -4,14 +4,17 @@
 
 **난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
-> - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-> - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
-> - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
-> - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
+관련 문서:
 
-retrieval-anchor-keywords: SameSite HttpOnly Secure matrix, cookie attribute matrix, SameSite Lax Strict None, HttpOnly prevents document.cookie, Secure HTTPS-only cookie, Domain Path cookie scope, host-only cookie, domain cookie subdomain scope, Path is not security boundary, cookie csrf primer, ambient authority cookie, same-site vs cross-site cookie, beginner cookie security primer
+- [Network README](./README.md#network-네트워크)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+- [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+- [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
+- [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
+- [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
+
+retrieval-anchor-keywords: samesite httponly secure matrix, cookie attribute matrix, samesite lax strict none, httponly prevents document.cookie, secure https-only cookie, domain path cookie scope, host-only cookie, domain cookie subdomain scope, path is not security boundary, cookie csrf primer, ambient authority cookie, same-site vs cross-site cookie, beginner cookie security primer, cookie stored but not sent, 처음 배우는데 cookie 속성이 뭐예요
 
 <details>
 <summary>Table of Contents</summary>
@@ -40,6 +43,8 @@ cookie를 설명할 때 아래 말들이 자주 한 덩어리로 섞인다.
 
 헷갈리는 이유는 간단하다.
 이 다섯 속성이 모두 cookie에 붙지만, **브라우저가 바꾸는 질문이 서로 다르기 때문**이다.
+
+실전에서 "cookie는 저장돼 보이는데 request에는 안 실린다"가 먼저 보이면 이 정의표를 끝까지 읽기보다 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)로 바로 내려가고, 정리 후에는 [Network README](./README.md)로 돌아와 다음 사다리를 고르면 된다.
 
 - `SameSite`: cross-site 요청에도 이 cookie를 자동 전송할까?
 - `HttpOnly`: 브라우저 JS가 이 cookie 값을 읽을 수 있을까?
@@ -316,3 +321,7 @@ Set-Cookie: session=...; Path=/; HttpOnly; Secure; SameSite=None
 
 - 외부 사이트에서 자동 `POST`를 날리거나 background 요청을 보낼 때 cookie가 빠지는 쪽에서 많이 체감된다.
 - 반면 사용자가 링크를 클릭해 들어오는 top-level navigation은 비교적 덜 깨지게 동작한다.
+
+## 한 줄 정리
+
+`SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`는 각각 "cross-site 전송", "JS 읽기", "HTTPS 전송", "host 범위", "path 범위"를 나눠 보는 속성이고, 실제 증상이 `cookie stored but not sent`라면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)로 먼저 우회한 뒤 [Network README](./README.md#network-네트워크)로 돌아와 다음 갈래를 고르면 된다.

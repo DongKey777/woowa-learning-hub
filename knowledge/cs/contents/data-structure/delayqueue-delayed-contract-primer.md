@@ -8,12 +8,14 @@
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
 > - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
+> - [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
+> - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 > - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
 > - [Timer Priority Policy Split](./timer-priority-policy-split.md)
 > - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
 > - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 >
-> retrieval-anchor-keywords: delayqueue delayed contract, delayed compareto getdelay, delayed compareTo getDelay mismatch, java delayed interface, java delayqueue delayed implementation, delayqueue expired head, delayqueue stuck waiting, delayqueue poll null but expired task exists, delayqueue task runs late, compareTo deadline getDelay deadline, delayed task ordering contract, getDelay negative but not head, business priority in delayqueue, timer priority policy split, delayed compareTo business priority, due time gate, mutable deadline delayqueue, delayqueue reschedule stale entry, delayed beginner primer
+> retrieval-anchor-keywords: delayqueue delayed contract, delayed compareto getdelay, delayed compareTo getDelay mismatch, java delayed interface, java delayqueue delayed implementation, delayqueue expired head, delayqueue stuck waiting, delayqueue poll null but expired task exists, delayqueue task runs late, compareTo deadline getDelay deadline, delayed task ordering contract, getDelay negative but not head, business priority in delayqueue, timer priority policy split, delayed compareTo business priority, due time gate, mutable deadline delayqueue, delayqueue reschedule stale entry, delayed beginner primer, delayqueue nanotime, currentTimeMillis vs nanoTime delayqueue, timer clock choice, relative deadline clock, deadlineNanos, equal deadline sequence tie breaker, same deadline fifo delayqueue, delayqueue stable order, delayed sequence business priority separate
 
 ## 먼저 그림부터
 
@@ -22,7 +24,7 @@
 - `compareTo()`는 **줄 순서**를 정한다.
 - `getDelay()`는 **줄 맨 앞 사람이 입장 시간이 됐는지**를 말한다.
 
-문제는 `DelayQueue`가 매번 줄 전체를 뒤져서 "입장 가능한 사람"을 찾지 않는다는 점이다.  
+문제는 `DelayQueue`가 매번 줄 전체를 뒤져서 "입장 가능한 사람"을 찾지 않는다는 점이다.
 보통 **맨 앞 원소의 delay만 보고** 꺼낼지, 더 기다릴지를 정한다.
 
 그래서 두 메서드가 같은 기준을 봐야 한다.
@@ -39,6 +41,8 @@
 ## 1. 정답 패턴은 같은 deadline 필드를 쓰는 것이다
 
 가장 안전한 구현은 **절대 deadline** 하나를 저장하고, 두 메서드가 모두 그 값을 기준으로 판단하게 만드는 방식이다.
+여기서 `delay`가 입력 표현이고 `deadline`이 queue 내부 표현이라는 단어 구분부터 먼저 잡고 싶다면 [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)를 먼저 보고 와도 좋다.
+왜 이 값을 보통 `deadlineMillis`보다 `deadlineNanos`로 두는지부터 헷갈리면 [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)에서 벽시계와 상대 지연 시계를 먼저 나누고 돌아오면 이해가 훨씬 쉽다.
 
 ```java
 final class ScheduledJob implements Delayed {
@@ -78,7 +82,7 @@ final class ScheduledJob implements Delayed {
 - `getDelay()`도 `deadlineNanos - now`로 남은 시간을 계산한다
 - `sequence`는 deadline이 같을 때만 쓰는 tie-breaker다
 
-즉 `compareTo()`와 `getDelay()`가 서로 다른 답을 내는 것이 아니라,  
+즉 `compareTo()`와 `getDelay()`가 서로 다른 답을 내는 것이 아니라,
 같은 deadline을 서로 다른 용도로 읽고 있을 뿐이다.
 
 ## 2. 어긋난 구현은 "만료된 작업이 숨어 있는 queue"를 만든다
@@ -106,11 +110,54 @@ public int compareTo(Delayed other) {
 | A | 지금 | 1 | 예 | 뒤 |
 | B | 10초 뒤 | 100 | 아니오 | 앞 |
 
-사람 눈에는 A가 지금 실행돼야 한다.  
+사람 눈에는 A가 지금 실행돼야 한다.
 하지만 queue head는 B가 된다.
 
-`DelayQueue.take()`는 head인 B를 보고 "아직 10초 남았네"라고 판단할 수 있다.  
+`DelayQueue.take()`는 head인 B를 보고 "아직 10초 남았네"라고 판단할 수 있다.
 그 결과 A는 이미 만료됐는데도 B 뒤에 숨어서 늦게 실행된다.
+
+### 초보자용 visual trace: 두 메서드가 같은 deadline을 볼 때와 아닐 때
+
+같은 시각 `now = 100`에서 queue 안에 작업 두 개가 있다고 하자.
+
+| task | 저장된 deadline | `getDelay()` 계산 | `compareTo()`가 써야 하는 값 |
+|---|---:|---:|---|
+| A | 100 | `100 - 100 = 0` | 100 |
+| B | 110 | `110 - 100 = 10` | 110 |
+
+이때 올바른 흐름은 아래처럼 한 줄로 이어진다.
+
+```text
+same deadline field
+A.deadline=100, B.deadline=110, now=100
+
+compareTo(A, B) -> A가 더 이른 deadline이라 head
+getDelay(A)     -> 0, 지금 꺼내도 됨
+
+결론: head=A, expired=A
+```
+
+즉 `compareTo()`가 "A를 맨 앞에 둔다"고 말한 순간,
+`getDelay()`도 같은 deadline을 읽어서 "맞다, A는 지금 만료됐다"고 이어져야 한다.
+
+반대로 `compareTo()`가 deadline 대신 business priority를 보면 흐름이 끊긴다.
+
+```text
+mismatched fields
+A.deadline=100, priority=1
+B.deadline=110, priority=100
+now=100
+
+compareTo(A, B) -> priority 때문에 B가 head
+getDelay(B)     -> 10, 아직 아님
+getDelay(A)     -> 0, 이미 만료됐지만 head가 아니라 숨음
+
+결론: head=B, expired=A
+```
+
+초보자 기준 체크 문장은 이것 하나면 충분하다.
+
+> `compareTo()`가 고른 head와 `getDelay()`가 0 이하라고 말하는 task가 같아야 한다.
 
 ## 3. 실제로 깨지는 것
 
@@ -123,12 +170,12 @@ public int compareTo(Delayed other) {
 | task 실행 순서가 deadline과 다르다 | heap 순서가 deadline이 아닌 다른 값으로 정해졌다 |
 | 테스트는 가끔 통과하지만 운영에서 늦게 실행된다 | priority, sequence, mutable field가 deadline보다 앞서 비교될 때 입력 순서에 따라 숨어 버린다 |
 
-`DelayQueue`는 "queue 전체에서 delay가 0 이하인 아무 원소나 찾아서 꺼내는 구조"가 아니다.  
+`DelayQueue`는 "queue 전체에서 delay가 0 이하인 아무 원소나 찾아서 꺼내는 구조"가 아니다.
 **head가 만료됐는지**를 보는 구조라고 기억하면 이 버그가 바로 보인다.
 
 ## 4. business priority는 어디에 넣어야 하나
 
-business priority가 필요하다고 해서 항상 잘못은 아니다.  
+business priority가 필요하다고 해서 항상 잘못은 아니다.
 다만 primary key가 deadline이어야 한다.
 
 | 요구 | 안전한 방향 |
@@ -137,9 +184,53 @@ business priority가 필요하다고 해서 항상 잘못은 아니다.
 | 같은 deadline끼리 높은 priority 먼저 처리 | `deadline -> priority -> sequence` |
 | deadline보다 business priority가 더 중요 | `DelayQueue` 하나로 섞지 말고 scheduler 정책을 분리한다 |
 
-즉 "10초 뒤 high priority"가 "지금 만료된 low priority"보다 head에 오면 안 된다.  
+즉 "10초 뒤 high priority"가 "지금 만료된 low priority"보다 head에 오면 안 된다.
 그 순간 `DelayQueue`의 delay-aware blocking 계약이 깨진다.
 이 분리 기준이 헷갈리면 [Timer Priority Policy Split](./timer-priority-policy-split.md)에서 due-time gate와 ready priority queue를 먼저 나눠 보면 된다.
+
+### 4.5 같은 deadline에서도 sequence tie-breaker를 두는 이유
+
+여기서 초보자가 한 번 더 헷갈리는 지점이 있다.
+
+> "deadline이 같다면 priority를 tie-breaker로 쓰면 되지, sequence까지 왜 필요하지?"
+
+먼저 `sequence`의 역할부터 아주 작게 나누면 쉽다.
+
+| 값 | 답하려는 질문 |
+|---|---|
+| `deadline` | 언제 실행 가능해지는가 |
+| `sequence` | 같은 deadline 묶음 안에서 어떤 순서로 꺼낼 것인가 |
+| `business priority` | 이미 실행 가능한 작업들 중 무엇이 더 중요한가 |
+
+즉 `sequence`는 **시간 동점 처리용 안정장치**이고,
+`business priority`는 **업무 정책**이다. 둘은 같은 질문에 답하지 않는다.
+
+예를 들어 A와 B가 둘 다 `deadline = 100`이라면 둘 다 같은 시각에 만료된다.
+이때 `sequence`가 없으면 "동점일 때 어떤 순서로 나오나"가 구현 세부에 기대는 모양이 되기 쉽다.
+
+| task | deadline | sequence | business priority |
+|---|---:|---:|---:|
+| A | 100 | 10 | 1 |
+| B | 100 | 11 | 100 |
+
+이 표에서 `sequence`가 말하는 것은 단 하나다.
+
+- 둘 다 같은 시각에 due라면 먼저 들어온 A를 먼저 꺼낼지
+- 아니면 같은 deadline 묶음 안에서 다른 안정 규칙을 둘지
+
+반면 `business priority`는 "둘 다 ready가 된 뒤 누구를 먼저 처리할까"에 가깝다.
+그래서 둘을 한 칸으로 합쳐 생각하면 아래 두 요구가 섞인다.
+
+1. 같은 deadline에서 결과가 흔들리지 않게 하자
+2. 중요한 일부터 처리하자
+
+1번은 comparator stability 문제고, 2번은 scheduler policy 문제다.
+같은 deadline 동점 처리를 안정적으로 만들고 싶다면 보통 `deadline -> sequence`를 먼저 둔다.
+"같은 deadline에서는 high priority 먼저"가 진짜 요구라면 그때만 `deadline -> priority -> sequence`처럼 넣는다.
+
+핵심은 이것이다.
+
+> `sequence`는 equal deadline을 안정적으로 풀기 위한 tie-breaker이고, business priority는 그 위에 얹을지 말지 따로 결정하는 정책이다.
 
 ## 5. 자주 하는 오해
 
@@ -149,11 +240,12 @@ business priority가 필요하다고 해서 항상 잘못은 아니다.
 4. `compareTo()`에서 남은 delay를 매번 새로 계산하면 더 정확하다고 생각한다.
 5. queue에 넣은 뒤 deadline이나 priority 필드를 바꿔도 heap 순서가 자동으로 다시 잡힌다고 생각한다.
 
-`compareTo()`에서는 보통 현재 시각을 다시 계산하기보다, 저장해 둔 `deadlineNanos` 같은 안정적인 값을 비교하는 편이 안전하다.  
+`compareTo()`에서는 보통 현재 시각을 다시 계산하기보다, 저장해 둔 `deadlineNanos` 같은 안정적인 값을 비교하는 편이 안전하다.
 남은 시간은 계속 변하지만, "누가 더 이른 deadline인가"는 같은 두 task 사이에서 흔들리면 안 되기 때문이다.
 
 ## 다음 문서로 이어가기
 
+- `deadlineNanos`를 왜 `System.nanoTime()`으로 잡는지부터 분리하려면 [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 - `DelayQueue`와 plain `PriorityQueue`의 timer loop 차이를 더 보려면 [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
 - `PriorityBlockingQueue.take()`가 왜 deadline까지 기다려 주지 않는지 먼저 잡으려면 [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
 - business priority를 `Delayed.compareTo()`에 넣어도 되는지 헷갈리면 [Timer Priority Policy Split](./timer-priority-policy-split.md)
@@ -163,5 +255,5 @@ business priority가 필요하다고 해서 항상 잘못은 아니다.
 
 ## 한 줄 정리
 
-`Delayed` 구현에서는 `compareTo()`가 **가장 이른 deadline을 head로 보내고**, `getDelay()`가 **그 같은 deadline까지 남은 시간**을 말해야 한다.  
+`Delayed` 구현에서는 `compareTo()`가 **가장 이른 deadline을 head로 보내고**, `getDelay()`가 **그 같은 deadline까지 남은 시간**을 말해야 한다.
 둘이 어긋나면 `DelayQueue`는 만료된 task를 queue 안에 두고도 기다리는 이상한 scheduler가 된다.

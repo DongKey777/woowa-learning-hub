@@ -13,9 +13,11 @@
 > - [Interval Greedy Patterns](./interval-greedy-patterns.md)
 > - [Sweep Line Overlap Counting](./sweep-line-overlap-counting.md)
 > - [시간복잡도와 공간복잡도](./basic.md#시간복잡도와-공간복잡도)
+> - [Deque Router Example Pack](../data-structure/deque-router-example-pack.md)
+> - [Monotonic Deque Walkthrough](../data-structure/monotonic-deque-walkthrough.md)
 > - [Monotonic Deque vs Heap for Window Extrema](../data-structure/monotonic-deque-vs-heap-for-window-extrema.md)
 >
-> retrieval-anchor-keywords: sliding window, fixed window, variable window, contiguous subarray, contiguous substring, contiguous index range, contiguous index interval, array interval scan, longest substring, minimum window substring, grow shrink window, frequency map, window sum, rolling window, k-length scan, recent k elements, recent k maximum, recent k minimum, subarray scan, window query, substring window, subarray vs subsequence, contiguous only, original order window, sliding window maximum, sliding window minimum, max in every window, min in every window, monotonic deque, monotonic queue, deque-based window state, window extrema, interval vs sliding window, interval scheduling vs sliding window, meeting rooms not sliding window, calendar overlap not sliding window, reservation schedule not window
+> retrieval-anchor-keywords: sliding window, fixed window, variable window, contiguous subarray, contiguous substring, contiguous index range, contiguous index interval, array interval scan, longest substring, minimum window substring, grow shrink window, frequency map, window sum, rolling window, k-length scan, recent k elements, recent k maximum, recent k minimum, subarray scan, window query, substring window, subarray vs subsequence, contiguous only, original order window, sliding window maximum, sliding window minimum, max in every window, min in every window, monotonic deque, monotonic queue, deque-based window state, window extrema, window sum vs window max, window count vs window max, when do i need deque, do i need monotonic deque, fixed window sum not deque, fixed window maximum deque, interval vs sliding window, interval scheduling vs sliding window, meeting rooms not sliding window, calendar overlap not sliding window, reservation schedule not window
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -40,6 +42,35 @@
 - 고정 길이 평균/최대값
 
 핵심은 매번 처음부터 다시 보지 않고, 이전 상태를 재사용하는 것이다.
+
+## 먼저 이것부터: `deque`가 필요한 window인가
+
+처음 읽을 때는 sliding window를 이렇게 두 갈래로만 나누면 된다.
+
+- **더하고 빼면 갱신되는 값**이면: 보통 `sum`, `count`, `freq`로 간다.
+- **현재 최고/최저 후보를 계속 추적해야 하는 값**이면: 보통 monotonic `deque`로 간다.
+
+쉽게 말해, 창에서 원소 하나가 빠질 때 답을 `-nums[left]`처럼 바로 고칠 수 있으면 deque가 필요 없는 경우가 많다.
+반대로 최대값 원소가 빠졌을 때 "그다음 최대가 누구지?"를 즉시 알아야 하면 후보 순서를 관리하는 deque가 필요하다.
+
+| 질문 형태 | 창을 밀 때 주 상태 | deque 필요 여부 | 첫 라우트 |
+|---|---|---|---|
+| `길이 k 합`, `평균`, `최근 k개 요청 수` | running sum, count | 대개 필요 없음 | 이 문서의 fixed window |
+| `중복 없는 가장 긴 부분 문자열`, `minimum window substring` | `Map` / `freq` / distinct count | 대개 필요 없음 | 이 문서의 variable window |
+| `각 길이 k 구간의 최대/최소`, `최근 k개 중 max/min` | 현재 극값 후보 순서 | 필요함 | [Monotonic Deque Walkthrough](../data-structure/monotonic-deque-walkthrough.md) |
+| `각 길이 k 구간의 median`, `top-k` | 정렬된 순서, 순위 | deque보다 다른 구조가 먼저 | 문제 요구 구조를 다시 확인 |
+
+### 10초 체크
+
+1. 답이 `sum/count/frequency`인가? 그러면 sliding window 자체에 집중한다.
+2. 답이 `max/min`인가? 그러면 sliding window 위에 monotonic deque가 올라간다.
+3. 답이 `median/kth/top-k`인가? 그러면 deque보다 heap/tree 쪽일 가능성이 크다.
+
+### 초보자 혼동 포인트
+
+- `window`라는 단어만 보고 deque를 떠올리면 과하다. `window sum`류는 보통 누적값 갱신이 핵심이다.
+- 반대로 `max/min`을 `sum`처럼 생각하면 틀리기 쉽다. 최대값이 창 밖으로 나가면 다음 답 후보를 새로 찾아야 한다.
+- deque는 "sliding window의 전용 자료구조"가 아니라, **window extrema를 위한 추가 장치**다.
 
 ## 자주 헷갈리는 패턴 구분
 
@@ -101,6 +132,16 @@
 - max/min in every subarray of size `k`
 - 최근 `k`개 중 최댓값/최솟값
 - 고정 길이 window extrema query
+
+짧은 비교 예제로 보면 더 빠르다.
+
+| 문제 | window가 한 칸 밀릴 때 갱신 방식 | 필요한 상태 |
+|---|---|---|
+| `nums = [2, 4, 1, 3]`, `k = 2`의 window sum | 이전 합에서 `빠진 값 빼고 새 값 더함` | `sum` 하나 |
+| 같은 입력의 window max | 빠진 값이 최대였는지부터 확인해야 함 | max 후보를 유지하는 deque |
+
+첫 번째는 `6 -> 5 -> 4`를 산술적으로 바로 갱신할 수 있다.
+두 번째는 `[2, 4]`에서 `4`가 빠지는 순간 다음 최대가 `1`인지 `3`인지 후보 구조 없이는 즉시 알 수 없다.
 
 ---
 

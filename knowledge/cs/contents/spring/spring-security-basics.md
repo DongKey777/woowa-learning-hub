@@ -7,11 +7,12 @@
 관련 문서:
 
 - [Spring Security 아키텍처](./spring-security-architecture.md)
+- [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring security basics, spring security 입문, spring security 인증 인가 기초, authentication authorization beginner, spring security filter chain beginner, securityfilterchain 기초, spring security 401 403 차이, usernamepasswordauthenticationfilter, spring security 로그인 흐름, spring security 세션 기초, spring security 뭐예요, spring security configuration beginner, httpsecurity 기초, permitall authenticated
+retrieval-anchor-keywords: spring security basics, spring security 입문, spring security filter chain beginner, 처음 배우는데 security filter chain, security filter chain 큰 그림, security filter chain 기초, security filter chain 언제 쓰는지, spring security 401 403 차이, spring security 로그인 흐름, spring security 세션 기초, spring security 뭐예요, httpsecurity 기초
 
 ## 핵심 개념
 
@@ -32,6 +33,12 @@ HTTP 요청
   -> 인가 필터 (AuthorizationFilter)
   -> 컨트롤러 실행
 ```
+
+처음 배우는데 `security filter chain`이 낯설다면, 큰 그림은 아래 3문장으로 잡으면 된다.
+
+1. 요청이 컨트롤러에 닿기 전에 보안 필터 묶음이 먼저 돈다.
+2. 앞쪽 필터는 "누구인지" 확인하고, 뒤쪽 필터는 "들어와도 되는지" 판단한다.
+3. 순서가 바뀌면 인증 실패와 권한 실패가 섞여 보인다.
 
 | 상황 | HTTP 상태 코드 | 의미 |
 |---|---|---|
@@ -83,6 +90,7 @@ public class SecurityConfig {
 
 ## 더 깊이 가려면
 
+- `security filter chain`의 큰 그림은 이해했는데 "그래서 어느 필터가 먼저 도는가?"가 궁금해졌다면 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)으로 넘어간다.
 - 필터 체인 내부 구조, `AuthenticationManager`, `AuthenticationProvider` 흐름은 [Spring Security 아키텍처](./spring-security-architecture.md)에서 자세히 다룬다.
 - HTTP 세션, 쿠키 기반 인증의 기초는 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)를 먼저 읽으면 더 명확해진다.
 - 메서드 레벨 시큐리티(`@PreAuthorize`, `@PostAuthorize`)는 고급 주제에 해당한다.

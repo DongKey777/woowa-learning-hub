@@ -35,6 +35,10 @@
 > - append only review history
 > - retirement verdict record
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Review Outcome Template](./README.md#shadow-review-outcome-template)
+> - 다음 단계: [Shadow Forum Escalation Rules](./shadow-forum-escalation-rules.md)
+
 ## 핵심 개념
 
 shadow review packet이 forum에 던지는 질문이라면, outcome template는 그 질문에 대한 **authoritative answer**다.

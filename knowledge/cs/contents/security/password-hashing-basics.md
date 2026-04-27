@@ -7,11 +7,17 @@
 관련 문서:
 
 - [비밀번호 저장: bcrypt / scrypt / argon2](./password-storage-bcrypt-scrypt-argon2.md)
+- [Brute Force Protection Basics](./brute-force-protection-basics.md)
 - [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
-- [Spring IoC 컨테이너와 DI](../spring/ioc-di-container.md)
-- [Security 카테고리 README](./README.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: password hashing basics, 비밀번호 저장 방법, 비밀번호 해시, why not encrypt password, plain text password danger, md5 sha256 password storage, bcrypt 왜 써야 하나, salt 이란, rainbow table 공격, password storage beginner, 비밀번호 평문 저장 위험, credential leak
+retrieval-anchor-keywords: password hashing basics, 비밀번호 저장 방법, 비밀번호 해시, why not encrypt password, plain text password danger, md5 sha256 password storage, bcrypt 왜 써야 하나, salt 이란, rainbow table 공격, password storage beginner, 비밀번호 평문 저장 위험, credential leak, security readme password primer, security beginner route, security primer next step, return to security README, 회원가입 만들 때 비밀번호 저장
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security 입문 문서 안에서 다른 primer를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
+- bcrypt, scrypt, argon2를 어떤 기준으로 고를지와 cost 파라미터를 더 자세히 보려면 [비밀번호 저장: bcrypt / scrypt / argon2](./password-storage-bcrypt-scrypt-argon2.md)로 이어 가면 된다.
+- 비밀번호를 안전하게 저장한 뒤에도 로그인 시도 자체를 어떻게 줄일지 궁금하면 [Brute Force Protection Basics](./brute-force-protection-basics.md)를 같이 보면 된다.
 
 ## 핵심 개념
 

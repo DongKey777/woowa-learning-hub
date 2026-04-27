@@ -22,6 +22,10 @@
 > - exception state transition
 > - registry cadence
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Consumer Exception State Machine and Review Cadence](./README.md#consumer-exception-state-machine-and-review-cadence)
+> - 다음 단계: [Consumer Exception Registry Quality and Automation](./consumer-exception-registry-quality-automation.md)
+
 ## 핵심 개념
 
 registry가 있어도 상태 변화가 없으면 예외는 그냥 쌓인다.

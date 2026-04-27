@@ -17,6 +17,7 @@
 </details>
 
 > 관련 문서:
+> - [Software Engineering README: Clean Architecture vs Layered Architecture, Modular Monolith](./README.md#clean-architecture-vs-layered-architecture-modular-monolith)
 > - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 > - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
 > - [DDD Bounded Context Failure Patterns](./ddd-bounded-context-failure-patterns.md)
@@ -141,3 +142,8 @@ Modular Monolith는 하나의 배포 단위 안에서 **기능 단위 모듈을 
 - 경계를 더 나누는 것이 실제로 유지보수 비용을 줄이는가?
 - 모듈 경계를 패키지 수준이 아니라 의존성 수준에서 강제하고 있는가?
 - 이 모놀리스는 단순히 큰 코드베이스인가, 아니면 모듈이 살아 있는가?
+
+## 다음 읽기
+
+- 다음 한 걸음: [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md) - 추상적인 모듈 경계 선택을 패키지 규칙과 아키텍처 테스트로 내리는 바로 다음 단계다.
+- README로 돌아가기: [Software Engineering README](./README.md#clean-architecture-vs-layered-architecture-modular-monolith) - 같은 묶음의 DDD, ACL, migration 문서로 다시 이동하기 쉽다.

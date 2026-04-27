@@ -7,6 +7,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Support Access Alert Router Primer](./support-access-alert-router-primer.md)
 > - [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md)
 > - [Delivery Surface Policy for Support Access Alerts](./delivery-surface-policy-for-support-access-alerts.md)
 > - [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)
@@ -22,6 +23,7 @@ retrieval-anchor-keywords: tenant policy schema for privileged support alerts, p
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- beginner가 `읽기/쓰기/누가 받나` 수준에서 막혔다면 먼저 [Support Access Alert Router Primer](./support-access-alert-router-primer.md)로 돌아가 `10초 라우터`의 `user-scoped routing`과 `tenant policy knob` 경계를 다시 고정한다.
 - B2C/B2B별 audience routing matrix 자체는 [Audience Matrix for Support Access Events](./audience-matrix-for-support-access-events.md)에서 먼저 본다.
 - email, inbox, alternate verified channel 같은 delivery surface 선택은 [Delivery Surface Policy for Support Access Alerts](./delivery-surface-policy-for-support-access-alerts.md)로 이어진다.
 - `policy_snapshot_id`, `audience_policy_key`, `retention_class`를 canonical event에 어떻게 싣는지는 [Canonical Security Timeline Event Schema](./canonical-security-timeline-event-schema.md)와 같이 보면 좋다.
@@ -188,7 +190,7 @@ regulated tenant에서 자주 틀리는 패턴은 compliance-sensitive support a
 
 ### 6. canonical timeline event에는 policy snapshot이 같이 찍혀야 한다
 
-support alert policy는 런타임 순간의 tenant 설정을 읽고 끝내면 안 된다.  
+support alert policy는 런타임 순간의 tenant 설정을 읽고 끝내면 안 된다.
 나중에 "왜 그때 security contact가 받았지?"를 설명하려면 canonical event에 정책 snapshot이 남아야 한다.
 
 최소 hidden evidence field:

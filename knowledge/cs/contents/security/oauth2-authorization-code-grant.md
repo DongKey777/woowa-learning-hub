@@ -6,6 +6,8 @@
 
 > 관련 문서:
 > - [OAuth2 기초](./oauth2-basics.md)
+> - [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)
+> - [Login Callback Artifact Cheat Sheet](./login-callback-artifact-cheat-sheet.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
@@ -26,10 +28,12 @@
 > - [Security README 기본 primer 묶음](./README.md#기본-primer)
 > - [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)
 
-retrieval-anchor-keywords: OAuth2 authorization code grant, PKCE, redirect URI, state, code exchange, authorization server, token endpoint, callback, front-channel, back-channel, browser auth, federated login session regeneration, logout coherence, device code flow, device authorization grant, limited input device, PAR, JAR, pushed authorization request, request object signing, browser session coherence, login hardening path, browser auth primer, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token, UserInfo endpoint, external identity mapping, issuer audience nonce, browser server boundary catalog, security readme browser server boundary, callback hardening, login completion hardening, post-login session regeneration, post-login csrf token rotation, BFF login completion, social login callback hardening, oauth redirect_uri mismatch behind proxy, callback URL flips to internal host, X-Forwarded-Host callback, oauth follow-up primer, after oauth basics route, oauth authorization code route, security readme oauth branch
+retrieval-anchor-keywords: OAuth2 authorization code grant, PKCE, redirect URI, state, code exchange, authorization server, token endpoint, callback, front-channel, back-channel, browser auth, federated login session regeneration, logout coherence, device code flow, device authorization grant, limited input device, PAR, JAR, pushed authorization request, request object signing, browser session coherence, login hardening path, browser auth primer, confidential client, token endpoint client auth, private_key_jwt, mTLS client auth, OIDC login, ID token, UserInfo endpoint, external identity mapping, issuer audience nonce, browser server boundary catalog, security readme browser server boundary, callback hardening, login completion hardening, post-login session regeneration, post-login csrf token rotation, BFF login completion, social login callback hardening, oauth redirect_uri mismatch behind proxy, callback URL flips to internal host, X-Forwarded-Host callback, oauth follow-up primer, after oauth basics route, oauth authorization code route, security readme oauth branch, oauth2 oidc social login primer, oauth2 vs oidc handoff, social login beginner handoff, id token vs access token beginner, state nonce login_state oauth_txn cheat sheet, callback artifact glossary return
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- social login 질문인데 `access token`, `id token`, internal session 역할이 아직 섞이면 [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)로 먼저 돌아가는 편이 낫다.
+- `state`, `nonce`, `login_state`, `oauth_txn`, shared session cookie, handoff code 이름이 한꺼번에 섞이면 [Login Callback Artifact Cheat Sheet](./login-callback-artifact-cheat-sheet.md)에서 용어부터 짧게 맞추고 다시 내려오는 편이 빠르다.
 - OAuth2 용어 자체가 아직 흐리면 [OAuth2 기초](./oauth2-basics.md) 또는 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가 first-step primer부터 다시 잡는 편이 낫다.
 - 브라우저 login hardening 문서를 cluster 형태로 다시 고르려면 [Security README: Browser / Server Boundary deep dive catalog](./README.md#browser--server-boundary-deep-dive-catalog)로 돌아가 redirect, session regeneration, browser storage 흐름을 이어 고르면 된다.
 - callback에서 `code` / `state` / `code_verifier` 저장과 소비가 왜 자주 깨지는지는 [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)로 내려가면 된다.
@@ -46,8 +50,11 @@ retrieval-anchor-keywords: OAuth2 authorization code grant, PKCE, redirect URI, 
 
 ## 핵심 개념
 
-OAuth2는 "로그인 프로토콜"이라기보다 **리소스 접근 위임 프레임워크**다.  
+OAuth2는 "로그인 프로토콜"이라기보다 **리소스 접근 위임 프레임워크**다.
 그중 Authorization Code Grant는 서버 사이드에서 가장 흔하게 쓰는 흐름이다.
+
+이 문서는 `state`, PKCE, callback, login completion hardening까지 들어가는 follow-up이다.
+`구글로 로그인` 질문이 아직 OAuth2/OIDC 용어 정리 단계라면 [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)가 먼저다.
 
 핵심은 이렇다.
 
@@ -80,7 +87,7 @@ Backend <- access token / refresh token / id token
 Backend -> own session/JWT issuance
 ```
 
-핵심은 `code`를 직접 토큰으로 바꾸는 주체가 서버라는 점이다.  
+핵심은 `code`를 직접 토큰으로 바꾸는 주체가 서버라는 점이다.
 이렇게 하면 토큰 발급에 필요한 민감 정보와 검증 로직을 서버에 묶을 수 있다.
 
 다만 Authorization Code Grant 자체가 `client_secret_basic`, `private_key_jwt`, mTLS 중 무엇으로 backend client를 증명할지까지 정해 주지는 않는다. 그 back-channel client proof 분기점은 [OAuth Client Authentication: `client_secret_basic`, `private_key_jwt`, mTLS](./oauth-client-authentication-private-key-jwt-mtls.md)에서 따로 본다.
@@ -144,7 +151,7 @@ OAuth2/IdP가 책임지는 것:
 
 ### 5. Spring Security와 연결
 
-Spring Security에서는 OAuth2 login이 끝난 뒤 authenticated principal을 받아 내부 사용자와 연결하는 구성이 흔하다.  
+Spring Security에서는 OAuth2 login이 끝난 뒤 authenticated principal을 받아 내부 사용자와 연결하는 구성이 흔하다.
 그 다음에 우리 시스템의 세션이나 JWT를 별도로 발급할 수 있다.
 
 이 부분은 [Spring Security 아키텍처](../spring/spring-security-architecture.md)와 함께 보면 연결이 쉽다.

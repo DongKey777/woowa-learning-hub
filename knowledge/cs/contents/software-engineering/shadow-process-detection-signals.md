@@ -34,6 +34,10 @@
 > - shadow retirement candidate
 > - catalog intake template
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Process Detection Signals](./README.md#shadow-process-detection-signals)
+> - 다음 단계: [Shadow Process Catalog and Retirement](./shadow-process-catalog-and-retirement.md)
+
 ## 핵심 개념
 
 shadow process는 스스로 "저는 shadow입니다"라고 드러나지 않는다.

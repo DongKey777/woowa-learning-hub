@@ -8,6 +8,7 @@
 
 > 관련 문서:
 > - [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
+> - [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)
 > - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 > - [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
@@ -18,6 +19,7 @@ retrieval-anchor-keywords: starter dependency map, starter vs autoconfiguration 
 ## 이 문서 다음에 보면 좋은 문서
 
 - starter를 넣었는데 실제 bean이 왜 안 뜨는지 증상 기준으로 바로 분기하려면 [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)로 간다.
+- starter dependency 한 줄이 Condition Evaluation Report의 positive/negative match로 어떻게 이어지는지 한 번에 연습하려면 [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)을 먼저 본다.
 - `@Configuration`과 Boot auto-configuration의 관계부터 다시 잡고 싶으면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)로 이어진다.
 - classpath 조건이 환경마다 왜 달라지는지 scope와 test slice 관점으로 더 보고 싶으면 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)를 본다.
 - Boot 자동 구성 전체 그림과 커스텀 starter 구조를 더 깊게 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
@@ -240,7 +242,7 @@ dependencies {
 - exporter/registry 구현체
 - cloud vendor SDK
 
-이런 것들은 소비자 앱이 직접 선택해야 자연스러운 경우가 많다.  
+이런 것들은 소비자 앱이 직접 선택해야 자연스러운 경우가 많다.
 Boot나 starter 작성자가 특정 vendor를 강제로 고르면 오히려 선택 폭이 줄어든다.
 
 ### 오해 3. classpath 조건은 starter 이름을 본다
@@ -278,7 +280,7 @@ prometheus registry class가 있나?
 
 이 다섯 문장만 잡아도 "`starter`, `auto-configuration`, `driver`가 한 덩어리로 보이는 혼란"을 대부분 줄일 수 있다.
 
-참고로 `runtimeOnly`/`runtime`은 앱 코드가 구현 class를 직접 import하지 않고 auto-configuration에 맡길 때 흔하다.  
+참고로 `runtimeOnly`/`runtime`은 앱 코드가 구현 class를 직접 import하지 않고 auto-configuration에 맡길 때 흔하다.
 앱 코드에서 vendor SDK type이나 registry type을 직접 참조한다면 compile classpath에도 필요하므로 `implementation` 또는 일반 Maven dependency가 더 맞을 수 있다.
 
 ---

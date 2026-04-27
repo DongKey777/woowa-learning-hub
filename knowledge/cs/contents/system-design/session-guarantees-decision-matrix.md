@@ -6,7 +6,10 @@
 
 관련 문서:
 
+- [Write Order vs Precondition Primer](./write-order-vs-precondition-primer.md)
+- [Session Policy Implementation Sketches](./session-policy-implementation-sketches.md)
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
+- [Monotonic Writes Ordering Primer](./monotonic-writes-ordering-primer.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
@@ -17,7 +20,7 @@
 - [Causal Consistency Intuition](../database/causal-consistency-intuition.md)
 - [Design Pattern: Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)
 
-retrieval-anchor-keywords: session guarantees decision matrix, session guarantee policy bundle, list-detail-search monotonicity, list detail monotonicity bridge, list detail search min-version floor, read-after-write monotonic reads writes-follow-reads monotonic writes, writes-follow-reads beginner, monotonic writes beginner, product flow consistency matrix, checkout session consistency, profile edit session guarantee, cart checkout monotonic writes, edit form if-match writes-follow-reads, per-session write ordering, per-session consistency policy, beginner session consistency, read your writes monotonic writes decision
+retrieval-anchor-keywords: session guarantees decision matrix, session guarantee policy bundle, session policy implementation sketches, gateway app db session hints, list-detail-search monotonicity, list detail monotonicity bridge, list detail search min-version floor, read-after-write monotonic reads writes-follow-reads monotonic writes, writes-follow-reads beginner, monotonic writes beginner, monotonic writes ordering primer, session write sequence primer, idempotency key vs sequence number, monotonic writes vs version check, product flow consistency matrix, checkout session consistency, profile edit session guarantee, cart checkout monotonic writes, edit form if-match writes-follow-reads, per-session write ordering, per-session consistency policy, beginner session consistency, read your writes monotonic writes decision
 
 ---
 
@@ -150,6 +153,8 @@ session_policy = document_edit
 ## 더 깊이 가려면
 
 - [Monotonic Reads and Session Guarantees Primer](./monotonic-reads-and-session-guarantees-primer.md)
+- [Monotonic Writes Ordering Primer](./monotonic-writes-ordering-primer.md)
+- [Session Policy Implementation Sketches](./session-policy-implementation-sketches.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
 - [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)

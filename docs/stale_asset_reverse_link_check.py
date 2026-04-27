@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
@@ -11,6 +10,7 @@ from pathlib import Path
 from markdown_link_scanner import (
     iter_markdown_files,
     iter_markdown_targets,
+    iter_local_asset_html_targets,
     iter_prose_lines,
     mask_inline_code,
     normalize_target,
@@ -18,14 +18,6 @@ from markdown_link_scanner import (
 
 DEFAULT_SCAN_PATHS = ("knowledge/cs", "docs")
 REPO_ROOT = Path.cwd().resolve()
-HTML_SIMPLE_ATTR_RE = re.compile(
-    r"""<(?:img|a|source)\b[^>]*\b(?:src|href)=["']([^"']+)["']""",
-    re.IGNORECASE,
-)
-HTML_SRCSET_RE = re.compile(
-    r"""<(?:img|source)\b[^>]*\bsrcset=["']([^"']+)["']""",
-    re.IGNORECASE,
-)
 LOCAL_DOC_SUFFIX = ".md"
 IGNORED_PREFIXES = ("http://", "https://", "mailto:", "data:")
 
@@ -56,27 +48,9 @@ def parse_args() -> argparse.Namespace:
 
 def iter_html_targets(line: str) -> list[tuple[str, str]]:
     targets: list[tuple[str, str]] = []
-    seen: set[tuple[str, str]] = set()
-
-    for raw_target in HTML_SIMPLE_ATTR_RE.findall(line):
-        pair = ("html-asset", raw_target)
-        if pair in seen:
-            continue
-        seen.add(pair)
-        targets.append(pair)
-
-    for raw_srcset in HTML_SRCSET_RE.findall(line):
-        for candidate in raw_srcset.split(","):
-            entry = candidate.strip()
-            if not entry:
-                continue
-            target = entry.split(None, 1)[0]
-            pair = ("html-srcset", target)
-            if pair in seen:
-                continue
-            seen.add(pair)
-            targets.append(pair)
-
+    for target in iter_local_asset_html_targets(line):
+        kind = "html-srcset" if target.attr == "srcset" else "html-asset"
+        targets.append((kind, target.raw_target))
     return targets
 
 

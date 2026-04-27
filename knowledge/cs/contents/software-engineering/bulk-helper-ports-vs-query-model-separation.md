@@ -26,6 +26,7 @@
 > - [Adapter Bulk Optimization Without Port Leakage](./adapter-bulk-optimization-without-port-leakage.md)
 > - [saveAll/sendAll Port Smells and Safer Alternatives](./saveall-sendall-port-smells-safer-alternatives.md)
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+> - [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md)
 > - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 > - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
@@ -49,6 +50,8 @@
 > - read side projection boundary
 > - when to split query repository
 > - beginner query model separation
+> - helper snapshot vs response dto
+> - command support data vs api response
 
 ## 왜 이 둘이 자주 헷갈리는가
 

@@ -1,114 +1,133 @@
 # 템플릿 메소드 패턴 기초 (Template Method Pattern Basics)
 
-> 한 줄 요약: 템플릿 메소드 패턴은 알고리즘의 뼈대를 부모 클래스에 고정하고, 세부 단계만 서브클래스에서 채우게 해서 공통 흐름을 재사용한다.
+> 한 줄 요약: 템플릿 메소드 패턴은 부모 클래스가 전체 순서를 고정하고, 자식 클래스는 그 안의 일부 단계만 채우는 패턴이다.
 
 **난이도: 🟢 Beginner**
 
+> 학습 순서 라벨: `basics -> framework examples -> deep dive` (`basics` 단계)
+>
+> Beginner Route: `[entrypoint]` [상속보다 조합 기초](./composition-over-inheritance-basics.md) -> `[entrypoint]` 이 문서 -> `[bridge]` [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) -> `[sibling primer]` [전략 패턴 기초](./strategy-pattern-basics.md)
+
 관련 문서:
 
-- [템플릿 메소드 (Template Method) 심화](./template-method.md)
-- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-- [전략 패턴 기초](./strategy-pattern-basics.md)
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
+- [Java 상속과 오버라이딩 기초](../language/java/java-inheritance-overriding-basics.md)
+- [추상 클래스 vs 인터페이스 입문](../language/java/java-abstract-class-vs-interface-basics.md)
 - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
-- [디자인 패턴 카테고리 인덱스](./README.md)
-- [Spring AOP 기초](../spring/spring-aop-basics.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) - 처음 배우는데 "부모가 흐름을 쥔다 vs 호출자가 전략을 고른다"를 빠르게 다시 자르는 비교 bridge
+- [전략 패턴 기초](./strategy-pattern-basics.md) - 템플릿 다음에 조합/객체 주입 큰 그림으로 넘어가는 sibling primer
+- [Template Hook Smells](./template-hook-smells.md) - `beforeX`/`afterX` 같은 hook가 늘어나기 시작하면 basics에서 바로 넘어갈 smell 점검 문서
+- [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](./template-method-framework-lifecycle-examples.md)
+- [템플릿 메소드 (Template Method) 심화](./template-method.md)
 
-retrieval-anchor-keywords: template method basics, 템플릿 메소드 패턴 기초, 템플릿 메소드 패턴이 뭔가요, template method beginner, abstract class template, 추상 메서드 패턴 입문, hook method beginner, abstract step beginner, hook method vs abstract step beginner, hook method vs abstract method beginner, 훅 메서드 기초, 추상 단계 기초, 추상 메서드 기초, 처음 배우는데 hook method, 처음 배우는데 훅 메서드, 처음 배우는데 abstract step, 처음 배우는데 추상 단계, hook method가 뭔가요, abstract step이 뭔가요, 추상 단계와 훅 메서드 차이, hook은 선택 빈칸, abstract step은 필수 빈칸, 뼈대 알고리즘 패턴, 상속 기반 흐름 고정, 공통 흐름 재사용, beginner template method, 템플릿 메소드 예시, inheritance vs composition template method, 상속으로 할까 조합으로 할까, 부모 클래스에 흐름 고정, 부모 클래스 vs 전략 객체, abstract class vs strategy, subclass skeleton, fixed workflow inheritance vs runtime composition, 처음 배우는데 템플릿 메소드, 템플릿 메소드 큰 그림, 템플릿 메소드 기초, 템플릿 메소드 언제 쓰는지, 부모가 흐름을 쥔다, 호출자가 전략을 고른다, 부모가 흐름을 쥔다 vs 호출자가 전략을 고른다, caller chooses strategy vs parent controls flow, parent owns workflow template method
+retrieval-anchor-keywords: template method basics, template method beginner, template method big picture, template method when to use beginner, report template pattern, export report template, 보고서 내보내기 템플릿, 리포트 템플릿, hook method beginner, abstract step beginner, template method vs strategy beginner, 처음 배우는데 템플릿 메소드, 처음 배우는데 템플릿 메소드 언제 쓰는지, 템플릿 메소드 기초, 추상 클래스면 다 템플릿 메소드인가요
 
 ---
 
-## 핵심 개념
+## 빠른 진입: 10초 질문 -> 30초 비교표 -> 1분 예시
 
-처음 배우는데는 두 문장으로 먼저 자르면 된다.
+처음 배우는데 "언제 쓰는지"나 "큰 그림"이 먼저 궁금하면, 이 문서는 템플릿 메소드를 `부모가 순서를 쥐고 자식이 일부 단계만 채우는 패턴`으로 잡고 시작하면 된다.
 
-- 템플릿 메소드: **부모가 흐름을 쥔다**
-- 전략: **호출자가 전략을 고른다**
+먼저 용어보다 질문부터 본다.
 
-템플릿 메소드 패턴은 **알고리즘의 전체 흐름(뼈대)을 부모 클래스에 정의**하고, 흐름 안의 특정 단계만 서브클래스가 구현하게 하는 패턴이다.
+- 부모가 `run()` 같은 전체 순서를 직접 실행하나?
+- 자식은 그 순서 안의 일부 단계만 채우나?
+- 요청마다 구현을 갈아끼우는 문제가 아니라, 공통 흐름을 재사용하는 문제인가?
 
-입문자가 헷갈리는 지점은 "왜 상속을 쓰냐"다. 공통 흐름이 명확하게 고정돼 있고, 변하는 것은 일부 단계뿐일 때 상속을 쓰면 코드 중복 없이 흐름을 공유할 수 있다. 반면 흐름 자체를 바꿔야 한다면 전략 패턴이 더 적합하다.
+위 셋이 모두 `예`에 가깝다면 템플릿 메소드 후보로 보면 된다.
 
-| 큰 그림 질문 | 템플릿 메소드 | 전략 |
+### 30초 비교표: 템플릿 메소드 vs 단순 base class
+
+처음 읽을 때는 `추상 클래스냐 아니냐`보다 `고정 흐름 유무`만 먼저 보면 된다.
+
+| 템플릿 메소드 | 단순 base class |
+|---|---|
+| 부모가 `run()` 같은 **고정 흐름**을 직접 들고 있다 | 부모는 공통 필드, 유틸 메서드, 기본 구현만 묶어 둔다 |
+| 자식은 흐름 안의 일부 단계만 구현한다 | 자식은 독립 메서드를 각자 구현한다 |
+| 질문: "부모가 순서를 통제하나?" | 질문: "부모가 코드 중복만 줄이나?" |
+
+### 30초 비교표: 템플릿 메소드 vs 전략
+
+| 질문 | 템플릿 메소드 | 전략 |
 |---|---|---|
-| 누가 흐름/선택권을 쥐는가 | 부모 클래스가 공통 순서를 고정한다 | 호출자, 설정, DI가 전략 객체를 고른다 |
-| 무엇을 바꾸는가 | 고정된 흐름 안의 일부 단계 | 교체 가능한 규칙/알고리즘 |
-| 언제 쓰는지 | 순서를 흔들리면 안 되는 기초 파이프라인 | 요청마다 방법을 바꿔 끼워야 하는 문제 |
+| 누가 흐름을 쥐는가 | 부모 클래스 | 호출자, 설정, DI |
+| 무엇을 바꾸는가 | 고정 흐름 안의 단계 | 교체 가능한 규칙/알고리즘 |
+| 언제 쓰는가 | 순서를 바꾸면 안 되는 처리 흐름 | 요청마다 방법을 갈아끼워야 하는 문제 |
 
-## 먼저 자를 질문
+### 1분 예시: 리포트 템플릿
 
-패턴 이름보다 "상속을 써도 되나?"가 먼저 떠오르면 이렇게 본다.
+검색어로는 `리포트 템플릿`, `보고서 내보내기 템플릿`처럼 떠올려도 된다.
 
-- 부모 클래스가 공통 순서를 끝까지 고정해야 한다. 즉 **부모가 흐름을 쥐어야 한다**: 템플릿 메소드
-- 호출자, 설정, DI가 이번 구현을 골라 넣는 게 자연스럽다. 즉 **호출자가 전략을 고른다**: 전략 + 조합
-- 아직 둘 다 흐리다: [상속보다 조합 기초](./composition-over-inheritance-basics.md) -> [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) 순서로 읽는다
+`AbstractReport`가 `load() -> format() -> export()` 순서를 고정한다고 보자.
 
-## hook / abstract step을 처음 보면
+- `load()`와 `format()`은 자식 클래스가 채운다.
+- `export()`와 예외 처리, 로그 순서는 부모가 쥔다.
 
-처음 배우는데 `hook method`, `abstract step`이라는 말이 먼저 보이면 용어보다 빈칸의 성격을 먼저 본다.
+즉 PDF와 CSV는 구현이 달라도 **보고서 내보내기 순서**는 같다. 이때 템플릿 메소드가 잘 맞는다.
 
-| 처음 보는 용어 | 쉬운 뜻 | 서브클래스가 해야 하는 일 |
+## 추상 클래스 오해 먼저 끊기
+
+추상 클래스를 쓴다고 자동으로 템플릿 메소드가 되지는 않는다.
+
+1. 추상 클래스는 공통 필드나 유틸 메서드를 묶는 타입일 수도 있다.
+2. 템플릿 메소드는 부모가 **고정 순서 메서드**를 실제로 들고 있어야 한다.
+3. 고정 순서가 없고 `save()`, `load()` 같은 API만 흩어져 있으면 단순 base class에 더 가깝다.
+
+짧게 보면 이렇다.
+
+| 빠른 체크 | 템플릿 메소드 신호 |
+|---|---|
+| 부모가 순서 메서드를 직접 실행하는가 | 예 |
+| 자식이 오버라이드하는 지점이 흐름 내부 슬롯인가 | 예 |
+
+## hook 과 abstract step
+
+템플릿 메소드 안의 빈칸은 보통 두 종류로 보면 된다.
+
+| 용어 | 쉬운 뜻 | 자식이 해야 하는 일 |
 |---|---|---|
-| abstract step | 없으면 흐름이 완성되지 않는 **필수 빈칸** | 반드시 구현한다 |
-| hook method | 기본 흐름에 가끔 덧붙이는 **선택 빈칸** | 필요할 때만 오버라이드한다 |
+| abstract step | 없으면 흐름이 완성되지 않는 필수 빈칸 | 반드시 구현 |
+| hook method | 기본 흐름에 선택적으로 덧붙이는 빈칸 | 필요할 때만 오버라이드 |
 
-즉 `convert()`처럼 없으면 보고서 내보내기가 끝나지 않는 단계는 abstract step이고, `afterExport()`처럼 기본은 아무 일도 안 해도 되는 후처리는 hook이다.
-훅이 많아지는 냄새나 프레임워크별 예시는 나중에 보고, 첫 질문은 여기서 **부모가 흐름을 쥔다**는 큰 그림부터 잡는다.
+작게 예를 들면:
 
-## 한눈에 보기
+- `loadData()`가 없으면 처리 자체가 안 끝난다 -> `abstract step`
+- `afterExport()`를 안 바꿔도 출력은 끝난다 -> `hook method`
 
-부모 클래스 `AbstractReport`가 전체 흐름을 고정한다.
+hook가 계속 늘어나면 설계가 무거워졌다는 신호일 수 있다. 비교부터 다시 자르려면 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md), 이미 `beforeX`/`afterX`/`cleanup`이 늘어난 상태를 바로 점검하려면 [Template Hook Smells](./template-hook-smells.md)로 넘어가면 된다.
 
-- `templateMethod()` — 흐름 전체를 담은 `final` 메서드
-- `fetchData()` — 서브클래스가 구현하는 단계 (데이터 소스가 다름)
-- `formatData()` — 서브클래스가 구현하는 단계 (포맷이 다름)
-- `exportResult()` — 부모에 공통 로직으로 고정
+### 3문항 미니 체크
 
-`PdfReport`는 DB에서 조회 + PDF 변환, `CsvReport`는 파일 읽기 + CSV 변환을 구현한다. 흐름 순서는 두 서브클래스 모두 동일하다.
+기초 문서에서도 아래 3문항으로 바로 경계를 확인하면 된다. [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)의 미니 체크와 같은 질문 세트다.
 
-```
-templateMethod() { fetchData(); formatData(); exportResult(); }
-```
+1. "결제 수단이 카드/계좌이체/간편결제로 바뀌고, 주문마다 다른 구현을 고른다."
+   정답: 전략
+   이유: 빈칸 하나를 채우는 문제가 아니라 어떤 규칙 객체를 쓸지 호출자가 고른다.
+2. "`리포트 템플릿`처럼 보고서 내보내기 순서는 항상 `검증 -> 변환 -> 저장`이고, 특정 배치에서만 저장 후 슬랙 알림을 붙인다."
+   정답: hook method
+   이유: 기본 흐름은 고정이고 끝에 선택적 후처리만 더한다.
+3. "`load()`가 빠지면 처리 자체가 끝나지 않는데, CSV와 PDF가 여기만 다르게 구현한다."
+   정답: abstract step
+   이유: 없으면 흐름이 완성되지 않는 필수 슬롯이다.
 
-## 상세 분해
+짧게 외우면 이렇다.
 
-템플릿 메소드 패턴은 세 가지 요소로 이뤄진다.
+- 흐름 안의 필수 빈칸이면 `abstract step`
+- 흐름 끝에 선택적으로 덧붙이면 `hook method`
+- 요청마다 다른 구현을 골라 끼우면 `strategy`
 
-- **템플릿 메소드** — 전체 흐름을 `final`로 정의한다. 서브클래스가 이 흐름을 바꾸지 못하게 막는다.
-- **추상 메서드(abstract step)** — 서브클래스가 반드시 구현해야 하는 단계다. 부모는 선언만 한다.
-- **훅 메서드(hook)** — 서브클래스가 원할 때만 오버라이드하는 선택적 단계다. 기본 구현이 있거나 빈 메서드로 둔다.
+## 자주 헷갈리는 포인트
 
-## 흔한 오해와 함정
+처음에는 아래 세 가지만 구분하면 충분하다.
 
-- **"훅 메서드를 많이 만들수록 좋다"** — 훅이 늘어날수록 서브클래스가 어디를 오버라이드해야 하는지 파악하기 어려워진다. 꼭 필요한 경우만 추가한다.
-- **"전략 패턴과 같다"** — 템플릿 메소드는 **부모가 흐름을 쥐는 상속 구조**고, 전략 패턴은 **호출자가 전략 객체를 고르는 조합 구조**다. 흐름이 고정인지 교체 가능한지가 핵심 차이다.
-- **"추상 클래스는 항상 템플릿 메소드 패턴이다"** — 추상 클래스를 쓴다고 해서 모두 템플릿 메소드 패턴은 아니다. 흐름 고정 + 단계 위임 구조가 있어야 패턴이다.
+| 헷갈리는 지점 | 빠른 기준 | 다음 문서 |
+|---|---|---|
+| 추상 클래스면 다 템플릿 메소드인가 | 아니다. 부모가 고정 순서를 가져야 한다 | [추상 클래스 vs 인터페이스 입문](../language/java/java-abstract-class-vs-interface-basics.md) |
+| 전략과 뭐가 다른가 | 부모가 흐름을 쥐면 템플릿, 호출자가 구현을 고르면 전략 | [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) |
+| 상속을 기본값으로 써도 되나 | 아니다. 템플릿 메소드는 상속의 좁은 예외다 | [상속보다 조합 기초](./composition-over-inheritance-basics.md) |
 
-## 실무에서 쓰는 모습
-
-데이터 처리 파이프라인에서 "데이터 로드 → 변환 → 저장"이라는 흐름이 고정돼 있고 각 단계만 다를 때 쓴다. `AbstractDataProcessor`에 흐름을 고정하고, 각 구현체가 데이터 소스와 변환 로직을 채운다.
-
-Spring의 `JdbcTemplate`, `RestTemplate`도 이 패턴을 활용한다. 커넥션 열기·닫기, 예외 처리 같은 공통 흐름은 내부에 고정하고, 실제 쿼리나 요청 부분만 사용자가 람다로 넘긴다.
-
-## 더 깊이 가려면
-
-- [템플릿 메소드 (Template Method) 심화](./template-method.md) — abstract step vs hook method 경계, 언제 쓰지 말아야 하는지
-- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md) — 상속 기반 vs 주입 기반 선택 기준
-- [상속보다 조합 기초](./composition-over-inheritance-basics.md) — 템플릿 메소드가 허용되는 예외와, 조합을 기본으로 보는 큰 그림
-
-## 면접/시니어 질문 미리보기
-
-> Q: 템플릿 메소드 패턴에서 `final` 키워드가 중요한 이유는?
-> 의도: 패턴의 핵심 제약을 이해하는지 확인한다.
-> 핵심: 흐름(뼈대)을 서브클래스가 바꾸지 못하게 보호한다.
-
-> Q: 템플릿 메소드와 전략 패턴 중 어느 것을 선택하는가?
-> 의도: 두 패턴의 트레이드오프를 설명하는지 확인한다.
-> 핵심: 흐름이 고정이면 템플릿 메소드, 흐름 자체를 runtime에 교체해야 하면 전략 패턴이다.
-
-> Q: 훅 메서드와 추상 메서드의 차이는?
-> 의도: 패턴 구성 요소를 아는지 확인한다.
-> 핵심: 추상 메서드는 서브클래스가 반드시 구현해야 하고, 훅 메서드는 선택적으로 오버라이드한다.
+실무에서도 흐름이 고정된 배치, 리포트, 처리 파이프라인에서 주로 보이고, 요청마다 규칙을 갈아끼우는 문제는 전략 쪽이 더 자주 맞는다.
 
 ## 한 줄 정리
 
-템플릿 메소드 패턴은 알고리즘 흐름을 부모에 고정하고 변하는 단계만 서브클래스에 위임해, 코드 중복 없이 공통 흐름을 여러 구현체가 공유하게 한다.
+템플릿 메소드는 `추상 클래스` 자체가 아니라 **부모가 고정 흐름을 직접 쥐고 있느냐**로 판단하는 패턴이며, 그 흐름 안의 일부 단계만 자식이 채울 때 성립한다.

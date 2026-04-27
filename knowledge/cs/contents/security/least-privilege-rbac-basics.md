@@ -11,7 +11,12 @@
 - [Spring Security 기초](../spring/spring-security-basics.md)
 - [Security 카테고리 README](./README.md)
 
-retrieval-anchor-keywords: least privilege basics, rbac 기초, 역할 기반 접근 제어, 최소 권한 원칙이란, role based access control beginner, 권한 관리 입문, admin 권한 남용, 역할이란 뭔가요, rbac 왜 써요, permission vs role, spring security role, 권한 분리 기초
+retrieval-anchor-keywords: least privilege basics, rbac 기초, 역할 기반 접근 제어, 최소 권한 원칙이란, role based access control beginner, 권한 관리 입문, admin 권한 남용, 역할이란 뭔가요, rbac 왜 써요, permission vs role, spring security role, 권한 분리 기초, 권한을 나눠 주려면 어떻게 시작하나
+
+## 빠른 복귀 링크
+
+- security 전체 beginner 분기에서 다시 고르려면 [Security 카테고리 README](./README.md)로 돌아가면 된다.
+- `인증은 됐는데 왜 403인가`까지 바로 이어서 보려면 다음 단계는 [인증과 인가의 차이](./authentication-vs-authorization.md)다.
 
 ## 핵심 개념
 
@@ -87,10 +92,11 @@ public void deleteUser(Long userId) { ... }
 
 자원 소유자 확인도 필요하다. 로그인한 사용자가 `userId=1`인데 `/users/2` 자원에 접근하려 하면 역할 외에도 소유권 체크가 필요하다.
 
-## 더 깊이 가려면
+## 이 문서 다음에 보면 좋은 문서
 
-- 인증과 인가의 차이: [인증과 인가의 차이](./authentication-vs-authorization.md)
-- role vs scope vs 소유권 상세: [Security 카테고리 README](./README.md)
+- 로그인 성공과 권한 허용을 먼저 분리하고 싶으면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 이어 가면 된다.
+- `role`만으로 안 끝나고 `scope`, `ownership`까지 같이 봐야 하는 beginner bridge가 필요하면 [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)를 보면 된다.
+- security 카테고리 안에서 다른 auth primer나 authz symptom route를 다시 고르려면 [Security 카테고리 README](./README.md)로 돌아가면 된다.
 
 ## 면접/시니어 질문 미리보기
 

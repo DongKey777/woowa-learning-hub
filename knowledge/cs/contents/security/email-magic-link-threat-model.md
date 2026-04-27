@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Password Reset, Magic Link, Public Origin Guide](./password-reset-magic-link-public-origin-guide.md)
 > - [Password Reset Threat Modeling](./password-reset-threat-modeling.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [PKCE Failure Modes / Recovery](./pkce-failure-modes-recovery.md)
@@ -18,7 +19,7 @@ retrieval-anchor-keywords: magic link, email login, one-time link, email token, 
 
 ## 핵심 개념
 
-magic link는 이메일로 받은 일회성 링크를 클릭해 로그인하는 방식이다.  
+magic link는 이메일로 받은 일회성 링크를 클릭해 로그인하는 방식이다.
 비밀번호 입력이 줄어 UX가 좋지만, 링크 자체가 bearer credential처럼 동작할 수 있다.
 
 위험:

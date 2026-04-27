@@ -1,23 +1,39 @@
 # Monotonic Stack Walkthrough
 
 > 한 줄 요약: monotonic stack은 "아직 답이 확정되지 않은 index"를 쌓아 두었다가, 더 큰 값이나 더 낮은 막대가 나타나는 순간 pop하며 답을 확정하는 구조다.
+> 시작 전 1줄 체크: shared drill에서 하던 그대로, 문제에 `strictly`가 보이면 먼저 `같은 값은 아직 답이 아니다`라고 한국어 한 줄로 적고 시작한다.
 
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
 > - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
 > - [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
+> - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md)
+> - [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)
 > - [Stack](./basic.md#stack-스택)
 > - [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)
 > - [상각 분석과 복잡도 함정](../algorithm/amortized-analysis-pitfalls.md)
 >
-> retrieval-anchor-keywords: monotonic stack walkthrough, monotonic stack trace, monotonic stack beginner, next greater element walkthrough, next greater element trace, next greater element step by step, next greater element monotonic stack, histogram largest rectangle walkthrough, histogram largest rectangle trace, largest rectangle in histogram monotonic stack, histogram stack tutorial, stock span monotonic stack, daily temperatures monotonic stack, previous smaller element, next smaller element, monotonic stack vs monotonic deque, stack candidate pruning, stack unresolved index, stack boundary finding, histogram width formula, histogram sentinel zero, 오큰수 추적, 단조 스택 추적, 단조 스택 입문, 다음 큰 수 추적, 히스토그램 최대 직사각형 추적, 히스토그램 스택 풀이, 단조 덱과 단조 스택 차이, 스택으로 경계 찾기
+> retrieval-anchor-keywords: monotonic stack walkthrough, monotonic stack trace, monotonic stack beginner, monotonic stack index vs value, monotonic stack duplicate handling, monotonic stack comparison operator, monotonic stack strict boundary quiz, monotonic stack boundary template, monotonic stack while condition template, previous smaller strict, previous greater strict, next smaller strict, next greater strict, previous smaller or equal, previous greater or equal, next smaller or equal, next greater or equal, previous smaller template, previous greater template, next smaller template, next greater template, previous boundary stack template, next boundary stack template, monotonic stack translation table, previous vs next stack boundary quiz, previous next strict or equal quiz, monotonic previous next operator quiz, monotonic stack mini quiz, next greater element walkthrough, next greater element trace, next greater element step by step, next greater element monotonic stack, histogram largest rectangle walkthrough, histogram largest rectangle trace, largest rectangle in histogram monotonic stack, histogram stack tutorial, stock span monotonic stack, daily temperatures monotonic stack, previous smaller element, next smaller element, monotonic stack vs monotonic deque, monotonic deque vs stack shared input drill, stack vs deque beginner choice, stack candidate pruning, stack unresolved index, stack boundary finding, histogram width formula, histogram sentinel zero, monotonic strict translation check, strict or equal translation, monotonic operator translation, strictly means equal not answer, 오큰수 추적, 단조 스택 추적, 단조 스택 입문, 다음 큰 수 추적, 이전 작은 값, 이전 큰 값, 다음 작은 값, 다음 큰 값, 이전 경계 템플릿, 다음 경계 템플릿, 이전 다음 경계 퀴즈, 이전 다음 strict or equal 퀴즈, 단조 스택 while 조건, 단조 스택 연산자 표, strict 경계 퀴즈, 연산자 경계 퀴즈, strict 번역 체크, strict 번역 한 줄, 단조 strict 번역, 히스토그램 최대 직사각형 추적, 히스토그램 스택 풀이, 단조 덱과 단조 스택 차이, 단조 덱 스택 공통 입력 드릴, 스택으로 경계 찾기
 
 ## 빠른 라우팅
 
 - `next greater element`, `daily temperatures`, `stock span`, `오큰수`, `히스토그램 최대 직사각형`처럼 **나중에 온 값이 이전 index의 답을 확정**하는 문제라면 이 문서가 직접 라우트다.
+- 같은 입력으로 `deque`와 `stack`을 어디서 갈라야 하는지 먼저 보고 싶다면 [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md)부터 보면 된다.
 - `sliding window maximum/minimum`, `최근 k개 최대/최소`처럼 **window 만료 처리**가 필요하면 [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)부터 보는 편이 맞다.
 - 구현보다 `왜 while pop이 O(n)인가`, `왜 지배당한 후보를 버려도 되나`가 궁금하면 [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md)과 [상각 분석과 복잡도 함정](../algorithm/amortized-analysis-pitfalls.md)을 같이 보면 된다.
+
+## 먼저 잡는 mental model
+
+monotonic stack은 "값 저장소"보다 **미해결 질문 보관함**에 가깝다.
+
+- stack에 있는 index는 "오른쪽에서 아직 답을 못 찾은 상태"다.
+- 새 값을 읽을 때마다 stack top의 질문을 해결할 수 있으면 pop하면서 답을 적는다.
+- pop은 버림이 아니라 `이 index의 답이 지금 확정됐다`는 이벤트다.
+
+입문 단계에서는 아래 한 줄을 먼저 기억하면 좋다.
+
+- `window 만료가 있으면 deque`, `만료 없이 pop 순간 답이 정해지면 stack`
 
 ## 먼저 대비: deque와 stack
 
@@ -40,6 +56,13 @@
   - 목표 답: `10`
 - 표기법: `[(index:value), ...]`
 - 표 안에서는 **오른쪽이 stack top**이다.
+
+두 문제의 차이를 한 번에 보면 아래처럼 정리된다.
+
+| 문제 | stack이 유지하는 모양 | pop 조건 | pop 순간 확정되는 것 |
+|---|---|---|---|
+| Next Greater Element | 값이 큰 index가 위에 오게 유지(내림차순 후보) | `nums[top] < nums[i]` | `top`의 다음 큰 값이 `nums[i]` |
+| Histogram 최대 직사각형 | 높이가 낮은 index가 아래에 남게 유지(오름차순 높이) | `heights[top] > current` | `top` 막대의 최대 폭(오른쪽 경계) |
 
 ## 1. Next Greater Element trace
 
@@ -144,7 +167,166 @@ for (int i = 0; i <= heights.length; i++) {
 }
 ```
 
-## 4. 입문 체크리스트
+## 4. previous / next 경계 템플릿 카드
+
+여기서 가장 많이 막히는 지점은 "이걸 `while`로 어떻게 번역하지?"다.
+초급 단계에서는 먼저 **답이 언제 정해지는지**만 나눠 잡으면 훨씬 쉽다.
+
+- `previous ...` 문제: 현재 index `i`의 답이 **지금 바로** 정해진다. pop을 끝낸 뒤 `stack.peek()`가 답 후보다.
+- `next ...` 문제: 이전 index들의 답이 **지금 pop되면서** 정해진다. 현재 값 `nums[i]`가 pop된 원소들의 답이다.
+
+아래 표를 먼저 보고, 그 아래 두 개의 뼈대 코드를 그대로 옮기면 된다.
+
+| 찾는 것 | stack에 남겨 둘 후보 | strict 기준 `while` 조건 | 답이 적히는 순간 |
+|---|---|---|---|
+| `previous smaller` | 아래에서 위로 값이 증가하는 후보 | `while (a[stack.peek()] >= a[i])` | pop이 끝난 뒤 `prev[i] = stack.peek()` |
+| `previous greater` | 아래에서 위로 값이 감소하는 후보 | `while (a[stack.peek()] <= a[i])` | pop이 끝난 뒤 `prev[i] = stack.peek()` |
+| `next smaller` | 아직 더 작은 값을 못 만난 후보 | `while (a[stack.peek()] > a[i])` | pop하면서 `next[stack.pop()] = i` |
+| `next greater` | 아직 더 큰 값을 못 만난 후보 | `while (a[stack.peek()] < a[i])` | pop하면서 `next[stack.pop()] = i` |
+
+같은 값까지 답으로 인정하는 `or equal` 버전이면 비교 한쪽만 바꾸면 된다.
+
+| 찾는 것 | `or equal`일 때 바뀌는 `while` |
+|---|---|
+| `previous smaller or equal` | `while (a[stack.peek()] > a[i])` |
+| `previous greater or equal` | `while (a[stack.peek()] < a[i])` |
+| `next smaller or equal` | `while (a[stack.peek()] >= a[i])` |
+| `next greater or equal` | `while (a[stack.peek()] <= a[i])` |
+
+헷갈릴 때는 이름을 그대로 한국어로 읽으면 된다.
+
+- `previous smaller`: "왼쪽에서 더 작은 값만 남겨야 하니, 작지 않은 값(`>=`)은 미리 치운다."
+- `next greater`: "오른쪽에서 더 큰 값이 나오면, 그보다 작은 이전 후보(`<`)는 지금 답이 확정된다."
+
+### previous 계열 공통 뼈대
+
+```java
+Deque<Integer> stack = new ArrayDeque<>();
+int[] prev = new int[a.length];
+Arrays.fill(prev, -1);
+
+for (int i = 0; i < a.length; i++) {
+    while (!stack.isEmpty() && a[stack.peek()] >= a[i]) { // previous smaller 기준
+        stack.pop();
+    }
+    prev[i] = stack.isEmpty() ? -1 : stack.peek();
+    stack.push(i);
+}
+```
+
+### next 계열 공통 뼈대
+
+```java
+Deque<Integer> stack = new ArrayDeque<>();
+int[] next = new int[a.length];
+Arrays.fill(next, -1);
+
+for (int i = 0; i < a.length; i++) {
+    while (!stack.isEmpty() && a[stack.peek()] < a[i]) { // next greater 기준
+        next[stack.pop()] = i;
+    }
+    stack.push(i);
+}
+```
+
+작은 예제로 한 번만 눈에 익히면 더 빨라진다.
+
+- 배열: `a = [4, 2, 5, 3]`
+- `previous smaller`에서 `i = 3`, 값 `3`
+  - stack top `5`는 더 작지 않으니 `>= 3` 조건으로 pop한다.
+  - 다음 top `2`는 더 작으니 멈춘다.
+  - 그래서 `previous smaller` 답은 index `1`, 값 `2`다.
+- 같은 배열에서 `next greater`도 `i = 3`, 값 `3`
+  - `3`이 들어올 때는 이전 값 `5`보다 크지 않아서 아무도 확정되지 않는다.
+  - 대신 `i = 2`, 값 `5`가 들어오던 순간 index `1`, 값 `2`는 `< 5`라서 이미 `next greater = 5`로 확정됐다.
+
+초보자가 자주 섞는 두 문장은 아래처럼 분리해 두면 안전하다.
+
+| 헷갈림 | 바로잡는 문장 |
+|---|---|
+| `previous`도 pop하면서 답을 적나? | 아니다. `previous`는 pop을 끝낸 뒤 남은 top이 현재 원소의 답이다. |
+| `next`도 남은 top을 현재 답으로 쓰나? | 아니다. `next`는 현재 값이 이전 원소들의 답이 된다. |
+
+연산자 전체 그림을 한 장으로 다시 보고 싶다면 [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)를 같이 보면 된다.
+
+## 5. strict 경계 미니 퀴즈
+
+연산자를 정할 때는 먼저 "같은 값도 경계로 인정하나?"만 묻는 편이 가장 덜 헷갈린다.
+
+- strict라면 `같은 값은 아직 답이 아님`
+- or equal이라면 `같은 값도 지금 답이 될 수 있음`
+
+아래 배열 하나로 4문항만 빠르게 점검해 보자.
+
+- 예제 배열: `nums = [5, 5, 3, 6]`
+- 기준 index: `i = 1`, 값 `5`
+
+| 문항 | 질문 | 답 |
+|---|---|---|
+| 1 | `previous smaller (strict)`는? | 없음. 왼쪽 값 `5`는 더 작지 않다. |
+| 2 | `previous greater or equal`은? | index `0`, 값 `5`. 같은 값도 허용하므로 바로 답이다. |
+| 3 | `next smaller (strict)`는? | index `2`, 값 `3`. 오른쪽에서 처음 만나는 더 작은 값이다. |
+| 4 | `next greater or equal`은? | index `3`, 값 `6`. 오른쪽의 `3`은 크지 않고, `6`이 처음으로 조건을 만족한다. |
+
+헷갈릴 때는 이름을 한국어 문장으로 바꿔 읽으면 빨라진다.
+
+| 이름 | 한국어로 풀어 읽기 | 같은 값 처리 |
+|---|---|---|
+| `previous smaller` | 왼쪽에서 가장 가까운 "더 작은 값" | 같은 값 `X` |
+| `previous greater or equal` | 왼쪽에서 가장 가까운 "크거나 같은 값" | 같은 값 `O` |
+| `next smaller` | 오른쪽에서 가장 가까운 "더 작은 값" | 같은 값 `X` |
+| `next greater or equal` | 오른쪽에서 가장 가까운 "크거나 같은 값" | 같은 값 `O` |
+
+공식처럼 외우기보다 아래 두 줄로 고정하면 실수가 줄어든다.
+
+- 문제 이름에 `strictly`, `greater`, `smaller`만 있으면 같은 값은 pop하지 않는다.
+- 문제 이름에 `or equal`, `greater or equal`, `smaller or equal`이 보이면 같은 값도 pop 후보에 넣는다.
+
+연산자 번역을 더 많이 연습하고 싶다면 [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)를 바로 이어서 보면 된다.
+
+## 5.5. Previous-vs-Next 경계 미니 퀴즈
+
+초보자가 가장 자주 섞는 축은 두 개다.
+
+- `previous vs next`: 답을 `지금 내 칸에 쓰는가`, 아니면 `예전 칸들을 pop하며 쓰는가`
+- `strict vs or equal`: 같은 값을 `답에서 제외하는가`, 아니면 `포함하는가`
+
+먼저 아래 2x2 표를 한 번 보고 시작하면, `>`와 `>=`를 외우기보다 문제 문장을 먼저 읽게 된다.
+
+| 축 | 답을 쓰는 자리 | 같은 값 처리 |
+|---|---|---|
+| `previous` | 현재 index `i`의 답을 지금 쓴다 | strict면 equal을 pop해서 지우고, or-equal이면 equal을 남긴다 |
+| `next` | 이전 index들의 답을 지금 pop하며 쓴다 | strict면 equal에서는 아직 안 터지고, or-equal이면 equal에서도 답이 확정될 수 있다 |
+
+같은 배열 하나로 4문항만 짧게 확인하자.
+
+- 예제 배열: `nums = [4, 4, 2, 5]`
+- 기준 index: `i = 1`, 값 `4`
+
+| 문항 | 먼저 볼 방향 | 답 | 왜 이렇게 되나 |
+|---|---|---|---|
+| 1 | `previous smaller (strict)` | 없음 | 왼쪽 `4`는 더 작지 않다. strict라서 equal도 탈락이다. |
+| 2 | `previous smaller or equal` | index `0`, 값 `4` | 이번에는 equal 허용이라 왼쪽 `4`를 그대로 답으로 쓴다. |
+| 3 | `next greater (strict)` | index `3`, 값 `5` | 오른쪽 `2`는 더 크지 않다. strict greater를 처음 만족하는 값은 `5`다. |
+| 4 | `next greater or equal` | index `3`, 값 `5` | 기준 index 오른쪽에 같은 `4`는 없으므로, or-equal이어도 첫 답은 결국 `5`다. |
+
+위 4문항만 보면 `next`에서 equal 차이가 덜 보일 수 있다. 그래서 duplicate가 실제로 갈리는 보조 예시를 한 줄 더 붙여 두면 안전하다.
+
+- 보조 예시: `nums = [4, 4, 2]`, 기준 index `0`
+
+| 질문 | 답 | 한 줄 해석 |
+|---|---|---|
+| `next greater (strict)` | 없음 | 오른쪽의 `4`는 더 크지 않다. strict라서 equal은 계속 미해결이다. |
+| `next greater or equal` | index `1`, 값 `4` | 이번에는 같은 값도 답이므로 두 번째 `4`에서 바로 해결된다. |
+
+한 줄로 고정하면 이렇다.
+
+- `previous`는 `현재 칸`을 채우는 문제라서 pop을 끝낸 뒤 남은 top을 읽는다.
+- `next`는 `예전 칸들`을 채우는 문제라서 현재 값이 들어올 때 pop된 원소들의 답이 된다.
+
+`previous/next`와 `strict/or-equal`을 한 장 표로 다시 보고 싶다면 [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)와 [Monotonic Strict-vs-Equal Translation Card](./monotonic-strict-vs-equal-translation-card.md)를 이어서 보면 된다.
+
+## 6. 입문 체크리스트
 
 - monotonic stack도 값보다 `index`를 저장하는 편이 안전하다.
 - Next Greater Element에서는 stack이 `아직 더 큰 값을 못 만난 index`를 뜻한다.
@@ -152,6 +334,23 @@ for (int i = 0; i <= heights.length; i++) {
 - Histogram 폭은 `현재 index - pop 후 top - 1`로 읽는다.
 - deque와 달리 front 만료는 없다. `window`가 움직이면 stack보다 deque를 먼저 의심해야 한다.
 - 비교 연산 `<`, `<=`, `>`, `>=`는 문제 정의와 중복 처리 규칙에 맞춰 정해야 한다.
+
+## 7. 자주 헷갈리는 지점
+
+| 헷갈리는 포인트 | 빠른 답 |
+|---|---|
+| 왜 값을 바로 안 넣고 index를 넣나? | 답 배열을 채우려면 위치가 필요하고, histogram 폭 계산도 index 기준이기 때문이다. |
+| `\<`와 `\<=` 중 뭘 쓰나? | 문제가 "strictly greater"인지 "greater or equal"인지 먼저 확인하고 연산자를 맞춘다. |
+| `>`와 `>=`도 같은 규칙인가? | 맞다. `strict`면 같은 값을 남기고, `or equal`이면 같은 값도 경계로 인정한다. |
+| `previous`와 `next`는 왜 코드 모양이 다르나? | `previous`는 현재 원소의 답을 지금 채우고, `next`는 현재 원소가 이전 원소들의 답이 되기 때문이다. |
+| histogram에서 sentinel `0`은 왜 쓰나? | 마지막까지 남은 막대들을 한 번에 flush해서 누락 없이 면적을 확정하려는 장치다. |
+
+## 8. 다음 단계 라우팅
+
+- window 만료가 함께 나오면: [Monotonic Deque Walkthrough](./monotonic-deque-walkthrough.md)
+- monotonic 구조의 공통 패턴을 묶어 보고 싶다면: [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
+- `strict`와 `or equal` 번역을 더 압축해서 보고 싶다면: [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)
+- `while-pop`이 왜 전체 `O(n)`인지 증명 관점으로 보려면: [Monotone Deque Proof Intuition](../algorithm/monotone-deque-proof-intuition.md), [상각 분석과 복잡도 함정](../algorithm/amortized-analysis-pitfalls.md)
 
 ## 한 줄 정리
 

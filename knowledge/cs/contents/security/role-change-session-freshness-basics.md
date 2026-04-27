@@ -16,7 +16,20 @@
 - [HTTP와 HTTPS 기초](../network/http-https-basics.md)
 - [Spring Security 기초](../spring/spring-security-basics.md)
 
-retrieval-anchor-keywords: role change session freshness, session freshness basics, role revoked but session still works, admin removed but still access, permission granted but still 403, stale claims, authz freshness basics, re-login after role change, authz version, session version, version bump pattern, role downgrade active session, 세션 권한 변경 뭐예요, beginner session freshness, 처음 배우는 세션 갱신, security symptom shortcut, session tail beginner route, grant freshness handoff, category return path
+retrieval-anchor-keywords: role change session freshness, session freshness basics, role revoked but session still works, admin removed but still access, permission granted but still 403, stale claims, authz freshness basics, re-login after role change, authz version, session version, version bump pattern, role downgrade active session, 세션 권한 변경 뭐예요, beginner session freshness, 처음 배우는 세션 갱신, security symptom shortcut, session tail beginner route, grant freshness handoff, category return path, runtime-debugging handoff first, runtime debugging handoff first, freshness before runtime debugging, authz freshness runtime-debugging handoff, stale claim runtime-debugging handoff first, role change runtime-debugging handoff first
+
+## 빠른 복귀 링크
+
+- security 카테고리 전체 분기표로 돌아가려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
+- session tail, revoke, `logout still works` 쪽 다음 분기를 다시 고르려면 [Security README: Session Coherence / Assurance deep dive catalog](./README.md#session-coherence--assurance-deep-dive-catalog)
+- 이 primer를 읽고 propagation timeline이 궁금해졌다면 다음 단계는 [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md)
+
+## 시작 전에: 이 문서의 역할
+
+- 이 문서는 `primer`다. role/permission/tenant membership 변경 뒤 session이 왜 낡아질 수 있는지 큰 그림부터 고정한다.
+- 이 문서는 `survey`가 아니다. security 전체 입구를 다시 고르려면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아간다.
+- 이 문서는 `deep dive`/`runtime debugging` 문서가 아니다. cache provenance, pod/region drift, negative cache 증거를 이미 모으는 단계라면 [AuthZ Cache Inconsistency / Runtime Debugging](./authz-cache-inconsistency-runtime-debugging.md)으로 handoff하는 편이 맞다.
+- 이 문서는 `playbook`/`recovery`도 아니다. 실시간 incident 대응 순서가 먼저면 security incident/recovery 문서로 넘어간다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -93,7 +106,7 @@ retrieval-anchor-keywords: role change session freshness, session freshness basi
 3. 기존 session이나 token이 예전 권한을 들고 있으면 refresh하거나 revoke한다.
 4. 다음 요청은 최신 권한 모델로 다시 판단한다.
 
-실무에서는 여기서 보통 `session_version`, `authz_version`, `tenant_version`을 분리해 올린다.  
+실무에서는 여기서 보통 `session_version`, `authz_version`, `tenant_version`을 분리해 올린다.
 이 분해 패턴은 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)에서 따로 정리한다.
 
 이 결과로 사용자가 보게 되는 동작은 보통 셋 중 하나다.
@@ -127,7 +140,7 @@ retrieval-anchor-keywords: role change session freshness, session freshness basi
 - 로그인 상태는 유지되고 권한만 내려가면 보통 `403`에 가깝다.
 - session 자체를 더 이상 신뢰하지 않으면 `401`이나 재로그인 흐름으로 간다.
 
-즉 `role 회수 = 무조건 전원 로그아웃`은 아니다.  
+즉 `role 회수 = 무조건 전원 로그아웃`은 아니다.
 하지만 `role 회수 후에도 old admin allow가 계속 남는다`는 더 나쁘다.
 
 ---
@@ -227,7 +240,7 @@ role 문자열이 안 바뀌어도 아래 변화는 session freshness 문제를 
 
 ### 4. 문제를 피하려면 무조건 전체 로그아웃만 시키면 된다
 
-항상 그렇지는 않다.  
+항상 그렇지는 않다.
 낮은 권한의 base session은 유지하되, 높은 권한만 제거하는 설계도 가능하다. 핵심은 old high-privilege allow가 남지 않는 것이다.
 
 ---

@@ -4,8 +4,8 @@
 
 **난이도: 🔴 Advanced**
 
-관련 문서: [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
-retrieval-anchor-keywords: retry envelope, idempotent retry, exception classifier, backoff policy, attempt budget
+관련 문서: [Spring Retry Envelope 위치 Primer](./spring-retry-envelope-placement-primer.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md), [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
+retrieval-anchor-keywords: retry envelope, idempotent retry, exception classifier, backoff policy, attempt budget, spring retry envelope placement, retry outside transaction
 
 ## 핵심 개념
 
@@ -67,17 +67,17 @@ retry가 끝까지 실패하면 그냥 throw만 하면 안 된다.
 
 ### 시나리오 1: 좌석 예약이 간헐적으로 실패
 
-충돌로 인한 serialization failure는 envelope 안에서 재시도할 수 있다.  
+충돌로 인한 serialization failure는 envelope 안에서 재시도할 수 있다.
 하지만 같은 요청이 두 번 예약되지 않도록 idempotency key가 같이 있어야 한다.
 
 ### 시나리오 2: 배치가 밤마다 deadlock에 걸림
 
-같은 작업을 재시도할 수 있어도, row 접근 순서가 잘못되면 retry가 폭주한다.  
+같은 작업을 재시도할 수 있어도, row 접근 순서가 잘못되면 retry가 폭주한다.
 이때 envelope는 backoff와 제한 횟수를 반드시 둬야 한다.
 
 ### 시나리오 3: 외부 호출 후 commit 실패
 
-외부는 성공, DB는 실패인 경우 그냥 재시도하면 중복이 된다.  
+외부는 성공, DB는 실패인 경우 그냥 재시도하면 중복이 된다.
 envelope는 결과 조회나 멱등성 회복 로직을 포함해야 한다.
 
 ## 코드로 보기

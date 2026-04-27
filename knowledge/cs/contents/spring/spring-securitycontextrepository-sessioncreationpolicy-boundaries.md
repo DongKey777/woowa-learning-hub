@@ -17,21 +17,35 @@
 > - [Session Revocation at Scale](../security/session-revocation-at-scale.md)
 > - [Revocation Propagation Lag / Debugging](../security/revocation-propagation-lag-debugging.md)
 > - [Session Inventory UX / Revocation Scope Design](../security/session-inventory-ux-revocation-scope-design.md)
+> - [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)
 > - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SecurityContextRepository, session basics to Spring Security, why JSESSIONID appears, cookie exists but session missing, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, SavedRequest beginner bridge, post-login session persistence, next request anonymous after login
+retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SecurityContextRepository, session basics to Spring Security, why JSESSIONID appears, cookie exists but session missing, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, SavedRequest beginner bridge, post-login session persistence, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme, first spring deep dive after browser guide, first spring deep dive after safe next doc, after browser 401 302 guide, after safe next doc server anonymous, before spring deep dive already checked cookie header, spring deep dive 전에는 browser guide 먼저, safe next doc before securitycontextrepository
 
 ## 입문 브리지
 
 `SessionCreationPolicy`, `SecurityContextRepository`, `hidden JSESSIONID`는 입문자에게 갑자기 난이도가 뛰는 지점이다.
 아래 순서로 읽으면 "왜 세션이 생겼지?"와 "왜 다음 요청에서 다시 익명이지?"를 같은 축에서 설명할 수 있다.
 
+이 문서는 beginner ladder에서 `safe next doc` 자체가 아니라, safe next doc 뒤에 오는 **첫 Spring deep dive**다.
+즉 `SavedRequest`나 `cookie 있는데 다시 로그인`이 보이더라도, 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 branch를 고정한 뒤에 들어오는 것이 안전하다.
+여기서의 고정 역할은 **`server persistence / session mapping` deep dive**다. `로그인 후 원래 URL 복귀`, `SavedRequest`, `302 /login`이 더 앞에 보이면 persistence보다 redirect 쪽 질문이므로 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)로 먼저 되돌린다.
+
+| 증상 alias | 고정 next-step label | 이 문서에서 보는 축 |
+|---|---|---|
+| `cookie 있는데 다시 로그인`, `cookie exists but session missing`, `next request anonymous after login` | `server persistence / session mapping` | post-login persistence / 다음 요청 복원 |
+| `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | `redirect / navigation memory` | 이 문서보다 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)가 우선이다 |
+| `API가 login HTML을 받음`, `browser 401 -> 302 /login bounce` | `browser redirect / API contract` | browser용 redirect chain이 API 체인에 섞였는지 먼저 분리한 뒤 persistence 문제를 본다 |
+
 - `cookie`, `session`, `JWT` 기본 차이부터 다시 잡아야 하면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) -> [Spring Security 아키텍처](./spring-security-architecture.md) 순으로 먼저 올라온다.
-- primer에서 `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거친 뒤 이 문서에서 **post-login persistence / 다음 요청 복원** 축을 본다.
+- primer에서 `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거치고 [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 돌아와 server persistence branch를 확정한 뒤 이 문서에서 **post-login persistence / 다음 요청 복원** 축을 본다.
+- 너무 일찍 올라왔다고 느껴지면 [Spring README의 Spring + Security primer ladder](./README.md#spring--security)로 돌아가 entrypoint를 다시 잡는다. 이 문서로 복귀할 때는 "로그인 성공 다음 요청에서 인증이 유지되는가?" 질문 하나만 가져온다.
 - 로그인 redirect 자체가 꼬여 `SavedRequest` loop처럼 보이면 이 문서보다 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 먼저 본다.
 - `STATELESS`인데 `JSESSIONID`가 생긴다, 로그인 성공 직후 다음 요청이 다시 익명이다, `SecurityContextHolder`에 넣었는데 유지가 안 된다는 질문이면 이 문서가 맞다.
 - browser cookie는 남아 있는데 서버 세션이나 token translation을 못 찾아 `hidden session mismatch`, `cookie는 있는데 session missing`처럼 보이면 이 문서 다음에 [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)를 붙여 outage/translation 경계까지 내려간다.
+- route가 아직 흐리면 이 문서를 붙잡고 있지 말고 [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 돌아가 request `Cookie` header, redirect `Location`, server anonymous 세 갈래부터 다시 고른다.
+- 이 문서를 읽고 나면 다음 단계를 고정한다: `server persistence / session mapping`이면 여기서 계속, `redirect / navigation memory`면 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)로 이동한다. 다시 헷갈리면 [Spring README의 Spring + Security primer ladder](./README.md#spring--security)로 즉시 복귀한다.
 
 ## 핵심 개념
 

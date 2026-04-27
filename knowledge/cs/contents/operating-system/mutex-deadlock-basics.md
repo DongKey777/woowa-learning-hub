@@ -13,7 +13,7 @@
 
 retrieval-anchor-keywords: 뮤텍스란, 교착상태란, mutex beginner, deadlock beginner, 데드락이란, mutex lock unlock, critical section basics, race condition basics, 임계구역, deadlock conditions, 교착상태 발생 조건, 스레드 동기화 기초
 
-## 핵심 개념
+## 먼저 잡는 멘탈 모델
 
 멀티스레드 환경에서 두 스레드가 같은 변수를 동시에 쓰면 어떻게 될까? 예를 들어 두 스레드가 `count++`를 동시에 실행하면, 실제로는 `읽기 → 증가 → 쓰기` 세 단계가 겹쳐서 증가가 한 번만 반영될 수 있다. 이런 상황을 **경쟁 조건(race condition)**이라 한다.
 
@@ -90,6 +90,14 @@ synchronized (this) {
 ```
 
 실제 서버에서 교착상태가 발생하면 스레드가 영원히 응답을 못 해 타임아웃이 쌓이는 증상이 나타난다. `jstack` 명령어나 Java 프로파일러로 스레드 덤프를 확인하면 `BLOCKED` 상태의 스레드와 대기 중인 자원을 볼 수 있다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "락 도구들 차이를 OS 레벨에서 정리"하려면: [Futex, Mutex, Semaphore, Spinlock](./futex-mutex-semaphore-spinlock.md)
+> - "운영 중 락 경합 때문에 느린지"를 확인하려면: [Lock Contention, Futex Wait, Off-CPU Debugging](./lock-contention-futex-offcpu-debugging.md)
+> - "교착상태/우선순위 역전까지" 확장하려면: [Futex Requeue, Priority Inheritance, Convoy Debugging](./futex-requeue-priority-inheritance-convoy-debugging.md)
 
 ## 더 깊이 가려면
 

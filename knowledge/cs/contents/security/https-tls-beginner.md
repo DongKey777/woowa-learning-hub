@@ -9,9 +9,15 @@
 - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
 - [보안 기초: 왜 보안이 필요한가](./security-basics-what-and-why.md)
 - [네트워크 HTTP 상태·세션·캐시](../network/http-state-session-cache.md)
-- [Security 카테고리 README](./README.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 
-retrieval-anchor-keywords: https tls beginner, https가 뭔가요, tls 기초, 자물쇠 아이콘, ssl tls 차이, http vs https, 인증서가 뭔가요, certificate authority beginner, tls handshake 쉽게, 도청 방지, 전송 암호화 입문, https 왜 써야 하나요
+retrieval-anchor-keywords: https tls beginner, https가 뭔가요, tls 기초, 자물쇠 아이콘, ssl tls 차이, http vs https, 인증서가 뭔가요, certificate authority beginner, tls handshake 쉽게, 도청 방지, 전송 암호화 입문, https 왜 써야 하나요, security readme https primer, security beginner route, security primer next step, return to security README, https로 바꾸는 이유
+
+## 이 문서 다음에 보면 좋은 문서
+
+- security 입문 문서 안에서 다른 primer를 다시 고르고 싶으면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 돌아가면 된다.
+- `Secure` 쿠키, proxy/LB 뒤 HTTPS 인식, login 직후 cookie 누락처럼 "TLS는 맞는 것 같은데 브라우저 보안 속성이 꼬인다"는 증상으로 이어지면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)를 보면 된다.
+- HSTS, 인증서 검증 체인, MITM 방어를 한 단계 더 깊게 보려면 [HTTPS / HSTS / MITM](./https-hsts-mitm.md)로 이어 가면 된다.
 
 ## 핵심 개념
 

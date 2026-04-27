@@ -6,8 +6,11 @@
 
 > 관련 문서:
 > - [Software Engineering README: 테스트 전략과 테스트 더블](./README.md#테스트-전략과-테스트-더블)
+> - [테스트 전략 기초](./test-strategy-basics.md)
 > - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+> - [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
 > - [Repository Fake Design Guide](./repository-fake-design-guide.md)
+> - [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
 > - [Architectural Fitness Functions](./architectural-fitness-functions.md)
 > - [Backward Compatibility Test Gates](./backward-compatibility-test-gates.md)
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
@@ -29,6 +32,11 @@
 > - contract test
 > - hexagonal testing seam
 > - fake outbound port
+> - first test checklist follow-up
+> - webmvctest datajpatest next document
+> - beginner test checklist reverse link
+
+`테스트 전략 기초`에서 첫 테스트를 고른 뒤 "왜 그 테스트가 맞는지", "mock 대신 fake를 언제 써야 하는지"가 더 궁금할 때 이 문서로 올라오면 된다. 특히 `@WebMvcTest` 경계는 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), `@DataJpaTest`에서 H2와 운영 DB 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)로 바로 내려가면 된다.
 
 ## 핵심 개념
 

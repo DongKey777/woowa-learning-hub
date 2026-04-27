@@ -5,20 +5,29 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [CORS 기초](./cors-basics.md)
 > - [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
 > - [CORS, SameSite, Preflight](./cors-samesite-preflight.md)
 > - [CSRF in SPA + BFF Architecture](./csrf-in-spa-bff-architecture.md)
 > - [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
 > - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+> - [Security README 기본 primer 묶음](./README.md#기본-primer)
+> - [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)
 
-retrieval-anchor-keywords: CORS, credentials, allowlist, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, preflight, origin, wildcard, cookie, browser security, cross-origin, credentials include vs Access-Control-Allow-Credentials, fetch credentials vs cors, credentialed cors allowlist
+retrieval-anchor-keywords: CORS, credentials, allowlist, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, preflight, origin, wildcard, cookie, browser security, cross-origin, credentials include vs Access-Control-Allow-Credentials, fetch credentials vs cors, credentialed cors allowlist, beginner cors handoff, cors primer return, security readme return path, cookie scope vs cors beginner, credentialed cors safe next step
 
 ---
 
+## 처음 읽는다면
+
+- `origin`, `preflight`, `credentials: "include"`가 아직 한 덩어리로 들리면 [CORS 기초](./cors-basics.md) -> [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md) -> [CORS, SameSite, Preflight](./cors-samesite-preflight.md) 순서로 먼저 분리하는 편이 안전하다.
+- 지금 증상이 `쿠키가 안 실린다`, `credentialed request만 막힌다`, `preflight는 통과했는데 실제 응답이 이상하다`처럼 보이면 [Security README: 증상별 바로 가기](./README.md#증상별-바로-가기)로 돌아가 browser/auth symptom row를 다시 고른다.
+- security 입문 흐름으로 한 단계 뒤로 가려면 [Security README 기본 primer 묶음](./README.md#기본-primer)으로 복귀하면 된다.
+
 ## 핵심 개념
 
-CORS는 브라우저가 cross-origin 응답을 읽을 수 있게 할지 결정하는 메커니즘이다.  
+CORS는 브라우저가 cross-origin 응답을 읽을 수 있게 할지 결정하는 메커니즘이다.
 여기에 `credentials`가 섞이면 cookie와 인증 정보 전송의 경계가 바뀐다.
 
 핵심은 이 세 가지를 분리해서 보는 것이다.

@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
+- [Spring/JPA Exact-Key Lock Mapping Guide](./spring-jpa-exact-key-lock-mapping-guide.md)
 - [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
 - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md)
 - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)

@@ -14,9 +14,10 @@
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
 > - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
+> - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 
-retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, db lock wait vs spring proxy, deadlock vs rollback-only, lock timeout vs transactional not applied, deadlock vs UnexpectedRollbackException, why transactional not applied vs deadlock, rollback not working vs lock wait, transaction marked rollback-only vs lock wait, self invocation vs deadlock, checked exception commit vs deadlock, lock wait timeout exceeded, deadlock found when trying to get lock
+retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, db lock wait vs spring proxy, deadlock vs rollback-only, lock timeout vs transactional not applied, deadlock vs UnexpectedRollbackException, why transactional not applied vs deadlock, rollback not working vs lock wait, transaction marked rollback-only vs lock wait, self invocation vs deadlock, checked exception commit vs deadlock, lock wait timeout exceeded, deadlock found when trying to get lock, blocker waiter victim evidence, db wait graph first, rollback-only marker first triage
 
 ## 핵심 개념
 
@@ -37,6 +38,23 @@ retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, d
 
 ---
 
+## 2분 triage 체크리스트
+
+장애 초반엔 아래 4줄만 확인해도 branch 오판을 많이 줄일 수 있다.
+
+1. 에러 로그에 `deadlock`/`lock wait timeout`/wait graph 출력이 있는가
+2. 반대로 `UnexpectedRollbackException`/`transaction marked rollback-only`가 먼저 뜨는가
+3. 같은 클래스 내부 호출(`self-invocation`)이나 `private` `@Transactional` 경로가 있는가
+4. 트랜잭션 안에서 외부 API/원격 호출을 오래 잡고 있지는 않은가
+
+| 체크 결과 | 첫 분기 |
+|---|---|
+| 1번이 명확히 예 | DB lock/deadlock branch |
+| 2~3번이 먼저 예 | Spring proxy/rollback branch |
+| 1번과 4번이 함께 예 | DB 현상 + Spring boundary 동시 점검 |
+
+---
+
 ## 먼저 이 표로 갈라 본다
 
 | 먼저 보이는 신호 | 우선 branch | 왜 이쪽에서 시작하나 | 지금 시작하지 말 것 |
@@ -53,6 +71,17 @@ retrieval-anchor-keywords: lock wait vs rollback, deadlock vs self invocation, d
 ```text
 실제 DB wait 증거가 있으면 DB branch, commit 의미/프록시 경계 착시가 먼저면 Spring branch
 ```
+
+---
+
+## 로그 한 줄로 branch 잡는 예시
+
+| 증상 문장 | 1차 분기 |
+|---|---|
+| `Deadlock found when trying to get lock; try restarting transaction` | DB lock/deadlock부터 시작 |
+| `org.springframework.transaction.UnexpectedRollbackException: Transaction silently rolled back because it has been marked as rollback-only` | Spring proxy/rollback부터 시작 |
+
+초반에는 "누가 맞는지 토론"보다, 로그 한 줄로 첫 branch를 정해 시간을 아끼는 게 낫다.
 
 ---
 
@@ -150,6 +179,14 @@ DB가 blocker / waiter / victim을 실제로 보여 주는가?
 
 - 예: DB branch부터
 - 아니오: Spring proxy/rollback branch부터
+
+---
+
+## 자주 섞이는 오해 3가지
+
+- `deadlock`이 한 번 떴다고 모든 rollback 이슈를 DB로 몰아가면 안 된다. 이후 증상은 rollback-only chain일 수 있다.
+- `@Transactional`이 붙어 있어도 DB wait 증거가 없으면 프록시 경계 문제가 먼저일 가능성이 크다.
+- DB wait 증거가 있어도 원인이 항상 SQL 튜닝만은 아니다. 긴 트랜잭션 경계가 lock hold time을 키웠을 수 있다.
 
 ---
 

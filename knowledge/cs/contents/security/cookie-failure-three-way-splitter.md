@@ -1,0 +1,198 @@
+# Cookie Failure Three-Way Splitter
+
+> 한 줄 요약: cookie 문제는 보통 하나가 아니라 세 갈래다. `Set-Cookie`가 아예 막혔는지, 저장은 됐지만 다음 요청에 안 붙는지, request에는 실렸는데 서버가 여전히 anonymous로 보는지를 먼저 갈라야 한다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- `[primer]` [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md)
+- `[primer]` [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md)
+- `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+- `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+- `[primer bridge]` [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
+- `[primer]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
+- `[primer bridge]` [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
+- `[primer bridge]` [Subdomain Login Callback Boundaries](./subdomain-login-callback-boundaries.md)
+- `[primer bridge]` [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)
+- `[primer]` [Social Login To Local Session Bridge](./social-login-to-local-session-bridge.md)
+- `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+- `[rag bridge]` [Cross-Domain Bridge Map](../../rag/cross-domain-bridge-map.md)
+
+retrieval-anchor-keywords: cookie failure splitter, cookie three-way splitter, blocked set-cookie vs stored not sent vs sent but anonymous, blocked set-cookie, stored but not sent, sent but anonymous, cookie sent but server anonymous, next request anonymous after login, set-cookie blocked but request cookie missing, cookie debug first split, login loop cookie splitter, cookie-not-sent vs server-mapping-missing, browser cookie triage beginner, cookie basics, why cookie missing after login
+retrieval-anchor-keywords: blocked response cookie, stored cookie request header missing, request cookie exists but session missing, devtools set-cookie blocked splitter, cookie storage vs transmission vs server restore
+retrieval-anchor-keywords: cookie 1 minute checklist, set-cookie application cookies request cookie compare, cookie devtools compare row, security troubleshooting return path, browser session troubleshooting return path, cookie branch return to index, social login cookie confusion, oauth2 oidc cookie confusion, id token vs session cookie confusion, callback success but app anonymous cookie split, external idp cookie transport vs local session, 처음 배우는데 cookie가 왜 안 가요, cookie transport basics, cookie basics, why cookie missing after social login, session cookie 뭐예요, 소셜 로그인인데 쿠키가 왜 없어요, id token 있는데 왜 anonymous예요, access token 있는데 왜 cookie가 또 필요해요
+retrieval-anchor-keywords: cookie mini trace, screenshot free cookie trace, blocked stored not sent sent but anonymous example, set-cookie application request cookie mini trace, cookie branch example table, cookie trace without screenshot
+
+## 왜 이 문서를 먼저 읽나
+
+초보자는 아래 세 장면을 한 문제처럼 묶기 쉽다.
+
+- DevTools에 `This Set-Cookie was blocked...`가 뜬다
+- `Application > Cookies`에는 값이 보이는데 다음 요청 `Cookie` header는 비어 있다
+- request `Cookie` header는 있는데도 서버가 다시 `/login`이나 anonymous 응답을 준다
+
+하지만 이 셋은 서로 다른 단계다.
+
+| 단계 | 가장 짧은 질문 | 안전한 다음 문서 |
+|---|---|---|
+| 1. 저장 전 | 브라우저가 이 `Set-Cookie`를 아예 받아들였나? | `[primer]` [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md) |
+| 2. 전송 전 | 저장된 cookie가 이 요청 URL에 실제로 붙었나? | `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
+| 3. 서버 복원 | request에는 실렸는데 서버가 session/auth를 다시 찾았나? | `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+
+핵심 mental model은 이것 하나면 된다.
+
+- `blocked Set-Cookie`는 저장 실패다
+- `stored but not sent`는 브라우저 전송 범위 실패다
+- `sent but anonymous`는 서버 복원 실패다
+
+## social login이면 먼저 섞였는지부터 본다
+
+아래처럼 들리면 cookie 갈래를 고르기 전에 한 칸 되돌아가는 편이 빠르다.
+
+- "`구글 로그인`은 성공했는데 왜 app session이 없죠?"
+- "`access token`이 있는데 왜 cookie가 또 필요하죠?"
+- "`id token`을 받았는데 왜 `/api/me`는 anonymous죠?"
+
+이 경우는 cookie transport failure와 social login 역할 구분이 섞였을 수 있다.
+
+먼저 이 chooser부터 짧게 고른다.
+
+| 지금 제일 먼저 막히는 문장 | 먼저 갈 문서 | 이 문서를 다시 보는 시점 |
+|---|---|---|
+| "`access token` / `id token` / app session이 각각 무슨 역할인지" 자체가 헷갈린다 | [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md) | "이제 token 역할은 알겠고, 실제 cookie가 어디서 끊기는지"를 보고 싶을 때 |
+| "callback 성공 뒤 app-local session이 언제 생기는지, handoff가 한 번 더 있는지"가 헷갈린다 | [Social Login To Local Session Bridge](./social-login-to-local-session-bridge.md) | callback 이후 local session 생성 지점을 이해한 뒤, `blocked` / `stored but not sent` / `sent but anonymous` 중 하나를 다시 고를 때 |
+| `Set-Cookie` / `Application > Cookies` / request `Cookie` header 중 어디가 비는지 이미 보인다 | 이 문서에 그대로 남는다 | 아래 1분 체크리스트로 바로 내려간다 |
+
+짧은 규칙:
+
+- `access token`이나 `id token`이 보인다고 cookie 전송이 성공했다는 뜻은 아니다.
+- callback `302`가 성공해도 app-local session 생성은 아직 안 끝났을 수 있다.
+- social login detour를 읽고 나면 이 문서로 돌아와 `Set-Cookie` / `Application > Cookies` / request `Cookie` header 세 줄만 다시 비교한다.
+- 세 줄 비교가 끝나면 `blocked` / `stored but not sent` / `sent but anonymous` 중 하나만 다시 고른다.
+
+## DevTools 1분 체크리스트부터 고정
+
+세 갈래를 고르기 전, 초보자는 같은 cookie 이름 기준으로 아래 세 줄만 먼저 맞추면 된다.
+
+| 먼저 비교할 줄 | 왜 먼저 보나 | 바로 갈 문서 |
+|---|---|---|
+| response `Set-Cookie` | 서버가 cookie를 주려 했는지 본다 | [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md) |
+| `Application > Cookies` row | 브라우저가 저장했는지 본다 | [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md) |
+| 실패한 요청의 request `Cookie` header | 그 요청에 실제로 보냈는지 본다 | [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md) |
+
+짧은 규칙:
+
+- `Set-Cookie`만 있고 `Application` row가 없으면 `blocked` 갈래다.
+- `Application` row는 있는데 request `Cookie`가 비면 `stored but not sent` 갈래다.
+- request `Cookie`까지 있으면 `sent but anonymous` 갈래다.
+
+## screenshot 없이 보는 미니 trace 3개
+
+아래 표는 같은 cookie 이름 `SESSION`만 따라가며 읽는 초미니 예시다.
+캡처가 없어도 `Set-Cookie` 한 줄, `Application` 한 줄, 실패한 요청 `Cookie` 한 줄만 맞추면 된다.
+
+| mini trace | response `Set-Cookie` | `Application > Cookies` | 실패한 요청 `Cookie` | 바로 읽을 결론 | 다음 한 걸음 |
+|---|---|---|---|---|---|
+| blocked | `Set-Cookie: SESSION=abc; SameSite=None` | `SESSION` row가 안 생김 | 비어 있음 | 브라우저가 저장 전에 막았다 | [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md) |
+| stored but not sent | `Set-Cookie: SESSION=abc; Path=/auth; Secure; HttpOnly` | `SESSION`, `Path=/auth` row가 보임 | `GET /api/me`에는 `Cookie`가 비어 있음 | 저장은 됐지만 이 요청 범위에는 안 붙었다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
+| sent but anonymous | `Set-Cookie: SESSION=abc; Path=/; Secure; HttpOnly` | `SESSION`, `Path=/` row가 보임 | `GET /api/me`에 `Cookie: SESSION=abc`가 있음 | 브라우저는 보냈고, 이제 서버 복원 갈래다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+
+한 줄로 다시 읽으면:
+
+- `row 없음`이면 `blocked`
+- `row는 있는데 request Cookie 없음`이면 `stored but not sent`
+- `request Cookie 있음`이면 `sent but anonymous`
+
+세 예시 중 어디에도 딱 안 들어맞으면 먼저 [Cookie DevTools Field Checklist Primer](./cookie-devtools-field-checklist-primer.md)에서 같은 cookie 이름 기준 3칸 비교를 다시 하고, 그다음 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 branch를 다시 고른다.
+
+## 먼저 15초 분기표
+
+| 지금 제일 먼저 보이는 증거 | 어디서 끊어 읽나 | 바로 갈 문서 |
+|---|---|---|
+| Network response나 Issues에 `This Set-Cookie was blocked...`가 보인다 | 저장 단계 | [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md) |
+| `Application > Cookies`에는 있는데 실패한 request `Cookie` header가 비어 있다 | 전송 단계 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
+| 실패한 request `Cookie` header에 session 값이 실제로 있다 | 서버 복원 단계 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+
+한 줄 규칙:
+
+- request `Cookie` header를 보기 전에는 "서버가 session을 잃었다"고 단정하지 않는다.
+- `Set-Cookie` blocked reason이 보일 때는 `Path`나 session store 얘기부터 하지 않는다.
+- request `Cookie` header가 실제로 있는 것이 확인된 뒤에만 Spring session/BFF mapping deep dive로 내려간다.
+
+## 세 갈래를 한 장으로 보기
+
+| 갈래 | DevTools에서 보이는 장면 | 안전한 다음 한 걸음 | follow-up 한 칸 |
+|---|---|---|---|
+| blocked `Set-Cookie` | `This Set-Cookie was blocked...`, `Secure`, `SameSite`, invalid `Domain` reason이 response 옆에 붙음 | [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md) | `Secure`면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md), cross-site면 [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md) |
+| stored but not sent | `Application > Cookies`에는 값이 있는데 실패한 요청 request `Cookie` header는 비어 있음 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) | XHR/API면 [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md), login redirect면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md), social login 설명이 섞이면 [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md) |
+| sent but anonymous | request `Cookie` header는 있는데 응답은 다시 `/login`, login HTML, anonymous `/api/me`, raw `401`/`302` bounce | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) | social login callback success와 local session 생성이 섞이면 [Social Login To Local Session Bridge](./social-login-to-local-session-bridge.md) |
+
+각 갈래를 읽고 나면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아와 다음 branch를 다시 고른다.
+
+## 가장 흔한 예시 3개
+
+### 1. blocked `Set-Cookie`
+
+```http
+Set-Cookie: SESSION=abc; SameSite=None
+```
+
+이 장면에서 브라우저가 `SameSite=None` + `Secure` 없음 때문에 막았다면, 아직 "cookie는 생겼는데 안 붙는다" 단계까지 가지도 못했다.
+
+먼저 볼 문서:
+
+- [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md)
+- 다 읽은 뒤 다음 갈래를 다시 고를 때는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다.
+
+### 2. stored but not sent
+
+```http
+Set-Cookie: SESSION=abc; Path=/auth; Secure; HttpOnly
+```
+
+`/auth/callback`에서는 보이는데 `/api/me` request `Cookie` header가 비면, 이건 보통 저장 실패가 아니라 `Path`/`Domain`/`SameSite`/`credentials` 분기다.
+
+먼저 볼 문서:
+
+- [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+- 다 읽은 뒤 다음 갈래를 다시 고를 때는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다.
+
+### 3. sent but anonymous
+
+```http
+GET /api/me
+Cookie: SESSION=abc
+```
+
+request에는 `SESSION=abc`가 있는데도 응답이 다시 login HTML이나 anonymous면, 이제 질문은 브라우저가 아니라 서버 쪽이다.
+
+- session lookup이 실패했나
+- session store/BFF mapping이 비었나
+- page redirect 정책이 API 계약에 섞였나
+
+먼저 볼 문서:
+
+- [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+- 다 읽은 뒤 다음 갈래를 다시 고를 때는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다.
+
+## 초보자가 자주 섞는 오해
+
+- `Application > Cookies`에 보인다고 그 요청에 자동 전송된 것은 아니다.
+- `request Cookie` header가 있다고 로그인 성공이 보장되는 것은 아니다.
+- `Set-Cookie was blocked`가 보이면 session store outage보다 cookie attribute 축을 먼저 본다.
+- `auth.example.com`에서 저장된 cookie와 `app.example.com` 요청은 같은 칸이 아니다.
+- `credentials: "include"`는 cookie 전송 허가 옵션일 뿐이고, cookie scope나 서버 session 복원을 대신해 주지 않는다.
+
+## 한 줄 정리
+
+이 주제는 바로 deep dive로 내려가지 말고 아래 순서를 고정하는 편이 안전하다.
+
+1. splitter에서 `blocked` / `not sent` / `sent but anonymous`를 먼저 고른다.
+2. 각 갈래의 safe next-step primer 하나만 먼저 읽는다.
+3. primer에서 원인이 좁혀진 뒤에만 `SameSite`, proxy, Spring session, BFF/session-store deep dive로 내려간다.
+
+다음 갈래를 다시 고를 때는 먼저 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다.
+
+- 질문이 network/security/spring 경계를 같이 건드리면 [RAG: Cross-Domain Bridge Map](../../rag/cross-domain-bridge-map.md)로 한 칸만 올라간다.

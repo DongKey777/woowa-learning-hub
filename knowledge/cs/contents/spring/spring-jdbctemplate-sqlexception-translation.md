@@ -4,14 +4,42 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
-> - [Spring Routing DataSource Read/Write Transaction Boundaries](./spring-routing-datasource-read-write-transaction-boundaries.md)
-> - [Spring Resilience4j: Retry, CircuitBreaker, Bulkhead](./spring-resilience4j-retry-circuit-breaker-bulkhead.md)
-> - [Deadlock Case Study](../database/deadlock-case-study.md)
+관련 문서:
+- [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
+- [Spring Routing DataSource Read/Write Transaction Boundaries](./spring-routing-datasource-read-write-transaction-boundaries.md)
+- [Spring Resilience4j: Retry, CircuitBreaker, Bulkhead](./spring-resilience4j-retry-circuit-breaker-bulkhead.md)
+- [Deadlock Case Study](../database/deadlock-case-study.md)
 
-retrieval-anchor-keywords: JdbcTemplate, SQLExceptionTranslator, DataAccessException, SQLErrorCodeSQLExceptionTranslator, SQLStateSQLExceptionTranslator, duplicate key, transient data access, integrity violation, jdbc exception translation
+retrieval-anchor-keywords: jdbctemplate rowmapper basics, resultsetextractor basics, rowmapper vs resultsetextractor, jdbctemplate query callback, jdbctemplate exception translation, 처음 배우는데 rowmapper 뭐예요, resultsetextractor 언제 쓰는지, jdbctemplate queryforobject 헷갈림, sql 결과를 객체로 바꾸는 법, jdbc 예외 번역 입문
+
+## 이 문서 전에 큰 그림이 필요하면
+
+- "`JdbcTemplate`가 왜 `Template`라는 이름을 쓰는지"부터 먼저 잡고 싶다면 [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)을 먼저 본다.
+
+## 처음 배우는데 먼저 헷갈리는 이름 정리
+
+`JdbcTemplate`를 처음 볼 때는 예외 번역보다 "`query` 안에 왜 `RowMapper`랑 `ResultSetExtractor`가 같이 나오지?"가 먼저 막히기 쉽다.
+
+큰 그림은 단순하다.
+
+- `RowMapper`: 결과 행을 **한 줄씩** 객체 하나로 바꾸는 역할
+- `ResultSetExtractor`: 결과 전체를 **한 번에** 읽어 최종 결과를 만드는 역할
+- `JdbcTemplate`: SQL 실행, 자원 정리, 예외 번역 같은 바깥 절차를 맡는 틀
+
+| 헷갈리는 대상 | 어떻게 생각하면 쉬운가 | 언제 먼저 떠올리면 좋은가 |
+|---|---|---|
+| `RowMapper` | "한 행 -> 한 객체 변환기" | 사용자 목록, 주문 목록처럼 행마다 같은 매핑일 때 |
+| `ResultSetExtractor` | "전체 `ResultSet`를 보고 최종 모양을 만드는 조립기" | one-to-many 묶기, 직접 집계, 커스텀 병합이 필요할 때 |
+
+예를 들어 `select id, name from users` 결과를 `List<User>`로 받고 싶다면 보통은 `RowMapper`부터 떠올리면 된다.
+
+반대로 "주문 1개와 그 안의 주문 항목 여러 개를 한 번에 묶어 `OrderDetail` 하나로 만들고 싶다"처럼 **여러 행을 함께 봐야** 하면 `ResultSetExtractor`가 더 자연스럽다.
+
+즉 초반 판단 기준은 "예외 번역이 뭔가"보다 "`한 행씩 바꾸는 문제인가, 결과 전체를 조립하는 문제인가`"다.
+
+이 구분이 잡히면 그다음에 "`JdbcTemplate`가 이 콜백들을 감싼 채 예외를 어떻게 번역하는가"를 읽는 흐름이 훨씬 쉬워진다.
 
 ## 핵심 개념
 
@@ -27,7 +55,7 @@ Spring은 이 문제를 `SQLExceptionTranslator`와 `DataAccessException` 계층
 
 즉 `JdbcTemplate`의 핵심 가치는 단순 보일러플레이트 제거가 아니라, **DB 예외를 애플리케이션이 다루기 좋은 의미 계층으로 번역하는 것**이다.
 
-## 깊이 들어가기
+## 예외 번역을 왜 신경 써야 하나
 
 ### 1. 예외 번역은 portability와 정책 분리를 돕는다
 
@@ -69,6 +97,8 @@ SQL 실행
 즉 Spring은 DB 벤더별 에러 코드 매핑을 우선 활용하고, 부족하면 SQL state 기반 분류로 내려간다.
 
 이 덕분에 개발자는 MySQL, PostgreSQL, Oracle의 개별 숫자를 service 로직에 직접 박는 일을 줄일 수 있다.
+
+## 실무 정책으로 연결하기
 
 ### 4. 예외 계층은 retry와 API mapping 경계를 나누는 데 유용하다
 

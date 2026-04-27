@@ -4,23 +4,37 @@
 
 **난이도: 🔴 Advanced**
 
-> 관련 문서:
-> - [JWT 깊이 파기](./jwt-deep-dive.md)
-> - [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
-> - [API Key, HMAC Signed Request, Replay Protection](./api-key-hmac-signature-replay-protection.md)
-> - [Refresh Token Rotation / Reuse Detection](./refresh-token-rotation-reuse-detection.md)
-> - [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
-> - [Replay Store Outage / Degradation Recovery](./replay-store-outage-degradation-recovery.md)
-> - [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+관련 문서:
+- [JWT 깊이 파기](./jwt-deep-dive.md)
+- [Token Introspection vs Self-Contained JWT](./token-introspection-vs-self-contained-jwt.md)
+- [API Key, HMAC Signed Request, Replay Protection](./api-key-hmac-signature-replay-protection.md)
+- [Refresh Token Rotation / Reuse Detection](./refresh-token-rotation-reuse-detection.md)
+- [Token Misuse Detection / Replay Containment](./token-misuse-detection-replay-containment.md)
+- [Replay Store Outage / Degradation Recovery](./replay-store-outage-degradation-recovery.md)
+- [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)
+- [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
+- [OAuth Device Code Flow / Security Model](./oauth-device-code-flow-security.md)
+- [Auth, Session, Token Master Note](../../master-notes/auth-session-token-master-note.md)
 
-retrieval-anchor-keywords: DPoP, token binding, proof-of-possession, JWK thumbprint, cnf claim, htm, htu, replay protection, bearer token, sender-constrained token, token misuse, proof replay, jti store outage, proof vs bearer
+retrieval-anchor-keywords: dpop, token binding, proof-of-possession, jwk thumbprint, cnf claim, htm, htu, replay protection, sender-constrained token, proof replay, jti store outage, dpop 뭐예요, cli login에서 dpop가 필요한가요, token binding basics, device code flow follow-up
 
 ---
 
+## 30초 return path
+
+- 처음 배우는데 `CLI 로그인인데 왜 DPoP가 나오지?`, `TV 코드 입력 다음에 token binding도 봐야 하나요?`처럼 보이면 device approval 흐름과 token 재사용 방어를 섞은 경우가 많다.
+- 지금 질문이 `CLI 로그인`, `TV 코드 입력`, `브라우저 없는 기기 승인`이라면 이 문서보다 [OAuth Device Code Flow / Security Model](./oauth-device-code-flow-security.md)로 돌아가는 편이 안전하다. 그 문서에서 승인 화면, `user_code`, polling 흐름을 먼저 고정한 뒤 다시 DPoP를 붙여도 늦지 않다.
+- 지금 질문이 `탈취된 access token을 다른 기기에서 재사용할 수 있나`, `sender-constrained token이 필요하나`라면 이 문서를 계속 읽는다.
+- proof 계열 전체 비교가 먼저 필요하면 [Proof-of-Possession vs Bearer Token Trade-offs](./proof-of-possession-vs-bearer-token-tradeoffs.md)로, security 갈래를 다시 고르려면 [Security README: Browserless / Cross-Device Login](./README.md#2-c-branch-point-browserless--cross-device-login)으로 돌아간다.
+
+짧게 기억하면 이렇다.
+
+- Device Code Flow: `어디서 승인하고 어떻게 기다리나`
+- DPoP: `승인 뒤 받은 token을 누가 다시 쓸 수 있나`
+
 ## 핵심 개념
 
-DPoP(Demonstration of Proof-of-Possession)는 access token을 단순 bearer로만 쓰지 않게 만드는 방식이다.  
+DPoP(Demonstration of Proof-of-Possession)는 access token을 단순 bearer로만 쓰지 않게 만드는 방식이다.
 클라이언트가 자신의 private key로 요청마다 proof를 만들고, 서버는 그 proof와 token이 같은 key에 묶였는지 본다.
 
 핵심 효과:

@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [로그 마스킹 기초: Authorization 헤더와 에러 로그는 어디까지 가려야 하나](./log-masking-basics.md)
 > - [Session Revocation at Scale](./session-revocation-at-scale.md)
 > - [Authorization Caching / Staleness](./authorization-caching-staleness.md)
 > - [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md)
@@ -15,13 +16,13 @@
 > - [SCIM Drift / Reconciliation](./scim-drift-reconciliation.md)
 > - [System Design: Session Store / Claim-Version Cutover 설계](../system-design/session-store-claim-version-cutover-design.md)
 
-retrieval-anchor-keywords: audit log, auth log, authz traceability, actor action resource, denied access, security event, immutable log, forensics, principal, correlation id, compliance, security telemetry, claim schema version, store generation, reconciliation run id, directory event id, cleanup evidence, retirement evidence, deprovision proof
+retrieval-anchor-keywords: audit log, auth log, authz traceability, actor action resource, denied access, security event, immutable log, forensics, principal, correlation id, compliance, security telemetry, claim schema version, store generation, reconciliation run id, directory event id, cleanup evidence, retirement evidence, deprovision proof, log masking, authorization header masking, token redaction, secret redaction
 
 ---
 
 ## 핵심 개념
 
-auth/authz audit log는 누가 로그인했고, 어떤 권한으로, 어떤 자원에, 어떤 결과를 냈는지 추적하는 기록이다.  
+auth/authz audit log는 누가 로그인했고, 어떤 권한으로, 어떤 자원에, 어떤 결과를 냈는지 추적하는 기록이다.
 애플리케이션 debug log와 달리, audit log는 보안과 규제 대응을 위한 증거로 설계해야 한다.
 
 핵심 질문:

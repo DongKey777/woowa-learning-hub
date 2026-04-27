@@ -1,279 +1,309 @@
 # HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
-> connection reuse, multiplexing, HOL blocking, browser/server 변화만 먼저 잡고 싶은 학습자를 위한 HTTP 버전 비교 primer
+> 브라우저가 한 페이지를 그릴 때 여러 리소스를 가져오는 방식을 `연결 수`, `동시 전송`, `손실 전파` 관점으로 먼저 비교하는 beginner primer
+>
+> 이 문서는 HTTP 버전 주제의 **메인 beginner 엔트리**다. 3분 요약이 먼저 필요하면 [HTTP 버전 비교 시작 가이드 (3분 브리지)](./http-versions-beginner-overview.md)를 보고 다시 돌아오면 된다.
 
 > 관련 문서:
+> - [HTTP 버전 비교 시작 가이드 (3분 브리지)](./http-versions-beginner-overview.md) (overview bridge)
 > - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
-> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
+> - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) (selection follow-up primer)
+> - [TCP와 UDP 기초](./tcp-udp-basics.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
-> - [HTTP/2, HTTP/3 Connection Reuse, Coalescing](./http2-http3-connection-reuse-coalescing.md)
-> - [HTTP/3, QUIC Practical Trade-offs](./http3-quic-practical-tradeoffs.md)
+> - [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
-> - [DNS, CDN, HTTP/2, HTTP/3](./dns-cdn-websocket-http2-http3.md)
+> - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: HTTP/1.1 vs HTTP/2 vs HTTP/3, beginner HTTP version comparison, HTTP keep-alive, connection reuse, multiplexing basics, HOL blocking, browser protocol negotiation, server protocol support, QUIC basics, TCP HOL vs QUIC streams, HTTP version differences
+retrieval-anchor-keywords: HTTP/1.1 vs HTTP/2 vs HTTP/3, beginner HTTP version comparison, HTTP version main comparison primer, HTTP version overview bridge, HTTP version mental model, H1 H2 H3 difference, connection reuse vs multiplexing, TCP HOL vs QUIC streams, why HTTP/3 QUIC, browser loads many resources, browser protocol negotiation basics, HTTP version routing, H1 H2 H3 misconception card, HTTP version quick check, HTTP/2 is not always faster, HTTP/3 is not always best, H2 multiplexing vs H3 QUIC, ALPN Alt-Svc next reading order, HTTP version to Alt-Svc cache lifecycle, beginner HTTP version follow-up path, http connection vs stream beginner, transport vs protocol primer, h3 fallback meaning beginner
 
 <details>
 <summary>Table of Contents</summary>
 
+- [먼저 잡는 mental model](#먼저-잡는-mental-model)
 - [왜 중요한가](#왜-중요한가)
-- [한 번에 보는 큰 그림](#한-번에-보는-큰-그림)
-- [연결 재사용은 어떻게 달라지나](#연결-재사용은-어떻게-달라지나)
-- [멀티플렉싱과 HOL blocking은 어떻게 달라지나](#멀티플렉싱과-hol-blocking은-어떻게-달라지나)
-- [브라우저 입장에서는 무엇이 달라지나](#브라우저-입장에서는-무엇이-달라지나)
-- [서버와 인프라 입장에서는 무엇이 달라지나](#서버와-인프라-입장에서는-무엇이-달라지나)
+- [한눈에 비교](#한눈에-비교)
+- [자주 헷갈리는 질문 빠른 판별 카드](#자주-헷갈리는-질문-빠른-판별-카드)
+- [같은 페이지 로딩 예시로 보기](#같은-페이지-로딩-예시로-보기)
+- [버전별 감각](#버전별-감각)
+- [브라우저와 서버 입장 차이](#브라우저와-서버-입장-차이)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
+- [헷갈리면 여기로](#헷갈리면-여기로)
+- [초급자 다음 읽기 순서](#초급자-다음-읽기-순서)
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
+- [한 줄 정리](#한-줄-정리)
 
 </details>
 
+## 먼저 잡는 mental model
+
+브라우저가 상품 페이지 하나를 열 때를 떠올려 보자.
+
+- HTML 1개
+- CSS 1개
+- JS 2개
+- 이미지 3개
+- 리뷰 API 1개
+
+이때 HTTP 버전 비교는 "누가 더 최신인가"보다 아래 세 질문으로 보는 편이 쉽다.
+
+1. 브라우저가 병렬성을 얻으려고 연결을 몇 개나 열어야 하는가
+2. 한 연결 안에서 여러 요청을 같이 흘릴 수 있는가
+3. 중간에 손실이 나면 그 영향이 한 요청에 머무는가, 같은 연결 전체로 번지는가
+
+여기서 용어를 먼저 고정하면 뒤 문서들까지 덜 헷갈린다.
+
+| 용어 | 이 문서에서의 뜻 | 기억 그림 |
+|---|---|---|
+| `연결(connection)` | 실제로 잡힌 TCP 또는 QUIC 연결 | 큰 길 |
+| `stream` | HTTP/2, HTTP/3에서 한 연결 안에 함께 실리는 요청/응답 하나 | 차선 |
+| `transport` | HTTP 아래에서 데이터를 옮기는 바닥 계층. 여기서는 TCP 또는 QUIC | 길 바닥 |
+| `fallback` | H3를 시도했지만 못 써서 H2/H1.1로 조용히 내려가는 것 | H3 길에서 우회 |
+
+이 감각으로 세 버전을 먼저 잡으면 된다.
+
+| 먼저 볼 질문 | HTTP/1.1 | HTTP/2 | HTTP/3 |
+|---|---|---|---|
+| 병렬성 확보 방식 | 여러 TCP 연결로 나눠 보낸다 | 한 TCP 연결에 여러 stream을 같이 싣는다 | 한 QUIC 연결에 여러 stream을 같이 싣는다 |
+| 한 연결 안 동시 전송 | 제한적이다 | 가능하다 | 가능하다 |
+| 손실이 생기면 | 그 TCP 연결이 기다린다 | 같은 TCP 연결의 여러 stream이 함께 느려질 수 있다 | 손실 영향이 주로 해당 stream 쪽에 더 가깝다 |
+| 한 줄 감각 | 여러 길을 만든다 | 한 길에 여러 차선을 같이 쓴다 | 한 길을 유지하되 사고 전파를 더 줄이려 한다 |
+
+핵심만 먼저 외우면:
+
+- HTTP/1.1: 재사용은 하지만 병렬성은 주로 연결 수로 확보한다
+- HTTP/2: 한 TCP 연결 재사용과 멀티플렉싱이 핵심이다
+- HTTP/3: 그 멀티플렉싱을 QUIC으로 옮겨 TCP HOL 문제를 줄인다
+
+용어를 한 줄로 다시 묶으면:
+
+- 비교의 중심은 "`연결`을 어떻게 쓰는가"다
+- HTTP/2, HTTP/3에서는 그 연결 안의 "`stream`"을 같이 본다
+- HTTP/3의 차이는 주로 HTTP 의미보다 "`transport`가 TCP에서 QUIC으로 바뀐다"는 데 있다
+- `fallback`은 최종 `h2` 결과와 같은 말이 아니라, H3 시도 실패 뒤 조용히 내려가는 과정을 뜻한다
+
 ## 왜 중요한가
 
-HTTP 버전 비교는 "무엇이 더 최신인가"보다 **브라우저가 연결을 어떻게 아끼고, 요청을 어떻게 동시에 보내며, 손실이 났을 때 어디서 막히는가**를 구분하는 문제다.
+입문 단계에서 HTTP 버전 비교를 알아두면 아래 질문에 답하기 쉬워진다.
 
-특히 입문 단계에서는 아래 네 가지를 같이 이해하면 된다.
+- 왜 브라우저가 같은 사이트에 연결을 여러 개 열기도 했는가
+- 왜 HTTP/2는 한 연결을 더 오래 재사용하려 하는가
+- 왜 HTTP/3는 QUIC과 UDP 이야기가 같이 따라오는가
+- 왜 "HTTP/3가 무조건 더 빠르다"라고 단정하면 안 되는가
 
-- 연결을 한 번 맺고 계속 재사용하는가
-- 한 연결에서 여러 요청을 동시에 섞어 보낼 수 있는가
-- 앞의 지연이 뒤 요청까지 막는가
-- 브라우저와 서버가 지원해야 하는 것이 무엇인가
+즉 버전 비교는 단순 암기 문제가 아니라, **브라우저가 네트워크를 어떻게 쓰는지 이해하는 출발점**이다.
 
 ### Retrieval Anchors
 
-- `HTTP/1.1 vs HTTP/2 vs HTTP/3`
-- `HTTP keep-alive`
-- `connection reuse`
-- `multiplexing basics`
-- `HOL blocking`
-- `browser protocol negotiation`
-- `server protocol support`
-- `QUIC basics`
+- `HTTP version mental model`
+- `H1 H2 H3 difference`
+- `connection reuse vs multiplexing`
+- `TCP HOL vs QUIC streams`
+- `browser loads many resources`
+- `why HTTP/3 QUIC`
 
 ---
 
-## 한 번에 보는 큰 그림
+## 한눈에 비교
 
-세 버전을 가장 짧게 비교하면 아래와 같다.
+초급자 기준으로는 이 표 하나를 먼저 이해하면 충분하다.
 
-| 비교 항목 | HTTP/1.1 | HTTP/2 | HTTP/3 |
+| 비교 포인트 | HTTP/1.1 | HTTP/2 | HTTP/3 |
 |---|---|---|---|
-| 전송 계층 | TCP | TCP | QUIC over UDP |
-| 연결 재사용 | `keep-alive`로 재사용, 그래도 여러 TCP 연결을 자주 연다 | 한 TCP 연결을 더 적극적으로 재사용한다 | 한 QUIC 연결을 더 적극적으로 재사용한다 |
-| 멀티플렉싱 | 사실상 없음 | stream multiplexing | QUIC stream multiplexing |
-| HOL blocking 핵심 | 한 연결 안에서 요청/응답 순서가 발목을 잡기 쉽다 | HTTP 레벨 HOL은 줄지만 TCP HOL은 남는다 | TCP HOL을 피한다. 한 stream 손실이 다른 stream을 덜 막는다 |
-| 브라우저 동작 | 병렬성을 위해 여러 연결을 연다 | 적은 연결에 많은 요청을 싣는다 | 가능하면 QUIC/H3를 쓰고 안 되면 H2로 fallback한다 |
-| 서버 변화 | 소켓 수와 연결 관리 비용이 크다 | stream 수, flow control, H2 지원이 중요하다 | UDP 443, QUIC, fallback 운영이 중요하다 |
+| 기반 transport | TCP | TCP | QUIC over UDP |
+| 브라우저 기본 전략 | 여러 연결로 병렬성 확보 | 적은 연결에 많은 요청을 태움 | 가능하면 H3를 쓰고 안 되면 H2/H1로 fallback |
+| 멀티플렉싱 | 사실상 약하다 | 있다 | 있다 |
+| HOL blocking 핵심 | 순차 처리 성격이 강하다 | HTTP 레벨 HOL은 줄지만 TCP HOL은 남는다 | TCP HOL 영향을 크게 줄인다 |
+| 입문자 한 줄 요약 | 여러 연결로 버틴다 | 한 TCP 연결을 잘 쓴다 | 한 연결 구조를 유지하면서 손실 전파를 더 줄인다 |
 
-핵심만 말하면:
+## 자주 헷갈리는 질문 빠른 판별 카드
 
-- HTTP/1.1은 "연결을 재사용하되 병렬성은 연결 수로 확보"한다
-- HTTP/2는 "한 TCP 연결에 여러 요청을 같이 싣는다"
-- HTTP/3는 "그 멀티플렉싱을 QUIC 위로 옮겨 TCP HOL 문제를 줄인다"
+첫 읽기에서 아래 5줄만 먼저 고르면, 바로 deep dive로 떨어지지 않고 다음 문서를 더 안전하게 고를 수 있다.
 
----
+| 헷갈리는 질문 | 5초 판별 |
+|---|---|
+| "HTTP/2면 연결이 여러 개인가요, 하나인가요?" | 보통 핵심은 "적은 수의 TCP 연결"과 "그 안의 여러 stream"이다. 여러 연결 자체가 핵심은 아니다. |
+| "HTTP/2면 무조건 가장 빠른가요?" | 아니다. 요청 수가 적거나 손실이 있으면 체감 이득이 작을 수 있다. |
+| "HTTP/3는 그냥 HTTP/2의 최신판인가요?" | 절반만 맞다. HTTP 의미는 비슷하지만 바닥 transport가 TCP에서 QUIC으로 바뀐다. |
+| "HTTP/3면 무조건 써야 하나요?" | 아니다. UDP 경로, 브라우저, CDN, 프록시 조건이 안 맞으면 H2로 fallback할 수 있다. 다만 `h2` 결과만 보고 바로 fallback이라고 단정하지는 않는다. |
+| "지금 나는 무엇부터 읽어야 하나요?" | 버전 차이 자체가 헷갈리면 이 문서, 실제 선택 과정이 헷갈리면 ALPN/Alt-Svc primer로 간다. |
 
-## 연결 재사용은 어떻게 달라지나
+## 같은 페이지 로딩 예시로 보기
+
+`shop.example.com` 상품 페이지를 여는 장면을 단순화해 보자.
+
+브라우저는 보통 HTML만 받는 게 아니라 CSS, JS, 이미지, API 응답도 같이 가져와야 한다.
 
 ### HTTP/1.1
 
-HTTP/1.1도 이미 `keep-alive`로 연결 재사용을 한다.  
-다만 한 연결에서 요청을 마음 편하게 동시에 섞어 보내기 어렵기 때문에, 브라우저는 보통 같은 origin에 TCP 연결을 여러 개 연다.
+- `keep-alive`로 연결을 재사용할 수는 있다
+- 그래도 한 연결에서 요청을 마음 편히 많이 섞기 어렵다
+- 그래서 브라우저는 같은 origin에 TCP 연결을 여러 개 열고 요청을 분산한다
 
-즉 감각은 이렇다.
-
-- 재사용은 한다
-- 하지만 병렬성 확보를 위해 연결 수를 늘린다
-- 그래서 socket, handshake, TLS 비용이 늘기 쉽다
+즉 감각은 "한 연결이 약해서 여러 연결로 나눠 싣는다"에 가깝다.
 
 ### HTTP/2
 
-HTTP/2는 한 TCP 연결 위에 여러 stream을 올려서 **연결을 더 오래, 더 공격적으로 재사용**한다.
+- 한 TCP 연결 안에 여러 stream을 만든다
+- HTML, CSS, JS, API 요청을 같은 연결에 함께 실을 수 있다
+- 연결 수는 줄지만, 그 한 연결이 더 중요해진다
 
-- 브라우저는 같은 origin에 새 TCP 연결을 여러 개 열 필요가 줄어든다
-- 작은 CSS, JS, API 요청을 한 연결에 같이 실을 수 있다
-- 연결 수는 줄지만, 한 연결이 더 중요한 자원이 된다
+즉 감각은 "연결 수를 줄이고 한 연결 활용도를 높인다"다.
 
 ### HTTP/3
 
-HTTP/3도 연결 재사용을 매우 중요하게 본다.  
-차이는 그 연결이 TCP가 아니라 QUIC이라는 점이다.
+- 한 QUIC 연결 안에 여러 stream을 만든다
+- 브라우저가 같은 종류의 동시 요청을 유지할 수 있다
+- 어떤 stream 쪽에서 손실이 나도 다른 stream까지 같은 방식으로 묶여 멈추는 문제를 줄이려 한다
 
-- 브라우저는 QUIC 연결 하나에 여러 stream을 올린다
-- 네트워크가 바뀌어도 QUIC이 연결을 이어갈 여지가 있다
-- 단, H3를 못 쓰는 경로가 있으면 브라우저는 H2/H1로 내려간다
+즉 감각은 "HTTP/2의 동시성은 유지하고, TCP 기반 공통 대기를 줄인다"다.
 
-입문 감각으로 정리하면:
+## 버전별 감각
 
-- HTTP/1.1: "재사용은 하지만 여러 연결이 필요"
-- HTTP/2: "한 연결 재사용을 적극화"
-- HTTP/3: "한 연결 재사용을 유지하면서 transport 한계도 보완"
+### HTTP/1.1: keep-alive는 있지만 여러 연결이 자주 필요하다
 
----
+HTTP/1.1도 이미 연결 재사용을 한다.
+하지만 병렬성 확보가 약해서 브라우저는 여러 TCP 연결을 열어 우회하곤 했다.
 
-## 멀티플렉싱과 HOL blocking은 어떻게 달라지나
+입문용 문장으로 정리하면:
 
-### HTTP/1.1: 연결 안에서는 순차성이 강하다
+- 재사용은 한다
+- 하지만 동시에 많이 보내려면 연결 수가 늘기 쉽다
+- 그래서 연결 관리 비용이 커질 수 있다
 
-HTTP/1.1에서는 한 연결에서 요청 하나가 오래 걸리면 뒤 요청이 기다리기 쉽다.  
-그래서 브라우저는 아예 연결을 여러 개 열어 우회한다.
+### HTTP/2: 멀티플렉싱은 좋아졌지만 TCP 위다
 
-즉 HTTP/1.1의 병렬성은 "프로토콜이 잘 섞어준다"기보다 **연결을 여러 개 만들어서 분산한다**에 가깝다.
+HTTP/2의 핵심은 한 TCP 연결 위에서 stream multiplexing을 한다는 점이다.
 
-### HTTP/2: HTTP 레벨 HOL은 줄지만 TCP HOL은 남는다
+- 한 연결에서 여러 요청을 동시에 보낼 수 있다
+- 큰 응답 하나 때문에 작은 응답이 HTTP 메시지 순서상 전부 막히지는 않는다
+- 다만 패킷 손실이 나면 TCP 특성 때문에 같은 연결의 여러 stream이 함께 느려질 수 있다
 
-HTTP/2의 핵심은 stream multiplexing이다.
+그래서 HTTP/2를 한 줄로 말하면:
 
-- 요청 A, B, C를 한 연결에서 동시에 보낼 수 있다
-- 큰 응답 하나 때문에 작은 응답이 HTTP 메시지 순서상 완전히 막히지는 않는다
+- HTTP 레벨 병목은 줄였다
+- 하지만 TCP 레벨 대기는 남는다
 
-하지만 TCP 위라는 사실은 그대로다.
+### HTTP/3: QUIC 위로 올라간 HTTP다
 
-- 패킷 하나가 유실되면
-- 그 TCP 연결 위의 뒤 패킷들은 재전송이 끝날 때까지 대기할 수 있고
-- 결국 같은 연결의 여러 stream이 함께 느려질 수 있다
+HTTP/3는 HTTP 의미를 새로 만든 것보다, **transport를 QUIC으로 바꿨다**는 점이 더 중요하다.
 
-즉 HTTP/2는 **HTTP 레벨 HOL blocking은 줄였지만 TCP 레벨 HOL blocking은 남긴다.**
+- QUIC은 UDP 위에서 동작한다
+- 여러 stream을 유지하면서 손실 전파를 더 잘 분리하려 한다
+- 대신 서버, CDN, 프록시, 회사망 같은 경로가 H3를 제대로 지원해야 한다
+- 그래서 최종 `h2`가 보일 때도 "처음부터 H2였는지", "H3를 시도했다가 fallback됐는지"는 따로 구분해야 한다
 
-### HTTP/3: QUIC stream으로 TCP HOL 문제를 줄인다
+그래서 HTTP/3를 한 줄로 말하면:
 
-HTTP/3는 QUIC 위에서 각 stream을 다룬다.
+- 멀티플렉싱은 유지한다
+- TCP HOL 문제를 줄인다
+- 하지만 운영 경로와 fallback까지 같이 봐야 한다
 
-- 어떤 stream에서 손실이 나도
-- 다른 stream 데이터까지 같은 방식으로 멈출 필요가 줄어든다
+## 브라우저와 서버 입장 차이
 
-그래서 손실이 있거나 모바일처럼 경로가 불안정한 환경에서 HTTP/3의 이점이 체감되기 쉽다.
+브라우저와 서버는 같은 버전을 보더라도 신경 쓰는 포인트가 조금 다르다.
 
-단, 이것이 "절대 안 느려진다"는 뜻은 아니다.
+### 브라우저 입장
 
-- UDP 차단
-- QUIC 미지원 middlebox
-- fallback 경로
+- HTTP/1.1에서는 병렬성을 위해 연결을 여러 개 열기 쉽다
+- HTTP/2에서는 ALPN으로 `h2`를 협상하고 한 연결 재사용을 더 적극적으로 한다
+- HTTP/3에서는 `Alt-Svc`, HTTPS RR, QUIC 가능 여부에 따라 `h3`를 시도하고 안 되면 fallback한다
 
-같은 다른 운영 이슈가 남는다.
+### 서버와 인프라 입장
 
-### 아주 짧은 비유
+- HTTP/1.1에서는 소켓 수와 keep-alive 관리가 중요하다
+- HTTP/2에서는 stream, flow control, H2 termination이 중요하다
+- HTTP/3에서는 UDP 443, QUIC 지원, H2 fallback, 관측 포인트가 중요하다
 
-- HTTP/1.1: 차선을 여러 개 늘려서 차를 분산한다
-- HTTP/2: 차선을 하나로 합치고 차 안에서 줄을 잘 세운다
-- HTTP/3: 차선 하나를 유지하되, 앞차 사고가 옆차까지 모두 멈추게 하지는 않으려 한다
-
----
-
-## 브라우저 입장에서는 무엇이 달라지나
-
-브라우저가 하는 큰 일은 세 버전 모두 비슷하다.
-
-- 서버에 연결한다
-- request를 보낸다
-- response를 받아 렌더링한다
-
-달라지는 것은 **어떤 연결을 몇 개 쓰고, 어떤 프로토콜을 협상하며, 실패 시 어디로 fallback하느냐**다.
-
-### HTTP/1.1 브라우저 감각
-
-- 병렬 다운로드를 위해 연결을 여러 개 연다
-- `keep-alive`로 재사용하지만 연결 수가 많아지기 쉽다
-- 텍스트 기반이라 디버깅 감각은 비교적 단순하다
-
-### HTTP/2 브라우저 감각
-
-- TLS 단계에서 보통 ALPN으로 `h2`를 협상한다
-- 연결 수는 줄이고 한 연결에 많은 요청을 태운다
-- 한 연결 상태가 나빠지면 많은 리소스 요청이 같이 흔들릴 수 있다
-
-### HTTP/3 브라우저 감각
-
-- 가능하면 `h3`를 시도하고, 안 되면 H2로 fallback한다
-- QUIC/UDP가 가능한 경로에서 성능 이득을 본다
-- 네트워크 이동이나 손실이 있는 환경에서 더 유리할 수 있다
-
-입문자가 기억할 핵심은 이것이다.
-
-- 브라우저 코드를 따로 짜지 않아도 대부분 자동 협상한다
-- 하지만 브라우저는 "지원되는 가장 좋은 버전"을 쓰려 할 뿐이다
-- 서버와 인프라가 준비되지 않으면 결국 H1/H2로 내려간다
-
----
-
-## 서버와 인프라 입장에서는 무엇이 달라지나
-
-애플리케이션 입장에서는 세 버전 모두 결국 request/response를 처리한다는 점은 비슷하다.  
-정말 크게 달라지는 곳은 보통 **웹 서버, 프록시, CDN, 로드밸런서, 관측 체계**다.
-
-### HTTP/1.1 서버 감각
-
-- 연결 수가 많아질 수 있다
-- keep-alive timeout과 idle socket 관리가 중요하다
-- reverse proxy와 app server가 오래전부터 잘 지원한다
-
-### HTTP/2 서버 감각
-
-- H2 termination을 지원해야 한다
-- `MAX_CONCURRENT_STREAMS`, flow control, header compression 같은 개념이 추가된다
-- 연결 수는 줄지만 한 연결에 더 많은 요청이 몰린다
-
-### HTTP/3 서버 감각
-
-- TCP 443만이 아니라 UDP 443도 열어야 한다
-- QUIC과 TLS 1.3 통합 스택이 필요하다
-- `Alt-Svc`, fallback, UDP 차단 대응을 같이 운영해야 한다
-- packet capture와 장애 해석이 H1/H2보다 어렵다
-
-즉 서버 쪽에서 느끼는 변화는:
-
-- H1.1: 연결 수 관리
-- H2: stream과 공유 연결 관리
-- H3: UDP/QUIC 운영과 fallback 관리
-
----
+애플리케이션 business logic 자체는 세 버전이 바뀐다고 완전히 새로 쓰는 경우가 드물다.
+실무에서 더 크게 달라지는 곳은 보통 웹 서버, 프록시, CDN, 로드밸런서다.
 
 ## 자주 헷갈리는 포인트
 
-### HTTP/2가 있으면 HTTP/1.1은 완전히 쓸모없나
+### HTTP/2가 있으면 HTTP/1.1은 끝난 것 아닌가
 
 아니다.
 
-- 여전히 호환성이 가장 넓다
-- 중간 장비와 오래된 클라이언트가 단순하게 지원한다
-- 일부 환경에서는 H2/H3보다 디버깅과 운영이 쉽다
+- 호환성은 여전히 HTTP/1.1이 가장 넓다
+- 내부 구간이나 오래된 장비에서는 HTTP/1.1이 계속 쓰인다
+- 실무에서는 앞단은 H2/H3, 내부는 H1.1인 구성도 흔하다
 
 ### HTTP/2는 항상 HTTP/1.1보다 빠른가
 
 아니다.
 
-- 요청이 많고 손실이 적은 환경에서는 유리하다
-- 하지만 손실이 있는 네트워크에서는 TCP HOL 때문에 기대만큼 이득이 안 날 수 있다
+- 요청 수가 많고 연결 재사용 이득이 크면 유리하다
+- 하지만 요청 수가 적거나 경로 상태가 단순하면 차이가 작을 수 있다
+- 손실이 있는 네트워크에서는 TCP HOL 때문에 기대만큼 이득이 안 날 수도 있다
 
-### HTTP/3는 HTTP/2의 완전한 상위호환인가
+### HTTP/3는 그냥 "HTTP/2를 UDP로 옮긴 것"인가
 
-개념적으로는 더 진화한 쪽이지만, 운영 현실은 다르다.
+절반만 맞다.
 
-- QUIC/UDP를 못 쓰는 경로가 있다
-- 그래서 대부분 H3만 단독으로 두지 않고 H2 fallback을 같이 둔다
+- HTTP 의미 자체는 비슷하다
+- 하지만 transport가 QUIC으로 바뀌면서 연결 수립, 손실 처리, fallback 방식이 달라진다
+- 그래서 "문법만 같고 바닥은 꽤 다르다"라고 이해하는 편이 낫다
 
-### 브라우저와 서버 코드가 완전히 바뀌나
+### HTTP/3가 항상 가장 좋은 선택인가
 
-보통 애플리케이션 business logic은 크게 안 바뀐다.  
-대신 protocol termination, proxy 설정, TLS/ALPN, 관측 포인트가 달라진다.
+아니다.
 
----
+- 회사망이나 중간 장비가 UDP를 제한할 수 있다
+- CDN이나 프록시 설정이 덜 맞으면 fallback이 더 중요해질 수 있다
+- 그래서 실제 브라우저는 H3만 고집하지 않고 H2/H1로 내려갈 수 있다
+
+### 애플리케이션 코드를 전부 다시 짜야 하나
+
+보통 아니다.
+
+- 버전 협상은 대개 브라우저, 서버, 프록시가 맡는다
+- 애플리케이션은 여전히 request/response를 처리한다
+- 대신 termination, proxy 설정, observability 포인트가 달라진다
+
+## 헷갈리면 여기로
+
+이 문서는 큰 그림용이다. 아래처럼 다음 문서를 고르면 된다.
+
+| 지금 막히는 질문 | 바로 다음 문서 |
+|---|---|
+| 브라우저가 실제로 언제 H2/H3를 고르는지 궁금하다 | [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) |
+| 왜 HTTP/2에도 HOL blocking이 남는지 더 정확히 보고 싶다 | [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) |
+| QUIC, UDP, transport 차이가 아직 낯설다 | [TCP와 UDP 기초](./tcp-udp-basics.md) |
+| H3가 안 붙고 H2로 내려가는 이유를 보고 싶다 | [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md) |
+| 여러 origin이 같은 H2/H3 연결을 공유하는지 궁금하다 | [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md) |
+| 아직 request, response, keep-alive 자체가 헷갈린다 | [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md) |
+
+## 초급자 다음 읽기 순서
+
+HTTP 버전 큰 그림을 잡았다면, 초급자는 아래 순서로 읽는 편이 덜 흔들린다.
+
+| 순서 | 문서 | 왜 이 순서가 안전한가 |
+|---|---|---|
+| 1 | [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md) | "브라우저가 실제로 언제 H2/H3를 고르나?"를 먼저 붙여서 버전 비교와 실제 선택 흐름을 연결한다 |
+| 2 | [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md) | selection 문서를 읽고 나면 `Alt-Svc`를 "다음 새 connection용 힌트 메모"로 더 쉽게 이해할 수 있다 |
+| 3 | [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md) | lifecycle 다음에 `ma`, scope, `421`을 붙이면 용어가 덜 한꺼번에 섞인다 |
+
+이동 기준도 이렇게 단순하게 잡으면 된다.
+
+- 지금 "버전 차이" 다음으로 궁금한 것이 "브라우저가 무엇을 보고 선택하나"라면 selection primer로 간다.
+- selection primer를 읽고 "`Alt-Svc`가 왜 바로 H3가 아니라 다음 방문 힌트처럼 보이나"가 남으면 바로 `Alt-Svc Cache Lifecycle Basics`로 이어간다.
+- `Alt-Svc Cache Lifecycle Basics`까지 읽은 뒤에만 `ma`, scope, `421`, stale recovery 같은 분기로 내려가면 초급자 기준에서 길을 잃기 덜 쉽다.
 
 ## 면접에서 자주 나오는 질문
 
 > Q: HTTP/1.1과 HTTP/2의 가장 큰 차이는 무엇인가요?
-> 핵심: 연결 재사용 방식보다도, 한 연결에서 여러 요청을 동시에 섞어 보내는 multiplexing 지원 여부가 가장 크다.
+> 핵심: HTTP/2는 한 TCP 연결 안에서 여러 요청을 동시에 흘리는 멀티플렉싱이 핵심이고, HTTP/1.1은 병렬성을 주로 여러 연결로 확보했다.
 
 > Q: HTTP/2에도 HOL blocking이 남는 이유는 무엇인가요?
-> 핵심: HTTP/2는 TCP 위에 있으므로 패킷 손실 시 TCP 레벨 HOL blocking이 같은 연결의 여러 stream에 영향을 줄 수 있다.
+> 핵심: HTTP/2는 여전히 TCP 위에 있으므로 패킷 손실 시 같은 연결의 여러 stream이 함께 영향을 받을 수 있다.
 
-> Q: HTTP/3는 무엇을 바꾸나요?
-> 핵심: HTTP 의미 자체보다 transport를 QUIC으로 바꿔 TCP HOL 문제를 줄이고, 손실/이동성 환경에서 더 유리하게 만든다.
+> Q: HTTP/3는 무엇을 바꿨나요?
+> 핵심: HTTP 의미보다 transport를 QUIC으로 바꿔 손실 전파를 더 줄이고, 연결 경로 선택과 fallback 방식을 바꿨다.
 
-> Q: 브라우저와 서버 입장에서 실무적으로 가장 큰 차이는 무엇인가요?
-> 핵심: 브라우저는 자동 협상과 fallback이 중요하고, 서버는 H2/H3 termination, stream/UDP 운영, 관측 체계 준비가 중요하다.
+> Q: 실무에서 가장 먼저 체감되는 차이는 무엇인가요?
+> 핵심: 브라우저는 연결 재사용과 fallback 방식이 달라지고, 서버/인프라는 H2/H3 termination과 UDP/QUIC 운영을 신경 써야 한다.
 
 ## 한 줄 정리
 
-HTTP/1.1은 여러 연결로 병렬성을 확보하고, HTTP/2는 한 TCP 연결 재사용과 multiplexing으로 효율을 높이며, HTTP/3는 그 구조를 QUIC으로 옮겨 TCP HOL blocking을 줄이되 운영 복잡도는 더 가져온다.
+HTTP/1.1은 여러 연결로 병렬성을 확보하고, HTTP/2는 한 TCP 연결 재사용과 멀티플렉싱으로 효율을 높이며, HTTP/3는 그 구조를 QUIC으로 옮겨 손실 전파를 더 줄이려 한다.

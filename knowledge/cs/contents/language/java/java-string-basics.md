@@ -8,6 +8,8 @@
 
 - [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
+- [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
@@ -98,6 +100,8 @@ String result = sb.toString(); // "Hello, World"
 
 - String Pool 내부와 `intern()` 함정: [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - `==` vs `equals()` 깊이 있는 설명: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- direct equality와 case-insensitive ordering을 분리해서 보고 싶다면 [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
+- nullable `String` 정렬에서 `nullsLast`와 case-insensitive comparator를 함께 읽고 싶다면 [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 
 ## 면접/시니어 질문 미리보기
 

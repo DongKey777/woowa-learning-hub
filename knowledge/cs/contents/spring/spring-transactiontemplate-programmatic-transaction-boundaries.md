@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 > - [Spring `UnexpectedRollbackException` and Rollback-Only Marker Traps](./spring-unexpectedrollback-rollbackonly-marker-traps.md)
@@ -12,7 +13,11 @@
 > - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 > - [Spring Delivery Reliability: `@Retryable`, Resilience4j, and Outbox Relay Worker Design](./spring-delivery-reliability-retryable-resilience4j-outbox-relay.md)
 
-retrieval-anchor-keywords: TransactionTemplate, programmatic transaction, PlatformTransactionManager, transaction callback, partial commit loop, imperative transaction boundary, transaction status setRollbackOnly, requires new alternative, transaction per item
+retrieval-anchor-keywords: TransactionTemplate, programmatic transaction, PlatformTransactionManager, transaction callback, partial commit loop, imperative transaction boundary, transaction status setRollbackOnly, requires new alternative, transaction per item, 처음 배우는데 TransactionTemplate 뭐예요, TransactionTemplate 언제 쓰는지, 코드 블록 트랜잭션 입문, 템플릿 클래스 예시, 트랜잭션 경계 직접 자르기, @Transactional 말고 TransactionTemplate
+
+## 이 문서 전에 큰 그림이 필요하면
+
+- "`TransactionTemplate`가 왜 template 계열인지"부터 짧게 잡고 싶다면 [Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림](./spring-template-classes-beginner-primer.md)을 먼저 본다.
 
 ## 핵심 개념
 

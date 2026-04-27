@@ -7,6 +7,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Logout Scope Primer](./logout-scope-primer.md)
 > - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
 > - [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)
 > - [JWT 깊이 파기](./jwt-deep-dive.md)
@@ -32,6 +33,7 @@ retrieval-anchor-keywords: session revocation, logout, token invalidation, black
 ## 이 문서 다음에 보면 좋은 문서
 
 - session이 살아 있을 때 role, permission, tenant membership 변경을 초보자 눈높이로 먼저 정리하고 싶으면 [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)부터 보고 내려오면 된다.
+- `현재 세션`, `이 기기`, `모든 기기`, `refresh revoke`, `BFF cleanup`이 아직 한 덩어리로 들리면 [Logout Scope Primer](./logout-scope-primer.md)에서 범위를 먼저 자르고 내려오는 편이 안전하다.
 - `logout still works`, `logout tail`, `revocation tail`처럼 실제 tail symptom을 바로 해석해야 하면 [Revocation Propagation Lag / Debugging](./revocation-propagation-lag-debugging.md)로 이어진다.
 - federated logout coherence는 [OIDC Back-Channel Logout / Session Coherence](./oidc-backchannel-logout-session-coherence.md)와 같이 보는 편이 좋다.
 - `login loop`, `hidden session mismatch`, `cookie는 있는데 session missing`처럼 browser/BFF translation 계층이 먼저 의심되면 [BFF Session Store Outage / Degradation Recovery](./bff-session-store-outage-degradation-recovery.md), [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 이어진다.
@@ -91,7 +93,7 @@ access token을 즉시 무효화하려고 blacklist를 두는 경우가 많다.
 
 토큰에 version을 넣고 요청 시 비교하면, 오래된 세션을 자연스럽게 끊을 수 있다.
 
-다만 실무에서는 `session_version` 하나만으로는 role revoke, tenant move, policy/cache stale을 세밀하게 가르기 어려워 `authz_version`, `tenant_version`, `refresh_family_version`까지 분리하는 경우가 많다.  
+다만 실무에서는 `session_version` 하나만으로는 role revoke, tenant move, policy/cache stale을 세밀하게 가르기 어려워 `authz_version`, `tenant_version`, `refresh_family_version`까지 분리하는 경우가 많다.
 이 분해 기준은 [AuthZ / Session Versioning Patterns](./authz-session-versioning-patterns.md)에서 따로 본다.
 
 ### 4. 여러 인스턴스에서 같은 결정을 해야 한다

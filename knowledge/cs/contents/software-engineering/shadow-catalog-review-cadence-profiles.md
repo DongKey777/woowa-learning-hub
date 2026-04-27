@@ -34,6 +34,10 @@
 > - shadow review forum response time
 > - next_review_at cadence profile
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Catalog Review Cadence Profiles](./README.md#shadow-catalog-review-cadence-profiles)
+> - 다음 단계: [Shadow Lifecycle Scorecard Metrics](./shadow-lifecycle-scorecard-metrics.md)
+
 ## 핵심 개념
 
 `next_review_at`은 단순 달력 메모가 아니다.

@@ -46,6 +46,10 @@
 > - merge successor lineage
 > - transitive lineage preservation
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Catalog Reopen and Successor Rules](./README.md#shadow-catalog-reopen-and-successor-rules)
+> - 다음 단계: [Temporary Hold Exit Criteria](./shadow-temporary-hold-exit-criteria.md)
+
 ## 핵심 개념
 
 shadow catalog에서 recurrence를 다루는 핵심 질문은 하나다.

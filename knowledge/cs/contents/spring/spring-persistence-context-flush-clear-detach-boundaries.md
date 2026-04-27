@@ -5,6 +5,8 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기](./spring-persistence-transaction-web-service-repository-primer.md)
+> - [Spring `@DataJpaTest` Bulk Update Stale-State Mini Guide](./spring-datajpatest-bulk-update-stale-state-mini-guide.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Transaction Isolation / ReadOnly Pitfalls](./spring-transaction-isolation-readonly-pitfalls.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)

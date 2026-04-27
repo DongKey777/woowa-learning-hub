@@ -4,16 +4,21 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [팩토리 패턴 기초](./factory-basics.md)
-> - [전략 패턴 기초](./strategy-pattern-basics.md)
-> - [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [런타임 선택에서 Bridge vs Strategy vs Factory](./bridge-strategy-vs-factory-runtime-selection.md)
-> - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
-> - [디자인 패턴 카테고리 인덱스](./README.md)
+> Beginner Route: `[entrypoint]` [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md) -> `[bridge]` 이 문서 -> `[checklist]` [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
 
-retrieval-anchor-keywords: strategy vs policy selector naming, selector resolver registry strategy vs factory, policy selector vs factory, strategy selector naming, resolver vs factory beginner, registry vs factory naming, factory naming smell, factory when not creating, runtime policy selection not factory, chooses not creates, resolves not creates, lookup not creation, PaymentPolicyFactory smell, PaymentPolicySelector, PaymentStrategyResolver, PaymentHandlerRegistry, beginner naming factory selector resolver registry strategy, factory 이름 오해, factory 보다 selector, factory 보다 resolver, factory 보다 registry, factory 보다 strategy, 정책 선택기 이름, 전략 선택 이름, 생성이 아니면 factory 아님, 선택 조회 해석 실행 이름 구분
+관련 문서:
+- [팩토리 패턴 기초](./factory-basics.md)
+- [전략 패턴 기초](./strategy-pattern-basics.md)
+- [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
+- [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
+- [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md)
+- [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
+- [런타임 선택에서 Bridge vs Strategy vs Factory](./bridge-strategy-vs-factory-runtime-selection.md)
+- [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
+- [객체지향 핵심 원리](../language/java/object-oriented-core-principles.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: strategy vs policy selector naming, factory 보다 selector, factory 보다 resolver, 생성이 아니면 factory 아님, raw input 해석 vs 후보 선택, 문자열 enum 변환 resolver, 코드값 해석 resolver, 해석 다음 선택, 뜻이 정해진 뒤 selector, selector naming beginner bridge, selector naming follow up, selector 이름 뭐로 지어야 해, 처음 배우는데 resolver selector 차이, 처음 배우는데 selector naming
 
 ---
 
@@ -31,6 +36,35 @@ retrieval-anchor-keywords: strategy vs policy selector naming, selector resolver
 짧게 외우면 이렇다.
 
 **만들면 Factory, 고르면 Selector, 해석하면 Resolver, 찾으면 Registry, 실행 방식이면 Strategy다.**
+
+`selector`라는 검색어로 들어왔는데 아직 큰 그림이 약하면, 먼저 [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)에서 생성/선택/해석 축을 자르고 다시 이 문서로 내려오면 덜 헷갈린다.
+
+---
+
+## 20초 증상 카드: raw input 해석 vs 후보 선택
+
+처음 배우는데 `Resolver`와 `Selector`가 같이 보여도, 먼저 "지금 문자열을 뜻으로 바꾸는 중인가, 이미 뜻이 정해진 후보 중 하나를 고르는 중인가"만 보면 된다.
+
+| 지금 먼저 보이는 증상 | 첫 이름 후보 | 이유 |
+|---|---|---|
+| `"CARD"`, `"tosspay"`, URL 조각, request code를 enum이나 도메인 값으로 바꾼다 | `Resolver` | raw input을 의미 있는 값으로 해석하는 책임이다 |
+| 이미 `PaymentMethod.CARD` 같은 도메인 값이 있고, 그 값으로 정책/핸들러 중 하나를 고른다 | `Selector` | 후보 selection이 중심이다 |
+| `Map<Key, Handler>`에서 등록된 bean을 그대로 찾는다 | `Registry` | 선택 기준보다 lookup 저장소 역할이 더 크다 |
+
+20초로 자르면 이 한 줄이다.
+
+**문자열을 뜻으로 바꾸면 `Resolver`, 뜻이 정해진 뒤 후보를 고르면 `Selector`다.**
+
+자주 나오는 흐름도 이 순서다.
+
+```java
+PaymentMethod method = paymentMethodResolver.resolve(request.getMethodCode());
+PaymentPolicy policy = paymentPolicySelector.select(method);
+```
+
+- `request.getMethodCode()`처럼 raw input이 아직 거칠면 `Resolver`부터 본다
+- `PaymentMethod`까지 올라오면 그다음은 `Selector`가 맞는지 본다
+- 둘 다 단순 `Map` lookup만 한다면 [Registry Primer](./registry-primer-lookup-table-resolver-router-service-locator.md)로 더 좁혀 본다
 
 ---
 

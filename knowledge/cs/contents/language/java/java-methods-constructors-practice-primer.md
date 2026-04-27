@@ -5,7 +5,7 @@
 **난이도: 🟢 Beginner**
 
 > 관련 문서:
-> - [Language README](../README.md)
+> - [Language README: Java primer](../README.md#java-primer)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 > - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
 > - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
@@ -15,7 +15,7 @@
 > - [객체지향 핵심 원리](./object-oriented-core-principles.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 
-> retrieval-anchor-keywords: java methods and constructors basics, java method constructor primer, java parameter return type basics, java method overloading basics, java constructor overloading basics, java object state change, java method practice, java constructor practice, java beginner method signature, java void vs return type, java class state update, java field state change, java instance vs static methods, java static utility method basics, java simple factory method basics
+> retrieval-anchor-keywords: java methods and constructors basics, java method constructor primer, java parameter return type basics, java method overloading basics, java constructor overloading basics, java object state change, java method practice, java constructor practice, java beginner method signature, java void vs return type, java class state update, java field state change, java instance vs static methods, java static utility method basics, java simple factory method basics, 자바 메서드 생성자 기초, 자바 메서드 생성자 차이 기초, 처음 배우는데 메서드 생성자 차이, 처음 배우는데 메서드 큰 그림, 메서드 언제 쓰는지 기초, 생성자 언제 쓰는지 기초, 자바 파라미터 리턴타입 기초, parameter return type 차이 기초, 자바 메서드 시그니처 기초, 자바 메서드 오버로딩 기초, 자바 생성자 오버로딩 기초, this super 초기화 흐름 기초, 객체 상태 변경 메서드 기초
 
 <details>
 <summary>Table of Contents</summary>
@@ -32,7 +32,7 @@
 
 ## 왜 이 문서가 필요한가
 
-Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.  
+Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.
 하지만 실제 코드에서는 다음 질문이 한 번에 묶여 나온다.
 
 - 이 객체는 어떤 값으로 시작해야 하지?
@@ -175,7 +175,7 @@ boolean success = account.withdraw(1700);
 3. `deposit(200, 50)` 후 `balance = 1550`, `transactionCount = 2`
 4. `withdraw(1700)`은 잔액 부족이라 실패하고 `false`를 반환한다
 
-즉 "return value가 있다"와 "항상 state change가 있다"는 같은 뜻이 아니다.  
+즉 "return value가 있다"와 "항상 state change가 있다"는 같은 뜻이 아니다.
 `withdraw()`는 `boolean`을 반환하지만, 실패하면 상태를 바꾸지 않을 수 있다.
 
 ### 연습 2. 요구사항을 시그니처로 바꿔 보기
@@ -209,7 +209,7 @@ public int getValue()
 
 ### constructor에도 return type을 써야 한다고 생각한다
 
-constructor는 method처럼 보여도 선언 방식이 다르다.  
+constructor는 method처럼 보여도 선언 방식이 다르다.
 클래스 이름과 같고 return type을 쓰지 않는다. `void`도 쓰지 않는다.
 
 ### return type만 다르면 overloading이라고 생각한다
@@ -218,12 +218,12 @@ constructor는 method처럼 보여도 선언 방식이 다르다.
 
 ### 상태를 바꾸는 메서드와 읽기 메서드를 구분하지 않는다
 
-`deposit()` 같은 command 성격 메서드와 `getBalance()` 같은 query 성격 메서드를 구분해서 읽는 습관이 필요하다.  
+`deposit()` 같은 command 성격 메서드와 `getBalance()` 같은 query 성격 메서드를 구분해서 읽는 습관이 필요하다.
 그래야 호출 뒤에 객체가 달라졌는지 예측할 수 있다.
 
 ### parameter와 field를 같은 것으로 느낀다
 
-parameter는 호출 시 잠깐 들어오는 입력이고, field는 객체가 계속 들고 있는 상태다.  
+parameter는 호출 시 잠깐 들어오는 입력이고, field는 객체가 계속 들고 있는 상태다.
 constructor나 method는 parameter를 받아 field를 바꿀 수 있다.
 
 ## 어떤 문서를 다음에 읽으면 좋은가

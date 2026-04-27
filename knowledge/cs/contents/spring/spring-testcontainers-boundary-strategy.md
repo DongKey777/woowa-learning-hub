@@ -6,6 +6,8 @@
 
 > 관련 문서:
 > - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
+> - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
+> - [Spring `@DynamicPropertySource` vs `@ServiceConnection`: Testcontainers에서 언제 수동 property wiring이 아직 필요한가](./spring-dynamicpropertysource-vs-serviceconnection-primer.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)

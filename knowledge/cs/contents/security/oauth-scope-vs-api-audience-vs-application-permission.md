@@ -16,7 +16,17 @@
 > - [Security README: Service / Delegation Boundaries](./README.md#service--delegation-boundaries-deep-dive-catalog)
 > - [Security README: AuthZ / Tenant / Response Contracts](./README.md#authz--tenant--response-contracts-deep-dive-catalog)
 
-retrieval-anchor-keywords: oauth scope vs audience vs permission, api audience vs scope vs permission, audience is not scope, scope is not permission, aud claim vs scope claim, resource indicator, api audience boundary, resource server boundary, gateway audience vs service audience, delegated api scope, application permission source of truth, business permission boundary, multi-service oauth vocabulary, token audience mismatch, downscoped token, token exchange audience split, scope does not grant object access, aud does not grant route access, api audience primer, oauth scope primer, application permission primer
+retrieval-anchor-keywords: oauth scope vs audience vs permission, api audience vs scope vs permission, audience is not scope, scope is not permission, aud claim vs scope claim, resource indicator, api audience boundary, resource server boundary, gateway audience vs service audience, delegated api scope, application permission source of truth, business permission boundary, multi-service oauth vocabulary, token audience mismatch, downscoped token, token exchange audience split, scope does not grant object access, aud does not grant route access, api audience primer, oauth scope primer, application permission primer, scope는 있는데 왜 이 api가 token을 안 받지, aud scope permission 차이, audience scope permission 차이, 토큰은 유효한데 api가 안 받음, aud mismatch beginner, audience mismatch beginner, scope 있는데 403, scope 있는데 왜 거부, scope 있는데 왜 안 됨, app permission이 따로 있나, aud는 맞는데 403, audience는 맞는데 permission deny, token은 valid한데 resource server reject
+
+## 증상으로 바로 찾기
+
+아래처럼 검색하거나 질문이 들어오면 이 문서가 첫 primer다.
+
+| 지금 보이는 말 | 먼저 분리할 질문 | 다음 문서 |
+|---|---|---|
+| `scope는 있는데 왜 이 API가 token을 안 받지` | 이 token이 애초에 이 API용 `audience`인가 | gateway/BFF 경계까지 보면 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md) |
+| `aud`도 맞고 `scope`도 있는데 왜 `403`이지 | 내부 app permission, tenant, ownership를 따로 보는가 | claim/role/authority 문자열까지 섞이면 [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md) |
+| `scope=orders.read`인데 왜 남의 주문은 못 읽지 | `scope`와 object-level permission을 같은 말로 읽고 있나 | object/role 축은 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -43,6 +53,12 @@ retrieval-anchor-keywords: oauth scope vs audience vs permission, api audience v
 - `aud=orders-api`면 orders API 전체 route가 다 열렸다고 생각한다.
 - `scope=orders.read`를 "모든 주문을 읽을 permission"으로 읽는다.
 - 내부 permission 변경을 OAuth scope rename이나 token 재발급 문제로만 해석한다.
+
+입문자용으로 더 짧게 외우면 이렇다.
+
+- `API가 token을 받을지`는 먼저 `audience`
+- `그 API 범위를 위임했는지`는 `scope`
+- `지금 이 행동을 최종 허용할지`는 `application permission`
 
 ---
 

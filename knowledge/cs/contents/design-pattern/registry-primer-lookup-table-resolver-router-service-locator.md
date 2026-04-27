@@ -8,13 +8,24 @@
 > - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 > - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
+> - [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md)
 > - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 > - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
 > - [디자인 패턴 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: registry primer lookup table resolver router service locator, lookup table vs registry beginner, resolver vs registry beginner, router vs registry beginner, service locator vs registry beginner, registry service locator difference, lookup table resolver router service locator difference, registry pattern beginner, registry 큰 그림, registry 기초, registry 언제 쓰는지, registry 처음 배우는데, lookup table 처음 배우는데, resolver router registry 처음 배우는데, service locator 처음 배우는데, lookup table 큰 그림, resolver 큰 그림, router 큰 그림, service locator 큰 그림, keyed lookup primer, named handler lookup primer, handler registry beginner, payment handler registry beginner, route to registry pattern, route to service locator antipattern, service locator anti pattern beginner, hidden dependency lookup beginner, 전역 조회소 안티패턴, 레지스트리 룩업 테이블, lookup table 레지스트리 차이, resolver 레지스트리 차이, router 레지스트리 차이, service locator 레지스트리 차이, 라우터 리졸버 레지스트리 차이, 서비스 로케이터 안티패턴 기초
+retrieval-anchor-keywords: router vs selector naming, router vs dispatcher naming, request dispatch router handler mapping, handler mapping beginner, request routing naming bridge
 
 ---
+
+## Quick check
+
+- key에 이미 등록된 값을 찾으면 `lookup table` / `registry`
+- 애매한 입력을 도메인 의미로 풀면 `resolver`
+- 요청을 어느 처리 경로로 보낼지 고르면 `router`
+- 코드 본문에서 전역 조회소로 의존성을 꺼내면 `service locator` 냄새
+
+헷갈리면 먼저 "`무엇을 찾나`"보다 "`어떤 질문에 답하나`"로 자르면 된다.
 
 ## 먼저 큰 그림
 
@@ -28,19 +39,30 @@ retrieval-anchor-keywords: registry primer lookup table resolver router service 
 - **Router**: "이 요청은 어느 경로나 처리자로 보내야 하는가?"
 - **Service Locator**: "내가 필요한 의존성을 전역 조회소에서 몰래 꺼내도 되는가?" 보통은 안티 패턴 신호다.
 
-즉 `lookup table`은 [Registry Pattern](./registry-pattern.md) 쪽으로,  
+즉 `lookup table`은 [Registry Pattern](./registry-pattern.md) 쪽으로,
 `service locator`는 [Service Locator Antipattern](./service-locator-antipattern.md) 쪽으로 먼저 보내면 된다.
 
 ---
 
-## 30초 구분표
+## 먼저 10초 기준
+
+처음 보면 아래 네 줄만 잡아도 절반은 끝난다.
+
+- `lookup table` / `registry`: "이 key에 등록된 것은 무엇인가?"
+- `resolver`: "이 입력을 해석하면 무엇인가?"
+- `router`: "이 요청은 어디로 보내야 하나?"
+- `service locator`: "필요한 의존성을 전역 조회소에서 꺼내고 있나?"
+
+즉 **등록 lookup인지, 입력 해석인지, 요청 분기인지, 숨은 의존성 조회인지**로 먼저 자른다.
+
+## 30초 비교표
 
 | 단어 | 먼저 묻는 질문 | 좋은 예 | 헷갈리면 다음 문서 |
 |---|---|---|---|
 | lookup table | key로 이미 있는 값이나 객체를 찾는가 | `PaymentMethod -> PaymentInfo` | [Registry Pattern](./registry-pattern.md) |
 | registry | 등록된 handler, strategy, converter를 key로 찾는가 | `PaymentMethod -> PaymentHandler` | [Registry Pattern](./registry-pattern.md) |
 | resolver | 문자열, 요청값, 이름을 의미 있는 값으로 해석하는가 | `"CARD"` -> `PaymentMethod.CARD` | [Strategy vs Policy Selector Naming](./strategy-policy-selector-naming.md) |
-| router | 요청을 어느 handler/path/queue로 보낼지 고르는가 | `/payments/card` -> payment controller | [Strategy vs Policy Selector Naming](./strategy-policy-selector-naming.md) |
+| router | 요청을 어느 handler/path/queue로 보낼지 고르는가 | `/payments/card` -> payment controller | [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md) |
 | service locator | 필요한 의존성을 코드 본문에서 전역으로 꺼내는가 | `ApplicationContext.getBean(...)` | [Service Locator Antipattern](./service-locator-antipattern.md) |
 
 가장 초보자 친화적인 기준은 이것이다.
@@ -49,7 +71,7 @@ retrieval-anchor-keywords: registry primer lookup table resolver router service 
 
 ---
 
-## 결제 예시로 한 번에 보기
+## 1분 예시: 결제 요청 하나로 나누기
 
 같은 결제 요청에서도 네 단어가 서로 다른 위치에 놓일 수 있다.
 

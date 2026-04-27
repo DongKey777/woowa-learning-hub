@@ -6,21 +6,43 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
-> - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
-> - [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)
-> - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
+관련 문서:
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+- [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)
+- [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)
+- [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
+- [Bean Name vs Domain Key Lookup](../design-pattern/bean-name-vs-domain-key-lookup.md)
 
-retrieval-anchor-keywords: spring bean naming, bean name beginner, @Component("name"), @Bean(name), default bean name, bean alias, bean rename pitfall, class rename bean name, method rename bean name, qualifier string bean name, @Qualifier bean name fallback, bean name alias qualifier, AnnotationBeanNameGenerator, Introspector.decapitalize, URLParser bean name, parameter name bean match, @Resource by name, explicit bean name vs default bean name
+retrieval-anchor-keywords: spring bean naming, bean rename pitfall, default bean name, bean alias, qualifier string rename, router vs qualifier confusion, resource vs qualifier, name driven injection, type driven injection, kotlin bean rename, nosuchbeandefinitionexception, 처음 배우는데 bean 이름이 왜 바뀌어요, qualifier 문자열이 왜 깨져요
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - Bean 등록과 DI 전체 흐름을 먼저 한 장으로 보고 싶다면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)로 이어진다.
 - 여러 후보 중 하나를 고르는 `@Primary`/`@Qualifier`/컬렉션 주입 선택은 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)로 이어진다.
+- `rename` 문제를 보다가 "이거 router로 풀어야 하나?"가 먼저 떠오르면 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 바로 빠져나가 `고정 wiring`과 `runtime 분기`를 먼저 자른다.
 - 문자열 qualifier가 반복될 때 역할 annotation으로 올리는 기준은 [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)에서 본다.
 - startup 에러가 이미 `NoSuchBeanDefinitionException`, `NoUniqueBeanDefinitionException`로 터졌다면 [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)로 바로 이어진다.
+- 특히 `NoUniqueBeanDefinitionException`가 먼저 보이면 rename보다 "여러 후보 중 하나를 어떻게 고를지"가 핵심일 수 있으니 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)로 역방향 안내한다.
+
+---
+
+## 30초 분기표: 지금 rename부터 의심해도 되는가
+
+처음에는 에러 전문을 길게 읽기보다, **예외 이름과 최근 변경 종류**만 보고 먼저 갈라 타면 된다.
+
+| 먼저 보이는 신호 | 첫 판단 | 바로 다음 행동 |
+|---|---|---|
+| `NoSuchBeanDefinitionException` + 방금 클래스명/`@Bean` 메서드명/`@Qualifier` 문자열을 바꿨다 | `rename` 때문에 **이름 계약이 끊겼을 가능성**이 크다 | 아래 1, 2, 5장을 보고 기본 bean 이름이 바뀌었는지와 old qualifier 문자열이 남았는지 확인한다 |
+| `NoUniqueBeanDefinitionException` | rename보다 **같은 타입 후보가 여러 개라 선택 실패**했을 가능성이 크다 | 이 문서보다 먼저 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md)로 간다 |
+| `qualifier` 문자열이 반복돼서 "이거 router 문제 아닌가?"가 먼저 든다 | rename보다 **고정 wiring과 runtime 분기를 섞어 읽는 중**일 수 있다 | [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 먼저 가서 router 경계를 자른다 |
+| `NoSuchBeanDefinitionException`인데 rename은 안 했고 starter/scan/config를 건드렸다 | rename보다 **bean 자체가 안 올라왔을 가능성**이 크다 | [Spring DI 예외 빠른 판별](./spring-di-exception-quick-triage.md)이나 scan/condition 문서로 가서 등록 누락부터 본다 |
+
+한 줄로 줄이면 이렇다.
+
+- `NoUnique`면 먼저 "무엇을 고를지" 문제다.
+- `NoSuch` + rename 직후면 "이름이 바뀌었는지" 문제다.
+- `NoSuch` + 등록 경로 변경 직후면 "bean이 아예 생겼는지" 문제다.
 
 ---
 
@@ -33,6 +55,10 @@ retrieval-anchor-keywords: spring bean naming, bean name beginner, @Component("n
 - `@Qualifier("name")`는 보통 **같은 타입 후보 안에서 이름이나 qualifier 값으로 더 좁히는 장치**다
 
 beginner가 자주 헷갈리는 지점은 "`@Qualifier(\"name\")`면 무조건 bean id를 집는 것 아닌가?"인데, Spring은 먼저 **타입 후보를 모은 뒤** 그 안에서 qualifier와 bean 이름을 본다.
+
+> 역방향 안내:
+> `NoUniqueBeanDefinitionException`는 보통 "이름이 깨졌다"보다 "타입 후보가 여러 개라 하나를 못 골랐다"에 가깝다.
+> 이 경우 rename 추적보다 먼저 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md)에서 선택 규칙을 고른다.
 
 ---
 
@@ -56,7 +82,7 @@ public class URLParser {
 }
 ```
 
-이 경우 기본 bean 이름은 `uRLParser`가 아니라 `URLParser`다.  
+이 경우 기본 bean 이름은 `uRLParser`가 아니라 `URLParser`다.
 Spring이 기본 이름을 만들 때 Java `Introspector.decapitalize` 규칙을 따라가기 때문이다.
 
 beginner 실수는 대개 여기서 나온다.
@@ -99,8 +125,21 @@ public class PaymentConfig {
 }
 ```
 
-이제 bean 이름은 `primaryPaymentClient`가 된다.  
+이제 bean 이름은 `primaryPaymentClient`가 된다.
 즉, `@Bean` 메서드 rename은 생각보다 쉽게 qualifier 문자열을 깨뜨린다.
+
+Kotlin도 규칙은 같다. `fun` 이름이 곧 기본 bean 이름이 된다.
+
+| 선언 언어 | 이름 없는 `@Bean` 선언 | 실제 기본 bean 이름 |
+|---|---|---|
+| Java | `paymentClient()` | `paymentClient` |
+| Kotlin | `fun paymentClient()` | `paymentClient` |
+
+초보자 감각으로는 이렇게 보면 된다.
+
+- `@Bean` 이름을 안 적었다
+- 그러면 Java의 메서드명, Kotlin의 함수명이 bean 이름이 된다
+- 그래서 **Kotlin에서 함수 rename도 bean rename**이다
 
 이 위험을 줄이는 가장 쉬운 방법은 이름을 명시하는 것이다.
 
@@ -116,6 +155,59 @@ public class PaymentConfig {
 ```
 
 이제 메서드명을 `primaryPaymentClient`에서 `kakaoGatewayClient`로 바꿔도 bean 이름은 계속 `mainPaymentClient`다.
+
+## 2-1. Kotlin 함수 rename은 bean rename일 수 있다
+
+Kotlin 설정 코드에서 아래 패턴이 자주 나온다.
+
+```kotlin
+@Configuration
+class PaymentConfig {
+
+    @Bean
+    fun kakaoPaymentClient(): PaymentClient {
+        return KakaoPaymentClient()
+    }
+}
+
+@Service
+class BillingService(
+    @Qualifier("kakaoPaymentClient")
+    private val paymentClient: PaymentClient,
+)
+```
+
+처음에는 "`@Qualifier` 문자열만 바꾸면 되겠지"라고 보기 쉬운데, 실제로는 반대 순서로 보는 편이 안전하다.
+
+1. 이름 없는 `@Bean`인가?
+2. 그렇다면 Kotlin `fun` 이름이 bean 이름인가?
+3. 그 이름을 `@Qualifier("...")`가 기대하고 있는가?
+
+예를 들어 함수명을 이렇게 바꾸면:
+
+```kotlin
+@Configuration
+class PaymentConfig {
+
+    @Bean
+    fun mainPaymentClient(): PaymentClient {
+        return KakaoPaymentClient()
+    }
+}
+```
+
+bean 이름도 같이 `mainPaymentClient`로 바뀐다.
+하지만 주입 쪽이 아직 `@Qualifier("kakaoPaymentClient")`면 `NoSuchBeanDefinitionException` 경로로 깨질 수 있다.
+
+짧게 비교하면 이렇다.
+
+| Kotlin 변경 | bean 이름 변화 | 문자열 주입 영향 |
+|---|---|---|
+| `fun kakaoPaymentClient()` -> `fun mainPaymentClient()` | 바뀜 | `@Qualifier("kakaoPaymentClient")`가 깨질 수 있음 |
+| `@Bean("mainPaymentClient") fun kakaoPaymentClient()` -> 함수명만 rename | 안 바뀜 | `@Qualifier("mainPaymentClient")`는 유지 가능 |
+| `@Bean("mainPaymentClient", "kakaoPaymentClient")`로 잠깐 alias 운영 | 새 이름과 옛 이름 둘 다 허용 | 점진 migration 가능 |
+
+즉, Kotlin에서 rename 안전성을 높이고 싶다면 "함수명을 예쁘게 바꾼다"보다 **bean 이름 계약을 먼저 분리한다**가 핵심이다.
 
 ---
 
@@ -224,7 +316,7 @@ public class BillingService {
 }
 ```
 
-여기서 클래스명을 `MainPaymentClient`로 바꾸면 기본 bean 이름도 `mainPaymentClient`로 바뀐다.  
+여기서 클래스명을 `MainPaymentClient`로 바꾸면 기본 bean 이름도 `mainPaymentClient`로 바뀐다.
 그런데 qualifier 문자열은 그대로 `kakaoPaymentClient`면 주입이 깨진다.
 
 ### 5-2. 이름 없는 `@Bean` + 문자열 qualifier
@@ -240,8 +332,28 @@ public class PaymentConfig {
 }
 ```
 
-이 상태에서 메서드명을 `mainPaymentClient()`로 바꾸면, bean 이름도 같이 바뀐다.  
+이 상태에서 메서드명을 `mainPaymentClient()`로 바꾸면, bean 이름도 같이 바뀐다.
 이미 `@Qualifier("kakaoPaymentClient")`가 퍼져 있으면 같이 깨진다.
+
+Kotlin도 같은 식으로 읽으면 된다.
+
+```kotlin
+@Configuration
+class PaymentConfig {
+
+    @Bean
+    fun kakaoPaymentClient(): PaymentClient {
+        return KakaoPaymentClient()
+    }
+}
+```
+
+여기서 `fun kakaoPaymentClient()`를 `fun mainPaymentClient()`로 rename하면, Spring 입장에서는 bean 이름도 함께 rename한 셈이다.
+
+여기서 바로 기억할 한 줄은 이것이다.
+
+- **Kotlin `fun` rename != 코드 정리만 한 것**
+- 이름 없는 `@Bean`이라면 **DI 이름 계약까지 바꾼 것**이다
 
 ### 5-3. 주입 파라미터명 fallback도 rename 함정이 될 수 있다
 
@@ -255,7 +367,7 @@ public class BillingService {
 }
 ```
 
-이런 코드는 겉보기엔 qualifier가 없지만, 사실상 이름 계약이 숨어 있을 수 있다.  
+이런 코드는 겉보기엔 qualifier가 없지만, 사실상 이름 계약이 숨어 있을 수 있다.
 그래서 parameter rename만 해도 해석 결과가 달라질 수 있다.
 
 beginner 기준으로는 아래만 기억하면 된다.
@@ -280,9 +392,32 @@ beginner 기준으로는 아래만 기억하면 된다.
 - `@Autowired` + `@Qualifier`는 기본적으로 **type-driven injection**
 - `@Resource(name = "...")`는 기본적으로 **name-driven injection**
 
+## 6-1. `@Resource` vs `@Qualifier` 한 표로 끝내기
+
+rename 문서에서 마지막 선택지가 자꾸 느리게 읽히면, 아래 표만 먼저 보면 된다.
+
+| 비교 축 | `@Autowired` + `@Qualifier("mainPaymentClient")` | `@Resource(name = "mainPaymentClient")` |
+|---|---|---|
+| 초보자용 한 줄 감각 | "이 타입 후보들 중 이쪽을 더 좁힌다" | "이 이름의 bean을 바로 찾는다" |
+| 기본 출발점 | 타입 후보 수집 | 이름 매칭 |
+| rename에 민감한 지점 | bean 이름 문자열, qualifier 문자열 | bean 이름 문자열 |
+| 잘 맞는 상황 | 생성자 주입에서 특정 후보 1개를 고정 | 필드/setter 주입에서 이름 계약 자체가 핵심 |
+| 이 문서에서의 해석 | type-driven 주입 쪽 | name-driven 주입 쪽 |
+
+처음엔 이렇게만 외우면 충분하다.
+
+- "같은 타입 후보가 여러 개라서 이번 파라미터 하나만 고른다"면 `@Qualifier`
+- "애초에 이 이름의 bean을 집는 게 의도다"면 `@Resource`
+- 생성자 주입을 유지하고 싶다면 실무에서는 대체로 `@Qualifier`나 커스텀 qualifier가 더 자연스럽다
+
 즉, "이 역할의 같은 타입 후보 중에서 좁힌다"면 qualifier 쪽이고, "유일한 이 이름을 집는다"가 핵심이면 `@Resource`가 더 의미상 가깝다.
 
 다만 `@Resource`는 생성자 파라미터에 붙이는 도구가 아니므로, 생성자 주입에서는 explicit bean name + `@Qualifier`나 커스텀 qualifier 쪽이 현실적인 선택이다.
+
+Kotlin 초급자에게는 아래 두 줄이 가장 실용적이다.
+
+- 함수명 rename을 자주 할 것 같으면 `@Bean("stableName")`로 bean 이름을 먼저 고정한다
+- 문자열 `@Qualifier`가 자꾸 따라다니면 [Spring 커스텀 `@Qualifier` 입문](./spring-custom-qualifier-primer.md)으로 넘어가 역할 annotation으로 올린다
 
 ---
 
@@ -291,6 +426,7 @@ beginner 기준으로는 아래만 기억하면 된다.
 | 질문 | 먼저 볼 문서 |
 |---|---|
 | bean이 어떻게 등록되고 주입되는지 전체 감각이 부족하다 | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| `NoUniqueBeanDefinitionException`가 떠서 rename 문제인지 헷갈린다 | [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md) |
 | 같은 타입 후보가 여러 개일 때 `@Primary`/`@Qualifier`/컬렉션 중 뭘 써야 할지 헷갈린다 | [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md) |
 | 문자열 qualifier를 역할 annotation으로 올려야 할지 고민된다 | [Spring 커스텀 `@Qualifier` 입문](./spring-custom-qualifier-primer.md) |
 | 에러가 이미 `NoSuchBeanDefinitionException`로 터졌다 | [Spring DI 예외 빠른 판별](./spring-di-exception-quick-triage.md) |

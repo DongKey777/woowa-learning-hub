@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Software Engineering README: Data Migration Rehearsal, Reconciliation, Cutover](./README.md#data-migration-rehearsal-reconciliation-cutover)
 > - [Strangler Fig Migration, Contract, Cutover](./strangler-fig-migration-contract-cutover.md)
 > - [Migration Scorecards](./migration-scorecards.md)
 > - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
@@ -166,3 +167,8 @@ data migration의 핵심은 속도가 아니라, **어떤 차이를 허용하고
 ## 한 줄 정리
 
 Data migration rehearsal, reconciliation, cutover는 데이터 전환을 단순 배포가 아니라 정합성 검증과 권한 전환이 포함된 운영 프로그램으로 다루는 관점이다.
+
+## 다음 읽기
+
+- 다음 한 걸음: [Migration Wave Governance and Decision Rights](./migration-wave-governance-decision-rights.md) - rehearsal과 reconciliation 결과를 누가 어떤 기준으로 승인할지 이어서 정리할 수 있다.
+- README로 돌아가기: [Software Engineering README](./README.md#data-migration-rehearsal-reconciliation-cutover) - migration scorecard, consumer adoption 같은 후속 문서를 다시 고르기 쉽다.

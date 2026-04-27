@@ -39,6 +39,10 @@
 > - cutover shadow escalation
 > - deprecation bypass shadow escalation
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Shadow Forum Escalation Rules](./README.md#shadow-forum-escalation-rules)
+> - 다음 단계: [Shadow Catalog Lifecycle States](./shadow-catalog-lifecycle-states.md)
+
 ## 핵심 개념
 
 local stewardship forum의 목적은 shadow backlog를 빠르게 소화하는 것이다.

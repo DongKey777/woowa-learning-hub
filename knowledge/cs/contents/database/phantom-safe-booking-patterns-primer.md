@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
 - [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md)
 - [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md)
 - [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md)
@@ -15,7 +16,7 @@
 - [Overlap Predicate Index Design for Booking Tables](./overlap-predicate-index-design-booking-tables.md)
 - [Slotization Precheck Queries for Overlaps, Rounding Collisions, and DST Boundaries](./slotization-precheck-overlap-rounding-dst.md)
 
-retrieval-anchor-keywords: phantom-safe booking patterns, phantom-safe booking primer, booking overlap primer, unique-slot, unique slot, slot unique key, booking slot claim, exclusion-constraint, exclusion constraint, guard-row, guard row, double booking prevention, booking overlap design, overlap check pattern matrix, unique slot vs exclusion constraint vs guard row, discrete slot booking, continuous interval booking, PostgreSQL overlap constraint, MySQL booking guard
+retrieval-anchor-keywords: phantom-safe booking patterns, phantom-safe booking primer, booking overlap primer, unique-slot, unique slot, slot unique key, booking slot claim, exclusion-constraint, exclusion constraint, guard-row, guard row, double booking prevention, booking overlap design, overlap check pattern matrix, unique slot vs exclusion constraint vs guard row, exclusion constraint vs slot row, continuous interval vs discrete slot, discrete slot booking, continuous interval booking, PostgreSQL overlap constraint, MySQL booking guard
 
 ## 핵심 개념
 
@@ -26,7 +27,7 @@ retrieval-anchor-keywords: phantom-safe booking patterns, phantom-safe booking p
 
 이 방식은 동시에 두 요청이 같은 "없음"을 관찰하면 phantom이나 write skew로 쉽게 샌다.
 
-phantom-safe 설계의 핵심은 조회 결과를 믿지 않는 것이다.  
+phantom-safe 설계의 핵심은 조회 결과를 믿지 않는 것이다.
 대신 "충돌 가능한 요청이 어디서 반드시 부딪히는가"를 저장 시점에 고정한다.
 
 - `unique-slot`: slot claim row의 PK/UNIQUE가 부딪히게 만든다
@@ -77,7 +78,7 @@ CREATE TABLE room_slot_claim_active (
 
 ### 왜 phantom-safe한가
 
-부재 기반 판단을 "겹치는 slot row가 아직 없다"는 exact key 충돌로 바꿔 버리기 때문이다.  
+부재 기반 판단을 "겹치는 slot row가 아직 없다"는 exact key 충돌로 바꿔 버리기 때문이다.
 즉 phantom을 abstract interval이 아니라 **실제 존재해야 하는 slot row**로 내린다.
 
 ### 놓치기 쉬운 함정
@@ -113,7 +114,7 @@ WHERE (status IN ('HELD', 'CONFIRMED', 'BLACKOUT'));
 
 ### 왜 phantom-safe한가
 
-애플리케이션이 "겹치는 row가 없는지"를 먼저 판단하지 않아도,  
+애플리케이션이 "겹치는 row가 없는지"를 먼저 판단하지 않아도,
 DB가 overlapping active interval을 insert/update 시점에 직접 거부하기 때문이다.
 
 ### 놓치기 쉬운 함정
@@ -123,7 +124,7 @@ DB가 overlapping active interval을 insert/update 시점에 직접 거부하기
 - capacity가 1보다 큰 문제나 multi-table arbitration까지 제약 하나로 닫히지는 않는다
 - 운영 테이블에 바로 추가하기 전에 overlap preflight scan과 lifecycle 정리가 필요하다
 
-즉 exclusion constraint는 continuous overlap에는 매우 직접적이지만,  
+즉 exclusion constraint는 continuous overlap에는 매우 직접적이지만,
 "예약끼리 2개 이상 허용", "room type pool에서 팔고 나중에 room_id를 붙임" 같은 문제로 가면 다른 surface가 필요하다.
 
 ## 패턴 3. guard row
@@ -152,7 +153,7 @@ guard key는 workload에 따라 달라진다.
 
 ### 왜 phantom-safe한가
 
-충돌 가능한 요청이 모두 같은 guard key를 먼저 잠그면,  
+충돌 가능한 요청이 모두 같은 guard key를 먼저 잠그면,
 absence check와 insert/update가 사실상 직렬화되기 때문이다.
 
 단, 이 조건이 빠지면 바로 샌다.
@@ -168,24 +169,24 @@ absence check와 insert/update가 사실상 직렬화되기 때문이다.
 - canonical ordering이 없으면 deadlock이 booking volume보다 먼저 문제를 만든다
 - hot resource는 duplicate storm 대신 lock wait hotspot으로 바뀐다
 
-guard row는 "MySQL이라서 어쩔 수 없이 쓰는 우회"라기보다,  
+guard row는 "MySQL이라서 어쩔 수 없이 쓰는 우회"라기보다,
 multi-path booking workflow를 한 admission protocol로 묶기 위한 적극적인 선택지에 가깝다.
 
 ## 어떤 질문으로 고르면 되나
 
 ### 1. 시간이 이미 discrete한가
 
-그렇다면 `unique-slot`이 1차 후보다.  
+그렇다면 `unique-slot`이 1차 후보다.
 slot row가 곧 truth가 되므로 엔진 차이를 가장 덜 탄다.
 
 ### 2. continuous interval이 business truth이고 PostgreSQL을 쓰는가
 
-그렇다면 exclusion constraint가 가장 직접적이다.  
+그렇다면 exclusion constraint가 가장 직접적이다.
 단일 active table 안에서 닫히는 overlap은 이 방식이 설명과 복구가 가장 짧다.
 
 ### 3. write path가 여러 개고 transition도 함께 통일해야 하는가
 
-그렇다면 guard row를 먼저 본다.  
+그렇다면 guard row를 먼저 본다.
 신규 예약, 연장, 취소, expiry cleanup, admin override를 같은 queue surface로 묶기 쉽다.
 
 ### 4. 패배 요청을 어떻게 다루고 싶은가
@@ -193,7 +194,7 @@ slot row가 곧 truth가 되므로 엔진 차이를 가장 덜 탄다.
 - 빠른 reject가 좋으면: `unique-slot`, exclusion constraint
 - queued serialization이 좋으면: guard row
 
-즉 세 패턴의 차이는 "무엇이 더 안전한가"가 아니라  
+즉 세 패턴의 차이는 "무엇이 더 안전한가"가 아니라
 **어디에서 경쟁을 줄 세우고, 어디에서 conflict를 설명할 것인가**에 더 가깝다.
 
 ## 실전 판단 예시
@@ -220,20 +221,20 @@ slot row가 곧 truth가 되므로 엔진 차이를 가장 덜 탄다.
 
 ### "`SELECT ... FOR UPDATE` overlap probe면 충분한가?"
 
-보통 아니다.  
+보통 아니다.
 base booking table의 overlap predicate는 B-tree scan axis와 business overlap이 어긋나기 쉽고, MySQL에서는 isolation/plan/index shape에 따라 lock footprint가 흔들린다.
 
 ### "guard row를 잠갔으면 exact overlap recheck는 필요 없나?"
 
-아니다.  
+아니다.
 guard row는 동시성 queue를 만드는 도구이지, 실제 점유 구간을 자동으로 계산해 주는 도구는 아니다.
 
 ### "exclusion constraint면 모든 예약 문제를 끝낼 수 있나?"
 
-아니다.  
+아니다.
 capacity > 1, multi-table arbitration, later assignment, external inventory는 guard row나 ledger까지 같이 봐야 한다.
 
 ## 한 줄 정리
 
-booking overlap check에서 phantom-safe를 얻는 방법은 하나가 아니다.  
+booking overlap check에서 phantom-safe를 얻는 방법은 하나가 아니다.
 시간이 discrete하면 `unique-slot`, PostgreSQL continuous interval이면 exclusion constraint, multi-path booking workflow나 MySQL 중심 설계면 guard row를 먼저 검토하면 된다.

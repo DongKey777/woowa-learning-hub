@@ -8,9 +8,11 @@
 
 관련 문서:
 
+- [Subprocess Symptom First-Branch Guide](./subprocess-symptom-first-branch-guide.md)
 - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 - [Process Spawn API Comparison: `fork()`, `vfork()`, `posix_spawn()`, `exec()`, `clone()`](./process-spawn-api-comparison.md)
 - [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
+- [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)
 - [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)
 - [posix_spawn File Actions Primer](./posix-spawn-file-actions-primer.md)
 - [posix_spawn Attributes Primer](./posix-spawn-attributes-primer.md)
@@ -20,9 +22,17 @@
 - [signals, process supervision](./signals-process-supervision.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: subprocess fd hygiene basics, subprocess pipe redirection, subprocess stdout redirect, subprocess stdin redirect, stdout buffering after redirect, child output delayed pipe, fd wiring vs stdio buffering, popen runtime wrapper mapping, popen pipe fd mapping, subprocess PIPE mapping, pipe redirection basics, dup2 redirect basics, close-on-exec basics, exec fd leak, leaked pipe eof, pipe2 o_cloexec, dup2 stdin stdout stderr, close_fds mental model, subprocess spawn api fd hygiene, fork exec pipe eof, posix_spawn file actions basics, shell wrapper descriptor leak, close_fds pass_fds mental model, pass_fds fd inheritance, fd hygiene 처음 배우는데, 서브프로세스 뭐예요
+retrieval-anchor-keywords: subprocess fd hygiene basics, subprocess symptom first branch guide, subprocess comparison table, subprocess pipe redirection, subprocess stdout redirect, subprocess stdin redirect, stdout buffering after redirect, child output delayed pipe, fd wiring vs stdio buffering, popen runtime wrapper mapping, popen pipe fd mapping, subprocess PIPE mapping, pipe redirection basics, dup2 redirect basics, close-on-exec basics, exec fd leak, leaked pipe eof, pipe2 o_cloexec, dup2 stdin stdout stderr, close_fds mental model, subprocess spawn api fd hygiene, fork exec pipe eof, posix_spawn file actions basics, shell wrapper descriptor leak, shell wrapper quoting boundary, close_fds pass_fds mental model, pass_fds fd inheritance, subprocess fd hygiene self-check, beginner handoff box, primer handoff box, subprocess primer flow, subprocess learning path, subprocess fd hygiene 다음 문서, 서브프로세스 fd 자가 점검, fd hygiene 처음 배우는데, 서브프로세스 뭐예요, lsof FIFO subprocess, lsof deleted 뜻, lsof REG IPv4 FIFO
 
-## 핵심 개념
+## Subprocess Primer Handoff
+
+> **이 문서는 subprocess 입문 흐름의 1단계다**
+>
+> - 출발점: [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)에서 parent/child, `pipe`, `waitpid()` 그림을 먼저 잡는다
+> - 지금 문서의 질문: "child에 남길 fd와 바로 닫을 fd를 어떻게 구분하지?"
+> - 다음 문서: [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)에서 "배선은 맞는데 왜 child가 출력하다 멈추지?"를 잇는다
+
+## 먼저 잡는 멘탈 모델
 
 subprocess를 띄울 때 가장 많이 섞이는 질문은 이것이다.
 
@@ -65,7 +75,7 @@ parent
 
 ## spawn API 선택이 바꾸는 것: hygiene를 어디에 적는가
 
-초보자가 자주 헷갈리는 지점은 "`fork()`를 쓰느냐 `posix_spawn()`을 쓰느냐에 따라 규칙 자체가 달라지나?"다.  
+초보자가 자주 헷갈리는 지점은 "`fork()`를 쓰느냐 `posix_spawn()`을 쓰느냐에 따라 규칙 자체가 달라지나?"다.
 결론부터 말하면 **규칙은 거의 같고, 그 규칙을 코드 어디에 적는지만 달라진다.**
 
 | launch 모양 | stdio / fd 정리를 적는 위치 | beginner-safe 기본값 | 자주 나는 실수 |
@@ -82,6 +92,8 @@ parent
 - `close()`는 parent/child가 **현재 시점에 쥔 불필요한 끝**을 정리한다
 
 즉 API 선택은 표현 방식의 차이이고, hygiene 기본 원칙은 같다.
+
+다만 `shell=True`, `sh -c`, shell script wrapper처럼 shell이 한 겹 끼면 "fd가 target에 직접 가는가, shell에도 먼저 보이는가"라는 boundary가 추가된다. 이 감각은 [Shell Wrapper Boundary Primer](./shell-wrapper-boundary-primer.md)에서 따로 떼어 읽는 편이 쉽다.
 
 stdout/stderr redirect 배선은 맞는데 parent가 출력을 늦게 받는다면 fd 문제가 아니라 child stdio buffering일 수 있다. 이 차이는 [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)에서 따로 분리해 읽는 편이 안전하다.
 
@@ -186,7 +198,7 @@ reader 입장에서는 둘 다 똑같이 보인다.
 - 현재 parent/child의 정리 실수면 `close()` 문제다
 - 예상 밖 helper/subprocess까지 write end가 갔다면 `CLOEXEC` / close policy 문제다
 
-그래서 EOF가 안 오면 "`close()`만 보면 된다"도 틀리고 "`CLOEXEC`만 보면 된다"도 틀리다.  
+그래서 EOF가 안 오면 "`close()`만 보면 된다"도 틀리고 "`CLOEXEC`만 보면 된다"도 틀리다.
 둘을 같이 봐야 한다.
 
 ## 흔한 실수 빠른 비교
@@ -261,6 +273,20 @@ dup2(pipe_write_end, STDOUT_FILENO)
 - `pipe2(O_CLOEXEC)`가 빠졌는지 본다
 - parent가 child-side end를 즉시 닫았는지 본다
 
+작게 읽는 표:
+
+| `lsof` 표시 | subprocess 문맥에서 먼저 떠올릴 뜻 |
+|---|---|
+| `FIFO` | parent-child 사이 pipe일 가능성이 크다. EOF가 안 오면 누가 반대쪽 end를 아직 들고 있는지 본다. |
+| `REG` | redirect 대상 일반 파일이다. stdout/stderr가 파일로 빠지는지 확인할 때 본다. |
+| `IPv4` | child가 네트워크 socket도 함께 상속했을 수 있다. 원치 않는 listener/socket leak 여부를 의심한다. |
+| `(deleted)` | 지워진 파일이지만 fd는 아직 살아 있다. log file reopen 누락이나 temp file 정리 실패를 떠올린다. |
+
+흔한 오해:
+
+- `FIFO`가 보인다고 named pipe만 뜻하는 것은 아니다. 초보자 관찰에서는 "pipe 계열 연결선"으로 먼저 읽으면 충분하다.
+- `(deleted)`는 "곧 정리될 것"이 아니라 "아직 열린 참조가 남아 있다"는 경고에 가깝다.
+
 ### 시나리오 2: 재시작했는데 포트가 계속 잡혀 있다
 
 가능한 원인:
@@ -298,14 +324,27 @@ dup2(pipe_write_end, STDOUT_FILENO)
 > Q: `fork()+exec()` 대신 `posix_spawn()`을 쓰면 `CLOEXEC`를 신경 안 써도 되나요?
 > 핵심: 아니다. API가 바뀌어도 원치 않는 fd를 기본적으로 넘기지 않는 원칙은 같고, 생성 시점 `O_CLOEXEC`가 여전히 가장 안전한 출발점이다.
 
-## 이 문서 다음에 보면 좋은 문서
+## Self-check (자가 점검 4문항)
 
-- `exec()` 경계의 leak를 더 깊게 보려면 [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
-- `popen()` / `PIPE` / `close_fds` / `pass_fds` 옵션을 OS-level pipe와 fd table로 번역해 보려면 [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
-- redirect 배선은 맞는데 child 출력이 늦게 보이는 이유를 보려면 [Stdio Buffering After Redirect](./stdio-buffering-after-redirect.md)
-- `dup()`와 shared open file description까지 같이 보려면 [Open File Description, dup, fork, Shared Offsets](./open-file-description-dup-fork-shared-offsets.md)
-- local IPC primitive 선택까지 넓히려면 [pipe, socketpair, eventfd, memfd IPC Selection](./pipe-socketpair-eventfd-memfd-ipc-selection.md)
-- supervision / reaping 흐름을 같이 보려면 [signals, process supervision](./signals-process-supervision.md)
+아래 질문은 시험이 아니라, 지금 이해한 축을 말로 꺼내 보고 다음 문서를 고르기 위한 점검이다. 먼저 짧게 답해 보고, 막히면 바로 아래 `힌트`만 확인해 보자.
+
+1. `CLOEXEC`가 막는 문제(`exec` 경계 leak)와 `close()`가 푸는 문제(EOF/lifecycle 정리)를 말로 분리해 설명할 수 있는가?
+   힌트: `CLOEXEC`는 새 프로그램으로 fd가 새는 일을 막고, `close()`는 현재 파이프 생명주기를 끝내는 동작이다.
+2. "`기본값은 close all, 필요한 것만 명시 inherit`" 원칙을 `fork()+exec()`와 `posix_spawn()` 둘 다에 적용해 볼 수 있는가?
+   힌트: 어떤 생성 API를 쓰든 기본은 최소 상속이고, 필요한 fd만 의도적으로 남긴다는 사고가 안전하다.
+3. child redirect에서 `dup2()` 뒤 원래 pipe end를 parent/child가 각각 왜 닫아야 하는지 설명할 수 있는가?
+   힌트: 새 표준 입출력 자리에 복제한 뒤 원본까지 들고 있으면 EOF 판정과 자원 정리가 꼬이기 쉽다.
+4. "child는 종료됐는데 parent read가 EOF를 못 받는 상황"에서 먼저 확인할 주체(누가 write end를 들고 있는지)를 떠올릴 수 있는가?
+   힌트: 누군가 write end 복사본을 아직 열어 두면 커널은 아직 쓰는 쪽이 남았다고 판단한다.
+
+## 여기까지 이해했으면 다음 deep-dive
+
+> **Beginner handoff box**
+>
+> - "`stdout=PIPE`인데 왜 child가 `write()`에서 멈추지?"가 남으면: [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
+> - "`popen()` / `PIPE` / `close_fds` 옵션이 실제 fd table에서 어떻게 보이지?"를 보고 싶으면: [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
+> - "`exec()` 뒤에도 fd leak를 왜 계속 신경 써야 하지?"를 더 파려면: [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
+> - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 한 줄 정리
 

@@ -12,7 +12,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 
-retrieval-anchor-keywords: ConditionalOnClass beginner, @ConditionalOnClass classpath trap, starter present auto-configuration missing, starter 있는데 bean 없음, same code different classpath, classpath difference bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, transitive optional dependency missing, testImplementation bean only in test, testRuntimeOnly bean only in test, WebMvcTest auto-configuration missing, DataJpaTest auto-configuration missing, slice vs full context auto-configuration, starter missing only in CI, starter missing only in prod, did not find required class, found required class, condition evaluation required class not found, positive matches classpath, negative matches classpath, condition report classpath example, conditions endpoint classpath example
+retrieval-anchor-keywords: ConditionalOnClass beginner, @ConditionalOnClass classpath trap, starter present auto-configuration missing, starter 있는데 bean 없음, same code different classpath, classpath difference bean missing, compileOnly bean missing, provided dependency bean missing, optional dependency bean missing, transitive optional dependency missing, testImplementation bean only in test, testRuntimeOnly bean only in test, WebMvcTest auto-configuration missing, DataJpaTest auto-configuration missing, slice vs full context auto-configuration, starter missing only in CI, starter missing only in prod, did not find required class, found required class, condition evaluation required class not found, positive matches classpath, negative matches classpath, condition report classpath example, conditions endpoint classpath example, WebMvcTest omission vs negative match, slice omission matrix, ConditionalOnClass negative match matrix, test slice report interpretation, auto configuration omitted from slice
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -31,7 +31,7 @@ starter 추가 = auto-configuration 후보 등록
 @ConditionalOnClass = "지금 이 실행의 classpath에 필요한 class가 있나?"
 ```
 
-즉 "`starter`를 넣었다"는 말은 아직 절반만 맞다.  
+즉 "`starter`를 넣었다"는 말은 아직 절반만 맞다.
 실제 bean 생성은 **현재 실행 환경의 classpath**가 조건을 통과해야 이어진다.
 
 그래서 같은 저장소라도 아래 셋은 결과가 달라질 수 있다.
@@ -117,7 +117,7 @@ AcmeClientAutoConfiguration:
 - `found required class`면 classpath 관문은 통과했다.
 - `did not find required class`면 classpath 관문에서 이미 멈췄다.
 
-Boot 버전에 따라 source 이름이나 문장 순서는 조금 달라도, 초보자가 잡아야 할 단서는 거의 이 두 표현이다.  
+Boot 버전에 따라 source 이름이나 문장 순서는 조금 달라도, 초보자가 잡아야 할 단서는 거의 이 두 표현이다.
 Actuator `conditions` endpoint도 같은 방향으로 읽으면 된다.
 
 | report에서 먼저 보이는 표현 | beginner 해석 | 다음 질문 |
@@ -186,7 +186,7 @@ auto-configuration 후보는 보였다
 | `compileOnly`, `provided` 계열 | 컴파일 시점 또는 컨테이너 제공 환경 | IDE/컨테이너에서는 되는데 executable jar, worker, CI 실행에서 bean이 빠진다 |
 | `testImplementation`, `testRuntimeOnly` 계열 | 테스트 실행에서만 | 테스트는 통과하지만 실제 앱/운영에서는 bean이 없다 |
 
-여기서 beginner가 자주 헷갈리는 점은 `runtimeOnly` 자체를 문제로 보는 것이다.  
+여기서 beginner가 자주 헷갈리는 점은 `runtimeOnly` 자체를 문제로 보는 것이다.
 `@ConditionalOnClass`는 **런타임 classpath 검사**라서 `runtimeOnly`가 맞는 설계일 수도 있다.
 
 문제는 scope 이름 하나가 아니라, **환경마다 실제로 어떤 runtime classpath를 쓰는가**다.
@@ -207,7 +207,7 @@ auto-configuration 후보는 보였다
 
 두 번째 함정은 starter 또는 라이브러리 쪽에서 **구현 dependency를 optional로 둔 경우**다.
 
-이 패턴 자체는 이상한 설계가 아니다.  
+이 패턴 자체는 이상한 설계가 아니다.
 오히려 driver, SDK, cloud client처럼 무거운 구현체를 소비자 앱이 직접 고르도록 하려면 흔하다.
 
 하지만 beginner 입장에서는 아래 오해가 자주 생긴다.
@@ -255,7 +255,24 @@ auto-configuration 후보는 보였다
 | target auto-configuration이 있고 `@ConditionalOnClass did not find required class`가 뜬다 | classpath 문제다 |
 | target auto-configuration이 slice에서 아예 안 보이거나 선택적으로만 보인다 | slice boundary 문제다 |
 
-즉 `@WebMvcTest`에서 bean이 없다고 바로 "`starter`가 안 먹었다"로 결론 내리면 안 된다.  
+### `@WebMvcTest` 누락 vs 진짜 negative match 빠른 비교표
+
+초보자는 아래 표 하나만 기억해도 report를 훨씬 덜 헷갈린다.
+
+| 상황 | report에서 먼저 보이는 단서 | beginner 해석 | 첫 다음 행동 |
+|---|---|---|---|
+| `@WebMvcTest`라서 대상 auto-configuration이 애초에 slice에 안 들어옴 | target auto-configuration 이름이 report에 거의 안 보이거나, MVC 관련 것만 보임 | "classpath에서 class를 못 찾은 것"이 아니라 **이 테스트가 그 자동 구성을 평가할 판 자체가 아님** | 같은 증상을 `@SpringBootTest`에서도 재현되는지 먼저 본다 |
+| auto-configuration은 평가됐지만 `@ConditionalOnClass`가 실패함 | `Negative matches` 아래에 `did not find required class`가 직접 찍힘 | slice 여부와 별개로 **현재 실행 classpath에 필요한 class가 없음** | dependency scope, optional dependency, test-only dependency를 본다 |
+| auto-configuration은 평가됐고 classpath도 통과함 | `Positive matches`에 `found required class`가 찍힘 | classpath는 원인이 아니다 | `@ConditionalOnMissingBean`, property, 다른 slice 제한을 본다 |
+
+한 줄 멘탈 모델은 이렇다.
+
+```text
+이름 자체가 report에 거의 안 보임 -> slice가 안 다루는 영역일 수 있다
+이름은 보이는데 did not find required class -> 진짜 classpath negative match다
+```
+
+즉 `@WebMvcTest`에서 bean이 없다고 바로 "`starter`가 안 먹었다"로 결론 내리면 안 된다.
 먼저 "`이 테스트가 그 auto-configuration을 볼 수 있는 slice인가?`"를 묻고, 그 다음에 classpath를 본다.
 
 beginner 기준으로는 아래 순서면 충분하다.

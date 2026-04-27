@@ -1,19 +1,31 @@
 # Bloom Filter vs Cuckoo Filter
 
-> 한 줄 요약: Bloom Filter와 Cuckoo Filter는 둘 다 membership 검사용 확률적 구조지만, Cuckoo Filter는 삭제와 더 높은 공간 효율에서 강하고 Bloom Filter는 더 단순하다.
+> 한 줄 요약: Bloom Filter와 Cuckoo Filter는 둘 다 "없을 가능성"을 빨리 거르는 선필터이고, 정답이 바로 필요한 exact 경로에는 쓰지 않는다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
 > 관련 문서:
 > - [Bloom Filter](./bloom-filter.md)
 > - [Cuckoo Filter](./cuckoo-filter.md)
+> - [응용 자료 구조 개요](./applied-data-structures-overview.md)
+> - [해시 테이블 기초](./hash-table-basics.md)
 > - [Quotient Filter](./quotient-filter.md)
 > - [Xor Filter](./xor-filter.md)
 > - [Sketch and Filter Selection Playbook](./sketch-filter-selection-playbook.md)
-> - [HashMap 내부 구조](./hashmap-internals.md)
-> - [LRU Cache Design](./lru-cache-design.md)
 
 > retrieval-anchor-keywords: bloom filter, cuckoo filter, xor filter, membership filter, false positive, deletion, fingerprint, cuckoo hashing, approximate set, filter comparison, cache admission
+
+## 먼저 오해부터 막기
+
+둘 다 `정답기`가 아니라 앞단 선필터다.
+즉 `mightContain=true`가 나와도 최종 판단은 `HashSet`, DB unique/index, 캐시 키 조회 같은 exact 경로가 맡아야 한다.
+
+| 질문 | Bloom Filter | Cuckoo Filter |
+|---|---|---|
+| exact path를 바로 대체해도 되나? | 안 된다. `있을 수도 있다`까지만 말한다. | 안 된다. 삭제 가능해도 여전히 확률적 필터다. |
+| false positive 비용이 작은가? | 캐시 미스 감소, 크롤링 중복 체크처럼 "한 번 더 확인" 비용이 작을 때 적합 | 만료 key 선필터처럼 "한 번 더 확인"은 가능하지만 삭제 이점이 클 때 적합 |
+| false positive 비용이 큰가? | 결제, 권한, 중복 차단 단독 경로에는 부적합 | 결제, 권한, 정확 차단 단독 경로에는 부적합 |
+| 먼저 떠올릴 선택 기준은? | 구현 단순함, 추가/조회 위주 | 삭제 필요, rolling window, 만료 관리 |
 
 ## 핵심 개념
 
@@ -24,11 +36,10 @@
 
 둘 다 false positive는 있을 수 있지만 false negative는 피하려고 설계한다.
 
-실무 선택은 보통 다음 기준으로 갈린다.
+처음 고를 때는 다음 두 문장만 기억하면 된다.
 
-- 단순함이 중요하면 Bloom Filter
-- 삭제가 필요하면 Cuckoo Filter
-- 공간 효율과 높은 적재율이 중요하면 Cuckoo Filter를 검토
+- "정말 있는지"가 중요하면 둘 다 말고 exact 경로로 간다.
+- "없으면 빨리 버려도 되는지"가 중요하면 그다음에 Bloom/Cuckoo를 비교한다.
 
 ## 깊이 들어가기
 
@@ -65,7 +76,7 @@ Cuckoo Filter는 해시값의 짧은 fingerprint를 저장하고, cuckoo hashing
 - 만료되는 idempotency key
 - rolling window membership
 
-이런 경우에는 삭제가 쉬운 Cuckoo Filter가 매력적이다.  
+이런 경우에는 삭제가 쉬운 Cuckoo Filter가 매력적이다.
 반면 단순 blacklist pre-check처럼 추가/조회 위주면 Bloom Filter가 충분하다.
 
 ### 4. 왜 둘 다 완전한 set이 아닌가

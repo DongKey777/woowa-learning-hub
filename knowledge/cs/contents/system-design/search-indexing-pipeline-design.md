@@ -8,6 +8,7 @@ retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, toke
 
 > 관련 문서:
 > - [Search 시스템 설계](./search-system-design.md)
+> - [Search Hit Overlay Pattern](./search-hit-overlay-pattern.md)
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
 > - [Job Queue 설계](./job-queue-design.md)
@@ -24,7 +25,7 @@ retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, toke
 
 ## 핵심 개념
 
-검색 인덱싱 파이프라인은 "DB 변경을 검색 엔진에 복제하는 ETL"보다 더 넓다.  
+검색 인덱싱 파이프라인은 "DB 변경을 검색 엔진에 복제하는 ETL"보다 더 넓다.
 실전에서는 다음까지 포함한다.
 
 - 소스 데이터 수집
@@ -41,7 +42,7 @@ retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, toke
 
 ### 1. Source of truth와 index는 다르다
 
-원본 DB는 정합성 중심이고, 검색 인덱스는 조회 최적화 중심이다.  
+원본 DB는 정합성 중심이고, 검색 인덱스는 조회 최적화 중심이다.
 둘을 같은 저장소로 취급하면 다음 문제가 생긴다.
 
 - 검색 쿼리가 원본 DB를 압박한다
@@ -56,7 +57,7 @@ retrieval-anchor-keywords: search indexing pipeline, ingest, normalization, toke
 - 평균 문서 크기 2 KB
 - reindex window 24시간
 
-인덱싱 파이프라인은 단순 쓰기량뿐 아니라, reprocess와 backfill을 감당해야 한다.  
+인덱싱 파이프라인은 단순 쓰기량뿐 아니라, reprocess와 backfill을 감당해야 한다.
 그래서 평상시 처리량보다 장애 후 재처리 속도를 같이 봐야 한다.
 
 보는 숫자:
@@ -79,7 +80,7 @@ CDC / Event Stream
   -> Refresh / Commit
 ```
 
-실무에서 각 단계는 독립적으로 실패할 수 있다.  
+실무에서 각 단계는 독립적으로 실패할 수 있다.
 그래서 단계별 retry와 DLQ가 필요하다.
 
 ### 4. 스키마와 버전 관리
@@ -111,7 +112,7 @@ source DB schema와 search document schema를 같이 바꾸는 경우에는 CDC 
 - micro-batch indexing
 - batch reindex
 
-보통은 신규 데이터는 빠르게, 대량 재처리는 배치로 섞는다.  
+보통은 신규 데이터는 빠르게, 대량 재처리는 배치로 섞는다.
 즉, `hot path`와 `cold path`를 분리하는 것이 핵심이다.
 
 ### 6. Reindex와 backfill

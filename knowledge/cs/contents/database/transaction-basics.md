@@ -6,13 +6,16 @@
 
 관련 문서:
 
+- [Database First-Step Bridge](./database-first-step-bridge.md)
+- [Database README: 빠른 탐색](./README.md#빠른-탐색)
+- [Junior Backend Roadmap: 3단계 데이터베이스 기본기](../../JUNIOR-BACKEND-ROADMAP.md#3단계-데이터베이스-기본기)
+- [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
 - [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
-- [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
-retrieval-anchor-keywords: transaction basics, acid intro, commit rollback intro, atomicity for beginners, durability beginner, isolation beginner, transaction unit of work, what is transaction, savepoint basics, beginner db transaction, 트랜잭션이 뭐예요, commit이 뭔가요
+retrieval-anchor-keywords: transaction basics, acid intro, commit rollback intro, atomicity for beginners, durability beginner, isolation beginner, transaction unit of work, what is transaction, savepoint basics, beginner db transaction, transaction to isolation bridge, atomicity vs isolation beginner, commit not enough concurrency, beginner isolation faq, 트랜잭션이 뭐예요, commit이 뭔가요, 격리수준 왜 배우나요
 
 ## 핵심 개념
 
@@ -80,11 +83,50 @@ COMMIT;
 
 스프링/JPA 환경에서는 `@Transactional` 어노테이션이 begin/commit/rollback을 자동으로 끼워 준다. 처음에는 "이 메서드가 시작될 때 트랜잭션이 열리고 끝날 때 닫힌다" 정도로 단순화해서 본다.
 
+## 트랜잭션에서 격리 수준으로 넘어갈 때 FAQ
+
+먼저 그림 하나만 고정하면 덜 헷갈린다. 트랜잭션은 "내 작업을 한 덩어리로 끝내는 규칙"이고, 격리 수준은 "동시에 일하는 다른 사람과 서로 어디까지 보이게 할지 정하는 규칙"이다.
+
+| 질문이 겨누는 것 | 먼저 떠올릴 단어 |
+|---|---|
+| 실패 시 되돌릴 수 있나? | `commit` / `rollback` |
+| 동시에 실행될 때 서로 꼬이나? | 격리 수준 / 락 |
+
+### Q1. `commit`만 하면 동시성 문제도 해결되나요?
+
+아니다. `commit`은 **내 작업을 확정하는 시점**이지, 다른 트랜잭션이 중간에 같은 row를 읽거나 바꾸는 문제까지 자동으로 막아 주지는 않는다.
+
+예를 들어 두 사용자가 재고 1개를 거의 동시에 읽고 둘 다 "아직 1개 남았네"라고 판단할 수 있다. 둘 다 각자 트랜잭션을 잘 `commit`했더라도, 읽는 순간과 쓰는 순간이 겹치면 oversell 문제가 생긴다. 이 지점부터는 atomicity보다 **isolation과 락**을 같이 봐야 한다.
+
+### Q2. 격리 수준은 "`rollback`을 더 강하게 해 주는 옵션"인가요?
+
+아니다. `rollback`은 실패했을 때 **내 변경을 없던 일로 돌리는 기능**이고, 격리 수준은 동시에 실행될 때 **서로의 변경을 언제 볼 수 있는지**를 정한다. 둘은 다른 문제를 다룬다.
+
+입문자는 "`SERIALIZABLE`이면 더 안전하니까 rollback도 더 잘 되겠지"라고 섞어 생각하기 쉽다. 하지만 rollback은 모든 격리 수준에서 가능하고, 격리 수준은 주로 dirty read, non-repeatable read, phantom read 같은 **동시성 간섭**을 줄이는 데 쓰인다.
+
+### Q3. 트랜잭션을 길게 잡으면 격리 수준 문제를 덜 신경 써도 되나요?
+
+오히려 반대인 경우가 많다. 트랜잭션이 길수록 락을 오래 잡거나, 오래된 스냅샷을 붙들고 있게 되어 다른 요청과 더 자주 충돌한다.
+
+즉 "오래 잡으면 안전"이 아니라 **짧고 필요한 SQL만 묶고**, 정말 동시에 꼬이는 구간에서만 격리 수준이나 락 전략을 올바르게 고르는 쪽이 안전하다.
+
+### Q4. 지금 `READ COMMITTED`, `REPEATABLE READ`, `SERIALIZABLE`을 전부 외워야 하나요?
+
+처음부터 표 전체를 암기할 필요는 없다. 먼저 아래 두 줄만 이해하면 된다.
+
+- `READ COMMITTED`: 매번 읽을 때 이미 `commit`된 최신 결과를 본다
+- `REPEATABLE READ`: 같은 트랜잭션 안에서 내가 처음 본 값을 다시 읽을 때 덜 흔들리게 잡아 준다
+
+이 두 단계 차이만 잡아도 "왜 트랜잭션 다음에 격리 수준을 배우는지"가 보인다. 그다음에 dirty read, non-repeatable read, phantom read를 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)에서 연결하면 된다.
+
 ## 더 깊이 가려면
 
+- 학습 흐름으로 돌아가려면 [Database README: 빠른 탐색](./README.md#빠른-탐색), [Junior Backend Roadmap: 3단계 데이터베이스 기본기](../../JUNIOR-BACKEND-ROADMAP.md#3단계-데이터베이스-기본기)를 먼저 본다.
+- 가장 안전한 다음 한 걸음은 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)다.
 같은 카테고리 다음 단계 문서:
 
-- 동시에 도는 두 트랜잭션이 서로의 변경을 어떻게 보는지 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- 동시에 도는 두 트랜잭션이 서로의 변경을 어떻게 보는지 가장 먼저 잡으려면 → [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)
+- 격리 수준과 락을 한 문서에서 더 길게 묶어 보려면 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - 격리 수준만으로 막지 못하는 5가지 이상 현상 → [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
 - 실무에서 트랜잭션 경계/락 전략을 어떻게 고르는가 → [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
 

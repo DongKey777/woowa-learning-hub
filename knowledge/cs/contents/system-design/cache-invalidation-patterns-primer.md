@@ -2,7 +2,7 @@
 
 > 한 줄 요약: TTL, delete-on-write, write-through, versioned keys, stampede-safe refresh를 "언제 옛 값을 버리고 어떻게 다시 채울지" 관점에서 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, cache ttl basics, ttl cache primer, delete on write cache, cache aside invalidation, write through cache basics, versioned keys cache, cache key versioning, cache stampede basics, single flight cache refresh, request coalescing cache, stale while revalidate basics, refresh ahead cache, ttl jitter basics, stale refill from replica, invalidate then stale replica, beginner cache consistency
+retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, cache ttl basics, ttl cache primer, delete on write cache, cache aside invalidation, write through cache basics, versioned keys cache, cache key versioning, cache stampede basics, single flight cache refresh, request coalescing cache, stale while revalidate basics, refresh ahead cache, ttl jitter basics, stale refill from replica, invalidate then stale replica, beginner cache consistency, cache invalidation decision tree, delete-on-write vs write-through, stale window vs miss storm, cache invalidation mental model, source cache user clocks, invalidation symptom routing
 
 **난이도: 🟢 Beginner**
 
@@ -13,6 +13,8 @@ retrieval-anchor-keywords: cache invalidation primer, cache invalidation pattern
 - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
+- [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
+- [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
 - [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)
 - [분산 캐시 설계](./distributed-cache-design.md)
@@ -56,6 +58,63 @@ product:42 -> price=10000
 
 중요한 점은 보통 하나만 쓰지 않는다는 것이다.
 실무에서는 `TTL + delete-on-write + single-flight`처럼 조합하는 경우가 많다.
+
+---
+
+## 먼저 잡는 mental model: 세 개의 시계
+
+cache invalidation이 헷갈리는 이유는 보통 시계가 하나가 아니라 세 개이기 때문이다.
+
+| 시계 | 실제로 진행되는 것 | 느릴 때 보이는 증상 |
+|---|---|---|
+| source 시계 | DB/원본 commit이 반영되는 시점 | write는 성공했는데 read가 옛값을 본다 |
+| cache 시계 | TTL 만료, 삭제, 재적재, refresh 시점 | key마다 freshness가 들쭉날쭉하다 |
+| user 시계 | 사용자가 다음 화면을 여는 시점 | "방금 본 값이 다음 화면에서 뒤로 간다" |
+
+무효화 전략은 결국 이 세 시계를 완벽히 일치시키는 일이 아니라,
+**사용자에게 보이는 역행(regression)을 줄이도록 시계 차이를 관리하는 일**이다.
+
+---
+
+## 초보자 1분 선택 순서
+
+처음에는 패턴 이름보다 "지금 가장 아픈 실패가 무엇인지"부터 고르면 쉽다.
+
+| 먼저 답할 질문 | 첫 선택 | 이유 |
+|---|---|---|
+| write 직후 바로 최신값이 꼭 필요한가 | `write-through` 또는 `delete-on-write + 짧은 TTL` | 저장 직후 read 흔들림을 먼저 줄일 수 있다 |
+| stale를 몇 분 허용해도 서비스가 안전한가 | `TTL` | 구현 복잡도를 가장 낮게 시작할 수 있다 |
+| key fan-out이 커서 삭제 누락이 자주 나나 | `versioned keys` | purge fan-out보다 새 key 전환이 단순하다 |
+| hot key 만료 때 원본이 흔들리나 | `single-flight + jitter (+ stale-while-revalidate)` | 만료 순간 동시 miss를 완화한다 |
+
+한 번에 완벽한 조합을 찾으려 하기보다, 먼저 가장 비싼 실패를 줄이는 조합으로 시작하면 된다.
+
+## 한 번에 감 잡는 미니 비교: "프로필 저장 직후 조회"라면?
+
+같은 상황을 패턴별로 짧게 비교하면 선택 기준이 더 빨리 잡힌다.
+
+가정: 사용자가 `닉네임`을 저장하고 1초 안에 `내 프로필`을 다시 연다.
+
+| 선택 | 사용자가 다음 조회에서 보기 쉬운 결과 | 초보자 관점 한 줄 판단 |
+|---|---|---|
+| `TTL`만 사용 | TTL 안에서는 옛 닉네임이 잠깐 남을 수 있음 | stale 허용이 가능할 때만 시작점으로 안전 |
+| `delete-on-write + TTL` | 첫 재조회는 miss 후 새 값 재적재, 그다음은 안정 | 기본형으로 가장 무난하고 확장 쉽다 |
+| `write-through + TTL` | 저장 직후 재조회에서 새 값을 볼 확률이 가장 높음 | write path 복잡도를 감당할 때 선택 |
+
+핵심: 같은 "프로필 저장"이어도 **write 직후 UX를 얼마나 강하게 요구하는지**가 첫 분기다.
+
+## 증상 기반 첫 대응 매트릭스
+
+초보자에게는 "패턴 이름"보다 "지금 보이는 실패" 기준이 더 빠르다.
+
+| 지금 보이는 증상 | 첫 대응(최소) | 바로 같이 볼 보조 장치 |
+|---|---|---|
+| 저장 직후 같은 화면에서 옛값이 자주 보임 | `delete-on-write` 또는 `write-through` | recent-write 라우팅 점검 |
+| 특정 hot key 만료 시 지연/오류 급증 | `single-flight + TTL jitter` | 짧은 `stale-while-revalidate` |
+| 목록/검색만 옛 상태로 되돌아감 | 관련 projection key invalidation 재점검 | [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md) |
+| stale 감소를 위해 fallback했더니 primary 부담 급증 | post-write 구간만 fallback 범위 축소 | [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md) |
+
+핵심은 "한 번에 완성형"이 아니라, 사용자에게 가장 먼저 보이는 실패를 줄이는 최소 조합으로 시작하는 것이다.
 
 ---
 
@@ -333,30 +392,56 @@ stale-while-revalidate for short grace window
 
 ---
 
+## 흔한 혼동
+
+- TTL을 짧게만 두면 즉시 최신성이 보장된다고 오해하기 쉽다. TTL 안에서는 stale가 그대로 남는다.
+- delete-on-write에서 상세 key만 지우고 목록/search projection key를 놓치면 화면 값이 갈린다.
+- write-through를 쓰면 무효화가 필요 없다고 생각하기 쉽다. 실패 복구와 related key 정합은 여전히 남는다.
+- versioned keys는 purge를 없애는 기법이 아니라, stale key cleanup을 뒤로 미루는 전략이다.
+- stampede 보호는 대형 트래픽에서만 필요하다고 보기 쉽다. 작은 서비스도 hot key 하나면 같은 문제가 난다.
+- 모든 key를 즉시 완전 동기화하려고 시작하면 구현/운영 복잡도만 급격히 커진다. 먼저 사용자 영향이 큰 read path부터 보호하고 확장해야 한다.
+- invalidation을 넣었는데도 화면 역행이 남을 수 있다. 이 경우는 invalidation 문제라기보다 목록/상세/검색의 monotonicity 경계 문제일 수 있다.
+
+---
+
+## 다음으로 이어 읽기
+
+지금 보이는 증상 기준으로 다음 문서를 고르면 초보자 동선이 짧아진다.
+
+| 지금 보이는 증상 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| write 직후 옛값 노출이 핵심이다 | [Read-After-Write Routing Primer](./read-after-write-routing-primer.md) | recent-write 요청을 어떤 source로 보낼지 먼저 고정할 수 있다 |
+| cache와 replica가 섞여 stale 원인이 불분명하다 | [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md) | by-source stale 경로를 분리해 볼 수 있다 |
+| stale hit 거절/우회 이유가 안 보인다 | [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md) | reject/fallback reason을 지표와 로그로 남기는 기준을 잡는다 |
+| incident 중 read downgrade 정책이 필요하다 | [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md) | freshness를 일부 양보할 때 지켜야 할 안전선을 본다 |
+| 캐시 계층 설계를 넓혀 보고 싶다 | [분산 캐시 설계](./distributed-cache-design.md) | invalidation을 cluster topology와 운영 정책으로 확장한다 |
+
+---
+
 ## 면접 답변 골격
 
 짧게 답하면 이렇게 정리할 수 있다.
 
-> cache invalidation은 캐시된 값이 언제 더 이상 신뢰할 수 없는지 결정하는 문제입니다.  
-> 가장 단순한 방법은 TTL이고, cache-aside에서는 delete-on-write가 흔합니다. write 직후 read가 많으면 write-through가 유리하고, 관련 key fan-out이 크면 versioned keys로 새 버전만 읽게 만들 수 있습니다.  
+> cache invalidation은 캐시된 값이 언제 더 이상 신뢰할 수 없는지 결정하는 문제입니다.
+> 가장 단순한 방법은 TTL이고, cache-aside에서는 delete-on-write가 흔합니다. write 직후 read가 많으면 write-through가 유리하고, 관련 key fan-out이 크면 versioned keys로 새 버전만 읽게 만들 수 있습니다.
 > 다만 invalidation만으로 끝나지 않고, hot key에서는 single-flight, stale-while-revalidate, TTL jitter 같은 stampede-safe refresh가 함께 있어야 origin을 보호할 수 있습니다.
 
 ## 꼬리질문
 
-> Q: TTL만 짧게 두면 invalidation 문제가 거의 해결되나요?  
-> 의도: bounded stale와 instant freshness를 구분하는지 확인  
+> Q: TTL만 짧게 두면 invalidation 문제가 거의 해결되나요?
+> 의도: bounded stale와 instant freshness를 구분하는지 확인
 > 핵심: 아니다. stale window는 남고, miss storm가 커질 수 있다.
 
-> Q: delete-on-write와 write-through는 어떻게 다르나요?  
-> 의도: cache-aside 기본형과 eager update 차이를 아는지 확인  
+> Q: delete-on-write와 write-through는 어떻게 다르나요?
+> 의도: cache-aside 기본형과 eager update 차이를 아는지 확인
 > 핵심: 전자는 지우고 다음 read에 재적재, 후자는 새 값을 즉시 캐시에 써 둔다.
 
-> Q: versioned keys는 왜 쓰나요?  
-> 의도: fan-out invalidation 비용을 이해하는지 확인  
+> Q: versioned keys는 왜 쓰나요?
+> 의도: fan-out invalidation 비용을 이해하는지 확인
 > 핵심: 많은 cache layer를 즉시 purge하기보다 새 버전 key로 우회하는 편이 단순할 때가 있다.
 
-> Q: stampede는 TTL만의 문제인가요?  
-> 의도: miss 동시성 문제를 이해하는지 확인  
+> Q: stampede는 TTL만의 문제인가요?
+> 의도: miss 동시성 문제를 이해하는지 확인
 > 핵심: TTL expiry가 가장 흔한 원인이지만, 강제 삭제 직후에도 hot key면 같은 현상이 생길 수 있다.
 
 ## 한 줄 정리

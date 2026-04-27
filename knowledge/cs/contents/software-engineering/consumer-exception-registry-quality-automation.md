@@ -21,6 +21,10 @@
 > - registry lint
 > - exception data quality
 
+> 읽기 가이드:
+> - 돌아가기: [Software Engineering README - Consumer Exception Registry Quality and Automation](./README.md#consumer-exception-registry-quality-and-automation)
+> - 다음 단계: [Consumer Exception State Machine and Review Cadence](./consumer-exception-state-machine-review-cadence.md)
+
 ## 핵심 개념
 
 registry는 있어도 품질이 낮으면 다시 안 쓰이게 된다.

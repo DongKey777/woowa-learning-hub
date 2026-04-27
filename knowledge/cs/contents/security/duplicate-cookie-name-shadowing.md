@@ -4,16 +4,33 @@
 
 **난이도: 🟢 Beginner**
 
+> 문서 역할: `follow-up primer`
+>
+> broad한 login-loop 첫 진입점이 아니라, 실패한 요청 raw `Cookie` header에 같은 이름이 실제로 중복 전송되었거나 [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md), [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)에서 `duplicate detour`가 확정됐을 때 여는 문서다.
+
 > 관련 문서:
-> - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
-> - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
-> - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
-> - [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+> - `[primer]` [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+> - `[follow-up primer bridge]` [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md)
+> - `[primer bridge]` [Callback Cookie Name Splitter](./callback-cookie-name-splitter.md)
+> - `[primer bridge]` [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md)
+> - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+> - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+> - `[primer]` [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
+> - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
+> - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, cookie name collision, same cookie name different path, same cookie name different domain, duplicate JSESSIONID, duplicate SESSION cookie, cookie header duplicate name, browser sends two cookies same name, stale cookie shadows new cookie, cookie path shadowing, cookie domain shadowing, wrong session cookie sent, wrong session cookie selected, login loop duplicate cookie, re-login loop duplicate cookie, cookie overwrite myth, last Set-Cookie does not always win, delete cookie exact path domain, auth cookie shadowing, callback login loop duplicate cookie, session cookie duplicate domain path, cookie scope collision, duplicate auth cookie beginner
+retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session cookie, cookie name collision, same cookie name different path, same cookie name different domain, duplicate JSESSIONID, duplicate SESSION cookie, cookie header duplicate name, browser sends two cookies same name, stale cookie shadows new cookie, cookie path shadowing, cookie domain shadowing, wrong session cookie sent, wrong session cookie selected, login loop duplicate cookie, re-login loop duplicate cookie, cookie overwrite myth, last Set-Cookie does not always win, delete cookie exact path domain, auth cookie shadowing, callback login loop duplicate cookie, session cookie duplicate domain path, cookie scope collision, duplicate cookie follow-up primer, duplicate cookie detour, duplicate cookie after raw header proof, duplicate cookie return path, deduped cookie still login loop, duplicate cookie fixed but still anonymous, duplicate cookie fixed but cookie header missing, browser session troubleshooting path duplicate cookie, browser session beginner ladder duplicate cookie, cookie scope troubleshooting duplicate detour, duplicate cookie handoff primer, request header verification duplicate cookie, application vs network duplicate detour
+retrieval-anchor-keywords: callback cookie same name as session, same name different role not duplicate, callback cookie role split
 
-## 이 문서를 먼저 읽는 이유
+## 왜 이 문서를 지금 여나
+
+이 문서는 generic한 login-loop 첫 문서가 아니다.
+먼저 아래 증거 중 하나가 있어야 한다.
+
+- [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)의 `cookie-header gate`로 같은 실패 요청의 `Application` 저장값과 request `Cookie` header를 이미 맞췄다
+- 실패한 요청 raw `Cookie` header에 같은 이름이 두 번 보인다
+- `Duplicate Cookie vs Proxy Login Loop Bridge`에서 duplicate 갈래가 확정됐다
+- `Application > Cookies`와 route별 재현 차이를 본 뒤 `중복 이름 detour`가 필요하다고 좁혀졌다
 
 초보자는 보통 이렇게 생각한다.
 
@@ -30,6 +47,7 @@ retrieval-anchor-keywords: duplicate cookie name shadowing, duplicate session co
 즉 이 문서의 핵심은 한 줄이다.
 
 - `cookie name`이 같다고 `같은 cookie`는 아니다
+- 다만 이름이 같아도 먼저 역할이 같은지부터 봐야 한다. callback 검사용 one-time cookie와 main session cookie를 같은 것으로 읽고 있다면 [Callback Cookie Name Splitter](./callback-cookie-name-splitter.md)에서 역할 분리부터 하고 다시 돌아오는 편이 빠르다.
 
 ---
 
@@ -173,6 +191,7 @@ subdomain을 나눠 둔 구조에서는 `Domain` 차이 때문에 같은 이름 
 
 - `Name` column만 보면 중복을 놓친다
 - framework가 파싱한 값만 보면 raw header의 중복을 못 본다
+- `Application > Cookies`에 같은 이름이 두 줄 보여도, 실패한 요청 raw `Cookie` header를 확인하기 전에는 duplicate root cause로 확정하지 않는다
 
 즉 `Domain`, `Path`, raw `Cookie` header를 같이 봐야 한다.
 
@@ -194,6 +213,7 @@ subdomain을 나눠 둔 구조에서는 `Domain` 차이 때문에 같은 이름 
 `session; Path=/`를 지우는 응답은 `session; Path=/app`를 지우지 못한다.
 
 즉 삭제도 보통 같은 `(이름, Domain, Path)`를 정확히 맞춰야 한다.
+old cookie가 host-only였다면 `Domain`을 넣지 않고 원래 host에서 지워야 한다는 점까지 포함하면, 실전 migration cleanup은 [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md)에서 한 번 더 보는 편이 안전하다.
 
 ### 3. "서버 세션 저장소가 불안정해서 loop가 난다"
 
@@ -204,6 +224,40 @@ subdomain을 나눠 둔 구조에서는 `Domain` 차이 때문에 같은 이름 
 - raw `Cookie` header에 이름이 중복된다
 
 이 세 가지가 보이면 shadowing이 더 직접적인 원인일 수 있다.
+
+---
+
+## duplicate를 확인한 뒤 어디로 이어 가나
+
+이 문서는 "중복 cookie가 있나?"를 가르는 primer bridge다.
+중복을 확인했거나 cleanup까지 마쳤다면, 같은 cookie scope primer를 처음부터 다시 반복하기보다 남은 증상을 세 갈래로만 나누면 된다.
+
+duplicate detour를 끝냈으면 같은 login-loop primer path로 복귀하는 3단계 사다리를 고정하면 덜 헷갈린다.
+
+| 단계 | 왜 이 단계로 복귀하나 | 링크 |
+|---|---|---|
+| 1. `primer` | login redirect와 `SavedRequest`가 어떤 기억을 남기는지 다시 고정 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| 2. `primer bridge` | `401`/`302`, login HTML fallback, cookie 전송 이후의 anonymous 증상을 한 표로 다시 분기 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| 3. `catalog` | 다음 symptom 갈래를 category navigator에서 안전하게 다시 선택 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+고정 복귀 경로는 이 한 줄로도 기억하면 된다.
+
+- [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)에서 duplicate detour로 들어왔으면, 이 문서에서 중복 여부를 정리한 뒤 `입문 -> 증상 분기 -> 카테고리 라우터` 순서로 위 사다리를 타고 돌아온다.
+
+| duplicate를 본 뒤 남은 장면 | 이제 중심 원인 | 다음 한 걸음 |
+|---|---|---|
+| 실패한 요청의 raw `Cookie` header에서 같은 이름 중복이 사라졌는데 header 자체가 비었다 | duplicate보다 cookie 전송 범위 문제가 더 중심이다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) |
+| raw `Cookie` header에는 `session=...` 하나가 실리는데도 `302 -> /login`이나 login HTML fallback이 계속 난다 | duplicate보다 redirect UX, server session 복원, BFF mapping 쪽이 더 가깝다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| 배포나 scope migration 뒤 특정 host/path의 old cookie만 계속 되살아난다 | duplicate 원인은 맞지만 cleanup 설계가 아직 덜 끝났다 | [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md) |
+| 어느 갈래로 다시 가야 할지 헷갈린다 | symptom 기준으로 browser/session troubleshooting route를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+추가로 이것만 기억하면 된다.
+
+- 이 문서가 끝내는 질문은 `중복이 있나?`다.
+- 다음 질문은 `Cookie` header가 비었나, 하나인데도 익명인가, redirect host/scheme이 꺾였나 중 하나다.
+- login 직후 `Location`이 `http://...`로 내려가거나 proxy 뒤에서만 다시 튄다면 [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)가 더 가깝다.
+- duplicate인지 proxy/scheme mismatch인지 아직 헷갈리면 [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md)에서 raw `Cookie` header 중복과 `http://...` redirect 증거를 먼저 갈라 본다.
+- duplicate detour가 끝난 뒤 broad 위치를 다시 잡고 싶으면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 한 칸 올라간 다음, 현재 증상 branch는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)에서 다시 고른다.
 
 ---
 
@@ -222,8 +276,11 @@ subdomain을 나눠 둔 구조에서는 `Domain` 차이 때문에 같은 이름 
 
 ## 다음 단계
 
-- 우선 `cookie가 저장돼 있지만 요청에 안 붙는 문제` 전체를 먼저 정리하고 싶으면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 이어 간다.
-- `302 -> /login`, `SavedRequest`, login HTML fallback까지 함께 보이면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)를 본다.
+- duplicate detour를 끝냈으면 먼저 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) -> [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) 순서로 같은 login-loop primer path에 복귀한다.
+- 갈래를 다시 고르려면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 먼저 돌아간다.
+- duplicate를 지운 뒤 실패한 요청의 raw `Cookie` header가 비어 있다면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 이어 간다.
+- raw `Cookie` header에는 session이 하나 실리는데도 `302 -> /login`, login HTML fallback, `hidden session` confusion이 남으면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)를 본다.
+- 배포 중 session cookie scope를 옮기면서 old cookie를 어떤 tombstone으로 치워야 하는지까지 바로 보고 싶으면 [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md)로 이어 간다.
 - cookie/session/JWT 역할 자체가 아직 섞여 보이면 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)부터 다시 맞춘다.
 
 ## 한 줄 정리

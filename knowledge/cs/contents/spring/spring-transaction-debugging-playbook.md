@@ -7,6 +7,9 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [30초 진단 카드: Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
+> - [@Transactional 기초](./spring-transactional-basics.md)
+> - [Mini Debugging Card for `UnexpectedRollbackException`](./spring-unexpectedrollbackexception-mini-debugging-card.md)
 > - [@Transactional 깊이 파기](./transactional-deep-dive.md)
 > - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 > - [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](./spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)
@@ -18,10 +21,12 @@
 > - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
 > - [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md)
 
-retrieval-anchor-keywords: transaction debugging, transactional not applied, proxy transaction, self invocation, private method transaction, checked exception commit, rollbackFor, requires new partial commit, long transaction, lock wait, service layer transaction boundary
+retrieval-anchor-keywords: transaction debugging, transactional not applied, proxy transaction, self invocation, private method transaction, checked exception commit, rollbackFor, requires new partial commit, long transaction, lock wait, service layer transaction boundary, transaction debugging first check, propagation before proxy no, transactional propagation first mistake, proxy bypass first check, 30초 트랜잭션 진단 카드, transactional 먼저 볼 것, why transactional not applied first step, beginner transaction debugging route, self invocation before propagation, propagation 보다 프록시 먼저, this method transactional playbook route
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- 초급자라면 이 문서에 오래 머무르기 전에 [30초 진단 카드: Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)로 먼저 내려가도 된다.
+- `@Transactional` 용어가 아직 낯설면 [@Transactional 기초](./spring-transactional-basics.md)로 한 번 돌아가서 `begin/commit/rollback`과 프록시 경계를 먼저 맞춘다.
 - 트랜잭션 기본 의미는 [@Transactional 깊이 파기](./transactional-deep-dive.md)로 되돌아가면 좋다.
 - service 경계와 ownership은 [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)로 이어진다.
 - persistence context 증상은 [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)에서 더 깊게 다룬다.
@@ -46,13 +51,37 @@ retrieval-anchor-keywords: transaction debugging, transactional not applied, pro
 - `REQUIRES_NEW`로 기대와 다른 분리 커밋이 발생함
 - 락 대기 때문에 트랜잭션이 길어지고 p99가 튐
 
+`UnexpectedRollbackException`, `transaction marked as rollback-only`, `catch 했는데 마지막에 터짐`처럼 rollback-only 신호가 핵심이면 먼저 [Mini Debugging Card for `UnexpectedRollbackException`](./spring-unexpectedrollbackexception-mini-debugging-card.md)로 짧게 분기한 뒤 이 문서의 TRACE/로그 체크로 내려오면 된다.
+
+## 0. propagation 열기 전에 30초 먼저 확인
+
+초급자가 가장 자주 새는 지점은 `REQUIRES_NEW`, `NESTED`, rollback 옵션부터 파고드는 것이다.
+그 전에 먼저 확인할 질문은 하나다.
+
+`이 호출이 정말 프록시를 지나 `@Transactional`까지 도달했는가?`
+
+전파 옵션은 **트랜잭션 interception이 시작된 뒤**에야 의미가 있다. 프록시를 우회했다면 propagation을 아무리 바꿔도 출발점이 없다.
+
+| 코드/증상 단서 | 첫 판단 | 지금 바로 갈 문서 |
+|---|---|---|
+| `this.saveOrder()` 같은 내부 호출 | 프록시 우회 가능성이 가장 크다 | [30초 진단 카드](./spring-self-invocation-transactional-only-misconception-primer.md) |
+| `@Transactional private void save()` | propagation보다 메서드 경계가 먼저 문제다 | [@Transactional 기초](./spring-transactional-basics.md#private-문제와-내부-호출-문제를-한눈에-구분하기) |
+| `new OrderService()`로 직접 만든 객체 | Bean이 아니라 프록시 자체가 없다 | [AOP 기초](./spring-aop-basics.md#checklist-direct-new) |
+| 위 세 가지는 아닌데도 롤백/분리 커밋이 이상하다 | 그때 propagation, rollback, lock 대기로 내려간다 | 이 playbook 계속 읽기 |
+
+짧게 외우면 이 순서다.
+
+1. 프록시를 탔나
+2. 트랜잭션이 실제로 시작됐나
+3. 그다음에야 propagation과 rollback 규칙을 본다
+
 ---
 
 ## 깊이 들어가기
 
 ### 1. 먼저 프록시부터 의심한다
 
-`@Transactional`은 AOP 프록시를 통해 동작한다.  
+`@Transactional`은 AOP 프록시를 통해 동작한다.
 따라서 첫 질문은 "이 메서드가 프록시를 거쳤는가?"다.
 
 체크 포인트:
@@ -79,7 +108,7 @@ logging.level.org.hibernate.type.descriptor.sql=TRACE
 
 ### 3. 전파와 롤백 규칙을 분리해서 본다
 
-전파는 "이미 트랜잭션이 있으면 합류할지"의 문제다.  
+전파는 "이미 트랜잭션이 있으면 합류할지"의 문제다.
 롤백은 "예외를 만났을 때 실제로 커밋할지"의 문제다.
 
 문제는 이 둘이 섞여 보인다는 점이다.
@@ -121,7 +150,7 @@ logging.level.org.hibernate.type.descriptor.sql=TRACE
 
 ### 시나리오 3: `REQUIRES_NEW` 때문에 감사 로그는 남았는데 주문은 롤백됐다
 
-이건 버그일 수도 있고 의도일 수도 있다.  
+이건 버그일 수도 있고 의도일 수도 있다.
 핵심은 **같이 실패해야 하는지, 분리 커밋이 필요한지**를 먼저 판단하는 것이다.
 
 ### 시나리오 4: 결제 트랜잭션이 길어져 락 대기가 폭증했다

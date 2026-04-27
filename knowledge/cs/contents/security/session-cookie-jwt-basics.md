@@ -6,13 +6,16 @@
 
 관련 문서:
 
-- [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
-- [JWT 깊이 파기](./jwt-deep-dive.md)
-- [네트워크 HTTP 상태·세션·캐시](../network/http-state-session-cache.md)
-- [Beginner Guide to Auth Failure Responses: 401 / 403 / 404](./auth-failure-response-401-403-404.md)
-- [Security README 기본 primer 묶음으로 돌아가기](./README.md#기본-primer)
+- `[primer]` [네트워크 HTTP 상태·세션·캐시](../network/http-state-session-cache.md)
+- `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md)
+- `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+- `[follow-up]` [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
+- `[follow-up]` [Beginner Guide to Auth Failure Responses: 401 / 403 / 404](./auth-failure-response-401-403-404.md)
+- `[deep dive]` [JWT 깊이 파기](./jwt-deep-dive.md)
+- `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: session cookie jwt basics, 세션 쿠키 jwt 차이, 로그인 상태 유지, http stateless, 쿠키가 뭔가요, 세션이 뭔가요, jwt 입문, jsessionid, 서버 세션 vs jwt, 토큰 기반 인증, stateless auth, cookie session beginner, 왜 로그인이 유지되나요, security readme session primer, security beginner session route, login loop beginner bridge, browser session troubleshooting path, cookie exists but login loops, saved request beginner, browser session troubleshooting beginner, auth basics route, auth beginner route, security beginner route, security basics route, first-step session primer, security primer next step, return to security README
+retrieval-anchor-keywords: session cookie jwt basics, 세션 쿠키 jwt 차이, 로그인 상태 유지, http stateless, 쿠키가 뭔가요, 세션이 뭔가요, jwt 입문, jsessionid, 서버 세션 vs jwt, 토큰 기반 인증, stateless auth, cookie session beginner, 왜 로그인이 유지되나요, security readme session primer, security beginner session route, login loop beginner bridge, browser session troubleshooting path, browser session troubleshooting safe next step, cookie exists but login loops, saved request beginner, browser session troubleshooting beginner, auth basics route, auth beginner route, security beginner route, security basics route, first-step session primer, security primer next step, return to security README, browser session primer ladder, primer bridge next step, primer bridge safe next step, browser session deep dive handoff, primer follow-up deep dive ladder, safe next step auth primer, safe next step browser session, auth session primer bridge
 
 ## 핵심 개념
 

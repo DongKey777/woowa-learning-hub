@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
+- [Spring `@ActiveProfiles` vs test override primer: `application-test.yml`, `@TestPropertySource`, annotation `properties`](./spring-activeprofiles-vs-test-overrides-primer.md)
 - [Spring @Transactional 기초](./spring-transactional-basics.md)
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)

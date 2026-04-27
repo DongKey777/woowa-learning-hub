@@ -6,8 +6,13 @@
 
 관련 문서:
 
+- [Exact-Key Pre-Check Decision Card](./exact-key-pre-check-decision-card.md)
 - [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
+- [FOR SHARE vs FOR UPDATE Duplicate Check Note](./for-share-vs-for-update-duplicate-check-note.md)
 - [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- [EXPLAIN Checklist for Exact-Key Locking Reads](./explain-checklist-exact-key-locking-reads.md)
+- [MySQL RR exact-key probe assumptions checklist](./mysql-rr-exact-key-probe-assumptions-checklist.md)
+- [Spring/JPA Exact-Key Lock Mapping Guide](./spring-jpa-exact-key-lock-mapping-guide.md)
 - [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
 - [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md)
 - [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md)
@@ -78,6 +83,10 @@ next-key는 business 문장을 잠그지 않고 chosen index path를 따른다. 
 - 통계나 인덱스 추가로 optimizer가 다른 경로를 고른다
 - 어떤 writer는 probe 후 insert하지만, 다른 writer는 바로 insert한다
 
+이 지점이 불안하면 말로 추측하지 말고 [EXPLAIN Checklist for Exact-Key Locking Reads](./explain-checklist-exact-key-locking-reads.md)부터 열어 `key`/`type`/`rows`가 정말 intended full unique-key path를 가리키는지 먼저 확인하는 편이 안전하다.
+
+그리고 실제 장애가 "`같은 key인데 왜 이번엔 안 줄 섰지?`"처럼 보인다면, index-path drift와 mixed write path를 한 번에 점검하는 [MySQL RR exact-key probe assumptions checklist](./mysql-rr-exact-key-probe-assumptions-checklist.md)로 바로 내려가면 된다.
+
 핵심은 "`같은 SQL 텍스트`"가 아니라 "`같은 key slot을 같은 protocol로 건드렸는가`"다.
 
 ## 흔한 오해와 함정
@@ -87,7 +96,7 @@ next-key는 business 문장을 잠그지 않고 chosen index path를 따른다. 
 - "`0 row`였으니 아무것도 안 잠겼다"
   - RR에서는 exact-key 주변 scanned gap이 남을 수 있다.
 - "`FOR UPDATE`면 `FOR SHARE`보다 무조건 안전하다"
-  - empty-result exact-key에서는 lock 세기보다 **같은 index path를 탔는지**가 더 중요하다.
+  - empty-result exact-key에서는 lock 세기보다 **같은 index path를 탔는지**가 더 중요하다. 차이를 따로 짧게 고정하려면 [FOR SHARE vs FOR UPDATE Duplicate Check Note](./for-share-vs-for-update-duplicate-check-note.md)를 바로 보면 된다.
 - "테스트에서 한 번 막혔으니 앞으로도 계속 막힌다"
   - RC 전환, 함수 추가, 인덱스 변경, optimizer plan drift가 오면 바로 다른 결과가 나온다.
 
@@ -105,7 +114,11 @@ exact duplicate check를 beginner-safe하게 가져가려면 순서를 이렇게
 ## 더 깊이 가려면
 
 - exact-key와 overlap을 한 번에 비교하려면 [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
+- `FOR SHARE`와 `FOR UPDATE` 차이가 exact-key duplicate check에서 언제 작아지는지 따로 보려면 [FOR SHARE vs FOR UPDATE Duplicate Check Note](./for-share-vs-for-update-duplicate-check-note.md)
+- exact-key duplicate pre-check가 정말 full unique-key path를 타는지 바로 확인하려면 [EXPLAIN Checklist for Exact-Key Locking Reads](./explain-checklist-exact-key-locking-reads.md)
+- same-key queue 직관이 index-path drift나 mixed writer 때문에 언제 깨지는지 체크리스트로 보려면 [MySQL RR exact-key probe assumptions checklist](./mysql-rr-exact-key-probe-assumptions-checklist.md)
 - `0 row` 뒤에 실제로 어떤 gap/next-key가 남는지 더 깊게 보려면 [MySQL Empty-Result Locking Reads](./mysql-empty-result-locking-reads.md)
+- Spring Data JPA `@Lock`가 이 exact-key SQL과 어떻게 이어지는지 보려면 [Spring/JPA Exact-Key Lock Mapping Guide](./spring-jpa-exact-key-lock-mapping-guide.md)
 - RR 가정이 plan/path 의존인지 체크리스트로 확인하려면 [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
 - 애플리케이션 코드에서 `PESSIMISTIC_WRITE` 착시로 이어지는 지점을 보려면 [Spring 트랜잭션 기초](../spring/spring-transactional-basics.md), [JPA `PESSIMISTIC_WRITE`의 범위 잠금 한계와 전환 기준](./range-locking-limits-jpa.md)
 

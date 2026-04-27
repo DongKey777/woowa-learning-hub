@@ -2,17 +2,19 @@
 
 > 한 줄 요약: 알림 배지나 unread count는 빠른 요약 read model이라 조금 stale할 수 있지만, 알림을 눌러 들어간 source 상세는 알림이 전제로 한 원인 데이터를 보여 주는 별도 causal 보장이 필요하다.
 
-retrieval-anchor-keywords: notification badge vs source freshness, notification badge source freshness primer, unread badge count read model, unread count stale source detail, badge count stale independently, notification count projection lag, badge read model consistency, source detail causal guarantee, notification click source causal token, badge count vs causal consistency, unread count vs source of truth, 알림 배지 stale, unread count stale, 알림 카운트와 원본 신선도, system-design-00058
+retrieval-anchor-keywords: notification badge vs source freshness, notification badge basics, unread badge count read model, unread count stale source detail, badge count stale independently, notification count projection lag, source detail causal guarantee, notification click source causal token, badge count vs causal consistency, unread count vs source of truth, 알림 배지 stale, unread count stale, 알림 카운트와 원본 신선도, 처음 배우는데 알림 배지 뭐예요, notification fallback headroom ratio
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [Badge Freshness Observability Primer](./badge-freshness-observability-primer.md)
 - [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
 - [Notification Causal Token Walkthrough](./notification-causal-token-walkthrough.md)
 - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
 - [Mixed Cache+Replica Freshness Bridge](./mixed-cache-replica-freshness-bridge.md)
 - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
+- [Replica Lag Observability와 Routing SLO](../database/replica-lag-observability-routing-slo.md)
 - [Notification 시스템 설계](./notification-system-design.md)
 - [Mobile Push Notification Pipeline Design](./mobile-push-notification-pipeline-design.md)
 
@@ -21,6 +23,8 @@ retrieval-anchor-keywords: notification badge vs source freshness, notification 
 ## 핵심 개념
 
 먼저 화면을 둘로 나누면 덜 헷갈린다.
+처음 배우는데 `badge`와 `source`가 왜 따로 노는지 헷갈린다면 "요약판 vs 본판"으로 먼저 보면 된다.
+`알림 숫자가 맞는데 원문이 안 보여요`, `뭐예요, 왜 클릭했는데 댓글이 없어요?` 같은 질문이 바로 이 문서의 출발점이다.
 
 | 화면 요소 | 쉬운 말 | 보통 읽는 곳 | 사용자 기대 |
 |---|---|---|---|
@@ -147,6 +151,32 @@ primary/source = 9001+    -> accept
 
 ---
 
+## 같은 이벤트를 숫자로 바로 비교해 보기
+
+하나의 댓글 이벤트를 두 숫자로만 나눠 보면 차이가 더 선명해진다.
+
+> 이벤트 1건이 생겼을 때 `badge 숫자`는 "summary가 따라왔나", `source click`은 "원인 데이터가 기준선까지 따라왔나"를 본다.
+
+| 같은 댓글 이벤트 `comment:777` | badge/count 응답 | source click 응답 |
+|---|---|---|
+| 사용자 기대 | unread 숫자가 곧 `+1` 되면 좋다 | 클릭하면 그 댓글이 바로 보여야 한다 |
+| 실제 입력 값 | `projection_watermark=8998`, 목표 commit `9001` | `required_watermark=9001` |
+| 첫 판정 | 아직 `8998 < 9001`이라 badge는 `0`일 수 있다 | cache `8995`, replica `8999`는 거절하고 primary `9001+`를 읽어야 한다 |
+| 사용자에게 보여도 되는 결과 | `unread_count=0`은 잠깐 허용 가능 | 댓글 미노출은 허용하면 안 된다 |
+| 운영에서 보는 숫자 | `badge_projection_lag_ms` | `rejected_hit_reason=watermark`, `primary_fallback_total` |
+
+짧게 같은 숫자를 다시 쓰면 이렇다.
+
+- badge 쪽: `9001 - 8998 = 아직 3만큼 뒤처짐`이라 count가 잠깐 늦을 수 있다.
+- click 쪽: `required_watermark=9001`인데 replica가 `8999`면 `2`만큼 모자라도 거절하고 더 최신 source를 찾아야 한다.
+
+초보자용 기억법:
+
+- badge 숫자는 `조금 늦어도 되는 요약판`
+- source click은 `한 번 눌렀으면 원인을 보여 줘야 하는 본판`
+
+---
+
 ## 흔한 혼동
 
 - `배지가 1이면 원본 상세도 반드시 fresh하다`고 보면 안 된다. 배지는 count projection이고 source 상세는 별도 read path다.
@@ -186,6 +216,30 @@ badge 문제와 source 문제를 같은 metric 하나로 보면 원인 분리가
 | 읽었는데 배지가 다시 살아남 | mark-read event lag, decrement/idempotency key, correction job delta |
 
 source 상세의 rejected cache hit, replica fallback, no-fill 이유는 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)에서 이어서 보면 된다.
+badge count read model에서 `projection lag`, `cache age`, `correction delta`를 어떻게 분리해 읽는지는 [Badge Freshness Observability Primer](./badge-freshness-observability-primer.md)에서 바로 이어진다.
+
+---
+
+## 숫자 언어도 같은 카드로 읽는다
+
+알림 primer에서도 숫자 해석은 새로 만들지 않는 편이 좋다.
+초보자는 `stale가 많이 늘었나`와 `그 대응을 primary가 버티나`를 같은 카드 언어로 반복해서 보는 편이 덜 헷갈린다.
+
+| 숫자 질문 | 여기서의 뜻 | 같은 카드로 이어 읽을 문서 |
+|---|---|---|
+| `stale peak multiplier`가 큰가 | badge projection lag나 click 후 source stale이 baseline보다 얼마나 튀었는가 | [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md) |
+| `fallback headroom ratio`가 충분한가 | source 상세를 primary fallback으로 보호할 여유가 남았는가 | [Read-After-Write Routing Primer](./read-after-write-routing-primer.md) |
+| 같은 stale 급증인데 왜 대응이 달라지나 | reject/fallback reason과 primary 보호를 같이 봐야 하는가 | [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md) |
+
+빠른 연결:
+
+- Green 카드부터 보려면 [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)의 `fallback headroom band`와 시작 예시를 먼저 본다.
+- 같은 숫자를 routing 판단으로 옮기려면 [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)의 `공통 미니 예시 카드: stale/headroom 숫자 고정`을 붙여 읽는다.
+- 같은 stale 급증이어도 headroom이 `1.4x (Red)`면 해석이 바뀐다는 반례는 [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)의 `공통 반례 카드`가 가장 직접적이다.
+
+초보자용 한 줄:
+
+> badge 숫자가 틀린지 보는 언어는 `stale`, click 보호를 계속 밀 수 있는지 보는 언어는 `headroom`이다. 두 숫자를 같은 카드로 반복해서 읽어야 primer마다 말이 흔들리지 않는다.
 
 ---
 

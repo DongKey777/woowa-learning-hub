@@ -9,6 +9,8 @@
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 > - [Record and Value Object Equality](./record-value-object-equality-basics.md)
+> - [Mutable Hash Keys Bridge](./mutable-hash-keys-hashset-hashmap-bridge.md)
+> - [Mutable Keys in HashMap and TreeMap](./hashmap-treemap-mutable-key-lookup-primer.md)
 > - [Java Array Equality Basics](./java-array-equality-basics.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
@@ -17,7 +19,7 @@
 > - [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 > - [Java Collections 성능 감각](./collections-performance.md)
 
-> retrieval-anchor-keywords: java equality basics, java identity basics, java `==` vs `equals`, java `hashCode` basics, java string comparison basics, java primitive vs reference comparison, java object equality, java reference equality, java beginner equality, java record equality basics, java record equals hashCode, value object equality basics, mutable entity equality hazard, java array equality basics, java array `==` vs `equals`, java `Arrays.equals`, java `Arrays.deepEquals`, `HashMap` `HashSet` equals hashCode, `String` equals vs `==`, `Objects.equals`, java comparable basics, java comparator basics, java compareTo equals consistency, java natural ordering basics
+> retrieval-anchor-keywords: java equality basics, java identity basics, java `==` vs `equals`, java `hashCode` basics, java string comparison basics, java primitive vs reference comparison, java object equality, java reference equality, java beginner equality, java record equality basics, java record equals hashCode, value object equality basics, mutable entity equality hazard, mutable key equals hashCode bug, hashmap mutable key, hashmap key mutation lookup, hashset mutable element bug, mutable hash key beginner, java array equality basics, java array `==` vs `equals`, java `Arrays.equals`, java `Arrays.deepEquals`, `HashMap` `HashSet` equals hashCode, `String` equals vs `==`, `Objects.equals`, java comparable basics, java comparator basics, java compareTo equals consistency, java natural ordering basics, 자바 == equals 차이, 처음 배우는데 == equals hashcode, 자바 문자열 비교 equals, 객체 동일성 동등성 차이, 자바 hashCode 왜 같이 구현, equals만 구현하면 안 되는 이유, 언제 == 쓰고 언제 equals 쓰는지, 자바 비교 연산 큰 그림
 
 <details>
 <summary>Table of Contents</summary>
@@ -44,7 +46,7 @@ Java 입문자가 비교 연산에서 가장 자주 막히는 지점은 "같다"
 - `equals()`를 만들면 왜 `hashCode()`도 같이 만들라고 할까?
 - `HashSet`에 넣었는데 중복 제거가 왜 안 될까?
 
-이 문서는 위 질문을 초급 수준에서 한 번에 정리한다.  
+이 문서는 위 질문을 초급 수준에서 한 번에 정리한다.
 정렬 계약, `BigDecimal`, JPA 엔티티 같은 심화 설계는 관련 문서로 확장하고, 여기서는 초보자가 먼저 실수하지 않아야 할 최소 규칙을 잡는다.
 
 ## 같은 값과 같은 객체는 다르다
@@ -100,12 +102,12 @@ System.out.println(a == b); // false
 System.out.println(a.equals(b)); // true
 ```
 
-`equals()`는 "논리적으로 같은 값인가"를 표현한다.  
+`equals()`는 "논리적으로 같은 값인가"를 표현한다.
 다만 모든 클래스가 자동으로 값 비교를 해 주는 것은 아니다.
 
 ### `Object`의 기본 `equals()`는 사실상 identity 비교다
 
-클래스가 `equals()`를 오버라이드하지 않으면, 기본 구현은 `==`와 비슷하게 동작한다.  
+클래스가 `equals()`를 오버라이드하지 않으면, 기본 구현은 `==`와 비슷하게 동작한다.
 그래서 사용자 정의 클래스는 "무엇이 같다고 볼 것인가"를 직접 정해야 할 수 있다.
 
 ```java
@@ -206,7 +208,7 @@ import java.util.Objects;
 System.out.println(Objects.equals(role, inputRole));
 ```
 
-문자열 리터럴은 intern 때문에 `==`가 우연히 `true`처럼 보일 수 있다.  
+문자열 리터럴은 intern 때문에 `==`가 우연히 `true`처럼 보일 수 있다.
 그래서 초보자가 더 자주 속는다. 이 부분은 [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)에서 더 깊게 이어진다.
 
 ## 초보자가 자주 하는 비교 실수
@@ -233,7 +235,7 @@ System.out.println(a == b); // true 일 수 있다
 System.out.println(c == d); // false 일 수 있다
 ```
 
-`Integer`, `Long`, `Boolean`은 기본형이 아니라 참조형이다.  
+`Integer`, `Long`, `Boolean`은 기본형이 아니라 참조형이다.
 cache와 autoboxing 때문에 `==`가 가끔 맞아 보여 더 위험하다.
 
 ### 3. null wrapper를 primitive 문맥에서 비교한다
@@ -246,7 +248,7 @@ if (count == 0) { // NullPointerException
 }
 ```
 
-이 비교는 `count`가 자동 unboxing되면서 예외를 낸다.  
+이 비교는 `count`가 자동 unboxing되면서 예외를 낸다.
 wrapper와 기본형을 섞을 때는 null 가능성을 먼저 생각해야 한다.
 
 ### 4. `equals()`만 만들고 `hashCode()`를 빼먹는다
@@ -346,6 +348,7 @@ public class EqualityExample {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 초급 흐름을 먼저 이어가려면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- 값 객체 관점에서 equality를 확장해 보고 싶다면 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - 배열 비교 함정을 따로 정리해서 보려면 [Java Array Equality Basics](./java-array-equality-basics.md)
 - 정렬 기준과 `equals()` 관계까지 이어서 보려면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 - `equals()`와 `hashCode()` 계약을 더 정확히 보려면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)

@@ -10,6 +10,7 @@
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md)
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
+> - [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 
 retrieval-anchor-keywords: validation, binding, BindingResult, MethodArgumentNotValidException, ConstraintViolationException, field error, object error, type mismatch, conversion service, message codes
 
@@ -145,6 +146,8 @@ public OrderResponse get(@PathVariable Long id) {
 서비스 안에서 같은 검증을 다시 하는 건 중복일 수 있지만, 도메인 invariant는 별개다.
 
 즉, "요청 검증"과 "도메인 불변식"은 같은 것이 아니다.
+
+초급자 기준으로 이 경계가 자꾸 섞이면 [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)를 먼저 보고 돌아오는 편이 빠르다.
 
 ## 코드로 보기
 

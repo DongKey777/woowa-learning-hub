@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Spring Data JPA `save`, `persist`, `merge` State Transitions](../spring/spring-data-jpa-save-persist-merge-state-transitions.md)
 > - [JPA Dirty Checking, @Version, Cascade Trade-offs](../spring/jpa-dirty-checking-version-strategy.md)
+> - [Fetch Join vs `@EntityGraph` Mini Card for DTO Reads](../spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md)
 > - [Covering Index Composite Ordering](./covering-index-composite-ordering.md)
 > - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 
@@ -105,6 +106,8 @@ List<OrderLine> lines;
 - 연관이 **단일 `@OneToMany` 하나 + pagination 없음**: fetch join OK
 - 연관이 **`@OneToMany` + pagination**: fetch join 금지. `@BatchSize`로 풀어야 한다
 - 연관이 **여러 `@OneToMany`**: 반드시 `@BatchSize` (fetch join 하나 + batch로 나머지)
+
+DTO 읽기에서 "fetch join과 `@EntityGraph` 중 무엇을 먼저 고를지"만 빠르게 정리하고 싶다면 [Fetch Join vs `@EntityGraph` Mini Card for DTO Reads](../spring/spring-fetch-join-vs-entitygraph-dto-read-mini-card.md)를 먼저 보고 돌아오면 된다.
 
 ## 실전 시나리오
 

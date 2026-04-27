@@ -5,6 +5,7 @@
 > 관련 문서:
 > - [RAG Design](./README.md)
 > - [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)
+> - [Link Regression Fixtures](./link-regression-fixtures.md)
 > - [Local Asset Existence Lint](./local-asset-existence-lint.md)
 > - [Asset Filename Lint](./asset-filename-lint.md)
 > - [Fence False-Link Precheck](./fence-false-link-precheck.md)
@@ -46,6 +47,7 @@
 
 ## 어디로 이어서 가나
 
+- literal markdown/HTML example과 balanced-paren target regression fixture를 같이 보려면 [Link Regression Fixtures](./link-regression-fixtures.md)로 간다.
 - link label, filename, spacing guard 규칙 자체를 손봐야 하면 [Document Naming and Linking Guidelines](./document-naming-linking-guidelines.md)로 간다.
 - 전체 QA note index로 돌아가려면 [RAG Design](./README.md)를 다시 본다.
 

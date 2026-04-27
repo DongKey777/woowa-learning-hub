@@ -46,6 +46,7 @@ DEFAULT_TOP_K = 5
 FTS_POOL_SIZE = 40
 DENSE_POOL_SIZE = 40
 CATEGORY_BOOST = 0.15  # added to final score when category matches a learning point
+SIGNAL_CATEGORY_BOOST = 0.0015
 
 # Difficulty boost ladder — applied as a tie-breaker inside the top pool only,
 # so it never promotes an unrelated doc into the candidate set. Experience
@@ -69,6 +70,20 @@ DIFFICULTY_BOOST_LADDER: dict[str | None, dict[str | None, float]] = {
         "advanced": 0.01,
         "expert": 0.0,
         None: 0.0,
+    },
+}
+
+# Small, deterministic boosts for signal families whose beginner primer should
+# survive cheap-mode FTS ties. Values stay far below CATEGORY_BOOST so explicit
+# learner-state category mappings remain dominant.
+SIGNAL_CATEGORY_BOOST_TAGS = {
+    "java_oop_basics",
+    "transaction_anomaly_patterns",
+}
+
+SIGNAL_PATH_BOOSTS: dict[str, dict[str, float]] = {
+    "java_oop_basics": {
+        "contents/language/java/object-oriented-core-principles.md": 0.004,
     },
 }
 
@@ -252,6 +267,253 @@ def _apply_difficulty_boost(
     return boosted
 
 
+def _contains_any(haystack: str, cues: set[str]) -> bool:
+    return any(cue in haystack for cue in cues)
+
+
+def _projection_path_boosts(haystack: str, signal_tags: set[str]) -> dict[str, float]:
+    if "projection_freshness" not in signal_tags:
+        return {}
+    if _contains_any(
+        haystack,
+        {
+            "failover",
+            "visibility",
+            "verification",
+            "write loss",
+            "stateful",
+            "replica",
+            "리플리카",
+            "캐시인지",
+            "cache invalidation",
+            "application cache",
+        },
+    ):
+        return {}
+    if _contains_any(haystack, {"transaction rollback", "트랜잭션 롤백"}) and not _contains_any(
+        haystack,
+        {
+            "read model",
+            "읽기 모델",
+            "stale read",
+            "read-your-writes",
+            "저장",
+            "예전 값",
+            "옛값",
+        },
+    ):
+        return {}
+    if _contains_any(haystack, {"projection rebuild", "backfill", "watermark"}) and not _contains_any(
+        haystack,
+        {
+            "처음",
+            "입문",
+            "먼저",
+            "stale read",
+            "read-your-writes",
+            "예전 값",
+            "옛값",
+            "strict read",
+            "session pinning",
+            "watermark gated",
+        },
+    ):
+        return {}
+
+    boosts = {
+        "contents/design-pattern/read-model-staleness-read-your-writes.md": 0.004,
+    }
+    if _contains_any(
+        haystack,
+        {
+            "strict read",
+            "session pinning",
+            "세션 피닝",
+            "세션 고정",
+            "expected version",
+            "watermark gated",
+            "watermark gate",
+            "version gated",
+        },
+    ):
+        boosts.update(
+            {
+                "contents/design-pattern/session-pinning-vs-version-gated-strict-reads.md": 0.008,
+                "contents/design-pattern/strict-read-fallback-contracts.md": 0.002,
+            }
+        )
+    if _contains_any(haystack, {"cqrs", "survey", "설문"}):
+        boosts["contents/database/schema-migration-partitioning-cdc-cqrs.md"] = 0.0015
+    if _contains_any(
+        haystack,
+        {
+            "목록 새로고침",
+            "이전 화면 상태",
+            "상세는 바뀌었는데",
+            "list refresh lag",
+            "old screen state",
+            "detail view updated",
+            "list stale",
+        },
+    ):
+        boosts["contents/design-pattern/projection-lag-budgeting-pattern.md"] = 0.004
+        boosts["contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"] = 0.002
+    if _contains_any(
+        haystack,
+        {
+            "slo",
+            "lag budget",
+            "freshness budget",
+            "서비스 수준",
+            "허용 범위",
+            "반영 지연",
+        },
+    ):
+        boosts.update(
+            {
+                "contents/design-pattern/projection-freshness-slo-pattern.md": 0.004,
+                "contents/design-pattern/projection-lag-budgeting-pattern.md": 0.004,
+            }
+        )
+        return boosts
+
+    boosts["contents/design-pattern/read-model-cutover-guardrails.md"] = max(
+        boosts.get("contents/design-pattern/read-model-cutover-guardrails.md", 0.0),
+        0.0035,
+    )
+    boosts["contents/design-pattern/projection-lag-budgeting-pattern.md"] = max(
+        boosts.get("contents/design-pattern/projection-lag-budgeting-pattern.md", 0.0),
+        0.002,
+    )
+    if "rebuild" in haystack or "backfill" in haystack:
+        boosts["contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md"] = 0.0025
+    return boosts
+
+
+def _stateful_failover_path_boosts(haystack: str, signal_tags: set[str]) -> dict[str, float]:
+    if "stateful_failover_placement" not in signal_tags:
+        return {}
+    if not _contains_any(
+        haystack,
+        {
+            "상태 저장",
+            "리더 배치",
+            "배치 예산",
+            "복제본을 올릴지",
+        },
+    ):
+        return {}
+    return {
+        "contents/system-design/stateful-workload-placement-failover-control-plane-design.md": 0.0045,
+        "contents/system-design/global-traffic-failover-control-plane-design.md": 0.0022,
+    }
+
+
+def _transaction_path_boosts(haystack: str, signal_tags: set[str]) -> dict[str, float]:
+    if "transaction_isolation" not in signal_tags:
+        return {}
+    if _contains_any(
+        haystack,
+        {
+            "@transactional",
+            "service layer",
+            "self invocation",
+            "remote call",
+            "controller/repository",
+        },
+    ):
+        return {}
+    if _contains_any(
+        haystack,
+        {
+            "locking strategy",
+            "optimistic pessimistic",
+            "for update",
+            "어떻게 같이 정해",
+            "strategy",
+        },
+    ):
+        return {}
+    if not _contains_any(
+        haystack,
+        {
+            "mvcc",
+            "phantom read",
+            "dirty read",
+            "non-repeatable read",
+            "왜 생기",
+            "처음",
+            "입문",
+            "primer",
+            "큰 그림",
+        },
+    ):
+        return {}
+    return {
+        "contents/database/transaction-isolation-locking.md": 0.004,
+        "contents/database/transaction-isolation-basics.md": 0.004,
+    }
+
+
+def _contextual_signal_path_boosts(prompt: str, signals: list[dict]) -> dict[str, float]:
+    haystack = prompt.lower()
+    signal_tags = {str(signal.get("tag")) for signal in signals}
+    boosts: dict[str, float] = {}
+    for path_boosts in (
+        _projection_path_boosts(haystack, signal_tags),
+        _stateful_failover_path_boosts(haystack, signal_tags),
+        _transaction_path_boosts(haystack, signal_tags),
+    ):
+        for path, boost in path_boosts.items():
+            boosts[path] = max(boosts.get(path, 0.0), boost)
+    return boosts
+
+
+def _contextual_signal_category_boosts(prompt: str, signals: list[dict]) -> set[str]:
+    haystack = prompt.lower()
+    categories = {
+        signal.get("category")
+        for signal in signals
+        if signal.get("tag") in SIGNAL_CATEGORY_BOOST_TAGS
+    }
+    if _projection_path_boosts(haystack, {str(signal.get("tag")) for signal in signals}):
+        categories.add("design-pattern")
+    return {str(category) for category in categories if category}
+
+
+def _apply_signal_boost(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+    prompt: str,
+    signals: list[dict],
+) -> list[tuple[int, float]]:
+    if not signals:
+        return scored
+
+    category_boosts = _contextual_signal_category_boosts(prompt, signals)
+    path_boosts: dict[str, float] = {}
+    for signal in signals:
+        for path, boost in SIGNAL_PATH_BOOSTS.get(str(signal.get("tag")), {}).items():
+            path_boosts[path] = max(path_boosts.get(path, 0.0), boost)
+    path_boosts.update(_contextual_signal_path_boosts(prompt, signals))
+
+    if not category_boosts and not path_boosts:
+        return scored
+
+    boosted: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        if chunk is None:
+            boosted.append((row_id, score))
+            continue
+        if chunk["category"] in category_boosts:
+            score += SIGNAL_CATEGORY_BOOST
+        score += path_boosts.get(chunk["path"], 0.0)
+        boosted.append((row_id, score))
+    boosted.sort(key=lambda t: (-t[1], t[0]))
+    return boosted
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -289,6 +551,7 @@ def search(
     try:
         # 1. Query expansion
         tokens = signal_rules.expand_query(prompt, topic_hints)
+        signals = signal_rules.detect_signals(prompt, topic_hints)
         fts_query = _to_fts_query(tokens or _fallback_tokens(prompt))
 
         # 2. FTS ranking
@@ -328,6 +591,12 @@ def search(
         #     untouched. Applied to the same `boosted` pool so the discovery
         #     set is never widened by difficulty alone.
         boosted = _apply_difficulty_boost(boosted, chunks, experience_level)
+
+        # 5c. Signal boost — cheap mode has no cross-encoder, so near-ties can
+        #     let broad survey or deep-dive docs outrank the intended beginner
+        #     primer. Use the already-detected signal family as a small,
+        #     deterministic tie-breaker without widening the candidate pool.
+        boosted = _apply_signal_boost(boosted, chunks, prompt, signals)
 
         # 6. Category filter — keep only chunks whose category matches the
         #    learning points, if any. Falls back to unfiltered when the

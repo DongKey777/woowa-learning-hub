@@ -4,20 +4,45 @@
 
 **난이도: 🟢 Beginner**
 
-> 관련 문서:
-> - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
-> - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
-> - [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
-> - [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
-> - [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
-> - [HTTPS와 TLS 기초](./https-tls-beginner.md)
-> - [HTTPS / HSTS / MITM](./https-hsts-mitm.md)
-> - [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
-> - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+관련 문서:
 
-retrieval-anchor-keywords: secure cookie behind proxy, secure cookie proxy guide, secure cookie login loop, tls termination cookie issue, tls termination login cookie missing, X-Forwarded-Proto mismatch, x-forwarded-proto login loop, reverse proxy secure cookie, load balancer https http mismatch, browser sees https app sees http, app thinks request is http, request.isSecure false, secure cookie not persisting, secure cookie not sent after redirect, https login redirects to http, X-Forwarded-Host redirect, host preservation load balancer, wrong origin callback, proxy trust headers, ingress secure cookie issue, ALB secure cookie loop, nginx x-forwarded-proto cookie, spring forward headers secure cookie, express trust proxy secure cookie, secure session cookie behind proxy, login works locally but fails behind proxy, secure cookie dropped after http redirect, browser session troubleshooting return path, proxy cookie return path, 401 302 proxy branch
-retrieval-anchor-keywords: SameSite None vs X-Forwarded-Proto, external IdP iframe vs proxy mismatch, redirect becomes http after login, proxy cookie mismatch beginner
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+- [Wrong-Scheme vs Wrong-Origin Redirect Shortcut](./wrong-scheme-vs-wrong-origin-redirect-shortcut.md)
+- [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+- [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)
+- [Forwarded Header Trust Boundary Primer](./forwarded-header-trust-boundary-primer.md)
+- [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)
+- [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
+- [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+
+retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop, X-Forwarded-Proto mismatch, login redirect becomes http, secure cookie not sent after redirect, proxy scheme drift beginner, wrong-scheme redirect chooser, browser sees https app sees http, load balancer https http mismatch, cookie stored but not sent chooser, browser session troubleshooting return path, browser session beginner ladder return
+
+## 이 문서 다음에 보면 좋은 문서
+
+- proxy detour를 끝냈으면 deep dive를 더 열기 전에 먼저 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가고, login-loop 기준점을 다시 맞출 때만 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) 순서로 한 장씩 다시 탄다.
+- redirect가 `http://...`가 아니라 internal/staging host로 바뀌는 쪽이 핵심이면 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)로 넘어간다.
+- redirect는 계속 HTTPS인데 request `Cookie` header가 특정 host/path/subdomain에서만 비면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 가서 cookie scope 축을 먼저 자른다.
+- external IdP callback, iframe, partner portal 경로에서만 깨지고 redirect는 계속 HTTPS라면 [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)로 분기한다.
+- logout/migration cleanup이 안 먹는 것처럼 보여서 `bad tombstone`과 proxy/HTTPS mismatch를 먼저 가르고 싶다면 [Secure Cookie Cleanup Behind Proxy](./secure-cookie-cleanup-behind-proxy.md)로 간다.
+- 질문이 proxy, cookie scope, Spring session/BFF 경계를 한꺼번에 건드리면 [RAG: Cross-Domain Bridge Map](../../rag/cross-domain-bridge-map.md)로 한 칸만 올라가고, 다시 symptom을 고를 때는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 복귀한다.
+
+## 이 문서의 한 걸음 복귀 경로
+
+이 문서는 beginner follow-up이다. proxy 설정을 더 깊게 파기 전에, 먼저 아래 한 줄만 기억하면 된다.
+
+| 여기까지 읽고 난 뒤 상태 | 바로 돌아갈 자리 |
+|---|---|
+| `wrong-scheme`였다는 건 알겠는데 다음 symptom branch를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| cookie/proxy/security 용어 자체가 다시 흐려졌다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
+
+## 막히면 먼저 돌아갈 자리
+
+초보자 기준 return path는 고정한다.
+
+- 지금 읽은 follow-up이 맞는지 애매해지면 먼저 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아간다.
+- 증상이 `cookie stored but not sent`, `server still anonymous`, `social login/iframe`, `wrong host` 중 무엇인지 다시 고를 때는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)에서 한 갈래만 다시 잡는다.
+- network/security deep dive를 연속으로 더 내리기 전에 README로 복귀해 다음 한 장이 정말 필요한지 확인한다.
 
 ## 이 문서를 먼저 읽는 이유
 
@@ -34,6 +59,15 @@ retrieval-anchor-keywords: SameSite None vs X-Forwarded-Proto, external IdP ifra
 - **앱은 "아니, HTTP 요청이 왔다"고 생각한다**
 
 즉 cookie 자체보다 먼저, **원래 요청이 HTTPS였다는 사실이 proxy를 지나 앱까지 제대로 전달됐는지**를 봐야 한다.
+
+다만 아래처럼 질문이 섞여 있으면 proxy primer만 붙들수록 더 헷갈릴 수 있다.
+
+- "구글 로그인은 되는데 `access token`이랑 session cookie가 왜 둘 다 필요한지 모르겠어요"
+- "OIDC 로그인 문제인지, 브라우저 cookie 문제인지, proxy 문제인지 구분이 안 돼요"
+
+이 경우에는 먼저 [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)로 돌아가
+"외부 로그인 신원 확인"과 "우리 앱의 session cookie 유지"를 분리한 뒤,
+그다음에 이 문서로 와서 proxy/scheme 축만 보는 편이 빠르다.
 
 ---
 
@@ -57,6 +91,24 @@ retrieval-anchor-keywords: SameSite None vs X-Forwarded-Proto, external IdP ifra
 
 ---
 
+## 20초 chooser: cookie scope mismatch vs proxy scheme drift
+
+먼저 cookie 속성을 세세하게 읽기 전에, **다음 요청이 어떤 URL로 나가는지**부터 자른다.
+
+| 내가 먼저 본 증거 | 이때 더 가까운 축 | 다음 한 걸음 | 돌아오는 자리 |
+|---|---|---|---|
+| login 직후 `Location`이나 다음 요청 URL이 `http://...`로 내려간다 | proxy scheme drift | 이 문서에서 `X-Forwarded-Proto`, trusted proxy, app의 secure-request 해석을 본다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| redirect와 다음 요청 URL은 계속 `https://...`인데 특정 host/path/subdomain에서만 cookie가 안 붙는다 | generic cookie-scope mismatch | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 가서 `Domain` / `Path` / host-only cookie를 먼저 자른다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
+| `Application > Cookies`에는 값이 있는데 다음 요청 `Cookie` header가 비고, redirect URL은 여전히 HTTPS다 | generic cookie-scope mismatch 쪽이 먼저 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
+| `Application > Cookies`에는 값이 있고 login 뒤 바로 `http://...`로 꺾인 다음 요청에서만 cookie가 빠진다 | proxy scheme drift가 먼저 | 이 문서에서 wrong-scheme redirect를 먼저 본다. host까지 틀리면 [Wrong-Scheme vs Wrong-Origin Redirect Shortcut](./wrong-scheme-vs-wrong-origin-redirect-shortcut.md)으로 잠깐 분기한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+자주 헷갈리는 지점은 두 가지다.
+
+- `cookie가 저장됐다`와 `cookie가 다음 요청에 전송됐다`는 같은 말이 아니다.
+- `redirect가 http로 꺾인다`는 순간에는 cookie scope보다 proxy/scheme 전달 축이 더 강한 단서다.
+
+---
+
 ## 먼저 10초 판별표
 
 | 지금 보이는 현상 | 보통 뜻하는 것 | 먼저 볼 것 |
@@ -65,6 +117,20 @@ retrieval-anchor-keywords: SameSite None vs X-Forwarded-Proto, external IdP ifra
 | HTTPS login 직후 redirect가 `http://...`로 내려온다 | 앱이 요청을 insecure로 읽고 있다 | `X-Forwarded-Proto`, app의 proxy header 신뢰 설정 |
 | `Application` 탭에는 cookie가 있는데 redirect 뒤 다음 요청에는 cookie가 안 실린다 | `Secure` cookie가 `http` 요청에는 안 붙는다 | 다음 요청 URL이 `https`인지 `http`인지 |
 | `Domain` / `Path` / `SameSite`는 맞아 보이는데 staging/prod에서만 깨진다 | TLS termination 경계가 더 의심된다 | proxy가 original scheme을 넘기는지 |
+| social login인데 OAuth2/OIDC 설명과 browser cookie 설명이 같이 꼬여 있다 | proxy 원인 분류 전에 login mental model이 먼저 흔들린 상태일 수 있다 | [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md) |
+
+## 막히면 여기로 돌아온다
+
+proxy, cookie, redirect 이야기가 다시 한 덩어리로 섞이면 아래처럼 가장 먼저 보이는 증거만 붙들고 이동하면 된다.
+
+| 내가 확인한 증거 | 다음 한 걸음 | 돌아오는 자리 |
+|---|---|---|
+| 실패한 요청 raw `Cookie` header가 같은 이름 cookie를 두 번 담는다 | [Duplicate Cookie vs Proxy Login Loop Bridge](./duplicate-cookie-vs-proxy-login-loop-bridge.md)로 먼저 가서 duplicate shadowing과 proxy/scheme mismatch 중 어느 축이 먼저인지 자른다 | 읽고 나면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 다음 symptom 한 장만 다시 고른다 |
+| login 응답 `Location`이나 다음 요청 URL이 `http://...`로 꺾인다 | 이 문서에서 `X-Forwarded-Proto`와 trusted proxy 설정을 먼저 확인 | 정리되면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 다음 login-loop 갈래를 다시 고른다 |
+| redirect는 계속 HTTPS인데 external IdP/iframe/partner portal에서만 깨진다 | [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md) | 읽고 나면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가 browser/session primer 흐름에 다시 합류한다 |
+| redirect는 HTTPS인데 특정 host/path에서만 cookie가 안 붙는다 | [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md) | 읽고 나면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 돌아가 scope 다음 갈래를 다시 고른다 |
+| cookie도 실렸고 redirect도 정상인데 서버가 계속 anonymous로 본다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) | server/session 쪽 판단을 마치면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다 |
+| "`구글 로그인` 흐름 설명"과 "`왜 cookie가 안 붙는가`"가 한 문장처럼 섞인다 | [OAuth2 vs OIDC Social Login Primer](./oauth2-oidc-social-login-primer.md)에서 OAuth2/OIDC/session 역할부터 다시 나눈다 | 읽고 나면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아가 cookie/proxy primer를 다시 고른다 |
 
 ---
 
@@ -270,13 +336,28 @@ proxy/LB/ingress가 아래 역할을 하는지 본다.
 
 ---
 
+## detour에서 복귀하는 return to Browser / Session Troubleshooting Path
+
+다음 갈래를 다시 고를 때는 먼저 `return to Browser / Session Troubleshooting Path`라는 같은 wording으로 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다. 질문이 proxy, cookie scope, Spring session/BFF 경계를 같이 건드리면 [RAG: Cross-Domain Bridge Map](../../rag/cross-domain-bridge-map.md)로 한 칸만 올라간다.
+
+proxy detour에서 원인을 확인했다면 Spring/프레임워크 설정 deep dive로 바로 내려가기 전에, 아래 사다리로 같은 login-loop 기준점으로 복귀한다.
+
+| 단계 | 왜 이 단계로 복귀하나 | 링크 |
+|---|---|---|
+| 1. `primer` | login redirect와 `SavedRequest` 기본 문맥을 다시 고정 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| 2. `primer bridge` | `401`/`302`, login HTML fallback, cookie 누락 증상을 공통 분기표로 정리 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| 3. `catalog` | 다음 symptom 갈래를 category navigator에서 안전하게 재선택 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+
+---
+
 ## 다음 단계
 
-- login redirect와 `302 -> /login` 자체를 먼저 다시 읽고 싶으면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)로 돌아가 `401` 의미와 browser UX redirect를 다시 분리한다.
+- login-loop detour를 끝냈으면 먼저 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)로 복귀하고, 필요할 때만 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) 순서로 다시 읽어 기준점을 맞춘다.
 - request `Cookie` header 자체가 비고 `auth`/`app`/`api` subdomain, `Domain`, `Path`, `SameSite`가 더 의심되면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)로 옮겨 간다.
 - `http://`로 꺾이는 것보다 `Location`이나 OAuth `redirect_uri`의 host가 wrong origin으로 바뀌는 것이 핵심이면 [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md)에서 host preservation과 `X-Forwarded-Host`를 이어 본다.
 - redirect와 다음 요청 URL이 계속 `https://...`인데 external IdP callback, iframe, partner portal 경로에서만 깨지면 [SameSite=None Cross-Site Login Primer](./samesite-none-cross-site-login-primer.md)로 분기한다.
 - redirect는 정상 HTTPS이고 request `Cookie` header도 실리는데 서버가 계속 anonymous로 보면 [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)에서 server session/BFF mapping 갈래로 다시 타거나 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 다음 갈래를 고른다.
+- 어디서 다시 읽어야 할지 잠깐 멈추면 초보자 기준 wording은 항상 `return to Browser / Session Troubleshooting Path`이고, category navigator 순서는 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)다.
 
 ## 한 줄 정리
 
