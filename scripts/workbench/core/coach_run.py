@@ -901,6 +901,28 @@ def run_coach(
             error_phase = "memory_snapshot"
             error_message = str(exc)
 
+    # Learner stream hook (v3 closed loop): append a coach_run event to
+    # state/learner/history.jsonl so the cross-repo profile picks up this
+    # turn's learning_points and PR context. Failure here is intentionally
+    # swallowed — a learner-memory blip must never undo a successful
+    # coach-run write.
+    if error_phase is None:
+        try:
+            from .learner_memory import (  # type: ignore
+                _resolve_learner_id,
+                append_learner_event,
+                build_coach_run_event,
+            )
+            from .concept_catalog import load_catalog  # type: ignore
+            event = build_coach_run_event(
+                session_payload=session_payload,
+                learner_id=_resolve_learner_id(),
+                catalog=load_catalog(),
+            )
+            append_learner_event(event)
+        except Exception:
+            pass
+
     if error_phase is None and _drill is not None:
         try:
             if drill_result is not None:

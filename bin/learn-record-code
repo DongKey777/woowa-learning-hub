@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: bin/learn-record-code --file-path <path> --summary "..." \
+#                              [--lines-added N] [--lines-removed N] \
+#                              [--linked-test class.method] [--module name]
+# Appends a code_attempt event after an AI-driven code edit.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" learn-record-code "$@"

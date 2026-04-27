@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Usage: bin/learn-test --module spring-core-1
+# Scans `missions/spring-learning-test/<module>/build/test-results/test/*.xml`
+# and appends one test_result event per <testcase> to the learner stream.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" learn-test "$@"

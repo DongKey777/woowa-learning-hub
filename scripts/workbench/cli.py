@@ -677,6 +677,146 @@ def _record_rag_ask_event(
         sys.stderr.write(f"[learner-memory] rag-ask event append failed: {exc}\n")
 
 
+def cmd_learn_test(args: argparse.Namespace) -> int:
+    """Scan JUnit XML outputs and record each `<testcase>` as a learner event.
+
+    Inputs:
+      --module / --path: pick the module under `missions/spring-learning-test/`
+                        OR specify an explicit `build/test-results/test/`.
+      --no-record: dry-run (parse + summarize, do not append events).
+
+    Output: JSON `{module, scanned, recorded, passed, failed}`.
+    """
+    import xml.etree.ElementTree as ET
+
+    if args.path:
+        results_dir = Path(args.path)
+    else:
+        if not args.module:
+            sys.stderr.write("learn-test: provide --module or --path\n")
+            return 2
+        results_dir = (
+            ROOT
+            / "missions"
+            / "spring-learning-test"
+            / args.module
+            / "build"
+            / "test-results"
+            / "test"
+        )
+
+    if not results_dir.exists():
+        sys.stderr.write(f"learn-test: no test results at {results_dir}\n")
+        return 2
+
+    junit_tests: list[dict] = []
+    for xml_path in sorted(results_dir.glob("TEST-*.xml")):
+        try:
+            tree = ET.parse(xml_path)
+        except ET.ParseError:
+            continue
+        for case in tree.iter("testcase"):
+            test = {
+                "class": case.get("classname") or "",
+                "name": case.get("name") or "",
+                "duration_ms": _parse_junit_duration_ms(case.get("time")),
+            }
+            failure_node = case.find("failure")
+            if failure_node is None:
+                failure_node = case.find("error")
+            if failure_node is not None:
+                test["failure"] = {
+                    "message": (failure_node.get("message") or "").strip(),
+                    "stack_trace": (failure_node.text or "").strip(),
+                }
+            junit_tests.append(test)
+
+    passed = sum(1 for t in junit_tests if "failure" not in t)
+    failed = len(junit_tests) - passed
+    recorded = 0
+
+    if not args.no_record:
+        try:
+            from core.concept_catalog import load_catalog  # type: ignore
+            from core.learner_memory import (  # type: ignore
+                _resolve_learner_id,
+                append_learner_event,
+                build_test_result_event,
+            )
+            catalog = load_catalog()
+            learner_id = _resolve_learner_id()
+            for test in junit_tests:
+                try:
+                    event = build_test_result_event(
+                        junit_test=test,
+                        learner_id=learner_id,
+                        module=args.module,
+                        catalog=catalog,
+                    )
+                    append_learner_event(event)
+                    recorded += 1
+                except Exception:
+                    continue
+        except Exception as exc:  # noqa: BLE001
+            sys.stderr.write(f"learn-test: record failed — {exc}\n")
+
+    print(json.dumps(
+        {
+            "module": args.module,
+            "results_dir": str(results_dir),
+            "scanned": len(junit_tests),
+            "recorded": recorded,
+            "passed": passed,
+            "failed": failed,
+        },
+        ensure_ascii=False,
+    ))
+    return 0
+
+
+def _parse_junit_duration_ms(value: str | None) -> int | None:
+    if not value:
+        return None
+    try:
+        return int(round(float(value) * 1000))
+    except ValueError:
+        return None
+
+
+def cmd_learn_record_code(args: argparse.Namespace) -> int:
+    """Record a single `code_attempt` event for a learner code edit.
+
+    Used by the AI session after it edits a file in
+    `missions/spring-learning-test/<module>/...`. Designed to be called
+    from a wrapper or directly when the diff is already known.
+    """
+    try:
+        from core.concept_catalog import infer_module_from_path, load_catalog  # type: ignore
+        from core.learner_memory import (  # type: ignore
+            _resolve_learner_id,
+            append_learner_event,
+            build_code_attempt_event,
+        )
+        catalog = load_catalog()
+        module = args.module or infer_module_from_path(args.file_path)
+        event = build_code_attempt_event(
+            file_path=args.file_path,
+            diff_summary=args.summary or "",
+            lines_added=args.lines_added or 0,
+            lines_removed=args.lines_removed or 0,
+            linked_test=args.linked_test,
+            learner_id=_resolve_learner_id(),
+            module=module,
+            catalog=catalog,
+        )
+        append_learner_event(event)
+        print(json.dumps({"recorded": True, "event_id": event["event_id"]}, ensure_ascii=False))
+        return 0
+    except Exception as exc:  # noqa: BLE001
+        sys.stderr.write(f"learn-record-code: {exc}\n")
+        return 2
+
+
 def cmd_learner_profile(args: argparse.Namespace) -> int:
     """Subactions for state/learner/* (show / recompute / clear / redact / set).
 
@@ -1013,6 +1153,27 @@ def build_parser() -> argparse.ArgumentParser:
 
     lp_suggest = learner_profile_subparsers.add_parser("suggest")
     lp_suggest.set_defaults(func=cmd_learner_profile)
+
+    learn_test_parser = subparsers.add_parser(
+        "learn-test",
+        help="Scan JUnit XML and record test_result events.",
+    )
+    learn_test_parser.add_argument("--module", help="spring-learning-test module name (e.g. spring-core-1).")
+    learn_test_parser.add_argument("--path", help="Explicit path to a build/test-results/test directory.")
+    learn_test_parser.add_argument("--no-record", action="store_true")
+    learn_test_parser.set_defaults(func=cmd_learn_test)
+
+    learn_record_code_parser = subparsers.add_parser(
+        "learn-record-code",
+        help="Append a single code_attempt event for a learner code edit.",
+    )
+    learn_record_code_parser.add_argument("--file-path", required=True)
+    learn_record_code_parser.add_argument("--summary", default="")
+    learn_record_code_parser.add_argument("--lines-added", type=int, default=0)
+    learn_record_code_parser.add_argument("--lines-removed", type=int, default=0)
+    learn_record_code_parser.add_argument("--linked-test")
+    learn_record_code_parser.add_argument("--module")
+    learn_record_code_parser.set_defaults(func=cmd_learn_record_code)
 
     next_action_parser = subparsers.add_parser("next-action")
     next_action_parser.add_argument("--repo", required=True)

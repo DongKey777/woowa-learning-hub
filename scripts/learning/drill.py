@@ -144,6 +144,25 @@ def append_history(repo_name: str, drill_result: dict) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(drill_result, ensure_ascii=False) + "\n")
+    # Learner stream hook (v3): single sink for drill answers, so this
+    # function carries the cross-repo `drill_answer` event too. Failure
+    # is swallowed — the per-repo drill history already holds the truth.
+    try:
+        from scripts.workbench.core.learner_memory import (  # type: ignore
+            _resolve_learner_id,
+            append_learner_event,
+            build_drill_answer_event,
+        )
+        from scripts.workbench.core.concept_catalog import load_catalog  # type: ignore
+        event = build_drill_answer_event(
+            drill_record=drill_result,
+            learner_id=_resolve_learner_id(),
+            repo=repo_name,
+            catalog=load_catalog(),
+        )
+        append_learner_event(event)
+    except Exception:
+        pass
     return path
 
 
