@@ -187,6 +187,76 @@ class NegativeFeedbackNestedSignalsTests(_Isolated):
         )
         self.assertFalse(event["had_negative_feedback"])
 
+    def test_production_shape_body_excerpt_picks_up_negative(self) -> None:
+        # `packets.py:_comment_sample` puts mentor text under `body_excerpt`,
+        # not `body`. The earlier patch missed this and would have
+        # silently returned False on real production payloads.
+        catalog = concept_catalog.load_catalog()
+        payload = {
+            "repo": "x",
+            "current_pr": {"number": 7},
+            "pr_report_evidence": {
+                "mentor_comment_samples": [
+                    {"author": "mentor", "body_excerpt": "여기 트랜잭션 다시 봐 주세요"},
+                ]
+            },
+            "learning_point_recommendations": [
+                {"learning_point": "transaction_consistency"}
+            ],
+        }
+        event = learner_memory.build_coach_run_event(
+            session_payload=payload, learner_id="alignment-tester", catalog=catalog,
+        )
+        self.assertTrue(event["had_negative_feedback"])
+
+    def test_production_shape_thread_participants_pick_up_negative(self) -> None:
+        # `thread_builder._participant` writes `body_excerpt`, threads
+        # land under `thread_samples` (not `review_threads`).
+        catalog = concept_catalog.load_catalog()
+        payload = {
+            "repo": "x",
+            "current_pr": {"number": 7},
+            "pr_report_evidence": {
+                "thread_samples": [
+                    {
+                        "thread_id": 1,
+                        "participants": [
+                            {"author": "mentor", "role": "mentor",
+                             "body_excerpt": "수정 필요해 보이네요"},
+                        ],
+                    }
+                ]
+            },
+            "learning_point_recommendations": [
+                {"learning_point": "transaction_consistency"}
+            ],
+        }
+        event = learner_memory.build_coach_run_event(
+            session_payload=payload, learner_id="alignment-tester", catalog=catalog,
+        )
+        self.assertTrue(event["had_negative_feedback"])
+
+    def test_changes_requested_count_picks_up_negative(self) -> None:
+        # `packets.py:153` → review_summary.changes_requested_count.
+        catalog = concept_catalog.load_catalog()
+        payload = {
+            "repo": "x",
+            "current_pr": {"number": 7},
+            "pr_report_evidence": {
+                "review_summary": {
+                    "review_count": 3,
+                    "changes_requested_count": 2,
+                }
+            },
+            "learning_point_recommendations": [
+                {"learning_point": "transaction_consistency"}
+            ],
+        }
+        event = learner_memory.build_coach_run_event(
+            session_payload=payload, learner_id="alignment-tester", catalog=catalog,
+        )
+        self.assertTrue(event["had_negative_feedback"])
+
 
 class LearnTestPathOnlyInfersModuleTests(_Isolated):
     def setUp(self) -> None:

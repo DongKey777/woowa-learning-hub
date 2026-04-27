@@ -590,13 +590,23 @@ def _detect_negative_feedback(session_payload: dict) -> bool:
     """Best-effort signal: did the mentor flag this PR for changes?
 
     Real session payloads keep review state nested under `current_pr` and
-    `pr_report_evidence`, while some fixtures pass it as flat top-level
-    fields. We sweep both. False by default — coach_run events without
-    strong negatives stay clean (mastery rule then has to actively prove
-    a positive signal to mark a concept mastered).
+    `pr_report_evidence`. The exact shape comes from
+    `scripts/workbench/core/packets.py` and `thread_builder.py`:
+
+      * mentor comments use `body_excerpt` (not `body`) — see `_comment_sample`
+      * threads live under `thread_samples` (not `review_threads`),
+        with bodies at `participants[*].body_excerpt`
+      * `review_summary.changes_requested_count > 0` is a strong count signal
+
+    Some fixtures still pass flat top-level fields (`review_state`,
+    `mentor_verdict`, etc.) — we sweep both shapes so prod and tests align.
+    False by default; mastery only flips to True on a positive signal so a
+    silent miss here keeps the system conservative, not over-eager.
     """
     current_pr = session_payload.get("current_pr") or {}
     evidence = session_payload.get("pr_report_evidence") or {}
+
+    # 1) Flat / nested decision strings.
     flat_sources = [
         session_payload.get("mentor_verdict"),
         session_payload.get("review_state"),
@@ -609,16 +619,45 @@ def _detect_negative_feedback(session_payload: dict) -> bool:
     flat = " ".join(str(v) for v in flat_sources if v).lower()
     if any(phrase in flat for phrase in _NEGATIVE_PHRASES):
         return True
-    sample_buckets = [
+
+    # 2) Count signal — `review_summary.changes_requested_count > 0`.
+    review_summary = evidence.get("review_summary") or {}
+    if (review_summary.get("changes_requested_count") or 0) > 0:
+        return True
+
+    # 3) Mentor comment text — accept both `body` (legacy/fixture) and
+    #    `body_excerpt` (real packets) keys.
+    comment_buckets = [
         session_payload.get("mentor_comment_samples") or [],
         evidence.get("mentor_comment_samples") or [],
-        (evidence.get("review_threads") or []),
     ]
-    for bucket in sample_buckets:
+    for bucket in comment_buckets:
         for sample in (bucket or [])[:8]:
-            body = ((sample or {}).get("body") or "").lower()
-            if any(phrase in body for phrase in _NEGATIVE_PHRASES):
+            text = (
+                (sample or {}).get("body_excerpt")
+                or (sample or {}).get("body")
+                or ""
+            ).lower()
+            if any(phrase in text for phrase in _NEGATIVE_PHRASES):
                 return True
+
+    # 4) Thread participants — `thread_samples[*].participants[*].body_excerpt`.
+    thread_buckets = [
+        session_payload.get("thread_samples") or [],
+        evidence.get("thread_samples") or [],
+        evidence.get("review_threads") or [],  # backward-compat fixture key
+    ]
+    for bucket in thread_buckets:
+        for thread in (bucket or [])[:6]:
+            for participant in ((thread or {}).get("participants") or [])[:8]:
+                text = (
+                    (participant or {}).get("body_excerpt")
+                    or (participant or {}).get("body")
+                    or ""
+                ).lower()
+                if any(phrase in text for phrase in _NEGATIVE_PHRASES):
+                    return True
+
     return False
 
 
