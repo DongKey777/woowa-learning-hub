@@ -583,6 +583,10 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
     - tier 0 / blocked: hits=null, next_command=null
     - tier 1/2: hits = augment() result, next_command=null
     - tier 3: hits=null, next_command = bin/coach-run absolute path
+
+    Side effect: every classification (all tiers, including 0 and Tier 3
+    blocked) is appended to `state/learner/history.jsonl` so the
+    closed-loop personalization layer has full coverage.
     """
     import shlex
     from dataclasses import asdict
@@ -596,11 +600,7 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
         "next_command": None,
     }
 
-    if decision.tier == 0 or decision.blocked:
-        print(json.dumps(out, ensure_ascii=False))
-        return 0
-
-    if decision.tier in (1, 2):
+    if decision.tier in (1, 2) and not decision.blocked:
         # Lazy import — sentence-transformers loads only when needed
         # Match the existing pattern from coach_run.py (scripts.learning.*)
         from scripts.learning import integration  # type: ignore
@@ -627,20 +627,54 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
         else:
             out["hits"] = result
-        print(json.dumps(out, ensure_ascii=False))
-        return 0
 
-    if decision.tier == 3:
+    elif decision.tier == 3 and not decision.blocked:
         coach_run_path = str(ROOT / "bin" / "coach-run")
         out["next_command"] = (
             f"{coach_run_path} --repo {shlex.quote(args.repo or '')}"
             f" --prompt {shlex.quote(args.prompt)}"
         )
-        print(json.dumps(out, ensure_ascii=False))
-        return 0
 
+    _record_rag_ask_event(args, decision, out)
     print(json.dumps(out, ensure_ascii=False))
     return 0
+
+
+def _record_rag_ask_event(
+    args: argparse.Namespace, decision, out: dict
+) -> None:
+    """Append a learner event for every rag-ask outcome.
+
+    Catches any exception so a learner-memory hiccup never breaks the
+    primary CLI contract — `bin/rag-ask` must always produce its JSON.
+    """
+    try:
+        from core.concept_catalog import load_catalog  # type: ignore
+        from core.learner_memory import (  # type: ignore
+            _resolve_learner_id,
+            append_learner_event,
+            build_rag_ask_event,
+        )
+        rag_result = (
+            out["hits"]
+            if isinstance(out.get("hits"), dict) and "error" not in out["hits"]
+            else None
+        )
+        event = build_rag_ask_event(
+            prompt=args.prompt,
+            tier=decision.tier,
+            mode=decision.mode,
+            experience_level=decision.experience_level,
+            rag_result=rag_result,
+            repo=getattr(args, "repo", None),
+            module=getattr(args, "module", None),
+            learner_id=_resolve_learner_id(),
+            blocked=decision.blocked,
+            catalog=load_catalog(),
+        )
+        append_learner_event(event)
+    except Exception as exc:  # noqa: BLE001
+        sys.stderr.write(f"[learner-memory] rag-ask event append failed: {exc}\n")
 
 
 def cmd_learner_profile(args: argparse.Namespace) -> int:
@@ -939,6 +973,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     rag_ask_parser.add_argument("prompt", help="Learner prompt to classify and answer.")
     rag_ask_parser.add_argument("--repo", help="Optional onboarded repo name (for Tier 3 PR coaching).")
+    rag_ask_parser.add_argument("--module", help="Optional learning module hint (e.g. spring-core-1).")
     rag_ask_parser.set_defaults(func=cmd_rag_ask)
 
     learner_profile_parser = subparsers.add_parser(
