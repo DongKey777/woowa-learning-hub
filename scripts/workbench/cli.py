@@ -910,8 +910,20 @@ def cmd_learner_profile(args: argparse.Namespace) -> int:
         return 0
 
     if sub == "suggest":
-        sys.stderr.write("suggest is implemented in a later commit.\n")
-        return 2
+        from core.concept_catalog import load_catalog  # type: ignore
+        from core.learner_memory import suggest_next  # type: ignore
+        profile = load_learner_profile() or default_profile()
+        suggestions = suggest_next(profile, load_catalog(), max_n=getattr(args, "max", 3))
+        if getattr(args, "format", "json") == "text":
+            if not suggestions:
+                print("(no recommendations yet — keep learning a few more turns)")
+            else:
+                print("다음 추천:")
+                for i, s in enumerate(suggestions, 1):
+                    print(f"  {i}. ({s['type']}) {s['value']} — {s['reason']}")
+        else:
+            print(json.dumps(suggestions, ensure_ascii=False, indent=2))
+        return 0
 
     sys.stderr.write(f"unknown learner-profile subcommand: {sub}\n")
     return 2
@@ -1175,6 +1187,8 @@ def build_parser() -> argparse.ArgumentParser:
     lp_migrate.set_defaults(func=cmd_learner_profile)
 
     lp_suggest = learner_profile_subparsers.add_parser("suggest")
+    lp_suggest.add_argument("--max", type=int, default=3)
+    lp_suggest.add_argument("--format", choices=["json", "text"], default="json")
     lp_suggest.set_defaults(func=cmd_learner_profile)
 
     learn_test_parser = subparsers.add_parser(

@@ -921,13 +921,125 @@ def _build_learner_profile(history: list[dict], summary: dict) -> dict:
             "skip_concepts": [],
         },
     }
-    # `next_recommendations` is populated by `suggest_next` in a later phase.
+    # Phase 4 — fill next_recommendations using the freshly-built profile.
+    try:
+        profile["next_recommendations"] = suggest_next(profile, catalog)
+    except Exception:  # noqa: BLE001
+        profile["next_recommendations"] = []
     return profile
 
 
 def default_profile() -> dict:
     """Skeleton profile when no events have been recorded yet."""
     return _build_learner_profile([], {"total_events": 0})
+
+
+# === Active Guidance — suggest_next (v3 Phase 4) ==========================
+def suggest_next(
+    profile: dict | None,
+    catalog: dict,
+    *,
+    max_n: int = 3,
+) -> list[dict]:
+    """Compute the next-step recommendations from a learner profile.
+
+    Priority order (matches plan v3 §Suggest-Next 알고리즘):
+
+      1. Drill an uncertain concept that hasn't been drilled yet (~0.85)
+      2. Surface an underexplored concept in the current stage (~0.6)
+      3. Advance to the next stage's first module when prereqs met (~0.9)
+         — when prereqs are unmet, still surface the module with the
+         missing concepts as `blockers` (~0.5).
+    """
+    if not profile or not catalog:
+        return []
+    suggestions: list[dict] = []
+    concepts = profile.get("concepts") or {}
+    mastered_ids = {
+        (c or {}).get("concept_id") for c in concepts.get("mastered") or []
+    }
+    mastered_ids.discard(None)
+    activity = profile.get("activity") or {}
+    current_stage = activity.get("current_stage")
+
+    # Rule 1 — drill uncertain concepts.
+    for entry in concepts.get("uncertain") or []:
+        cid = entry.get("concept_id")
+        evidence = entry.get("evidence") or {}
+        last_drill_score = evidence.get("last_drill_score")
+        if cid is None:
+            continue
+        if last_drill_score is not None:
+            continue
+        suggestions.append(
+            {
+                "type": "drill",
+                "value": cid,
+                "reason": f"asked {evidence.get('ask_count_7d') or 0}x in 7d, no drill yet",
+                "priority": 0.85,
+            }
+        )
+
+    # Rule 2 — same-stage underexplored concepts.
+    for entry in concepts.get("underexplored") or []:
+        cid = entry.get("concept_id")
+        if cid is None:
+            continue
+        if entry.get("stage") and entry["stage"] != current_stage:
+            continue
+        suggestions.append(
+            {
+                "type": "concept",
+                "value": cid,
+                "reason": f"{current_stage or 'current stage'} stage gap",
+                "priority": 0.6,
+            }
+        )
+
+    # Rule 3 — advance to next stage when prereqs are met.
+    from .concept_catalog import next_stage as _next_stage  # local import
+    from .concept_catalog import stage_first_module as _first_module
+    if current_stage:
+        next_id = _next_stage(catalog, current_stage)
+        if next_id:
+            next_module = _first_module(catalog, next_id)
+            stage = (catalog.get("stages") or {}).get(next_id) or {}
+            # Prereqs that are themselves part of the next stage are
+            # things the learner is about to study, not gates to entry —
+            # only earlier-stage concepts count as blockers.
+            stage_concepts: set[str] = set(stage.get("concepts") or [])
+            prereq_ids: set[str] = set()
+            for cid in stage_concepts:
+                concept = (catalog.get("concepts") or {}).get(cid) or {}
+                for pid in concept.get("prerequisites") or []:
+                    if pid not in stage_concepts:
+                        prereq_ids.add(pid)
+            unmet = [pid for pid in prereq_ids if pid not in mastered_ids]
+            if next_module:
+                if not unmet:
+                    suggestions.append(
+                        {
+                            "type": "module",
+                            "value": next_module,
+                            "reason": f"{current_stage} prerequisites met, ready for {next_id}",
+                            "priority": 0.9,
+                            "blockers": [],
+                        }
+                    )
+                else:
+                    suggestions.append(
+                        {
+                            "type": "module",
+                            "value": next_module,
+                            "reason": f"prereqs not yet mastered: {unmet}",
+                            "priority": 0.5,
+                            "blockers": list(unmet),
+                        }
+                    )
+
+    suggestions.sort(key=lambda s: -float(s.get("priority") or 0))
+    return suggestions[:max_n]
+
 
 
 # === Adaptive Response — learner_context (v3 closed loop) =================
