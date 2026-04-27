@@ -1041,7 +1041,6 @@ def suggest_next(
     return suggestions[:max_n]
 
 
-
 # === Adaptive Response — learner_context (v3 closed loop) =================
 def build_learner_context(
     profile: dict | None,
@@ -1164,9 +1163,6 @@ def build_learner_context(
             "must_offer_next_action": must_offer_next_action,
         },
     }
-
-
-
 
 
 # === Migration from per-repo memory (Commit 3 / Phase 2) ==================

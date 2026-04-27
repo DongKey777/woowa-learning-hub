@@ -841,11 +841,7 @@ def cmd_learn_record_code(args: argparse.Namespace) -> int:
 
 
 def cmd_learner_profile(args: argparse.Namespace) -> int:
-    """Subactions for state/learner/* (show / recompute / clear / redact / set).
-
-    `migrate-from-repos` and `suggest` are stubs in this phase — they are
-    wired in later commits.
-    """
+    """Subactions for state/learner/* (show / recompute / clear / redact / set / migrate-from-repos)."""
     from core.learner_memory import (  # type: ignore
         clear_learner_state,
         default_profile,
@@ -853,7 +849,7 @@ def cmd_learner_profile(args: argparse.Namespace) -> int:
         recompute_learner_profile,
         redact_substring,
     )
-    from core.paths import (  # type: ignore  # noqa: F401
+    from core.paths import (  # type: ignore
         learner_history_path,
         learner_profile_path,
         learner_summary_path,

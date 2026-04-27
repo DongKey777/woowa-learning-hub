@@ -161,6 +161,8 @@ bin/orchestrator fleet-status
 - [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) — AI 운영 계약
 - [`docs/orchestrator.md`](docs/orchestrator.md) — 지속 오케스트레이터
 - [`docs/onboarding.md`](docs/onboarding.md) — 새 미션 온보딩 가이드
+- [`docs/learner-memory.md`](docs/learner-memory.md) — 학습자 단일 source of truth (state/learner) + adaptive response loop
+- [`docs/rag-runtime.md`](docs/rag-runtime.md) — `bin/rag-ask` Tier 분류 + RAG 런타임 운영
 
 ---
 
