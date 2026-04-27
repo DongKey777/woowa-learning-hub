@@ -215,6 +215,43 @@ class DiInjectionPhraseTests(unittest.TestCase):
         self.assertEqual(d.tier, 0)
 
 
+class KoreanConceptPhraseAndColloquialSignalTests(unittest.TestCase):
+    """학습자가 한글 phrase + 구어체 정의 시그널로 물을 때 router가
+    매치하도록 보강한 회귀.
+    실제 학습 세션에서 "컴포넌트스캔이 머야"가 Tier 0으로 떨어지던 케이스.
+    """
+
+    def test_korean_component_scan_phrase_routes_to_tier1(self) -> None:
+        d = classify("컴포넌트 스캔이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_component_scan_no_space_routes_to_tier1(self) -> None:
+        d = classify("컴포넌트스캔이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_component_scan_with_meoya_routes_to_tier1(self) -> None:
+        # "머야" 구어체 + 한글 phrase 동시 매치 — 학습 세션에서 실제 발생.
+        d = classify("컴포넌트스캔이 머야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_di_phrase_routes_to_tier1(self) -> None:
+        d = classify("의존성 주입이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_meoya_with_domain_routes_to_tier1(self) -> None:
+        d = classify("Bean이 머야")
+        self.assertEqual(d.tier, 1)
+
+    def test_meonya_with_domain_routes_to_tier1(self) -> None:
+        d = classify("DI가 머냐")
+        self.assertEqual(d.tier, 1)
+
+    def test_meoya_alone_without_domain_stays_tier0(self) -> None:
+        # 도메인 없으면 정의 시그널만으로는 Tier 0에 머물러야 한다.
+        d = classify("이게 머야")
+        self.assertEqual(d.tier, 0)
+
+
 class ReEscapeTests(unittest.TestCase):
     """`.` in build.gradle / settings.gradle / pom.xml must NOT be regex
     wildcard (peer AI #2)."""

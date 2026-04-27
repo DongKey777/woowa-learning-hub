@@ -47,7 +47,7 @@ class RouterDecision:
 # === 1. Definition signals (Tier 1 trigger — ANDed with domain) ===
 DEFINITION_SIGNALS = frozenset([
     # Korean (≥2 chars; "란" 1-char excluded to avoid "이란" / "한란" noise)
-    "뭐야", "뭐예요", "뭐임", "뭐냐",
+    "뭐야", "뭐예요", "뭐임", "뭐냐", "머야", "머냐",
     "알려줘", "설명해", "정의가", "정의는", "이란", "이라고",
     # "어떤" / "무슨" + 명사 — definitional intent (다 multi-char로 묶어 false positive 방지)
     "어떤거야", "어떤 거야", "어떤 건가",
@@ -94,6 +94,8 @@ LEARNING_CONCEPT_TOKENS = frozenset([
     # DI 방식별 phrase — 학습자가 자주 쓰는 표현 (multi-word라 false positive 거의 없음)
     "constructor injection", "setter injection", "field injection",
     "생성자 주입", "세터 주입", "필드 주입",
+    # Spring concept 한글 phrase — 영문 토큰만 있어 한글로 물으면 도메인 매치 실패
+    "컴포넌트 스캔", "컴포넌트스캔", "의존성 주입", "어노테이션",
     # Persistence
     "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",
     "transactional", "savepoint", "mvcc",
