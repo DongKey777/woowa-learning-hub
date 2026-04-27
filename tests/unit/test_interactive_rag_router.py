@@ -179,6 +179,42 @@ class ExpandedDefinitionSignalTests(unittest.TestCase):
         self.assertEqual(d.tier, 0)
 
 
+class DiInjectionPhraseTests(unittest.TestCase):
+    """`spring-core-1` DependencyInjectionTest 학습 단계에서 자주 등장하는
+    DI 방식 phrase가 도메인 매치되도록 보강한 회귀."""
+
+    def test_constructor_injection_question_routes_with_depth(self) -> None:
+        d = classify("constructor injection은 어떻게 작동해")
+        self.assertEqual(d.tier, 2)
+
+    def test_setter_injection_question_routes_with_depth(self) -> None:
+        d = classify("setter injection이 어떻게 동작해")
+        self.assertEqual(d.tier, 2)
+
+    def test_field_injection_definition_routes_to_tier1(self) -> None:
+        d = classify("field injection이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_phrase_constructor_routes_with_depth(self) -> None:
+        d = classify("생성자 주입은 어떻게 작동해")
+        self.assertEqual(d.tier, 2)
+
+    def test_korean_phrase_setter_definition_routes_to_tier1(self) -> None:
+        d = classify("세터 주입이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_korean_phrase_field_definition_routes_to_tier1(self) -> None:
+        d = classify("필드 주입이 어떤거야")
+        self.assertEqual(d.tier, 1)
+
+    def test_bare_injection_word_does_not_force_domain_match(self) -> None:
+        # phrase로만 등록했으므로 단독 "injection"은 도메인 토큰 매치 안 됨.
+        # 다른 도메인 토큰이 있으면 매치되겠지만, "injection" 단독은 의료/생물학
+        # 등 false positive 가능성을 막기 위해 의도적으로 제외.
+        d = classify("injection이 어떤거야")
+        self.assertEqual(d.tier, 0)
+
+
 class ReEscapeTests(unittest.TestCase):
     """`.` in build.gradle / settings.gradle / pom.xml must NOT be regex
     wildcard (peer AI #2)."""

@@ -91,6 +91,9 @@ LEARNING_CONCEPT_TOKENS = frozenset([
     "spring", "bean", "di", "ioc", "autowired", "component", "applicationcontext",
     "controller", "service", "repository", "restcontroller", "dispatcherservlet",
     "filter", "interceptor",
+    # DI 방식별 phrase — 학습자가 자주 쓰는 표현 (multi-word라 false positive 거의 없음)
+    "constructor injection", "setter injection", "field injection",
+    "생성자 주입", "세터 주입", "필드 주입",
     # Persistence
     "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",
     "transactional", "savepoint", "mvcc",
