@@ -137,6 +137,48 @@ class AsciiBoundaryRegressionTests(unittest.TestCase):
         self.assertEqual(d.tier, 1)
 
 
+class ExpandedDefinitionSignalTests(unittest.TestCase):
+    """학습 세션에서 발견된 자연 한국어 표현이 router에서 빠지지 않도록.
+
+    실제 학습자가 "@Autowired가 어떤거야"처럼 물었을 때 v2.2 router가
+    Tier 0으로 떨어뜨리던 케이스를 회귀로 못박는다.
+    """
+
+    def test_eotteongeoya_routes_to_tier1_with_domain(self) -> None:
+        d = classify("@Autowired가 어떤거야")
+        self.assertEqual(d.tier, 1)
+
+    def test_eotteon_geoya_with_space_routes_to_tier1(self) -> None:
+        d = classify("Bean이 어떤 거야?")
+        self.assertEqual(d.tier, 1)
+
+    def test_mwoeun_uimi_routes_to_tier1(self) -> None:
+        d = classify("Bean이 어떤 의미야")
+        self.assertEqual(d.tier, 1)
+
+    def test_museun_uimi_routes_to_tier1(self) -> None:
+        d = classify("DI는 무슨 의미야")
+        self.assertEqual(d.tier, 1)
+
+    def test_eotteon_yeokhal_routes_to_tier1(self) -> None:
+        d = classify("DispatcherServlet이 어떤 역할이야")
+        self.assertEqual(d.tier, 1)
+
+    def test_mwonya_routes_to_tier1(self) -> None:
+        d = classify("트랜잭션이 뭐냐")
+        self.assertEqual(d.tier, 1)
+
+    def test_no_domain_definition_signal_alone_stays_tier0(self) -> None:
+        # 도메인 토큰이 없으면 정의 시그널만으로는 Tier 0에 머물러야 한다.
+        d = classify("이게 어떤거야")
+        self.assertEqual(d.tier, 0)
+
+    def test_tool_only_with_new_signal_stays_tier0(self) -> None:
+        # Gradle은 TOOL 토큰, 학습 도메인 매치 없음 → Tier 0 유지.
+        d = classify("Gradle이 어떤 의미야")
+        self.assertEqual(d.tier, 0)
+
+
 class ReEscapeTests(unittest.TestCase):
     """`.` in build.gradle / settings.gradle / pom.xml must NOT be regex
     wildcard (peer AI #2)."""

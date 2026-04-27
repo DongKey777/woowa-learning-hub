@@ -47,7 +47,13 @@ class RouterDecision:
 # === 1. Definition signals (Tier 1 trigger — ANDed with domain) ===
 DEFINITION_SIGNALS = frozenset([
     # Korean (≥2 chars; "란" 1-char excluded to avoid "이란" / "한란" noise)
-    "뭐야", "뭐예요", "알려줘", "설명해", "정의가", "정의는", "이란", "이라고",
+    "뭐야", "뭐예요", "뭐임", "뭐냐",
+    "알려줘", "설명해", "정의가", "정의는", "이란", "이라고",
+    # "어떤" / "무슨" + 명사 — definitional intent (다 multi-char로 묶어 false positive 방지)
+    "어떤거야", "어떤 거야", "어떤 건가",
+    "어떤 의미", "무슨 의미",
+    "어떤 역할", "무슨 역할",
+    "어떤 개념", "무슨 개념",
     # English (word boundary applied)
     "what is", "what's", "define", "definition of", "explain briefly",
 ])
