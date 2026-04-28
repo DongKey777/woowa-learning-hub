@@ -35,6 +35,12 @@ git clone https://github.com/DongKey777/woowa-learning-hub.git
 cd woowa-learning-hub
 ```
 
+> **Native Windows (PowerShell)** 사용자는 클론 직후 한 번만 추가:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+> AI가 OS 감지해서 `.\bin\*.ps1` 자동 호출. macOS / Linux / WSL2는 추가 설정 없음.
+
 **2) AI 세션 열기** — 권한 자동 승인 옵션으로 시작 (학습자가 매 명령마다 y/n 안 묻게)
 
 | AI | 명령 | 비고 |
