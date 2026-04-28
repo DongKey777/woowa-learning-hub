@@ -6,13 +6,13 @@ import signal
 import subprocess
 import sys
 import time
-import fcntl
 import re
 from datetime import datetime, timedelta, timezone
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
+from .file_lock import lock_exclusive, unlock
 from .paths import ROOT, ensure_global_layout, ensure_orchestrator_layout
 
 DEFAULT_LOOP_INTERVAL_SECONDS = 45
@@ -862,14 +862,14 @@ class Orchestrator:
     def _locked(self):
         if self._lock_depth == 0:
             self._lock_handle = self.lock_path.open("a+", encoding="utf-8")
-            fcntl.flock(self._lock_handle.fileno(), fcntl.LOCK_EX)
+            lock_exclusive(self._lock_handle)
         self._lock_depth += 1
         try:
             yield
         finally:
             self._lock_depth -= 1
             if self._lock_depth == 0 and self._lock_handle is not None:
-                fcntl.flock(self._lock_handle.fileno(), fcntl.LOCK_UN)
+                unlock(self._lock_handle)
                 self._lock_handle.close()
                 self._lock_handle = None
 

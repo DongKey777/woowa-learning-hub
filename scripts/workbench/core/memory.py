@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import fcntl
 import json
 import os
 import re
@@ -10,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .candidate_interpretation import LEARNING_POINT_RULES
+from .file_lock import lock_exclusive, unlock
 from .paths import repo_memory_dir
 from .schema_validation import validate_payload
 
@@ -479,11 +479,11 @@ def _atomic_write(path: Path, content: str) -> None:
 
 def _append_with_lock(path: Path, line: str) -> None:
     with path.open("a", encoding="utf-8") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
+        lock_exclusive(handle)
         try:
             handle.write(line)
         finally:
-            fcntl.flock(handle, fcntl.LOCK_UN)
+            unlock(handle)
 
 
 def compute_memory_update(

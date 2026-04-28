@@ -7,11 +7,11 @@ import shutil
 import subprocess
 import sys
 import time
-import fcntl
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .file_lock import lock_exclusive, unlock
 from .orchestrator import Orchestrator, _isoformat, _pid_alive, _utc_now
 from .paths import ROOT, ensure_orchestrator_layout
 
@@ -1220,14 +1220,14 @@ def _update_fleet_status() -> None:
     lock_path = ensure_orchestrator_layout() / ".fleet-status.lock"
     lock_path.touch(exist_ok=True)
     with lock_path.open("a+", encoding="utf-8") as handle:
-        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        lock_exclusive(handle)
         try:
             _write_json(
                 _fleet_status_path(),
                 {"updated_at": _isoformat(_utc_now()), "workers": _fleet_summary()},
             )
         finally:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+            unlock(handle)
 
 
 def run_worker_loop(
