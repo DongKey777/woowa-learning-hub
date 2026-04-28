@@ -10,16 +10,20 @@ Role:
 
 ## First-Run Protocol (learning-hub)
 
-새 환경 감지 시 순서대로:
+새 환경 감지 시 순서대로 (학습자는 한국어 의도만 던지고, 모든 명령은 AI가 자동 호출):
 
+0. **OS 감지** — `uname` 실패 또는 `$env:OS == "Windows_NT"`이면 Windows native 모드.
+   - Native Windows: 학습자에게 한국어로 동의 받은 후 `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` 자동 호출 (PowerShell 한 번만)
+   - 이후 명령 호출은 OS별 자동 분기: `bin/<cmd>` (Unix) / `.\bin\<cmd>.ps1` (Windows native) / `python scripts/workbench/cli.py <cmd>` (universal fallback)
 1. Python 의존성 설치 — `pip install -e .` (sentence-transformers / numpy / scikit-learn)
-2. HuggingFace 모델 캐시 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder reranker
-3. CS 인덱스 빌드 — `bin/cs-index-build` (`state/cs_rag/*` 생성)
-4. 미션 저장소 clone + onboard-repo → bootstrap-repo
-5. Learner State Assessment
-6. coach-run
+2. (필요 시) `gh auth login` 트리거 — 브라우저로 GitHub 인증
+3. HuggingFace 모델 캐시 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder reranker
+4. CS 인덱스 빌드 — `bin/cs-index-build` (또는 Windows native에서 `.ps1`)
+5. 미션 저장소 clone + onboard-repo → bootstrap-repo
+6. Learner State Assessment
+7. coach-run
 
-각 단계를 한국어 한 줄로 학습자에게 보고.
+각 단계를 한국어 한 줄로 학습자에게 보고. **학습자가 외울 명령 = 0개**.
 
 ### CS Readiness 복구
 

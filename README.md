@@ -27,19 +27,12 @@
 
 ## 1분 안에 시작
 
-**1) 이 저장소만 직접 클론** (한 번만, 위치 자유)
+**1) 이 저장소만 직접 클론** (한 번만, 위치 자유, 모든 OS 동일)
 
 ```bash
-cd ~/IdeaProjects                                       # 또는 원하는 위치
 git clone https://github.com/DongKey777/woowa-learning-hub.git
 cd woowa-learning-hub
 ```
-
-> **Native Windows (PowerShell)** 사용자는 클론 직후 한 번만 추가:
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-> ```
-> AI가 OS 감지해서 `.\bin\*.ps1` 자동 호출. macOS / Linux / WSL2는 추가 설정 없음.
 
 **2) AI 세션 열기** — 권한 자동 승인 옵션으로 시작 (학습자가 매 명령마다 y/n 안 묻게)
 
@@ -57,9 +50,8 @@ cd woowa-learning-hub
 
 > *"이 저장소로 학습 시작하자. spring-core-1부터 가고 싶어."*
 
-AI가 자동: `pip install -e .` → HuggingFace 모델 warm-up → `bin/cs-index-build` (CS 인덱스
-87초) → `missions/` 안에 학습 테스트 클론 → 첫 학습 가이드. 이후 학습자는 답변 따라 한국어로
-진행.
+AI가 환경 셋업(의존성 / 모델 / 인덱스 / 미션 클론)을 자동 처리하고 첫 학습 가이드를 안내한다.
+이후 학습자는 답변 따라 한국어로 진행. **외울 명령 = 0개. OS 무관.**
 
 ---
 
@@ -89,11 +81,10 @@ woowa-learning-hub/                  ← (1) 직접 클론
 
 - Python 3.10+, `git`, `gh` CLI (`gh auth login` 완료)
 - AI CLI 한 종류 (Claude Code / Codex / Gemini)
-- 셸 환경:
-  - **macOS / Linux / WSL2**: `bin/*` 그대로 동작
-  - **Native Windows** (PowerShell / cmd): `.\bin\*.ps1` PowerShell wrapper 사용
-    (모든 명령에 .ps1 미러 제공). `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` 한 번만 실행 필요.
-  - 자세한 OS별 가이드: [`docs/platform-compatibility.md`](docs/platform-compatibility.md)
+- 셸 환경: macOS / Linux / WSL2 / **Native Windows** 모두 지원 — AI가 OS 감지해서
+  `bin/*` (Unix) 또는 `.\bin\*.ps1` (Windows native) 자동 선택. ExecutionPolicy /
+  의존성 설치 / gh 인증 모두 AI가 First-Run Protocol에서 자동 처리. 자세한 OS별
+  가이드: [`docs/platform-compatibility.md`](docs/platform-compatibility.md)
 
 의존성 / 모델 / 인덱스는 첫 세션에서 AI가 자동 처리.
 

@@ -12,16 +12,18 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 ## First-Run Protocol (learning-hub)
 
-새 환경(fresh clone 또는 의존성/인덱스 미구성)을 감지하면 AI 세션이 순서대로 수행:
+새 환경(fresh clone 또는 의존성/인덱스 미구성)을 감지하면 AI 세션이 순서대로 수행. **모든 명령은 AI가 자동 호출하고 학습자가 외울 명령은 0개**:
 
+0. **OS 감지 + Windows 셋업** — `uname` 실패 또는 `$env:OS == "Windows_NT"`이면 native Windows. 학습자에게 한국어로 동의 받은 후 `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` 자동 호출 (PowerShell, 한 번만). 이후 명령은 OS별 자동 분기 — `bin/<cmd>` (Unix) / `.\bin\<cmd>.ps1` (Windows native) / `python scripts/workbench/cli.py <cmd>` (universal fallback).
 1. **Python 의존성 설치** — `pip install -e .` (sentence-transformers, numpy, scikit-learn). 이미 설치돼 있으면 skip.
-2. **HuggingFace 모델 캐시** — 첫 검색 시 자동 다운로드되지만, `paraphrase-multilingual-MiniLM-L12-v2` (384-dim) 와 `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` 를 미리 warm-up해 첫 학습자 턴의 지연을 줄인다.
-3. **CS 인덱스 빌드** — `bin/cs-index-build`. `state/cs_rag/index.sqlite3`, `state/cs_rag/dense.npz`, `state/cs_rag/manifest.json` 생성. corpus hash 변경 감지 시 자동 재빌드.
-4. **미션 저장소 클론 + onboard** — 학습자가 지정한 mission repo를 `missions/` 아래로 clone, `repo-registry.json`에 등록.
-5. **Learner State Assessment** — 학습자의 브랜치/PR/미해결 스레드를 직접 관찰해 `contexts/learner-state.json` 생성.
-6. **coach-run 호출** — 이 모든 셋업이 끝난 뒤에야 첫 코칭 응답 생성.
+2. **GitHub 인증** — `gh auth status` 확인 후 미인증이면 `gh auth login` 트리거 (브라우저 자동 열림).
+3. **HuggingFace 모델 캐시** — 첫 검색 시 자동 다운로드되지만, `paraphrase-multilingual-MiniLM-L12-v2` (384-dim) 와 `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` 를 미리 warm-up.
+4. **CS 인덱스 빌드** — `bin/cs-index-build` (또는 Windows native `.ps1`). `state/cs_rag/index.sqlite3`, `dense.npz`, `manifest.json` 생성.
+5. **미션 저장소 클론 + onboard** — 학습자가 지정한 mission repo를 `missions/` 아래로 clone, `repo-registry.json`에 등록.
+6. **Learner State Assessment** — 학습자의 브랜치/PR/미해결 스레드를 직접 관찰해 `contexts/learner-state.json` 생성.
+7. **coach-run 호출** — 이 모든 셋업이 끝난 뒤에야 첫 코칭 응답 생성.
 
-각 단계는 한국어 한 줄로 학습자에게 진행 상황 보고 (예: "CS 인덱스 빌드 중…"). 실패 시 한국어로 원인 설명.
+각 단계는 한국어 한 줄로 학습자에게 진행 상황 보고 (예: *"CS 인덱스 빌드 중…"*). 실패 시 한국어로 원인 설명.
 
 ### CS Readiness 복구 규칙
 

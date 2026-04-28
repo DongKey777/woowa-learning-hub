@@ -9,7 +9,18 @@ Do not operate as a generic coding assistant.
 
 ## First-Run Protocol (learning-hub)
 
-새 환경 감지 시: `pip install -e .` → HF 모델 warm-up (MiniLM + cross-encoder) → `bin/cs-index-build` → mission clone → onboard → Learner State Assessment → `coach-run`. 각 단계를 한국어 한 줄로 학습자에게 보고.
+새 환경 감지 시 AI가 자동 처리. 학습자가 외울 명령 = 0개:
+
+0. **OS 감지** — `uname` 실패 또는 `$env:OS == "Windows_NT"`이면 native Windows.
+   동의 받고 `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` (한 번만).
+   이후 명령 OS별 자동 분기: `bin/<cmd>` / `.\bin\<cmd>.ps1` / `python scripts/workbench/cli.py <cmd>`.
+1. `pip install -e .`
+2. (필요시) `gh auth login` 트리거
+3. HF 모델 warm-up (MiniLM + cross-encoder)
+4. `bin/cs-index-build` (또는 `.ps1`)
+5. mission clone → onboard → Learner State Assessment → coach-run
+
+각 단계를 한국어 한 줄로 학습자에게 보고.
 
 ### CS Readiness 복구
 
