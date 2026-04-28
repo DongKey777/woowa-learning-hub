@@ -6,6 +6,25 @@
 
 ---
 
+## 무엇을 하는가
+
+이 시스템은 **네 가지 학습 입력을 한 곳에 모아** 개인화된 코칭으로 변환한다.
+
+1. **다른 크루들의 PR + 리뷰** (peer 학습 데이터) — upstream `woowacourse/<repo>`에서 같은
+   미션을 푼 다른 학습자들의 PR / 리뷰 / 멘토 코멘트를 SQLite 아카이브로 수집. 학습자가
+   질문하면 **같은 단계 peer PR**을 골라 멘토 리뷰 맥락을 근거로 학습 포인트를 추출.
+2. **CS 지식 베이스** (24,407 청크 / 384-dim 임베딩) — 하이브리드 검색(FTS + dense + rerank)
+   + Tier 0~3 자동 라우팅. 정의 질문은 cheap 모드, 비교/깊이 질문은 full 모드.
+3. **학습 테스트 결과** — `spring-learning-test` 모듈의 JUnit XML을 자동 파싱해 모듈별
+   완료율 / pass-fail / concept 매핑으로 누적.
+4. **Drill 채점** — 학습자가 자기 말로 답한 내용을 4차원(정확도 / 깊이 / 실전성 / 완결성)
+   으로 채점해 mastery / uncertainty 산출.
+
+이 네 입력이 **단일 학습자 stream**(`state/learner/`)에 누적되며 cross-mission 패턴까지 인식.
+같은 개념을 반복 질문하면 답이 자동으로 깊어지고, 정착된 개념은 기본 정의를 생략한다 (closed-loop).
+
+---
+
 ## 1분 안에 시작
 
 **1) 이 저장소만 직접 클론** (한 번만, 위치 자유)
@@ -83,8 +102,25 @@ woowa-learning-hub/                  ← (1) 직접 클론
 **Drill (이해도 객관 검증)** — *"DI drill 풀어볼래"* → AI가 4문장 답변 요구 질문 발행 →
 학습자 답 → 4차원 채점 (정확도 / 깊이 / 실전성 / 완결성). 8점 ×2 + 테스트 통과 → mastered.
 
-**PR 코칭** — *"내 미션 저장소를 코칭해줘. https://github.com/내계정/java-janggi"* → AI가
-자기 fork 클론 + upstream 등록 + peer PR 수집 + 학습자 브랜치 직접 관찰 후 답변.
+**PR 코칭 (peer 데이터 활용)** — *"내 미션 저장소를 코칭해줘.
+https://github.com/내계정/java-janggi, upstream은 woowacourse/java-janggi"* → AI가
+다음을 자동 처리:
+
+- 학습자 자기 fork를 `missions/`에 클론 + upstream `woowacourse/java-janggi` 등록
+- upstream에서 **다른 크루들의 PR / 리뷰 / 멘토 코멘트**를 SQLite로 수집
+  (`state/repos/<repo>/archive/prs.sqlite3`)
+- 학습자 브랜치 + 열린 PR + 미해결 리뷰 thread 직접 관찰
+  (`contexts/learner-state.json`)
+- 학습자 질문에 따라 **같은 단계 peer PR** 추출 → 멘토 리뷰 맥락에서 **학습 포인트 도출**
+  → 학습자 코드와 비교 → 답변 생성
+
+후속 질문 예시: *"다른 크루들은 Repository 경계를 어떻게 잡았어?"*, *"이 리뷰 기준 다음
+액션 뭐야?"*, *"같은 단계에서 자주 지적된 학습 포인트가 뭐야?"* — 모두 peer PR 데이터에
+근거해 답.
+
+세부 명세: [`docs/agent-operating-contract.md`](docs/agent-operating-contract.md) (Response
+Contract, Learner State Assessment), [`docs/artifact-catalog.md`](docs/artifact-catalog.md)
+(coach-run.json + packets 구조).
 
 **프로필 확인** — *"지금까지 뭘 학습했어?"* / *"다음에 뭐 하면 좋을까?"* → mastered /
 uncertain / underexplored 분석 + 다음 동선 추천.
