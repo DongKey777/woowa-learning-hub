@@ -19,6 +19,28 @@ def _path_lines(items: list[dict], count_key: str, limit: int = 3) -> list[str]:
     return lines
 
 
+def _aggregate_freshness_note(items: list[dict]) -> str | None:
+    """Summarize cohort freshness across surfaced peer items.
+
+    Returns ``None`` when every item is in the current cohort. Otherwise
+    a short Korean caveat naming the offending years so the AI can
+    surface "이전 기수 자료" without scanning highlights.
+    """
+    years = sorted(
+        {
+            int(item["created_year"])
+            for item in items
+            if item.get("cohort_caveat") and item.get("created_year")
+        }
+    )
+    if not years:
+        return None
+    if len(years) == 1:
+        return f"{years[0]}년 기수 PR — 미션 세부 요구사항이 다를 수 있음"
+    label = ", ".join(str(y) for y in years)
+    return f"{label}년 혼합 — 이전 기수 자료, 미션 세부 다를 수 있음"
+
+
 def _mentor_comment_samples(pr_evidence: dict) -> list[dict]:
     mentor = pr_evidence.get("mentor_comment_samples")
     if mentor:
@@ -88,7 +110,10 @@ def _focus_pr_lines(focus_payload: dict, limit: int = 3) -> list[str]:
         if matched_paths:
             suffix.append(f"path={matched_paths[0]}")
         tail = f" ({', '.join(suffix)})" if suffix else ""
-        lines.append(f"PR #{number} - {title}{tail}")
+        cohort_suffix = ""
+        if item.get("cohort_caveat") and item.get("created_year"):
+            cohort_suffix = f" — {item['created_year']}년 자료, 미션 세부 다를 수 있음"
+        lines.append(f"PR #{number} - {title}{tail}{cohort_suffix}")
     return lines
 
 
@@ -100,6 +125,9 @@ def _interpretation_lines(interpretation_payload: dict, limit: int = 3) -> list[
         title = primary.get("title") or "title 없음"
         label = item.get("label")
         quotes = primary.get("evidence_quotes") or []
+        cohort_suffix = ""
+        if primary.get("cohort_caveat") and primary.get("created_year"):
+            cohort_suffix = f" — {primary['created_year']}년 자료, 미션 세부 다를 수 있음"
         if quotes:
             quote = quotes[0]
             source = quote.get("source")
@@ -112,11 +140,11 @@ def _interpretation_lines(interpretation_payload: dict, limit: int = 3) -> list[
             elif path:
                 location = path
             if location:
-                lines.append(f"{label}: PR #{pr_number} - {title} | {source} {location} | {excerpt}")
+                lines.append(f"{label}: PR #{pr_number} - {title}{cohort_suffix} | {source} {location} | {excerpt}")
                 continue
-            lines.append(f"{label}: PR #{pr_number} - {title} | {source} | {excerpt}")
+            lines.append(f"{label}: PR #{pr_number} - {title}{cohort_suffix} | {source} | {excerpt}")
             continue
-        lines.append(f"{label}: PR #{pr_number} - {title}")
+        lines.append(f"{label}: PR #{pr_number} - {title}{cohort_suffix}")
     return lines
 
 
@@ -250,7 +278,7 @@ def _response_evidence(context: dict, packets: dict) -> list[dict]:
 
     focus_payload = packets.get("focus_ranking", {})
     if focus_payload:
-        evidence.append({
+        focus_item: dict = {
             "type": "focus_ranking",
             "json_path": context.get("focus_ranking_path"),
             "markdown_path": None,
@@ -259,11 +287,15 @@ def _response_evidence(context: dict, packets: dict) -> list[dict]:
                 f"path_source={(focus_payload.get('local_path_signature') or {}).get('source')}",
             ],
             "highlights": _focus_pr_lines(focus_payload, limit=3),
-        })
+        }
+        focus_freshness = _aggregate_freshness_note(focus_payload.get("candidates", [])[:3])
+        if focus_freshness:
+            focus_item["freshness_note"] = focus_freshness
+        evidence.append(focus_item)
 
     interpretation_payload = packets.get("candidate_interpretation", {})
     if interpretation_payload:
-        evidence.append({
+        interp_item: dict = {
             "type": "candidate_interpretation",
             "json_path": context.get("candidate_interpretation_path"),
             "markdown_path": None,
@@ -272,7 +304,15 @@ def _response_evidence(context: dict, packets: dict) -> list[dict]:
                 f"candidate_profiles={len(interpretation_payload.get('candidate_profiles', []))}",
             ],
             "highlights": _interpretation_lines(interpretation_payload, limit=3),
-        })
+        }
+        interp_primaries = [
+            (rec.get("primary_candidate") or {})
+            for rec in interpretation_payload.get("learning_point_recommendations", [])[:3]
+        ]
+        interp_freshness = _aggregate_freshness_note(interp_primaries)
+        if interp_freshness:
+            interp_item["freshness_note"] = interp_freshness
+        evidence.append(interp_item)
 
     profile = _learning_memory_profile(context)
     if profile:

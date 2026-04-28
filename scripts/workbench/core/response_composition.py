@@ -149,6 +149,8 @@ def render_response_markdown(response: dict) -> str:
             lines.append(f"  json: `{item['json_path']}`")
         if item.get("markdown_path"):
             lines.append(f"  markdown: `{item['markdown_path']}`")
+        if item.get("freshness_note"):
+            lines.append(f"  freshness: {item['freshness_note']}")
         for summary in item.get("summary", []):
             lines.append(f"  summary: {summary}")
         for highlight in item.get("highlights", []):

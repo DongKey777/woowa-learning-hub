@@ -328,6 +328,9 @@ def build_candidate_interpretation(
                 "reasons": point["reasons"],
                 "evidence_quotes": evidence_quotes,
                 "why_this_learning_point": _why_learning_point(point, candidate),
+                "created_year": candidate.get("created_year"),
+                "cohort_caveat": candidate.get("cohort_caveat", False),
+                "freshness_note": candidate.get("freshness_note"),
             })
         matching = [item for item in matching if item.get("evidence_quotes")]
         if not matching:

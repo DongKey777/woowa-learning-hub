@@ -80,6 +80,7 @@ Role:
 - `response_hints.must_include_phrases`의 표현을 답변 본문에 포함한다 (예: 4번째 반복 질문이면 "4번째 질문이야" 인지 표시 → 학습자에게 시스템이 자기를 기억하고 있음을 체감시킴).
 - 응답 헤더는 `[RAG: tier-N — <reason> · 적용: <header_required_tags 모두>]` 형식. `header_required_tags` 항목이 모두 surface 되어야 한다.
 - `response_hints.must_offer_next_action`이 채워져 있으면 답변 마지막에 자연 문장으로 제안한다 (예: "다음 턴에 DI drill 한 번 풀어볼까?").
+- `focus_ranking` / `candidate_interpretation` / `response.evidence` 항목에 `freshness_note`가 채워져 있거나 candidate에 `cohort_caveat=true`가 있으면 본문에 자연어로 명시한다 — 이전 기수 PR이라는 사실과 미션 세부가 다를 수 있음을 학습자에게 알린다 (예: "2024년 기수 PR이지만 접근 방식 참고로..."). 누락하면 회귀 테스트 실패.
 
 이 규약은 `tests/unit/test_personalization_loop.py`로 검증된다. AGENTS 규약만 의존하지 않는 testable contract — `learner_context`가 의도대로 동작하지 않으면 회귀 테스트가 실패한다.
 

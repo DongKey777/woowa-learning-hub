@@ -1156,6 +1156,29 @@ def cmd_learner_profile(args: argparse.Namespace) -> int:
             print(json.dumps(suggestions, ensure_ascii=False, indent=2))
         return 0
 
+    if sub == "cohort":
+        from core.memory import _atomic_write  # type: ignore
+        from core.paths import learner_identity_path  # type: ignore
+        path = learner_identity_path()
+        try:
+            identity = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+        except (json.JSONDecodeError, OSError):
+            identity = {}
+        if args.year is None:
+            print(json.dumps(
+                {"cohort_year": identity.get("cohort_year")},
+                ensure_ascii=False,
+            ))
+            return 0
+        year = int(args.year)
+        if not 2000 <= year <= 2100:
+            sys.stderr.write(f"cohort year out of range: {year}\n")
+            return 2
+        identity["cohort_year"] = year
+        _atomic_write(path, json.dumps(identity, ensure_ascii=False, indent=2) + "\n")
+        print(json.dumps({"updated": True, "cohort_year": year}, ensure_ascii=False))
+        return 0
+
     sys.stderr.write(f"unknown learner-profile subcommand: {sub}\n")
     return 2
 
@@ -1421,6 +1444,13 @@ def build_parser() -> argparse.ArgumentParser:
     lp_suggest.add_argument("--max", type=int, default=3)
     lp_suggest.add_argument("--format", choices=["json", "text"], default="json")
     lp_suggest.set_defaults(func=cmd_learner_profile)
+
+    lp_cohort = learner_profile_subparsers.add_parser(
+        "cohort",
+        help="Show or set the learner's cohort_year (used to tag peer PRs by freshness).",
+    )
+    lp_cohort.add_argument("year", nargs="?", type=int, help="Cohort year (e.g. 2026). Omit to read.")
+    lp_cohort.set_defaults(func=cmd_learner_profile)
 
     learn_test_parser = subparsers.add_parser(
         "learn-test",

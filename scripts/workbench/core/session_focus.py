@@ -6,9 +6,18 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
+from .cohort import current_cohort_year
 from .comment_classifier import _has_column
 from .paths import repo_context_dir
 from .schema_validation import validate_payload
+
+
+def _extract_year(iso_ts: str | None) -> int | None:
+    """Pull the YYYY year out of an ISO-8601 timestamp like ``2024-04-12T...``."""
+    if not iso_ts or len(iso_ts) < 4:
+        return None
+    head = iso_ts[:4]
+    return int(head) if head.isdigit() else None
 
 GENERIC_ROOTS = frozenset({
     "src/main/java", "src/test/java", "src/main", "src/test",
@@ -274,7 +283,7 @@ def _review_maps(connection: sqlite3.Connection) -> tuple[dict[int, list[dict]],
 
 def _candidate_rows(connection: sqlite3.Connection, current_pr_number: int | None) -> list[sqlite3.Row]:
     query = """
-        SELECT id, number, title, body, author_login, base_ref_name, head_ref_name, updated_at
+        SELECT id, number, title, body, author_login, base_ref_name, head_ref_name, updated_at, created_at
         FROM pull_requests_current
         WHERE is_missing = 0
     """
@@ -603,6 +612,7 @@ def build_session_focus(
         prompt_tokens = _tokenize_text(prompt)
         combined_terms = prompt_tokens + [term for term in _topic_terms(topic_terms) if term not in prompt_tokens]
         stage_constrained = bool(_extract_stage_numbers(title_hint, branch_hint, current_pr_title))
+        cohort_year = current_cohort_year()
 
         for row in _candidate_rows(connection, current_pr_number):
             candidate = dict(row)
@@ -628,11 +638,24 @@ def build_session_focus(
             if score <= 0:
                 continue
 
+            created_year = _extract_year(candidate.get("created_at"))
+            cohort_caveat = bool(
+                created_year is not None and created_year != cohort_year
+            )
+            freshness_note = (
+                f"{created_year}년 자료 — 현재 미션 세부 요구사항과 다를 수 있음"
+                if cohort_caveat
+                else None
+            )
             candidates.append({
                 "pr_number": candidate["number"],
                 "title": candidate["title"],
                 "author_login": candidate["author_login"],
                 "updated_at": candidate.get("updated_at"),
+                "created_at": candidate.get("created_at"),
+                "created_year": created_year,
+                "cohort_caveat": cohort_caveat,
+                "freshness_note": freshness_note,
                 "score": score,
                 "reasons": stage_reasons + text_reasons + review_reasons + comment_reasons + issue_comment_reasons + path_reasons,
                 "matched_terms": matched_terms,
