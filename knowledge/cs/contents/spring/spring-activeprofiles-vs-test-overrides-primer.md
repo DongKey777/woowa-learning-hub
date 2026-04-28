@@ -9,17 +9,14 @@
 
 관련 문서:
 
+- [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](./spring-testing-basics.md)
+- [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
 
-> 관련 문서:
-> - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](./spring-testing-basics.md)
-> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
-
-retrieval-anchor-keywords: activeprofiles vs testpropertysource, activeprofiles vs application-test.yml, spring test profile override beginner, application-test.yml not loaded, @activeprofiles test profile select, @testpropertysource beginner, springboottest properties beginner, webmvctest properties attribute, datajpatest properties attribute, application-test.yml override confusion, profile selection vs property override, spring test property source primer, spring test properties annotation vs file, test profile file loading, active profile does not set properties
+retrieval-anchor-keywords: activeprofiles vs testpropertysource, activeprofiles vs application-test.yml, spring test profile override beginner, application-test.yml not loaded, @activeprofiles test profile select, @testpropertysource beginner, springboottest properties beginner, webmvctest properties attribute, datajpatest properties attribute, application-test.yml override confusion, profile selection vs property override, spring test property source primer, spring test properties annotation vs file, activeprofiles 왜 안 바뀌어요, test profile file loading
 
 ## 핵심 개념
 
@@ -42,6 +39,30 @@ retrieval-anchor-keywords: activeprofiles vs testpropertysource, activeprofiles 
 가장 중요한 한 줄은 이것이다.
 
 **`@ActiveProfiles`는 "무슨 파일이 후보가 되나"를 정하고, override 도구들은 "같은 key가 있을 때 어떤 값이 최종값이 되나"를 정한다.**
+
+처음엔 아래처럼 두 줄로 외우면 된다.
+
+- profile을 켜는 스위치: `@ActiveProfiles`
+- 값을 적거나 덮는 도구: `application-test.yml`, `@TestPropertySource`, annotation `properties`
+
+---
+
+## 증상 문장으로 먼저 가르기
+
+초급자는 "annotation 이름"보다 **막힌 문장**으로 먼저 분리하면 덜 헷갈린다.
+
+| 지금 드는 말 | 먼저 볼 것 |
+|---|---|
+| "`@ActiveProfiles(\"test\")` 붙였는데 값이 안 바뀌어요" | `application-test.yml`이 실제로 있는지, 그 key가 있는지 |
+| "`application-test.yml`은 읽히는데 이 테스트만 값 하나 바꾸고 싶어요" | annotation `properties` 또는 `@TestPropertySource` |
+| "여러 테스트가 같은 테스트 설정 묶음을 써야 해요" | `application-test.yml` 또는 `@TestPropertySource` |
+| "profile에 따라 bean 분기도 바뀌어야 해요" | `@ActiveProfiles`가 필요한 축인지 먼저 확인 |
+
+한 줄로 줄이면 아래처럼 잡으면 된다.
+
+```text
+프로필을 켜는 문제인가, 값을 덮는 문제인가?
+```
 
 ---
 
@@ -224,6 +245,17 @@ class AppModeTest {
 
 ---
 
+## 5.5 가장 흔한 beginner 질문 두 개
+
+| 자주 나오는 질문 | 짧은 답 |
+|---|---|
+| "`@ActiveProfiles(\"test\")` 붙였는데 왜 값이 안 바뀌어요?" | `application-test.yml`에 그 key가 실제로 있는지부터 본다 |
+| "`application-test.yml`도 있는데 왜 inline 값이 먹어요?" | 더 가까운 테스트 override가 마지막에 덮었기 때문이다 |
+
+이 표를 기억하면 "profile 선택"과 "값 override"를 한 문장으로 섞는 실수를 줄일 수 있다.
+
+---
+
 ## 6. 무엇을 먼저 고를까
 
 | 질문 | 먼저 볼 도구 | 이유 |
@@ -239,6 +271,17 @@ class AppModeTest {
 공통 테스트 환경 = @ActiveProfiles("test") + application-test.yml
 개별 테스트 미세 조정 = @TestPropertySource 또는 properties
 ```
+
+---
+
+## 6.5 작은 결정 트리
+
+1. `test` profile bean과 설정 파일을 함께 켜야 하면 `@ActiveProfiles("test")`부터 본다.
+2. 여러 테스트가 공유할 기본값이면 `application-test.yml`로 올린다.
+3. 이 테스트 그룹에만 추가 설정 묶음이 필요하면 `@TestPropertySource`를 본다.
+4. 이 클래스에서 값 1~2개만 잠깐 바꾸면 annotation `properties`가 가장 읽기 쉽다.
+
+초급자 기준 핵심은 "`@ActiveProfiles`로 모든 걸 해결하려 하지 않는 것"이다.
 
 ---
 

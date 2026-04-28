@@ -17,7 +17,7 @@
 - [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 - [Idempotency Key Status Contract Examples](../database/idempotency-key-status-contract-examples.md)
 
-retrieval-anchor-keywords: service layer external io primer, transactional external api beginner, after commit vs outbox beginner, spring service transaction external side effect, 외부 io 트랜잭션 밖, 커밋 후 알림, 결제 승인 트랜잭션 경계, outbox beginner spring, after_commit beginner spring, propagation external side effect, required requires_new external api, flush is not commit external api, jpa flush 외부 호출, 메시지 발행 outbox primer, beginner transaction boundary remote call
+retrieval-anchor-keywords: service layer external io primer, transactional external api beginner, after commit vs outbox beginner, spring service transaction external side effect, 외부 io 트랜잭션 밖, 커밋 후 알림, outbox 뭐예요 처음, after commit 왜 안돼요, 결제 승인 트랜잭션 경계, propagation external side effect, required requires_new external api, flush is not commit external api, jpa flush 외부 호출, beginner transaction boundary remote call, 처음 transactional 외부 api
 
 ## 먼저 mental model 한 줄
 
@@ -37,7 +37,7 @@ retrieval-anchor-keywords: service layer external io primer, transactional exter
 |---|---|---|
 | 외부 API 응답을 보고 그다음 DB 상태를 정해야 한다 | 외부 호출을 메인 tx 밖으로 빼고, DB 트랜잭션은 앞뒤로 짧게 나눈다 | 외부 지연이 lock/connection 점유 시간으로 번지는 것을 줄인다 |
 | 주문 commit 뒤 알림/캐시 무효화 정도만 하면 된다 | `@TransactionalEventListener(AFTER_COMMIT)` | 커밋된 사실에만 반응하게 만들 수 있다 |
-| 브로커 발행/통합 이벤트가 유실되면 안 된다 | outbox | app 프로세스 장애까지 고려한 재시도 경로를 만들 수 있다 |
+| 브로커 발행/통합 이벤트가 유실되면 안 된다 | outbox | "보내야 할 사실"을 DB에 먼저 남기고, 전달 자체는 다음 단계 문서로 넘길 수 있다 |
 | 감사 로그처럼 "별도 로컬 DB 기록"만 남기고 싶다 | 제한적으로 `REQUIRES_NEW` | 외부 API가 아니라 **독립 로컬 commit**일 때만 의미가 맞는다 |
 
 ## 가장 먼저 버려야 할 오해 4개
@@ -147,9 +147,15 @@ public class OrderPlacedNotificationListener {
 
 즉 `AFTER_COMMIT`은 **커밋 후 반응**에는 좋지만, **전달 보장**까지 해결하지는 않는다.
 
+## `AFTER_COMMIT` 다음에 outbox를 보는 기준
+
 ### 예시 3. 브로커 발행이 절대 빠지면 안 된다 -> outbox
 
 주문 생성 뒤 Kafka/RabbitMQ 이벤트 발행이 다른 서비스와의 계약이라면, `AFTER_COMMIT`만으로는 불안할 수 있다.
+
+초급 문서에서는 outbox를 아래 한 줄로만 먼저 잡으면 충분하다.
+
+- 메인 tx 안에서는 "브로커에 지금 보냈다"가 아니라, "보내야 할 사실을 DB에 남겼다".
 
 이때는 "보낼 이벤트"를 DB에 같이 저장한다.
 
@@ -162,25 +168,14 @@ public Long placeOrder(PlaceOrderCommand command) {
 }
 ```
 
-## 서비스 레이어에서 가장 흔한 3가지 예시 (계속 3)
+여기서는 relay worker, 재시도, 멱등 소비자 설계까지 한 번에 파고들지 않는다.
+초급자가 먼저 구분해야 하는 것은 "커밋 뒤 한 번 반응하면 충분한가"와 "전달 사실 자체를 남겨야 하는가" 두 가지다.
 
-```java
-public void relayPendingEvents() {
-    OutboxEvent event = outboxRepository.nextPending();
-    messagePublisher.publish(event);
-    outboxRepository.markSent(event.getId());
-}
-```
-
-초급자는 아래 한 줄로 기억하면 된다.
-
-- 메인 tx 안에서는 "브로커에 지금 보냈다"가 아니라, "보내야 할 사실을 DB에 남겼다".
-
-그래서 outbox는 이런 상황에 맞다.
-
-- 다른 시스템이 그 이벤트를 꼭 받아야 한다.
-- 프로세스 재시작이나 브로커 장애가 현실적인 전제다.
-- 재시도와 멱등성을 운영으로 가져갈 준비가 되어 있다.
+| 질문 | `AFTER_COMMIT` 쪽 | outbox 쪽 |
+|---|---|---|
+| 실패해도 다시 손으로 보내거나 재실행해도 되는가 | 대체로 가능 | 보통 아니다 |
+| 메인 tx 안에서 DB에 같이 남겨야 하는 것은 무엇인가 | 보통 주문/도메인 상태만 | 주문/도메인 상태 + 보낼 이벤트 사실 |
+| 다음 단계 | 이 문서에서 멈춰도 된다 | relay/retry는 [Spring EventListener / TransactionalEventListener / Outbox](./spring-eventlistener-transaction-phase-outbox.md)로 넘긴다 |
 
 ## propagation을 어디까지 연결해서 보면 되나
 
@@ -226,10 +221,12 @@ JPA를 쓰면 이런 오해가 붙는다.
 
 후속 알림이 빠져도 재전송 정도로 복구 가능하면 충분할 수 있다.
 반대로 다른 서비스 계약상 유실이 더 치명적이면 outbox가 맞다.
+즉 초급자 기준 첫 질문은 "`AFTER_COMMIT`이 더 고급인가?"가 아니라 "빠져도 되는 알림인가, 빠지면 안 되는 전달인가?"다.
 
 ### Q3. `REQUIRES_NEW`로 메시지 발행 성공 여부를 저장하면 되지 않나?
 
 그건 "발행 성공/실패 기록"을 남기는 데는 쓸 수 있어도, **발행 자체의 전달 보장**을 대신하지는 못한다.
+전달 보장, relay, 재시도까지 바로 들어가고 싶다면 [Spring EventListener / TransactionalEventListener / Outbox](./spring-eventlistener-transaction-phase-outbox.md)로 내려가면 된다.
 
 ## 여기서 어디로 가면 되나
 

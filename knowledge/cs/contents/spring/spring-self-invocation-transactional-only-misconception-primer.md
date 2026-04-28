@@ -7,6 +7,7 @@
 관련 문서:
 
 - [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](./spring-aop-basics.md)
+- [Spring `@Async` 내부 호출 증상 카드: 같은 스레드 로그를 async 설정 버그로 오해할 때](./spring-async-self-invocation-same-thread-symptom-card.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
 - [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
 - [Spring Self-Invocation Proxy Trap Matrix: `@Transactional`, `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`](./spring-self-invocation-proxy-annotation-matrix.md)
@@ -14,7 +15,7 @@
 - [JDBC / JPA / MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: self invocation primer, transactional only misconception, transactional만 문제 오해, self invocation 공통 오해, proxy bypass beginner, internal call proxy bypass, this method transactional async cacheable, transactional async cacheable 공통 규칙, self invocation 1페이지 카드, why transactional not applied beginner, why async not async self invocation, 프록시 안 지나면 annotation 안 먹음, spring self invocation transactional only misconception primer basics, spring self invocation transactional only misconception primer beginner, spring self invocation transactional only misconception primer intro
+retrieval-anchor-keywords: self invocation primer, transactional only misconception, transactional만 문제 오해, self invocation 공통 오해, proxy bypass beginner, internal call proxy bypass, this method transactional async cacheable, transactional async cacheable 공통 규칙, self invocation 1페이지 카드, why transactional not applied beginner, why async not async self invocation, 프록시 안 지나면 annotation 안 먹음, self injection 비교, facade worker pattern, bean split transactional fix
 
 ## 먼저 mental model 한 줄
 
@@ -155,6 +156,7 @@ sendReceipt thread = task-1
 
 - 같은 스레드 로그가 곧바로 "`@EnableAsync`가 없다"의 증거는 아니다.
 - 초급 단계에서는 먼저 **프록시를 탔는지**부터 확인하는 편이 더 빠르다.
+- "`왜 자꾸 async 설정 문제로 오진하지?`"가 남아 있으면 [Spring `@Async` 내부 호출 증상 카드](./spring-async-self-invocation-same-thread-symptom-card.md)로 이어서 보면 된다.
 - `@Async`가 실제로 분리돼도, 이후 문제는 [`Spring Scheduler / Async Boundaries`](./spring-scheduler-async-boundaries.md)나 [`Spring `@Transactional` and `@Async` Composition Traps`](./spring-transactional-async-composition-traps.md)에서 이어서 본다.
 
 ## 흔한 오해 바로잡기
@@ -191,6 +193,22 @@ public class BillingFacade {
 - 그 Bean 앞에 프록시가 설 수 있다.
 - 그래서 `@Transactional`, `@Async` 같은 기능이 다시 적용된다.
 
+## 수리 패턴 미니 카드
+
+처음에는 "어떤 annotation을 더 붙일까?"보다 **호출 구조를 어떻게 고칠까**로 고르면 덜 헷갈린다.
+
+| 수리 선택지 | 언제 먼저 고르나 | 초급자 기준 판단 |
+|---|---|---|
+| bean split | `this.write()`처럼 문제 메서드가 한두 개로 좁다 | 가장 기본 답이다. 다른 Bean으로 빼서 프록시 정문을 다시 탄다 |
+| facade-worker | 주문 생성, 재고 차감처럼 유스케이스 하위 작업이 여러 개다 | "누가 커밋 주인인가"까지 같이 정리할 때 좋다 |
+| self-injection | 구조를 크게 못 바꾸고 우회가 급하다 | 가능은 하지만 기본 답으로 외우지 않는다. 왜 안 됐는지보다 "우회 코드"만 남기기 쉽다 |
+
+한 줄로 줄이면 이렇다.
+
+- 작은 self-invocation 수리면 `bean split`부터 본다.
+- 유스케이스 경계까지 같이 정리해야 하면 `facade-worker`로 간다.
+- `self-injection`은 마지막 우회책으로만 본다.
+
 ## 여기서 어디로 가면 되나
 
 | 지금 필요한 것 | 다음 문서 |
@@ -199,7 +217,7 @@ public class BillingFacade {
 | `@Transactional` 증상부터 다시 잡고 싶다 | [@Transactional 기초](./spring-transactional-basics.md) |
 | `@Bean` self-call identity 테스트와 왜 검증 방식이 다른지 먼저 분리하고 싶다 | [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
 | `@Async`, `@Cacheable`, `@Validated`, `@PreAuthorize`까지 한 번에 비교하고 싶다 | [Spring Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md) |
-| 코드를 바로 어떻게 나눌지 보고 싶다 | [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md) |
+| `bean split`과 `facade-worker`를 코드로 비교하고 싶다 | [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md) |
 
 ## 한 줄 정리
 

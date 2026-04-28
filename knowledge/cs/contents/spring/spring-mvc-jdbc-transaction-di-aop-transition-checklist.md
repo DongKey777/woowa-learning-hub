@@ -9,6 +9,7 @@
 - [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring MVC 컨트롤러 기초](./spring-mvc-controller-basics.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
+- [트랜잭션 기초](../database/transaction-basics.md)
 - [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
 - [IoC와 DI 기초](./spring-ioc-di-basics.md)
 - [AOP 기초](./spring-aop-basics.md)
@@ -16,7 +17,7 @@
 - [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc jdbc di aop beginner bridge, mvc to jdbc confusion checklist, jdbc to di aop confusion checklist, mvc service repository transaction boundary beginner, controller service repository mental model, @transactional is aop beginner, transaction is not jdbc call, request is not transaction, controller opens transaction misconception, service owns transaction boundary beginner, proxy before deep dive, beginner spring ladder transition, mvc jdbc transaction di aop ladder, beginner handoff ladder
+retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc jdbc di aop beginner bridge, mvc to jdbc confusion checklist, jdbc to di aop confusion checklist, controller service repository mental model, @transactional is aop beginner, transaction is not jdbc call, request is not transaction, service owns transaction boundary beginner, proxy before deep dive, beginner spring ladder transition, mvc jdbc transaction di aop ladder, beginner handoff ladder, 처음 spring jdbc transaction, 왜 service 에서 transaction
 
 ## 먼저 한 줄 mental model
 
@@ -145,7 +146,8 @@ HTTP 요청
 | 지금 막히는 지점 | 먼저 볼 primer | 그다음 한 걸음 | deep dive는 나중에 |
 |---|---|---|---|
 | MVC와 service/repository 경계가 흐리다 | [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초](./spring-mvc-controller-basics.md) | MVC request lifecycle 전체 |
-| JDBC 호출과 트랜잭션 경계를 같은 것으로 느낀다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [@Transactional 기초](./spring-transactional-basics.md) | isolation / locking / propagation |
+| JDBC 호출과 트랜잭션 경계를 같은 것으로 느낀다 | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 기초](../database/transaction-basics.md) | isolation / locking / propagation |
+| `commit`과 `rollback`이 어느 service 범위에서 묶이는지 헷갈린다 | [트랜잭션 기초](../database/transaction-basics.md) | [@Transactional 기초](./spring-transactional-basics.md) | propagation / rollback-only / self-invocation |
 | `Bean`, `주입`, `프록시`가 한꺼번에 섞인다 | [IoC와 DI 기초](./spring-ioc-di-basics.md) | [AOP 기초](./spring-aop-basics.md) | AOP proxy mechanism 세부 |
 | `@Transactional`이 왜 안 먹는지 모르겠다 | [@Transactional 기초](./spring-transactional-basics.md) | [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md) | self-invocation matrix / propagation |
 

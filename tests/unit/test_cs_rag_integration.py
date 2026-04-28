@@ -51,6 +51,11 @@ def _load_live_readiness_diagnostics_contract() -> dict[str, object]:
     return payload.get("_meta", {}).get("live_readiness_diagnostics", {})
 
 
+def _load_empty_learning_points_parity_contract() -> dict[str, str]:
+    payload = _load_fixture_payload()
+    return payload.get("_meta", {}).get("empty_learning_points_cs_only_parity", {})
+
+
 def _full_mode_index_ready() -> bool:
     try:
         return indexer.is_ready(indexer.DEFAULT_INDEX_ROOT).state == "ready"
@@ -471,7 +476,9 @@ class AugmentAgainstRealIndex(unittest.TestCase):
     def test_empty_learning_points_matches_none_for_beginner_transaction_fallback_family(
         self,
     ) -> None:
-        prompt = _load_fixture_query("tx_intro_isolation_locking_primer")["prompt"]
+        contract = _load_empty_learning_points_parity_contract()
+        fixture = _load_fixture_query(contract["query_id"])
+        prompt = fixture["prompt"]
 
         none_result = self._augment(
             prompt=prompt,
@@ -489,16 +496,22 @@ class AugmentAgainstRealIndex(unittest.TestCase):
         none_keys = list(none_result["by_fallback_key"])
         empty_keys = list(empty_result["by_fallback_key"])
 
-        self.assertEqual(none_keys, ["database:transaction_anomaly_patterns"])
+        self.assertEqual(none_keys, [contract["expected_fallback_key"]])
         self.assertEqual(empty_keys, none_keys)
+        self.assertEqual(
+            none_result["fallback_reason"],
+            "cs_only_no_peer_learning_point",
+        )
         self.assertEqual(
             empty_result["fallback_reason"],
             "cs_only_no_peer_learning_point",
         )
+        self.assertEqual(none_result["by_learning_point"], {})
         self.assertEqual(empty_result["by_learning_point"], {})
 
         none_paths = [hit["path"] for hit in none_result["by_fallback_key"][none_keys[0]][:3]]
         empty_paths = [hit["path"] for hit in empty_result["by_fallback_key"][empty_keys[0]][:3]]
+        self.assertEqual(none_paths[0], contract["expected_top_path"])
         self.assertEqual(empty_paths, none_paths)
         self.assertEqual(empty_result["cs_categories_hit"], none_result["cs_categories_hit"])
 

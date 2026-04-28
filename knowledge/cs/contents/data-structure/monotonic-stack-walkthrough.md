@@ -272,12 +272,12 @@ for (int i = 0; i < a.length; i++) {
 - 예제 배열: `nums = [5, 5, 3, 6]`
 - 기준 index: `i = 1`, 값 `5`
 
-| 문항 | 질문 | 답 |
-|---|---|---|
-| 1 | `previous smaller (strict)`는? | 없음. 왼쪽 값 `5`는 더 작지 않다. |
-| 2 | `previous greater or equal`은? | index `0`, 값 `5`. 같은 값도 허용하므로 바로 답이다. |
-| 3 | `next smaller (strict)`는? | index `2`, 값 `3`. 오른쪽에서 처음 만나는 더 작은 값이다. |
-| 4 | `next greater or equal`은? | index `3`, 값 `6`. 오른쪽의 `3`은 크지 않고, `6`이 처음으로 조건을 만족한다. |
+| 문항 | 질문 | 답 | 한 줄 해설 |
+|---|---|---|---|
+| 1 | `previous smaller (strict)`는? | 없음. 왼쪽 값 `5`는 더 작지 않다. | strict라서 `같은 5`는 답으로 인정하지 않는다. |
+| 2 | `previous greater or equal`은? | index `0`, 값 `5`. 같은 값도 허용하므로 바로 답이다. | 이번에는 `or equal`이라 `같은 5`도 왼쪽 답이 된다. |
+| 3 | `next smaller (strict)`는? | index `2`, 값 `3`. 오른쪽에서 처음 만나는 더 작은 값이다. | strict smaller는 `같은 값`이 아니라 `실제로 더 작은 값`이 나와야 멈춘다. |
+| 4 | `next greater or equal`은? | index `3`, 값 `6`. 오른쪽의 `3`은 크지 않고, `6`이 처음으로 조건을 만족한다. | `or equal`이라도 오른쪽에 같은 값이 없으면 결국 `처음 만난 더 큰 값`이 답이다. |
 
 헷갈릴 때는 이름을 한국어 문장으로 바꿔 읽으면 빨라진다.
 

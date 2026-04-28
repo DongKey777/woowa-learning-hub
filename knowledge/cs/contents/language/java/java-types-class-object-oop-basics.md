@@ -13,34 +13,19 @@
 - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) - 객체지향 큰 그림 다음에 "상속 언제 쓰는지"를 `extends`와 dynamic dispatch로 좁혀 보는 다음 primer
 - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-- [객체지향 핵심 원리](./object-oriented-core-principles.md) - 클래스/객체 감각을 OOP 큰 그림으로 먼저 묶고, 그다음 "상속 언제 쓰는지"로 넘어가게 만드는 첫 handoff primer
-- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - OOP 큰 그림과 상속 primer를 지난 뒤 "공통 흐름을 부모가 쥘지, 계약을 인터페이스로 열지"를 beginner 기준으로 나누는 다음 handoff primer
+- [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [Java enum 기초](./java-enum-basics.md)
+- [Java Optional 입문](./java-optional-basics.md)
+- [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md) - 클래스/객체 감각을 OOP 큰 그림으로 묶고, 그다음 "상속 언제 쓰는지"로 넘어가게 만드는 handoff primer
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - "공통 흐름을 부모가 쥘지, 계약을 인터페이스로 열지"를 beginner 기준으로 나누는 다음 primer
 - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
-- [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md) - 처음 배우는데 디자인 패턴을 어디부터 읽을지 막히면 조합 -> 패턴 기초 route map으로 이어 주는 beginner entrypoint
-- [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
-- [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
 
-retrieval-anchor-keywords: java oop primer, java class object instance basics, java primitive vs reference type, java oop beginner route, 객체지향 기초, 클래스 객체 인스턴스 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 oop, 처음 배우는데 상속 언제 쓰는지, oop to design pattern beginner route, design pattern beginner route, 처음 배우는데 디자인 패턴 어디부터, java types class object oop basics basics, java types class object oop basics beginner, java types class object oop basics intro
+retrieval-anchor-keywords: java oop primer, java syntax to oop bridge, java primitive vs reference type, java class object instance basics, java interface vs abstract class basics, java oop beginner route, 클래스 객체 인스턴스 차이, 기본형 참조형 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 인터페이스 추상클래스 차이, 객체지향 기초 뭐예요, oop 큰 그림, 왜 참조형은 같이 바뀌지, 처음 배우는데 oop, java beginner class object interface abstract class
 
-<details>
-<summary>Table of Contents</summary>
-
-- [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
-- [처음 읽는 순서](#처음-읽는-순서)
-- [먼저 잡을 mental model](#먼저-잡을-mental-model)
-- [클래스/객체/인스턴스 3단계 브리지](#클래스객체인스턴스-3단계-브리지)
-- [기본형과 참조형](#기본형과-참조형)
-- [클래스, 객체, 인스턴스](#클래스-객체-인스턴스)
-- [인터페이스와 추상 클래스](#인터페이스와-추상-클래스)
-- [핵심 OOP 원리](#핵심-oop-원리)
-- [코드로 한 번에 보기](#코드로-한-번에-보기)
-- [초보자가 자주 헷갈리는 포인트](#초보자가-자주-헷갈리는-포인트)
-- [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
-- [한 줄 정리](#한-줄-정리)
-
-</details>
+처음 읽는 초보자라면 위에서 아래로 전부 훑기보다 `증상으로 먼저 자르기 -> 클래스/객체/인스턴스 3단계 브리지 -> 기본형/참조형 -> 한 줄 정리` 순서만 먼저 봐도 된다. 인터페이스, 추상 클래스, OOP 확장은 관련 문서로 한 칸씩 넘기면 충분하다.
 
 ## 왜 이 문서가 필요한가
 
@@ -57,24 +42,22 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 
 ## 처음 읽는 순서
 
-처음 배우는데 OOP 큰 그림이 한 번에 안 잡히면, 문서를 따로따로 외우기보다 **"타입과 객체 이해 -> OOP 큰 그림 연결 -> 상속 이해 -> 추상 클래스/인터페이스 구분 -> 조합 우선 판단"** 순서로 보면 된다.
+처음 배우는데 OOP 큰 그림이 한 번에 안 잡히면, 문서를 따로따로 외우기보다 **"타입과 객체 이해 -> OOP 큰 그림 연결 -> 상속 이해 -> 추상 클래스/인터페이스 구분"** 순서로 먼저 보면 된다. 디자인 패턴과 조합 설계는 그다음 단계로 미뤄도 충분하다.
 
 | 지금 막히는 질문 | 먼저 읽을 문서 | 이 문서가 하는 일 |
 |---|---|---|
 | "클래스, 객체, 타입이 대체 뭐지?" | 이 문서 | 기본형/참조형, 클래스/객체, OOP 핵심 용어를 한 번에 묶는다 |
+| "`new`로 객체를 만든 뒤 생성자와 메서드가 어떻게 이어지지?" | [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md) | 객체 생성, constructor, 인스턴스 메서드를 한 바퀴로 붙여 준다 |
 | "클래스/객체는 알겠는데 OOP 큰 그림은 왜 필요한가?" | [객체지향 핵심 원리](./object-oriented-core-principles.md) | 클래스/객체 감각을 캡슐화, 추상화, 상속, 다형성으로 연결한다 |
 | "`extends`가 코드 복사랑 뭐가 다르지?" | [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) | is-a 관계, overriding, dynamic dispatch를 먼저 분리한다 |
 | "`@Override`와 overloading 이름이 왜 헷갈리지?" | [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) | compile-time 선택과 runtime 선택을 분리한다 |
 | "추상 클래스와 인터페이스는 언제 나누지?" | [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) | 부모가 공통 흐름을 쥐는지, 계약을 열어 두는지로 자른다 |
-| "재사용하려면 일단 상속해야 하나?" | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) | 코드 재사용과 설계 결합을 분리하고, 조합을 기본값으로 잡는다 |
+| "재사용하려면 일단 상속해야 하나?" | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) | 상속 기본기를 지난 뒤, 조합을 기본값으로 옮겨 붙인다 |
 
 첫 읽기 경로를 한 줄로 줄이면 이렇다.
-**이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)**
-템플릿 메소드는 그 다음에 "상속을 좁게 허용하는 예외"로 보면 덜 헷갈린다.
+**이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)**
 
-## 처음 읽는 순서 (계속 2)
-
-처음 배우는데 "디자인 패턴은 어디부터 보지?"가 바로 나오면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)를 같이 본다. 이 문서에서 잡은 큰 그림을 그대로 이어서 **객체지향 핵심 원리 -> 상속보다 조합 -> 패턴 기초** route로 연결해 주는 beginner route map이다.
+상속보다 조합, 템플릿 메소드, 전략 패턴 같은 설계 주제는 위 경로가 정리된 다음 단계로 넘기는 편이 초보자 과부하를 줄인다.
 
 ## 먼저 잡을 mental model
 
@@ -92,6 +75,67 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 - `Student`는 클래스 이름이다.
 - `Student student;`는 참조 변수 선언일 뿐, 아직 객체를 만들지 않았다.
 - `student = new Student("jane", 20);`가 실행되어야 비로소 객체가 생기고, 그 객체를 `student`가 가리킨다.
+
+여기서 다음 한 칸이 바로 메서드와 생성자 문서다.
+
+- `new Student("jane", 20)`를 만나는 순간 constructor가 한 번 실행된다.
+- 그다음 `student.increaseAge()` 같은 인스턴스 메서드가 이미 만들어진 객체를 여러 번 움직인다.
+
+즉 object-model 첫 route는 "`class` 정의 -> 참조 변수 준비 -> `new`와 constructor -> instance method 호출" 순서로 읽으면 된다.
+
+## 여기서 먼저 멈출 것
+
+이 문서에서 초보자가 먼저 붙이면 되는 결론은 네 줄이다.
+
+- 클래스는 정의다.
+- 객체는 `new`로 생기는 실행 중 실체다.
+- 참조 변수는 그 객체를 가리키는 손잡이다.
+- 기본형과 참조형은 "값 자체를 다루는가, 객체를 가리키는가" 차이로 먼저 읽는다.
+
+인터페이스/추상 클래스의 설계 trade-off, 상속보다 조합, 패턴 이름은 이 네 줄이 붙은 뒤 관련 문서로 넘겨도 늦지 않다.
+
+## 증상으로 먼저 자르기
+
+용어가 한꺼번에 섞이면 정의를 더 읽기보다 "지금 무슨 종류의 혼동인가"를 먼저 고르는 편이 빠르다.
+
+| 지금 보이는 말 | 먼저 붙일 질문 | 다음 문서 |
+|---|---|---|
+| "`Student student`만 써도 학생이 생긴 거 아닌가?" | 변수 선언과 객체 생성을 분리했나 | [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md) |
+| "`new` 다음에 왜 생성자가 바로 나오고, 그 뒤에 메서드를 부르지?" | 객체가 태어나는 순간과 태어난 뒤 사용 순간을 나눴나 | [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md) |
+| "`String`도 값처럼 보이는데 왜 참조형이지?" | 값 자체를 담나, 객체를 가리키나 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`왜 `==`는 false인데 필드값은 같아 보이지?`" | 다른 객체 둘인지, 같은 객체 하나를 같이 보는지 먼저 갈랐나 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`extends`가 그냥 코드 복사 같아 보인다" | 부모-자식 관계와 동적 디스패치를 구분했나 | [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) |
+| "인터페이스와 추상 클래스가 둘 다 추상이라 구분이 안 된다" | 계약을 열지, 공통 뼈대를 잡을지 묻고 있나 | [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) |
+
+## 한눈에 보기
+
+처음 Java를 배울 때는 용어를 하나씩 외우기보다 "값을 다루는가, 객체를 다루는가, 계약을 여는가, 공통 뼈대를 잡는가"만 먼저 나눠 보면 된다.
+
+| 지금 보는 개념 | 가장 짧은 기억법 | 초보자 실수 |
+|---|---|---|
+| 기본형 | 값 자체를 담는다 | `String`도 기본형이라고 착각 |
+| 참조형 | 객체를 가리킨다 | `b = a`를 복사라고 착각 |
+| 클래스 | 객체를 만들기 위한 틀 | 선언만 해도 객체가 생긴다고 착각 |
+| 객체/인스턴스 | 실행 중 실제로 만들어진 대상 | 변수 이름과 객체를 같은 것으로 착각 |
+| 인터페이스 | "무엇을 할 수 있는가" 계약 | 가벼운 클래스로 이해 |
+| 추상 클래스 | 공통 상태와 흐름을 묶는 부모 | 그냥 인터페이스 대체재로 이해 |
+| 캡슐화 | 상태를 함부로 못 건드리게 막는다 | 필드를 `public`으로 바로 열어 둠 |
+| 다형성 | 같은 타입 자리에 다른 구현을 꽂을 수 있다 | 상속만 하면 다형성이라고 착각 |
+
+이 표를 문장으로 줄이면 이렇다. 기본형/참조형은 "무엇을 다루는가", 클래스/객체는 "언제 실체가 생기는가", 인터페이스/추상 클래스는 "무엇을 열고 무엇을 고정하는가"를 가르는 질문이다.
+
+## 30초 결정표
+
+처음 배우는데 용어가 너무 많으면 "지금 내가 무엇을 선언하려는가" 질문으로 먼저 자르면 된다.
+
+| 지금 만들려는 것 | 먼저 고를 말 | 왜 그렇게 읽는가 | 가장 작은 예시 |
+|---|---|---|---|
+| 숫자, 참/거짓, 한 글자 같은 단순 값 | 기본형 | 값 자체를 직접 다루기 때문 | `int count = 3;` |
+| 이름, 주문, 학생처럼 여러 상태를 가진 대상 | 클래스 + 객체 | 상태와 동작을 묶은 대상을 만들기 때문 | `Student student = new Student(...);` |
+| "할인할 수 있다", "출력할 수 있다" 같은 역할 | 인터페이스 | 여러 구현이 같은 계약을 따르게 하기 때문 | `DiscountPolicy policy` |
+| 같은 부모 규칙과 공통 상태를 공유하는 뼈대 | 추상 클래스 | 자식들이 같은 필드/흐름을 물려받기 때문 | `abstract class Member` |
+
+이 표만 먼저 붙이면 "`String`은 왜 기본형이 아니지", "`Student student`만 쓰면 학생이 생긴 건가", "인터페이스와 추상 클래스 중 뭘 고르지" 같은 질문을 한 칸씩 분리해서 볼 수 있다.
 
 ## 클래스/객체/인스턴스 3단계 브리지
 
@@ -130,7 +174,7 @@ int age = 20;
 boolean enrolled = true;
 ```
 
-기본형 변수는 숫자, 문자, 논리값 같은 단순 데이터를 직접 표현한다. 초보자 관점에서는 "변수에 실제 값이 들어 있다"고 이해하면 충분하다.
+기본형은 숫자, 문자, 논리값 같은 단순 데이터를 직접 표현한다. 초보자 관점에서는 "변수에 실제 값이 들어 있다"고 이해하면 충분하다.
 
 ### 참조형은 "객체를 가리킨다"
 
@@ -140,17 +184,8 @@ int[] scores = {90, 80, 70};
 Student student = new Student("jane", 20);
 ```
 
-`String`, 배열, 클래스 타입 변수는 객체 자체를 복사하는 것이 아니라 **그 객체를 참조하는 값**을 가진다. 그래서 같은 객체를 여러 변수가 함께 가리킬 수 있다.
-
-```java
-Student first = new Student("jane", 20);
-Student second = first;
-
-second.increaseAge();
-System.out.println(first.getAge()); // 21
-```
-
-`second = first`는 새로운 학생 객체를 만든 것이 아니라 같은 객체를 함께 바라보게 만든 것이다.
+`String`, 배열, 클래스 타입 변수는 **그 객체를 참조하는 값**을 가진다. 그래서 같은 객체를 여러 변수가 함께 가리킬 수 있다.
+즉 `second = first` 같은 대입은 새 객체 생성이 아니라 같은 객체를 함께 바라보게 만드는 경우가 많다.
 
 ### 초보자가 기억할 최소 규칙
 
@@ -159,6 +194,36 @@ System.out.println(first.getAge()); // 21
 - `String`은 참조형이다.
 - `Integer`, `Long`, `Boolean`은 기본형이 아니라 wrapper 참조형이다.
 - 참조형 변수는 `null`이 될 수 있지만, 기본형 변수는 `null`이 될 수 없다.
+
+### 값 복사와 참조 공유를 10초로 구분하기
+
+처음 배우는데 "한쪽만 바꿨는데 왜 같이 바뀌지"가 나오면 아래 두 장면을 같이 본다.
+
+| 장면 | 무슨 일이 일어나나 | 결과 |
+|---|---|---|
+| 기본형 대입 `b = a` | 값 자체를 복사 | `b`를 바꿔도 `a`는 그대로 |
+| 참조형 대입 `second = first` | 같은 객체를 함께 가리킴 | 객체 상태를 바꾸면 둘 다 같은 결과를 봄 |
+
+```java
+int a = 10;
+int b = a;
+b = 20;
+
+System.out.println(a); // 10
+System.out.println(b); // 20
+```
+
+```java
+Student first = new Student("jane", 20);
+Student second = first;
+
+second.increaseAge();
+
+System.out.println(first.getAge());  // 21
+System.out.println(second.getAge()); // 21
+```
+
+핵심은 "`=`가 항상 같은 복사"가 아니라는 점이다. 기본형에서는 값이 복사되고, 참조형에서는 "어느 객체를 보게 할지"가 복사된다.
 
 ## 클래스, 객체, 인스턴스
 
@@ -226,7 +291,29 @@ Student student = new Student("jane", 20);
 이 문장에서 생성자는 `"jane"`과 `20`을 받아 `Student`의 시작 상태를 정한다.
 즉 "생성자"는 단순 문법이 아니라 **객체가 잘못된 상태로 태어나지 않게 하는 첫 번째 규칙**이다.
 
+## 객체 모델에서 비교로 넘어가는 30초 handoff
+
+클래스, 객체, 참조 변수까지는 알겠는데 바로 `==`와 `equals()`에서 막히는 초보자가 많다. 이때는 새 규칙을 더 외우기보다, 방금 본 객체 모델을 그대로 비교 질문으로 옮기면 된다.
+
+| 지금 보이는 코드/증상 | 먼저 묻는 질문 | 첫 해석 |
+|---|---|---|
+| `Student a = new Student(...); Student b = new Student(...);` | `new`가 두 번 일어났나 | 보통 다른 객체 둘이다 |
+| `Student b = a;` | 새 객체를 만든 건가, 같은 객체를 같이 보나 | 새 객체가 아니라 같은 객체 별칭이다 |
+| `a == b` | 같은 객체 손잡이인가 | 참조형에서는 보통 identity 질문이다 |
+| `a.equals(b)` | 이 타입이 같은 값으로 취급할 규칙을 정했나 | 값 비교 질문이다 |
+
+한 줄로 줄이면 아래 순서다.
+
+1. `class`는 정의다.
+2. `new`가 실행되면 객체가 생긴다.
+3. 참조 변수는 그 객체를 가리킨다.
+4. 그래서 참조형 `==`는 "같은 객체를 가리키나"로 읽고, `equals()`는 "같은 값으로 볼까"로 읽는다.
+
+즉 `==`와 `equals()`는 갑자기 튀어나온 비교 문법이 아니라, **객체를 몇 개 만들었고 참조를 어떻게 나눠 들고 있나**에서 자연스럽게 이어지는 다음 질문이다. 여기 감각을 바로 코드 비교 규칙으로 붙이고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)로 이어 가면 된다.
+
 ## 인터페이스와 추상 클래스
+
+이 구간은 "여기서 완전히 끝내야 하는 핵심"이 아니라 용어가 보여도 겁먹지 않게 하는 브리지다. 지금 당장 막히지 않았다면 표와 예제만 읽고 관련 문서로 넘어가도 된다.
 
 초보자는 둘 다 "완전하지 않은 타입"처럼 보여 헷갈리기 쉽다. 하지만 역할이 다르다.
 
@@ -283,6 +370,17 @@ public abstract class Member {
 
 - 인터페이스: `can-do`
 - 추상 클래스: 공통 상태를 가진 `base type`
+
+### 같은 예제로 한 번에 구분하기
+
+처음 읽을 때는 서로 다른 예제보다 같은 도메인에서 나눠 보는 편이 덜 헷갈린다.
+
+| 타입 | 이 예제에서 맡는 역할 | 왜 이 선택이 자연스러운가 |
+|---|---|---|
+| `DiscountPolicy` 인터페이스 | "할인을 계산할 수 있다"는 계약 | 정액 할인, 정률 할인처럼 구현을 바꿔 끼우기 쉽다 |
+| `Member` 추상 클래스 | 회원이 공통으로 가지는 이름과 기본 흐름 | `name` 같은 공통 상태와 기본 메서드를 부모가 쥘 수 있다 |
+
+즉 "여러 구현이 같은 역할을 수행하나?"를 묻고 있으면 인터페이스 쪽이고, "여러 자식이 같은 시작 상태와 골격을 가져야 하나?"를 묻고 있으면 추상 클래스 쪽이다.
 
 ## 핵심 OOP 원리
 
@@ -420,6 +518,12 @@ public class VipMember extends Member {
 기본형은 보통 `==`로 값 비교를 하지만, 참조형은 같은 객체를 가리키는지와 내용이 같은지를 구분해야 한다.
 예를 들어 `String` 내용 비교는 보통 `.equals()`를 사용한다.
 
+처음엔 이렇게 이어서 기억하면 된다.
+
+- `Student b = a;`를 보면 "같은 객체를 같이 보나?"를 먼저 묻는다.
+- 그래서 참조형 `a == b`는 같은 객체 확인에 가깝다.
+- 반대로 서로 다른 객체 둘이어도 학생 번호나 이름이 같으면 같은 값으로 볼 수 있는데, 그 규칙이 `equals()` 쪽 질문이다.
+
 ### `new`를 쓸 때마다 항상 다른 객체가 만들어진다
 
 `new Student(...)`를 호출하면 새 객체가 생성된다.
@@ -448,7 +552,19 @@ public class VipMember extends Member {
 
 이 감각을 이어서 보고 싶다면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)로 먼저 큰 그림을 잡고, 상속이 허용되는 좁은 예외를 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md), 조합과 상속의 비교를 [템플릿 메소드 vs 전략](../../design-pattern/template-method-vs-strategy.md)에서 이어 보면 된다.
 
-## 어떤 문서를 다음에 읽으면 좋은가
+## 실무에서 쓰는 모습
+
+초급 미션에서도 아래 정도 흐름은 자주 만난다.
+
+1. 주문 금액은 `int` 같은 기본형으로 계산한다.
+2. 주문자나 상품은 `Order`, `Product` 같은 클래스로 묶는다.
+3. 할인 정책은 `DiscountPolicy` 인터페이스로 열어 둔다.
+4. 공통 회원 정보가 있으면 `Member` 같은 추상 클래스로 시작 상태와 공통 메서드를 묶을 수 있다.
+5. 실제 할인 방식은 `RateDiscountPolicy`, `FixedDiscountPolicy` 같은 구현체로 갈아끼운다.
+
+즉 문법이 따로 놀지 않는다. 기본형은 계산에, 클래스는 상태 묶기에, 인터페이스는 교체 가능한 역할에, 추상 클래스는 공통 뼈대에 쓰인다.
+
+## 더 깊이 가려면
 
 - 변수, 제어문, 배열, 형변환까지 문법을 먼저 다지고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - 메서드, 생성자, parameter, return type, overloading을 한 클래스 흐름으로 묶어 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
@@ -456,7 +572,17 @@ public class VipMember extends Member {
 - `extends`, overriding, `@Override`, dynamic dispatch를 작은 예제로 이어 보고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
 - 처음 배우는데 "상속을 언제 쓰는지", "추상 클래스와 인터페이스를 어디서 나누는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) 순서가 가장 안전하다
 - 접근 제한자, `static`, `final`을 클래스 모델과 함께 잡고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
+- `==`, `.equals()`, `hashCode()`가 왜 갈리는지 같이 잡고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- 상태값을 `int` 대신 타입으로 묶는 감각을 붙이고 싶다면 [Java enum 기초](./java-enum-basics.md)
+- `null` 대신 "없음"을 타입으로 표현하는 감각을 붙이고 싶다면 [Java Optional 입문](./java-optional-basics.md)
+- 객체 여러 개를 모아 다루는 첫 구조를 보고 싶다면 [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - 처음 배우는데 디자인 패턴을 어디부터 볼지 막히면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)에서 **상속보다 조합 -> 패턴 기초** route map부터 타면 된다
+
+## 지금은 이렇게만 잡고 넘어가기
+
+- 기본형 vs 참조형은 "값 자체를 다루나, 객체를 가리키나"만 먼저 구분하면 된다.
+- 인터페이스 vs 추상 클래스는 "역할 계약을 여나, 공통 상태와 흐름을 묶나"만 먼저 잡아도 첫 미션 읽기에는 충분하다.
+- 다형성은 "호출 코드를 크게 바꾸지 않고 구현을 갈아끼우는 구조"라는 감각만 남기고, 설계 면접식 답변은 다음 단계에서 붙이면 된다.
 
 ## 한 줄 정리
 

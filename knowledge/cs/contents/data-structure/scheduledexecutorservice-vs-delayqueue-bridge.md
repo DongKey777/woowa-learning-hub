@@ -7,28 +7,14 @@
 
 관련 문서:
 
+- [Timer Priority Policy Split](./timer-priority-policy-split.md)
+- [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
+- [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 
 
-retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue bridge basics, scheduledexecutorservice vs delayqueue bridge beginner, scheduledexecutorservice vs delayqueue bridge intro, data structure basics, beginner data structure, 처음 배우는데 scheduledexecutorservice vs delayqueue bridge, scheduledexecutorservice vs delayqueue bridge 입문, scheduledexecutorservice vs delayqueue bridge 기초, what is scheduledexecutorservice vs delayqueue bridge, how to scheduledexecutorservice vs delayqueue bridge
-> 관련 문서:
-> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
-> - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
-> - [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
-> - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
-> - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
-> - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)
-> - [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)
-> - [Periodic Scheduling Drift vs Backlog Primer](./periodic-scheduling-drift-vs-backlog-primer.md)
-> - [Periodic Task Cancellation Bridge](./periodic-task-cancellation-bridge.md)
-> - [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)
-> - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
-> - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
-> - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
->
-> retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduledexecutorservice delay queue, scheduledthreadpoolexecutor delayed work queue, java scheduled executor data structure, schedule runnable after delay, scheduleAtFixedRate scheduleWithFixedDelay, fixed rate vs fixed delay queue mental model, fixed rate timeline trace, fixed delay timeline trace, periodic task re-enqueue, periodic deadline requeue, repeating task requeue, self rescheduling job, stale periodic ticket, scheduleAtFixedRate timeline, scheduleWithFixedDelay timeline, scheduled future cancel, scheduledfuture cancel stale entry, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, delayed task queue mental model, delay-aware priority queue, deadline ticket queue, deadline heap, expired head, hidden future task, not one sleeping thread per task, scheduler worker waits for earliest deadline, executor queue bridge beginner, timer cancellation stale entry, timer reschedule stale entry, beginner scheduler queue, java timer queue beginner, fixed rate vs fixed delay overrun primer, 스케줄드 executor delayqueue, 자바 스케줄러 자료구조, 지연 작업 큐, fixed rate vs fixed delay 타임라인, 주기 작업 재등록, scheduled executor nanoTime, currentTimeMillis vs nanoTime scheduler, java timer clock choice, deadlineNanos
+retrieval-anchor-keywords: scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduledthreadpoolexecutor delayed work queue, java scheduled executor data structure, schedule runnable after delay, fixed rate vs fixed delay queue mental model, scheduled executor priority after due, scheduler priority after due, due task business priority, scheduled executor business priority, delay-aware priority queue, deadline ticket queue, not one sleeping thread per task, 처음 배우는데 scheduledexecutorservice, what is scheduled executor priority after due
 
 ## 먼저 그림부터
 
@@ -310,6 +296,51 @@ worker:            run1                run2
 
 직접 `DelayQueue` 반복 작업을 만들 때 이 계산을 어떤 ticket 재등록 코드로 옮겨야 하는지, 그리고 그 과정에서 stale-ticket 버그가 어디서 생기는지까지 붙여 보고 싶다면 [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)로 이어서 보면 된다.
 
+## 시간이 된 뒤의 priority는 다른 문제다
+
+여기서 beginner가 자주 헷갈리는 지점이 하나 더 있다.
+
+> `ScheduledExecutorService`는 "언제 due가 되는가"를 관리하는 scheduler이지, "due가 된 작업들 중 비즈니스 priority가 가장 높은 것을 다시 뽑아 주는 dispatcher"까지 자동으로 해 주는 도구는 아니다.
+
+간단히 두 줄로 나누면 이렇다.
+
+| 질문 | 기본 scheduler가 먼저 답하는 것 |
+|---|---|
+| 언제 실행 가능해지나? | delay / deadline |
+| 실행 가능해진 작업들 중 무엇을 먼저 처리하나? | worker 가용성, queue에 들어온 due 순서, 별도 policy 유무 |
+
+예를 들어 이런 요구를 보자.
+
+- `vipEmail`은 30초 뒤부터 실행 가능
+- `normalSms`는 5초 뒤부터 실행 가능
+- 둘 다 시간이 된 뒤에는 VIP를 먼저 보내고 싶다
+
+이 요구를 `ScheduledExecutorService` 하나에 그대로 기대하면 보통 오해가 생긴다.
+executor queue의 기본 감각은 **가장 먼저 due가 된 task를 head로 꺼내는 것**이지,
+"지금 due인 작업들을 한데 모아 business priority로 재정렬"하는 것이 아니다.
+
+| 상황 | scheduler가 잘하는 일 | 따로 생각해야 하는 일 |
+|---|---|---|
+| 5초 뒤 `normalSms` 실행 가능 | 5초가 되면 깨워서 실행 후보로 만든다 | 그 시점에 `vipEmail`은 아직 미래라 비교 대상이 아니다 |
+| 30초 뒤 `vipEmail`도 실행 가능 | 이제 `vipEmail`도 실행 후보가 된다 | 이미 due인 작업들끼리 다시 priority를 고를지 결정해야 한다 |
+| due 작업이 한꺼번에 몰림 | earliest-deadline wait를 풀어 준다 | due batch를 business priority ready queue로 옮길지 결정해야 한다 |
+
+즉 mental model은 이렇게 끊어 두는 편이 안전하다.
+
+```text
+ScheduledExecutorService
+  = due-time gate + 실행 스레드 관리
+
+custom business-priority dispatch
+  = due가 된 작업들을 어떤 정책으로 먼저 처리할지
+```
+
+만약 요구가 "시간이 된 작업들 중 VIP 먼저"라면,
+`schedule()` 단계와 **ready queue 단계**를 분리해 읽어야 한다.
+이때는 `Delayed.compareTo()`에 business priority를 억지로 넣기보다
+[Timer Priority Policy Split](./timer-priority-policy-split.md)처럼
+`due-time gate -> ready PriorityQueue(priority)` 두 단계로 나누는 편이 덜 헷갈린다.
+
 ## 이 bridge가 뜻하지 않는 것
 
 이 문서는 `ScheduledExecutorService`의 JVM 내부 구현을 외우자는 문서가 아니다.
@@ -319,6 +350,7 @@ worker:            run1                run2
 |---|---|
 | scheduled executor는 public `DelayQueue`를 그대로 감싼 것이다 | API는 executor이고, 내부 대기 규칙을 `DelayQueue`처럼 상상하면 된다 |
 | delay가 짧으면 business priority가 높다는 뜻이다 | delay는 실행 가능 시각이고, priority 정책은 별도 관심사다 |
+| `schedule()`만 쓰면 due 이후 business priority dispatch까지 자동으로 된다 | scheduler는 due-time gate에 가깝고, due 이후 priority는 별도 ready-queue 정책일 수 있다 |
 | 등록된 작업마다 sleeping thread가 필요하다 | queue head의 가장 이른 deadline을 기준으로 worker가 기다린다고 보면 된다 |
 | 반복 실행은 queue와 별개인 특수 기능이다 | 다음 deadline을 계산해 다시 예약하는 흐름으로 보면 된다 |
 | cancel하면 queue 구조 문제가 모두 사라진다 | 취소/재예약에는 stale ticket 정책이 남을 수 있고, Java에서는 [ScheduledFuture Cancellation Bridge](./scheduledfuture-cancel-stale-entries.md)에서 `removeOnCancelPolicy`까지 같이 보면 된다 |

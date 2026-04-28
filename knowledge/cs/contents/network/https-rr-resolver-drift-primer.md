@@ -31,6 +31,7 @@ retrieval-anchor-keywords: https rr resolver drift, browser doh vs dig, os resol
 - [왜 같은 host인데 답이 달라지나](#왜-같은-host인데-답이-달라지나)
 - [가장 흔한 4가지 원인](#가장-흔한-4가지-원인)
 - [짧은 예시: browser는 `h3`, `dig HTTPS`는 비어 있는 경우](#짧은-예시-browser는-h3-dig-https는-비어-있는-경우)
+- [짧은 before/after: `dig`만 보고 "HTTPS RR 없음"이라고 오판한 경우](#짧은-beforeafter-dig만-보고-https-rr-없음이라고-오판한-경우)
 - [30초 체크리스트: 비교를 공정하게 만드는 방법](#30초-체크리스트-비교를-공정하게-만드는-방법)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
@@ -158,6 +159,38 @@ host가 한 글자라도 다르면 `HTTPS` RR/SVCB는 완전히 다른 레코드
 
 추가로 이 경우에는 DNS HTTPS RR이 아니라 `Alt-Svc`로 H3를 배웠을 가능성도 남아 있다.
 그래서 "`browser는 `h3`, `dig HTTPS`는 비어 있음`"은 곧바로 DNS 문제 확정이 아니라, **resolver path 비교 단계로 들어가야 한다는 신호**다.
+
+## 짧은 before/after: `dig`만 보고 "HTTPS RR 없음"이라고 오판한 경우
+
+초급자가 많이 하는 실수는 "`내 터미널 결과 = 브라우저가 본 DNS`"라고 바로 놓는 것이다.
+
+| 구분 | before | after |
+|---|---|---|
+| 상황 | 사내 Wi-Fi에서 `dig HTTPS api.example.com`이 비어 있다 | 브라우저는 Secure DNS(DoH), 터미널은 회사 DNS를 본다는 점을 먼저 확인한다 |
+| 초급자 해석 | "`HTTPS RR이 없네. 그러면 브라우저 H3는 DNS랑 무관하다`" | "`내 `dig` 결과는 회사 DNS 관점일 뿐이다. 브라우저는 다른 resolver로 `HTTPS` RR을 봤을 수 있다`" |
+| 더 안전한 결론 | 잘못된 단정 | "`DoH/public resolver`와 `회사 DNS`가 다른 view를 줄 수 있으니, resolver를 맞춘 뒤 다시 비교하자`" |
+
+짧은 관찰 예시는 아래처럼 읽으면 충분하다.
+
+```bash
+$ dig +noall +answer api.example.com HTTPS
+# 회사 DNS 경로: answer 없음
+```
+
+- browser DevTools: 첫 요청부터 `Protocol = h3`
+- 브라우저 설정: Secure DNS ON
+- 회사 네트워크: 내부 DNS 정책 사용
+
+이 장면에서 before 결론은 "`dig`에 안 보였으니 DNS HTTPS RR은 원인이 아니다"다.
+하지만 after 결론은 다르다. **브라우저는 DoH로 public resolver에 물었고, 터미널 `dig`는 회사 DNS에 물었을 수 있다.** 그러면 `dig` 결과와 브라우저 실제 동작이 달라도 이상하지 않다.
+
+즉 이 사례의 핵심 symptom phrase는 이것이다.
+
+- "`dig`에는 없는데 브라우저는 `h3`다"
+- "회사망에서는 안 보이는데 집에서는 보인다"
+- "브라우저 실제 동작과 터미널 DNS 답이 안 맞는다"
+
+이 세 문장이 보이면 먼저 authoritative zone 오류보다 **DoH vs 회사 DNS 경로 차이**를 의심하는 편이 초급자에게 더 안전하다.
 
 ## 30초 체크리스트: 비교를 공정하게 만드는 방법
 

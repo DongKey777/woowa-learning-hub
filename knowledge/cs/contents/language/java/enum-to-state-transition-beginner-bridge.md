@@ -1,0 +1,268 @@
+# Enum에서 상태 전이 모델로 넘어가는 첫 브리지
+
+> 한 줄 요약: enum을 "상태 이름표"로만 두지 말고 `setStatus(...)` 대신 `confirm()`/`cancel()` 같은 도메인 행동 안에서 전이 규칙을 묶기 시작하면, 미션 코드에서 상태 변경 이유와 허용 범위를 훨씬 쉽게 추적할 수 있다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [language 카테고리 인덱스](../README.md)
+- [Java enum 기초](./java-enum-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md)
+- [Java 예외 처리 기초](./java-exception-handling-basics.md)
+- [객체지향 설계 기초](../../software-engineering/oop-design-basics.md)
+
+retrieval-anchor-keywords: enum state transition beginner, setter vs domain action java, setstatus vs confirm cancel, java enum 상태 전이, enum으로 상태 모델링, 주문 상태 전이 입문, 예약 상태 전이 기초, mission style domain state, enum 다음 단계 oop, 상태값 int 대신 enum 다음, 상태 전이 허용 여부, beginner state transition java, 도메인 메서드로 상태 변경, setstatus 왜 위험해, confirm cancel 왜 쓰나
+
+## 핵심 개념
+
+처음 enum을 배울 때는 보통 "정수 상수 대신 이름 있는 값"까지만 본다. 그런데 미션 스타일 도메인 코드에서는 그다음 질문이 바로 붙는다.
+
+- 지금 상태가 무엇인가
+- 여기서 다음 상태로 넘어가도 되는가
+
+즉 enum의 첫 실무 handoff는 "상태 이름표"에서 "상태 전이 규칙"으로 넘어가는 것이다.  
+초급자는 state machine이라는 큰 용어보다, **"상태값 + 허용된 다음 행동"을 같이 묶는다**고 생각하는 편이 더 읽기 쉽다.
+
+## 한눈에 보기
+
+| 지금 단계 | enum이 하는 일 | 코드에서 보이는 질문 |
+|---|---|---|
+| 1단계 | 가능한 상태 이름을 고정한다 | `PENDING`, `CONFIRMED`, `CANCELLED` 중 하나인가 |
+| 2단계 | 잘못된 상태값 입력을 막는다 | `"3"` 같은 매직 넘버가 못 들어오게 한다 |
+| 3단계 | 상태별 허용 행동을 나눈다 | `confirm()`를 지금 호출해도 되는가 |
+| 4단계 | 전이 규칙을 한곳에 모은다 | `PENDING -> CONFIRMED`는 허용, `CANCELLED -> CONFIRMED`는 금지 |
+
+핵심 문장은 이것 하나면 충분하다.
+
+> enum은 "상태 후보 목록"이고, 상태 전이 모델은 "그 목록 사이의 이동 규칙"이다.
+
+여기서 초급자가 가장 빨리 체감하는 차이는 이것이다.
+
+| 상태 변경 방식 | 호출이 어떻게 읽히나 | 규칙이 어디로 퍼지기 쉬운가 |
+|---|---|---|
+| `setStatus(CONFIRMED)` | "상태값을 바꾼다" | 서비스, 컨트롤러, 테스트 helper마다 조건문이 흩어지기 쉽다 |
+| `confirm()` | "예약을 확정한다" | `Reservation` 안에서 전이 검증과 예외를 같이 읽기 쉽다 |
+| `cancel()` | "예약을 취소한다" | 취소 가능 여부, 종료 상태 처리, 부수 효과 위치를 찾기 쉽다 |
+
+## enum만 써도 좋아지는 지점
+
+```java
+enum ReservationStatus {
+    REQUESTED, CONFIRMED, SEATED, CANCELLED
+}
+```
+
+여기까지만 해도 `int status = 3`보다 훨씬 낫다.
+
+- 가능한 상태가 코드에 이름으로 드러난다
+- 잘못된 값이 들어갈 여지가 줄어든다
+- `switch`나 if 조건이 읽기 쉬워진다
+
+하지만 아직은 "상태 이름을 담아 둔 것"에 가깝다. 전이 규칙은 코드 여러 곳에 흩어질 수 있다.
+
+## 다음 단계는 "가능한 행동"을 묻는 것
+
+상태 머신을 어렵게 생각할 필요는 없다. 초급자 기준 첫 질문은 이것뿐이다.
+
+- 예약 요청 상태에서 확정할 수 있는가
+- 이미 취소된 예약을 다시 확정할 수 있는가
+- 결제 전 주문을 배송 상태로 바꿔도 되는가
+
+이 질문이 나오기 시작하면 enum을 단순 표시값이 아니라 **도메인 규칙의 입구**로 보기 시작해야 한다.
+
+## 왜 `setStatus(...)`가 규칙을 흩뿌리기 쉬운가
+
+`setStatus(...)`는 문법상 간단하지만, 코드가 말해 주는 정보가 너무 적다.
+
+```java
+reservation.setStatus(ReservationStatus.CONFIRMED);
+reservation.setStatus(ReservationStatus.CANCELLED);
+```
+
+위 두 줄만 보면 호출 이유가 보이지 않는다.
+
+- 왜 지금 확정하는가: 결제 성공 때문인지, 관리자 강제 처리인지
+- 무엇을 막아야 하는가: 이미 취소된 예약인지, 이미 착석한 예약인지
+- 어디서 검증하는가: 서비스인지, 컨트롤러인지, 엔티티인지
+
+그래서 미션 코드에서는 아래 문제가 자주 생긴다.
+
+- 서비스 A는 `REQUESTED`에서만 확정하게 막는다
+- 서비스 B는 같은 검증을 빼먹고 바로 `setStatus(CONFIRMED)`를 호출한다
+- 테스트는 setter로 상태를 마음대로 밀어 넣어 실제 도메인 규칙과 다른 객체를 만든다
+
+즉 setter는 "무슨 행동을 했는가"보다 "결과 상태값이 무엇인가"만 남기기 때문에, 규칙이 한곳에 모이기 어렵다.
+
+## 전이 규칙을 도메인 메서드로 모은다
+
+```java
+enum ReservationStatus {
+    REQUESTED,
+    CONFIRMED,
+    SEATED,
+    CANCELLED
+}
+
+class Reservation {
+    private ReservationStatus status = ReservationStatus.REQUESTED;
+
+    public void confirm() {
+        if (status != ReservationStatus.REQUESTED) {
+            throw new IllegalStateException("요청 상태에서만 확정할 수 있다.");
+        }
+        status = ReservationStatus.CONFIRMED;
+    }
+
+    public void cancel() {
+        if (status == ReservationStatus.SEATED) {
+            throw new IllegalStateException("착석 후에는 취소할 수 없다.");
+        }
+        status = ReservationStatus.CANCELLED;
+    }
+}
+```
+
+여기서 중요한 점은 enum이 모든 일을 다 하는 것이 아니라, **도메인 객체가 상태와 전이를 함께 책임진다**는 것이다.
+
+- 상태값은 enum이 명확하게 만든다
+- 전이 규칙은 `Reservation` 메서드가 붙잡는다
+- 호출자는 필드를 직접 바꾸지 않고 행동 메서드를 통해서만 상태를 바꾼다
+
+이 구조가 OOP 입문에서 말하는 "상태를 숨기고 행동으로 바꾼다"와 연결된다.
+
+## `confirm()`/`cancel()`이 더 읽기 쉬운 이유
+
+도메인 메서드는 상태 변경을 "값 대입"이 아니라 "업무 행동"으로 보여 준다.
+
+| 질문 | `setStatus(...)` 중심 코드 | `confirm()`/`cancel()` 중심 코드 |
+|---|---|---|
+| 이 줄이 무엇을 하려는가 | 최종 상태만 보인다 | 행동 의도가 메서드 이름에 드러난다 |
+| 전이 가능 조건은 어디서 찾나 | 호출자 주변 if 문을 뒤져야 한다 | 메서드 본문 하나를 먼저 보면 된다 |
+| 예외 메시지는 어디에 둘까 | 호출자마다 따로 생기기 쉽다 | 도메인 메서드 안에서 일관되게 둘 수 있다 |
+| 미션 리뷰에서 무엇을 읽기 쉬운가 | "왜 여기서 상태를 바꾸지?"가 남는다 | "왜 이 행동이 허용/금지되는지"를 바로 볼 수 있다 |
+
+예를 들어 `reservation.confirm()`은 "예약 확정" 규칙을 읽는 entrypoint가 되고, `reservation.cancel()`은 "취소 가능 조건"을 읽는 entrypoint가 된다.  
+학습자는 setter 호출 지점을 전부 뒤지는 대신, **행동 메서드 몇 개만 따라가면 상태 규칙을 이해할 수 있다.**
+
+## 흔한 오해와 함정
+
+- "enum만 쓰면 자동으로 상태 머신이 된다"
+  아니다. enum은 상태 후보를 고정할 뿐이고, 전이 허용/금지 규칙은 별도로 적어야 한다.
+- "`setStatus(...)`만 열어 두고 서비스에서 알아서 바꾸면 된다"
+  그러면 전이 규칙이 여러 서비스/컨트롤러로 흩어져서 초급 미션에서 가장 먼저 깨진다.
+- "`setter`를 `private`으로만 두면 괜찮다"
+  일부 누수는 막지만, 여전히 "확정", "취소" 같은 행동 이름이 코드에서 사라지면 읽는 사람은 최종 상태값만 보고 의도를 추측해야 한다.
+- "`ordinal()` 순서대로 다음 상태라고 보면 된다"
+  상태 전이는 선언 순서와 같은 개념이 아니다. `PAID -> SHIPPED`는 가능해도 `ordinal + 1` 같은 계산으로 표현하면 금방 깨진다.
+- "취소나 완료도 그냥 상태값 하나일 뿐이다"
+  맞지만, 동시에 "더 이상 다음 행동이 거의 없는 종료 상태"라는 의미도 있다. 이런 terminal 상태 감각을 같이 읽어야 한다.
+
+## 종료 상태를 짧게 붙여 읽기
+
+초급자 기준에서는 `CANCELLED`와 `COMPLETED`를 "마지막 칸"이라고 먼저 생각하면 된다.
+
+| 상태 | 왜 terminal로 읽는가 | 보통 막아야 하는 것 |
+|---|---|---|
+| `CANCELLED` | 이미 흐름을 중단했다 | 다시 `CONFIRMED`, `PAID`, `SHIPPED`로 되돌리기 |
+| `COMPLETED` | 이미 흐름을 끝냈다 | 뒤늦게 다시 진행 중 상태로 바꾸기 |
+
+즉 terminal 상태는 "이 이름이 특별하다"가 아니라, **이후 전이가 거의 없어야 한다**는 뜻이다.
+
+```java
+enum OrderStatus {
+    CREATED,
+    PAID,
+    COMPLETED,
+    CANCELLED;
+
+    public boolean isTerminal() {
+        return this == COMPLETED || this == CANCELLED;
+    }
+}
+```
+
+이 메서드 하나만으로 상태 전이가 완성되지는 않지만, 도메인 메서드가 아래처럼 읽히기 쉬워진다.
+
+```java
+public void pay() {
+    if (status.isTerminal()) {
+        throw new IllegalStateException("종료 상태에서는 다시 진행할 수 없다.");
+    }
+    status = OrderStatus.PAID;
+}
+```
+
+핵심은 "취소됨/완료됨도 상태값이니까 아무 데나 다시 바꿔도 된다"가 아니라,  
+"취소됨/완료됨이 되었기 때문에 어떤 전이는 이제 불가능해야 한다"로 읽는 것이다.
+
+## enum 메서드로 올리는 최소 규칙
+
+전이 규칙이 아주 짧으면 enum 메서드로 일부를 올릴 수도 있다.
+
+```java
+enum OrderStatus {
+    PENDING,
+    PAID,
+    SHIPPED,
+    CANCELLED;
+
+    public boolean canShip() {
+        return this == PAID;
+    }
+}
+```
+
+beginner 단계에서는 "모든 비즈니스 규칙을 enum 안에 몰아넣기"보다 아래 기준을 먼저 잡는 편이 안전하다.
+
+| 규칙 위치 | 먼저 고를 때 | 이유 |
+|---|---|---|
+| 도메인 객체 메서드 | 상태 변경이 도메인 행위와 함께 읽혀야 할 때 | `order.pay()`, `reservation.confirm()`처럼 말이 자연스럽다 |
+| enum 메서드 | 상태별 허용 여부가 아주 짧고 공통적으로 쓰일 때 | `canCancel()`, `isTerminal()`처럼 질문형 읽기가 쉽다 |
+
+## 실무에서 쓰는 모습
+
+미션 스타일 도메인에서는 보통 아래 순서로 자주 나온다.
+
+1. enum으로 상태 후보를 만든다. 예: `OrderStatus`, `ReservationStatus`
+2. 엔티티/도메인 객체가 현재 상태를 필드로 가진다.
+3. `pay()`, `confirm()`, `cancel()` 같은 행동 메서드가 상태를 직접 검증하고 바꾼다.
+4. 불가능한 전이는 `IllegalStateException` 같은 예외로 막는다.
+
+이 구조의 장점은 학습자가 "상태를 바꾸는 코드"를 찾을 때, setter와 서비스 조건문을 뒤지지 않고 도메인 메서드부터 읽게 만든다는 점이다.
+
+미션 코드에서 특히 좋은 이유는 아래와 같다.
+
+- 리뷰어가 "`setStatus()`를 열어 두지 말고 행동 메서드로 바꾸세요"라고 말할 때 근거가 선명해진다
+- `confirm()` 하나만 읽어도 "어느 상태에서 가능한가"와 "성공 시 무엇으로 바뀌는가"를 한 번에 본다
+- `cancel()` 하나만 읽어도 종료 상태, 중복 취소, 후속 정책을 같은 자리에서 다룰 수 있다
+
+## 초급자용 15초 체크
+
+- 상태가 정해진 목록인가 -> enum
+- 상태를 누가 바꾸는가 -> 도메인 메서드
+- 아무 데서나 바꿔도 되는가 -> 아니면 검증 로직 필요
+- 더 갈 곳이 거의 없는 종료 상태가 있는가 -> `CANCELLED`, `COMPLETED` 같은 terminal 상태 의식하기
+
+## 더 깊이 가려면
+
+- enum 문법과 `name()`/`ordinal()` 기초부터 다시 보면 [Java enum 기초](./java-enum-basics.md)
+- 상태를 필드 대신 행동으로 감추는 OOP 큰 그림은 [객체지향 핵심 원리](./object-oriented-core-principles.md)
+- 전이 실패를 예외로 다루는 기준은 [Java 예외 처리 기초](./java-exception-handling-basics.md)
+- enum을 DB/JSON 경계에 내보낼 때의 문자열 저장과 unknown 값 처리는 [Enum Persistence, JSON, and Unknown Value Evolution](./enum-persistence-json-unknown-value-evolution.md)
+- 상태 전이 규칙을 더 넓은 도메인 책임으로 보는 감각은 [객체지향 설계 기초](../../software-engineering/oop-design-basics.md)
+
+## 면접/시니어 질문 미리보기
+
+**Q. 상태 전이 규칙을 enum에 둘지, 도메인 객체에 둘지 어떻게 고르나?**  
+짧은 상태 질의는 enum에 둘 수 있지만, 실제 상태 변경과 불변식은 도메인 메서드가 같이 책임지는 편이 읽기 쉽다.
+
+**Q. setter로 상태만 바꾸면 왜 위험한가?**  
+전이 규칙이 한곳에 모이지 않아 `REQUESTED`에서만 가능해야 하는 행동이 어디서든 호출될 수 있다.
+
+**Q. 나중에 상태가 복잡해지면 무엇을 더 보나?**  
+enum alone에서 시작하되, 상태별 행동이 커지면 상태 객체나 더 명시적인 state pattern을 검토한다.
+
+## 한 줄 정리
+
+enum을 배운 다음 단계는 "상태 이름표"를 넘어서, 도메인 메서드가 그 상태 사이의 허용된 이동 규칙까지 같이 붙잡게 만드는 것이다.

@@ -20,7 +20,7 @@ retrieval-anchor-keywords: binarysearch duplicate boundary primer basics, binary
 > - [Priority-Only Range Search Follow-Up](./priority-only-range-search-follow-up.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 > - [Primitive Array Descending Search Primer](./primitive-array-descending-binarysearch-primer.md)
-> - [Binary Search Patterns](../algorithm/binary-search-patterns.md)
+> - [Binary Search Patterns](../../algorithm/binary-search-patterns.md)
 
 > retrieval-anchor-keywords: language-java-00097, binarySearch duplicate boundary primer, java binarySearch duplicates first last occurrence, java Arrays.binarySearch duplicate index beginner, java first occurrence after Arrays.binarySearch, java last occurrence after Arrays.binarySearch, java duplicate range after binary search java, java binarySearch left boundary right boundary beginner, java binarySearch scan left right duplicates, java binarySearch exact hit then expand duplicates, java binarySearch first last index primitive array, java binarySearch duplicate block beginner, java lower bound upper bound handoff java, java int array lowerBound upperBound helper, java long array lowerBound upperBound helper, java primitive array boundary helper beginner, java duplicate expansion to lowerBound upperBound java, java comparator duplicate boundary binarySearch, java Arrays.binarySearch duplicates no first guarantee, java first last occurrence sorted array java beginner, 자바 binarySearch 중복 첫 위치, 자바 binarySearch 중복 마지막 위치, 자바 Arrays.binarySearch 중복 인덱스, 자바 정렬 배열 중복 범위 찾기, 자바 binarySearch 찾은 뒤 좌우 확장, 자바 int 배열 lowerBound upperBound, 자바 long 배열 lowerBound upperBound
 

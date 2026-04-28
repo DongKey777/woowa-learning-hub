@@ -3,6 +3,17 @@
 **난이도: 🔴 Advanced**
 > 자바 플랫폼의 메타프로그래밍 3대 축 -- 런타임 타입 정보 조작, 컴파일 타임 타입 안전성, 선언적 메타데이터
 
+관련 문서:
+
+- [Java Generics Basics](./java-generics-basics.md)
+- [Reflection Cost and Alternatives](./reflection-cost-and-alternatives.md)
+- [Generic Type Erasure Workarounds](./generic-type-erasure-workarounds.md)
+- [Annotation Processing](./annotation-processing.md)
+- [Java Types, Class, Object, OOP Basics](./java-types-class-object-oop-basics.md)
+- [language 카테고리 인덱스](../README.md)
+
+retrieval-anchor-keywords: java reflection generics annotations, java reflection basics, java generics basics, java annotations basics, reflection generics annotations 차이, 자바 리플렉션 제네릭 어노테이션, 자바 리플렉션 처음, 자바 제네릭 왜 쓰는지, 자바 어노테이션 뭐예요, 처음 배우는데 reflection, 처음 배우는데 generics, 처음 배우는데 annotations, java type erasure basics, java runtime metadata basics, java metaprogramming basics, reflection vs generics vs annotations, class 정보 런타임 조회, generic type erasure why
+
 ## 핵심 개념
 
 | 요소 | 시점 | 핵심 역할 |
@@ -10,6 +21,8 @@
 | Reflection | 런타임 | 클래스/메서드/필드 정보를 동적으로 조회 및 호출 |
 | Generics | 컴파일 타임 | 타입 파라미터로 재사용성과 타입 안전성 확보 |
 | Annotations | 컴파일 + 런타임 | 코드에 메타데이터를 부착하여 도구/프레임워크가 활용 |
+
+처음 배우는 관점에서는 이렇게 잡으면 된다. Reflection은 "실행 중 클래스 정보를 뒤져서 쓰는 도구", Generics는 "컴파일할 때 타입 실수를 막는 장치", Annotation은 "코드에 의미표를 붙여 프레임워크가 읽게 하는 표시"다.
 
 ---
 

@@ -5,14 +5,18 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
+> - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+> - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring `HandlerMethodReturnValueHandler` Chain](./spring-handlermethodreturnvaluehandler-chain.md)
 > - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 > - [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
+> - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
 
-retrieval-anchor-keywords: content negotiation, Accept header, Content-Type, HttpMessageConverter, produces, consumes, media type, charset, response format, negotiation
+retrieval-anchor-keywords: content negotiation pitfalls, spring 415 unsupported media type, @requestbody 415 beginner, content-type application json why, accept vs content-type difference, httpmessageconverter media type, produces consumes mismatch, requestbody media type mismatch, controller 전에 415, spring beginner negotiation, json body not supported, what is content negotiation, spring mvc lifecycle basics binding 단계, binding 단계에서 415 왜, 처음 content negotiation 헷갈려요
 
 ## 핵심 개념
 
@@ -24,6 +28,22 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 - `HttpMessageConverter`: 실제 직렬화/역직렬화 담당
 
 이게 어긋나면 406, 415, 400 같은 상태 코드가 나온다.
+
+## 초급자 입구: `@RequestBody 415`에서 들어왔을 때
+
+이 문서는 원래 content negotiation 전체를 다루는 심화 카드다. 그런데 초급자는 보통 "`@RequestBody`에서 왜 `415 Unsupported Media Type`이 나요?"라는 증상으로 먼저 들어온다. 그때는 아래 순서로 끊어 읽는 편이 안전하다.
+
+1. JSON body와 query/form 바인딩이 섞여 있으면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)부터 본다.
+2. `400`인지 `415`인지 먼저 갈라야 하면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md)에서 첫 분기를 잡는다.
+3. 그다음 "`JSON 내용` 문제가 아니라 `Content-Type` 계약 문제구나"가 보이면 이 문서로 돌아와 `Accept`와 `Content-Type`, `consumes`를 같이 본다.
+
+`Spring MVC 요청 생명주기 기초`에서 보던 큰 흐름으로 다시 붙이면, 이 문서는 그중 4번 `argument binding / message conversion` 칸을 확대해서 보는 카드다. 즉 "컨트롤러 전에 왜 막혔지?"까지는 lifecycle basics로 판단하고, "그중에서도 왜 `415`였지?"는 여기서 `Content-Type`, `Accept`, converter 선택으로 더 잘게 나누면 된다.
+
+짧게 외우면 이렇다.
+
+- `400`: JSON 문법, DTO 타입, validation 쪽을 먼저 의심한다.
+- `415`: `Content-Type`, `consumes`, message converter 선택을 먼저 의심한다.
+- `406`: 응답 쪽 `Accept` 계약을 먼저 의심한다.
 
 ## 깊이 들어가기
 

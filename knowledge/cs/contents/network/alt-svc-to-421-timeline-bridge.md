@@ -23,7 +23,7 @@
 > - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 > - [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
 
-retrieval-anchor-keywords: alt-svc to 421 timeline, stale discovery to 421, stale alt-svc timeline bridge, http/3 421 timeline beginner, old endpoint hint later 421, discovery state to recovery, h3 stale hint retry timeline, alt-svc then 421 then 200, stale endpoint authority timeline, same url 421 recovery bridge, http/3 endpoint discovery stale, h3 wrong path after old alt-svc, beginner alt-svc 421 bridge, stale h3 endpoint learned yesterday, old discovery state fresh path retry
+retrieval-anchor-keywords: alt-svc to 421 timeline, stale discovery to 421, stale alt-svc timeline bridge, http/3 421 timeline beginner, old endpoint hint later 421, discovery state to recovery, h3 stale hint retry timeline, alt-svc then 421 then 200, stale endpoint authority timeline, same url 421 recovery bridge, http/3 endpoint discovery stale, h3 wrong path after old alt-svc, beginner alt-svc 421 bridge, alt-svc and 421 same trace, 421 with alt-svc discovery vs coalescing
 
 ## 먼저 고정할 한 문장
 
@@ -138,12 +138,35 @@ retrieval-anchor-keywords: alt-svc to 421 timeline, stale discovery to 421, stal
 3. `Protocol`이 다시 `h3`인지 `h2`인지 본다.
 4. 그다음에야 app 문제인지 추가 판독한다.
 
+## `Alt-Svc`와 `421`이 같은 trace에 같이 보일 때 10초 분기표
+
+초급자가 제일 많이 헷갈리는 장면은 이것이다.
+
+- 응답 header에는 `Alt-Svc`가 보인다.
+- 같은 캡처 안에는 `421` row도 보인다.
+- 그래서 "`discovery가 틀린 건가, reuse가 틀린 건가`"가 한 번에 섞인다.
+
+이때는 "`둘 중 하나만 참`"으로 읽지 말고, **배운 힌트**와 **거절된 재사용**을 한 표에서 분리한다.
+
+| trace에서 보인 것 | 먼저 답하는 질문 | 초급자 해석 | 바로 다음 확인 |
+|---|---|---|---|
+| 응답 header의 `Alt-Svc: h3=\"...\"` | "브라우저가 H3 후보를 어디서 배웠나?" | discovery 증거다. H3를 시도할 근거가 있었다 | 이 힌트가 예전 기억인지, 방금 받은 응답인지 본다 |
+| 같은 URL의 `421` row | "방금 쓴 connection/path가 이 origin에 맞았나?" | coalescing 또는 reuse guardrail 거절 신호다 | `Connection ID`, `Remote Address`, retry 뒤 `200/403/404`를 본다 |
+| `Alt-Svc`와 `421`가 둘 다 같은 trace에 있음 | "배운 힌트"와 "그 힌트로 고른 path/reuse 결과"가 한 캡처에 같이 나온 것 | discovery가 있었다는 뜻이지, 그 reuse까지 안전했다는 뜻은 아니다 | `Alt-Svc`는 discovery 문장으로, `421`은 reuse 교정 문장으로 따로 읽는다 |
+
+한 줄로 줄이면:
+
+- `Alt-Svc`는 "`어디로 가 볼까`"의 증거다.
+- `421`은 "`방금 그 connection은 이 origin에 맞지 않는다`"의 증거다.
+- 둘이 같이 보여도 모순이 아니라, **discovery 다음에 reuse 교정이 이어진 trace**일 수 있다.
+
 ## 자주 헷갈리는 말 번역표
 
 | 헷갈리는 말 | 더 안전한 해석 |
 |---|---|
 | "`Alt-Svc`를 봤으니 421은 이상하다" | 이상한 것이 아니라, 예전 discovery 상태가 나중에 교정된 것일 수 있다 |
 | "`421`이면 discovery가 틀렸다" | discovery는 맞았지만 그 path 또는 reuse 문맥이 틀렸을 수 있다 |
+| "`Alt-Svc`와 `421`가 같이 있으니 원인이 하나여야 한다" | 아니다. 같은 trace 안에서도 discovery 증거와 coalescing 거절 증거가 같이 남을 수 있다 |
 | "`421 -> 200`이면 프런트가 두 번 호출했다" | 브라우저의 자동 recovery trace일 수도 있다 |
 | "`421 -> h2`면 Alt-Svc가 원래 없었다" | 아니다. discovery는 있었어도 recovery에서 H2가 더 안전하다고 판단할 수 있다 |
 

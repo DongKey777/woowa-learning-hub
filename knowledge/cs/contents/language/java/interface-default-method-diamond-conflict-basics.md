@@ -7,11 +7,12 @@
 관련 문서:
 
 - [Language README](../README.md)
+- [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md)
 - [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 
-retrieval-anchor-keywords: java default method diamond conflict, java two interfaces same default method, java default method override conflict, java class inherits unrelated defaults, java duplicate default method compile error, class wins over interface default, more specific interface wins, interfacename.super syntax, 같은 default method 두 개, 인터페이스 default method 충돌 해결, implements 두 개 했더니 컴파일 에러, 처음 배우는데 default method 충돌 큰 그림, default method 충돌 뭐예요, interface default method diamond conflict basics basics, interface default method diamond conflict basics beginner
+retrieval-anchor-keywords: java default method diamond conflict, java two interfaces same default method, java duplicate default method compile error, interfacename.super 어디서 쓰나, interface super call not allowed here, 같은 default method 두 개, implements 두 개 했더니 컴파일 에러, default method 충돌 뭐예요, 처음 배우는데 default method 충돌, default method override vs overload, 같은 이름인데 충돌인가 오버로딩인가, 파라미터 다르면 충돌 아님, default method 시그니처 기준
 
 <details>
 <summary>Table of Contents</summary>
@@ -19,7 +20,10 @@ retrieval-anchor-keywords: java default method diamond conflict, java two interf
 - [처음 배우는데 왜 헷갈리나](#처음-배우는데-왜-헷갈리나)
 - [큰 그림 규칙 3개](#큰-그림-규칙-3개)
 - [가장 흔한 충돌 예제](#가장-흔한-충돌-예제)
+- [충돌인지 오버로딩인지 먼저 자르기](#충돌인지-오버로딩인지-먼저-자르기)
+- [Default Method Override vs Overload 미니 드릴](#default-method-override-vs-overload-미니-드릴)
 - [충돌을 직접 푸는 방법](#충돌을-직접-푸는-방법)
+- [어디서 쓸 수 있고 어디서는 못 쓰나](#어디서-쓸-수-있고-어디서는-못-쓰나)
 - [자동으로 풀리는 두 경우](#자동으로-풀리는-두-경우)
 - [자주 하는 오해](#자주-하는-오해)
 - [다음에 읽을 문서](#다음에-읽을-문서)
@@ -96,6 +100,107 @@ class SmartDevice implements Camera, Recorder {
 - 이름과 파라미터가 같은 시그니처 충돌이면 구현 클래스가 정해야 한다
 - 이것이 beginner가 말하는 `diamond problem`의 핵심 감각이다
 
+## 충돌인지 오버로딩인지 먼저 자르기
+
+처음 배우는데 가장 많이 헷갈리는 지점은 "`start`라는 이름이 같으니 무조건 충돌인가?"이다.
+
+큰 그림은 이것 하나면 된다.
+
+- **이름이 아니라 시그니처를 본다**
+- parameter 목록까지 같으면 충돌 후보다
+- parameter 목록이 다르면 충돌이 아니라 overload다
+
+| 모양 | 어떻게 읽나 | 결과 |
+|---|---|---|
+| `start()` vs `start()` | 같은 시그니처 | 충돌 가능, 구현 클래스가 override해야 할 수 있음 |
+| `start()` vs `start(String mode)` | 다른 시그니처 | 충돌 아님, overload |
+| `start(String)` vs `start(String)` | 같은 시그니처 | 충돌 가능 |
+
+## Default Method Override vs Overload 미니 드릴
+
+### 미니 드릴 1. 충돌일까 overload일까
+
+```java
+interface Printer {
+    default void print() {
+        System.out.println("printer");
+    }
+}
+
+interface Scanner {
+    default void print(String mode) {
+        System.out.println("scanner " + mode);
+    }
+}
+
+class OfficeMachine implements Printer, Scanner {
+}
+```
+
+정답: 충돌이 아니라 overload다.
+
+- `print()`와 `print(String)`은 이름은 같아도 parameter 목록이 다르다
+- 그래서 `OfficeMachine`은 두 메서드를 함께 가진다
+- 초급자 기준 기억법은 "`같은 이름`보다 `괄호 안 모양`이 먼저"다
+
+### 미니 드릴 2. 왜 이번에는 충돌인가
+
+```java
+interface Alarm {
+    default void ring(String level) {
+        System.out.println("alarm " + level);
+    }
+}
+
+interface Bell {
+    default void ring(String level) {
+        System.out.println("bell " + level);
+    }
+}
+
+class SmartBell implements Alarm, Bell {
+}
+```
+
+정답: 이번에는 충돌이다.
+
+- 둘 다 `ring(String)`으로 시그니처가 완전히 같다
+- return type이나 메서드 몸체가 아니라 **parameter 목록이 같은지**가 첫 기준이다
+- 그래서 `SmartBell`은 직접 override해야 한다
+
+### 미니 드릴 3. override와 overload가 같이 들어갈 수도 있다
+
+```java
+interface Alarm {
+    default void ring() {
+        System.out.println("alarm");
+    }
+}
+
+class SmartAlarm implements Alarm {
+    @Override
+    public void ring() {
+        System.out.println("smart alarm");
+    }
+
+    public void ring(int times) {
+        for (int i = 0; i < times; i++) {
+            ring();
+        }
+    }
+}
+```
+
+여기서는 둘이 동시에 있다.
+
+- `ring()`은 부모 인터페이스의 같은 시그니처를 다시 쓰므로 override
+- `ring(int)`는 parameter 목록을 늘린 새 메서드이므로 overload
+
+즉 beginner용 한 줄 판단은 이것이다.
+
+- **부모와 시그니처가 같으면 override**
+- **이름은 같지만 parameter 목록이 다르면 overload**
+
 ## 충돌을 직접 푸는 방법
 
 가장 기본 해법은 구현 클래스에서 직접 override하는 것이다.
@@ -130,6 +235,71 @@ class SmartDevice implements Camera, Recorder {
 
 - override는 **충돌을 없애는 최종 결정**
 - `Camera.super.start()`는 **선택한 인터페이스 기본 구현 호출**
+
+## 어디서 쓸 수 있고 어디서는 못 쓰나
+
+초급자가 가장 빨리 헷갈리는 지점은 문법 자체보다 **호출 위치 제한**이다. 큰 그림은 한 줄이다.
+
+- `InterfaceName.super.method()`는 **그 인터페이스를 직접 구현한 클래스의 인스턴스 메서드 본문 안**에서만 쓴다
+
+아래 표로 먼저 자르면 검색 혼선이 줄어든다.
+
+| 위치 | 가능 여부 | 왜 그런가 |
+|---|---|---|
+| 구현 클래스의 `override` 메서드 안 | 가능 | "어느 인터페이스 기본 구현을 고를지" 지금 이 클래스가 결정하는 자리라서 |
+| 구현 클래스의 다른 인스턴스 메서드 안 | 가능 | 같은 클래스가 그 인터페이스를 직접 `implements`하고 있기 때문 |
+| `static` 메서드 안 | 불가 | 인스턴스 문맥이 아니라서 |
+| 인터페이스를 구현하지 않은 하위 헬퍼 클래스 안 | 불가 | 그 클래스는 그 default 구현의 직접 상속 주체가 아니라서 |
+| 그냥 `main` 같은 바깥 호출 코드 | 불가 | call-site에서 임의로 특정 인터페이스 기본 구현을 집어 고르는 문법이 아니어서 |
+
+### 되는 예제
+
+```java
+interface Camera {
+    default void start() {
+        System.out.println("camera start");
+    }
+}
+
+class SmartDevice implements Camera {
+    public void boot() {
+        Camera.super.start(); // 컴파일 OK
+    }
+}
+```
+
+핵심은 `boot()`가 `SmartDevice`의 인스턴스 메서드이고, `SmartDevice`가 `Camera`를 직접 구현한다는 점이다.
+
+### 안 되는 예제 1. 바깥 call-site에서 바로 고르기
+
+```java
+class App {
+    public static void main(String[] args) {
+        SmartDevice device = new SmartDevice();
+        Camera.super.start(); // 컴파일 에러
+    }
+}
+```
+
+여기서는 `App`이 `Camera`를 구현하지도 않고, 지금 위치가 `SmartDevice`의 인스턴스 본문도 아니다. 즉 "어느 default를 고를지" 결정할 자리가 아니다.
+
+### 안 되는 예제 2. `static` 문맥에서 호출하기
+
+```java
+class SmartDevice implements Camera {
+    public static void bootAll() {
+        Camera.super.start(); // 컴파일 에러
+    }
+}
+```
+
+`Camera.super.start()`는 `this`와 연결된 인스턴스 쪽 선택 문법이라 `static` 메서드에서는 못 쓴다.
+
+처음 배우는데는 아래처럼 외우면 충분하다.
+
+- **구현 클래스 안**이라고 다 되는 것은 아니다
+- **인스턴스 문맥 + 직접 implements한 인터페이스**여야 된다
+- 이 문법은 "호출하는 쪽이 고르는 call-site 문법"이 아니라 **구현 클래스가 상속 충돌을 정리하는 문법**이다
 
 ## 자동으로 풀리는 두 경우
 
@@ -192,6 +362,12 @@ class Sparrow implements Bird {
 
 파라미터 목록까지 같은 시그니처일 때 문제다. 이름이 같아도 오버로딩 모양이면 다른 메서드일 수 있다.
 
+즉 `default method`에서도 질문 순서는 같다.
+
+1. 같은 이름인가
+2. 같은 parameter 목록인가
+3. 같다면 충돌 후보, 다르면 overload
+
 ### `default method` 충돌을 피하려고 무조건 추상 클래스로 가는 것은 아니다
 
 이 문제는 "다중 인터페이스에서 기본 구현 선택" 문제다. 공통 상태와 긴 공통 로직이 필요할 때만 추상 클래스를 다시 검토하면 된다.
@@ -203,6 +379,7 @@ class Sparrow implements Bird {
 ## 다음에 읽을 문서
 
 - `default method` 자체가 왜 생겼는지 큰 그림부터 보고 싶다면 [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md)
+- 같은 이름 메서드를 시그니처 기준으로 자르는 감각을 더 기초부터 보고 싶다면 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - 인터페이스 안의 `default`와 `static`을 먼저 구분하고 싶다면 [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - 인터페이스와 추상 클래스를 언제 나누는지 더 넓게 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 

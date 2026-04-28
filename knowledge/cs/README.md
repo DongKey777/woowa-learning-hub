@@ -105,6 +105,12 @@
 | 여러 카테고리를 엮어 정리하기 | `master note` / `synthesis` | `master-notes/README.md` | 카테고리 전체 catalog |
 | README나 navigator 역할이 헷갈리기 | `taxonomy` / `routing helper` | `rag/navigation-taxonomy.md`, `rag/README.md` | 개념 설명 본문 |
 
+beginner 안전 규칙도 한 줄로 고정해 둔다.
+
+- 첫 클릭은 가능하면 `survey`, `primer`, `primer bridge`, `catalog` 중 하나로 시작한다.
+- `Advanced Backend Roadmap`, `Master Notes`, `Senior-Level Questions`는 useful하지만 beginner entrypoint는 아니다.
+- `playbook`, `runbook`, `drill`, `recovery`는 "지금 장애/운영 순서가 먼저 필요한가?"가 맞을 때만 연다.
+
 - 학습 순서용 `survey`부터 보고 싶다면:
   - [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md)
   - [Advanced Backend Roadmap](./ADVANCED-BACKEND-ROADMAP.md)
@@ -140,11 +146,11 @@
 | 1. Java basics | [자바 언어의 구조와 기본 문법](./contents/language/java/java-language-basics.md) | [Java 타입, 클래스, 객체, OOP 입문](./contents/language/java/java-types-class-object-oop-basics.md) | [Language README](./contents/language/README.md) 전체 catalog |
 | 2. HTTP / web basics | [HTTP 요청-응답 기본 흐름](./contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [HTTP 메서드와 REST 멱등성 입문](./contents/network/http-methods-rest-idempotency-basics.md) | [Network README](./contents/network/README.md) 운영형 deep dive |
 | 3. MVC | [Spring 요청 파이프라인과 Bean Container 기초](./contents/spring/spring-request-pipeline-bean-container-foundations-primer.md) | [Spring MVC 컨트롤러 기초](./contents/spring/spring-mvc-controller-basics.md) | [Spring MVC 요청 생명주기](./contents/spring/spring-mvc-request-lifecycle.md) |
-| 4. JDBC / transactions | [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) | [트랜잭션 격리 수준 기초](./contents/database/transaction-isolation-basics.md) | [트랜잭션 격리수준과 락](./contents/database/transaction-isolation-locking.md) |
+| 4. JDBC / transactions | [Database First-Step Bridge](./contents/database/database-first-step-bridge.md) | [트랜잭션 기초](./contents/database/transaction-basics.md) | [트랜잭션 격리수준과 락](./contents/database/transaction-isolation-locking.md) |
 | 5. DI / AOP | [IoC와 DI 기초](./contents/spring/spring-ioc-di-basics.md) | [AOP 기초](./contents/spring/spring-aop-basics.md) -> [@Transactional 기초](./contents/spring/spring-transactional-basics.md) | propagation / rollback-only / self-invocation 심화 |
 | 6. System design | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./contents/system-design/stateless-backend-cache-database-queue-starter-pack.md) | [System Design Foundations](./contents/system-design/system-design-foundations.md) | cutover / control-plane incident 문서 |
 
-- MVC에서 JDBC/트랜잭션으로, 다시 DI/AOP로 넘어가며 `controller / service / repository / @Transactional / proxy`가 한 문장에 섞이면 [Spring MVC -> JDBC/트랜잭션 -> DI/AOP 전환 오해 체크리스트](./contents/spring/spring-mvc-jdbc-transaction-di-aop-transition-checklist.md)부터 보고, 그다음 [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) -> [@Transactional 기초](./contents/spring/spring-transactional-basics.md) -> [AOP 기초](./contents/spring/spring-aop-basics.md) 순으로 간다.
+- MVC에서 JDBC/트랜잭션으로, 다시 DI/AOP로 넘어가며 `controller / service / repository / @Transactional / proxy`가 한 문장에 섞이면 [Spring MVC -> JDBC/트랜잭션 -> DI/AOP 전환 오해 체크리스트](./contents/spring/spring-mvc-jdbc-transaction-di-aop-transition-checklist.md)부터 보고, 그다음 [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) -> [트랜잭션 기초](./contents/database/transaction-basics.md) -> [@Transactional 기초](./contents/spring/spring-transactional-basics.md) -> [AOP 기초](./contents/spring/spring-aop-basics.md) 순으로 간다.
 - 안전 사다리를 문서 하나로 보고 싶으면 [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md)으로 바로 간다.
 - 이 route를 roadmap 관점으로 다시 보면 [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md#우테코-백엔드-안전-사다리-동기화)에서 같은 순서를 따라갈 수 있다.
 
@@ -153,13 +159,14 @@
 로그인 문제는 먼저 네 칸으로 자른다. `Location scheme / origin` -> `redirect / navigation memory` -> `cookie transfer` -> `server persistence / session mapping` 순서다. 즉 `login 직후 Location이 public https origin으로 유지되는가` -> `원래 가려던 URL/redirect 기억이 꼬였는가` -> `request Cookie header가 실제로 붙는가` -> `cookie는 왔는데 서버가 session/auth state를 복원하지 못하는가`를 먼저 나눈다. root handoff alias로는 세 번째를 `cookie-not-sent`, 네 번째를 `server-mapping-missing`으로 읽으면 된다.
 초보자 첫 클릭 규칙은 더 단순하다. login 직후 `Location`이 `http://...`로 꺾이거나 `https://...`인데 host/origin이 public 값과 다르면 cookie 표보다 먼저 `[primer bridge]` [Wrong-Scheme vs Wrong-Origin Redirect Shortcut](./contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md)으로 간다. redirect가 정상일 때만 아래 표의 `redirect / navigation memory`나 `cookie transfer`로 내려간다. 길을 잃으면 [Browser / Session Troubleshooting Path](./contents/security/README.md#browser--session-troubleshooting-path)로 돌아온다.
 allowed-after-revoke, grant/stale-deny, tenant-membership freshness는 모두 같은 beginner ladder를 쓴다. 먼저 `[primer]` [Role Change and Session Freshness Basics](./contents/security/role-change-session-freshness-basics.md)로 mental model을 맞추고, 그다음 증상별 `[primer bridge]` 하나만 고른 뒤에만 `deep dive`나 `recovery`로 내려간다. `allowed after revoke`처럼 아직 허용되는 tail은 `[primer bridge]` [Claim Freshness After Permission Changes](./contents/security/claim-freshness-after-permission-changes.md)로, `stale deny`처럼 아직 거부되는 tail은 `[primer bridge]` [Grant Path Freshness and Stale Deny Basics](./contents/security/grant-path-freshness-stale-deny-basics.md)로 먼저 갈라 잡는다.
+Spring 경계까지 바로 내려가야 할 때의 direct jump도 하나만 기억하면 된다. `redirect / navigation memory`와 `server persistence / session mapping`을 Spring 쪽 anchor에서 다시 고정하려면 [Spring Security 예외 번역과 세션 경계](./contents/spring/README.md#spring-bridge-security-session-boundary)로 간다.
 아래 표만 기억하면 beginner phrase를 route label로 바로 정규화할 수 있다.
 
 | 검색/질문 표현 | 정규화 route label | 먼저 볼 문서 |
 |---|---|---|
 | `Location`이 `http://...`로 꺾임, `https://...`인데 host/origin이 틀림, proxy/LB 뒤에서만 redirect가 이상함 | `Location scheme / origin` | `1차 질문:` login 직후 `Location`이 public `https` origin인가? 아니면 `http://...`/wrong host인가? -> `[primer bridge]` [Wrong-Scheme vs Wrong-Origin Redirect Shortcut](./contents/security/wrong-scheme-vs-wrong-origin-redirect-shortcut.md) |
 | `cookie-not-sent`, `stored but not sent`, `Application에는 있는데 request Cookie가 없음` | `cookie transfer` | `[primer]` [Cookie Scope Mismatch Guide](./contents/security/cookie-scope-mismatch-guide.md) |
-| `server-mapping-missing`, `sent but anonymous`, `cookie는 갔는데 계속 anonymous` | `server persistence / session mapping` | `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md) |
+| `server-mapping-missing`, `sent but anonymous`, `cookie는 갔는데 계속 anonymous` | `server persistence / session mapping` | `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md) -> 필요하면 `[spring bridge anchor]` [Spring Security 예외 번역과 세션 경계](./contents/spring/README.md#spring-bridge-security-session-boundary) |
 | `OIDC logout tail`, `logout tail`, `revoke tail`, `allowed after revoke` | `allowed-after-revoke / session-tail / revocation propagation` | `[primer]` [Role Change and Session Freshness Basics](./contents/security/role-change-session-freshness-basics.md) |
 
 로그인 루프 검색에서 canonical beginner entry route label은 `[canonical beginner entry route: login-loop]`다. 순서는 `[primer]` Login Redirect / `SavedRequest` -> `[primer bridge]` Browser `401` vs `302`다. HTTP state, Cookie/Session/JWT가 약하면 이 route 전에 해당 primer를 먼저 워밍업으로 본다. Spring `RequestCache`, `SecurityContextRepository`, BFF/session-store 문서는 이 bridge에서 증상을 나눈 뒤에만 deep dive로 내려간다.
@@ -176,7 +183,7 @@ redirect mismatch는 beginner가 가장 먼저 헷갈리는 갈래라서, `cooki
 
 | 막히는 질문 | 먼저 볼 문서 | 다음 bridge |
 |---|---|---|
-| `redirect / navigation memory`부터 의심된다. `401`인지 `302`인지 헷갈리고, login loop / `SavedRequest` / hidden `JSESSIONID`가 섞인다 | `[canonical beginner entry route: login-loop]` `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md) | `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](./contents/spring/spring-security-requestcache-savedrequest-boundaries.md) -> `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) -> `[deep dive]` [Browser / BFF Token Boundary / Session Translation](./contents/security/browser-bff-token-boundary-session-translation.md). category entrypoint로 돌아가려면 [Browser / Session Beginner Ladder](./contents/security/README.md#browser--session-beginner-ladder) -> [Browser / Session Troubleshooting Path](./contents/security/README.md#browser--session-troubleshooting-path) |
+| `redirect / navigation memory`부터 의심된다. `401`인지 `302`인지 헷갈리고, login loop / `SavedRequest` / hidden `JSESSIONID`가 섞인다 | `[canonical beginner entry route: login-loop]` `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md) | `[spring bridge anchor]` [Spring Security 예외 번역과 세션 경계](./contents/spring/README.md#spring-bridge-security-session-boundary) -> `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](./contents/spring/spring-security-requestcache-savedrequest-boundaries.md) -> `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) -> `[deep dive]` [Browser / BFF Token Boundary / Session Translation](./contents/security/browser-bff-token-boundary-session-translation.md). category entrypoint로 돌아가려면 [Browser / Session Beginner Ladder](./contents/security/README.md#browser--session-beginner-ladder) -> [Browser / Session Troubleshooting Path](./contents/security/README.md#browser--session-troubleshooting-path) |
 | `cookie transfer`부터 의심된다. `cookie 있는데 다시 로그인`, `Application > Cookies`에는 값이 보이는데 request `Cookie` header가 비고, subdomain 이동이나 proxy/LB 뒤에서만 더 잘 깨진다 | `[primer]` [Cookie Scope Mismatch Guide](./contents/security/cookie-scope-mismatch-guide.md) | `[primer bridge]` [Duplicate Cookie vs Proxy Login Loop Bridge](./contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md)에서 `same-name cookie 중복`과 `wrong-scheme redirect / Secure cookie 미전송`을 먼저 자른다. bridge 뒤 duplicate면 `[primer]` [Duplicate Cookie Name Shadowing](./contents/security/duplicate-cookie-name-shadowing.md), wrong-scheme이면 `[primer]` [Secure Cookie Behind Proxy Guide](./contents/security/secure-cookie-behind-proxy-guide.md), request `Cookie`는 실리는데도 anonymous면 `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md)로 한 칸만 더 내려간다. |
 | `server persistence / session mapping`부터 의심된다. request `Cookie` header는 보이는데 서버가 계속 anonymous이고 login HTML로 되돌아가거나, `sent but anonymous`처럼 보인다 | `[primer]` [Cookie Scope Mismatch Guide](./contents/security/cookie-scope-mismatch-guide.md) | `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./contents/security/browser-401-vs-302-login-redirect-guide.md)에서 `sent but anonymous`를 고정한 뒤에만 `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) -> `[deep dive]` [Browser / BFF Token Boundary / Session Translation](./contents/security/browser-bff-token-boundary-session-translation.md) 순서로 내려간다. `request Cookie`가 실제로 보이는지부터 다시 확인해야 하면 `[primer bridge]` [Cookie Failure Three-Way Splitter](./contents/security/cookie-failure-three-way-splitter.md)로 잠깐 되돌아간다. |
 | `왜 로그인 상태가 유지돼요?`, `cookie / session / JWT` 차이부터 다시 잡고 싶다 | `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](./contents/network/http-state-session-cache.md) -> `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](./contents/network/cookie-session-jwt-browser-flow-primer.md) | `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md) |
@@ -197,6 +204,12 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 
 루트 진입점에서도 자주 들어오는 증상 질의를 바로 route할 수 있게, 아래 route 묶음들은 [Master Notes](./master-notes/README.md), [Query Playbook](./rag/query-playbook.md), [Cross-Domain Bridge Map](./rag/cross-domain-bridge-map.md), category bridge `README` 기준을 한 번에 붙여 둔다.
 
+junior reader라면 이 구간을 아래 순서로 읽는다.
+
+- 첫 클릭은 가능하면 `[primer]`, `[primer bridge]`, `[catalog]`, `[cross-category bridge]` 중 하나로 잡는다.
+- 같은 bullet에 `[master note]`, `[playbook]`, `[recovery]`, `[system design]`가 같이 보여도, 그 링크들은 대개 범위를 넓히거나 incident/설계 단계로 넘어갈 때의 follow-up이다.
+- `master note`가 먼저 적혀 있어도 "기초 개념을 처음 잡는 문서"라는 뜻은 아니다. 초보자라면 bullet 안의 beginner-safe starter 문장부터 다시 확인한다.
+
 - `stale read`, `stale-read`, `read-after-write`, `방금 썼는데 조회가 옛값`, `replica lag`부터 떠오르면 [Replica Freshness Master Note](./master-notes/replica-freshness-master-note.md), [Consistency Boundary Master Note](./master-notes/consistency-boundary-master-note.md)로 freshness budget을 먼저 잡고, bridge route는 [Read Model Staleness and Read-Your-Writes](./contents/design-pattern/read-model-staleness-read-your-writes.md) -> [Incremental Summary Table Refresh and Watermark Discipline](./contents/database/incremental-summary-table-refresh-watermark.md) -> [Dual-Read Comparison / Verification Platform 설계](./contents/system-design/dual-read-comparison-verification-platform-design.md) 순으로 내려간다.
 - `dirty read`, `lost update`, `write skew`, `phantom`, `@Transactional`, `왜 안 롤백되지`, `self invocation`, `checked exception commit`, `lock wait`, `deadlock`, `UnexpectedRollbackException`이 같이 나오면 [Database to Spring Transaction Master Note](./master-notes/database-to-spring-transaction-master-note.md)로 DB/Spring 경계를 먼저 묶고, beginner split은 [DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표](./contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md)로 branch를 먼저 고른다. core ladder는 [트랜잭션 격리수준과 락](./contents/database/transaction-isolation-locking.md) -> [@Transactional 깊이 파기](./contents/spring/transactional-deep-dive.md) -> [Spring Service-Layer Transaction Boundary Patterns](./contents/spring/spring-service-layer-transaction-boundary-patterns.md) 순으로 먼저 맞춘다.
   - core ladder 뒤 beginner branch는 역할을 `[primer bridge]`로 먼저 고정한 뒤 증상별로 나눈다.
@@ -214,23 +227,29 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 - `missing-audit-trail`, `audit trail이 없다`, `누가 허용/거부했는지 안 남는다`, `decision log missing`, `auth-signal-gap`, `allow/deny reason code가 안 보인다`, `401/403 spike인데 reason bucket이 없다`가 먼저 보이면 `[master note]` [Auth, Session, Token Master Note](./master-notes/auth-session-token-master-note.md), `[master note]` [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)로 auth evidence/telemetry 경계를 먼저 잡고, security route label은 `[catalog]` [운영 / Incident catalog](./contents/security/README.md#운영--incident-catalog) -> `[catalog]` [AuthZ / Tenant / Response Contracts deep dive catalog](./contents/security/README.md#authz--tenant--response-contracts-deep-dive-catalog)다. beginner-safe bridge route는 `[primer bridge]` [Auth Observability Primer Bridge](./contents/security/auth-observability-primer-bridge.md)로 `signal / decision / audit` 3칸을 먼저 고정한 뒤 `[deep dive]` [Auth Observability: SLI / SLO / Alerting](./contents/security/auth-observability-sli-slo-alerting.md) -> `[deep dive]` [AuthZ Decision Logging Design](./contents/security/authz-decision-logging-design.md) -> `[deep dive]` [Audit Logging for Auth / AuthZ Traceability](./contents/security/audit-logging-auth-authz-traceability.md) -> `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./contents/security/authorization-runtime-signals-shadow-evaluation.md) 순으로 붙인다.
 - `replay store down`, `nonce store down`, `duplicate request after retry`, `replay-safe retry`, `backfill replay`가 섞이면 [Retry, Timeout, Idempotency Master Note](./master-notes/retry-timeout-idempotency-master-note.md)를 먼저 보고, 저장소 replay/backfill/repair 축이 더 크면 [Data Pipeline Replay Master Note](./master-notes/data-pipeline-replay-master-note.md), [Eventual Consistency Master Note](./master-notes/eventual-consistency-master-note.md)로 이어진다. security route label은 `[cross-category bridge]` [Session / Boundary / Replay](./contents/security/README.md#session--boundary--replay)로 맞추고, bridge route는 `[recovery]` [Replay Store Outage / Degradation Recovery](./contents/security/replay-store-outage-degradation-recovery.md) -> `[system design]` [Idempotency Key Store / Dedup Window / Replay-Safe Retry 설계](./contents/system-design/idempotency-key-store-dedup-window-replay-safe-retry-design.md) -> `[system design]` [Replay / Repair Orchestration Control Plane 설계](./contents/system-design/replay-repair-orchestration-control-plane-design.md) 순으로 붙인다.
 - `authority transfer`, `SCIM deprovision`, `SCIM disable은 끝났는데 access shutdown 설명이 안 맞음`, `backfill is green but access tail remains`, `decision parity`, `auth shadow divergence`, `deprovision tail`, `cleanup evidence`, `retirement evidence`, `decision log join key`, `audit evidence bundle`가 보이면 beginner-safe starter를 `[primer]` [Identity Lifecycle / Provisioning Primer](./contents/security/identity-lifecycle-provisioning-primer.md) -> `[primer]` [Role Change and Session Freshness Basics](./contents/security/role-change-session-freshness-basics.md) -> `[primer bridge]` [Claim Freshness After Permission Changes](./contents/security/claim-freshness-after-permission-changes.md) -> `[cross-category bridge]` [Database: Identity / Authority Transfer 브리지](./contents/database/README.md#database-bridge-identity-authority) -> `[cross-category bridge]` [Security: Identity / Delegation / Lifecycle](./contents/security/README.md#identity--delegation--lifecycle) 순으로 먼저 고정한 뒤 `[system design]` [Database / Security Authority Bridge](./contents/system-design/README.md#system-design-database-security-authority-bridge) -> `[system design]` [Verification / Shadowing / Authority Bridge](./contents/system-design/README.md#system-design-verification-shadowing-authority-bridge)로 넘긴다. 한 줄 mental model은 "DB row parity가 green이어도 security runtime access tail은 남을 수 있다"다. bridge에서 owner를 고정한 뒤에만 `[deep dive]` [Online Backfill Verification, Drift Checks, and Cutover Gates](./contents/database/online-backfill-verification-cutover-gates.md) -> `[deep dive]` [SCIM Deprovisioning / Session / AuthZ Consistency](./contents/security/scim-deprovisioning-session-authz-consistency.md) -> `[deep dive]` [Authorization Runtime Signals / Shadow Evaluation](./contents/security/authorization-runtime-signals-shadow-evaluation.md) -> `[system design]` [Database / Security Identity Bridge Cutover 설계](./contents/system-design/database-security-identity-bridge-cutover-design.md)를 붙이고, 범위가 커질 때는 `[survey]` [추천 학습 흐름 (category-local survey)](./contents/security/README.md#추천-학습-흐름-category-local-survey)에서 `SCIM / Lifecycle / Drift` branch를 먼저 훑는다. cutover 승격/조직 owner 경계까지 커질 때만 `[master note]` [Migration Cutover Master Note](./master-notes/migration-cutover-master-note.md)와 `[master note]` [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)를 추가한다.
-- `acting on behalf of`, `break glass`, `delegated admin`, `support access notification`이 보이면 `[master note]` [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)를 대표 진입점으로 잡고, beginner-safe starter는 `[primer]` [Support Access Alert Router Primer](./contents/security/support-access-alert-router-primer.md) -> `[cross-category bridge]` [Identity / Delegation / Lifecycle](./contents/security/README.md#identity--delegation--lifecycle)로 먼저 고정한다. 그다음에만 `[deep dive]` [Support Operator / Acting-on-Behalf-Of Controls](./contents/security/support-operator-acting-on-behalf-of-controls.md) -> `[deep dive]` [Customer-Facing Support Access Notifications](./contents/security/customer-facing-support-access-notifications.md) -> `[deep dive]` [Audience Matrix for Support Access Events](./contents/security/audience-matrix-for-support-access-events.md) -> `[deep dive]` [Incident-Close Break-Glass Gate](./contents/security/incident-close-break-glass-gate.md) 순으로 붙인다.
-- `trust bundle rollback`, `hardware attestation failure`, `trust bundle recovery`가 보이면 [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)를 대표 진입점으로 잡고, rollout/cutover 문맥이 크면 [Migration Cutover Master Note](./master-notes/migration-cutover-master-note.md)를 같이 본다. security route label은 `[cross-category bridge]` [Incident / Recovery / Trust](./contents/security/README.md#incident--recovery--trust) -> `[catalog]` [Hardware Trust / Recovery deep dive catalog](./contents/security/README.md#hardware-trust--recovery-deep-dive-catalog)다. bridge route는 `[deep dive]` [mTLS Certificate Rotation / Trust Bundle Rollout](./contents/security/mtls-certificate-rotation-trust-bundle-rollout.md) -> `[recovery]` [Hardware Attestation Policy / Failure Recovery](./contents/security/hardware-attestation-policy-failure-recovery.md) -> `[system design]` [Trust-Bundle Rollback During Cell Cutover 설계](./contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md) 순으로 붙인다.
+- `acting on behalf of`, `break glass`, `delegated admin`, `support access notification`이 보이면 beginner-safe first click은 `[primer]` [Support Access Alert Router Primer](./contents/security/support-access-alert-router-primer.md) -> `[cross-category bridge]` [Identity / Delegation / Lifecycle](./contents/security/README.md#identity--delegation--lifecycle)다. `[master note]` [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)는 "지원자 권한 위임, 책임 경계, 신뢰 모델을 한 번에 묶어야 할 때"만 범위 확장용으로 붙인다. 그다음에만 `[deep dive]` [Support Operator / Acting-on-Behalf-Of Controls](./contents/security/support-operator-acting-on-behalf-of-controls.md) -> `[deep dive]` [Customer-Facing Support Access Notifications](./contents/security/customer-facing-support-access-notifications.md) -> `[deep dive]` [Audience Matrix for Support Access Events](./contents/security/audience-matrix-for-support-access-events.md) -> `[deep dive]` [Incident-Close Break-Glass Gate](./contents/security/incident-close-break-glass-gate.md) 순으로 붙인다.
+- `trust bundle rollback`, `hardware attestation failure`, `trust bundle recovery`가 보이면 junior first click은 `[cross-category bridge]` [Incident / Recovery / Trust](./contents/security/README.md#incident--recovery--trust) -> `[catalog]` [Hardware Trust / Recovery deep dive catalog](./contents/security/README.md#hardware-trust--recovery-deep-dive-catalog)다. 여기서 "지금 장애 대응 순서가 먼저 필요한지"와 "hardening / rollout 문서를 읽을지"를 먼저 고른다. 그다음 bridge route로 `[deep dive]` [mTLS Certificate Rotation / Trust Bundle Rollout](./contents/security/mtls-certificate-rotation-trust-bundle-rollout.md) -> `[recovery]` [Hardware Attestation Policy / Failure Recovery](./contents/security/hardware-attestation-policy-failure-recovery.md) -> `[system design]` [Trust-Bundle Rollback During Cell Cutover 설계](./contents/system-design/trust-bundle-rollback-during-cell-cutover-design.md) 순으로 붙이고, 여러 trust/cutover incident를 함께 묶을 때만 `[master note]` [Trust and Identity Master Note](./master-notes/trust-and-identity-master-note.md)와 [Migration Cutover Master Note](./master-notes/migration-cutover-master-note.md)를 추가한다.
 
-## Junior Backend Roadmap
+## Junior Backend Roadmap (`survey`)
 
 - [신입 백엔드 CS 학습 순서 가이드](./JUNIOR-BACKEND-ROADMAP.md)
 
-## Advanced Backend Roadmap
+이 구간은 beginner-safe entrypoint다. 큰 그림을 먼저 잡고 category `README`나 primer로 내려갈 때 연다.
+
+## Advanced Backend Roadmap (`survey`, advanced)
 
 - [백엔드 심화 학습 순서 가이드](./ADVANCED-BACKEND-ROADMAP.md)
 
-## Master Notes
+이 구간은 심화 survey다. incident, cutover, control-plane, synthesis를 바로 읽고 싶은 junior 이상 독자에게 맞고, 초보자는 먼저 `JUNIOR-BACKEND-ROADMAP`이나 category `README` primer에서 시작하는 편이 안전하다.
+
+## Master Notes (`synthesis`, advanced)
 
 - [마스터노트 인덱스](./master-notes/README.md)
 - [Master Notes 안내](./MASTER-NOTES.md)
 
-추천 진입:
+이 구간은 여러 카테고리를 한 번에 묶는 synthesis entrypoint다. beginner의 첫 클릭보다는, primer나 category README를 읽은 뒤 "왜 이게 여러 레이어에 걸리는지"를 묶고 싶을 때 연다.
+
+추천 주제:
 
 - `latency / timeout / retry / backpressure`
 - `transaction / consistency / idempotency / outbox`
@@ -247,11 +266,16 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 - [Retry, Timeout, Idempotency Master Note](./master-notes/retry-timeout-idempotency-master-note.md)
 - [Migration Cutover Master Note](./master-notes/migration-cutover-master-note.md)
 
-## Senior-Level Questions
+## Senior-Level Questions (`question bank`, advanced)
 
 - [시니어 레벨 질문 모음](./SENIOR-QUESTIONS.md)
 
+이 구간은 설명 본문이 아니라 self-check용 question bank다. 막히는 질문이 나오면 다시 `primer`나 `deep dive` 본문으로 돌아간다.
+
 ## RAG Ready
+
+이 구간은 개념 primer가 아니라 `routing helper / retrieval helper` entrypoint다.
+검색 규칙, 역할 라벨, query 확장 키워드가 필요할 때 열고, 설명 본문은 다시 category `README`나 개별 `primer` / `deep dive`로 내려간다.
 
 - [RAG Ready Checklist](./RAG-READY.md)
 - [RAG Design](./rag/README.md)
@@ -275,6 +299,12 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 | 증상 기반 키워드 확장 | `rag/retrieval-anchor-keywords.md`, `rag/query-playbook.md` |
 | 검색 라우팅 잡기 | `rag/topic-map.md`, `rag/query-playbook.md`, `rag/cross-domain-bridge-map.md` |
 
+RAG 문서에서 멈추지 않는 안전 규칙도 같이 둔다.
+
+- `rag/*.md`를 읽고 나면 다음 클릭은 가능하면 category `README`, `primer`, `primer bridge` 중 하나로 잡는다.
+- `playbook`, `runbook`, `drill`, `recovery`가 검색 결과에 먼저 보여도, 지금 질문이 beginner `what is` / `처음` / `헷갈려요` 계열이면 entrypoint로 바로 열지 않는다.
+- 검색어가 `문서 역할`, `roadmap`, `README 차이`, `primer vs deep dive`, `incident badge`처럼 taxonomy 성격이면 이 구간에 머물고, 개념 질문이면 다시 본문으로 내려간다.
+
 ## Category Catalog Snapshots
 
 아래 대분류 섹션들은 루트 `README`에 남겨 둔 **catalog snapshot**이다.
@@ -282,9 +312,19 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 - 학습 순서를 고르려면 roadmap 같은 `survey`로 돌아간다.
 - 설명 본문이 필요하면 각 카테고리 `README`의 `primer` 또는 개별 `deep dive` 문서로 내려간다.
 - 교차 도메인 묶음이 필요하면 `master note`, self-check가 목적이면 `question bank`로 이동한다.
+- beginner라면 snapshot에서 고른 다음 첫 문서는 가능하면 각 카테고리 `README`의 `primer`나 `quick start`여야 한다.
+- snapshot 안의 `playbook`, `runbook`, `drill`, `recovery`, incident-heavy deep dive는 entrypoint가 아니라 follow-up으로 읽는다.
 - 루트 snapshot heading도 generic `정리노트`보다 `카테고리 README` / `category navigator` 같은 역할명이 바로 보이게 유지한다.
 - 링크를 연 다음에도 상단 역할 라벨(`primer`, `catalog`, `deep dive`, `question bank`)을 다시 확인한다.
 - 역할 이름이 헷갈리면 [Navigation Taxonomy](./rag/navigation-taxonomy.md)에서 `survey / primer / catalog / deep dive` 경계를 다시 확인하고, incident 라벨이 섞이면 [Incident Badge Vocabulary](./rag/navigation-taxonomy.md#incident-badge-vocabulary)를 본다.
+
+처음 보는 주제라면 snapshot을 이렇게 해석하면 안전하다.
+
+| 지금 상태 | snapshot에서 고를 첫 링크 | 아직 미루는 링크 |
+|---|---|---|
+| `처음`, `뭐예요`, `what is`, `basics` | category `README`, `primer`, `quick start` | incident-heavy `playbook`, `recovery`, 설계 deep dive |
+| 증상 이름은 있는데 원인 축이 헷갈림 | `primer bridge`, symptom-first `catalog` | broad `master note`, 운영 절차 문서 |
+| 이미 기본 개념은 있고 한 경계를 깊게 파고 싶음 | `deep dive` | unrelated survey 재시작 |
 
 ## Data Structure (자료구조)
 
@@ -315,6 +355,10 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 - Union-Find Deep Dive
 
 [🔝 목차로 돌아가기](#table-of-contents)
+
+## 한 줄 정리
+
+루트 `README`는 답 자체를 주는 본문보다 `survey -> primer -> primer bridge -> deep dive` 순서로 안전한 다음 문서를 고르게 만드는 meta navigator로 읽는 것이 가장 안전하다.
 
 ## Algorithm (알고리즘)
 

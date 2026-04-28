@@ -35,6 +35,7 @@ retrieval-anchor-keywords: module api dto patterns basics, module api dto patter
 
 > 관련 문서:
 > - [Software Engineering README: Module API DTO Patterns](./README.md#module-api-dto-patterns)
+> - [Command DTO Vs Query View Naming Checklist](./command-dto-vs-query-view-naming-checklist.md)
 > - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
 > - [Shared Module Guardrails](./shared-module-guardrails.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)

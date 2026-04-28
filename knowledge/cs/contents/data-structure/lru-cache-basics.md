@@ -7,6 +7,7 @@
 관련 문서:
 
 - [LRU Cache Design](./lru-cache-design.md)
+- [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
 - [연결 리스트 기초](./linked-list-basics.md)
 - [자료구조 정리](./README.md)
 - [시간복잡도 입문](../algorithm/time-complexity-intro.md)
@@ -80,6 +81,7 @@ LRU 캐시를 O(1)으로 구현하려면 두 자료구조가 필요하다.
 ## 더 깊이 가려면
 
 - Java `LinkedHashMap`을 써서 LRU를 구현하는 방법과 TTL, 캐시 크기 튜닝은 [LRU Cache Design](./lru-cache-design.md)
+- `LinkedHashMap`의 삽입 순서와 접근 순서가 왜 다른지 먼저 짧게 잡고 싶다면 [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
 - 양방향 연결 리스트 원리와 노드 이동 메커니즘은 [연결 리스트 기초](./linked-list-basics.md)
 - Spring에서 캐시를 다루는 `@Cacheable`과의 연결은 [캐시, 메시징, 관측성](../software-engineering/cache-message-observability.md)
 

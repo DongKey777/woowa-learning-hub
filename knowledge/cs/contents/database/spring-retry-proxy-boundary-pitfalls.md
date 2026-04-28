@@ -4,8 +4,22 @@
 
 **난이도: 🔴 Advanced**
 
-관련 문서: [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md), [`CannotAcquireLockException` / `40001` 혼동 FAQ](./cannotacquirelockexception-40001-insert-if-absent-faq.md), [Spring Retry Envelope 위치 Primer](./spring-retry-envelope-placement-primer.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md), [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md), [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
+관련 문서: [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md), [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md), [`CannotAcquireLockException` / `40001` 혼동 FAQ](./cannotacquirelockexception-40001-insert-if-absent-faq.md), [Spring Retry Envelope 위치 Primer](./spring-retry-envelope-placement-primer.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md), [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md), [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
 retrieval-anchor-keywords: spring retry proxy boundary, spring retryable transactional, spring retry transaction boundary, @retryable @transactional same method, self-invocation retry ignored, self invocation transactional ignored, same bean call no proxy, aop proxy retry boundary, requires_new retry pitfall, requires_new connection pool exhaustion, unexpectedrollbackexception retry, rollback-only retry spring, outer transaction inner retry spring, retry advice transaction advice order, fresh transaction per retry attempt, spring retry facade split, retry envelope placement spring
+
+## Beginner 먼저 보기
+
+이 문서는 "`@Retryable`이 왜 안 먹지?", "retry는 3번 찍히는데 왜 `UnexpectedRollbackException`이 나지?", "`40001`이면 같은 transaction 안에서 SQL만 다시 치면 되나?" 같은 증상을 proxy/transaction 경계 관점에서 해부하는 advanced 문서다.
+
+처음 보는 독자라면 아래 순서로 짧게 우회한 뒤 돌아오는 편이 훨씬 안전하다.
+
+| 지금 막힌 첫 질문 | 먼저 볼 카드 | 여기서 먼저 잡는 감각 |
+|---|---|---|
+| "트랜잭션 안에서 뭘 밖으로 빼야 하는지부터 헷갈린다" | [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md) | retry 전에 **트랜잭션 길이와 외부 I/O 경계**를 먼저 줄인다 |
+| "`40001`/deadlock은 SQL 한 줄 재시도인가, 전체 재시도인가" | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | retry 단위가 **SQL 한 줄이 아니라 트랜잭션 시도 전체**라는 감각을 맞춘다 |
+| "`duplicate`/`busy`/`retryable` 결과 문장이 자꾸 섞인다" | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | 예외 이름보다 **서비스 결과 라벨**을 먼저 고정한다 |
+
+짧게 말해, **경계 길이 -> whole-transaction retry -> 결과 라벨** 순서로 첫 그림을 잡고 이 문서를 읽으면 `proxy` 함정이 glossary처럼 보이지 않는다.
 
 ## 핵심 개념
 
@@ -23,14 +37,12 @@ retrieval-anchor-keywords: spring retry proxy boundary, spring retryable transac
 - 일반적인 default order에서는 retry advice가 transaction advice 바깥에 걸려서 attempt마다 새 transaction이 열리기 쉽다
 - 하지만 self-invocation, 바깥 `@Transactional`, 잘못된 `REQUIRES_NEW` 사용이 끼어들면 기대한 경계가 바로 무너진다
 
-## 처음 읽는다면 먼저 붙일 두 문서
+## 이름 혼동을 먼저 끊고 싶다면
 
-이 문서는 proxy 경계 함정을 설명하는 advanced 문서다. 처음 보는 독자라면 아래 두 장을 먼저 보고 돌아오면 훨씬 덜 헷갈린다.
+예외 클래스 이름 때문에 자꾸 길을 잃는다면 아래 두 장을 먼저 붙이면 된다.
 
 - `insert-if-absent`에서 `duplicate` / `busy` / `retryable` 3버킷을 먼저 익히려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - `CannotAcquireLockException`과 PostgreSQL `40001`을 같은 이름으로 외우지 않으려면 [`CannotAcquireLockException` / `40001` 혼동 FAQ](./cannotacquirelockexception-40001-insert-if-absent-faq.md)
-
-짧게 말해, **결과 라벨을 먼저 고정한 뒤 proxy 경계를 읽는 순서**가 초회독에 가장 안전하다.
 
 ## 먼저 실패 지도를 잡기
 

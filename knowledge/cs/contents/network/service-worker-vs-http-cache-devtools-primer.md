@@ -2,7 +2,7 @@
 
 **난이도: 🟢 Beginner**
 
-> 한 줄 요약: 먼저 `첫 방문`인지 `같은 URL 재방문`인지 한 줄로 가른 뒤, `from ServiceWorker`가 보이면 `Disable cache` 실험보다 먼저 "이번 줄에 Service Worker가 개입했는가"를 1분 안에 분리해야 한다. Cache Storage와 HTTP cache는 그 다음 질문이다.
+> 한 줄 요약: 먼저 `첫 방문`인지 `같은 URL 재방문`인지 한 줄로 가른 뒤, `from ServiceWorker`가 보이면 `Disable cache` 실험보다 먼저 "이번 줄에 Service Worker가 개입했는가"를 1분 안에 분리해야 한다. 그다음에 Cache Storage, HTTP cache, cookie, `sessionStorage`/`localStorage`를 서로 다른 저장소로 떼어 읽는다.
 
 관련 문서:
 
@@ -11,9 +11,10 @@
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [Cache-Control 실전](./cache-control-practical.md)
 - [Browser DevTools 새로고침 분기표: normal reload, hard reload, `Disable cache`](./browser-devtools-reload-hard-reload-disable-cache-primer.md)
+- [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - [CDN 기초](../system-design/cdn-basics.md)
 
-retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, from serviceworker, service worker vs memory cache, service worker vs disk cache, service worker vs 304, who served the body, devtools service worker triage, service worker cache 뭐예요, 처음 배우는 service worker cache, service worker vs http cache devtools primer basics, service worker vs http cache devtools primer beginner
+retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, from serviceworker, service worker vs memory cache, service worker vs disk cache, service worker vs 304, cache storage vs cookie vs localstorage, sessionstorage localstorage cookie cache confusion, browser storage comparison beginner, who served the body, devtools service worker triage, service worker cache 뭐예요
 
 <details>
 <summary>Table of Contents</summary>
@@ -25,8 +26,10 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 - [정말 먼저 볼 4가지](#정말-먼저-볼-4가지)
 - [1분 분기표](#1분-분기표)
 - [service worker, cache storage, http cache 한 줄 비교](#service-worker-cache-storage-http-cache-한-줄-비교)
+- [브라우저 저장소 전체 지도](#브라우저-저장소-전체-지도)
 - [짧은 예시](#짧은-예시)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
+- [cookie와 Web Storage까지 섞일 때](#cookie와-web-storage까지-섞일-때)
 - [전송 경로와 cache 질문을 섞지 않는 법](#전송-경로와-cache-질문을-섞지-않는-법)
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
 - [한 줄 정리](#한-줄-정리)
@@ -70,6 +73,8 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 - Service Worker: 문 앞에서 응답 경로를 고를 수 있는 "중간 담당자"
 - Cache Storage: Service Worker가 필요하면 꺼내 쓰는 앱 쪽 저장 상자
 - HTTP cache: 브라우저가 `Cache-Control`, `ETag`, `304` 규칙으로 관리하는 내장 저장소
+- cookie: 브라우저가 요청에 자동으로 실어 보낼 수 있는 작은 상태 조각
+- `sessionStorage` / `localStorage`: 자바스크립트가 읽고 쓰는 앱 저장 칸
 
 즉 `from ServiceWorker`는 **Service Worker 경로** 신호이고, `memory cache`/`disk cache`/`304`는 **HTTP cache 경로** 신호다. Cache Storage는 Service Worker가 선택적으로 쓸 수 있는 저장소이지, `from ServiceWorker`와 완전히 같은 말은 아니다.
 
@@ -169,6 +174,32 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 | 주된 판단 자리 | fetch handler, offline 동작, SW 등록 상태 | Cache Storage key/entry, 앱이 붙인 이름 | response header, request validator, Network row |
 | 서버 왕복 | 있을 수도, 없을 수도 있음 | 없을 수도 있지만 SW가 fetch를 같이 할 수도 있음 | `memory`/`disk`는 보통 없음, `304`는 있음 |
 | 초급자 오해 | "곧바로 Cache Storage를 쓴 뜻이다" | "브라우저 HTTP cache랑 같은 저장소다" | "다 같은 cache hit 이름이다" |
+
+---
+
+## 브라우저 저장소 전체 지도
+
+초급자 혼선은 보통 "브라우저 안에 저장된다"는 공통점 때문에 생긴다. 하지만 질문을 두 칸으로 나누면 정리가 빨라진다.
+
+1. 이 저장소가 **HTTP 요청/응답 경로**를 바꾸는가?
+2. 아니면 **앱 상태만 보관**하는가?
+
+| 저장소/개념 | 주인 | 무엇을 넣나 | HTTP 요청에 자동으로 영향이 가나 | DevTools에서 먼저 볼 곳 | 가장 흔한 오해 |
+|---|---|---|---|---|---|
+| Service Worker | 브라우저 안의 SW 스크립트 | fetch 처리 로직 | 그럴 수 있다. 응답 경로를 가로챌 수 있다 | Network `from ServiceWorker`, Application > Service Workers | "저장소 이름이다" |
+| Cache Storage | SW/앱 코드 | `Request`-`Response` 쌍 | 자동 아님. SW 코드가 꺼내 써야 한다 | Application > Cache Storage | "HTTP cache와 같은 상자다" |
+| HTTP cache | 브라우저 | HTTP 응답 사본 | 그렇다. 브라우저가 `Cache-Control`, `ETag`, `304` 규칙으로 재사용한다 | Network `from memory cache`, `from disk cache`, `304` | "cookie나 localStorage랑 같은 층이다" |
+| cookie | 브라우저 | session id, preference, token 같은 작은 값 | 그럴 수 있다. 조건이 맞는 요청에 `Cookie` 헤더로 자동 전송된다 | Application > Cookies, Network request headers | "cookie에 있으면 곧 cache hit다" |
+| `sessionStorage` | 페이지 스크립트 | 탭 단위 앱 상태 | 아니다. JS가 직접 읽어 헤더/본문에 넣지 않으면 네트워크에 안 실린다 | Application > Session Storage | "브라우저가 다음 요청에 알아서 보낸다" |
+| `localStorage` | 페이지 스크립트 | 브라우저에 남겨둘 앱 상태 | 아니다. JS가 직접 사용해야 한다 | Application > Local Storage | "cookie처럼 자동 전송된다" |
+
+한 줄로 외우면:
+
+- Cache Storage와 HTTP cache는 둘 다 "응답 사본" 쪽이다.
+- cookie는 "자동 전송될 수 있는 상태" 쪽이다.
+- `sessionStorage`/`localStorage`는 "JS가 직접 꺼내 쓰는 앱 상태" 쪽이다.
+
+즉 `localStorage`에 토큰이 있어도 브라우저는 그 값을 보고 자동으로 `Authorization` 헤더를 만들지 않는다. 반대로 cookie는 JS가 안 만져도 조건이 맞으면 요청에 실릴 수 있다.
 
 ---
 
@@ -303,6 +334,30 @@ Service Worker는 여러 선택을 할 수 있다.
 
 ---
 
+## cookie와 Web Storage까지 섞일 때
+
+### cookie는 cache가 아니라 "자동 전송될 수 있는 상태"에 가깝다
+
+- cookie는 브라우저가 `Cookie` 헤더로 다시 실어 보낼 수 있다
+- HTTP cache는 body 재사용 여부를 다룬다
+
+즉 cookie가 있다고 해서 응답 body가 reuse됐다는 뜻은 아니다. 반대로 `304`가 보여도 login cookie와는 다른 질문이다.
+
+### `sessionStorage`와 `localStorage`는 네트워크 자동 저장소가 아니다
+
+- 둘 다 브라우저의 Web Storage다
+- JS가 직접 `getItem()` 해서 요청 헤더나 body에 넣어야 네트워크에 영향이 간다
+
+그래서 Application 탭에서 `localStorage` 값이 보여도, Network request header에 아무 변화가 없을 수 있다. 이 경우 질문은 "값이 저장됐나?"이지 "브라우저가 자동 전송했나?"가 아니다.
+
+### 초급자용 3문장 정리
+
+- cookie는 "브라우저가 자동 전송할 수 있는 값"이다.
+- `sessionStorage`/`localStorage`는 "JS가 직접 꺼내 써야 하는 값"이다.
+- HTTP cache와 Cache Storage는 "응답 사본을 어디서 다시 쓰는가"를 보는 값이다.
+
+---
+
 ## 전송 경로와 cache 질문을 섞지 않는 법
 
 ### `Protocol(h2/h3)`만 보고 cache 종류를 결정하면 안 된다
@@ -326,6 +381,7 @@ Service Worker가 있어도 내부에서 네트워크 fetch를 하거나, 별도
 
 - `memory cache`, `disk cache`, `304` trace를 더 자세히 읽고 싶다면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - `Cache-Control`, `ETag`, `Last-Modified`, `304`의 의미를 처음부터 다시 묶고 싶다면 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- cookie가 왜 자동 전송되고 `localStorage`는 왜 자동 전송되지 않는지 이어서 보려면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - directive 차이까지 올라가려면 [Cache-Control 실전](./cache-control-practical.md)
 - `Protocol(h2/h3)` 열을 왜 cache 종류와 분리해서 읽어야 하는지 보려면 [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 
@@ -333,4 +389,4 @@ Service Worker가 있어도 내부에서 네트워크 fetch를 하거나, 별도
 
 ## 한 줄 정리
 
-같은 URL을 다시 봐도 `from ServiceWorker`는 "Service Worker 경로가 개입했나"를, Cache Storage는 "SW가 앱 저장소를 썼나"를, `304`는 "서버 재검증 뒤 기존 HTTP cache body를 계속 써도 되나"를 뜻하므로 먼저 질문 자체를 분리해서 읽어야 한다.
+같은 브라우저 저장소처럼 보여도 `from ServiceWorker`는 응답 경로, Cache Storage와 HTTP cache는 응답 사본, cookie는 자동 전송 상태, `sessionStorage`/`localStorage`는 JS 앱 상태를 뜻하므로 먼저 "누가 자동으로 무엇을 하느냐"부터 분리해서 읽어야 한다.

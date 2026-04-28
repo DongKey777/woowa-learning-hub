@@ -1,0 +1,288 @@
+# Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기
+
+> 한 줄 요약: Spring MVC를 처음 배울 때는 "요청이 어디서 들어와서, 누가 컨트롤러를 찾고, 값은 누가 채우고, 실패는 누가 HTTP 응답으로 바꾸는가"를 한 장의 흐름으로 먼저 잡으면 된다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
+- [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
+- [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
+- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+- [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
+- [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
+- [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [spring 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: spring mvc request lifecycle basics, dispatcher servlet what is, dispatcherservlet basics, filter interceptor controller flow, spring request flow beginner, spring mvc 처음 배우는데, dispatcherservlet 뭐예요, filter interceptor 차이 basics, @requestbody 400 왜 나요, binding basics, exception handling basics, controlleradvice beginner, spring mvc 요청 흐름 기초, controller 전에 400 왜, handler mapping binding exception flow
+
+## 핵심 개념
+
+처음에는 Spring MVC를 "한 번의 요청이 지나가는 공항 동선"처럼 보면 된다.
+
+- 입국장 입구에서는 `Filter`가 먼저 본다.
+- 안내 데스크처럼 `DispatcherServlet`이 어느 컨트롤러로 보낼지 정한다.
+- 탑승권 정보 맞추듯 `@PathVariable`, `@RequestParam`, `@RequestBody` 값을 Spring이 채운다.
+- 실행 중 실패가 나면 `@ExceptionHandler`나 `@RestControllerAdvice`가 HTTP 응답으로 번역한다.
+
+입문자가 자주 헷갈리는 이유는 이 단계들이 모두 "중간에서 뭔가 자동으로 해 준다"로 보이기 때문이다. 그래서 처음에는 구현체 이름보다 "입구 -> 길찾기 -> 값 채우기 -> 실행 -> 실패 번역" 순서만 고정하면 된다.
+
+## 한눈에 보기
+
+```text
+HTTP 요청
+  -> Filter
+  -> DispatcherServlet
+  -> HandlerMapping
+  -> HandlerInterceptor preHandle
+  -> argument binding / message conversion
+  -> Controller 메서드 호출
+  -> return value handling / HttpMessageConverter
+  -> 예외면 ExceptionResolver -> @ExceptionHandler or @RestControllerAdvice
+  -> HandlerInterceptor afterCompletion
+  -> HTTP 응답
+```
+
+| 단계 | 지금 단계에서 이렇게 기억하면 된다 | 초급자가 자주 묻는 말 |
+|---|---|---|
+| `Filter` | Spring MVC 앞단에서 요청 자체를 본다 | "로그인 안 된 요청을 입구에서 막는 곳?" |
+| `DispatcherServlet` | MVC의 관문이다 | "`DispatcherServlet`이 뭐예요?" |
+| `HandlerMapping` | 어떤 컨트롤러 메서드로 갈지 찾는다 | "URL은 누가 매칭해요?" |
+| 바인딩 | 문자열/JSON을 메서드 파라미터로 바꾼다 | "`@RequestBody` 400은 왜 나요?" |
+| 컨트롤러 | 서비스 호출과 응답 반환에 집중한다 | "비즈니스 로직은 어디에 둬요?" |
+| 예외 처리 | 실패를 HTTP 상태코드와 에러 바디로 바꾼다 | "`@ControllerAdvice`는 언제 써요?" |
+
+## 상세 분해
+
+처음에는 `POST /admin/reservations` 한 요청만 붙잡아도 충분하다. 아래 여섯 칸으로 끊으면 "`지금 어디서 막혔는지`"가 빨리 보인다.
+
+| 순서 | 누가 맡는가 | 여기서 하는 일 | 여기서 자주 막히는 증상 |
+|---|---|---|---|
+| 1 | `Filter` | 요청을 입구에서 먼저 검사한다 | 로그인 전 차단, CORS, 공통 로깅 |
+| 2 | `DispatcherServlet` + `HandlerMapping` | 어느 컨트롤러 메서드로 갈지 찾는다 | `404`, `405` |
+| 3 | `HandlerInterceptor` | 컨트롤러 전후 공통 작업을 붙인다 | 접근 로그, 처리 시간 측정 |
+| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | controller 전에 [`400` first split](./spring-requestbody-400-before-controller-primer.md), [`415 Unsupported Media Type` first split](./spring-content-negotiation-pitfalls.md) |
+| 5 | `Controller` | 서비스 호출과 응답 반환을 한다 | 도메인 규칙 위반, 조회 실패 |
+| 6 | exception resolver / advice | 예외를 HTTP 응답으로 번역한다 | `400`/`404`/`409` 응답 모양 불일치 |
+
+짧게 외우면 이렇다.
+
+- 입구에서 막는 건 `Filter`
+- 길을 정하는 건 `DispatcherServlet`
+- 값을 채우는 건 binding
+- 정책 응답으로 바꾸는 건 advice
+
+## Filter, Interceptor, Controller는 어느 순서로 만나는가?
+
+세 칸을 먼저 분리하면 lifecycle이 훨씬 덜 무겁다.
+
+| 위치 | 담당 | 대표 질문 | RoomEscape 예시 |
+|---|---|---|---|
+| `Filter` | 요청 입구 공통 처리 | "아예 안으로 들여보낼까?" | 인증 쿠키 없음, 공통 로깅, CORS |
+| `HandlerInterceptor` | 컨트롤러 전후 공통 처리 | "컨트롤러 주변에서 체크할까?" | 관리자 URL 접근 로그, 처리 시간 측정 |
+| `Controller` | 요청을 서비스 호출로 연결 | "어떤 입력으로 어떤 작업을 시킬까?" | `AdminReservationController#create` |
+
+많이 헷갈리는 지점은 "`Interceptor`도 요청 전에 실행되니 `Filter`와 같은 것 아닌가?"다. 초급자 기준 답은 간단하다.
+
+- `Filter`는 Spring MVC 바깥 입구다.
+- `HandlerInterceptor`는 이미 "어느 컨트롤러로 갈지" 감이 잡힌 뒤에 붙는다.
+- `Controller`는 공통 처리 도구가 아니라 실제 업무 메서드다.
+
+## `Filter`는 Spring MVC 바깥 입구다
+
+`Filter`는 서블릿 컨테이너 레벨에서 요청을 먼저 본다. 그래서 인증 전처리, 공통 헤더, 요청 래핑처럼 "컨트롤러에 가기 전"에 해야 하는 일에 어울린다.
+
+입문 기준으로는 이렇게 구분하면 충분하다.
+
+- 요청 자체를 초입에서 막아야 하면 `Filter`
+- 컨트롤러 주변에서 공통 작업을 붙이면 `HandlerInterceptor`
+
+## `DispatcherServlet`은 길찾기 관문이다
+
+`DispatcherServlet`은 직접 비즈니스 로직을 처리하지 않는다. 대신 "이번 요청을 누가 처리할까?"를 조율한다.
+
+- `GET /admin/reservations` 요청이 들어온다.
+- `HandlerMapping`이 맞는 컨트롤러 메서드를 찾는다.
+- 필요하면 argument resolver, message converter, exception resolver 같은 도구를 붙여 handler를 Spring MVC 방식으로 실행한다.
+
+즉 `DispatcherServlet`은 controller를 새로 만드는 존재가 아니라, 이미 준비된 Bean 중에서 맞는 handler를 찾아 연결하는 관문이다. 초급자가 헷갈리는 역할도 아래처럼 끊어 두면 덜 섞인다.
+
+| 질문 | `DispatcherServlet`이 하는 일 | 하지 않는 일 |
+|---|---|---|
+| "URL은 누가 찾나요?" | 맞는 handler를 찾는 흐름을 조율한다 | 비즈니스 규칙을 직접 판단하지 않는다 |
+| "파라미터 값은 누가 채우나요?" | 바인딩 도구들이 동작하도록 연결한다 | DTO 필드를 직접 수동 세팅하지 않는다 |
+| "예외는 누가 응답으로 바꾸나요?" | resolver chain을 태워 응답 번역을 시도한다 | 팀의 도메인 정책을 스스로 결정하지 않는다 |
+
+## 바인딩은 "값 채우기" 단계다
+
+컨트롤러 파라미터는 그냥 비어 있는 상태로 들어오지 않는다. Spring이 요청에서 값을 꺼내 타입에 맞게 채운다.
+
+| 파라미터 | 어디서 값이 오는가 | 흔한 실패 |
+|---|---|---|
+| `@PathVariable Long id` | URL 경로 `/rooms/1` | `abc`처럼 숫자로 못 바꾸는 값 |
+| `@RequestParam String date` | 쿼리스트링 `?date=2026-04-28` | 이름 오타, 필수값 누락 |
+| `@RequestBody ReservationRequest` | JSON body | [`415 Unsupported Media Type`](./spring-content-negotiation-pitfalls.md), [`400` before controller](./spring-requestbody-400-before-controller-primer.md) |
+
+이 단계에서 나는 실패는 아직 비즈니스 규칙 위반이 아닐 수 있다. 문자열을 숫자로 못 바꾸거나 JSON 모양이 DTO와 안 맞는 식의 **binding failure**일 수 있다.
+
+특히 `415 Unsupported Media Type`은 "JSON 값이 조금 틀렸다"보다 "`@RequestBody`가 기대한 요청 형식과 `Content-Type` 계약이 안 맞았다"에 더 가깝다. 그래서 binding 칸에서 `400`과 함께 보되, `415`가 보이면 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 바로 넘어가 `Accept`가 아니라 요청 `Content-Type` 문제인지 먼저 분리하는 편이 안전하다.
+
+여기서 초급자가 한 번 더 자주 섞는 지점은 "`객체로 받는다`면 다 같은 바인딩 아닌가?"다. 검색 조건처럼 query/form 입력을 객체로 묶는 쪽은 `@ModelAttribute`, JSON body를 DTO로 읽는 쪽은 `@RequestBody`라고 나눠 보면 훨씬 덜 헷갈린다. 이 비교를 한 장 표로 먼저 보고 싶다면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)를 같이 보면 된다.
+
+초급자가 자주 보는 착각도 여기서 끊어 두면 좋다.
+
+- `400`이 바로 났다고 해서 컨트롤러 로직이 실행된 것은 아닐 수 있다.
+- `@RequestBody` 문제는 서비스 로직이 아니라 JSON 모양, `Content-Type`, DTO 필드 타입 문제일 수 있다.
+- `@PathVariable Long id`에 `abc`가 들어오면 "예약 조회 로직 실패"보다 먼저 "숫자 변환 실패"가 난다.
+
+## 컨트롤러는 요청을 서비스 호출로 연결한다
+
+초급자 기준 컨트롤러 역할은 단순하다.
+
+- 요청에서 값을 받는다.
+- 서비스를 호출한다.
+- 결과를 응답으로 돌려준다.
+
+예를 들어 RoomEscape 관리자 API라면 `POST /admin/reservations` 요청을 받아 `ReservationCreateRequest`로 바인딩하고, 컨트롤러는 그 객체를 서비스로 넘긴다. 검증, 저장, 도메인 규칙은 보통 서비스와 그 아래 계층이 맡는다.
+
+## 예외 처리는 실패를 HTTP 응답으로 번역한다
+
+컨트롤러에서 예외가 나면 그대로 브라우저에 Java 예외가 보이는 것이 아니다. Spring MVC가 예외를 잡아 HTTP 응답으로 바꾼다.
+
+입문 기준으로는 이 두 가지만 먼저 구분하면 된다.
+
+- binding/validation 실패: 대개 `400 Bad Request`
+- 비즈니스 예외: 정책에 따라 `404`, `409`, `500` 등으로 번역
+
+이 번역 정책을 공통화하는 대표 도구가 `@RestControllerAdvice`다.
+
+여기서 중요한 감각은 "예외가 났다"와 "예외 응답이 나갔다"가 같은 문장이 아니라는 점이다.
+
+- 예외는 controller/service 쪽에서 발생할 수 있다.
+- 응답 상태코드와 에러 바디 모양은 exception resolver와 advice가 정리한다.
+- 그래서 같은 `IllegalArgumentException`이어도 팀 정책에 따라 `400`으로 번역할 수도 있고, 별도 도메인 예외로 나눌 수도 있다.
+
+초급자 첫 판단표도 같이 들고 가면 좋다.
+
+| 실패 위치 | 처음 떠올릴 의미 | 흔한 상태 코드 |
+|---|---|---|
+| binding / validation | 요청 형식이나 입력값이 잘못됐다 | `400` |
+| controller/service 조회 | 찾는 대상이 없다 | `404` |
+| controller/service 비즈니스 규칙 | 현재 상태와 충돌한다 | `409` |
+| 예상 밖 예외 | 아직 정책화되지 않았거나 서버 내부 문제다 | `500` |
+
+## `@RequestBody` 400이 나면 어디서 실패한 건가?
+
+입문자가 가장 자주 맞닥뜨리는 증상 중 하나라서 별도로 기억할 가치가 있다.
+
+| 보이는 현상 | 먼저 볼 곳 | 흔한 원인 |
+|---|---|---|
+| 요청 보내자마자 `400 Bad Request` | binding / message conversion | JSON 필드명 불일치, 숫자/날짜 타입 변환 실패 |
+| 요청 보내자마자 `415 Unsupported Media Type` | `@RequestBody`의 media type 계약 | `Content-Type: application/json` 누락, `consumes`와 불일치 |
+| 필수값 누락 메시지 | validation | `@NotNull`, `@NotBlank` 같은 제약 위반 |
+| 컨트롤러 로그가 안 찍힘 | binding 또는 filter 앞단 | 컨트롤러 전에 이미 실패했을 수 있음 |
+| 응답 에러 모양이 프로젝트 표준과 다름 | `@RestControllerAdvice` | 예외 번역 정책이 빠졌거나 범위가 다를 수 있음 |
+
+짧게 말하면:
+
+- 요청 body를 객체로 못 바꾸면 binding 실패다.
+- 객체로는 바꿨지만 규칙을 어기면 validation 실패다.
+- 둘 다 최종적으로는 `400`처럼 비슷하게 보일 수 있어서, 초반에는 "컨트롤러에 들어오기 전 실패인지"를 먼저 따져야 한다.
+
+`@RequestBody`가 왜 컨트롤러 전에 `400`으로 끝나는지 JSON 문법, DTO 타입, `Content-Type` 예시로 따로 보고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)를 바로 이어서 보면 된다. 반대로 `415 Unsupported Media Type`이 먼저 보이면 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)에서 `Content-Type`과 `Accept`를 분리해 보는 편이 더 빠르다.
+
+## 흔한 오해와 함정
+
+- "`Filter`와 `Interceptor`는 같은 자리다"
+  아니다. `Filter`가 더 앞단이고, `Interceptor`는 컨트롤러 실행 전후에 붙는다.
+
+- "`@RequestBody` 400이면 컨트롤러 로직이 틀렸다"
+  꼭 그렇지 않다. JSON 형식, `Content-Type`, DTO 구조가 안 맞아 바인딩 단계에서 먼저 실패했을 수 있다.
+
+- "`@RestControllerAdvice`가 요청을 막는다"
+  아니다. 이쪽 책임은 "실패를 어떤 HTTP 응답으로 보낼지"를 정하는 것이다.
+
+- "`DispatcherServlet`이 서비스나 레포지토리를 만든다"
+  아니다. 객체 생성과 주입은 Bean 컨테이너가 담당하고, `DispatcherServlet`은 요청 라우팅을 담당한다.
+
+- "`HandlerInterceptor`의 `afterCompletion`이 항상 성공 흐름만 본다"
+  아니다. 예외가 나도 정리 단계에서 호출될 수 있다. 그래서 로깅/정리에는 어울리지만, 예외를 응답으로 번역하는 주된 자리는 아니다.
+
+## 실무에서 쓰는 모습
+
+RoomEscape 스타일의 관리자 요청을 아주 단순화하면 이런 그림이다.
+
+1. 클라이언트가 `POST /admin/reservations`와 JSON body를 보낸다.
+2. 인증/로깅용 `Filter`가 먼저 요청을 통과시킨다.
+3. `DispatcherServlet`이 `AdminReservationController#create` 같은 handler를 찾는다.
+4. Spring이 JSON body를 `ReservationCreateRequest`로 바인딩한다.
+5. 컨트롤러가 서비스를 호출한다.
+6. 예약 시간 형식이 틀리면 binding/validation 예외가 난다.
+7. `@RestControllerAdvice`가 `400` 에러 응답으로 바꾼다.
+8. 성공이면 반환 객체를 JSON으로 직렬화해 응답한다.
+
+이 흐름을 머리에 넣어 두면 "지금 내가 봐야 할 문제가 입구인가, 컨트롤러 매핑인가, 바인딩인가, 예외 번역인가"를 더 빨리 가를 수 있다.
+
+반대로 같은 요청이 다른 결과로 끝나는 모습도 같이 보면 더 잘 남는다.
+
+| 같은 `POST /admin/reservations`라도 | 어디서 끝나는가 | 초급자 첫 해석 |
+|---|---|---|
+| 인증 쿠키가 없다 | `Filter` 또는 security filter chain | 컨트롤러 전에 막혔다 |
+| URL은 맞지만 `GET`으로 보냈다 | `HandlerMapping` 단계 | 매핑 규칙이 안 맞았다 |
+| JSON 시간 형식이 깨졌다 | binding / message conversion | DTO로 못 바꿨다 |
+| 예약 슬롯이 이미 찼다 | controller/service | 도메인 충돌이라 `409` 후보다 |
+
+## 자주 보는 증상별 첫 분기
+
+| 보이는 증상 | 첫 의심 지점 | 왜 그쪽을 먼저 보나 |
+|---|---|---|
+| `404 Not Found` | `HandlerMapping` | 맞는 URL/HTTP 메서드 매핑을 못 찾았을 수 있다 |
+| `405 Method Not Allowed` | 매핑된 HTTP 메서드 | 경로는 맞지만 `GET`/`POST`가 다를 수 있다 |
+| `@RequestBody` 요청에서 바로 `400` | binding / message conversion | JSON 형식이나 DTO 구조가 먼저 안 맞을 수 있다 |
+| 로그인 전인데 컨트롤러까지 안 온다 | `Filter` 또는 Security filter chain | MVC보다 앞단에서 막혔을 수 있다 |
+| 예외가 났는데 응답 모양이 제각각이다 | `@RestControllerAdvice` / exception resolver | 실패 번역 정책이 통일되지 않았을 수 있다 |
+
+## RoomEscape 관리자 API로 한 번 더 묶기
+
+RoomEscape 미션 기준으로는 아래처럼 생각하면 된다.
+
+1. 관리자 요청 `POST /admin/reservations`가 들어온다.
+2. 인증이나 공통 헤더 처리는 `Filter`에서 먼저 지나간다.
+3. `DispatcherServlet`이 관리자 예약 생성 컨트롤러를 찾는다.
+4. 요청 JSON을 `ReservationCreateRequest`로 바인딩한다.
+5. 형식이 맞으면 컨트롤러가 서비스를 호출한다.
+6. 예약 시간 형식이나 필수값이 틀리면 binding/validation에서 `400` 후보가 된다.
+7. 이미 존재하는 예약 시간 같은 업무 예외면 서비스에서 예외를 던지고, advice가 `409` 같은 응답으로 번역할 수 있다.
+
+이 한 장면만 떠올라도 초급자가 자주 섞는 네 가지를 분리할 수 있다.
+
+- URL을 누가 찾는가: `DispatcherServlet`과 `HandlerMapping`
+- 값을 누가 채우는가: binding / message conversion
+- 업무를 누가 실행하는가: controller -> service
+- 실패를 누가 HTTP 응답으로 바꾸는가: exception resolver / `@RestControllerAdvice`
+
+## 더 깊이 가려면
+
+- 전체 전략 객체와 resolver 체인까지 보고 싶다면 [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)로 내려간다.
+- `Filter`, `HandlerInterceptor`, `@ControllerAdvice` 경계를 더 또렷하게 비교하려면 [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)를 본다.
+- `@RequestBody` 400, `BindingResult`, validation 순서를 더 자세히 보려면 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 이어간다.
+- HTTP 요청이 서버까지 오는 더 바깥 그림이 필요하면 [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)으로 내려간다.
+
+## 면접/시니어 질문 미리보기
+
+> Q: `DispatcherServlet`의 역할은 무엇인가?
+> 의도: Spring MVC 전체 요청 조율 이해 확인
+> 핵심: 요청을 받아 handler 탐색, 실행, 예외/응답 처리까지 조율하는 관문이다.
+
+> Q: `Filter`와 `HandlerInterceptor`는 어디가 다른가?
+> 의도: 서블릿 경계와 MVC 경계 구분 확인
+> 핵심: `Filter`는 서블릿 입구, `HandlerInterceptor`는 컨트롤러 전후다.
+
+> Q: `@RequestBody`에서 `400`이 나는 대표 이유는 무엇인가?
+> 의도: binding failure와 비즈니스 실패 구분 확인
+> 핵심: JSON 형식, `Content-Type`, DTO 구조, 타입 변환 문제가 먼저 원인일 수 있다.
+
+## 한 줄 정리
+
+Spring MVC 요청 생명주기 기초는 "`Filter`가 입구를 보고, `DispatcherServlet`이 길을 정하고, Spring이 값을 바인딩해 컨트롤러를 실행하고, 예외 처리기가 실패를 HTTP 응답으로 바꾼다"는 한 문장으로 먼저 잡으면 된다.

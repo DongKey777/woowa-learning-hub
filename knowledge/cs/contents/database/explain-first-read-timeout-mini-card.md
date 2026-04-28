@@ -14,7 +14,7 @@
 - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, rows key type mini card, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문, explain first read timeout mini card basics, explain first read timeout mini card beginner, explain first read timeout mini card intro
+retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문, explain examples key null, explain examples using filesort, explain examples using index, key null 왜
 
 ## 먼저 멘탈모델
 
@@ -62,7 +62,7 @@ timeout 앞에서 초보자가 바로 모든 컬럼을 읽을 필요는 없다. 
 3. `rows`로 "읽는 양이 이미 큰가"를 본다.
 4. `filesort`/`temporary`로 "읽은 뒤에 한 번 더 무거운 일을 하나"를 본다.
 
-## 작은 예시
+## 대표 장면 미리보기
 
 ```sql
 EXPLAIN
@@ -87,6 +87,59 @@ LIMIT 20;
 - 다음 액션은 blocker 조회보다 인덱스/정렬 축 확인이다
 
 반대로 `type=ref`, `key=idx_orders_status_created_at`, `rows=20` 근처면 plan 자체보다는 lock 대기나 다른 축도 같이 의심할 수 있다.
+
+아래 세 장면은 초보자가 가장 자주 마주치는 `EXPLAIN` snapshot이다.
+
+| snapshot | 첫 문장 |
+| --- | --- |
+| `key = NULL` | 인덱스 경로부터 다시 본다 |
+| `Using filesort` | 정렬 축과 복합 인덱스 순서를 다시 본다 |
+| `Using index` | 커버링 가능성은 좋지만 row 수까지 같이 본다 |
+
+## snapshot 1. `key = NULL`
+
+인덱스 경로를 못 잡은 장면이다.
+
+```text
++----+-------------+--------+------+---------------+------+--------+-------------+
+| id | select_type | table  | type | possible_keys | key  | rows   | Extra       |
++----+-------------+--------+------+---------------+------+--------+-------------+
+|  1 | SIMPLE      | orders | ALL  | NULL          | NULL | 850000 | Using where |
++----+-------------+--------+------+---------------+------+--------+-------------+
+```
+
+한 줄 진단 패턴:
+`key = NULL`이 보이면 "조건에 맞는 인덱스가 없거나, 있어도 지금 WHERE 모양으로는 못 탄다"부터 적는다.
+
+## snapshot 2. `Using filesort`
+
+인덱스로 정렬까지 못 끝낸 장면이다.
+
+```text
++----+-------------+--------+------+------------------------------+-------------------+------+-----------------------------+
+| id | select_type | table  | type | possible_keys                | key               | rows | Extra                       |
++----+-------------+--------+------+------------------------------+-------------------+------+-----------------------------+
+|  1 | SIMPLE      | orders | ref  | idx_orders_status_created_at | idx_orders_status | 4200 | Using where; Using filesort |
++----+-------------+--------+------+------------------------------+-------------------+------+-----------------------------+
+```
+
+한 줄 진단 패턴:
+`Using filesort`가 남으면 "필터용 인덱스는 탔지만 ORDER BY 순서까지는 못 맞췄다"라고 읽는다.
+
+## snapshot 3. `Using index`
+
+인덱스만 읽고 끝낼 가능성이 큰 장면이다.
+
+```text
++----+-------------+--------+------+--------------------------+--------------------------+------+-------------+
+| id | select_type | table  | type | possible_keys            | key                      | rows | Extra       |
++----+-------------+--------+------+--------------------------+--------------------------+------+-------------+
+|  1 | SIMPLE      | orders | ref  | idx_orders_member_status | idx_orders_member_status |   18 | Using index |
++----+-------------+--------+------+--------------------------+--------------------------+------+-------------+
+```
+
+한 줄 진단 패턴:
+`Using index`가 보이면 "필요한 컬럼을 인덱스만으로 읽는 커버링 가능성"을 먼저 떠올리되, `rows`가 크면 여전히 느릴 수 있다고 같이 적는다.
 
 ## 바로 다음 행동
 

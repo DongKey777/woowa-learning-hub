@@ -4,6 +4,16 @@
 
 > 작성자 : [박재용](https://github.com/ggjae)
 
+관련 문서:
+
+- [프로세스와 스레드 기초](../../operating-system/process-thread-basics.md)
+- [프로세스, 스레드, 가상 메모리, 컨텍스트 스위치, 스케줄러 기초](../../operating-system/process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- [컨텍스트 스위칭, 데드락, Lock-free](../../operating-system/context-switching-deadlock-lockfree.md)
+- [CPU 캐시 일관성, 메모리 배리어](../../operating-system/cpu-cache-coherence-memory-barrier.md)
+- [language 카테고리 인덱스](../README.md)
+
+retrieval-anchor-keywords: c++ multithread programming, c++ multithreading basics, c++ thread basics, c++ mutex basics, c++ race condition basics, c++ data race why, c++ lock unlock basics, c++ concurrency intro, 멀티스레드 프로그래밍, c++ 멀티스레드 기초, c++ 스레드 처음, 처음 배우는데 c++ 스레드, c++ thread 왜 어려운지, c++ mutex 언제 쓰는지, c++ data race 뭐예요, c++ thread basics beginner, c++ concurrency basics, 병렬 프로그래밍 큰 그림, thread vs process basics
+
 본 자료는 작성자인 '박재용'의 개인 Repository의 글을 재구성하여 작성되었습니다.  
 자료를 공부하기 이전에 익혀두어야 하는 두가지 기술을 먼저 이야기하겠습니다.  
 

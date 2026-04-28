@@ -1,0 +1,158 @@
+# Browser `302` vs `304` vs `401` 새로고침 분기표
+
+> 한 줄 요약: page reload 뒤 DevTools에 `302`, `304`, `401`이 보일 때는 "다른 URL로 이동시키는가, 기존 body를 다시 쓰는가, 인증 안 됐다고 멈추는가"를 먼저 갈라 읽으면 덜 헷갈린다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload](./browser-devtools-reload-hard-reload-disable-cache-primer.md)
+- [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
+- [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+- [network 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: browser 302 vs 304 vs 401, reload decision table, devtools redirect vs revalidation, page reload login redirect, 304 revalidation beginner, 401 unauthorized beginner, location header vs if-none-match, same url different next request, 새로고침했는데 로그인으로 가요, 처음 배우는데 302 304 401 차이, fetch redirect follow login html 200, devtools final 200 hides 302 login, xhr login html instead of json
+
+## 핵심 개념
+
+초급자가 가장 많이 섞는 이유는 셋 다 "새로고침 뒤 뭔가 한 번 더 일어났다"처럼 보이기 때문이다.
+
+- `302`는 브라우저가 **다른 URL로 한 번 더 가게 만드는 신호**다.
+- `304`는 브라우저가 **기존 cache body를 계속 쓰게 만드는 신호**다.
+- `401`은 서버가 **지금 인증이 안 됐다고 직접 말하는 신호**다.
+
+즉 셋은 같은 종류의 상태 코드가 아니다.
+
+- `302`: 다음 목적지를 바꾼다
+- `304`: body를 다시 받을지 말지를 바꾼다
+- `401`: 로그인/인증 해석을 요구한다
+
+새로고침 뒤 follow-up decision을 한 줄로 외우면 이렇다.
+
+- `302`면 `Location`을 본다
+- `304`면 validator를 본다
+- `401`이면 redirect가 아니라 auth failure인지 본다
+
+## 한눈에 보기
+
+| status | 브라우저의 바로 다음 동작 | DevTools에서 먼저 보는 칸 | 초급자 첫 해석 |
+|---|---|---|---|
+| `302 Found` | `Location`을 따라 다음 URL로 이동 요청을 만든다 | 첫 row의 `Status`, `Response Headers > Location`, 다음 row URL | redirect다. "같은 페이지를 다시 읽은 것"보다 "다른 URL로 보냈다"에 가깝다 |
+| `304 Not Modified` | 기존 cache body를 재사용한다 | 같은 URL row, `Request Headers > If-None-Match` 또는 `If-Modified-Since`, `Location` 없음 | revalidation이다. 서버 왕복은 있었지만 body는 다시 안 받았다 |
+| `401 Unauthorized` | HTTP 자체로는 자동 이동하지 않는다 | `Status 401`, `Location` 없음, 필요하면 `WWW-Authenticate` | raw unauthenticated다. 그다음 login 화면 이동은 앱이나 브라우저 UX 정책이 덧씌운 결과일 수 있다 |
+
+같은 reload에서 초급자가 가장 먼저 버려야 할 오해는 이것이다.
+
+- `302`를 보면 곧바로 cache 문제라고 생각한다
+- `304`를 보면 redirect 한 번 탄 것처럼 읽는다
+- `401`을 보면 항상 브라우저가 자동으로 `/login`으로 간다고 생각한다
+
+## DevTools에서 먼저 볼 4칸
+
+새로고침 뒤 Network 탭을 볼 때는 아래 4칸만 먼저 확인하면 된다.
+
+| 확인 칸 | `302`일 때 보이는 것 | `304`일 때 보이는 것 | `401`일 때 보이는 것 |
+|---|---|---|---|
+| `Status` | `302` | `304` | `401` |
+| `Response Headers` | `Location`이 핵심 | `ETag`, `Last-Modified`, `Cache-Control`이 핵심 | `WWW-Authenticate` 또는 auth error body가 힌트 |
+| `Request Headers` | 다음 요청에서 `Cookie`가 실렸는지 같이 볼 수 있다 | `If-None-Match`, `If-Modified-Since`가 보이기 쉽다 | `Cookie`, `Authorization`이 비었는지 본다 |
+| 다음 row | URL이 바뀌거나 `/login` 같은 후속 요청이 이어진다 | 보통 같은 URL이고 cached body를 다시 쓴다 | raw `401`이면 후속 row가 없을 수 있고, 앱이 처리하면 별도 login 요청이 생길 수 있다 |
+
+짧은 판독 규칙:
+
+1. 다음 row URL이 바뀌면 `302`부터 의심한다.
+2. 같은 URL이고 validator가 보이면 `304`부터 의심한다.
+3. `Location`이 없고 `401`이면 redirect보다 auth failure부터 읽는다.
+
+## 페이지 새로고침에서 자주 보는 세 장면
+
+### 1. 새로고침했더니 `/login`으로 간다
+
+```text
+GET /orders/42   -> 302 Found
+Location: /login
+GET /login       -> 200 OK
+```
+
+이 장면은 cache보다 redirect 흐름이 먼저다.
+질문은 "`304`였나?"가 아니라 "왜 보호 페이지가 login redirect를 탔나?"다.
+
+### 2. 새로고침했더니 같은 URL이 `304`다
+
+```text
+GET /app.js
+If-None-Match: "v7"
+
+304 Not Modified
+```
+
+이 장면은 다른 곳으로 간 것이 아니라, 같은 URL을 재검증한 뒤 기존 body를 다시 쓴 것이다.
+질문은 "왜 login으로 갔나?"가 아니라 "이 리소스가 왜 revalidation 대상이었나?"다.
+
+### 3. 새로고침했더니 raw `401`이 보인다
+
+```text
+GET /api/me -> 401 Unauthorized
+```
+
+이 장면은 HTTP가 인증 실패를 직접 말한 것이다.
+브라우저 page UX에서 `/login`으로 보내는 경우와 달리, 여기서는 `Location`이 없을 수 있다.
+
+초급자용 한 줄 비교:
+
+- `/login`으로 이어지면 `302`
+- 같은 URL cached body 재사용이면 `304`
+- 에러로 멈추면 `401`
+
+## 흔한 오해와 함정
+
+### `401`과 `302 -> /login`을 같은 뜻으로 말한다
+
+비슷한 상황에서 나올 수는 있지만 같은 장면은 아니다.
+
+- raw `401`은 서버의 직접 응답이다
+- `302 -> /login`은 browser navigation이 한 번 더 붙은 모습이다
+
+### `304`를 "서버가 다른 페이지를 줬다"로 읽는다
+
+아니다.
+`304`는 새 body를 안 보낸 것이다.
+브라우저는 기존 cache 사본을 다시 쓴다.
+
+### redirect row와 최종 row를 섞어 본다
+
+Network 탭에서는 `302` row와 그다음 `200` row를 분리해서 봐야 한다.
+최종 row만 보면 "왜 갑자기 login HTML `200`이 왔지?"처럼 보일 수 있다.
+
+`fetch`/XHR에서도 같은 함정이 있다.
+브라우저가 redirect를 따라간 뒤 최종 `/login` HTML `200`만 코드나 DevTools에 먼저 보일 수 있어서, 원래 API가 `302`였다는 사실을 놓치기 쉽다.
+
+### page 요청과 API 요청을 같은 기준으로 읽는다
+
+page 요청은 `302 -> /login` UX가 흔하고, API 요청은 raw `401` 계약이 더 흔하다.
+같은 새로고침이어도 어떤 URL을 다시 불렀는지 먼저 봐야 한다.
+
+## 더 깊이 가려면
+
+- 새로고침 종류 자체가 헷갈리면 [Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload](./browser-devtools-reload-hard-reload-disable-cache-primer.md)
+- `304`의 validator와 cache policy를 더 자세히 보려면 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- `302` login redirect와 `SavedRequest` 복귀를 이어서 보려면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `fetch`/XHR가 숨은 `302 -> /login -> 200 HTML`을 어떻게 final response처럼 보이게 하는지 이어서 보려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
+- raw `401`과 browser `302 /login` UX 차이를 더 정확히 보려면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+
+## 면접/시니어 질문 미리보기
+
+**Q. `304`는 에러인가요?**
+아니다. cache revalidation 결과로 기존 body를 계속 써도 된다는 뜻이다.
+
+**Q. 브라우저에서 `401`이면 항상 `/login`으로 redirect되나요?**
+아니다. HTTP 자체는 redirect를 강제하지 않는다. `/login` 이동은 앱이나 보안 설정이 덧붙이는 흐름일 수 있다.
+
+**Q. `302`와 `304`를 가장 빠르게 구분하는 방법은 무엇인가요?**
+`Location`이 있으면 `302` 쪽, validator와 같은 URL 재검증이면 `304` 쪽부터 본다.
+
+## 한 줄 정리
+
+새로고침 뒤 `302`는 "다른 URL로 가라", `304`는 "기존 body를 계속 써라", `401`은 "지금 인증이 안 됐다"이므로 DevTools에서 `Location`, validator, auth header를 같은 순서로 보면 된다.

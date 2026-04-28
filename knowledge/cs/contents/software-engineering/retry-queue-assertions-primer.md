@@ -10,9 +10,11 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+- [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
+- [HTTP Coalescing Failure Mapping](./http-coalescing-failure-mapping.md)
 
 
-retrieval-anchor-keywords: retry queue assertions primer basics, retry queue assertions primer beginner, retry queue assertions primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry queue assertions primer, retry queue assertions primer 입문, retry queue assertions primer 기초, what is retry queue assertions primer, how to retry queue assertions primer
+retrieval-anchor-keywords: retry queue assertions primer basics, retry queue assertions primer beginner, retry queue assertions primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry queue assertions primer, retry queue assertions primer 입문, retry queue assertions primer 기초, what is retry queue assertions primer, how to retry queue assertions primer, sourceindex stable itemid retry drift, retry queue stable item id example
 `ItemFailure`, `RetryCandidate`, `manual review`, `terminal failure`라는 이름을 이미 보고도 테스트를 어디서 시작해야 할지 막막하다면, 이 문서는 그 첫 묶음만 좁혀서 설명한다.
 [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)에서 `retryable`, `manual-review`, `permanent` 분류표를 먼저 잡았다면, 여기서는 그 분류가 테스트에서 어떤 assertion으로 보이는지 이어서 읽으면 된다.
 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)에서 failure mapping 자체를 봤다면, 여기서는 그다음 단계인 "실패를 다음 경로로 제대로 번역했는가"만 다룬다.
@@ -28,6 +30,8 @@ batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Prime
 - [최소 테스트 2: manual-review failure는 queue에 섞이지 않는다](#최소-테스트-2-manual-review-failure는-queue에-섞이지-않는다)
 - [최소 테스트 3: terminal failure는 retry queue와 manual review에 섞이지 않는다](#최소-테스트-3-terminal-failure는-retry-queue와-manual-review에-섞이지-않는다)
 - [최소 테스트 4: 원래 item 식별자를 잃지 않는다](#최소-테스트-4-원래-item-식별자를-잃지-않는다)
+- [외부 api retry 분기에서 test double 고르기](#외부-api-retry-분기에서-test-double-고르기)
+- [bridge example: `sourceIndex -> stable itemId`를 retry queue까지 이어서 본다](#bridge-example-sourceindex---stable-itemid를-retry-queue까지-이어서-본다)
 - [짧은 비교 표](#짧은-비교-표)
 - [작은 예시](#작은-예시)
 - [practice loop](#practice-loop)
@@ -39,6 +43,7 @@ batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Prime
 > 관련 문서:
 > - [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
 > - [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)
+> - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 > - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
 > - [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)
 > - [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
@@ -66,6 +71,8 @@ batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Prime
 > - batch retry reason classification checklist
 > - retryable manual-review terminal failure example
 > - batch failure triage beginner
+> - external api retry mock stub fake
+> - retry branch test double choice
 
 ## 먼저 잡을 그림
 
@@ -78,6 +85,12 @@ batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Prime
 
 즉 테스트는 "실패가 있었다"로 끝나면 안 된다.
 **그 실패가 다음에 어디로 가야 하는지**를 고정해야 한다.
+
+짧은 횟수 표기도 여기서 같이 맞춰 두면 덜 헷갈린다.
+
+- 이 문서에서는 **`총 N회 시도 = 첫 시도 1회 + 재시도 N-1회`**로 읽는다.
+- 따라서 `재시도 2회`는 "실패 후 두 번 더"이고, `총 3회 시도`와 같은 장면이다.
+- `attemptCount`가 있다면 "현재까지 총 몇 번 시도했는가"인지, "몇 번 더 retry 가능한가"인지 테스트 이름과 필드 설명에서 같이 드러내는 편이 안전하다.
 
 가장 흔한 회귀는 네 가지다.
 
@@ -222,6 +235,72 @@ and candidate.reasonCode == partner-timeout
 
 이 테스트는 특히 retry payload가 재정렬될 수 있을 때 중요하다.
 index는 바뀔 수 있지만 `itemId`는 바뀌면 안 된다.
+
+## `attemptCount`를 읽는 최소 기준
+
+초심자는 `attemptCount=3`을 봤을 때 "재시도 3번인가, 총 3번인가?"에서 자주 막힌다.
+이 문서에서는 아래처럼 고정해서 읽는다.
+
+| 표기 | 뜻 | 같은 장면 예시 |
+|---|---|---|
+| `재시도 2회` | 첫 실패 뒤 추가로 2번 더 시도 | `attemptCount=3`, `maxAttempts=3` |
+| `총 3회 시도` | 첫 시도 1회 + 재시도 2회 | `attemptCount`가 3에 도달하면 중단 |
+
+테스트 이름과 payload 필드가 둘 다 있다면 한쪽만 믿지 말고 둘이 같은 기준을 쓰는지 같이 본다.
+예를 들어 메서드명은 `총_3회_시도_후_중단한다`인데 queue payload 설명은 `retryCount=3`이라고 쓰면, 운영자와 개발자가 서로 다른 숫자를 떠올리기 쉽다.
+
+## 외부 API retry 분기에서 test double 고르기
+
+외부 API retry 테스트에서 초심자가 가장 자주 헷갈리는 부분은 "가짜를 뭘로 둘까"다.
+핵심은 **무엇을 확인하려는지 먼저 고르고 그에 맞는 더블을 붙이는 것**이다.
+
+| 확인하려는 것 | 먼저 쓰기 쉬운 더블 | 왜 이게 맞나 |
+|---|---|---|
+| timeout이 오면 retryable로 분류되는가 | stub | 고정 응답 1개만 있으면 분기 확인이 되기 때문 |
+| 1차 timeout 뒤 2차 성공처럼 재시도 흐름이 이어지는가 | fake | 호출 횟수에 따라 응답을 바꾸는 작은 상태를 담기 쉽기 때문 |
+| 정말 3번 호출했는가, 마지막에는 더 안 불렀는가 | mock | 호출 횟수와 상호작용 자체가 검증 목표이기 때문 |
+
+작은 mental model은 이렇게 잡으면 된다.
+
+- **stub**: "이번 테스트에서는 timeout을 돌려주는 버튼"
+- **fake**: "간단한 메모리를 가진 작은 가짜 서버"
+- **mock**: "몇 번 불렀는지 검사하는 감시 카메라"
+
+예를 들어 `PartnerClient`가 첫 호출은 timeout, 둘째 호출은 성공을 반환해야 한다면 stub 두 개를 순서대로 엮기보다 fake 하나가 읽기 쉽다.
+반대로 "3회 초과 호출 금지"가 핵심이면 fake 결과보다 mock의 호출 횟수 assertion이 더 직접적이다.
+
+```text
+stub: 항상 timeout 반환 -> retryable 분류 테스트
+fake: 1회 timeout, 2회 success 저장 -> retry success 흐름 테스트
+mock: send()가 3번 호출됐는지 검증 -> backoff/중단 조건 테스트
+```
+
+처음에는 "retry 분류는 stub, retry 흐름은 fake, 호출 횟수 제한은 mock"으로 시작하면 대부분의 외부 API 분기를 무리 없이 나눌 수 있다.
+
+## bridge example: `sourceIndex -> stable itemId`를 retry queue까지 이어서 본다
+
+[Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)에서 본 장면을 그대로 가져와 보자.
+첫 요청에서는 vendor가 `sourceIndex=2`를 실패로 돌려줬고, 우리 쪽 원본 line은 `line-19`였다.
+
+| 시점 | vendor가 준 값 | 우리 쪽에 남겨야 하는 값 |
+|---|---|---|
+| 첫 bulk 요청 | `sourceIndex=2` | `itemId=line-19` |
+| retry payload 재구성 후 | `sourceIndex=0`으로 다시 압축될 수 있음 | 여전히 `itemId=line-19` |
+
+초심자 테스트에서 여기서 잠글 것은 count가 아니다.
+retry queue entry가 첫 실패 때의 `sourceIndex=2`를 그대로 저장하는지보다, **두 번째 요청에서도 같은 `line-19`를 가리키는가**가 더 중요하다.
+
+```text
+given first rejection sourceIndex=2 maps to itemId=line-19
+and retry payload is rebuilt as [line-19, line-24]
+when vendor rejects sourceIndex=0 on retry
+then retryQueueEntry.itemId == line-19
+and retryQueueEntry does not store stale sourceIndex=2 as identity
+```
+
+이 bridge 예시는 "failure mapping 테스트"와 "retry queue assertion 테스트"가 실제로 한 줄로 이어진다는 뜻이다.
+mapping에서 stable id로 번역하지 못하면, queue 테스트가 초록이어도 엉뚱한 item을 다시 처리할 수 있다.
+vendor index를 stable id로 다시 고정하는 더 자세한 그림은 [HTTP Coalescing Failure Mapping](./http-coalescing-failure-mapping.md)의 retry drift 예시를 이어서 보면 된다.
 
 ## 짧은 비교 표
 

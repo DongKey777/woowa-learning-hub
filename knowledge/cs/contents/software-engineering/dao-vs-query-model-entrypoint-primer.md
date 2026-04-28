@@ -139,6 +139,19 @@ public interface OrderQueryRepository {
 - 같은 DB query repository에서 멈출지, 별도 read store로 갈지 보려면: [Same-DB Query Repository Vs Separate Read Store](./same-db-query-repository-vs-separate-read-store.md)
 - Spring Data repository와 도메인 repository 이름 충돌이 헷갈리면: [Spring Data vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md)
 
+## 다음 읽기
+
+아직 "`DAO로 충분한가`, `query model까지 가야 하나`"가 바로 안 서면 한 번에 deep dive로 내려가지 말고 아래 한 칸씩만 이동하면 된다.
+
+| 지금 남은 질문 | 다음 문서 | 그다음 안전한 한 걸음 |
+|---|---|---|
+| "`Repository`, `DAO`, `Entity` 말이 아직 한 덩어리다" | [Repository, DAO, Entity](./repository-dao-entity.md) | [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md) |
+| "목록/검색이 커질 때 query repository를 어디까지 분리하나?" | [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) | [Same-DB Query Repository Vs Separate Read Store](./same-db-query-repository-vs-separate-read-store.md) |
+| "query model을 쓰더라도 같은 DB면 충분한가?" | [Same-DB Query Repository Vs Separate Read Store](./same-db-query-repository-vs-separate-read-store.md) | [Event Sourcing, CQRS Adoption Criteria](./event-sourcing-cqrs-adoption-criteria.md) |
+| "Spring Data interface와 도메인 repository 이름이 왜 다르지?" | [Spring Data vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md) | [Repository Interface Contract Primer](./repository-interface-contract-primer.md) |
+
+길을 잃으면 persistence primer 묶음으로 돌아와 다음 한 칸만 다시 고르면 된다: [Software Engineering README](./README.md#dao-vs-query-model-entrypoint)
+
 ## 한 줄 정리
 
 처음 배우는데 entrypoint 선택이 헷갈리면, **정해진 대상을 읽고 쓰는 일은 DAO, 읽기 화면 자체를 설계하는 일은 dedicated query repository/read model**이라고 기억하면 큰 그림이 잘 잡힌다.

@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)
 - [Spring Security 기초: 인증과 인가의 흐름 잡기](./spring-security-basics.md)
 - [Spring Security 아키텍처](./spring-security-architecture.md)
 - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
@@ -16,14 +17,24 @@
 - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 
-retrieval-anchor-keywords: security filter chain ordering, spring security filter chain ordering, 처음 배우는데 security filter chain, security filter chain 뭐예요, security filter order, filter order 401 403, jwt filter order, cors csrf auth order, exception translation filter order, onceperrequestfilter order, delegatingfilterproxy, securityfilterchain
+retrieval-anchor-keywords: security filter chain ordering, spring security filter chain ordering, 처음 배우는데 security filter chain, security filter chain 뭐예요, security filter order, filter order 401 403, admin 302 403 spring security, savedrequest filter chain order, jwt filter order, cors csrf auth order, exception translation filter order, onceperrequestfilter order, delegatingfilterproxy, securityfilterchain
 
 ## 입문 브리지
+
+이 문서는 `필터가 정확히 어느 순서로 도는가`, `예외 번역 필터가 앞뒤 어디에 있는가`, `JWT filter를 어느 기준 필터 앞에 둘 것인가`처럼 **이미 Security 큰 그림을 안다는 전제** 위에서 읽는 advanced 문서다.
+
+처음 보는 용어가 아직 많다면 이 문서에 바로 들어오지 말고 아래 순서로 내려가는 편이 안전하다.
+
+| 지금 떠오르는 질문 | 먼저 갈 문서 | 여기로 다시 올라오는 시점 |
+|---|---|---|
+| "`security filter chain`이 뭐예요?", "`Filter`/`Interceptor`가 왜 다른가요?" | [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md) | "세 칸 역할은 알겠고, 이제 Security chain 안쪽 순서를 보고 싶다" |
+| "`/admin`이 `302 /login`으로 튀어요", "`403`이랑 뭐가 달라요?" | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) | "`302`는 인증 전, `403`은 권한 단계라는 건 알겠고 그걸 만드는 필터 순서가 궁금하다" |
+| "로그인은 성공했는데 마지막에만 `403`이 나요", "`SavedRequest`가 왜 보이죠?" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | "`SavedRequest`와 role mapping 문제를 분리했고, 이제 어느 필터가 그 분기를 만드는지 보고 싶다" |
 
 `security filter chain`을 처음 배우는데 아직 큰 그림이 안 잡혔다면 이 문서보다 [Spring Security 기초: 인증과 인가의 흐름 잡기](./spring-security-basics.md)를 먼저 본다.
 
 - 기초 문서에서 먼저 잡을 질문: "보안 필터 묶음이 컨트롤러보다 왜 먼저 도는가?"
-- 이 문서로 다시 올라올 질문: "그래서 어느 필터가 먼저 돌고, 그 순서가 401/403을 어떻게 바꾸는가?"
+- 이 문서로 다시 올라올 질문: "그래서 어느 필터가 먼저 돌고, 그 순서가 `302`/`401`/`403` 분기를 어떻게 바꾸는가?"
 
 ## 핵심 개념
 

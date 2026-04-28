@@ -1,83 +1,120 @@
 # 읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문
 
-> 한 줄 요약: 우테코식 코드 리뷰에서 자주 나오는 "이름이 안 읽힌다", "책임이 섞였다", "테스트가 너무 무겁다"는 결국 같은 질문이다. 변경 이유를 나누고, 바꾼 범위를 가장 싼 테스트부터 빠르게 확인할 수 있게 만들었는가?
+> 한 줄 요약: "메서드가 안 읽힌다", "Controller가 너무 많은 걸 안다", "테스트가 너무 무겁다"는 결국 같은 질문이다. 바꾸려는 이유 1개를 고르고, 그 이유를 가장 싼 테스트 1개로 먼저 잠근다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [우테코 백엔드 미션 선행 개념 입문](./woowacourse-backend-mission-prerequisite-primer.md)
 - [클린 코드 기초](./clean-code-basics.md)
-- [Controller / Service / Repository before 예시 - 주문 생성 로직이 Controller에 몰린 상태](./layered-architecture-basics.md#before-주문-생성-로직이-controller에-몰린-상태)
-- [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
-- [Service 계층 기초](./service-layer-basics.md)
+- [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [테스트 전략 기초](./test-strategy-basics.md)
-- [TDD 기초](./tdd-basics.md)
 - [리팩토링 기초](./refactoring-basics.md)
+- [Service 계층 기초](./service-layer-basics.md)
 - [코드 리뷰 기초](./code-review-basics.md)
+- [Spring Bean DI 기초](../spring/spring-bean-di-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+retrieval-anchor-keywords: readable code primer, layering testing loop, 메서드가 너무 길어요, controller가 너무 많은 걸 알아요, 왜 서버 전체 테스트부터, service 테스트가 통합테스트인가요, 관심사 분리 입문, controller service repository responsibility, unit vs integration test beginner, refactor with tests loop, 테스트 피드백 루프, 우테코 코드 리뷰 가독성
 
-retrieval-anchor-keywords: readable code primer, readable code layering testing primer, 관심사 분리 입문, separation of concerns beginner, controller service repository responsibility, readable service method, unit vs integration test beginner, unit test integration test difference, refactor with tests loop, 테스트 피드백 루프, 테스트로 리팩토링 안전망, 우테코 코드 리뷰 가독성, 우테코 코드 리뷰 테스트, beginner readable code, beginner layering testing
+## 먼저 자르는 3칸 비교
 
-## 핵심 개념
+처음에는 용어보다 **리뷰 문장을 어느 칸에 넣을지**만 정하면 된다.
 
-입문 단계에서는 용어를 많이 외우기보다 아래 한 문장을 먼저 잡는 편이 좋다.
+| 지금 들리는 말 | 먼저 붙일 이름 | 바로 확인할 1개 | 다음 문서 |
+|---|---|---|---|
+| "메서드가 너무 길어요" | 읽기 문제 | 한 메서드가 질문 1개만 답하는가 | [클린 코드 기초](./clean-code-basics.md) |
+| "Controller가 너무 많은 걸 알아요" | 레이어 문제 | 입력, 규칙, 저장이 한곳에 섞였는가 | [계층형 아키텍처 기초](./layered-architecture-basics.md) |
+| "왜 서버 전체 테스트부터 돌리죠?" | 테스트 문제 | 지금 검증할 질문 1개가 무엇인가 | [테스트 전략 기초](./test-strategy-basics.md) |
 
-**읽기 좋은 코드 = 한 메서드와 한 클래스가 한 질문에 답하는 코드**
-
-이 문장을 네 가지로 풀면 다음과 같다.
-
-- 이름이 바로 의도를 말해야 읽기 쉽다.
-- 입력, 유스케이스 조립, 저장을 같은 곳에 몰아넣지 않아야 책임이 보인다.
-- 비즈니스 규칙은 빠른 단위 테스트로, 프레임워크/DB 연결은 통합 테스트로 확인해야 피드백이 빨라진다.
-- 리팩토링은 테스트를 안전망으로 두고 작은 단계로 나눌수록 코드 리뷰가 쉬워진다.
-
-우테코 리뷰에서 이 네 가지가 함께 자주 언급되는 이유도 같다. 결국 리뷰어는 "이 변경이 어디에 속하는지"와 "안전하게 바뀌었는지"를 보고 있다.
+- 짧게 외우면 `읽기 = 질문 분리`, `레이어 = 자리 분리`, `테스트 = 검증 범위 분리`다.
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
-처음에는 멋진 아키텍처 이름보다 코드가 아래 흐름으로 읽히는지가 더 중요하다.
+초심자에게는 이 흐름이면 충분하다.
 
 ```text
-입력 해석
-  -> 유스케이스 조립
-  -> 핵심 규칙 실행
-  -> 저장/외부 연동
+입력 해석 -> 규칙 실행 -> 저장/응답
 ```
 
-이 흐름이 코드와 테스트에 어떻게 대응되는지만 잡아도, 읽기 좋은 코드와 레이어 분리가 같이 보이기 시작한다.
+- 입력 해석: Controller
+- 규칙 실행: Service/Domain
+- 저장/응답: Repository, Response DTO
 
-| 지금 확인하는 질문 | 보통 맡는 곳 | 먼저 붙일 테스트 | 리뷰에서 자주 보는 포인트 |
+이 흐름이 한 메서드에 한꺼번에 섞이면 읽기 문제가 되고, 한 클래스에 오래 붙어 있으면 레이어 문제가 되며, 한 번에 다 검증하려 들면 테스트가 무거워진다.
+
+## 리뷰 문장을 다음 행동으로 바꾸는 1분 카드
+
+| 리뷰나 셀프리뷰 문장 | 먼저 볼 자리 | 첫 행동 | 바로 다음 링크 |
 |---|---|---|---|
-| 요청 형식이 맞는가 | Controller, Parser | 통합/슬라이스 테스트 | HTTP, 입력 변환, 응답 형식이 비즈니스 규칙과 섞이지 않았는가 |
-| 주문/할인/검증 규칙이 맞는가 | Domain, Service | 단위 테스트 | 메서드 이름과 규칙이 같은 수준에서 읽히는가 |
-| DB에 제대로 저장되는가 | Repository, JPA Adapter | 통합 테스트 | SQL/JPA 세부가 Service나 Domain으로 새지 않았는가 |
-| 전체 흐름이 이어지는가 | 핵심 유스케이스 경로 | 소수의 통합/E2E 테스트 | 전체는 되지만 중간 책임이 뭉개지지 않았는가 |
+| "이름은 단순한데 더 많은 일을 해요" | Service 메서드 단계 | `검증 -> 저장 -> 응답`이 한 메서드에 섞였는지 표시 | [클린 코드 기초](./clean-code-basics.md) |
+| "Controller가 규칙까지 다 알아요" | Controller | 업무 규칙과 저장 호출에 밑줄 긋기 | [계층형 아키텍처 기초](./layered-architecture-basics.md) |
+| "Service 테스트가 너무 무거워요" | 테스트 코드 | DB, 스프링, HTTP를 실제로 붙였는지 확인 | [테스트 전략 기초](./test-strategy-basics.md) |
+| "`List`/`Set`/`Map` 선택 때문에 규칙 설명이 자꾸 흐려져요" | 규칙 문장 자체 | `순서 / 중복 / key 조회` 중 무엇을 묻는지 한 줄로 다시 적기 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) |
+| "구조를 바꾸고 싶은데 불안해요" | 변경 범위 | 바뀌는 규칙 1개를 테스트 1개로 먼저 잠그기 | [리팩토링 기초](./refactoring-basics.md) |
 
-초심자에게 가장 중요한 감각은 이것이다.
+## 초심자가 자주 하는 혼동 한 번에 끊기
 
-- **단위 테스트는 규칙을 빠르게 확인하는 도구**
-- **통합 테스트는 경계와 연결을 확인하는 도구**
+| 헷갈리는 첫 판단 | 다시 볼 기준 | 첫 행동 |
+|---|---|---|
+| 메서드를 둘로 나눴으니 충분하다 | 이름보다 질문 수가 줄었는가 | `검증/저장/응답`이 아직 같이 있으면 한 번 더 자른다 |
+| Controller가 얇아졌으니 레이어도 끝났다 | 규칙이 여전히 한 클래스에 몰렸는가 | Service/Domain 쪽에 남을 규칙을 다시 적는다 |
+| Service를 테스트했으니 통합 테스트다 | 실제로 붙인 것이 무엇인가 | fake/mock이면 규칙 테스트부터 본다 |
 
-둘은 경쟁 관계가 아니라 역할 분담이다.
+- 짧게 외우면 `메서드 분리 != 책임 분리 완료`, `얇은 Controller != 좋은 경계 완료`, `Service 테스트 != 자동 통합 테스트`다.
 
-## 용어가 낯설면 이렇게 번역해서 읽기
+## 잘못된 첫 반응 대신 이렇게 시작한다
 
-처음 읽을 때는 영어 용어를 정확히 외우기보다, 아래처럼 "지금 무엇을 확인하는 말인지"로 번역하면 된다.
+초심자는 구조 피드백을 들으면 `일단 메서드 추출`, `일단 Service로 이동`, `일단 서버 전체 테스트`처럼 크게 반응하기 쉽다. 아래처럼 **더 작은 첫 행동**으로 줄이면 다음 문서도 덜 헷갈린다.
 
-| 문서에서 자주 나오는 말 | 초심자용 해석 |
-|---|---|
-| 유스케이스 조립 (orchestration) | 한 기능을 끝내기 위해 호출 순서를 정하는 일 |
-| 도메인 규칙 (domain rule) | 주문/할인/검증처럼 비즈니스에서 바뀌면 안 되는 규칙 |
-| 단위 테스트 (unit test) | 외부 의존을 빼고 규칙만 빠르게 확인하는 테스트 |
-| 통합/슬라이스 테스트 (integration/slice test) | 스프링/DB/직렬화처럼 경계 연결이 맞는지 확인하는 테스트 |
-| 리팩토링 (refactoring) | 외부 동작은 유지한 채 내부 구조만 읽기 좋게 바꾸는 작업 |
+| 지금 보인 증상 | 자주 하는 큰 반응 | 더 싼 첫 행동 | 바로 다음 문서 |
+|---|---|---|---|
+| "메서드가 너무 길어요" | 이름만 바꾼 private 메서드를 여러 개 뽑는다 | `검증/저장/응답` 중 어떤 질문이 섞였는지 표시한다 | [클린 코드 기초](./clean-code-basics.md) |
+| "Controller가 너무 많은 걸 알아요" | 코드를 통째로 Service로 옮긴다 | `입력 형식`과 `업무 규칙`을 다른 색으로 표시한다 | [계층형 아키텍처 기초](./layered-architecture-basics.md) |
+| "구조를 바꾸기 무서워요" | `@SpringBootTest`부터 크게 붙인다 | 방금 옮길 규칙 1개만 단위 테스트로 먼저 잠근다 | [테스트 전략 기초](./test-strategy-basics.md) |
+
+- 멘탈 모델은 `크게 옮기기`보다 `질문 1개 표시 -> 책임 1개 이동 -> 테스트 1개 고정`이다.
+
+## 같은 주문 생성 코드로 보는 1회 pass
+
+처음부터 구조 전체를 바꾸지 말고 **책임 1개 이동 + 테스트 1개 고정**만 한다.
+
+| 순서 | 이번 pass에서 하는 일 | 먼저 잠글 테스트 |
+|---|---|---|
+| 1 | `create()` 안에서 `수량 검증 / 저장 / 응답 조립`을 표시한다 | 아직 추가하지 않아도 된다 |
+| 2 | `수량은 1개 이상` 규칙만 Service/Domain 쪽으로 옮긴다 | 단위 테스트 1개 |
+| 3 | Controller에는 요청 파싱과 응답 반환만 남긴다 | 계약이 바뀌었을 때만 `@WebMvcTest` 1개 |
+| 4 | 초록을 확인한 뒤 다음 책임 1개로 넘어간다 | 기존 테스트 재실행 |
+
+- 이 pass에서는 `retry`, `rollback`, 외부 운영 시나리오까지 같이 다루지 않는다.
+- 그런 질문은 starter 3축을 정리한 뒤 관련 문서로 넘긴다.
+
+## 지금은 링크만 걸고 지나가는 질문
+
+이 primer의 역할은 `읽기 문제인가 -> 책임 위치 문제인가 -> 첫 테스트 문제인가`를 고르는 데 있다. 아래 질문은 초심자 입구에서 바로 풀기보다, **책임 1개 + 테스트 1개**가 잡힌 뒤에 관련 문서로 넘기는 편이 덜 헷갈린다.
+
+| 지금 들리는 말 | 여기서 바로 깊게 안 파는 이유 | 막혔을 때 여는 문서 |
+|---|---|---|
+| "재시도 몇 번까지가 맞죠?", "멱등키는 어디까지 퍼져야 하죠?" | 첫 pass가 `규칙 1개 이동`이 아니라 운영 분기표 정리로 커지기 쉽다 | [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md) |
+| "함께 저장되거나 함께 실패해야 하나요?" | 읽기/레이어 문제보다 협력 흐름 검증 질문에 가깝다 | [테스트 전략 기초](./test-strategy-basics.md#같은-주문-생성-예시로-보는-레이어-변경---첫-테스트) |
+| "배치나 메시지 consumer도 같은 규칙을 써야 해요" | `Controller -> Service -> Repository` starter를 넘어서 진입점/출구 경계 설계가 필요하다 | [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md) |
+| "`Map`/`Queue`가 왜 여기서 나오죠?", "`Optional`과 빈 컬렉션을 어디서 나누죠?" | 구조 primer를 건너뛰고 deep dive 구현체로 가면 `규칙 문장`보다 타입 이름만 남기 쉽다 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) -> [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
+
+- stop rule: 아직 `이번 pass에서 옮길 책임 1개`를 말할 수 없다면 이 표의 문서는 읽지 않고 starter 표로 돌아간다.
+- 초심자 첫 pass에서는 `retry`, `incident`, `rollback` 같은 운영 단어가 보여도 본문에서 붙잡지 않는다. 이 문서는 링크만 건네고, starter 3축을 정한 뒤 follow-up으로 넘긴다.
+
+## 첫 10분 실행 순서
+
+| 순서 | 지금 할 일 | 끝났다고 볼 기준 |
+|---|---|---|
+| 1 | 리뷰 문장을 `읽기 / 레이어 / 테스트` 중 하나로 이름 붙인다 | 어느 표를 볼지 정해진다 |
+| 2 | 코드에서 책임이 섞인 줄 1곳만 표시한다 | 이번 pass에서 옮길 책임 1개가 정해진다 |
+| 3 | 그 변경을 가장 싸게 검증할 테스트 1개를 고른다 | 다음 행동이 `코드 1곳 + 테스트 1개`로 줄어든다 |
+
+- 여기까지 정해졌다면 이 primer의 역할은 끝이다.
+- 다음 행동도 `코드 1곳 + 테스트 1개`보다 커지면, 더 읽기보다 다시 이 표로 돌아와 범위를 줄인다.
 
 ## before / after 짧은 예시로 보기
-
-처음에는 아래처럼 "동작은 하지만 읽기 어려운 코드"가 자주 나온다.
 
 ```java
 public OrderResponse create(CreateOrderRequest request) {
@@ -94,30 +131,13 @@ public OrderResponse create(CreateOrderRequest request) {
 
     product.decrease(request.quantity());
     Order order = new Order(product.id(), request.quantity());
-
-    productRepository.save(product);
     orderRepository.save(order);
 
     return new OrderResponse(order.id(), product.name(), request.quantity());
 }
 ```
 
-이 메서드는 한 번에 너무 많은 질문에 답한다.
-
-- 입력 검증
-- 조회
-- 재고 규칙
-- 상태 변경
-- 저장
-- 응답 조립
-
-그래서 리뷰에서는 보통 아래처럼 읽힌다.
-
-- `create()`라는 이름만으로는 실제 책임이 보이지 않는다.
-- Controller나 Service 한 곳에 규칙과 저장과 응답 조립이 다 몰려 있다.
-- 이 코드를 테스트하려면 웹, DB, 비즈니스 규칙이 한 덩어리로 묶여 피드백이 느려진다.
-
-같은 흐름을 더 읽기 쉽게 나누면 보통 아래 방향이 된다.
+위 코드는 동작은 하지만 질문이 많다. 입력 검증, 조회, 재고 규칙, 저장, 응답 조립이 한 메서드에 몰려 있다.
 
 ```java
 public OrderResponse create(CreateOrderRequest request) {
@@ -135,181 +155,24 @@ public OrderId place(CreateOrderCommand command) {
 }
 ```
 
-이제 질문이 나뉜다.
-
-## before / after 짧은 예시로 보기 (계속 2)
-
-- Controller는 입력/응답에 집중한다.
-- Service는 유스케이스 조립에 집중한다.
-- `Order.place(...)`는 핵심 규칙에 집중한다.
-
-그러면 테스트도 자연스럽게 분리된다.
-
-| 확인하고 싶은 것 | 적합한 테스트 |
-|---|---|
-| `quantity <= 0`이면 예외인가 | 단위 테스트 |
-| 재고 부족이면 주문 생성이 막히는가 | 단위 테스트 |
-| JSON 요청이 `CreateOrderRequest`로 잘 매핑되는가 | 통합/슬라이스 테스트 |
-| JPA 저장과 조회가 기대대로 동작하는가 | 통합 테스트 |
+이제 초심자는 "Controller는 입력/응답", "Service는 흐름 조립", "Domain은 규칙"처럼 읽을 수 있다.
 
 ## unit test와 integration test를 이렇게 나눈다
 
-입문자가 가장 자주 헷갈리는 부분은 "Service를 테스트하면 무조건 통합 테스트 아닌가요?"라는 질문이다.
-
-실용적인 기준은 하나다.
-
-**외부 의존을 실제로 붙였는가, 아니면 대체했는가**
-
-| 구분 | 단위 테스트 | 통합 테스트 |
+| 지금 확인할 질문 | 먼저 붙일 테스트 | 이유 |
 |---|---|---|
-| 주로 보는 것 | 비즈니스 규칙, 분기, 계산 | 스프링 빈 연결, DB 매핑, 직렬화, 트랜잭션 |
-| 외부 의존 | Fake, Stub, Mock으로 대체 | 실제 DB, 실제 컨텍스트, 실제 직렬화 사용 |
-| 속도 | 빠름 | 상대적으로 느림 |
-| 리팩토링 내성 | 결과 중심이면 높음 | 경계 변화에 민감하지만 현실 검증에 강함 |
-| 먼저 추가할 곳 | 도메인 규칙, 작은 유스케이스 | Repository, Controller, 외부 연동 경계 |
-
-짧게 기억하면 된다.
-
-- "할인 계산 규칙이 맞나?"는 단위 테스트에 가깝다.
-- "JPA 매핑이 맞나?"는 통합 테스트에 가깝다.
-- "JSON 요청이 잘 들어오나?"도 통합/슬라이스 테스트에 가깝다.
-
-## 리팩토링할 때의 최소 안전 루프
-
-우테코 리뷰 문화에서 중요한 것은 "한 번에 크게 고치는 용기"보다 "작게 바꾸고 바로 확인하는 리듬"이다.
-
-가장 안전한 초심자용 루프는 아래 순서다.
-
-1. 바꾸려는 규칙이나 버그 근처에 작은 테스트를 먼저 둔다.
-2. 이름 변경, 메서드 추출, 책임 이동 중 하나만 한다.
-3. 가까운 단위 테스트를 먼저 돌려 빠르게 깨졌는지 본다.
-4. 경계가 걸려 있으면 관련 통합 테스트도 함께 확인한다.
-5. 기능 변경과 구조 변경을 가능한 한 분리해서 리뷰 가능한 단위로 남긴다.
-
-이 루프는 TDD의 `Red -> Green -> Refactor`와도 이어진다. 꼭 모든 코드를 테스트 먼저 작성하지 않더라도, **리팩토링 전에 안전망을 만들고 작은 단위로 이동한다**는 점이 핵심이다.
-
-## 첫 미션에서 바로 쓰는 15분 적용 체크리스트
-
-코드를 전부 다시 설계하려고 하지 말고, 아래 4가지만 먼저 적용하면 리뷰 난이도가 크게 내려간다.
-
-1. 메서드 하나를 고르고 "이 메서드는 한 질문에 답하는가?"만 확인한다.
-2. 답이 두 개 이상이면 이름 붙일 수 있는 단계로 한 번만 분리한다.
-3. 분리한 규칙에 단위 테스트 1개를 추가한다.
-4. 입력 매핑/DB 저장이 바뀌었다면 통합 또는 슬라이스 테스트 1개를 추가한다.
-
-체크리스트를 적용한 뒤 세부 기준이 더 필요하면:
-
-- 책임 경계가 헷갈리면 [계층형 아키텍처 기초](./layered-architecture-basics.md), [Service 계층 기초](./service-layer-basics.md)
-- 테스트 구분이 헷갈리면 [테스트 전략 기초](./test-strategy-basics.md)
-- 단계적 개선 방법이 더 필요하면 [리팩토링 기초](./refactoring-basics.md)
-
-## 30분에서 10분 분기로 넘어갈 때: 실제 PR 상황 3개
-
-30분 입문을 읽고 나면, 다음 10분은 문서를 많이 여는 시간보다 **지금 받은 리뷰 코멘트를 어느 바구니에 넣을지 고르는 시간**이다.
-
-짧게 기억하면 된다.
-
-- 코드가 안 읽히면 `코드리딩`
-- 책임이 섞였으면 `레이어 설계`
-- 테스트가 너무 넓거나 무거우면 `테스트`
-
-| PR에서 바로 보이는 상황 | 지금 먼저 떠올릴 질문 | 10분 분기 | 바로 이어서 읽을 문서 |
-|---|---|---|---|
-| "메서드 이름은 `validate`인데 조회, 저장, 예외 메시지 조립까지 같이 한다" | 이 코멘트가 네이밍 문제인지, 책임 섞임 문제인지 먼저 분리됐나? | 코드리딩 | [Common-Confusion Wayfinding Notes](./common-confusion-wayfinding-notes.md) |
-| "Service 하나가 `Repository` 조회, 외부 API 호출, 이벤트 발행까지 모두 직접 한다" | 이 로직을 옮길 파일을 찾기 전에, 안/밖 경계를 먼저 설명할 수 있나? | 레이어 설계 | [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md) |
-| "주문 수량 검증 하나 바꿨는데 `@SpringBootTest`와 DB 초기화 테스트만 커졌다" | 지금 확인하려는 질문이 규칙인지, wiring인지 분리됐나? | 테스트 | [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md) |
-
-### 예시 1. 가독성 이슈면 먼저 `코드리딩`
-
-리뷰 예시:
-
-> "이 메서드는 이름보다 훨씬 많은 일을 하네요."
-
-이때 초심자가 자주 하는 실수는 바로 `Service`를 더 쪼개거나 클래스를 옮기는 것이다. 그런데 첫 질문은 구조 변경이 아니라, **무슨 종류의 일이 섞였는지 이름을 붙일 수 있는가**다.
-
-| 바로 보이는 증상 | 먼저 할 일 | 아직 미루는 일 |
-|---|---|---|
-| 한 메서드에서 검증, 상태 변경, 응답 조립이 한 번에 나온다 | 단계 이름을 붙여 읽기 흐름을 다시 적는다 | 새 패턴 도입, 패키지 재배치 |
-
-- 이 경우 10분 문서는 [Common-Confusion Wayfinding Notes](./common-confusion-wayfinding-notes.md)가 맞다.
-- 이유는 "네이밍 문제처럼 보이지만 사실 책임 분리 문제"인 코멘트를 먼저 번역해 주기 때문이다.
-- 그다음에도 Controller/Service 경계가 여전히 흐리면 [계층형 아키텍처 기초](./layered-architecture-basics.md)로 이어간다.
-
-### 예시 2. 레이어 혼합이면 먼저 `레이어 설계`
-
-리뷰 예시:
-
-> "Service가 외부 시스템 세부 구현까지 너무 많이 알고 있어요."
-
-이 코멘트에서 중요한 것은 "Service가 두껍다"가 아니라, **유스케이스 조립과 외부 연동 세부가 같은 레이어에 섞였는가**다.
-
-## 30분에서 10분 분기로 넘어갈 때: 실제 PR 상황 3개 (계속 2)
-
-| 바로 보이는 증상 | 먼저 할 일 | 아직 미루는 일 |
-|---|---|---|
-| Service 안에서 HTTP client, JPA 세부, 이벤트 발행 코드가 다 보인다 | inbound/outbound로 안과 밖 경계를 먼저 나눈다 | 곧바로 헥사고날 전체 구조를 다 도입한다 |
-
-- 이 경우 10분 문서는 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)가 맞다.
-- 이유는 "파일을 어디로 옮길까"보다 "무엇이 안쪽 규칙이고 무엇이 바깥 연결인가"를 먼저 잡게 해 주기 때문이다.
-- 영속성 누수까지 같이 보여서 헷갈리면 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)도 같이 연결하면 된다.
-
-### 예시 3. 테스트 과잉이면 먼저 `테스트`
-
-리뷰 예시:
-
-> "이 변경은 수량 규칙 하나인데 왜 서버 전체를 띄우는 테스트만 있죠?"
-
-여기서 초심자가 놓치기 쉬운 지점은 "테스트를 더 많이 쓰라"가 아니라, **질문보다 큰 테스트를 먼저 골라 피드백이 느려졌는가**다.
-
-| 바로 보이는 증상 | 먼저 할 일 | 아직 미루는 일 |
-|---|---|---|
-| 규칙 1개 확인인데 `@SpringBootTest`만 늘어난다 | unit / adapter / contract 중 어느 경계를 검증할지 먼저 고른다 | E2E 테스트를 더 추가한다 |
-
-- 이 경우 10분 문서는 [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)가 맞다.
-- 이유는 "테스트 종류"를 고른 다음 단계인 "어느 경계까지 검증할지"를 정리해 주기 때문이다.
-- 첫 테스트 종류 자체가 아직 헷갈리면 먼저 [테스트 전략 기초](./test-strategy-basics.md)로 돌아간다.
-
-## 우테코 코드 리뷰에서 자주 들리는 말의 뜻
-
-| 리뷰에서 자주 보이는 말 | 실제로 묻는 질문 | 바로 해볼 수정 |
-|---|---|---|
-| "메서드가 두 가지 일을 하는 것 같아요." | 한 메서드가 두 개 이상의 이유로 바뀌지 않는가 | 이름 붙일 수 있는 단계별 메서드로 추출한다 |
-| "Controller가 너무 많은 걸 알고 있네요." | 입력/응답과 비즈니스 규칙이 섞이지 않았는가 | 규칙을 Service나 Domain으로 옮긴다 |
-| "테스트가 구현에 너무 붙어 있어요." | 내부 호출 순서보다 결과를 검증하고 있는가 | 반환값, 상태 변화, 예외 같은 결과를 중심으로 단언한다 |
-| "이 리팩토링이 안전한 근거가 있나요?" | 동작이 유지됐다는 증거가 있는가 | 작은 테스트를 추가하고, 변경 전후 모두 통과시킨다 |
-
-즉 리뷰 코멘트는 서로 다른 주제를 말하는 것처럼 보여도, 실제로는 같은 축으로 모인다.
-
-- 읽기 쉬운 책임 분리
-- 빠른 테스트 피드백
-- 작은 단위의 안전한 리팩토링
-
-## 흔한 오해와 함정
-
-- "읽기 좋은 코드는 짧은 코드다"라고 생각하기 쉽다.
-  - 더 정확한 기준은 짧기보다 **의도가 바로 읽히는가**다.
-- "Service는 무조건 얇아야 한다"라고 외우기 쉽다.
-  - 중요한 것은 얇기보다 **Controller와 Repository 책임을 대신 떠안지 않는가**다.
-- "단위 테스트가 많으면 통합 테스트는 거의 없어도 된다"라고 오해하기 쉽다.
-  - 규칙 검증과 경계 검증은 다른 질문이다. 둘 다 필요하다.
-- "리팩토링은 예쁘게 다시 짜는 것"이라고 느끼기 쉽다.
-  - 리팩토링의 핵심은 외부 동작을 유지하면서 내부 구조만 개선하는 것이다.
-- "가독성 이슈면 항상 네이밍만 고치면 된다"라고 생각하기 쉽다.
-  - 실제 PR에서는 네이밍 뒤에 책임 혼합이 숨어 있는 경우가 많아, 먼저 증상을 분류해야 한다.
-- "레이어 혼합이 보이면 바로 헥사고날 전체 구조로 가야 한다"라고 오해하기 쉽다.
-  - 초심자에게는 전체 패턴 도입보다 안/밖 경계를 한 번 말로 설명해 보는 것이 먼저다.
-- "테스트 과잉은 테스트 개수를 줄이라는 뜻이다"라고 받아들이기 쉽다.
-  - 더 중요한 기준은 개수보다 **질문에 맞는 가장 작은 테스트를 골랐는가**다.
+| 수량이 0이면 예외가 나는가 | unit test | 규칙만 빠르게 깨져야 구조 정리가 쉽다 |
+| 잘못된 요청이 400으로 막히는가 | `@WebMvcTest` | 웹 계약은 HTTP 경계에서 확인하는 게 빠르다 |
+| 저장/조회 매핑이 맞는가 | `@DataJpaTest` | JPA와 SQL은 실제 연결이 필요하다 |
+| 주문 저장과 재고 차감이 함께 묶이는가 | 소수의 통합 테스트 | 여러 경계가 실제로 이어지는지 보는 질문이다 |
 
 ## 다음에 읽을 문서
 
-- 이름, 메서드 크기, 추상화 수준이 더 궁금하면 [클린 코드 기초](./clean-code-basics.md)
-- Controller / Service / Repository 책임이 더 헷갈리면 [계층형 아키텍처 기초](./layered-architecture-basics.md), [Service 계층 기초](./service-layer-basics.md)
-- 단위/통합 테스트의 기본 배치가 더 필요하면 [테스트 전략 기초](./test-strategy-basics.md)
-- Red-Green-Refactor 감각을 더 붙이고 싶다면 [TDD 기초](./tdd-basics.md)
-- 작은 단계로 구조를 고치는 기준이 더 필요하면 [리팩토링 기초](./refactoring-basics.md)
-- 리뷰 댓글을 읽는 법까지 같이 보고 싶다면 [코드 리뷰 기초](./code-review-basics.md)
+- 읽기 문제가 더 크면 [클린 코드 기초](./clean-code-basics.md)
+- 자리 문제가 더 크면 [계층형 아키텍처 기초](./layered-architecture-basics.md)
+- 첫 테스트 선택이 더 막히면 [테스트 전략 기초](./test-strategy-basics.md)
+- 구조를 안전하게 옮기는 순서가 더 필요하면 [리팩토링 기초](./refactoring-basics.md)
 
 ## 한 줄 정리
 
-읽기 좋은 코드, 레이어 분리, 테스트 전략, 리팩토링은 따로 놀지 않는다. "한 곳에 한 이유만 남기고, 바꾼 범위는 가장 빠른 테스트로 바로 확인한다"는 같은 습관의 다른 이름이다.
+읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프는 다른 주제가 아니라 `책임 1개를 분리하고 그 책임을 가장 싼 테스트 1개로 잠그는 같은 작업`이다.

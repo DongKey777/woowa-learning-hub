@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [DTO, VO, Entity 기초](../../software-engineering/dto-vo-entity-basics.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
 - [Stable ID vs Natural Key Bridge](./stable-id-vs-natural-key-bridge.md)
@@ -21,6 +22,8 @@ retrieval-anchor-keywords: language-java-00111, stable id as map key primer, imm
 ## 먼저 잡을 멘탈 모델
 
 `Map`은 "어떤 서랍 이름으로 찾을까"와 "그 서랍 안에 무엇을 넣을까"를 같이 정하는 구조다.
+
+`DTO/VO/Entity` 문서를 방금 읽고 넘어왔다면 여기서는 이름을 더 늘리기보다, `Entity는 추적 대상`, `key는 조회 기준`이라는 두 역할을 분리하는 데만 집중하면 된다.
 
 - key는 서랍 이름이다
 - value는 서랍 안 내용물이다

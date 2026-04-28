@@ -2,9 +2,12 @@
 
 > 한 줄 요약: HTTP/2 multiplexing은 무한 병렬이 아니다. `SETTINGS_MAX_CONCURRENT_STREAMS` 한계에 걸리면 새 stream은 보이지 않는 대기열에 서고, 운영자는 이를 upstream 지연이나 네트워크 문제로 오해하기 쉽다.
 
+처음 읽는다면 [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)에서 `slot 부족`과 `credit 부족` 차이부터 잡고 들어오는 편이 빠르다.
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)
 > - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [HTTP/2 Flow Control, WINDOW_UPDATE, Stall](./http2-flow-control-window-update-stalls.md)
 > - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)

@@ -7,7 +7,14 @@
 > 관련 문서:
 > - [스케줄러 공정성, page cache, 파일 시스템 기초](./scheduler-fairness-page-cache.md)
 > - [NUMA, page replacement, thrashing](./memory-management-numa-page-replacement-thrashing.md)
+> - [memory management basics](./memory-management-basics.md)
+> - [workingset refault, page cache reclaim debugging](./workingset-refault-page-cache-reclaim-debugging.md)
 > - [file descriptor, socket, syscall cost](./file-descriptor-socket-syscall-cost-server-impact.md)
+> - [LRU cache basics](../data-structure/lru-cache-basics.md)
+> - [buffer pool, read ahead, eviction interaction](../database/buffer-pool-read-ahead-eviction-interaction.md)
+> - [operating-system 카테고리 인덱스](./README.md)
+
+> retrieval-anchor-keywords: page replacement basics, clock vs lru, lru replacement algorithm, clock page replacement algorithm, page eviction basics, page cache eviction, working set memory basics, thrashing page replacement, 처음 배우는데 lru clock 차이, 왜 lru 대신 clock 써요, page replacement 큰 그림, 메모리 꽉 차면 무엇을 버리나요, page fault cache hit ratio basics, os cache eviction beginner, buffer pool eviction vs page cache, 언제 clock 알고리즘 쓰나요
 
 ---
 

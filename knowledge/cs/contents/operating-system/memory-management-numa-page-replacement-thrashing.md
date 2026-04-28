@@ -2,6 +2,17 @@
 
 **난이도: 🔴 Advanced**
 
+관련 문서:
+
+- [가상 메모리 기초](./virtual-memory-basics.md)
+- [메모리 관리 기초](./memory-management-basics.md)
+- [Page Replacement: Clock vs LRU](./page-replacement-clock-vs-lru.md)
+- [NUMA first-touch, remote memory locality debugging](./numa-first-touch-remote-memory-locality-debugging.md)
+- [Major/Minor Page Faults Runtime Diagnostics](./major-minor-page-faults-runtime-diagnostics.md)
+- [Java Execution, Object, Memory Mental Model Primer](../language/java/java-execution-object-memory-mental-model-primer.md)
+
+retrieval-anchor-keywords: numa basics, page replacement basics, thrashing basics, 메모리 관리 numa 페이지 교체 스래싱, numa 뭐예요, page replacement 뭐예요, thrashing 뭐예요, 처음 배우는데 numa, 처음 배우는데 page replacement, 처음 배우는데 thrashing, working set basics, page fault 많으면 왜 느려져요, 메모리 충분한데 왜 느려요, remote memory access basics, clock vs lru basics, memory pressure beginner bridge, tail latency and page fault
+
 운영체제 면접에서 메모리 관리는 단순히 "페이지를 교체한다" 수준으로 끝나지 않는다. 실제 서버는 CPU 코어 수가 많아지고, 메모리 대역폭이 병목이 되며, NUMA 구조까지 고려해야 한다. 이 문서는 page replacement와 thrashing을 중심으로, 왜 메모리 압박이 서버 전체 지연으로 이어지는지까지 정리한다.
 
 <details>

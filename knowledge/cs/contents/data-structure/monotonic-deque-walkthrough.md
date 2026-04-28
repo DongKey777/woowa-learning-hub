@@ -151,6 +151,28 @@ plain deque의 front는 `현재 최댓값`이 아니라 `가장 먼저 들어온
 - **가장 왼쪽 index**, **가장 먼저 등장한 위치**까지 의미가 있으면 strict 비교(`max: <`, `min: >`)를 검토해야 한다.
 - 문제에서 tie-break를 말하지 않았는데 구현 리뷰에서 연산자 질문이 나온다면, [Monotonic Operator Boundary Cheat Sheet](./monotonic-operator-boundary-cheat-sheet.md)로 연결해서 `strict vs or-equal` 기준을 다시 확인하면 된다.
 
+바로 코드로 대조하면 차이는 한 줄이다.
+
+```java
+// window maximum: 값만 출력하면 equal도 pop해서 오른쪽 값을 대표로 둔다.
+while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) {
+    dq.pollLast();
+}
+dq.offerLast(i);
+answer.add(nums[dq.peekFirst()]);
+```
+
+```java
+// window maximum: 가장 왼쪽 index가 중요하면 equal은 남겨서 왼쪽 값을 대표로 둔다.
+while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) {
+    dq.pollLast();
+}
+dq.offerLast(i);
+answer.add(dq.peekFirst());
+```
+
+최소값은 비교만 반대로 뒤집으면 된다. 즉 `값만 출력`이면 `>=`, `왼쪽 index 유지`면 `>`다.
+
 ## 4.5. 미니 퀴즈: strict vs or-equal
 
 아래 4문항은 모두 **중복값이 들어온 순간 뒤에서 무엇을 pop할지**를 묻는다.

@@ -1,51 +1,33 @@
 # 테스트 전략과 테스트 더블
 
-> 한 줄 요약: 테스트 전략은 단위/통합/E2E를 나누는 분류가 아니라, 어디에서 빠르게 신뢰를 얻고 어디에서 시스템 경계를 검증할지 정하는 설계다.
+> 한 줄 요약: 이 문서는 `첫 테스트를 고른 뒤 왜 그 선택이 맞는지`와 `mock/stub/fake 중 무엇을 왜 쓰는지`를 한 단계 더 설명하는 follow-up이다.
 
 **난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
+- [테스트 전략 기초](./test-strategy-basics.md)
+- [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+- [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
+- [Repository Fake Design Guide](./repository-fake-design-guide.md)
+- [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
+- [Spring MVC Request Lifecycle Basics](../spring/spring-mvc-request-lifecycle-basics.md)
+- [software-engineering 카테고리 인덱스](./README.md)
 
+retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stub fake difference, first test checklist follow-up, unit integration e2e balance, webmvctest datajpatest next step, fake outbound port, contract test basics, hexagonal testing seam, beginner test routing follow-up
 
-retrieval-anchor-keywords: testing strategy and test doubles basics, testing strategy and test doubles beginner, testing strategy and test doubles intro, software engineering basics, beginner software engineering, 처음 배우는데 testing strategy and test doubles, testing strategy and test doubles 입문, testing strategy and test doubles 기초, what is testing strategy and test doubles, how to testing strategy and test doubles
-> 관련 문서:
-> - [Software Engineering README: 테스트 전략과 테스트 더블](./README.md#테스트-전략과-테스트-더블)
-> - [테스트 전략 기초](./test-strategy-basics.md)
-> - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
-> - [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
-> - [Repository Fake Design Guide](./repository-fake-design-guide.md)
-> - [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
-> - [Architectural Fitness Functions](./architectural-fitness-functions.md)
-> - [Backward Compatibility Test Gates](./backward-compatibility-test-gates.md)
-> - [Consumer Migration Playbook and Contract Adoption](./consumer-migration-playbook-contract-adoption.md)
-> - [Test Data Strategy Across Environments](./test-data-strategy-cross-environment.md)
-> - [Production Readiness Review](./production-readiness-review.md)
-> - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
-> - [API Contract Testing, Consumer-Driven](./api-contract-testing-consumer-driven.md)
+`테스트 전략 기초`에서 첫 테스트를 고른 뒤 "왜 그 테스트가 맞는지", "mock 대신 fake를 언제 써야 하는지"가 더 궁금할 때 이 문서로 올라오면 된다. 특히 `@WebMvcTest` 경계는 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), `@DataJpaTest`에서 테스트 DB 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)로 바로 내려가면 된다.
 
-> retrieval-anchor-keywords:
-> - test strategy
-> - test pyramid
-> - unit test
-> - integration test
-> - e2e test
-> - test double
-> - mock
-> - stub
-> - fake
-> - contract test
-> - hexagonal testing seam
-> - fake outbound port
-> - first test checklist follow-up
-> - webmvctest datajpatest next document
-> - beginner test checklist reverse link
+처음 읽는 초심자라면 이 문서 전체를 다 읽기보다 아래 두 질문만 먼저 잡으면 충분하다.
 
-`테스트 전략 기초`에서 첫 테스트를 고른 뒤 "왜 그 테스트가 맞는지", "mock 대신 fake를 언제 써야 하는지"가 더 궁금할 때 이 문서로 올라오면 된다. 특히 `@WebMvcTest` 경계는 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), `@DataJpaTest`에서 H2와 운영 DB 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)로 바로 내려가면 된다.
+| 지금 막힌 질문 | 여기서 먼저 볼 곳 |
+|---|---|
+| "왜 단위 테스트로 시작하지?" | `테스트는 시스템 경계에 맞춰야 한다` |
+| "mock 대신 fake가 더 낫다는 말이 왜 나오지?" | `test double은 실제 의존성을 통제하는 도구다` |
+
+- stop rule: `첫 테스트 1개`를 아직 못 골랐다면 [테스트 전략 기초](./test-strategy-basics.md)로 먼저 돌아간다.
+- 운영/배포 질문은 이 문서 본문보다 [Backend Delivery and Observability Foundations Primer](./backend-delivery-observability-foundations-primer.md) 같은 follow-up 문서에서 따로 보는 편이 beginner 동선에 맞다.
 
 ## 핵심 개념
 
@@ -110,19 +92,18 @@ Mock이 많아지면:
 
 행위 검증이 꼭 필요한 경계에서만 mock을 쓰는 것이 좋다.
 
-### 5. 테스트 전략은 배포 전략과 연결돼야 한다
+### 5. 테스트 전략은 검증 질문 순서와 연결돼야 한다
 
-테스트는 개발 로컬에서 끝나지 않는다.
+초심자에게 더 중요한 기준은 "운영 장치 이름"보다 **지금 실패를 어디서 가장 빨리 다시 만들 수 있느냐**다.
 
-다음과 연결된다.
+보통은 아래 순서로 생각하면 충분하다.
 
-- PR gate
-- contract gate
-- canary rollout
-- rollback 판단
-- production readiness review
+- 규칙이 바뀌었나
+- HTTP 입력/응답 계약이 바뀌었나
+- DB/JPA 동작이 바뀌었나
+- 여러 컴포넌트 협력 흐름이 바뀌었나
 
-즉 테스트는 품질 검증이면서 **출시 안전 장치**다.
+이 순서가 잡힌 뒤에야 PR gate, contract gate, rollout 같은 운영 질문을 더 얹을 수 있다. 이 문서에서는 그 운영 확장을 중심으로 다루지 않고, 먼저 **검증 질문과 테스트 종류를 맞추는 감각**에 집중한다.
 
 ---
 

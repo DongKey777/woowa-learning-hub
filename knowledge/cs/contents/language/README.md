@@ -4,6 +4,97 @@
 
 > 이 README는 language category `navigator`다. 언어별 `primer`와 Java 중심 `deep dive catalog`를 묶고, 학습 순서용 `survey`는 루트 roadmap으로 보낸다.
 
+> beginner 빠른 진입:
+> - 첫 10분은 primer 5개 축만 본다: `실행 모델 -> 객체 모델 -> equality -> collections basics -> optional/enum/null`
+> - 지금 막힌 증상 하나만 고르고, 문서는 한 번에 한 장씩만 읽는다
+> - "`new` 했는데 뭐가 생기지?"면 [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md)
+> - "`class`/객체/인스턴스/OOP가 한꺼번에 섞인다"면 [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md)
+> - "`==`/`equals()`/`hashCode()`가 섞인다"면 [Java Equality and Identity Basics](./java/java-equality-identity-basics.md)
+> - "`List`/`Set`/`Map` 자체가 아직 안 잡혔다"면 [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md)
+> - "`컬렉션은 알겠는데 백엔드 문제 문장을 자료구조로 못 옮기겠다`"면 [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md)
+> - "`Optional`이랑 `null`, 빈 리스트, enum 상태가 언제 갈리는지 모르겠다"면 [Java Optional 입문](./java/java-optional-basics.md)
+> - "`Optional`보다 enum 상태가 더 맞는 순간이 언제인지 모르겠다"면 [Java enum 기초](./java/java-enum-basics.md)
+> - "`HashSet` 중복, `HashMap` 조회, mutable key까지 같이 흔들린다"면 [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md)
+> - "`HashMap#get(...)`이 왜 `null`인지부터 헷갈린다"면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md)
+> - 구현체 암기보다 `무엇이 만들어지는가 / 같은 값 기준은 무엇인가 / key로 다시 찾는가 / 넣은 뒤 바꾸는가` 네 질문을 먼저 붙인다
+> - `처음`, `왜`, `언제`, `뭐예요`, `헷갈려요`가 붙는 beginner 질문이면 deep dive보다 primer 한 장으로 먼저 자른다
+> - `record`, sorted collection, comparator, BigDecimal key 같은 follow-up은 위 primer를 지난 뒤 붙인다
+> - JFR, safepoint, Loom, JDBC cancel 같은 운영/진단 주제도 위 5장을 지난 뒤 아래 deep dive cluster로 넘긴다
+
+처음엔 "문서를 다 읽어야 이해된다"보다 "지금 코드가 무슨 질문을 하고 있나"를 먼저 자르는 편이 낫다.
+
+| 지금 보이는 증상 | 먼저 갈 primer | 읽고 나서 붙일 다음 한 칸 |
+|---|---|---|
+| "`new`를 안 했는데 왜 같이 바뀌지?" | [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) |
+| "`Student student`만 써도 객체가 생긴 거 아닌가?" | [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) | [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) |
+| "`==`와 `equals()`가 계속 섞인다" | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) |
+| "`List`/`Set`/`Map`이 아직 구조부터 안 잡힌다" | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
+| "`Optional`이 왜 필요한지, 빈 리스트랑 뭐가 다른지 모르겠다" | [Java Optional 입문](./java/java-optional-basics.md) | [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./java/optional-collections-domain-null-handling-bridge.md) |
+| "`없음`을 `Optional`로 볼지 enum 상태로 볼지 모르겠다" | [Java enum 기초](./java/java-enum-basics.md) | [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./java/optional-collections-domain-null-handling-bridge.md) |
+| "`HashMap#get(...)`이 왜 `null`이지?" | [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) | [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md) |
+
+초보자 첫 진입은 한 문서로 막힌 증상 하나만 자르고, 다음 문서도 한 칸만 옮기는 편이 안전하다.
+
+각 primer 상단의 `language 카테고리 인덱스` 링크는 다시 이 README로 돌아오는 safe return path다. 한 장 읽고도 여전히 막히면 `실행 모델`, `객체 모델`, `equality`, `collections`, `optional/enum/null` 중 어느 축이었는지만 다시 고르고 다음 한 칸만 붙인다.
+
+빠른 왕복 루트를 5축으로 줄이면 아래 표를 먼저 보면 된다.
+
+| 지금 고른 축 | 첫 primer | 바로 다음 한 칸 | 막히면 돌아올 자리 |
+|---|---|---|---|
+| 실행 모델 | [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) | [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) | 이 README의 [빠른 탐색](#빠른-탐색) |
+| 객체 모델 | [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) | [객체지향 핵심 원리](./java/object-oriented-core-principles.md) | 이 README의 [빠른 탐색](#빠른-탐색) |
+| equality | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) | 이 README의 `==`/`equals()` 증상 표 |
+| collections | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 README의 `List`/`Set`/`Map` 증상 표 |
+| optional/enum/null | [Java Optional 입문](./java/java-optional-basics.md) 또는 [Java enum 기초](./java/java-enum-basics.md) | [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./java/optional-collections-domain-null-handling-bridge.md) | 이 README의 `Optional`/빈 리스트/enum 증상 표 |
+
+`collections -> optional/null -> enum 상태`를 한 줄로 붙이면 이렇다.
+
+- 순서/중복/key 조회를 먼저 고른다 -> 단건의 없음이면 `Optional` -> 없음의 이유가 중요해지면 enum 상태나 상태 타입으로 올린다
+
+| 지금 가장 헷갈리는 한 문장 | 먼저 갈 문서 | 20초 판단 기준 |
+|---|---|---|
+| "`List`가 비어 있으면 그게 `null` 아닌가요?" | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) | 여러 건의 `0개`는 빈 컬렉션이 정상 상태다 |
+| "`Optional`이랑 빈 리스트를 언제 갈라요?" | [Java Optional 입문](./java/java-optional-basics.md) | 단건의 없음은 `Optional`, 여러 건의 `0개`는 컬렉션이다 |
+| "`HashMap#get(...) == null`이면 없는 거죠?" | [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) | key 없음과 value `null`을 분리해서 읽는다 |
+| "`없음`의 이유까지 말해야 하면 `Optional`이면 충분한가요?" | [Java enum 기초](./java/java-enum-basics.md) | 이유 이름표가 중요하면 enum 상태나 상태 타입으로 올린다 |
+
+| 지금 보이는 증상 | 먼저 갈 문서 | 바로 잡을 한 줄 | 다음 한 칸 |
+|---|---|---|---|
+| "`new`를 했는데 뭐가 생기는지 모르겠다" | [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) | 변수와 객체, `static`과 instance를 분리해서 본다 | [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) |
+| "한쪽만 바꿨는데 왜 다른 변수도 같이 바뀌지?" | [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) | `=`가 값 복사인지, 같은 객체 별칭인지 먼저 자른다 | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) |
+| "`class`/객체/인스턴스가 같은 말처럼 보인다" | [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) | 설계도, 실행 중 실체, 그 실체를 가리키는 손잡이를 나눈다 | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) |
+| "`==`와 `equals()`를 언제 써야 할지 모르겠다" | [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) | `==`는 같은 객체, `equals()`는 같은 값 질문이다 | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) |
+| "`List`/`Set`/`Map`부터 고르기 어렵다" | [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) | 순서, 중복, key 조회 세 질문으로 먼저 자른다 | [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md) |
+| "`Optional`, 빈 리스트, enum 상태 중 뭘 써야 할지 모르겠다" | [Java Optional 입문](./java/java-optional-basics.md) | 단건의 없음은 `Optional`, 다건의 0개는 빈 컬렉션, 없음의 이유는 상태 타입으로 본다 | [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./java/optional-collections-domain-null-handling-bridge.md) |
+| "`enum`을 상태 이름표로만 써야 하나, 없음의 이유까지 담아도 되나?" | [Java enum 기초](./java/java-enum-basics.md) | enum은 가능한 상태 후보를 고정하고, 이유가 중요해지면 상태 타입 entrypoint가 된다 | [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./java/enum-to-state-transition-beginner-bridge.md) |
+| "`Set`은 왜 중복이 안 들어가고 `Map`은 왜 조회가 깨지지?" | [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md) | 컬렉션 선택 뒤에는 동등성 규칙과 mutable key 위험을 같이 본다 | [HashSet vs TreeSet Duplicate Semantics](./java/hashset-vs-treeset-duplicate-semantics.md) |
+
+초보자 첫 route를 더 줄이면 이렇다. 실행 흐름이 흔들리면 1번, "같이 바뀐다" 같은 별칭 증상이 보이면 1번 다음 3번, 객체 용어가 흔들리면 2번, 비교 규칙이 흔들리면 3번, 자료구조 이름부터 안 잡히면 4번, 컬렉션 버그처럼 보여도 사실 비교 규칙 문제면 foundations로 간다.
+
+운영/진단 문서는 beginner route의 중심이 아니다. primer 4장으로 질문을 먼저 자른 뒤 아래 cluster로 넘어가면 된다.
+
+- runtime/diagnostics는 [Java Runtime and Diagnostics](#java-runtime-and-diagnostics)
+- concurrency/async는 [Java Concurrency and Async](#java-concurrency-and-async)
+- serialization/payload는 [Java Serialization and Payload Contracts](#java-serialization-and-payload-contracts)
+- boundary/language 설계는 [Java Language and Boundary Design](#java-language-and-boundary-design)
+
+특히 beginner가 많이 틀리는 지점은 "`List`/`Set`/`Map` 버그처럼 보여도 실제 원인은 참조 공유나 `equals()`/`hashCode()`"인 경우다. 자료구조 이름이 먼저 보여도 비교 규칙 문서로 한 칸 돌아가면 더 빨리 풀리는 경우가 많다.
+
+자주 섞이는 오해도 아래 네 줄로 먼저 끊어 두면 route가 빨라진다.
+
+- "`Student student`를 쓰면 학생 객체가 바로 생긴다"가 아니다. 변수 선언과 객체 생성은 다른 단계다.
+- "`a = b`면 객체가 복사된다"가 아니다. 참조형에서는 같은 객체 별칭일 수 있다.
+- "`==`면 다 값 비교다"가 아니다. 참조형에서는 보통 같은 객체 질문이다.
+- "`HashSet`/`HashMap` 문제는 컬렉션 구현체만 바꾸면 된다"가 아니다. 동등성 규칙과 mutable key를 같이 본다.
+
+두 문서를 연달아 보면 더 빨리 풀리는 흔한 조합도 있다.
+
+| 이런 말이 먼저 나온다 | 읽는 순서 | 이유 |
+|---|---|---|
+| "한쪽만 바꿨는데 왜 다른 변수도 같이 바뀌지?" | 실행 모델 -> equality | 먼저 같은 객체를 같이 보고 있는지 분리해야 `==`/`equals()`도 덜 꼬인다 |
+| "`HashSet` 중복이 안 막히거나 `HashMap#get()`이 깨진다" | equality -> collections | 값 비교 규칙을 먼저 잡고, 그 규칙이 컬렉션 조회에 어떻게 붙는지 이어서 본다 |
+| "`List`/`Set`/`Map`부터 헷갈리는데 비교도 자꾸 틀린다" | foundations -> equality -> collections basics | 순서/중복/key 조회 질문을 먼저 자르고, 값 비교 규칙을 다시 붙인 뒤, 마지막에 구현체 목록을 정리하면 덜 과부하다 |
+
 > retrieval-anchor-keywords: language readme, language navigator, language primer, language deep dive catalog, language survey, language roadmap, language playbook, java playbook, java runtime playbook, java diagnostics, java troubleshooting guide, java basics, 자바 처음 공부, 자바 처음 시작, 자바 처음인데 뭐부터, 자바 처음 배우는데 뭐부터, 자바 기초 뭐부터, java internals, java runtime catalog, java concurrency catalog, java async catalog, async quick links, concurrency quick links, executor cluster, executor common pool, common-pool cluster, completablefuture, cancellation propagation, cancellation context propagation, context propagation cluster, thread dump interpretation, jcmd cheat sheet, async-profiler vs JFR, flamegraph, safepoint diagnostics, jcstress, happens-before verification, common pool, executor sizing, structured concurrency, structured concurrency cluster, virtual threads, loom cluster, scoped value, threadlocal propagation, partial success fan-in, remote bulkhead metrics, bulkhead observability, permit contention, retry storm, upstream saturation, degraded response contract, aggregate error report, java serialization catalog, java boundary design, jvm primer, JFR Loom incident map, virtual thread diagnostics, JDBC cancel confirmation, DB-side cancel verification, java beginner oop, java class object primer, java oop first reading path, java data type primer, java type conversion primer, java scope primer, java casting primer, 자바 데이터타입 기초, 자바 형변환 기초, 자바 스코프 기초, 자바 캐스팅 기초, 데이터타입 형변환 스코프, 기본형 vs 참조형, 자바 기본형 참조형 어디로, 필드 vs 지역 변수, 자바 필드 지역 변수 어디로, length vs length(), 배열 length string length 차이, 객체지향 입문, 객체지향 큰 그림, 객체지향 처음 배우는데, 처음 배우는데 객체지향, 객체지향 기초 읽는 순서, 객체지향 언제 쓰는지, OOP 큰 그림, OOP 기초, OOP 읽는 순서, 클래스 객체 인스턴스 차이, 클래스랑 객체 차이, 인스턴스가 뭐예요, 객체지향 4대 원칙 기초, 캡슐화 상속 다형성 추상화 기초, 객체지향 설계 기초, 처음 배우는데 객체지향 설계, 객체지향 설계 큰 그림, java basics to oop design handoff, oop design basics handoff, 객체지향 디자인 패턴 기초, 처음 배우는데 디자인 패턴 큰 그림, 객체지향 패턴 입문 순서, java basics to design pattern handoff, design pattern beginner handoff, java package basics, java import basics, java package import boundary basics, 자바 package import 기초, 자바 package import 큰 그림, 처음 배우는데 package import, 자바 package는 왜 쓰는지, 자바 import는 언제 쓰는지, import 안 해도 되는 경우, 패키지랑 import 차이, 자바 public class 파일명 규칙, public class 왜 파일명이랑 같아야 해, java source file structure basics, java one public class per file, java public class file name rule, java top level class file convention, java top-level access modifier bridge, java top-level public package-private only, java top-level protected private compile error, java package private boundary basics, java same package no import, java default package avoid, java wildcard import subpackage, java access modifier basics, java member model basics, instance vs static member basics, java instance vs static methods, 인스턴스 메서드 static 메서드 차이, 처음 배우는데 static 언제 쓰는지, static 메서드 언제 쓰는지 기초, static이 뭐예요, 객체 없이 메서드 호출 왜 돼요, java static utility method basics, java static factory method basics, static factory 언제 쓰는지, new 대신 of from valueOf, java factory method basics, java of from valueOf basics, final field method class basics, java method basics, 메서드 생성자 차이 기초, 처음 배우는데 생성자 언제 쓰는지, 생성자 오버로딩 기초, this와 super 차이 기초, 생성자는 왜 필요해요, java constructor basics, java constructor chaining basics, java initialization order basics, java this super basics, java instance initializer block basics, java static initializer block basics, java parameter return type basics, java parameter passing basics, java pass by value basics, java reference type pass by value, java parameter reassignment basics, java side effect basics, java object state tracking, java aliasing basics, java method overloading basics, java inheritance basics, java extends basics, java overriding basics, java @Override basics, java dynamic dispatch basics, java overloading vs overriding, java overload override difference, 오버로딩 오버라이딩 차이, java compile time vs runtime method selection, java parent reference child object method call, java object state change basics, interface vs abstract class basics, java abstract class vs interface beginner, 추상 클래스 인터페이스 큰 그림, 처음 배우는데 추상 클래스 인터페이스 차이, 처음 배우는데 상속 언제 쓰는지, 상속 언제 쓰는지, 상속 언제 써야 하는지, 기초 상속 언제 쓰는지, 상속 vs 조합, 상속보다 조합 기초, 추상 클래스 인터페이스 상속 조합 순서, 추상 클래스 인터페이스 다음 조합 템플릿 전략, 추상 클래스 인터페이스 조합 템플릿 전략 읽는 순서, 상속 다음 추상 클래스 인터페이스, 추상 클래스 템플릿 메소드 언제 쓰는지, 템플릿 메소드 언제 쓰는지, 템플릿 메소드 기초, template method, template method beginner, abstract class template method beginner, hook method beginner, abstract step beginner, hook method primer, abstract step primer, 처음 배우는데 hook method, 처음 배우는데 훅 메서드, 처음 배우는데 abstract step, 처음 배우는데 추상 단계, 훅 메서드 기초, 추상 단계 기초, hook은 선택 빈칸, abstract step은 필수 빈칸, 템플릿 메소드 기초 먼저, 인터페이스와 조합, inheritance vs composition java beginner, inheritance vs composition beginner, java equality basics, java identity basics, java string comparison basics, java hashCode basics, java mutable key, hashmap mutable key, hashmap key mutation lookup, mutable key equals hashCode bug, java record equality basics, java record equals hashCode, record component equality, record value object equality, immutable value object basics, mutable entity equality hazard, java array equality basics, java arrays equals, java arrays deepEquals, java nested array comparison, java multidimensional array equality, java array debug printing basics, java array print weird output, 배열 출력 왜 이상해요, java array toString basics, java array deepToString basics, java nested array reference-like output, java array default toString, java `[I@` output meaning, java `[Ljava.lang.String;@` output meaning, java array copy basics, java array clone basics, java Arrays.copyOf basics, java shallow copy deep copy array, java nested array copy, java multidimensional array copy, java Arrays.sort basics, java Arrays.binarySearch basics, java array sorting basics, java array searching basics, java binarySearch insertion point, java binarySearch same comparator, java comparable basics, java comparator basics, java comparator comparing, java comparator thenComparing, java comparator reversed, java comparator reversed placement, java mixed direction comparator chain, java primitive descending tie breaker, java thenComparingInt reversed placement, java thenComparingLong reversed placement, java thenComparingDouble reversed placement, java comparator nullsFirst, java comparator nullsLast, java nullsLast reversed descending, java descending nullsLast comparator, wrapper number descending null last, comparator utility patterns, java list sort vs stream sorted, java list sort comparator, java stream sorted comparator, same comparator list sort stream sorted, stream toList vs collectors toList, java Stream.toList beginner, java Collectors.toList mutability, stream result mutability bridge, sorted toList unmodifiable, collectors toList no guarantees, toCollection ArrayList, natural ordering basics, custom comparator basics, compareTo basics, TreeSet natural ordering duplicate, TreeMap natural ordering replace value, treemap mutable key, treemap key mutation lookup, no comparator treeset treemap compareTo, compareTo same key slot, HashSet duplicate rule, TreeSet duplicate rule, HashSet vs TreeSet duplicate semantics, equals hashCode vs compare == 0, TreeSet compareTo 0 duplicate, TreeSet comparator equals consistency, TreeMap comparator equals consistency, TreeSet TreeMap comparator tie breaker, TreeMap compare 0 same key, sorted map duplicate surprise, compare zero replaces value, sorted set duplicate surprise, navigablemap mental model, navigableset mental model, java treeset first last floor ceiling lower higher, java treemap firstKey lastKey floorKey ceilingKey lowerKey higherKey, java treemap floorEntry ceilingEntry lowerEntry higherEntry, comparator order drives lookup behavior, floor ceiling comparator order, descending comparator floor ceiling surprise, java exception basics, 자바 예외처리 기초, 예외 처리 처음 배우는데, 예외 처리 큰 그림, throw catch 언제 쓰는지, checked unchecked 차이 기초, 처음 배우는데 try catch, try catch 기초, 언제 throws 쓰는지, 예외 처리 primer, checked unchecked 큰 그림, java generics basics, 자바 제네릭 입문, 제네릭 처음 배우는데, 제네릭 큰 그림, 제네릭 언제 쓰는지, List Object와 List String 차이, List<Object> vs List<String>, List<Object>와 List<String> 차이, 왜 List<String>은 List<Object>가 아닌가, 처음 배우는데 List Object vs List String, 제네릭 왜 쓰는지 쉽게, java enum basics, 자바 enum 기초, enum 처음 배우는데, enum 언제 쓰는지, 상태값 int 대신 enum, ordinal 쓰면 안되는 이유, java collections basics, 자바 컬렉션 기초, 컬렉션 큰 그림, 자바 컬렉션 큰 그림, 처음 배우는데 컬렉션, 컬렉션 처음 배우는데 뭐부터, 리스트 셋 맵 차이, list set map 차이, list set map 큰 그림, ArrayList HashSet HashMap 언제 쓰는지, 처음 배우는데 List Set Map 언제 쓰는지, List Set Map 언제 써야 하나, collection beginner route, collection first reading, beginner collection primer, coroutine basics, c++ basics, language index, what to read next
 
 ## 빠른 탐색
@@ -56,7 +147,7 @@
   - [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./java/bigdecimal-hashmap-treemap-lookup-mini-drill.md) - `put("1.0")` 뒤 `containsKey/get("1")`가 `HashMap`과 `TreeMap`에서 왜 갈리는지 조회만 분리해 손예측하는 1페이지 drill
   - [Comparator Utility Patterns](./java/java-comparator-utility-patterns.md) - `comparingInt`/`thenComparingInt` 계열, `reversed()` 위치, mixed-direction primitive tie-breaker 조립 감각까지 이어서 보기
   - [Comparator 변수명 짓기 초급 패턴](./java/comparator-variable-naming-beginner-primer.md) - `byName`, `byScoreDescThenName`처럼 comparator 이름만 읽어도 정렬 의도와 재사용 지점을 바로 파악하게 돕는 beginner primer
-  - [Comparator Reversed Scope Primer](./java/comparator-reversed-scope-primer.md) - `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`가 왜 다른지, whole-chain vs single-field `reversed()` 범위를 작은 예제로 정리한 beginner primer
+  - [Comparator Reversed Scope Primer](./java/comparator-reversed-scope-primer.md) - `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`의 범위 차이를 작은 예제로 정리하고, `TreeSet` distinctness는 왜 그대로인지까지 짚는 beginner primer
   - [`List.sort` vs `Collections.sort` 미니 브리지](./java/list-sort-vs-collections-sort-mini-bridge.md) - 둘 다 `List` 제자리 정렬일 때, 초급 기준으로 어떤 호출 형태를 먼저 고르면 읽기 쉬운지와 comparator 재사용 감각을 짧게 정리한 beginner bridge
   - [`List.sort` vs `Stream.sorted` Comparator Bridge](./java/list-sort-vs-stream-sorted-comparator-bridge.md) - 같은 comparator chain을 mutable list 정렬과 stream 정렬 결과에 재사용하는 감각 잡기
   - [`Stream.toList()` vs `Collectors.toList()` Result Mutability Bridge](./java/stream-tolist-vs-collectors-tolist-mutability-bridge.md) - `sorted(...)` 뒤에서 읽기 전용 결과와 수정 가능한 결과를 어떻게 구분할지, `Collectors.toList()`에 mutability를 기대하지 말아야 하는 이유를 정리한 beginner bridge
@@ -68,6 +159,8 @@
   - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./java/submap-boundaries-primer.md) - `TreeSet`/`TreeMap` range API를 "정렬된 줄의 구간 창"으로 읽게 만들고, `head = 끝 제외`, `tail = 시작 포함`, `sub = [from, to)`를 짧은 표와 예제로 고정하는 beginner primer
   - [HashSet vs TreeSet Duplicate Semantics](./java/hashset-vs-treeset-duplicate-semantics.md) - `Set`을 처음 배울 때 "왜 하나는 2개고 하나는 1개지?"를 한 화면 비교표로 바로 예측하게 만들며, `equals/hashCode` vs `compare == 0` 기준을 beginner 눈높이로 나눠 주는 primer
   - [Sorting and Searching Arrays Basics](./java/java-array-sorting-searching-basics.md) - "`sort` 뒤 원본이 바뀌고 `binarySearch`가 이상할 때": `Arrays.sort()` 제자리 정렬과 `binarySearch()` 전제를 함께 잡는 primer
+  - [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](./java/arrays-sort-binarysearch-precondition-bridge.md) - "정렬은 했는데 왜 검색 결과가 이상해요?"처럼 처음 헷갈리는 질문에서, 정렬 기준과 검색 기준이 같은지 먼저 확인하게 만드는 beginner bridge
+  - [BinarySearch Duplicate Boundary Primer](./java/binarysearch-duplicate-boundary-primer.md) - "`binarySearch()`가 맞는 값을 찾았는데 첫 위치가 왜 아니죠?"처럼 중복값 경계가 처음 헷갈릴 때, hit 뒤 좌우 확장으로 first/last를 읽게 만드는 primer
   - [BinarySearch With Nullable Wrapper Sort Keys](./java/binarysearch-nullable-wrapper-sort-keys.md) - nullable `Integer`/`Long`/`Double` sort key에서 같은 comparator를 `Arrays.sort(...)`와 `Arrays.binarySearch(...)`에 같이 재사용하는 beginner bridge
 - [객체지향 핵심 원리](./java/object-oriented-core-principles.md) - 처음 배우는데 OOP 큰 그림을 먼저 잡고, `클래스 선언/참조 변수 선언/객체 생성` 1분 브리지로 헷갈림을 푼 뒤 `상속 언제 쓰는지 -> 추상 클래스/인터페이스 -> 상속보다 조합` 순서로 이어지게 만드는 primer
   - [불변 객체와 방어적 복사 입문](./java/java-immutable-object-basics.md) - `record` 생성자에서 `List.copyOf(...)`, 배열 복사, `Collections.unmodifiableList(...)`를 어떻게 나눠 써야 하는지 한 장으로 먼저 잡는 beginner primer
@@ -81,18 +174,23 @@
 - [`filter` vs `map` 결정 미니 카드](./java/stream-filter-vs-map-decision-mini-card.md) - `조건에 맞는 것만 남기기`와 `남긴 값을 다른 값으로 바꾸기`를 한 페이지 표와 예제로 끊어, 초보자가 `filter`/`map`을 문장 단위로 바로 구분하게 돕는 mini card
   - [Java String 기초](./java/java-string-basics.md)
   - [Java enum 기초](./java/java-enum-basics.md) - 처음 배우는데 상태값을 `int` 대신 enum으로 언제 바꾸는지, `ordinal`보다 `name` 중심으로 설계하는 이유를 잡는 beginner primer
+  - [Enum 키라면 언제 `HashMap`에서 `EnumMap`으로 옮길까](./java/enummap-status-policy-lookup-primer.md) - key 후보가 enum으로 닫힌 순간을 신호로 읽고, 상태별 라벨 같은 작은 lookup table을 `HashMap`에서 `EnumMap`으로 옮기는 기준을 한 예제로 잡아 주는 beginner bridge
+  - [Enum equality quick bridge](./java/enum-equality-quick-bridge.md) - enum에서 `==`와 `equals()`가 왜 둘 다 맞는지, 그래도 왜 `==`를 관용적으로 쓰는지 null-safe 비교 감각까지 짧게 잇는 beginner bridge
+  - [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./java/enum-to-state-transition-beginner-bridge.md) - `setStatus(...)`가 규칙을 흩뿌리는 이유와, `confirm()`/`cancel()` 같은 도메인 행동 안에서 허용된 전이를 검증해야 미션 코드가 읽히는 이유를 함께 잇는 beginner bridge
   - 컬렉션 beginner route는 `처음 배우는데 언제 쓰는지` -> `리스트 셋 맵 차이` -> requirement drill -> foundations primer 순서로 따라가면 된다.
   - [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) - 처음 배우는데 `List`/`Set`/`Map`을 언제 쓰는지, `컬렉션 큰 그림`, `리스트 셋 맵 차이`, `Collection` vs `Collections`, `ArrayList`/`HashSet`/`HashMap` 첫 선택을 `요구 -> 인터페이스 -> 구현체` 30초 순서로 묶어 주는 primer
   - [List/Set/Map Requirement-to-Type Drill](./java/list-set-map-requirement-to-type-drill.md) - 요구 문장을 `List`/`Set`/`Map`으로 먼저 번역하는 1페이지 초급 드릴에 더해, `순서` 단어가 없거나 `id로 찾기`처럼 key가 암시된 문장 패턴 FAQ/오답노트까지 묶은 primer
   - [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md) - `List`/`Set`/`Map` 선택 뒤에 바로 따라오는 `equals()`/`hashCode()`/`Comparable`, mutable key, 순회 중 수정 trade-off를 한 장에 묶어 초보자 실수를 줄이는 primer
-  - [Map Value-Shape Drill](./java/map-value-shape-drill.md) - `Map<K,V>`에서 key는 정했는데 value를 `단일값`/`리스트`/`집계객체` 중 무엇으로 둘지 막히는 초보자를 위해, 요구 문장을 value 모양으로 번역하는 후속 미니 드릴
-  - [`LinkedHashSet` 순서+중복 제거 미니 브리지](./java/linkedhashset-order-dedup-mini-bridge.md) - "중복 제거 + 입력 순서 유지"가 함께 나오면 `List`/`HashSet` 사이에서 오래 고민하지 않고 `LinkedHashSet`을 떠올리게 돕는 beginner bridge
+  - [Map Value-Shape Drill](./java/map-value-shape-drill.md) - `Map<K,V>`에서 key는 정했는데 value를 `단일값`/`리스트`/`집계객체` 중 무엇으로 둘지 막히는 초보자를 위해, `Integer`/`List<T>`/`record` 같은 첫 Java 타입으로 바로 잇는 후속 미니 드릴
+  - [`LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지](./java/linkedhashset-order-dedup-mini-bridge.md) - `순서 유지`와 `정렬 유지`를 같은 뜻으로 오해하지 않도록, `LinkedHashSet`의 삽입 순서와 `TreeSet`의 정렬 순서를 1페이지 비교표로 갈라 주는 beginner bridge
   - [Collection vs Collections vs Arrays 유틸리티 미니 브리지](./java/collection-vs-collections-vs-arrays-utility-mini-bridge.md) - 컬렉션 입문 다음에 가장 많이 섞어 쓰는 `Collection` API, `Collections` helper, `Arrays` helper를 5가지 공통 작업으로 빠르게 구분하는 beginner bridge
   - [`Arrays.asList()` 고정 크기 리스트 함정 체크리스트](./java/arrays-aslist-fixed-size-list-checklist.md) - `Arrays.asList(...)`에서 `add/remove`가 왜 실패하는지, `new ArrayList<>(...)`와 `List.of(...)`를 언제 고를지 1페이지로 잇는 beginner checklist
   - [Iterable vs Collection vs Map 브리지 입문](./java/iterable-collection-map-iteration-bridge.md) - 컬렉션 입문 직후 가장 자주 헷갈리는 `Iterable`/`Collection`/`Map` 계층 차이와 `for-each`/`entrySet` 반복 API 선택을 짧게 연결하는 beginner bridge
   - [Map Iteration Patterns Cheat Sheet](./java/map-iteration-patterns-cheat-sheet.md) - `entrySet()`/`keySet()`/`values()`를 "key+value / key only / value only" 기준으로 바로 고르고, `keySet()+get()` 첫 시도 실수를 Do/Don't 예시로 빠르게 교정하는 1페이지 beginner 치트시트
   - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) - `get()`의 `null`이 "key 없음"인지 "value가 null"인지 헷갈릴 때, `containsKey()`와 `getOrDefault()`를 어떤 질문에서 꺼내야 하는지 짧은 표와 예제로 정리한 beginner primer
   - [Java Optional 입문](./java/java-optional-basics.md) - 처음 배우는데 `Optional`을 언제 쓰는지, `null`과 차이, `orElse`/`orElseGet` 선택 기준, `get()` 남용을 피하는 기초를 정리한 primer
+  - [`Optional` 필드/파라미터 anti-pattern 30초 카드](./java/optional-field-parameter-antipattern-card.md) - `Optional`을 반환값 대신 필드나 파라미터에 넣을 때 왜 상태가 두 겹으로 꼬이는지, 그리고 plain 값/오버로딩/빈 컬렉션/상태 타입으로 무엇을 대신 고를지 빠르게 정리한 beginner card
+  - [`Optional.empty()` 비교와 값 꺼내기 전 equality 판단 프라이머](./java/optional-empty-equals-before-unwrapping-primer.md) - `Optional.empty()`를 `null`처럼 읽지 않고, 값을 꺼내기 전 `isEmpty()`/`equals()`/`filter(...).isPresent()` 중 무엇을 고를지 초급자용 표로 정리한 primer
   - [Java 스레드와 동기화 기초](./java/java-thread-basics.md)
   - [JVM, GC, JMM](./java/jvm-gc-jmm-overview.md)
 - Java `deep dive catalog`에서 bucket을 바로 고르려면:
@@ -131,7 +229,13 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 
 ### Java primer
 
+- primer에서 한 칸 읽고 다음 문서가 막히면 [빠른 탐색](#빠른-탐색)으로 돌아가고, Java 밖으로 넘어가야 하면 [교차 카테고리 브리지](#교차-카테고리-브리지)에서 다음 카테고리를 고른다.
 - [자바 언어의 구조와 기본 문법](./java/java-language-basics.md) - 처음 배우는데 `source -> bytecode -> JVM` 실행 큰 그림부터 타입/형변환/변수 스코프, 배열/제어문 기초까지 한 번에 잡는 primer
+- Java 첫 입구는 문서를 넓게 훑기보다 아래 5개 축만 먼저 잡는 편이 덜 흔들린다.
+  [Java 실행 모델과 객체 메모리 mental model 입문](./java/java-execution-object-memory-mental-model-primer.md) -> [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) -> [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) -> [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) -> [Java Optional 입문](./java/java-optional-basics.md)
+- `List`/`Set`/`Map`은 알겠는데 `빈 리스트`, `Optional`, `Map#get(...) == null`, enum 상태가 같이 섞이면 이 짧은 우회로로 자른다.
+  [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) -> [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) -> [Java Optional 입문](./java/java-optional-basics.md) -> [Java enum 기초](./java/java-enum-basics.md)
+- `mutable key`, comparator, `Map#get(...) == null`, enum 상태 같은 follow-up은 위 5개 축 중 어디가 흔들리는지 먼저 고른 뒤 옆 가지로 붙인다.
 - [Java 반복문과 스코프 follow-up 입문](./java/java-loop-control-scope-follow-up-primer.md) - 제어문 첫 읽기 다음 단계에서 `반복 횟수가 정해지면 for, 조건이 유지되는 동안 돌면 while` 선택 기준과 `for`/`while`/`break`/`continue`/scope 비교표를 같이 묶고, `코드 손으로 추적하는 법`, `루프 표로 푸는 법`, `for문 안에서 선언한 변수 밖에서 왜 안 보임`, `break는 가장 가까운 반복문만 끝남`, `while 무한 루프 왜 생김` 같은 scope/loop 초급 혼동을 짧은 예제와 trace table로 바로 교정하는 beginner primer
 - [Java package와 import 경계 입문](./java/java-package-import-boundary-basics.md) - 처음 배우는데 `package`가 왜 필요한지, `import`를 언제 쓰고 언제 생략하는지, `public class` 파일명 규칙과 `package-private` 경계를 큰 그림으로 잡는 기초 primer
 - [Java 패키지 경계 퀵체크 카드](./java/java-package-boundary-quickcheck-card.md) - `same package / subclass / non-subclass`를 10초 표로 먼저 자르고, `public`/`protected`/package-private 접근 가능 여부를 빠르게 판단하게 돕는 beginner quick card
@@ -139,6 +243,7 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 - [Java default package 회피 브리지](./java/java-default-package-avoid-bridge.md) - top-level 파일명 규칙 바로 다음 단계에서, `package` 선언을 생략한 default package가 왜 실제 코드에서는 금방 import/구조화 문제를 만든다고 보는지 짧은 표와 예제로 잇는 beginner bridge
 - [접근 제한자 오해 미니 퀴즈: top-level vs member](./java/java-access-modifier-top-level-member-mini-quiz.md) - `private`/`protected`가 top-level에서는 왜 안 되고 member에서는 왜 가능한지 5문항 예측형으로 바로 점검하게 만드는 beginner drill
 - [Java 타입, 클래스, 객체, OOP 입문](./java/java-types-class-object-oop-basics.md) - 클래스/객체 기초에서 `객체지향 큰 그림 -> 상속 언제 쓰는지 -> 추상 클래스/인터페이스` beginner route를 여는 첫 primer
+- 처음 배우는데 `기본형 vs 참조형`, `클래스 vs 객체`, `인터페이스 vs 추상 클래스`가 한꺼번에 섞이면 위 primer 하나에서 먼저 큰 그림을 잡고, 그다음 [Java Equality and Identity Basics](./java/java-equality-identity-basics.md) -> [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) -> [Java Optional 입문](./java/java-optional-basics.md) -> [Java enum 기초](./java/java-enum-basics.md) 순서로 한 칸씩 붙이면 초급 동선이 덜 흔들린다.
 - [Java 메서드와 생성자 실전 입문](./java/java-methods-constructors-practice-primer.md) - 처음 배우는데 메서드/생성자 차이, `parameter`/`return`/`this`/`super` 흐름, 메서드/생성자를 각각 언제 쓰는지까지 묶어 정리한 기초 primer
 - [Java parameter 전달, pass-by-value, side effect 입문](./java/java-parameter-passing-pass-by-value-side-effects-primer.md) - 처음 배우는데 "기본형은 안 바뀌는데 객체는 왜 바뀌어 보여요?"를 값 복사/참조값 복사/mutation vs reassignment로 끊어 이해하는 beginner primer
 - [Java 오버로딩 vs 오버라이딩 입문](./java/java-overloading-vs-overriding-beginner-primer.md) - 같은 이름 메서드에서 처음 배우는 사람이 가장 헷갈리는 overloading/overriding을 컴파일 시그니처 선택과 런타임 dispatch로 나눠 잡는 기초 primer
@@ -171,7 +276,7 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 - [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./java/bigdecimal-hashmap-treemap-lookup-mini-drill.md) - `put("1.0")` 뒤 `containsKey/get("1")`가 `HashMap`과 `TreeMap`에서 왜 갈리는지 조회만 분리해 손예측하는 1페이지 drill
 - [Comparator Utility Patterns](./java/java-comparator-utility-patterns.md) - `comparingInt`/`thenComparingInt` 계열, `reversed()` 위치, mixed-direction primitive tie-breaker 조립 감각까지 이어서 보기
 - [Comparator 변수명 짓기 초급 패턴](./java/comparator-variable-naming-beginner-primer.md) - `byName`, `byScoreDescThenName`처럼 comparator 이름만 읽어도 정렬 의도와 재사용 지점을 바로 파악하게 돕는 beginner primer
-- [Comparator Reversed Scope Primer](./java/comparator-reversed-scope-primer.md) - `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`가 왜 다른지, whole-chain vs single-field `reversed()` 범위를 작은 예제로 정리한 beginner primer
+- [Comparator Reversed Scope Primer](./java/comparator-reversed-scope-primer.md) - `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`의 범위 차이를 작은 예제로 정리하고, `TreeSet` distinctness는 왜 그대로인지까지 짚는 beginner primer
 - [`List.sort` vs `Collections.sort` 미니 브리지](./java/list-sort-vs-collections-sort-mini-bridge.md) - 둘 다 `List` 제자리 정렬일 때, 초급 기준으로 어떤 호출 형태를 먼저 고르면 읽기 쉬운지와 comparator 재사용 감각을 짧게 정리한 beginner bridge
 - [`List.sort` vs `Stream.sorted` Comparator Bridge](./java/list-sort-vs-stream-sorted-comparator-bridge.md) - 같은 comparator chain을 mutable list 정렬과 stream 정렬 결과에 재사용하는 감각 잡기
 - [`Stream.toList()` vs `Collectors.toList()` Result Mutability Bridge](./java/stream-tolist-vs-collectors-tolist-mutability-bridge.md) - `sorted(...)` 뒤에서 `toList()`를 읽기 전용 결과로 이해하고, 수정 가능한 결과가 필요하면 `toCollection(ArrayList::new)`처럼 명시적으로 고르는 beginner bridge
@@ -181,8 +286,11 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 - [NavigableMap and NavigableSet Mental Model](./java/navigablemap-navigableset-mental-model.md) - `first`/`last`/`floor`/`ceiling`/`lower`/`higher`를 comparator order 이웃 찾기로 보고, reverse order `floor`/`ceiling` 2행 미니 워크시트까지 확인하는 primer
 - [HashSet vs TreeSet Duplicate Semantics](./java/hashset-vs-treeset-duplicate-semantics.md) - 처음 배우는데 `HashSet`과 `TreeSet` 중복 결과가 왜 다른지, `equals/hashCode`와 `compare == 0`을 한 화면 예측 표로 비교해 `size()` 오해를 줄이는 primer
 - [Sorting and Searching Arrays Basics](./java/java-array-sorting-searching-basics.md) - "`sort` 뒤 원본이 바뀌고 `binarySearch`가 이상할 때": `Arrays.sort()` 제자리 정렬과 `binarySearch()` 전제를 함께 잡는 primer
+- [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](./java/arrays-sort-binarysearch-precondition-bridge.md) - 정렬만 했다고 끝이 아니라, 검색도 같은 규칙을 써야 한다는 첫 함정을 짧은 체크리스트로 정리한 beginner bridge
+- [BinarySearch Duplicate Boundary Primer](./java/binarysearch-duplicate-boundary-primer.md) - 중복값에서 "왜 첫 위치가 아니라 아무 위치가 나오죠?"를 바로 풀고, 다음 단계 lower/upper bound로 넘어가기 전에 좌우 확장 mental model을 먼저 붙이는 primer
 - [BinarySearch With Nullable Wrapper Sort Keys](./java/binarysearch-nullable-wrapper-sort-keys.md) - nullable `Integer`/`Long`/`Double` sort key에서 같은 comparator를 `Arrays.sort(...)`와 `Arrays.binarySearch(...)`에 같이 재사용하는 beginner bridge
 - [객체지향 핵심 원리](./java/object-oriented-core-principles.md) - 처음 배우는데 OOP 큰 그림, 객체지향 4대 원칙, 그리고 `클래스 선언/참조 변수 선언/객체 생성` 혼동을 짧게 풀어 준 뒤 `상속 언제 쓰는지`와 `추상 클래스/인터페이스`로 이어지는 beginner route primer
+- object model 쪽 beginner route는 `실행 모델 -> 클래스/객체 -> OOP 큰 그림` 순서로 고정하고, 접근 제한자/초기화 순서/패턴 비교는 그다음 follow-up으로 내려 보낸다.
 - [불변 객체와 방어적 복사 입문](./java/java-immutable-object-basics.md) - `record`가 `final`이라도 `List`와 배열은 왜 생성자에서 다시 복사해야 하는지, snapshot과 read-only view 차이를 짧은 표로 묶은 beginner primer
 - [불변 객체와 방어적 복사](./java/immutable-objects-and-defensive-copying.md)
 - [추상 클래스 vs 인터페이스 입문](./java/java-abstract-class-vs-interface-basics.md) - 공통 상태/흐름은 추상 클래스, 바꿔 끼울 계약은 인터페이스+조합으로 나누고 beginner 첫 읽기 bridge를 `추상 클래스/인터페이스 -> 상속보다 조합 -> 템플릿 메소드 패턴 기초 -> 템플릿 메소드 vs 전략` 순서로 고정하는 entrypoint primer
@@ -201,20 +309,27 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 - [`filter` vs `map` 결정 미니 카드](./java/stream-filter-vs-map-decision-mini-card.md) - `OO만 골라라`와 `OO로 바꿔라`를 구분하는 10초 표와 주문 예제로, 초보자가 `filter`와 `map`의 역할을 바로 가르는 stream follow-up card
 - [Java String 기초](./java/java-string-basics.md)
 - [Java enum 기초](./java/java-enum-basics.md) - 처음 배우는데 상태값을 `int` 대신 enum으로 언제 바꾸는지, `ordinal`보다 `name` 중심으로 설계하는 이유를 잡는 beginner primer
-- 컬렉션 beginner route는 `처음 배우는데 언제 쓰는지` -> `리스트 셋 맵 차이` -> requirement drill -> foundations primer 순서로 묶어 두었다.
+- [Enum 키라면 언제 `HashMap`에서 `EnumMap`으로 옮길까](./java/enummap-status-policy-lookup-primer.md) - key 후보가 enum으로 닫힌 순간을 신호로 읽고, 상태별 라벨 같은 작은 lookup table을 `HashMap`에서 `EnumMap`으로 옮기는 기준을 한 예제로 잡아 주는 beginner bridge
+- [Enum equality quick bridge](./java/enum-equality-quick-bridge.md) - enum에서 `==`와 `equals()`가 왜 둘 다 맞는지, 그래도 왜 `==`를 관용적으로 쓰는지 null-safe 비교 감각까지 짧게 잇는 beginner bridge
+- 컬렉션 beginner route는 `컬렉션 기본 구분` -> `리스트 셋 맵 차이` -> requirement drill -> foundations primer 순서로 묶고, 정렬 계약이나 mutable key incident는 foundations 뒤 관련 문서로 넘긴다.
 - [Java 컬렉션 프레임워크 입문](./java/java-collections-basics.md) - 처음 배우는데 `List`/`Set`/`Map`을 언제 쓰는지, `컬렉션 큰 그림`, `리스트 셋 맵 차이`, `Collection` vs `Collections`, `ArrayList`/`HashSet`/`HashMap` 첫 선택을 `요구 -> 인터페이스 -> 구현체` 30초 순서로 묶어 주는 primer
 - [List/Set/Map Requirement-to-Type Drill](./java/list-set-map-requirement-to-type-drill.md) - 요구 문장을 `List`/`Set`/`Map`으로 먼저 번역하는 1페이지 초급 드릴에 더해, `순서` 단어가 없거나 `id로 찾기`처럼 key가 암시된 문장 패턴 FAQ/오답노트까지 묶은 primer
 - [Collections, Equality, and Mutable-State Foundations](./java/collections-equality-mutable-state-foundations.md) - `List`/`Set`/`Map` 선택 뒤에 바로 따라오는 `equals()`/`hashCode()`/`Comparable`, mutable key, 순회 중 수정 trade-off를 한 장에 묶어 초보자 실수를 줄이는 primer
 - [Map Value-Shape Drill](./java/map-value-shape-drill.md) - `Map<K,V>`에서 key는 정했는데 value를 `단일값`/`리스트`/`집계객체` 중 무엇으로 둘지 막히는 초보자를 위해, 요구 문장을 value 모양으로 번역하는 후속 미니 드릴
-- [`LinkedHashSet` 순서+중복 제거 미니 브리지](./java/linkedhashset-order-dedup-mini-bridge.md) - "중복 제거 + 입력 순서 유지" 요구에서 `List`/`HashSet`이 각각 무엇을 놓치는지 짧은 표와 예제로 연결하는 beginner bridge
+- [`LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지](./java/linkedhashset-order-dedup-mini-bridge.md) - `중복 제거 + 순서` 요구를 볼 때 `입력 순서 유지`와 `정렬 유지`를 분리해 읽게 만들고, "`HashSet`인데 왜 중복이 남지?" 같은 follow-up을 `equals()`/`hashCode()` 기준으로 바로 연결해 주는 beginner bridge
 - [Collection vs Collections vs Arrays 유틸리티 미니 브리지](./java/collection-vs-collections-vs-arrays-utility-mini-bridge.md) - 컬렉션 입문 다음에 가장 많이 섞어 쓰는 `Collection` API, `Collections` helper, `Arrays` helper를 5가지 공통 작업으로 빠르게 구분하는 beginner bridge
 - [`Arrays.asList()` 고정 크기 리스트 함정 체크리스트](./java/arrays-aslist-fixed-size-list-checklist.md) - `Arrays.asList(...)`에서 `add/remove`가 왜 실패하는지, `new ArrayList<>(...)`와 `List.of(...)`를 언제 고를지 1페이지로 잇는 beginner checklist
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./java/map-of-copyof-unmodifiablemap-readonly-bridge.md) - `읽기 전용`이라는 말만 보고 셋을 같은 것으로 오해하지 않도록, 상수 맵 / 복사본 / 원본 뷰 차이를 짧은 표와 예제로 정리한 beginner bridge
 - [Iterable vs Collection vs Map 브리지 입문](./java/iterable-collection-map-iteration-bridge.md) - 컬렉션 입문 다음 단계에서 `Iterable`/`Collection`/`Map` 계층과 반복 API (`for-each`, `entrySet`)를 혼동 없이 이어 주는 beginner bridge
 - [Map Iteration Patterns Cheat Sheet](./java/map-iteration-patterns-cheat-sheet.md) - `entrySet()`/`keySet()`/`values()` 선택을 10초 표와 Do/Don't 예시로 묶어, 초보자의 비효율적인 `keySet()+get()` 습관을 빠르게 교정하는 1페이지 primer
 - [Map `put()` / `get()` / `remove()` / `containsKey()` 반환값 치트시트](./java/map-put-get-remove-containskey-return-cheat-sheet.md) - `Map`의 대표 메서드 4개가 각각 이전 값/현재 값/삭제된 값/존재 여부를 돌려준다는 점을 한 표와 한 예제로 묶어, beginner가 반환값을 성공 신호로 오해하는 실수를 줄이는 미니 카드
+- [Map 조회/갱신 API 미니 브리지: `put()` vs `putIfAbsent()` vs `computeIfAbsent()` vs `merge()`](./java/map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md) - `Map` 갱신 API 네 개를 "값이 있으면 덮어쓰나, 없을 때만 채우나, 기존 값과 합치나" 축으로 묶고, `Map<K, List<V>>` 누적에서 `computeIfAbsent(...).add(...)`를 왜 쓰는지까지 초보자 관점으로 연결하는 beginner bridge
+- [Map 값 변환 프라이머: `replaceAll()` vs `entrySet()` 수정 vs 새 맵 만들기](./java/map-entry-setvalue-vs-put-remove-structural-change-bridge.md) - `Map`을 돌며 value를 바꿔야 할 때 `replaceAll()`을 기본값으로 잡고, 조건부 수정은 `entrySet().setValue(...)`, 원본 보존은 새 맵 만들기로 나누어 초보자용 안전성/가독성 기준을 잡아 주는 primer
 - [Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지](./java/map-put-null-containskey-distinction-bridge.md) - `put() == null`을 곧바로 "새 key"로 읽는 beginner 혼동을 줄이기 위해, `containsKey()`를 저장 전에 함께 보는 패턴을 짧은 표와 예제로 정리한 bridge
-- [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) - `Map.get()`의 `null`이 "key 없음"과 "value가 null"을 같이 뜻할 수 있다는 점을 먼저 잡고, 존재 확인/기본값 정책/순회 중 재조회 혼동을 짧은 표와 예제로 구분하는 beginner primer
+- [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./java/map-get-null-containskey-getordefault-primer.md) - `Optional.empty()`와 빈 컬렉션 다음 단계에서 `Map.get()`의 `null`이 왜 다시 애매해지는지부터 연결하고, "key 없음" vs "value가 null" 분기와 `containsKey()`/`getOrDefault()` 선택을 짧은 표와 예제로 묶는 beginner primer
+- [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./java/hashmap-hashset-hashcode-equals-lookup-bridge.md) - `equals()`/`hashCode()` 입문 다음 단계에서, `HashMap`/`HashSet`이 `hashCode()`로 후보 bucket을 찾고 `equals()`로 마지막 확인을 한다는 lookup 흐름을 한 장으로 이어 주는 beginner bridge
+- [HashSet Mutable Element Removal Drill](./java/hashset-mutable-element-removal-drill.md) - `equals()`/`hashCode()` 기준 필드를 바꾼 뒤 `contains()`와 `remove()`가 왜 함께 실패하는지 bucket lookup 관점으로 바로 손예측하게 만드는 beginner drill
+- [Map null 허용 여부 구현체 브리지: `HashMap` vs `Hashtable` vs `ConcurrentHashMap` vs `Map.of`](./java/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge.md) - `HashMap`은 왜 `null`을 받고 `ConcurrentHashMap`과 `Map.of(...)`는 왜 막는지, `get() == null` 해석 차이까지 초보자용 비교표로 바로 이어 주는 beginner bridge
 - [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./java/map-lookup-debug-equals-hashcode-compareto-mini-bridge.md) - 조회 실패가 나오면 먼저 `HashMap` 계열과 `TreeMap` 계열을 나누고, `equals()`/`hashCode()` vs `compareTo()` 확인 순서를 10초 표와 짧은 예제로 잡아 주는 beginner debug bridge
 - [TreeMap 조회 전용 미니 드릴: `containsKey()` / `get()` with `record` key and name-only comparator](./java/treemap-record-containskey-get-name-comparator-drill.md) - `record Student(id, name)`와 name-only comparator에서 `containsKey(new Student(99, "Mina"))`가 왜 `true`인지 조회만 분리해 손예측하는 1페이지 drill
 - [Map 구현체별 반복 순서 치트시트](./java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md) - `HashMap`/`LinkedHashMap`/`TreeMap`의 순서 미보장, 삽입 순서, access-order 기반 LRU 느낌 예제, key 정렬 순서를 한 표와 짧은 예제로 비교해 beginner의 출력 순서 오해를 줄이는 primer
@@ -223,6 +338,9 @@ Java 구간은 `primer -> deep dive catalog -> cross-category bridge` 순서로 
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./java/submap-boundaries-primer.md) - `TreeSet`/`TreeMap` range API를 "정렬된 줄의 구간 창"으로 읽게 만들고, `head = 끝 제외`, `tail = 시작 포함`, `sub = [from, to)`를 짧은 표와 예제로 고정하는 beginner primer
 - [`lower` vs `floor` Exact Match 미니 드릴](./java/lower-vs-floor-exact-match-mini-drill.md) - `TreeSet`/`TreeMap`에서 exact match일 때만 `lower`와 `floor`가 갈라진다는 점을 짧은 표와 손예측 문제로 분리해, ordered-map 초급 혼동을 빠르게 줄이는 1페이지 drill
 - [Java Optional 입문](./java/java-optional-basics.md) - 처음 배우는데 `Optional`을 언제 쓰는지, `null`과 차이, `orElse`/`orElseGet` 선택 기준, `get()` 남용을 피하는 기초를 정리한 primer
+- [`Optional` 필드/파라미터 anti-pattern 30초 카드](./java/optional-field-parameter-antipattern-card.md) - `Optional`을 필드나 파라미터에 둘 때 생기는 이중 상태와 호출 복잡도를 짧은 판단표로 정리하고, plain 값/오버로딩/빈 컬렉션/상태 타입 대안을 바로 이어 주는 beginner card
+- [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./java/optional-collections-domain-null-handling-bridge.md) - 단건의 없음은 `Optional`, 다건의 0개는 빈 컬렉션, key 조회의 애매한 없음은 `Map` null-vs-missing으로 이어지고, 없음의 이유가 중요해지면 `enum`/도메인 타입으로 올린다는 판단 기준을 짧은 표와 예제로 잇는 beginner bridge
+- [Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까](./java/domain-state-type-primer-enum-record-value-object.md) - `true/false`와 `null`이 도메인 의미를 숨기기 시작할 때, 상태 이름은 `enum`, 값 묶음은 `record`, 규칙까지 가진 값은 값 객체로 올리는 기준을 초급자용 표와 예제로 정리한 primer
 - [Java 스레드와 동기화 기초](./java/java-thread-basics.md)
 - [JVM, GC, JMM](./java/jvm-gc-jmm-overview.md)
 - [Java 동시성 유틸리티](./java/java-concurrency-utilities.md)
@@ -368,11 +486,13 @@ virtual-thread adoption, pinning, `ScopedValue`, structured fan-out, framework b
 - [BigDecimal `stripTrailingZeros()` 입력 경계 브리지](./java/bigdecimal-striptrailingzeros-input-boundary-bridge.md) - `stripTrailingZeros`를 고급 함정 전에 입력 정규화 정책, `setScale`/출력 정책과의 차이, 체크리스트 관점으로 먼저 붙이는 beginner bridge
 - [BigDecimal 출력 정책 미니 브리지: `toString()` vs `toPlainString()`](./java/bigdecimal-tostring-vs-toplainstring-output-policy-mini-bridge.md) - 로그/JSON/UI에서 사람이 읽는 문자열과 serializer 계약을 분리해, 지수 표기 혼동을 줄이는 beginner bridge
 - [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./java/bigdecimal-1-0-vs-1-00-collections-mini-drill.md) - `BigDecimal` 전용으로 `HashSet`/`TreeSet`/`TreeMap` 결과를 짧게 손예측하는 beginner worksheet
+- [BigDecimal Comparator Tie-Breaker 미니 드릴](./java/bigdecimal-comparator-tie-breaker-mini-drill.md) - `1.0`과 `1.00`을 sorted collection에서 둘 다 남기고 싶을 때 `compareTo()` 뒤에 `scale()` tie-breaker를 왜 붙이는지 손예측과 조회 예제로 묶은 beginner drill
 - [BigDecimal 조회 전용 미니 드릴: `contains` in `HashSet` vs `TreeSet`](./java/bigdecimal-hashset-treeset-contains-mini-drill.md) - `add("1.0")` 뒤 `contains("1")`와 `contains("1.00")`가 왜 `HashSet`과 `TreeSet`에서 갈리는지 조회 기준만 따로 고정하는 1페이지 drill
 - [BigDecimal 조회 전용 미니 드릴: `contains`/`get` in `HashMap` vs `TreeMap`](./java/bigdecimal-hashmap-treemap-lookup-mini-drill.md) - `put("1.0")` 뒤 `containsKey/get("1")`가 `HashMap`과 `TreeMap`에서 왜 갈리는지 조회만 분리해 손예측하는 1페이지 drill
 - [Record-Comparator 60초 미니 드릴](./java/record-comparator-60-second-mini-drill.md) - `record Student(id, name)`와 name-only comparator를 함께 두고 `HashSet`/`TreeSet`/`TreeMap` 결과를 60초 안에 예측한 뒤, `thenComparingLong(Student::id)` 하나로 collapse가 separation으로 바뀌는 후속 비교까지 보는 beginner worksheet
 - [TreeMap 조회 전용 미니 드릴: `containsKey()` / `get()` with `record` key and name-only comparator](./java/treemap-record-containskey-get-name-comparator-drill.md) - `TreeMap` 조회만 따로 떼어 `new Student(99, "Mina")`가 왜 같은 key 자리로 보이는지 확인하는 beginner follow-up worksheet
 - [Comparator in TreeSet and TreeMap](./java/treeset-treemap-comparator-tie-breaker-basics.md) - name-only comparator가 언제 의도된 collapse이고, 언제 `thenComparingLong(...id)`가 필요한지 sorted collection 기준으로 설명하는 beginner primer
+- [Comparator Consistency With `equals()` Bridge](./java/comparator-consistency-with-equals-bridge.md) - `HashSet`의 `equals()` 기준과 `TreeSet`/`TreeMap`의 `compare(...) == 0` 기준이 왜 갈리는지, 같은 `record` 예제로 바로 비교하는 beginner bridge
 - [Comparator 변수명 짓기 초급 패턴](./java/comparator-variable-naming-beginner-primer.md) - `byName`, `byScoreDescThenName`처럼 comparator 이름에 기준과 방향을 담아 정렬 의도와 재사용성을 더 잘 읽히게 만드는 beginner primer
 - [Record and Value Object Equality](./java/record-value-object-equality-basics.md) - value object vs entity 경계, 배열/가변 컬렉션 component FAQ, `record equals` vs comparator confusion 표를 묶은 primer
 - [Record component로 `BigDecimal`을 써도 되나요?](./java/record-bigdecimal-component-faq.md) - `record Price(BigDecimal amount)`에서 `1.0` vs `1.00`, canonicalization, hash/sorted 컬렉션 기준 차이를 바로 확인하는 beginner FAQ primer
@@ -381,6 +501,8 @@ virtual-thread adoption, pinning, `ScopedValue`, structured fan-out, framework b
 - [Java Array Debug Printing Basics](./java/java-array-debug-printing-basics.md) - "출력부터 막혔나?"를 먼저 확인할 때: 배열 출력과 equality/copy 분기 기준을 한 장으로 정리한 beginner bridge
 - [Java Array Copy and Clone Basics](./java/java-array-copy-clone-basics.md) - "복사 분리가 막혔나?"를 먼저 확인할 때: 배열 대입/`clone`/`copyOf`와 shallow/deep copy를 연결하는 beginner bridge
 - [Sorting and Searching Arrays Basics](./java/java-array-sorting-searching-basics.md) - "정렬-검색 전제가 막혔나?"를 먼저 확인할 때: beginner array 정렬/검색에서 comparator chain 다음 단계로 넘어가는 bridge
+- [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](./java/arrays-sort-binarysearch-precondition-bridge.md) - "왜 결과가 이상해요?"를 물을 때 정렬 기준과 검색 기준 mismatch부터 빠르게 확인하는 entry
+- [BinarySearch Duplicate Boundary Primer](./java/binarysearch-duplicate-boundary-primer.md) - 정렬은 맞는데 첫/마지막 위치가 막힐 때 좌우 확장 패턴으로 이어 주는 follow-up
 - [BinarySearch With Nullable Wrapper Sort Keys](./java/binarysearch-nullable-wrapper-sort-keys.md)
 - [equals, hashCode, Comparable 계약](./java-equals-hashcode-comparable-contracts.md)
 - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./java/autoboxing-integercache-null-unboxing-pitfalls.md)
@@ -401,6 +523,7 @@ virtual-thread adoption, pinning, `ScopedValue`, structured fan-out, framework b
 ### 교차 카테고리 브리지
 
 - 이벤트 계약 진화와 replay 호환성은 [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./java/json-null-missing-unknown-field-schema-evolution.md), [Design Pattern: Event Upcaster Compatibility Patterns](../design-pattern/event-upcaster-compatibility-patterns.md), [System Design: Historical Backfill / Replay Platform](../system-design/historical-backfill-replay-platform-design.md)을 묶어 보면 좋다.
+- Java 배열 정렬/검색에서 알고리즘 이분 탐색으로 넘어갈 때는 [Sorting and Searching Arrays Basics](./java/java-array-sorting-searching-basics.md) -> [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](./java/arrays-sort-binarysearch-precondition-bridge.md) -> [이분 탐색 입문](../algorithm/binary-search-intro.md) -> [이분 탐색 패턴](../algorithm/binary-search-patterns.md) 순서가 beginner에게 가장 안전하다. "`정렬은 했는데 왜 검색 결과가 이상해요?`", "`처음 이분 탐색 뭐부터 봐요?`" 같은 질문을 Java 라이브러리 전제와 알고리즘 경계로 나눠서 올려 보낼 수 있다.
 - 객체 계약과 경계 설계는 [ClassLoader, Exception 경계, 객체 계약](./java/classloader-exception-boundaries-object-contracts.md), [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md), [Database: Transaction Boundary, Isolation, and Locking Decision Framework](../database/transaction-boundary-isolation-locking-decision-framework.md)으로 이어 보면 더 선명하다.
 - JVM/동시성 감각은 [JVM, GC, JMM](./java/jvm-gc-jmm-overview.md), [Java 동시성 유틸리티](./java/java-concurrency-utilities.md), `[drill]` [Security: JWT / JWKS Outage Recovery / Failover Drills](../security/jwt-jwks-outage-recovery-failover-drills.md)의 장애 해석 감각과도 연결된다.
 - 숫자 parsing/canonicalization 경계는 [`BigInteger` Parser Radix, Leading Zero, Sign, and Boundary Contracts](./java/biginteger-radix-leading-zero-sign-policies.md), [Parser Overflow Boundaries: `parseInt`, `parseLong`, and `toIntExact`](./java/parser-overflow-boundaries-parseint-parselong-tointexact.md), [`BigInteger`, Unsigned Parsing, and Numeric Boundary Semantics](./java/biginteger-unsigned-parsing-boundaries.md), [Integer Overflow, Exact Arithmetic, and Unit Conversion Pitfalls](./java/integer-overflow-exact-arithmetic-unit-conversion-pitfalls.md)를 함께 보면 `문자열 문법 -> parse -> exact/narrowing -> domain max` 흐름이 한 번에 연결된다.

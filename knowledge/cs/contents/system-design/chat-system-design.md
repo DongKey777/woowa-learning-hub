@@ -7,10 +7,15 @@
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [WebSocket 기초](../network/websocket-basics.md)
 > - [SSE, WebSocket, Polling](../network/sse-websocket-polling.md)
+> - [WebSocket heartbeat, backpressure, reconnect](../network/websocket-heartbeat-backpressure-reconnect.md)
 > - [gRPC vs REST](../network/grpc-vs-rest.md)
 > - [Connection Keep-Alive, Load Balancing, Circuit Breaker](../network/connection-keepalive-loadbalancing-circuit-breaker.md)
+> - [메시지 큐 기초](./message-queue-basics.md)
 > - [MVCC, Replication, Sharding](../database/mvcc-replication-sharding.md)
+
+retrieval-anchor-keywords: chat system design, 채팅 시스템 설계, 채팅 서버 뭐예요, 처음 배우는데 채팅 설계, websocket chat architecture, message ordering chat, offline message delivery, chat ack retry, chat idempotency, group chat fanout, 채팅 순서 보장, 채팅 읽음 표시 설계, chat system basics, real-time messaging design, 채팅 설계 헷갈리는 포인트
 
 ---
 

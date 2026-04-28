@@ -1,8 +1,8 @@
-# Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`
+# Spring DI 예외 빠른 판별: bean을 못 찾음 vs 여러 개라 못 고름
 
-> 한 줄 요약: `NoSuchBeanDefinitionException`는 "조건에 맞는 bean 후보가 0개", `NoUniqueBeanDefinitionException`는 "후보는 있지만 2개 이상이라 하나로 못 고름"이다.
+> 한 줄 요약: bean을 못 찾는 경우는 `NoSuchBeanDefinitionException`, bean 후보가 여러 개라 하나를 못 고르는 경우는 `NoUniqueBeanDefinitionException`로 보면 된다.
 >
-> 문서 역할: 이 문서는 spring 카테고리 안에서 DI startup 오류를 scan 누락, `@Profile`/conditional 탈락, 후보 중복으로 먼저 가르는 **beginner troubleshooting note**를 담당한다.
+> 문서 역할: 이 문서는 spring 카테고리 안에서 DI startup 오류를 "bean이 0개인가, 2개 이상인가"부터 가른 뒤 scan 누락, `@Profile`/conditional 탈락, 후보 중복으로 이어지는 **beginner troubleshooting note**를 담당한다.
 
 **난이도: 🟢 Beginner**
 
@@ -12,7 +12,18 @@
 - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 - [추상 클래스 vs 인터페이스와 DI 브리지: 상속 선택과 주입 선택을 섞지 않기](../design-pattern/abstract-class-vs-interface-injection-bridge.md)
 
-retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, found 2 selection rule problem, nouniquebeandefinitionexception log one line, primary qualifier collection checklist, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, primary qualifier collection guide, spring di exception quick triage basics
+retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, bean을 못 찾음 vs 여러 개라 못 고름, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, found 2 selection rule problem, nouniquebeandefinitionexception log one line, primary qualifier collection checklist, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, primary qualifier collection guide
+
+## 처음 읽을 때는 용어를 이렇게 번역한다
+
+초보자 기준으로는 예외 이름을 그대로 외우기보다 아래처럼 번역해서 보면 된다.
+
+| 로그 이름 | 초보자 번역 | 첫 질문 |
+|---|---|---|
+| `NoSuchBeanDefinitionException` | bean을 못 찾음 | "왜 후보가 0개지?" |
+| `NoUniqueBeanDefinitionException` | bean이 여러 개라 못 고름 | "왜 하나로 못 정하지?" |
+
+즉 첫 분기는 "못 찾음"과 "못 고름" 둘 중 무엇인가다.
 
 ## rename 의심이면 여기서 바로 갈라 타기
 
@@ -61,7 +72,7 @@ retrieval-anchor-keywords: spring di exception quick triage, spring di exception
 
 <a id="missing-bean-path"></a>
 
-## 1. `NoSuchBeanDefinitionException`를 보면 먼저 scan/등록 누락부터 본다
+## 1. bean을 못 찾는 경우 (`NoSuchBeanDefinitionException`)
 
 대표 상황은 아래다.
 
@@ -161,7 +172,7 @@ public class SmsConfig {
 
 <a id="ambiguous-bean-path"></a>
 
-## 2. `NoUniqueBeanDefinitionException`를 보면 후보 중복부터 본다
+## 2. bean이 여러 개라 못 고르는 경우 (`NoUniqueBeanDefinitionException`)
 
 대표 상황은 아래다.
 

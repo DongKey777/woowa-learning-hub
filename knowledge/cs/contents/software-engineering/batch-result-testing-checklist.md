@@ -242,6 +242,7 @@ chunk 상세는 `ChunkResult`에서, 실패 item의 다음 경로는 `RetryCandi
 
 `RetryCandidate` 테스트는 큐 시스템 테스트가 아니다.
 메시지 브로커가 없어도 "이 실패가 retry backlog에 들어갈 자격이 있는가"만 먼저 고정하면 된다.
+횟수 표기도 같이 맞춰 두는 편이 좋다. 이 문서에서는 **`총 N회 시도 = 첫 시도 1회 + 재시도 N-1회`**로 읽으므로, `attemptCount=3`이라면 보통 `재시도 2회`가 끝난 장면으로 본다.
 
 ## 4. Checkpoint 체크리스트
 

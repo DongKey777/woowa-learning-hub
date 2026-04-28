@@ -24,7 +24,7 @@
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
 
-retrieval-anchor-keywords: absolute redirect url behind load balancer, absolute redirect behind proxy, x-forwarded-host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, callback url flips to internal host, proxy host mismatch beginner, host header preservation beginner
+retrieval-anchor-keywords: absolute redirect url behind load balancer, absolute redirect behind proxy, x-forwarded-host redirect, x-forwarded-host callback, host preservation load balancer, preserve host header, wrong origin callback, post-login redirect wrong origin, post-login redirect wrong host, oauth callback wrong origin, oauth redirect_uri mismatch behind proxy, redirect_uri built from internal host, 왜 내부 host로 가요, 처음 배우는데 wrong origin, return to browser session troubleshooting path
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -44,6 +44,8 @@ retrieval-anchor-keywords: absolute redirect url behind load balancer, absolute 
 |---|---|
 | host/origin 문제라는 건 알겠는데 다음 symptom branch를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 | primer부터 다시 읽어야 할 만큼 browser/session 문장이 다시 섞였다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
+
+`Wrong-Scheme vs Wrong-Origin Redirect Shortcut`에서 `https://...`인데 host만 틀린 갈래로 들어왔다면, beginner one-step return path도 고정이다. wrong-origin 원인을 한 장만 확인한 뒤에는 absolute URL 세부 설정을 더 파기 전에 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 바로 돌아간다.
 
 ## 이 문서를 먼저 읽는 이유
 

@@ -4,28 +4,53 @@
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md)
+- [기본 자료 구조](./basic.md)
+- [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+- [큐 기초](./queue-basics.md)
+- [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
+- [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 
+retrieval-anchor-keywords: backend data structure starter pack, backend junior data structure, map set queue primer, hashmap treemap linkedhashmap beginner, queue vs priority queue, fifo handoff basics, lookup dedupe ordering, prefix search trie, 자료구조 뭐부터, 백엔드 자료구조 입문, 조회 중복제거 순서, bfs queue bridge
 
-retrieval-anchor-keywords: backend data structure starter pack basics, backend data structure starter pack beginner, backend data structure starter pack intro, data structure basics, beginner data structure, 처음 배우는데 backend data structure starter pack, backend data structure starter pack 입문, backend data structure starter pack 기초, what is backend data structure starter pack, how to backend data structure starter pack
-> 관련 문서:
-> - [자료구조 정리](./README.md)
-> - [기본 자료 구조](./basic.md)
-> - [배열 vs 연결 리스트](./array-vs-linked-list.md)
-> - [해시 테이블 기초](./hash-table-basics.md)
-> - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
-> - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
-> - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
-> - [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)
-> - [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
-> - [Top-k Streaming and Heavy Hitters](../algorithm/top-k-streaming-heavy-hitters.md)
->
-> retrieval-anchor-keywords: backend data structure starter pack, backend data-structure starter pack, array list map set queue priority queue trie, lookup dedupe ordering fifo handoff top-k selection, array vs list backend, list vs set backend, map vs set backend, queue vs priority queue backend, trie prefix search backend, top-k priority queue backend, id lookup data structure, duplicate check data structure, prefix autocomplete structure, 백엔드 자료구조 입문, 백엔드 자료구조 선택, 배열 리스트 맵 셋 큐 우선순위 큐 트라이, 조회 중복제거 순서 fifo top-k 자료구조
+## 처음 30초에 자르는 법
+
+입문자가 가장 자주 하는 실수는 자료구조 이름부터 외우려는 것이다.
+처음에는 이름보다 **반복 질문**을 먼저 붙잡으면 된다.
+
+| 문제 문장 | 실제로 반복되는 질문 | 첫 선택 |
+|---|---|---|
+| `회원 id로 바로 찾기` | exact lookup | `map` |
+| `이미 처리한 요청인가` | membership / dedupe | `set` |
+| `받은 순서대로 처리` | FIFO handoff | `queue` |
+| `가장 이른 재시도 작업부터` | earliest-first | `priority queue` |
+| `"spr"`로 시작하는 후보 찾기 | prefix lookup | `trie` |
+
+`최소 이동 횟수`, `미로`, `환승 최소`처럼 **이동 횟수**를 세는 문장이라면 자료구조 선택보다 알고리즘 질문이 먼저다.
+그때의 `queue`는 작업 대기열이 아니라 BFS를 구현하는 도구이므로 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)으로 먼저 넘어가면 된다.
+
+## 어디서 왔고 다음 어디로 갈지
+
+이 문서는 beginner에게서 자주 보이는 세 질문 사이를 잇는 `bridge` 역할도 한다.
+
+- `Java에서 List/Set/Map은 알겠는데 백엔드 문제 문장을 구조로 어떻게 번역하지?`
+- `왜 queue가 자료구조 문서에도 나오고 BFS 문서에도 나오지?`
+- `처음 자료구조를 봤는데 언제 알고리즘 문서로 넘어가야 하지?`
+
+안전한 동선은 아래처럼 한 칸씩이다.
+
+| 지금 상태 | 먼저 읽을 문서 | 여기서 잡을 것 | 그다음 한 칸 |
+|---|---|---|---|
+| `List`/`Set`/`Map` 기본 이름이 아직 흔들린다 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | 인터페이스와 첫 구현체 감각 | 이 문서 |
+| `lookup / dedupe / FIFO / earliest-first`로 질문을 번역하고 싶다 | 이 문서 | 반복 질문 기준 첫 구조 선택 | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) 또는 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
+| `최소 이동`, `정렬 후 탐색`, `경계 찾기`처럼 계산 문제 냄새가 난다 | 이 문서 | 자료구조 문제인지 알고리즘 문제인지 분리 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
+
+- 짧게 외우면 `컬렉션 이름 -> 반복 질문 -> 알고리즘 패턴` 순서다.
+- `처음`, `뭐부터`, `왜`, `헷갈` 같은 beginner query에서는 `TreeMap`/힙/operator 문서보다 이 사다리를 먼저 태우는 편이 안전하다.
 
 ## 먼저 잡는 mental model
 
@@ -111,6 +136,9 @@ PriorityQueue<RetryTask> retryTasks =
 - "이 key의 현재 상태"를 자주 갱신한다
 - 값을 꺼낼 때 순서보다 식별자가 더 중요하다
 
+`map`과 `set`이 아직 같이 헷갈리면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)에서
+`"있나?"`와 `"무슨 값이지?"`를 먼저 자르고 돌아오는 편이 빠르다.
+
 추가로 한 번만 기억하면 좋은 분기:
 
 - exact lookup만 중요하면 보통 `HashMap`
@@ -139,6 +167,7 @@ PriorityQueue<RetryTask> retryTasks =
 - 존재 여부뿐 아니라 count, timestamp, 상태도 붙여야 하면 `map`
 
 즉 `set`은 "value가 없는 `map`처럼" 생각하면 입문 단계에서는 충분하다.
+특히 `dedupe`에서 `counting`이나 `status lookup`으로 요구가 바뀌는 순간은 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)를 먼저 거치면 오진이 줄어든다.
 
 ## 4. Queue: FIFO handoff가 핵심일 때
 
@@ -228,6 +257,9 @@ PriorityQueue<RetryTask> retryTasks =
 - `list` vs `priority queue`
   - 정렬된 결과를 한 번 보여 주는 것과 top-1/top-k를 계속 유지하는 것은 다르다
   - 후자는 `priority queue` 쪽이 더 자연스럽다
+- `queue` vs `BFS용 queue`
+  - BFS에서 queue를 쓰는 이유는 `먼저 발견한 레벨`을 그대로 꺼내기 위해서다
+  - `더 짧은 비용`을 비교해야 하는 문제면 queue보다 `0-1 BFS`나 `dijkstra` 분기를 먼저 봐야 한다
 
 ## 30초 선택 체크리스트
 
@@ -246,8 +278,8 @@ PriorityQueue<RetryTask> retryTasks =
 - exact lookup과 hash 감각을 먼저 잡고 싶다면: [해시 테이블 기초](./hash-table-basics.md)
 - map의 ordered 변형까지 보고 싶다면: [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 - queue, deque, priority queue 분기를 더 또렷하게 보고 싶다면: [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
-- top-k와 heap 방향이 헷갈리면: [Top-K Heap Direction Patterns](./top-k-heap-direction-patterns.md)
 - prefix search와 autocomplete를 더 보고 싶다면: [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
+- `top-k`, heap 방향, streaming heavy hitters처럼 한 단계 더 들어간 선택 문제는 카테고리 README의 deep-dive 라우트에서 이어 보면 된다: [자료구조 정리](./README.md)
 
 ## 한 줄 정리
 

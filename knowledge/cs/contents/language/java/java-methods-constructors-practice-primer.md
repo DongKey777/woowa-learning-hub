@@ -1,35 +1,26 @@
 # Java 메서드와 생성자 실전 입문
 
-> 한 줄 요약: Java 입문자가 parameter, return type, overloading, constructor, object state change를 따로 외우지 않고 하나의 클래스 흐름으로 묶어 이해하도록 돕는 짧은 practice primer다.
+> 한 줄 요약: 메서드는 이미 만든 객체를 움직이는 도구이고, 생성자는 객체가 어떤 상태로 시작할지 정하는 입구다. 초보자는 이 한 줄을 먼저 잡으면 `parameter`, `return type`, `overloading`, 상태 변경이 한 흐름으로 묶인다.
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README: Java primer](../README.md#java-primer)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md)
+- [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
+- [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
+- [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+- [의존성 주입(DI) 기초](../../software-engineering/dependency-injection-basics.md)
 
-
-retrieval-anchor-keywords: java methods constructors practice primer basics, java methods constructors practice primer beginner, java methods constructors practice primer intro, java basics, beginner java, 처음 배우는데 java methods constructors practice primer, java methods constructors practice primer 입문, java methods constructors practice primer 기초, what is java methods constructors practice primer, how to java methods constructors practice primer
-> 관련 문서:
-> - [Language README: Java primer](../README.md#java-primer)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
-> - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
-> - [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
-> - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-> - [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-
-> retrieval-anchor-keywords: java methods and constructors basics, java method constructor primer, java parameter return type basics, java method overloading basics, java constructor overloading basics, java object state change, java method practice, java constructor practice, java beginner method signature, java void vs return type, java class state update, java field state change, java instance vs static methods, java static utility method basics, java simple factory method basics, 자바 메서드 생성자 기초, 자바 메서드 생성자 차이 기초, 처음 배우는데 메서드 생성자 차이, 처음 배우는데 메서드 큰 그림, 메서드 언제 쓰는지 기초, 생성자 언제 쓰는지 기초, 자바 파라미터 리턴타입 기초, parameter return type 차이 기초, 자바 메서드 시그니처 기초, 자바 메서드 오버로딩 기초, 자바 생성자 오버로딩 기초, this super 초기화 흐름 기초, 객체 상태 변경 메서드 기초
+retrieval-anchor-keywords: java method constructor basics, java method vs constructor, java object creation constructor method order, java new constructor instance method flow, java parameter return type basics, java overloading basics, java object state change, 자바 메서드 생성자 차이, 자바 메서드 생성자 기초, 처음 배우는데 메서드 생성자, 객체 만들고 생성자 메서드 순서, 메서드 언제 쓰나요, 생성자 언제 쓰나요, 뭐예요 method constructor, 왜 return type 필요해요
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [처음 읽는 한 바퀴](#처음-읽는-한-바퀴)
 - [먼저 잡아야 하는 다섯 질문](#먼저-잡아야-하는-다섯-질문)
 - [한 클래스에서 한 번에 보기](#한-클래스에서-한-번에-보기)
 - [손으로 추적하는 연습](#손으로-추적하는-연습)
@@ -52,6 +43,29 @@ Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.
 
 이 문서는 위 다섯 질문을 한 클래스 안에서 같이 보게 만드는 짧은 primer다.
 
+먼저 아주 짧게 구분하면 이렇다.
+
+| 질문 | 보면 되는 대상 |
+|---|---|
+| "객체를 어떤 값으로 시작하지?" | 생성자 |
+| "이미 만든 객체에게 어떤 일을 시키지?" | 메서드 |
+| "결과를 밖으로 돌려줘야 하나?" | return type |
+| "입력이 몇 가지 형태로 들어오나?" | parameter, overloading |
+| "호출 뒤에 객체가 달라졌나?" | state change 여부 |
+
+## 처음 읽는 한 바퀴
+
+처음엔 용어를 따로 외우기보다 "`class`를 보고, `new`를 만나고, 생성자로 시작 상태를 정한 뒤, 인스턴스 메서드로 객체를 움직인다"는 순서만 붙이면 된다.
+
+| 장면 | 코드에서 보는 모양 | 초보자용 해석 |
+|---|---|---|
+| 타입 정의 | `class BankAccount { ... }` | 어떤 상태와 동작을 가진 객체를 만들지 적어 둔다 |
+| 객체 생성 | `new BankAccount("Mina", 1000)` | 새 객체가 생기고 constructor가 바로 실행된다 |
+| 시작 상태 확정 | `this.owner = owner` | constructor가 필드를 채워 "태어날 때 상태"를 정한다 |
+| 객체 사용 | `account.deposit(300)` | 만들어진 객체에 인스턴스 메서드를 호출해 상태를 바꾸거나 읽는다 |
+
+즉 초보자 기준으로는 `new` 앞은 "무엇을 만들지", `new` 직후 constructor는 "어떤 상태로 시작할지", 인스턴스 메서드는 "살아 있는 객체에게 무엇을 시킬지"를 담당한다.
+
 ## 먼저 잡아야 하는 다섯 질문
 
 | 개념 | 초보자 질문 | 핵심 규칙 |
@@ -62,7 +76,7 @@ Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.
 | overloading | "비슷한 일을 하는 메서드를 여러 형태로 만들 수 있나?" | 이름은 같아도 parameter 목록이 다르면 가능하다 |
 | object state change | "이 호출 뒤에 필드 값이 바뀌는가?" | 필드를 수정하면 state change, 읽기만 하면 query에 가깝다 |
 
-이 다섯 개를 따로 외우기보다 "`객체를 만들고`, `입력을 받아`, `필요하면 값을 돌려주고`, `상태를 바꾸거나 읽는다`"는 한 흐름으로 묶는 편이 훨씬 잘 남는다.
+이 다섯 개를 따로 외우기보다 "`new`로 객체를 만들고, constructor로 시작 상태를 정하고, method가 입력을 받아, 필요하면 값을 돌려주고, 상태를 바꾸거나 읽는다`"는 한 흐름으로 묶는 편이 훨씬 잘 남는다.
 
 ## 한 클래스에서 한 번에 보기
 
@@ -236,6 +250,15 @@ constructor는 method처럼 보여도 선언 방식이 다르다.
 
 parameter는 호출 시 잠깐 들어오는 입력이고, field는 객체가 계속 들고 있는 상태다.
 constructor나 method는 parameter를 받아 field를 바꿀 수 있다.
+
+### 생성자와 메서드를 둘 다 "그냥 함수"로 읽는다
+
+겉모양만 보면 둘 다 괄호가 있어서 비슷해 보인다.
+하지만 초보자는 아래처럼 역할을 나눠 읽는 습관이 필요하다.
+
+- 생성자는 객체를 만든다. 그래서 클래스 이름과 같고 return type이 없다.
+- 메서드는 이미 있는 객체를 사용한다. 그래서 상태를 바꾸거나 값을 읽는다.
+- 같은 클래스 안에서도 "태어날 때 한 번" 쓰는 코드와 "살아 있는 동안 여러 번" 쓰는 코드를 분리해야 덜 헷갈린다.
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 

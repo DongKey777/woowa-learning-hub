@@ -9,6 +9,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Map 구현체 선택 미니 드릴](./map-implementation-selection-mini-drill.md)
+- [LinkedHashMap access-order와 캐시 동작 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md)
 - [HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge](./hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
@@ -88,6 +89,8 @@ System.out.println(hashMap.keySet());       // 순서를 기대하면 안 됨
 
 즉 `LinkedHashMap`은 항상 "삽입 순서 map"이 아니다. 생성자 옵션 하나로 "최근 접근 순서 map"으로도 쓸 수 있다.
 
+여기서 캐시 예제가 갑자기 어렵게 느껴지는 이유는 `access-order=true`가 단순 출력 순서 옵션이 아니라, **조회한 항목을 뒤로 보내서 다음 eviction 후보를 바꾸는 규칙**이기 때문이다.
+
 ## 작은 LRU 느낌 예제
 
 ```java
@@ -139,6 +142,7 @@ cache.put("C", "carrot");   // [A, C]  가장 오래된 B 제거
 | 지금 막힌 질문 | 다음 문서 |
 |---|---|
 | "짧은 요구 문장에서 셋 중 하나를 바로 골라야 한다" | [Map 구현체 선택 미니 드릴](./map-implementation-selection-mini-drill.md) |
+| "`accessOrder=true`가 왜 캐시 동작을 바꾸는지 아직 감이 안 온다" | [LinkedHashMap access-order와 캐시 동작 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md) |
 | "조회 규칙과 immutable key까지 같이 비교하고 싶다" | [HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge](./hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md) |
 | "`Map`을 돌 때 `entrySet()`/`keySet()`/`values()` 중 뭘 써야 하지?" | [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md) |
 | "`TreeMap`에서 왜 두 번째 `put`이 덮어써지지?" | [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md) |

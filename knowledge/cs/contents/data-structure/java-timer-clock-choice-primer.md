@@ -4,24 +4,15 @@
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
+- [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
+- [Monotonic Clock, Wall Clock, Timeout, Deadline](../operating-system/monotonic-clock-wall-clock-timeout-deadline.md)
+- [`Instant`, `LocalDateTime`, `OffsetDateTime`, `ZonedDateTime` Boundary Design](../language/java/java-time-instant-localdatetime-boundaries.md)
 
-
-retrieval-anchor-keywords: java timer clock choice primer basics, java timer clock choice primer beginner, java timer clock choice primer intro, data structure basics, beginner data structure, 처음 배우는데 java timer clock choice primer, java timer clock choice primer 입문, java timer clock choice primer 기초, what is java timer clock choice primer, how to java timer clock choice primer
-> 관련 문서:
-> - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
-> - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
-> - [Timer Vocabulary Bridge: delay vs timeout vs deadline vs dueAt](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
-> - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
-> - [Timer Cancellation and Reschedule Stale Entry Primer](./timer-cancellation-reschedule-stale-entry-primer.md)
-> - [DelayQueue vs PriorityQueue Timer Pitfalls](./delayqueue-vs-priorityqueue-timer-pitfalls.md)
->
-> retrieval-anchor-keywords: java timer clock choice, java nanotime vs currenttimemillis, System.nanoTime vs currentTimeMillis, delayqueue nanotime, delayqueue currenttimemillis, java timer queue clock, java deadline queue clock, relative delay java, relative deadline java, monotonic clock java, wall clock vs monotonic clock java, timer queue elapsed time, nanoTime relative delay, currentTimeMillis wall clock, java schedule after 5 seconds, java delayed queue beginner, delayqueue deadlineNanos, epoch millis to delay queue, dueAtEpochMillis to nanoTime, 자바 nanoTime currentTimeMillis 차이, 자바 타이머 시계 선택, 상대 지연 nanoTime, 벽시계 시간 currentTimeMillis, 지연 큐 시계 선택
+retrieval-anchor-keywords: java timer clock choice, java nanotime vs currenttimemillis, timeunit milliseconds to nanoseconds, duration to millis vs to nanos, timer code unit mismatch, java schedule after 5 seconds, delayqueue deadline nanos, dueat epoch millis to nanotime, relative delay java beginner, wall clock vs monotonic clock java, 자바 nanotime currenttimemillis 차이, 자바 timeunit duration 변환, 밀리초 나노초 변환 실수, timeout 단위 헷갈림 beginner
 
 ## 먼저 그림부터
 
@@ -152,7 +143,63 @@ long deadlineNanos =
 
 즉 "외부 계약은 absolute time, 내부 scheduler는 relative time"으로 나누면 머리가 훨씬 덜 복잡해진다.
 
-## 5. DelayQueue식 구현에서는 이런 모양이 기본값이다
+## 5. `TimeUnit`과 `Duration` 변환도 결국 내부 기준 하나로 모은다
+
+timer code에서 자주 나는 실수는 시계 혼합만이 아니다.
+`ms`, `s`, `ns`, `Duration`이 한 메서드 안에 같이 보일 때
+"지금 이 값이 **입력 표현**인지, **내부 비교 기준**인지"를 놓치면 버그가 생긴다.
+
+가장 안전한 mental model은 이것이다.
+
+| 값 | 초보자용 질문 | 흔한 표현 |
+|---|---|---|
+| 입력 delay | "호출자가 몇 초/밀리초 뒤라고 말했나?" | `5`, `500`, `Duration.ofSeconds(5)` |
+| 내부 deadline | "queue는 어떤 기준으로 비교하나?" | `deadlineNanos` |
+| 출력/로그 값 | "사람이나 다른 API에 무엇을 보여 주나?" | `remainingMillis`, `dueAtEpochMillis` |
+
+즉 `TimeUnit`과 `Duration`은 보통 **표현을 바꾸는 도구**이고,
+queue가 실제로 붙잡고 있어야 하는 값은 여전히 `deadlineNanos` 같은 내부 기준이다.
+
+### 빠른 비교표
+
+| 하고 싶은 일 | 더 안전한 첫 선택 | 이유 |
+|---|---|---|
+| `(delay, unit)` 입력을 내부 deadline으로 바꾸기 | `unit.toNanos(delay)` | 호출자가 준 단위를 직접 받는다 |
+| `Duration`을 내부 deadline으로 바꾸기 | `duration.toNanos()` | 타입에 단위 정보가 이미 들어 있다 |
+| 남은 시간을 로그나 메트릭으로 보여 주기 | `Duration.ofNanos(remaining)` 또는 `TimeUnit.NANOSECONDS.toMillis(...)` | 내부 기준에서 바깥 표현으로 한 번만 바꾼다 |
+| `Duration`을 다시 `currentTimeMillis()`와 섞어 계산하기 | 피한다 | 단위 변환과 시계 변환이 한 줄에 섞인다 |
+
+예를 들어 아래 두 코드는 같은 뜻이다.
+
+```java
+long delayNanos = unit.toNanos(delay);
+long deadlineNanos = System.nanoTime() + delayNanos;
+```
+
+```java
+long deadlineNanos = System.nanoTime() + duration.toNanos();
+```
+
+핵심은 `TimeUnit`이든 `Duration`이든 "마지막에는 내부 비교 단위 하나로 모은다"는 점이다.
+
+## 6. millis/nanos 변환 실수는 변수 이름과 최종 단위를 같이 본다
+
+아래는 timer code에서 초보자가 특히 자주 하는 단위 실수다.
+
+| 실수 | 왜 헷갈리나 | 더 안전한 모양 |
+|---|---|---|
+| `delayMillis`인데 `TimeUnit.SECONDS.toNanos(delayMillis)`를 쓴다 | 변수 이름과 변환 단위가 다르다 | 변수 이름과 변환 단위를 맞춘다 |
+| `duration.toMillis()` 후 다시 `MILLISECONDS.toNanos(...)` | 중간 표현을 괜히 거친다 | 가능하면 `duration.toNanos()`로 바로 간다 |
+| `deadlineNanos`를 로그에 바로 출력한다 | 내부 기준값을 벽시계처럼 읽는다 | 로그는 `remainingMillis`나 `dueAtEpochMillis`로 따로 만든다 |
+| `Duration.ofMillis(500)`과 `schedule(..., 500, SECONDS)`를 같은 감각으로 읽는다 | 숫자는 같아도 단위가 다르다 | 숫자보다 단위를 먼저 읽는다 |
+
+timer code 리뷰에서는 아래 질문 3개만 먼저 던져도 실수가 많이 줄어든다.
+
+1. 지금 보는 값은 `delay`, `deadline`, `dueAt` 중 무엇인가?
+2. 이 줄은 단위 변환인가, 시계 변환인가?
+3. 내부 비교 기준이 마지막에 `deadlineNanos` 하나로 모였는가?
+
+## 7. DelayQueue식 구현에서는 이런 모양이 기본값이다
 
 `Delayed` 구현에서는 보통 `deadlineNanos`를 저장하고,
 `getDelay()`와 `compareTo()`가 모두 그 값을 기준으로 움직이게 만든다.
@@ -195,19 +242,22 @@ final class TimerTicket implements Delayed {
 
 이 세 가지다.
 
-## 6. 자주 하는 오해
+## 8. 자주 하는 오해
 
 1. `currentTimeMillis()`가 더 익숙하니 timer queue에도 그대로 쓰면 된다고 생각한다.
 2. `nanoTime()`은 너무 고급스럽고 과한 선택이라고 느낀다.
 3. `nanoTime()`을 쓰면 "현재 시각"도 같이 알 수 있다고 생각한다.
 4. `dueAtEpochMillis`와 queue 내부 `deadlineNanos`를 같은 값으로 저장해야 한다고 생각한다.
 5. `nanoTime()`을 쓴다는 말이 곧 nanosecond-level accuracy를 약속한다는 뜻으로 읽는다.
+6. `Duration`을 쓴다고 해서 clock 선택 문제와 단위 변환 문제가 자동으로 사라진다고 생각한다.
+7. 숫자가 같으면 단위도 같은 뜻이라고 읽는다. `500ms`와 `500ns`는 완전히 다른 지연이다.
 
 입문 단계에서는 이렇게만 정리하면 충분하다.
 
 - "몇 시냐?"는 벽시계 질문이다.
 - "얼마 남았냐?"는 스톱워치 질문이다.
 - delay/deadline queue는 보통 두 번째 질문을 더 자주 한다.
+- `TimeUnit`과 `Duration`은 숫자에 단위를 붙여 주는 표현이고, queue 내부 비교 기준은 따로 고정해야 한다.
 
 ## 다음 문서로 이어가기
 

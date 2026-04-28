@@ -7,10 +7,14 @@
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [추천 / 피드 랭킹 아키텍처](./recommendation-feed-ranking-architecture.md)
+> - [Caching Basics](./caching-basics.md)
 > - [분산 캐시 설계](./distributed-cache-design.md)
 > - [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)
 > - [채팅 시스템 설계](./chat-system-design.md)
 > - [MVCC, Replication, Sharding](../database/mvcc-replication-sharding.md)
+
+retrieval-anchor-keywords: newsfeed system design, 뉴스피드 시스템 설계, feed system 뭐예요, 처음 배우는데 피드 설계, fan-out on write vs read, follower graph feed, hot key feed, infinite scroll cursor feed, personalized feed cache, ranking feed architecture, newsfeed timeline design, 피드 캐시 설계, 대형 계정 fanout, 뉴스피드 설계 헷갈, what is fan-out in feed
 
 ---
 

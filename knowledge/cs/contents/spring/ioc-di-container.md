@@ -1,39 +1,39 @@
 # IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)
 
 
-> 한 줄 요약: IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
-> Spring의 심장은 IoC 컨테이너다. 객체의 생성, 조립, 생명주기를 프레임워크가 제어하는 구조를 코드 레벨에서 해체한다.
+> 한 줄 요약: IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)는 BeanDefinition, 후보 선택, 생명주기처럼 Spring 컨테이너 내부를 이해하려는 독자를 위한 심화 문서다.
+> Spring의 심장은 IoC 컨테이너다. 이 문서는 `BeanDefinition`, 후보 선택, 생명주기, scope처럼 **컨테이너 내부 동작**을 코드 레벨에서 해체한다.
+>
+> 문서 역할: `spring-ioc-di-basics.md`와 `spring-bean-di-basics.md`를 읽은 뒤 "컨테이너 안에서 실제로 무슨 일이 벌어지나?"가 궁금할 때 내려오는 심화 브리지다.
 
 **난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [IoC와 DI 기초](./spring-ioc-di-basics.md)
+- [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
+- [Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle](./spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md)
+- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
+- [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
+- [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
+- [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
+- [spring 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
-> - [Spring ApplicationContext Refresh Phases](./spring-application-context-refresh-phases.md)
-> - [Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle](./spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md)
-> - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-> - [Spring Boot Condition Evaluation Report Debugging](./spring-boot-condition-evaluation-report-debugging.md)
-> - [Spring Startup Bean Graph Debugging Playbook](./spring-startup-bean-graph-debugging-playbook.md)
-> - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
-> - [Spring `FactoryBean` and `SmartInitializingSingleton` Extension Points](./spring-factorybean-smartinitializingsingleton-extension-points.md)
-> - [Spring Early Bean References and Circular Proxy Traps](./spring-early-bean-reference-circular-proxy-traps.md)
-> - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
-
-retrieval-anchor-keywords: beandefinition, beanfactory, applicationcontext, beanfactorypostprocessor, beanpostprocessor, autowire candidate, scope, circular dependency, constructor injection, bean overriding, condition evaluation report, ioc di container basics, ioc di container beginner, ioc di container intro, spring basics
+retrieval-anchor-keywords: beandefinition, beanfactory, applicationcontext, beanfactorypostprocessor, beanpostprocessor, autowire candidate, bean lifecycle basics, scope resolution, circular dependency, constructor injection internals, ioc container internals, spring container deep dive, applicationcontext refresh phases, applicationcontext 뭐가 달라요, 왜 빈 후보 선택이 꼬여요
 
 ---
 
 ## 핵심 개념
 
-**IoC(Inversion of Control)** 란 객체의 생성과 의존 관계 설정의 제어권이 개발자에서 프레임워크로 역전되는 것이다.
+이 문서는 "IoC/DI가 뭐예요?"를 처음 설명하는 입문 primer가 아니다. 이미 입문 용어를 알고 있다고 가정하고, **컨테이너가 내부에서 어떤 순서와 규칙으로 Bean을 만들고 연결하는지**를 본다.
 
-**DI(Dependency Injection)** 는 IoC를 구현하는 패턴 중 하나로, 의존 객체를 외부에서 주입받는 방식이다.
+짧게 역할을 나누면 이렇다.
+
+- `spring-ioc-di-basics.md`: 왜 `new` 대신 DI를 쓰는지
+- `spring-bean-di-basics.md`: Bean 등록, component scan, configuration, proxy 감각
+- 이 문서: `BeanDefinition`, lifecycle, 후보 선택, scope, 순환 참조 같은 내부 메커니즘
 
 Spring IoC 컨테이너의 핵심 인터페이스 계층:
 
@@ -44,6 +44,15 @@ BeanFactory (최상위 — 지연 초기화, 기본 DI)
         ├── ClassPathXmlApplicationContext (XML Config)
         └── GenericWebApplicationContext (웹 환경)
 ```
+
+### 컨테이너를 내부 엔진처럼 보면
+
+이 문서에서는 컨테이너를 아래 4단계 엔진으로 본다.
+
+1. Bean 정의를 모은다
+2. 후보를 선택한다
+3. 인스턴스를 만들고 후처리한다
+4. scope와 프록시 규칙으로 사용 시점을 제어한다
 
 ### Spring 없이 DI를 구현하면?
 

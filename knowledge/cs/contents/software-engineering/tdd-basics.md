@@ -8,10 +8,11 @@
 
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [리팩토링 기초](./refactoring-basics.md)
+- [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
+- [spring 테스트 기초](../spring/spring-testing-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
-- [spring 테스트 기초](../spring/README.md)
 
-retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, tdd 사이클, 테스트 주도 개발 기초, beginner tdd, tdd intro, tdd basics basics, tdd basics beginner, tdd basics intro
+retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, tdd 사이클, beginner tdd, tdd example beginner, 처음 tdd 어떻게 시작해요, what is tdd basics, red green refactor example
 
 ## 핵심 개념
 
@@ -61,11 +62,43 @@ TDD의 핵심 리듬은 세 단계다.
 
 테스트가 통과된 상태에서만 리팩토링한다. 중복 제거, 메서드 추출, 이름 개선 순으로 진행한다.
 
+## 아주 짧은 예시
+
+처음 TDD를 붙일 때는 "주문 금액은 0보다 커야 한다"처럼 규칙이 하나인 도메인 메서드가 가장 안전하다.
+
+| 단계 | 내가 쓰는 것 | 왜 이 순서가 beginner에게 안전한가 |
+|---|---|---|
+| Red | `주문_금액이_0이면_예외를_던진다` 테스트 작성 | 요구사항을 한 문장으로 고정한다 |
+| Green | 예외를 던지는 최소 구현 추가 | 동작을 통과시키는 데만 집중한다 |
+| Refactor | 이름 정리, 중복 제거 | 통과한 뒤 구조를 다듬는다 |
+
+```java
+@Test
+void 주문_금액이_0이면_예외를_던진다() {
+    assertThatThrownBy(() -> new OrderItem("콜라", 0))
+            .isInstanceOf(IllegalArgumentException.class);
+}
+```
+
+```java
+public class OrderItem {
+    public OrderItem(String name, int price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("가격은 0보다 커야 합니다.");
+        }
+    }
+}
+```
+
+이 예시에서 중요한 점은 "정답 구조"를 한 번에 만들지 않는 것이다. 처음에는 예외 한 가지부터 통과시키고, 다음 테스트가 생길 때 생성자 분리나 값 객체 추출을 고민하면 된다.
+
 ## 흔한 오해와 함정
 
 - "TDD는 시간이 두 배 걸린다"는 오해가 있다. 초기에는 느리지만, 버그 디버깅 시간과 회귀 테스트 비용이 줄어 전체 개발 속도가 빨라지는 경우가 많다.
 - "TDD를 하면 모든 버그가 사라진다"는 기대도 있다. TDD는 요구사항을 명세한 테스트를 통과하는 코드를 만드는 것이므로, 잘못된 명세는 잡지 못한다.
 - "테스트가 통과하면 리팩토링은 나중에"라는 생각도 위험하다. Refactor 단계를 건너뛰면 기술 부채가 쌓인다. Red-Green까지만 반복하는 것은 TDD가 아니다.
+- "처음부터 완성된 설계를 떠올려야 TDD가 된다"는 오해도 흔하다. 처음에는 작은 규칙 하나를 테스트로 고정하고, 다음 테스트가 필요해질 때 일반화하면 된다.
+- "`Controller`나 DB 연동부터 TDD로 시작해야 하나"라는 질문도 많다. 처음에는 외부 의존이 적은 도메인 규칙부터 시작하는 편이 사이클이 짧고 왜 TDD가 도움이 되는지 체감하기 쉽다.
 
 ## 실무에서 쓰는 모습
 

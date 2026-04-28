@@ -1,6 +1,6 @@
 # Java 실행 모델과 객체 메모리 mental model 입문
 
-> 한 줄 요약: Java 초보자가 `.java -> .class -> JVM`, class/object/instance, `static`/instance, stack/heap intuition을 한 장의 흐름으로 연결해 이해하도록 돕는 primer다.
+> 한 줄 요약: Java 초보자가 `.java -> .class -> JVM`, class/object/instance, `static`/instance, reference 공유까지만 한 장의 흐름으로 연결하고 JVM 내부 세부는 관련 문서로 넘기게 돕는 primer다.
 
 **난이도: 🟢 Beginner**
 
@@ -10,11 +10,52 @@
 - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-- [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md)
-- [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
+- [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+- [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md) - stack/heap 그림을 더 정확한 JVM follow-up으로 넘길 때
+- [JVM, GC, JMM](./jvm-gc-jmm-overview.md) - GC, JMM, 런타임 내부 용어를 따로 볼 때
 - [가상 메모리 기초](../../operating-system/virtual-memory-basics.md)
 
-retrieval-anchor-keywords: java execution model basics, java source to bytecode, java jvm execution beginner, java class object instance difference, java static vs instance basics, java stack heap intuition, java reference variable basics, java object memory mental model, 자바 실행 모델 입문, 클래스 객체 인스턴스 차이, static instance 차이, stack heap 기초, java execution object memory mental model primer basics, java execution object memory mental model primer beginner, java execution object memory mental model primer intro
+retrieval-anchor-keywords: java execution model basics, java source to bytecode, java jvm execution beginner, java class object instance difference, java static vs instance basics, java reference variable basics, java object memory mental model, same object alias beginner, 자바 실행 모델 입문, 클래스 객체 인스턴스 차이, static instance 차이, 한쪽만 바꿨는데 왜 같이 바뀌지, new 안 했는데 같이 바뀜, 자바 참조 공유 기초
+
+## 처음 읽는 순서
+
+처음 막히는 지점을 용어별로 따로 외우기보다 아래 순서로 묶으면 덜 흔들린다.
+
+| 지금 막히는 질문 | 먼저 잡을 포인트 | 다음 문서 |
+|---|---|---|
+| "`main`이 실행된다는 말이 잘 안 잡힌다" | `.java -> .class -> JVM 실행` | [자바 언어의 구조와 기본 문법](./java-language-basics.md) |
+| "`new`를 하면 뭐가 생기지?" | class는 정의, object는 실행 중 실체 | [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) |
+| "`a = b`인데 왜 같이 바뀌지?" | 변수와 객체를 분리해서 본다 | [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md) |
+| "`static`은 왜 객체 없이 부르지?" | class-level 공유 상태/동작으로 본다 | [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md) |
+
+한 줄로 줄이면 이 문서는 "실행 흐름"과 "객체가 실제로 언제 생기는가"를 붙여 주는 첫 진입점이다.
+
+## 여기서 먼저 멈출 것
+
+이 문서는 beginner 첫 진입점이라 아래 두 가지만 먼저 잡고 멈추는 편이 좋다.
+
+- `new`가 나오면 "새 객체가 생겼나, 기존 객체를 다시 가리키나"를 먼저 본다.
+- `stack`/`heap`은 정확한 JVM 구조가 아니라 "지역 변수와 객체를 분리해서 보는 생각 도구"로만 쓴다.
+
+GC, JIT, JMM, escape analysis 같은 내부 용어는 이 문서의 중심이 아니다. 지금은 "실행 흐름과 reference 공유"만 붙으면 충분하다. 운영 이슈나 JVM 내부 구조가 떠올라도 바로 깊게 파지 말고 관련 문서 링크로 넘긴다.
+
+처음엔 아래 세 질문만 바로 답할 수 있으면 된다.
+
+- `new`가 실제 객체 생성 순간인가
+- `a = b`가 새 객체 생성이 아니라 같은 객체 별칭일 수 있는가
+- `static`이 객체별 값이 아니라 class 공유 값인가
+
+## 증상으로 바로 고르기
+
+실행 모델 문서를 펼쳐야 하는지, equality나 collections로 넘어가야 하는지 헷갈리면 먼저 증상을 자른다.
+
+| 지금 보이는 증상 | 먼저 붙일 질문 | 다음 문서 |
+|---|---|---|
+| "`new`를 안 했는데 왜 값이 같이 바뀌지?" | 같은 객체를 같이 보고 있나 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`출력은 같은데 `==`는 왜 false지?`" | 새 객체를 두 번 만든 건지, 같은 객체 별칭인지 구분했나 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`static`을 붙였더니 값이 다 같이 바뀐다" | 이 값이 class 공유 상태가 맞나 | [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md) |
+| "`HashMap` key를 바꿨더니 조회가 깨진다" | 애초에 같은 객체를 계속 돌려 쓰는가 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
+| "`main`이 어디서 시작되는지 모르겠다" | `.java -> .class -> JVM` 흐름이 잡혔나 | [자바 언어의 구조와 기본 문법](./java-language-basics.md) |
 
 ## 핵심 개념
 
@@ -55,9 +96,80 @@ Order class loaded
 | `static` member | class 하나당 공유하는 상태/동작 | 모든 `Order`가 함께 본다 |
 | stack / heap intuition | 지역 변수는 호출 단위, 객체는 참조 대상 | 변수와 객체를 같은 것으로 보면 자주 틀린다 |
 
-## 상세 분해
+## 변수, 객체, 메서드 호출을 한 그림으로 묶기
 
-### 1. source -> bytecode -> JVM
+처음에는 아래 세 줄을 따로 외우지 말고 한 번에 연결하는 편이 낫다.
+
+```java
+Order order = new Order("ramen", 2);
+order.addQuantity(1);
+System.out.println(order.getQuantity());
+```
+
+| 코드 조각 | 실제로 보는 질문 | beginner 해석 |
+|---|---|---|
+| `Order order` | 무엇을 가리킬 변수인가 | `Order` 객체를 가리킬 손잡이를 준비한다 |
+| `new Order("ramen", 2)` | 언제 실체가 생기나 | 이 순간 실제 주문 객체가 만들어진다 |
+| `order.addQuantity(1)` | 누가 상태를 바꾸나 | `order`가 가리키는 같은 객체의 `quantity`가 바뀐다 |
+| `order.getQuantity()` | 어디서 값을 읽나 | 방금 바뀐 같은 객체 상태를 다시 읽는다 |
+
+즉 초보자 기준으로는 "변수 이름이 바뀌는가"보다 "지금 같은 객체를 계속 보고 있는가"를 먼저 추적하면 side effect와 메서드 호출 흐름이 같이 정리된다.
+
+바로 아래 두 줄도 같이 붙이면 더 덜 헷갈린다.
+
+| 코드 | 먼저 읽는 질문 | 초보자용 해석 |
+|---|---|---|
+| `order = anotherOrder;` | 손잡이가 어디를 가리키게 바뀌나 | 변수의 대상이 바뀐다 |
+| `order.addQuantity(1);` | 손잡이가 가리키는 대상 안에서 무엇이 바뀌나 | 같은 객체 상태가 바뀐다 |
+
+즉 `=`는 "어디를 보게 할지", `.` 메서드 호출은 "그 대상에게 무엇을 시킬지"로 먼저 나누면 실행 흐름이 빨리 잡힌다.
+
+처음엔 아래 네 장면을 시간순으로만 읽어도 많이 풀린다.
+
+| 장면 | 실제로 일어나는 일 | 초보자 체크 문장 |
+|---|---|---|
+| `Order order;` | 참조 변수만 준비 | 아직 객체는 없다 |
+| `order = new Order("ramen", 2);` | 새 객체 생성 + 연결 | 이때 실체가 생긴다 |
+| `Order another = order;` | 같은 객체를 함께 가리킴 | 복사가 아니라 별칭일 수 있다 |
+| `another.addQuantity(1);` | 같은 객체 상태 변경 | `order`로 읽어도 바뀐 값이 보일 수 있다 |
+
+즉 "`변수`가 많다"와 "`객체`가 많다"는 다른 말이다. 변수 개수보다 실제 `new`가 몇 번 일어났는지를 먼저 세면 reference 공유가 빨리 보인다.
+
+## 30초 실행 추적 순서
+
+처음 디버깅할 때는 JVM 내부 구조를 길게 떠올리기보다 아래 네 줄만 따라가도 충분하다.
+
+1. 지금은 `class`를 읽는 단계인가, `new`로 객체를 만드는 단계인가
+2. 변수는 새 객체를 가리키는가, 기존 객체를 다시 가리키는가
+3. 바뀌는 값이 instance field인가, `static` 공유 값인가
+4. 이상한 비교처럼 보이면 같은 객체 질문인지, 같은 값 질문인지 나눈다
+
+마지막 줄이 중요한 이유는 이 문서의 혼동이 곧 equality 문서의 혼동으로 이어지기 쉽기 때문이다. "`=` 뒤에 `new`가 없는데 값이 같이 바뀐다" 같은 증상은 실행 모델 문제이면서 동시에 reference 공유 문제다.
+
+한 번 더 줄이면 아래 두 문장으로 정리된다.
+
+- `new`가 없으면 새 객체가 아니라 기존 객체를 다시 가리키는지 먼저 본다.
+- 같은 객체를 같이 보는 상황이 잡혀야 `==`, `equals()`, `HashMap` 조회도 덜 꼬인다.
+
+여기서 비교 문법으로 넘어갈 때도 순서는 같다.
+
+- `==`가 보이면 먼저 "두 참조가 같은 객체를 가리키나?"를 묻는다.
+- `equals()`가 보이면 그다음 "서로 다른 객체여도 같은 값으로 볼 규칙이 있나?"를 묻는다.
+
+## 자주 섞이는 말 4개 빠른 비교
+
+실행 모델을 읽다가 막히면 용어 뜻을 길게 외우기보다 아래 네 칸부터 다시 맞추면 된다.
+
+| 말 | 초보자용 첫 뜻 | 코드에서 찾는 자리 | 흔한 오해 |
+|---|---|---|---|
+| `class` | 어떤 객체를 만들 수 있는지 적어 둔 정의 | `class Order { ... }` | 클래스 이름만 나오면 객체도 이미 있다고 생각 |
+| object / instance | 실행 중 실제로 만들어진 대상 | `new Order("ramen", 2)` 결과 | object와 instance를 시험용 다른 용어라고 생각 |
+| reference variable | 그 객체를 가리키는 손잡이 | `Order order` | 변수 안에 객체 전체가 통째로 들어 있다고 생각 |
+| `static` member | 객체마다가 아니라 class 전체가 함께 보는 값/동작 | `Order.getCreatedCount()` | 객체 상태도 편해서 `static`으로 올려도 된다고 생각 |
+
+한 줄로 줄이면 `class`는 정의, object는 실체, reference variable은 그 실체를 가리키는 이름표, `static`은 객체 바깥의 공유 칸이다.
+
+## source -> bytecode -> JVM
 
 ```java
 class Order {
@@ -77,7 +189,7 @@ class Order {
 - compile time: 문법/타입/이름을 검사한다
 - runtime: JVM이 클래스를 로드하고 메서드를 실제로 실행한다
 
-### 2. class vs object vs instance
+## class vs object vs instance
 
 ```java
 class Order {
@@ -108,9 +220,7 @@ Order second = new Order("dumpling", 1);
 
 실무에서는 object와 instance를 거의 비슷하게 쓰지만, 입문 단계에서는 **"class는 정의, object는 결과"** 로만 구분해도 충분하다.
 
-### 3. `static` vs instance
-
-## 상세 분해 (계속 2)
+## `static` vs instance
 
 ```java
 class Order {
@@ -146,7 +256,7 @@ class Order {
 
 입문 단계에서는 "`static`은 편한 전역 변수"가 아니라 **class 수준 공유 상태/동작**으로 읽는 습관이 중요하다.
 
-### 4. stack / heap intuition
+## stack / heap intuition
 
 아래 코드를 실행한다고 생각해 보자.
 
@@ -175,13 +285,62 @@ object area (heap intuition)
 - `second = first`는 주문 객체를 하나 더 만든 것이 아니라, 같은 객체를 같이 가리키게 만든다.
 - 지역 변수 `first`, `second`와 실제 주문 객체를 구분해야 side effect를 설명할 수 있다.
 
-정확한 JVM 구현은 더 복잡하지만, beginner 단계에서는 **"메서드 호출마다 지역 변수 공간이 생기고, 객체는 그 변수가 가리키는 대상이다"** 라는 감각이면 충분하다.
+정확한 JVM 구현은 더 복잡하지만, beginner 단계에서는 **"메서드 호출마다 지역 변수 공간이 생기고, 객체는 그 변수가 가리키는 대상이다"** 라는 감각이면 충분하다. 여기서는 객체가 언제 생기고 왜 같은 객체를 같이 보게 되는지만 잡고, JIT/GC/JMM 같은 런타임 내부 용어는 관련 문서로 넘긴다.
+
+## 한 객체를 같이 보나, 객체를 하나 더 만드나
+
+초보자가 가장 자주 헷갈리는 분기는 `=`가 나올 때다.
+
+| 코드 | 실제로 생기는 일 | 결과 |
+|---|---|---|
+| `Order second = first;` | 새 객체는 안 생기고 같은 객체를 하나 더 가리킨다 | 한쪽 변경이 다른 쪽에서도 보인다 |
+| `Order second = new Order("ramen", 2);` | 새 객체가 하나 더 생긴다 | 두 변수의 상태가 서로 독립적이다 |
+
+짧은 예제로 다시 보면 차이가 더 선명하다.
+
+| 코드 | `first.getQuantity()` 결과 | `first == ...` 결과 |
+|---|---|---|
+| `Order alias = first; alias.addQuantity(1);` | `3` | `true` |
+| `Order copyLike = new Order("ramen", 2); copyLike.addQuantity(1);` | `2` | `false` |
+
+```java
+Order first = new Order("ramen", 2);
+Order second = first;
+second.addQuantity(1);
+
+System.out.println(first == second); // true
+```
+
+```java
+Order first = new Order("ramen", 2);
+Order second = new Order("ramen", 2);
+second.addQuantity(1);
+
+System.out.println(first == second); // false
+```
+
+여기서 beginner가 먼저 잡아야 할 핵심은 "`=`가 항상 복사"가 아니라, **오른쪽이 `new`인지 기존 reference인지 먼저 본다**는 점이다.
+
+## `==`를 여기서 어떻게 읽어야 하나
+
+실행 모델 문서를 읽다가 `first == second`를 보면 "값 비교냐?"가 아니라 "같은 객체 손잡이냐?"를 먼저 묻는 편이 안전하다.
+
+| 코드 | 초보자용 해석 |
+|---|---|
+| `first == second` | 두 변수가 같은 객체를 가리키는가 |
+| `first.equals(second)` | 두 객체 내용을 같은 값으로 볼 것인가 |
+
+이 문서에서는 첫 줄만 먼저 잡으면 충분하다. 값 비교 규칙을 더 자세히 보고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)로 바로 넘어가면 된다.
 
 ## 흔한 오해와 함정
 
 ### "`new`를 하면 변수 안에 객체 전체가 들어간다"
 
 아니다. 변수는 보통 객체를 가리키는 참조를 들고 있다고 이해해야 한다. 그래서 `second = first` 뒤에 한쪽으로 상태를 바꾸면 다른 쪽에서도 같은 변경이 보인다.
+
+### "`Student student;`만 써도 학생 객체가 하나 생긴다"
+
+아니다. 변수 선언은 손잡이만 준비한 것이다. 실제 객체는 `new Student(...)`가 실행될 때 생긴다.
 
 ### "`static`이면 어디서나 막 써도 된다"
 
@@ -195,35 +354,33 @@ object area (heap intuition)
 
 아니다. 그 그림은 초보자용 생각 도구다. JIT 최적화나 실제 HotSpot 구현까지 들어가면 더 복잡하다. 이 단계에서는 local variable과 object를 구분하는 데 집중하는 편이 낫다.
 
-## 실무에서 쓰는 모습
+## 미션 코드에 붙이는 첫 질문
 
-우아한테크코스 백엔드 미션에서 `Order`, `Cart`, `Menu` 같은 도메인 객체를 읽을 때도 같은 프레임으로 보면 된다.
+우아한테크코스 백엔드 미션에서 `Order`, `Cart`, `Menu` 같은 도메인 객체를 읽을 때도 아래 네 질문이면 충분하다.
 
-1. compile time에는 타입과 메서드 이름이 맞는지 잡힌다.
-2. runtime에는 요청 흐름 안에서 실제 객체가 만들어지고 메서드가 호출된다.
-3. 객체마다 달라야 하는 상태는 instance field에 둔다.
-4. 모든 객체가 함께 써야 하는 값만 `static final` 상수나 class-level helper로 둔다.
+1. 지금은 class 정의를 읽는가, `new`가 실행되는가
+2. 이 변수는 새 객체를 가리키는가, 기존 객체 별칭인가
+3. 바뀌는 값이 객체마다 다른 instance field인가
+4. 정말 함께 써야 하는 값만 `static`으로 올라가 있는가
 
-예를 들어 `Order.createdCount` 같은 진짜 공유 상태는 조심해서 쓰고, `order.quantity`처럼 도메인 상태는 객체 안에 두는 편이 자연스럽다. 디버깅할 때도 "변수가 바뀌었는가?"보다 "같은 객체를 여러 변수가 공유하고 있는가?"를 먼저 보면 side effect를 더 빨리 찾는다.
+디버깅할 때도 "변수가 바뀌었는가?"보다 "같은 객체를 여러 변수가 공유하고 있는가?"를 먼저 보면 side effect를 더 빨리 찾는다.
 
 ## 더 깊이 가려면
 
 - source/bytecode/JVM 큰 그림을 먼저 더 단단히 잡고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - class/object/instance를 OOP 문맥까지 넓히고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - `static`, `private`, `final`을 멤버 모델 관점에서 더 정확히 보고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-- stack/heap 직관의 한계와 HotSpot 최적화까지 이어서 보고 싶다면 [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md)
+- stack/heap 그림을 실제 JVM 메모리 세부 구조로 더 파고들고 싶다면 [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md)
+- GC, JMM, JVM 내부 용어를 따로 정리해서 보고 싶다면 [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 - OS 관점의 메모리 큰 그림을 같이 보고 싶다면 [가상 메모리 기초](../../operating-system/virtual-memory-basics.md)
 
-## 면접/시니어 질문 미리보기
+## 여기서 멈추고 넘길 것
 
-**Q. Java는 왜 `.java`를 바로 실행하지 않고 `.class`를 거치나요?**
-바이트코드라는 중간 형식을 두면 JVM이 여러 OS 환경에서 같은 코드를 실행하고 최적화하기 쉬워진다.
+이 문서는 beginner 첫 진입점이라 JVM 내부 최적화나 운영 이슈를 중심으로 다루지 않는다. 아래 단어가 보여도 지금은 "무엇이 정의이고 무엇이 실행 중 실체인가"만 잡으면 충분하다.
 
-**Q. class와 object의 차이는 무엇인가요?**
-class는 필드와 메서드의 정의이고, object는 그 정의를 바탕으로 실행 중에 만들어진 실제 대상이다.
-
-**Q. 왜 서버 코드에서 `static` 가변 상태를 조심하라고 하나요?**
-요청마다 분리돼야 할 데이터를 class 전체가 공유해 버리면 테스트와 동시성 버그가 커지기 쉽기 때문이다.
+- stack/heap 그림의 한계와 JVM 메모리 세부 구조는 [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md)으로 넘긴다.
+- GC, JMM, 런타임 내부 용어는 [JVM, GC, JMM](./jvm-gc-jmm-overview.md)에서 따로 본다.
+- `static` 공유 상태의 더 까다로운 설계 문제는 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md) 다음 단계에서 다룬다.
 
 ## 한 줄 정리
 

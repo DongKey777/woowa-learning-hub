@@ -21,7 +21,7 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 
-retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean vs @primary, conditionalonbean vs @qualifier, condition passes but autowire ambiguous, conditionalonbean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but nouniquebeandefinitionexception, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, conditionalonbean positive match ambiguous dependency, beginner conditionalonbean primer, spring conditional activation boundary, conditionalonbean debug output, spring conditionalonbean activation vs di candidate selection primer basics
+retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean vs @primary, conditionalonbean vs @qualifier, conditionalonbean name type annotation match, condition passes but autowire ambiguous, conditionalonbean name does not inject named bean, conditional bean activation vs dependency injection, spring condition positive but nouniquebeandefinitionexception, existing prerequisite bean required not bean choice, auto-configuration activation vs bean injection, conditionalonbean positive match ambiguous dependency, conditionalonbean basics, conditionalonbean what is, conditionalonbean debug output
 
 ## 먼저 mental model
 
@@ -54,7 +54,7 @@ retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selecti
 | 핵심 질문 | "이 bean/config를 활성화해도 되나?" | "주입 지점에 어떤 bean을 넣나?" |
 | 동작 시점 | 조건 평가, bean definition 등록 전후 | 실제 bean 생성자/`@Bean` 파라미터 주입 시점 |
 | 보는 대상 | 선행 bean의 존재 여부 | 이미 등록된 후보 목록 |
-| 대표 도구 | `@ConditionalOnBean(type/name/annotation)` | `@Primary`, `@Qualifier`, parameter name, `List<T>`, `Map<String, T>` |
+| 대표 도구 | `@ConditionalOnBean(value/type/name/annotation)` | `@Primary`, `@Qualifier`, parameter name, `List<T>`, `Map<String, T>` |
 | 하는 일 | 조건이 맞으면 등록 경로를 연다 | 단일 후보를 고르거나 전체 후보를 받는다 |
 | 하지 않는 일 | 여러 후보 중 하나를 대신 골라 주지 않는다 | 꺼져 있던 auto-configuration을 켜지 않는다 |
 
@@ -63,6 +63,59 @@ retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selecti
 ```text
 활성화 조건이 통과해도, 주입 후보 선택은 여전히 별도 문제다.
 ```
+
+---
+
+## `name`/`type`/`annotation`은 무엇을 match하나
+
+초보자 기준 mental model은 단순하다.
+
+- `type` 또는 `value`: "이 **타입의 bean**이 있나?"
+- `name`: "이 **이름의 bean**이 있나?"
+- `annotation`: "이 **annotation이 붙은 bean**이 있나?"
+
+즉 `@ConditionalOnBean`의 속성들은 모두 **bean lookup 기준**이다.
+주입 시점에 "그 bean을 선택해라"라고 지시하는 속성이 아니다.
+
+| 속성 | condition이 보는 것 | 주입 선택과 다른 점 |
+|---|---|---|
+| `value` / `type` | `PaymentClient`, `DataSource` 같은 타입 존재 여부 | 같은 타입 bean이 여러 개여도 condition은 통과할 수 있다 |
+| `name` | `mainDataSource` 같은 bean name 존재 여부 | 그 이름의 bean을 파라미터에 자동 주입하지는 않는다 |
+| `annotation` | `@RemoteClient`, `@Primary` 같은 annotation이 붙은 bean 존재 여부 | injection point에 annotation을 붙이는 규칙과는 별개다 |
+
+여기서 초보자가 특히 놓치는 포인트가 두 개 있다.
+
+1. 같은 속성 안에 여러 값을 쓰면 보통 "전부 있는지"를 본다.
+2. 여러 속성을 함께 써도, 그 요구사항이 꼭 **같은 bean 하나**에서 동시에 만족될 필요는 없다.
+
+예를 들어 아래 조건은 이렇게 읽는다.
+
+```java
+@ConditionalOnBean(
+    value = PaymentClient.class,
+    name = "mainDataSource",
+    annotation = Primary.class
+)
+```
+
+의미는 "`PaymentClient` 타입 bean이 있고, `mainDataSource`라는 이름의 bean이 있고, `@Primary`가 붙은 bean도 있나?"에 가깝다.
+이 세 조건을 만족하는 bean이 반드시 하나여야 한다는 뜻은 아니다.
+
+또 하나 자주 놓치는 규칙이 있다.
+
+- `@Bean` 메서드에 `@ConditionalOnBean`만 쓰고 `value`/`type`/`name`/`annotation`을 생략하면, Spring Boot는 **그 `@Bean` 메서드의 반환 타입**을 기본 match 대상으로 본다.
+
+그래서 아래 코드는 사실상 "`PaymentReporter` 타입 bean이 이미 있을 때만"으로 읽힌다.
+
+```java
+@Bean
+@ConditionalOnBean
+public PaymentReporter paymentReporter() {
+    return new PaymentReporter();
+}
+```
+
+이 기본 동작도 "이 타입을 주입해라"가 아니라 "이 타입이 이미 있으면 등록 경로를 열어라" 쪽이다.
 
 ---
 
@@ -169,6 +222,8 @@ public AuditReader auditReader(@Qualifier("mainDataSource") DataSource dataSourc
 |---|---|
 | "`@ConditionalOnBean(Foo.class)`가 있으니 `Foo`가 자동으로 하나 골라진다" | 아니다. 조건은 존재 여부만 본다. 어떤 `Foo`를 주입할지는 별도 규칙이다. |
 | "`name = \"foo\"`면 그 이름의 bean이 파라미터에도 들어간다" | 아니다. 이름 조건은 activation gate다. 정확한 주입은 `@Qualifier(\"foo\")` 같은 주입 규칙이 맡는다. |
+| "`annotation = Primary.class`면 `@Primary` bean이 자동 주입된다" | 아니다. annotation 조건은 그런 bean이 있는지만 본다. 실제 주입 우선순위 판단은 주입 단계에서 다시 일어난다. |
+| "`type`, `name`, `annotation`을 같이 쓰면 한 bean이 전부 만족해야 한다" | 꼭 그렇지 않다. 조건은 각 요구사항이 BeanFactory 안에 충족되는지를 본다. |
 | "condition report에서 positive match면 생성도 안전하다" | 아니다. 조건 통과 뒤에 constructor/`@Bean` 파라미터 주입이 또 실패할 수 있다. |
 | "`NoUniqueBeanDefinitionException`가 났으니 `@ConditionalOnBean`이 miss한 것이다" | 오히려 반대일 수 있다. 조건은 통과했지만, 주입 단계에서 후보가 많아 실패한 것일 수 있다. |
 

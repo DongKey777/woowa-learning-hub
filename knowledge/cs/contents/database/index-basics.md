@@ -1,102 +1,222 @@
 # 인덱스 기초 (Index Basics)
 
-> 한 줄 요약: 인덱스는 특정 열의 값을 미리 정렬해 두어 풀스캔 없이 빠르게 찾는 자료구조이고, 쓰기 성능과 트레이드오프가 있다.
+> 한 줄 요약: 인덱스는 "찾는 길을 미리 정리한 목록"이고, `EXPLAIN`은 DB가 실제로 그 길을 탔는지 확인하는 첫 도구다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [Database First-Step Bridge](./database-first-step-bridge.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
+- [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
+- [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
 - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: index basics, 인덱스란, db index beginner, full table scan, b-tree index beginner, primary index vs secondary index, 복합 인덱스 기초, 인덱스 쓰기 비용, 인덱스가 뭐예요, 쿼리 느릴 때 인덱스, db 인덱스 왜 필요해요, db 인덱스 처음 배우는데, 인덱스 어떻게 동작, 인덱스 큰 그림, index basics basics
+retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, explain 처음 읽는 법, clustered vs secondary index, covering index beginner, 왜 인덱스 안 타요, index 뭐예요, query plan basics, full table scan why, using filesort beginner, key null explain, db index 처음, what is index
 
 ## 핵심 개념
 
-인덱스(index)는 **테이블의 특정 열 값을 미리 정렬해 두어, 원하는 row를 빠르게 찾게 해주는 별도의 자료구조**다.
+인덱스는 **테이블에서 원하는 row를 빨리 찾기 위한 추가 자료구조**다.  
+책 뒤의 찾아보기처럼 "어떤 값이 어디 있는지"를 미리 정리해 둔다고 보면 된다.
 
-인덱스 없이 "이메일이 alice@example.com인 사람을 찾아라"를 실행하면 DB는 테이블의 모든 row를 처음부터 끝까지 읽는다(풀스캔). 행이 100만 개면 100만 번 읽는다. 이메일 열에 인덱스가 있으면 정렬된 구조에서 위치를 즉시 찾아가므로 훨씬 적은 횟수로 찾는다.
+입문자가 처음 헷갈리는 지점은 보통 두 가지다.
 
-입문자가 자주 헷갈리는 지점:
+- 인덱스는 읽기를 빠르게 하지만, 쓰기 때도 같이 갱신해야 해서 공짜가 아니다.
+- 인덱스를 만들었다고 끝이 아니라, DB가 실제로 그 인덱스를 썼는지는 `EXPLAIN`으로 확인해야 한다.
 
-- 인덱스는 읽기 속도를 높이지만, INSERT·UPDATE·DELETE 때마다 인덱스도 함께 갱신해야 해서 **쓰기 비용이 증가**한다.
-- 인덱스가 많을수록 항상 좋은 것이 아니다 — 쓰기가 잦은 테이블에 인덱스가 지나치게 많으면 오히려 전체 처리량이 낮아진다.
+즉 이 문서의 큰 그림은 "`인덱스가 뭔지`"와 "`실행 계획에서 그 인덱스를 실제로 탔는지`"를 입문 눈높이에서 같이 잡는 것이다.
+`optimizer trace`, histogram, storage engine 차이처럼 운영 성격이 강한 가지는 follow-up 링크로 넘긴다.
 
 ## 한눈에 보기
 
-인덱스는 책의 "찾아보기(색인)" 페이지와 같다. 본문을 처음부터 뒤지는 대신 색인에서 페이지 번호를 찾아 바로 간다.
+| 질문 | 첫 답 |
+| --- | --- |
+| 인덱스가 뭐예요? | 테이블 전체를 훑지 않도록 미리 정렬된 찾기 경로다 |
+| B-Tree는 뭐예요? | 대부분의 기본 인덱스가 쓰는 정렬/탐색 구조다 |
+| clustered index는 뭐예요? | MySQL InnoDB에서 primary key 순서 자체가 테이블 저장 순서에 가까운 구조다 |
+| secondary index는 뭐예요? | 본문과 별도로 만든 보조 찾기 경로다 |
+| covering index는 뭐예요? | 쿼리에 필요한 컬럼을 인덱스만으로 해결하는 상태다 |
+| `EXPLAIN`은 왜 봐요? | DB가 full scan, index scan, filesort 중 어떤 길을 고르는지 확인하려고 본다 |
 
-- 풀스캔: 테이블 전체를 순서대로 읽어 조건에 맞는 row를 찾는다
-- 인덱스 스캔: B-Tree 구조에서 해당 값의 위치를 빠르게 탐색한다
-
-```
-풀스캔: 1M rows 전부 읽기
-인덱스: Alice → row 위치 (즉시)
+```text
+느린 조회를 볼 때 첫 순서
+1. WHERE / ORDER BY 모양 확인
+2. EXPLAIN 확인
+3. key, rows, Extra 읽기
+4. 인덱스 자체가 없는지 / 있는데도 안 타는지 분리
 ```
 
 ## 상세 분해
 
-**기본 키(Primary Key) 인덱스**
+### 1. B-Tree 인덱스
 
-- 테이블 생성 시 자동으로 만들어진다. 기본 키는 유일하고 NULL이 불가능하다.
-- MySQL InnoDB에서는 기본 키 순서대로 row가 물리적으로 저장된다(클러스터드 인덱스).
+실무에서 "인덱스"라고 하면 대부분 먼저 **B-Tree 계열 인덱스**를 떠올리면 된다.
 
-**일반(Secondary) 인덱스**
+- 값이 정렬된 상태로 유지된다
+- `=`, `>`, `<`, `BETWEEN`, `ORDER BY` 같은 패턴에 잘 맞는다
+- "어디쯤 있는지"를 단계적으로 좁혀 가며 찾는다
 
-- 개발자가 `CREATE INDEX`로 추가한다.
-- 기본 키가 아닌 열(이메일, 이름, 날짜 등)을 빠르게 검색할 때 사용한다.
+그래서 이메일 exact match, 최근 주문 range 조회, 날짜 정렬 같은 초급 쿼리 대부분은 B-Tree 감각으로 설명할 수 있다.
 
-**복합 인덱스**
+### 2. clustered index와 secondary index
 
-- 두 개 이상의 열을 묶어서 인덱스를 만든다.
-- `(department, hire_date)` 복합 인덱스는 "부서 = A인 사람 중 최신 입사자"처럼 두 조건을 동시에 활용할 때 효율적이다.
-- 열 순서가 중요하다 — 앞쪽 열이 조건에 포함되어야 인덱스가 유효하게 사용된다.
+이 부분은 **MySQL InnoDB 기준의 첫 감각**만 잡으면 충분하다.
 
-**유니크 인덱스**
+- clustered index: primary key leaf에 row 본문이 함께 있다
+- secondary index: 보조 인덱스 leaf에는 보통 secondary key와 primary key가 들어 있고, 필요하면 다시 본문으로 내려간다
 
-- 중복 값을 허용하지 않는 인덱스다. 이메일, 주민번호처럼 유일해야 하는 열에 쓴다.
-- DB가 INSERT·UPDATE 시 중복 여부를 자동으로 검사한다.
+즉 MySQL에서는 secondary index를 타더라도, `SELECT *`처럼 컬럼이 많으면 **한 번 더 primary key 쪽으로 찾아가는 비용**이 남을 수 있다.
+엔진별 저장 구조 차이를 여기서 끝까지 파기보다, 초보자는 아래 두 줄만 기억하면 된다.
+
+- primary key 인덱스와 보조 인덱스는 역할이 다를 수 있다.
+- 인덱스를 탔어도 필요한 컬럼이 많으면 추가 읽기가 생길 수 있다.
+
+PostgreSQL과 MySQL의 저장 구조 차이를 따로 보고 싶다면 [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)로 넘어가면 된다.
+
+### 3. covering index
+
+커버링 인덱스는 **쿼리에 필요한 컬럼을 인덱스만으로 다 읽을 수 있는 상태**다.
+
+예를 들어 아래 쿼리를 보자.
+
+```sql
+SELECT member_id, status, created_at
+FROM orders
+WHERE member_id = 10
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+`(member_id, created_at, status)` 같은 인덱스가 있으면, DB가 인덱스만 읽고 결과를 만들 가능성이 커진다.
+
+핵심은 "인덱스를 탔다"보다 "테이블 본문까지 다시 가지 않아도 되는가"다.
+다만 컬럼을 너무 많이 넣으면 인덱스가 비대해지고 쓰기 비용도 커진다.
+
+### 4. 복합 인덱스와 왼쪽부터 읽는 감각
+
+복합 인덱스는 여러 컬럼을 묶은 인덱스다.
+
+```sql
+INDEX (member_id, status, created_at)
+```
+
+이런 인덱스는 보통 아래처럼 **앞쪽 컬럼부터 맞는 조건**에서 강하다.
+
+- `member_id = ?`
+- `member_id = ? AND status = ?`
+- `member_id = ? AND status = ? ORDER BY created_at`
+
+반대로 `status = ?`만 따로 찾으면 기대만큼 못 쓸 수 있다.  
+입문자는 이걸 "컬럼을 많이 넣을수록 좋다"가 아니라, "**자주 같이 쓰는 조건 순서**를 맞춘다"로 기억하는 편이 안전하다.
+
+## EXPLAIN 처음 읽는 순서
+
+`EXPLAIN`은 **DB가 이 SQL을 어떤 경로로 실행하려 하는지 보여 주는 표**다.
+
+처음에는 아래 네 칸만 봐도 충분하다.
+
+| 칸 | 초보자 해석 |
+| --- | --- |
+| `key` | 실제로 선택한 인덱스가 있는가 |
+| `rows` | 얼마나 많이 읽을 것 같다고 보는가 |
+| `Extra` | `Using index`, `Using filesort` 같은 추가 힌트가 있는가 |
+| `type` | 아주 넓게 읽는지, 좁혀서 읽는지 |
+
+읽는 순서는 보통 이렇게 잡으면 된다.
+
+1. `key`가 `NULL`인가 본다.
+2. `rows`가 과하게 큰가 본다.
+3. `Extra`에 `Using filesort`, `Using temporary`, `Using index`가 있는지 본다.
+4. 마지막으로 `type`을 보고 full scan에 가까운지 확인한다.
+
+예를 들어:
+
+```sql
+EXPLAIN
+SELECT *
+FROM orders
+WHERE member_id = 10
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+- `key = NULL`이면 인덱스 설계나 조건식 모양부터 의심한다
+- `key`는 있는데 `Using filesort`가 있으면 정렬 순서와 복합 인덱스를 본다
+- `Using index`가 있으면 커버링 가능성을 떠올린다
+
+`EXPLAIN`은 정답지가 아니라 출발점이다.
+초급 단계에서는 `key -> rows -> Extra -> type` 네 칸만 읽어도 "왜 느린지"를 감으로 말하는 실수는 크게 줄어든다.
+`Using filesort` 내부 구현이나 통계 오차까지 바로 내려가기보다, 먼저 "인덱스가 없나 / 있는데도 정렬이 안 맞나"를 분리하는 데 집중하면 된다.
 
 ## 흔한 오해와 함정
 
-| 자주 하는 말 | 왜 틀리기 쉬운가 | 더 맞는 첫 대응 |
-|---|---|---|
-| "모든 열에 인덱스를 달자" | 인덱스가 많을수록 쓰기마다 인덱스 갱신 비용이 커진다 | WHERE·JOIN·ORDER BY에 자주 쓰이는 열에만 단다 |
-| "인덱스가 있으면 무조건 빠르다" | 쿼리 조건이나 선택도에 따라 풀스캔이 더 빠를 수도 있다 | EXPLAIN으로 실행 계획을 보고 실제로 인덱스가 쓰이는지 확인한다 |
-| "인덱스는 한 번 달면 알아서 유지된다" | 인덱스는 write 때마다 자동으로 갱신되며 그 비용이 쌓인다 | 쓰기가 많은 테이블은 인덱스 수를 줄이거나 불필요한 인덱스를 삭제한다 |
+| 자주 하는 말 | 왜 헷갈리나 | 더 안전한 첫 판단 |
+| --- | --- | --- |
+| "인덱스 달았으니 끝" | DB가 다른 경로를 고를 수 있다 | `EXPLAIN`으로 실제 plan을 본다 |
+| "primary key 말고 만든 인덱스도 다 똑같다" | secondary index는 본문 재조회 비용이 남을 수 있다 | clustered/secondary 역할을 분리해 본다 |
+| "`SELECT *`여도 인덱스만 타면 빠르다" | 필요한 컬럼이 많으면 커버링이 깨진다 | 필요한 컬럼만 조회할 수 있는지 본다 |
+| "`Using filesort`면 무조건 인덱스가 없다" | 인덱스는 있어도 정렬 순서가 안 맞을 수 있다 | `ORDER BY`와 복합 인덱스 순서를 같이 본다 |
+| "함수만 써도 인덱스는 알아서 탄다" | `LOWER(name)`, `%abc` 같은 조건은 일반 인덱스를 깨기 쉽다 | 조건식 모양을 먼저 단순화한다 |
+
+초급에서 가장 흔한 실수는 "인덱스 유무"만 보고 끝내는 것이다.  
+실제로는 **조건식 모양, 컬럼 순서, 조회 컬럼 수, 정렬 축**이 같이 맞아야 plan이 좋아진다.
 
 ## 실무에서 쓰는 모습
 
-**(1) 검색 속도 개선** — 회원 테이블에서 이메일로 로그인을 처리할 때 이메일 열에 인덱스를 추가하면 매번 수백만 row를 스캔하지 않아도 된다.
-
-**(2) 정렬·범위 조회** — 주문 테이블에서 "최근 30일 주문"처럼 날짜 범위 조회를 자주 한다면 `created_at` 열에 인덱스를 두면 효율적이다.
+### 예시 1. 로그인용 이메일 조회
 
 ```sql
--- 인덱스 추가 예
-CREATE INDEX idx_member_email ON member (email);
+SELECT id, email, password
+FROM member
+WHERE email = 'alice@example.com';
 ```
+
+이 쿼리는 `email` 인덱스가 없으면 전체 회원 row를 훑기 쉽다.  
+초급에서는 "exact match 검색에는 B-Tree 인덱스가 잘 맞는다"는 감각부터 잡으면 된다.
+
+### 예시 2. 최근 주문 목록
+
+```sql
+SELECT member_id, status, created_at
+FROM orders
+WHERE member_id = 10
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+이 경우는 단순히 `member_id` 인덱스 하나만 볼 게 아니라:
+
+- `WHERE`
+- `ORDER BY`
+- `SELECT` 컬럼
+
+을 함께 봐서 복합 인덱스와 커버링 가능성을 같이 생각해야 한다.
+
+### 예시 3. 왜 plan이 이상한지 첫 질문
+
+`EXPLAIN`을 봤더니 `key = NULL`, `rows`가 매우 크다면, 초보자의 첫 질문은 "`DB가 이상한가요?`"가 아니라 아래가 더 맞다.
+
+- WHERE 컬럼에 인덱스가 있는가
+- 함수/타입 변환 때문에 인덱스를 못 타는가
+- 정렬 때문에 filesort가 생겼는가
 
 ## 더 깊이 가려면
 
-- B-Tree 구조, 실행 계획(EXPLAIN), 인덱스 선택도 분석 → [인덱스와 실행 계획](./index-and-explain.md)
+- `EXPLAIN`의 `type`, `rows`, `Extra`를 더 정확히 읽고 싶다면 → [인덱스와 실행 계획](./index-and-explain.md)
+- `WHERE + ORDER BY + LIMIT`에 맞는 복합 인덱스 순서와 커버링 설계를 더 보고 싶다면 → [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+- MySQL과 PostgreSQL의 저장 구조 차이 때문에 clustered/secondary 감각이 왜 달라지는지 보고 싶다면 → [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
+- SQL이 논리적으로 어떻게 실행되고 조인 순서가 왜 plan에 영향을 주는지 붙여 보고 싶다면 → [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
+- JPA 코드에서 인덱스 설계가 엔티티/쿼리 메서드와 어떻게 연결되는지 보려면 → [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-cross-category bridge:
+## 여기서 멈추는 기준
 
-- Spring Data JPA에서 `@Index` 어노테이션으로 인덱스를 선언하는 방법은 spring 카테고리 참고
+아래 세 줄이 분리되면 이 문서는 충분히 읽은 것이다.
 
-## 면접/시니어 질문 미리보기
-
-> Q: 인덱스를 추가하면 왜 쓰기 성능이 낮아지나요?
-> 의도: 인덱스가 쓰기 때도 갱신된다는 사실을 아는지 확인
-> 핵심: INSERT·UPDATE·DELETE 때마다 인덱스 자료구조도 함께 수정해야 하므로 추가 I/O와 락 비용이 발생한다.
-
-> Q: 복합 인덱스에서 열 순서가 왜 중요한가요?
-> 의도: 인덱스 탐색 방식의 기초 원리를 이해하는지 확인
-> 핵심: 인덱스는 앞 열부터 차례로 정렬돼 있어서, 쿼리에 앞쪽 열이 없으면 인덱스 전체를 활용하지 못하고 부분만 사용하거나 무시된다.
+- 인덱스는 전체를 다 훑지 않도록 찾는 길을 미리 정리한 자료구조다.
+- 좋은 인덱스는 `WHERE`, `ORDER BY`, 조회 컬럼 모양과 같이 봐야 한다.
+- `EXPLAIN`은 먼저 `key -> rows -> Extra -> type` 순서로 읽고, 깊은 엔진 내부는 다음 문서로 넘긴다.
 
 ## 한 줄 정리
 
-인덱스는 특정 열을 미리 정렬해 두어 풀스캔을 피하게 해주는 자료구조이며, 읽기 속도와 쓰기 비용 사이의 트레이드오프를 이해하고 필요한 열에만 적용해야 한다.
+인덱스는 B-Tree 기반의 빠른 찾기 경로이고, clustered/secondary/covering 차이와 `EXPLAIN`의 기본 신호를 함께 읽어야 "인덱스를 만들었는데 왜 아직 느린가"를 설명할 수 있다.

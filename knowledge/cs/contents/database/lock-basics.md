@@ -55,24 +55,23 @@ retrieval-anchor-keywords: database lock basics, 락 기초, 공유락 배타락
 
 **(2) 낙관적 락 + JPA** — 수정이 드문 프로필 정보 수정 등에서 `@Version` 컬럼을 두고 충돌 시 `OptimisticLockingFailureException`을 catch해 재시도하거나 사용자에게 재시도를 안내한다.
 
+## 여기서 멈추는 기준
+
+입문 1회차에서는 아래만 분리되면 충분하다.
+
+- plain `SELECT`와 locking read는 역할이 다르다.
+- 비관적 락은 기다리게 하고, 낙관적 락은 충돌 시 실패시키고 다시 판단한다.
+- deadlock, timeout, gap lock은 "락이 있다" 다음 단계의 심화 주제다.
+
 ## 더 깊이 가려면
 
 - 격리 수준과 락의 관계, 갭 락·넥스트 키 락 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - 실제 데드락 발생 패턴과 해결책 → [Deadlock Case Study](./deadlock-case-study.md)
+- lock wait, deadlock, timeout 대응 순서가 바로 필요하면 → [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 
 cross-category bridge:
 
 - JPA `@Version`과 `@Transactional`에서 낙관적 락이 어떻게 동작하는지 → [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
-
-## 면접/시니어 질문 미리보기
-
-> Q: 데드락이 왜 발생하나요?
-> 의도: 락 획득 순서와 데드락의 인과관계를 설명할 수 있는지 확인
-> 핵심: 두 트랜잭션이 서로가 가진 락을 기다리는 순환 대기 상태다. A가 row1을 잠그고 row2를 기다리고, B가 row2를 잠그고 row1을 기다릴 때 발생한다. 예방책은 락 획득 순서를 고정하는 것이다.
-
-> Q: 낙관적 락과 비관적 락 중 어떤 상황에서 무엇을 선택하나요?
-> 의도: 충돌 빈도와 트레이드오프를 아는지 확인
-> 핵심: 충돌이 드물고 재시도가 허용되면 낙관적 락, 충돌이 잦거나 재시도가 어려우면 비관적 락이 더 안전하다.
 
 ## 한 줄 정리
 

@@ -12,11 +12,12 @@
 - [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
+- [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry card, busy bucket retry policy beginner, lock timeout fail fast retry once, connection timeout busy retry once, busy should fail fast, busy short bounded retry, busy 재시도 기준 카드, busy 즉시 실패 짧은 재시도, 락 타임아웃 한 번 재시도, beginner busy bucket checklist, busy fast fail primer, busy fail fast vs one short retry card basics, busy fail fast vs one short retry card beginner, busy fail fast vs one short retry card intro
+retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry card, busy bucket retry policy beginner, lock timeout fail fast retry once, connection timeout busy retry once, busy should fail fast, busy short bounded retry, busy 즉시 실패 짧은 재시도, 락 타임아웃 한 번 재시도, beginner busy bucket checklist, busy fast fail primer, 왜 busy면 바로 실패해요, busy retry what is basics, 처음 busy 재시도 기준
 
 ## 먼저 멘탈모델
 
@@ -30,6 +31,16 @@ retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry c
 핵심 질문은 1개다.
 
 > "이 실패가 잠깐 줄이 막힌 정도라서, 같은 요청을 한 번만 더 확인해도 해석이 더 좋아질까?"
+
+## 이런 질문이면 먼저 이 카드로 온다
+
+아래 질문은 `retryable` playbook보다 이 카드가 먼저다.
+
+- "`busy`면 몇 번 재시도해야 하나요?"
+- "lock timeout이 떴는데 바로 실패해야 하나요?"
+- "한 번만 다시 보면 `already exists`로 바뀔 수도 있나요?"
+
+핵심은 "성공률을 높이기 위한 무한 retry"가 아니라 "서비스 결과를 더 정확히 번역하기 위한 짧은 확인 1회"인지 구분하는 것이다.
 
 ## 한 장 비교표
 
@@ -58,6 +69,8 @@ retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry c
 
 - 다시 때리면 같은 풀 입구에서 또 막힐 가능성이 높다.
 - 이 경우 `busy`는 곧바로 fail fast 하는 편이 보통 더 낫다.
+
+처음 판단할 때는 "재시도로 성공률을 올리나?"보다 "재시도로 결과 해석이 더 또렷해지나?"를 먼저 묻는 편이 안전하다.
 
 ## 초보자용 4문항 체크리스트
 
@@ -92,6 +105,9 @@ retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry c
 - "응답을 부드럽게 만들려면 retry를 많이 넣는 편이 낫다"
   - 아니다. 혼잡 구간에서 blind retry는 큐를 더 길게 만들 수 있다.
 
+- "`busy`와 `40001`은 어차피 둘 다 다시 해보면 되는 것 아닌가요?"
+  - 아니다. `busy`는 보통 fail-fast 또는 1회 짧은 확인이고, `40001`은 새 트랜잭션 whole retry 쪽 규칙이다.
+
 ## 한 줄 가이드
 
 - 같은 요청의 winner가 **곧 확정될 가능성**이 높으면: 짧은 `1회` retry
@@ -102,6 +118,7 @@ retrieval-anchor-keywords: busy fail fast vs short retry, busy one short retry c
 - `busy` / `retryable` / `already exists` 전체 번역표는 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - `busy`를 pool 대기와 lock 대기로 다시 나누려면 [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
 - retry를 메서드 안 while문이 아니라 바깥 envelope로 거는 이유는 [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
+- retry를 트랜잭션 boundary 바깥에서 감싸는 이유를 Spring 코드로 보면 [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
 
 ## 한 줄 정리
 

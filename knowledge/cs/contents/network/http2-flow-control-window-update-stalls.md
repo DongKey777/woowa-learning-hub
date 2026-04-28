@@ -2,6 +2,8 @@
 
 > 한 줄 요약: HTTP/2 멀티플렉싱이 있어도 `WINDOW_UPDATE`가 늦거나 connection window가 고갈되면 stream은 조용히 멈추고, 운영자는 이를 네트워크 불안정으로 오해하기 쉽다.
 
+처음 읽는다면 [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)에서 `stream slot 부족`과 `window credit 부족`을 먼저 가른 뒤 내려오면 덜 헷갈린다.
+
 ## 60초 입문 브리지
 
 먼저 이렇게 생각하면 된다. HTTP/2의 window는 "지금 더 보내도 되는 데이터 예산"이다. 수신자가 데이터를 읽으면 그만큼 `WINDOW_UPDATE`로 예산을 다시 돌려주고, 예산이 0에 가까워지면 연결은 살아 있어도 데이터 흐름만 멈출 수 있다.
@@ -27,8 +29,8 @@ stall을 볼 때 첫 오해는 "응답이 안 오니 패킷 손실이겠지"다.
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
-> - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [HTTP/2 HOL Blocking vs Flow-Control Stall Quick Decision Table](./http2-hol-blocking-vs-flow-control-stall-quick-decision-table.md)
+> - [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md)
 > - [HTTP/2 Upload Early Reject, RST_STREAM, Flow-Control Cleanup](./http2-upload-early-reject-rst-stream-flow-control-cleanup.md)
 > - [gRPC Deadlines, Cancellation Propagation](./grpc-deadlines-cancellation-propagation.md)
 > - [HTTP/2, HTTP/3 Connection Reuse, Coalescing](./http2-http3-connection-reuse-coalescing.md)

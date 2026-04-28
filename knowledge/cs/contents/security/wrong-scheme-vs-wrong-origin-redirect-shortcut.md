@@ -16,7 +16,7 @@
 - `[catalog]` [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - `[catalog]` [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: wrong scheme vs wrong origin redirect, login redirect becomes http, redirect location http instead of https, redirect location internal hostname, app-internal redirect after login, secure cookie not sent after redirect http, redirect chain http proof, location header first check, raw cookie duplicate not redirect mismatch, 로그인 뒤 왜 http로 가나, 처음 배우는데 location 헤더를 어디서 보나, wrong host after login, security readme return path, browser session beginner ladder return, browser session troubleshooting return
+retrieval-anchor-keywords: wrong scheme vs wrong origin redirect, login redirect becomes http, redirect location http instead of https, redirect location internal hostname, app-internal redirect after login, secure cookie not sent after redirect http, redirect chain http proof, location header first check, raw cookie duplicate not redirect mismatch, 로그인 뒤 왜 http로 가나, 처음 배우는데 location 헤더를 어디서 보나, wrong host after login, security readme return path, browser session troubleshooting return, return to browser session troubleshooting path
 
 ## 왜 이 문서를 먼저 읽나
 
@@ -70,6 +70,16 @@ retrieval-anchor-keywords: wrong scheme vs wrong origin redirect, login redirect
 - `wrong scheme`이면 `Secure Cookie Behind Proxy Guide` 한 장만 읽고 README로 복귀한다.
 - `wrong origin`이면 `Absolute Redirect URL Behind Load Balancer Guide` 한 장만 읽고 README로 복귀한다.
 - follow-up 문서 안에서 더 깊은 proxy/header 문서가 보여도, beginner는 먼저 README 복귀 자리부터 잃지 않는 편이 안전하다.
+
+## detour에서 복귀하는 return to Browser / Session Troubleshooting Path
+
+이 shortcut의 beginner return path wording은 항상 `return to Browser / Session Troubleshooting Path`다. follow-up 문서로 한 장만 내려간 뒤에는 아래 한 줄만 따라오면 된다.
+
+| 방금 고른 갈래 | 다음 한 걸음 | beginner return path |
+|---|---|---|
+| `wrong-scheme`: `Location`이나 다음 요청 URL이 `http://...`다 | [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| `wrong-origin`: `https://...`인데 host/origin이 internal/staging/`localhost`다 | [Absolute Redirect URL Behind Load Balancer Guide](./absolute-redirect-url-behind-load-balancer-guide.md) | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
+| detour를 읽는 동안 browser/session 용어가 다시 섞였다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) | ladder에서 primer 한 장만 다시 고른 뒤 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 내려온다 |
 
 ## 같은 로그인 실패처럼 보여도 브라우저가 겪는 일은 다르다
 

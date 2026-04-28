@@ -1,11 +1,26 @@
 # 트랜잭션 격리수준과 락
 
+> 한 줄 요약: 이 문서는 "왜 같이 rollback되나?" 다음 단계로, "동시에 실행될 때 무엇이 보이고 언제 기다리게 만들까?"를 한 장으로 묶어 주는 심화 입구다.
+
 **난이도: 🔴 Advanced**
 
-> 신입 백엔드 개발자가 transaction, ACID, isolation level, locking을 한 흐름으로 설명할 때 필요한 핵심 primer
+transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할 때 보는 심화 primer. 처음 DB를 배우는 단계라면 [트랜잭션 기초](./transaction-basics.md)와 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)를 먼저 읽는 편이 안전하다.
 
-관련 문서: [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [JDBC 실전 코드 패턴](./jdbc-code-patterns.md), [Read Committed vs Repeatable Read Anomalies](./read-committed-vs-repeatable-read-anomalies.md), [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md), [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
-retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity consistency isolation durability, transaction isolation, isolation level, dirty read, non-repeatable read, phantom read, read committed, repeatable read, serializable, locking read, select for update, optimistic lock, pessimistic lock, when to lock, lost update, deadlock, optimistic pessimistic lock 처음 배우는데 언제 쓰는지 말고 큰 그림, optimistic pessimistic lock primer 큰 그림, optimistic pessimistic lock 처음 배우는데, optimistic pessimistic lock primer beginner, locking 큰 그림 입문, lock 처음 배우는데 큰 그림, mvcc 처음 배우는데 read view undo chain 전에 큰 그림, mvcc 처음 배우는데 큰 그림, mvcc 처음 배우는데, mvcc 큰 그림 입문, mvcc primer beginner, mvcc intro before read view undo chain, jdbc transaction, jdbc transaction isolation, jdbc commit rollback, jdbc auto commit false, autoCommit false transaction, setAutoCommit false, manual transaction demarcation, begin commit rollback, connection commit rollback, spring transaction isolation, @transactional isolation, jpa transaction isolation, jpa optimistic lock, jpa pessimistic lock, hibernate optimistic locking, select for update jpa, entitymanager lock mode
+관련 문서:
+
+- [트랜잭션 기초](./transaction-basics.md)
+- [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)
+- [락 기초](./lock-basics.md)
+- [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
+- [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+- [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)
+- [Read Committed vs Repeatable Read Anomalies](./read-committed-vs-repeatable-read-anomalies.md)
+- [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md)
+- [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md)
+- [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
+- [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
+
+retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity consistency isolation durability, transaction isolation, isolation level, dirty read, non-repeatable read, phantom read, read committed, repeatable read, serializable, locking read, select for update, optimistic lock, pessimistic lock, when to lock, lost update, deadlock, optimistic pessimistic lock 처음 배우는데 언제 쓰는지 말고 큰 그림, optimistic pessimistic lock primer 큰 그림, optimistic pessimistic lock 처음 배우는데, optimistic pessimistic lock primer beginner, locking 큰 그림 입문, lock 처음 배우는데 큰 그림, mvcc 처음 배우는데 read view undo chain 전에 큰 그림, mvcc 처음 배우는데 큰 그림, mvcc 처음 배우는데, mvcc 큰 그림 입문, mvcc primer beginner, mvcc intro before read view undo chain, jdbc transaction, jdbc transaction isolation, jdbc commit rollback, jdbc auto commit false, autoCommit false transaction, setAutoCommit false, manual transaction demarcation, begin commit rollback, connection commit rollback, spring transaction isolation, @transactional isolation, jpa transaction isolation, jpa optimistic lock, jpa pessimistic lock, hibernate optimistic locking, select for update jpa, entitymanager lock mode, commit 했는데 왜 두 번 팔려요, select 두 번 했는데 값이 달라요, 언제 for update 써요, transaction lock isolation difference
 
 <details>
 <summary>Table of Contents</summary>
@@ -24,6 +39,24 @@ retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+## 먼저 분리할 세 질문
+
+이 문서는 용어를 한꺼번에 외우기보다, 아래 세 질문을 분리해 주는 역할로 읽는 편이 훨씬 쉽다.
+
+| 지금 막힌 질문 | 먼저 붙일 축 | 첫 문장 |
+|---|---|---|
+| "왜 주문 저장과 재고 차감이 같이 취소되지?" | 트랜잭션 경계 | 무엇을 같이 `commit`/`rollback`할지 정하는 문제다 |
+| "`commit`은 했는데 같은 값을 다시 읽으니 달라졌어" | 격리 수준 | 동시에 실행될 때 무엇이 보이느냐의 문제다 |
+| "마지막 재고를 누가 먼저 잡게 해야 하지?" | 락 전략 | 경쟁 자원을 기다리게 할지, 실패시키고 재시도할지 정하는 문제다 |
+
+같은 주문 생성 요청을 한 줄씩 자르면 더 덜 추상적이다.
+
+| 코드/증상에서 보이는 장면 | 이 문서가 답하는 부분 | 먼저 다른 문서가 답하는 부분 |
+|---|---|---|
+| `@Transactional`이 붙어 있다 | 트랜잭션과 격리 수준이 어디에 걸리는지 | JPA인지 JDBC인지 자체는 [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
+| `commit`은 됐는데 마지막 재고가 두 번 팔렸다 | 격리 수준만으로 안 끝나고 락/제약이 왜 필요한지 | 입문 설명은 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
+| `SELECT ... FOR UPDATE`가 처음 보인다 | plain `SELECT`와 locking read 차이 | lock 용어 첫 감은 [락 기초](./lock-basics.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 

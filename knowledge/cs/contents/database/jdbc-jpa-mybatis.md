@@ -1,10 +1,17 @@
 # JDBC, JPA, MyBatis
 
+> 한 줄 요약: 이 문서는 beginner primer 다음 단계에서 "SQL 위치 구분" 위에 `flush`, 영속성 컨텍스트, OSIV, pool 점유 시간 같은 심화 개념을 얹는 follow-up이다.
+
 **난이도: 🔴 Advanced**
 
-> 신입 백엔드 개발자가 데이터베이스 접근 기술을 구분해서 이해하기 위한 정리
+관련 문서:
 
-관련 문서: [JDBC 실전 코드 패턴](./jdbc-code-patterns.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
+- [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md)
+- [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)
+- [트랜잭션 기초](./transaction-basics.md)
+- [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+- [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
 
 <details>
 <summary>Table of Contents</summary>
@@ -21,46 +28,23 @@
 
 </details>
 
-> retrieval-anchor-keywords:
-> - JDBC
-> - JPA
-> - Hibernate
-> - MyBatis
-> - persistence framework comparison
-> - ORM vs SQL mapper
-> - first level cache
-> - SQLite vs H2 vs MySQL
-> - jdbc vs jpa vs mybatis
-> - hibernate vs jpa
-> - entity manager
-> - persistence context
-> - dirty checking
-> - N+1
-> - sql mapper
-> - when to use mybatis
-> - when to use jpa
-> - spring data access choice
-> - jpa 언제 쓰나
-> - mybatis 언제 쓰나
-> - orm vs jdbc
-> - @Transactional
-> - transactional
-> - spring transaction boundary
-> - transaction propagation
-> - service layer transaction
-> - why transactional not applied
-> - self invocation
-> - EntityManager flush
-> - flush timing
-> - flush before query
-> - flush clear detach
-> - open session in view
-> - OSIV
-> - lazy loading controller
-> - lazy loading json serialization
-> - long transaction
-> - connection pool exhaustion
-> - external call in transaction
+> retrieval-anchor-keywords: jdbc vs jpa vs mybatis, orm vs sql mapper, hibernate vs jpa, entity manager, persistence context, dirty checking, flush timing, osiv, self invocation, transaction propagation, long transaction, connection pool exhaustion, lazy loading controller, external call in transaction
+
+## 먼저 볼 mental model
+
+이 문서는 "처음 기술 이름을 구분하는 primer"가 아니라, **이미 JPA/JDBC/MyBatis 이름은 구분했는데 왜 실제 런타임 동작이 예상과 다르게 보이는지** 설명하는 follow-up이다.
+
+| 지금 들리는 증상 | 먼저 볼 문서 | 이 문서를 여는 시점 |
+|---|---|---|
+| "`save()`만 보이고 SQL이 안 보여요" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 아직 이 문서 전 단계다 |
+| "`save()`는 했는데 왜 여기서 `UPDATE` SQL이 나가죠?" | 이 문서 | `flush`, dirty checking 감각이 필요하다 |
+| "`@Transactional` 붙였는데 왜 적용이 안 되죠?" | 이 문서, [트랜잭션 기초](./transaction-basics.md) | 기술 구분보다 Spring 경계와 proxy를 같이 봐야 한다 |
+| "외부 API 한 번 불렀는데 pool timeout이 나요" | 이 문서, [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md) | 긴 트랜잭션과 connection 점유 시간을 같이 봐야 한다 |
+
+짧게 말하면 아래처럼 나눈다.
+
+- 기초 문서의 질문: "SQL이 어디서 만들어지지?"
+- 이 문서의 질문: "그 기술이 런타임에서 왜 이런 식으로 움직이지?"
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -88,6 +72,14 @@
 - 반복 코드를 얼마나 감춰주는지
 
 가 다르다.
+
+입문자가 한 번 더 헷갈리는 지점은 "접근 기술 선택"과 "트랜잭션/성능 문제"를 같은 질문으로 섞는다는 점이다. 이 문서는 기술 비교표만 보여 주는 glossary가 아니라, 아래처럼 **같은 주문 저장 흐름을 다른 축으로 다시 읽는 용도**에 가깝다.
+
+| 같은 주문 저장 흐름에서 보이는 장면 | 기술 구분 질문 | 심화 동작 질문 |
+|---|---|---|
+| `orderRepository.save(order)` | JPA 축인가? | 왜 지금 SQL이 바로 안 나가고 commit 직전에 몰리나? |
+| `orderMapper.insert(order)` | MyBatis 축인가? | SQL은 명확한데 트랜잭션 경계는 어디서 잡히나? |
+| `jdbcTemplate.update(...)` | JDBC 축인가? | connection을 언제 빌리고 언제 반환하나? |
 
 ---
 

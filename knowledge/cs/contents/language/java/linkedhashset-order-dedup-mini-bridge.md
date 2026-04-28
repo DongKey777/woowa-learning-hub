@@ -1,6 +1,6 @@
-# `LinkedHashSet` 순서+중복 제거 미니 브리지
+# `LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지
 
-> 한 줄 요약: "중복은 제거해야 하는데, 처음 들어온 순서도 유지하고 싶다"면 `List`와 `Set` 사이에서 고민을 오래 끌기보다 `LinkedHashSet`을 먼저 떠올리면 된다.
+> 한 줄 요약: 초급자는 `Set`으로 중복을 먼저 정리한 뒤에도 `출력`, `API 응답`, `인덱스 접근`이 필요해지면 `new ArrayList<>(set)`로 한 번 바꾼다는 흐름까지 같이 기억하면 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
 
@@ -9,95 +9,147 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
+- [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 
-retrieval-anchor-keywords: linkedhashset beginner, java linkedhashset 언제 쓰나, linkedhashset order dedup, java 중복 제거 순서 유지, list set linkedhashset 차이, linkedhashset insertion order beginner, list vs set order dedup requirement, java ordered set beginner, linkedhashset mental model, 처음 배우는데 linkedhashset, 자바 linkedhashset 기초, 자바 중복 제거하면서 순서 유지, 순서 유지 중복 제거 컬렉션, list set linkedhashset 선택 기준, linkedhashset order dedup mini bridge basics
+retrieval-anchor-keywords: linkedhashset vs treeset beginner, linkedhashset insertion order, treeset sorted order, java set to list conversion, new arraylist from set, hashset duplicate seems broken, equals hashcode set dedupe, linkedhashset duplicate rule beginner, linkedhashset 언제 쓰나, treeset 언제 쓰나, set list 변환 시점, 출력 api 인덱스 요구, 입력 순서 유지 set, 정렬 유지 set, java set 순서 헷갈림
 
 ## 먼저 잡는 멘탈 모델
 
-먼저 요구를 짧게 번역해 보자.
+먼저 "순서"라는 말을 둘로 나눠 읽는다.
 
-- `List`: 들어온 **순서**를 그대로 들고 간다. 대신 중복도 그대로 남는다.
-- `Set`: **중복 제거**가 된다. 대신 기본 `HashSet`은 순서를 믿으면 안 된다.
-- `LinkedHashSet`: **중복 제거 + 넣은 순서 유지**를 같이 잡는다.
+- `LinkedHashSet`: 먼저 넣은 순서를 그대로 기억한다.
+- `TreeSet`: 비교 규칙대로 다시 줄 세운다.
+- 둘 다 `Set`이라 중복은 막지만, 보여 주는 순서의 뜻이 다르다.
 
 초급 기준 기억 문장은 이것 하나면 충분하다.
 
-> "순서도 남기고, 같은 값은 한 번만 남긴다" -> `LinkedHashSet`
+> "입력한 순서를 그대로 남기나?"면 `LinkedHashSet`, "정렬된 순서로 다시 보여 주나?"면 `TreeSet`
 
 ## 10초 비교표
 
-| 지금 필요한 것 | 첫 선택 | 왜 이렇게 고르나 |
+| 질문 | `LinkedHashSet` | `TreeSet` |
 |---|---|---|
-| 순서만 중요하고 중복은 허용 | `List` | 화면/입력 순서를 그대로 보여 줘야 함 |
-| 중복 제거만 중요하고 순서는 안 중요 | `HashSet` | 같은 값이 한 번만 있으면 충분 |
-| 중복 제거와 입력 순서가 둘 다 중요 | `LinkedHashSet` | 중복을 막으면서 처음 들어온 순서를 유지 |
+| 무엇을 유지하나 | 삽입 순서 | 정렬 순서 |
+| `banana`, `apple`, `carrot`를 넣으면 | `banana -> apple -> carrot` | `apple -> banana -> carrot` |
+| 중복 판단 | `equals()` / `hashCode()` | `compareTo()` 또는 `Comparator` |
+| 이런 요구에서 고른다 | "처음 들어온 순서를 그대로 보여 준다" | "이름순, 날짜순, 점수순으로 보여 준다" |
+
+핵심은 "`순서 유지`와 `정렬 유지`는 같은 뜻이 아니다"는 점이다.
+
+## FAQ: "`HashSet`인데 왜 중복이 안 막힌 것처럼 보이나요?"
+
+먼저 `LinkedHashSet`은 "순서가 있는 `HashSet` 계열"이라고 생각하면 된다.
+
+- `HashSet`과 `LinkedHashSet`은 둘 다 `equals()` / `hashCode()`로 중복을 판단한다.
+- 그래서 값이 같아 보여도 `equals()`가 `false`면 둘 다 들어간다.
+- 반대로 `equals()`가 `true`면 `LinkedHashSet`도 중복을 막고, 먼저 들어온 순서만 유지한다.
+
+초급자는 보통 "문자열이 같아 보이는데 왜 2개지?"보다 "내가 같은 값이라고 믿는 기준이 `equals()`에 들어 있나?"를 먼저 확인하는 편이 안전하다.
+
+| 겉으로 보이는 증상 | 먼저 의심할 것 |
+|---|---|
+| `HashSet`/`LinkedHashSet`에 같은 회원이 2번 들어간다 | `equals()`/`hashCode()`를 안 만들었거나 기준 필드가 다르다 |
+| `TreeSet`에서는 1개인데 `LinkedHashSet`에서는 2개다 | 정렬 기준과 동등성 기준이 다르다 |
+
+즉 "`LinkedHashSet`이 중복을 못 막는다"기보다 "`내 클래스의 같음 기준이 set의 중복 기준과 다르다"가 더 정확한 설명이다.
 
 ## 작은 예제로 보기
 
-사용자가 태그를 아래 순서로 눌렀다고 하자.
-
-`java`, `backend`, `java`, `spring`
-
-원하는 결과가
-
-- 같은 태그는 한 번만 남고
-- 처음 누른 순서는 유지되는 것
-
-이라면 `LinkedHashSet`이 가장 바로 맞는다.
+같은 값을 같은 순서로 넣어도 결과는 다르게 나온다.
 
 ```java
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-Set<String> tags = new LinkedHashSet<>();
-tags.add("java");
-tags.add("backend");
-tags.add("java");
-tags.add("spring");
+Set<String> linked = new LinkedHashSet<>();
+Set<String> tree = new TreeSet<>();
 
-System.out.println(tags); // [java, backend, spring]
+linked.add("banana");
+linked.add("apple");
+linked.add("carrot");
+
+tree.add("banana");
+tree.add("apple");
+tree.add("carrot");
+
+System.out.println(linked); // [banana, apple, carrot]
+System.out.println(tree);   // [apple, banana, carrot]
 ```
 
 읽는 포인트는 두 가지다.
 
-- 두 번째 `"java"`는 중복이라 추가되지 않는다.
-- 결과 순서는 정렬이 아니라 **처음 들어온 순서**다.
+- `LinkedHashSet`은 넣은 순서를 바꾸지 않는다.
+- `TreeSet`은 입력 순서를 기억하지 않고 정렬 결과를 보여 준다.
 
-## 왜 `List` 하나로 끝내면 안 되나
+## `Set`을 `List`로 바꾸는 시점
 
-`List`도 순서는 잘 지킨다.
-하지만 중복 제거를 자동으로 해 주지 않는다.
+핵심은 "`중복 제거`가 중심일 때는 `Set`으로 들고 있고, `보여 주기 방식`이 필요해지는 순간 `List`로 바꾼다"이다.
+
+| 지금 필요한 것 | 더 자연스러운 타입 | 이유 |
+|---|---|---|
+| 중복 없이 모으기, `contains(...)` 확인 | `Set` | membership와 dedupe가 본질이다 |
+| API 응답 배열 만들기, 화면에 순서대로 출력 | `new ArrayList<>(set)` | `List`가 출력 계약을 더 잘 드러낸다 |
+| `get(0)`, `for (int i ...)`처럼 인덱스 사용 | `new ArrayList<>(set)` | `Set`에는 인덱스 개념이 없다 |
+
+짧게 기억하면 이렇다.
+
+- 저장/중복 제거 단계: `Set`
+- 반환/출력/인덱스 단계: `List`
+
+예를 들어 태그를 중복 없이 모은 뒤 API로 내보낼 때는 이런 흐름이 자연스럽다.
 
 ```java
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-List<String> tags = new ArrayList<>();
-tags.add("java");
+Set<String> tags = new LinkedHashSet<>();
 tags.add("backend");
 tags.add("java");
+tags.add("backend");
 
-System.out.println(tags); // [java, backend, java]
+List<String> response = new ArrayList<>(tags);
+
+System.out.println(response); // [backend, java]
+System.out.println(response.get(0)); // backend
 ```
 
-즉 `List`는 "순서 보관함"에 가깝고,
-`LinkedHashSet`은 "중복 없는 순서 보관함"에 가깝다.
+여기서 포인트는 두 가지다.
+
+- 중복 제거는 `Set`이 끝냈다.
+- `List` 변환은 "중복 제거를 다시 하려고"가 아니라 "응답 모양과 사용 방식"을 맞추려고 한다.
+
+## 언제 무엇을 고르나
+
+요구 문장을 이렇게 번역하면 덜 헷갈린다.
+
+| 요구 문장 | 첫 선택 | 이유 |
+|---|---|---|
+| "중복은 빼고, 사용자가 누른 순서는 그대로 보여 준다" | `LinkedHashSet` | 입력 순서가 의미다 |
+| "중복은 빼고, 이름순으로 보여 준다" | `TreeSet` | 정렬 결과가 의미다 |
+| "중복도 허용하고, 누른 순서도 그대로 보여 준다" | `List` | `Set`이 아니라 중복 허용 목록이다 |
+| "중복만 막으면 되고 순서는 상관없다" | `HashSet` | 순서 계약이 필요 없다 |
 
 ## 초보자가 자주 헷갈리는 포인트
 
-- `LinkedHashSet`은 **정렬**해 주는 컬렉션이 아니다. 넣은 순서를 유지할 뿐이다. 정렬 순서가 필요하면 `TreeSet` 쪽 질문이다.
-- `Set`이므로 인덱스로 `get(0)`처럼 접근하지 않는다. 순회가 중심이다.
-- 화면이나 API에 `List`가 필요하면 `new ArrayList<>(linkedHashSet)`처럼 마지막에 변환하면 된다.
-- "중복도 남겨야 하는데, 순서만 유지"라면 `LinkedHashSet`이 아니라 `List`가 맞다.
+- "`LinkedHashSet`도 순서를 보장하니 정렬된 거 아닌가요?" 아니다. 이미 넣은 순서를 지키는 것뿐이다.
+- "`TreeSet`도 순서가 있으니 입력 순서를 기억하나요?" 아니다. 정렬 규칙이 다시 순서를 만든다.
+- "`LinkedHashSet`인데도 중복이 들어가요"라는 말은 구현체 문제보다 `equals()`/`hashCode()` 기준 불일치인 경우가 많다.
+- "`Set`으로 중복 제거했으면 끝 아닌가요?" 출력이 리스트 형태이거나 인덱스 접근이 필요하면 마지막에 `new ArrayList<>(set)`로 바꾸는 편이 더 자연스럽다.
+- `TreeSet`은 정렬 기준이 곧 중복 기준에도 연결된다. 이름만 비교하면 이름이 같은 두 객체가 하나로 합쳐질 수 있다.
+- `Set`이므로 둘 다 인덱스로 `get(0)` 하지는 않는다. 순회가 중심이다.
 
 ## 빠른 선택 체크
 
-- "중복 없이 태그 목록을 입력 순서대로 보여 준다" -> `LinkedHashSet`
-- "최근 방문 기록처럼 같은 값도 다시 보여 줘야 한다" -> `List`
-- "정렬된 순서가 필요하다" -> `TreeSet` 방향으로 생각
+- "태그를 한 번만 남기되 사용자가 고른 순서는 그대로" -> `LinkedHashSet`
+- "학생 이름을 가나다순으로 한 번만 보여 준다" -> `TreeSet`
+- "`순서`라는 말이 나왔을 때 그게 입력 순서인지 정렬 순서인지 먼저 묻기" -> 가장 안전한 첫 질문
 
 ## 한 줄 정리
 
-`List`와 `Set` 중 하나만 억지로 고르기보다, "중복 제거 + 입력 순서 유지"가 같이 나오면 beginner 기준 첫 후보는 `LinkedHashSet`이다.
+`LinkedHashSet`은 "넣은 순서를 기억하는 set"이고 `TreeSet`은 "정렬해서 다시 줄 세우는 set"이므로, 초급자는 `순서 유지`와 `정렬 유지`를 같은 말로 읽지 않는 습관부터 잡아야 한다.

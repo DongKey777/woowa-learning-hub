@@ -15,12 +15,36 @@
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
 - [DFS와 BFS 입문](./dfs-bfs-intro.md)
+- [Deque Basics](../data-structure/deque-basics.md)
+- [Queue vs Deque vs Priority Queue Primer](../data-structure/queue-vs-deque-vs-priority-queue-primer.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: 0-1 bfs implementation template, zero one bfs template, 0-1 bfs java template, 0-1 bfs python template, 0-1 bfs dist deque parent, zero one bfs dist deque parent, 0-1 bfs beginner template, 0-1 bfs relax template, 0-1 bfs parent update template, 0-1 bfs deque push front back, 0-1 bfs code skeleton, 0-1 bfs checklist, 0-1 bfs equal distance, 0-1 bfs newdist == dist, zero one bfs implementation mistake check template basics
+retrieval-anchor-keywords: 0-1 bfs implementation template, zero one bfs template, 0-1 bfs java template, 0-1 bfs python template, 0-1 bfs dist deque parent, 0-1 bfs beginner template, 0-1 bfs relax template, 0-1 bfs parent update template, 0-1 bfs deque push front back, 0-1 bfs code skeleton, 처음 0-1 bfs 코드 어떻게 써요, 왜 0 은 앞에 넣지, 언제 newdist == dist 무시해, 뭐예요 0-1 bfs checklist basics, zero one bfs implementation mistake check template
 
-## 먼저 외울 규칙 3개
+처음 구현할 때는 아래 세 줄만 먼저 대조하면 된다.
+
+- `if (newDist < dist[next])`
+- `parent[next] = cur`
+- `cost == 0 ? front : back`
+
+셋 중 하나라도 빠지면, 초보자가 겪는 대부분의 오답 패턴으로 바로 이어진다.
+
+## 먼저 떠올릴 실행 순서
+
+초보자는 코드 전체를 읽기보다 relax 한 번의 흐름만 고정하는 편이 빠르다.
+
+```text
+newDist 계산
+-> 더 짧은가 비교
+-> dist 갱신
+-> parent 갱신
+-> 0이면 앞 / 1이면 뒤
+```
+
+이 다섯 칸이 한 세트라고 보면 `visited` 습관 때문에 꼬이는 일이 줄어든다.
+
+## 먼저 외울 규칙 4개
 
 - `dist[next]`는 "처음 봤는가"가 아니라 "더 짧아졌는가"로 갱신한다.
 - `cost == 0`이면 덱 앞, `cost == 1`이면 덱 뒤에 넣는다.
@@ -36,6 +60,18 @@ retrieval-anchor-keywords: 0-1 bfs implementation template, zero one bfs templat
 | `dist[next]` | `newDist < dist[next]`일 때만 갱신 | `visited[next]`를 먼저 고정 |
 | `parent[next]` | `dist[next]`를 갱신한 바로 아래 | 첫 방문 때 한 번만 기록 |
 | `deque` | `cost == 0`이면 `front`, `cost == 1`이면 `back` | 둘 다 뒤에 넣음 |
+
+## 증상 문구로 디버깅
+
+코드를 읽을 때 아래 말이 떠오르면 어느 줄을 볼지 바로 정할 수 있다.
+
+| 떠오르는 말 | 먼저 볼 줄 |
+|---|---|
+| `왜 더 짧은 경로를 놓치지?` | `if (newDist < dist[next])` |
+| `왜 복원 경로가 이상하지?` | `parent[next] = cur` |
+| `왜 0 비용 순간이 느리게 퍼지지?` | `addFirst` / `appendleft` |
+| `왜 같은 정점이 두 번 들어가?` | stale entry를 버그로 착각했는지 |
+| `왜 visited를 썼더니 답이 틀리지?` | relax 전에 `visited[next]`로 막았는지 |
 
 ## Java 템플릿
 
@@ -125,14 +161,6 @@ def zero_one_bfs(graph, start):
 
 초보자가 코드를 점검할 때는 `for` 루프 안을 아래 순서로만 보면 된다.
 
-```text
-newDist 계산
--> 더 짧은가 비교
--> dist 갱신
--> parent 갱신
--> 0이면 앞 / 1이면 뒤
-```
-
 즉 `parent`를 따로 갱신하는 알고리즘이 아니라, **relax 성공 블록 안에서 세트로 움직이는 알고리즘**이라고 보면 된다.
 
 손으로 먼저 추적해 보고 싶다면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)의 deque / `dist` 표를 바로 옆에 두고 같이 보면 된다.
@@ -179,6 +207,14 @@ visited[next] = true
 동점 parent 규칙만 분리해서 다시 보고 싶다면 [0-1 BFS parent tie mini note](./zero-one-bfs-parent-tie-mini-note.md)로 이어가면 된다.
 다만 문제에서 "사전순으로 가장 작은 경로"를 강제하면 예외가 생길 수 있으니, 그 경우는 [0-1 BFS lexicographic tie mini note](./zero-one-bfs-lexicographic-tie-mini-note.md)를 같이 보는 편이 안전하다.
 
+### 7. `visited`를 아예 못 쓴다고 오해
+
+초보자가 자주 하는 반대편 오해도 있다.
+핵심은 `visited`를 쓰느냐 마느냐가 아니라, `visited`를 `dist`보다 앞선 판정 기준으로 쓰느냐이다.
+
+- 위험한 형태: `visited[next]`면 relax 자체를 건너뜀
+- 안전한 출발점: `newDist < dist[next]`를 먼저 보고, 필요한 보조 표시는 그 뒤에 생각
+
 ## 복원까지 같이 볼 때 기억할 한 줄
 
 - BFS: 첫 방문 때 `parent` 고정
@@ -187,7 +223,7 @@ visited[next] = true
 
 0-1 BFS는 이름보다 동작을 기준으로 보면, `parent` 갱신 감각이 BFS보다 Dijkstra 쪽에 더 가깝다.
 
-## 같이 보면 좋은 문서
+## 다음에 어디로 가나
 
 - 반례를 먼저 보고 싶으면 [0-1 BFS dist vs visited 미니 반례 카드](./zero-one-bfs-dist-vs-visited-counterexamples.md)
 - 오래된 deque 항목이 왜 harmless한지 한 장만 더 보려면 [0-1 BFS stale-entry mini card](./zero-one-bfs-stale-entry-mini-card.md)
@@ -196,6 +232,8 @@ visited[next] = true
 - 줄 단위 deque 변화와 오래된 항목 처리까지 보고 싶으면 [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
 - `parent[]`로 경로를 실제 복원하는 흐름은 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - `0-1 BFS`와 Dijkstra를 언제 고르는지는 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
+- deque 자체가 아직 낯설면 [Deque Basics](../data-structure/deque-basics.md)
+- `queue`, `deque`, `priority queue`를 언제 구분하는지 먼저 잡으려면 [Queue vs Deque vs Priority Queue Primer](../data-structure/queue-vs-deque-vs-priority-queue-primer.md)
 
 ## 한 줄 정리
 

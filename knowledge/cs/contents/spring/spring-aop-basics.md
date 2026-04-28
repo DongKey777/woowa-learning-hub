@@ -12,15 +12,16 @@
 - [Spring Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md)
 - [Spring @Transactional 기초](./spring-transactional-basics.md)
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)
-- [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean public external call proxy, self invocation vs self injection, spring aop basics basics, spring aop basics beginner, spring aop basics intro
+retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, spring aop 뭐예요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean public external call proxy, self invocation vs self injection, spring aop basics beginner, spring aop basics intro
 
 초급자용 공통 라우팅 한 줄:
 
 `this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call(proxy)`가 깨졌는지 본다.
+
+즉 이 문서는 "`왜 annotation이 아예 안 먹지?`"처럼 **프록시 경로 문제**를 먼저 가르는 입구다. `Bean + public + external call(proxy)`가 맞는데도 결과가 이상하면 그때 [`@Transactional 기초`](./spring-transactional-basics.md)로 넘어가 `rollbackFor`, `readOnly`, `propagation` 같은 **트랜잭션 옵션 문제**를 본다.
 
 이 문서에서 `self-invocation`은 어려운 새 용어가 아니라, **같은 클래스 안에서 `this.method()`로 다시 부르는 내부 호출**이라고 읽으면 된다.
 
@@ -33,6 +34,7 @@ AOP 입문에서 `@Transactional`로 넘어갈 때는 용어보다 아래 순서
 | "AOP가 왜 필요한가?" | 이 문서 | [`@Transactional 기초`](./spring-transactional-basics.md) |
 | "`@Transactional`이 왜 AOP 이야기와 같이 나오지?" | [`@Transactional 기초`](./spring-transactional-basics.md) | [`Service-Layer 2패턴`](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
 | "`this.method()`를 구조적으로 어떻게 고치지?" | [`Service-Layer 2패턴`](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴) | 이 문서의 `Bean + public + external call(proxy)` 체크로 다시 복귀 |
+| "트랜잭션은 열리는 것 같은데 rollback/readOnly/전파가 헷갈린다" | [`@Transactional 기초`](./spring-transactional-basics.md) | [`@Transactional 깊이 파기`](./transactional-deep-dive.md) |
 
 짧게 기억하면:
 
@@ -65,6 +67,11 @@ AOP 입문에서 `@Transactional`로 넘어갈 때는 용어보다 아래 순서
 
 짧은 예시:
 
+<a id="example-proxy-bypass"></a>
+
+문제 예시:
+[`this.method()` 체크로 이동](#checklist-this-method) · [`private` 체크로 이동](#checklist-private-method) · [`new` 체크로 이동](#checklist-direct-new)
+
 ```java
 // 문제: 같은 클래스 내부 호출 + private + 직접 new
 public void placeOrder() {
@@ -75,6 +82,9 @@ public void placeOrder() {
 @Transactional
 private void saveOrder() {}
 ```
+
+개선 예시:
+[`this.method()` 비교로 복귀](#checklist-this-method) · [`private` 비교로 복귀](#checklist-private-method) · [`new` 비교로 복귀](#checklist-direct-new)
 
 ```java
 // 개선: 프록시가 적용될 public Bean 경계를 통해 호출
@@ -116,6 +126,9 @@ public class OrderService {
 | `this.saveOrder()` | 아니오 | annotation이 붙어도 안 먹는 것처럼 보임 |
 | `orderTxService.saveOrder()` | 예 | annotation 동작을 기대할 수 있음 |
 
+예시 왕복:
+[`문제 예시의 this.saveOrder()` 다시 보기](#example-proxy-bypass)
+
 첫 조치:
 
 - 프록시 기능이 필요한 메서드를 다른 Spring Bean으로 분리한다.
@@ -150,6 +163,9 @@ public class OrderService {
 | `@Transactional private void save()` | 낮음 |
 | `@Transactional public void save()` | 높음 |
 
+예시 왕복:
+[`문제 예시의 private saveOrder()` 다시 보기](#example-proxy-bypass)
+
 첫 조치:
 
 - annotation을 `public` 경계 메서드로 올린다.
@@ -171,39 +187,33 @@ public class OrderService {
 | `new AuditService()` | 아니오 | 낮음 |
 | 생성자 주입받은 `auditService` | 예 | 높음 |
 
+예시 왕복:
+[`문제 예시의 new AuditService()` 다시 보기](#example-proxy-bypass)
+
 첫 조치:
 
 - 직접 생성 대신 생성자 주입으로 Bean을 받는다.
 - "객체는 있는데 왜 annotation이 안 먹지?"가 보이면 `new` 생성 흔적부터 찾는다.
 
-## 1페이지 비교표: `@Transactional` / `@Cacheable` / `@Async` 프록시 전제
+## 여기서 멈추고, 나머지는 follow-up으로 넘긴다
 
-초급자 관점에서 먼저 이렇게 기억하면 된다.
+이 문서는 초급자가 "`왜 annotation이 안 먹지?`"를 프록시 관점으로 분리하는 입구다. `@Cacheable`, `@Async`도 같은 프록시 전제를 공유하지만, 캐시 키나 executor 설정까지 여기서 같이 설명하면 입문 문서의 중심이 흐려진다.
 
-- 셋 다 "메서드에 annotation만 붙이면 끝"이 아니라, **프록시를 타는 호출 경로**가 전제다.
-- 아래 3칸(Bean / public / external call) 중 하나라도 깨지면 "붙었는데 안 동작" 증상이 나온다.
-
-| annotation | Spring Bean이어야 하나 | `public` 메서드 전제가 필요한가 | 외부 호출(프록시 경유)이어야 하나 | 전제가 깨졌을 때 초보가 보는 증상 |
-|---|---|---|---|---|
-| `@Transactional` | 필요 | 보통 필요 | 필요 | 트랜잭션 시작/전파/롤백 기대가 깨짐 |
-| `@Cacheable` | 필요 | 보통 필요 | 필요 | 캐시 적중 없이 매번 원본 메서드 실행 |
-| `@Async` | 필요 | 보통 필요 | 필요 | 비동기가 아니라 호출 스레드에서 즉시 실행 |
-
-### 3문항 미니 진단 카드
-
-아래 3칸을 Yes/No로만 보면 초급자도 바로 가지를 탈 수 있다.
+초급자용으로는 이 3문항만 남기면 충분하다.
 
 ```text
-1. 이 객체는 Spring Bean인가?  No -> `new` 흔적부터 지우고 DI 주입으로 바꾼다.
-2. annotation 붙은 메서드가 `public`인가?  No -> `public` 경계 메서드로 올린다.
-3. 호출이 다른 Bean에서 들어오나?  No -> `this.method()` 자기 호출이라 프록시를 우회한다.
-4. 1~3이 모두 Yes인가?  Yes -> 프록시 전제는 맞다. 이제 annotation 옵션/실행 환경을 본다.
-5. `@Transactional`이면 전파/rollback 조건으로 이동한다.
-6. `@Cacheable`이면 key/condition/cacheManager 설정으로 이동한다.
-7. `@Async`이면 executor/@EnableAsync/반환 타입을 확인한다.
+1. 이 객체는 Spring Bean인가?
+2. annotation 붙은 메서드가 `public`인가?
+3. 호출이 다른 Bean에서 들어오나?
 ```
 
-더 자세한 분기는 [`Spring Self-Invocation Proxy Trap Matrix`](./spring-self-invocation-proxy-annotation-matrix.md)와 [`AOP와 프록시 메커니즘`](./aop-proxy-mechanism.md)에서 이어서 보면 된다.
+셋 중 하나라도 아니오면, 먼저 프록시 경로를 복구한다.
+
+| annotation | 여기서 기억할 공통점 | 세부 질문은 어디로 갈까 |
+|---|---|---|
+| `@Transactional` | 프록시를 타야 begin/commit/rollback이 붙는다 | [Spring @Transactional 기초](./spring-transactional-basics.md) |
+| `@Cacheable` | 프록시를 타야 캐시 확인이 먼저 일어난다 | [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md) |
+| `@Async` | 프록시를 타야 다른 스레드 실행으로 넘어간다 | [Spring Scheduler / Async Boundaries](./spring-scheduler-async-boundaries.md) |
 
 한 줄 규칙:
 
@@ -216,71 +226,6 @@ public class OrderService {
 | `this.method()` | "다른 Bean을 거쳤나?" |
 | `private` | "프록시가 설 `public` 경계인가?" |
 | `new Foo()` | "애초에 Spring Bean인가?" |
-
-## `@Cacheable`인데 DB를 매번 다시 읽는다면? 1분 확인 절차
-
-초급자용 mental model부터 잡으면 쉽다.
-
-- `@Cacheable`은 메서드 앞 정문에 붙은 "캐시 확인원"에 가깝다.
-- 같은 클래스 안에서 `this.method()`로 들어가면 정문을 안 지나므로, 확인원도 못 만나고 DB 쪽으로 바로 간다.
-
-짧은 예시:
-
-```java
-@Service
-public class ProductService {
-
-    public ProductDto renderProduct(Long id) {
-        return this.findProduct(id); // 내부 호출 -> 캐시 프록시 우회
-    }
-
-    @Cacheable(cacheNames = "products", key = "#id")
-    public ProductDto findProduct(Long id) {
-        return productRepository.findDtoById(id); // DB 조회
-    }
-}
-```
-
-같은 `id`로 두 번 호출했는데도 DB 조회 로그가 두 번 보이면, 초급자는 먼저 "캐시 설정이 다 틀렸나?"보다 "호출이 프록시를 탔나?"를 의심하는 편이 빠르다.
-
-| 확인 단계 | 무엇을 보면 되나 | 해석 |
-|---|---|---|
-| 1. 같은 파라미터로 두 번 호출 | 예: `id=1`로 연속 요청/테스트 | 캐시 hit가 나면 두 번째는 원본 메서드 실행이 줄어야 한다 |
-| 2. SQL 로그나 repository 호출 횟수 확인 | `select ...`가 두 번 찍히는지 본다 | 두 번 찍히면 "캐시 miss가 계속 난다"는 관찰을 확보한 것 |
-| 3. 호출 경로 확인 | `this.findProduct(id)` / 같은 클래스 내부 호출인지 본다 | 맞다면 설정 실수보다 프록시 우회 가능성이 크다 |
-
-다음 이동:
-
-- 내부 호출 여부를 더 짧게 가르려면 [`Spring Self-Invocation Proxy Trap Matrix`](./spring-self-invocation-proxy-annotation-matrix.md)
-- 캐시 key, `condition`, `cacheManager`까지 이어서 보려면 [`Spring Cache 추상화 함정`](./spring-cache-abstraction-traps.md)
-
-짧은 대비 예시:
-
-```java
-@Service
-public class BillingService {
-
-    @Async
-    public void sendReceipt() {}
-
-    public void issueBill() {
-        this.sendReceipt(); // 내부 호출 -> 프록시 우회 -> @Async 미적용
-    }
-}
-```
-
-## `@Cacheable`인데 DB를 매번 다시 읽는다면? 1분 확인 절차 (계속 2)
-
-```java
-@Service
-public class BillingFacade {
-    private final BillingWorker billingWorker;
-
-    public void issueBill() {
-        billingWorker.sendReceipt(); // 외부 Bean 호출 -> 프록시 경유 -> @Async 적용
-    }
-}
-```
 
 ## 증상별 다음 문서 한 칸 라우팅
 

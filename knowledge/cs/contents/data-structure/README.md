@@ -1,116 +1,205 @@
 # Data Structure (자료구조)
 
-**난이도: 🔴 Advanced**
+> 한 줄 요약: 자료구조 README는 백엔드 주니어가 `map`, `queue`, `tree` 계열을 헷갈릴 때 문제 문장을 먼저 번역해 출발점을 고르게 돕는 입구 문서다.
 
-> retrieval-anchor-keywords: data structure readme, data structure navigator, data structure playbook, data structure routing guide, basic primer, mini prompt pack, mini prompt direct link, applied data structure mini prompt, 초미니 실전 프롬프트 팩, 초미니 실전 프롬프트 팩 바로가기, binary tree vs bst vs heap, binary tree traversal, tree traversal routing, preorder inorder postorder level order, preorder signal, inorder signal, postorder signal, level order queue, binary search tree basics, bst basics, question bank, queue vs deque vs priority queue, fifo queue, queue terminology bridge, queue api vs implementation, enqueue dequeue peek, front rear head tail, deque basics, plain deque, deque router, deque example pack, plain deque vs monotonic deque, monotonic deque vs 0-1 bfs, monotonic deque walkthrough, monotonic stack walkthrough, sliding window maximum trace, sliding window minimum trace, next greater element trace, histogram largest rectangle trace, priority queue basics, java priorityqueue pitfalls, priorityqueue comparator direction, priorityqueue tie breaker, priorityqueue stale entry, priorityqueue not sorted, scheduledexecutorservice vs delayqueue, scheduled executor service delayqueue bridge, scheduled executor deadline ticket queue, scheduledfuture cancel stale entry, scheduledfuture cancellation, scheduledthreadpoolexecutor removeoncancelpolicy, removeOnCancelPolicy, cancelled scheduled task queue retention, not one sleeping thread per task, fixed rate vs fixed delay queue mental model, fixed rate timeline trace, fixed delay timeline trace, scheduleAtFixedRate timeline, scheduleWithFixedDelay timeline, periodic task re-enqueue, repeating task requeue, delayqueue repeating task, delayqueue periodic task, self rescheduling job, stale ticket bug, java scheduled executor data structure, java timer clock choice, nanoTime vs currentTimeMillis, System.nanoTime vs currentTimeMillis, delayqueue nanotime, monotonic clock java, wall clock vs monotonic clock, relative delay java, deadlineNanos, delayqueue vs priorityqueue, java delayqueue, timer priority policy split, delayqueue business priority, due time gate, delayed compareTo business priority, scheduler priority after due, ready queue priority, priorityblockingqueue vs delayqueue, priorityblockingqueue timer misuse, priorityblockingqueue timer queue, timer cancellation stale entry, delayqueue generation flag, latest wins timer, lazy stale skip, top-k heap direction, top k heap direction, kth largest min heap, streaming top-k heap, median two heaps, java priorityqueue heap direction, circular queue, circular queue vs ring buffer, circular queue interview, ring buffer, circular buffer, ring buffer use case matrix, logging ring buffer, telemetry buffer routing, audio ring buffer, producer consumer pipeline routing, bounded queue policy, bounded buffer policy, reject policy, overwrite policy, blocking queue policy, backpressure primer, bounded mpmc queue, sequencer coordination, aba problem, reclamation, segment tree, segment tree not bst or heap, segment tree vs bst, segment tree vs heap, range aggregation tree, interval tree, disjoint interval set, dynamic interval query, online interval insert, booking conflict, overlap query, bloom filter, trie, skip list, timing wheel, delay queue, concurrent skip list, union find deep dive, union find component size, union find component count, union find metadata walkthrough, connected components, connected component query, connected component count, 연결 요소, 연결 요소 개수, 연결 컴포넌트, connectivity question router, same component vs path reconstruction vs shortest path, graph traversal vs union find, connectivity query boundary, path reconstruction router, edge deletion connectivity, friend network group count, friend network group size, subway transfer count, minimum transfers, transfer count bfs, 환승 횟수, 최소 환승 경로, 친구 네트워크 그룹 수, ordered workload, ordered search workload matrix, point lookup layout, lower_bound only layout, short scan layout, long scan layout, roaring bitmap, container transition, roaring set op result, roaring lazy union pipeline, bitmap-wide lazy union, roaring whole-bitmap repair, roaring lazy union repair cost, lazy OR materialization cost, roaring intermediate repair path, temporary container roaring, repairAfterLazy hotspot profiling, roaring query result ordering, roaring predicate ordering, repairAfterLazy debt reduction, roaring intermediate result reuse, shared bitmap base reuse, lazy xor temporary run, run-heavy warehouse bitmap, roaring andnot result, roaring difference heuristic, lazy cardinality repair, roaring runOptimize timing, query result runOptimize, bulk built bitmap compaction, bitmap-native set-op, row ordering bitmap, bitmap compression playbook, selection playbook, operations playbook, warehouse sort key bitmap, dictionary encoding bitmap, row group sizing bitmap, late arriving rows bitmap, bitmap maintenance, bitmap compaction, bitmap rebuild, warehouse reclustering bitmap, bitmap locality remediation, bitmap hotspot remediation, id remapping bitmap, runOptimize scheduling tradeoff, roaring run formation, chunk boundary roaring, 16-bit container boundary, interval list vs roaring, whole bitmap run codec, roaring production profiling, roaring run churn observability, chunk-local cardinality histogram, container churn hotspot, sorted ingest locality, bitmap id locality, roaring prometheus metrics, roaring opentelemetry metrics, roaring exemplar sampling, roaring metric naming, bit sliced bitmap sort key, bsi prefix locality, bit slice segment boundary, upper slice run length, eytzinger, cache-oblivious ordered search, van emde boas layout, blocked search array, cache-oblivious b-tree, leaf-packed ordered index, hybrid top index leaf layout, guide index plus contiguous leaves
+**난이도: 🟢 Beginner**
 
-## 빠른 탐색
+관련 문서:
 
-이 `README`는 기본 개념 `primer`, 응용 주제 `catalog`, 아래쪽 `question bank`를 함께 묶는 **navigator 문서**다.
-mixed catalog에서 `[playbook]` 라벨은 선택 기준이나 연산 순서가 먼저 필요한 step-oriented 문서라는 뜻이고, 라벨이 없는 항목은 trade-off 중심 `deep dive`다.
+- [큐 기초](./queue-basics.md)
+- [덱 기초](./deque-basics.md)
+- [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
+- [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+- [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md)
+- [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md)
+- [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
+- [Map order symptom router card](./map-order-symptom-router-card.md)
+- [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [Connectivity Question Router](./connectivity-question-router.md)
+- [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- [Backend Data-Structure Starter Pack](./backend-data-structure-starter-pack.md)
 
-- 기본 primer부터 읽고 싶다면:
-  - 설명이 붙은 링크는 `무슨 질문에서 여길 여나`만 짧게 적었다.
-  - [기본 자료 구조](basic.md)
-  - [스택 기초](stack-basics.md) 🟢
-  - [연결 리스트 기초](linked-list-basics.md) 🟢
-  - [배열 vs 연결 리스트](array-vs-linked-list.md) 🟢
-  - [Backend Data-Structure Starter Pack](backend-data-structure-starter-pack.md) 🟢
-  - [복잡도와 알고리즘 패턴 기초](complexity-and-algorithm-pattern-foundations-backend-juniors.md) 🟢
-  - [해시 테이블 기초](hash-table-basics.md) 🟢
-  - [LRU 캐시 설계 입문](lru-cache-basics.md) 🟢
-  - [큐 기초](queue-basics.md) 🟢
-  - [트리 기초](tree-basics.md) 🟢
-  - [힙 기초](heap-basics.md) 🟢
-  - [그래프 기초](graph-basics.md) 🟢
-  - [덱 기초](deque-basics.md) 🟢
-  - [Deque Router Example Pack](deque-router-example-pack.md) (`plain deque` vs `monotonic deque` vs `0-1 BFS`)
-  - [Connectivity Question Router](connectivity-question-router.md) (`same group` vs `actual path` vs `minimum path`)
-  - [Union-Find Component Metadata Walkthrough](union-find-component-metadata-walkthrough.md) (`same?`가 `size/count`까지 커질 때)
-  - [Queue vs Deque vs Priority Queue Primer](queue-vs-deque-vs-priority-queue-primer.md)
-  - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
-  - [TreeMap Interval Entry Primer](treemap-interval-entry-primer.md) (`online interval insert`와 `offline interval merge`를 첫 표에서 바로 가르는 예약 입문)
-  - [Java PriorityQueue Pitfalls](java-priorityqueue-pitfalls.md) (`stable-order` 오해, duplicate priority, tie-breaker)
-  - [PriorityBlockingQueue Timer Misuse Primer](priorityblockingqueue-timer-misuse-primer.md)
-  - [ScheduledExecutorService vs DelayQueue Bridge](scheduledexecutorservice-vs-delayqueue-bridge.md)
-  - [DelayQueue Repeating Task Primer](delayqueue-repeating-task-primer.md)
-  - [Java Timer Clock Choice Primer](java-timer-clock-choice-primer.md)
-  - [ScheduledFuture Cancellation Bridge](scheduledfuture-cancel-stale-entries.md)
-  - [DelayQueue Remove Cost Primer](delayqueue-remove-cost-primer.md)
-  - [DelayQueue Delayed Contract Primer](delayqueue-delayed-contract-primer.md)
-  - [Timer Priority Policy Split](timer-priority-policy-split.md)
-  - [Timer Cancellation and Reschedule Stale Entry Primer](timer-cancellation-reschedule-stale-entry-primer.md)
-  - [Top-K Heap Direction Patterns](top-k-heap-direction-patterns.md)
-  - [Monotonic Deque Walkthrough](monotonic-deque-walkthrough.md) (`sliding window max/min` 손추적, duplicate tie-break)
-  - [Sliding Window Duplicate Extrema Index Drill](sliding-window-duplicate-extrema-index-drill.md) (`왼쪽 index 유지` vs `오른쪽 index 대체`)
-  - [Monotonic Stack Walkthrough](monotonic-stack-walkthrough.md) (`next/previous`, `strict vs equal`, flush 규칙)
-  - [Monotonic Duplicate Rule Micro-Drill](monotonic-duplicate-rule-micro-drill.md) (`<` vs `<=`, `>` vs `>=` 1문장 규칙)
-  - [Monotonic Strict-vs-Equal Translation Card](monotonic-strict-vs-equal-translation-card.md) (문장 신호 -> pop 조건 번역)
-  - [Deque vs Stack Signal Card](deque-vs-stack-signal-card.md) (`window answer read` vs `index answer finalize`)
-  - [Monotonic Operator Boundary Cheat Sheet](monotonic-operator-boundary-cheat-sheet.md) (`window/recent k -> deque`, `next/previous -> stack`)
-  - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](monotonic-deque-vs-stack-shared-input-drill.md) (같은 입력으로 `deque` vs `stack`)
-  - [Monotonic Structure Router Quiz](monotonic-structure-router-quiz.md) (`deque` vs `stack` vs `neither`)
-  - [Circular Queue vs Ring Buffer Primer](circular-queue-vs-ring-buffer-primer.md)
-  - [Bounded Queue Policy Primer](bounded-queue-policy-primer.md)
-  - [Binary Tree vs BST vs Heap Bridge](binary-tree-vs-bst-vs-heap-bridge.md)
-  - [Binary Tree Traversal Routing Guide](binary-tree-traversal-routing-guide.md)
-  - [Segment Tree Is Not BST or Heap](segment-tree-not-bst-or-heap-bridge.md)
-  - [Balanced BST vs Unbalanced BST Primer](balanced-bst-vs-unbalanced-bst-primer.md)
-  - [Array](basic.md#array-배열)
-  - [Linked List](basic.md#linked-list-연결-리스트)
-  - [Hash Table](basic.md#hash-table-해시-테이블)
-  - [Heap](basic.md#heap-힙)
-  - [Tree](basic.md#tree-트리)
-  - [Graph](basic.md#graph-그래프)
-  - [Union-Find](basic.md#union-find-유니온-파인드)
-- 응용 catalog에서 문제 축을 먼저 고르려면:
-  - [응용 자료 구조 개요](applied-data-structures-overview.md) (`문제 문장 -> 연산 -> 구조` 30초 입문)
-  - [초미니 실전 프롬프트 팩 바로가기](applied-data-structures-overview.md#초미니-실전-프롬프트-팩) (상황별 `처음 볼 문서`와 `다음 문서 1개`, 그리고 `온라인/윈도우/근사/배치` 같은 한 단어 오답 경고 힌트가 붙은 첫 분기 오독 방지 카드)
-  - [Fenwick Tree vs Segment Tree](fenwick-vs-segment-tree.md)
-  - [Bloom Filter vs Cuckoo Filter](bloom-filter-vs-cuckoo-filter.md)
-  - [Trie Prefix Search / Autocomplete](trie-prefix-search-autocomplete.md)
-- 특정 trade-off deep dive로 바로 들어가려면:
-  - [Ring Buffer](ring-buffer.md)
-  - [Michael-Scott Lock-Free Queue](michael-scott-lock-free-queue.md)
-  - [Interval Tree](interval-tree.md)
-  - [Disjoint Interval Set](disjoint-interval-set.md)
-  - [Cache-Aware Data Structure Layouts](cache-aware-data-structure-layouts.md)
-  - [Ordered Search Workload Matrix](ordered-search-workload-matrix.md)
-  - [Eytzinger Layout and Cache-Friendly Search](eytzinger-layout-and-cache-friendly-search.md)
-  - [van Emde Boas Layout vs Eytzinger vs Blocked Arrays](van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md)
-  - [Cache-Oblivious B-Tree / Leaf-Packed Variants vs Plain vEB Layout](cache-oblivious-b-tree-vs-plain-veb-layout.md)
-  - [Hybrid Top-Index / Leaf Layouts](hybrid-top-index-leaf-layouts.md)
-  - [Roaring Container Transition Heuristics](roaring-container-transition-heuristics.md)
-  - [Chunk-Boundary Pathologies In Roaring](chunk-boundary-pathologies-in-roaring.md)
-  - [Roaring Set-Op Result Heuristics](roaring-set-op-result-heuristics.md)
-  - [Roaring Bitmap-Wide Lazy Union Pipeline](roaring-bitmap-wide-lazy-union-pipeline.md)
-  - [Roaring Lazy Union And Repair Costs](roaring-lazy-union-and-repair-costs.md)
-  - [Roaring Intermediate Repair Path Guide](roaring-intermediate-repair-path-guide.md)
-  - [Roaring Query Result Ordering Guide](roaring-query-result-ordering-guide.md)
-  - [Roaring ANDNOT Result Heuristics](roaring-andnot-result-heuristics.md)
-  - [Roaring runOptimize Timing Guide](roaring-run-optimize-timing-guide.md)
-  - [Roaring Instrumentation Schema Examples](roaring-instrumentation-schema-examples.md) (Java/CRoaring bridge, Prometheus/OpenTelemetry naming, adaptive sampling)
-  - `[playbook]` [Bitmap Locality Remediation Playbook](bitmap-locality-remediation-playbook.md)
-  - `[playbook]` [Roaring Bitmap Selection Playbook](roaring-bitmap-selection-playbook.md)
-  - [Compressed Bitmap Families: WAH, EWAH, CONCISE](compressed-bitmap-families-wah-ewah-concise.md)
-  - `[playbook]` [Row-Ordering and Bitmap Compression Playbook](row-ordering-and-bitmap-compression-playbook.md)
-  - [Warehouse Sort-Key Co-Design for Bitmap Indexes](warehouse-sort-key-co-design-for-bitmap-indexes.md)
-  - [Late-Arriving Rows and Bitmap Maintenance](late-arriving-rows-and-bitmap-maintenance.md)
-  - [Roaring Run Formation and Row Ordering](roaring-run-formation-and-row-ordering.md)
-  - [Roaring Production Profiling Checklist](roaring-production-profiling-checklist.md)
-  - [Roaring Run-Churn Observability Guide](roaring-run-churn-observability-guide.md)
-  - [Bit-Sliced Bitmap Index](bit-sliced-bitmap-index.md)
-  - [Bit-Sliced Bitmap Sort-Key Sensitivity](bit-sliced-bitmap-sort-key-sensitivity.md)
-- 선택 기준이나 연산 절차가 먼저 필요하면:
-  - `[playbook]` [Fenwick and Segment Tree Operations Playbook](fenwick-segment-tree-operations-playbook.md)
-  - `[playbook]` [Sketch and Filter Selection Playbook](sketch-filter-selection-playbook.md)
-  - `[playbook]` [Bitmap Locality Remediation Playbook](bitmap-locality-remediation-playbook.md)
-  - `[playbook]` [Roaring Bitmap Selection Playbook](roaring-bitmap-selection-playbook.md)
-  - `[playbook]` [Row-Ordering and Bitmap Compression Playbook](row-ordering-and-bitmap-compression-playbook.md)
-- 면접형 self-check로 마무리하려면:
-  - 이 README 아래 `질의응답` 구간
-- 문서 역할 구분이 헷갈리면:
-  - [Navigation Taxonomy](../../rag/navigation-taxonomy.md)
+retrieval-anchor-keywords: data structure readme, beginner data structure routing, hashmap treemap linkedhashmap primer, hashset treeset beginner bridge, queue deque priority queue, connectivity router, bfs queue bridge, 자료구조 처음인데 뭐부터, map set queue tree 뭐부터, set map 차이 처음, queue deque 차이 처음, deque가 뭐예요, treemap 왜 써요, 범위 조회 자료구조 뭐부터, bfs랑 queue 차이 뭐예요
+
+## 길 잃었을 때 복귀 경로
+
+이 README는 자료구조 카테고리 navigator다. primer에서 길을 잃으면 아래 한 칸으로 돌아와 다시 분기하면 된다.
+
+| 지금 헷갈리는 문장 | 여기로 되돌아오기 | 바로 다음 안전한 한 걸음 |
+|---|---|---|
+| `set인지 map인지 아직도 모르겠어요` | [먼저 자를 질문](#먼저-자를-질문) | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) |
+| `중복 제거는 되는데 왜 TreeSet/TreeMap이 또 필요한지 모르겠어요` | [증상별 빠른 길](#증상별-빠른-길) | [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md) -> [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
+| `queue를 쓰긴 하는데 FIFO 문제인지 BFS 문제인지 모르겠어요` | [초급 10초 라우터](#초급-10초-라우터) | [큐 기초](./queue-basics.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `덱이 queue의 다른 이름인지, 양쪽에서 빼는 건지 헷갈려요` | [증상별 빠른 길](#증상별-빠른-길) | [덱 기초](./deque-basics.md) -> [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
+| `정렬/범위 조회가 필요한데 HashMap으로도 될지 헷갈려요` | [처음 15분 읽기 루트](#처음-15분-읽기-루트) | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
+| `왜 lower랑 floor가 달라요?`, `exact match 포함 여부가 헷갈려요` | [증상별 빠른 길](#증상별-빠른-길) | [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md) -> [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md) |
+
+## 증상별 빠른 길
+
+처음엔 자료구조 이름을 다 외우기보다, 지금 막힌 문장을 beginner bridge에 직접 붙이는 편이 더 빠르다.
+아래 5개는 `set/map/queue/deque/treemap` 계열에서 초급자가 가장 자주 하는 첫 질문만 모아 둔 라우터다.
+
+| 지금 보이는 증상 질문 | 먼저 볼 beginner bridge | 여기서 먼저 해결되는 혼동 |
+|---|---|---|
+| `중복만 막으면 되나요, 값도 같이 저장해야 하나요?`, `set이랑 map이 뭐가 달라요?` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | `membership only`와 `key -> value`를 먼저 분리한다 |
+| `정수 id 집합인데 set이면 되나요, bitmap은 언제 써요?` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) | `membership only` 기본값과 `dense integer id` 집합 연산 신호를 분리한다 |
+| `정렬된 set이 왜 필요하죠?`, `HashSet이면 끝 아닌가요?` | [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md) | `중복 제거만`과 `정렬/이웃/범위` 요구를 분리한다 |
+| `queue가 뭐예요?`, `왜 BFS랑 queue가 같이 나오죠?` | [큐 기초](./queue-basics.md) | FIFO 규칙과 `queue는 도구, BFS는 문제 유형`을 먼저 붙인다 |
+| `deque가 뭐예요?`, `queue랑 뭐가 달라요?`, `양쪽에서 빼는 게 왜 필요하죠?` | [덱 기초](./deque-basics.md) | plain deque와 queue/stack의 차이를 먼저 잡는다 |
+| `TreeMap은 언제 써요?`, `범위 조회면 왜 HashMap이 아니죠?` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | `lookup only`와 `정렬/범위/ceiling/floor` 요구를 분리한다 |
+| `왜 lower랑 floor가 달라요?`, `같은 key 포함 여부가 뭐예요?` | [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md) | strict/inclusive와 exact match 포함 여부를 먼저 고정한다 |
+
+질문이 둘 이상 섞여 보이면 이 순서로 자르면 된다.
+
+1. `있나/없나`에서 끝나면 `set`
+2. `key의 값`이 필요하면 `map`
+3. `먼저 온 순서`면 `queue`
+4. `앞뒤 양쪽 끝 제어`면 `deque`
+5. `정렬된 이웃/범위`면 `TreeSet/TreeMap`
+
+## 먼저 자를 질문
+
+이름보다 "지금 무엇을 해야 하나"를 묻는 편이 빠르다.
+
+| 지금 먼저 묻는 것 | 첫 구조/문서 | 이유 |
+|---|---|---|
+| `응용 자료구조가 뭔지`, `online/offline부터 헷갈린다` | [응용 자료 구조 개요](./applied-data-structures-overview.md) | 반복 질의를 연산 문장으로 먼저 번역한다 |
+| `중복만 막나`, `있는지만 보나`, `값도 붙여야 하나` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | `set`과 `map` 경계를 먼저 자른다 |
+| `dense integer id 집합을 계속 겹쳐 보나`, `bitmap이 괜히 과한가` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) | `Set` 기본값에서 `bitmap/bitset` 신호를 자른다 |
+| `중복 제거는 맞는데 정렬/범위도 같이 필요하다` | [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md) | `hash set`과 `tree set` 경계를 자른다 |
+| `map/set/queue/priority queue/trie/bitmap 중 뭐부터 고르지` | [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md) | lookup, dedupe, fifo, prefix 질문을 정리한다 |
+| `id로 바로 찾기`, `key -> value` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | 조회가 핵심이면 `map` 계열부터 정해야 한다 |
+| `먼저 들어온 순서대로 처리` | [큐 기초](./queue-basics.md) | FIFO 규칙이 먼저다 |
+| `앞/뒤 양쪽 끝을 번갈아 써야 한다` | [덱 기초](./deque-basics.md) | plain deque가 필요한지부터 분리할 수 있다 |
+| `가장 작은 값`, `가장 급한 작업` | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) | queue와 priority queue를 분리해야 한다 |
+| `같은 그룹인가`, `연결되어 있나` | [Connectivity Question Router](./connectivity-question-router.md) | 자료구조 선택인지 탐색 문제인지부터 가른다 |
+| `그래프가 뭐고 정점/간선이 뭔지부터 낯설다` | [그래프 기초](./graph-basics.md) | BFS나 union-find 전에 그래프 그림을 먼저 붙인다 |
+
+## 초급 10초 라우터
+
+문제 문장을 이렇게 번역하면 출발점이 빨리 잡힌다.
+
+| 지금 문제에서 가장 먼저 보이는 문장 | 먼저 볼 문서 | 왜 여기서 시작하나 |
+|---|---|---|
+| `회원 id로 주문 조회` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | exact lookup이 핵심이다 |
+| `이미 처리한 요청인가`, `중복만 막으면 되나` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | `set`으로 끝나는지 `map`으로 확장되는지 먼저 확인해야 한다 |
+| `입력한 순서 그대로 응답` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | 삽입 순서가 요구사항이다 |
+| `왜 출력 순서가 바뀌지?` | [Map order symptom router card](./map-order-symptom-router-card.md) | `HashMap`/`LinkedHashMap`/`TreeMap` 중 어떤 순서 규칙인지 10초 안에 자를 수 있다 |
+| `조회만 했는데 map 순서가 바뀐다` | [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md) | 삽입 순서와 접근 순서를 먼저 분리해야 한다 |
+| `같은 key 값만 바꿨는데 순회 순서가 달라진다` | [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md) | 기존 key 갱신이 access-order에서 재접근처럼 보일 수 있다 |
+| `다음 예약 시간`, `범위 조회` | [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md) | 이웃/범위 탐색이 필요하다 |
+| `왜 lower랑 floor가 달라요?`, `exact match면 포함돼요?` | [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md) -> [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md) | ordered map의 strict/inclusive 차이를 먼저 고정한다 |
+
+## 그래프/탐색 10초 라우터
+
+| 지금 문제에서 가장 먼저 보이는 문장 | 먼저 볼 문서 | 왜 여기서 시작하나 |
+|---|---|---|
+| `작업을 받은 순서대로 처리` | [큐 기초](./queue-basics.md) | FIFO handoff가 핵심이다 |
+| `가까운 칸부터`, `최소 이동 횟수` | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | queue는 도구이고 질문은 BFS다 |
+| `미로가 왜 그래프예요?`, `격자도 그래프인가요?` | [그래프 기초](./graph-basics.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 칸을 정점, 이동 가능을 간선으로 번역하면 BFS/DFS가 바로 붙는다 |
+| `정점`, `간선`, `방향 그래프`가 낯설다 | [그래프 기초](./graph-basics.md) | 그래프 그림부터 이해해야 뒤 문서가 덜 추상적이다 |
+| `최단 경로, MST, 위상 정렬이 한꺼번에 섞인다` | [그래프 관련 알고리즘](../algorithm/graph.md) | beginner primer 다음의 그래프 분기 라우터다 |
+
+## 같은 장면 번역
+
+같은 서비스 장면도 질문이 어디에 있느냐에 따라 구조가 달라진다.
+
+| 같은 주문 서비스 장면 | 첫 출발점 | 이유 |
+|---|---|---|
+| `orderId로 한 건 찾기` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | 조회 구조 선택 문제다 |
+| `요청을 받은 순서대로 worker에 넘기기` | [큐 기초](./queue-basics.md) | 순서 보존이 핵심이다 |
+| `가장 가까운 창고부터 확장` | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) -> [큐 기초](./queue-basics.md) | 자료구조보다 탐색 순서가 핵심이다 |
+
+짧은 예시 하나만 더 붙이면 초반 분기가 더 빨라진다.
+
+| `주문 처리`라는 같은 말이라도 | 실제로 먼저 필요한 답 | 첫 구조 |
+|---|---|---|
+| `이 주문번호 이미 봤나?` | membership only | `Set` |
+| `orderId로 상태를 바로 찾나?` | `key -> value` lookup | `Map` |
+| `먼저 들어온 주문부터 보내나?` | FIFO 순서 | [큐 기초](./queue-basics.md) |
+| `가까운 물류센터부터 넓히나?` | 거리 순서 확장 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) -> [큐 기초](./queue-basics.md) |
+
+이 한 장면 예시는 `map`, `queue`, `bfs`를 이름이 아니라 질문 모양으로 나누는 용도다.
+
+그래프 계열은 여기서 한 번 더 짧게 자르면 더 안전하다.
+
+| 지금 헷갈리는 말 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| `정점`, `간선`, `방향 그래프` | [그래프 기초](./graph-basics.md) | 자료구조 그림 자체가 먼저다 |
+| `갈 수 있나`, `같은 그룹인가` | [Connectivity Question Router](./connectivity-question-router.md) | 답의 모양이 yes/no인지 먼저 자른다 |
+| `가까운 칸부터`, `최소 이동 횟수` | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 그래프 위에서 탐색 순서를 고르는 단계다 |
+
+헷갈리면 아래 3문장만 순서대로 다시 묻는 편이 가장 빠르다.
+
+1. `key로 바로 찾는가?` -> `map`
+2. `먼저 온 것을 먼저 처리하는가?` -> `queue`
+3. `거리 1, 2, 3 순서로 넓히는가?` -> `BFS + queue`
+
+특히 2번과 3번은 둘 다 queue를 쓰지만 질문이 다르다.
+`작업 순서`면 자료구조 문서로, `최소 이동 횟수`면 알고리즘 문서로 가면 된다.
+
+## 처음 15분 읽기 루트
+
+처음엔 구현체보다 "지금 묻는 요구"를 먼저 고정한다.
+
+| 지금 막힌 문장 | 15분 첫 루트 | 왜 이 순서가 쉬운가 |
+|---|---|---|
+| `중복만 막나, 값도 붙이나` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) -> [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | `set`과 `map`을 먼저 자른 뒤 구현체를 고른다 |
+| `HashSet이면 되나, TreeSet/TreeMap까지 봐야 하나` | [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md) -> [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | `정렬된 집합`과 `정렬된 key-value` 요구를 나눠서 본다 |
+| `먼저 들어온 순서대로 처리` | [큐 기초](./queue-basics.md) -> [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) | FIFO 감각부터 잡고 queue/deque/priority queue를 나눈다 |
+| `덱이 왜 필요한지 모르겠다`, `queue로 안 되나` | [덱 기초](./deque-basics.md) -> [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) | 양쪽 끝 제어가 필요한지부터 분리한다 |
+| `다음 예약`, `이전 값`, `범위 조회` | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) -> [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md) | `정렬`보다 `이웃/범위` 요구를 먼저 붙인다 |
+| `가까운 칸부터`, `최소 이동 횟수` | [큐 기초](./queue-basics.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | queue를 쓰더라도 핵심 질문이 BFS인지 바로 분리한다 |
+| `그래프 정점/간선부터 안 잡힌다` | [그래프 기초](./graph-basics.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 그래프 그림이 먼저다 |
+| `10:00 이후 첫 예약 찾기` | [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md) | 이웃 탐색이 필요하다 |
+
+## 옆 카테고리로 잠깐 갔다가 돌아오기
+
+자료구조 primer를 읽다가 탐색 규칙이나 서비스 책임 문장이 더 먼저 막히면, 옆 카테고리 문서 한 장만 보고 다시 이 README로 복귀하는 동선이 가장 안전하다.
+
+| 지금 먼저 막힌 문장 | 잠깐 다녀올 문서 | 돌아올 자리 |
+|---|---|---|
+| `queue를 쓰긴 하는데 왜 BFS라고 하죠?`, `가까운 칸부터가 뭐예요?` | [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기) | [초급 10초 라우터](#초급-10초-라우터) |
+| `Service 규칙보다 List/Set/Map 선택이 먼저 막혀요`, `처음이라 어디까지가 구조 선택이죠?` | [Software Engineering README - 연결해서 보면 좋은 문서](../software-engineering/README.md#연결해서-보면-좋은-문서-cross-category-bridge) | [같은 장면 번역](#같은-장면-번역) |
+| `왜 출력 순서가 바뀌지?`, `Java 컬렉션 basics부터 다시 볼래요` | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | [처음 15분 읽기 루트](#처음-15분-읽기-루트) |
+
+## 자주 섞는 오해
+
+- `queue`가 보인다고 항상 자료구조 문제가 아니다. `최소 이동 횟수`면 핵심은 BFS다.
+- `map`이 보인다고 항상 탐색이 사라지는 것도 아니다. BFS/DFS 안에서도 `visited set/map`을 쓴다.
+- `그래프`, `union-find`, `BFS`를 같은 층위로 외우면 더 헷갈린다. `그래프는 구조`, `union-find는 연결성 질의`, `BFS는 탐색 순서`로 끊어 읽는 편이 안전하다.
+- `그래프 기초`에서 바로 다익스트라나 MST로 들어가면 초보자 범위를 넘기 쉽다. 그 분기는 [그래프 관련 알고리즘](../algorithm/graph.md)으로 넘기는 편이 낫다.
+- `정렬된 출력 한 번`과 `계속 range/floor/ceiling을 묻는 상황`은 다르다. 전자는 `HashMap + 마지막 정렬`로 끝날 수 있고, 후자는 `TreeMap` 쪽이다.
+- `priority queue`는 queue라는 이름이 있어도 FIFO가 아니다. 먼저 꺼내는 기준이 도착 순서가 아니라 우선순위다.
+- `queue`와 `map`이 같이 보여도 둘 중 하나만 고르는 문제가 아닐 수 있다. 예를 들어 BFS는 queue로 확장하고 `visited set/map`으로 중복 방문을 막는다.
+
+처음엔 아래 세 문장으로 다시 번역해도 된다.
+
+- `순서대로 처리`면 queue
+- `key로 바로 찾기`면 map
+- `거리 순서로 퍼지기`면 알고리즘 문서의 BFS
+
+## 처음 읽는 순서
+
+처음이면 아래 5개만 먼저 보면 충분하다.
+
+1. [기본 자료 구조](./basic.md)
+2. [큐 기초](./queue-basics.md)
+3. [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
+4. [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+5. [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md)
+
+## 심화로 내려가는 기준
+
+아래부터는 "기본 선택은 끝났는데 다음 경계가 막힐 때" 보는 문서들이다.
+
+- queue에서 `deque`나 `priority queue` 경계가 헷갈리면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- `LinkedHashMap`의 삽입 순서와 access-order, 같은 key 갱신 시 순서 변화까지 짧게 분리하고 싶으면 [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
+- `HashMap`/`LinkedHashMap`/`TreeMap` 중 무엇 때문에 순서가 달라졌는지 먼저 빨리 자르고 싶으면 [Map order symptom router card](./map-order-symptom-router-card.md)
+- `TreeMap`의 `floor/ceiling/subMap`이 필요하면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- `circular queue`와 `ring buffer`를 구분하고 싶으면 [Circular Queue vs Ring Buffer Primer](./circular-queue-vs-ring-buffer-primer.md)
+- `sliding window`에서 deque가 왜 필요한지 보고 싶으면 [Monotonic Queue / Stack](./monotonic-queue-and-stack.md)
+- timer queue, lock-free queue, roaring bitmap 같은 운영/심화 주제는 아래 `응용 catalog`에서 필요한 것만 고르면 된다
 
 ## 기본 primer
 
@@ -119,11 +208,18 @@ mixed catalog에서 `[playbook]` 라벨은 선택 기준이나 연산 순서가 
 - [Array](basic.md#array-배열)
 - [Linked List](basic.md#linked-list-연결-리스트)
 - [Backend Data-Structure Starter Pack](backend-data-structure-starter-pack.md)
+- [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
+- [Bitmap vs Set Dense Integer ID Beginner Bridge](bitmap-vs-set-dense-integer-id-beginner-bridge.md)
 - [복잡도와 알고리즘 패턴 기초](complexity-and-algorithm-pattern-foundations-backend-juniors.md)
 - [Stack](basic.md#stack-스택)
 - [Queue](basic.md#queue-큐) (`enqueue/dequeue` vs `front/rear/head/tail` 브리지 포함)
 - [Queue vs Deque vs Priority Queue Primer](queue-vs-deque-vs-priority-queue-primer.md)
+- [ArrayDeque vs LinkedList 큐 선택 카드](arraydeque-vs-linkedlist-queue-choice-card.md) (`java queue 구현 기본값`, BFS/service FIFO에서 왜 `ArrayDeque`를 먼저 두는지)
+- [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](arraydeque-vs-blockingqueue-service-handoff-primer.md) (`로컬 FIFO`와 `멀티스레드 worker handoff`를 어디서 갈라야 하는지)
 - [Java PriorityQueue Pitfalls](java-priorityqueue-pitfalls.md) (중복 priority trace, stable-order 오해, `(priority, sequence)` tie-breaker)
+
+## queue와 timer primer
+
 - [TreeMap Interval Entry Primer](treemap-interval-entry-primer.md)
 - [PriorityBlockingQueue Timer Misuse Primer](priorityblockingqueue-timer-misuse-primer.md)
 - [ScheduledExecutorService vs DelayQueue Bridge](scheduledexecutorservice-vs-delayqueue-bridge.md)
@@ -136,150 +232,137 @@ mixed catalog에서 `[playbook]` 라벨은 선택 기준이나 연산 순서가 
 - [Top-K Heap Direction Patterns](top-k-heap-direction-patterns.md)
 - [Circular Queue vs Ring Buffer Primer](circular-queue-vs-ring-buffer-primer.md)
 - [Bounded Queue Policy Primer](bounded-queue-policy-primer.md)
+
+## tree와 graph primer
+
 - [Hash Table](basic.md#hash-table-해시-테이블)
 - [Heap](basic.md#heap-힙)
 - [Tree](basic.md#tree-트리)
-- [Binary Tree](basic.md#binary-tree-이진-트리)
+- [Binary Tree](binary-tree-vs-bst-vs-heap-bridge.md)
 - [Binary Tree vs BST vs Heap Bridge](binary-tree-vs-bst-vs-heap-bridge.md)
 - [Binary Tree Traversal Routing Guide](binary-tree-traversal-routing-guide.md)
 - [Segment Tree Is Not BST or Heap](segment-tree-not-bst-or-heap-bridge.md)
 - [Balanced BST vs Unbalanced BST Primer](balanced-bst-vs-unbalanced-bst-primer.md)
 - [Graph](basic.md#graph-그래프)
 - [Union-Find](basic.md#union-find-유니온-파인드)
+- [Union-Find Standalone Beginner Primer](union-find-standalone-beginner-primer.md) (`same component yes/no` first stop)
 - [Union-Find Component Metadata Walkthrough](union-find-component-metadata-walkthrough.md) (`same?` 질문이 `size/count`까지 확장될 때)
 - [Deletion-Aware Connectivity Bridge](deletion-aware-connectivity-bridge.md)
 
 ## 응용 catalog
 
-### 응용 자료 구조 [▶︎ 🗒](applied-data-structures-overview.md)
+## 응용 자료 구조 [▶︎ 🗒](applied-data-structures-overview.md)
 
 개별 deep dive 전에, [응용 자료 구조 개요](applied-data-structures-overview.md)에서 `문제 문장 -> 필요한 연산 -> 자료 구조` 흐름과 30초 선택 플로우만 먼저 잡아두면 첫 진입이 훨씬 빨라진다.
 아래 mixed catalog에서는 `[playbook]` 라벨로 step-oriented selection / operation 문서를 따로 튀게 했다.
 
-### 큐와 작업 흐름
+## 큐와 작업 흐름
 
 `FIFO queue`, `deque`, `priority queue` 구분이 먼저 헷갈리면 [Queue vs Deque vs Priority Queue Primer](queue-vs-deque-vs-priority-queue-primer.md)에서 `도착 순서`, `양쪽 끝 제어`, `우선순위` 축을 먼저 나누고, `A(2) -> B(1) -> C(1)` 한 입력으로 `FIFO poll`과 `duplicate-priority poll`을 바로 비교한 초급 trace, 그리고 `먼저 도착한 요청`, `비용 0은 앞`, `상위 3개만 유지` 같은 자연어 문장을 핵심 연산으로 번역하는 짧은 bridge 예시까지 보고 아래 deep dive로 내려가면 된다.
+Java에서 "BFS나 메서드 안의 로컬 FIFO"와 "여러 스레드가 worker에게 작업을 넘기는 큐"를 자꾸 같은 질문으로 보면 [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](arraydeque-vs-blockingqueue-service-handoff-primer.md)로 이어서 `로컬 순서 보존`과 `동시성 handoff 계약`을 먼저 분리하는 편이 좋다.
 같은 `deque`라도 `양끝 시뮬레이션`, `sliding window extrema`, `0-1 shortest path`가 서로 다른 패턴이라는 감각을 빨리 잡고 싶다면 [Deque Router Example Pack](deque-router-example-pack.md)으로 바로 가는 편이 빠르다.
 `enqueue/dequeue/peek` 같은 FIFO API와 `front/rear/head/tail` 같은 구현 용어를 가장 얕게 이어 주는 입문 정리는 [Queue](basic.md#queue-큐) 섹션이다.
 Java `PriorityQueue`를 쓰다가 comparator 방향, tie-breaker, stale entry, sorted iteration 오해가 자주 섞이면 [Java PriorityQueue Pitfalls](java-priorityqueue-pitfalls.md)에서 중복 priority trace와 `(priority, sequence)` 패턴까지 함께 정리하는 편이 빠르다.
+
+## timer queue와 delay queue
+
 Java timer executor를 떠올리며 `PriorityBlockingQueue`면 thread safety와 timer 대기가 한 번에 해결된다고 느껴지면 [PriorityBlockingQueue Timer Misuse Primer](priorityblockingqueue-timer-misuse-primer.md)에서 `empty blocking`과 `deadline blocking` 차이를 먼저 분리해두는 편이 좋다.
 `ScheduledExecutorService`를 쓰면서 내부에서 작업이 어떻게 기다리는지 자료구조 그림이 안 잡히거나, `scheduleAtFixedRate()`와 `scheduleWithFixedDelay()`가 왜 다른 박자로 다시 queue에 들어가는지 헷갈리면 [ScheduledExecutorService vs DelayQueue Bridge](scheduledexecutorservice-vs-delayqueue-bridge.md)에서 `deadline ticket -> delayed work queue -> worker -> periodic re-enqueue` 흐름을 먼저 잡아두면 좋다.
 직접 `DelayQueue`로 반복 작업을 만들면서 fixed-rate와 fixed-delay를 어떤 수식으로 다시 넣는지, 그리고 self-rescheduling 코드에서 stale ticket이 어디서 생기는지 같이 보고 싶다면 [DelayQueue Repeating Task Primer](delayqueue-repeating-task-primer.md)가 가장 바로 맞는 진입점이다.
 상대 지연을 queue 내부 deadline으로 저장할 때 `currentTimeMillis()`와 `nanoTime()` 중 무엇이 더 자연스러운지 막히면 [Java Timer Clock Choice Primer](java-timer-clock-choice-primer.md)에서 `벽시계 vs 스톱워치` 감각을 먼저 잡고 가면 이후 `DelayQueue` 문서가 훨씬 덜 헷갈린다.
+
+## cancellation과 stale entry
+
 `ScheduledFuture.cancel()`을 호출했는데 `true`가 나와도 왜 queue size가 안 줄 수 있는지, 취소된 작업이 왜 내부에서 stale ticket처럼 남는지, 이 API를 `DelayQueue` 쪽 invalidation으로 어떻게 번역해 읽어야 하는지, `removeOnCancelPolicy`를 언제 켜야 하는지 헷갈리면 [ScheduledFuture Cancellation Bridge](scheduledfuture-cancel-stale-entries.md)에서 future 상태 전환과 DelayQueue-style stale-entry mental model을 한 그림으로 먼저 붙여두면 좋다.
 heap-backed timer queue에서 `remove(ticket)`가 왜 `poll()`처럼 바로 끝나지 않는지, exact handle과 `equals()` 기반 제거가 왜 다른 함정으로 이어지는지 헷갈리면 [DelayQueue Remove Cost Primer](delayqueue-remove-cost-primer.md)에서 `head pop vs middle search`, `handle vs equality`, `latest generation` 함정을 먼저 분리해두면 좋다.
+
+## delay queue contract
+
 `DelayQueue`를 직접 구현해 보며 `Delayed.compareTo()`와 `getDelay()`가 왜 같은 deadline을 봐야 하는지 헷갈리면 [DelayQueue Delayed Contract Primer](delayqueue-delayed-contract-primer.md)에서 `head ordering`과 `expired head` 계약을 먼저 확인하는 편이 안전하다.
 `Delayed.compareTo()`에 business priority까지 넣고 싶어질 때는 [Timer Priority Policy Split](timer-priority-policy-split.md)에서 `due-time gate`와 `ready priority ordering`을 먼저 분리하는 편이 안전하다.
 `DelayQueue`를 이미 골랐는데 취소나 재예약 때문에 오래된 timer ticket이 왜 남는지 막히면 [Timer Cancellation and Reschedule Stale Entry Primer](timer-cancellation-reschedule-stale-entry-primer.md)에서 `즉시 제거`, `lazy stale skip`, `generation` 플래그, latest-wins 검사를 먼저 분리해두는 편이 좋다.
 Java timer executor나 delayed task queue를 만들 때 `PriorityQueue`로 끝내도 되는지, `DelayQueue`가 필요한지 헷갈리면 [DelayQueue vs PriorityQueue Timer Pitfalls](delayqueue-vs-priorityqueue-timer-pitfalls.md)에서 `정렬`과 `delay-aware blocking`, cancellation stale-entry trade-off를 먼저 분리해두는 편이 안전하다. 같은 문서의 non-timer 분기에서 stable-order 요구를 `(priority, sequence)` comparator 패턴으로 바로 라우팅해 준다.
+
+## heap 방향과 bounded queue
+
 `kth-largest`, `streaming top-k`, `median`에서 min-heap / max-heap 방향 선택이 이름과 다르게 느껴질 때는 [Top-K Heap Direction Patterns](top-k-heap-direction-patterns.md)로 바로 이어 보면 "루트가 어떤 경계값을 대표해야 하는가" 기준이 정리된다.
 원형 배열 queue 구현과 시스템 문맥 `ring buffer` 용어가 자꾸 섞이면 [Circular Queue vs Ring Buffer Primer](circular-queue-vs-ring-buffer-primer.md)에서 `면접형 queue 설계`와 `시스템형 bounded buffer`를 먼저 분리해두는 편이 좋다.
 고정 크기 queue가 꽉 찼을 때 `reject`, `overwrite`, `blocking`, `backpressure` 중 무엇이 맞는지 먼저 잡고 싶다면 [Bounded Queue Policy Primer](bounded-queue-policy-primer.md)로 내려가면 `누가 양보하나` 축이 빨리 정리된다.
 `logging`, `telemetry`, `audio`, `producer-consumer pipeline`처럼 같은 ring buffer 계열이어도 `유실 허용`, `callback 실시간성`, `fan-in/out`, `stage dependency` 축이 다르면 다음 문서 라우팅이 달라지므로 [Ring Buffer](ring-buffer.md)의 use-case matrix까지 같이 보면 빠르다.
+
+## concurrent queue와 ring buffer
 
 timer 구조를 고를 때는 [Timing Wheel vs Delay Queue](timing-wheel-vs-delay-queue.md)에서 `earliest deadline`과 `timer churn` 축을 먼저 잡고, 이어서 [Concurrent Skip List Internals](concurrent-skiplist-internals.md)에서 `ordered range scan`이 왜 별도 요구인지 보면 읽기 흐름이 자연스럽다.
 
 동시성 큐 internals를 한 축으로 읽고 싶다면 `Ring Buffer -> Lock-Free SPSC Ring Buffer -> Bounded MPMC Queue -> Sequencer-Based Ring Buffer Coordination -> ABA Problem and Tagged Pointers -> Hazard Pointers vs Epoch-Based Reclamation -> Reclamation Cost Trade-offs` 순서가 좋다.
 앞쪽은 bounded ring의 slot/state machine과 backpressure를, 뒤쪽은 pointer reuse와 safe reclamation을 이어서 설명한다.
 
-연속 구간을 한 칸씩 밀되 `최대/최소`를 바로 답해야 하면 먼저 [Deque](applied-data-structures-overview.md#deque-덱)에서 `sliding window maximum/minimum`, `recent k extrema` 라우팅을 잡고, 중복값에서 `<`와 `<=`가 왜 갈리는지부터 짧게 고정하고 싶다면 [Sliding Window Duplicate Extrema Index Drill](sliding-window-duplicate-extrema-index-drill.md)이나 [Monotonic Duplicate Rule Micro-Drill](monotonic-duplicate-rule-micro-drill.md)로 `왼쪽 index 유지 vs 오른쪽 index 대체`, `이전 값 유지 vs 새 값 대체` 한 문장을 먼저 적는 편이 안전하다. 그다음 `deque vs stack` 선택이 막히면 [Monotonic Deque vs Monotonic Stack Shared-Input Drill](monotonic-deque-vs-stack-shared-input-drill.md)로 `window 만료`와 `pop 시점 답 확정` 차이를 한 입력에서 빠르게 잡고, 이어서 [Monotonic Deque Walkthrough](monotonic-deque-walkthrough.md)로 plain deque가 언제 monotonic deque로 바뀌는지 손으로 따라가면 된다. 이후 [Monotonic Deque vs Heap for Window Extrema](monotonic-deque-vs-heap-for-window-extrema.md)에서 문서 첫머리 6줄 라우터 박스로 `deque부터 볼지`, `heap lazy deletion으로 갈지`, `사실 다른 구조를 봐야 할지`를 먼저 자르고, duplicate에서 `대표를 먼저 정하는 deque`와 `복사본을 일단 넣고 stale top만 치우는 heap`이 어떻게 갈리는지까지 비교 표로 이어 보면 초입 판단이 훨씬 빨라진다. 마지막에 [슬라이딩 윈도우 패턴](../algorithm/sliding-window-patterns.md), [Monotonic Queue / Stack](monotonic-queue-and-stack.md) 순서로 일반화하는 편이 빠르다. 반대로 `next greater element`, `오큰수`, `histogram largest rectangle`처럼 window 만료 없이 stack top에서만 답이 정해지는 문제라면 [Monotonic Stack Walkthrough](monotonic-stack-walkthrough.md)로 바로 가는 편이 더 직관적이다.
+## monotonic deque와 stack
+
+`sliding window maximum/minimum`처럼 연속 구간의 `최대/최소`를 바로 답해야 하면 deque 쪽으로 먼저 간다.
+반대로 `next greater element`, `오큰수`, `histogram largest rectangle`처럼 "현재 원소의 답이 스택 top 비교로 정해지나"를 묻는 문제면 stack 쪽으로 먼저 간다.
+중복값에서 `<`와 `<=`가 갈리는 규칙만 자꾸 흔들리면 drill 문서 하나만 먼저 보고, 나머지 심화 문서는 아래 링크에서 필요한 것만 고르면 된다.
+
+## monotonic 관련 문서
 
 - [Deque](applied-data-structures-overview.md#deque-덱) (monotonic deque routing for sliding window maximum/minimum, recent `k` extrema)
 - [Deque Router Example Pack](deque-router-example-pack.md) (plain deque vs monotonic deque vs 0-1 BFS quick split)
-- [Queue vs Deque vs Priority Queue Primer](queue-vs-deque-vs-priority-queue-primer.md)
-- [Java PriorityQueue Pitfalls](java-priorityqueue-pitfalls.md) (comparator direction, duplicate-priority stable-order misconception, `(priority, sequence)` tie-breaker, stale entry, heap is not a sorted list)
-- [PriorityBlockingQueue Timer Misuse Primer](priorityblockingqueue-timer-misuse-primer.md) (`BlockingQueue`의 empty wait와 timer deadline wait 차이)
-- [ScheduledExecutorService vs DelayQueue Bridge](scheduledexecutorservice-vs-delayqueue-bridge.md) (`DelayQueue` head/deadline 감각, scheduled executor worker queue, fixed-rate vs fixed-delay 재등록 timeline)
-- [DelayQueue Repeating Task Primer](delayqueue-repeating-task-primer.md) (`fixed-rate` vs `fixed-delay` 재등록 수식, self-rescheduling job, stale-ticket bug 진입점)
-- [Java Timer Clock Choice Primer](java-timer-clock-choice-primer.md) (`currentTimeMillis()`와 `nanoTime()`의 역할 분리, relative deadline clock 감각)
-- [ScheduledFuture Cancellation Bridge](scheduledfuture-cancel-stale-entries.md) (`cancel()` 반환값, DelayQueue-style invalidation, stale ticket mental model, `queue.size()` 착시, `removeOnCancelPolicy` queue-cost trade-off)
-- [DelayQueue Remove Cost Primer](delayqueue-remove-cost-primer.md) (heap의 head pop vs arbitrary remove, `handle`/`equals()` cancellation caveat)
-- [DelayQueue Delayed Contract Primer](delayqueue-delayed-contract-primer.md) (`Delayed.compareTo()`와 `getDelay()` deadline alignment)
-- [Timer Priority Policy Split](timer-priority-policy-split.md) (`Delayed.compareTo()`를 business priority로 오버로딩하지 않고 due-time gate와 ready queue 정책 분리)
-- [Timer Cancellation and Reschedule Stale Entry Primer](timer-cancellation-reschedule-stale-entry-primer.md) (`DelayQueue` 이후 generation flag, lazy stale skip, latest-wins cancellation/reschedule 정책)
-- [DelayQueue vs PriorityQueue Timer Pitfalls](delayqueue-vs-priorityqueue-timer-pitfalls.md) (delay-aware blocking, cancellation, stale-entry timer trade-off, non-timer stable-order -> `(priority, sequence)` route)
-- [Top-K Heap Direction Patterns](top-k-heap-direction-patterns.md) (`kth-largest`, streaming top-k, median에서 min-heap / max-heap 방향 선택)
-- [Circular Queue vs Ring Buffer Primer](circular-queue-vs-ring-buffer-primer.md)
-- [Bounded Queue Policy Primer](bounded-queue-policy-primer.md)
-- [Ring Buffer](ring-buffer.md) (logging/telemetry/audio/pipeline use-case matrix, overwrite vs backpressure routing)
-- [Lock-Free SPSC Ring Buffer](lock-free-spsc-ring-buffer.md)
-- [Lock-Free MPSC Queue](lock-free-mpsc-queue.md)
-- [Bounded MPMC Queue](bounded-mpmc-queue.md)
-- [Sequencer-Based Ring Buffer Coordination](sequencer-based-ring-buffer-coordination.md)
-- [Michael-Scott Lock-Free Queue](michael-scott-lock-free-queue.md)
-- [ABA Problem and Tagged Pointers](aba-problem-and-tagged-pointers.md)
-- [Hazard Pointers vs Epoch-Based Reclamation](hazard-pointers-vs-epoch-based-reclamation.md)
-- [Reclamation Cost Trade-offs](reclamation-cost-tradeoffs.md)
-- [Concurrent Skip List Internals](concurrent-skiplist-internals.md)
-- [Work-Stealing Deque](work-stealing-deque.md)
-- [Hierarchical Timing Wheel](hierarchical-timing-wheel.md)
-- [Calendar Queue](calendar-queue.md)
-- [Timing Wheel Variants and Selection](timing-wheel-variants-and-selection.md)
-- [Timing Wheel vs Delay Queue](timing-wheel-vs-delay-queue.md)
 - [Monotonic Deque Walkthrough](monotonic-deque-walkthrough.md) (plain deque -> monotonic deque trace, sliding window maximum/minimum step-by-step, 값만 출력 vs index 출력에서 `<`/`<=`, `>`/`>=`가 갈리는 duplicate tie-break 미니 박스와 4문항 strict/or-equal 퀴즈 + 4문항 duplicate 대표자 퀴즈)
 - [Sliding Window Duplicate Extrema Index Drill](sliding-window-duplicate-extrema-index-drill.md) (sliding-window max/min에서 duplicate extrema index tie-break만 따로 분리해 `왼쪽 index`와 `오른쪽 index` 규칙을 작은 표와 예제로 먼저 고정하는 초급 드릴)
 - [Monotonic Deque vs Heap for Window Extrema](monotonic-deque-vs-heap-for-window-extrema.md) (6-line beginner router box for `deque vs heap vs other`, duplicate vs stale-entry comparison table, worst-case heap growth)
+
+## monotonic stack 관련 문서
+
 - [Monotonic Stack Walkthrough](monotonic-stack-walkthrough.md) (첫머리 `strictly` 번역 체크 1줄, next greater element, histogram largest rectangle, index vs value, `previous/next smaller/greater` while 조건 템플릿 표, `previous vs next`와 `strict/or-equal`을 한 번에 자르는 compact 미니 퀴즈, 연산자/flush 기준)
 - [Monotonic Duplicate Rule Micro-Drill](monotonic-duplicate-rule-micro-drill.md) (`<` vs `<=`, `>` vs `>=`를 `이전 값 유지 vs 새 값 대체` 규칙과 작은 duplicate 예제로 바로 고정하는 초급 드릴)
-- [Monotonic Strict-vs-Equal Translation Card](monotonic-strict-vs-equal-translation-card.md) (`first greater`, `greater or equal`, `leftmost max`, `rightmost min`을 바로 pop 조건으로 번역하는 한 화면 카드)
-- [Deque vs Stack Signal Card](deque-vs-stack-signal-card.md) (`window answer read`와 `index answer finalize`를 2행 비교표와 fresh 예시 2개로 끊어 보는 초소형 beginner 카드)
-- [Monotonic Operator Boundary Cheat Sheet](monotonic-operator-boundary-cheat-sheet.md) (`window/recent k -> deque`, `next/previous -> stack` 1페이지 결정표로 먼저 분기한 뒤, `값만 구함 vs 왼쪽 index tie-break`와 duplicate deque 입력 1개를 바로 이어 보는 초급 치트시트)
 - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](monotonic-deque-vs-stack-shared-input-drill.md) (먼저 [Monotonic Structure Router Quiz](monotonic-structure-router-quiz.md)로 `deque vs stack vs neither`를 고른 뒤, 같은 입력에서 `window max/min`과 `NGE/PSE`를 함께 비교하고 duplicate add-on으로 `<` vs `<=`, `>` vs `>=` 차이까지 짧게 고정하는 초급 손추적 드릴)
 - [Monotonic Structure Router Quiz](monotonic-structure-router-quiz.md) (`signal -> 선택 구조` 1페이지 표와 6문항으로 `deque vs stack vs neither` 첫 분기를 빠르게 잡고, `neither` 안의 `map/freq sliding window` vs `interval overlap`도 짧은 handoff 예제로 나눠 주는 첫 독서용 라우팅 퀴즈)
 - [Monotonic Queue / Stack](monotonic-queue-and-stack.md) (상단 초급 5줄 멘탈 모델 박스로 `좋은 후보만 남긴다` 감각부터 잡고, sliding window maximum/minimum과 recent `k` extrema로 내려가는 브리지)
 
-### 순서 유지, 범위 질의, 캐시
+## 순서 유지와 캐시
 
 트리 문제에서 "루트를 먼저 기록하나, 자식 결과를 모아 부모를 계산하나, 아니면 레벨별로 보나"가 먼저 막히면 [Binary Tree Traversal Routing Guide](binary-tree-traversal-routing-guide.md)에서 `preorder/inorder/postorder/level-order` signal을 먼저 분리한 뒤 BST/heap/segment tree 문서로 내려가면 된다.
 
 plain `BST`가 왜 입력 순서에 따라 `O(n)`까지 무너지는지부터 헷갈리면 [Balanced BST vs Unbalanced BST Primer](balanced-bst-vs-unbalanced-bst-primer.md)에서 `높이` 관점을 먼저 잡고, 이어서 [TreeMap, HashMap, LinkedHashMap 비교](treemap-vs-hashmap-vs-linkedhashmap.md)와 [Skip List](skip-list.md)로 내려가면 ordered set/map 선택 이유가 훨씬 또렷해진다. 이번 정리에는 `lower/floor/ceiling/higher`가 범위를 벗어날 때 `null`을 돌려주는 한 줄 경계표도 추가되어, `TreeMap` 첫 사용에서 나오는 NPE 실수를 바로 잡기 쉽다.
 
-예약/캘린더/gap-check 문제에서 `floorKey`/`ceilingKey`/`subMap`이 왜 자연스럽게 나오는지부터 잡고 싶다면 [TreeMap Interval Entry Primer](treemap-interval-entry-primer.md)로 먼저 들어가 `online interval insert`와 `offline interval merge`를 2열 표로 자른 뒤, `왼쪽 예약`, `오른쪽 예약`, `시간창 view` 감각을 익히고 [Disjoint Interval Set](disjoint-interval-set.md)이나 [Interval Tree](interval-tree.md)로 내려가면 혼선이 적다.
+`LinkedHashMap`을 쓰는데 조회만 했더니 순서가 바뀌는 현상이 먼저 보이면 [LinkedHashMap access-order 미니 프라이머](linkedhashmap-access-order-mini-primer.md)에서 `삽입 순서 vs 접근 순서`를 1페이지로 분리한 뒤, 필요할 때만 [LRU 캐시 설계 입문 (LRU Cache Basics)](lru-cache-basics.md)으로 내려가면 된다. 핵심은 "최근에 넣은 것"이 아니라 "최근에 만진 것" 기준이라는 점이다.
+
+`HashMap`인지 `LinkedHashMap`인지 `TreeMap`인지부터 헷갈려 "왜 출력 순서가 바뀌지?"가 첫 증상이라면 [Map order symptom router card](map-order-symptom-router-card.md)에서 `순서 계약 없음 / 삽입 순서 / key 정렬 / access-order` 4갈래로 먼저 자르는 편이 더 빠르다.
+
+## 범위 질의와 예약 탐색
+
+예약/캘린더/gap-check 문제에서 `lower/floor/ceiling/higher`가 아직 손에 안 붙으면 먼저 [TreeSet Exact-Match Drill](treeset-exact-match-drill.md)에서 값만 있는 정렬 줄로 `strict/inclusive`를 떼어 연습하고, 그다음 [TreeMap Neighbor-Query Micro Drill](treemap-neighbor-query-micro-drill.md)에서 6개 일정 예제로 `왼쪽/오른쪽` 감각을 예약표로 옮겨 보는 편이 덜 막힌다. 여기서 `lowerKey/floorKey/ceilingKey/higherKey`를 `lowerEntry/floorEntry/ceilingEntry/higherEntry`로 연결하는 한 장이 필요하면 [TreeMap Key/Entry Strictness Bridge](treemap-key-entry-strictness-bridge.md)를 끼워 넣고, 오전/오후 시간창만 먼저 잘라 보고 싶다면 [TreeMap `subMap` Schedule-Window Mini Drill](treemap-submap-schedule-window-mini-drill.md)에서 `오전 창`, `점심 포함 오후 창`, `점심 이후 창`을 손으로 예측해 본 뒤, [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](treemap-floorentry-ceilingentry-value-read-micro-drill.md)에서 `entry.getValue()`로 종료 시각 읽기를 붙이고, 마지막으로 [TreeMap Interval Entry Primer](treemap-interval-entry-primer.md)로 들어가 `subMap`, 충돌 검사, gap check까지 확장하는 편이 덜 막힌다.
+
+## ordered search와 layout
 
 정적 ordered search locality를 비교하려면 `Cache-Aware Data Structure Layouts -> Ordered Search Workload Matrix -> Eytzinger Layout and Cache-Friendly Search -> van Emde Boas Layout vs Eytzinger vs Blocked Arrays -> Cache-Oblivious B-Tree / Leaf-Packed Variants vs Plain vEB Layout -> Hybrid Top-Index / Leaf Layouts -> Cache-Oblivious vs Cache-Aware Layouts` 순서로 읽으면 workload triage, point lookup, `lower_bound` 뒤 scan 연결, pure vEB binary와 scan-friendly leaf layout의 차이, top guide와 contiguous leaf의 역할 분리, 재귀 배치의 선택축이 함께 잡힌다.
 
 interval이 처음부터 전부 주어져 한 번 계산하면 끝나는 문제가 아니라, 새 interval이 계속 들어오며 `insert -> overlap query`가 섞이면 `segment tree`보다 [Interval Tree](interval-tree.md)나 [Disjoint Interval Set](disjoint-interval-set.md)을 먼저 보는 편이 맞다.
 `segment tree`라는 이름 때문에 ordered tree나 priority tree처럼 읽히면 먼저 [Segment Tree Is Not BST or Heap](segment-tree-not-bst-or-heap-bridge.md)에서 역할을 분리하고, 그다음 [Fenwick Tree vs Segment Tree](fenwick-vs-segment-tree.md)와 [Segment Tree Lazy Propagation](segment-tree-lazy-propagation.md)으로 내려가면 혼선이 적다.
+
+## connectivity와 union-find
+
 연결성에서 매번 헷갈리면 아래 3줄만 먼저 잡아도 된다.
 1. `같은 그룹인가?`, `갈 수 있나?`처럼 yes/no만 필요하면 union-find 쪽으로 먼저 간다.
 2. `실제 경로 하나`를 보여 달라는 말이면 DFS/BFS로 `parent`를 남겨 복원한다. 이 경로가 shortest일 필요는 없다.
 3. `가장 짧은/가장 싼 경로`를 묻는 순간 shortest-path 문제다. 알고리즘을 먼저 고르고 predecessor로 경로를 복원한다.
-`같은 컴포넌트인가`, `connected components(연결 요소)가 몇 개인가`, `경로 하나를 복원하라`, `최단 경로를 구하라`가 한데 섞이면 [Connectivity Question Router](connectivity-question-router.md)에서 먼저 답의 모양을 `yes/no vs actual path vs minimum path`로 분리한 뒤 union-find / BFS / shortest-path 문서로 내려가면 된다. 이번 버전에는 `같은 팀이야?`, `이어져 있어?`, `연결요소가 몇 개야?`처럼 초급자가 실제로 던지는 질문 문장 pack도 함께 들어 있어 첫 분기 정확도를 바로 잡기 쉽다. 이때 yes/no에 `그룹 크기`, `전체 그룹 수`, `connected components(연결 요소) 수`가 붙으면 [Union-Find Component Metadata Walkthrough](union-find-component-metadata-walkthrough.md)로 바로 넘기는 것이 가장 빠르다.
-간선 추가만 있는 연결성은 [Union-Find Deep Dive](union-find-deep-dive.md)로 충분하지만, 삭제가 섞이는 순간은 [Deletion-Aware Connectivity Bridge](deletion-aware-connectivity-bridge.md)에서 `왜 plain DSU가 안 되고 DSU rollback / dynamic connectivity로 넘어가는지`를 먼저 분리한 뒤 [DSU Rollback](../algorithm/dsu-rollback.md)로 이어 가면 된다.
+`같은 컴포넌트인가`, `connected components(연결 요소)가 몇 개인가`, `경로 하나를 복원하라`, `최단 경로를 구하라`가 한데 섞이면 [Connectivity Question Router](connectivity-question-router.md)에서 먼저 답의 모양을 `yes/no vs actual path vs minimum path`로 분리한 뒤 union-find / BFS / shortest-path 문서로 내려가면 된다. 이번 버전에는 `같은 팀이야?`, `이어져 있어?`, `연결요소가 몇 개야?`처럼 초급자가 실제로 던지는 질문 문장 pack도 함께 들어 있어 첫 분기 정확도를 바로 잡기 쉽다. yes/no만 먼저 익힐 때는 [Union-Find Standalone Beginner Primer](union-find-standalone-beginner-primer.md)로 들어가고, 여기에 `그룹 크기`, `전체 그룹 수`, `connected components(연결 요소) 수`가 붙으면 [Union-Find Component Metadata Walkthrough](union-find-component-metadata-walkthrough.md)로 넘기면 된다.
+간선 추가만 있는 연결성의 첫 관문은 [Union-Find Standalone Beginner Primer](union-find-standalone-beginner-primer.md)이고, path compression과 union by size/rank까지 구조적으로 정리하려면 [Union-Find Deep Dive](union-find-deep-dive.md)로 내려가면 된다. 삭제가 섞이는 순간은 [Deletion-Aware Connectivity Bridge](deletion-aware-connectivity-bridge.md)에서 `왜 plain DSU가 안 되고 DSU rollback / dynamic connectivity로 넘어가는지`를 먼저 분리한 뒤 [DSU Rollback](../algorithm/dsu-rollback.md)로 이어 가면 된다.
 
-- [Heap Variants](heap-variants.md) (`extract-min` 반복 루프 감각, heap vs ordered map 경계 한 줄)
-- [Heap vs Priority Queue vs Ordered Map Beginner Bridge](heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md) (`top 1` 반복 추출 vs `floor/ceiling/subMap` 분기)
-- [TreeMap Interval Entry Primer](treemap-interval-entry-primer.md) (`online interval insert` vs `offline interval merge` 첫 분기 표, `reservation/calendar/gap-check`를 `floorEntry`/`ceilingEntry`/`subMap`으로 읽는 입문, 초반에 neighbor-query 워크시트로 바로 점프 가능)
-- [Radix Heap](radix-heap.md)
-- [HashMap 내부 구조](hashmap-internals.md)
-- [Robin Hood Hashing](robin-hood-hashing.md)
-- [Balanced BST vs Unbalanced BST Primer](balanced-bst-vs-unbalanced-bst-primer.md)
-- [Cache-Aware Data Structure Layouts](cache-aware-data-structure-layouts.md)
-- [Ordered Search Workload Matrix](ordered-search-workload-matrix.md)
-- [Cache-Oblivious vs Cache-Aware Layouts](cache-oblivious-vs-cache-aware-layouts.md)
-- [Eytzinger Layout and Cache-Friendly Search](eytzinger-layout-and-cache-friendly-search.md)
-- [van Emde Boas Layout vs Eytzinger vs Blocked Arrays](van-emde-boas-layout-vs-eytzinger-vs-blocked-arrays.md)
-- [Cache-Oblivious B-Tree / Leaf-Packed Variants vs Plain vEB Layout](cache-oblivious-b-tree-vs-plain-veb-layout.md)
-- [Hybrid Top-Index / Leaf Layouts](hybrid-top-index-leaf-layouts.md)
-- [LRU Cache Design](lru-cache-design.md)
-- [TreeMap, HashMap, LinkedHashMap 비교](treemap-vs-hashmap-vs-linkedhashmap.md)
-- [Fenwick Tree](fenwick-tree.md)
-- [Fenwick Tree vs Segment Tree](fenwick-vs-segment-tree.md)
-- `[playbook]` [Fenwick and Segment Tree Operations Playbook](fenwick-segment-tree-operations-playbook.md)
-- [Segment Tree Is Not BST or Heap](segment-tree-not-bst-or-heap-bridge.md)
-- [Indexed Tree (Segment Tree)](applied-data-structures-overview.md#세그먼트-트리-indexed-tree--segment-tree)
-- [Segment Tree Lazy Propagation](segment-tree-lazy-propagation.md)
-- [Interval Tree](interval-tree.md)
-- [Disjoint Interval Set](disjoint-interval-set.md)
-- [Skip List](skip-list.md)
-- [Connectivity Question Router](connectivity-question-router.md) (same-component yes/no, `같은 팀인지`/`연결요소 몇 개인지` 같은 beginner query phrase pack, `무가중치 BFS vs 가중치 Dijkstra` shortest-path handoff)
+## connectivity 관련 문서
+
+- [Connectivity Question Router](connectivity-question-router.md) (same-component yes/no, `같은 팀인지`/`연결요소 몇 개인지` 같은 beginner query phrase pack, `yes/no vs path reconstruction vs shortest-path` micro-drill, `무가중치 BFS vs 가중치 Dijkstra` shortest-path handoff)
+- [Union-Find Standalone Beginner Primer](union-find-standalone-beginner-primer.md) (same-component yes/no first stop, union-find vs BFS/DFS boundary, smallest hand trace)
 - [Union-Find Deep Dive](union-find-deep-dive.md) (same-component yes/no, BFS/DFS traversal boundary, edge-addition-only connectivity)
 - [Deletion-Aware Connectivity Bridge](deletion-aware-connectivity-bridge.md) (edge deletion handoff, DSU rollback/dynamic connectivity threshold)
 - [Union-Find Component Metadata Walkthrough](union-find-component-metadata-walkthrough.md) (component size, component count, redundant union guard, `size[find(x)]` 기준)
 
-### 근사 집계와 압축 표현
+## 근사 집계와 압축 표현
 
-exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristics -> Chunk-Boundary Pathologies In Roaring -> Roaring Set-Op Result Heuristics -> Roaring Bitmap-Wide Lazy Union Pipeline -> Roaring Lazy Union And Repair Costs -> Roaring Intermediate Repair Path Guide -> Roaring Query Result Ordering Guide -> Roaring ANDNOT Result Heuristics -> Roaring runOptimize Timing Guide -> Roaring Run Formation and Row Ordering -> Roaring Production Profiling Checklist -> Roaring Run-Churn Observability Guide -> [playbook] Bitmap Locality Remediation Playbook -> Roaring Instrumentation Schema Examples -> [playbook] Roaring Bitmap Selection Playbook -> Compressed Bitmap Families: WAH, EWAH, CONCISE -> [playbook] Row-Ordering and Bitmap Compression Playbook -> Warehouse Sort-Key Co-Design for Bitmap Indexes -> Late-Arriving Rows and Bitmap Maintenance -> Bit-Sliced Bitmap Index -> Bit-Sliced Bitmap Sort-Key Sensitivity` 순서로 읽으면 chunk-local 임계값, 16-bit seam이 interval/range workload에서 언제 extra header와 extra run restart로 바뀌는지, set-op 결과 container 선택, per-container lazy union이 bitmap-level repair boundary로 어떻게 누적되는지, run-heavy warehouse bitmap에서 lazy OR savings가 exact count·serialize·`runOptimize()` 경계에서 언제 다시 비용으로 돌아오는지, temporary bitmap/run이 intermediate repair path에서 어떤 rewrite를 만드는지, selective predicate ordering과 shared intermediate reuse가 wide `OR`의 `repairAfterLazy()` debt를 언제 실질적으로 줄이는지, difference가 lazy repair 대신 direct demotion으로 끝나는 지점, bitmap-native set-op 뒤 언제 `runOptimize()`를 cold path handoff에 거는지, sorted ingest가 active chunk 수와 run 수를 어떻게 바꾸는지, profiling 뒤 row ordering·batch compaction·ID remapping·cold-path optimize를 어떤 순서로 써야 하는지, Java `RoaringBitmap` bridge와 CRoaring wrapper에서 chunk/run/transition metric schema를 어떻게 맞추고 Prometheus/OpenTelemetry 이름·adaptive sampling을 어떻게 나눌지, warehouse sort key가 dictionary encoding과 row-group reset 비용을 어떻게 함께 흔드는지, late data와 upsert/delete가 run locality를 언제 무너뜨려 compact나 rebuild 판단으로 이어지는지, 그리고 BSI slice가 sort-key prefix locality와 segment boundary에 따라 bit position별로 다르게 반응하는 지점까지 한 흐름으로 정리할 수 있다.
+이 구간은 초보자용 첫 선택보다 "정확도와 메모리를 어떻게 바꿔 먹는가"를 따지는 심화 라우트다.
+처음이면 sketch/filter와 roaring bitmap을 같은 층위로 외우기보다, 아래에서 필요한 축만 골라 내려가는 편이 빠르다.
+
+## sketch와 filter
 
 - [Bloom Filter](bloom-filter.md) (`exact membership` 정답 경로와 `approximate prefilter` 선필터를 초반 decision box로 분리)
 - [Cuckoo Filter](cuckoo-filter.md) (`exact membership` 정답 경로와 `deletion 가능한 approximate prefilter` 선필터를 초반 decision box로 분리)
@@ -296,6 +379,9 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 - `[playbook]` [Sketch and Filter Selection Playbook](sketch-filter-selection-playbook.md)
 - [Count-Min Sketch vs HyperLogLog](count-min-vs-hyperloglog.md)
 - [Approximate Counting for Rate Limiting and Observability](approximate-counting-rate-limiting-observability.md)
+
+## roaring bitmap 계열
+
 - [Roaring Bitmap](roaring-bitmap.md)
 - [Roaring Container Transition Heuristics](roaring-container-transition-heuristics.md)
 - [Chunk-Boundary Pathologies In Roaring](chunk-boundary-pathologies-in-roaring.md)
@@ -308,6 +394,9 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 - [Roaring runOptimize Timing Guide](roaring-run-optimize-timing-guide.md)
 - [Roaring Production Profiling Checklist](roaring-production-profiling-checklist.md)
 - [Roaring Run-Churn Observability Guide](roaring-run-churn-observability-guide.md)
+
+## bitmap 운영 playbook
+
 - `[playbook]` [Bitmap Locality Remediation Playbook](bitmap-locality-remediation-playbook.md)
 - [Roaring Instrumentation Schema Examples](roaring-instrumentation-schema-examples.md) (Prometheus/OpenTelemetry naming, adaptive sampling, bridge patterns)
 - `[playbook]` [Roaring Bitmap Selection Playbook](roaring-bitmap-selection-playbook.md)
@@ -316,13 +405,16 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 - [Warehouse Sort-Key Co-Design for Bitmap Indexes](warehouse-sort-key-co-design-for-bitmap-indexes.md)
 - [Late-Arriving Rows and Bitmap Maintenance](late-arriving-rows-and-bitmap-maintenance.md)
 - [Roaring Run Formation and Row Ordering](roaring-run-formation-and-row-ordering.md)
+
+## succinct bitmap index
+
 - [Succinct Bitvector Rank/Select](succinct-bitvector-rank-select.md)
 - [Bit-Sliced Bitmap Index](bit-sliced-bitmap-index.md)
 - [Bit-Sliced Bitmap Sort-Key Sensitivity](bit-sliced-bitmap-sort-key-sensitivity.md)
 - [Elias-Fano Encoded Posting List](elias-fano-encoded-posting-list.md)
 - [LSM-Friendly Index Structures](lsm-friendly-index-structures.md)
 
-### 문자열 / Prefix 검색
+## 문자열 / Prefix 검색
 
 - [Trie](applied-data-structures-overview.md#trie-트라이)
 - [Trie Prefix Search / Autocomplete](trie-prefix-search-autocomplete.md)
@@ -336,7 +428,7 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 
 아래 구간은 설명 본문이 아니라 self-check용 질문 묶음이다. 막히는 항목은 다시 위의 `primer`, `catalog`, 개별 `deep dive` 문서로 돌아가서 보강한다.
 
-### 질의응답
+## 질의응답
 
 <details>
 <summary>자료구조가 무엇인지 말씀해주세요.</summary>
@@ -347,7 +439,6 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 
 </p>
 </details>
-
 
 <details>
 <summary>선형 구조와 비선형 구조의 차이가 무엇인가요?</summary>
@@ -401,6 +492,8 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 </p>
 </details>
 
+## 질의응답: queue
+
 <details>
 <summary>큐와 덱의 차이점은 무엇일까요?</summary>
 <p>
@@ -419,6 +512,8 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 
 </p>
 </details>
+
+## 질의응답: tree
 
 <details>
 <summary>트리라는 자료구조가 무엇인지 간략하게 한 줄로 설명해보세요.</summary>
@@ -460,6 +555,8 @@ exact bitmap 계열은 `Roaring Bitmap -> Roaring Container Transition Heuristic
 
 </p>
 </details>
+
+## 질의응답: tree와 heap
 
 <details>
 <summary>구간합 문제를 누적합으로 풀이한다면, 단점은 무엇이며 그에 비해 인덱스 트리가 갖는 장점은 무엇인지 시간복잡도를 들어 설명해주세요.</summary>
@@ -510,3 +607,7 @@ A가 B의 부모노드 이면, A의 키값과 B의 키값 사이에는 대소관
 
 </p>
 </details>
+
+## 한 줄 정리
+
+Data Structure (자료구조)는 백엔드 주니어가 `조회`, `순서`, `범위`, `탐색` 질문을 먼저 나눠 `map`, `queue`, `tree` 출발점을 고르게 돕는 문서다.

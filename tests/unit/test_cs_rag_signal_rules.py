@@ -83,8 +83,9 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         "DispatcherServlet big picture",
         (
             "dispatcherservlet beginner primer explains dispatcher servlet, request pipeline, "
-            "bean container foundation, controller service repository roles, and front "
-            "controller basics for first-time Spring learners."
+            "bean container foundation, applicationcontext basics, beanfactory basics, "
+            "controller service repository roles, and front controller basics for first-time "
+            "Spring learners."
         ),
     ),
     _chunk(
@@ -106,8 +107,8 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         "Transactional annotation basics",
         (
             "spring transactional basics covers transactional annotation basics, spring proxy "
-            "transaction, unchecked exception rollback, checked exception rollback, and self "
-            "invocation transactional behavior for beginners."
+            "transaction, transaction propagation basics, unchecked exception rollback, checked "
+            "exception rollback, and self invocation transactional behavior for beginners."
         ),
     ),
     _chunk(
@@ -141,6 +142,55 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         (
             "bean definition overriding semantics covers override conflicts, bean name "
             "collisions, context merge rules, and configuration precedence."
+        ),
+    ),
+    _chunk(
+        "component-scan-primer",
+        "contents/spring/spring-bean-di-basics.md",
+        "Spring Bean and DI Basics",
+        "spring",
+        "Component scan beginner guide",
+        (
+            "spring bean di basics explains component scan basics, spring component "
+            "scan basics, springbootapplication basics, bean registration vs "
+            "component scan, component scan candidate discovery, and component scan "
+            "beginner mental model for first-time Spring learners."
+        ),
+    ),
+    _chunk(
+        "component-scan-deep",
+        "contents/spring/spring-component-scan-failure-patterns.md",
+        "Spring Component Scan Failure Patterns",
+        "spring",
+        "Troubleshooting scan boundaries",
+        (
+            "spring component scan failure patterns covers package boundary "
+            "troubleshooting, missing stereotype annotation, mult-module scan "
+            "gaps, nosuchbeandefinitionexception, and failure triage after bean "
+            "registration goes wrong."
+        ),
+    ),
+    _chunk(
+        "aop-primer",
+        "contents/spring/spring-aop-basics.md",
+        "AOP Basics",
+        "spring",
+        "Why AOP exists",
+        (
+            "spring aop basics explains aop basics, proxy aop beginner, cross-cutting "
+            "concern, why use aop, and self invocation internal call in simple "
+            "beginner terms."
+        ),
+    ),
+    _chunk(
+        "aop-deep",
+        "contents/spring/aop-proxy-mechanism.md",
+        "AOP Proxy Mechanism",
+        "spring",
+        "Proxy internals",
+        (
+            "aop proxy mechanism covers advisor pointcut advice, jdk dynamic proxy, "
+            "cglib, proxy target class, and advanced proxy internals."
         ),
     ),
     _chunk(
@@ -260,6 +310,18 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         ),
     ),
     _chunk(
+        "java-concurrency-primer",
+        "knowledge/cs/contents/language/java/java-concurrency-utilities.md",
+        "Java Concurrency Utilities",
+        "language",
+        "Concurrency overview",
+        (
+            "java concurrency overview explains executorservice, future, completablefuture, "
+            "countdownlatch, thread pool basics, future composition basics, coordination "
+            "primitives, and executor basics for first-time Java learners."
+        ),
+    ),
+    _chunk(
         "cf-cancel-primer",
         "knowledge/cs/contents/language/java/completablefuture-cancellation-semantics.md",
         "CompletableFuture Cancellation Semantics",
@@ -282,6 +344,19 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
             "completablefuture execution model covers common pool, default executor, "
             "forkjoinpool, async stage, blocking stage, thread hopping, work stealing, "
             "and starvation hazards."
+        ),
+    ),
+    _chunk(
+        "cf-allof-timeout",
+        "knowledge/cs/contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md",
+        "`CompletableFuture` `allOf`, `join`, Timeout, and Exception Handling Hazards",
+        "language",
+        "Fan-in timeout hazards",
+        (
+            "completablefuture allof join timeout hazards explains join vs get, "
+            "completionexception, executionexception, ortimeout, completeontimeout, "
+            "exceptionally, whencomplete, partial failure, partial success fan-in, and "
+            "why timeout does not cancel background work."
         ),
     ),
 ]
@@ -352,6 +427,18 @@ class CsRagSignalRulesTest(unittest.TestCase):
         paths = [hit["path"] for hit in hits]
         self.assertIn(winner, paths, f"missing winner {winner} in {paths}")
         self.assertIn(loser, paths, f"missing loser {loser} in {paths}")
+        self.assertLess(paths.index(winner), paths.index(loser), paths)
+
+    def assert_ranks_ahead_or_absent(
+        self,
+        hits: list[dict],
+        winner: str,
+        loser: str,
+    ) -> None:
+        paths = [hit["path"] for hit in hits]
+        self.assertIn(winner, paths, f"missing winner {winner} in {paths}")
+        if loser not in paths:
+            return
         self.assertLess(paths.index(winner), paths.index(loser), paths)
 
     def test_java_basics_terms_map_to_language_signal(self) -> None:
@@ -482,6 +569,54 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("future vs completablefuture basics", expanded)
         self.assertIn("countdownlatch coordination basics", expanded)
 
+    def test_java_concurrency_shortform_queries_add_beginner_overview_vocabulary(self) -> None:
+        prompts = (
+            "CompletableFuture가 뭐야?",
+            "What is CompletableFuture?",
+            "Callable가 뭐야?",
+            "What is Callable?",
+            "Future가 뭐야?",
+            "ExecutorService가 뭐야?",
+            "CountDownLatch가 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "java_concurrency_utilities",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("java concurrency overview", expanded)
+                self.assertIn("thread pool basics", expanded)
+                self.assertIn("future composition basics", expanded)
+                self.assertIn("executor basics", expanded)
+
+    def test_java_concurrency_shortform_queries_rank_overview_primer_ahead_of_deep_dives(self) -> None:
+        prompts = (
+            "CompletableFuture가 뭐야?",
+            "What is CompletableFuture?",
+            "Callable가 뭐야?",
+            "What is Callable?",
+            "Future가 뭐야?",
+            "ExecutorService가 뭐야?",
+            "CountDownLatch가 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=4)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "knowledge/cs/contents/language/java/java-concurrency-utilities.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "knowledge/cs/contents/language/java/java-concurrency-utilities.md",
+                    "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+                )
+
     def test_completablefuture_common_pool_query_adds_execution_model_vocabulary(self) -> None:
         prompt = (
             "CompletableFuture common pool default executor blocking stage thread hopping "
@@ -549,7 +684,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
         )
 
-        common_pool_hits = self._search(common_pool_prompt)
+        common_pool_hits = self._search(common_pool_prompt, top_k=8)
         self.assert_path_rank_at_most(
             common_pool_hits,
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
@@ -559,6 +694,66 @@ class CsRagSignalRulesTest(unittest.TestCase):
             common_pool_hits,
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
             "knowledge/cs/contents/language/java/completablefuture-cancellation-semantics.md",
+        )
+
+    def test_completablefuture_allof_timeout_prompt_routes_to_explicit_fan_in_hazard_signal(
+        self,
+    ) -> None:
+        prompt = (
+            "CompletableFuture allOf join orTimeout exceptionally whenComplete 차이를 처음 배우는데 "
+            "common pool 실행 모델 말고 timeout 예외 흐름을 설명해줘"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "java_completablefuture_fan_in_timeout",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("java_completablefuture_fan_in_timeout", tags)
+        self.assertNotIn("java_concurrency_utilities", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("completablefuture allof join basics", expanded)
+        self.assertIn("allof does not collect results", expanded)
+        self.assertIn("join wraps exceptions", expanded)
+        self.assertIn("timeout exceptional completion basics", expanded)
+        self.assertNotIn("common pool", expanded)
+        self.assertNotIn("forkjoinpool", expanded)
+        self.assertNotIn("thread hopping", expanded)
+
+    def test_completablefuture_allof_timeout_and_common_pool_prompts_split_search_ranking(
+        self,
+    ) -> None:
+        fan_in_prompt = (
+            "CompletableFuture allOf join orTimeout exceptionally whenComplete 차이를 처음 배우는데 "
+            "common pool 실행 모델 말고 timeout 예외 흐름을 설명해줘"
+        )
+        common_pool_prompt = (
+            "CompletableFuture common pool default executor blocking stage thread hopping "
+            "starvation 을 어떻게 이해해야 해?"
+        )
+
+        fan_in_hits = self._search(fan_in_prompt)
+        self.assert_path_rank_at_most(
+            fan_in_hits,
+            "knowledge/cs/contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            fan_in_hits,
+            "knowledge/cs/contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md",
+            "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+        )
+
+        common_pool_hits = self._search(common_pool_prompt, top_k=8)
+        self.assert_path_rank_at_most(
+            common_pool_hits,
+            "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            common_pool_hits,
+            "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+            "knowledge/cs/contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md",
         )
 
     def test_executor_tuning_query_stays_in_java_concurrency_family(self) -> None:
@@ -1195,20 +1390,20 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("connection pool", expanded)
         self.assertNotIn("close", expanded)
 
-    def test_introductory_jwt_validation_query_prefers_authentication_primer_signal(self) -> None:
+    def test_introductory_jwt_validation_query_prefers_validation_order_signal(self) -> None:
         prompt = "JWT 를 처음 배우는데 kid issuer audience signature validation 순서를 입문자 기준으로 먼저 설명해줘"
 
         self.assertEqual(
             signal_rules.top_signal_tag(prompt),
-            "security_authentication",
+            "security_token_validation",
         )
         tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_token_validation", tags)
         self.assertIn("security_authentication", tags)
-        self.assertNotIn("security_token_validation", tags)
         expanded = signal_rules.expand_query(prompt)
-        self.assertIn("token payload structure", expanded)
-        self.assertIn("claims", expanded)
-        self.assertIn("exp", expanded)
+        self.assertIn("token validation", expanded)
+        self.assertIn("signature verification", expanded)
+        self.assertNotIn("session cookie jwt basics", expanded)
 
     def test_timeout_attribution_terms_map_to_network_signal(self) -> None:
         prompt = "timeout attribution 을 할 때 local reply 랑 upstream error 를 어떻게 구분해?"
@@ -1458,6 +1653,21 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("commit horizon after failover", expanded)
         self.assertIn("loss boundary", expanded)
 
+    def test_failover_validation_terms_map_to_database_signal(self) -> None:
+        prompt = "commit horizon after failover validation 을 어떻게 해야 하지?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "failover_verification",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("failover_verification", tags)
+        self.assertNotIn("security_token_validation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("commit horizon after failover", expanded)
+        self.assertIn("loss boundary", expanded)
+        self.assertNotIn("token validation", expanded)
+
     def test_progressive_cutover_terms_map_to_cutover_signal(self) -> None:
         prompt = "shadow traffic mirrored requests route guardrail 로 progressive cutover 를 운영하고 싶어"
 
@@ -1479,6 +1689,21 @@ class CsRagSignalRulesTest(unittest.TestCase):
         expanded = signal_rules.expand_query(prompt)
         self.assertIn("response diff", expanded)
         self.assertIn("shadow traffic", expanded)
+
+    def test_strangler_validation_terms_map_to_cutover_signal(self) -> None:
+        prompt = "strangler validation, shadow traffic metrics, diffing 으로 cutover 전 검증하고 싶어"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "progressive_cutover_control_plane",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("progressive_cutover_control_plane", tags)
+        self.assertNotIn("security_token_validation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("response diff", expanded)
+        self.assertIn("shadow traffic", expanded)
+        self.assertNotIn("signature verification", expanded)
 
     def test_failover_visibility_terms_map_to_visibility_signal(self) -> None:
         prompt = "failover visibility window 동안 stale primary 와 topology cache divergence 를 어떻게 줄이지?"
@@ -2332,6 +2557,16 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "예산 판단이 뭐가 다른지 비교해줘. 저장 직후 예전 값이 보이는 문제와 장애 "
                 "전환 때 리더를 어디에 둘지 고민하는 문제를 큰 그림부터 알고 싶어"
             ),
+            "stateful_workload_colloquial": (
+                "읽기 모델 최신성을 처음 배우는데 투영 최신성이랑 상태 있는 워크로드 배치 "
+                "장애 전환이 어떻게 다른지 같이 알고 싶어. 왜 저장 직후엔 예전 값이 남고 "
+                "장애 때 어느 복제본을 올릴지 따로 고민하는지 큰 그림부터 설명해줘"
+            ),
+            "leader_node_colloquial": (
+                "읽기 모델 최신성을 처음 배우는데 투영 최신성이랑 상태 있는 서비스 장애 때 "
+                "어느 노드를 리더로 둘지 판단하는 문제가 어떻게 다른지 알고 싶어. 저장 "
+                "직후 예전 값이 남는 문제와 같이 큰 그림부터 설명해줘"
+            ),
         }
 
         for cue, prompt in prompts.items():
@@ -2807,6 +3042,36 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("stale read", expanded)
         self.assertIn("commit horizon after failover", expanded)
         self.assertNotIn("loss boundary", expanded)
+        self.assertNotIn("jwt", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_introductory_projection_vs_failover_validation_query_stays_beginner_first_without_jwt_noise(
+        self,
+    ) -> None:
+        prompt = (
+            "read model freshness 를 처음 배우는데 projection freshness 랑 "
+            "failover validation 차이를 같이 보고 싶어. stale read 랑 "
+            "read-your-writes 큰 그림부터 설명해줘"
+        )
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        signals = signal_rules.detect_signals(prompt)
+        tags = [signal["tag"] for signal in signals]
+        self.assertIn("projection_freshness", tags)
+        self.assertIn("failover_verification", tags)
+        self.assertNotIn("security_token_validation", tags)
+        self.assertLess(
+            tags.index("projection_freshness"),
+            tags.index("failover_verification"),
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("stale read", expanded)
+        self.assertIn("commit horizon after failover", expanded)
+        self.assertNotIn("validation", expanded)
         self.assertNotIn("jwt", expanded)
         self.assertNotIn("signature verification", expanded)
 
@@ -3399,6 +3664,8 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 expanded = signal_rules.expand_query(prompt)
                 self.assertIn("read model staleness", expanded)
                 self.assertIn("read your writes", expanded)
+                self.assertIn("saved-but-not-visible", expanded)
+                self.assertIn("old-screen-state", expanded)
                 self.assertIn("read-after-write", expanded)
                 self.assertIn("replica lag", expanded)
                 self.assertIn("read replica delay", expanded)
@@ -3406,6 +3673,23 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 self.assertNotIn("projection lag budget", expanded)
                 self.assertNotIn("projection freshness slo", expanded)
                 self.assertNotIn("read model cutover guardrails", expanded)
+
+    def test_korean_projection_freshness_saved_not_visible_old_screen_state_prompt_keeps_primer_anchors(
+        self,
+    ) -> None:
+        prompt = "저장했는데 안 보이고 이전 화면 상태가 남아 있어. 왜 이래?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "projection_freshness",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("read model staleness", expanded)
+        self.assertIn("saved but still old data", expanded)
+        self.assertIn("saved-but-not-visible", expanded)
+        self.assertIn("old screen state after save", expanded)
+        self.assertIn("old-screen-state", expanded)
+        self.assertNotIn("projection lag budget", expanded)
 
     def test_projection_freshness_plural_symptom_variants_keep_shared_canonical_tokens(
         self,
@@ -3629,6 +3913,9 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("read model staleness", expanded)
         self.assertNotIn("read your writes", expanded)
         self.assertNotIn("saved but still old data", expanded)
+        self.assertIn("query model separation", expanded)
+        self.assertIn("list search filter sort beginner guide", expanded)
+        self.assertIn("browser filter state", expanded)
 
     def test_beginner_filter_sort_state_confusion_search_prefers_query_model_primer(
         self,
@@ -3853,12 +4140,44 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("repeatable read", expanded)
         self.assertIn("phantom read", expanded)
 
+    def test_mvcc_concept_explanation_query_uses_transaction_primer_signal(self) -> None:
+        prompt = "MVCC 개념 설명해줘"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_isolation",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("mvcc", expanded)
+        self.assertIn("read committed", expanded)
+        self.assertIn("repeatable read", expanded)
+        self.assertIn("phantom read", expanded)
+
     def test_shortform_mvcc_query_ranks_transaction_primer_ahead_of_internals_deep_dive(
         self,
     ) -> None:
         prompt = "MVCC가 뭐야?"
 
-        hits = self._search(prompt)
+        hits = self._search(prompt, top_k=8)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            "contents/database/mvcc-read-view-undo-chain-internals.md",
+        )
+
+    def test_mvcc_concept_explanation_query_ranks_transaction_primer_ahead_of_internals_deep_dive(
+        self,
+    ) -> None:
+        prompt = "MVCC 개념 설명해줘"
+
+        hits = self._search(prompt, top_k=8)
         self.assert_path_rank_at_most(
             hits,
             "contents/database/transaction-isolation-basics.md",
@@ -3994,6 +4313,56 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("http keep-alive", expanded)
         self.assertNotIn("retry budget", expanded)
 
+    def test_beginner_keepalive_alias_queries_keep_primer_bias_and_ranking(self) -> None:
+        cases = (
+            "persistent connection 뭐야?",
+            "connection reuse 뭐야?",
+        )
+
+        for prompt in cases:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "network_keepalive_basics",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("keepalive connection reuse basics", expanded)
+                self.assertIn("keep-alive basics", expanded)
+                self.assertIn("http connection reuse", expanded)
+                self.assertNotIn("retry budget", expanded)
+
+                hits = self._search(prompt, top_k=4)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/network/keepalive-connection-reuse-basics.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/network/keepalive-connection-reuse-basics.md",
+                    "contents/network/http2-http3-connection-reuse-coalescing.md",
+                )
+
+    def test_spring_mvc_shortform_variants_keep_beginner_primer_signal(self) -> None:
+        cases = (
+            "Spring MVC 뭐야?",
+            "스프링 MVC 뭐야?",
+            "Spring M V C 뭐야?",
+            "스프링 M V C 뭐야?",
+        )
+
+        for prompt in cases:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring request pipeline beginner", expanded)
+                self.assertIn("dispatcher servlet beginner", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertNotIn("rest api", expanded)
+
     def test_colloquial_shortform_queries_keep_beginner_primer_bias_for_foundation_topics(
         self,
     ) -> None:
@@ -4014,6 +4383,15 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "must_exclude": {"transactional deep dive", "mvcc"},
             },
             {
+                "prompt": "@Transactional 무슨 뜻이야?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring transactional basics",
+                    "transactional annotation basics",
+                },
+                "must_exclude": {"transactional deep dive", "mvcc"},
+            },
+            {
                 "prompt": "DI vs IoC 차이가 뭔데?",
                 "top_tag": "spring_framework",
                 "must_include": {
@@ -4022,6 +4400,82 @@ class CsRagSignalRulesTest(unittest.TestCase):
                     "inversion of control",
                 },
                 "must_exclude": set(),
+            },
+            {
+                "prompt": "AOP가 뭐야?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring aop basics",
+                    "proxy aop beginner",
+                },
+                "must_exclude": {"transactional deep dive"},
+            },
+            {
+                "prompt": "AOP란?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring aop basics",
+                    "proxy aop beginner",
+                },
+                "must_exclude": {"transactional deep dive"},
+            },
+            {
+                "prompt": "AOP 왜 써?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring aop basics",
+                    "proxy aop beginner",
+                    "why use aop",
+                },
+                "must_exclude": {"advisor pointcut advice"},
+            },
+            {
+                "prompt": "AOP 감이 안 와",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring aop basics",
+                    "proxy aop beginner",
+                },
+                "must_exclude": {"advisor pointcut advice"},
+            },
+            {
+                "prompt": "ApplicationContext 왜 써?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring bean basics",
+                    "applicationcontext basics",
+                    "beanfactory basics",
+                },
+                "must_exclude": {"transactional deep dive"},
+            },
+            {
+                "prompt": "ApplicationContext 감이 안 와",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring bean basics",
+                    "applicationcontext basics",
+                    "beanfactory basics",
+                },
+                "must_exclude": {"transactional deep dive"},
+            },
+            {
+                "prompt": "@Transactional 왜 써?",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring transactional basics",
+                    "transactional annotation basics",
+                    "spring proxy transaction",
+                },
+                "must_exclude": {"transaction propagation", "mvcc"},
+            },
+            {
+                "prompt": "transactional 감이 안 와",
+                "top_tag": "spring_framework",
+                "must_include": {
+                    "spring transactional basics",
+                    "transactional annotation basics",
+                },
+                "must_exclude": {"transaction propagation", "mvcc"},
             },
             {
                 "prompt": "HTTP keep-alive 뭔데?",
@@ -4048,7 +4502,37 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "must_exclude": {"signature verification"},
             },
             {
+                "prompt": "세션이란?",
+                "top_tag": "security_authentication",
+                "must_include": {"session vs jwt", "session cookie jwt basics"},
+                "must_exclude": {"signature verification"},
+            },
+            {
+                "prompt": "세션 무슨 뜻이야?",
+                "top_tag": "security_authentication",
+                "must_include": {"session vs jwt", "session cookie jwt basics"},
+                "must_exclude": {"signature verification"},
+            },
+            {
+                "prompt": "쿠키가 뭐야?",
+                "top_tag": "security_authentication",
+                "must_include": {"session cookie jwt basics", "cookie session jwt browser flow"},
+                "must_exclude": {"signature verification"},
+            },
+            {
                 "prompt": "JWT랑 쿠키 둘 다 로그인 유지에 쓰는 거야?",
+                "top_tag": "security_authentication",
+                "must_include": {"session vs jwt", "session cookie jwt basics"},
+                "must_exclude": {"signature verification"},
+            },
+            {
+                "prompt": "session이 뭔지 감이 안 와",
+                "top_tag": "security_authentication",
+                "must_include": {"session vs jwt", "session cookie jwt basics"},
+                "must_exclude": {"signature verification"},
+            },
+            {
+                "prompt": "JWT가 뭔지 감이 안 와",
                 "top_tag": "security_authentication",
                 "must_include": {"session vs jwt", "session cookie jwt basics"},
                 "must_exclude": {"signature verification"},
@@ -4083,7 +4567,53 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/spring/spring-mvc-handlerexecutionchain-interceptor-ordering.md",
             },
             {
+                "prompt": "Spring MVC 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            {
+                "prompt": "Spring M V C 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            {
+                "prompt": "스프링 M V C 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            {
+                "prompt": "스프링 MVC 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            {
+                "prompt": "MVC 패턴이 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-mvc-handlerexecutionchain-interceptor-ordering.md",
+            },
+            {
                 "prompt": "Spring bean 이 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "spring bean basics",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "ApplicationContext 가 뭐야?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "ApplicationContext basics",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "What is ApplicationContext in Spring?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "BeanFactory vs ApplicationContext 차이가 뭐야?",
                 "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
                 "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
             },
@@ -4093,9 +4623,64 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
             },
             {
+                "prompt": "@Transactional 무슨 뜻이야?",
+                "primer_doc": "contents/spring/spring-transactional-basics.md",
+                "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
+            },
+            {
+                "prompt": "@Transactional은 뭐 하는 거야?",
+                "primer_doc": "contents/spring/spring-transactional-basics.md",
+                "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
+            },
+            {
+                "prompt": "트랜잭션 전파가 뭐야?",
+                "primer_doc": "contents/spring/spring-transactional-basics.md",
+                "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
+            },
+            {
                 "prompt": "DI vs IoC 차이가 뭔데?",
                 "primer_doc": "contents/spring/spring-ioc-di-basics.md",
                 "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "AOP가 뭐야?",
+                "primer_doc": "contents/spring/spring-aop-basics.md",
+                "deep_dive_doc": "contents/spring/aop-proxy-mechanism.md",
+            },
+            {
+                "prompt": "AOP는 뭐 하는 거야?",
+                "primer_doc": "contents/spring/spring-aop-basics.md",
+                "deep_dive_doc": "contents/spring/aop-proxy-mechanism.md",
+            },
+            {
+                "prompt": "AOP 왜 써?",
+                "primer_doc": "contents/spring/spring-aop-basics.md",
+                "deep_dive_doc": "contents/spring/aop-proxy-mechanism.md",
+            },
+            {
+                "prompt": "AOP 감이 안 와",
+                "primer_doc": "contents/spring/spring-aop-basics.md",
+                "deep_dive_doc": "contents/spring/aop-proxy-mechanism.md",
+            },
+            {
+                "prompt": "ApplicationContext 왜 써?",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "ApplicationContext 감이 안 와",
+                "primer_doc": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "@Transactional 왜 써?",
+                "primer_doc": "contents/spring/spring-transactional-basics.md",
+                "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
+            },
+            {
+                "prompt": "transactional 감이 안 와",
+                "primer_doc": "contents/spring/spring-transactional-basics.md",
+                "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
             },
             {
                 "prompt": "HTTP keep-alive 뭔데?",
@@ -4108,6 +4693,18 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
             },
             {
+                "prompt": "mvcc basics",
+                "primer_doc": "contents/database/transaction-isolation-basics.md",
+                "deep_dive_doc": "contents/database/mvcc-read-view-undo-chain-internals.md",
+                "top_k": 8,
+            },
+            {
+                "prompt": "MVCC 기초",
+                "primer_doc": "contents/database/transaction-isolation-basics.md",
+                "deep_dive_doc": "contents/database/mvcc-read-view-undo-chain-internals.md",
+                "top_k": 8,
+            },
+            {
                 "prompt": "세션이랑 JWT 차이가 뭔데?",
                 "primer_doc": "contents/security/session-cookie-jwt-basics.md",
                 "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
@@ -4118,7 +4715,37 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
             },
             {
+                "prompt": "세션 무슨 뜻이야?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
+                "prompt": "쿠키가 뭐야?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
                 "prompt": "JWT랑 쿠키 둘 다 로그인 유지에 쓰는 거야?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
+                "prompt": "JWT가 뭐야?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
+                "prompt": "JWT는 뭐 하는 거야?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
+                "prompt": "session이 뭔지 감이 안 와",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
+            {
+                "prompt": "JWT가 뭔지 감이 안 와",
                 "primer_doc": "contents/security/session-cookie-jwt-basics.md",
                 "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
             },
@@ -4127,13 +4754,24 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "primer_doc": "contents/security/session-cookie-jwt-basics.md",
                 "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
             },
+            {
+                "prompt": "로그인 왜 기억돼?",
+                "primer_doc": "contents/security/session-cookie-jwt-basics.md",
+                "deep_dive_doc": "contents/security/authentication-authorization-session-foundations.md",
+            },
         )
 
         for case in cases:
             with self.subTest(prompt=case["prompt"]):
-                hits = self._search(case["prompt"])
+                hits = self._search(case["prompt"], top_k=case.get("top_k", 4))
                 self.assert_path_rank_at_most(hits, case["primer_doc"], 1)
-                self.assert_ranks_ahead(hits, case["primer_doc"], case["deep_dive_doc"])
+                deep_dive_doc = case.get("deep_dive_doc")
+                if deep_dive_doc:
+                    self.assert_ranks_ahead_or_absent(
+                        hits,
+                        case["primer_doc"],
+                        deep_dive_doc,
+                    )
 
     def test_beginner_connection_pool_query_prefers_connection_pool_primer_signal(self) -> None:
         prompt = "connection pool 이 뭐야? 처음 배우는데 왜 필요한지 알려줘"
@@ -4167,6 +4805,23 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("hikari cp", expanded)
         self.assertNotIn("resource lifecycle", expanded)
 
+    def test_mvcc_basics_queries_prefer_transaction_isolation_primer_signal(self) -> None:
+        prompts = (
+            "mvcc basics",
+            "MVCC 기초",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "transaction_isolation",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("transaction isolation basics", expanded)
+                self.assertIn("mvcc", expanded)
+                self.assertIn("isolation level", expanded)
+
     def test_spring_dispatcher_terms_map_to_spring_signal(self) -> None:
         prompt = "Spring 의 dispatcherServlet 이 어떻게 동작하고 bean lifecycle 과 어디서 엮여?"
 
@@ -4196,8 +4851,202 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("bean container foundation", expanded)
         self.assertIn("controller service repository roles", expanded)
 
+    def test_beginner_mvc_pattern_query_prefers_request_pipeline_primer(self) -> None:
+        prompt = "MVC 패턴이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring request pipeline beginner", expanded)
+        self.assertIn("dispatcher servlet beginner", expanded)
+        self.assertIn("bean container foundation", expanded)
+
     def test_beginner_spring_bean_query_prefers_foundation_primer(self) -> None:
-        prompt = "Spring bean 이 뭐야?"
+        prompts = (
+            "Spring bean 이 뭐야?",
+            "Spring bean이란?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring bean basics", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertIn("applicationcontext basics", expanded)
+
+    def test_beginner_component_scan_query_adds_intro_primer_vocabulary(self) -> None:
+        prompts = (
+            "component scan 이 뭐야?",
+            "What does component scan mean in Spring?",
+            "@ComponentScan 이 뭐야?",
+            "처음 배우는데 component scan 이 뭐야?",
+            "@ComponentScan이란?",
+            "컴포넌트 스캔이 뭐야?",
+            "component scan 왜 써?",
+            "컴포넌트 스캔 왜 써?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("component scan basics", expanded)
+                self.assertIn("spring component scan basics", expanded)
+                self.assertIn("spring bean di basics", expanded)
+                self.assertIn("bean registration vs component scan", expanded)
+
+    def test_beginner_component_scan_query_prefers_intro_primer_over_failure_troubleshooting(
+        self,
+    ) -> None:
+        prompts = (
+            "component scan 이 뭐야?",
+            "What does component scan mean in Spring?",
+            "@ComponentScan 이 뭐야?",
+            "처음 배우는데 component scan 이 뭐야?",
+            "@ComponentScan이란?",
+            "컴포넌트 스캔이 뭐야?",
+            "component scan 왜 써?",
+            "컴포넌트 스캔 왜 써?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=5)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/spring/spring-bean-di-basics.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/spring/spring-bean-di-basics.md",
+                    "contents/spring/spring-component-scan-failure-patterns.md",
+                )
+
+    def test_spring_bean_registration_flow_queries_keep_foundation_primer_bias(self) -> None:
+        prompts = (
+            "Spring bean 등록 흐름",
+            "Bean registration flow",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring bean basics", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertIn("applicationcontext basics", expanded)
+                self.assertIn("beanfactory basics", expanded)
+                self.assertIn("bean registration basics", expanded)
+
+    def test_spring_bean_registration_flow_queries_rank_foundation_primer_ahead_of_deep_dive(
+        self,
+    ) -> None:
+        prompts = (
+            "Spring bean 등록 흐름",
+            "Bean registration flow",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                    "contents/spring/spring-bean-definition-overriding-semantics.md",
+                )
+
+    def test_foundation_basics_shortform_queries_add_beginner_primer_vocabulary(self) -> None:
+        prompts = (
+            "spring bean basics",
+            "ApplicationContext basics",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring bean basics", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertIn("applicationcontext basics", expanded)
+                self.assertIn("beanfactory basics", expanded)
+
+    def test_beginner_applicationcontext_query_prefers_foundation_primer(self) -> None:
+        prompts = (
+            "What is ApplicationContext in Spring?",
+            "What does ApplicationContext mean in Spring?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring bean basics", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertIn("applicationcontext basics", expanded)
+                self.assertIn("beanfactory basics", expanded)
+
+    def test_beginner_beanfactory_query_prefers_foundation_primer(self) -> None:
+        prompts = (
+            "BeanFactory가 뭐야?",
+            "What does BeanFactory mean in Spring?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring bean basics", expanded)
+                self.assertIn("bean container foundation", expanded)
+                self.assertIn("applicationcontext basics", expanded)
+                self.assertIn("beanfactory basics", expanded)
+
+    def test_beginner_beanfactory_query_ranks_foundation_primer_ahead_of_deep_dive(self) -> None:
+        for prompt in ("BeanFactory가 뭐야?", "What does BeanFactory mean in Spring?"):
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt)
+
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+                    "contents/spring/spring-bean-definition-overriding-semantics.md",
+                )
+
+    def test_beginner_spring_bean_english_meaning_query_prefers_foundation_primer(self) -> None:
+        prompt = "What does a Spring bean mean?"
 
         self.assertEqual(
             signal_rules.top_signal_tag(prompt),
@@ -4207,6 +5056,138 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("spring bean basics", expanded)
         self.assertIn("bean container foundation", expanded)
         self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("beanfactory basics", expanded)
+
+        hits = self._search(prompt, top_k=4)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+
+    def test_korean_bean_shortform_query_keeps_foundation_primer_bias(self) -> None:
+        prompt = "빈이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("bean container foundation", expanded)
+        self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("beanfactory basics", expanded)
+
+        hits = self._search(prompt, top_k=4)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            "contents/spring/spring-bean-definition-overriding-semantics.md",
+        )
+
+    def test_beginner_korean_applicationcontext_query_prefers_foundation_primer(self) -> None:
+        prompt = "ApplicationContext 가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("bean container foundation", expanded)
+        self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("beanfactory basics", expanded)
+
+    def test_applicationcontext_role_shortform_query_keeps_foundation_primer_bias(self) -> None:
+        prompt = "ApplicationContext는 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("applicationcontext role basics", expanded)
+        self.assertIn("applicationcontext 역할", expanded)
+
+        hits = self._search(prompt, top_k=4)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            "contents/spring/spring-bean-definition-overriding-semantics.md",
+        )
+
+    def test_beginner_beanfactory_vs_applicationcontext_query_prefers_foundation_primer(self) -> None:
+        prompt = "BeanFactory vs ApplicationContext 차이가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("bean container foundation", expanded)
+        self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("beanfactory basics", expanded)
+        self.assertIn("beanfactory vs applicationcontext", expanded)
+        self.assertIn("applicationcontext extends beanfactory", expanded)
+
+    def test_spring_bean_role_shortform_query_keeps_foundation_primer_bias(self) -> None:
+        prompt = "Spring bean은 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("bean container foundation", expanded)
+        self.assertIn("spring bean role basics", expanded)
+        self.assertIn("spring bean what it does", expanded)
+
+        hits = self._search(prompt, top_k=4)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            "contents/spring/spring-bean-definition-overriding-semantics.md",
+        )
+
+    def test_korean_definition_shortform_applicationcontext_query_keeps_foundation_primer_bias(
+        self,
+    ) -> None:
+        prompt = "ApplicationContext란?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean basics", expanded)
+        self.assertIn("applicationcontext basics", expanded)
+        self.assertIn("beanfactory basics", expanded)
+
+        hits = self._search(prompt, top_k=4)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
 
     def test_dispatcher_servlet_spacing_and_casing_variants_keep_beginner_primer_bias(self) -> None:
         prompts = [
@@ -4356,6 +5337,36 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("transactional deep dive", expanded)
         self.assertNotIn("mvcc", expanded)
 
+    def test_korean_plain_spring_transaction_shortform_keeps_beginner_primer_bias(self) -> None:
+        prompt = "스프링 트랜잭션이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_english_plain_spring_transaction_shortform_keeps_beginner_primer_bias(self) -> None:
+        prompt = "Spring transaction what is it?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("mvcc", expanded)
+
     def test_english_contracted_transactional_query_keeps_beginner_primer_bias(self) -> None:
         prompt = "What's @Transactional?"
 
@@ -4371,6 +5382,52 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("transactional annotation basics", expanded)
         self.assertNotIn("transactional deep dive", expanded)
         self.assertNotIn("mvcc", expanded)
+
+    def test_korean_transactional_meaning_query_keeps_beginner_primer_bias(self) -> None:
+        prompt = "@Transactional 무슨 뜻이야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("transactional deep dive", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_korean_transactional_role_shortform_keeps_beginner_primer_bias(self) -> None:
+        prompt = "@Transactional은 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation how it works", expanded)
+        self.assertNotIn("transactional deep dive", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_korean_transactional_meaning_query_ranks_primer_ahead_of_deep_dive(self) -> None:
+        hits = self._search("@Transactional 무슨 뜻이야?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            "contents/spring/spring-transaction-propagation-deep-dive.md",
+        )
 
     def test_english_why_use_transactional_query_keeps_beginner_primer_bias(self) -> None:
         prompt = "Why use @Transactional?"
@@ -4388,6 +5445,38 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("transactional deep dive", expanded)
         self.assertNotIn("mvcc", expanded)
 
+    def test_english_how_does_transactional_work_query_keeps_beginner_primer_bias(self) -> None:
+        prompt = "How does @Transactional work?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation how it works", expanded)
+        self.assertNotIn("transactional deep dive", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_english_how_does_transactional_work_query_ranks_primer_ahead_of_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("How does @Transactional work?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            "contents/spring/spring-transaction-propagation-deep-dive.md",
+        )
+
     def test_beginner_di_vs_ioc_query_adds_ioc_primer_vocabulary(self) -> None:
         prompt = "DI vs IoC 차이가 뭐야? 처음 배우는데 스프링 기준으로 알려줘"
 
@@ -4399,6 +5488,198 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("spring ioc di basics", expanded)
         self.assertIn("dependency injection", expanded)
         self.assertIn("inversion of control", expanded)
+
+    def test_korean_inversion_of_control_shortform_query_adds_ioc_primer_vocabulary(self) -> None:
+        prompt = "제어 역전이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring ioc di basics", expanded)
+        self.assertIn("dependency injection", expanded)
+        self.assertIn("inversion of control", expanded)
+        self.assertIn("spring ioc di beginner primer", expanded)
+        self.assertIn("ioc 제어 역전 입문", expanded)
+
+    def test_korean_inversion_of_control_shortform_query_ranks_ioc_primer_ahead_of_companions(
+        self,
+    ) -> None:
+        hits = self._search("제어 역전이 뭐야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-ioc-di-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-ioc-di-basics.md",
+            "contents/spring/spring-bean-di-basics.md",
+        )
+
+    def test_korean_dependency_injection_shortform_query_adds_ioc_primer_vocabulary(self) -> None:
+        prompt = "의존성 주입이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring ioc di basics", expanded)
+        self.assertIn("dependency injection", expanded)
+        self.assertIn("spring ioc di beginner primer", expanded)
+        self.assertIn("dependency injection 입문", expanded)
+        self.assertIn("의존성 주입이 뭐예요", expanded)
+
+    def test_korean_dependency_injection_shortform_query_ranks_ioc_primer_ahead_of_companions(
+        self,
+    ) -> None:
+        hits = self._search("의존성 주입이 뭐야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-ioc-di-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-ioc-di-basics.md",
+            "contents/spring/spring-bean-di-basics.md",
+        )
+
+    def test_component_scan_vs_bean_registration_query_prefers_intro_primer_vocabulary(self) -> None:
+        prompt = "@Bean이랑 component scan 차이가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring bean di basics", expanded)
+        self.assertIn("bean registration vs component scan", expanded)
+        self.assertIn("component scan candidate discovery", expanded)
+        self.assertNotIn("package boundary troubleshooting", expanded)
+
+    def test_component_scan_vs_bean_registration_query_ranks_intro_primer_ahead_of_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("@Bean이랑 component scan 차이가 뭐야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-bean-di-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-bean-di-basics.md",
+            "contents/spring/spring-component-scan-failure-patterns.md",
+        )
+
+    def test_shortform_aop_query_prefers_aop_primer_vocabulary(self) -> None:
+        prompt = "AOP가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring aop basics", expanded)
+        self.assertIn("proxy aop beginner", expanded)
+        self.assertIn("cross-cutting concern", expanded)
+        self.assertNotIn("transactional deep dive", expanded)
+
+    def test_shortform_aop_query_ranks_aop_primer_ahead_of_proxy_deep_dive(self) -> None:
+        hits = self._search("AOP가 뭐야?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            "contents/spring/aop-proxy-mechanism.md",
+        )
+
+    def test_korean_role_shortform_aop_query_keeps_beginner_primer_bias(self) -> None:
+        prompt = "AOP는 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring aop basics", expanded)
+        self.assertIn("proxy aop beginner", expanded)
+        self.assertNotIn("aop proxy mechanism", expanded)
+
+    def test_korean_why_use_aop_query_ranks_primer_ahead_of_proxy_deep_dive(self) -> None:
+        hits = self._search("AOP 왜 써?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            "contents/spring/aop-proxy-mechanism.md",
+        )
+
+    def test_korean_definition_shortform_aop_query_ranks_primer_ahead_of_proxy_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("AOP란?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-aop-basics.md",
+            "contents/spring/aop-proxy-mechanism.md",
+        )
+
+    def test_korean_transaction_propagation_shortform_keeps_beginner_transactional_primer(self) -> None:
+        prompt = "트랜잭션 전파가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_korean_transaction_propagation_why_use_shortform_keeps_beginner_transactional_primer(
+        self,
+    ) -> None:
+        prompt = "트랜잭션 전파는 왜 써?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transaction propagation basics", expanded)
+        self.assertNotIn("mvcc", expanded)
 
     def test_di_and_ioc_shortform_query_adds_ioc_primer_vocabulary(self) -> None:
         prompt = "DI와 IoC 차이가 뭐야?"
@@ -4437,6 +5718,212 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("session vs jwt", expanded)
         self.assertIn("session cookie jwt basics", expanded)
         self.assertNotIn("signature verification", expanded)
+
+    def test_korean_definition_shortform_session_query_stays_on_authentication_primer(
+        self,
+    ) -> None:
+        prompt = "세션이란?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_korean_definition_shortform_session_query_ranks_primer_ahead_of_foundations(
+        self,
+    ) -> None:
+        hits = self._search("세션이란?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            "contents/security/authentication-authorization-session-foundations.md",
+        )
+
+    def test_korean_session_meaning_query_stays_on_authentication_primer(self) -> None:
+        prompt = "세션 무슨 뜻이야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_english_session_only_query_stays_on_authentication_primer(self) -> None:
+        prompt = "What is session?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_session_login_persistence_shortform_query_stays_on_authentication_primer(self) -> None:
+        prompt = "세션이 왜 유지돼?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("login state persistence", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_session_login_persistence_shortform_query_ranks_primer_ahead_of_foundations(
+        self,
+    ) -> None:
+        hits = self._search("세션이 왜 유지돼?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            "contents/security/authentication-authorization-session-foundations.md",
+        )
+
+    def test_http_stateless_login_memory_query_stays_on_authentication_primer(self) -> None:
+        prompt = "HTTP는 상태 없는데 로그인은 왜 기억해?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        self.assertNotIn("network_and_reliability", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("http stateless login state", expanded)
+        self.assertIn("why login stays", expanded)
+
+    def test_login_memory_shortform_query_stays_on_authentication_primer(self) -> None:
+        prompt = "로그인 왜 기억돼?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("http stateless login state", expanded)
+        self.assertIn("why login stays", expanded)
+
+    def test_http_stateless_login_memory_query_ranks_session_cookie_primer_first(self) -> None:
+        hits = self._search("HTTP는 상태 없는데 로그인은 왜 기억해?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            "contents/network/http-state-session-cache.md",
+        )
+
+    def test_beginner_cookie_only_query_stays_on_authentication_primer(self) -> None:
+        prompt = "쿠키가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("cookie session jwt browser flow", expanded)
+        self.assertIn("http stateless login state", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_beginner_jwt_only_query_stays_on_jwt_primer(self) -> None:
+        prompt = "JWT가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        self.assertNotIn("security_token_validation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("http stateless login state", expanded)
+        self.assertIn("token based authentication", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_korean_jwt_role_shortform_stays_on_jwt_primer(self) -> None:
+        prompt = "JWT는 뭐 하는 거야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        self.assertNotIn("security_token_validation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("token based authentication", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_english_jwt_meaning_query_stays_on_jwt_primer(self) -> None:
+        prompt = "What does JWT mean?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "security_authentication",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("security_authentication", tags)
+        self.assertNotIn("security_token_validation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("session cookie jwt basics", expanded)
+        self.assertIn("session vs jwt", expanded)
+        self.assertIn("token based authentication", expanded)
+        self.assertNotIn("signature verification", expanded)
+
+    def test_english_jwt_meaning_query_ranks_primer_ahead_of_foundations(self) -> None:
+        hits = self._search("What does JWT mean?")
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/security/session-cookie-jwt-basics.md",
+            "contents/security/authentication-authorization-session-foundations.md",
+        )
 
     def test_fixture_jwt_basics_prompt_adds_session_cookie_primer_vocabulary(self) -> None:
         prompt = "JWT 토큰이 뭐고 세션 쿠키로 로그인 상태를 유지하는 거랑 뭐가 달라?"

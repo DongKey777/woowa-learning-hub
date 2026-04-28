@@ -1,0 +1,156 @@
+# HashMap, TreeMap, LinkedHashMap Beginner Selection Primer
+
+> 한 줄 요약: `Map`을 처음 고를 때는 "순서가 필요 없는가, 넣은 순서가 필요한가, 정렬과 범위 탐색이 필요한가" 세 갈래로 먼저 자르면 대부분의 첫 선택 실수를 줄일 수 있다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [자료구조 카테고리 인덱스](./README.md)
+- [Map order symptom router card](./map-order-symptom-router-card.md)
+- [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+- [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
+- [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
+- [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
+- [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
+
+retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection primer, which map should i use, java map choice basics, hashmap vs treemap vs linkedhashmap intro, map order beginner, map range query beginner, map insertion order beginner, ordered map basics, 트리맵 해시맵 링크드해시맵 차이, map 뭐 써야 해, map 처음 고르기, map 입문, beginner map primer
+
+## 핵심 개념
+
+세 구현체 모두 `key -> value`를 저장하는 `Map`이지만, 먼저 지키는 약속이 다르다.
+
+- `HashMap`: 순서 약속 없이 key로 빨리 찾는 기본 map
+- `LinkedHashMap`: 넣은 순서를 기억하는 map
+- `TreeMap`: key를 정렬된 상태로 보관하며 앞뒤 이웃과 범위를 찾는 map
+
+입문자에게 가장 쉬운 질문은 이것이다.
+
+> "나는 그냥 찾기만 하면 되나, 순서를 보여 줘야 하나, 정렬된 탐색까지 해야 하나?"
+
+이 질문 하나로 첫 분기를 잡으면 내부 구현 세부를 몰라도 방향을 정할 수 있다.
+만약 지금 막힌 문장이 선택보다 더 직접적으로 `왜 출력 순서가 바뀌지?`에 가깝다면, 이 문서보다 먼저 [Map order symptom router card](./map-order-symptom-router-card.md)에서 `HashMap`/`LinkedHashMap`/`TreeMap`의 순서 규칙을 10초 안에 자르는 편이 더 빠르다.
+반대로 `왜 lower랑 floor가 달라요?`, `exact match 포함 여부가 헷갈려요`처럼 이미 ordered map 이웃 조회 이름까지 나온 상태라면, 구현체 선택보다 먼저 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)에서 strict/inclusive 감각을 고정하는 편이 빠르다.
+아직 `map`과 `set` 자체가 헷갈리면 이 문서보다 먼저 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)에서
+`key -> value`와 `membership only`를 자르고 오는 편이 안전하다.
+
+## 한눈에 보기
+
+| 지금 필요한 것 | 첫 선택 | 왜 이 구현체인가 |
+|---|---|---|
+| 회원 id로 값만 빨리 찾기 | `HashMap` | 순서 계약이 없고 일반 조회에 가장 무난하다 |
+| 사용자가 담은 순서 그대로 보여 주기 | `LinkedHashMap` | 삽입 순서를 유지한다 |
+| 가장 가까운 다음 시간 찾기 | `TreeMap` | `ceilingKey()` 같은 이웃 탐색이 가능하다 |
+| `10:00~11:00` 범위 전체 보기 | `TreeMap` | `subMap()` 같은 범위 view가 자연스럽다 |
+
+이 표를 `Set`까지 같이 붙여서 보면 beginner가 더 덜 헷갈린다.
+
+| 질문이 여기서 끝나는가 | 첫 구조 | 다음 문서 |
+|---|---|---|
+| `이 값이 있나?` | `Set` 계열 | [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md) |
+| `이 key의 값이 뭐지?` | `Map` 계열 | 이 문서 |
+| `먼저 들어온 작업부터 처리하나?` | queue 계열 | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
+
+짧게 외우면 이렇게 된다.
+
+- 순서 필요 없음 -> `HashMap`
+- 넣은 순서 필요 -> `LinkedHashMap`
+- 정렬, 앞뒤 이웃, 범위 필요 -> `TreeMap`
+
+같은 데이터를 세 구현체에 어떻게 읽는지만 비교해도 감각이 빨리 잡힌다.
+
+| 같은 주문 데이터 | `HashMap`에서 먼저 보는 것 | `LinkedHashMap`에서 먼저 보는 것 | `TreeMap`에서 먼저 보는 것 |
+|---|---|---|---|
+| `A102 -> 결제완료`, `A101 -> 배송준비`, `A103 -> 배송완료` | `A102`를 바로 찾는 lookup | 입력 순서 `A102, A101, A103` 유지 | key 순서 `A101, A102, A103` 정렬 |
+
+즉 이 문서의 첫 판단은 "어느 key가 먼저 보이느냐"가 아니라 "lookup, insertion order, sorted neighbor/range 중 무엇이 요구사항인가"다.
+
+초반 판단을 더 빨리 하려면 문장을 이렇게 번역하면 된다.
+
+| 문제 문장 | 실제 신호 | 첫 선택 |
+|---|---|---|
+| `그냥 키로 찾기` | 순서 계약이 없다 | `HashMap` |
+| `입력한 순서 그대로 보여 주기` | 삽입 순서가 기능 요구다 | `LinkedHashMap` |
+| `다음 값`, `이전 값`, `범위 전체` | 정렬된 이웃/범위 탐색이 필요하다 | `TreeMap` |
+| `정렬된 출력 한 번만 필요` | 저장 중 정렬이 아니라 마지막 표시만 정렬하면 된다 | 보통 `HashMap` + 마지막 정렬 |
+
+## 상세 분해
+
+### 1. `HashMap`은 기본값이다
+
+문제 문장이 "코드로 값 찾기", "id로 객체 조회", "설정값 lookup"에 가깝다면 보통 `HashMap`부터 시작한다.
+
+- key로 정확히 찾는 일이 중심이다
+- 출력 순서가 비즈니스 규칙이 아니다
+- 정렬된 탐색 API가 필요 없다
+
+즉 "특별한 순서 요구가 없다"는 사실이 `HashMap` 선택 신호다.
+
+### 2. `LinkedHashMap`은 정렬 map이 아니라 순서 map이다
+
+`LinkedHashMap`은 key를 정렬하지 않는다. 대신 순서를 기억한다.
+
+- 기본값: 넣은 순서 유지
+
+그래서 "관리자 화면에서 등록한 순서대로 보여 줘야 한다", "사용자가 담은 순서를 그대로 응답해야 한다" 같은 문장에 잘 맞는다.
+
+### 3. `TreeMap`은 정렬보다 탐색 방식이 핵심이다
+
+초보자는 `TreeMap`을 "오름차순 map"으로만 기억하기 쉽다. 하지만 더 중요한 이유는 아래 API다.
+
+- `firstKey()`, `lastKey()`
+- `floorKey()`, `ceilingKey()`
+- `subMap()`, `headMap()`, `tailMap()`
+
+즉 `TreeMap`은 단순 출력 정렬보다 "기준값 바로 앞/뒤를 찾기", "구간 안의 데이터만 보기"에 강하다.
+
+## 흔한 오해와 함정
+
+- "`HashMap`도 지금 실행하면 순서가 비슷해 보이는데요?"
+  우연한 결과일 수 있다. 순서를 계약처럼 기대하면 안 된다.
+- "`LinkedHashMap`이면 자동 정렬되나요?"
+  아니다. 정렬이 아니라 삽입 순서 또는 접근 순서다.
+- "`TreeMap`은 값(value) 기준으로 정렬되나요?"
+  아니다. 기본은 key 기준 정렬이다.
+- "`TreeMap`은 `Set`의 정렬 버전과 같은 감각으로 봐도 되나요?"
+  어느 정도는 그렇다. `TreeSet`이 값 하나를 정렬된 상태로 보관하듯, `TreeMap`은 key를 정렬된 상태로 보관한다.
+- "정렬된 출력이 필요하면 무조건 `TreeMap`인가요?"
+  한 번 출력만 정렬하면 되는 경우는 `HashMap`에 담고 마지막에 따로 정렬해도 된다. 반대로 조회 도중 계속 앞뒤 이웃을 찾아야 하면 `TreeMap`이 더 직접적이다.
+- "`TreeMap`은 빠른 조회용 기본 map인가요?"
+  아니다. 일반 단건 lookup만 보면 보통 `HashMap`이 더 단순하다.
+- "정렬이 필요해 보이면 바로 `TreeMap`인가요?"
+  화면 마지막에 한 번만 정렬해서 보여 주는지, 매 조회마다 `floor/ceiling/subMap`이 필요한지부터 구분해야 한다. 전자는 `HashMap`으로도 충분한 경우가 많다.
+- "`LinkedHashMap`이면 최근에 조회한 순서로 자동 정리되나요?"
+  기본값은 아니다. 기본은 `삽입 순서`이고, `access-order`를 명시적으로 켠 경우에만 최근 접근 순서가 된다.
+- "`visited map`을 쓰면 map 문제로 봐야 하나요?"
+  아니다. BFS/DFS 안에서 `visited set/map`은 탐색 보조 도구로 자주 쓴다. 핵심 질문이 `가까운 순서로 퍼지나`, `연결을 다 보나`라면 출발점은 여전히 알고리즘 쪽이다.
+
+## 실무에서 쓰는 모습
+
+회원 id로 회원 정보를 찾는 캐시나 사전은 보통 `HashMap`으로 시작한다. 요구사항이 "id를 주면 값이 나온다"에 가깝기 때문이다.
+
+북마크, 관리자 수동 등록 목록처럼 "입력한 순서가 의미"인 화면은 `LinkedHashMap`이 잘 맞는다.
+
+예약 시간표, 점수 구간, 마감 시간처럼 "다음 값", "이전 값", "이 구간 안의 값들"이 자주 나오면 `TreeMap`이 자연스럽다. 예를 들어 `10:05` 이후 첫 예약을 찾는 요구는 `ceilingKey(10:05)`처럼 바로 읽히지만, `HashMap`으로 시작하면 결국 key를 다시 정렬하거나 범위 필터를 반복하게 된다.
+
+## 더 깊이 가려면
+
+- 내부 구조와 복잡도 비교를 더 자세히 보려면 [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
+- `TreeMap`의 예약/캘린더 예제를 바로 보고 싶다면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- Java 컬렉션 관점에서 반복 순서 차이를 짧게 복습하려면 [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- `floor/ceiling/lower/higher` 이름이 자꾸 헷갈리면 [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
+- `LinkedHashMap`의 삽입 순서와 access-order 차이만 먼저 짧게 잡고 싶다면 [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
+- access-order를 tiny LRU 예제로 이어 보고 싶다면 [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
+- set에서 같은 분기를 다시 보고 싶다면 [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md)
+
+## 다음 단계
+
+- `Map`과 `heap`을 자꾸 섞는다면 [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
+- `TreeMap`으로 `floor/ceiling/subMap`을 실제 예약 예제에 붙여 보고 싶다면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- 구현체 차이를 복잡도까지 포함해 다시 보고 싶다면 [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
+
+## 한 줄 정리
+
+처음 `Map`을 고를 때는 `HashMap`을 기본값으로 두고, 순서를 보여 줘야 하면 `LinkedHashMap`, 앞뒤 이웃과 범위를 찾아야 하면 `TreeMap`으로 분기하면 된다.

@@ -23,6 +23,7 @@
 > - [OAuth2 기초](./oauth2-basics.md)
 > - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
 > - [Security README 기본 primer 묶음](./README.md#기본-primer)
+> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
 retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, login logout permission check primer, browser api auth flow primer, browser api session flow, browser page auth flow, spa bff auth basics, api bearer token basics, session cookie jwt bff boundary, login state boundary primer, 인증 인가 세션 기초, 로그인 로그아웃 권한검사 기초, 브라우저 api 인증 흐름, 브라우저 bff 경계 입문
 
@@ -34,6 +35,7 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 - `401`, `403`, concealment `404`를 응답 코드로 연결하고 싶으면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)를 바로 보면 된다.
 - role, scope, ownership이 같은 "권한"처럼 들리면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)로 이어 가는 편이 안전하다.
 - social login, external IdP, authorization code, callback이 섞이면 [OAuth2 기초](./oauth2-basics.md)와 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md) 순으로 이어 가면 된다.
+- browser login loop나 callback 뒤 anonymous처럼 session 쪽 증상이 보이면 같은 split vocabulary로 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다. `SavedRequest`면 `redirect / navigation memory`, request `Cookie` header가 비면 `cookie-missing`, cookie는 실렸는데도 익명이면 `server-anonymous`다.
 
 ---
 
@@ -88,7 +90,7 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 |---|---|---|---|
 | 로그인 전/로그아웃 후 API가 거절됨 | 인증 복원(authn) | credential/session이 아예 없거나 만료됐는지 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
 | 로그인은 됐는데 특정 기능만 계속 막힘 | 인가(authz) | principal은 복원됐고 role/scope/ownership 중 무엇이 deny인지 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
-| 브라우저에서만 `/login`으로 튀거나 loop | 세션 전달/redirect 경계 | 다음 요청의 `Cookie` header가 실제로 실렸는지 | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md), [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md) |
+| 브라우저에서만 `/login`으로 튀거나 loop | 세션 전달/redirect 경계 | 다음 요청의 `Cookie` header가 실제로 실렸는지 | 먼저 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)에서 `redirect / navigation memory`, `cookie-missing`, `server-anonymous` 중 같은 증상 이름을 고른다. 그다음 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md), [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 내려간다 |
 | 토큰은 valid한데 운영에서 권한 반영이 늦음 | freshness/전파 | claim/session/cache가 최신 grant를 봤는지 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) -> [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md) |
 
 이 표의 목적은 "토큰 종류를 더 외우는 것"이 아니라 "디버깅 시작점을 틀리지 않는 것"이다.

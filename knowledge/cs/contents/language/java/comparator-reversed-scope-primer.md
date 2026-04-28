@@ -21,7 +21,7 @@ retrieval-anchor-keywords: comparator reversed scope primer basics, comparator r
 > - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 > - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 
-> retrieval-anchor-keywords: comparator reversed scope primer, java comparator reversed scope, java reversed whole chain comparator, java whole chain reversed comparator, java single field reversed comparator, java comparator reversed placement beginner, java reversed thenComparing scope, java a reversed thenComparing b, java a thenComparing b reversed, whole chain vs single field reversed, java grade desc name asc comparator, java grade desc name desc comparator, java tie breaker descending comparator, java comparator mixed direction beginner, java reversed comparator chain beginner, java comparator reversed small example, java beginner comparator reversed confusion
+> retrieval-anchor-keywords: comparator reversed scope primer, java comparator reversed scope, java reversed whole chain comparator, java whole chain reversed comparator, java single field reversed comparator, java comparator reversed placement beginner, java reversed thenComparing scope, java a reversed thenComparing b, java a thenComparing b reversed, whole chain vs single field reversed, java grade desc name asc comparator, java grade desc name desc comparator, java tie breaker descending comparator, java comparator mixed direction beginner, java reversed comparator chain beginner, java comparator reversed small example, java beginner comparator reversed confusion, java treeset reversed comparator distinctness, java treeset reversed comparator compare zero
 
 <details>
 <summary>Table of Contents</summary>
@@ -30,6 +30,7 @@ retrieval-anchor-keywords: comparator reversed scope primer basics, comparator r
 - [먼저 잡을 mental model](#먼저-잡을-mental-model)
 - [한 장 비교 표](#한-장-비교-표)
 - [작은 예제로 whole-chain vs single-field 보기](#작은-예제로-whole-chain-vs-single-field-보기)
+- [`TreeSet`에서는 distinctness도 바뀔까](#treeset에서는-distinctness도-바뀔까)
 - [tie-breaker도 내림차순으로 만들고 싶을 때](#tie-breaker도-내림차순으로-만들고-싶을-때)
 - [초보자가 자주 헷갈리는 지점](#초보자가-자주-헷갈리는-지점)
 - [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
@@ -130,6 +131,56 @@ Comparator<Student> wholeChainReversed =
 - 맨 끝에 도달했을 때는 이미 `grade -> name` 체인이 완성돼 있다
 - 그래서 `reversed()`가 그 체인 전체를 뒤집는다
 - 즉 "학년 내림차순, 같은 학년이면 이름 내림차순"이 된다
+
+## `TreeSet`에서는 distinctness도 바뀔까
+
+여기서 초보자가 한 번 더 헷갈리는 지점이 있다.
+
+> `a.reversed().thenComparing(b)`와 `a.thenComparing(b).reversed()`는 순서는 바꾸지만, `TreeSet`의 중복 판정 자체는 보통 바꾸지 않는다.
+
+```java
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
+record Student(long id, String name, int grade) {}
+
+Comparator<Student> gradeDescNameAsc =
+        Comparator.comparingInt(Student::grade)
+                .reversed()
+                .thenComparing(Student::name);
+
+Comparator<Student> wholeChainReversed =
+        Comparator.comparingInt(Student::grade)
+                .thenComparing(Student::name)
+                .reversed();
+
+Student mina = new Student(1L, "Mina", 2);
+Student bora = new Student(2L, "Bora", 2);
+Student ari = new Student(3L, "Ari", 1);
+
+Set<Student> left = new TreeSet<>(gradeDescNameAsc);
+Set<Student> right = new TreeSet<>(wholeChainReversed);
+
+left.add(mina);
+left.add(bora);
+left.add(ari);
+
+right.add(mina);
+right.add(bora);
+right.add(ari);
+
+System.out.println(left.size());  // 3
+System.out.println(right.size()); // 3
+```
+
+왜 둘 다 `3`일까?
+
+- 두 comparator 모두 "학년이 같고 이름도 같을 때만" `compare(...) == 0`이 된다.
+- `reversed()`는 비교 방향만 뒤집지, `0`을 다른 값으로 바꾸지 않는다.
+- 그래서 `TreeSet` 기준 distinctness는 그대로고, 화면에 보이는 순서만 달라진다.
+
+즉 `TreeSet` 크기까지 바꾸고 싶다면 `reversed()` 위치를 바꾸는 것이 아니라, `thenComparing(...)`으로 어떤 필드까지 구분할지를 바꿔야 한다.
 
 ## tie-breaker도 내림차순으로 만들고 싶을 때
 

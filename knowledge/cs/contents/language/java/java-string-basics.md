@@ -1,31 +1,37 @@
 # Java String 기초
 
-> 한 줄 요약: String은 불변 객체이므로 `+` 연산마다 새 객체를 만들고, 내용 비교에는 `equals()`를 써야 하며, 반복적인 문자열 조합에는 `StringBuilder`가 훨씬 효율적이다.
+> 한 줄 요약: String은 불변 객체라서 값이 같아 보여도 `==`는 객체 비교가 되고, 문자열 내용 비교는 `equals()`로 해야 하며, 반복 연결에는 `StringBuilder`가 기본 선택이다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
 - [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
+- [Hash Table Basics](../data-structure/hash-table-basics.md)
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: java string basics, string 불변성 입문, string equals beginner, string vs stringbuilder, 문자열 비교 방법, java string 입문, string 왜 equals 써야 하나요, string pool beginner, 자바 문자열 기초, string concatenation beginner, stringbuilder 언제 써야 하나, string immutable beginner, java string basics basics, java string basics beginner, java string basics intro
+retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, string equals beginner, 문자열 비교 방법, 문자열 비교 == equals 차이, 자바 문자열 비교 equals, string 왜 equals 써야 하나요, string == 왜 false, string 같은데 == false, string compare what is, string basics intro, 자바 문자열 기초, string immutable beginner, stringbuilder 언제 써야 하나
 
 ## 핵심 개념
 
 Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(immutable)** 객체다. `str = str + "world"` 처럼 보여도 원래 문자열이 바뀌는 게 아니라 새 `String` 객체가 생기고 참조가 교체된다.
 
-입문자가 가장 자주 저지르는 실수 두 가지가 있다. 첫째, `==`로 문자열 내용을 비교하는 것. 둘째, 반복문 안에서 `+`로 문자열을 이어 붙이는 것. 두 실수 모두 결과가 잘못되거나 성능이 나빠진다.
+입문자가 가장 자주 저지르는 실수 두 가지가 있다. 첫째, `"왜 문자열이 같은데 `==`는 false지?"` 상태에서 문자열 내용을 `==`로 비교하는 것. 둘째, 반복문 안에서 `+`로 문자열을 이어 붙이는 것. 첫 번째는 결과가 틀리고, 두 번째는 성능이 나빠진다.
 
 ## 한눈에 보기
 
-- `java string basics`의 첫 기준은 정의, 사용 시점, 흔한 오해를 분리해서 읽는 것이다.
-- 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
-- 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
+| 지금 묻는 질문 | 먼저 쓸 도구 | 이유 |
+|---|---|---|
+| 문자열 내용이 같은가 | `equals()` | `String`은 참조형이라 내용 비교를 `==`가 보장하지 않는다 |
+| 정말 같은 `String` 객체인가 | `==` | identity 질문일 때만 맞는 도구다 |
+| 대소문자 무시하고 같은가 | `equalsIgnoreCase()` | `"abc"`와 `"ABC"`를 같은 입력으로 볼 때 쓴다 |
+| 문자열을 반복해서 이어 붙이는가 | `StringBuilder` | `+`는 반복문에서 새 `String`을 계속 만든다 |
+
+입문 단계에서는 `"같은 문자열인가"`와 `"같은 객체인가"`를 먼저 분리하면 대부분의 첫 비교 버그를 바로 자를 수 있다.
 
 ## 코드로 보는 예시
 
@@ -47,6 +53,12 @@ for (int i = 0; i < 1000; i++) sb.append(i); // 객체 1개 재사용
 String result = sb.toString();
 ```
 
+위 예시에서 초보자가 먼저 가져갈 한 줄은 이것이다.
+
+- `a == c`가 `false`여도 `"hello"`라는 **내용**은 같다.
+- `a == b`가 우연히 `true`여도, 문자열 비교를 `==`로 해도 된다는 뜻은 아니다.
+- 문자열 비교 버그를 줄이는 기본값은 항상 `equals()`다.
+
 ## 상세 분해
 
 ### String 불변성
@@ -62,6 +74,12 @@ String upper = s.toUpperCase(); // s는 여전히 "hello"
 ### equals()와 ==
 
 `==`는 참조(주소)를 비교한다. `equals()`는 내용을 비교한다. 문자열 내용이 같은지 확인할 때는 항상 `equals()`를 써야 한다.
+
+이 문장을 더 실전적으로 바꾸면 아래처럼 기억하면 된다.
+
+- `"문자열이 같은가?"`를 묻는다 -> `equals()`
+- `"정말 같은 객체를 같이 보고 있나?"`를 묻는다 -> `==`
+- `==`가 가끔 `true`라고 해서 문자열 비교 기본값이 바뀌는 것은 아니다
 
 ```java
 String a = new String("hi");
@@ -86,6 +104,9 @@ String result = sb.toString(); // "Hello, World"
 
 ## 흔한 오해와 함정
 
+**오해 0: 문자열 비교는 `==`로 해도 가끔 되니까 써도 된다**
+리터럴은 String Pool 덕분에 `==`가 `true`로 보일 수 있다. 하지만 `new String(...)`, 외부 입력, 메서드 반환값이 섞이면 바로 깨진다. 문자열 내용 비교의 기본값은 `equals()`다.
+
 **오해 1: `String`은 기본 타입(primitive)이다**
 아니다. `String`은 클래스다. 다만 리터럴 문법(`"hello"`)으로 편하게 만들 수 있어 기본 타입처럼 보인다.
 
@@ -97,7 +118,7 @@ String result = sb.toString(); // "Hello, World"
 
 ## 실무에서 쓰는 모습
 
-1. 사용자 입력을 받아서 비교할 때: `input.equals("admin")` (대소문자 무시는 `equalsIgnoreCase`)
+1. 사용자 입력을 받아서 비교할 때: `"admin".equals(input)` 또는 `Objects.equals(input, "admin")`
 2. 여러 필드를 붙여 메시지 생성: `StringBuilder`로 반복 `append`
 3. `null` 안전 비교: `Objects.equals(name, "Alice")`
 4. 문자열에서 부분 추출: `str.substring(0, 3)`, `str.contains("key")`
@@ -105,9 +126,10 @@ String result = sb.toString(); // "Hello, World"
 ## 더 깊이 가려면
 
 - String Pool 내부와 `intern()` 함정: [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
-- `==` vs `equals()` 깊이 있는 설명: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- `==` vs `equals()`를 문자열 밖의 객체 비교까지 넓혀 보고 싶다면: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - direct equality와 case-insensitive ordering을 분리해서 보고 싶다면 [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
 - nullable `String` 정렬에서 `nullsLast`와 case-insensitive comparator를 함께 읽고 싶다면 [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
+- `"문자열도 결국 hash 기반 컬렉션에서 어떻게 비교되나?"`가 궁금하면: [Hash Table Basics](../data-structure/hash-table-basics.md)
 
 ## 면접/시니어 질문 미리보기
 
@@ -122,4 +144,4 @@ String result = sb.toString(); // "Hello, World"
 
 ## 한 줄 정리
 
-String은 불변이므로 내용 비교는 `equals()`, 반복 연결은 `StringBuilder`를 쓰는 것이 기본 원칙이다.
+String은 불변 객체이므로 `"문자열이 같은가?"`는 `equals()`, `"같은 객체인가?"`는 `==`, 반복 연결은 `StringBuilder`로 읽는 것이 기본 원칙이다.

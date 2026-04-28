@@ -10,21 +10,17 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [기본 자료 구조](./basic.md)
+- [자료구조 정리](./README.md)
+- [응용 자료 구조 개요](./applied-data-structures-overview.md#deque-덱)
+- [Deque Router Example Pack](./deque-router-example-pack.md)
+- [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
+- [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
+- [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
+- [Heap Variants](./heap-variants.md)
+- [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
 
-
-retrieval-anchor-keywords: queue vs deque vs priority queue primer basics, queue vs deque vs priority queue primer beginner, queue vs deque vs priority queue primer intro, data structure basics, beginner data structure, 처음 배우는데 queue vs deque vs priority queue primer, queue vs deque vs priority queue primer 입문, queue vs deque vs priority queue primer 기초, what is queue vs deque vs priority queue primer, how to queue vs deque vs priority queue primer
-> 관련 문서:
-> - [기본 자료 구조](./basic.md)
-> - [자료구조 정리](./README.md)
-> - [응용 자료 구조 개요](./applied-data-structures-overview.md#deque-덱)
-> - [Deque Router Example Pack](./deque-router-example-pack.md)
-> - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
-> - [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md)
-> - [Monotonic Queue and Stack](./monotonic-queue-and-stack.md)
-> - [Heap Variants](./heap-variants.md)
-> - [희소 그래프 최단 경로](../algorithm/sparse-graph-shortest-paths.md)
->
-> retrieval-anchor-keywords: queue vs deque vs priority queue, fifo queue, deque basics, double ended queue, deque vs queue, priority queue basics, priority queue vs queue, heap vs queue, queue interview, deque interview, priority queue interview, bfs queue, topological sort queue, sliding window deque, monotonic deque, plain deque, plain deque simulation, deque router, deque example pack, deque problem pattern, monotonic deque vs 0-1 bfs, zero one bfs deque, 0-1 bfs deque, dijkstra priority queue, meeting rooms heap, top k heap, duplicate priority poll, priority queue stable order misconception, priority queue tie breaker, priority queue stable checklist, stable need tie breaker, same priority fifo misconception, same priority insertion order, priority queue duplicate stable test, natural language to operations, prompt bridge, operation translation example, pollFirst pollLast trace, deque pollfirst polllast example, queue vs deque poll trace, 큐 덱 우선순위 큐 차이, fifo 큐, 덱 입문, 양방향 큐, 큐와 덱 차이, 우선순위 큐 입문, 큐와 힙 차이, bfs 큐, 위상정렬 큐, 슬라이딩 윈도우 덱, 일반 덱, 단조 덱, 0-1 bfs 덱, 다익스트라 우선순위 큐, 회의실 최소 힙, top k 힙, 동일 우선순위 poll, 같은 priority fifo, 같은 우선순위 fifo 오해, 우선순위 큐 안정 순서 오해, 우선순위 큐 tie breaker, stable 필요 tie breaker 체크리스트, 우선순위 큐 동점 체크, 동일 우선순위 삽입 순서, 자연어 연산 번역, 프롬프트 브리지, pollFirst pollLast 차이, 덱 pollFirst pollLast 예시
+retrieval-anchor-keywords: queue vs deque vs priority queue, fifo queue, deque basics, priority queue basics, bfs queue, sliding window deque, 0-1 bfs deque, dijkstra priority queue, priority queue tie breaker, same priority fifo misconception, queue vs deque poll trace, 큐 덱 우선순위 큐 차이
 
 ## 핵심 질문
 
@@ -66,6 +62,27 @@ retrieval-anchor-keywords: queue vs deque vs priority queue primer basics, queue
 
 이 표만 바로 떠올라도 FIFO queue와 priority queue를 많이 덜 섞는다.
 
+## 초급 혼동 한 줄 분기
+
+아래 세 문장은 비슷해 보여도 첫 구조가 다르다.
+
+| 문장 | 첫 선택 | 한 줄 이유 |
+|---|---|---|
+| `먼저 도착한 요청부터 처리` | Queue | arrival order가 규칙이다 |
+| `미로에서 가까운 칸부터 탐색` | Queue를 쓰는 BFS | queue는 도구이고 핵심은 level-order 탐색이다 |
+| `가장 급한 작업부터 처리` | Priority Queue | 도착 순서보다 priority가 먼저다 |
+| `앞에서도 빼고 뒤에서도 뺀다` | Deque | 양쪽 끝 제어가 핵심이다 |
+
+`queue/deque`와 `map/set`을 같은 층위로 섞어 읽으면 초반에 더 헷갈릴 수 있다.
+
+| 지금 제일 먼저 묻는 것 | 먼저 볼 구조 | 다음 문서 |
+|---|---|---|
+| `누가 먼저 나가나?` | queue/deque/priority queue | 이 문서 |
+| `이 값이 있나?` | set | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) |
+| `이 key의 값이 뭐지?` | map | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
+
+이 미니 표를 먼저 떠올리면 `queue`라는 단어 하나만 보고 BFS와 일반 작업 큐를 섞는 실수를 줄이기 쉽다.
+
 ## 초급 미니 trace: queue vs deque
 
 같은 입력 3개라도 `queue`는 꺼내는 쪽이 고정이고, `deque`는 꺼내는 쪽을 내가 고른다는 점이 첫 분기다.
@@ -83,6 +100,14 @@ retrieval-anchor-keywords: queue vs deque vs priority queue primer basics, queue
 - `Queue poll()`과 `Deque pollFirst()`는 초반 체감이 거의 같다.
 - `Deque`를 고르는 순간 핵심은 "뒤에서도 꺼낼 일이 있는가?"다.
 - 뒤에서 꺼낼 일이 전혀 없으면 `queue`로 먼저 생각하는 편이 단순하다.
+
+그래서 Java에서 아래 코드가 보여도 바로 "덱 문제"라고 단정하면 안 된다.
+
+```java
+Queue<Integer> queue = new ArrayDeque<>();
+```
+
+이 코드는 구현체로 `ArrayDeque`를 썼을 뿐, 사용 규칙은 여전히 FIFO queue일 수 있다.
 
 ## 빠른 비교표
 
@@ -110,6 +135,7 @@ retrieval-anchor-keywords: queue vs deque vs priority queue primer basics, queue
 - Priority Queue는 priority가 작은 것을 먼저 꺼낸다.
 - 같은 priority(`B`, `C`)끼리의 순서는 보장되지 않을 수 있다.
 - 같은 priority에서도 도착 순서(stable)가 필요하면 `(priority, sequence)` tie-breaker를 함께 넣는다. 자세한 예시는 [Java PriorityQueue Pitfalls](./java-priorityqueue-pitfalls.md) 참고.
+- 반대로 `"같은 순위라도 뒤에서 취소하거나 앞에서 꺼내야 한다"`면 priority보다 deque 패턴을 먼저 의심하는 편이 맞다.
 
 ## 같은 deque라도 세 패턴이 있다
 

@@ -98,7 +98,7 @@ CS_DOMAIN_TOKENS = frozenset([
 # === 4. Learning concept tokens (Spring/JPA + Java basics + DS — woowa context) ===
 LEARNING_CONCEPT_TOKENS = frozenset([
     # Spring core/web
-    "spring", "bean", "di", "ioc", "autowired", "component", "applicationcontext",
+    "spring", "bean", "di", "ioc", "aop", "autowired", "component", "applicationcontext",
     "controller", "service", "repository", "restcontroller", "dispatcherservlet",
     "filter", "interceptor",
     # DI 방식별 phrase — 학습자가 자주 쓰는 표현 (multi-word라 false positive 거의 없음)
@@ -107,7 +107,7 @@ LEARNING_CONCEPT_TOKENS = frozenset([
     # Spring concept 한글 phrase — 영문 토큰만 있어 한글로 물으면 도메인 매치 실패
     "컴포넌트 스캔", "컴포넌트스캔", "의존성 주입", "어노테이션",
     # Spring core annotations / proxy (학습 세션 중 자주 등장하는 표현)
-    "configuration", "@configuration", "@bean", "프록시",
+    "configuration", "@configuration", "@bean", "프록시", "횡단 관심사",
     "rest controller", "@restcontroller",
     # Persistence
     "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",

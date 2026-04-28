@@ -131,6 +131,12 @@ runbook 첫 페이지는 긴 설명보다 확인 순서가 중요하다.
 이 증거가 없다면 runbook은 "복구 절차"가 아니라 추측 순서가 된다.
 특히 결제, 정산, 알림, 외부 API write처럼 부작용이 큰 batch에서는 확인 항목 없이 rerun 버튼부터 누르면 안 된다.
 
+재시도 횟수 표기도 runbook에서 먼저 통일해 두는 편이 안전하다.
+
+- 이 문서에서는 **`총 N회 시도 = 첫 시도 1회 + 재시도 N-1회`**로 읽는다.
+- 그래서 operator 메모에 `재시도 2회 남음`이라고 적을지, `총 3회 중 1회 사용`이라고 적을지 하나로 정해야 한다.
+- `attemptCount=3` 같은 운영 지표를 보여 줄 때는 `현재까지 총 3회 시도`처럼 첫 시도 포함 여부를 같이 적는다.
+
 ## stop condition은 실패를 키우지 않는 안전장치다
 
 stop condition은 "실패하면 멈춘다"라는 막연한 문장이 아니다.
@@ -214,6 +220,7 @@ rerun 뒤에 무엇을 확인할지도 runbook에 있어야 한다.
 | 실패하면 다시 실행한다 | `snapshotTime`이 같고 `latestCheckpoint`가 있으면 chunk 3부터 resume한다 |
 | 계속 실패하면 담당자에게 문의한다 | receipt 조회 실패나 duplicate 의심이 있으면 scheduler를 pause하고 owner에게 escalate한다 |
 | timeout은 재시도한다 | `partner-timeout`만 retry queue로 보내고 validation 오류는 manual review로 남긴다 |
+| 3번까지 재시도한다 | `총 3회 시도(첫 시도 1회 + 재시도 2회)` 후 stop condition을 다시 본다 |
 
 ## 짧은 예시: 상품 동기화 batch
 

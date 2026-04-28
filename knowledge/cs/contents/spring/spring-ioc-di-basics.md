@@ -1,19 +1,21 @@
 # IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가
 
-> 한 줄 요약: IoC는 객체 생성과 조립의 제어권을 개발자에서 컨테이너로 넘기는 원칙이고, DI는 그 구현 방법으로 컨테이너가 필요한 의존 객체를 직접 주입해 준다.
+> 한 줄 요약: IoC는 객체 생성과 조립의 제어권을 개발자에서 컨테이너로 넘기는 원칙이고, DI는 그 구현 방법으로 컨테이너가 필요한 의존 객체를 주입해 결합도를 낮춘다.
+>
+> 문서 역할: 이 문서는 "IoC/DI가 왜 필요한가"를 먼저 잡는 입문 진입점이다. Bean 등록, component scan, 프록시 세부 동작은 다음 문서로 넘긴다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Spring Bean과 DI 기초](./spring-bean-di-basics.md)
+- [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, ioc container beginner, 의존성 주입이 뭐예요, 생성자 주입 기초, spring 객체 조립 컨테이너, applicationcontext beginner, 테스트하기 좋은 코드 di, 결합도 낮추기 di, spring mvc to ioc di handoff
+retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프링 ioc di 처음 배우는데, spring ioc di beginner primer, ioc 제어 역전 입문, dependency injection 입문, spring di 왜 필요해요, 의존성 주입이 뭐예요, 왜 new 대신 di 를 써요, 결합도 낮추기 di, 테스트하기 좋은 코드 di, 구현체 교체 why di, spring 객체 조립 원리, ioc di what is, beginner spring di why
 
 ## 핵심 개념
 
@@ -43,13 +45,17 @@ DI 있음:
 
 ## 상세 분해
 
-- **IoC 컨테이너**: `ApplicationContext`가 Spring의 IoC 컨테이너다. Bean 등록, 생성, 의존성 조립을 담당한다.
+- **IoC**: "누가 객체를 만들고 연결할지"의 제어권을 애플리케이션 코드가 아니라 컨테이너가 갖는다는 원칙이다.
+- **DI**: 그 제어권 역전을 실제 코드에 반영하는 방식이다. 객체가 필요한 의존성을 직접 만들지 않고 외부에서 받는다.
+- **왜 필요한가**:
+  - 구현체 교체가 쉬워진다
+  - 테스트에서 mock 객체로 바꾸기 쉽다
+  - 서비스가 "무엇이 필요한지"에만 집중할 수 있다
 - **의존성 주입 방식 세 가지**:
   - 생성자 주입: 생성 시점에 의존성이 고정되어 불변 설계가 가능하다. Spring 권장 방식.
   - setter 주입: 선택적 의존성이나 나중에 변경할 가능성이 있을 때.
   - 필드 주입(`@Autowired`를 필드에 직접): 짧고 편하지만 테스트에서 주입이 어렵고 불변성도 없어 학습 예제 외에는 피한다.
 - **인터페이스 기반 설계**: DI의 이점을 최대로 누리려면 구체 클래스 대신 인터페이스에 의존해야 한다. 컨테이너가 구현체를 바꿔 주입할 수 있다.
-- **`ApplicationContext` vs `BeanFactory`**: `BeanFactory`가 기본 컨테이너, `ApplicationContext`는 그 위에 이벤트, 국제화 등 부가 기능을 더한 것이다. 실무에서는 거의 항상 `ApplicationContext`를 쓴다.
 
 ## 흔한 오해와 함정
 
@@ -85,6 +91,11 @@ public class OrderService {
 
 `OrderService`는 `OrderRepository`가 `MemoryOrderRepository`인지 `JpaOrderRepository`인지 알 필요가 없다. 컨테이너가 적절한 구현체를 결정해서 주입한다.
 
+여기서 초반에는 두 가지만 기억하면 된다.
+
+- 이 문서의 질문: "왜 직접 `new`하지 않고 주입받지?"
+- 다음 문서의 질문: "그럼 Spring은 그 객체를 어디서 등록하고 어떻게 찾아오지?"
+
 ## 요청 흐름과 연결해서 이해하기
 
 IoC/DI 문서를 따로 외우지 말고, 아래 한 장으로 붙여 읽으면 덜 헷갈린다.
@@ -100,7 +111,8 @@ HTTP 요청 (예: GET /orders/1)
 
 ## 더 깊이 가려면
 
-- Bean 후보 선택, `@Primary`, `@Qualifier`, `ObjectProvider` 등 주입 전략 세부 내용은 [IoC 컨테이너와 DI](./ioc-di-container.md)와 [Spring Bean과 DI 기초](./spring-bean-di-basics.md)에서 이어서 본다.
+- Bean 등록, component scan, `@Configuration`, 프록시 감각은 [Spring Bean과 DI 기초](./spring-bean-di-basics.md)에서 이어서 본다.
+- Bean 후보 선택, `@Primary`, `@Qualifier`, `BeanDefinition`, 생명주기 같은 컨테이너 내부 동작은 [IoC 컨테이너와 DI](./ioc-di-container.md)에서 이어서 본다.
 - 저장소 레이어에서 DI가 어떻게 쓰이는지는 [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md)를 같이 보면 연결이 명확해진다.
 - HTTP 메서드와 컨트롤러 매핑부터 다시 올라오려면 [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md) -> [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md) -> 이 문서 순서로 본다.
 
@@ -120,4 +132,4 @@ HTTP 요청 (예: GET /orders/1)
 
 ## 한 줄 정리
 
-IoC는 객체 조립 책임을 컨테이너에게 넘기는 원칙이고, DI는 컨테이너가 인터페이스 기반 의존 객체를 주입하는 방법으로 결합도를 낮추고 테스트를 쉽게 만든다.
+IoC는 객체 조립 책임을 컨테이너에게 넘기는 원칙이고, DI는 그 원칙을 코드에 적용해 결합도를 낮추고 테스트를 쉽게 만드는 방법이다.

@@ -9,10 +9,12 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
+- [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- [LinkedHashMap access-order와 캐시 동작 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java map implementation practice, java ordered map choice beginner, hashmap linkedhashmap treemap difference drill, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, map implementation selection mini drill basics, map implementation selection mini drill beginner, map implementation selection mini drill intro, java basics
+retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java map implementation practice, java ordered map choice beginner, hashmap linkedhashmap treemap difference drill, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, map implementation selection mini drill basics, java basics, hashmap vs treemap 언제 써요, tree map 정렬 map beginner
 
 ## 먼저 잡는 멘탈 모델
 
@@ -69,12 +71,15 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 - `HashMap`이 내 환경에서 우연히 일정한 순서로 보여도 그 순서를 계약처럼 믿으면 안 된다.
 - `LinkedHashMap`은 "정렬 map"이 아니다. key를 정렬하지 않고 넣은 순서를 유지한다.
 - `TreeMap`은 value가 아니라 key 기준으로 정렬한다.
+- `TreeMap`에서 같은 key 자리는 `equals()`가 아니라 `compareTo()`/`Comparator` 기준으로 판단될 수 있어서 두 번째 `put`이 덮어쓰기가 될 수 있다.
 - 문장에 "순서대로 보여 준다"가 있으면 `HashMap`보다 `LinkedHashMap` 쪽을 먼저 의심한다.
 - 문장에 "`~순`", "`오름차순`", "`이름순`"이 있으면 `TreeMap` 신호로 읽는다.
 
 ## 다음 읽기
 
 - 구현체별 순서 감각을 예제로 다시 보고 싶다면 [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- "삽입 순서 map인 건 아는데 `accessOrder=true`가 왜 캐시를 바꾸는지"가 막히면 [LinkedHashMap access-order와 캐시 동작 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md)
+- `HashMap`과 `TreeMap`의 조회 기준과 덮어쓰기 차이를 짧게 붙여 보고 싶다면 [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
 - 먼저 `List`/`Set`/`Map` 큰 분류가 헷갈리면 [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
 - `TreeMap` 탐색 API까지 이어서 보려면 [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 

@@ -1304,6 +1304,7 @@ def cmd_orchestrator_run_once(args: argparse.Namespace) -> int:
     payload = orchestrator.run_once(
         low_water_mark=args.low_water_mark,
         wave_size=args.wave_size,
+        fleet_profile=args.profile,
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
@@ -1315,6 +1316,7 @@ def cmd_orchestrator_run_loop(args: argparse.Namespace) -> int:
         interval_seconds=args.interval_seconds,
         low_water_mark=args.low_water_mark,
         wave_size=args.wave_size,
+        fleet_profile=args.profile,
     )
 
 
@@ -1325,6 +1327,7 @@ def cmd_orchestrator_start(args: argparse.Namespace) -> int:
         interval_seconds=args.interval_seconds,
         low_water_mark=args.low_water_mark,
         wave_size=args.wave_size,
+        fleet_profile=args.profile,
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
@@ -1348,6 +1351,7 @@ def cmd_orchestrator_queue(args: argparse.Namespace) -> int:
     payload = orchestrator.list_queue(
         status_filter=args.status,
         lane=args.lane,
+        fleet_profile=args.profile,
         limit=args.limit,
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
@@ -1361,6 +1365,7 @@ def cmd_orchestrator_claim(args: argparse.Namespace) -> int:
         limit=args.limit,
         lease_seconds=args.lease_seconds,
         lanes=args.lane,
+        fleet_profile=args.profile,
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
@@ -1382,6 +1387,7 @@ def cmd_orchestrator_worker_loop(args: argparse.Namespace) -> int:
         worker=args.worker,
         lane=args.lane,
         model=args.model,
+        fleet_profile=args.profile,
         idle_seconds=args.idle_seconds,
         lease_seconds=args.lease_seconds,
         timeout_seconds=args.timeout_seconds,
@@ -1392,28 +1398,34 @@ def cmd_orchestrator_supervisor_loop(args: argparse.Namespace) -> int:
     return run_supervisor_loop(
         cli_script=Path(__file__).resolve(),
         model=args.model,
+        fleet_profile=args.profile,
         interval_seconds=args.interval_seconds,
     )
 
 
 def cmd_orchestrator_fleet_start(args: argparse.Namespace) -> int:
-    payload = start_fleet_background(cli_script=Path(__file__).resolve(), model=args.model)
+    payload = start_fleet_background(
+        cli_script=Path(__file__).resolve(),
+        model=args.model,
+        fleet_profile=args.profile,
+    )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
 
 
-def cmd_orchestrator_fleet_status(_: argparse.Namespace) -> int:
-    print(json.dumps(fleet_status(), ensure_ascii=False, indent=2))
+def cmd_orchestrator_fleet_status(args: argparse.Namespace) -> int:
+    print(json.dumps(fleet_status(args.profile), ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_orchestrator_fleet_stop(args: argparse.Namespace) -> int:
-    print(json.dumps(stop_fleet(force=args.force), ensure_ascii=False, indent=2))
+    print(json.dumps(stop_fleet(force=args.force, fleet_profile=args.profile), ensure_ascii=False, indent=2))
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="woowa-learning-hub")
+    orchestrator_profile_choices = ["quality", "expansion", "expansion60"]
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     bootstrap_parser = subparsers.add_parser("bootstrap")
@@ -1683,18 +1695,21 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrator_run_once_parser = orchestrator_subparsers.add_parser("run-once")
     orchestrator_run_once_parser.add_argument("--low-water-mark", type=int, default=2)
     orchestrator_run_once_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_run_once_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_run_once_parser.set_defaults(func=cmd_orchestrator_run_once)
 
     orchestrator_run_loop_parser = orchestrator_subparsers.add_parser("run-loop")
     orchestrator_run_loop_parser.add_argument("--interval-seconds", type=int, default=45)
     orchestrator_run_loop_parser.add_argument("--low-water-mark", type=int, default=2)
     orchestrator_run_loop_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_run_loop_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_run_loop_parser.set_defaults(func=cmd_orchestrator_run_loop)
 
     orchestrator_start_parser = orchestrator_subparsers.add_parser("start")
     orchestrator_start_parser.add_argument("--interval-seconds", type=int, default=45)
     orchestrator_start_parser.add_argument("--low-water-mark", type=int, default=2)
     orchestrator_start_parser.add_argument("--wave-size", type=int, default=6)
+    orchestrator_start_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_start_parser.set_defaults(func=cmd_orchestrator_start)
 
     orchestrator_stop_parser = orchestrator_subparsers.add_parser("stop")
@@ -1707,6 +1722,7 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrator_queue_parser = orchestrator_subparsers.add_parser("queue")
     orchestrator_queue_parser.add_argument("--status", choices=["pending", "leased", "completed", "blocked"])
     orchestrator_queue_parser.add_argument("--lane")
+    orchestrator_queue_parser.add_argument("--profile", choices=orchestrator_profile_choices)
     orchestrator_queue_parser.add_argument("--limit", type=int)
     orchestrator_queue_parser.set_defaults(func=cmd_orchestrator_queue)
 
@@ -1715,6 +1731,7 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrator_claim_parser.add_argument("--limit", type=int, default=1)
     orchestrator_claim_parser.add_argument("--lease-seconds", type=int, default=1800)
     orchestrator_claim_parser.add_argument("--lane", action="append")
+    orchestrator_claim_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_claim_parser.set_defaults(func=cmd_orchestrator_claim)
 
     orchestrator_complete_parser = orchestrator_subparsers.add_parser("complete")
@@ -1727,6 +1744,7 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrator_worker_loop_parser.add_argument("--worker", required=True)
     orchestrator_worker_loop_parser.add_argument("--lane", required=True)
     orchestrator_worker_loop_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_worker_loop_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_worker_loop_parser.add_argument("--idle-seconds", type=int, default=15)
     orchestrator_worker_loop_parser.add_argument("--lease-seconds", type=int, default=2700)
     orchestrator_worker_loop_parser.add_argument("--timeout-seconds", type=int, default=2700)
@@ -1734,18 +1752,22 @@ def build_parser() -> argparse.ArgumentParser:
 
     orchestrator_supervisor_loop_parser = orchestrator_subparsers.add_parser("supervisor-loop")
     orchestrator_supervisor_loop_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_supervisor_loop_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_supervisor_loop_parser.add_argument("--interval-seconds", type=int, default=20)
     orchestrator_supervisor_loop_parser.set_defaults(func=cmd_orchestrator_supervisor_loop)
 
     orchestrator_fleet_start_parser = orchestrator_subparsers.add_parser("fleet-start")
     orchestrator_fleet_start_parser.add_argument("--model", default="gpt-5.4")
+    orchestrator_fleet_start_parser.add_argument("--profile", choices=orchestrator_profile_choices, default="quality")
     orchestrator_fleet_start_parser.set_defaults(func=cmd_orchestrator_fleet_start)
 
     orchestrator_fleet_status_parser = orchestrator_subparsers.add_parser("fleet-status")
+    orchestrator_fleet_status_parser.add_argument("--profile", choices=orchestrator_profile_choices)
     orchestrator_fleet_status_parser.set_defaults(func=cmd_orchestrator_fleet_status)
 
     orchestrator_fleet_stop_parser = orchestrator_subparsers.add_parser("fleet-stop")
     orchestrator_fleet_stop_parser.add_argument("--force", action="store_true")
+    orchestrator_fleet_stop_parser.add_argument("--profile", choices=orchestrator_profile_choices)
     orchestrator_fleet_stop_parser.set_defaults(func=cmd_orchestrator_fleet_stop)
 
     return parser

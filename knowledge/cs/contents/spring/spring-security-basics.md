@@ -7,7 +7,7 @@
 관련 문서:
 
 - [Spring Security 아키텍처](./spring-security-architecture.md)
-- [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
+- [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md): `UsernamePasswordAuthenticationFilter` 앞뒤 배치, `302 /login`과 `403`이 왜 갈리는지처럼 "필터 순서가 결과를 바꾸는 순간"부터 올라갈 심화 문서
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)

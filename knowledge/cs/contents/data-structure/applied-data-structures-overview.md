@@ -14,10 +14,11 @@
 - [Heap Variants](./heap-variants.md)
 - [Timing Wheel vs Delay Queue](./timing-wheel-vs-delay-queue.md)
 
-retrieval-anchor-keywords: applied data structures, data structure routing, online vs offline, interval tree, interval greedy, disjoint interval set, booking conflict, dynamic interval query, queue deque priority queue, heap vs timing wheel, timer churn, exact deadline ordering, approximate membership, 처음 배우는 응용 자료 구조, online offline 헷갈림
+retrieval-anchor-keywords: applied data structures, data structure routing, online vs offline, interval tree, interval greedy, queue deque priority queue, heap vs timing wheel, approximate membership, 처음 배우는 응용 자료 구조, 응용 자료구조 처음인데 뭐부터, 응용 자료구조 큰 그림, online offline 차이 뭐예요, 예약 충돌 자료구조 뭐 써요, 범위 조회 자료구조 뭐부터, heap timing wheel 차이
 
 응용 자료 구조는 기본 구조를 더 많이 외우는 영역이라기보다, 문제의 **접근 패턴과 제약 조건**을 기준으로 구조를 고르는 영역에 가깝다.
 이 문서는 개별 문서를 다시 풀어 쓰기보다, 어떤 문제에서 어떤 문서로 내려가면 좋은지 빠르게 라우팅하는 데 초점을 둔다.
+즉 "응용 자료구조 처음인데 뭐부터 보지?", "online/offline 차이가 뭐예요?", "예약 충돌이면 왜 interval tree 쪽으로 가요?" 같은 첫 질문을 깊은 문서 대신 여기서 먼저 받는 entrypoint primer다.
 
 <details>
 <summary>Table of Contents</summary>

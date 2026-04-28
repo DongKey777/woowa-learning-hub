@@ -19,14 +19,20 @@
 
 관련 문서:
 
+- [timer vocabulary: delay, timeout, deadline, due at](../data-structure/timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
 - [네트워크 타임아웃 타입: connect, read, write](../network/timeout-types-connect-read-write.md)
 - [타임아웃, 재시도, 백오프 실전](../network/timeout-retry-backoff-practical.md)
+- [request deadline, timeout budget primer](../system-design/request-deadline-timeout-budget-primer.md)
 - [Spring Scheduler와 Async 경계](../spring/spring-scheduler-async-boundaries.md)
 - [Resilience4j retry, circuit breaker, bulkhead](../spring/spring-resilience4j-retry-circuit-breaker-bulkhead.md)
 - [Spring Batch chunk, retry, skip](../spring/spring-batch-chunk-retry-skip.md)
 - [idempotency, retry, consistency boundaries](../software-engineering/idempotency-retry-consistency-boundaries.md)
+- [Clocksource, Timer Resolution, Jitter](./clocksource-timer-resolution-jitter.md)
 - [CFS Scheduler, nice, CPU Fairness](./cfs-scheduler-nice-cpu-fairness.md)
 - [Scheduler Fairness, Page Cache, File System Basics](./scheduler-fairness-page-cache.md)
+- [operating-system 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: monotonic clock vs wall clock, timeout vs deadline, deadline propagation basics, System.nanoTime vs currentTimeMillis, CLOCK_MONOTONIC timeout, wall clock monotonic difference, ntp clock jump timeout bug, retry backoff monotonic clock, 처음 배우는데 timeout deadline 차이, timeout deadline 큰 그림, 왜 monotonic clock 써요, 언제 wall clock 쓰고 언제 monotonic clock 쓰나요, deadline exceeded beginner, request timeout budget basics, 타임아웃 데드라인 차이, 모노토닉 클럭이 뭐예요, wall clock 이 뭐예요, 시계가 바뀌면 timeout 왜 깨지나요
 
 ## 깊이 들어가기
 

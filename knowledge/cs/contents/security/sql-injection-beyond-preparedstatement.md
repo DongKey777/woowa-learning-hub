@@ -5,11 +5,15 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [SQL 인젝션 기초](./sql-injection-basics.md)
 > - [인증과 인가의 차이](./authentication-vs-authorization.md)
 > - [비밀번호 저장: bcrypt / scrypt / argon2](./password-storage-bcrypt-scrypt-argon2.md)
 > - [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)
+> - [JDBC / JPA / MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 > - [MySQL 온라인 스키마 변경 전략](../database/online-schema-change-strategies.md)
 > - [슬로우 쿼리 분석 플레이북](../database/slow-query-analysis-playbook.md)
+
+retrieval-anchor-keywords: sql injection beyond preparedstatement, preparedstatement만 쓰면 끝인가요, preparedstatement 써도 왜 위험해요, order by sql injection, 동적 정렬 sql injection, 컬럼명 바인딩 안 되나요, sql 구조 주입, 2차 sql injection, stored sql injection, sql injection advanced, native query injection, jdbc dynamic query safety, sql 인젝션 심화, 헷갈리는 preparedstatement 한계, what is identifier injection
 
 ---
 

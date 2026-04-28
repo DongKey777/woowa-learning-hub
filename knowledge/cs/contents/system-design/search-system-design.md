@@ -2,15 +2,20 @@
 
 > 한 줄 요약: 검색 시스템은 단순 조회가 아니라, 인덱싱 파이프라인과 랭킹, freshness, hot query를 함께 관리하는 분산 정보 검색 시스템이다.
 
+retrieval-anchor-keywords: search system design, 검색 시스템 설계, 검색 시스템 뭐예요, search architecture basics, 처음 배우는데 검색 시스템, 검색 큰 그림, inverted index 뭐예요, 검색과 DB 차이, db like vs search engine, 언제 elasticsearch 쓰나요, autocomplete trie, indexing pipeline, ranking relevance freshness, hot query, search normalization
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [System Design Foundations](./system-design-foundations.md)
+> - [Search Indexing Pipeline 설계](./search-indexing-pipeline-design.md)
+> - [Document Search / Ranking Platform 설계](./document-search-ranking-platform-design.md)
 > - [인덱스와 실행 계획](../database/index-and-explain.md)
-> - [Slow Query Analysis Playbook](../database/slow-query-analysis-playbook.md)
 > - [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md)
-> - [RAG Topic Map](../../rag/topic-map.md)
+> - [Trie (Prefix Search / Autocomplete)](../data-structure/trie-prefix-search-autocomplete.md)
+> - [Search Normalization and Query Pattern](../design-pattern/search-normalization-query-pattern.md)
 
 ---
 
@@ -18,6 +23,7 @@
 
 검색 시스템은 DB `LIKE` 검색을 예쁘게 감싼 것이 아니다.  
 문서 수집, 정규화, 토큰화, 역인덱스, 랭킹, 캐시, freshness를 동시에 다룬다.
+처음 배우는데 헷갈리면 "원본 DB", "검색용 인덱스", "결과 순서를 정하는 랭킹" 세 박스로 먼저 나눠 보면 큰 그림이 잡힌다.
 
 가장 먼저 구분해야 할 것은 검색의 종류다.
 

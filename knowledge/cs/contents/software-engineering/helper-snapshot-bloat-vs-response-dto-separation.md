@@ -31,6 +31,7 @@ retrieval-anchor-keywords: helper snapshot bloat vs response dto separation basi
 
 > 관련 문서:
 > - [Software Engineering README: Helper Snapshot Bloat Vs Response DTO Separation](./README.md#helper-snapshot-bloat-vs-response-dto-separation)
+> - [Command DTO Vs Query View Naming Checklist](./command-dto-vs-query-view-naming-checklist.md)
 > - [Bulk Helper Ports vs Query Model Separation](./bulk-helper-ports-vs-query-model-separation.md)
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 > - [Module API DTO Patterns](./module-api-dto-patterns.md)

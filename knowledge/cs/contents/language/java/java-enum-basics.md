@@ -6,12 +6,16 @@
 
 관련 문서:
 
-- [enum-persistence-json-unknown-value-evolution](./enum-persistence-json-unknown-value-evolution.md)
-- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - [language 카테고리 인덱스](../README.md)
+- [Java Optional 입문](./java-optional-basics.md)
+- [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
+- [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md)
+- [EnumMap으로 상태별 라벨/요금/정책 lookup 붙이기](./enummap-status-policy-lookup-primer.md)
+- [Enum equality quick bridge](./enum-equality-quick-bridge.md)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - [Java 예외 처리 기초](./java-exception-handling-basics.md)
 
-retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs 상수 정수, java enum switch, enum values ordinal, enum 상수 집합, beginner enum java, 열거형 사용법, java enum name ordinal, java 상태값 enum, enum 처음 배우는데, enum 큰 그림, enum 언제 쓰는지
+retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum 왜 쓰나요, enum vs int constants, java enum switch, enum ordinal name, beginner enum java, java 상태값 enum, enum 처음 배우는데, enum 큰 그림, enum 언제 쓰는지, enum vs optional, enum null 상태 표현, 없음의 이유 enum
 
 ## 핵심 개념
 
@@ -19,7 +23,7 @@ retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum
 
 정수 상수(`static final int MONDAY = 0`)로 대체할 수 있지만, 정수는 컴파일러가 의미를 모른다. `setDay(0)` 대신 `setDay(Day.MONDAY)`로 쓰면 잘못된 값 전달을 컴파일 시점에 막을 수 있다.
 
-입문자가 헷갈리는 지점은 enum도 클래스처럼 메서드와 필드를 가질 수 있다는 것이다. 단순 상수 이상이다.
+입문자가 헷갈리는 지점은 enum도 클래스처럼 메서드와 필드를 가질 수 있다는 것이다. 다만 beginner 첫 읽기에서는 "상태 후보를 고정하는 타입"으로 먼저 이해하면 충분하다.
 
 ## 한눈에 보기
 
@@ -27,9 +31,34 @@ retrieval-anchor-keywords: java enum basics, enum 입문, 열거형 기초, enum
 - 코드 예시는 바로 아래 섹션에서 보고, 여기서는 판단 기준만 먼저 잡는다.
 - 입문 단계에서는 API 이름보다 어떤 문제를 줄이는지부터 확인한다.
 
+## 15초 비교표: `enum`은 언제 나오나
+
+초보자가 자주 섞는 선택지를 한 장으로 놓고 보면 enum 자리가 더 선명해진다.
+
+| 지금 표현하려는 것 | 첫 선택 | 왜 |
+|---|---|---|
+| 주문 상태가 `WAIT`, `ACTIVE`, `DONE` 중 하나여야 한다 | `enum` | 가능한 값 후보를 고정한다 |
+| 회원 한 명을 찾았는데 없을 수도 있다 | `Optional<User>` | 단건 결과의 있음/없음이 핵심이다 |
+| 주문 항목이 0개일 수 있다 | `List<OrderLine>` + 빈 리스트 | 여러 건 자료의 0개는 컬렉션이 표현한다 |
+| 닉네임이 없음 / 비공개 / 미입력처럼 이유가 갈린다 | `enum`을 포함한 상태 타입 | "왜 없는지"를 이름 붙여서 전달한다 |
+
+짧게 말하면 enum은 "가능한 상태 이름표"다. `Optional`이 단건의 없음에 답한다면, enum은 "어떤 상태들 중 하나인가"에 답한다.
+
+## 처음 `enum`과 `null`이 같이 헷갈릴 때
+
+초보자 질문은 보통 "`null` 대신 enum 하나 더 만들면 끝 아닌가요?"로 나온다. 이때는 "질문의 종류"를 먼저 나누면 된다.
+
+| 지금 코드가 묻는 질문 | 첫 선택 | 이유 |
+|---|---|---|
+| 값이 있나 없나 | `Optional<T>` | 단건의 존재 여부가 핵심이다 |
+| 상태 후보가 `WAIT`, `ACTIVE`, `DONE`처럼 닫혀 있나 | `enum` | 가능한 값 집합을 고정한다 |
+| 없음 / 비공개 / 미입력처럼 이유도 갈라야 하나 | enum을 포함한 상태 타입 | 이유 이름표가 필요하다 |
+
+즉 enum은 `null`을 기계적으로 치환하는 도구가 아니라, "도메인 상태 이름이 미리 정해져 있는가"를 드러내는 도구다.
+
 ## 코드로 보는 예시
 
-```
+```java
 // 정수 상수 방식 (오류 가능성 있음)
 static final int STATUS_WAIT   = 0;
 static final int STATUS_ACTIVE = 1;
@@ -39,6 +68,26 @@ void process(int status) { ... }  // process(999) 컴파일 통과
 enum OrderStatus { WAIT, ACTIVE, DONE }
 void process(OrderStatus status) { ... }  // process(OrderStatus.WAIT)만 가능
 ```
+
+없음의 이유를 같이 표현할 때도 enum이 잘 맞는다.
+
+```java
+enum NicknameStatus {
+    PRESENT,
+    NOT_ENTERED,
+    PRIVATE
+}
+
+record NicknameInfo(NicknameStatus status, String value) {
+}
+```
+
+이 예제는 `Optional<String>` 하나로는 부족한 순간을 보여 준다.
+
+- 값이 없을 수 있다는 사실만 중요하면 `Optional<String>`
+- 값이 없는 이유까지 갈라야 하면 `NicknameStatus` 같은 enum 상태
+
+반대로 이유 구분이 전혀 없고 "있다/없다"만 중요하다면 enum보다 `Optional`이 더 단순하다. beginner 첫 읽기에서는 이 둘을 경쟁 관계로 보기보다, "질문이 다르다"로 받아들이는 편이 안전하다.
 
 ## 상세 분해
 
@@ -70,25 +119,24 @@ switch 표현식과 잘 어울리며, 빠진 케이스를 IDE나 컴파일러가
 ### 필드와 메서드를 가진 enum
 
 ```java
-public enum Planet {
-    EARTH(5.97e24, 6.37e6),
-    MARS (6.42e23, 3.39e6);
+public enum DeliveryStatus {
+    READY("배송 준비"),
+    SHIPPED("배송 중"),
+    DONE("배송 완료");
 
-    private final double mass;
-    private final double radius;
+    private final String label;
 
-    Planet(double mass, double radius) {
-        this.mass   = mass;
-        this.radius = radius;
+    DeliveryStatus(String label) {
+        this.label = label;
     }
 
-    public double surfaceGravity() {
-        return 6.674e-11 * mass / (radius * radius);
+    public String label() {
+        return label;
     }
 }
 ```
 
-enum 상수에 값을 붙이고 메서드를 정의할 수 있다. 상태별 로직을 enum 안에 캡슐화하는 패턴이다.
+enum 상수에 설명용 값을 붙이고 메서드를 정의할 수 있다. beginner 단계에서는 "상태 이름에 표시용 라벨을 같이 붙일 수 있다" 정도만 먼저 잡아도 충분하다.
 
 ## 흔한 오해와 함정
 
@@ -96,34 +144,29 @@ enum 상수에 값을 붙이고 메서드를 정의할 수 있다. 상태별 로
 enum 순서가 바뀌거나 중간에 상수가 삽입되면 ordinal이 밀린다. DB에는 `name()`(문자열)을 저장하는 것이 안전하다.
 
 **오해 2: `==`와 `equals()`가 다르게 동작한다**
-enum 상수는 싱글턴이므로 `==`와 `equals()` 모두 같은 결과를 낸다. 관용적으로는 `==`를 쓴다.
+enum 상수는 싱글턴이므로 `==`와 `equals()` 모두 같은 결과를 낸다. 관용적으로는 `==`를 쓰고, 왜 그런지와 null-safe 비교 감각은 [Enum equality quick bridge](./enum-equality-quick-bridge.md)에서 짧게 이어진다.
 
 **오해 3: `Enum.values()`는 항상 선언 순서대로다**
 맞다. 하지만 ordinal에 의존한 로직을 짜면 상수 추가 시 버그가 생긴다. 순서 의존을 피하고 필드로 순서를 관리하는 것이 낫다.
 
-## 실무에서 쓰는 모습
+**오해 4: `null`이 보기 싫으면 enum 상수 하나를 무조건 추가하면 된다**
+항상 그렇지는 않다. "값이 있나 없나"만 중요하면 `Optional`이 더 단순하고, "왜 없는가"가 중요할 때 enum 상태가 빛난다. enum 상수를 추가할지, `Optional`로 둘지는 도메인 질문이 무엇인지부터 보고 결정한다.
 
-주문 도메인에서 상태 전이를 enum으로 표현한다.
+## 다음 한 칸
 
-1. `OrderStatus { PENDING, PAID, SHIPPED, DELIVERED, CANCELLED }` 선언
-2. 서비스에서 `order.getStatus() == OrderStatus.PENDING` 조건 체크
-3. JPA에서 `@Enumerated(EnumType.STRING)`으로 문자열로 DB 저장
-4. 잘못된 상태 값이 API로 들어오면 `IllegalArgumentException`으로 처리
+enum 첫 읽기 뒤에는 "상태 이름표" 다음 단계만 한 칸씩 붙이는 편이 안전하다.
+
+| 지금 막힌 질문 | 다음 문서 |
+|---|---|
+| "`Optional.empty()`와 enum 상태를 언제 갈라야 하지?" | [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md) |
+| "`==`로 비교해도 되는 이유가 더 궁금하다" | [Enum equality quick bridge](./enum-equality-quick-bridge.md) |
+| "상태별 라벨이나 정책 lookup을 붙이고 싶다" | [EnumMap으로 상태별 라벨/요금/정책 lookup 붙이기](./enummap-status-policy-lookup-primer.md) |
+| "단순 상수 집합을 넘어 상태 전이까지 가고 싶다" | [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md) |
 
 ## 더 깊이 가려면
 
+- enum에서 미션 스타일 도메인 상태 전이로 넘어가는 첫 단계: [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md)
 - JSON 직렬화·DB 저장 시 unknown 값 처리: [enum-persistence-json-unknown-value-evolution](./enum-persistence-json-unknown-value-evolution.md)
-
-## 면접/시니어 질문 미리보기
-
-**Q. enum이 일반 클래스와 다른 점은?**
-모든 생성자가 `private`이고, 인스턴스는 선언된 상수들뿐이다. 외부에서 `new`로 만들 수 없다. 또한 암묵적으로 `java.lang.Enum`을 상속한다.
-
-**Q. enum을 Map의 키로 쓸 때 `HashMap` 대신 `EnumMap`을 쓰는 이유는?**
-`EnumMap`은 ordinal 기반 배열로 구현되어 `HashMap`보다 빠르고 메모리 효율이 높다. 키가 enum으로 고정된 경우 항상 `EnumMap`이 유리하다.
-
-**Q. enum에서 abstract 메서드를 선언할 수 있는가?**
-가능하다. 상수별 구현을 강제하는 패턴으로, 각 상수가 abstract 메서드를 오버라이드한다.
 
 ## 한 줄 정리
 

@@ -7,24 +7,16 @@
 
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [자바 언어의 구조와 기본 문법](./java-language-basics.md)
+- [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+- [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
+- [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
+- [Java Array Equality Basics](./java-array-equality-basics.md)
+- [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
+- [배열 vs `List` 변환 엔트리 프라이머](./array-to-list-conversion-entrypoint-primer.md)
 
-
-retrieval-anchor-keywords: java array copy clone basics basics, java array copy clone basics beginner, java array copy clone basics intro, java basics, beginner java, 처음 배우는데 java array copy clone basics, java array copy clone basics 입문, java array copy clone basics 기초, what is java array copy clone basics, how to java array copy clone basics
-> 관련 문서:
-> - [Language README](../README.md)
-> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
-> - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
-> - [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
-> - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
-> - [배열 vs `List` 변환 엔트리 프라이머](./array-to-list-conversion-entrypoint-primer.md)
-> - [Java Array Equality Basics](./java-array-equality-basics.md)
-> - [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-
-> retrieval-anchor-keywords: java array copy basics, java array clone basics, java array assignment vs copy, java array assignment vs clone, java array assignment alias, java clone vs Arrays.copyOf, java array `clone` basics, java `Arrays.copyOf` basics, java array shallow copy, java nested array shallow copy, java nested array deep copy, java 2d array clone shallow copy, java matrix copy java, java array defensive copy, java beginner array copy, 자바 배열 복사 기초, 배열 대입 복사 차이, 배열 shallow copy deep copy 차이, 배열 복사 처음 배우는데, 배열 복사 큰 그림, clone 과 copyOf 차이 기초, clone copyOf 언제 쓰는지, 2차원 배열 깊은 복사 방법, 중첩 배열 복사 기초, 배열 참조 공유 왜 같이 바뀜, 배열 한쪽 바꾸면 다른 쪽도 바뀜, array copy changed together
+retrieval-anchor-keywords: java array copy basics, java array clone basics, java arrays.copyof vs clone, java array assignment alias, java shallow copy deep copy, 배열 대입 복사 차이, 배열 복사 처음 배우는데, clone 과 copyof 차이 기초, 왜 clone해도 같이 바뀌나요, 배열 한쪽 바꾸면 다른 쪽도 바뀜, java nested array shallow copy, java array defensive copy, array copy changed together
 
 <details>
 <summary>Table of Contents</summary>
@@ -314,9 +306,9 @@ public class ArrayCopyExample {
 }
 ```
 
-이 예제에서 확인할 포인트는 다섯 가지다.
+## 이 예제에서 바로 볼 것
 
-## 코드로 한 번에 보기 (계속 2)
+위 코드를 읽을 때 확인할 포인트는 다섯 가지다.
 
 - 변수 대입은 copy가 아니라 alias다
 - `clone()`은 같은 길이의 새 바깥 배열을 만든다

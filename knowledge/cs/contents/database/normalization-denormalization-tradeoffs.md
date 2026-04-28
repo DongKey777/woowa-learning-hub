@@ -1,22 +1,27 @@
 # 정규화와 반정규화 트레이드오프
 
-> 한 줄 요약: 정규화는 무결성을 지키고, 반정규화는 읽기를 빠르게 한다. 둘은 정답이 아니라 비용 선택이다.
+> 한 줄 요약: "데이터를 나눠 정확하게 저장할지, 조금 복제해서 빨리 읽을지"를 고르는 문서다. 정규화는 무결성을 지키고, 반정규화는 읽기를 빠르게 한다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟡 Intermediate**
 
-> 관련 문서:
-> - [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md)
-> - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
-> - [B+Tree vs LSM-Tree](./bptree-vs-lsm-tree.md)
-> - [온라인 스키마 변경 전략](./online-schema-change-strategies.md)
-> - [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
-> - [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md)
+관련 문서:
 
-retrieval-anchor-keywords: normalization, denormalization, summary table, read model, data duplication, incremental refresh, source of truth, backend tradeoff
+- [정규화 기초](./normalization-basics.md)
+- [SQL 읽기와 관계형 모델링 기초](./sql-reading-relational-modeling-primer.md)
+- [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
+- [Summary Drift Detection, Invalidation, and Bounded Rebuild](./summary-drift-detection-bounded-rebuild.md)
+- [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
+
+retrieval-anchor-keywords: normalization vs denormalization, 정규화 반정규화 차이, 정규화 반정규화 뭐예요, 정규화 반정규화 언제 쓰나요, db 정규화 처음 배우는데, 반정규화 처음 배우는데, 정규화 큰 그림, 반정규화 큰 그림, join이 많아졌는데 반정규화해야 하나요, 조회가 느린데 반정규화해야 하나요, read model 뭐예요, summary table 뭐예요, source of truth 뭐예요, beginner database tradeoff, what is normalization vs denormalization
 
 ---
 
 ## 핵심 개념
+
+처음 배우는 관점에서는 이렇게 잡으면 된다.
+
+- 정규화: 같은 사실을 여러 곳에 복사하지 않게 **테이블을 나눠 저장**하는 쪽
+- 반정규화: 조회를 빨리 하려고 필요한 값을 **조금 복제해서 미리 붙여 두는** 쪽
 
 정규화는 데이터 중복을 줄여서 이상(anomaly)을 막는 설계다. 반정규화는 읽기 성능이나 조회 단순화를 위해 의도적으로 중복을 허용하는 설계다.
 
@@ -26,6 +31,15 @@ retrieval-anchor-keywords: normalization, denormalization, summary table, read m
 - 반정규화는 읽기 성능과 조회 단순성을 얻는다
 
 문제는 “항상 정규화”도, “조회 편하라고 다 펼치기”도 정답이 아니라는 점이다.
+
+## 먼저 고르는 30초 표
+
+| 지금 더 중요한 것 | 먼저 떠올릴 선택 | 이유 |
+|---|---|---|
+| 값이 여러 군데서 어긋나면 안 된다 | 정규화 | 중복을 줄여 수정 이상을 막기 쉽다 |
+| 같은 화면을 아주 자주 읽고 JOIN이 계속 비싸다 | 반정규화 | 미리 펼쳐 둔 읽기 모델이 응답을 단순하게 만든다 |
+| 아직 서비스 초반이고 병목이 측정되지 않았다 | 정규화부터 시작 | 기본 저장 모델을 먼저 안정적으로 잡는 편이 안전하다 |
+| 운영 중이고 read SLA가 명확히 깨진다 | 선택적 반정규화 | 필요한 화면만 summary table이나 read model로 분리한다 |
 
 ---
 
@@ -74,6 +88,15 @@ retrieval-anchor-keywords: normalization, denormalization, summary table, read m
 이걸 모르면, 조회는 빨라졌는데 운영은 더 어려워진다.
 
 특히 summary table을 오래 운영하려면 refresh watermark, replay, late correction 전략이 같이 필요하다.
+
+## 자주 헷갈리는 지점
+
+| 헷갈리는 질문 | 짧은 답 |
+|---|---|
+| "정규화가 좋은 설계고 반정규화는 나쁜 지름길 아닌가요?" | 아니다. 둘 다 목적이 다르고, 반정규화도 근거가 있으면 정상 설계다. |
+| "JOIN이 많아 보이면 바로 반정규화해야 하나요?" | 아니다. 먼저 실제 병목인지 측정하고, 인덱스와 쿼리 구조를 본 뒤 결정한다. |
+| "read model이 곧 반정규화인가요?" | 겹치지만 완전히 같진 않다. read model은 조회 전용 구조 전체를 뜻하고, 그 안에 반정규화가 자주 들어간다. |
+| "한 번 반정규화하면 끝인가요?" | 아니다. 동기화, 재계산, source of truth를 계속 관리해야 한다. |
 
 ---
 
@@ -177,6 +200,13 @@ public void onOrderPaid(OrderPaidEvent event) {
 | CQRS read model | 쓰기와 읽기를 분리한다 | 시스템 복잡도가 올라간다 | 조회 패턴이 복잡할 때 |
 
 핵심 기준은 “정답”이 아니라 **어떤 실패를 감당할 것인가**다.
+
+## 다음에 어디로 가면 좋은가
+
+- "정규화 자체가 아직 헷갈린다"면 → [정규화 기초](./normalization-basics.md)
+- "JOIN과 GROUP BY를 먼저 읽고 싶다"면 → [SQL 읽기와 관계형 모델링 기초](./sql-reading-relational-modeling-primer.md)
+- "Spring/JPA 코드에서 이 선택이 어떻게 보이는지"면 → [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
+- "summary table을 운영할 때 동기화가 왜 어려운지"면 → [Incremental Summary Table Refresh and Watermark Discipline](./incremental-summary-table-refresh-watermark.md)
 
 ---
 

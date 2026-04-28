@@ -10,12 +10,13 @@
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
+- [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelockexception postgres 40001 difference, insert-if-absent faq, cannotacquirelockexception retryable or busy, 40001 deadlock or serialization failure, beginner lock exception faq, spring exception sqlstate faq, insert-if-absent cannotacquirelockexception guide, sqlstate 40001 beginner, postgresql 40001 retryable faq, cannotacquirelockexception timeout deadlock difference, busy vs retryable faq, cannotacquirelockexception 오해, 40001 오해, insert-if-absent 혼동 faq
+retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelockexception postgres 40001 difference, insert-if-absent faq, cannotacquirelockexception retryable or busy, 40001 deadlock or serialization failure, beginner lock exception faq, spring exception sqlstate faq, insert-if-absent cannotacquirelockexception guide, sqlstate 40001 beginner, postgresql 40001 retryable faq, cannotacquirelockexception timeout deadlock difference, busy vs retryable faq, 왜 40001이 deadlock 아니에요, 처음 sqlstate 뭐예요
 
 ## 먼저 멘탈모델
 
@@ -30,6 +31,18 @@ retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelo
 - `40001`은 **DB SQLSTATE**
 
 그래서 `CannotAcquireLockException == 40001`처럼 1:1로 외우면 자주 틀린다.
+
+## 이런 검색어로 들어오면 먼저 이름보다 코드를 본다
+
+아래처럼 검색하고 있다면 이 문서의 출발점은 항상 같다.
+
+- "`CannotAcquireLockException`인데 deadlock인가요?"
+- "`40001`이면 이미 누가 이긴 건가요?"
+- "Spring 예외 이름만 보고 retry 걸어도 되나요?"
+
+세 질문 모두 첫 답은 "`예외 이름`이 아니라 root `SQLSTATE/errno`부터 본다"다.
+
+처음 이 오류를 보면 이름이 길어서 겁먹기 쉬운데, 초보자 메모는 "`바깥 이름`과 `안쪽 DB 코드`를 분리해서 본다" 한 줄이면 충분하다.
 
 ## 30초 비교표
 
@@ -89,18 +102,45 @@ retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelo
 - `busy`: 지금은 혼잡하다고 응답하거나 짧게 제한 retry
 - `retryable`: 새 트랜잭션으로 전체 시도 다시 시작
 
-### Q4. 왜 `40001`은 SQL 한 줄만 다시 실행하면 안 되나요?
+## 재시도 단위
 
-`40001`은 읽기-판단-쓰기 전체 조합이 깨졌다는 뜻이기 때문이다.
-그래서 실패한 `INSERT` 한 줄만 다시 던지면, 이전 attempt에서 읽었던 조건과 판단을 재사용하게 되어 의미가 틀어진다.
+초보자는 먼저 "DB가 방금 문제 삼은 범위가 어디인가?"만 잡으면 된다.
 
-초보자 기억법:
+- `duplicate key`: 보통 `INSERT` 한 줄 결과만 다시 해석하면 된다
+- `40001`: 그 `INSERT` 앞에서 했던 읽기와 판단까지 포함한 **한 번의 시도 전체**가 무효다
+- `deadlock`: 내가 잡은 락 순서가 이번 시도에서 꼬였으니, 역시 **이번 트랜잭션 전체**를 버려야 한다
 
-## FAQ (계속 2)
+가장 작은 예시를 보자.
+
+1. 트랜잭션이 "`오늘 남은 좌석이 있나?`"를 읽는다.
+2. 있으면 `INSERT reservation ...`를 하기로 판단한다.
+3. 동시에 다른 트랜잭션도 같은 판단을 한다.
+4. DB는 둘을 함께 놓고 보니 이 판단 조합을 직렬화할 수 없어서 `40001`을 돌려준다.
+
+여기서 `INSERT` 한 줄만 다시 던지면 문제가 두 가지다.
+
+| 무엇을 재시도하나 | 왜 초보자 기준으로 위험한가 |
+|---|---|
+| 실패한 SQL 1줄만 다시 실행 | "좌석이 남아 있다"는 이전 판단을 그대로 들고 간다 |
+| 트랜잭션 전체를 새로 시작 | 다시 읽고, 다시 판단하고, 다시 쓰므로 새 snapshot 기준으로 맞는 결론을 낸다 |
+
+즉 `40001`은 "이 SQL 문법이 틀렸다"가 아니라, **이 읽기-판단-쓰기 묶음이 이번 snapshot에서는 성립하지 않는다**는 신호다.
+
+그래서 "`실패한 INSERT 한 줄만 다시 치면 되나요?`"라는 질문이 나오면, 초보자 기본 답은 "아니오, 판단에 쓰인 읽기부터 새로 시작"이다.
+
+deadlock도 초보자 해석은 비슷하다.
+
+- deadlock victim이 되면 현재 트랜잭션은 이미 중단됐다
+- 일부 SQL만 이어서 실행하는 게 아니라, 새 트랜잭션에서 락을 다시 잡아야 한다
+- 그래서 `40P01`/`1213`도 보통 SQL 한 줄 retry가 아니라 whole-transaction retry로 묶는다
+
+짧게 외우면:
 
 - `duplicate key` -> winner read
 - `40001` / deadlock -> transaction retry
 - timeout -> busy 분리
+
+## FAQ (계속)
 
 ### Q5. 검색할 때 어떤 문서로 바로 들어가면 좋나요?
 
@@ -114,6 +154,8 @@ retrieval-anchor-keywords: cannotacquirelockexception 40001 faq, cannotacquirelo
 2. PostgreSQL `40001`은 deadlock이 아니라 serialization failure로 분리한다.
 3. `insert-if-absent`에서는 `duplicate key`=`already exists`, timeout=`busy`, `40001`/deadlock=`retryable`로 먼저 번역한다.
 4. `retryable`은 SQL 한 줄이 아니라 새 트랜잭션 attempt로 다시 시작한다.
+
+Spring 트랜잭션 경계에서 retry를 어디에 걸어야 하는지 바로 이어서 보고 싶다면 [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)로 넘어가면 된다.
 
 ## 바로 이어서 읽기
 

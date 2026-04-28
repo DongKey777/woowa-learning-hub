@@ -7,29 +7,23 @@
 
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
+- [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md)
+- [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
+- [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+- [Beginner Drill Sheet: Equality vs Ordering](./equality-vs-ordering-beginner-drill-sheet.md)
+- [Record-Comparator 60초 미니 드릴](./record-comparator-60-second-mini-drill.md)
+- [Record component로 `BigDecimal`을 써도 되나요?](./record-bigdecimal-component-faq.md)
+- [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
+- [`List.copyOf(...)` vs `stream.toList()` 읽기 전용 스냅샷 브리지](./list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md)
+- [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
+- [Java Array Equality Basics](./java-array-equality-basics.md)
+- [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+- [Record Serialization Evolution](./record-serialization-evolution.md)
 
-
-retrieval-anchor-keywords: record value object equality basics basics, record value object equality basics beginner, record value object equality basics intro, java basics, beginner java, 처음 배우는데 record value object equality basics, record value object equality basics 입문, record value object equality basics 기초, what is record value object equality basics, how to record value object equality basics
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
-> - [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md)
-> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
-> - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
-> - [Beginner Drill Sheet: Equality vs Ordering](./equality-vs-ordering-beginner-drill-sheet.md)
-> - [Record-Comparator 60초 미니 드릴](./record-comparator-60-second-mini-drill.md)
-> - [Record component로 `BigDecimal`을 써도 되나요?](./record-bigdecimal-component-faq.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-> - [`List.copyOf(...)` vs `stream.toList()` 읽기 전용 스냅샷 브리지](./list-copyof-vs-stream-tolist-readonly-snapshot-bridge.md)
-> - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
-> - [Java Array Equality Basics](./java-array-equality-basics.md)
-> - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
-> - [Record Serialization Evolution](./record-serialization-evolution.md)
-
-> retrieval-anchor-keywords: java record equality, java record equals hashCode, record component equality, record generated equals, record generated hashCode, record shallow immutability, java value object equality, immutable value object, entity vs value object, record vs entity decision, record vs class beginner, mutable entity equality hazard, hashset mutable key bug, record canonical constructor normalization, array component equality, record mutable component pitfall, record value object entity example, record hashset contains false, record comparator mismatch, record equals comparator compare zero mismatch, treeset record duplicate surprise, treemap record key overwrite comparator, record equals true but treeset size one, equals ordering inconsistency beginner, record array component faq, record list component faq, record defensive copy, record canonicalization beginner, record array equals false, record mutable collection component, record compact constructor copy normalize, record accessor mutable list, record accessor collection exposure, record list copyof faq, tree set compare zero beginner, record equals tree map overwrite
+retrieval-anchor-keywords: java record equality, java record equals hashcode, record component equality, java value object equality, immutable value object, entity vs value object, 처음 배우는데 record equality, record equality 뭐예요, record vs entity decision, mutable entity equality hazard, record canonical constructor normalization, array component equality, record mutable collection component, treeset record duplicate surprise, treemap record key overwrite comparator
 
 <details>
 <summary>Table of Contents</summary>

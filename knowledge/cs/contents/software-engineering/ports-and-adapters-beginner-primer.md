@@ -10,6 +10,7 @@
 - [왜 이름이 어렵게 느껴지는가](#왜-이름이-어렵게-느껴지는가)
 - [먼저 잡는 한 줄 멘탈 모델](#먼저-잡는-한-줄-멘탈-모델)
 - [before / after 한눈 비교](#before--after-한눈-비교)
+- [Layered와 Hexagonal을 어떻게 이어서 보나](#layered와-hexagonal을-어떻게-이어서-보나)
 - [Port는 무엇인가](#port는-무엇인가)
 - [Adapter는 무엇인가](#adapter는-무엇인가)
 - [Inbound와 Outbound를 어떻게 구분하나](#inbound와-outbound를-어떻게-구분하나)
@@ -25,16 +26,17 @@
 관련 문서:
 
 - [Software Engineering README: Ports and Adapters Beginner Primer](./README.md#ports-and-adapters-beginner-primer)
+- [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 - [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
 - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
 - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
 - [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md)
 
-retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, 레이어 설계, controller service repository 다음 단계, 책임이 어디까지인지 몰라 파일을 옮겨도 계속 헷갈린다, service가 외부 api 호출 이벤트 발행 저장 세부를 모두 직접 안다, inbound port, outbound port, controller adapter, repository adapter, hexagonal folder layout, repository interface contract, hexagonal testing seam, clean architecture relation, port adapter basics
+retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, 레이어 설계, controller service repository 다음 단계, layered vs hexagonal beginner, 언제 outbound port가 필요한가, service가 외부 api 호출 이벤트 발행 저장 세부를 모두 직접 안다, inbound port, outbound port, controller adapter, repository adapter, hexagonal folder layout, repository interface contract, hexagonal testing seam, clean architecture relation
 
 입문 설명이 끝난 뒤 "adapter"라는 이름이 GoF 어댑터와 어떻게 다른지 헷갈리면 [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md), [Design Pattern: Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](../design-pattern/hexagonal-ports-pattern-language.md)로 이어서 보면 된다.
-같은 port/adaptor 구분이 queue, topic, consumer 운영 경계까지 커지는 순간은 [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: Event Bus Control Plane 설계](../system-design/event-bus-control-plane-design.md)가 다음 handoff다.
+처음 읽는 단계에서는 HTTP 요청 1개를 기준 예시로 붙잡으면 충분하다. queue, topic, consumer 운영 설계까지 커지는 순간은 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md)가 다음 handoff다.
 
 ## 왜 이름이 어렵게 느껴지는가
 
@@ -66,6 +68,27 @@ retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture b
 |---|---|---|
 | before: 입출력 세부가 안쪽으로 섞임 | controller가 도메인 객체를 직접 만들고 service가 SDK/JPA 타입을 바로 안다 | 유스케이스 테스트가 무겁고 저장/연동 기술 변경이 안쪽까지 번진다 |
 | after: port와 adapter로 경계 분리 | 안쪽은 `UseCase`, `Repository`, `PaymentGateway` 같은 약속만 보고 바깥이 HTTP/DB/SDK를 맞춘다 | 테스트 seam이 생기고 기술 교체 영향이 adapter 쪽에 머문다 |
+
+## Layered와 Hexagonal을 어떻게 이어서 보나
+
+처음부터 둘 중 하나를 버리고 다른 하나를 택하는 그림으로 보면 오히려 더 헷갈린다.
+
+| 질문 | 먼저 보는 기준 |
+|---|---|
+| "Controller, Service, Repository 책임이 아직도 자꾸 섞인다" | layered부터 다시 맞춘다. 이 문제는 port보다 역할 분리가 먼저다. |
+| "같은 주문 생성 규칙을 HTTP 말고 배치나 메시지 입력에서도 재사용해야 한다" | inbound port를 도입해 유스케이스 입구를 하나로 모은다. |
+| "Service가 DB/JPA 말고도 PG SDK, 파일 저장, 이벤트 발행 세부를 다 안다" | outbound port를 도입해 바깥 기술 세부를 adapter로 뺀다. |
+| "지금은 단순 CRUD와 화면 응답이 대부분이다" | layered에 머물고, 바뀔 경계가 드러날 때만 port를 추가한다. |
+
+짧게 말하면 layered는 **역할을 나누는 기본 지도**이고, hexagonal은 그 지도 위에서 **입구와 출구를 더 엄격하게 분리하는 방법**이다.
+
+- stop rule: 아직 `Controller -> Service -> Repository`만으로도 설명이 흔들리면, 배치/메시지 채널 예시는 당장 외우지 않고 HTTP 예시 1개만 붙잡는다.
+
+그래서 "팀이 언제까지 controller-service-repository로 가도 되나?"라는 질문에는 보통 이렇게 답하면 된다.
+
+- 유스케이스 입구가 사실상 HTTP 하나뿐이면 layered로도 충분하다.
+- 바깥 기술 교체보다 코드 읽기와 책임 분리가 더 큰 문제면 layered를 먼저 단단히 하는 편이 낫다.
+- 반대로 같은 유스케이스를 여는 채널이 늘거나, Service가 외부 연동 세부 때문에 계속 비대해지면 port가 실제 문제를 줄인다.
 
 ## Port는 무엇인가
 
@@ -128,14 +151,14 @@ class PgPaymentGatewayAdapter implements PaymentGateway {
 | 구분 | 역할 | 예시 |
 |---|---|---|
 | Inbound port | 시스템이 제공하는 기능의 입구 | `PlaceOrderUseCase`, `CancelOrderUseCase` |
-| Inbound adapter | 바깥 요청을 포트 호출로 번역 | Controller, CLI handler, Message consumer |
+| Inbound adapter | 바깥 요청을 포트 호출로 번역 | Controller, CLI handler, Batch/Message handler |
 | Outbound port | 시스템이 바깥에 요청해야 하는 기능 | `PaymentGateway`, `OrderRepository`, `ClockHolder` |
 | Outbound adapter | 포트 구현을 실제 기술로 연결 | JPA repository adapter, Redis adapter, PG adapter |
 
 초심자는 `Repository`도 outbound port라는 점에서 많이 정리된다.
 도메인이나 애플리케이션이 저장이 필요하다고 말하고, 실제 DB 연동은 바깥 구현이 맡는다고 보면 된다.
 여기서 `Repository interface`를 "구현 교체 계약"으로 읽는 감각이 아직 약하면 [Repository Interface Contract Primer](./repository-interface-contract-primer.md)를 먼저 보고 돌아와도 좋다.
-HTTP controller, message consumer, scheduled job를 같은 inbound adapter 축에서 비교하고 싶다면 [Message-Driven Adapter Example](./message-driven-adapter-example.md)을 이어서 보면 된다.
+HTTP controller 말고 batch/message handler까지 같은 inbound adapter 축으로 확장하는 예시는 [Message-Driven Adapter Example](./message-driven-adapter-example.md)으로 넘기면 된다.
 
 ## 가장 작은 폴더 구조 예시
 
@@ -227,6 +250,7 @@ src/main/java/com/example/
 - Ports and Adapters는 그 규칙을 **입출력 경계에서 코드로 보이게 만드는 방법**에 가깝다
 
 그래서 레이어드 구조를 쓰는 팀도 일부 경계에서는 ports/adapters를 함께 사용한다.
+즉 "layered 다음 단계"를 꼭 전면 개편으로 이해할 필요는 없다. 기존 controller-service-repository 구조를 유지한 채, 유스케이스 입구나 외부 연동 출구처럼 자주 흔들리는 지점만 port로 감싸도 충분하다.
 테스트 경계까지 이어서 보고 싶다면 [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)를 다음 문서로 보면 좋다.
 이 문서가 초급용이고, consistency boundary나 DDD 고급 주제까지 같이 보고 싶다면 [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)를 이어서 보면 된다.
 
@@ -249,6 +273,7 @@ src/main/java/com/example/
 - 모든 클래스에 인터페이스를 만들어야 한다고 생각한다. 보통은 유스케이스 입구와 바깥 의존 지점만 먼저 분리해도 충분하다.
 - 컨트롤러가 곧 application이라고 생각한다. 컨트롤러는 보통 inbound adapter다.
 - JPA repository 구현체를 domain 안에 두기도 한다. 저장 구현은 대체로 outbound adapter 쪽이 맞다.
+- 레이어드 구조를 버리고 처음부터 전부 hexagonal로 재배치해야 한다고 생각한다. 실제로는 controller-service-repository를 유지한 채 일부 경계만 port로 빼도 효과가 크다.
 - Hexagonal Architecture를 배우자마자 bounded context, saga, eventual consistency까지 한 번에 넣으려 한다. 그건 다음 단계다.
 
 한 문장으로 다시 정리하면, ports and adapters는 **안쪽 코드를 바깥 기술로부터 보호하기 위해 입구와 출구를 명확히 나누는 구조**다.

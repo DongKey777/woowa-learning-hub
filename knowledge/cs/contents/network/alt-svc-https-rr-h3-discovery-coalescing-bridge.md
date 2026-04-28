@@ -14,7 +14,7 @@
 - [Stale HTTPS RR H3 Fallback Primer](./stale-https-rr-h3-fallback-primer.md)
 - [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
 
-retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc, alt svc https rr h3 discovery coalescing bridge basics, alt svc https rr h3 discovery coalescing bridge beginner, alt svc https rr h3 discovery coalescing bridge intro
+retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, first clean request h2 alt-svc next h3, next new connection h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc, alt svc https rr h3 discovery bridge intro
 
 ## 헷갈리면 이 문장으로 먼저 가르기
 
@@ -228,6 +228,22 @@ QUIC + TLS(ALPN)로 실제 h3가 성립하는지 확인
 
 첫 읽기에서는 아래 4줄 타임라인 2개만 비교해도 충분하다.
 차이는 "`첫 요청 전에 힌트를 이미 알았나`" 한 줄로 먼저 잡으면 된다.
+
+### 10초 미니 타임라인 카드
+
+`첫 clean request`, "`응답에서 무엇을 배웠나`", "`다음 새 connection에서 무엇이 바뀌나`"만 보면 초급자도 빠르게 구분할 수 있다.
+
+| 장면 | 첫 clean request | 응답에서 배운 것 | 다음 새 connection | 10초 결론 |
+|---|---|---|---|---|
+| `Alt-Svc` driven | 보통 `h2`/`http/1.1` | `Alt-Svc: h3=":443"` | QUIC + ALPN `h3`를 새로 시도 | "첫 요청은 학습, 다음 새 connection이 반영" |
+| HTTPS RR driven | 첫 요청 전 DNS HTTPS RR 확인 가능 | 없어도 된다 | 첫 connection부터 `h3`가 바로 될 수 있음 | "출발 전에 힌트를 알아 첫 요청부터 H3 가능" |
+| 힌트는 있는데 여전히 `h2` | `Alt-Svc` 또는 HTTPS RR이 있을 수 있음 | 힌트는 배웠을 수 있음 | 새 connection이어도 `h2`/`http/1.1` fallback 가능 | "힌트와 실제 성공은 다른 단계" |
+
+초급자 메모:
+
+- `첫 clean request`는 "이전에 배운 H3 힌트가 없는 첫 출발"에 가깝다.
+- `재요청`은 "그냥 다시 클릭"이 아니라 **새 connection이 다시 필요해진 다음 요청**으로 읽는다.
+- 그래서 `첫 요청 h2 -> 다음 h3`를 보면 먼저 "`중간 응답에서 `Alt-Svc`를 배웠나?`"를 묻는 편이 빠르다.
 
 | 구분 | `첫 요청` / `다음 새 연결(재요청)` 4줄 타임라인 |
 |---|---|

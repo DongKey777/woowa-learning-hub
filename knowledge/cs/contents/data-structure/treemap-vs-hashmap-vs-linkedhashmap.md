@@ -6,6 +6,7 @@
 
 > 관련 문서:
 > - [자료구조 정리](./README.md)
+> - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 > - [응용 자료 구조](./applied-data-structures-overview.md)
 > - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
 > - [Balanced BST vs Unbalanced BST Primer](./balanced-bst-vs-unbalanced-bst-primer.md)
@@ -17,6 +18,8 @@ retrieval-anchor-keywords: TreeMap vs HashMap vs LinkedHashMap, sorted map vs ha
 ---
 
 ## 핵심 개념
+
+처음 고르는 단계라면 이 문서보다 [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)에서 `순서 없음 / 삽입 순서 / 정렬과 범위` 3갈래를 먼저 잡는 편이 빠르다.
 
 `Map` 계열은 모두 `key -> value`를 저장하지만, 무엇을 우선순위로 둘지는 다르다.
 

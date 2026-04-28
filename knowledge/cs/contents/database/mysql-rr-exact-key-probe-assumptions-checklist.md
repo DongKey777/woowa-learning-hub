@@ -11,11 +11,12 @@
 - [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
 - [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md)
 - [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md)
+- [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: mysql rr exact key probe assumptions checklist, same key queue intuition breaks, index path drift duplicate check, mixed write path duplicate check, mysql repeatable read same key not queued, exact key probe checklist beginner, explain checklist same key path, duplicate precheck mixed writer, full unique key equality checklist, mysql rr path drift checklist, 왜 같은 키인데 안 막혀요, rr exact key 가정 체크리스트, 같은 key queue 착시, mixed write path locking read, mysql rr exact key probe assumptions checklist basics
+retrieval-anchor-keywords: mysql rr exact key probe assumptions checklist, same key queue intuition breaks, index path drift duplicate check, mixed write path duplicate check, mysql repeatable read same key not queued, exact key probe checklist beginner, explain checklist same key path, duplicate precheck mixed writer, full unique key equality checklist, mysql rr path drift checklist, 왜 같은 키인데 안 막혀요, 같은 key queue 착시, 처음 duplicate check 뭐예요, exact key probe what is basics
 
 ## 핵심 개념
 
@@ -41,6 +42,18 @@ retrieval-anchor-keywords: mysql rr exact key probe assumptions checklist, same 
 | 6. correctness backstop으로 `UNIQUE`가 있는가 | duplicate write를 DB가 끝까지 막는다 | probe가 흔들리면 바로 중복 위험으로 이어진다 |
 
 위 표에서 하나라도 `아니오`면 "`RR이라 같은 key는 줄이 선다`"는 설명을 멈추는 편이 맞다.
+
+## 이런 증상 문장이 나오면 가정을 의심한다
+
+아래 말이 나오면 "`같은 business key`니까 당연히 queue 되겠지"부터 내려놓는 편이 좋다.
+
+- "왜 같은 키인데 어떤 요청은 안 막혀요?"
+- "테스트에서는 줄이 섰는데 운영에서는 duplicate가 나요"
+- "API는 괜찮은데 배치가 같이 돌면 설명이 깨져요"
+
+이 3개는 대개 `index path drift`나 `mixed write path` 신호다.
+
+처음 보는 사람은 "같은 key"라는 말 대신 "같은 index slot을 같은 절차로 먼저 건드리나?"로 질문을 바꾸면 덜 헷갈린다.
 
 ## 언제 특히 잘 깨지나
 
@@ -127,6 +140,10 @@ FOR SHARE;
 2. `EXPLAIN key/type/rows`
 3. 이 경로를 타는 writer 목록
 4. "`queueing 보조일 뿐, correctness는 `UNIQUE`가 맡는다`"는 문장
+
+짧게 말해, 이 문서는 "`왜 같은 키인데 안 막혀요`"를 설명할 때 쓰고 "`중복을 끝까지 누가 막나요`"의 답은 항상 `UNIQUE`로 닫는다.
+
+애플리케이션 트랜잭션 경계를 어디에 두어야 이 가정이 덜 흔들리는지 이어서 보려면 [Spring Service Layer Transaction Boundary Patterns](../spring/spring-service-layer-transaction-boundary-patterns.md)로 넘어가면 된다.
 
 ## 다음에 어디로 가면 좋은가
 

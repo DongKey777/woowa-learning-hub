@@ -16,7 +16,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: mysql explain range locking primer, explain overlap query beginner, explain range locking read, explain for update range scan, mysql overlap explain primer, beginner explain gap lock, explain rows type range for update, exact key vs range explain, overlap query explain checklist, mysql explain wider access path, range lock beginner, explain next-key beginner, for update range explain, mysql explain overlap lock footprint, mysql explain range locking primer basics
+retrieval-anchor-keywords: mysql explain range locking primer, explain overlap query beginner, explain range locking read, explain for update range scan, mysql overlap explain primer, beginner explain gap lock, explain rows type range for update, exact key vs range explain, overlap query explain checklist, mysql explain wider access path, range lock beginner, 왜 for update인데 넓게 막혀요, explain overlap what is basics, 처음 range lock explain
 
 ## 핵심 개념
 
@@ -36,6 +36,17 @@ retrieval-anchor-keywords: mysql explain range locking primer, explain overlap q
 2. 접근 타입이 exact lookup인가, `range`인가
 3. `rows`가 작은가, 이미 넓은가
 4. 이 넓은 scan이 곧 넓은 lock footprint 후보인가
+
+## 이런 질문으로 들어왔으면 이 문서가 맞다
+
+아래처럼 말하고 있다면 exact-key 문서보다 이 문서가 먼저다.
+
+- "`FOR UPDATE`인데 왜 생각보다 넓게 막혀요?"
+- "겹치는 row만 잠그는 것 아닌가요?"
+- "`EXPLAIN rows`가 큰데 lock wait도 같이 커질 수 있나요?"
+- "처음 overlap query를 보는데 `type=range`가 뭐예요?"
+
+반대로 질문이 "`정말 같은 key 한 칸만 보나?`"에 더 가깝다면 [EXPLAIN Checklist for Exact-Key Locking Reads](./explain-checklist-exact-key-locking-reads.md)부터 보는 편이 빠르다.
 
 ## exact-key에서 range로 넘어갈 때 달라지는 질문
 
@@ -151,6 +162,11 @@ overlap query에서는 이 한 줄만으로도 도움이 된다.
 | `rows`가 크다 | 넓은 scan 가능성 | 넓은 lock wait, false positive 대기부터 의심 |
 | `Using where`가 남는다 | 후단 필터가 있다 | logical overlap 전체가 index에 안 담겼을 수 있다 |
 
+초보자 메모:
+
+- `rows`가 크다고 "문제 확정"은 아니다
+- 대신 "`겹치는 것만 잠근다`고 말하면 위험" 신호로 읽는 편이 맞다
+
 ## beginner 검증 순서
 
 ### 1. exact-key 문장인지 range 문장인지 먼저 분류한다
@@ -231,6 +247,8 @@ overlap query에서는 이 한 줄만으로도 도움이 된다.
 | overlap/range + `type=range` + `Using where` | chosen axis 기반 넓은 scan으로 읽는다 |
 | `rows`가 커서 lock wait가 걱정됨 | index 축 재검토 또는 slot/guard row 쪽으로 이동 검토 |
 | active/history가 섞여 scan이 커 보임 | `active_flag` prefix, active table split, 다른 arbitration surface를 검토 |
+
+처음 읽는다면 위 표에서 자기 query를 한 줄로 분류한 뒤, `EXPLAIN key/type/rows`만 코드 리뷰 메모에 남기는 것부터 시작하면 된다.
 
 ## 다음에 어디로 가면 좋은가
 

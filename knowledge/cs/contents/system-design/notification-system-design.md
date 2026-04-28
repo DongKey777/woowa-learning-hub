@@ -2,22 +2,28 @@
 
 > 한 줄 요약: 알림 시스템은 이벤트를 여러 채널로 전달하면서 중복, 순서, 우선순위, 재시도를 함께 다루는 분산 메시징 설계다.
 
+retrieval-anchor-keywords: notification system design, notification architecture, 알림 시스템 설계, 알림 시스템 뭐예요, notification system basics, 처음 배우는데 알림 시스템, 알림 큰 그림, push email sms in-app 차이, 알림 채널 언제 나누나요, notification queue, notification retry backoff, 알림 중복 왜 생기나요, idempotency dedup, user notification preference, delivery status read status, notification routing
+
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [메시지 큐 기초](./message-queue-basics.md)
+> - [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md)
+> - [Email Delivery Platform 설계](./email-delivery-platform-design.md)
+> - [Webhook Delivery Platform 설계](./webhook-delivery-platform-design.md)
 > - [Rate Limiter 설계](./rate-limiter-design.md)
-> - [분산 캐시 설계](./distributed-cache-design.md)
-> - [채팅 시스템 설계](./chat-system-design.md)
 > - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
-> - [JWT 깊이 파기](../security/jwt-deep-dive.md)
+> - [Duplicate Suppression Windows](../database/duplicate-suppression-windows.md)
+> - [Domain Events vs Integration Events](../design-pattern/domain-events-vs-integration-events.md)
 
 ---
 
 ## 핵심 개념
 
 알림 시스템은 "이벤트를 보여주는 UI"가 아니라, **사용자에게 전달 가능한 상태로 바꾸는 파이프라인**이다.
+처음 배우는데 헷갈리면 "알림함 화면"보다 "이벤트를 큐에 넣고 채널별로 배달하는 흐름"으로 먼저 잡는 편이 이해가 빠르다.
 
 여기서 다뤄야 하는 문제:
 

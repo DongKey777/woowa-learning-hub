@@ -1,6 +1,6 @@
 # Common-Confusion Wayfinding Notes
 
-> 한 줄 요약: `batch/헥사고날`, `영속성/JPA`, `테스트`, `계층 책임`이 섞여 보일 때는 "흐름(유스케이스)", "저장 구현", "검증 전략", "계층 경계"를 분리해 보고 첫 문서를 고르면 오독이 크게 줄어든다.
+> 한 줄 요약: `메서드가 너무 길어요`, `Controller가 너무 많은 걸 알아요`, `왜 서버 전체 테스트부터 돌리죠?` 같은 리뷰 문장이 섞여 들릴 때는 `읽기 / 계층 / 테스트 / 영속성 / 유스케이스`를 먼저 가르고 첫 문서를 고르면 오독이 크게 줄어든다.
 
 **난이도: 🟢 Beginner**
 
@@ -21,6 +21,7 @@
 관련 문서:
 
 - [Software Engineering README: Common-Confusion Wayfinding Notes](./README.md#common-confusion-wayfinding-notes)
+- [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)
 - [Controller / Service / Repository before 예시 - 주문 생성 로직이 Controller에 몰린 상태](./layered-architecture-basics.md#before-주문-생성-로직이-controller에-몰린-상태)
 - [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
 - [Service 계층 기초](./service-layer-basics.md)
@@ -31,13 +32,26 @@
 - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)
 
-retrieval-anchor-keywords: common confusion wayfinding notes, beginner wayfinding, 어디부터 읽어야 하나, 테스트 전략 기초 vs hexagonal testing seams primer, 첫 테스트 선택과 seam 차이, service 변경 springboottest 오해, inbound adapter test slices primer, controller service repository boundary confusion, batch hexagonal jpa test confusion, saveall 오해 다음 문서, coupon expiration first test seam, 초심자 문서 길잡이, common confusion wayfinding notes basics, common confusion wayfinding notes beginner, common confusion wayfinding notes intro
+retrieval-anchor-keywords: common confusion wayfinding notes, beginner wayfinding, 어디부터 읽어야 하나, 메서드가 너무 길어요 어디부터, 테스트 전략 기초 vs hexagonal testing seams primer, 첫 테스트 선택과 seam 차이, service 변경 springboottest 오해, inbound adapter test slices primer, controller service repository boundary confusion, batch hexagonal jpa test confusion, saveall 오해 다음 문서, coupon expiration first test seam, 초심자 문서 길잡이, common confusion wayfinding notes basics, common confusion wayfinding notes beginner
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
 헷갈릴 때는 문서 이름보다 먼저, **"흐름(유스케이스) / 저장 구현 / 검증 전략 / 계층 경계" 중 지금 막힌 칸 하나만 고른다.**
 
 Controller가 이미 얇은데도 "규칙은 어디에 두고 Service는 어디까지 알아야 하지?"가 흐리면, [계층형 아키텍처 기초](./layered-architecture-basics.md)와 [Service 계층 기초](./service-layer-basics.md)부터 연달아 본다.
+
+## 읽기 / 레이어 / 테스트를 먼저 가르는 30초 비교표
+
+초심자에게 가장 자주 섞이는 첫 문장은 `메서드가 너무 길어요`, `Controller가 너무 많은 걸 알아요`, `왜 서버 전체 테스트부터 돌리죠?`다. 이 셋은 비슷해 보여도 첫 문서가 다르다.
+
+| 리뷰에서 먼저 들리는 말 | 먼저 붙일 이름 | 첫 문서 | 왜 여기부터 보나 |
+|---|---|---|---|
+| "메서드가 너무 길어요" | 읽기 문제 | [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md) | 한 메서드가 질문 몇 개를 동시에 답하는지부터 줄여야 레이어와 테스트 분리도 쉬워진다. |
+| "Controller가 너무 많은 걸 알아요" | 계층 문제 | [계층형 아키텍처 기초](./layered-architecture-basics.md) | `입력 / 규칙 / 저장` 중 어디가 섞였는지 먼저 봐야 Service가 비대해지는 오해를 줄일 수 있다. |
+| "왜 서버 전체 테스트부터 돌리죠?" | 테스트 문제 | [테스트 전략 기초](./test-strategy-basics.md) | `규칙 / 웹 계약 / JPA / 협력 흐름` 중 무엇을 검증할지 먼저 골라야 가장 싼 첫 테스트를 잡을 수 있다. |
+
+- 짧게 외우면 `길다 -> 읽기`, `많이 안다 -> 계층`, `너무 무겁다 -> 테스트`다.
+- 세 문장이 한 코드에 같이 붙어 있다면 [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)의 `같은 주문 생성 코드로 보는 1회 pass`부터 보고 다시 이 표로 돌아오면 된다.
 
 ## 먼저 잡는 4칸 지도
 

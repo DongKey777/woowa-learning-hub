@@ -7,6 +7,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
 > - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
 > - [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)
 > - [TLS Session Resumption, 0-RTT, Replay Risk](./tls-session-resumption-0rtt-replay-risk.md)
@@ -34,6 +35,7 @@ retrieval-anchor-keywords: request timing decomposition, DNS time, connect time,
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- DevTools `dns`/`connect`/`ssl`/`waiting` 라벨을 먼저 읽고 싶다면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)부터 본다.
 - 전체 예산 설계는 [Timeout Budget Propagation Across Proxy, Gateway, Service Hops](./timeout-budget-propagation-proxy-gateway-service-hop-chain.md)로 이어진다.
 - 재시도 / 타임아웃 정책 자체는 [Timeout, Retry, Backoff 실전](./timeout-retry-backoff-practical.md)과 같이 보는 편이 좋다.
 - queue wait가 병목으로 보이면 [Upstream Queueing, Connection Pool Wait, Tail Latency](./upstream-queueing-connection-pool-wait-tail-latency.md)를 이어서 본다.

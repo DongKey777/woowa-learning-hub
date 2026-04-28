@@ -6,12 +6,14 @@
 
 관련 문서:
 
+- [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md)
+- [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md)
 - [이분 탐색 패턴](./binary-search-patterns.md)
 - [정렬 알고리즘 비교 심화](./sort.md)
 - [algorithm 카테고리 인덱스](./README.md)
 - [트리 기초](../data-structure/tree-basics.md)
 
-retrieval-anchor-keywords: binary search intro, 이분 탐색 입문, 이진 탐색 기초, binary search beginner, 이분 탐색이 뭐예요, 정렬된 배열 탐색, log n 탐색, lo hi mid, binary search lo hi, lower bound beginner, upper bound beginner, 경계 이분 탐색, off by one binary search, binary search loop condition, binary search intro basics
+retrieval-anchor-keywords: binary search intro, 이분 탐색 입문, 이진 탐색 기초, binary search beginner, 이분 탐색이 뭐예요, 정렬된 배열 탐색, log n 탐색, lo hi mid, lower bound beginner, upper bound beginner, 경계 이분 탐색, off by one binary search, arrays.binarysearch 뭐예요, 정렬은 했는데 왜 검색 결과가 이상해요, binarysearch 처음 배우는데
 
 ## 핵심 개념
 
@@ -34,6 +36,24 @@ lo=3, hi=3, mid=3 → arr[3]=7 = 7 → 찾음!
 | Lower Bound | target 이상인 첫 번째 위치 | lo < hi |
 | Upper Bound | target 초과인 첫 번째 위치 | lo < hi |
 
+## Java에서 처음 붙일 안전한 사다리
+
+Java로 처음 이분 탐색을 접하면 알고리즘 문법보다 "`정렬은 했는데 왜 `binarySearch(...)` 결과가 이상하지?`"에서 먼저 막히는 경우가 많다.
+
+처음에는 아래처럼 `primer -> follow-up -> deep dive` 한 칸씩만 가는 편이 안전하다.
+
+| 지금 보이는 증상 | 먼저 볼 문서 | 바로 다음 한 칸 | 더 깊이 갈 문서 |
+|---|---|---|---|
+| `Arrays.sort()` 뒤 원본 순서가 왜 바뀌지? | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md) | 이 문서 | [이분 탐색 패턴](./binary-search-patterns.md) |
+| 정렬은 했는데 검색 결과가 이상하다 | [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) | 이 문서 | [이분 탐색 패턴](./binary-search-patterns.md) |
+| 중복값에서 첫 위치/마지막 위치가 필요하다 | [BinarySearch Duplicate Boundary Primer](../language/java/binarysearch-duplicate-boundary-primer.md) | 이 문서의 Lower/Upper Bound 설명 | [이분 탐색 패턴](./binary-search-patterns.md) |
+
+짧게 외우면 이렇다.
+
+- Java 라이브러리 전제가 헷갈리면 language primer부터 본다
+- `lo`, `hi`, `mid`가 왜 그렇게 움직이는지 궁금하면 이 문서에서 멈춘다
+- "조건이 처음 참이 되는 지점"까지 가면 [이분 탐색 패턴](./binary-search-patterns.md)으로 넘긴다
+
 ## 상세 분해
 
 - **mid 계산**: `mid = (lo + hi) / 2`는 `lo + hi`가 int 최댓값을 초과할 수 있다. `mid = lo + (hi - lo) / 2`가 안전하다.
@@ -55,6 +75,8 @@ lo=3, hi=3, mid=3 → arr[3]=7 = 7 → 찾음!
 
 ## 더 깊이 가려면
 
+- Java `Arrays.sort(...) -> Arrays.binarySearch(...)` 전제를 먼저 다시 붙이고 싶다면 [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md)
+- Java 배열에서 중복값 경계를 가장 쉬운 방식으로 먼저 읽고 싶다면 [BinarySearch Duplicate Boundary Primer](../language/java/binarysearch-duplicate-boundary-primer.md)
 - Lower Bound / Upper Bound 응용 패턴과 결정 문제 이분 탐색은 [이분 탐색 패턴](./binary-search-patterns.md)
 - 정렬 후 이분 탐색 파이프라인의 복잡도 분석은 [정렬 알고리즘 비교 심화](./sort.md)
 

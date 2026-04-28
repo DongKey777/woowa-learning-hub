@@ -158,6 +158,32 @@ DNS 기반 discovery까지 같이 읽어야 하면 [Alt-Svc와 HTTPS RR, SVCB: H
 
 ---
 
+## Discovery source 분기 상자: HTTP header vs DNS record
+
+ALPN/`Alt-Svc`/fallback을 읽다가 헷갈리면, 먼저 **"어디서 H3 후보를 배웠나"**를 분리한다.
+
+| 지금 본 증거 | discovery source 판독 | 여기서 바로 결론 내리면 안 되는 것 |
+|---|---|---|
+| Response Headers의 `Alt-Svc` | HTTP header에서 다음 새 연결용 H3 후보를 배웠다 | "그러니 이 row가 바로 `h3`다" |
+| DNS trace의 `HTTPS` RR / `SVCB` | DNS record에서 첫 연결 전 H3 후보를 미리 알 수 있다 | "그러니 H3 handshake까지 이미 성공했다" |
+| DevTools `Protocol = h2/h3` | 후보를 써 본 **결과**가 화면에 보인다 | "후보를 어디서 배웠는지까지 이 칸 하나로 확정" |
+
+짧게 가르면:
+
+- `Alt-Svc` 질문이면 `HTTP header 기반 discovery`
+- HTTPS RR/SVCB 질문이면 `DNS record 기반 discovery`
+- `Protocol` 질문이면 `실제 연결 선택 결과`
+
+즉 초급자에게는 순서가 중요하다.
+
+1. 먼저 discovery source를 고른다. "`HTTP header였나, DNS record였나?`"
+2. 그다음 protocol 선택을 본다. "`실제로 `h3`가 성립했나?`"
+3. 마지막에 fallback을 본다. "`시도했지만 `h2`/`http/1.1`로 내려왔나?`"
+
+이 순서만 지켜도 "`Alt-Svc`를 봤으니 이미 H3다", "`DNS에 HTTPS RR이 있으니 fallback은 아니다`" 같은 혼선을 크게 줄일 수 있다.
+
+---
+
 ## Protocol-vs-Cache Boundary Bridge
 
 먼저 한 줄 감각부터 잡자.

@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md)
+- [Alt-Svc Endpoint Migration Rollout Symptom Bridge](./alt-svc-endpoint-migration-rollout-symptom-bridge.md)
 - [Alt-Svc Cache vs Per-Origin 421 Recovery](./alt-svc-cache-vs-per-origin-421-recovery.md)
 - [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md)
 - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
@@ -143,12 +144,13 @@ retrieval-anchor-keywords: h3 stale alt-svc 421 recovery, stale alt-svc 421, sta
 | 지금 보이는 장면 | 먼저 잡는 짧은 해석 | 바로 다음 문서 |
 |---|---|---|
 | 같은 URL이 `421 -> 200`으로 이어진다 | 프런트 중복 호출 결론보다 브라우저 retry recovery를 먼저 의심 | [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md), [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md) |
+| 배포 뒤 일부 사용자 첫 요청만 흔들리고 `h3 -> h2`나 `421 -> 200`이 섞인다 | stale `Alt-Svc`를 가진 client의 수렴 구간일 수 있다 | [Alt-Svc Endpoint Migration Rollout Symptom Bridge](./alt-svc-endpoint-migration-rollout-symptom-bridge.md) |
 | 첫 줄 `421`, 둘째 줄 `403/404`가 연달아 나온다 | 첫 줄은 path/connection 교정, 둘째 줄은 app 결과일 수 있다 | [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md) |
 | 배포 직후 특정 origin의 첫 H3 시도만 `421`이 잦다 | stale `Alt-Svc` 또는 endpoint authority 변경 가능성을 본다 | [Alt-Svc Cache Lifecycle Basics](./alt-svc-cache-lifecycle-basics.md), [Alt-Svc `ma`, Cache Scope, 421 Reuse Primer](./alt-svc-ma-cache-scope-421-reuse-primer.md) |
 | discovery 문제인지 reuse 문제인지 계속 헷갈린다 | "어디서 endpoint를 배웠나"와 "그 connection을 공유해도 되나"를 분리한다 | [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md), [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md) |
 | 주니어에게 5분 재현 절차를 알려줘야 한다 | `GET` 기준으로 DevTools에서 Status/Protocol/Connection ID 변화를 먼저 캡처한다 | [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md) |
 
-이 라우팅 표는 stale hint 복구를 "한 번의 짧은 판별 질문"으로 시작하게 만들어, 용어 암기보다 먼저 triage 순서를 잡아 준다.
+이 표는 stale hint 복구를 짧은 판별 질문으로 시작하게 해, 용어 암기보다 triage 순서를 먼저 잡게 한다.
 
 ---
 

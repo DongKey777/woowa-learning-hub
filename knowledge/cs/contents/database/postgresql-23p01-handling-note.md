@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Spring/JPA 예외 래퍼에서 `SQLSTATE 23P01` 꺼내는 브리지](./spring-jpa-sqlstate-23p01-bridge.md)
 - [PostgreSQL `23P01` vs `23505` Product Language Card](./postgresql-23p01-vs-23505-product-language-card.md)
 - [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
 - [Exclusion Constraint Case Studies for Overlap and Range Invariants](./exclusion-constraint-overlap-case-studies.md)

@@ -1,0 +1,177 @@
+# `Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge
+
+> 한 줄 요약: 값이 "하나 있을 수도 없을 수도 있음"이면 `Optional`에 머무르고, 값이 "0개 이상일 수 있음"이면 컬렉션으로 옮기고, "없음의 이유" 자체가 비즈니스 규칙이면 도메인 타입으로 끌어올리면 초보자도 null 처리를 덜 헷갈린다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [language 카테고리 인덱스](../README.md)
+- [Java Optional 입문](./java-optional-basics.md)
+- [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+- [Java enum 기초](./java-enum-basics.md)
+- [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
+- [Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지](./map-put-null-containskey-distinction-bridge.md)
+- [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+
+retrieval-anchor-keywords: optional collection bridge, optional list beginner, optional vs empty list, null handling design java, optional 언제 쓰고 컬렉션 언제 쓰나, optional list map set 헷갈림, optional collection domain type basics, optional empty collection difference, 없음의 의미를 타입으로, beginner null handling java, 자바 optional 컬렉션 설계, optional 대신 도메인 타입, optional collection primer, optional 0개 이상 데이터, map null vs missing beginner
+
+## 먼저 잡는 멘탈 모델
+
+초보자 기준으로는 `Optional`을 "한 칸짜리 상자", 컬렉션을 "여러 칸짜리 상자"로 보면 된다.
+
+- `Optional<T>`: 값이 0개 또는 1개
+- `List<T>`, `Set<T>`, `Map<K, V>`: 값이 0개 이상
+
+여기서 한 번 더 분기해야 한다.
+
+- "값이 없을 수 있다"만 말하면 충분한가
+- 아니면 "왜 없는지", "없음도 상태 중 하나인지"를 같이 표현해야 하는가
+
+첫 번째면 `Optional`이 맞고, 두 번째면 컬렉션 설계나 도메인 타입으로 한 단계 올려서 표현하는 편이 더 읽기 쉽다.
+
+## 10초 판단 표
+
+| 지금 표현하려는 것 | 첫 선택 | 이유 |
+|---|---|---|
+| 회원을 id로 찾았더니 없을 수도 있다 | `Optional<User>` | 단일 조회 결과가 없을 수 있다는 뜻만 있으면 충분 |
+| 주문의 쿠폰 목록이 0개일 수 있다 | `List<Coupon>` + 빈 리스트 | "쿠폰이 없음"이 정상적인 0개 상태라서 `Optional<List<Coupon>>`까지 갈 필요가 없다 |
+| 연락처가 없음 / 비공개 / 아직 미입력처럼 이유가 다르다 | 도메인 타입 또는 `enum` 포함 타입 | 단순 present/absent보다 상태 의미가 더 중요하다 |
+
+핵심은 "비어 있음"이 데이터 개수 문제인지, 비즈니스 의미 문제인지 먼저 나누는 것이다.
+
+## `Optional`에 머물러도 되는 경우
+
+`Optional`은 단건 조회나 선택적 계산 결과처럼 "있으면 쓰고, 없으면 다른 처리"가 자연스러운 곳에 잘 맞는다.
+
+```java
+Optional<User> user = userRepository.findById(id);
+String nickname = user.map(User::getNickname)
+        .orElse("손님");
+```
+
+이 예제에서 호출자는 두 가지만 알면 된다.
+
+- 사용자가 있을 수 있다
+- 없으면 기본값이나 예외 정책을 정하면 된다
+
+즉 `Optional`은 "없음 처리 책임을 호출자에게 분명하게 넘기는 도구"다.  
+반대로 값이 여러 개일 수 있는 구조까지 `Optional`로 감싸기 시작하면, 개수와 정책이 한꺼번에 섞여 읽기가 어려워진다.
+
+## 컬렉션까지는 쉬운데 `Map`에서 다시 헷갈리는 이유
+
+`List`와 `Set`은 보통 "비어 있음"을 컬렉션 자체로 표현한다.
+그래서 초보자도 `list.isEmpty()`를 보면 "0개구나"라고 바로 읽는다.
+
+그런데 `Map`은 컬렉션 계열이면서도 `get(key)`라는 "단건 조회 API"를 같이 갖고 있다.
+여기서 다시 `Optional`과 비슷한 질문이 튀어나온다.
+
+- `Optional<T>`: 값이 있나, 없나
+- `List<T>` / `Set<T>`: 원소가 0개인가, 1개 이상인가
+- `Map<K, V>`: key가 없나, 아니면 key는 있는데 value가 `null`인가
+
+즉 `Map`은 "여러 개를 담는 컬렉션"이면서도 "한 key를 단건 조회하는 상자"이기도 하다.
+그래서 `Optional`에서 막히던 "없음" 감각이 `Map.get()`에서 다시 나타난다.
+
+| 지금 보는 타입 | 초보자용 질문 | 바로 떠올릴 것 |
+|---|---|---|
+| `Optional<User>` | 사용자가 있나 없나? | `orElse`, `orElseThrow` |
+| `List<Coupon>` | 쿠폰이 0개인가? | `isEmpty()` |
+| `Map<Long, String>` | 이 id가 없나, 값이 `null`인가? | `containsKey()`, `getOrDefault()` |
+
+예를 들어:
+
+- 회원 조회 결과가 없을 수 있으면 `Optional<User>`
+- 회원의 쿠폰이 0개일 수 있으면 `List<Coupon>`
+- 회원 id별 상태를 찾는데 `Map<Long, String>`에 `null`도 넣을 수 있으면 `get(id) == null`만으로는 부족
+
+이 마지막 분기를 더 자세히 보는 문서가 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)다.
+
+## 컬렉션 설계로 옮겨야 하는 경우
+
+여러 개를 담는 값이라면, "0개"는 대개 null 문제가 아니라 컬렉션의 정상 상태다.
+
+```java
+List<OrderLine> orderLines = order.getOrderLines();
+if (orderLines.isEmpty()) {
+    System.out.println("주문 항목 없음");
+}
+```
+
+여기서는 `Optional<List<OrderLine>>`보다 `빈 리스트`가 보통 더 낫다.
+
+- 호출자가 `isPresent()` 후 다시 `isEmpty()`를 보는 2단계 체크를 안 해도 된다
+- API 사용자가 "이 값은 여러 개일 수 있다"는 사실을 바로 읽을 수 있다
+- Stream, for-each, `size()` 같은 컬렉션 API를 바로 쓸 수 있다
+
+즉 "0개일 수 있음"은 컬렉션이 이미 잘 표현한다.
+
+### 초보자가 자주 헷갈리는 조합
+
+| 표현 | 보통 더 나은 표현 | 이유 |
+|---|---|---|
+| `Optional<List<T>>` | `List<T>` | 여러 개 자료에서 `0개`는 빈 리스트로 충분한 경우가 많다 |
+| `Optional<Set<T>>` | `Set<T>` | 중복 제거된 결과가 없으면 빈 집합이면 된다 |
+| `Optional<Map<K, V>>` | `Map<K, V>` | 조회 테이블이 비어 있는 상태는 맵 자체가 표현한다 |
+
+예외는 있다. "목록 자체가 아직 로드되지 않음"과 "로드했지만 0개"를 정말 구분해야 하면 별도 상태 타입이 더 낫다. `Optional<List<T>>`로 억지로 두 의미를 붙이지 않는 편이 좋다.
+
+## 도메인 타입으로 옮겨야 하는 경우
+
+없음의 이유가 비즈니스 규칙이면 `Optional.empty()` 하나로는 정보가 부족하다.
+
+예를 들어 닉네임이 없을 수 있는 이유가 아래처럼 여러 가지라면:
+
+- 아직 미입력
+- 운영 정책상 비공개
+- 탈퇴 후 제거됨
+
+이때는 `Optional<String>`보다 상태를 가진 타입이 더 분명하다.
+
+```java
+enum NicknameStatus {
+    PRESENT,
+    NOT_ENTERED,
+    PRIVATE
+}
+
+record NicknameInfo(NicknameStatus status, String value) {
+}
+```
+
+이 설계의 장점은 `null`과 `Optional.empty()` 뒤에 숨어 있던 이유를 타입으로 끌어올린다는 점이다.
+
+- 프론트 응답 정책을 분기하기 쉽다
+- 테스트에서 "왜 없는지"를 바로 검증할 수 있다
+- 나중에 상태가 늘어나도 `enum`과 타입이 의도를 붙잡아 준다
+
+즉 비즈니스 의미가 커질수록 `Optional`보다 도메인 타입이 더 설명력이 좋다.
+
+## 흔한 오해와 함정
+
+- "`Optional<List<T>>`가 더 안전해 보이니 무조건 좋다"
+  안전해 보이지만, 실제로는 `isPresent()`와 `isEmpty()`를 둘 다 보게 만들어 호출 코드를 늘리기 쉽다.
+- "빈 리스트를 주면 값이 없는 이유를 설명한 것이다"
+  아니다. 빈 리스트는 "0개"만 말한다. "아직 로딩 안 됨", "권한이 없어 숨김" 같은 뜻은 별도 타입이 필요하다.
+- "`Optional`만 쓰면 null 설계가 끝난다"
+  null 방어는 API 경계 한 부분일 뿐이다. 다건 데이터는 컬렉션 설계가, 상태 의미는 도메인 타입이 더 중요할 수 있다.
+
+## 실무에서 고르는 순서
+
+1. 값 개수가 0/1인지 0..N인지 먼저 본다.
+2. 0/1이면 `Optional<T>`를 먼저 고려한다.
+3. 0..N이면 빈 컬렉션이 정상 상태인지 먼저 본다.
+4. "왜 없는지"가 중요한 순간부터는 `enum`, `record`, value object 같은 도메인 타입을 검토한다.
+
+이 순서로 보면 `Optional`, 컬렉션, 도메인 타입이 경쟁 관계가 아니라 서로 다른 층에서 null 혼동을 줄이는 도구라는 점이 보인다.
+
+## 더 깊이 가려면
+
+- `Optional` API 자체가 아직 헷갈리면 [Java Optional 입문](./java-optional-basics.md)
+- 빈 컬렉션과 인터페이스 선택 감각이 약하면 [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+- "없음의 이유"를 상태 타입으로 올리는 감각은 [Java enum 기초](./java-enum-basics.md)
+- 도메인 불변식과 값 타입 설계를 더 보려면 [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
+
+## 한 줄 정리
+
+단건의 "있음/없음"은 `Optional`, 다건의 "0개"는 빈 컬렉션, "없음의 이유"까지 중요해지는 순간은 도메인 타입으로 올린다고 기억하면 null 처리 설계가 훨씬 단순해진다.

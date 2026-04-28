@@ -1,0 +1,144 @@
+# TreeSet Exact-Match Drill
+
+> 한 줄 요약: `TreeSet`의 `lower/floor/ceiling/higher`는 값 하나짜리 정렬 줄에서 "같은 값을 포함하나"만 구분하면 손으로 바로 맞힐 수 있다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [자료구조 카테고리 인덱스](./README.md)
+- [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md)
+- [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
+- [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
+
+retrieval-anchor-keywords: treeset exact match drill, treeset lower floor ceiling higher, navigableset beginner drill, treeset exact match beginner, treeset floor ceiling 처음, lower higher 헷갈림 set, sorted set basics, treeset 뭐예요, treeset neighbor query, treeset exact value practice, treeset inclusive strict, what is treeset lower floor
+
+## 핵심 개념
+
+`TreeSet`은 "정렬된 값 줄"이라고 보면 된다.
+`TreeMap`처럼 value를 붙이지 않고 값 자체만 다루기 때문에, 초보자에게는 `lower/floor/ceiling/higher` 감각을 떼어 연습하기 더 쉽다.
+
+- `lower(x)`: `x`보다 strict하게 작은 가장 가까운 값
+- `floor(x)`: `x`와 같거나 그보다 작은 가장 가까운 값
+- `ceiling(x)`: `x`와 같거나 그보다 큰 가장 가까운 값
+- `higher(x)`: `x`보다 strict하게 큰 가장 가까운 값
+
+먼저 외울 문장은 한 줄이면 충분하다.
+
+> `lower/higher`는 strict, `floor/ceiling`은 exact match를 포함한다.
+
+## 한눈에 보기
+
+같은 숫자 줄을 계속 쓴다.
+
+```text
+[10, 20, 30, 40]
+```
+
+| 질문 | 답을 찾는 메서드 | 읽는 법 |
+|---|---|---|
+| `30` 바로 왼쪽 값은? | `lower(30)` | exact match는 빼고 왼쪽 |
+| `30`이 있으면 그 자리도 포함한 왼쪽은? | `floor(30)` | 같은 값 포함 |
+| `30`이 있으면 그 자리도 포함한 오른쪽은? | `ceiling(30)` | 같은 값 포함 |
+| `30` 바로 오른쪽 값은? | `higher(30)` | exact match는 빼고 오른쪽 |
+
+exact match가 있을 때만 `strict`와 `inclusive` 차이가 크게 드러난다.
+값이 없는 중간 지점에서는 왼쪽 둘, 오른쪽 둘이 각각 같은 답으로 모인다.
+
+## 상세 분해
+
+### 예제 1. exact match가 있는 값
+
+질문: `30`을 넣으면?
+
+| 호출 | 답 |
+|---|---|
+| `lower(30)` | `20` |
+| `floor(30)` | `30` |
+| `ceiling(30)` | `30` |
+| `higher(30)` | `40` |
+
+해석: `floor/ceiling`만 `30`을 붙잡고, `lower/higher`는 strict하게 한 칸 건너뛴다.
+
+### 예제 2. 값 사이에 있는 수
+
+질문: `25`를 넣으면?
+
+| 호출 | 답 |
+|---|---|
+| `lower(25)` | `20` |
+| `floor(25)` | `20` |
+| `ceiling(25)` | `30` |
+| `higher(25)` | `30` |
+
+해석: `25`는 set 안에 없으므로 inclusive/strict 차이가 사라진다.
+
+### 예제 3. 맨 왼쪽보다 더 작은 값
+
+질문: `5`를 넣으면?
+
+| 호출 | 답 |
+|---|---|
+| `lower(5)` | `null` |
+| `floor(5)` | `null` |
+| `ceiling(5)` | `10` |
+| `higher(5)` | `10` |
+
+해석: 왼쪽에는 값이 없어서 `null`이 나온다. 이건 에러가 아니라 정상 결과다.
+
+### 예제 4. 맨 오른쪽보다 더 큰 값
+
+질문: `45`를 넣으면?
+
+| 호출 | 답 |
+|---|---|
+| `lower(45)` | `40` |
+| `floor(45)` | `40` |
+| `ceiling(45)` | `null` |
+| `higher(45)` | `null` |
+
+해석: 이번에는 오른쪽 값이 없어서 `ceiling/higher`가 `null`이 된다.
+
+## 흔한 오해와 함정
+
+- `floor`를 "이전 값"으로만 외우면 exact match에서 틀린다. 같은 값도 포함한다.
+- `ceiling`을 "다음 값"으로만 외우면 exact match에서 틀린다. 이것도 같은 값을 포함한다.
+- `lower`와 `floor`, `higher`와 `ceiling`을 같은 말처럼 쓰면 대부분 exact match 문제에서 실수한다.
+- `null`이 나오면 예외라고 느끼기 쉽지만, 단지 그 방향에 이웃 값이 없다는 뜻이다.
+- `TreeSet`인데도 `key/value`처럼 생각하면 오히려 헷갈린다. 이 문서는 값 하나짜리 줄로만 보면 된다.
+
+## 실무에서 쓰는 모습
+
+`TreeSet<Integer>`나 `TreeSet<LocalTime>`은 "값 자체만 정렬된 상태로 유지"하면 되는 장면에서 가볍게 쓴다.
+예를 들어 예약 시작 시각 목록만 관리한다면 `10:00 이후 첫 시각`, `현재보다 바로 이전 시각` 같은 질문을 `ceiling`과 `lower`로 바로 읽을 수 있다.
+
+```java
+NavigableSet<Integer> slots = new TreeSet<>(List.of(10, 20, 30, 40));
+
+Integer previous = slots.floor(25);   // 20
+Integer next = slots.ceiling(25);     // 30
+Integer exactOrNext = slots.ceiling(30); // 30
+```
+
+값만 있으면 `TreeSet`, 값에 설명이나 종료 시각까지 붙여야 하면 `TreeMap`으로 넘어가면 된다.
+
+## 더 깊이 가려면
+
+- `Set` 선택 자체가 아직 흐리면 [HashSet vs TreeSet Beginner Bridge](./hashset-vs-treeset-beginner-bridge.md)
+- 같은 이웃 조회를 예약표 `key -> value` 기준으로 옮겨 보고 싶다면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
+- `subMap`, 충돌 검사, gap check처럼 range 감각까지 넓히고 싶다면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- Java 이름표 전체를 `NavigableSet`/`NavigableMap` 기준으로 같이 보고 싶다면 [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
+
+## 면접/시니어 질문 미리보기
+
+1. `TreeSet`과 `HashSet`의 선택 기준은 무엇인가요?
+   정렬, 이웃 값, 범위 조회가 필요하면 `TreeSet`, membership만 필요하면 `HashSet`이다.
+2. exact match가 있을 때 `floor`와 `lower`는 왜 다른가요?
+   `floor`는 inclusive, `lower`는 strict이기 때문이다.
+3. `TreeSet`으로 충분한데 `TreeMap`으로 가는 순간은 언제인가요?
+   값 자체만이 아니라 `시작 시각 -> 예약 정보`처럼 value를 함께 읽어야 할 때다.
+
+## 한 줄 정리
+
+`TreeSet`의 `lower/floor/ceiling/higher`는 "왼쪽/오른쪽"보다 "exact match를 포함하나"를 먼저 고정하면 초급 손추적이 훨씬 쉬워진다.

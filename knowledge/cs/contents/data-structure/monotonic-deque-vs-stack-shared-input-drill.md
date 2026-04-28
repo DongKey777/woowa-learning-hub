@@ -198,19 +198,25 @@ retrieval-anchor-keywords: monotonic deque vs stack shared input drill basics, m
 - `<`는 `같은 값이면 이전 후보 유지`
 - `<=`는 `같은 값이면 새 후보로 교체`
 
-### 2. Stack 쪽: `>` vs `>=`
+### 2. Stack 쪽: `next greater` vs `next greater or equal`
 
-질문: 같은 `dup = [2, 2, 1]`에서 `Previous Smaller`를 구한다.
+질문: 같은 `dup = [2, 2, 1]`에서 오른쪽 답을 비교한다.
 
 | 질문 | pop 조건 | 결과 |
 |---|---|---|
-| `Previous Smaller` | `while topValue >= cur` | `[-1, -1, -1]` |
-| `Previous Smaller or Equal` | `while topValue > cur` | `[-1, 2, -1]` |
+| `Next Greater` | `while topValue < cur` | `[-1, -1, -1]` |
+| `Next Greater or Equal` | `while topValue <= cur` | `[2, -1, -1]` |
+
+손으로 보면 차이는 `i = 1`의 두 번째 `2`에서 바로 난다.
+
+| 현재 값 | `Next Greater` | `Next Greater or Equal` |
+|---|---|---|
+| 두 번째 `2` | 첫 번째 `2`를 pop하지 않음. 같은 값은 `greater`가 아님 | 첫 번째 `2`를 pop하고 `ans[0] = 2` 확정. 같은 값도 `equal`로 인정 |
 
 여기서 초급자가 가장 자주 놓치는 부분은 이것이다.
 
-- `strict smaller`면 같은 값 `2`는 답이 아니므로 `>=`로 제거해야 한다.
-- `smaller or equal`이면 같은 값 `2`도 답 후보라서 `>`만 제거한다.
+- `strict greater`면 같은 값 `2`는 답이 아니므로 `<`까지만 pop한다.
+- `greater or equal`이면 같은 값 `2`도 답이 되므로 `<=`까지 pop한다.
 
 ### 중복값 보조 예제에서 딱 기억할 두 줄
 
@@ -221,14 +227,14 @@ retrieval-anchor-keywords: monotonic deque vs stack shared input drill basics, m
 
 이 두 줄만 먼저 적으면 `<`/`<=`, `>`/`>=`를 외우기보다 문제 문장에서 다시 고를 수 있다.
 
-### 구현 전이용 최소 의사코드: stack NGE vs PSE
+### 구현 전이용 최소 의사코드: stack NGE vs NGE-or-equal
 
-stack은 `언제 답을 쓰는가`만 보면 된다.
-`NGE`는 pop 순간 오른쪽 답을 쓰고, `PSE`는 pop 정리 뒤 남은 top을 왼쪽 답으로 읽는다.
+stack은 `같은 값도 이번에 답을 확정할지`만 먼저 정하면 된다.
+둘 다 오른쪽 답을 pop 순간에 쓴다는 뼈대는 같다.
 
 ## Duplicate Add-On. 중복값 한 번 더 고정하기 (계속 2)
 
-| next greater element (NGE) | previous smaller element (PSE) |
+| next greater element (NGE) | next greater or equal element (NGEE) |
 |---|---|
 | ```text
 | ans = [-1] * n
@@ -244,11 +250,8 @@ stack은 `언제 답을 쓰는가`만 보면 된다.
 | st = empty stack of index
 |
 | for i in 0..n-1:
-|     while st not empty and nums[st.top] >= nums[i]:
-|         st.pop()
-|
-|     if st not empty:
-|         ans[i] = nums[st.top]
+|     while st not empty and nums[st.top] <= nums[i]:
+|         ans[st.pop()] = nums[i]
 |
 |     st.push(i)
 | ``` |
@@ -256,7 +259,7 @@ stack은 `언제 답을 쓰는가`만 보면 된다.
 입문자 기준으로는 아래 두 문장이 가장 중요하다.
 
 - NGE: `현재 값이 예전 index의 답을 써 준다`
-- PSE: `현재 값보다 작은 왼쪽 후보만 남긴 뒤 top을 읽는다`
+- NGEE: `현재 값이 같아도 예전 index의 답을 써 줄 수 있다`
 
 ## 빠른 비교표
 

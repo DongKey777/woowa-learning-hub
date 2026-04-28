@@ -6,9 +6,19 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 
+from scripts.workbench.cli import build_parser
 from scripts.workbench.core import orchestrator_workers as ow
+from scripts.workbench.core import orchestrator as orchestrator_module
 from scripts.workbench.core.orchestrator import Orchestrator
-from scripts.workbench.core.orchestrator_workers import WORKER_FLEET, _fleet_can_enqueue
+from scripts.workbench.core.orchestrator_workers import (
+    EXPANSION_FLEET,
+    EXPANSION60_FLEET,
+    FLEET_PROFILES,
+    WORKER_FLEET,
+    _fleet_can_enqueue,
+    _fleet_for_profile,
+    _profile_for_worker,
+)
 
 
 class OrchestratorTest(unittest.TestCase):
@@ -133,6 +143,83 @@ class OrchestratorTest(unittest.TestCase):
         )
         self.assertEqual(claimed["claimed"][0]["title"], "Java object memory model")
 
+    def test_expansion_claim_does_not_take_legacy_quality_pending(self) -> None:
+        orchestrator = self._make_orchestrator()
+        now = datetime(2026, 4, 14, 0, 0, tzinfo=timezone.utc)
+        orchestrator.enqueue_candidates(
+            "qa-content-spring",
+            [
+                {
+                    "title": "Legacy QA Spring pending",
+                    "goal": "Existing quality repair queue item without explicit profile",
+                    "tags": ["qa", "spring", "beginner"],
+                }
+            ],
+            source="worker-suggestion:runtime-qa-content-spring",
+            now=now,
+        )
+        items = orchestrator.load_queue()
+        legacy = next(entry for entry in items if entry["title"] == "Legacy QA Spring pending")
+        legacy.pop("fleet_profile", None)
+        orchestrator.save_queue(items)
+
+        expansion_claim = orchestrator.claim(
+            "expansion-qa-spring-entrypoints",
+            lanes=["qa-content-spring"],
+            claim_tags=["spring"],
+            fleet_profile="expansion",
+            refresh_backlog=False,
+            now=now,
+        )
+        self.assertEqual(expansion_claim["claimed"], [])
+
+        quality_claim = orchestrator.claim(
+            "runtime-qa-content-spring",
+            lanes=["qa-content-spring"],
+            claim_tags=["spring"],
+            fleet_profile="quality",
+            refresh_backlog=False,
+            now=now,
+        )
+        self.assertEqual(quality_claim["claimed"][0]["title"], "Legacy QA Spring pending")
+
+    def test_expansion_run_once_seeds_only_expansion_profile_items(self) -> None:
+        orchestrator = self._make_orchestrator()
+        payload = orchestrator.run_once(low_water_mark=1, wave_size=4, fleet_profile="expansion")
+        queue = orchestrator.load_queue()
+        self.assertTrue(queue)
+        self.assertTrue(all(entry.get("fleet_profile") == "expansion" for entry in queue))
+        self.assertTrue(all(entry.get("fleet_profile") == "expansion" for entry in payload["current_wave"]["items"]))
+
+        quality_claim = orchestrator.claim(
+            "runtime-qa-content-spring",
+            lanes=["spring"],
+            claim_tags=["spring"],
+            fleet_profile="quality",
+            refresh_backlog=False,
+        )
+        self.assertEqual(quality_claim["claimed"], [])
+
+    def test_same_title_can_exist_in_separate_queue_profiles(self) -> None:
+        orchestrator = self._make_orchestrator()
+        candidate = {"title": "Shared title", "goal": "Profile-isolated backlog item", "tags": ["spring"]}
+        quality_created = orchestrator.enqueue_candidates(
+            "spring",
+            [candidate],
+            source="test-quality",
+            fleet_profile="quality",
+        )
+        expansion_created = orchestrator.enqueue_candidates(
+            "spring",
+            [candidate],
+            source="test-expansion",
+            fleet_profile="expansion",
+        )
+        self.assertEqual(len(quality_created), 1)
+        self.assertEqual(len(expansion_created), 1)
+        items = [entry for entry in orchestrator.load_queue() if entry["title"] == "Shared title"]
+        self.assertEqual({entry["fleet_profile"] for entry in items}, {"quality", "expansion"})
+
     def test_seed_woowa_backend_curriculum_backlog_adds_foundation_pack(self) -> None:
         orchestrator = self._make_orchestrator()
         created = orchestrator.seed_woowa_backend_curriculum_backlog()
@@ -147,6 +234,10 @@ class OrchestratorTest(unittest.TestCase):
         self.assertEqual(java_item["source"], "curriculum-foundation")
         self.assertIn("curriculum-foundation", java_item["tags"])
         self.assertGreaterEqual(int(java_item["priority"]), 100)
+
+    def test_pid_alive_treats_permission_error_as_alive(self) -> None:
+        with mock.patch.object(orchestrator_module.os, "kill", side_effect=PermissionError):
+            self.assertTrue(orchestrator_module._pid_alive(12345))
 
 
 class FleetSpecTest(unittest.TestCase):
@@ -163,6 +254,104 @@ class FleetSpecTest(unittest.TestCase):
         self.assertTrue(all("claim_tags" in entry for entry in WORKER_FLEET))
         self.assertTrue(all(not entry.get("can_enqueue", True) for entry in WORKER_FLEET))
         self.assertFalse(_fleet_can_enqueue())
+
+    def test_fleet_profiles_keep_quality_and_expansion_separate(self) -> None:
+        self.assertIs(FLEET_PROFILES["quality"], WORKER_FLEET)
+        self.assertIs(FLEET_PROFILES["expansion"], EXPANSION_FLEET)
+        self.assertIs(FLEET_PROFILES["expansion60"], EXPANSION60_FLEET)
+        self.assertEqual(_fleet_for_profile("quality"), WORKER_FLEET)
+        self.assertEqual(_fleet_for_profile("expansion"), EXPANSION_FLEET)
+        self.assertEqual(_fleet_for_profile("expansion60"), EXPANSION60_FLEET)
+
+    def test_expansion_fleet_has_30_mixed_purpose_workers(self) -> None:
+        self.assertEqual(len(EXPANSION_FLEET), 30)
+        names = {entry["name"] for entry in EXPANSION_FLEET}
+        self.assertEqual(len(names), 30)
+        roles = [entry["role"] for entry in EXPANSION_FLEET]
+        self.assertEqual(roles.count("curriculum"), 1)
+        self.assertEqual(roles.count("content"), 8)
+        self.assertEqual(roles.count("qa"), 12)
+        self.assertEqual(roles.count("rag"), 6)
+        self.assertEqual(roles.count("ops"), 3)
+        self.assertTrue(any(entry.get("can_enqueue", True) for entry in EXPANSION_FLEET))
+        self.assertTrue(all("write_scopes" in entry for entry in EXPANSION_FLEET))
+        self.assertTrue(all("claim_tags" in entry for entry in EXPANSION_FLEET))
+        self.assertTrue(all(entry["name"].startswith("expansion-") for entry in EXPANSION_FLEET))
+        self.assertTrue(_fleet_can_enqueue("expansion"))
+
+    def test_expansion_profile_lookup_finds_expansion_workers(self) -> None:
+        profile = _profile_for_worker("expansion-spring-mvc-roomescape", "spring", "expansion")
+        self.assertEqual(profile["role"], "content")
+        self.assertEqual(profile["mode"], "expand")
+        self.assertIn("roomescape", profile["claim_tags"])
+
+    def test_expansion_workers_lock_shared_surfaces(self) -> None:
+        spring_core = _profile_for_worker("expansion-spring-core-di", "spring", "expansion")
+        spring_mvc = _profile_for_worker("expansion-spring-mvc-roomescape", "spring", "expansion")
+        self.assertIn("expansion:content:spring", spring_core["write_scopes"])
+        self.assertIn("expansion:content:spring", spring_mvc["write_scopes"])
+
+        rag_workers = [
+            _profile_for_worker("expansion-rag-spring-di", "qa-retrieval", "expansion"),
+            _profile_for_worker("expansion-rag-roomescape-admin", "qa-retrieval", "expansion"),
+            _profile_for_worker("expansion-rag-persistence", "qa-retrieval", "expansion"),
+            _profile_for_worker("expansion-rag-http-testing", "qa-retrieval", "expansion"),
+            _profile_for_worker("expansion-rag-golden-curation", "qa-retrieval", "expansion"),
+        ]
+        self.assertTrue(all("expansion:rag:golden" in profile["write_scopes"] for profile in rag_workers))
+
+    def test_expansion60_fleet_has_60_pipeline_workers(self) -> None:
+        self.assertEqual(len(EXPANSION60_FLEET), 60)
+        names = {entry["name"] for entry in EXPANSION60_FLEET}
+        self.assertEqual(len(names), 60)
+        roles = [entry["role"] for entry in EXPANSION60_FLEET]
+        self.assertEqual(roles.count("curriculum"), 2)
+        self.assertEqual(roles.count("content"), 24)
+        self.assertEqual(roles.count("qa"), 22)
+        self.assertEqual(roles.count("rag"), 8)
+        self.assertEqual(roles.count("ops"), 4)
+        self.assertTrue(all(entry["name"].startswith("expansion60-") for entry in EXPANSION60_FLEET))
+        self.assertTrue(_fleet_can_enqueue("expansion60"))
+
+    def test_expansion60_content_workers_use_granular_non_readme_scopes(self) -> None:
+        content_workers = [entry for entry in EXPANSION60_FLEET if entry["role"] == "content"]
+        self.assertEqual(len(content_workers), 24)
+        scopes = [scope for entry in content_workers for scope in entry["write_scopes"]]
+        self.assertEqual(len(scopes), len(set(scopes)))
+        self.assertTrue(all(scope.startswith("expansion60:content:") for scope in scopes))
+        self.assertTrue(
+            all(not path.endswith("/README.md") for entry in content_workers for path in entry["target_paths"])
+        )
+
+    def test_expansion60_keeps_singleton_rag_mutators_separate(self) -> None:
+        signal_mutators = [
+            entry
+            for entry in EXPANSION60_FLEET
+            if "scripts/learning/rag/signal_rules.py" in entry["target_paths"]
+        ]
+        golden_mutators = [
+            entry
+            for entry in EXPANSION60_FLEET
+            if "tests/fixtures/cs_rag_golden_queries.json" in entry["target_paths"]
+        ]
+        self.assertEqual([entry["name"] for entry in signal_mutators], ["expansion60-rag-signal-rules-mutator"])
+        self.assertEqual([entry["name"] for entry in golden_mutators], ["expansion60-rag-golden-mutator"])
+
+    def test_expansion60_run_once_seeds_only_expansion60_profile_items(self) -> None:
+        orchestrator = Orchestrator(Path(tempfile.mkdtemp()) / "state" / "orchestrator")
+        payload = orchestrator.run_once(low_water_mark=1, wave_size=4, fleet_profile="expansion60")
+        queue = orchestrator.load_queue()
+        self.assertTrue(queue)
+        self.assertTrue(all(entry.get("fleet_profile") == "expansion60" for entry in queue))
+        self.assertTrue(all(entry.get("fleet_profile") == "expansion60" for entry in payload["current_wave"]["items"]))
+
+    def test_fleet_start_parser_accepts_profile(self) -> None:
+        args = build_parser().parse_args(["orchestrator", "fleet-start", "--profile", "expansion60"])
+        self.assertEqual(args.profile, "expansion60")
+
+    def test_fleet_status_parser_can_use_active_profile_default(self) -> None:
+        args = build_parser().parse_args(["orchestrator", "fleet-status"])
+        self.assertIsNone(args.profile)
 
 
 class CompletionGateTest(unittest.TestCase):

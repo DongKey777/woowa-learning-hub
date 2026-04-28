@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java array common confusion checklist basics, java array common confusion checklist beginner, java array common confusion checklist intro, java basics, beginner java, 처음 배우는데 java array common confusion checklist, java array common confusion checklist 입문, java array common confusion checklist 기초, what is java array common confusion checklist, how to java array common confusion checklist
+retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷갈릴 때, 자바 배열 기초 체크리스트, 배열 처음 배우는데 뭐가 헷갈리나요, 배열 == equals 차이, 배열 왜 같이 바뀌나요, 배열 sort 왜 원본 바뀌나요, 배열 length 왜 에러나요, i <= arr.length 왜 터져요, 배열 값 비교 참조 공유 차이, 배열 출력 비교 복사 정렬 분기, array beginner symptom router, java array beginner checklist, java array same array vs same value, java array alias confusion
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java 반복문과 스코프 follow-up 입문](./java-loop-control-scope-follow-up-primer.md)
@@ -23,6 +23,7 @@ retrieval-anchor-keywords: java array common confusion checklist basics, java ar
 > - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 > - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 > - [Primitive Descending Array Sort Bridge](./primitive-descending-array-sort-bridge.md)
+> - [배열 vs 연결 리스트](../../data-structure/array-vs-linked-list.md)
 > - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 
 > retrieval-anchor-keywords: java array common confusion checklist, java array beginner checklist, java array confusion bridge, java array re-entry checklist, java array first routing, java array same array vs same value, java array compare copy sort checklist, java array == vs value compare, java array equals confusion, java array alias confusion, java array assignment alias, java array sort mutates original, java array in place sort, java array beginner routing, java array same value but false, java array changed together, java array sort changed original, java 2d array confusion route, java row column confusion route, jagged array confusion route, 자바 배열 혼동 체크리스트, 자바 배열 입문 체크리스트, 배열 공통 confusion, 배열 재진입 체크리스트, 배열 같은 값 같은 배열 차이, 배열 == 값 비교 차이, 배열 equals 혼동, 배열 alias 혼동, 배열 대입 참조 공유, 배열 sort 원본 변경, 배열 제자리 정렬, 배열 비교 복사 정렬 분기, 배열 인덱스 순회 실수, 2차원 배열 행 열 혼동, jagged array 순회 실수, i less than length, i less or equal length, array loop route, 배열 length까지 돌면 왜 에러, 배열 길이만큼 돌면 왜 터짐, i <= arr.length 왜 에러, 배열 마지막 인덱스 length minus one, 배열 오프바이원 입문

@@ -20,6 +20,7 @@ DEFAULT_LEASE_SECONDS = 30 * 60
 DEFAULT_LOW_WATER_MARK = 2
 DEFAULT_WAVE_SIZE = 6
 RECENT_COMPLETION_WINDOW = 8
+DEFAULT_QUEUE_PROFILE = "quality"
 QUEUE_PENDING = "pending"
 QUEUE_LEASED = "leased"
 QUEUE_COMPLETED = "completed"
@@ -155,6 +156,20 @@ def _normalize_candidate_tags(title: str, goal: str, tags: list[str]) -> list[st
     return normalized
 
 
+def _normalize_queue_profile(fleet_profile: str | None) -> str:
+    normalized = (fleet_profile or DEFAULT_QUEUE_PROFILE).strip().lower()
+    return normalized or DEFAULT_QUEUE_PROFILE
+
+
+def _item_fleet_profile(item: dict[str, Any]) -> str:
+    # Legacy queue entries predate fleet profiles and belong to the quality queue.
+    return _normalize_queue_profile(str(item.get("fleet_profile") or DEFAULT_QUEUE_PROFILE))
+
+
+def _matches_fleet_profile(item: dict[str, Any], fleet_profile: str | None) -> bool:
+    return _item_fleet_profile(item) == _normalize_queue_profile(fleet_profile)
+
+
 def _matches_claim_tags(item: dict[str, Any], claim_tags: list[str] | None) -> bool:
     if not claim_tags:
         return True
@@ -222,22 +237,23 @@ def _qa_content_prefixes_for_lane(lane: str) -> tuple[str, ...] | None:
     return tuple(config["prefixes"])
 
 
-def _live_lane_items(items: list[dict[str, Any]], lane: str) -> list[dict[str, Any]]:
+def _live_lane_items(items: list[dict[str, Any]], lane: str, *, fleet_profile: str | None = DEFAULT_QUEUE_PROFILE) -> list[dict[str, Any]]:
     return [
         item
         for item in items
         if item["lane"] == lane and item["status"] in {QUEUE_PENDING, QUEUE_LEASED}
+        and _matches_fleet_profile(item, fleet_profile)
     ]
 
 
-def _has_live_beginner_item(items: list[dict[str, Any]], lane: str) -> bool:
+def _has_live_beginner_item(items: list[dict[str, Any]], lane: str, *, fleet_profile: str | None = DEFAULT_QUEUE_PROFILE) -> bool:
     return any(
         _is_beginner_focused(
             item.get("base_title") or item["title"],
             item["goal"],
             list(item.get("tags", [])),
         )
-        for item in _live_lane_items(items, lane)
+        for item in _live_lane_items(items, lane, fleet_profile=fleet_profile)
     )
 
 
@@ -825,6 +841,12 @@ class Orchestrator:
         self._lock_depth = 0
         self.ensure_layout()
 
+    def _wave_path_for_profile(self, fleet_profile: str | None) -> Path:
+        profile = _normalize_queue_profile(fleet_profile)
+        if profile == DEFAULT_QUEUE_PROFILE:
+            return self.wave_path
+        return self.base_dir / f"current-wave-{profile}.json"
+
     def ensure_layout(self) -> None:
         self.base_dir.mkdir(parents=True, exist_ok=True)
         self.lock_path.touch(exist_ok=True)
@@ -927,6 +949,9 @@ class Orchestrator:
             lane_entry[status] = lane_entry.get(status, 0) + 1
         return summary, lane_summary
 
+    def _profile_items(self, items: list[dict[str, Any]], fleet_profile: str | None) -> list[dict[str, Any]]:
+        return [item for item in items if _matches_fleet_profile(item, fleet_profile)]
+
     def _new_item(self, lane: str, planner: dict[str, Any], now: datetime) -> dict[str, Any]:
         cursor = int(planner["lane_cursors"].get(lane, 0))
         lane_config = LANE_CATALOG[lane]
@@ -954,6 +979,7 @@ class Orchestrator:
             "completed_at": None,
             "completion_summary": None,
             "source": "template",
+            "fleet_profile": DEFAULT_QUEUE_PROFILE,
         }
 
     def _choose_template(
@@ -962,18 +988,23 @@ class Orchestrator:
         items: list[dict[str, Any]],
         *,
         require_beginner: bool = False,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> dict[str, Any]:
         lane_config = LANE_CATALOG[lane]
         templates = lane_config["templates"]
         live_titles = {
             _normalize_title(item.get("base_title") or item["title"])
             for item in items
-            if item["lane"] == lane and item["status"] in {QUEUE_PENDING, QUEUE_LEASED}
+            if item["lane"] == lane
+            and item["status"] in {QUEUE_PENDING, QUEUE_LEASED}
+            and _matches_fleet_profile(item, fleet_profile)
         }
         completed_titles: list[str] = [
             _normalize_title(item.get("base_title") or item["title"])
             for item in items
-            if item["lane"] == lane and item["status"] == QUEUE_COMPLETED
+            if item["lane"] == lane
+            and item["status"] == QUEUE_COMPLETED
+            and _matches_fleet_profile(item, fleet_profile)
         ]
         recent = completed_titles[-RECENT_COMPLETION_WINDOW:]
         best_template = templates[0]
@@ -997,7 +1028,16 @@ class Orchestrator:
                 best_template = template
         return best_template
 
-    def _make_template_item(self, lane: str, template: dict[str, Any], planner: dict[str, Any], now: datetime) -> dict[str, Any]:
+    def _make_template_item(
+        self,
+        lane: str,
+        template: dict[str, Any],
+        planner: dict[str, Any],
+        now: datetime,
+        *,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
+    ) -> dict[str, Any]:
+        profile = _normalize_queue_profile(fleet_profile)
         cursor = int(planner["lane_cursors"].get(lane, 0))
         cycle = cursor // len(LANE_CATALOG[lane]["templates"]) + 1
         suffix = f" cycle {cycle}" if cycle > 1 else ""
@@ -1029,6 +1069,7 @@ class Orchestrator:
             "completed_at": None,
             "completion_summary": None,
             "source": "template",
+            "fleet_profile": profile,
         }
 
     def _make_adaptive_item(
@@ -1042,7 +1083,9 @@ class Orchestrator:
         *,
         source: str,
         priority_boost: int = 3,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> dict[str, Any]:
+        profile = _normalize_queue_profile(fleet_profile)
         cursor = int(planner["lane_cursors"].get(lane, 0))
         item_id = f"{lane}-{cursor + 1:05d}"
         planner["lane_cursors"][lane] = cursor + 1
@@ -1072,12 +1115,21 @@ class Orchestrator:
             "completed_at": None,
             "completion_summary": None,
             "source": source,
+            "fleet_profile": profile,
         }
 
-    def _candidate_exists(self, items: list[dict[str, Any]], lane: str, title: str) -> bool:
+    def _candidate_exists(
+        self,
+        items: list[dict[str, Any]],
+        lane: str,
+        title: str,
+        *,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
+    ) -> bool:
         target = _normalize_title(title)
         return any(
             item["lane"] == lane and _normalize_title(item.get("base_title") or item["title"]) == target
+            and _matches_fleet_profile(item, fleet_profile)
             for item in items
             if item["status"] in {QUEUE_PENDING, QUEUE_LEASED, QUEUE_COMPLETED}
         )
@@ -1170,35 +1222,43 @@ class Orchestrator:
         scored.sort(key=lambda item: (-item[0], item[1]))
         return [path for _, path in scored[:limit]]
 
-    def _adaptive_probe(self, lane: str, items: list[dict[str, Any]], planner: dict[str, Any], now: datetime) -> dict[str, Any] | None:
+    def _adaptive_probe(
+        self,
+        lane: str,
+        items: list[dict[str, Any]],
+        planner: dict[str, Any],
+        now: datetime,
+        *,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
+    ) -> dict[str, Any] | None:
         if lane == "qa-anchor":
             docs = self._scan_anchorless_docs()
             if docs:
                 title = f"Anchorless high-value docs: {docs[0].split('/')[0]}"
-                if not self._candidate_exists(items, lane, title):
+                if not self._candidate_exists(items, lane, title, fleet_profile=fleet_profile):
                     goal = "Add retrieval-anchor-keywords to these docs and tighten nearby related-doc navigation: " + ", ".join(docs)
-                    return self._make_adaptive_item(lane, title, goal, ["qa", "anchor", "metadata", "retrieval"], planner, now, source="adaptive-probe")
+                    return self._make_adaptive_item(lane, title, goal, ["qa", "anchor", "metadata", "retrieval"], planner, now, source="adaptive-probe", fleet_profile=fleet_profile)
         if lane == "qa-taxonomy":
             gaps = self._scan_readme_taxonomy_gaps()
             if gaps:
                 title = f"README taxonomy gaps: {gaps[0].split('/')[0]}"
-                if not self._candidate_exists(items, lane, title):
+                if not self._candidate_exists(items, lane, title, fleet_profile=fleet_profile):
                     goal = "Clarify survey/deep-dive/primer/catalog routing in these README or navigator files: " + ", ".join(gaps)
-                    return self._make_adaptive_item(lane, title, goal, ["qa", "taxonomy", "readme", "navigation"], planner, now, source="adaptive-probe")
+                    return self._make_adaptive_item(lane, title, goal, ["qa", "taxonomy", "readme", "navigation"], planner, now, source="adaptive-probe", fleet_profile=fleet_profile)
         if lane == "qa-link":
             broken = self._scan_broken_links()
             if broken:
                 title = "Broken links and reverse-link cleanup"
-                if not self._candidate_exists(items, lane, title):
+                if not self._candidate_exists(items, lane, title, fleet_profile=fleet_profile):
                     goal = "Fix broken markdown links and strengthen reverse links. Current examples: " + "; ".join(broken)
-                    return self._make_adaptive_item(lane, title, goal, ["qa", "link", "broken-links", "reverse-link"], planner, now, source="adaptive-probe")
+                    return self._make_adaptive_item(lane, title, goal, ["qa", "link", "broken-links", "reverse-link"], planner, now, source="adaptive-probe", fleet_profile=fleet_profile)
         if lane == "qa-content" or lane in QA_CONTENT_CATEGORY_LANES:
             prefixes = _qa_content_prefixes_for_lane(lane)
             docs = self._scan_beginner_content_gaps(prefixes=prefixes)
             if docs:
                 title_prefix = lane.removeprefix("qa-content-") if lane in QA_CONTENT_CATEGORY_LANES else docs[0].split('/')[0]
                 title = f"Beginner content rubric gaps: {title_prefix}"
-                if not self._candidate_exists(items, lane, title):
+                if not self._candidate_exists(items, lane, title, fleet_profile=fleet_profile):
                     goal = "Tighten beginner content quality (mental model, examples, common confusion, next-step routing) in: " + ", ".join(docs)
                     return self._make_adaptive_item(
                         lane,
@@ -1208,11 +1268,18 @@ class Orchestrator:
                         planner,
                         now,
                         source="adaptive-probe",
+                        fleet_profile=fleet_profile,
                     )
         return None
 
-    def seed_woowa_backend_curriculum_backlog(self, *, now: datetime | None = None) -> dict[str, list[str]]:
+    def seed_woowa_backend_curriculum_backlog(
+        self,
+        *,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
+        now: datetime | None = None,
+    ) -> dict[str, list[str]]:
         with self._locked():
+            profile = _normalize_queue_profile(fleet_profile)
             current = now or _utc_now()
             items = self.load_queue()
             planner = self.load_planner()
@@ -1222,7 +1289,7 @@ class Orchestrator:
                     title = str(candidate["title"]).strip()
                     goal = str(candidate["goal"]).strip()
                     tags = [str(tag).strip() for tag in candidate.get("tags", []) if str(tag).strip()]
-                    if not title or not goal or self._candidate_exists(items, lane, title):
+                    if not title or not goal or self._candidate_exists(items, lane, title, fleet_profile=profile):
                         continue
                     priority_boost = 18 if LANE_CATALOG[lane]["kind"] == "content" else 15
                     item = self._make_adaptive_item(
@@ -1234,6 +1301,7 @@ class Orchestrator:
                         current,
                         source="curriculum-foundation",
                         priority_boost=priority_boost,
+                        fleet_profile=profile,
                     )
                     items.append(item)
                     created.setdefault(lane, []).append(item["item_id"])
@@ -1246,7 +1314,7 @@ class Orchestrator:
                 items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
                 self.save_queue(items)
                 self.save_planner(planner)
-                self.run_once(now=current)
+                self.run_once(now=current, fleet_profile=profile)
             return created
 
     def enqueue_candidates(
@@ -1255,10 +1323,12 @@ class Orchestrator:
         candidates: list[dict[str, Any]],
         *,
         source: str,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
         pending_cap: int | None = None,
         now: datetime | None = None,
     ) -> list[str]:
         with self._locked():
+            profile = _normalize_queue_profile(fleet_profile)
             current = now or _utc_now()
             items = self.load_queue()
             planner = self.load_planner()
@@ -1269,28 +1339,28 @@ class Orchestrator:
                 tags = [str(tag).strip() for tag in candidate.get("tags", []) if str(tag).strip()]
                 if not title or not goal:
                     continue
-                if self._candidate_exists(items, lane, title):
+                if self._candidate_exists(items, lane, title, fleet_profile=profile):
                     continue
-                if pending_cap is not None and len(_live_lane_items(items, lane)) >= pending_cap:
+                if pending_cap is not None and len(_live_lane_items(items, lane, fleet_profile=profile)) >= pending_cap:
                     self._append_history(
                         "queue.enqueue_skipped",
-                        {"lane": lane, "title": title, "source": source, "reason": "pending_cap", "pending_cap": pending_cap},
+                        {"lane": lane, "title": title, "source": source, "fleet_profile": profile, "reason": "pending_cap", "pending_cap": pending_cap},
                         now=current,
                     )
                     break
-                item = self._make_adaptive_item(lane, title, goal, tags, planner, current, source=source)
+                item = self._make_adaptive_item(lane, title, goal, tags, planner, current, source=source, fleet_profile=profile)
                 items.append(item)
                 created.append(item["item_id"])
                 self._append_history(
                     "queue.seed",
-                    {"item_id": item["item_id"], "lane": lane, "title": item["title"], "source": source},
+                    {"item_id": item["item_id"], "lane": lane, "title": item["title"], "source": source, "fleet_profile": profile},
                     now=current,
                 )
             if created:
                 items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
                 self.save_queue(items)
                 self.save_planner(planner)
-                self.run_once(now=current)
+                self.run_once(now=current, fleet_profile=profile)
             return created
 
     def _refresh_backlog(
@@ -1300,34 +1370,40 @@ class Orchestrator:
         *,
         low_water_mark: int,
         now: datetime,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> list[dict[str, Any]]:
+        profile = _normalize_queue_profile(fleet_profile)
         for lane in LANE_CATALOG:
             lane_config = LANE_CATALOG[lane]
-            live_count = len(_live_lane_items(items, lane))
+            live_count = len(_live_lane_items(items, lane, fleet_profile=profile))
             while live_count < low_water_mark:
-                item = self._adaptive_probe(lane, items, planner, now)
+                item = self._adaptive_probe(lane, items, planner, now, fleet_profile=profile)
                 if item is None:
                     require_beginner = (
                         lane_config["kind"] == "content"
                         and _lane_has_beginner_template(lane)
-                        and not _has_live_beginner_item(items, lane)
+                        and not _has_live_beginner_item(items, lane, fleet_profile=profile)
                     )
-                    template = self._choose_template(lane, items, require_beginner=require_beginner)
-                    item = self._make_template_item(lane, template, planner, now)
+                    template = self._choose_template(lane, items, require_beginner=require_beginner, fleet_profile=profile)
+                    item = self._make_template_item(lane, template, planner, now, fleet_profile=profile)
                 items.append(item)
-                self._append_history("queue.seed", {"item_id": item["item_id"], "lane": lane, "title": item["title"]}, now=now)
+                self._append_history(
+                    "queue.seed",
+                    {"item_id": item["item_id"], "lane": lane, "title": item["title"], "fleet_profile": profile},
+                    now=now,
+                )
                 live_count += 1
             if (
                 lane_config["kind"] == "content"
                 and _lane_has_beginner_template(lane)
-                and not _has_live_beginner_item(items, lane)
+                and not _has_live_beginner_item(items, lane, fleet_profile=profile)
             ):
-                template = self._choose_template(lane, items, require_beginner=True)
-                item = self._make_template_item(lane, template, planner, now)
+                template = self._choose_template(lane, items, require_beginner=True, fleet_profile=profile)
+                item = self._make_template_item(lane, template, planner, now, fleet_profile=profile)
                 items.append(item)
                 self._append_history(
                     "queue.seed",
-                    {"item_id": item["item_id"], "lane": lane, "title": item["title"], "source": "beginner-guard"},
+                    {"item_id": item["item_id"], "lane": lane, "title": item["title"], "source": "beginner-guard", "fleet_profile": profile},
                     now=now,
                 )
             adaptive_live = [
@@ -1336,14 +1412,15 @@ class Orchestrator:
                 if item["lane"] == lane
                 and item["status"] in {QUEUE_PENDING, QUEUE_LEASED}
                 and str(item.get("source", "")).startswith("adaptive")
+                and _matches_fleet_profile(item, profile)
             ]
             if not adaptive_live:
-                adaptive_item = self._adaptive_probe(lane, items, planner, now)
+                adaptive_item = self._adaptive_probe(lane, items, planner, now, fleet_profile=profile)
                 if adaptive_item is not None:
                     items.append(adaptive_item)
                     self._append_history(
                         "queue.seed",
-                        {"item_id": adaptive_item["item_id"], "lane": lane, "title": adaptive_item["title"], "source": adaptive_item["source"]},
+                        {"item_id": adaptive_item["item_id"], "lane": lane, "title": adaptive_item["title"], "source": adaptive_item["source"], "fleet_profile": profile},
                         now=now,
                     )
         return items
@@ -1371,17 +1448,26 @@ class Orchestrator:
             items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
         return items
 
-    def _build_wave(self, items: list[dict[str, Any]], *, wave_size: int, now: datetime) -> dict[str, Any]:
-        pending = [item for item in items if item.get("status") == QUEUE_PENDING]
+    def _build_wave(
+        self,
+        items: list[dict[str, Any]],
+        *,
+        wave_size: int,
+        now: datetime,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
+    ) -> dict[str, Any]:
+        profile = _normalize_queue_profile(fleet_profile)
+        pending = [item for item in items if item.get("status") == QUEUE_PENDING and _matches_fleet_profile(item, profile)]
         pending.sort(key=lambda entry: (-int(entry["priority"]), entry["created_at"], entry["item_id"]))
         selected: list[dict[str, Any]] = []
         if wave_size <= 0:
             wave = {
                 "wave_id": f"wave-{now.strftime('%Y%m%d%H%M%S')}",
                 "created_at": _isoformat(now),
+                "fleet_profile": profile,
                 "items": selected,
             }
-            _write_json(self.wave_path, wave)
+            _write_json(self._wave_path_for_profile(profile), wave)
             return wave
         seen_lanes: set[str] = set()
         for item in pending:
@@ -1402,9 +1488,10 @@ class Orchestrator:
         wave = {
             "wave_id": f"wave-{now.strftime('%Y%m%d%H%M%S')}",
             "created_at": _isoformat(now),
+            "fleet_profile": profile,
             "items": selected,
         }
-        _write_json(self.wave_path, wave)
+        _write_json(self._wave_path_for_profile(profile), wave)
         return wave
 
     def _wave_view(self, item: dict[str, Any]) -> dict[str, Any]:
@@ -1412,6 +1499,7 @@ class Orchestrator:
             "item_id": item["item_id"],
             "lane": item["lane"],
             "kind": item["kind"],
+            "fleet_profile": _item_fleet_profile(item),
             "title": item["title"],
             "goal": item["goal"],
             "priority": item["priority"],
@@ -1455,29 +1543,35 @@ class Orchestrator:
         low_water_mark: int = DEFAULT_LOW_WATER_MARK,
         wave_size: int = DEFAULT_WAVE_SIZE,
         refresh_backlog: bool = True,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
         now: datetime | None = None,
     ) -> dict[str, Any]:
         with self._locked():
+            profile = _normalize_queue_profile(fleet_profile)
             current = now or _utc_now()
             items = self._release_expired_leases(self.load_queue(), now=current)
             planner = self.load_planner()
             if refresh_backlog:
-                items = self._refresh_backlog(items, planner, low_water_mark=low_water_mark, now=current)
+                items = self._refresh_backlog(items, planner, low_water_mark=low_water_mark, now=current, fleet_profile=profile)
             items.sort(key=lambda entry: (entry["lane"], entry["item_id"]))
             self.save_queue(items)
             if refresh_backlog:
                 self.save_planner(planner)
-            wave = self._build_wave(items, wave_size=wave_size, now=current)
-            summary, lane_summary = self._queue_summary(items)
+            wave = self._build_wave(items, wave_size=wave_size, now=current, fleet_profile=profile)
+            profile_items = self._profile_items(items, profile)
+            summary, lane_summary = self._queue_summary(profile_items)
+            global_summary, _ = self._queue_summary(items)
             status = self.load_status()
             status.update(
                 {
+                    "fleet_profile": profile,
                     "heartbeat_at": _isoformat(current),
                     "last_refresh_at": _isoformat(current),
                     "last_wave_at": wave["created_at"],
                     "current_wave_id": wave["wave_id"],
                     "queue_summary": summary,
                     "lane_summary": lane_summary,
+                    "global_queue_summary": global_summary,
                     "stop_requested": self.stop_path.exists(),
                 }
             )
@@ -1486,7 +1580,7 @@ class Orchestrator:
             self.save_status(status)
             self._append_history(
                 "orchestrator.wave",
-                {"wave_id": wave["wave_id"], "size": len(wave["items"]), "queue_summary": summary},
+                {"wave_id": wave["wave_id"], "size": len(wave["items"]), "queue_summary": summary, "fleet_profile": profile},
                 now=current,
             )
             return {"status": status, "current_wave": wave}
@@ -1501,14 +1595,17 @@ class Orchestrator:
         write_scopes: list[str] | None = None,
         claim_tags: list[str] | None = None,
         refresh_backlog: bool = True,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
         now: datetime | None = None,
     ) -> dict[str, Any]:
         with self._locked():
+            profile = _normalize_queue_profile(fleet_profile)
             current = now or _utc_now()
             self.run_once(
                 now=current,
                 refresh_backlog=refresh_backlog,
                 wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                fleet_profile=profile,
             )
             items = self.load_queue()
             normalized_write_scopes = [scope for scope in (write_scopes or []) if str(scope).strip()]
@@ -1517,12 +1614,13 @@ class Orchestrator:
             lane_filter = set(lanes or [])
             suggested_ids = {
                 item["item_id"]
-                for item in _read_json(self.wave_path, {"items": []}).get("items", [])
+                for item in _read_json(self._wave_path_for_profile(profile), {"items": []}).get("items", [])
             }
             candidates = [
                 item
                 for item in items
                 if item.get("status") == QUEUE_PENDING and (not lane_filter or item["lane"] in lane_filter)
+                and _matches_fleet_profile(item, profile)
                 and _matches_claim_tags(item, claim_tags)
             ]
             candidates.sort(
@@ -1550,6 +1648,7 @@ class Orchestrator:
                         "lane": item["lane"],
                         "worker": worker,
                         "write_scopes": normalized_write_scopes,
+                        "fleet_profile": profile,
                     },
                     now=current,
                 )
@@ -1558,6 +1657,7 @@ class Orchestrator:
                 now=current,
                 refresh_backlog=refresh_backlog,
                 wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                fleet_profile=profile,
             )
             return {"worker": worker, "claimed": claimed}
 
@@ -1580,6 +1680,7 @@ class Orchestrator:
                 raise ValueError(f"item is not leased: {item_id}")
             if target.get("lease_owner") != worker:
                 raise ValueError(f"item {item_id} is leased by {target.get('lease_owner')}, not {worker}")
+            profile = _item_fleet_profile(target)
             target["status"] = QUEUE_COMPLETED
             target["lease_owner"] = None
             target["lease_expires_at"] = None
@@ -1590,13 +1691,14 @@ class Orchestrator:
             self.save_queue(items)
             self._append_history(
                 "queue.complete",
-                {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": summary},
+                {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": summary, "fleet_profile": profile},
                 now=current,
             )
             self.run_once(
                 now=current,
                 refresh_backlog=refresh_backlog,
                 wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                fleet_profile=profile,
             )
             return {"item_id": item_id, "worker": worker, "status": "completed"}
 
@@ -1620,6 +1722,7 @@ class Orchestrator:
                 raise ValueError(f"item is not leased: {item_id}")
             if target.get("lease_owner") != worker:
                 raise ValueError(f"item {item_id} is leased by {target.get('lease_owner')}, not {worker}")
+            profile = _item_fleet_profile(target)
             target["status"] = QUEUE_BLOCKED if blocked else QUEUE_PENDING
             target["lease_owner"] = None
             target["lease_expires_at"] = None
@@ -1629,13 +1732,14 @@ class Orchestrator:
             self.save_queue(items)
             self._append_history(
                 "queue.blocked" if blocked else "queue.requeued",
-                {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": reason},
+                {"item_id": item_id, "lane": target["lane"], "worker": worker, "summary": reason, "fleet_profile": profile},
                 now=current,
             )
             self.run_once(
                 now=current,
                 refresh_backlog=refresh_backlog,
                 wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                fleet_profile=profile,
             )
             return {"item_id": item_id, "worker": worker, "status": target["status"]}
 
@@ -1677,14 +1781,18 @@ class Orchestrator:
         reason: str,
         *,
         refresh_backlog: bool = True,
+        fleet_profile: str | None = None,
         now: datetime | None = None,
     ) -> list[str]:
         with self._locked():
+            profile = _normalize_queue_profile(fleet_profile) if fleet_profile is not None else None
             current = now or _utc_now()
             items = self.load_queue()
             released: list[str] = []
             for item in items:
                 if item.get("status") == QUEUE_LEASED and item.get("lease_owner") == worker:
+                    if profile is not None and not _matches_fleet_profile(item, profile):
+                        continue
                     item["status"] = QUEUE_PENDING
                     item["lease_owner"] = None
                     item["lease_expires_at"] = None
@@ -1694,20 +1802,31 @@ class Orchestrator:
                     released.append(item["item_id"])
                     self._append_history(
                         "queue.requeued",
-                        {"item_id": item["item_id"], "lane": item["lane"], "worker": worker, "summary": reason},
+                        {"item_id": item["item_id"], "lane": item["lane"], "worker": worker, "summary": reason, "fleet_profile": _item_fleet_profile(item)},
                         now=current,
                     )
             if released:
                 self.save_queue(items)
+                run_profile = profile or _item_fleet_profile(next(item for item in items if item["item_id"] == released[0]))
                 self.run_once(
                     now=current,
                     refresh_backlog=refresh_backlog,
                     wave_size=DEFAULT_WAVE_SIZE if refresh_backlog else 0,
+                    fleet_profile=run_profile,
                 )
             return released
 
-    def list_queue(self, *, status_filter: str | None = None, lane: str | None = None, limit: int | None = None) -> dict[str, Any]:
+    def list_queue(
+        self,
+        *,
+        status_filter: str | None = None,
+        lane: str | None = None,
+        fleet_profile: str | None = None,
+        limit: int | None = None,
+    ) -> dict[str, Any]:
         items = self.load_queue()
+        if fleet_profile:
+            items = self._profile_items(items, fleet_profile)
         if status_filter:
             items = [item for item in items if item.get("status") == status_filter]
         if lane:
@@ -1726,7 +1845,10 @@ class Orchestrator:
             self.save_status(status)
         return {
             "status": status,
-            "current_wave": _read_json(self.wave_path, {"wave_id": None, "items": []}),
+            "current_wave": _read_json(
+                self._wave_path_for_profile(status.get("fleet_profile")),
+                {"wave_id": None, "items": []},
+            ),
             "queue": self.list_queue(limit=20),
         }
 
@@ -1754,7 +1876,9 @@ class Orchestrator:
         interval_seconds: int = DEFAULT_LOOP_INTERVAL_SECONDS,
         low_water_mark: int = DEFAULT_LOW_WATER_MARK,
         wave_size: int = DEFAULT_WAVE_SIZE,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> dict[str, Any]:
+        profile = _normalize_queue_profile(fleet_profile)
         status = self.load_status()
         pid = status.get("pid")
         if pid and _pid_alive(int(pid)):
@@ -1774,6 +1898,8 @@ class Orchestrator:
                     str(low_water_mark),
                     "--wave-size",
                     str(wave_size),
+                    "--profile",
+                    profile,
                 ],
                 cwd=str(ROOT),
                 stdout=handle,
@@ -1784,6 +1910,7 @@ class Orchestrator:
         status.update(
             {
                 "status": "running",
+                "fleet_profile": profile,
                 "pid": proc.pid,
                 "started_at": _isoformat(now),
                 "heartbeat_at": _isoformat(now),
@@ -1793,7 +1920,7 @@ class Orchestrator:
         )
         self.save_status(status)
         self.pid_path.write_text(str(proc.pid), encoding="utf-8")
-        self._append_history("orchestrator.start", {"pid": proc.pid}, now=now)
+        self._append_history("orchestrator.start", {"pid": proc.pid, "fleet_profile": profile}, now=now)
         return {"status": status, "already_running": False}
 
     def run_loop(
@@ -1802,7 +1929,9 @@ class Orchestrator:
         interval_seconds: int = DEFAULT_LOOP_INTERVAL_SECONDS,
         low_water_mark: int = DEFAULT_LOW_WATER_MARK,
         wave_size: int = DEFAULT_WAVE_SIZE,
+        fleet_profile: str | None = DEFAULT_QUEUE_PROFILE,
     ) -> int:
+        profile = _normalize_queue_profile(fleet_profile)
         now = _utc_now()
         pid = os.getpid()
         current_status = self.load_status()
@@ -1814,6 +1943,7 @@ class Orchestrator:
         current_status.update(
             {
                 "status": "running",
+                "fleet_profile": profile,
                 "pid": pid,
                 "started_at": current_status.get("started_at") or _isoformat(now),
                 "heartbeat_at": _isoformat(now),
@@ -1822,11 +1952,11 @@ class Orchestrator:
             }
         )
         self.save_status(current_status)
-        self._append_history("orchestrator.loop_started", {"pid": pid}, now=now)
+        self._append_history("orchestrator.loop_started", {"pid": pid, "fleet_profile": profile}, now=now)
         try:
             while True:
                 cycle_now = _utc_now()
-                self.run_once(low_water_mark=low_water_mark, wave_size=wave_size, now=cycle_now)
+                self.run_once(low_water_mark=low_water_mark, wave_size=wave_size, now=cycle_now, fleet_profile=profile)
                 status = self.load_status()
                 status["status"] = "running"
                 status["pid"] = pid
@@ -1853,6 +1983,11 @@ class Orchestrator:
 def _pid_alive(pid: int) -> bool:
     try:
         os.kill(pid, 0)
+    except PermissionError:
+        # In sandboxed agent sessions, kill(pid, 0) can return EPERM for a
+        # live child process. EPERM means the process exists but cannot be
+        # signalled from this context.
+        return True
     except OSError:
         return False
     return True

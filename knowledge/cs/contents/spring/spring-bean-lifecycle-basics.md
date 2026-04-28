@@ -9,14 +9,15 @@
 - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 - [Spring Bean과 DI 기초](./spring-bean-di-basics.md)
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton scope basics, bean scope beginner, prototype bean basics, spring bean 언제 만들어지나, spring bean created when, spring initialization callback, spring destroy callback, spring bean 생성 순서, spring bean lifecycle basics basics, spring bean lifecycle basics beginner
+retrieval-anchor-keywords: spring bean lifecycle basics, spring bean 생명주기 입문, spring bean 생명주기 뭐예요, 스프링 빈 생명주기 큰 그림, bean lifecycle 처음 배우는데, @postconstruct @predestroy 기초, spring bean 초기화 콜백, spring bean 소멸 콜백, singleton prototype 차이 기초, request scope session scope 뭐예요, spring bean 언제 만들어지나, 왜 postconstruct 에서 transactional 안 먹어요, spring bean 생성 순서, 빈 생성 주입 초기화 차이, 스프링 빈 처음 배우는데 언제 쓰는지
 
 ## 핵심 개념
 
-Spring Bean은 단순히 "컨테이너에 등록된 객체"가 아니라, 생성부터 소멸까지 명확한 생명주기를 가진 객체다. 이 흐름을 모르면 `@PostConstruct`가 생각대로 동작하지 않거나, 리소스 정리 코드가 소멸 시점에 호출되지 않는 문제를 만나게 된다.
+Spring Bean을 처음 배울 때는 "그냥 Spring이 대신 만드는 객체" 정도로 들리기 쉽다. 그런데 실제로는 **언제 만들어지고, 주입이 언제 끝나고, 언제 정리되는지**가 정해져 있다. 이 큰 그림을 먼저 잡아야 `@PostConstruct`가 왜 필요한지, 왜 `@Transactional`이 거기서 기대대로 안 붙을 수 있는지, 왜 singleton/prototype 차이를 따로 봐야 하는지가 이어진다.
 
 입문자가 자주 놓치는 포인트는 Bean 생성 직후와 의존성 주입 완료 후의 차이, 그리고 scope에 따라 생성 시점이 달라진다는 점이다.
 
@@ -38,6 +39,14 @@ BeanDefinition 등록
 | 의존성 주입 완료 직후 | `@PostConstruct` | 초기화, 연결 검증, 캐시 예열 |
 | 컨테이너 종료 직전 | `@PreDestroy` | 리소스 해제, 연결 종료 |
 
+헷갈리기 쉬운 표현을 먼저 번역해 두면 더 쉽다.
+
+| 자주 하는 말 | 실제로 구분해야 하는 시점 |
+|---|---|
+| "bean이 만들어졌다" | 생성자 호출까지 끝난 상태 |
+| "이제 써도 된다" | 주입과 초기화까지 끝난 상태 |
+| "`@Transactional`도 같이 붙겠지?" | 프록시 적용까지 끝났는지 별도로 봐야 한다 |
+
 ## 상세 분해
 
 - **생성자 호출**: 의존성 주입이 아직 완료되지 않은 시점이다. 생성자에서 주입받은 필드 외의 다른 Bean에 접근하면 null이 될 수 있다.
@@ -45,6 +54,14 @@ BeanDefinition 등록
 - **`@PreDestroy`**: 컨테이너가 종료될 때 호출된다. DB 커넥션, 파일 핸들, 스레드풀 같은 리소스를 해제하는 코드를 둔다.
 - **singleton scope**: 기본 scope. 컨테이너 하나에 Bean 인스턴스 하나가 만들어져 공유된다. 컨테이너 시작 시 생성, 종료 시 소멸.
 - **prototype scope**: 요청할 때마다 새 인스턴스가 만들어진다. `@PreDestroy`가 호출되지 않으므로 리소스 정리를 직접 해야 한다.
+
+초보자가 처음엔 아래 세 줄만 구분해도 충분하다.
+
+- 생성은 "객체 껍데기가 생김"
+- 초기화는 "주입이 끝나고 준비 작업까지 마침"
+- 프록시는 "실제 객체 바깥에 호출용 래퍼가 붙음"
+
+이 순서를 머리에 두면 "`@PostConstruct` 안에서 왜 프록시 기반 기능을 기대하면 안 되지?"가 자연스럽게 이어진다.
 
 ## 흔한 오해와 함정
 
@@ -56,6 +73,9 @@ BeanDefinition 등록
 
 **오해 3: singleton Bean에 요청별 상태를 저장해도 된다**
 singleton은 모든 요청이 공유하는 하나의 인스턴스다. `currentUserId` 같은 가변 필드를 두면 요청 간 데이터가 섞일 수 있다.
+
+**오해 4: 생성자와 `@PostConstruct`는 아무 때나 바꿔 써도 된다**
+생성자는 "필수 의존성을 받아 객체를 성립시키는 자리"이고, `@PostConstruct`는 "주입이 끝난 뒤 준비 작업을 하는 자리"다. DB 연결 확인, 캐시 예열처럼 외부 협력이 필요한 작업은 보통 `@PostConstruct` 쪽이 더 자연스럽다.
 
 ## 실무에서 쓰는 모습
 
@@ -87,11 +107,20 @@ public class CacheWarmup {
 
 `@PostConstruct` 안에서는 주입받은 `dataLoader`를 안전하게 사용할 수 있다.
 
+아래처럼 쓰임새를 나누면 감이 더 빠르다.
+
+| 코드 위치 | 넣기 좋은 일 | 피하는 편이 좋은 일 |
+|---|---|---|
+| 생성자 | 필수 의존성 저장, 불변 필드 세팅 | 외부 호출, 긴 준비 작업 |
+| `@PostConstruct` | 캐시 예열, 설정 검증, 연결 확인 | self 호출로 프록시 기능 기대 |
+| `@PreDestroy` | 스레드풀 종료, 연결 정리 | 새 작업 시작 |
+
 ## 더 깊이 가려면
 
 - scope 종류(request, session, prototype)별 생명주기 함정은 [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)에서 더 자세히 다룬다.
 - `BeanPostProcessor`, `SmartInitializingSingleton` 같은 확장 포인트는 고급 주제에 해당한다.
 - Bean 등록 전체 흐름은 [IoC 컨테이너와 DI](./ioc-di-container.md)에서 이어서 볼 수 있다.
+- session scope가 왜 HTTP 세션과 연결되는지는 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)에서 같이 보면 덜 헷갈린다.
 
 ## 면접/시니어 질문 미리보기
 

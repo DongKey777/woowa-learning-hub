@@ -13,11 +13,13 @@
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
 - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
+- [Browser Cache Toggles vs Alt-Svc DNS Cache Primer](./browser-cache-toggles-vs-alt-svc-dns-cache-primer.md)
+- [HTTP Cache Reuse vs Connection Reuse vs Session Persistence Primer](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recovery, warm alt-svc but 421, h3 retry vs h2 fallback, 421 does not clear all alt-svc, alt-svc cache survives 421, per origin h3 misdirected request, h3 alternative service retry decision, fresh h3 after 421, h2 fallback after 421, same origin 421 new h3, same origin 421 h2 fallback, beginner alt-svc 421 bridge, alt-svc warm connection wrong origin, alt svc cache vs per origin 421 recovery basics
+retrieval-anchor-keywords: alt-svc cache vs 421 recovery, warm alt-svc but 421, per-origin 421 recovery, why 421 does not clear all alt-svc, alt-svc cache survives 421, h3 retry vs h2 fallback, 처음 보는 alt-svc cache, alt-svc dns cache confusion, cache reuse vs connection reuse, same origin 421 new h3, same origin 421 h2 fallback, what is per-origin 421
 
 <details>
 <summary>Table of Contents</summary>
@@ -70,6 +72,18 @@ retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recover
 
 - `Alt-Svc` cache는 "후보를 기억하는 메모"
 - `421`은 "이번 탑승 조합은 틀렸다"는 교정 신호
+
+## 왜 자꾸 cache라는 단어에서 헷갈리나
+
+초급자는 `cache`라는 단어가 세 군데에서 나와 자주 섞는다.
+
+| 단어 | 실제로 저장하는 것 | 이 문서에서의 역할 |
+|---|---|---|
+| `Alt-Svc` cache | "이 origin에는 h3 후보가 있었다"는 힌트 | h3 후보를 기억하는 메모 |
+| http cache | body, validator, `304` 관련 응답 재사용 | 이번 421 retry path의 중심이 아님 |
+| session/cookie 상태 | 로그인 같은 사용자 상태 | connection 교정과 별개 층위 |
+
+그래서 "`421`이 났다 = cache를 전부 지웠다"라고 읽으면 거의 항상 과하다.
 
 ## 핵심 한 표: cache와 421 recovery는 무엇이 다른가
 
@@ -171,6 +185,7 @@ retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recover
 | "`Alt-Svc`가 warm하면 `421` 뒤에도 무조건 다시 H3다" | 아니다. 새 H3 retry도 가능하지만 H2 fallback도 가능하다. |
 | "`421 -> h2`면 Alt-Svc가 원래 없었던 것이다" | 아니다. warm cache가 있어도 recovery 정책상 H2가 선택될 수 있다. |
 | "한 origin이 `421`을 받았으니 같은 certificate의 다른 origin도 전부 실패한다" | 먼저 per-origin correction인지 본다. 다른 origin은 계속 정상일 수 있다. |
+| "DevTools에서 disable cache를 켜면 Alt-Svc 문제도 같이 사라진다" | 아니다. http cache 토글과 Alt-Svc/connection 상태는 같은 스위치가 아니다. |
 
 ## DevTools에서 먼저 볼 4가지
 
@@ -196,6 +211,7 @@ retrieval-anchor-keywords: alt-svc cache vs 421 recovery, per-origin 421 recover
 - stale hint에서 `421` 뒤 fresh path로 가는 장면을 더 길게 보면 [H3 Stale Alt-Svc 421 Recovery Primer](./h3-stale-alt-svc-421-recovery-primer.md)
 - same-URL `421` retry trace를 H2/H3 공통 그림으로 보면 [421 Retry After Wrong Coalescing: H2/H3 브라우저 재시도 입문](./http2-http3-421-retry-after-wrong-coalescing.md)
 - `421` 뒤 왜 `h2`가 되었는지 fallback 관점으로 더 보고 싶으면 [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
+- browser cache 토글과 Alt-Svc/DNS cache를 헷갈린다면 [Browser Cache Toggles vs Alt-Svc DNS Cache Primer](./browser-cache-toggles-vs-alt-svc-dns-cache-primer.md)
 
 ## 한 줄 정리
 

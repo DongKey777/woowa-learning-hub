@@ -65,7 +65,7 @@ retrieval-anchor-keywords: transaction debugging, transactional not applied, pro
 | 코드/증상 단서 | 첫 판단 | 지금 바로 갈 문서 |
 |---|---|---|
 | `this.saveOrder()` 같은 내부 호출 | 프록시 우회 가능성이 가장 크다 | [30초 진단 카드](./spring-self-invocation-transactional-only-misconception-primer.md) |
-| `@Transactional private void save()` | propagation보다 메서드 경계가 먼저 문제다 | [@Transactional 기초](./spring-transactional-basics.md#private-문제와-내부-호출-문제를-한눈에-구분하기) |
+| `@Transactional private void save()` | propagation보다 메서드 경계가 먼저 문제다 | [@Transactional 기초](./spring-transactional-basics.md#private와-내부-호출은-구분만-하고-원리-설명은-다른-문서로-넘긴다) |
 | `new OrderService()`로 직접 만든 객체 | Bean이 아니라 프록시 자체가 없다 | [AOP 기초](./spring-aop-basics.md#checklist-direct-new) |
 | 위 세 가지는 아닌데도 롤백/분리 커밋이 이상하다 | 그때 propagation, rollback, lock 대기로 내려간다 | 이 playbook 계속 읽기 |
 

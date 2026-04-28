@@ -20,6 +20,12 @@
 
 처음 배우는데 같은 `@Qualifier` 문자열이 서비스마다 반복돼서 "이걸 계속 붙이는 게 맞나?" 싶다면, 이 문서를 읽기 전에 [Spring 커스텀 `@Qualifier` 입문: bean 이름 문자열 대신 역할 annotation으로 고르기](./spring-custom-qualifier-primer.md)를 먼저 보면 큰 그림이 더 빨리 잡힌다. 반복 qualifier는 custom qualifier primer로 보내고, 요청마다 구현체가 바뀌는 경우만 이 문서에서 router 경계로 자르면 된다.
 
+> 주의 미니 박스:
+> `channel`, `pgCode`, `type` 같은 외부 입력값을 bean 이름에 바로 매핑하지 말자.
+> `paymentClients.get(channel)`처럼 API 값과 bean 이름 계약을 붙이면, 요청 스펙 변경이 DI 이름 변경으로 번진다.
+> 먼저 외부 값을 enum이나 별도 domain key로 정규화하고, 그 key로 router 내부 전략을 고르는 편이 초급자 실수를 줄인다.
+> 더 길게 보면 [Bean Name vs Domain Key Lookup](../design-pattern/bean-name-vs-domain-key-lookup.md)로 이어진다.
+
 ## 먼저 어디로 갈지 고르기
 
 관련 문서:
@@ -73,8 +79,6 @@ retrieval-anchor-keywords: spring router vs qualifier, router 언제 쓰는지, 
 - `Map<String, Bean>`은 후보를 모아 두는 출발점이지, 그 자체가 `@Qualifier`의 대체품은 아니다
 
 한 줄로 줄이면 **고정 wiring은 qualifier, 호출마다 달라지는 분기는 router**다.
-
-> 주의: `channel`, `pgCode` 같은 외부 입력값을 bean 이름에 바로 붙이지 말자. 초급자 실수로 `paymentClients.get(channel)`를 곧바로 `emailSender`, `kakaoPaymentClient` 같은 bean 이름 계약에 묶으면, API 값 변경이 wiring 이름 변경으로 번진다. 먼저 외부 값을 enum이나 별도 domain key로 정규화하고, 그 다음 router 내부에서 전략을 찾는 편이 안전하다. 더 길게 보면 [Bean Name vs Domain Key Lookup](../design-pattern/bean-name-vs-domain-key-lookup.md)로 이어진다.
 
 ---
 

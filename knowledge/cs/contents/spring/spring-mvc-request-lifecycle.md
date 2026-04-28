@@ -7,6 +7,7 @@
 **난이도: 🟡 Intermediate**
 
 관련 문서:
+- [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [@Transactional 깊이 파기](./transactional-deep-dive.md)
@@ -23,6 +24,7 @@ retrieval-anchor-keywords: dispatcherservlet, handlermapping, handleradapter, ha
 
 ## 이 문서 다음에 보면 좋은 문서
 
+- 처음 배우는 단계라면 [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)에서 입구 흐름을 먼저 잡는 편이 안전하다.
 - 처음 배우는데 `필터 vs 인터셉터 차이`가 먼저 필요하면 [필터 vs 인터셉터 차이부터 잡기: Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)부터 보는 편이 첫 이해가 빠르다.
 - async 분기는 [Spring MVC Async Dispatch with `Callable` / `DeferredResult`](./spring-mvc-async-deferredresult-callable-dispatch.md)로 이어진다.
 - 예외 흐름은 [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md), [Spring `BasicErrorController`, `ErrorAttributes`, and Whitelabel Error Boundaries](./spring-basicerrorcontroller-errorattributes-whitelabel-boundaries.md)로 이어진다.

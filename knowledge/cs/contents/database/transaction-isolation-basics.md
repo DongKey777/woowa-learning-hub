@@ -1,17 +1,21 @@
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)
 
-> 한 줄 요약: 격리 수준은 동시에 실행되는 트랜잭션끼리 서로의 중간 결과를 얼마나 볼 수 있는지를 결정하는 4단계 설정이다.
+> 한 줄 요약: 격리 수준은 "같은 row나 범위를 다시 읽을 때 왜 값이 달라지지?"를 설명하는 동시성 가시성 규칙이다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [트랜잭션 기초](./transaction-basics.md)
+- [Database First-Step Bridge](./database-first-step-bridge.md)
+- [락 기초](./lock-basics.md)
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
+- [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md)
 - [database 카테고리 인덱스](./README.md)
-- [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
+- [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
-retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, serializable beginner, dirty read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, read uncommitted 설명, isolation 4단계 입문, transaction isolation basics basics, transaction isolation basics beginner, transaction isolation basics intro, database basics, beginner database
+retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, serializable beginner, dirty read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, 같은 row 다시 읽었는데 값이 달라요, select 두 번 했는데 값이 바뀌어요, 범위 조회 다시 했는데 행이 늘었어요, oversell 왜 생겨요, 언제 lock 필요해요, read uncommitted 설명, isolation 4단계 입문
 
 ## 핵심 개념
 
@@ -22,8 +26,20 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 입문자가 헷갈리는 지점:
 
 - 격리 수준은 트랜잭션 크기나 길이와 무관하다 — 동시 실행 시 가시성(visibility) 설정이다
-- MySQL InnoDB 기본값은 `REPEATABLE READ`, PostgreSQL 기본값은 `READ COMMITTED`다
-- 격리 수준이 높다고 해서 데이터가 자동으로 '정확해지는' 것은 아니다
+- 격리 수준이 높다고 해서 데이터가 자동으로 "정확해지는" 것은 아니다
+- 이 문서는 "첫 감"을 잡는 입문용이고, 엔진별 기본값/예외/retry 설계는 관련 문서로 넘겨도 된다
+
+처음 읽기에서 이 문서가 답하려는 질문도 하나다. "같은 row나 범위를 다시 읽을 때 왜 보이는 값이 달라지지?" `FOR UPDATE`, gap lock, `40001`, deadlock은 다음 단계 링크로 보내도 충분하다.
+
+입문 1회차에서는 anomaly 이름을 다 외우려 하지 않아도 된다. "같은 row 재조회 문제인가, 범위 재조회 문제인가"만 분리되면 첫 목표는 달성한 것이다.
+
+증상 이름이 먼저 앞에 나와도, 처음 읽기에서는 아래처럼 한 번 끊어 두면 덜 흔들린다.
+
+| 먼저 보인 단어 | 이 문서에서 잡을 한 줄 | 자세한 대응은 어디로 가나 |
+|---|---|---|
+| `dirty read`, `phantom read` | "동시에 볼 수 있는 범위가 다르다"는 뜻으로 먼저 읽는다 | [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) |
+| `FOR UPDATE`, gap lock | 격리 수준 표와 선점 읽기는 같은 얘기가 아니다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) |
+| `deadlock`, `40001` | 이미 충돌이 표면화된 다음 단계다 | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
 
 ## 한눈에 보기 — 4단계 비교
 
@@ -34,50 +50,162 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 | REPEATABLE READ | 불가 | 불가 | 가능(DB에 따라 다름) |
 | SERIALIZABLE | 불가 | 불가 | 불가 |
 
-숫자가 올라갈수록 보장은 강해지고 동시성은 낮아진다.
+숫자가 올라갈수록 보장은 강해지고 동시성은 낮아진다. 처음에는 `READ COMMITTED`와 `REPEATABLE READ`의 차이만 분명히 잡아도 충분하다.
 
-## 상세 분해 — 이상 현상 3가지
+## 첫 읽기 mental model
 
-각 단계가 막는 이상 현상을 입문 단계에서 이해해야 한다.
+처음에는 "표를 외우기"보다 "무슨 장면을 막고 싶은가"를 먼저 잡는 편이 쉽다.
 
-- **Dirty Read**: 아직 commit되지 않은 다른 트랜잭션의 변경을 읽는다. 그 트랜잭션이 rollback되면 읽은 데이터가 사라진 데이터가 된다.
-- **Non-Repeatable Read**: 같은 트랜잭션 안에서 같은 row를 두 번 읽었을 때 중간에 다른 트랜잭션이 그 row를 `UPDATE`하고 commit하면 두 번째 읽기 결과가 달라진다.
-- **Phantom Read**: 같은 트랜잭션 안에서 같은 범위 조건으로 두 번 조회했을 때 중간에 다른 트랜잭션이 `INSERT`/`DELETE`를 하면 결과 행 수가 달라진다.
+| 보인 장면 | 먼저 떠올릴 격리 수준 감각 |
+|---|---|
+| 아직 확정되지 않은 값을 읽을까 걱정된다 | dirty read를 막는 최소선부터 본다 |
+| 같은 row를 다시 읽을 때 값이 바뀌면 곤란하다 | `READ COMMITTED`와 `REPEATABLE READ` 차이를 본다 |
+| 범위 조회 중간에 새 row가 끼어들면 안 된다 | phantom read와 락 전략을 같이 본다 |
+
+격리 수준을 "보이는 규칙"으로 먼저 묶어 두면, 락과 덜 섞인다.
+
+| 지금 보려는 것 | 격리 수준이 먼저 답하는가? | 왜 그런가 |
+|---|---|---|
+| 다른 트랜잭션의 `commit` 전 값을 읽을 수 있나 | 예 | 가시성 규칙 자체다 |
+| 같은 범위 조회 결과가 중간에 바뀌나 | 예 | row/범위 재조회 시 무엇이 보이는지의 문제다 |
+| 마지막 재고를 누가 먼저 선점하나 | 아니오 | 선점은 보통 locking read, 제약, 버전 관리까지 같이 봐야 한다 |
+
+## 짧은 예시: 마지막 재고 1개를 두 사람이 같이 보면
+
+아래 장면 하나만 떠올리면 격리 수준 표가 조금 덜 추상적으로 보인다.
+
+| 시점 | A 트랜잭션 | B 트랜잭션 |
+|---|---|---|
+| 1 | 재고 `1` 조회 | - |
+| 2 | - | 재고 `1` 조회 |
+| 3 | 재고 차감 후 `commit` | - |
+| 4 | - | 이미 본 값만 믿고 다시 차감 시도 |
+
+이때 격리 수준 표가 바로 oversell을 "자동 해결"해 주는 것은 아니다.
+
+- `READ COMMITTED`에서는 B가 다시 읽으면 최신 commit 값을 볼 수 있다.
+- `REPEATABLE READ`에서는 같은 트랜잭션 안에서 B가 처음 본 값이 유지되어 보일 수 있다.
+- `SERIALIZABLE`은 충돌을 더 강하게 막지만, 대신 대기나 retry 비용이 커진다.
+
+즉 초보자 기준 첫 문장은 이것이면 충분하다. 격리 수준은 "무엇이 보이느냐"를 바꾸고, 마지막 재고 같은 문제는 보통 락·버전 컬럼·제약과 같이 풀어야 한다.
+
+그래서 이 문서를 읽는 동안에는 `40001 retry`, `deadlock`, `gap lock`을 해결하려 들지 않는 편이 낫다. 그런 단어가 나오면 "격리 수준만으로 끝나지 않는다"까지만 잡고 follow-up으로 넘긴다.
+
+## 먼저 이렇게 기억하면 덜 헷갈린다
+
+| 지금 생긴 질문 | 먼저 떠올릴 문장 | 다음 문서 |
+|---|---|---|
+| "다른 사람이 아직 확정하지 않은 값을 내가 읽을 수 있나?" | dirty read 문제일 가능성이 크다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
+| "같은 row를 두 번 읽었는데 값이 달라졌어" | non-repeatable read를 의심한다 | [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md) |
+| "범위 조회 결과 행 수가 중간에 바뀌었어" | phantom read 또는 락 전략 문제일 수 있다 | [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) |
+
+입문자가 특히 많이 섞는 오해도 여기서 바로 끊어 두면 좋다.
+
+- 격리 수준은 "트랜잭션을 길게 잡는 설정"이 아니라 동시 실행 시 가시성 규칙이다.
+- 격리 수준은 oversell 방지 스위치가 아니라, 락/제약/재시도와 함께 보는 한 축이다.
+- plain `SELECT`가 보장하는 것과 `FOR UPDATE`가 보장하는 것은 같지 않다.
+
+같은 `SELECT`여도 "그냥 읽는 것"과 "경쟁 자원을 선점하려고 읽는 것"은 다르게 봐야 한다. 다만 입문 1회차에서는 "격리 수준은 보이는 규칙"까지만 잡고, 선점 읽기 디테일은 다음 문서로 넘겨도 된다.
+
+| 지금 하려는 일 | 먼저 떠올릴 읽기 방식 | 왜 다른가 |
+|---|---|---|
+| 화면에 보여 줄 값만 확인 | plain `SELECT` | 현재 보이는 값을 읽는 것이 중심이다 |
+| 마지막 재고, 좌석, 예약 가능 여부를 선점하며 확인 | locking read (`FOR UPDATE` 등) | 다른 트랜잭션이 동시에 같은 자원을 바꾸지 못하게 해야 한다 |
+| "조회는 했는데 중간에 누가 끼어들었나?"를 판단 | 격리 수준 + 락 문서 같이 보기 | 격리 수준만으로 선점이 끝나지 않을 수 있다 |
+
+초보자 기준으로 한 줄씩 줄이면 아래처럼 기억해도 충분하다.
+
+- plain `SELECT`는 "지금 보이는 값을 읽는 도구"에 가깝다.
+- `FOR UPDATE` 같은 locking read는 "읽으면서 경쟁 자원을 잡는 도구"에 가깝다.
+- 그래서 "`SELECT`는 했는데 oversell이 났다"는 말이 나오면 격리 수준 표만 다시 보는 것으로 끝내지 않는다.
+
+## 언제 locking이 필요한가
+
+초보자 기준으로는 "가시성 문제"와 "선점 문제"를 나눠 보면 가장 덜 헷갈린다.
+
+| 지금 하려는 일 | 격리 수준 표만으로 충분한가 | 왜 locking/제약이 더 필요한가 |
+|---|---|---|
+| 같은 row를 다시 읽을 때 값이 왜 바뀌는지 이해 | 대체로 예 | 가시성 규칙을 먼저 이해하는 문제다 |
+| 마지막 재고 1개를 한 명만 성공시켜야 함 | 아니오 | 둘 다 읽고 쓰면 lost update나 oversell이 날 수 있다 |
+| "없는 예약만 insert"처럼 부재를 믿고 판단 | 아니오 | 범위/부재 경쟁은 row 하나만 읽는 문제보다 넓다 |
+
+짧게 연결하면 아래처럼 기억해도 된다.
+
+- 격리 수준은 "무엇이 보이느냐"를 정한다.
+- locking read는 "누가 먼저 자원을 잡느냐"를 정한다.
+- 제약 조건은 "아예 틀린 상태로 못 들어가게" 막는다.
+
+예약 예시로 보면 더 선명하다.
+
+| 장면 | plain `SELECT`만 하면 생길 수 있는 일 | 첫 대응 후보 |
+|---|---|---|
+| 좌석 1개 남음 | 두 요청이 둘 다 "남았다"고 보고 성공 시도 | `FOR UPDATE`, 조건부 `UPDATE`, 버전 컬럼 |
+| 같은 시간대 예약이 비어 있음 | 두 요청이 둘 다 "없다"고 보고 insert | `UNIQUE`/exclusion constraint, guard row, 더 강한 격리+retry |
+| 화면 재조회 값이 달라짐 | 혼란은 생기지만 중복 성공과는 다를 수 있음 | 격리 수준 표부터 다시 본다 |
+
+그래서 초보자 첫 판단 질문은 이것 하나면 충분하다. "나는 지금 값을 다시 읽는 중인가, 아니면 경쟁 자원을 선점해야 하는가?"
+
+## 이름보다 장면을 먼저 구분하기
+
+처음 읽기에서는 용어 정의를 길게 외우기보다 아래 세 장면만 분리하면 충분하다.
+
+| 먼저 떠올릴 장면 | 붙는 이름 | 한 줄 기억 |
+|---|---|---|
+| 아직 commit 안 된 값을 읽었다 | dirty read | 확정 전 값을 본 것이다 |
+| 같은 row를 다시 읽었더니 값이 달라졌다 | non-repeatable read | row 재조회 결과가 흔들린다 |
+| 같은 조건으로 다시 조회했더니 행 수가 달라졌다 | phantom read | 범위 재조회 결과가 흔들린다 |
+
+이 문서의 목표는 "이상 현상 이름 맞히기"보다 "row 재조회 문제와 범위 재조회 문제를 섞지 않기"다.
 
 ## 흔한 오해와 함정
 
 | 자주 하는 말 | 왜 틀리기 쉬운가 | 더 맞는 첫 대응 |
 |---|---|---|
 | "SERIALIZABLE이면 다 해결된다" | 동시성이 거의 직렬로 떨어져 처리량이 급감한다 | 실제 발생하는 이상 현상만 막는 수준을 고른다 |
-| "READ UNCOMMITTED는 쓰면 안 된다" | 통계성 쿼리처럼 다소 부정확해도 빠른 읽기가 필요할 때 의도적으로 사용한다 | 용도를 먼저 정하고 수준을 선택한다 |
+| "READ UNCOMMITTED는 아무 데서나 위험한 옵션이니 외울 필요도 없다" | 일반 애플리케이션에서는 거의 쓰지 않지만, 표를 읽을 때 최약 보장 단계라는 기준점 역할은 한다 | 실무 기본 비교는 `READ COMMITTED`와 `REPEATABLE READ`부터 잡는다 |
 | "격리 수준 올리면 데드락이 없어진다" | 격리가 높아지면 락 범위가 넓어져 오히려 데드락 가능성이 커질 수 있다 | 데드락은 격리 수준이 아닌 락 획득 순서 설계로 다룬다 |
+| "`@Transactional`이 있으니 locking read는 필요 없다" | 트랜잭션은 경계를 묶을 뿐, 같은 자원을 누가 먼저 차지할지는 별도 문제다 | 경쟁 자원 선점이 필요하면 [락 기초](./lock-basics.md)까지 같이 본다 |
 
-## 실무에서 쓰는 모습
+## 여기서 멈춰도 되는 지점
 
-가장 흔한 시나리오 둘:
+아래 세 줄이 분리됐으면 첫 읽기 목표는 충분하다.
 
-**(1) 일반 웹 서비스 CRUD** — 대부분 `READ COMMITTED` 또는 MySQL 기본값인 `REPEATABLE READ`를 그대로 사용한다. 사용자의 한 번 요청은 하나의 짧은 트랜잭션으로 처리되기 때문에 Non-Repeatable Read가 문제가 되지 않는 경우가 많다.
+- dirty read는 "아직 commit되지 않은 값을 읽는가"의 질문이다.
+- non-repeatable read는 "같은 row를 다시 읽을 때 값이 바뀌는가"의 질문이다.
+- phantom read는 "같은 범위를 다시 읽을 때 행 수가 바뀌는가"의 질문이다.
+- oversell, deadlock, serialization failure는 같은 표 안에서 이름만 외우기보다 락/제약/retry 문서로 나눠 보는 편이 안전하다.
 
-**(2) 재고 차감·예약 시스템** — 같은 자원을 동시에 여러 사용자가 변경하는 경우 `REPEATABLE READ` + 명시적 락 또는 낙관적 락을 조합한다. 격리 수준만 올리는 것보다 락 전략을 함께 설계하는 것이 더 중요하다.
+이 다음부터는 락, 엔진 차이, retry 설계처럼 symptom이 붙을 때만 follow-up 문서를 연다.
+
+## 입문에서 여기까지만 기억하기
+
+처음 읽기에서는 아래 세 문장만 남아도 충분하다.
+
+- 격리 수준은 "무엇이 보이느냐"를 바꾸는 규칙이다.
+- row 재조회 문제와 범위 재조회 문제는 같은 증상이 아니다.
+- 마지막 재고, 예약, 중복 방지는 보통 락·버전 컬럼·제약을 같이 봐야 한다.
+
+실제 서비스에서 기본값, 엔진 차이, retry 규칙까지 들어가면 이미 심화 단계다. 이 문서에서는 거기까지 확장하지 않는다.
+
+## 여기서 심화로 밀어 두는 것
+
+아래 주제는 격리 수준을 처음 이해하는 데 꼭 필요하지 않다. 먼저 "같은 row"와 "범위 조회"가 왜 다르게 흔들리는지만 잡고, 세부 구현은 링크로 내려가면 된다.
+
+| 지금은 링크만 기억할 주제 | 갈 문서 |
+|---|---|
+| MySQL과 PostgreSQL이 같은 이름의 격리 수준을 어떻게 다르게 구현하는지 | [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md) |
+| `FOR UPDATE`, gap lock, next-key lock처럼 락 동작이 왜 달라 보이는지 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) |
+| `SERIALIZABLE` retry, `40001`, deadlock 대응처럼 incident 성격이 강한 주제 | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
 
 ## 더 깊이 가려면
 
-- 이상 현상 5가지를 더 자세히 보려면 → [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
-- MySQL vs PostgreSQL 격리 수준 구현 차이 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- 이상 현상을 한 장 표로 다시 보고 싶으면 → [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
+- `READ COMMITTED`와 `REPEATABLE READ`를 사례 중심으로 비교하고 싶으면 → [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md)
+- `FOR UPDATE`, gap lock, retry, 엔진 차이처럼 incident 성격이 붙으면 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 
 cross-category bridge:
 
-- Spring `@Transactional(isolation = ...)` 설정 방법과 주의사항 → [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
-
-## 면접/시니어 질문 미리보기
-
-> Q: READ COMMITTED와 REPEATABLE READ의 차이를 설명해 주세요.
-> 의도: 이상 현상과 격리 수준의 대응 관계를 말로 표현할 수 있는지 확인
-> 핵심: REPEATABLE READ는 같은 트랜잭션 안에서 같은 row를 다시 읽어도 결과가 바뀌지 않음을 보장한다. READ COMMITTED는 매 읽기마다 최신 commit 결과를 반영한다.
-
-> Q: MySQL InnoDB의 기본 격리 수준이 REPEATABLE READ인데 왜 Phantom Read가 잘 발생하지 않나요?
-> 의도: MVCC 개념을 아는지 간접 확인
-> 핵심: InnoDB는 MVCC 스냅샷 읽기를 사용하므로 일반 `SELECT`에서는 phantom이 보이지 않는다. 단 `SELECT ... FOR UPDATE` 같은 현재 읽기에서는 발생할 수 있다.
+- Spring `@Transactional(isolation = ...)`를 처음 코드에서 읽는 법 → [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
 ## 한 줄 정리
 

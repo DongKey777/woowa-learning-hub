@@ -1,84 +1,72 @@
 # Java Array Equality Basics
 
-> 한 줄 요약: 배열은 객체라서 `==`와 `array.equals()`가 reference identity를 보고, 값 비교는 1차원이면 `Arrays.equals()`, 중첩 배열이면 `Arrays.deepEquals()`를 써야 한다.
+> 한 줄 요약: 배열은 객체라서 `==`와 `array.equals(...)`가 같은 배열인지부터 보고, 값 비교는 1차원이면 `Arrays.equals()`, 중첩 배열이면 `Arrays.deepEquals()`로 나눠야 한다.
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
+- [language 카테고리 인덱스](../README.md)
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
+- [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
+- [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 
+retrieval-anchor-keywords: java array equality basics, java array == vs arrays.equals, java array equals false why, java array same value but false, java array identity vs equality, java arrays.equals when to use, java arrays.deepequals when to use, java 2d array comparison basics, 자바 배열 비교 기초, 배열 == 값 비교 차이, 배열 equals 왜 false, 배열 비교 처음 배우는데, arrays.equals 뭐예요, arrays.deepequals 언제 써요
 
-retrieval-anchor-keywords: java array equality basics basics, java array equality basics beginner, java array equality basics intro, java basics, beginner java, 처음 배우는데 java array equality basics, java array equality basics 입문, java array equality basics 기초, what is java array equality basics, how to java array equality basics
-> 관련 문서:
-> - [Language README](../README.md)
-> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
-> - [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
-> - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
-> - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
-> - [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
-> - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-> - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
+## 핵심 개념
 
-> retrieval-anchor-keywords: java array equality basics, java array comparison, java array `==` vs `equals`, java array identity vs equality, java array `Arrays.equals`, java array `Arrays.deepEquals`, java 2d array comparison, java multidimensional array equality, java nested array comparison, java matrix equality, java `int[]` compare, java `String[][]` compare, java beginner array equality, java nested array equals mistake, java array alias equality confusion, java array copy clone equality confusion, 자바 배열 비교 기초, 자바 배열 == equals 차이, 배열 equals 왜 false, 배열 비교 처음 배우는데, 배열 비교 큰 그림, Arrays.equals 언제 쓰는지, Arrays.deepEquals 언제 쓰는지, 2차원 배열 비교 방법 기초, 중첩 배열 비교 기초, 자바 int 배열 값 비교, 배열 출력은 같은데 비교 false, array print same but equals false
+배열 비교에서 초보자가 가장 자주 섞는 질문은 두 가지다.
 
-<details>
-<summary>Table of Contents</summary>
+- "같은 배열 객체인가?"
+- "배열 안의 값이 같은가?"
 
-- [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
-- [배열 비교 규칙을 먼저 한 장으로 보기](#배열-비교-규칙을-먼저-한-장으로-보기)
-- [배열에서 `==`와 `equals()`가 값 비교가 아닌 이유](#배열에서-와-equals가-값-비교가-아닌-이유)
-- [1차원 배열은 `Arrays.equals()`로 비교하기](#1차원-배열은-arraysequals로-비교하기)
-- [중첩 배열은 `Arrays.deepEquals()`로 비교하기](#중첩-배열은-arraysdeepequals로-비교하기)
-- [중첩 배열에서 초보자가 자주 하는 실수](#중첩-배열에서-초보자가-자주-하는-실수)
-- [코드로 한 번에 보기](#코드로-한-번에-보기)
-- [빠른 체크리스트](#빠른-체크리스트)
-- [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
-- [한 줄 정리](#한-줄-정리)
+배열은 참조형 객체라서 `==`는 기본적으로 첫 번째 질문을 본다.
+그래서 값이 같아 보여도 서로 다른 배열 두 개면 `==`는 `false`다.
 
-</details>
+이 문서를 한 줄로 줄이면 이렇게 읽으면 된다.
 
-## 왜 이 문서가 필요한가
+- 같은 배열인지 확인: `==`
+- 1차원 배열 값 비교: `Arrays.equals(...)`
+- 중첩 배열 값 비교: `Arrays.deepEquals(...)`
 
-배열 비교는 Java 입문자가 자주 헷갈리는 주제다.
+큰 equality 감각 자체가 아직 흔들리면 먼저 [Java Equality and Identity Basics](./java-equality-identity-basics.md)에서 "같은 객체"와 "같은 값"을 분리하고, 다시 이 문서로 돌아오면 배열 규칙이 훨씬 덜 헷갈린다.
 
-- `int[]` 두 개의 값이 같은데 왜 `==`는 `false`일까?
-- `array.equals(other)`를 썼는데 왜 내용 비교가 안 될까?
-- `String[][]` 비교에 `Arrays.equals()`를 썼는데 왜 `false`일까?
-- `Arrays.deepEquals()`는 언제 쓰고, 언제 쓰면 안 될까?
+## 증상으로 바로 고르기
 
-핵심은 간단하다. 배열도 참조형 객체이고, 2차원 배열도 사실은 "배열 안에 배열"이다.
-그래서 기본형 비교 규칙을 그대로 가져오면 틀리고, 중첩 구조에서는 `Arrays.equals()`와 `Arrays.deepEquals()`의 역할도 나뉜다.
+배열 비교도 "문법"보다 "지금 무슨 증상이 보이느냐"로 고르면 빠르다.
 
-아직 "이게 비교 문제 맞나?"가 헷갈리면, 먼저 [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)에서 출력/비교/공유/정렬 중 어디에 걸렸는지부터 나누는 편이 빠르다.
-
-## 배열 비교 규칙을 먼저 한 장으로 보기
-
-먼저 한 가지를 끊어서 생각하면 덜 헷갈린다.
-
-- `[I@...`처럼 출력 자체가 이상하면 이 문서보다 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)를 먼저 본다.
-- 한쪽 수정이 다른 쪽에도 같이 퍼지면 비교 문제가 아니라 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) 쪽이다.
-
-| 도구 | 실제로 묻는 질문 | 잘 맞는 경우 | 주의할 점 |
+| 지금 보이는 증상 | 실제로 묻는 질문 | 먼저 쓸 도구 | 다음 연결 |
 |---|---|---|---|
-| `==` | 같은 배열 객체를 가리키는가 | alias인지 확인할 때 | 내용이 같아도 다른 배열이면 `false` |
-| `array.equals(other)` | 배열에서는 사실상 `==`와 같다 | 거의 쓰지 않는 편이 낫다 | 배열은 `equals()`를 값 비교로 오버라이드하지 않는다 |
-| `Arrays.equals(a, b)` | 1차원 배열의 각 원소가 순서대로 같은가 | `int[]`, `String[]`, `Member[]` 비교 | 원소가 다시 배열이면 그 안까지는 내려가지 않는다 |
-| `Arrays.deepEquals(a, b)` | 중첩 배열 내부까지 내려가서 같은가 | `String[][]`, `int[][]`, 배열을 원소로 가진 `Object[]` 비교 | 평범한 `int[]` 같은 1차원 primitive 배열에는 직접 쓸 수 없다 |
+| `first == second`가 `false`인데 눈으로는 값이 같다 | 같은 배열인지, 같은 값인지 | 값 비교면 `Arrays.equals(...)` | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| `array.equals(other)`도 `false`다 | 배열이 `equals()`를 값 비교로 바꿨는가 | 보통 아니다. `Arrays.equals(...)` 또는 `Arrays.deepEquals(...)` | [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md) |
+| `String[][]` 비교에 `Arrays.equals(...)`를 썼는데 `false`다 | 바깥 배열 원소가 다시 배열인가 | `Arrays.deepEquals(...)` | [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md) |
+| 한쪽을 바꾸면 다른 쪽도 같이 바뀐다 | 비교 문제가 아니라 alias인가 | `left == right`로 같은 배열인지 확인 | [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) |
 
-초보자용 규칙으로는 다음처럼 외우면 된다.
+배열 comparison bug를 만났을 때 첫 질문은 항상 이 두 개면 충분하다.
 
-- "같은 배열 객체냐?"를 묻는 경우만 `==`
-- 1차원 배열 내용 비교는 `Arrays.equals()`
-- 2차원 이상이거나 배열 안에 배열이 들어 있으면 `Arrays.deepEquals()`
+1. 지금 내가 보고 싶은 건 같은 배열인가, 같은 값인가?
+2. 이 배열이 1차원인가, 배열 안에 배열이 또 있는가?
 
-## 배열에서 `==`와 `equals()`가 값 비교가 아닌 이유
+## 한눈에 보기
 
-배열은 참조형이다. 그래서 `==`는 "같은 메모리의 같은 배열 객체를 보고 있는가"를 비교한다.
+| 비교 방법 | 실제 의미 | 잘 맞는 경우 | 초보자 주의점 |
+|---|---|---|---|
+| `==` | 같은 배열 객체를 가리키는가 | alias 확인 | 값이 같아도 새로 만든 배열 둘이면 `false` |
+| `array.equals(other)` | 배열에서는 사실상 identity 비교 | 거의 쓰지 않는 편이 안전 | 값 비교라고 기대하면 틀리기 쉽다 |
+| `Arrays.equals(a, b)` | 1차원 배열 원소가 같은 순서로 같은가 | `int[]`, `String[]`, `Member[]` | 원소가 다시 배열이면 안쪽까지는 내려가지 않는다 |
+| `Arrays.deepEquals(a, b)` | 중첩 배열 내부까지 내려가서 같은가 | `int[][]`, `String[][]`, 배열을 담은 `Object[]` | 1차원 primitive 배열 만능 도구가 아니다 |
+
+짧게 외우면 이렇다.
+
+- 배열 `==`는 reference identity
+- 배열 값 비교의 기본값은 `Arrays.equals(...)`
+- 2차원 이상이거나 배열 안에 배열이 있으면 `Arrays.deepEquals(...)`
+
+## 왜 `==`와 `array.equals(...)`가 계속 헷갈릴까
+
+배열도 객체이기 때문이다.
 
 ```java
 int[] first = {1, 2, 3};
@@ -87,59 +75,39 @@ int[] alias = first;
 
 System.out.println(first == second); // false
 System.out.println(first == alias);  // true
-```
-
-`first`와 `second`는 값은 같지만 서로 다른 배열 객체다.
-반면 `alias`는 `first`와 같은 배열을 가리키므로 `true`다.
-
-배열의 `equals()`도 함정이다.
-
-```java
 System.out.println(first.equals(second)); // false
 ```
 
-배열은 `Object.equals()`를 값 비교용으로 오버라이드하지 않는다.
-그래서 `array.equals(other)`는 초보자 관점에서 사실상 `==`와 같은 함정이라고 봐도 된다.
+이 예제를 문장으로 읽으면 단순하다.
 
-## 1차원 배열은 `Arrays.equals()`로 비교하기
+- `first`와 `second`는 값은 같지만 다른 배열이다
+- `alias`는 `first`와 같은 배열을 같이 본다
+- 배열의 `equals()`는 초보자가 기대하는 "값 비교용 equals"가 아니다
 
-`Arrays.equals()`는 1차원 배열의 값을 비교할 때 가장 먼저 떠올리면 되는 기본 도구다.
+즉 배열에서 `==`와 `array.equals(...)`가 둘 다 `false`라면, 대개 버그는 "`equals`를 썼는데 왜 값 비교가 안 되지?" 쪽이다.
+그때는 바로 core equality 문서의 한 줄 규칙으로 돌아가면 된다.
+
+> 참조형에서 `==`는 보통 같은 객체 질문이고, 값 질문이면 타입이 제공하는 값 비교 도구로 간다.
+
+배열에서 그 "값 비교 도구"가 바로 `Arrays.equals(...)`와 `Arrays.deepEquals(...)`다.
+
+## 1차원 배열과 중첩 배열을 나눠 보기
+
+### 1차원 배열: `Arrays.equals(...)`
 
 ```java
 import java.util.Arrays;
 
-int[] numbers1 = {1, 2, 3};
-int[] numbers2 = {1, 2, 3};
-
-System.out.println(Arrays.equals(numbers1, numbers2)); // true
-```
-
-이 메서드는 다음을 순서대로 본다.
-
-1. 둘 다 `null`인지
-2. 길이가 같은지
-3. 같은 인덱스의 원소가 순서대로 같은지
-
-따라서 이런 경우에 잘 맞는다.
-
-- `int[]`, `long[]`, `double[]` 같은 1차원 primitive 배열
-- `String[]`, `Integer[]`, 사용자 정의 객체 배열 같은 1차원 참조형 배열
-
-예를 들어 `String[]`는 각 원소가 `String`이므로, 원소 비교 단계에서 `String.equals()`가 동작해 내용 비교가 된다.
-
-```java
-String[] left = {"A", "B"};
-String[] right = {"A", "B"};
+int[] left = {1, 2, 3};
+int[] right = {1, 2, 3};
 
 System.out.println(Arrays.equals(left, right)); // true
 ```
 
-하지만 여기서 중요한 제한이 하나 있다.
-원소가 다시 배열이면, `Arrays.equals()`는 그 안으로 재귀적으로 들어가지 않는다.
+이때 `Arrays.equals(...)`는 길이와 순서와 각 칸의 값을 본다.
+그래서 `int[]`, `long[]`, `String[]` 같은 평범한 1차원 배열 비교의 기본값으로 생각하면 된다.
 
-## 중첩 배열은 `Arrays.deepEquals()`로 비교하기
-
-`Arrays.deepEquals()`는 "배열 안에 배열"이 있는 중첩 구조를 비교할 때 쓴다.
+### 중첩 배열: `Arrays.deepEquals(...)`
 
 ```java
 import java.util.Arrays;
@@ -153,144 +121,70 @@ String[][] board2 = {
         {"X", "O"}
 };
 
+System.out.println(Arrays.equals(board1, board2));     // false
 System.out.println(Arrays.deepEquals(board1, board2)); // true
 ```
 
-이 메서드는 바깥 배열의 원소를 보다가 그 원소도 배열이면 안쪽으로 더 내려가서 비교한다.
-그래서 다음 같은 구조에 잘 맞는다.
+`board1`과 `board2`의 바깥 배열 원소는 `String[]`다.
+그래서 `Arrays.equals(...)`는 row 배열들을 다시 객체로 보고 비교해 `false`가 될 수 있다.
+이럴 때는 안쪽 배열까지 내려가는 `Arrays.deepEquals(...)`가 맞다.
 
-- `String[][]`, `String[][][]`
-- `int[][]`, `long[][]`
-- 배열을 원소로 담고 있는 `Object[]`
+배열 구조를 이렇게 읽으면 된다.
 
-예를 들어 primitive 배열이 안쪽에 중첩된 경우도 처리할 수 있다.
+- `int[]`, `String[]`: 1차원 비교
+- `int[][]`, `String[][]`: 중첩 비교
+- `Object[]` 안에 배열이 들어 있다: 중첩 비교
 
-```java
-Object[] mixed1 = {new int[]{1, 2}, new String[]{"A", "B"}};
-Object[] mixed2 = {new int[]{1, 2}, new String[]{"A", "B"}};
+## 흔한 오해와 함정
 
-System.out.println(Arrays.deepEquals(mixed1, mixed2)); // true
-```
+### `array.equals(...)`면 값 비교라고 생각한다
 
-다만 plain `int[]`처럼 1차원 primitive 배열은 `Arrays.deepEquals()`에 직접 넘길 수 없다.
-이 경우는 계속 `Arrays.equals(int[], int[])` 같은 1차원 전용 오버로드를 써야 한다.
+배열은 그 기대를 만족하지 않는다.
+배열 값 비교 의도를 드러내려면 `Arrays.equals(...)` 또는 `Arrays.deepEquals(...)`를 써야 한다.
 
-## 중첩 배열에서 초보자가 자주 하는 실수
+### 2차원 배열도 `Arrays.equals(...)`면 충분하다고 생각한다
 
-### 1. 2차원 배열도 `Arrays.equals()`면 충분하다고 생각한다
+2차원 배열은 "배열 안에 배열"이다.
+겉만 보면 안쪽 row는 여전히 다른 배열 객체라서 `Arrays.equals(...)`가 기대와 다르게 보일 수 있다.
 
-```java
-String[][] left = {
-        {"A", "B"},
-        {"C"}
-};
-String[][] right = {
-        {"A", "B"},
-        {"C"}
-};
+### `Arrays.deepEquals(...)`를 모든 배열의 만능 해답으로 생각한다
 
-System.out.println(Arrays.equals(left, right)); // false
-```
+초보자 기본 규칙은 더 단순하게 두는 편이 좋다.
 
-이유는 바깥 배열의 각 원소가 `String[]`이기 때문이다.
-`Arrays.equals()`는 각 row를 다시 `String[]` 배열 객체로 보고 비교하므로, row reference가 다르면 `false`가 된다.
+- 평범한 1차원 배열: `Arrays.equals(...)`
+- 중첩 배열: `Arrays.deepEquals(...)`
 
-### 2. `array.equals(other)`가 값 비교라고 착각한다
+이렇게 나누면 불필요하게 복잡한 오버로드 규칙까지 한 번에 들고 가지 않아도 된다.
 
-```java
-int[] left = {1, 2};
-int[] right = {1, 2};
-
-System.out.println(left.equals(right)); // false
-```
-
-배열의 `equals()`는 초보자가 기대하는 값 비교가 아니다.
-배열 내용 비교는 `Arrays.equals()` 또는 `Arrays.deepEquals()`로 의도를 분명히 드러내는 편이 안전하다.
-
-### 3. `Arrays.deepEquals()`를 모든 배열 비교의 만능 도구로 생각한다
-
-```java
-int[] left = {1, 2};
-int[] right = {1, 2};
-
-// Arrays.deepEquals(left, right); // 컴파일되지 않음
-System.out.println(Arrays.equals(left, right)); // true
-```
-
-1차원 primitive 배열은 `Object[]`가 아니므로 `deepEquals()` 대상이 아니다.
-깊게 내려갈 구조가 없는 평범한 `int[]`, `long[]`, `double[]`는 `Arrays.equals()`가 맞다.
-
-### 4. 중첩 배열에서는 "원소만 같으면 순서는 상관없다"고 생각한다
+### 순서가 달라도 원소만 같으면 같다고 생각한다
 
 배열 비교는 둘 다 순서 민감하다.
+집합처럼 "들어 있는 원소만 같으면 된다"가 아니다.
 
-- 길이가 다르면 다르다.
-- 같은 원소라도 순서가 다르면 다르다.
-- jagged array라면 row 길이 차이도 그대로 비교 결과에 반영된다.
+## 실무에서 쓰는 모습
 
-즉 `Arrays.deepEquals()`는 "중첩 구조를 재귀적으로 비교"할 뿐이고, 집합처럼 순서를 무시하지는 않는다.
+배열 equality bug는 보통 테스트 코드나 디버깅에서 처음 보인다.
 
-## 코드로 한 번에 보기
+- 예상 결과 배열과 실제 결과 배열을 비교해야 할 때
+- 2차원 보드, 좌표표, 좌석 상태처럼 중첩 배열을 검증할 때
+- copy 문제인지 comparison 문제인지 먼저 잘라야 할 때
 
-```java
-import java.util.Arrays;
+예를 들어 "출력은 같은데 assertion이 실패한다"면 아래 순서가 안전하다.
 
-public class ArrayEqualityExample {
-    public static void main(String[] args) {
-        int[] numbers1 = {1, 2, 3};
-        int[] numbers2 = {1, 2, 3};
-        int[] alias = numbers1;
+1. 비교 대상이 1차원인지 중첩 배열인지 먼저 본다.
+2. 1차원이면 `Arrays.equals(...)`, 중첩이면 `Arrays.deepEquals(...)`로 바꾼다.
+3. 그래도 이상하면 값 비교 문제가 아니라 alias나 복사 문제인지 확인한다.
 
-        System.out.println(numbers1 == numbers2);      // false
-        System.out.println(numbers1 == alias);         // true
-        System.out.println(numbers1.equals(numbers2)); // false
-        System.out.println(Arrays.equals(numbers1, numbers2)); // true
+이 흐름은 [Java Equality and Identity Basics](./java-equality-identity-basics.md)의 symptom route와 같다.
+먼저 "같은 객체 질문인가, 같은 값 질문인가"를 자르고, 그다음 배열 타입에 맞는 비교 도구를 고른다.
 
-        String[][] board1 = {
-                {"O", "X"},
-                {"X", "O"}
-        };
-        String[][] board2 = {
-                {"O", "X"},
-                {"X", "O"}
-        };
+## 더 깊이 가려면
 
-        System.out.println(Arrays.equals(board1, board2));     // false
-        System.out.println(Arrays.deepEquals(board1, board2)); // true
-
-        Object[] mixed1 = {new int[]{1, 2}, new String[]{"A", "B"}};
-        Object[] mixed2 = {new int[]{1, 2}, new String[]{"A", "B"}};
-
-        System.out.println(Arrays.deepEquals(mixed1, mixed2)); // true
-    }
-}
-```
-
-이 예제에서 확인할 포인트는 네 가지다.
-
-- 배열의 `==`는 reference identity 비교다.
-- 배열의 `equals()`는 값 비교가 아니다.
-- 1차원 배열 내용 비교는 `Arrays.equals()`다.
-- 중첩 배열 내용 비교는 `Arrays.deepEquals()`다.
-
-## 빠른 체크리스트
-
-- 같은 배열 객체인지 확인할 때만 `==`
-- 배열 내용 비교에 `array.equals(other)`는 쓰지 않기
-- `int[]`, `String[]`, `Member[]` 같은 1차원 배열은 `Arrays.equals()`
-- `int[][]`, `String[][]`, 배열을 원소로 가진 `Object[]`는 `Arrays.deepEquals()`
-- `Arrays.equals()`와 `Arrays.deepEquals()`는 둘 다 순서와 길이에 민감하다는 점 기억하기
-- 1차원 primitive 배열에 `Arrays.deepEquals()`를 억지로 적용하지 않기
-
-## 어떤 문서를 다음에 읽으면 좋은가
-
-- 배열 출력이 왜 `[I@...`처럼 보이는지부터 정리하려면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
-- 배열 대입과 `clone()`, `Arrays.copyOf()` 차이까지 함께 보려면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
-- equality 기본 축부터 넓게 정리하려면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
-- 배열과 참조형 기초를 먼저 다시 다지고 싶다면 [자바 언어의 구조와 기본 문법](./java-language-basics.md)
-- 얕은 복사와 깊은 복사 감각까지 함께 묶어 보려면 [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-- 객체 `equals()`/`hashCode()` 계약으로 확장하려면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
+- 배열 비교 전에 equality 기본 축을 다시 잡고 싶으면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- 출력이 `[I@...`처럼 보여서 비교 전에 눈으로 확인하는 법이 먼저 필요하면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
+- 한쪽 변경이 다른 쪽에도 퍼져서 comparison보다 alias가 의심되면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
+- 배열 equality 다음 단계로 `HashSet`/`HashMap`의 `equals()`/`hashCode()` 흐름을 잇고 싶으면 [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 
 ## 한 줄 정리
 
-Java 배열 비교에서 `==`와 `array.equals()`는 객체 동일성을 보고, 실제 값 비교는 1차원 배열이면 `Arrays.equals()`, 중첩 배열이면 `Arrays.deepEquals()`를 써야 한다.
+배열 비교에서 먼저 자를 것은 "같은 배열인가, 같은 값인가"이고, 값 비교라면 1차원은 `Arrays.equals(...)`, 중첩 배열은 `Arrays.deepEquals(...)`로 가면 된다.

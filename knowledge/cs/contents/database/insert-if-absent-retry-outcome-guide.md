@@ -20,7 +20,7 @@
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 - [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
 - [멱등성 키와 중복 방지](./idempotency-key-and-deduplication.md)
-- [System Design: Retry / Timeout / Idempotency Master Note](../system-design/retry-timeout-idempotency.md)
+- [Retry, Timeout, Idempotency Master Note](../../master-notes/retry-timeout-idempotency-master-note.md)
 - [database 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: insert-if-absent retry outcome, insert if absent retry guide, duplicate key vs lock wait, duplicate key vs lock timeout, insert-if-absent timeout vs duplicate, duplicate key already exists, lock timeout busy signal, deadlock whole transaction retry, serialization failure whole transaction retry, cannotacquirelockexception vs 40001, busy pool wait vs lock wait, beginner insert-if-absent guide, insert if absent retry outcome guide basics, insert if absent retry outcome guide beginner, insert if absent retry outcome guide intro

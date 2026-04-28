@@ -4,6 +4,17 @@
 
 **난이도: 🔴 Advanced**
 
+관련 문서:
+
+- [프로세스와 스레드 기초](./process-thread-basics.md)
+- [프로세스, 스레드, 가상 메모리, 컨텍스트 스위치, 스케줄러 기초](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- [Mutex, Deadlock Basics](./mutex-deadlock-basics.md)
+- [Futex, Mutex, Semaphore, Spinlock](./futex-mutex-semaphore-spinlock.md)
+- [Java Thread Basics](../language/java/java-thread-basics.md)
+- [Java Concurrency Utilities](../language/java/java-concurrency-utilities.md)
+
+retrieval-anchor-keywords: context switching basics, deadlock basics, lock-free basics, 컨텍스트 스위칭이란, 데드락이란, lock free 뭐예요, 스레드 늘렸는데 왜 느려져요, 멀티스레드 왜 느려질까, 처음 배우는데 컨텍스트 스위치, 처음 배우는데 데드락, 처음 배우는데 lock free, context switch cost why, deadlock four conditions, starvation vs livelock difference, cas basics, compare and swap basics, thread contention basics, 동시성 문제 기초, context switching deadlock lockfree beginner bridge
+
 ## 핵심 개념 (정의 + 존재 이유)
 
 ### 컨텍스트 스위칭

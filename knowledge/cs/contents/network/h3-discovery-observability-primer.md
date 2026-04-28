@@ -13,7 +13,7 @@
 - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
 - [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
 
-retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix, h3 discovery observability primer basics, h3 discovery observability primer beginner, h3 discovery observability primer intro
+retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, https rr 없음, https rr 있음, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix, curl http3 unsupported build
 
 ## Discovery vs Permission 용어 고정 박스
 
@@ -57,7 +57,9 @@ retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace
 - [증상으로 먼저 나누기: discovery vs permission](#증상으로-먼저-나누기-discovery-vs-permission)
 - [DevTools에서 먼저 볼 것](#devtools에서-먼저-볼-것)
 - [DNS answer를 `dig`로 확인하기](#dns-answer를-dig로-확인하기)
+- [`dig` 환경 차이 체크](#dig-환경-차이-체크)
 - [`curl`로 작은 trace 만들기](#curl로-작은-trace-만들기)
+- [`curl` Alt-Svc cache 감각 보기](#curl-altsvc-cache-감각-보기)
 - [판단 순서](#판단-순서)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
@@ -352,6 +354,42 @@ dig +noall +answer "$DOMAIN" HTTPS
 www.example.com. 300 IN HTTPS 1 . alpn="h3,h2" ipv4hint=203.0.113.10
 ```
 
+## 첫 판독용 `dig` 2종 비교
+
+처음 읽을 때는 같은 명령의 출력이 "`HTTPS RR 없음`"인지 "`HTTPS RR 있음`"인지부터 가른다.
+
+`HTTPS RR 없음`, `Alt-Svc` driven 후보:
+
+```text
+$ dig +noall +answer alt-only.example HTTPS
+
+(출력 없음)
+```
+
+첫 판독 문장: "DNS 힌트는 아직 안 보인다. 첫 요청이 `h2`였다면 response의 `Alt-Svc`를 먼저 본다."
+
+`HTTPS RR 있음`, HTTPS RR driven 후보:
+
+```text
+$ dig +noall +answer rr-first.example HTTPS
+rr-first.example. 300 IN HTTPS 1 . alpn="h3,h2" ipv4hint=203.0.113.10
+```
+
+첫 판독 문장: "DNS가 출발 전에 H3 힌트를 줬다. 첫 clean request부터 `h3`였다면 HTTPS RR 쪽 설명력이 커진다."
+
+같은 명령인데 출력만 다르므로, 초급자는 이 비교를 "`DNS answer가 비었는가 / `alpn=\"h3\"`가 보이는가`" 2칸 체크처럼 쓰면 된다.
+
+### `dig` 2종과 DevTools를 바로 붙여 읽는 미니 비교
+
+아래처럼 `dig`와 DevTools 한 줄씩만 붙이면 첫 판독이 더 빨라진다.
+
+| 장면 | `dig` 한 줄 | DevTools 첫 줄 | 초급자 결론 |
+|---|---|---|---|
+| HTTPS RR 없음 + `Alt-Svc` 있음 | `(출력 없음)` | 첫 요청 `h2`, response에 `Alt-Svc: h3=":443"` | "`Alt-Svc` driven 쪽부터 본다" |
+| HTTPS RR 있음 + 첫 요청부터 `h3` | `alpn="h3,h2"` 보임 | 첫 clean request부터 `Protocol=h3` | "HTTPS RR driven 쪽 설명력이 더 크다" |
+
+여기서도 결론은 "`가능성이 크다`"까지만 쓴다. 둘 다 보이거나 기존 cache가 남아 있으면 단정하지 않는다.
+
 입문자가 먼저 볼 부분은 두 곳이다.
 
 | answer 조각 | 읽는 법 |
@@ -366,6 +404,16 @@ www.example.com. 300 IN HTTPS 1 edge.example.net. alpn="h3"
 ```
 
 이 경우는 "DNS가 `www.example.com`의 웹 endpoint 후보로 `edge.example.net`과 H3 힌트를 줬다"로 읽는다.
+
+짧은 기억법:
+
+- `dig`가 비면 "`DNS 힌트 없음`"까지는 말할 수 있다.
+- `dig`에 `alpn="h3"`가 있으면 "`DNS 힌트 있음`"까지는 말할 수 있다.
+- 둘 다 "`실제 첫 요청 결과`"는 DevTools `Protocol`과 response `Alt-Svc`를 같이 보고 마무리한다.
+
+## `dig` 환경 차이 체크
+
+처음 판독이 끝났으면, 그다음에는 도구와 resolver 차이만 짧게 확인한다.
 
 ### 구버전 도구에서는 TYPE65도 시도한다
 
@@ -449,7 +497,17 @@ http_version=3
 - browser가 자연스럽게 H3를 선택했다는 증명은 아님
 - curl build가 HTTP/3를 지원하지 않으면 이 명령 자체가 실패할 수 있음
 
-### 3. curl의 Alt-Svc cache 감각 보기
+짧은 1차 분기:
+
+| `curl --http3` 장면 | 먼저 적는 초급자 문장 | 다음 확인 |
+|---|---|---|
+| `option --http3: the installed libcurl version does not support this` 비슷한 오류 | "`내 curl 환경`이 HTTP/3 기능을 못 낸다. 아직 서버 탓으로 단정하지 않는다." | `curl -V`에서 HTTP/3, QUIC 계열 지원 표시가 있는지 |
+| 일반 `curl`은 되는데 `curl --http3`만 실패 | "`기본 HTTPS는 되지만 H3 경로`에서 막힌다. 서버 또는 네트워크 경로를 더 본다." | `Alt-Svc` 광고, DevTools `Protocol`, UDP/QUIC fallback 흔적 |
+| `curl --http3`가 성공 | "`이 환경에서 H3 시도 자체는 가능하다.`" | browser의 자연 선택과 cache/DNS 힌트를 분리해서 본다 |
+
+핵심은 "`명령 자체가 이해되지 않는 실패`"와 "`H3 시도는 했지만 연결이 안 되는 실패`"를 먼저 떼는 것이다.
+
+## `curl` Alt-Svc cache 감각 보기
 
 browser와 완전히 같지는 않지만, `Alt-Svc`가 "첫 응답 이후 다음 연결에 영향을 준다"는 감각을 볼 수 있다.
 
@@ -468,8 +526,6 @@ curl -v --alt-svc "$ALT_SVC_CACHE" -o /dev/null "https://$DOMAIN"
 - 첫 command의 response header에 `Alt-Svc`가 있었는가
 - `/tmp/h3-altsvc.txt`에 h3 alternative service가 저장됐는가
 - 다음 command의 verbose log에서 alternative service를 쓰려는 흔적이 있는가
-
-## `curl`로 작은 trace 만들기 (계속 2)
 
 이 trace는 `Alt-Svc`가 "현재 response를 즉시 바꾸는 header"가 아니라 "다음 connection 후보를 cache하게 하는 힌트"라는 감각을 잡는 데 유용하다.
 
@@ -554,6 +610,12 @@ UDP 443 차단, QUIC listener 문제, browser policy 때문에 H2로 fallback될
 아니다.
 `curl --http3`는 강제 시도에 가깝다.
 browser의 자연 선택은 cache, DNS, policy, 기존 connection 영향을 더 많이 받는다.
+
+### `curl --http3`가 아예 지원되지 않는다고 나오면 서버가 H3를 안 한다는 뜻인가
+
+아니다.
+이 경우는 먼저 `curl` 도구 자체의 기능 부족으로 읽는다.
+초급자 기준 첫 문장은 "`서버 판정 보류, 내 실험 도구부터 확인`"이 맞다.
 
 ### DevTools의 `Disable cache`를 켜면 Alt-Svc cache도 깨끗해지나
 

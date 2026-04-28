@@ -32,6 +32,7 @@ retrieval-anchor-keywords: cross-origin cookie primer, fetch credentials mode, s
 - [브라우저 요청 흐름 2: cross-origin 이지만 same-site인 서브도메인 API 호출](#브라우저-요청-흐름-2-cross-origin-이지만-same-site인-서브도메인-api-호출)
 - [브라우저 요청 흐름 3: cross-site API 호출](#브라우저-요청-흐름-3-cross-site-api-호출)
 - [왜 링크 이동은 되는데 `fetch`는 안 되나](#왜-링크-이동은-되는데-fetch는-안-되나)
+- [login redirect와 `credentials`를 같이 볼 때](#login-redirect와-credentials를-같이-볼-때)
 - [디버깅 체크리스트](#디버깅-체크리스트)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
@@ -372,6 +373,45 @@ include를 켠다
 - "클릭으로 들어가면 로그인돼 있는데 SPA 호출은 401이다"
 
 같은 현상을 더 빨리 설명할 수 있다.
+
+---
+
+## login redirect와 `credentials`를 같이 볼 때
+
+beginner 질문은 보통 "`fetch`가 login HTML `200`을 받아요"로 들어온다.
+여기서 먼저 나눌 것은 둘이다.
+
+- `redirect follow`: 브라우저가 최종 login page까지 따라간 표면
+- `credentials`/cookie scope: 첫 요청이 anonymous였던 원인 후보
+
+예를 들어 `https://app.example.com`에서 `https://api.example.com/me`를 이렇게 호출하면:
+
+```js
+fetch("https://api.example.com/me");
+```
+
+브라우저는 기본 `credentials: "same-origin"`을 쓴다.
+즉 cross-origin인 `api.example.com` 호출에는 session cookie를 싣지 않을 수 있다.
+그러면 서버는 anonymous로 읽고 아래처럼 응답할 수 있다.
+
+```text
+GET /me
+-> 302 Location: /login
+-> GET /login
+-> 200 text/html
+```
+
+여기서 보이는 것은 마지막 login HTML `200`이지만, 첫 원인은 "첫 API request에 cookie가 안 실렸다"일 수 있다.
+
+| 지금 보이는 증거 | 먼저 붙일 라벨 | 바로 다음 한 걸음 |
+|---|---|---|
+| final response가 login HTML `200`이고 Network에 `/login`이 보인다 | redirect follow surface | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)에서 redirect chain을 먼저 읽는다 |
+| 첫 API request의 `Cookie` header가 비어 있다 | credentials/cookie lane | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)로 가서 `stored` vs `sent`를 먼저 고정한다 |
+| request `Cookie`는 실렸는데도 `/login`으로 튄다 | server restore lane | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)로 넘긴다 |
+| `OPTIONS`만 실패하고 actual request가 없다 | preflight lane | [Preflight Debug Checklist](../security/preflight-debug-checklist.md)로 간다 |
+
+짧게 외우면 login HTML `200`은 redirect follow 결과일 수 있지만, redirect를 만든 출발점은 cookie 미전송일 수 있다.
+그래서 첫 API request의 `Cookie` header를 보기 전에는 `SavedRequest`나 server session bug로 바로 점프하지 않는다.
 
 ---
 

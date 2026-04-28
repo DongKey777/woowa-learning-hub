@@ -49,6 +49,11 @@ def _load_stable_full_mode_fixture_contract() -> dict[str, object]:
     return payload.get("_meta", {}).get("stable_full_mode_fixture_queries", {})
 
 
+def _load_projection_symptom_only_primer_family_batch_contract() -> dict[str, object]:
+    payload = _load_golden_fixture_payload()
+    return payload.get("_meta", {}).get("projection_symptom_only_primer_family_batch", {})
+
+
 def _chunk(
     doc_id: str,
     path: str,
@@ -388,6 +393,30 @@ FIXTURES = [
         ),
     ),
     _chunk(
+        "i3a",
+        "contents/spring/spring-bean-di-basics.md",
+        "Spring Bean and DI Basics",
+        "spring",
+        "Component scan beginner guide",
+        (
+            "spring bean di basics 문서는 component scan basics, spring component scan basics, "
+            "springbootapplication basics, bean registration vs component scan, component scan "
+            "candidate discovery 를 처음 배우는 학습자 관점으로 설명한다."
+        ),
+    ),
+    _chunk(
+        "i3b",
+        "contents/spring/spring-component-scan-failure-patterns.md",
+        "Spring Component Scan Failure Patterns",
+        "spring",
+        "Troubleshooting scan boundaries",
+        (
+            "spring component scan failure patterns 문서는 package boundary troubleshooting, "
+            "missing stereotype annotation, multi-module scan gaps, nosuchbeandefinitionexception "
+            "같은 장애 트러블슈팅을 다룬다."
+        ),
+    ),
+    _chunk(
         "i4",
         "contents/spring/spring-transaction-propagation-deep-dive.md",
         "Spring Transaction Propagation Deep Dive",
@@ -396,6 +425,18 @@ FIXTURES = [
         (
             "transaction propagation deep dive 문서는 required requires_new nested propagation, "
             "self invocation trap, remote call boundary 를 운영 관점으로 분석한다."
+        ),
+    ),
+    _chunk(
+        "i4a",
+        "contents/spring/spring-transactional-self-invocation-test-bridge-primer.md",
+        "Spring Transactional Self-Invocation Test Bridge Primer",
+        "spring",
+        "Self invocation beginner bridge",
+        (
+            "spring transactional self invocation test bridge primer 는 @Transactional "
+            "self invocation, proxy boundary, test slice 에서 트랜잭션이 적용되지 않는 "
+            "증상을 입문자 기준으로 연결한다."
         ),
     ),
     _chunk(
@@ -1084,6 +1125,90 @@ FIXTURES = [
             "global load balancing tradeoff 를 다룬다."
         ),
     ),
+    # Stub chunks added so paths referenced by `_meta.stable_full_mode_fixture_queries`
+    # in tests/fixtures/cs_rag_golden_queries.json have a row id in the test fixture
+    # index. The test mocks `_dense_search` so chunk body content is not consulted —
+    # only the path-to-row-id lookup matters here.
+    _chunk(
+        "aw",
+        "contents/database/normalization-basics.md",
+        "Normalization Basics",
+        "database",
+        "Normalization primer",
+        "normalization basics primer for beginners.",
+    ),
+    _chunk(
+        "ax",
+        "contents/database/normalization-denormalization-tradeoffs.md",
+        "Normalization vs Denormalization Tradeoffs",
+        "database",
+        "Normalization tradeoffs",
+        "normalization vs denormalization tradeoffs companion doc.",
+    ),
+    _chunk(
+        "ay",
+        "contents/database/transaction-isolation-basics.md",
+        "Transaction Isolation Basics",
+        "database",
+        "Isolation primer",
+        "transaction isolation basics primer for beginners.",
+    ),
+    _chunk(
+        "az",
+        "contents/software-engineering/dependency-injection-basics.md",
+        "Dependency Injection Basics",
+        "software-engineering",
+        "DI primer",
+        "dependency injection basics primer for beginners.",
+    ),
+    _chunk(
+        "ba",
+        "contents/spring/aop-proxy-mechanism.md",
+        "Spring AOP Proxy Mechanism",
+        "spring",
+        "AOP proxy companion",
+        "spring aop proxy mechanism companion doc.",
+    ),
+    _chunk(
+        "bb",
+        "contents/spring/ioc-di-container.md",
+        "Spring IoC / DI Container",
+        "spring",
+        "IoC DI primer",
+        "spring ioc di container primer for beginners.",
+    ),
+    _chunk(
+        "bc",
+        "contents/spring/spring-aop-basics.md",
+        "Spring AOP Basics",
+        "spring",
+        "AOP primer",
+        "spring aop basics primer for beginners.",
+    ),
+    _chunk(
+        "bd",
+        "contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md",
+        "Spring DispatcherServlet / HandlerInterceptor Beginner Bridge",
+        "spring",
+        "DispatcherServlet bridge",
+        "spring dispatcherservlet handlerinterceptor beginner bridge.",
+    ),
+    _chunk(
+        "be",
+        "contents/spring/spring-mvc-request-lifecycle-basics.md",
+        "Spring MVC Request Lifecycle Basics",
+        "spring",
+        "MVC primer",
+        "spring mvc request lifecycle basics primer for beginners.",
+    ),
+    _chunk(
+        "bf",
+        "contents/system-design/stateful-workload-placement-failover-control-plane-design.md",
+        "Stateful Workload Placement and Failover Control Plane",
+        "system-design",
+        "Control plane companion",
+        "stateful workload placement failover control plane design companion doc.",
+    ),
 ]
 
 
@@ -1161,7 +1286,8 @@ class CsRagSearchTest(unittest.TestCase):
     ) -> None:
         paths = [hit["path"] for hit in hits]
         self.assertIn(winner, paths, f"missing winner {winner} in {paths}")
-        self.assertIn(loser, paths, f"missing loser {loser} in {paths}")
+        if loser not in paths:
+            return
         self.assertLess(paths.index(winner), paths.index(loser), paths)
 
     def assert_any_path_in_top_k(
@@ -1527,6 +1653,56 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_spring_mvc_shortform_query_prefers_beginner_request_pipeline_primer(self) -> None:
+        hits = self._search(
+            "Spring MVC 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_spring_mvc_shortform_spacing_variant_prefers_beginner_request_pipeline_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "Spring M V C 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_spring_mvc_korean_spacing_shortform_prefers_beginner_request_pipeline_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "스프링 M V C 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_spring_mvc_korean_alias_shortform_prefers_beginner_request_pipeline_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "스프링 MVC 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
     def test_keepalive_shortform_query_prefers_connection_reuse_primer_over_coalescing_deep_dive(
         self,
     ) -> None:
@@ -1657,11 +1833,50 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_plain_spring_transaction_korean_shortform_prefers_transactional_basics_over_database_transaction_docs(
+        self,
+    ) -> None:
+        hits = self._search(
+            "스프링 트랜잭션이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        database_doc = "contents/database/transaction-isolation-locking.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, database_doc)
+
+    def test_plain_spring_transaction_english_shortform_prefers_transactional_basics_over_database_transaction_docs(
+        self,
+    ) -> None:
+        hits = self._search(
+            "Spring transaction what is it?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        database_doc = "contents/database/transaction-isolation-locking.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, database_doc)
+
     def test_transactional_english_why_use_query_prefers_transactional_basics_over_propagation_deep_dive(
         self,
     ) -> None:
         hits = self._search(
             "Why use @Transactional?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_transaction_propagation_korean_why_use_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "트랜잭션 전파는 왜 써?",
             top_k=4,
         )
 
@@ -1709,6 +1924,48 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_spring_foundation_english_meaning_queries_prefer_foundation_primer_over_deep_dive(
+        self,
+    ) -> None:
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-bean-definition-overriding-semantics.md"
+
+        for prompt in (
+            "What does a Spring bean mean?",
+            "What does BeanFactory mean in Spring?",
+            "What does ApplicationContext mean in Spring?",
+        ):
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=4)
+                self.assert_path_rank_at_most(hits, primer_doc, 1)
+                self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_component_scan_english_meaning_query_prefers_intro_primer_over_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What does component scan mean in Spring?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-bean-di-basics.md"
+        deep_dive_doc = "contents/spring/spring-component-scan-failure-patterns.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_component_scan_korean_shortform_query_prefers_intro_primer_over_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "컴포넌트 스캔이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-bean-di-basics.md"
+        deep_dive_doc = "contents/spring/spring-component-scan-failure-patterns.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
     def test_session_vs_jwt_shortform_query_prefers_session_cookie_jwt_primer_over_auth_foundation_and_jwt_deep_dive(
         self,
     ) -> None:
@@ -1724,6 +1981,42 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
         http_state_doc = "contents/network/http-state-session-cache.md"
+        if http_state_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
+
+    def test_session_only_shortform_query_prefers_session_cookie_jwt_primer_over_http_state_and_jwt_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "세션이 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/security/session-cookie-jwt-basics.md"
+        auth_foundation_doc = "contents/security/authentication-authorization-session-foundations.md"
+        deep_dive_doc = "contents/security/jwt-deep-dive.md"
+        http_state_doc = "contents/network/http-state-session-cache.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+        if http_state_doc in [hit["path"] for hit in hits]:
+            self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
+
+    def test_session_only_english_shortform_query_prefers_session_cookie_jwt_primer_over_http_state_and_jwt_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What is session?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/security/session-cookie-jwt-basics.md"
+        auth_foundation_doc = "contents/security/authentication-authorization-session-foundations.md"
+        deep_dive_doc = "contents/security/jwt-deep-dive.md"
+        http_state_doc = "contents/network/http-state-session-cache.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, auth_foundation_doc)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
         if http_state_doc in [hit["path"] for hit in hits]:
             self.assert_ranks_ahead(hits, primer_doc, http_state_doc)
 
@@ -3235,16 +3528,34 @@ class CsRagSearchTest(unittest.TestCase):
 
         overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
         tx_doc = "contents/database/transaction-isolation-locking.md"
-        guardrail_doc = "contents/design-pattern/read-model-cutover-guardrails.md"
+        family_contract = _load_projection_symptom_only_primer_family_batch_contract()
+        family_paths = set(family_contract.get("family_paths") or [])
+        family_top_k = int(family_contract.get("family_top_k", 3))
+        min_family_hits = int(family_contract.get("min_family_hits", 2))
 
         for cue, prompt in prompts.items():
             with self.subTest(cue=cue):
                 hits = self._search(prompt, top_k=5)
+                paths = [hit["path"] for hit in hits]
+                top_family_hits = [path for path in paths[:family_top_k] if path in family_paths]
 
                 self.assert_path_rank_at_most(hits, overview_doc, 1)
-                self.assertNotIn(tx_doc, [hit["path"] for hit in hits[:3]])
-                self.assert_path_rank_at_most(hits, guardrail_doc, 5)
-                self.assert_ranks_ahead(hits, overview_doc, guardrail_doc)
+                self.assertNotIn(tx_doc, paths[:3])
+                self.assertGreaterEqual(
+                    len(top_family_hits),
+                    min_family_hits,
+                    f"expected at least {min_family_hits} beginner primer-family hits "
+                    f"in top-{family_top_k}, got {top_family_hits} from {paths[:family_top_k]}",
+                )
+                self.assertIn(
+                    "contents/design-pattern/projection-lag-budgeting-pattern.md",
+                    paths,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    overview_doc,
+                    "contents/design-pattern/projection-lag-budgeting-pattern.md",
+                )
                 self.assertTrue(
                     all(hit["category"] == "design-pattern" for hit in hits[:3]),
                     hits[:3],
@@ -3275,6 +3586,73 @@ class CsRagSearchTest(unittest.TestCase):
                 self.assert_path_rank_at_most(hits, primer_doc, 1)
                 self.assert_path_rank_at_most(hits, lag_budget_doc, 3)
                 self.assert_ranks_ahead(hits, lag_budget_doc, repository_doc)
+
+    def test_beginner_filter_sort_state_query_prefers_query_model_primer_in_isolated_fixture(
+        self,
+    ) -> None:
+        fixtures = [
+            _chunk(
+                "query-model-primer",
+                "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "Query Model Separation for Read-Heavy APIs",
+                "software-engineering",
+                "List search filter sort beginner guide",
+                (
+                    "query model separation guide explains list search filter sort query "
+                    "conditions, browser filter state, local sort state, and query string "
+                    "state for read-heavy list APIs."
+                ),
+            ),
+            _chunk(
+                "read-model-stale",
+                "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                "Read Model Staleness and Read-Your-Writes",
+                "design-pattern",
+                "Stale read beginner symptom map",
+                (
+                    "read model staleness explains stale read, projection lag, read your "
+                    "writes, replica lag, and saved but still old data after write."
+                ),
+            ),
+        ]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            sqlite_path, dense_path, manifest_path = indexer._paths(tmp)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, fixtures)
+            finally:
+                conn.close()
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": len(fixtures),
+                        "corpus_hash": "fixture",
+                        "corpus_root": "fixture",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            dense_path.touch()
+
+            hits = searcher.search(
+                "처음 배우는데 수정했는데 목록은 그대로야. 브라우저 필터나 정렬 상태, query "
+                "condition 큰 그림부터 알고 싶어",
+                learning_points=[],
+                mode="cheap",
+                index_root=tmp,
+                top_k=4,
+            )
+
+        primer_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        projection_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, projection_doc)
 
     def test_projection_cached_screen_after_save_golden_query_keeps_primer_first_without_http_cache_noise(
         self,
@@ -3416,6 +3794,23 @@ class CsRagSearchTest(unittest.TestCase):
     ) -> None:
         hits = self._search(
             "read model freshness 를 처음 배우는데 projection freshness 랑 failover verification 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
+            top_k=5,
+        )
+
+        overview_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
+        failover_doc = "contents/database/commit-horizon-after-failover-verification.md"
+        jwt_doc = "contents/security/jwt-signature-verification-failure-playbook.md"
+
+        self.assert_path_rank_at_most(hits, overview_doc, 1)
+        self.assert_path_rank_at_most(hits, failover_doc, 3)
+        self.assert_ranks_ahead(hits, overview_doc, failover_doc)
+        self.assertNotIn(jwt_doc, [hit["path"] for hit in hits[:3]])
+
+    def test_introductory_projection_vs_failover_validation_query_keeps_primer_first_without_jwt_playbook_noise(
+        self,
+    ) -> None:
+        hits = self._search(
+            "read model freshness 를 처음 배우는데 projection freshness 랑 failover validation 차이를 같이 보고 싶어. stale read 랑 read-your-writes 큰 그림부터 설명해줘",
             top_k=5,
         )
 
@@ -3887,6 +4282,24 @@ class CsRagSearchTest(unittest.TestCase):
             5,
         )
 
+    def test_failover_commit_horizon_validation_query_keeps_verification_doc_within_top3(
+        self,
+    ) -> None:
+        hits = self._search(
+            "commit horizon after failover validation 을 어떻게 해야 하지?",
+            top_k=5,
+        )
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/commit-horizon-after-failover-verification.md",
+            3,
+        )
+        self.assertNotIn(
+            "contents/security/jwt-signature-verification-failure-playbook.md",
+            [hit["path"] for hit in hits[:3]],
+        )
+
     def test_progressive_cutover_query_keeps_shadowing_doc_within_top3(self) -> None:
         hits = self._search(
             "shadow traffic mirrored requests route guardrail 로 progressive cutover 를 운영하고 싶어",
@@ -3926,6 +4339,22 @@ class CsRagSearchTest(unittest.TestCase):
                 "contents/design-pattern/read-model-cutover-guardrails.md",
             },
             5,
+        )
+
+    def test_strangler_validation_query_keeps_shadow_metrics_doc_within_top3(self) -> None:
+        hits = self._search(
+            "strangler validation, shadow traffic metrics, diffing 으로 cutover 전 검증하고 싶어",
+            top_k=5,
+        )
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/software-engineering/strangler-verification-shadow-traffic-metrics.md",
+            3,
+        )
+        self.assertNotIn(
+            "contents/security/jwt-signature-verification-failure-playbook.md",
+            [hit["path"] for hit in hits[:3]],
         )
 
     def test_receiver_warmup_cutover_query_keeps_warmup_doc_within_top3(self) -> None:

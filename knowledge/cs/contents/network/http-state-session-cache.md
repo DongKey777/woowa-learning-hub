@@ -1,233 +1,139 @@
 # HTTP의 무상태성과 쿠키, 세션, 캐시
 
+> 한 줄 요약: `stateless`, `cookie`, `session`, `cache`는 모두 "상태"와 관련 있지만 같은 층위의 개념은 아니다. 이 문서는 브라우저 저장, 서버 저장, 응답 재사용을 한 번에 분리해 보는 beginner primer다.
 
-> 한 줄 요약: HTTP의 무상태성과 쿠키, 세션, 캐시는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
-**난이도: 🟡 Intermediate**
-
+**난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
-
-> 신입 백엔드 개발자가 웹 요청의 상태 관리와 캐싱을 설명하기 위한 핵심 정리
-
-> 관련 문서:
-> - [Cache-Control 실전](./cache-control-practical.md)
-> - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
-> - [HTTP 메서드, REST, 멱등성](./http-methods-rest-idempotency.md)
-> - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-> - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
-> - [API Gateway Auth Rate Limit Chain](./api-gateway-auth-rate-limit-chain.md)
-> - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-> - [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
-> - [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
-> - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-> - [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
-> - [Spring OAuth2 + JWT 통합](../spring/spring-oauth2-jwt-integration.md)
+- [Network README](./README.md#http의-무상태성과-쿠키-세션-캐시)
+- [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+- [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 
 retrieval-anchor-keywords: http stateless, cookie, session, jwt, http cache, set-cookie, cookie header, session id, browser state, browser cookie storage flow, jwt header vs cookie, personalization cache, login state, beginner auth bridge, why login state is kept
 
-<details>
-<summary>Table of Contents</summary>
-
-- [왜 중요한가](#왜-중요한가)
-- [다음 단계 브리지](#다음-단계-브리지)
-- [HTTP는 왜 Stateless인가](#http는-왜-stateless인가)
-- [쿠키](#쿠키)
-- [세션](#세션)
-- [JWT와의 차이](#jwt와의-차이)
-- [HTTP 캐시](#http-캐시)
-- [추천 공식 자료](#추천-공식-자료)
-- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
-
-</details>
-
 ## 왜 중요한가
 
-백엔드 개발자는 로그인 상태를 유지해야 하고, 응답 속도도 신경 써야 한다.
-이때 자주 나오는 개념이
+입문 단계에서는 아래 네 단어가 자주 한 덩어리로 들린다.
 
-- HTTP의 무상태성
-- 쿠키
-- 세션
-- 캐시
+- `stateless`: HTTP가 이전 요청을 자동으로 기억하지 않는 성질
+- `cookie`: 브라우저가 저장하고 다음 요청에 실어 보내는 값
+- `session`: 서버가 사용자 상태를 보관하는 방식
+- `cache`: 이전 응답을 다시 쓰는 방식
 
-다.
+핵심은 "누가 무엇을 저장하나"를 먼저 나누는 것이다. cookie는 브라우저 저장, session은 서버 저장, cache는 응답 재사용이고, stateless는 그 전체 배경 규칙이다.
 
-### Retrieval Anchors
+## 한눈에 보는 역할 구분
 
-- `HTTP stateless`
-- `cookie`
-- `session`
-- `JWT`
-- `HTTP cache`
-- `Set-Cookie`
-- `session id`
-- `login state`
+| 개념 | 누가 들고 있나 | 주로 무엇을 위해 쓰나 | 첫 질문 |
+|---|---|---|---|
+| HTTP stateless | 프로토콜 성질 | 요청 사이 자동 기억 없음 | 서버가 이전 요청을 저절로 기억하나? |
+| cookie | 브라우저 | 다음 요청에 값 전달 | 브라우저가 무엇을 저장하고 보내나? |
+| session | 서버 | 로그인 상태 복원 | 서버가 어떤 사용자로 볼지 어디서 찾나? |
+| cache | 브라우저/중간 캐시 | 같은 응답 재사용 | 이 body를 다시 받아야 하나? |
 
----
+이 표만 먼저 잡아도 `cookie=session`, `cache=로그인 유지`, `stateless면 쿠키를 못 쓴다` 같은 첫 오해를 많이 줄일 수 있다.
 
-## 다음 단계 브리지
+## 한 번에 읽는 예시
 
-기초 개념을 읽고 바로 Spring/security deep dive로 점프하면 `cookie`, `session`, `JWT`, `stateless`, `hidden JSESSIONID`가 같은 말처럼 섞이기 쉽다.
-아래 순서로 올라가면 안전하다.
+아래 세 장면을 같은 브라우저에서 연달아 본다고 생각하면 쉽다.
 
-1. 브라우저가 `Set-Cookie`를 저장하고 `Cookie`나 `Authorization`으로 다시 보내는 장면부터 보기: [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-2. 상태를 누가 보관하는지 비교: [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-3. Spring Security가 요청 앞단에서 인증 상태를 어떻게 다루는지 보기: [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-4. browser login redirect, `302`, 숨은 `JSESSIONID`, 원래 URL 복귀가 한꺼번에 헷갈리면: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
-5. 로그인 후 원래 URL 복귀나 `302` bounce가 꼬이면: [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
-6. `STATELESS`인데 `JSESSIONID`가 생기거나 다음 요청에서 다시 익명이 되면: [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-7. 브라우저는 로그인돼 보이는데 API만 loop를 돌거나 `cookie는 있는데 session missing`처럼 보이면: [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md) -> [BFF Session Store Outage / Degradation Recovery](../security/bff-session-store-outage-degradation-recovery.md)
+```http
+POST /login HTTP/1.1
+Host: shop.example.com
 
-증상별로 다시 고르면 더 빠르다.
+HTTP/1.1 200 OK
+Set-Cookie: JSESSIONID=abc123; Path=/; HttpOnly; Secure
+```
 
-## 다음 단계 브리지 (계속 2)
+```http
+GET /me HTTP/1.1
+Host: shop.example.com
+Cookie: JSESSIONID=abc123
+```
 
-- `로그인 후 다시 /login으로 간다`, `SavedRequest 때문에 loop가 난다`: `RequestCache` / `SavedRequest`
-- `redirect 응답에도 cookie가 저장되나`, `왜 login 전에도 JSESSIONID가 보이지`: [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
-- `왜 숨은 JSESSIONID가 생기지`, `세션 안 쓰려는데 왜 stateful처럼 보이지`: `SecurityContextRepository` / `SessionCreationPolicy`
-- `cookie는 보이는데 서버는 세션을 못 찾는다`, `브라우저는 로그인돼 보이는데 API만 돈다`: browser/BFF translation -> BFF session store
+```http
+GET /static/app.js HTTP/1.1
+Host: shop.example.com
 
----
+HTTP/1.1 200 OK
+Cache-Control: max-age=600
+ETag: "app-js-v8"
+```
+
+여기서 읽는 포인트는 세 가지다.
+
+- 로그인 응답의 `Set-Cookie`는 브라우저 저장 규칙이다
+- 다음 `/me` 요청의 `Cookie`는 서버가 session을 찾기 위한 전달 수단이다
+- `app.js`의 `Cache-Control`과 `ETag`는 로그인 상태가 아니라 응답 재사용 규칙이다
+
+즉 `/me`는 "누가 로그인했는가" 질문이고, `app.js`는 "이 파일을 다시 내려받아야 하는가" 질문이다.
 
 ## HTTP는 왜 Stateless인가
 
-HTTP는 기본적으로 **이전 요청을 기억하지 않는 프로토콜**이다.
+HTTP는 기본적으로 각 요청을 독립적으로 본다. 같은 사용자가 1초 전에 로그인했더라도, 다음 요청에 아무 단서가 없으면 서버는 그 사용자를 자동으로 알아보지 못한다.
 
-즉 같은 사용자가 연속해서 요청을 보내도,
+그래서 로그인 같은 기능에는 "이 요청이 누구의 것인지 알려 주는 단서"가 따로 필요하다. 가장 흔한 단서가 cookie 안의 session id다. stateless라는 말은 "상태를 절대 못 가진다"가 아니라 "프로토콜이 자동으로 이어 주지 않는다"에 가깝다.
 
-- 서버는 기본적으로 이전 요청과 현재 요청을 자동으로 연결하지 않는다.
+## 쿠키와 세션은 어떻게 이어지나
 
-이 성질을 Stateless라고 부른다.
+가장 흔한 session 로그인 흐름은 아래와 같다.
 
-### 장점
+1. 서버가 로그인 성공 후 session store에 사용자 상태를 만든다.
+2. 서버가 그 상태를 찾을 수 있는 session id를 `Set-Cookie`로 보낸다.
+3. 브라우저가 다음 요청에 `Cookie` 헤더로 session id를 자동 전송한다.
+4. 서버가 session id로 사용자 상태를 다시 찾는다.
 
-- 서버 구조가 단순하다
-- 확장하기 쉽다
+즉 cookie는 운반 수단이고, session은 서버 조회 방식이다. 둘은 자주 같이 등장하지만 같은 개념은 아니다.
 
-### 단점
+JWT를 쓰면 서버가 session store 대신 토큰 자체를 검증할 수 있다. 다만 JWT도 `Authorization` 헤더에 넣을 수도 있고 cookie에 넣을 수도 있으므로, "JWT냐 cookie냐"보다 "무엇을 어떤 transport에 실었나"가 더 정확한 질문이다.
 
-- 로그인 상태 같은 걸 따로 관리해야 한다
+## 캐시는 왜 별도 축인가
 
----
+cache는 인증 상태를 보관하는 장치가 아니라 "이전 응답 body를 다시 쓸 수 있는가"를 다루는 축이다.
 
-## 쿠키
+| 장면 | 중심 헤더/단서 | 답하는 질문 |
+|---|---|---|
+| session 복원 | `Cookie: JSESSIONID=...` | 이 요청이 누구 것인가 |
+| JWT 검증 | `Authorization` 또는 cookie 속 JWT | 이 요청을 믿어도 되는가 |
+| HTTP cache 재사용 | `Cache-Control`, `ETag`, `Last-Modified` | 이 응답 body를 다시 받아야 하는가 |
 
-쿠키는 **서버가 브라우저에 저장하라고 내려주는 작은 데이터**다.
+예를 들어 로그인 유지가 잘 되어도 `app.js`는 cache miss가 날 수 있고, 반대로 정적 파일이 disk cache에서 잘 재사용돼도 `/me` 요청은 session 만료로 `401`이 날 수 있다. 서로 다른 질문이기 때문이다.
 
-서버는 응답 헤더에 `Set-Cookie`를 넣고,
-브라우저는 이후 요청에 `Cookie` 헤더로 다시 보낸다.
+## 자주 헷갈리는 포인트
 
-### 주로 쓰는 목적
+- `stateless`는 cookie 금지가 아니다. HTTP가 자동 기억을 안 할 뿐, 브라우저와 서버가 추가 단서를 주고받을 수 있다.
+- cookie가 있다고 곧 session은 아니다. cookie에는 session id도, JWT도, 단순 설정값도 들어갈 수 있다.
+- session cookie라는 말은 "세션 인증"이 아니라 브라우저 종료 전까지만 유지되는 cookie 수명을 뜻할 때도 있다.
+- cache는 로그인 상태 저장소가 아니다. 개인화된 `/me` 응답과 정적 `app.js` 응답은 캐시 판단 기준이 다르다.
+- `304 Not Modified`는 인증 성공 신호가 아니다. 기존 캐시 body를 계속 써도 된다는 뜻이다.
 
-- 로그인 상태 유지
-- 사용자 설정 유지
-- 간단한 식별 정보 저장
+## 다음 단계 브리지
 
-### 주의
-
-- 쿠키는 브라우저에 저장된다
-- 민감한 정보를 그대로 넣는 것은 위험하다
-
----
-
-## 세션
-
-세션은 **서버 쪽에 사용자 상태를 저장하는 방식**이다.
-
-보통 흐름은:
-
-1. 서버가 세션 저장소에 사용자 상태를 만든다
-2. 세션 ID를 쿠키로 브라우저에 보낸다
-3. 이후 요청마다 브라우저가 세션 ID를 보낸다
-4. 서버가 세션 저장소에서 상태를 찾는다
-
-즉 보통
-
-- 쿠키 = 세션 ID 전달 수단
-- 세션 = 서버 측 상태 저장
-
-으로 같이 쓰인다.
-
----
-
-## JWT와의 차이
-
-세션과 JWT는 로그인 상태를 유지한다는 점에서 비슷하지만 다르다.
-
-### 세션
-
-- 상태를 서버에 저장
-- 브라우저에는 세션 ID만 둠
-
-### JWT
-
-- 토큰 자체에 정보를 담음
-- 서버가 세션 저장소를 꼭 갖지 않아도 됨
-
-즉 세션은 **서버 저장 중심**, JWT는 **토큰 자체 중심**이라고 보면 된다.
-
----
-
-## HTTP 캐시
-
-캐시는 **이전에 받은 응답을 다시 재사용해서 응답 속도를 높이는 방식**이다.
-
-대표 헤더:
-
-- `Cache-Control`
-- `Expires`
-- `ETag`
-- `Last-Modified`
-
-### 왜 중요한가
-
-- 서버 부하를 줄인다
-- 응답 속도를 높인다
-- 네트워크 비용을 줄인다
-
-### 주의
-
-개인화된 응답은 캐시 전략을 조심해야 한다.
-로그인 사용자별 응답을 잘못 캐시하면 정보가 섞일 수 있다.
-
----
-
-## 추천 공식 자료
-
-- MDN HTTP Cookies:
-  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
-- MDN HTTP Caching:
-  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching
-- HTTP Semantics RFC:
-  - https://httpwg.org/specs/rfc9110.html
-
----
+- browser가 `Set-Cookie`를 저장하고 `Cookie`를 언제 다시 보내는지부터 보고 싶으면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
+- `304`, `ETag`, `from disk cache`가 더 헷갈리면 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- `cache 재사용`, `연결 재사용`, `로그인 유지`가 한 덩어리면 [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
+- login redirect, 숨은 `JSESSIONID`, 원래 URL 복귀가 섞이면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- Spring/security 쪽으로 더 깊게 가려면 [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 
 ## 면접에서 자주 나오는 질문
 
-### Q. HTTP가 Stateless라는 것은 무슨 뜻인가요?
+### Q. HTTP가 stateless라는 것은 무엇인가요?
 
-- 서버가 기본적으로 이전 요청 상태를 기억하지 않는다는 뜻이다.
+이전 요청 상태를 프로토콜이 자동으로 이어 주지 않는다는 뜻이다. 그래서 로그인 상태 같은 것은 cookie, session, token 같은 별도 단서가 필요하다.
 
-### Q. 쿠키와 세션의 차이는 무엇인가요?
+### Q. cookie와 session의 차이는 무엇인가요?
 
-- 쿠키는 브라우저에 저장되는 데이터다.
-- 세션은 서버 쪽 상태 저장 방식이다.
-- 보통 세션 ID를 쿠키로 전달한다.
+cookie는 브라우저 저장/전송 수단이고, session은 서버 상태 저장 방식이다. 보통 session id를 cookie로 전달한다.
 
-### Q. 세션과 JWT 차이는 무엇인가요?
+### Q. cache는 cookie나 session과 무엇이 다른가요?
 
-- 세션은 상태를 서버에 저장하고, JWT는 토큰 자체에 정보를 담는다.
-
-### Q. 캐시를 왜 사용하나요?
-
-- 응답 속도를 높이고 서버 부하를 줄이기 위해 사용한다.
+cache는 "응답 body를 다시 받을지"를 다루고, cookie/session은 "이 요청이 누구 것인지"를 다룬다. 즉 질문 자체가 다르다.
 
 ## 한 줄 정리
 
-HTTP의 무상태성과 쿠키, 세션, 캐시는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
+HTTP의 stateless는 "자동 기억 없음"이고, cookie는 브라우저 전달 수단, session은 서버 상태 저장, cache는 응답 재사용 규칙이다. 먼저 "누가 무엇을 저장하나"를 분리하면 이후 Spring auth와 browser cache 문서를 훨씬 덜 헷갈리고 읽을 수 있다.

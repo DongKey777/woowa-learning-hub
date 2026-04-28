@@ -19,6 +19,7 @@ Runtime state lives under `state/orchestrator/`:
 - `queue.json`: all backlog items and their statuses
 - `planner.json`: lane cursors used to replenish backlog
 - `current-wave.json`: the current suggested wave for workers to claim
+- `current-wave-expansion.json`: the expansion-profile suggested wave
 - `status.json`: runner heartbeat, pid, queue summary
 - `history.jsonl`: append-only event history
 - `runner.pid`: background runner pid
@@ -41,16 +42,18 @@ Runtime state lives under `state/orchestrator/`:
   - status + current wave + queue summary
 - `bin/orchestrator queue`
   - inspect queue items
+- `bin/orchestrator queue --profile quality|expansion|expansion60`
+  - inspect queue items for one fleet profile
 - `bin/orchestrator claim --worker <name>`
   - claim work items for a worker / AI session
 - `bin/orchestrator complete --worker <name> --item-id <id> --summary "..."`
   - mark a claimed item complete
-- `bin/orchestrator fleet-start`
-  - start the local worker fleet supervisor and persistent worker processes
-- `bin/orchestrator fleet-status`
-  - inspect the local worker fleet state
-- `bin/orchestrator fleet-stop`
-  - stop the local worker fleet
+- `bin/orchestrator fleet-start --profile quality|expansion|expansion60`
+  - start the local worker fleet supervisor and persistent worker processes for the selected profile
+- `bin/orchestrator fleet-status [--profile quality|expansion|expansion60]`
+  - inspect the active or selected local worker fleet state
+- `bin/orchestrator fleet-stop [--profile quality|expansion|expansion60]`
+  - stop the active or selected local worker fleet
 
 ## Flow
 
@@ -65,7 +68,7 @@ Runtime state lives under `state/orchestrator/`:
 The queue runner alone does not create content. To get persistent autonomous work, start the local worker fleet:
 
 ```bash
-bin/orchestrator fleet-start
+bin/orchestrator fleet-start --profile quality
 bin/orchestrator fleet-status
 ```
 
@@ -85,13 +88,33 @@ Each worker process repeatedly does:
 
 If a worker exits, the supervisor starts it again. This is the persistent execution layer that the queue alone does not provide.
 
-The current 30-worker fleet is a quality-repair profile, not an expansion profile:
+The default 30-worker fleet is a quality-repair profile, not an expansion profile:
 
 - 21 QA workers for category docs, primer contracts, anchors, and link ladders
 - 6 RAG workers for ranking regressions, signal rules, golden fixtures, and index readiness
 - 3 ops/release workers for queue control and release gates
 
 See [orchestrator-30-worker-fleet.md](orchestrator-30-worker-fleet.md) for the full profile contract.
+
+For new CS corpus growth, use the separate expansion profile:
+
+```bash
+bin/orchestrator fleet-start --profile expansion
+bin/orchestrator fleet-status
+```
+
+The expansion fleet mixes 1 curriculum analyst, 8 content workers, 12 QA workers, 6 RAG validation workers, and 3 ops workers. It targets learner-profile and Woowacourse Level 2/RoomEscape Admin gaps instead of turning all 30 workers into writers.
+
+For higher-throughput corpus growth, use the 60-worker expansion profile:
+
+```bash
+bin/orchestrator fleet-start --profile expansion60
+bin/orchestrator fleet-status --profile expansion60
+```
+
+The `expansion60` fleet mixes 2 curriculum workers, 24 content workers, 22 QA workers, 8 RAG workers, and 4 ops workers. It is designed for high throughput without treating all workers as writers: content scopes are narrower, README registration is handled by QA workers, and singleton RAG mutation surfaces are owned by exactly one worker each.
+
+Queue ownership is profile-isolated. Legacy items without `fleet_profile` are treated as `quality`, while expansion-created items carry `fleet_profile=expansion` or `fleet_profile=expansion60`. An expansion worker must not claim legacy `worker-suggestion:runtime-qa-*` pending items; those remain for the quality fleet.
 
 ## Design Notes
 
@@ -100,7 +123,11 @@ See [orchestrator-30-worker-fleet.md](orchestrator-30-worker-fleet.md) for the f
   - it does not pretend to generate content without an actual worker
 - Backlog is lane-based, but execution is write-scope protected:
   - content lanes still express broad CS categories
-  - the active quality fleet claims only QA/RAG/Ops lanes
+  - queue items are also profile-scoped by `fleet_profile`
+  - the quality fleet claims only QA/RAG/Ops lanes
+  - the expansion fleet allows bounded content writing and keeps QA/RAG/Ops workers in the same profile
+  - the expansion60 fleet narrows content write scopes and moves README/taxonomy/RAG singleton edits to specialized workers
   - write scopes prevent conflicting writers from editing the same ownership surface
   - `fix` workers repair existing lint/retrieval debt instead of creating new docs
+  - `expand` workers may create new Beginner/Junior docs only when the queue item maps to learner-profile, Woowacourse Level 2, or RAG retrieval gaps
 - Queue items are intentionally high-level enough to support repeated waves without becoming brittle one-off prompts.

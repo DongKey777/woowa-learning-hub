@@ -1,10 +1,17 @@
 # JDBC 실전 코드 패턴
 
+> 한 줄 요약: 이 문서는 raw JDBC 코드를 실제로 만났을 때 `Connection -> PreparedStatement -> ResultSet -> commit/rollback -> close` 순서로 읽게 만드는 follow-up entry다.
+
 **난이도: 🔴 Advanced**
 
-> JDBC를 설명할 때 “원리”를 넘어 “실제로 어떻게 짜는가”를 보기 위한 문서
+관련 문서:
 
-관련 문서: [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md), [HikariCP 튜닝](./hikari-connection-pool-tuning.md)
+- [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md)
+- [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
+- [트랜잭션 기초](./transaction-basics.md)
+- [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
+- [HikariCP 튜닝](./hikari-connection-pool-tuning.md)
 
 <details>
 <summary>Table of Contents</summary>
@@ -20,43 +27,41 @@
 
 </details>
 
-> retrieval-anchor-keywords:
-> - JDBC
-> - PreparedStatement
-> - ResultSet
-> - try-with-resources
-> - connection pool
-> - transaction pattern
-> - batch insert
-> - SQLException handling
-> - auto commit
-> - auto-commit
-> - autoCommit
-> - setAutoCommit(false)
-> - jdbc auto commit false
-> - manual transaction demarcation
-> - manual commit rollback
-> - connection lifecycle
-> - jdbc connection lifecycle
-> - connection acquire release
-> - connection borrow return
-> - getConnection close pattern
-> - JDBC 코드 패턴
-> - jdbc repository example
-> - jdbc select insert update example
-> - jdbc transaction commit rollback
-> - preparedstatement parameter binding
-> - jdbc generated keys
-> - return generated keys
-> - jdbc row mapping
-> - connection close leak
-> - 순수 jdbc 예제
-> - jdbc 코드 예시
+> retrieval-anchor-keywords: jdbc preparedstatement resultset, try-with-resources, auto commit, setautocommit false, manual commit rollback, connection lifecycle, connection borrow return, getconnection close pattern, jdbc repository example, jdbc generated keys, jdbc row mapping, connection close leak, 순수 jdbc 예제, jdbc 코드 예시
+
+## 먼저 큰 그림
+
+처음 JDBC 코드를 읽을 때는 문법보다 **커넥션을 빌리고 반납하는 순서**를 먼저 보면 덜 헷갈린다.
+
+```text
+Connection 획득
+  -> PreparedStatement 준비
+  -> 파라미터 바인딩
+  -> executeQuery / executeUpdate
+  -> 필요하면 commit / 실패하면 rollback
+  -> close 로 자원 반납
+```
+
+이 문서는 database 입문 전체의 첫 문서가 아니라, `PreparedStatement`나 `JdbcTemplate`가 실제로 보일 때 여는 follow-up이다. 초보자 기준 첫 질문은 "이 SQL이 맞나?"보다 아래 셋이다.
+
+| 지금 먼저 볼 것 | 왜 먼저 보나 |
+|---|---|
+| `getConnection()` 위치 | connection을 언제 빌리는지 알아야 transaction 길이가 보인다 |
+| `setAutoCommit(false)` 유무 | 여러 SQL을 한 묶음으로 보는지 바로 알 수 있다 |
+| `close()` 위치 | 누수가 있는지, pool 반환이 늦는지 감이 잡힌다 |
+
+증상 문장으로 바꾸면 아래처럼 라우팅하면 된다.
+
+| 지금 막힌 문장 | 먼저 읽을 포인트 |
+|---|---|
+| "`PreparedStatement`는 보이는데 전체 흐름이 안 잡혀요" | 이 문서의 기본 조회/저장 패턴 |
+| "`setAutoCommit(false)`가 왜 필요한지 모르겠어요" | 이 문서의 트랜잭션 패턴, [트랜잭션 기초](./transaction-basics.md) |
+| "`close()` 했는데 왜 connection pool 이야기가 또 나오죠?" | 이 문서의 트랜잭션 패턴까지만 보고, 운영 설명은 [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 
-- JDBC 자체와 JPA/MyBatis의 역할 차이를 먼저 정리하려면 [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)를 같이 본다.
-- `autoCommit`, `commit/rollback`, 락 범위가 왜 중요한지 이어서 보려면 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)이 바로 연결된다.
+- "JDBC가 JPA/MyBatis와 뭐가 다른가?"부터 헷갈리면 [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md)로 먼저 돌아간다.
+- `autoCommit`, `commit/rollback`, 락 범위가 왜 중요한지 이어서 보려면 [트랜잭션 기초](./transaction-basics.md), [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) 순서가 바로 연결된다.
 - `connection lifecycle`, `getConnection()` 시점, `close()`가 실제로 pool 반환인지가 궁금하면 [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)와 [HikariCP 튜닝](./hikari-connection-pool-tuning.md)으로 넘어가면 된다.
 - `batch insert`를 단순 문법이 아니라 chunk 크기, 커밋 주기, pool 점유 시간까지 같이 보려면 [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)를 바로 이어서 읽는다.
 

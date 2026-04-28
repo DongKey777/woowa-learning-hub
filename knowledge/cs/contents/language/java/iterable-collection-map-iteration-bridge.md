@@ -11,8 +11,9 @@
 - [Java 제네릭 입문](./java-generics-basics.md)
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
+- [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](../../spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md)
 
-retrieval-anchor-keywords: iterable collection map 차이, iterable vs collection vs map, java interface hierarchy iterable collection map, map is not collection, for each iterable map iteration, java iterator basics, java entryset keyset values 차이, collection iteration api beginner, map iteration beginner, collection api size add remove, iterable foreach beginner, 처음 배우는데 iterable collection map 차이, map은 collection인가요, 자바 컬렉션 계층 구조, 자바 반복 api 기초
+retrieval-anchor-keywords: iterable collection map 차이, iterable vs collection vs map, java interface hierarchy iterable collection map, map is not collection, for each iterable map iteration, java iterator basics, java entryset keyset values 차이, collection iteration api beginner, map iteration beginner, 처음 배우는데 iterable collection map 차이, map은 collection인가요, iterable collection map 헷갈려요, 자바 컬렉션 계층 구조, 자바 반복 api 기초
 
 ## 먼저 잡는 멘탈 모델
 
@@ -94,6 +95,12 @@ for (Map.Entry<String, Integer> entry : scoreByUser.entrySet()) {
 - "`Collection`과 `Collections`는 같은 건가요?"
   아니다. `Collection`은 인터페이스, `Collections`는 유틸리티 클래스다.
 
+헷갈릴 때는 타입 이름보다 질문을 먼저 붙이면 덜 꼬인다.
+
+- 지금 필요한 건 "반복 가능 여부"인가? -> `Iterable`
+- 원소 묶음을 "추가/삭제/크기 확인"해야 하나? -> `Collection`
+- key로 value를 "찾아야" 하나? -> `Map`
+
 ## 다음 읽기
 
 | 지금 막힌 질문 | 다음 문서 |
@@ -101,6 +108,7 @@ for (Map.Entry<String, Integer> entry : scoreByUser.entrySet()) {
 | "List/Set/Map 첫 선택을 빠르게 고르고 싶어요" | [Java 컬렉션 프레임워크 입문](./java-collections-basics.md) |
 | "`Set` 중복 판단이 왜 이상해 보여요?" | [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md) |
 | "`Map`에서 floor/ceiling 같은 탐색은 언제 쓰죠?" | [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md) |
+| "Spring에서 `Map<String, Bean>` 주입은 또 다른 이야기인가요?" | [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](../../spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md) |
 
 ## 한 줄 정리
 

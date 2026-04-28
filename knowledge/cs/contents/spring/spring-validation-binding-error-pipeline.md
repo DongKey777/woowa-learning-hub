@@ -1,10 +1,15 @@
 # Spring Validation and Binding Error Pipeline
 
 > 한 줄 요약: Spring validation은 단순히 `@Valid`를 붙이는 일이 아니라, 바인딩 실패와 검증 실패가 어떤 순서로 발생하고 어떤 응답으로 번역되는지 이해하는 문제다.
+>
+> 초급자 브리지: primer에서 말하는 **DTO 변환 실패**는 이 문서에서 말하는 **바인딩 실패**와 같은 축이다. 반대로 **validation 실패**는 DTO를 만든 뒤 `@Valid`나 Bean Validation 규칙에서 막히는 경우다. 처음 볼 때 헷갈리면 "`DTO를 아예 못 만들었나, 아니면 만든 뒤 규칙을 어겼나?`"로 먼저 나누면 된다. 그리고 validation까지 갔으면 다음 갈림길은 "`컨트롤러 안에서 `BindingResult`로 직접 처리하나?`" 아니면 "`예외로 번져 `@ExceptionHandler` / `@RestControllerAdvice`로 가나?`"다.
 
 **난이도: 🔴 Advanced**
 
+이 문서는 내부 순서를 깊게 보는 advanced 설명이다. 초급자라면 먼저 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)에서 "`validation 실패가 메서드 안으로 들어오는 경우`"를 잡고, 이어서 [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)에서 "`예외로 번진 뒤 어디서 `400`을 만드는가`"를 본 다음 돌아오면 순서가 덜 헷갈린다.
+
 > 관련 문서:
+> - [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
@@ -12,7 +17,7 @@
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 > - [Validation Boundary Mini Bridge](../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 
-retrieval-anchor-keywords: validation, binding, BindingResult, MethodArgumentNotValidException, ConstraintViolationException, field error, object error, type mismatch, conversion service, message codes
+retrieval-anchor-keywords: validation, binding, BindingResult, MethodArgumentNotValidException, ConstraintViolationException, field error, object error, type mismatch, conversion service, message codes, dto 변환 실패 vs validation 실패, @valid 언제 타요, 처음 spring 400 헷갈려요, binding failure vs validation failure
 
 ## 핵심 개념
 

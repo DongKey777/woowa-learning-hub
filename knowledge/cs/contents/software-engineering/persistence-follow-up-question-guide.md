@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: persistence follow up question guide basics, persistence follow up question guide beginner, persistence follow up question guide intro, software engineering basics, beginner software engineering, 처음 배우는데 persistence follow up question guide, persistence follow up question guide 입문, persistence follow up question guide 기초, what is persistence follow up question guide, how to persistence follow up question guide
+retrieval-anchor-keywords: persistence beginner guide, persistence primer next step, 영속성 기초 다음 문서, 영속성 처음 배우는데 어디부터, repository 다음 문서 뭐 봐요, query model이 뭐예요 영속성, dao query model 차이 처음, entity 누수 문서 고르기, jpa 매핑 다음 질문, persistence decision map beginner, persistence wayfinding beginner, 초심자 영속성 길잡이, 영속성 문서 선택표, repository dao entity 다음 읽기, query model separation 입문 연결
 <details>
 <summary>Table of Contents</summary>
 
@@ -35,8 +35,9 @@ retrieval-anchor-keywords: persistence follow up question guide basics, persiste
 > - [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
 > - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+> - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 >
-> retrieval-anchor-keywords: persistence follow-up question guide, persistence decision table beginner, single question persistence table, repository interface contract follow-up, repository naming smells follow-up, dao vs query model entrypoint guide, persistence adapter mapping checklist next step, aggregate persistence mapping pitfalls guide, persistence model leakage anti-patterns entrypoint, beginner persistence reading order, beginner persistence decision map, beginner persistence bridge, repository to leakage guide, repository interface to leakage path, persistence doc chooser beginner, 질문형 결정표 영속성, 영속성 follow-up 선택 가이드, 영속성 문서 선택표, repository primer 다음 문서, JPA 초심자 다음 문서 고르기, ORM 누수 문서 선택, persistence beginner wayfinding, 초심자 영속성 결정표, repository interface contract primer 다음, persistence leakage anti-patterns 전에 읽기
+> retrieval-anchor-keywords: persistence follow-up question guide, persistence decision table beginner, single question persistence table, repository interface contract follow-up, repository naming smells follow-up, dao vs query model entrypoint guide, persistence adapter mapping checklist next step, aggregate persistence mapping pitfalls guide, persistence model leakage anti-patterns entrypoint, beginner persistence reading order, beginner persistence decision map, beginner persistence bridge, repository to leakage guide, repository interface to leakage path, persistence doc chooser beginner, 질문형 결정표 영속성, 영속성 follow-up 선택 가이드, 영속성 문서 선택표, repository primer 다음 문서, JPA 초심자 다음 문서 고르기, ORM 누수 문서 선택, persistence beginner wayfinding, 초심자 영속성 결정표, repository interface contract primer 다음, persistence leakage anti-patterns 전에 읽기, query model 뭐예요 영속성, read model 뭐예요 영속성, 목록 api 때문에 repository가 비대해져요, 조회 전용 모델 처음, dto record 이름이 헷갈려요
 
 ## 왜 이 가이드가 필요한가
 
@@ -95,6 +96,7 @@ retrieval-anchor-keywords: persistence follow up question guide basics, persiste
 | 서비스가 `OrderEntity`를 직접 가져와 규칙을 수행한다 | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) |
 | `cascade`와 aggregate 규칙이 같은 말처럼 들린다 | [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
 | 컨트롤러 응답 타입이 `Entity`다 | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
+| query view나 response DTO를 `record`로 둘지부터 헷갈린다 | [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) | [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md) |
 
 ## 짧은 예시: 주문 저장 코드를 보고 어디로 갈까
 

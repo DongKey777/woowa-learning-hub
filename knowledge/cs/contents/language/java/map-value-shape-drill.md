@@ -12,7 +12,7 @@
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 
-retrieval-anchor-keywords: map value shape drill, java map value type practice, map single value list aggregate object, map k v beginner worksheet, map value design beginner, 자바 map value 뭐로 두지, 자바 map 값 타입 고르기, map 값 단일값 리스트 객체 선택, key는 같은데 값이 여러 개인 경우, map value record object beginner, map value shape exercise, map value shape drill basics, map value shape drill beginner, map value shape drill intro, java basics
+retrieval-anchor-keywords: map value shape drill, java map value type practice, map single value list aggregate object, map k v beginner worksheet, map value design beginner, 자바 map value 뭐로 두지, 자바 map 값 타입 고르기, map 값 단일값 리스트 객체 선택, key는 같은데 값이 여러 개인 경우, map value record object beginner, map value shape exercise, map value shape drill basics, map value shape drill beginner, java map integer list record, map value type integer list t record
 
 ## 먼저 잡는 멘탈 모델
 
@@ -32,6 +32,21 @@ retrieval-anchor-keywords: map value shape drill, java map value type practice, 
 | "회원 id -> 주문 목록", "태그 -> 게시글 목록" | `리스트` | `Map<Long, List<Order>>` |
 | "회원 id -> 이름+등급+포인트", "상품 id -> 가격+재고+상태" | `집계객체` | `Map<Long, MemberSummary>`, `Map<String, ProductStock>` |
 
+## 모양에서 타입으로 바로 잇기
+
+처음 막히는 지점은 보통 "`단일값`이면 정확히 뭐?", "`집계객체`는 클래스를 새로 만들어야 하나?"다.
+초보자 기본값은 아래처럼 잡으면 된다.
+
+| value 모양 | 바로 쓰는 Java 예시 | 초보자 기본값으로 좋은 때 |
+|---|---|---|
+| `단일값` | `Integer`, `String`, `Boolean` | 한 key에 값 하나만 있으면 충분하고, 꺼내자마자 바로 쓰면 될 때 |
+| `리스트` | `List<T>` | 한 key 아래 값이 여러 개 붙고, 순서대로 보여 주거나 순회할 일이 있을 때 |
+| `집계객체` | `record MemberSummary(...)` | 값이 2개 이상이고 항상 같이 읽거나 같이 전달할 때 |
+
+- `Map`의 제네릭에는 `int`를 바로 넣지 못하므로 숫자 한 개면 보통 `Integer`를 쓴다.
+- "목록"부터 떠오르는데 실제로는 하나만 저장하면 된다면 `List<T>`보다 `Integer`나 `String` 같은 단일값이 더 단순하다.
+- `집계객체`는 거창한 설계가 아니라, beginner 기준에서는 작은 `record` 하나로 시작하는 편이 가장 읽기 쉽다.
+
 ## 아주 짧은 예시
 
 ```java
@@ -45,6 +60,7 @@ record MemberSummary(String name, String grade, int point) {}
 - 재고 수량처럼 값이 하나면 `단일값`
 - 게시글 태그처럼 여러 개가 달리면 `리스트`
 - 이름/등급/포인트처럼 함께 읽는 정보면 `집계객체`
+- 초보자 기본 선택으로 적으면 `Integer` -> `List<T>` -> `record` 순서로 떠올리면 된다
 
 ## 미니 드릴
 
@@ -82,9 +98,11 @@ record MemberSummary(String name, String grade, int point) {}
 
 - 값이 여러 개인데 `Map<K, V>`에 단일값만 두면 새 값이 들어올 때 이전 값이 덮어써진다.
 - 값이 여러 필드인데 `Map<K, String>` 하나에 `"name,grade,point"`처럼 욱여넣기 시작하면 읽기와 수정이 금방 어려워진다.
+- 값이 하나뿐인데도 습관적으로 `List<T>`부터 만들면 `get(0)` 같은 불필요한 코드가 따라온다.
 - `Map<K, List<V>>`가 필요하다고 해서 "중복 제거"까지 자동으로 해결되지는 않는다.
 - 값 목록에서 중복까지 막아야 하면 `List` 대신 `Set` 계열이 더 맞을 수 있다.
 - `집계객체`는 거창한 말이 아니다. 초보자 기준에서는 `record`나 작은 DTO처럼 "함께 읽는 값 묶음"이라고 이해하면 충분하다.
+- "숫자 하나인데 `int`로 넣으면 안 되나?"가 자주 나오는데, `Map<String, int>`는 안 되고 `Map<String, Integer>`처럼 wrapper를 쓴다.
 
 ## 빠른 선택 체크
 

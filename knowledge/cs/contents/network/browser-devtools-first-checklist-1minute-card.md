@@ -15,7 +15,7 @@
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
 
-retrieval-anchor-keywords: devtools first checklist, browser devtools first check, status protocol remote address connection id, response alt-svc checklist, devtools 4 field checklist, network tab first read, beginner devtools card, same url two rows checklist, 421 beginner capture, protocol remote address quick check, connection id quick read, devtools one minute checklist, status special labels devtools, failed blocked canceled status, browser network first minute
+retrieval-anchor-keywords: devtools first checklist, browser devtools first check, status protocol remote address connection id, response alt-svc checklist, devtools 4 field checklist, network tab first read, beginner devtools card, same url two rows checklist, 421 beginner capture, protocol remote address quick check, connection id quick read, devtools one minute checklist, status special labels devtools, 304 h3 devtools, 304 over h3 duplicate fetch
 
 <details>
 <summary>Table of Contents</summary>
@@ -24,6 +24,7 @@ retrieval-anchor-keywords: devtools first checklist, browser devtools first chec
 - [1분 관찰 순서](#1분-관찰-순서)
 - [Status 특수 표기 먼저 묶기](#status-특수-표기-먼저-묶기)
 - [4칸이 각각 답하는 질문](#4칸이-각각-답하는-질문)
+- [`304`와 `Protocol`을 같이 읽는 미니 카드](#304와-protocol을-같이-읽는-미니-카드)
 - [H3/421에서만 붙이는 미니 체크](#h3421에서만-붙이는-미니-체크)
 - [아주 작은 예시](#아주-작은-예시)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
@@ -138,6 +139,39 @@ retrieval-anchor-keywords: devtools first checklist, browser devtools first chec
 3. `Remote Address`로 목적지 변화를 본다.
 4. `Connection ID`로 같은 연결인지 새 연결인지 본다.
 
+## `304`와 `Protocol`을 같이 읽는 미니 카드
+
+초보자가 자주 틀리는 장면이 `Status = 304`, `Protocol = h3` 한 줄이다.
+
+먼저 이렇게 분리해서 읽으면 된다.
+
+- `304`는 "서버가 기존 body를 계속 써도 된다고 답했다"는 뜻이다.
+- `h3`는 "그 재검증 요청이 HTTP/3 길로 갔다"는 뜻이다.
+
+즉 `304 over h3`는 보통 아래 둘을 **같이** 말할 뿐이다.
+
+1. 서버에 재검증 요청은 갔다.
+2. 그 길이 HTTP/3였다.
+
+이 한 줄만으로 바로 결론 내리면 안 되는 것:
+
+- `h3`라서 `h2`에서 `h3`로 downgrade/upgrade가 일어났다고 단정
+- 같은 URL이 두 줄 보인다고 duplicate fetch라고 단정
+
+짧은 비교표:
+
+| 보이는 조합 | 먼저 내릴 결론 | 아직 모르는 것 |
+|---|---|---|
+| `304` + `h3` | H3로 재검증했다 | 같은 연결 재사용인지, 새 연결인지 |
+| `304` + `h2` | H2로 재검증했다 | duplicate fetch인지 |
+| `200` + `h3` | H3로 실제 응답을 받았다 | cache miss인지, resource 변경 때문인지 |
+
+한 줄 체크 순서:
+
+1. `Status 304`면 먼저 cache 재검증 장면으로 묶는다.
+2. `Protocol h3`는 그다음에 "어느 길로 재검증했는가"만 덧붙인다.
+3. duplicate fetch나 recovery 판단은 `Connection ID`, 시간 순서, 같은 URL 반복 여부로 따로 본다.
+
 ## H3/421에서만 붙이는 미니 체크
 
 기본은 4칸으로 충분하다.
@@ -193,6 +227,7 @@ retrieval-anchor-keywords: devtools first checklist, browser devtools first chec
 
 - `Protocol`은 길
 - cache는 `304`, `from memory cache`, `from disk cache` 쪽 신호다
+- 그래서 `304 over h3`는 "H3로 재검증"이지, `h3` 자체가 cache 종류를 뜻하는 것은 아니다
 
 ### `421`을 보면 바로 auth 문제라고 생각한다
 
@@ -212,6 +247,7 @@ retrieval-anchor-keywords: devtools first checklist, browser devtools first chec
 
 ## 다음에 이어서 볼 문서
 
+- 응답 헤더의 `Server`/`Via`/`X-Request-Id`로 browser/proxy/app 1차 분기를 더 빨리 하고 싶다면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - `Protocol` 표기 자체가 헷갈리면 [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
 - `304`와 cache 판독이 먼저 필요하면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - 같은 URL `421 -> 200`/`421 -> 403` 판독으로 바로 이어 가려면 [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)

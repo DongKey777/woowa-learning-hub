@@ -7,6 +7,7 @@
 관련 문서:
 
 - [트랜잭션·락·커넥션 풀 첫 그림](./transaction-locking-connection-pool-primer.md)
+- [타임아웃 튜닝 순서 체크리스트 카드](./timeout-tuning-order-checklist-card.md)
 - [트랜잭션 경계·격리수준·락 의사결정 프레임워크](./transaction-boundary-isolation-locking-decision-framework.md)
 - [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md)
@@ -16,7 +17,7 @@
 - [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: transaction boundary checklist card, external io inside transaction checklist, @transactional external api review, transaction boundary code review card, beginner transaction review questions, pr comment one-liner transaction review, review comment tone card, question request block review tone, review comment tone selector, before after transaction boundary snippet, transaction boundary before after example, outbox before after snippet, spring transaction retry boundary example, spring retry facade tx service example, beginner retry idempotency 연결표
+retrieval-anchor-keywords: transaction boundary checklist card, external io inside transaction checklist, @transactional external api review, beginner transaction review questions, pr comment one-liner transaction review, before after transaction boundary snippet, outbox before after snippet, spring transaction retry boundary example, 조회성 검증 예외, 임시 draft 예외, outbox 전환 예시, 처음 배우는데 transaction boundary, 외부 io inside tx basics, external delay to lock pool timeout, beginner retry idempotency 연결표
 
 ## 경계 체크 다음에 바로 보는 카드
 
@@ -29,6 +30,20 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | `insert-if-absent`에서 duplicate/timeout/deadlock 해석이 섞인다 | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | `already exists`/`busy`/`retryable` 3버킷으로 결과 언어를 고정해 준다 |
 | MySQL `1062 duplicate key`를 자꾸 blind retry하게 된다 | [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md) | `insert retry`보다 `winner fresh read`가 먼저라는 기본 흐름을 짧게 정리한다 |
 | exact-key duplicate에서 `UNIQUE`와 locking read 역할이 헷갈린다 | [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md) | retry 신호(`busy`/`already exists`/`retryable`)가 왜 다르게 해석되는지 첫 그림을 맞춰 준다 |
+| "느려지면 timeout만 올리면 되나?"가 먼저 튀어나온다 | [타임아웃 튜닝 순서 체크리스트 카드](./timeout-tuning-order-checklist-card.md) | `외부 지연 -> 긴 트랜잭션 -> lock wait -> pool 대기` 순서가 보여서, 숫자 조정보다 경계 축소를 먼저 떠올리게 해 준다 |
+
+## 외부 지연이 timeout처럼 보이는 20초 연결
+
+이 카드를 본 뒤 timeout 문서로 넘어갈 때 초보자가 붙잡을 문장은 하나면 충분하다.
+
+> 외부 호출이 느려지면 `DB 안 일`만 늦는 게 아니라, 같은 트랜잭션 안의 lock 보유 시간과 connection 점유 시간도 같이 늘어난다.
+
+짧게 그리면 이렇게 이어진다.
+
+`외부 API 2초 지연 -> tx 2초 연장 -> 후행 요청 lock wait 증가 -> active connection 고정 -> pool timeout`
+
+그래서 코드리뷰에서 "외부 I/O를 빼자"는 말은 단순한 깔끔함 얘기가 아니라,
+뒤에서 보일 `lock wait timeout`, `Connection is not available` 같은 증상을 미리 끊자는 뜻이다.
 
 ## 먼저 한 장 그림
 
@@ -69,7 +84,7 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 
 예외 기준은 "권장 패턴"이 아니라, 초보자가 과하게 다 쪼개는 오탐을 줄이기 위한 아주 좁은 허용선이다.
 
-## 코드리뷰 5문항 카드 (계속 2)
+### 코드리뷰 5문항 카드 (계속 2)
 
 | 번호 | 리뷰 질문 | `예`일 때 기본 액션 | 예외적으로 tx 안에 남겨도 되는 조건 | 실제 PR 코멘트 1줄 예시 |
 |---|---|---|---|---|
@@ -79,9 +94,65 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 4 | 재시도 로직이 메서드 바깥에서 전체 트랜잭션을 반복 실행할 수 있나? | idempotency key/중복 방지 규칙을 같이 점검 | 재실행 구간이 순수 조회 또는 멱등 write뿐이고, 외부 호출도 같은 key로 안전하게 중복 억제된다는 근거가 있을 때만 한 경계에 둘 수 있다. | 현재 retry가 메서드 전체를 다시 실행할 수 있어 중복 write 위험이 있으니, idempotency key(또는 중복 방지 조건) 확인 부탁드립니다. |
 | 5 | 느린 외부 호출이 lock wait, deadlock, pool timeout으로 번질 수 있는 경로가 보이나? | timeout/격리/락 순서보다 먼저 "트랜잭션 길이"부터 줄임 | 호출 p99가 매우 짧고 상한이 강하게 통제되며, 그 구간 동안 잡는 커넥션/락이 사실상 없다는 관측이 있을 때만 남겨도 되는 후보로 본다. | 외부 호출 지연 시 lock wait와 pool 대기가 함께 늘 수 있어, timeout 튜닝 전에 트랜잭션 길이 축소부터 검토 부탁드립니다. |
 
-### 흔한 혼선 바로잡기
+## 예외 기준 3케이스 미니 예시
 
-## 코드리뷰 5문항 카드 (계속 3)
+아래 3개는 "`외부 I/O는 무조건 다 밖으로`"라고 오독하지 않게 도와주는 최소 예시다.
+
+| 케이스 | tx 안에 잠깐 남겨도 되는 조건 | 코드리뷰에서 바로 보는 신호 | 기본 판단 |
+|---|---|---|---|
+| 조회성 검증 | 외부 호출이 `주소 유효성 확인`, `회원 상태 조회`처럼 읽기 전용이고, 실패해도 외부 side effect가 남지 않는다 | `save()`보다 먼저 호출되고, 뒤에 잡는 락 범위가 작다 | 예외 허용 가능. 다만 느리면 여전히 밖으로 빼는 쪽이 우선 |
+| 임시 draft 저장 | 첫 write가 `PENDING`/`DRAFT`라 다른 요청을 막지 않고, 외부 승인 실패 시 draft를 버리거나 만료 처리해도 된다 | `status=DRAFT`, `expires_at`, 조회 화면에서 draft 숨김 규칙이 보인다 | 제한적 허용. draft가 blocker가 되면 바로 분리 대상 |
+| outbox 전환 | 외부 publish 결과를 tx 안에서 기다리지 않고, DB 안에는 `보낼 사실`만 남긴다 | `outbox enqueue`는 tx 안, `publish()`는 워커/after-commit 경계에 있다 | 권장 패턴. "안에 남겨도 되나?"보다 "이미 분리됐나?"를 본다 |
+
+## 케이스 1. 조회성 검증
+
+```java
+@Transactional
+public OrderDraft startOrder(Command cmd) {
+    addressClient.validate(cmd.address()); // read-only check
+    return orderRepository.saveDraft(cmd.userId(), cmd.address());
+}
+```
+
+리뷰 판단은 한 줄이면 충분하다. "`validate()`가 read-only 확인이고 draft 저장 전에 끝나므로 예외 후보는 맞지만, timeout이 잦으면 tx 밖 pre-check로 빼는 쪽이 더 안전합니다."
+
+## 케이스 2. 임시 draft
+
+```java
+@Transactional
+public Long submitPaymentDraft(Command cmd) {
+    PaymentDraft draft = draftRepository.save(PaymentDraft.pending(cmd.orderId()));
+    paymentClient.authorize(cmd.token());
+    draft.markAuthorized();
+    return draft.id();
+}
+```
+
+이 코드는 `draft`가 진짜 임시 상태인지 먼저 본다. 다른 주문 흐름을 막지 않고, 실패 시 만료/삭제로 닫히며, 조회 화면에서도 숨겨진다면 제한적으로 볼 수 있다. 반대로 `pending` row가 재시도 중복이나 재고 blocker가 되면 "임시"가 아니라 사실상 active row라서 분리해야 한다.
+
+## 케이스 3. outbox 전환
+
+```java
+@Transactional
+public void completeOrder(Long orderId) {
+    orderRepository.markCompleted(orderId);
+    outboxRepository.enqueue("OrderCompleted", orderId);
+}
+```
+
+```java
+public void relay() {
+    OutboxEvent event = outboxRepository.next();
+    eventPublisher.publish(event);
+    outboxRepository.markSent(event.id());
+}
+```
+
+리뷰 문장은 보통 이렇게 끝난다. "`publish()`를 트랜잭션 밖 워커로 분리해서 commit 기준이 선명해졌습니다. 이제 확인 포인트는 relay 재시도와 `markSent` 멱등성입니다."
+
+## 흔한 혼선 바로잡기
+
+### 코드리뷰 5문항 카드 (계속 3)
 
 - "외부 I/O가 빠르다"만으로는 예외가 아니다. 초보자 기준에서는 `빠르다`보다 `락 없이 짧게 끝나고 실패해도 외부 부작용이 남지 않는다`가 먼저다.
 - "같은 사내 서비스 호출"도 네트워크면 기본은 외부 I/O다. 같은 팀 서비스라고 해서 DB 트랜잭션 수명이 자동으로 같이 묶이지 않는다.
@@ -102,9 +173,9 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 요청형 | 개선 방향은 보이지만 선택지는 열어 둠 | "이 방향을 검토해 달라" | `경계 분리를 검토 부탁드립니다.` |
 | 차단형 | 현재 구조로는 위험이 커서 merge gate가 필요함 | "이건 먼저 고쳐야 한다" | `병합 전 경계 분리가 필요합니다.` |
 
-### 같은 5문항, 3가지 톤으로 말하기
+## 같은 5문항, 3가지 톤으로 말하기
 
-## 코멘트 톤 선택 카드 (계속 2)
+### 코멘트 톤 선택 카드 (계속 2)
 
 | 번호 | 질문형 | 요청형 | 차단형 |
 |---|---|---|---|
@@ -114,9 +185,9 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 4. 전체 트랜잭션 재시도 가능 | 현재 retry가 메서드 전체를 다시 실행할 수 있는 구조 같은데, 중복 write 방지 키가 이미 있는지 확인 가능할까요? | whole transaction retry 가능성이 보여, idempotency key나 중복 방지 조건을 함께 넣어 주시길 부탁드립니다. | 전체 재시도 경로가 있는데 중복 방지 장치가 보이지 않습니다. idempotency 보강 전에는 병합하면 안 됩니다. |
 | 5. 외부 지연이 lock/pool 문제로 번짐 | 이 외부 호출이 느려질 때 lock wait나 pool 대기로 이어질 가능성을 확인해 보셨을까요? timeout 조정보다 경계 축소가 먼저인지 궁금합니다. | 외부 호출 지연이 lock wait와 pool 대기로 번질 수 있어, timeout 튜닝 전에 트랜잭션 길이 축소를 우선 검토 부탁드립니다. | 현재 구조는 외부 지연이 DB 대기로 직접 번질 수 있습니다. timeout 조정보다 경계 축소가 선행되어야 하므로 병합 전 수정이 필요합니다. |
 
-### 빠른 선택 예시
+## 빠른 선택 예시
 
-## 코멘트 톤 선택 카드 (계속 3)
+### 코멘트 톤 선택 카드 (계속 3)
 
 | 리뷰 상황 | 추천 톤 | 이유 |
 |---|---|---|
@@ -124,7 +195,7 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 위험은 보이지만 팀에서 여러 대안을 열어 둠 | 요청형 | 수정 방향은 제시하되 구현 선택지는 남겨 둘 수 있다 |
 | lock/pool 전파 위험이 명확하고 재현 가능 | 차단형 | "나중에 보자"로 넘기면 운영 리스크가 그대로 남는다 |
 
-### 30초 판정 규칙
+## 30초 판정 규칙
 
 - 5문항 모두 `아니오`면: 일단 경계 위험은 낮다.
 - 1~2개 `예`면: PR 코멘트로 경계 분리 질문을 남긴다.
@@ -140,7 +211,7 @@ retrieval-anchor-keywords: transaction boundary checklist card, external io insi
 | 2번. write 직후 외부 응답을 기다린 뒤 다시 write 하나? | `write -> 브로커 발행 대기 -> write` | DB write는 짧게 commit하고, 메시지는 outbox로 넘김 |
 | 4번. 전체 retry가 어디를 다시 실행하는지 분리돼 있나? | `@Retryable`이 외부 호출과 DB write를 같이 재실행 | retry는 facade에서, DB atomic attempt는 별도 tx service로 분리 |
 
-### 스니펫 1. 결제 승인 HTTP 호출 분리
+## 스니펫 1. 결제 승인 HTTP 호출 분리
 
 `1번 문항`을 보면 먼저 이런 패턴을 의심하면 된다.
 
@@ -173,11 +244,11 @@ public void placeOrder(Command cmd) {
 
 - `paymentClient.authorize(...)`가 느려져도 첫 번째 DB 트랜잭션은 이미 끝났다는 점
 
-### 스니펫 2. 메시지 발행 대기를 outbox로 분리
+## 스니펫 2. 메시지 발행 대기를 outbox로 분리
 
 `2번 문항`은 "write 뒤에 브로커 ack를 기다리면서 다시 DB write까지 이어지나?"를 보는 질문이다.
 
-## 문항-행동 연결 미니 스니펫 (계속 2)
+### 문항-행동 연결 미니 스니펫 (계속 2)
 
 ```java
 // before: DB write 뒤 브로커 발행을 기다린 뒤 다시 DB write
@@ -219,7 +290,7 @@ outbox 쪽 설명을 더 보고 싶으면:
 - [Outbox, Saga, Eventual Consistency](./outbox-saga-eventual-consistency.md)
 - [Exactly-Once 신화와 DB + Queue 경계](./exactly-once-myths-db-queue.md)
 
-### 스니펫 3. Spring에서 외부 I/O 분리 + retry 경계 분리 같이 보여주기
+## 스니펫 3. Spring에서 외부 I/O 분리 + retry 경계 분리 같이 보여주기
 
 초보자가 가장 자주 헷갈리는 부분은 이것이다.
 
@@ -228,7 +299,7 @@ outbox 쪽 설명을 더 보고 싶으면:
 
 하지만 실제로는 **무엇을 다시 실행할지**를 먼저 잘라야 한다.
 
-## 문항-행동 연결 미니 스니펫 (계속 3)
+## 스니펫 3 before 위험 읽기
 
 ```java
 // before: 한 메서드가 DB write, 외부 승인, retry를 전부 같이 들고 있음
@@ -253,7 +324,7 @@ public class PaymentService {
 - lock 충돌로 retry가 걸리면 `paymentClient.authorize(...)`까지 다시 호출될 수 있다
 - 외부 승인 대기 시간이 길어지면 DB 트랜잭션도 같이 길어진다
 
-## 문항-행동 연결 미니 스니펫 (계속 4)
+## 스니펫 3 after 분리 예시
 
 ```java
 // after: retry는 facade에서, DB 시도는 짧은 트랜잭션으로, 외부 I/O는 경계 밖으로 분리
@@ -295,7 +366,7 @@ public class PaymentTxService {
 
 - retry는 `facade`가 잡고, 한 번의 DB 시도는 `@Transactional` 메서드가 짧게 끝낸다
 
-### before/after를 30초로 읽는 표
+## before/after를 30초로 읽는 표
 
 | 비교 포인트 | before | after |
 |---|---|---|
@@ -306,7 +377,7 @@ public class PaymentTxService {
 
 retry 경계를 더 자세히 보려면:
 
-## 문항-행동 연결 미니 스니펫 (계속 5)
+### 문항-행동 연결 미니 스니펫 (계속 5)
 
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
@@ -327,7 +398,7 @@ retry 경계를 더 자세히 보려면:
 | 2. 왜 위험한가 | lock/connection 점유, 중복 부작용, commit-발행 불일치 중 무엇이 보이나? |
 | 3. 무엇을 바꾸라고 말할까 | `DB commit 경계`와 `외부 I/O 경계`를 분리하자고 제안할 수 있나? |
 
-### 세트 1. 결제 API
+## 세트 1. 결제 API
 
 한 줄 mental model:
 
@@ -357,13 +428,13 @@ public void confirmOrder(Long orderId, String paymentToken) {
 | before 코멘트 | `@Transactional` 안에서 결제 승인 응답을 기다리고 있어 결제 지연이 lock/pool 대기로 번질 수 있습니다. `markPending`/`approve`/`markPaid` 경계를 분리해서 DB 트랜잭션을 짧게 가져갈 수 있을지 검토 부탁드립니다. |
 | after 코멘트 | 결제 승인 호출을 트랜잭션 밖으로 빼서 DB 점유 시간을 줄인 점이 좋습니다. 남은 확인 포인트는 승인 재시도 시 중복 결제를 막을 `idempotency key` 또는 결과 조회 경로가 있는지입니다. |
 
-### 세트 2. 파일 업로드
+## 세트 2. 파일 업로드
 
 한 줄 mental model:
 
 > 파일 전송 시간은 들쭉날쭉해서, 트랜잭션 안에 넣으면 "가끔 느린 요청"이 DB 병목으로 커지기 쉽다.
 
-## 실전 코드리뷰 미니 시나리오 3세트 (계속 2)
+### 실전 코드리뷰 미니 시나리오 3세트 (계속 2)
 
 ```java
 // before
@@ -388,7 +459,7 @@ public Attachment upload(ProfileImageCommand cmd) {
 | before 코멘트 | 파일 업로드가 트랜잭션 안에 있어 전송 시간이 그대로 커넥션 점유 시간으로 이어질 수 있습니다. 업로드와 메타데이터 저장 경계를 분리하고, 업로드 성공 후 DB 저장 실패 시 정리 전략도 같이 명시해 주세요. |
 | after 코멘트 | 업로드 자체를 트랜잭션 밖으로 분리해서 긴 I/O를 잘라낸 점이 명확합니다. 이제 업로드는 성공했는데 DB 저장이 실패한 경우를 위해 orphan 파일 cleanup 기준만 보강되면 리뷰 포인트가 닫힙니다. |
 
-### 세트 3. 이벤트 발행
+## 세트 3. 이벤트 발행
 
 한 줄 mental model:
 
@@ -413,7 +484,7 @@ public void completeDelivery(Long orderId) {
 }
 ```
 
-## 실전 코드리뷰 미니 시나리오 3세트 (계속 3)
+### 실전 코드리뷰 미니 시나리오 3세트 (계속 3)
 
 | 구분 | PR 코멘트 |
 |---|---|
@@ -438,6 +509,8 @@ public void completeDelivery(Long orderId) {
   - 그럴 수 있다. 그래서 rollback 환상을 기대하기보다, 어디서 보상/재시도/멱등성을 둘지 같이 설계해야 한다.
 - "timeout만 줄이면 해결된다"
   - timeout은 실패를 빨리 드러낼 뿐, 긴 경계 자체를 없애주지 않는다.
+- "lock timeout이나 pool timeout이 보이니 DB 설정 카드부터 보면 된다"
+  - 그 전에 `외부 지연 -> 긴 tx -> lock/pool 전파` 경로가 있는지 먼저 본다. timeout 값 조정 순서는 [타임아웃 튜닝 순서 체크리스트 카드](./timeout-tuning-order-checklist-card.md)에서 바로 이어서 확인하면 된다.
 - "pool size를 키우면 된다"
   - 근본 원인이 긴 트랜잭션이면 lock/대기 전파는 계속 남는다.
 - "차단형 코멘트는 무조건 공격적이다"

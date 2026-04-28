@@ -10,10 +10,27 @@
 - [0-1 BFS parent tie mini note](./zero-one-bfs-parent-tie-mini-note.md)
 - [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
 - [0-1 BFS 손계산 워크시트](./zero-one-bfs-hand-calculation-worksheet.md)
+- [그래프 기초](../data-structure/graph-basics.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: 0-1 bfs full path lexicographic, zero one bfs full path compare, 0-1 bfs parent number vs full path, 0-1 bfs lexicographic bridge, 0-1 bfs parent compare wrong, 0-1 bfs 전체 경로 사전순 비교, 0-1 bfs 부모 번호 비교 반례, 0-1 bfs 전체 경로 비교 반례, shortest path lexicographic full path, immediate parent compare counterexample, parent only tie break wrong, lexicographically smallest shortest path full path, beginner lexicographic path compare, 0-1 bfs tie break primer, zero one bfs full path lexicographic bridge basics
+retrieval-anchor-keywords: 0-1 bfs full path lexicographic, zero one bfs full path compare, 0-1 bfs parent number vs full path, 0-1 bfs lexicographic bridge, 0-1 bfs parent compare wrong, shortest path lexicographic full path, parent only tie break wrong, lexicographically smallest shortest path full path, beginner lexicographic path compare, 처음 사전순 경로 헷갈림, 왜 parent 만 비교하면 안 되지, 언제 tie break 필요해, 뭐예요 lexicographic path basics, 0-1 bfs 전체 경로 비교 반례, 0-1 bfs tie break primer
+
+이 문서가 바로 답하는 질문은 하나다.
+
+`왜 parent 번호만 비교하면 사전순 최단 경로가 안 되지?`
+
+이 질문에 답하려고, 마지막 한 칸 비교와 전체 경로 비교를 분리해서 보여 준다.
+
+## 먼저 떠올릴 그림
+
+사전순 비교는 문자열 비교와 비슷하다.
+앞에서부터 보다가 처음 다른 칸에서 승부가 난다.
+
+| 비교 방식 | 보는 위치 | 초보자용 한 줄 |
+|---|---|---|
+| 부모 번호 비교 | 마지막 한 칸 | `target` 직전만 봄 |
+| 전체 경로 사전순 | 처음 갈라지는 칸 | 앞에서부터 처음 다른 칸을 봄 |
 
 ## 먼저 감각부터
 
@@ -35,6 +52,21 @@ parent 비교
     1, 3, 4, T
     앞에서부터 보고 처음 다른 2와 3을 비교
 ```
+
+## 증상 문구로 먼저 걸러내기
+
+문제 문장에 아래 표현이 있으면 부모 번호 한 칸 비교로 줄여도 되는지 의심해야 한다.
+
+| 보이는 표현 | 뜻 | 초보자 함정 |
+|---|---|---|
+| `경로 전체가 사전순` | 전체 나열 비교 | parent 번호만 비교함 |
+| `사전순으로 가장 작은 최단 경로` | 거리 동점에서 전체 경로 비교 | 첫 최단 경로가 답이라고 생각 |
+| `동점이면 번호가 작은 부모` | 마지막 한 칸 규칙 | 전체 사전순과 같은 뜻으로 읽음 |
+
+처음 읽을 때는 아래 둘을 따로 외우면 안전하다.
+
+- `번호가 작은 부모`는 지역 규칙
+- `사전순으로 작은 경로`는 전체 규칙
 
 ## 언제 두 기준이 갈리나
 
@@ -141,17 +173,15 @@ parent 비교
 
 - 마지막 부모 번호가 작으면 전체 경로도 작을 거라고 바로 생각하기 쉽다.
 - 하지만 사전순은 앞에서부터 비교하므로, 더 앞 칸에서 이미 승부가 끝날 수 있다.
+- 간선을 번호순으로 탐색하면 자동으로 전체 경로 사전순이 된다고 생각하기 쉽지만, 동점 처리 규칙이 문제 요구와 맞는지 따로 확인해야 한다.
 - 그래서 전체 경로 사전순 요구를 부모 번호 비교로 바꾸면 반례가 생긴다.
-
-## 한 줄 정리
-
-`parent` 번호 비교는 도착 직전 한 칸만 보는 규칙이고, 전체 경로 사전순 비교는 시작점부터 처음 다른 칸을 보는 규칙이라서, 두 기준은 작은 반례에서도 쉽게 갈린다.
 
 ## 다음 연결
 
 - 사전순 tie-break가 왜 `newDist == dist[next]` 분기에서만 붙는지 보려면 [0-1 BFS lexicographic tie mini note](./zero-one-bfs-lexicographic-tie-mini-note.md)
 - 기본형에서는 왜 동점 부모를 보통 그대로 두는지 보려면 [0-1 BFS parent tie mini note](./zero-one-bfs-parent-tie-mini-note.md)
 - `parent` 배열로 경로를 복원하는 기본 감각부터 다시 잡으려면 [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
+- 경로를 정점 나열로 읽는 감각이 아직 약하면 [그래프 기초](../data-structure/graph-basics.md)
 
 ## 한 줄 정리
 

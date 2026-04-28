@@ -2,12 +2,13 @@
 
 **난이도: 🟢 Beginner**
 
-> 한 줄 요약: 브라우저 Network 탭에서 `memory cache`, `disk cache`, `revalidation`, `304 Not Modified`를 실제 요청 trace 기준으로 구분하고, `304`인데도 DevTools에 body가 보이는 이유를 cached body 재사용 관점으로 읽는 실전 primer
+> 한 줄 요약: 같은 URL 재방문에서 브라우저 Network 탭의 `from memory cache`, `from disk cache`, `revalidation`, `304 Not Modified`를 waterfall과 headers 기준으로 구분하고, `304`인데도 DevTools에 body가 보이는 이유를 cached body 재사용 관점으로 읽는 실전 primer
 
 관련 문서:
 
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [Browser DevTools `Disable cache` ON/OFF 실험 카드](./browser-devtools-disable-cache-on-off-experiment-card.md)
+- [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
 - [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
 - [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
 - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
@@ -18,7 +19,7 @@
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
 
-retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cache, browser cache revalidation, 304 devtools, conditional request trace, from memory cache, from disk cache, if-none-match, if-modified-since, 304 vs memory cache, 304 response body devtools, protocol vs cache signal, 처음 배우는데 h3랑 304, 처음 배우는데 memory cache 뭐예요
+retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cache, browser cache revalidation, 304 devtools, conditional request trace, from memory cache, from disk cache, if-none-match, 304 vs memory cache, waterfall vs cache signal, waiting vs 304, 같은 url 재방문 304 vs memory cache, 새로고침했는데 304 왜 떠요, 처음 배우는데 memory cache 뭐예요
 
 > [!TIP]
 > `Protocol h3`를 보고 있는 순간에도 질문은 두 개다.
@@ -27,6 +28,7 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 > - body 출처 질문: "서버에서 다시 받았나, browser cache를 썼나"
 >
 > 이 문서는 두 번째 질문을 푼다. 첫 번째 질문에서 `Alt-Svc`/HTTPS RR/SVCB를 같이 읽어야 하면 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)로 간다.
+> waterfall의 `dns`/`connect`/`ssl`/`waiting` 라벨 자체가 아직 헷갈리면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)부터 보고 돌아오면 된다.
 
 <details>
 <summary>Table of Contents</summary>
@@ -36,8 +38,10 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 - [먼저 기억할 핵심 구분](#먼저-기억할-핵심-구분)
 - [DevTools에서 먼저 켜 둘 것](#devtools에서-먼저-켜-둘-것)
 - [한 번에 보는 trace 판독표](#한-번에-보는-trace-판독표)
+- [같은 URL 재방문에서 `304` vs `from memory cache` 30초 구분법](#같은-url-재방문에서-304-vs-from-memory-cache-30초-구분법)
 - [DevTools 듀얼-시그널 미니 체크리스트](#devtools-듀얼-시그널-미니-체크리스트)
 - [1분 분리 체크리스트: `Protocol=h3` vs `from memory cache` vs `304`](#1분-분리-체크리스트-protocolh3-vs-from-memory-cache-vs-304)
+- [Waterfall 타이밍 vs cache 신호 1분 브리지](#waterfall-타이밍-vs-cache-신호-1분-브리지)
 - [memory cache 읽는 법](#memory-cache-읽는-법)
 - [disk cache 읽는 법](#disk-cache-읽는-법)
 - [revalidation과 304 읽는 법](#revalidation과-304-읽는-법)
@@ -198,6 +202,42 @@ Chrome/Edge DevTools 기준으로 실전에서 먼저 보는 포인트는 아래
 3. status가 `304`인지 `200`인지 본다
 4. waterfall이 네트워크 왕복처럼 보이는지, 즉시 종료처럼 보이는지 본다
 
+## 같은 URL 재방문에서 `304` vs `from memory cache` 30초 구분법
+
+초급자가 가장 많이 묻는 장면은 이것이다.
+
+- "같은 `app.js`를 다시 눌렀는데 어떤 줄은 `from memory cache`고 어떤 줄은 `304`예요."
+- "둘 다 기존 걸 쓰는 것 같아서 같은 뜻 아닌가요?"
+
+같은 URL 재방문에서는 **`서버에 다시 물어봤는가`** 하나만 먼저 자르면 된다.
+
+| 장면 | Waterfall에서 먼저 보이는 것 | Headers에서 먼저 보이는 것 | 첫 해석 |
+|---|---|---|---|
+| `from memory cache` | 네트워크 구간이 거의 없거나 매우 짧다 | request에 `If-None-Match`/`If-Modified-Since`가 없는 경우가 많다 | 브라우저가 메모리에 있던 body를 즉시 재사용 |
+| `from disk cache` | 네트워크 구간이 거의 없거나 매우 짧다 | validator request가 없는 경우가 많다 | 브라우저가 디스크에 있던 body를 즉시 재사용 |
+| `304 Not Modified` | `waiting` 같은 왕복 흔적이 보일 수 있다 | request에 `If-None-Match` 또는 `If-Modified-Since`, response에 `304` | 서버에 다시 물어본 뒤 기존 body를 계속 사용 |
+
+한 줄 규칙:
+
+- waterfall에 네트워크 왕복 흔적이 거의 없고 validator request도 안 보이면 `memory/disk cache` 쪽이다.
+- request header에 validator가 실렸고 status가 `304`면 재검증이다.
+
+즉 둘 다 "기존 body를 다시 쓴다"는 점은 같지만, **`304`는 서버 확인이 있었고 `from memory cache`는 즉시 재사용일 가능성이 높다.**
+
+작은 멘탈 모델로 다시 압축하면 이렇다.
+
+```text
+from memory cache  = 안 물어보고 바로 씀
+304 Not Modified   = 물어보고 그대로 씀
+```
+
+처음 판독할 때는 `Status`보다 아래 순서가 덜 틀린다.
+
+1. 같은 URL의 반복 방문인지 확인한다.
+2. `Size`/badge에 `from memory cache` 또는 `from disk cache`가 있는지 본다.
+3. 없으면 `Headers`에서 `If-None-Match`/`If-Modified-Since`를 찾는다.
+4. validator가 있으면 `304`인지 `200`인지 본다.
+
 ## DevTools 듀얼-시그널 미니 체크리스트
 
 초급자 오분류를 줄이는 핵심은 한 신호만 보지 않고 아래 두 신호를 같이 읽는 것이다.
@@ -271,6 +311,39 @@ from memory cache  -> body를 브라우저 메모리에서 바로 썼는가
 - `304`를 memory cache의 하위 종류처럼 설명한다.
 
 이 세 줄을 분리해 읽으면 `Protocol=h3`와 `from memory cache`/`304`를 같은 칸에서 비교하는 실수를 크게 줄일 수 있다.
+
+---
+
+## Waterfall 타이밍 vs cache 신호 1분 브리지
+
+초급자가 다음 단계에서 바로 막히는 지점은 "그럼 waterfall은 언제 보지?"다.
+
+- `memory cache`/`disk cache`/`304`는 **cache 신호**다.
+- `dns`/`connect`/`ssl`/`waiting`/`content download`는 **타이밍 신호**다.
+
+둘은 경쟁하는 답이 아니라, 서로 다른 질문에 대한 답이다.
+
+| 지금 보이는 것 | 먼저 답하는 질문 | 먼저 내릴 결론 | 아직 단정하면 안 되는 것 |
+|---|---|---|---|
+| `from memory cache` | body를 어디서 썼나 | 메모리 사본을 바로 재사용했다 | waterfall이 짧으니 서버가 빨랐다고 단정 |
+| `from disk cache` | body를 어디서 썼나 | 디스크 사본을 바로 재사용했다 | `dns/connect/ssl`이 없으니 계측이 이상하다고 단정 |
+| validator + `304` | 서버에 다시 물어봤나 | 재검증 후 기존 body를 계속 쓴다 | `304`를 memory/disk hit와 같은 종류로 묶음 |
+| `waiting`이 김 | 첫 바이트 전 대기가 길었나 | 응답 시작 전 대기 구간이 길다 | cache miss나 app 느림으로 바로 확정 |
+| `content download`가 김 | body 전송이 오래 걸렸나 | 응답 시작 뒤 다운로드가 길다 | cache 여부를 이 막대만으로 판정 |
+
+가장 짧은 판독 순서는 이렇게 고정하면 된다.
+
+1. `Size`나 row badge에서 `from memory cache`/`from disk cache`/`304`를 먼저 본다.
+2. 그다음 waterfall으로 네트워크 시간이 있었다면 어디에 있었는지만 읽는다.
+3. 마지막에 `Protocol`을 붙여 "`그 장면이 h2였나 h3였나`"를 적는다.
+
+세 줄 예시:
+
+- `from memory cache` + 거의 빈 waterfall -> "서버가 매우 빨랐다"보다 "브라우저가 body를 바로 썼다"가 먼저다.
+- validator + `304` + `waiting` 존재 -> 서버 왕복이 있었고, 그 대기 시간은 재검증 round trip에 들어간다.
+- `200` + 긴 `content download` -> cache 질문보다 body 전송량이나 다운로드 경로를 먼저 본다.
+
+waterfall 칸 이름 자체가 아직 헷갈리면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)로 이어서 보면 된다.
 
 ---
 

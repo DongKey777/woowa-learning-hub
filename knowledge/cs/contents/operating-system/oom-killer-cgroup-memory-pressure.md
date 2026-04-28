@@ -23,8 +23,14 @@
 
 - [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md)
 - [컨테이너, cgroup, namespace](./container-cgroup-namespace.md)
+- [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
+- [cgroup swap controller basics](./cgroup-swap-controller-basics.md)
 - [Page Replacement, Clock vs LRU](./page-replacement-clock-vs-lru.md)
+- [kswapd vs direct reclaim latency](./kswapd-vs-direct-reclaim-latency.md)
 - [Scheduler Fairness, Page Cache, File System Basics](./scheduler-fairness-page-cache.md)
+- [operating-system 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: oom killer cgroup memory pressure, oomkilled meaning, killed log meaning memory, memory.events oom_kill, cgroup oom vs global oom, linux oom killer basics, container memory limit killed, memory pressure reclaim swap basics, 처음 보는 oom, 메모리 부족인데 왜 프로세스가 죽어요, 왜 컨테이너만 죽었어요, oom killer 뭐예요, cgroup memory pressure 큰 그림, memory.current memory.max 보는 법, oom_score_adj basics, host는 멀쩡한데 pod만 oomkilled, beginner oom triage
 
 ## 깊이 들어가기
 

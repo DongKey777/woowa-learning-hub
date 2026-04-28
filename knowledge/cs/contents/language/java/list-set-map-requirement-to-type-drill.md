@@ -73,7 +73,7 @@ retrieval-anchor-keywords: list set map requirement drill, java list set map pra
 - "중복 제거 + 순서"가 동시에 필요하면 기본 답을 하나만 고르기 어렵다.
 - 첫 읽기에서는 핵심 요구 하나를 먼저 고른다.
 - 예: "중복 제거"가 본질이면 `Set` 먼저, "순서 출력"이 본질이면 `List` 먼저.
-- 그런데 "중복 제거 + 입력 순서 유지"가 요구 자체라면 `LinkedHashSet`을 바로 떠올리는 편이 더 정확하다. 이 감각은 [`LinkedHashSet` 순서+중복 제거 미니 브리지](./linkedhashset-order-dedup-mini-bridge.md)에서 짧게 이어서 보면 된다.
+- 그런데 "중복 제거 + 입력 순서 유지"와 "중복 제거 + 정렬 유지"는 다른 요구다. 앞쪽이면 `LinkedHashSet`, 뒤쪽이면 `TreeSet`을 떠올리는 감각을 [`LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지](./linkedhashset-order-dedup-mini-bridge.md)에서 짧게 이어서 보면 된다.
 - `Map`은 `Collection` 하위 타입이 아니므로 반복할 때 `entrySet()` 같은 전용 API를 쓴다.
 
 ## 자주 틀리는 문장 패턴 FAQ
@@ -154,7 +154,7 @@ retrieval-anchor-keywords: list set map requirement drill, java list set map pra
 ## 다음 단계
 
 - 타입 고르는 기준을 먼저 정리하려면 [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
-- "중복 제거 + 순서 유지" 조합을 바로 고르려면 [`LinkedHashSet` 순서+중복 제거 미니 브리지](./linkedhashset-order-dedup-mini-bridge.md)
+- "중복 제거 + 입력 순서 유지"와 "중복 제거 + 정렬 유지"를 갈라 보고 싶다면 [`LinkedHashSet` 순서 유지 vs `TreeSet` 정렬 유지 브리지](./linkedhashset-order-dedup-mini-bridge.md)
 - `Map`인데 출력 순서도 중요해졌다면 [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - `Map`의 `get()`/`containsKey()` 선택이 헷갈리면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - `Map` 반복 습관을 바로 교정하려면 [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)

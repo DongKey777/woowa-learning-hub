@@ -7,6 +7,7 @@
 관련 문서:
 
 - [자료구조 정리](./README.md)
+- [Union-Find Standalone Beginner Primer](./union-find-standalone-beginner-primer.md)
 - [Connectivity Question Router](./connectivity-question-router.md)
 - [그래프 알고리즘](../algorithm/graph.md)
 - [알고리즘 기본: DFS와 BFS](../algorithm/basic.md#dfs와-bfs)
@@ -22,6 +23,7 @@ retrieval-anchor-keywords: union find, union-find basics, disjoint set union, ds
 ## 이 문서 다음에 보면 좋은 문서
 
 - `같은 컴포넌트인가?`, `경로 하나를 복원하라`, `최단 거리와 경로를 구하라`가 섞여 보이면 [Connectivity Question Router](./connectivity-question-router.md)에서 질문의 답 모양부터 먼저 분리하면 된다.
+- union-find를 아직 처음 배우는 단계라면 이 문서보다 [Union-Find Standalone Beginner Primer](./union-find-standalone-beginner-primer.md)부터 읽는 편이 안전하다.
 - `같은 그룹인가?`를 넘어서 `이 그룹 크기는 몇인가?`, `전체 컴포넌트는 몇 개인가?`까지 손으로 따라가고 싶다면 [Union-Find Component Metadata Walkthrough](./union-find-component-metadata-walkthrough.md)가 가장 빠르다.
 - Kruskal에서 union-find가 실제로 어디에 끼는지 문제 풀이 맥락으로 보려면 [Minimum Spanning Tree: Prim vs Kruskal](../algorithm/minimum-spanning-tree-prim-vs-kruskal.md)이 가장 직접적이다.
 - `O(alpha(n))` 감각과 path compression의 상각 효과를 더 깊게 보려면 [Union-Find Amortized Proof Intuition](../algorithm/union-find-amortized-proof-intuition.md)로 이어 가면 된다.

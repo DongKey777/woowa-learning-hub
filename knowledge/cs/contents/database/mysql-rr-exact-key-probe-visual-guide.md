@@ -40,6 +40,23 @@ retrieval-anchor-keywords: mysql rr exact key probe, mysql repeatable read dupli
 | plan/path가 바뀜 | 잠금은 원래 상상한 key slot이 아니라 chosen index path를 따라간다 | 다른 칸을 더듬고 있었을 수 있음 |
 | `UNIQUE`가 없음 | RR 테스트는 통과해도 hard backstop이 없다 | 줄 세우는 도우미는 있어도 출입문 잠금장치는 없음 |
 
+## 초급자 분기 카드
+
+RR exact-key 그림을 본 뒤에는 "그래서 지금 나는 어느 옆 문서로 가야 하지?"가 바로 생긴다. 아래 표를 다음 한 장으로 쓰면 엔진별 혼동이 줄어든다.
+
+| 지금 막힌 질문 | 바로 갈 문서 | 왜 그 문서가 다음인가 |
+|---|---|---|
+| "우린 RC인데, 왜 RR에서 보던 줄 세우기가 안 보이지?" | [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md) | RR queue가 RC에서 왜 약해지고 duplicate error가 `INSERT` 시점으로 올라오는지 이어서 설명한다 |
+| "그러면 duplicate safety의 진짜 주인공은 누구지?" | [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md) | `UNIQUE`와 locking read를 개찰구 vs 대기줄로 나눠 초급자 기준으로 다시 고정한다 |
+| "`duplicate key`나 `lock timeout`이 나면 서비스 결과를 어떻게 닫지?" | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | `already exists` / `busy` / `retryable` 3버킷으로 바로 번역하는 결과 표를 준다 |
+
+짧게 연결하면 이 순서다.
+
+1. RR 그림으로 "같은 key slot queue" 감각을 잡는다.
+2. RC로 내려간 팀이면 RC pitfall note로 넘어가 queue가 왜 약해졌는지 확인한다.
+3. 그다음 duplicate primer에서 `UNIQUE`와 locking read의 역할을 분리한다.
+4. 마지막으로 retry outcome guide에서 예외를 서비스 언어로 닫는다.
+
 ## 상세 분해
 
 ### 1. 직관이 맞는 가장 좁은 장면

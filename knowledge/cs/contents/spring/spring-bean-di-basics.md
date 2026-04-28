@@ -2,13 +2,14 @@
 
 > 한 줄 요약: Spring Bean은 "내가 `new`로 직접 만든 객체"가 아니라, 컨테이너가 등록하고 조립하고 필요하면 프록시로 감싸서 꺼내 주는 객체다.
 >
-> 문서 역할: 이 문서는 spring 카테고리 안에서 Bean, DI, component scan, configuration, proxy 감각을 한 번에 잡는 **beginner primer**를 담당한다.
+> 문서 역할: 이 문서는 spring 카테고리 안에서 Bean 등록, component scan, configuration, proxy 감각을 한 번에 묶는 **beginner primer**를 담당한다. "왜 DI가 필요한가" 자체는 `spring-ioc-di-basics.md`가 먼저 담당한다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
+- [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
@@ -19,11 +20,13 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [팩토리 패턴 기초](../design-pattern/factory-basics.md)
 
-retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, dependency injection basics, component scan basics, spring proxy intuition, constructor injection, qualifier annotation basics, primary annotation basics, collection injection, objectprovider basics, springbootapplication basics, 스프링 빈 처음, beginner spring bean, intro spring di, spring bean di basics basics
+retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, component scan basics, spring proxy intuition, spring configuration basics, spring bean 언제 만들어져요, component scan vs di difference, configuration vs bean registration, 왜 transactional 안 먹어요, springbootapplication basics, 스프링 빈 처음, beginner spring bean, 빈 등록과 주입 차이, bean registration basics, component scan what is
 
 ---
 
 ## 핵심 개념
+
+`IoC와 DI 기초`를 읽고 난 뒤에는 "왜"보다 "Spring이 실제로 어디서 객체를 올리고 연결하는가"가 다음 질문이 된다. 이 문서는 그 경계를 정리한다.
 
 Spring 입문 초반에는 아래 다섯 개만 먼저 구분하면 된다.
 
@@ -62,9 +65,44 @@ Spring 입문 초반에는 아래 다섯 개만 먼저 구분하면 된다.
 
 **등록 -> 주입 -> 초기화 -> 프록시 -> 사용**
 
+처음 배우는 단계에서는 이 다섯 단어를 아래처럼 대응시키면 덜 헷갈린다.
+
+| 지금 들리는 말 | 실제로 Spring이 하는 일 | 먼저 붙잡을 질문 |
+|---|---|---|
+| "bean 등록" | 컨테이너가 객체 설계도와 생성 규칙을 올린다 | 이 객체는 scan으로 찾았나, `@Bean`으로 만들었나 |
+| "DI" | 등록된 후보 중 맞는 의존성을 연결한다 | 누구를 누구에게 넣었나 |
+| "초기화" | 주입이 끝난 뒤 준비 작업을 한다 | 연결 확인이나 캐시 예열이 필요한가 |
+| "프록시" | 메서드 호출 앞에서 부가기능을 가로챈다 | 트랜잭션/캐시/보안이 왜 붙었나 |
+| "사용" | 컨트롤러, 서비스, 스케줄러가 Bean을 호출한다 | 지금 문제는 요청 길찾기인가, 객체 조립인가 |
+
 ---
 
-## 1. DI는 "객체를 누가 조립하느냐"의 문제다
+## 한 요청 예시로 붙여 보기
+
+처음엔 용어를 따로 외우기보다, 한 요청에서 각 개념이 어디에 끼는지만 붙여 보면 덜 헷갈린다.
+
+```text
+POST /orders
+-> DispatcherServlet 이 OrderController 로 보냄
+-> OrderController 는 이미 주입된 OrderService 를 사용
+-> OrderService 가 OrderRepository 를 호출
+-> @Transactional 이 붙은 service 라면 프록시가 경계에서 begin/commit/rollback 처리
+```
+
+| 같은 장면에서 보이는 것 | 실제 질문 | 담당 개념 |
+|---|---|---|
+| `OrderController`가 어떻게 `OrderService`를 갖고 있나 | 누가 객체를 연결했나 | DI |
+| `OrderService`, `OrderRepository`는 언제 올라왔나 | 어떤 객체를 Bean으로 등록했나 | component scan / `@Bean` |
+| `@Transactional`이 왜 메서드 앞뒤에서 동작하나 | 누가 호출을 가로챘나 | proxy |
+| `/orders`가 왜 이 컨트롤러로 오나 | 누가 URL을 연결했나 | MVC |
+
+이 표에서 중요한 포인트는 "`/orders` 요청을 받는 일"과 "`OrderService`를 주입해 두는 일"이 같은 단계가 아니라는 점이다.
+
+---
+
+## 1. DI는 여기서 "등록된 Bean을 어떻게 연결하느냐"의 문제다
+
+왜 DI가 필요한지는 [IoC와 DI 기초](./spring-ioc-di-basics.md)에서 먼저 다뤘다. 여기서는 그 다음 단계로, Spring이 **이미 등록한 Bean 후보를 어떻게 연결하는지**만 본다.
 
 Spring을 쓰기 전에는 보통 내가 직접 의존 객체를 만든다.
 
@@ -90,7 +128,7 @@ public class OrderService {
 }
 ```
 
-핵심은 `OrderService`가 `MemoryOrderRepository`를 직접 `new`하지 않는다는 점이다.
+핵심은 `OrderService`가 `MemoryOrderRepository`를 직접 `new`하지 않는다는 점이다. 다만 이 문서의 중심은 "왜 그렇게 하느냐"보다 "그 객체가 Bean 후보로 어떻게 올라왔느냐"다.
 
 - 서비스는 "무엇이 필요하다"만 말한다
 - 컨테이너는 "그걸 누구로 채울지"를 결정한다
@@ -114,6 +152,8 @@ public class OrderService {
 ---
 
 ## 2. Component Scan과 `@Bean` 등록은 역할이 다르다
+
+앞 문서가 "DI가 필요한 이유"를 설명했다면, 여기서는 "컨테이너가 주입하려면 먼저 후보를 등록해야 한다"는 흐름을 붙인다.
 
 Spring은 Bean을 두 가지 큰 경로로 많이 등록한다.
 
@@ -178,6 +218,24 @@ public class AppConfig {
 
 ---
 
+## 2-1. 등록 방식은 이렇게 고른다
+
+| 지금 만들려는 객체 | 먼저 떠올릴 등록 방식 | 이유 |
+|---|---|---|
+| `OrderService`, `OrderRepository`처럼 우리 레이어 객체 | component scan | 역할이 클래스에 이미 드러난다 |
+| `Clock`, `ObjectMapper`, 외부 SDK client | `@Configuration` + `@Bean` | 내가 소유하지 않은 타입이라 stereotype을 붙일 수 없다 |
+| starter가 자동으로 만들어 주는 공용 기본값 | auto-configuration | 내가 직접 만들기보다 Boot 기본 계약을 먼저 탄다 |
+
+짧게 외우면 이렇다.
+
+- 우리 코드 역할 객체면 scan
+- 외부 객체 조립이면 `@Bean`
+- Boot가 제공하는 기본값이면 auto-configuration
+
+다음 질문이 "`그래서 언제 `@Bean`을 쓰고 Boot 자동 구성은 언제 믿죠?`"라면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)으로 이어진다.
+
+---
+
 ## 3. `@SpringBootApplication`은 scan 시작점도 정한다
 
 Spring Boot 초보자가 자주 놓치는 포인트다.
@@ -208,6 +266,14 @@ com.example.app
 - 서비스가 주입되지 않음
 
 초보자 기준으로는 "Bean 등록이 안 된다면, 먼저 scan 범위와 어노테이션부터 본다"가 가장 실용적이다.
+
+여기서 많이 섞이는 오해를 한 번 더 잘라 두면 좋다.
+
+| 증상 | 먼저 볼 축 | 이유 |
+|---|---|---|
+| `OrderService` 자체가 안 뜬다 | component scan | 후보 등록이 안 됐을 가능성이 크다 |
+| `PaymentClient` 구현체가 둘이라 주입이 모호하다 | DI 후보 선택 | scan보다 `@Primary`, `@Qualifier` 문제일 수 있다 |
+| `@Transactional`이 기대대로 안 먹는다 | proxy 경계 | Bean은 있어도 프록시를 우회했을 수 있다 |
 
 ---
 
@@ -269,15 +335,9 @@ public RefundService(@Qualifier("kakaoPaymentClient") PaymentClient paymentClien
 
 ---
 
-## 4-2. Collection 주입과 ObjectProvider — 후보 수집과 지연 조회
+## 4-2. Collection 주입까지만 먼저 익힌다
 
-`List<PaymentClient>`, `Map<String, PaymentClient>`는 후보를 전부 받는다. `@Primary`가 있어도 collection에는 둘 다 들어간다.
-
-`ObjectProvider<PaymentClient>`는 즉시 확정하지 않고 나중에 꺼낸다.
-
-- optional bean: `getIfAvailable()`
-- request scope 객체: 매번 새로 꺼내야 할 때
-- 실행 시점에 조회해야 할 때
+입문 단계에서는 `@Primary`와 `@Qualifier` 다음으로 `List<PaymentClient>`, `Map<String, PaymentClient>`만 먼저 익혀도 충분하다. 이 둘은 "후보를 하나 고르는 것"이 아니라 "후보를 전부 받는 것"이다.
 
 초보자용 한 장 요약:
 
@@ -286,13 +346,14 @@ public RefundService(@Qualifier("kakaoPaymentClient") PaymentClient paymentClien
 | 기본값 하나면 된다 | `@Primary` |
 | 이번 주입에서 특정 구현체 | `@Qualifier` |
 | 후보 전부 받기 | `List<T>`, `Map<String, T>` |
-| 나중에, 또는 없을 수도 있는 bean | `ObjectProvider<T>` |
+
+`ObjectProvider<T>`처럼 "지금 말고 나중에 꺼내기", scope 지연 조회 같은 주제는 초반 큰 그림을 잡은 뒤에 봐도 된다. 처음에는 "하나 고르기"와 "전부 받기"만 분리해도 DI 오류를 훨씬 빨리 읽을 수 있다. 더 필요하면 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md)로 내려가면 된다.
 
 ---
 
-## 5. Bean 생명주기는 생성 직후 끝나지 않는다
+## 5. Bean 생명주기는 이 정도만 먼저 잡는다
 
-Bean은 "생성"만으로 끝나지 않는다.
+입문자는 생명주기를 모두 외우기보다 "등록과 주입 뒤에도 초기화와 프록시 단계가 남아 있다"는 감각만 먼저 잡으면 된다.
 
 ```text
 정의 등록
@@ -312,9 +373,14 @@ Bean은 "생성"만으로 끝나지 않는다.
 - 캐시 예열
 - 간단한 검증
 
-같은 "초기화 작업"에는 잘 맞는다.
+같은 "초기화 작업"에는 잘 맞는다. 반대로 트랜잭션, 캐시, 보안처럼 프록시를 타는 동작 원리까지 여기서 한꺼번에 파고들 필요는 없다. 그런 부분은 [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)에서 따로 보면 된다.
 
-하지만 "프록시를 반드시 타야 하는 호출"은 여기서 기대하지 않는 편이 안전하다.
+특히 beginner가 자주 묻는 질문을 한 줄로 정리하면 이렇다.
+
+- "`@PostConstruct`는 준비 작업"에 가깝다
+- "`@Transactional`은 메서드 호출을 프록시가 감싼다"에 가깝다
+
+즉 둘은 비슷한 "어노테이션"처럼 보여도 개입 시점이 다르다.
 
 ### 2. 기본 scope는 singleton이다
 
@@ -335,7 +401,7 @@ public class CouponService {
 
 ---
 
-## 6. Proxy는 "앞에서 한 번 더 받는 객체"라고 이해하면 된다
+## 6. Proxy는 "앞에서 한 번 더 받는 문지기" 정도로 잡는다
 
 `@Transactional`, `@Cacheable`, `@Async` 같은 기능이 초반에 어렵게 느껴지는 이유는 프록시를 못 잡아서다.
 
@@ -377,14 +443,31 @@ public class OrderService {
 
 **프록시 기능은 "빈 밖에서 빈으로 들어오는 호출"에서 먼저 의심한다.**
 
-### `@Configuration`도 프록시 감각과 연결된다
+여기까지 이해하면 beginner 문서 목표는 충분하다. `@Configuration`의 `proxyBeanMethods`, BeanPostProcessor 체인, `BeanDefinition` 같은 컨테이너 내부는 이미 다음 단계다. 그런 심화는 [IoC 컨테이너와 DI](./ioc-di-container.md), [Spring `@Configuration`, `proxyBeanMethods`, and BeanPostProcessor Chain](./spring-configuration-proxybeanmethods-beanpostprocessor-chain.md)으로 넘겨 두는 편이 첫 이해에 안전하다.
 
-`@Configuration` 클래스는 경우에 따라 프록시처럼 동작해 `@Bean` 메서드가 같은 singleton을 돌려주도록 보정한다.
+### 6-1. 설정 클래스 프록시는 왜 또 따로 말할까
 
-입문 단계에서는 아래만 기억해도 충분하다.
+service의 `@Transactional` 프록시와 `@Configuration` 프록시는 목적이 다르다.
 
-- `@Bean` 메서드끼리 직접 호출이 섞이면 단순 자바 메서드 호출이 아닐 수 있다
-- 이 영역은 AOP 프록시와는 목적이 다르지만 "중간에서 호출을 보정한다"는 감각은 비슷하다
+| 프록시가 붙는 자리 | 초보자용 목적 | 지금 기억할 한 줄 |
+|---|---|---|
+| service 메서드 앞 | 트랜잭션, 캐시, 보안 같은 부가기능 | "호출을 가로챈다" |
+| `@Configuration` 클래스 | `@Bean` 메서드 사이 singleton 의미를 지킨다 | "같은 bean을 중복 생성하지 않게 돕는다" |
+
+즉 proxy라는 단어는 같아도 "부가기능 프록시"와 "설정 조립 프록시"를 같은 이유로 붙는다고 보면 오해가 커진다.
+
+---
+
+## 자주 하는 혼동 4개
+
+- "component scan이 DI를 한다"로 외우기 쉽지만, 더 정확히는 component scan은 **후보를 등록**하고 DI는 **등록된 후보를 연결**한다.
+- controller가 요청마다 service를 `new`한다고 느끼기 쉽지만, 보통 service/repository는 애플리케이션 시작 때 singleton Bean으로 이미 준비된다.
+- `@Transactional`을 "DB 저장 어노테이션"으로 보면 좁다. 실제로는 **Spring Bean 호출 경계에 프록시를 세우는 방식**이 핵심이다.
+- 직접 `new OrderService()`를 만들고 "`@Transactional`이 안 먹는다"고 놀라기 쉽지만, 컨테이너 밖 객체는 Bean 프록시 혜택을 받지 못한다.
+
+짧게 외우면 아래 한 줄이다.
+
+**등록은 scan/`@Bean`, 연결은 DI, 부가기능은 proxy, 요청 길찾기는 MVC다.**
 
 ---
 
@@ -423,4 +506,4 @@ public class OrderService {
 
 ## 한 줄 정리
 
-Bean, DI, scan, configuration, proxy를 따로 외우지 말고 "컨테이너가 객체를 등록하고 조립하고 필요하면 감싸서 꺼내 준다"는 한 문장으로 묶어 두면 Spring 입문이 훨씬 덜 헷갈린다.
+Bean 문서는 "Spring이 객체를 어디서 등록하고 어떻게 연결하고 왜 프록시로 감싸는가"를 한 장면으로 묶어 주는 primer라고 보면 된다.

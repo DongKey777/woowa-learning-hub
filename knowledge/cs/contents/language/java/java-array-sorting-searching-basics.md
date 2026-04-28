@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java array sorting searching basics basics, java array sorting searching basics beginner, java array sorting searching basics intro, java basics, beginner java, 처음 배우는데 java array sorting searching basics, java array sorting searching basics 입문, java array sorting searching basics 기초, what is java array sorting searching basics, how to java array sorting searching basics
+retrieval-anchor-keywords: java arrays.sort arrays.binarysearch primer, java 배열 정렬 검색 입문, 자바 배열 정렬 기초, 자바 배열 검색 기초, arrays.sort 뭐예요, arrays.binarysearch 뭐예요, 자바 배열 정렬은 했는데 왜 검색 결과가 이상해요, 자바 sort 하면 왜 원본이 바뀌나요, 자바 binarysearch 음수 반환 왜, 자바 배열 정렬 후 찾기, 처음 배우는데 배열 정렬 검색, 배열 정렬 검색 큰 그림, java array sort search beginner, java array sort mutates original, java binarysearch negative result meaning
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -23,6 +23,7 @@ retrieval-anchor-keywords: java array sorting searching basics basics, java arra
 > - [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](./arrays-sort-binarysearch-precondition-bridge.md)
 > - [BinarySearch Duplicate Boundary Primer](./binarysearch-duplicate-boundary-primer.md)
 > - [Primitive Descending Array Sort Bridge](./primitive-descending-array-sort-bridge.md)
+> - [이분 탐색 입문](../../algorithm/binary-search-intro.md)
 > - [`Arrays.sort(...)` vs `List.sort(...)` 브리지](./arrays-sort-vs-list-sort-bridge.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 > - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)

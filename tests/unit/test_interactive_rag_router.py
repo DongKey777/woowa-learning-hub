@@ -238,6 +238,14 @@ class KoreanConceptPhraseAndColloquialSignalTests(unittest.TestCase):
         d = classify("의존성 주입이 뭐야")
         self.assertEqual(d.tier, 1)
 
+    def test_aop_shortform_routes_to_tier1(self) -> None:
+        d = classify("AOP가 뭐야?")
+        self.assertEqual(d.tier, 1)
+
+    def test_aop_why_use_routes_to_tier2(self) -> None:
+        d = classify("AOP 왜 써?")
+        self.assertEqual(d.tier, 2)
+
     def test_meoya_with_domain_routes_to_tier1(self) -> None:
         d = classify("Bean이 머야")
         self.assertEqual(d.tier, 1)

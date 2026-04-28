@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)
 > - [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
 > - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
@@ -20,6 +21,8 @@ retrieval-anchor-keywords: filter vs interceptor, spring filter vs interceptor, 
 ## 먼저 큰 그림
 
 처음에는 세 칸으로만 나눠도 충분하다.
+
+관리자 인증 예시까지 같이 붙여 보고 싶다면 [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)를 먼저 본 뒤, 이 문서에서 `@ControllerAdvice`까지 포함한 전체 비교로 확장하면 된다.
 
 | 구성요소 | 아주 짧은 역할 | 처음 배우는 기준에서 먼저 떠올릴 질문 |
 |---|---|---|

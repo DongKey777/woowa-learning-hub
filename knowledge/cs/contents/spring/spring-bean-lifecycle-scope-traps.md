@@ -12,8 +12,9 @@
 - [연결 입문 문서](../database/transaction-basics.md)
 
 
-retrieval-anchor-keywords: spring bean lifecycle scope traps basics, spring bean lifecycle scope traps beginner, spring bean lifecycle scope traps intro, spring basics, beginner spring, 처음 배우는데 spring bean lifecycle scope traps, spring bean lifecycle scope traps 입문, spring bean lifecycle scope traps 기초, what is spring bean lifecycle scope traps, how to spring bean lifecycle scope traps
+retrieval-anchor-keywords: spring bean lifecycle scope traps, singleton mutable state bug, prototype bean singleton injection trap, request scope async trap, scoped proxy objectprovider difference, @postconstruct transactional trap, bean scope deep dive, 스프링 빈 스코프 함정, request scope 비동기 문제, prototype singleton 주입 문제, scoped proxy objectprovider 차이, 왜 singleton 상태가 섞여요, request scope 왜 async 에서 깨져요, scoped proxy 왜 헷갈려요
 > 관련 문서:
+> - [Spring Bean 생명주기 기초: 생성부터 소멸까지](./spring-bean-lifecycle-basics.md)
 > - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 > - [IoC 컨테이너와 DI](./ioc-di-container.md)
 > - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
@@ -41,6 +42,8 @@ retrieval-anchor-keywords: spring bean lifecycle scope traps basics, spring bean
 > - 스코프 함정
 
 ## 핵심 개념
+
+처음 배우는 단계에서 "빈은 언제 만들어져요?", "singleton이랑 prototype 뭐가 달라요?"를 묻는다면 이 문서보다 [Spring Bean 생명주기 기초: 생성부터 소멸까지](./spring-bean-lifecycle-basics.md)를 먼저 보는 편이 안전하다. 이 문서는 그 다음 단계에서 **왜 상태 공유 버그가 생기고, 왜 scope와 프록시가 같이 꼬이는지**를 파고드는 심화 카드다.
 
 Spring Bean은 컨테이너가 만드는 객체다.
 중요한 건 “객체를 만든다”가 아니라, **언제 만들고, 어디까지 공유하고, 어떤 시점에 프록시로 바뀌는가**다.

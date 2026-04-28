@@ -21,7 +21,10 @@ DEFAULT_TASK_TIMEOUT_SECONDS = 45 * 60
 DEFAULT_SUPERVISOR_INTERVAL_SECONDS = 20
 
 DEFAULT_WORKER_PENDING_CAP = 80
+EXPANSION_WORKER_PENDING_CAP = 35
+EXPANSION60_WORKER_PENDING_CAP = 28
 DEFAULT_COMPLETION_GATE_TIMEOUT_SECONDS = 180
+DEFAULT_FLEET_PROFILE = "quality"
 
 CONTENT_DOC_PREFIX = "knowledge/cs/contents/"
 RAG_CODE_PREFIX = "scripts/learning/rag/"
@@ -670,7 +673,187 @@ QUALITY_REPAIR_FLEET: list[dict[str, Any]] = [
     ),
 ]
 
+def _default_expansion_gates(role: str) -> list[str]:
+    if role == "content":
+        return ["authoring_lint", "readme_registration", "duplicate_topic_check", "targeted_rag_query"]
+    if role == "qa":
+        return ["beginner_first", "symptom_phrase_anchors", "cross_category_bridge"]
+    if role == "rag":
+        return ["beginner_query_precision", "golden_fixture_contract", "unit_regression"]
+    if role == "ops":
+        return ["pending_cap", "index_health", "release_readiness"]
+    return ["learner_profile_gap_map", "level2_roomescape_alignment", "no_content_edits"]
+
+
+def _expansion_profile(
+    name: str,
+    lane: str,
+    role: str,
+    mode: str,
+    claim_tags: list[str],
+    target_paths: list[str],
+    *,
+    write_scopes: list[str] | None = None,
+    can_enqueue: bool = False,
+    quality_gates: list[str] | None = None,
+) -> dict[str, Any]:
+    return {
+        "name": name,
+        "lane": lane,
+        "role": role,
+        "mode": mode,
+        "claim_tags": claim_tags,
+        "write_scopes": write_scopes or [f"expansion:{role}:{name.removeprefix('expansion-')}"],
+        "target_paths": target_paths,
+        "quality_gates": quality_gates or _default_expansion_gates(role),
+        "can_enqueue": can_enqueue,
+        "pending_cap": EXPANSION_WORKER_PENDING_CAP,
+    }
+
+
+def _expansion60_profile(
+    name: str,
+    lane: str,
+    role: str,
+    mode: str,
+    claim_tags: list[str],
+    target_paths: list[str],
+    *,
+    write_scopes: list[str] | None = None,
+    can_enqueue: bool = False,
+    quality_gates: list[str] | None = None,
+) -> dict[str, Any]:
+    profile = _expansion_profile(
+        name,
+        lane,
+        role,
+        mode,
+        claim_tags,
+        target_paths,
+        write_scopes=write_scopes,
+        can_enqueue=can_enqueue,
+        quality_gates=quality_gates,
+    )
+    profile["pending_cap"] = EXPANSION60_WORKER_PENDING_CAP
+    profile["fleet_size"] = 60
+    return profile
+
+
+EXPANSION_FLEET: list[dict[str, Any]] = [
+    _expansion_profile("expansion-curriculum-learner-map", "qa-taxonomy", "curriculum", "report", ["woowacourse", "level2", "roomescape", "spring", "foundation"], ["knowledge/cs/JUNIOR-BACKEND-ROADMAP.md", "state/learner/**", "state/orchestrator/reports/**"]),
+    _expansion_profile("expansion-spring-core-di", "spring", "content", "expand", ["spring", "bean", "di", "ioc", "component-scan", "beginner"], ["knowledge/cs/contents/spring/**", "knowledge/cs/contents/spring/README.md"], write_scopes=["expansion:content:spring"], can_enqueue=True),
+    _expansion_profile("expansion-spring-mvc-roomescape", "spring", "content", "expand", ["spring-mvc", "controller", "restcontroller", "dispatcher", "roomescape", "admin"], ["knowledge/cs/contents/spring/**", "knowledge/cs/contents/network/**", "knowledge/cs/contents/spring/README.md"], write_scopes=["expansion:content:spring", "expansion:content:network"], can_enqueue=True),
+    _expansion_profile("expansion-roomescape-admin-web", "software-engineering", "content", "expand", ["roomescape", "admin", "dto", "validation", "exception", "layering"], ["knowledge/cs/contents/software-engineering/**", "knowledge/cs/contents/spring/**", "knowledge/cs/contents/network/**"], write_scopes=["expansion:content:software-engineering", "expansion:content:spring", "expansion:content:network"], can_enqueue=True),
+    _expansion_profile("expansion-roomescape-admin-persistence", "database", "content", "expand", ["jdbc", "jpa", "repository", "transaction", "roomescape"], ["knowledge/cs/contents/database/**", "knowledge/cs/contents/spring/**", "knowledge/cs/contents/database/README.md"], write_scopes=["expansion:content:database", "expansion:content:spring"], can_enqueue=True),
+    _expansion_profile("expansion-java-oop-collections", "language-java", "content", "expand", ["java", "oop", "collections", "equals", "hashcode", "enum", "optional"], ["knowledge/cs/contents/language/java/**", "knowledge/cs/contents/language/README.md"], write_scopes=["expansion:content:language-java"], can_enqueue=True),
+    _expansion_profile("expansion-http-web-foundations", "network", "content", "expand", ["http", "rest", "status-code", "cookie", "session", "web"], ["knowledge/cs/contents/network/**", "knowledge/cs/contents/network/README.md"], write_scopes=["expansion:content:network"], can_enqueue=True),
+    _expansion_profile("expansion-testing-layering", "software-engineering", "content", "expand", ["testing", "layering", "readable-code", "refactoring", "tdd"], ["knowledge/cs/contents/software-engineering/**", "knowledge/cs/contents/software-engineering/README.md"], write_scopes=["expansion:content:software-engineering"], can_enqueue=True),
+    _expansion_profile("expansion-algorithm-data-structure-practice", "data-structure", "content", "expand", ["algorithm", "data-structure", "bfs", "dfs", "queue", "map", "set"], ["knowledge/cs/contents/data-structure/**", "knowledge/cs/contents/algorithm/**"], write_scopes=["expansion:content:data-structure", "expansion:content:algorithm"], can_enqueue=True),
+    _expansion_profile("expansion-qa-spring-entrypoints", "qa-content-spring", "qa", "fix", ["spring", "beginner", "component-scan", "di", "bean"], ["knowledge/cs/contents/spring/**", "knowledge/cs/contents/spring/README.md"], write_scopes=["expansion:content:spring"]),
+    _expansion_profile("expansion-qa-roomescape-bridges", "qa-bridge", "qa", "fix", ["roomescape", "spring", "database", "testing", "bridge"], ["knowledge/cs/contents/spring/**", "knowledge/cs/contents/database/**", "knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering"]),
+    _expansion_profile("expansion-qa-database-persistence", "qa-content-database", "qa", "fix", ["jdbc", "jpa", "transaction", "sql", "repository"], ["knowledge/cs/contents/database/**", "knowledge/cs/contents/database/README.md"], write_scopes=["expansion:content:database"]),
+    _expansion_profile("expansion-qa-java-primer-contract", "qa-content-language-java", "qa", "fix", ["java", "oop", "collections", "primer"], ["knowledge/cs/contents/language/java/**", "knowledge/cs/contents/language/README.md"], write_scopes=["expansion:content:language-java"]),
+    _expansion_profile("expansion-qa-http-web", "qa-content-network", "qa", "fix", ["http", "rest", "cookie", "session", "status-code"], ["knowledge/cs/contents/network/**", "knowledge/cs/contents/network/README.md"], write_scopes=["expansion:content:network"]),
+    _expansion_profile("expansion-qa-testing-layering", "qa-content-software-engineering", "qa", "fix", ["testing", "layering", "refactoring", "readable-code"], ["knowledge/cs/contents/software-engineering/**", "knowledge/cs/contents/software-engineering/README.md"], write_scopes=["expansion:content:software-engineering"]),
+    _expansion_profile("expansion-qa-anchor-symptoms", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "뭐예요", "왜", "헷갈"], ["knowledge/cs/contents/**/*.md", "knowledge/cs/rag/retrieval-anchor-keywords.md"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering", "expansion:content:language-java", "expansion:content:network", "expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-qa-cross-category", "qa-link", "qa", "script", ["bridge", "cross-category", "readme", "next-step"], ["knowledge/cs/contents/**/*.md", "knowledge/cs/contents/**/README.md"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering", "expansion:content:language-java", "expansion:content:network", "expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-qa-duplicate-taxonomy", "qa-taxonomy", "qa", "fix", ["duplicate", "taxonomy", "overlap", "navigation"], ["knowledge/cs/**"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering", "expansion:content:language-java", "expansion:content:network", "expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-qa-code-density", "qa-content", "qa", "fix", ["code", "example", "beginner", "clarity"], ["knowledge/cs/contents/**"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering", "expansion:content:language-java", "expansion:content:network", "expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-qa-readme-registration", "qa-link", "qa", "script", ["readme", "registration", "navigator", "return-path"], ["knowledge/cs/contents/**/README.md", "knowledge/cs/contents/**/*.md"], write_scopes=["expansion:content:spring", "expansion:content:database", "expansion:content:software-engineering", "expansion:content:language-java", "expansion:content:network", "expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-qa-algorithm-data-structure", "qa-content-data-structure", "qa", "fix", ["algorithm", "data-structure", "bfs", "dfs", "queue", "map"], ["knowledge/cs/contents/data-structure/**", "knowledge/cs/contents/algorithm/**"], write_scopes=["expansion:content:data-structure", "expansion:content:algorithm"]),
+    _expansion_profile("expansion-rag-spring-di", "qa-retrieval", "rag", "fix", ["spring", "di", "bean", "component-scan", "golden"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_*.py", "scripts/learning/rag/**"], write_scopes=["expansion:rag:golden", "expansion:rag:signal-rules"]),
+    _expansion_profile("expansion-rag-roomescape-admin", "qa-retrieval", "rag", "fix", ["roomescape", "admin", "controller", "validation", "exception"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_*.py", "scripts/learning/rag/**"], write_scopes=["expansion:rag:golden", "expansion:rag:signal-rules"]),
+    _expansion_profile("expansion-rag-persistence", "qa-retrieval", "rag", "fix", ["jdbc", "jpa", "transaction", "repository"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_*.py", "scripts/learning/rag/**"], write_scopes=["expansion:rag:golden", "expansion:rag:signal-rules"]),
+    _expansion_profile("expansion-rag-http-testing", "qa-retrieval", "rag", "fix", ["http", "rest", "testing", "layering"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_*.py", "scripts/learning/rag/**"], write_scopes=["expansion:rag:golden", "expansion:rag:signal-rules"]),
+    _expansion_profile("expansion-rag-signal-rules", "qa-retrieval", "rag", "fix", ["signal", "boost", "suppress", "beginner"], ["scripts/learning/rag/signal_rules.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion:rag:signal-rules"]),
+    _expansion_profile("expansion-rag-golden-curation", "qa-retrieval", "rag", "fix", ["golden", "fixture", "query", "regression"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_golden.py"], write_scopes=["expansion:rag:golden"]),
+    _expansion_profile("expansion-ops-queue-governor", "qa-taxonomy", "ops", "queue", ["queue", "pending", "candidate", "governor"], ["state/orchestrator/**"]),
+    _expansion_profile("expansion-ops-index-readiness", "qa-retrieval", "ops", "ops", ["index", "cs-index-build", "readiness", "post-wave"], ["state/cs_rag/**", "knowledge/cs/**", "scripts/learning/rag/**"]),
+    _expansion_profile("expansion-ops-release-gate", "qa-link", "ops", "ops", ["release", "gate", "commit", "lint", "index", "test"], ["knowledge/cs/**", "tests/**", "state/cs_rag/**"]),
+]
+
+EXPANSION60_FLEET: list[dict[str, Any]] = [
+    _expansion60_profile("expansion60-curriculum-level2-map", "qa-taxonomy", "curriculum", "report", ["woowacourse", "level2", "roomescape", "spring", "foundation"], ["knowledge/cs/JUNIOR-BACKEND-ROADMAP.md", "state/learner/**", "state/orchestrator/reports/**"]),
+    _expansion60_profile("expansion60-curriculum-gap-prioritizer", "qa-taxonomy", "curriculum", "report", ["gap", "priority", "learner", "module", "roadmap"], ["knowledge/cs/JUNIOR-BACKEND-ROADMAP.md", "knowledge/cs/contents/**/README.md", "state/orchestrator/reports/**"]),
+    _expansion60_profile("expansion60-spring-di-bean", "spring", "content", "expand", ["spring", "di", "bean", "ioc", "component-scan"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:di-bean"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-mvc-binding", "spring", "content", "expand", ["spring-mvc", "controller", "binding", "requestbody", "modelattribute"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:mvc-binding"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-validation-error", "spring", "content", "expand", ["validation", "bindingresult", "exception", "problemdetail", "400"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:validation-error"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-security-admin", "spring", "content", "expand", ["security", "admin", "302", "403", "session", "savedrequest"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:security-admin"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-transaction-aop", "spring", "content", "expand", ["transaction", "transactional", "aop", "proxy", "self-invocation"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:transaction-aop"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-test-slice", "spring", "content", "expand", ["spring-test", "slice", "mockmvc", "test", "profile"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:test-slice"], can_enqueue=True),
+    _expansion60_profile("expansion60-spring-roomescape-flow", "spring", "content", "expand", ["roomescape", "request-flow", "admin", "controller", "service"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:roomescape-flow"], can_enqueue=True),
+    _expansion60_profile("expansion60-network-http-status", "network", "content", "expand", ["http", "status-code", "redirect", "prg", "401", "403"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:http-status"], can_enqueue=True),
+    _expansion60_profile("expansion60-network-browser-devtools", "network", "content", "expand", ["browser", "devtools", "waterfall", "cache", "application"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:browser-devtools"], can_enqueue=True),
+    _expansion60_profile("expansion60-network-cookie-session-cache", "network", "content", "expand", ["cookie", "session", "cache", "localstorage", "storage"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:cookie-session-cache"], can_enqueue=True),
+    _expansion60_profile("expansion60-network-api-browser-boundary", "network", "content", "expand", ["api", "browser", "json", "html", "redirect"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:api-browser-boundary"], can_enqueue=True),
+    _expansion60_profile("expansion60-database-jdbc", "database", "content", "expand", ["jdbc", "sql", "datasource", "connection"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jdbc"], can_enqueue=True),
+    _expansion60_profile("expansion60-database-jpa-repository", "database", "content", "expand", ["jpa", "repository", "entity", "dao", "mapper"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jpa-repository"], can_enqueue=True),
+    _expansion60_profile("expansion60-database-transaction-lock", "database", "content", "expand", ["transaction", "isolation", "lock", "deadlock", "retry"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:transaction-lock"], can_enqueue=True),
+    _expansion60_profile("expansion60-database-index-explain", "database", "content", "expand", ["index", "explain", "query", "mysql", "postgresql"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:index-explain"], can_enqueue=True),
+    _expansion60_profile("expansion60-java-object-model", "language-java", "content", "expand", ["java", "object", "reference", "memory", "class"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:object-model"], can_enqueue=True),
+    _expansion60_profile("expansion60-java-equality-hashcode", "language-java", "content", "expand", ["equals", "hashcode", "identity", "value", "set"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:equality-hashcode"], can_enqueue=True),
+    _expansion60_profile("expansion60-java-collections-map-set", "language-java", "content", "expand", ["collections", "map", "set", "list", "queue"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:collections-map-set"], can_enqueue=True),
+    _expansion60_profile("expansion60-java-optional-enum-null", "language-java", "content", "expand", ["optional", "enum", "null", "state", "value-object"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:optional-enum-null"], can_enqueue=True),
+    _expansion60_profile("expansion60-algo-bfs-dfs-graph", "data-structure", "content", "expand", ["algorithm", "bfs", "dfs", "graph", "visited"], ["knowledge/cs/contents/algorithm/**"], write_scopes=["expansion60:content:algorithm:bfs-dfs-graph"], can_enqueue=True),
+    _expansion60_profile("expansion60-ds-queue-deque-map", "data-structure", "content", "expand", ["queue", "deque", "map", "set", "treemap"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:queue-deque-map"], can_enqueue=True),
+    _expansion60_profile("expansion60-ds-tree-heap-unionfind", "data-structure", "content", "expand", ["tree", "heap", "union-find", "priority-queue"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:tree-heap-unionfind"], can_enqueue=True),
+    _expansion60_profile("expansion60-se-layering-dto-contract", "software-engineering", "content", "expand", ["layering", "dto", "contract", "service", "repository"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:layering-dto-contract"], can_enqueue=True),
+    _expansion60_profile("expansion60-se-testing-refactoring", "software-engineering", "content", "expand", ["testing", "refactoring", "readable-code", "tdd"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:testing-refactoring"], can_enqueue=True),
+    _expansion60_profile("expansion60-qa-spring-di-bean", "qa-content-spring", "qa", "fix", ["spring", "di", "bean", "ioc"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:di-bean"]),
+    _expansion60_profile("expansion60-qa-spring-mvc-binding", "qa-content-spring", "qa", "fix", ["spring-mvc", "binding", "controller"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:mvc-binding"]),
+    _expansion60_profile("expansion60-qa-spring-security-admin", "qa-content-spring", "qa", "fix", ["security", "admin", "302", "403"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:security-admin"]),
+    _expansion60_profile("expansion60-qa-spring-transaction-test", "qa-content-spring", "qa", "fix", ["transaction", "aop", "test", "slice"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:transaction-aop", "expansion60:content:spring:test-slice"]),
+    _expansion60_profile("expansion60-qa-network-status-redirect", "qa-content-network", "qa", "fix", ["http", "status", "redirect", "prg"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:http-status"]),
+    _expansion60_profile("expansion60-qa-network-browser-storage", "qa-content-network", "qa", "fix", ["browser", "devtools", "cookie", "session", "cache"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:browser-devtools", "expansion60:content:network:cookie-session-cache"]),
+    _expansion60_profile("expansion60-qa-database-jdbc-jpa", "qa-content-database", "qa", "fix", ["jdbc", "jpa", "repository", "entity"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jdbc", "expansion60:content:database:jpa-repository"]),
+    _expansion60_profile("expansion60-qa-database-transaction-index", "qa-content-database", "qa", "fix", ["transaction", "lock", "index", "explain"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:transaction-lock", "expansion60:content:database:index-explain"]),
+    _expansion60_profile("expansion60-qa-java-object-equality", "qa-content-language-java", "qa", "fix", ["java", "object", "equals", "hashcode"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:object-model", "expansion60:content:language-java:equality-hashcode"]),
+    _expansion60_profile("expansion60-qa-java-collections-null", "qa-content-language-java", "qa", "fix", ["collections", "optional", "enum", "null"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:collections-map-set", "expansion60:content:language-java:optional-enum-null"]),
+    _expansion60_profile("expansion60-qa-algorithm-graph", "qa-content-data-structure", "qa", "fix", ["algorithm", "bfs", "dfs", "graph"], ["knowledge/cs/contents/algorithm/**"], write_scopes=["expansion60:content:algorithm:bfs-dfs-graph"]),
+    _expansion60_profile("expansion60-qa-ds-map-tree", "qa-content-data-structure", "qa", "fix", ["queue", "map", "treemap", "heap", "union-find"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:queue-deque-map", "expansion60:content:data-structure:tree-heap-unionfind"]),
+    _expansion60_profile("expansion60-qa-se-layering-testing", "qa-content-software-engineering", "qa", "fix", ["layering", "dto", "testing", "refactoring"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:layering-dto-contract", "expansion60:content:software-engineering:testing-refactoring"]),
+    _expansion60_profile("expansion60-qa-readme-spring-network", "qa-link", "qa", "script", ["readme", "registration", "spring", "network"], ["knowledge/cs/contents/spring/README.md", "knowledge/cs/contents/network/README.md"], write_scopes=["expansion60:readme:spring", "expansion60:readme:network"]),
+    _expansion60_profile("expansion60-qa-readme-data-java", "qa-link", "qa", "script", ["readme", "registration", "database", "java"], ["knowledge/cs/contents/database/README.md", "knowledge/cs/contents/language/README.md"], write_scopes=["expansion60:readme:database", "expansion60:readme:language-java"]),
+    _expansion60_profile("expansion60-qa-readme-algo-se", "qa-link", "qa", "script", ["readme", "registration", "algorithm", "data-structure", "software-engineering"], ["knowledge/cs/contents/algorithm/README.md", "knowledge/cs/contents/data-structure/README.md", "knowledge/cs/contents/software-engineering/README.md"], write_scopes=["expansion60:readme:algorithm", "expansion60:readme:data-structure", "expansion60:readme:software-engineering"]),
+    _expansion60_profile("expansion60-qa-anchor-symptoms-a", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "뭐예요", "헷갈"], ["knowledge/cs/contents/{spring,network,database}/**"], write_scopes=["expansion60:qa:anchor:a"]),
+    _expansion60_profile("expansion60-qa-anchor-symptoms-b", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "처음", "왜"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering}/**"], write_scopes=["expansion60:qa:anchor:b"]),
+    _expansion60_profile("expansion60-qa-cross-category-a", "qa-bridge", "qa", "script", ["bridge", "cross-category", "spring", "database", "network"], ["knowledge/cs/contents/{spring,database,network}/**"], write_scopes=["expansion60:qa:bridge:a"]),
+    _expansion60_profile("expansion60-qa-cross-category-b", "qa-bridge", "qa", "script", ["bridge", "cross-category", "java", "algorithm", "software-engineering"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering}/**"], write_scopes=["expansion60:qa:bridge:b"]),
+    _expansion60_profile("expansion60-qa-duplicate-taxonomy", "qa-taxonomy", "qa", "fix", ["duplicate", "taxonomy", "overlap", "navigation"], ["knowledge/cs/**"], write_scopes=["expansion60:qa:taxonomy"]),
+    _expansion60_profile("expansion60-qa-code-density", "qa-content", "qa", "fix", ["code", "example", "beginner", "clarity"], ["knowledge/cs/contents/**"], write_scopes=["expansion60:qa:code-density"]),
+    _expansion60_profile("expansion60-rag-spring-query-eval", "qa-retrieval", "rag", "fix", ["spring", "di", "mvc", "transaction", "query"], ["tests/unit/test_cs_rag_search.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:eval:spring"]),
+    _expansion60_profile("expansion60-rag-roomescape-admin-eval", "qa-retrieval", "rag", "fix", ["roomescape", "admin", "security", "validation"], ["tests/unit/test_cs_rag_search.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:eval:roomescape-admin"]),
+    _expansion60_profile("expansion60-rag-persistence-eval", "qa-retrieval", "rag", "fix", ["jdbc", "jpa", "transaction", "database"], ["tests/unit/test_cs_rag_search.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:eval:persistence"]),
+    _expansion60_profile("expansion60-rag-http-java-eval", "qa-retrieval", "rag", "fix", ["http", "java", "collections", "browser"], ["tests/unit/test_cs_rag_search.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:eval:http-java"]),
+    _expansion60_profile("expansion60-rag-signal-rules-mutator", "qa-retrieval", "rag", "fix", ["signal", "boost", "suppress", "beginner"], ["scripts/learning/rag/signal_rules.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:signal-rules"]),
+    _expansion60_profile("expansion60-rag-golden-mutator", "qa-retrieval", "rag", "fix", ["golden", "fixture", "query", "regression"], ["tests/fixtures/cs_rag_golden_queries.json", "tests/unit/test_cs_rag_golden.py"], write_scopes=["expansion60:rag:golden"]),
+    _expansion60_profile("expansion60-rag-router-runtime", "qa-retrieval", "rag", "fix", ["rag-ask", "router", "tier", "interactive"], ["scripts/workbench/core/interactive_rag_router.py", "tests/unit/test_interactive_rag_router.py"], write_scopes=["expansion60:rag:router"]),
+    _expansion60_profile("expansion60-rag-index-smoke", "qa-retrieval", "rag", "script", ["index", "stale", "cs-index-build", "readiness"], ["state/cs_rag/**", "scripts/learning/rag/**"], write_scopes=["expansion60:rag:index-smoke"]),
+    _expansion60_profile("expansion60-ops-queue-governor", "qa-taxonomy", "ops", "queue", ["queue", "pending", "candidate", "governor"], ["state/orchestrator/**"], write_scopes=["expansion60:ops:queue-governor"]),
+    _expansion60_profile("expansion60-ops-write-scope-governor", "qa-taxonomy", "ops", "ops", ["write-scope", "lease", "waiting", "throughput"], ["state/orchestrator/**", "docs/orchestrator-30-worker-fleet.md"], write_scopes=["expansion60:ops:write-scope-governor"]),
+    _expansion60_profile("expansion60-ops-index-readiness", "qa-retrieval", "ops", "ops", ["index", "cs-index-build", "readiness", "post-wave"], ["state/cs_rag/**", "knowledge/cs/**", "scripts/learning/rag/**"], write_scopes=["expansion60:ops:index-readiness"]),
+    _expansion60_profile("expansion60-ops-release-gate", "qa-link", "ops", "ops", ["release", "gate", "commit", "lint", "test"], ["knowledge/cs/**", "tests/**", "state/cs_rag/**"], write_scopes=["expansion60:ops:release-gate"]),
+]
+
+FLEET_PROFILES: dict[str, list[dict[str, Any]]] = {
+    "quality": QUALITY_REPAIR_FLEET,
+    "expansion": EXPANSION_FLEET,
+    "expansion60": EXPANSION60_FLEET,
+}
+
 WORKER_FLEET = QUALITY_REPAIR_FLEET
+
+
+def _normalize_fleet_profile(profile: str | None) -> str:
+    normalized = (profile or DEFAULT_FLEET_PROFILE).strip().lower()
+    if normalized not in FLEET_PROFILES:
+        allowed = ", ".join(sorted(FLEET_PROFILES))
+        raise ValueError(f"unknown fleet profile: {profile!r}; expected one of: {allowed}")
+    return normalized
+
+
+def _fleet_for_profile(profile: str | None = None) -> list[dict[str, Any]]:
+    return FLEET_PROFILES[_normalize_fleet_profile(profile)]
 
 LANE_SCOPE: dict[str, str] = {
     "qa-content-database": "knowledge/cs/contents/database/** and knowledge/cs/contents/database/README.md",
@@ -692,8 +875,13 @@ LANE_SCOPE: dict[str, str] = {
 }
 
 
-def _profile_for_worker(worker: str, lane: str) -> dict[str, Any]:
-    for profile in [*WORKER_FLEET, *WORKER_PROFILES]:
+def _profile_for_worker(worker: str, lane: str, fleet_profile: str | None = None) -> dict[str, Any]:
+    selected_profile = _normalize_fleet_profile(fleet_profile)
+    fallback_profiles: list[dict[str, Any]] = []
+    for profile_name, profiles in FLEET_PROFILES.items():
+        if profile_name != selected_profile:
+            fallback_profiles.extend(profiles)
+    for profile in [*_fleet_for_profile(selected_profile), *fallback_profiles, *WORKER_PROFILES]:
         if profile["name"] == worker:
             return profile
     return {
@@ -758,6 +946,29 @@ def _fleet_status_path() -> Path:
 
 def _supervisor_pid_path() -> Path:
     return ensure_orchestrator_layout() / "fleet-supervisor.pid"
+
+
+def _fleet_profile_path() -> Path:
+    return ensure_orchestrator_layout() / "fleet-profile.json"
+
+
+def _write_active_fleet_profile(profile: str, *, supervisor_pid: int | None = None) -> None:
+    _write_json(
+        _fleet_profile_path(),
+        {
+            "profile": _normalize_fleet_profile(profile),
+            "supervisor_pid": supervisor_pid,
+            "updated_at": _isoformat(_utc_now()),
+        },
+    )
+
+
+def _active_fleet_profile(default: str = DEFAULT_FLEET_PROFILE) -> str:
+    payload = _load_json(_fleet_profile_path(), {})
+    try:
+        return _normalize_fleet_profile(str(payload.get("profile") or default))
+    except ValueError:
+        return _normalize_fleet_profile(default)
 
 
 def _worker_codex_home(worker: str) -> Path:
@@ -987,9 +1198,9 @@ def _run_completion_gates(
     }
 
 
-def _fleet_summary() -> dict[str, Any]:
+def _fleet_summary(fleet_profile: str | None = None) -> dict[str, Any]:
     summary: dict[str, Any] = {}
-    for spec in WORKER_FLEET:
+    for spec in _fleet_for_profile(fleet_profile):
         worker = spec["name"]
         status = _load_json(_worker_status_path(worker), {})
         pid_path = _worker_pid_path(worker)
@@ -1014,16 +1225,16 @@ def _fleet_summary() -> dict[str, Any]:
     return summary
 
 
-def _fleet_can_enqueue() -> bool:
-    return any(spec.get("can_enqueue", True) for spec in WORKER_FLEET)
+def _fleet_can_enqueue(fleet_profile: str | None = None) -> bool:
+    return any(spec.get("can_enqueue", True) for spec in _fleet_for_profile(fleet_profile))
 
 
 def _lane_prompt(lane: str) -> str:
     return LANE_SCOPE.get(lane, "knowledge/cs/**")
 
 
-def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
-    profile = _profile_for_worker(worker, lane)
+def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: str | None = None) -> str:
+    profile = _profile_for_worker(worker, lane, fleet_profile)
     scope = _lane_prompt(lane)
     target_paths = _profile_list(profile, "target_paths") or [scope]
     write_scopes = _profile_list(profile, "write_scopes")
@@ -1077,6 +1288,15 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
 - Add or tighten common-confusion guidance when the doc still reads like a glossary.
 - If the doc is marked Beginner, push advanced operator or incident-heavy detail behind related-doc links instead of centering it.
 """
+    corpus_quality_rules = """Corpus quality contract:
+- Treat the CS corpus as a sequenced learning system, not a collection of isolated articles.
+- Every touched Beginner/Junior doc should answer a real learner question, give a compact mental model, show one concrete example or decision table, name common confusions, and point to one safe next step.
+- Before adding a new doc, check for an existing near-duplicate in the target category. Strengthen the existing doc instead when that gives the learner a clearer path.
+- Do not invent links or categories. Related-doc links must point to real files and should include at least one cross-category bridge when it helps the learning path.
+- Retrieval anchors must include canonical terms and learner symptom phrases such as "처음", "헷갈", "왜", "언제", "뭐예요", "basics", or "what is" when relevant.
+- Keep advanced incident, operations, and edge-case material behind follow-up links unless the task is explicitly advanced.
+- If a doc is meant to win a RAG query, state the target query shape in the summary and make the title/anchors/body align with that query.
+"""
     if mode == "report":
         mode_rules = """- Report-only mode: do not edit knowledge content files.
 - You may return changed_files as [] unless you intentionally write a small report under state/orchestrator/reports/.
@@ -1099,6 +1319,14 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any]) -> str:
     elif mode == "queue":
         mode_rules = """- Queue-governor mode: reduce duplicate or runaway candidates before adding more work.
 - Prefer pruning, bucketing, or reporting over creating new documentation.
+"""
+    elif mode == "expand":
+        mode_rules = """- Expansion mode: create or extend Beginner/Junior docs only when the claimed item calls for content growth.
+- Treat learner-profile signals, Woowacourse Level 2/RoomEscape prerequisites, and RAG retrieval gaps as the source of truth for topic choice.
+- New docs must follow `docs/cs-authoring-guide.md`, include symptom-style anchors, and be registered in the relevant category README when discoverability would otherwise be weak.
+- If a category README is not listed in Target paths, do not edit it; report the needed registration in the summary or as a follow-up candidate for README QA.
+- Avoid duplicating an existing primer; if a near-duplicate exists, strengthen that doc instead and explain the choice in the summary.
+- Prefer 1 focused entrypoint doc plus precise bridge links over broad encyclopedia-style coverage.
 """
     else:
         mode_rules = """- Write mode: edit only the target paths listed in this profile.
@@ -1130,17 +1358,18 @@ Task:
 
 Execution rules:
 - Complete exactly one coherent wave for this item.
-- Prefer repairing existing docs and tests over adding new content when this is a QA/RAG/Ops profile.
+- Prefer repairing existing docs and tests over adding new content when this is a QA/RAG/Ops profile; content expansion profiles may create new docs when the claimed item requires it.
 - Strengthen related-doc links and retrieval-anchor-keywords when directly relevant.
 - Do not revert edits made by others.
 - Keep changes scoped; do not drift into unrelated categories.
 - If this is a QA lane, make the smallest high-value fixes that reduce the named quality debt.
 - Platform completion gates run after your JSON response. Touched content docs under `knowledge/cs/contents/**` must pass `scripts/lint_cs_authoring.py`, and touched CS RAG code/tests/fixtures must pass the narrow related pytest target. Gate failures requeue this item.
 - Report every modified path in `changed_files`; missing paths can hide a failing gate and will be treated as worker-quality debt.
+{corpus_quality_rules}
 {mode_rules}
-{beginner_rules}- Final response must be JSON only with:
-- Summary should mention the beginner-facing quality improvement when this is a QA lane.
-{qa_beginner_rules}- Final response must be JSON only with:
+{beginner_rules}{qa_beginner_rules}Output contract:
+- Final response must be JSON only.
+- Summary should mention the learner-facing quality improvement, especially for QA/RAG lanes.
 - summary: short worker-completion summary
 - changed_files: array of relative file paths you changed
 - next_candidates: array with 1 to 3 concise follow-up gaps worth queueing next for the same lane
@@ -1154,6 +1383,7 @@ def _run_codex_task(
     item: dict[str, Any],
     *,
     model: str,
+    fleet_profile: str | None,
     timeout_seconds: int,
 ) -> dict[str, Any]:
     worker_dir = _worker_dir(worker)
@@ -1161,7 +1391,7 @@ def _run_codex_task(
     prompt_path = _worker_prompt_path(worker)
     output_path = _worker_output_path(worker)
     schema_path = _ensure_worker_schema()
-    prompt = _worker_prompt(worker, lane, item)
+    prompt = _worker_prompt(worker, lane, item, fleet_profile)
     prompt_path.write_text(prompt, encoding="utf-8")
     if output_path.exists():
         output_path.unlink()
@@ -1222,9 +1452,14 @@ def _update_fleet_status() -> None:
     with lock_path.open("a+", encoding="utf-8") as handle:
         lock_exclusive(handle)
         try:
+            fleet_profile = _active_fleet_profile()
             _write_json(
                 _fleet_status_path(),
-                {"updated_at": _isoformat(_utc_now()), "workers": _fleet_summary()},
+                {
+                    "updated_at": _isoformat(_utc_now()),
+                    "profile": fleet_profile,
+                    "workers": _fleet_summary(fleet_profile),
+                },
             )
         finally:
             unlock(handle)
@@ -1235,12 +1470,15 @@ def run_worker_loop(
     worker: str,
     lane: str,
     model: str,
+    fleet_profile: str = DEFAULT_FLEET_PROFILE,
     idle_seconds: int = DEFAULT_WORKER_IDLE_SECONDS,
     lease_seconds: int = DEFAULT_WORKER_LEASE_SECONDS,
     timeout_seconds: int = DEFAULT_TASK_TIMEOUT_SECONDS,
 ) -> int:
     orchestrator = Orchestrator()
-    profile = _profile_for_worker(worker, lane)
+    fleet_profile = _normalize_fleet_profile(fleet_profile)
+    _write_active_fleet_profile(fleet_profile)
+    profile = _profile_for_worker(worker, lane, fleet_profile)
     write_scopes = _profile_list(profile, "write_scopes")
     claim_tags = _profile_list(profile, "claim_tags")
     refresh_backlog = bool(profile.get("can_enqueue", True))
@@ -1249,7 +1487,12 @@ def run_worker_loop(
     worker_dir.mkdir(parents=True, exist_ok=True)
     pid = os.getpid()
     _worker_pid_path(worker).write_text(str(pid), encoding="utf-8")
-    orchestrator.release_worker_leases(worker, "worker_loop_restart", refresh_backlog=refresh_backlog)
+    orchestrator.release_worker_leases(
+        worker,
+        "worker_loop_restart",
+        refresh_backlog=refresh_backlog,
+        fleet_profile=fleet_profile,
+    )
     status = _worker_status(worker)
     status.update(
         {
@@ -1263,6 +1506,7 @@ def run_worker_loop(
             "last_error": None,
             "role": profile.get("role"),
             "mode": profile.get("mode"),
+            "fleet_profile": fleet_profile,
             "write_scopes": write_scopes,
             "claim_tags": claim_tags,
         }
@@ -1291,6 +1535,7 @@ def run_worker_loop(
                 write_scopes=write_scopes,
                 claim_tags=claim_tags,
                 refresh_backlog=refresh_backlog,
+                fleet_profile=fleet_profile,
             )
             if not claimed["claimed"]:
                 status["status"] = "idle"
@@ -1305,7 +1550,14 @@ def run_worker_loop(
             status["current_title"] = item["title"]
             _write_worker_status(worker, status)
             _update_fleet_status()
-            task = _run_codex_task(worker, lane, item, model=model, timeout_seconds=timeout_seconds)
+            task = _run_codex_task(
+                worker,
+                lane,
+                item,
+                model=model,
+                fleet_profile=fleet_profile,
+                timeout_seconds=timeout_seconds,
+            )
             if task["ok"]:
                 validation = _run_completion_gates(worker, lane, task)
                 status["last_validation"] = validation
@@ -1329,6 +1581,7 @@ def run_worker_loop(
                         lane,
                         [candidate for candidate in next_candidates if isinstance(candidate, dict)],
                         source=f"worker-suggestion:{worker}",
+                        fleet_profile=fleet_profile,
                         pending_cap=pending_cap,
                     )
                 status["last_success_at"] = _isoformat(_utc_now())
@@ -1358,7 +1611,7 @@ def run_worker_loop(
     return 0
 
 
-def _start_worker_process(cli_script: Path, worker: str, lane: str, model: str) -> int:
+def _start_worker_process(cli_script: Path, worker: str, lane: str, model: str, fleet_profile: str) -> int:
     worker_dir = _worker_dir(worker)
     worker_dir.mkdir(parents=True, exist_ok=True)
     with _worker_log_path(worker).open("a", encoding="utf-8") as handle:
@@ -1374,6 +1627,8 @@ def _start_worker_process(cli_script: Path, worker: str, lane: str, model: str) 
                 lane,
                 "--model",
                 model,
+                "--profile",
+                fleet_profile,
             ],
             cwd=str(ROOT),
             stdout=handle,
@@ -1387,6 +1642,7 @@ def _start_worker_process(cli_script: Path, worker: str, lane: str, model: str) 
             "worker": worker,
             "lane": lane,
             "pid": proc.pid,
+            "fleet_profile": fleet_profile,
             "status": "starting",
             "last_heartbeat_at": _isoformat(_utc_now()),
             "current_item_id": None,
@@ -1400,13 +1656,16 @@ def run_supervisor_loop(
     *,
     cli_script: Path,
     model: str,
+    fleet_profile: str = DEFAULT_FLEET_PROFILE,
     interval_seconds: int = DEFAULT_SUPERVISOR_INTERVAL_SECONDS,
 ) -> int:
     orchestrator = Orchestrator()
+    fleet_profile = _normalize_fleet_profile(fleet_profile)
     supervisor_pid = os.getpid()
     _supervisor_pid_path().write_text(str(supervisor_pid), encoding="utf-8")
-    if _fleet_can_enqueue():
-        orchestrator.start_background(cli_script=cli_script)
+    _write_active_fleet_profile(fleet_profile, supervisor_pid=supervisor_pid)
+    if _fleet_can_enqueue(fleet_profile):
+        orchestrator.start_background(cli_script=cli_script, fleet_profile=fleet_profile)
     else:
         # Quality-repair fleets consume existing QA/RAG/Ops debt only. Starting the
         # backlog refresher here would keep generating expansion waves.
@@ -1416,7 +1675,7 @@ def run_supervisor_loop(
         while True:
             if orchestrator.stop_path.exists():
                 break
-            for spec in WORKER_FLEET:
+            for spec in _fleet_for_profile(fleet_profile):
                 worker = spec["name"]
                 lane = spec["lane"]
                 pid_path = _worker_pid_path(worker)
@@ -1427,7 +1686,7 @@ def run_supervisor_loop(
                     except ValueError:
                         pid = None
                 if not pid or not _pid_alive(pid):
-                    _start_worker_process(cli_script, worker, lane, model)
+                    _start_worker_process(cli_script, worker, lane, model, fleet_profile)
             _update_fleet_status()
             time.sleep(interval_seconds)
     finally:
@@ -1437,8 +1696,9 @@ def run_supervisor_loop(
     return 0
 
 
-def start_fleet_background(*, cli_script: Path, model: str) -> dict[str, Any]:
+def start_fleet_background(*, cli_script: Path, model: str, fleet_profile: str = DEFAULT_FLEET_PROFILE) -> dict[str, Any]:
     orchestrator = Orchestrator()
+    fleet_profile = _normalize_fleet_profile(fleet_profile)
     supervisor_pid = None
     if _supervisor_pid_path().exists():
         try:
@@ -1446,8 +1706,16 @@ def start_fleet_background(*, cli_script: Path, model: str) -> dict[str, Any]:
         except ValueError:
             supervisor_pid = None
     if supervisor_pid and _pid_alive(supervisor_pid):
-        return {"already_running": True, "supervisor_pid": supervisor_pid, "workers": _fleet_summary()}
+        active_profile = _active_fleet_profile(fleet_profile)
+        return {
+            "already_running": True,
+            "profile": active_profile,
+            "requested_profile": fleet_profile,
+            "supervisor_pid": supervisor_pid,
+            "workers": _fleet_summary(active_profile),
+        }
     ensure_orchestrator_layout()
+    _write_active_fleet_profile(fleet_profile)
     with (ensure_orchestrator_layout() / "fleet-supervisor.log").open("a", encoding="utf-8") as handle:
         proc = subprocess.Popen(
             [
@@ -1457,6 +1725,8 @@ def start_fleet_background(*, cli_script: Path, model: str) -> dict[str, Any]:
                 "supervisor-loop",
                 "--model",
                 model,
+                "--profile",
+                fleet_profile,
             ],
             cwd=str(ROOT),
             stdout=handle,
@@ -1464,10 +1734,18 @@ def start_fleet_background(*, cli_script: Path, model: str) -> dict[str, Any]:
             start_new_session=True,
         )
     _supervisor_pid_path().write_text(str(proc.pid), encoding="utf-8")
-    return {"already_running": False, "supervisor_pid": proc.pid, "workers": _fleet_summary()}
+    _write_active_fleet_profile(fleet_profile, supervisor_pid=proc.pid)
+    return {
+        "already_running": False,
+        "profile": fleet_profile,
+        "supervisor_pid": proc.pid,
+        "workers": _fleet_summary(fleet_profile),
+    }
 
 
-def fleet_status() -> dict[str, Any]:
+def fleet_status(fleet_profile: str | None = None) -> dict[str, Any]:
+    active_profile = _active_fleet_profile()
+    selected_profile = _normalize_fleet_profile(fleet_profile or active_profile)
     supervisor_pid = None
     if _supervisor_pid_path().exists():
         try:
@@ -1475,15 +1753,18 @@ def fleet_status() -> dict[str, Any]:
         except ValueError:
             supervisor_pid = None
     return {
+        "profile": selected_profile,
+        "active_profile": active_profile,
         "supervisor": {"pid": supervisor_pid, "alive": bool(supervisor_pid and _pid_alive(supervisor_pid))},
-        "workers": _fleet_summary(),
+        "workers": _fleet_summary(selected_profile),
     }
 
 
-def stop_fleet(*, force: bool = False) -> dict[str, Any]:
+def stop_fleet(*, force: bool = False, fleet_profile: str | None = None) -> dict[str, Any]:
     orchestrator = Orchestrator()
+    selected_profile = _normalize_fleet_profile(fleet_profile or _active_fleet_profile())
     orchestrator.request_stop(force=force)
-    for spec in WORKER_FLEET:
+    for spec in _fleet_for_profile(selected_profile):
         pid_path = _worker_pid_path(spec["name"])
         if not pid_path.exists():
             continue
@@ -1501,4 +1782,4 @@ def stop_fleet(*, force: bool = False) -> dict[str, Any]:
             supervisor_pid = None
     if supervisor_pid and _pid_alive(supervisor_pid):
         os.kill(supervisor_pid, signal.SIGTERM if force else signal.SIGTERM)
-    return fleet_status()
+    return fleet_status(selected_profile)

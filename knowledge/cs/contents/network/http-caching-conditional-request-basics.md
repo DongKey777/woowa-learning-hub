@@ -15,7 +15,9 @@
 - [CDN 기초](../system-design/cdn-basics.md)
 - [CORS 기초](../security/cors-basics.md)
 
-retrieval-anchor-keywords: http caching basics, conditional request, cache-control, etag, last-modified, 304 not modified, if-none-match, cache revalidation, html vs app.js cache, static asset cache experiment, from disk cache vs 304, beginner http caching, http caching conditional request basics basics, http caching conditional request basics beginner, http caching conditional request basics intro
+retrieval-anchor-keywords: http caching basics, conditional request basics, cache-control 뭐예요, etag 뭐예요, last-modified 뭐예요, 304 뭐예요, 처음 배우는데 http 캐시, http 캐시 큰 그림, 캐시가 왜 다시 요청해요, 브라우저 캐시랑 304 차이, from disk cache 304 차이, cache-control 언제 쓰는지, etag last-modified 헷갈려요, if-none-match, cache revalidation
+
+이 문서는 이런 첫 질문을 바로 받는 primer다: "`304 Not Modified`가 뭐예요?", "`Cache-Control`이랑 `ETag`가 왜 같이 나와요?", "`from disk cache`와 `304`가 왜 달라요?"
 
 <details>
 <summary>Table of Contents</summary>
@@ -74,6 +76,18 @@ HTTP 캐시는 단순히 "응답을 저장한다"로 끝나지 않는다.
 |---|---|---|---|
 | `from memory cache` / `from disk cache` | 보통 없음 | 보통 없음 | 브라우저가 저장해 둔 사본 |
 | `304 Not Modified` | 있음 | 있음 (`If-None-Match`, `If-Modified-Since`) | 브라우저가 저장해 둔 사본 |
+
+같은 URL 재방문에서 초급자가 바로 써먹을 첫 구분은 이것이다.
+
+- `from memory cache` / `from disk cache`는 "안 물어보고 바로 쓴다"
+- `304 Not Modified`는 "서버에 물어보고 그대로 쓴다"
+
+DevTools에서 실제 row를 읽을 때는:
+
+- waterfall에 네트워크 왕복 흔적이 거의 없고 validator request도 안 보이면 local cache reuse 쪽
+- request header에 `If-None-Match` 또는 `If-Modified-Since`가 있고 status가 `304`면 revalidation 쪽
+
+이 판독을 Network 탭 기준으로 더 짧게 연습하려면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)를 이어서 보면 된다.
 
 ---
 

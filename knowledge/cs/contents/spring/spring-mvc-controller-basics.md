@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Controller Entity Return vs DTO Return Primer](./spring-controller-entity-return-vs-dto-return-primer.md)
+- [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
@@ -172,6 +173,7 @@ public class OrderService {
 - 컨트롤러의 `service` 주입이 왜 필요한지 바로 붙이려면 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](./spring-ioc-di-basics.md)로 이어 읽는다.
 - 요청 흐름과 객체 준비를 한 번에 묶으려면 [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)로 돌아온다.
 - `DispatcherServlet`과 `HandlerInterceptor`가 같이 나와서 처음부터 용어가 무겁게 느껴지면 [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)로 먼저 우회한다.
+- 필터, 인터셉터, 바인딩, 예외 처리까지 한 장으로 연결해서 보고 싶다면 [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)로 이어간다.
 
 ## 면접/시니어 질문 미리보기
 

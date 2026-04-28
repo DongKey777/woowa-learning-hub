@@ -9,7 +9,7 @@
 - [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
 - [`Arrays.sort`, `List.sort`, `stream.sorted` Comparator Reuse Bridge](./arrays-sort-comparator-reuse-bridge.md)
 - [Primitive Array Descending Search Primer](./primitive-array-descending-binarysearch-primer.md)
-- [Binary Search Patterns](../algorithm/binary-search-patterns.md)
+- [Binary Search Patterns](../../algorithm/binary-search-patterns.md)
 
 retrieval-anchor-keywords: language-java-00105, arrays sort binarysearch precondition bridge, java arrays sort then binarysearch checklist, java binarysearch same comparator precondition, java sort order must match search order, java binarysearch 왜 결과가 이상해요, java binarysearch 처음 배우는데 체크리스트, java descending sort binarysearch mismatch, java object array same comparator search, java arrays binarysearch unsorted comparator mismatch, 자바 binarysearch 전제 브리지, 자바 정렬 기준 검색 기준 같아야 함, 자바 배열 정렬 후 검색 체크리스트, arrays sort binarysearch precondition bridge basics, arrays sort binarysearch precondition bridge beginner
 

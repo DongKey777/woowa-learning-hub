@@ -7,44 +7,21 @@
 
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
+- [Java Array Equality Basics](./java-array-equality-basics.md)
+- [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
+- [Record and Value Object Equality](./record-value-object-equality-basics.md)
+- [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md)
+- [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+- [Enum equality quick bridge](./enum-equality-quick-bridge.md)
+- [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 
+retrieval-anchor-keywords: java equality basics, java identity basics, java == vs equals, java string comparison basics, java wrapper comparison basics, java enum comparison basics, java hashcode basics, same object vs same value, 자바 == equals 차이, 자바 문자열 비교 equals, integer long wrapper == 왜 이상해요, enum 비교 == equals 뭐 써요, equals만 구현하면 안 되는 이유, hashset 중복 제거 왜 안 됨, 처음 배우는데 == equals 뭐가 달라요
 
-retrieval-anchor-keywords: java equality identity basics basics, java equality identity basics beginner, java equality identity basics intro, java basics, beginner java, 처음 배우는데 java equality identity basics, java equality identity basics 입문, java equality identity basics 기초, what is java equality identity basics, how to java equality identity basics
-> 관련 문서:
-> - [Language README](../README.md)
-> - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [Record and Value Object Equality](./record-value-object-equality-basics.md)
-> - [Mutable Hash Keys Bridge](./mutable-hash-keys-hashset-hashmap-bridge.md)
-> - [Mutable Keys in HashMap and TreeMap](./hashmap-treemap-mutable-key-lookup-primer.md)
-> - [Java Array Equality Basics](./java-array-equality-basics.md)
-> - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
-> - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
-> - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
-> - [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
-> - [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
-> - [Java Collections 성능 감각](./collections-performance.md)
-
-> retrieval-anchor-keywords: java equality basics, java identity basics, java `==` vs `equals`, java `hashCode` basics, java string comparison basics, java primitive vs reference comparison, java object equality, java reference equality, java beginner equality, java record equality basics, java record equals hashCode, value object equality basics, mutable entity equality hazard, mutable key equals hashCode bug, hashmap mutable key, hashmap key mutation lookup, hashset mutable element bug, mutable hash key beginner, java array equality basics, java array `==` vs `equals`, java `Arrays.equals`, java `Arrays.deepEquals`, `HashMap` `HashSet` equals hashCode, `String` equals vs `==`, `Objects.equals`, java comparable basics, java comparator basics, java compareTo equals consistency, java natural ordering basics, 자바 == equals 차이, 처음 배우는데 == equals hashcode, 자바 문자열 비교 equals, 객체 동일성 동등성 차이, 자바 hashCode 왜 같이 구현, equals만 구현하면 안 되는 이유, 언제 == 쓰고 언제 equals 쓰는지, 자바 비교 연산 큰 그림
-
-<details>
-<summary>Table of Contents</summary>
-
-- [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
-- [같은 값과 같은 객체는 다르다](#같은-값과-같은-객체는-다르다)
-- [비교 연산의 차이](#비교-연산의-차이)
-- [hashCode 기본기](#hashcode-기본기)
-- [문자열 비교는 어떻게 해야 하나](#문자열-비교는-어떻게-해야-하나)
-- [초보자가 자주 하는 비교 실수](#초보자가-자주-하는-비교-실수)
-- [코드로 한 번에 보기](#코드로-한-번에-보기)
-- [빠른 체크리스트](#빠른-체크리스트)
-- [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
-- [한 줄 정리](#한-줄-정리)
-
-</details>
+처음 읽는 초보자라면 `객체 모델에서 비교로 넘어가기 -> 30초 분기표 -> 같은 값과 같은 객체는 다르다 -> 문자열 비교 -> 빠른 체크리스트` 순서만 먼저 따라가도 대부분의 첫 비교 버그를 자를 수 있다. wrapper cache, `intern()`, comparator 계약은 이 문서에서 깊게 파지 않고 관련 문서로 넘긴다.
 
 ## 왜 이 문서가 필요한가
 
@@ -56,7 +33,139 @@ Java 입문자가 비교 연산에서 가장 자주 막히는 지점은 "같다"
 - `HashSet`에 넣었는데 중복 제거가 왜 안 될까?
 
 이 문서는 위 질문을 초급 수준에서 한 번에 정리한다.
-정렬 계약, `BigDecimal`, JPA 엔티티 같은 심화 설계는 관련 문서로 확장하고, 여기서는 초보자가 먼저 실수하지 않아야 할 최소 규칙을 잡는다.
+`IntegerCache`, `intern()`, 정렬 계약, `BigDecimal`, JPA 엔티티 같은 심화 설계는 관련 문서로 확장하고, 여기서는 초보자가 먼저 실수하지 않아야 할 최소 규칙만 잡는다. 즉 이 문서의 목표는 "희한한 예외 사례" 설명이 아니라 "지금 이 비교가 값 질문인지 객체 질문인지"를 바로 자르는 데 있다.
+
+## 여기서 먼저 멈출 것
+
+이 문서에서 먼저 가져갈 규칙은 세 줄이면 충분하다.
+
+- 참조형에서 `==`는 보통 "같은 객체인가" 질문이다.
+- 값 내용을 비교하려면 보통 `equals()` 또는 `Objects.equals(...)`를 쓴다.
+- `HashSet`/`HashMap`이 끼면 `hashCode()`와 `equals()`를 같이 본다.
+
+`IntegerCache`, `autoboxing`, `intern()`, 정렬 계약은 "왜 가끔 예외처럼 보이는가"를 설명하는 follow-up이다. 첫 읽기에서는 기본 규칙부터 고정하는 편이 안전하다.
+
+## String, wrapper, enum에서 막히면 먼저 이렇게 자른다
+
+처음 비교 버그를 만났을 때 `IntegerCache`, string pool, enum 내부 구현부터 파고들 필요는 없다. 초보자 첫 대응은 "이 타입에서 안전한 기본 비교 도구가 무엇인가"만 먼저 고정하면 된다.
+
+| 지금 보이는 증상 | 먼저 쓸 기본 규칙 | 여기서 기억할 한 줄 | 다음 문서 |
+|---|---|---|---|
+| `String` 값이 같아 보이는데 `==`가 `false`다 | `equals()` 또는 `Objects.equals()` | 문자열은 참조형이라 내용 비교를 `==`에 맡기지 않는다 | [Java String 기초](./java-string-basics.md) |
+| `Integer`, `Long`, `Boolean` 비교가 어떤 값에서는 되고 어떤 값에서는 이상하다 | wrapper에 `==`를 기본값으로 쓰지 않는다 | wrapper도 참조형이므로 값 비교는 보통 `equals()` 쪽이다 | [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md) |
+| enum 비교에서 `==`를 써도 되는지 헷갈린다 | enum은 `==`를 기본값으로 둔다 | enum은 상수마다 인스턴스가 고정되어 있어 `==`가 자연스럽다 | [Enum equality quick bridge](./enum-equality-quick-bridge.md) |
+
+입문 단계에서 먼저 외울 축은 아래 세 줄이다.
+
+- `String`: 값 비교면 `equals()`
+- wrapper: 값 비교면 `equals()`부터 떠올리고, `==`는 의도적으로 identity를 볼 때만 쓴다
+- enum: 같은 상수인지 볼 때 `==`
+
+즉 `String`, wrapper, enum이 서로 다른 예외처럼 보이더라도, 실제 출발점은 하나다. "참조형 `==`는 기본적으로 같은 객체 질문이고, 값 질문이면 타입이 허용하는 안전한 비교 도구로 간다." 이 문서는 그 공통 출발점을 잡는 entry bridge이고, cache나 pool 같은 이유 설명은 follow-up 문서로 넘긴다.
+
+## 객체 모델에서 비교로 넘어가기
+
+이 문서를 펼치는 초보자 상당수는 사실 비교 연산 자체보다 앞단에서 이미 헷갈려 있다.
+
+- 클래스와 객체가 아직 섞여 있다
+- `new`를 몇 번 했는지 놓쳤다
+- 참조 변수 복사를 객체 복사로 읽었다
+
+그래서 `==`와 `equals()`도 따로 외우기보다, 객체 모델에서 그대로 이어 붙이는 편이 빠르다.
+
+| 앞단에서 먼저 확인할 것 | 확인되면 비교는 이렇게 읽는다 |
+|---|---|
+| `new`를 두 번 했다 | 서로 다른 객체 둘일 가능성이 크다. 참조형 `==`는 보통 `false`다 |
+| `b = a`만 했다 | 같은 객체를 같이 보는 별칭일 가능성이 크다. 참조형 `==`는 `true`일 수 있다 |
+| "필드값이 같아 보인다" | 그건 identity가 아니라 equality 질문일 수 있다. `equals()` 쪽이다 |
+| `HashSet`, `HashMap`이 끼어 있다 | 값 비교 규칙이 컬렉션 조회 규칙으로 이어진다. `hashCode()`도 같이 본다 |
+
+한 줄 멘탈 모델은 이것이다.
+
+- 참조 변수는 객체를 가리키는 손잡이다.
+- `==`는 그 손잡이 둘이 같은 객체를 가리키는지 먼저 묻는다.
+- `equals()`는 서로 다른 객체여도 같은 값으로 취급할지 묻는다.
+
+클래스/객체/참조 변수 감각 자체가 아직 흐리다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)과 [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md)을 먼저 5분만 훑고 오는 편이 더 빠르다. 이 문서는 그 다음 한 칸, 즉 "그래서 비교를 무엇으로 하느냐"를 정리하는 자리다.
+
+## 먼저 잡는 멘탈 모델
+
+비교를 시작할 때는 "둘이 같냐"보다 "무엇이 같아야 하냐"를 먼저 정하면 쉽다.
+
+| 질문 | 먼저 쓸 도구 | 이유 |
+|---|---|---|
+| 값 내용이 같은가 | `equals()` | 문자열, 사용자 정의 객체의 논리적 같음 |
+| 정말 같은 객체인가 | `==` | 같은 인스턴스를 함께 보고 있는지 확인 |
+| 해시 컬렉션에서 같은 key인가 | `hashCode()` + `equals()` | 위치를 찾고, 그다음 같은 값인지 확인 |
+
+초보자용 한 줄로 줄이면 이렇다. `==`는 "같은 칸을 보나", `equals()`는 "내용이 같나", `hashCode()`는 "`HashMap`/`HashSet`이 같은 칸을 빨리 찾게 해 주나"를 보는 도구다.
+
+## 30초 분기표: 지금 무엇을 비교하는가
+
+처음 막히면 "둘이 같은 값인가?"보다 "내가 지금 무엇을 비교하려는가?"부터 나누면 빠르다.
+
+| 지금 비교하려는 것 | 먼저 떠올릴 도구 | 이유 |
+|---|---|---|
+| 기본형 두 값 | `==` | 기본형에서 `==`는 값 비교다 |
+| 문자열 내용 | `equals()` / `Objects.equals()` | `String`은 참조형이라 `==`가 내용 비교가 아니다 |
+| 사용자 정의 객체의 논리적 같음 | `equals()` | 어떤 필드를 같다고 볼지 타입이 직접 정해야 한다 |
+| `HashSet` 중복 제거, `HashMap` key 조회 | `hashCode()` + `equals()` | 해시 위치를 찾고 같은 값인지 다시 확인한다 |
+| 정말 같은 객체를 가리키는지 | `==` | identity 질문일 때만 참조형 `==`가 맞다 |
+
+이 표만 먼저 잡아도 `==`, `equals()`, `hashCode()`를 한 줄에 섞어 쓰는 실수가 많이 줄어든다.
+
+특히 초보자 첫 증상은 보통 아래 둘 중 하나다.
+
+- "`왜 `==`는 false인데 눈으로 보면 같지?`" -> 다른 객체 둘일 수 있다. 값 질문이면 `equals()`로 간다.
+- "`왜 한쪽 바꿨는데 다른 쪽도 바뀌지?`" -> 같은 객체 별칭일 수 있다. identity 질문이면 `==`가 맞다.
+
+비교 도구를 더 짧게 외우면 아래 세 칸으로 끝난다.
+
+| 도구 | 가장 먼저 답하는 질문 | beginner 기본 사용처 |
+|---|---|---|
+| `==` | 같은 객체인가, 같은 기본형 값인가 | identity 확인, primitive 비교 |
+| `equals()` | 같은 내용인가 | 문자열, 사용자 정의 객체 값 비교 |
+| `Objects.equals(a, b)` | null까지 포함해 같은 내용인가 | null 가능성이 있는 값 비교 |
+
+## 증상으로 바로 고르기
+
+비교 문법을 외우기 전에, 지금 보이는 증상을 먼저 이름 붙이면 훨씬 빨리 정리된다.
+
+| 지금 보이는 증상 | 먼저 의심할 것 | 다음 문서 |
+|---|---|---|
+| `"ADMIN"`인데 조건문이 안 돈다 | 문자열 내용을 `==`로 비교했는지 | [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md) |
+| 배열 값이 같아 보이는데 `==`나 `array.equals(...)`가 `false`다 | 배열 비교를 일반 객체 `equals()`처럼 읽었는지 | [Java Array Equality Basics](./java-array-equality-basics.md) |
+| `Integer`/`Long` 비교가 값에 따라 들쭉날쭉하다 | wrapper를 primitive처럼 `==`로 비교했는지 | [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md) |
+| enum 비교에서 `equals()`를 써야 할지 `==`를 써야 할지 멈칫한다 | enum 상수 비교인지, 문자열 입력 비교인지 섞었는지 | [Enum equality quick bridge](./enum-equality-quick-bridge.md) |
+| `HashSet` 중복 제거가 안 된다 | `equals()`와 `hashCode()`를 같은 필드로 맞췄는지 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
+| `HashMap#get(...)`가 방금 넣은 key를 못 찾는다 | key를 넣은 뒤 비교 기준 필드를 바꿨는지 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
+| `a = b` 뒤 한쪽 변경이 다른 쪽에도 보인다 | 참조 공유를 값 복사로 오해했는지 | [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md) |
+
+이 표를 더 짧게 쓰면 이렇다.
+
+- "`같은 값인가`"가 질문이면 `equals()`
+- "`같은 객체인가`"가 질문이면 `==`
+- "`HashSet`/`HashMap`에서 왜 안 맞지?"가 질문이면 `hashCode()`와 `equals()`를 같이 본다
+
+처음 읽는 단계에서는 아래 세 문장을 바로 말할 수 있으면 충분하다.
+
+- `left == right`는 같은 객체인지 묻는 경우가 많다.
+- `left.equals(right)`는 같은 값으로 취급할지 묻는다.
+- `map.get(key)`가 안 맞으면 비교 연산자보다 key의 `hashCode()`/`equals()`와 변경 여부를 먼저 본다.
+
+## 같은 "비교"라도 질문이 다르다
+
+초보자는 비교 연산 자체보다 "지금 어떤 질문을 푸는가"를 놓쳐서 더 자주 헷갈린다.
+
+| 지금 코드에서 하는 일 | 실제 질문 | 먼저 보는 규칙 |
+|---|---|---|
+| `first == second` | 같은 객체를 함께 보고 있나 | identity |
+| `first.equals(second)` | 같은 값으로 취급할까 | equality |
+| `list.contains(member)` | 목록 안에 같은 값이 있나 | `equals()` |
+| `set.add(member)` | 이미 같은 원소가 있나 | `hashCode()` 후 `equals()` |
+| `map.get(key)` | 같은 key로 다시 찾을 수 있나 | `hashCode()` 후 `equals()` |
+
+한 줄로 요약하면 `==`/`equals()`를 따로 외우기보다 "참조 공유 확인", "값 비교", "컬렉션 조회"를 다른 질문으로 분리하는 편이 훨씬 덜 꼬인다.
 
 ## 같은 값과 같은 객체는 다르다
 
@@ -80,6 +189,21 @@ Java에서는 "같다"를 두 축으로 나눠서 봐야 한다.
 - 참조형에서는 객체 identity 비교
 
 이 차이를 놓치면 `String`, wrapper, 컬렉션 key에서 버그가 생긴다.
+
+## 같은 학생 예제로 질문 분리하기
+
+같은 `Member`를 두고도 코드가 묻는 질문은 다를 수 있다.
+
+| 코드 | 실제 질문 | 먼저 보는 규칙 |
+|---|---|---|
+| `left == right` | 같은 객체를 같이 보고 있나 | identity |
+| `left.equals(right)` | 논리적으로 같은 학생인가 | equality |
+| `members.contains(candidate)` | 목록 안에 같은 값이 있나 | `equals()` |
+| `memberMap.get(candidate)` | 같은 key로 다시 찾을 수 있나 | `hashCode()` 후 `equals()` |
+
+비교 실수가 줄지 않는다면 연산자부터 외우기보다 "지금은 객체 질문인가, 값 질문인가, 컬렉션 조회 질문인가"를 먼저 말로 붙여 보는 편이 안전하다.
+
+같은 `Member`를 두고도 질문이 바뀌면 도구도 바뀐다는 점이 중요하다. 그래서 초보자 디버깅에서는 "왜 false지?"보다 "지금 이 줄이 같은 객체, 같은 값, 같은 key 중 무엇을 묻지?"를 먼저 적는 편이 더 빠르다.
 
 ## 비교 연산의 차이
 
@@ -180,6 +304,14 @@ System.out.println(first.hashCode() == second.hashCode()); // true 여야 한다
 - 둘 다 같은 필드를 기준으로 만든다.
 - `HashMap` key나 `HashSet` 원소로 쓸 값은 가능하면 불변으로 둔다.
 
+짧게 체크하면 아래처럼 읽으면 된다.
+
+| 상황 | 먼저 떠올릴 말 |
+|---|---|
+| `==`가 보인다 | "같은 객체인가?" |
+| `equals()`가 보인다 | "같은 값인가?" |
+| `HashMap`/`HashSet`이 보인다 | "`hashCode()`와 `equals()`를 같이 보자" |
+
 ## 문자열 비교는 어떻게 해야 하나
 
 문자열은 참조형이므로 내용 비교에 `==`를 쓰면 안 된다.
@@ -214,11 +346,11 @@ if ("ADMIN".equals(role)) {
 ```java
 import java.util.Objects;
 
+String inputRole = null;
 System.out.println(Objects.equals(role, inputRole));
 ```
 
-문자열 리터럴은 intern 때문에 `==`가 우연히 `true`처럼 보일 수 있다.
-그래서 초보자가 더 자주 속는다. 이 부분은 [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)에서 더 깊게 이어진다.
+문자열 리터럴은 `==`가 우연히 맞아 보일 때가 있어 더 헷갈린다. 초보자 첫 규칙은 이유를 깊게 파기보다 "문자열 내용 비교는 `equals()`"로 고정하는 편이 안전하다. 왜 그런지는 [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)에서 더 깊게 이어진다.
 
 ## 초보자가 자주 하는 비교 실수
 
@@ -237,30 +369,14 @@ if (userInput == "yes") {
 ```java
 Integer a = 127;
 Integer b = 127;
-Integer c = 128;
-Integer d = 128;
 
 System.out.println(a == b); // true 일 수 있다
-System.out.println(c == d); // false 일 수 있다
 ```
 
 `Integer`, `Long`, `Boolean`은 기본형이 아니라 참조형이다.
-cache와 autoboxing 때문에 `==`가 가끔 맞아 보여 더 위험하다.
+여기서는 "`wrapper도 참조형이라 `==`가 값 비교가 아니다`"까지만 먼저 기억하면 된다. 값 비교 입구는 [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md)에서 먼저 잡고, cache, autoboxing, null unboxing 세부 규칙은 그다음 follow-up으로 넘겨도 충분하다.
 
-### 3. null wrapper를 primitive 문맥에서 비교한다
-
-```java
-Integer count = null;
-
-if (count == 0) { // NullPointerException
-    // ...
-}
-```
-
-이 비교는 `count`가 자동 unboxing되면서 예외를 낸다.
-wrapper와 기본형을 섞을 때는 null 가능성을 먼저 생각해야 한다.
-
-### 4. `equals()`만 만들고 `hashCode()`를 빼먹는다
+### 3. `equals()`만 만들고 `hashCode()`를 빼먹는다
 
 ```java
 Set<Member> members = new HashSet<>();
@@ -270,7 +386,7 @@ members.add(new Member(1L, "jane"));
 
 논리적으로 같은 `Member`를 같은 값으로 다루려면 `equals()`와 `hashCode()`가 함께 맞아야 한다.
 
-### 5. "변수 복사"를 "객체 복사"로 오해한다
+### 4. "변수 복사"를 "객체 복사"로 오해한다
 
 ```java
 Member original = new Member(1L, "jane");
@@ -337,9 +453,9 @@ public class EqualityExample {
 }
 ```
 
-이 예제에서 확인할 포인트는 네 가지다.
+## 예제에서 확인할 포인트
 
-## 코드로 한 번에 보기 (계속 2)
+이 예제에서 확인할 포인트는 네 가지다.
 
 - 기본형은 `==`가 값 비교다.
 - 참조형은 `==`가 identity 비교다.
@@ -355,15 +471,19 @@ public class EqualityExample {
 - `equals()`를 오버라이드하면 `hashCode()`도 같이 구현
 - 해시 컬렉션 key는 가능한 불변으로 유지
 - `Integer`, `Long`, `Boolean`도 참조형이라는 점을 잊지 않기
+- wrapper cache, unboxing, string pool 같은 예외 사례는 먼저 기본 규칙이 맞는지 확인한 뒤 follow-up으로 넘기기
+- 컬렉션 버그처럼 보여도 먼저 "같은 객체 질문인지, 같은 값 질문인지"를 다시 자르기
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - 초급 흐름을 먼저 이어가려면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- `hashCode()`와 `equals()`가 `HashMap`/`HashSet`에서 실제로 어떤 순서로 쓰이는지 바로 잇고 싶다면 [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 - 값 객체 관점에서 equality를 확장해 보고 싶다면 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - 배열 비교 함정을 따로 정리해서 보려면 [Java Array Equality Basics](./java-array-equality-basics.md)
 - 정렬 기준과 `equals()` 관계까지 이어서 보려면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 - `equals()`와 `hashCode()` 계약을 더 정확히 보려면 [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
-- wrapper 비교 함정을 더 보려면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
+- wrapper 값 비교를 먼저 짧게 잡으려면 [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md)
+- wrapper cache, unboxing까지 확장하려면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
 - 문자열 pool과 `intern()`까지 확장하려면 [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 - 해시 컬렉션 성능과 연결해 보려면 [Java Collections 성능 감각](./collections-performance.md)
 

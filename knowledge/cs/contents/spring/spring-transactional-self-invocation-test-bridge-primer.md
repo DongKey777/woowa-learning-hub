@@ -12,7 +12,7 @@
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [JDBC / JPA / MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: transactional self invocation test bridge, transactional self invocation verification test, transactional self invocation behavior test, transactional self invocation identity test misconception, bean self call vs transactional self invocation, assertsame not enough transactional self invocation, transaction active self invocation test, transactionsynchronizationmanager self invocation test, beginner transactional proxy self invocation test, beginner transactional self invocation primer, bean self call identity vs transactional behavior, transactional proxy bypass verification, spring transactional self invocation test bridge primer basics, spring transactional self invocation test bridge primer beginner, spring transactional self invocation test bridge primer intro
+retrieval-anchor-keywords: transactional self invocation test, transactional self invocation beginner, transactional proxy bypass test, assertsame not enough transactional, bean self call vs transactional, transaction active test, rollback behavior test, identity vs behavior test, spring transactional test bridge, transactional 안 먹어요 test, self invocation 헷갈려, behavior verification basics
 
 ## 먼저 mental model 한 줄
 
@@ -26,6 +26,14 @@ retrieval-anchor-keywords: transactional self invocation test bridge, transactio
 초급자 기준으로 기억할 문장은 이것 하나면 충분하다.
 
 **`@Bean` self-call은 identity 테스트, `@Transactional` self-invocation은 behavior 테스트다.**
+
+## 처음 헷갈릴 때 20초 분기
+
+| 지금 머릿속 질문 | 먼저 보는 기준 | 추천 검증 |
+|---|---|---|
+| "`assertSame` 했는데 왜 아직도 `@Transactional`이 안 먹어요?" | 같은 객체인지와 트랜잭션 동작은 다른 질문이다 | transaction active, commit/rollback 결과 확인 |
+| "처음인데 `self-call`이랑 self-invocation이 같은 말인가요?" | 둘 다 내부 호출 문맥이지만, 문서마다 검증 질문이 다를 수 있다 | 이 문서에서는 behavior 쪽만 본다 |
+| "무엇을 수정해야 하나요?" | annotation 옵션보다 호출 경로가 먼저다 | 다른 Bean으로 경계 분리 후 다시 테스트 |
 
 ## 20초 비교표
 
@@ -100,6 +108,15 @@ assertTrue(billingFacade.issueBill());   // 다른 Bean 호출
 - 그래서 `@Transactional`이 붙어 있어도 transaction active가 `false`일 수 있다.
 - 다른 Bean인 `BillingWorker`로 경계를 나누면 프록시를 타기 쉬워지고, 그때는 `true`를 기대할 수 있다.
 
+## 왜 이 예제가 초급자에게 안전한가
+
+이 예제는 옵션을 많이 보지 않고도 핵심만 보여 준다.
+
+- 같은 클래스 내부 호출이면 `false`
+- 다른 Bean을 거치면 `true`
+
+즉 처음에는 `propagation`, `rollbackFor`보다 "`정문인 프록시를 지났나`"만 확인해도 충분하다.
+
 ## 무엇을 assert해야 하나
 
 `@Transactional` self-invocation에서는 아래처럼 **동작 신호**를 고른다.
@@ -123,6 +140,12 @@ assertTrue(billingFacade.issueBill());   // 다른 Bean 호출
 - `@Bean` self-call 문서에서 `assertSame`을 봤다고 해서, `@Transactional`도 같은 방식으로 검증하면 안 된다.
 - `@Transactional` self-invocation은 "같은 인스턴스냐"보다 "`this.` 내부 호출이라 프록시를 안 지났나"를 봐야 한다.
 - 초급 단계에서는 `AopContext.currentProxy()` 같은 우회보다, 다른 Bean으로 경계를 분리하고 동작을 다시 검증하는 쪽이 더 읽기 쉽다.
+
+## 다음 한 걸음
+
+- 테스트가 왜 필요한지부터 다시 묶고 싶으면 [`@Transactional 기초`](./spring-transactional-basics.md)로 돌아간다.
+- "`@Transactional`만의 예외가 아니라 프록시 공통 규칙인가?"가 궁금하면 [`Spring Self-Invocation 공통 오해 1페이지 카드`](./spring-self-invocation-transactional-only-misconception-primer.md)로 이어간다.
+- service 분리 패턴까지 보고 싶으면 [`Spring Service-Layer Transaction Boundary Patterns`](./spring-service-layer-transaction-boundary-patterns.md)를 본다.
 
 ## 어디로 이어서 보면 되나
 

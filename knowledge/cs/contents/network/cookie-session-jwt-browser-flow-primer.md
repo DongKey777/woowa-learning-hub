@@ -7,39 +7,18 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
+- [Network README](./README.md#cookie--session--jwt-브라우저-흐름-입문)
+- [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [Cookie vs `localStorage` 토큰 저장 선택 카드](./cookie-vs-localstorage-token-storage-choice-card.md)
+- [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
+- [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
+- [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
+- [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 
-> 관련 문서:
-> - `[category]` [Network README](./README.md#network-네트워크)
-> - `[primer]` [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
-> - `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
-> - `[primer]` [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
-> - `[primer]` [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
-> - `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
-> - `[primer handoff]` [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
-> - `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-> - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
-> - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
-> - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-
-retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow, set-cookie to cookie, browser cookie storage rules, browser automatic cookie sending, session cookie vs persistent cookie, cookie domain path secure samesite, httponly secure samesite basics, samesite httponly secure matrix, cookie attribute matrix, domain path cookie scope, host-only cookie, jsessionid browser flow, hidden jsessionid route, savedrequest beginner bridge
-
-<details>
-<summary>Table of Contents</summary>
-
-- [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
-- [한 번에 보는 전체 흐름](#한-번에-보는-전체-흐름)
-- [쿠키는 브라우저가 저장하는 운반 수단이다](#쿠키는-브라우저가-저장하는-운반-수단이다)
-- [브라우저는 언제 쿠키를 전송하나](#브라우저는-언제-쿠키를-전송하나)
-- [세션 인증은 요청에서 어떻게 보이나](#세션-인증은-요청에서-어떻게-보이나)
-- [JWT 인증은 요청에서 어떻게 보이나](#jwt-인증은-요청에서-어떻게-보이나)
-- [세 가지 방식을 한 표로 비교](#세-가지-방식을-한-표로-비교)
-- [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
-- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
-
-</details>
+retrieval-anchor-keywords: cookie session jwt 차이, 쿠키 세션 jwt 차이, 쿠키 세션 jwt 뭐예요, 처음 배우는데 쿠키 세션 jwt, cookie session jwt 헷갈려요, session이랑 jwt 언제 써요, authorization 헤더랑 쿠키 차이, 브라우저가 쿠키를 왜 자동으로 보내요, set-cookie to cookie, browser automatic cookie sending, session cookie vs persistent cookie, cookie scope basics, jsessionid browser flow, hidden jsessionid route, savedrequest beginner bridge
 
 ## 왜 이 문서가 필요한가
 
@@ -57,18 +36,7 @@ retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow,
 
 이 구분이 서면 "브라우저가 무엇을 저장하고", "HTTP 요청에 무엇이 실리고", "서버가 무엇을 확인하는가"가 한 번에 정리된다.
 
-### Retrieval Anchors
-
-- `cookie session jwt browser flow`
-- `Set-Cookie to Cookie`
-- `browser cookie storage rules`
-- `browser automatic cookie sending`
-- `JWT Authorization header`
-- `JWT in cookie`
-- `authorization bearer vs cookie`
-- `hidden JSESSIONID route`
-
----
+처음 배우는데 `cookie`, `session`, `JWT`가 한 번에 헷갈리면 이 문서에서는 먼저 "운반 수단 / 서버 상태 / 토큰 형식"이라는 큰 그림만 고정하면 된다.
 
 ## 한 번에 보는 전체 흐름
 
@@ -97,7 +65,15 @@ retrieval-anchor-keywords: cookie session jwt browser flow, browser cookie flow,
 - `Authorization: Bearer` JWT는 **브라우저가 자동 전송하지 않고**, 앱 코드가 헤더를 넣는다
 - JWT를 cookie에 넣으면 **브라우저 자동 전송은 session과 비슷해지지만**, 서버 검증 방식은 session lookup이 아니라 token validation이 된다
 
----
+처음 읽을 때는 "무엇이 저장되고, 무엇이 전송되고, 서버가 무엇을 확인하는가"만 먼저 분리하면 된다.
+
+| 질문 | session cookie | JWT in `Authorization` | JWT in cookie |
+|---|---|---|---|
+| 브라우저가 저장하는 것 | session id cookie | 토큰 자체 또는 토큰 참조값 | JWT cookie |
+| 다음 요청에 누가 실어 보내나 | 브라우저 자동 | 프론트엔드/클라이언트 코드 | 브라우저 자동 |
+| 서버가 확인하는 것 | session store의 사용자 상태 | JWT 서명, 만료, claim | JWT 서명, 만료, claim |
+
+이 표를 먼저 잡아 두면 "`cookie = session`", "`JWT = 무조건 Authorization 헤더`" 같은 첫 오해를 줄일 수 있다.
 
 ## 쿠키는 브라우저가 저장하는 운반 수단이다
 
@@ -229,14 +205,7 @@ Accept: application/json
 - 그 값으로 session store를 조회한다
 - 해당 세션에 연결된 사용자 정보를 가져온다
 
-즉 session 방식의 핵심은:
-
-- 브라우저에는 **식별자**
-- 서버에는 **실제 로그인 상태**
-
-가 있다는 점이다.
-
----
+즉 session 방식의 핵심은 브라우저에는 **식별자**, 서버에는 **실제 로그인 상태**가 따로 있다는 점이다.
 
 ## JWT 인증은 요청에서 어떻게 보이나
 
@@ -260,6 +229,8 @@ Accept: application/json
 - 브라우저가 자동으로 `Authorization` 헤더를 붙여주지 않는다
 - 프론트엔드 코드나 클라이언트 코드가 직접 넣는다
 - 서버는 session store 조회 대신 JWT를 검증한다
+
+토큰을 `cookie`에 둘지 `localStorage`에 둘지 초급자용 비교표가 먼저 필요하면 [Cookie vs `localStorage` 토큰 저장 선택 카드](./cookie-vs-localstorage-token-storage-choice-card.md)를 같이 보면 된다.
 
 즉 session cookie와 가장 큰 차이는 **자동 전송이 아니라 앱 코드 전송**이라는 점이다.
 
@@ -290,8 +261,6 @@ Accept: application/json
 - JWT cookie: token을 직접 **서명/만료/claim 검증**
 
 그래서 "JWT니까 무조건 header"도 아니고, "cookie에 있으면 곧 session"도 아니다.
-
----
 
 ## 세 가지 방식을 한 표로 비교
 
@@ -357,6 +326,18 @@ JWT를 cookie에 담고 서버가 매 요청 token만 검증하면, transport는
 - access token은 짧게, refresh token은 별도 cookie나 서버 저장소로 관리
 
 그래서 단순히 "우리 서비스는 JWT를 쓴다"만으로는 실제 browser flow를 설명하기 부족할 수 있다.
+
+### 7. `저장됨`, `전송됨`, `인증됨`은 같은 체크가 아니다
+
+초급자가 DevTools에서 가장 자주 섞는 세 단계다.
+
+| 화면에서 본 것 | 뜻 | 아직 모르는 것 |
+|---|---|---|
+| `Application > Cookies`에 값이 있다 | 브라우저가 저장했다 | 다음 요청에 실리는지 |
+| `Network` 요청 헤더에 `Cookie`가 있다 | 이번 요청에는 전송됐다 | 서버가 로그인 상태로 인정하는지 |
+| 응답이 `200`이고 사용자 정보가 보인다 | 서버가 인증 상태를 인정했다 | 다음 요청에서도 같은 상태가 유지되는지 |
+
+예를 들어 cookie가 저장돼 있어도 `Domain`, `Path`, `SameSite`가 안 맞으면 다음 요청에 안 실릴 수 있다. 또 cookie가 실려도 서버 세션이 만료됐거나 JWT가 만료됐다면 인증은 실패할 수 있다.
 
 ---
 

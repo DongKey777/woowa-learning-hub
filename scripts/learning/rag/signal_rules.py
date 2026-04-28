@@ -267,6 +267,8 @@ _RULES: list[Rule] = [
             "spring data jpa",
             "spring mvc",
             "springmvc",
+            "aop",
+            "spring aop",
             "dispatcher servlet",
             "dispatcherservlet",
             "@transactional",
@@ -275,11 +277,17 @@ _RULES: list[Rule] = [
             "@restcontroller",
             "@service",
             "@component",
+            "@componentscan",
             "ioc",
             "di",
             "dependency injection",
+            "의존성 주입",
             "inversion of control",
+            "제어 역전",
+            "제어의 역전",
             "bean",
+            "beanfactory",
+            "bean factory",
             "빈",
             "스프링",
             "스프링 부트",
@@ -288,6 +296,11 @@ _RULES: list[Rule] = [
             "hibernate",
             "entitymanager",
             "applicationcontext",
+            "application context",
+            "component scan",
+            "componentscan",
+            "컴포넌트 스캔",
+            "컴포넌트스캔",
             "filter chain",
             "spring security",
         },
@@ -474,6 +487,39 @@ _RULES: list[Rule] = [
         "category": "language",
     },
     {
+        "tag": "java_completablefuture_fan_in_timeout",
+        "triggers": {
+            "allof",
+            "all of",
+            "anyof",
+            "any of",
+            "join",
+            "join vs get",
+            "completionexception",
+            "executionexception",
+            "ortimeout",
+            "or timeout",
+            "completeontimeout",
+            "complete on timeout",
+            "exceptionally",
+            "whencomplete",
+            "partial failure",
+            "partial success",
+            "fan-in",
+            "fan in",
+            "fan-out",
+            "fan out",
+        },
+        "expand": [
+            "completablefuture allof",
+            "join vs get",
+            "completionexception",
+            "ortimeout",
+            "exceptionally",
+        ],
+        "category": "language",
+    },
+    {
         "tag": "java_virtual_threads_loom",
         "triggers": {
             "virtual thread",
@@ -494,6 +540,29 @@ _RULES: list[Rule] = [
             "virtual threads",
             "project loom",
             "carrier thread",
+        ],
+        "category": "language",
+    },
+    {
+        "tag": "java_structured_concurrency",
+        "triggers": {
+            "structured concurrency",
+            "structured-concurrency",
+            "structuredtaskscope",
+            "structured task scope",
+            "structured cancellation",
+            "scope-bound context",
+            "scope bound context",
+            "scope lifetime",
+            "structured lifetime",
+            "task group lifetime",
+            "fail-fast task group",
+        },
+        "expand": [
+            "structured concurrency",
+            "structuredtaskscope",
+            "cancellation propagation",
+            "scope lifetime",
         ],
         "category": "language",
     },
@@ -706,6 +775,9 @@ _RULES: list[Rule] = [
             "token",
             "session",
             "세션",
+            "cookie",
+            "cookies",
+            "쿠키",
             "cookie login",
             "cookie keeps me signed in",
             "browser remembers my login",
@@ -1043,11 +1115,15 @@ _RULES: list[Rule] = [
             "stateful placement failover",
             "stateful workload",
             "stateful workload placement",
+            "상태 있는 워크로드 배치 장애 전환",
             "상태 저장 워크로드",
             "상태 저장 워크로드 배치",
             "상태 저장 워크로드 장애 전환 배치",
             "상태 저장 서비스 리더 배치",
             "리더 배치",
+            "어느 복제본을 올릴지",
+            "상태 있는 서비스 장애 때 어느 노드를 리더로 둘지",
+            "어느 노드를 리더로 둘지",
             "배치 예산",
             "leader placement",
             "replica promotion",
@@ -1100,6 +1176,11 @@ _RULES: list[Rule] = [
             "stale endpoint read",
             "failover 가시성",
             "페일오버 visibility",
+            "장애 전환 뒤 읽기 보임",
+            "장애 전환 뒤 읽기 보임 구간",
+            "읽기 보임 구간",
+            "옛 주 서버",
+            "주 서버를 읽",
         },
         "expand": [
             "failover visibility window",
@@ -1118,7 +1199,9 @@ _RULES: list[Rule] = [
             "last applied position",
             "write loss audit",
             "promotion verification",
+            "promotion validation",
             "failover verification",
+            "failover validation",
             "backend db recovery",
         },
         "expand": [
@@ -1146,6 +1229,7 @@ _RULES: list[Rule] = [
             "semantic equivalence",
             "diffing",
             "strangler verification",
+            "strangler validation",
         },
         "expand": [
             "progressive cutover",
@@ -1312,6 +1396,13 @@ _SUPPRESSED_WHEN_PRESENT: dict[str, set[str]] = {
     },
     "java_completablefuture_cancellation": {
         "java_concurrency_utilities",
+    },
+    "java_completablefuture_fan_in_timeout": {
+        "java_concurrency_utilities",
+        "network_and_reliability",
+    },
+    "java_structured_concurrency": {
+        "concurrency",
     },
     "java_oop_basics": {
         "java_language_runtime",
@@ -1502,6 +1593,27 @@ _JAVA_VIRTUAL_THREADS_INCIDENT_CUES = {
     "java monitor enter",
 }
 
+_JAVA_STRUCTURED_CONCURRENCY_HTTPCLIENT_CUES = {
+    "httpclient",
+    "http client",
+    "fan-out",
+    "fan out",
+    "deadline",
+    "retry",
+    "bulkhead",
+    "remote concurrency",
+}
+
+_JAVA_STRUCTURED_CONCURRENCY_CONTEXT_CUES = {
+    "scopedvalue",
+    "scoped value",
+    "threadlocal",
+    "inheritablethreadlocal",
+    "inheritable threadlocal",
+    "context propagation",
+    "mdc",
+}
+
 _SPRING_FRAMEWORK_DISPATCHER_TRIGGERS = {
     "dispatcher servlet",
     "dispatcherservlet",
@@ -1509,11 +1621,14 @@ _SPRING_FRAMEWORK_DISPATCHER_TRIGGERS = {
     "springmvc",
     "__dispatcher_servlet_compound__",
     "__spring_mvc_compound__",
+    "__mvc_beginner_shortform__",
 }
 
 _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS = {
     "@transactional",
     "transactional",
+    "__transaction_propagation_beginner_shortform__",
+    "__spring_transaction_beginner_shortform__",
 }
 
 _SPRING_FRAMEWORK_IOC_DI_TRIGGERS = {
@@ -1522,9 +1637,25 @@ _SPRING_FRAMEWORK_IOC_DI_TRIGGERS = {
     "di vs ioc",
     "di ioc",
     "dependency injection",
-    "inversion of control",
     "의존성 주입",
+    "inversion of control",
+    "제어 역전",
     "제어의 역전",
+}
+
+_SPRING_FRAMEWORK_COMPONENT_SCAN_TRIGGERS = {
+    "component scan",
+    "componentscan",
+    "@componentscan",
+    "컴포넌트 스캔",
+    "컴포넌트스캔",
+}
+
+_SPRING_FRAMEWORK_AOP_TRIGGERS = {
+    "aop",
+    "spring aop",
+    "관점 지향 프로그래밍",
+    "횡단 관심사",
 }
 
 _SPRING_FRAMEWORK_JPA_TRIGGERS = {
@@ -1539,16 +1670,67 @@ _SPRING_FRAMEWORK_SECURITY_TRIGGERS = {
     "filter chain",
 }
 
+_SPRING_FOUNDATION_FLOW_TOPIC_CUES = {
+    "bean",
+    "빈",
+    "applicationcontext",
+    "application context",
+    "beanfactory",
+    "bean factory",
+}
+
+_SPRING_FOUNDATION_FLOW_CUES = {
+    "flow",
+    "흐름",
+    "registration",
+    "등록",
+    "registration flow",
+    "등록 흐름",
+    "bean registration",
+}
+
+_SPRING_FOUNDATION_ROLE_CUES = {
+    "뭐 하는 거야",
+    "뭐하는 거야",
+    "무슨 역할",
+}
+
+_SPRING_FOUNDATION_ADVANCED_CUES = {
+    "override",
+    "overriding",
+    "semantics",
+    "collision",
+    "conflict",
+    "precedence",
+    "merge",
+}
+
+_SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES = {
+    "spring bean",
+    "beanfactory",
+    "bean factory",
+    "applicationcontext",
+    "application context",
+    "component scan",
+    "componentscan",
+    "@componentscan",
+}
+
 _BEGINNER_INTENT_PHRASES = {
     "처음 배우",
     "처음 보",
     "입문자",
     "입문용",
     "입문 관점",
+    "감이 안 와",
+    "감이 안와",
+    "감이 안 온",
+    "기초",
     "기초부터",
     "기본부터",
     "기본 개념",
     "큰 그림",
+    "basics",
     "first principles",
     "big picture",
     "beginner",
@@ -1570,14 +1752,36 @@ _BEGINNER_SHORTFORM_QUESTION_CUES = {
     "뭔데",
     "뭔데요",
     "뭐예요",
+    "뭐 하는 거야",
+    "뭐하는 거야",
+    "무슨 역할",
+    "어디에 써",
     "무엇",
+    "무슨 뜻이야",
+    "무슨 뜻이에요",
     "what is",
     "what's",
+    "why use",
+    "why do we use",
+    "why should i use",
     "차이가 뭐야",
     "차이가 뭐예요",
     "뭐가 달라",
     "뭐가 다른데",
 }
+
+_BEGINNER_WHY_USE_SHORTFORM_CUES = {
+    "왜 써",
+    "왜 사용",
+    "왜 필요해",
+    "왜 필요하지",
+    "왜 쓰는",
+    "왜 쓰죠",
+}
+
+_KOREAN_DEFINITION_SHORTFORM_RE = re.compile(
+    r"(?:^|[\s(])[\w@./+-]+(?:이란|란)(?:\?|$|[\s)])"
+)
 
 _TRANSACTIONAL_BEGINNER_WHY_USE_CUES = {
     "why use @transactional",
@@ -1594,15 +1798,76 @@ _TRANSACTIONAL_BEGINNER_PLAIN_ALIAS_CUES = {
     "what does transactional mean",
 }
 
+_TRANSACTIONAL_BEGINNER_MECHANICS_CUES = {
+    "how does @transactional work",
+    "how does transactional work",
+    "how @transactional works",
+    "how transactional works",
+}
+
+_AUTH_BEGINNER_MEANING_CUES = {
+    "what does jwt mean",
+    "what does session mean",
+    "what does cookie mean",
+}
+
+_AUTH_LOGIN_MEMORY_CUES = {
+    "로그인 기억",
+    "브라우저가 로그인",
+    "브라우저가 기억",
+    "왜 기억해",
+    "왜 기억하지",
+    "왜 기억돼",
+    "왜 기억되",
+    "기억돼",
+    "기억되",
+    "remember my login",
+    "browser remembers my login",
+    "still logged in",
+    "stay logged in",
+    "keep me signed in",
+}
+
+_AUTH_HTTP_STATELESS_CUES = {
+    "http",
+    "stateless",
+    "상태 없",
+    "상태가 없",
+    "상태를 안",
+}
+
+_JWT_VALIDATION_ORDER_CUES = {
+    "kid",
+    "issuer",
+    "audience",
+    "signature",
+    "signature validation",
+    "signature verification",
+    "claim validation",
+    "token validation",
+    "validation 순서",
+    "검증 순서",
+    "서명 검증",
+}
+
 _WOOWA_BACKEND_FOUNDATION_TOPIC_CUES = {
     "dispatcherservlet",
     "dispatcher servlet",
+    "mvc",
     "spring bean",
     "bean",
+    "beanfactory",
+    "bean factory",
+    "applicationcontext",
+    "application context",
     "빈",
+    "컴포넌트 스캔",
+    "컴포넌트스캔",
     "keep-alive",
     "keep alive",
     "keepalive",
+    "persistent connection",
+    "connection reuse",
     "connection pool",
     "connection pooling",
     "@transactional",
@@ -1610,10 +1875,31 @@ _WOOWA_BACKEND_FOUNDATION_TOPIC_CUES = {
     "di vs ioc",
     "di ioc",
     "di와 ioc",
+    "ioc",
+    "dependency injection",
+    "inversion of control",
+    "의존성 주입",
+    "제어의 역전",
+    "aop",
+    "spring aop",
+    "횡단 관심사",
     "session vs jwt",
     "session",
     "jwt",
+    "cookie",
+    "cookies",
+    "쿠키",
     "세션",
+}
+
+_DATABASE_MODELING_BEGINNER_TOPIC_CUES = {
+    "normalization",
+    "정규화",
+    "index",
+    "인덱스",
+    "database normalization",
+    "database index",
+    "db index",
 }
 
 _TRANSACTIONAL_ADVANCED_CUES = {
@@ -1648,6 +1934,24 @@ _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES = {
     "deadlock",
     "데드락",
     "lock ordering",
+}
+
+_JAVA_CONCURRENCY_BEGINNER_SHORTFORM_TOPIC_CUES = {
+    "callable",
+    "executorservice",
+    "future",
+    "completablefuture",
+    "countdownlatch",
+    "cyclicbarrier",
+    "phaser",
+    "stampedlock",
+}
+
+_TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES = {
+    "개념 설명",
+    "개념만 설명",
+    "개념부터 설명",
+    "기초 개념",
 }
 
 _PROJECTION_FRESHNESS_PRIMER_CUES = {
@@ -1757,8 +2061,10 @@ _PROJECTION_MINIMAL_STALE_AFTER_SAVE_CUES = {
     "저장했는데 안 보임",
     "저장했는데 옛값이 보인다",
     "저장했는데 옛값이 보임",
+    "저장했는데 안 보이고",
     "옛값이 보여",
     "옛값만 보여",
+    "이전 화면 상태가 남아 있어",
     "저장한 값이 안 보여",
     "저장한 값이 안 보임",
     "방금 쓴 값이 안 보임",
@@ -2156,6 +2462,16 @@ _PROJECTION_FILTER_SORT_STATE_CUES = {
     "필터 상태",
 }
 
+_QUERY_MODEL_BEGINNER_FILTER_SORT_SCOPE_CUES = {
+    "list",
+    "목록",
+    "query",
+    "query model",
+    "search",
+    "검색",
+    "조건",
+}
+
 _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES = {
     "cqrs",
     "eventual consistency",
@@ -2309,6 +2625,15 @@ _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
         ],
         "score_bonus": 2,
     },
+    "java_completablefuture_fan_in_timeout": {
+        "expand": [
+            "completablefuture allof join basics",
+            "allof does not collect results",
+            "join wraps exceptions",
+            "timeout exceptional completion basics",
+        ],
+        "score_bonus": 3,
+    },
     "java_virtual_threads_loom": {
         "expand": [
             "loom overview",
@@ -2323,6 +2648,15 @@ _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
             "java_language_runtime",
             "resource_lifecycle",
         },
+    },
+    "java_structured_concurrency": {
+        "expand": [
+            "structured concurrency basics",
+            "structured task scope",
+            "scope bound context",
+            "fail-fast task group",
+        ],
+        "score_bonus": 3,
     },
     "security_authentication": {
         "requires_any": {"security_token_validation"},
@@ -2351,8 +2685,16 @@ _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
         "score_bonus": 2,
         "suppress": {"resource_lifecycle"},
     },
+    "db_modeling": {
+        "expand": [
+            "database fundamentals for beginners",
+        ],
+        "score_bonus": 2,
+        "suppress": {"java_value_canonicalization"},
+    },
     "transaction_isolation": {
         "expand": [
+            "transaction isolation basics",
             "mvcc",
             "dirty read",
             "non-repeatable read",
@@ -2534,6 +2876,144 @@ def _java_runtime_expand(matched_triggers: set[str]) -> list[str]:
     return expand
 
 
+def _is_transaction_isolation_beginner_meaning_prompt(
+    haystack: str,
+    tokens: set[str],
+) -> bool:
+    if not _has_beginner_intent(haystack, tokens):
+        return False
+    if not any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_TOPIC_CUES):
+        return False
+    if any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES):
+        return False
+    if any(
+        cue in haystack
+        for cue in {
+            "optimistic lock",
+            "pessimistic lock",
+            "낙관적 락",
+            "비관적 락",
+            "select for update",
+            "for update",
+            "locking strategy",
+        }
+    ):
+        return False
+    return (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or _has_korean_definition_shortform(haystack)
+        or any(cue in haystack for cue in _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES)
+        or "큰 그림" in haystack
+    )
+
+
+def _transaction_isolation_expand(
+    haystack: str,
+    tokens: set[str],
+    matched_triggers: set[str],
+    *,
+    beginner_intent: bool = False,
+) -> list[str]:
+    expand = [
+        "transaction",
+        "isolation level",
+        "locking strategy",
+        "optimistic lock",
+        "pessimistic lock",
+        "rollback",
+    ]
+
+    if beginner_intent:
+        expand.extend(
+            [
+                "transaction isolation basics",
+                "mvcc",
+                "dirty read",
+                "non-repeatable read",
+                "phantom read",
+                "read committed",
+                "repeatable read",
+            ]
+        )
+
+    if _is_transaction_isolation_beginner_meaning_prompt(haystack, tokens):
+        expand = [
+            "transaction isolation basics",
+            "transaction isolation level basics",
+            "isolation level beginner",
+            "read committed beginner",
+            "repeatable read beginner",
+            "serializable beginner",
+            "dirty read beginner",
+            "트랜잭션 격리 수준 처음 배우는데",
+            "격리 수준이 뭐예요",
+            "동시에 실행될 때 무엇이 보이는지",
+            "mvcc",
+        ]
+        if "mvcc" in haystack:
+            expand.extend(
+                [
+                    "mvcc 개념 설명",
+                    "mvcc 처음 배우는데",
+                    "mvcc beginner",
+                ]
+            )
+
+    if matched_triggers & {
+        "locking",
+        "optimistic",
+        "pessimistic",
+        "for update",
+        "serializable",
+    }:
+        expand.extend(
+            [
+                "locking strategy",
+                "optimistic lock",
+                "pessimistic lock",
+            ]
+        )
+
+    return expand
+
+
+def _db_modeling_expand(
+    haystack: str,
+    tokens: set[str],
+    matched_triggers: set[str],
+    *,
+    beginner_intent: bool = False,
+) -> list[str]:
+    del haystack, tokens
+    expand = ["schema design", "normalization", "index", "primary key"]
+
+    if not beginner_intent:
+        return expand
+
+    beginner_expand = ["database schema basics", "db modeling beginner", "큰 그림"]
+    if matched_triggers & {"정규화", "normalization"}:
+        beginner_expand.extend(
+            [
+                "database normalization basics",
+                "normal form basics",
+                "1nf 2nf 3nf",
+                "정규화 기초",
+                "정규화 큰 그림",
+            ]
+        )
+    if matched_triggers & {"index", "인덱스"}:
+        beginner_expand.extend(
+            [
+                "database index basics",
+                "b-tree basics",
+                "index lookup beginner",
+                "인덱스 기초",
+                "인덱스 큰 그림",
+            ]
+        )
+    return beginner_expand + expand
+
+
 def _spring_framework_expand(
     haystack: str,
     matched_triggers: set[str],
@@ -2556,6 +3036,17 @@ def _spring_framework_expand(
                 "controller service repository roles",
             ]
         )
+        if beginner_intent:
+            expand.extend(
+                [
+                    "spring request pipeline bean container foundations primer",
+                    "dispatcher servlet bean container big picture",
+                    "spring mvc beginner mental model",
+                    "요청 처리 흐름",
+                    "객체 준비 흐름",
+                    "bean 컨테이너 큰 그림",
+                ]
+            )
 
     if matched_triggers & _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS:
         if beginner_intent:
@@ -2573,6 +3064,13 @@ def _spring_framework_expand(
                     "self invocation transactional",
                 ]
             )
+            if "propagation" in haystack or "전파" in haystack:
+                expand.extend(
+                    [
+                        "transaction propagation basics",
+                        "propagation behavior basics",
+                    ]
+                )
         else:
             expand.extend(
                 [
@@ -2602,15 +3100,102 @@ def _spring_framework_expand(
                 "inversion of control",
             ]
         )
+        if beginner_intent:
+            expand.extend(
+                [
+                    "spring ioc di beginner primer",
+                    "ioc 제어 역전 입문",
+                    "dependency injection 입문",
+                    "의존성 주입이 뭐예요",
+                    "spring 객체 조립 컨테이너",
+                    "테스트하기 좋은 코드 di",
+                ]
+            )
 
-    if beginner_intent and matched_triggers & {"bean", "빈"}:
+    if matched_triggers & _SPRING_FRAMEWORK_COMPONENT_SCAN_TRIGGERS:
+        expand.extend(
+            [
+                "component scan basics",
+                "spring component scan basics",
+            ]
+        )
+        if (
+            beginner_intent
+            or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+            or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        ):
+            expand.extend(
+                [
+                    "spring bean di basics",
+                    "component scan beginner mental model",
+                    "springbootapplication basics",
+                    "bean registration vs component scan",
+                    "component scan candidate discovery",
+                ]
+            )
+
+    if matched_triggers & _SPRING_FRAMEWORK_AOP_TRIGGERS:
+        if beginner_intent:
+            expand.extend(
+                [
+                    "spring aop basics",
+                    "aop basics",
+                    "why use spring aop",
+                    "spring aop beginner overview",
+                    "aspect oriented programming basics",
+                    "proxy aop beginner",
+                    "cross-cutting concern",
+                    "why use aop",
+                    "self invocation internal call",
+                ]
+            )
+        else:
+            expand.extend(
+                [
+                    "aop proxy mechanism",
+                    "advisor pointcut advice",
+                    "self invocation proxy bypass",
+                ]
+            )
+
+    if beginner_intent and matched_triggers & {
+        "bean",
+        "빈",
+        "beanfactory",
+        "bean factory",
+        "applicationcontext",
+        "application context",
+    }:
         expand.extend(
             [
                 "spring bean basics",
                 "bean container foundation",
                 "applicationcontext basics",
+                "beanfactory basics",
+                "bean definition",
+                "bean registration basics",
+                "beanfactory vs applicationcontext",
+                "applicationcontext extends beanfactory",
+                "applicationcontext beginner mental model",
+                "spring request pipeline bean container foundations primer",
+                "요청 처리 흐름",
+                "객체 준비 흐름",
+                "bean 컨테이너 큰 그림",
             ]
         )
+        if any(cue in haystack for cue in _SPRING_FOUNDATION_ROLE_CUES):
+            expand.extend(
+                [
+                    "spring bean role basics",
+                    "applicationcontext role basics",
+                    "beanfactory role basics",
+                    "spring bean what it does",
+                    "applicationcontext what it does",
+                    "빈이 하는 일",
+                    "beanfactory 역할",
+                    "applicationcontext 역할",
+                ]
+            )
 
     if matched_triggers & _SPRING_FRAMEWORK_JPA_TRIGGERS:
         expand.extend(
@@ -2743,6 +3328,79 @@ def _java_completablefuture_cancellation_expand(
     return expand
 
 
+def _java_completablefuture_fan_in_timeout_expand(
+    matched_triggers: set[str],
+    *,
+    beginner_intent: bool = False,
+) -> list[str]:
+    expand = [
+        "completablefuture allof",
+        "join vs get",
+        "completionexception",
+        "ortimeout",
+        "exceptionally",
+    ]
+
+    if beginner_intent:
+        expand.extend(
+            [
+                "completablefuture allof join basics",
+                "allof does not collect results",
+                "join wraps exceptions",
+                "timeout exceptional completion basics",
+            ]
+        )
+    else:
+        expand.extend(
+            [
+                "completeontimeout",
+                "whencomplete",
+                "partial failure",
+                "fan-out fan-in",
+                "background task leak",
+            ]
+        )
+
+    if matched_triggers & {"allof", "all of", "anyof", "any of"}:
+        expand.extend(
+            [
+                "allof fan-in",
+                "result aggregation",
+            ]
+        )
+
+    if matched_triggers & {"join", "join vs get", "completionexception", "executionexception"}:
+        expand.extend(
+            [
+                "join exception wrapper",
+                "executionexception",
+            ]
+        )
+
+    if matched_triggers & {
+        "ortimeout",
+        "or timeout",
+        "completeontimeout",
+        "complete on timeout",
+    }:
+        expand.extend(
+            [
+                "timeout semantics",
+                "future completion vs task cancellation",
+            ]
+        )
+
+    if matched_triggers & {"exceptionally", "whencomplete", "partial failure", "partial success"}:
+        expand.extend(
+            [
+                "failure recovery boundary",
+                "partial success fan-in",
+            ]
+        )
+
+    return expand
+
+
 def _security_authentication_expand(
     haystack: str,
     matched_triggers: set[str],
@@ -2770,6 +3428,8 @@ def _security_authentication_expand(
             "쿠키",
             "로그인 상태",
             "로그인 유지",
+            "왜 유지돼",
+            "왜 유지되",
             "로그인 계속",
             "로그인 안 풀",
             "로그인 풀림",
@@ -2787,6 +3447,8 @@ def _security_authentication_expand(
             "remember me",
         }
     )
+    has_http_login_state_intent = "__http_login_state__" in matched_triggers
+    has_login_state_memory_intent = "__login_state_memory__" in matched_triggers
     has_jwt_structure_intent = any(
         cue in haystack
         for cue in {
@@ -2795,15 +3457,34 @@ def _security_authentication_expand(
             "claims",
             " exp ",
         }
+    ) or _is_jwt_validation_order_prompt(haystack)
+    has_auth_beginner_meaning_intent = (
+        not has_jwt_structure_intent
+        and any(cue in haystack for cue in _AUTH_BEGINNER_MEANING_CUES)
+        and bool(matched_triggers & {"jwt", "session", "세션", "cookie", "cookies", "쿠키"})
+    )
+    has_beginner_jwt_mental_model_intent = (
+        (beginner_intent or has_auth_beginner_meaning_intent)
+        and not has_jwt_structure_intent
+        and "jwt" in matched_triggers
+    )
+    has_beginner_cookie_mental_model_intent = (
+        (beginner_intent or has_auth_beginner_meaning_intent)
+        and not has_jwt_structure_intent
+        and bool(matched_triggers & {"cookie", "cookies", "쿠키"})
     )
     has_beginner_session_mental_model_intent = (
-        beginner_intent
+        (beginner_intent or has_auth_beginner_meaning_intent)
         and not has_jwt_structure_intent
         and bool(matched_triggers & {"session", "세션"})
     )
 
     if (
+        has_http_login_state_intent
+        or has_login_state_memory_intent
+        or
         has_cookie_login_state_intent
+        or has_beginner_cookie_mental_model_intent
         or has_beginner_session_mental_model_intent
         or (has_session_jwt_basics_intent and not has_jwt_structure_intent)
     ):
@@ -2817,6 +3498,16 @@ def _security_authentication_expand(
                 "server session vs jwt",
                 "login state persistence",
                 "why login stays",
+            ]
+        )
+
+    if has_beginner_jwt_mental_model_intent:
+        expand.extend(
+            [
+                "session cookie jwt basics",
+                "session vs jwt",
+                "http stateless login state",
+                "token based authentication",
             ]
         )
 
@@ -3008,6 +3699,8 @@ def _projection_freshness_expand(
             )
         expand.extend(
             [
+                "saved-but-not-visible",
+                "old-screen-state",
                 "쓴 직후 읽기 보장",
                 "저장 직후 예전 값이 보임",
                 "저장한 값이 바로 안 보임",
@@ -3175,6 +3868,25 @@ def _gap_lock_compound_matches(haystack: str) -> set[str]:
     return matched
 
 
+def _security_authentication_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
+    matched: set[str] = set()
+    has_http_stateless_cue = "http" in tokens or any(
+        cue in haystack for cue in _AUTH_HTTP_STATELESS_CUES
+    )
+    has_login_memory_cue = any(cue in haystack for cue in _AUTH_LOGIN_MEMORY_CUES)
+    has_login_state_topic_cue = (
+        "로그인" in haystack
+        or "login" in tokens
+        or "logged" in tokens
+        or "signed" in tokens
+    )
+    if has_http_stateless_cue and has_login_memory_cue:
+        matched.add("__http_login_state__")
+    if has_login_state_topic_cue and has_login_memory_cue:
+        matched.add("__login_state_memory__")
+    return matched
+
+
 def _is_projection_strict_read_beginner_intro_prompt(haystack: str, tokens: set[str]) -> bool:
     if not _has_beginner_intent(haystack, tokens):
         return False
@@ -3222,14 +3934,39 @@ def _mvcc_beginner_primer_matches(haystack: str, tokens: set[str]) -> set[str]:
 
 def _spring_framework_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
     matched: set[str] = set()
+    has_propagation_cue = "propagation" in haystack or "전파" in haystack
     if {"dispatcher", "servlet"} <= tokens:
         matched.add("__dispatcher_servlet_compound__")
-    if {"spring", "mvc"} <= tokens:
+    if ({"spring", "mvc"} <= tokens) or ({"스프링", "mvc"} <= tokens):
         matched.add("__spring_mvc_compound__")
-    if "spring" in tokens and "propagation" in haystack and (
+    if (
+        ({"spring", "m", "v", "c"} <= tokens)
+        or ({"스프링", "m", "v", "c"} <= tokens)
+    ):
+        matched.add("__spring_mvc_compound__")
+    if _has_beginner_intent(haystack, tokens) and (
+        "mvc" in tokens or {"m", "v", "c"} <= tokens
+    ):
+        matched.add("__mvc_beginner_shortform__")
+    if "spring" in tokens and has_propagation_cue and (
         "transaction" in tokens or "transactional" in haystack
     ):
         matched.add("__spring_transaction_propagation_compound__")
+    if (
+        _has_beginner_intent(haystack, tokens)
+        and has_propagation_cue
+        and ("transaction" in tokens or "트랜잭션" in haystack)
+        and (
+            any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+            or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        )
+        and "spring" not in tokens
+        and "@transactional" not in haystack
+        and "transactional" not in haystack
+    ):
+        matched.add("__transaction_propagation_beginner_shortform__")
+    if _is_spring_transaction_beginner_shortform_prompt(haystack, tokens):
+        matched.add("__spring_transaction_beginner_shortform__")
     return matched
 
 
@@ -3257,6 +3994,26 @@ def _should_suppress_network_timeout_noise(haystack: str, hits: list[dict]) -> b
 
     matched_triggers = network_hit.get("_matched_triggers", set())
     return bool(matched_triggers) and matched_triggers <= {"timeout"}
+
+
+def _should_suppress_network_http_login_state_noise(haystack: str, hits: list[dict]) -> bool:
+    present_tags = {hit["tag"] for hit in hits}
+    if "security_authentication" not in present_tags:
+        return False
+
+    network_hit = next((hit for hit in hits if hit["tag"] == "network_and_reliability"), None)
+    if not network_hit:
+        return False
+
+    matched_triggers = network_hit.get("_matched_triggers", set())
+    if not matched_triggers or matched_triggers - {"http"}:
+        return False
+
+    auth_compound_matches = _security_authentication_compound_matches(
+        haystack,
+        set(_tokenize(haystack)),
+    )
+    return "__http_login_state__" in auth_compound_matches
 
 
 def _should_suppress_deadlock_anomaly_overlap(hits: list[dict]) -> bool:
@@ -3310,7 +4067,12 @@ def _spring_transactional_beginner_suppressions(
     if not _has_beginner_intent(haystack, tokens):
         return set()
 
-    if not any(trigger in haystack for trigger in _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS):
+    spring_compound_matches = _spring_framework_compound_matches(haystack, tokens)
+    if not (
+        any(trigger in haystack for trigger in _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS)
+        or "__transaction_propagation_beginner_shortform__" in spring_compound_matches
+        or "__spring_transaction_beginner_shortform__" in spring_compound_matches
+    ):
         return set()
 
     present_tags = {hit["tag"] for hit in hits}
@@ -3536,6 +4298,18 @@ def _should_suppress_projection_filter_sort_state_noise(
     return "projection_freshness" in present_tags
 
 
+def _is_beginner_query_model_filter_sort_prompt(haystack: str, tokens: set[str]) -> bool:
+    if not _has_beginner_intent(haystack, tokens):
+        return False
+    if not any(cue in haystack for cue in _PROJECTION_FILTER_SORT_STATE_CUES):
+        return False
+    if not any(cue in haystack for cue in _QUERY_MODEL_BEGINNER_FILTER_SORT_SCOPE_CUES):
+        return False
+    if any(cue in haystack for cue in _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES):
+        return False
+    return True
+
+
 def _should_suppress_global_failover_when_visibility_is_more_specific(
     hits: list[dict],
 ) -> bool:
@@ -3610,6 +4384,8 @@ def _should_suppress_security_token_validation_for_projection_failover_contrast(
         "write loss audit",
         "commit horizon",
         "verify",
+        "validation",
+        "failover validation",
     }
     return any(cue in haystack for cue in visibility_cues) and any(
         cue in haystack for cue in verification_cues
@@ -3826,8 +4602,10 @@ def _projection_beginner_failover_verification_noise_tokens(
     has_verification_cue = (
         "verification" in tokens
         or "verify" in tokens
+        or "validation" in tokens
         or ("write" in tokens and "loss" in tokens)
         or "commit horizon" in haystack
+        or "failover validation" in haystack
     )
     if "failover" not in tokens or not has_verification_cue:
         return set()
@@ -3836,6 +4614,8 @@ def _projection_beginner_failover_verification_noise_tokens(
     stripped_tokens = {"verification"}
     if "verify" in tokens:
         stripped_tokens.add("verify")
+    if "validation" in tokens:
+        stripped_tokens.add("validation")
     return stripped_tokens
 
 
@@ -4085,18 +4865,40 @@ def _has_beginner_intent(haystack: str, tokens: set[str]) -> bool:
         return True
     if any(group <= tokens for group in _BEGINNER_INTENT_TOKEN_GROUPS):
         return True
+    if _has_korean_definition_shortform(haystack):
+        return True
     return (
         _is_woowa_backend_foundation_shortform_prompt(haystack)
+        or _is_database_modeling_beginner_shortform_prompt(haystack)
         or _is_transaction_primer_shortform_prompt(haystack)
         or _is_projection_cutover_safety_shortform_prompt(haystack)
+        or _is_java_concurrency_beginner_shortform_prompt(haystack)
         or _is_transactional_beginner_why_use_prompt(haystack)
         or _is_transactional_beginner_plain_alias_prompt(haystack)
+        or _is_transactional_beginner_mechanics_prompt(haystack)
         or _is_transactional_beginner_spring_shortform_prompt(haystack, tokens)
+        or _is_spring_transaction_beginner_shortform_prompt(haystack, tokens)
+        or _is_transaction_propagation_beginner_shortform_prompt(haystack, tokens)
+        or _is_spring_beginner_english_meaning_prompt(haystack)
+        or _is_spring_ioc_di_beginner_shortform_prompt(haystack)
+        or _is_spring_foundation_flow_prompt(haystack)
     )
 
 
+def _has_korean_definition_shortform(haystack: str) -> bool:
+    return bool(_KOREAN_DEFINITION_SHORTFORM_RE.search(haystack))
+
+
+def _is_jwt_validation_order_prompt(haystack: str) -> bool:
+    return any(cue in haystack for cue in _JWT_VALIDATION_ORDER_CUES)
+
+
 def _is_woowa_backend_foundation_shortform_prompt(haystack: str) -> bool:
-    if not any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES):
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        or _has_korean_definition_shortform(haystack)
+    ):
         return False
     if not any(cue in haystack for cue in _WOOWA_BACKEND_FOUNDATION_TOPIC_CUES):
         return False
@@ -4105,14 +4907,53 @@ def _is_woowa_backend_foundation_shortform_prompt(haystack: str) -> bool:
     return True
 
 
+def _is_database_modeling_beginner_shortform_prompt(haystack: str) -> bool:
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        or _has_korean_definition_shortform(haystack)
+    ):
+        return False
+    return any(cue in haystack for cue in _DATABASE_MODELING_BEGINNER_TOPIC_CUES)
+
+
 def _is_transaction_primer_shortform_prompt(haystack: str) -> bool:
-    if not any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES):
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or _has_korean_definition_shortform(haystack)
+        or any(cue in haystack for cue in _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES)
+    ):
         return False
     if not any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_TOPIC_CUES):
         return False
     if any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES):
         return False
     return True
+
+
+def _is_transaction_propagation_beginner_shortform_prompt(
+    haystack: str,
+    tokens: set[str],
+) -> bool:
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+    ):
+        return False
+    if "transaction" not in tokens and "트랜잭션" not in haystack:
+        return False
+    if "propagation" not in haystack and "전파" not in haystack:
+        return False
+    return "@transactional" not in haystack
+
+
+def _is_java_concurrency_beginner_shortform_prompt(haystack: str) -> bool:
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or _has_korean_definition_shortform(haystack)
+    ):
+        return False
+    return any(cue in haystack for cue in _JAVA_CONCURRENCY_BEGINNER_SHORTFORM_TOPIC_CUES)
 
 
 def _is_transactional_beginner_why_use_prompt(haystack: str) -> bool:
@@ -4142,6 +4983,53 @@ def _is_transactional_beginner_spring_shortform_prompt(
     if any(cue in haystack for cue in _TRANSACTIONAL_ADVANCED_CUES):
         return False
     return len(tokens) <= 4
+
+
+def _is_spring_transaction_beginner_shortform_prompt(
+    haystack: str,
+    tokens: set[str],
+) -> bool:
+    if "@transactional" in haystack or "transactional" in haystack:
+        return False
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        or _has_korean_definition_shortform(haystack)
+    ):
+        return False
+    if not ({"spring", "transaction"} <= tokens or ("스프링" in haystack and "트랜잭션" in haystack)):
+        return False
+    return not any(cue in haystack for cue in _TRANSACTIONAL_ADVANCED_CUES)
+
+
+def _is_transactional_beginner_mechanics_prompt(haystack: str) -> bool:
+    if not any(cue in haystack for cue in _TRANSACTIONAL_BEGINNER_MECHANICS_CUES):
+        return False
+    if "@transactional" not in haystack and "spring" not in haystack:
+        return False
+    return not any(cue in haystack for cue in _TRANSACTIONAL_ADVANCED_CUES)
+
+
+def _is_spring_foundation_flow_prompt(haystack: str) -> bool:
+    if not any(cue in haystack for cue in _SPRING_FOUNDATION_FLOW_CUES):
+        return False
+    if not any(cue in haystack for cue in _SPRING_FOUNDATION_FLOW_TOPIC_CUES):
+        return False
+    return not any(cue in haystack for cue in _SPRING_FOUNDATION_ADVANCED_CUES)
+
+
+def _is_spring_beginner_english_meaning_prompt(haystack: str) -> bool:
+    if "what does" not in haystack or "mean" not in haystack:
+        return False
+    if not any(cue in haystack for cue in _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES):
+        return False
+    return not any(cue in haystack for cue in _SPRING_FOUNDATION_ADVANCED_CUES)
+
+
+def _is_spring_ioc_di_beginner_shortform_prompt(haystack: str) -> bool:
+    return any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES) and any(
+        cue in haystack for cue in _SPRING_FRAMEWORK_IOC_DI_TRIGGERS
+    )
 
 
 def _is_projection_freshness_primer_prompt(haystack: str) -> bool:
@@ -4459,6 +5347,8 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
     for primer_tag, config in _BEGINNER_PRIMER_OVERRIDES.items():
         if primer_tag not in present_tags:
             continue
+        if primer_tag == "security_authentication" and _is_jwt_validation_order_prompt(haystack):
+            continue
         if primer_tag == "projection_freshness" and not (
             _is_projection_freshness_primer_prompt(haystack)
             or _is_projection_strict_read_beginner_intro_prompt(haystack, tokens)
@@ -4501,6 +5391,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
         matched_triggers = _matched_triggers(haystack, tokens, rule["triggers"])
         if rule["tag"] == "transaction_isolation" and not matched_triggers:
             matched_triggers.update(_mvcc_beginner_primer_matches(haystack, tokens))
+        if rule["tag"] == "security_authentication":
+            matched_triggers.update(_security_authentication_compound_matches(haystack, tokens))
         if rule["tag"] == "spring_framework":
             matched_triggers.update(_spring_framework_compound_matches(haystack, tokens))
         if rule["tag"] == "mysql_gap_locking":
@@ -4513,6 +5405,20 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
         expand = list(rule["expand"])
         if rule["tag"] == "storage_contract_evolution":
             expand = _storage_contract_expand(matched_triggers)
+        elif rule["tag"] == "transaction_isolation":
+            expand = _transaction_isolation_expand(
+                haystack,
+                tokens,
+                matched_triggers,
+                beginner_intent=_has_beginner_intent(haystack, tokens),
+            )
+        elif rule["tag"] == "db_modeling":
+            expand = _db_modeling_expand(
+                haystack,
+                tokens,
+                matched_triggers,
+                beginner_intent=_has_beginner_intent(haystack, tokens),
+            )
         elif rule["tag"] == "security_authentication":
             expand = _security_authentication_expand(
                 haystack,
@@ -4534,6 +5440,11 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             )
         elif rule["tag"] == "java_completablefuture_cancellation":
             expand = _java_completablefuture_cancellation_expand(
+                matched_triggers,
+                beginner_intent=_has_beginner_intent(haystack, tokens),
+            )
+        elif rule["tag"] == "java_completablefuture_fan_in_timeout":
+            expand = _java_completablefuture_fan_in_timeout_expand(
                 matched_triggers,
                 beginner_intent=_has_beginner_intent(haystack, tokens),
             )
@@ -4625,6 +5536,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
         suppressed_tags.update(_java_runtime_false_positive_suppressions(hits))
         suppressed_tags.update(_java_virtual_threads_false_positive_suppressions(hits))
         suppressed_tags.update(_java_family_generic_noise_suppressions(haystack, tokens, hits))
+        if _should_suppress_network_http_login_state_noise(haystack, hits):
+            suppressed_tags.add("network_and_reliability")
         if suppressed_tags:
             hits = [hit for hit in hits if hit["tag"] not in suppressed_tags]
     hits.sort(key=lambda h: (-h["score"], h["tag"]))
@@ -4684,6 +5597,16 @@ def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]
         if signal["tag"] in suppressed_expand_tags:
             continue
         base.extend(signal["expand"])
+    if _is_beginner_query_model_filter_sort_prompt(haystack, tokens):
+        base.extend(
+            [
+                "query model separation",
+                "query model separation read heavy apis",
+                "list search filter sort beginner guide",
+                "browser filter state",
+                "local sort state",
+            ]
+        )
     # de-dupe while preserving order
     seen: set[str] = set()
     out: list[str] = []

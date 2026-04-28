@@ -13,9 +13,10 @@
 - [Feature Flags, Rollout, Dependency Management](./feature-flags-rollout-dependency-management.md)
 - [Deployment Rollout, Rollback, Canary, Blue-Green](./deployment-rollout-rollback-canary-blue-green.md)
 - [Incident Review and Learning Loop Architecture](./incident-review-learning-loop-architecture.md)
+- [테스트 전략 기초](./test-strategy-basics.md)
 - [System Design Foundations](../system-design/system-design-foundations.md)
 
-retrieval-anchor-keywords: backend delivery observability primer, 운영 배포 감각, 로그는 남기는데 무엇을 지표로 보고 문제면 flag를 끌지 rollback할지, beginner observability primer, logs vs metrics beginner, feature flag vs deploy, rollout rollback beginner, incident response beginner, canary rollback starter, change safety beginner, backend operations primer, project stage backend delivery, observability entrypoint, feature flag rollout basics, backend delivery observability foundations primer basics
+retrieval-anchor-keywords: backend delivery observability primer, logs vs metrics beginner, feature flag vs deploy, rollout rollback beginner, incident response beginner, change safety beginner, backend operations primer, observability entrypoint, canary rollback starter, kill switch basics, deployment safety flow, software engineering beginner ops, 처음 운영 용어 헷갈려요, rollback 왜 말해요, what is feature flag
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -32,6 +33,15 @@ retrieval-anchor-keywords: backend delivery observability primer, 운영 배포 
 핵심은 한 줄이다.
 
 - delivery와 observability는 따로 있는 주제가 아니라, `안전하게 바꾸고 빨리 알아차리는 한 흐름`이다.
+
+## 이런 문장으로 막히면 여기서 시작하면 된다
+
+| 지금 떠오르는 말 | 먼저 잡을 질문 |
+|---|---|
+| "로그는 남기는데 배포가 안전한지는 뭘로 보지?" | logs와 metrics가 각각 어떤 판단을 맡는지 나눈다 |
+| "배포만 했는데 왜 feature flag 얘기가 같이 나오지?" | deploy와 release를 분리하는 이유를 본다 |
+| "이상하면 rollback만 하면 되지 않나?" | flag off, rollout 축소, rollback이 푸는 문제가 다른지 본다 |
+| "incident response는 회고 문서 아닌가?" | 첫 목표가 분석보다 피해 축소라는 점을 먼저 잡는다 |
 
 ## before / after 한눈 비교
 
@@ -103,6 +113,18 @@ retrieval-anchor-keywords: backend delivery observability primer, 운영 배포 
 - 노출 위험은 `rollout`
 - 버전 위험은 `rollback`
 
+## 이상할 때 무엇부터 줄일까
+
+초심자가 가장 자주 막히는 지점은 "문제가 보였는데 첫 행동이 무엇인지"다.
+
+| 지금 보이는 상황 | 먼저 시도할 것 | 이유 |
+|---|---|---|
+| 새 기능만 문제고 코드는 살아 있다 | `flag off` | 기능 노출만 빠르게 끊을 수 있다 |
+| 일부 사용자만 이상하고 더 넓히기 불안하다 | rollout 비율 축소 | blast radius를 더 키우지 않는다 |
+| 코드 버전 자체가 전반적으로 잘못됐다 | rollback | 이전 안정 버전으로 되돌아가야 한다 |
+
+즉 `flag off`, `rollout 축소`, `rollback`은 비슷한 비상 버튼이 아니라 서로 다른 문제를 푸는 버튼이다.
+
 ## incident response를 초심자용으로 단순화하면
 
 incident response를 거대한 운영 프로세스로 보기보다, 첫 5분 질문 세 개로 시작하면 된다.
@@ -123,6 +145,7 @@ incident response를 거대한 운영 프로세스로 보기보다, 첫 5분 질
 - `feature flag가 있으니 rollback은 필요 없다`가 아니다. 데이터 변경이나 버전 호환성 문제는 코드 rollback이 필요할 수 있다.
 - `rollout`은 배포 기법 이름만이 아니라 `얼마나 작은 범위로 시작하나`의 문제다.
 - `incident response`는 postmortem 문서를 쓰는 시간이 아니라, 먼저 피해를 제한하고 복구하는 시간이다.
+- 테스트가 잘 있어도 rollout 없이 바로 전체 공개하면 운영 위험은 남는다. 테스트는 출시 전 confidence를 높이고, observability는 출시 후 이상 신호를 잡는다.
 
 ## 지금 막힌 문장으로 다음 문서 고르기
 

@@ -12,10 +12,11 @@
 - [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
 - [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
+- [HTTP Cache Reuse vs Connection Reuse vs Session Persistence Primer](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: 421 retry path mini guide, 421 fresh h3 vs h2 fallback, h3 reuse 421 retry path, same h3 new connection after 421, h2 fallback after h3 421, fresh quic connection retry, browser 421 retry path, 421 after h3 reuse beginner, wrong h3 reuse then h2, wrong h3 reuse then fresh h3, 421 retry decision beginner, same url 421 then h3, same url 421 then h2, h3 misdirected request retry path, h3 421 fallback primer
+retrieval-anchor-keywords: 421 retry path basics, 421 fresh h3 vs h2 fallback, same url 421 then h3, same url 421 then h2, why 421 retry path, 처음 보는 421 retry, h3 421 fallback beginner, devtools same url twice, fresh quic connection retry, wrong h3 reuse retry, cache reuse vs connection reuse, what is 421 retry path
 
 ## 먼저 잡는 mental model
 
@@ -28,6 +29,22 @@ retrieval-anchor-keywords: 421 retry path mini guide, 421 fresh h3 vs h2 fallbac
 
 - `421`은 **wrong connection 교정 신호**
 - 그다음 선택은 **fresh H3**일 수도 있고 **H2 fallback**일 수도 있다
+
+## 처음 보면 왜 헷갈리나
+
+초급자가 가장 자주 하는 질문은 보통 이 두 가지다.
+
+- "같은 URL이 두 줄 보이는데 왜 중복 호출이 아니에요?"
+- "`fallback`이면 cache나 session도 같이 버린 건가요?"
+
+이 문서에서는 아래처럼 끊어 읽으면 덜 헷갈린다.
+
+| 눈에 보이는 것 | 먼저 붙일 이름 |
+|---|---|
+| 같은 URL이 `421` 뒤 한 번 더 보임 | 브라우저 recovery 재시도 후보 |
+| `connection id`만 바뀌고 `protocol=h3` 유지 | fresh h3 retry |
+| `protocol=h3 -> h2` 변경 | h2 fallback |
+| 로그인/session 상태는 그대로 | connection 교정이지 session 리셋이 아님 |
 
 ## 둘 중 무엇이 더 잘 나오나
 
@@ -122,6 +139,8 @@ retrieval-anchor-keywords: 421 retry path mini guide, 421 fresh h3 vs h2 fallbac
 - "`421` 뒤 다시 `h3`가 보였으니 같은 요청을 같은 connection으로 보낸 것"은 아니다. connection id가 바뀌면 fresh H3다.
 - "`421` 뒤 `h2`가 보였으니 원인이 무조건 UDP 차단"은 아니다. 이 문서에서는 먼저 retry path 재선택으로 읽는다.
 - "`421`이 떴으니 H3는 완전히 깨졌다"도 아니다. 같은 trace 안에서 새 H3 connection으로 바로 회복될 수 있다.
+- "`421` 뒤 재시도가 보였으니 브라우저 cache가 body를 다시 쓴 것"도 아니다. 이 문서는 cache 재사용보다 connection 재선택을 읽는 문맥이다.
+- "`421` 뒤 다시 로그인 화면이 보일 수 있으니 session도 초기화됐다"라고 바로 단정하면 안 된다. connection path 교정과 세션 만료는 다른 층위다.
 
 ## 다음에 이어서 볼 문서
 

@@ -5,6 +5,8 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)
+> - [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)
 > - [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
@@ -21,12 +23,38 @@
 > - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, post-login redirect original URL, request cache stateless api, request cache beginner route, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, cookie exists but session missing, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, session basics to Spring Security, SavedRequest beginner bridge, login loop beginner bridge, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme
+retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, post-login redirect original URL, request cache stateless api, request cache beginner route, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, cookie exists but session missing, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, session basics to Spring Security, SavedRequest beginner bridge, login loop beginner bridge, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme, /admin 302 login final 403, admin 302 -> login -> final 403, 로그인 후 원래 admin 복귀 403, 왜 login 갔다가 마지막 403, savedrequest final 403 beginner, beginner-safe handoff, safe next doc before requestcache, redirect navigation memory deep dive, spring deep dive after browser guide
 
 ## 입문 브리지
 
-이 문서는 `SavedRequest`, `RequestCache`, `302` login loop를 다루는 advanced deep dive지만, 기초 개념에서 막 올라온 독자를 위한 계단을 먼저 두는 편이 안전하다.
-여기서의 고정 역할은 **`redirect / navigation memory` deep dive**다. `다음 요청에서 다시 익명`, `cookie 있는데 다시 로그인`처럼 persistence 쪽이 더 앞에 보이면 이 문서를 오래 붙잡지 말고 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 바로 갈아탄다.
+이 문서는 beginner ladder의 `follow-up deep dive`다. beginner-safe handoff는 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 branch를 고정하고, 그다음에만 이 문서를 여는 것이다.
+즉 이 문서는 `safe next doc` 자체가 아니라, `SavedRequest`, `saved request bounce`, `원래 URL 복귀`가 **`redirect / navigation memory`**로 확정된 뒤에 읽는 고정 deep dive다.
+검색에서 바로 들어와 "관리자 URL이 `302 /login`인데 이게 왜 `403`이랑 다른가요?", "로그인 후 원래 `/admin`으로 복귀했는데 왜 마지막엔 `403`인가요?"를 먼저 묻는 독자라면 deep dive보다 초급 분기 문서로 먼저 내려보내는 편이 이탈을 줄인다.
+반대로 `cookie 있는데 다시 로그인`, `hidden session`, `next request anonymous after login`처럼 **`server persistence / session mapping`** 쪽이 먼저 보이면 이 문서를 오래 붙잡지 말고 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 바로 갈아탄다.
+
+### `/admin 302 -> login -> final 403` 먼저 끊어 읽기
+
+beginner가 advanced 문서에 너무 빨리 들어오는 대표 장면이 이것이다.
+
+```text
+/admin 요청
+-> 302 /login
+-> 로그인 성공
+-> 원래 /admin 으로 복귀
+-> final 403
+```
+
+이 한 줄 증상을 통째로 보면 "`SavedRequest`가 문제인가?", "`권한이 없나?", "`세션이 날아갔나?"가 한꺼번에 섞인다. 먼저 아래 분기표로 **어느 단계까지는 정상인지**부터 고정한다.
+
+| 지금 보인 장면 | 먼저 붙일 해석 라벨 | 바로 갈 next step |
+|---|---|---|
+| `/admin`에서 곧바로 `302 /login` | `인증 전 redirect` | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)에서 `302`와 `403`를 먼저 분리 |
+| 로그인 성공 후 원래 `/admin`으로 돌아옴 | `SavedRequest 복귀는 일단 성공` | 이 문서에서 `redirect / navigation memory` 축을 본다 |
+| 복귀 직후 최종 `403` | `복귀와 인가 실패를 분리해야 함` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)에서 role mapping을 먼저 확인 |
+| 로그인 후 다시 `/login`으로 튐 | `복귀 후 인증 유지 실패 또는 loop` | [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 이동해 persistence를 본다 |
+
+- 핵심 mental model은 이것이다: `302 /login`은 **인증 전 이동**, `원래 /admin 복귀`는 **주소 메모 재생**, `final 403`은 **복귀 후 인가 실패**일 수 있다.
+- 그래서 "`/admin 302 -> login -> final 403`" 검색으로 들어온 독자는 이 문서를 처음부터 끝까지 읽기보다, 먼저 "복귀는 성공했는가, 마지막 막힘은 권한인가"를 분리해야 advanced 오진입이 줄어든다.
 
 | 증상 alias | 고정 next-step label | 이 문서에서 보는 축 |
 |---|---|---|
@@ -35,7 +63,9 @@ retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, Http
 | `cookie 있는데 다시 로그인`, `cookie exists but session missing`, `next request anonymous after login` | `server persistence / session mapping` | 이 문서보다 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)가 우선이다 |
 
 - `cookie`, `session`, `JWT` 차이 자체가 아직 흐리면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) -> [Spring Security 아키텍처](./spring-security-architecture.md) 순으로 먼저 올라온다.
-- primer에서 `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, `원래 URL 복귀` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 한 번 거치고 [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 돌아와 redirect/navigation memory branch를 확정한 뒤 이 문서에서 **navigation memory / redirect 복귀** 축을 본다.
+- 검색 질문이 아직 "`302 /login`이랑 `403` 차이가 뭐예요", "`SavedRequest`가 왜 나오죠" 수준이라면 먼저 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)로 내려가 `인증 전 redirect`와 `인증 후 권한 실패`를 분리하고 다시 올라온다.
+- primer에서 `SavedRequest`, `saved request bounce`, `browser 401 -> 302 /login bounce`, `원래 URL 복귀` 같은 handoff alias로 올라왔다면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `safe next doc`을 먼저 고른 뒤 [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 돌아와 redirect/navigation memory branch를 확정하고 이 문서에서 **navigation memory / redirect 복귀** 축만 깊게 본다.
+- `로그인 성공 후 원래 /admin URL 복귀`, `복귀 직후 403`, `SavedRequest는 되는데 admin 권한이 막힘`처럼 redirect 복귀와 role mapping이 한 장면에 같이 보이면, deep dive 전에 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)에서 `복귀`와 `인가 실패`를 두 단계로 먼저 분리한다.
 - 너무 일찍 올라왔다고 느껴지면 먼저 [Spring README의 Spring + Security primer ladder](./README.md#spring--security)로 돌아가 entrypoint를 다시 고른다. 그다음 이 문서로 복귀할 때는 "로그인 후 원래 URL 복귀가 이상한가?" 질문 하나만 들고 온다.
 - 그 다음 `로그인 후 다시 /login으로 튄다`, `보호 페이지로 돌아가자마자 또 인증하라고 한다`, `API가 401 대신 HTML login page를 준다`면 이 문서에서 `SavedRequest` / `RequestCache`를 먼저 분리한다.
 - 같은 primer handoff라도 `hidden session`, `hidden JSESSIONID`, `cookie exists but session missing`, `cookie 있는데 다시 로그인`, `next request anonymous after login`처럼 **다음 요청 인증 유지** 쪽이 핵심이면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 이어 간다.

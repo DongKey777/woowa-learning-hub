@@ -8,11 +8,14 @@
 관련 문서:
 
 - [카테고리 README](./README.md)
+- [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+- [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
+- [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: adapter bulk optimization without port leakage basics, adapter bulk optimization without port leakage beginner, adapter bulk optimization without port leakage intro, software engineering basics, beginner software engineering, 처음 배우는데 adapter bulk optimization without port leakage, adapter bulk optimization without port leakage 입문, adapter bulk optimization without port leakage 기초, what is adapter bulk optimization without port leakage, how to adapter bulk optimization without port leakage
+retrieval-anchor-keywords: adapter bulk optimization without port leakage, saveall port smell, jdbc batch inside adapter, http bulk endpoint mapping, per-item port contract, domain-shaped port, bulk contract promotion, beginner hexagonal boundary, batch optimization without leakage, named bulk contract, partial failure mapping, adapter coalescing, 처음 saveall 왜 안 되나요, bulk port 언제 올리나요, what is bulk port
 <details>
 <summary>Table of Contents</summary>
 
@@ -32,49 +35,6 @@ retrieval-anchor-keywords: adapter bulk optimization without port leakage basics
 
 </details>
 
-> 관련 문서:
-> - [Software Engineering README: Adapter Bulk Optimization Without Port Leakage](./README.md#adapter-bulk-optimization-without-port-leakage)
-> - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
-> - [Bulk Port vs Per-Item Use Case Tradeoffs](./bulk-port-vs-per-item-use-case-tradeoffs.md)
-> - [saveAll/sendAll Port Smells and Safer Alternatives](./saveall-sendall-port-smells-safer-alternatives.md)
-> - [True Bulk Contracts and Partial Failure Results](./true-bulk-contracts-partial-failure-results.md)
-> - [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)
-> - [HTTP Coalescing Failure Mapping](./http-coalescing-failure-mapping.md)
-> - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
-> - [Repository, DAO, Entity](./repository-dao-entity.md)
-> - [Repository Fake Design Guide](./repository-fake-design-guide.md)
-> - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)
-> - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
-> - [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)
->
-> retrieval-anchor-keywords:
-> - adapter bulk optimization without port leakage
-> - adapter internal bulk api
-> - JPA batch inside adapter
-> - Hibernate JDBC batch boundary
-> - JDBC batch adapter implementation
-> - HTTP bulk endpoint adapter
-> - per-item port domain-shaped port
-> - domain-shaped outbound port
-> - no saveAll port leak
-> - saveAll as adapter detail
-> - Spring Data saveAll implementation detail
-> - transaction scoped batch buffer
-> - adapter coalescing
-> - bulk endpoint per item result mapping
-> - http coalescing failure mapping
-> - batch receipt to item receipt
-> - port leakage prevention
-> - adapter optimization vs application contract
-> - true bulk contract
-> - named chunk contract
-> - testing named bulk contracts
-> - bulk adapter regression test beginner
-> - hexagonal adapter bulk primer
-> - beginner adapter bulk decision flow
-> - per item receipt preservation
-> - batch optimization checklist beginner
-
 ## 먼저 떠올릴 그림
 
 초심자에게는 이 그림 하나로 시작하면 된다.
@@ -92,6 +52,20 @@ retrieval-anchor-keywords: adapter bulk optimization without port leakage basics
 - 파트너사의 `/bulk-send` HTTP endpoint
 
 그 이름이 곧바로 application port로 올라올 필요는 없다.
+
+짧게 외우면:
+
+- port는 "무슨 일을 약속하나"를 말한다
+- adapter는 "그 약속을 어떤 기술로 빠르게 처리하나"를 말한다
+
+## 이런 문장에서 막히면 이 문서가 맞다
+
+| 지금 떠오르는 말 | 먼저 잡을 기준 |
+|---|---|
+| "`saveAll`이 더 빠르니 port도 `saveAll`이어야 하나?" | 기술 API 이름과 application 계약 이름을 분리한다 |
+| "외부가 `/bulk-send`만 주는데 단건 port는 거짓말 아닌가?" | 호출 방식보다 per-item 결과를 보존할 수 있는지 본다 |
+| "batch를 숨기면 실패 원인을 못 찾지 않나?" | item 실패를 다시 설명할 수 있으면 숨길 수 있다 |
+| "운영자가 chunk 단위로 다시 돌린다면?" | 그때는 bulk 자체가 업무 단위인지 다시 판단한다 |
 
 ## port에는 무엇을 남기고 adapter에는 무엇을 숨기나
 
@@ -297,7 +271,7 @@ class PartnerWelcomeMailAdapter implements WelcomeMailSender {
 - 한 item 실패가 다른 item의 성공 의미를 흐리지 않는다
 - retry와 idempotency key가 port의 per-item 약속과 맞는다
 
-## 안전한 모양 3: HTTP bulk endpoint는 adapter가 per-item 결과로 번역한다 (계속 2)
+## bulk를 숨기기 어려운 신호
 
 이 조건을 지킬 수 없으면 adapter 최적화로 숨기기 어렵다.
 그때는 bulk를 application 계약으로 올릴지 검토해야 한다.

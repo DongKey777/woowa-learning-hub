@@ -15,6 +15,8 @@
 
 > 관련 문서:
 > - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
+> - [BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기](./spring-beandefinitionoverrideexception-quick-triage.md)
+> - [Spring `spring.main.allow-bean-definition-overriding` Boundaries Primer: 테스트에서는 언제 괜찮고, 운영 기본값으로는 왜 위험한가](./spring-allow-bean-definition-overriding-test-boundaries-primer.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
 > - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
@@ -210,6 +212,8 @@ bean 이름 충돌은 등록 단계 문제라서 `@Primary`보다 먼저 터질 
 
 이 표만 기억해도 "무엇부터 고쳐야 하는가"가 훨씬 빨라진다.
 
+startup 로그에서 `BeanDefinitionOverrideException`, `overriding is disabled`, `existing bean`, `found 2`가 섞여 보여 30초 안에 분기가 안 되면 [BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기](./spring-beandefinitionoverrideexception-quick-triage.md)부터 열어 증상 기준으로 가르는 편이 빠르다.
+
 ---
 
 ## 초보자 기준 정리
@@ -231,6 +235,7 @@ bean 이름 충돌은 등록 단계 문제라서 `@Primary`보다 먼저 터질 
 ## 이 문서 다음에 보면 좋은 문서
 
 - "`@Primary`와 `@Qualifier` 중 무엇을 써야 하지?"가 다음 질문이면 [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)로 이어진다.
+- startup 오류 메시지 한 줄만 들고 빠르게 갈라 타고 싶다면 [BeanDefinitionOverrideException Quick Triage: 같은 이름 충돌인지, back-off인지, 후보 선택 문제인지 먼저 가르기](./spring-beandefinitionoverrideexception-quick-triage.md)로 먼저 간다.
 - 이름 충돌과 override 정책을 더 정확하게 보고 싶다면 [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)로 이어진다.
 - bean 이름이 어디서 오고 rename 때 왜 깨지는지 보고 싶다면 [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)로 이어진다.
 - Boot 기본 bean이 왜 안 뜨는지가 섞이면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.

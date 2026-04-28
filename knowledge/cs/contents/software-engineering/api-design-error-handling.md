@@ -455,6 +455,8 @@ public record FieldErrorMessage(
 ) {}
 ```
 
+## 검증 응답 테스트에서 먼저 보는 곳
+
 테스트에서 자주 보는 검증 포인트도 이 구조와 같다.
 
 ```java
@@ -472,6 +474,30 @@ mockMvc.perform(post("/members")
     .andExpect(jsonPath("$.errors[0].field").value("email"))
     .andExpect(jsonPath("$.errors[0].message").value("이메일 형식이 올바르지 않습니다."));
 ```
+
+### 흔한 혼동: 왜 어떤 프로젝트는 `$.errors[0]`이고, 어떤 프로젝트는 `$.fieldErrors[0]`인가
+
+초심자 기준 멘탈 모델은 이것 하나면 충분하다.
+
+- `jsonPath`가 틀린 게 아니라, **프로젝트마다 에러 목록을 담는 JSON 필드 이름이 다를 뿐**이다.
+- 그래서 assertion이 깨지면 "`message`가 없나?"보다 먼저 "**배열이 `errors` 아래에 있나, `fieldErrors` 아래에 있나**"를 확인하면 된다.
+
+| 응답 포맷 | 첫 필드 에러 JSONPath 예시 | 언제 자주 보나 | 읽는 법 |
+|---|---|---|---|
+| `errors` 배열 아래에 field/message를 넣는 커스텀 envelope | `$.errors[0].field` | 팀이 `ErrorResponse`를 직접 정의한 프로젝트 | `errors`를 "필드 오류 목록"으로 읽으면 된다 |
+| `fieldErrors` 배열을 따로 두는 포맷 | `$.fieldErrors[0].field` | Spring 기본 바인딩 오류 응답을 변형 없이 쓰거나, 전역 에러 포맷에서 필드 오류 전용 배열을 분리한 프로젝트 | `fieldErrors`를 "필드 검증 전용 목록"으로 읽으면 된다 |
+
+같은 실패라도 JSON 뼈대가 다르면 테스트 경로도 같이 바뀐다.
+
+```java
+// 커스텀 envelope
+.andExpect(jsonPath("$.errors[0].field").value("email"))
+
+// fieldErrors 분리형 envelope
+.andExpect(jsonPath("$.fieldErrors[0].field").value("email"))
+```
+
+즉 `$.errors[0]`와 `$.fieldErrors[0]`의 차이는 **검증 의미 차이**가 아니라 **응답 포맷 이름 차이**다. 초심자는 먼저 실제 응답 JSON에서 "필드 오류 배열의 이름"만 찾고, 그다음 같은 경로로 `field`, `message`, `rejectedValue`를 따라가면 된다.
 
 ### 흔한 혼동: `400` 한 건인데 왜 에러가 여러 개인가
 

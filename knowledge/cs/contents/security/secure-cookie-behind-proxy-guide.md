@@ -16,7 +16,7 @@
 - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
 - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop, x-forwarded-proto mismatch, login redirect becomes http, secure cookie not sent after redirect, proxy scheme drift beginner, wrong-scheme redirect chooser, browser sees https app sees http, load balancer https http mismatch, cookie stored but not sent chooser, browser session troubleshooting return path, browser session beginner ladder return, secure cookie behind proxy guide basics, secure cookie behind proxy guide beginner, secure cookie behind proxy guide intro
+retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop, x-forwarded-proto mismatch, login redirect becomes http, secure cookie not sent after redirect, proxy scheme drift beginner, wrong-scheme redirect chooser, browser sees https app sees http, load balancer https http mismatch, cookie stored but not sent chooser, browser session troubleshooting return path, secure cookie behind proxy guide basics, secure cookie behind proxy guide beginner, return to browser session troubleshooting path, wrong-scheme follow-up return
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -35,6 +35,8 @@ retrieval-anchor-keywords: secure cookie behind proxy, secure cookie login loop,
 |---|---|
 | `wrong-scheme`였다는 건 알겠는데 다음 symptom branch를 다시 골라야 한다 | [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path) |
 | cookie/proxy/security 용어 자체가 다시 흐려졌다 | [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder) |
+
+`Wrong-Scheme vs Wrong-Origin Redirect Shortcut`에서 이 문서로 들어왔다면, beginner one-step return path도 같다. `http://...` 원인을 한 장만 확인한 뒤에는 deep dive를 더 열기 전에 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 바로 돌아간다.
 
 ## 막히면 먼저 돌아갈 자리
 

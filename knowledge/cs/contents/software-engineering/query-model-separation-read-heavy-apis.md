@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: query model separation read heavy apis basics, query model separation read heavy apis beginner, query model separation read heavy apis intro, software engineering basics, beginner software engineering, 처음 배우는데 query model separation read heavy apis, query model separation read heavy apis 입문, query model separation read heavy apis 기초, what is query model separation read heavy apis, how to query model separation read heavy apis
+retrieval-anchor-keywords: query model basics, query model beginner, read model basics, read model beginner, query repository basics, query model 뭐예요, read model 뭐예요, query repository 뭐예요, query model 큰 그림, 처음 배우는데 query model, 조회 전용 모델 기초, 목록 api 엔티티 분리, 왜 query model을 나누나요, 언제 query repository를 쓰나요, cqrs lite beginner
 <details>
 <summary>Table of Contents</summary>
 
@@ -36,8 +36,9 @@ retrieval-anchor-keywords: query model separation read heavy apis basics, query 
 > - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
 > - [Event Sourcing, CQRS Adoption Criteria](./event-sourcing-cqrs-adoption-criteria.md)
+> - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 >
-> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model, helper snapshot bloat, helper snapshot vs response dto, command support data, dao vs query model, query repository 언제 쓰는지
+> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model, helper snapshot bloat, helper snapshot vs response dto, command support data, dao vs query model, query repository 언제 쓰는지, read model 언제 필요해요, query model과 response model 차이, write model read model 차이, 목록 api에서 엔티티가 비대해져요, 조회 화면 때문에 repository 메서드가 많아져요, 처음 query model 헷갈림, query model 첫 질문, read model 큰 그림
 
 ## 왜 헷갈리는가
 
@@ -77,6 +78,7 @@ retrieval-anchor-keywords: query model separation read heavy apis basics, query 
 
 query model과 response model은 모양이 비슷할 수 있다.
 그래도 둘을 개념적으로 구분해 두면, 나중에 API 필드 이름이나 외부 계약이 바뀌어도 SQL projection을 덜 흔들 수 있다.
+Java에서 `query view`나 `response model`을 `record`로 둘 계획이라면, 값 의미와 동등성 감각은 [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)로 이어 보면 덜 섞인다.
 
 ## 언제 query repository를 꺼낼까
 
@@ -290,6 +292,19 @@ public class OrderQueryService {
 - response model은 query model과 비슷해 보여도 외부 계약이라는 별도 변경 이유를 가진다
 - 같은 DB 위의 query 분리만으로도 충분한 경우가 많다
 - CQRS-lite의 출발점은 유행어가 아니라 "읽기 요구가 write model을 망가뜨리고 있는가"라는 질문이다
+
+## 다음 읽기
+
+이 문서는 "query model을 왜 나누는가"까지 잡는 primer다. 여기서 더 내려갈 때도 아래처럼 한 칸씩만 붙이면 초심자 route가 무너지지 않는다.
+
+| 지금 남은 질문 | 다음 문서 |
+|---|---|
+| "분리는 알겠는데 출발 판단이 아직 헷갈린다" | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) |
+| "같은 DB query repository로 끝낼지, read store를 따로 둘지 궁금하다" | [Same-DB Query Repository Vs Separate Read Store](./same-db-query-repository-vs-separate-read-store.md) |
+| "query view와 response DTO가 비슷해 보여서 다시 섞인다" | [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md) |
+| "조회 경로 분리 때문에 entity 누수와 lazy loading 경계도 같이 보고 싶다" | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md), [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md) |
+
+README 기반 persistence route로 복귀하려면 여기서 다시 시작하면 된다: [Software Engineering README](./README.md#query-model-separation-for-read-heavy-apis)
 
 ## 한 줄 정리
 

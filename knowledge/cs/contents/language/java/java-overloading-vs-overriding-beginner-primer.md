@@ -10,18 +10,15 @@
 - [카테고리 README](../README.md)
 - [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md)
+- [Java `default method` diamond conflict 기초](./interface-default-method-diamond-conflict-basics.md)
 
-
-retrieval-anchor-keywords: java overloading vs overriding beginner primer basics, java overloading vs overriding beginner primer beginner, java overloading vs overriding beginner primer intro, java basics, beginner java, 처음 배우는데 java overloading vs overriding beginner primer, java overloading vs overriding beginner primer 입문, java overloading vs overriding beginner primer 기초, what is java overloading vs overriding beginner primer, how to java overloading vs overriding beginner primer
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
-> - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-
-> retrieval-anchor-keywords: java overloading vs overriding, java overload override difference, java method overloading basics, java method overriding basics, java compile time vs runtime method selection, java parent reference child object method call, java polymorphism beginner example, java inheritance practice example, java same method name different parameter, java same signature override, java @Override basics, java dynamic dispatch beginner, java overload argument list, java override runtime dispatch, 자바 오버로딩 오버라이딩 차이, 처음 배우는데 오버로딩 오버라이딩, 메서드 이름 같은데 왜 다르게 동작하나요, 자바 @Override 왜 쓰나요, 부모 타입 자식 객체 메서드 호출, 컴파일 타임 런타임 메서드 선택 차이, 오버로딩 언제 쓰는지 기초, 오버라이딩 언제 쓰는지 기초
+retrieval-anchor-keywords: java overloading vs overriding, java overload override difference, java method overloading basics, java method overriding basics, java compile time vs runtime method selection, java same method name different parameter, java same signature override, java @override basics, 자바 오버로딩 오버라이딩 차이, 처음 배우는데 오버로딩 오버라이딩, 메서드 이름 같은데 왜 다르게 동작하나요, 컴파일 타임 런타임 메서드 선택 차이, default method override overload 차이, 같은 이름인데 시그니처가 다르면 오버로딩, 처음 배우는데 시그니처 기준 판별
 
 <details>
 <summary>Table of Contents</summary>
@@ -32,6 +29,7 @@ retrieval-anchor-keywords: java overloading vs overriding beginner primer basics
 - [메서드 선택을 2단계로 읽기](#메서드-선택을-2단계로-읽기)
 - [손으로 풀어보는 연습](#손으로-풀어보는-연습)
 - [초보자가 자주 틀리는 포인트](#초보자가-자주-틀리는-포인트)
+- [인터페이스 `default method`에 적용해 보기](#인터페이스-default-method에-적용해-보기)
 - [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
 - [한 줄 정리](#한-줄-정리)
 
@@ -242,10 +240,62 @@ return type만 다르게 두는 것은 허용되지 않는다.
 
 오타나 시그니처 불일치를 바로 컴파일 에러로 바꿔 주기 때문이다.
 
+## 인터페이스 `default method`에 적용해 보기
+
+처음 배우는데 `default method`까지 나오면 "같은 이름이면 충돌인가, 오버로딩인가, 오버라이딩인가"가 다시 섞이기 쉽다.
+
+여기서도 기준은 같다.
+
+- 부모 인터페이스의 **같은 시그니처**를 구현 클래스가 다시 쓰면 override
+- 이름은 같지만 **parameter 목록이 다르면** overload
+- 서로 다른 인터페이스가 **같은 시그니처의 default method**를 주면 충돌이라 구현 클래스가 override해서 정리해야 한다
+
+짧은 예제로 보면:
+
+```java
+interface Printer {
+    default void print() {
+        System.out.println("printer");
+    }
+}
+
+interface Scanner {
+    default void print(String mode) {
+        System.out.println("scanner " + mode);
+    }
+}
+
+class OfficeMachine implements Printer, Scanner {
+    @Override
+    public void print() {
+        Printer.super.print();
+    }
+
+    public void print(int copies) {
+        for (int i = 0; i < copies; i++) {
+            print();
+        }
+    }
+}
+```
+
+이 코드를 이렇게 읽으면 된다.
+
+- `print()`는 `Printer`의 같은 시그니처를 다시 쓰므로 override
+- `print(String)`는 `Scanner`에서 온 다른 시그니처라서 overload로 함께 존재
+- `print(int)`도 새 overload다
+
+즉 class든 interface default method든, 초급자 기준 판별 순서는 늘 같다.
+
+1. 같은 이름인가
+2. parameter 목록도 같은가
+3. 같으면 override/충돌 후보, 다르면 overload
+
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - parameter, return type, method overloading을 더 기초부터 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - `extends`, `super(...)`, dynamic dispatch를 상속 관점에서 더 길게 읽고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
+- 인터페이스 `default method`에서 같은 이름 충돌과 `InterfaceName.super` 문법까지 이어서 보고 싶다면 [Java `default method` diamond conflict 기초](./interface-default-method-diamond-conflict-basics.md)
 - 클래스, 객체, 추상화, 다형성까지 OOP 지도를 넓히고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - overloading/overriding 뒤에 "상속 vs 조합, 추상 클래스 vs 인터페이스를 언제 쓰는지"까지 이어 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 - 상속과 다형성을 더 넓은 설계 원리로 연결하고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)

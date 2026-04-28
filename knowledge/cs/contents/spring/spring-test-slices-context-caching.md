@@ -1,31 +1,46 @@
 # Spring Test Slices와 Context Caching
 
-> 한 줄 요약: Spring 테스트는 "많이 돌리는 것"보다, 어떤 컨텍스트를 얼마나 작게 재사용할지 설계하는 문제가 더 중요하다.
+> 한 줄 요약: 이 문서는 "`왜 테스트가 갑자기 느려졌지?`" 단계에서 slice와 context cache를 같이 보는 follow-up이고, 처음 테스트를 고르는 단계라면 먼저 beginner primer로 내려가는 편이 안전하다.
 
 **난이도: 🟡 Intermediate**
 
-
 관련 문서:
-
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
+- [Spring 테스트 기초: @SpringBootTest부터 슬라이스 테스트까지](./spring-testing-basics.md)
+- [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
+- [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
+- [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
+- [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
+- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
+- [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
 
-> 관련 문서:
-> - [Spring Boot 자동 구성](./spring-boot-autoconfiguration.md)
-> - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
-> - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
-> - [Spring Security 아키텍처](./spring-security-architecture.md)
-> - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
-> - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
-> - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
-> - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
-> - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
-> - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
-
-retrieval-anchor-keywords: test slice, context cache, webmvctest, datajpatest, springboottest, springboottest properties, testpropertysource, dynamicpropertysource, test property override, test property cache split, mockbean, dirtiescontext, testentitymanager, spring test slices context caching basics, spring test slices context caching beginner
+retrieval-anchor-keywords: test slice, context cache, webmvctest, datajpatest, springboottest, spring test slow, 왜 테스트 느려요, 처음 배우는데 test slice, context cache 뭐예요, slice test cache split, springboottest properties, testpropertysource, dynamicpropertysource, test property override, dirtiescontext
 
 ---
+
+## 먼저 이 문서로 오기 전 체크
+
+처음 Spring 테스트를 고르는 단계라면 이 문서보다 아래 두 문서가 먼저다.
+
+- "`처음이라 `@SpringBootTest` / `@WebMvcTest` / `@DataJpaTest` 차이부터 헷갈려요`" -> [Spring 테스트 기초](./spring-testing-basics.md)
+- "`service bean not found`가 scan 문제인지 slice 경계 문제인지 모르겠어요`" -> [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)
+
+이 문서는 그 다음 단계, 즉 "**테스트 종류는 대충 골랐는데 왜 느리고 왜 캐시가 자꾸 갈라지지?**"를 보는 문서다.
+
+## 먼저 잡는 mental model
+
+처음에는 캐시 구현 디테일보다 아래 한 줄로 보면 된다.
+
+> mental model: slice는 "얼마나 적게 띄울까"를 정하는 선택이고, context cache는 "한 번 띄운 걸 몇 번 다시 쓸까"를 정하는 선택이다.
+
+같은 `POST /orders` 테스트라도 질문이 다르면 보는 축이 달라진다.
+
+| 지금 막힌 말 | 먼저 보는 축 | 먼저 읽을 문서 |
+|---|---|---|
+| "`/orders` 응답 코드만 빨리 보고 싶어요" | 테스트 범위 선택 | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`service bean not found`가 나요" | slice 경계 확인 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| "`어제보다 테스트가 3배 느려졌어요`" | context 재사용 여부 | 이 문서 |
+| "`JSON` 모양이나 외부 API client 헤더만 보고 싶어요" | 더 좁은 계약 slice | [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md) |
 
 ## 핵심 개념
 
@@ -45,6 +60,17 @@ Spring 테스트의 핵심은 두 가지다.
 
 이 문서를 읽어야 하는 이유는 명확하다.
 테스트가 느리고, 불안정하고, 리팩터링에 약하다면 단순히 mock을 늘릴 문제가 아니라, **컨텍스트 구성 자체를 재설계해야 하기 때문**이다.
+
+## 20초 분기: 지금 문제는 slice 선택인가, cache 분열인가
+
+아래처럼 나누면 glossary처럼 읽지 않고 바로 출발점을 고를 수 있다.
+
+| 보이는 증상 | 더 가까운 원인 | 다음 행동 |
+|---|---|---|
+| "`@WebMvcTest`인데 service bean이 없어요" | 원래 slice에 없는 Bean을 기대함 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)로 이동 |
+| "`@SpringBootTest`가 여기저기 늘면서 CI가 느려졌어요" | full context 남용 | slice로 줄일 수 있는 테스트를 먼저 분리 |
+| 테스트 로직은 비슷한데 클래스마다 시작 시간이 길다 | 같은 컨텍스트를 재사용하지 못함 | property, mock, `@DirtiesContext` 차이를 비교 |
+| JSON 직렬화나 outbound client만 검증하면 되는데 테스트가 무겁다 | slice가 너무 넓음 | [`@JsonTest` / `@RestClientTest`](./spring-jsontest-restclienttest-slice-boundaries.md)로 축소 |
 
 ---
 
@@ -81,7 +107,7 @@ class OrderControllerTest {
 }
 ```
 
-### 2. Context Caching은 왜 중요한가
+## Context Caching은 왜 중요한가
 
 Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 즉, 테스트 클래스마다 무조건 다시 올리는 것이 아니라, 컨텍스트 구성이 같으면 재사용할 수 있다.
@@ -97,12 +123,21 @@ Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 
 결과적으로 테스트는 논리적으로 비슷한데, 컨텍스트는 매번 새로 뜬다.
 
-### 3. Slice와 Full Context의 경계
+짧게 기억하면 아래 표면 충분하다.
+
+| 느려지는 이유 | 초급자용 해석 |
+|---|---|
+| slice를 너무 크게 골랐다 | 처음부터 큰 앱을 매번 띄운다 |
+| 같은 slice라도 속성이 자꾸 달라진다 | 재사용 가능한 컨텍스트가 매번 다른 것으로 판정된다 |
+| `@DirtiesContext`를 자주 쓴다 | 일부러 캐시를 버린다 |
+
+## Slice와 Full Context의 경계
 
 | 선택지 | 장점 | 단점 | 언제 쓰는가 |
 |---|---|---|---|
 | `@WebMvcTest` | 빠르고 좁다 | 서비스/리포지토리 흐름은 못 본다 | controller contract 확인 |
 | `@DataJpaTest` | repository 검증에 좋다 | 웹/보안/서비스 흐름은 못 본다 | query, mapping, transaction 확인 |
+| `@JsonTest` / `@RestClientTest` | payload / outbound client 계약만 더 좁게 본다 | 애플리케이션 전체 흐름은 못 본다 | JSON shape, 외부 HTTP adapter 확인 |
 | `@SpringBootTest` | 현실과 가장 가깝다 | 느리고 무겁다 | end-to-end-like integration |
 
 핵심은 “`@SpringBootTest`를 쓰지 말라”가 아니라, **슬라이스로 충분한데 전체 컨텍스트를 올리는 습관을 줄이라**는 것이다.
@@ -130,12 +165,15 @@ Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 테스트가 구현 세부사항에 묶이면, 클래스 이름만 바꿔도 테스트가 흔들린다.
 이 경우 mock 자체보다, **테스트의 경계가 잘못 잡힌 것**일 가능성이 크다.
 
-### 시나리오 3: Security가 붙은 컨트롤러 테스트가 너무 복잡하다
+짧게 말하면 "`mock이 많다`"는 현상보다 "`원래 좁아야 할 테스트가 이미 너무 많은 Bean을 기대한다`"가 더 근본 원인일 수 있다.
 
-`@WebMvcTest`에 `Spring Security`가 섞이면 인증/인가 필터 설정이 추가된다.
-이때 실제 인증이 필요한지, 아니면 `@WithMockUser`로 충분한지 구분해야 한다.
+### 시나리오 3: 보안, 필터, custom config까지 섞이며 slice가 커졌다
 
-이 주제는 [Spring Security 아키텍처](./spring-security-architecture.md)와 같이 보면 이해가 빠르다.
+이 시점부터는 단순 캐시 문서보다 "원래 slice 경계를 누가 넓혔는가"를 따로 보는 편이 빠르다.
+
+- `@Import`, `@TestConfiguration`이 섞였으면 [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
+- "`원래 `@WebMvcTest`에 service가 없어야 하는 거였나?`"가 헷갈리면 [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)
+- 보안 필터 체인이 핵심이면 [Spring Security 아키텍처](./spring-security-architecture.md)
 
 ---
 
@@ -202,7 +240,7 @@ class BTest {
 
 ---
 
-## 꼬리질문
+## 다음 질문은 다른 문서로 넘긴다
 
 > Q: `@WebMvcTest`와 `@SpringBootTest`의 가장 큰 차이는 무엇인가?
 > 의도: 테스트 범위와 컨텍스트 비용 구분 확인
@@ -216,9 +254,10 @@ class BTest {
 > 의도: 테스트 설계의 응집도 확인
 > 핵심: 구현 세부사항에 테스트가 묶인다
 
-> Q: Security가 붙은 MVC 테스트는 왜 어려워지기 쉬운가?
-> 의도: 필터 체인과 테스트 경계 이해 확인
-> 핵심: 인증/인가 필터가 컨텍스트에 개입하기 때문이다
+- "`처음이라 어떤 테스트 annotation을 고를지 모르겠어요`" -> [Spring 테스트 기초](./spring-testing-basics.md)
+- "`property override가 cache를 왜 쪼개죠?`" -> [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
+- "`slice에 뭘 import했더니 갑자기 무거워졌어요`" -> [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
+- "`JSON` 필드명이나 외부 API client 요청만 검증하고 싶은데 너무 무거워요`" -> [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
 
 ---
 

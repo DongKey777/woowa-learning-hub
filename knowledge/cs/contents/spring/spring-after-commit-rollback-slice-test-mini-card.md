@@ -37,6 +37,22 @@ retrieval-anchor-keywords: after commit test beginner, transactionaleventlistene
 
 **rollback 기반 slice test가 통과해도, 그것만으로 "`AFTER_COMMIT`이 운영처럼 잘 돈다"까지는 말할 수 없다.**
 
+## 증상 문장으로 먼저 가르기
+
+초급자는 아래처럼 **지금 막힌 말**로 먼저 분리하면 된다.
+
+| 막힌 말 | 먼저 떠올릴 질문 |
+|---|---|
+| "`flush()`까지 했는데 listener가 안 돌아요" | commit이 실제로 있었나 |
+| "`verify(..., never())`는 통과하는데 안심해도 되나요?" | rollback 때문에 원래 안 돈 것과 버그를 구분했나 |
+| "`@DataJpaTest`에서 `AFTER_COMMIT`까지 보고 싶어요" | slice test 하나로 끝낼 문제인가, commit-visible 테스트를 따로 둘 문제인가 |
+
+짧게 줄이면 아래 한 줄이다.
+
+```text
+안 도는 이유가 로직 버그인지, 아직 commit이 없어서인지 먼저 가른다
+```
+
 ## 왜 이런 착시가 생기나
 
 ### 1. `flush`를 commit처럼 느끼기 쉽다
@@ -144,6 +160,16 @@ TestTransaction.end();
 - "`AFTER_COMMIT` 검증을 위해 무조건 모든 테스트를 `@SpringBootTest`로 바꿔야 한다"가 아니다.
 
 보통은 **slice test로 JPA 감각을 먼저 고정**하고, **commit-visible 경로만 별도 테스트로 얇게 보강**하면 된다.
+
+## 다음 테스트를 어디로 보낼까
+
+| 지금 확인하려는 것 | 추천 출발점 |
+|---|---|
+| 엔티티 매핑, repository 저장/조회, flush 반응 | `@DataJpaTest` |
+| `AFTER_COMMIT` listener 호출 여부 | commit이 실제로 보이는 테스트 |
+| commit 뒤 알림/아웃박스 같은 후속 side effect | 더 넓은 통합 테스트 또는 명시적 commit 테스트 |
+
+초급자 기준으로는 **"같은 트랜잭션 안 확인"과 "commit 뒤 확인"을 같은 테스트 책임으로 묶지 않는 것**이 핵심이다.
 
 ## 어디로 이어서 보면 좋나
 

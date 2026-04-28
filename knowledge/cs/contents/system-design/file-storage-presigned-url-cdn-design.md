@@ -7,10 +7,16 @@
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
+> - [CDN 기초 (CDN Basics)](./cdn-basics.md)
+> - [Object Metadata Service 설계](./object-metadata-service-design.md)
 > - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 > - [Cache-Control 실전](../network/cache-control-practical.md)
 > - [HTTPS / HSTS / MITM](../security/https-hsts-mitm.md)
+> - [Signed URL / Presigned Upload Threat Model](../security/signed-url-presigned-upload-threat-model.md)
 > - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
+> - [Spring Multipart Upload Request Pipeline](../spring/spring-multipart-upload-request-pipeline.md)
+
+retrieval-anchor-keywords: file storage presigned url cdn design, presigned url 뭐예요, cdn 파일 업로드 설계, 처음 배우는데 파일 저장 큰 그림, object storage direct upload, signed url upload flow, cdn download architecture, private bucket public bucket, file upload scalability, multipart resumable upload, presigned url security, 파일 업로드 서버 안 거치는 이유, cdn cache-control file download, 파일 저장 설계 헷갈, beginner file storage architecture
 
 ---
 

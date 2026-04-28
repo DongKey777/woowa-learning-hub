@@ -15,7 +15,7 @@
 - [Spring 트랜잭션 기본](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: timeout tuning order checklist, before increasing timeout checklist, connection timeout tuning order, lock timeout tuning order, timeout value increase before checklist, long transaction external io hot key explain plan pool size, timeout tuning beginner card, timeout basics, timeout 뭐예요, 처음 배우는데 timeout, 타임아웃 튜닝 순서 체크리스트, 타임아웃 값 올리기 전에, connection timeout 먼저 볼 것, 트랜잭션 길이 외부 io 핫키 실행계획 풀 크기, timeout 값 늘리기 전 5단계
+retrieval-anchor-keywords: timeout tuning order checklist, before increasing timeout checklist, connection timeout tuning order, lock timeout tuning order, timeout value increase before checklist, long transaction external io hot key explain plan pool size, timeout tuning beginner card, timeout basics, timeout 뭐예요, 처음 배우는데 timeout, 타임아웃 튜닝 순서 체크리스트, 타임아웃 값 올리기 전에, connection timeout 먼저 볼 것, 트랜잭션 길이 외부 io 핫키 실행계획 풀 크기, external delay lock wait pool timeout route
 
 ## 먼저 멘탈모델
 
@@ -27,6 +27,21 @@ retrieval-anchor-keywords: timeout tuning order checklist, before increasing tim
 > "값을 올리면 문제가 사라지나, 아니면 같은 막힘을 더 오래 숨기기만 하나?"
 
 이 카드의 목적은 그 질문을 5단계로 빠르게 확인하는 것이다.
+
+## 경계 카드에서 바로 넘어오는 20초 연결
+
+[트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md)를 방금 보고 왔다면, timeout 쪽에서도 같은 그림을 그대로 쓰면 된다.
+
+| 경계 카드에서 보인 냄새 | timeout 카드에서 다시 읽는 증상 | 초보자 첫 액션 |
+|---|---|---|
+| `@Transactional` 안 외부 API 대기 | `lock wait timeout`, `Connection is not available`, `waiting` 증가 | timeout 값보다 먼저 트랜잭션 경계 축소 가능성을 본다 |
+| `write -> 외부 응답 대기 -> write` | active connection 고정, 후행 요청 borrow timeout | commit 단위를 짧게 나눌 수 있는지 본다 |
+
+한 줄로 줄이면:
+
+`외부 지연 -> 긴 tx -> lock wait -> pool 대기 -> timeout`
+
+즉 timeout 조정 카드는 경계 카드의 반대편이 아니라, **같은 문제를 운영 증상 언어로 다시 읽는 카드**다.
 
 ## 5단계 한 장 체크리스트
 

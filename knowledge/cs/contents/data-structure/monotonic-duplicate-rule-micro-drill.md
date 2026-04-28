@@ -36,8 +36,8 @@ deque와 stack의 모양은 달라도, `equal을 남길지 지울지`를 먼저 
 
 | 구조 | 질문 | 보통 고르는 pop 조건 | 중복에서 남는 쪽 |
 |---|---|---|---|
-| max deque | "같은 최대값이면 새 값이 대표여도 됨" | `backValue <= cur` | 새 값 |
-| max deque | "같은 최대값이면 가장 왼쪽 index 유지" | `backValue < cur` | 이전 값 |
+| max deque | "같은 최대값이면 가장 오른쪽 index를 대표로 써도 됨" | `backValue <= cur` | 새 값 = 오른쪽 대표 |
+| max deque | "같은 최대값이면 가장 왼쪽 index를 대표로 유지" | `backValue < cur` | 이전 값 = 왼쪽 대표 |
 | next greater stack | "greater만 허용" | `topValue < cur` | 같은 값은 남겨 둠 |
 | next greater or equal stack | "greater or equal 허용" | `topValue <= cur` | 같은 값도 이번에 해결 |
 | previous smaller stack | "smaller만 허용" | `topValue >= cur` | 같은 값 제거 |
@@ -65,6 +65,7 @@ deque와 stack의 모양은 달라도, `equal을 남길지 지울지`를 먼저 
 
 - `값만` 물으면 두 구현이 모두 통과할 수 있다.
 - `어느 index를 대표로 볼지`가 붙는 순간 `<`와 `<=`는 다른 규칙이다.
+- `새 값 유지`라고 적어도 되고, beginner 관점에서는 `오른쪽 대표 유지`라고 적어도 같은 말이다.
 
 ## Drill 2. Stack: `>`와 `>=`가 바꾸는 것
 

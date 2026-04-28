@@ -14,7 +14,7 @@
 - [Request Deadline / Timeout Budget Primer](../system-design/request-deadline-timeout-budget-primer.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decision table, hol blocking vs window_update, packet loss vs credit starvation, tcp hol vs h2 flow control, h2 stall routing beginner, stream stalled but connection alive, http/2가 느려져요, 처음 배우는데 h2 stall, http2 hol blocking vs flow control stall quick decision table basics, http2 hol blocking vs flow control stall quick decision table beginner, http2 hol blocking vs flow control stall quick decision table intro, network basics, beginner network, 처음 배우는데 http2 hol blocking vs flow control stall quick decision table
+retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decision table, hol blocking vs window_update, packet loss vs credit starvation, tcp hol vs h2 flow control, h2 stall routing beginner, stream stalled but connection alive, max_concurrent_streams vs window_update, stream slot vs window credit, http/2가 느려져요, 처음 배우는데 h2 stall, http2 hol blocking vs flow control stall quick decision table beginner, http2 hol blocking vs flow control stall quick decision table intro, network basics, beginner network
 
 ## 먼저 잡는 그림
 
@@ -35,6 +35,25 @@ retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decisi
 | 작은 요청도 같이 느려지나 | 자주 그렇다. 같은 TCP 연결이면 같이 영향 받기 쉽다 | connection window가 막히면 그렇고, stream window만 막히면 아닐 수 있다 |
 | 손실이 꼭 있어야 하나 | 대체로 손실/재정렬/전송 지연 후보를 먼저 본다 | 아니다. 손실이 없어도 receiver가 천천히 읽으면 생긴다 |
 | 첫 다음 문서 | [HTTP/2 멀티플렉싱과 HOL blocking](./http2-multiplexing-hol-blocking.md) | [HTTP/2 Flow Control, WINDOW_UPDATE, Stall](./http2-flow-control-window-update-stalls.md) |
+
+## 먼저 자르는 오해: stream slot 부족 vs window credit 부족
+
+여기서 초급자가 한 번 더 헷갈린다. 둘 다 "HTTP/2에서 뭔가 막혔다"로 보이지만 질문 자체가 다르다.
+
+| 구분 | stream slot 부족 | window credit 부족 |
+|---|---|---|
+| 먼저 떠올릴 말 | `MAX_CONCURRENT_STREAMS` | `WINDOW_UPDATE`, `stream window`, `connection window` |
+| 막히는 순간 | 새 stream을 더 열려고 할 때 | stream은 이미 열렸는데 DATA를 더 보내려 할 때 |
+| 눈에 보이는 증상 | 요청 시작 자체가 늦다, pending queue가 생긴다 | 시작은 했는데 중간에 조용히 멈춘다 |
+| 비유 | 계산대 자리가 다 차서 새 손님이 줄을 선다 | 계산대 자리는 있는데 결제 한도가 0원이라 더 못 산다 |
+| 먼저 볼 문서 | [HTTP/2 MAX_CONCURRENT_STREAMS, Pending Queue, Saturation](./http2-max-concurrent-streams-pending-queue-saturation.md) | [HTTP/2 Flow Control, WINDOW_UPDATE, Stall](./http2-flow-control-window-update-stalls.md) |
+
+짧게 기억하면 된다.
+
+- `slot 문제`는 "새 요청이 아직 출발도 못 함"
+- `credit 문제`는 "출발은 했는데 중간에 더 못 감"
+
+둘을 섞으면 "stream이 안 열렸다"와 "stream은 열렸는데 DATA가 안 간다"를 같은 장애처럼 읽게 된다.
 
 ## 헷갈릴 때 바로 쓰는 4문장 판별
 
@@ -74,6 +93,7 @@ retrieval-anchor-keywords: http/2 hol vs flow-control stall, http/2 quick decisi
 - "HTTP/2는 멀티플렉싱이니까 HOL이 없다"는 절반만 맞다. HTTP 레벨 HOL은 줄지만 TCP HOL은 남는다.
 - "stall이면 네트워크 장애다"도 틀릴 수 있다. H2 flow control stall은 애플리케이션이 천천히 읽어도 생긴다.
 - "`MAX_CONCURRENT_STREAMS`에 걸린 것과 flow-control stall은 같다"도 틀리다. 하나는 새 stream 개수 제한이고, 다른 하나는 열린 stream의 전송 예산 문제다.
+- "작은 요청도 같이 느리면 무조건 HOL blocking"도 성급하다. connection window가 바닥나면 작은 요청도 함께 멈출 수 있다.
 
 ## 안전한 다음 한 걸음
 

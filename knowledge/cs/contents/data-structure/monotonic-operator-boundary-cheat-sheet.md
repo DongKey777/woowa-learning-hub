@@ -21,7 +21,7 @@ retrieval-anchor-keywords: monotonic operator boundary cheat sheet basics, monot
 > - [Monotonic Stack Walkthrough](./monotonic-stack-walkthrough.md)
 > - [Monotonic Deque vs Monotonic Stack Shared-Input Drill](./monotonic-deque-vs-stack-shared-input-drill.md)
 >
-> retrieval-anchor-keywords: monotonic operator boundary, monotonic deque operator, monotonic stack operator, monotonic duplicates, less than vs less than equal monotonic, greater than vs greater than equal monotonic, monotonic deque duplicate tie break, monotonic stack duplicate tie break, monotonic duplicate rule drill, monotonic duplicate micro drill, deque leftmost max index, deque rightmost max index, deque rightmost min index, first greater monotonic, first greater or equal monotonic, value only monotonic deque, value only vs index tie break deque, monotonic deque value only, monotonic deque leftmost tie break, previous smaller strict duplicate bug, operator boundary cheat sheet, monotonic operator decision table, monotonic deque stack decision table, monotonic operator mapping table, problem sentence to operator monotonic, strict vs or equal monotonic mapping, 단조 연산자 경계, 단조 덱 중복 연산자, 단조 스택 중복 연산자, 단조 덱 < <= 차이, 단조 스택 > >= 차이, 값만 구할 때 단조 덱, 인덱스 tie break 단조 덱, 중복값 tie break, 단조 연산자 결정표, 문제 문장 연산자 매핑
+> retrieval-anchor-keywords: monotonic operator boundary, monotonic deque operator, monotonic stack operator, monotonic duplicates, less than vs less than equal monotonic, greater than vs greater than equal monotonic, monotonic deque duplicate tie break, monotonic stack duplicate tie break, monotonic duplicate rule drill, monotonic duplicate micro drill, deque leftmost max index, deque rightmost max index, deque rightmost min index, first greater monotonic, first greater or equal monotonic, value only monotonic deque, value only vs index tie break deque, monotonic deque value only, monotonic deque leftmost tie break, previous smaller strict duplicate bug, operator boundary cheat sheet, monotonic operator decision table, monotonic deque stack decision table, monotonic operator mapping table, problem sentence to operator monotonic, strict vs or equal monotonic mapping, greater greater or equal smaller smaller or equal, 초과 이상 미만 이하 연산자 번역, 단조 연산자 경계, 단조 덱 중복 연산자, 단조 스택 중복 연산자, 단조 덱 < <= 차이, 단조 스택 > >= 차이, 값만 구할 때 단조 덱, 인덱스 tie break 단조 덱, 중복값 tie break, 단조 연산자 결정표, 문제 문장 연산자 매핑
 
 ## 먼저 잡는 감각
 
@@ -42,6 +42,15 @@ retrieval-anchor-keywords: monotonic operator boundary cheat sheet basics, monot
 | `next greater`, `next smaller` | stack | 현재 원소의 다음 답 | greater면 `top < cur`, smaller면 `top > cur`일 때 답 확정 | strict라서 같은 값은 답이 아니다 |
 | `previous strictly smaller`, `previous strictly greater` | stack | 현재 원소의 이전 답 | smaller면 push 전 `top >= cur` pop, greater면 push 전 `top <= cur` pop | equal을 지워야 strict 이전 답이 남는다 |
 | `greater or equal`, `smaller or equal` | stack | 현재 원소의 다음/이전 답 | equal도 답으로 인정되게 반대편 strict만 pop | 문장에 `or equal`, `이상`, `이하`가 보이면 equal을 남겨야 한다 |
+
+### 문장 번역 한 줄 예문
+
+| 영어 표현 | 한국어 문제 문장으로 바로 읽기 | 바로 잡는 연산자 감각 |
+|---|---|---|
+| `greater` | `오른쪽에서 나보다 큰 수가 처음 나오는 위치를 구하라` | `초과`이므로 같은 값은 답이 아니다 |
+| `greater or equal` | `오른쪽에서 나보다 크거나 같은 수가 처음 나오는 위치를 구하라` | `이상`이므로 같은 값도 답이 될 수 있다 |
+| `smaller` | `왼쪽에서 나보다 작은 값이 가장 가까운 index를 구하라` | `미만`이므로 같은 값은 버린다 |
+| `smaller or equal` | `왼쪽에서 나보다 작거나 같은 값이 가장 가까운 index를 구하라` | `이하`이므로 같은 값도 남겨 둔다 |
 
 ### 3단계 번역 습관
 

@@ -1,48 +1,38 @@
 # BigDecimal Comparator Tie-Breaker 미니 드릴
 
-> 한 줄 요약: `BigDecimal`의 natural ordering은 scale을 무시하므로, `TreeSet`/`TreeMap`에서 `1.0`과 `1.00`을 둘 다 남기고 싶다면 "값 비교 후 scale tie-breaker"를 붙여야 한다.
+> 한 줄 요약: `TreeSet`/`TreeMap`에서 `BigDecimal`의 숫자값은 같지만 scale은 다른 `1.0`과 `1.00`을 둘 다 남기고 싶다면, `compareTo()` 뒤에 `scale()` tie-breaker를 직접 붙여야 한다.
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README: Java primer](../README.md#java-primer)
+- [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
+- [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
+- [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md)
+- [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 
-
-retrieval-anchor-keywords: bigdecimal comparator tie breaker mini drill basics, bigdecimal comparator tie breaker mini drill beginner, bigdecimal comparator tie breaker mini drill intro, java basics, beginner java, 처음 배우는데 bigdecimal comparator tie breaker mini drill, bigdecimal comparator tie breaker mini drill 입문, bigdecimal comparator tie breaker mini drill 기초, what is bigdecimal comparator tie breaker mini drill, how to bigdecimal comparator tie breaker mini drill
-> 관련 문서:
-> - [Language README: Java primer](../README.md#java-primer)
-> - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
-> - [BigDecimal 미니 드릴: `1.0` vs `1.00` in `HashSet`/`TreeSet`/`TreeMap`](./bigdecimal-1-0-vs-1-00-collections-mini-drill.md)
-> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
-> - [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md)
-> - [BigDecimal Key 정책 30초 체크리스트](./bigdecimal-key-policy-30-second-checklist.md)
-> - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
-
-> retrieval-anchor-keywords: language-java-00126, bigdecimal comparator tie breaker, bigdecimal treeset comparator scale, bigdecimal treemap comparator scale, bigdecimal value then scale comparator, bigdecimal custom comparator distinct scale, bigdecimal 1.0 1.00 treeset both kept, bigdecimal 1.0 1.00 treemap separate keys, comparator naturalOrder thenComparingInt scale, java bigdecimal scale sensitive sorted collection, java bigdecimal custom comparator beginner, 자바 bigdecimal comparator tie breaker, 자바 bigdecimal treeset scale 유지, 자바 bigdecimal treemap scale 유지, 자바 bigdecimal compareTo scale 무시, 자바 bigdecimal custom comparator 연습
+retrieval-anchor-keywords: bigdecimal comparator tie breaker, bigdecimal treeset scale, bigdecimal treemap scale, bigdecimal 1.0 1.00 treeset, bigdecimal value then scale comparator, java bigdecimal compareto scale 무시, 자바 bigdecimal treeset 구분, 처음 배우는데 bigdecimal comparator, why bigdecimal treeset merges, how to keep 1.0 1.00, bigdecimal custom comparator beginner, sorted collection bigdecimal distinctness
 
 ## 먼저 잡을 mental model
 
-초보자 기준으로는 아래 두 줄이면 충분하다.
+- 기본 `TreeSet<BigDecimal>`/`TreeMap<BigDecimal, V>`는 `compareTo()` 결과로 같은 자리인지 판단한다.
+- `BigDecimal.compareTo()`는 scale을 무시하므로 `1.0`과 `1.00`을 같은 숫자로 본다.
+- 그래서 scale 차이도 남기고 싶다면 "숫자 비교 후 scale 비교"를 한 번 더 붙여야 한다.
 
-- 기본 `TreeSet<BigDecimal>`/`TreeMap<BigDecimal, V>`는 `compareTo()`를 쓴다
-- `BigDecimal.compareTo()`는 scale을 무시하므로 `1.0`과 `1.00`을 같은 자리로 볼 수 있다
+짧게 외우면 이 문장이다.
 
-그래서 scale 차이도 보존하고 싶다면 comparator에 마지막 구분자를 직접 붙여야 한다.
+> natural ordering은 "숫자값"만 보고, tie-breaker는 "같은 숫자 안에서 다시 나누는 규칙"이다.
 
-> 값 순서는 `compareTo()`로 유지하고, 같은 숫자 안에서는 `scale()`로 다시 나눈다.
+## 한눈에 보는 비교
 
-## 문제 장면 한 장 요약
-
-| 비교 규칙 | `1.0` vs `1.00` 결과 | `TreeSet`/`TreeMap`에서 보이는 현상 |
+| 규칙 | `1.0` vs `1.00` | `TreeSet`/`TreeMap` 결과 |
 |---|---|---|
-| natural ordering (`compareTo`) | 같은 값 | 하나로 합쳐지거나 value가 덮어써질 수 있음 |
-| `value -> scale` comparator | 다른 값으로 끝까지 구분 | 둘 다 남길 수 있음 |
+| `compareTo()`만 사용 | 같은 값 | 같은 자리로 합쳐질 수 있다 |
+| `compareTo()` 후 `scale()` 비교 | 다른 값 | 둘 다 따로 남길 수 있다 |
 
-이 문서의 목표는 "정렬을 바꾸자"가 아니라 "숫자 순서는 유지하면서 scale-sensitive entry도 살려 보자"다.
+여기서 tie-breaker는 보기 좋은 정렬 장식이 아니다.
+sorted collection 안에서 "같은 원소인가, 다른 원소인가"를 끝까지 나누는 기준이다.
 
 ## 드릴 코드
 
@@ -65,93 +55,69 @@ amounts.add(new BigDecimal("2.0"));
 TreeMap<BigDecimal, String> labels = new TreeMap<>(byValueThenScale);
 labels.put(new BigDecimal("1.0"), "scale-1");
 labels.put(new BigDecimal("1.00"), "scale-2");
-labels.put(new BigDecimal("2.0"), "scale-1-two");
 
 System.out.println(amounts);
 System.out.println(amounts.size());
-System.out.println(labels.size());
 System.out.println(labels.get(new BigDecimal("1.0")));
 System.out.println(labels.get(new BigDecimal("1.00")));
+System.out.println(labels.get(new BigDecimal("1")));
 ```
 
-## 실행 전 30초 손예측
+## 실행 전 손예측
 
-| 질문 | 내 답 |
+| 질문 | 예상 |
 |---|---|
-| `amounts` 출력 순서 |  |
+| `amounts` |  |
 | `amounts.size()` |  |
-| `labels.size()` |  |
 | `labels.get(new BigDecimal("1.0"))` |  |
 | `labels.get(new BigDecimal("1.00"))` |  |
+| `labels.get(new BigDecimal("1"))` |  |
 
-## 정답
+정답은 이렇게 읽으면 된다.
 
 - `amounts` -> `[1.0, 1.00, 2.0]`
 - `amounts.size()` -> `3`
-- `labels.size()` -> `3`
 - `labels.get(new BigDecimal("1.0"))` -> `"scale-1"`
 - `labels.get(new BigDecimal("1.00"))` -> `"scale-2"`
+- `labels.get(new BigDecimal("1"))` -> `null`
 
-핵심은 `1.0`과 `1.00`이 숫자로는 같아도 comparator가 마지막에 `scale()`까지 보므로 `compare(...) == 0`으로 끝나지 않는다는 점이다.
+## 왜 `get(new BigDecimal("1"))`는 `null`일까
 
-## 왜 이 comparator가 두 요구를 같이 만족하나
+`byValueThenScale`은 두 단계를 본다.
 
-```java
-Comparator<BigDecimal> byValueThenScale =
-        Comparator.<BigDecimal>naturalOrder()
-                .thenComparingInt(BigDecimal::scale);
-```
+1. 먼저 `compareTo()`로 숫자값을 비교한다.
+2. 숫자값이 같으면 `scale()`로 다시 비교한다.
 
-위 한 줄을 초보자 눈으로 풀면 이렇게 읽으면 된다.
+그래서 `1`, `1.0`, `1.00`은 숫자값은 같아도 scale이 각각 `0`, `1`, `2`라서 모두 다른 key 자리다.
 
-1. 먼저 숫자 크기대로 정렬한다
-2. 숫자가 같으면 scale이 작은 쪽을 앞에 둔다
-3. 그래서 `1.0`과 `1.00`은 같은 숫자 그룹 안에서 다른 자리로 갈라진다
+| key | scale | 같은 자리인가 |
+|---|---|---|
+| `1` | `0` | 아니오 |
+| `1.0` | `1` | 아니오 |
+| `1.00` | `2` | 아니오 |
 
-짧은 비교표로 보면 더 쉽다.
-
-| 비교 단계 | `1.0` vs `1.00` |
-|---|---|
-| `compareTo()` | `0` |
-| `scale()` 비교 | `1` vs `2` |
-| 최종 comparator 결과 | `0`이 아님 |
-
-즉 tie-breaker는 보기 좋은 정렬용이 아니라, 여기서는 "같은 숫자라도 scale-sensitive entry를 따로 남길지"를 결정하는 distinctness 규칙이다.
-
-## `TreeMap`에서 특히 기억할 점
-
-이 comparator를 쓰면 `TreeMap`도 scale별로 다른 key 칸을 가진다.
-
-| key | value |
-|---|---|
-| `1.0` | `"scale-1"` |
-| `1.00` | `"scale-2"` |
-| `2.0` | `"scale-1-two"` |
-
-그래서 아래처럼 읽으면 된다.
-
-- natural ordering `TreeMap`이면 `1.0`과 `1.00`이 같은 key 칸으로 합쳐질 수 있다
-- `byValueThenScale` `TreeMap`이면 scale까지 key identity에 포함된다
-
-이건 장점이지만, 동시에 조회 기준도 바뀐다는 뜻이다.
-
-- `labels.get(new BigDecimal("1.0"))`는 `"scale-1"`
-- `labels.get(new BigDecimal("1.00"))`는 `"scale-2"`
-- `labels.get(new BigDecimal("1"))`는 `null`일 수 있다
-
-즉 "scale을 보존하고 싶다"는 요구가 있을 때만 이 comparator가 맞다.
+즉 "scale을 살린다"는 말은 조회 기준도 같이 바뀐다는 뜻이다.
 
 ## 초보자 공통 혼동
 
-- `thenComparingInt(BigDecimal::scale)`를 붙이면 정렬만 달라지고 distinctness는 그대로라고 생각하기 쉽다.
-- `TreeMap`에서 custom comparator를 쓰면 조회는 여전히 `compareTo()` 기준일 거라고 생각하기 쉽다.
-- `1.0`과 `1.00`을 둘 다 남기고 싶으면서도 `get(new BigDecimal("1"))`도 둘 다 찾길 기대하기 쉽다.
+- `thenComparingInt(BigDecimal::scale)`를 붙여도 정렬만 달라지고 distinctness는 그대로라고 생각하기 쉽다.
+- `TreeMap`에서 custom comparator를 써도 `get()`은 여전히 `compareTo()`만 볼 거라고 생각하기 쉽다.
+- `1.0`과 `1.00`을 둘 다 남기고 싶으면서 `1`로도 둘 다 찾히길 기대하기 쉽다.
 
-안전한 기억법:
+안전한 선택 순서는 이렇다.
 
-- 같은 숫자를 한 칸으로 모으고 싶다 -> natural ordering 쪽
-- 같은 숫자라도 scale 차이를 살리고 싶다 -> tie-breaker 추가
+- 같은 숫자는 한 칸으로 합쳐도 된다 -> natural ordering 유지
+- 같은 숫자라도 표현 차이를 남겨야 한다 -> tie-breaker 추가
+- 표현 차이를 남겼다면 조회도 같은 표현으로 해야 한다
+
+## 다음에 어디로 이어서 읽을까
+
+| 지금 막힌 질문 | 다음 문서 |
+|---|---|
+| `HashSet`과 `TreeSet` 결과가 왜 갈리지? | [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md) |
+| comparator와 `equals()` 관계가 헷갈린다 | [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md) |
+| tie-breaker를 언제 붙여야 할지 더 보고 싶다 | [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md) |
 
 ## 한 줄 정리
 
-`TreeSet`/`TreeMap`에서 `BigDecimal`의 숫자 순서는 유지하되 `1.0`과 `1.00` 같은 scale-sensitive entry를 둘 다 남기고 싶다면, `Comparator.naturalOrder().thenComparingInt(BigDecimal::scale)`처럼 tie-breaker를 직접 넣어야 한다.
+`TreeSet`/`TreeMap`에서 `BigDecimal`의 숫자 순서는 유지하되 `1.0`과 `1.00`을 따로 남기고 싶다면, `Comparator.naturalOrder().thenComparingInt(BigDecimal::scale)`처럼 scale tie-breaker를 직접 넣어야 한다.

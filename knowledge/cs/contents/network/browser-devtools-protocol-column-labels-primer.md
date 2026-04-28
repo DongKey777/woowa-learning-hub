@@ -16,11 +16,12 @@
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
 
-retrieval-anchor-keywords: devtools protocol column, har export http/1.1, connection id reuse, h3 same connection, h3 new connection, remote address clue, protocol vs cache, copy paste protocol mismatch, browser network tab, http2 http3 basics, same url two rows, connection reuse checklist, beginner devtools reading, 처음 배우는데 h3, protocol column 뭐예요
+retrieval-anchor-keywords: devtools protocol column, har export http/1.1, connection id reuse, h3 same connection, h3 new connection, remote address clue, protocol vs cache, copy paste protocol mismatch, browser network tab, http2 http3 basics, same url two rows, connection reuse checklist, beginner devtools reading, remote address connection id first check, reused connection first clue
 
 <details>
 <summary>Table of Contents</summary>
 
+- [README에서 여기까지 오는 가장 짧은 길](#readme에서-여기까지-오는-가장-짧은-길)
 - [먼저 잡는 멘탈 모델](#먼저-잡는-멘탈-모델)
 - [먼저 외우는 4칸 역할](#먼저-외우는-4칸-역할)
 - [가장 짧은 비교표](#가장-짧은-비교표)
@@ -31,6 +32,24 @@ retrieval-anchor-keywords: devtools protocol column, har export http/1.1, connec
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
 
 </details>
+
+## README에서 여기까지 오는 가장 짧은 길
+
+README에서 네트워크 입문 흐름을 따라오다가 "H2/H3 비교는 알겠는데, DevTools에서 같은 `h3` 두 줄이 왜 다르게 보이지?"에서 멈추면 이 문서가 바로 다음 다리다.
+
+가장 짧은 연결은 아래처럼 잡으면 된다.
+
+| 지금 막힌 질문 | 먼저 볼 문서 | 여기로 돌아오는 이유 |
+|---|---|---|
+| Network 탭에서 뭘 먼저 봐야 할지 모르겠다 | [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md) | `Status`/`Protocol`/`Remote Address`/`Connection ID` 4칸을 먼저 익힌 뒤, 여기서 reused connection 단서를 더 촘촘히 읽는다 |
+| H1/H2/H3 큰 차이가 아직 흐릿하다 | [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) | 버전 큰 그림을 잡은 뒤, 여기서 "같은 버전인데도 새 연결일 수 있다"를 읽는다 |
+| `421 -> 200` trace를 바로 판독하고 싶다 | [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md) | 이 문서에서 `Connection ID` 감각을 잡고 내려가면 recovery 판독이 훨씬 쉬워진다 |
+
+짧게 요약하면:
+
+- README의 버전 route와 DevTools route 사이에서
+- 이 문서는 "`Protocol`만 보지 말고 `Remote Address`와 `Connection ID`를 같이 보라"는 초급자용 미니 브리지다
+- 특히 reused connection 단서는 `Connection ID`가 주신호이고, `Remote Address`는 보조 신호라는 감각을 먼저 심어 준다
 
 ## 먼저 잡는 멘탈 모델
 
@@ -56,6 +75,10 @@ Network 탭 1행은 "이번 요청이 어떤 길로, 어느 목적지로, 같은
 - `Remote Address`는 목적지
 - `Connection ID`는 같은 차편인지 새 차편인지
 - cache hit, `304`, Service Worker 여부는 여전히 **다른 신호**다
+
+초급자 메모 한 줄:
+
+- 같은 `h3` 두 줄을 봤다면 "`버전은 이미 같다`"를 먼저 적고, 그다음 질문을 "`reused connection인가, 새 연결인가`"로 바꾸면 읽기가 빨라진다
 
 ---
 
@@ -84,6 +107,12 @@ Network 탭 1행은 "이번 요청이 어떤 길로, 어느 목적지로, 같은
 - `Remote Address`는 보조 신호다
 - `Protocol`이 바뀌지 않아도 `Connection ID`가 바뀌면 새 연결일 수 있다
 - `Status 304`가 붙어 있으면 먼저 "`어느 길로 재검증했나`"로 읽고 cache body 질문은 분리한다
+
+이 문서에서 계속 쓰는 가장 짧은 판독 문장은 이것이다.
+
+```text
+같은 Protocol -> Connection ID 먼저 -> Remote Address로 보강
+```
 
 ---
 
@@ -129,6 +158,10 @@ Network 탭 1행은 "이번 요청이 어떤 길로, 어느 목적지로, 같은
 | `/api/me` | `200` | `h3` | `24` | 같은 `h3`라도 새 연결 recovery 후보 |
 
 핵심은 "`h3`가 같다"보다 "`Connection ID`가 같은가"가 더 직접적인 질문이라는 점이다.
+
+그래서 README에서 이 문서를 만났다면 초급자는 먼저 아래 한 줄만 챙기면 된다.
+
+- "`Protocol`은 버전 큰 그림, `Connection ID`는 reused connection 첫 단서, `Remote Address`는 보강 근거"
 
 ---
 
@@ -244,6 +277,7 @@ Network 탭 1행은 "이번 요청이 어떤 길로, 어느 목적지로, 같은
 ## 다음에 이어서 볼 문서
 
 - 4칸을 1분 순서로 바로 읽고 싶으면 [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- README에서 바로 넘어온 상태라면 먼저 [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)에서 4칸 순서를 익히고, 다시 이 문서로 돌아와 `Connection ID` 우선순위만 고정하면 된다
 - version 선택 자체가 궁금하면 [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
 - H1/H2/H3 차이를 큰 그림으로 먼저 잡으려면 [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md)
 - connection reuse/coalescing 자체가 궁금하면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)

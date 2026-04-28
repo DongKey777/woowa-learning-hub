@@ -6,16 +6,18 @@
 
 관련 문서:
 - [Software Engineering README: Repository, DAO, Entity](./README.md#repository-dao-entity)
+- [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 - [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
 - [Service 계층 기초](./service-layer-basics.md)
 - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 - [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- [Module API DTO Patterns](./module-api-dto-patterns.md)
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity 한눈에, repository dao entity basics, repository dao entity intro, software engineering basics
+retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, entity를 dto로 써도 되나요, service가 dao를 바로 알아도 되나요, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity basics, what is repository entity
 
-처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결한다.
+처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결하고, 더 큰 설계 그림이 필요하면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 다시 올라가면 된다.
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -57,6 +59,27 @@ retrieval-anchor-keywords: repository dao entity beginner, repository dao entity
 | Entity | `order_id`, `status`, `total_amount`를 담는다 | DB 모양에 맞춘다 |
 
 즉 같은 주문 생성 예시라도, 계층 문서에서는 "Controller/Service/Repository를 왜 나누는가"가 중심이고, 여기서는 **Repository 아래에서 저장 책임이 어떻게 더 쪼개지는가**가 중심이다.
+
+## 레이어 계약까지 같이 보면
+
+`Repository`, `DAO`, `Entity`만 따로 외우면 다시 "`그럼 request DTO는 어디까지 가나요?`"가 막히기 쉽다.
+같은 주문 생성 장면을 한 줄로 펼치면 아래처럼 읽으면 된다.
+
+| 경계 | 기본 타입 | 이 문서에서 기억할 포인트 |
+|---|---|---|
+| Controller -> Service | `CreateOrderRequest`, `CreateOrderCommand` | 요청 계약은 저장 계층까지 그대로 들고 가지 않는다 |
+| Service -> Repository | `Order` | Service는 저장 기술 대신 도메인 의미로 부탁한다 |
+| Repository 구현 -> DAO | `OrderEntity` | 저장 구현체가 DB 친화적인 모양으로 변환한다 |
+| DAO -> DB | row, SQL | DAO는 테이블/쿼리 문장에 집중한다 |
+
+짧게 외우면 이렇다.
+
+- request DTO는 웹 계약이다.
+- `Order`는 규칙을 가진 도메인 대상이다.
+- `OrderEntity`는 저장 모양이다.
+- DAO는 그 저장 모양을 SQL로 옮긴다.
+
+즉 `Repository/DAO/Entity` 구분은 persistence 내부 얘기이면서도, 동시에 "`request DTO -> domain -> entity`를 한 타입으로 뭉치지 않는다"는 레이어 계약과 연결된다.
 
 ## 작은 주문 저장 코드 예시
 
@@ -106,6 +129,8 @@ class JdbcOrderRepository implements OrderRepository {
   - 둘 다 저장소처럼 보이지만, Repository는 도메인 관점이고 DAO는 테이블/SQL 관점이다.
 - "Entity가 곧 도메인 객체 아닌가요?"
   - 항상 그렇지 않다. 저장용 모양과 규칙 중심 객체는 다를 수 있다.
+- "Request DTO를 바로 `repository.save(...)`에 넘기면 안 되나요?"
+  - 그러면 웹 계약이 저장 계층까지 흘러가서 입력 형식과 DB 모양이 같이 묶인다. Service에서 domain object나 command로 한 번 끊는 편이 안전하다.
 - "작은 프로젝트인데 다 나눠야 하나요?"
   - 아니다. Repository 하나로 시작하고 필요할 때만 더 쪼개면 된다.
 - "조회가 복잡해지면 DAO 메서드만 늘리면 되나요?"

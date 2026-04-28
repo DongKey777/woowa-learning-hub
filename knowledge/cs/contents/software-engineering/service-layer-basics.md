@@ -165,6 +165,19 @@ class OrderService {
 - 같이 성공하거나 같이 실패해야 하는 경계는 Service 트랜잭션
 - Repository 조회가 필요한 중복 검사는 "조회가 있다"가 아니라 "규칙 재사용이 필요하다"를 기준으로 Service 쪽에 둔다
 
+## 같은 주문 장면으로 보는 `Controller / Service / Repository` 빠른 비교
+
+`Controller는 얇은데 Service가 너무 커 보여요`라는 말이 나올 때는, 주문 생성 장면을 3칸으로 다시 자르면 초심자가 가장 덜 헷갈린다.
+
+| 같은 주문 생성 장면 | 기본 자리 | 여기서 먼저 확인할 질문 |
+|---|---|---|
+| `quantity` 누락, JSON 형식 오류, `@Valid` 실패 | Controller | 요청이 잘못되면 `400`으로 막히는가 |
+| `수량은 1 이상`, `재고 부족이면 실패`, `주문 저장 + 재고 차감` 순서 | Service/Domain | 이 규칙이 웹 말고 다른 진입점에서도 그대로 필요하나 |
+| 주문 저장, 재고 조회/차감 SQL/JPA 매핑 | Repository | 저장 방식이 바뀌어도 규칙 문장이 안 흔들리나 |
+
+- 빠른 기준: `HTTP 문장`이면 Controller, `업무 문장`이면 Service/Domain, `SQL/JPA 문장`이면 Repository다.
+- 그래서 Service가 비대해 보일 때도, 먼저 "`응답 조립이 섞였나`"와 "`저장 세부가 새어 들어왔나`"를 따로 보는 편이 `Service에는 로직이 있으면 안 된다`는 오해를 줄인다.
+
 ## Service 변경이면 첫 테스트를 어디서 시작할까
 
 먼저 이렇게 잡으면 된다. **Service 코드가 바뀌었다고 항상 Service 통합 테스트부터 시작하는 것은 아니다.** 바뀐 것이 "규칙"이면 unit test부터, 바뀐 것이 "여러 협력과 트랜잭션 연결"이면 integration test부터 보는 편이 빠르다.

@@ -1,0 +1,125 @@
+# Command DTO Vs Query View Naming Checklist
+
+> 한 줄 요약: `Command`, `SupportSnapshot`, `QueryView`, `Response`는 모두 DTO처럼 보여도 바뀌는 이유와 두는 패키지가 다르므로, 이름에 역할을 붙여 두면 초심자가 레이어 경계를 훨씬 덜 헷갈린다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Module API DTO Patterns](./module-api-dto-patterns.md)
+- [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md)
+- [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
+- [Controller Entity Return Vs DTO Return Primer](../spring/spring-controller-entity-return-vs-dto-return-primer.md)
+- [software-engineering 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: command dto naming, query view naming, support snapshot naming, response dto naming, dto package placement, command dto vs response dto, query view vs response, snapshot vs response dto, dto 이름이 헷갈려요, command package 어디에 두나요, view suffix 언제 써요, beginner dto naming checklist
+
+## 핵심 개념
+
+먼저 한 줄로 나누면 이렇다.
+
+- `Command`는 "이 작업을 해 달라"는 입력이다.
+- `SupportSnapshot`은 "이 결정을 위해 읽어 온 내부 사실"이다.
+- `QueryView`는 "화면이나 조회 로직이 읽기 좋은 모양"이다.
+- `Response`는 "밖으로 약속한 응답 계약"이다.
+
+초심자가 가장 많이 헷갈리는 이유는 네 타입이 모두 필드 몇 개 가진 record/class처럼 보여서다. 하지만 실제로는 누가 쓰는지와 왜 바뀌는지가 다르다.
+
+## 한눈에 보기
+
+| 타입 | 주 사용처 | 이름 예시 | 기본 패키지 감각 | 바뀌는 이유 |
+|---|---|---|---|---|
+| Command DTO | controller -> application service | `CreateReservationCommand` | `application/command` 또는 `application/usecase` | 유스케이스 입력이 바뀜 |
+| Support Snapshot | application service 안쪽 판단 보조 | `ReservationPolicySupportSnapshot` | `application/support` 또는 `application/readmodel` | 내부 판단 재료가 바뀜 |
+| Query View | query service, admin 목록/상세 조회 | `ReservationAdminRowView` | `query/view` 또는 `readmodel/view` | 조회 컬럼, 정렬, 조인 전략이 바뀜 |
+| Response DTO | controller 응답, 외부 API 계약 | `ReservationResponse`, `ReservationAdminListResponse` | `presentation/response` 또는 `api/response` | 외부 JSON 계약이 바뀜 |
+
+짧게 외우면 `Do -> Command`, `Decide -> Snapshot`, `Display -> View`, `Deliver -> Response`다.
+
+## 이름과 패키지 기본 규칙
+
+처음에는 세세한 예외보다 아래 네 줄을 기본값으로 두는 편이 안전하다.
+
+| 상황 | 추천 이름 | 피하는 이름 | 이유 |
+|---|---|---|---|
+| 상태 변경 요청 | `ApproveReservationCommand` | `ReservationDto`, `ReservationRequestDto` | 웹 요청 모양보다 유스케이스 의도를 드러내야 한다. |
+| 내부 판단용 읽기 결과 | `ReservationPolicySupportSnapshot` | `ReservationResponse`, `ReservationView` | 외부 계약이 아니라 command 판단 재료이기 때문이다. |
+| 화면/조회 전용 읽기 모델 | `ReservationAdminDetailView` | `ReservationDto`, `ReservationEntity` | 조회 최적화와 컬럼 모양이 중심이기 때문이다. |
+| API 응답 계약 | `ReservationAdminResponse` | `ReservationView`를 그대로 반환 | 클라이언트에 약속한 필드명과 null 정책이 중심이기 때문이다. |
+
+패키지 배치는 "누가 import해야 하는가"로 고르면 된다.
+
+- controller가 service를 호출할 때 넘기는 타입이면 `application` 쪽에 둔다.
+- application service만 쓰는 내부 보조 조회 타입이면 `application` 또는 `support` 아래에 숨긴다.
+- 목록/검색/상세 조회 전용 타입이면 `query` 또는 `readmodel` 아래에 둔다.
+- HTTP 응답 직렬화에 직접 쓰는 타입이면 `presentation` 또는 `api` 아래에 둔다.
+
+즉 `view`를 controller 응답 패키지에 두기보다, `query/view`와 `response`를 따로 두는 쪽이 나중에 덜 흔들린다.
+
+## roomescape admin 예시로 보는 구분
+
+예약 관리자 화면을 만든다고 가정해 보자.
+
+| 단계 | 타입 예시 | 왜 이 이름이 맞는가 |
+|---|---|---|
+| 예약 생성 요청 | `CreateReservationCommand` | 예약을 "생성해 달라"는 유스케이스 입력이기 때문이다. |
+| 예약 가능 여부 판단 재료 조회 | `ReservationPolicySupportSnapshot` | 영업시간, 휴무일, 현재 예약 수 같은 내부 판단 재료이기 때문이다. |
+| 관리자 목록 조회 | `ReservationAdminRowView` | 목록 row에 필요한 고객명, 시간, 상태를 읽기 좋은 모양으로 모았기 때문이다. |
+| 관리자 응답 | `ReservationAdminResponse` | 최종 JSON 필드명과 응답 구조를 약속하는 타입이기 때문이다. |
+
+예시 패키지 구조는 이렇게 시작하면 된다.
+
+```text
+reservation/
+  application/
+    command/CreateReservationCommand.java
+    support/ReservationPolicySupportSnapshot.java
+  query/
+    view/ReservationAdminRowView.java
+  presentation/
+    response/ReservationAdminResponse.java
+```
+
+여기서 `ReservationAdminRowView`를 바로 응답으로 써도 되지 않냐는 질문이 자주 나온다. 단일 관리자 화면 하나뿐이면 가능해 보일 수 있다. 그래도 초심자 단계에서는 `view`와 `response`를 개념적으로 분리해 두는 편이 안전하다. 화면 컬럼이 바뀌는 이유와 외부 API 계약이 바뀌는 이유가 곧 갈라지기 때문이다.
+
+## 흔한 오해와 함정
+
+- `RequestDto`를 곧바로 `Command` 대신 쓰면 웹 입력 형식과 유스케이스 입력이 묶인다.
+- 내부 보조 조회 결과에 `Response`를 붙이면 나중에 controller가 그대로 반환하기 쉬워진다.
+- 목록 row 조회 타입에 `Dto`만 붙이면 읽기 모델인지 응답 계약인지 이름만 봐서는 구분이 안 된다.
+- JPA projection이나 SQL row 결과를 `Entity`라고 부르면 저장 모델과 조회 모델 경계가 무너진다.
+- `AdminReservationView`를 외부 응답으로 그대로 내보내기 시작하면, 화면 컬럼 요구가 API 계약을 끌고 다니게 된다.
+
+헷갈릴 때는 "이 타입을 바꾸게 만드는 첫 이유가 무엇인가?"를 다시 물어보면 된다.
+
+## 리뷰 체크리스트
+
+- 상태 변경 입력인데 이름이 `SomethingDto`로 뭉개져 있지 않은가?
+- 내부 판단 보조 타입인데 `Response`나 `View`처럼 밖으로 공개될 이름을 쓰고 있지 않은가?
+- 조회 전용 모델인데 `Entity`나 `Command`처럼 행동을 암시하는 이름을 쓰고 있지 않은가?
+- controller 응답 타입이 query view를 그대로 재수출하고 있지 않은가?
+- 패키지가 `dto/` 하나로 몰려 있어 import 경계가 흐려지지 않았는가?
+
+리뷰에서 빠르게 말하려면 이렇게 정리하면 된다.
+
+- "이건 작업 요청이니 `Command`가 더 맞다."
+- "이건 내부 판단 재료라 `SupportSnapshot`이 더 맞다."
+- "이건 목록 row 조회라 `View`가 더 맞다."
+- "이건 외부 JSON 계약이라 `Response`로 분리하는 게 안전하다."
+
+## 더 깊이 가려면
+
+- [Module API DTO Patterns](./module-api-dto-patterns.md) — 모듈 경계에서 command/query/result를 나누는 기준
+- [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md) — support snapshot이 screen DTO로 비대해지는 신호
+- [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) — 조회 전용 모델을 언제 별도 경로로 분리할지
+- [Controller Entity Return Vs DTO Return Primer](../spring/spring-controller-entity-return-vs-dto-return-primer.md) — Spring controller에서 응답 DTO를 분리해야 하는 이유
+
+## 면접/시니어 질문 미리보기
+
+- "Command와 Request DTO를 왜 분리하나요?" — 진입점이 HTTP 하나뿐일 때는 비슷해 보여도, 유스케이스 이름과 웹 입력 형식의 변경 이유를 분리하기 위해서다.
+- "Query View와 Response DTO가 같은 필드를 가지면 하나로 합쳐도 되나요?" — 작은 화면 하나에서는 가능하지만, 조회 최적화와 외부 계약 변경이 갈라질 가능성이 있으면 분리해 두는 편이 안전하다.
+- "Snapshot이라는 이름은 언제 쓰나요?" — command 판단이나 내부 조립을 위해 읽어 온 사실 묶음일 때 쓰고, 외부에 약속하는 계약 이름으로는 보통 쓰지 않는다.
+
+## 한 줄 정리
+
+이름이 헷갈릴수록 타입 모양이 아니라 `누가 쓰는가`와 `왜 바뀌는가`를 기준으로 `Command`, `SupportSnapshot`, `QueryView`, `Response`를 나누면 된다.

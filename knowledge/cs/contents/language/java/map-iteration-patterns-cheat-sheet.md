@@ -11,8 +11,9 @@
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Java 스트림과 람다 입문](./java-stream-lambda-basics.md)
+- [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](../../spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md)
 
-retrieval-anchor-keywords: java map iteration cheat sheet, map entryset keyset values 차이, entryset vs keyset performance, java map for each beginner, map 반복문 기초, entryset do dont 예시, keyset values 언제 쓰나, map key value iteration beginner, 처음 배우는데 map 순회, hashmap 반복 패턴, inefficient map iteration, map get in loop smell, keyset get null confusion, map null handling during iteration, containskey getordefault iteration bridge
+retrieval-anchor-keywords: java map iteration cheat sheet, map entryset keyset values 차이, entryset vs keyset performance, java map for each beginner, map 반복문 기초, entryset do dont 예시, keyset values 언제 쓰나, map key value iteration beginner, 처음 배우는데 map 순회, hashmap 반복 패턴, map 왜 entryset 기본인가요, map get in loop smell, keyset get null confusion, containskey getordefault iteration bridge
 
 ## 먼저 잡는 멘탈 모델
 
@@ -110,6 +111,11 @@ scores.values().forEach(System.out::println);
 - "처음엔 뭘 기본으로 잡죠?"
   고민되면 `entrySet()`부터 시작하고, key-only/value-only가 명확할 때 좁혀 가면 된다.
 
+헷갈리면 이 한 문장으로 다시 돌아오면 된다.
+
+- 둘 다 쓰면 `entrySet()`
+- 하나만 쓰면 그 뷰만 꺼낸다
+
 ## 빠른 기억 문장
 
 - key+value: `entrySet()`
@@ -117,6 +123,15 @@ scores.values().forEach(System.out::println);
 - value only: `values()`
 
 "둘 다 쓰면 `entrySet()`"만 확실히 기억하면 첫 시도 실패를 크게 줄일 수 있다.
+
+## 다음에 어디로 이어서 읽을까
+
+| 지금 막힌 질문 | 다음 문서 |
+|---|---|
+| "`Map` 자체가 왜 for-each가 안 되죠?" | [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md) |
+| "`get()`이 `null`일 때 반복 중 판단을 어떻게 하죠?" | [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md) |
+| "람다 `forEach`와 일반 반복문은 언제 바꾸죠?" | [Java 스트림과 람다 입문](./java-stream-lambda-basics.md) |
+| "Spring의 `Map<String, Bean>` 반복은 이 규칙과 어떻게 이어지죠?" | [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리: `Map<String, Bean>` Router vs Injection-time 선택](../../spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md) |
 
 ## 한 줄 정리
 
