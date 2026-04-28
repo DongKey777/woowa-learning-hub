@@ -17,6 +17,10 @@
       "type": "array",
       "items": {"type": "string"}
     },
+    "concept_match_mode": {
+      "type": ["string", "null"],
+      "enum": ["strict", "fallback", "none", "unknown", null]
+    },
     "prompt": {"type": ["string", "null"]},
     "question_fingerprint": {"type": ["string", "null"]},
     "tier": {"type": ["integer", "null"]},

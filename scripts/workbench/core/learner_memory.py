@@ -475,13 +475,17 @@ def build_test_result_event(
     passed = failure is None
     stack = (failure or {}).get("stack_trace") if isinstance(failure, dict) else None
     message = (failure or {}).get("message") if isinstance(failure, dict) else None
+    concept_ids, concept_match_mode = infer_concepts_from_test(
+        test_class, test_method, module, catalog
+    )
     return {
         "event_type": "test_result",
         "ts": _now_iso(),
         "learner_id": learner_id,
         "repo_context": None,
         "module_context": module,
-        "concept_ids": infer_concepts_from_test(test_class, test_method, module, catalog),
+        "concept_ids": concept_ids,
+        "concept_match_mode": concept_match_mode,
         "module": module or "",
         "test_class": test_class,
         "test_method": test_method,
@@ -744,30 +748,132 @@ def _events_for_concept(history: list[dict], concept_id: str) -> list[dict]:
     ]
 
 
+def _has_test_fail_in_window(
+    history: list[dict], concept_id: str, days: int = 7
+) -> bool:
+    return any(
+        e.get("event_type") == "test_result"
+        and e.get("pass") is False
+        and _within(e.get("ts"), days=days)
+        for e in _events_for_concept(history, concept_id)
+    )
+
+
+def _test_pass_strict_count(concept_id: str, history: list[dict]) -> int:
+    return sum(
+        1
+        for e in _events_for_concept(history, concept_id)
+        if e.get("event_type") == "test_result"
+        and e.get("pass") is True
+        and e.get("concept_match_mode") == "strict"
+    )
+
+
+def _test_pass_fallback_count(concept_id: str, history: list[dict]) -> int:
+    return sum(
+        1
+        for e in _events_for_concept(history, concept_id)
+        if e.get("event_type") == "test_result"
+        and e.get("pass") is True
+        and e.get("concept_match_mode") in ("fallback", "unknown", None)
+    )
+
+
+def _ask_decline_with_activity_evidence(
+    concept_id: str, history: list[dict]
+) -> bool:
+    """Concept asked >= 3x in days 8–21 ago, 0 in last 7d, and *some* activity
+    in the last 7d in the same module — i.e. learner moved on rather than left."""
+    concept_events = _events_for_concept(history, concept_id)
+    asks_recent = [
+        e for e in concept_events
+        if e.get("event_type") == "rag_ask" and _within(e.get("ts"), days=7)
+    ]
+    if asks_recent:
+        return False
+    asks_prior = [
+        e for e in concept_events
+        if e.get("event_type") == "rag_ask"
+        and _within(e.get("ts"), days=21)
+        and not _within(e.get("ts"), days=7)
+    ]
+    if len(asks_prior) < 3:
+        return False
+    prior_modules = [m for m in (e.get("module_context") for e in asks_prior) if m]
+    if not prior_modules:
+        return False
+    from collections import Counter
+    dominant_module = Counter(prior_modules).most_common(1)[0][0]
+    for ev in history:
+        if not _within(ev.get("ts"), days=7):
+            continue
+        if ev.get("module_context") != dominant_module:
+            continue
+        et = ev.get("event_type")
+        if et == "test_result" and ev.get("pass"):
+            return True
+        if et in ("code_attempt", "coach_run"):
+            return True
+    return False
+
+
+def _code_attempt_with_passing_test(
+    concept_id: str, history: list[dict]
+) -> bool:
+    concept_events = _events_for_concept(history, concept_id)
+    for ev in concept_events:
+        if ev.get("event_type") != "code_attempt":
+            continue
+        linked = ev.get("linked_test")
+        if not linked:
+            continue
+        for tr in concept_events:
+            if tr.get("event_type") != "test_result" or not tr.get("pass"):
+                continue
+            tr_id = f"{tr.get('test_class', '')}.{tr.get('test_method', '')}"
+            if tr_id == linked or linked in tr_id or tr_id in linked:
+                return True
+    return False
+
+
 def _is_mastered(concept_id: str, history: list[dict]) -> tuple[bool, dict]:
-    drills = [
-        event
-        for event in _events_for_concept(history, concept_id)
-        if event.get("event_type") == "drill_answer"
-    ][-5:]
-    high_scores = sum(1 for e in drills if (e.get("total_score") or 0) >= 8)
+    concept_events = _events_for_concept(history, concept_id)
+    drills = [e for e in concept_events if e.get("event_type") == "drill_answer"][-5:]
+    drill_high_scores = sum(1 for e in drills if (e.get("total_score") or 0) >= 8)
     pr_neg = any(
         e.get("event_type") == "coach_run"
         and e.get("had_negative_feedback")
         and _within(e.get("ts"), days=7)
-        for e in _events_for_concept(history, concept_id)
+        for e in concept_events
     )
-    test_events = [
-        event
-        for event in _events_for_concept(history, concept_id)
-        if event.get("event_type") == "test_result"
-    ]
-    last_test_pass = test_events[-1].get("pass") if test_events else None
-    mastered = (high_scores >= 2) and (not pr_neg) and (last_test_pass is not False)
+    test_pass_strict = _test_pass_strict_count(concept_id, history)
+    test_pass_fallback = _test_pass_fallback_count(concept_id, history)
+    ask_decline_active = _ask_decline_with_activity_evidence(concept_id, history)
+    code_attempt_test_pass = _code_attempt_with_passing_test(concept_id, history)
+    no_recent_test_fail = not _has_test_fail_in_window(history, concept_id, days=7)
+
+    signal_score = 0
+    if drill_high_scores >= 2:
+        signal_score += 2
+    if test_pass_strict >= 1:
+        signal_score += 2
+    elif test_pass_fallback >= 2:
+        signal_score += 2
+    if ask_decline_active:
+        signal_score += 1
+    if code_attempt_test_pass:
+        signal_score += 1
+
+    mastered = (signal_score >= 3) and (not pr_neg) and no_recent_test_fail
     return mastered, {
-        "drill_high_scores": high_scores,
+        "signal_score": signal_score,
+        "drill_high_scores": drill_high_scores,
+        "test_pass_strict": test_pass_strict,
+        "test_pass_fallback": test_pass_fallback,
+        "ask_decline_with_activity": ask_decline_active,
+        "code_attempt_with_passing_test": code_attempt_test_pass,
         "no_recent_pr_negative": not pr_neg,
-        "last_test_pass": last_test_pass,
+        "no_recent_test_fail": no_recent_test_fail,
     }
 
 

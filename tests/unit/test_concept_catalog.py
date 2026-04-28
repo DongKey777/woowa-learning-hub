@@ -124,18 +124,29 @@ class TestArtifactInferenceTests(unittest.TestCase):
         self.catalog = load_catalog()
 
     def test_concepts_from_test_class_matches_alias(self) -> None:
-        hits = infer_concepts_from_test(
-            "cholog.BeanTest", "registerBean", "spring-core-1", self.catalog
+        # `Bean` here is at word-boundary (preceded by `.`, followed by `.`) so the
+        # ASCII pattern matches — strict source.
+        hits, source = infer_concepts_from_test(
+            "cholog.Bean", "register", "spring-core-1", self.catalog
         )
         self.assertIn("concept:spring/bean", hits)
+        self.assertEqual(source, "strict")
 
     def test_concepts_from_test_falls_back_to_module_hint(self) -> None:
         # Method name has no alias hit; falls back to module-hint match.
-        hits = infer_concepts_from_test(
+        hits, source = infer_concepts_from_test(
             "cholog.UnknownTest", "doSomething", "spring-jdbc-1", self.catalog
         )
         # spring-jdbc-1 is the module_hint for jdbc-template & transactional
         self.assertTrue(any("jdbc" in cid or "transaction" in cid for cid in hits))
+        self.assertEqual(source, "fallback")
+
+    def test_concepts_from_test_returns_none_when_no_hit(self) -> None:
+        hits, source = infer_concepts_from_test(
+            "cholog.MysteryTest", "doNothing", None, self.catalog
+        )
+        self.assertEqual(hits, [])
+        self.assertEqual(source, "none")
 
     def test_concepts_from_path_via_basename(self) -> None:
         path = "missions/spring-learning-test/spring-core-1/test/SpringBeanTest.java"

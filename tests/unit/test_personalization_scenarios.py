@@ -77,7 +77,8 @@ def _drill(*, score: int, concept: str, days_ago: float = 0) -> dict:
 
 
 def _test_result(*, concept: str, passed: bool, days_ago: float = 0,
-                 module: str = "spring-core-1") -> dict:
+                 module: str = "spring-core-1",
+                 match_mode: str = "strict") -> dict:
     ts = _iso(days_ago)
     return {
         "event_type": "test_result",
@@ -85,6 +86,7 @@ def _test_result(*, concept: str, passed: bool, days_ago: float = 0,
         "ts": ts,
         "learner_id": "scenario",
         "concept_ids": [concept],
+        "concept_match_mode": match_mode,
         "module": module,
         "test_class": "T",
         "test_method": "m",

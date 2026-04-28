@@ -134,7 +134,7 @@ class LadderTests(unittest.TestCase):
             _ev(prompt=f"di-{i}", concept="concept:spring/di", days_ago=0.02 * i)
             for i in range(100)
         ]
-        # Mark Bean mastered via drill events.
+        # Mark Bean mastered via drill events + strict test pass (score 4 ≥ 3).
         for i in range(3):
             events.append({
                 "event_type": "drill_answer",
@@ -148,6 +148,18 @@ class LadderTests(unittest.TestCase):
                 "dimensions": {},
                 "weak_tags": [],
             })
+        events.append({
+            "event_type": "test_result",
+            "event_id": "t-bean-pass",
+            "ts": _ts(1),
+            "learner_id": "ladder",
+            "concept_ids": ["concept:spring/bean"],
+            "concept_match_mode": "strict",
+            "module": "spring-core-1",
+            "test_class": "BeanTest",
+            "test_method": "register",
+            "pass": True,
+        })
         prof = self._seed(events)
         ctx = learner_memory.build_learner_context(prof, prompt="Bean과 DI 차이")
         # Bean mastered → skip basics; DI uncertain → deepen.

@@ -147,25 +147,25 @@ def infer_concepts_from_test(
     test_method: str,
     module: str | None,
     catalog: dict,
-) -> list[str]:
+) -> tuple[list[str], str]:
     """Best-effort concept attribution for a JUnit test result.
 
-    Strategy:
-      1. Try alias match against test_class + "." + test_method (catches
-         e.g. `BeanTest.registerBean` matching the `bean` alias).
-      2. Fall back to all concepts whose `module_hint == module`.
+    Returns ``(concept_ids, source)`` where ``source`` is one of:
+      - ``"strict"`` — direct alias hit on ``test_class.test_method``
+      - ``"fallback"`` — no alias hit, matched via ``module_hint``
+      - ``"none"`` — no alias hit and no module to fall back to
     """
     text_hits = extract_concept_ids(f"{test_class}.{test_method}", catalog)
     if text_hits:
-        return text_hits
+        return text_hits, "strict"
     if not module:
-        return []
+        return [], "none"
     matches = [
         cid
         for cid, entry in (catalog.get("concepts") or {}).items()
         if entry.get("module_hint") == module
     ]
-    return sorted(matches)
+    return sorted(matches), ("fallback" if matches else "none")
 
 
 def infer_concepts_from_path(

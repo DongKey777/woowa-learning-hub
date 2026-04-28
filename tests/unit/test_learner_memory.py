@@ -360,7 +360,7 @@ class RecomputeAggregationTests(_DiskIsolated):
         self.assertNotIn("concept:spring/bean", underexplored_ids)
 
     def test_mastery_drill_then_test_pass(self) -> None:
-        # 2 high-score drills + a passing test_result → mastered.
+        # 2 high-score drills (+2) + 1 strict test_result pass (+2) = 4 ≥ 3 → mastered.
         self._seed([
             {
                 "event_type": "drill_answer",
@@ -392,6 +392,7 @@ class RecomputeAggregationTests(_DiskIsolated):
                 "ts": _iso(0),
                 "learner_id": "test-learner",
                 "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "strict",
                 "module": "spring-core-1",
                 "test_class": "BeanTest",
                 "test_method": "register",
@@ -403,6 +404,7 @@ class RecomputeAggregationTests(_DiskIsolated):
         self.assertIn("concept:spring/bean", mastered)
 
     def test_pr_negative_feedback_blocks_mastered(self) -> None:
+        # Score is high (drill 2 + strict test pass 2 = 4 ≥ 3) but pr_neg blocks.
         self._seed([
             {
                 "event_type": "drill_answer",
@@ -429,6 +431,18 @@ class RecomputeAggregationTests(_DiskIsolated):
                 "weak_tags": [],
             },
             {
+                "event_type": "test_result",
+                "event_id": "t-tx",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/transactional"],
+                "concept_match_mode": "strict",
+                "module": "spring-jdbc-1",
+                "test_class": "TransactionalTest",
+                "test_method": "rollback",
+                "pass": True,
+            },
+            {
                 "event_type": "coach_run",
                 "event_id": "c1",
                 "ts": _iso(0),
@@ -442,6 +456,183 @@ class RecomputeAggregationTests(_DiskIsolated):
         profile = learner_memory.recompute_learner_profile()
         mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
         self.assertNotIn("concept:spring/transactional", mastered)
+
+    def test_mastery_via_strict_test_pass_and_ask_decline_with_activity(self) -> None:
+        # No drills. 1 strict test pass (+2) + ask decline + activity (+1) = 3 → mastered.
+        self._seed([
+            # 4 prior asks 10 days ago (within days 8-21)
+            self._rag_ask(_iso(10), concept_ids=["concept:spring/bean"]),
+            self._rag_ask(_iso(11), concept_ids=["concept:spring/bean"]),
+            self._rag_ask(_iso(12), concept_ids=["concept:spring/bean"]),
+            self._rag_ask(_iso(13), concept_ids=["concept:spring/bean"]),
+            # No asks in last 7 days. Activity in same module 1 day ago:
+            {
+                "event_type": "test_result",
+                "event_id": "t-bean",
+                "ts": _iso(1),
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "strict",
+                "module": "spring-core-1",
+                "test_class": "BeanTest",
+                "test_method": "register",
+                "pass": True,
+            },
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
+        self.assertIn("concept:spring/bean", mastered)
+
+    def test_mastery_blocked_by_recent_test_fail_even_when_score_high(self) -> None:
+        # High score (drill 2 + strict pass 2 = 4) but recent test_fail (within 7d) blocks.
+        self._seed([
+            {
+                "event_type": "drill_answer",
+                "event_id": "d1",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/bean"],
+                "drill_session_id": "s1",
+                "linked_learning_point": "x",
+                "total_score": 9,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "drill_answer",
+                "event_id": "d2",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/bean"],
+                "drill_session_id": "s2",
+                "linked_learning_point": "x",
+                "total_score": 9,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "test_result",
+                "event_id": "t-pass",
+                "ts": _iso(2),
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "strict",
+                "module": "spring-core-1",
+                "test_class": "BeanTest",
+                "test_method": "registerOk",
+                "pass": True,
+            },
+            {
+                "event_type": "test_result",
+                "event_id": "t-fail",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "strict",
+                "module": "spring-core-1",
+                "test_class": "BeanTest",
+                "test_method": "registerEdge",
+                "pass": False,
+            },
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
+        self.assertNotIn("concept:spring/bean", mastered)
+
+    def test_mastery_via_fallback_test_pass_requires_two_passes(self) -> None:
+        # 2 high-score drills (+2) + 1 fallback test pass (+0) = 2 → not mastered.
+        # Adding a second fallback pass → +2 → 4 ≥ 3 → mastered.
+        seed_one_fallback = [
+            {
+                "event_type": "drill_answer",
+                "event_id": "d1",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/bean"],
+                "drill_session_id": "s1",
+                "linked_learning_point": "x",
+                "total_score": 9,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "drill_answer",
+                "event_id": "d2",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "concept_ids": ["concept:spring/bean"],
+                "drill_session_id": "s2",
+                "linked_learning_point": "x",
+                "total_score": 8,
+                "dimensions": {},
+                "weak_tags": [],
+            },
+            {
+                "event_type": "test_result",
+                "event_id": "t-fb1",
+                "ts": _iso(1),
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "fallback",
+                "module": "spring-core-1",
+                "test_class": "MysteryTest",
+                "test_method": "x",
+                "pass": True,
+            },
+        ]
+        self._seed(seed_one_fallback)
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
+        self.assertNotIn("concept:spring/bean", mastered)
+
+        seed_two_fallback = seed_one_fallback + [
+            {
+                "event_type": "test_result",
+                "event_id": "t-fb2",
+                "ts": _iso(0),
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "fallback",
+                "module": "spring-core-1",
+                "test_class": "MysteryTest",
+                "test_method": "y",
+                "pass": True,
+            },
+        ]
+        self._seed(seed_two_fallback)
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
+        self.assertIn("concept:spring/bean", mastered)
+
+    def test_ask_decline_alone_no_activity_does_not_score(self) -> None:
+        # Asks declined but NO activity in last 7d in same module → ask_decline=False.
+        # Plus 1 strict pass would score 2, but with ask_decline blocked stays at 2 < 3.
+        self._seed([
+            self._rag_ask(_iso(10), concept_ids=["concept:spring/bean"]),
+            self._rag_ask(_iso(11), concept_ids=["concept:spring/bean"]),
+            self._rag_ask(_iso(12), concept_ids=["concept:spring/bean"]),
+            {
+                "event_type": "test_result",
+                "event_id": "t-bean",
+                "ts": _iso(8),  # outside last 7d, so no activity-in-last-7d
+                "learner_id": "test-learner",
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "concept_match_mode": "strict",
+                "module": "spring-core-1",
+                "test_class": "BeanTest",
+                "test_method": "register",
+                "pass": True,
+            },
+        ])
+        profile = learner_memory.recompute_learner_profile()
+        mastered = {c["concept_id"] for c in profile["concepts"]["mastered"]}
+        self.assertNotIn("concept:spring/bean", mastered)
 
     def test_test_failure_marks_concept_uncertain(self) -> None:
         self._seed([
