@@ -25,7 +25,7 @@ def _deepen_and_broaden_lines(interpretation_payload: dict, profile: dict, limit
     broaden = []
     for item in interpretation_payload.get("learning_point_recommendations", []):
         primary = item.get("primary_candidate") or {}
-        line = f"{item.get('label')}: PR #{primary.get('pr_number')} - {primary.get('title')}"
+        line = f"{item.get('label')}: PR #{primary.get('pr_number')}{_cohort_suffix(primary)} - {primary.get('title')}"
         if primary.get("best_evidence"):
             line += f" | {primary.get('best_evidence')}"
         if item.get("learning_point") in dominant:
@@ -104,6 +104,24 @@ def _quote_location(quote: dict | None) -> str | None:
     if path and line:
         return f"{path}:{line}"
     return path
+
+
+def _cohort_suffix(candidate: dict | None) -> str:
+    """Append " (YYYY년 자료)" when the peer PR is from a prior cohort.
+
+    The peer-cohort plan requires this caveat to surface in every line
+    where the learner reads a PR reference, not just in evidence
+    sections — a 2024 PR mentioned without context can be read as if it
+    came from the same mission as the learner.
+    """
+    if not isinstance(candidate, dict):
+        return ""
+    if not candidate.get("cohort_caveat"):
+        return ""
+    year = candidate.get("created_year")
+    if not year:
+        return ""
+    return f" ({year}년 자료)"
 
 
 def _focus_core_lesson(question_focus: str) -> str:
@@ -209,11 +227,12 @@ def _grounded_lesson(recommendation: dict | None) -> str | None:
         "pr_body": "PR 본문",
     }.get(quote.get("source"), "근거")
 
+    cohort_suffix = _cohort_suffix(candidate)
     if location and excerpt:
-        return f"{label}는 PR #{pr_number}에서 {author}가 {location} {source}로 '{excerpt}'라고 짚은 지점에서 실제로 드러난다."
+        return f"{label}는 PR #{pr_number}{cohort_suffix}에서 {author}가 {location} {source}로 '{excerpt}'라고 짚은 지점에서 실제로 드러난다."
     if excerpt:
-        return f"{label}는 PR #{pr_number}에서 {author}가 '{excerpt}'라고 짚은 지점에서 실제로 드러난다."
-    return f"{label}는 PR #{pr_number}의 실제 리뷰 근거와 연결해 봐야 한다."
+        return f"{label}는 PR #{pr_number}{cohort_suffix}에서 {author}가 '{excerpt}'라고 짚은 지점에서 실제로 드러난다."
+    return f"{label}는 PR #{pr_number}{cohort_suffix}의 실제 리뷰 근거와 연결해 봐야 한다."
 
 
 def _memory_lesson(memory_policy: dict) -> str | None:
@@ -257,6 +276,7 @@ def _example_items(context: dict, packets: dict) -> list[str]:
         primary = item.get("primary_candidate") or {}
         pr_number = primary.get("pr_number")
         title = primary.get("title") or "title 없음"
+        cohort_suffix = _cohort_suffix(primary)
         quotes = primary.get("evidence_quotes") or []
         if quotes:
             quote = quotes[0]
@@ -266,15 +286,15 @@ def _example_items(context: dict, packets: dict) -> list[str]:
             if location and excerpt:
                 subject = f"{author}가" if author else "리뷰어가"
                 items.append(
-                    f"PR #{pr_number} ({title})에서는 {item.get('label')}를 {location}에서 다뤘다. {subject} '{excerpt}'라고 짚었다."
+                    f"PR #{pr_number}{cohort_suffix} ({title})에서는 {item.get('label')}를 {location}에서 다뤘다. {subject} '{excerpt}'라고 짚었다."
                 )
                 continue
             if excerpt:
                 subject = f"{author}가" if author else "리뷰어가"
-                items.append(f"PR #{pr_number} ({title})에서는 {item.get('label')}를 다뤘고, {subject} '{excerpt}'라고 짚었다.")
+                items.append(f"PR #{pr_number}{cohort_suffix} ({title})에서는 {item.get('label')}를 다뤘고, {subject} '{excerpt}'라고 짚었다.")
                 continue
             continue
-        items.append(f"{item.get('label')} 사례로는 PR #{pr_number} ({title})를 볼 수 있다.")
+        items.append(f"{item.get('label')} 사례로는 PR #{pr_number}{cohort_suffix} ({title})를 볼 수 있다.")
     return _unique_lines(items, limit=3)
 
 

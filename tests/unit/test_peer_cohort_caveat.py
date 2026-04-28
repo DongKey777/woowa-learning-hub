@@ -256,6 +256,98 @@ class MarkdownRenderTests(unittest.TestCase):
         self.assertIn("highlight: PR #42 - Step 2 (score=5) — 2024년 자료", md)
 
 
+class CoachReplyMarkdownSurfaceTests(unittest.TestCase):
+    """The Korean-language learner-facing markdown produced by
+    ``response_teaching.py`` (not ``render_response_markdown``) is what
+    learners actually read. Freshness must surface there too — this is
+    the gap the first end-to-end coach-run inspection caught.
+    """
+
+    def test_example_items_carries_year_suffix(self) -> None:
+        from core.response_teaching import _example_items
+        packets = {
+            "candidate_interpretation": {
+                "learning_point_recommendations": [
+                    {
+                        "label": "테스트 전략",
+                        "primary_candidate": {
+                            "pr_number": 99,
+                            "title": "2024 step",
+                            "created_year": 2024,
+                            "cohort_caveat": True,
+                            "evidence_quotes": [
+                                {
+                                    "author": "lxxjn0",
+                                    "path": "src/main/java/X.java",
+                                    "line": 12,
+                                    "excerpt": "리뷰 의견",
+                                    "source": "review_comment",
+                                },
+                            ],
+                        },
+                    }
+                ]
+            }
+        }
+        items = _example_items({}, packets)
+        self.assertEqual(len(items), 1)
+        self.assertIn("2024년 자료", items[0])
+
+    def test_grounded_lesson_carries_year_suffix(self) -> None:
+        from core.response_teaching import _grounded_lesson
+        recommendation = {
+            "label": "테스트 전략",
+            "primary_candidate": {
+                "pr_number": 99,
+                "title": "2024 step",
+                "created_year": 2024,
+                "cohort_caveat": True,
+                "evidence_quotes": [
+                    {
+                        "author": "lxxjn0",
+                        "path": "src/X.java",
+                        "line": 5,
+                        "excerpt": "리뷰 의견",
+                        "source": "review_comment",
+                    },
+                ],
+            },
+        }
+        line = _grounded_lesson(recommendation)
+        self.assertIsNotNone(line)
+        self.assertIn("2024년 자료", line)
+
+    def test_no_suffix_for_current_cohort(self) -> None:
+        from core.response_teaching import _example_items
+        packets = {
+            "candidate_interpretation": {
+                "learning_point_recommendations": [
+                    {
+                        "label": "테스트 전략",
+                        "primary_candidate": {
+                            "pr_number": 99,
+                            "title": "current step",
+                            "created_year": 2026,
+                            "cohort_caveat": False,
+                            "evidence_quotes": [
+                                {
+                                    "author": "alice",
+                                    "path": "src/X.java",
+                                    "line": 5,
+                                    "excerpt": "ok",
+                                    "source": "review_comment",
+                                },
+                            ],
+                        },
+                    }
+                ]
+            }
+        }
+        items = _example_items({}, packets)
+        self.assertEqual(len(items), 1)
+        self.assertNotIn("년 자료", items[0])
+
+
 class AIFileFreshnessRuleTests(unittest.TestCase):
     def _read(self, name: str) -> str:
         return (ROOT / name).read_text(encoding="utf-8")
