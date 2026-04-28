@@ -138,6 +138,101 @@ class CoachRunHookTests(_IsolatedDir):
         learner_memory.append_learner_event(event)
         self.assertTrue(self._events()[0]["had_negative_feedback"])
 
+    def test_module_context_inferred_from_profile_when_last_active_fresh(self) -> None:
+        # Seed a recent rag_ask in spring-core-1, recompute profile, then
+        # build a coach_run event that has no explicit module — expect it
+        # to inherit spring-core-1 from profile.activity.current_module.
+        from core.concept_catalog import load_catalog
+        from datetime import datetime, timezone
+        catalog = load_catalog()
+        ts = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        with self.history_path.open("w", encoding="utf-8") as fh:
+            fh.write(json.dumps({
+                "event_type": "rag_ask",
+                "event_id": "r1",
+                "ts": ts,
+                "learner_id": "hook-tester",
+                "repo_context": None,
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "prompt": "Bean이 뭐야",
+                "tier": 1,
+                "rag_mode": "cheap",
+                "blocked": False,
+            }) + "\n")
+        learner_memory.recompute_learner_profile()
+        event = learner_memory.build_coach_run_event(
+            session_payload={
+                "repo": "spring-core-1",
+                "primary_learning_points": ["transaction_consistency"],
+            },
+            learner_id="hook-tester",
+            catalog=catalog,
+        )
+        self.assertEqual(event["module_context"], "spring-core-1")
+
+    def test_module_context_skipped_when_profile_last_active_stale(self) -> None:
+        # Profile says current_module=spring-core-1 but last_active is 5 days
+        # ago — _detect_current_module must NOT use it. With no other recent
+        # event either, module_context falls through to None.
+        from core.concept_catalog import load_catalog
+        from datetime import datetime, timedelta, timezone
+        catalog = load_catalog()
+        old_ts = (datetime.now(timezone.utc) - timedelta(days=5)).isoformat(timespec="seconds")
+        with self.history_path.open("w", encoding="utf-8") as fh:
+            fh.write(json.dumps({
+                "event_type": "rag_ask",
+                "event_id": "r-old",
+                "ts": old_ts,
+                "learner_id": "hook-tester",
+                "repo_context": None,
+                "module_context": "spring-core-1",
+                "concept_ids": ["concept:spring/bean"],
+                "prompt": "Bean이 뭐야",
+                "tier": 1,
+                "rag_mode": "cheap",
+                "blocked": False,
+            }) + "\n")
+        learner_memory.recompute_learner_profile()
+        event = learner_memory.build_coach_run_event(
+            session_payload={
+                "repo": "spring-core-1",
+                "primary_learning_points": ["transaction_consistency"],
+            },
+            learner_id="hook-tester",
+            catalog=catalog,
+        )
+        self.assertIsNone(event["module_context"])
+
+    def test_module_context_explicit_payload_field_wins(self) -> None:
+        # When the caller explicitly passes a module, that overrides
+        # profile/history inference.
+        from core.concept_catalog import load_catalog
+        catalog = load_catalog()
+        event = learner_memory.build_coach_run_event(
+            session_payload={
+                "repo": "spring-core-1",
+                "module": "spring-jdbc-2",
+                "primary_learning_points": ["transaction_consistency"],
+            },
+            learner_id="hook-tester",
+            catalog=catalog,
+        )
+        self.assertEqual(event["module_context"], "spring-jdbc-2")
+
+    def test_module_context_none_when_history_empty(self) -> None:
+        from core.concept_catalog import load_catalog
+        catalog = load_catalog()
+        event = learner_memory.build_coach_run_event(
+            session_payload={
+                "repo": "spring-core-1",
+                "primary_learning_points": ["transaction_consistency"],
+            },
+            learner_id="hook-tester",
+            catalog=catalog,
+        )
+        self.assertIsNone(event["module_context"])
+
 
 class DrillHookTests(_IsolatedDir):
     def test_drill_append_history_records_learner_event(self) -> None:

@@ -85,6 +85,19 @@ Role:
 
 `learner_context`가 null인 경우(cold start, profile 없음) 일반 v2.2 답변 톤으로 진행. 학습자가 `RAG로 깊게` 같은 override를 명시하면 그쪽이 우선.
 
+## Code Attempt Recording
+
+학습자가 미션 코드를 작성/수정하고 AI가 검토할 때, 다음 두 조건 중 하나가 만족되면 AI는 자동으로
+`bin/learn-record-code --silent --file-path <path> --summary <one-line> --lines-added N --lines-removed M [--linked-test <Class.method>]`를 호출한다:
+
+1. AI가 학습자의 미션 파일을 **실제로 수정/생성**한 경우 (Write/Edit tool 사용 후)
+2. 학습자가 **명시적으로 파일 경로를 지목**해 검토를 요청한 경우 (예: "`Reservation.java` 어때?", "내 ReservationController 봐줘")
+
+- "코드 어때?" 같은 모호한 요청 단독으로는 트리거하지 않음 — 파일 경로/라인 수가 불명확하면 기록하지 않는다
+- linked-test: 같은 turn 또는 직전 turn에 `bin/learn-test` 결과를 봤다면 해당 `test_class.test_method`를 연계
+- 학습자가 외울 명령 = 0 (AI 자동)
+- `--silent` 플래그는 stdout을 억제하되 이벤트는 정상 기록한다 — 학습자에게 노이즈 없이 closed-loop 데이터가 쌓이도록
+
 ## Execution Status Contract
 
 `coach-run.json` expresses state through `execution_status`:

@@ -392,6 +392,38 @@ def build_rag_ask_event(
     }
 
 
+def _detect_current_module(max_age_hours: int = 24) -> str | None:
+    """Best-effort current-module detection for events that don't carry it.
+
+    Both ``profile.activity.current_module`` and the history fallback are
+    guarded by a 24-hour staleness window — a long-idle profile shouldn't
+    falsely tag the next coach_run with last week's module.
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=max_age_hours)
+    try:
+        profile = load_learner_profile() or {}
+    except (OSError, json.JSONDecodeError):
+        profile = {}
+    activity = profile.get("activity") or {}
+    cur = activity.get("current_module")
+    if cur:
+        last_active_raw = (
+            ((activity.get("modules_progress") or {}).get(cur) or {}).get("last_active")
+        )
+        last_active = _parse_iso(last_active_raw)
+        if last_active and last_active >= cutoff:
+            return cur
+        # else: profile says module X but its last_active is stale → fall through
+    for ev in reversed(_load_history(limit=20)):
+        ts = _parse_iso(ev.get("ts"))
+        if not ts or ts < cutoff:
+            continue
+        m = ev.get("module_context")
+        if m:
+            return m
+    return None
+
+
 def build_coach_run_event(
     *,
     session_payload: dict,
@@ -417,12 +449,17 @@ def build_coach_run_event(
     response = session_payload.get("response") or {}
     current_pr = session_payload.get("current_pr") or {}
     pr_number = current_pr.get("number") or session_payload.get("pr_number")
+    module_context = (
+        session_payload.get("module")
+        or session_payload.get("module_context")
+        or _detect_current_module()
+    )
     return {
         "event_type": "coach_run",
         "ts": _now_iso(),
         "learner_id": learner_id,
         "repo_context": session_payload.get("repo"),
-        "module_context": None,
+        "module_context": module_context,
         "pr_number": pr_number,
         "concept_ids": sorted(set(concept_ids)),
         "had_negative_feedback": _detect_negative_feedback(session_payload),

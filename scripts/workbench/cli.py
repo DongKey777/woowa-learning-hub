@@ -1067,7 +1067,8 @@ def cmd_learn_record_code(args: argparse.Namespace) -> int:
             catalog=catalog,
         )
         append_learner_event(event)
-        print(json.dumps({"recorded": True, "event_id": event["event_id"]}, ensure_ascii=False))
+        if not getattr(args, "silent", False):
+            print(json.dumps({"recorded": True, "event_id": event["event_id"]}, ensure_ascii=False))
         return 0
     except Exception as exc:  # noqa: BLE001
         sys.stderr.write(f"learn-record-code: {exc}\n")
@@ -1463,6 +1464,11 @@ def build_parser() -> argparse.ArgumentParser:
     learn_record_code_parser.add_argument("--lines-removed", type=int, default=0)
     learn_record_code_parser.add_argument("--linked-test")
     learn_record_code_parser.add_argument("--module")
+    learn_record_code_parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Suppress stdout (event still recorded). Used by AI auto-invocation.",
+    )
     learn_record_code_parser.set_defaults(func=cmd_learn_record_code)
 
     next_action_parser = subparsers.add_parser("next-action")
