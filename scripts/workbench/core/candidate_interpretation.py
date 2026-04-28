@@ -137,32 +137,76 @@ def _source_quote(source_type: str, pr_number: int | None, sample: dict) -> dict
     }
 
 
+def _extract_point_terms(point: dict) -> set[str]:
+    """Extract keyword terms from point.reasons, ignoring profile-boost reasons.
+
+    profile:* reasons (underexplored/repeated/active/dominant) describe how the
+    rule was boosted, not what it's about. Including them would let the
+    body-scan fallback in _sample_matches_point match comments containing
+    those literal words by accident.
+    """
+    terms: set[str] = set()
+    for reason in point.get("reasons", []):
+        if not isinstance(reason, str):
+            continue
+        if reason.startswith("text:") or reason.startswith("path:"):
+            kw = reason.split(":", 1)[1]
+            normalized = _normalize_text(kw)
+            if normalized:
+                terms.add(normalized)
+    return terms
+
+
+def _sample_matches_point(sample: dict, point_terms: set[str]) -> bool:
+    """Decide whether a comment/review sample is evidence for a learning point.
+
+    Fast path: if retrieval already tagged matching terms, accept.
+    Fallback: scan the sample body for any rule keyword. This covers the
+    common case where retrieval vocabulary (prompt + topic terms) doesn't
+    include learning-point keywords, which would otherwise reject every
+    sample that wasn't coincidentally tagged with a rule keyword.
+
+    Preserves prior behavior: empty matched_terms (path-only retrieval
+    match) passes through without body scan, mirroring the original guard.
+    """
+    if not point_terms:
+        return True  # no filter
+    raw_matched = sample.get("matched_terms", [])
+    matched_terms = {_normalize_text(t) for t in raw_matched if t}
+    matched_terms.discard("")
+    if not matched_terms:
+        return True  # path-only or unfiltered match — preserve old behavior
+    if matched_terms & point_terms:
+        return True  # fast path
+    body = _normalize_text(sample.get("body_excerpt", ""))
+    if not body:
+        return False
+    return any(term in body for term in point_terms)
+
+
 def _evidence_quotes(candidate: dict, point: dict) -> list[dict]:
     pr_number = candidate.get("pr_number")
     quotes: list[dict] = []
-    point_terms = {reason.split(":", 1)[1] for reason in point.get("reasons", []) if ":" in reason}
+    point_terms = _extract_point_terms(point)
 
     for sample in candidate.get("matched_comment_samples", []):
         if len(quotes) >= 3:
             break
-        matched_terms = set(sample.get("matched_terms", []))
-        if matched_terms and point_terms and not (matched_terms & point_terms):
+        if not _sample_matches_point(sample, point_terms):
             continue
         quotes.append(_source_quote("review_comment", pr_number, sample))
 
     for sample in candidate.get("matched_review_samples", []):
         if len(quotes) >= 3:
             break
-        matched_terms = set(sample.get("matched_terms", []))
-        if matched_terms and point_terms and not (matched_terms & point_terms):
+        if not _sample_matches_point(sample, point_terms):
             continue
         quotes.append(_source_quote("review_body", pr_number, sample))
 
     for sample in candidate.get("matched_issue_comment_samples", []):
         if len(quotes) >= 3:
             break
-        matched_terms = set(sample.get("matched_terms", []))
-        if matched_terms and point_terms and not (matched_terms & point_terms):
+        if not _sample_matches_point(sample, point_terms):
             continue
         quotes.append(_source_quote("issue_comment", pr_number, sample))
 

@@ -19,6 +19,8 @@ from unittest import mock
 
 from scripts.workbench.core.candidate_interpretation import (
     _evidence_quotes,
+    _extract_point_terms,
+    _sample_matches_point,
     build_candidate_interpretation,
 )
 
@@ -81,6 +83,61 @@ class EvidenceQuotesFastPathTest(unittest.TestCase):
         quotes = _evidence_quotes(candidate, point)
         self.assertEqual(len(quotes), 1)
         self.assertEqual(quotes[0]["source"], "review_comment")
+
+
+class PointTermsSanitizationTest(unittest.TestCase):
+    """Case 3 — profile-only reasons must NOT leak into body-scan.
+
+    Production scenarios are usually mixed (text + profile reasons), so
+    test the mixed case as the primary; profile-only is a corner case kept
+    as a secondary smoke check.
+    """
+
+    def test_profile_only_reasons_yield_empty_point_terms(self) -> None:
+        # 보조 case — profile-only reasons (production 에선 드뭄)
+        point = {
+            "id": "responsibility_boundary",
+            "reasons": ["profile:underexplored", "profile:repeated"],
+        }
+        terms = _extract_point_terms(point)
+        self.assertEqual(terms, set())
+
+    def test_mixed_reasons_strip_profile_but_keep_text_path(self) -> None:
+        # Primary scenario — text/path + profile mixed reasons.
+        # profile suffix ("underexplored", "repeated", "active", "dominant")
+        # must NOT make it into point_terms; otherwise body-scan would
+        # falsely match comments containing those literal words.
+        point = {
+            "id": "testing_strategy",
+            "reasons": [
+                "text:test",
+                "text:테스트",
+                "path:test",
+                "profile:underexplored",
+                "profile:repeated",
+            ],
+        }
+        terms = _extract_point_terms(point)
+        self.assertIn("test", terms)
+        self.assertIn("테스트", terms)
+        self.assertNotIn("underexplored", terms)
+        self.assertNotIn("repeated", terms)
+        self.assertNotIn("active", terms)
+        self.assertNotIn("dominant", terms)
+
+        # Also verify at the filter layer: a body containing the profile
+        # suffix words must NOT match when no real keyword is present.
+        sample = _comment_sample(
+            body="이 영역은 underexplored 인데 repeated 한 측면이 있습니다",
+            matched_terms=["domain"],  # test 와 무관
+        )
+        # Sanity: helper-level check
+        self.assertFalse(_sample_matches_point(sample, terms))
+        # End-to-end: _evidence_quotes returns empty (and pr_body fallback
+        # is not triggered because focus_excerpt is empty).
+        candidate = _candidate(samples=[sample])
+        quotes = _evidence_quotes(candidate, point)
+        self.assertEqual(quotes, [])
 
 
 class EmptyBodyTest(unittest.TestCase):
