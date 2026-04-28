@@ -1,9 +1,9 @@
 """Unit tests for `scripts/workbench/core/interactive_rag_router.classify()`.
 
-Covers the 4-tier classification protocol from
-/Users/idonghun/.claude/plans/indexed-plotting-cake.md (v2.2).
+Covers the 4-tier classification protocol from the v2.2 router design
+(see `docs/rag-runtime.md` for runtime semantics).
 
-Test classes mirror the plan's verification matrix:
+Test classes mirror the verification matrix:
 - Basic 4 cases (Tier 0/1/2/3)
 - Tier 3 blocked (preconditions unmet)
 - Word boundary regressions (Python `\\b` unicode boundary trap)
