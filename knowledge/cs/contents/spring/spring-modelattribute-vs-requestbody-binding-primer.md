@@ -9,13 +9,14 @@
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+- [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: JSON인데 왜 `Content-Type`에서 막히나](./spring-requestbody-415-unsupported-media-type-primer.md)
 - [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: modelattribute vs requestbody beginner, @modelattribute 뭐예요, @requestbody 뭐예요, spring mvc binding difference, spring 400 원인 헷갈려요, get은 되는데 post는 400 spring, modelattribute requestbody 차이, 폼 바인딩 json 바인딩 차이, get admin reservations query vs post admin reservations json, roomescape admin binding primer, controller 전에 415, json인데 unsupported media type, post json unsupported media type spring, requestbody 415 before controller, content-type application json beginner
+retrieval-anchor-keywords: modelattribute vs requestbody beginner, @modelattribute 뭐예요, @requestbody 뭐예요, modelattribute requestbody 헷갈려요, json body랑 query 차이 뭐예요, get post dto 차이 처음, spring 400 원인 헷갈려요, get은 되는데 post는 400 spring, modelattribute requestbody 차이, 폼 바인딩 json 바인딩 차이, get admin reservations query vs post admin reservations json, roomescape admin binding primer, 컨트롤러 전에 415, json인데 unsupported media type, content-type application json 안 붙였는데 415
 
 ## 핵심 개념
 
@@ -34,8 +35,9 @@ retrieval-anchor-keywords: modelattribute vs requestbody beginner, @modelattribu
 - "`GET`은 되는데 `POST`는 왜 바로 `400`이에요?"
 - "검색 query는 되는데 JSON 생성 요청은 왜 안 돼요?"
 - "`@ModelAttribute`랑 `@RequestBody` 중 뭘 써야 해요?"
-- "JSON인데 왜 `Unsupported Media Type`이에요?"
-- "컨트롤러 전에 `415`가 나요. `@RequestBody` 문제예요?"
+- "`json`인데 `415 Unsupported Media Type`가 떠요?"
+- "컨트롤러 전에 `415 Unsupported Media Type`가 나요. `@RequestBody` 문제예요?"
+- "`POST /admin/reservations`인데 body는 JSON 같고 컨트롤러 전에 `415 Unsupported Media Type`가 나요."
 
 ## 한눈에 보기
 
@@ -138,9 +140,13 @@ Content-Type: application/json
 | `GET /admin/reservations?date=tomorrow`에서 바로 `400` | `@ModelAttribute` 쪽 문자열 변환 | query 값 `"tomorrow"`를 `LocalDate`로 바꾸지 못할 수 있다 |
 | 검색 조건 일부가 비어 들어온다 | `@ModelAttribute` 쪽 파라미터 이름 | query key 이름과 DTO 필드명이 안 맞을 수 있다 |
 | `POST` JSON 요청에서 컨트롤러 로그가 안 찍힌다 | `@RequestBody` 쪽 message conversion | JSON 문법이나 DTO 타입이 먼저 깨졌을 수 있다 |
-| `POST` JSON 요청인데 컨트롤러 전에 `415`가 난다 | `@RequestBody` + `Content-Type` 계약 | JSON처럼 보여도 Spring은 먼저 body 형식 계약부터 확인한다 |
-| "JSON인데 `Unsupported Media Type`"가 뜬다 | `@RequestBody` + media type 선택 | body 내용보다 `Content-Type`, `consumes` 불일치를 먼저 의심해야 한다 |
+| `POST` JSON 요청인데 컨트롤러 전에 `415 Unsupported Media Type`가 난다 | `@RequestBody` + `Content-Type` 계약 | JSON처럼 보여도 Spring은 먼저 body 형식 계약부터 확인한다 |
+| body는 JSON처럼 생겼는데 "`415 Unsupported Media Type`"가 뜬다 | `@RequestBody` + `Content-Type` 헤더 | body 내용보다 "`나는 JSON이다`"라고 적은 `Content-Type: application/json`이 빠졌는지 먼저 본다 |
+| `Content-Type: application/json`으로 보냈는데도 `415`가 난다 | `@RequestBody` + `consumes` 조건 | 컨트롤러 `consumes`, 프록시/클라이언트 헤더, charset 포함값까지 계약이 맞는지 봐야 한다 |
+| "`json`인데 `415 Unsupported Media Type`"가 뜬다 | `@RequestBody` + media type 선택 | body 내용보다 `Content-Type`, `consumes` 불일치를 먼저 의심해야 한다 |
 | `415 Unsupported Media Type` | `@RequestBody` + `Content-Type` 계약 | JSON body를 보냈는데 `application/json`이 아니거나 `consumes`와 안 맞을 수 있다 |
+
+## 어디서 값을 읽는지로 먼저 자르기
 
 초급자에게 가장 중요한 분리 기준은 이것이다.
 
@@ -154,7 +160,24 @@ Content-Type: application/json
 - query/form이 먼저 떠오르면 `@ModelAttribute`
 - JSON body가 먼저 떠오르면 `@RequestBody`
 - "같은 `/admin/reservations`인데 GET은 되고 POST만 깨진다"면 두 요청의 입력 위치를 따로 봐야 한다
-- "POST JSON인데 controller 전에 `415`"면 JSON 값보다 `Content-Type`과 media type 계약을 먼저 본다
+- "POST JSON인데 컨트롤러 전에 `415 Unsupported Media Type`"이면 JSON 값보다 `Content-Type`과 media type 계약을 먼저 본다
+- `415` 증상만 따로 짧게 잡고 싶으면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)로 바로 간다
+
+## `컨트롤러 전에 415 Unsupported Media Type` / `json인데 415 Unsupported Media Type` 빠른 분기
+
+이 증상 문장으로 검색해 들어온 초급자는 보통 "JSON 문법이 틀렸나?"부터 떠올린다. 그런데 `415 Unsupported Media Type`은 그보다 앞단에서 "`이 body를 어떤 형식으로 읽어야 하는지`" 계약이 안 맞았다는 쪽에 더 가깝다.
+
+| 지금 눈에 보이는 말 | 먼저 붙잡을 질문 | 보통 더 가까운 축 |
+|---|---|---|
+| "컨트롤러 전에 `415 Unsupported Media Type`" | 요청 헤더에 `Content-Type: application/json`이 있나? | `@RequestBody` media type 계약 |
+| "`json`인데 `415 Unsupported Media Type`" | body가 JSON처럼 생긴 것과 헤더가 JSON이라고 선언한 것은 같은가? | `Content-Type` 누락/불일치 |
+| "`Content-Type: application/json`인데도 `415`" | 컨트롤러 `consumes`나 클라이언트가 실제로 보낸 헤더가 다른가? | `consumes` / converter 선택 |
+
+짧게 외우면 이렇게 본다.
+
+- JSON 모양이 맞는지는 `400` parse/type 쪽 질문이다.
+- JSON이라고 선언했는지는 `415` media type 쪽 질문이다.
+- 그래서 "`json`인데 `415 Unsupported Media Type`"은 body 값보다 헤더 계약을 먼저 본다.
 
 ## 흔한 오해와 함정
 

@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [리팩토링 피드백 문장 라우터](./refactoring-feedback-phrase-router.md)
 - [우테코 백엔드 미션 선행 개념 입문](./woowacourse-backend-mission-prerequisite-primer.md)
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)
@@ -85,6 +86,7 @@ retrieval-anchor-keywords: mission review vocabulary primer, pr review glossary 
 
 ## 안전한 다음 한 걸음
 
+- 리뷰 문장이 `추상화가 어색해요`, `책임이 섞였어요`, `테스트가 너무 무거워요`처럼 바로 수정 방향으로 안 읽히면 [리팩토링 피드백 문장 라우터](./refactoring-feedback-phrase-router.md)에서 먼저 primer와 첫 행동을 고른다.
 - service/repository 책임이 막히면 [Service 계층 기초](./service-layer-basics.md)
 - DTO/entity 구분이 막히면 [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
 - repository 경계가 막히면 [Repository, DAO, Entity](./repository-dao-entity.md)

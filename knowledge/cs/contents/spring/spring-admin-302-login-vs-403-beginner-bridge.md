@@ -17,17 +17,44 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring admin 302 vs 403, admin request redirect vs forbidden, spring security admin login redirect, 302 /login 왜 가요, admin 403 왜 나요, savedrequest beginner, requestcache basics, authentication vs authorization spring, admin page not logged in, admin page role missing, 처음 배우는데 302 403 차이, spring security redirect memory, 로그인 페이지로 튀어요 spring, 권한 없어서 403 spring
+retrieval-anchor-keywords: spring admin 302 vs 403, /admin 302 login, 302 /login 왜 가요, 왜 403 떠요, 접근 거부 왜 떠요, 로그인 성공했는데 접근 거부, 로그인 성공했는데 왜 403, 로그인 성공 후 원래 url 복귀 403, 복귀는 됐는데 권한 없음, admin 302 login final 403, /admin 302 -> login -> final 403, 왜 login 갔다가 마지막 403, savedrequest beginner, authentication vs authorization spring, 처음 배우는데 302 403 차이
 
 ## 핵심 개념
 
-초급자 기준으로는 먼저 질문을 둘로 쪼개면 된다.
+초급자 기준으로는 먼저 질문을 셋으로 쪼개면 된다.
 
 - `302 /login`: "이 요청을 보낸 사용자가 아직 로그인하지 않았다. 먼저 로그인시키고 원래 URL로 돌아오게 하자."
 - `403`: "로그인은 했지만 이 URL에 들어올 권한은 없다."
+- `login-success-final-403`: "로그인 복귀는 성공했지만, 돌아온 `/admin/**`에서 마지막 권한 검사가 막혔다."
 
 헷갈리는 이유는 둘 다 "관리자 페이지 접근 실패"로 보이기 때문이다.  
-하지만 실제로는 하나는 **인증 전 단계**, 다른 하나는 **인증 후 권한 단계**다.
+하지만 실제로는 `302 /login`은 **인증 전 단계**, `403`은 **인증 후 권한 단계**, `login-success-final-403`은 **복귀 성공 후 인가 실패**다.
+
+## 30초 결정표
+
+이 문서는 아래 카드 한 장으로 먼저 자르면 된다.
+
+| 지금 눈에 먼저 들어온 장면 | 바로 붙일 라벨 | 지금 묻는 질문 | safe next doc |
+|---|---|---|---|
+| `/admin` 요청이 곧바로 `302 /login`으로 튄다 | `not logged in yet` | "아직 익명 사용자였나?" | 이 문서 계속 또는 [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| 로그인 화면까지 안 가고 바로 plain `403`이다 | `logged in but not admin` | "이미 로그인했고 `ADMIN`만 막혔나?" | 이 문서 계속 |
+| `/admin -> 302 /login -> 로그인 성공 -> 원래 /admin 복귀 -> final 403` | `login-success-final-403` | "복귀는 성공했고 마지막 역할 매핑만 남았나?" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
+
+짧게 외우면 이렇게 끝난다.
+
+- `302 /login`: 아직 누구인지 못 찾았다.
+- plain `403`: 누군지는 찾았지만 관리자 권한이 안 맞는다.
+- `login-success-final-403`: 로그인 복귀는 성공했고 마지막 인가만 실패했다.
+
+## 이 문서가 바로 맞는 검색 증상
+
+아래처럼 증상형으로 검색해서 들어왔다면 이 문서가 첫 분기점이다.
+
+| 검색하거나 말하기 쉬운 증상 | 이 문서에서 먼저 붙잡는 질문 |
+|---|---|
+| "`/admin`이 `302 /login`으로 가요" | 지금 사용자가 비로그인인가? |
+| "`왜 403 떠요`", "`접근 거부 왜 떠요`" | 로그인은 이미 됐고 권한만 막힌 상태인가? |
+| "`로그인 성공했는데 접근 거부`", "`로그인 성공했는데 왜 403`", "`로그인 성공 후 원래 URL 복귀 403`", "`복귀는 됐는데 권한 없음`" | 복귀 자체는 성공했고 마지막 `ADMIN` 검사만 남은 상태인가? |
 
 ## 한눈에 보기
 
@@ -35,7 +62,7 @@ retrieval-anchor-keywords: spring admin 302 vs 403, admin request redirect vs fo
 |---|---|---|---|
 | 로그인 자체가 안 됨 | `302 /login` 또는 API면 `401` | 인증부터 필요하다 | "지금 익명 사용자였나?" |
 | 로그인은 됐음 | `403` | 관리자 권한이 부족하다 | "이 사용자가 `ADMIN`인가?" |
-| 로그인 후 다시 원래 URL로 복귀 | `302`가 한 번 더 보일 수 있음 | `SavedRequest`가 로그인 전에 가려던 주소 메모를 다시 쓴다 | "주소 메모 흐름이 켜져 있나?" |
+| 로그인 후 다시 원래 URL로 복귀했는데 마지막에 막힘 | 복귀 뒤 final `403` | `SavedRequest`는 성공했고 마지막 인가만 실패했다 | "authority가 `ROLE_ADMIN`인가?" |
 
 ```text
 /admin 요청
@@ -52,6 +79,23 @@ retrieval-anchor-keywords: spring admin 302 vs 403, admin request redirect vs fo
 
 핵심은 `302`를 봤다고 바로 "권한이 없네"라고 결론 내리면 안 된다는 점이다.  
 `302`는 권한 실패보다 먼저, "로그인 절차로 보내는 동작"일 가능성이 크다.
+
+## `/admin 302 -> login -> final 403`로 보일 때 먼저 끊는 법
+
+`/admin -> 302 /login -> 로그인 성공 -> 원래 /admin 복귀 -> final 403`처럼 한 장면으로 보이면 더 단순하게 끊는다.
+
+- 원래 `/admin`으로 복귀했다면 `SavedRequest`의 주소 메모는 일단 성공이다.
+- 그 뒤 마지막 `403`이 남았다면 이제 질문은 redirect가 아니라 `ADMIN` 권한 검사다.
+- 그래서 이 장면은 plain `403`과도 구분해서 `login-success-final-403`로 따로 라벨링해 두는 편이 빠르다.
+
+즉 beginner 기준 한 줄 구분은 이것이다.  
+**`302 /login`은 "로그인하러 가는 길", 복귀 후 `403`은 "돌아오긴 했지만 관리자 권한은 아직 못 통과한 상태"`**다.
+
+그래서 "`로그인 성공했는데 접근 거부`"라는 말만 들리면 첫 반응도 바꿔야 한다.
+
+- "로그인이 실패했나?"보다 "`SavedRequest` 복귀는 끝났나?"를 먼저 본다.
+- 복귀까지 끝났다면 마지막 질문은 "`현재 authority가 진짜 `ROLE_ADMIN`인가?`"다.
+- 이 분기가 맞으면 검색 문장을 "`로그인 성공 후 원래 URL 복귀 403`" 또는 "`복귀는 됐는데 권한 없음`"으로 다시 읽고, 바로 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)로 이어 간다.
 
 ## 처음엔 이 세 사용자만 구분하면 된다
 
@@ -127,8 +171,20 @@ GET /admin/reservations
 - 로그인 성공
 - 원래 `/admin/reservations`로 다시 이동
 
-이 흐름은 **redirect memory** 문제다. 보통 이 기억 장치가 `SavedRequest`로 보인다.  
+이 흐름은 **`redirect / navigation memory`** 문제다. 보통 이 기억 장치가 `SavedRequest`로 보인다.  
 `403`처럼 "권한이 없어서 막혔다"는 문제와는 축이 다르다.
+
+## beginner-safe handoff
+
+이 문서는 "`지금 보고 있는 장면을 어느 라벨로 먼저 묶을까?`"를 정하는 첫 분기 문서다. 용어를 아래처럼 고정하면 다음 문서 선택이 덜 흔들린다.
+
+| 먼저 붙일 라벨 | 뜻 | safe next doc |
+|---|---|---|
+| `redirect / navigation memory` | 로그인 전 원래 URL을 기억했다가 로그인 후 다시 보내는 흐름 | [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| `server persistence / session mapping` | 쿠키는 있는데 다음 요청에서 계속 anonymous이거나 다시 로그인되는 흐름 | [Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer](./spring-admin-session-cookie-flow-primer.md) |
+
+즉 "`302 /login`이 먼저 보인다", "`원래 URL 복귀가 이상하다`", "`복귀는 됐는데 마지막 `403``"가 핵심이면 먼저 `redirect / navigation memory`로 읽는다.  
+반대로 "`cookie 있는데 다시 로그인`", "`next request anonymous after login`"이 먼저 보이면 `server persistence / session mapping`으로 갈아탄다.
 
 ### 4. 브라우저와 API는 같은 인증 실패라도 응답이 다를 수 있다
 
@@ -151,7 +207,7 @@ GET /admin/reservations
   아니다. 복귀는 `SavedRequest`가 도와줄 수 있지만, 돌아온 뒤에도 권한이 없으면 결국 `403`이 날 수 있다.
 
 - "로그인 성공 후 원래 `/admin/**` URL로 복귀했다가 마지막에 `403`이 났으니 `SavedRequest`가 잘못됐다"라고 생각하기 쉽다.  
-  실제로는 `SavedRequest`는 정상 동작했고, `hasRole("ADMIN")`와 실제 authority 이름이 어긋나 마지막 인가에서 실패한 경우가 많다. 이 경우는 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)로 바로 이어 간다.
+  실제로는 `SavedRequest`는 정상 동작했고, `hasRole("ADMIN")`와 실제 authority 이름이 어긋나 마지막 인가에서 실패한 경우가 많다. 이때는 "`복귀는 성공, 최종 실패는 인가`"라고 먼저 라벨링한 뒤 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)로 바로 이어 간다.
 
 - "`403`이 났으니 로그인 페이지로 보내면 해결된다"라고 생각하기 쉽다.  
   이미 로그인된 사용자의 권한 문제라면 재로그인보다 역할 매핑과 `hasRole("ADMIN")` 규칙을 먼저 봐야 한다.
@@ -185,7 +241,7 @@ http.authorizeHttpRequests(auth -> auth
 
 1. 지금 사용자가 아예 비로그인인지, 이미 로그인한 일반 사용자인지 먼저 나눈다.
 2. 비로그인이면 `302 /login`과 `SavedRequest` 흐름을 본다.
-3. 로그인 사용자면 `hasRole("ADMIN")`, authority 이름, 역할 매핑을 본다.
+3. "`왜 403 떠요`"가 핵심이면 로그인 사용자라고 가정하고 `hasRole("ADMIN")`, authority 이름, 역할 매핑을 본다.
 4. 브라우저가 아니라 API 호출이라면 redirect보다 `401`/`403` 응답 계약이 맞는지도 함께 본다.
 
 ## 더 깊이 가려면
@@ -205,7 +261,7 @@ http.authorizeHttpRequests(auth -> auth
 > 핵심: `302 /login`은 보통 인증 전 로그인 유도이고, `403`은 인증 후 권한 부족이다.
 
 > Q: 로그인 후 원래 `/admin` URL로 복귀하는 것은 어느 개념과 관련 있는가?
-> 의도: redirect memory와 authorization 분리 확인
+> 의도: `redirect / navigation memory`와 authorization 분리 확인
 > 핵심: `RequestCache`와 `SavedRequest`가 원래 요청을 기억하는 흐름이다.
 
 > Q: 왜 API에서는 `302 /login`보다 `401` JSON이 더 자연스러운가?

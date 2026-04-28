@@ -14,7 +14,7 @@
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Ordered Map Null-Safe Practice Drill](../language/java/ordered-map-null-safe-practice-drill.md)
 
-retrieval-anchor-keywords: treemap key entry bridge, lowerkey lowerentry beginner, floorkey floorentry beginner, ceilingkey ceilingentry beginner, higherkey higherentry beginner, treemap strict inclusive entry, 왜 lower랑 floor가 달라요 entry, exact match 포함 여부 entry, lower floor ceiling higher 헷갈림, reservation conflict check treemap, treemap key에서 entry로, treemap entry 뭐예요, ordered map reservation basics, what is lowerentry, treemap reservation end time bridge
+retrieval-anchor-keywords: treemap key entry bridge, lowerkey lowerentry beginner, floorkey floorentry beginner, ceilingkey ceilingentry beginner, higherkey higherentry beginner, treemap strict inclusive entry, 왜 lower랑 floor가 달라요 entry, exact match 포함 여부 entry, lower floor ceiling higher 헷갈림, ordered map key entry difference, ordered map exact match entry, entry로 바꾸면 포함 여부 바뀌나요, treemap key에서 entry로, treemap entry 뭐예요, what is lowerentry
 
 ## 핵심 개념
 
@@ -35,6 +35,14 @@ strictness도 바뀌지 않는다.
 
 - `왜 lower랑 floor가 달라요?` -> strict vs inclusive 차이다.
 - `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` -> 아니다. `Key/Entry`가 아니라 메서드 이름이 결정한다.
+
+ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
+
+| 학습자 질문 | 바로 번역한 답 |
+|---|---|
+| `ordered map에서 key랑 entry 차이가 뭐예요?` | key는 위치만, entry는 위치와 값까지 준다 |
+| `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` | 아니다. `lower/floor/ceiling/higher` 이름이 포함 여부를 정한다 |
+| `왜 lowerEntry랑 floorEntry가 달라요?` | `entry` 차이가 아니라 strict/inclusive 차이다 |
 
 ## 한눈에 보기
 
@@ -71,6 +79,7 @@ strictness도 바뀌지 않는다.
 | `lowerEntry`가 `lowerKey`보다 더 많이 포함하나 | 아니다. 둘 다 exact match를 제외한다 |
 | `floorEntry`는 `Entry`라서 포함하나 | 아니다. `floor`라서 포함한다 |
 | `ceilingEntry`와 `higherEntry` 차이가 value 때문인가 | 아니다. `ceiling`은 포함, `higher`는 제외다 |
+| `ordered map에서 entry가 더 똑똑한 검색인가` | 아니다. 검색 기준은 여전히 key이고 entry는 찾은 줄의 value를 같이 보여 줄 뿐이다 |
 
 즉 `왜 lower랑 floor가 달라요`의 답은 `Key` 단계에서도 같고 `Entry` 단계에서도 같다.
 

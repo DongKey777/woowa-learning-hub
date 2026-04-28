@@ -22,7 +22,18 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
 
-retrieval-anchor-keywords: @conditionalonmissingbean vs @primary, conditionalonmissingbean primary confusion, primary is not auto configuration override, primary does not restore boot bean, auto-configuration back-off vs bean selection, bean registration vs dependency injection, boot default bean skipped existing bean, user bean wins boot default, conditionalonmissingbean back off, existing bean found primary ignored, spring boot default bean missing primary, bean candidate selection vs conditional bean registration, beginner spring boot bean choice, @primary injection priority, spring conditionalonmissingbean vs primary primer basics
+retrieval-anchor-keywords: @conditionalonmissingbean 뭐예요, conditionalonmissingbean vs @primary, starter 넣었는데 bean 왜 없어요, boot 기본 bean 왜 안 떠요, 내 bean 만들었더니 기본 bean 사라졌어요, @primary 붙였는데 기본 bean 왜 안 생겨요, auto configuration back off 뭐예요, bean 등록이랑 주입 차이, user bean 있으면 boot bean 어떻게 돼요, spring boot bean 선택 헷갈려요, existing bean found back off, primary does not restore boot bean, conditional bean registration beginner, boot default bean skipped existing bean, 조건부 bean 등록 언제 쓰나요
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 **Boot 기본 bean이 왜 안 보이는지 처음 묻는 질문**에서 deep dive보다 먼저 걸리도록 조정했다.
+
+| 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
+|---|---|
+| "`@ConditionalOnMissingBean`이 뭐예요?" | Boot가 기본 bean을 만들지 말지 정하는 등록 조건이라고 먼저 자른다 |
+| "starter 넣었는데 bean이 왜 없어요?" | 먼저 back-off인지 classpath/property 조건 실패인지 나눠 보자고 안내한다 |
+| "`@Primary` 붙였는데 기본 bean이 왜 안 생겨요?" | `@Primary`는 등록이 아니라 주입 우선순위라고 먼저 분리한다 |
+| "내 bean 만들었더니 Boot bean이 사라졌어요" | 같은 타입 bean 존재 때문에 `@ConditionalOnMissingBean`이 물러났을 가능성을 먼저 본다 |
 
 ## 먼저 mental model
 

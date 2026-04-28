@@ -20,8 +20,40 @@ RAG에서는 이 네 층을 같은 무게로 보지 않는다.
 
 이 폴더의 `README`, taxonomy, topic map은 대부분 **routing helper**다.
 실제 개념 설명 근거는 카테고리 `README`의 `primer`나 개별 `contents/**` 문서로 내려가서 읽는 편이 맞다.
+즉 이 폴더 문서는 "무엇을 먼저 읽을지 정하는 곳"이지, beginner가 advanced incident 문서를 첫 클릭으로 골라도 되는 신호가 아니다.
 
 문서 역할 이름이 헷갈리면 [Navigation Taxonomy](./navigation-taxonomy.md)를 먼저 본다.
+
+beginner-safe 기본 흐름도 고정해 둔다.
+
+`routing helper -> survey/category README -> primer -> primer bridge -> deep dive -> playbook/recovery`
+
+`routing helper`에서 멈추는 질문과 바로 내려가야 하는 질문을 분리해 읽으면 beginner 오독이 줄어든다.
+
+| 지금 질문 | 여기서 멈춰도 되나 | 다음 안전한 한 걸음 |
+|---|---|---|
+| `README 차이`, `primer vs deep dive`, `문서 역할이 헷갈려요` | yes | `Navigation Taxonomy`, `Query Playbook` |
+| `처음`, `뭐예요`, `what is`, `basics` | no | category `README` 또는 linked `primer` |
+| 증상은 있는데 축이 헷갈린다 | no | category `README`의 `primer bridge` |
+| live incident 대응 순서가 먼저다 | no | incident-heavy category `README`의 `playbook` / `recovery` |
+
+## 20초 역할 판별표
+
+README와 navigator가 길어 보여도, beginner 첫 클릭은 아래 표로 자르면 된다.
+
+| 문서에서 먼저 보이는 신호 | 이 문서의 주 역할 | beginner-safe first click? | 다음 안전한 한 걸음 |
+|---|---|---|---|
+| `학습 순서`, `큰 그림`, `roadmap` | `survey` | yes | category `README` |
+| `README`, `catalog`, `navigator`, `무엇을 읽을지` | `meta/category navigator` | yes | 같은 문서 안의 `primer` 또는 linked primer |
+| `처음`, `뭐예요`, `basics`, `입문` | `primer` | yes | `primer bridge` 또는 같은 category follow-up |
+| `헷갈려요`, `왜`, symptom phrase, 두 갈래 비교 | `primer bridge` | yes | 해당 원인의 `deep dive` |
+| `incident`, `recovery`, `playbook`, `runbook`, `cutover` | incident follow-up | no | 먼저 category `README`나 `primer bridge`로 돌아가 축을 고정 |
+| `master note`, `synthesis`, `senior questions` | advanced follow-up | no | 이미 primer/deep dive를 읽은 뒤 범위를 넓힐 때 |
+
+주니어 독자가 README에서 길을 잃지 않게 하려면, mixed bullet에서도 beginner entrypoint를 앞에 두고 advanced follow-up을 뒤에 두는 편이 안전하다.
+
+특히 `처음`, `헷갈려요`, `왜`, `what is`, `basics`처럼 broad query shape에서는 `routing helper` 문서를 읽은 뒤 바로 `playbook`이나 `recovery`로 가지 않는다.
+category `README` 또는 linked `primer`로 한 번 내려가 개념 축을 고정한 뒤 incident follow-up을 고른다.
 
 ## README 이름이 같아도 역할은 다르다
 

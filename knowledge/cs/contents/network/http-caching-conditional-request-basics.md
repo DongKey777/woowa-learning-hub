@@ -8,10 +8,10 @@
 
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
 - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [Strong vs Weak ETag: validator 정밀도와 cache correctness](./strong-vs-weak-etag-validator-precision-cache-correctness.md)
-- [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 - [CDN 기초](../system-design/cdn-basics.md)
 - [CORS 기초](../security/cors-basics.md)
 
@@ -298,7 +298,7 @@ Content-Type: text/html; charset=UTF-8
 
 ## 304와 프로토콜 fallback은 다른 질문이다 (bridge)
 
-먼저 한 줄로 구분하면:
+처음이면 이 섹션은 짧게만 잡으면 된다.
 
 - `304`는 "같은 리소스 본문을 다시 받을지"를 묻는 **캐시 재검증** 신호다.
 - protocol fallback/downgrade는 "이번 요청을 HTTP/3 대신 HTTP/2(또는 HTTP/1.1)로 보낼지"를 묻는 **전송 경로** 신호다.
@@ -308,20 +308,7 @@ Content-Type: text/html; charset=UTF-8
 | 본문을 다시 다운로드할까? | `ETag`/`If-None-Match`, `Last-Modified`/`If-Modified-Since`, `304` |
 | 어떤 HTTP 버전으로 연결할까? | `Alt-Svc`, ALPN, UDP 차단 여부, H2/H1 fallback |
 
-즉 `304`가 보여도 "프로토콜이 내려갔다"는 뜻은 아니다. 프로토콜 fallback 판단은 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)에서 따로 본다.
-
-같은 browsing session 안에서도 두 판단은 독립적으로 일어날 수 있다.
-
-| 시점 | 브라우저가 결정하는 것 | 결과 |
-| --- | --- | --- |
-| 첫 방문 | 아직 캐시 사본이 없고, 서버가 H2로 응답 | `200 OK over h2` + `ETag: "v1"` 저장 |
-| 같은 탭에서 1분 뒤 재방문 | 이번엔 H3가 가능해서 H3로 연결, 하지만 리소스는 안 바뀜 | `304 Not Modified over h3`, body는 기존 캐시 재사용 |
-
-이 예시의 핵심은 이렇다.
-
-- `h2 -> h3`는 "어느 전송 경로로 갈까?"에 대한 답이다.
-- `200 -> 304`는 "본문을 다시 받을까?"에 대한 답이다.
-- 그래서 같은 세션에서 **프로토콜은 바뀌어도 캐시 재검증 결과는 그대로 `304`일 수 있다.**
+즉 `304`가 보여도 "프로토콜이 내려갔다"는 뜻은 아니다. beginner 문맥에서는 `304`를 cache 질문으로만 읽고, H2/H3 fallback은 [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md) 같은 follow-up 문서로 분리하면 충분하다.
 
 ---
 
@@ -381,7 +368,7 @@ Content-Type: text/html; charset=UTF-8
 
 ### shared cache/CDN 문제는 여기서 더 복잡해진다
 
-브라우저 단일 캐시를 넘어서 `Vary`, compression variant, CDN key가 섞이면 이야기가 더 어려워진다. 그때는 [Compression, Cache, Vary, Accept-Encoding, Personalization](./compression-cache-vary-accept-encoding-personalization.md)과 [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)을 같이 본다.
+브라우저 단일 캐시를 넘어서 `Vary`, compression variant, CDN key가 섞이면 beginner 범위를 넘기기 쉽다. 그때는 [Compression, Cache, Vary, Accept-Encoding, Personalization](./compression-cache-vary-accept-encoding-personalization.md)으로 한 단계만 더 내려가고, 운영형 edge case는 그다음 playbook으로 분리해서 보는 편이 안전하다.
 
 ---
 

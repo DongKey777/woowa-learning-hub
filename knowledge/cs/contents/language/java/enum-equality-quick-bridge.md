@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Java enum 기초](./java-enum-basics.md)
+- [Enum 상수 비교와 문자열 payload 비교를 언제 나눌까](./enum-string-boundary-bridge.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md)
 - [Java Optional 입문](./java-optional-basics.md)
@@ -121,7 +122,7 @@ if (status == OrderStatus.PAID) {
 }
 ```
 
-문자열 자체를 enum 상수와 직접 비교하는 감각으로 넘어가면 안 된다.
+문자열 자체를 enum 상수와 직접 비교하는 감각으로 넘어가면 안 된다. 이 경계가 아직 헷갈리면 [Enum 상수 비교와 문자열 payload 비교를 언제 나눌까](./enum-string-boundary-bridge.md)에서 "문자열 -> enum 변환 -> enum 비교" 흐름만 따로 짧게 이어서 보면 된다.
 
 ## 실무에서 쓰는 모습
 

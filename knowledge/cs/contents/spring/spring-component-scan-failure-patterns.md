@@ -1,6 +1,6 @@
 # Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정
 
-> 한 줄 요약: component scan은 "프로젝트 전체 검색"이 아니라 `@SpringBootApplication`이나 `@ComponentScan`이 정한 base package 아래에서 stereotype 후보만 찾는 과정이므로, 패키지 위치 하나만 어긋나도 `NoSuchBeanDefinitionException`이 난다.
+> 한 줄 요약: component scan은 "프로젝트 전체 검색"이 아니라 `@SpringBootApplication`이나 `@ComponentScan`이 정한 base package 아래에서 stereotype 후보만 찾는 과정이므로, 패키지 위치 하나만 어긋나도 `NoSuchBeanDefinitionException`이나 "service bean not found" 같은 증상으로 바로 드러난다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 **component scan boundary troubleshooting primer**를 담당한다.
 
@@ -18,7 +18,17 @@
 - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 
-retrieval-anchor-keywords: spring component scan failure, component scan boundary, springbootapplication package, scanbasepackages, scanbasepackageclasses, multi module component scan, missing stereotype annotation, nosuchbeandefinitionexception, profile conditional bean missing, condition evaluation report, starter bean missing faq, 처음 배우는데 bean 안 떠요, spring bean basics, component scan basics, spring component scan failure patterns basics
+retrieval-anchor-keywords: spring component scan failure, component scan boundary, springbootapplication package, scanbasepackages, scanbasepackageclasses, multi module component scan, missing stereotype annotation, nosuchbeandefinitionexception, service bean not found, controller bean missing, bean 안 떠요 왜, 처음 배우는데 bean 안 떠요, why bean not found spring, webmvctest service bean not found, component scan basics
+
+## 이 문서가 끼는 primer 순서
+
+Spring DI 축을 처음 따라올 때는 보통 아래 순서가 덜 헷갈린다.
+
+1. 왜 직접 `new`하지 않는지부터 잡고 싶으면 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](./spring-ioc-di-basics.md)
+2. Bean 등록과 component scan의 큰 그림을 먼저 잡고 싶으면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+3. "`bean`이 왜 안 떠요?", "`service bean not found`가 왜 나요?"처럼 **누락 증상**이 보이면 이 문서
+
+즉 이 문서는 "DI가 왜 필요한가"를 설명하는 입문서가 아니라, Bean 등록 개념을 이미 한 번 본 뒤에 **scan 경계가 어디서 끊겼는지 역추적하는 primer**다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -32,6 +42,19 @@ retrieval-anchor-keywords: spring component scan failure, component scan boundar
 
 ---
 
+## 이런 증상이면 이 문서부터 본다
+
+아래처럼 **bean 누락을 직접 말하는 증상 검색어**가 먼저 보이면 이 문서가 맞다.
+
+| 검색하거나 로그에서 먼저 본 말 | 이 문서가 맞는 이유 |
+|---|---|
+| `NoSuchBeanDefinitionException` | 후보가 0개인 경로를 먼저 의심해야 한다 |
+| `Parameter 0 of constructor required a bean of type ... that could not be found` | 생성자 주입 대상이 scan 경계 밖이거나 후보 등록 자체가 안 됐을 수 있다 |
+| `service bean not found`, `controller bean missing` | stereotype annotation 누락이나 package boundary 누락을 바로 점검해야 한다 |
+| `@WebMvcTest service bean not found` | 실제 scan 실패보다 test slice 경계일 수도 있으니 이 문서와 [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)를 같이 보면 분기가 빨라진다 |
+
+반대로 `found 2 beans`, `NoUniqueBeanDefinitionException`, `dev에서는 되는데 prod에서만 안 돼요`가 먼저 보이면 scan 경계보다 후보 중복이나 conditional 탈락을 먼저 의심하는 편이 빠르다.
+
 ## 먼저 10초 역분기
 
 `bean이 안 떴다 = 무조건 scan 실패`로 보면 초반에 자주 헤맨다. 먼저 아래 둘 중 어디에 가까운지 가른다.
@@ -40,7 +63,7 @@ retrieval-anchor-keywords: spring component scan failure, component scan boundar
 |---|---|---|
 | 언제 깨지는가? | 로컬, 테스트, 운영 어디서나 비슷하게 깨진다 | 특정 profile, 특정 테스트 슬라이스, CI/운영에서만 깨진다 |
 | 코드에서 먼저 볼 것 | `@SpringBootApplication` 위치, `scanBasePackages`, stereotype annotation | `@Profile`, `@ConditionalOnProperty`, `@ConditionalOnClass`, `@ConditionalOnBean` |
-| 바로 이어갈 문서 | 이 문서 | [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md), [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md), [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ](./spring-starter-added-but-bean-missing-faq.md) |
+| 바로 이어갈 문서 | 이 문서 | [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md), [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트](./spring-boot-condition-evaluation-report-first-debug-checklist.md), [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ](./spring-starter-added-but-bean-missing-faq.md), [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
 
 짧게 말하면 이렇다.
 

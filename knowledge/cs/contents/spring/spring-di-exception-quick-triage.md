@@ -8,11 +8,12 @@
 
 관련 문서:
 - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 - [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집](./spring-primary-qualifier-collection-injection-decision-guide.md)
 - [Spring Bean 이름 규칙과 rename 함정 입문: `@Component`, `@Bean`, `@Qualifier` 문자열이 어디서 이어지는가](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)
 - [추상 클래스 vs 인터페이스와 DI 브리지: 상속 선택과 주입 선택을 섞지 않기](../design-pattern/abstract-class-vs-interface-injection-bridge.md)
 
-retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, bean을 못 찾음 vs 여러 개라 못 고름, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, found 2 selection rule problem, nouniquebeandefinitionexception log one line, primary qualifier collection checklist, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, primary qualifier collection guide
+retrieval-anchor-keywords: spring di exception quick triage, spring di exception 뭐예요, bean을 못 찾음 vs 여러 개라 못 고름, nosuchbeandefinitionexception vs nouniquebeandefinitionexception, expected single matching bean but found 2, expected at least 1 bean which qualifies as autowire candidate, no qualifying bean of type available, rename qualifier string problem, 처음 배우는데 spring di 예외, bean not found vs bean duplication, scan miss vs profile mismatch, webmvctest service bean not found, datajpatest service bean not found, 왜 webmvctest 에서 service 가 없어요, 헷갈리는 test slice di 예외
 
 ## 처음 읽을 때는 용어를 이렇게 번역한다
 
@@ -57,6 +58,7 @@ retrieval-anchor-keywords: spring di exception quick triage, spring di exception
 | 보인 예외/문구 | 실제 뜻 | 먼저 볼 것 | beginner용 첫 대응 |
 |---|---|---|---|
 | `NoSuchBeanDefinitionException` + rename 직후 | bean이 아예 없는지보다 **이름 계약이 끊겼을 수 있다** | 클래스명, `@Bean` 메서드명, `@Qualifier("oldName")` 문자열 | [Spring Bean 이름 규칙과 rename 함정 입문](./spring-bean-naming-qualifier-rename-pitfalls-primer.md)으로 먼저 간다 |
+| `NoSuchBeanDefinitionException` + `@WebMvcTest`/`@DataJpaTest` 안에서만 발생 | scan 고장보다 **slice 경계 안에 없는 bean을 기대한 것**일 수 있다 | 테스트 어노테이션 종류, 기대한 bean이 web/JPA slice 바깥인지 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)로 먼저 가서 "원래 안 보이는 bean인가?"를 확인한다 |
 | `NoSuchBeanDefinitionException` | 조건에 맞는 후보가 0개다 | scan 범위, stereotype annotation, `@Bean`, profile/condition, qualifier mismatch | Bean이 왜 등록되지 않았는지부터 본다 |
 | `NoUniqueBeanDefinitionException` | 타입은 맞는데 후보가 2개 이상이다 | 구현체 개수, 같은 반환 타입 `@Bean`, `@Primary`, `@Qualifier` | "기본 후보를 둘지, 명시적으로 찍을지"를 정한다 |
 | `expected single matching bean but found 2` | 거의 항상 후보 중복이다 | 후보 목록 이름 | `@Primary`, `@Qualifier`, collection 주입 중 맞는 전략을 고른다 |
@@ -84,11 +86,34 @@ retrieval-anchor-keywords: spring di exception quick triage, spring di exception
 
 beginner의 빠른 확인 순서는 이렇다.
 
-1. 주입하려는 concrete class가 진짜 Spring Bean인지 본다
-2. `Application` package 하위인지 본다
-3. stereotype annotation 또는 `@Bean` 등록이 있는지 본다
-4. package와 annotation이 멀쩡한데 특정 profile/test/CI에서만 깨지면 `@Profile`/`@Conditional...`을 본다
-5. `@Qualifier`를 썼다면 이름/역할이 실제 bean과 맞는지 본다
+1. 먼저 `@WebMvcTest`, `@DataJpaTest` 같은 test slice 안에서만 깨지는지 본다. 그렇다면 [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)로 먼저 가는 편이 빠르다
+2. 주입하려는 concrete class가 진짜 Spring Bean인지 본다
+3. `Application` package 하위인지 본다
+4. stereotype annotation 또는 `@Bean` 등록이 있는지 본다
+5. package와 annotation이 멀쩡한데 특정 profile/test/CI에서만 깨지면 `@Profile`/`@Conditional...`을 본다
+6. `@Qualifier`를 썼다면 이름/역할이 실제 bean과 맞는지 본다
+
+## test slice에서만 bean not found면 먼저 이것부터 본다
+
+초보자가 가장 자주 헷갈리는 beginner 증상은 이것이다.
+
+- "`왜 `@WebMvcTest`에서 service bean not found가 나요?`"
+- "`왜 `@DataJpaTest`에서 service/controller bean이 없어요?`"
+
+이때는 component scan이 망가졌다고 단정하기 전에, **지금 테스트가 full app이 아니라 slice 경계로 잘려 있는지**부터 확인한다.
+
+짧게 외우면 아래처럼 본다.
+
+| 지금 보는 테스트 | 안 보여도 이상하지 않은 bean | 먼저 갈 문서 |
+|---|---|---|
+| `@WebMvcTest` | `@Service`, `@Repository`, 일반 `@Component` | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| `@DataJpaTest` | controller, service, web/security bean | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| `@SpringBootTest` | 위 bean들이 한꺼번에 안 보인다면 | 이 문서의 scan/`@Profile`/conditional 분기를 계속 본다 |
+
+즉 "`test에서 bean을 못 찾음`"이라는 같은 로그라도,
+
+- slice test 안에서만 보이면 -> **경계 오해**일 수 있고
+- 앱 실행이나 `@SpringBootTest`에서도 같이 보이면 -> **등록/scan/조건 문제**일 가능성이 더 크다
 
 가장 흔한 예시는 component scan 누락이다.
 

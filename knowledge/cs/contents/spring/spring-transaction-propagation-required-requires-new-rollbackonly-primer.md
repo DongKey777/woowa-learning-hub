@@ -177,71 +177,20 @@ checkout tx 시작
 | "이 작업만 따로 커밋해서 남겨야 하나?" | `REQUIRES_NEW`를 검토한다 |
 | "분명 catch 했는데 마지막에 왜 실패하지?" | rollback-only 가능성을 먼저 본다 |
 
-## 여기서 `NESTED`는 어떻게 다르게 봐야 하나
+## `NESTED`는 여기서 짧게만 잡고 넘긴다
 
-초급자는 `NESTED`를 "`REQUIRES_NEW`의 약한 버전"으로 외우면 거의 항상 헷갈린다.
-둘 다 "안쪽 작업을 분리해 보인다"는 공통점은 있지만, 분리 방식이 다르다.
+이 문서의 초급 범위에서는 `NESTED`를 깊게 파지 않아도 된다.
+처음엔 아래 두 줄만 분리되면 충분하다.
 
-- `NESTED`: 같은 큰 트랜잭션 안에 savepoint를 찍고, 안쪽 일부만 되감는다.
-- `REQUIRES_NEW`: 안쪽 작업을 아예 별도 트랜잭션으로 떼서 따로 커밋하거나 롤백한다.
+- `NESTED`: 같은 큰 트랜잭션 안에서 **부분 되돌리기(savepoint)** 쪽 감각이다.
+- `REQUIRES_NEW`: 안쪽 작업을 **별도 결과로 남기기** 쪽 감각이다.
 
-짧게 비유하면:
+즉 "`주문은 실패해도 실패 로그는 꼭 남겨야 해요`"처럼 결과를 따로 남기는 질문이면 이 문서의 `REQUIRES_NEW`까지만 먼저 잡으면 된다.
+반대로 "`100건 중 1건만 되감고 나머지는 계속 가고 싶어요`", "`JPA에서 `NESTED`를 붙였는데 왜 기대처럼 안 보여요`"처럼 savepoint나 플랫폼 차이가 중심이면 아래 follow-up으로 넘기는 편이 초급자에게 더 안전하다.
 
-- `NESTED`는 같은 문서에서 "여기까지 되돌리기" 체크포인트를 찍는 느낌이다.
-- `REQUIRES_NEW`는 새 문서를 하나 더 열어 따로 저장하는 느낌이다.
-
-### 초급자용 20초 비교
-
-| 질문 | `NESTED` | `REQUIRES_NEW` |
-|---|---|---|
-| 안쪽 작업은 바깥과 같은 큰 일인가? | 보통 그렇다 | 꼭 그렇지 않다 |
-| 안쪽 성공을 바깥 실패와 분리해 남길 수 있나? | 아니다 | 가능하다 |
-| 안쪽 실패 후 바깥 흐름을 계속 갈 수 있나? | savepoint 기준으로는 가능하다 | 가능하다 |
-| 마지막에 바깥이 전체 롤백되면? | 안쪽도 함께 사라진다 | 안쪽에서 이미 커밋한 것은 남을 수 있다 |
-
-핵심 한 줄:
-
-- `NESTED`는 **부분 되돌리기**에 가깝다.
-- `REQUIRES_NEW`는 **별도 결과 남기기**에 가깝다.
-
-### savepoint 한계도 초급자 감각으로만 먼저 기억하자
-
-`NESTED`를 이해할 때 초급자가 꼭 먼저 기억할 한계는 복잡한 플랫폼 차이보다 이것이다.
-
-- savepoint는 "같은 트랜잭션 안에서 잠깐 되감기"다.
-- 그래서 바깥 트랜잭션이 최종 실패하면 안쪽에서 했던 일도 같이 사라진다.
-- 즉 "안쪽 작업만 영구적으로 남기고 싶다"는 요구에는 `NESTED`가 아니라 `REQUIRES_NEW` 쪽 감각이 맞다.
-
-예를 들면:
-
-- 배치 100건 중 1건 실패를 되감고 99건 흐름은 계속 보고 싶다 -> `NESTED` 감각
-- 주문은 실패해도 실패 로그만큼은 꼭 DB에 남기고 싶다 -> `REQUIRES_NEW` 감각
-
-즉 `NESTED`는 "같은 이야기 안의 부분 수정", `REQUIRES_NEW`는 "이 기록은 본 이야기와 별개로 저장"이라고 잡으면 된다.
-
-### 왜 Spring/JPA에서는 `NESTED`가 기대처럼 안 보일 때가 있나
-
-여기서 초급자가 하나만 더 기억하면 된다.
-
-- `NESTED`의 핵심은 JPA 마법이 아니라 **JDBC savepoint**다.
-- 그래서 Spring/JPA라고 해서 항상 "안쪽 트랜잭션이 하나 더 생긴다"처럼 동작하지는 않는다.
-- 특히 JPA 중심 코드에서는 "`NESTED`를 줬는데 왜 그냥 같은 트랜잭션처럼 보이지?"라는 느낌이 자주 나온다.
-
-초급자용 판단표:
-
-## 여기서 `NESTED`는 어떻게 다르게 봐야 하나 (계속 2)
-
-| 상황 | 먼저 가져갈 감각 |
-|---|---|
-| "안쪽 실패만 잠깐 되감고 싶다" | savepoint가 실제로 가능한 환경인지 먼저 의심한다 |
-| "안쪽 성공은 바깥 실패와 무관하게 꼭 남겨야 한다" | `NESTED`보다 `REQUIRES_NEW` 쪽 요구다 |
-| "JPA에서 `NESTED`를 붙였는데 차이가 잘 안 보인다" | JPA 자체 중첩 트랜잭션이 아니라 savepoint 지원 문제일 수 있다 |
-
-한 줄로 정리하면:
-
-- `NESTED`는 "새 트랜잭션 추가"가 아니라 "같은 트랜잭션 안의 savepoint"라고 기억해야 오해가 줄어든다.
-
-플랫폼 차이까지 깊게 들어가고 싶다면 [Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies](./spring-transaction-propagation-nested-requires-new-case-studies.md)를 보고, JPA 쪽에서 왜 이 기대가 더 자주 깨지는지 먼저 짧게 잡고 싶다면 [Spring Mini Card: `JpaTransactionManager`에서 `NESTED` 기대가 자주 깨지는 이유](./spring-jpatransactionmanager-savepoint-expectations-mini-card.md), savepoint 자체 감각이 먼저 필요하면 [Savepoint와 Partial Rollback](../database/savepoint-partial-rollback.md)을 같이 보면 된다.
+- [Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies](./spring-transaction-propagation-nested-requires-new-case-studies.md)
+- [Spring Mini Card: `JpaTransactionManager`에서 `NESTED` 기대가 자주 깨지는 이유](./spring-jpatransactionmanager-savepoint-expectations-mini-card.md)
+- [Savepoint와 Partial Rollback](../database/savepoint-partial-rollback.md)
 
 ## 아주 짧은 코드 감각
 

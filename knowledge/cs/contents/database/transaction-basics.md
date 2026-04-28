@@ -14,11 +14,13 @@
 - [미션 코드 독해용 DB 체크리스트](./mission-code-reading-db-checklist.md)
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
 
-retrieval-anchor-keywords: transaction basics, acid basics, transaction beginner, commit rollback intro, transaction unit of work, transaction vs isolation, transaction vs jpa, what is transaction, 트랜잭션이 뭐예요, 주문 저장 재고 차감 같이 취소, commit 했는데 두 번 팔렸어요, transactional 이면 jpa 인가요, save 만 보이는데 rollback, rollback only beginner, transaction boundary service
+retrieval-anchor-keywords: transaction basics, transaction beginner, acid basics, transaction vs isolation, what is transaction, 트랜잭션이 뭐예요, 트랜잭션 처음 배우는데, 트랜잭션 큰 그림, 트랜잭션이 왜 필요해요, 트랜잭션 언제 쓰는지, @transactional 뭐예요, @transactional 과 트랜잭션 차이, commit rollback 이 뭐예요, 주문 저장 재고 차감 같이 취소, save 만 보이는데 rollback
 
 ## 먼저 잡을 그림
 
 트랜잭션은 여러 DB 변경을 **하나의 사건처럼 묶는 단위**다. 초보자는 "같이 성공하거나 같이 실패할 범위"로 먼저 이해하면 된다.
+
+처음 질문이 "`트랜잭션이 뭐예요?`", "`@Transactional`이랑 같은 말인가요?`", "`왜 commit/rollback을 묶어서 보죠?`"라면 이 문서가 먼저다. `deadlock`, `isolation`, `lock`이 먼저 떠올라도 입문 1회차에서는 잠깐 뒤로 미루고, 실패 범위부터 고정하는 편이 덜 헷갈린다.
 
 ```text
 주문 저장
@@ -30,7 +32,7 @@ retrieval-anchor-keywords: transaction basics, acid basics, transaction beginner
 이 문서의 질문은 하나다. "무엇을 같이 `commit`/`rollback`할까?"  
 "두 사용자가 동시에 마지막 재고를 잡으면?"은 다음 단계인 격리 수준과 락 질문이다.
 
-입문 1회차에서는 여기서 멈추는 편이 안전하다. `deadlock`, `savepoint`, `retry` 같은 단어가 먼저 보여도 이 문서에서는 "같이 되돌릴 범위"만 분리하고, 나머지는 관련 문서로 넘긴다.
+입문 1회차에서는 여기서 멈추는 편이 안전하다. `deadlock`, `savepoint`, `retry` 같은 단어가 먼저 보여도 이 문서에서는 "같이 되돌릴 범위"만 분리하고, 자세한 대응은 관련 문서로 넘긴다.
 
 | 지금 보이는 문제 | 이 문서가 먼저 답하는가? | 왜 그런가 |
 |---|---|---|
@@ -156,9 +158,9 @@ createOrder()
 
 | 먼저 보인 단어 | 지금은 왜 넘기나 | 다음 문서 |
 |---|---|---|
-| `deadlock`, `lock wait` | 이미 충돌 대응 단계다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+| `deadlock`, `lock wait` | 이미 충돌 대응 단계다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
 | `savepoint` | 부분 롤백은 입문 핵심보다 한 단계 뒤다 | [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md) |
-| `40001`, `retry` | 재시도는 격리 수준과 충돌 해석을 같이 봐야 한다 | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) |
+| `40001`, `retry` | 재시도는 격리 수준과 충돌 해석을 같이 봐야 한다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) |
 
 ## 한 줄 정리
 

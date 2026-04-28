@@ -21,12 +21,20 @@ retrieval-anchor-keywords: async same thread, async self invocation, async proxy
 
 그래서 같은 클래스 안에서 `this.sendMail()`처럼 부르면 `@Async`가 틀린 게 아니라, **프록시를 거치지 못해 동기 호출처럼 보일 수 있다.**
 
+이 카드에서는 `this.method()` / `private` / 직접 `new`를 매번 따로 나열하지 않고, **프록시 정문 3문항**으로 묶어 읽는다.
+
+| 정문 3문항 신호 | 초급자용 해석 | 첫 확인 |
+|---|---|---|
+| `this.method()` | 같은 집 안에서 바로 다시 불렀다 | 호출을 다른 Bean으로 뺐는지 |
+| `private` 메서드 | 프록시가 설 문이 닫혀 있다 | `public` 경계로 올려야 하는지 |
+| 직접 `new` | 스프링 밖 객체라 프록시를 못 건다 | DI 받은 Bean인지 |
+
 ## 이 증상은 이렇게 읽는다
 
 | 보인 증상 | 초급자 오해 | 먼저 볼 것 |
 |---|---|---|
 | `caller`와 `@Async` 로그가 같은 스레드 이름 | `@EnableAsync`를 빼먹었다 | 같은 클래스 내부 호출인지 |
-| `task-1`, `applicationTaskExecutor-1` 같은 이름이 안 보임 | executor bean 등록이 틀렸다 | `this.method()` / `private` / 직접 `new` |
+| `task-1`, `applicationTaskExecutor-1` 같은 이름이 안 보임 | executor bean 등록이 틀렸다 | 위 `프록시 정문 3문항`부터 본다 |
 | 로컬에서는 동기처럼 보이는데 Bean 분리 후 갑자기 다른 스레드로 감 | 환경 차이 버그다 | 프록시 경유 여부가 달라졌는지 |
 
 같은 스레드 로그는 "설정 버그 확정"이 아니라 **프록시 우회 신호일 수 있다**가 첫 판단이다.
@@ -103,7 +111,7 @@ public class ReceiptSender {
 ## 어디로 이어서 읽나
 
 - self-invocation 자체를 1분 안에 다시 잡고 싶으면 [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
-- `this.method()` / `private` / 직접 `new` 3가지를 한 번에 체크하려면 [AOP 기초](./spring-aop-basics.md)
+- `프록시 정문 3문항` 원리를 한 번에 다시 보고 싶으면 [AOP 기초](./spring-aop-basics.md)
 - `@Async`와 `@Transactional`이 같이 있을 때 왜 더 헷갈리는지 보려면 [Spring `@Transactional` and `@Async` Composition Traps](./spring-transactional-async-composition-traps.md)
 
 ## 한 줄 정리

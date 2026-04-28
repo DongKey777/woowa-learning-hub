@@ -43,6 +43,10 @@ retrieval-anchor-keywords: system design catalog, system design reading route, b
 이 `README`는 system design primer와 advanced catalog를 함께 묶는 **navigator 문서**다.
 mixed bridge/catalog에서는 `[catalog]`는 README subsection entrypoint, `[playbook]` / `[drill]` / `[incident matrix]` / `[recovery]`는 incident-oriented 문서, `[system design]`는 control-plane / cutover handoff를 뜻한다. pure system-design catalog에서만 bare link를 남기고, security README와 왕복하는 bridge sequence는 역할 cue를 다시 붙인다.
 beginner troubleshooting route는 `[catalog] -> [primer] -> [primer bridge] -> [deep dive] -> [recovery] / [system design]` 사다리를 먼저 지켜서 security README와 round-trip handoff parity를 맞춘다.
+`Beginner Entrypoints`는 첫 클릭용, `Case Study`와 `Replay / Cutover`와 `Retirement`는 follow-up용이다. 처음 보는 독자는 사례형 설계나 cutover/recovery 문서를 primer 대신 열지 않는다.
+
+`처음`, `system design 뭐부터`, `헷갈려요`, `what is`, `basics` 같은 질문이면 이 README 안에서도 `초심자 1회차 라우트`, `Primer Route`, `Beginner Entrypoints`만 먼저 본다.
+`case study`, `replay`, `cutover`, `retirement`, `incident`, `recovery`라는 단어가 먼저 보이는 구간은 "지금 advanced 운영/설계 과제가 붙었을 때 여는 follow-up"으로 해석하는 편이 안전하다.
 
 | 헷갈리는 역할 | 이 README에서 뜻하는 것 | 초보자용 첫 진입점 |
 |---|---|---|
@@ -51,6 +55,13 @@ beginner troubleshooting route는 `[catalog] -> [primer] -> [primer bridge] -> [
 | `deep dive` | primer bridge 다음에 security/database/spring 쪽 원인과 경계를 실제로 파는 단계 | bridge section 안의 `[deep dive]` 링크들 |
 | `playbook` / `drill` / `incident matrix` | live response, rehearsal, blast-radius triage를 먼저 보는 incident ladder | [Security / System-Design Incident Bridge](#system-design-security-incident-bridge) |
 | `recovery` | outage/degradation tail을 다루는 incident-oriented recovery deep dive | [Security / System-Design Incident Bridge](#system-design-security-incident-bridge), [Auth Session Troubleshooting Bridge](#system-design-auth-session-troubleshooting-bridge) |
+
+| 이 README에서 보이는 섹션 이름 | 실제 역할 | 처음 읽는 독자에게 안전한가 |
+|---|---|---|
+| `초심자 1회차 라우트`, `Primer Route`, `Beginner Entrypoints` | `survey` + `primer` | 예. 첫 클릭 후보다 |
+| `Case Study Entrypoints` | 설계형 `deep dive` follow-up | 아니오. primer 뒤에 연다 |
+| `Replay and Cutover Entrypoints`, `Analytics Correction Entrypoints`, `Retirement Route` | cutover / replay / 운영형 `[system design]` follow-up | 아니오. entrypoint가 아니다 |
+| `Security / System-Design Incident Bridge` | mixed incident ladder | 아니오. 실제 incident/복구 맥락일 때만 연다 |
 
 ## 초심자 1회차 라우트
 
@@ -189,14 +200,14 @@ consistency guarantee 용어를 먼저 구분하고 싶다면:
   - [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md)
 ## Case Study Entrypoints
 
-대표 사례형 설계부터 읽고 싶다면:
+`Beginner Entrypoints`를 한 번 돈 뒤, "설계를 문제 형태로 묶어 보고 싶다"는 시점에만 내려오는 follow-up 묶음이다.
   - [URL 단축기 설계](./url-shortener-design.md)
   - [Rate Limiter 설계](./rate-limiter-design.md)
   - [분산 캐시 설계](./distributed-cache-design.md)
   - [Payment System / Ledger / Idempotency / Reconciliation](./payment-system-ledger-idempotency-reconciliation-design.md)
 ## Replay and Cutover Entrypoints
 
-migration / replay / cutover cluster로 바로 들어가려면:
+이 구간은 primer가 아니라 migration / replay / cutover 고급 전환 묶음이다. junior reader는 consistency primer나 database bridge를 먼저 읽고, 실제 cutover owner 관점 질문이 붙을 때만 내려온다.
   - [Outbox Watermark Token Primer](./outbox-watermark-token-primer.md)
   - [Change Data Capture / Outbox Relay](./change-data-capture-outbox-relay-design.md)
   - [Historical Backfill / Replay Platform](./historical-backfill-replay-platform-design.md)
@@ -208,7 +219,7 @@ migration / replay / cutover cluster로 바로 들어가려면:
   - [Dedicated Cell Drain and Retirement](./dedicated-cell-drain-retirement-design.md)
 ## Analytics Correction Entrypoints
 
-analytics correction / restatement cluster로 바로 들어가려면:
+이 구간도 운영형 follow-up이다. 입문 질문이라면 `Notification Consistency Route`나 `Consistency Check Route`에서 용어를 먼저 고정한다.
   - [Historical Backfill / Replay Platform](./historical-backfill-replay-platform-design.md)
   - [Analytics Late Data Reconciliation](./analytics-late-data-reconciliation-design.md)
   - [Dashboard Restatement UX](./dashboard-restatement-ux-design.md)
@@ -236,7 +247,7 @@ first-response stale triage를 먼저 익히려면:
   - `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
 ## Retirement Route
 
-decommission / retirement / irreversible cleanup cluster로 바로 들어가려면:
+이 구간은 irreversible cleanup / retirement follow-up이다. beginner entrypoint가 아니며, overlap 검증과 cutover owner 경계가 이미 잡힌 뒤에만 연다.
   - [Decommission / Retirement Cluster](#system-design-decommission-retirement-cluster)
   - [Verifier Overlap Hard-Reject Retirement Gates](./verifier-overlap-hard-reject-retirement-gates-design.md)
   - [Bridge Retirement Evidence Packet](./bridge-retirement-evidence-packet-design.md)

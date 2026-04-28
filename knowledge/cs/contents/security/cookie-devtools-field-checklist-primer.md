@@ -7,20 +7,15 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Cookie Failure Three-Way Splitter](./cookie-failure-three-way-splitter.md)
+- [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md)
+- [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+- [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
+- [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
+- [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
+- [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
 
-> 관련 문서:
-> - [Cookie Failure Three-Way Splitter](./cookie-failure-three-way-splitter.md)
-> - [Cookie Rejection Reason Primer](./cookie-rejection-reason-primer.md)
-> - [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
-> - [Fetch Credentials vs Cookie Scope](./fetch-credentials-vs-cookie-scope.md)
-> - [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
-
-retrieval-anchor-keywords: cookie devtools field checklist, cookie 1 minute checklist, devtools cookie checklist beginner, set-cookie application cookies request cookie compare, cookie troubleshooting columns to compare, devtools cookie compare domain path samesite secure, response set-cookie vs application cookies vs request cookie, blocked set-cookie application request cookie checklist, cookie name domain path compare, cookie beginner devtools quick check, browser cookie first minute checklist, network application issues cookie checklist, cookie headers to compare beginner, 쿠키가 있는데도 요청에 안 감, cookie devtools field checklist primer basics
-retrieval-anchor-keywords: request url cookie name domain path samesite secure httponly expires, issues blocked reason cookie, request headers cookie compare, response headers set-cookie compare
+retrieval-anchor-keywords: cookie devtools checklist, cookie field checklist, cookie compare set-cookie application request, cookie blocked reason basics, cookie scope mismatch basics, cookie request header compare, cookie name domain path samesite secure, browser cookie first minute, 쿠키가 있는데도 요청에 안 감, cookie 왜 안 보내요, cookie 뭐예요 basics
 
 ## 먼저 잡을 mental model
 
@@ -74,7 +69,19 @@ cookie 디버깅 첫 질문은 복잡하지 않다.
 | `Application Secure` vs 실패 요청 URL scheme | HTTPS 전용인지 본다 | redirect가 `http://...`로 꺾이면 안 붙을 수 있다 |
 | response `Set-Cookie Name` vs request `Cookie` header | 같은 cookie가 살아서 갔는지 본다 | 저장은 됐어도 다음 요청에는 빠졌을 수 있다 |
 
-## common confusion
+## 아주 작은 예시: 로그인 성공 뒤 `/api/me`에 cookie가 안 붙는 경우
+
+`https://auth.example.com/login` 응답은 성공인데, 바로 이어진 `https://app.example.com/api/me` 요청이 anonymous라고 하자. 초급자는 이 세 줄만 같은 cookie 이름 `SESSION`으로 나란히 본다.
+
+| 어디를 보나 | 실제 관찰 | 바로 내리는 첫 해석 |
+|---|---|---|
+| `Response Headers > Set-Cookie` | `SESSION=...; Path=/auth; Secure; SameSite=Lax` | 서버는 cookie를 주긴 했다 |
+| `Application > Cookies` | `SESSION` row가 저장돼 있다 | 저장 자체는 성공했다 |
+| `Request Headers > Cookie` on `/api/me` | `SESSION`이 없다 | 전송 단계에서 scope가 안 맞는다 |
+
+이 장면에서는 "세션이 서버에서 사라졌나?"보다 먼저 `Path=/auth`와 요청 경로 `/api/me`가 어긋났는지 본다. 저장은 됐는데 요청에 안 붙는 전형적인 `stored but not sent` 갈래이기 때문이다.
+
+## 자주 헷갈리는 지점
 
 - `Application > Cookies`에 보인다고 그 요청에 자동 전송된 것은 아니다.
 - `HttpOnly`는 "JS에서 못 읽음"이지 "요청에 안 붙음"이 아니다.

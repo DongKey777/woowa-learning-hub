@@ -4,12 +4,13 @@
 
 **난이도: 🔴 Advanced**
 
-retrieval-anchor-keywords: covering index, index-only scan, using index, using index vs index only scan, mysql using index vs postgresql index only scan, visibility map, heap fetches, heap fetches not zero, MVCC visibility, covering index but still heap fetches, covering index but still reads table, why heap fetches remain, using index but still table lookup, secondary index lookup, EXPLAIN ANALYZE, 커버링 인덱스와 index only scan 차이, using index 의미
+retrieval-anchor-keywords: covering index, index-only scan, using index, using index vs index only scan, mysql using index vs postgresql index only scan, visibility map, heap fetches, heap fetches not zero, MVCC visibility, covering index but still heap fetches, covering index but still reads table, why heap fetches remain, using index but still table lookup, secondary index lookup, EXPLAIN ANALYZE, postgresql cluster vs index only scan, postgresql cluster physical row order, cluster does not mean index only scan, cluster 한번 하면 계속 정렬되나요, postgresql cluster 헷갈림, physical row order index only scan, 커버링 인덱스와 index only scan 차이, using index 의미
 
 ## 증상별 바로 가기
 
 - `Using index`와 `Index Only Scan`을 같은 뜻으로 읽고 있거나, MySQL `Extra`와 PostgreSQL plan node를 같은 신호로 해석하고 있다면 이 문서에서 용어부터 분리한다.
-- `covering index를 만들었는데 PostgreSQL에서 Heap Fetches가 남는다`, `visibility map 때문에 heap/table를 다시 읽는다` 같은 follow-up이면 이 문서에서 MVCC visibility와 vacuum 상태를 함께 본다.
+- `covering index를 만들었는데 PostgreSQL에서 Heap Fetches가 남는다`, `visibility map 때문에 heap/table를 다시 읽는다` 같은 follow-up이면 먼저 [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md)에서 초급 멘탈모델을 잡고, 그다음 이 문서에서 MVCC visibility와 vacuum 상태를 함께 본다.
+- PostgreSQL `CLUSTER`, `Index Only Scan`, physical row order를 한 덩어리로 헷갈리고 있다면 먼저 [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)의 비교표로 저장 구조 층을 분리한 뒤 이 문서를 읽는다.
 - `Using index`는 보이는데도 읽기 p95가 그대로이거나, 컬럼을 더 넣은 뒤 write가 무거워졌다면 [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)으로 이동한다.
 - `Using filesort`, `ORDER BY ... LIMIT`, left-prefix 문제가 먼저면 [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)로 돌아가서 인덱스 shape부터 다시 잡는다.
 
@@ -19,6 +20,7 @@ retrieval-anchor-keywords: covering index, index-only scan, using index, using i
   - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
   - [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)
   - [인덱스와 실행 계획](./index-and-explain.md)
+  - [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
   - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
   - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
   - [Autovacuum Freeze Debt, XID Age, and Wraparound Playbook](./autovacuum-freeze-debt-wraparound-playbook.md)
@@ -31,6 +33,24 @@ retrieval-anchor-keywords: covering index, index-only scan, using index, using i
 즉, 커버링 인덱스는 설계이고 index-only scan은 실행 결과다.
 
 이 차이를 모르면 "인덱스는 다 같은 거 아닌가?"라는 착각에 빠진다.
+
+## 초급자용 30초 구분
+
+PostgreSQL에서 아래 셋을 같은 층으로 묶으면 거의 항상 헷갈린다.
+
+| 헷갈리는 말 | 실제로 답하는 질문 | 안전한 첫 문장 |
+|------|------|------|
+| covering index | "이 쿼리에 필요한 컬럼이 인덱스에 다 있나?" | 컬럼 구성에 대한 설계 이야기다 |
+| `Index Only Scan` | "이번 실행에서 heap을 안 읽고 끝내려는 경로를 탔나?" | 실행 계획 이름이다 |
+| `CLUSTER` / physical row order | "table heap row를 어떤 순서로 다시 써 뒀나?" | 저장 배치나 maintenance 이야기다 |
+
+짧게 말하면 이렇다.
+
+- covering index: 인덱스 안에 무엇을 넣었는가
+- `Index Only Scan`: 그 인덱스로 이번 실행을 어떻게 끝냈는가
+- `CLUSTER`: heap row 순서를 한 번 어떻게 정리했는가
+
+즉 `CLUSTER`는 row 배치 쪽 이야기이고, `Index Only Scan`은 heap 생략 실행 이야기다. 이름에 `index`가 같이 보여도 같은 버튼이 아니다.
 
 ## 깊이 들어가기
 

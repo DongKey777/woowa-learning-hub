@@ -15,7 +15,15 @@
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring mvc request lifecycle basics, dispatcher servlet what is, dispatcherservlet basics, filter interceptor controller flow, spring request flow beginner, spring mvc 처음 배우는데, dispatcherservlet 뭐예요, filter interceptor 차이 basics, @requestbody 400 왜 나요, binding basics, exception handling basics, controlleradvice beginner, spring mvc 요청 흐름 기초, controller 전에 400 왜, handler mapping binding exception flow
+retrieval-anchor-keywords: spring mvc request lifecycle basics, spring mvc 큰 그림, dispatcherservlet basics, spring request flow beginner, spring mvc 처음 배우는데, 요청이 컨트롤러까지 어떻게 가요, filter interceptor 차이 basics, requestbody 400 왜 나요, binding basics, exception handling basics, controller 전에 400 왜, 415 content negotiation primer
+
+## 먼저 여기까지만 잡는다
+
+이 문서는 Spring MVC beginner가 "입구 -> 길찾기 -> 값 채우기 -> 컨트롤러 -> 실패 번역" 순서를 한 장으로 잡는 primer다.
+
+- 먼저 잡을 것: `Filter`, `DispatcherServlet`, binding, controller, advice의 자리
+- 지금 중심이 아닌 것: async dispatch, content negotiation 확장, streaming 응답, disconnect 추적
+- `415`, `Accept`, `produces`, `consumes`가 바로 궁금하면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md), [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 바로 내려간다.
 
 ## 핵심 개념
 
@@ -62,7 +70,7 @@ HTTP 요청
 | 1 | `Filter` | 요청을 입구에서 먼저 검사한다 | 로그인 전 차단, CORS, 공통 로깅 |
 | 2 | `DispatcherServlet` + `HandlerMapping` | 어느 컨트롤러 메서드로 갈지 찾는다 | `404`, `405` |
 | 3 | `HandlerInterceptor` | 컨트롤러 전후 공통 작업을 붙인다 | 접근 로그, 처리 시간 측정 |
-| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | controller 전에 [`400` first split](./spring-requestbody-400-before-controller-primer.md), [`415 Unsupported Media Type` first split](./spring-content-negotiation-pitfalls.md) |
+| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | controller 전에 [`400` first split](./spring-requestbody-400-before-controller-primer.md), [`415 Unsupported Media Type` first split](./spring-requestbody-415-unsupported-media-type-primer.md) -> [`Content negotiation` 확장 보기](./spring-content-negotiation-pitfalls.md) |
 | 5 | `Controller` | 서비스 호출과 응답 반환을 한다 | 도메인 규칙 위반, 조회 실패 |
 | 6 | exception resolver / advice | 예외를 HTTP 응답으로 번역한다 | `400`/`404`/`409` 응답 모양 불일치 |
 
@@ -122,19 +130,19 @@ HTTP 요청
 |---|---|---|
 | `@PathVariable Long id` | URL 경로 `/rooms/1` | `abc`처럼 숫자로 못 바꾸는 값 |
 | `@RequestParam String date` | 쿼리스트링 `?date=2026-04-28` | 이름 오타, 필수값 누락 |
-| `@RequestBody ReservationRequest` | JSON body | [`415 Unsupported Media Type`](./spring-content-negotiation-pitfalls.md), [`400` before controller](./spring-requestbody-400-before-controller-primer.md) |
+| `@RequestBody ReservationRequest` | JSON body | [`415 Unsupported Media Type` first split](./spring-requestbody-415-unsupported-media-type-primer.md) -> [`Content negotiation` 확장 보기](./spring-content-negotiation-pitfalls.md), [`400` before controller](./spring-requestbody-400-before-controller-primer.md) |
 
-이 단계에서 나는 실패는 아직 비즈니스 규칙 위반이 아닐 수 있다. 문자열을 숫자로 못 바꾸거나 JSON 모양이 DTO와 안 맞는 식의 **binding failure**일 수 있다.
+이 단계 실패는 아직 비즈니스 규칙 위반이 아닐 수 있다. 문자열을 숫자로 못 바꾸거나 JSON 모양이 DTO와 안 맞는 식의 **binding failure**일 수 있다.
 
-특히 `415 Unsupported Media Type`은 "JSON 값이 조금 틀렸다"보다 "`@RequestBody`가 기대한 요청 형식과 `Content-Type` 계약이 안 맞았다"에 더 가깝다. 그래서 binding 칸에서 `400`과 함께 보되, `415`가 보이면 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 바로 넘어가 `Accept`가 아니라 요청 `Content-Type` 문제인지 먼저 분리하는 편이 안전하다.
+특히 `415 Unsupported Media Type`은 "JSON 값이 틀렸다"보다 "`@RequestBody`가 기대한 요청 형식과 `Content-Type` 계약이 안 맞았다"에 더 가깝다. 그래서 `415`가 보이면 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)로 넘어가 검색 증상부터 분리하고, 그다음 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 이어가 `Accept`, `produces`, `consumes`까지 넓혀 보면 된다.
 
-여기서 초급자가 한 번 더 자주 섞는 지점은 "`객체로 받는다`면 다 같은 바인딩 아닌가?"다. 검색 조건처럼 query/form 입력을 객체로 묶는 쪽은 `@ModelAttribute`, JSON body를 DTO로 읽는 쪽은 `@RequestBody`라고 나눠 보면 훨씬 덜 헷갈린다. 이 비교를 한 장 표로 먼저 보고 싶다면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)를 같이 보면 된다.
+여기서 초급자가 한 번 더 섞는 지점은 "`객체로 받는다`면 다 같은 바인딩 아닌가?"다. query/form 입력을 묶는 쪽은 `@ModelAttribute`, JSON body를 읽는 쪽은 `@RequestBody`라고만 먼저 나눠도 훨씬 덜 헷갈린다. 이 비교를 표로 보고 싶다면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)를 같이 보면 된다.
 
-초급자가 자주 보는 착각도 여기서 끊어 두면 좋다.
+짧게 끊어 기억하면 된다.
 
 - `400`이 바로 났다고 해서 컨트롤러 로직이 실행된 것은 아닐 수 있다.
-- `@RequestBody` 문제는 서비스 로직이 아니라 JSON 모양, `Content-Type`, DTO 필드 타입 문제일 수 있다.
-- `@PathVariable Long id`에 `abc`가 들어오면 "예약 조회 로직 실패"보다 먼저 "숫자 변환 실패"가 난다.
+- `@RequestBody` 문제는 서비스 로직보다 JSON 모양, `Content-Type`, DTO 필드 타입을 먼저 본다.
+- `@PathVariable Long id`에 `abc`가 들어오면 예약 조회 실패보다 숫자 변환 실패가 먼저 난다.
 
 ## 컨트롤러는 요청을 서비스 호출로 연결한다
 
@@ -190,7 +198,7 @@ HTTP 요청
 - 객체로는 바꿨지만 규칙을 어기면 validation 실패다.
 - 둘 다 최종적으로는 `400`처럼 비슷하게 보일 수 있어서, 초반에는 "컨트롤러에 들어오기 전 실패인지"를 먼저 따져야 한다.
 
-`@RequestBody`가 왜 컨트롤러 전에 `400`으로 끝나는지 JSON 문법, DTO 타입, `Content-Type` 예시로 따로 보고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)를 바로 이어서 보면 된다. 반대로 `415 Unsupported Media Type`이 먼저 보이면 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)에서 `Content-Type`과 `Accept`를 분리해 보는 편이 더 빠르다.
+`@RequestBody`가 왜 컨트롤러 전에 `400`으로 끝나는지 JSON 문법, DTO 타입, `Content-Type` 예시로 따로 보고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)를 바로 이어서 보면 된다. 반대로 `415 Unsupported Media Type`이 먼저 보이면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)에서 `Content-Type`과 `consumes`를 먼저 가르고, 그 다음 단계에서 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 넘어가 `Accept`까지 넓혀 본 뒤, 다시 이 문서의 binding 칸으로 돌아와 "지금 막힌 게 `@RequestBody` media type 계약인지, 그 이후 JSON/validation인지"를 정리하면 초급자 동선이 끊기지 않는다.
 
 ## 흔한 오해와 함정
 

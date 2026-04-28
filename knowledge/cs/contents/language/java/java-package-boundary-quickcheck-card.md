@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java package boundary quickcheck card basics, java package boundary quickcheck card beginner, java package boundary quickcheck card intro, java basics, beginner java, 처음 배우는데 java package boundary quickcheck card, java package boundary quickcheck card 입문, java package boundary quickcheck card 기초, what is java package boundary quickcheck card, how to java package boundary quickcheck card
+retrieval-anchor-keywords: java access boundary quick check, java package boundary beginner, protected package-private quick card, same package subclass non-subclass, protected 언제 돼요, package-private 언제 돼요, 같은 패키지면 어디까지 보이나요, 다른 패키지 subclass protected, 자바 접근 경계 빠른 판단, 자바 protected package-private 차이, 자바 same package subclass non-subclass, 처음 배우는데 protected 헷갈림, 처음 배우는데 package-private 헷갈림, access modifier quick check java, beginner access boundary card
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)
@@ -20,9 +20,11 @@ retrieval-anchor-keywords: java package boundary quickcheck card basics, java pa
 > - [Access Modifier Boundary Lab](./java-access-modifier-boundary-lab.md)
 > - [Java Top-level 타입 접근 제한자 브리지](./top-level-type-access-modifier-bridge.md)
 
-> retrieval-anchor-keywords: java package boundary quickcheck card, java package boundary quick check, same package subclass non subclass, java protected quick check, java package private quick check, java access boundary card, java same package different package subclass rule, java protected same package subclass non subclass table, java protected access quick card, java package import boundary follow-up, 자바 패키지 경계 체크 카드, 자바 same package subclass non-subclass, 자바 protected 빠른 판단, 자바 package-private 빠른 판단, 자바 접근 경계 퀵체크
+> retrieval-anchor-keywords: java package boundary quickcheck card, java package boundary quick check, same package subclass non subclass, java protected quick check, java package private quick check, java access boundary card, java same package different package subclass rule, java protected same package subclass non subclass table, java protected access quick card, java package import boundary follow-up, 자바 패키지 경계 체크 카드, 자바 same package subclass non-subclass, 자바 protected 빠른 판단, 자바 package-private 빠른 판단, 자바 접근 경계 퀵체크, protected는 같은 패키지 아니면 안 되나요, subclass면 protected 어디까지 되나요, package-private은 상속해도 안 되나요, same package 아니면 public만 되나요, access modifier 10초 판단표
 
 ## 먼저 잡는 멘탈 모델
+
+이 카드는 `"protected는 언제 돼요?"`, `"같은 package면 private 빼고 다 되나요?"`, `"subclass면 package-private도 보이나요?"`처럼 빠른 판단이 필요한 첫 질문을 바로 받도록 설계한 엔트리 포인트다.
 
 복잡하게 외우기보다 아래 순서로만 보면 된다.
 

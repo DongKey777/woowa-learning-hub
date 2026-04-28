@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Constraint-First Booking Primer](./constraint-first-booking-primer.md)
 - [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)
 - [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
 - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
@@ -35,6 +36,8 @@ retrieval-anchor-keywords: mysql overlap fallback beginner, mysql locking read o
 
 - PostgreSQL에서는 continuous overlap을 제약으로 직접 닫기 쉽다
 - MySQL에서는 같은 문제를 slot row나 guard row 같은 **다른 충돌 surface**로 바꾸는 편이 더 예측 가능하다
+
+처음 질문이 "`FOR UPDATE`부터 붙이면 안 되나요?"라면, 이 문서 전에 [Constraint-First Booking Primer](./constraint-first-booking-primer.md)부터 보고 "existing row lock"과 "new-row admission rule"을 먼저 분리하는 편이 덜 헷갈린다.
 
 ## 왜 direct substitute가 아닌가
 

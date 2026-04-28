@@ -7,6 +7,8 @@
 관련 문서:
 
 - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+- [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)
+- [Spring `MethodArgumentNotValidException` vs `HandlerMethodValidationException` 초급 브리지: `@Valid` request body와 method validation `400`를 한 표로 잇기](./spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md)
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring RoomEscape validation `400` vs business conflict `409` 분리 primer](./spring-roomescape-validation-400-vs-business-conflict-409-primer.md)
 - [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
@@ -53,9 +55,17 @@ HTTP 요청
 | 컨트롤러 첫 줄 로그 | 보통 안 찍힘 | 보통 안 찍힘 |
 | 대표 단서 | JSON parse, type mismatch, `HttpMessageNotReadableException` | field error, `must not be blank`, `MethodArgumentNotValidException` |
 | 초급자 첫 확인 | JSON 문법, 날짜/시간/enum/숫자 타입 | `@NotBlank`, `@Size`, `@Positive` 같은 제약 |
+| validation 실패 다음 갈림길 | 해당 없음. `BindingResult`도 못 끼어든다 | `BindingResult` 없으면 전역 예외 `400`, 있으면 컨트롤러 로컬 분기 |
 | 예시 | `"date": "tomorrow"` | `"name": ""`, `"partySize": 0` |
 
 핵심은 "`400`이 났다"보다 먼저 "`@Valid`까지 갔나?`"를 묻는 것이다.
+
+초급자 질문 흐름은 두 갈래만 먼저 고정하면 된다.
+
+1. "`DTO를 아예 못 만들었다`"면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) 쪽 질문이다.
+2. "`DTO는 만들었고 그다음 규칙에서 막혔다`"면 `BindingResult` 없이는 전역 예외 `400`, 있으면 컨트롤러 로컬 분기다. 자세한 비교는 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나](./spring-bindingresult-local-validation-400-primer.md), 예외 이름 비교는 [Spring `MethodArgumentNotValidException` vs `HandlerMethodValidationException` 초급 브리지](./spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md)로 이어 본다.
+
+즉 `BindingResult`는 이 둘 중 **DTO를 만든 뒤의 validation `400`에서만** 손을 댈 수 있다. `LocalDate` parse 실패, JSON parse 실패처럼 DTO 생성 전 단계에서 멈춘 `400`에는 끼어들지 못한다. 그때도 역할은 "`validation 실패를 로컬 처리로 받을지`, `전역 예외 처리로 넘길지`"를 가르는 handoff다.
 
 ## 상세 분해
 
@@ -202,6 +212,7 @@ JSON 문법은 맞고 타입도 맞는다. 대신 제약 조건을 어겨서 `@V
 |---|---|---|
 | `JSON parse error`, `Cannot deserialize`, `HttpMessageNotReadableException` | DTO 변환 실패로 `@Valid` 전에 멈췄을 가능성 큼 | 요청 JSON, 날짜/시간/enum/숫자 타입 |
 | `must not be blank`, `must be greater than 0`, `Field error` | `@Valid`를 탄 뒤 실패했을 가능성 큼 | DTO 제약 애너테이션, 입력값 |
+| `@Valid` 실패인데 컨트롤러 안으로 들어왔다 | `BindingResult`가 validation 실패를 로컬로 받은 경우일 수 있음 | `@Valid` 바로 뒤 `BindingResult` 유무 |
 | 컨트롤러 첫 줄 로그가 안 찍힘 | 둘 다 가능 | 로그 키워드로 DTO 변환 실패인지 validation 실패인지 추가 분기 |
 | `@NotBlank`를 붙였는데 메시지가 안 보임 | DTO 변환에서 먼저 실패했을 수 있음 | DTO 생성 자체가 됐는지 확인 |
 

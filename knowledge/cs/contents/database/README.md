@@ -138,6 +138,7 @@
 | "DB를 어디부터 공부해야 할지 모르겠어" | [Database First-Step Bridge](./database-first-step-bridge.md) | 입문 순서를 먼저 고정한다 |
 | "주문 저장과 재고 차감이 같이 취소돼야 하나?" | [트랜잭션 기초](./transaction-basics.md) | 실패 범위를 먼저 고정해야 한다 |
 | "`save()`는 보이는데 SQL이 어디 있는지 모르겠어" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 접근 기술을 먼저 구분해야 코드 읽기가 풀린다 |
+| "`JpaRepository`만 보이고 구현체가 안 보여" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 먼저 JPA 흔적인지 보고, 그다음 Spring Data JPA 자동 구현으로 넘긴다 |
 | "`Repository`랑 `Entity`가 같이 보이는데 각각 뭐 하는지 헷갈려" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 이름보다 SQL 위치와 매핑 역할을 먼저 분리해야 한다 |
 | "`@Transactional`, `save()`, `@Entity`가 한 화면에 같이 보여서 뭐부터 봐야 할지 모르겠어" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 30초 판별 카드로 역할을 먼저 쪼개야 트랜잭션과 접근 기술을 안 섞는다 |
 | "`commit`은 했는데 왜 마지막 재고가 또 팔리지?" | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) | commit 성공과 동시성 제어를 분리해야 한다 |
@@ -157,6 +158,7 @@
 |---|---|---|
 | "`@Transactional`이 있으니 JPA겠지?" | 트랜잭션 경계와 DB 접근 기술은 다른 축이다 | [트랜잭션 기초](./transaction-basics.md), [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
 | "`save()`만 보이는데 insert SQL이 안 보여" | repository 뒤에서 ORM이 SQL을 만들 수 있다 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
+| "`findByEmail()`은 있는데 구현 클래스가 안 보여" | Spring Data JPA가 메서드 이름과 proxy 구현체를 만들 수 있다 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md), [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md) |
 | "`Entity`가 있으니 repository도 자동으로 다 되는 거 아닌가?" | entity는 매핑 정보이고, 실제 SQL 경로는 repository/mapper/DAO에서 다시 확인한다 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md), [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md) |
 | "`DAO`면 레거시니까 지금 안 봐도 되지?" | 이름보다 `JdbcTemplate`, `PreparedStatement`, SQL 문자열이 있는지부터 본다 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
 | "`commit`은 했는데 마지막 재고가 두 번 팔렸어" | commit과 동시성 제어는 다른 질문이다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
@@ -174,7 +176,7 @@
 | 이런 단어가 먼저 보이면 | primer 본문에서 어디까지만 잡고 넘길지 |
 |---|---|
 | `PreparedStatement`, `commit`, `close()` | "SQL이 코드 어디 있나"까지만 잡고 [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)으로 넘긴다 |
-| `deadlock`, `lock timeout`, `waiting for lock` | "동시성 충돌이 있다"까지만 잡고 [락 기초](./lock-basics.md) 또는 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) 뒤에 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 넘긴다 |
+| `deadlock`, `lock timeout`, `waiting for lock` | 3단계로 자른다. 1) [락 기초](./lock-basics.md)에서 "무엇을 기다리는가"를 잡고, 2) `deadlock`이면 [Deadlock Case Study](./deadlock-case-study.md)로 순환 대기를 익히고, 3) 실제 incident 분류는 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 넘긴다 |
 | `retry`, `40001`, `could not serialize access` | "격리 수준만으로 끝나지 않는다"까지만 잡고 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)으로 넘긴다 |
 | `failover`, `stale read`, `replica lag` | "트랜잭션 입문"과 별도 freshness 질문으로 분리하고 [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md), [Failover Promotion과 Read Divergence](./failover-promotion-read-divergence.md)로 넘긴다 |
 | `cdc replay`, `projection lag`, `read model` | "입문 primer 범위 밖"으로 끊고 [CDC / Outbox / Read Model Cutover 브리지](#database-bridge-cdc-cutover), [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md)로 넘긴다 |
@@ -212,7 +214,7 @@ beginner 기준 빠른 규칙:
 | "처음 배우는데 DB를 어디부터 봐요?" | `beginner bridge` | [Database First-Step Bridge](./database-first-step-bridge.md) |
 | "트랜잭션이 뭐예요?" | `primer` | [트랜잭션 기초](./transaction-basics.md) |
 | "`save()` 뒤 SQL이 왜 안 보여요?" | `primer` | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
-| "`deadlock`이 나요" | `playbook` follow-up | [락 기초](./lock-basics.md) 뒤에 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+| "`deadlock`이 나요" | `playbook` follow-up | [락 기초](./lock-basics.md) -> [Deadlock Case Study](./deadlock-case-study.md) -> [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
 
 ## 추천 학습 흐름 (category-local survey)
 
@@ -233,6 +235,9 @@ beginner first route:
 
 [Database First-Step Bridge](./database-first-step-bridge.md) -> [트랜잭션 기초](./transaction-basics.md) -> [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) -> [Lost Update vs Oversell vs Duplicate Insert Beginner Bridge](./lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md) ->
 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) -> [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) -> [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md) -> [PostgreSQL vs MySQL Isolation Cheat Sheet](./postgresql-vs-mysql-isolation-cheat-sheet.md) -> `[playbook]` [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) -> [MVCC Snapshot vs Locking Read Portability Note](./mvcc-snapshot-vs-locking-read-portability-note.md) -> [Lost Update vs Write Skew vs Phantom Timeline Guide](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md) -> [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) -> [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) -> [MySQL RR exact-key probe visual guide](./mysql-rr-exact-key-probe-visual-guide.md) -> [MySQL RC Duplicate-Check Pitfall Note](./mysql-rc-duplicate-check-pitfall-note.md) -> [MySQL REPEATABLE READ Safe-Range Checklist](./mysql-repeatable-read-safe-range-checklist.md) -> [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md) -> [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md) -> [Range Invariant Enforcement for Write Skew and Phantom Anomalies](./range-invariant-enforcement-write-skew-phantom.md) -> [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md) -> [Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL](./ordered-guard-row-upsert-patterns-postgresql-mysql.md) -> [Hot-Path Slot Arbitration Choices](./hot-path-slot-arbitration-choices.md) -> [Reservation Reschedule and Cancellation Transition Patterns](./reservation-reschedule-cancellation-transition-patterns.md) -> [Slot Delta Reschedule Semantics](./slot-delta-reschedule-semantics.md) -> [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md) -> [Guard-Row Hot-Row Contention Mitigation](./hot-row-contention-counter-sharding.md) -> `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+
+lock incident 3-step bridge:
+[락 기초](./lock-basics.md) -> [Deadlock Case Study](./deadlock-case-study.md) -> `[playbook]` [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 
 ### 2. Query Plan / Index / Write Path
 
@@ -337,12 +342,14 @@ beginner first route:
 처음 30초 판단은 아래처럼 하면 된다.
 
 - `save()` + `@Entity`가 먼저 보이면 JPA 흔적부터 확인
+- `JpaRepository`, `findBy...`, 구현체 없는 repository interface가 먼저 보이면 Spring Data JPA follow-up까지 같이 염두에 둔다
 - `mapper.xml`이나 `@Mapper`가 먼저 보이면 MyBatis 흔적부터 확인
 - SQL 문자열이나 `PreparedStatement`가 먼저 보이면 JDBC 흔적부터 확인
 
 | 지금 보인 단서 | beginner 첫 문서 | 바로 다음 follow-up |
 |---|---|---|
 | `save()`, `@Entity`, `JpaRepository` | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md) |
+| `findByEmail()`, `findByStatus()`, 구현체 없는 repository interface | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md) |
 | `PreparedStatement`, `JdbcTemplate`, SQL 문자열 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | [JDBC 실전 코드 패턴](./jdbc-code-patterns.md) |
 | `DAO`, `jdbcTemplate`, SQL 문자열 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | [JDBC 실전 코드 패턴](./jdbc-code-patterns.md) |
 | "`@Transactional`도 보이고 mapper도 보여요" | [트랜잭션 기초](./transaction-basics.md) + [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md) |

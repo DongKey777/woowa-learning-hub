@@ -10,6 +10,7 @@
 - [Java enum 기초](./java-enum-basics.md)
 - [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md)
 - [Record and Value Object Equality](./record-value-object-equality-basics.md)
+- [Request DTO에서 raw string을 값 객체로 올리는 경계 입문](./request-dto-to-value-object-boundary-primer.md)
 - [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
 - [Validation Boundary: Input vs Domain Invariant 미니 브리지](../../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 
@@ -160,6 +161,7 @@ public record DiscountRate(int percent) {
 - 상태 후보를 타입으로 고정하는 감각은 [Java enum 기초](./java-enum-basics.md)
 - 상태 이름표에서 전이 규칙으로 넘어가는 단계는 [Enum에서 상태 전이 모델로 넘어가는 첫 브리지](./enum-to-state-transition-beginner-bridge.md)
 - `record`가 value object와 어디서 만나고 어디서 갈리는지는 [Record and Value Object Equality](./record-value-object-equality-basics.md)
+- request DTO의 raw string을 service 전에 값 객체로 올리는 감각은 [Request DTO에서 raw string을 값 객체로 올리는 경계 입문](./request-dto-to-value-object-boundary-primer.md)
 - `Optional`로 끝낼지 상태 타입으로 올릴지 판단은 [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
 - 입력 검증과 도메인 불변식을 어디서 나눌지는 [Validation Boundary: Input vs Domain Invariant 미니 브리지](../../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 

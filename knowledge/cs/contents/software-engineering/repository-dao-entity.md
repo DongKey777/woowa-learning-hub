@@ -10,12 +10,14 @@
 - [Controller / Service / Repository after 예시 - 주문 생성 흐름을 Controller Service Repository로 나눈 상태](./layered-architecture-basics.md#after-주문-생성-흐름을-controller-service-repository로-나눈-상태)
 - [Service 계층 기초](./service-layer-basics.md)
 - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
+- [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
 - [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
 - [Module API DTO Patterns](./module-api-dto-patterns.md)
+- [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
-retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity 저장 모양, entity를 dto로 써도 되나요, service가 dao를 바로 알아도 되나요, persistence mental model, repository order save example, dao sql insert example, 저장 계층 입문, 처음 배우는 repository dao entity, repository dao entity basics, what is repository entity
+retrieval-anchor-keywords: repository dao entity beginner, repository dao entity 차이, 주문 생성 repository dao entity, repository는 뭐예요, dao는 뭐예요, entity는 뭐예요, repository dao entity 뭐가 달라요, service가 dao를 바로 알아도 되나요, entity 저장 모양, entity를 dto로 써도 되나요, repository와 query model 차이, dao와 query model 차이, persistence mental model, 처음 영속성 큰 그림, what is repository entity
 
 처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결하고, 더 큰 설계 그림이 필요하면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 다시 올라가면 된다.
 

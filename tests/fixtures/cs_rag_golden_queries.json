@@ -37,7 +37,7 @@
     },
     "stable_full_mode_fixture_queries": {
       "description": "Deterministic full-mode fixture checks that stay runnable even when the shared live index is stale during concurrent corpus churn. Introductory prompts must keep the primer doc ahead of the deeper companion docs while still surfacing those companion paths nearby.",
-    "queries": {
+      "queries": {
         "beginner_transactional_english_plain_alias_lockin": {
           "companion_paths": [
             "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -94,6 +94,79 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_mvcc_english_why_use_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-isolation-basics.md",
+            "contents/database/mvcc-read-view-consistent-read-internals.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_keepalive_english_meaning_lockin": {
+          "companion_paths": [
+            "contents/network/http2-http3-connection-reuse-coalescing.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_keepalive_shortform_lockin": {
+          "companion_paths": [
+            "contents/network/http2-http3-connection-reuse-coalescing.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_keepalive_colloquial_shortform_lockin": {
+          "companion_paths": [
+            "contents/network/http2-http3-connection-reuse-coalescing.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_keep_alive_spacing_shortform_lockin": {
+          "companion_paths": [
+            "contents/network/http2-http3-connection-reuse-coalescing.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_connection_pool_shortform_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_connection_pool_colloquial_shortform_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_connection_pooling_english_meaning_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_connection_pooling_shortform_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_hikaricp_shortform_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_hikaricp_english_meaning_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_hikaricp_korean_why_use_lockin": {
+          "companion_paths": [
+            "contents/database/transaction-locking-connection-pool-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_ioc_english_shortform_lockin": {
           "companion_paths": [
             "contents/spring/ioc-di-container.md",
@@ -147,6 +220,12 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_beanfactory_english_role_shortform_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-bean-definition-overriding-semantics.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_bean_factory_spacing_english_shortform_lockin": {
           "companion_paths": [
             "contents/spring/spring-bean-definition-overriding-semantics.md"
@@ -156,6 +235,13 @@
         "beginner_spring_aop_shortform_lockin": {
           "companion_paths": [
             "contents/spring/aop-proxy-mechanism.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_spring_dispatcherservlet_why_exists_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-mvc-request-lifecycle-basics.md",
+            "contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md"
           ],
           "companion_max_rank": 4
         },
@@ -178,6 +264,12 @@
           "companion_max_rank": 4
         },
         "beginner_spring_bean_english_meaning_shortform_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-bean-definition-overriding-semantics.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_spring_bean_english_role_shortform_lockin": {
           "companion_paths": [
             "contents/spring/spring-bean-definition-overriding-semantics.md"
           ],
@@ -244,6 +336,12 @@
           "companion_max_rank": 4
         },
         "beginner_applicationcontext_english_meaning_shortform_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-bean-definition-overriding-semantics.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_applicationcontext_english_role_shortform_lockin": {
           "companion_paths": [
             "contents/spring/spring-bean-definition-overriding-semantics.md"
           ],
@@ -660,19 +758,19 @@
           "projection_freshness_symptom_only_detail_updated_list_card_stale",
           "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
           "projection_freshness_symptom_only_detail_updated_list_old_value",
-        "projection_freshness_symptom_only_mobile_screen_delay",
-        "projection_freshness_symptom_only_mobile_screen_update_delay_variant",
-        "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
-        "projection_freshness_symptom_only_mobile_app_screen_delay_variant",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_shortform_variant",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
-        "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant",
-        "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
-        "projection_freshness_symptom_only_no_jargon_cached_screen_compact",
-        "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+          "projection_freshness_symptom_only_mobile_screen_delay",
+          "projection_freshness_symptom_only_mobile_screen_update_delay_variant",
+          "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant",
+          "projection_freshness_symptom_only_mobile_app_screen_delay_variant",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_shortform_variant",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_transliterated_variant",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_after_gesture_variant",
+          "projection_freshness_symptom_only_mobile_swipe_refresh_pull_down_variant",
+          "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+          "projection_freshness_symptom_only_no_jargon_cached_screen_compact",
+          "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
           "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
           "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
           "projection_freshness_intro_full_korean_old_value_visible_rollback_compare",
@@ -732,7 +830,9 @@
     {
       "id": "repo_boundary_ko",
       "prompt": "Repository 경계가 뭐야? 트랜잭션까지 알아야 하는거야?",
-      "learning_points": ["repository_boundary"],
+      "learning_points": [
+        "repository_boundary"
+      ],
       "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md",
       "acceptable_paths": [
         "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
@@ -741,13 +841,17 @@
     {
       "id": "repo_vs_dao",
       "prompt": "Repository 랑 DAO 차이가 뭐야",
-      "learning_points": ["repository_boundary"],
+      "learning_points": [
+        "repository_boundary"
+      ],
       "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
     },
     {
       "id": "repo_read_model_boundary",
       "prompt": "Repository 에서 화면용 join DTO 까지 만들어도 돼? aggregate persistence 와 read model 경계가 헷갈려",
-      "learning_points": ["repository_boundary"],
+      "learning_points": [
+        "repository_boundary"
+      ],
       "expected_path": "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md",
       "max_rank": 3
     },
@@ -928,13 +1032,17 @@
     {
       "id": "tx_isolation",
       "prompt": "트랜잭션 격리 수준에 따라 어떤 이상 현상이 생겨?",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/read-committed-vs-repeatable-read-anomalies.md"
     },
     {
       "id": "tx_boundary_locking_framework",
       "prompt": "동시에 수정되는 도메인에서 transaction boundary isolation locking strategy 를 어떤 순서로 고르지?",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/transaction-boundary-isolation-locking-decision-framework.md",
       "max_rank": 3
     },
@@ -961,7 +1069,9 @@
     {
       "id": "cas_vs_pessimistic_lock_choice",
       "prompt": "compare-and-swap (CAS) 와 pessimistic lock 중에 어느 쪽을 골라야 해? lost update retry 와 select for update trade-off 가 헷갈려",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/compare-and-swap-vs-pessimistic-locks.md",
       "max_rank": 3
     },
@@ -978,20 +1088,26 @@
     {
       "id": "spring_tx_propagation",
       "prompt": "@Transactional propagation 은 어떻게 동작해?",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/spring/transactional-deep-dive.md"
     },
     {
       "id": "spring_service_tx_boundary",
       "prompt": "@Transactional 을 controller 나 repository 말고 service layer 어디에 둬야 해? remote call 도 같이 고민돼",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
       "max_rank": 3
     },
     {
       "id": "api_versioning",
       "prompt": "API versioning contract testing anti-corruption layer 어떻게 설계해",
-      "learning_points": ["testing_strategy"],
+      "learning_points": [
+        "testing_strategy"
+      ],
       "expected_path": "contents/software-engineering/api-versioning-contract-testing-anti-corruption-layer.md"
     },
     {
@@ -1017,19 +1133,25 @@
     {
       "id": "testing_doubles",
       "prompt": "단위 테스트 mock fake stub 뭐 써야 해?",
-      "learning_points": ["testing_strategy"],
+      "learning_points": [
+        "testing_strategy"
+      ],
       "expected_path": "contents/software-engineering/testing-strategy-and-test-doubles.md"
     },
     {
       "id": "hikari_pool",
       "prompt": "HikariCP 커넥션 풀 튜닝 어떻게 해",
-      "learning_points": ["resource_lifecycle"],
+      "learning_points": [
+        "resource_lifecycle"
+      ],
       "expected_path": "contents/database/hikari-connection-pool-tuning.md"
     },
     {
       "id": "deadlock_case",
       "prompt": "MySQL 데드락이 왜 생기는 거야",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/deadlock-case-study.md"
     },
     {
@@ -1042,7 +1164,9 @@
     {
       "id": "normalization",
       "prompt": "정규화와 반정규화 트레이드오프가 뭐야",
-      "learning_points": ["db_modeling"],
+      "learning_points": [
+        "db_modeling"
+      ],
       "expected_path": "contents/database/normalization-denormalization-tradeoffs.md"
     },
     {
@@ -1102,7 +1226,9 @@
     {
       "id": "layered_responsibility",
       "prompt": "Controller Service Repository 계층 책임을 어떻게 나누지",
-      "learning_points": ["responsibility_boundary"],
+      "learning_points": [
+        "responsibility_boundary"
+      ],
       "expected_path": "contents/design-pattern/repository-pattern-vs-antipattern.md"
     },
     {
@@ -1183,6 +1309,19 @@
       "companion_max_rank": 4
     },
     {
+      "id": "spring_mvc_vs_dispatcherservlet_difference_beginner_primer",
+      "prompt": "Spring MVC 랑 DispatcherServlet 차이가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-mvc-request-lifecycle-basics.md",
+        "contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "generic_crud_korean_list_read_vs_update_boundary",
       "prompt": "회원 목록 조회 API는 알겠는데 수정 API는 어디 책임이 달라?",
       "learning_points": [],
@@ -1215,7 +1354,9 @@
     {
       "id": "gap_lock",
       "prompt": "MySQL gap lock next-key lock 어떻게 동작해",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/gap-lock-next-key-lock.md",
       "max_rank": 3
     },
@@ -1241,7 +1382,9 @@
     {
       "id": "innodb_lock_wait_timeout",
       "prompt": "InnoDB lock wait timeout 이랑 next-key lock 은 왜 같이 언급돼?",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/gap-lock-next-key-lock.md",
       "acceptable_paths": [
         "contents/database/deadlock-case-study.md"
@@ -1251,7 +1394,9 @@
     {
       "id": "innodb_lock_wait_timeout_range_locking",
       "prompt": "InnoDB lock wait timeout 이 next-key lock range locking 에서 왜 생겨?",
-      "learning_points": ["transaction_consistency"],
+      "learning_points": [
+        "transaction_consistency"
+      ],
       "expected_path": "contents/database/gap-lock-next-key-lock.md",
       "max_rank": 1
     },
@@ -1657,52 +1802,52 @@
       "max_rank": 1
     },
     {
-    "id": "projection_freshness_beginner_navigator_bridge_overview_neighbors_cqrs_overview_rejection",
-    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 개요 문서랑 옆 형제 문서를 같이 보고 싶어. CQRS 전체 개요 말고 projection 큰 그림부터 보고 싶어",
-    "learning_points": [],
-    "experience_level": "beginner",
+      "id": "projection_freshness_beginner_navigator_bridge_overview_neighbors_cqrs_overview_rejection",
+      "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 개요 문서랑 옆 형제 문서를 같이 보고 싶어. CQRS 전체 개요 말고 projection 큰 그림부터 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "companion_paths": [
         "contents/design-pattern/read-model-cutover-guardrails.md",
         "contents/design-pattern/projection-lag-budgeting-pattern.md"
       ],
-    "require_all_companion_paths": true,
-    "companion_max_rank": 3,
-    "max_rank": 1
-  },
-  {
-    "id": "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection",
-    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 overview docs 랑 nearby sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
-    "learning_points": [],
-    "experience_level": "beginner",
-    "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
-    "companion_paths": [
-      "contents/design-pattern/read-model-cutover-guardrails.md",
-      "contents/design-pattern/projection-lag-budgeting-pattern.md"
-    ],
-    "require_all_companion_paths": true,
-    "companion_max_rank": 3,
-    "max_rank": 1
-  },
-  {
-    "id": "projection_freshness_beginner_entrypoint_bridge_siblings",
-    "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 entrypoint primer 랑 bridge docs, linked sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
-    "learning_points": [],
-    "experience_level": "beginner",
-    "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
-    "companion_paths": [
-      "contents/design-pattern/read-model-cutover-guardrails.md",
-      "contents/design-pattern/projection-lag-budgeting-pattern.md"
-    ],
-    "require_all_companion_paths": true,
-    "companion_max_rank": 3,
-    "max_rank": 1
-  },
-  {
-    "id": "projection_freshness_beginner_staleness_overview_neighbors",
-    "prompt": "읽기 모델 projection 을 처음 배우는데 stale read 때문에 예전 값이 왜 보이는지 staleness overview doc 이랑 nearby docs 를 같이 보고 싶어. CQRS 전체 overview 말고 projection 큰 그림부터 보고 싶어",
-    "learning_points": [],
-    "experience_level": "beginner",
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_beginner_overview_docs_sibling_docs_route_rejection",
+      "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 overview docs 랑 nearby sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_beginner_entrypoint_bridge_siblings",
+      "prompt": "읽기 모델 projection 을 처음 배우는데 예전 값이 왜 보이는지 entrypoint primer 랑 bridge docs, linked sibling docs 를 같이 보고 싶어. broad CQRS survey routes 말고 projection 큰 그림부터 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "companion_paths": [
+        "contents/design-pattern/read-model-cutover-guardrails.md",
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "require_all_companion_paths": true,
+      "companion_max_rank": 3,
+      "max_rank": 1
+    },
+    {
+      "id": "projection_freshness_beginner_staleness_overview_neighbors",
+      "prompt": "읽기 모델 projection 을 처음 배우는데 stale read 때문에 예전 값이 왜 보이는지 staleness overview doc 이랑 nearby docs 를 같이 보고 싶어. CQRS 전체 overview 말고 projection 큰 그림부터 보고 싶어",
+      "learning_points": [],
+      "experience_level": "beginner",
       "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
       "companion_paths": [
         "contents/design-pattern/read-model-cutover-guardrails.md",
@@ -2735,6 +2880,19 @@
       "max_rank": 1
     },
     {
+      "id": "beginner_mvcc_english_why_use_lockin",
+      "prompt": "Why use MVCC?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/transaction-isolation-locking.md",
+      "companion_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/mvcc-read-view-consistent-read-internals.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
       "id": "beginner_spring_ioc_di_intro",
       "prompt": "스프링 IoC DI 가 뭐예요? 처음 배우는데 왜 필요한지부터 알려줘",
       "learning_points": [],
@@ -2765,6 +2923,42 @@
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-ioc-di-basics.md",
       "max_rank": 1
+    },
+    {
+      "id": "beginner_query_model_shortform_lockin",
+      "prompt": "query model 이 뭐야? 처음 배우는데 read-heavy API 큰 그림부터 알려줘",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_query_service_english_shortform_lockin",
+      "prompt": "What is a query service in backend APIs?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_query_service_korean_why_use_lockin",
+      "prompt": "query service 는 왜 써?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+      ],
+      "companion_max_rank": 4
     },
     {
       "id": "beginner_network_keepalive_primer",
@@ -3040,6 +3234,19 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_spring_dispatcherservlet_why_exists_lockin",
+      "prompt": "DispatcherServlet은 왜 있어?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-mvc-request-lifecycle-basics.md",
+        "contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_spring_aop_english_why_use_lockin",
       "prompt": "Why use Spring AOP?",
       "learning_points": [],
@@ -3088,6 +3295,18 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_beanfactory_english_role_shortform_lockin",
+      "prompt": "What does BeanFactory do in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-bean-definition-overriding-semantics.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_bean_factory_spacing_english_shortform_lockin",
       "prompt": "What is Bean Factory in Spring?",
       "learning_points": [],
@@ -3126,6 +3345,18 @@
     {
       "id": "beginner_spring_bean_english_meaning_shortform_lockin",
       "prompt": "What does a Spring bean mean?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-bean-definition-overriding-semantics.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_spring_bean_english_role_shortform_lockin",
+      "prompt": "What does a Spring bean do?",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
@@ -3280,6 +3511,18 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_applicationcontext_english_role_shortform_lockin",
+      "prompt": "What does ApplicationContext do in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-bean-definition-overriding-semantics.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_application_context_spacing_english_shortform_lockin",
       "prompt": "What is Application Context in Spring?",
       "learning_points": [],
@@ -3333,6 +3576,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "companion_paths": [
+        "contents/network/http2-http3-connection-reuse-coalescing.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {
@@ -3341,6 +3588,22 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "companion_paths": [
+        "contents/network/http2-http3-connection-reuse-coalescing.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_keepalive_english_meaning_lockin",
+      "prompt": "What is HTTP keep-alive?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "companion_paths": [
+        "contents/network/http2-http3-connection-reuse-coalescing.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {
@@ -3349,6 +3612,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "companion_paths": [
+        "contents/network/http2-http3-connection-reuse-coalescing.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {
@@ -3357,6 +3624,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {
@@ -3365,6 +3636,10 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {
@@ -3373,6 +3648,61 @@
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_connection_pooling_english_meaning_lockin",
+      "prompt": "What is connection pooling?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_hikaricp_shortform_lockin",
+      "prompt": "HikariCP가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_hikaricp_english_meaning_lockin",
+      "prompt": "What is HikariCP?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1,
+      "acceptable_paths": [
+        "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md"
+      ]
+    },
+    {
+      "id": "beginner_hikaricp_korean_why_use_lockin",
+      "prompt": "HikariCP 왜 써?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "companion_max_rank": 4,
       "max_rank": 1
     },
     {

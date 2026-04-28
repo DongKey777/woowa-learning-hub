@@ -2,7 +2,7 @@
 
 > 한 줄 요약: Spring 초반에는 "요청은 `DispatcherServlet`이 받고, 일은 controller -> service -> repository로 흘러가고, 그 객체들은 Bean 컨테이너가 미리 등록하고 주입해 둔다"는 한 장의 그림을 먼저 잡는 게 가장 중요하다.
 >
-> 문서 역할: 이 문서는 spring 카테고리 안에서 `DispatcherServlet`, controller/service/repository 역할, Bean 등록, DI, component scan, `application.yml` 설정 읽기를 한 흐름으로 묶는 **beginner bridge primer**를 담당한다. 특히 "`스프링이 뭐예요`", "`controller`/`service`/`repository`가 왜 나뉘어요", "`Bean`이 뭐예요"처럼 첫 질문이 들어왔을 때 deep dive보다 먼저 걸리도록 설계한다.
+> 문서 역할: 이 문서는 spring 카테고리 안에서 `DispatcherServlet`, controller/service/repository 역할, Bean 등록, DI를 한 흐름으로 묶는 **beginner bridge primer**를 담당한다. `application.yml` 설정 읽기는 "요청 흐름을 읽고도 값 주입이 헷갈릴 때"만 붙이는 follow-up 칸으로 둔다.
 
 **난이도: 🟢 Beginner**
 
@@ -20,18 +20,42 @@
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [Database First-Step Bridge](../database/database-first-step-bridge.md)
 
-retrieval-anchor-keywords: spring request pipeline beginner, spring bean container foundation, 스프링 뭐예요, spring 큰 그림, 처음 배우는데 스프링 구조, bean 이 뭐예요 spring, controller service repository 뭐예요, controller service repository 왜 나눠요, dispatcherservlet 뭐예요, spring bean registration vs di, component scan beginner, 404 vs 400 vs nosuchbeandefinition, transactional 안 먹어요 beginner, spring 다음 database 뭐부터, controller 다음 save sql 어디서 봐요
+retrieval-anchor-keywords: spring request pipeline beginner, spring 큰 그림, spring 요청 흐름 뭐예요, dispatcherservlet 뭐예요, bean di 뭐예요, controller service repository 헷갈려요, 요청은 어디서 받고 save는 어디서 해요, controller 다음 save sql 어디서 봐요, spring 다음 database 뭐부터, transactional 안 먹어요 beginner, entity table column 헷갈려요, spring sql primer route
 
-## 이 문서가 먼저 잡아야 하는 질문
+## 먼저 여기까지만 잡는다
 
-이 문서는 아래처럼 **개념 첫 질문**이 들어왔을 때 심화 문서보다 먼저 걸리는 entrypoint를 목표로 한다.
+이 문서의 1차 목표는 "요청 길찾기"와 "객체 준비"를 같은 일로 보지 않게 만드는 것이다.
+
+- 먼저 잡을 것: `DispatcherServlet`, controller/service/repository 역할, Bean 등록, DI, `@Transactional`이 service 경계에 붙는 감각
+- 한 박자 뒤로 미룰 것: 설정 우선순위, `@ConfigurationProperties` 세부, condition report, async/streaming, timeout/disconnect
+- 설정값 읽기가 바로 궁금하면 이 문서 안에서 오래 머물기보다 [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md), [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)로 내려가면 된다.
+
+## 이 문서가 먼저 잡아야 하는 검색 질문
+
+이 문서는 아래처럼 **"브라우저 요청 흐름"과 "Bean/DI 준비 흐름"이 한 질문 안에서 섞이는 beginner 검색**에서 먼저 뜨도록 설계한다.
 
 | 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
 |---|---|
-| "`스프링이 뭐예요?`" | 요청 처리 흐름과 객체 준비 흐름을 한 장으로 먼저 나눈다 |
-| "`controller`, `service`, `repository`는 왜 나눠요?`" | 레이어 책임 분리를 주문 요청 예시로 보여 준다 |
-| "`Bean`이 뭐예요?`" | Spring이 앱 시작 때 객체를 미리 등록하고 연결한다는 감각부터 준다 |
-| "`DispatcherServlet`이 뭐예요?`" | controller를 만드는 존재가 아니라, 이미 준비된 Bean으로 요청을 연결하는 관문이라고 설명한다 |
+| "`스프링이 뭐예요?`" | 요청 처리 흐름과 객체 준비 흐름을 두 칸으로 먼저 자른다 |
+| "`DispatcherServlet`이 뭐예요?" | controller를 만드는 존재가 아니라, 이미 준비된 Bean으로 요청을 연결하는 관문이라고 설명한다 |
+| "`controller`, `service`, `repository`는 왜 나눠요?" | 한 주문 요청 예시로 각 레이어 책임을 나눈다 |
+| "`controller` 다음에 `save()`랑 SQL은 어디서 봐요?" | 이 문서에서 DB handoff 지점만 짚고 database bridge로 안전하게 넘긴다 |
+
+## 이 문서를 읽기 전에 먼저 끊을 오해
+
+처음 헷갈리는 지점은 보통 "`요청이 들어올 때` 객체가 생기고 연결된다"는 식으로 한 장면으로 보는 데서 시작한다. 이 문서는 먼저 아래 두 줄을 분리해서 읽게 만드는 entrypoint다.
+
+| 한 요청에서 눈에 보이는 일 | 실제 시점 | 초급자용 한 줄 |
+|---|---|---|
+| URL이 어느 컨트롤러로 가는가 | 요청 도착 후 | MVC의 길찾기 문제다 |
+| 컨트롤러 안 `service`가 왜 이미 들어 있나 | 앱 시작 전후 | Bean 등록과 DI 문제다 |
+| `save()`가 왜 commit/rollback 경계로 묶이나 | service 호출 시점 | 트랜잭션 프록시 문제다 |
+
+짧게만 외우면 이렇다.
+
+- 요청이 들어온 뒤 하는 일: 매핑, 바인딩, 응답 반환
+- 요청 전에 끝나는 일: Bean 등록, DI, 설정 바인딩
+- service 호출 경계에서 붙는 일: `@Transactional` 프록시
 
 ## 첫 읽기 엔트리 루트 (HTTP -> MVC -> IoC/DI)
 
@@ -55,6 +79,12 @@ retrieval-anchor-keywords: spring request pipeline beginner, spring bean contain
 | "`controller` 다음 `service`/`repository`는 알겠는데 `save()`와 SQL은 어디서 봐요?" | [Database First-Step Bridge](../database/database-first-step-bridge.md) | DB 문서로 넘어갈 때도 locking이 아니라 `트랜잭션 -> 접근 기술 -> 인덱스` 순서를 먼저 고정한다 |
 | "`왜 SQL 전에 controller/service가 보여요?`" | 이 문서 계속 읽기 -> [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | 요청 처리와 DB 접근 기술을 같은 문제로 섞지 않게 해 준다 |
 
+초보자용 안전 루트를 더 짧게 말하면 이렇다.
+
+`HTTP 요청-응답 기본 흐름 -> 이 문서 -> Database First-Step Bridge -> JDBC · JPA · MyBatis 기초`
+
+여기서 멈춰도 되는 이유는, 이 4칸만으로도 "`request는 어떻게 controller까지 오나`", "`service/repository는 누가 연결했나`", "`save()` 뒤 SQL은 어느 기술이 만들까`"를 먼저 분리할 수 있기 때문이다. `deadlock`, `락`, `self-invocation`, `rollback-only`는 이 문서의 중심이 아니라 follow-up 신호다.
+
 ## 20초 mental map: 같은 요청을 세 시점으로 자르기
 
 처음 막히는 지점은 보통 "한 요청에서 본 현상"을 전부 같은 순간에 일어난 일처럼 보는 데서 시작한다. 이 문서는 먼저 시간을 세 칸으로 나눠 기억하게 만드는 용도다.
@@ -70,6 +100,15 @@ retrieval-anchor-keywords: spring request pipeline beginner, spring bean contain
 - Bean/DI는 "요청 전에 미리 준비된 것"이다.
 - MVC는 "들어온 요청을 어디로 보낼지"를 정하는 것이다.
 - 트랜잭션은 "service 메서드 경계에서 DB 작업을 어떻게 묶을지"를 정하는 것이다.
+
+검색 질문으로 줄이면 이렇다.
+
+| 검색 질문 | 먼저 붙일 축 | 한 줄 답 |
+|---|---|---|
+| "`브라우저 요청이 controller까지 어떻게 가요?`" | MVC | `DispatcherServlet`이 handler를 찾아 이미 준비된 controller Bean으로 보낸다 |
+| "`controller 안 service는 누가 넣어요?`" | DI | 앱 시작 때 컨테이너가 생성자 주입으로 미리 연결한다 |
+| "`controller 다음 save와 SQL은 어디서 봐요?`" | database handoff | service/repository 이후는 database primer로 넘겨 보는 편이 안전하다 |
+| "`404`, `400`, bean missing`이 다 보여요" | 증상 분리 | 같은 요청 장면을 길찾기, 값 채우기, 객체 조립으로 다시 자른다 |
 
 ## 1분 비교: MVC / DI / 트랜잭션 / 요청 파이프라인
 
@@ -92,7 +131,7 @@ retrieval-anchor-keywords: spring request pipeline beginner, spring bean contain
 ## 먼저 여기까지만 잡고 멈춰도 된다
 
 - 이 문서의 목표는 "`요청은 어디로 들어오고`, `객체는 누가 미리 준비했는가`"를 한 장으로 연결하는 것이다.
-- 초급자 첫 읽기에서는 `Filter chain ordering`, `async dispatch`, `self-invocation`, `condition report`까지 같이 붙잡지 않아도 된다.
+- 초급자 첫 읽기에서는 `filter chain ordering`, `async dispatch`, `self-invocation`, `condition report`까지 같이 붙잡지 않아도 된다.
 - 그런 단어가 나오면 이 문서에서 mental model만 챙기고, 아래 관련 문서 링크로 내려가는 편이 더 빠르다.
 
 ## 이 문서 다음에 보면 좋은 문서
@@ -109,6 +148,7 @@ retrieval-anchor-keywords: spring request pipeline beginner, spring bean contain
 - 요청은 오는데 service 경계에서 rollback이 헷갈리기 시작하면, 이 문서 안에서 다 해결하려고 하지 말고 [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)로 분리해서 본다.
 - HTTP 요청 자체가 아직 흐리면 [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)으로 한 번 내려가 네트워크 단계부터 다시 맞춘다.
 - controller/service 흐름은 보이는데 `save()` 뒤 SQL, commit, repository 역할이 바로 헷갈리면 [Database First-Step Bridge](../database/database-first-step-bridge.md)로 이어서 "트랜잭션 -> JDBC/JPA/MyBatis -> 인덱스" 순서만 먼저 고정한다.
+- controller/service까지는 보이는데 `table`, `column`, `FK` 감각이 없어서 JPA 문서가 너무 빠르면 [SQL 읽기와 관계형 모델링 기초](../database/sql-reading-relational-modeling-primer.md)로 먼저 내려가 테이블-관계 모델부터 복구한 뒤 다시 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)로 돌아온다.
 - "`controller`/`service`/`repository` 이름은 보이는데 누가 누구를 언제 준비했는지`"가 막히면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)로 옮겨 "등록 -> 주입 -> 프록시" 순서부터 다시 잡는다.
 
 ## 더 깊은 follow-up은 나중에
@@ -378,7 +418,7 @@ public class OrderController {
 
 ---
 
-## 5. 설정 파일은 어떻게 읽혀 Bean으로 연결되는가
+## 5. 설정 파일은 요청 흐름을 읽은 뒤에 붙인다
 
 미션에서 `application.yml`을 볼 때도 같은 그림으로 읽으면 된다.
 

@@ -8,6 +8,7 @@
 
 관련 문서:
 
+- [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
 - [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [HTTP/3 421 Observability Primer: DevTools와 Edge Log로 Coalescing Recovery 읽기](./http3-421-observability-primer.md)
@@ -247,6 +248,7 @@ retrieval-anchor-keywords: devtools first checklist, browser devtools first chec
 
 ## 다음에 이어서 볼 문서
 
+- response headers가 비는 `(blocked)`/`canceled`/`(failed)` 줄을 따로 읽고 싶다면 [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
 - 응답 헤더의 `Server`/`Via`/`X-Request-Id`로 browser/proxy/app 1차 분기를 더 빨리 하고 싶다면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - `Protocol` 표기 자체가 헷갈리면 [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
 - `304`와 cache 판독이 먼저 필요하면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)

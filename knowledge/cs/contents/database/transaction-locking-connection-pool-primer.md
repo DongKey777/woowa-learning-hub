@@ -19,6 +19,17 @@
 
 retrieval-anchor-keywords: transaction locking connection pool primer, transaction boundary beginner, isolation locking uniqueness beginner, deadlock intuition beginner, connection pool before jdbc jpa, request to db flow beginner, unique vs lock beginner, long transaction connection pool exhaustion, lock wait to pool timeout bridge, transactional external api call pitfall, external api inside transaction pool timeout, hikaricp active pending connection bridge, transaction locking connection pool primer basics, transaction locking connection pool primer beginner, transaction locking connection pool primer intro
 
+## 처음 막히는 질문별 1분 라우트
+
+`트랜잭션`, `락`, `커넥션 풀`은 한 장에 같이 나오지만, 초보자 질문은 보통 아래 셋 중 하나로 먼저 잘라야 한다.
+
+| 지금 떠오르는 말 | 이 문서에서 먼저 답하나? | 바로 다음 문서 |
+|---|---|---|
+| "`왜 connection timeout이 lock 문제처럼 번져요?`" | 예 | [커넥션 풀 기초](./connection-pool-basics.md) |
+| "`언제 UNIQUE고 언제 lock이에요?`" | 예 | [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md) |
+| "`save()`는 보이는데 SQL은 어디 있죠?`" | 아니오 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
+| "`왜 마지막 재고가 또 팔려요?`" | 일부만 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
+
 ## 먼저 큰 그림
 
 초보자는 용어를 따로 외우기보다 **요청 하나가 DB를 다녀오는 흐름**을 먼저 잡는 편이 덜 헷갈린다.
@@ -55,6 +66,18 @@ JDBC, JPA, MyBatis, Spring은 이 흐름을 감싸는 **이름과 편의 기능*
 - 락은 "대기 순서"
 - `UNIQUE`는 "존재 규칙"
 - 커넥션 풀은 "연결 수용량"
+
+## 증상을 보면 먼저 번역할 한 줄
+
+초보자는 에러 이름을 보면 원인을 바로 확정하기 쉽다. 여기서는 "어디가 막혔는지"만 먼저 번역하면 충분하다.
+
+| 먼저 보인 말 | 첫 번역 | 바로 다음 문서 |
+|---|---|---|
+| `connection timeout`, `pool exhausted` | DB 연결 자체를 오래 쥔 요청이 있을 수 있다 | [커넥션 풀 기초](./connection-pool-basics.md) |
+| `lock wait timeout`, `deadlock detected` | 연결은 빌렸지만 row 순서나 대기열에서 막혔을 수 있다 | [락 기초](./lock-basics.md) |
+| `duplicate key`, `already exists` | 기다림보다 exact key 규칙 충돌일 수 있다 | [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md) |
+
+이 표의 목적은 진단 완료가 아니다. "`pool인가요? lock인가요? unique인가요?`" 세 갈래만 먼저 고르면 뒤 문서가 훨씬 짧게 읽힌다.
 
 ## 1. 트랜잭션 경계: 무엇을 같이 rollback할까
 
@@ -193,6 +216,15 @@ DB 커넥션은 무료가 아니다.
 - 긴 트랜잭션이면 -> 연결을 더 오래 잡는다
 - 느린 쿼리면 -> 연결과 락을 더 오래 점유한다
 - deadlock이면 -> 풀 크기보다 락 순서가 우선 문제다
+
+짧게 기억하면 아래처럼 이어진다.
+
+```text
+긴 트랜잭션
+  -> 락/쿼리 대기 증가
+  -> 커넥션 반환 지연
+  -> 새 요청은 pool timeout으로 보일 수 있음
+```
 
 ## 5-1. hot row 경합이 pool exhaustion으로 번지는 한 장 그림
 

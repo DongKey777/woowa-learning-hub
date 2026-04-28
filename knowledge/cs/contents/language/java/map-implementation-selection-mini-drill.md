@@ -12,9 +12,10 @@
 - [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [LinkedHashMap access-order와 캐시 동작 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md)
+- [LinkedHashMap access-order 미니 프라이머](../../data-structure/linkedhashmap-access-order-mini-primer.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java map implementation practice, java ordered map choice beginner, hashmap linkedhashmap treemap difference drill, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, map implementation selection mini drill basics, java basics, hashmap vs treemap 언제 써요, tree map 정렬 map beginner
+retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java ordered map choice beginner, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, linkedhashmap access order 헷갈림, 조회만 했는데 순서가 바뀐다, 정렬돼 보인다 map 뭐 써야 해, 캐시처럼 밀린다 linkedhashmap, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, hashmap vs treemap 언제 써요
 
 ## 먼저 잡는 멘탈 모델
 
@@ -22,9 +23,10 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 
 - 순서 요구가 없으면 `HashMap`
 - 넣은 순서를 유지해야 하면 `LinkedHashMap`
+- 최근에 본 항목이 뒤로 가야 하면 `LinkedHashMap(access-order=true)`
 - key 정렬 순서가 필요하면 `TreeMap`
 
-짧게 외우면 "`순서 없음 / 넣은 순서 / 정렬 순서`" 3칸 표다.
+짧게 외우면 "`순서 없음 / 넣은 순서 / 최근 접근 순서 / 정렬 순서`" 4칸 표다.
 
 ## 10초 비교표
 
@@ -32,6 +34,7 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 |---|---|---|
 | "조회만 빨리", "순서는 상관없다" | `HashMap` | 순서 계약이 필요 없다 |
 | "입력한 순서대로 보여 준다" | `LinkedHashMap` | 삽입 순서를 유지한다 |
+| "조회한 것이 뒤로 가야 한다", "최근에 본 것을 남긴다" | `LinkedHashMap(access-order=true)` | 삽입 순서가 아니라 최근 접근 순서가 필요하다 |
 | "이름순", "점수순", "날짜순" | `TreeMap` | key 기준 정렬 순서가 필요하다 |
 
 초보자 기준에서는 이 표만 정확히 읽어도 첫 선택 실수 대부분을 줄일 수 있다.
@@ -51,6 +54,9 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 | 7 | 에러 코드로 메시지를 찾기만 하면 된다. |  |
 | 8 | 최근 등록된 FAQ를 등록한 순서대로 그대로 나열한다. |  |
 | 9 | 주문을 주문번호 오름차순으로 확인해야 한다. |  |
+| 10 | "이상하게 순서가 바뀐다"는 제보가 왔고, 사실은 최근에 조회한 항목이 뒤로 밀리는 캐시 같은 동작이 필요하다. |  |
+| 11 | 결과를 찍어 보니 key가 "정렬돼 보인다". 이름순이나 번호순처럼 key 기준 오름차순이 요구다. |  |
+| 12 | 순서가 매번 달라도 괜찮고, 그냥 id로 값만 빨리 찾으면 된다. |  |
 
 ## 정답과 한 줄 이유
 
@@ -65,14 +71,52 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 | 7 | `HashMap` | 코드로 찾기만 하면 된다 |
 | 8 | `LinkedHashMap` | 등록한 순서 그대로 보여 줘야 한다 |
 | 9 | `TreeMap` | 주문번호 오름차순은 정렬 순서다 |
+| 10 | `LinkedHashMap(access-order=true)` | "조회한 항목이 뒤로 밀린다"는 access-order 신호다 |
+| 11 | `TreeMap` | "정렬돼 보인다"는 key 정렬 요구다 |
+| 12 | `HashMap` | 순서 계약 없이 조회만 빠르면 된다 |
+
+## 증상으로 바로 고르기 15초 라운드
+
+요구사항이 아니라 장애 설명처럼 들려도 같은 방식으로 번역하면 된다.
+
+| 증상 표현 | 먼저 번역할 요구 | 첫 선택 |
+|---|---|---|
+| "순서가 바뀐다" | 조회 뒤 순서가 밀리는가, 아니면 그냥 순서를 믿으면 안 되는가 | `LinkedHashMap(access-order=true)` 또는 `HashMap` |
+| "정렬돼 보인다" | 우연한 출력이 아니라 key 오름차순이 진짜 요구인가 | `TreeMap` |
+| "캐시처럼 밀린다" | 최근에 본 항목을 뒤로 보내고 오래 안 본 항목을 밀어내는가 | `LinkedHashMap(access-order=true)` |
+
+여기서 빠르게 읽는 요령은 한 줄이다.
+
+- "`정렬`"이 들리면 `TreeMap`
+- "`조회 후 뒤로 밀림`", "`캐시처럼`"이 들리면 `LinkedHashMap(access-order=true)`
+- "`그냥 조회`", "`순서는 상관없음`"이면 `HashMap`
+
+## 함정 1문항: 삽입 순서 vs access-order
+
+아래 문장을 보고 가장 먼저 떠올릴 구현체를 골라 보자.
+
+> "작은 최근 조회 캐시를 만들 건데, `get()`으로 다시 본 항목은 뒤로 보내고 가장 오래 안 본 항목을 먼저 밀어내고 싶다."
+
+1. `HashMap`
+2. 기본 `LinkedHashMap`
+3. `LinkedHashMap(access-order=true)`
+4. `TreeMap`
+
+정답은 `3`이다.
+
+- `2`번이 흔한 오답이다. `LinkedHashMap`이라는 이름만 보고 "순서 있는 map"이라고 읽으면 맞아 보이지만, 기본값은 **넣은 순서 유지**라서 `get()`만으로는 순서가 안 바뀐다.
+- 문장에 "`get()`으로 다시 본 항목은 뒤로"라는 표현이 나오면 삽입 순서가 아니라 **최근 접근 순서**가 필요하다는 신호다.
+- 그래서 이 문장은 그냥 `LinkedHashMap`이 아니라 `LinkedHashMap(access-order=true)`로 읽어야 beginner 실수를 줄일 수 있다.
 
 ## 자주 헷갈리는 포인트
 
 - `HashMap`이 내 환경에서 우연히 일정한 순서로 보여도 그 순서를 계약처럼 믿으면 안 된다.
 - `LinkedHashMap`은 "정렬 map"이 아니다. key를 정렬하지 않고 넣은 순서를 유지한다.
+- `LinkedHashMap`이라고 해서 항상 삽입 순서만 뜻하지는 않는다. `access-order=true`면 조회한 항목이 뒤로 가는 최근 접근 순서 모드가 된다.
 - `TreeMap`은 value가 아니라 key 기준으로 정렬한다.
 - `TreeMap`에서 같은 key 자리는 `equals()`가 아니라 `compareTo()`/`Comparator` 기준으로 판단될 수 있어서 두 번째 `put`이 덮어쓰기가 될 수 있다.
 - 문장에 "순서대로 보여 준다"가 있으면 `HashMap`보다 `LinkedHashMap` 쪽을 먼저 의심한다.
+- 문장에 "최근에 본 것", "조회한 것이 뒤로", "오래 안 본 것을 제거"가 있으면 기본 `LinkedHashMap`이 아니라 `LinkedHashMap(access-order=true)` 신호다.
 - 문장에 "`~순`", "`오름차순`", "`이름순`"이 있으면 `TreeMap` 신호로 읽는다.
 
 ## 다음 읽기

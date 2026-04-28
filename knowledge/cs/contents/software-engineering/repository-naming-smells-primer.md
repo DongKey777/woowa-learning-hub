@@ -7,15 +7,16 @@
 관련 문서:
 
 - [Software Engineering README: Repository Naming Smells Primer](./README.md#repository-naming-smells-primer)
+- [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 - [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
 - [Repository, DAO, Entity](./repository-dao-entity.md)
 - [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
 - [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 - [Spring Data Repository vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md)
 
-retrieval-anchor-keywords: repository naming smells, repository method naming, repository name smell, dao naming smell, repository vs dao naming, domain language repository contract, sql shaped dao api, table shaped dao api, method name cue repository dao, repository method names beginner, repository naming beginner, repository 메서드 이름, repository 네이밍 냄새, dao 메서드 이름, dao 네이밍 냄새
+retrieval-anchor-keywords: repository naming smells, repository method naming, repository vs dao naming, domain language repository contract, sql shaped dao api, repository method names beginner, repository 메서드 이름, repository 네이밍 냄새, dao 메서드 이름, repository 메서드 이름 왜 save find 인가요, repository 이름 처음 헷갈려요, repository와 dao 이름 차이 뭐예요, 언제 repository 말투를 쓰나요, insert select update가 왜 dao 같아요, query model 이름까지 섞여서 헷갈려요
 
-처음 배우는데 `OrderRepository` 안에 `insertOrderRow`, `selectOrdersJoinMember`, `updateOrderTableStatus` 같은 이름이 보이면 "이게 repository가 맞나?"라는 감각이 드는 편이 정상이다. 이 문서는 그 감각을 **메서드 이름 단서**만으로 빠르게 잡는 1페이지 primer다.
+처음 배우는데 `OrderRepository` 안에 `insertOrderRow`, `selectOrdersJoinMember`, `updateOrderTableStatus` 같은 이름이 보이면 "이게 repository가 맞나?"라는 감각이 드는 편이 정상이다. 이 문서는 **"repository 메서드 이름이 왜 `save/find` 말투인지", "언제 DAO 말투로 보는지"** 같은 첫 질문이 들어왔을 때 먼저 도착해야 하는 1페이지 primer다.
 
 ## 큰 그림 먼저
 

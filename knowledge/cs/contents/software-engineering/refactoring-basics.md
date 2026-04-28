@@ -6,6 +6,9 @@
 
 관련 문서:
 
+- [리팩토링 피드백 문장 라우터](./refactoring-feedback-phrase-router.md)
+- [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
+- [리팩토링 커밋 분리 프라이머](./refactor-commit-split-primer.md)
 - [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Technical Debt and Refactoring Timing](./technical-debt-refactoring-timing.md)
@@ -179,6 +182,8 @@ private Order saveOrder(CreateOrderRequest request) {
 | 레이어까지 함께 흔들린다 | [계층형 아키텍처 기초](./layered-architecture-basics.md)부터 보고 책임 위치를 정리 | 메서드 정리와 책임 이동을 섞으면 더 헷갈리기 쉽다 |
 
 - "테스트가 무거워서 손대기 무섭다"면 [테스트 전략 기초](./test-strategy-basics.md)에서 가장 싼 테스트부터 고르는 편이 낫다.
+- 가독성 피드백을 "첫 failing test 1개"로 바로 번역하는 연습이 필요하면 [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)를 먼저 보고 돌아오면 된다.
+- 리뷰 문장 자체가 `추상화가 어색해요`, `책임이 섞였어요`, `테스트가 너무 무거워요`처럼 추상적으로 들리면 [리팩토링 피드백 문장 라우터](./refactoring-feedback-phrase-router.md)에서 먼저 primer와 첫 행동을 고른다.
 - "메서드는 잘랐는데 리뷰가 계속된다"면 [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)으로 돌아가 증상 문구를 다시 번역해 본다.
 
 ## 흔한 오해와 함정

@@ -22,7 +22,7 @@
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [HTTPS / TLS 입문](../security/https-tls-beginner.md)
 
-retrieval-anchor-keywords: browser protocol negotiation, alpn vs alt-svc, browser http version selection, http/3 basics, first request vs next request, first visit h2 repeat visit h3, 첫 요청이 왜 h2예요, first visit repeat visit confusion, alt-svc cache, alt-svc cache vs http cache, 304 vs h3 fallback, quic fallback, udp blocked h3, devtools first visit checklist, http header vs dns record
+retrieval-anchor-keywords: browser protocol negotiation, alpn vs alt-svc, browser http version selection, first request vs next request, first visit h2 repeat visit h3, 첫 요청이 왜 h2예요, 왜 다음 요청은 h3예요, 왜 http/3가 바로 안 떠요, alpn 뭐예요, alt-svc 뭐예요, 처음 배우는데 h2 h3 선택, http/3 선택 기준 뭐예요, 첫 방문 h2 두번째 h3 헷갈려요, alt-svc cache, udp blocked h3
 
 <details>
 <summary>Table of Contents</summary>

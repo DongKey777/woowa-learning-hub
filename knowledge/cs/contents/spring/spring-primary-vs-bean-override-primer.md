@@ -22,7 +22,18 @@
 > - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
 > - [Spring DI 예외 빠른 판별: `NoSuchBeanDefinitionException` vs `NoUniqueBeanDefinitionException`](./spring-di-exception-quick-triage.md)
 
-retrieval-anchor-keywords: @primary vs bean override, @primary vs bean definition overriding, primary vs overriding beginner, injection priority vs bean name collision, same type different bean names, same bean name collision, bean candidate selection vs definition override, beandefinitionoverrideexception beginner, overriding disabled spring boot, primary cannot fix bean name collision, bean name conflict vs autowire conflict, nouniquebeandefinitionexception vs bean override, duplicate bean name vs multiple bean candidates, spring main allow bean definition overriding, primary not bean override
+retrieval-anchor-keywords: @primary 뭐예요, bean override 뭐예요, @primary vs bean override, @primary 언제 써요, bean override 언제 켜요, 같은 타입 빈 여러 개 뭐가 주입돼요, 같은 이름 bean 이 겹치면 어떻게 돼요, bean name collision vs bean candidate, nouniquebeandefinitionexception vs beandefinitionoverrideexception, 주입 단계 등록 단계 차이, primary not bean override, overriding disabled spring boot, spring bean candidate selection beginner, 빈 이름 충돌 헷갈려요, primary qualifier 전에 뭐부터 봐요
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 **`@Primary`와 bean override를 처음 같이 헷갈리는 질문**에서 primer로 먼저 걸리도록 조정했다.
+
+| 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
+|---|---|
+| "`@Primary`가 뭐예요?" | 이미 등록된 후보 중 기본 주입 대상을 고르는 규칙이라고 먼저 자른다 |
+| "bean override가 뭐예요?" | 같은 이름 bean definition 충돌을 등록 단계 문제로 먼저 자른다 |
+| "`@Primary` 붙이면 충돌 해결돼요?" | 아니다. 이름 충돌은 주입 단계 전에 먼저 터질 수 있다고 답한다 |
+| "같은 타입이 여러 개인 거랑 같은 이름 충돌이 왜 달라요?" | 타입 후보 선택과 이름 등록 충돌을 시간축으로 분리해 준다 |
 
 ## 먼저 mental model
 

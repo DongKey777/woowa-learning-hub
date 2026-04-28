@@ -8,6 +8,7 @@
 
 - [트랜잭션 기초](./transaction-basics.md)
 - [Database First-Step Bridge](./database-first-step-bridge.md)
+- [Lost Update vs Oversell vs Duplicate Insert Beginner Bridge](./lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md)
 - [락 기초](./lock-basics.md)
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
@@ -88,6 +89,8 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 - `SERIALIZABLE`은 충돌을 더 강하게 막지만, 대신 대기나 retry 비용이 커진다.
 
 즉 초보자 기준 첫 문장은 이것이면 충분하다. 격리 수준은 "무엇이 보이느냐"를 바꾸고, 마지막 재고 같은 문제는 보통 락·버전 컬럼·제약과 같이 풀어야 한다.
+
+여기서 바로 막히는 질문이 "`마지막 재고가 두 번 팔렸다`가 lost update인지 oversell인지 duplicate insert인지 모르겠다"라면, anomaly 표를 더 외우기 전에 [Lost Update vs Oversell vs Duplicate Insert Beginner Bridge](./lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md)에서 증상 분리부터 먼저 하고 돌아오는 편이 안전하다.
 
 그래서 이 문서를 읽는 동안에는 `40001 retry`, `deadlock`, `gap lock`을 해결하려 들지 않는 편이 낫다. 그런 단어가 나오면 "격리 수준만으로 끝나지 않는다"까지만 잡고 follow-up으로 넘긴다.
 

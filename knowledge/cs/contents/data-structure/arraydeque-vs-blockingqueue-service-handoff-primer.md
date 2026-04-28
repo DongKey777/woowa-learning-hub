@@ -11,9 +11,11 @@
 - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
 - [BlockingQueue, TransferQueue, and ConcurrentSkipListSet Semantics](../language/java/blockingqueue-transferqueue-concurrentskiplistset-semantics.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)
+- [Message-Driven Adapter Example](../software-engineering/message-driven-adapter-example.md)
 - [data-structure 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: arraydeque vs blockingqueue, java fifo service handoff, arraydeque local queue, blockingqueue producer consumer, blockingqueue beginner, when to use blockingqueue, arraydeque service code beginner, queue handoff between threads, java worker queue basics, arraydeque vs blockingqueue primer, 멀티스레드 큐 뭐 써요, blockingqueue가 뭐예요
+retrieval-anchor-keywords: arraydeque vs blockingqueue, java fifo service handoff, arraydeque local queue, blockingqueue producer consumer, blockingqueue beginner, when to use blockingqueue, arraydeque service code beginner, queue handoff between threads, java worker queue basics, arraydeque vs blockingqueue primer, 멀티스레드 큐 뭐 써요, blockingqueue가 뭐예요, queue가 보이는데 운영 문서로 가야 하나요, worker queue 다음 단계, message consumer 전 safe route
 
 ## 핵심 개념
 
@@ -28,6 +30,19 @@ retrieval-anchor-keywords: arraydeque vs blockingqueue, java fifo service handof
 
 로컬 순회나 BFS처럼 내가 넣고 내가 바로 빼는 흐름이면 `ArrayDeque` 쪽이 자연스럽다.
 반대로 producer 스레드가 넣고 worker 스레드가 꺼내는 구조라면, 이제는 "FIFO 자료구조"보다 "동시성 handoff 계약"이 더 중요해진다.
+
+## beginner safe route: queue에서 adapter까지
+
+이 문서는 `자료구조 queue` 다음 한 칸을 설명하는 follow-up이다. 여기서 바로 broker 운영, saga, distributed scheduler로 점프하지 말고 아래 사다리만 먼저 고정하면 된다.
+
+| 지금 보이는 질문 | 여기서 먼저 끝낼 판단 | 다음 안전한 한 칸 |
+|---|---|---|
+| `같은 스레드에서 내가 넣고 내가 빼나?` | 로컬 FIFO면 `ArrayDeque` 쪽이다 | [큐 기초](./queue-basics.md)로 돌아가 FIFO 도구 감각만 잠근다 |
+| `다른 스레드 worker에게 작업을 넘기나?` | handoff 계약이면 `BlockingQueue` 쪽이다 | 이 문서에서 `producer/consumer`, `blocking`, `bounded`만 먼저 구분한다 |
+| `HTTP 말고 consumer도 같은 일을 여는 입구인가?` | 이제 자료구조가 아니라 유스케이스 입구 질문이다 | [Message-Driven Adapter Example](../software-engineering/message-driven-adapter-example.md) |
+
+- 짧게 외우면 `queue 도구 -> handoff 계약 -> inbound adapter`다.
+- `왜 queue 다음에 갑자기 Kafka 운영 문서가 나오죠?`, `처음인데 system design으로 가야 하나요` 같은 질문이면 여기서 멈추고 `Message-Driven Adapter Example`까지만 이어 가면 beginner-safe 하다.
 
 ## 한눈에 보기
 

@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java package import boundary basics basics, java package import boundary basics beginner, java package import boundary basics intro, java basics, beginner java, 처음 배우는데 java package import boundary basics, java package import boundary basics 입문, java package import boundary basics 기초, what is java package import boundary basics, how to java package import boundary basics
+retrieval-anchor-keywords: java package import basics, java package import beginner, package랑 import 차이, 자바 package 왜 쓰는지, 자바 import 왜 쓰는지, 자바 파일 두 개로 나눌 때, 처음 배우는데 package import, 처음 자바 package 헷갈림, 자바 package 큰 그림, package 선언 꼭 써야 하나요, public class 파일명 왜 같아야 해, 같은 패키지 import 안 해도 되나요, default package 왜 피하나요, beginner java package structure, what is java package import
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -23,7 +23,7 @@ retrieval-anchor-keywords: java package import boundary basics basics, java pack
 > - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 > - [Java module system runtime boundaries](./java-module-system-runtime-boundaries.md)
 
-> retrieval-anchor-keywords: java package basics, java import basics, java package import boundary basics, java package declaration, java import declaration, java source file structure, java public class file name rule, java top level class file convention, java one public class per file, java package private boundary basics, java default package avoid, java same package no import, java.lang no import, java wildcard import subpackage, java import does not change access, java package private beginner design, java helper class package private, java package naming basics, java beginner package structure, java package boundary quick check, java same package subclass non subclass, java protected package boundary, 자바 패키지 임포트 기초, 자바 package import 기초, 처음 배우는데 package import, 자바 package 왜 쓰는지, 자바 import 언제 쓰는지, import 언제 생략하는지, import 안 해도 되는 경우, 자바 public class 파일명 규칙, 자바 소스 파일 구조 기초, package private 경계 기초, package-private 언제 쓰는지 기초, default package 피하는 이유, 같은 패키지 import 생략, 자바 패키지 경계 퀵체크
+> retrieval-anchor-keywords: java package basics, java import basics, java package import boundary basics, java package declaration, java import declaration, java source file structure, java public class file name rule, java top level class file convention, java one public class per file, java package private boundary basics, java default package avoid, java same package no import, java.lang no import, java wildcard import subpackage, java import does not change access, java package private beginner design, java helper class package private, java package naming basics, java beginner package structure, java package boundary quick check, java same package subclass non subclass, java protected package boundary, 자바 패키지 임포트 기초, 자바 package import 기초, 처음 배우는데 package import, 자바 package 왜 쓰는지, 자바 import 언제 쓰는지, import 언제 생략하는지, import 안 해도 되는 경우, 자바 public class 파일명 규칙, 자바 소스 파일 구조 기초, package private 경계 기초, package-private 언제 쓰는지 기초, default package 피하는 이유, 같은 패키지 import 생략, 자바 패키지 경계 퀵체크, package랑 import 차이 뭐예요, package가 폴더 이름인가요, 자바 클래스 파일 나눌 때 뭐부터, 자바 처음인데 package부터 막힘, why use package in java, when do I need import in java, same package no import beginner
 
 <details>
 <summary>Table of Contents</summary>
@@ -43,6 +43,8 @@ retrieval-anchor-keywords: java package import boundary basics basics, java pack
 </details>
 
 ## 왜 이 문서가 필요한가
+
+이 문서는 `"package랑 import 차이 뭐예요?"`, `"왜 package를 써요?"`, `"자바 파일을 두 개로 나누면 뭐가 달라져요?"` 같은 첫 질문이 들어왔을 때 deep dive보다 먼저 닿아야 하는 입문 primer를 목표로 한다.
 
 Java 입문자는 클래스를 여러 파일로 나누기 시작하는 순간부터 이런 질문을 만나게 된다.
 

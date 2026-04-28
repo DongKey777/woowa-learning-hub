@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: hashset vs treeset duplicate semantics basics, hashset vs treeset duplicate semantics beginner, hashset vs treeset duplicate semantics intro, java basics, beginner java, 처음 배우는데 hashset vs treeset duplicate semantics, hashset vs treeset duplicate semantics 입문, hashset vs treeset duplicate semantics 기초, what is hashset vs treeset duplicate semantics, how to hashset vs treeset duplicate semantics
+retrieval-anchor-keywords: hashset vs treeset 차이, hashset treeset 중복 기준, hashset treeset beginner, set 처음 배우는데 hashset treeset, 처음 배우는데 set 중복 기준, hashset은 둘 다 들어가는데 treeset은 왜 하나만 남아요, treeset 왜 하나만 남아요, compareto 0 이면 왜 같은 값처럼 보여요, equals false 인데 treeset 중복, hashset equals hashcode treeset compareto, set 중복 판단 큰 그림, set 헷갈림, why treeset size is 1, why hashset and treeset differ, hashset vs treeset duplicate rule
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
@@ -25,6 +25,7 @@ retrieval-anchor-keywords: hashset vs treeset duplicate semantics basics, hashse
 > - [Java Collections 성능 감각](./collections-performance.md)
 > - [BigDecimal compareTo vs equals in HashSet, TreeSet, and TreeMap](./bigdecimal-sorted-collection-bridge.md)
 > - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
+> - [HashSet vs TreeSet Beginner Bridge](../../data-structure/hashset-vs-treeset-beginner-bridge.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
 > retrieval-anchor-keywords: language-java-00113, hashset vs treeset duplicate semantics, java hashset duplicate rule, java treeset duplicate rule, java set duplicate semantics, hashset equals hashCode, treeset compareTo duplicate, treeset comparator compare zero duplicate, equals hashCode vs compare == 0, sorted set duplicate surprise, treeset compareTo 0 same element, comparator returning 0 same element, hash collision not duplicate, hashset vs treeset beginner, java set equality ordering mismatch, natural ordering treeset duplicate, compareTo tree map value replacement, beginner prediction hashset treeset, hashset treeset one screen table, hashset treeset size prediction, equals false compare 0 surprise, equals true compare not 0 surprise, bigdecimal hashset treeset treemap, hashset treeset 차이 기초, hashset treeset 중복 기준, set 중복 판단 큰 그림, 처음 배우는데 set 중복이 왜 다르지, hashset은 equals hashcode treeset은 compareto, treeset compareTo 0이면 같은 값, hash collision 중복 아님, hashset treeset 미니 랩, set duplicate prediction drill, equals hashCode compare zero lab
@@ -50,6 +51,7 @@ retrieval-anchor-keywords: hashset vs treeset duplicate semantics basics, hashse
 
 Java 입문자가 `Set`을 배우면서 자주 헷갈리는 질문은 대체로 비슷하다.
 
+- 이 문서는 특히 `"HashSet에는 둘 다 들어가는데 TreeSet에는 왜 하나만 남아요?"` 같은 첫 질문을 바로 받기 위한 primer다.
 - `HashSet`에는 두 개가 다 들어가는데 왜 `TreeSet`에는 하나만 남을까?
 - `hashCode()`가 같으면 중복이라고 봐야 할까?
 - `compareTo()`가 `0`이면 `equals()`도 `true`여야 할까?

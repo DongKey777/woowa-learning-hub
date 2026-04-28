@@ -10,6 +10,7 @@
 - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) - "상속 언제 쓰는지"를 먼저 잡은 뒤, 부모 흐름 고정과 계약 진화 갈림길로 넘어오는 바로 전 단계 primer
 - [Marker Interface vs Capability Method 브리지](./marker-interface-vs-capability-method-bridge.md)
 - [Java `default method` diamond conflict 기초](./interface-default-method-diamond-conflict-basics.md)
+- [Default Method 계약 진화 vs 충돌 해결 미니 드릴](./default-method-contract-evolution-vs-conflict-mini-drill.md)
 - [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
@@ -212,6 +213,7 @@ public SPI나 라이브러리에서는 이 차이가 더 커져서 운영 중 `A
 ## 다음에 읽을 문서
 
 - 다중 인터페이스에서 같은 `default method`가 충돌할 때 규칙부터 잡고 싶다면 [Java `default method` diamond conflict 기초](./interface-default-method-diamond-conflict-basics.md)
+- "이건 진화 질문인가, 충돌 해결 질문인가"를 4문항으로 바로 판별해 보고 싶다면 [Default Method 계약 진화 vs 충돌 해결 미니 드릴](./default-method-contract-evolution-vs-conflict-mini-drill.md)
 - "상속 언제 쓰는지"에서 막혔다면 먼저 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)로 돌아가 큰 그림을 다시 잡는다
 - 인터페이스와 추상 클래스의 큰 그림을 먼저 더 잡고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 - `default method`가 왜 호환성 이야기와 연결되는지 보려면 [Java Binary Compatibility and Runtime Linkage Errors](./java-binary-compatibility-linkage-errors.md)

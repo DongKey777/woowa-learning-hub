@@ -14,7 +14,7 @@
 - [Spring MVC 요청 생명주기 기초](../spring/spring-mvc-request-lifecycle-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: edge 504 app 200, gateway timeout app 200, timeout budget mismatch, 브라우저 504인데 서버 로그 200, app은 성공했는데 왜 504, why edge 504 app 200, what is gateway timeout, 처음 보는 504, hop by hop timeout basics, browser waiting 504, proxy timeout budget beginner, timeout mismatch 왜 생겨요
+retrieval-anchor-keywords: edge 504 app 200, gateway timeout app 200, timeout budget mismatch, 브라우저 504인데 서버 로그 200, edge는 504인데 왜 서버는 200, app은 성공했는데 왜 504, why edge 504 app 200, what is gateway timeout, 처음 보는 504, hop by hop timeout basics, devtools waterfall 504 200, gateway timeout 언제 생겨요, timeout mismatch 왜 생겨요, 504 app log 200 헷갈려요
 
 ## 핵심 개념
 
@@ -45,9 +45,9 @@ app 로그는 app이 자기 일을 끝낸 시점을 남긴다.
 둘 사이 timeout budget이 다르면 edge 504 + app 200이 함께 나올 수 있다.
 ```
 
-## 브라우저 타임라인 한 장으로 보기
+## DevTools timeline 한 장으로 보기
 
-브라우저 Network 탭에서 beginner가 먼저 상상해야 할 타임라인은 아래 하나면 충분하다.
+브라우저 Network 탭에서 beginner가 먼저 그려야 할 장면은 "`사용자 화면 종료 시점`과 `app 완료 시점`이 다를 수 있다"는 timeline 하나다.
 
 ```text
 t=0ms    브라우저 -> edge 로 요청 시작
@@ -57,7 +57,16 @@ t=951ms  브라우저는 504를 받음
 t=1180ms app 작업 완료, app 로그에 200 기록
 ```
 
-이 타임라인의 핵심은 `951ms`와 `1180ms`를 같은 사건으로 읽지 않는 것이다.
+DevTools에서 beginner가 읽는 순서를 한 줄 표로 붙이면 더 안전하다.
+
+| 시각 | DevTools / 사용자 화면 | edge / gateway | app 로그 |
+|---|---|---|---|
+| `0ms` | 요청 row 시작 | upstream으로 전달 시작 | 요청 받음 |
+| `950ms` | waterfall의 `waiting`이 거의 timeout 끝까지 감 | 자기 timeout 도달 직전 | 아직 처리 중 |
+| `951ms` | `Status 504`, 사용자는 여기서 종료를 봄 | `504 Gateway Timeout` 반환 | 아직 처리 중 |
+| `1180ms` | 사용자는 이미 실패 화면 | 이미 응답 종료 | 뒤늦게 `200` 완료 기록 |
+
+이 timeline의 핵심은 `951ms`와 `1180ms`를 같은 사건으로 읽지 않는 것이다.
 
 - 브라우저 사용자는 `951ms`에 이미 끝난 요청을 본다
 - app은 `1180ms`에야 자기 일을 끝냈다고 기록한다
@@ -66,21 +75,21 @@ t=1180ms app 작업 완료, app 로그에 200 기록
 DevTools에서는 보통 이렇게 읽으면 된다.
 
 - `Status`가 `504`인지 먼저 본다
-- waterfall에서 `waiting`이 길었는지 본다
+- waterfall에서 `waiting`이 timeout 직전까지 길었는지 본다
 - app 로그 timestamp가 edge timeout보다 뒤인지 비교한다
 
 즉 browser timeline 질문은 "`왜 504가 떴지?`"보다 먼저  
 "`사용자에게 응답이 끊긴 시점`과 `app이 끝난 시점`이 갈렸나?"로 두는 편이 안전하다.
 
-## 홉별 mental model
+## 홉별 timeout 표 한 장으로 보기
 
-이 패턴은 hop-by-hop으로 보면 훨씬 덜 헷갈린다.
+이 장면은 hop-by-hop timeout 표로 보면 가장 덜 헷갈린다.
 
-| 홉 | 무엇을 기다리나 | 자기 timeout이 끝나면 | beginner 메모 |
-|---|---|---|---|
-| 브라우저 | edge의 최종 응답 | 사용자는 그 상태 코드로 끝난다 | 사용자는 app 내부 사정을 직접 못 본다 |
-| edge / gateway | upstream app의 응답 | `504` 같은 gateway 응답을 직접 만들 수 있다 | 브라우저가 실제로 보는 주체인 경우가 많다 |
-| app | DB, 외부 API, 내부 로직 | 자기 일은 계속 끝낼 수 있다 | 이미 사용자는 떠났는데도 `200`을 남길 수 있다 |
+| 홉 | 누구를 기다리나 | 예시 timeout | 이 timeout이 먼저 끝나면 | beginner 메모 |
+|---|---|---:|---|---|
+| 브라우저 | edge의 최종 응답 | `2.5s` | 사용자는 브라우저 에러/실패 화면을 본다 | 사용자는 안쪽 hop의 늦은 성공을 직접 못 본다 |
+| edge / gateway | app의 첫 응답 | `1.0s` | `504 Gateway Timeout`을 직접 만들어 반환할 수 있다 | 브라우저가 실제로 보는 상태 코드 주체인 경우가 많다 |
+| app | DB, 외부 API, 내부 로직 | `2.0s` | 자기 일은 더 계속하다가 끝낼 수 있다 | 이미 사용자는 떠났는데도 `200` 로그가 남을 수 있다 |
 
 초급자용 비유:
 

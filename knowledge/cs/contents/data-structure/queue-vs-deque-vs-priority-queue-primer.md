@@ -69,7 +69,7 @@ retrieval-anchor-keywords: queue vs deque vs priority queue, fifo queue, deque b
 | 문장 | 첫 선택 | 한 줄 이유 |
 |---|---|---|
 | `먼저 도착한 요청부터 처리` | Queue | arrival order가 규칙이다 |
-| `미로에서 가까운 칸부터 탐색` | Queue를 쓰는 BFS | queue는 도구이고 핵심은 level-order 탐색이다 |
+| `미로에서 가까운 칸부터 탐색` | Queue를 쓰는 BFS | queue는 FIFO 순서를 만드는 도구이고, 핵심은 BFS의 level-order 탐색이다 |
 | `가장 급한 작업부터 처리` | Priority Queue | 도착 순서보다 priority가 먼저다 |
 | `앞에서도 빼고 뒤에서도 뺀다` | Deque | 양쪽 끝 제어가 핵심이다 |
 

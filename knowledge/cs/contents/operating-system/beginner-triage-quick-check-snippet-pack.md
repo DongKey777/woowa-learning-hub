@@ -15,7 +15,7 @@
 - [인터럽트 기초](./interrupt-basics.md)
 - [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
 
-retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, symptom first routing, slow response first check, oom first check, too many open files first check, interrupt signal first check, beginner self-check route, primer review route, quick observation mental model, what to check first, basics triage route, beginner triage quick check snippet pack basics, beginner triage quick check snippet pack beginner, beginner triage quick check snippet pack intro
+retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, 처음 운영체제 점검, 뭐부터 봐요, 왜 느려요, 왜 killed, too many open files first check, interrupt signal confusion, beginner self-check route, symptom first routing, quick observation mental model, what to check first, basics triage route, 헷갈릴 때 보는 문서, beginner primer route
 
 ## 먼저 잡는 멘탈 모델
 
@@ -81,21 +81,16 @@ fd와 interrupt는 "명령은 알겠는데 개념 축이 흔들리는" 경우가
 |---|---|---|---|---|
 | 인터럽트/시그널/예외가 헷갈림 | `cat /proc/interrupts`<br>`ps -e -o pid,ppid,stat,comm,wchan:24`<br>`kill -l` | 하드웨어 인터럽트 관찰(`/proc/interrupts`)과 프로세스 signal 상태(`ps`, `kill -l`)를 같은 개념으로 섞지 않는다. | [softirq, hardirq, latency, server debugging](./softirq-hardirq-latency-server-debugging.md) | interrupt와 process 흐름이 같이 흐리면 [README self-check 빠른 점검 루트](./README.md#개념-점검용-추천-순서-self-check-빠른-점검-루트)로 돌아가 1번, 4번 primer를 다시 본다. |
 
-## fd quick-check 다음에 바로 보는 20초 handoff
+## 20초 handoff 표만 기억하면 된다
 
-멘탈 모델은 이것만 먼저 고정하면 된다. `Too many open files`가 뜨면 "파일을 너무 많이 열었나?"보다 "어느 번호표 상자가 찼나?"를 먼저 묻는다.
+이 문서는 여기서 더 파고들지 않는다. `fd`, `느림`, `oom`은 **증상 이름만 잡고 바로 다음 문서로 넘기는 것**이 목적이다.
 
-| quick-check 결과 | 첫 해석 | 바로 이어서 볼 문서 |
+| quick-check 뒤 바로 내릴 말 | 첫 해석 | 바로 이어서 볼 문서 |
 |---|---|---|
-| `ls /proc/$PID/fd | wc -l` 값이 `ulimit -n`에 바짝 붙음 | 지금 이 프로세스의 번호표 상자가 거의 찼다. `EMFILE` 쪽 first-read triage로 이어진다. | [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md) 의 `Quick-check 다음 1분 판독표` |
-| `cat /proc/sys/fs/file-nr` 첫 값이 크고 노드 전체가 흔들림 | 특정 프로세스보다 시스템 전체 번호표 풀이 차는 `ENFILE` 쪽을 먼저 본다. | [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md) 의 `Quick-check 다음 1분 판독표` |
-| 둘 다 애매하거나 PID 하나만 봐서는 감이 안 옴 | 아직 원인 확정 단계가 아니다. 한도 위치를 다시 나눠 읽어야 한다. 바로 deep dive로 밀지 말고 fd primer부터 다시 고정한다. | [파일 디스크립터 기초](./file-descriptor-basics.md), [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md), [README self-check 빠른 점검 루트](./README.md#개념-점검용-추천-순서-self-check-빠른-점검-루트) |
-
-짧게만 기억하면 된다.
-
-- `EMFILE`: 내 프로세스 상자가 먼저 찬 경우
-- `ENFILE`: 시스템 전체 상자가 먼저 찬 경우
-- 다음 단계는 새 명령을 더 많이 치는 것이 아니라, 위 관찰값을 들고 decision table로 내려가는 것이다
+| "`fd` 수가 `ulimit -n`에 가깝다" | 내 프로세스 상자가 먼저 찬 `emfile` 쪽이다. | [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md), [파일 디스크립터 기초](./file-descriptor-basics.md) |
+| "`file-nr` 쪽이 크다" | 시스템 전체 상자가 흔들리는 `enfile` 쪽이다. | [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md) |
+| "`killed`는 봤는데 원인은 아직 모르겠다" | 종료 결과만 본 상태다. OOM 여부는 다음 beginner bridge에서 다시 가른다. | [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md), [메모리 관리 기초](./memory-management-basics.md) |
+| "`느리다`인데 CPU인지 I/O인지 모르겠다" | 지금은 원인 확정이 아니라 분기 단계다. | [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md), [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md) |
 
 ## 작은 예시: "너무 느려요"일 때
 
@@ -128,58 +123,21 @@ cat /proc/pressure/cpu /proc/pressure/io
 - [vmstat Counters, Runtime Pressure](./vmstat-counters-runtime-pressure.md)
 - [PSI, Pressure Stall Information, Runtime Debugging](./psi-pressure-stall-information-runtime-debugging.md)
 
-## `dmesg`가 안 열릴 때 OOM은 무엇을 먼저 보나
+## OOM은 여기서 확정하지 말고 한 번 더 넘긴다
 
-멘탈 모델은 단순하다. `dmesg`는 "커널이 남긴 이유 설명"이고, 막혀 있으면 먼저 `cgroup`과 현재 메모리 상태에서 "누가 한도를 넘었는지"를 본다.
+`Killed`, `137`, `OOMKilled`, `memory.events`는 초급자에게 비슷하게 보여도 같은 말이 아니다. 이 문서에서는 아래 한 줄만 먼저 고정하면 충분하다.
 
-| 상황 | 먼저 볼 것 | 짧은 해석 |
-|---|---|---|
-| 컨테이너 안에서 `dmesg: read kernel buffer failed: Operation not permitted` | `cat /sys/fs/cgroup/memory.current`<br>`cat /sys/fs/cgroup/memory.max`<br>`cat /sys/fs/cgroup/memory.events` | `memory.current`가 `memory.max` 근처이고 `memory.events`의 `oom`/`oom_kill`이 늘면 cgroup OOM 쪽이 더 유력하다. |
-| 커널 로그 권한이 막혀도 "정말 메모리 부족이었나?"가 궁금함 | `free -h`<br>`cat /proc/meminfo | egrep 'MemAvailable|SwapFree'` | 호스트 여유 메모리와 swap 여지를 먼저 본다. 호스트는 여유가 있는데 프로세스/컨테이너만 죽었으면 global OOM보다 cgroup limit 쪽이 흔하다. |
-| 재시작 뒤라 현재 값만으로 헷갈림 | 애플리케이션 로그의 `Killed` 흔적<br>오케스트레이터 상태의 `OOMKilled` 여부<br>`memory.events`의 누적 카운터 | 지금 메모리가 내려가 있어도 누적 이벤트는 남을 수 있다. "현재 사용량"과 "직전 OOM 흔적"을 분리해서 읽는다. |
+- `Killed`나 `137`만으로 OOM을 확정하지 않는다.
+- `OOMKilled`나 `memory.events`가 붙는지 보고 다음 문서에서 다시 가른다.
+- 권한 때문에 `dmesg`가 막혀도 OOM 학습 경로가 끝난 것은 아니다.
 
-여기까지 보고도 메모리 개념 축이 흔들리면 [README self-check 빠른 점검 루트](./README.md#개념-점검용-추천-순서-self-check-빠른-점검-루트)로 돌아가 1번, 3번 primer를 먼저 다시 본다.
+더 깊은 운영 디테일은 이 문서에서 계속 다루지 않는다. 아래 순서로 넘기면 된다.
 
-## OOM 종료 흔적 읽기
-
-종료 해석은 "강제 종료"와 "OOM 문맥"을 분리해서 보면 된다.
-
-| 보이는 종료 흔적 | 초보자 1차 해석 | OOM 쪽으로 더 기우는 추가 단서 |
-|---|---|---|
-| `Exited` 또는 종료 코드 `0` | 프로그램이 스스로 끝난 정상 종료일 가능성이 높다 | 보통 없음 |
-| `Terminated`, `SIGTERM`, 종료 코드 `143` | 사용자나 supervisor가 종료를 요청한 흔적일 가능성이 높다 | 보통 없음 |
-| `Killed`, 종료 코드 `137` | 강한 종료가 있었던 것은 맞지만 이유는 아직 모른다 | `OOMKilled`, `memory.events`의 `oom_kill` 증가, 메모리 limit 근접 |
-
-이 표에서 초보자가 꼭 기억할 한 줄은 이것이다.
-
-- 종료 코드 `137` 하나만으로 OOM을 확정하지 않는다.
-- OOM은 "강제 종료"라는 결과에 `OOMKilled`나 `memory.events` 같은 메모리 문맥이 더 붙어야 한다.
-
-권한 제한 환경에서의 초급자용 분기만 기억하면 된다.
-
-- `dmesg`가 막혔다 = OOM 분석 불가가 아니다.
-- 컨테이너/권한 제한 환경에서는 `memory.events`가 가장 먼저 보는 대체 관찰점이다.
-- `free -h`는 호스트 상태, `memory.current`/`memory.max`는 cgroup 상태다. 둘은 같은 숫자가 아니다.
-
-## cgroup 파일 이름 호환성 메모
-
-호환성 메모는 파일 이름보다 역할을 맞추는 데 목적이 있다.
-
-| 보고 싶은 역할 | cgroup v2 파일 | cgroup v1에서 자주 보이는 이름 |
-|---|---|---|
-| 현재 사용량 | `memory.current` | `memory.usage_in_bytes` |
-| 제한값 | `memory.max` | `memory.limit_in_bytes` |
-| OOM 흔적 | `memory.events` | `memory.oom_control`와 로그를 함께 확인 |
-
-- 핵심은 파일 이름이 아니라 역할이다. "현재 사용량 / 제한값 / OOM 흔적" 3가지만 같은 자리에서 찾으면 된다.
-- 오래된 환경이나 일부 컨테이너 이미지는 `memory.current` 대신 `memory.usage_in_bytes`만 보일 수 있다.
-
-더 깊게 들어가야 하면 아래 문서로 이동한다.
-
-- [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md)
-- [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
-- [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
-- [OOM Killer Scoring, Victim Selection](./oom-killer-scoring-victim-selection.md)
+| 지금 보이는 말 | 여기서의 안전한 다음 단계 |
+|---|---|
+| "`killed`가 떠서 왜 죽었는지 모르겠다" | [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md)로 이동해 종료 흔적과 OOM 문맥을 분리한다. |
+| "`memory.events`가 뭔지 처음 본다" | [메모리 관리 기초](./memory-management-basics.md)로 돌아가 메모리 범위부터 다시 잡는다. |
+| "컨테이너/cgroup까지 내려가니 갑자기 어렵다" | [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)으로 돌아가 primer 축을 다시 고른다. |
 
 ## 흔한 혼동
 

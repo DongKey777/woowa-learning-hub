@@ -14,13 +14,15 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, string equals beginner, 문자열 비교 방법, 문자열 비교 == equals 차이, 자바 문자열 비교 equals, string 왜 equals 써야 하나요, string == 왜 false, string 같은데 == false, string compare what is, string basics intro, 자바 문자열 기초, string immutable beginner, stringbuilder 언제 써야 하나
+retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, string equals beginner, 문자열 비교 방법, 문자열 비교 == equals 차이, 자바 문자열 비교 equals, string 왜 equals 써야 하나요, string == 왜 false, string 같은데 == false, 문자열 같은데 왜 false, 문자열 비교 왜 안돼요, 문자열 equals 뭐예요, string comparison what is, 자바 문자열 기초
 
 ## 핵심 개념
 
 Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(immutable)** 객체다. `str = str + "world"` 처럼 보여도 원래 문자열이 바뀌는 게 아니라 새 `String` 객체가 생기고 참조가 교체된다.
 
 입문자가 가장 자주 저지르는 실수 두 가지가 있다. 첫째, `"왜 문자열이 같은데 `==`는 false지?"` 상태에서 문자열 내용을 `==`로 비교하는 것. 둘째, 반복문 안에서 `+`로 문자열을 이어 붙이는 것. 첫 번째는 결과가 틀리고, 두 번째는 성능이 나빠진다.
+
+질문을 더 넓게 보면 이 문서는 `String` 버전의 `==` vs `equals()` 입문 문서다. "`문자열 비교가 왜 안 돼요`", "`String equals가 뭐예요`", "`같아 보이는데 왜 false예요`"처럼 들어오면 먼저 여기서 문자열 증상을 자르고, 그다음 [Java Equality and Identity Basics](./java-equality-identity-basics.md)로 넘어가서 문자열 밖의 객체 비교까지 같은 규칙으로 확장하면 된다.
 
 ## 한눈에 보기
 
@@ -32,6 +34,16 @@ Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(
 | 문자열을 반복해서 이어 붙이는가 | `StringBuilder` | `+`는 반복문에서 새 `String`을 계속 만든다 |
 
 입문 단계에서는 `"같은 문자열인가"`와 `"같은 객체인가"`를 먼저 분리하면 대부분의 첫 비교 버그를 바로 자를 수 있다.
+
+문장을 더 직접적으로 바꾸면 아래처럼 읽으면 된다.
+
+| 학습자 발화 | 바로 떠올릴 규칙 | 다음 다리 |
+|---|---|---|
+| `"문자열 비교가 왜 안 돼요"` | 내용 비교면 `equals()` | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| `"String 같은데 왜 false예요"` | `==`가 객체 비교인지 먼저 본다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| `"String equals가 뭐예요"` | 문자열 값 비교 기본 도구다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+
+이 세 문장은 [Java Equality and Identity Basics](./java-equality-identity-basics.md)의 문자열 증상 표에서도 같은 표현으로 다시 이어진다. 여기서 `String` 로컬 규칙을 먼저 자르고, equality primer에서 참조형 일반 규칙으로 넓히는 양방향 브리지라고 생각하면 된다.
 
 ## 코드로 보는 예시
 
@@ -127,6 +139,7 @@ String result = sb.toString(); // "Hello, World"
 
 - String Pool 내부와 `intern()` 함정: [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - `==` vs `equals()`를 문자열 밖의 객체 비교까지 넓혀 보고 싶다면: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- "`문자열 비교가 왜 안 돼요`"에서 "`그럼 객체 비교 전체 규칙은 뭐예요`"로 확장하고 싶다면: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - direct equality와 case-insensitive ordering을 분리해서 보고 싶다면 [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
 - nullable `String` 정렬에서 `nullsLast`와 case-insensitive comparator를 함께 읽고 싶다면 [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 - `"문자열도 결국 hash 기반 컬렉션에서 어떻게 비교되나?"`가 궁금하면: [Hash Table Basics](../data-structure/hash-table-basics.md)

@@ -1,42 +1,51 @@
 # Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리
 
-> 한 줄 요약: `@RequestBody` 요청이 `400 Bad Request`로 먼저 끝나는 가장 흔한 이유는 Spring이 controller / service 단계에 들어가기 전, binding / message conversion 단계에서 이미 요청 body를 읽지 못해 **DTO 변환 실패**가 났기 때문이다.
+> 한 줄 요약: `@RequestBody` 요청이 `400 Bad Request`로 먼저 끝나는 가장 흔한 이유는 Spring이 컨트롤러 / 서비스 단계에 들어가기 전, binding / message conversion 단계에서 이미 요청 body를 읽지 못해 **DTO 변환 실패**가 났기 때문이다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)
-- [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
-- [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
-- [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
 - [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)
+- [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
+- [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: JSON인데 왜 `Content-Type`에서 막히나](./spring-requestbody-415-unsupported-media-type-primer.md)
 - [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)
 - [Spring `LocalDate`/`LocalTime` JSON 파싱 `400` 자주 나는 형식 모음](./spring-localdate-localtime-json-400-cheatsheet.md)
+- [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
+- [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)
+- [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
 - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: @requestbody 400 왜 바로 나요, @requestbody 400 vs 415 차이, post /admin/reservations requestbody 400, roomescape admin reservations json example, requestbody type mismatch json, wrong content-type 415 spring, unsupported media type why spring, spring content-type application json beginner, 컨트롤러 로그 안 찍힘 requestbody, 컨트롤러 진입 전 400 spring, httpmessageconverter basics, malformed json 400 spring, enum localdate parse 400, spring mvc requestbody 처음 배우는데, dto 변환 실패 400 spring
+retrieval-anchor-keywords: @requestbody 400 왜 바로 나요, @requestbody 400 vs 415 차이, @requestbody @valid 언제 타요, @valid 전에 400 나요, post /admin/reservations requestbody 400, roomescape admin reservations json example, requestbody type mismatch json, unsupported media type why spring, spring content-type application json beginner, json 보냈는데 415가 떠요, 컨트롤러 로그 안 찍힘 requestbody, 컨트롤러 진입 전 400 spring, httpmessageconverter basics, malformed json 400 spring, dto 변환 실패 400 spring
 
 ## 핵심 개념
 
 처음에는 이렇게 기억하면 된다.
 
+- `@RequestBody`에서 "`왜 `@Valid`가 안 타지?`"가 먼저 떠오르면, 이 문서는 "`DTO도 못 만들어서 validation 전에 끊긴 경우`"를 먼저 가르는 입구다. DTO 생성까지 성공한 뒤의 다음 분기는 바로 [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)로 이어 본다.
 - `@RequestBody`는 "컨트롤러가 raw body를 직접 읽는 기능"이 아니다.
 - Spring이 먼저 요청 body를 읽고, JSON을 DTO로 바꾸는 데 성공해야 컨트롤러 메서드를 호출한다.
-- binding / message conversion 단계에서 실패하면 controller / service 단계는 시작도 못 하고 **DTO 변환 실패 `400`** 같은 오류 응답이 먼저 나간다.
+- binding / message conversion 단계에서 실패하면 컨트롤러 / 서비스 단계는 시작도 못 하고 **DTO 변환 실패 `400`** 같은 오류 응답이 먼저 나간다.
 - 이때는 아직 DTO 자체가 없어서 `@Valid`도, `BindingResult`도 개입할 자리가 없다.
 
-즉 "`400`이 났다"와 "내 컨트롤러 코드가 실행됐다"는 같은 말이 아니다. RoomEscape 관리자 API에서 `POST /admin/reservations`를 보낼 때도 JSON 모양이나 타입이 틀리면 `create()` 메서드 첫 줄 로그조차 안 찍힐 수 있다. 이 문서의 초점은 그중에서도 **DTO를 아예 못 만든 경우**이고, DTO를 만든 뒤 제약을 어긴 **validation 실패**는 [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)로 이어진다.
+즉 "`400`이 났다"와 "내 컨트롤러 코드가 실행됐다"는 같은 말이 아니다. RoomEscape 관리자 API에서 `POST /admin/reservations`를 보낼 때도 JSON 모양이나 타입이 틀리면 `create()` 메서드 첫 줄 로그조차 안 찍힐 수 있다. 이 문서의 초점은 그중에서도 **DTO를 아예 못 만든 경우**이고, DTO를 만든 뒤 제약을 어긴 **validation 실패**는 바로 다음 읽기 경로인 [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)로 이어진다.
 
-초급자 검색 문장으로 바꾸면 이 문서가 직접 받는 질문은 아래와 같다.
+초급자 검색 진입 문장은 README와 같은 증상 문장 세트로 아래처럼 고정한다.
 
-- "컨트롤러 로그가 왜 안 찍혀요?"
-- "`@RequestBody`인데 왜 컨트롤러 진입 전에 `400`이 나요?"
-- "JSON 보냈는데 왜 `@Valid`도 못 타요?"
+- "`@RequestBody`인데 컨트롤러 전에 `400`이 나요"
+- "`JSON parse error`가 보여요"
+- "`json`인데 `415 Unsupported Media Type`가 떠요"
+- "`Content-Type: application/json` 안 붙였는데 `415`예요"
+
+읽는 순서를 한 줄로 고정하면 더 덜 헷갈린다.
+
+1. `400`이 났을 때 먼저 "`DTO를 아예 못 만들었나, 아니면 만든 뒤 `@Valid`에서 막혔나?`"를 이 문서와 [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md) 한 쌍으로 자른다.
+2. 그다음 `@ModelAttribute`와 `@RequestBody` 중 지금 값이 어디로 들어오는지 확인한다.
+3. 여기서 `400`/`415`/`302`/`403` 중 어디서 끊겼는지 가른다.
 
 ## 한눈에 보기
 
@@ -54,6 +63,7 @@ HTTP 요청
 
 | 보이는 현상 | 첫 분기 | 먼저 볼 것 |
 |---|---|---|
+| `BindingResult`가 왜 못 받았지? | 아직 DTO 생성 전일 수 있음 | `BindingResult`는 validation handoff 지점이라 message conversion 실패에는 끼어들지 못함 |
 | `302`/`401`/`403` | 아직 body 단계 전 | security / filter |
 | `415 Unsupported Media Type` | body 형식 선언 실패 | `Content-Type: application/json` |
 | `400` + JSON parse / 날짜 / enum / 숫자 단서 | **DTO 변환 실패** | JSON 문법, 필드명, 타입 |
@@ -65,15 +75,19 @@ HTTP 요청
 - `400`인데 parse/type 단서가 보이면 **DTO 변환 실패**부터 본다.
 - `400`인데 `@Valid` 단서가 보이면 **validation 실패**까지는 온 것이다.
 
+`415`만 따로 빠르게 보고 싶다면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)로 바로 옮겨도 된다. 이 문서는 `400`과 `415`를 함께 가르는 입구이고, 새 primer는 `Content-Type`과 `consumes` 축만 더 짧게 붙잡는다.
+
 ## `400` parse/type vs `415` media-type
 
-초급자에게 가장 자주 필요한 건 "`400`과 `415`를 한 번에 어떻게 가르지?"다. 그래서 아래 decision table을 먼저 붙잡으면 좋다.
+초급자에게 가장 자주 필요한 첫 분기도 README와 같은 문장으로 잡으면 된다.  
+"`@RequestBody`인데 컨트롤러 전에 `400`이 나요", "`JSON parse error`가 보여요"는 이 표의 왼쪽으로 보고,  
+"`json`인데 `415 Unsupported Media Type`가 떠요", "`Content-Type: application/json` 안 붙였는데 `415`예요"는 오른쪽으로 보면 된다.
 
 | 비교 축 | `400 Bad Request` parse/type 실패 | `415 Unsupported Media Type` 실패 |
 |---|---|---|
 | Spring이 먼저 못한 일 | JSON을 읽어 DTO로 바꾸기 | 이 body를 어떤 형식으로 읽을지 결정하기 |
 | 보통 이미 맞춰진 것 | `Content-Type: application/json` | body가 JSON처럼 보여도 상관없다. 핵심은 header 계약 |
-| 학습자 화면에서 자주 보이는 단서 | `JSON parse error`, `Cannot deserialize`, 날짜/enum/숫자 변환 실패 | `Content-Type 'text/plain' is not supported`, `application/json` 누락 |
+| 학습자 화면에서 자주 보이는 단서 | `JSON parse error`, `Cannot deserialize`, 날짜/enum/숫자 변환 실패 | "분명 JSON으로 보냈는데 `415 Unsupported Media Type`가 떠요", `Content-Type 'text/plain' is not supported` |
 | 가장 먼저 확인할 것 | 닫는 괄호, 쉼표, 필드 타입, 날짜/시간 형식 | 요청 헤더의 `Content-Type`, 컨트롤러의 `consumes` 계약 |
 | body를 JSON처럼 예쁘게 적어도 해결되나 | 아니오. 값 형식까지 DTO 타입과 맞아야 한다 | 아니오. 헤더가 틀리면 body 모양보다 먼저 막힌다 |
 | beginner 한 줄 판단 | "내용은 읽으려 했는데 값 해석에 실패했다" | "애초에 이 형식 body는 받지 않겠다고 판단했다" |
@@ -123,7 +137,7 @@ HTTP 요청
 
 즉 검색 query에서 막혔는지, 생성 JSON에서 막혔는지를 먼저 가르면 "`둘 다 reservations인데 왜 원인이 다르지?`"라는 혼동을 줄일 수 있다. 그리고 생성 JSON에서 막혔다면 다시 "`DTO 변환 실패냐, validation 실패냐`"로 한 번 더 쪼개면 된다.
 
-## 왜 controller / service 전에 끝나는가
+## 왜 컨트롤러 / 서비스 전에 끝나는가
 
 Spring MVC는 컨트롤러 메서드를 호출하기 전에 파라미터를 다 준비한다. `@RequestBody CreateReservationRequest request`가 있다면 Spring은 대략 아래 순서로 움직인다.
 
@@ -137,7 +151,7 @@ Spring MVC는 컨트롤러 메서드를 호출하기 전에 파라미터를 다 
 1. Spring Security가 로그인 여부와 `ADMIN` 권한을 먼저 본다.
 2. 그다음에야 `Content-Type`과 body를 보고 converter를 고른다.
 3. binding / message conversion이 된다.
-4. 마지막에 controller / service 단계가 시작된다.
+4. 마지막에 컨트롤러 / 서비스 단계가 시작된다.
 
 그래서 아래처럼 컨트롤러 첫 줄에 로그를 넣어도, binding / message conversion에서 실패하면 이 로그는 찍히지 않는다.
 
@@ -149,7 +163,7 @@ public ReservationResponse create(@RequestBody CreateReservationRequest request)
 }
 ```
 
-초급자 기준으로는 "`service 로직이 잘못됐다`"보다 "`binding / message conversion 단계에서 아직 컨트롤러 메서드 인자를 못 만들었다`"가 더 정확한 설명이다. 이번 축 이름으로 부르면 "`controller 전에 DTO 변환 실패가 났다`"에 가깝다.
+초급자 기준으로는 "`service 로직이 잘못됐다`"보다 "`binding / message conversion 단계에서 아직 컨트롤러 메서드 인자를 못 만들었다`"가 더 정확한 설명이다. 이번 축 이름으로 부르면 "`컨트롤러 전에 DTO 변환 실패가 났다`"에 가깝다.
 
 이 경계 때문에 `@Valid @RequestBody CreateReservationRequest request, BindingResult bindingResult`처럼 선언해 두었더라도, JSON 문법 오류나 `LocalDate` 파싱 실패는 `bindingResult.hasErrors()`까지 데려올 수 없다. `BindingResult`는 "만들어진 DTO의 validation 에러 바구니"이지, "DTO를 못 만든 body 파싱 에러 바구니"는 아니다.
 
@@ -172,7 +186,7 @@ RoomEscape 미션에서 가장 많이 찾게 되는 장면은 `POST /admin/reser
 
 - body 내용이 틀리면 binding / message conversion `400` 후보다.
 - body 형식 선언이 틀리면 media type 계약 위반인 `415` 후보다.
-- 정상 JSON이라도 그다음엔 validation이나 controller / service 단계에서 다른 오류가 날 수 있다.
+- 정상 JSON이라도 그다음엔 validation이나 컨트롤러 / 서비스 단계에서 다른 오류가 날 수 있다.
 
 위 표를 더 짧게 접으면 이렇게 된다.
 
@@ -189,7 +203,7 @@ RoomEscape 미션에서 가장 많이 찾게 되는 장면은 `POST /admin/reser
 
 | 학습자 증상 문장 | 이 문서에서 먼저 보는 축 |
 |---|---|
-| "컨트롤러 로그 안 찍힘" | controller 이전 DTO 변환 실패 |
+| "컨트롤러 로그 안 찍힘" | 컨트롤러 이전 DTO 변환 실패 |
 | "`@RequestBody`인데 바로 `400`" | message conversion / JSON 파싱 |
 | "`@Valid`가 안 타는 것 같아요" | validation 전 단계에서 DTO 생성 실패 |
 | "`415`도 같이 보여요" | `Content-Type` 계약 |
@@ -285,7 +299,7 @@ RoomEscape 관리자 예약 생성 API를 예로 들면 초반 점검 순서는 
 
 초급자에게 가장 실용적인 감각은 이것이다.
 
-- 컨트롤러 로그가 안 찍히면 controller / service보다 binding / message conversion을 먼저 본다.
+- 컨트롤러 로그가 안 찍히면 컨트롤러 / 서비스보다 binding / message conversion을 먼저 본다.
 - 날짜, 시간, enum, 숫자 필드는 "문자열이 비슷해 보여도" 자주 깨진다.
 - Postman, 브라우저 fetch, 프론트엔드 axios에서 `Content-Type` 누락이 생각보다 흔하다.
 
@@ -302,7 +316,7 @@ RoomEscape 관리자 예약 생성 API를 예로 들면 초반 점검 순서는 
 ## 면접/시니어 질문 미리보기
 
 **Q. `@RequestBody` 요청에서 컨트롤러 로그가 안 찍히는데 왜 `400`이 날 수 있나요?**  
-컨트롤러 호출 전에 `HttpMessageConverter`가 binding / message conversion을 수행하는데, 이 단계에서 JSON 문법 오류나 타입 변환 실패가 나면 controller / service 단계까지 도달하지 못한다.
+컨트롤러 호출 전에 `HttpMessageConverter`가 binding / message conversion을 수행하는데, 이 단계에서 JSON 문법 오류나 타입 변환 실패가 나면 컨트롤러 / 서비스 단계까지 도달하지 못한다.
 
 **Q. JSON 문법 오류와 validation 실패는 어떻게 다른가요?**  
 문법 오류는 DTO를 만들기 전 실패고, validation 실패는 DTO 생성 후 `@Valid` 같은 제약 검사에서 실패한다.
@@ -315,4 +329,4 @@ RoomEscape 관리자 예약 생성 API를 예로 들면 초반 점검 순서는 
 
 ## 한 줄 정리
 
-`@RequestBody`의 `400`은 controller / service보다 먼저 binding / message conversion 단계에서 나는 경우가 많으므로, JSON 문법, DTO 타입, `Content-Type`을 먼저 분리해서 봐야 한다.
+`@RequestBody`의 `400`은 컨트롤러 / 서비스보다 먼저 binding / message conversion 단계에서 나는 경우가 많으므로, JSON 문법, DTO 타입, `Content-Type`을 먼저 분리해서 봐야 한다.

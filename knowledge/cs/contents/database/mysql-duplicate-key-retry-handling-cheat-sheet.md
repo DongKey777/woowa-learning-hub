@@ -22,12 +22,15 @@ retrieval-anchor-keywords: mysql duplicate key retry cheat sheet, mysql 1062 han
 
 `1062 -> primary/fresh read -> replay|busy|conflict` 흐름을 한 장 시퀀스로 먼저 보고 싶다면 [MySQL `1062` 후 Fresh-Read 경로 미니 시퀀스 다이어그램](./mysql-1062-fresh-read-mini-sequence-diagram.md)부터, 같은 내용을 표와 코드로 더 짧게 보고 싶다면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)부터 보면 된다.
 
+`duplicate key`를 막 배운 뒤 "`그럼 lock timeout, deadlock은 왜 다르게 읽죠?`"가 바로 붙는다면 [Duplicate Key vs Lock Timeout vs Deadlock 입문 브리지](./db-error-signal-beginner-result-language-mini-card.md)를 먼저 끼워 넣는 편이 빠르다.
+
 ## Beginner 연결표 (경계/재시도 카드로 확장)
 
 `1062` 분류를 끝낸 뒤 다음 질문으로 바로 이어갈 수 있게 최소 동선을 표로 정리한다.
 
 | 다음 질문 | 바로 볼 카드 | 연결 이유 |
 |---|---|---|
+| "`duplicate key` loser와 `busy`/`retryable` loser를 한 장에서 먼저 가르고 싶다" | [Duplicate Key vs Lock Timeout vs Deadlock 입문 브리지](./db-error-signal-beginner-result-language-mini-card.md) | duplicate insert primer에서 lock 입문으로 넘어갈 때 `already exists` / `busy` / `retryable` 감각을 먼저 붙여 준다 |
 | "경계가 길어서 timeout/중복 해석이 더 꼬이는 건 아닐까?" | [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md) | 외부 I/O가 경계 안에 있으면 busy/재시도 신호가 급격히 늘어난다 |
 | "duplicate/timeout/deadlock/serialization을 한 표로 보고 싶다" | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | 서비스 결과 3버킷(`already exists`/`busy`/`retryable`)으로 고정해 준다 |
 | "PostgreSQL `40001`은 왜 트랜잭션 전체 재시도인가?" | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | MySQL duplicate와 다른 retry 단위를 비교해 헷갈림을 줄여 준다 |

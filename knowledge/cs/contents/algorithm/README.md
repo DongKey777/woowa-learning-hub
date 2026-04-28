@@ -14,7 +14,7 @@
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](../data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [큐 기초](../data-structure/queue-basics.md)
 
-retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time complexity starter, dfs bfs starter, binary search intro, two pointer intro, dp intro, shortest path router, queue map bfs split, graph problem router, 처음 알고리즘 뭐부터, 알고리즘 입구
+retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time complexity starter, dfs bfs starter, binary search intro, two pointer intro, dp intro, shortest path router, queue map bfs split, graph problem router, 처음 알고리즘 뭐부터, 알고리즘 입구, bfs queue map 왜 같이 나와요, bfs랑 queue 차이 뭐예요, queue vs bfs basics
 
 ## 길 잃었을 때 복귀 경로
 
@@ -25,6 +25,51 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | `BFS인지 queue인지 아직도 헷갈려요`, `왜 자꾸 map까지 섞이죠?` | [BFS, Queue, Map 먼저 분리하기](#bfs-queue-map-먼저-분리하기) | [큐 기초](../data-structure/queue-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) |
 | `반으로 줄이는 건지, 양끝에서 좁히는 건지 모르겠어요` | [초보자 첫 분기](#초보자-첫-분기) | [이분 탐색 입문](./binary-search-intro.md) 또는 [두 포인터 입문](./two-pointer-intro.md) |
 | `문제보다 자료구조 선택이 먼저 막혀요` | [먼저 자를 질문](#먼저-자를-질문) | [자료구조 README - 초급 10초 라우터](../data-structure/README.md#초급-10초-라우터) |
+
+## 프라이머에서 다시 돌아오는 자리
+
+입문 문서를 읽고 다시 길이 흐려질 때 보는 복귀 표다.
+
+| 방금 읽은 primer | 이 README에서 다시 붙일 자리 | 바로 다음 한 걸음 |
+|---|---|---|
+| [그래프 기초](../data-structure/graph-basics.md) | [그래프 입문 10분 루트](#그래프-입문-10분-루트) | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| [큐 기초](../data-structure/queue-basics.md) | [BFS, Queue, Map 먼저 분리하기](#bfs-queue-map-먼저-분리하기) | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| [DFS와 BFS 입문](./dfs-bfs-intro.md) | [초보자 첫 분기](#초보자-첫-분기) | [그래프](./graph.md) 또는 [Connectivity Question Router](../data-structure/connectivity-question-router.md) |
+| [이분 탐색 입문](./binary-search-intro.md) | [먼저 자를 질문](#먼저-자를-질문) | [두 포인터 입문](./two-pointer-intro.md)과 헷갈리는지 한 번 더 확인한다 |
+
+### 복귀 후 한 줄 규칙
+
+`왜 bfs랑 queue가 같이 나와요`가 다시 나오면 이 표에서 한 칸만 고르면 된다.
+
+## 그래프 입문 10분 루트
+
+백엔드 주니어가 `graph`, `bfs`, `queue`, `최소 이동 횟수`를 한 번에 만나면 보통 여기서 막힌다. 이때는 알고리즘을 더 넓게 보지 말고 아래 순서로 좁히는 편이 가장 안전하다.
+
+| 지금 보이는 증상 | 먼저 볼 문서 | 여기서 얻는 mental model |
+|---|---|---|
+| `그래프가 뭐예요?`, `정점/간선이 아직 추상적이에요` | [그래프 기초](../data-structure/graph-basics.md) | 그래프는 구조라는 감각 |
+| `왜 queue가 나오죠?`, `bfs랑 queue가 같은 말인가요?` | [큐 기초](../data-structure/queue-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) | queue는 도구, BFS는 탐색 규칙이라는 분리 |
+| `갈 수 있나`와 `최소 이동 횟수`를 자꾸 섞어요 | [DFS와 BFS 입문](./dfs-bfs-intro.md) -> [Connectivity Question Router](../data-structure/connectivity-question-router.md) | 연결 여부와 shortest path를 다른 질문으로 자르기 |
+| `가중치`, `비용 합 최소`까지 같이 보여요 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) | 무가중치 BFS와 weighted shortest path 분리 |
+
+같은 문장을 어디에서 잘라야 하는지 헷갈리면 아래 한 줄 번역부터 다시 보면 된다.
+
+| 원래 문장 | 자료구조로 읽으면 | 알고리즘으로 읽으면 |
+|---|---|---|
+| `queue를 써야 하나요?` | FIFO 도구가 필요한가 | 거리 순서 탐색에서 queue를 도구로 쓰는가 |
+| `graph가 뭐예요?` | 정점과 간선으로 관계를 그리는 구조 | 그 구조 위에서 어떤 탐색을 할지 고르는 단계 |
+| `최소 이동 횟수예요` | queue 이름보다 먼저 알고리즘 냄새가 난다 | BFS 시작 신호다 |
+
+즉 `queue`, `graph`, `BFS`가 한 문제에 같이 보여도 셋이 같은 층위는 아니다. beginner가 자주 하는 오진은 `도구 이름`과 `질문 종류`를 섞는 데서 시작한다.
+
+## 그래프 입문 오진 교정
+바로 아래 오진 교정표까지 같이 보면 entrypoint가 더 선명해진다.
+
+| 헷갈린 첫 문장 | 먼저 고칠 생각 | 첫 문서 |
+|---|---|---|
+| `queue가 보이니까 BFS죠?` | queue는 BFS 구현 도구일 수 있지만, 작업 FIFO일 수도 있다 | [큐 기초](../data-structure/queue-basics.md) |
+| `graph가 보이니까 최단 경로죠?` | graph 문제도 연결 여부, 경로 하나, 최단 경로로 갈라진다 | [그래프 기초](../data-structure/graph-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| `최소면 다 BFS죠?` | `최소 이동 횟수`와 `최소 비용`은 다르다 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) |
 
 ## 먼저 자를 질문
 
@@ -45,7 +90,7 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | `최소 이동 횟수`, `가까운 칸부터`, `환승 최소` | [DFS와 BFS 입문](./dfs-bfs-intro.md) | queue는 도구이고 핵심은 unweighted shortest path다 |
 | `그래프가 뭐고 정점/간선이 뭔지부터 헷갈린다` | [그래프 기초](../data-structure/graph-basics.md) | 문제 풀이 전에 자료구조 그림부터 붙여야 BFS/DFS가 덜 추상적이다 |
 | `같은 그룹인가`, `연결요소가 몇 개인가` | [Connectivity Question Router](../data-structure/connectivity-question-router.md) | 연결성 질문과 최단 경로 질문을 먼저 가른다 |
-| `MST`, `위상 정렬`, `가중치 최단 경로`까지 한 번에 섞여 보인다 | [그래프](./graph.md) | beginner primer를 넘는 그래프 라우팅은 여기서 분기한다 |
+| `MST`, `위상 정렬`, `가중치 최단 경로`까지 한 번에 섞여 보인다 | [그래프](./graph.md) | `그래프 기초`와 `DFS와 BFS 입문` 다음에 내려가는 심화 그래프 라우터다 |
 | `반으로 줄여 찾기` | [이분 탐색 입문](./binary-search-intro.md) | 정렬 구간을 줄이는 규칙이 핵심이다 |
 | `정렬은 했는데 왜 \`binarySearch\` 결과가 이상하지?` | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md) -> [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) | Java 라이브러리 전제를 먼저 정리한 뒤 알고리즘 패턴으로 넘어가야 덜 헷갈린다 |
 | `양끝에서 좁히기`, `두 수의 합`, `연속 구간` | [두 포인터 입문](./two-pointer-intro.md) | 포인터 이동 규칙이 핵심이다 |
@@ -58,6 +103,7 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 |---|---|---|
 | `최소 이동 횟수`, `가까운 칸부터` | [큐 기초](../data-structure/queue-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) | queue 도구 감각을 먼저 잡고 BFS 거리 감각으로 넘어간다 |
 | `그래프 정점/간선부터 안 잡힌다` | [그래프 기초](../data-structure/graph-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) | 자료구조 그림을 먼저 잡아야 탐색 순서 설명이 덜 추상적이다 |
+| `MST`, `가중치 최단 경로`, `위상 정렬`이 바로 눈에 들어온다 | [그래프 기초](../data-structure/graph-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) -> [그래프](./graph.md) | primer 두 장으로 질문 종류를 먼저 자른 뒤 심화 비교로 가는 편이 beginner-safe 하다 |
 | `id로 바로 찾기`, `중복 체크` | [Backend Data-Structure Primer](../data-structure/backend-data-structure-starter-pack.md) -> [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](../data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md) | 알고리즘 전에 자료구조 첫 선택 실수를 줄인다 |
 | `반으로 줄여 찾기` | [시간복잡도 입문](./time-complexity-intro.md) -> [이분 탐색 입문](./binary-search-intro.md) | 왜 `O(log n)`이 되는지 먼저 붙인다 |
 | `Java에서 정렬 후 검색 결과가 이상하다` | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md) -> [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) -> [이분 탐색 입문](./binary-search-intro.md) | `정렬 여부`와 `검색 기준 일치`를 먼저 분리하면 알고리즘 경계 설명이 덜 과부하다 |
@@ -72,8 +118,10 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | `BFS인지 queue인지 아직도 헷갈려요`, `왜 queue가 나오지?` | [자료구조 README - 초급 10초 라우터](../data-structure/README.md#초급-10초-라우터) | [BFS, Queue, Map 먼저 분리하기](#bfs-queue-map-먼저-분리하기) |
 | `정렬은 했는데 왜 \`binarySearch\`가 이상해요?`, `처음이라 전제가 뭐예요?` | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md), [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) | [초보자 첫 분기](#초보자-첫-분기) |
 | `서비스 규칙 설명보다 collection 선택이 먼저 막혀요` | [자료구조 README - 먼저 자를 질문](../data-structure/README.md#먼저-자를-질문) | [먼저 자를 질문](#먼저-자를-질문) |
+| `이건 BFS가 아니라 Service 책임 얘기인가요?`, `queue/map가 보여도 어디서 끊어 읽죠?` | [Software Engineering README - 연결해서 보면 좋은 문서](../software-engineering/README.md#연결해서-보면-좋은-문서-cross-category-bridge) | [BFS, Queue, Map 먼저 분리하기](#bfs-queue-map-먼저-분리하기) |
 
 옆 카테고리 문서를 보고 나면, 용어를 더 늘리기보다 이 README의 `초보자 첫 분기`나 `BFS, Queue, Map 먼저 분리하기`로 돌아와 문제 문장을 다시 번역하는 편이 beginner-safe 하다.
+복귀 위치가 다시 흐려지면 [길 잃었을 때 복귀 경로](#길-잃었을-때-복귀-경로)에서 증상 문장을 다시 고르면 된다.
 
 ## BFS, Queue, Map 먼저 분리하기
 
@@ -82,63 +130,49 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | 문장 신호 | 실제로 묻는 것 | 첫 출발점 |
 |---|---|---|
 | `미로에서 출구까지 몇 칸?` | 간선 수가 최소인 경로 | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| `A에서 B로 갈 수 있어?`, `같은 그룹인가?` | 연결 여부 yes/no 또는 component 질문 | [Connectivity Question Router](../data-structure/connectivity-question-router.md) |
+| `A에서 B까지 아무 경로나 하나 보여줘` | 실제 경로 하나 복원 | [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md) |
 | `주문을 받은 순서대로 worker에 넘기기` | FIFO handoff 정책 | [큐 기초](../data-structure/queue-basics.md) |
 | `회원 id로 주문을 바로 조회` | exact lookup | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](../data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
 
-같은 서비스 장면도 질문을 어디에 두느냐에 따라 출발점이 달라진다.
-
-| 같은 서비스 장면 | 지금 먼저 묻는 것 | 첫 출발점 |
-|---|---|---|
-| 주문 API에서 `요청을 받은 순서대로 worker에 넘기기` | 처리 순서 규칙 | Queue |
-| 주문 API에서 `orderId로 주문 한 건 바로 찾기` | key lookup | HashMap 계열 |
-| 추천 기능에서 `가까운 친구부터 보기` | 거리 1, 2, 3 순서 확장 | BFS |
-
-처음에는 아래 한 줄만 외워도 충분하다.
+처음에는 아래 세 줄만 먼저 고정하면 충분하다.
 
 - `먼저 온 요청을 차례대로 처리`면 queue
+- `갈 수 있나`, `같은 그룹인가`면 connectivity
+- `아무 경로 하나 보여줘`면 path reconstruction
 - `key로 한 건 바로 찾기`면 map
 - `거리 1, 2, 3 순서로 넓히기`면 BFS
-
-같은 문장을 백엔드 장면으로 바꾸면 더 덜 헷갈린다.
-
-| 주문/추천 기능에서 보인 문장 | 실제 질문 | 첫 출발점 |
-|---|---|---|
-| `재시도 요청도 받은 순서대로 worker가 소비` | 처리 순서를 어떻게 지키나 | [큐 기초](../data-structure/queue-basics.md) |
-| `userId로 추천 대상 한 건 바로 찾기` | key로 exact lookup 하나 | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](../data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
-| `친구의 친구를 가까운 관계부터 확장` | 거리 1, 2, 3 순서가 핵심인가 | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
-
-이 표의 목적은 "같은 서비스 코드라도 알고리즘 질문과 자료구조 질문이 분리된다"는 감각을 먼저 붙이는 것이다.
 
 헷갈리면 아래 순서로 다시 자르면 된다.
 
 1. `무엇을 먼저 꺼내나?`가 핵심이면 자료구조 후보를 본다.
-2. `몇 번 만에 닿나?`가 핵심이면 BFS부터 본다.
-3. `방문 체크를 무엇으로 저장하나?`는 보조 도구 질문이다. `set/map`이 보여도 탐색 자체는 여전히 BFS/DFS일 수 있다.
+2. `갈 수 있나`, `같은 그룹인가?`가 핵심이면 connectivity부터 본다.
+3. `몇 번 만에 닿나?`가 핵심이면 BFS부터 본다.
+4. `방문 체크를 무엇으로 저장하나?`는 보조 도구 질문이다. `set/map`이 보여도 탐색 자체는 여전히 BFS/DFS일 수 있다.
 
 ## 초급자가 자주 섞는 오해
 
 - `queue`가 보인다고 항상 자료구조 문제가 아니다. `최소 이동 횟수`면 핵심은 BFS다.
+- `갈 수 있나?`와 `최소 이동 횟수인가?`를 안 자르면 BFS와 DSU, path reconstruction이 한데 섞인다.
 - `map`이 보인다고 항상 알고리즘이 사라지는 것도 아니다. BFS/DFS 안의 `visited set/map`은 탐색 보조 도구다.
 - `그래프`, `BFS`, `최단 경로`를 한 단어로 뭉개면 초반에 거의 반드시 섞인다. `그래프는 구조`, `BFS/DFS는 탐색`, `최단 경로는 질문 종류`로 따로 떼면 읽기 난도가 크게 내려간다.
-- `MST`, `위상 정렬`, `가중치 shortest path`는 첫 회독 primer 범위를 넘는다. 이 경우 [그래프](./graph.md)에서 질문 종류를 다시 자르는 편이 안전하다.
 - `visited`를 `boolean[]`로 둘지 `Set`으로 둘지 막히면 [Java BFS visited 배열 vs Set beginner card](./bfs-visited-array-vs-set-java-beginner-card.md)에서 sparse id / 문자열 key 분기를 먼저 자르면 된다.
 - `연결되어 있나?`와 `최단 경로인가?`는 같은 그래프 문장처럼 보여도 질문이 다르다.
-- `0-1 BFS`, 가중치 shortest path, MST 같은 확장 주제는 아래 입문 문서를 본 뒤 비교 문서로 내려가도 늦지 않다.
 - `queue`와 `map`이 같이 나와도 보통은 충돌이 아니다. 예를 들어 BFS는 queue로 레벨을 관리하고 map/set으로 방문 여부나 거리를 기록한다.
 
-## 심화로 내려가는 기준
+## 여기서 멈추고 다음으로 넘길 것
 
-아래 비교 문서는 기본 패턴을 고른 뒤에 읽으면 덜 무겁다.
+이 섹션의 목표는 `bfs`, `queue`, `map`을 분리하는 데까지다. 아래 주제는 초반 primer 범위를 넘기므로, 지금 막힌 질문이 명확할 때만 내려가면 된다.
 
-- 그래프 라우팅 전체가 필요하면 [그래프](./graph.md)
-- BFS와 가중치 shortest path 경계를 자르려면 [최단 경로 알고리즘 비교](./dijkstra-bellman-ford-floyd-warshall.md)
-- `0-1 BFS`, 희소 그래프 shortest path가 궁금하면 [Sparse Graph Shortest Paths](./sparse-graph-shortest-paths.md)
-- `sliding window`와 interval 문제를 나누고 싶으면 [슬라이딩 윈도우 패턴](./sliding-window-patterns.md), [구간 / Interval Greedy 패턴](./interval-greedy-patterns.md)
-- MST, flow, assignment 같은 심화 비교는 아래 `패턴 / 비교 카탈로그`에서 필요한 것만 고르면 된다
+- `최소 이동 횟수`와 `최소 비용`이 섞이면 [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md)
+- 그래프 질문 전체를 다시 자르고 싶으면 [그래프 관련 알고리즘](./graph.md)
+- `visited[]`와 `Set` 구현 선택이 막히면 [Java BFS visited 배열 vs Set beginner card](./bfs-visited-array-vs-set-java-beginner-card.md)
+
+처음 읽는 단계라면 여기서 더 넓히기보다 `DFS와 BFS 입문`, `이분 탐색 입문`, `두 포인터 입문` 중 지금 막힌 문서 한 장만 더 읽고 멈추는 편이 안전하다.
 
 ## 🟢 Beginner 입문 문서
 
-처음 알고리즘을 공부하는 경우 아래 5편을 순서대로 읽는 것을 권장한다.
+처음 알고리즘을 공부하는 경우 아래 목록에서 **앞 5편 정도만 먼저** 읽는 것을 권장한다.
 
 - [Backend Algorithm Starter Pack](backend-algorithm-starter-pack.md) — `정렬/이분 탐색/BFS/DFS/그리디/DP/shortest path` 중 어디서 시작할지 먼저 자르는 입구 문서
 - [시간복잡도 입문](time-complexity-intro.md) — Big-O 감각 잡기, 루프 분석, `이중 for문` 시간복잡도 첫 판단
@@ -158,6 +192,8 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 
 ## 기본 프라이머
 
+아래 broad survey는 `입문 문서를 읽고 난 뒤 한 번에 훑는` 용도에 가깝다. 처음이라면 바로 아래 catalog보다 위의 beginner primer부터 타는 편이 안전하다.
+
 ## 알고리즘 기본 [▶︎ 🗒](basic.md)
 
 - [시간복잡도와 공간복잡도](basic.md#시간복잡도와-공간복잡도)
@@ -174,6 +210,8 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 
 ## 패턴 / 비교 카탈로그
 
+이 아래 카탈로그는 `입문 분기`를 끝낸 뒤 필요한 주제만 집어 내려가는 follow-up 구간이다. `MST`, `flow`, `0-1 BFS`, `A*`처럼 이름이 먼저 보인다고 해서 첫 회독부터 모두 따라갈 필요는 없다.
+
 ## 알고리즘 응용
 
 - [정렬 알고리즘](sort.md) (stable / unstable, comparison / non-comparison, preprocessing, interval merge vs scheduling sort key)
@@ -184,7 +222,7 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
   - [Minimum Spanning Tree: Prim vs Kruskal](minimum-spanning-tree-prim-vs-kruskal.md) (generic MST landing page, Prim/Kruskal selection, Prim heap vs matrix implementation follow-up)
   - [Kruskal에서 Union-Find가 끼는 순간](kruskal-union-find-beginner-bridge.md) (beginner MST cycle-check bridge)
   - [최단 경로 알고리즘](graph.md#최단-경로-알고리즘) (다익스트라, 벨만-포드, 플로이드-워셜 legacy notes)
-  - [분리 집합(Union Find)과 크루스칼(Kruskal) 알고리즘](graph.md#분리-집합Union-Find과-크루스칼Kruskal-알고리즘)
+  - [분리 집합(Union Find)과 크루스칼(Kruskal) 알고리즘](graph.md#분리-집합union-find과-크루스칼kruskal-알고리즘)
   - [위상 정렬 패턴](topological-sort-patterns.md)
   - [Topological DP](topological-dp.md) (DAG shortest/longest path, dependency accumulation, critical path scheduling)
 - [Longest Increasing Subsequence Patterns](longest-increasing-subsequence-patterns.md) (subsequence optimization, tails + lower_bound, subsequence vs subarray)

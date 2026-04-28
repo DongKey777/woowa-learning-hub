@@ -30,6 +30,7 @@ _RULES: list[Rule] = [
             "persistence",
             "read model",
             "query model",
+            "query service",
         },
         "expand": [
             "repository",
@@ -38,6 +39,7 @@ _RULES: list[Rule] = [
             "persistence",
             "aggregate root",
             "read model",
+            "query service",
         ],
         "category": "database",
     },
@@ -1747,6 +1749,11 @@ _BEGINNER_INTENT_TOKEN_GROUPS = (
     frozenset({"먼저", "설명해줘"}),
 )
 
+_BEGINNER_CONFUSION_CUES = {
+    "모르겠",
+    "헷갈",
+}
+
 _BEGINNER_SHORTFORM_QUESTION_CUES = {
     "뭐야",
     "뭔데",
@@ -1773,6 +1780,7 @@ _BEGINNER_SHORTFORM_QUESTION_CUES = {
 _BEGINNER_WHY_USE_SHORTFORM_CUES = {
     "왜 써",
     "왜 사용",
+    "왜 있어",
     "왜 필요해",
     "왜 필요하지",
     "왜 쓰는",
@@ -2472,6 +2480,23 @@ _QUERY_MODEL_BEGINNER_FILTER_SORT_SCOPE_CUES = {
     "조건",
 }
 
+_QUERY_MODEL_BEGINNER_MEANING_TOPIC_CUES = {
+    "query model",
+    "query service",
+}
+
+_QUERY_MODEL_BEGINNER_MEANING_ADVANCED_CUES = {
+    "aggregate",
+    "aggregate persistence",
+    "join dto",
+    "remote lookup",
+    "anti-pattern",
+    "anti pattern",
+    "cqrs",
+    "projection",
+    "eventual consistency",
+}
+
 _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES = {
     "cqrs",
     "eventual consistency",
@@ -2695,6 +2720,8 @@ _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
     "transaction_isolation": {
         "expand": [
             "transaction isolation basics",
+            "transaction isolation beginner primer",
+            "transaction isolation simple mental model",
             "mvcc",
             "dirty read",
             "non-repeatable read",
@@ -2880,7 +2907,7 @@ def _is_transaction_isolation_beginner_meaning_prompt(
     haystack: str,
     tokens: set[str],
 ) -> bool:
-    if not _has_beginner_intent(haystack, tokens):
+    if not (_has_beginner_intent(haystack, tokens) or _has_beginner_confusion_intent(haystack)):
         return False
     if not any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_TOPIC_CUES):
         return False
@@ -2903,6 +2930,7 @@ def _is_transaction_isolation_beginner_meaning_prompt(
         any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
         or _has_korean_definition_shortform(haystack)
         or any(cue in haystack for cue in _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES)
+        or _has_beginner_confusion_intent(haystack)
         or "큰 그림" in haystack
     )
 
@@ -2936,9 +2964,24 @@ def _transaction_isolation_expand(
             ]
         )
 
+    if _is_mvcc_beginner_why_use_prompt(haystack):
+        return [
+            "transaction isolation basics",
+            "transaction isolation beginner primer",
+            "transaction isolation simple mental model",
+            "mvcc",
+            "mvcc basics",
+            "mvcc beginner",
+            "mvcc concept overview",
+            "why use mvcc",
+            "concurrent read write visibility basics",
+        ]
+
     if _is_transaction_isolation_beginner_meaning_prompt(haystack, tokens):
         expand = [
             "transaction isolation basics",
+            "transaction isolation beginner primer",
+            "transaction isolation simple mental model",
             "transaction isolation level basics",
             "isolation level beginner",
             "read committed beginner",
@@ -2956,6 +2999,9 @@ def _transaction_isolation_expand(
                     "mvcc 개념 설명",
                     "mvcc 처음 배우는데",
                     "mvcc beginner",
+                    "read committed",
+                    "repeatable read",
+                    "phantom read",
                 ]
             )
 
@@ -3014,6 +3060,66 @@ def _db_modeling_expand(
     return beginner_expand + expand
 
 
+def _connection_pool_expand(
+    haystack: str,
+    matched_triggers: set[str],
+    *,
+    beginner_intent: bool = False,
+) -> list[str]:
+    beginner_hikari_shortform = bool(
+        matched_triggers & {"hikari", "hikari cp"}
+        and (
+            any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+            or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+            or _has_beginner_confusion_intent(haystack)
+        )
+    )
+    expand = [
+        "connection pool basics",
+        "db connection reuse",
+        "hikari cp",
+        "pool exhaustion",
+        "connection timeout",
+    ]
+
+    if beginner_intent or beginner_hikari_shortform:
+        expand.extend(
+            [
+                "db connection pool beginner",
+                "hikari cp beginner",
+                "pool size basics",
+            ]
+        )
+
+    if matched_triggers & {"hikari", "hikari cp"} and (beginner_intent or beginner_hikari_shortform):
+        expand.extend(
+            [
+                "hikaricp basics",
+                "hikaricp connection pool overview",
+            ]
+        )
+
+    return expand
+
+
+def _has_spring_foundation_english_role_intent(
+    haystack: str,
+    matched_triggers: set[str],
+) -> bool:
+    if not (
+        matched_triggers
+        & {"beanfactory", "bean factory", "applicationcontext", "application context", "bean"}
+    ):
+        return False
+    return bool(
+        re.search(
+            r"\bwhat\s+does\s+(?:a\s+)?(?:spring\s+)?"
+            r"(?:beanfactory|bean\s+factory|applicationcontext|application\s+context|bean)\s+do\b",
+            haystack,
+        )
+    )
+
+
 def _spring_framework_expand(
     haystack: str,
     matched_triggers: set[str],
@@ -3047,6 +3153,21 @@ def _spring_framework_expand(
                     "bean 컨테이너 큰 그림",
                 ]
             )
+            if (
+                matched_triggers
+                & {"dispatcher servlet", "dispatcherservlet", "__dispatcher_servlet_compound__"}
+            ) and (
+                matched_triggers
+                & {"spring mvc", "springmvc", "__spring_mvc_compound__", "__mvc_beginner_shortform__"}
+            ):
+                expand.extend(
+                    [
+                        "dispatcher servlet vs spring mvc",
+                        "front controller vs mvc mental model",
+                        "dispatcher servlet handles request routing",
+                        "spring mvc is the web stack big picture",
+                    ]
+                )
 
     if matched_triggers & _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS:
         if beginner_intent:
@@ -3183,7 +3304,9 @@ def _spring_framework_expand(
                 "bean 컨테이너 큰 그림",
             ]
         )
-        if any(cue in haystack for cue in _SPRING_FOUNDATION_ROLE_CUES):
+        if any(cue in haystack for cue in _SPRING_FOUNDATION_ROLE_CUES) or (
+            _has_spring_foundation_english_role_intent(haystack, matched_triggers)
+        ):
             expand.extend(
                 [
                     "spring bean role basics",
@@ -3927,9 +4050,31 @@ def _projection_freshness_compound_matches(haystack: str, tokens: set[str]) -> s
 def _mvcc_beginner_primer_matches(haystack: str, tokens: set[str]) -> set[str]:
     if "mvcc" not in haystack:
         return set()
-    if not _has_beginner_intent(haystack, tokens):
+    if not (_has_beginner_intent(haystack, tokens) or _has_beginner_confusion_intent(haystack)):
         return set()
     return {"__mvcc_beginner_primer__"}
+
+
+def _is_mvcc_beginner_why_use_prompt(haystack: str) -> bool:
+    if "mvcc" not in haystack:
+        return False
+    if any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES):
+        return False
+    return any(
+        cue in haystack
+        for cue in {
+            "why use",
+            "why do we use",
+            "why should i use",
+            "왜 써",
+            "왜 사용",
+            "왜 있어",
+            "왜 필요해",
+            "왜 필요하지",
+            "왜 쓰는",
+            "왜 쓰죠",
+        }
+    )
 
 
 def _spring_framework_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
@@ -4306,6 +4451,23 @@ def _is_beginner_query_model_filter_sort_prompt(haystack: str, tokens: set[str])
     if not any(cue in haystack for cue in _QUERY_MODEL_BEGINNER_FILTER_SORT_SCOPE_CUES):
         return False
     if any(cue in haystack for cue in _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES):
+        return False
+    return True
+
+
+def _is_beginner_query_model_meaning_prompt(haystack: str, tokens: set[str]) -> bool:
+    has_beginner_cue = (
+        _has_beginner_intent(haystack, tokens)
+        or _has_beginner_confusion_intent(haystack)
+        or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+        or _has_korean_definition_shortform(haystack)
+    )
+    if not has_beginner_cue:
+        return False
+    if not any(cue in haystack for cue in _QUERY_MODEL_BEGINNER_MEANING_TOPIC_CUES):
+        return False
+    if any(cue in haystack for cue in _QUERY_MODEL_BEGINNER_MEANING_ADVANCED_CUES):
         return False
     return True
 
@@ -4873,6 +5035,7 @@ def _has_beginner_intent(haystack: str, tokens: set[str]) -> bool:
         or _is_transaction_primer_shortform_prompt(haystack)
         or _is_projection_cutover_safety_shortform_prompt(haystack)
         or _is_java_concurrency_beginner_shortform_prompt(haystack)
+        or _is_java_virtual_threads_beginner_shortform_prompt(haystack)
         or _is_transactional_beginner_why_use_prompt(haystack)
         or _is_transactional_beginner_plain_alias_prompt(haystack)
         or _is_transactional_beginner_mechanics_prompt(haystack)
@@ -4880,9 +5043,14 @@ def _has_beginner_intent(haystack: str, tokens: set[str]) -> bool:
         or _is_spring_transaction_beginner_shortform_prompt(haystack, tokens)
         or _is_transaction_propagation_beginner_shortform_prompt(haystack, tokens)
         or _is_spring_beginner_english_meaning_prompt(haystack)
+        or _is_spring_foundation_english_role_prompt(haystack)
         or _is_spring_ioc_di_beginner_shortform_prompt(haystack)
         or _is_spring_foundation_flow_prompt(haystack)
     )
+
+
+def _has_beginner_confusion_intent(haystack: str) -> bool:
+    return any(cue in haystack for cue in _BEGINNER_CONFUSION_CUES)
 
 
 def _has_korean_definition_shortform(haystack: str) -> bool:
@@ -4920,6 +5088,7 @@ def _is_database_modeling_beginner_shortform_prompt(haystack: str) -> bool:
 def _is_transaction_primer_shortform_prompt(haystack: str) -> bool:
     if not (
         any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
         or _has_korean_definition_shortform(haystack)
         or any(cue in haystack for cue in _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES)
     ):
@@ -4954,6 +5123,21 @@ def _is_java_concurrency_beginner_shortform_prompt(haystack: str) -> bool:
     ):
         return False
     return any(cue in haystack for cue in _JAVA_CONCURRENCY_BEGINNER_SHORTFORM_TOPIC_CUES)
+
+
+def _is_java_virtual_threads_beginner_shortform_prompt(haystack: str) -> bool:
+    if not (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or _has_korean_definition_shortform(haystack)
+    ):
+        return False
+    if not any(cue in haystack for cue in _JAVA_VIRTUAL_THREADS_CORE_TRIGGERS):
+        return False
+    if any(cue in haystack for cue in _JAVA_VIRTUAL_THREADS_MIGRATION_CUES):
+        return False
+    if any(cue in haystack for cue in _JAVA_VIRTUAL_THREADS_BUDGET_CUES):
+        return False
+    return True
 
 
 def _is_transactional_beginner_why_use_prompt(haystack: str) -> bool:
@@ -5024,6 +5208,21 @@ def _is_spring_beginner_english_meaning_prompt(haystack: str) -> bool:
     if not any(cue in haystack for cue in _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES):
         return False
     return not any(cue in haystack for cue in _SPRING_FOUNDATION_ADVANCED_CUES)
+
+
+def _is_spring_foundation_english_role_prompt(haystack: str) -> bool:
+    if "what does" not in haystack or " do" not in haystack:
+        return False
+    return _has_spring_foundation_english_role_intent(
+        haystack,
+        {
+            "beanfactory",
+            "bean factory",
+            "applicationcontext",
+            "application context",
+            "bean",
+        },
+    ) and not any(cue in haystack for cue in _SPRING_FOUNDATION_ADVANCED_CUES)
 
 
 def _is_spring_ioc_di_beginner_shortform_prompt(haystack: str) -> bool:
@@ -5339,11 +5538,25 @@ def _is_projection_rollback_window_transaction_rollback_db_prompt(
 
 def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict]) -> set[str]:
     if not _has_beginner_intent(haystack, tokens):
-        return set()
+        if not _is_beginner_query_model_meaning_prompt(haystack, tokens):
+            return set()
 
     hits_by_tag = {hit["tag"]: hit for hit in hits}
     present_tags = set(hits_by_tag)
     suppressed_tags: set[str] = set()
+    if _is_beginner_query_model_meaning_prompt(haystack, tokens) and "persistence_boundary" in present_tags:
+        primer_hit = hits_by_tag["persistence_boundary"]
+        primer_hit["score"] += 3
+        primer_hit["expand"].extend(
+            [
+                "query model separation",
+                "query model separation read heavy apis",
+                "query service vs repository",
+                "read-heavy api beginner primer",
+                "list search filter sort beginner guide",
+            ]
+        )
+        suppressed_tags.update(present_tags & {"api_boundary", "layer_responsibility"})
     for primer_tag, config in _BEGINNER_PRIMER_OVERRIDES.items():
         if primer_tag not in present_tags:
             continue
@@ -5360,7 +5573,19 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
 
         primer_hit = hits_by_tag[primer_tag]
         primer_hit["score"] += int(config.get("score_bonus", 0))
-        primer_hit["expand"].extend(config.get("expand", []))
+        if primer_tag == "transaction_isolation" and _is_mvcc_beginner_why_use_prompt(haystack):
+            primer_hit["expand"].extend(
+                [
+                    "transaction isolation beginner primer",
+                    "transaction isolation simple mental model",
+                    "mvcc basics",
+                    "mvcc concept overview",
+                    "why use mvcc",
+                    "concurrent read write visibility basics",
+                ]
+            )
+        else:
+            primer_hit["expand"].extend(config.get("expand", []))
         if primer_tag == "projection_freshness" and _is_projection_strict_read_beginner_intro_prompt(
             haystack, tokens
         ):
@@ -5421,6 +5646,12 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             )
         elif rule["tag"] == "security_authentication":
             expand = _security_authentication_expand(
+                haystack,
+                matched_triggers,
+                beginner_intent=_has_beginner_intent(haystack, tokens),
+            )
+        elif rule["tag"] == "connection_pool_basics":
+            expand = _connection_pool_expand(
                 haystack,
                 matched_triggers,
                 beginner_intent=_has_beginner_intent(haystack, tokens),

@@ -1,23 +1,35 @@
-# DB 입문 오류 신호 미니카드
+# Duplicate Key vs Lock Timeout vs Deadlock 입문 브리지
 
-> 한 줄 요약: `duplicate key` / `lock wait timeout` / `deadlock`은 모두 "DB 에러"처럼 보이지만, 초보자 기본 해석은 각각 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 먼저 나누면 된다.
+> 한 줄 요약: 중복 insert primer에서 `duplicate key`를 막 배운 초보자는 락 입문으로 넘어가기 전에 loser signal을 먼저 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 번역해 두면 `busy`와 `retryable`이 훨씬 빨리 연결된다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
 - [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md)
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md)
 - [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
+- [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md)
 - [DB 신호 -> 서비스 결과 enum -> HTTP 응답 브리지](./db-signal-service-result-http-bridge.md)
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- [Spring `@Transactional` 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait timeout deadlock one page, beginner db error translation, duplicate key beginner meaning, lock wait timeout beginner meaning, deadlock beginner meaning, already exists busy retryable one page, db error to user result language, duplicate key lock timeout deadlock result table, 초급자 db 오류 신호 표, duplicate key lock wait timeout deadlock 분류표, 이미 있음 지금 막힘 이번 시도만 다시, 중복 키 락 대기 타임아웃 데드락 한 장, beginner database error card, db error signal beginner result language mini card basics
+retrieval-anchor-keywords: duplicate key vs lock timeout vs deadlock, duplicate key lock timeout deadlock beginner bridge, duplicate key why not retry, deadlock why retryable, loser signal beginner bridge, already exists busy retryable one page, duplicate insert lock primer bridge, duplicate key busy retryable basics, lock wait timeout beginner meaning, deadlock beginner meaning, duplicate key랑 lock timeout 차이, deadlock retry 왜 해요, 중복키 락타임아웃 데드락 차이, 처음 lock 배우기 전에 보는 표, 헷갈리는 loser signal
+
+## 이 문서가 먼저 맞는 질문
+
+아래처럼 **중복 insert primer는 읽었는데 lock/time-out/deadlock 쪽이 처음 붙는 질문**이면 이 브리지가 가장 먼저 맞다.
+
+- "`duplicate key`랑 `lock timeout` 차이가 뭐예요?"
+- "`duplicate key`는 왜 retryable이 아니고 deadlock은 왜 retryable이에요?"
+- "`busy`랑 `already exists`를 어디서 갈라요?"
+- "중복 insert loser signal을 한 장 표로 먼저 보고 싶어요"
 
 ## 먼저 멘탈모델
 
@@ -39,6 +51,12 @@ retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait ti
 | `lock wait timeout` | `지금 막힘` | 누가 락을 오래 쥐고 있어 이번 시도는 결론을 못 봤다 | blocker/긴 트랜잭션/혼잡부터 확인하고, 필요하면 매우 짧은 제한 retry | 곧바로 `이미 있음`으로 단정 |
 | `deadlock` | `이번 시도만 다시` | 서로가 서로를 기다려 DB가 희생자 하나를 골랐다 | **트랜잭션 전체**를 bounded retry | timeout 늘리기만 하거나 SQL 한 줄만 재실행 |
 
+이 표를 `already exists` / `busy` / `retryable` 언어로 다시 읽으면 아래처럼 닫힌다.
+
+- `duplicate key` -> `already exists`
+- `lock wait timeout` -> `busy`
+- `deadlock` -> `retryable`
+
 ## 작은 예시
 
 같은 쿠폰을 두 요청이 동시에 발급한다고 가정하자.
@@ -49,6 +67,12 @@ retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait ti
 | A가 row를 오래 잡고 있고 B는 기다리다 포기 | `lock wait timeout` | 아직 줄이 안 빠졌다 | "지금 혼잡"으로 답하고 blocker/트랜잭션 길이 확인 |
 | A는 row 1 -> row 2, B는 row 2 -> row 1 순서로 잠금 | `deadlock` | 이번 판의 잠금 순서가 꼬였다 | 전체 발급 시도 1~2회 bounded retry |
 
+핵심은 loser signal이 같지 않다는 점이다.
+
+- `duplicate key` loser는 보통 **이미 winner가 있다**
+- `lock wait timeout` loser는 **winner를 아직 못 봤다**
+- `deadlock` loser는 **이번 attempt만 접고 새 attempt로 다시 간다**
+
 ## 자주 헷갈리는 지점
 
 - `duplicate key`는 보통 "이미 winner가 있음"이지 "재시도를 더 세게 걸어야 함"이 아니다.
@@ -57,10 +81,20 @@ retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait ti
 - `deadlock` retry는 SQL 한 줄이 아니라 트랜잭션 전체를 다시 시작해야 안전하다.
 - 세 신호를 다 같은 `409`나 같은 재시도 정책으로 묶으면 서비스 의미가 흐려진다.
 
+## 다음 한 칸은 이렇게 잇는다
+
+| 지금 막힌 질문 | 다음 문서 | 왜 여기로 가나 |
+|---|---|---|
+| "`duplicate key` 뒤 same payload / 다른 payload를 더 자세히 보고 싶다" | [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md) | duplicate loser가 `already exists` 안에서 replay와 conflict로 어떻게 갈리는지 본다 |
+| "`lock timeout`을 왜 `already exists`로 보면 안 되지?" | [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md) | `busy` 감각을 5줄로 더 짧게 고정한다 |
+| "`deadlock`과 `40001`을 같은 retryable로 묶는 이유?" | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | `deadlock`과 `serialization failure`를 whole-transaction retry로 확장한다 |
+| "락이 왜 이렇게 오래 잡히는지부터 헷갈린다" | [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md) | 긴 트랜잭션과 외부 I/O가 `busy` 신호를 키우는 원인을 먼저 본다 |
+
 ## 안전한 다음 단계
 
 | 지금 본 신호 | 다음 문서 |
 |---|---|
+| `duplicate key`와 `busy`/`retryable`을 한 표로 더 길게 이어 보고 싶다 | [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md) |
 | `duplicate key` 뒤에 `409` / 재사용 / 진행중 구분이 헷갈린다 | [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md) |
 | `lock wait timeout`을 자꾸 `이미 있음`처럼 읽게 된다 | [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md) |
 | `deadlock`과 `lock timeout`을 한 예외 이름에서 분리 못 하겠다 | [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md) |
@@ -68,4 +102,4 @@ retrieval-anchor-keywords: db error signal mini card, duplicate key lock wait ti
 
 ## 한 줄 정리
 
-`duplicate key` / `lock wait timeout` / `deadlock`은 모두 "DB 에러"처럼 보이지만, 초보자 기본 해석은 각각 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 먼저 나누면 된다.
+중복 insert primer에서 `duplicate key`를 배운 직후에는 loser signal을 먼저 `이미 있음` / `지금 막힘` / `이번 시도만 다시`로 번역해 두면, 락 입문에서 `busy`와 `retryable` 분류가 훨씬 빨리 붙는다.

@@ -51,7 +51,7 @@ retrieval-anchor-keywords: service layer transaction boundary, application servi
 |---|---|---|
 | AOP 용어가 아직 추상적이다 | [AOP 기초](./spring-aop-basics.md) | 아래 [`초급 빠른 수정: 내부 호출 프록시 우회 2패턴`](#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
 | `@Transactional` begin/commit/rollback 그림이 먼저 필요하다 | [Spring `@Transactional` 기초](./spring-transactional-basics.md) | 아래 [`초급 빠른 수정: 내부 호출 프록시 우회 2패턴`](#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
-| 패턴 이름은 알겠는데 왜 필요한지 다시 헷갈린다 | [AOP 기초의 `Bean + public + external call(proxy)` 체크](./spring-aop-basics.md#초급자용-3단계-왕복-라우트) | 이 문서의 30초 진단 카드 |
+| 패턴 이름은 알겠는데 왜 필요한지 다시 헷갈린다 | [AOP 기초의 `Bean + public + external call` 체크](./spring-aop-basics.md#초급자용-3단계-왕복-라우트) | 이 문서의 30초 진단 카드 |
 
 | 지금 질문 | 먼저 보는 한 줄 답 |
 |---|---|

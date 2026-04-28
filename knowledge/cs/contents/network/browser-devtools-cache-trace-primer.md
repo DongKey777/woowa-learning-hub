@@ -130,6 +130,22 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 
 즉 `304`는 서버 왕복이 있었고, `memory cache`/`disk cache`는 아예 서버에 안 갔을 수 있다.
 
+## 먼저 자를 세 가지 축
+
+처음 읽을 때 가장 많이 섞이는 것은 `cache`, `protocol`, `실험 스위치`다. 이 셋을 먼저 분리하면 Network 탭이 glossary처럼 보이지 않는다.
+
+| 지금 보는 축 | 이 축이 답하는 질문 | 바로 보는 단서 | 헷갈리기 쉬운 오해 |
+|---|---|---|---|
+| cache | body를 어디서 가져왔나 | `from memory cache`, `from disk cache`, `304`, validator | `Protocol h3`면 cache도 새로 받은 것이라고 생각함 |
+| protocol | 어떤 전송 길로 갔나 | `Protocol`, `Connection ID`, `Remote Address` | `h2`/`h3`가 body 출처까지 말해 준다고 생각함 |
+| 실험 스위치 | 지금 결과가 자연 사용자 흐름인가 | `Disable cache`, hard reload, query string 변경 | 실험 결과를 평소 cache 정책으로 단정함 |
+
+짧게 외우면 아래처럼 읽으면 된다.
+
+- `304`, `memory cache`, `disk cache`는 **body 출처 질문**
+- `h2`, `h3`는 **전송 경로 질문**
+- `Disable cache`는 **실험 조건 질문**
+
 ### Retrieval Anchors
 
 - `browser devtools cache trace`

@@ -12,13 +12,14 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java 2d array deeptostring deepequals shallow copy bridge basics, java 2d array deeptostring deepequals shallow copy bridge beginner, java 2d array deeptostring deepequals shallow copy bridge intro, java basics, beginner java, 처음 배우는데 java 2d array deeptostring deepequals shallow copy bridge, java 2d array deeptostring deepequals shallow copy bridge 입문, java 2d array deeptostring deepequals shallow copy bridge 기초, what is java 2d array deeptostring deepequals shallow copy bridge, how to java 2d array deeptostring deepequals shallow copy bridge
+retrieval-anchor-keywords: java 2d array deeptostring deepequals shallow copy, java multidimensional array debug compare copy, java matrix clone shallow copy, java 2d array clone why changed together, java arrays deeptostring deepequals beginner, 자바 2차원 배열 출력 비교 복사, 자바 deeptostring deepequals 차이, 자바 2차원 배열 clone 왜 같이 바뀜, 자바 2차원 배열 복사 얕은 복사, 자바 2차원 배열 출력이 이상해요, 자바 2차원 배열 값 비교, 자바 2차원 배열 왜 같이 바뀌나요, 처음 배우는데 2차원 배열 복사, 2차원 배열 deeptostring 뭐예요, shallow copy 뭐예요
 > 관련 문서:
 > - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
 > - [Java 2차원 배열 순회 입문](./java-2d-array-traversal-primer.md)
 > - [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
 > - [Java Array Equality Basics](./java-array-equality-basics.md)
 > - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
+> - [배열 vs 연결 리스트](../../data-structure/array-vs-linked-list.md)
 
 > retrieval-anchor-keywords: java 2d array confusion bridge, java 2d array deepToString deepEquals shallow copy, java multidimensional array debug compare copy together, java matrix deepToString deepEquals clone, java nested array output compare copy bridge, java 2d array same output but shared row, java clone shallow copy 2d array beginner, java Arrays.deepToString Arrays.deepEquals matrix, java 2d array row shared clone, java array of arrays beginner bridge, 자바 2차원 배열 confusion bridge, 자바 2차원 배열 출력 비교 복사 한 번에, 자바 deepToString deepEquals shallow copy, 자바 2차원 배열 clone 왜 같이 바뀜, 자바 배열 안의 배열 브리지, 자바 행 배열 공유 복사
 

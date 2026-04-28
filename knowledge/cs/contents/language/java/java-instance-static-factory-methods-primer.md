@@ -1,33 +1,26 @@
 # Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문
 
-> 한 줄 요약: Java 입문자가 "이 동작을 객체에 붙일지, `static` helper로 둘지, 생성용 `static factory`로 만들지"를 `this` 의존성, 생성 책임, 호출 문장 모양으로 구분하도록 돕는 practice primer다.
+> 한 줄 요약: Java 입문자가 생성자를 막 배운 직후 "`instance` 메서드부터 붙여야 하나, `static` helper로 빼야 하나, `of()` 같은 factory로 열어야 하나"를 `this` 의존성, 생성 책임, 호출 문장 모양으로 차분히 구분하도록 돕는 practice primer다.
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
+- [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
+- [객체지향 핵심 원리](./object-oriented-core-principles.md)
+- [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
 
-
-retrieval-anchor-keywords: java instance static factory methods primer basics, java instance static factory methods primer beginner, java instance static factory methods primer intro, java basics, beginner java, 처음 배우는데 java instance static factory methods primer, java instance static factory methods primer 입문, java instance static factory methods primer 기초, what is java instance static factory methods primer, how to java instance static factory methods primer
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
-> - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
-> - [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-
-> retrieval-anchor-keywords: java static vs instance methods, java instance method basics, java static utility method basics, java static factory method basics, java simple factory method basics, when to use instance method java, when to use static method java, java utility class beginner, java factory method beginner, java of from valueOf basics, java named constructor basics, java this dependent behavior, java object creation entrypoint, java method design beginner
+retrieval-anchor-keywords: java static vs instance methods, java instance method basics, java static utility method basics, java static factory method basics, java constructor vs static factory beginner, java constructor after instance method, java of from valueof basics, java named constructor basics, when to use instance method java, when to use static method java, when to use static factory java, java this dependent behavior, static method 뭐예요, 생성자 다음 뭐 배워요, 처음 factory method 헷갈려요
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [생성자 다음에 무엇을 먼저 붙이나](#생성자-다음에-무엇을-먼저-붙이나)
 - [먼저 결론: 세 가지를 어떻게 고르나](#먼저-결론-세-가지를-어떻게-고르나)
 - [인스턴스 메서드는 언제 자연스러운가](#인스턴스-메서드는-언제-자연스러운가)
 - [`static` 유틸리티 메서드는 언제 자연스러운가](#static-유틸리티-메서드는-언제-자연스러운가)
@@ -55,6 +48,30 @@ Java 입문자는 `static`을 배우기 시작하면 비슷한 질문을 자주 
 - 객체를 어떻게 만들지, 어떤 이름으로 만들지, 생성 전에 어떤 정리를 할지가 중요하면 `static factory method`가 자연스럽다.
 
 이 문서는 위 세 가지를 한 번에 비교해서 "왜 여기에는 `this`가 필요하고, 왜 저기에는 `new` 대신 `of()`가 자연스러운가"를 감각적으로 잡게 하는 데 목적이 있다.
+
+## 생성자 다음에 무엇을 먼저 붙이나
+
+생성자를 막 배우면 초보자는 종종 바로 `of()`, `from()` 같은 이름으로 점프한다.
+하지만 beginner route에서는 보통 **constructor -> 인스턴스 메서드 -> `static` utility -> `static factory`** 순서로 읽는 편이 덜 헷갈린다.
+
+이유는 간단하다.
+
+- constructor는 "객체가 어떻게 태어나는가"를 보여 준다.
+- 인스턴스 메서드는 "태어난 객체가 자기 상태로 무엇을 하는가"를 보여 준다.
+- `static` utility는 "객체 바깥에서 입력만으로 끝나는 보조 계산"을 보여 준다.
+- `static factory`는 그다음에 "생성 입구에 이름을 붙일 가치가 있는가"를 묻는다.
+
+즉 생성자를 배운 직후 첫 질문은 "`public static Foo of(...)`를 만들까?"보다 "`이 동작이 이미 만들어진 객체의 책임인가?`"가 더 안전하다.
+
+| 지금 막힌 질문 | 먼저 고를 후보 | 이유 |
+|---|---|---|
+| "이 객체가 할인 가능한 상태인가?" | 인스턴스 메서드 | 이미 있는 객체의 상태를 읽는다 |
+| "이 문자열이 이메일 모양인가?" | `static` utility | 객체 없이 입력만 보면 된다 |
+| "문자열을 검증해서 `EmailAddress`를 만들고 싶다" | constructor 다음에 `static factory` 검토 | 생성 경로에 이름과 검증을 붙이는 문제다 |
+| "객체를 만든 뒤 값 보여 주기/비교/상태 확인을 하고 싶다" | factory보다 인스턴스 메서드 먼저 | 생성 이후 책임을 객체 안에 붙이는 감각이 먼저 필요하다 |
+
+처음에는 "`new`가 낯설다"는 이유만으로 factory로 숨기지 않는 편이 좋다.
+생성자와 인스턴스 메서드가 충분히 익숙해진 뒤, **생성 경로를 설명해야 할 때만** factory를 꺼내는 것이 beginner handoff에 맞다.
 
 ## 먼저 결론: 세 가지를 어떻게 고르나
 
@@ -271,6 +288,16 @@ public constructor가 항상 나쁜 것은 아니다.
 
 즉 factory는 "객체 생성도 메서드 이름으로 설명하고 싶다"는 요구를 해결한다.
 
+반대로 아래 상황에서는 constructor를 먼저 두고 끝내도 충분하다.
+
+- 인자 의미가 이미 분명할 때
+- 생성 경로가 하나뿐일 때
+- 생성 직후 주로 필요한 것이 "객체 사용"이지 "생성 이름 붙이기"가 아닐 때
+
+초보자에게는 이 경계가 중요하다.
+`BankAccount(owner, balance)` 정도의 단순 타입까지 무조건 `of(...)`로 감싸기 시작하면, 생성자와 factory의 차이를 배우기도 전에 "왜 둘 다 있는지"가 더 흐려진다.
+먼저는 constructor가 시작 상태를 만든다는 사실을 분명히 잡고, 그다음 생성 경로가 여러 개가 될 때 factory를 붙이는 편이 좋다.
+
 ## 한 번에 비교하는 코드
 
 아래 코드는 인스턴스 메서드, utility 메서드, factory 메서드가 한 문맥에서 어떻게 다른지 보여 준다.
@@ -384,6 +411,9 @@ public final class EmailRules {
 - 불변식이 타입 바깥으로 새어 나간다
 - 메서드 호출 문장이 덜 자연스러워진다
 
+특히 생성자를 막 배운 직후에는 "`new` 대신 `static`이면 더 쉬워 보인다"는 이유로 factory를 남발하기 쉽다.
+그런데 factory는 constructor를 대체하는 쉬운 문법이 아니라, **생성 경로를 설명해야 할 때만 쓰는 설계 선택지**다.
+
 ### factory method와 utility method를 같은 것으로 느낀다
 
 둘 다 `static`일 수 있지만 목적이 다르다.
@@ -404,13 +434,12 @@ public final class EmailRules {
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 
-- method 시그니처, return type, state change를 먼저 손에 익히고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- constructor와 인스턴스 메서드의 기본 흐름부터 다시 붙이고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - `private`, 인스턴스 멤버, `static`, `final`의 기본 모델을 먼저 정리하고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 생성자 chaining과 `static`/instance 초기화 순서까지 이어서 보고 싶다면 [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
 - 메시지 전달과 캡슐화 관점에서 "왜 객체에 메서드를 붙이는가"를 더 길게 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
-- 생성 시 검증, 정규화, 값 객체 경계를 더 엄밀하게 보고 싶다면 [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
 - 상태를 쉽게 바꾸지 않는 설계까지 함께 보고 싶다면 [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 
 ## 한 줄 정리
 
-인스턴스 메서드는 **이미 있는 객체의 상태와 규칙**을 다루고, `static` 유틸리티 메서드는 **상태 없는 보조 계산/검사**를 맡으며, simple factory method는 **객체 생성 경로를 이름 있게 여는 `static` 메서드**다.
+생성자를 배운 다음 첫 칸은 보통 인스턴스 메서드이고, 그다음에야 `static` 유틸리티와 `static factory`를 "`this`가 필요한가, 새 객체를 설명해야 하는가" 기준으로 나누면 덜 헷갈린다.

@@ -1,6 +1,8 @@
 # Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나
 
 > 한 줄 요약: Spring Boot 자동 구성(Auto-configuration)은 classpath에 라이브러리가 있을 때 미리 만들어둔 Bean 설정을 조건부로 자동 등록해, 개발자가 반복적인 설정을 직접 쓰지 않아도 되게 해준다.
+>
+> 문서 역할: 이 문서는 "starter를 추가했는데 왜 Bean이 바로 생겨요?", "자동 구성/자동 설정이 뭐예요?" 같은 첫 질문이 깊은 내부 문서보다 먼저 이 입문 문서로 오게 하는 primer entrypoint다.
 
 **난이도: 🟢 Beginner**
 
@@ -17,9 +19,15 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring boot autoconfiguration basics, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, auto-configuration 입문, @springbootapplication 역할 입문, @enableautoconfiguration beginner, spring boot starter 뭐예요, 자동 빈 등록 입문, conditional bean 입문, spring.factories 입문, spring boot 설정 안 해도 되는 이유, classpath condition beginner, boot customizer beginner, objectmapper customizer beginner, webclient builder customizer beginner
+retrieval-anchor-keywords: spring boot autoconfiguration basics, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, starter 추가했는데 왜 바로 동작해요, starter 추가했는데 왜 bean 이 생겨요, starter 넣으면 왜 빈이 자동으로 등록돼요, spring boot 자동구성 뭐예요, spring boot 자동 설정 뭐예요, auto-configuration 입문, 자동 구성 큰 그림, 처음 배우는데 starter auto-configuration 헷갈려요, @springbootapplication 역할 입문, spring boot starter 뭐예요, 자동 빈 등록 입문, spring boot 설정 안 해도 되는 이유
 
 ## 핵심 개념
+
+이 문서는 특히 아래처럼 묻는 초급 질문을 빠르게 받쳐 주는 용도다.
+
+- "starter 추가했는데 왜 바로 동작해요?"
+- "자동 설정이 뭐예요?"
+- "내가 Bean 등록 안 했는데 왜 생겨요?"
 
 Spring Boot 이전에는 `DataSource`, `JdbcTemplate`, `TransactionManager` 등 기본 인프라 Bean을 개발자가 XML이나 `@Configuration` 클래스에 직접 등록해야 했다. Spring Boot의 자동 구성은 이 과정을 자동화한다.
 

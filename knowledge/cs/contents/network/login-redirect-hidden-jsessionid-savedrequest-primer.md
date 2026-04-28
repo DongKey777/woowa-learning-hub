@@ -12,10 +12,12 @@
 - `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
 - `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - `[primer]` [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
+- `[primer bridge]` [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - `[primer]` [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - `[primer]` [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
 - `[primer bridge]` [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
 - `[primer]` [Browser `302` vs `304` vs `401` 새로고침 분기표](./browser-302-304-401-reload-decision-table-primer.md)
+- `[mini card]` [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)
 - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
   - `Application > Cookies`에는 값이 보이는데 같은 실패 요청의 request `Cookie` header가 비면, guide 안의 `Application vs Network 15초 미니 체크`를 먼저 거쳐 `cookie-header gate`를 통과시킨다
 - `[primer]` [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
@@ -25,7 +27,7 @@
 - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md): `Browser / Session Troubleshooting Path`의 server persistence branch를 고른 뒤 들어간다
 - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
 
-retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, hidden jsessionid, cookie 있는데 다시 로그인, request cookie header empty, browser 401 302 /login bounce, api gets login html, api가 로그인 html 200을 받아요, fetch login html instead of json, xhr redirected to login, fetch redirect modes beginner, fetch redirect follow manual error, hidden login redirect fetch, cross origin fetch redirect login, redirect follow vs missing cookie
+retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, hidden jsessionid, cookie 있는데 다시 로그인, request cookie header empty, browser 401 302 /login bounce, api gets login html, api가 로그인 html 200을 받아요, fetch login html instead of json, xhr redirected to login, fetch redirect modes beginner, opaqueredirect basics, manual redirect location confusion, devtools 302 but fetch status 0, final html 200 is not api success
 
 <details>
 <summary>Table of Contents</summary>
@@ -395,6 +397,13 @@ loop를 보면 초보자는 자주 "redirect가 문제다"로만 읽는다.
 
 특히 `fetch('/api/me')`가 최종적으로 login HTML `200`을 받으면 "인증이 됐다"가 아니라 "중간에 `302 -> /login`을 따라가 버렸다"일 수 있으니, Network 탭에서 첫 응답과 `Location`을 먼저 확인하는 편이 안전하다.
 
+여기서 한 걸음만 더 고정하면 초보자가 덜 헤맨다.
+
+- page 요청의 final HTML `200`은 자연스러운 도착점일 수 있다
+- API 요청의 final HTML `200`은 원래 JSON 계약이 깨졌다는 경고일 수 있다
+
+즉 "login HTML `200`"은 성공 판정이 아니라, **지금 읽는 응답이 page용인지 API용인지 다시 묻는 신호**다. 이 감각 자체를 먼저 잡고 싶으면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)으로 바로 이어 가면 된다.
+
 ---
 
 ## 왜 `fetch`/XHR는 login HTML `200`만 보이나
@@ -475,37 +484,23 @@ cross-origin fetch에서 흔한 함정은 아래 순서다.
 
 ## `fetch redirect` 모드 한 장 브리지
 
-여기서 beginner가 한 번 더 막히는 질문이 있다.
+헷갈리는 질문은 세 가지다. "`fetch`도 redirect를 따라가나요?", "`manual`이면 `302 Location`을 그대로 읽나요?", "`error`는 언제 쓰나요?"
 
-- "`fetch`도 redirect를 따라가나요?"
-- "`manual`로 바꾸면 `302`를 그대로 잡을 수 있나요?"
-- "`error`는 언제 쓰나요?"
-
-핵심만 먼저 고정하면 이렇다.
-
-| 모드 | 브라우저 `fetch`의 기본 반응 | login redirect 장면에서 초보자에게 보이는 것 |
+| 모드 | 앱 코드에서 먼저 보이는 것 | DevTools에서 먼저 보이는 것 |
 |---|---|---|
-| `follow` | redirect를 따라간다 | 최종 `/login` HTML `200`이나 `response.url === '/login'`이 먼저 눈에 띈다 |
-| `manual` | 자동 follow를 멈추고 redirect가 있었다는 사실만 제한적으로 드러낸다 | 브라우저에서는 `opaqueredirect` 같은 제한된 응답으로 보여 status/body/header를 앱 코드에서 그대로 읽기 어렵다 |
-| `error` | redirect가 나오면 요청을 실패로 본다 | login redirect를 성공 `200`으로 착각하지 않고 바로 예외 흐름으로 보낼 수 있다 |
+| `follow` | 최종 `/login` HTML `200`, 또는 `response.url`이 `/login`으로 바뀐 모습 | 중간 `302` row 뒤에 최종 `200` row |
+| `manual` | `response.type === "opaqueredirect"`, `status === 0`, body 없음, headers 비어 있음 | 실제 `302` status와 `Location` header |
+| `error` | redirect가 나오면 예외 흐름으로 빠짐 | 어떤 redirect가 실패를 만들었는지 trace로 확인 |
 
-한 줄 기억법:
+핵심은 이것이다.
 
-- `follow` = "브라우저가 끝까지 따라가서 마지막 장면을 보여 준다"
-- `manual` = "redirect가 있었다는 흔적은 남기지만, 브라우저 앱 코드에 완전한 `302` 응답을 그대로 주지는 않는다"
-- `error` = "redirect 자체를 실패로 취급한다"
+- `follow`는 마지막 장면을 먼저 보여 줘서 login HTML `200`이 성공처럼 보이게 할 수 있다.
+- 그래서 `response.redirected`와 `response.url`은 "follow 뒤 최종 결과"를 읽는 데 쓰고, `manual`에서 만나는 `opaqueredirect`와 같은 칸으로 섞지 않는 편이 안전하다.
+- `manual`은 "redirect 발생"만 제한적으로 드러내는 모드다. beginner가 기대하는 normal `302` payload dump가 아니다.
+- 그래서 "`manual`이면 `Location`을 코드에서 다 읽는다"는 기대보다 "실제 `302`와 `Location`은 DevTools Network 탭에서 확인한다"가 더 맞다.
+- API 계약상 redirect 자체가 오면 안 되면 `error` mental model이 가장 선명하다.
 
-그래서 초보자가 자주 기대하는 아래 생각은 그대로 맞지 않는다.
-
-- "`manual`이면 `302 Location`을 코드에서 서버 응답처럼 다 읽을 수 있겠지"
-- "`follow`인데 `200`이니 로그인 성공이겠지"
-
-브라우저 `fetch`에서는 오히려 이렇게 읽는 편이 안전하다.
-
-1. 기본값 `follow` 때문에 login HTML `200`이 최종 장면으로 보일 수 있다.
-2. `manual`은 디버깅용 full packet dump라기보다 "redirect happened"를 더 빨리 감지하는 모드에 가깝다.
-3. 실제 `302 Location` waterfall은 앱 코드보다 DevTools Network 탭에서 보는 편이 더 확실하다.
-4. API 계약상 redirect가 오면 안 되면 `error` mental model이 가장 선명하다.
+`response.redirected`, `response.url`, `opaqueredirect`를 어느 칸에서 읽어야 하는지 1분 안에 다시 고정하고 싶으면 [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)를 바로 이어서 보면 된다.
 
 ---
 

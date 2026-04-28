@@ -17,7 +17,7 @@
 - [쿠키 속성 매트릭스: `SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`](../network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: filter vs security filter chain, filter vs interceptor basics, spring security filter chain beginner, admin auth flow spring, roomescape admin auth, filter interceptor security 차이, 처음 배우는데 security filter chain, interceptor 뭐예요, custom filter 어디에 두나, admin 401 403 spring, savedrequest 어디서 생기나, 302 login 왜 뜨나, admin api 400 before controller, requestbody 400 after security, spring filter chain intro
+retrieval-anchor-keywords: filter vs security filter chain, spring security filter chain beginner, filter interceptor security 차이, custom filter 어디에 두나, admin 401 403 spring, savedrequest 어디서 생기나, 302 login 왜 뜨나, admin api 400 before controller, addfilterbefore 뭐예요, addfilterafter 뭐예요, usernamepasswordauthenticationfilter 앞, usernamepasswordauthenticationfilter 뒤, jwt filter 어디에 두나, spring security filter order beginner, 필터 순서 처음
 
 ## 핵심 개념
 
@@ -75,6 +75,30 @@ RoomEscape 관리자 API를 예로 들면:
 ```
 
 핵심은 "`302 /login`과 `SavedRequest`는 대개 Security filter chain 안에서 만들어지고, `HandlerInterceptor`는 그 뒤에야 온다"는 점이다.
+
+## `addFilterBefore` / `addFilterAfter`가 갑자기 보일 때
+
+초급자 기준으로는 메서드 이름을 외우기보다 "`내 커스텀 필터가 로그인 필터보다 먼저 필요한가, 나중에 필요한가`"만 먼저 잡으면 된다.
+
+| 지금 코드에서 보인 표현 | 초급 해석 | 먼저 떠올릴 질문 |
+|---|---|---|
+| `.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)` | "`UsernamePasswordAuthenticationFilter`보다 앞에서 인증 재료를 준비하자" | "로그인 필터가 돌기 전에 토큰/헤더/쿠키를 먼저 읽어야 하나?" |
+| `.addFilterAfter(customFilter, UsernamePasswordAuthenticationFilter.class)` | "`UsernamePasswordAuthenticationFilter`가 한 일 뒤에서 후속 처리를 하자" | "로그인 성공/실패가 정리된 뒤 추가 기록이나 후처리가 필요한가?" |
+
+여기서 `UsernamePasswordAuthenticationFilter`는 beginner에게 "폼 로그인 인증을 처리하는 기준점" 정도로만 잡아 두면 충분하다.
+
+```text
+브라우저 요청
+-> 바깥 Filter
+-> Spring Security filter chain
+   -> custom filter를 앞에 둘까?
+   -> UsernamePasswordAuthenticationFilter
+   -> custom filter를 뒤에 둘까?
+-> DispatcherServlet
+```
+
+즉 `addFilterBefore` / `addFilterAfter` 질의는 결국 "`보안 체인 안에서 어느 기준 필터 앞뒤에 둘까`"라는 ordering 질문이다.  
+아직 "`왜 `/admin`은 `302 /login`이고 왜 어떤 요청은 `403`이지?`"가 더 먼저 떠오르면 이 문서의 `302`/`403` 분기부터 끝내고, "`이제 기준 필터 앞뒤를 정해야겠다`"까지 왔을 때만 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md#addfilterbeforeaddfilterafter와-usernamepasswordauthenticationfilter-앞뒤-브리지)로 내려가는 편이 안전하다.
 
 ## 관리자 API 실패 지점 빠른 분기
 

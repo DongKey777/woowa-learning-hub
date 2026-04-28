@@ -44,6 +44,13 @@ HTTP 요청
 
 처음 질문이 "Spring MVC가 뭐예요?" 수준이라면 이 문서만 오래 붙잡기보다 [Spring MVC 컨트롤러 기초](./spring-mvc-controller-basics.md)로 먼저 가서 controller 중심 흐름을 보고 돌아오는 편이 더 안전하다.
 
+처음 읽을 때는 아래 두 줄만 바로 구분해도 절반은 끝난다.
+
+| 헷갈리는 말 | 실제로 먼저 하는 일 | 초급자 기억법 |
+|---|---|---|
+| `DispatcherServlet` | 어떤 컨트롤러로 보낼지 찾는다 | 길을 정하는 관문 |
+| `HandlerInterceptor` | 찾은 길 앞뒤에 공통 작업을 넣는다 | 지나가는 길목 도우미 |
+
 ## 용어를 이렇게 나눠 기억하면 덜 헷갈린다
 
 | 용어 | 지금 단계에서 기억할 역할 | 처음부터 깊게 보지 않아도 되는 것 |
@@ -62,7 +69,7 @@ HTTP 요청
 | "`HandlerInterceptor`는 언제 쓰는지 모르겠어요" | [Spring MVC 컨트롤러 기초](./spring-mvc-controller-basics.md) 먼저, 그다음 [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md) | 먼저 컨트롤러 흐름을 알아야 인터셉터 위치가 보인다 |
 | "필터랑 인터셉터 차이는요?" | [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md) | 책임 경계 비교가 핵심인 질문이다 |
 
-## 가장 흔한 오해 3개
+## 흔한 오해와 함정
 
 - `DispatcherServlet`이 컨트롤러 객체를 매번 새로 만든다고 생각하기 쉽다.
   실제로는 보통 컨테이너가 미리 만든 Bean을 찾아 연결한다.
@@ -70,6 +77,10 @@ HTTP 요청
   인증/인가는 대개 Security filter chain이 먼저 처리하고, 인터셉터는 MVC 전후 공통 작업에 더 가깝다.
 - `DispatcherServlet`과 `HandlerInterceptor`를 이해하려면 처음부터 lifecycle deep dive를 끝까지 읽어야 한다고 느끼기 쉽다.
   초반에는 "진입점"과 "전후 훅"만 구분해도 충분하다.
+- "`로그를 남기고 싶으니 컨트롤러마다 직접 넣어야 하나?"라고 생각하기 쉽다.
+  요청 시작 시각 기록, 실행 시간 측정처럼 여러 컨트롤러에 반복되는 일은 `HandlerInterceptor` 후보인지 먼저 본다.
+- "`필터`와 `인터셉터`는 같은 말 아닌가?"라고 섞기 쉽다.
+  서블릿 필터는 MVC 앞단, 인터셉터는 컨트롤러 전후라는 위치 차이만 먼저 고정하고, 비교는 [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)로 넘기는 편이 안전하다.
 
 ## 아주 짧은 예시
 
@@ -101,6 +112,14 @@ public class LoggingInterceptor implements HandlerInterceptor {
 - `DispatcherServlet`은 `/orders/1` 요청을 `OrderController`로 보낸다.
 - `LoggingInterceptor`는 그 직전/직후에 로깅 같은 공통 작업을 넣는다.
 - 비즈니스 로직 자체는 여전히 컨트롤러와 서비스가 맡는다.
+
+요청 한 번을 더 짧게 따라가면 이렇게 읽힌다.
+
+1. 브라우저가 `GET /orders/1`을 보낸다.
+2. `DispatcherServlet`이 "`/orders/{id}`를 처리할 컨트롤러가 누구지?"를 찾는다.
+3. 찾은 뒤 `LoggingInterceptor`가 먼저 실행되어 시작 시각을 기록한다.
+4. 컨트롤러가 `OrderResponse`를 만든다.
+5. 인터셉터가 마지막에 실행 시간을 남기고 응답이 나간다.
 
 ## 다음 단계
 

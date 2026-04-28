@@ -38,6 +38,14 @@ findByEmail(email) → SELECT * FROM member WHERE email = ?
 | `PagingAndSortingRepository` | 페이징·정렬 추가 |
 | `CrudRepository` | 기본 CRUD |
 
+처음 배우면 `JPA`, `Spring Data JPA`, `JpaRepository`가 한 단어처럼 섞이기 쉽다. 아래처럼 나누면 초반 혼동이 줄어든다.
+
+| 용어 | 초급자용 한 줄 해석 | 내가 직접 주로 하는 일 |
+|---|---|---|
+| JPA | 엔티티를 DB 테이블과 연결하는 표준 | `@Entity` 설계, 영속 상태 이해 |
+| Spring Data JPA | JPA 위에서 repository 구현을 줄여 주는 도구 | 인터페이스 선언, 쿼리 메서드 작성 |
+| `JpaRepository` | Spring Data JPA가 제공하는 기본 repository 계약 | `save`, `findById`, `findAll` 같은 메서드 사용 |
+
 ## 상세 분해
 
 - **`@Entity`**: 클래스를 JPA 엔티티로 표시. DB 테이블과 매핑된다.
@@ -79,6 +87,22 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 ```
 
 `MemberRepository`는 인터페이스만 선언했지만, `save`, `findById`, `findByEmail`이 모두 동작한다.
+
+처음 읽을 때는 "내가 쓰는 코드"와 "프레임워크가 대신 하는 일"을 분리해서 보면 이해가 빠르다.
+
+| 내가 쓰는 코드 | 프레임워크가 대신 하는 일 |
+|---|---|
+| `Member` 엔티티 정의 | 엔티티를 테이블과 매핑 |
+| `MemberRepository extends JpaRepository` 선언 | repository 구현체를 런타임에 생성 |
+| `findByEmail` 메서드 이름 작성 | 메서드 이름을 해석해 쿼리 생성 |
+| service에서 `memberRepository.findByEmail(...)` 호출 | `EntityManager`를 통해 실제 조회 실행 |
+
+예를 들어 회원 가입 중복 체크는 보통 이렇게 읽으면 된다.
+
+1. service가 `memberRepository.findByEmail(email)`을 호출한다.
+2. Spring Data JPA가 메서드 이름을 보고 조회 쿼리를 만든다.
+3. 결과가 없으면 새 `Member`를 `save()`한다.
+4. 같은 트랜잭션 안에서 회원 정보를 다시 바꿨다면, 커밋 시 Dirty Checking이 UPDATE 여부를 결정한다.
 
 ## 더 깊이 가려면
 

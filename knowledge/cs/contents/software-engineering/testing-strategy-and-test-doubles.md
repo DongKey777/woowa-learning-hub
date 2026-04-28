@@ -15,7 +15,7 @@
 - [Spring MVC Request Lifecycle Basics](../spring/spring-mvc-request-lifecycle-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stub fake difference, first test checklist follow-up, unit integration e2e balance, webmvctest datajpatest next step, fake outbound port, contract test basics, hexagonal testing seam, beginner test routing follow-up
+retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stub fake difference, first test checklist follow-up, unit slice integration e2e balance, springboottest not e2e, webmvctest datajpatest next step, fake outbound port, contract test basics, hexagonal testing seam, beginner test routing follow-up
 
 `테스트 전략 기초`에서 첫 테스트를 고른 뒤 "왜 그 테스트가 맞는지", "mock 대신 fake를 언제 써야 하는지"가 더 궁금할 때 이 문서로 올라오면 된다. 특히 `@WebMvcTest` 경계는 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), `@DataJpaTest`에서 테스트 DB 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)로 바로 내려가면 된다.
 
@@ -31,10 +31,11 @@ retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stu
 
 ## 핵심 개념
 
-테스트는 "많이 쓰면 좋은 것"이 아니라, 목적이 다른 안전장치를 층별로 배치하는 것이다.
+테스트는 "많이 쓰면 좋은 것"이 아니라, 목적이 다른 안전장치를 층별로 배치하는 것이다. 이 문서에서는 beginner primer와 같은 용어를 그대로 쓴다.
 
 - unit test는 작은 로직의 빠른 검증
-- integration test는 실제 연결점의 검증
+- slice test는 MVC/JPA 같은 특정 기술 경계의 검증
+- app integration test는 `@SpringBootTest` 계열의 실제 연결점 검증
 - contract test는 경계 의미의 검증
 - e2e test는 사용자 흐름 전체의 마지막 검증
 
@@ -63,7 +64,8 @@ retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stu
 | 경계 | 적합한 테스트 |
 |---|---|
 | 메서드/객체 | unit test |
-| 저장소/DB | integration test |
+| 웹/JPA 같은 특정 프레임워크 경계 | slice test |
+| 저장소/DB/트랜잭션 협력 | app integration test |
 | 서비스 간 계약 | contract test |
 | 사용자 시나리오 | E2E test |
 
@@ -119,7 +121,7 @@ mock만으로는 부족하고, 실제 계약 검증과 stub 서버를 같이 써
 
 ### 시나리오 3: 결제/주문 흐름을 검증한다
 
-E2E는 최소 핵심 시나리오만 두고, 나머지는 contract/integration으로 분해한다.
+E2E는 최소 핵심 시나리오만 두고, 나머지는 contract/app integration으로 분해한다.
 
 ---
 
@@ -142,8 +144,8 @@ void calculates_discount_correctly() {
 
 | 선택 | 장점 | 단점 | 언제 선택하는가 |
 |---|---|---|---|
-| unit 중심 | 빠르다 | 통합 문제가 늦게 보일 수 있다 | 로직이 복잡할 때 |
-| integration 중심 | 실제와 가깝다 | 느릴 수 있다 | DB/브로커 의존이 중요할 때 |
+| unit 중심 | 빠르다 | 협력 문제가 늦게 보일 수 있다 | 로직이 복잡할 때 |
+| slice + app integration | 웹/JPA 경계와 실제 협력을 분리해 읽기 쉽다 | 경계 설계가 필요하다 | Spring 테스트 범위를 나눌 때 |
 | contract + minimal E2E | 경계를 잘 잡는다 | 설계가 필요하다 | 서비스가 여러 개일 때 |
 
 테스트 전략은 "어떤 테스트를 쓸까"보다 **어느 수준에서 실패를 잡을까**의 문제다.
@@ -152,11 +154,11 @@ void calculates_discount_correctly() {
 
 ## 꼬리질문
 
-- unit test와 integration test의 경계를 어디에 둘 것인가?
+- unit test와 slice/app integration test의 경계를 어디에 둘 것인가?
 - mock 대신 fake를 쓰는 것이 더 나은 곳은 어디인가?
 - contract test를 어떤 경계에 적용할 것인가?
 - E2E를 최소화하면서도 충분한 신뢰를 얻을 수 있는가?
 
 ## 한 줄 정리
 
-테스트 전략과 테스트 더블은 빠른 피드백과 높은 신뢰를 동시에 얻기 위해, 각 경계에 맞는 검증 계층과 대체 구현을 배치하는 설계다.
+테스트 전략과 테스트 더블은 빠른 피드백과 높은 신뢰를 동시에 얻기 위해, unit/slice/app integration/E2E 각 경계에 맞는 검증 계층과 대체 구현을 배치하는 설계다.

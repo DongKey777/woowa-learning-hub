@@ -4,6 +4,10 @@
 
 **난이도: 🔴 Advanced**
 
+retrieval-anchor-keywords: java equals hashcode comparable contracts, equals hashcode contract advanced, comparable contract advanced, compareTo equals consistency, hashset duplicate bug contract, treeset compareTo 0 duplicate surprise, treemap compareTo 0 overwrite, mutable key hashmap lookup bug, jpa entity identity hashcode bug, bigdecimal equals compareTo mismatch, wrapper equality integercache follow-up, 왜 hashset 중복 제거가 이상해요, 왜 treeset 에서 값이 사라져요, 왜 map get 이 null 처럼 보여요, equals hashcode comparable 심화, comparison consistency advanced
+
+처음 배우는 단계라면 이 문서보다 [Java Equality and Identity Basics](./java/java-equality-identity-basics.md), [Comparable and Comparator Basics](./java/java-comparable-comparator-basics.md), [HashSet vs TreeSet Duplicate Semantics](./java/hashset-vs-treeset-duplicate-semantics.md) 순서가 먼저다. 이 문서는 "왜 중복 제거가 깨졌지?", "왜 `TreeSet`에서 값이 사라지지?" 같은 증상이 나온 뒤 계약 관점으로 되짚을 때 읽는 심화 정리다.
+
 ## 핵심 개념
 
 이 주제는 단순히 "오버라이딩 규칙"을 외우는 문제가 아니다.  
@@ -35,33 +39,11 @@
 - `TreeSet`에서 `compareTo()`가 부정확하면 데이터가 "사라진 것처럼" 보인다.
 - JPA 엔티티의 `id`가 생성 전후로 달라지면 `hashCode()`가 바뀌는 버그가 난다.
 
-### retrieval anchors
-
-이 문서는 다음 키워드로 회수되도록 설계하면 좋다.
-
-- `equals`
-- `hashCode`
-- `Comparable`
-- `Comparator`
-- `HashMap`
-- `HashSet`
-- `TreeMap`
-- `TreeSet`
-- `mutable key`
-- `BigDecimal`
-- `BigDecimal scale`
-- `scale-sensitive equality`
-- `money equality`
-- `JPA entity identity`
-- `natural ordering`
-- `comparison consistency`
-- `canonical representation`
-- `IntegerCache`
-- `wrapper equality`
-- `autoboxing`
-
 ### 관련 문서
 
+- [Java Equality and Identity Basics](./java/java-equality-identity-basics.md)
+- [Comparable and Comparator Basics](./java/java-comparable-comparator-basics.md)
+- [HashSet vs TreeSet Duplicate Semantics](./java/hashset-vs-treeset-duplicate-semantics.md)
 - [HashMap 내부 구조](../data-structure/hashmap-internals.md)
 - [Java Collections 성능 감각](./java/collections-performance.md)
 - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./java/bigdecimal-money-equality-rounding-serialization-pitfalls.md)

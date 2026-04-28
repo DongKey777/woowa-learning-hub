@@ -11,6 +11,7 @@
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [`List.contains()` vs `Set.contains()` 증상 카드](./list-contains-vs-set-contains-symptom-card.md)
 - [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 - [Stable ID as Map Key Primer](./stable-id-map-key-primer.md)
 - [Mutable Element Pitfalls in List and Set](./mutable-element-pitfalls-list-set-primer.md)
@@ -181,6 +182,8 @@ Map   // Collection 계층 밖
 - `List`는 "이 값이 있나"를 주로 묻는다.
 - `Set`은 "이미 같은 값이 있나"를 주로 묻는다.
 - `Map`은 "같은 key로 다시 찾을 수 있나"를 주로 묻는다.
+
+`contains(...)`라는 이름은 같아도 `List`와 `Set`의 질문을 더 짧게 분리해서 잡고 싶다면 [`List.contains()` vs `Set.contains()` 증상 카드](./list-contains-vs-set-contains-symptom-card.md)로 먼저 들어가도 된다.
 
 그래서 초보자 기준으로는 "컬렉션이 다르다"보다 "질문이 다르다"를 먼저 붙이는 편이 안전하다. 같은 `Student`를 넣어도 `contains`, `add`, `get`은 서로 다른 장면이라는 감각이 있어야 구현체 암기로 흐르지 않는다.
 

@@ -10,11 +10,12 @@
 - [타임아웃 튜닝 순서 체크리스트 카드](./timeout-tuning-order-checklist-card.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
+- [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md)
 - [Spring 트랜잭션 기본](../spring/spring-transactional-basics.md)
 - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문, explain examples key null, explain examples using filesort, explain examples using index, key null 왜
+retrieval-anchor-keywords: explain first read timeout, explain beginner timeout card, explain type key rows extra, using filesort using temporary, statement timeout explain first check, mysql explain slow query beginner, explain query plan first read, timeout plan reading primer, 실행계획 첫 판독, rows key type filesort temporary, timeout explain 입문, explain examples key null, explain examples using temporary, using temporary beginner, group by distinct temporary explain
 
 ## 먼저 멘탈모델
 
@@ -94,6 +95,7 @@ LIMIT 20;
 | --- | --- |
 | `key = NULL` | 인덱스 경로부터 다시 본다 |
 | `Using filesort` | 정렬 축과 복합 인덱스 순서를 다시 본다 |
+| `Using temporary` | `GROUP BY`/`DISTINCT`처럼 중간 결과를 다시 모으는지 본다 |
 | `Using index` | 커버링 가능성은 좋지만 row 수까지 같이 본다 |
 
 ## snapshot 1. `key = NULL`
@@ -141,13 +143,56 @@ LIMIT 20;
 한 줄 진단 패턴:
 `Using index`가 보이면 "필요한 컬럼을 인덱스만으로 읽는 커버링 가능성"을 먼저 떠올리되, `rows`가 크면 여전히 느릴 수 있다고 같이 적는다.
 
+## snapshot 4. `Using temporary`
+
+초보자가 `Using temporary`를 처음 보면 "DB가 갑자기 이상한 임시 파일을 만들었나?"로 오해하기 쉽다.
+여기서는 먼저 "`GROUP BY`나 `DISTINCT` 때문에 중간 결과를 한 번 모아 다시 정리하는구나" 정도만 잡으면 충분하다.
+
+```sql
+EXPLAIN
+SELECT status, COUNT(*)
+FROM orders
+WHERE created_at >= '2026-04-01'
+GROUP BY status;
+```
+
+```text
++----+-------------+--------+-------+-----------------------+-----------------------+-------+----------------------------------+
+| id | select_type | table  | type  | possible_keys         | key                   | rows  | Extra                            |
++----+-------------+--------+-------+-----------------------+-----------------------+-------+----------------------------------+
+|  1 | SIMPLE      | orders | range | idx_orders_created_at | idx_orders_created_at | 48000 | Using where; Using temporary     |
++----+-------------+--------+-------+-----------------------+-----------------------+-------+----------------------------------+
+```
+
+한 줄 진단 패턴:
+`Using temporary`가 보이면 "필터 후 남은 row를 `status`별로 다시 모아야 해서 중간 작업이 붙었다"라고 읽는다.
+
+`DISTINCT`도 비슷하다.
+
+```sql
+EXPLAIN
+SELECT DISTINCT status
+FROM orders
+WHERE created_at >= '2026-04-01';
+```
+
+초보자 첫 해석은 아래 한 표면 충분하다.
+
+| 보이는 모양 | 왜 `Using temporary` 후보가 되나 | 첫 질문 |
+| --- | --- | --- |
+| `GROUP BY status` | 같은 status끼리 다시 묶어야 한다 | 그룹 기준 컬럼에 맞는 인덱스가 있나 |
+| `SELECT DISTINCT status` | 중복 status를 제거해야 한다 | 정말 distinct가 필요한가 |
+| `GROUP BY` + `ORDER BY`가 서로 다름 | 묶고 나서 또 정렬해야 한다 | 집계 후 정렬까지 한 번에 끝낼 수 있나 |
+
+핵심은 "`Using temporary` = 무조건 장애"가 아니라 "`읽은 뒤 중간 정리 작업이 하나 더 붙었다`"로 읽는 것이다.
+
 ## 바로 다음 행동
 
 | 지금 보인 조합 | 초보자 다음 행동 |
 | --- | --- |
 | `type = ALL` + `key = NULL` | [인덱스와 실행 계획](./index-and-explain.md)으로 가서 인덱스 축부터 다시 본다 |
 | `rows` 큼 + `Using filesort` | 정렬 컬럼과 복합 인덱스 순서를 본다 |
-| `rows` 큼 + `Using temporary` | `GROUP BY`/`DISTINCT`/중간 결과 재배열을 의심한다 |
+| `rows` 큼 + `Using temporary` | `GROUP BY`/`DISTINCT`/중간 결과 재배열을 의심하고 집계 기준 컬럼을 적어 둔다 |
 | `rows` 작고 정렬 신호도 약함 | lock wait, hot key, 긴 트랜잭션 쪽 로그도 같이 본다 |
 
 timeout 문서와 같이 붙여 기억하면 더 쉽다.
@@ -160,6 +205,7 @@ timeout 문서와 같이 붙여 기억하면 더 쉽다.
 - "`rows`는 추정치라 초보자는 볼 필요 없다" -> 추정치여도 "이미 넓다/좁다"를 가르는 1차 신호로는 충분하다.
 - "`Using filesort`면 무조건 디스크 정렬이다" -> 아니다. 핵심은 "인덱스 순서로 끝나지 못했다"는 뜻이다.
 - "`Using temporary`면 바로 장애다" -> 아니다. 다만 timeout 앞에서는 중간 작업 비용 후보로 먼저 적어 둔다.
+- "`Using temporary`는 temp 파일을 무조건 디스크에 쓴다는 뜻이다" -> 아니다. 먼저 뜻하는 바는 `GROUP BY`/`DISTINCT`/재정렬을 위해 중간 결과 저장이 필요하다는 신호다.
 - "`key`만 잡히면 느린 쿼리가 아니다" -> 아니다. `key`가 보여도 `rows`, `filesort`, `temporary` 때문에 느릴 수 있다.
 - "`type = range`면 항상 좋다" -> 아니다. 너무 넓은 `range`면 timeout 후보가 될 수 있다.
 

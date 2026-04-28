@@ -6,7 +6,7 @@
 
 **난이도: 🔴 Advanced**
 
-이 문서는 내부 순서를 깊게 보는 advanced 설명이다. 초급자라면 먼저 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)에서 "`validation 실패가 메서드 안으로 들어오는 경우`"를 잡고, 이어서 [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)에서 "`예외로 번진 뒤 어디서 `400`을 만드는가`"를 본 다음 돌아오면 순서가 덜 헷갈린다.
+이 문서는 내부 순서를 깊게 보는 advanced 설명이다. 초급자라면 먼저 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)에서 "`validation 실패가 메서드 안으로 들어오는 경우`"를 잡고, 이어서 [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)에서 "`예외로 번진 뒤 어디서 `400`을 만드는가`"를 본다. 그 두 문서를 보고 "`validation 실패가 컨트롤러 안으로 들어오기도 하고 예외로 번지기도 한다`"는 감이 잡히면, 다시 여기로 돌아와 `## 깊이 들어가기`부터 읽으면 된다.
 
 > 관련 문서:
 > - [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)

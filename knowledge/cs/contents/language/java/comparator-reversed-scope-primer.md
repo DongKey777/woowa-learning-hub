@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: comparator reversed scope primer basics, comparator reversed scope primer beginner, comparator reversed scope primer intro, java basics, beginner java, 처음 배우는데 comparator reversed scope primer, comparator reversed scope primer 입문, comparator reversed scope primer 기초, what is comparator reversed scope primer, how to comparator reversed scope primer
+retrieval-anchor-keywords: comparator reversed scope primer, java comparator reversed scope, comparator reversed 어디 붙여요, comparator reversed 왜 전체가 뒤집혀요, thencomparing 뒤 reversed 차이, a.reversed thencomparing b, a.thencomparing b reversed, 정렬 기준 하나만 내림차순, 학년 내림차순 이름 오름차순 comparator, 학년도 이름도 내림차순 comparator, comparator chain whole vs single field, comparator 큰 그림 reversed scope, 처음 배우는데 comparator reversed, comparator 체인 뒤집기 기초, java comparator reversed beginner
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -21,7 +21,7 @@ retrieval-anchor-keywords: comparator reversed scope primer basics, comparator r
 > - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 > - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 
-> retrieval-anchor-keywords: comparator reversed scope primer, java comparator reversed scope, java reversed whole chain comparator, java whole chain reversed comparator, java single field reversed comparator, java comparator reversed placement beginner, java reversed thenComparing scope, java a reversed thenComparing b, java a thenComparing b reversed, whole chain vs single field reversed, java grade desc name asc comparator, java grade desc name desc comparator, java tie breaker descending comparator, java comparator mixed direction beginner, java reversed comparator chain beginner, java comparator reversed small example, java beginner comparator reversed confusion, java treeset reversed comparator distinctness, java treeset reversed comparator compare zero
+> retrieval-anchor-keywords: comparator reversed scope primer, java comparator reversed scope, java reversed whole chain comparator, java whole chain reversed comparator, java single field reversed comparator, java comparator reversed placement beginner, java reversed thenComparing scope, java a reversed thenComparing b, java a thenComparing b reversed, whole chain vs single field reversed, java grade desc name asc comparator, java grade desc name desc comparator, java tie breaker descending comparator, java comparator mixed direction beginner, java reversed comparator chain beginner, java comparator reversed small example, java beginner comparator reversed confusion, reversed가 왜 tie-breaker까지 뒤집혀요, 정렬 기준 하나만 뒤집고 싶어요, compare chain 전체 reversed 차이, java treeset reversed comparator distinctness, java treeset reversed comparator compare zero
 
 <details>
 <summary>Table of Contents</summary>

@@ -12,11 +12,12 @@
 - [Transaction Heartbeat와 Long-Running Job Locking](./transaction-heartbeat-long-running-job-locking.md)
 - [DB Lease와 Fencing Token](./db-lease-fencing-coordination.md)
 - [Idempotent Transaction Retry Envelopes](./idempotent-transaction-retry-envelopes.md)
+- [Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기](../spring/spring-service-layer-external-io-after-commit-outbox-primer.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: pending row recovery primer, pending idempotency row takeover, stale processing row recovery, in progress versus takeover idempotency, lease heartbeat expiry recovery, pending row safe recovery beginner, pending row should stay processing, idempotency pending row liveness, processing row stale detection beginner, compare and swap takeover row, retry after pending row, pending row recovery checklist, pending row heartbeat primer, pending row lease primer, pending row takeover safety
+retrieval-anchor-keywords: pending row recovery primer, pending idempotency row takeover, stale processing row recovery, lease heartbeat expiry recovery, pending row 뭐예요, pending 상태가 안 끝나요, pending이 계속 남아요, processing이랑 pending 차이, pending takeover 언제 해요, 멱등성 pending 헷갈려요, 처음 배우는데 pending recovery, 왜 pending을 바로 takeover하면 안 돼요, stale row recovery 뭐예요, heartbeat랑 lease 차이, 큰 그림 pending recovery
 
 ## 먼저 멘탈모델
 
@@ -56,6 +57,10 @@ beginner 기본값은 단순하다.
 
 - **기본값 1:** ownership 신호가 살아 있으면 takeover하지 않는다
 - **기본값 2:** ownership 신호가 없으면 그래도 바로 덮어쓰지 말고, 명시적 recovery 규칙이 있을 때만 takeover한다
+
+처음 배우는데 `pending`, `processing`, `takeover`가 한꺼번에 헷갈리면 이 문서에서는 아래 한 줄만 먼저 잡으면 된다.
+
+> `PENDING`은 저장소 상태, `PROCESSING`은 호출자에게 설명하는 응답, `takeover`는 ownership이 정말 끊겼을 때만 여는 복구 절차다.
 
 ## 30초 결정표
 

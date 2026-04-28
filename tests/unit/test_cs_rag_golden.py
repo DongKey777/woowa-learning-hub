@@ -72,6 +72,27 @@ _FAILOVER_DIVERGENCE_BEGINNER_ALIAS_QUERY_IDS = (
 _SPRING_FOUNDATION_ROLE_BEGINNER_QUERY_IDS = (
     "beginner_applicationcontext_role_shortform_lockin",
     "beginner_spring_bean_role_shortform_lockin",
+    "beginner_applicationcontext_english_role_shortform_lockin",
+    "beginner_spring_bean_english_role_shortform_lockin",
+    "beginner_beanfactory_english_role_shortform_lockin",
+)
+_BEGINNER_INFRA_PRIMER_QUERY_IDS = (
+    "beginner_keepalive_shortform_lockin",
+    "beginner_keepalive_colloquial_shortform_lockin",
+    "beginner_keepalive_english_meaning_lockin",
+    "beginner_keep_alive_spacing_shortform_lockin",
+    "beginner_connection_pool_shortform_lockin",
+    "beginner_connection_pool_colloquial_shortform_lockin",
+    "beginner_connection_pooling_shortform_lockin",
+    "beginner_connection_pooling_english_meaning_lockin",
+    "beginner_hikaricp_shortform_lockin",
+    "beginner_hikaricp_english_meaning_lockin",
+    "beginner_hikaricp_korean_why_use_lockin",
+)
+_BEGINNER_QUERY_MODEL_BROAD_QUERY_IDS = (
+    "beginner_query_model_shortform_lockin",
+    "beginner_query_service_english_shortform_lockin",
+    "beginner_query_service_korean_why_use_lockin",
 )
 
 
@@ -112,9 +133,11 @@ def _load_projection_symptom_only_search_regression_sweep_contract() -> dict[str
 
 def _generic_companion_family_contract_query_ids() -> set[str]:
     contract = _load_projection_symptom_only_primer_family_batch_contract()
-    if contract.get("generic_companion_policy") != "family_contract":
-        return set()
-    return set(contract.get("query_ids") or [])
+    family_query_ids: set[str] = set(_BEGINNER_INFRA_PRIMER_QUERY_IDS)
+    family_query_ids.update(_BEGINNER_QUERY_MODEL_BROAD_QUERY_IDS)
+    if contract.get("generic_companion_policy") == "family_contract":
+        family_query_ids.update(contract.get("query_ids") or [])
+    return family_query_ids
 
 
 def _load_projection_korean_failover_visibility_contrast_sweep_contract() -> dict[str, object]:
@@ -278,11 +301,107 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                     "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
                 )
                 self.assertEqual(query.get("max_rank"), 1)
-                self.assertIn("뭐 하는 거야", query["prompt"])
+                self.assertTrue(
+                    "뭐 하는 거야" in query["prompt"] or "What does" in query["prompt"]
+                )
                 self.assertIn(
                     "contents/spring/spring-bean-definition-overriding-semantics.md",
                     query.get("companion_paths", []),
                 )
+
+        english_role_expanded = signal_rules.expand_query(
+            queries_by_id["beginner_applicationcontext_english_role_shortform_lockin"]["prompt"]
+        )
+        self.assertIn("applicationcontext role basics", english_role_expanded)
+        self.assertIn("applicationcontext what it does", english_role_expanded)
+        self.assertNotIn("refreshbeanfactory", english_role_expanded)
+
+        bean_role_expanded = signal_rules.expand_query(
+            queries_by_id["beginner_spring_bean_english_role_shortform_lockin"]["prompt"]
+        )
+        self.assertIn("spring bean role basics", bean_role_expanded)
+        self.assertIn("spring bean what it does", bean_role_expanded)
+        self.assertNotIn("beanfactorypostprocessor", bean_role_expanded)
+
+    def test_beginner_infra_meaning_queries_stay_on_primer_contract(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        stable_contract = _load_stable_full_mode_fixture_contract().get("queries", {})
+
+        expected = {
+            "beginner_keepalive_shortform_lockin": (
+                "HTTP keep-alive 뭐야?",
+                "contents/network/keepalive-connection-reuse-basics.md",
+                "contents/network/http2-http3-connection-reuse-coalescing.md",
+            ),
+            "beginner_keepalive_colloquial_shortform_lockin": (
+                "HTTP keep-alive 뭔데?",
+                "contents/network/keepalive-connection-reuse-basics.md",
+                "contents/network/http2-http3-connection-reuse-coalescing.md",
+            ),
+            "beginner_keepalive_english_meaning_lockin": (
+                "What is HTTP keep-alive?",
+                "contents/network/keepalive-connection-reuse-basics.md",
+                "contents/network/http2-http3-connection-reuse-coalescing.md",
+            ),
+            "beginner_keep_alive_spacing_shortform_lockin": (
+                "HTTP keep alive 뭐야?",
+                "contents/network/keepalive-connection-reuse-basics.md",
+                "contents/network/http2-http3-connection-reuse-coalescing.md",
+            ),
+            "beginner_connection_pool_shortform_lockin": (
+                "connection pool 이 뭐야?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_connection_pool_colloquial_shortform_lockin": (
+                "connection pool 뭔데?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_connection_pooling_shortform_lockin": (
+                "connection pooling 이 뭐야?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_connection_pooling_english_meaning_lockin": (
+                "What is connection pooling?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_hikaricp_shortform_lockin": (
+                "HikariCP가 뭐야?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_hikaricp_english_meaning_lockin": (
+                "What is HikariCP?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+            "beginner_hikaricp_korean_why_use_lockin": (
+                "HikariCP 왜 써?",
+                "contents/database/connection-pool-basics.md",
+                "contents/database/transaction-locking-connection-pool-primer.md",
+            ),
+        }
+
+        for query_id in _BEGINNER_INFRA_PRIMER_QUERY_IDS:
+            with self.subTest(query_id=query_id):
+                query = queries_by_id[query_id]
+                prompt, expected_path, companion_path = expected[query_id]
+                self.assertIn(query_id, stable_contract)
+                self.assertEqual(query.get("experience_level"), "beginner")
+                self.assertEqual(query.get("prompt"), prompt)
+                self.assertEqual(query.get("expected_path"), expected_path)
+                self.assertEqual(query.get("max_rank"), 1)
+                self.assertIn(companion_path, query.get("companion_paths", []))
+                self.assertEqual(query.get("companion_max_rank"), 4)
+                self.assertEqual(
+                    stable_contract[query_id].get("companion_paths"),
+                    [companion_path],
+                )
+                self.assertEqual(stable_contract[query_id].get("companion_max_rank"), 4)
 
     def test_projection_freshness_beginner_contrast_queries_keep_beginner_rank_one_contract(
         self,
@@ -477,6 +596,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "beginner_spring_bean_english_meaning_shortform_lockin",
                 "What does a Spring bean mean",
             ),
+            (
+                "beginner_spring_bean_english_role_shortform_lockin",
+                "What does a Spring bean do",
+            ),
             ("beginner_spring_bean_korean_definition_shortform_lockin", "Spring bean이란"),
             ("beginner_bean_korean_shortform_lockin", "빈이 뭐야"),
             ("beginner_applicationcontext_shortform_lockin", "ApplicationContext 가 뭐야"),
@@ -487,6 +610,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             (
                 "beginner_applicationcontext_english_meaning_shortform_lockin",
                 "What does ApplicationContext mean in Spring",
+            ),
+            (
+                "beginner_applicationcontext_english_role_shortform_lockin",
+                "What does ApplicationContext do in Spring",
             ),
             (
                 "beginner_application_context_spacing_english_shortform_lockin",
@@ -500,6 +627,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             (
                 "beginner_beanfactory_english_meaning_shortform_lockin",
                 "What does BeanFactory mean in Spring",
+            ),
+            (
+                "beginner_beanfactory_english_role_shortform_lockin",
+                "What does BeanFactory do in Spring",
             ),
             (
                 "beginner_bean_factory_spacing_english_shortform_lockin",
@@ -875,6 +1006,37 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertIn("spring aop beginner overview", expanded)
         self.assertIn("aspect oriented programming basics", expanded)
         self.assertNotIn("advisor pointcut advice", expanded)
+
+    def test_beginner_hikaricp_korean_why_use_shortform_stays_on_connection_pool_primer(self) -> None:
+        payload = _load_fixture_payload()
+        queries_by_id = {query["id"]: query for query in payload["queries"]}
+        stable_contract = _load_stable_full_mode_fixture_contract().get("queries", {})
+
+        query_id = "beginner_hikaricp_korean_why_use_lockin"
+        self.assertIn(query_id, queries_by_id)
+        self.assertIn(query_id, stable_contract)
+
+        query = queries_by_id[query_id]
+        self.assertEqual(query.get("prompt"), "HikariCP 왜 써?")
+        self.assertEqual(query.get("experience_level"), "beginner")
+        self.assertEqual(query.get("expected_path"), "contents/database/connection-pool-basics.md")
+        self.assertEqual(
+            query.get("companion_paths"),
+            ["contents/database/transaction-locking-connection-pool-primer.md"],
+        )
+        self.assertEqual(query.get("companion_max_rank"), 4)
+        self.assertEqual(query.get("max_rank"), 1)
+        self.assertEqual(
+            stable_contract[query_id].get("companion_paths"),
+            ["contents/database/transaction-locking-connection-pool-primer.md"],
+        )
+        self.assertEqual(stable_contract[query_id].get("companion_max_rank"), 4)
+
+        expanded = signal_rules.expand_query(query["prompt"])
+        self.assertIn("db connection pool beginner", expanded)
+        self.assertIn("hikari cp beginner", expanded)
+        self.assertIn("hikaricp basics", expanded)
+        self.assertNotIn("resource lifecycle", expanded)
 
     def test_beginner_session_and_jwt_shortform_queries_keep_cookie_jwt_primer_ahead_of_foundations(
         self,
@@ -3098,6 +3260,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "prompt_terms": ["What does transactional mean", "Spring"],
                 "expected_path": "contents/spring/spring-transactional-basics.md",
             },
+            "beginner_mvcc_english_why_use_lockin": {
+                "prompt_terms": ["Why use", "MVCC"],
+                "expected_path": "contents/database/transaction-isolation-locking.md",
+            },
             "beginner_di_vs_ioc_shortform_lockin": {
                 "prompt_terms": ["DI vs IoC", "차이가 뭐야"],
                 "expected_path": "contents/spring/spring-ioc-di-basics.md",
@@ -3126,12 +3292,20 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "prompt_terms": ["What does", "BeanFactory", "mean", "Spring"],
                 "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
             },
+            "beginner_beanfactory_english_role_shortform_lockin": {
+                "prompt_terms": ["What does", "BeanFactory", "do", "Spring"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
             "beginner_bean_factory_spacing_english_shortform_lockin": {
                 "prompt_terms": ["What is", "Bean Factory", "Spring"],
                 "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
             },
             "beginner_spring_bean_english_meaning_shortform_lockin": {
                 "prompt_terms": ["What does", "Spring bean", "mean"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_spring_bean_english_role_shortform_lockin": {
+                "prompt_terms": ["What does", "Spring bean", "do"],
                 "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
             },
             "beginner_component_scan_english_meaning_shortform_lockin": {
@@ -3144,6 +3318,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             },
             "beginner_applicationcontext_english_meaning_shortform_lockin": {
                 "prompt_terms": ["What does", "ApplicationContext", "mean", "Spring"],
+                "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            },
+            "beginner_applicationcontext_english_role_shortform_lockin": {
+                "prompt_terms": ["What does", "ApplicationContext", "do", "Spring"],
                 "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
             },
             "beginner_application_context_spacing_english_shortform_lockin": {

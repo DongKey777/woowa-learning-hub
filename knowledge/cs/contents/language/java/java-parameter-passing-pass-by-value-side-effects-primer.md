@@ -14,7 +14,7 @@
 - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 
-retrieval-anchor-keywords: java pass by value, java parameter passing basics, java reference copy, java mutation vs reassignment, java side effect basics, java aliasing basics, 자바 값 전달, 자바는 항상 pass by value, 기본형은 안 바뀌는데 객체는 왜 바뀌나요, 메서드에서 객체 바꾸면 원본도 바뀌는지, 자바 파라미터 전달 큰 그림, mutation reassignment 차이
+retrieval-anchor-keywords: java pass by value, java parameter passing basics, java reference copy, java mutation vs reassignment, java side effect basics, java aliasing basics, java same object vs same value, java aliasing equals identity, 자바 값 전달, 자바는 항상 pass by value, 기본형은 안 바뀌는데 객체는 왜 바뀌나요, 메서드에서 객체 바꾸면 원본도 바뀌는지, 같은 객체와 같은 값 차이, == equals 왜 헷갈려요, mutation reassignment 차이
 
 <details>
 <summary>Table of Contents</summary>
@@ -23,6 +23,7 @@ retrieval-anchor-keywords: java pass by value, java parameter passing basics, ja
 - [먼저 결론: Java는 항상 pass-by-value다](#먼저-결론-java는-항상-pass-by-value다)
 - [기본형과 참조형에서 무엇이 복사되는가](#기본형과-참조형에서-무엇이-복사되는가)
 - [mutation과 reassignment는 다르다](#mutation과-reassignment는-다르다)
+- [같은 객체를 본다는 말이 비교로 가면](#같은-객체를-본다는-말이-비교로-가면)
 - [손으로 추적하는 작은 연습](#손으로-추적하는-작은-연습)
 - [side effect를 읽는 체크리스트](#side-effect를-읽는-체크리스트)
 - [어떤 문서를 다음에 읽으면 좋은가](#어떤-문서를-다음에-읽으면-좋은가)
@@ -186,6 +187,29 @@ System.out.println(values.length); // 3
 | `counter = new Counter(999)` | 메서드 안 parameter가 가리키는 대상 | 안 보인다 |
 | `numbers[0] = 99` | 같은 배열의 원소 | 보인다 |
 | `numbers = new int[] {7, 8, 9}` | 메서드 안 parameter 변수 | 안 보인다 |
+
+## 같은 객체를 본다는 말이 비교로 가면
+
+pass-by-value를 이해한 뒤 다음으로 자주 막히는 지점이 바로 `==`와 `equals()`다.
+둘 다 뿌리는 같다. "참조값 복사"와 "같은 객체를 함께 본다"를 비교 질문으로 옮기면 된다.
+
+| 코드 상황 | parameter/aliasing 관점에서 실제로 일어난 일 | 비교로 읽으면 |
+|---|---|---|
+| `Todo alias = first;` | 참조값만 하나 더 복사됐다. 둘은 같은 객체를 본다 | `alias == first`는 `true`일 수 있다 |
+| `markDone(first);` 뒤 `alias.isDone()`도 `true` | 메서드가 같은 객체를 mutation했다 | side effect가 보이는 이유와 identity 공유 이유가 같다 |
+| `new Member(1L, "jane")`를 두 번 만들었다 | 필드값은 같아 보여도 객체는 둘이다 | `left == right`는 보통 `false`, 값 비교면 `equals()`를 본다 |
+| `memberMap.get(key)`가 안 맞는다 | "같은 값" 규칙이 컬렉션 조회까지 이어진다 | `equals()`와 `hashCode()`를 같이 본다 |
+
+짧게 이어 붙이면 아래 순서다.
+
+1. Java는 항상 값만 복사한다.
+2. 참조형에서는 그 값이 "어느 객체를 보는지"라는 참조값이다.
+3. 그래서 alias나 parameter가 같은 객체를 함께 볼 수 있다.
+4. 같은 객체인지 묻는 질문이 `==`다.
+5. 서로 다른 객체여도 같은 값으로 볼지 묻는 질문이 `equals()`다.
+
+즉 "`왜 한쪽 바꿨는데 다른 쪽도 바뀌지?`"와 "`왜 `==`는 false인데 값은 같지?`"는 별개 주제가 아니다.
+둘 다 "참조값 복사"를 어디까지 이해했는지 묻는 같은 학습 축이다.
 
 ## 손으로 추적하는 작은 연습
 

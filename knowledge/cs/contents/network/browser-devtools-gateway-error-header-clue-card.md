@@ -6,13 +6,17 @@
 
 관련 문서:
 
+- [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
+- [DevTools 뒤 `X-Request-Id`는 어디로 가나요? Gateway -> App Log -> Trace Beginner Bridge](./x-request-id-gateway-app-log-trace-beginner-bridge.md)
+- [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
 - [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
+- [network 카테고리 인덱스](./README.md)
 - [Spring MVC 요청 생명주기 기초](../spring/spring-mvc-request-lifecycle-basics.md)
 
-retrieval-anchor-keywords: server via x-request-id, devtools response header first pass, x-request-id 뭐예요, via 헤더 뭐예요, server 헤더 뭐예요, browser proxy app attribution, gateway error first check, response header who made this, 처음 devtools header, proxy 흔적 헤더, what is x-request-id, devtools 502 header clue
+retrieval-anchor-keywords: server via x-request-id, devtools response header first pass, x-request-id 뭐예요, via 헤더 뭐예요, server 헤더 뭐예요, browser proxy app attribution, gateway error first check, response header who made this, 처음 devtools header, proxy 흔적 헤더, what is x-request-id, devtools 502 header clue, 브라우저 문제인지 프록시 문제인지 앱 문제인지, 처음 에러 헤더 볼 때
 
 ## 핵심 개념
 
@@ -26,12 +30,12 @@ retrieval-anchor-keywords: server via x-request-id, devtools response header fir
 
 ## 한눈에 보기
 
-| DevTools에서 먼저 보인 것 | 초급자 첫 해석 | 먼저 붙일 다음 질문 |
-|---|---|---|
-| 응답 헤더 자체가 거의 없다 | 브라우저 차단, 취소, 전송 실패처럼 HTTP 응답 전 단계일 수 있다 | `Status`가 `(blocked)`/`canceled`/`(failed)`인가 |
-| `Server: nginx` 같은 값이 눈에 띈다 | proxy나 web server가 응답을 만든 장면 후보다 | body가 gateway 기본 HTML인가 |
-| `Via: 1.1 varnish` 같은 값이 있다 | 중간 hop을 거쳤다는 뜻이다 | 이 응답이 app 원본인지, intermediary가 만든 응답인지 |
-| `X-Request-Id`가 있다 | 적어도 추적용 식별자를 남길 만큼 서버 체인을 탔을 가능성이 크다 | app/log/trace에서 같은 ID를 찾을 수 있는가 |
+| DevTools에서 먼저 보인 것 | 초급자 첫 해석 | 1차 소유 후보 | 먼저 붙일 다음 질문 |
+|---|---|---|---|
+| 응답 헤더 자체가 거의 없다 | 브라우저 차단, 취소, 전송 실패처럼 HTTP 응답 전 단계일 수 있다 | browser | `Status`가 `(blocked)`/`canceled`/`(failed)`인가 |
+| `Server: nginx` 같은 값이 눈에 띈다 | proxy나 web server가 응답을 만든 장면 후보다 | proxy | body가 gateway 기본 HTML인가 |
+| `Via: 1.1 varnish` 같은 값이 있다 | 중간 hop을 거쳤다는 뜻이다 | proxy | 이 응답이 app 원본인지, intermediary가 만든 응답인지 |
+| `X-Request-Id`가 있다 | 적어도 추적용 식별자를 남길 만큼 서버 체인을 탔을 가능성이 크다 | app 또는 gateway | app/log/trace에서 같은 ID를 찾을 수 있는가 |
 
 짧게 외우면 이렇게 보면 된다.
 
@@ -40,6 +44,12 @@ retrieval-anchor-keywords: server via x-request-id, devtools response header fir
 Server/Via 강함 -> proxy 문맥 먼저
 X-Request-Id 있음 -> 서버 체인 추적 가능성 먼저
 ```
+
+처음 보는 사람이 가장 헷갈리는 질문을 한 줄로 바꾸면 이렇다.
+
+- "헤더가 비어 있으면 browser 쪽부터"
+- "`Server`/`Via`가 먼저 보이면 proxy 쪽부터"
+- "`X-Request-Id`가 있으면 app/gateway 로그 추적부터"
 
 ## 상세 분해
 
@@ -75,6 +85,28 @@ X-Request-Id 있음 -> 서버 체인 추적 가능성 먼저
 
 그래서 `500`이나 `404`를 볼 때 `X-Request-Id`가 있으면, "브라우저가 혼자 실패했다"보다 "서버 체인 안에서 처리된 요청" 쪽으로 먼저 기운다.
 
+초급자 다음 액션도 같이 붙이면 더 안전하다.
+
+- gateway access log에 같은 ID가 있는지 본다
+- app 로그에 같은 ID가 찍히는지 본다
+- tracing 화면이 있으면 request ID나 연결된 trace를 찾는다
+
+## 실전 예시 한 장
+
+```http
+HTTP/1.1 502 Bad Gateway
+Server: nginx
+Via: 1.1 varnish
+X-Request-Id: 8f2d2b71
+Content-Type: text/html
+```
+
+이 한 장을 초급자용으로 읽으면 충분하다.
+
+- `Server`와 `Via`가 같이 보이므로 browser 단독 실패보다 proxy/gateway 응답 후보가 강하다
+- `X-Request-Id`가 있으므로 "이 요청이 서버 체인을 탔다"는 추적 실마리가 있다
+- `Content-Type: text/html`에 짧은 기본 에러 페이지가 붙으면 app JSON 에러보다 앞단 기본 응답 후보가 더 커진다
+
 ### 세 헤더가 없을 때
 
 이 경우는 오히려 해석이 쉬워질 때가 있다.
@@ -84,6 +116,8 @@ X-Request-Id 있음 -> 서버 체인 추적 가능성 먼저
 - `(failed)`면 DNS, TLS, 네트워크 실패처럼 HTTP 응답 전에 끊긴 장면 후보
 
 즉 **응답 헤더가 없다는 사실 자체**가 "app 에러 body를 읽는 단계가 아니었다"는 힌트가 될 수 있다.
+
+이 세 status를 헤더 없는 row 기준으로 따로 익히고 싶다면 [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)을 먼저 보면 된다.
 
 ## 흔한 오해와 함정
 
@@ -113,8 +147,10 @@ X-Request-Id 있음 -> 서버 체인 추적 가능성 먼저
 
 - DevTools 첫 판독 순서 전체가 필요하면 [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
 - `500`/`502`/`504`를 첫 분기로 나누려면 [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
+- cache 관련 응답 헤더가 보일 때 app ownership을 언제 보류해야 하는지 보려면 [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
 - header 기초가 아직 약하면 [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 - local reply인지 upstream 실패 번역인지 더 엄밀하게 가르려면 [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
+- `X-Request-Id`를 DevTools 다음에 gateway 로그, app 로그, trace로 어떻게 이어 보는지 보려면 [DevTools 뒤 `X-Request-Id`는 어디로 가나요? Gateway -> App Log -> Trace Beginner Bridge](./x-request-id-gateway-app-log-trace-beginner-bridge.md)
 - `X-Request-Id`가 실제 서버 처리 흐름에서 어디에 걸리는지 보려면 [Spring MVC 요청 생명주기 기초](../spring/spring-mvc-request-lifecycle-basics.md)
 
 ## 한 줄 정리

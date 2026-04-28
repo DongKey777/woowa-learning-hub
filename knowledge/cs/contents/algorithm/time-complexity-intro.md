@@ -10,8 +10,11 @@
 - [이분 탐색 패턴](./binary-search-patterns.md)
 - [algorithm 카테고리 인덱스](./README.md)
 - [해시 테이블 기초](../data-structure/hash-table-basics.md)
+- [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md)
 
-retrieval-anchor-keywords: time complexity intro, big o notation beginner, 시간복잡도 입문, 빅오 표기법이 뭐예요, o(n) o(n^2) 차이, 복잡도 감각, algorithm complexity primer, worst case complexity, o(log n) 의미, 시간복잡도 계산 방법, loop complexity, nested loop complexity, double for loop complexity, 중첩 루프 복잡도, 이중 for문 시간복잡도
+retrieval-anchor-keywords: time complexity intro, big o notation beginner, 시간복잡도 입문, 시간복잡도 기초, 시간복잡도 큰 그림, 시간복잡도 왜 배워요, 처음 배우는데 시간복잡도, 빅오 표기법이 뭐예요, o(n) o(n^2) 차이, o(log n) 의미, 시간복잡도 계산 방법, loop complexity, nested loop complexity, 중첩 루프 복잡도, 이중 for문 시간복잡도
+
+이 문서는 `시간복잡도 뭐예요`, `빅오 왜 배워요`, `처음 배우는데 O(n) O(n^2)가 왜 다른가요`처럼 첫 질문이 들어왔을 때 deep dive보다 먼저 닿아야 하는 primer를 목표로 한다.
 
 ## 핵심 개념
 

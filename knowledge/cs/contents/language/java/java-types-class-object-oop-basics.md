@@ -253,7 +253,7 @@ public class Student {
 
 이 클래스는 다음을 함께 정의한다.
 
-- 필드(field): 객체가 기억해야 하는 상태
+- 필드(field): 객체가 기억해야 하는 상태. 첫 route에서는 "인스턴스 field = 객체 상태를 저장하는 인스턴스 멤버"로 같이 읽으면 된다
 - 생성자(constructor): 객체를 생성할 때 필요한 초기화 규칙
 - 메서드(method): 객체가 수행할 수 있는 동작
 
@@ -288,7 +288,7 @@ Student student = new Student("jane", 20);
 Student student = new Student("jane", 20);
 ```
 
-이 문장에서 생성자는 `"jane"`과 `20`을 받아 `Student`의 시작 상태를 정한다.
+이 문장에서 생성자는 `"jane"`과 `20`을 받아 `Student`의 인스턴스 field를 채우고 시작 상태를 정한다.
 즉 "생성자"는 단순 문법이 아니라 **객체가 잘못된 상태로 태어나지 않게 하는 첫 번째 규칙**이다.
 
 ## 객체 모델에서 비교로 넘어가는 30초 handoff

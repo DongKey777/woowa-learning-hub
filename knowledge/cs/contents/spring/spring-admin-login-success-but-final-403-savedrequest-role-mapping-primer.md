@@ -14,7 +14,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring login success but 403, savedrequest after login 403, admin login restored url forbidden, spring role mapping beginner, role_admin prefix mismatch, hasrole admin 403, 로그인 성공했는데 403, 원래 url 복귀 후 403, savedrequest role mismatch, admin 권한 매핑 오류, spring security 역할 매핑 기초, requestcache 복귀 후 권한 실패, beginner savedrequest 403, why login succeeds but forbidden
+retrieval-anchor-keywords: spring login success but 403, savedrequest after login 403, admin login restored url forbidden, spring role mapping beginner, role_admin prefix mismatch, hasrole admin 403, 로그인 성공했는데 403, 로그인 성공 후 원래 url 복귀 403, 복귀는 됐는데 403, 복귀는 됐는데 권한 없음, savedrequest 복귀 후 권한 없음, savedrequest role mismatch, admin 권한 매핑 오류, spring security 역할 매핑 기초, savedrequest 성공했는데 403
 
 ## 핵심 개념
 
@@ -40,6 +40,13 @@ retrieval-anchor-keywords: spring login success but 403, savedrequest after logi
 
 즉 로그인 성공 뒤 `403`이 나는 장면은 "보관함에서 로그인 메모는 잘 꺼냈지만, 주소 메모를 따라 돌아간 관리자 URL에서 권한 검사가 막혔다"로 읽으면 된다.
 
+이 문서의 고정 역할도 함께 기억하면 좋다.
+
+- 이 문서는 `redirect / navigation memory` 갈래가 이미 맞다고 본 뒤, 복귀 직후 남은 final `403`을 설명하는 **safe next doc**이다.
+- 반대로 "`cookie 있는데 다시 로그인`", "`next request anonymous after login`"이 먼저 보이면 이 문서보다 `server persistence / session mapping` 갈래가 우선이다.
+
+이 문서는 특히 "`로그인 성공 후 원래 URL 복귀 403`", "`복귀는 됐는데 권한 없음`", "`원래 URL로 돌아왔는데 마지막만 막혀요`" 같은 검색 문장을 가장 짧게 받아 주는 primer다.
+
 ## 한눈에 보기
 
 | 지금 보인 현상 | 실제로 통과한 단계 | 아직 남아 있는 단계 | 먼저 볼 포인트 |
@@ -60,6 +67,20 @@ GET /admin/reservations
 ```
 
 핵심은 "주소 메모를 따라 복귀했다"와 "관리자 권한까지 통과했다"를 같은 뜻으로 읽지 않는 것이다.
+
+브리지 문서에서 "`302 /login`은 이해했는데 로그인 성공 후 원래 URL 복귀 `403`이 남아요"까지 왔다면, 여기서부터는 질문을 한 문장 더 줄여 "`복귀는 됐는데 권한 없음`"으로 읽으면 된다. 그 순간 `SavedRequest` deep dive보다 authority 이름 확인이 먼저다.
+
+초급자용 한 줄로 더 줄이면 이렇다.
+
+- `SavedRequest`가 성공했다 = 로그인 전 가려던 주소를 다시 열었다.
+- final `403`이 났다 = 그 주소를 열 권한 이름은 아직 안 맞았다.
+
+따라서 초급자용 라벨을 고정하면 이렇게 된다.
+
+| 먼저 붙일 라벨 | 이 문서를 읽어도 되는가 | 이유 |
+|---|---|---|
+| `redirect / navigation memory` | 예 | 원래 URL 복귀 뒤 마지막 권한 실패를 설명하는 문서이기 때문이다 |
+| `server persistence / session mapping` | 아니오, 우선순위 아님 | 아직 다음 요청에서 로그인 사용자를 복원하지 못하는 갈래일 수 있기 때문이다 |
 
 ## 처음엔 세 단계를 따로 본다
 

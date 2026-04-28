@@ -34,6 +34,12 @@
 
 이 문서는 "처음 기술 이름을 구분하는 primer"가 아니라, **이미 JPA/JDBC/MyBatis 이름은 구분했는데 왜 실제 런타임 동작이 예상과 다르게 보이는지** 설명하는 follow-up이다.
 
+따라서 beginner 첫 읽기에서는 아래 셋을 이 문서 안에서 한꺼번에 해결하려 하지 않는다.
+
+- `save()` 뒤 SQL 위치 구분이 아직 안 됐다
+- `Repository`/`Entity`/`Mapper` 역할 이름이 아직 헷갈린다
+- `deadlock`, `retry`, `pool exhausted`처럼 이미 incident 성격의 단어가 먼저 튄다
+
 | 지금 들리는 증상 | 먼저 볼 문서 | 이 문서를 여는 시점 |
 |---|---|---|
 | "`save()`만 보이고 SQL이 안 보여요" | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) | 아직 이 문서 전 단계다 |
@@ -45,6 +51,14 @@
 
 - 기초 문서의 질문: "SQL이 어디서 만들어지지?"
 - 이 문서의 질문: "그 기술이 런타임에서 왜 이런 식으로 움직이지?"
+
+증상이 이미 운영/incident 언어라면 이 문서도 끝 문서가 아니다.
+
+| 먼저 튀는 단어 | 이 문서에서 잡는 최소선 | 바로 이어질 문서 |
+|---|---|---|
+| `pool exhausted`, long transaction | "접근 기술보다 connection 점유 시간이 핵심" | [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md) |
+| `deadlock`, `lock timeout`, `retry` | "JPA/JDBC 비교표만으로 안 끝난다" | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md) |
+| OSIV, lazy loading controller | "JPA 런타임 경계 질문" | [Spring Open Session In View Trade-offs](../spring/spring-open-session-in-view-tradeoffs.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 

@@ -14,7 +14,7 @@
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 - [Map 수정 중 순회 안전 가이드](./map-remove-during-iteration-safety-primer.md)
 
-retrieval-anchor-keywords: java map put get remove containskey return value cheat sheet, map put overwrite vs duplicate beginner, map key overwrite set duplicate difference, hashmap put 반환값 이전값, map get 반환값 null 의미, map remove 반환값 삭제된값, map containskey boolean 의미, hashmap put get remove containskey beginner, treemap put overwrite previous value, 자바 map put get remove containskey 차이, 자바 map 덮어쓰기 중복 차이, 자바 hashmap 반환값 표, map previous value current value removed value exists boolean, map method return meaning beginner, map put get remove containskey return cheat sheet basics
+retrieval-anchor-keywords: java map put get remove containskey return value cheat sheet, map put overwrite vs duplicate beginner, map put vs putifabsent overwrite difference, map key overwrite set duplicate difference, hashmap put 반환값 이전값, map get 반환값 null 의미, map remove 반환값 삭제된값, map containskey boolean 의미, hashmap put get remove containskey beginner, treemap put overwrite previous value, 자바 map put get remove containskey 차이, 자바 map put putifabsent 차이, 자바 map 덮어쓰기 중복 차이, 자바 hashmap 반환값 표, putifabsent overwrite 안함
 
 ## 먼저 잡는 멘탈 모델
 
@@ -47,6 +47,11 @@ retrieval-anchor-keywords: java map put get remove containskey return value chea
 - 현재 값을 보고 싶으면 `get()`
 - 삭제된 값을 보고 싶으면 `remove()`
 - 존재 여부만 묻고 싶으면 `containsKey()`
+
+overwrite 축만 10초 안에 같이 묶어 두면 더 덜 헷갈린다.
+
+- `put()`은 기존 값이 있어도 덮어쓴다
+- `putIfAbsent()`는 기존 값이 있으면 덮어쓰지 않는다
 
 ## 한 예제로 같이 보기
 
@@ -199,6 +204,7 @@ System.out.println(nicknameByUser.remove("bob"));   // null
 | "돌면서 삭제하면 왜 깨지죠?" | [Map 수정 중 순회 안전 가이드](./map-remove-during-iteration-safety-primer.md) |
 | "`TreeMap`은 왜 key 객체가 달라도 덮어쓰기 되죠?" | [TreeMap `put` 반환값 브리지: `null` vs 이전 값](./treemap-put-return-value-overwrite-bridge.md) |
 | "`Set`의 중복 제거와 `Map` 덮어쓰기가 자꾸 섞인다" | [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md) |
+| "`put()`이랑 `putIfAbsent()`는 둘 다 넣는데 언제 갈라지죠?" | [Map 조회/갱신 API 미니 브리지: `put()` vs `putIfAbsent()` vs `computeIfAbsent()` vs `merge()`](./map-put-putifabsent-computeifabsent-merge-overwrite-bridge.md) |
 
 ## 한 줄 정리
 

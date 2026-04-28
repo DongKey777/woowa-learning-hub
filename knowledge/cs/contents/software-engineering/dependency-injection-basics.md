@@ -8,10 +8,32 @@
 
 - [SOLID 원칙 기초](./solid-principles-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)
+- [Repository, DAO, Entity](./repository-dao-entity.md)
+- [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md)
 - [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dependency injection basics, di 기초, 의존성 주입 입문, ioc 컨테이너 입문, new 직접 생성 문제, 객체 외부 주입, 생성자 주입 기초, 필드 주입 vs 생성자 주입, di 왜 쓰나요, 테스트 의존성 교체, spring di 입문, beginner di, dependency injection basics basics, dependency injection basics beginner, dependency injection basics intro
+retrieval-anchor-keywords: dependency injection basics, dependency injection what is, di 기초, di 처음, 의존성 주입 뭐예요, ioc랑 di 차이 헷갈림, 왜 new 하면 안 돼요, 객체 외부 주입, 생성자 주입 기초, 생성자 주입 언제 쓰나요, 필드 주입 vs 생성자 주입, 테스트 의존성 교체, service repository 연결 누가 해요, spring di 입문, beginner di
+
+## 먼저 잡는 멘탈 모델
+
+DI를 처음 볼 때는 "어려운 프레임워크 기능"으로 외우기보다, 아래 한 장면으로 이해하는 편이 빠르다.
+
+| 장면 | 지금 클래스가 하는 일 | 결과 |
+|---|---|---|
+| 직접 생성 | 필요한 협력 객체를 `new`로 직접 고른다 | 구현체가 바뀌면 내 코드도 같이 흔들린다 |
+| DI | "나는 `OrderRepository`가 필요하다"만 말한다 | 실제 구현체 선택은 바깥에서 바꿀 수 있다 |
+
+짧게 말하면 DI는 **객체가 협력자를 직접 고르는 책임을 바깥으로 미루는 설계**다.
+
+## 지금 질문이라면 어디로 이어 읽나
+
+| 지금 헷갈리는 질문 | 이 문서에서 먼저 잡을 것 | 다음 문서 |
+|---|---|---|
+| "왜 그냥 `new`하면 안 돼요?" | 결합도와 테스트 교체 비용 | 이 문서의 `핵심 개념` |
+| "Service 안 `Repository`는 누가 넣어요?" | 주입과 컨테이너의 역할 분리 | [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) |
+| "Spring이 실제로 Bean을 어떻게 연결해요?" | DI와 컨테이너를 구분해서 보기 | [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md) |
+| "Repository 인터페이스를 왜 두죠?" | 구현 교체와 책임 분리 | [Repository, DAO, Entity](./repository-dao-entity.md) |
 
 ## 핵심 개념
 
@@ -32,7 +54,7 @@ class OrderService {
 }
 ```
 
-두 번째 방식이 DI다. 어떤 `OrderRepository`를 쓸지 결정권이 `OrderService` 밖으로 옮겨진다.
+두 번째 방식이 DI다. 어떤 `OrderRepository`를 쓸지 결정권이 `OrderService` 밖으로 옮겨진다. 처음에는 "객체를 받는 문법"보다 **구현체 선택 책임이 서비스 밖으로 빠진다**는 점이 더 중요하다.
 
 IoC(Inversion of Control, 제어의 역전)는 이 패턴의 상위 개념이다. 객체가 자신의 의존 객체를 관리하던 제어권을 외부 컨테이너(예: Spring)가 가져간다는 의미다.
 
@@ -43,6 +65,11 @@ IoC(Inversion of Control, 제어의 역전)는 이 패턴의 상위 개념이다
 | 생성자 주입 | 불변, 필수 의존성 강조, 테스트 용이 | 파라미터가 많아지면 설계 냄새 신호 |
 | 세터 주입 | 선택적 의존성, 나중에 교체 가능 | 미주입 상태 실행 위험 |
 | 필드 주입 (`@Autowired`) | 코드 짧음 | 테스트에서 주입 불가, final 불가 |
+
+초보자가 가장 자주 묻는 질문은 사실 "어떤 주입 방식을 외울까?"보다 "`new`를 지우면 뭐가 좋아지나?"다. 답은 아래 두 줄로 충분하다.
+
+- 구현체를 바꿀 때 서비스 코드를 덜 건드린다.
+- 테스트에서 가짜 객체를 넣어 서비스 로직만 따로 검증하기 쉬워진다.
 
 ## 상세 분해
 
@@ -58,11 +85,23 @@ IoC(Inversion of Control, 제어의 역전)는 이 패턴의 상위 개념이다
 
 Spring IoC 컨테이너는 `@Component`나 `@Bean`으로 등록된 객체를 관리하고, 의존 관계를 자동으로 연결(자동 와이어링)해 준다. 개발자는 `new`를 직접 쓰지 않아도 된다.
 
+## 같은 주문 예시로 보는 before / after
+
+처음 읽을 때는 추상 용어보다 "주문 생성 서비스 하나"에 붙여 보는 편이 덜 헷갈린다.
+
+| 코드 상태 | 서비스 코드에서 보이는 신호 | 초보자 기준 결과 |
+|---|---|---|
+| before | `new JdbcOrderRepository()`가 서비스 안에 박혀 있다 | 테스트에서 DB 없는 실행이 어렵다 |
+| after | 생성자에서 `OrderRepository`를 받는다 | `FakeOrderRepository`나 mock으로 바꿔 끼우기 쉽다 |
+
+예를 들어 주문 저장 방식을 메모리 저장소에서 JPA 저장소로 바꾸고 싶을 때, DI가 없으면 `OrderService`를 수정해야 한다. DI가 있으면 주입되는 구현체만 바꾸고 서비스 코드는 그대로 둘 수 있다.
+
 ## 흔한 오해와 함정
 
 - "DI와 IoC는 같은 말이다"는 오해가 많다. IoC는 넓은 패턴이고, DI는 IoC를 구현하는 한 가지 방법이다.
 - 필드 주입(`@Autowired`)은 코드가 짧아 보이지만 테스트에서 의존성을 교체하기 어렵고, `final`을 사용할 수 없다. Spring 공식 문서도 생성자 주입을 권장한다.
 - "DI를 쓰면 무조건 인터페이스가 필요하다"는 오해도 있다. 인터페이스 없이도 DI는 가능하다. 다만 교체 유연성을 얻으려면 인터페이스가 필요하다.
+- "DI를 쓰면 Service가 아무 일도 안 하는 얇은 껍데기가 되어야 한다"는 뜻은 아니다. DI는 책임 분리 도구이지, 비즈니스 로직 금지 규칙이 아니다.
 
 ## 실무에서 쓰는 모습
 
@@ -72,7 +111,9 @@ Spring Boot 프로젝트에서 `@Service`가 붙은 `OrderService`가 `@Reposito
 
 ## 더 깊이 가려면
 
+- "왜 `new` 대신 주입받는가"를 Spring 맥락으로 다시 붙이고 싶다면 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md)부터 읽는다.
 - [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md) — Spring이 DI를 어떻게 처리하는지 내부 구조
+- [Repository, DAO, Entity](./repository-dao-entity.md) — 저장 책임과 인터페이스 경계를 같이 보기
 - [SOLID 원칙 기초](./solid-principles-basics.md) — DI가 DIP(의존 역전 원칙)와 어떻게 연결되는지
 
 ## 면접/시니어 질문 미리보기

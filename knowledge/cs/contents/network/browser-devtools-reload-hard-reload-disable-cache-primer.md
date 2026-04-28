@@ -49,6 +49,24 @@ retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard relo
 그래서 cache trace를 읽기 전 첫 질문은 "`이 줄이 어떻게 만들어졌나`"다.
 같은 URL이라도 새로고침 방식이 다르면 `200`, `304`, `from memory cache`, `from disk cache`가 다르게 보일 수 있다.
 
+## 처음 헷갈릴 때 30초 체크
+
+초급자가 실제로 자주 묻는 말은 "`hard reload`하니 `200`인데 평소엔 `304`예요. 뭐가 진짜예요?"에 가깝다. 이때는 `정답 찾기`보다 `어떤 조건에서 본 결과인가`를 먼저 분리한다.
+
+| 지금 본 장면 | 먼저 내릴 결론 | 바로 이어서 볼 것 |
+|---|---|---|
+| `normal reload`에서 `304` | 평소 반복 방문에서 재검증이 일어났을 수 있다 | response의 `Cache-Control`, `ETag` |
+| `hard reload`에서 `200` | 강제 재요청 실험 영향이 섞였을 수 있다 | 같은 URL을 `normal reload`로 다시 비교 |
+| `empty cache and hard reload`에서 `200` | 기존 cache를 비운 뒤 다시 받은 것이다 | 이 결과를 평소 사용자 흐름처럼 말하지 않기 |
+| `Disable cache` ON에서 항상 `200` | checkbox가 cache 재사용을 흔들고 있을 수 있다 | `Disable cache` OFF로 되돌려 기준선 다시 보기 |
+
+짧게 외우면 아래 한 줄이면 충분하다.
+
+- `normal reload`는 기준선
+- `hard reload`는 실험
+- `empty cache and hard reload`는 cache를 비운 실험
+- `Disable cache` ON은 별도 실험 스위치
+
 ## 같은 URL 1분 분기표
 
 | 내가 한 행동 | 같은 URL에서 먼저 보는 질문 | 초급자 첫 결론 | 자연 사용자 흐름으로 바로 말해도 되나 |

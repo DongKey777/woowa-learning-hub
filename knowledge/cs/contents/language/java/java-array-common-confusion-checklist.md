@@ -1,6 +1,6 @@
 # Java 배열 입문 공통 confusion 체크리스트
 
-> 한 줄 요약: 배열에서 막힐 때는 먼저 "지금 헷갈리는 게 출력인지, 값 비교인지, 같은 배열 공유인지, 제자리 정렬인지"를 나누면 `==`, alias, `Arrays.sort()` 함정을 훨씬 빨리 피할 수 있다.
+> 한 줄 요약: 배열에서 막힐 때는 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`인가", "한쪽을 바꾸면 다른 쪽도 같이 바뀌는가", "정렬 뒤 원본이 바뀌었는가"를 나누면 `==`, alias, `Arrays.sort()` 함정을 훨씬 빨리 피할 수 있다.
 
 **난이도: 🟢 Beginner**
 
@@ -32,10 +32,10 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 
 배열에서 자주 막히는 질문은 사실 서로 다른 네 문제다.
 
-- 출력: "지금 배열 안에 뭐가 들어 있지?"
-- 비교: "두 배열의 값이 같은가?"
-- 공유: "두 변수가 같은 배열을 같이 보고 있나?"
-- 정렬: "정렬 결과가 원본을 바꿨나, 복사본을 만들었나?"
+- 출력: "`[I@...`처럼 이상하게 보이나?"
+- 비교: "값은 같은데 `==`나 `array.equals(...)`가 `false`인가?"
+- 공유: "한쪽을 바꾸면 다른 쪽도 같이 바뀌는가?"
+- 정렬: "`Arrays.sort()` 뒤 원본 순서가 바뀌었나?"
 
 초보자 기준으로는 아래 한 줄이 제일 중요하다.
 
@@ -45,7 +45,7 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 
 ## 이 문서를 먼저 열면 좋은 순간
 
-- "값은 같은데 왜 false지?"와 "왜 같이 바뀌지?"가 머릿속에서 섞이기 시작할 때
+- "값은 같은데 `==`나 `array.equals(...)`가 `false`다"와 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 머릿속에서 섞이기 시작할 때
 - `==`, `clone()`, `Arrays.sort()`를 각각 봤는데도 어디로 다시 돌아가야 할지 감이 안 잡힐 때
 - 배열 primer를 여러 장 읽고 나서도 "지금 질문이 비교인지 공유인지 정렬인지" 구분이 안 될 때
 
@@ -60,8 +60,8 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 | 지금 보이는 증상 | 실제로 먼저 묻는 질문 | 첫 도구/첫 확인 | 다음 문서 |
 |---|---|---|---|
 | `System.out.println(array)` 결과가 `[I@...`처럼 이상하다 | "출력 경로가 잘못된 건가?" | 1차원은 `Arrays.toString()`, 중첩 배열은 `Arrays.deepToString()` | [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md) |
-| 값은 같아 보이는데 `==` 또는 `array.equals(...)`가 `false`다 | "같은 배열을 비교한 건가, 값 비교를 한 건가?" | 1차원은 `Arrays.equals()`, 중첩 배열은 `Arrays.deepEquals()` | [Java Array Equality Basics](./java-array-equality-basics.md) |
-| `copied = original` 뒤 한쪽을 바꾸니 다른 쪽도 바뀐다 | "복사본이 아니라 같은 배열 alias인가?" | `copied == original` 확인 | [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) |
+| 값은 같은데 `==`나 `array.equals(...)`가 `false`다 | "같은 배열을 비교한 건가, 값 비교를 한 건가?" | 1차원은 `Arrays.equals()`, 중첩 배열은 `Arrays.deepEquals()` | [Java Array Equality Basics](./java-array-equality-basics.md) |
+| 한쪽을 바꾸면 다른 쪽도 같이 바뀐다 | "복사본이 아니라 같은 배열 alias인가?" | `copied == original` 확인 | [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) |
 | `Arrays.sort()` 뒤 원본 순서가 사라졌다 | "정렬이 새 배열을 만든다고 착각했나?" | `sort()`는 반환값 없이 원본을 직접 바꿈 | [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md) |
 | `int[]`에 `Comparator.reverseOrder()`를 넘기려다 막혔다 | "primitive 배열인데 object 배열 overload를 기대했나?" | `int[]`는 오름차순 정렬 후 뒤집기/역방향 읽기부터 검토 | [Primitive Descending Array Sort Bridge](./primitive-descending-array-sort-bridge.md) |
 | 2차원 배열에서 `row`/`col`이 자꾸 바뀌거나 jagged array에서 터진다 | "바깥 길이와 현재 row 길이를 섞고 있나?" | 바깥은 `arr.length`, 안쪽은 `arr[row].length` 확인 | [Java 2차원 배열 순회 입문](./java-2d-array-traversal-primer.md) |
@@ -176,8 +176,8 @@ System.out.println(Arrays.toString(copy));     // [3, 1, 2]
 
 1. 메서드 자체가 헷갈리면 [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)부터 본다.
 2. 출력이 이상하면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)로 간다.
-3. `false`가 문제면 [Java Array Equality Basics](./java-array-equality-basics.md)로 간다.
-4. 같이 바뀌면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)로 간다.
+3. "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 보이면 [Java Array Equality Basics](./java-array-equality-basics.md)로 간다.
+4. "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 보이면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)로 간다.
 5. 정렬 뒤 원본이 달라졌거나 검색 결과가 이상하면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)로 간다.
 
 ## 다음에 어디로 이어 읽으면 좋은가

@@ -14,13 +14,14 @@
 - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
 - [의존성 주입(DI) 기초](../../software-engineering/dependency-injection-basics.md)
 
-retrieval-anchor-keywords: java method constructor basics, java method vs constructor, java object creation constructor method order, java new constructor instance method flow, java parameter return type basics, java overloading basics, java object state change, 자바 메서드 생성자 차이, 자바 메서드 생성자 기초, 처음 배우는데 메서드 생성자, 객체 만들고 생성자 메서드 순서, 메서드 언제 쓰나요, 생성자 언제 쓰나요, 뭐예요 method constructor, 왜 return type 필요해요
+retrieval-anchor-keywords: java method constructor basics, java method vs constructor, java object creation constructor method order, java new constructor instance method flow, java parameter return type basics, java overloading basics, java object state change, java field vs parameter beginner, 자바 메서드 생성자 차이, 처음 배우는데 메서드 생성자, 객체 만들고 생성자 메서드 순서, 메서드 언제 쓰나요, 생성자 언제 쓰나요, field가 뭐예요, 객체 상태가 뭐예요
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
 - [처음 읽는 한 바퀴](#처음-읽는-한-바퀴)
+- [다음 칸으로 넘어갈 때 순서](#다음-칸으로-넘어갈-때-순서)
 - [먼저 잡아야 하는 다섯 질문](#먼저-잡아야-하는-다섯-질문)
 - [한 클래스에서 한 번에 보기](#한-클래스에서-한-번에-보기)
 - [손으로 추적하는 연습](#손으로-추적하는-연습)
@@ -57,14 +58,45 @@ Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.
 
 처음엔 용어를 따로 외우기보다 "`class`를 보고, `new`를 만나고, 생성자로 시작 상태를 정한 뒤, 인스턴스 메서드로 객체를 움직인다"는 순서만 붙이면 된다.
 
+여기서 먼저 용어 하나만 같이 붙이면 뒤가 훨씬 편하다.
+
+- `field`: 객체가 오래 들고 있는 값
+- 인스턴스 멤버: 각 객체에 붙어 있는 멤버. beginner route에서는 보통 "인스턴스 필드 + 인스턴스 메서드" 묶음으로 읽으면 된다
+- 객체 상태(object state): 그 객체의 field 값 묶음
+
+즉 이 문서에서는 "`constructor`가 field를 채워 객체 상태를 시작시키고, 인스턴스 메서드가 그 상태를 읽거나 바꾼다"는 한 문장으로 계속 읽으면 된다.
+
 | 장면 | 코드에서 보는 모양 | 초보자용 해석 |
 |---|---|---|
 | 타입 정의 | `class BankAccount { ... }` | 어떤 상태와 동작을 가진 객체를 만들지 적어 둔다 |
 | 객체 생성 | `new BankAccount("Mina", 1000)` | 새 객체가 생기고 constructor가 바로 실행된다 |
-| 시작 상태 확정 | `this.owner = owner` | constructor가 필드를 채워 "태어날 때 상태"를 정한다 |
-| 객체 사용 | `account.deposit(300)` | 만들어진 객체에 인스턴스 메서드를 호출해 상태를 바꾸거나 읽는다 |
+| 시작 상태 확정 | `this.owner = owner` | constructor가 인스턴스 필드를 채워 "태어날 때 객체 상태"를 정한다 |
+| 객체 사용 | `account.deposit(300)` | 만들어진 객체의 인스턴스 메서드가 필드 상태를 바꾸거나 읽는다 |
 
 즉 초보자 기준으로는 `new` 앞은 "무엇을 만들지", `new` 직후 constructor는 "어떤 상태로 시작할지", 인스턴스 메서드는 "살아 있는 객체에게 무엇을 시킬지"를 담당한다.
+
+## 다음 칸으로 넘어갈 때 순서
+
+이 문서를 읽고 나면 초보자는 자주 이렇게 점프한다.
+
+- "생성자 알겠으니 이제 `of()`부터 쓰면 되나?"
+- "`static`이 더 간단해 보이는데 메서드도 다 `static`이면 안 되나?"
+
+여기서 바로 factory pattern 쪽으로 건너뛰면, 아직 익히지 않은 두 질문이 섞인다.
+
+1. 이미 만들어진 객체의 책임은 어디에 두지?
+2. 생성 입구에 이름을 붙여야 할 만큼 생성 경로가 복잡한가?
+
+그래서 beginner route에서는 보통 아래 순서가 더 안전하다.
+
+| 지금 익힐 것 | 먼저 확인할 질문 | 다음 문서 |
+|---|---|---|
+| constructor | "객체가 어떤 상태로 태어나는가?" | 이 문서 안에서 유지 |
+| 인스턴스 메서드 | "태어난 객체가 자기 상태로 무엇을 하는가?" | [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md) |
+| `static` utility | "객체 없이 입력만으로 끝나는 계산인가?" | [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md) |
+| `static` factory | "생성 경로 자체에 이름, 검증, 기본값이 필요한가?" | [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md) |
+
+핵심은 constructor를 배웠다고 바로 factory가 주인공이 되는 것이 아니라, **먼저 인스턴스 메서드로 객체 책임 감각을 붙인 뒤** `static` 선택지를 비교하는 것이다.
 
 ## 먼저 잡아야 하는 다섯 질문
 
@@ -72,9 +104,9 @@ Java 입문 구간에서 메서드와 생성자는 보통 따로 배운다.
 |---|---|---|
 | parameter | "메서드가 일을 하려면 무엇이 필요하지?" | parameter는 호출자가 넘겨 주는 입력이다 |
 | return type | "실행 결과를 밖으로 돌려줘야 하나?" | 돌려줄 값이 없으면 `void`, 있으면 그 타입을 쓴다 |
-| constructor | "객체는 어떤 상태로 태어나야 하지?" | constructor는 객체의 시작 상태를 정한다. return type을 쓰지 않는다 |
+| constructor | "객체는 어떤 상태로 태어나야 하지?" | constructor는 인스턴스 필드를 채워 객체의 시작 상태를 정한다. return type을 쓰지 않는다 |
 | overloading | "비슷한 일을 하는 메서드를 여러 형태로 만들 수 있나?" | 이름은 같아도 parameter 목록이 다르면 가능하다 |
-| object state change | "이 호출 뒤에 필드 값이 바뀌는가?" | 필드를 수정하면 state change, 읽기만 하면 query에 가깝다 |
+| object state change | "이 호출 뒤에 인스턴스 필드 값이 바뀌는가?" | 인스턴스 필드를 수정하면 state change, 읽기만 하면 query에 가깝다 |
 
 이 다섯 개를 따로 외우기보다 "`new`로 객체를 만들고, constructor로 시작 상태를 정하고, method가 입력을 받아, 필요하면 값을 돌려주고, 상태를 바꾸거나 읽는다`"는 한 흐름으로 묶는 편이 훨씬 잘 남는다.
 
@@ -147,10 +179,10 @@ public class BankAccount {
 | `getBalance()` | 없음 | `int` | 없음 | 상태를 읽는 query method다 |
 | `summary()` | 없음 | `String` | 없음 | 객체 상태를 문자열로 요약해 돌려준다 |
 
-여기서 객체 상태는 `owner`, `balance`, `transactionCount` 같은 필드다.
+여기서 객체 상태는 `owner`, `balance`, `transactionCount` 같은 **인스턴스 필드 묶음**이다.
 
-- constructor는 객체가 처음 태어날 때 이 필드를 채운다.
-- `deposit()`와 `withdraw()`는 필드를 바꾸므로 state change가 있다.
+- constructor는 객체가 처음 태어날 때 이 인스턴스 필드를 채운다.
+- `deposit()`와 `withdraw()`는 인스턴스 필드를 바꾸므로 state change가 있다.
 - `getBalance()`와 `summary()`는 읽기만 하므로 state change가 없다.
 
 ### overloading은 무엇이 다를 때 성립하나
@@ -248,7 +280,7 @@ constructor는 method처럼 보여도 선언 방식이 다르다.
 
 ### parameter와 field를 같은 것으로 느낀다
 
-parameter는 호출 시 잠깐 들어오는 입력이고, field는 객체가 계속 들고 있는 상태다.
+parameter는 호출 시 잠깐 들어오는 입력이고, field는 객체가 계속 들고 있는 인스턴스 상태다.
 constructor나 method는 parameter를 받아 field를 바꿀 수 있다.
 
 ### 생성자와 메서드를 둘 다 "그냥 함수"로 읽는다
@@ -259,6 +291,18 @@ constructor나 method는 parameter를 받아 field를 바꿀 수 있다.
 - 생성자는 객체를 만든다. 그래서 클래스 이름과 같고 return type이 없다.
 - 메서드는 이미 있는 객체를 사용한다. 그래서 상태를 바꾸거나 값을 읽는다.
 - 같은 클래스 안에서도 "태어날 때 한 번" 쓰는 코드와 "살아 있는 동안 여러 번" 쓰는 코드를 분리해야 덜 헷갈린다.
+
+### 생성자를 배웠다고 곧바로 factory로 가야 한다고 느낀다
+
+아니다.
+`new BankAccount(...)`와 인스턴스 메서드 호출 흐름이 아직 낯설다면, `BankAccount.of(...)`를 먼저 붙이는 것이 오히려 개념을 하나 더 늘린다.
+
+먼저는 아래 두 칸을 분리해 읽는 편이 좋다.
+
+- constructor: 객체의 시작 상태를 만든다
+- 인스턴스 메서드: 만들어진 객체가 자기 상태로 일한다
+
+그다음 생성 경로에 이름을 붙일 필요가 생길 때만 factory를 검토하면 된다.
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 

@@ -13,6 +13,7 @@
 - [Repository 인터페이스, 구현체, DAO를 한 표로 보기](#repository-인터페이스-구현체-dao를-한-표로-보기)
 - [코드로 보면 어디가 계약이고 어디가 구현인가](#코드로-보면-어디가-계약이고-어디가-구현인가)
 - [언제 인터페이스를 두고 언제 클래스로 충분한가](#언제-인터페이스를-두고-언제-클래스로-충분한가)
+- [contract 질문 vs persistence 질문 30초 분기](#contract-질문-vs-persistence-질문-30초-분기)
 - [흔한 오해와 함정](#흔한-오해와-함정)
 - [다음에 읽을 문서](#다음에-읽을-문서)
 - [한 줄 정리](#한-줄-정리)
@@ -26,11 +27,13 @@
 - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+- [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)
 - [Spring Data JPA 기초](../database/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: repository interface beginner, repository interface contract, repository interface vs implementation, repository implementation swap, repository port beginner, dao vs repository interface, spring data jpa repository interface, domain repository contract, repository adapter beginner, repository naming smell, persistence follow-up question guide, repository method naming beginner, repository interface contract primer basics, repository interface contract primer beginner, repository interface contract primer intro
+retrieval-anchor-keywords: repository interface beginner, repository interface contract, repository interface vs implementation, repository port beginner, dao vs repository interface, spring data jpa repository interface, domain repository contract, repository adapter beginner, 왜 repository를 인터페이스로 만들어요, repository가 interface인 이유, 처음 배우는데 repository interface 뭐예요, 처음 배우는데 왜 구현체가 또 있죠, repository interface 언제 쓰는지, jparepository랑 repository interface 차이, 인터페이스 왜 쓰는지 저장소 예시
 
-처음 배우는데 "왜 `Repository`를 인터페이스로 두고 구현체를 갈아끼운다고 말하지?"가 제일 막힌다면, 이 문서를 큰 그림 entrypoint로 잡고 나서 [Repository, DAO, Entity](./repository-dao-entity.md)와 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)로 내려가면 된다.
+처음 배우는데 "왜 `Repository`를 인터페이스로 두고 구현체를 갈아끼운다고 말하지?"가 제일 막힌다면, 이 문서를 `왜 repository를 interface로 만들어요?` 같은 첫 질문을 받았을 때 가장 먼저 닿아야 하는 큰 그림 entrypoint로 잡고 나서 [Repository, DAO, Entity](./repository-dao-entity.md)와 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)로 내려가면 된다.
+`interface`라는 단어 자체가 아직 낯설면 [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)에서 계약과 구현을 나누는 감각을 먼저 잡고 돌아오면 덜 헷갈린다.
 
 ## 왜 이 문서가 필요한가
 
@@ -164,6 +167,22 @@ service는 "주문을 저장/조회할 수 있다"는 계약만 알면 된다.
 
 인 경우가 많다.
 
+## contract 질문 vs persistence 질문 30초 분기
+
+`Repository Interface Contract Primer`를 읽고 나면 초심자는 종종 "`그래서 다음에 fake를 보나요, JPA를 더 보나요?`"에서 다시 멈춘다.
+이때는 "저장 계약을 더 분명히 하고 싶은가, 아니면 저장 기술 동작을 더 알고 싶은가"만 나눠 보면 된다.
+
+| 지금 막힌 질문 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| "`Service`가 repository에 정확히 무엇을 기대해야 하지?", "`fake`도 이 계약만 재현하면 되나?" | [Repository Fake Design Guide](./repository-fake-design-guide.md) | fake는 "`DB 없이도 저장 계약을 어떻게 재현할까`"라는 contract 질문의 다음 단계다 |
+| "`flush`, dirty checking, `cascade`, `Entity` 매핑은 어디서 다뤄야 하지?" | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | 이쪽은 fake보다 persistence adapter와 ORM 번역 규칙 질문에 가깝다 |
+| "`Service`에 `Entity`가 보이는데 이게 괜찮나?" | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | 계약 자체보다 ORM 세부가 바깥으로 샌 상태를 먼저 보는 편이 빠르다 |
+
+짧게 정리하면:
+
+- `Repository Fake Design Guide`는 **계약을 test에서 어떻게 재현하나**를 이어서 보는 문서다.
+- JPA 동작 설명이 더 필요하다면 fake보다 **매핑/누수 문서**로 가는 편이 덜 헷갈린다.
+
 ## 흔한 오해와 함정
 
 - "`Repository는 무조건 인터페이스다`"라고 외우기 쉽다.
@@ -183,6 +202,7 @@ service는 "주문을 저장/조회할 수 있다"는 계약만 알면 된다.
 - repository port와 adapter mapping 경계를 바로 점검하고 싶다면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - repository를 outbound port로 읽는 감각을 넓히고 싶다면 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 - test fake가 왜 "구현 교체"가 아니라 "계약 재현"인지 보고 싶다면 [Repository Fake Design Guide](./repository-fake-design-guide.md)
+- service에 `Entity`가 보이거나 JPA 세부가 밖으로 샌 것 같다면 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 
 ## 한 줄 정리
 

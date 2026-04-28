@@ -22,7 +22,7 @@
 > - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 > - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
 
-retrieval-anchor-keywords: disable cache vs fresh profile, disable cache vs close connections, alt-svc cache primer, dns cache primer browser, h3 discovery different results, disable cache not alt-svc cache, disable cache not dns cache, close connections h3 discovery, fresh profile alt-svc clean test, fresh profile dns cache clean test, browser cache toggle h3, browser cache vs alt-svc vs dns cache, http cache vs alt-svc cache vs dns cache, why h3 appears only after closing connections, why fresh profile changes h3
+retrieval-anchor-keywords: disable cache vs fresh profile, disable cache vs close connections, alt-svc cache 뭐예요, dns cache 뭐예요, disable cache 뭐예요, 처음 배우는데 disable cache랑 새 profile 뭐가 달라요, 왜 새 profile 에서는 h3가 보이는데 disable cache에서는 안 바뀌어요, 브라우저 h3 실험이 자꾸 헷갈려요, cache를 비운다는 말이 뭐가 달라요, browser cache vs alt-svc vs dns cache, http cache vs alt-svc cache vs dns cache, why h3 appears only after closing connections, why fresh profile changes h3, 언제 새 profile을 쓰고 언제 connection 종료를 보나요, 큰 그림으로 http cache alt-svc dns cache 차이
 
 <details>
 <summary>Table of Contents</summary>
@@ -36,6 +36,16 @@ retrieval-anchor-keywords: disable cache vs fresh profile, disable cache vs clos
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
 
 </details>
+
+## 이 문서가 먼저 맞는 질문
+
+이 문서는 아래처럼 **처음 배우는 사람이 실험 기준선부터 헷갈릴 때** 먼저 읽도록 만든 primer다.
+
+- "`Disable cache` 뭐예요? 새 profile이랑 같은 거예요?"
+- "`왜 새 profile에서는 h3가 보이는데 Disable cache에서는 그대로예요?`"
+- "`Alt-Svc cache`랑 DNS cache 차이를 큰 그림으로 먼저 알고 싶어요"
+
+반대로 이미 NetLog나 resolver path까지 파고 있다면 이 문서보다 아래 심화 문서가 더 빠를 수 있다.
 
 ## 먼저 잡는 멘탈 모델
 

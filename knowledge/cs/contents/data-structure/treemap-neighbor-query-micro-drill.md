@@ -7,6 +7,7 @@
 관련 문서:
 
 - [자료구조 카테고리 인덱스](./README.md)
+- [TreeSet, TreeMap Null-Boundary Quick Reference](./treeset-treemap-null-boundary-quick-reference.md)
 - [TreeSet Exact-Match Drill](./treeset-exact-match-drill.md)
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
@@ -16,7 +17,7 @@
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)
 
-retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilingkey beginner, lower higher floor ceiling beginner, treemap lowerkey higherkey exact match, why lower floor different, exact match inclusive 여부, 왜 lower랑 floor가 달라요, floor ceiling exact match 포함, 같은 key 포함 여부 treemap, treeset lower floor ceiling higher, reservation schedule treemap drill, next reservation lookup, previous reservation lookup, lower higher 헷갈림, calendar booking neighbor query
+retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilingkey beginner, lower higher floor ceiling beginner, treemap lowerkey higherkey exact match, why lower floor different, exact match inclusive 여부, 왜 lower랑 floor가 달라요, floor ceiling exact match 포함, 같은 key 포함 여부 treemap, ordered map lower floor difference, ordered map exact match 포함 여부, ordered map router query, treeset lower floor ceiling higher, reservation schedule treemap drill, lower higher 헷갈림
 
 ## 핵심 개념
 
@@ -36,6 +37,14 @@ retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilin
 한 줄로 줄이면 이렇다.
 
 > `lower/floor`는 왼쪽, `ceiling/higher`는 오른쪽이고, `floor/ceiling`만 exact match를 포함한다.
+
+ordered map query를 처음 붙일 때는 아래처럼 문장을 바로 번역하면 된다.
+
+| 검색하거나 묻는 말 | 첫 번역 |
+|---|---|
+| `왜 lower랑 floor가 달라요?` | 같은 key가 있을 때 `lower`는 건너뛰고 `floor`는 멈춘다 |
+| `exact match 포함 여부가 뭐예요?` | `floor/ceiling`만 같은 key를 포함한다 |
+| `ordered map에서 lower/floor 언제 써요?` | 정렬된 key에서 strict/inclusive 이웃 조회를 나누는 질문이다 |
 
 ## 먼저 외울 한 장
 
@@ -67,6 +76,13 @@ retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilin
 
 - `floor/ceiling` = `같은 값 있으면 포함`
 - `lower/higher` = `같은 값 있어도 제외`
+
+이 규칙은 `ordered map query pack` 관점에서 한 줄로 요약하면 아래와 같다.
+
+| 질문 | 같은 key가 있으면 | learner 메모 |
+|---|---|---|
+| `lower vs floor` | `lower`는 왼쪽으로 더 간다, `floor`는 그 자리에 선다 | `왜 lower랑 floor가 달라요`의 핵심 |
+| `higher vs ceiling` | `higher`는 오른쪽으로 더 간다, `ceiling`은 그 자리에 선다 | `exact match 포함 여부`의 오른쪽 버전 |
 
 ## 한눈에 보기
 
@@ -231,6 +247,8 @@ retrieval-anchor-keywords: treemap neighbor query drill, treemap floorkey ceilin
 - `higherKey`는 `ceilingKey`의 strict 버전이다. exact match를 포함하지 않는다.
 - `null`이 나오면 에러라고 느끼기 쉽지만, 이웃이 없다는 정상 결과다.
 - 예약 충돌 여부까지 한 번에 판단하려 하면 초반에 과부하가 온다. 먼저 `strict/inclusive 왼쪽/오른쪽`만 맞히고, 다음 단계에서 `floorEntry`/`ceilingEntry`로 종료 시각까지 읽는 편이 낫다.
+- `ordered map`을 "정렬된 출력 도구" 정도로만 보면 `lower/floor` 질문이 갑자기 뜬금없어 보일 수 있다. 이 문서에서는 `정렬된 key에서 가장 가까운 이웃을 찾는 도구`로 읽어야 한다.
+- "`못 찾으면 예외인가 null인가`가 먼저 헷갈리면 [TreeSet, TreeMap Null-Boundary Quick Reference](./treeset-treemap-null-boundary-quick-reference.md)에서 빈 컬렉션/경계 바깥 결과를 한 장으로 먼저 보고 오는 편이 안전하다.
 
 ## 실무에서 쓰는 모습
 

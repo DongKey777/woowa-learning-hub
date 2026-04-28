@@ -24,11 +24,27 @@
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
 - [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 - [Pool 지표 읽기 미니 브리지](./pool-metrics-lock-wait-timeout-mini-bridge.md)
+- [Spring `@Transactional` 기초](../spring/spring-transactional-basics.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: unique vs locking read, duplicate primer, unique constraint vs select for update, duplicate key vs lock timeout, duplicate key deadlock serialization failure, connection timeout deadlock duplicate key mapping, connection timeout busy retryable already exists, service layer failure translation table, already exists busy retryable mapping, winner already exists conflict busy comparison, duplicate winner comparison table, winner row already exists conflict busy primer, duplicate fresh read conflict mapping, duplicate key handling beginner, unique vs locking read duplicate primer basics
+retrieval-anchor-keywords: unique vs locking read, unique constraint vs select for update, duplicate key 뭐예요, duplicate key랑 lock timeout 차이, unique 랑 for update 뭐가 달라요, select for update 넣었는데 왜 duplicate key 나요, insert if absent 처음 배우는데, exact duplicate 큰 그림, 중복 insert 헷갈려요, duplicate key handling beginner, already exists busy retryable mapping, duplicate fresh read conflict mapping, connection timeout deadlock duplicate key mapping, insert if absent 기초, why duplicate key after for update
+
+## 이 문서가 먼저 맞는 질문
+
+아래처럼 **처음 개념을 묻는 질문**이면 deep dive보다 이 primer가 먼저 맞다.
+
+- "`duplicate key`가 뭐예요?"
+- "`UNIQUE`랑 `FOR UPDATE`는 뭐가 달라요?"
+- "`select for update` 넣었는데 왜 아직도 중복이 나요?"
+- "`lock timeout`이랑 `duplicate key`를 같은 장애로 봐도 되나요?"
+
+짧게 먼저 고정하면 이렇다.
+
+- exact duplicate를 최종 차단하는 문은 보통 `UNIQUE`다
+- locking read는 이미 있는 row를 순서대로 다루게 도와줄 수는 있어도, 없는 row를 항상 미리 잠가 주는 만능 duplicate 방지 장치는 아니다
+- 그래서 첫 질문에서는 "`누가 승자를 확정하나?`"를 먼저 보고, 그다음에 "`대기열을 앞단에서 만들 필요가 있나?`"를 본다
 
 ## 핵심 개념
 

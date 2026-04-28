@@ -12,6 +12,7 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
+- [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
 > 관련 문서:
 > - [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
@@ -21,7 +22,20 @@
 > - [Spring Starter 넣었는데 Bean이 안 뜰 때 FAQ: classpath 조건, property, override, scan boundary](./spring-starter-added-but-bean-missing-faq.md)
 > - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 
-retrieval-anchor-keywords: starter dependency map, starter vs autoconfiguration module, starter vs sdk driver, starter ownership beginner, spring starter ownership, spring starter dependency tree beginner, starter is not implementation, starter is not auto-configuration module, spring boot starter vs autoconfigure, spring-boot-autoconfigure vs starter, starter jar no classes beginner, starter dependency map primer, gradle runtimeonly mysql connector, maven runtime mysql connector, starter plus driver beginner
+retrieval-anchor-keywords: spring starter 뭐예요, spring boot starter 뭐예요, starter 처음 배우는데, starter 큰 그림, what is spring starter, starter vs autoconfiguration module, starter vs sdk driver, spring boot starter vs autoconfigure, starter 넣으면 뭐가 따라와요, starter랑 driver 차이, starter랑 autoconfiguration 차이, 언제 starter 추가해요, starter jar no classes beginner, gradle runtimeonly mysql connector, starter dependency map primer
+
+## 이 문서가 먼저 잡아야 하는 질문
+
+이 문서는 아래처럼 **starter를 처음 보는 질문**에서 deep dive보다 먼저 걸리는 primer를 목표로 한다.
+
+| 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
+|---|---|
+| "`spring starter`가 뭐예요?" | starter는 기능을 쓰겠다는 입구 dependency라고 먼저 자른다 |
+| "starter 넣으면 끝 아닌가요?" | starter, auto-configuration, driver는 소유자와 역할이 다르다고 설명한다 |
+| "starter랑 `spring-boot-autoconfigure`는 뭐가 달라요?" | 소비자용 묶음과 조건부 bean 조립 규칙을 분리한다 |
+| "JPA starter 넣었는데 MySQL driver를 또 왜 적어요?" | starter와 vendor driver 책임이 분리된 구조라고 보여 준다 |
+
+질문이 "`starter 넣었는데 왜 바로 Bean이 생겨요?`"라면 [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)로 이어서 "동작 원리"를 본다. 반대로 지금 질문이 "`starter 자체가 뭐예요?`", "`언제 starter를 추가하죠?`", "`왜 driver를 또 적죠?`"라면 이 문서가 첫 정거장이다.
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -29,6 +43,7 @@ retrieval-anchor-keywords: starter dependency map, starter vs autoconfiguration 
 - starter dependency 한 줄이 Condition Evaluation Report의 positive/negative match로 어떻게 이어지는지 한 번에 연습하려면 [Spring Starter Condition Report Starter Drill: `spring-boot-starter-data-jpa` 하나를 positive/negative match로 읽는 법](./spring-starter-condition-report-starter-drill.md)을 먼저 본다.
 - `@Configuration`과 Boot auto-configuration의 관계부터 다시 잡고 싶으면 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)로 이어진다.
 - classpath 조건이 환경마다 왜 달라지는지 scope와 test slice 관점으로 더 보고 싶으면 [Spring `@ConditionalOnClass` classpath 함정 입문: starter는 있는데 왜 환경마다 auto-configuration이 빠질까](./spring-conditionalonclass-classpath-scope-optional-test-slice-primer.md)를 본다.
+- JPA starter와 DB driver 관계가 아직 감으로 안 잡히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)로 넘어가 "`save()` 뒤 SQL은 누가 만들고 driver는 어디서 쓰이는가"를 한 번 더 연결한다.
 - Boot 자동 구성 전체 그림과 커스텀 starter 구조를 더 깊게 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
 
 ---
@@ -48,6 +63,12 @@ SDK/driver = 실제 연결과 동작을 수행하는 구현 클래스
 - starter 이름은 **앱이 처음 적는 편한 entrypoint**일 뿐이다.
 - auto-configuration 코드는 흔히 **starter가 아니라 다른 module**에 들어 있다.
 - 런타임 bean 생성은 결국 **SDK/driver class가 실제 classpath에 있느냐**에 달려 있다.
+
+처음 배우는 입장에서는 아래처럼 한 문장씩 끊어 읽는 편이 안전하다.
+
+- starter = "이 기능을 쓰고 싶다"라고 build 파일에 적는 첫 줄
+- auto-configuration = "조건이 맞으면 이 Bean들을 묶어 주겠다"는 Spring Boot 쪽 조립 규칙
+- driver/SDK = DB나 외부 시스템과 실제로 통신하는 구현 부품
 
 즉 아래 세 질문은 서로 다르다.
 

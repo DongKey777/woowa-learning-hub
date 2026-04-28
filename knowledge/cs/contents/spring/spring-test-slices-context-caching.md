@@ -8,6 +8,7 @@
 - [카테고리 README](./README.md)
 - [Spring 테스트 기초: @SpringBootTest부터 슬라이스 테스트까지](./spring-testing-basics.md)
 - [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
+- [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
 - [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
 - [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
 - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
@@ -42,6 +43,19 @@ retrieval-anchor-keywords: test slice, context cache, webmvctest, datajpatest, s
 | "`어제보다 테스트가 3배 느려졌어요`" | context 재사용 여부 | 이 문서 |
 | "`JSON` 모양이나 외부 API client 헤더만 보고 싶어요" | 더 좁은 계약 slice | [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md) |
 
+## 처음 보는 사람용 30초 결정표
+
+같은 "`테스트가 이상해요`"라도 먼저 자를 축이 다르다.
+
+| 지금 가장 먼저 보이는 말 | 먼저 자를 축 | 이 문서가 답하는가 |
+|---|---|---|
+| "`@WebMvcTest`인데 service bean not found예요" | slice 경계 | 아니오. 먼저 [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| "`assertSame`은 맞는데 `@Transactional`이 안 먹어요" | 프록시 behavior 검증 | 아니오. 먼저 [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
+| "`어제보다 테스트가 3배 느려졌어요`" | context 재사용 | 예. 이 문서의 핵심 질문이다 |
+| "`properties`만 조금 다른데 왜 다시 다 뜨죠?" | cache split 원인 | 예. property 차이와 cache key를 같이 본다 |
+
+짧게 말하면 이 문서는 "`무슨 테스트를 쓸까?`"보다 "`이미 고른 테스트가 왜 자꾸 새 컨텍스트를 띄우지?`"를 설명하는 쪽이다.
+
 ## 핵심 개념
 
 Spring 테스트의 핵심은 두 가지다.
@@ -60,6 +74,17 @@ Spring 테스트의 핵심은 두 가지다.
 
 이 문서를 읽어야 하는 이유는 명확하다.
 테스트가 느리고, 불안정하고, 리팩터링에 약하다면 단순히 mock을 늘릴 문제가 아니라, **컨텍스트 구성 자체를 재설계해야 하기 때문**이다.
+
+## beginner-safe mental map: 느림의 원인을 두 칸으로 자르기
+
+처음에는 "`테스트가 느리다`"를 하나의 원인으로 보지 말고, 아래 두 칸으로만 잘라도 충분하다.
+
+| 느려지는 이유 | 초급자용 해석 | 먼저 할 일 |
+|---|---|---|
+| slice를 너무 크게 골랐다 | 처음부터 큰 앱을 매번 띄운다 | `@SpringBootTest`를 slice나 단위 테스트로 줄일 수 있는지 본다 |
+| 같은 slice라도 설정이 자꾸 달라진다 | 비슷해 보여도 cache 입장에서는 다른 컨텍스트다 | property, `@MockBean`, `@DirtiesContext` 차이를 비교한다 |
+
+이 두 칸을 먼저 나누면 "`service bean not found`", "`@Transactional` 안 먹음`, "`느림`"을 한 덩어리로 섞지 않게 된다.
 
 ## 20초 분기: 지금 문제는 slice 선택인가, cache 분열인가
 
@@ -130,6 +155,12 @@ Spring Test는 비슷한 설정의 `ApplicationContext`를 캐시한다.
 | slice를 너무 크게 골랐다 | 처음부터 큰 앱을 매번 띄운다 |
 | 같은 slice라도 속성이 자꾸 달라진다 | 재사용 가능한 컨텍스트가 매번 다른 것으로 판정된다 |
 | `@DirtiesContext`를 자주 쓴다 | 일부러 캐시를 버린다 |
+
+## 자주 섞이는 오해 3가지
+
+- "`테스트가 느리다` = 로직이 무겁다"는 뜻은 아니다. 처음엔 로직보다 컨텍스트를 몇 번 새로 띄웠는지가 더 큰 원인인 경우가 많다.
+- "`service bean not found`와 느림은 같은 문제"가 아니다. 전자는 slice 경계, 후자는 cache 재사용 축이 더 가깝다.
+- "`assertSame`은 맞는데 `@Transactional`이 안 먹는다"도 cache 문서의 주제가 아니다. 그때는 [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md)로 내려가 behavior 검증으로 바꿔야 한다.
 
 ## Slice와 Full Context의 경계
 
@@ -258,6 +289,7 @@ class BTest {
 - "`property override가 cache를 왜 쪼개죠?`" -> [Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache](./spring-test-property-override-boundaries-primer.md)
 - "`slice에 뭘 import했더니 갑자기 무거워졌어요`" -> [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
 - "`JSON` 필드명이나 외부 API client 요청만 검증하고 싶은데 너무 무거워요`" -> [Spring `@JsonTest` and `@RestClientTest` Slice Boundaries](./spring-jsontest-restclienttest-slice-boundaries.md)
+- "`assertSame`은 맞는데 rollback/commit 결과가 이상해요`" -> [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
 
 ---
 

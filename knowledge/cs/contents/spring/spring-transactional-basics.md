@@ -6,18 +6,20 @@
 
 관련 문서:
 
+- [spring 카테고리 인덱스](./README.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
+- [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](./spring-aop-basics.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [Spring Persistence / Transaction Mental Model Primer](./spring-persistence-transaction-web-service-repository-primer.md)
 - [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md)
 - [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md)
 
-retrieval-anchor-keywords: transactional basics, @transactional 입문, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional 처음, transactional 왜 안 먹어요, transactional annotation how it works, spring proxy transaction, begin commit rollback spring, transactional method beginner, transactional rollback default, checked exception rollback, transactional 내부 호출, transactional proxy bypass
+retrieval-anchor-keywords: transactional basics, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional 처음, transactional 왜 안 먹어요, spring proxy transaction, begin commit rollback spring, transactional method beginner, transactional rollback default, transactional 내부 호출, transactional proxy bypass, 왜 annotation 안 먹어요 spring
 
-## 먼저 이 문서에서 멈출 범위
+## beginner 정지선
 
 > `@Transactional` 옵션을 바꾸기 전에 먼저 확인할 것:
 > 호출이 "프록시를 통과했는지"가 1순위다.
@@ -25,14 +27,44 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 이 문서는 "`트랜잭션 옵션을 바꿔야 하나?`"로 들어가기 전에, 먼저 **트랜잭션이 어디서 시작되는지**를 잡는 beginner 입구다.
 
 - 이 단계에서 먼저 잡을 것: "`요청 하나`와 `트랜잭션 하나`는 같은 말이 아니다", "`public` service 진입점을 프록시가 감싼다".
-- 이 문서의 중심이 아닌 것: `propagation`, `isolation`, `rollback-only`, `REQUIRES_NEW`, 운영 장애 사례.
+- 이 문서의 중심이 아닌 것: `propagation`, `isolation`, `rollback-only`, `REQUIRES_NEW`, 장애 복구 사례.
 - 위 단어가 바로 궁금하면 이 문서를 끝까지 붙잡기보다 [Spring Persistence / Transaction Mental Model Primer](./spring-persistence-transaction-web-service-repository-primer.md), [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md), [@Transactional 깊이 파기](./transactional-deep-dive.md)로 넘어가는 편이 낫다.
 
-## 프록시 경로 먼저 보는 기준
+## 처음엔 이 2문장만 기억한다
+
+- `@Transactional`은 service 메서드 앞뒤에 begin/commit/rollback을 붙이는 프록시 규칙이다.
+- "`왜 안 먹어요`"가 먼저 보이면 옵션보다 호출 경로부터 본다.
+
+## 처음 헷갈리는 질문을 4칸으로 먼저 자른다
+
+`@Transactional`을 처음 보면 MVC, DI, AOP, 테스트가 한꺼번에 섞여 보이기 쉽다. 이럴 때는 용어를 늘리기보다 지금 막힌 문장을 아래 4칸 중 어디에 놓을지 먼저 고르면 된다.
+
+| 지금 튀어나온 말 | 먼저 보는 축 | 여기서 바로 읽을 문서 |
+|---|---|---|
+| "`요청은 들어왔나요?`", "`controller까지 왔어요?`" | 요청 파이프라인 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| "`왜 new 대신 주입해요?`", "`service는 누가 넣어 줘요?`" | Bean + DI | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| "`commit/rollback`은 누가 해요?`, "`왜 트랜잭션이 안 먹어요?`" | 트랜잭션 프록시 | 이 문서 |
+| "`테스트가 잘못된 건가요?`", "`@WebMvcTest`인데 service가 없어요`" | 테스트 slice | [Spring 테스트 기초](./spring-testing-basics.md) |
+
+짧게 말하면 `@Transactional` 입문은 "DB 옵션 표"를 외우는 단계가 아니라, **지금 질문이 요청/주입/프록시/테스트 중 무엇인지 분리하는 단계**다.
+
+## AOP와 왜 같이 나오는지 20초로 묶기
+
+처음에는 용어를 늘리지 말고 아래 세 줄만 연결하면 된다.
+
+| 지금 보이는 말 | 초급자용 해석 | 먼저 읽을 문서 |
+|---|---|---|
+| "`AOP`가 뭐예요?" | 공통 코드를 메서드 앞뒤에 붙이는 이유 | [AOP 기초](./spring-aop-basics.md) |
+| "`@Transactional`이 왜 프록시 이야기로 가요?" | 트랜잭션도 그 공통 코드를 붙이는 대표 사례 | 이 문서 계속 읽기 |
+| "`왜 annotation이 안 먹어요?`" | 옵션보다 프록시 경로가 먼저 깨졌을 수 있다 | [AOP 기초](./spring-aop-basics.md) |
+
+짧게 기억하면 "`AOP`는 왜 프록시가 필요한지", `@Transactional`은 "그 프록시가 commit/rollback을 어디에 붙이는지"를 설명한다.
+
+## 프록시 경로 먼저
 
 초급자용 공통 라우팅 한 줄:
 
-`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call(proxy)`가 깨졌는지 본다.
+`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call`이 깨졌는지 본다.
 
 짧게 구분하면:
 
@@ -40,6 +72,13 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 |---|---|---|
 | "`@Transactional`이 아예 안 먹는 것 같다", "`this.method()`가 보인다", "`private`에 붙였다" | 프록시 경로 문제 | [AOP 기초](./spring-aop-basics.md) |
 | "트랜잭션은 잡히는 것 같은데 rollback/readOnly/전파 결과가 기대와 다르다" | 트랜잭션 옵션 문제 | 이 문서 계속 읽기 |
+
+짧게 말하면 이 문서의 beginner 질문은 두 개뿐이다.
+
+- "`트랜잭션이 어디서 시작돼요?`"
+- "`왜 annotation이 안 먹어요?`"
+
+둘을 넘는 옵션 조합이나 incident 설명은 이 문서의 중심이 아니라 follow-up 링크로 넘긴다.
 
 ## 핵심 개념
 
@@ -53,11 +92,11 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 외부 -> 프록시(트랜잭션 시작) -> 실제 메서드 실행 -> 프록시(commit 또는 rollback)
 ```
 
-| 결과 | 기본 동작 |
+| 결과 | 여기서 먼저 기억할 것 |
 |---|---|
 | 메서드 정상 종료 | commit |
-| RuntimeException (unchecked) 발생 | rollback |
-| checked Exception 등 세부 규칙 | 이 문서 끝의 follow-up 링크로 미룬다 |
+| `RuntimeException` 발생 | rollback |
+| checked exception, 전파 옵션 | 지금은 follow-up 링크로 넘긴다 |
 
 ## 주문 요청 한 장면으로 위치 잡기
 
@@ -84,6 +123,18 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 예를 들어 controller가 service를 호출해도, 그 service 메서드에 `@Transactional`이 없으면 요청은 정상 처리되지만 트랜잭션은 기대와 다르게 짧거나 아예 없을 수 있다. 반대로 요청은 하나여도 service 내부에서 여러 repository 작업을 한 트랜잭션으로 묶을 수 있다.
 
 그래서 문제를 볼 때는 순서를 이렇게 잡는 편이 안전하다. "컨트롤러까지 왔나?" 다음에 "프록시를 타고 트랜잭션이 열렸나?"를 본다. 이 감각이 잡히면 `404`, DI 오류, rollback 문제를 한 덩어리로 섞지 않게 된다.
+
+## 처음엔 어디에 붙일지만 먼저 고른다
+
+처음 `@Transactional`을 붙일 때는 옵션보다 "`어느 레이어를 작업 묶음 경계로 볼까`"를 먼저 정하는 편이 덜 헷갈린다.
+
+| 붙이는 위치 | beginner 기본값 | 왜 이렇게 보나 |
+|---|---|---|
+| controller | 기본 시작점으로는 잘 안 쓴다 | 요청 길찾기와 DB 작업 묶음을 한 파일에서 같이 읽게 되어 질문 축이 섞이기 쉽다 |
+| service `public` 진입 메서드 | 가장 흔한 시작점 | "주문 생성", "결제 취소" 같은 유스케이스 한 덩어리를 transaction으로 묶기 쉽다 |
+| repository 메서드마다 | 입문 기본값으로는 너무 잘게 쪼개지기 쉽다 | 여러 저장 작업을 한 묶음으로 볼지 감각을 잡기 어렵다 |
+
+안전한 첫 선택은 "controller는 요청 입구, service는 작업 묶음 경계"로 나누는 것이다. 그다음에 "`왜 service에서 프록시 이야기가 나오지?`"가 남으면 [AOP 기초](./spring-aop-basics.md)로 이어서 보면 된다.
 
 ## 30초 미니 체크: 이 3문항부터 답해 보기
 
@@ -115,6 +166,7 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 |---|---|---|
 | "`assertSame`인데 왜 프록시처럼 안 보여요?" | identity 테스트와 동작 테스트를 섞음 | [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
 | "`@WebMvcTest`에서 service bean이 없어요`" | slice 경계 문제 | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`@DataJpaTest`인데 commit 뒤 동작이 안 보여요" | 기본 rollback slice에서 commit 이후를 기대함 | [Spring 테스트 기초](./spring-testing-basics.md) |
 | "`트랜잭션이 안 먹는 것 같은데 this.method()`가 보여요" | 프록시 우회 문제 | [AOP 기초](./spring-aop-basics.md) |
 
 짧게 외우면 이렇다.
@@ -122,6 +174,12 @@ retrieval-anchor-keywords: transactional basics, @transactional 입문, spring t
 - 테스트 어노테이션 선택은 "무엇을 띄울까" 문제다.
 - `@Transactional` 적용 여부는 "프록시를 탔나" 문제다.
 - 둘이 동시에 보여도 질문 축이 다르므로, 테스트를 바꾸기 전에 호출 경로를 먼저 분리한다.
+
+초급자용 한 줄 복기:
+
+- `service bean not found`면 보통 slice 경계 질문이다.
+- "`트랜잭션이 안 먹는다`"면 보통 프록시 경계 질문이다.
+- 같은 service 단어가 보여도, **무엇을 띄웠나**와 **어떻게 호출했나**는 다른 질문이다.
 
 ## `private`와 내부 호출은 구분만 하고, 원리 설명은 다른 문서로 넘긴다
 
@@ -173,9 +231,9 @@ public class OrderTxService {
 
 `@Transactional`이 안 먹는 것처럼 보이면, 옵션(rollbackFor/readOnly)보다 먼저 "프록시를 통과했는가?"를 확인한다.
 
-두 primer에서 공통으로 쓰는 라우팅 문구는 아래 한 줄이다.
+두 primer에서 공통으로 쓰는 라우팅 문구는 README와 같은 이 한 줄이다.
 
-`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call(proxy)`가 깨졌는지 본다.
+`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call`이 깨졌는지 본다.
 
 | 보이는 증상 | 1차 확인 | 바로 이동(입문) | 다음 확인(증상 고정 시) |
 |---|---|---|---|
@@ -224,8 +282,8 @@ public class OrderTxService {
 **오해 1: 어노테이션만 붙이면 항상 트랜잭션이 걸린다**
 같은 클래스 내부 호출은 프록시를 우회하므로 트랜잭션이 시작되지 않는다. 반드시 외부 Bean에서 호출해야 한다.
 
-**오해 2: checked exception도 무조건 rollback된다**
-기본값은 아니다. `rollbackFor = Exception.class` 처럼 명시해야 checked exception에도 rollback이 걸린다.
+**오해 2: 안 되면 `rollbackFor`, `readOnly`, `propagation`부터 바꿔야 한다**
+내부 호출/프록시 우회가 원인이면 옵션을 바꿔도 해결되지 않는다. 이 경우는 [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)으로 바로 가서 구조를 먼저 고친다.
 
 **오해 3: `private` 메서드에도 적용된다**
 입문 단계에서는 트랜잭션 경계를 보통 service의 `public` 진입 메서드에 둔다고 생각하는 편이 안전하다. `private` 메서드에 붙여 두고 기대한 효과를 얻는 패턴은 beginner 기본값이 아니다.
@@ -233,8 +291,8 @@ public class OrderTxService {
 **오해 3-1: `private`와 내부 호출은 같은 문제다**
 아니다. `private`는 메서드 경계 문제이고, 내부 호출은 호출 경로 문제다. 그래서 `public`으로 바꿔도 `this.save()`면 여전히 안 될 수 있다.
 
-**오해 4: 안 되면 `rollbackFor`, `propagation`부터 바꿔야 한다**
-내부 호출/프록시 우회가 원인이면 옵션을 바꿔도 해결되지 않는다. 이 경우는 [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)으로 바로 가서 구조를 먼저 고치고, 패턴 비교가 더 필요하면 [Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md)로 넘어간다.
+**오해 4: checked exception 규칙까지 지금 다 외워야 한다**
+처음 읽을 때는 "기본 rollback은 주로 `RuntimeException` 쪽" 정도만 잡으면 충분하다. checked exception 세부 규칙은 [@Transactional 깊이 파기](./transactional-deep-dive.md)로 넘긴다.
 
 ### 헷갈릴 때 바로 다시 보는 한 줄 구분
 
@@ -270,13 +328,13 @@ public class OrderService {
 ## 더 깊이 가려면
 
 - 트랜잭션 전파(propagation), rollback-only 함정, 중첩 트랜잭션은 [@Transactional 깊이 파기](./transactional-deep-dive.md)에서 다룬다.
-- 내부 호출/프록시 우회 증상은 [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)으로 먼저 바로 고쳐 보고, 원리 비교가 더 필요하면 [AOP 기초](./spring-aop-basics.md)와 [Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md)로 확장하면 빠르다.
+- 내부 호출/프록시 우회 증상은 README가 약속한 표현대로 먼저 `프록시 경로 먼저`, `Bean + public + external call`을 다시 확인한 뒤 [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)으로 바로 고쳐 본다. 원리 비교가 더 필요하면 [AOP 기초](./spring-aop-basics.md)와 [Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md)로 확장하면 빠르다.
 - 프록시가 왜 내부 호출에서 한계가 생기는지는 [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)을 보면 더 명확해진다.
 - DB 격리수준과 `@Transactional(isolation=...)` 연결은 [트랜잭션 격리수준과 락](../database/transaction-isolation-locking.md)에서 이어서 본다.
 
 ## 다음 질문은 다른 문서로 넘긴다
 
-아래 질문이 먼저 떠오르면, 이 문서 안에서 더 파기보다 follow-up 문서로 바로 이동하는 편이 빠르다.
+아래 질문이 먼저 떠오르면, 이 문서 안에서 더 파기보다 `프록시 경로 먼저`, `Bean + public + external call` 기준이 맞는지만 다시 확인하고 follow-up 문서로 바로 이동하는 편이 빠르다.
 
 - "`왜 내부 호출이면 안 되죠?`" -> [AOP 기초](./spring-aop-basics.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - "`checked exception인데 rollback하려면요?`" -> [@Transactional 깊이 파기](./transactional-deep-dive.md)

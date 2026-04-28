@@ -1,10 +1,10 @@
 # 트랜잭션 격리수준과 락
 
-> 한 줄 요약: 이 문서는 "왜 같이 rollback되나?" 다음 단계로, "동시에 실행될 때 무엇이 보이고 언제 기다리게 만들까?"를 한 장으로 묶어 주는 심화 입구다.
+> 한 줄 요약: 이 문서는 [트랜잭션 기초](./transaction-basics.md)와 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) 다음 단계에서, "무엇을 같이 되돌릴까"와 "동시에 실행될 때 무엇이 보일까"가 실제 락/incident 대응으로 어떻게 이어지는지 묶어 주는 심화 bridge다.
 
 **난이도: 🔴 Advanced**
 
-transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할 때 보는 심화 primer. 처음 DB를 배우는 단계라면 [트랜잭션 기초](./transaction-basics.md)와 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)를 먼저 읽는 편이 안전하다.
+transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할 때 보는 심화 primer다. 처음 DB를 배우는 단계라면 [트랜잭션 기초](./transaction-basics.md)에서 `commit`/`rollback` 경계를 먼저 잡고, [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)에서 row 재조회와 범위 재조회 차이를 먼저 분리한 뒤 이 문서로 올라오는 편이 안전하다.
 
 관련 문서:
 
@@ -20,11 +20,12 @@ transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할
 - [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
 - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
 
-retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity consistency isolation durability, transaction isolation, isolation level, dirty read, non-repeatable read, phantom read, read committed, repeatable read, serializable, locking read, select for update, optimistic lock, pessimistic lock, when to lock, lost update, deadlock, optimistic pessimistic lock 처음 배우는데 언제 쓰는지 말고 큰 그림, optimistic pessimistic lock primer 큰 그림, optimistic pessimistic lock 처음 배우는데, optimistic pessimistic lock primer beginner, locking 큰 그림 입문, lock 처음 배우는데 큰 그림, mvcc 처음 배우는데 read view undo chain 전에 큰 그림, mvcc 처음 배우는데 큰 그림, mvcc 처음 배우는데, mvcc 큰 그림 입문, mvcc primer beginner, mvcc intro before read view undo chain, jdbc transaction, jdbc transaction isolation, jdbc commit rollback, jdbc auto commit false, autoCommit false transaction, setAutoCommit false, manual transaction demarcation, begin commit rollback, connection commit rollback, spring transaction isolation, @transactional isolation, jpa transaction isolation, jpa optimistic lock, jpa pessimistic lock, hibernate optimistic locking, select for update jpa, entitymanager lock mode, commit 했는데 왜 두 번 팔려요, select 두 번 했는데 값이 달라요, 언제 for update 써요, transaction lock isolation difference
+retrieval-anchor-keywords: transaction basics next step, transaction isolation basics next, transaction acid, acid, atomicity consistency isolation durability, transaction isolation, isolation level, dirty read, non-repeatable read, phantom read, read committed, repeatable read, serializable, locking read, select for update, optimistic lock, pessimistic lock, when to lock, lost update, deadlock, lock timeout, serialization failure, incident handling, transaction primer 다음 뭐 읽어요, 격리 수준 기초 다음 뭐 봐요, 처음 트랜잭션 다음 단계, isolation basics after beginner, what is select for update, commit 했는데 왜 두 번 팔려요, select 두 번 했는데 값이 달라요, 언제 for update 써요, deadlock 나면 다음 뭐 봐요, transaction lock isolation difference
 
 <details>
 <summary>Table of Contents</summary>
 
+- [기초에서 incident로 올라가는 읽기 순서](#기초에서-incident로-올라가는-읽기-순서)
 - [이 문서 다음에 보면 좋은 문서](#이-문서-다음에-보면-좋은-문서)
 - [왜 중요한가](#왜-중요한가)
 - [트랜잭션이란](#트랜잭션이란)
@@ -39,6 +40,24 @@ retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity
 - [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
 
 </details>
+
+## 기초에서 incident로 올라가는 읽기 순서
+
+이 문서는 beginner primer를 건너뛰고 바로 여는 문서라기보다, 두 primer를 읽고도 "`FOR UPDATE`를 언제 붙이지?", "`deadlock`이 보이면 어디까지가 개념이고 어디부터가 incident 대응이지?"가 남았을 때 여는 bridge다.
+
+| 학습 단계 | 지금 막힌 질문 | 먼저 볼 문서 | 이 문서를 읽은 뒤 다음 단계 |
+|---|---|---|---|
+| 1단계. 경계 이해 | "무엇을 같이 `commit`/`rollback`하지?" | [트랜잭션 기초](./transaction-basics.md) | 같은 row/범위를 다시 읽을 때 왜 달라지는지 궁금해지면 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
+| 2단계. 가시성 이해 | "`select`를 두 번 했는데 왜 값이나 행 수가 달라지지?" | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) | plain `SELECT`와 locking read를 같이 봐야 하면 이 문서 |
+| 3단계. bridge | "`@Transactional`도 있는데 언제 `FOR UPDATE`, version, constraint까지 붙이지?" | 이 문서 | 엔진 차이, retry, deadlock처럼 증상이 구체화되면 아래 follow-up |
+| 4단계. incident handling | "`lock timeout`, `deadlock`, `40001`이 실제로 떴다" | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md) | 엔진별 재현/정책까지 내려간다 |
+
+짧게 기억하면 progression은 아래 네 줄이다.
+
+1. [트랜잭션 기초](./transaction-basics.md): 같이 성공/실패할 경계를 먼저 잡는다.
+2. [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md): 같은 row 재조회와 범위 재조회 차이를 먼저 분리한다.
+3. 이 문서: 격리 수준, locking read, optimistic/pessimistic lock, constraint를 한 프레임으로 묶는다.
+4. incident 문서: `deadlock`, `lock timeout`, `40001 retry`처럼 실제 증상이 붙었을 때만 내려간다.
 
 ## 먼저 분리할 세 질문
 
@@ -63,6 +82,8 @@ retrieval-anchor-keywords: transaction basics, transaction acid, acid, atomicity
 - `@Transactional`, `Connection`, `EntityManager`, `flush`처럼 JDBC/JPA/Spring 위에서 보이는 이름과 DB 트랜잭션 개념을 연결하려면 [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)를 먼저 같이 본다.
 - 질문이 "어떤 이상 현상을 막아야 하나"보다 "`REQUIRED` / `REQUIRES_NEW` 때문에 왜 커넥션이 오래 잡히나", "왜 pool이 마르나"에 가까우면 [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)로 이어진다.
 - raw JDBC에서 `autoCommit`, `commit/rollback`, batch와 transaction boundary를 코드로 확인하려면 [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)을 붙여 읽는 편이 좋다.
+- 실제 증상이 `deadlock`, `lock timeout`, `waiting for lock`에 가까우면 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 바로 내려가서 incident 순서대로 확인한다.
+- 실제 증상이 `40001`, serialization failure, "retry를 어디에 둘까"라면 [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)과 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)를 이어 본다.
 
 ## 왜 중요한가
 

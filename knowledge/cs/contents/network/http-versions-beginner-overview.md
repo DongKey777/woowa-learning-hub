@@ -16,7 +16,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: http version 뭐예요, h1 h2 h3 뭐가 달라요, http/1.1 http/2 http/3 큰 그림, http version 처음 배우는데, http version beginner overview bridge, http 1.1 2 3 quick start, h1 h2 h3 first read routing, http version difference vs selection, http 버전 헷갈릴 때 첫 문서, browser chooses h2 or h3, alpn alt-svc entrypoint, first request h2 next request h3, http connection vs stream beginner, transport vs protocol primer, http/2 http/3 언제 쓰는지
+retrieval-anchor-keywords: http version 뭐예요, h1 h2 h3 뭐가 달라요, http/1.1 http/2 http/3 큰 그림, http version 처음 배우는데, http version beginner overview bridge, h1 h2 h3 first read routing, http version difference vs selection, http 버전 헷갈릴 때 첫 문서, browser chooses h2 or h3, alpn alt-svc entrypoint, first request h2 next request h3, http connection vs stream beginner, http/2 뭐예요, http/3 뭐예요, 처음 배우는데 h2 h3 헷갈려요
 
 ## 이 문서의 역할
 

@@ -8,6 +8,7 @@
 
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [리팩토링 기초](./refactoring-basics.md)
+- [리팩토링 커밋 분리 프라이머](./refactor-commit-split-primer.md)
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 - [spring 테스트 기초](../spring/spring-testing-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)

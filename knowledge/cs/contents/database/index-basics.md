@@ -13,7 +13,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, explain 처음 읽는 법, clustered vs secondary index, covering index beginner, 왜 인덱스 안 타요, index 뭐예요, query plan basics, full table scan why, using filesort beginner, key null explain, db index 처음, what is index
+retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, explain 처음 읽는 법, clustered vs secondary index, covering index beginner, 왜 인덱스 안 타요, index 뭐예요, query plan basics, key = null 이 보여요, using filesort 가 보여요, rows가 너무 커 보여요, db index 처음, what is index
 
 ## 핵심 개념
 
@@ -46,6 +46,17 @@ retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, 
 3. key, rows, Extra 읽기
 4. 인덱스 자체가 없는지 / 있는데도 안 타는지 분리
 ```
+
+## 처음 많이 보이는 증상 말
+
+README와 다음 primer에서 같은 문장으로 찾을 수 있게, 처음에는 아래 증상 표현 그대로 떠올리면 된다.
+
+| 지금 드는 말 | 이 문서에서 먼저 볼 것 | 다음 문서 |
+| --- | --- | --- |
+| "`WHERE` 조건 하나인데 왜 느리죠?" | 인덱스가 찾는 길이라는 감각부터 다시 잡는다 | 필요하면 [인덱스와 실행 계획](./index-and-explain.md) |
+| "`key = NULL`이 보여요" | 인덱스가 없거나 조건식 모양이 안 맞는지 먼저 의심한다 | [인덱스와 실행 계획](./index-and-explain.md) |
+| "`Using filesort`가 보여요" | 찾는 길과 정렬 길이 따로 노는지 본다 | [인덱스와 실행 계획](./index-and-explain.md) |
+| "`rows가 너무 커 보여요`" | 읽는 양이 왜 큰지 `WHERE`, `ORDER BY`, 조회 컬럼을 같이 본다 | [인덱스와 실행 계획](./index-and-explain.md) |
 
 ## 상세 분해
 

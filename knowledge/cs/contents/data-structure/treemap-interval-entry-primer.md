@@ -7,6 +7,7 @@
 관련 문서:
 
 - [자료구조 카테고리 인덱스](./README.md)
+- [Reservation Interval Half-Open Boundary Card](./reservation-interval-half-open-boundary-card.md)
 - [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
@@ -103,6 +104,9 @@ boolean canBook =
 
 이 표 하나가 "neighbor query -> interval insert" 브리지다.
 
+경계 규칙 자체가 아직 손에 안 붙는다면 여기서 바로 멈추고 [Reservation Interval Half-Open Boundary Card](./reservation-interval-half-open-boundary-card.md)로 가는 편이 낫다.
+이 문서의 `가능` 판정은 모두 반열린 구간 `[start, end)`를 전제로 해서, `10:00`에 끝난 예약 뒤 `10:00`에 시작하는 예약은 맞닿지만 겹치지 않는다고 읽는다.
+
 ## 흔한 오해와 함정
 
 - `ceilingEntry(end)`를 찾아야 한다고 느끼기 쉽지만, beginner용 booking check는 보통 `ceilingEntry(start)`면 충분하다.
@@ -140,6 +144,7 @@ if (noLeftOverlap && noRightOverlap) {
 
 ## 더 깊이 가려면
 
+- `[start, end)`와 inclusive endpoint `[start, end]`가 자꾸 섞이면 [Reservation Interval Half-Open Boundary Card](./reservation-interval-half-open-boundary-card.md)
 - 아직 `floorKey`와 `ceilingKey` 자체가 헷갈리면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - `lowerKey/floorKey/ceilingKey/higherKey`를 `Entry` 네 쌍으로 바꾸는 중간 브리지가 필요하면 [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - 시작 시각을 찾은 뒤 종료 시각을 읽는 감각이 약하면 [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)

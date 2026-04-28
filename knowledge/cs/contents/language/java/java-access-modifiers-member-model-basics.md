@@ -1,6 +1,6 @@
 # Java 접근 제한자와 멤버 모델 입문
 
-> 한 줄 요약: Java 입문자가 접근 제한자, 인스턴스 vs `static` 멤버, `final`의 의미를 하나의 클래스 모델로 연결해서 이해하도록 정리한 primer다.
+> 한 줄 요약: Java 입문자가 접근 제한자, 인스턴스 vs `static` 멤버, `final`의 의미를 하나의 클래스 모델로 연결해서 이해하도록 정리한 primer다. 특히 `field`, 인스턴스 멤버, 객체 상태를 같은 흐름으로 묶어 첫 Java route의 용어 혼선을 줄이는 데 초점을 둔다.
 
 **난이도: 🟢 Beginner**
 
@@ -28,7 +28,7 @@ retrieval-anchor-keywords: java access modifiers member model basics basics, jav
 > - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
 > - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
 
-> retrieval-anchor-keywords: java access modifier basics, java access modifiers and member model, java modifier decision table, java public private protected package-private, java package private default access, java instance member vs static member, java static field vs instance field, java static method vs instance method, java static utility method basics, java static factory method basics, java final field method class, java beginner class member basics, java private static final constant, java encapsulation basics, access modifier beginner, class member model basics, java member modifier decision flow, java top-level vs member private protected, java top-level member mini quiz bridge, java protected access confusion, protected other package subclass access, protected field this vs parent reference, java protected this field access, java protected base reference compile error, java protected other package baseRef access, java protected child reference access, java protected this childRef parentRef table, java protected same package different package summary table, java protected compile success fail prediction, java protected method call same rule as field access, java protected method vs field same context rule, java access modifier follow-up example, java access modifier lab bridge, java protected lab entrypoint, java protected worksheet, java protected follow-up worksheet, java this protected vs parentRef protected, java this protected vs baseRef protected, java protected 3 question follow-up, java protected wrong answer note, java import does not change access protected, java subpackage same package misconception, java package name similarity protected confusion, java same package subclass non subclass, java package boundary quick card, 자바 protected this baseRef 차이, 자바 protected 워크시트, 자바 접근제한자 후속 문제, 자바 top-level member 구분, 자바 top-level private protected 불가 member 가능, 자바 import 해도 protected 안 보임, 자바 패키지명 비슷해도 다른 패키지, 자바 패키지 경계 퀵체크, java final reference vs immutable
+> retrieval-anchor-keywords: java access modifier basics, java access modifiers and member model, java modifier decision table, java public private protected package-private, java package private default access, java instance member vs static member, java static field vs instance field, java static method vs instance method, java static utility method basics, java static factory method basics, java final field method class, java beginner class member basics, java private static final constant, java encapsulation basics, access modifier beginner, class member model basics, java member modifier decision flow, java field instance member object state, java field vs object state beginner, field가 인스턴스 멤버인가요, 객체 상태는 뭐예요, java top-level vs member private protected, java top-level member mini quiz bridge, java protected access confusion, protected other package subclass access, protected field this vs parent reference, java protected this field access, java protected base reference compile error, java protected other package baseRef access, java protected child reference access, java protected this childRef parentRef table, java protected same package different package summary table, java protected compile success fail prediction, java protected method call same rule as field access, java protected method vs field same context rule, java access modifier follow-up example, java access modifier lab bridge, java protected lab entrypoint, java protected worksheet, java protected follow-up worksheet, java this protected vs parentRef protected, java this protected vs baseRef protected, java protected 3 question follow-up, java protected wrong answer note, java import does not change access protected, java subpackage same package misconception, java package name similarity protected confusion, java same package subclass non subclass, java package boundary quick card, 자바 protected this baseRef 차이, 자바 protected 워크시트, 자바 접근제한자 후속 문제, 자바 top-level member 구분, 자바 top-level private protected 불가 member 가능, 자바 import 해도 protected 안 보임, 자바 패키지명 비슷해도 다른 패키지, 자바 패키지 경계 퀵체크, java final reference vs immutable
 
 <details>
 <summary>Table of Contents</summary>
@@ -59,6 +59,14 @@ Java 초보자는 클래스를 배우기 시작하면 비슷해 보이는 modifi
 - `final`은 "상수"라는 뜻인가, "상속 금지"라는 뜻인가?
 
 이 문서의 핵심은 modifier를 따로 외우지 않고 **"이 멤버가 누구 소유인가, 누가 접근해야 하는가, 앞으로 바뀔 수 있는가"** 라는 세 질문으로 연결해서 보는 데 있다.
+
+같은 첫 route에서 자주 헷갈리는 말도 여기서 같이 고정해 두면 좋다.
+
+- `field`: 객체나 클래스가 들고 있는 값
+- 인스턴스 멤버: 각 객체에 붙는 field/method
+- 객체 상태(object state): 그 객체의 인스턴스 field 값 묶음
+
+즉 beginner 기준으로는 "`constructor`가 인스턴스 field를 채워 객체 상태를 만들고, 인스턴스 메서드가 그 상태를 읽거나 바꾼다"는 흐름 위에 modifier를 얹는다고 보면 된다.
 
 ## 먼저 보는 3축 모델
 
@@ -135,7 +143,14 @@ same package / subclass / non-subclass를 먼저 빠르게 자르고 싶다면 [
 
 멤버를 이해할 때 가장 중요한 축은 **객체 소속인지, 클래스 소속인지**다.
 
-| 구분 | 누구 소유인가 | 접근 방식 | 언제 쓰나 |
+여기서는 아래 네 말을 한 묶음으로 읽으면 된다.
+
+- `field`: 값을 저장하는 멤버
+- 인스턴스 field: 각 객체가 따로 들고 있는 값
+- 인스턴스 메서드: 그 객체의 field 상태를 읽거나 바꾸는 동작
+- 객체 상태: 인스턴스 field 값 전체, `static` 멤버는 클래스 전체가 공유
+
+| 구분 | 소유 | 접근 방식 | 언제 쓰나 |
 |---|---|---|---|
 | 인스턴스 멤버 | 객체 하나하나 | `account.deposit()` | 객체마다 다른 상태/동작 |
 | `static` 멤버 | 클래스 전체 | `BankAccount.getCreatedCount()` | 모든 객체가 공유하는 값/동작 |
@@ -153,8 +168,9 @@ public class BankAccount {
 }
 ```
 
-`accountNumber`, `balance`는 계좌 객체마다 다르다.
-`BankAccount`를 두 개 만들면 두 객체는 각자 자기 `balance`를 가진다.
+`accountNumber`, `balance`는 계좌 객체마다 다른 인스턴스 field다.
+이 둘의 현재 값 묶음이 곧 그 `BankAccount` 객체의 상태다.
+`BankAccount`를 두 개 만들면 각자 자기 `balance`를 가진다.
 
 ### static 필드는 모든 객체가 함께 본다
 
@@ -172,18 +188,18 @@ public class BankAccount {
 }
 ```
 
-`createdCount`는 특정 계좌 하나의 상태가 아니라 **클래스 전체가 공유하는 상태**다.
-새 계좌를 만들 때마다 하나의 값이 같이 증가한다.
+`createdCount`는 특정 계좌 하나가 아니라 **클래스 전체가 공유하는 상태**다.
+새 계좌를 만들 때마다 같이 증가한다.
 
 ### static 메서드는 클래스 관점의 동작이다
 
-`static` 메서드는 객체 없이 호출할 수 있다.
+`static` 메서드는 객체 없이 호출한다.
 
 ```java
 int created = BankAccount.getCreatedCount();
 ```
 
-이런 메서드는 보통 다음 용도로 쓴다.
+보통 다음 용도로 쓴다.
 
 - 공용 규칙 검사
 - 팩터리 메서드
@@ -195,7 +211,7 @@ int created = BankAccount.getCreatedCount();
 ### static 메서드는 인스턴스 멤버를 직접 다룰 수 없다
 
 `static` 메서드에는 `this`가 없다.
-그래서 객체가 있어야만 의미가 생기는 인스턴스 필드/메서드를 직접 사용할 수 없다.
+그래서 객체가 있어야 하는 인스턴스 필드/메서드를 직접 사용할 수 없다.
 
 ```java
 public static void printBalance() {
@@ -203,7 +219,7 @@ public static void printBalance() {
 }
 ```
 
-이 규칙을 기억하면 "`static`은 클래스 소속"이라는 개념이 더 선명해진다.
+이 규칙을 기억하면 "`static`은 클래스 소속"이 더 선명해진다.
 
 ## final은 어디에 붙고 무엇을 고정하나
 
@@ -322,7 +338,7 @@ public final class BankAccount {
 - `MIN_DEPOSIT`는 `private static final`이라 클래스 내부 상수다.
 - `createdCount`는 `static`이라 모든 계좌 객체가 함께 공유한다.
 - `accountNumber`는 `final` 인스턴스 필드라 객체마다 하나씩 있고 다시 대입할 수 없다.
-- `deposit()`과 `getBalance()`는 인스턴스 상태를 다루므로 인스턴스 메서드다.
+- `deposit()`과 `getBalance()`는 객체의 인스턴스 field 상태를 다루므로 인스턴스 메서드다.
 - `getCreatedCount()`는 클래스 전체 상태를 다루므로 `static` 메서드다.
 - `getAccountNumber()`는 하위 클래스가 바꾸지 못하도록 `final` 메서드다.
 

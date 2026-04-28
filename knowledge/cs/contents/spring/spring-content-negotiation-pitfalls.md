@@ -7,6 +7,7 @@
 > 관련 문서:
 > - [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
 > - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+> - [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: JSON인데 왜 `Content-Type`에서 막히나](./spring-requestbody-415-unsupported-media-type-primer.md)
 > - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring `HandlerMethodReturnValueHandler` Chain](./spring-handlermethodreturnvaluehandler-chain.md)
@@ -16,7 +17,7 @@
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 > - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
 
-retrieval-anchor-keywords: content negotiation pitfalls, spring 415 unsupported media type, @requestbody 415 beginner, content-type application json why, accept vs content-type difference, httpmessageconverter media type, produces consumes mismatch, requestbody media type mismatch, controller 전에 415, spring beginner negotiation, json body not supported, what is content negotiation, spring mvc lifecycle basics binding 단계, binding 단계에서 415 왜, 처음 content negotiation 헷갈려요
+retrieval-anchor-keywords: content negotiation pitfalls, spring 415 unsupported media type, @requestbody 415 beginner, content-type application json why, accept vs content-type difference, httpmessageconverter media type, produces consumes mismatch, requestbody media type mismatch, controller 전에 415, spring beginner negotiation, json body not supported, what is content negotiation, spring mvc lifecycle basics binding 단계, binding 단계에서 415 왜, requestbody 400 vs 415 first hit, content-type 415 왜 나요, 처음 content negotiation 헷갈려요
 
 ## 핵심 개념
 
@@ -35,15 +36,28 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 
 1. JSON body와 query/form 바인딩이 섞여 있으면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)부터 본다.
 2. `400`인지 `415`인지 먼저 갈라야 하면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md)에서 첫 분기를 잡는다.
-3. 그다음 "`JSON 내용` 문제가 아니라 `Content-Type` 계약 문제구나"가 보이면 이 문서로 돌아와 `Accept`와 `Content-Type`, `consumes`를 같이 본다.
+3. "`json인데 unsupported media type`" 같은 증상 문장 그대로 빠르게 정리하고 싶으면 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)를 본다.
+4. 그다음 "`JSON 내용` 문제가 아니라 `Content-Type` 계약 문제구나"가 보이면 이 문서로 돌아와 `Accept`와 `Content-Type`, `consumes`를 같이 본다.
 
 `Spring MVC 요청 생명주기 기초`에서 보던 큰 흐름으로 다시 붙이면, 이 문서는 그중 4번 `argument binding / message conversion` 칸을 확대해서 보는 카드다. 즉 "컨트롤러 전에 왜 막혔지?"까지는 lifecycle basics로 판단하고, "그중에서도 왜 `415`였지?"는 여기서 `Content-Type`, `Accept`, converter 선택으로 더 잘게 나누면 된다.
 
+초급자 기준으로는 여기서 원인을 좁힌 뒤 다시 [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md)의 4번 `argument binding / message conversion` 칸으로 돌아가 "이 실패가 binding 쪽인지, validation 쪽인지, 아니면 controller 이후 문제인지"를 한 번 더 확인하면 흐름이 덜 끊긴다. `415`는 그 binding 칸 안에서도 `Content-Type` 계약과 converter 선택이 어긋난 경우라고 붙여 두면 기억하기 쉽다.
+
+증상 문장 기준으로 더 짧게 자르면 아래 route가 먼저다.
+
+| 처음 검색하거나 말한 문장 | first hit | 왜 이 순서가 안전한가 |
+|---|---|---|
+| "`json`인데 `415 Unsupported Media Type`" | [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md) | body 값보다 `Content-Type`/`consumes` 계약부터 확인하게 한다 |
+| "`@RequestBody`인데 controller 전에 `400`", "`JSON parse error`" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) | `Content-Type`은 맞는 편인데 DTO 변환이나 validation 전 경계에서 실패했는지 먼저 자른다 |
+| "`Accept`랑 `Content-Type`이 왜 달라요?`", "`produces`/`consumes`가 왜 필요해요?`" | 이 문서 계속 | 이제는 초급 첫 분기보다 negotiation 계약 전체를 볼 단계다 |
+
 짧게 외우면 이렇다.
 
-- `400`: JSON 문법, DTO 타입, validation 쪽을 먼저 의심한다.
+- `400`: `Content-Type`은 맞는 편인데 JSON 문법, DTO 타입, validation 쪽을 먼저 의심한다.
 - `415`: `Content-Type`, `consumes`, message converter 선택을 먼저 의심한다.
 - `406`: 응답 쪽 `Accept` 계약을 먼저 의심한다.
+
+즉 lifecycle basics 한 장에서는 "4번 binding 단계에서 막혔다"까지 찾고, 이 문서에서는 그 binding 단계를 다시 "`400`인지 `415`인지", "`요청 body 해석` 문제인지 "`응답 형식 협상` 문제인지"로 세분화한다고 생각하면 된다.
 
 ## 깊이 들어가기
 

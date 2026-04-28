@@ -19,6 +19,11 @@ retrieval-anchor-keywords: ioc di basics, 스프링 ioc di 가 뭐예요, 스프
 
 ## 핵심 개념
 
+처음에는 용어를 외우기보다 아래 한 줄 감각부터 잡으면 된다.
+
+- IoC: "객체를 누가 만들고 연결할지"의 책임을 애플리케이션 코드 밖으로 넘긴다.
+- DI: 그 책임을 넘긴 뒤, 필요한 객체를 실제로 "주입받는" 방식이다.
+
 DI(Dependency Injection, 의존성 주입)를 처음 접하면 "왜 내가 `new`로 직접 만들면 안 되는가?"라는 질문이 자연스럽게 생긴다.
 
 핵심은 **결합도**다. 내가 `new MemoryOrderRepository()`를 직접 쓰면 `OrderService`와 `MemoryOrderRepository`가 강하게 묶인다. 나중에 `JpaOrderRepository`로 바꾸고 싶을 때 `OrderService` 코드를 직접 수정해야 한다.
@@ -43,6 +48,11 @@ DI 있음:
 | 테스트 | 구현체 교체 어려움 | mock으로 쉽게 교체 |
 | 결합도 | 높음 | 낮음 |
 
+| 용어 | 초급자용 질문 | 짧은 답 |
+|---|---|---|
+| IoC | "누가 객체를 만들고 연결해요?" | 컨테이너가 그 제어권을 가져간다 |
+| DI | "그럼 필요한 객체는 어떻게 들어와요?" | 생성자나 setter 같은 통로로 주입된다 |
+
 ## 상세 분해
 
 - **IoC**: "누가 객체를 만들고 연결할지"의 제어권을 애플리케이션 코드가 아니라 컨테이너가 갖는다는 원칙이다.
@@ -57,6 +67,48 @@ DI 있음:
   - 필드 주입(`@Autowired`를 필드에 직접): 짧고 편하지만 테스트에서 주입이 어렵고 불변성도 없어 학습 예제 외에는 피한다.
 - **인터페이스 기반 설계**: DI의 이점을 최대로 누리려면 구체 클래스 대신 인터페이스에 의존해야 한다. 컨테이너가 구현체를 바꿔 주입할 수 있다.
 
+## 구체 예시로 한 번에 보기
+
+처음에는 "repository 구현체를 바꾸는 순간 서비스 코드가 같이 바뀌는가?"만 봐도 감이 빨리 온다.
+
+### 직접 `new`하는 경우
+
+```java
+public class OrderService {
+    private final OrderRepository orderRepository = new MemoryOrderRepository();
+
+    public Order findOrder(Long id) {
+        return orderRepository.findById(id);
+    }
+}
+```
+
+이 코드는 지금은 단순하지만, `JpaOrderRepository`로 바꾸려면 `OrderService` 코드도 같이 고쳐야 한다.
+
+### DI를 쓰는 경우
+
+```java
+public class OrderService {
+    private final OrderRepository orderRepository;
+
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    public Order findOrder(Long id) {
+        return orderRepository.findById(id);
+    }
+}
+```
+
+이제 `OrderService`는 "무엇이 필요하다"만 말하고, 실제 구현체 선택은 바깥으로 밀려난다. 초급자 기준으로는 이 차이가 가장 중요하다.
+
+| 바꾸고 싶은 것 | 직접 `new` | DI |
+|---|---|---|
+| 저장소 구현체 교체 | 서비스 코드 수정 필요 | 주입 설정만 바꾸면 될 수 있다 |
+| 테스트에서 가짜 객체 넣기 | 어렵다 | 생성자에 mock을 넣기 쉽다 |
+| 서비스 관심사 | 구현체 선택까지 같이 떠안음 | 비즈니스 로직에 더 집중 |
+
 ## 흔한 오해와 함정
 
 **오해 1: DI를 쓰면 코드가 복잡해진다**
@@ -67,6 +119,15 @@ DI 있음:
 
 **오해 3: IoC와 DI는 같은 말이다**
 IoC는 더 넓은 원칙(제어를 역전하라)이고, DI는 그 구현 방법 중 하나다. IoC는 DI 외에도 서비스 로케이터 패턴 등으로 구현할 수 있다.
+
+## 처음 헷갈리는 질문 4개
+
+| 헷갈리는 말 | 먼저 고정할 답 |
+|---|---|
+| "왜 그냥 `new`하면 안 돼요?" | 작은 예제에서는 가능하지만, 구현체 교체와 테스트가 어려워진다 |
+| "IoC랑 DI가 같은 말 아닌가요?" | IoC는 원칙, DI는 그 원칙을 구현하는 대표 방법이다 |
+| "DI면 무조건 인터페이스가 있어야 하나요?" | 항상 그런 것은 아니지만, 구현 교체 가능성을 열어 두려면 인터페이스가 유리하다 |
+| "`@Autowired`만 붙이면 끝인가요?" | 주입 표시는 끝이 아니라 시작이다. 어떤 Bean이 등록됐는지와 후보가 하나인지도 같이 봐야 한다 |
 
 ## 실무에서 쓰는 모습
 

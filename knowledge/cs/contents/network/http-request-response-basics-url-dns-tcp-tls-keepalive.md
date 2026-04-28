@@ -47,6 +47,12 @@ retrieval-anchor-keywords: browser request lifecycle basics, browser to server b
 | "`controller` 다음 `service`/`repository`는 보이는데 DB 문서는 어디서 시작해요?" | [Database First-Step Bridge](../database/database-first-step-bridge.md) | `lock`, `failover`, `playbook`보다 먼저 `트랜잭션 -> 접근 기술 -> 인덱스` 순서를 고정한다 |
 | "`save()`만 보여서 SQL이 안 보여요" | [Database First-Step Bridge](../database/database-first-step-bridge.md) -> [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | JPA/MyBatis/JDBC를 먼저 구분해야 SQL 위치를 덜 헷갈린다 |
 
+처음이고 "`왜 controller 뒤에 바로 lock 문서가 나오죠?`", "`뭐예요, 저는 아직 save()도 헷갈려요`" 같은 반응이 들면 아래 4칸만 유지하면 된다.
+
+`HTTP 요청-응답 기본 흐름 -> Spring 요청 파이프라인과 Bean Container 기초 -> Database First-Step Bridge -> JDBC · JPA · MyBatis 기초`
+
+이 루트의 목표는 "브라우저가 요청을 보낸다 -> Spring이 controller/service/repository로 연결한다 -> DB 접근 기술이 SQL 위치를 결정한다"까지만 잡는 것이다. `deadlock`, `retry`, `failover`, `cutover`는 아직 안전한 다음 단계가 아니다.
+
 ## 한눈에 보기
 
 | 단계 | 브라우저 쪽 행동 | 서버/프록시 쪽 행동 | 개발자가 읽어야 할 핵심 |
@@ -131,9 +137,11 @@ Cache-Control: no-cache
 
 ## 프록시, 상태 코드, Keep-Alive
 
-브라우저가 항상 Spring 앱에 직접 붙는다고 생각하면 실무 트래픽을 읽기 어렵다. 실제 경로는 자주 `브라우저 -> CDN/LB/reverse proxy -> app server`다. 이 중간 프록시는 TLS를 대신 끝내고, path나 host로 라우팅하고, 필요하면 자기 판단으로 응답을 돌려준다.
+브라우저가 항상 Spring 앱에 직접 붙는다고 생각하면 트래픽을 읽기 어렵다. 실제 경로는 자주 `브라우저 -> CDN/LB/reverse proxy -> app server`다. 이 중간 프록시는 TLS를 대신 끝내고, path나 host로 라우팅하고, 필요하면 자기 판단으로 응답을 돌려준다.
 
-상태 코드는 "현재 hop이 바깥에 내보낸 결과"다. `200/201/204`는 성공, `301/302/304`는 이동이나 캐시 재사용, `400/401/403/404`는 요청 측 문제, `500/502/503/504`는 서버 측 문제다. 특히 `502 Bad Gateway`, `504 Gateway Timeout`은 프록시가 upstream 앱을 대신해 낸 응답일 수 있다.
+상태 코드는 "현재 hop이 바깥에 내보낸 결과"다. `200/201/204`는 성공, `301/302/304`는 이동이나 캐시 재사용, `400/401/403/404`는 요청 측 문제, `500/502/503/504`는 서버 측 문제다. `502`와 `504`는 프록시가 upstream 앱 대신 낸 응답일 수 있다.
+
+입문 단계에서는 `502`/`504`의 내부 원인을 깊게 파지 말고, "브라우저와 앱 사이 중간 계층도 응답을 만들 수 있다"까지만 먼저 잡으면 충분하다.
 
 브라우저에서 자주 먼저 읽는 상태 코드는 아래 정도다.
 
@@ -145,8 +153,8 @@ Cache-Control: no-cache
 | `401 Unauthorized` | 인증이 없거나 실패했다 | 로그인 상태, 토큰, 쿠키 |
 | `403 Forbidden` | 누군지는 알지만 허용되지 않는다 | 권한, 역할 |
 | `404 Not Found` | 경로나 자원이 없다 | path, id |
-| `502 Bad Gateway` | 프록시가 upstream 응답을 정상 처리하지 못했다 | 프록시, upstream 연결 |
-| `504 Gateway Timeout` | 프록시가 upstream을 기다리다 timeout 났다 | timeout, 느린 서버 |
+| `502 Bad Gateway` | 앱 앞단 어딘가에서 응답 연결이 어긋났다 | 프록시/LB 존재부터 확인 |
+| `504 Gateway Timeout` | 앱 앞단 어딘가에서 기다리다 timeout 났다 | timeout과 느린 upstream 여부 확인 |
 
 `keep-alive`는 로그인 상태 유지가 아니라 연결 재사용이다. 한 요청이 끝난 뒤 같은 TCP 연결을 다시 써서 다음 요청 비용을 줄이는 개념이다. 쿠키는 사용자 상태 전달, 세션은 서버 상태 저장, keep-alive는 네트워크 연결 재사용이므로 서로 다른 층이다. 이 셋이 자꾸 섞이면 [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)부터 먼저 보면 된다.
 
@@ -204,7 +212,7 @@ Host: shop.example.com
 Cookie: JSESSIONID=abc123
 ```
 
-여기서 읽을 포인트는 세 가지다. 첫째, 로그인 응답이 `302`면 브라우저가 곧바로 다음 URL로 이동한다. 둘째, `Set-Cookie`가 있으면 브라우저가 저장하고 다음 요청에서 `Cookie`로 되돌려 보낸다. 셋째, `/orders` 요청이 `504`로 끝났다면 Spring 컨트롤러 로직만이 아니라 앞단 프록시 timeout도 같이 봐야 한다. 이 습관이 잡히면 이후 Spring MVC 요청 생명주기 문서를 읽을 때도 네트워크와 프레임워크 경계가 분리된다.
+여기서 읽을 포인트는 세 가지다. 첫째, 로그인 응답이 `302`면 브라우저가 곧바로 다음 URL로 이동한다. 둘째, `Set-Cookie`가 있으면 브라우저가 저장하고 다음 요청에서 `Cookie`로 되돌려 보낸다. 셋째, 이 문서 단계에서는 `504` 같은 운영형 추적보다 `redirect`, `cookie`, `request/response` 역할 분리를 먼저 익히는 편이 안전하다. 이 습관이 잡히면 이후 Spring MVC 요청 생명주기 문서를 읽을 때도 네트워크와 프레임워크 경계가 분리된다.
 
 폼 제출 뒤 결과 화면을 보여 주는 브라우저 흐름은 PRG로 보면 더 깔끔하다.
 
@@ -248,12 +256,13 @@ Cookie: JSESSIONID=abc123
 
 ## 더 깊이 가려면
 
-- 학습 흐름으로 돌아가려면 [Network README: HTTP 요청-응답 기본 흐름](./README.md#http-요청-응답-기본-흐름), [Junior Backend Roadmap: 2단계 운영체제와 네트워크 기초](../../JUNIOR-BACKEND-ROADMAP.md#2단계-운영체제와-네트워크-기초)를 먼저 본다.
+- 학습 흐름으로 돌아가려면 [Network README: HTTP 요청-응답 기본 흐름](./README.md#http-요청-응답-기본-흐름), [Junior Backend Roadmap](../../JUNIOR-BACKEND-ROADMAP.md#2단계-운영체제와-네트워크-기초)를 먼저 본다.
 - 브라우저 waterfall에서 `dns`/`connect`/`ssl`/`waiting`을 바로 읽고 싶다면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
 - 쿠키와 세션을 브라우저 기준으로 더 보고 싶다면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - 프록시가 어디서 응답을 만들어내는지 더 보고 싶다면 [프록시와 리버스 프록시 기초](./proxy-reverse-proxy-basics.md), [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 - 상태 코드와 request/response를 더 잘 읽고 싶다면 [HTTP 상태 코드 기초](./http-status-codes-basics.md), [HTTP 요청/응답 헤더 기초](./http-request-response-headers-basics.md)
 - 브라우저 form submit과 redirect 후 `GET` 흐름을 더 보고 싶다면 [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)
+- `502`/`504`를 beginner 단계에서 한 칸만 더 나누고 싶다면 [Browser DevTools `502` `504` 앱 `500` 결정 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - Spring 코드로 처음 이어 가려면 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) -> [Spring MVC 컨트롤러 기초](../spring/spring-mvc-controller-basics.md) 순으로 간다.
 - `DispatcherServlet`, binding, 예외 처리 전체 흐름까지 펼치려면 그다음에 [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)로 간다.
 - Spring 다음에 DB 코드 독해를 처음 붙일 때는 [Database First-Step Bridge](../database/database-first-step-bridge.md)로 넘어가 `트랜잭션 -> 접근 기술 -> 인덱스` 순서만 먼저 잡는다.

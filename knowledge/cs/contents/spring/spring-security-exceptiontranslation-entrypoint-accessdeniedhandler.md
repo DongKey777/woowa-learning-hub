@@ -7,12 +7,44 @@
 > 관련 문서:
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
+> - [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)
+> - [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](./spring-api-401-vs-browser-302-beginner-bridge.md)
 > - [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)
 > - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
 > - [Spring ProblemDetail Error Response Design](./spring-problemdetail-error-response-design.md)
 > - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
 
-retrieval-anchor-keywords: ExceptionTranslationFilter, AuthenticationEntryPoint, AccessDeniedHandler, 401 vs 403, security exception translation, authenticationexception, accessdeniedexception, login redirect, bearer token error
+retrieval-anchor-keywords: ExceptionTranslationFilter, AuthenticationEntryPoint, AccessDeniedHandler, 401 vs 403, security exception translation, authenticationexception, accessdeniedexception, login redirect, bearer token error, 302 login vs 403, why 302 login, why 403, beginner primer, what is exceptiontranslationfilter
+
+## 입문 브리지
+
+이 문서는 `ExceptionTranslationFilter` 계약을 깊게 설명하는 advanced 문서다.  
+그런데 실제 진입 질문은 보통 더 단순하다. "`왜 `/admin`이 `302 /login`으로 가요?`", "`왜 어떤 때는 `401`이고 어떤 때는 `403`이에요?`"처럼 **상태 코드 숫자보다 먼저 갈래를 구분하고 싶은 질문**이 먼저 나온다.
+
+처음 30초는 아래 표만 잡고 읽어도 된다.
+
+| 지금 인증 상태 | `ExceptionTranslationFilter`가 보내는 마지막 갈래 | 브라우저/페이지에서 자주 보이는 결과 | 한 줄 해석 |
+|---|---|---|---|
+| 아직 비로그인, 또는 인증이 유효하지 않음 | `AuthenticationEntryPoint` | `302 /login` 또는 API면 `401` | "먼저 로그인 필요" |
+| 로그인은 됐지만 권한이 부족함 | `AccessDeniedHandler` | `403` | "누군지는 알지만 이 자원 권한은 없음" |
+| 로그인 후 원래 URL로 다시 돌아가는 중 | entry point 자체보다 `RequestCache`/`SavedRequest`가 같이 보임 | `302`가 한 번 더 보일 수 있음 | "권한 실패라기보다 로그인 전 주소 메모 재생" |
+
+이 표는 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md) 초입의 beginner 분기와 같은 기준이다.  
+이 문서에서는 그 다음 단계로, **왜 그 갈래가 `ExceptionTranslationFilter`에서 결정되는지**를 설명한다.
+
+지금 질문이 아래에 가깝다면 먼저 옆 문서로 내려가는 편이 더 빠르다.
+
+| 지금 떠오르는 질문 | 먼저 갈 문서 | 이 문서로 다시 올라오는 시점 |
+|---|---|---|
+| "`302 /login`이랑 `403`이 왜 갈려요?" | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) | "`302`는 인증 전, `403`은 권한 단계라는 건 알겠고 누가 그 분기를 만드는지 궁금하다" |
+| "브라우저는 `302`인데 API는 `401` JSON이에요" | [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](./spring-api-401-vs-browser-302-beginner-bridge.md) | "같은 인증 실패인데 왜 entry point 전략이 달라지는지 알고 싶다" |
+| "`SavedRequest`가 왜 같이 보여요?" | [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) | "주소 메모 역할은 알겠고, 이제 401/403 번역 계약과 경계를 같이 보고 싶다" |
+
+짧게 외우면 이렇게 자르면 된다.
+
+- `AuthenticationEntryPoint`: "로그인부터 시켜야 하는 쪽"
+- `AccessDeniedHandler`: "로그인은 됐지만 권한이 부족한 쪽"
+- `SavedRequest`: "권한 실패라기보다 로그인 전 주소 메모가 다시 재생되는 쪽"
 
 ## 핵심 개념
 

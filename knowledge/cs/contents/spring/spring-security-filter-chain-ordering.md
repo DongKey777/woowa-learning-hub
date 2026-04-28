@@ -17,13 +17,25 @@
 - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 
-retrieval-anchor-keywords: security filter chain ordering, spring security filter chain ordering, 처음 배우는데 security filter chain, security filter chain 뭐예요, security filter order, filter order 401 403, admin 302 403 spring security, savedrequest filter chain order, jwt filter order, cors csrf auth order, exception translation filter order, onceperrequestfilter order, delegatingfilterproxy, securityfilterchain
+retrieval-anchor-keywords: security filter chain ordering, spring security filter chain ordering, security filter order, filter order 401 403, admin 302 403 spring security, savedrequest filter chain order, jwt filter order, exception translation filter order, addfilterbefore, addfilterafter, add filter before usernamepasswordauthenticationfilter, add filter after usernamepasswordauthenticationfilter, usernamepasswordauthenticationfilter 앞, usernamepasswordauthenticationfilter 뒤, security filter chain ordering usernamepasswordauthenticationfilter
 
 ## 입문 브리지
 
 이 문서는 `필터가 정확히 어느 순서로 도는가`, `예외 번역 필터가 앞뒤 어디에 있는가`, `JWT filter를 어느 기준 필터 앞에 둘 것인가`처럼 **이미 Security 큰 그림을 안다는 전제** 위에서 읽는 advanced 문서다.
 
+basics 체크포인트: `security filter chain`이 "보안 필터 묶음"이라는 감각, `302 /login`과 `403`의 차이, 세션 로그인에서 `SavedRequest`가 "원래 주소 메모"라는 설명이 바로 떠오르지 않으면 이 문서보다 [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md), [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md), [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)부터 먼저 본다.
+
 처음 보는 용어가 아직 많다면 이 문서에 바로 들어오지 말고 아래 순서로 내려가는 편이 안전하다.
+
+특히 advanced ordering 문서에 바로 들어왔는데 머릿속에 먼저 "`302 /login`이랑 `403`이 왜 갈리죠?"가 떠오른다면, 처음 30초는 `ExceptionTranslationFilter`만 기준으로 잡아 두면 된다.
+
+| 지금 인증 상태 | `ExceptionTranslationFilter`가 붙이는 마지막 갈래 | 브라우저에서 자주 보이는 결과 | 한 줄 해석 |
+|---|---|---|---|
+| 아직 비로그인, 또는 인증이 유효하지 않음 | `AuthenticationEntryPoint` | `302 /login` 또는 API면 `401` | "먼저 로그인 필요" |
+| 로그인은 됐지만 권한이 부족함 | `AccessDeniedHandler` | `403` | "누군지는 알지만 이 자원 권한은 없음" |
+| 로그인 후 원래 URL로 다시 돌아가는 중 | entry point 자체보다 `RequestCache`/`SavedRequest`가 같이 보임 | `302`가 한 번 더 보일 수 있음 | "권한 실패라기보다 로그인 전 주소 메모 재생" |
+
+이 미니 표는 beginner용 분기 표고, 이 문서의 본론은 "그 갈래가 **필터 순서 어디에서** 결정되는가"를 보는 것이다.
 
 | 지금 떠오르는 질문 | 먼저 갈 문서 | 여기로 다시 올라오는 시점 |
 |---|---|---|
@@ -35,6 +47,35 @@ retrieval-anchor-keywords: security filter chain ordering, spring security filte
 
 - 기초 문서에서 먼저 잡을 질문: "보안 필터 묶음이 컨트롤러보다 왜 먼저 도는가?"
 - 이 문서로 다시 올라올 질문: "그래서 어느 필터가 먼저 돌고, 그 순서가 `302`/`401`/`403` 분기를 어떻게 바꾸는가?"
+
+## `addFilterBefore` / `addFilterAfter`와 `UsernamePasswordAuthenticationFilter` 앞뒤 브리지
+
+`addFilterAfter`, "`UsernamePasswordAuthenticationFilter` 앞에 둬요 뒤에 둬요?", "`JWT filter`를 어디에 꽂죠?" 같은 검색으로 들어왔다면 이 섹션이 가장 짧은 entry다.
+
+먼저 beginner 감각으로는 `UsernamePasswordAuthenticationFilter`를 "폼 로그인 인증을 처리하는 기준 필터"라고만 잡으면 된다.
+
+| 코드에서 보인 표현 | ordering 질문을 초급 문장으로 바꾸면 | 이 문서에서 이어서 볼 포인트 |
+|---|---|---|
+| `.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)` | "로그인 필터가 돌기 전에 인증 재료를 먼저 준비해야 하나?" | 앞단 인증 재료 준비, `SecurityContext` 세팅 시점 |
+| `.addFilterAfter(customFilter, UsernamePasswordAuthenticationFilter.class)` | "로그인 필터가 끝난 뒤 결과를 보고 후속 처리를 해야 하나?" | 인증 성공/실패 뒤 후처리, 예외 번역과의 거리 |
+
+핵심은 메서드 이름이 아니라 **기준 필터 앞뒤에서 무엇이 이미 끝났는가**다.
+
+```text
+custom filter before UsernamePasswordAuthenticationFilter
+-> 아직 기준 로그인 필터 전
+-> 인증 재료 준비 / 토큰 해석 / 선행 검사 쪽 질문
+
+UsernamePasswordAuthenticationFilter
+-> username/password 기반 인증 시도
+
+custom filter after UsernamePasswordAuthenticationFilter
+-> 기준 로그인 필터 후
+-> 결과 기반 후처리 / 추가 검사 / 후속 기록 쪽 질문
+```
+
+아직 "`Filter`랑 security chain이 어떻게 다른가요?"가 먼저라면 [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)에서 앞뒤 감각부터 잡고 다시 올라온다.  
+반대로 큰 그림은 이미 있고 "`어느 필터를 기준점으로 잡아야 하지?`"가 핵심이면 이 문서의 코드 예시와 시나리오를 바로 읽으면 된다.
 
 ## 핵심 개념
 

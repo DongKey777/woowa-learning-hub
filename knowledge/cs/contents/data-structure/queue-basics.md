@@ -13,7 +13,25 @@
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue difference, queue는 도구 bfs는 문제 유형, queue vs bfs beginner, 큐와 스택 차이, beginner queue, queue vs stack, 대기열 자료구조, queue front rear, 처음 queue 헷갈림, arraydeque queue beginner
+retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 가까운 칸부터 한 겹씩 퍼지는 탐색, queue vs bfs beginner, bfs visited set basics, bfs queue visited pair, queue만 쓰면 되나요, visited 왜 필요해요, 처음 bfs visited 헷갈림, arraydeque queue beginner
+
+## README 복귀 가이드
+
+- `queue인데 왜 BFS예요?`가 다시 나오면 [자료구조 README - 초급 10초 라우터](./README.md#초급-10초-라우터)로 먼저 복귀한다.
+- 문장이 `최소 이동 횟수`, `가까운 칸부터`로 바뀌면 [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)로 넘어간다.
+
+## beginner 다음 한 칸 사다리
+
+`queue`라는 단어가 같아도 beginner가 바로 다음에 붙여야 하는 문서는 다르다. 처음에는 아래 세 칸만 고정하면 운영 문서로 점프하는 실수를 줄일 수 있다.
+
+| 지금 막힌 문장 | primer | follow-up | deep dive 대신 여기까지만 |
+|---|---|---|---|
+| `먼저 들어온 요청부터 처리해요`, `worker에게 넘기는 큐예요` | 이 문서 | [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](./arraydeque-vs-blockingqueue-service-handoff-primer.md) | [자료구조 README - 같은 장면 번역](./README.md#같은-장면-번역) |
+| `consumer도 같은 일을 여는 입구인가요?`, `HTTP 말고 메시지로도 같은 유스케이스를 열어요` | 이 문서 | [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](./arraydeque-vs-blockingqueue-service-handoff-primer.md) | [Message-Driven Adapter Example](../software-engineering/message-driven-adapter-example.md) |
+| `가까운 칸부터`, `최소 이동 횟수`, `환승 최소` | 이 문서 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기) |
+
+- 짧게 외우면 `FIFO 도구 -> handoff 계약 -> 유스케이스 입구` 또는 `FIFO 도구 -> BFS`다.
+- `처음`, `왜 queue가 또 나와요`, `queue가 보이는데 운영 문서로 가야 하나요` 같은 질문은 이 사다리에서 한 칸씩만 이동하면 beginner route가 무너지지 않는다.
 
 ## 핵심 개념
 
@@ -40,7 +58,7 @@ retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, que
 | 문제 문장 | 실제로 묻는 것 | 첫 구조 |
 |---|---|---|
 | `들어온 순서대로 처리` | 먼저 온 것을 먼저 꺼내는가 | 큐 |
-| `가까운 칸부터 한 겹씩 본다` | 거리 1, 2, 3 순서로 넓어지는가 | 큐 + BFS |
+| `가까운 칸부터 한 겹씩 본다` | 거리 1, 2, 3 순서로 넓어지는가 | BFS(구현 도구는 queue) |
 | `가장 급한 작업부터` | 도착 순서가 아니라 우선순위가 기준인가 | 우선순위 큐 |
 
 처음엔 아래 비교만 정확히 자르면 queue 오분류가 크게 줄어든다.
@@ -104,7 +122,11 @@ peek()     → 2 조회, [2, 3]
 
 초보자 기준으로는 아래 한 줄이 핵심이다.
 
-> `queue는 순서를 만드는 도구`, `BFS는 그 도구를 써서 가까운 것부터 탐색하는 문제 풀이 방식`
+> `queue는 FIFO 순서를 만드는 도구`, `BFS는 그 도구를 써서 가까운 칸부터 한 겹씩 퍼지는 탐색`
+
+그리고 BFS를 실제로 쓸 때는 이 한 줄까지 같이 붙여 두는 편이 안전하다.
+
+> `BFS beginner 기본 세트 = queue + visited`
 
 같은 문장에 `queue`와 `BFS`가 함께 나와도, 먼저 묻는 것이 다르다.
 
@@ -127,6 +149,42 @@ peek()     → 2 조회, [2, 3]
 1. `순서대로 처리`가 핵심이면 queue다.
 2. `가까운 것부터 탐색`이 핵심이면 BFS다.
 3. BFS를 고른 뒤에야 `그 BFS를 queue로 구현한다`고 붙인다.
+
+## BFS에서는 `queue + visited`를 한 세트로 보기
+
+초보자가 BFS를 처음 배울 때 가장 많이 멈추는 지점이 여기다.
+`queue`만 기억하고 `visited`를 빼면, 순서는 맞아도 같은 칸을 계속 다시 넣게 된다.
+
+짧게 역할을 나누면 이렇다.
+
+| 구성 요소 | 맡는 일 | 빠지면 생기는 일 |
+|---|---|---|
+| `queue` | `가까운 칸부터` 꺼내는 FIFO 순서 유지 | 거리 레벨 순서가 무너진다 |
+| `visited set/boolean[][]` | 이미 본 칸을 다시 넣지 않게 막음 | 같은 칸이 큐에 여러 번 들어간다 |
+
+초보자용 한 줄 기억법:
+
+> `queue는 다음에 볼 칸을 담고, visited는 이미 넣은 칸을 다시 막는다`
+
+아주 작은 미로 trace로 보면 더 분명하다.
+
+```text
+시작 칸 S
+1) S를 queue에 넣고 visited에도 표시
+2) S를 꺼내 이웃 A, B를 본다
+3) A, B를 queue에 넣는 동시에 visited 표시
+4) 다음에 A를 꺼냈을 때 다시 S를 만나도 visited라서 재삽입하지 않는다
+```
+
+즉 BFS의 beginner 패턴은 보통 아래 두 줄이 같이 간다.
+
+```java
+queue.offer(next);
+visited.add(next); // 또는 visited[nx][ny] = true;
+```
+
+핵심은 `꺼낼 때`가 아니라 `넣을 때 바로 visited 처리`하는 쪽이 beginner에게 더 안전하다는 점이다.
+그래야 같은 정점이 여러 부모를 통해 큐에 중복으로 쌓이는 일을 초반에 막을 수 있다.
 
 ## 상세 분해
 
@@ -164,6 +222,8 @@ poll C -> E enqueue    -> q = [D, E]
   아니다. 구현체 이름이 `Deque`를 포함해도, BFS에서 실제로 쓰는 것은 `offer`/`poll` 기반 FIFO 규칙이다. `offerFirst`/`pollLast`처럼 양끝 제어가 등장할 때만 "덱 능력"이 핵심이다.
 - **오해 3: BFS에서는 dequeue할 때 방문 표시해도 같다.**
   아니다. 보통은 enqueue하는 순간 방문 표시를 해야 같은 정점이 여러 번 들어가는 일을 막을 수 있다.
+- **오해 3-1: BFS는 queue만 있으면 된다.**
+  아니다. beginner 기준으로는 `queue + visited`를 한 묶음으로 외우는 편이 안전하다. queue는 순서를 만들고, visited는 중복 방문을 막는다.
 - **오해 4: `queue`라는 단어가 나오면 무조건 자료구조 문제다.**
   아니다. `최소 이동 횟수`, `가까운 칸부터`, `레벨 순서` 같은 문장은 알고리즘 쪽에서는 BFS 신호다. 큐는 그 BFS를 구현하는 도구다.
 - **오해 5: 한 문제에는 queue나 map 중 하나만 나온다.**
@@ -177,7 +237,7 @@ poll C -> E enqueue    -> q = [D, E]
 ## 실무에서 쓰는 모습
 
 **BFS 그래프 탐색** — 미로 탐색, 최단 경로처럼 "레벨 단위"로 탐색해야 할 때 큐를 쓴다.
-시작 노드를 enqueue하고, dequeue한 노드의 이웃을 큐에 추가하는 패턴을 반복한다. `회원 추천 1촌 -> 2촌 -> 3촌`처럼 가까운 관계부터 넓혀 가는 기능도 같은 감각이다.
+시작 노드를 enqueue하고 `visited`에도 바로 표시한 뒤, dequeue한 노드의 이웃을 `처음 발견했을 때만` 큐에 추가하는 패턴을 반복한다. `회원 추천 1촌 -> 2촌 -> 3촌`처럼 가까운 관계부터 넓혀 가는 기능도 같은 감각이다.
 Java에선 이때 `Queue<Node> q = new ArrayDeque<>();`를 많이 쓰는데, 포인트는 `ArrayDeque`라는 이름보다 "이번 BFS가 FIFO만 필요하다"는 사용 의도다.
 
 **메시지 브로커** — Kafka, RabbitMQ 같은 메시지 큐 시스템도 FIFO 원칙을 따른다. 생산자(Producer)가 enqueue하고 소비자(Consumer)가 dequeue한다.
@@ -189,13 +249,14 @@ Java에선 이때 `Queue<Node> q = new ArrayDeque<>();`를 많이 쓰는데, 포
 - 로컬 FIFO와 멀티스레드 worker handoff 큐를 언제 갈라야 하는지는 [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](./arraydeque-vs-blockingqueue-service-handoff-primer.md)
 - 원형 큐와 링 버퍼의 차이는 [Circular Queue vs Ring Buffer Primer](./circular-queue-vs-ring-buffer-primer.md)
 - BFS에서 큐가 왜 레벨 순서를 보장하는지는 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- BFS에서 `queue + visited`가 왜 beginner 기본 패턴인지 다시 확인하려면 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - `갈 수 있나?`, `경로 하나`, `최소 이동 횟수`를 먼저 분기하고 싶다면 [Connectivity Question Router](./connectivity-question-router.md)
 
 ## 다음 단계
 
 - 큐, 덱, 우선순위 큐를 문제 문장으로 먼저 자르고 싶다면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - BFS에서 큐가 왜 `거리 순서`를 만드는지 다시 붙이고 싶다면 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
-- `queue는 도구, BFS는 문제 유형` 감각을 그래프 질문으로 다시 확인하고 싶다면 [그래프 기초](./graph-basics.md)
+- `queue는 FIFO 순서를 만드는 도구, BFS는 가까운 칸부터 한 겹씩 퍼지는 탐색` 감각을 그래프 질문으로 다시 확인하고 싶다면 [그래프 기초](./graph-basics.md)
 - 원형 큐와 링 버퍼까지 이어 보고 싶다면 [Circular Queue vs Ring Buffer Primer](./circular-queue-vs-ring-buffer-primer.md)
 - `queue`와 `map`을 자꾸 섞는다면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 

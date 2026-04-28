@@ -9,11 +9,11 @@
 - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 - [Service Contract Smell Cards](./service-contract-smell-cards.md)
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
-- [Module API DTO Patterns](./module-api-dto-patterns.md)
+- [Module API DTO Patterns](./module-api-dto-patterns.md) - 모듈 간 `Entity` 노출을 `Command/Query/Result DTO`로 바꾸는 첫 입문
 - [software-engineering 카테고리 인덱스](./README.md)
 - [spring bean / request pipeline 입문](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
-retrieval-anchor-keywords: entity leakage review checklist, jpa entity leakage checklist, 코드리뷰에서 entity 누수, 엔티티를 response dto로 반환, service 계약에 entity 전달, module api entity 노출, beginner code review entity leak, entity를 dto로 바로 반환, service가 entity를 받는 코드리뷰, cross module entity leak, jpa entity boundary review, entity leakage basics, 처음 배우는데 entity 누수
+retrieval-anchor-keywords: entity leakage review checklist, jpa entity leakage checklist, 코드리뷰에서 entity 누수, 엔티티를 response dto로 반환, service 계약에 entity 전달, module api entity 노출, beginner code review entity leak, entity를 dto로 바로 반환, service가 entity를 받는 코드리뷰, cross module entity leak, jpa entity boundary review, entity leakage basics, 처음 배우는데 entity 누수, 모듈 간 entity 노출 왜 안 돼요, module dto review basics
 
 ## 핵심 개념
 
@@ -21,7 +21,7 @@ retrieval-anchor-keywords: entity leakage review checklist, jpa entity leakage c
 
 - Controller 밖 응답 타입에 `Entity`가 보이면 API 누수 가능성이 크다.
 - Service 메서드 파라미터/반환 타입에 `Entity`가 보이면 유스케이스 계약 누수 가능성이 크다.
-- 다른 모듈 공개 API에 `Entity`가 보이면 경계 누수 가능성이 크다.
+- 다른 모듈 공개 API에 `Entity`가 보이면 경계 누수 가능성이 크다. 이 경우 첫 다음 문서는 [Module API DTO Patterns](./module-api-dto-patterns.md)다.
 
 짧게 외우면 이렇다.
 
@@ -58,6 +58,8 @@ retrieval-anchor-keywords: entity leakage review checklist, jpa entity leakage c
 | `Entity`에 직렬화/화면용 어노테이션이 계속 붙는가? | 저장 모델이 표현 모델 역할까지 먹고 있음 | 표현 책임을 DTO로 분리 |
 
 한 문장으로 줄이면: **Entity가 "저장"이 아니라 "전달 계약" 역할까지 하고 있으면 누수 신호다.**
+
+특히 마지막에서 두 번째 질문이 `예`라면, 여기서 누수 신호만 확인한 뒤 바로 [Module API DTO Patterns](./module-api-dto-patterns.md)로 넘어가서 어떤 `Command/Query/Result DTO`로 끊을지 고르면 된다.
 
 ## 흔한 누수 패턴 3개
 

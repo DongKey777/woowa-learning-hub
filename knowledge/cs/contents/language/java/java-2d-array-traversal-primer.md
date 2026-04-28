@@ -12,13 +12,14 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java 2d array traversal primer basics, java 2d array traversal primer beginner, java 2d array traversal primer intro, java basics, beginner java, 처음 배우는데 java 2d array traversal primer, java 2d array traversal primer 입문, java 2d array traversal primer 기초, what is java 2d array traversal primer, how to java 2d array traversal primer
+retrieval-anchor-keywords: java 2d array traversal primer, java two dimensional array beginner, java row column index confusion, java arr.length vs arr[i].length, java jagged array traversal, java board traversal java, 자바 2차원 배열 입문, 자바 2차원 배열 처음 배우는데, 자바 행 열 인덱스 헷갈림, 자바 arr.length arr[i].length 차이, 자바 2차원 배열 for문 기초, 배열 안의 배열 뭐예요, 처음 배우는데 2차원 배열, 2차원 배열 뭐예요, 2차원 배열 왜 헷갈려요
 > 관련 문서:
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 > - [Java 반복문과 스코프 follow-up 입문](./java-loop-control-scope-follow-up-primer.md)
 > - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
 > - [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
 > - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
+> - [배열 vs 연결 리스트](../../data-structure/array-vs-linked-list.md)
 
 > retrieval-anchor-keywords: java 2d array traversal primer, java two dimensional array beginner, java multidimensional array beginner, java row column index confusion, java arr.length vs arr[i].length, java jagged array primer, java jagged array traversal, java 2d array nested loop, java matrix loop beginner, java board traversal java, java grid traversal java beginner, java row first column second, java 2차원 배열 순회, 자바 2차원 배열 입문, 자바 행 열 인덱스 헷갈림, 자바 arr.length arr[i].length 차이, 자바 가변 길이 2차원 배열, jagged array 순회, 배열 안의 배열, 행 먼저 열 나중, 2차원 배열 for문 기초, 2차원 배열 row column 차이
 

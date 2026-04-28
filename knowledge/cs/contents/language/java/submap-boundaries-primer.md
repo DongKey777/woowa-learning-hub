@@ -16,7 +16,7 @@
 - [BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups](./bigdecimal-navigablemap-lookup-bridge.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 
-retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner, submap headmap tailmap beginner, java inclusive exclusive boundary primer, treeset subset inclusive exclusive, treemap submap inclusive exclusive, sortedset subset from inclusive to exclusive, sortedmap submap from inclusive to exclusive, headset exclusive default, tailset inclusive default, headmap exclusive default, tailmap inclusive default, navigableset subset boolean overload, navigablemap submap boolean overload, java range view beginner
+retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner, submap headmap tailmap beginner, java inclusive exclusive boundary primer, treeset subset inclusive exclusive, treemap submap inclusive exclusive, sortedset subset from inclusive to exclusive, sortedmap submap from inclusive to exclusive, headset exclusive default, tailset inclusive default, headmap exclusive default, tailmap inclusive default, navigableset subset boolean overload, linkedhashmap vs treemap range query, linkedhashmap floorkey why not
 
 ## 먼저 잡을 멘탈 모델
 
@@ -30,6 +30,20 @@ retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner,
 - `(` 또는 `)` 느낌: 경계를 제외한다
 
 즉 `10`부터 `40` 전까지 보면 `[10, 40)`처럼 읽으면 된다.
+
+## 먼저 갈라야 하는 질문: 삽입 순서인가, 정렬 범위인가
+
+range API를 읽기 전에 이것부터 분리하면 beginner 혼동이 크게 줄어든다.
+
+| 지금 필요한 것 | 첫 선택 | 이유 |
+|---|---|---|
+| "넣은 순서대로 다시 보여 줘" | `LinkedHashMap` | 삽입 순서를 보장한다 |
+| "`30` 이하에서 가장 가까운 key를 찾아 줘" | `TreeMap` | `floorKey(30)` 같은 이웃 조회가 된다 |
+| "`20` 이상 `40` 미만만 잘라 줘" | `TreeMap` | `subMap(20, 40)` 같은 range view를 만든다 |
+
+짧게 말하면 `LinkedHashMap`의 강점은 **삽입 순서 보장**이고, 이 문서의 `headMap`/`tailMap`/`subMap`은 **정렬된 key 경계 자르기** 쪽이다.
+
+그래서 "`LinkedHashMap`도 순서가 있으니 `subMap` 비슷하게 생각해도 되지 않나?"라고 묻는다면 답은 아니다. 삽입 순서는 비교 가능한 정렬 축이 아니어서, `20`과 `40` 사이를 자르거나 `30` 근처 이웃을 찾는 기준이 되지 못한다.
 
 ## 이름부터 10초로 읽기
 
@@ -265,6 +279,7 @@ System.out.println(desc.subMap(40, 20)); // {40=A, 30=B}
 - `subSet(20, 40)`를 `20`과 `40` 둘 다 포함으로 읽기 쉽다. 기본은 `[20, 40)`다.
 - `headSet(30)`을 "`30`까지"라고 읽기 쉽다. 기본은 `30` 제외다.
 - `tailSet(30)`을 "`30` 뒤부터"라고 읽고 `30`을 빼기 쉽다. 기본은 `30` 포함이다.
+- `LinkedHashMap`도 순서가 있으니 비슷한 range query가 가능하다고 생각하기 쉽다. 하지만 삽입 순서는 정렬 줄이 아니라서 `floorKey`/`subMap` 계열 질문은 `TreeMap` 쪽이다.
 - `subMap(20, false, 40, true)` 같은 boolean overload를 보면 순서를 놓치기 쉽다. `fromInclusive`, `toInclusive` 순서라서 "왼쪽부터 하나씩" 읽는 편이 안전하다.
 - `headMap(30, true)`를 "오른쪽까지 넓힌다"로 읽기 쉽다. 실제로는 "`30` exact match를 포함하느냐"만 바뀐다.
 - `subMap(...)`이 value 범위를 자른다고 생각하기 쉽다. 실제로는 key 범위를 자른다.

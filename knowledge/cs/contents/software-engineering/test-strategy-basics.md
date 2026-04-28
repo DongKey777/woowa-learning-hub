@@ -9,6 +9,9 @@
 관련 문서:
 
 - [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)
+- [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
+- [Controller 계약 변경 vs Service 규칙 변경 첫 failing test 미니 카드](./controller-contract-vs-service-rule-first-test-mini-card.md)
+- [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
@@ -17,12 +20,13 @@
 - [Servlet Filter vs MVC Interceptor Beginner Bridge](./servlet-filter-vs-mvc-interceptor-beginner-bridge.md)
 - [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
 - [DataJpaTest Flush/Clear Batch Checklist](./datajpatest-flush-clear-batch-checklist.md)
+- [트랜잭셔널 테스트 rollback vs commit 경계 카드](./transactional-test-rollback-vs-commit-boundary-card.md)
 - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 - [design-pattern 카테고리 인덱스](../design-pattern/README.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처음 테스트 뭐예요, failing test first, 단위 테스트 최소 예시, springboottest integration test, springboottest e2e difference, webmvctest 최소 예시, datajpatest 최소 예시, test double basics, slice test choice, feedback loop basics, 왜 서버 전체 테스트부터, springboottest 처음 헷갈려, 가장 싼 테스트
+retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처음 테스트 뭐예요, failing test first, 단위 테스트 최소 예시, springboottest integration test, springboottest e2e difference, mockmvc vs testresttemplate, real browser e2e basics, webmvctest 최소 예시, datajpatest 최소 예시, test double basics, slice test choice, slice vs integration test, 왜 서버 전체 테스트부터
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -41,7 +45,7 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 | Service에서 바뀐 것 | 여기서 먼저 볼 행 | 첫 테스트 |
 |---|---|---|
 | 계산, 검증, 상태 전이 같은 규칙 | `계산식/검증 로직 변경` | 단위 테스트 |
-| 저장 순서, 롤백, 여러 컴포넌트 연결 | `트랜잭션 경계/여러 컴포넌트 협력 흐름 변경` | `@SpringBootTest` 통합 테스트 |
+| 저장 순서, 롤백, 여러 컴포넌트 연결 | `트랜잭션 경계/여러 컴포넌트 협력 흐름 변경` | `@SpringBootTest` 앱 통합 테스트 |
 | Controller 요청 검증까지 같이 수정 | `Controller 입력 검증/응답 포맷 변경` | `@WebMvcTest` |
 
 - 한 줄 연결: `Service 책임을 읽었다 -> 바뀐 책임 종류를 고른다 -> 아래 첫 테스트 선택표의 같은 행으로 내려간다.`
@@ -71,6 +75,7 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 | "주문 저장은 됐는데 재고 차감이 안 돼요" | 여러 컴포넌트 협력과 롤백을 보는가 | `@SpringBootTest` | [Service 계층 기초](./service-layer-basics.md) |
 
 - 짧게 외우면 `말을 테스트 이름으로 바꾸지 말고, 질문으로 바꾼다`.
+- 구조 정리 피드백을 받은 뒤 이 표로 내려왔다면 [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)에서 `리뷰 문장 -> 질문 1개 -> 첫 failing test` 흐름을 먼저 맞추고 오는 편이 덜 헷갈린다.
 - 같은 변경을 읽기/레이어 관점에서 먼저 정리하고 싶다면 [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md), [계층형 아키텍처 기초](./layered-architecture-basics.md)를 먼저 보고 다시 내려오면 된다.
 
 ## 30초 자가진단 카드 (4문항 Yes/No)
@@ -82,7 +87,7 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 | 1. 계산식/검증 로직 변경인가? | 단위 테스트부터 시작 | 2번 질문으로 |
 | 2. Controller 입력 검증/응답 포맷 변경인가? | `@WebMvcTest`부터 시작 | 3번 질문으로 |
 | 3. JPA 쿼리/매핑/인덱스 관련 변경인가? | `@DataJpaTest`부터 시작 | 4번 질문으로 |
-| 4. 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경인가? | `@SpringBootTest` 통합 테스트 1개부터 | 단위 테스트 1개를 먼저 쓰고 필요 시 올린다 |
+| 4. 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경인가? | `@SpringBootTest` 앱 통합 테스트 1개부터 | 단위 테스트 1개를 먼저 쓰고 필요 시 올린다 |
 
 - 판단이 겹치면: **더 싼 테스트(단위/슬라이스) 1개를 먼저 잠그고** 다음 레벨 테스트를 추가한다.
 - `401/403`, CSRF, retry처럼 바로 네 칸에 안 들어가는 주제는 starter에서 억지로 끼워 넣지 말고, 아래 `후속 분기` 링크로 보낸다.
@@ -96,7 +101,7 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 | 1번 | 계산식/검증 로직 변경 | 단위 테스트 |
 | 2번 | Controller 입력 검증/응답 포맷 변경 | 슬라이스 테스트 (`@WebMvcTest`) |
 | 3번 | JPA 쿼리/매핑/인덱스 관련 변경 | 슬라이스 테스트 (`@DataJpaTest`) |
-| 4번 | 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경 | 통합 테스트 (`@SpringBootTest`) |
+| 4번 | 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경 | 앱 통합 테스트 (`@SpringBootTest`) |
 
 - `보안 규칙 자체 변경`과 `외부 API 연동 분기/재시도 정책 변경`은 starter 4칸을 다 고른 뒤에 보는 **후속 분기**다.
 - 그래서 이 경우는 체크리스트에서 억지로 한 칸만 고르기보다, 먼저 `HTTP 계약인가?`, `규칙 분기인가?`, `실제 연결인가?`를 나눈 뒤 관련 문서로 내려가면 된다.
@@ -120,6 +125,7 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 | 보안 규칙 (`401/403`, CSRF, filter chain) | HTTP 계약 테스트를 고르기 전부터 보안 예외를 섞으면 `WebMvcTest` starter가 흐려진다 | [Servlet Filter vs MVC Interceptor Beginner Bridge](./servlet-filter-vs-mvc-interceptor-beginner-bridge.md) |
 | 외부 API retry/멱등성 | 첫 failing test보다 운영 분기표가 먼저 커지기 쉽다 | [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md) |
 | `flush/clear`, DB 차이, 세부 JPA 검증 | `DataJpaTest`를 왜 쓰는지보다 세부 옵션 이름이 먼저 남기 쉽다 | [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md), [DataJpaTest Flush/Clear Batch Checklist](./datajpatest-flush-clear-batch-checklist.md) |
+| "`@Transactional` 테스트는 초록인데 commit 뒤 동작이 불안하다" | rollback 기반 테스트와 commit-visible 테스트를 한 번에 섞으면 질문 경계가 흐려진다 | [트랜잭셔널 테스트 rollback vs commit 경계 카드](./transactional-test-rollback-vs-commit-boundary-card.md), [Spring Transactional Test Rollback Misconceptions](../spring/spring-transactional-test-rollback-misconceptions.md) |
 
 - stop rule: `첫 테스트 1개`를 아직 못 골랐다면 이 표의 링크는 열지 않는다.
 - beginner follow-up 기준은 단순하다: `규칙 / 웹 계약 / JPA / 협력 흐름` 중 하나를 먼저 잠근 뒤에만 심화 문서로 내려간다.
@@ -160,29 +166,32 @@ retrieval-anchor-keywords: test strategy basics, 처음 테스트 뭐부터, 처
 
 ## 핵심 개념
 
-테스트는 코드가 의도대로 동작하는지 자동으로 확인하는 수단이다. 범위에 따라 세 단계로 나뉜다.
+테스트는 코드가 의도대로 동작하는지 자동으로 확인하는 수단이다. beginner 기준으로는 아래 네 이름을 먼저 분리해 두면 덜 헷갈린다.
 
 - **단위 테스트(Unit Test)** — 하나의 클래스나 메서드를 격리해서 검증한다. 빠르고 저렴하다.
-- **통합 테스트(Integration Test)** — 여러 컴포넌트(DB, 서비스, 레포지토리)를 묶어서 검증한다. 느리지만 실제 협력을 확인한다.
-- **E2E 테스트** — 실제 HTTP 요청을 보내 전체 흐름을 검증한다. 가장 느리고 비용이 크다.
+- **슬라이스 테스트(Slice Test)** — MVC나 JPA처럼 특정 프레임워크 경계만 실제로 붙여 검증한다. `@WebMvcTest`, `@DataJpaTest`가 대표적이다.
+- **앱 통합 테스트(App Integration Test)** — 여러 빈, 트랜잭션, 실제 저장소 협력을 함께 붙여 검증한다. `@SpringBootTest`가 대표적이다.
+- **E2E 테스트** — 브라우저나 외부 클라이언트가 사용자 흐름을 바깥에서 끝까지 검증한다. 가장 느리고 비용이 크다.
 
-입문자가 헷갈리는 포인트는 "외부 의존을 어떻게 처리하느냐"다. 단위 테스트에서는 실제 DB 대신 가짜 객체(Mock/Stub)를 쓰는 경우가 많다.
+입문자가 자주 섞는 것은 `@SpringBootTest = E2E`라는 착시다. 이 문서에서는 `@SpringBootTest`를 먼저 **앱 통합 테스트**로 부르고, 진짜 사용자 여정을 바깥에서 검증할 때만 E2E라고 부른다.
 
 ## 한눈에 보기
 
 ```
-E2E         ▲ 적게
-Integration ▌▌
-Unit        ▌▌▌▌▌ 많이
+E2E              ▲ 매우 적게
+App Integration  ▌▌
+Slice            ▌▌▌
+Unit             ▌▌▌▌▌ 많이
 ```
 
 | 종류 | 속도 | 신뢰도 | 권장 비율 |
 |---|---|---|---|
 | 단위 테스트 | 빠름 | 격리된 로직 검증 | 많이 |
-| 통합 테스트 | 보통 | 협력 검증 | 적당히 |
+| 슬라이스 테스트 | 빠름~보통 | 웹/JPA 같은 특정 경계 검증 | 적당히 |
+| 앱 통합 테스트 | 보통~느림 | 실제 빈 협력, 트랜잭션, wiring 검증 | 소수 |
 | E2E 테스트 | 느림 | 전체 흐름 검증 | 소수 |
 
-## unit / integration / e2e를 1분에 구분하는 기준
+## unit / slice / integration / e2e를 1분에 구분하는 기준
 
 초심자가 가장 많이 헷갈리는 지점은 `통합 테스트`와 `E2E 테스트`를 같은 뜻처럼 쓰는 순간이다. 이 문서에서는 **"어디까지 실제로 붙였는가"**로만 구분한다.
 
@@ -190,10 +199,10 @@ Unit        ▌▌▌▌▌ 많이
 |---|---|---|
 | 순수 객체와 fake/stub/mock만 붙였다 | 단위 테스트 | 규칙, 계산, 상태 전이 |
 | MVC 또는 JPA처럼 특정 기술 경계만 실제로 붙였다 | 슬라이스 테스트 | HTTP 계약, 쿼리/매핑 |
-| 여러 빈, 트랜잭션, 실제 저장소 협력을 붙였다 | 통합 테스트 | 롤백, wiring, 협력 흐름 |
+| 여러 빈, 트랜잭션, 실제 저장소 협력을 붙였다 | 앱 통합 테스트 | 롤백, wiring, 협력 흐름 |
 | 애플리케이션을 바깥에서 실제 요청으로 검증했다 | E2E 테스트 | 핵심 사용자 흐름 최종 확인 |
 
-- `@SpringBootTest`는 보통 통합 테스트 쪽에 가깝다. HTTP를 바깥에서 끝까지 태우는지까지 봐야 E2E라고 부르는 편이 초심자 기준으로 덜 헷갈린다.
+- `@SpringBootTest`는 보통 앱 통합 테스트 쪽에 가깝다. HTTP를 태웠는지보다, **테스트 코드가 앱 안쪽을 제어하는지 / 사용자가 바깥에서 끝까지 검증하는지**를 더 먼저 본다.
 - 짧게 외우면 `규칙 = unit`, `웹/JPA 경계 = slice`, `여러 협력 = integration`, `사용자 흐름 끝단 = e2e`다.
 - 그래서 starter의 첫 선택은 보통 `unit -> slice -> integration` 순서에서 끝나고, E2E는 마지막 안전망 몇 개만 남긴다.
 
@@ -203,19 +212,47 @@ Unit        ▌▌▌▌▌ 많이
 
 | 지금 만든 테스트 장면 | 초심자 기준 이름 | 이유 |
 |---|---|---|
-| 테스트 코드가 `OrderService`를 직접 호출한다 | 통합 테스트 | 스프링 빈, 트랜잭션, DB 협력을 붙였지만 사용자는 아직 등장하지 않는다 |
-| 테스트 코드가 `MockMvc`나 `TestRestTemplate`로 `POST /orders`를 호출한다 | 경계형 통합 테스트 또는 얇은 E2E 후보 | HTTP 입구는 탔지만 보통 테스트 프로세스 안에서 앱을 제어한다 |
+| 테스트 코드가 `OrderService`를 직접 호출한다 | 앱 통합 테스트 | 스프링 빈, 트랜잭션, DB 협력을 붙였지만 사용자는 아직 등장하지 않는다 |
+| 테스트 코드가 `MockMvc`나 `TestRestTemplate`로 `POST /orders`를 호출한다 | 슬라이스 테스트 또는 앱 통합 테스트 | HTTP 입구는 탔지만 보통 테스트 프로세스 안에서 앱을 제어한다 |
 | 앱을 실제 포트로 띄우고, 로그인부터 주문 완료까지 바깥 클라이언트가 끝까지 검증한다 | E2E 테스트 | 사용자가 겪는 전체 흐름을 바깥에서 확인한다 |
 
 - `@SpringBootTest`는 "컨텍스트를 얼마나 넓게 켰는가"를 말해 주지, 자동으로 `E2E` 라벨을 주지는 않는다.
-- `@SpringBootTest(webEnvironment = RANDOM_PORT)`처럼 실제 HTTP를 태워도, 목적이 `트랜잭션/직렬화/보안 경계가 함께 붙는지` 확인이라면 실무에서는 통합 테스트로 부르는 경우가 많다.
-- 초심자용 안전한 구분은 간단하다. `내 테스트가 서비스 내부 협력을 보는가? -> integration`, `사용자 흐름을 바깥에서 끝까지 보는가? -> e2e`.
+- `@SpringBootTest(webEnvironment = RANDOM_PORT)`처럼 실제 HTTP를 태워도, 목적이 `트랜잭션/직렬화/보안 경계가 함께 붙는지` 확인이라면 여전히 **앱 통합 테스트**로 부르는 경우가 많다.
+- 초심자용 안전한 구분은 간단하다. `내 테스트가 앱 안쪽 협력을 보는가? -> integration`, `사용자 흐름을 바깥에서 끝까지 보는가? -> e2e`.
+
+## MockMvc vs TestRestTemplate vs 진짜 브라우저를 1분에 고르기
+
+초심자가 자주 묻는 질문은 "`HTTP로 때렸는데 왜 아직도 통합 테스트예요?`"다. 여기서는 **HTTP를 태웠는지**보다 **무엇을 생략했는지**를 같이 봐야 덜 헷갈린다.
+
+| 도구 | 보통 붙는 범위 | 초심자 기준 이름 | 아직 빠진 것 | 언제 고르면 좋은가 |
+|---|---|---|---|---|
+| `MockMvc` | Spring MVC 입구, controller, validation, JSON 변환, 예외 번역 | 슬라이스 테스트 또는 웹 경계 앱 통합 테스트 | 진짜 서버 소켓, 실제 브라우저 렌더링, JS 실행 | `400/201` 같은 HTTP 계약을 빠르게 잠그고 싶을 때 |
+| `TestRestTemplate` | 랜덤 포트로 뜬 실제 앱 + HTTP 요청/응답 | 앱 통합 테스트 | 브라우저 이벤트, 쿠키/스토리지 실제 UX, 프런트엔드 흐름 | 보안, 직렬화, 필터 체인, 실제 포트 wiring까지 같이 보고 싶을 때 |
+| 실제 브라우저 E2E | 브라우저, 화면, 네트워크, 백엔드까지 사용자 흐름 전체 | E2E 테스트 | 거의 없음. 대신 느리고 유지비가 크다 | 로그인, 결제, 주문 완료처럼 사용자 여정 전체가 진짜로 이어져야 할 때 |
+
+- `MockMvc`는 HTTP 모양을 흉내 내지만 보통 테스트 프로세스 안에서 controller 경계를 검증하므로, beginner 기준으로는 E2E보다 **웹 경계 테스트**로 이해하는 편이 안전하다.
+- `TestRestTemplate`는 실제 포트로 요청하므로 `MockMvc`보다 한 단계 더 넓지만, 여전히 브라우저 사용자가 아니라 **테스트 코드가 클라이언트 역할**을 한다. 그래서 대개 **앱 통합 테스트**로 분류한다.
+- 진짜 브라우저 E2E는 클릭, 리다이렉트, 쿠키, 정적 리소스, 프런트엔드 상태 변화까지 포함하므로 "`사용자가 끝까지 성공했는가`"를 최종 확인할 때만 소수로 남긴다.
+
+## true E2E가 필요한 순간만 따로 고르기
+
+아래 중 하나라도 핵심이면, `MockMvc`나 `TestRestTemplate`만으로는 부족할 수 있다.
+
+| 질문 | 왜 브라우저 E2E가 필요한가 |
+|---|---|
+| 로그인 후 리다이렉트와 화면 전환이 실제로 이어지는가 | 서버 응답만 맞아도 브라우저 쿠키, 라우팅, 화면 초기화에서 끊길 수 있다 |
+| 버튼 연타, 비활성화, 중복 제출 방지가 실제 화면에서 동작하는가 | 백엔드 테스트만으로는 사용자 조작 타이밍을 재현하기 어렵다 |
+| 파일 업로드, 결제창, 외부 인증처럼 브라우저 상호작용이 핵심인가 | 실제 DOM, 팝업, 리다이렉트 체인을 태워 봐야 한다 |
+| 팀이 최근 버그를 "API는 정상이었는데 화면 연결에서" 자주 냈는가 | 위험이 UI 경계에 모이면 진짜 사용자 흐름 검증 가치가 커진다 |
+
+- 반대로 "`응답 코드가 맞나?`", "`직렬화가 맞나?`", "`보안 필터가 붙나?`"가 질문의 전부라면 `MockMvc`나 `TestRestTemplate` 기반 **슬라이스/앱 통합 테스트**가 먼저다.
+- 한 줄 기준: `브라우저 동작이 핵심이면 E2E`, `HTTP 계약이나 서버 wiring이 핵심이면 slice/app integration`이다.
 
 ### 주문 생성 예시로 30초 구분
 
 | 내가 확인하려는 것 | 더 맞는 선택 | 왜 여기서 멈추나 |
 |---|---|---|
-| 주문 저장 실패 시 재고도 함께 롤백되는가 | `@SpringBootTest` 통합 테스트 | 핵심은 내부 협력과 트랜잭션 경계다 |
+| 주문 저장 실패 시 재고도 함께 롤백되는가 | `@SpringBootTest` 앱 통합 테스트 | 핵심은 내부 협력과 트랜잭션 경계다 |
 | `/orders` 요청 JSON이 `400`/`201`으로 끝나는가 | `@WebMvcTest` 또는 `@SpringBootTest` HTTP 테스트 | 핵심은 HTTP 계약이다 |
 | 브라우저/클라이언트 관점에서 로그인 후 주문까지 진짜로 완료되는가 | E2E | 핵심은 사용자가 겪는 전체 여정이다 |
 
@@ -232,9 +269,23 @@ Unit        ▌▌▌▌▌ 많이
 | 메모리에서 실제처럼 저장/조회 흐름을 흉내 내고 싶다 | fake | repository 규약을 조금 더 자연스럽게 읽을 수 있다 |
 | 특정 호출이 있었는지만 확인하고 싶다 | mock/spy | 알림 전송, 이벤트 발행처럼 상호작용 자체가 질문일 때 맞다 |
 
+예를 들어 `OrderService.place()`가 `주문번호 중복이면 실패` 규칙을 검사한다고 하자.
+
+- 결과 질문은 "`중복 주문번호면 예외가 나는가?`"다.
+- 이 질문은 `save()`와 `existsByOrderNumber()`가 동작하는 메모리 `FakeOrderRepository`로 읽는 편이 자연스럽다.
+- 반대로 "`place()`가 repository를 정확히 1번 호출했는가?`"만 검증하면 호출 순서가 중심이 돼서 규칙 설명보다 구현 상세가 앞서기 쉽다.
+
+| 같은 주문 저장 테스트에서 | fake repository가 더 맞는 경우 | mock repository가 더 맞는 경우 |
+|---|---|---|
+| 내가 확인하려는 것 | 저장 후 다시 조회했을 때의 결과, 중복 거절 같은 계약 의미 | 특정 메서드 호출 여부 자체 |
+| 테스트가 읽히는 문장 | "`이미 있으면 실패한다`" | "`exists`를 먼저 부르고 `save`를 나중에 부른다`" |
+| 초심자 starter로 더 안전한 쪽 | fake | mock |
+
 - 초심자 첫 선택 규칙은 간단하다. **결과를 검증하면 stub/fake 쪽, 호출 자체를 검증하면 mock/spy 쪽**이다.
 - fake가 왜 자주 추천되냐면, 구현 세부 호출 순서보다 "저장 후 다시 읽었을 때 어떤 결과가 나오는가"를 더 자연스럽게 읽게 해 주기 때문이다.
-- 더 자세한 차이와 repository 예시는 [Repository Fake Design Guide](./repository-fake-design-guide.md), follow-up 설명은 [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)로 이어서 보면 된다.
+- `작은 service 리팩토링에서 mock을 먼저 잡아야 하나, fake를 먼저 잡아야 하나`가 막히면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)에서 `결과를 읽는가 / 호출을 읽는가` 기준만 먼저 잡고 돌아오면 된다.
+- 메모리 repository 예시를 한 단계 더 보고 싶다면 [Repository Fake Design Guide](./repository-fake-design-guide.md)의 `처음 3분 요약`, `메모리 repository 예시: 같은 질문을 fake로 읽기`, `같은 질문을 mock으로 읽으면 무엇이 달라지나`부터 이어서 보면 된다.
+- 용어 차이를 조금 더 정밀하게 정리하고 싶다면 [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)로 올라가면 된다.
 
 ## 빠른 피드백 루프는 이렇게 만든다
 
@@ -244,7 +295,7 @@ Unit        ▌▌▌▌▌ 많이
 |---|---|---|
 | 1 | 지금 바뀐 규칙 1개를 unit이나 slice로 바로 깨지게 만들 수 있는가 | 실패 원인이 한 문장으로 설명된다 |
 | 2 | 그 테스트가 초록이 되면 구조를 조금 옮겨도 안심되는가 | 리팩터링 1단계가 덜 불안하다 |
-| 3 | 실제 협력 버그가 남을 수 있는가 | 있으면 integration test 1개를 추가한다 |
+| 3 | 실제 협력 버그가 남을 수 있는가 | 있으면 app integration test 1개를 추가한다 |
 | 4 | 사용자가 끝까지 겪는 핵심 흐름이 남았는가 | 남으면 E2E 1개만 추가한다 |
 
 - 이 순서는 `테스트를 많이 쌓자`가 아니라 `가장 싼 신호부터 받고, 비싼 신호는 뒤에 소수만 남기자`에 가깝다.
@@ -260,7 +311,7 @@ Unit        ▌▌▌▌▌ 많이
 | 계산식/검증 로직 변경 (할인, 포인트, 상태 전이) | 단위 테스트 | 외부 의존 없이 규칙 자체를 가장 빠르게 검증할 수 있다. |
 | Controller 입력 검증/응답 포맷 변경 | 슬라이스 테스트 (`@WebMvcTest`) | 웹 계층 계약(요청/응답/검증)을 DB 없이 확인할 수 있다. |
 | JPA 쿼리/매핑/인덱스 관련 변경 | 슬라이스 테스트 (`@DataJpaTest`) | 실제 영속 계층 동작을 좁은 범위로 검증할 수 있다. |
-| 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경 | 통합 테스트 (`@SpringBootTest`) | "붙였을 때" 깨지는 협력 문제를 조기에 잡는다. |
+| 트랜잭션 경계/여러 컴포넌트 협력 흐름 변경 | 앱 통합 테스트 (`@SpringBootTest`) | "붙였을 때" 깨지는 협력 문제를 조기에 잡는다. |
 
 ## 변경 유형 매핑 사례 4개 (before / after)
 
@@ -606,7 +657,7 @@ class OrderRepositoryDataJpaTest {
 
 - "순수 로직이 바뀌었나?" -> 단위 테스트부터.
 - "스프링 레이어 계약이 바뀌었나?" -> 해당 슬라이스 테스트부터.
-- "여러 의존을 실제로 붙여야 안심되나?" -> 통합 테스트 1개부터.
+- "여러 의존을 실제로 붙여야 안심되나?" -> 앱 통합 테스트 1개부터.
 - 헷갈리면 단위 테스트 1개를 먼저 추가하고, 실패 원인이 경계(wiring) 쪽이면 슬라이스/통합으로 올린다.
 
 ## 상세 분해
@@ -632,21 +683,21 @@ void 주문_금액이_0원이면_예외() {
 
 입문 단계에서는 Mock과 Stub의 차이보다, "실제 의존을 교체해서 빠르게 테스트한다"는 개념을 먼저 잡으면 충분하다.
 
-**통합 테스트 범위**
+**앱 통합 테스트 범위**
 
-Spring에서 `@SpringBootTest`를 쓰면 전체 컨텍스트를 올려서 실제 DB와 함께 테스트할 수 있다. `@DataJpaTest`는 JPA 관련 빈만 올려 더 빠르다.
+Spring에서 `@SpringBootTest`를 쓰면 전체 컨텍스트를 올려서 실제 DB와 함께 테스트할 수 있다. `@DataJpaTest`는 JPA 관련 빈만 올리는 슬라이스 테스트라 더 빠르다.
 
 ## 흔한 오해와 함정
 
 - "테스트가 많으면 많을수록 좋다"는 오해가 있다. 테스트가 구현 세부에 강하게 묶이면 리팩터링할 때 테스트도 같이 고쳐야 해서 오히려 비용이 커진다. 인터페이스와 동작을 테스트하는 편이 낫다.
 - `@SpringBootTest`를 단위 테스트처럼 쓰면 전체 컨텍스트 로딩 비용이 쌓여 빌드가 느려진다.
-- Mock을 너무 많이 쓰면 실제 협력에서 발생하는 버그를 잡지 못한다. 핵심 통합 경로는 통합 테스트로 커버해야 한다.
-- "통합 테스트가 더 현실적이니 처음부터 통합만 쓰자"는 선택도 흔한 실수다. 초급 단계에서는 **가장 싼 테스트 1개**(보통 단위/슬라이스)로 먼저 실패를 고정하고, 필요한 경우에만 통합 테스트를 추가하는 편이 유지비가 낮다.
+- Mock을 너무 많이 쓰면 실제 협력에서 발생하는 버그를 잡지 못한다. 핵심 협력 경로는 앱 통합 테스트로 커버해야 한다.
+- "통합 테스트가 더 현실적이니 처음부터 통합만 쓰자"는 선택도 흔한 실수다. 초급 단계에서는 **가장 싼 테스트 1개**(보통 단위/슬라이스)로 먼저 실패를 고정하고, 필요한 경우에만 앱 통합 테스트를 추가하는 편이 유지비가 낮다.
 - 입력 검증/쿼리 수정/트랜잭션 경계처럼 변경 이유가 다른데 테스트 종류를 한 가지로 통일하면, 실패 원인이 어디인지 오히려 늦게 드러난다.
 
 ## 실무에서 쓰는 모습
 
-대부분의 백엔드 프로젝트에서는 도메인/서비스 로직은 단위 테스트로 빠르게 커버하고, Repository나 외부 연동이 포함된 경로는 슬라이스 테스트(`@DataJpaTest`, `@WebMvcTest`)나 `@SpringBootTest` 통합 테스트로 검증하며, 진짜 사용자 여정은 핵심 시나리오 2~3개만 E2E로 남기는 패턴이 흔하다.
+대부분의 백엔드 프로젝트에서는 도메인/서비스 로직은 단위 테스트로 빠르게 커버하고, Repository나 외부 연동이 포함된 경로는 슬라이스 테스트(`@DataJpaTest`, `@WebMvcTest`)나 `@SpringBootTest` 앱 통합 테스트로 검증하며, 진짜 사용자 여정은 핵심 시나리오 2~3개만 E2E로 남기는 패턴이 흔하다.
 
 ## 더 깊이 가려면
 
@@ -663,4 +714,4 @@ Spring에서 `@SpringBootTest`를 쓰면 전체 컨텍스트를 올려서 실제
 
 ## 한 줄 정리
 
-테스트는 단위·통합·E2E를 적절히 섞되, 많은 단위 테스트로 빠른 피드백을 잡고 소수의 통합 테스트로 실제 협력을 검증하는 것이 기본 전략이다.
+테스트는 단위·슬라이스·앱 통합·E2E를 역할별로 나눠 두고, 많은 단위/슬라이스 테스트로 빠른 피드백을 잡은 뒤 소수의 앱 통합/E2E로 실제 협력과 사용자 흐름을 확인하는 것이 기본 전략이다.

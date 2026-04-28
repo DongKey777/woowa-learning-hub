@@ -1,0 +1,103 @@
+# Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드
+
+> 한 줄 요약: `response.redirected`와 `response.url`은 대개 `redirect: "follow"` 뒤에 보이는 최종 결과 신호이고, `redirect: "manual"`에서는 대신 `response.type === "opaqueredirect"` 같은 제한된 신호만 보여서 둘을 같은 칸에서 읽으면 "`manual`인데 왜 `redirected`가 안 보이죠?" 같은 혼동이 생긴다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Network README](./README.md#fetch-response-redirected-vs-responseurl-vs-opaqueredirect-미니-카드)
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
+- [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
+- [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+
+retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basics, response.url basics, opaqueredirect beginner, fetch manual redirect confusion, manual redirect status 0, why response redirected false, fetch follow login html, redirect follow vs manual, 처음 fetch redirect, 헷갈 response.url, what is opaqueredirect
+
+## 핵심 개념
+
+이 카드에서 먼저 고정할 문장은 하나다.
+
+- `response.redirected`와 `response.url`은 "redirect를 따라간 뒤 어디에 도착했는가"를 읽을 때 쓴다.
+- `opaqueredirect`는 "`manual` 모드라서 redirect 중간 정보를 코드에 거의 안 열어 준다"는 신호다.
+
+즉 셋은 같은 종류의 값이 아니다. 앞의 둘은 **post-follow 신호**, 마지막 하나는 **manual-mode 신호**에 가깝다.
+
+## 한눈에 보기
+
+| 지금 쓴 모드 | 앱 코드에서 먼저 볼 신호 | 이 신호가 답하는 질문 | 여기서 바로 확정 못 하는 것 |
+|---|---|---|---|
+| `redirect: "follow"` | `response.redirected === true` | 중간에 redirect가 있었나 | 원래 `Location` 값이 정확히 뭐였나 |
+| `redirect: "follow"` | `response.url === ".../login"` | 최종 도착 URL이 어디인가 | 첫 응답이 `401`이었는지 `302`였는지 |
+| `redirect: "manual"` | `response.type === "opaqueredirect"` | redirect가 있었고, 코드에는 제한된 정보만 보인다는 뜻인가 | `Location` header, body, normal `302` payload |
+
+짧게 외우면 아래처럼 나눈다.
+
+- `redirected` = "따라간 적이 있었나"
+- `url` = "지금 어디에 도착했나"
+- `opaqueredirect` = "`manual`이라 자세한 중간 내용은 코드에서 못 본다"
+
+## 상세 분해
+
+### `response.redirected`는 무엇을 말하나
+
+`response.redirected`는 "최종 응답에 도착하기 전에 redirect를 한 번 이상 따라갔는가"를 알려 주는 boolean 신호다.
+
+- `true`면 중간 redirect가 있었을 가능성이 높다.
+- 하지만 이 값만으로 `/login`으로 갔는지, CDN으로 갔는지, 어떤 `Location`이었는지는 모른다.
+
+그래서 beginner에게는 "`redirected`는 원인 전체가 아니라 follow 뒤 흔적"이라고 설명하는 편이 안전하다.
+
+### `response.url`은 무엇을 말하나
+
+`response.url`은 현재 `Response`가 가리키는 최종 URL이다.
+
+- `follow` 모드에서 `/api/me`를 호출했는데 `response.url`이 `/login`이면, 중간 redirect를 따라가 login 페이지에 도착했을 가능성이 크다.
+- 반대로 `response.url`은 "원래 내가 요청한 URL"이 아니라 "마지막에 도착한 URL" 쪽 감각으로 읽어야 한다.
+
+즉 `response.url`은 "최종 목적지"를 알려 주지만, redirect 과정을 다 풀어 주지는 않는다.
+
+### `opaqueredirect`는 왜 따로 읽어야 하나
+
+`redirect: "manual"`에서는 초보자가 기대하는 "`302` status와 `Location` header를 그대로 코드에서 읽기"가 잘 안 보인다. 대신 아래처럼 제한된 신호가 먼저 온다.
+
+- `response.type === "opaqueredirect"`
+- `status === 0`
+- body 없음
+- headers를 normal response처럼 읽지 못함
+
+그래서 `manual`은 "`redirected`와 `url`이 덜 자세히 보이는 follow"가 아니라, **아예 다른 관측 모드**라고 보는 편이 맞다.
+
+## 흔한 오해와 함정
+
+- `response.redirected === true`면 `Location` header도 읽을 수 있다고 생각한다. 아니다. 그 값은 follow가 있었다는 흔적일 뿐이다.
+- `response.url`이 원래 요청 URL이라고 생각한다. follow가 있었다면 최종 도착지일 수 있다.
+- `manual`이면 normal `302` response를 다룬다고 생각한다. beginner 기준으로는 `opaqueredirect`라는 제한 신호를 먼저 만난다고 보는 편이 맞다.
+- `manual`에서 `redirected`가 기대만큼 안 보이니 redirect 자체가 없었다고 생각한다. 이 모드에서는 DevTools Network 탭이 더 직접적인 근거다.
+
+## 실무에서 쓰는 모습
+
+예를 들어 `fetch("/api/me")`가 사실은 로그인 안 된 사용자라서 `/login`으로 튄 상황을 보자.
+
+| 코드 | 먼저 보이는 값 | 첫 해석 |
+|---|---|---|
+| `fetch("/api/me")` | `response.redirected === true` | 중간 redirect를 따라간 흔적이 있다 |
+| 같은 호출 | `response.url === "https://app.example.com/login"` | 최종 도착지는 login 페이지다 |
+| `fetch("/api/me", { redirect: "manual" })` | `response.type === "opaqueredirect"` | redirect는 있었지만 코드는 제한된 표면만 본다 |
+
+이때 safe next step은 간단하다.
+
+1. `follow`에서 `response.url`이 `/login`이면 login HTML `200`을 API 성공으로 읽지 않는다.
+2. `manual`에서 `opaqueredirect`가 보이면 `Location`을 코드에서 캐내려 하지 말고 DevTools의 실제 `302` row를 본다.
+3. 둘 다 결국은 "첫 API 요청에 cookie가 실렸는가"와 "왜 redirect가 났는가"로 돌아간다.
+
+## 더 깊이 가려면
+
+- login redirect 전체 흐름과 `fetch redirect` 모드 비교는 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- page 이동 자체가 redirect인지 SPA navigation인지 먼저 가르려면 [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
+- login HTML `200`과 JSON API 성공 응답을 분리하려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
+- auth 실패가 browser redirect UX로 감싸진 장면을 더 직접적으로 보려면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+
+## 한 줄 정리
+
+`response.redirected`와 `response.url`은 대개 follow 뒤 최종 결과를 읽는 신호이고, `opaqueredirect`는 manual 모드의 제한 신호이므로 셋을 같은 종류의 값처럼 읽지 않는 것이 핵심이다.

@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: treeset treemap natural ordering compareto bridge basics, treeset treemap natural ordering compareto bridge beginner, treeset treemap natural ordering compareto bridge intro, java basics, beginner java, 처음 배우는데 treeset treemap natural ordering compareto bridge, treeset treemap natural ordering compareto bridge 입문, treeset treemap natural ordering compareto bridge 기초, what is treeset treemap natural ordering compareto bridge, how to treeset treemap natural ordering compareto bridge
+retrieval-anchor-keywords: treeset treemap compareto beginner, natural ordering beginner, compareto 0 같은 자리, compareto 0 이면 왜 treeset 하나만 남아요, compareto 0 이면 왜 treemap 덮어써져요, comparator 안 줬는데 왜 하나만 남아요, new treeset compareto rule, new treemap compareto rule, compareto 0 왜 같은 key 로 봐요, 자바 natural ordering 뭐예요, 자바 compareto 0 중복, 자바 treeset compareto 0, 자바 treemap compareto 0 덮어쓰기, 처음 배우는데 compareto 같은 자리, 정렬 기준과 같은 자리 차이
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./map-lookup-debug-equals-hashcode-compareto-mini-bridge.md)
@@ -24,6 +24,7 @@ retrieval-anchor-keywords: treeset treemap natural ordering compareto bridge bas
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 > - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+> - [HashSet vs TreeSet Beginner Bridge](../../data-structure/hashset-vs-treeset-beginner-bridge.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
 > retrieval-anchor-keywords: natural ordering in treeset and treemap, java treeset natural ordering duplicate, java treemap natural ordering replace value, java treemap compareTo same key, java compareTo tree set map surprise, comparable compareTo duplicate surprise, no comparator treeset treemap, new TreeSet natural ordering, new TreeMap natural ordering, compareTo 0 same element, compareTo 0 same key slot, sorted collection natural ordering duplicate, sorted map natural ordering value replacement, beginner comparable sorted collections, navigableset natural ordering lookup, navigablemap natural ordering lookup, first last floor ceiling compareTo order, mutable compareTo field treeset treemap, bigdecimal sorted collection surprise, bigdecimal compareTo equals mismatch
@@ -49,6 +50,8 @@ retrieval-anchor-keywords: treeset treemap natural ordering compareto bridge bas
 ## 왜 이 문서가 필요한가
 
 `TreeSet`과 `TreeMap` 예제를 처음 볼 때는 보통 이런 형태를 먼저 만난다.
+
+이 문서는 특히 `"Comparator를 안 줬는데 왜 TreeSet에는 하나만 남아요?"`, `"왜 TreeMap 값이 덮어써져요?"` 같은 첫 질문을 바로 받기 위한 beginner bridge다.
 
 ```java
 Set<Student> students = new TreeSet<>(Comparator.comparing(Student::name));

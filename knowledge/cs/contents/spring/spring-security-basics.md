@@ -7,12 +7,14 @@
 관련 문서:
 
 - [Spring Security 아키텍처](./spring-security-architecture.md)
+- [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md): `/admin`에서 로그인 redirect와 권한 부족을 처음 구분할 때 바로 내려갈 beginner entrypoint
+- [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md): "`302 /login` 다음 로그인은 성공했는데 마지막만 `403`"일 때 바로 이어 갈 beginner entrypoint
 - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md): `UsernamePasswordAuthenticationFilter` 앞뒤 배치, `302 /login`과 `403`이 왜 갈리는지처럼 "필터 순서가 결과를 바꾸는 순간"부터 올라갈 심화 문서
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring security basics, spring security 입문, spring security filter chain beginner, 처음 배우는데 security filter chain, security filter chain 큰 그림, security filter chain 기초, security filter chain 언제 쓰는지, spring security 401 403 차이, spring security 로그인 흐름, spring security 세션 기초, spring security 뭐예요, httpsecurity 기초, spring security basics basics, spring security basics beginner, spring security basics intro
+retrieval-anchor-keywords: spring security basics, spring security 입문, spring security filter chain beginner, 처음 배우는데 security filter chain, security filter chain 큰 그림, spring security 401 403 차이, spring security 로그인 흐름, spring security 뭐예요, httpsecurity 기초, 302 /login 왜 가요 spring security, spring security 403 왜 나와요, admin 403 beginner, 로그인 성공했는데 마지막 403, savedrequest role mismatch beginner, 왜 admin 페이지가 login으로 가요
 
 ## 핵심 개념
 
@@ -45,6 +47,46 @@ HTTP 요청
 | 인증 안 됨 | 401 Unauthorized | 로그인이 필요하다 |
 | 인증은 됐지만 권한 없음 | 403 Forbidden | 접근 권한이 없다 |
 
+## 증상별 첫 이동
+
+처음 읽는 문서라면 deep dive보다 먼저 증상에 맞는 첫 이동 문서를 고정하는 편이 빠르다.
+
+| 지금 보이는 증상 | 먼저 붙일 진단 라벨 | 첫 이동 문서 |
+|---|---|---|
+| "`/admin`이 `302 /login`으로 튀어요", "`왜 로그인 페이지로 가요`" | 인증 전 redirect | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) |
+| "`403`이 떠요", "`접근 거부 왜 떠요`", "`admin 403`" | 인증 후 권한 실패 | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) |
+| "`302 /login` 다음 로그인은 성공했는데 마지막만 `403`", "`원래 admin URL로 돌아왔는데 403`" | `redirect / navigation memory` 확인 후 역할 매핑 점검 | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
+| "`cookie 있는데 다시 로그인`", "`next request anonymous after login`" | `server persistence / session mapping` | [Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer](./spring-admin-session-cookie-flow-primer.md) |
+| "`401`인지 `302`인지 헷갈려요", "브라우저랑 API가 다르게 보여요" | 응답 계약 분리 | [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](./spring-api-401-vs-browser-302-beginner-bridge.md) |
+
+## 증상 문장을 라벨로 바꾸기
+
+초급 질의를 증상으로 바꾸면 아래처럼 바로 연결된다.
+
+| 검색하거나 물어보는 표현 | 먼저 붙일 라벨 | 이 문서에서 먼저 잡을 포인트 |
+|---|---|---|
+| "`302 /login`으로 튀어요" | 인증 전 redirect | 비로그인 사용자를 로그인으로 보내는 갈래인지 본다 |
+| "`403`이 떠요" | 인증 후 권한 실패 | 로그인은 됐는지, 역할이 맞는지 본다 |
+| "`로그인 성공했는데 마지막에만 403`" | 복귀 성공 후 역할 매핑 | `SavedRequest` 복귀와 `ROLE_ADMIN` 검사를 분리해 본다 |
+| "`addFilterBefore`를 왜 쓰죠?", "`UsernamePasswordAuthenticationFilter` 앞에 둔다는 게 뭐예요?" | 필터 위치 조정 | 인증 필터를 기존 기준 필터 앞에 두려는 상황인지 본다 |
+| "`addFilterAfter`는 언제 써요?", "`UsernamePasswordAuthenticationFilter` 뒤에 붙이면 뭐가 달라요?" | 필터 위치 조정 | 로그인 처리 뒤 후속 작업을 두려는 상황인지 본다 |
+| "필터 순서가 너무 헷갈려요" | ordering 입문 | 먼저 인증 단계와 인가 단계를 두 칸으로 나눠 본다 |
+
+특히 beginner가 `/admin 302 -> login -> final 403`처럼 검색했다면 이렇게 읽으면 된다.
+
+1. 첫 `302 /login`은 대개 "로그인부터"다.
+2. 로그인 성공 후 원래 URL로 돌아왔다면 `SavedRequest` 복귀는 일단 성공이다.
+3. 마지막 `403`만 남았다면 redirect보다 authority 이름과 `hasRole("ADMIN")` 규칙을 먼저 본다.
+
+## safe next doc 고정
+
+용어를 고정하면 다음 문서 선택도 단순해진다.
+
+| 고정 라벨 | 뜻 | safe next doc |
+|---|---|---|
+| `redirect / navigation memory` | 로그인 전 원래 URL을 기억했다가 로그인 후 다시 보내는 갈래 | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
+| `server persistence / session mapping` | 다음 요청에서 로그인 사용자를 다시 복원하는 갈래 | [Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer](./spring-admin-session-cookie-flow-primer.md) |
+
 ## 상세 분해
 
 - **필터 체인**: Spring Security는 서블릿 필터 체인 위에서 동작한다. Spring의 Bean이 아닌 서블릿 레이어에서 먼저 요청을 가로챈다.
@@ -52,17 +94,24 @@ HTTP 요청
 - **`HttpSecurity` 설정**: 어떤 URL은 인증 없이 접근 가능하고(`permitAll`), 어떤 URL은 로그인이 필요한지(`authenticated`), 어떤 URL은 특정 역할이 필요한지(`hasRole`) 설정한다.
 - **`UserDetailsService`**: 사용자 이름으로 사용자 정보를 불러오는 인터페이스. 로그인 시 DB에서 사용자를 조회할 때 이 인터페이스를 구현한다.
 - **`PasswordEncoder`**: 비밀번호를 암호화하고 비교하는 컴포넌트. `BCryptPasswordEncoder`가 가장 많이 쓰인다.
+- **필터 위치 조정 (`addFilterBefore`, `addFilterAfter`)**: custom 필터를 기존 기준 필터의 앞뒤 어디에 둘지 정할 때 쓴다. beginner 기준으로는 "`내 필터가 `UsernamePasswordAuthenticationFilter`보다 먼저 인증 재료를 준비해야 하나, 뒤에서 후처리를 해야 하나?`" 한 질문만 먼저 붙이면 된다. 이 감각이 아직 흐리면 [Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md)에서 기준 필터 앞뒤 감각을 먼저 잡고, 순서 자체가 핵심이면 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md#addfilterbeforeaddfilterafter와-usernamepasswordauthenticationfilter-앞뒤-브리지)으로 내려간다.
 
 ## 흔한 오해와 함정
 
 **오해 1: 401과 403은 같은 의미다**
 401은 인증 자체가 안 된 것(로그인 필요), 403은 인증은 됐지만 권한이 없는 것이다. 구분하지 않으면 디버깅이 어려워진다.
 
+**오해 1-1: 로그인 성공 후 마지막 `403`도 그냥 같은 로그인 문제다**
+`/admin -> 302 /login -> 로그인 성공 -> 원래 URL 복귀 -> final 403`처럼 보이면 login redirect와 role 매핑을 분리해서 봐야 한다. 이때는 보통 로그인 실패보다 `SavedRequest` 복귀 뒤 authority 이름 불일치가 더 직접적인 원인이다.
+
 **오해 2: `@PreAuthorize`는 컨트롤러에만 쓸 수 있다**
 서비스 레이어 메서드에도 붙일 수 있다. 단 메서드 시큐리티를 활성화(`@EnableMethodSecurity`)해야 한다.
 
 **오해 3: Spring Security를 추가하면 모든 엔드포인트가 자동으로 보호된다**
 기본 설정에서는 그렇게 동작하지만, 명시적 `SecurityFilterChain` Bean을 정의하는 순간 기본 설정이 대체된다. `permitAll`을 빠뜨리면 공개해야 할 엔드포인트도 막힐 수 있다.
+
+**오해 4: `addFilterBefore`만 쓰면 필터 순서 문제는 끝난다**
+어느 필터 앞에 둘지는 여전히 알아야 한다. `addFilterBefore`는 도구일 뿐이고, 먼저 "이 필터가 인증 전에 필요한가, 인증 후에 필요한가"를 나눠야 순서가 덜 헷갈린다.
 
 ## 실무에서 쓰는 모습
 
@@ -91,6 +140,8 @@ public class SecurityConfig {
 ## 더 깊이 가려면
 
 - `security filter chain`의 큰 그림은 이해했는데 "그래서 어느 필터가 먼저 도는가?"가 궁금해졌다면 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)으로 넘어간다.
+- `/admin`에서 `302 /login`과 `403`이 번갈아 보여서 지금 인증 문제인지 권한 문제인지부터 끊고 싶다면 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)를 먼저 본다.
+- 로그인은 성공했고 원래 관리자 URL로도 돌아왔는데 마지막 `403`만 남는다면 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)로 바로 이어 간다.
 - 필터 체인 내부 구조, `AuthenticationManager`, `AuthenticationProvider` 흐름은 [Spring Security 아키텍처](./spring-security-architecture.md)에서 자세히 다룬다.
 - HTTP 세션, 쿠키 기반 인증의 기초는 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)를 먼저 읽으면 더 명확해진다.
 - 메서드 레벨 시큐리티(`@PreAuthorize`, `@PostAuthorize`)는 고급 주제에 해당한다.

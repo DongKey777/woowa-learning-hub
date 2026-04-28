@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Spring 테스트 기초: @SpringBootTest부터 슬라이스 테스트까지](./spring-testing-basics.md)
 - [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md)
 - [Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
@@ -43,6 +44,22 @@ retrieval-anchor-keywords: transactional self invocation test, transactional sel
 | `@Transactional` 내부 호출 | 트랜잭션이 실제로 시작됐나? | transaction active, commit/rollback, DB side effect 확인 | `assertSame(service, bean)` 같은 identity 확인 |
 
 핵심은 "`self-invocation`이라는 단어가 같아도, 검증 신호는 같지 않다"는 점이다.
+
+## 테스트 종류 문제와 프록시 문제를 먼저 분리하기
+
+처음에는 "`테스트가 이상한가?`"와 "`트랜잭션 프록시가 안 탔나?`"가 같이 섞여 보인다. 하지만 질문을 먼저 나누면 다음 문서가 훨씬 빨리 정해진다.
+
+| 지금 보이는 증상 | 먼저 의심할 축 | 먼저 볼 문서 | 이 문서가 필요한 순간 |
+|---|---|---|---|
+| `@WebMvcTest`에서 `service bean not found`가 난다 | slice 경계 | [Spring 테스트 기초](./spring-testing-basics.md) | 아직 아님. Bean이 아예 없으면 transaction behavior까지 못 본다 |
+| `@SpringBootTest`나 실제 앱에서는 Bean이 보이는데 `@Transactional`만 안 먹는다 | 프록시 호출 경로 | [@Transactional 기초](./spring-transactional-basics.md) | 맞다. 이제 behavior 검증으로 내려온다 |
+| `assertSame`은 통과했는데 rollback/commit 결과가 기대와 다르다 | identity와 behavior 혼동 | 이 문서 | 지금 바로 여기서 검증 신호를 바꾼다 |
+
+짧게 외우면 이렇다.
+
+- Bean이 없으면 먼저 test slice 문제다.
+- Bean은 있는데 transaction 동작이 이상하면 그다음이 프록시 문제다.
+- `assertSame`은 Bean 존재 힌트일 뿐, transaction 성공 증거는 아니다.
 
 ## 왜 `@Transactional`은 identity 테스트로 안 풀리나
 
@@ -138,11 +155,13 @@ assertTrue(billingFacade.issueBill());   // 다른 Bean 호출
 ## 자주 헷갈리는 포인트
 
 - `@Bean` self-call 문서에서 `assertSame`을 봤다고 해서, `@Transactional`도 같은 방식으로 검증하면 안 된다.
+- `@WebMvcTest`에서 service가 안 뜨는 문제와, `@SpringBootTest`에서 `@Transactional`이 안 먹는 문제는 둘 다 "`안 된다`"로 보이지만 다른 층위다.
 - `@Transactional` self-invocation은 "같은 인스턴스냐"보다 "`this.` 내부 호출이라 프록시를 안 지났나"를 봐야 한다.
 - 초급 단계에서는 `AopContext.currentProxy()` 같은 우회보다, 다른 Bean으로 경계를 분리하고 동작을 다시 검증하는 쪽이 더 읽기 쉽다.
 
 ## 다음 한 걸음
 
+- "`처음`이라 `@WebMvcTest` / `@SpringBootTest`부터 헷갈리면" [`Spring 테스트 기초`](./spring-testing-basics.md)로 돌아가 test 종류를 먼저 고른다.
 - 테스트가 왜 필요한지부터 다시 묶고 싶으면 [`@Transactional 기초`](./spring-transactional-basics.md)로 돌아간다.
 - "`@Transactional`만의 예외가 아니라 프록시 공통 규칙인가?"가 궁금하면 [`Spring Self-Invocation 공통 오해 1페이지 카드`](./spring-self-invocation-transactional-only-misconception-primer.md)로 이어간다.
 - service 분리 패턴까지 보고 싶으면 [`Spring Service-Layer Transaction Boundary Patterns`](./spring-service-layer-transaction-boundary-patterns.md)를 본다.

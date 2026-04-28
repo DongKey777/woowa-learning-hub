@@ -8,11 +8,16 @@
 관련 문서:
 
 - [카테고리 README](./README.md)
+- [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: repository fake design guide basics, repository fake design guide beginner, repository fake design guide intro, software engineering basics, beginner software engineering, 처음 배우는데 repository fake design guide, repository fake design guide 입문, repository fake design guide 기초, what is repository fake design guide, how to repository fake design guide
+retrieval-anchor-keywords: repository fake design guide basics, repository fake design guide beginner, repository fake design guide intro, fake repository example, memory repository example, mock vs fake repository, 처음 repository fake, mock 대신 fake 왜, what is repository fake, beginner repository contract
+
+`Repository Interface Contract Primer`에서 "`service가 기대하는 저장 계약을 test에서는 어떻게 재현하지?`"까지 왔다면, 이 문서는 그 다음 한 걸음을 맡는다.
+반대로 아직 질문이 "`첫 failing test에서 fake와 mock 중 뭐부터 집어야 하지?`"라면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)로 먼저 내려가 결과 중심 선택 기준부터 짧게 잡는 편이 더 안전하다.
+반대로 질문이 `flush`, dirty checking, `cascade`, `Entity` 매핑 자체로 기울어 있으면 fake 설계보다 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)나 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)를 먼저 보는 편이 맞다.
 <details>
 <summary>Table of Contents</summary>
 
@@ -38,6 +43,22 @@ retrieval-anchor-keywords: repository fake design guide basics, repository fake 
 > - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
 >
 > retrieval-anchor-keywords: repository fake design, repository fake design guide, repository fake, fake repository, in memory repository, fake outbound port, use case test repository fake, outbound port semantics, repository port contract, jpa leakage in tests, persistence detail leakage, dirty checking leakage, persistence context identity, detach copy fake, duplicate constraint fake, optimistic locking fake, explicit save semantics, hexagonal repository fake, fake vs jpa repository, repository fake should return domain object, repository fake snapshot copy
+
+## 처음 3분 요약
+
+처음에는 어렵게 잡지 말고 이렇게 보면 된다.
+
+- repository fake는 "`DB 없이도 저장 계약을 읽을 수 있게 만든 메모리 저장소`"다.
+- mock repository는 "`이 메서드를 불렀는지`"를 확인할 때 더 잘 맞는다.
+- 초심자 starter에서는 보통 호출 횟수보다 "`저장 후 다시 읽으면 어떤 결과가 나와야 하나`"가 더 중요해서 fake가 먼저 등장한다.
+
+짧게 비교하면 아래 표로 충분하다.
+
+| 지금 확인하려는 질문 | 더 먼저 고를 것 | 이유 |
+|---|---|---|
+| "`중복 주문번호면 실패하나?`" | fake repository | 저장/조회/중복 같은 계약 결과를 한 흐름으로 읽을 수 있다 |
+| "`알림을 정확히 1번 보냈나?`" | mock/spy | 호출 자체가 비즈니스 결과일 수 있다 |
+| "`JPA dirty checking 없이도 save 의미가 분명한가?`" | fake repository | `save()` 전후 상태를 메모리에서 드러내기 쉽다 |
 
 ## 왜 별도 가이드가 필요한가
 
@@ -140,6 +161,79 @@ public interface OrderRepository {
 - **ORM이 알아서 처리하는 메커니즘은 adapter test로**
 
 만약 fake가 dirty checking까지 흉내 내야만 현재 서비스 test가 통과한다면, 그건 fake를 똑똑하게 만들 문제가 아니라 application/service가 JPA 관리 상태에 의존하고 있다는 신호다.
+
+## 메모리 repository 예시: 같은 질문을 fake로 읽기
+
+초심자가 제일 헷갈리는 장면은 "`mock으로도 되는데 왜 fake를 만들죠?`"다.
+같은 주문 생성 질문을 두 방식으로 놓고 보면 차이가 빨리 보인다.
+
+질문은 하나로 고정한다.
+
+- "`같은 주문번호가 이미 있으면 주문 생성이 실패해야 한다.`"
+
+fake는 메모리에서 계약을 재현한다.
+그래서 테스트가 결과 문장에 더 가깝게 읽힌다.
+
+```java
+@Test
+void duplicate_order_number_is_rejected() {
+    FakeOrderRepository repository = new FakeOrderRepository();
+    repository.save(existingOrder("ORDER-001"));
+
+    PlaceOrderService service = new PlaceOrderService(repository, fixedIdGenerator("order-2"));
+
+    assertThatThrownBy(() -> service.place(command("ORDER-001")))
+            .isInstanceOf(DuplicateOrderNumberException.class);
+}
+```
+
+이 테스트는 초심자 눈에도 비교적 직접 읽힌다.
+
+- 먼저 기존 주문을 저장했다
+- 같은 주문번호로 다시 생성했다
+- 중복이라 실패했다
+
+즉 중심 질문이 `호출 순서`가 아니라 `계약 결과`다.
+
+## 같은 질문을 mock으로 읽으면 무엇이 달라지나
+
+mock은 호출 확인이 질문일 때 더 잘 맞는다.
+같은 규칙을 mock 중심으로 쓰면 테스트의 초점이 조금 달라진다.
+
+```java
+@Test
+void duplicate_order_number_is_rejected() {
+    OrderRepository repository = mock(OrderRepository.class);
+    given(repository.existsByOrderNumber(new OrderNumber("ORDER-001"))).willReturn(true);
+
+    PlaceOrderService service = new PlaceOrderService(repository, fixedIdGenerator("order-2"));
+
+    assertThatThrownBy(() -> service.place(command("ORDER-001")))
+            .isInstanceOf(DuplicateOrderNumberException.class);
+
+    then(repository).should(never()).save(any(Order.class));
+}
+```
+
+이 테스트도 틀린 것은 아니다.
+다만 초심자 starter에서는 아래처럼 읽힐 가능성이 높다.
+
+- `existsByOrderNumber()`를 먼저 불렀는가
+- `save()`를 안 불렀는가
+
+즉 결과보다 상호작용이 먼저 눈에 들어온다.
+
+## fake와 mock을 여기서 어떻게 고를까
+
+| 같은 repository 경계 테스트에서 | fake가 더 잘 맞는 경우 | mock이 더 잘 맞는 경우 |
+|---|---|---|
+| 질문의 중심 | 저장 계약의 결과 | 호출 자체 |
+| 테스트가 설명하는 문장 | "`중복이면 실패한다`" | "`이 메서드를 부르거나 안 부른다`" |
+| beginner starter 적합도 | 높음 | 보조 수단 |
+
+- repository처럼 `상태를 저장하고 다시 읽는 경계`는 fake가 결과 중심 읽기에 유리하다.
+- notifier, event publisher처럼 `호출이 일 자체인 경계`는 mock/spy가 더 자연스럽다.
+- 그래서 repository fake는 "mock보다 더 진짜 같아서"가 아니라, **현재 질문이 저장 계약 중심이라서** 선택하는 경우가 많다.
 
 ## 코드로 보기
 

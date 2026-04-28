@@ -1,6 +1,6 @@
-# Module API DTO Patterns
+# Module API DTO Patterns (모듈 간 DTO 계약 입문)
 
-> 한 줄 요약: 모듈 경계에서는 aggregate나 entity를 직접 넘기기보다, `command/query/result DTO`를 기본값으로 두고, domain object는 명시적 shared kernel의 작은 불변 값일 때만 예외적으로 넘기는 편이 안전하다.
+> 한 줄 요약: 모듈 간 계약에서는 aggregate나 entity를 직접 넘기기보다, `command/query/result DTO`를 기본값으로 두고, 여러 내부 service를 묶어야 할 때만 module facade를 두는 편이 초심자에게도 더 안전하다.
 
 **난이도: 🟢 Beginner**
 
@@ -8,15 +8,22 @@
 관련 문서:
 
 - [카테고리 README](./README.md)
+- [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
+- [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
+- [Shared Module Guardrails](./shared-module-guardrails.md)
+- [Service 계층 기초](./service-layer-basics.md)
+- [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+- [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: module api dto patterns basics, module api dto patterns beginner, module api dto patterns intro, software engineering basics, beginner software engineering, 처음 배우는데 module api dto patterns, module api dto patterns 입문, module api dto patterns 기초, what is module api dto patterns, how to module api dto patterns
+retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, module facade basics, service to service call basics, 모듈 간 dto 계약, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, module api 뭐예요, module facade 언제 써요, service끼리 바로 호출해도 되나요, what is module api dto, 처음 모듈 간 엔티티 전달
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [이 문서가 바로 답하는 질문](#이-문서가-바로-답하는-질문)
 - [초심자 30초 결정 흐름](#초심자-30초-결정-흐름)
 - [먼저 세 가지 질문으로 고르기](#먼저-세-가지-질문으로-고르기)
 - [한 장으로 보는 선택 기준](#한-장으로-보는-선택-기준)
@@ -32,18 +39,6 @@ retrieval-anchor-keywords: module api dto patterns basics, module api dto patter
 - [꼬리질문](#꼬리질문)
 
 </details>
-
-> 관련 문서:
-> - [Software Engineering README: Module API DTO Patterns](./README.md#module-api-dto-patterns)
-> - [Command DTO Vs Query View Naming Checklist](./command-dto-vs-query-view-naming-checklist.md)
-> - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
-> - [Shared Module Guardrails](./shared-module-guardrails.md)
-> - [Repository, DAO, Entity](./repository-dao-entity.md)
-> - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
-> - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
-> - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
->
-> retrieval-anchor-keywords: module api dto patterns, module boundary dto, command query result dto, command dto, query dto, result dto, public module api, module contract, module facade dto, domain object boundary, aggregate boundary leak, entity boundary leak, safe contract unsafe contract, modular monolith api package, shared kernel value object, cross-module contract, boundary language, order payment module api, beginner dto decision flow, command dto vs patch dto, query result snapshot contract, module api common confusion
 
 ## 왜 이 문서가 필요한가
 
@@ -67,6 +62,22 @@ retrieval-anchor-keywords: module api dto patterns basics, module api dto patter
 
 즉 "객체를 덜 만들자"보다 **변경 이유를 경계에서 끊자**가 더 중요하다.
 
+## 이 문서가 바로 답하는 질문
+
+처음 검색할 때는 용어보다 증상 문장으로 들어오는 경우가 많다.
+이 문서는 특히 아래 질문에 바로 답하도록 쓰였다.
+
+| 학습자가 실제로 묻는 말 | 이 문서의 짧은 답 |
+|---|---|
+| "다른 모듈에 `Entity`나 aggregate를 그냥 넘겨도 되나요?" | 보통 아니다. 모듈 간 계약은 `Command/Query/Result DTO`로 끊는다. |
+| "같은 코드베이스인데 DTO를 왜 또 만들어요?" | 같은 저장소여도 모듈이 다르면 변경 이유를 분리해야 해서다. |
+| "모듈 API 계약이 뭐예요?" | 상대 모듈이 알아도 되는 입력/출력 언어만 공개한 public API다. |
+| "언제 value object를 같이 써도 되나요?" | 의미가 완전히 같고 작은 불변 shared kernel일 때만 예외다. |
+| "`service`끼리 바로 객체 주고받으면 더 빠른 것 아닌가요?" | 빠를 수는 있어도 내부 모델 결합이 커져서 리팩토링 비용이 빨리 붙는다. |
+
+짧게 말하면, 이 문서는 "모듈 간 DTO 계약을 왜 만들고 어디까지 공개해야 하냐"는 beginner 질문의 첫 진입점이다.
+코드 리뷰에서 이미 "`Entity`가 다른 모듈 API로 넘어간다"는 냄새를 잡아 둔 상태라면, 먼저 [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)로 누수 위치를 확인하고 다시 돌아오면 더 덜 헷갈린다.
+
 ## 초심자 30초 결정 흐름
 
 처음 설계할 때는 용어보다 "상대 모듈이 원하는 것"만 먼저 본다.
@@ -78,6 +89,60 @@ retrieval-anchor-keywords: module api dto patterns basics, module api dto patter
 | "모든 모듈이 같은 의미로 쓰는 작은 값" | 작은 불변 value object | primitive 오염보다 의미가 선명하다 |
 
 즉 초심자 기준 기본값은 "aggregate를 넘긴다"가 아니라 "`의도/조회/공유값`을 분리한다"다.
+
+## 먼저: 이 문서에서 말하는 module facade는 뭐예요?
+
+이 문맥에서 `module facade`는 "패턴 이름을 붙이기 위한 큰 구조물"이 아니라, **다른 모듈이 들어오는 정문 하나**라고 보면 된다.
+
+- 밖에서는 `OrderPaymentApi`, `OrderQueryApi` 같은 공개 계약만 본다
+- 안에서는 여러 internal service, repository, domain object를 조합할 수 있다
+- 호출자는 내부 `OrderService`, `OrderPolicy`, `OrderRepository` 이름까지 알 필요가 없다
+
+중요한 점은 **모든 모듈에 facade가 반드시 필요한 것은 아니라는 것**이다.
+
+- 공개해야 할 유스케이스가 하나이고 내부 협력이 단순하면, public application service 인터페이스 하나로 충분할 수 있다
+- 반대로 외부 모듈에게 "어느 service를 어떤 순서로 불러야 하는지"까지 알리게 되면 facade를 둘 이유가 생긴다
+
+즉 facade의 핵심은 "`service`를 하나 더 만드는 것"이 아니라, **모듈 바깥에 보여 줄 언어와 진입점을 줄이는 것**이다.
+
+## 언제 module facade가 아예 필요할까
+
+초심자는 "`service`가 이미 있는데 facade를 또 둬야 하나요?"에서 가장 자주 멈춘다.
+아래처럼 보면 결정이 빨라진다.
+
+| 상황 | 첫 선택 | 이유 |
+|---|---|---|
+| 다른 모듈이 한 유스케이스만 호출하고, 내부 협력도 사실상 1개 service면 충분하다 | facade 없이 공개 service 인터페이스 1개 | facade를 추가해도 계약이 거의 안 줄어든다 |
+| 다른 모듈이 호출할 때 내부 service 둘 이상을 정해진 순서로 묶어야 한다 | module facade | 호출 순서와 트랜잭션 책임을 소유 모듈 안에 숨길 수 있다 |
+| 호출자마다 내부 service 이름이나 도메인 세부를 알아야 한다 | module facade + DTO 계약 | "무엇을 요청하나"만 남기고 "어떻게 처리하나"를 감춘다 |
+| public API가 내부 service 메서드 재수출처럼 계속 늘어난다 | facade 재검토 또는 API 재분리 | 외부 계약이 내부 구현 이름에 끌려가고 있다는 신호다 |
+| facade가 단순 전달만 하고 의미 있는 축약이 전혀 없다 | facade 생략 가능 | 얇은 껍데기만 늘어나면 beginner에게도 구조만 복잡해진다 |
+
+짧게 외우면 이렇다.
+
+- **한 유스케이스를 한 문장으로 요청하게 만들고 싶으면 facade**
+- **이미 한 문장인데 안쪽도 단순하면 facade를 억지로 만들 필요는 없다**
+
+## facade 없이 service-to-service 직접 호출로 충분한 경우
+
+`service-to-service call`이라는 말이 항상 "나쁜 냄새"는 아니다.
+문제는 **어느 경계에서, 무엇을 직접 아느냐**다.
+
+| 장면 | 괜찮은가 | 이유 |
+|---|---|---|
+| 같은 모듈 내부에서 application service가 domain service를 호출 | 대체로 괜찮다 | 아직 모듈 내부 협력이라 외부 계약 문제가 아니다 |
+| 같은 모듈 내부에서 service가 repository를 호출 | 대체로 괜찮다 | 저장 세부를 모듈 바깥에 노출하지 않는다 |
+| 다른 모듈이 공개된 `OrderQueryApi` 같은 service 인터페이스 하나만 호출 | 괜찮을 수 있다 | 이미 그 인터페이스 자체가 모듈 정문 역할을 한다 |
+| 다른 모듈이 `OrderInternalService`, `OrderValidator`, `OrderRepository`를 각각 직접 호출 | 보통 위험하다 | 호출자가 내부 조립 순서를 알게 되어 facade가 필요한 상태다 |
+| 다른 모듈이 aggregate를 받아서 domain method를 계속 호출 | 보통 위험하다 | service-to-service가 아니라 사실상 내부 모델 공유가 된다 |
+
+즉 beginner 기준으로는 "`직접 호출` 자체"보다 아래 질문이 더 중요하다.
+
+1. 이 호출이 **모듈 공개 계약**을 통하나?
+2. 호출자가 **내부 처리 순서**를 알아야 하나?
+3. 호출자가 **entity/aggregate 행위**까지 쥐게 되나?
+
+2번이나 3번이 `예`라면, 보통 facade나 더 좁은 DTO 계약이 필요하다.
 
 ## 먼저 세 가지 질문으로 고르기
 
@@ -95,7 +160,7 @@ retrieval-anchor-keywords: module api dto patterns basics, module api dto patter
 
 반대로 아래 판단은 보통 경계 누수 신호다.
 
-- "같은 JVM 안이니까 aggregate를 넘겨도 되겠지"
+- "같은 JVM 안이니까 다른 모듈에도 aggregate를 넘겨도 되겠지"
 - "필드가 많으니 entity를 그대로 재사용하자"
 - "어차피 내부 호출이라 framework request/response 타입을 써도 되겠지"
 
@@ -300,6 +365,11 @@ public interface OrderQueryApi {
 특히 `nullable 필드가 많은 범용 Update DTO`는 조심해야 한다.
 이런 DTO는 대개 "공개 API"가 아니라 "내부 테이블 patch 포맷"이기 쉽다.
 
+초심자 관점에서 외우기 쉬운 기준은 하나다.
+
+- **cross-module 계약**은 유스케이스 언어를 공개한다
+- **in-module 구현**은 aggregate와 entity 세부를 숨긴다
+
 ## Before: aggregate를 모듈 API 밖으로 노출한다
 
 아래 예시는 `payment`가 주문 aggregate를 직접 받아 쓰는 경우다.
@@ -321,6 +391,7 @@ public interface OrderModuleApi {
 - order 모듈이 내부 규칙을 API 타입 변경 없이 바꾸기 어려워진다
 
 같은 코드베이스라서 괜찮아 보이지만, 사실상 `payment`가 `order.internal`을 직접 붙잡은 상태와 비슷하다.
+모듈러 모놀리스에서 이 경계를 코드로 막는 방법은 [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)를 같이 보면 된다.
 
 ## After: command/query/result DTO로 계약을 좁힌다
 
@@ -391,12 +462,15 @@ public record MarkOrderPaidResult(
 - 공유하는 domain type이 있다면 정말 작은 불변 value object/shared kernel인가?
 - caller가 이 반환 객체를 받아 domain method를 계속 호출해야 한다면, 경계 설계가 잘못된 것은 아닌가?
 
+리뷰가 아직 막연하면 먼저 [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)에서 "Controller 응답, Service 시그니처, 모듈 공개 API" 순으로 `Entity` 노출 위치를 체크한 뒤, 여기 돌아와서 `Command/Query/Result DTO` 중 무엇으로 바꿀지 결정하면 된다.
+
 ## 다음에 이어서 볼 문서
 
 - 모듈 공개 범위를 코드로 강제하려면: [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
 - shared kernel을 어디까지 허용할지 좁히려면: [Shared Module Guardrails](./shared-module-guardrails.md)
 - 읽기 모델이 비대해지기 시작했다면: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 - entity/ORM 세부가 API로 새면: [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
+- service와 repository 계약을 어디서 더 끊을지 이어서 보려면: [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
 
 ## 꼬리질문
 

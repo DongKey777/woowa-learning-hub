@@ -31,6 +31,7 @@ retrieval-anchor-keywords: message driven adapter example, inbound adapter examp
 > 관련 문서:
 > - [Software Engineering README: Message-Driven Adapter Example](./README.md#message-driven-adapter-example)
 > - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
+> - [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](../data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md)
 > - [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)
 > - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
 > - [Webhook and Broker Boundary Primer](./webhook-and-broker-boundary-primer.md)
@@ -70,6 +71,8 @@ retrieval-anchor-keywords: message driven adapter example, inbound adapter examp
 > - inbound adapter testing matrix
 > - controller consumer scheduler test matrix
 > - scheduled job integration test
+> - queue에서 adapter까지 beginner route
+> - queue가 보이는데 운영 문서로 가야 하나요
 > - command handler bridge
 > - process manager timeout bridge
 > - job queue handoff
@@ -83,6 +86,19 @@ controller, message consumer, scheduled job를 서로 다른 테스트 포트폴
 scheduled job가 기존 per-item 유스케이스를 반복 호출하는 thin adapter로 끝나는지, 아니면 batch window/chunk/checkpoint를 가진 전용 application service가 필요한지는 [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md)에서 이어서 보면 된다.
 outbox/inbox와 event contract까지 포함해 unit/integration/contract를 한 번에 나누고 싶다면 [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)를 바로 이어서 보면 된다.
 재시도, backlog, misfire, long-running workflow까지 커지는 순간은 [System Design: Job Queue 설계](../system-design/job-queue-design.md), [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md), [System Design: Workflow Orchestration + Saga 설계](../system-design/workflow-orchestration-saga-design.md)가 다음 handoff다.
+
+## queue에서 여기까지 오는 안전한 사다리
+
+이 문서는 `queue` 자체를 설명하는 primer가 아니라, `같은 유스케이스를 HTTP/controller와 message consumer가 어떻게 함께 여는가`를 보여 주는 follow-up이다. beginner는 아래 순서를 지키면 system design 문서로 과하게 점프하지 않는다.
+
+| 지금 막힌 문장 | 먼저 고정할 문서 | 이 문서에서 잡을 것 | 그다음에만 여는 문서 |
+|---|---|---|---|
+| `worker가 받은 순서대로 처리해요`, `consumer queue가 있어요` | [큐 기초](../data-structure/queue-basics.md) | FIFO 도구가 아니라 `입구가 같은 유스케이스인가`를 본다 | [Batch Job Scope In Hexagonal Architecture](./batch-job-scope-hexagonal-architecture.md) |
+| `같은 스레드가 아니라 worker handoff예요` | [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](../data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md) | handoff 계약과 inbound adapter 질문을 분리한다 | [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md) |
+| `retry`, `backlog`, `misfire`, `workflow timeout`까지 같이 보여요 | 이 문서에서 멈추지 않는다 | 이미 beginner primer 범위를 넘는다 | [System Design: Job Queue 설계](../system-design/job-queue-design.md) 또는 [System Design: 분산 스케줄러 설계](../system-design/distributed-scheduler-design.md) |
+
+- 짧게 외우면 `queue FIFO -> handoff 계약 -> same use case boundary`다.
+- `처음`, `consumer도 controller처럼 같은 service를 써요?`, `왜 queue 다음에 운영 문서가 나오죠` 같은 query를 이 문서가 받도록 연결했다.
 
 ## 왜 이 primer가 필요한가
 

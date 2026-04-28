@@ -1,6 +1,6 @@
 # Map 조회/갱신 API 미니 브리지: `put()` vs `putIfAbsent()` vs `computeIfAbsent()` vs `merge()`
 
-> 한 줄 요약: `Map` 갱신 API는 모두 "값을 넣는다"처럼 보이지만, 실제 차이는 언제 기존 값을 덮어쓰는지에 있다. 초보자는 먼저 "항상 덮어쓸 건가, 비어 있을 때만 넣을 건가, 기존 값과 합칠 건가"를 고르면 덜 헷갈린다.
+> 한 줄 요약: `HashMap.put`, `TreeMap.put`, `putIfAbsent()`를 한 카드에 놓고 보면 "구현체 선택"과 "덮어쓰기 정책 선택"이 다른 축이라는 점이 보이고, 그다음에 `computeIfAbsent()`와 `merge()`를 붙이면 `Map` 갱신 API 전체가 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
 
@@ -8,13 +8,15 @@
 
 - [language 카테고리 인덱스](../README.md)
 - [Map `put()` / `get()` / `remove()` / `containsKey()` 반환값 치트시트](./map-put-get-remove-containskey-return-cheat-sheet.md)
+- [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
+- [TreeMap `put` 반환값 브리지: `null` vs 이전 값](./treemap-put-return-value-overwrite-bridge.md)
 - [Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지](./map-put-null-containskey-distinction-bridge.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Map Value-Shape Drill](./map-value-shape-drill.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Hash Table Basics](../../data-structure/hash-table-basics.md)
 
-retrieval-anchor-keywords: java map put vs putifabsent vs computeifabsent vs merge, hashmap overwrite rules beginner, map value overwrite when, putifabsent 언제 써, computeifabsent 뭐가 달라, merge 덮어쓰기 규칙, map k list v accumulation beginner, computeifabsent list add pattern, same key multiple values java map, map multivalue beginner, 자바 map 값 있으면 덮어쓰나, 자바 map 없을 때만 넣기
+retrieval-anchor-keywords: java map put vs putifabsent vs computeifabsent vs merge, hashmap put vs treemap put vs putifabsent, hashmap overwrite rules beginner, treemap overwrite rules beginner, map value overwrite when, putifabsent 언제 써, computeifabsent 뭐가 달라, merge 덮어쓰기 규칙, map k list v accumulation beginner, computeifabsent list add pattern, same key multiple values java map, 자바 map 값 있으면 덮어쓰나, 자바 map 없을 때만 넣기, hashmap treemap put 차이 헷갈, 처음 map overwrite policy
 
 ## 핵심 개념
 
@@ -28,6 +30,40 @@ retrieval-anchor-keywords: java map put vs putifabsent vs computeifabsent vs mer
 짧게 외우면 이렇다.
 
 > 항상 교체면 `put()`, 비어 있을 때만 채우면 `putIfAbsent()`/`computeIfAbsent()`, 누적이면 `merge()`.
+
+## `HashMap.put` vs `TreeMap.put` vs `putIfAbsent()` 빠른 비교 카드
+
+초보자가 자주 섞는 두 질문은 사실 축이 다르다.
+
+- `HashMap` vs `TreeMap`은 "어떤 구현체를 쓰나?"라는 질문이다.
+- `put()` vs `putIfAbsent()`는 "기존 값이 있을 때 덮어쓸 건가?"라는 질문이다.
+
+즉 `TreeMap`을 골랐다고 자동으로 "안 덮어쓴다"가 되지 않는다. `TreeMap.put(...)`도 같은 key 자리면 그대로 덮어쓴다.
+
+| 비교 대상 | key가 비어 있으면 | 기존 값이 있으면 | 초보자용 한 줄 |
+|---|---|---|---|
+| `HashMap.put(k, v)` | 저장 | 새 값으로 덮어쓴다 | 구현체는 `HashMap`, 정책은 "항상 교체" |
+| `TreeMap.put(k, v)` | 저장 | 같은 key 자리면 새 값으로 덮어쓴다 | 구현체는 `TreeMap`, 정책은 여전히 "항상 교체" |
+| `putIfAbsent(k, v)` | 저장 | 기존 값을 유지한다 | 구현체와 별개로 정책만 "비어 있을 때만 저장" |
+
+여기서 `TreeMap.put(...)`의 "같은 key 자리"는 `equals()`가 아니라 comparator 또는 `compareTo() == 0`으로 정해진다. 그래서 초보자용 멘탈 모델은 이렇게 잡으면 된다.
+
+> `HashMap`/`TreeMap`은 key를 찾는 방식의 선택이고, `put`/`putIfAbsent`는 overwrite 정책의 선택이다.
+
+짧은 예제로 보면 더 분명하다.
+
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("alice", 10);
+scores.put("alice", 20);            // 20으로 덮어쓰기
+scores.putIfAbsent("alice", 30);    // 그대로 20
+
+TreeMap<String, Integer> sortedScores = new TreeMap<>();
+sortedScores.put("alice", 10);
+sortedScores.put("alice", 20);      // 여기서도 20으로 덮어쓰기
+```
+
+핵심은 마지막 줄이다. `TreeMap`은 정렬 map일 뿐, `put()`의 기본 정책 자체를 바꾸지는 않는다.
 
 ## 한눈에 보기
 
@@ -168,6 +204,8 @@ counts.merge(word, 1, Integer::sum);
 
 - "`putIfAbsent()`는 key만 없을 때 동작한다"고 외우고 끝내기 쉽다.
   `HashMap`처럼 `null` value를 허용하면 현재 값이 `null`일 때도 새 값으로 채운다.
+- "`TreeMap`은 정렬 map이니까 `put()`도 기존 값을 보존할 것"이라고 느끼기 쉽다.
+  아니다. `TreeMap.put()`도 같은 key 자리면 덮어쓴다. 구현체 선택과 overwrite 정책 선택을 분리해서 봐야 한다.
 - "`computeIfAbsent()`는 그냥 `putIfAbsent()`의 복잡한 버전"이라고 보기 쉽다.
   차이는 값을 미리 만들지 않고, 정말 필요할 때만 함수로 계산한다는 점이다.
 - "`computeIfAbsent(...).add(...)`는 결국 매번 새 리스트를 넣는 것 아닌가?"라고 느끼기 쉽다.
@@ -207,6 +245,8 @@ counts.merge(word, 1, Integer::sum);
 - `null`이 섞이면 `putIfAbsent()`와 `computeIfAbsent()` 해석이 더 헷갈릴 수 있다. 먼저 [Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지](./map-put-null-containskey-distinction-bridge.md)를 같이 보면 좋다.
 - `Map<K, List<V>>`처럼 value 모양 자체가 왜 달라져야 하는지부터 약하면 [Map Value-Shape Drill](./map-value-shape-drill.md)을 먼저 보고 돌아오면 좋다.
 - 조회 결과 `null`의 뜻부터 불분명하다면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)로 먼저 돌아간다.
+- "왜 `TreeMap.put()`도 덮어쓰지?"가 아직 남아 있으면 [TreeMap `put` 반환값 브리지: `null` vs 이전 값](./treemap-put-return-value-overwrite-bridge.md)로 바로 이어서 보면 좋다.
+- "그럼 `HashMap`과 `TreeMap`은 대체 언제 고르지?"가 더 궁금하면 [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)에서 구현체 선택 축만 따로 정리할 수 있다.
 - `Map`이 왜 이런 식으로 key를 찾는지 큰 그림이 필요하면 [Hash Table Basics](../../data-structure/hash-table-basics.md)로 넘어가면 된다.
 
 ## 한 줄 정리

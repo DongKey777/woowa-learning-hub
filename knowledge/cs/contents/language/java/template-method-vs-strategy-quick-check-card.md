@@ -1,0 +1,95 @@
+# Template Method vs Strategy Quick Check Card
+
+> 한 줄 요약: 추상 클래스 vs 인터페이스 큰 그림 다음에는 "부모가 순서를 고정하나"와 "밖에서 구현을 갈아끼우나" 두 질문으로 템플릿 메소드와 전략을 4개 짧은 사례에 바로 대입해 보면 된다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - 추상 클래스와 인터페이스 큰 그림 다음에 바로 이어 보는 handoff primer
+- [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md) - 공통 상태/계약 판단을 먼저 다시 점검하고 싶을 때 보는 quick check
+- [객체지향 핵심 원리](./object-oriented-core-principles.md) - 상속과 다형성 큰 그림이 아직 흐리면 한 칸 뒤로 돌아가는 primer
+- [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) - 부모가 흐름을 쥐는 구조를 더 길게 보고 싶을 때
+- [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md) - 전략 객체를 주입해 교체하는 구조를 더 길게 보고 싶을 때
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) - 둘 다 아닌데 조합이 기본값처럼 보일 때 보는 안전한 다음 단계
+- [language 카테고리 인덱스 - Java primer](../README.md#java-primer)
+
+retrieval-anchor-keywords: template method vs strategy quick check, template method strategy card, template method strategy beginner, parent owns flow vs injected behavior, parent controls flow caller chooses strategy, template method strategy 4 cases, 템플릿 메소드 전략 퀵체크, 템플릿 메소드 전략 언제 쓰는지, 부모가 흐름을 쥔다 호출자가 구현을 고른다, 밖에서 구현을 넣어주나요, 처음 배우는데 템플릿 메소드 전략, 왜 템플릿 메소드 말고 전략, what is template method vs strategy, strategy injected behavior basics
+
+## 핵심 개념
+
+이 카드는 패턴 정의를 길게 읽기보다 다음 선택을 빨리 하려는 용도다. 먼저 두 질문만 본다.
+
+- 부모 클래스가 `검증 -> 변환 -> 저장` 같은 순서를 끝까지 고정하나?
+- 호출자, 설정, DI가 이번 구현을 바꿔 끼우나?
+
+첫 질문이 더 강하면 템플릿 메소드 쪽이고, 둘째 질문이 더 강하면 전략 쪽이다. 둘 다 약하면 상속보다 조합을 다시 의심한다.
+
+## 한눈에 보기
+
+| 지금 보이는 말 | 먼저 기울 쪽 | 10초 이유 |
+|---|---|---|
+| `순서는 항상 같고 단계만 다르다` | 템플릿 메소드 | 부모가 skeleton을 쥔다 |
+| `상황마다 규칙 객체를 바꿔 끼운다` | 전략 | 호출자가 구현을 고른다 |
+| `필수 단계 + 선택적 hook` | 템플릿 메소드 | 고정 흐름 안의 빈칸 문제다 |
+| `테스트나 설정에서 구현을 쉽게 교체해야 한다` | 전략 | 주입 가능한 계약이 더 자연스럽다 |
+
+## 4가지 짧은 사례
+
+### 사례 1. 리포트 내보내기 순서는 늘 같다
+
+`read -> validate -> save` 순서는 항상 같고, CSV냐 JSON이냐에 따라 `save()`만 달라진다.
+
+정답: **템플릿 메소드**
+
+왜:
+- 부모가 전체 순서를 고정한다
+- 하위 클래스는 일부 단계만 채운다
+
+### 사례 2. 할인 정책을 요청마다 바꿔야 한다
+
+주문 서비스는 그대로 두고, 일반 할인/이벤트 할인/VIP 할인을 설정이나 테스트에서 갈아끼운다.
+
+정답: **전략**
+
+왜:
+- 핵심 변화가 "어떤 정책 객체를 넣을지"다
+- 서비스는 계약만 알고 구현은 밖에서 주입받는다
+
+### 사례 3. 배치 흐름은 고정인데 끝에 알림만 선택적으로 붙인다
+
+배치는 항상 `load -> process -> store`로 돌고, 어떤 작업만 `afterStore()` 알림 hook을 연다.
+
+정답: **템플릿 메소드**
+
+왜:
+- 기본 흐름은 부모가 쥔다
+- 바뀌는 것은 전체 규칙이 아니라 선택적 덧붙임이다
+
+### 사례 4. 결제 방식이 카드/간편결제/포인트로 계속 바뀐다
+
+`pay()` 호출 흐름은 같지만, 실제 승인/차감 규칙은 결제 수단마다 다르고 런타임에 선택된다.
+
+정답: **전략**
+
+왜:
+- 부모 흐름보다 교체 가능한 행동 객체가 중심이다
+- 새 결제 수단은 새 전략 구현으로 늘리는 편이 안전하다
+
+## 흔한 오해와 함정
+
+- 추상 클래스를 쓴다고 자동으로 템플릿 메소드가 되지는 않는다. 부모가 고정 순서를 쥐어야 템플릿 메소드다.
+- `hook` 하나 추가하는 것으로 끝날 문제인지, 이미 규칙 전체를 갈아끼워야 하는지 헷갈리면 전략 쪽을 다시 본다.
+- "중복 코드가 있으니 상속"은 위험한 출발점이다. 흐름 고정이 약하면 조합이 더 낫다.
+- 전략은 인터페이스 문법 자체보다 "밖에서 구현을 넣어 교체한다"는 설계 감각이 핵심이다.
+
+## 다음 한 칸
+
+- 아직 `공통 상태 vs 계약`이 더 헷갈리면 [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md)
+- "부모가 흐름을 쥔다"를 템플릿 메소드 예제로 더 보고 싶다면 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
+- "구현을 주입해 바꾼다"를 전략 예제로 더 보고 싶다면 [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md)
+- 둘 다 아닌데 왜 자꾸 조합을 먼저 보라고 하는지 남으면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
+
+## 한 줄 정리
+
+템플릿 메소드 vs 전략은 "추상 클래스냐 인터페이스냐"보다 먼저, 부모가 흐름을 고정하는 문제인지 밖에서 행동을 갈아끼우는 문제인지로 자르면 훨씬 빨리 풀린다.

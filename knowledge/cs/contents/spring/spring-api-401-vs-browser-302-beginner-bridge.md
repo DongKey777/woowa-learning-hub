@@ -15,7 +15,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, fetch 401 대신 302, browser page 302 login spring, spring mixed mvc app auth failure, api authentication entry point beginner, form login api separation spring, 처음 배우는데 401 302 차이, json api unauthorized beginner, spring browser redirect api json, login page redirect vs api error
+retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, fetch 401 대신 302, browser page 302 login spring, spring mixed mvc app auth failure, api authentication entry point beginner, form login api separation spring, 처음 배우는데 401 302 차이, spring browser redirect api json, login page redirect vs api error, savedrequest 처음, 로그인 후 원래 주소 기억, 왜 login 갔다가 다시 와요, requestcache 뭐예요
 
 ## 핵심 개념
 
@@ -125,6 +125,19 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 즉 `403`은 "`302`냐 `401`이냐"와 다른 축이다.  
 초급자는 먼저 "`아직 인증 안 됨` vs `이미 로그인했지만 권한 없음`"을 분리한 뒤, 그다음 "`인증 안 됨`을 page 계약으로 보일지 API 계약으로 보일지"를 보면 된다.
 
+## 다음 문서 분기
+
+이 문서 다음에는 `SavedRequest` deep dive로 바로 점프하기보다, 지금 막힌 질문을 한 번 더 잘라서 가는 편이 안전하다.
+
+| 지금 가장 막히는 질문 | 다음 문서 | 왜 그 문서가 먼저인가 |
+|---|---|---|
+| "`/api/**`는 `401`, `/admin/**`는 `302 /login`으로 실제 설정을 어떻게 나눠요?" | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | 이 문서의 `브라우저 계약 vs API 계약`을 실제 체인 분리 설정으로 옮기는 다음 단계다 |
+| "`/admin`이 `302 /login`으로 갔다가 로그인 후 다시 돌아오는데 마지막엔 `403`이 나요" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | `원래 URL 복귀`와 `최종 권한 실패`를 먼저 두 단계로 끊어야 `RequestCache` 오진입을 줄일 수 있다 |
+| "`왜 로그인 후 원래 주소로 다시 가요?`, `SavedRequest`가 뭐예요?" | [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) | 여기서부터는 `redirect / navigation memory` 축을 깊게 보는 advanced follow-up이다 |
+
+- 짧게 고정하면 이 순서다: `401 vs 302 계약 구분` -> 필요하면 `final 403 primer` -> 그다음에만 `RequestCache / SavedRequest` deep dive.
+- 특히 "`로그인 성공 후 원래 /admin 으로 복귀했는데 마지막에 403`"처럼 `SavedRequest`와 권한 실패가 한 문장에 같이 보이면 advanced 문서보다 `final 403 primer`를 먼저 보는 편이 beginner-safe하다.
+
 ## 흔한 오해와 함정
 
 - "`302 /login`이면 무조건 브라우저 쪽 문제다"라고 생각하기 쉽다.  
@@ -182,7 +195,8 @@ SecurityFilterChain webChain(HttpSecurity http) throws Exception {
 - `302 /login`과 `403`을 먼저 갈라야 한다면 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)를 먼저 본다.
 - `/admin/**`는 login redirect, `/api/**`는 `401` JSON으로 안전하게 분리하는 실제 설정 감각이 필요하면 [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md)로 이어 간다.
 - "결국 누가 `302`와 `401`을 최종 결정하나?"가 궁금해지면 [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)로 내려간다.
-- 로그인 후 원래 URL 복귀와 API redirect 충돌이 더 궁금하면 [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 이어 본다.
+- 로그인 후 원래 URL 복귀 자체가 궁금하면 [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 이어 본다.
+- 로그인 후 원래 URL로 돌아왔는데 마지막 `403`이 섞여 보인다면 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)를 먼저 거친다.
 - 브라우저 DevTools 기준으로 `401`과 `302` 증상을 먼저 나누고 싶다면 [Security: Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 먼저 본다.
 - 쿠키와 세션 자체가 아직 흐리면 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)부터 다시 맞춘다.
 

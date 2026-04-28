@@ -14,11 +14,20 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring admin session cookie flow, admin login cookie session primer, roomescape admin auth beginner, browser cookie to spring session, jsessionid basics spring, admin endpoint authentication flow, 쿠키 세션 로그인 흐름 spring, 처음 배우는데 admin 인증, cookie 있는데 왜 다시 로그인, session id로 사용자 찾기, admin 302 login before 403, spring security session beginner, savedrequest basics spring, securitycontext 뭐예요, savedrequest 처음
+retrieval-anchor-keywords: spring admin session cookie flow, admin login cookie session primer, roomescape admin auth beginner, browser cookie to spring session, jsessionid basics spring, 쿠키 세션 로그인 흐름 spring, 처음 배우는데 admin 인증, cookie 있는데 왜 다시 로그인, session id로 사용자 찾기, savedrequest basics spring, securitycontext 뭐예요, 로그인 성공했는데 admin 403, 왜 복귀는 됐는데 403, 302 /login 먼저 보여요, 403 먼저 보여요
+
+## 먼저 갈림길부터 고르기
+
+이 문서는 "`브라우저 쿠키 -> 서버 세션 -> 현재 로그인 사용자 복원`이 어떻게 이어지나?"를 보는 primer다. 그래서 입구에서 보인 장면이 아래 둘 중 하나라면 먼저 다른 브리지로 가는 편이 덜 헷갈린다.
+
+- `/admin`이 곧바로 `302 /login`으로 튄다면: [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)에서 먼저 "`아직 비로그인인가, 원래 URL 복귀 메모가 끼어드나?`"를 분리한다.
+- 로그인은 성공했고 마지막이 `403`이라면: [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)에서 먼저 "`복귀는 성공했고 마지막 `ROLE_ADMIN` 검사만 남았나?`"를 본다.
+
+짧게 말하면 이 문서는 "`cookie 있는데 왜 다시 로그인?`", "`session id로 사용자를 어떻게 다시 찾지?`", "`SecurityContext`가 어디서 살아나지?" 같은 질문에 맞고, `302 /login`과 `403`의 1차 분기는 위 두 문서가 먼저다.
 
 ## 핵심 개념
 
-이 주제는 처음부터 용어로 들어가면 잘 안 잡힌다. 먼저 장면으로 보면 된다.
+이 주제는 처음부터 용어로 들어가면 잘 안 잡힌다. 먼저 장면으로 보면 된다. 특히 입구 분기를 이미 지나 "이제 세션과 쿠키가 실제로 어떤 순서로 이어지지?"가 남았을 때 이 primer를 읽으면 된다.
 
 - 브라우저는 로그인 뒤 받은 쿠키를 다음 요청에 다시 보낸다.
 - 서버는 그 쿠키 안의 세션 식별자(`JSESSIONID` 같은 값)로 "누가 로그인했는지"를 찾는다.
@@ -38,6 +47,43 @@ retrieval-anchor-keywords: spring admin session cookie flow, admin login cookie 
 | 로그인 전 주소 메모 사용 | 비로그인 상태였다면 `SavedRequest`로 원래 `/admin/**` 주소로 다시 보낼 수 있다 | "로그인 후 왜 아까 가던 관리자 화면으로 돌아가지?" |
 
 비로그인 상태에서 먼저 `/admin/reservations`를 눌렀다면 Spring Security는 그 원래 URL을 `SavedRequest`처럼 잠깐 기억해 두었다가 로그인 성공 뒤 다시 보내 줄 수 있다. 초급자 기준으로는 "쿠키/세션은 로그인 상태를 이어 주고, `SavedRequest`는 로그인 후 돌아갈 주소를 기억한다"까지 같이 묶어 두면 된다.
+
+## safe next doc 고르기
+
+이 문서는 `cookie`, `session`, `SecurityContext`, `SavedRequest`를 한 장면으로 묶는 입문 primer다. 여기서 다음 문서를 고를 때도 용어를 두 갈래로 고정해 두면 초급자가 덜 헤맨다.
+
+| 먼저 보이는 증상 | 고정 라벨 | beginner-safe handoff |
+|---|---|---|
+| "`원래 URL 복귀`가 이상해요", "`복귀는 됐는데 마지막 403`", "`SavedRequest`가 헷갈려요" | `redirect / navigation memory` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) -> [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| "`cookie 있는데 다시 로그인`", "`next request anonymous after login`", "`hidden JSESSIONID`가 보여요" | `server persistence / session mapping` | [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
+
+짧게 외우면 이렇다.
+
+- 주소 복귀가 먼저 이상하면 `redirect / navigation memory`
+- 다음 요청에서 로그인 사용자를 못 되살리면 `server persistence / session mapping`
+
+## `SavedRequest` 복귀와 `ROLE_ADMIN` 검사를 한 표로 묶기
+
+세션/쿠키 primer에서도 초급자가 가장 자주 헷갈리는 장면은 이것이다.
+
+- 로그인 전 `/admin/reservations`를 눌렀다.
+- 로그인 성공 후 원래 주소로 돌아오긴 했다.
+- 그런데 마지막에 `403`이 났다.
+
+이 장면은 "`SavedRequest`도 세션에 들어 있고, 권한 검사도 세션 기반 로그인에서 이어진다"는 공통점 때문에 한 흐름처럼 보이지만, 실제 질문은 둘로 끊어 읽어야 한다.
+
+| 지금 본 장면 | 세션/쿠키 흐름에서 뜻하는 것 | 여기서 이미 확인된 사실 | 아직 남은 질문 |
+|---|---|---|---|
+| `/admin/**` 요청 직후 `302 /login` | 비로그인이라 보호 URL 접근이 막힘 | 브라우저가 로그인 페이지로 이동했다 | "로그인 후 어디로 돌아갈까?" |
+| 로그인 성공 후 원래 `/admin/**`로 복귀 | `SavedRequest`가 주소 메모를 다시 재생함 | 원래 주소 메모 복귀는 성공했다 | "이 사용자가 진짜 `ROLE_ADMIN`인가?" |
+| 복귀 직후 최종 `403` | 복귀 이후 인가 검사에서 막힘 | 세션에서 로그인 사용자 복원까지는 됐다 | "`hasRole(\"ADMIN\")`과 현재 authority 이름이 맞나?" |
+
+초급자용 한 줄 기억법은 이렇다.
+
+- 원래 주소로 돌아왔다 = `SavedRequest` 주소 메모는 성공했다.
+- 마지막 `403`이다 = 그다음 `ROLE_ADMIN` 검사에서 별도로 막혔을 수 있다.
+
+그래서 "`복귀는 됐는데 왜 403이지?`", "`SavedRequest`가 성공했는데 admin이 왜 막혀?`" 같은 검색은 세션 자체를 전부 의심하기보다, 먼저 `redirect / navigation memory` 라벨을 붙이고 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)에서 role mapping 표를 이어 보는 편이 빠르다.
 
 ```text
 브라우저 로그인 성공

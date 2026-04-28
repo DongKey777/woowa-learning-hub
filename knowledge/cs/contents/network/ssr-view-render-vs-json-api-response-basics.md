@@ -9,11 +9,12 @@
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
 - [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: ssr vs json api basics, html response vs json response, 서버 렌더링 api 차이, api 성공인데 화면 안 바뀜, fetch 200 but no navigation, browser page request vs api request, json api success handling beginner, controller returns html vs json, page 이동과 api 응답 차이, login html instead of json, beginner web response mental model, fetch redirect followed login html 200, xhr redirect login page 200, hidden 302 login redirect in fetch, devtools final 200 hides initial 302
+retrieval-anchor-keywords: ssr vs json api basics, html response vs json response, 서버 렌더링 api 차이, api 성공인데 화면 안 바뀜, fetch 200 but no navigation, browser page request vs api request, json api success handling beginner, controller returns html vs json, page 이동과 api 응답 차이, login html instead of json, fetch redirect followed login html 200, hidden 302 login redirect in fetch, final html 200 is not api success, true html endpoint vs hidden auth redirect, 왜 api가 html로 와요
 
 ## 핵심 개념
 
@@ -29,6 +30,8 @@ retrieval-anchor-keywords: ssr vs json api basics, html response vs json respons
 
 그래서 `fetch("/api/orders")`가 성공했다고 해도 브라우저가 자동으로 새 페이지로 이동하지는 않는다. 반대로 브라우저 주소창에서 `/orders`를 열어 HTML을 받으면, 그 순간의 성공은 "데이터 저장 성공"이 아니라 "화면 렌더링 성공"에 가깝다.
 
+같은 이유로 `final HTML 200`은 "브라우저가 보여 줄 HTML을 받았다"는 뜻일 수는 있어도, 곧바로 "원래 API 계약이 성공했다"는 뜻은 아니다.
+
 ## 한눈에 보기
 
 | 구분 | SSR 뷰 렌더링 응답 | JSON API 응답 |
@@ -37,6 +40,7 @@ retrieval-anchor-keywords: ssr vs json api basics, html response vs json respons
 | 흔한 `Content-Type` | `text/html` | `application/json` |
 | 성공 뒤 기본 동작 | 브라우저가 화면을 그림 | 클라이언트 코드가 메시지 표시, 상태 갱신, 이동 여부를 결정 |
 | 화면 이동과의 관계 | redirect나 새 page request와 자주 붙어 다님 | 자동 이동은 없고 별도 JS/navigation 로직이 필요 |
+| `200`을 읽는 기준 | 최종 HTML page가 도착했는지 | 기대한 JSON shape와 status가 왔는지 |
 | 초급자 오해 | HTML이 왔으니 API도 성공했다고 착각 | `200` JSON이면 페이지도 자동 전환된다고 착각 |
 
 짧은 기억법:
@@ -133,6 +137,25 @@ Content-Type: application/json
 2. 응답 `Content-Type`이 HTML인가 JSON인가
 3. 성공 뒤 누가 다음 행동을 결정하는가
 
+## final HTML `200`을 API 성공으로 읽지 않는 20초 체크
+
+초급자가 가장 많이 놓치는 문장은 이것이다.
+
+- `HTML 200`은 "브라우저가 읽을 결과물"일 수 있다
+- `API success`는 "원래 요청이 기대한 JSON 계약을 만족했다"여야 한다
+
+즉 API 요청에서 마지막에 HTML이 보이면, 성공보다 **계약이 바뀌었는지**부터 본다.
+
+| 지금 보인 표면 | 바로 성공으로 읽으면 안 되는 이유 | 먼저 확인할 것 |
+|---|---|---|
+| `/api/me` 호출 결과가 `200 text/html` | JSON 대신 login page나 SSR page를 따라간 결과일 수 있다 | 최종 URL이 `/login`이나 page route로 바뀌었는지 |
+| body가 `<html>`로 시작한다 | 브라우저용 응답이 API 체인에 섞였을 수 있다 | `Content-Type`, redirect row, `Location` |
+| DevTools 마지막 줄만 `200`이다 | 앞단 `302 -> /login`이 접혀 있을 수 있다 | 첫 응답 status와 redirect chain |
+
+짧게 외우면 아래 한 줄이면 된다.
+
+`final HTML 200`은 "원래 API가 성공했다"가 아니라 "브라우저가 마지막으로 HTML을 받았다"일 수 있다.
+
 ## `fetch`와 XHR에서 자주 헷갈리는 숨은 redirect
 
 초급자가 특히 많이 당황하는 장면은 이것이다.
@@ -170,6 +193,41 @@ Content-Type: text/html
 
 즉 `fetch`/XHR에서 보이는 최종 `200`은 "원래 API가 성공했다"가 아니라 "브라우저가 redirect를 따라간 끝 응답"일 수 있다.
 
+이때 safe next step은 두 갈래다.
+
+- 숨은 redirect 자체를 먼저 읽고 싶으면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- Spring에서 왜 page는 `302 /login`이고 API는 `401` JSON으로 설계하는지 보고 싶으면 [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
+
+## 진짜 HTML endpoint vs 숨은 auth redirect chooser
+
+같은 `text/html`이라도 초급자 질문은 사실 두 갈래다.
+
+- "원래 HTML page를 여는 endpoint를 호출한 건가?"
+- "JSON API를 호출했는데 login redirect가 숨어 들어온 건가?"
+
+처음에는 아래 표만 보면 된다.
+
+| 지금 본 단서 | 진짜 HTML endpoint 쪽에 더 가까움 | 숨은 auth redirect 쪽에 더 가까움 |
+|---|---|---|
+| 요청 URL | `/orders/42`, `/login`, `/products` 같은 page route | `/api/me`, `/api/orders`, XHR/fetch data route |
+| 누가 요청을 시작했나 | 주소창 이동, `<a>` 클릭, form submit 뒤 page load | `fetch`, XHR, 프론트 state refresh, background polling |
+| 기대했던 응답 | 화면으로 바로 그릴 HTML | 코드가 읽을 JSON |
+| 최종 URL | 처음부터 page URL이었다 | 원래는 API URL인데 최종 URL이 `/login`으로 바뀌었다 |
+| redirect chain | page 흐름에서 자연스러울 수 있다 | API 요청이면 `302 -> /login -> 200 HTML`이 계약 오염 신호일 수 있다 |
+| 첫 대응 | "이 HTML은 원래 page 결과물인가?" | "이 HTML은 원래 API가 아니라 login fallback인가?" |
+
+짧은 선택 규칙은 이것이다.
+
+1. 처음 요청한 URL이 page route인지 API route인지 본다.
+2. API route였는데 final URL이 `/login`이나 다른 page route면 숨은 auth redirect를 먼저 의심한다.
+3. page route였고 처음부터 `Accept: text/html` 문맥이면 진짜 HTML endpoint일 가능성이 높다.
+
+예를 들어 `fetch('/api/me')`가 `200 text/html`을 받았으면 "HTML endpoint구나"보다 "`/api/me`가 auth fallback으로 `/login` HTML에 닿았나?"를 먼저 본다. 반대로 주소창에서 `/orders/42`를 열어 `200 text/html`을 받았다면 그 자체는 정상적인 SSR page 응답에 가깝다.
+
+헷갈릴 때 한 줄로 줄이면 아래처럼 외우면 된다.
+
+`HTML이 왔다`보다 먼저 `내가 원래 page를 요청했나, data를 요청했나`를 묻는다.
+
 ## 흔한 오해와 함정
 
 - "API가 `200`이면 브라우저가 자동으로 다음 화면으로 간다"라고 생각하기 쉽다.  
@@ -177,6 +235,9 @@ Content-Type: text/html
 
 - "`fetch` 결과로 login HTML을 받았으니 JSON API도 성공했다"라고 생각하기 쉽다.  
   실제로는 API 경계에 브라우저용 redirect/HTML 응답이 섞였거나, 숨은 `302 -> /login -> 200 HTML`이 final response만 남긴 것일 수 있다.
+
+- "마지막 status가 `200`이니까 일단 성공이고, body 형식은 나중 문제"라고 생각하기 쉽다.  
+  API는 status만이 아니라 **기대한 응답 계약(JSON shape, `Content-Type`, URL chain)** 까지 맞아야 성공으로 읽을 수 있다.
 
 - "서버가 HTML도 주고 JSON도 주니까 둘 다 같은 controller 감각이다"라고 생각하기 쉽다.  
   브라우저 view 렌더링과 API contract는 소비자와 후속 처리 방식이 다르다.
@@ -212,6 +273,7 @@ DevTools에서 빠르게 가르려면 아래 순서가 가장 단순하다.
 - 브라우저 요청의 큰 흐름부터 다시 잡으려면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - redirect, forward, SPA navigation을 먼저 가르려면 [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
 - `200`/`302`/`401`을 응답 계약 관점에서 다시 읽으려면 [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- login HTML `200`이 숨은 redirect follow인지 더 직접적으로 보고 싶으면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - 같은 Spring 앱에서 page와 API auth 실패가 왜 갈리는지 보려면 [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
 - Spring 코드에서 view 반환과 API 반환이 어떻게 갈리는지 보려면 [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md)
 
@@ -225,6 +287,9 @@ JSON API 성공은 데이터 전달 성공일 뿐 자동 navigation을 뜻하지
 
 **Q. `fetch`가 `200`인데 body가 login HTML인 이유는 무엇인가요?**  
 보호된 API가 먼저 `302 Location: /login`을 냈고, 브라우저가 redirect를 따라가 최종 login HTML `200`을 받은 장면일 수 있다. 최종 `200`만 보고 원래 API 성공으로 읽으면 안 된다.
+
+**Q. final HTML `200`만 보면 왜 위험한가요?**  
+그 `200`은 원래 API route의 JSON 성공이 아니라, redirect 뒤 다른 URL에서 도착한 HTML일 수 있다. API는 status와 함께 `Content-Type`, 최종 URL, body 형식을 같이 봐야 한다.
 
 **Q. 로그인 성공 뒤 어떤 경우는 `302`, 어떤 경우는 JSON `200/204`가 나오는 이유는 무엇인가요?**  
 페이지 요청은 다음 화면 이동이 중요해서 redirect가 자연스럽고, API 요청은 프론트 코드가 성공 여부를 읽어야 해서 JSON 응답이 자연스럽다.

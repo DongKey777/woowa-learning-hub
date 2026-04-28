@@ -17,6 +17,11 @@
 
 retrieval-anchor-keywords: readable code primer, layering testing loop, 메서드가 너무 길어요, controller가 너무 많은 걸 알아요, 왜 서버 전체 테스트부터, service 테스트가 통합테스트인가요, 관심사 분리 입문, controller service repository responsibility, unit vs integration test beginner, refactor with tests loop, 테스트 피드백 루프, 우테코 코드 리뷰 가독성
 
+## README 복귀 가이드
+
+- starter 분기가 다시 흐려지면 [Software Engineering README - 30초 starter 지도](./README.md#30초-starter-지도)로 돌아간다.
+- 구조보다 `queue/map` 선택이 먼저 막히면 [자료구조 README - 초급 10초 라우터](../data-structure/README.md#초급-10초-라우터)로 잠깐 우회한다.
+
 ## 먼저 자르는 3칸 비교
 
 처음에는 용어보다 **리뷰 문장을 어느 칸에 넣을지**만 정하면 된다.

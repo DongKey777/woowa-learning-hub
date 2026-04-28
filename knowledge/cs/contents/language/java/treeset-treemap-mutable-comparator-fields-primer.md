@@ -10,9 +10,10 @@
 - [카테고리 README](../README.md)
 - [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [HashSet vs TreeSet Beginner Bridge](../../data-structure/hashset-vs-treeset-beginner-bridge.md)
 
 
-retrieval-anchor-keywords: treeset treemap mutable comparator fields primer basics, treeset treemap mutable comparator fields primer beginner, treeset treemap mutable comparator fields primer intro, java basics, beginner java, 처음 배우는데 treeset treemap mutable comparator fields primer, treeset treemap mutable comparator fields primer 입문, treeset treemap mutable comparator fields primer 기초, what is treeset treemap mutable comparator fields primer, how to treeset treemap mutable comparator fields primer
+retrieval-anchor-keywords: mutable fields inside sorted collections, treeset mutable field bug, treemap mutable key bug, treeset contains false after mutation, treemap get null after key mutation, treeset 값 바꿨더니 contains false, treemap key 바꿨더니 get null, treeset 정렬이 안 바뀌어요, treemap 키 수정 왜 안 돼요, compareto mutable field bug, comparator depends on mutable field, immutable key sorted collection beginner, 처음 treeset 헷갈림, 왜 정렬 컬렉션 값 바꾸면 안 되나요, 언제 remove 후 reinsert 하나요
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -22,6 +23,7 @@ retrieval-anchor-keywords: treeset treemap mutable comparator fields primer basi
 > - [Priority Update Patterns](./priority-update-patterns-treeset-treemap-priorityqueue-bridge.md)
 > - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 > - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
+> - [HashSet vs TreeSet Beginner Bridge](../../data-structure/hashset-vs-treeset-beginner-bridge.md)
 > - [불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 
@@ -55,6 +57,8 @@ retrieval-anchor-keywords: treeset treemap mutable comparator fields primer basi
 - `TreeSet.contains(...)`가 분명 있어 보이는 원소를 못 찾는다
 - `TreeMap.get(...)`이 방금 key의 필드를 바꿨을 뿐인데 `null`을 돌려준다
 - `thenComparing(...)`까지 넣었는데도 정렬이 깨진 것처럼 보인다
+
+이 문서는 특히 `"TreeSet 값 바꿨더니 contains가 false예요"`, `"TreeMap key 수정했더니 get이 null이에요"` 같은 첫 질문이 깊은 구현 문서보다 먼저 여기로 오도록 만든 primer다.
 
 핵심은 하나다.
 

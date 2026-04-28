@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Constraint-First Booking Primer](./constraint-first-booking-primer.md)
 - [Guard Row Scope Quick Examples](./guard-row-scope-quick-examples.md)
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
 - [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)
@@ -65,6 +66,8 @@ retrieval-anchor-keywords: unique vs guard row, slot row primer, insert if absen
 
 `UNIQUE`는 가장 단순한 선택지다.
 "같은 의미의 row는 하나만 존재해야 한다"를 exact key로 바로 표현할 수 있을 때 쓴다.
+
+예약 도메인에서 처음 헷갈리면 [Constraint-First Booking Primer](./constraint-first-booking-primer.md)를 먼저 보고 "`FOR UPDATE`보다 먼저 exact key나 slot key로 바꿀 수 있는가"를 확인하는 편이 빠르다.
 
 예:
 

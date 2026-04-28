@@ -14,7 +14,7 @@
 - [HashSet vs TreeSet Duplicate Semantics](../language/java/hashset-vs-treeset-duplicate-semantics.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: hashset vs treeset beginner, hashset treeset choice basics, set selection primer, dedupe only vs sorted set, sorted set beginner, set range query beginner, hashset when to use, treeset when to use, 해시셋 트리셋 차이, set 처음 고르기, 중복 제거만 필요할 때, floor ceiling set 뭐예요, why treeset, what is sorted set
+retrieval-anchor-keywords: hashset vs treeset beginner, hashset treeset 차이, set 처음 배우는데 뭐 써요, hashset 언제 쓰는지, treeset 언제 쓰는지, 왜 treeset 써요, sorted set 뭐예요, 중복 제거만 필요할 때, 정렬된 set 필요할 때, floor ceiling set 뭐예요, set range query beginner, dedupe only vs sorted set, 처음 배우는데 hashset treeset 큰 그림, 해시셋 트리셋 차이, 왜 lower랑 floor가 달라요 set
 
 ## 핵심 개념
 
@@ -31,6 +31,8 @@ retrieval-anchor-keywords: hashset vs treeset beginner, hashset treeset choice b
 초급자가 먼저 물어야 할 질문은 이것이다.
 
 > 나는 정말 `있다/없다`만 알면 되나, 아니면 `가장 가까운 값`, `정렬된 순서`, `범위`까지 필요하나?
+
+이 문서는 `"Set 처음 배우는데 HashSet이랑 TreeSet 중 뭐부터 골라요?"` 같은 첫 질문에서 바로 걸리도록 만든 entrypoint primer다.
 
 이 질문으로 자르면 `HashSet`과 `TreeSet`을 이름이 아니라 요구사항으로 고르게 된다.
 
@@ -52,6 +54,17 @@ retrieval-anchor-keywords: hashset vs treeset beginner, hashset treeset choice b
 | `사전순으로 태그를 보여 줘야 하나?` | 약함 | 강함 |
 | `중복만 막으면 끝인가?` | 강함 | 약함 |
 
+README에서 beginner가 자주 멈추는 `lower/floor/ceiling/higher`는 `TreeSet`에서도 아래처럼 바로 번역하면 된다.
+
+| 헷갈리는 말 | `TreeSet`에서 바로 읽는 법 | 짧은 치트키 |
+|---|---|---|
+| `왜 lower랑 floor가 달라요?` | 같은 값이 있으면 `lower`는 건너뛰고 `floor`는 멈춘다 | `lower` = `바로 이전`, `floor` = `같거나 이전` |
+| `왜 higher랑 ceiling이 달라요?` | 같은 값이 있으면 `higher`는 건너뛰고 `ceiling`은 멈춘다 | `higher` = `바로 다음`, `ceiling` = `같거나 다음` |
+| `exact match 포함 여부가 헷갈려요` | `floor/ceiling`만 같은 값을 포함한다 | inclusive pair |
+| `같은 값이 있으면 제외하나요?` | `lower/higher`는 같은 값을 제외한다 | strict pair |
+
+이 네 줄은 `TreeSet`을 처음 볼 때 방향보다 포함 여부를 먼저 고정하는 용도다.
+
 ## 먼저 자르는 질문
 
 처음엔 아래 세 질문만 순서대로 보면 된다.
@@ -67,6 +80,15 @@ retrieval-anchor-keywords: hashset vs treeset beginner, hashset treeset choice b
 
 입문자가 자주 놓치는 포인트는 "`정렬된 출력 한 번`"과 "`정렬된 구조를 계속 유지`"가 다르다는 점이다.
 마지막에 한 번만 정렬해서 보여 주면 `HashSet`으로 충분할 수 있지만, 매번 이웃 값과 범위를 묻는다면 `TreeSet` 쪽이 더 직접적이다.
+
+증상 문장을 API 이름으로 바로 바꾸면 더 빨리 분기된다.
+
+| 문제 문장 | 실제 질문 | 구조 |
+|---|---|---|
+| `이 값이 이미 있나?` | membership only | `HashSet` |
+| `30 바로 이전 값은?` | `lower(30)` | `TreeSet` |
+| `30이 있으면 그 값도 포함한 다음 값은?` | `ceiling(30)` | `TreeSet` |
+| `왜 lower랑 floor가 달라요?` | strict vs inclusive neighbor query | `TreeSet` |
 
 ## 같은 도메인도 요구가 달라지면 갈린다
 
@@ -118,6 +140,7 @@ NavigableSet<Integer> activeScores = new TreeSet<>();
 
 - `Set`과 `Map` 자체가 아직 헷갈리면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - `TreeSet`과 `TreeMap`의 정렬/이웃 탐색 감각을 같이 잡고 싶으면 [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
+- `TreeSet`과 `PriorityQueue`를 `next smallest` 문장 기준으로 먼저 분리하고 싶다면 [TreeSet vs PriorityQueue Neighbor-Choice Card](./treeset-vs-priorityqueue-neighbor-choice-card.md)
 - `TreeSet`의 `floor/ceiling` 감각을 예약 예제로 보고 싶으면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
 - 값만 있는 `TreeSet`에서 `lower/floor/ceiling/higher` exact match를 먼저 손으로 맞히고 싶다면 [TreeSet Exact-Match Drill](./treeset-exact-match-drill.md)
 - Java에서 `HashSet`과 `TreeSet`의 실제 중복 판정 차이를 보려면 [HashSet vs TreeSet Duplicate Semantics](../language/java/hashset-vs-treeset-duplicate-semantics.md)

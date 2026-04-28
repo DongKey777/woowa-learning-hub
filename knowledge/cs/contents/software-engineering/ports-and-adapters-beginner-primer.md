@@ -29,14 +29,30 @@
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)
 - [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+- [큐 기초](../data-structure/queue-basics.md)
+- [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md)
 - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
 - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
 - [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md)
 
-retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, 레이어 설계, controller service repository 다음 단계, layered vs hexagonal beginner, 언제 outbound port가 필요한가, service가 외부 api 호출 이벤트 발행 저장 세부를 모두 직접 안다, inbound port, outbound port, controller adapter, repository adapter, hexagonal folder layout, repository interface contract, hexagonal testing seam, clean architecture relation
+retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, layered vs hexagonal beginner, controller service repository 다음 단계, 언제 outbound port가 필요한가, inbound port, outbound port, controller adapter, repository adapter, repository interface contract, queue가 왜 여기서 나오지, consumer queue beginner, bfs queue 차이, queue 뜻이 여러 개라 헷갈려요, what is inbound adapter
 
 입문 설명이 끝난 뒤 "adapter"라는 이름이 GoF 어댑터와 어떻게 다른지 헷갈리면 [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md), [Design Pattern: Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](../design-pattern/hexagonal-ports-pattern-language.md)로 이어서 보면 된다.
 처음 읽는 단계에서는 HTTP 요청 1개를 기준 예시로 붙잡으면 충분하다. queue, topic, consumer 운영 설계까지 커지는 순간은 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md)가 다음 handoff다.
+
+## `queue`라는 단어가 보여도 바로 운영 문서로 가지 않기
+
+초심자가 ports/adapters에서 자주 헷갈리는 단어가 `queue`다. 하지만 같은 단어라도 질문이 다르면 출발점이 달라진다.
+
+| 지금 보이는 문장 | 먼저 묻는 질문 | 먼저 볼 문서 | 다음 한 칸 |
+|---|---|---|---|
+| `worker가 받은 순서대로 처리한다`, `consumer가 queue에서 꺼낸다` | FIFO handoff 자체가 핵심인가 | [큐 기초](../data-structure/queue-basics.md) | [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](../data-structure/arraydeque-vs-blockingqueue-service-handoff-primer.md) |
+| `가까운 칸부터`, `최소 이동 횟수`, `BFS queue` | 계산 문제인가, 서비스 handoff인가 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `HTTP 말고 메시지 consumer도 같은 유스케이스를 연다` | 입구를 하나의 유스케이스로 묶을 것인가 | 이 문서 | [Message-Driven Adapter Example](./message-driven-adapter-example.md) |
+
+- `queue`가 보인다고 바로 job queue 운영 문서나 saga 문서로 내려가지 않는다.
+- 먼저 `자료구조 queue`, `알고리즘 BFS`, `아키텍처 inbound adapter` 중 무엇이 질문의 중심인지 자른다.
+- 초심자 safe route는 `queue 기초/자료구조 primer -> 이 문서 -> message-driven adapter` 순서다.
 
 ## 왜 이름이 어렵게 느껴지는가
 

@@ -7,6 +7,10 @@
 retrieval-anchor-keywords: graph router, shortest path router, weighted shortest path, unweighted shortest path, dag shortest path, mst router, topological sort, dsu vs bfs, same group vs actual path, 그래프 라우터, 최단 경로, 최소 비용 경로, 연결성 질문, 처음 배우는데, 뭐예요
 
 관련 문서:
+- [그래프 기초](../data-structure/graph-basics.md)
+- [DFS와 BFS 입문](./dfs-bfs-intro.md)
+- [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md)
+- [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md)
 - [Connectivity Question Router](../data-structure/connectivity-question-router.md)
 - [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)
 - [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md)
@@ -31,6 +35,21 @@ retrieval-anchor-keywords: graph router, shortest path router, weighted shortest
 > 문서 역할: 이 문서는 algorithm 카테고리 안에서 **graph basics primer + routing entrypoint** 역할을 한다.
 
 ---
+
+## beginner 먼저 자를 질문
+
+이 문서는 `그래프 문제를 더 넓게 분기하는 라우터`다. 아직 `그래프가 뭐예요`, `왜 queue가 같이 나와요`, `갈 수 있나`와 `최소 이동 횟수`가 섞인다면 이 문서를 깊게 읽기보다 아래처럼 한 칸 뒤로 물러나는 편이 더 안전하다.
+
+| 지금 막힌 문장 | 먼저 볼 문서 | 왜 여기서 끊는가 |
+|---|---|---|
+| `그래프가 뭐예요?`, `격자도 그래프인가요?` | [그래프 기초](../data-structure/graph-basics.md) | 정점/간선 그림이 먼저다 |
+| `갈 수 있나?`, `같은 그룹인가?` | [Connectivity Question Router](../data-structure/connectivity-question-router.md) | 답의 모양이 `yes/no`인지 먼저 자른다 |
+| `아무 경로 하나 보여줘` | [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md) | shortest path가 아니라 경로 복원 질문이다 |
+| `최소 이동 횟수`, `최소 칸 수` | [DFS와 BFS 입문](./dfs-bfs-intro.md) | 무가중치 shortest path는 BFS가 먼저다 |
+| `최소 비용`, `가중치 합` | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) | BFS와 weighted shortest path를 분리해야 한다 |
+| `모든 정점을 싸게 연결` | [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md) | path가 아니라 spanning tree 질문이다 |
+
+짧게 외우면 `구조가 낯설면 graph basics`, `yes/no면 connectivity`, `최소 이동 횟수면 BFS`, `최소 비용이면 Dijkstra 계열`이다.
 
 ## 이 문서 다음에 보면 좋은 문서
 

@@ -8,14 +8,29 @@
 
 - [카테고리 README](./README.md)
 - [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md)
+- [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 - [기본 자료 구조](./basic.md)
 - [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - [큐 기초](./queue-basics.md)
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [Service 계층 기초](../software-engineering/service-layer-basics.md)
 
-retrieval-anchor-keywords: backend data structure starter pack, backend junior data structure, map set queue primer, hashmap treemap linkedhashmap beginner, queue vs priority queue, fifo handoff basics, lookup dedupe ordering, prefix search trie, 자료구조 뭐부터, 백엔드 자료구조 입문, 조회 중복제거 순서, bfs queue bridge
+retrieval-anchor-keywords: backend data structure starter pack, backend junior data structure, map set queue primer, hashmap treemap linkedhashmap beginner, queue vs priority queue, fifo handoff basics, lookup dedupe ordering, prefix search trie, 자료구조 뭐부터, 백엔드 자료구조 입문, 조회 중복제거 순서, bfs queue bridge, service 규칙보다 자료구조가 먼저 막혀요, 처음 백엔드 미션 자료구조 뭐부터, service 전에 map queue
+
+## 여기서 먼저 끝내도 되는 기준
+
+이 문서는 `첫 구조 선택`을 자르는 primer다. 아래가 분리되면 1회독 목표는 충분하다.
+
+- `id로 바로 찾기`면 `map`
+- `이미 봤나`면 `set`
+- `받은 순서대로 처리`면 `queue`
+- `가장 이른 것 하나`나 `top-k`면 `priority queue`
+- `접두사로 찾기`면 `trie`
+
+여기까지 잡혔다면 곧바로 timer, worker handoff, incident 문서로 내려갈 필요는 없다.
+먼저 [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)나 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)처럼 바로 다음 경계 문서 한 장만 더 붙이는 편이 beginner-safe 하다.
 
 ## 처음 30초에 자르는 법
 
@@ -48,9 +63,52 @@ retrieval-anchor-keywords: backend data structure starter pack, backend junior d
 | `List`/`Set`/`Map` 기본 이름이 아직 흔들린다 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | 인터페이스와 첫 구현체 감각 | 이 문서 |
 | `lookup / dedupe / FIFO / earliest-first`로 질문을 번역하고 싶다 | 이 문서 | 반복 질문 기준 첫 구조 선택 | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) 또는 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
 | `최소 이동`, `정렬 후 탐색`, `경계 찾기`처럼 계산 문제 냄새가 난다 | 이 문서 | 자료구조 문제인지 알고리즘 문제인지 분리 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
+| `Controller`/`Service` 코드에서 규칙 설명보다 `Map`/`Queue` 선택이 먼저 막힌다 | 이 문서 | 구조 선택과 책임 위치를 다른 질문으로 자르기 | [Service 계층 기초](../software-engineering/service-layer-basics.md) |
 
 - 짧게 외우면 `컬렉션 이름 -> 반복 질문 -> 알고리즘 패턴` 순서다.
 - `처음`, `뭐부터`, `왜`, `헷갈` 같은 beginner query에서는 `TreeMap`/힙/operator 문서보다 이 사다리를 먼저 태우는 편이 안전하다.
+
+## beginner 다음 한 칸 사다리
+
+한 문서를 읽고 바로 deep dive로 뛰지 않도록, 자주 나오는 beginner 질문은 아래처럼 세 칸만 고정해 두면 된다.
+
+| 지금 증상 | primer | follow-up | deep dive 대신 여기서 멈출 안전한 복귀 |
+|---|---|---|---|
+| `List`/`Set`/`Map` 이름은 아는데 백엔드 문장을 구조로 못 옮기겠어요 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | 이 문서 -> [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | [자료구조 README - 초급 10초 라우터](./README.md#초급-10초-라우터) |
+| `queue`가 자료구조인지 BFS 도구인지 헷갈려요 | 이 문서 | [큐 기초](./queue-basics.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기) |
+| `Map`/`Queue`는 골랐는데 이걸 Service에서 왜 쓰는지 모르겠어요 | 이 문서 | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) 또는 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) | [Service 계층 기초](../software-engineering/service-layer-basics.md) |
+| `처음 백엔드 미션`인데 자료구조를 고른 뒤 다시 어디로 가야 할지 모르겠어요 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | 이 문서 -> [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | [Service 계층 기초](../software-engineering/service-layer-basics.md) |
+
+- `처음`, `왜 queue가 둘 다 나와요`, `service 코드인데 자료구조가 먼저 막혀요` 같은 질의는 위 표 순서로만 넘기면 beginner route가 짧게 유지된다.
+- `priority queue`, ordered map, trie 구현 세부는 위 follow-up이 끝난 뒤에만 열고, 그전에는 README 복귀나 Service primer 복귀로 끊는 편이 안전하다.
+
+## Java -> 자료구조 -> 알고리즘/Service 4칸 사다리
+
+`처음 백엔드 미션`, `service 전에 map/queue가 막혀요`, `왜 queue가 BFS랑 같이 나와요` 같은 query는 아래 4칸만 먼저 타면 된다.
+
+| 지금 질문 | 먼저 갈 문서 | 여기서 끝내야 하는 것 | 그다음 한 칸 |
+|---|---|---|---|
+| `List`/`Set`/`Map` 이름부터 흔들린다 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | `순서 / 중복 / key 조회` 분리 | 이 문서 |
+| `lookup / dedupe / FIFO`로 문제 문장을 번역하고 싶다 | 이 문서 | `map / set / queue / priority queue` 첫 선택 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) 또는 [Service 계층 기초](../software-engineering/service-layer-basics.md) |
+| `최소 이동 횟수`, `가까운 칸부터`가 보여 계산 문제가 된다 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) | `queue는 도구, BFS는 규칙` 분리 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `문제 풀이가 아니라 Service/worker 흐름`이 핵심이다 | [Service 계층 기초](../software-engineering/service-layer-basics.md) | 자료구조 선택과 책임 위치 분리 | [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) |
+
+- 짧게 외우면 `컬렉션 이름 -> 반복 질문 -> 계산 규칙 또는 책임 위치` 순서다.
+- 이 사다리는 beginner를 operator 문서나 deep dive graph 문서로 보내지 않고, primer -> follow-up -> 복귀 흐름만 유지하기 위한 브리지다.
+
+## 자료구조가 해결된 뒤 어디로 갈까
+
+이 문서는 `구조를 무엇으로 고를까`를 자르는 자리다. 여기서 막힘이 풀렸다면 다음 질문은 보통 자료구조가 아니라 **"그 구조를 어느 계층에서 왜 쓰나?"**로 바뀐다. 이 분기는 자료구조 primer의 다음 단계일 뿐, 첫 회독에 반드시 같이 들고 갈 범위는 아니다.
+
+| 지금 남은 질문 | 여기서의 판단 | 다음 안전한 문서 |
+|---|---|---|
+| `List`로 응답 순서를 만들 건 알겠는데 이 조립을 Controller가 해도 되나? | 자료구조 선택은 끝났고 책임 위치가 남았다 | [Service 계층 기초](../software-engineering/service-layer-basics.md) |
+| `Queue`가 필요한 건 알겠는데 작업 handoff 규칙을 Service에서 어떻게 읽나? | FIFO는 구조 질문, handoff 경계는 유스케이스 질문이다 | [Service 계층 기초](../software-engineering/service-layer-basics.md) -> [Message-Driven Adapter Example](../software-engineering/message-driven-adapter-example.md) |
+| `가까운 칸부터`라서 queue를 썼는데 이건 서비스 코드가 아니라 문제 풀이 같다 | 구조보다 탐색 규칙이 핵심이다 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+
+- 짧게 외우면 `구조를 고른다 -> 필요하면 책임 위치를 고른다 -> 계산 문제면 알고리즘으로 간다`다.
+- 그래서 `처음이라 헷갈려요`, `왜 queue가 service 코드에 나오죠?`, `List/Set/Map은 알겠는데 어디서 조립하죠?` 같은 질문은 `자료구조 starter -> Service primer` 순서로 붙이고, 운영/incident 문서로 바로 내려가지 않는다.
+- `처음 백엔드 미션 자료구조 뭐부터`, `service 전에 map/queue가 막혀요`, `왜 queue가 service 전에 나와요` 같은 query는 `Java 컬렉션 프레임워크 입문 -> 이 문서 -> 우테코 백엔드 미션 선행 개념 입문` 순서로 복귀시키는 편이 beginner-safe 하다.
 
 ## 먼저 잡는 mental model
 

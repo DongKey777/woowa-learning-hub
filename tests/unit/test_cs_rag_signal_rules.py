@@ -359,6 +359,30 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
             "why timeout does not cancel background work."
         ),
     ),
+    _chunk(
+        "loom-primer",
+        "knowledge/cs/contents/language/java/project-loom-basics.md",
+        "Project Loom Basics",
+        "language",
+        "Virtual thread beginner overview",
+        (
+            "project loom beginner primer explains what virtual threads are, loom "
+            "overview, virtual threads basics, pinning basics, and blocking i/o with "
+            "loom for first-time Java learners."
+        ),
+    ),
+    _chunk(
+        "loom-migration-deep",
+        "knowledge/cs/contents/language/java/project-loom-migration-pinning-pitfalls.md",
+        "Project Loom Migration and Pinning Pitfalls",
+        "language",
+        "Migration pitfalls",
+        (
+            "project loom migration deep dive covers threadlocal migration, context "
+            "propagation, scoped value migration, mdc carry-over, and pinning incident "
+            "triage during production rollout."
+        ),
+    ),
 ]
 
 
@@ -1229,6 +1253,34 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("virtual threads basics", expanded)
         self.assertNotIn("bytecode", expanded)
         self.assertNotIn("jvm", expanded)
+
+    def test_virtual_thread_shortform_query_adds_beginner_primer_vocabulary(self) -> None:
+        prompt = "virtual thread가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "java_virtual_threads_loom",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("project loom", expanded)
+        self.assertIn("loom overview", expanded)
+        self.assertIn("virtual threads basics", expanded)
+        self.assertIn("pinning basics", expanded)
+        self.assertNotIn("virtual thread migration", expanded)
+
+    def test_virtual_thread_shortform_query_ranks_primer_ahead_of_migration_deep_dive(self) -> None:
+        hits = self._search("virtual thread가 뭐야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "knowledge/cs/contents/language/java/project-loom-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "knowledge/cs/contents/language/java/project-loom-basics.md",
+            "knowledge/cs/contents/language/java/project-loom-migration-pinning-pitfalls.md",
+        )
 
     def test_virtual_thread_migration_query_adds_operational_terms_without_primer_bias(self) -> None:
         prompt = "virtual thread migration 에서 pinning ThreadLocal pool boundary 를 어떻게 점검해?"
@@ -3938,6 +3990,48 @@ class CsRagSignalRulesTest(unittest.TestCase):
             paths[:2],
         )
 
+    def test_beginner_query_model_meaning_prompt_boosts_query_model_primer_vocabulary(self) -> None:
+        prompt = "query model 이 뭐야? 처음 배우는데 read-heavy API 큰 그림부터 알려줘"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("api_boundary", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("query model separation", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("read-heavy api beginner primer", expanded)
+
+    def test_english_query_service_meaning_prompt_boosts_query_model_primer_vocabulary(self) -> None:
+        prompt = "What is a query service in backend APIs?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("query model separation", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("list search filter sort beginner guide", expanded)
+
+    def test_korean_query_service_why_use_prompt_boosts_query_model_primer_vocabulary(self) -> None:
+        prompt = "query service 는 왜 써?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("query model separation", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("read-heavy api beginner primer", expanded)
+
     def test_explicit_read_model_lag_prompt_keeps_projection_freshness_signal(
         self,
     ) -> None:
@@ -4155,6 +4249,21 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("repeatable read", expanded)
         self.assertIn("phantom read", expanded)
 
+    def test_mvcc_confusion_query_uses_transaction_primer_signal(self) -> None:
+        prompt = "MVCC가 뭔지 잘 모르겠어"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_isolation",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("transaction isolation basics", expanded)
+        self.assertIn("mvcc", expanded)
+        self.assertIn("read committed", expanded)
+        self.assertIn("repeatable read", expanded)
+
     def test_shortform_mvcc_query_ranks_transaction_primer_ahead_of_internals_deep_dive(
         self,
     ) -> None:
@@ -4176,6 +4285,53 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self,
     ) -> None:
         prompt = "MVCC 개념 설명해줘"
+
+        hits = self._search(prompt, top_k=8)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            "contents/database/mvcc-read-view-undo-chain-internals.md",
+        )
+
+    def test_mvcc_confusion_query_ranks_transaction_primer_ahead_of_internals_deep_dive(
+        self,
+    ) -> None:
+        prompt = "MVCC가 뭔지 잘 모르겠어"
+
+        hits = self._search(prompt, top_k=8)
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            "contents/database/mvcc-read-view-undo-chain-internals.md",
+        )
+
+    def test_english_mvcc_why_use_query_uses_transaction_primer_signal(self) -> None:
+        prompt = "Why use MVCC?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_isolation",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("transaction isolation basics", expanded)
+        self.assertIn("mvcc", expanded)
+        self.assertIn("mvcc basics", expanded)
+        self.assertIn("why use mvcc", expanded)
+
+    def test_english_mvcc_why_use_query_ranks_transaction_primer_ahead_of_internals_deep_dive(
+        self,
+    ) -> None:
+        prompt = "Why use MVCC?"
 
         hits = self._search(prompt, top_k=8)
         self.assert_path_rank_at_most(
@@ -4618,6 +4774,12 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
             },
             {
+                "prompt": "What is a query service in backend APIs?",
+                "primer_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "deep_dive_doc": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                "top_k": 8,
+            },
+            {
                 "prompt": "@Transactional 뭔데?",
                 "primer_doc": "contents/spring/spring-transactional-basics.md",
                 "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -4693,6 +4855,16 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
             },
             {
+                "prompt": "HikariCP가 뭐야?",
+                "primer_doc": "contents/database/connection-pool-basics.md",
+                "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
+            },
+            {
+                "prompt": "What is HikariCP?",
+                "primer_doc": "contents/database/connection-pool-basics.md",
+                "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
+            },
+            {
                 "prompt": "mvcc basics",
                 "primer_doc": "contents/database/transaction-isolation-basics.md",
                 "deep_dive_doc": "contents/database/mvcc-read-view-undo-chain-internals.md",
@@ -4700,6 +4872,12 @@ class CsRagSignalRulesTest(unittest.TestCase):
             },
             {
                 "prompt": "MVCC 기초",
+                "primer_doc": "contents/database/transaction-isolation-basics.md",
+                "deep_dive_doc": "contents/database/mvcc-read-view-undo-chain-internals.md",
+                "top_k": 8,
+            },
+            {
+                "prompt": "MVCC가 뭔지 잘 모르겠어",
                 "primer_doc": "contents/database/transaction-isolation-basics.md",
                 "deep_dive_doc": "contents/database/mvcc-read-view-undo-chain-internals.md",
                 "top_k": 8,
@@ -4805,6 +4983,27 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("hikari cp", expanded)
         self.assertNotIn("resource lifecycle", expanded)
 
+    def test_hikaricp_beginner_shortform_queries_stay_on_connection_pool_primer(self) -> None:
+        prompts = (
+            "HikariCP가 뭐야?",
+            "What is HikariCP?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "connection_pool_basics",
+                )
+                tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+                self.assertIn("connection_pool_basics", tags)
+                self.assertNotIn("resource_lifecycle", tags)
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("connection pool basics", expanded)
+                self.assertIn("hikari cp", expanded)
+                self.assertIn("hikaricp basics", expanded)
+                self.assertNotIn("resource lifecycle", expanded)
+
     def test_mvcc_basics_queries_prefer_transaction_isolation_primer_signal(self) -> None:
         prompts = (
             "mvcc basics",
@@ -4850,6 +5049,51 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("spring request pipeline beginner", expanded)
         self.assertIn("bean container foundation", expanded)
         self.assertIn("controller service repository roles", expanded)
+
+    def test_dispatcherservlet_why_exists_query_adds_beginner_request_pipeline_vocabulary(
+        self,
+    ) -> None:
+        prompt = "DispatcherServlet은 왜 있어?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring request pipeline bean container foundations primer", expanded)
+        self.assertIn("dispatcher servlet bean container big picture", expanded)
+        self.assertIn("spring mvc beginner mental model", expanded)
+
+    def test_spring_mvc_vs_dispatcherservlet_difference_query_uses_compare_mental_model(
+        self,
+    ) -> None:
+        prompt = "Spring MVC 랑 DispatcherServlet 차이가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dispatcher servlet vs spring mvc", expanded)
+        self.assertIn("front controller vs mvc mental model", expanded)
+        self.assertIn("dispatcher servlet handles request routing", expanded)
+        self.assertIn("spring mvc is the web stack big picture", expanded)
+
+    def test_spring_mvc_vs_dispatcherservlet_difference_query_ranks_primer_ahead_of_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("Spring MVC 랑 DispatcherServlet 차이가 뭐야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            "contents/spring/spring-mvc-handlerexecutionchain-interceptor-ordering.md",
+        )
 
     def test_beginner_mvc_pattern_query_prefers_request_pipeline_primer(self) -> None:
         prompt = "MVC 패턴이 뭐야?"

@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: query model basics, query model beginner, read model basics, read model beginner, query repository basics, query model 뭐예요, read model 뭐예요, query repository 뭐예요, query model 큰 그림, 처음 배우는데 query model, 조회 전용 모델 기초, 목록 api 엔티티 분리, 왜 query model을 나누나요, 언제 query repository를 쓰나요, cqrs lite beginner
+retrieval-anchor-keywords: query model basics, read model beginner, query repository basics, query model 뭐예요, read model 뭐예요, query repository 뭐예요, query model 큰 그림, 처음 query model 헷갈림, 조회 전용 모델 기초, 목록 api 엔티티 분리, 목록 api 때문에 repository가 비대해져요, write model read model 차이, query model과 response model 차이, 왜 query model을 나누나요, same database read model
 <details>
 <summary>Table of Contents</summary>
 
@@ -30,6 +30,7 @@ retrieval-anchor-keywords: query model basics, query model beginner, read model 
 > 관련 문서:
 > - [Software Engineering README: Query Model Separation for Read-Heavy APIs](./README.md#query-model-separation-for-read-heavy-apis)
 > - [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
+> - [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 > - [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md)
 > - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 > - [JPA Lazy Loading and N+1 Boundary Smells](./jpa-lazy-loading-n-plus-one-boundary-smells.md)

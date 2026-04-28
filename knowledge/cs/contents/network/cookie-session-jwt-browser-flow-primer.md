@@ -38,6 +38,22 @@ retrieval-anchor-keywords: cookie session jwt 차이, 쿠키 세션 jwt 차이, 
 
 처음 배우는데 `cookie`, `session`, `JWT`가 한 번에 헷갈리면 이 문서에서는 먼저 "운반 수단 / 서버 상태 / 토큰 형식"이라는 큰 그림만 고정하면 된다.
 
+## 처음 막히는 3가지 질문
+
+beginner가 실제로 자주 묻는 질문은 정의보다 아래 세 문장에 가깝다.
+
+| 지금 막힌 문장 | 먼저 답할 질문 | 이 문서에서 붙일 이름 | 다음 한 걸음 |
+|---|---|---|---|
+| "`Set-Cookie`는 왔는데 왜 다음 요청 `Cookie`가 없어요?" | 저장된 cookie가 이번 요청 조건에도 맞았나 | cookie 전송 문제 | [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md) |
+| "`Cookie`는 있는데 왜 다시 로그인해요?" | 서버가 session id나 JWT를 검증해 사용자를 복원했나 | 인증/복원 문제 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| "`304`도 보이고 cookie도 있는데, 그럼 로그인 유지된 거 아닌가요?" | body 재사용과 인증 성공을 같은 뜻으로 읽고 있나 | cache와 auth 혼선 | [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md) |
+
+짧게 외우면 아래 순서다.
+
+1. `Set-Cookie`는 저장 신호다.
+2. `Cookie` 헤더는 전송 신호다.
+3. `200/401/302`는 인증 결과 신호다.
+
 ## 한 번에 보는 전체 흐름
 
 로그인 이후 브라우저 요청 흐름을 아주 단순화하면 아래 셋 중 하나다.

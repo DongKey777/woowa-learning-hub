@@ -12,16 +12,18 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java default package avoid bridge basics, java default package avoid bridge beginner, java default package avoid bridge intro, java basics, beginner java, 처음 배우는데 java default package avoid bridge, java default package avoid bridge 입문, java default package avoid bridge 기초, what is java default package avoid bridge, how to java default package avoid bridge
+retrieval-anchor-keywords: java default package beginner, java unnamed package beginner, default package 왜 안돼요, package 선언 안 하면 안 되나요, java package 꼭 써야 하나요, 자바 package 선언 왜 붙이나, 자바 package 선언 생략 문제, 처음 배우는데 default package, hello java package 없이 시작, 두 파일부터 package 필요, beginner java package declaration, why avoid default package java, what is unnamed package java
 > 관련 문서:
 > - [Language README: Java primer](../README.md#java-primer)
 > - [Java Top-level 타입 접근 제한자 브리지](./top-level-type-access-modifier-bridge.md)
 > - [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)
 > - [Java 패키지 경계 퀵체크 카드](./java-package-boundary-quickcheck-card.md)
 
-> retrieval-anchor-keywords: java default package avoid bridge, java unnamed package beginner, java package declaration why needed, java no package declaration problem, java default package cannot import, java named package cannot use default package class, java default package avoid beginner, java source file package declaration basics, java top-level file name next step, 자바 default package 왜 피하나, 자바 package 선언 왜 붙이나, 자바 package 선언 생략 문제, 자바 unnamed package, 자바 default package import 안됨, 자바 default package 회피 브리지, 자바 파일명 규칙 다음 단계
+> retrieval-anchor-keywords: java default package avoid bridge, java unnamed package beginner, java package declaration why needed, java no package declaration problem, java default package cannot import, java named package cannot use default package class, java default package avoid beginner, java source file package declaration basics, java top-level file name next step, 자바 default package 왜 피하나, 자바 package 선언 왜 붙이나, 자바 package 선언 생략 문제, 자바 unnamed package, 자바 default package import 안됨, 자바 default package 회피 브리지, 자바 파일명 규칙 다음 단계, package 선언 안 하면 뭐가 문제예요, 자바 hello world 다음 두 번째 파일부터 막힘, default package는 편한데 왜 나중에 꼬여요, named package로 언제 옮겨야 해요, why package declaration matters in java
 
 ## 먼저 잡는 멘탈 모델
+
+이 문서는 `"package 선언 안 하면 안 되나요?"`, `"Hello.java 하나는 되는데 왜 다음 파일부터 막히나요?"`, `"default package를 왜 피하라고 해요?"` 같은 첫 질문이 들어왔을 때 바로 연결되는 짧은 브리지다.
 
 default package는 "주소 없이 메모만 붙여 둔 파일"에 가깝다.
 

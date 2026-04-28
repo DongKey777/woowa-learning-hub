@@ -25,7 +25,7 @@
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 > - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http/1.1 vs http/2 vs http/3, beginner http version comparison, http version main comparison primer, http version overview bridge, http version mental model, h1 h2 h3 difference, connection reuse vs multiplexing, tcp hol vs quic streams, why http/3 quic, browser loads many resources, browser protocol negotiation basics, http version routing, h1 h2 h3 misconception card, http version quick check, http/2 is not always faster
+retrieval-anchor-keywords: http/1.1 vs http/2 vs http/3, beginner http version comparison, http version main comparison primer, http version mental model, h1 h2 h3 difference, connection reuse vs multiplexing, tcp hol vs quic streams, why http/3 quic, http/2 뭐예요, http/3 뭐예요, h1 h2 h3 뭐가 달라요, 처음 배우는데 http 버전, http/1.1 http/2 http/3 큰 그림, http/2 http/3 언제 쓰는지, 왜 http/3에 quic이 같이 나와요
 
 <details>
 <summary>Table of Contents</summary>
@@ -46,6 +46,8 @@ retrieval-anchor-keywords: http/1.1 vs http/2 vs http/3, beginner http version c
 </details>
 
 ## 먼저 잡는 mental model
+
+이 문서는 `http/2 뭐예요`, `http/3 뭐예요`, `h1 h2 h3 뭐가 달라요`, `처음 배우는데 http 버전 큰 그림이 필요해요` 같은 **첫 질문**이 들어왔을 때 deep dive보다 먼저 잡히도록 만든 메인 primer다.
 
 브라우저가 상품 페이지 하나를 열 때를 떠올려 보자.
 

@@ -15,7 +15,7 @@
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [N+1 Query Detection and Solutions](../database/n-plus-one-query-detection-solutions.md)
 
-retrieval-anchor-keywords: controller entity return vs dto return, spring controller entity return primer, entity direct return jackson lazy loading, serialization time lazy loading, response serialization lazy loading, controller returns entity why bad, dto return beginner, lazy loading during json serialization, lazyinitializationexception controller response, osiv entity return response, jackson getter triggers query, restcontroller entity return beginner, controller 엔티티 반환 dto 반환, 직렬화 시점 lazy loading, 응답 직렬화 중 sql
+retrieval-anchor-keywords: controller entity return vs dto return, spring controller entity return primer, entity direct return jackson lazy loading, lazy loading during json serialization, lazyinitializationexception controller response, osiv entity return response, controller 엔티티 반환 dto 반환, 컨트롤러에서 엔티티 바로 반환해도 되나요, 엔티티를 dto로 왜 바꾸나요, jpa 응답 dto 처음 배우는데, entity 반환 dto 반환 헷갈려요, lazyinitializationexception 뭐예요, json 직렬화할 때 sql 왜 나가요, osiv 켜져 있는데 dto가 왜 필요해요, 읽기 응답에서 엔티티 그대로 써도 되나요
 
 ## 먼저 mental model 한 줄
 

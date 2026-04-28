@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: java comparable comparator basics basics, java comparable comparator basics beginner, java comparable comparator basics intro, java basics, beginner java, 처음 배우는데 java comparable comparator basics, java comparable comparator basics 입문, java comparable comparator basics 기초, what is java comparable comparator basics, how to java comparable comparator basics
+retrieval-anchor-keywords: java comparable comparator basics, comparable comparator 차이, compareto comparator 차이, comparable comparator 언제 쓰는지, 정렬할 때 comparable comparator 뭐 써요, compareto 0 이면 같은 값인가요, treeset compareto 0 왜 하나만 남아요, treemap compareto 0 왜 덮어써져요, 자연 정렬이 뭐예요, custom comparator 뭐예요, 처음 배우는데 comparable comparator, 자바 정렬 기준 큰 그림, 자바 정렬 기초, what is comparable java, what is comparator java
 > 관련 문서:
 > - [Language README](../README.md)
 > - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
@@ -38,7 +38,7 @@ retrieval-anchor-keywords: java comparable comparator basics basics, java compar
 > - [BigDecimal Money Equality, Rounding, and Serialization Pitfalls](./bigdecimal-money-equality-rounding-serialization-pitfalls.md)
 > - [Java `equals`, `hashCode`, `Comparable` 계약](../java-equals-hashcode-comparable-contracts.md)
 
-> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareto basics, java compare method basics, java sorting beginner, java list sort comparator, java stream sorted comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareto equals consistency, java compareto returning 0, java sorted collection duplicate surprise, java treeset natural ordering duplicate, java treemap natural ordering replace value, compareto treeset treemap bridge, what is comparable java, why treeset size is 1, 처음 배우는데 comparable comparator, compareto comparator 언제 쓰는지, compare 0 equals 불일치, treeset compareto 0 중복 이유, treemap compareto 0 덮어쓰기
+> retrieval-anchor-keywords: java comparable basics, java comparator basics, natural ordering, custom comparator, java compareto basics, java compare method basics, java sorting beginner, java list sort comparator, java stream sorted comparator, java treeset comparator equals consistency, java treemap comparator equals consistency, java compareto equals consistency, java compareto returning 0, java sorted collection duplicate surprise, java treeset natural ordering duplicate, java treemap natural ordering replace value, compareto treeset treemap bridge, what is comparable java, why treeset size is 1, 처음 배우는데 comparable comparator, compareto comparator 언제 쓰는지, compare 0 equals 불일치, treeset compareto 0 중복 이유, treemap compareto 0 덮어쓰기, 정렬 기준이 같은데 왜 set 결과가 달라요, 같은 값인가 같은 자리인가
 
 <details>
 <summary>Table of Contents</summary>

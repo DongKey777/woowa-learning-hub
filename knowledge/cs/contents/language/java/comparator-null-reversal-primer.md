@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: comparator null reversal primer basics, comparator null reversal primer beginner, comparator null reversal primer intro, java basics, beginner java, 처음 배우는데 comparator null reversal primer, comparator null reversal primer 입문, comparator null reversal primer 기초, what is comparator null reversal primer, how to comparator null reversal primer
+retrieval-anchor-keywords: comparator null reversal primer, nullslast reversed 차이, nullsfirst reversed 차이, reverseorder vs reversed null 차이, comparator null 위치 왜 바뀌어요, null 값은 뒤인데 내림차순 하고 싶어요, null 먼저 뒤로 comparator, nullable comparator 큰 그림, comparator outer null policy inner value order, 자바 nullslast reversed 차이, 자바 reverseorder nullslast 차이, 자바 comparator null 위치 뒤집힘, 처음 배우는데 comparator null 처리, nullable 정렬 기초, java comparator null beginner
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
@@ -22,7 +22,7 @@ retrieval-anchor-keywords: comparator null reversal primer basics, comparator nu
 > - [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
 > - [BinarySearch With Nullable Wrapper Sort Keys](./binarysearch-nullable-wrapper-sort-keys.md)
 
-> retrieval-anchor-keywords: comparator null reversal primer, java nullsFirst reversed, java nullsLast reversed, java reverse comparator null placement, java reverse whole comparator nullsLast, java reverse only value comparator nullsLast, java Comparator.nullsLast reversed beginner, java Comparator.nullsFirst reversed beginner, java nullsLast reverseOrder difference, java nullsFirst reverseOrder difference, java nullable comparator descending null last, java nullable comparator descending null first, java reversed changes null position, java reverseOrder keeps null position, java comparator outer null policy inner value order, java null handling comparator primer, java beginner comparator null reversal, 자바 nullsLast reversed 차이, 자바 reverseOrder nullsLast 차이, 자바 comparator null 위치 뒤집힘
+> retrieval-anchor-keywords: comparator null reversal primer, java nullsfirst reversed, java nullslast reversed, java reverse comparator null placement, java reverse whole comparator nullslast, java reverse only value comparator nullslast, java comparator.nullslast reversed beginner, java comparator.nullsfirst reversed beginner, java nullslast reverseorder difference, java nullsfirst reverseorder difference, java nullable comparator descending null last, java nullable comparator descending null first, java reversed changes null position, java reverseorder keeps null position, java comparator outer null policy inner value order, java null handling comparator primer, java beginner comparator null reversal, null이 왜 앞으로 와요, null 위치는 유지하고 값만 내림차순, null policy와 value order 차이, 자바 nullslast reversed 차이, 자바 reverseorder nullslast 차이, 자바 comparator null 위치 뒤집힘
 
 <details>
 <summary>Table of Contents</summary>

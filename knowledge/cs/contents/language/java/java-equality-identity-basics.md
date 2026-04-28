@@ -10,6 +10,7 @@
 - [Language README](../README.md)
 - [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md)
 - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
 - [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
 - [Java Array Equality Basics](./java-array-equality-basics.md)
 - [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
@@ -19,7 +20,7 @@
 - [Enum equality quick bridge](./enum-equality-quick-bridge.md)
 - [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 
-retrieval-anchor-keywords: java equality basics, java identity basics, java == vs equals, java string comparison basics, java wrapper comparison basics, java enum comparison basics, java hashcode basics, same object vs same value, 자바 == equals 차이, 자바 문자열 비교 equals, integer long wrapper == 왜 이상해요, enum 비교 == equals 뭐 써요, equals만 구현하면 안 되는 이유, hashset 중복 제거 왜 안 됨, 처음 배우는데 == equals 뭐가 달라요
+retrieval-anchor-keywords: java equality basics, java identity basics, java == vs equals, java hashcode basics, same object vs same value, java pass by value equality bridge, java aliasing identity equality, 자바 == equals 차이, 자바 문자열 비교 equals, 문자열 비교가 왜 안 돼요, string 같은데 왜 false예요, string equals가 뭐예요, hashset 중복 제거 왜 안 됨, 같은 객체와 같은 값 차이, 처음 배우는데 == equals 뭐가 달라요
 
 처음 읽는 초보자라면 `객체 모델에서 비교로 넘어가기 -> 30초 분기표 -> 같은 값과 같은 객체는 다르다 -> 문자열 비교 -> 빠른 체크리스트` 순서만 먼저 따라가도 대부분의 첫 비교 버그를 자를 수 있다. wrapper cache, `intern()`, comparator 계약은 이 문서에서 깊게 파지 않고 관련 문서로 넘긴다.
 
@@ -52,6 +53,7 @@ Java 입문자가 비교 연산에서 가장 자주 막히는 지점은 "같다"
 | 지금 보이는 증상 | 먼저 쓸 기본 규칙 | 여기서 기억할 한 줄 | 다음 문서 |
 |---|---|---|---|
 | `String` 값이 같아 보이는데 `==`가 `false`다 | `equals()` 또는 `Objects.equals()` | 문자열은 참조형이라 내용 비교를 `==`에 맡기지 않는다 | [Java String 기초](./java-string-basics.md) |
+| `"문자열 비교가 왜 안 돼요"`, `"String 같은데 왜 false예요"`, `"String equals가 뭐예요"`처럼 문자열 증상만 먼저 막혔다 | `String` 로컬 규칙부터 자른 뒤 equality 전체로 넓힌다 | 문자열 symptom entrypoint는 `Java String 기초`, 비교 일반화는 다시 이 문서다 | [Java String 기초](./java-string-basics.md) |
 | `Integer`, `Long`, `Boolean` 비교가 어떤 값에서는 되고 어떤 값에서는 이상하다 | wrapper에 `==`를 기본값으로 쓰지 않는다 | wrapper도 참조형이므로 값 비교는 보통 `equals()` 쪽이다 | [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md) |
 | enum 비교에서 `==`를 써도 되는지 헷갈린다 | enum은 `==`를 기본값으로 둔다 | enum은 상수마다 인스턴스가 고정되어 있어 `==`가 자연스럽다 | [Enum equality quick bridge](./enum-equality-quick-bridge.md) |
 
@@ -87,6 +89,42 @@ Java 입문자가 비교 연산에서 가장 자주 막히는 지점은 "같다"
 - `equals()`는 서로 다른 객체여도 같은 값으로 취급할지 묻는다.
 
 클래스/객체/참조 변수 감각 자체가 아직 흐리다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)과 [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md)을 먼저 5분만 훑고 오는 편이 더 빠르다. 이 문서는 그 다음 한 칸, 즉 "그래서 비교를 무엇으로 하느냐"를 정리하는 자리다.
+
+## pass-by-value와 aliasing confusion에서 바로 넘어오기
+
+`==`/`equals()`를 따로 외우다 꼬이는 학습자 상당수는 사실 바로 앞 단계에서 "`왜 한쪽을 바꾸면 다른 쪽도 같이 바뀌지?`"를 풀던 사람이다.
+그 혼란과 equality 혼란은 뿌리가 같다. 둘 다 "참조값이 복사되고, 여러 변수가 같은 객체를 볼 수 있다"는 사실에서 출발한다.
+
+```java
+Todo first = new Todo();
+Todo alias = first;
+
+System.out.println(first == alias); // true
+```
+
+여기서 `alias = first`는 객체 복사가 아니라 참조값 복사다.
+그래서 `first`와 `alias`는 같은 객체를 보고, 같은 객체인지 묻는 `==`가 `true`가 된다.
+
+반대로 아래는 값이 같아 보여도 다른 객체다.
+
+```java
+Member left = new Member(1L, "jane");
+Member right = new Member(1L, "jane");
+
+System.out.println(left == right); // false
+System.out.println(left.equals(right)); // true가 되게 설계할 수 있다
+```
+
+이 둘을 한 표로 붙이면 기억하기 쉽다.
+
+| 먼저 있었던 혼란 | 실제 질문 | 같은 뿌리에서 이어지는 비교 도구 |
+|---|---|---|
+| `a = b` 뒤 한쪽 수정이 다른 쪽에도 보인다 | 같은 객체를 함께 보고 있나 | `==` |
+| 필드값이 같아 보이는데 `==`가 `false`다 | 서로 다른 객체여도 같은 값으로 볼까 | `equals()` |
+| `HashSet`/`HashMap`에서 같은 값 취급이 깨진다 | 컬렉션이 같은 값을 다시 찾을 수 있나 | `hashCode()` + `equals()` |
+
+즉 pass-by-value 문서에서 배운 "같은 객체를 함께 본다"는 감각이 equality 문서의 출발점이다.
+side effect를 본 경험이 있으면, 이제 그 경험을 "`==`는 같은 객체 질문", "`equals()`는 같은 값 질문"으로 번역하면 된다.
 
 ## 먼저 잡는 멘탈 모델
 
@@ -139,7 +177,7 @@ Java 입문자가 비교 연산에서 가장 자주 막히는 지점은 "같다"
 | enum 비교에서 `equals()`를 써야 할지 `==`를 써야 할지 멈칫한다 | enum 상수 비교인지, 문자열 입력 비교인지 섞었는지 | [Enum equality quick bridge](./enum-equality-quick-bridge.md) |
 | `HashSet` 중복 제거가 안 된다 | `equals()`와 `hashCode()`를 같은 필드로 맞췄는지 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
 | `HashMap#get(...)`가 방금 넣은 key를 못 찾는다 | key를 넣은 뒤 비교 기준 필드를 바꿨는지 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
-| `a = b` 뒤 한쪽 변경이 다른 쪽에도 보인다 | 참조 공유를 값 복사로 오해했는지 | [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md) |
+| `a = b` 뒤 한쪽 변경이 다른 쪽에도 보인다 | 참조 공유를 값 복사로 오해했는지 | [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md) |
 
 이 표를 더 짧게 쓰면 이렇다.
 
@@ -315,6 +353,8 @@ System.out.println(first.hashCode() == second.hashCode()); // true 여야 한다
 ## 문자열 비교는 어떻게 해야 하나
 
 문자열은 참조형이므로 내용 비교에 `==`를 쓰면 안 된다.
+
+문자열 비교 증상만 따로 잘라 보고 싶다면 [Java String 기초](./java-string-basics.md)의 `"문자열 비교가 왜 안 돼요"`, `"String 같은데 왜 false예요"`, `"String equals가 뭐예요"` 표부터 먼저 보고, 다시 여기로 돌아와 `String` 밖의 참조형 비교까지 넓히면 흐름이 자연스럽다.
 
 ```java
 String role = new String("ADMIN");

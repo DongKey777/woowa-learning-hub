@@ -36,6 +36,34 @@ retrieval-anchor-keywords: spring testing basics, spring test beginner, springbo
 | `@DataJpaTest` | JPA 레이어(Repository, Datasource) | 레포지토리 단위 테스트 |
 | 순수 단위 테스트 | Spring 컨텍스트 없음 | Service 로직 테스트 |
 
+## 처음엔 테스트를 2가지 질문으로 고른다
+
+처음에는 annotation 이름보다 "`무엇을 검증하나`"와 "`Spring을 어디까지 켜야 하나`" 두 질문만 잡으면 된다.
+
+| 먼저 답할 질문 | 예시 답 | 자연스러운 시작점 |
+|---|---|---|
+| 지금 보는 건 웹 계약인가, DB 매핑인가, 계산 로직인가? | "`응답 코드와 JSON`", "`쿼리와 엔티티`", "`할인 계산`" | `@WebMvcTest`, `@DataJpaTest`, 순수 단위 테스트 |
+| 여러 레이어 wiring과 실제 트랜잭션까지 같이 봐야 하나? | "`controller -> service -> repository`를 한 번에 붙여 보고 싶어요" | `@SpringBootTest` |
+
+짧게 외우면 "`무엇을 확인하나`가 먼저고, `얼마나 크게 켜나`가 그다음"이다.
+
+## 실패 문장을 먼저 번역하면 덜 헷갈린다
+
+처음에는 "`테스트가 안 돼요`"를 한 덩어리로 보기 쉽다. 하지만 beginner 단계에서는 실패 문장을 아래처럼 번역하면 출발점이 훨씬 빨라진다.
+
+| 지금 바로 보이는 말 | 먼저 자를 축 | 먼저 읽을 문서 |
+|---|---|---|
+| "`@WebMvcTest`인데 service bean not found예요" | slice 경계 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| "`@Transactional`이 안 먹는 것 같아요`" | 프록시 경계 | [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md) |
+| "`POST /orders`가 controller 전에 400 나요`" | 요청 바인딩/파이프라인 | [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md) |
+| "`어제보다 테스트가 3배 느려졌어요`" | context 재사용 | [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md) |
+
+한 줄로 줄이면:
+
+- "`무엇을 띄웠나`"는 test slice 질문이다.
+- "`어떻게 호출됐나`"는 프록시 질문이다.
+- "`어디서 실패했나`"는 요청 파이프라인 질문이다.
+
 ## 처음엔 `POST /orders` 한 장면으로 고르면 쉽다
 
 같은 주문 기능도 "무엇을 확인하느냐"에 따라 테스트 시작점이 달라진다.
@@ -54,6 +82,37 @@ retrieval-anchor-keywords: spring testing basics, spring test beginner, springbo
 - 계산 로직이면 순수 단위 테스트
 - "진짜로 다 같이 붙는가"를 볼 때만 `@SpringBootTest`
 
+## 같은 `OrderService`라도 테스트마다 역할이 다르다
+
+처음 많이 헷갈리는 지점은 "`OrderService`라는 이름이 같으니 어느 테스트에서나 같은 객체겠지"라고 보는 것이다. 실제로는 같은 주문 예제라도 테스트가 무엇을 확인하느냐에 따라 `OrderService`가 **진짜 Bean일 수도 있고, Mock일 수도 있고, 아예 없을 수도 있다.**
+
+| 내가 고른 테스트 | `OrderService`는 보통 무엇인가 | 초급자용 한 줄 |
+|---|---|---|
+| `@WebMvcTest(OrderController.class)` | `@MockBean`으로 넣은 가짜 Bean | controller가 service를 "어떻게 호출하는지"만 본다 |
+| `@DataJpaTest` | 보통 아예 없다 | service 없이 repository/JPA만 본다 |
+| `@SpringBootTest` | 실제 Spring Bean | wiring, 트랜잭션, 설정까지 같이 본다 |
+| 순수 단위 테스트 | 개발자가 직접 만든 mock/stub 의존성 | Spring 없이 service 로직만 본다 |
+
+짧은 concrete example 하나로 보면 아래처럼 구분하면 된다.
+
+- "`POST /orders`가 201과 JSON을 주는지만 보겠다" -> `@WebMvcTest` + `@MockBean OrderService`
+- "`OrderRepository.save()`와 매핑이 맞는지만 보겠다" -> `@DataJpaTest`
+- "`주문 생성 service가 재고 차감, 저장, 트랜잭션까지 실제로 붙는가`" -> `@SpringBootTest`
+
+그래서 "`왜 어떤 테스트에서는 service bean not found가 나고, 어떤 테스트에서는 진짜 service가 돌아가죠?`"라는 질문은 scan이 오락가락해서가 아니라, **테스트가 일부러 보는 범위를 다르게 잘랐기 때문**인 경우가 많다.
+
+## 슬라이스는 새 구조가 아니라 보는 창이다
+
+초급자가 자주 헷갈리는 포인트는 "`@WebMvcTest`와 `@DataJpaTest`가 runtime 구조에도 따로 존재하나?`"라는 느낌이다. 하지만 slice는 운영 코드의 새 레이어가 아니라, **한 요청에서 어느 부분만 확대해서 볼지 정하는 테스트 창**에 가깝다.
+
+| 지금 보는 창 | 주로 확대하는 runtime 질문 | 같이 섞지 말아야 할 것 |
+|---|---|---|
+| `@WebMvcTest` | URL 매핑, JSON, 검증/바인딩, 예외 응답 | service 트랜잭션 동작까지 한 번에 확인하려는 기대 |
+| `@DataJpaTest` | repository 쿼리, 엔티티 매핑, flush/rollback 감각 | controller 요청 흐름과 HTTP 응답 문제 |
+| `@SpringBootTest` | controller-service-repository wiring 전체 | 느린데도 이유 없이 기본값처럼 쓰는 습관 |
+
+짧게 외우면 "`slice는 무엇을 줄여서 볼지`, `@Transactional`은 어디를 묶을지`"다. 둘 다 같은 주문 기능을 보더라도 질문 축이 다르다.
+
 ## 처음 막히는 질문부터 고르기
 
 | 지금 보이는 증상 | 먼저 고를 테스트 | 왜 이쪽이 먼저인가 |
@@ -61,6 +120,7 @@ retrieval-anchor-keywords: spring testing basics, spring test beginner, springbo
 | "컨트롤러 응답 JSON만 보고 싶은데 전체 앱이 너무 느려요" | `@WebMvcTest` | 요청 매핑, 바인딩, 응답 형식만 빠르게 볼 수 있다 |
 | "`@WebMvcTest`인데 service bean not found가 나요" | `@WebMvcTest` + `@MockBean` | 웹 슬라이스는 service를 기본으로 안 올리는 것이 정상이다 |
 | "쿼리나 엔티티 매핑만 확인하고 싶어요" | `@DataJpaTest` | JPA 경계만 켜서 repository 검증에 집중한다 |
+| "`commit` 뒤 이벤트/후처리까지 같이 확인하고 싶어요" | `@SpringBootTest` | rollback 기본값인 slice보다 실제 commit 경계를 보는 질문에 가깝다 |
 | "트랜잭션, 보안, 설정까지 한 번에 붙는지 봐야 해요" | `@SpringBootTest` | 여러 레이어 wiring을 같이 보는 통합 검증이기 때문이다 |
 | "service 계산 로직만 확인하면 돼요" | 순수 단위 테스트 | Spring 없이 가장 빠르게 실패 원인을 좁힌다 |
 
@@ -80,6 +140,7 @@ retrieval-anchor-keywords: spring testing basics, spring test beginner, springbo
 - `@WebMvcTest`에서 service Bean이 없다는 것은 대개 **슬라이스 경계 문제**다.
 - `@Transactional`이 안 먹는 것은 대개 **프록시 경계 문제**다.
 - 둘 다 "`안 된다`"로 보이지만, 하나는 "무엇을 띄웠나", 다른 하나는 "어떻게 호출했나"를 보는 질문이다.
+- controller 전에 `400`이 나는 것은 테스트 종류보다 **바인딩/요청 파이프라인 문제**일 수 있다.
 
 ## 레이어별로 이렇게 읽으면 된다
 

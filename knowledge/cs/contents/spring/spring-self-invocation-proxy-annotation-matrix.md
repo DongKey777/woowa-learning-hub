@@ -46,7 +46,7 @@ retrieval-anchor-keywords: self invocation, proxy trap, internal call bypass pro
 
 이 문서는 고급 매트릭스지만, 아래 한 줄은 `AOP 기초`와 동일하게 가져가면 된다.
 
-`Bean + public + external call(proxy)`가 안 맞으면, `@Transactional`, `@Async`, `@Cacheable` 같은 프록시 기반 annotation은 같은 뿌리에서 실패한다.
+`Bean + public + external call`이 안 맞으면, `@Transactional`, `@Async`, `@Cacheable` 같은 프록시 기반 annotation은 같은 뿌리에서 실패한다.
 
 | 빠르게 보는 항목 | 초급자용 해석 | 이 문서에서 이어서 볼 것 |
 |---|---|---|

@@ -9,6 +9,7 @@
 - [Language README](../README.md)
 - [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md)
+- [Default Method 계약 진화 vs 충돌 해결 미니 드릴](./default-method-contract-evolution-vs-conflict-mini-drill.md)
 - [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
 
@@ -54,6 +55,11 @@ retrieval-anchor-keywords: java default method diamond conflict, java two interf
 - `implements` 두 개 했더니 같은 `default method` 때문에 컴파일이 안 된다
 - 인터페이스 둘 다 `start()` 기본 구현이 있는데 누구 것이 선택되는지 모르겠다
 - `interfaceName.super`를 왜 쓰는지 감이 안 잡힌다
+
+먼저 한 번 더 자르고 싶다면 이렇게 묻는다.
+
+- 지금 질문이 "기존 구현체를 살리며 메서드를 추가할 수 있나?"면 conflict보다 evolution 쪽이다
+- 지금 질문이 "같은 시그니처 두 개 중 누구 걸 골라야 하나?"면 이 문서의 conflict 규칙으로 들어오면 된다
 
 ## 큰 그림 규칙 3개
 
@@ -379,6 +385,7 @@ class Sparrow implements Bird {
 ## 다음에 읽을 문서
 
 - `default method` 자체가 왜 생겼는지 큰 그림부터 보고 싶다면 [인터페이스 default method 기초: 계약 vs evolution](./interface-default-method-contract-evolution-primer.md)
+- 워크시트처럼 "이건 충돌인가, 그냥 계약 진화인가"를 먼저 자르고 싶다면 [Default Method 계약 진화 vs 충돌 해결 미니 드릴](./default-method-contract-evolution-vs-conflict-mini-drill.md)
 - 같은 이름 메서드를 시그니처 기준으로 자르는 감각을 더 기초부터 보고 싶다면 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
 - 인터페이스 안의 `default`와 `static`을 먼저 구분하고 싶다면 [인터페이스 `default method` vs `static` method 프라이머](./interface-default-vs-static-method-primer.md)
 - 인터페이스와 추상 클래스를 언제 나누는지 더 넓게 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)

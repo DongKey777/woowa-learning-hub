@@ -10,13 +10,16 @@
 - [Map order symptom router card](./map-order-symptom-router-card.md)
 - [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
+- [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
+- [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
+- [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)
 - [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 - [LinkedHashMap access-order 미니 프라이머](./linkedhashmap-access-order-mini-primer.md)
 - [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection primer, which map should i use, java map choice basics, hashmap vs treemap vs linkedhashmap intro, map order beginner, map range query beginner, map insertion order beginner, ordered map basics, 트리맵 해시맵 링크드해시맵 차이, map 뭐 써야 해, map 처음 고르기, map 입문, beginner map primer
+retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection primer, which map should i use, java map choice basics, hashmap vs treemap vs linkedhashmap intro, map order beginner, map range query beginner, ordered map router, lower floor difference ordered map, exact match inclusive 여부 map, 왜 lower랑 floor가 달라요, map 뭐 써야 해, map 처음 고르기, 같거나 이전 map, 같거나 다음 map
 
 ## 핵심 개념
 
@@ -33,8 +36,21 @@ retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection
 이 질문 하나로 첫 분기를 잡으면 내부 구현 세부를 몰라도 방향을 정할 수 있다.
 만약 지금 막힌 문장이 선택보다 더 직접적으로 `왜 출력 순서가 바뀌지?`에 가깝다면, 이 문서보다 먼저 [Map order symptom router card](./map-order-symptom-router-card.md)에서 `HashMap`/`LinkedHashMap`/`TreeMap`의 순서 규칙을 10초 안에 자르는 편이 더 빠르다.
 반대로 `왜 lower랑 floor가 달라요?`, `exact match 포함 여부가 헷갈려요`처럼 이미 ordered map 이웃 조회 이름까지 나온 상태라면, 구현체 선택보다 먼저 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)에서 strict/inclusive 감각을 고정하는 편이 빠르다.
+그리고 문자열 key를 다루는 문제라도 질문이 `"startsWith 후보"`인지 `"사전순 다음 key"`인지 섞여 있다면 [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)로 먼저 `prefix`와 `ordered range/neighbor`를 자르는 편이 빠르다.
 아직 `map`과 `set` 자체가 헷갈리면 이 문서보다 먼저 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)에서
 `key -> value`와 `membership only`를 자르고 오는 편이 안전하다.
+
+## 막힌 문장별 바로 가기
+
+ordered map 관련 beginner query를 한 줄로 라우팅하면 아래처럼 보면 된다.
+
+| 학습자 질문 | 먼저 볼 문서 | 왜 여기부터 읽나 |
+|---|---|---|
+| `왜 출력 순서가 바뀌지?` | [Map order symptom router card](./map-order-symptom-router-card.md) | 순서 계약 문제인지부터 잘라야 한다 |
+| `왜 lower랑 floor가 달라요?` | [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md) | strict/inclusive와 exact match 포함 여부를 먼저 고정해야 한다 |
+| `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` | [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md) | `Key/Entry`와 `lower/floor` 차이를 분리해야 한다 |
+| `다음 예약, 이전 예약, 범위 조회를 한 번에 다뤄요` | [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md) | ordered map의 이웃/범위 탐색 패턴으로 넘어가는 단계다 |
+| `문자열 key인데 prefix search와 사전순 다음 key가 헷갈려요` | [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md) | `Trie`와 `TreeMap`이 같은 문자열 key 위에서 푸는 질문을 분리해야 한다 |
 
 ## 한눈에 보기
 
@@ -74,7 +90,26 @@ retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection
 | `그냥 키로 찾기` | 순서 계약이 없다 | `HashMap` |
 | `입력한 순서 그대로 보여 주기` | 삽입 순서가 기능 요구다 | `LinkedHashMap` |
 | `다음 값`, `이전 값`, `범위 전체` | 정렬된 이웃/범위 탐색이 필요하다 | `TreeMap` |
+| `왜 lower랑 floor가 달라요`, `exact match 포함 여부` | 정렬된 이웃을 strict/inclusive로 나눠 읽어야 한다 | `TreeMap` -> neighbor-query primer |
 | `정렬된 출력 한 번만 필요` | 저장 중 정렬이 아니라 마지막 표시만 정렬하면 된다 | 보통 `HashMap` + 마지막 정렬 |
+
+## 이름이 헷갈릴 때 바로 번역
+
+README에서 자주 막히는 문장을 이 문서 안에서 바로 외우려면 아래 네 줄로 번역하면 된다.
+
+| README 증상 문장 | `TreeMap`에서 바로 떠올릴 API | 초보자용 짧은 읽는 법 |
+|---|---|---|
+| `왜 lower랑 floor가 달라요?` | `lowerKey(x)` vs `floorKey(x)` | `lower`는 `바로 이전`, `floor`는 `같거나 이전` |
+| `왜 higher랑 ceiling이 달라요?` | `higherKey(x)` vs `ceilingKey(x)` | `higher`는 `바로 다음`, `ceiling`은 `같거나 다음` |
+| `exact match 포함 여부가 헷갈려요` | `floorKey(x)`, `ceilingKey(x)` | `floor/ceiling`만 `같은 key 포함` |
+| `같은 key가 있으면 건너뛰나요?` | `lowerKey(x)`, `higherKey(x)` | `lower/higher`는 `같은 key 제외` |
+
+한 줄 치트키로 줄이면 이렇게 외우면 된다.
+
+- `lower` = 바로 이전
+- `floor` = 같거나 이전
+- `ceiling` = 같거나 다음
+- `higher` = 바로 다음
 
 ## 상세 분해
 
@@ -105,6 +140,15 @@ retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection
 - `subMap()`, `headMap()`, `tailMap()`
 
 즉 `TreeMap`은 단순 출력 정렬보다 "기준값 바로 앞/뒤를 찾기", "구간 안의 데이터만 보기"에 강하다.
+
+초보자가 이름 때문에 멈추면 영어 단어 뜻보다 한국어 증상 문장으로 다시 번역하는 편이 빠르다.
+
+| 질문 | 한국어로 다시 읽기 | 왜 `TreeMap` 신호인가 |
+|---|---|---|
+| `floorKey(10:30)` | `10:30이 있으면 그 자리, 없으면 바로 이전` | exact match 포함 왼쪽 |
+| `ceilingKey(10:30)` | `10:30이 있으면 그 자리, 없으면 바로 다음` | exact match 포함 오른쪽 |
+| `lowerKey(10:30)` | `10:30은 빼고 바로 이전` | strict 왼쪽 |
+| `higherKey(10:30)` | `10:30은 빼고 바로 다음` | strict 오른쪽 |
 
 ## 흔한 오해와 함정
 

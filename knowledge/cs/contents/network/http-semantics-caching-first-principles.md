@@ -6,14 +6,14 @@
 
 관련 문서:
 
+- [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP 메서드와 REST 멱등성 입문](./http-methods-rest-idempotency-basics.md)
+- [HTTP 상태 코드 기초](./http-status-codes-basics.md)
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
 - [프록시와 리버스 프록시 기초](./proxy-reverse-proxy-basics.md)
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
-- [Cache-Control 실전](./cache-control-practical.md)
-- [CDN 캐시 키와 무효화 전략](./cdn-cache-key-invalidation.md)
 - [network 카테고리 인덱스](./README.md)
-
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 retrieval-anchor-keywords: http semantics, http caching first principles, safe vs idempotent, browser cache vs server cache, browser cache vs server-side cache, shared cache basics, reverse proxy cache basics, cdn cache basics, conditional request first principles, cache-control primer, beginner http caching, beginner http semantics, get post cache semantics, 304 first principles, public private cache

@@ -70,6 +70,15 @@ retrieval-anchor-keywords: security readme, security category navigator, auth tr
 이 README는 security category `navigator`다. `기본 primer`는 auth / session / OAuth 기초 축을 맞추는 입문 구간이고, `추천 학습 흐름`은 category-local `survey`, `... deep dive catalog` heading은 theme bucket을 고르는 `catalog`, 링크된 개별 `.md`는 실제 `deep dive`다. 즉시 대응은 `[playbook]` / `[runbook]` / `[drill]` / `[incident matrix]` / `[recovery]` 문서로 내려간다.
 여기서 `[primer]`는 용어와 mental model을 처음 여는 first-step 문서이고, `[primer bridge]`는 primer 하나를 읽은 뒤 symptom을 spring / authz / system-design handoff로 넘기는 2단계 문서다.
 
+초보자 first-click safety rail은 아래처럼 고정하면 된다.
+
+| 지금 상태 | 먼저 열 역할 | 이 README에서 첫 클릭 | 아직 미루는 것 |
+|---|---|---|---|
+| `처음`, `로그인은 되는데 왜 403`, `cookie가 뭐가 문제인지 모르겠다` | `primer` | [기본 primer](#기본-primer), [Auth / Permission Basics](#auth--permission-basics), [Permission / 403 Basics](#permission--403-basics) | [운영 / Incident catalog](#운영--incident-catalog), trust/recovery deep dive |
+| 증상 문장은 있는데 branch가 안 잘린다 | `primer bridge` / `catalog` | [첫 분기](#첫-분기), [증상별 바로 가기](#증상별-바로-가기), [Browser / Session Troubleshooting Path](#browser--session-troubleshooting-path) | 여러 deep dive 연속 읽기 |
+| 학습 순서 전체가 먼저 필요하다 | `survey` | [추천 학습 흐름 (category-local survey)](#추천-학습-흐름-category-local-survey) | symptom-first catalog에 오래 머무르기 |
+| live incident, outage, recovery 순서가 급하다 | `playbook` / `runbook` / `recovery` | [운영 / Incident catalog](#운영--incident-catalog) | beginner primer를 incident 대응 문서로 착각하기 |
+
 ## 첫 분기
 
 cross-origin browser 증상을 먼저 자르고 싶으면 아래 3칸만 보면 된다.
@@ -536,6 +545,7 @@ cross-origin login/API 증상은 아래 3칸으로 먼저 자르면 CORS 관련 
 ## 운영 / Incident catalog
 
 이 구간은 incident 대응 순서가 먼저 필요한 `playbook`, repeatable operator 절차인 `runbook`, rehearsal 중심 `drill`, 분류표 역할의 `incident matrix`, 그리고 recovery-oriented `deep dive`를 함께 묶은 incident-first catalog다.
+즉, 이 섹션은 security beginner entrypoint가 아니라 follow-up bucket이다. `처음`, `헷갈려요`, `why 403`, `cookie 있는데 왜 다시 로그인` 계열이면 먼저 [기본 primer](#기본-primer)나 [증상별 바로 가기](#증상별-바로-가기)로 돌아간다.
 
 - `[playbook]` [JWT Signature Verification Failure Playbook](./jwt-signature-verification-failure-playbook.md)
 - `[drill]` [JWT / JWKS Outage Recovery / Failover Drills](./jwt-jwks-outage-recovery-failover-drills.md)

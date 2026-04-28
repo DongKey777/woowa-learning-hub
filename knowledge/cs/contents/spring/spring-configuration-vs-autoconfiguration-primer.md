@@ -1,6 +1,6 @@
 # Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`
 
-> 한 줄 요약: 초급자 기준으로는 "`service`/`repository` 같은 우리 코드면 component scan, 외부 객체 조립이면 `@Bean`, Boot가 대신 채우는 기본값이면 auto-configuration"으로 먼저 자르면 된다. `@Configuration`은 그 `@Bean` 규칙을 담는 설명서이고, `proxyBeanMethods`는 설명서 안의 `@Bean` 메서드 self-invocation(내부 호출)을 안전하게 보정할지 정하는 스위치다.
+> 한 줄 요약: 초급자 기준으로는 "`service`/`repository` 같은 우리 코드면 component scan, 외부 객체 조립이면 `@Bean`, Boot가 대신 채우는 기본값이면 auto-configuration"으로 먼저 자르면 된다. `@Configuration`은 그 `@Bean` 규칙을 담는 설명서이고, `proxyBeanMethods`는 이 설명서 안에서 `@Bean` 메서드를 직접 부를 때만 신경 쓰면 되는 안전 스위치다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 Bean 등록 기초에서 Boot 설정 문서로 넘어갈 때 "`언제 scan / `@Bean` / auto-configuration을 고르나`"를 먼저 연결해 주는 **beginner bridge primer**를 담당한다.
 
@@ -10,6 +10,7 @@
 - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)
+- [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)
 - [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
 - [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)
 - [Spring Full vs Lite Configuration 예제: `proxyBeanMethods`, self-invocation(내부 호출), 메서드 파라미터 주입](./spring-full-vs-lite-configuration-examples.md)
@@ -20,11 +21,12 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @bean difference, component scan vs bean registration, spring configuration beginner, boot auto configuration beginner, 언제 @bean 써요, configuration 뭐예요, auto configuration 뭐예요, 처음 spring 설정 헷갈, proxybeanmethods beginner, self-invocation internal call, self invocation vs parameter injection, @conditionalonmissingbean mental model, boot default bean registration, spring configuration vs autoconfiguration primer basics
+retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @bean difference, component scan vs bean registration, spring configuration beginner, boot auto configuration beginner, 언제 @bean 써요, 언제 configuration 써요, configuration 뭐예요, auto configuration 뭐예요, 처음 spring 설정 헷갈, proxybeanmethods beginner, self-invocation internal call, self invocation vs parameter injection, @conditionalonmissingbean mental model, boot default bean registration
 
 ## 이 문서 다음에 보면 좋은 문서
 
 - Bean 등록 자체가 아직 흐리다면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)로 한 칸 돌아가서 "`우리 코드 scan / 외부 객체 `@Bean` / Boot 기본값 auto-configuration`" 3갈래를 먼저 다시 붙인다.
+- starter를 넣으면 왜 기본 Bean이 바로 생기는지부터 짧게 보고 싶다면 [Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나](./spring-boot-autoconfiguration-basics.md)로 먼저 간다.
 - Boot 조건부 등록을 더 자세히 보려면 [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)으로 이어진다.
 - 내 설정이 있을 때 Boot 기본값이 왜 빠지는지 처음 디버깅하려면 [Spring Boot Condition Evaluation Report 첫 디버그 체크리스트: `--debug`, Actuator `conditions`, `@ConditionalOnMissingBean`](./spring-boot-condition-evaluation-report-first-debug-checklist.md)로 이어진다.
 - "`@Primary`와 `@ConditionalOnMissingBean`이 같은 문제인가?"를 짧은 표로 먼저 분리하고 싶다면 [Spring `@ConditionalOnMissingBean` vs `@Primary` 오해 분리: auto-configuration back-off와 bean 선택은 다르다](./spring-conditionalonmissingbean-vs-primary-primer.md)로 이어진다.
@@ -71,6 +73,27 @@ retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @b
 
 ---
 
+## 30초 선택 사다리
+
+이 문서를 찾는 초급자는 보통 "`@Configuration`이랑 `@Bean`이 뭐가 다르고, Boot는 또 언제 끼어들지?"에서 멈춘다.
+그때는 어노테이션 이름보다 아래 질문 순서로 자르는 편이 훨씬 덜 헷갈린다.
+
+| 순서 | 먼저 물을 질문 | 바로 고를 첫 선택 |
+|---|---|---|
+| 1 | 이 객체가 `OrderService`, `OrderRepository`처럼 우리 애플리케이션 역할 클래스인가? | component scan |
+| 2 | 이 객체가 `Clock`, `ObjectMapper`, 외부 SDK client처럼 내가 조립 규칙을 적어야 하는가? | `@Configuration` + `@Bean` |
+| 3 | 이 객체가 starter가 보통 대신 채워 주는 공용 기본값인가? | Boot auto-configuration을 먼저 믿고, 필요하면 customizer나 사용자 Bean으로 개입 |
+
+헷갈릴 때는 아래처럼 짧게 읽으면 된다.
+
+- `@Bean`은 "객체 하나를 이렇게 만들겠다"는 등록 규칙이다.
+- `@Configuration`은 그 `@Bean` 규칙을 묶어 두는 설명서다.
+- auto-configuration은 Boot가 들고 오는 기본 설명서다.
+
+즉 비교 축은 "`@Configuration` vs `@Bean`"이 아니라, **"`@Bean`은 규칙 하나, `@Configuration`은 그 규칙 묶음, auto-configuration은 Boot가 가져오는 기본 묶음`"**에 가깝다.
+
+---
+
 ## 1. 처음엔 "`어떤 등록 방식을 고르나`"부터 자른다
 
 `@Configuration`, `@Bean`, auto-configuration을 어노테이션 이름으로 외우기 시작하면 금방 섞인다.
@@ -88,6 +111,11 @@ retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @b
 - 외부 객체 조립이면 `@Bean`
 - Boot 기본값이면 auto-configuration
 
+여기서 `@Configuration`이 안 보이는 이유는 `@Configuration`이 경쟁 후보가 아니라,
+**`@Bean`을 어디에 모아 둘지 정하는 껍데기**이기 때문이다.
+초반 오해는 대부분 "`@Configuration`도 bean 등록 방식 하나인가?"에서 시작하는데,
+실제로는 "`@Bean`을 어떤 설명서에 담았나`"로 읽는 쪽이 더 정확하다.
+
 이 문서는 여기서 한 칸 더 가서, 왜 `@Configuration`과 auto-configuration이 사실 같은 메커니즘 위에 있는지도 붙여 준다.
 
 ---
@@ -95,6 +123,11 @@ retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @b
 ## 2. `@Bean`과 `@Configuration`은 무엇이 다른가
 
 `@Bean`은 개별 객체 생성 규칙이고, `@Configuration`은 그 규칙들을 담는 클래스다.
+
+초보자에게는 아래 한 줄로 먼저 잡는 편이 좋다.
+
+- `@Bean` = "이 객체 하나는 이렇게 만든다"
+- `@Configuration` = "그 규칙들을 한 파일에 모아 둔다"
 
 ```java
 @Configuration
@@ -117,6 +150,9 @@ public class AppConfig {
 - `AppConfig`는 "조립 설명서"
 - `systemClock()`과 `orderService()`는 "부품 만드는 함수"
 - Spring은 이 메서드 정보를 읽어 Bean으로 등록한다
+
+그래서 "`@Configuration`을 붙였는데 왜 Bean이 안 생기죠?"보다
+"그 안에 실제 `@Bean` 메서드가 있는가, 또는 component scan 대상이 맞는가?"를 먼저 보는 편이 정확하다.
 
 여기서 중요한 점은 `@Configuration` 자체가 Bean을 직접 쓰는 곳이 아니라, **Bean을 어떻게 만들지 선언하는 곳**이라는 점이다.
 

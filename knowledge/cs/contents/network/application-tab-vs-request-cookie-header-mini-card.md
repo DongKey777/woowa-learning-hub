@@ -13,7 +13,7 @@
 - [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
 - [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
 
-retrieval-anchor-keywords: application tab cookie but no request cookie, request cookie header empty, cookie stored but not sent, application cookies vs network cookie, devtools cookie stored vs sent, why cookie header is empty, application cookies 있는데 요청에는 없음, cookie header 왜 비어요, browser cookie debug basics, stored vs sent cookie beginner, fetch credentials cookie missing, domain path samesite secure cookie
+retrieval-anchor-keywords: application tab cookie but no request cookie, request cookie header empty, cookie stored but not sent, application cookies vs network cookie, devtools cookie stored vs sent, why cookie header is empty, application cookies 있는데 요청에는 없음, cookie header 왜 비어요, browser cookie debug basics, stored vs sent cookie beginner, fetch credentials cookie missing, domain path samesite secure cookie, credentials omit vs domain path mismatch, 왜 application 탭에는 있는데 요청 헤더는 없어요, cookie stored but header empty why
 
 ## 핵심 개념
 
@@ -55,6 +55,20 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 - `SameSite=Lax` cookie는 cross-site `fetch`나 `POST`에서 안 붙을 수 있다.
 - `Secure` cookie는 `http://` 요청에 안 붙는다.
 
+## 상세 분해
+
+이 증상은 보통 아래 다섯 칸 중 하나로 정리된다.
+
+| 원인 칸 | Application 탭에서는 왜 보여요? | Request `Cookie` 헤더는 왜 비어요? | 지금 바로 볼 것 |
+|---|---|---|---|
+| `Domain` 불일치 | 브라우저 저장 자체는 가능하다 | 이번 요청 host가 cookie 범위 밖이다 | 요청 URL host vs cookie `Domain` |
+| `Path` 불일치 | 같은 host라면 저장 row는 계속 남아 있다 | 요청 path가 cookie 범위 밖이다 | `/api` 요청인데 cookie `Path=/auth` 같은지 |
+| `SameSite`/`Secure` | 속성은 저장 metadata라서 Application에 그대로 보인다 | 현재 문맥이 cross-site이거나 HTTPS가 아니다 | top-level 이동인지 `fetch`인지, `https://`인지 |
+| `credentials` 누락 | cookie는 저장돼 있다 | cross-origin `fetch`에서 브라우저가 credential 전송을 안 한다 | `fetch(..., { credentials: "include" })` 여부 |
+| `credentials` 누락 vs `Domain`/`Path` mismatch 구분 | 둘 다 Application row는 그대로 남아 있을 수 있다 | cross-origin `fetch` 전체에서 빠지면 `credentials` 쪽, 특정 host/path에서만 빠지면 scope 쪽일 가능성이 크다 | 요청이 cross-origin인지, 같은 cookie가 다른 path나 host에서는 붙는지 |
+
+초급자에게 가장 중요한 감각은 "Application 탭 row는 과거 저장 사실이고, request `Cookie` 헤더는 이번 요청 판정 결과"라는 점이다.
+
 ## 30초 디버깅 순서
 
 1. 실패한 **같은 요청 row**를 연다.
@@ -64,6 +78,17 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 5. `Cookie`가 실렸다면 그다음부터는 브라우저 문제가 아니라 서버 세션 복원이나 인증 매핑 문제로 본다.
 
 포인트는 "저장소 화면"과 "실패한 실제 요청"을 반드시 같은 턴에 맞춰 보는 것이다. `Application` 탭만 보고 있으면 과거에 저장된 cookie row 때문에 오진하기 쉽다.
+
+## 실무에서 쓰는 모습
+
+예를 들어 프런트가 `https://app.example.com`, API가 `https://api.example.com`인 SPA를 보자.
+
+1. 로그인 응답에서 `Set-Cookie: SID=...; SameSite=None; Secure`가 내려온다.
+2. `Application > Cookies > https://api.example.com`에는 `SID`가 보인다.
+3. 그런데 프런트 코드가 `fetch("https://api.example.com/me")`만 호출하고 `credentials: "include"`를 빼먹었다.
+4. 그러면 저장 row는 남아 있어도 실제 `/me` 요청의 `Cookie` 헤더는 비어 있을 수 있다.
+
+이 장면에서 "cookie가 저장 안 됐다"가 아니라 "cross-origin 요청 전송 조건이 빠졌다"가 맞는 첫 해석이다.
 
 ## 흔한 오해와 함정
 
