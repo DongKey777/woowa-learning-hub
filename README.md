@@ -84,10 +84,10 @@ woowa-learning-hub/                  ← (1) 직접 클론
 - Python 3.10+, `git`, `gh` CLI (`gh auth login` 완료)
 - AI CLI 한 종류 (Claude Code / Codex / Gemini)
 - 셸 환경:
-  - **macOS / Linux**: 그대로 동작
-  - **Windows**: **WSL2 권장** (Ubuntu 등 — Linux 환경 그대로). 또는 native PowerShell에서도
-    Python 코드는 동작 (`python scripts/workbench/cli.py <command>`)하지만 `bin/*` 셸
-    래퍼는 못 씀. 자세한 건 [`docs/platform-compatibility.md`](docs/platform-compatibility.md).
+  - **macOS / Linux / WSL2**: `bin/*` 그대로 동작
+  - **Native Windows** (PowerShell / cmd): `.\bin\*.ps1` PowerShell wrapper 사용
+    (모든 명령에 .ps1 미러 제공). `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` 한 번만 실행 필요.
+  - 자세한 OS별 가이드: [`docs/platform-compatibility.md`](docs/platform-compatibility.md)
 
 의존성 / 모델 / 인덱스는 첫 세션에서 AI가 자동 처리.
 

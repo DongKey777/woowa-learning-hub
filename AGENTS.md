@@ -35,6 +35,13 @@ Role:
 6. [docs/token-budget.md](docs/token-budget.md)
 7. [docs/agent-entrypoints.md](docs/agent-entrypoints.md)
 
+## Cross-Platform 명령 호출 (Windows native 지원)
+
+- macOS / Linux / WSL: `bin/rag-ask "..."` 형식 그대로 호출 (bash wrapper)
+- **Native Windows (PowerShell / cmd)**: 같은 명령에 `.ps1` 확장자 추가 — `.\bin\rag-ask.ps1 "..."`
+- AI 세션은 OS 감지 (`uname` 실패 또는 `$env:OS == "Windows_NT"`) 시 `.ps1` 형식 자동 사용. 둘 다 같은 Python 모듈을 호출하므로 동작 동일.
+- 마지막 fallback: `python scripts/workbench/cli.py <command> ...` 직접 호출 (모든 OS 동작).
+
 ## Non-Negotiable Safety
 
 - mission repos are read-only unless the user explicitly asks for code changes

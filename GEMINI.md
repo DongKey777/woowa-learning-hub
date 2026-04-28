@@ -81,6 +81,13 @@ Learners use Gemini CLI on the **free tier or Google AI Pro ($20/mo) subscriptio
 
 AGENTS.md / CLAUDE.md와 의미적으로 동일 — 어느 AI를 써도 같은 응답 규약.
 
+## Cross-Platform 명령 호출 (Windows native 지원)
+
+- macOS / Linux / WSL: `bin/rag-ask "..."` 형식 (bash wrapper)
+- **Native Windows (PowerShell / cmd)**: `.\bin\rag-ask.ps1 "..."` (PowerShell wrapper)
+- OS 감지(`uname` 실패 또는 `$env:OS == "Windows_NT"`) 시 `.ps1` 자동. 동작 동일.
+- 최후 fallback: `python scripts/workbench/cli.py <command> ...` (모든 OS).
+
 ## Gemini-Specific Notes
 
 - This file is the project-level context file for Gemini-style hierarchical memory.

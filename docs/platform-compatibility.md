@@ -5,13 +5,16 @@
 
 ## 한눈에
 
-| 환경 | bin/ 셸 래퍼 | Python 직접 호출 | 권장 |
-|---|---|---|---|
-| **macOS** | ✅ | ✅ | ✅ |
-| **Linux** | ✅ | ✅ | ✅ |
-| **Windows + WSL2** (Ubuntu 등) | ✅ | ✅ | ✅ **추천** |
-| **Windows + Git Bash** | ⚠️ bash는 OK, Python 모듈은 OK (cross-platform 락) | ✅ | 가능 |
-| **Windows + PowerShell / cmd** | ❌ bash 직접 실행 안 됨 | ✅ | 가능 (`python scripts/workbench/cli.py ...`) |
+| 환경 | bash wrapper (`bin/*`) | PowerShell wrapper (`bin/*.ps1`) | Python 직접 호출 | 권장 |
+|---|---|---|---|---|
+| **macOS** | ✅ | n/a | ✅ | ✅ |
+| **Linux** | ✅ | n/a | ✅ | ✅ |
+| **Windows + WSL2** (Ubuntu 등) | ✅ | n/a | ✅ | ✅ |
+| **Windows + Git Bash** | ✅ | ⚠️ pwsh 별도 | ✅ | 가능 |
+| **Windows + PowerShell / cmd** | ❌ | ✅ **권장** | ✅ | 가능 |
+
+모든 wrapper(`bin/*`, `bin/*.ps1`)는 같은 Python 모듈을 호출하므로 **동작 100% 동일**.
+학습자는 OS별로 자기 환경에 맞는 형식을 쓰면 된다.
 
 ## 동작 원리
 
@@ -79,23 +82,35 @@ claude --dangerously-skip-permissions   # 또는 codex / gemini
 ### 옵션 B: Native PowerShell
 
 ```powershell
-# Python / git / gh 설치 필요 (winget / chocolatey 등)
+# 1. Python / git / gh 설치 필요 (winget / chocolatey 등)
 git clone https://github.com/DongKey777/woowa-learning-hub.git
 cd woowa-learning-hub
 python -m pip install -e .
 gh auth login
 
-# AI 세션 시작
+# 2. PowerShell ExecutionPolicy 설정 (한 번만)
+#    unsigned local script 실행 허용. CurrentUser scope이라 다른 사용자에게 영향 없음.
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+# 3. AI 세션 시작
 claude --dangerously-skip-permissions   # 또는 codex / gemini
 # 한국어로: "이 저장소로 학습 시작하자."
 ```
 
-**제약**: AI가 `bin/rag-ask "..."` 같은 명령을 시도하면 PowerShell이 bash 스크립트를 못 돌려
-실패. AI에게 *"bin/ 명령 대신 python 스크립트를 직접 호출해줘"* 라고 한국어로 알려주면 AI가
-`python scripts/workbench/cli.py ...` 형식으로 자동 fallback.
+**명령 형식**: AI가 OS를 감지해서 자동으로 `.ps1` wrapper를 호출:
 
-장기적으로 PowerShell wrapper (`bin/*.ps1`) 추가가 가능하지만 현재는 Python 직접 호출이
-표준 fallback.
+```powershell
+# bash 형식 (macOS/Linux/WSL):  bin/rag-ask "Bean이 뭐야?"
+# PowerShell 형식 (Native Win):  .\bin\rag-ask.ps1 "Bean이 뭐야?"
+# Python 직접 (모든 OS):         python scripts/workbench/cli.py rag-ask "Bean이 뭐야?"
+```
+
+세 형식 모두 같은 Python 모듈을 호출하므로 **동작 100% 동일**. AI는 첫 명령에서 OS 감지
+(`uname` 실패 또는 `$env:OS == "Windows_NT"`)해서 적절한 형식 자동 선택.
+
+**ExecutionPolicy 보안**: `RemoteSigned`는 인터넷에서 받은 unsigned 스크립트는 거부하고
+로컬 unsigned 스크립트만 허용. CurrentUser scope이라 시스템 전체에 영향 없음. 워크벤치
+저장소를 신뢰한다는 전제로 안전.
 
 ### 옵션 C: Git Bash
 
