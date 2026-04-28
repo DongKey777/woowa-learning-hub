@@ -36,6 +36,7 @@
     "suggested_topics": { "type": "array", "items": { "type": "string" } },
     "topic_inference_reasons": { "type": "array", "items": { "type": "string" } },
     "topic_candidates": { "type": "array" },
+    "topic_confidence": { "type": "string", "enum": ["low", "medium", "high"] },
     "primary_intent": { "type": "string" },
     "suggested_intents": { "type": "array", "items": { "type": "string" } },
     "intent_reasons": { "type": "array", "items": { "type": "string" } },

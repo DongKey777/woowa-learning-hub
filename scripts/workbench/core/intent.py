@@ -51,6 +51,32 @@ TOPIC_RULES = [
         "prompt_keywords": ["test", "테스트"],
         "path_keywords": ["test"],
     },
+    {
+        "topic": "Domain",
+        "query": "Domain",
+        "prompt_keywords": [
+            # Korean single-word
+            "도메인", "모델", "모델링", "엔티티", "값객체", "객체",
+            # Korean multi-word — explicit modeling intent gets Domain priority
+            # over single-word ties (especially for entity collision with DTO).
+            "도메인 설계", "도메인 객체", "도메인 모델",
+            "엔티티 설계", "엔티티 모델링",
+            # English single-word
+            "domain", "model", "entity", "aggregate",
+            # English multi-word — `entity modeling` prompts win Domain (6) over DTO (3).
+            "entity modeling", "entity design", "domain modeling", "domain design", "domain object",
+        ],
+        "path_keywords": ["domain", "model", "entity", "aggregate"],
+    },
+    {
+        "topic": "Controller",
+        "query": "Controller",
+        "prompt_keywords": [
+            "컨트롤러", "엔드포인트", "라우팅", "핸들러",
+            "controller", "endpoint", "handler", "routing", "rest",
+        ],
+        "path_keywords": ["controller", "handler", "endpoint"],
+    },
 ]
 
 INTENT_RULES = [
@@ -156,7 +182,15 @@ def infer_topics(prompt: str, diff_files: list[str], mission_map: dict | None = 
                     "reasons": ["mission-map:fallback"] + candidate.get("reasons", [])[:3],
                 })
         else:
-            scored.extend(mission_candidates)
+            # Prompt-silent: cap mission-map fallback so a single weak signal
+            # cannot outscore a real prompt-side match (3 per keyword).
+            for candidate in mission_candidates:
+                capped = min(int(candidate.get("score", 0)), 2)
+                scored.append({
+                    **candidate,
+                    "score": capped,
+                    "reasons": ["mission-map:weak-fallback"] + candidate.get("reasons", [])[:3],
+                })
 
     if not scored:
         return {
@@ -172,15 +206,24 @@ def infer_topics(prompt: str, diff_files: list[str], mission_map: dict | None = 
                     "reasons": ["default: no prompt/diff match"],
                 }
             ],
+            "confidence": "low",
         }
 
     scored.sort(key=lambda item: (-item["score"], item["topic"]))
+    top_score = scored[0]["score"]
+    if top_score >= 6:
+        confidence = "high"
+    elif top_score >= 3:
+        confidence = "medium"
+    else:
+        confidence = "low"
     return {
         "primary_topic": scored[0]["topic"],
         "primary_query": scored[0]["query"],
         "suggested_topics": [item["topic"] for item in scored[:3]],
         "inference_reasons": scored[0]["reasons"],
         "topic_candidates": scored[:5],
+        "confidence": confidence,
     }
 
 

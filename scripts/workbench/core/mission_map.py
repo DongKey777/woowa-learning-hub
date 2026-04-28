@@ -176,20 +176,57 @@ def _tokenize(text: str | None) -> list[str]:
     return tokens
 
 
-def _tracked_files(repo_path: Path) -> list[Path]:
-    result = run_capture(["git", "ls-files"], cwd=repo_path)
-    if result.returncode == 0:
-        return [repo_path / line.strip() for line in result.stdout.splitlines() if line.strip()]
+def _repo_files(repo_path: Path) -> list[Path]:
+    files: set[Path] = set()
+
+    # Tracked files (existing behavior)
+    tracked = run_capture(["git", "ls-files"], cwd=repo_path)
+    if tracked.returncode == 0:
+        for line in tracked.stdout.splitlines():
+            stripped = line.strip()
+            if stripped:
+                files.add(repo_path / stripped)
+
+    # Untracked files, respecting .gitignore — required so mid-implementation
+    # work (controller/, domain/ before first commit) is visible to layer detection.
+    untracked = run_capture(["git", "ls-files", "--others", "--exclude-standard"], cwd=repo_path)
+    if untracked.returncode == 0:
+        for line in untracked.stdout.splitlines():
+            stripped = line.strip()
+            if stripped:
+                files.add(repo_path / stripped)
 
     ignored = {".git", ".gradle", "build", "dist", "target", "node_modules", ".idea", ".next"}
-    files = []
-    for path in repo_path.rglob("*"):
+
+    if not files:
+        # Last-resort fallback: rglob (when git is unavailable or returns nothing).
+        for path in repo_path.rglob("*"):
+            if not path.is_file():
+                continue
+            try:
+                rel_parts = path.relative_to(repo_path).parts
+            except ValueError:
+                continue
+            if any(part in ignored for part in rel_parts):
+                continue
+            files.add(path)
+        return list(files)
+
+    # Defense-in-depth: even if `--exclude-standard` lets something through,
+    # filter against the ignored set on repo-relative parts (not absolute parts —
+    # repo path may itself contain a token like "build" and trigger false rejects).
+    safe_files: list[Path] = []
+    for path in files:
         if not path.is_file():
             continue
-        if any(part in ignored for part in path.parts):
+        try:
+            rel_parts = path.relative_to(repo_path).parts
+        except ValueError:
             continue
-        files.append(path)
-    return files
+        if any(part in ignored for part in rel_parts):
+            continue
+        safe_files.append(path)
+    return safe_files
 
 
 def _build_files(repo_path: Path) -> list[Path]:
@@ -528,7 +565,7 @@ def _relative_paths(repo_path: Path, files: list[Path], limit: int = 8) -> list[
 def build_mission_map(repo: dict) -> dict:
     repo_name = repo["name"]
     repo_path = Path(repo["path"]).resolve()
-    files = sorted(_tracked_files(repo_path))
+    files = sorted(_repo_files(repo_path))
     build_files = _build_files(repo_path)
     build_tool = _primary_build_tool(build_files)
     language_counts = _language_counts(files)

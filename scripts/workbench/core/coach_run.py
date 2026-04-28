@@ -816,6 +816,7 @@ def run_coach(
             "mission_map_summary": session_payload.get("mission_map_summary", []),
             "primary_intent": session_payload.get("primary_intent"),
             "primary_topic": session_payload.get("primary_topic"),
+            "topic_confidence": session_payload.get("topic_confidence", "low"),
             "reviewer": session_payload.get("reviewer"),
             "current_pr": session_payload.get("current_pr"),
             "focus_ranking_path": session_payload.get("focus_ranking_path"),

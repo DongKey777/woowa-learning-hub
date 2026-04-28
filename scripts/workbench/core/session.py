@@ -98,6 +98,7 @@ def start_session(
         "context_type": context.get("context_type"),
         "primary_intent": context.get("primary_intent"),
         "primary_topic": context.get("primary_topic") or context.get("topic_query") or (context.get("suggested_topics") or [None])[0],
+        "topic_confidence": context.get("topic_confidence", "low"),
         "reviewer": context.get("reviewer"),
         "current_pr": context.get("current_pr"),
         "focus_ranking_path": context.get("focus_ranking_path"),

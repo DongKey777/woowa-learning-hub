@@ -28,6 +28,7 @@
     "context_type": { "type": ["string", "null"] },
     "primary_intent": { "type": ["string", "null"] },
     "primary_topic": { "type": ["string", "null"] },
+    "topic_confidence": { "type": "string", "enum": ["low", "medium", "high"] },
     "reviewer": { "type": ["string", "null"] },
     "current_pr": { "type": ["object", "null"] },
     "recommended_next_actions": { "type": "array", "items": { "type": "object" } },
