@@ -1183,6 +1183,111 @@ def cmd_learner_profile(args: argparse.Namespace) -> int:
     return 2
 
 
+def cmd_reclassify_history(args: argparse.Namespace) -> int:
+    """Backfill historical tier / concept_match_mode using the current rules.
+
+    Two transformations apply:
+
+    * ``rag_ask`` events: re-run ``interactive_rag_router.classify`` with
+      ``learner_profile=None`` so we apply only the keyword/router rules
+      that have shipped since the event was first recorded. Personalized
+      promotions (``promoted_by_profile``) are intentionally *not*
+      backfilled — they belong to live turns, not history.
+    * ``test_result`` events: re-run ``infer_concepts_from_test`` to fill
+      in ``concept_match_mode`` (strict / fallback / none) on events that
+      pre-date the field. ``concept_ids`` are left alone — recomputing
+      them could shrink the set under the more conservative router and
+      drop existing mastery signals.
+    """
+    from core.concept_catalog import infer_concepts_from_test, load_catalog  # type: ignore
+    from core.interactive_rag_router import classify  # type: ignore
+    from core.learner_memory import (  # type: ignore
+        learner_history_path,
+        recompute_learner_profile,
+    )
+    from core.memory import _atomic_write  # type: ignore
+
+    history_path = learner_history_path()
+    if not history_path.exists() or history_path.stat().st_size == 0:
+        print(json.dumps({"reclassified": False, "reason": "history empty"}, ensure_ascii=False))
+        return 0
+
+    catalog = load_catalog()
+    raw_lines = history_path.read_text(encoding="utf-8").splitlines()
+    rag_changes: list[dict] = []
+    test_changes: list[dict] = []
+    rewritten: list[str] = []
+
+    for raw in raw_lines:
+        if not raw.strip():
+            rewritten.append(raw)
+            continue
+        try:
+            event = json.loads(raw)
+        except json.JSONDecodeError:
+            rewritten.append(raw)
+            continue
+        et = event.get("event_type")
+        if et == "rag_ask":
+            prompt = event.get("prompt") or ""
+            old_tier = event.get("tier")
+            decision = classify(prompt, learner_profile=None)
+            new_tier = decision.tier
+            if new_tier != old_tier:
+                rag_changes.append({
+                    "event_id": event.get("event_id"),
+                    "prompt": prompt[:60],
+                    "old_tier": old_tier,
+                    "new_tier": new_tier,
+                })
+                if not args.dry_run:
+                    event["tier"] = new_tier
+        elif et == "test_result":
+            old_mode = event.get("concept_match_mode")
+            ids, source = infer_concepts_from_test(
+                event.get("test_class") or "",
+                event.get("test_method") or "",
+                event.get("module"),
+                catalog,
+            )
+            if old_mode != source:
+                test_changes.append({
+                    "event_id": event.get("event_id"),
+                    "test_class": event.get("test_class"),
+                    "test_method": event.get("test_method"),
+                    "old_mode": old_mode,
+                    "new_mode": source,
+                })
+                if not args.dry_run:
+                    event["concept_match_mode"] = source
+        rewritten.append(json.dumps(event, ensure_ascii=False))
+
+    summary = {
+        "dry_run": bool(args.dry_run),
+        "rag_ask_changes": len(rag_changes),
+        "test_result_changes": len(test_changes),
+        "rag_ask_diff": rag_changes[:10],
+        "test_result_diff": test_changes[:10],
+    }
+
+    if args.dry_run:
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        return 0
+
+    if rag_changes or test_changes:
+        backup_path = history_path.with_suffix(history_path.suffix + ".bak")
+        backup_path.write_text(
+            "\n".join(raw_lines) + ("\n" if raw_lines else ""),
+            encoding="utf-8",
+        )
+        _atomic_write(history_path, "\n".join(rewritten) + "\n")
+        recompute_learner_profile()
+        summary["backup_path"] = str(backup_path)
+
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    return 0
+
+
 def _orchestrator() -> Orchestrator:
     return Orchestrator()
 
@@ -1451,6 +1556,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lp_cohort.add_argument("year", nargs="?", type=int, help="Cohort year (e.g. 2026). Omit to read.")
     lp_cohort.set_defaults(func=cmd_learner_profile)
+
+    reclassify_parser = subparsers.add_parser(
+        "reclassify-history",
+        help="Backfill historical rag_ask tier + test_result concept_match_mode using current rules.",
+    )
+    reclassify_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print proposed changes without rewriting history.jsonl.",
+    )
+    reclassify_parser.set_defaults(func=cmd_reclassify_history)
 
     learn_test_parser = subparsers.add_parser(
         "learn-test",

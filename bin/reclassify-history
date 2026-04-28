@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/reclassify-history             (rewrite history.jsonl after backup)
+#   bin/reclassify-history --dry-run   (print proposed changes only)
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+python3 "$ROOT/scripts/workbench/cli.py" reclassify-history "$@"
