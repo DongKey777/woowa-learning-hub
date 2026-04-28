@@ -64,6 +64,10 @@ DEPTH_SIGNALS = frozenset([
     "vs", "차이", "비교", "왜 필요", "왜 써", "왜 사용", "왜 쓰",
     "어떻게 동작", "어떻게 작동", "어떻게 돼", "어떻게 처리",
     "방법", "해결 방법", "원리", "내부 구조", "트레이드오프",
+    # 비교 표현 (학습 세션에서 자주 등장: "@Component vs @Repository 뭐가 다른데?")
+    "뭐가 다른", "뭐가 달라", "어떻게 달라",
+    # 사용 시점 묻기 ("@Repository 언제 붙이는거야?")
+    "언제 쓰는", "언제 써", "언제 붙이는", "언제 사용",
     # English
     "vs.", "difference between", "why use", "why does", "how does",
     "trade-off", "tradeoff", "under the hood",
@@ -77,12 +81,18 @@ CS_DOMAIN_TOKENS = frozenset([
     "스레드", "병행성", "동시성", "락(", "잠금",
     "큐", "스택", "트리", "그래프", "해시", "힙", "연결리스트",
     "예외", "예외처리",
+    # 인프라 / 서버 (학습자가 "웹서버와 WAS 차이" 같은 질문할 때 자주 등장)
+    "웹서버", "웹 서버", "애플리케이션 서버",
+    "톰캣", "서블릿", "리버스 프록시",
     # English
     "transaction", "isolation", "normalization", "index", "cache",
     "deadlock", "thread", "concurrency", "synchronization",
     "throttle", "timeout", "architecture",
     "queue", "stack", "tree", "graph", "hash", "heap", "linked list",
     "exception", "exception handling",
+    # Infrastructure / servers
+    "web server", "application server", "was",
+    "tomcat", "nginx", "apache", "servlet", "reverse proxy",
 ])
 
 # === 4. Learning concept tokens (Spring/JPA + Java basics + DS — woowa context) ===
@@ -96,6 +106,9 @@ LEARNING_CONCEPT_TOKENS = frozenset([
     "생성자 주입", "세터 주입", "필드 주입",
     # Spring concept 한글 phrase — 영문 토큰만 있어 한글로 물으면 도메인 매치 실패
     "컴포넌트 스캔", "컴포넌트스캔", "의존성 주입", "어노테이션",
+    # Spring core annotations / proxy (학습 세션 중 자주 등장하는 표현)
+    "configuration", "@configuration", "@bean", "프록시",
+    "rest controller", "@restcontroller",
     # Persistence
     "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",
     "transactional", "savepoint", "mvcc",

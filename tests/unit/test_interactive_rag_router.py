@@ -252,6 +252,73 @@ class KoreanConceptPhraseAndColloquialSignalTests(unittest.TestCase):
         self.assertEqual(d.tier, 0)
 
 
+class ComparisonAndUsageTimingPhraseTests(unittest.TestCase):
+    """학습 세션 중 발견된 자연 한국어 비교 / 사용 시점 phrase 회귀.
+
+    실제 학습자가 던진 표현이 v3 router를 빠져나가던 케이스:
+    - "@Component랑 @Repository가 뭐가 다른데"
+    - "@RestController랑 @Controller가 뭐가 달라"
+    - "@Repository는 보통 언제 붙이는거야"
+    - "왜 @Configuration이 프록시로 감싸져"
+    """
+
+    def test_meoga_dareun_routes_to_tier2(self) -> None:
+        d = classify("Bean과 Repository가 뭐가 다른데")
+        self.assertEqual(d.tier, 2)
+
+    def test_meoga_dalla_routes_to_tier2(self) -> None:
+        d = classify("@RestController랑 @Controller가 뭐가 달라")
+        self.assertEqual(d.tier, 2)
+
+    def test_eotteoke_dalla_routes_to_tier2(self) -> None:
+        d = classify("@Bean과 @Component가 어떻게 달라")
+        self.assertEqual(d.tier, 2)
+
+    def test_eonje_butineun_routes_to_tier2(self) -> None:
+        d = classify("@Repository는 언제 붙이는거야")
+        self.assertEqual(d.tier, 2)
+
+    def test_eonje_sseo_routes_to_tier2(self) -> None:
+        d = classify("@Configuration 언제 써")
+        self.assertEqual(d.tier, 2)
+
+    def test_eonje_sseuneun_routes_to_tier2(self) -> None:
+        d = classify("Repository 언제 쓰는 거야")
+        self.assertEqual(d.tier, 2)
+
+
+class ConfigurationProxyAndInfraDomainTests(unittest.TestCase):
+    """학습 세션 중 발견된 도메인 토큰 누락 회귀.
+
+    - "왜 @Configuration이 프록시로 감싸져" — configuration / 프록시 토큰
+    - "웹서버와 WAS 차이" — 인프라/서버 토큰
+    """
+
+    def test_configuration_proxy_question_routes_with_depth(self) -> None:
+        d = classify("@Configuration이 프록시로 어떻게 동작해")
+        self.assertEqual(d.tier, 2)
+
+    def test_korean_proxy_with_definition_routes_to_tier1(self) -> None:
+        d = classify("프록시가 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_websever_was_comparison_routes_to_tier2(self) -> None:
+        d = classify("웹서버와 애플리케이션 서버 차이가 뭐야")
+        self.assertEqual(d.tier, 2)
+
+    def test_tomcat_definition_routes_to_tier1(self) -> None:
+        d = classify("Tomcat이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_servlet_korean_definition_routes_to_tier1(self) -> None:
+        d = classify("서블릿이 뭐야")
+        self.assertEqual(d.tier, 1)
+
+    def test_reverse_proxy_question_routes_to_tier1(self) -> None:
+        d = classify("리버스 프록시가 뭐야")
+        self.assertEqual(d.tier, 1)
+
+
 class ReEscapeTests(unittest.TestCase):
     """`.` in build.gradle / settings.gradle / pom.xml must NOT be regex
     wildcard (peer AI #2)."""
