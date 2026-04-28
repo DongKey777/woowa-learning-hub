@@ -12,25 +12,62 @@
 
 ## 1. 공통 준비 — First-Run Protocol (AI 세션이 자동 처리)
 
-**학습자 한국어 prompt**:
+### 사전 단계 (학습자가 직접) — 단 한 번
 
-> *"이 저장소로 학습 시작하자."*
+```bash
+cd ~/IdeaProjects                                          # 자기 노트북 원하는 위치
+git clone https://github.com/DongKey777/woowa-learning-hub.git
+cd woowa-learning-hub
+claude    # 또는 codex, gemini
+```
 
-**AI 세션 자동 호출 흐름** (시작 파일 `CLAUDE.md` / `AGENTS.md` / `GEMINI.md`의 First-Run
-Protocol):
+`woowa-learning-hub`는 한 번만 직접 클론. 이후 학습 테스트와 자기 미션 저장소는 **AI가
+첫 세션에서 `missions/` 아래에 자동 클론**한다 (학습자가 직접 받을 필요 없음).
+
+### 학습자 노트북 디렉토리 배치
+
+```
+woowa-learning-hub/                    ← 학습자가 직접 클론
+└─ missions/                           ← AI가 자동 클론 (gitignored)
+   ├─ spring-learning-test/              학습 테스트 (Spring 개념 검증)
+   └─ <자기 미션>/                       자기 fork — PR 보낼 곳
+```
+
+### 학습자 한국어 prompt
+
+> *"이 저장소로 학습 시작하자. spring-core-1부터 가고 싶어."*
+> 또는 PR 코칭부터 가고 싶으면:
+> *"내 미션 저장소를 코칭해줘. https://github.com/내계정/java-janggi, upstream은
+> woowacourse/java-janggi, 사이클2 진행 중."*
+
+### AI 세션 자동 호출 흐름
+
+시작 파일(`CLAUDE.md` / `AGENTS.md` / `GEMINI.md`)의 First-Run Protocol에 따라:
 
 1. `pip install -e .` — Python 의존성 설치 (sentence-transformers / numpy / scikit-learn)
 2. HuggingFace 모델 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder
    (첫 실행만 온라인, 이후 캐시 재사용)
 3. `bin/cs-index-build` — CS RAG 인덱스 생성 (`state/cs_rag/index.sqlite3`,
    `dense.npz`, `manifest.json`). 87초 정도 소요 (cold)
-4. (PR 코칭이 필요하면) 미션 저장소 클론 + `bin/onboard-repo` 등록
-5. (PR 코칭이 필요하면) Learner State Assessment — 학습자 브랜치/PR/스레드 직접 관찰
+4. **학습 테스트 / 미션 저장소 자동 클론** (학습자 의도에 따라):
+   - 학습 테스트 흐름: `cd missions && git clone https://github.com/woowacourse/spring-learning-test.git`
+   - PR 코칭 흐름: 학습자 fork (`https://github.com/내계정/<repo>.git`)을 `missions/<repo>/`에 클론
+     → `bin/onboard-repo` 등록 (upstream `woowacourse/<repo>` 명시)
+5. (PR 코칭) Learner State Assessment — 학습자 브랜치/PR/스레드 직접 관찰
 6. 첫 학습 가이드 시작
 
 **예상 결과**: AI가 각 단계를 한국어 한 줄씩 보고 (예: *"CS 인덱스 빌드 중…"*). 모두
 끝나면 학습자에게 "어디서부터 시작할까?" 묻거나 직전 의도(spring-core-1 등)에 따라 바로 첫
 도전 과제 안내.
+
+### 이미 다른 곳에 미션 저장소가 있다면
+
+`missions/` 권장이지만, 학습자가 이미 다른 위치 (예: `~/code/java-janggi`)에 클론해뒀으면
+한국어로 위치만 알려주면 됨:
+
+> *"내 미션 저장소는 `~/code/java-janggi`에 이미 있어."*
+
+→ AI 자동: `bin/onboard-repo --path ~/code/java-janggi --upstream woowacourse/java-janggi ...`
 
 **막혔을 때** (수동 진단):
 
