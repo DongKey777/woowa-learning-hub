@@ -23,7 +23,7 @@
 > - [Security README: Session / Boundary / Replay](../security/README.md#session--boundary--replay)
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
-retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, post-login redirect original URL, request cache stateless api, request cache beginner route, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, cookie exists but session missing, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, session basics to Spring Security, SavedRequest beginner bridge, login loop beginner bridge, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme, /admin 302 login final 403, admin 302 -> login -> final 403, 로그인 후 원래 admin 복귀 403, 왜 login 갔다가 마지막 403, savedrequest final 403 beginner, beginner-safe handoff, safe next doc before requestcache, redirect navigation memory deep dive, spring deep dive after browser guide, savedrequest 처음, saved request 처음, savedrequest 뭐예요, saved request 뭐예요, requestcache 처음, request cache 뭐예요, requestcache basics, request cache basics, requestcache 헷갈려요, savedrequest 헷갈려요, savedrequest는 성공했는데 마지막 403, savedrequest 성공 final 403, savedrequest 됐는데 왜 403, savedrequest 이후 403, 쿠키 세션 savedrequest 차이, 로그인 메모, 로그인 메모 뭐예요, 주소 메모, 주소 메모 뭐예요, 보관함, 보관함 뭐예요, 로그인 후 원래 페이지 기억, 로그인 후 원래 주소 기억, what is requestcache, what is savedrequest
+retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, HttpSessionRequestCache, login redirect, saved request redirect, original URL after login, post-login redirect original URL, request cache stateless api, request cache beginner route, 302 login loop, auth session troubleshooting, BFF login redirect, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, cookie exists but session missing, logout redirect confusion, saved request debugging, API returns login HTML, OAuth2 login success redirect, SavedRequestAwareAuthenticationSuccessHandler, sid mapping, back-channel logout, post-login redirect vs logout mapping, post-login session persistence, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SavedRequest, session basics to Spring Security, SavedRequest beginner bridge, login loop beginner bridge, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme, /admin 302 login final 403, admin 302 -> login -> final 403, 로그인 후 원래 admin 복귀 403, 왜 login 갔다가 마지막 403, savedrequest final 403 beginner, beginner-safe handoff, safe next doc before requestcache, redirect navigation memory deep dive, spring deep dive after browser guide, savedrequest 처음, saved request 처음, savedrequest 뭐예요, saved request 뭐예요, requestcache 처음, request cache 뭐예요, requestcache basics, request cache basics, requestcache 헷갈려요, savedrequest 헷갈려요, savedrequest는 성공했는데 마지막 403, savedrequest 성공 final 403, savedrequest 됐는데 왜 403, savedrequest 이후 403, 쿠키 세션 savedrequest 차이, 로그인 메모, 로그인 메모 뭐예요, 주소 메모, 주소 메모 뭐예요, 보관함, 보관함 뭐예요, 로그인 후 원래 페이지 기억, 로그인 후 원래 주소 기억, 왜 login 갔다가 홈으로 가요, 로그인 후 홈으로 가요, 로그인 후 원래 주소로 안 돌아가요, savedrequest restore failed, restore failed primer, what is requestcache, what is savedrequest
 
 ## 입문 브리지
 
@@ -34,6 +34,7 @@ retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, Http
 | 지금 눈에 먼저 들어온 장면 | 바로 붙일 라벨 | 지금 가장 먼저 묻는 질문 | safe next doc |
 |---|---|---|---|
 | `/admin` 요청이 곧바로 `302 /login`으로 튄다 | `not logged in yet` | "아직 로그인 안 된 상태였나? 그리고 로그인 전 `주소 메모`를 남겼나?" | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) |
+| 로그인은 성공했는데 홈(`/`)이나 기본 페이지로 간다 | `savedrequest restore-failed / default target url won` | "`주소 메모`를 못 저장했나, 아니면 success handler/default target url이 원래 주소를 덮어썼나?" | 이 문서에서 `RequestCache` 저장/복원과 success handler 우선순위를 같이 본다 |
 | 로그인 성공 후 원래 `/admin`으로 복귀했다 | `savedrequest restored target url` | "`주소 메모`를 따라 원래 URL로 돌아온 것까지는 성공했나?" | 이 문서에서 `RequestCache` / `SavedRequest` 경계를 본다 |
 | 원래 `/admin`으로 복귀한 직후 final `403`이 난다 | `login-success-final-403` | "복귀는 성공했고 마지막 관리자 권한만 실패했나?" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
 | 로그인 후 다시 `/login`으로 튄다 | `server persistence / session mapping` | "`주소 메모`보다 다음 요청 로그인 유지가 먼저 깨졌나?" | [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
@@ -45,6 +46,23 @@ retrieval-anchor-keywords: RequestCache, SavedRequest, DefaultSavedRequest, Http
 - final `403`: 복귀 뒤 마지막 권한 검사에서 막혔을 수 있다.
 
 초급자 검색 문장으로는 "`savedrequest 처음`", "`주소 메모가 왜 보여요`", "`로그인 후 원래 페이지를 왜 기억해요`" 같은 질문에 대응한다.
+
+### 왜 `login` 갔다가 홈으로 가요?
+
+이 질문은 beginner가 `SavedRequest` 복귀 실패를 가장 빨리 말하는 문장이라서, 아래 한 표로 먼저 자르는 편이 안전하다.
+
+| 보이는 장면 | 먼저 붙일 라벨 | 보통 먼저 의심할 것 | 지금 갈 문서 |
+|---|---|---|---|
+| `/admin` -> `/login` -> 로그인 성공 -> 원래 `/admin`으로 돌아옴 | `savedrequest restored` | `SavedRequest` 저장/복원은 일단 성공 | 이 문서 계속 |
+| `/admin` -> `/login` -> 로그인 성공 -> 홈(`/`)이나 기본 페이지로 감 | `savedrequest restore-failed or overridden` | 로그인 전 요청을 저장하지 못했거나, success handler/default target URL이 복귀를 덮어씀 | 이 문서 계속 |
+| `/admin` -> `/login` -> 로그인 성공 -> 원래 `/admin` 복귀 -> final `403` | `restore ok, authorization failed later` | 복귀는 성공했고 마지막 권한 검사만 실패 | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
+| `/admin` -> `/login` -> 로그인 성공 -> 다시 `/login` | `persistence broken before restore matters` | `SavedRequest`보다 다음 요청 로그인 유지가 먼저 깨짐 | [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](./spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
+
+짧게 외우면 이렇다.
+
+- "`홈으로 가요`"는 `SavedRequest`를 못 썼거나 다른 redirect 정책이 우선했다는 뜻에 가깝다.
+- "`원래 주소로 돌아왔는데 403`"은 `SavedRequest` 실패가 아니라 마지막 권한 검사 갈래다.
+- "`다시 /login`"은 `SavedRequest`보다 로그인 유지가 먼저 깨진 갈래다.
 
 ### 30초 복귀 사다리
 

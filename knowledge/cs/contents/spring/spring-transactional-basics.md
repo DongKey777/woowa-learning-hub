@@ -14,7 +14,7 @@
 - [Spring Persistence / Transaction Mental Model Primer](./spring-persistence-transaction-web-service-repository-primer.md)
 - [트랜잭션 기초](../database/transaction-basics.md)
 
-retrieval-anchor-keywords: transactional basics, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional 처음, 왜 @transactional이 안 먹어요, transactional 왜 안 먹어요, spring proxy transaction, begin commit rollback spring, transactional rollback default, transactional 내부 호출, transactional proxy bypass, 프록시 경로 먼저, bean public external call, transactional service method 어디에 붙여요, transactional 다음 뭐 읽어요
+retrieval-anchor-keywords: transactional basics, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional 처음, 왜 @transactional이 안 먹어요, transactional 왜 안 먹어요, spring proxy transaction, begin commit rollback spring, transactional rollback default, transactional 내부 호출, transactional proxy bypass, 프록시 경로 먼저, bean public external call, transactional service method 어디에 붙여요, transactional self invocation beginner
 
 ## beginner 정지선
 
@@ -27,6 +27,36 @@ retrieval-anchor-keywords: transactional basics, spring transaction beginner, sp
 - 이 문서의 중심이 아닌 것: `propagation`, `isolation`, `rollback-only`, `REQUIRES_NEW`, 동시성 사례, test slice 세부 비교.
 - 위 단어가 먼저 보이면 지금은 링크만 저장하고, 이 문서에서는 "`어디서 시작하나`"와 "`왜 안 먹나`" 두 질문까지만 끝내는 편이 낫다.
 - `AOP`도 여기서는 새 축이 아니라 "`왜 프록시가 필요한가`"를 설명하는 보조 단어 정도로만 잡는다.
+
+## 처음 30초 결론
+
+- `@Transactional`은 service `public` 메서드 경계에 begin/commit/rollback을 붙이는 Spring 프록시 규칙이다.
+- "`왜 안 먹어요?`"가 먼저 보이면 옵션보다 `this.method()`, `private`, 직접 `new`부터 확인한다.
+- `REQUIRES_NEW`, `rollback-only`, `격리수준`, 테스트 rollback 착시는 이 문서의 끝이 아니라 다음 단계 링크다.
+
+## `@Transactional`과 AOP를 한 문장으로 묶기
+
+처음엔 `AOP`가 새 주제처럼 보여도, 이 문서에서는 "`@Transactional`을 메서드 앞뒤에 붙여 주는 전달 방식" 정도로만 이해하면 충분하다.
+
+| 지금 들은 말 | 초급자용 번역 | 여기서 바로 안 파는 것 |
+|---|---|---|
+| "`AOP`" | 공통 코드를 메서드 앞뒤에 붙이는 방식 | `Advice`, `Pointcut` 세부 문법 |
+| "`프록시`" | 진짜 service 앞에서 begin/commit/rollback을 대신 붙여 주는 문지기 | JDK/CGLIB 차이 |
+| "`self-invocation`" | 같은 클래스 안에서 `this.method()`로 불러 문지기를 우회한 상태 | 우회 패턴 비교 |
+
+짧게 외우면 "`@Transactional`은 트랜잭션 규칙이고, AOP/프록시는 그 규칙을 전달하는 방식"이다.
+
+## 비유는 여기까지만 맞다
+
+`문지기` 비유는 입문용으로는 유용하지만, "`메서드 몸체가 바뀌었다`"거나 "`annotation이 붙은 곳이면 어디서 불러도 항상 같은 효과가 난다`"까지 뜻하지는 않는다.
+
+| 비유가 도와주는 지점 | 여기서 끊어야 하는 오해 |
+|---|---|
+| "`메서드 앞뒤에 공통 동작이 붙는다`" | 실제 메서드 코드가 직접 바뀌는 것은 아니다 |
+| "`프록시를 지나면 begin/commit/rollback이 붙는다`" | 같은 클래스 내부 호출까지 자동으로 다 잡아 주는 것은 아니다 |
+| "`service 앞에 한 겹이 더 있다`" | `private`, 직접 `new`, 내부 호출까지 모두 같은 방식으로 적용된다는 뜻은 아니다 |
+
+그래서 beginner 기준 첫 확인 순서는 "`Bean인가?` -> `public` 진입 메서드인가? -> 다른 Bean에서 외부 호출로 들어왔는가?"다.
 
 ## 처음엔 여기까지만 끝내도 된다
 
@@ -41,99 +71,74 @@ retrieval-anchor-keywords: transactional basics, spring transaction beginner, sp
 - `@Transactional`은 service 메서드 앞뒤에 begin/commit/rollback을 붙이는 프록시 규칙이다.
 - "`왜 `@Transactional`이 안 먹어요?`"가 먼저 보이면 옵션보다 호출 경로부터 본다.
 
-## 테스트에서만 헷갈릴 때 20초 분기
+## 주문 예시로 10초만에 위치 잡기
 
-처음에는 "`테스트에서 안 돼요`"가 전부 트랜잭션 문제처럼 보이기 쉽다. 여기서는 "`무엇을 띄웠나`"와 "`프록시를 탔나`"만 분리하고, slice 세부 운영은 [Spring 테스트 기초](./spring-testing-basics.md)로 넘긴다.
+초급자는 용어보다 "`한 요청에서 어디 장면을 보고 있나`"를 먼저 붙이면 덜 헷갈린다.
 
-| 테스트에서 먼저 보인 말 | 실제로 먼저 자를 축 | 먼저 읽을 문서 |
+| 같은 `POST /orders` 장면 | 지금 붙일 이름 | 여기서 바로 할 질문 |
 |---|---|---|
-| "`@WebMvcTest`인데 service bean not found예요" | slice가 service를 원래 띄우는가 | [Spring 테스트 기초](./spring-testing-basics.md) |
-| "`service`는 보이는데 `@Transactional`이 안 먹어요" | 프록시를 타고 들어갔는가 | 이 문서 |
-| "`POST /orders`가 controller 전에 400 나요" | 요청 바인딩/파이프라인 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| controller가 `placeOrder()`를 부른다 | 요청 처리 | "`컨트롤러까지는 정상 진입했나?`" |
+| service 진입 직전에 프록시가 선다 | 트랜잭션 시작 경계 | "`외부 호출로 프록시 정문을 지났나?`" |
+| `orderRepository.save()`와 `paymentRepository.save()`가 묶인다 | DB 작업 묶기 | "`어디까지 같이 commit/rollback하나?`" |
 
-같은 `OrderService`가 보여도 테스트가 무엇을 켰는지에 따라 읽는 법이 달라진다.
+즉 "`요청이 왔다`"와 "`트랜잭션이 열렸다`"는 보통 같은 문장이 아니라, 한 요청 안의 다른 장면이다.
 
-| 같은 주문 예제에서 보이는 장면 | 초급자용 해석 | 안전한 다음 한 걸음 |
+## 요청, DI, 트랜잭션을 같은 말로 묶지 않는다
+
+처음 막히는 지점은 보통 "`POST /orders` 요청이 왔다"와 "`트랜잭션이 열렸다`"를 같은 사건처럼 보는 데서 시작한다. beginner는 아래 세 칸만 분리해도 훨씬 덜 헷갈린다.
+
+| 지금 보는 장면 | 먼저 붙일 이름 | 첫 질문 |
 |---|---|---|
-| `@WebMvcTest(OrderController.class)`에서 `@MockBean OrderService`를 넣는다 | controller 계약을 보는 중이라 트랜잭션 본문보다 test scope가 먼저다 | [Spring 테스트 기초](./spring-testing-basics.md)로 돌아가 "`무엇을 띄웠나`"부터 확인 |
-| `@SpringBootTest`에서는 service Bean이 있는데 `this.placeOrder()`가 보인다 | 테스트 종류보다 프록시 우회가 먼저 의심된다 | 이 문서에서 `프록시 정문 3문항`까지 읽기 |
+| URL이 controller까지 갔나 | MVC | "`요청이 어디서 끊겼지?`" |
+| controller 안 `OrderService`가 왜 있나 | Bean + DI | "`누가 이 객체를 넣어 줬지?`" |
+| `save()` 둘을 같이 commit/rollback하나 | 트랜잭션 경계 | "`어디까지 한 묶음이지?`" |
 
-짧게 외우면:
+짧게 말하면 요청은 MVC가 받고, 객체 연결은 DI가 미리 끝내고, DB 작업 묶음은 `@Transactional`이 service 경계에서 정한다.
 
-- "`무엇을 띄웠나`"는 test slice 질문이다.
-- "`어떻게 호출했나`"는 트랜잭션 프록시 질문이다.
-- 둘 다 service 단어가 보여도 같은 원인으로 묶지 않는다.
+## 먼저 갈 문서부터 고른다
 
-## 처음 헷갈리는 질문을 4칸으로 먼저 자른다
+처음에는 `@Transactional`, test slice, 요청 바인딩, AOP가 한 화면에 같이 떠도 전부 한 문제로 묶지 않는 편이 빠르다. 이 문서는 "`Bean은 있고`, `요청도 들어왔고`, `service 경계에서 묶이는 규칙이 궁금하다`"일 때 여는 입구다.
 
-`@Transactional`을 처음 보면 MVC, DI, AOP, 테스트가 한꺼번에 섞여 보이기 쉽다. 이럴 때는 용어를 늘리기보다 지금 막힌 문장을 아래 4칸 중 어디에 놓을지 먼저 고르면 된다.
-
-| 지금 튀어나온 말 | 먼저 보는 축 | 여기서 바로 읽을 문서 |
+| 지금 먼저 보인 말 | 먼저 자를 축 | 먼저 읽을 문서 |
 |---|---|---|
-| "`요청은 들어왔나요?`", "`controller까지 왔어요?`" | 요청 파이프라인 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
-| "`왜 new 대신 주입해요?`", "`service는 누가 넣어 줘요?`" | Bean + DI | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
-| "`commit/rollback`은 누가 해요?`, "`왜 트랜잭션이 안 먹어요?`" | 트랜잭션 프록시 | 이 문서 |
-| "`테스트가 잘못된 건가요?`", "`@WebMvcTest`인데 service가 없어요`" | 테스트 slice | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`@WebMvcTest`인데 service bean not found예요" | 무엇을 띄웠나 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| "`POST /orders`가 controller 전에 400 나요" | 요청 바인딩 / 파이프라인 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| "`왜 new 대신 주입해요?`", "`service`는 누가 넣어 줘요?`" | Bean + DI | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| "`service`는 보이는데 `@Transactional`이 안 먹어요" | 프록시 경계 | 이 문서 |
 
-짧게 말하면 `@Transactional` 입문은 "DB 옵션 표"를 외우는 단계가 아니라, **지금 질문이 요청/주입/프록시/테스트 중 무엇인지 분리하는 단계**다.
+짧게 외우면 "`무엇을 띄웠나`"는 test slice, "`어떻게 호출했나`"는 트랜잭션 프록시다.
 
-## AOP와 왜 같이 나오는지 20초로 묶기
+## AOP와 옵션은 여기서 링크만 건넨다
 
-처음에는 용어를 늘리지 말고 아래 세 줄만 연결하면 된다.
-
-| 지금 보이는 말 | 초급자용 해석 | 먼저 읽을 문서 |
-|---|---|---|
-| "`AOP`가 뭐예요?" | 공통 코드를 메서드 앞뒤에 붙이는 이유 | [AOP 기초](./spring-aop-basics.md) |
-| "`@Transactional`이 왜 프록시 이야기로 가요?" | 트랜잭션도 그 공통 코드를 붙이는 대표 사례 | 이 문서 계속 읽기 |
-| "`왜 `@Transactional`이 안 먹어요?`" | 옵션보다 프록시 경로가 먼저 깨졌을 수 있다 | [AOP 기초](./spring-aop-basics.md) |
-
-짧게 기억하면 "`AOP`는 왜 프록시가 필요한지", `@Transactional`은 "그 프록시가 commit/rollback을 어디에 붙이는지"를 설명한다.
-`self-invocation`, `proxy mode`, `AspectJ` 같은 단어까지 같이 파고 싶어지면 그 시점부터는 beginner 입구가 아니라 follow-up 문서를 여는 것이 안전하다.
-
-## 같은 주문 코드에서 AOP를 어디까지 기억하면 되나
-
-처음에는 `AOP`를 새 프레임워크처럼 외우기보다, 같은 주문 코드에서 "`메서드 본문 밖에서 자동으로 붙는 동작`" 정도로만 기억하면 충분하다.
-
-| 주문 코드에서 보이는 것 | 지금 초급자가 읽는 말 | 먼저 고정할 질문 |
-|---|---|---|
-| `orderService.placeOrder()` 본문 | 비즈니스 로직 | "무슨 작업을 묶고 있지?" |
-| 메서드 진입 전에 transaction 시작 | AOP/프록시가 붙인 공통 코드 | "프록시를 통과했나?" |
-| 메서드 종료 후 commit/rollback | AOP/프록시가 붙인 공통 코드 | "정상 종료인가, 예외인가?" |
-
-짧게 외우면 `AOP`는 "`메서드 앞뒤에 붙는 공통 코드`", `@Transactional`은 "그 공통 코드가 transaction begin/commit/rollback일 때의 대표 예시"다.
-
-## 프록시 경로 먼저
-
-초급자용 공통 라우팅 한 줄:
-
-`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call`이 깨졌는지 본다.
-
-짧게 구분하면:
-
-| 지금 보이는 증상 | 먼저 볼 축 | 다음 문서 |
-|---|---|---|
-| "`@Transactional`이 아예 안 먹는 것 같다", "`this.method()`가 보인다", "`private`에 붙였다" | 프록시 경로 문제 | [AOP 기초](./spring-aop-basics.md) |
-| "트랜잭션은 잡히는 것 같은데 rollback/readOnly/전파 결과가 기대와 다르다" | 트랜잭션 옵션 문제 | 이 문서 계속 읽기 |
-
-짧게 말하면 이 문서의 beginner 질문은 두 개뿐이다.
+이 문서의 beginner 질문은 두 개뿐이다.
 
 - "`트랜잭션이 어디서 시작돼요?`"
 - "`왜 `@Transactional`이 안 먹어요?`"
 
-둘을 넘는 옵션 조합이나 운영형 사례는 이 문서의 중심이 아니라 follow-up 링크로 넘긴다. `rollback-only`, `REQUIRES_NEW`, `격리수준`이 먼저 보여도 지금은 "트랜잭션 기본 mental model은 이미 잡혔나?"부터 다시 확인하는 편이 안전하다.
+그래서 아래 단어가 먼저 보여도 본문 중심으로 끌고 오지 않고 follow-up 링크만 건넨다.
 
-## 지금은 여기까지만 보고, 나머지는 링크로 넘긴다
-
-처음 읽을 때는 `@Transactional`을 "서비스 메서드 경계를 Spring 프록시가 묶어 주는 규칙"까지만 잡으면 충분하다. 아래 단어가 먼저 보여도 이 문서에서 끝까지 파지 말고, 관련 문서 링크만 저장해 두는 편이 beginner-safe 하다.
-
-| 지금 먼저 보인 말 | 여기서 내릴 1차 판단 | 다음 문서 |
+| 먼저 보인 단어 | 여기서 내릴 1차 판단 | 다음 문서 |
 |---|---|---|
-| "`@WebMvcTest`인데 service bean not found예요" | 트랜잭션보다 slice 범위를 먼저 확인한다 | [Spring 테스트 기초](./spring-testing-basics.md) |
-| "`왜 rollback돼요?`", "`어디까지 같이 실패해요?`" | 작업 묶음 경계 질문이다 | [트랜잭션 기초](../database/transaction-basics.md) |
-| "`동시에 요청이 오면요?`", "`격리수준은 언제 봐요?`" | Spring 프록시보다 DB 동시성 질문에 가깝다 | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) |
+| "`AOP`가 뭐예요?", "`프록시가 왜 나오죠?`" | 공통 코드를 메서드 앞뒤에 붙이는 방식부터 본다 | [AOP 기초](./spring-aop-basics.md) |
+| "`this.method()`", "`private`", "`new Foo()`" | 프록시 정문을 우회했는지 먼저 본다 | [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md) |
+| "`rollback-only`", `REQUIRES_NEW`, "`전파`" | beginner 옵션 범위를 넘는 follow-up이다 | [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md) |
+| "`격리수준`", "`동시에 요청이 오면요?`" | Spring 프록시보다 DB 동시성 질문에 가깝다 | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) |
 | "`SQL`, `flush`, `JPA`는 어디서 봐요?`" | 트랜잭션 자체보다 persistence 흐름 질문이다 | [Database First-Step Bridge](../database/database-first-step-bridge.md) |
 
-짧게 외우면 `@Transactional 기초 -> 트랜잭션 기초 -> 격리 수준 기초` 순서다. `rollback-only`, `REQUIRES_NEW`, `격리수준` 같은 단어는 지금 붙잡을 본문이 아니라 다음 단계 신호로만 둔다.
+짧게 말하면 이 문서는 "service 메서드 경계를 Spring 프록시가 묶는다"까지만 잡고, 운영어와 심화 옵션은 링크 뒤로 미룬다.
+
+## beginner-safe 다음 한 걸음
+
+`@Transactional`이 처음인데 `rollback-only`, `REQUIRES_NEW`, `격리수준`, `self-invocation`까지 한 번에 섞이면 아래처럼 **한 장만 더** 내려가는 편이 안전하다.
+
+| 지금 먼저 남은 질문 | 여기서 내릴 1차 판단 | 다음 문서 1장 |
+|---|---|---|
+| "`왜 같이 commit/rollback해요?`" | Spring 옵션보다 DB transaction 큰 그림이 먼저다 | [트랜잭션 기초](../database/transaction-basics.md) |
+| "`service`는 있는데 `@Transactional`이 안 먹어요" | 옵션보다 프록시 경로 확인이 먼저다 | [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md) |
+| "`전파`, `REQUIRES_NEW`, `rollback-only`가 왜 나와요?`" | beginner follow-up 한 장만 더 보면 된다 | [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md) |
+| "`격리수준`, `동시에 요청이 오면요?`" | Spring 프록시보다 DB 동시성 질문에 가깝다 | [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md) |
+
+처음에는 "`실패 범위`는 DB primer, "`적용 경계`는 Spring proxy primer"라고만 분리해도 충분하다. 이 문서에서 멈췄는데 `save()` 뒤 SQL 위치가 더 궁금하면 [Database First-Step Bridge](../database/database-first-step-bridge.md)로, `동시에 마지막 재고가 두 번 팔려요`가 더 궁금하면 [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)로 한 칸만 옮긴다.
 
 ## 핵심 개념
 
@@ -206,6 +211,18 @@ class OrderService {
 
 그래서 문제를 볼 때는 순서를 이렇게 잡는 편이 안전하다. "컨트롤러까지 왔나?" 다음에 "프록시를 타고 트랜잭션이 열렸나?"를 본다. 이 감각이 잡히면 `404`, DI 오류, rollback 문제를 한 덩어리로 섞지 않게 된다.
 
+## 요청 1개가 트랜잭션도 꼭 1개라는 뜻은 아니다
+
+beginner 오해를 가장 많이 줄이는 표 하나만 고르면 이 표다. HTTP 요청 횟수와 트랜잭션 개수는 보통 관련은 있지만, 같은 단위는 아니다.
+
+| 장면 | 요청 수 | 트랜잭션 수 감각 | 왜 이렇게 되나 |
+|---|---|---|---|
+| 조회 controller가 단순 읽기만 하고 트랜잭션 경계를 따로 안 둠 | 1 | 0 또는 프레임워크 기본값에 의존 | 요청은 왔어도 service 경계에 `@Transactional`이 없을 수 있다 |
+| `placeOrder()` 하나가 저장 2개를 함께 처리 | 1 | 1 | service `public` 메서드 하나를 작업 묶음 경계로 잡는다 |
+| service가 다른 트랜잭션 정책 메서드를 추가로 호출 | 1 | 1 이상으로 달라질 수 있음 | 이때부터는 beginner 범위를 넘는 전파(follow-up) 질문이다 |
+
+즉 "`요청이 하나니까 트랜잭션도 하나겠지`"보다 "`어느 service 경계를 한 묶음으로 봤지`"를 먼저 묻는 편이 안전하다.
+
 ## 처음엔 어디에 붙일지만 먼저 고른다
 
 처음 `@Transactional`을 붙일 때는 옵션보다 "`어느 레이어를 작업 묶음 경계로 볼까`"를 먼저 정하는 편이 덜 헷갈린다.
@@ -226,9 +243,9 @@ class OrderService {
 
 | 질문 | 예 / 아니오 해석 | 지금 기억할 한 줄 |
 |---|---|---|
-| 같은 클래스 안에서 `this.save()`처럼 불렀는가 | 예면 `@Transactional`이 빠질 수 있다 | 내부 호출은 프록시를 우회한다 |
-| `@Transactional`을 `private` 메서드에 붙였는가 | 예면 기대한 방식으로 적용되지 않는다 | 프록시가 잡는 공개 진입 메서드로 올린다 |
-| `@Transactional`을 기대한 객체를 직접 `new Foo()`로 만들었는가 | 예면 Spring Bean이 아니라 프록시를 기대하기 어렵다 | 직접 생성 대신 DI 받은 Bean인지 먼저 본다 |
+| 같은 클래스 안에서 `this.method()`로 호출했나? | 예면 `@Transactional`이 빠질 수 있다 | 내부 호출은 프록시를 우회한다 |
+| annotation을 `private` 메서드에 붙였나? | 예면 기대한 방식으로 적용되지 않는다 | 프록시가 잡는 `public` 진입 메서드로 올린다 |
+| 객체를 `new`로 직접 생성했나? | 예면 Spring Bean이 아니라 프록시를 기대하기 어렵다 | 직접 생성 대신 DI 받은 Bean인지 먼저 본다 |
 
 짧은 판단 예시는 아래처럼 보면 된다.
 
@@ -268,7 +285,7 @@ class OrderService {
 | 보이는 코드 | 지금 여기서 내릴 1차 판단 | 바로 할 일 |
 |---|---|---|
 | `@Transactional private void save()` | 메서드 경계가 트랜잭션 진입점으로 부적절할 수 있다 | service 진입 메서드로 경계를 올린다 |
-| `this.saveOrder()` | 호출 경로가 프록시를 우회했을 가능성이 크다 | 다른 Spring Bean 경유 호출로 바꾼다 |
+| `this.method()` | 호출 경로가 프록시를 우회했을 가능성이 크다 | 다른 Spring Bean 경유 호출로 바꾼다 |
 | `new OrderService()` | Bean이 아니라 프록시 적용 자체를 기대하기 어렵다 | Bean 등록 경로부터 다시 본다 |
 
 짧게만 외우면 된다.
@@ -309,7 +326,9 @@ public class OrderTxService {
 
 처음에는 용어보다 이 한 줄로 보면 된다.
 
-`왜 `@Transactional`이 안 먹어요?`라는 질문이 먼저 나오면, 옵션(rollbackFor/readOnly)보다 먼저 "프록시를 통과했는가?"를 확인한다.
+이 문서에서 beginner 검색 spine은 본문 표현 `왜 @Transactional이 안 먹어요?`, retrieval alias `왜 @transactional이 안 먹어요`로 맞춘다.
+
+`왜 @Transactional이 안 먹어요?`라는 질문이 먼저 나오면, 옵션(`rollbackFor`, `readOnly`)보다 먼저 "프록시를 통과했는가?"를 확인한다.
 
 두 primer에서 공통으로 쓰는 라우팅 문구는 README와 같은 이 한 줄이고, 이 세 신호를 묶어 **프록시 정문 3문항**이라고 부른다.
 
@@ -318,7 +337,7 @@ public class OrderTxService {
 | 보이는 증상 | 1차 확인 | 바로 이동(입문) | 다음 확인(증상 고정 시) |
 |---|---|---|---|
 | `@Transactional`을 붙였는데 트랜잭션이 안 열린 것 같다 | 같은 클래스 내부에서 `this.method()`로 호출했는가 | [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴) | [Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md) |
-| `private` 메서드에 `@Transactional`을 붙였는데 무시된다 | 프록시가 가로채는 `public` 메서드 외부 호출인가 | [AOP 기초](./spring-aop-basics.md) | [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md) |
+| `private` 메서드에 `@Transactional`을 붙였는데 무시된다 | `Bean + public + external call` 중 `public` 경계가 맞는가 | [AOP 기초](./spring-aop-basics.md#checklist-private-method) | [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md) |
 | 직접 `new`한 객체에 annotation을 붙였는데 아무 일도 안 일어난다 | 그 객체가 Spring Bean으로 등록되어 있는가 | [AOP 기초](./spring-aop-basics.md#checklist-direct-new) | [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md) |
 | `@Transactional` 말고 `@Async`/`@Cacheable`도 내부 호출에서 이상하다 | 같은 "프록시 우회" 패턴이 반복되는가 | [AOP 기초](./spring-aop-basics.md) | [Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md) |
 
@@ -349,7 +368,7 @@ public class OrderTxService {
 ## 흔한 오해와 함정
 
 **오해 1: 어노테이션만 붙이면 항상 트랜잭션이 걸린다**
-같은 클래스 내부 호출은 프록시를 우회하므로 트랜잭션이 시작되지 않는다. 반드시 외부 Bean에서 호출해야 한다.
+같은 클래스 내부 호출은 프록시를 우회하므로 트랜잭션이 시작되지 않을 수 있다. beginner 기본값은 `Bean + public + external call`을 맞춘 외부 Bean 경로로 보는 편이 안전하다.
 
 **오해 2: 안 되면 `rollbackFor`, `readOnly`, `propagation`부터 바꿔야 한다**
 내부 호출/프록시 우회가 원인이면 옵션을 바꿔도 해결되지 않는다. 이 경우는 [Service-Layer 2패턴](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)으로 바로 가서 구조를 먼저 고친다.
@@ -358,7 +377,7 @@ public class OrderTxService {
 입문 단계에서는 트랜잭션 경계를 보통 service의 `public` 진입 메서드에 둔다고 생각하는 편이 안전하다. `private` 메서드에 붙여 두고 기대한 효과를 얻는 패턴은 beginner 기본값이 아니다.
 
 **오해 3-1: `private`와 내부 호출은 같은 문제다**
-아니다. `private`는 메서드 경계 문제이고, 내부 호출은 호출 경로 문제다. 그래서 `public`으로 바꿔도 `this.save()`면 여전히 안 될 수 있다.
+아니다. `private`는 메서드 경계 문제이고, 내부 호출은 호출 경로 문제다. 그래서 `public`으로 바꿔도 `this.method()`면 여전히 안 될 수 있다.
 
 **오해 4: 예외 규칙과 전파 옵션을 지금 다 외워야 한다**
 처음 읽을 때는 "`@Transactional`이 어디서 시작되고 왜 안 먹는지"를 먼저 고정하면 충분하다. checked exception, `rollbackFor`, 전파 옵션 세부 규칙은 [Spring Mini Card: rollback-only 실패 vs checked exception인데 commit된 것처럼 보이는 놀람](./spring-rollbackonly-vs-checked-exception-commit-surprise-card.md), [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md)로 넘긴다.

@@ -7,12 +7,13 @@
 관련 문서:
 
 - [Network README](./README.md#fetch-redirecterror-tiny-card)
+- [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
 - [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)
 - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 
-retrieval-anchor-keywords: fetch redirect error, redirect error mode beginner, when to use redirect error, fetch redirect follow manual error, api got login html, redirect should fail fast, fetch login redirect contract, fetch redirect error vs manual, fetch redirect error vs follow, 언제 redirect error 써요, 왜 login html 대신 실패로 받고 싶어요, beginner fetch redirect choice
+retrieval-anchor-keywords: fetch redirect error, redirect error mode beginner, when to use redirect error, fetch redirect follow manual error, api got login html, redirect should fail fast, fetch login redirect contract, fetch redirect error vs manual, fetch redirect error vs follow, fetch 401 vs 302 vs login html, hidden login html 200 fail fast, 302 login should fail fetch, 언제 redirect error 써요, 왜 login html 대신 실패로 받고 싶어요, beginner fetch redirect choice
 
 ## 핵심 개념
 
@@ -40,6 +41,16 @@ beginner 기준 핵심 질문은 하나다.
 - "이 호출에서 redirect는 정상 흐름인가, 아니면 계약 위반인가?"
 
 이 질문에 "계약 위반"이라고 답하면 `error`가 가장 깨끗하다.
+
+먼저 분기표를 하나 더 붙이면 더 덜 헷갈린다.
+
+| 먼저 보인 장면 | 첫 해석 | `redirect: "error"`가 특히 잘 맞는가 |
+|---|---|---|
+| raw `401` + JSON body | redirect 문제가 아니라 auth failure 계약이다 | 보통 아니다. 먼저 `401` body와 auth lane을 본다 |
+| 첫 row `302 /login` | browser login redirect가 섞였다 | 그렇다. API 계약에서 redirect를 금지하고 싶을 때 선명하다 |
+| 최종 login HTML `200` | 숨은 redirect follow 결과일 수 있다 | 그렇다. 다음부터는 조용한 follow 대신 실패로 드러내기 좋다 |
+
+즉 이 카드는 "`401`/`302`/login HTML `200` 중 어느 장면인가"를 먼저 고른 뒤, 그중 redirect lane에서 `error`를 쓰는 이유를 설명하는 follow-up 카드다.
 
 ## 언제 `error`가 가장 깔끔한가
 
@@ -89,12 +100,14 @@ beginner 기준 핵심 질문은 하나다.
 
 safe next step도 이 기준으로 잡으면 된다.
 
-1. JSON/API 호출인데 redirect가 뜨면 먼저 `error`로 숨은 login HTML 성공 표면을 없앤다.
-2. 왜 redirect가 떴는지 추적해야 하면 그다음 `manual`과 DevTools Network 탭으로 실제 `302` row를 본다.
-3. page redirect UX 자체를 이해해야 하면 login redirect primer로 돌아간다.
+1. 먼저 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)에서 지금 장면이 raw `401`, 첫 `302`, 숨은 login HTML `200` 중 무엇인지 고른다.
+2. JSON/API 호출인데 redirect lane으로 확인되면 `error`로 숨은 login HTML 성공 표면을 없앤다.
+3. 왜 redirect가 떴는지 추적해야 하면 그다음 `manual`과 DevTools Network 탭으로 실제 `302` row를 본다.
+4. page redirect UX 자체를 이해해야 하면 login redirect primer로 돌아간다.
 
 ## 더 깊이 가려면
 
+- raw `401 JSON`, 첫 `302 /login`, 숨은 login HTML `200`을 먼저 구분하려면 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
 - `follow`에서 `response.redirected`, `response.url`, `opaqueredirect`를 어떤 칸에서 읽는지 다시 고정하려면 [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)
 - login redirect와 `SavedRequest`, hidden login HTML `200` 전체 흐름은 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - "`API가 HTML을 받아요`가 진짜 HTML endpoint인지 숨은 auth redirect인지"를 분리하려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)

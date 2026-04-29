@@ -7,10 +7,11 @@
 관련 문서:
 
 - [Rate Limiter 설계](./rate-limiter-design.md)
+- [API Gateway 기초](./api-gateway-basics.md)
 - [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: rate limiting basics, 속도 제한 입문, rate limit 뭐예요, throttling 기초, 429 too many requests, token bucket 개념, leaky bucket 개념, fixed window rate limit, api 호출 제한, rate limiting beginner, 요청 횟수 제한, ddos 방어 기초, 트래픽 제어 기초, rate limiting basics basics, rate limiting basics beginner
+retrieval-anchor-keywords: rate limiting basics, what is rate limiting, rate limit beginner, rate limiter beginner, rate limit 처음 배우는데, rate limiter 뭐예요, rate limiter 왜 써요, 왜 429가 와요, 정상 사용자도 왜 막히나요, throttling 기초, token bucket 개념, fixed window rate limit, api 호출 제한, 트래픽 제어 기초, api gateway rate limit 기초
 
 ---
 
@@ -24,6 +25,8 @@ Rate Limiting이 필요한 이유는 세 가지다:
 - **서비스 보호**: 한 사용자나 봇이 초당 수천 요청을 보내면 서비스 전체가 다운될 수 있다.
 - **공정한 자원 배분**: 일부 클라이언트가 자원을 독점하지 못하게 한다.
 - **비용 통제**: 외부 API를 내부에서 쓸 때 호출 비용이 급증하는 것을 막는다.
+
+첫 질문이 `rate limiter가 뭐예요?`, `왜 429가 와요?`, `처음 시스템 설계 배우는데 요청을 왜 막아요?`라면 이 문서가 맞다. `Redis로 여러 서버가 limit을 같이 세려면 어떻게 해요?`, `hot key는 어떻게 피하죠?` 단계부터는 [Rate Limiter 설계](./rate-limiter-design.md)로 넘어간다.
 
 ---
 

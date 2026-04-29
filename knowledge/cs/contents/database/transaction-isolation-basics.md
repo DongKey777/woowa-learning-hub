@@ -16,7 +16,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
-retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, serializable beginner, dirty read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, 같은 row 다시 읽었는데 값이 달라요, select 두 번 했는데 값이 바뀌어요, 범위 조회 다시 했는데 행이 늘었어요, oversell 왜 생겨요, 언제 lock 필요해요, read uncommitted 설명, isolation 4단계 입문
+retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, 같은 row 다시 읽었는데 값이 달라요, isolation 4단계 입문, 격리 수준 다음 단계, for update 다음 단계, locking read follow-up, locking read 다음 문서, deadlock 나면 다음 뭐 봐요, lock timeout retry follow-up, 40001 retry beginner
 
 ## 핵심 개념
 
@@ -30,7 +30,7 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 - 격리 수준이 높다고 해서 데이터가 자동으로 "정확해지는" 것은 아니다
 - 이 문서는 "첫 감"을 잡는 입문용이고, 엔진별 기본값/예외/retry 설계는 관련 문서로 넘겨도 된다
 
-처음 읽기에서 이 문서가 답하려는 질문도 하나다. "같은 row나 범위를 다시 읽을 때 왜 보이는 값이 달라지지?" `FOR UPDATE`, gap lock, `40001`, deadlock은 다음 단계 링크로 보내도 충분하다.
+처음 읽기에서 이 문서가 답하려는 질문도 하나다. "같은 row나 범위를 다시 읽을 때 왜 보이는 값이 달라지지?" `FOR UPDATE`, gap lock, `40001`, deadlock은 여기서 다 해결하려 하지 말고, `FOR UPDATE 다음 단계`, `locking read follow-up`, `deadlock 나면 다음 뭐 봐요` 갈림길로 넘겨도 충분하다.
 
 입문 1회차에서는 anomaly 이름을 다 외우려 하지 않아도 된다. "같은 row 재조회 문제인가, 범위 재조회 문제인가"만 분리되면 첫 목표는 달성한 것이다.
 
@@ -39,8 +39,8 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 | 먼저 보인 단어 | 이 문서에서 잡을 한 줄 | 자세한 대응은 어디로 가나 |
 |---|---|---|
 | `dirty read`, `phantom read` | "동시에 볼 수 있는 범위가 다르다"는 뜻으로 먼저 읽는다 | [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md) |
-| `FOR UPDATE`, gap lock | 격리 수준 표와 선점 읽기는 같은 얘기가 아니다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) |
-| `deadlock`, `40001` | 이미 충돌이 표면화된 다음 단계다 | [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+| `FOR UPDATE`, gap lock | 격리 수준 표와 선점 읽기는 같은 얘기가 아니다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)에서 `FOR UPDATE 다음 단계`, `locking read follow-up`을 먼저 본다 |
+| `deadlock`, `40001` | 이미 충돌이 표면화된 다음 단계다 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)로 `deadlock 나면 다음 뭐 봐요`, `lock timeout retry follow-up`을 분기한다 |
 
 ## 한눈에 보기 — 4단계 비교
 
@@ -102,15 +102,15 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 |---|---|---|---|
 | 1단계. 경계 이해 | "무엇을 같이 `commit`/`rollback`하지?" | [트랜잭션 기초](./transaction-basics.md) | 같은 row/범위를 다시 읽을 때 왜 달라지는지 궁금해지면 이 문서 |
 | 2단계. 가시성 이해 | "`select`를 두 번 했는데 왜 값이나 행 수가 달라지지?" | 이 문서 | plain `SELECT`와 locking read를 같이 봐야 하면 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
-| 3단계. bridge | "`@Transactional`도 있는데 언제 `FOR UPDATE`, version, constraint까지 붙이지?" | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) | 엔진 차이, retry, deadlock처럼 증상이 구체화되면 incident 문서로 내려간다 |
-| 4단계. incident handling | "`lock timeout`, `deadlock`, `40001`이 실제로 떴다" | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | 증상별 재현과 retry 정책까지 분리한다 |
+| 3단계. bridge | "`@Transactional`도 있는데 언제 `FOR UPDATE`, version, constraint까지 붙이지?" | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) | `FOR UPDATE 다음 단계`, `locking read follow-up`처럼 선점 읽기 갈림길을 먼저 정리한다 |
+| 4단계. incident handling | "`lock timeout`, `deadlock`, `40001`이 실제로 떴다" | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | `deadlock 나면 다음 뭐 봐요`, `lock timeout retry follow-up`처럼 증상별 retry 분기를 분리한다 |
 
 짧게 기억하면 progression은 아래 네 줄이다.
 
 1. [트랜잭션 기초](./transaction-basics.md): 같이 성공/실패할 경계를 먼저 잡는다.
 2. 이 문서: 같은 row 재조회와 범위 재조회 차이를 먼저 분리한다.
-3. [트랜잭션 격리수준과 락](./transaction-isolation-locking.md): 격리 수준, locking read, optimistic/pessimistic lock, constraint를 한 프레임으로 묶는다.
-4. incident 문서: `deadlock`, `lock timeout`, `40001 retry`처럼 실제 증상이 붙었을 때만 내려간다.
+3. [트랜잭션 격리수준과 락](./transaction-isolation-locking.md): `FOR UPDATE 다음 단계`, `locking read follow-up` 질문을 먼저 정리한다.
+4. incident 문서: `deadlock`, `lock timeout`, `40001 retry`처럼 실제 증상이 붙으면 `deadlock 나면 다음 뭐 봐요`, `lock timeout retry follow-up` 분기로 내려간다.
 
 ## 먼저 이렇게 기억하면 덜 헷갈린다
 
@@ -222,7 +222,8 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 
 - 이상 현상을 한 장 표로 다시 보고 싶으면 → [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
 - `READ COMMITTED`와 `REPEATABLE READ`를 사례 중심으로 비교하고 싶으면 → [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md)
-- `FOR UPDATE`, gap lock, retry, 엔진 차이처럼 incident 성격이 붙으면 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
+- `FOR UPDATE 다음 단계`, `locking read follow-up`가 필요하면 → [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- `deadlock 나면 다음 뭐 봐요`, `lock timeout retry follow-up`, `40001 retry`가 궁금하면 → [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 
 cross-category bridge:
 

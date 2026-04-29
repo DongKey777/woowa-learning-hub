@@ -8,6 +8,7 @@ retrieval-anchor-keywords: request deadline primer, timeout budget primer, end-t
 
 관련 문서:
 
+- [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)
 - [System Design Foundations](./system-design-foundations.md)
 - [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
 - [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md)
@@ -100,7 +101,7 @@ db_timeout = min(200ms, remaining - 100ms)
   - 실제 값은 제품, 네트워크, 프록시 유무에 따라 다르다. Beginner 단계에서는 "아래 호출이 위 deadline을 넘기지 않게 더 짧아야 한다"만 먼저 잡으면 된다.
 - 이 문서 단계에서는 `lock wait`, `pool acquire`, `retry storm` 세부 운영값까지 외우지 않아도 된다. 그런 분기는 관련 문서로 넘기는 편이 안전하다.
 
-## 여기서 멈추고 다음으로 갈 것
+## 다음 읽기
 
 이 문서의 목표는 timeout budget의 첫 그림을 잡는 것까지다. 아래 질문이 생기면 그때 다음 문서로 이동하면 된다.
 
@@ -112,6 +113,10 @@ db_timeout = min(200ms, remaining - 100ms)
 | "`지금은 timeout보다 기능 축소 순서가 더 궁금해요`" | [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md) | budget 이후에는 어떤 기능을 버리며 버틸지로 질문이 바뀐다 |
 
 처음이면 "`언제 deeper 문서로 가야 해요?`"의 기준도 단순하다. app, cache, DB가 왜 같은 timeout을 쓰면 안 되는지만 설명할 수 있으면 이 문서는 충분히 끝낸 것이다.
+
+safe return path:
+
+- timeout, retry, degrade ladder 전체를 다시 보고 싶으면 [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)로 돌아간다.
 
 ## 한 줄 정리
 

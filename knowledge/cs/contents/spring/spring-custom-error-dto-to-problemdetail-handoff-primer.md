@@ -1,6 +1,6 @@
-# Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer
+# Spring validation `400` 4단계 `ProblemDetail` handoff primer: 커스텀 Error DTO에서 표준 오류 바디로 넘어가기
 
-> 한 줄 요약: 처음에는 팀 전용 `ErrorResponse` DTO로도 충분하지만, Spring 기본 예외와 여러 API 실패를 한 계약으로 묶고 싶어지는 순간부터 `ProblemDetail`이 "표준 error body" 후보로 의미를 갖기 시작한다.
+> 한 줄 요약: 이 문서는 Spring MVC 바인딩/validation `400` 주 라우트의 마지막 `4단계 ProblemDetail` handoff를 설명한다. 처음에는 팀 전용 `ErrorResponse` DTO로도 충분하지만, Spring 기본 예외와 여러 API 실패를 한 계약으로 묶고 싶어지는 순간부터 `ProblemDetail`이 "표준 error body" 후보로 의미를 갖기 시작한다.
 
 **난이도: 🟢 Beginner**
 
@@ -11,6 +11,7 @@
 - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
 - [Spring RoomEscape validation `400` vs business conflict `409` 분리 primer](./spring-roomescape-validation-400-vs-business-conflict-409-primer.md)
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
+- [Gateway JSON vs App JSON Tiny Card](../network/gateway-json-vs-app-json-tiny-card.md)
 - [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
@@ -23,12 +24,27 @@
 - 이전 문서: [3단계 `BindingResult` primer](./spring-bindingresult-local-validation-400-primer.md)
 - 더 깊게: [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)
 - README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
+- README 바인딩 follow-up 증상표 순서: "`validation 400` 응답 바디를 어떤 계약으로 보여 줘야 해요?", "`팀 `ErrorResponse`로 충분한가요, `ProblemDetail`로 가야 하나요?`"면 이 문서를 먼저 보고, "`전역 advice에서 그 계약을 어떻게 번역하지?`"가 다음 질문이면 `Spring 예외 처리 기초`로 넘긴다.
 
-여기서 앞 단계 문장을 그대로 다시 잡고 시작하면 덜 헷갈린다. `BindingResult`는 DTO 생성 후 validation에서만 개입하므로, 이 4단계 문서는 그 다음 질문인 "`그 validation 400 응답 바디를 어떤 계약으로 보여 줄까?`"를 다룬다.
+`BindingResult`는 DTO 생성 후 validation에서만 개입하므로, 이 문서는 그 다음 질문인 "`그 validation 400 응답 바디를 어떤 계약으로 보여 줄까?`"를 다룬다.
 
-retrieval-anchor-keywords: spring custom error dto problemdetail handoff, problemdetail beginner primer, errorresponse vs problemdetail, custom error dto 언제 problemdetail, spring 표준 에러 바디 언제 필요해요, roomescape error response beginner, restcontrolleradvice problemdetail 입문, responseentityexceptionhandler problemdetail beginner, spring mvc 기본 예외도 같은 바디로, validation 400 custom dto vs problemdetail, beginner error contract handoff, error body standardization spring, bindingresult vs methodargumentnotvalidexception, validation 400 contract 왜 달라요, problemdetail 배우고 validation pipeline 다시
+retrieval-anchor-keywords: 4단계 problemdetail, problemdetail 4단계, validation 400 4단계 problemdetail, validation 400 problemdetail handoff, validation 400 custom dto vs problemdetail, spring validation 400 problemdetail 뭐예요, problemdetail 뭐예요, problemdetail 처음, spring error response 뭐 써요, 에러 응답 body 뭐예요, errorresponse vs problemdetail, custom error dto 언제 problemdetail, spring 표준 에러 바디 언제 필요해요, responseentityexceptionhandler problemdetail beginner, spring custom error dto problemdetail handoff
+
+이 문서는 "`4단계 ProblemDetail`", "`validation 400 problemdetail`", "`에러 응답 body는 뭘로 맞춰요?`" 같은 검색이 들어왔을 때 advanced 설계 문서보다 먼저 걸리도록 만든 beginner bridge primer다.
+
+## 질문 그대로 먼저 답하기
+
+README 바인딩 follow-up 증상표와 같은 검색 문장 세트에 바로 답하려는 문서다. 이 문서는 "`400`을 어디서 잡았나?" 다음 질문인 "`그 `400` body를 어떤 약속으로 보여 줄까?`"를 첫 클릭 문장으로 받는다.
+
+| 학습자가 보통 이렇게 말해요 | 먼저 붙잡을 질문 | 더 가까운 원인 |
+|---|---|---|
+| "`validation 400` 응답 바디를 어떤 계약으로 보여 줘야 해요?" | validation 실패를 팀 공통 JSON으로 맞추고 싶은 건가? | `400` body contract를 아직 정하지 못한 상태 |
+| "`팀 `ErrorResponse`로 충분한가요, `ProblemDetail`로 가야 하나요?`" | 도메인 예외만 정리하면 되는가, Spring 기본 예외까지 한 계약으로 묶고 싶은가? | 커스텀 DTO와 표준 error body의 선택 시점 |
+| "`BindingResult`로 로컬 처리한 `400`도 `ProblemDetail`로 맞춰야 하나요?" | 전역 advice 번역 말고 로컬 `BindingResult` 처리도 같은 계약으로 통일할 건가? | 로컬/전역 `400` 응답 body handoff 고민 |
 
 ## 핵심 개념
+
+이 문서를 한 문장으로 부르면 "`validation 400` 주 라우트의 마지막 4단계에서, 팀 DTO를 유지할지 `ProblemDetail`로 handoff할지 정하는 primer"다.
 
 처음에는 두 질문만 잡으면 된다.
 
@@ -143,21 +159,21 @@ public class ApiExceptionHandler {
 
 핵심은 "`ProblemDetail`은 고급 기능"이 아니라, **도메인 예외 밖의 실패까지 계약에 넣고 싶어질 때 자연스럽게 보이는 다음 단계**라는 점이다.
 
-## validation `400`에서 `ProblemDetail`이 끼어드는 자리
+## 4단계 `ProblemDetail` handoff: validation `400`에서 끼어드는 자리
 
 `ProblemDetail`을 beginner가 헷갈리는 이유는 "`validation 실패면 다 전역 advice에서 같은 `400` body가 나오겠지`"라고 생각하기 쉽기 때문이다. 하지만 `BindingResult`가 있으면 같은 validation 실패라도 먼저 컨트롤러가 잡는다.
 
-| 질문 | DTO 생성 | `BindingResult` 개입 | 전역 vs 로컬 | `ProblemDetail`을 어디서 맞추나 |
+| 질문 | DTO 생성 | `BindingResult` 개입 | handoff 용어 | `ProblemDetail`을 어디서 맞추나 |
 |---|---|---|---|---|
-| `BindingResult` 로컬 처리 | 예 | 예 | 현재 컨트롤러 메서드 | 컨트롤러에서 직접 만들거나 공통 helper를 호출 |
-| `MethodArgumentNotValidException` 전역 처리 | 예 | 아니오 | `@RestControllerAdvice` / `ResponseEntityExceptionHandler` | 전역 advice에서 한 번에 만들기 쉽다 |
-| JSON parse, 타입 변환 같은 앞단 `400` | 아니오 | 아니오 | 컨트롤러 전 전역 `400` | `handleHttpMessageNotReadable` 같은 전역 경로에서 맞춘다 |
+| 로컬 `BindingResult` 처리 | 예 | 예 | 컨트롤러 메서드가 validation 실패를 먼저 받아 응답 바디를 직접 정한다 | 컨트롤러에서 직접 만들거나 공통 helper를 호출 |
+| 전역 advice 번역 | 예 | 아니오 | `MethodArgumentNotValidException`처럼 번진 실패를 `@RestControllerAdvice` / `ResponseEntityExceptionHandler`가 공통 HTTP 오류 계약으로 번역한다 | 전역 advice에서 한 번에 만들기 쉽다 |
+| JSON parse, 타입 변환 같은 앞단 `400` | 아니오 | 아니오 | 위 두 경로 전에 컨트롤러 진입 전 `400`으로 끝날 수 있다 | `handleHttpMessageNotReadable` 같은 전역 경로에서 맞춘다 |
 
 이 표를 같은 축으로 다시 읽으면 더 단순해진다.
 
 - DTO를 못 만들었으면: `BindingResult` 차례가 아니고, 전역 `400` body 정책 쪽 질문이다.
-- DTO는 만들었고 `BindingResult`가 끼어들면: 로컬 `400` body도 같은 계약으로 직접 맞춰야 한다.
-- DTO는 만들었지만 `BindingResult`가 없으면: `MethodArgumentNotValidException` 전역 경로에서 `ProblemDetail` 통일이 쉽다.
+- DTO는 만들었고 `BindingResult`가 끼어들면: 로컬 `BindingResult` 처리로 먼저 잡히므로 로컬 `400` body도 같은 계약으로 직접 맞춰야 한다.
+- DTO는 만들었지만 `BindingResult`가 없으면: 전역 advice 번역 경로로 넘어가므로 `ProblemDetail` 통일이 쉽다.
 
 즉 `ProblemDetail`은 "validation이면 무조건 자동 생성"이 아니라, **전역 예외 처리 경로에 올라왔을 때 표준 body로 통일하기 쉬운 도구**에 가깝다. 로컬 `BindingResult` 경로를 택했다면 그 메서드도 같은 계약을 따르도록 직접 맞춰 줘야 한다.
 
@@ -210,22 +226,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 ## 공통 전역 `400` 감각을 잡았으면 어디로 돌아가나
 
-이 문서를 읽고 나면 beginner는 보통 "`이제 `400` body를 공통 `ProblemDetail`로 맞추는 이유는 알겠는데, 그 `400`이 Spring 내부에서 어느 갈림길을 타고 여기까지 왔지?`"라는 다음 질문으로 넘어간다.
-
-그때의 return path는 한 칸으로 고정하면 된다.
-
-- "`전역 `400` shape를 왜 맞추는지`"는 이 문서에서 잡는다
-- "`그 `400`이 binding 실패인지, validation 실패인지, `BindingResult` 로컬 처리였는지`"는 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)에서 다시 분해한다
-
-즉 handoff 순서는 이렇게 기억하면 된다.
-
-```text
-BindingResult / MethodArgumentNotValidException 갈림길 이해
--> 공통 전역 400 shape를 Error DTO / ProblemDetail로 정리
--> 다시 pipeline 문서로 돌아가 "어느 실패가 이 shape로 들어왔는지" 복기
-```
-
-특히 "`왜 어떤 `400`은 `ProblemDetail` advice로 갔고, 어떤 `400`은 컨트롤러 로컬 `BindingResult`에서 끝났지?`", "`global 400 shaping`은 알겠는데 validation pipeline은 아직 헷갈려요`" 같은 질문이면 이 문서 다음 한 걸음은 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)이다.
+> return path: `ProblemDetail`에서 응답 바디 계약을 잡았으면 [Spring 예외 처리 기초](./spring-exception-handling-basics.md)로 전역 `400` 번역을 다시 묶고, 바로 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)으로 돌아가 "`이 `400`이 binding인지 validation인지, `BindingResult` 로컬 처리였는지`"만 다시 분해하면 된다.
 
 ## 더 깊이 가려면
 

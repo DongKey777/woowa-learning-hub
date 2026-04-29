@@ -13,7 +13,7 @@
 - [Java Array Equality Basics](./java-array-equality-basics.md)
 - [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 
-retrieval-anchor-keywords: java array debug printing basics, java array print weird output, java array default tostring, java arrays.tostring when to use, java arrays.deeptostring when to use, java array [i@ output meaning, java array weird log output, java 2d array printing basics, 배열 출력 왜 이상해요, 배열 [i@ 뭐예요, 배열 출력 처음 헷갈릴 때, 배열 equals 왜 false, 배열 왜 같이 바뀌나요, what is java array debug printing, beginner java array debugging
+retrieval-anchor-keywords: java array debug printing basics, java array print weird output, java array default tostring, java arrays.tostring when to use, java arrays.deeptostring when to use, java array [i@ output meaning, java array weird log output, java 2d array printing basics, 배열 출력 왜 이상해요, 배열 [i@ 뭐예요, 배열 출력 처음 헷갈릴 때, 배열 equals 왜 false, 배열 왜 같이 바뀌나요, 값은 같은데 false 배열, what is java array debug printing
 
 ## 핵심 개념
 
@@ -24,9 +24,9 @@ retrieval-anchor-keywords: java array debug printing basics, java array print we
 - 값은 같은데 `==`나 `array.equals(...)`가 `false`다.
 - 한쪽을 바꾸면 다른 쪽도 같이 바뀐다.
 
-여기서 먼저 잘라야 하는 질문은 하나다.
+여기서 먼저 잘라야 하는 증상은 세 가지다.
 
-> 지금 문제는 "배열 내용을 어떻게 볼까"인가, "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, 아니면 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가?
+> 지금 문제는 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, 아니면 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가?
 
 이 문서는 첫 번째 질문, 즉 **출력 경로**를 다룬다. 한 줄 규칙은 이것이면 충분하다.
 
@@ -34,22 +34,29 @@ retrieval-anchor-keywords: java array debug printing basics, java array print we
 - 중첩 배열 출력: `Arrays.deepToString(...)`
 - 배열을 그대로 `println`하거나 문자열과 바로 더하지 않기
 
+배열에서 막혔을 때 먼저 던질 질문도 equality primer와 같은 구조로 맞춰 두면 덜 헷갈린다.
+
+1. 지금 문제는 출력이 이상한가, 값은 같은데 `==`나 `array.equals(...)`가 `false`다인가, 아니면 한쪽을 바꾸면 다른 쪽도 같이 바뀐다인가?
+2. 지금 보는 배열이 1차원인가, 배열 안에 배열이 또 있는가?
+
 ## 증상으로 바로 고르기
 
 배열에서 막히면 메서드 이름보다 증상으로 분기하는 편이 빠르다.
 
 | 지금 보이는 증상 | 실제로 먼저 묻는 질문 | 먼저 쓸 도구 | 다음 연결 |
 |---|---|---|---|
-| `System.out.println(array)` 결과가 `[I@...`, `[Ljava.lang.String;@...`처럼 이상하다 | 배열 내용을 잘못 출력한 건가 | 1차원은 `Arrays.toString(...)` | 이 문서 |
-| `String[][]`를 `Arrays.toString(...)`으로 찍었더니 안쪽 row가 또 이상하다 | 중첩 배열이라 안쪽까지 내려가야 하나 | `Arrays.deepToString(...)` | 이 문서 |
+| 출력이 이상하다: `System.out.println(array)` 결과가 `[I@...`, `[Ljava.lang.String;@...`처럼 보인다 | 배열 내용을 잘못 출력한 건가 | 1차원은 `Arrays.toString(...)` | 이 문서 |
+| 출력이 이상하다: `String[][]`를 `Arrays.toString(...)`으로 찍었더니 안쪽 row가 또 이상하다 | 중첩 배열이라 안쪽까지 내려가야 하나 | `Arrays.deepToString(...)` | 이 문서 |
 | 값은 같은데 `==`나 `array.equals(...)`가 `false`다 | 출력 문제가 아니라 비교 규칙 문제인가 | 1차원은 `Arrays.equals(...)`, 중첩 배열은 `Arrays.deepEquals(...)` | [Java Array Equality Basics](./java-array-equality-basics.md) |
 | 한쪽을 바꾸면 다른 쪽도 같이 바뀐다 | 비교 문제가 아니라 같은 배열을 공유한 건가 | `copied == original` 확인 | [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) |
 
-짧게 외우면 이렇다.
+배열 debug loop를 짧게 외우면 이렇다.
 
-- `[I@...`를 보면 출력 문제부터 의심한다.
+- "출력이 이상하다"가 보이면 `[I@...` 같은 기본 출력부터 의심한다.
 - "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 보이면 equality 문서로 분기한다.
 - "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 보이면 copy/alias 문서로 분기한다.
+
+즉 `[I@...`와 `[[Ljava...`는 이 문서의 출발 신호이고, "값은 같은데 `==`나 `array.equals(...)`가 `false`다"는 [Java Array Equality Basics](./java-array-equality-basics.md), "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"는 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)로 이어지는 세 문서 루프를 만든다.
 
 ## 한눈에 보기
 
@@ -60,7 +67,7 @@ retrieval-anchor-keywords: java array debug printing basics, java array print we
 | 2차원 배열 내용 보기 | `Arrays.toString(board)` | `Arrays.deepToString(board)` | `[[O, X], [X, O]]` |
 | 값이 같은지 보기 | `numbers.equals(other)` | `Arrays.equals(numbers, other)` | `true` 또는 `false` |
 
-즉 `toString` 계열은 **보여 주는 도구**고, `equals` 계열은 **비교 도구**다. 이 문서는 `[I@...`, `[[Ljava...`처럼 "출력이 이상하다"에 답하고, "값은 같은데 `==`나 `array.equals(...)`가 `false`다"와 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"는 각각 equality/copy 문서로 돌려보낸다.
+즉 `toString` 계열은 **보여 주는 도구**고, `equals` 계열은 **비교 도구**다. 이 문서는 `[I@...`, `[[Ljava...`처럼 "출력이 이상하다"에 답하고, equality primer의 symptom route와 같은 문장으로 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"와 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"를 각각 equality/copy 문서로 돌려보낸다.
 
 ## 왜 배열을 그대로 출력하면 이상한 문자열이 보일까
 
@@ -166,7 +173,7 @@ System.out.println(letters); // Java
 
 ## 실무에서 쓰는 모습
 
-배열 출력 문제는 보통 테스트 실패 로그나 디버그 로그에서 먼저 드러난다.
+배열 출력 문제는 보통 테스트 실패 로그나 디버그 로그에서 먼저 드러난다. 이때도 equality primer와 같은 순서로 읽으면 된다.
 
 1. 로그에 `[I@...`가 보이면 배열 내용이 안 보이는 상태라고 판단한다.
 2. 1차원이면 `Arrays.toString(...)`, 중첩 배열이면 `Arrays.deepToString(...)`으로 바꾼다.

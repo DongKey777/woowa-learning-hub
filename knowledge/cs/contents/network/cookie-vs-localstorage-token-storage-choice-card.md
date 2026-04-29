@@ -10,11 +10,12 @@
 - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+- [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
 - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
 - [XSS와 CSRF 기초](../security/xss-csrf-basics.md)
 - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
 
-retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localstorage 차이, token storage beginner, localstorage token xss, cookie token csrf, httponly cookie vs localstorage, browser automatic cookie sending, authorization header from localstorage, devtools cookie localstorage 위치, application cookies local storage, cookie or localstorage 뭐가 나아요, token 어디 저장해요, 처음 배우는데 cookie localstorage 뭐예요, local storage token but authorization header empty, application local storage token 있는데 authorization header 비어요
+retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localstorage 차이, token storage beginner, localstorage token xss, cookie token csrf, httponly cookie vs localstorage, browser automatic cookie sending, authorization header from localstorage, devtools cookie localstorage 위치, application cookies local storage, cookie or localstorage 뭐가 나아요, 처음 배우는데 cookie localstorage 뭐예요, local storage token but authorization header empty, bearer token인데 credentials include 고치면 되나요, 302 login vs missing authorization header
 
 ## 핵심 개념
 
@@ -55,7 +56,7 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 - `cookie` 쪽 대표 증상: `Application > Cookies`에는 값이 있는데 같은 요청의 request `Cookie` header가 비어 있다
 - `localStorage` 쪽 대표 증상: `Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 비어 있다
 
-## 상세 분해
+## storage별 전송 흐름
 
 ### 1. `cookie`는 "저장"보다 "자동 전송"이 핵심이다
 
@@ -80,6 +81,8 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 
 그래서 `localStorage` 쪽은 "브라우저가 왜 안 보내지?"보다 "`Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 왜 비지?"를 먼저 묻는 편이 안전하다. 첫 확인 포인트는 결국 "프런트 코드가 실제로 읽어서 헤더에 넣었나?"다.
 
+## 보안과 선택 기준
+
 ### 3. XSS와 CSRF가 같은 문제가 아니다
 
 이 선택에서 가장 많이 틀리는 문장은 "`cookie`는 CSRF, `localStorage`는 XSS니까 서로 완전히 대체 관계다"라는 말이다.
@@ -101,6 +104,26 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 
 이때도 최종 선택은 아키텍처에 따라 달라지지만, 초급자 첫 판단은 이 정도로 충분하다.
 
+## 증상 handoff
+
+### 5. `credentials` 수정은 cookie lane이고, bearer token lane은 따로 본다
+
+여기서 많이 나는 오진은 "`fetch`가 인증 실패했으니 `credentials: \"include\"`부터 넣자"다.
+
+이 처방은 **cookie가 자동 전송되는 구조**에서만 먼저 맞는 질문이다. `localStorage`나 메모리에 든 bearer token 구조라면 브라우저는 토큰을 자동으로 들고 가지 않으므로, `credentials`를 바꿔도 빈 `Authorization` 헤더가 그대로일 수 있다.
+
+| 지금 보이는 증상 | 먼저 읽는 lane | 첫 확인 포인트 |
+|---|---|---|
+| `302 -> /login`, login HTML `200`, request `Cookie` header가 비어 있음 | cookie / redirect lane | `credentials`, `SameSite`, `Domain`, `Path` |
+| `Application > Local Storage`에는 access token이 있는데 request `Authorization` header가 비어 있음 | bearer token / storage lane | 프런트 코드가 토큰을 읽어 헤더를 붙였는가 |
+| raw `401 JSON`인데 `Authorization: Bearer ...`가 이미 실려 있음 | bearer token / server validation lane | 만료, audience, scope, 서버 검증 로직 |
+
+짧게 외우면:
+
+- `Cookie` header가 문제면 `credentials`와 cookie scope를 본다
+- `Authorization` header가 문제면 storage보다 **헤더 조립 코드**를 먼저 본다
+- `302 /login`과 `Authorization` 누락을 같은 고장으로 묶지 않는다
+
 ## 흔한 오해와 함정
 
 ### "`cookie`가 더 안전하니까 무조건 정답이다"
@@ -118,6 +141,10 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 ### "`cookie`에 넣으면 무조건 session 방식이다"
 
 아니다. cookie 안에 session id가 들어갈 수도 있고, JWT가 들어갈 수도 있다. 중요한 차이는 **서버가 session store를 조회하느냐, 토큰을 직접 검증하느냐**다.
+
+### "`localStorage` bearer token도 `credentials: \"include\"`면 해결된다"
+
+아니다. `credentials`는 cookie 같은 browser credential 전송 옵션이지, `localStorage` 값을 읽어 `Authorization` 헤더를 대신 만들어 주는 기능이 아니다.
 
 ## 실무에서 쓰는 모습
 
@@ -155,6 +182,7 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 - `cookie`가 자동 전송되는 흐름부터 다시 잡으려면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - `SameSite`, `HttpOnly`, `Secure` 같은 속성별 차이를 보려면 [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - cross-origin `fetch`에서 cookie가 왜 빠지는지 보려면 [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
+- `302 /login`과 숨은 login HTML `200`을 cookie lane 증상으로 읽는 법은 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
 - XSS와 CSRF 차이를 먼저 다시 고정하려면 [XSS와 CSRF 기초](../security/xss-csrf-basics.md)
 - BFF와 CSRF까지 설계를 올려 보려면 [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
 

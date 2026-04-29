@@ -16,6 +16,24 @@
 
 retrieval-anchor-keywords: localdate 400 spring, localtime 400 spring, requestbody date parse error, requestbody time parse error, localdate json format beginner, localtime json format beginner, 2026/05/01 400 spring, 18시 400 spring, cannot deserialize localdate, cannot deserialize localtime, datetime sent to localdate, date only sent to localtime, requestbody datetime cheat sheet, spring date time parsing 처음, localdate localtime format mismatch
 
+## 이 라우트에서 보는 위치
+
+- 현재 문서: 2.5단계 형식 오류 follow-up. `@Valid` 전에 멈춘 `LocalDate`/`LocalTime` 변환 실패를 따로 잡는다.
+- 이전 문서: [2단계 `@Valid` primer](./spring-valid-400-vs-message-conversion-400-primer.md)
+- 다음 문서: [3단계 `BindingResult` primer](./spring-bindingresult-local-validation-400-primer.md)
+- README 복귀: [Spring MVC 바인딩/400 follow-up 지도](./README.md#spring-mvc-바인딩400-follow-up-지도)
+- README 바인딩 follow-up 증상표 순서: "`2026/05/01` 보냈는데 `400`이 나요?", "`18시`, `오후 6시`, `6pm` 보내면 왜 안 되죠?", "`LocalDate`인데 `2026-05-01T18:00:00` 보내도 되나요?"면 이 문서를 먼저 보고, "`아직 validation까지 갔나?`"가 다음 질문이면 `@Valid` primer로 넘긴다.
+
+## 질문 그대로 먼저 답하기
+
+README 바인딩 follow-up 증상표와 같은 검색 문장 세트에 바로 답하려는 문서다. 이 문서는 "`validation 규칙이 틀렸나?`"보다 먼저 "`date/time 문자열 모양이 타입과 맞나?`"를 고정한다.
+
+| 학습자가 보통 이렇게 말해요 | 먼저 붙잡을 질문 | 더 가까운 원인 |
+|---|---|---|
+| "`2026/05/01` 보냈는데 `400`이 나요?" | DTO의 `date` 필드가 `LocalDate`인데 slash(`/`) 형식이 들어간 건가? | `LocalDate` 기본 형식 mismatch |
+| "`18시`, `오후 6시`, `6pm` 보내면 왜 안 되죠?" | DTO의 `time` 필드가 `LocalTime`인데 자연어/ampm 문자열이 들어간 건가? | `LocalTime` 기본 형식 mismatch |
+| "`LocalDate`인데 `2026-05-01T18:00:00` 보내도 되나요?" | 날짜 칸에 datetime 전체 문자열을 넣은 건가? | 타입보다 더 긴 datetime 입력 |
+
 ## 핵심 개념
 
 처음에는 이렇게 잡으면 된다.

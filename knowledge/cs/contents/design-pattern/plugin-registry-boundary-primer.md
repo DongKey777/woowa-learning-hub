@@ -10,6 +10,7 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 
 > 관련 문서:
 > - [Plugin Architecture: 기능을 꽂아 넣는 패턴 언어](./plugin-architecture-pattern-language.md)
@@ -19,11 +20,13 @@
 > - [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 > - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
 
-retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin lookup narrow registry, plugin locator smell, plugin manager hidden dependency, plugin extension point registry, plugin registry beginner, plugin architecture registry boundary, plugin manager vs service locator, plugin host registry, plugin id lookup registry, application wide plugin locator smell, applicationcontext plugin getbean smell, 플러그인 lookup beginner
+retrieval-anchor-keywords: plugin registry boundary primer, plugin registry vs service locator, injected plugin registry, plugin registry beginner, plugin registry 큰 그림, plugin registry 언제 쓰는지, 처음 배우는데 plugin registry 뭐예요, service locator랑 뭐가 달라요, 처음 배우는데 service locator 차이, 왜 applicationcontext getbean이 문제예요, plugin manager가 왜 냄새예요, 플러그인 매니저가 왜 service locator 같아요, 플러그인 구조 큰 그림, dependency injection registry beginner, 주입받은 registry와 전역 locator 차이
 
 ---
 
 ## 먼저 머릿속 그림
+
+이 문서는 `"plugin registry가 뭐예요?"`, `"처음 배우는데 service locator랑 뭐가 달라요?"`, `"왜 ApplicationContext getBean이 냄새라는 거예요?"` 같은 첫 질문이 들어왔을 때 먼저 착지해야 하는 primer다.
 
 plugin registry를 처음 보면 "어차피 뭔가를 찾아오는 거니까 service locator 아닌가?"라는 질문이 자주 나온다.
 초보자에게는 아래 그림으로 잡는 편이 가장 쉽다.

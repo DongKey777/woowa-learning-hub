@@ -1,6 +1,6 @@
-# TreeMap Key/Entry Strictness Bridge
+# TreeMap lowerKey-to-lowerEntry Strict Handoff Card
 
-> 한 줄 요약: `왜 lower랑 floor가 달라요?`라는 감각은 `Entry`로 바꿔도 그대로이며, `exact match 포함 여부`는 `lower/higher` vs `floor/ceiling`이 결정하고 `Key/Entry` 차이가 결정하지 않는다.
+> 한 줄 요약: `floorKey -> floorEntry` 예시를 막 익혔더라도 strict 쪽 규칙은 그대로 따로 잡아야 하며, `lowerKey -> lowerEntry`와 `higherKey -> higherEntry`는 exact match를 여전히 건너뛴 채 value만 덧붙여 읽는 handoff다.
 
 **난이도: 🟢 Beginner**
 
@@ -14,7 +14,7 @@
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Ordered Map Null-Safe Practice Drill](../language/java/ordered-map-null-safe-practice-drill.md)
 
-retrieval-anchor-keywords: treemap key entry bridge, lowerkey lowerentry beginner, floorkey floorentry beginner, ceilingkey ceilingentry beginner, higherkey higherentry beginner, treemap strict inclusive entry, 왜 lower랑 floor가 달라요 entry, exact match 포함 여부 entry, lower floor ceiling higher 헷갈림, ordered map key entry difference, ordered map exact match entry, entry로 바꾸면 포함 여부 바뀌나요, treemap key에서 entry로, treemap entry 뭐예요, what is lowerentry
+retrieval-anchor-keywords: treemap strict handoff card, lowerkey lowerentry beginner, higherkey higherentry beginner, floorkey floorentry beginner, ceilingkey ceilingentry beginner, floor 예시 보고 lowerentry도 포함한다고 착각, higherentry exact match 왜 건너뛰나요, lower floor ceiling higher 헷갈림, strict inclusive entry difference, ordered map key entry difference, entry로 바꾸면 포함 여부 바뀌나요, treemap entry 뭐예요, what is lowerentry, 처음 treemap strict side, why lowerentry skips exact match
 
 ## 핵심 개념
 
@@ -40,6 +40,10 @@ strictness도 바뀌지 않는다.
 - `왜 lower랑 floor가 달라요?` -> strict vs inclusive 차이다.
 - `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` -> 아니다. `Key/Entry`가 아니라 메서드 이름이 결정한다.
 
+inclusive 예시 하나를 익혔다고 strict 쪽이 inclusive로 바뀌는 것은 아니다.
+
+## key에서 entry로 넘길 때
+
 ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 
 | 학습자 질문 | 바로 번역한 답 |
@@ -54,6 +58,16 @@ ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 |---|---|---|
 | `TreeSet.floor(10:30)` -> `10:30` | `TreeMap.floorKey(10:30)` -> `10:30` | exact match 포함 |
 | `TreeMap.floorKey(10:30)` -> `10:30` | `TreeMap.floorEntry(10:30)` -> `10:30 -> 11:00` | exact match 포함 |
+
+반대로 strict 쪽은 아래 두 줄을 따로 떼어 외우는 편이 안전하다.
+
+| 이미 읽던 key 질문 | entry로 넘기면 | 그대로 유지되는 규칙 |
+|---|---|---|
+| `lowerKey(10:30)` -> `09:00` | `lowerEntry(10:30)` -> `09:00 -> 10:00` | exact match 제외 |
+| `higherKey(10:30)` -> `13:00` | `higherEntry(10:30)` -> `13:00 -> 14:00` | exact match 제외 |
+
+이 두 줄이 이 문서의 strict-side handoff card다.
+`floor/ceiling` 예시를 방금 봤더라도, `lower/higher`는 여전히 같은 key에서 멈추지 않고 한 칸 건너뛴다.
 
 ## 한눈에 보기
 
@@ -84,6 +98,27 @@ ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 - `entry`는 시작 시각 + 종료 시각
 - strict/inclusive는 메서드 이름이 결정하고, key/entry 차이가 결정하지는 않는다
 
+## strict 쪽만 따로 고정하기
+
+inclusive 예시를 먼저 보면 beginner는 아래처럼 과잉 일반화하기 쉽다.
+
+- `floorEntry(10:30)`가 exact match를 포함했으니 `lowerEntry(10:30)`도 같은 줄을 줄 것 같다
+- `ceilingEntry(10:30)`가 `10:30 -> 11:00`이었으니 `higherEntry(10:30)`도 비슷하게 같은 줄일 것 같다
+
+둘 다 아니다.
+strict 쪽 handoff는 "찾는 줄"이 먼저 strict하게 바뀌고, `Entry`는 그 뒤에 value를 붙여 줄 뿐이다.
+
+| learner symptom | 잘못 읽은 버전 | correct handoff |
+|---|---|---|
+| `lowerEntry가 왜 10:30이 아니죠?` | `lower`도 `floor`처럼 exact match에 멈춘다고 생각함 | `lowerKey(10:30)`가 이미 `09:00`이므로 `lowerEntry(10:30)`도 `09:00 -> 10:00` |
+| `higherEntry가 왜 바로 다음 줄이죠?` | `higher`도 `ceiling`처럼 exact match를 포함한다고 생각함 | `higherKey(10:30)`가 이미 `13:00`이므로 `higherEntry(10:30)`도 `13:00 -> 14:00` |
+
+안전한 읽기 순서는 항상 같다.
+
+1. 먼저 `lowerKey` 또는 `higherKey`로 strict한 기준 줄을 고른다.
+2. 그다음 같은 줄을 `lowerEntry` 또는 `higherEntry`로 다시 읽어 value를 붙인다.
+3. strict/inclusive 규칙은 1단계에서 이미 끝났다고 생각한다.
+
 ## exact match 포함 여부를 다시 고정하기
 
 이 문서에서 가장 중요한 오해 방지는 이것이다.
@@ -96,6 +131,35 @@ ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 | `ordered map에서 entry가 더 똑똑한 검색인가` | 아니다. 검색 기준은 여전히 key이고 entry는 찾은 줄의 value를 같이 보여 줄 뿐이다 |
 
 즉 `왜 lower랑 floor가 달라요`의 답은 `Key` 단계에서도 같고 `Entry` 단계에서도 같다.
+
+## 4문제 미니 드릴
+
+아래 표는 beginner가 가장 자주 틀리는 exact-match 순간만 따로 뽑은 짧은 practice drill이다.
+기준 예약표는 그대로다.
+
+```text
+09:00 -> 10:00
+10:30 -> 11:00
+13:00 -> 14:00
+15:30 -> 16:00
+```
+
+먼저 스스로 답을 가리고, 오른쪽 칸으로 확인한다.
+
+| 문제 | 잠깐 먼저 답해 보기 | 정답 | 왜 이렇게 읽나 |
+|---|---|---|---|
+| `10:30` exact match에서 `lowerEntry(10:30)`는? | `09:00 -> 10:00` / `10:30 -> 11:00` 중 무엇인가 | `09:00 -> 10:00` | `lower`는 strict라서 exact match를 제외한다 |
+| `10:30` exact match에서 `floorEntry(10:30)`는? | `09:00 -> 10:00` / `10:30 -> 11:00` 중 무엇인가 | `10:30 -> 11:00` | `floor`는 inclusive라서 exact match에서 멈춘다 |
+| `10:30` exact match에서 `ceilingEntry(10:30)`는? | `10:30 -> 11:00` / `13:00 -> 14:00` 중 무엇인가 | `10:30 -> 11:00` | `ceiling`도 inclusive라서 exact match를 포함한다 |
+| `10:30` exact match에서 `higherEntry(10:30)`는? | `10:30 -> 11:00` / `13:00 -> 14:00` 중 무엇인가 | `13:00 -> 14:00` | `higher`는 strict라서 exact match를 건너뛴다 |
+
+한 줄로 다시 접으면 아래 두 문장만 남는다.
+
+- `lower/higher`는 exact match를 포함하지 않는다.
+- `floor/ceiling`은 exact match를 포함한다.
+
+이 미니 드릴의 목표는 `Entry` 이름에 흔들리지 않고, exact-match 포함/제외만 4문제로 손에 붙이는 것이다.
+`Key` 버전으로 바꿔도 정답 줄은 같고, 달라지는 것은 value를 같이 읽느냐뿐이다.
 
 ## 네 쌍을 한 번에 연결하는 표
 
@@ -155,6 +219,7 @@ boolean noRightOverlap = next == null || !end.isAfter(next.getKey());
 - `Entry`가 더 똑똑한 검색이라고 느끼기 쉽지만, 실제 검색 기준은 여전히 key다. `value`를 비교해서 찾는 것이 아니다.
 - `lowerEntry`와 `floorEntry` 차이가 `Entry`라서 생긴다고 오해하기 쉽다. 차이는 여전히 strict vs inclusive다.
 - `floorKey`에서 `floorEntry`로 바꾸는 순간 exact-match 규칙을 새로 외워야 한다고 느끼기 쉽다. 실제로는 같은 줄에서 멈춘 뒤 value를 같이 읽기만 하면 된다.
+- `floorEntry`와 `ceilingEntry` 예시를 먼저 봤다고 `lowerEntry`와 `higherEntry`도 같은 key에서 멈춘다고 일반화하면 안 된다. strict 쪽은 `lowerKey`/`higherKey`가 고른 줄을 그대로 따라간다.
 - `higherEntry(t)`를 "무조건 다음 줄"로 외우면 exact match에서 틀린다. 같은 key는 strict하게 건너뛴다.
 - `Entry`를 받았으면 바로 `getValue()`부터 읽고 싶어지지만, 경계 시각에서는 `null` 먼저 확인해야 한다.
 - 충돌 검사 전체를 한 번에 외우려 하면 더 막힌다. 먼저 `Key/Entry` 대응표를 붙이고, 그다음 `prev.end <= start`, `end <= next.start`로 넘어가는 편이 낫다.

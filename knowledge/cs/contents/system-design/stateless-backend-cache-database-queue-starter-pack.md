@@ -2,12 +2,13 @@
 
 > 한 줄 요약: 로드 밸런서가 stateless app 여러 대에 요청을 나누고, database는 정답을 보관하고, cache는 반복 읽기를 덜어 주고, queue는 느린 후처리를 뒤로 미루는 구조로 보면 백엔드 scale basics가 한 그림에 잡힌다.
 
-retrieval-anchor-keywords: stateless backend scale basics, load balancer cache database queue primer, stateless app horizontal scaling intuition, backend box mental model, why load balancer with stateless app, source of truth vs cache, cache or queue first decision, scale out beginner, what is stateless backend, backend basics 처음, 왜 서버를 여러 대 두나요, load balancer cache db queue what is, request path mental model, sync vs async backend basics, beginner project architecture map
+retrieval-anchor-keywords: stateless backend scale basics, load balancer cache database queue primer, backend box mental model, source of truth vs cache, cache or queue first decision, what is stateless backend, backend basics 처음, 왜 서버를 여러 대 두나요, request path mental model, sync vs async backend basics, service 코드인데 queue가 왜 나와요, controller service repository 다음 system design, queue handoff vs bfs, queue가 보여서 bfs인 줄 알았어요, undo queue랑 message queue 차이
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 - [System Design Foundations](./system-design-foundations.md)
 - [Queue vs Cache vs DB Decision Drill](./queue-vs-cache-vs-db-decision-drill.md)
 - [로드 밸런서 기초](./load-balancer-basics.md)
@@ -18,10 +19,27 @@ retrieval-anchor-keywords: stateless backend scale basics, load balancer cache d
 - [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md)
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
+- [커맨드 패턴 기초](../design-pattern/command-pattern-basics.md)
+- [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)
 - [system-design 카테고리 인덱스](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
+
+## 이 문서를 어디에 끼워 읽나
+
+이 문서는 beginner에게 `첫 system design primer` 역할이다.
+`controller -> service -> repository`는 읽히는데 `cache`, `queue`, `load balancer`가 왜 붙는지 처음 헷갈릴 때 여는 문서고, incident/playbook 문서로 바로 내려가기 전의 안전한 handoff 지점이다.
+
+| 지금 막힌 문장 | 이 문서의 역할 | 바로 다음 한 걸음 | 아직 미루는 것 |
+|---|---|---|---|
+| `service 코드인데 queue가 왜 나와요?`, `controller -> service -> repository 다음에 뭐 봐요?` | software-engineering primer 다음의 `system design 첫 bridge` | [Queue vs Cache vs DB Decision Drill](./queue-vs-cache-vs-db-decision-drill.md) | outbox, cutover, recovery playbook |
+| `queue가 보여서 BFS인 줄 알았어요`, `왜 queue가 system design에서도 나와요?` | 자료구조 queue와 `후처리 handoff` queue를 분리하는 primer | [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)로 잠깐 우회한 뒤 이 문서로 돌아오기 | per-key ordering, watermark, backlog tuning |
+| `undo queue랑 message queue 차이도 헷갈려요` | design-pattern의 `작업 요청`과 system-design의 `비동기 전달`을 가르는 primer bridge | [커맨드 패턴 기초](../design-pattern/command-pattern-basics.md) | workflow engine, durable orchestration |
+| `cache를 쓰면 최신값도 보장되죠?`, `queue에 넣었는데 왜 아직 완료가 아니죠?` | `복사본`, `후처리`, `정답 저장소` 경계를 먼저 고정하는 primer | [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md) | read-model migration, replay repair |
+
+- safe next step: 이 문서를 읽은 뒤에는 `Queue vs Cache vs DB Decision Drill` 또는 `Consistency, Idempotency, and Async Workflow Foundations` 둘 중 하나만 더 읽는다.
+- misconception guard: 여기서 말하는 `queue`는 보통 `후처리 handoff`다. `최소 이동 횟수`, `visited`, `거리 1, 2, 3` 같은 말이 먼저 보이면 algorithm 쪽 queue로 다시 자르는 편이 안전하다.
 
 ## 먼저 잡을 그림
 
@@ -88,6 +106,14 @@ Client
 | 외부 API/후처리 때문에 응답이 느리다 | Queue | 지금 응답에 꼭 필요 없는 일을 요청 경로 밖으로 뺀다 |
 | 사용자에게 지금 확답이 필요하다 | Database (+ App) | 핵심 상태는 먼저 저장/판정하고 응답한다 |
 
+처음에는 `DB / cache / queue`를 아래처럼 딱 세 칸으로 잘라 두면 덜 헷갈린다.
+
+| 박스 | 무엇을 맡나 | 주문 완료 예시 | 초보자 오해 |
+|---|---|---|---|
+| Database | 정답 기준점 저장 | 주문 row, 결제 승인 상태 저장 | `queue 있으면 DB 없이도 되나?` |
+| Cache | 자주 읽는 값 재사용 | 상품 상세, 공지 목록 재조회 가속 | `cache가 최신값도 보장하나?` |
+| Queue | 응답 뒤 작업 대기 | 이메일, 알림, 검색 인덱싱 전달 | `queue에 넣으면 업무도 끝났나?` |
+
 ---
 
 ## 왜 load balancer와 stateless app이 항상 같이 나오나
@@ -151,6 +177,15 @@ Client -> App -> DB에 주문 저장 -> 201 Created
 - 주문 생성 성공 여부는 사용자가 바로 알아야 한다.
 - 이메일 발송까지 기다리면 응답이 불필요하게 느려진다.
 - 외부 연동이 느리거나 잠깐 실패해도 주문 자체는 먼저 받는 편이 낫다.
+
+한 번 더 짧게 따라가면 "주문 완료"라는 한 문장 안에도 완료 시점이 둘이다.
+
+| 시점 | 사용자에게 보이는 말 | 실제로 끝난 일 |
+|---|---|---|
+| `201 Created` 직후 | `주문은 접수됐다` | database 기준 핵심 상태 저장 |
+| 몇 초 뒤 메일/알림 도착 | `후처리도 따라왔다` | queue 뒤 worker 작업 완료 |
+
+이 구분을 먼저 잡아 두면 `queue에 넣었는데 왜 메일이 아직 안 와요?`를 장애로 볼지, 정상적인 async 지연으로 볼지 판단이 쉬워진다.
 
 ### 3. Stateless app은 "아무것도 저장하지 않는다"가 아니라 "인스턴스에 묶지 않는다"에 가깝다
 
@@ -226,7 +261,8 @@ Client -> App -> DB에 주문 저장 -> 201 Created
 - DB가 느릴 때 왜 바로 sharding으로 뛰지 않는지 알고 싶다면 [Database Scaling Primer](./database-scaling-primer.md)
 - cache, app, queue, DB 중 어디가 먼저 장애를 흡수하는지 보고 싶다면 [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
 
-DB와 queue 사이의 전달 보장을 더 엄격하게 다루는 심화는 [Change Data Capture / Outbox Relay](./change-data-capture-outbox-relay-design.md)에서 이어진다.
+DB와 queue 사이 전달 보장까지 궁금해졌다면 그때 [Change Data Capture / Outbox Relay](./change-data-capture-outbox-relay-design.md)로 내려가면 된다.
+처음 읽을 때는 `주문 저장은 DB`, `메일 발송은 queue`처럼 역할 분리까지만 잡아도 충분하다.
 
 ---
 

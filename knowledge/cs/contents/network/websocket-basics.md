@@ -12,7 +12,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC Controller 기초](../spring/spring-mvc-controller-basics.md)
 
-retrieval-anchor-keywords: websocket basics, 웹소켓이 뭔가요, http vs websocket, websocket 양방향 통신, 서버 push 입문, ws wss 차이, websocket upgrade 헤더, 실시간 통신 기초, 채팅 구현 방법, beginner websocket, websocket basics basics, websocket basics beginner, websocket basics intro, network basics, beginner network
+retrieval-anchor-keywords: websocket basics, 웹소켓이 뭔가요, websocket 왜 써요, websocket 언제 써요, http vs websocket, websocket 양방향 통신, 서버가 먼저 보내는 통신 뭐예요, 실시간 통신 처음 배우는데, 채팅은 왜 websocket을 써요, 서버 push 입문, ws wss 차이, websocket upgrade 헤더, 실시간 통신 기초, 채팅 구현 방법, what is websocket
 
 ## 핵심 개념
 
@@ -69,6 +69,8 @@ Spring Boot에서는 `spring-boot-starter-websocket` 의존성을 추가하고 `
 
 ## 더 깊이 가려면
 
+- "`실시간 통신 말고 기본 HTTP 요청 흐름부터 다시 보고 싶어요`라면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)"
+- "`로그인 상태`나 `쿠키`와 웹소켓 연결 유지가 왜 다른지 먼저 분리하고 싶다면 [HTTP 무상태성과 상태 유지 전략 입문](./http-stateless-state-management-basics.md)"
 - [WebSocket heartbeat, backpressure, reconnect](./websocket-heartbeat-backpressure-reconnect.md) — 운영 중 발생하는 연결 유지, 배압, 재연결 전략
 - [network 카테고리 인덱스](./README.md) — 다음 단계 주제 탐색
 

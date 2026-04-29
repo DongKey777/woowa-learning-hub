@@ -9,6 +9,7 @@
 - [자료구조 카테고리 인덱스](./README.md)
 - [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
+- [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)
 - [Set vs Bitmap Audience Selection Mini Drill](./set-vs-bitmap-audience-selection-mini-drill.md)
 - [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md)
 - [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
@@ -229,10 +230,13 @@ beginner가 자주 멈추는 follow-up은 이 질문이다.
   beginner 층위에서는 비트 기반 집합이라는 큰 묶음으로 이해해도 된다. Java 표준 라이브러리 이름은 `BitSet`이고, 더 큰 실무 구조로는 `Roaring Bitmap` 같은 변형이 있다.
 - "`문자열 id도 hash해서 bitmap에 넣으면 되지 않나요?"
   그러면 별도 매핑, 충돌 관리, 역조회 문제가 생긴다. beginner 단계에서는 그 복잡도보다 `Set`이 더 안전하다.
+- "`BitSet`이 그냥 `boolean[]`의 다른 문법인가요?"
+  아니다. "칸 값 배열"과 "비트 집합 도구"를 먼저 나누면 이후 handoff가 덜 헷갈린다. 이 출발점은 [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)에서 따로 정리했다.
 
 ## 더 깊이 가려면
 
 - `set` 자체가 아직 헷갈리면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+- `BitSet`과 plain bit array 차이부터 먼저 잡고 싶으면 [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)
 - audience selection 문장에 decision table을 바로 적용해 보고 싶으면 [Set vs Bitmap Audience Selection Mini Drill](./set-vs-bitmap-audience-selection-mini-drill.md)
 - 자료구조 선택 큰 그림에서 `bitmap` 위치를 다시 보고 싶으면 [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
 - Java의 비트 기반 사고를 알고리즘 관점에서 보고 싶으면 [Bitset Optimization Patterns](../algorithm/bitset-optimization-patterns.md)

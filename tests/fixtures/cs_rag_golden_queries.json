@@ -59,6 +59,13 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_spring_transaction_mixed_language_shortform_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-transaction-propagation-deep-dive.md",
+            "contents/database/transaction-isolation-locking.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_transactional_english_shortform_lockin": {
           "companion_paths": [
             "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -73,10 +80,29 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_transactional_english_meaning_with_annotation_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-transaction-propagation-deep-dive.md",
+            "contents/spring/spring-transactional-self-invocation-test-bridge-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_transactional_korean_meaning_lockin": {
           "companion_paths": [
             "contents/spring/spring-transaction-propagation-deep-dive.md",
             "contents/spring/spring-transactional-self-invocation-test-bridge-primer.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_springbootapplication_shortform_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-component-scan-failure-patterns.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_springbootapplication_annotation_definition_lockin": {
+          "companion_paths": [
+            "contents/spring/spring-component-scan-failure-patterns.md"
           ],
           "companion_max_rank": 4
         },
@@ -88,6 +114,13 @@
           "companion_max_rank": 4
         },
         "beginner_mvcc_meaning_shortform_basics": {
+          "companion_paths": [
+            "contents/database/transaction-isolation-locking.md",
+            "contents/database/mvcc-read-view-consistent-read-internals.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_mvcc_english_meaning_lockin": {
           "companion_paths": [
             "contents/database/transaction-isolation-locking.md",
             "contents/database/mvcc-read-view-consistent-read-internals.md"
@@ -123,6 +156,12 @@
         "beginner_keepalive_colloquial_shortform_lockin": {
           "companion_paths": [
             "contents/network/http2-http3-connection-reuse-coalescing.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_keepalive_merged_alias_lockin": {
+          "companion_paths": [
+            "contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md"
           ],
           "companion_max_rank": 4
         },
@@ -186,7 +225,19 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_query_model_english_role_shortform_lockin": {
+          "companion_paths": [
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_query_service_english_shortform_lockin": {
+          "companion_paths": [
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_query_service_english_meaning_alias_lockin": {
           "companion_paths": [
             "contents/software-engineering/query-model-separation-read-heavy-apis.md"
           ],
@@ -201,6 +252,13 @@
         "beginner_query_service_korean_role_shortform_lockin": {
           "companion_paths": [
             "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_query_service_korean_role_colloquial_lockin": {
+          "companion_paths": [
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+            "contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md"
           ],
           "companion_max_rank": 4
         },
@@ -709,6 +767,12 @@
             "contents/design-pattern/projection-lag-budgeting-pattern.md"
           ],
           "companion_max_rank": 3
+        },
+        "beginner_string_key_lookup_datastructure_lockin": {
+          "companion_paths": [
+            "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md"
+          ],
+          "companion_max_rank": 4
         }
       }
     },
@@ -1074,6 +1138,14 @@
       "learning_points": [],
       "expected_path": "contents/data-structure/applied-data-structures-overview.md",
       "max_rank": 3
+    },
+    {
+      "id": "beginner_string_key_lookup_datastructure_lockin",
+      "prompt": "문자열 key 조회 자료구조가 뭐예요? exact lookup 기준으로 먼저 보고 싶어요",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md",
+      "max_rank": 1
     },
     {
       "id": "jwt_basics",
@@ -2960,6 +3032,19 @@
       "max_rank": 1
     },
     {
+      "id": "beginner_mvcc_english_meaning_lockin",
+      "prompt": "What does MVCC mean?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "companion_paths": [
+        "contents/database/transaction-isolation-locking.md",
+        "contents/database/mvcc-read-view-consistent-read-internals.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
       "id": "beginner_mvcc_english_why_use_lockin",
       "prompt": "Why use MVCC?",
       "learning_points": [],
@@ -3042,8 +3127,32 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_query_model_english_role_shortform_lockin",
+      "prompt": "What does a query model do in backend APIs?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_query_service_english_shortform_lockin",
       "prompt": "What is a query service in backend APIs?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_query_service_english_meaning_alias_lockin",
+      "prompt": "What does a query service mean?",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
@@ -3218,6 +3327,14 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+      "prompt": "스프링 transaction이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1
+    },
+    {
       "id": "beginner_transactional_korean_meaning_lockin",
       "prompt": "@Transactional 무슨 뜻이야?",
       "learning_points": [],
@@ -3270,6 +3387,19 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_transactional_english_meaning_with_annotation_lockin",
+      "prompt": "What does @Transactional mean in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-transaction-propagation-deep-dive.md",
+        "contents/spring/spring-transactional-self-invocation-test-bridge-primer.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_transactional_mental_model_confusion_lockin",
       "prompt": "transactional 감이 안 와",
       "learning_points": [],
@@ -3293,6 +3423,14 @@
     {
       "id": "beginner_di_vs_ioc_colloquial_shortform_lockin",
       "prompt": "DI vs IoC 차이가 뭔데?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_di_why_use_shortform_lockin",
+      "prompt": "DI는 왜 써?",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-ioc-di-basics.md",
@@ -3643,6 +3781,30 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_springbootapplication_shortform_lockin",
+      "prompt": "SpringBootApplication이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-bean-di-basics.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_springbootapplication_annotation_definition_lockin",
+      "prompt": "@SpringBootApplication이란?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-bean-di-basics.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_applicationcontext_shortform_lockin",
       "prompt": "ApplicationContext 가 뭐야?",
       "learning_points": [],
@@ -3758,6 +3920,18 @@
       "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
       "companion_paths": [
         "contents/network/http2-http3-connection-reuse-coalescing.md"
+      ],
+      "companion_max_rank": 4,
+      "max_rank": 1
+    },
+    {
+      "id": "beginner_keepalive_merged_alias_lockin",
+      "prompt": "HTTP keepalive가 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+      "companion_paths": [
+        "contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md"
       ],
       "companion_max_rank": 4,
       "max_rank": 1

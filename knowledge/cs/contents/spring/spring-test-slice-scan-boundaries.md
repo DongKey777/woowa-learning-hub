@@ -23,6 +23,16 @@
 
 retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, webmvctest 뭐예요, webmvctest service not found, 처음 배우는데 webmvctest, datajpatest 뭐예요, datajpatest service bean not found, springboottest full context, springboottest랑 webmvctest 차이, testconfiguration 뭐예요, import in slice test, 슬라이스 테스트 헷갈려요, 왜 service bean not found, controller slice vs repository slice, spring test slice scan boundaries basics
 
+## beginner 정지선
+
+이 문서에서 먼저 끝낼 질문은 세 개뿐이다.
+
+- `@WebMvcTest`는 왜 service를 기본으로 안 띄우나
+- `@DataJpaTest`는 왜 controller를 기본으로 안 띄우나
+- 전체 연결을 보고 싶으면 왜 `@SpringBootTest`로 올라가나
+
+`@Import`, `@TestConfiguration`, context cache, flush/clear/rollback visibility는 "경계를 바꾸면 무슨 일이 생기나"를 다루는 follow-up이다. 처음에는 링크만 저장해 두고 slice 기본 경계부터 잡는 편이 안전하다.
+
 ## 처음엔 이 표부터 고른다
 
 처음 막히면 "`scan이 왜 안 되지`"보다 "`내가 지금 어디까지 띄우려는 테스트지`"를 먼저 고르는 편이 빠르다.
@@ -38,6 +48,38 @@ retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, web
 - 웹 계약이면 `@WebMvcTest`
 - JPA면 `@DataJpaTest`
 - 전체 wiring이면 `@SpringBootTest`
+
+## 처음 20초 결론
+
+- slice 테스트는 "일부만 띄우는 테스트"라서 같은 package여도 service/repository/controller가 자동으로 다 보이지 않는다.
+- "`service bean not found`"는 scan 고장보다 "내가 지금 web slice를 고른 상태인가"를 먼저 확인하는 신호다.
+- 경계를 바꾸는 `@Import`/`@TestConfiguration`은 나중 단계다. 처음에는 기본 slice 목적이 맞는지부터 본다.
+
+## `service`라는 단어가 보여도 질문은 둘로 나눈다
+
+초급자가 가장 많이 섞는 문장은 "`service`가 없어요"와 "`service`는 있는데 트랜잭션이 안 먹어요"다. 둘 다 service 단어가 보이지만 같은 고장이 아니다.
+
+| 지금 나온 문장 | 먼저 자를 질문 | 먼저 갈 문서 |
+|---|---|---|
+| "`@WebMvcTest`인데 service bean not found예요" | "`무엇을 띄웠나?`" | 이 문서 |
+| "`@SpringBootTest`에서는 service가 보이는데 `@Transactional`이 안 먹어요" | "`어떻게 호출했나?`" | [`@Transactional 기초: 트랜잭션 어노테이션이 하는 일`](./spring-transactional-basics.md) |
+| "`POST /orders`가 controller 전에 400 나요" | "`service 전에 요청 바인딩에서 끊겼나?`" | [`Spring MVC 요청 생명주기 기초`](./spring-mvc-request-lifecycle-basics.md) |
+
+짧게 외우면 slice는 "`무엇을 띄웠나`", transaction 프록시는 "`어떻게 호출했나`"다.
+
+## 확대경 비유는 여기까지만 쓴다
+
+처음에는 slice 테스트를 "전체 앱을 다른 확대경으로 보는 창"이라고 생각하면 이해가 빠르다.
+
+| 테스트 | 확대해서 보는 부분 | 이 비유가 유용한 지점 |
+|---|---|---|
+| `@WebMvcTest` | controller 계약, JSON, 상태 코드 | web 계층만 따로 확인한다는 감각 |
+| `@DataJpaTest` | entity, repository, JPA 동작 | 저장 계층만 따로 확인한다는 감각 |
+| `@SpringBootTest` | controller + service + repository 연결 | 전체 wiring 확인이라는 감각 |
+
+하지만 이 비유는 여기까지만 맞다. slice는 화면만 확대하는 도구가 아니라, **애초에 어떤 Bean을 띄울지 경계를 잘라 둔 테스트**라서 같은 package라도 service/repository/controller가 자동으로 다 나오지 않는다.
+
+즉 "`controller 테스트에서 service가 안 보여요`"는 scan 고장보다 기본 경계 설명으로 끝나는 경우가 많다. 반대로 service가 이미 보이는데 behavior가 이상하면 slice 문서를 더 파기보다 transaction/AOP 문서로 넘어가는 편이 빠르다.
 
 ## 한 장 예시: 같은 주문 기능도 테스트 목적이 다르면 slice가 달라진다
 
@@ -67,6 +109,18 @@ retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, web
 - service는 **보이는데 동작이 이상하면** 프록시 질문일 가능성이 크다.
 - "`service`"라는 단어가 같아도 scan 문제와 transaction 문제는 같은 종류의 실패가 아니다.
 
+## 처음 많이 섞는 3문장
+
+처음에는 controller, service, transaction, test가 한 요청 그림에서 같이 보여서 아래 3문장을 같은 고장처럼 읽기 쉽다. 이 표는 "`어느 창을 잘못 골랐나`"와 "`runtime에서 어디가 막혔나`"를 분리하는 최소 분기표다.
+
+| 지금 튀어나온 말 | 먼저 자를 축 | 바로 갈 문서 |
+|---|---|---|
+| "`@WebMvcTest`인데 `OrderService`가 없어요" | slice 경계 | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`OrderService`는 있는데 `@Transactional`이 안 먹어요" | 프록시 호출 경로 | [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md) |
+| "`POST /orders`가 controller 전에 400 나요" | 요청 바인딩 / request pipeline | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+
+짧게 외우면 "`service가 없나`", "`service는 있는데 안 되나`", "`controller 전에 막혔나`" 세 문장만 먼저 나누면 된다.
+
 ## 한 번에 갈라 보기: 같은 `OrderService`로도 실패 장면이 다르다
 
 같은 주문 기능이라도 초급자는 "`OrderService`에서 터졌다"는 공통점 때문에 원인을 한 덩어리로 묶기 쉽다. 아래처럼 **Bean을 띄우지 못한 장면**과 **Bean은 있는데 프록시 동작이 빠진 장면**을 먼저 가르면 다음 문서가 빨라진다.
@@ -83,6 +137,10 @@ retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, web
 - Bean은 있는데 transaction이 이상하면 호출 경로를 다시 본다.
 - controller/service/repository를 한 번에 보고 싶을 때만 `@SpringBootTest`로 올라간다.
 
+## 더 깊은 설정은 여기서 멈추고 넘긴다
+
+처음부터 `@Import`, security filter, context caching까지 같이 열면 "`무엇을 띄웠나`"보다 "`얼마나 많이 끌고 왔나`"에 시선이 뺏기기 쉽다. beginner 기준으로는 기본 slice 목적을 먼저 고정하고, 아래 문서는 필요할 때만 여는 편이 낫다.
+
 ## 이 문서 다음에 보면 좋은 문서
 
 - 테스트 컨텍스트를 얼마나 재사용할지까지 이어서 보려면 [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)으로 넘어간다.
@@ -90,274 +148,41 @@ retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, web
 - service/controller는 뜨는데 entity/repository 쪽에서만 깨지면 [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)로 넘어가 JPA 전용 경계를 따로 본다.
 - `@DataJpaTest` 자체는 맞는데 flush/clear/rollback 착시가 섞이면 [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)까지 이어서 본다.
 
----
-
 ## 핵심 개념
 
-테스트에서 사람들이 말하는 "scan"은 보통 두 가지를 섞어 말한다.
+처음에는 "scan이 고장 났다"보다 "`무엇을 띄우는 테스트인가`"를 먼저 보면 된다.
 
-1. 어떤 package를 기준으로 bean/entity/repository를 찾는가
-2. 어떤 종류의 bean만 후보로 허용하는가
+| 테스트 | 기본으로 보는 것 | 기본으로 빠지는 것 | beginner 첫 판단 |
+|---|---|---|---|
+| `@WebMvcTest` | controller, JSON/MVC 계약 | service, repository, 일반 `@Component` | service가 안 보여도 slice 정상일 수 있다 |
+| `@DataJpaTest` | entity, repository, JPA 동작 | controller, service, web/security bean | controller가 안 보여도 slice 정상일 수 있다 |
+| `@SpringBootTest` | controller + service + repository 전체 연결 | slice처럼 의도적으로 비운 레이어가 적다 | 전체 wiring 확인용이다 |
 
-`@SpringBootTest`와 test slice의 가장 큰 차이는 둘 다 다르다는 점이다.
+짧게 외우면 `@WebMvcTest`는 웹 계약, `@DataJpaTest`는 저장 계층, `@SpringBootTest`는 전체 연결이다.
 
-| 테스트 형태 | 시작점 | 자동으로 들어오는 것 | 자동으로 빠지는 것 | 경계가 바뀌는 순간 |
-|---|---|---|---|---|
-| `@SpringBootTest` | 애플리케이션의 `@SpringBootApplication` / `@SpringBootConfiguration` | 보통 controller, service, repository, entity, 대부분의 auto-configuration | 테스트 전용 helper bean | `classes`, profile, exclude, test property로 앱 경계를 바꿀 때 |
-| `@WebMvcTest` | MVC slice + 선택한 controller 중심 | controller, controller advice, converter, JSON/MVC 지원 bean, 일부 filter/security 지원 | service, repository, 일반 `@Component` | `@Import`, `@TestConfiguration`, custom filter/security config를 얹을 때 |
-| `@DataJpaTest` | JPA slice | entity, repository, JPA infra, transaction test support | controller, service, web/security bean | `@Import`, auditing config, custom JPA scan 설정을 얹을 때 |
-| slice + custom config | 원래 slice 위에 명시적으로 올린 추가 설정 | import한 bean, 또는 그 설정이 다시 scan한 bean | 여전히 full app 전체는 아님 | `@ComponentScan`, `@EnableJpaRepositories`, `@EntityScan`을 test config에 넣을 때 |
+## 흔한 오해만 먼저 끊는다
 
-핵심은 간단하다.
-
-- `@SpringBootTest`는 **애플리케이션 실제 시작점**에 가깝다.
-- `@WebMvcTest`, `@DataJpaTest`는 **미리 잘라 둔 탐색 경계**에서 시작한다.
-- custom test config는 **원래 경계를 복원하는 버튼이 아니라, 새로운 구멍을 내는 버튼**이다.
-
----
-
-## 먼저 이 오해부터 버린다
-
-| 흔한 오해 | 실제 동작 |
+| 흔한 오해 | 여기서 먼저 잡을 답 |
 |---|---|
-| `@WebMvcTest`도 controller와 service가 같은 package면 service를 찾는다 | 아니다. MVC slice는 service/repository를 기본 후보에서 제외한다 |
-| `@DataJpaTest`는 repository가 필요하니 service도 같이 올린다 | 아니다. JPA slice는 entity/repository/JPA infra 중심이다 |
-| nested `@TestConfiguration`을 붙이면 slice가 full context처럼 변한다 | 아니다. 거기서 선언한 bean만 추가된다. 단, 그 안에 `@ComponentScan`을 넣으면 이야기가 달라진다 |
-| `@Import(AppConfig.class)`는 bean 하나만 더하는 안전한 동작이다 | 아니다. imported config가 다른 config나 scan을 끌고 오면 slice 경계가 생각보다 크게 넓어진다 |
-| full `@SpringBootTest`에서 통과하니 slice에서도 같은 bean이 보여야 한다 | 아니다. slice는 의도적으로 빠진 영역이 있다 |
-
-처음 막히는 증상을 짧게 다시 묶으면 아래와 같다.
-
-- "`왜 `@WebMvcTest`에서 service bean not found가 나요?`"는 대개 실패가 아니라 정상 slice 경계다.
-- "`왜 `@DataJpaTest`에서 controller가 안 보여요?`"도 scan 이상보다 JPA 전용 경계를 먼저 의심한다.
-- "`왜 `@Import` 하나 붙였는데 테스트가 점점 무거워져요?`"는 helper bean 추가가 아니라 경계 leak가 시작됐다는 신호일 수 있다.
-
----
-
-## `@SpringBootTest`는 왜 기준점인가
-
-기본 `@SpringBootTest`는 보통 실제 애플리케이션과 가장 비슷한 컨텍스트를 띄운다.
-
-- `@SpringBootApplication`이 정한 component scan 경계를 따른다
-- Boot auto-configuration이 전체 애플리케이션 시나리오를 기준으로 적용된다
-- controller, service, repository, entity가 한 번에 wiring될 수 있다
-
-즉 full test에서 보이던 bean이 slice test에서 안 보이면, 보통 "package가 틀렸다"보다 먼저 **테스트 종류가 경계를 잘랐는지**를 의심해야 한다.
-
-```java
-@SpringBootTest
-class OrderApplicationTest {
-
-    @Autowired OrderController orderController;
-    @Autowired OrderService orderService;
-    @Autowired OrderRepository orderRepository;
-}
-```
-
-이 그림은 애플리케이션 전체 wiring 검증에는 맞지만, controller 계약 하나만 보기에는 무겁다.
-
----
-
-## `@WebMvcTest`는 package 전체를 다시 scan하지 않는다
-
-`@WebMvcTest`를 처음 쓰면 가장 많이 하는 오해가 이것이다.
-
-> "controller가 같은 패키지에 있으니 service도 같이 보이겠지"
-
-실제로는 그렇지 않다.
-
-`@WebMvcTest`는 "웹 계층에 필요한 후보만 남긴 테스트 컨텍스트"다.
-즉 package가 같아도 아래는 기본으로 들어오지 않는다.
-
-- `@Service`
-- `@Repository`
-- 일반 `@Component`
-- 데이터베이스/메시징/외부 클라이언트 wiring
-
-반대로 이런 것은 slice 안에서 자주 남는다.
-
-- 선택한 `@Controller`
-- `@ControllerAdvice`
-- `Converter`, `GenericConverter`
-- `HandlerMethodArgumentResolver`
-- JSON/MVC 설정
-- 경우에 따라 filter/security 관련 web bean
-
-```java
-@WebMvcTest(OrderController.class)
-class OrderControllerTest {
-
-    @Autowired MockMvc mockMvc;
-
-    // 직접 구현체가 자동 주입되길 기대하면 안 된다.
-    @MockBean OrderService orderService;
-}
-```
-
-즉 `@WebMvcTest`에서 service가 안 보이는 것은 scan 실패라기보다 **원래 slice 경계가 그렇게 설계된 것**이다.
-
-처음 질문을 이렇게 바꾸면 덜 헷갈린다.
-
-- "같은 package인데 왜 service가 안 보이지?"가 아니라
-- "내가 web slice를 고른 상태에서 service까지 기대하고 있나?"를 먼저 본다.
-
----
-
-## `@DataJpaTest`는 JPA 쪽만 보는 별도 경계다
-
-`@DataJpaTest`도 full context를 반쯤 줄인 것이 아니다.
-
-이 테스트는 보통 아래를 검증하려고 만든다.
-
-- entity 매핑
-- repository query
-- JPA 설정
-- 트랜잭션 안의 persistence context 동작
-
-그래서 기본적으로 기대할 수 있는 것은 이쪽이다.
-
-- `@Entity`
-- Spring Data repository
-- JPA 관련 infrastructure
-- 테스트용 transaction support
-
-반대로 기대하면 안 되는 것은 이쪽이다.
-
-- controller
-- service
-- security/web layer
-- 애플리케이션 전체 business wiring
-
-```java
-@DataJpaTest
-class OrderRepositoryTest {
-
-    @Autowired OrderRepository orderRepository;
-
-    // service는 자동으로 보이지 않는 것이 정상이다.
-    // @Autowired OrderService orderService;
-}
-```
-
-여기서 더 헷갈리는 지점은, `@DataJpaTest`의 "scan"은 component scan 하나로 끝나지 않는다는 점이다.
-entity discovery와 repository discovery는 JPA 전용 경계를 따르므로, 이 축이 더 궁금하면 [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)로 이어서 보는 편이 빠르다.
-
----
-
-## custom `@Import` / `@TestConfiguration`은 경계를 넓히기도 하고, 그냥 구멍만 뚫기도 한다
-
-여기가 실무에서 가장 자주 오해되는 부분이다.
-
-### 1. 좁게 bean 하나만 추가하는 경우
-
-이런 형태는 slice의 의도를 비교적 잘 유지한다.
-
-```java
-@WebMvcTest(OrderController.class)
-@Import(OrderControllerTest.TestClockConfig.class)
-class OrderControllerTest {
-
-    @TestConfiguration
-    static class TestClockConfig {
-        @Bean
-        Clock testClock() {
-            return Clock.systemUTC();
-        }
-    }
-}
-```
-
-이 경우 `Clock`만 추가된 것이다.
-애플리케이션 전체를 다시 scan한 것이 아니다.
-
-### 2. imported config가 다시 scan을 시작하는 경우
-
-이때부터 slice 경계가 새기 시작한다.
-
-```java
-@WebMvcTest(OrderController.class)
-@Import(AppTestConfig.class)
-class OrderControllerTest {
-}
-
-@TestConfiguration
-@ComponentScan("com.example.order")
-class AppTestConfig {
-}
-```
-
-이 설정은 helper bean 하나만 더한 게 아니라, test config가 다시 package scan을 시작한다.
-그러면 controller test에 service, repository, 다른 component가 들어오기 시작할 수 있다.
-
-같은 문제는 JPA slice에서도 생긴다.
-
-- `@EnableJpaRepositories`를 test config에 다시 넣는다
-- `@EntityScan` 범위를 넓힌다
-- 운영용 config를 통째로 `@Import`한다
-
-이런 순간 `@DataJpaTest`는 단순 repository test가 아니라 **무슨 경계인지 설명하기 어려운 partial integration test**가 되기 쉽다.
-
-### 3. 중요한 차이 하나
-
-`@Import` 자체가 위험한 것이 아니라, **무엇을 import하느냐**가 중요하다.
-
-- test support bean만 선언한 config: 비교적 안전
-- 운영용 app config, broad `@ComponentScan`, 다른 infra config를 품은 config: 경계 leak 위험 큼
-
-즉 custom config의 질문은 항상 이것이어야 한다.
-
-> 이 설정은 bean 하나를 보강하는가, 아니면 테스트가 원래 제외하던 레이어를 다시 끌어오는가?
-
----
-
-## 왜 "같은 package인데 안 보이지?"가 자꾸 나오나
-
-full `@SpringBootTest`에 익숙하면 package 구조만 보고 이렇게 추론하기 쉽다.
-
-```text
-com.example.order
-  ├── OrderController
-  ├── OrderService
-  └── OrderRepository
-```
-
-하지만 slice에서는 package보다 먼저 **허용된 bean 종류**가 작동한다.
-
-- `@WebMvcTest`는 "order package 전체"가 아니라 "그중 web 관련 후보"
-- `@DataJpaTest`는 "order package 전체"가 아니라 "그중 JPA 관련 후보"
-
-즉 slice에서는 package가 맞아도 bean 종류가 다르면 제외될 수 있다.
-
-이 점이 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)과 다른 부분이다.
-component scan 문서는 "base package 자체가 틀린 경우"를 다루고, 이 문서는 **base package가 맞아도 slice filter가 일부를 의도적으로 빼는 경우**를 다룬다.
-
----
-
-## 실전 분기표
-
-### 시나리오 1: `@WebMvcTest`에서 service 주입이 안 된다
-
-가장 먼저 드는 결론은 "scan이 고장 났다"가 아니다.
-
-- 정상적인 slice 동작인지 본다
-- controller 계약만 보면 되는 테스트라면 mock/stub으로 유지한다
-- 진짜 service wiring까지 봐야 하면 `@SpringBootTest` 또는 더 넓은 integration test로 올린다
-
-### 시나리오 2: `@DataJpaTest`에서 auditing bean이나 converter가 없다
-
-- repository/JPA 계약에 필요한 최소 bean만 `@Import`할지
-- 그 bean이 사실 service/web/security까지 끌고 오는 운영 config인지
-- 계속 import를 늘려야 하는 상황이면 full integration test가 더 맞는지
-
-를 순서대로 본다.
-
-### 시나리오 3: nested `@TestConfiguration`을 추가했더니 갑자기 DB bean까지 보인다
-
-`@TestConfiguration` 자체보다 그 안의 `@ComponentScan`, `@Import`, 혹은 imported config의 하위 graph를 의심해야 한다.
-
-### 시나리오 4: full `@SpringBootTest`는 통과하지만 slice만 깨진다
-
-보통 slice가 부족한 것이 아니라, **검증하려는 경계와 테스트 타입이 안 맞는 것**이다.
+| "`@WebMvcTest`도 같은 package면 service를 찾겠지" | 아니다. web 관련 후보만 남긴다 |
+| "`@DataJpaTest`면 service도 조금은 같이 뜨겠지" | 아니다. JPA 경계만 본다 |
+| "`@Import` 하나면 그냥 bean 하나 추가겠지" | 꼭 아니다. 운영 config나 broad scan을 끌면 경계 leak가 생긴다 |
+| "full test에서 통과했으니 slice도 같은 bean이 보여야 한다" | 아니다. slice는 의도적으로 일부 레이어를 비운다 |
+
+처음 막히는 문장도 이 정도만 나누면 충분하다.
+
+- "`왜 `@WebMvcTest`에서 service bean not found가 나요?`"는 scan 고장보다 slice 정상 동작일 수 있다.
+- "`왜 `@DataJpaTest`에서 controller가 안 보여요?`"도 JPA 경계를 먼저 의심한다.
+- "`왜 `@Import` 하나 붙였는데 테스트가 무거워져요?`"는 helper bean이 아니라 경계 leak 신호일 수 있다.
+
+## beginner-safe 다음 한 걸음
+
+| 지금 막힌 문장 | 여기서 내릴 1차 판단 | 다음 문서 |
+|---|---|---|
+| "`@WebMvcTest`인데 service가 없어요" | controller 계약을 보는 slice일 수 있다 | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`service`는 있는데 `@Transactional`이 안 먹어요" | slice보다 프록시 호출 경로를 먼저 본다 | [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md) |
+| "`@Import`, `@TestConfiguration` 붙였더니 테스트가 커졌어요" | 경계를 새게 만들었을 수 있다 | [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md) |
+| "`flush`/`clear`/rollback 결과가 헷갈려요" | slice 선택보다 JPA 동작 follow-up이다 | [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md) |
 
 ---
 

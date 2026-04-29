@@ -585,7 +585,7 @@ public class VipMember extends Member {
 - 메서드, 생성자, parameter, return type, overloading을 한 클래스 흐름으로 묶어 보고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - 클래스/객체/인스턴스 차이를 캡슐화, 추상화, 상속, 다형성 큰 그림으로 이어서 보고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)
 - `extends`, overriding, `@Override`, dynamic dispatch를 작은 예제로 이어 보고 싶다면 [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
-- 처음 배우는데 "상속을 언제 쓰는지", "추상 클래스와 인터페이스를 어디서 나누는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) 순서가 가장 안전하다
+- 처음 배우는데 "상속을 언제 쓰는지", "추상 클래스와 인터페이스를 어디서 나누는지", "상속 vs 조합을 어떻게 보나"가 궁금하다면 [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) 순서가 가장 안전하다
 - 접근 제한자, `static`, `final`을 클래스 모델과 함께 잡고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - `==`, `.equals()`, `hashCode()`가 왜 갈리는지 같이 잡고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - 상태값을 `int` 대신 타입으로 묶는 감각을 붙이고 싶다면 [Java enum 기초](./java-enum-basics.md)

@@ -12,7 +12,7 @@
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 
-retrieval-anchor-keywords: demand paging page fault primer basics, demand paging page fault primer beginner, demand paging page fault primer intro, operating system basics, beginner operating system, 처음 배우는데 demand paging page fault primer, demand paging page fault primer 입문, demand paging page fault primer 기초, what is demand paging page fault primer, how to demand paging page fault primer
+retrieval-anchor-keywords: demand paging, demand paging 뭐예요, page fault가 뭐예요, page fault는 왜 나요, page fault는 에러인가요, demand paging vs page fault, lazy allocation 기초, first touch 메모리, 처음 배우는데 page fault, 페이지를 왜 나중에 올려요, fork가 처음엔 빠른데 왜 첫 write가 느려요, mmap은 왜 접근할 때 느려져요, copy on write page fault, major minor page fault 입문
 > 관련 문서:
 > - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 > - [가상 메모리](./README.md#가상-메모리)
@@ -24,6 +24,8 @@ retrieval-anchor-keywords: demand paging page fault primer basics, demand paging
 > - [Page Table Overhead, Memory Footprint](./page-table-overhead-memory-footprint.md)
 
 > retrieval-anchor-keywords: demand paging primer, page fault primer, virtual memory bridge, page fault basics, major vs minor page fault, copy-on-write primer, COW page fault, mmap page fault, anonymous page, file-backed page, first touch, lazy allocation, lazy loading, page cache hit fault, page cache miss fault, zero-fill-on-demand, MAP_PRIVATE, fork first write, demand-zero page, beginner handoff box, primer handoff box, demand paging 다음 문서
+
+이 문서는 "`page fault가 뭐예요`", "`왜 프로그램 시작할 때 메모리를 다 안 올려요?`", "`fork()`가 왜 첫 write에서만 느려져요?`"처럼 가상 메모리 다음에 바로 나오는 질문을 beginner 기준으로 묶는다.
 
 ## 핵심 개념
 

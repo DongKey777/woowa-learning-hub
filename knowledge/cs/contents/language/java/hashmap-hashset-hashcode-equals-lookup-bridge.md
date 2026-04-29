@@ -14,6 +14,7 @@ retrieval-anchor-keywords: hashmap hashset hashcode equals lookup bridge, hashco
 > 관련 문서:
 > - [Language README](../README.md)
 > - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+> - [`new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill](./new-aliasing-equality-hashset-hashmap-get-bridge-drill.md)
 > - [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
 > - [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./map-lookup-debug-equals-hashcode-compareto-mini-bridge.md)
 > - [Mutable Hash Keys Bridge](./mutable-hash-keys-hashset-hashmap-bridge.md)
@@ -197,6 +198,7 @@ System.out.println(names.get(new UserKey(1L))); // momo
 ## 다음 읽기
 
 - `equals()`/`hashCode()` 기초를 먼저 다시 다지고 싶으면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- aliasing에서 hash lookup까지 한 번에 묶어 예측하는 연습이 필요하면 [`new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill](./new-aliasing-equality-hashset-hashmap-get-bridge-drill.md)
 - `HashMap` 조회 실패 증상을 바로 디버깅 순서로 연결하고 싶으면 [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./map-lookup-debug-equals-hashcode-compareto-mini-bridge.md)
 - mutable key 때문에 lookup이 깨지는 사례를 보고 싶으면 [Mutable Hash Keys Bridge](./mutable-hash-keys-hashset-hashmap-bridge.md)
 - `TreeSet`/`TreeMap`은 왜 다른 규칙을 쓰는지 비교하고 싶으면 [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)

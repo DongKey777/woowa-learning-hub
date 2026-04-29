@@ -1,6 +1,6 @@
 # 큐 기초 (Queue Basics)
 
-> 한 줄 요약: 큐는 먼저 들어온 것이 먼저 나오는 FIFO 구조로, 순서를 지키며 처리해야 하는 모든 대기열 문제의 기본 도구다.
+> 한 줄 요약: 큐는 먼저 들어온 것이 먼저 나오는 FIFO 구조이고, `가까운 칸부터` 같은 BFS 문장에서는 beginner 답안을 `queue + visited`까지 같이 붙여 두는 편이 안전하다.
 
 **난이도: 🟢 Beginner**
 
@@ -16,7 +16,7 @@
 - [Service 계층 기초](../software-engineering/service-layer-basics.md)
 - [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 
-retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 가까운 칸부터 한 겹씩 퍼지는 탐색, queue vs bfs beginner, bfs visited set basics, queue만 쓰면 되나요, 처음 bfs visited 헷갈림, service 코드인데 queue가 보여요, queue가 worker handoff인지 bfs인지 헷갈려요, 받은 순서대로 처리 vs 최소 이동 횟수
+retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, queue vs bfs beginner, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 level-order 레벨 순서 탐색, bfs level order basics, bfs visited set basics, queue만 쓰면 되나요, 처음 bfs visited 헷갈림, queue가 worker handoff인지 bfs인지 헷갈려요, 받은 순서대로 처리 vs 최소 이동 횟수
 
 ## README 복귀 가이드
 
@@ -74,7 +74,7 @@ retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, que
 | 문제 문장 | 실제로 묻는 것 | 첫 구조 |
 |---|---|---|
 | `들어온 순서대로 처리` | 먼저 온 것을 먼저 꺼내는가 | 큐 |
-| `가까운 칸부터 한 겹씩 본다` | 거리 1, 2, 3 순서로 넓어지는가 | BFS(구현 도구는 queue) |
+| `가까운 칸부터`, `레벨 순서로 본다` | 거리 1, 2, 3 순서로 넓어지는가 | BFS(구현 도구는 queue) |
 | `가장 급한 작업부터` | 도착 순서가 아니라 우선순위가 기준인가 | 우선순위 큐 |
 
 처음엔 아래 비교만 정확히 자르면 queue 오분류가 크게 줄어든다.
@@ -82,7 +82,7 @@ retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, que
 | 문장 신호 | 실제 핵심 | 첫 출발점 |
 |---|---|---|
 | `먼저 받은 요청부터 처리` | FIFO 처리 순서 | 큐 |
-| `가까운 칸부터 한 겹씩 확장` | 거리 순서 탐색 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `가까운 칸부터`, `레벨 순서로 확장` | 거리 순서 탐색 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
 | `id로 한 건 바로 찾기` | key lookup | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
 | `가장 급한 작업부터 처리` | 우선순위 기준 | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
 
@@ -138,7 +138,7 @@ peek()     → 2 조회, [2, 3]
 
 초보자 기준으로는 아래 한 줄이 핵심이다.
 
-> `queue는 FIFO 순서를 만드는 도구`, `BFS는 그 도구를 써서 가까운 칸부터 한 겹씩 퍼지는 탐색`
+> `queue는 FIFO 순서를 만드는 도구`, `BFS는 그 도구를 써서 level-order(레벨 순서)로 가까운 칸부터 넓히는 탐색`
 
 그리고 BFS를 실제로 쓸 때는 이 한 줄까지 같이 붙여 두는 편이 안전하다.
 
@@ -149,7 +149,7 @@ peek()     → 2 조회, [2, 3]
 | 지금 보이는 신호 | 먼저 묻는 것 | 바로 떠올릴 첫 생각 |
 |---|---|---|
 | `먼저 온 요청부터 처리` | 처리 순서가 FIFO인가 | queue |
-| `미로에서 가까운 칸부터` | 탐색이 레벨 순서인가 | BFS, 구현 도구는 queue |
+| `미로에서 가까운 칸부터`, `level-order로 본다` | 탐색이 레벨 순서인가 | BFS, 구현 도구는 queue |
 | `갈 수 있나?`, `최소 몇 번인가?` | 연결/최단 경로 질문인가 | [그래프 기초](./graph-basics.md) 또는 [Connectivity Question Router](./connectivity-question-router.md) |
 
 짧은 예시로 보면 더 분명하다.
@@ -157,7 +157,7 @@ peek()     → 2 조회, [2, 3]
 | 상황 | queue가 답인가 | BFS가 답인가 | 이유 |
 |---|---|---|---|
 | 프린터 작업이 들어온 순서대로 출력 | 예 | 아니오 | 탐색이 아니라 FIFO 처리다 |
-| 미로에서 출구까지 최소 이동 횟수 찾기 | 도구로는 예 | 예 | 문제 핵심이 `가까운 칸부터 한 겹씩`이다 |
+| 미로에서 출구까지 최소 이동 횟수 찾기 | 도구로는 예 | 예 | 문제 핵심이 `level-order(레벨 순서)` 탐색이다 |
 | 주문 `orderId`로 바로 조회 | 아니오 | 아니오 | 이 경우 핵심은 queue가 아니라 map lookup이다 |
 
 헷갈릴 때는 이렇게 자르면 된다.
@@ -175,7 +175,7 @@ peek()     → 2 조회, [2, 3]
 
 | 구성 요소 | 맡는 일 | 빠지면 생기는 일 |
 |---|---|---|
-| `queue` | `가까운 칸부터` 꺼내는 FIFO 순서 유지 | 거리 레벨 순서가 무너진다 |
+| `queue` | `레벨 순서`가 유지되도록 다음 칸을 FIFO로 꺼냄 | 거리 레벨 순서가 무너진다 |
 | `visited set/boolean[][]` | 이미 본 칸을 다시 넣지 않게 막음 | 같은 칸이 큐에 여러 번 들어간다 |
 
 초보자용 한 줄 기억법:
@@ -202,6 +202,18 @@ visited.add(next); // 또는 visited[nx][ny] = true;
 핵심은 `꺼낼 때`가 아니라 `넣을 때 바로 visited 처리`하는 쪽이 beginner에게 더 안전하다는 점이다.
 그래야 같은 정점이 여러 부모를 통해 큐에 중복으로 쌓이는 일을 초반에 막을 수 있다.
 
+## 초급 셀프 체크
+
+아래 두 문장을 5초 안에 같이 말할 수 있으면 이 문서의 핵심은 잡힌 것이다.
+
+| 셀프 체크 문장 | 안전한 답안 문장 |
+|---|---|
+| `queue와 BFS는 같은 말인가요?` | `아니다. queue는 FIFO 도구이고, BFS beginner 답안 기본형은 queue + visited다.` |
+| `미로에서 가까운 칸부터 최소 이동 횟수를 구해요.` | `분류는 BFS, beginner 구현 답안은 queue + visited.` |
+
+- `queue`까지만 말하고 `visited`를 빼먹으면 BFS beginner 답안으로는 절반만 맞힌 셈이다.
+- `FIFO 처리`가 핵심이면 queue, `가까운 칸부터`가 핵심이면 BFS, 그리고 BFS 답안은 `queue + visited`까지 한 세트로 붙인다.
+
 ## 상세 분해
 
 큐를 쓸 때 도움이 되는 핵심 패턴은 세 가지다.
@@ -226,7 +238,7 @@ poll C -> E enqueue    -> q = [D, E]
 - **오해 1: 큐와 스택은 비슷하다.**
   둘 다 선형 구조지만 꺼내는 순서가 반대다. 스택은 LIFO(최근 것 먼저), 큐는 FIFO(오래된 것 먼저)다.
 - **오해 1-0: queue와 BFS는 같은 말이다.**
-  아니다. queue는 FIFO 도구이고, BFS는 그래프/미로를 레벨 순서로 탐색하는 방식이다. `가까운 칸부터`, `최소 이동 횟수`, `최소 환승 횟수` 같은 문장이 보이면 먼저 BFS 문제인지 판단하고, 그다음 구현 도구로 queue를 붙인다.
+  아니다. queue는 FIFO 도구이고, BFS는 그래프/미로를 level-order로 탐색하는 방식이다. `가까운 칸부터`, `최소 이동 횟수`, `최소 환승 횟수`, `레벨 순서` 같은 문장이 보이면 먼저 BFS 문제인지 판단하고, 그다음 구현 도구로 queue를 붙인다.
 - **오해 1-1: BFS에 쓰는 큐와 우선순위 큐가 비슷하다.**
   아니다. BFS는 "먼저 발견한 정점"을 먼저 처리하므로 FIFO 큐다. 가중치가 있으면 우선순위 큐 기반 다익스트라로 넘어간다.
 
@@ -241,11 +253,9 @@ poll C -> E enqueue    -> q = [D, E]
 - **오해 3-1: BFS는 queue만 있으면 된다.**
   아니다. beginner 기준으로는 `queue + visited`를 한 묶음으로 외우는 편이 안전하다. queue는 순서를 만들고, visited는 중복 방문을 막는다.
 - **오해 4: `queue`라는 단어가 나오면 무조건 자료구조 문제다.**
-  아니다. `최소 이동 횟수`, `가까운 칸부터`, `레벨 순서` 같은 문장은 알고리즘 쪽에서는 BFS 신호다. 큐는 그 BFS를 구현하는 도구다.
+  아니다. `최소 이동 횟수`, `가까운 칸부터`, `레벨 순서`, `level-order` 같은 문장은 알고리즘 쪽에서는 BFS 신호다. 큐는 그 BFS를 구현하는 도구다.
 - **오해 5: 한 문제에는 queue나 map 중 하나만 나온다.**
   아니다. 예를 들어 주문 시스템에서 `대기열 처리`는 queue로, `orderId 조회`는 map으로 푼다. 한 기능 안에서도 "무엇을 먼저 묻는가"에 따라 구조가 갈린다.
-- **오해 6: BFS에서 queue만 있으면 충분하다.**
-  아니다. 보통은 `queue + visited set/map`이 같이 간다. queue는 처리 순서를 만들고, visited는 같은 칸이나 정점이 다시 들어오는 일을 막는다.
 
 - **함정: 배열 기반 큐에서 앞쪽 공간이 낭비된다.**
   단순 배열로 큐를 구현하면 dequeue 후 앞 공간을 재사용하지 못한다. 원형 배열(circular array)로 해결한다.
@@ -272,10 +282,10 @@ Java에선 이때 `Queue<Node> q = new ArrayDeque<>();`를 많이 쓰는데, 포
 
 - 큐, 덱, 우선순위 큐를 문제 문장으로 먼저 자르고 싶다면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - BFS에서 큐가 왜 `거리 순서`를 만드는지 다시 붙이고 싶다면 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
-- `queue는 FIFO 순서를 만드는 도구, BFS는 가까운 칸부터 한 겹씩 퍼지는 탐색` 감각을 그래프 질문으로 다시 확인하고 싶다면 [그래프 기초](./graph-basics.md)
+- `queue는 FIFO 순서를 만드는 도구, BFS는 레벨 순서로 가까운 칸부터 넓히는 탐색` 감각을 그래프 질문으로 다시 확인하고 싶다면 [그래프 기초](./graph-basics.md)
 - 원형 큐와 링 버퍼까지 이어 보고 싶다면 [Circular Queue vs Ring Buffer Primer](./circular-queue-vs-ring-buffer-primer.md)
 - `queue`와 `map`을 자꾸 섞는다면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 
 ## 한 줄 정리
 
-큐는 "먼저 들어온 것이 먼저 나온다"는 FIFO 규칙 하나로, BFS·대기열·메시지 처리처럼 순서 보존이 중요한 문제를 깔끔하게 풀어준다.
+큐는 "먼저 들어온 것이 먼저 나온다"는 FIFO 도구이고, `가까운 칸부터` 같은 BFS beginner 답안은 `queue + visited`까지 같이 말해야 retrieval과 문제 분류가 덜 흔들린다.

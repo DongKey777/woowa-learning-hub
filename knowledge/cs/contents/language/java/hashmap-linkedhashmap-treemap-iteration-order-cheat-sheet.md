@@ -16,7 +16,7 @@
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 
-retrieval-anchor-keywords: hashmap linkedhashmap treemap iteration order, java map order cheat sheet, hashmap iteration order not guaranteed, linkedhashmap insertion order, linkedhashmap access order, treemap sorted order, treemap floorkey ceilingkey submap beginner, linkedhashmap vs treemap 언제 써요, 삽입 순서 보장 map, 정렬 기반 이웃 조회 map, map 구현체별 순서 차이, hashmap linkedhashmap treemap 차이, 자바 hashmap 순서 왜 바뀌지, 조회만 했는데 순서가 바뀐다, 최근에 조회한 key가 뒤로 간다
+retrieval-anchor-keywords: hashmap linkedhashmap treemap iteration order, java map order cheat sheet, hashmap iteration order not guaranteed, linkedhashmap insertion order, linkedhashmap access order, treemap sorted order, treemap floorkey ceilingkey submap beginner, 삽입 순서 보장 map, 정렬 기반 이웃 조회 map, map 구현체별 순서 차이, 자바 hashmap 순서 왜 바뀌지, 조회만 했는데 순서가 바뀐다, 최근에 조회한 key가 뒤로 간다, 처음 넣은 순서가 왜 안 나오지, linkedhashmap treemap 순서 차이 뭐예요
 
 ## 먼저 잡는 멘탈 모델
 
@@ -43,6 +43,25 @@ retrieval-anchor-keywords: hashmap linkedhashmap treemap iteration order, java m
 - "최근에 본 것이 뒤로 가야 함" -> `LinkedHashMap(access-order=true)`
 - "정렬해서 봄" -> `TreeMap`
 - "`x` 이하에서 가장 가까운 key"나 "`20` 이상 `40` 미만"을 바로 찾음 -> `TreeMap`
+
+## 순서 혼동을 15초 만에 자르는 증상 -> 원인 블록
+
+반복 순서 질문은 구현체 이름보다 **처음 보인 증상**으로 자르면 retrieval이 더 잘 걸린다.
+
+| 보인 증상 | 먼저 의심할 원인 | 첫 선택 |
+|---|---|---|
+| "처음 넣은 순서가 왜 안 나오지?" | `HashMap`에 순서 계약이 있다고 기대했다 | 기본 `LinkedHashMap` |
+| "조회만 했는데 key가 뒤로 갔다" | `LinkedHashMap(access-order=true)`라서 접근이 순서를 바꿨다 | `LinkedHashMap(access-order=true)` |
+| "왜 최근에 읽은 key 때문에 eviction 대상이 바뀌지?" | access-order와 `removeEldestEntry()`가 같이 동작했다 | `LinkedHashMap(access-order=true)` |
+| "`87` 이하에서 가장 가까운 key`", "`20` 이상 `40` 미만`"이 필요하다 | 삽입 순서가 아니라 정렬된 key 줄이 필요하다 | `TreeMap` |
+| "지금은 `HashMap`도 순서가 맞아 보이는데요?" | 우연한 출력 패턴을 계약처럼 읽고 있다 | 순서가 중요하면 `LinkedHashMap` 또는 `TreeMap`으로 의도를 명시 |
+
+짧게 번역하면 이렇다.
+
+- "처음 넣은 순서를 보여 줘" -> `LinkedHashMap`
+- "조회 후 순서가 밀린다" -> `LinkedHashMap(access-order=true)`
+- "가까운 key`/`범위" -> `TreeMap`
+- "`HashMap`인데도 지금은 일정해 보인다" -> 보장으로 읽지 말고 구현체 선택부터 다시 본다
 
 ## 같은 데이터로 바로 비교
 

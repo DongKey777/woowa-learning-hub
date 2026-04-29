@@ -14,7 +14,7 @@
 - [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix search, hashmap or trie choice, string key lookup basics, 문자열 key 조회 자료구조, 문자열 검색인데 trie 써야 하나요, 자동완성 아니면 trie 필요 없나요, trie는 언제 쓰고 hashmap은 언제 써요, 접두사 검색 말고 정확한 키 조회, 정확히 같은 문자열 찾기 trie hashmap, startswith 아니고 key 하나 찾기, 왜 trie가 아니고 hashmap, exact string match map, what is prefix search
+retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix search, hashmap or trie choice, 문자열 key 조회 자료구조, 문자열 key lookup 뭐 써요, 문자열 검색인데 trie 써야 하나요, 자동완성 아니면 trie 필요 없나요, trie는 언제 쓰고 hashmap은 언제 써요, 접두사 검색 말고 정확한 키 조회, 정확히 같은 문자열 찾기 trie hashmap, startswith 아니고 key 하나 찾기, 왜 trie가 아니고 hashmap, beginner string key lookup, string key exact lookup basics, 사전순 다음 key 뭐 써요
 
 ## 핵심 개념
 
@@ -51,12 +51,15 @@ retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix sear
 
 | 학습자 질문 | 먼저 떠올릴 답 | 왜 이렇게 자르나 |
 |---|---|---|
+| `문자열 key 조회 자료구조가 뭐예요?` | 먼저 이 카드 | broad query라도 실제 질문이 exact lookup인지 prefix search인지부터 잘라야 다음 map primer가 덜 헷갈린다 |
 | `문자열 검색인데 trie 써야 하나요?` | 보통 `HashMap`부터 본다 | 검색이 아니라 exact key lookup이면 map 기본값이 더 단순하다 |
 | `자동완성 아니면 trie 필요 없나요?` | prefix search가 없으면 대개 `HashMap` | `Trie`의 강점은 후보를 prefix로 묶는 데 있다 |
 | `trie는 언제 쓰고 hashmap은 언제 써요?` | `exact lookup -> HashMap`, `prefix search -> Trie` | 문자열이라는 사실보다 반복 질문 모양이 더 중요하다 |
 | `접두사 검색 말고 정확한 키 조회` | `HashMap` | `"이 key 하나의 값"`이면 prefix tree를 먼저 들고 올 이유가 약하다 |
 
 짧게 외우면 `문자열 key`가 아니라 `질문이 exact냐 prefix냐`를 먼저 본다.
+
+여기서 broad beginner query가 `문자열 key 조회 자료구조`, `문자열 key lookup 뭐 써요`처럼 들어오면 보통 이 카드가 먼저 와야 안전하다. 이유는 `Map` 구현체 세부(`HashMap`, `TreeMap`, `LinkedHashMap`)보다 앞서 `exact lookup`과 `prefix search`를 잘라야 하기 때문이다. 그 다음에 exact lookup 쪽으로 굳으면 [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)로 넘어가서 `HashMap`과 `TreeMap`을 다시 나누면 된다.
 
 ## 같은 문자열도 질문이 달라지면 구조가 달라진다
 
@@ -106,6 +109,20 @@ retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix sear
 | `spr` 입력 때 검색어 자동완성 | `Trie` |
 | API key 문자열의 exact match 인증 | `HashMap` |
 | `/api/or` prefix로 route 후보 찾기 | `Trie` |
+
+## 여기서 질문이 바뀌면 다음 카드로 넘어간다
+
+처음에는 `exact lookup vs prefix search`만 구분해도 충분하다. 그런데 learner 질문이 아래처럼 바뀌면 다음 분기가 생긴다.
+
+| 질문이 이렇게 바뀌면 | 이제 비교할 구조 | 왜 다음 카드로 가야 하나 |
+|---|---|---|
+| `문자열 key 조회 자료구조인데 exact lookup 쪽 같아요` | `HashMap` vs `TreeMap` vs `LinkedHashMap` | 이제 prefix 여부보다 map 구현체 선택이 핵심이므로 map primer로 넘어간다 |
+| `"app"`으로 시작하는 후보를 모을까? | `Trie` | prefix 묶음 자체가 핵심이다 |
+| `"apple"` 다음 사전순 문자열 하나를 찾을까? | `TreeMap` | prefix가 아니라 정렬된 이웃 조회다 |
+| `"app"` 이상 `"apq"` 미만 범위를 훑을까? | `TreeMap` | prefix 후보 수집이 아니라 ordered range lookup이다 |
+
+즉 beginner가 처음 막히는 문장은 보통 `HashMap vs Trie`지만, 그다음 막히는 문장은 자주 `prefix search냐 next-string/range lookup이냐`다.
+이 두 번째 질문이 나오면 [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)로 바로 넘어가면 된다.
 
 ## 더 깊이 가려면
 

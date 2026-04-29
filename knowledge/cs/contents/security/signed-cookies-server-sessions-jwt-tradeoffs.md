@@ -10,6 +10,7 @@
 > - `[primer]` [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
 > - `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
 > - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md)
+> - `[primer bridge]` [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)
 > - `[follow-up]` [Browser Storage Threat Model for Tokens](./browser-storage-threat-model-for-tokens.md)
 > - `[follow-up]` [Session Fixation / Clickjacking / CSP](./session-fixation-clickjacking-csp.md)
 > - `[deep dive]` [JWT 깊이 파기](./jwt-deep-dive.md)
@@ -20,10 +21,22 @@
 
 retrieval-anchor-keywords: signed cookie, server session, JWT, HttpOnly cookie, session store, CSRF, revocation, stateless auth, browser auth, session fixation, cookie auth, session regeneration, federated login fixation, browser session coherence, login hardening path, browser auth primer, cookie session spring security route, beginner auth bridge, hidden JSESSIONID, why login state is kept, primer follow-up deep dive ladder, beginner ladder auth session, browser session route alignment, safe next step before deep dive
 
+## 먼저 멈출 beginner 사다리
+
+이 문서는 beginner primer가 아니라 `comparison deep dive`다.
+처음 배우는 독자는 `무엇이 저장되고 누가 검증하는가`만 먼저 고정한 뒤에만 이 문서로 내려오는 편이 안전하다.
+
+| 지금 막힌 질문 | 먼저 멈출 문서 | 여기까지 오기 전에 고정할 것 | 이 문서를 여는 시점 |
+|---|---|---|---|
+| `cookie`, `session`, `JWT`가 아직 같은 말처럼 들려요 | [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md) -> [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) | `운반 수단`과 `서버 복원 방식`을 분리한다 | 기본 정의를 한 문장으로 말할 수 있을 때 |
+| `cookie 있는데 왜 다시 로그인돼요`, `SavedRequest`가 보여요 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) | `redirect`, `cookie-missing`, `server-anonymous` 중 어느 branch인지 자른다 | login loop 원인이 비교 자체가 아니라는 점을 확인한 뒤 |
+| `브라우저는 cookie를 보내는데 서버는 왜 token을 들고 있죠?` | [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md) | browser session과 server-side token translation을 같은 층위로 섞지 않는다 | browser + BFF와 mobile/API bearer 경계를 비교하고 싶을 때 |
+
 ## 이 문서 다음에 보면 좋은 문서
 
 - `cookie`, `session`, `JWT` 기본 정의가 아직 헷갈리면 한 단계 뒤로 가서 [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md) -> [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md) -> [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) 순서로 먼저 고정하는 편이 안전하다.
 - 로그인 루프나 `SavedRequest` 증상으로 이어지면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) 순서로 먼저 분기한 다음 deep dive로 내려간다.
+- browser cookie와 server-side token translation을 함께 보고 싶지만 Spring deep dive까지는 아직 이르다면 [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)에서 browser/session과 downstream token의 경계를 먼저 고정한다.
 - browser auth 선택지 비교를 Spring 요청 처리 흐름으로 연결하려면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)로 이어 가면 된다.
 - cookie/session hardening 관점의 fixation과 clickjacking 묶음은 [Session Fixation / Clickjacking / CSP](./session-fixation-clickjacking-csp.md)로 이어진다.
 - OAuth/OIDC callback 이후 session regeneration이 왜 필요한지는 [Session Fixation in Federated Login](./session-fixation-in-federated-login.md)에서 더 구체적으로 볼 수 있다.

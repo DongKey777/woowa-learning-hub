@@ -8,14 +8,11 @@
 관련 문서:
 
 - [카테고리 README](./README.md)
+- [Beginner Primer 작성 템플릿: 30초 비교표 + 1분 예시 박스 스켈레톤](./beginner-primer-template.md)
+- [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
+- [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
-
-> 관련 문서:
-> - [Beginner Primer 작성 템플릿: 30초 비교표 + 1분 예시 박스 스켈레톤](./beginner-primer-template.md)
-> - [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
-> - [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
-> - [디자인 패턴 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: primer scope manifest, beginner primer manifest, primer vs bridge vs checklist, beginner lint manifest, primer scope marker, true beginner primer list, beginner entrypoint manifest, design pattern primer manifest, first read primer manifest, primer scope taxonomy, beginner primer lint, filename heuristic replacement, primer classification manifest, 초보자 프라이머 매니페스트, primer scope 구분
 
@@ -58,14 +55,12 @@ retrieval-anchor-keywords: primer scope manifest, beginner primer manifest, prim
 아래 manifest block을 우선 기준으로 쓴다.
 새 beginner 문서를 추가할 때도 먼저 이 표에 넣으면, lint가 filename heuristic 없이 분류할 수 있다.
 
-## lint가 읽을 분류 계약 (계속 2)
-
 ```yaml
 primer-scope-manifest:
   version: 1
   doc_classes:
     true-beginner-primer: "첫 진입용 primer. 10초 질문, 30초 비교표, Quick-Check, 1분 예시 같은 primer 리듬을 기대한다."
-    beginner-entrypoint-router: "질문을 받아 다음 primer나 bridge로 보내는 entrypoint. primer처럼 보일 수 있지만 full primer 앵커를 강제하지 않는다."
+    beginner-entrypoint-router: "질문을 받아 다음 primer나 bridge로 보내는 entrypoint. primer처럼 보여도 full primer 앵커를 강제하지 않는다."
     beginner-bridge: "가까운 개념 둘 이상을 비교하거나 학습 단계를 연결하는 문서."
     beginner-checklist: "리뷰/점검/빠른 판별용 문서."
     support-template: "template, manifest, QA 가이드처럼 분류 기준을 설명하는 지원 문서."
@@ -77,6 +72,12 @@ primer-scope-manifest:
       - beginner-bridge
       - beginner-checklist
       - support-template
+```
+
+## 현재 파일 분류표
+
+```yaml
+primer-scope-manifest:
   files:
     object-oriented-design-pattern-basics.md: true-beginner-primer
     adapter-basics.md: true-beginner-primer
@@ -89,13 +90,17 @@ primer-scope-manifest:
     command-pattern-basics.md: true-beginner-primer
     decorator-proxy-basics.md: true-beginner-primer
     singleton-basics.md: true-beginner-primer
+```
+
+## router와 bridge 분류표
+
+```yaml
+primer-scope-manifest:
+  files:
     factory-selector-resolver-beginner-entrypoint.md: beginner-entrypoint-router
     template-method-query-router-beginner.md: beginner-entrypoint-router
     policy-object-vs-strategy-map-beginner-bridge.md: beginner-bridge
-
-## lint가 읽을 분류 계약 (계속 3)
-
-observer-vs-command-beginner-bridge.md: beginner-bridge
+    observer-vs-command-beginner-bridge.md: beginner-bridge
     abstract-class-vs-interface-injection-bridge.md: beginner-bridge
     request-object-creation-vs-di-container.md: beginner-bridge
     request-scope-vs-plain-request-objects.md: beginner-bridge
@@ -104,6 +109,13 @@ observer-vs-command-beginner-bridge.md: beginner-bridge
     strategy-policy-selector-naming.md: beginner-bridge
     policy-object-naming-primer.md: beginner-bridge
     registry-primer-lookup-table-resolver-router-service-locator.md: beginner-entrypoint-router
+```
+
+## checklist와 support 분류표
+
+```yaml
+primer-scope-manifest:
+  files:
     factory-misnaming-checklist.md: beginner-checklist
     injected-registry-vs-service-locator-checklist.md: beginner-checklist
     map-backed-selector-resolver-registry-factory-naming-checklist.md: beginner-checklist
@@ -152,6 +164,16 @@ observer-vs-command-beginner-bridge.md: beginner-bridge
 - "`Beginner`면 다 primer 아닌가요?" -> 아니다. beginner는 독자 난이도이고, primer는 문서 역할이다.
 - "`entrypoint`면 무조건 primer 아닌가요?" -> 아니다. 질문 라우터형 entrypoint는 primer로 보내는 표지판일 수 있다.
 - "`primer`라는 단어가 파일명에 있으면 primer 아닌가요?" -> 아니다. manifest 분류를 우선한다.
+
+## 다음 문서로 어디 가면 좋은가
+
+처음 추가하려는 문서가 아래 질문 중 어디에 걸리는지 먼저 고르면 덜 헷갈린다.
+
+| 지금 막힌 질문 | 먼저 볼 문서 | 이유 |
+|---|---|---|
+| "primer 문서 모양을 어떻게 맞춰요?" | [Beginner Primer 작성 템플릿](./beginner-primer-template.md) | 10초 질문, 30초 비교표, 1분 예시 리듬을 바로 따라갈 수 있다 |
+| "이 문서는 비교/브리지 성격 같은데요?" | [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md) | router형 beginner 문서가 primer와 어떻게 다른지 비교가 쉽다 |
+| "패턴 primer의 대표 예시를 한 번 보고 싶어요" | [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md) | true-beginner-primer가 실제로 어떤 리듬인지 바로 확인할 수 있다 |
 
 ## 다음에 문서를 추가할 때
 

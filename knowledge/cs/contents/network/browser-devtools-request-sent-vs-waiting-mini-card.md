@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
+- [Browser DevTools Waterfall -> Server Log Timing 브리지](./browser-devtools-waterfall-server-log-timing-bridge.md)
 - [Browser DevTools `Waiting` vs `Content Download` 미니 카드](./browser-devtools-waiting-vs-content-download-mini-card.md)
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 - [Spring Multipart Upload Request Pipeline](../spring/spring-multipart-upload-request-pipeline.md)
@@ -89,6 +90,7 @@ B: [request sent][........ waiting ........][download]
 ## 더 깊이 가려면
 
 - waterfall 전체 칸을 처음부터 다시 읽고 싶다면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
+- DevTools timing을 proxy/access log 필드와 이어 보고 싶다면 [Browser DevTools Waterfall -> Server Log Timing 브리지](./browser-devtools-waterfall-server-log-timing-bridge.md)
 - `Waiting`과 `Content Download`를 또 한 번 분리하고 싶다면 [Browser DevTools `Waiting` vs `Content Download` 미니 카드](./browser-devtools-waiting-vs-content-download-mini-card.md)
 - curl의 `TTFB`/`TTLB`와 연결해 더 깊게 보고 싶다면 [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 - upload가 Spring 안에서 multipart parsing으로 어떻게 이어지는지 보려면 [Spring Multipart Upload Request Pipeline](../spring/spring-multipart-upload-request-pipeline.md)

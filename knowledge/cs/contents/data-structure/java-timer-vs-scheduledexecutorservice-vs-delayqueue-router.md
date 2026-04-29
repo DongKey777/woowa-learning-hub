@@ -12,9 +12,11 @@
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 
 
-retrieval-anchor-keywords: java timer vs scheduledexecutorservice vs delayqueue router basics, java timer vs scheduledexecutorservice vs delayqueue router beginner, java timer vs scheduledexecutorservice vs delayqueue router intro, data structure basics, beginner data structure, 처음 배우는데 java timer vs scheduledexecutorservice vs delayqueue router, java timer vs scheduledexecutorservice vs delayqueue router 입문, java timer vs scheduledexecutorservice vs delayqueue router 기초, what is java timer vs scheduledexecutorservice vs delayqueue router, how to java timer vs scheduledexecutorservice vs delayqueue router
+retrieval-anchor-keywords: java timer vs scheduledexecutorservice vs delayqueue, 자바 스케줄러 처음 배우는데, 자바에서 몇 초 뒤 실행 뭐 써요, timer vs scheduledexecutorservice 차이, scheduledexecutorservice 기본값, delayqueue는 언제 직접 써요, java scheduler 큰 그림, delayed task beginner java, scheduleatfixedrate 어디서 써요, timertask 레거시 뭐예요, 직접 scheduler 구현 vs executor, what is scheduledexecutorservice, what is delayqueue in java, why not timer for new code, 처음 배우는 자바 스케줄러 선택
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
+> - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)
+> - [Timer Priority Policy Split](./timer-priority-policy-split.md)
 > - [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
 > - [PriorityBlockingQueue Timer Misuse Primer](./priorityblockingqueue-timer-misuse-primer.md)
@@ -156,6 +158,8 @@ task.run();
 ## 다음 문서로 이어가기
 
 - `ScheduledExecutorService` 아래에서 delayed work queue가 어떻게 보이는지부터 잡으려면 [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
+- 주기 작업이 밀릴 때 `fixed-rate`와 `fixed-delay`를 먼저 가르려면 [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)
+- due-time gate와 business priority ready queue를 왜 나누는지 보려면 [Timer Priority Policy Split](./timer-priority-policy-split.md)
 - queue 내부 deadline 시계를 왜 `nanoTime()` 쪽으로 생각하는지 보려면 [Java Timer Clock Choice Primer](./java-timer-clock-choice-primer.md)
 - `DelayQueue`를 직접 구현 레벨에서 이해하려면 [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)
 - repeating task 재등록 규칙은 [DelayQueue Repeating Task Primer](./delayqueue-repeating-task-primer.md)

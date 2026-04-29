@@ -15,7 +15,7 @@
 - [`subMap()` / `headMap()` / `tailMap()` Live View Primer](../language/java/treemap-range-view-live-window-primer.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: trie vs treemap beginner, prefix search vs ordered map, string key trie or treemap, trie prefix beginner, treemap string range beginner, prefix search 처음, 문자열 key trie treemap 헷갈림, 왜 trie 말고 treemap, ordered map what is, startswith vs next key, neighbor lookup vs autocomplete, prefix range basics, what is prefix search, lexicographic next key beginner
+retrieval-anchor-keywords: trie vs treemap beginner, prefix search vs ordered map, string key trie or treemap, trie prefix beginner, treemap string range beginner, prefix search 처음, 문자열 key trie treemap 헷갈림, 왜 trie 말고 treemap, startswith vs next key, neighbor lookup vs autocomplete, next string lookup, next string vs prefix search, 문자열 다음 key 찾기, 사전순 다음 문자열, string range lookup
 
 ## 핵심 개념
 
@@ -32,6 +32,8 @@ retrieval-anchor-keywords: trie vs treemap beginner, prefix search vs ordered ma
 짧게 외우면 이렇다.
 
 > `prefix 묶음 찾기`면 `Trie`, `정렬된 이웃/범위`면 `TreeMap`
+
+이 카드는 특히 `prefix search는 알겠는데 다음 문자열은 뭐로 찾지?`, `startsWith랑 사전순 range lookup이 왜 다른가요?` 같은 follow-up 질문을 받았을 때 바로 이어서 읽도록 만든 bridge다.
 
 ## 한눈에 보기
 

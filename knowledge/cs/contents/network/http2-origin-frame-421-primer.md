@@ -1,8 +1,8 @@
 # HTTP/2 ORIGIN Frame와 421 입문
 
-
-> 한 줄 요약: HTTP/2 ORIGIN Frame와 421 입문는 입문자가 먼저 잡아야 할 핵심 기준과 실무에서 헷갈리는 경계를 한 문서에서 정리한다.
-> ORIGIN frame으로 connection 재사용 범위를 미리 좁히고, `421 Misdirected Request`로 잘못 온 cross-origin reuse를 되돌리는 흐름을 beginner 관점에서 설명하는 follow-up primer
+> 한 줄 요약: `ORIGIN`은 "이 HTTP/2 connection을 어디까지 같이 써도 되는지"를 미리 좁히고, `421`은 잘못 탄 요청을 다른 connection으로 돌려보내는 신호다.
+>
+> 문서 역할: 이 문서는 network 카테고리 안에서 ORIGIN frame과 `421 Misdirected Request`를 초보자가 "연결 재사용 범위 제한" 관점으로 먼저 이해하게 돕는 **beginner follow-up primer**다.
 
 **난이도: 🟢 Beginner**
 
@@ -31,7 +31,7 @@
 > - [HTTP/1.1 vs HTTP/2 vs HTTP/3 입문 비교](./http1-http2-http3-beginner-comparison.md) (main comparison primer)
 > - [SNI Routing Mismatch, Hostname Failure](./sni-routing-mismatch-hostname-failure.md)
 
-retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3 no origin frame, h3 coalescing without origin, h3 421 recovery, alt-svc endpoint authority, 421 misdirected request, misdirected request retry, cross-origin connection reuse, narrow coalescing, reject coalescing, h2 coalescing guardrail, http2 origin frame 421 primer basics, http2 origin frame 421 primer beginner
+retrieval-anchor-keywords: http2 origin frame, 421 misdirected request, origin set basics, cross origin connection reuse, wrong connection retry, coalescing beginner, h2 connection reuse why, 421 what is, origin frame what is, 언제 421, 왜 421, 처음 coalescing, 헷갈리는 421, h3 no origin frame
 
 <details>
 <summary>Table of Contents</summary>
@@ -126,40 +126,32 @@ retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3
 
 `ORIGIN` frame은 **HTTP/2 connection 단위의 힌트**다.
 
-서버는 이 frame으로 "이 connection이 authoritative하다고 봐도 되는 origin 목록"을 클라이언트에게 알려 줄 수 있다.
-
 초보자 감각으로는 **connection 전용 allow-list**라고 생각하면 된다.
 
 ### 왜 필요하나
 
-아래 상황이 흔하기 때문이다.
+아래처럼 "인증서는 넓은데, connection 공유는 더 좁게 하고 싶다"는 장면에서 쓴다.
 
-- 인증서 SAN이나 wildcard가 여러 hostname을 한꺼번에 커버한다
+- 인증서가 여러 hostname을 함께 커버한다
 - 브라우저는 "같은 connection을 같이 써도 되나?"를 검토한다
-- 하지만 서버 운영자는 실제로는 일부 hostname만 같은 edge와 routing에서 안전하게 처리하고 싶다
+- 서버는 일부 origin만 같은 connection으로 받고 싶다
 
-이때 `ORIGIN` frame이 있으면 서버는 "cert는 넓어도, 이 connection 재사용 범위는 여기까지"라고 말할 수 있다.
+이때 `ORIGIN` frame이 있으면 서버는 "cert 범위와 별개로, 이 connection 재사용은 여기까지만"이라고 알려 줄 수 있다.
 
-### 실무 감각으로 보면
+### 작은 예로 보면
 
-예를 들어 인증서가 아래 셋을 모두 커버한다고 하자.
+인증서가 `www`, `static`, `admin`을 모두 커버해도, 실제로는 `www`와 `static`만 같이 받고 싶을 수 있다.
 
-- `https://www.example.com`
-- `https://static.example.com`
-- `https://admin.example.com`
-
-그런데 실제로 한 H2 connection으로 같이 받고 싶은 것은 `www`와 `static`뿐일 수 있다.
-
-이때 서버는 `ORIGIN` frame으로 `www`, `static`만 광고하고 `admin`은 빼서, 브라우저가 그 connection을 `admin`까지 확장하지 않도록 유도할 수 있다.
+이때 서버는 `ORIGIN` frame으로 `www`, `static`만 광고해서 브라우저가 그 connection을 `admin`까지 확장하지 않도록 유도할 수 있다.
 
 ### 꼭 같이 기억할 점
 
 - `ORIGIN`은 **HTTP/2 전용** frame이다
 - frame을 이해하지 못하는 클라이언트는 그냥 무시할 수 있다
-- `ORIGIN`이 있다고 해서 인증서 검증이 사라지는 것은 아니다
-- wildcard certificate를 쓰더라도 `ORIGIN`에는 `*.example.com` 같은 wildcard 이름을 넣는 방식이 아니라, 실제 origin을 명시하는 쪽으로 생각해야 한다
+- 인증서 검증을 대체하지는 않는다
+- wildcard certificate를 쓰더라도 `ORIGIN`은 실제 origin 목록을 적는 쪽으로 이해하면 된다
 
-실무적으로는 빈 `ORIGIN` frame을 보내서 "이 connection은 처음 SNI origin까지만 써라"는 신호를 주는 패턴도 있다.
+더 깊은 vendor별 동작이나 예외 패턴은 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)와 [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)로 넘겨서 보는 편이 안전하다.
 
 ---
 
@@ -167,14 +159,9 @@ retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3
 
 `421 Misdirected Request`는 "리소스가 없다"가 아니라 **이 요청이 잘못된 connection으로 왔다**에 가깝다.
 
-초급자용으로는 이 한 줄도 같이 기억하면 된다.
+초급자 기준으로는 "`421`을 보면 앱 로직보다 connection 문맥부터 다시 본다" 정도로 잡으면 된다.
 
-- `421`은 앱 권한/리소스 결과를 직접 말하는 status라기보다, 먼저 connection/authority 문맥을 다시 보게 만드는 신호다
-
-서버가 아래처럼 판단할 때 쓴다.
-
-- 이 target URI는 이 서버가 authoritative하게 답할 수 있는 범위가 아니다
-- 또는 이 요청은 지금 도착한 connection context에서 처리하면 안 된다
+서버가 "이 요청은 지금 connection 문맥으로 처리하면 안 된다"고 판단할 때 쓴다.
 
 즉 초보자 감각으로는:
 
@@ -199,7 +186,7 @@ retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3
 
 - `421`은 **wrong connection** 신호다
 - 그래서 클라이언트는 다른 connection으로 retry할 수 있다
-- HTTP 의미상으로도 `421`을 받은 클라이언트는 다른 connection에서 재시도할 수 있다
+- 초보자 1차 판단에서는 서버 장애보다 "connection을 잘못 공유했나?"를 먼저 떠올리는 편이 안전하다
 
 ---
 
@@ -262,22 +249,7 @@ retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3
 
 - `421`이 더 자주 마지막 복구 장치 역할을 하게 된다
 
-### 예시 3: HTTP/3에서는 어떻게 보나
-
-여기서 중요한 차이가 하나 있다.
-
-- `ORIGIN` frame은 HTTP/2 이야기다
-- 하지만 `421` 자체는 cross-origin connection reuse를 잘못했을 때 HTTP/3에서도 여전히 의미가 있다
-
-즉 H3에서는 "H2의 `ORIGIN` frame처럼 미리 좁히는 장치"보다:
-
-- certificate
-- endpoint/Alt-Svc 판단
-- `421` 거절
-
-이 조합으로 생각하는 편이 beginner에게 안전하다.
-
-이 H3 전용 감각은 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)에서 certificate scope, `Alt-Svc` endpoint authority, `421` recovery로 이어서 보면 된다.
+H3까지 바로 넓히면 초보자 기준으로는 축이 늘어난다. 이 문서에서는 "`ORIGIN`은 H2, `421`은 wrong connection 거절"까지만 먼저 잡고, H3 분기는 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)로 넘기는 편이 안전하다.
 
 ---
 
@@ -317,8 +289,14 @@ retrieval-anchor-keywords: http/2 origin frame, origin frame, origin set, http/3
 이 beginner 문서 기준으로는 아니라고 잡는 편이 좋다.
 
 - H2에서는 `ORIGIN` frame을 같이 볼 수 있다
-- H3에서는 coalescing 판단과 `421` 복구에 더 집중하면 된다
+- H3 세부 guardrail은 별도 문서로 넘긴다
 - H3에서 무엇을 기준으로 판단하는지는 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)로 이어서 본다
+
+## 다음에 어디로 가면 좋나
+
+- "`421`이 `403`/`404`와 로그에서 어떻게 다르게 보이죠?"가 궁금하면 [HTTP 421 Troubleshooting Trace Examples: 403/404와 구분하기](./http-421-troubleshooting-trace-examples.md)
+- "`여러 origin이 왜 같은 connection을 탈 수 있죠?`"가 아직 헷갈리면 [HTTP/2와 HTTP/3 Connection Coalescing 입문](./http2-http3-connection-reuse-coalescing.md)
+- "H3에서는 무엇으로 guardrail을 거나요?"가 다음 질문이면 [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 
 ---
 

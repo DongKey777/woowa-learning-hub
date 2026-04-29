@@ -8,10 +8,11 @@
 
 - [Stateless Sessions Primer](./stateless-sessions-primer.md)
 - [Horizontal vs Vertical Scaling Basics](./horizontal-vs-vertical-scaling-basics.md)
+- [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 - [HTTP/HTTPS 기초](../network/http-https-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: stateless stateful basics, stateless 서비스 입문, stateful 뭐예요, 세션 서버 상태, jwt stateless, 서버 상태 저장, stateless api 기초, 서버 확장 상태 관리, beginner stateless, 외부 세션 저장, 무상태 서비스, stateless rest api, stateless vs stateful basics basics, stateless vs stateful basics beginner, stateless vs stateful basics intro
+retrieval-anchor-keywords: stateless stateful basics, stateless 서비스 입문, stateful 뭐예요, 세션 서버 상태, jwt stateless, 서버 상태 저장, stateless api 기초, 서버 확장 상태 관리, beginner stateless, 외부 세션 저장, 무상태 서비스, stateless rest api, sticky session 언제, external session store 언제, token 기반 인증 비교
 
 ---
 
@@ -49,12 +50,21 @@ Stateless
 | 서버 재시작 영향 | 없음 | 상태 유실 |
 | 예시 | REST API + JWT | WebSocket 세션, TCP 연결 |
 
+다음 단계 판단표:
+
+| 선택지 | 지금 잘 맞는 상황 | 먼저 보이는 한계 | 초보자용 한 줄 판단 |
+|---|---|---|---|
+| Sticky session | 서버 1~2대로 빠르게 붙이는 내부 도구, 짧은 실험 | 같은 서버로 계속 보내야 해서 scale-out, 배포, 장애 복구가 금방 불편해진다 | "지금만 빨리"면 가능하지만, 서버를 늘릴 계획이 보이면 오래 끌지 않는다 |
+| External session store | 브라우저 웹앱처럼 서버가 logout, 세션 만료를 직접 통제해야 할 때 | Redis 같은 공용 저장소의 운영 책임이 생긴다 | 세션은 유지하되 LB가 자유롭게 분산하길 원하면 가장 흔한 중간 선택지다 |
+| Token 기반 인증 | 모바일/API처럼 여러 서버, 여러 게이트웨이에서 같은 인증 정보를 검증해야 할 때 | revoke, 권한 변경 즉시 반영, refresh 설계가 더 까다롭다 | app tier를 가장 stateless하게 만들기 쉽지만 "완전 무상태"라고 생각하면 오해다 |
+
 ---
 
 ## 상세 분해
 
 - **HTTP의 무상태성**: HTTP 자체는 Stateless 프로토콜이다. 각 요청은 독립적이고 서버는 이전 요청을 기억하지 않는다. 로그인 상태를 유지하려면 쿠키/세션 또는 토큰을 추가로 써야 한다.
 - **세션 기반 인증 (Stateful)**: 서버 메모리에 세션 ID와 사용자 정보를 저장한다. 클라이언트는 세션 ID만 쿠키로 갖는다. 서버를 여러 대 쓰면 세션이 있는 서버로만 요청이 가야 한다(Sticky Session).
+- **외부 세션 저장소**: 세션 자체는 남기되 서버 메모리 대신 Redis 같은 공용 저장소에 둔다. 인증은 여전히 세션 기반이지만, app 서버는 어느 인스턴스가 받아도 세션을 복원할 수 있어 더 stateless하게 운영된다.
 - **토큰 기반 인증 (Stateless)**: 사용자 정보를 JWT 같은 토큰에 담아 클라이언트가 보관한다. 서버는 토큰을 검증만 하고 저장하지 않는다. 어느 서버로 요청이 가도 동작한다.
 - **Stateful이 필요한 경우**: WebSocket 연결, 실시간 게임 서버, 주문 상태 머신처럼 연결 중에 상태가 이어져야 하는 경우다.
 
@@ -77,6 +87,12 @@ Stateless
 3. 토큰 기반(JWT)이면 어느 서버에서도 토큰을 검증해 사용자를 인식한다. 확장이 투명하게 동작한다.
 
 만약 세션을 꼭 서버 측에 저장해야 한다면 Redis 같은 외부 세션 저장소를 써서 모든 서버가 같은 세션을 보도록 만들면 Stateless처럼 확장할 수 있다.
+
+그래서 초보자 기준의 안전한 순서는 보통 이렇다.
+
+1. "로그아웃, 권한 회수, 브라우저 세션 관리"가 핵심이면 external session store를 먼저 검토한다.
+2. "모바일/API 확장, 게이트웨이 검증"이 핵심이면 token 기반 인증을 먼저 검토한다.
+3. sticky session은 초기 구현을 단순하게 만들 수 있지만, 다음 분기에서 거의 항상 "언제 외부화할까?"라는 질문으로 돌아온다.
 
 ---
 

@@ -16,7 +16,7 @@
 
 > 문서 역할: 이 문서는 security 카테고리에서 browser page, SPA + BFF, bearer API 흐름을 한 장으로 먼저 연결하는 beginner `primer`다. authn / authz, session / cookie / JWT, login / logout, permission check가 따로따로 보일 때 가장 먼저 읽는 entrypoint로 쓴다.
 
-retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, principal session permission model basics, principal meaning beginner, session이 뭐예요, principal이 뭐예요, permission model 뭐예요, authentication vs authorization what is, 로그인 됐는데 왜 403, token valid but 403 basics, browser api auth flow primer, browser page auth flow, spa bff auth basics, login logout permission check primer
+retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, principal session permission model basics, session이 뭐예요, principal이 뭐예요, permission model 뭐예요, authentication vs authorization what is, 로그인 됐는데 왜 403, token valid but 403 basics, browser api auth flow primer, spa bff auth basics, login logout permission check primer, 인증 인가 세션 헷갈려요, auth session cookie jwt 뭐부터
 
 ## 10초 선택표
 
@@ -32,11 +32,11 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 
 - authn / authz 차이와 `principal`, `permission model`을 더 또렷하게 보고 싶으면 [인증과 인가의 차이](./authentication-vs-authorization.md)로 이어 가면 된다.
 - 쿠키, 세션, JWT의 기본 정의가 아직 흐리면 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)에서 한 단계 더 천천히 다시 잡으면 된다.
-- browser에 무엇을 두고 BFF가 무엇을 맡는지 더 깊게 보려면 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 내려간다.
 - `401`, `403`, concealment `404`를 응답 코드로 연결하고 싶으면 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)를 바로 보면 된다.
 - role, scope, ownership이 같은 "권한"처럼 들리면 [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)로 이어 가는 편이 안전하다.
-- social login, external IdP, authorization code, callback이 섞이면 [OAuth2 기초](./oauth2-basics.md)와 [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md) 순으로 이어 가면 된다.
-- browser login loop나 callback 뒤 anonymous처럼 session 쪽 증상이 보이면 같은 split vocabulary로 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아간다. `SavedRequest`면 `redirect / navigation memory`, request `Cookie` header가 비면 `cookie-missing`, cookie는 실렸는데도 익명이면 `server-anonymous`다.
+- social login이나 external IdP 용어가 섞이면 먼저 [OAuth2 기초](./oauth2-basics.md)에서 역할만 나누고, 세부 callback 절차는 그다음 문서로 넘기면 된다.
+- browser login loop나 callback 뒤 anonymous처럼 session 쪽 증상이 보이면 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아가 현재 증상 이름부터 고른다.
+- BFF 내부 토큰 번역, 권한 변경 반영 지연, logout propagation처럼 운영형 질문은 이 문서를 다 읽은 뒤 follow-up으로 넘기는 편이 안전하다.
 
 ---
 
@@ -87,6 +87,34 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 
 즉 "`token valid` = `권한 허용`"이 아니다. 인증 성공 뒤에 인가 검사가 별도로 남아 있다.
 
+## 자주 섞이는 질문 4개
+
+처음 읽을 때는 아래 네 문장을 서로 다른 실패로 분리해서 보는 편이 가장 안전하다.
+
+| 헷갈리는 문장 | 실제로 먼저 분리할 것 | 먼저 갈 문서 |
+|---|---|---|
+| `로그인됐는데 왜 403이지?` | 인증 성공과 인가 성공을 같은 말로 보고 있지 않은지 | [인증과 인가의 차이](./authentication-vs-authorization.md) |
+| `쿠키가 있는데 왜 다시 로그인하지?` | browser 저장과 request 전송, server 복원을 같은 단계로 보고 있지 않은지 | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) |
+| `JWT valid라는데 왜 거부되지?` | 토큰 서명 검증과 application permission 체크를 섞고 있지 않은지 | [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md) |
+| `웹 보안을 어디서부터 보지?` | auth/session 문제와 XSS/CSRF/CORS 큰 그림을 아직 안 나눴는지 | [백엔드 주니어를 위한 웹 보안 스타터 팩](./web-security-starter-pack-backend-juniors.md) |
+
+핵심은 `credential 전달`, `principal 복원`, `permission 판단`, `브라우저 보안 기초`를 한 문장으로 뭉개지 않는 것이다.
+
+## 15초 concrete cycle: 같은 로그인 상태여도 결과는 다를 수 있다
+
+아래 한 번의 주문 조회/환불 흐름만 떠올려도 `인증`, `세션`, `인가`가 같은 말이 아니라는 점이 선명해진다.
+
+| 장면 | 클라이언트가 보내는 것 | 서버가 먼저 확인하는 것 | 결과 |
+|---|---|---|---|
+| 로그인 직후 `GET /orders/123` | session cookie 또는 bearer token | principal 복원 성공 + 주문 소유자 확인 통과 | `200` |
+| 같은 로그인 상태로 `POST /orders/123/refund` | 같은 cookie/token | principal 복원은 성공했지만 `refund.approve` 권한 없음 | `403` |
+| 로그아웃 후 `GET /orders/123` 재호출 | 만료됐거나 삭제된 cookie/token | principal 복원 실패 | `401` 또는 browser에서는 `302 -> /login` |
+
+여기서 보이는 핵심은 두 가지다.
+
+- 같은 credential을 보내도 `인가` 단계에서 막히면 `403`이 될 수 있다.
+- 로그아웃 뒤에는 permission model보다 먼저 `principal을 다시 만들 수 있느냐`가 깨진다.
+
 ## 초보자 디버깅 시작점 20초 버전
 
 같은 증상에서도 시작 질문을 고정하면 헤매는 시간을 줄일 수 있다.
@@ -112,7 +140,7 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 | 로그인 전/로그아웃 후 API가 거절됨 | 인증 복원(authn) | credential/session이 아예 없거나 만료됐는지 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
 | 로그인은 됐는데 특정 기능만 계속 막힘 | 인가(authz) | principal은 복원됐고 role/scope/ownership 중 무엇이 deny인지 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
 | 브라우저에서만 `/login`으로 튀거나 loop | 세션 전달/redirect 경계 | 다음 요청의 `Cookie` header가 실제로 실렸는지 | 먼저 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)에서 `redirect / navigation memory`, `cookie-missing`, `server-anonymous` 중 같은 증상 이름을 고른다. 그다음 [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md), [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 내려간다 |
-| 토큰은 valid한데 운영에서 권한 반영이 늦음 | freshness/전파 | claim/session/cache가 최신 grant를 봤는지 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) -> [Claim Freshness After Permission Changes](./claim-freshness-after-permission-changes.md) |
+| 토큰은 valid한데 특정 객체나 tenant만 안 됨 | 인가 모델(authz) | role 하나만 보는지, ownership/tenant 조건이 따로 있는지 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md), [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) |
 
 이 표의 목적은 "토큰 종류를 더 외우는 것"이 아니라 "디버깅 시작점을 틀리지 않는 것"이다.
 
@@ -155,10 +183,9 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 | 로그인 전 `GET /api/orders/123` | credential 없음 | principal 생성 실패 | `401` 또는 browser에서는 `302 -> /login` |
 | 로그인 직후 `GET /api/orders/123` | session cookie / bearer token 있음 | principal 복원 성공, ownership/tenant 검사 통과 | `200` |
 | 같은 로그인 상태로 `POST /api/orders/123/refund` | 동일 credential | principal은 있으나 `refund.approve` 권한 없음 | `403` |
-| 관리자에서 role 부여 직후 곧바로 재시도 | credential은 같음 | claim/session freshness가 아직 갱신 전일 수 있음 | 일시적 `403` 가능 (freshness 확인 필요) |
 | 로그아웃 후 같은 API 재호출 | 무효화된 cookie/token | principal 복원 불가 | 다시 `401` 계열 |
 
-이 표를 기억하면 "로그인됐는데 왜 `403`?", "토큰은 valid인데 왜 실패?" 같은 질문을 단계별로 분해하기 쉽다.
+이 표를 기억하면 "로그인됐는데 왜 `403`?", "토큰은 valid인데 왜 실패?" 같은 질문을 단계별로 분해하기 쉽다. 권한 변경 직후 반영 지연 같은 운영 이슈는 beginner 범위를 넘기 쉬우므로, 먼저 이 표로 `인증 성공`과 `인가 실패`를 분리한 뒤 follow-up 문서로 내려가면 된다.
 
 ## 브라우저 웹앱에서는 어떻게 보이나
 
@@ -216,7 +243,7 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 
 ## SPA + BFF에서는 어디가 달라지나
 
-BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기 쉬운데, 실제 핵심은 `browser에 무엇을 안 보여 줄 것인가`다.
+BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기 쉬운데, beginner 관점의 핵심은 `browser에 무엇을 직접 두고 무엇을 서버 쪽으로 숨길 것인가`다.
 
 ### 가장 단순한 mental model
 
@@ -235,9 +262,9 @@ BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기
 그래서 BFF를 쓰면 좋아지는 점도 있지만 새 책임도 생긴다.
 
 - browser-visible token surface를 줄일 수 있다.
-- 대신 cookie 기반이므로 CSRF, logout propagation, session mapping을 더 엄격하게 설계해야 한다.
+- 대신 cookie 기반 흐름이므로 CSRF와 session mapping을 같이 봐야 한다.
 
-초보자 기준에서는 여기까지만 정확히 잡아도 충분하다. 세부 token exchange나 downstream audience 설계는 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)로 넘기면 된다.
+초보자 기준에서는 여기까지만 정확히 잡아도 충분하다. 세부 token exchange, downstream audience, logout propagation 설계는 [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md) 같은 follow-up 문서로 넘기면 된다.
 
 ## permission check는 결국 무엇을 보나
 
@@ -249,7 +276,6 @@ BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기
 | scope | `orders.read`가 있는가? | token이 허용한 API 범위일 수 있기 때문이다 |
 | ownership | 이 주문의 주인인가? | role/scope만으로 객체 소유권이 해결되지 않기 때문이다 |
 | tenant | 같은 조직 데이터인가? | 멀티테넌트 경계는 따로 확인해야 하기 때문이다 |
-| freshness | 최근 권한 변경이 반영됐는가? | 로그인 뒤 role이 바뀌었을 수 있기 때문이다 |
 
 이 표에서 가장 중요한 beginner 포인트는 이것이다.
 
@@ -266,14 +292,16 @@ BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기
 
 특히 `scope`는 공급자나 게이트웨이 설계에 따라 "API 진입 범위"로만 쓰일 때가 많다. 그래서 `scope가 있다 = 앱 내부 모든 permission check가 끝났다`로 읽으면 위험하다.
 
+권한 변경 직후 반영 지연처럼 `freshness`가 중심인 질문은 beginner primer 범위를 넘기기 쉽다. 먼저 위 네 축으로 `왜 거절됐는지`를 분리한 뒤, 그래도 "방금 권한을 바꿨는데 결과가 안 바뀐다"가 남을 때만 follow-up 문서로 내려가면 된다.
+
 ## 제일 많이 헷갈리는 문장 6개
 
 - `로그인했으니 관리자 API도 되겠지` -> 아니다. 인증 성공과 관리자 권한은 별도다.
 - `cookie가 있으니 로그인 상태다` -> 아니다. cookie가 가도 server session이 없거나 복원에 실패할 수 있다.
-- `JWT를 쓰니 세션이 없다` -> 완전히 그렇지 않다. refresh, revoke, claim freshness 때문에 서버 상태가 일부 필요할 수 있다.
+- `JWT를 쓰니 세션이 없다` -> 완전히 그렇지 않다. beginner 단계에서는 "토큰만으로 모든 상태 관리가 끝나지 않을 수 있다"까지만 기억하면 충분하다.
 - `BFF를 쓰니 CSRF는 사라진다` -> 아니다. browser가 cookie를 자동 전송하면 CSRF 경계는 다시 봐야 한다.
 - `scope가 있으니 모든 리소스 접근이 된다` -> 아니다. ownership, tenant, business rule이 남아 있다.
-- `logout 버튼을 눌렀으니 어디서나 끝났다` -> 아니다. cookie, server session, refresh family, token cache를 어떤 범위까지 끊는지 봐야 한다.
+- `logout 버튼을 눌렀으니 어디서나 끝났다` -> 아니다. 최소한 browser 쪽 증거와 server 쪽 상태를 함께 끊는지 봐야 한다.
 
 ## browser와 API에서 증상이 다르게 보일 수 있다
 

@@ -16,15 +16,20 @@
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring mvc request lifecycle basics, spring mvc 큰 그림, dispatcherservlet basics, spring request flow beginner, spring mvc 처음 배우는데, 요청이 컨트롤러까지 어떻게 가요, spring mvc 파라미터 누가 채워요, requestparam pathvariable requestbody 누가 넣어줘요, argument resolver 뭐예요 처음, filter interceptor 차이 basics, requestbody 400 왜 나요, controller 전에 400 왜, 415 content negotiation primer, 415 400 차이, @valid 전에 400 왜
+retrieval-anchor-keywords: spring mvc request lifecycle basics, spring mvc 큰 그림, spring mvc 처음 배우는데, 요청이 컨트롤러까지 어떻게 가요, spring mvc 파라미터 누가 채워요, conversionservice 뭐예요 처음, formatter 뭐예요 spring 처음, webdatabinder 뭐예요 처음, conversionservice formatter webdatabinder 차이 뭐예요, spring binding이 뭐예요, query param localdate 변환 누가 해요, webdatabinder 언제 나와요, filter interceptor 차이 basics, requestbody 400 왜 나요, @valid 전에 400 왜
 
 ## 먼저 여기까지만 잡는다
 
-이 문서는 Spring MVC beginner가 "입구 -> 길찾기 -> 값 채우기 -> 컨트롤러 -> 실패 번역" 순서를 한 장으로 잡는 primer다.
+이 문서는 Spring MVC beginner가 "입구 -> 길찾기 -> 값 채우기 -> 컨트롤러 -> 실패 번역" 순서를 한 장으로 잡는 primer다. 특히 "`ConversionService`가 뭐예요?", "`WebDataBinder`는 언제 나와요?", "`query parameter`는 누가 `LocalDate`로 바꿔줘요?" 같은 첫 질문이 deep dive보다 먼저 여기로 오게 하는 entrypoint 역할도 맡는다.
 
 - 먼저 잡을 것: `Filter`, `DispatcherServlet`, binding, controller, advice의 자리
-- 지금 중심이 아닌 것: async dispatch, content negotiation 확장, streaming 응답, disconnect 추적
-- `415`, `Accept`, `produces`, `consumes`가 바로 궁금하면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md), [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 바로 내려간다.
+- 지금 중심이 아닌 것: async dispatch, streaming, content negotiation 심화
+
+| 먼저 보인 단어 | 이 primer에서 내릴 1차 판단 | 바로 넘길 문서 |
+|---|---|---|
+| `415`, `Accept`, `produces`, `consumes` | media type 계약 질문이 먼저다 | [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md), [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md) |
+| `302 /login`, `401`, `403` | 바인딩보다 입구 security/filter 질문일 수 있다 | [Spring Filter vs Spring Security Filter Chain vs HandlerInterceptor: 관리자 인증 입문 브리지](./spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md), [Security README](../security/README.md#browser--session-beginner-ladder) |
+| `ConversionService`, `Formatter`, `WebDataBinder`, `query param -> LocalDate` | 내부 클래스 이름보다 "값 채우기" 큰 그림을 먼저 잡는다 | 아래 표를 보고, 다음 단계로 [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md) |
 
 ## 핵심 개념
 
@@ -62,6 +67,19 @@ HTTP 요청
 | 컨트롤러 | 서비스 호출과 응답 반환에 집중한다 | "비즈니스 로직은 어디에 둬요?" |
 | 예외 처리 | 실패를 HTTP 상태코드와 에러 바디로 바꾼다 | "`@ControllerAdvice`는 언제 써요?" |
 
+## `ConversionService` / `Formatter` / `WebDataBinder`는 어디에 있나
+
+`ConversionService`, `Formatter`, `WebDataBinder`라는 이름이 먼저 보이면 초급자는 deep dive 문서로 바로 내려가기보다 이 문서의 "값 채우기" 칸에 먼저 꽂아 두는 편이 안전하다.
+
+| 용어 | beginner용 한 줄 역할 | 먼저 머리에 둘 자리 | 다음 문서 |
+|---|---|---|---|
+| `ConversionService` | 문자열을 `Long`, `Enum`, `LocalDate` 같은 타입으로 바꾸는 공용 변환기 | "값 채우기" 단계의 타입 변환 | [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md) |
+| `Formatter` | 사람 친화적 문자열 표기와 객체 표현을 연결하는 규칙 | "값 채우기" 단계의 문자열 표현 규칙 | [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md) |
+| `WebDataBinder` | query/form/path 값을 객체 필드에 묶는 웹 바인딩 도구 | 컨트롤러 호출 직전의 바인딩 조립 | [Spring ConversionService, Formatter, and Binder Pipeline](./spring-conversion-service-formatter-binder-pipeline.md) |
+
+짧게 외우면 `ConversionService`는 "타입 바꾸기", `Formatter`는 "문자열 표현 규칙", `WebDataBinder`는 "웹 요청 값을 객체에 묶기"다.
+처음 질문이 "`ConversionService`가 뭐예요?", "`WebDataBinder`가 왜 나와요?"라면 이 표까지만 잡고, 실제 `400` 증상은 아래 `@RequestBody` / `@ModelAttribute` 분기로 다시 내려가면 된다.
+
 ## 상세 분해
 
 처음에는 `POST /admin/reservations` 한 요청만 붙잡아도 충분하다. 아래 여섯 칸으로 끊으면 "`지금 어디서 막혔는지`"가 빨리 보인다.
@@ -97,6 +115,40 @@ HTTP 요청
 - `Filter`는 Spring MVC 바깥 입구다.
 - `HandlerInterceptor`는 이미 "어느 컨트롤러로 갈지" 감이 잡힌 뒤에 붙는다.
 - `Controller`는 공통 처리 도구가 아니라 실제 업무 메서드다.
+
+## `Filter` / `Interceptor` / `Controller` / `ControllerAdvice` 빠른 비교
+
+beginner가 특히 많이 헷갈리는 지점은 "`요청 앞에서 무언가 한다`"는 말이 네 칸에 모두 보인다는 점이다. 처음에는 "`언제 끼어드는가`"와 "`실패를 막는가, 번역하는가`"만 나눠도 충분하다.
+
+| 자리 | 언제 보나 | 주로 하는 일 | `POST /admin/reservations` 예시 |
+|---|---|---|---|
+| `Filter` | Spring MVC에 들어오기 전 | 요청 입구에서 공통 검사/차단 | 인증 쿠키가 없으면 컨트롤러 전에 막는다 |
+| `HandlerInterceptor` | 컨트롤러를 찾은 뒤 전후 | 컨트롤러 주변 공통 처리 | 관리자 요청 시작/종료 로그를 남긴다 |
+| `Controller` | 바인딩이 끝난 뒤 | 서비스 호출과 응답 반환 | `ReservationService.create(...)`를 호출한다 |
+| `@RestControllerAdvice` | 예외가 밖으로 나올 때 | 실패를 HTTP 응답으로 번역 | `ReservationNotFoundException`을 `404` 바디로 바꾼다 |
+
+짧게 외우면 `Filter`는 입구, `Interceptor`는 컨트롤러 주변, `Controller`는 업무 연결, `Advice`는 실패 번역이다.
+
+## 컨트롤러 전에 끝나는 실패를 먼저 분리한다
+
+입문자가 많이 꼬이는 이유는 `400`, `401/403`, `404`가 전부 "컨트롤러가 틀렸다"로 보이기 때문이다. 하지만 아래 셋은 **컨트롤러 본문에 들어가기 전** 끝날 수 있다.
+
+| 먼저 보인 결과 | 보통 어디서 멈췄나 | 첫 질문 |
+|---|---|---|
+| `401`/`403` 또는 로그인 redirect | `Filter` / security filter chain | 입구에서 이미 막힌 것 아닌가 |
+| `404`/`405` | `HandlerMapping` | URL과 HTTP 메서드가 맞나 |
+| `400`/`415` | binding / message conversion | JSON, `Content-Type`, DTO 타입이 맞나 |
+
+이 표는 "컨트롤러 로직 디버깅"으로 바로 들어가기 전에 쓰는 정지선이다. 컨트롤러 로그가 안 찍혔다면 controller/service보다 이 표를 먼저 다시 보면 된다.
+
+### 자주 섞는 오해
+
+- "`ControllerAdvice`가 요청을 먼저 가로채나요?"
+  아니다. 보통은 컨트롤러나 그 아래에서 예외가 나온 뒤 응답을 정리하는 쪽이다.
+- "`Interceptor`가 예외 응답 모양도 정하나요?"
+  보통 아니다. 공통 전후 처리와 관찰에 가깝고, 에러 바디 번역은 `Advice` 축이 더 가깝다.
+- "`Filter`에서 막히면 컨트롤러 로그가 찍혀야 하나요?"
+  아니다. 입구에서 끊겼다면 컨트롤러까지 가지 않을 수 있다.
 
 ## `Filter`는 Spring MVC 바깥 입구다
 

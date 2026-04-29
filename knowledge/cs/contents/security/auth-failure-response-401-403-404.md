@@ -18,7 +18,7 @@
 - [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)
 - [Spring `ProblemDetail` Error Response Design](../spring/spring-problemdetail-error-response-design.md)
 
-retrieval-anchor-keywords: 401 403 404 beginner, 401 vs 403 vs 404, auth failure response basics, 로그인 됐는데 왜 403, 남의 주문인데 왜 404, token valid but 403, what is 401, when to use 403, 404 concealment basics, actual request vs preflight, browser 401 vs 302, 처음 보는 auth status
+retrieval-anchor-keywords: 401 403 404 beginner, 401 vs 403 vs 404, auth failure response basics, 로그인 됐는데 왜 403, 남의 주문인데 왜 404, 토큰 valid인데 왜 403, 쿠키는 있는데 왜 다시 로그인, cookie exists but login again, what is 401, when to use 403, 404 concealment basics, actual request vs preflight, browser 401 vs 302, 처음 보는 auth status, why token valid but forbidden
 
 ## 처음 볼 때는 이 순서만 기억하면 된다
 
@@ -73,6 +73,22 @@ user-owned 또는 multi-tenant 리소스는 존재를 숨기기 위해 `403` 대
 | `로그인은 됐는데 이 API만 안 된다` | `403`로 보고 role, scope, ownership을 순서대로 본다 |
 | `내 건 되는데 남의 것만 404다` | concealment 가능성을 열고 ownership/tenant 문맥을 확인한다 |
 
+## 질문 문장 그대로 자르는 초보자 라우팅
+
+질문이 이미 증상 문장이라면 상태 코드 해석과 다음 문서를 같이 고르는 편이 빠르다.
+
+| 학습자가 자주 던지는 말 | 이 문서에서 먼저 붙일 뜻 | 바로 넘길 다음 문서 |
+|---|---|---|
+| `토큰 valid인데 왜 403` | 토큰 검증 성공은 authn 통과일 뿐이고, authz gate는 아직 남아 있다 | [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) |
+| `로그인 됐는데 이 API만 403` | 재로그인보다 role, scope, ownership 순서가 먼저다 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `권한을 방금 줬는데도 403` | authz freshness나 stale deny 가능성을 먼저 연다 | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) |
+| `쿠키는 있는데 왜 다시 로그인` | 바깥 모양은 authz보다 browser/session continuity 문제일 가능성이 더 크다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+
+짧게 정리하면:
+
+- `token valid but 403`은 `401`이 아니라 `403` primer에서 시작하는 질문이다.
+- `cookie는 있는데 왜 다시 로그인`은 `권한 부족`보다 `redirect / cookie 전송 / server 복원` 축으로 먼저 자르는 질문이다.
+
 ## 어디까지가 이 문서 범위인가
 
 이 문서는 beginner primer라서 `응답 코드의 첫 해석`까지만 다룬다. 아래 상황은 이 문서에서 깊게 파지 않는다.
@@ -91,8 +107,10 @@ user-owned 또는 multi-tenant 리소스는 존재를 숨기기 위해 `403` 대
 | `인증`과 `인가` 자체가 아직 헷갈린다 | [인증과 인가의 차이](./authentication-vs-authorization.md) |
 | `로그인 됐는데 왜 403`를 더 구조적으로 보고 싶다 | [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) |
 | `scope`와 `ownership` 차이가 헷갈린다 | [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `토큰 valid인데 왜 403`, `권한을 방금 줬는데도 403` | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) |
 | Network에 `OPTIONS`만 보인다 | [Preflight Debug Checklist](./preflight-debug-checklist.md) |
 | 브라우저에서는 `302 -> /login`이 보인다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| `쿠키는 있는데 왜 다시 로그인`, `Application > Cookies`에는 있는데 request `Cookie`가 헷갈린다 | [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
 | `남의 주문인데 왜 404`를 더 깊게 보고 싶다 | [Concealment `404` Entry Cues](./concealment-404-entry-cues.md) |
 | 권한을 방금 줬는데도 `403`/`404`가 남는다 | [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md) |
 | 응답 body를 어떻게 설계할지 궁금하다 | [Spring `ProblemDetail` Error Response Design](../spring/spring-problemdetail-error-response-design.md) |

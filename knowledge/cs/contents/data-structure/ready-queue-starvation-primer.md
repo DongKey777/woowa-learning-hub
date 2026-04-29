@@ -12,7 +12,7 @@
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 
 
-retrieval-anchor-keywords: ready queue starvation primer basics, ready queue starvation primer beginner, ready queue starvation primer intro, data structure basics, beginner data structure, 처음 배우는데 ready queue starvation primer, ready queue starvation primer 입문, ready queue starvation primer 기초, what is ready queue starvation primer, how to ready queue starvation primer
+retrieval-anchor-keywords: ready queue starvation primer, priority queue fairness beginner, 낮은 우선순위가 계속 실행 안 돼요, 높은 우선순위가 계속 오면, starvation 뭐예요, strict priority 기아 현상, ready queue fairness 큰 그림, aging scheduler beginner, quota fairness beginner, priority queue가 공정한가요, 처음 배우는데 scheduler fairness, due task fairness, ready queue에서 왜 굶어요, low priority task starvation, what is starvation in scheduler
 > 관련 문서:
 > - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 > - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](./heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)

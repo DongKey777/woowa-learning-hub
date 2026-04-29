@@ -13,11 +13,13 @@
 - [Spring WebClient Connection Pool / Timeout Tuning](../spring/spring-webclient-connection-pool-timeout-tuning.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: http keep-alive vs tcp keepalive, keepalive 차이, keepalive 뭐예요, http keep-alive basics, tcp keepalive basics, idle timeout basics, heartbeat basics, connection reuse vs liveness, keep-alive timeout 헷갈림, why connection closes idle, beginner keepalive primer, http keepalive tcp keepalive difference
+retrieval-anchor-keywords: http keep-alive vs tcp keepalive, keepalive 차이, keepalive 뭐예요, keepalive 큰 그림, keepalive 처음 배우는데, http keep-alive basics, tcp keepalive basics, idle timeout basics, heartbeat basics, connection reuse vs liveness, keep-alive timeout 헷갈림, keepalive랑 timeout 차이 뭐예요, 왜 keepalive인데 끊겨요, 언제 http keep-alive고 언제 tcp keepalive예요, 처음 네트워크 keepalive
 
 ## 핵심 개념
 
 `keepalive`는 한 가지 기능 이름처럼 들리지만, 실제로는 서로 다른 층의 말이 섞여 있다. 초급자가 가장 먼저 고정해야 할 질문은 "지금 말하는 keepalive가 연결을 다시 쓰는 이야기인가, 죽었는지 확인하는 이야기인가?"다.
+
+이 문서는 "`keepalive가 뭐예요?`", "`왜 keepalive인데 가끔 끊겨요?`", "`idle timeout이랑 heartbeat는 또 뭐가 달라요?`" 같은 첫 질문에서 먼저 잡아야 할 primer다. 운영 튜닝보다 먼저 용어를 네 칸으로 분리하는 데 집중한다.
 
 아주 짧게 나누면 이렇다.
 

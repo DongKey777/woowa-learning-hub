@@ -7,15 +7,15 @@
 관련 문서:
 
 - [language 카테고리 인덱스](../README.md)
-- [Java Optional 입문](./java-optional-basics.md)
 - [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md)
+- [Java Optional 입문](./java-optional-basics.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Java enum 기초](./java-enum-basics.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [Map `put()`이 `null`을 돌려줄 때: 새 key vs 기존 `null` value 구분 브리지](./map-put-null-containskey-distinction-bridge.md)
 - [Value Object Invariants, Canonicalization, and Boundary Design](./value-object-invariants-canonicalization-boundary-design.md)
 
-retrieval-anchor-keywords: optional collection bridge, optional list beginner, optional vs empty list, null handling design java, optional 언제 쓰고 컬렉션 언제 쓰나, optional list map set 헷갈림, optional collection domain type basics, optional empty collection difference, 없음의 의미를 타입으로, beginner null handling java, 자바 optional 컬렉션 설계, optional 대신 도메인 타입, optional collection primer, optional 0개 이상 데이터, map null vs missing beginner
+retrieval-anchor-keywords: optional collection bridge, optional list beginner, optional vs empty list, null handling design java, optional 언제 쓰고 컬렉션 언제 쓰나, optional list map set 헷갈림, optional collection domain type basics, optional empty collection difference, 없음의 의미를 타입으로, beginner null handling java, 자바 optional 컬렉션 설계, optional 대신 도메인 타입, optional 0개 이상 데이터, optional list before optional basics, 빈 컬렉션 먼저 봐야 하나
 
 ## 먼저 잡는 멘탈 모델
 

@@ -8,6 +8,7 @@ retrieval-anchor-keywords: request path failure modes, cache outage primer, queu
 
 관련 문서:
 
+- [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)
 - [System Design Foundations](./system-design-foundations.md)
 - [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md)
 - [Database Scaling Primer](./database-scaling-primer.md)
@@ -40,6 +41,8 @@ retrieval-anchor-keywords: request path failure modes, cache outage primer, queu
 
 초보자가 request path를 볼 때 자주 놓치는 점은, 시스템이 모든 장애를 같은 방식으로 다루지 않는다는 것이다.
 어떤 장애는 다른 레이어가 잠깐 흡수할 수 있지만, 어떤 장애는 거의 바로 사용자 오류로 드러난다.
+이 문서에서는 "어느 레이어가 망가졌는가"보다 먼저 "`다음 레이어가 잠깐 대신 버틸 수 있나?`"만 구분한다.
+세부 운영 전술은 일부러 뒤 문서로 넘긴다.
 
 대표 경로를 다시 그리면 아래와 같다.
 
@@ -82,7 +85,7 @@ Client
 
 ## 깊이 들어가기
 
-### 1. Cache가 죽으면 app이 fallback을 결정하고 DB가 부하를 맞는다
+### 1. Cache가 죽으면 app이 우회하고 DB가 더 바빠진다
 
 cache는 평소에는 DB read를 줄이는 완충 장치다.
 반대로 cache 자체가 죽으면 app은 cache를 건너뛰고 DB로 가야 한다.
@@ -96,25 +99,25 @@ Client -> LB -> App -> Cache timeout/error
                      -> DB 조회
 ```
 
-이때 first reaction은 app에서 일어난다.
+이때 초급자가 먼저 볼 것은 "cache miss를 누가 대신 처리하나"다.
 
-- cache timeout을 짧게 끊는다
-- stale entry가 있으면 잠깐 쓴다
-- single-flight나 request coalescing으로 같은 miss를 묶는다
+- app이 cache를 포기하고 원본 조회로 우회한다
+- 이미 가진 값이 있으면 잠깐 보여 줄 수 있다
+- 결국 원본 조회가 늘어난다
 
 하지만 **실제 충격을 맞는 레이어는 DB**다.
 
 - 평소 cache가 막아 주던 read가 DB로 쏟아진다
-- hot key가 있으면 특정 query가 바로 튄다
-- p95가 올라가고, DB CPU/connection이 먼저 흔들린다
+- 응답 시간이 늘어나기 쉽다
+- DB가 원래보다 더 많은 read를 처리해야 한다
 
-그래서 cache 장애는 "cache만 느리다"로 끝나지 않고, 자주 **DB read amplification incident**로 커진다.
+그래서 cache 장애는 "cache만 느리다"로 끝나지 않고, DB 부담 증가로 이어지기 쉽다.
 
 핵심 정리:
 
 - cache는 DB failure absorber가 아니라 DB load reducer다
 - cache가 죽으면 app은 우회하고, DB가 실제 비용을 낸다
-- DB가 그 비용을 못 버티면 그다음은 load shedding이나 partial outage로 번진다
+- 더 깊게는 [분산 캐시 설계](./distributed-cache-design.md)와 [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md)에서 본다
 
 ### 2. Queue 장애는 두 갈래로 봐야 한다
 
@@ -135,6 +138,9 @@ queue는 원래 worker 느림이나 burst를 흡수하는 레이어다.
 
 이 경우에는 queue가 더 이상 absorber가 아니다.
 이제 producer 쪽이 결정해야 한다.
+
+초급자는 여기서 "queue가 버퍼 역할을 계속 할 수 있나?"만 먼저 보면 된다.
+queue 자체가 죽었다면 producer 쪽에서 다른 저장 장소를 준비했는지 확인해야 한다.
 
 대표 선택지는 아래와 같다.
 
@@ -159,7 +165,7 @@ outbox relay -> Queue -> Worker
 
 - queue는 worker slowdown을 흡수할 수 있다
 - 하지만 queue 자체 장애는 queue가 흡수하지 못한다
-- 그때는 app 또는 DB outbox가 다음 absorber가 된다
+- outbox와 backlog 운영은 [Job Queue 설계](./job-queue-design.md)로 넘긴다
 
 ### 3. App instance가 죽으면 load balancer와 다른 replicas가 먼저 받쳐 준다
 
@@ -180,9 +186,8 @@ Client -> LB -> App A (dead)
 
 실제 트래픽을 떠안는 것은 남은 app replicas다.
 
-- 남은 인스턴스 CPU가 오른다
-- connection pool 사용량이 증가한다
-- 일부 inflight request는 실패할 수 있다
+- 남은 인스턴스 부하가 오른다
+- 이미 처리 중이던 일부 요청은 실패할 수 있다
 
 그래도 stateless app이면 대체로 전체 장애로 바로 이어지지 않는다.
 반대로 app 메모리에 session이나 local state가 깊게 묶여 있으면 흡수가 급격히 어려워진다.
@@ -192,6 +197,7 @@ Client -> LB -> App A (dead)
 - app instance 장애의 first absorber는 load balancer다
 - app tier가 stateless할수록 다른 replicas가 자연스럽게 이어받는다
 - sticky session, local-only state가 많으면 같은 장애도 훨씬 아프다
+- health check, drain 같은 운영 주제는 [Service Discovery / Health Routing 설계](./service-discovery-health-routing-design.md)로 넘긴다
 
 ### 4. Database가 죽으면 일부 cached read만 버티고 authoritative write는 거의 바로 멈춘다
 
@@ -204,13 +210,14 @@ Client -> LB -> App -> Cache miss     -> DB 실패
 Client -> LB -> App -> Write request  -> DB 실패
 ```
 
+여기서 초급자는 "read 일부는 잠깐 버틸 수 있지만, write는 거의 바로 멈춘다"만 먼저 잡으면 된다.
 여기서 살아남는 경로는 제한적이다.
 
 ## 깊이 들어가기 (계속 3)
 
 - 이미 cache에 있는 read는 잠깐 버틸 수 있다
-- read replica가 살아 있고 stale read 허용 범위가 있으면 일부 조회는 가능하다
-- queue에 이미 들어간 작업 중 DB를 다시 치지 않는 side effect 일부만 잠시 계속 처리될 수 있다
+- stale 허용 범위가 있으면 일부 조회는 잠깐 가능하다
+- 이미 분리된 비동기 작업 일부만 계속될 수 있다
 
 하지만 아래는 대체로 바로 막힌다.
 
@@ -227,7 +234,7 @@ Client -> LB -> App -> Write request  -> DB 실패
 
 - DB가 죽으면 cache는 cached read만 살려 준다
 - queue는 이미 적재된 일만 처리할 뿐, 새로운 authoritative write를 대신하지 못한다
-- DB 장애는 "우회"보다 "축소 운영"과 "빠른 failover"가 핵심이다
+- DB 장애 뒤 read-only나 graceful degradation 판단은 [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)로 이어진다
 
 ### 5. 결국 어떤 레이어가 어떤 실패를 흡수하도록 설계하는가가 중요하다
 
@@ -255,13 +262,29 @@ Client -> LB -> App -> Write request  -> DB 실패
 
 `app instance는 여러 대니까 신경 안 써도 된다`
 
-- 아니다. health check, drain, retry budget, connection pool까지 같이 설계해야 한다
+- 아니다. 다른 인스턴스로 우회는 되지만, 남은 인스턴스가 버틸지까지 봐야 한다
 
 `DB failover만 있으면 애플리케이션은 그대로다`
 
-- 아니다. failover 동안 timeout, stale read, retry amplification, read-only downgrade가 같이 따라온다
+- 아니다. failover 동안 응답 지연과 일부 기능 축소가 같이 따라올 수 있다
 
 ---
+
+## 다음 읽기
+
+처음 읽는 단계라면 이 문서에서 `어느 레이어가 먼저 흔들리고 누가 첫 absorber인지`까지만 잡으면 충분하다.
+그다음 한 걸음은 아래처럼 좁혀서 고르면 된다.
+
+| 지금 질문 | 다음 문서 | 이유 |
+|---|---|---|
+| "`남은 시간은 왜 계단처럼 줄여야 해요?`" | [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md) | failure path 다음에 `전체 마감`과 `하위 timeout`을 분리해 준다 |
+| "`기능을 줄여서 핵심 경로를 살리는 순서가 궁금해요`" | [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md) | degrade를 beginner-safe 후속 단계로 넘긴다 |
+| "`retry/backoff가 왜 장애를 더 키워요?`" | [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md) | 느린 장애가 attempt 증폭으로 커지는 장면을 이어서 본다 |
+| "`프록시나 네트워크 hop까지 같이 보고 싶어요`" | [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md) | cross-category로 HTTP hop 전파를 짧게 확인하고 다시 돌아온다 |
+
+safe return path:
+
+- timeout, retry, degrade 사다리를 다시 붙이고 싶으면 [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)로 돌아간다.
 
 ## 면접 답변 골격
 

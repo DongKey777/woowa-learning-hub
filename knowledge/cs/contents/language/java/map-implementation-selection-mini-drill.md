@@ -15,7 +15,7 @@
 - [LinkedHashMap access-order 미니 프라이머](../../data-structure/linkedhashmap-access-order-mini-primer.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java ordered map choice beginner, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, linkedhashmap access order 헷갈림, 조회만 했는데 순서가 바뀐다, 정렬돼 보인다 map 뭐 써야 해, 캐시처럼 밀린다 linkedhashmap, 처음 배우는데 map 구현체 선택, beginner map choice worksheet, hashmap vs treemap 언제 써요
+retrieval-anchor-keywords: map implementation selection mini drill, hashmap linkedhashmap treemap worksheet, java ordered map choice beginner, 자바 map 구현체 선택 연습, 자바 hashmap linkedhashmap treemap 고르기, 순서 유지 map 뭐 써야 해, 정렬된 map 뭐 써야 해, linkedhashmap access order 헷갈림, 조회만 했는데 순서가 바뀐다, 정렬돼 보인다 map 뭐 써야 해, 캐시처럼 밀린다 linkedhashmap, 처음 배우는데 map 구현체 선택, hashmap vs treemap 언제 써요, map 증상 기반 역선택 문제, 왜 get만 했는데 순서가 바뀌죠
 
 ## 먼저 잡는 멘탈 모델
 
@@ -57,6 +57,7 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 | 10 | "이상하게 순서가 바뀐다"는 제보가 왔고, 사실은 최근에 조회한 항목이 뒤로 밀리는 캐시 같은 동작이 필요하다. |  |
 | 11 | 결과를 찍어 보니 key가 "정렬돼 보인다". 이름순이나 번호순처럼 key 기준 오름차순이 요구다. |  |
 | 12 | 순서가 매번 달라도 괜찮고, 그냥 id로 값만 빨리 찾으면 된다. |  |
+| 13 | 원래는 "입력한 순서 유지"라고 생각해 `LinkedHashMap`을 골랐는데, 실제 증상은 `get()`만 해도 방금 조회한 항목이 맨 뒤로 가고 제거 후보도 바뀐다. 이 요구에 더 맞는 선택은? |  |
 
 ## 정답과 한 줄 이유
 
@@ -74,6 +75,7 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 | 10 | `LinkedHashMap(access-order=true)` | "조회한 항목이 뒤로 밀린다"는 access-order 신호다 |
 | 11 | `TreeMap` | "정렬돼 보인다"는 key 정렬 요구다 |
 | 12 | `HashMap` | 순서 계약 없이 조회만 빠르면 된다 |
+| 13 | `LinkedHashMap(access-order=true)` | "입력 순서"로 읽고 골랐지만 실제 증상은 최근 접근 순서와 eviction 후보 변경이므로 access-order가 맞다 |
 
 ## 증상으로 바로 고르기 15초 라운드
 
@@ -90,6 +92,10 @@ retrieval-anchor-keywords: map implementation selection mini drill, hashmap link
 - "`정렬`"이 들리면 `TreeMap`
 - "`조회 후 뒤로 밀림`", "`캐시처럼`"이 들리면 `LinkedHashMap(access-order=true)`
 - "`그냥 조회`", "`순서는 상관없음`"이면 `HashMap`
+
+역방향으로 읽을 때도 규칙은 같다.
+
+- 처음 요구사항 문장이 "`입력한 순서`"였더라도, 실제 증상이 "`get()`만 했는데 맨 뒤로 간다`"로 바뀌면 기본 `LinkedHashMap`에서 `LinkedHashMap(access-order=true)`로 역선택해야 한다.
 
 ## 함정 1문항: 삽입 순서 vs access-order
 

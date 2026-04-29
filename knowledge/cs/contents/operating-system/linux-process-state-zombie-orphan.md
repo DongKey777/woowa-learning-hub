@@ -12,7 +12,7 @@
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 
-retrieval-anchor-keywords: linux process state zombie orphan basics, linux process state zombie orphan beginner, linux process state zombie orphan intro, operating system basics, beginner operating system, 처음 배우는데 linux process state zombie orphan, linux process state zombie orphan 입문, linux process state zombie orphan 기초, what is linux process state zombie orphan, how to linux process state zombie orphan
+retrieval-anchor-keywords: linux process state zombie orphan basics, linux process state zombie orphan beginner, ready vs runnable vs sleeping linux, linux r s d state meaning, ready runnable sleeping difference, process state ready runnable sleeping 헷갈려요, sleeping blocked waiting difference, ps state r s d z what is, operating system basics, beginner operating system, 처음 배우는데 linux process state zombie orphan, linux process state zombie orphan 입문, linux process state zombie orphan 기초, what is linux process state zombie orphan, how to linux process state zombie orphan
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [프로세스와 스레드](./README.md#프로세스와-스레드)
@@ -31,6 +31,27 @@ retrieval-anchor-keywords: linux process state zombie orphan basics, linux proce
 - `Z` zombie
 
 이 중 실무에서 자주 헷갈리는 것이 `zombie`와 `orphan`이다.
+
+그 전에 beginner 문서에서 더 자주 섞이는 축을 먼저 분리하자.
+
+## 용어 먼저 정리: `ready` vs `runnable` vs `sleeping`
+
+운영체제 입문 자료를 읽다 보면 어떤 문서는 `ready`, 어떤 문서는 `runnable`, 또 어떤 문서는 `sleeping`이라고 써서 같은 상태처럼 보일 수 있다. 완전히 같은 말은 아니지만, beginner 단계에서는 아래처럼 정리하면 대부분의 질문이 풀린다.
+
+| 용어 | beginner에서 먼저 읽는 뜻 | Linux 관찰에서 붙는 주의점 |
+|------|--------------------------|----------------------------|
+| `running` | 지금 CPU에서 실제로 실행 중 | `ps`의 `R`은 running만이 아니라 runnable까지 넓게 묶어 보일 수 있다 |
+| `ready` | 실행 준비는 끝났고 CPU만 기다리는 상태 | beginner 설명용 표현이다 |
+| `runnable` | `ready`와 거의 같은 뜻으로 많이 쓴다 | Linux에서는 "실행 중이거나 곧 실행 가능"처럼 더 넓게 읽힐 수 있다 |
+| `sleeping` | CPU를 기다리는 게 아니라 외부 이벤트를 기다리는 상태 | Linux에서는 보통 `S`(interruptible sleep), `D`(uninterruptible sleep)처럼 다시 나뉜다 |
+
+짧게 말하면 이렇다.
+
+- 입문 문서에서는 `ready`와 `runnable`을 거의 동의어로 봐도 된다.
+- `sleeping`은 대개 `blocked`/`waiting` 쪽이지, ready queue에 서 있는 상태가 아니다.
+- Linux 상태 문자를 읽을 때는 `R`, `S`, `D`, `Z`처럼 좀 더 운영체제 관찰 친화적인 표기를 만난다.
+
+예를 들어 웹 요청 worker가 DB 응답을 기다리면 beginner 설명으로는 `blocked` 또는 `sleeping` 쪽이고, DB 응답을 받은 뒤 CPU 차례만 기다리면 `ready/runnable` 쪽이다. "`sleeping`이면 그냥 쉬는 거예요?"라는 질문에는 "아니고, 보통은 I/O나 락이 풀리길 기다리는 중"이라고 답하는 편이 안전하다.
 
 - `Zombie`는 **이미 종료됐지만 부모가 `wait()` 계열 호출로 회수하지 않은 자식 프로세스**
 - `Orphan`은 **부모가 먼저 종료되어 부모를 잃은 자식 프로세스**
@@ -53,8 +74,10 @@ retrieval-anchor-keywords: linux process state zombie orphan basics, linux proce
 전형적인 흐름은 이렇다.
 
 ```text
-fork() -> runnable -> running -> exit() -> zombie -> wait() -> fully reaped
+fork() -> ready/runnable -> running -> sleeping(blocked) <-> ready/runnable -> exit() -> zombie -> wait() -> fully reaped
 ```
+
+여기서 `sleeping(blocked)`는 "CPU를 못 받아서 기다리는 상태"가 아니라 "외부 이벤트가 끝나야 다시 runnable이 될 수 있는 상태"다.
 
 부모와 자식의 관계는 커널이 추적한다.
 

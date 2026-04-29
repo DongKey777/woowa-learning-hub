@@ -71,6 +71,23 @@ X-Request-Id -> gateway log와 app log 둘 다 대조
 | vendor/common error envelope + `Server: envoy`/`nginx`/CDN 흔적 | JSON이어도 proxy/vendor가 대신 말한 장면일 수 있다 | `{ "status": 504, "message": "upstream timeout" }` 같은 포맷은 app 계약과 다를 수 있다 | vendor header, 짧은 generic 문구, upstream timeout wording |
 | app처럼 보이는 JSON인데 `Via`가 강하고 `X-Request-Id`는 gateway 로그에만 있음 | "요청은 체인을 탔지만 app가 직접 답한 건 아닐 수 있다" | JSON body가 있다고 해서 app controller가 생성했다고 단정할 수 없다 | gateway access log와 app log 둘 다 같은 ID가 있는지 |
 
+## 헤더에서 payload 예시로 한 번에 건너뛰기
+
+헤더로 1차 owner를 좁혔다면, 다음 10초는 body 전체를 읽지 말고 payload 말투만 확인하면 된다.
+
+| 헤더 clue | 바로 붙일 payload 질문 | 다음 점프 |
+|---|---|---|
+| `Server`/`Via`가 강하고 `502`/`504`다 | preview가 `{ "title": "Gateway Timeout", "status": 504, "detail": ... }`처럼 generic `problem+json`인가 | [Response Body Ownership 체크리스트의 `payload 미니 예시 3개`](./browser-devtools-response-body-ownership-checklist.md#payload-미니-예시-3개)에서 gateway generic 예시를 바로 대조 |
+| `Server`/`Via`는 보이지만 body가 `{ "error": "...", "reason": "...", "request_id": ... }` 쪽이다 | vendor/gateway envelope인지, app 공통 `errorCode` 계약인지 | 같은 `payload 미니 예시 3개`에서 vendor/gateway envelope 예시와 비교 |
+| `X-Request-Id`가 app 로그/trace까지 이어지고 `404`/`409`다 | `{ "errorCode": "...", "message": "...", "traceId": ... }` 또는 도메인 `ProblemDetail` 말투인가 | [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)에서 app JSON vs gateway JSON 분기로 바로 이동 |
+
+짧게 연결하면 이렇다.
+
+```text
+Server/Via 강함 -> payload에서 generic title/detail/status 또는 vendor envelope 확인
+X-Request-Id가 app까지 이어짐 -> payload에서 errorCode/message/traceId 또는 domain ProblemDetail 확인
+```
+
 ## `Server`
 
 `Server`는 응답을 만든 소프트웨어 이름이 보일 때가 많다. 예를 들면 `nginx`, `envoy`, `cloudfront`, `Apache` 같은 값이 보일 수 있다.
@@ -173,6 +190,7 @@ Content-Type: application/problem+json
 - DevTools 첫 판독 순서 전체가 필요하면 [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
 - `500`/`502`/`504`를 첫 분기로 나누려면 [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - JSON body owner를 login HTML, gateway JSON, app JSON으로 더 잘게 나누려면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
+- 헤더 clue 다음에 payload 예시 3개를 바로 대조하려면 [Browser DevTools Response Body Ownership 체크리스트의 `payload 미니 예시 3개`](./browser-devtools-response-body-ownership-checklist.md#payload-미니-예시-3개)
 - cache 관련 응답 헤더가 보일 때 app ownership을 언제 보류해야 하는지 보려면 [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
 - header 기초가 아직 약하면 [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 - local reply인지 upstream 실패 번역인지 더 엄밀하게 가르려면 [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)

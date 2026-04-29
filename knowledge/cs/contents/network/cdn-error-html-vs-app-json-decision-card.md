@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
+- [Gateway Default HTML First-Line Card](./gateway-default-html-first-line-card.md)
 - [CDN Vendor Header Crosswalk Mini Card: CloudFront / Cloudflare 단서 읽기](./cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card.md)
 - [Browser DevTools `Accept` vs Response `Content-Type` 미니 카드](./browser-devtools-accept-vs-content-type-mini-card.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
@@ -138,6 +139,7 @@ Attention Required! | Cloudflare / Sorry, you have been blocked -> Cloudflare br
 ## 더 깊이 가려면
 
 - HTML/JSON owner를 더 넓게 가르려면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
+- branded HTML과 generic proxy 기본 HTML을 한 번 더 쪼개려면 [Gateway Default HTML First-Line Card](./gateway-default-html-first-line-card.md)
 - CloudFront/Cloudflare branded 흔적을 헤더로 읽으려면 [CDN Vendor Header Crosswalk Mini Card: CloudFront / Cloudflare 단서 읽기](./cdn-vendor-header-crosswalk-cloudfront-cloudflare-mini-card.md)
 - request `Accept`와 response `Content-Type`부터 먼저 자르고 싶으면 [Browser DevTools `Accept` vs Response `Content-Type` 미니 카드](./browser-devtools-accept-vs-content-type-mini-card.md)
 - `Server`/`Via`로 edge/proxy/app 경계를 더 붙여 읽고 싶으면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)

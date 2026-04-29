@@ -2,7 +2,9 @@
 
 > 한 줄 요약: TTL, delete-on-write, write-through, versioned keys, stampede-safe refresh를 "언제 옛 값을 버리고 어떻게 다시 채울지" 관점에서 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, cache ttl basics, ttl cache primer, delete on write cache, cache aside invalidation, write through cache basics, versioned keys cache, cache key versioning, cache stampede basics, single flight cache refresh, request coalescing cache, stale while revalidate basics, refresh ahead cache, ttl jitter basics
+> 이 문서는 "캐시 무효화가 뭐예요?", "왜 저장했는데 예전 값이 보여요?", "처음 cache invalidation 배우는데 큰 그림이 뭐예요?" 같은 첫 질문에 먼저 걸리도록 맞춘 entrypoint primer다.
+
+retrieval-anchor-keywords: cache invalidation primer, cache invalidation patterns, 캐시 무효화가 뭐예요, 캐시 무효화 처음, 처음 cache invalidation 배우는데, cache invalidation 큰 그림, 왜 저장했는데 예전 값이 보여요, 왜 캐시가 옛값을 줘요, stale 값 왜 보여요, ttl 언제 쓰나요, delete-on-write 언제 쓰나요, write-through 뭐예요, cache stampede basics, single flight cache refresh, stale while revalidate basics
 
 **난이도: 🟢 Beginner**
 

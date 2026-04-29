@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Lock Timeout 났을 때 blocker 먼저 보는 미니카드](./lock-timeout-blocker-first-check-mini-card.md)
 - [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md)
 - [Pool-Timeout 용어 짝맞춤 카드](./pool-timeout-term-matching-card.md)
 - [Timeout 로그 타임라인 체크리스트 카드](./timeout-log-timeline-first-failure-checklist-card.md)
@@ -153,7 +154,7 @@ WHERE concert_id = 7 AND seat_no = 'A-10';
 필요하면 다음 문서로 이어 본다.
 
 - `statement timeout` 쪽이면 [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
-- `lock timeout` 쪽이면 [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
+- `lock timeout` 쪽이면 [Lock Timeout 났을 때 blocker 먼저 보는 미니카드](./lock-timeout-blocker-first-check-mini-card.md), [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md), [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
 
 ## 한 줄 정리
 

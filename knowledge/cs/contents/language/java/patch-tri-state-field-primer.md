@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Java Deep Dive Catalog](./README.md)
+- [`Optional` vs `FieldPatch`: PATCH tri-state에서 왜 갈라지나](./optional-vs-fieldpatch-patch-tri-state-bridge.md)
 - [Request DTO에서 raw string을 값 객체로 올리는 경계 입문](./request-dto-to-value-object-boundary-primer.md)
 - [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
@@ -132,13 +133,14 @@ public Profile apply(UpdateProfileRequest request, Profile profile) {
 - "그럼 모든 DTO를 다 `FieldPatch`로 감싸야 하나요?"
   아니다. 전체 생성(create) 요청처럼 필드가 항상 와야 하는 모델은 보통 필요 없다.
 - "`Optional<String>`이면 되지 않나요?"
-  beginner 관점에선 보통 부족하다. `Optional`은 "있음/없음" 2칸에 더 가깝고, PATCH는 missing과 explicit `null`을 둘 다 구분해야 할 수 있다.
+  beginner 관점에선 보통 부족하다. `Optional`은 "있음/없음" 2칸에 더 가깝고, PATCH는 missing과 explicit `null`을 둘 다 구분해야 할 수 있다. 바로 다음 단계 비교는 [`Optional` vs `FieldPatch`: PATCH tri-state에서 왜 갈라지나](./optional-vs-fieldpatch-patch-tri-state-bridge.md)에서 보면 된다.
 - "문자열 하나 바꾸는데 너무 복잡한 것 아닌가요?"
   필드를 적게 바꾸는 PATCH일수록 유지/삭제/변경이 더 중요해져서 오히려 작은 tri-state가 도움이 된다.
 
 ## 더 깊이 가려면
 
 - raw DTO를 값 객체로 넘기는 감각은 [Request DTO에서 raw string을 값 객체로 올리는 경계 입문](./request-dto-to-value-object-boundary-primer.md)
+- `Optional`이 왜 PATCH tri-state를 완전히 대체하지 못하는지 짧게 이어 보려면 [`Optional` vs `FieldPatch`: PATCH tri-state에서 왜 갈라지나](./optional-vs-fieldpatch-patch-tri-state-bridge.md)
 - 값 객체가 왜 `equals()`/`hashCode()`와 이어지는지는 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - `==`와 `equals()`를 먼저 분리하고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - primitive/wrapper가 JSON 의도를 얼마나 보존하는지는 [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)

@@ -14,7 +14,7 @@
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 
-retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basics, response.url basics, opaqueredirect beginner, fetch manual redirect confusion, manual redirect status 0, why response redirected false, fetch follow login html, redirect follow vs manual, 처음 fetch redirect, 헷갈 response.url, what is opaqueredirect
+retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basics, response.url basics, opaqueredirect beginner, fetch manual redirect confusion, manual redirect status 0, why response redirected false, fetch follow login html, redirect follow vs manual, final url vs original url fetch, original api url became login, 처음 fetch redirect, 헷갈 response.url, what is opaqueredirect
 
 ## 핵심 개념
 
@@ -59,6 +59,14 @@ retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basic
 
 즉 `response.url`은 "최종 목적지"를 알려 주지만, redirect 과정을 다 풀어 주지는 않는다.
 
+초보자 10초 cue는 아래처럼 외우면 된다.
+
+- original call: `/api/me`
+- final `response.url`: `/login`
+- final `Content-Type`: `text/html`
+
+이 세 줄이 같이 보이면 "`200 OK`"보다 "`API가 login page로 흘렀다`"를 먼저 적는 편이 안전하다.
+
 ### `opaqueredirect`는 왜 따로 읽어야 하나
 
 `redirect: "manual"`에서는 초보자가 기대하는 "`302` status와 `Location` header를 그대로 코드에서 읽기"가 잘 안 보인다. 대신 아래처럼 제한된 신호가 먼저 온다.
@@ -91,7 +99,8 @@ retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basic
 
 1. `follow`에서 `response.url`이 `/login`이면 login HTML `200`을 API 성공으로 읽지 않는다.
 2. `manual`에서 `opaqueredirect`가 보이면 `Location`을 코드에서 캐내려 하지 말고 DevTools의 실제 `302` row를 본다.
-3. 둘 다 결국은 "첫 API 요청에 cookie가 실렸는가"와 "왜 redirect가 났는가"로 돌아간다.
+3. original URL과 final URL이 다르면 "무엇이 응답했나"보다 먼저 "어디로 도착했나"를 적는다.
+4. 둘 다 결국은 "첫 API 요청에 cookie가 실렸는가"와 "왜 redirect가 났는가"로 돌아간다.
 
 ## 더 깊이 가려면
 

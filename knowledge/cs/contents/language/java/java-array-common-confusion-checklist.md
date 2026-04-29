@@ -1,6 +1,6 @@
 # Java 배열 입문 공통 confusion 체크리스트
 
-> 한 줄 요약: 배열에서 막힐 때는 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`인가", "한쪽을 바꾸면 다른 쪽도 같이 바뀌는가", "정렬 뒤 원본이 바뀌었는가"를 나누면 `==`, alias, `Arrays.sort()` 함정을 훨씬 빨리 피할 수 있다.
+> 한 줄 요약: 배열에서 막힐 때는 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가를 같은 문장으로 자르고, 그다음에야 정렬/반복문 분기로 내려가면 `==`, alias, `Arrays.sort()` 함정을 훨씬 빨리 피할 수 있다.
 
 **난이도: 🟢 Beginner**
 
@@ -30,18 +30,29 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 
 ## 먼저 잡는 mental model
 
-배열에서 자주 막히는 질문은 사실 서로 다른 네 문제다.
+배열에서 자주 막히는 질문은 먼저 세 갈래로 자르고, 그다음 정렬/반복문으로 내려가면 덜 섞인다.
 
-- 출력: "`[I@...`처럼 이상하게 보이나?"
-- 비교: "값은 같은데 `==`나 `array.equals(...)`가 `false`인가?"
-- 공유: "한쪽을 바꾸면 다른 쪽도 같이 바뀌는가?"
+- 출력: "출력이 이상한가?"
+- 비교: "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가?
+- 공유: "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가?
+
+세 array primer가 공통으로 쓰는 첫 질문도 이 문장 그대로다.
+
+> 지금 문제는 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, 아니면 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가?
+
+정렬과 반복문은 이 세 갈래를 자른 뒤에 붙인다.
+
 - 정렬: "`Arrays.sort()` 뒤 원본 순서가 바뀌었나?"
+- 반복문: "`i <= arr.length` 때문에 마지막 칸을 넘어갔나?"
 
-초보자 기준으로는 아래 한 줄이 제일 중요하다.
+초보자 기준으로는 아래 두 줄이 제일 중요하다.
 
-> 배열 문제를 만나면 먼저 "값이 같은가"와 "같은 배열인가"를 분리해서 생각한다.
+- 먼저 위 세 갈래 중 어디에 해당하는지 고른다.
+- 그다음 "값이 같은가"와 "같은 배열인가"를 분리해서 생각한다.
 
-이 한 줄만 놓치지 않으면 `==`, alias, 제자리 정렬이 한 덩어리로 섞이는 일을 많이 줄일 수 있다.
+> 배열 문제를 만나면 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가를 고른 뒤, "값이 같은가"와 "같은 배열인가"를 분리해서 생각한다.
+
+이 흐름만 놓치지 않으면 `==`, alias, 제자리 정렬이 한 덩어리로 섞이는 일을 많이 줄일 수 있다.
 
 ## 이 문서를 먼저 열면 좋은 순간
 
@@ -54,6 +65,18 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 이 한 문장도 같이 붙여 두면 헷갈림이 줄어든다.
 
 > 배열의 `length`는 마지막 칸 번호가 아니라 전체 칸 수다. 그래서 마지막 유효 인덱스는 항상 `length - 1`이다.
+
+## 공통 세 갈래 먼저 자르기
+
+세 primer와 같은 wording으로 먼저 자르면 다음 문서 선택이 빨라진다.
+
+| 공통 첫 질문 | 바로 가는 첫 문서 |
+|---|---|
+| "출력이 이상한가" | [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md) |
+| "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가 | [Java Array Equality Basics](./java-array-equality-basics.md) |
+| "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가 | [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md) |
+
+이 세 갈래로 먼저 자른 다음에야 정렬/반복문 쪽 증상을 붙인다.
 
 ## 10초 선택표
 
@@ -75,7 +98,9 @@ retrieval-anchor-keywords: java array confusion primer, 자바 배열 처음 헷
 
 ## 가장 많이 반복되는 세 가지 혼동
 
-### 1. `==`는 값 비교가 아니라 "같은 배열인가"를 본다
+아래 세 섹션 제목도 primer들과 같은 branch cue를 유지한다.
+
+### 1. "값은 같은데 `==`나 `array.equals(...)`가 `false`다"
 
 ```java
 int[] first = {1, 2, 3};
@@ -92,7 +117,7 @@ System.out.println(first == second); // false
 
 즉 "`==`가 false"라는 사실만으로 "값이 다르다"라고 결론 내리면 안 된다.
 
-### 2. `copied = original`은 복사가 아니라 alias다
+### 2. "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"
 
 ```java
 int[] original = {1, 2, 3};
@@ -111,7 +136,7 @@ System.out.println(original[0]); // 99
 
 즉 "한쪽 수정이 같이 퍼진다"는 증상은 비교 문제가 아니라 공유 문제다.
 
-### 3. `Arrays.sort()`는 정렬된 복사본을 반환하지 않는다
+### 3. 정렬 뒤 원본이 바뀌었다
 
 ```java
 int[] numbers = {3, 1, 2};
@@ -175,10 +200,11 @@ System.out.println(Arrays.toString(copy));     // [3, 1, 2]
 ## 30초 재진입 순서
 
 1. 메서드 자체가 헷갈리면 [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)부터 본다.
-2. 출력이 이상하면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)로 간다.
-3. "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 보이면 [Java Array Equality Basics](./java-array-equality-basics.md)로 간다.
-4. "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 보이면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)로 간다.
-5. 정렬 뒤 원본이 달라졌거나 검색 결과가 이상하면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)로 간다.
+2. 먼저 "출력이 이상한가", "값은 같은데 `==`나 `array.equals(...)`가 `false`다"인가, "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"인가를 고른다.
+3. 출력이 이상하면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)로 간다.
+4. "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 보이면 [Java Array Equality Basics](./java-array-equality-basics.md)로 간다.
+5. "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"가 보이면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)로 간다.
+6. 정렬 뒤 원본이 달라졌거나 검색 결과가 이상하면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)로 간다.
 
 ## 다음에 어디로 이어 읽으면 좋은가
 
@@ -191,4 +217,4 @@ System.out.println(Arrays.toString(copy));     // [3, 1, 2]
 
 ## 한 줄 정리
 
-배열 입문에서 가장 흔한 실수는 `==`, alias, `Arrays.sort()`를 모두 "값이 왜 이상하지?" 한 문제로 섞어 읽는 것이다. 먼저 출력/비교/공유/정렬 네 축을 나누면 다음 문서 선택도 훨씬 쉬워진다.
+배열 입문에서 가장 흔한 실수는 `==`, alias, `Arrays.sort()`를 모두 "값이 왜 이상하지?" 한 문제로 섞어 읽는 것이다. 먼저 세 primer와 같은 문장으로 출력/비교/공유를 자르고, 그다음 정렬/반복문으로 내려가면 다음 문서 선택도 훨씬 쉬워진다.

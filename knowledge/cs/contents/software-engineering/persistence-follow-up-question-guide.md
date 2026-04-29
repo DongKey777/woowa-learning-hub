@@ -12,12 +12,13 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: persistence beginner guide, persistence primer next step, 영속성 기초 다음 문서, 영속성 처음 배우는데 어디부터, repository 다음 문서 뭐 봐요, query model이 뭐예요 영속성, dao query model 차이 처음, entity 누수 문서 고르기, jpa 매핑 다음 질문, persistence decision map beginner, persistence wayfinding beginner, 초심자 영속성 길잡이, 영속성 문서 선택표, repository dao entity 다음 읽기, query model separation 입문 연결
+retrieval-anchor-keywords: persistence beginner guide, persistence primer next step, 영속성 기초 다음 문서, 영속성 처음 배우는데 어디부터, repository 다음 문서 뭐 봐요, repository 다음 뭐 읽지, repository 다음 뭐부터 읽어요, repository 다음 fake mapping leakage, entity 누수 문서 고르기, jpa 매핑 다음 질문, persistence decision map beginner, persistence wayfinding beginner, 초심자 영속성 길잡이, 영속성 문서 선택표, repository dao entity 다음 읽기
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 가이드가 필요한가](#왜-이-가이드가-필요한가)
 - [먼저 잡는 한 줄 멘탈 모델](#먼저-잡는-한-줄-멘탈-모델)
+- [Repository 다음 뭐 읽지 30초 미니 카드](#repository-다음-뭐-읽지-30초-미니-카드)
 - [한 질문씩 내려가는 결정표](#한-질문씩-내려가는-결정표)
 - [Repository Primer 다음 3갈래](#repository-primer-다음-3갈래)
 - [짧은 예시: 주문 저장 코드를 보고 어디로 갈까](#짧은-예시-주문-저장-코드를-보고-어디로-갈까)
@@ -68,6 +69,26 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 
 이 네 칸 중 어디가 막혔는지 고르면 다음 문서가 빨라진다.
 
+## Repository 다음 뭐 읽지 30초 미니 카드
+
+`Repository Interface Contract Primer`를 막 읽고 "`repository 다음 뭐 읽지?`", "`처음이라 fake랑 mapping이랑 leakage가 아직 헷갈려요`"가 나오면 아래 3갈래만 먼저 고르면 된다.
+
+| 지금 막힌 질문 | 먼저 읽을 문서 | 이렇게 기억하면 된다 |
+|---|---|---|
+| "`test`에서 이 저장 계약을 어떻게 재현하지?", "`fake repository`는 뭘 흉내 내야 하지?" | [Repository Fake Design Guide](./repository-fake-design-guide.md) | fake는 `DB 흉내`가 아니라 `저장 계약 재현`이다 |
+| "`domain`과 `Entity`를 어디서 나누지?", "`mapper`는 어느 레이어 책임이지?" | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | mapping은 `도메인 언어`와 `JPA 언어`를 번역하는 자리다 |
+| "`Service`나 API에 `Entity`가 보이는데 왜 문제지?", "`엔티티를 그냥 반환하면 안 되나?`" | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | leakage는 `저장 모델`이 바깥 계약으로 새는 신호다 |
+
+짧게 외우면 이 한 줄이면 충분하다.
+
+- `fake = test에서 계약 재현`
+- `mapping = domain <-> entity 번역`
+- `leakage = entity가 바깥으로 샘`
+
+이 카드의 안전한 다음 한 걸음도 하나뿐이다.
+
+- 질문이 셋 중 하나로 보이면 문서 1개만 열고, 나머지는 나중에 본다.
+
 ## 한 질문씩 내려가는 결정표
 
 특히 `Repository Interface Contract Primer`를 막 읽은 직후라면, 한 번에 문서 제목을 다 비교하지 말고 아래 질문을 위에서 아래로 한 줄씩만 따라가면 된다.
@@ -95,6 +116,8 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 - "테스트에서 이 계약을 어떻게 재현하지?"면 [Repository Fake Design Guide](./repository-fake-design-guide.md)
 - "`domain`과 `Entity`를 어디서 끊지?"면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - "서비스/API에 `Entity`가 이미 새고 있네?"면 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
+
+처음에는 이 3개를 "`fake / mapping / leakage`"라는 짧은 별칭으로만 기억해도 충분하다.
 
 ## 빠른 보조 표
 

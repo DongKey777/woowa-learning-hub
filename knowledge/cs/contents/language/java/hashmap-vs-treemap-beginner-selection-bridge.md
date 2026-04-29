@@ -157,11 +157,18 @@ System.out.println(gradeByMinimumScore.subMap(70, true, 90, false));
 - `floorKey`/`ceilingKey`/`subMap`이 보이면 "출력 순서"보다 "정렬된 lookup" 요구로 읽기
 - `TreeMap` comparator가 너무 거칠면 overwrite surprise가 생길 수 있음
 
+ordered map 학습이 여기서 끊기지 않게, beginner follow-up은 아래 사다리로 붙이면 된다.
+
+- 이 문서에서 구현체 선택 감각을 잡는다
+- 다음 한 칸은 [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)로 가서 `floor`/`ceiling`의 boundary-`null`을 먼저 손으로 예측한다
+- 그다음 [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)에서 `lower`/`floor`/`ceiling`/`higher` 전체 좌표계를 묶는다
+
 ## 다음 읽기
 
 - 구현체 선택을 짧은 문제로 더 굳히려면 [Map 구현체 선택 미니 드릴](./map-implementation-selection-mini-drill.md)
 - 순서 차이만 다시 보고 싶다면 [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - `TreeMap`에서 두 번째 `put`이 왜 덮어쓰기로 읽히는지 더 짧게 보려면 [TreeMap `put` 반환값 브리지: `null` vs 이전 값](./treemap-put-return-value-overwrite-bridge.md)
+- ordered map route를 beginner-safe하게 이어 가려면 [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md) -> [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - `floorKey`, `ceilingKey`, `lowerKey`, `higherKey`를 한 장으로 묶어 보고 싶다면 [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - `TreeMap` comparator와 natural ordering이 같은 key 자리를 어떻게 만드는지 보려면 [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 

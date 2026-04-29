@@ -9,6 +9,7 @@
 - [Language README](../README.md)
 - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
 - [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md) - stack/heap 그림을 더 정확한 JVM follow-up으로 넘길 때
@@ -30,6 +31,19 @@ retrieval-anchor-keywords: java execution model basics, 자바 실행 모델 입
 
 한 줄로 줄이면 이 문서는 "실행 흐름"과 "객체가 실제로 언제 생기는가"를 붙여 주는 첫 진입점이다.
 
+## 여기서 멈출지, 다음 문서로 넘길지 20초로 자르기
+
+실행 모델 문서를 펼쳤다고 해서 끝까지 다 읽어야 하는 것은 아니다. 증상이 아래처럼 바뀌면 바로 다음 축으로 넘어가는 편이 더 빠르다.
+
+| 지금 먼저 보이는 증상 | 이 문서에서 먼저 붙일 질문 | 다음 한 칸 |
+|---|---|---|
+| "`Student student;`만 썼는데 객체가 생긴 거 아닌가요?" | 선언과 생성이 분리됐나 | 이 문서 계속 |
+| "`new`는 한 번인데 왜 둘 다 같이 바뀌죠?" | 같은 객체 별칭인가 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`==`는 false인데 필드는 같아 보여요" | 객체가 몇 개 생겼나부터 셌나 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`HashSet`/`HashMap`에서 왜 못 찾죠?" | 애초에 같은 객체를 돌려 쓰는가, 아니면 비교 규칙이 문제인가 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
+
+즉 이 문서는 "`무엇이 생기고 무엇이 공유되는가`"를 자르는 자리다. 그 다음부터는 `같은 객체 vs 같은 값`, `컬렉션 조회 규칙` 순서로 한 칸씩 넘기면 된다.
+
 ## 여기서 먼저 멈출 것
 
 이 문서는 beginner 첫 진입점이라 아래 두 가지만 먼저 잡고 멈추는 편이 좋다.
@@ -37,7 +51,7 @@ retrieval-anchor-keywords: java execution model basics, 자바 실행 모델 입
 - `new`가 나오면 "새 객체가 생겼나, 기존 객체를 다시 가리키나"를 먼저 본다.
 - `stack`/`heap`은 정확한 JVM 구조가 아니라 "지역 변수와 객체를 분리해서 보는 생각 도구"로만 쓴다.
 
-GC, JIT, JMM, escape analysis 같은 내부 용어는 이 문서의 중심이 아니다. 지금은 "실행 흐름과 reference 공유"만 붙으면 충분하다. 운영 이슈나 JVM 내부 구조가 떠올라도 바로 깊게 파지 말고 관련 문서 링크로 넘긴다.
+GC, JMM 같은 내부 용어는 이 문서의 중심이 아니다. 지금은 "실행 흐름과 reference 공유"만 붙으면 충분하다. 운영 이슈나 JVM 내부 구조가 떠올라도 바로 깊게 파지 말고 관련 문서 링크로 넘긴다.
 
 처음엔 아래 세 질문만 바로 답할 수 있으면 된다.
 
@@ -398,6 +412,17 @@ System.out.println(first == second); // false
 4. 정말 함께 써야 하는 값만 `static`으로 올라가 있는가
 
 디버깅할 때도 "변수가 바뀌었는가?"보다 "같은 객체를 여러 변수가 공유하고 있는가?"를 먼저 보면 side effect를 더 빨리 찾는다.
+
+## 다음 한 칸만 붙이기
+
+이 문서를 읽고 바로 JVM deep dive로 뛰지 말고, 지금 막힌 증상에 맞는 한 칸만 더 붙이는 편이 beginner에게 안전하다.
+
+| 지금 남은 질문 | 바로 다음 문서 |
+|---|---|
+| "`==`는 false인데 왜 값은 같아 보여요?" | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`a = b` 뒤 한쪽만 바꿨는데 왜 둘 다 바뀌죠?" | [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md) |
+| "`static`이 왜 객체마다가 아니라 같이 보이죠?" | [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md) |
+| "stack/heap 그림을 더 정확히 알고 싶어요" | [Stack vs Heap Escape Intuition](./stack-vs-heap-escape-intuition.md) |
 
 ## 더 깊이 가려면
 

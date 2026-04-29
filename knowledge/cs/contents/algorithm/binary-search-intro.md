@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md)
+- [정렬에서 이분 탐색으로 넘어가는 브리지](./sort-to-binary-search-bridge.md)
 - [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md)
 - [이분 탐색 패턴](./binary-search-patterns.md)
 - [정렬 알고리즘 비교 심화](./sort.md)
@@ -44,8 +45,8 @@ Java로 처음 이분 탐색을 접하면 알고리즘 문법보다 "`정렬은 
 
 | 지금 보이는 증상 | 먼저 볼 문서 | 바로 다음 한 칸 | 더 깊이 갈 문서 |
 |---|---|---|---|
-| `Arrays.sort()` 뒤 원본 순서가 왜 바뀌지? | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md) | 이 문서 | [이분 탐색 패턴](./binary-search-patterns.md) |
-| 정렬은 했는데 검색 결과가 이상하다 | [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) | 이 문서 | [이분 탐색 패턴](./binary-search-patterns.md) |
+| `Arrays.sort()` 뒤 원본 순서가 왜 바뀌지? | [Sorting and Searching Arrays Basics](../language/java/java-array-sorting-searching-basics.md) | [정렬에서 이분 탐색으로 넘어가는 브리지](./sort-to-binary-search-bridge.md) | [이분 탐색 패턴](./binary-search-patterns.md) |
+| 정렬은 했는데 검색 결과가 이상하다 | [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md) | [정렬에서 이분 탐색으로 넘어가는 브리지](./sort-to-binary-search-bridge.md) | [이분 탐색 패턴](./binary-search-patterns.md) |
 | 중복값에서 첫 위치/마지막 위치가 필요하다 | [BinarySearch Duplicate Boundary Primer](../language/java/binarysearch-duplicate-boundary-primer.md) | 이 문서의 Lower/Upper Bound 설명 | [이분 탐색 패턴](./binary-search-patterns.md) |
 
 짧게 외우면 이렇다.
@@ -75,6 +76,7 @@ Java로 처음 이분 탐색을 접하면 알고리즘 문법보다 "`정렬은 
 
 ## 더 깊이 가려면
 
+- 정렬이 왜 이분 탐색 전처리인지 한 장으로 다시 붙이고 싶다면 [정렬에서 이분 탐색으로 넘어가는 브리지](./sort-to-binary-search-bridge.md)
 - Java `Arrays.sort(...) -> Arrays.binarySearch(...)` 전제를 먼저 다시 붙이고 싶다면 [`Arrays.sort(...)` 뒤 `binarySearch(...)` 전제 브리지](../language/java/arrays-sort-binarysearch-precondition-bridge.md)
 - Java 배열에서 중복값 경계를 가장 쉬운 방식으로 먼저 읽고 싶다면 [BinarySearch Duplicate Boundary Primer](../language/java/binarysearch-duplicate-boundary-primer.md)
 - Lower Bound / Upper Bound 응용 패턴과 결정 문제 이분 탐색은 [이분 탐색 패턴](./binary-search-patterns.md)

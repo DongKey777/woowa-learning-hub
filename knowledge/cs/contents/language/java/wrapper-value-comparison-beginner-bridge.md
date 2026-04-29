@@ -20,6 +20,11 @@ retrieval-anchor-keywords: java wrapper comparison basics, integer long boolean 
 
 ## 핵심 개념
 
+먼저 질문을 분리하면 검색 오탐이 줄어든다.
+
+- "`int`와 `Integer`를 언제 고르나요?"는 타입 선택 질문이다. 이 경우 [Primitive-wrapper choice primer: `int`/`long`/`boolean` vs `Integer`/`Long`/`Boolean`](./primitive-wrapper-choice-primer.md)로 먼저 가는 편이 맞다.
+- "`Integer` 비교를 왜 `==`로 하면 이상하죠?"는 이 문서가 직접 다루는 비교 규칙 질문이다.
+
 초보자 눈에는 `Integer`, `Long`, `Boolean`이 `int`, `long`, `boolean`과 거의 같아 보인다. 이름도 비슷하고, 출력값도 똑같이 보이기 때문이다.
 
 하지만 비교 규칙은 다르다.

@@ -2,26 +2,19 @@
 
 > 한 줄 요약: 런타임에 "이번에는 어떤 정책/행동을 쓸까"를 고르는 일은 보통 Strategy이고, Factory는 그 전략이나 협력 객체를 어떻게 만들지를 숨길 때 등장하며, Bridge는 행동 종류와 구현 제공자처럼 두 변화 축이 함께 늘어날 때 쓴다.
 
-**난이도: 🟢 Beginner**
+**난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
+- [전략 패턴 기초](./strategy-pattern-basics.md)
+- [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
+- [전략 vs 상태 vs Policy Object](./strategy-vs-state-vs-policy-object.md)
+- [상속보다 조합 기초](../software-engineering/oop-design-basics.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
-> - [전략 패턴 기초](./strategy-pattern-basics.md)
-> - [팩토리 패턴 기초](./factory-basics.md)
-> - [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
-> - [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
-> - [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
-> - [Policy Object Pattern: 도메인 결정을 객체로 만든다](./policy-object-pattern.md)
-> - [디자인 패턴 카테고리 인덱스](./README.md)
-
-retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection strategy factory, behavior axis vs creation axis, policy selection not factory, runtime policy chooser, junior factory confusion, strategy selection beginner, strategy vs policy selector naming, selector resolver registry strategy vs factory, factory creates strategy, factory creates gateway client, bridge two change axes, behavior selection vs object creation, strategy vs factory beginner, bridge strategy factory payment example
+retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection strategy factory, behavior axis vs creation axis, policy selection not factory, runtime policy chooser, intermediate pattern bridge, strategy vs factory next step, selector vs factory naming, factory creates gateway client, bridge two change axes, behavior selection vs object creation, 언제 strategy 언제 factory, 왜 bridge 가 필요한가, bridge strategy factory payment example, what is bridge vs strategy vs factory
 
 ---
 
@@ -35,6 +28,19 @@ retrieval-anchor-keywords: bridge vs strategy vs factory, runtime selection stra
 - "결제 방식과 PG provider가 둘 다 늘어나는데 클래스가 폭발합니다"
 
 핵심은 패턴 이름보다 **무엇이 바뀌는가**다.
+
+---
+
+## 왜 beginner 다음 단계 문서인가
+
+`Strategy` primer와 `Factory` primer를 각각 읽고 나면, 실무 코드에서는 둘이 한 파일 안에 같이 보이기 시작한다.
+이때부터는 "정의 암기"보다 **책임 경계**를 자르는 연습이 더 중요하다.
+
+- `Map<PaymentMethod, PaymentStrategy>`를 꺼내는 코드를 `*Factory`로 부를지
+- provider client를 만드는 코드와 payment policy를 고르는 코드를 한 클래스로 둘지
+- 결제 수단 축과 PG provider 축이 동시에 늘 때 어디서 구조를 찢을지
+
+즉 이 문서는 beginner primer를 반복하기보다, **헷갈리는 두세 가지 축이 같이 등장할 때 오판을 줄이는 bridge** 역할에 가깝다.
 
 ---
 
@@ -129,6 +135,20 @@ return strategy.pay(order);
 
 ---
 
+## 한 클래스에 세 책임이 섞일 때 보는 경고 신호
+
+아래처럼 한 타입이 선택과 생성과 provider 분리를 동시에 떠안기 시작하면 이름부터 흐려진다.
+
+| 보이는 코드 냄새 | 실제로 섞인 질문 | 먼저 분리할 것 |
+|---|---|---|
+| `PaymentFactory`가 `Map` lookup도 하고 `new Gateway(...)`도 한다 | 무엇을 고르나 + 무엇을 만드나 | selector/registry와 factory |
+| 전략 구현 안에서 provider별 `switch`가 계속 커진다 | 행동 축 + provider 축 | bridge 축 분리 |
+| `Factory`인데 public API가 `create()`보다 `get()`/`resolve()`에 가깝다 | 생성보다 조회/선택 | 이름 재검토 |
+
+패턴을 고르는 핵심은 "어느 패턴이 더 멋진가"가 아니라, **변경 이유가 서로 다른 책임을 한 타입에 눌러 담고 있지 않은가**다.
+
+---
+
 ## 언제 진짜 Factory인가
 
 같은 결제 도메인에서도 아래는 factory라고 부를 만하다.
@@ -212,6 +232,19 @@ public final class CardPaymentStrategy implements PaymentStrategy {
 
 ---
 
+## 실무에서 가장 자주 나오는 조합
+
+아래 순서로 읽으면 비교가 훨씬 덜 섞인다.
+
+1. 호출 직전에 어떤 결제 흐름을 쓸지 고른다. 이것이 Strategy 축이다.
+2. 그 흐름이 의존할 gateway/client를 환경과 provider 설정으로 조립한다. 이것이 Factory 축이다.
+3. 결제 흐름 종류와 provider 종류가 서로 독립적으로 커지면, 흐름과 provider를 인터페이스 경계로 나눈다. 이것이 Bridge 축이다.
+
+중요한 점은 이 셋이 **서로 대체 관계가 아니라 계층적으로 같이 등장할 수 있다**는 사실이다.
+그래서 "런타임 선택이 있으니 factory"처럼 한 문장으로 덮으면 설계 언어가 금방 흐려진다.
+
+---
+
 ## 이름 붙일 때 바로 쓰는 체크표
 
 | 코드가 실제로 하는 일 | 더 맞는 이름 |
@@ -253,14 +286,19 @@ public final class CardPaymentStrategy implements PaymentStrategy {
 
 ---
 
+## 흔한 오해와 함정
+
+- DI 컨테이너가 객체를 만들어 준다고 해서, 도메인 코드의 선택 책임까지 모두 `Factory`라고 부르지는 않는다.
+- provider 축이 하나뿐이라면 Bridge를 억지로 도입할 필요는 없다. 두 축이 독립적으로 커질 때 의미가 생긴다.
+- `PolicyFactory`라는 이름이 붙어 있어도 실제 동작이 lookup이면, 리뷰에서는 이름을 바로 바로잡는 편이 안전하다.
+
 ## 다음으로 읽으면 좋은 문서
 
 - Strategy 감각을 먼저 굳히려면 [전략 패턴 기초](./strategy-pattern-basics.md)
 - 생성 책임과 이름 붙이기를 더 분명히 하려면 [팩토리 패턴 기초](./factory-basics.md)
 - 주입된 `Map<..., Handler>`가 왜 factory보다 registry에 가까운지 보려면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)
-- 결제 수단 축과 상태/정책 축을 더 세밀하게 나누려면 [Strategy vs State vs Policy Object](./strategy-vs-state-vs-policy-object.md)
-- 독립적인 두 축 분리를 더 깊게 보려면 [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
+- provider 축 분리가 더 궁금하면 [Bridge Pattern: 저장소와 제공자를 분리하는 추상화](./bridge-storage-provider-abstractions.md)
 
 ## 한 줄 정리
 
-"런타임에 고른다"만으로 factory라고 부르지 말고, **행동을 고르면 Strategy, 새 객체를 만들면 Factory, 두 축을 분리하면 Bridge**라고 먼저 자르는 편이 정확하다.
+런타임 선택이 보인다고 바로 Factory로 부르지 말고, **행동 선택인지, 생성 은닉인지, 두 축 분리인지**를 각각 잘라 보면 Strategy, Factory, Bridge 경계가 훨씬 선명해진다.

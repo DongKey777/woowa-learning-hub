@@ -11,7 +11,7 @@
 - [operating-system 카테고리 인덱스](./README.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: 뮤텍스란, 교착상태란, mutex beginner, deadlock beginner, 데드락이란, mutex lock unlock, critical section basics, race condition basics, 임계구역, deadlock conditions, 교착상태 발생 조건, 스레드 동기화 기초, mutex deadlock basics basics, mutex deadlock basics beginner, mutex deadlock basics intro
+retrieval-anchor-keywords: 뮤텍스란, 교착상태란, mutex beginner, deadlock beginner, 데드락이란, mutex lock unlock, critical section basics, race condition basics, 임계구역, deadlock conditions, 교착상태 발생 조건, 스레드 동기화 기초, mutex semaphore 차이 헷갈려요, deadlock 왜 걸려요, 처음 mutex 뭐예요
 
 ## 먼저 잡는 멘탈 모델
 
@@ -47,6 +47,15 @@ mutex.unlock() -[잠금 해제]-->
 | 용도 | 임계 구역 1개 보호 | 자원 1개 제어 |
 | 재귀 획득 | 구현에 따라 지원 | 보통 안 됨 |
 
+처음에는 아래 둘을 먼저 분리하면 덜 헷갈린다.
+
+| 지금 보이는 문제 | 실제 뜻 | 먼저 떠올릴 질문 |
+|------|------|------|
+| race condition | 동시에 건드려 값이 꼬인다 | "같은 데이터를 동시에 쓰고 있나?" |
+| deadlock | 서로 기다리느라 아무도 못 끝낸다 | "락 순서가 엇갈렸나?" |
+
+둘 다 멀티스레드 문제지만, race condition은 **결과가 틀리는 문제**에 가깝고 deadlock은 **진행이 멈추는 문제**에 가깝다.
+
 ## 상세 분해
 
 ### 교착상태(Deadlock) 4가지 조건
@@ -66,6 +75,30 @@ mutex.unlock() -[잠금 해제]-->
 ```
 
 두 스레드가 서로 상대방이 쥔 자원을 기다려 영원히 진행되지 않는다.
+
+### 아주 작은 코드 예시: 왜 lock 순서가 중요할까
+
+계좌 이체처럼 두 계좌를 함께 잠가야 하는 코드를 생각해 보자.
+
+```java
+void transfer(Account from, Account to, int amount) {
+    synchronized (from) {
+        synchronized (to) {
+            from.withdraw(amount);
+            to.deposit(amount);
+        }
+    }
+}
+```
+
+한 스레드는 `A -> B` 순서로, 다른 스레드는 `B -> A` 순서로 같은 함수를 호출하면 deadlock이 생길 수 있다.
+
+| 호출 | 잠금 순서 | 결과 |
+|------|-----------|------|
+| `transfer(a, b, 100)` | `a -> b` | 정상일 수도 있음 |
+| `transfer(b, a, 50)` | `b -> a` | 서로 하나씩 잡은 채 대기 가능 |
+
+그래서 실무에서는 "항상 id가 작은 계좌부터 잠근다"처럼 **전역 잠금 순서**를 정해 두는 편이 안전하다.
 
 ### 기본 예방법
 

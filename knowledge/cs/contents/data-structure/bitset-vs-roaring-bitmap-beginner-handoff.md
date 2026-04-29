@@ -7,7 +7,9 @@
 관련 문서:
 
 - [자료구조 카테고리 인덱스](./README.md)
+- [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)
 - [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md)
+- [Plain BitSet vs Compressed Bitmap Decision Card](./plain-bitset-vs-compressed-bitmap-decision-card.md)
 - [Roaring Bitmap](./roaring-bitmap.md)
 - [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
 - [Bitset Optimization Patterns](../algorithm/bitset-optimization-patterns.md)
@@ -29,6 +31,8 @@ beginner에게 중요한 첫 판단은 내부 자료구조 이름이 아니다.
 2. `BitSet`이 아쉬운 이유가 실제로 보였는가
 
 둘 다 아직 아니면 `Roaring` 내부로 더 들어가지 않아도 된다.
+
+여기서 `BitSet` mental model 자체가 아직 흐리다면, 즉 "`boolean[]`랑 뭐가 달라요?"가 먼저 걸리면 [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)로 한 칸 뒤로 물러나는 편이 더 안전하다.
 
 ## 한눈에 보기
 
@@ -117,8 +121,10 @@ beginner에게 중요한 첫 판단은 내부 자료구조 이름이 아니다.
 ## 더 깊이 가려면
 
 - `bitmap`과 `Set`의 출발점부터 다시 자르고 싶으면 [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md)
+- `BitSet`과 plain bit array 차이를 먼저 잡고 싶으면 [BitSet vs boolean[] Beginner Card](./bitset-vs-boolean-array-beginner-card.md)
 - plain bitmap이 알고리즘 문제에서 어떻게 쓰이는지 보고 싶으면 [Bitset Optimization Patterns](../algorithm/bitset-optimization-patterns.md)
 - `Roaring`을 처음 advanced 층위로 읽고 싶으면 [Roaring Bitmap](./roaring-bitmap.md)
+- `plain BitSet`과 compressed bitmap을 dense/sparse + set algebra 기준으로 한 번 더 자르고 싶으면 [Plain BitSet vs Compressed Bitmap Decision Card](./plain-bitset-vs-compressed-bitmap-decision-card.md)
 - `Roaring`과 다른 압축 표현까지 비교하고 싶으면 [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
 
 ## 면접/시니어 질문 미리보기

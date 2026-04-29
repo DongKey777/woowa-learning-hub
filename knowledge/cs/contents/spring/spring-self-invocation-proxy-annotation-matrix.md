@@ -40,13 +40,13 @@
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 
-retrieval-anchor-keywords: self invocation, proxy trap, internal call bypass proxy, transactional self invocation, async self invocation, cacheable self invocation, validated self invocation, preauthorize self invocation, AopContext, self injection, self-injection, private transactional, this method call proxy bypass, transactional basics, beginner routing, primer bridge, 왜 @Transactional이 안 먹어요, @Transactional이 왜 안 먹어요, aop 3문항 진단, this.method private new 체크, self invocation quick triage, private vs this call, self injection vs self invocation, private method transactional faq, this call transactional faq, self injection beginner faq, 프라이빗 메서드 트랜잭션, this 내부 호출 트랜잭션, self injection 우회, aop 내부 호출 함정, aop 30초 진단, transactional cacheable async 비교표, bean public external call proxy, spring aop public method only, 프록시 경로 먼저, aop primer to self invocation matrix, caller worker pattern, facade worker pattern, transactional internal call 2 patterns, beginner reverse link, matrix to primer bridge, private vs this 한눈표, private this self invocation 차이, 프록시 우회 비교표, private vs self invocation faq
+retrieval-anchor-keywords: self invocation, proxy trap, internal call bypass proxy, transactional self invocation, async self invocation, cacheable self invocation, validated self invocation, preauthorize self invocation, aopcontext, self injection, self-injection, private transactional, this method call proxy bypass, transactional basics, beginner routing, primer bridge, 왜 @transactional이 안 먹어요, @transactional이 왜 안 먹어요, aop 3문항 진단, this.method private new 체크, self invocation quick triage, private vs this call, self injection vs self invocation, private method transactional faq, this call transactional faq, self injection beginner faq, 프라이빗 메서드 트랜잭션, this 내부 호출 트랜잭션, self injection 우회, aop 내부 호출 함정, aop 30초 진단, transactional cacheable async 비교표, bean public external call proxy, spring aop public method only, 프록시 경로 먼저, aop primer to self invocation matrix, caller worker pattern, facade worker pattern, transactional internal call 2 patterns, beginner reverse link, matrix to primer bridge, private vs this 한눈표, private this self invocation 차이, 프록시 우회 비교표, private vs self invocation faq
 
 ## 초급자용 공통 라우팅 한 줄
 
 이 문서는 고급 매트릭스지만, 아래 한 줄은 프라이머와 `AOP 기초`에서 쓰는 문구를 그대로 둔다.
 
-beginner symptom spine도 primer와 같은 질문인 `왜 `@Transactional`이 안 먹어요?`로 맞춘다.
+beginner symptom spine도 primer와 같은 질문인 본문 표현 `왜 @Transactional이 안 먹어요?`, retrieval alias `왜 @transactional이 안 먹어요`로 맞춘다.
 
 `Bean + public + external call`이 안 맞으면, `@Transactional`, `@Async`, `@Cacheable` 같은 프록시 기반 annotation은 같은 뿌리에서 실패한다.
 

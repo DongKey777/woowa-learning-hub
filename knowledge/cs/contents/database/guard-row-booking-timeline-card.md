@@ -8,6 +8,7 @@
 
 - [Constraint-First Booking Primer](./constraint-first-booking-primer.md)
 - [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
+- [Booking Guard Row Retry Card](./booking-guard-row-retry-card.md)
 - [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
 - [Guard Row Scope Quick Examples](./guard-row-scope-quick-examples.md)
 - [Inventory Reservation System Design](../system-design/inventory-reservation-system-design.md)
@@ -107,6 +108,7 @@ guard row를 잡는 목적은 booking detail row를 잠그는 것이 아니다.
 ## 더 깊이 가려면
 
 - constraint-first 출발점을 먼저 잡고 싶다면 -> [Constraint-First Booking Primer](./constraint-first-booking-primer.md)
+- guard row에서 `lock timeout` / `deadlock` 뒤에 언제 기다리고, 언제 fail fast/retry할지 바로 이어서 보려면 -> [Booking Guard Row Retry Card](./booking-guard-row-retry-card.md)
 - guard key를 `(resource)` / `(resource, day)` / pooled inventory로 고르고 싶다면 -> [Guard Row Scope Quick Examples](./guard-row-scope-quick-examples.md)
 - `0 row FOR UPDATE`가 왜 같은 뜻이 아닌지 보려면 -> [Empty-Result Locking Cheat Sheet for PostgreSQL and MySQL](./empty-result-locking-cheat-sheet-postgresql-mysql.md)
 - booking overlap 패턴을 한 단계 넓게 비교하려면 -> [Phantom-Safe Booking Patterns Primer](./phantom-safe-booking-patterns-primer.md)

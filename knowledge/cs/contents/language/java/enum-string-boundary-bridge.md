@@ -1,6 +1,6 @@
 # DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기
 
-> 한 줄 요약: controller/DTO boundary에서는 `"PAID"`뿐 아니라 `"P"`, `"01"` 같은 외부 코드값도 enum으로 해석하고, domain 내부에서는 해석이 끝난 enum만 다루는 식으로 역할을 나누면 된다.
+> 한 줄 요약: `DTO enum 변환`이 막힐 때는 controller/DTO boundary에서 `"PAID"`뿐 아니라 `"P"` 코드, `"01"` 상태값 같은 외부 표현을 enum으로 해석하고, domain 내부에서는 해석이 끝난 enum만 다루는 식으로 역할을 나누면 된다.
 
 **난이도: 🟢 Beginner**
 
@@ -8,18 +8,25 @@
 
 - [Java enum 기초](./java-enum-basics.md)
 - [Enum equality quick bridge](./enum-equality-quick-bridge.md)
+- [enum 내부 이름과 외부 code를 나누면 왜 DB/JSON 저장 계약도 같이 갈라질까](./enum-code-name-persistence-bridge.md)
 - [Java String 기초](./java-string-basics.md)
 - [Enum Persistence, JSON, and Unknown Value Evolution](./enum-persistence-json-unknown-value-evolution.md)
 - [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
 - [객체지향 설계 기초](../../software-engineering/oop-design-basics.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: dto enum boundary beginner, controller dto domain enum handoff, enum string bridge, enum code value boundary, java dto string to enum, java code to enum mapping, external code value enum primer, enum vs string compare, enum 문자열 비교 헷갈, status string payload, p 01 enum mapping beginner, dto에서 enum 변환 언제, 처음 enum boundary, what is enum boundary, valueof 왜 실패해요
+retrieval-anchor-keywords: dto enum 변환, dto enum boundary beginner, controller dto domain enum handoff, enum string bridge, enum code value boundary, java dto string to enum, status code to enum mapping, external code value enum primer, dto status code mapper, p 코드 enum 변환, 01 상태값 enum 변환, p 코드 뭐예요, 01 상태값 왜 문자열, enum 문자열 비교 헷갈, valueof 왜 실패해요
 
 ## 핵심 개념
 
-처음 enum을 배우면 `status == OrderStatus.PAID`가 자연스럽게 보인다.  
+처음 enum을 배우면 `status == OrderStatus.PAID`가 자연스럽게 보인다.
 그다음 controller DTO에서 `"PAID"` 문자열을 만나면, 초급자는 "이걸 어디서 enum으로 바꿔야 하지?"에서 막히기 쉽다.
+
+이 문서는 특히 이런 검색에 바로 닿도록 만든 bridge다.
+
+- `DTO enum 변환`
+- `P 코드`
+- `01 상태값`
 
 실무 쪽으로 한 걸음만 가도 입력이 enum 이름 그대로 오지 않을 때가 더 많다.
 
@@ -40,7 +47,7 @@ retrieval-anchor-keywords: dto enum boundary beginner, controller dto domain enu
 |---|---|---|
 | `OrderStatus status` | `status == OrderStatus.PAID` | 굳이 `status.name()`으로 문자열 비교하기 |
 | `String rawStatus` | DTO/controller boundary에서 enum으로 변환 시도하기 | `rawStatus == "PAID"` 뒤에 enum처럼 믿기 |
-| `String rawCode`가 `"P"`, `"01"` 같은 외부 코드다 | 코드값을 enum으로 매핑하는 해석 단계 두기 | domain 메서드가 `"P"` 같은 문자열을 직접 받기 |
+| `String rawCode`가 `"P"` 코드나 `"01"` 상태값 같은 외부 표현이다 | 코드값을 enum으로 매핑하는 해석 단계 두기 | domain 메서드가 `"P"` 같은 문자열을 직접 받기 |
 | `String rawStatus`가 `null`/빈 문자열일 수도 있음 | null/blank/unknown 정책 먼저 정하기 | 바로 `Enum.valueOf(...)` 호출하기 |
 
 핵심 기준은 이것 하나다.
@@ -71,10 +78,10 @@ String rawStatus = "PAID";
 String rawCode = "P";
 ```
 
-이 순간에는 아직 "상태 판별"보다 "이 텍스트를 enum으로 받아들여도 되는가"가 먼저다.  
+이 순간에는 아직 "상태 판별"보다 "이 텍스트를 enum으로 받아들여도 되는가"가 먼저다.
 즉 비교 전에 boundary 해석 단계가 하나 더 있다.
 
-특히 `"P"`나 `"01"`은 `Enum.valueOf()`로 바로 올릴 수도 없다.  
+특히 `"P"` 코드나 `"01"` 상태값은 `Enum.valueOf()`로 바로 올릴 수도 없다.
 이 값들은 enum 이름이 아니라 **외부 시스템이 정한 코드값**이기 때문이다.
 
 ## 안전한 흐름: DTO 문자열/코드값 -> enum 변환 -> domain enum 비교
@@ -96,10 +103,10 @@ if (status == OrderStatus.PAID) {
 }
 ```
 
-여기서 중요한 포인트는 `valueOf(...)`가 비교를 대신하는 것이 아니라,  
+여기서 중요한 포인트는 `valueOf(...)`가 비교를 대신하는 것이 아니라,
 **비교할 수 있는 타입으로 올려 주는 입구**라는 점이다.
 
-코드값이 들어오는 경우에는 `valueOf(...)` 대신 "코드값 해석기"가 하나 더 필요하다.
+코드값이 들어오는 경우, 즉 DTO에 `"P"` 코드나 `"01"` 상태값이 들어오는 경우에는 `valueOf(...)` 대신 "코드값 해석기"가 하나 더 필요하다.
 
 ```java
 enum PaymentStatus {
@@ -129,7 +136,7 @@ record PaymentRequest(String statusCode) {
 }
 ```
 
-여기서 `"P"`는 domain의 본질이 아니라 **바깥 세계와 대화하기 위한 번역 키**다.  
+여기서 `"P"` 코드는 domain의 본질이 아니라 **바깥 세계와 대화하기 위한 번역 키**다.
 그래서 `"P"`를 domain 메서드 파라미터로 오래 들고 들어가기보다, boundary에서 `PaymentStatus.PENDING`으로 올리는 편이 안전하다.
 
 ## 어디서 변환할까: controller, DTO, domain 책임표
@@ -149,7 +156,7 @@ record PaymentRequest(String statusCode) {
 
 ## enum 이름과 외부 코드값은 왜 따로 봐야 할까
 
-처음에는 `"P"`도 그냥 enum 상수 이름을 줄여 쓴 것처럼 보일 수 있다.  
+처음에는 `"P"`도 그냥 enum 상수 이름을 줄여 쓴 것처럼 보일 수 있다.
 하지만 실제로는 역할이 다르다.
 
 | 구분 | 예시 | 누가 정하나 | 바뀌면 어디가 흔들리나 |
@@ -160,6 +167,11 @@ record PaymentRequest(String statusCode) {
 초급자 기준 핵심은 이것이다.
 
 > enum 이름은 내부 모델이고, 코드값은 boundary 계약이다.
+
+그래서 검색어가 `P 코드`, `01 상태값`처럼 짧게 들어와도 먼저 확인할 질문은 같다.
+
+- 이 값이 enum 이름인가
+- 아니면 외부 코드인가
 
 그래서 domain 메서드를 아래처럼 만들면 boundary 계약이 안쪽으로 새기 시작한다.
 
@@ -173,7 +185,7 @@ void approve(String statusCode) { ... }
 - 소문자 `"p"`는 허용할까?
 - 코드 체계가 바뀌면 domain 메서드를 다 바꿔야 하나?
 
-이 질문들은 비즈니스 규칙보다 입력 해석 규칙에 가깝다.  
+이 질문들은 비즈니스 규칙보다 입력 해석 규칙에 가깝다.
 즉 domain 메서드 시그니처보다 boundary mapper 쪽 질문이다.
 
 ## 자주 나오는 실수 5가지
@@ -186,7 +198,7 @@ void approve(String statusCode) { ... }
 | `Enum.valueOf(rawStatus)`를 바로 호출한다 | `null`, 빈 문자열, 소문자, 오타에서 바로 실패한다 | boundary 정책을 먼저 둔다 |
 | domain 메서드가 `"P"`나 `"01"`을 직접 받는다 | 외부 계약이 domain 시그니처에 새어 들어온다 | boundary에서 `fromCode(...)`로 끊는다 |
 
-특히 `status.name().equals("PAID")`는 "되긴 되는 코드"라서 더 자주 남는다.  
+특히 `status.name().equals("PAID")`는 "되긴 되는 코드"라서 더 자주 남는다.
 하지만 내부 enum을 다시 문자열로 내려 비교하기 시작하면, 코드가 enum의 장점을 스스로 지우게 된다.
 
 ## boundary에서 먼저 정할 정책
@@ -211,7 +223,7 @@ void approve(String statusCode) { ... }
 
 ## `Enum.valueOf()`가 자주 실패하는 경우
 
-처음에는 `Enum.valueOf(OrderStatus.class, rawStatus)`가 "문자열을 enum으로 바꾸는 기본 도구"처럼 보인다.  
+처음에는 `Enum.valueOf(OrderStatus.class, rawStatus)`가 "문자열을 enum으로 바꾸는 기본 도구"처럼 보인다.
 맞지만, **입력이 enum 이름과 정확히 같을 때만** 성공한다.
 
 작게 외우면 이렇게 정리할 수 있다.
@@ -225,7 +237,7 @@ void approve(String statusCode) { ... }
 | `"PAID"`처럼 정확히 일치 | 성공 | 변환 뒤 enum끼리 `==` 비교한다 |
 | `"P"`, `"01"` 같은 코드값 | 보통 실패 | `valueOf()` 대신 `fromCode()` 같은 명시적 매핑을 둔다 |
 
-핵심은 "`valueOf()`가 알아서 친절하게 맞춰 주겠지"라고 기대하지 않는 것이다.  
+핵심은 "`valueOf()`가 알아서 친절하게 맞춰 주겠지"라고 기대하지 않는 것이다.
 `valueOf()`는 parser라기보다 **정확히 맞는 enum 이름만 받는 lookup**에 가깝다.
 
 ## 코드값이 들어올 때의 최소 결정표
@@ -239,12 +251,12 @@ void approve(String statusCode) { ... }
 | `"01"` | 숫자처럼 보여도 의미 코드인가 | 숫자 계산 말고 코드 매핑으로 해석 |
 | `"paid"` | 표현만 다른가 | 정규화 정책 후 매핑 |
 
-`"01"`이 들어왔다고 해서 `1`로 바꿔도 된다는 뜻은 아니다.  
+`"01"`이 들어왔다고 해서 `1`로 바꿔도 된다는 뜻은 아니다.
 이 값은 "숫자"가 아니라 "코드"일 수 있다. leading zero까지 의미일 수 있으니, 우선 문자열 코드로 본 뒤 mapping 정책을 정하는 편이 안전하다.
 
 ## DTO에서 domain으로 넘기는 가장 단순한 handoff
 
-controller나 DTO boundary에서는 문자열이나 코드값을 enum으로 바꾸는 책임이 있고,  
+controller나 DTO boundary에서는 문자열이나 코드값을 enum으로 바꾸는 책임이 있고,
 domain 로직에서는 enum 비교와 상태 전이가 중심이 된다.
 
 ```java
@@ -291,7 +303,7 @@ void handle(OrderRequest request) {
 - `OrderRequest`: 외부 코드값을 어떻게 받아들일지 결정
 - `handle(...)` 이후: 변환이 끝난 enum으로 상태를 읽음
 
-여기서 더 중요한 것은 "DTO에 꼭 `toOrderStatus()` 메서드를 넣어라"가 아니다.  
+여기서 더 중요한 것은 "DTO에 꼭 `toOrderStatus()` 메서드를 넣어라"가 아니다.
 프로젝트에 따라 controller mapper나 별도 assembler가 변환을 맡아도 된다. 초급자 기준 핵심은 **domain 메서드가 `String statusCode` 대신 `OrderStatus status`를 받도록 끊는 것**이다.
 
 ## beginner용 빠른 결정표

@@ -9,6 +9,9 @@
 관련 문서:
 
 - [팩토리 패턴 기초](./factory-basics.md)
+- [Registry Pattern: 객체를 찾는 lookup table](./registry-pattern.md)
+- [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
+- [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)
 - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
 - [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
 - [Map-backed 클래스 네이밍 체크리스트: `Selector`, `Resolver`, `Registry`, `Factory`](./map-backed-selector-resolver-registry-factory-naming-checklist.md)
@@ -28,6 +31,9 @@ retrieval-anchor-keywords: factory selector resolver beginner, factory vs select
 
 - 예: provider별 client를 credentials/timeout과 함께 새로 조립한다 -> `Factory`
 - 아니면 대부분 `Selector`/`Resolver` 쪽 질문이다
+- 그런데 질문이 "검색 DTO도 repository가 만들까요?", "저장/조회 책임을 어디까지 두나요?"라면 naming보다 [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md) route가 먼저다
+
+이 문서는 여기서 멈춘다. `Factory`/`Selector`/`Resolver` 네이밍 경계까지만 다루고, service locator drift나 read model 운영 이야기는 follow-up 문서로 넘긴다.
 
 ## `selector`로 검색했다면 여기서 먼저 자르기
 
@@ -52,7 +58,12 @@ retrieval-anchor-keywords: factory selector resolver beginner, factory vs select
 
 짧게 외우면 이 한 줄이면 충분하다.
 
-**해석은 `Resolver`, 선택은 `Selector`, 생성은 `Factory`다.**
+**해석은 `Resolver`, 선택은 `Selector`, 등록 lookup은 `Registry`, 생성은 `Factory`다.**
+
+여기서 한 번 더 잘라야 할 예외가 있다.
+
+- "주문 aggregate를 저장하나, 화면 목록을 조합하나"처럼 **저장/조회 경계**가 중심이면 `Factory`/`Selector`보다 repository/read model 질문이다
+- 이 경우 첫 문서는 [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md), 다음 문서는 [Repository Boundary: Aggregate Persistence vs Read Model](./repository-boundary-aggregate-vs-read-model.md) 순서가 안전하다
 
 ---
 
@@ -68,7 +79,26 @@ PaymentClient client = paymentClientFactory.create(method.getProvider());
 - `paymentPolicySelector`: 조건을 보고 후보 정책 선택
 - `paymentClientFactory`: 선택된 provider 기준으로 새 client 생성
 
+같은 흐름에 registry가 들어오면 역할은 이렇게 끊는다.
+
+`paymentHandlerRegistry.get(method)`는 **이미 등록된 handler를 찾는 일**이고, `paymentClientFactory.create(provider)`는 **새 client를 만드는 일**이다.
+
+즉 `get()` 중심이면 registry 후보, `create()` 중심이면 factory 후보로 먼저 본다.
+
 이렇게 쪼개면 "생성 문제"와 "선택/해석 문제"가 섞이지 않는다.
+
+여기서 strategy까지 같이 보면 경계가 더 또렷해진다.
+
+```java
+PaymentPolicy policy = paymentPolicySelector.select(order, method);
+policy.apply(order);
+```
+
+- `paymentPolicySelector`: 이번 주문에 어떤 규칙 객체를 쓸지 **고른다**
+- `PaymentPolicy`: 선택된 규칙으로 실제 계산/판단을 **실행한다**
+- `paymentClientFactory`: 외부 provider client를 **새로 만든다**
+
+즉 **선택은 selector, 실행 방식은 strategy/policy, 생성은 factory**로 자르면 "런타임에 고른다 = 다 factory"라는 오해를 줄일 수 있다.
 
 ---
 
@@ -76,10 +106,20 @@ PaymentClient client = paymentClientFactory.create(method.getProvider());
 
 - "런타임에 고르니까 factory 아닌가요?"
   - 아니다. 런타임 선택은 `Selector`/`Resolver`에서도 일어난다. factory 여부는 생성 책임으로 본다.
+- "`Selector`와 `Strategy`는 같은 말 아닌가요?"
+  - 아니다. selector는 **무엇을 쓸지 고르는 쪽**, strategy는 **선택된 방식으로 행동하는 쪽**이다.
 - "`Map.get(...)`을 쓰면 다 registry 아닌가요?"
   - 아니다. raw 입력을 정규화하면 `Resolver`, 조건 분기면 `Selector`, 등록 lookup이면 `Registry`다.
+- "`Map<Key, Handler>`면 factory라고 불러도 되나요?"
+  - 보통 아니다. 새 객체를 만들지 않고 등록된 handler를 찾기만 하면 registry가 더 정확하다.
 - "`create()` 메서드가 있으면 factory인가요?"
   - 이름보다 실제 책임을 본다. 기존 객체를 고르기만 하면 factory가 아니다.
+
+이 단계에서 더 복잡한 분기까지 한 번에 잡으려 하지 않는 편이 좋다.
+
+- `Map<Key, Strategy>`처럼 lookup과 행동 교체가 같이 보이면 [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)로 한 칸만 더 내려간다.
+- `ApplicationContext.getBean(...)` 같은 숨은 조회 냄새가 보일 때만 [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)를 이어서 본다.
+- repository/read model, CQRS, projection 같은 저장-조회 경계 질문은 이 문서 밖 범위다. 그때는 [Repository Pattern vs Anti-Pattern](./repository-pattern-vs-antipattern.md)부터 다시 잡는다.
 
 ---
 

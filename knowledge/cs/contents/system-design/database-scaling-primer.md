@@ -27,6 +27,7 @@ retrieval-anchor-keywords: database scaling primer, primary replica basics, read
 
 DB 확장은 보통 "서버를 여러 대 붙이면 끝"이 아니다.
 초보자가 가장 많이 헷갈리는 지점은 **읽기 문제, 쓰기 문제, 쿼리 문제, 데이터 크기 문제를 한 단어로 다 `스케일링`이라고 부른다**는 점이다.
+그래서 이 문서는 특히 "`DB가 느린데 replica부터 붙여요?`", "`언제 partitioning이고 언제 sharding이에요?`", "`write가 느린데 replica가 왜 도움이 안 돼요?`" 같은 첫 질문에 답하도록 읽으면 가장 안전하다.
 
 실전에서는 보통 아래 순서로 생각한다.
 
@@ -53,6 +54,35 @@ Client
 단일 DB 자체가 한계면:
   -> sharding
 ```
+
+---
+
+## 30초 분기표
+
+지금 "`DB가 느린데 replica부터 붙여요?`", "`partitioning이랑 sharding이 언제 갈려요?`"가 섞이면 아래 표부터 보면 된다.
+
+| 지금 보이는 증상 | 먼저 보는 레버 | 왜 여기부터 보나 |
+|---|---|---|
+| 특정 API 하나만 느리다 | 인덱스, 실행 계획 | 비싼 쿼리 하나는 replica를 늘려도 그대로 비싸다 |
+| 같은 조회가 너무 많다 | cache, replica | 같은 read를 줄이거나 분산하는 문제가 더 가깝다 |
+| 저장은 느리고 primary만 바쁘다 | write path, 인덱스 비용, batch | replica는 보통 write 병목을 직접 줄이지 못한다 |
+| 테이블이 너무 커서 기간 관리가 어렵다 | partitioning | retention, pruning, archive가 쉬워진다 |
+| 단일 DB의 write/storage 한계가 분명하다 | sharding | 그때부터는 데이터를 여러 경계로 나눠야 한다 |
+
+---
+
+## 1분 예시: 주문 서비스가 커질 때
+
+주문 서비스에서 "`주문 목록`이 느리다"면 초보자는 곧바로 sharding을 떠올리기 쉽다.
+하지만 첫 분기는 보통 더 단순하다.
+
+1. `GET /orders` 한두 개 쿼리만 느리면 인덱스와 `EXPLAIN`을 먼저 본다.
+2. 같은 목록 조회가 너무 많으면 replica나 cache로 read를 줄인다.
+3. 주문 직후 상세가 예전 상태를 보이면 read-write split와 primary fallback을 같이 설계한다.
+4. `order_events`가 너무 커져 월별 정리와 archive가 힘들면 partitioning을 본다.
+5. 그래도 단일 primary write가 버티지 못할 때 sharding을 검토한다.
+
+핵심은 "`DB가 느리다`"는 한 문장만으로는 레버를 고를 수 없고, **느린 쿼리인지, 많은 read인지, write 한계인지, 데이터 크기 문제인지**를 먼저 나눠야 한다는 점이다.
 
 ---
 
@@ -269,6 +299,17 @@ replication이 "같은 데이터 복제"라면, sharding은 "데이터 자체를
 | Read-Write Split | 읽기 경로를 더 적극적으로 분산한다 | stale read 대응과 라우팅 정책이 복잡하다 | consistency class를 구분할 수 있을 때 |
 | Partitioning | 큰 테이블 관리와 pruning이 쉬워진다 | key 설계와 cross-partition 접근을 조심해야 한다 | 시간축/retention/대용량 테이블이 문제일 때 |
 | Sharding | write와 storage를 수평으로 확장할 수 있다 | 애플리케이션과 운영 복잡도가 가장 크다 | 단일 DB 한계가 명확할 때 |
+
+## 자주 헷갈리는 오해
+
+- "replica를 붙이면 write도 같이 빨라진다"는 오해가 많다.
+  - 보통 아니다. replica는 read 확장과 가용성 레버에 더 가깝고, write commit 기준점은 여전히 primary인 경우가 많다.
+- "partitioning은 곧 sharding이다"라고 섞기 쉽다.
+  - partitioning은 대개 한 DB 안에서 큰 테이블을 정리하는 문제고, sharding은 여러 DB 경계로 데이터를 나누는 문제다.
+- "sharding이 제일 큰 해결책이니 빨리 갈수록 좋다"라고 생각하기 쉽다.
+  - 실제로는 운영 복잡도와 data move 비용이 가장 크기 때문에, query/index/read routing으로 풀 수 있는 문제인지 먼저 보는 편이 안전하다.
+- "read-write split을 하면 조회를 전부 replica로 보내도 된다"라고 보기 쉽다.
+  - 주문 직후 상세처럼 최신성이 중요한 경로는 primary fallback이나 session stickiness가 필요할 수 있다.
 
 ## 꼬리질문
 

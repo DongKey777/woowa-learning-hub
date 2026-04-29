@@ -1,6 +1,6 @@
 # TreeSet Range View Mini Drill
 
-> 한 줄 요약: `TreeSet`의 `subSet`, `headSet`, `tailSet`은 "정렬된 값 줄에서 앞쪽 창, 뒤쪽 창, 가운데 창을 자른다"라고 읽으면 exact-match 이웃 조회 다음 단계로 자연스럽게 이어진다.
+> 한 줄 요약: `TreeSet`의 `subSet`, `headSet`, `tailSet`은 exact-match shortcut인 `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음`을 `앞쪽 창 / 시작 포함 뒤쪽 창 / 가운데 창`으로 넓혀 읽으면 자연스럽게 이어지고, 이 `시작 포함, 끝 제외` 감각은 `TreeMap subMap`으로 거의 그대로 넘어간다.
 
 **난이도: 🟢 Beginner**
 
@@ -12,11 +12,11 @@
 - [Navigable Range API 미니 드릴](../language/java/navigable-range-api-mini-drill.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: treeset range view mini drill, treeset subset headset tailset beginner, navigableset range slice basics, treeset range query 처음, treeset 범위 조회 헷갈림, subset headset tailset 뭐예요, treeset range window practice, sorted set range beginner, treeset exact match next step, exact match shortcut to range view, what is treeset subset, treeset headset tailset why, beginner treeset range drill
+retrieval-anchor-keywords: treeset range view mini drill, treeset subset headset tailset beginner, navigableset range slice basics, treeset range query 처음, treeset 범위 조회 헷갈림, subset headset tailset 뭐예요, treeset range window practice, sorted set range beginner, treeset exact match next step, exact match shortcut to range view, what is treeset subset, treeset headset tailset why, beginner treeset range drill, treeset subset treemap submap bridge, 시작 포함 끝 제외 treeset treemap
 
 ## 핵심 개념
 
-`TreeSet` exact match 드릴에서 `lower/floor/ceiling/higher`를 `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음` shortcut으로 읽었다면, 이번엔 그 감각을 "구간 창"으로 한 칸만 넓히면 된다.
+`TreeSet` exact match 드릴에서 `lower/floor/ceiling/higher`를 `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음` shortcut으로 읽었다면, 이번엔 같은 문장을 range view 쪽 표현으로만 바꿔 붙이면 된다.
 
 - `headSet(x)`: `x` 앞쪽 창
 - `tailSet(x)`: `x`부터 뒤쪽 창
@@ -24,11 +24,26 @@ retrieval-anchor-keywords: treeset range view mini drill, treeset subset headset
 
 처음엔 이렇게만 잡으면 충분하다.
 
-- `lower/floor`가 "`x` 기준 왼쪽 한 칸" shortcut이었다면 `headSet(x)`는 "`x` 앞쪽 전체 창"이다.
-- `ceiling/higher`가 "`x` 기준 오른쪽 한 칸" shortcut이었다면 `tailSet(x)`는 "`x`부터 뒤쪽 전체 창"이다.
-- `subSet(a, b)`는 그 두 감각을 합쳐 "`a`부터 `b` 전까지 가운데 창"으로 읽는다.
+- `바로 이전`과 `같거나 이전`이 왼쪽을 읽는 shortcut이었다면 `headSet(x)`는 "`x` 앞쪽 전체 창"으로 이어진다.
+- `같거나 다음`과 `바로 다음`이 오른쪽을 읽는 shortcut이었다면 `tailSet(x)`는 "`x`부터 뒤쪽 전체 창"으로 이어진다.
+- `subSet(a, b)`는 "`a`부터 시작해서 `b` 직전에서 멈추는 가운데 창"으로 읽는다.
 
-> `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음`에서 `앞쪽 창 / 뒤쪽 창 / 가운데 창`으로만 넓힌다고 생각하면 된다. 기본형은 `시작 포함, 끝 제외` 쪽으로 읽는다.
+| exact-match shortcut | range view로 넓힌 말 |
+|---|---|
+| `바로 이전`, `같거나 이전` | `x` 앞쪽 창 |
+| `같거나 다음`, `바로 다음` | `x`부터 뒤쪽 창 |
+| 왼쪽 시작 + 오른쪽 멈춤을 같이 보기 | `a`부터 `b` 전까지 가운데 창 |
+
+> `바로 이전 / 같거나 이전 / 같거나 다음 / 바로 다음`에서 `앞쪽 창 / 뒤쪽 창 / 가운데 창`으로만 넓힌다고 생각하면 된다. beginner에게는 이 exact-match shortcut bridge가 용어 점프를 가장 적게 만든다. 기본형은 `시작 포함, 끝 제외` 쪽으로 읽는다.
+
+이 기본형은 다음 단계에서도 거의 안 바뀐다.
+
+| 여기서 익히는 것 | 바로 다음에 옮길 곳 | 그대로 유지되는 읽는 법 |
+|---|---|---|
+| `subSet(20, 50)` | `subMap(09:00, true, 12:00, false)` | 왼쪽 경계는 포함, 오른쪽 경계는 제외 |
+| 값 줄에서 range slicing | key 줄에서 range slicing | 창 안에 들어오는 기준은 여전히 경계 포함 여부다 |
+
+그래서 `TreeSet`에서 `20 이상 50 미만`이 손에 붙었다면, `TreeMap`에서도 먼저 "`09:00` 이상 `12:00` 미만인 key만 보자"로 번역하면 된다.
 
 이 문서의 목표는 live view 성질을 깊게 파는 것이 아니라, "`30` 주변 한 칸"에서 "`20~40` 구간"으로 손추적 범위를 넓히는 것이다.
 
@@ -58,10 +73,10 @@ retrieval-anchor-keywords: treeset range view mini drill, treeset subset headset
 
 ### 1. exact-match 이웃에서 range view로 확장하기
 
-`lower(30)`이 "30 바로 왼쪽 한 칸"이었다면, `headSet(30)`은 "30보다 앞에 있는 값 전체"다.
-`ceiling(30)`이 "30 자신 또는 그 오른쪽 첫 값"이었다면, `tailSet(30)`은 "30부터 뒤쪽 전체"다.
+`lower(30)`을 `30 바로 왼쪽 한 칸`, `floor(30)`을 `30 같거나 왼쪽 한 칸`으로 읽었다면 둘 다 `headSet(30)`의 "`30` 앞쪽 창" 감각으로 이어진다.
+`ceiling(30)`을 `30 자신 또는 그 오른쪽 첫 값`, `higher(30)`를 `30 바로 오른쪽 한 칸`으로 읽었다면 둘 다 `tailSet(30)`의 "`30`부터 뒤쪽 창" 감각으로 이어진다.
 
-즉 이웃 조회는 한 칸, range view는 여러 칸이라고 보면 된다.
+즉 exact-match 이웃 조회는 한 칸, range view는 같은 방향의 여러 칸이라고 보면 된다.
 
 ### 2. 기본형은 경계 하나만 먼저 기억하기
 

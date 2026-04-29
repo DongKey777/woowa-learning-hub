@@ -7,12 +7,13 @@
 
 관련 문서:
 
+- [Rate Limiting 기초](./rate-limiting-basics.md)
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
 
 
-retrieval-anchor-keywords: rate limiter design basics, rate limiter design beginner, rate limiter design intro, system design basics, beginner system design, 처음 배우는데 rate limiter design, rate limiter design 입문, rate limiter design 기초, what is rate limiter design, how to rate limiter design
+retrieval-anchor-keywords: distributed rate limiter design, distributed rate limiter basics, redis rate limiter, token bucket vs sliding window, sliding window counter design, per user per tenant rate limit, rate limiter hot key, rate limiter lua script, rate limiter edge vs app layer, rate limiter consistency vs availability, 분산 rate limiter 설계, redis rate limit 설계, rate limiter hot key 뭐가 문제, rate limiter 어디에 두나요, 분산 rate limiter 뭐예요
 > 관련 문서:
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
@@ -22,6 +23,8 @@ retrieval-anchor-keywords: rate limiter design basics, rate limiter design begin
 ---
 
 ## 핵심 개념
+
+처음 배우는 단계라면 이 문서보다 [Rate Limiting 기초](./rate-limiting-basics.md)에서 `왜 429가 오는지`, `왜 정상 사용자도 막히는지`, `Token Bucket이 큰 그림에서 무엇인지`를 먼저 잡는 편이 안전하다. 이 문서는 그다음 단계인 분산 저장소, hot key, 계층별 정책 배치 같은 설계 판단으로 내려간다.
 
 Rate Limiter는 단순히 "초당 몇 개만 허용"하는 기능이 아니다. 실제로는 다음을 동시에 해결한다.
 

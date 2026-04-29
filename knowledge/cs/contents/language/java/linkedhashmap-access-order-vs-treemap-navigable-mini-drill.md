@@ -108,6 +108,7 @@ retrieval-anchor-keywords: linkedhashmap access order vs treemap navigable api, 
 
 | 지금 막힌 질문 | 다음 문서 |
 |---|---|
+| "`get()`과 기존 key `put()` 둘 다 왜 순서를 바꾸는지 한 장으로만 다시 보고 싶다" | [LinkedHashMap `get()` vs 기존 key `put()` access-order 미니 드릴](./linkedhashmap-get-put-existing-key-access-order-mini-drill.md) |
 | "`get()`이 왜 eviction 결과를 바꾸지?" | [LinkedHashMap access-order에서 cache/LRU로 넘어가는 브리지](./linkedhashmap-access-order-cache-behavior-bridge.md) |
 | "`floor`/`ceiling`/`lower`가 같이 헷갈린다" | [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md) |
 | "`subMap` 경계 포함/제외가 헷갈린다" | [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md) |

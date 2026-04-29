@@ -18,7 +18,7 @@
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, trie bitmap 뭐예요, 자료구조 처음 배우는데, 처음 배우는데 map set queue 차이, queue가 왜 bfs에도 나와요, bfs인데 왜 queue를 써요, 왜 이 문제는 queue가 아니라 bfs예요, set이랑 map이 왜 달라요, bitmap은 언제 써요, 첫 자료구조 선택 기준, exact lookup vs prefix search, what is queue vs bfs, beginner selection primer, basics
+retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, trie bitmap 뭐예요, 자료구조 처음 배우는데, 처음 배우는데 map set queue 차이, queue가 왜 bfs에도 나와요, 왜 이 문제는 queue가 아니라 bfs예요, set이랑 map이 왜 달라요, bitmap은 언제 써요, exact lookup vs prefix search, integer ids sparse range repeated set algebra, 정수 id sparse range 교집합 반복, sparse integer id 집합 연산 처음, 왜 bitset이 아까워요, beginner selection primer
 
 ## 이 문서가 먼저 잡아야 하는 첫 질문
 
@@ -55,6 +55,7 @@ retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, tri
 | `다음 재시도 시각이 가장 이른 작업` | `priority queue` | 우선순위 키가 순서를 바꾼다 |
 | `"app"`로 시작하는 검색어 후보` | `trie` | prefix 자체를 구조에 녹여 둔다 |
 | `active 사용자 집합 ∩ premium 사용자 집합` | `bitmap` | 큰 집합의 교집합/합집합을 비트 연산으로 처리하기 쉽다 |
+| `정수 id인데 sparse range이고 AND/OR를 반복` | `compressed bitmap` 후보 | plain bitset은 빈 칸 낭비가 커질 수 있어서 sparse range용 handoff를 먼저 본다 |
 
 ## queue vs BFS를 먼저 자르는 20초 분기
 
@@ -73,6 +74,17 @@ retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, tri
 - `누가 먼저 나가나?`를 묻는다면 `queue`
 - `어떤 칸을 먼저 퍼뜨리나?`를 묻는다면 `BFS`
 
+검색 문장을 learner 표현 그대로 다시 적어 두면 더 헷갈리지 않는다.
+
+| learner가 실제로 치는 증상 문장 | 먼저 붙일 라벨 | 왜 이렇게 읽나 |
+|---|---|---|
+| `queue 문제예요 bfs 문제예요?` | `BFS`를 먼저 의심 | 핵심이 `탐색 순서`인지 `FIFO 처리`인지 다시 자른다 |
+| `최소 이동 횟수인데 queue 써요?` | `BFS` | queue는 구현 도구이고 답의 모양은 거리다 |
+| `가까운 칸부터 탐색이면 queue 아닌가요?` | `BFS` | `가까운 칸부터`는 자료구조 이름보다 알고리즘 신호다 |
+| `들어온 순서대로 작업 처리해요` | `queue` | 실제 규칙이 FIFO 자체다 |
+
+즉 `queue`라는 단어가 검색어에 보여도, `미로`, `그래프`, `가까운 칸`, `최소 이동 횟수`, `레벨 순회`가 함께 보이면 broad primer에서 멈추지 말고 바로 [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md)로 넘기는 편이 정확하다.
+
 ## 한눈에 보기
 
 주니어가 처음 고를 때는 아래 표 하나로 출발해도 충분하다.
@@ -85,6 +97,7 @@ retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, tri
 | `가장 빠른 deadline/top-k` | `priority queue` | retry scheduler, 상위 점수 유지 | 매번 전체 정렬 |
 | `접두사 자동완성` | `trie` | `"spr"` -> `spring`, `spring boot` | `map` 전체를 `startsWith`로 스캔 |
 | `많은 정수 id의 집합 연산` | `bitmap` | 세그먼트 대상 계산, row 후보 필터 | `set`과 완전히 같은 층위라고 생각 |
+| `정수 id + sparse range + 반복 set algebra` | `compressed bitmap` 후보 | 광고/세그먼트 희소 대상자 계산 | `정수 id니까 무조건 plain bitset`이라고 생각 |
 
 `bitmap`만 낯설게 느껴질 수 있는데, 주니어 관점에서는 이렇게만 먼저 잡으면 된다.
 
@@ -131,6 +144,7 @@ retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, tri
   - key가 `0..n` 범위의 정수 id이고 교집합/합집합을 자주 하면 `bitmap`
 - `queue` vs `BFS용 queue`
   - 둘 다 queue를 쓰지만, `최소 이동 횟수`가 핵심이면 자료구조보다 알고리즘 질문이 먼저다
+  - `미로`, `그래프`, `레벨 순회`, `가까운 칸부터`, `최단 거리`, `최소 이동 횟수` 같은 말이 붙으면 broad selection보다 queue/BFS split 문서가 더 직접적이다
   - 이 경우는 [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) 순서로 이어서 보는 편이 빠르다
 - `bitmap`이 항상 최고 성능은 아니다
   - row 수가 작거나 id가 문자열 중심이면 구현 복잡도만 늘 수 있다
@@ -146,6 +160,7 @@ retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, tri
 | `queue가 왜 BFS랑 service 둘 다에 나와요?`, `최소 이동 횟수면 queue예요 BFS예요?` | [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | FIFO 도구와 거리 순서 탐색을 먼저 분리한 뒤 BFS로 넘긴다 |
 | `trie가 map이랑 뭐가 달라요?`, `문자열 key면 trie부터 봐야 하나요?` | [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md) | broad primer 다음 단계에서 exact lookup과 prefix lookup을 먼저 분리한다 |
 | `bitmap이 set보다 왜 유리할 수 있죠?` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) | 정수 id 집합 연산이라는 전제를 붙인다 |
+| `정수 id인데 sparse range라 plain bitset이 아까워 보여요` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) -> [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md) | integer id, sparse range, repeated set algebra가 함께 보일 때 plain bitset과 compressed bitmap을 분리한다 |
 
 주니어가 특히 기억하면 좋은 분기 하나만 더 적으면:
 

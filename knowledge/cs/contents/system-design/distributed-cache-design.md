@@ -7,6 +7,7 @@ retrieval-anchor-keywords: distributed cache, cache-aside, write-through, write-
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Cache Invalidation Patterns Primer](./cache-invalidation-patterns-primer.md)
 > - [시스템 설계 면접 프레임워크](./system-design-framework.md)
 > - [Caching vs Read Replica Primer](./caching-vs-read-replica-primer.md)
 > - [Back-of-Envelope 추정법](./back-of-envelope-estimation.md)
@@ -19,6 +20,8 @@ retrieval-anchor-keywords: distributed cache, cache-aside, write-through, write-
 > - [Receiver Warmup / Cache Prefill / Write Freeze Cutover 설계](./receiver-warmup-cache-prefill-write-freeze-cutover-design.md)
 
 ---
+
+처음 배우는 단계라면 `cache invalidation`, `TTL`, `write-through`, `delete-on-write`의 큰 그림을 먼저 [Cache Invalidation Patterns Primer](./cache-invalidation-patterns-primer.md)에서 잡고 다시 내려오는 편이 안전하다.
 
 ## 핵심 개념
 

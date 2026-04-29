@@ -16,11 +16,17 @@
 - [Aggregate Version and Optimistic Concurrency Pattern](../design-pattern/aggregate-version-optimistic-concurrency-pattern.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: write order vs precondition primer, monotonic writes vs version check, monotonic writes vs if-match, session write ordering vs expected version, per-session ordering vs precondition, checkout ordering vs cart version, admin policy edit version mismatch, order key vs optimistic concurrency, sequence number vs version column, idempotency key vs expected version, write sequence vs etag, monotonic writes beginner confusion, writes-follow-reads beginner confusion, checkout add coupon checkout ordering, admin settings stale save primer
+retrieval-anchor-keywords: write order vs precondition primer, monotonic writes vs version check, monotonic writes vs if-match, session write ordering vs expected version, checkout ordering vs cart version, sequence number vs version column, idempotency key vs expected version, write sequence vs etag, monotonic writes beginner confusion, writes-follow-reads beginner confusion, 처음 시스템 설계 배우는데 write order precondition 차이, if-match가 순서 보장을 해주나요, version check만 있으면 순서도 안전한가요, stale save 막기와 write ordering 차이, 언제 sequence를 쓰고 언제 if-match를 쓰나요
 
 ---
 
 ## 핵심 개념
+
+## 이 문서가 먼저 맞는 질문
+
+- "처음 배우는데 `If-Match`랑 write 순서 보장이 뭐가 다른지 헷갈려요"
+- "optimistic lock이 있으면 checkout 요청 순서도 안전한 거 아닌가요?"
+- "언제 `expected_version`을 붙이고, 언제 sequence/order key를 붙여야 하나요?"
 
 가장 쉬운 mental model은 질문을 둘로 나누는 것이다.
 

@@ -124,6 +124,18 @@ FIXTURES = [
         ),
     ),
     _chunk(
+        "b3",
+        "contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md",
+        "Bulk Helper Ports vs Query Model Separation",
+        "software-engineering",
+        "Bulk helper companion",
+        (
+            "bulk helper ports vs query model separation 문서는 bulk helper, orchestration port, "
+            "query model separation, query service responsibility, and read path boundary 를 "
+            "함께 비교하는 query service companion 문서다."
+        ),
+    ),
+    _chunk(
         "c",
         "contents/database/transaction-isolation-locking.md",
         "트랜잭션 격리수준과 락",
@@ -1175,7 +1187,11 @@ FIXTURES = [
         "Transaction Isolation Basics",
         "database",
         "Isolation primer",
-        "transaction isolation basics primer for beginners.",
+        (
+            "transaction isolation basics primer for beginners. what does mvcc mean, "
+            "mvcc meaning, mvcc means multi-version concurrency control, snapshot visibility, "
+            "row versions 를 입문자 관점에서 설명한다."
+        ),
     ),
     _chunk(
         "az",
@@ -1232,6 +1248,39 @@ FIXTURES = [
         "system-design",
         "Control plane companion",
         "stateful workload placement failover control plane design companion doc.",
+    ),
+    _chunk(
+        "bg",
+        "contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md",
+        "HTTP keep-alive vs TCP keepalive vs idle timeout vs heartbeat",
+        "network",
+        "Keepalive term split companion",
+        (
+            "http keep-alive, tcp keepalive, idle timeout, heartbeat 차이를 분리하는 "
+            "beginner companion doc."
+        ),
+    ),
+    _chunk(
+        "bh",
+        "contents/data-structure/trie-vs-hashmap-exact-lookup-beginner-card.md",
+        "Trie vs HashMap exact lookup beginner card",
+        "data-structure",
+        "Exact lookup vs prefix search",
+        (
+            "문자열 key 조회 자료구조, string key exact lookup, trie vs hashmap, "
+            "exact lookup vs prefix search 를 beginner 관점에서 먼저 분리한다."
+        ),
+    ),
+    _chunk(
+        "bi",
+        "contents/data-structure/hashmap-treemap-linkedhashmap-beginner-selection-primer.md",
+        "HashMap TreeMap LinkedHashMap beginner selection primer",
+        "data-structure",
+        "Map implementation selection companion",
+        (
+            "hashmap treemap linkedhashmap 선택 primer 는 exact lookup 이후 map 구현체를 "
+            "순서 없는 조회, 정렬된 이웃 조회, 삽입 순서 기준으로 나눈다."
+        ),
     ),
 ]
 
@@ -1883,6 +1932,22 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_transactional_english_annotation_meaning_query_prefers_transactional_basics_over_propagation_deep_dive(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query(
+            "beginner_transactional_english_meaning_with_annotation_lockin"
+        )
+        hits = self._search(
+            query["prompt"],
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        deep_dive_doc = "contents/spring/spring-transaction-propagation-deep-dive.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
     def test_transactional_english_short_alias_without_question_words_prefers_transactional_basics_over_propagation_deep_dive(
         self,
     ) -> None:
@@ -1927,6 +1992,20 @@ class CsRagSearchTest(unittest.TestCase):
     ) -> None:
         hits = self._search(
             "Spring transaction what is it?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-transactional-basics.md"
+        database_doc = "contents/database/transaction-isolation-locking.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, database_doc)
+
+    def test_plain_spring_transaction_mixed_language_shortform_prefers_transactional_basics_over_database_transaction_docs(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("beginner_spring_transaction_mixed_language_shortform_lockin")
+        hits = self._search(
+            query["prompt"],
             top_k=4,
         )
 
@@ -2000,6 +2079,20 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_di_why_use_shortform_query_prefers_ioc_di_basics_over_bean_override_semantics(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("beginner_di_why_use_shortform_lockin")
+        hits = self._search(
+            query["prompt"],
+            top_k=4,
+        )
+
+        primer_doc = query["expected_path"]
+        deep_dive_doc = "contents/spring/spring-bean-definition-overriding-semantics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, query["max_rank"])
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
     def test_english_ioc_and_di_meaning_queries_prefer_ioc_di_basics_over_companions(
         self,
     ) -> None:
@@ -2035,9 +2128,7 @@ class CsRagSearchTest(unittest.TestCase):
                 self.assert_path_rank_at_most(hits, primer_doc, 1)
                 self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
-    def test_component_scan_english_meaning_query_prefers_intro_primer_over_deep_dive(
-        self,
-    ) -> None:
+    def test_component_scan_english_meaning_query_prefers_intro_primer_over_deep_dive(self) -> None:
         hits = self._search(
             "What does component scan mean in Spring?",
             top_k=4,
@@ -2048,9 +2139,7 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
-    def test_component_scan_korean_shortform_query_prefers_intro_primer_over_deep_dive(
-        self,
-    ) -> None:
+    def test_component_scan_korean_shortform_query_prefers_intro_primer_over_deep_dive(self) -> None:
         hits = self._search(
             "컴포넌트 스캔이 뭐야?",
             top_k=4,
@@ -2060,6 +2149,22 @@ class CsRagSearchTest(unittest.TestCase):
         deep_dive_doc = "contents/spring/spring-component-scan-failure-patterns.md"
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_springbootapplication_beginner_queries_prefer_component_scan_primer_over_deep_dive(
+        self,
+    ) -> None:
+        primer_doc = "contents/spring/spring-bean-di-basics.md"
+        deep_dive_doc = "contents/spring/spring-component-scan-failure-patterns.md"
+
+        for query_id in (
+            "beginner_springbootapplication_shortform_lockin",
+            "beginner_springbootapplication_annotation_definition_lockin",
+        ):
+            query = _load_golden_fixture_query(query_id)
+            with self.subTest(query_id=query_id):
+                hits = self._search(query["prompt"], top_k=4)
+                self.assert_path_rank_at_most(hits, primer_doc, query["max_rank"])
+                self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
     def test_session_vs_jwt_shortform_query_prefers_session_cookie_jwt_primer_over_auth_foundation_and_jwt_deep_dive(
         self,

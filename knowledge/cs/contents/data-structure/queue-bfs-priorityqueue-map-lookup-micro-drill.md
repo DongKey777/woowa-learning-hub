@@ -15,7 +15,7 @@
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [알고리즘 카테고리 인덱스](../algorithm/README.md)
 
-retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue bfs difference beginner, bfs queue 헷갈림, priority queue 언제 써요, map lookup 뭐예요, one line problem classification, 자료구조 처음 분류, queue bfs priority queue map drill, what is map lookup, why is this bfs not queue, closest first bfs, earliest first priority queue, key lookup basics, shortest path handoff, bfs dijkstra 어디로 넘어가요
+retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue bfs difference beginner, bfs queue visited 헷갈림, priority queue 언제 써요, map lookup 뭐예요, one line problem classification, 자료구조 처음 분류, queue bfs priority queue map drill, why is this bfs not queue, queue 문제예요 bfs 문제예요, 최소 이동 횟수 queue bfs, 가까운 칸부터 bfs, bfs queue visited beginner, bfs 문제를 queue 문제로 착각, shortest path handoff
 
 ## 핵심 개념
 
@@ -30,12 +30,22 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 
 > `queue`는 FIFO 도구, `BFS`는 거리 순서 탐색, `priority queue`는 우선순위 순서, `map`은 key lookup이다.
 
+여기서 beginner가 특히 하나 더 붙여야 하는 문장이 있다.
+
+> `BFS 답안 기본형 = queue + visited`
+
+초급 검색 문장을 그대로 붙이면 특히 아래 세 문장이 이 문서의 target query shape다.
+
+- `queue 문제예요 BFS 문제예요?`
+- `최소 이동 횟수면 queue예요 BFS예요?`
+- `가까운 칸부터 탐색이면 왜 queue만 알면 안 되나요?`
+
 ## 한눈에 보기
 
 | 문제 문장 신호 | 첫 선택 | 왜 이렇게 자르나 |
 |---|---|---|
 | `받은 순서대로 처리` | `queue` | arrival order가 규칙이다 |
-| `미로에서 가까운 칸부터` | `BFS` | 거리 1, 2, 3 순서로 퍼진다 |
+| `미로에서 가까운 칸부터` | `BFS` | 거리 1, 2, 3 순서로 퍼지고 beginner 구현은 보통 `queue + visited`가 같이 간다 |
 | `다음 재시도 시각이 가장 이른 작업` | `priority queue` | 가장 작은 key 하나를 계속 꺼낸다 |
 | `orderId 42의 상태를 바로 조회` | `map lookup` | key 하나로 value를 찾는다 |
 
@@ -43,6 +53,7 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 
 - `누가 먼저 나가나?` -> `queue`
 - `어떤 칸을 먼저 탐색하나?` -> `BFS`
+- `BFS를 고른 뒤 기본 구현이 뭐지?` -> `queue + visited`
 - `지금 제일 급한 것 하나가 뭔가?` -> `priority queue`
 - `이 key의 값이 뭐지?` -> `map lookup`
 
@@ -53,7 +64,7 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 | 한 줄 문제 | 정답 |
 |---|---|
 | `프린터 작업을 들어온 순서대로 처리한다.` | `queue` |
-| `미로에서 출구까지 최소 몇 칸인지 구한다.` | `BFS` |
+| `미로에서 출구까지 최소 몇 칸인지 구한다.` | `BFS (`queue + visited`)` |
 | `재시도 시간이 가장 이른 작업부터 다시 실행한다.` | `priority queue` |
 | `회원 id로 회원 정보를 바로 찾는다.` | `map lookup` |
 
@@ -62,9 +73,12 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 | 정답 | 한 줄 이유 |
 |---|---|
 | `queue` | FIFO가 핵심이다 |
-| `BFS` | 최소 이동 횟수라서 거리 순서 탐색이 핵심이다 |
+| `BFS (`queue + visited`)` | 최소 이동 횟수라서 거리 순서 탐색이 핵심이고, beginner 구현은 보통 `queue + visited`를 같이 둔다 |
 | `priority queue` | 도착 순서보다 우선순위 key가 먼저다 |
 | `map lookup` | 순서보다 `key -> value` 조회가 핵심이다 |
+
+`BFS` 답을 맞혔는데 이유를 `queue를 쓰니까요`에서 멈췄다면 절반만 맞힌 것이다.
+이 drill에서는 `가까운 칸부터`가 보이면 `BFS`, 그리고 초급 답안 문장까지 쓰면 `queue + visited`로 마무리하는 쪽이 안전하다.
 
 ## BFS 다음 갈림길: shortest-path handoff
 
@@ -92,7 +106,7 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 
 ## 흔한 오해와 함정
 
-- `BFS도 queue를 쓰니까 queue가 정답이다` -> 반만 맞다. 구현 도구는 queue지만, 문제 분류는 `BFS`가 먼저다.
+- `BFS도 queue를 쓰니까 queue가 정답이다` -> 반만 맞다. 구현 도구는 queue지만, 문제 분류는 `BFS`가 먼저고 beginner 답안은 보통 `queue + visited`까지 같이 말해야 안전하다.
 - `priority queue도 queue니까 FIFO와 비슷하다` -> 아니다. 먼저 꺼내는 기준이 도착 순서가 아니라 우선순위다.
 - `최단 경로라고 쓰여 있으면 BFS부터 고르면 된다` -> 아니다. `최단` 앞에 붙는 것이 `이동 횟수`인지 `비용 합`인지 먼저 봐야 한다.
 - `map`은 그냥 저장소라서 분류 대상이 아니다` -> 아니다. `key로 바로 찾기`가 핵심이면 map lookup 문제가 맞다.

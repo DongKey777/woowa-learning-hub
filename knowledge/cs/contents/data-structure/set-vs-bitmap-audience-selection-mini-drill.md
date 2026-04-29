@@ -12,7 +12,7 @@
 - [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md)
 - [List contains vs Set contains symptom card](../language/java/list-contains-vs-set-contains-symptom-card.md)
 
-retrieval-anchor-keywords: set vs bitmap audience selection drill, audience segment set or bitmap, dense integer id drill, membership only vs set algebra, bitmap beginner practice, set beginner practice, 대상자 선택 뭐 써요, audience selection 처음, bitmap set 헷갈림, set or bitmap when to use, segment intersection basics, what is bitmap drill, beginner membership drill, dense id basics
+retrieval-anchor-keywords: set vs bitmap audience selection drill, audience segment set or bitmap, dense integer id drill, membership only vs set algebra, bitmap beginner practice, set beginner practice, 대상자 선택 뭐 써요, audience selection 처음, bitmap set 헷갈림, set or bitmap when to use, segment intersection basics, what is bitmap drill, beginner membership drill, sparse id set bitset roaring, set bitset roaring 뭐 써요
 
 ## 핵심 개념
 
@@ -62,6 +62,30 @@ retrieval-anchor-keywords: set vs bitmap audience selection drill, audience segm
 2. 아니면 audience 전체 set algebra인가
 3. id 범위가 dense integer id로 이미 정리돼 있나
 
+## sparse range follow-up 미니 드릴
+
+위 4문장이 쉬웠다면, 이제 beginner가 한 번 더 헷갈리는 다음 질문으로 넘어간다.
+
+> "`id`는 정수인데 듬성듬성이다. 그러면 `Set`, plain `BitSet`, `Roaring Bitmap` 중 무엇을 먼저 골라야 하죠?"
+
+여기서는 "정수 id인가?"보다 아래 세 축을 같이 봐야 한다.
+
+- `contains/add/remove` 같은 membership 위주인가
+- `maxId`까지 칸을 깔아도 될 만큼 범위가 작고 촘촘한가
+- sparse range인데도 exact `AND/OR/ANDNOT`를 반복하나
+
+아래 3문장을 보고 첫 선택을 골라 본다.
+
+| 상황 | 먼저 고를 것 |
+|---|---|
+| 5. 제외 대상자 id가 `17`, `29`, `10300000`처럼 멀리 떨어져 있고, 배치에서 `contains/remove`만 조금 한다. | ? |
+| 6. 좌석 id가 `0..4095`로 딱 정해져 있고, 빈 좌석 집합과 VIP 집합의 교집합을 여러 번 계산한다. | ? |
+| 7. 회원 id는 `10`, `5000000`, `9000000`처럼 sparse range인데, `active`, `consented`, `recentBuyer` 집합을 exact `AND/OR/ANDNOT`로 계속 합친다. | ? |
+
+짧은 안전 규칙은 이 한 줄이다.
+
+> sparse range에서 membership 위주면 `Set`, 범위가 작고 촘촘하면 plain `BitSet`, sparse range에서도 exact set algebra를 반복하면 `Roaring Bitmap`
+
 ## 정답과 이유
 
 | 상황 | 정답 | 왜 이렇게 고르나 |
@@ -78,10 +102,22 @@ retrieval-anchor-keywords: set vs bitmap audience selection drill, audience segm
 - `작은 예외 명단 관리` -> `Set`
 - `반복 세그먼트 계산` -> `bitmap/bitset`
 
+follow-up 3문장의 정답은 아래처럼 자른다.
+
+| 상황 | 정답 | 왜 이렇게 고르나 |
+|---|---|---|
+| 5 | `Set` | id가 sparse range이고 질문도 membership 위주라서 plain `BitSet`은 빈 칸 비용이 크고, compressed bitmap까지 갈 이유도 작다 |
+| 6 | plain `BitSet` | `0..4095`처럼 범위가 작고 촘촘해서 칸을 깔아도 낭비가 작고, exact 집합 연산도 바로 표현된다 |
+| 7 | `Roaring Bitmap` | sparse range라 plain `BitSet`은 wasteful한데, exact set algebra를 계속 하므로 `Set`보다 압축 bitmap handoff가 더 잘 맞는다 |
+
+이 follow-up은 절대 규칙이 아니라 beginner용 첫 분류다.
+라이브러리 구현, id 분포, 실제 메모리 예산에 따라 세부 선택은 달라질 수 있지만, 초반에는 이 세 문장만 분리해도 오개념이 많이 줄어든다.
+
 ## 흔한 오해와 함정
 
 - `대상자 선택`이라는 단어만 보고 무조건 `bitmap`으로 뛰어가면 안 된다. 작은 예외 명단이나 단건 membership은 아직 `Set`이 더 자연스럽다.
 - id가 정수라는 사실만으로 충분하지 않다. `정수 id + 반복 집합 연산`이 같이 보여야 `bitmap/bitset` 가치가 커진다.
+- sparse range라고 해서 항상 `Roaring Bitmap`부터 고르는 것도 아니다. membership 위주면 `Set`이 더 단순하고, range가 작고 촘촘하면 plain `BitSet`이 더 직접적이다.
 - `Set`을 고르면 느린 선택이라고 생각하기 쉽다. beginner 단계에서는 읽기 쉬운 기본값이 더 중요할 때가 많다.
 - `bitmap`을 고르는 순간 곧바로 `Roaring Bitmap` 내부 구현까지 파고들 필요는 없다. 먼저 `BitSet` 수준의 mental model로도 충분하다.
 

@@ -18,7 +18,7 @@
 > - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
 > - [Browser DevTools `Accept` vs Response `Content-Type` 미니 카드](../network/browser-devtools-accept-vs-content-type-mini-card.md)
 
-retrieval-anchor-keywords: content negotiation pitfalls, spring 415 unsupported media type, @requestbody 415 beginner, content-type application json why, accept vs content-type difference, httpmessageconverter media type, produces consumes mismatch, requestbody media type mismatch, controller 전에 415, spring beginner negotiation, json body not supported, what is content negotiation, spring mvc lifecycle basics binding 단계, binding 단계에서 415 왜, requestbody 400 vs 415 first hit, content-type 415 왜 나요, accept content-type 헷갈려요, 406이 왜 나와요, json 대신 html 와요, produces consumes 뭐예요, 처음 content negotiation 헷갈려요
+retrieval-anchor-keywords: content negotiation pitfalls, spring 415 unsupported media type, @requestbody 415 beginner, content-type application json why, accept vs content-type difference, httpmessageconverter media type, produces consumes mismatch, requestbody media type mismatch, controller 전에 415 unsupported media type, spring beginner negotiation, json인데 415 unsupported media type가 떠요, content-type: application/json 안 붙였는데 415예요, content-type 때문에 막힌 것 같아요, requestbody 400 vs 415 first hit, content-type 415 왜 나요, accept content-type 헷갈려요, 406이 왜 나와요, 406 not acceptable spring, json 대신 html 와요, produces consumes 뭐예요, 처음 content negotiation 헷갈려요
 
 ## 핵심 개념
 
@@ -37,8 +37,9 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 
 1. JSON body와 query/form 바인딩이 섞여 있으면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)부터 본다.
 2. `400`인지 `415`인지 먼저 갈라야 하면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md)에서 첫 분기를 잡는다.
-3. "`json인데 unsupported media type`" 같은 증상 문장 그대로 빠르게 정리하고 싶으면 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)를 본다.
-4. 그다음 "`JSON 내용` 문제가 아니라 `Content-Type` 계약 문제구나"가 보이면 이 문서로 돌아와 `Accept`와 `Content-Type`, `consumes`를 같이 본다.
+3. "`JSON인데 415 Unsupported Media Type가 떠요`", "`Content-Type: application/json 안 붙였는데 415예요`", "`Content-Type 때문에 막힌 것 같아요`" 같은 증상 문장 그대로 빠르게 정리하고 싶으면 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)를 본다.
+4. `415`는 아닌데 "`406이 왜 나와요`", "`406 Not Acceptable`", "`json 대신 html 와요`"처럼 응답 형식이 어긋난 말이 먼저 나오면 README 기준 `1.6단계 handoff`라고 생각하고 이 문서로 바로 들어온다.
+5. 그다음 "`JSON 내용` 문제가 아니라 `Content-Type` 또는 `Accept` 계약 문제구나"가 보이면 이 문서에서 `Accept`, request `Content-Type`, response `Content-Type`, `consumes`를 같이 본다.
 
 `Spring MVC 요청 생명주기 기초`에서 보던 큰 흐름으로 다시 붙이면, 이 문서는 그중 4번 `argument binding / message conversion` 칸을 확대해서 보는 카드다. 즉 "컨트롤러 전에 왜 막혔지?"까지는 lifecycle basics로 판단하고, "그중에서도 왜 `415`였지?"는 여기서 `Content-Type`, `Accept`, converter 선택으로 더 잘게 나누면 된다.
 
@@ -48,10 +49,11 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 
 | 처음 검색하거나 말한 문장 | first hit | 왜 이 순서가 안전한가 |
 |---|---|---|
-| "`json`인데 `415 Unsupported Media Type`" | [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md) | body 값보다 `Content-Type`/`consumes` 계약부터 확인하게 한다 |
+| "`JSON인데 415 Unsupported Media Type가 떠요`", "`Content-Type: application/json 안 붙였는데 415예요`", "`Content-Type 때문에 막힌 것 같아요`" | [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md) | body 값보다 `Content-Type`/`consumes` 계약부터 확인하게 한다 |
 | "`@RequestBody`인데 controller 전에 `400`", "`JSON parse error`" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) | `Content-Type`은 맞는 편인데 DTO 변환이나 validation 전 경계에서 실패했는지 먼저 자른다 |
-| "`Accept`랑 `Content-Type`이 왜 달라요?`", "`accept/content-type 헷갈려요`" | 이 문서 계속 | 요청 쪽 기대와 실제 응답, 요청 body 선언을 한 번에 분리해야 한다 |
+| "`api인데 로그인 html 와요`", "`fetch가 401 대신 login html 받아요`", "`api인데 302 /login 보여요`" | [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](./spring-api-401-vs-browser-302-beginner-bridge.md) | negotiation보다 먼저 security/browser redirect 계약이 API에 섞였는지 자르게 한다 |
 | "`406이 왜 나와요?`", "`json 대신 html 와요`" | 이 문서 계속 | 이제는 body 파싱보다 응답 형식 협상과 `Accept`/`produces`를 같이 볼 단계다 |
+| "`Accept`랑 `Content-Type`이 왜 달라요?`", "`accept/content-type 헷갈려요`" | 이 문서 계속 | 요청 쪽 기대와 실제 응답, 요청 body 선언을 한 번에 분리해야 한다 |
 | "`produces`/`consumes`가 왜 필요해요?`" | 이 문서 계속 | 초급 첫 분기를 넘어서 HTTP 계약 전체를 붙여 볼 단계다 |
 
 짧게 외우면 이렇다.
@@ -74,6 +76,18 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 - `Accept`가 넓게 `*/*`로 열려 있으면 서버가 HTML이나 다른 기본 응답을 골라도 이상하지 않을 수 있다.
 - `406`은 보통 "`요청 body를 못 읽었다`"가 아니라 "`응답 형식을 못 맞췄다`" 쪽 질문이다.
 
+여기서 초급자가 가장 자주 섞는 오진이 "`API가 HTML을 줬으니 무조건 content negotiation 문제겠지`"다. 하지만 아래 단서가 먼저 보이면 `406`이나 `produces`보다 security/browser redirect 축이 먼저다.
+
+| 먼저 보이는 단서 | 더 안전한 첫 해석 | 먼저 갈 문서 |
+|---|---|---|
+| `Location: /login`, login form HTML, redirect chain 뒤 최종 `200 text/html` | API가 브라우저용 login redirect를 따라가 login page HTML을 받은 것일 수 있다 | [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](./spring-api-401-vs-browser-302-beginner-bridge.md) |
+| redirect는 없고 response `Content-Type: text/html`, controller/view 계약도 HTML 쪽으로 열려 있음 | negotiation이나 `produces` 계약을 먼저 본다 | 이 문서 계속 |
+
+즉 "`json 대신 html`"은 symptom일 뿐이고, 원인은 둘 중 하나일 수 있다.
+
+- negotiation mismatch: `Accept`, `produces`, view/body 계약이 어긋났다.
+- security redirect mix: API가 `401` JSON 대신 `/login` HTML로 흘렀다.
+
 ### 2. `Content-Type`은 요청 바디 해석을 고른다
 
 요청이 JSON인데 form으로 해석하려 하면 실패한다.
@@ -82,7 +96,7 @@ Content negotiation은 "어떤 형식으로 요청하고 어떤 형식으로 응
 
 | 내가 먼저 확인할 헤더 | 답하는 질문 | 흔한 증상 문장 |
 |---|---|---|
-| `Content-Type` | "내가 보낸 body를 서버가 어떤 형식으로 읽어야 하나?" | "`json`인데 `415`예요", "`@RequestBody`인데 controller 전에 막혀요" |
+| `Content-Type` | "내가 보낸 body를 서버가 어떤 형식으로 읽어야 하나?" | "`JSON인데 415 Unsupported Media Type가 떠요`", "`Content-Type: application/json 안 붙였는데 415예요`", "`@RequestBody`인데 controller 전에 막혀요" |
 | `Accept` | "나는 어떤 응답을 받고 싶다고 말했나?" | "`406이 왜 나와요`", "`json 대신 html 와요`" |
 
 이 표는 entrypoint primer의 표현을 이 심화 카드로 다시 이어 붙이는 다리다. 다만 실제 응답이 왜 HTML이 되었는지는 login redirect, 예외 resolver, fallback view처럼 다른 층이 섞일 수 있으므로, `Accept`만 보고 모든 원인을 단정하면 안 된다.

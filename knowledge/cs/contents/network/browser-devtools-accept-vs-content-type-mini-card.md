@@ -14,7 +14,7 @@
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: accept vs content-type devtools, request accept response content-type, json 대신 html 와요, api got html instead of json, devtools accept header beginner, devtools content-type first check, response body preview before open, accept 뭐예요, content-type 뭐예요, json html confusion first pass, why api returns html, beginner network headers, content-type application json 안 붙였는데 415, request content-type first check, 왜 컨트롤러 전에 415
+retrieval-anchor-keywords: accept vs content-type devtools, accept star star devtools, accept */* meaning browser, request accept response content-type, json 대신 html 와요, api got html instead of json, devtools accept header beginner, devtools content-type first check, response body preview before open, accept 뭐예요, accept */* 왜 떠요, content-type 뭐예요, json html confusion first pass, why api returns html, beginner network headers
 
 ## 핵심 개념
 
@@ -59,9 +59,37 @@ Network row 하나를 열고 아래 순서만 지키면 된다.
 | `Accept: application/json` + `Content-Type: application/json` | JSON API 계약과 실제 응답이 같은 방향이다 |
 | `Accept: application/json` + `Content-Type: text/html` | API처럼 보냈지만 HTML page/login page가 섞였을 수 있다 |
 | `Accept: text/html` + `Content-Type: text/html` | 브라우저가 page를 열려는 장면일 가능성이 크다 |
-| `Accept: */*` + `Content-Type: text/html` | 기대가 넓어서 `Accept`만으로는 부족하다. URL, initiator를 같이 본다 |
+| `Accept: */*` + `Content-Type: text/html` | 브라우저/라이브러리 기본값일 수 있다. `Accept` 단독 해석을 멈추고 `Type`, `Initiator`, `Status`, `Location`을 같이 본다 |
 
 핵심은 `Accept`만 보고 성공을 확정하지 않고, response `Content-Type`으로 실제 결과를 닫는 것이다.
+
+## `Accept: */*`가 애매한 이유
+
+여기서 가장 자주 막히는 장면이 `Accept: */*`다. 이 값은 "정말 비즈니스적으로 아무 형식이나 원한다"는 뜻일 수도 있지만, 브라우저 요청 컨텍스트나 라이브러리 기본값 때문에 그냥 넓게 찍힌 것일 때가 많다. 그래서 DevTools에서 이 값 하나만 보고 "원래 HTML을 기대했네" 또는 "원래 JSON을 기대했네"라고 확정하면 오진이 난다.
+
+특히 `fetch`, XHR, 일부 HTTP 클라이언트는 기본 `Accept`를 넓게 두는 경우가 있다. 반대로 top-level page navigation은 보통 더 구체적인 `Accept` 조합을 보인다. 다만 이 부분은 브라우저 버전, 호출 방식, 라이브러리 설정에 따라 달라질 수 있으니 `*/*` 자체를 계약으로 읽기보다 "단서가 약하다"는 신호로 읽는 편이 안전하다.
+
+## `*/*`와 같이 봐야 하는 DevTools 칼럼
+
+`Accept: */*`를 봤을 때는 아래 칼럼을 붙여 보면 ambiguity가 많이 줄어든다.
+
+| 같이 볼 칼럼 | 왜 필요한가 | 빠른 해석 |
+|---|---|---|
+| `Type` | document인지 fetch/xhr인지 먼저 가른다 | `document`면 page/navigation 후보, `fetch`/`xhr`면 API 후보가 강하다 |
+| `Initiator` | 누가 이 요청을 만들었는지 본다 | `script`면 JS 호출, `other`나 문서 링크면 page 이동/리소스 로드 후보 |
+| `Status` | redirect나 auth 실패 흐름인지 잡는다 | `302`, `303`, `307`이면 redirect chain, `401`, `403`이면 auth 분기 후보 |
+| `Location` response header | redirect의 다음 목적지를 본다 | `/login` 같은 값이면 login redirect 가능성이 커진다 |
+| `Name`/`Path` | URL 모양으로 API/page 감을 잡는다 | `/api/...`면 API 후보, `.css`, `.js`, `.png`면 asset 후보 |
+| response `Content-Type` | 최종적으로 실제 도착 본문을 닫는다 | `text/html`이면 page/login/error HTML, `application/json`이면 JSON 응답 |
+
+외우기 쉽게 줄이면 이 순서다.
+
+```text
+Accept */* = 단독 판정 금지
+Type/Initiator = 요청 성격
+Status/Location = redirect 여부
+Content-Type = 실제 도착 형식
+```
 
 ## 다음 한 걸음 분기
 
@@ -70,6 +98,7 @@ Network row 하나를 열고 아래 순서만 지키면 된다.
 | 지금 헤더에서 보인 장면 | 여기서 내릴 첫 판단 | 다음 한 걸음 |
 |---|---|---|
 | `Accept: application/json`인데 response `Content-Type: text/html` | JSON API 기대와 실제 HTML 응답이 어긋났다 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md) 또는 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md) |
+| `Accept: */*`이고 response `Content-Type: text/html`이다 | `Accept` 단독으로는 API/page를 못 가른다 | `Type`, `Initiator`, `Status`, `Location` 칼럼을 붙여 보고, redirect면 [Browser `fetch` vs Page Navigation Redirect Trace 카드](./browser-fetch-vs-page-navigation-redirect-trace-card.md)로 간다 |
 | request body를 보내는데 request `Content-Type`이 비었거나 `text/plain`이다 | 응답 형식보다 먼저 요청 body 형식 계약이 비었을 수 있다 | [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](../spring/spring-requestbody-415-unsupported-media-type-primer.md) |
 | response `Content-Type: application/json`까지는 맞다 | network 헤더 계약은 대체로 맞다 | [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md) |
 
@@ -110,13 +139,26 @@ Content-Type: application/json
 
 이때는 login HTML보다 app JSON이나 gateway JSON 중 어느 쪽인지로 다음 분기를 넘기면 된다.
 
+`Accept: */*` 장면도 예시 하나만 붙여 두면 덜 헷갈린다.
+
+| 칸 | 값 | 초급자 첫 메모 |
+|---|---|---|
+| URL | `/api/me` | API처럼 보이는 경로 |
+| request `Accept` | `*/*` | 기대 형식 단서가 약하다 |
+| `Type` | `fetch` | JS API 호출 후보 |
+| `Status` | `302` | redirect chain 후보 |
+| `Location` | `/login` | 로그인 페이지로 이동 가능성 큼 |
+| response `Content-Type` | `text/html; charset=UTF-8` | 최종 응답은 login HTML일 수 있다 |
+
+이 경우 핵심은 "`Accept: */*`라서 HTML을 기대했다"가 아니다. "`Accept`는 애매하고, 다른 칼럼을 붙여 보니 fetch API 호출이 login HTML로 redirect된 흐름"이라고 읽는 것이다.
+
 ## 흔한 오해와 함정
 
 - `Accept`를 "서버가 실제로 보낸 타입"으로 읽는다. 아니다. `Accept`는 요청 쪽 희망 사항이다.
 - response `Content-Type`를 "클라이언트가 원한 값"으로 읽는다. 아니다. 서버가 실제로 보낸 본문 설명이다.
 - `Accept: application/json`이면 서버가 반드시 JSON을 보내야 한다고 생각한다. 실제 서비스에서는 redirect, 에러 페이지, fallback 때문에 HTML이 올 수 있다.
 - `Content-Type: text/html`이면 무조건 SSR 정상 페이지라고 생각한다. login page, gateway 기본 페이지, CDN 에러 HTML일 수도 있다.
-- `Accept: */*`를 보고 "무엇이든 괜찮다"를 곧바로 business 의미로 읽는다. 브라우저/라이브러리 기본값일 때가 많아서 URL, initiator, final URL을 같이 봐야 한다.
+- `Accept: */*`를 보고 "무엇이든 괜찮다"를 곧바로 business 의미로 읽는다. 브라우저/라이브러리 기본값일 때가 많아서 `Type`, `Initiator`, `Status`, `Location`, response `Content-Type`을 같이 봐야 한다.
 
 ## 실무에서 쓰는 모습
 
@@ -142,14 +184,19 @@ DevTools에서 `/api/me`를 눌렀는데 body를 열기 전 header만 이렇게 
 
 즉 `Accept`와 `Content-Type`은 "누가 맞았나"를 따지는 헤더가 아니라, **기대와 실제가 일치하는지 보는 2칸 체크**다.
 
+`Accept: */*`였다면 여기에 한 줄을 더 붙이면 된다.
+
+"`Accept`는 단서가 약하니, `Type`과 `Initiator`로 요청 성격을 먼저 자르고 `Status`와 `Location`으로 redirect 여부를 닫는다."
+
 ## 더 깊이 가려면
 
 - 헤더 역할 자체가 아직 헷갈리면 [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 - HTML page 응답과 JSON API 응답의 의미 차이를 더 붙여 읽고 싶으면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - `Content-Type`이 JSON이어도 owner가 app인지 gateway인지 더 가르고 싶으면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - `Accept: application/json`인데 login HTML이 온 장면을 깊게 보고 싶으면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- `Accept: */*`에서 redirect chain을 더 읽고 싶으면 [Browser `fetch` vs Page Navigation Redirect Trace 카드](./browser-fetch-vs-page-navigation-redirect-trace-card.md)
 - Spring 컨트롤러가 왜 어떤 요청엔 HTML view를, 어떤 요청엔 JSON을 내보내는지 붙여 보려면 [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](../spring/spring-mvc-controller-basics.md)
 
 ## 한 줄 정리
 
-DevTools에서 `Accept`는 "내가 기대한 응답", response `Content-Type`은 "서버가 실제로 보낸 응답"으로 읽으면 JSON/HTML 혼선을 body preview 전에 대부분 잘라낼 수 있다.
+DevTools에서 `Accept`는 "내가 기대한 응답", response `Content-Type`은 "서버가 실제로 보낸 응답"으로 읽고, `Accept: */*`면 `Type`·`Initiator`·`Status`·`Location`을 같이 보면 JSON/HTML 혼선을 body preview 전에 대부분 잘라낼 수 있다.

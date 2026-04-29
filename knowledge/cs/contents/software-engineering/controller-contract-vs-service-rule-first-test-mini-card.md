@@ -9,6 +9,7 @@
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)
+- [주문 예시로 보는 `@Valid`/바인딩 에러 vs 도메인 규칙 첫 테스트 카드](./order-validation-annotation-vs-domain-rule-card.md)
 - [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
@@ -64,6 +65,7 @@ retrieval-anchor-keywords: controller contract vs service rule, http contract ch
 
 - "`@Valid`가 있으니 수량 0 검사도 다 Controller 테스트 아닌가요?"
   - `null`, 형식 오류, 누락처럼 HTTP 입력 형식에 가까우면 Controller 쪽이다. 재고 부족, 최대 주문 수량처럼 업무 의미가 있으면 Service/Domain 쪽이다.
+  - `@Valid`/binding error와 도메인 규칙을 주문 예시 한 장으로 다시 자르고 싶으면 [주문 예시로 보는 `@Valid`/바인딩 에러 vs 도메인 규칙 첫 테스트 카드](./order-validation-annotation-vs-domain-rule-card.md)를 바로 이어 읽으면 된다.
 - "Service 메서드를 고쳤으니 무조건 통합 테스트 아닌가요?"
   - 규칙만 바뀌었다면 단위 테스트가 더 싸고 실패 이유도 선명하다.
 - "에러 메시지가 바뀌었는데 규칙 테스트만 고치면 되죠?"

@@ -1,0 +1,115 @@
+# TreeMap `ceilingKey` vs `higherKey` Exact-Match Choice Card
+
+> 한 줄 요약: `ceilingKey(x)`는 `x`와 같아도 멈추고, `higherKey(x)`는 `x`를 건너뛴 다음 key로 가므로 초보자는 먼저 `같거나 다음`과 `strictly 다음`을 분리해야 `Entry`/`Value` 단계에서도 덜 헷갈린다.
+
+**난이도: 🟡 Intermediate**
+
+관련 문서:
+
+- [자료구조 카테고리 인덱스](./README.md)
+- [TreeSet Exact-Match Drill](./treeset-exact-match-drill.md)
+- [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
+- [TreeMap `ceilingKey` vs `ceilingEntry` Return-Shape Twin Card](./treemap-ceilingkey-ceilingentry-return-shape-twin-card.md)
+- [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
+- [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
+
+retrieval-anchor-keywords: treemap ceilingkey higherkey beginner, ceilingkey higherkey exact match, ceilingkey vs higherkey difference, 같거나 다음 바로 다음 헷갈림, why ceilingkey returns same key, why higherkey skips exact match, treemap 다음 key 뭐예요, ordered map strictly next, exact match inclusive strict difference, ceiling higher beginner card, 처음 treemap next key, what is ceilingkey vs higherkey
+
+## 핵심 개념
+
+이 카드는 `ceilingKey`와 `higherKey`만 자르는 좁은 비교 카드다.
+입문자가 자주 틀리는 이유는 "둘 다 오른쪽을 본다"는 공통점만 기억하고, exact match 규칙을 놓치기 때문이다.
+
+먼저 한 줄로 고정하면 된다.
+
+> `ceilingKey(x)`는 `x`와 같거나 다음 key, `higherKey(x)`는 `x`보다 strict하게 다음 key다.
+
+즉 질문을 이렇게 번역하면 된다.
+
+- `같은 key가 있으면 거기서 멈춰도 되나?` -> `ceilingKey`
+- `같은 key는 건너뛰고 진짜 다음 key가 필요하나?` -> `higherKey`
+
+이 단계에서 아직 `Entry`나 `getValue()`는 생각하지 않는 편이 안전하다.
+먼저 "같거나 다음"과 "strictly 다음"이 손에 붙어야 이후 `ceilingEntry`와 `higherEntry`도 같은 규칙으로 읽힌다.
+
+## 한눈에 보기
+
+`TreeMap<start, end>` 예약표가 아래처럼 있다고 하자.
+
+```text
+09:00 -> 10:00
+10:30 -> 11:00
+13:00 -> 14:00
+15:30 -> 16:00
+```
+
+| 질문 | 고를 메서드 | 결과 |
+|---|---|---|
+| `10:30`과 같거나 다음 예약 시작은? | `ceilingKey(10:30)` | `10:30` |
+| `10:30`보다 strict하게 다음 예약 시작은? | `higherKey(10:30)` | `13:00` |
+| `11:00`과 같거나 다음 예약 시작은? | `ceilingKey(11:00)` | `13:00` |
+| `11:00`보다 strict하게 다음 예약 시작은? | `higherKey(11:00)` | `13:00` |
+
+핵심은 exact match가 있을 때만 차이가 크게 보인다는 점이다.
+
+- key가 딱 있으면 `ceilingKey`는 그 자리에서 멈춘다.
+- key가 딱 있으면 `higherKey`는 그 자리를 건너뛴다.
+- key가 없으면 둘 다 같은 오른쪽 후보로 모일 수 있다.
+
+## exact match에서 왜 갈리나
+
+`10:30`이 실제 key로 존재할 때를 따로 떼어 보면 실수가 줄어든다.
+
+| 호출 | 답 | 초보자용 해석 |
+|---|---|---|
+| `ceilingKey(10:30)` | `10:30` | 같아도 된다 |
+| `higherKey(10:30)` | `13:00` | 같은 key는 안 된다 |
+
+반대로 `11:00`처럼 중간 시각을 넣으면 차이가 사라진다.
+
+| 호출 | 답 | 초보자용 해석 |
+|---|---|---|
+| `ceilingKey(11:00)` | `13:00` | 오른쪽 첫 후보 |
+| `higherKey(11:00)` | `13:00` | exact match가 없어서 같은 답 |
+
+그래서 `ceilingKey`와 `higherKey`를 구분하는 질문은 사실상 이것 하나다.
+
+> "지금 넣은 key가 실제로 존재할 때, 그 자리를 결과로 인정할 것인가?"
+
+인정하면 `ceilingKey`, 인정하지 않으면 `higherKey`다.
+
+## 언제 무엇을 고르나
+
+예약표나 정렬된 key 문제를 읽을 때는 문장 자체를 아래처럼 잘라 보면 된다.
+
+| 문제 문장 | 먼저 떠올릴 메서드 | 이유 |
+|---|---|---|
+| `입력 시각과 같거나 바로 다음 예약 시작` | `ceilingKey` | exact match 포함 |
+| `입력 시각 이후 첫 예약 시작` | `higherKey` | exact match 제외 |
+| `이미 그 시각 예약이 있으면 그 예약부터 확인` | `ceilingKey` | 같은 key를 결과로 인정 |
+| `같은 시각 예약은 이미 처리했고 다음 후보만 필요` | `higherKey` | 같은 key를 건너뜀 |
+
+짧게 외우면 아래 두 줄이면 충분하다.
+
+- `같거나 다음`이라는 문장이 보이면 `ceilingKey`
+- `strictly 다음`, `이미 있는 key는 건너뛰고 다음`이라는 문장이 보이면 `higherKey`
+
+비유하면 `ceilingKey`는 "현재 줄도 후보"이고 `higherKey`는 "다음 줄부터 후보"다.
+다만 실제 `TreeMap`은 줄을 순차 탐색하는 구조가 아니라 정렬된 key에서 후보를 찾는다는 점에서, 이 비유는 포함 여부를 설명하는 데까지만 맞다.
+
+## 흔한 오해와 다음 단계
+
+- `ceilingKey`를 무조건 "다음 key"로 외우면 exact match에서 틀린다. beginner shortcut은 `같거나 다음`이다.
+- `higherKey`를 `ceilingKey`의 다른 이름처럼 쓰면 안 된다. 차이는 exact match를 인정하느냐에 있다.
+- `11:00`처럼 key가 없는 예제만 보면 둘이 같은 메서드처럼 느껴질 수 있다. 반드시 exact match 예제를 같이 봐야 한다.
+- `ceilingEntry`와 `higherEntry` 차이도 사실 같은 strictness 규칙이다. `Entry`는 반환 모양을 바꾸는 것이지 포함 여부를 새로 만들지 않는다.
+
+다음 단계는 한 칸만 가면 된다.
+
+- 반환 모양까지 같이 정리하고 싶으면 [TreeMap `ceilingKey` vs `ceilingEntry` Return-Shape Twin Card](./treemap-ceilingkey-ceilingentry-return-shape-twin-card.md)
+- `lower/floor/ceiling/higher` 네 쌍 전체를 한 장으로 다시 붙이고 싶으면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
+- `Entry`로 넘어가도 exact match 규칙이 그대로인지 확인하고 싶으면 [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
+
+## 한 줄 정리
+
+`ceilingKey`는 `같거나 다음`, `higherKey`는 `strictly 다음`으로 먼저 분리해 두면 exact match가 있는 문제에서 덜 헷갈리고, 그다음 `ceilingEntry`/`higherEntry`로 넘어가도 같은 strictness 규칙을 그대로 가져갈 수 있다.

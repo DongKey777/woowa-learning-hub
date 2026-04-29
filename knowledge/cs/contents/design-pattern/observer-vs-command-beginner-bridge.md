@@ -1,8 +1,8 @@
-# 옵저버 vs 커맨드: 처음 선택을 줄이는 1페이지 브리지
+# 옵저버 vs 커맨드: 알림과 실행 요청을 가르는 비교 브리지
 
 > 한 줄 요약: 옵저버는 "무슨 일이 일어났는지 여러 반응자에게 알리는 구조"이고, 커맨드는 "무엇을 실행하라고 요청 자체를 들고 다니는 구조"다.
 
-**난이도: 🟢 Beginner**
+**난이도: 🟡 Intermediate**
 
 > Beginner Route: `[entrypoint]` [옵저버 패턴 기초](./observer-basics.md) -> `[bridge]` 이 문서 -> `[deep dive]` [옵저버 (Observer) 심화](./observer.md)
 
@@ -13,10 +13,11 @@
 - [옵저버 (Observer) 심화](./observer.md)
 - [Command Pattern, Undo, Queue 심화](./command-pattern-undo-queue.md)
 - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
-
+- [도메인 이벤트 vs 통합 이벤트](./domain-events-vs-integration-events.md)
+- [Spring EventListener vs TransactionalEventListener](./spring-eventlistener-vs-transactionaleventlistener-timing.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer command difference, command vs observer beginner, event notification vs command request, 무엇이 일어났는지 vs 무엇을 실행할지, observer or command first choice, beginner pattern bridge, listener vs command object, notify vs execute, fan-out notification vs queued request, observer vs command beginner bridge basics, observer vs command beginner bridge beginner, observer vs command beginner bridge intro, design pattern basics
+retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer command difference, command vs observer intermediate, event notification vs command request, 무엇이 일어났는지 vs 무엇을 실행할지, observer or command first choice, listener vs command object, notify vs execute, fan-out notification vs queued request, event vs command naming, 언제 observer 언제 command, why observer not command, what is observer vs command, observer command review checklist
 
 ---
 
@@ -35,6 +36,19 @@ retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer
 - 옵저버는 **알림(notification)** 중심이다.
 - 커맨드는 **실행 요청(request)** 중심이다.
 
+## 왜 beginner primer 다음 단계인가
+
+옵저버와 커맨드의 정의 자체는 어렵지 않다.
+어려운 지점은 실무에서 둘 다 `Event`, `Message`, `Task` 같은 이름으로 섞여 들어오면서, **이 타입이 사실 보고인지 실행 요청인지**가 흐려질 때다.
+
+특히 아래 질문이 같이 나오면 beginner primer 다음 단계로 보는 편이 맞다.
+
+- "주문 완료 후 포인트 적립"이 단순 반응인지, 재시도 가능한 작업 명령인지
+- "이벤트니까 비동기겠지"라는 오해를 어디서 끊어야 하는지
+- application event와 작업 큐 메시지를 같은 것으로 봐도 되는지
+
+이 문서는 정의 소개보다, **event/command 경계가 흐려지는 중간 단계 혼동을 자르는 bridge**에 가깝다.
+
 ## 10초 선택 질문
 
 1. 지금 고민이 "누가 이 변화에 반응해야 하지?"인가
@@ -52,6 +66,15 @@ retrieval-anchor-keywords: observer vs command, 옵저버 vs 커맨드, observer
 | 자주 붙는 구조 | listener, event, notify, subscribe | execute, queue, undo, retry |
 | 잘 맞는 예 | 주문 완료 후 알림/로그/메트릭 | 주문 취소 요청 큐, 에디터 undo |
 | 직접 호출 대신 쓰는 이유 | 반응자 추가를 쉽게 하려고 | 실행 시점과 실행 주체를 분리하려고 |
+
+## 이름이 헷갈릴 때 먼저 보는 체크표
+
+| 타입 이름/장면 | 먼저 의심할 질문 | 더 가까운 쪽 |
+|---|---|---|
+| `OrderCompletedEvent` | 이미 끝난 사실을 알리나 | Observer/Event |
+| `CancelOrderCommand` | 아직 실행할 일을 위임하나 | Command |
+| `SendCouponTask` | 재시도와 작업 큐가 중요한가 | Command 쪽 해석 우선 |
+| `OrderChangedMessage` | 사실 보고인지 요청인지 이름만으로 불분명한가 | payload와 소비자 책임을 다시 본다 |
 
 ## 1분 예시
 
@@ -81,6 +104,17 @@ publisher.notify(new OrderCompleted(orderId));
 ```java
 queue.add(new CancelOrderCommand(orderId, reason));
 ```
+
+## 동기/비동기와 같은 말은 아니다
+
+초보자가 자주 하는 오해가 "옵저버는 동기, 커맨드는 비동기" 또는 그 반대라고 단정하는 것이다.
+하지만 이건 보장 규칙이 아니다.
+
+- 같은 프로세스 안에서 즉시 listener를 호출해도 Observer일 수 있다.
+- 웹 요청 안에서 바로 `command.execute()`를 호출해도 의미상 Command일 수 있다.
+- 메시지 브로커를 탄다고 해서 자동으로 Observer가 되는 것도 아니다. 그 메시지가 사실 보고인지 실행 요청인지가 더 중요하다.
+
+즉 **전달 수단보다 메시지 의미**를 먼저 봐야 한다.
 
 ## 자주 헷갈리는 포인트 4개
 
@@ -135,6 +169,12 @@ queue.add(new CancelOrderCommand(orderId, reason));
 - 큐, retry, undo가 핵심인가? → Command
 
 이 네 줄로도 첫 선택 실패 대부분을 줄일 수 있다.
+
+## 흔한 오해와 함정
+
+- `Event`라는 단어를 붙였다고 모두 사실 보고는 아니다. 이름보다 발화 시점과 소비자 기대를 본다.
+- observer fan-out 뒤에 무거운 후속 작업이 붙으면, listener 내부에서 Command를 큐에 넣는 쪽이 더 안전할 수 있다.
+- 같은 도메인 작업이라도 "사실 알림"과 "실행 요청"을 한 타입으로 섞어 쓰면 재시도, 중복 처리, 책임 경계 설명이 모두 어려워진다.
 
 ## 다음 읽기
 

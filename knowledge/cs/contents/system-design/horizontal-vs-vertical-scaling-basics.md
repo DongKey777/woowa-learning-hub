@@ -8,10 +8,25 @@
 
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Load Balancer Basics](./load-balancer-basics.md)
+- [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md)
 - [운영체제 프로세스와 스레드 기초](../operating-system/process-thread-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: horizontal vertical scaling basics, 수평 확장 수직 확장 입문, scale out scale up 차이, 서버 확장 방법, 트래픽 급증 대응, stateless 수평 확장, 수직 확장 한계, beginner scaling, 인스턴스 추가, 스케일 아웃 기초, 클라우드 확장 전략, 확장성 입문, horizontal vs vertical scaling basics basics, horizontal vs vertical scaling basics beginner, horizontal vs vertical scaling basics intro
+retrieval-anchor-keywords: horizontal vs vertical scaling, scale out vs scale up, horizontal vertical scaling basics, 수평 확장 수직 확장 차이, scale out scale up 차이, 서버 한 대 키우기 vs 여러 대 늘리기, 처음 배우는데 scale out이 뭐예요, 처음 배우는데 수평 확장, 수평 확장 큰 그림, 수평 확장 언제 쓰는지, 왜 수직 확장만 하면 안 되나요, 로드 밸런서 왜 같이 나와요, stateless가 왜 필요해요, 서버 확장 방법, 트래픽 급증 대응
+
+---
+
+## 처음 배우는데 이렇게 자르면 된다
+
+처음 질문이 `scale up`, `scale out`, `로드 밸런서`, `stateless`까지 한 번에 섞여도 아래 3칸으로 먼저 자르면 된다.
+
+| 지금 막힌 질문 | 먼저 붙잡을 한 줄 | 다음 문서 |
+|---|---|---|
+| `scale up이랑 scale out 차이가 뭐예요?` | 서버 한 대를 키우면 수직 확장, 서버 대수를 늘리면 수평 확장이다 | 이 문서 |
+| `서버를 여러 대로 늘리면 왜 로드 밸런서가 필요해요?` | 여러 서버 앞에서 요청을 나눠 줄 입구가 필요하다 | [Load Balancer Basics](./load-balancer-basics.md) |
+| `수평 확장할 때 왜 stateless가 같이 나와요?` | 어느 서버가 받아도 처리되게 상태를 서버 밖으로 빼야 하기 때문이다 | [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md) |
+
+처음에는 "확장 방식 비교 -> 요청 분배 -> 상태 위치" 순서로만 잡아도 큰 그림이 흔들리지 않는다.
 
 ---
 
@@ -87,6 +102,7 @@ retrieval-anchor-keywords: horizontal vertical scaling basics, 수평 확장 수
 
 - [Database Scaling Primer](./database-scaling-primer.md) — DB 수평 확장(샤딩, Read Replica)의 실무 함정
 - [Load Balancer Basics](./load-balancer-basics.md) — 수평 확장 시 필수인 로드 밸런서 동작 원리
+- [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md) — 수평 확장과 상태 외부화가 왜 한 묶음으로 설명되는지
 
 ---
 

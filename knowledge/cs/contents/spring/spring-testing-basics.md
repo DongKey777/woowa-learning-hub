@@ -46,6 +46,18 @@ retrieval-anchor-keywords: spring testing basics, spring test beginner, springbo
 
 즉 slice는 "트랜잭션을 대신 설명하는 개념"이 아니라, **어느 창으로 볼지 고르는 테스트 선택**이다.
 
+## 처음엔 이 오해만 먼저 끊는다
+
+처음에는 "`안 되면 더 크게 켜면 되지 않을까`"로 가기 쉽다. 하지만 아래 세 줄은 서로 다른 질문이라서, 애노테이션을 무작정 바꾸기 전에 먼저 갈라 보는 편이 빠르다.
+
+| 지금 나온 말 | 실제로 먼저 볼 질문 | 지금 바로 하지 말 것 | 먼저 갈 문서 |
+|---|---|---|---|
+| "`@WebMvcTest`인데 service bean not found예요" | web slice가 원래 service를 안 띄운 상태인가 | component scan 고장으로 단정하기 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md) |
+| "`service`는 보이는데 `@Transactional`이 안 먹어요" | 호출이 프록시 정문을 지났는가 | `@SpringBootTest`로만 바꿔서 해결하려 하기 | [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md) |
+| "`POST /orders`가 controller 전에 400 나요" | 테스트 종류보다 요청 바인딩이 먼저 끊겼는가 | transaction/service 문제로 먼저 넘겨짚기 | [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md) |
+
+짧게 외우면 "`무엇을 띄웠나`", "`어떻게 호출했나`", "`어디서 끊겼나`"는 서로 다른 분기다.
+
 ## 처음엔 여기까지만 고른다
 
 | 지금 먼저 보이는 말 | 여기서 끝낼 1차 답 | 더 깊게 볼 때만 여는 문서 |

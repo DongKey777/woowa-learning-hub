@@ -2,13 +2,16 @@
 
 > 한 줄 요약: cache는 같은 읽기를 아예 줄이는 전략이고 read replica는 DB 읽기 처리량을 늘리는 전략이며, 둘 다 stale 문제가 있지만 원인과 대응이 다르다는 점을 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: caching vs read replica, cache vs replica, read scaling primer, cache invalidation basics, stale read basics, stale-if-error, cache-first read scaling, read replica basics, cache-aside vs read replica, read-after-write basics, read-after-write routing primer, replica lag basics, primary fallback, session pinning primer, read-only downgrade
+> 이 문서는 "cache랑 replica 차이가 뭐예요?", "DB가 느릴 때 cache를 먼저 봐요, replica를 먼저 봐요?", "처음 배우는데 둘 다 stale이면 왜 따로 구분해요?" 같은 첫 질문이 deep dive보다 먼저 이 primer로 오도록 맞춘 entrypoint다.
+
+retrieval-anchor-keywords: caching vs read replica, cache vs replica, cache랑 replica 차이 뭐예요, 캐시와 레플리카 차이, 처음 cache replica 배우는데, cache replica 큰 그림, 왜 cache와 replica가 둘 다 stale해요, 언제 cache 쓰고 언제 replica 쓰나요, db 느릴 때 cache 먼저예요 replica 먼저예요, cache invalidation basics, read replica basics, read-after-write basics, replica lag basics, primary fallback, what is cache vs replica
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
 - [System Design Foundations](./system-design-foundations.md)
+- [Queue vs Cache vs DB Decision Drill](./queue-vs-cache-vs-db-decision-drill.md)
 - [Database Scaling Primer](./database-scaling-primer.md)
 - [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
 - [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)

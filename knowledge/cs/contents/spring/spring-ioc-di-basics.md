@@ -140,6 +140,32 @@ public class OrderService {
 
 짧게 외우면 `요청은 MVC`, `연결은 DI`, `후보 등록은 Bean`, `작업 묶음은 @Transactional`이다. 그래서 같은 `POST /orders` 장면을 보더라도 "`누가 연결했나`"가 질문일 때만 이 문서가 정답에 가장 가깝다.
 
+## 처음 막힐 때 4칸 비교
+
+처음에는 "`왜 new 대신 주입해요?`", "`bean`이 뭐예요?", "`왜 `@Transactional`이 안 먹어요?`"가 전부 비슷한 Spring 자동화처럼 보인다. 아래 표처럼 "지금 묻는 문장이 무엇인가"만 나눠도 첫 문서를 훨씬 덜 헤맨다.
+
+| 지금 입에서 먼저 나오는 말 | 이 질문의 중심 | 먼저 볼 문서 |
+|---|---|---|
+| "`왜 new 대신 주입해요?`" | 객체 조립 책임을 왜 밖으로 밀어내나 | 이 문서 |
+| "`service bean`은 누가 등록해요?", "`bean missing`이에요" | Bean 후보를 어떻게 올리나 | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| "`/orders`가 왜 컨트롤러까지 안 가요?`" | 요청이 어디로 라우팅되나 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| "`save()`는 됐는데 rollback이 이상해요" | 어디까지 한 트랜잭션으로 묶나 | [@Transactional 기초](./spring-transactional-basics.md) |
+
+같은 주문 예시를 한 줄씩만 붙이면 더 선명하다.
+
+```text
+앱 시작:
+  OrderRepository Bean 등록 -> OrderService에 주입
+
+요청 도착:
+  /orders -> OrderController -> OrderService.placeOrder()
+
+실행 중:
+  필요하면 @Transactional 프록시가 placeOrder() 앞뒤를 감싼다
+```
+
+즉 IoC/DI 문서는 "왜 `OrderService`가 `OrderRepository`를 직접 `new`하지 않나"를 설명하는 자리다. 요청 라우팅이나 트랜잭션 경계까지 한 번에 해결하는 문서는 아니다.
+
 ## 흔한 오해와 함정
 
 **오해 1: DI를 쓰면 코드가 복잡해진다**

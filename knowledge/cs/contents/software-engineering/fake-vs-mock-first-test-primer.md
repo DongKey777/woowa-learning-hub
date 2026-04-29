@@ -6,6 +6,8 @@
 
 관련 문서:
 
+- [Dummy vs Stub 초심자 미니 카드](./dummy-vs-stub-beginner-mini-card.md)
+- [Service Refactor First-Test Examples Pack](./service-refactor-first-test-examples-pack.md)
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md)
 - [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
@@ -20,6 +22,8 @@ retrieval-anchor-keywords: fake vs mock first test, first failing test fake mock
 ## 핵심 개념
 
 이 문서의 질문은 "`작은 service 리팩토링인데 첫 failing test를 fake로 시작할까, mock으로 시작할까?`"다. 초심자는 `mock`을 더 많이 들어서 먼저 집어 드는 경우가 많지만, 첫 테스트의 목적이 `호출 순서 확인`이 아니라 `규칙이 아직 같은 결과를 내는지`라면 fake가 더 읽기 쉽다.
+
+만약 아직 "`고정값을 넣은 더블`도 전부 mock 아닌가요?" 단계라면 [Dummy vs Stub 초심자 미니 카드](./dummy-vs-stub-beginner-mini-card.md)부터 먼저 보고 오는 편이 더 안전하다. 이 문서는 그 다음 단계인 `결과를 읽는가, 호출을 읽는가`를 다룬다.
 
 짧게 기준을 잡으면 이렇다. `저장 후 다시 읽었을 때 어떤 결과가 나와야 하나`를 묻는다면 fake가 먼저고, `이 알림을 정말 보냈나`, `이 포트를 호출했나`처럼 호출 자체가 비즈니스 결과라면 mock이 먼저다.
 

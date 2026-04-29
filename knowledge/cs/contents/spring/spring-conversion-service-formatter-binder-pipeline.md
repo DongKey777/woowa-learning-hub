@@ -5,6 +5,9 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
+> - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+> - [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
 > - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
@@ -12,6 +15,17 @@
 > - [Spring `@Async` Context Propagation and RestClient / HTTP Interface Clients](./spring-async-context-propagation-restclient-http-interface-clients.md)
 
 retrieval-anchor-keywords: ConversionService, Formatter, WebDataBinder, type conversion, binding pipeline, PropertyEditor, data binding, format annotation, conversion error
+retrieval-anchor-keywords: conversionservice deep dive, formatter deep dive, webdatabinder deep dive, spring binding internals advanced, spring type conversion pipeline advanced, conversionservice formatter webdatabinder 차이 심화, 바인딩 내부 동작 심화, beginner는 requestbody modelattribute primer 먼저, conversionservice next step after primer
+
+## 먼저 분기
+
+이 문서는 `primer`가 아니라 바인딩 내부 구조를 파고드는 `advanced` 문서다.
+
+| 지금 검색 문장이 이렇다면 | 먼저 갈 문서 | 이 문서는 아직 이르다 |
+|---|---|---|
+| "`ConversionService`가 뭐예요?", "`WebDataBinder`가 왜 나와요?`" | [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md) | 아직은 "값 채우기 단계"만 잡으면 된다 |
+| "`@RequestBody`인데 컨트롤러 전에 `400`이 나요" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md) | message conversion 증상을 먼저 가르는 편이 빠르다 |
+| "`query/form`이랑 JSON body가 왜 다르게 묶여요?`" | [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md) | 입력 출처 차이부터 나누는 게 먼저다 |
 
 ## 핵심 개념
 

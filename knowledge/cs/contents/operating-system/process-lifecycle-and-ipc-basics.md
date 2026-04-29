@@ -8,6 +8,7 @@
 
 관련 문서:
 
+- [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
 - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
@@ -78,6 +79,31 @@ parent exits first
 - `exec()`는 현재 프로세스의 프로그램 이미지를 바꾼다
 - `waitpid()`는 종료한 자식의 흔적을 회수한다
 - IPC는 데이터 크기와 관계에 맞는 도구를 고르는 문제다
+
+### 아주 작은 예시: shell이 `grep` 하나를 실행할 때
+
+`bash`에서 `grep foo app.log`를 실행하면 입문 수준에서는 아래처럼 단순화해도 충분하다.
+
+1. shell 프로세스가 `fork()`로 자식을 하나 만든다.
+2. 자식은 필요하면 stdin/stdout 같은 fd 배선을 정리한다.
+3. 자식이 `exec()`로 `grep` 프로그램으로 갈아탄다.
+4. `grep`이 끝나면 자식은 `exit()`한다.
+5. 부모 shell은 `waitpid()`로 종료 상태를 회수한 뒤 다음 프롬프트를 보여 준다.
+
+여기서 자주 놓치는 포인트는 "새 프로그램을 실행한 주체"가 보통 shell의 자식 프로세스라는 점이다. shell이 `exec()`를 직접 해 버리면 shell 자신이 사라지므로, 일반적인 interactive shell은 보통 `fork() -> child exec() -> parent waitpid()` 흐름으로 생각하면 된다.
+
+## 처음 읽을 때 자주 섞이는 비교
+
+process lifecycle 문서를 읽을 때는 "`새 프로세스를 만드는가`", "`지금 프로세스가 다른 프로그램으로 바뀌는가`", "`끝난 뒤 누가 회수하는가`"를 분리해 두면 훨씬 덜 헷갈린다.
+
+| 장면 | 먼저 떠올릴 동작 | 왜 다른가 |
+|------|------------------|-----------|
+| 새 자식을 하나 더 만든다 | `fork()` | 부모와 자식이 둘 다 남는다. |
+| 현재 자식을 다른 프로그램으로 바꾼다 | `exec()` | 프로세스 수를 늘리는 것이 아니라 현재 프로세스 이미지를 교체한다. |
+| 끝난 자식의 종료 상태를 정리한다 | `waitpid()` | 회수 전에는 zombie가 잠깐 남을 수 있다. |
+| 같은 프로세스 안에서 실행 흐름만 늘린다 | thread start / thread create | 새 프로세스가 아니라 같은 주소 공간 안의 스레드가 늘어난다. |
+
+이 표는 "`fork()`가 thread 생성과 같은가", "`exec()`가 새 프로세스를 만드는가" 같은 입문 오해를 줄이기 위한 최소 비교표다. thread 관점부터 다시 잡고 싶으면 [프로세스와 스레드 기초](./process-thread-basics.md)로 먼저 돌아가는 편이 안전하다.
 
 ## 1. `fork()`: 부모를 기준으로 자식이 하나 더 생긴다
 
@@ -243,6 +269,7 @@ parent exit()
 
 > **Beginner handoff box**
 >
+> - "`process/thread/fork/exec`가 한꺼번에 섞이면 어디로 돌아가지?`"가 궁금하면: [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
 > - "subprocess의 stdout/stderr redirect, pipe EOF, close-on-exec를 바로 잇고 싶다면": [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 > - "`fork()` 뒤 copy-on-write가 실제 비용으로 언제 드러나는지" 보려면: [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
 > - "`SIGCHLD` 기본 상태, `SIG_IGN`, `SA_NOCLDWAIT`, `waitpid()` 기대치"를 한 번에 정리하고 싶다면: [SIGCHLD Ignore vs `waitpid()` Bridge](./sigchld-ignore-vs-waitpid-bridge.md)

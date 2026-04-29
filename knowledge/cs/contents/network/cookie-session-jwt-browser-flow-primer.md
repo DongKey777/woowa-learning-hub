@@ -10,15 +10,18 @@
 - [Network README](./README.md#cookie--session--jwt-브라우저-흐름-입문)
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md)
+- [인증·인가·세션 기초 흐름](../security/authentication-authorization-session-foundations.md)
 - [Cookie vs `localStorage` 토큰 저장 선택 카드](./cookie-vs-localstorage-token-storage-choice-card.md)
 - [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
 - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)
 - [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
 - [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
 - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 
-retrieval-anchor-keywords: cookie session jwt 차이, 쿠키 세션 jwt 차이, 쿠키 세션 jwt 뭐예요, 처음 배우는데 쿠키 세션 jwt, cookie session jwt 헷갈려요, session이랑 jwt 언제 써요, authorization 헤더랑 쿠키 차이, 브라우저가 쿠키를 왜 자동으로 보내요, set-cookie to cookie, browser automatic cookie sending, session cookie vs persistent cookie, cookie scope basics, jsessionid browser flow, hidden jsessionid route, savedrequest beginner bridge
+retrieval-anchor-keywords: cookie session jwt 차이, 쿠키 세션 jwt 뭐예요, 처음 배우는데 쿠키 세션 jwt, cookie session jwt 헷갈려요, authorization 헤더랑 쿠키 차이, 브라우저가 쿠키를 왜 자동으로 보내요, set-cookie to cookie, session cookie vs persistent cookie, cookie scope basics, jsessionid browser flow, hidden jsessionid route, why login stays signed in, 왜 로그인이 유지돼요, 로그인 됐는데 왜 403, cookie 있는데 왜 다시 로그인
 
 ## 왜 이 문서가 필요한가
 
@@ -46,6 +49,7 @@ beginner가 실제로 자주 묻는 질문은 정의보다 아래 세 문장에 
 |---|---|---|---|
 | "`Set-Cookie`는 왔는데 왜 다음 요청 `Cookie`가 없어요?" | 저장된 cookie가 이번 요청 조건에도 맞았나 | cookie 전송 문제 | [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md) |
 | "`Cookie`는 있는데 왜 다시 로그인해요?" | 서버가 session id나 JWT를 검증해 사용자를 복원했나 | 인증/복원 문제 | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| "`브라우저는 cookie를 보내는데 서버는 왜 token을 또 들고 있나요?`" | browser cookie와 서버/BFF의 downstream token 번역을 같은 층위로 섞고 있나 | browser-server 경계 문제 | [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md) |
 | "`304`도 보이고 cookie도 있는데, 그럼 로그인 유지된 거 아닌가요?" | body 재사용과 인증 성공을 같은 뜻으로 읽고 있나 | cache와 auth 혼선 | [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md) |
 
 짧게 외우면 아래 순서다.
@@ -66,7 +70,21 @@ beginner가 실제로 자주 묻는 질문은 정의보다 아래 세 문장에 
 
 - `SameSite`, `Secure`, `Domain`, `Path`가 왜 전송을 막는지 자세히 보려면 [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
 - hidden `JSESSIONID`, login redirect, 원래 URL 복귀가 붙으면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- browser cookie와 서버/BFF token translation 경계가 처음 헷갈리면 [Browser BFF Session Boundary Primer](../system-design/browser-bff-session-boundary-primer.md)처럼 비교 폭이 좁은 bridge에서 먼저 멈춘다.
 - token 저장 전략, CSRF, BFF 같은 운영형 비교로 커지면 [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+
+## primer -> follow-up -> deeper 사다리
+
+이 문서는 network primer다. 초보자라면 여기서 바로 Spring Security deep dive나 운영형 token trade-off로 점프하기보다, 아래 사다리에서 한 칸씩만 내려가는 편이 안전하다.
+
+| 지금 질문 | primer | follow-up 한 칸 | deeper는 이때만 |
+|---|---|---|---|
+| "`cookie`, `session`, `JWT`가 아직 같은 말처럼 들려요" | 이 문서 | [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md) | 저장 전략이나 강제 무효화 trade-off가 궁금할 때만 [Signed Cookies / Server Sessions / JWT Trade-offs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md) |
+| "`왜 로그인 상태가 유지돼요?`", "`JSESSIONID`가 뭔가요?`" | 이 문서 | [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md) | redirect, hidden `JSESSIONID`, `SavedRequest`가 실제 증상으로 보일 때만 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md) |
+| "`로그인됐는데 왜 403이에요?`", "`token valid인데 왜 거부돼요?`" | 이 문서 | [인증·인가·세션 기초 흐름](../security/authentication-authorization-session-foundations.md) | 응답 코드 분기까지 필요할 때만 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](../security/auth-failure-response-401-403-404.md) |
+| "`cookie 있는데 왜 다시 로그인해요?`" | 이 문서 | [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md) | request `Cookie` header, redirect, server 복원이 실제로 섞일 때만 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+
+짧게 외우면 `browser 저장/전송 -> security에서 로그인 유지 방식 정리 -> authn/authz 분리 -> 증상별 guide` 순서다.
 
 ## 한 번에 보는 전체 흐름
 

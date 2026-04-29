@@ -17,6 +17,17 @@ from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, searcher, signal_rules
 
+GOLDEN_FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
+
+
+def _load_golden_fixture_query(query_id: str) -> dict:
+    with GOLDEN_FIXTURE_PATH.open(encoding="utf-8") as fh:
+        payload = json.load(fh)
+    for query in payload.get("queries", []):
+        if query.get("id") == query_id:
+            return query
+    raise KeyError(f"unknown CS RAG golden query fixture: {query_id}")
+
 
 def _chunk(
     doc_id: str,
@@ -4144,10 +4155,44 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("read-heavy api beginner primer", expanded)
         self.assertNotIn("layered architecture", expanded)
 
+    def test_english_query_service_meaning_alias_prompt_boosts_query_model_primer_vocabulary(
+        self,
+    ) -> None:
+        prompt = "What does a query service mean?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("what does query service mean", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
     def test_english_query_service_role_prompt_ranks_query_model_primer_ahead_of_companion(
         self,
     ) -> None:
         hits = self._search("What does query service do?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        )
+
+    def test_english_query_service_meaning_alias_prompt_ranks_query_model_primer_ahead_of_companion(
+        self,
+    ) -> None:
+        hits = self._search("What does a query service mean?", top_k=4)
 
         self.assert_path_rank_at_most(
             hits,
@@ -4913,6 +4958,16 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "must_exclude": set(),
             },
             {
+                "prompt": "What does a query service mean?",
+                "top_tag": "persistence_boundary",
+                "must_include": {
+                    "query service role",
+                    "query service responsibility",
+                    "what does query service mean",
+                },
+                "must_exclude": {"layered architecture"},
+            },
+            {
                 "prompt": "AOP가 뭐야?",
                 "top_tag": "spring_framework",
                 "must_include": {
@@ -5135,6 +5190,12 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "top_k": 8,
             },
             {
+                "prompt": "What does a query service mean?",
+                "primer_doc": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "deep_dive_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "top_k": 8,
+            },
+            {
                 "prompt": "쿼리 서비스 역할이 뭐야?",
                 "primer_doc": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
                 "deep_dive_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
@@ -5164,6 +5225,11 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "prompt": "DI vs IoC 차이가 뭔데?",
                 "primer_doc": "contents/spring/spring-ioc-di-basics.md",
                 "deep_dive_doc": "contents/spring/spring-bean-definition-overriding-semantics.md",
+            },
+            {
+                "prompt": "SpringBootApplication이 뭐야?",
+                "primer_doc": "contents/spring/spring-bean-di-basics.md",
+                "deep_dive_doc": "contents/spring/spring-component-scan-failure-patterns.md",
             },
             {
                 "prompt": "AOP가 뭐야?",
@@ -6060,6 +6126,24 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("transactional deep dive", expanded)
         self.assertNotIn("mvcc", expanded)
 
+    def test_english_transactional_meaning_query_with_annotation_keeps_beginner_primer_bias(
+        self,
+    ) -> None:
+        prompt = "What does @Transactional mean in Spring?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("transactional deep dive", expanded)
+        self.assertNotIn("mvcc", expanded)
+
     def test_english_transactional_spring_shortform_without_question_words_keeps_beginner_primer_bias(
         self,
     ) -> None:
@@ -6111,6 +6195,22 @@ class CsRagSignalRulesTest(unittest.TestCase):
 
     def test_english_plain_spring_transaction_shortform_keeps_beginner_primer_bias(self) -> None:
         prompt = "Spring transaction what is it?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("spring_framework", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring transactional basics", expanded)
+        self.assertIn("transactional annotation basics", expanded)
+        self.assertNotIn("mvcc", expanded)
+
+    def test_mixed_language_spring_transaction_shortform_keeps_beginner_primer_bias(self) -> None:
+        query = _load_golden_fixture_query("beginner_spring_transaction_mixed_language_shortform_lockin")
+        prompt = query["prompt"]
 
         self.assertEqual(
             signal_rules.top_signal_tag(prompt),
@@ -6184,6 +6284,23 @@ class CsRagSignalRulesTest(unittest.TestCase):
             hits,
             "contents/spring/spring-transactional-basics.md",
             "contents/spring/spring-transaction-propagation-deep-dive.md",
+        )
+
+    def test_mixed_language_spring_transaction_shortform_ranks_primer_ahead_of_database_transaction_doc(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("beginner_spring_transaction_mixed_language_shortform_lockin")
+        hits = self._search(query["prompt"])
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead_or_absent(
+            hits,
+            "contents/spring/spring-transactional-basics.md",
+            "contents/database/transaction-isolation-locking.md",
         )
 
     def test_english_why_use_transactional_query_keeps_beginner_primer_bias(self) -> None:
@@ -6349,6 +6466,71 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "contents/spring/spring-bean-di-basics.md",
             1,
         )
+        self.assert_ranks_ahead_or_absent(
+            hits,
+            "contents/spring/spring-bean-di-basics.md",
+            "contents/spring/spring-component-scan-failure-patterns.md",
+        )
+
+    def test_springbootapplication_beginner_queries_prefer_component_scan_primer_vocabulary(
+        self,
+    ) -> None:
+        for prompt in ("SpringBootApplication이 뭐야?", "@SpringBootApplication이란?"):
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+                self.assertIn("spring_framework", tags)
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("component scan basics", expanded)
+                self.assertIn("spring bean di basics", expanded)
+                self.assertIn("springbootapplication basics", expanded)
+
+    def test_springbootapplication_beginner_queries_rank_component_scan_primer_ahead_of_deep_dive(
+        self,
+    ) -> None:
+        for prompt in ("SpringBootApplication이 뭐야?", "@SpringBootApplication이란?"):
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=4)
+
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/spring/spring-bean-di-basics.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/spring/spring-bean-di-basics.md",
+                    "contents/spring/spring-component-scan-failure-patterns.md",
+                )
+
+    def test_component_scan_english_role_query_prefers_component_scan_primer_vocabulary(
+        self,
+    ) -> None:
+        prompt = "What does @ComponentScan do in Spring?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("component scan basics", expanded)
+        self.assertIn("spring bean di basics", expanded)
+        self.assertIn("component scan beginner mental model", expanded)
+        self.assertIn("bean registration vs component scan", expanded)
+
+    def test_component_scan_english_role_query_ranks_primer_ahead_of_failure_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("What does @ComponentScan do in Spring?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-bean-di-basics.md",
+            1,
+        )
         self.assert_ranks_ahead(
             hits,
             "contents/spring/spring-bean-di-basics.md",
@@ -6467,6 +6649,19 @@ class CsRagSignalRulesTest(unittest.TestCase):
         )
         expanded = signal_rules.expand_query(prompt)
         self.assertIn("spring ioc di basics", expanded)
+
+    def test_di_why_use_shortform_query_adds_ioc_beginner_primer_vocabulary(self) -> None:
+        query = _load_golden_fixture_query("beginner_di_why_use_shortform_lockin")
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(query["prompt"]),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(query["prompt"])
+        self.assertIn("spring ioc di basics", expanded)
+        self.assertIn("spring ioc di beginner primer", expanded)
+        self.assertIn("dependency injection 입문", expanded)
+        self.assertIn("의존성 주입이 뭐예요", expanded)
         self.assertIn("dependency injection", expanded)
         self.assertIn("inversion of control", expanded)
 

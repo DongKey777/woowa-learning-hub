@@ -260,6 +260,44 @@ Cookie: JSESSIONID=abc123
 3. 그래서 새로고침 대상이 `POST`가 아니라 `GET /orders/42`가 된다.
 4. 로그인 여부가 없으면 같은 흐름에서도 raw `401`, login page redirect `302`, 권한 거절 `403`이 각각 다르게 나타날 수 있다.
 
+## beginner가 한 번에 읽는 pass cycle
+
+처음에는 DNS, status, redirect, cache가 각각 따로 노는 지식처럼 보이기 쉽다. 아래처럼 **한 번의 브라우저 pass cycle**로 묶어 보면 "`왜 `POST` 다음에 `GET`이 보여요?`", "`왜 그다음엔 `304`예요?`"를 한 장면에서 정리할 수 있다.
+
+| 순서 | trace에서 먼저 보이는 것 | 지금 단계의 질문 | 먼저 붙일 이름 |
+|---|---|---|---|
+| 1 | `https://shop.example.com/orders` 입력 후 DNS, Connect, SSL | 어디로 어떻게 붙었나 | request lifecycle |
+| 2 | `POST /orders -> 303 See Other` | 결과 화면을 어느 URL에서 다시 열까 | redirect / PRG |
+| 3 | `GET /orders/42 -> 200 OK` | 브라우저가 결과 화면을 받았나 | 최종 응답 |
+| 4 | 새로고침 뒤 `GET /orders/42 -> 304 Not Modified` | 같은 body를 다시 받아야 하나 | cache revalidation |
+
+짧게 요약하면 이렇다.
+
+- `DNS`, `Connect`, `SSL`은 요청이 출발하기 전 준비 단계다.
+- `303`은 결과 화면을 다른 URL의 `GET`으로 다시 열라는 안내다.
+- `200`은 그 결과 화면 도착 장면이다.
+- `304`는 같은 URL body를 재사용해도 되는지 묻는 cache 장면이다.
+
+즉 `303 -> 200 -> 304`는 서로 충돌하지 않는다. 한 브라우저 흐름 안에서 "`이동`", "`도착`", "`재사용`"을 각각 다른 단계로 보여 줄 뿐이다.
+
+## 처음 헷갈리는 장면 빠른 분리
+
+request lifecycle primer를 읽다가 beginner가 가장 자주 멈추는 문장은 "`302` `303` `304`가 다 요청이 한 번 더 가는 것처럼 보여요`", "`cookie가 있으면 왜 또 `401`이죠?`"다. 이때는 아래 표처럼 질문 축을 먼저 고정하는 편이 안전하다.
+
+| 지금 보인 장면 | 같은 뜻으로 보면 안 되는 것 | 먼저 붙일 해석 | 다음 문서 |
+|---|---|---|---|
+| `POST /orders -> 303 -> GET /orders/42` | cache 재검증 | 결과 화면을 `GET`으로 다시 여는 PRG 흐름 | [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md) |
+| 새로고침 뒤 `GET /orders/42 -> 304` | redirect | 같은 URL body 재사용 여부 | [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md) |
+| `Cookie: JSESSIONID=...`는 있는데 `/me -> 401` | cache miss | 브라우저 전달과 서버 session 복원을 따로 봐야 한다 | [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md) |
+| `302 -> /login`이 보인다 | PRG 성공 장면 | 인증이 없어 login 쪽으로 이동했을 수 있다 | [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md) |
+
+한 줄 메모:
+
+- `303`은 "`POST` 결과를 어떤 `GET`으로 보여 줄까" 질문이다.
+- `304`는 "같은 URL body를 다시 받을까" 질문이다.
+- `401`은 "인증이 지금 없는가" 질문이다.
+- `302 /login`은 "인증 문제를 어디로 이동시켜 보여 주는가" 질문일 수 있다.
+
 ## 초급자용 다음 한 걸음
 
 처음 백엔드로 넘어갈 때는 바로 deep dive로 가지 말고 `network -> spring -> database` 순서로 한 칸씩만 이동하는 편이 안전하다.

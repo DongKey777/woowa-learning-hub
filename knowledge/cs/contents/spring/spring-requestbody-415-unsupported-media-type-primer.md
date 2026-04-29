@@ -1,6 +1,6 @@
 # Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`
 
-> 한 줄 요약: README 첫 증상표의 `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`, `Content-Type 때문에 막힌 것 같아요`는 body 값보다 먼저 `이 요청 body가 JSON이라고 선언됐나?`라는 `Content-Type` 헤더/계약 질문으로 자르게 하는 entrypoint다.
+> 한 줄 요약: README Spring MVC 바인딩/400 라우트에서 `1.5단계 보조 분기`로 쓰는 `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`, `Content-Type 때문에 막힌 것 같아요` 검색어는 body 값보다 먼저 `이 요청 body가 JSON이라고 선언됐나?`라는 `Content-Type` 헤더/계약 질문으로 자르게 하는 entrypoint다.
 
 **난이도: 🟢 Beginner**
 
@@ -24,20 +24,20 @@ retrieval-anchor-keywords: json인데 415 unsupported media type가 떠요, cont
 - `@RequestBody`는 body 내용만 보는 기능이 아니라, 먼저 `Content-Type`을 보고 어떤 형식인지 판단한다.
 - 그래서 body가 JSON처럼 보여도 헤더가 `application/json`이 아니면 Spring은 JSON으로 읽지 않을 수 있다.
 - 이때 자주 보이는 응답이 `415 Unsupported Media Type`이다.
-- README 바인딩 첫 증상표 순서로는 "`@RequestBody 400` first hit" 다음의 follow-up 카드가 아니라, 검색어가 처음부터 `415`와 `Content-Type`을 직접 말할 때 바로 들어오는 전용 entrypoint다.
+- README Spring MVC 바인딩/400 주 라우트 번호 체계로는 `1단계 @RequestBody 400` 다음에 끼워 넣는 `1.5단계 보조 분기`다. 즉, 검색어가 처음부터 `415`와 `Content-Type`을 직접 말할 때 바로 들어오는 전용 entrypoint다.
 
 즉 "`JSON 문법이 틀렸나?`"보다 "`이 요청이 JSON이라고 제대로 선언됐나?`"를 먼저 묻는 문서다. 초급자 기준으로 `415`는 보통 "값 해석 실패"보다 "body 형식 계약 실패"에 가깝다.
 
-## 질문 그대로 먼저 답하기
+## 1.5단계 보조 분기: 질문 그대로 먼저 답하기
 
-이 문서는 아래처럼 검색하는 초급자를 바로 받기 위한 entrypoint다.
+이 문서는 README의 Spring MVC 바인딩/400 라우트에서 `1.5단계 보조 분기`로 붙어 있는 검색 진입점이다. 즉, `@RequestBody 400` 주 라우트로 길게 돌기 전에 `415`와 헤더 계약이 검색어에 직접 드러난 초급자를 바로 받기 위한 entrypoint다.
 
 - `JSON인데 415 Unsupported Media Type가 떠요` -> JSON 모양보다 `Content-Type` 선언을 먼저 본다.
 - `Content-Type: application/json 안 붙였는데 415예요` -> 거의 바로 `Content-Type: application/json` 누락을 먼저 확인하면 된다.
 - `Content-Type 때문에 막힌 것 같아요` -> body 값보다 request header와 `consumes` 계약을 먼저 점검한다.
 - `컨트롤러 전에 415 Unsupported Media Type가 나요` -> 컨트롤러 로직보다 message converter가 요청 형식을 고르기 전에 막힌 장면일 수 있다.
 
-짧게 말해 "`JSON처럼 생겼다`"와 "`JSON이라고 선언했다`"는 다른 질문이다.
+짧게 말해 `1단계 @RequestBody 400`은 "`값을 읽다가 실패했나?`"를 먼저 보고, `1.5단계 보조 분기 @RequestBody 415`는 "`JSON처럼 생겼다`"와 "`JSON이라고 선언했다`"를 먼저 분리한다.
 
 헷갈리면 헤더 이름부터 외우기보다, 학습자가 실제로 말하는 증상 문장을 이렇게 붙여 보면 덜 헷갈린다.
 

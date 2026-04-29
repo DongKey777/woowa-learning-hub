@@ -17,7 +17,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: watermark metadata persistence basics, cache entry watermark metadata, cache refill watermark metadata, applied watermark cache entry, required watermark cache hit check, outbox watermark to cache metadata, cache causal hit metadata, refill metadata enables later hit check, watermark aware cache refill beginner, cache metadata persistence primer, causal cache metadata design, outbox projection cache bridge, cache entry observed watermark, cache metadata scope watermark, beginner watermark cache bridge
+retrieval-anchor-keywords: watermark metadata persistence basics, cache watermark metadata 뭐예요, cache refill에 watermark 왜 저장해요, cache hit에서 watermark 어떻게 비교해요, 처음 배우는데 cache freshness metadata, applied watermark cache entry, required watermark cache hit check, cache entry가 stale인지 어떻게 알아요, cache hit rejected 이유, outbox projection cache bridge, read-after-write cache metadata 기초, why cache hit can still be stale, what is cache watermark metadata, beginner watermark cache primer, cache metadata persistence primer
 
 ---
 
@@ -25,6 +25,8 @@ retrieval-anchor-keywords: watermark metadata persistence basics, cache entry wa
 
 초보자는 watermark 이야기를 듣고 outbox나 projection까지만 떠올리기 쉽다.
 하지만 운영에서 실제로 막히는 지점은 그다음이다.
+
+질문이 "cache hit인데 왜 stale할 수 있죠?", "cache refill에 payload만 넣으면 안 되나요?"라면 이 문서가 첫 문서다. `applied_watermark` 자체가 아직 낯설다면 [Projection Applied Watermark Basics](./projection-applied-watermark-basics.md)부터 먼저 잡고 돌아오면 된다.
 
 > fresh한 값을 한 번 읽어 왔다고 끝이 아니라, 그 fresh함을 다음 cache hit도 다시 증명할 수 있게 metadata로 남겨야 한다.
 

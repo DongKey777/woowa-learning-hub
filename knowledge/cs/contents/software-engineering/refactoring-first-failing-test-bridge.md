@@ -7,6 +7,7 @@
 관련 문서:
 
 - [리팩토링 기초](./refactoring-basics.md)
+- [Service Refactor First-Test Examples Pack](./service-refactor-first-test-examples-pack.md)
 - [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md)
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)

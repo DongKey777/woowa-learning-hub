@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- [AbortController 검색 자동완성 `canceled` trace 카드](./abortcontroller-search-autocomplete-canceled-trace-card.md)
 - [Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드](./browser-devtools-blocked-mixed-content-vs-cors-mini-card.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
@@ -132,6 +133,8 @@ retrieval-anchor-keywords: browser devtools blocked canceled failed, devtools st
 
 이 장면에서 앞의 두 줄을 "서버 에러"로 읽으면 잘못이다. 초급자 첫 해석은 "낡은 요청을 프론트가 정리했고, 마지막 요청만 정상 완료됐다"가 더 가깝다.
 
+이 패턴을 query 증가 순서, `Initiator`, `AbortController` 코드까지 붙여 더 구체적으로 읽고 싶다면 [AbortController 검색 자동완성 `canceled` trace 카드](./abortcontroller-search-autocomplete-canceled-trace-card.md)를 이어 보면 된다.
+
 반대로 `(blocked)` row라면 같은 URL이어도 CORS, mixed content, 확장 프로그램 차단 여부를 먼저 봐야 하고, `(failed)` row라면 사내 VPN, DNS, 인증서, 네트워크 상태를 먼저 확인하는 편이 빠르다.
 
 ## 더 깊이 가려면
@@ -141,6 +144,7 @@ retrieval-anchor-keywords: browser devtools blocked canceled failed, devtools st
 - body owner를 app/gateway/login HTML로 가르고 싶다면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - CORS와 브라우저 정책 차단을 더 또렷하게 보고 싶다면 [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
 - `(blocked)` 안에서 mixed content와 CORS를 콘솔 문구로 더 빨리 가르고 싶다면 [Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드](./browser-devtools-blocked-mixed-content-vs-cors-mini-card.md)
+- 자동완성에서 `AbortController`가 왜 `canceled` trace를 남기는지 concrete 예시를 보고 싶다면 [AbortController 검색 자동완성 `canceled` trace 카드](./abortcontroller-search-autocomplete-canceled-trace-card.md)
 - request/response header 자체가 아직 낯설다면 [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 
 ## 한 줄 정리

@@ -1,6 +1,6 @@
 # TTY-Aware Output Capture Patterns
 
-> 한 줄 요약: subprocess wrapper에서 출력을 받는 방법은 크게 `stdout/stderr separate pipes`, `stderr -> stdout merge`, `PTY capture` 셋으로 나뉜다. separate pipes는 기계가 후처리하기 쉽고, merge는 한 줄 로그를 단순하게 모으기 쉽고, PTY는 사람에게 보이는 터미널 화면을 더 비슷하게 재현한다.
+> 한 줄 요약: subprocess 출력을 받을 때는 "결과를 기계가 읽어야 하는가, 사람이 터미널처럼 봐야 하는가"를 먼저 고른 뒤 `separate pipes`, `merge`, `pty` 중 하나를 고르면 된다.
 >
 > 문서 역할: 이 문서는 operating-system `primer`에서 [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)와 [Pseudo-TTY vs Pipe Behavior](./pseudo-tty-vs-pipe-behavior.md) 사이를 잇는 beginner bridge다. subprocess wrapper를 만들 때 "로그 수집용 배선"과 "터미널 재생용 배선"을 같은 문제로 섞지 않도록, capture goal 기준으로 패턴을 나눠 준다.
 
@@ -19,7 +19,7 @@
 - [Subprocess Management in Spring Batch and Schedulers](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00071, tty aware output capture patterns, subprocess capture patterns, stdout stderr separate pipes, stderr merged into stdout, merged stderr capture, pty capture basics, machine friendly logs, human friendly terminal replay, subprocess wrapper logging pattern, pipe capture vs pty capture, one stream transcript capture, isatty capture choice, json log capture subprocess, terminal replay beginner
+retrieval-anchor-keywords: tty aware output capture basics, subprocess capture beginner, separate pipes vs merge vs pty, stdout stderr capture what is, pty capture 뭐예요, capture pattern 처음 고를 때, 로그 수집 방식 헷갈려요, 언제 pty를 써요, json log capture basics, terminal replay basics, machine friendly logs, human friendly terminal replay
 
 ## 먼저 잡는 멘탈 모델
 
@@ -214,9 +214,9 @@ CI나 test runner가 separate pipes를 읽어 하나의 transcript로 합칠 때
 
 아니다. 읽는 쪽이 너무 느리면 어떤 capture든 소비 정책이 중요하다. 다만 PTY는 beginner 관점에서 "TTY-aware 출력 모드" 문제를 먼저 푸는 선택지다. pipe drain 기본기는 [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)를 함께 봐야 한다.
 
-## 실무에서 쓰는 모습
+## 처음 고를 때는 여기까지만 기억
 
-많은 wrapper는 사실상 아래 세 가지 질문으로 선택이 갈린다.
+beginner 문서에서는 운영 사고나 복잡한 wrapper 아키텍처보다, 아래 세 문장만 기억해도 충분하다.
 
 | 질문 | `yes`면 기울기 쉬운 패턴 |
 |---|---|
@@ -224,11 +224,12 @@ CI나 test runner가 separate pipes를 읽어 하나의 transcript로 합칠 때
 | stdout/stderr 구분보다 한 파일 transcript가 중요한가 | merged stderr |
 | 사용자가 "진짜 터미널 같은 화면"을 기대하나 | PTY capture |
 
-실무에서는 "하나의 패턴이 항상 정답"이 아니라, 목적별 채널을 분리하는 식으로 풀기도 한다.
+여기서 멈춰도 되는 이유는 이 문서의 목표가 "첫 선택 실수 줄이기"이기 때문이다.
+운영용 로그 채널 분리, 웹 터미널 재생, flaky 자동화처럼 더 깊은 문제는 다음 문서로 넘기는 편이 안전하다.
 
-- 기계 저장용 artifact는 separate pipes
-- 사용자 라이브 뷰는 PTY 또는 terminal-oriented renderer
-- 운영 단순화를 원하면 초기 버전은 merge부터 시작
+- stdout/stderr 순서가 왜 어긋나 보이는지는 [stdout/stderr Ordering After Redirect](./stdio-buffering-after-redirect.md)
+- PTY를 붙였더니 color/prompt 동작이 왜 바뀌는지는 [Pseudo-TTY vs Pipe Behavior](./pseudo-tty-vs-pipe-behavior.md)
+- pipe 두 개를 둘 때 왜 drain이 필요한지는 [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)
 
 초보자에게 중요한 결론은 이것이다.
 
@@ -242,11 +243,13 @@ CI나 test runner가 separate pipes를 읽어 하나의 transcript로 합칠 때
 - wrapper 옵션을 `PIPE`, `stderr=STDOUT`, `close_fds` 기준으로 다시 읽고 싶다면 [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
 - 애플리케이션 레벨에서 구조화 로그와 사용자 콘솔을 분리하는 사고는 [HTTP Response Compression, Buffering, Streaming Trade-offs](../network/http-response-compression-buffering-streaming-tradeoffs.md)처럼 "전달용 표현"과 "처리용 표현"을 나누는 문서들과도 닿아 있다
 
-## 면접/시니어 질문 미리보기
+## 더 깊게 볼 때는 여기서 멈춘다
 
-- "wrapper가 stdout을 JSON으로 파싱해야 하는데 사용자에게는 색 있는 라이브 로그도 보여 주고 싶다면 채널을 어떻게 나누겠나?"
-- "`stderr=STDOUT`가 구현을 단순하게 해 주지만 디버깅 비용을 올리는 경우는 언제인가?"
-- "PTY capture를 붙였더니 자동화 테스트가 flaky해졌다면 어떤 TTY-aware 분기를 먼저 의심하겠나?"
+처음 읽는 단계라면 아래 질문들은 바로 파고들지 않아도 된다.
+
+- "json 파싱용 stdout과 라이브 콘솔 화면을 동시에 어떻게 설계하지?" -> [CI Log Merge Behavior Primer](./ci-log-merge-behavior-primer.md)
+- "pty를 붙였더니 자동화가 왜 흔들리지?" -> [Pseudo-TTY vs Pipe Behavior](./pseudo-tty-vs-pipe-behavior.md)
+- "spawn api마다 capture 배선이 왜 다르게 보이지?" -> [popen and Runtime Wrapper Mapping](./popen-runtime-wrapper-mapping.md)
 
 ## 한 줄 정리
 

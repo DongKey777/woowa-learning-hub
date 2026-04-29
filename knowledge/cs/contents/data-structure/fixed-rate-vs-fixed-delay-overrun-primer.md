@@ -12,8 +12,9 @@
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 
 
-retrieval-anchor-keywords: fixed rate vs fixed delay overrun primer basics, fixed rate vs fixed delay overrun primer beginner, fixed rate vs fixed delay overrun primer intro, data structure basics, beginner data structure, 처음 배우는데 fixed rate vs fixed delay overrun primer, fixed rate vs fixed delay overrun primer 입문, fixed rate vs fixed delay overrun primer 기초, what is fixed rate vs fixed delay overrun primer, how to fixed rate vs fixed delay overrun primer
+retrieval-anchor-keywords: fixed rate vs fixed delay overrun, scheduleatfixedrate vs schedulewithfixeddelay 차이, 주기보다 실행 시간이 길면, 왜 scheduleatfixedrate가 바로 다시 돌아요, why schedulewithfixeddelay waits, periodic task overrun beginner, timer queue 주기 작업 큰 그림, fixed rate catch up 뭐예요, fixed delay 쉬는 시간 보장, 처음 배우는데 fixed rate fixed delay, 주기 작업 헷갈려요, overrun catch up basics, deadline ticket beginner, what is fixed rate vs fixed delay, schedulewithfixeddelay beginner
 > 관련 문서:
+> - [Java Timer vs ScheduledExecutorService vs DelayQueue Router](./java-timer-vs-scheduledexecutorservice-vs-delayqueue-router.md)
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Periodic Task Cancellation Bridge](./periodic-task-cancellation-bridge.md)
 > - [Slow Periodic Task Primer](./slow-periodic-task-primer.md)

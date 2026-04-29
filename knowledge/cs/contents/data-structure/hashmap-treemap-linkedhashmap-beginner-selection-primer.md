@@ -19,7 +19,7 @@
 - [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, hashmap treemap linkedhashmap primer, hashmap treemap linkedhashmap 큰 그림, map selection primer, hashmap treemap linkedhashmap 차이 뭐예요, 처음 배우는데 hashmap treemap linkedhashmap 차이, map 구현체 처음 고르기, map 뭐 써야 해, 순서 없는 map 뭐예요, 넣은 순서 유지 map 뭐예요, 정렬되는 map 뭐예요, map range query beginner, 왜 lower랑 floor가 달라요, 언제 hashmap 말고 treemap 써요, 왜 linkedhashmap 써요
+retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, hashmap treemap linkedhashmap primer, hashmap treemap linkedhashmap 큰 그림, map selection primer, hashmap treemap linkedhashmap 차이 뭐예요, 처음 배우는데 hashmap treemap linkedhashmap 차이, map 구현체 처음 고르기, map 뭐 써야 해, 문자열 key exact lookup map, 문자열 key 조회 hashmap treemap, 순서 없는 map 뭐예요, 넣은 순서 유지 map 뭐예요, 정렬되는 map 뭐예요, map range query beginner, 왜 lower랑 floor가 달라요
 
 ## 핵심 개념
 
@@ -35,6 +35,7 @@ retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, hashmap treem
 > "나는 그냥 찾기만 하면 되나, 순서를 보여 줘야 하나, 정렬된 탐색까지 해야 하나?"
 
 이 질문 하나로 첫 분기를 잡으면 내부 구현 세부를 몰라도 방향을 정할 수 있다.
+따라서 broad beginner query가 `문자열 key 조회 자료구조`, `string key exact lookup map`처럼 들어와도, 이미 [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)에서 `exact lookup` 쪽으로 굳은 상태라면 이 문서가 두 번째 우선순위가 된다. 여기서는 `문자열` 자체보다 `순서 없는 lookup`, `삽입 순서`, `정렬된 이웃/범위`를 다시 나누는 것이 핵심이다.
 만약 지금 막힌 문장이 선택보다 더 직접적으로 `왜 출력 순서가 바뀌지?`에 가깝다면, 이 문서보다 먼저 [Map order symptom router card](./map-order-symptom-router-card.md)에서 `HashMap`/`LinkedHashMap`/`TreeMap`의 순서 규칙을 10초 안에 자르는 편이 더 빠르다.
 반대로 `왜 lower랑 floor가 달라요?`, `exact match 포함 여부가 헷갈려요`처럼 이미 ordered map 이웃 조회 이름까지 나온 상태라면, 구현체 선택보다 먼저 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)에서 strict/inclusive 감각을 고정하는 편이 빠르다.
 그리고 문자열 key를 다루는 문제라도 질문이 `"startsWith 후보"`인지 `"사전순 다음 key"`인지 섞여 있다면 [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)로 먼저 `prefix`와 `ordered range/neighbor`를 자르는 편이 빠르다.
@@ -47,6 +48,7 @@ ordered map 관련 beginner query를 한 줄로 라우팅하면 아래처럼 보
 
 | 학습자 질문 | 먼저 볼 문서 | 왜 여기부터 읽나 |
 |---|---|---|
+| `문자열 key 조회 자료구조인데 prefix search는 아니에요` | 이 문서 | `Trie` 여부를 이미 잘랐다면 이제 `HashMap`과 `TreeMap` 같은 map 구현체 우선순위를 정해야 한다 |
 | `왜 출력 순서가 바뀌지?` | [Map order symptom router card](./map-order-symptom-router-card.md) | 순서 계약 문제인지부터 잘라야 한다 |
 | `왜 lower랑 floor가 달라요?` | [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md) | strict/inclusive와 exact match 포함 여부를 먼저 고정해야 한다 |
 | `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` | [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md) | `Key/Entry`와 `lower/floor` 차이를 분리해야 한다 |

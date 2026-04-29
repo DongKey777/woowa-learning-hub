@@ -19,7 +19,20 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: session vs process group primer, session process group basics, session process group mental model, controlling terminal mental model, job control basics, process group job control, controlling terminal basics, foreground process group, terminal foreground pgid, ctrl-c process group, terminal generated signals, sigint foreground process group, sigtstp foreground process group, setpgid basics, setsid basics
+retrieval-anchor-keywords: session vs process group primer, session이 뭐예요, process group이 뭐예요, session vs process group 뭐가 달라요, controlling terminal 뭐예요, foreground process group 뭐예요, ctrl-c를 누르면 왜 pipeline 전체가 멈춰요, ctrl-c가 어디로 가요, setpgid와 setsid 차이, setpgid랑 setsid가 헷갈려요, 터미널에서 분리된다는 게 뭐예요, 처음 배우는데 session process group, job control basics, process group job control, what is session vs process group
+
+## 이 문서가 먼저 맞는 질문
+
+아래처럼 "용어를 처음 묻는 질문"이면 shell/job-control deep dive보다 이 문서가 먼저다.
+
+- "`session`이 뭐예요?"
+- "`process group`이 뭐예요?"
+- "`session`과 `process group`은 뭐가 달라요?"
+- "`Ctrl-C`를 누르면 왜 pipeline 전체가 같이 멈춰요?"
+- "`setpgid()`와 `setsid()`가 왜 따로 있죠?"
+- "terminal에서 분리된다는 말이 정확히 뭐예요?"
+
+반대로 `nohup`, `fg`, `bg`, `disown` 같은 shell 명령 차이나 daemonization checklist가 궁금하면 관련 follow-up 문서로 내려가는 편이 안전하다.
 
 ## 먼저 잡는 멘탈 모델
 

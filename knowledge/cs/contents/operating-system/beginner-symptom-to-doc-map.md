@@ -17,7 +17,7 @@
 - [인터럽트 기초](./interrupt-basics.md)
 - [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
 
-retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, command first quick check, slow response first triage, oom first triage, too many open files first triage, interrupt confusion primer, syscall vs context switch confusion, process vs thread confusion, 왜 느려요 운영체제, 처음 뭐부터 봐요, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
+retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, slow response first triage, oom first triage, too many open files first triage, syscall vs context switch confusion, process vs thread confusion, 왜 context switch 느려요, heap vs stack 언제 달라요, 왜 느려요 운영체제, 처음 뭐부터 봐요, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
 
 ## 먼저 잡는 멘탈 모델
 
@@ -36,6 +36,8 @@ retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner sym
 | 지금 보이는 말 | 먼저 떠올릴 축 | 바로 갈 primer |
 |---|---|---|
 | "왜 이렇게 느려요?", "`load`가 높대요" | CPU / scheduler / I/O wait | [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md), [CPU 스케줄링 기초](./cpu-scheduling-basics.md) |
+| "`왜 context switch 느려요?`", "`스레드 늘렸더니 더 느려요`" | scheduler / runnable 경쟁 / 전환 비용 | [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md), [CPU 스케줄링 기초](./cpu-scheduling-basics.md) |
+| "`heap vs stack 언제 달라요?`", "`지역 변수랑 객체는 어디에 있어요?`" | stack / heap / thread-local vs shared state | [Process, Thread, Stack, Heap, File Descriptor, Socket: Backend Boundary Primer](./process-thread-stack-heap-fd-socket-backend-primer.md), [메모리 관리 기초](./memory-management-basics.md) |
 | "`Killed`, `OOMKilled`가 떠요" | memory pressure | [메모리 관리 기초](./memory-management-basics.md) |
 | "`Too many open files`가 떠요" | fd / socket / limit | [파일 디스크립터 기초](./file-descriptor-basics.md) |
 | "`프로세스`, `스레드`, `시스템 콜`이 자꾸 섞여요" | 개념 축 재정렬 | [프로세스와 스레드 기초](./process-thread-basics.md), [시스템 콜 기초](./syscall-basics.md) |
@@ -47,6 +49,8 @@ retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner sym
 | 지금 필요한 것 | 바로 갈 문서 | 왜 여기로 가나 |
 |---|---|---|
 | "증상은 있는데 무슨 명령부터 볼지 모르겠다" | [Beginner Triage Quick-Check Snippet Pack](./beginner-triage-quick-check-snippet-pack.md) | 증상별로 2~3개 관찰 명령만 먼저 실행해 30초 안에 분기할 수 있다. |
+| "`왜 context switch 느려요`처럼 느림 원인이 전환 비용인지부터 헷갈린다" | [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md) | `syscall`과 `context switch`, runnable 경쟁, thread 증가 비용을 한 장에서 먼저 분리해 준다. |
+| "`heap vs stack 언제 달라요`처럼 메모리 질문이 thread 공유/지역 상태로 섞인다" | [Process, Thread, Stack, Heap, File Descriptor, Socket: Backend Boundary Primer](./process-thread-stack-heap-fd-socket-backend-primer.md) | stack은 스레드 로컬 호출 상태, heap은 프로세스 공유 객체 공간이라는 감각을 요청 처리 장면으로 다시 묶어 준다. |
 | "서버가 느린데 `load average` 다음에 어디까지 내려가야 할지 모르겠다" | [Load Average Triage: CPU Saturation vs cgroup Throttling vs I/O Wait](./load-average-triage-cpu-saturation-cgroup-throttling-io-wait.md) | `load average`를 CPU 포화/쿼터 쓰로틀링/I/O 대기 3갈래로 나누는 beginner bridge라서 deep dive 진입 전 첫 분기가 선명해진다. |
 | "증상은 잡았는데 개념이 자꾸 섞여서 다시 정리하고 싶다" | [개념 점검용 추천 순서 (self-check 빠른 점검 루트)](./README.md#개념-점검용-추천-순서-self-check-빠른-점검-루트) | primer 4편을 짧게 다시 훑고 각 문서 말미 `Self-check`로 개념 축을 재고정할 수 있다. |
 | "카테고리 전체에서 다른 primer를 다시 고르고 싶다" | [operating-system 카테고리 인덱스](./README.md) | symptom entrypoint에서 primer/deep dive catalog 전체로 다시 이동할 수 있다. |

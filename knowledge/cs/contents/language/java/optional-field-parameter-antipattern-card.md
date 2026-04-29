@@ -6,13 +6,14 @@
 
 관련 문서:
 
+- [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md)
 - [Java Optional 입문](./java-optional-basics.md)
 - [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
 - [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
 - [DTO, VO, Entity 기초](../../software-engineering/dto-vo-entity-basics.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: optional field parameter anti pattern, java optional field beginner, java optional parameter beginner, optional 필드 왜 안 쓰나, optional 파라미터 왜 안 되나, optional field anti pattern java, optional parameter anti pattern java, return optional not field, return optional not parameter, optional 대신 뭘 쓰나, 처음 배우는데 optional 필드, optional null 이중 상태, beginner optional api design, optional dto field warning
+retrieval-anchor-keywords: optional field parameter anti pattern, java optional field beginner, java optional parameter beginner, optional 필드 왜 안 쓰나, optional 파라미터 왜 안 되나, optional field anti pattern java, optional parameter anti pattern java, return optional not field, return optional not parameter, optional 대신 뭘 쓰나, 처음 배우는데 optional 필드, optional null 이중 상태, beginner optional api design, optional list vs empty list, optional list field 어색함
 
 ## 먼저 잡는 멘탈 모델
 

@@ -17,7 +17,7 @@
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - [배열 vs `List` 변환 엔트리 프라이머](./array-to-list-conversion-entrypoint-primer.md)
 
-retrieval-anchor-keywords: java array copy basics, java array clone basics, java arrays.copyof vs clone, java array assignment alias, java shallow copy deep copy, java array alias vs equality symptom, same value but false vs changed together array, 배열 대입 복사 차이, 배열 복사 처음 배우는데, clone 과 copyof 차이 기초, 왜 clone해도 같이 바뀌나요, 배열 한쪽 바꾸면 다른 쪽도 같이 바뀜, 배열 값은 같은데 false, 배열 == equals false 인데 복사 문제인가, java nested array shallow copy
+retrieval-anchor-keywords: java array copy basics, java array clone basics, java arrays.copyof vs clone, java array assignment alias, java shallow copy deep copy, java array alias vs equality symptom, same value but false vs changed together array, 배열 대입 복사 차이, 배열 복사 처음 배우는데, clone 과 copyof 차이 기초, 왜 clone해도 같이 바뀌나요, 배열 한쪽 바꾸면 다른 쪽도 같이 바뀜, 배열 값은 같은데 false, shared reference array beginner, java nested array shallow copy
 
 <details>
 <summary>Table of Contents</summary>
@@ -57,6 +57,7 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 배열 초보자가 자주 빠지는 함정도 하나 더 있다.
 
 - "`Arrays.equals()`가 이상한가?"라고 생각했는데, 실제 첫 증상은 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"가 아니라 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"였을 수 있다
+- `[I@...`나 `[[Ljava...`가 먼저 보였는데도 copy 문제로 달려가면, 실제로는 출력 경로를 아직 바로 못 잡은 상태일 수 있다
 
 이 문서는 그 차이를 초보자 관점에서 한 번에 정리한다.
 
@@ -65,14 +66,13 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"와 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"는 비슷해 보여도 출발 축이 다르다.
 앞은 비교 축이고, 뒤는 alias/copy 축이다.
 
-특히 아래처럼 읽으면 덜 헷갈린다.
+특히 equality primer의 symptom route를 그대로 가져오면 덜 헷갈린다.
 
 | 지금 보이는 증상 | 실제로 먼저 의심할 것 | 첫 확인 | 다음 문서 |
 |---|---|---|---|
 | `[I@...`처럼 출력이 이상하거나, 2차원 배열 로그가 `[[Ljava...`처럼 보인다 | 복사 문제가 아니라 출력 경로 문제 | 1차원은 `Arrays.toString(...)`, 중첩 배열은 `Arrays.deepToString(...)` | [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md) |
 | 값은 같은데 `==`나 `array.equals(...)`가 `false`다 | 같은 배열인지, 같은 값인지 | 1차원은 `Arrays.equals()`, 중첩 배열은 `Arrays.deepEquals()` | [Java Array Equality Basics](./java-array-equality-basics.md) |
-| `left == right`가 `true`고 한쪽 수정이 다른 쪽에도 바로 보인다 | 비교 실패가 아니라 같은 배열 alias | `left == right`와 수정 전후 출력 함께 보기 | 이 문서 |
-| 값이 달라진 이유를 `equals()` 탓으로 돌리고 싶은데, 변경이 양쪽에 동시에 퍼진다 | shared reference가 먼저 생겼는지 | `copied = original` 같은 대입이 있었는지 찾기 | 이 문서 |
+| 한쪽을 바꾸면 다른 쪽도 같이 바뀌고 `left == right`가 `true`다 | 비교 실패가 아니라 같은 배열 alias | `left == right`와 수정 전후 출력 함께 보기 | 이 문서 |
 
 짧게 외우면 이렇다.
 
@@ -80,15 +80,12 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 - 한쪽을 바꾸면 다른 쪽도 같이 바뀌면 alias/shared reference를 먼저 본다
 - 출력이 이상하면 copy보다 출력 경로를 먼저 자른다
 
-즉 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"와 "한쪽을 바꾸면 다른 쪽도 같이 바뀐다"는 비슷해 보여도 출발 문서가 다르다.
-앞은 [Java Array Equality Basics](./java-array-equality-basics.md), 뒤는 이 문서다.
+세 문서의 첫 질문도 같아야 한다.
 
-먼저 축을 나누면 더 빠르다.
+1. 지금 문제는 출력이 이상한가, 값은 같은데 `==`나 `array.equals(...)`가 `false`다인가, 아니면 한쪽을 바꾸면 다른 쪽도 같이 바뀐다인가?
+2. 내가 확인하려는 건 같은 배열인가, 같은 값인가, 아니면 같은 변경이 전파되는가?
 
-- 아직 "공유 문제인지 비교 문제인지"부터 헷갈리면 [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)를 먼저 본다.
-- `[I@...`처럼 출력이 이상하면 복사보다 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)를 먼저 본다.
-- 값은 비슷해 보이는데 `==`나 `equals()` 결과가 기대와 다르면 복사보다 [Java Array Equality Basics](./java-array-equality-basics.md) 쪽이 더 가깝다.
-- "한쪽 수정이 다른 쪽에도 전파된다"가 핵심 증상이면 이 문서가 맞다.
+즉 "값은 같은데 `==`나 `array.equals(...)`가 `false`다"는 [Java Array Equality Basics](./java-array-equality-basics.md), `[I@...`나 `[[Ljava...`처럼 출력이 이상하면 [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md), "한쪽 수정이 다른 쪽에도 전파된다"가 핵심이면 이 문서로 오면 된다.
 
 ## 먼저 결론: 대입 vs `clone()` vs `Arrays.copyOf()`
 

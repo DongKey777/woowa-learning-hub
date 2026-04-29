@@ -14,7 +14,7 @@
 > - [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - [eBPF, perf, strace, and Production Tracing](./ebpf-perf-strace-production-tracing.md)
 
-> retrieval-anchor-keywords: major page fault, minor page fault, pgfault, pgmajfault, copy-on-write, demand paging, page fault primer, anonymous page fault, file-backed page fault, reclaim-induced major fault, swapin major fault, page cache refault, cold-page refault, smaps_rollup, perf stat, mincore
+> retrieval-anchor-keywords: major page fault runtime diagnostics, minor page fault runtime diagnostics, pgfault, pgmajfault, copy-on-write runtime counter, demand paging diagnostics, anonymous page fault telemetry, file-backed page fault telemetry, reclaim-induced major fault, swapin major fault, page cache refault, cold-page refault, smaps_rollup, perf stat, mincore, page fault observability, page fault latency debugging, 운영 중 page fault 해석, pgmajfault가 늘어요, page fault count runtime analysis
 
 ## 핵심 개념
 

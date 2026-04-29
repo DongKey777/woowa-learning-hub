@@ -1,6 +1,6 @@
 # Map 조회/갱신 API 미니 브리지: `put()` vs `putIfAbsent()` vs `computeIfAbsent()` vs `merge()`
 
-> 한 줄 요약: `HashMap.put`, `TreeMap.put`, `putIfAbsent()`를 한 카드에 놓고 보면 "구현체 선택"과 "덮어쓰기 정책 선택"이 다른 축이라는 점이 보이고, 그다음에 `computeIfAbsent()`와 `merge()`를 붙이면 `Map` 갱신 API 전체가 덜 헷갈린다.
+> 한 줄 요약: `HashMap.put`, `TreeMap.put`, `putIfAbsent()`를 한 카드에 놓고 보면 "구현체 선택"과 "덮어쓰기 정책 선택"이 다른 축이라는 점이 보이고, `put()`과 `putIfAbsent()`의 반환값과 호출 뒤 현재 상태까지 같이 보면 `Map` 갱신 API 전체가 덜 헷갈린다.
 
 **난이도: 🟢 Beginner**
 
@@ -16,7 +16,7 @@
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Hash Table Basics](../../data-structure/hash-table-basics.md)
 
-retrieval-anchor-keywords: java map put vs putifabsent vs computeifabsent vs merge, hashmap put vs treemap put vs putifabsent, hashmap overwrite rules beginner, treemap overwrite rules beginner, map value overwrite when, putifabsent 언제 써, computeifabsent 뭐가 달라, merge 덮어쓰기 규칙, map k list v accumulation beginner, computeifabsent list add pattern, same key multiple values java map, 자바 map 값 있으면 덮어쓰나, 자바 map 없을 때만 넣기, hashmap treemap put 차이 헷갈, 처음 map overwrite policy
+retrieval-anchor-keywords: java map put vs putifabsent vs computeifabsent vs merge, hashmap put vs treemap put vs putifabsent, hashmap overwrite rules beginner, treemap overwrite rules beginner, map value overwrite when, putifabsent return value what means, put vs putifabsent return value difference, putifabsent 언제 써, computeifabsent 뭐가 달라, merge 덮어쓰기 규칙, 자바 putifabsent 반환값 뭐예요, 자바 map 값 있으면 덮어쓰나, 자바 map 없을 때만 넣기, hashmap treemap put 차이 헷갈, 처음 map overwrite policy
 
 ## 핵심 개념
 
@@ -88,16 +88,33 @@ sortedScores.put("alice", 20);      // 여기서도 20으로 덮어쓰기
 
 `null`이 들어갈 수 있는 `Map`에서는 "key는 있는데 값이 비어 있는 상태"도 따로 생각해야 덜 헷갈린다. 이 표만 기억해도 `putIfAbsent()`와 `computeIfAbsent()`를 `put()`처럼 잘못 쓰는 일이 줄어든다.
 
+## `put()`과 `putIfAbsent()` 반환값까지 같이 읽기
+
+초보자가 많이 놓치는 지점은 "`putIfAbsent()`도 뭘 돌려주지?"다. 둘 다 **호출 전 상태를 읽게 해 주는 반환값**이 있지만, 호출 뒤 현재 상태는 다르게 바뀐다.
+
+| 호출 전 상태 | `put(k, v)` 반환값 | 호출 뒤 현재 값 | `putIfAbsent(k, v)` 반환값 | 호출 뒤 현재 값 |
+|---|---|---|---|---|
+| key가 없음 | `null` | `v`로 저장됨 | `null` | `v`로 저장됨 |
+| key에 기존 값 `old`가 있음 | `old` | `v`로 덮어씀 | `old` | `old` 유지 |
+| key는 있는데 값이 `null`임 | `null` | `v`로 덮어씀 | `null` | `v`로 채움 |
+
+여기서 한 줄로 읽으면 된다.
+
+- `put()` 반환값은 "덮어쓰기 전 값이 뭐였나?"
+- `putIfAbsent()` 반환값은 "이미 값이 있었나, 아니면 이번에 내가 채웠나?"
+
+주의할 점도 하나 있다. `HashMap`처럼 `null` value를 허용하는 구현에서는 두 메서드 모두 `null`을 돌려줄 때 해석이 한 번 더 필요하다. 이 `null`은 "원래 key가 없었다"일 수도 있고, "원래 값이 `null`이었다"일 수도 있다.
+
 ## 작은 예제로 같이 보기
 
 ```java
 Map<String, Integer> scores = new HashMap<>();
 
-scores.put("alice", 10);                         // alice = 10
-scores.put("alice", 20);                         // alice = 20
+Integer p1 = scores.put("alice", 10);           // p1 = null, alice = 10
+Integer p2 = scores.put("alice", 20);           // p2 = 10, alice = 20
 
-scores.putIfAbsent("alice", 30);                 // 그대로 20
-scores.putIfAbsent("bob", 30);                   // bob = 30
+Integer p3 = scores.putIfAbsent("alice", 30);   // p3 = 20, alice = 20
+Integer p4 = scores.putIfAbsent("bob", 30);     // p4 = null, bob = 30
 
 scores.computeIfAbsent("alice", k -> 40);        // 그대로 20
 scores.computeIfAbsent("charlie", k -> 40);      // charlie = 40
@@ -106,11 +123,12 @@ scores.merge("alice", 5, Integer::sum);          // 20 + 5 = 25
 scores.merge("daisy", 5, Integer::sum);          // daisy = 5
 ```
 
-읽는 포인트는 네 줄이면 충분하다.
+읽는 포인트는 다섯 줄이면 충분하다.
 
-- `put()`은 `"alice"`를 10에서 20으로 바로 바꿨다
-- `putIfAbsent()`는 `"alice"`를 건드리지 않았다
-- `computeIfAbsent()`도 `"alice"`를 건드리지 않았다
+- 첫 `put()`은 원래 값이 없어서 `null`을 돌려주고 `"alice"`를 10으로 저장했다
+- 두 번째 `put()`은 이전 값 10을 돌려주고 `"alice"`를 20으로 덮어썼다
+- `putIfAbsent("alice", 30)`은 현재 값 20을 돌려주고 상태는 그대로 유지했다
+- `putIfAbsent("bob", 30)`은 `null`을 돌려주고 `"bob"`를 새로 채웠다
 - `merge()`는 `"alice"`를 유지하는 대신 20과 5를 합쳐 25로 갱신했다
 
 ## 언제 어떤 API를 고르나

@@ -7,6 +7,7 @@
 관련 문서:
 
 - [인덱스 기초](./index-basics.md)
+- [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md)
 - [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md)
 - [PostgreSQL `Seq Scan`, `Index Scan`, `Bitmap Heap Scan`, `Index Only Scan` 한 장 카드](./postgresql-plan-node-mini-card.md)
 - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
@@ -112,11 +113,22 @@ retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs 
 
 | 지금 보이는 신호 | 먼저 볼 문서 | 바로 이어서 볼 문서 |
 | --- | --- | --- |
-| "`key = NULL`이 보여요" | [인덱스와 실행 계획](./index-and-explain.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
-| "`Using filesort`가 보여요" | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
-| "`Using temporary`가 보여요" | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md) |
+| "`key = NULL`이 보여요" | [MySQL `EXPLAIN`에서 `key = NULL`이 보여요](./mysql-explain-key-null-beginner-card.md) | [인덱스 기초](./index-basics.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| "`type = ALL`이 보여요" | [MySQL `EXPLAIN`에서 `type = ALL`이 보여요](./mysql-explain-type-all-beginner-card.md) | [MySQL `EXPLAIN`에서 `key = NULL`이 보여요](./mysql-explain-key-null-beginner-card.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| "`Using filesort`가 보여요" | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md) | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md), [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
+| "`Using temporary`가 보여요" | [MySQL `EXPLAIN`에서 `Using temporary`가 보여요](./mysql-explain-using-temporary-beginner-card.md) | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md), [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md) |
 | "`rows가 너무 커 보여요`" | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 | PostgreSQL에서 `actual rows`, `Buffers`, `Heap Fetches`가 헷갈림 | [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md) | [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md) |
+
+## `Using filesort` 초보자 follow-up
+
+`Using filesort`만 따로 보였을 때는 초보자 해석과 follow-up을 아래처럼 고정해 두면 retrieval 경로가 덜 흔들린다.
+
+| 단계 | 먼저 던질 질문 | 갈 문서 |
+| --- | --- | --- |
+| 1차 mini-card | "인덱스를 못 탄 건가, 아니면 정렬만 따로 하는 건가?" | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md) |
+| 2차 beginner follow-up | "`WHERE`와 `ORDER BY` 축이 복합 인덱스 순서와 맞나?" | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) |
+| 3차 advanced follow-up | filesort를 허용해도 되는지, temporary/ICP와 함께 읽어야 하는지 | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
 
 ## 처음 읽는 4칸
 

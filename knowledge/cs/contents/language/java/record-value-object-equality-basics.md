@@ -1,6 +1,6 @@
 # Record and Value Object Equality
 
-> 한 줄 요약: `record`는 "이 필드들이 곧 값이다"를 선언할 때 잘 맞고, 시간에 따라 상태가 바뀌는 entity에는 기본 선택이 아니다.
+> 한 줄 요약: `record`는 "이 필드들이 곧 값이다"를 선언할 때 잘 맞고, 시간에 따라 상태가 바뀌는 entity에는 기본 선택이 아니다. sorted collection, comparator, `BigDecimal` 정책은 첫 읽기 뒤 follow-up으로 넘긴다.
 
 **난이도: 🟢 Beginner**
 
@@ -29,6 +29,17 @@ retrieval-anchor-keywords: java record equality, java record equals hashcode, re
 
 - `record`: 같은 값이면 같은 것으로 봐도 되는 타입
 - entity: 시간이 지나도 같은 대상을 추적해야 하는 타입
+
+## 처음엔 여기까지만 잡으면 된다
+
+`record` beginner 문서에서 가장 흔한 scope creep은 "`record`도 배웠으니 comparator, `TreeMap`, `BigDecimal`, serialization까지 한 번에 봐야 하나요?"로 번지는 것이다.
+
+이 문서에서는 아래 두 질문만 먼저 붙이면 충분하다.
+
+1. 이 타입이 "현재 필드 값이 곧 의미"인 value object인가?
+2. component가 배열이나 가변 컬렉션처럼 equality를 흔들 수 있는가?
+
+정렬 기준 충돌, 금액 canonicalization, 직렬화 진화는 모두 다음 한 칸 주제다.
 
 ## `record`의 `equals()`/`hashCode()`는 무엇을 보나
 
@@ -105,6 +116,15 @@ System.out.println(
 ```
 
 배열은 내용이 같아 보여도 바로 값 비교가 되지 않을 수 있다. "왜 `record`인데 false지?"가 보이면 `record` 자체보다 component 타입의 equality를 먼저 본다.
+
+## 증상별로 다음 문서 고르기
+
+| 지금 보이는 증상 | 이 문서에서 먼저 결론낼 것 | 다음 문서 |
+|---|---|---|
+| "`record`인데 왜 `equals()`가 false지?" | component 타입이 배열/가변 값인지 확인 | [Java Array Equality Basics](./java-array-equality-basics.md) |
+| "`HashSet`/`HashMap`에 넣었더니 조회가 흔들린다" | component 또는 key가 mutable한지 확인 | [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md) |
+| "`TreeSet`/`TreeMap`에서 결과가 다르다" | 이 문서는 해시 기준까지만 본다고 선 긋기 | [Comparator Consistency With `equals()` Bridge](./comparator-consistency-with-equals-bridge.md) |
+| "`BigDecimal` component도 그냥 같다고 보면 되나요?" | 금액 동등성 정책은 별도라고 분리 | [Record component로 `BigDecimal`을 써도 되나요?](./record-bigdecimal-component-faq.md) |
 
 ## `record` 안에서 안전하게 시작하는 방법
 

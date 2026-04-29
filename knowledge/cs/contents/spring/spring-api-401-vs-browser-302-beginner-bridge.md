@@ -15,7 +15,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, fetch 401 대신 302, browser page 302 login spring, spring mixed mvc app auth failure, authenticationentrypoint beginner, accessdeniedhandler beginner, exceptiontranslationfilter 처음, form login api separation spring, 처음 배우는데 401 302 차이, spring browser redirect api json, login page redirect vs api error, 왜 login 갔다가 다시 와요, requestcache 뭐예요
+retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, api인데 로그인 html 와요, fetch 401 대신 302, api인데 302 /login 보여요, spring mixed mvc app auth failure, authenticationentrypoint beginner, response contract split, exceptiontranslationfilter 처음, form login api separation spring, 처음 배우는데 401 302 차이, spring browser redirect api json, login page redirect vs api error, 왜 api가 login으로 가요
 
 ## 핵심 개념
 
@@ -30,6 +30,25 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 - JSON API: `401 Unauthorized`
 
 입문자가 자주 헷갈리는 이유는 둘 다 결국 "인증 실패"인데, 하나는 이동이고 하나는 데이터 응답이라 모양이 완전히 다르게 보이기 때문이다.
+
+## 첫 분기 고정 라벨
+
+이 문서는 Spring Security beginner 사다리에서 `response-contract-split` 라벨을 맡는다.
+즉 "`아직 인증 안 됨`인데 왜 브라우저는 `302`, API는 `401`처럼 보이지?"를 먼저 본다.
+
+| 검색하거나 바로 말하는 증상 | 먼저 붙일 고정 라벨 | 지금 바로 던질 질문 | safe next doc |
+|---|---|---|---|
+| "`브라우저는 302인데 API는 401이에요`", "`브라우저랑 API가 다르게 보여요`" | `response-contract-split` | "누가 이 응답을 읽는가: 페이지 이동인가, JSON 계약인가?" | 이 문서 계속 |
+| "`/admin`이 바로 `302 /login`으로 가요" | `pre-login-302` | "아직 비로그인이라 로그인 전 `주소 메모`를 남기는 갈래인가?" | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) |
+| "`api인데 로그인 html 와요`", "`fetch(\"/api/me\")`가 `401` 대신 login HTML이나 `302`를 받아요" | `response-contract-split` | "API가 브라우저용 redirect 계약을 잘못 탔나?" | 이 문서 계속 -> [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) |
+| "`로그인 성공 후 원래 URL 복귀 403`", "`복귀는 됐는데 권한 없음`" | `login-success-final-403` | "원래 URL 복귀는 끝났고 마지막 권한 검사만 남았나?" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) |
+| "`cookie 있는데 다시 로그인`", "`next request anonymous after login`" | `server persistence / session mapping` | "응답 계약보다 다음 요청 로그인 복원이 먼저 깨졌나?" | [Spring 관리자 인증에서 쿠키와 세션이 어떻게 이어지는가: 초급 primer](./spring-admin-session-cookie-flow-primer.md) |
+
+짧게 고정하면 이렇게 읽으면 된다.
+
+- `response-contract-split`: 아직 인증 안 됨인데 브라우저와 API가 서로 다른 계약으로 보인다.
+- `pre-login-302`: 브라우저 쪽 로그인 진입이 먼저 보인다.
+- `login-success-final-403`: 복귀는 성공했고 마지막 권한 실패가 남았다.
 
 ## 한눈에 보기
 
@@ -61,15 +80,15 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 
 처음 재진입은 아래 표처럼 잡으면 된다.
 
-| 지금 보이는 장면 | 먼저 붙일 라벨 | 바로 이어서 볼 문서 | 왜 그 문서로 재진입하나 |
-|---|---|---|---|
-| 브라우저 페이지가 `/login`으로 튄다 | `authenticationentrypoint` | [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md) | "아직 인증 안 됨"을 누가 `302`나 `401`로 번역하는지 핵심 책임을 다시 잡는다 |
-| `fetch("/api/me")`가 `401` 대신 login HTML이나 `302`를 받는다 | `authenticationentrypoint + chain split` | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | API가 브라우저용 entry point를 잘못 타는지 경로 분리 관점으로 바로 내려간다 |
-| 이미 로그인했는데 마지막 응답이 `403`이다 | `accessdeniedhandler` | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) | "인증 안 됨"과 "권한 부족"을 먼저 끊은 뒤 denied handler 축으로 재진입한다 |
-| 로그인 후 원래 URL로 돌아왔는데 마지막에 `403`이다 | `savedrequest 다음 denied handler` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | 복귀 자체와 마지막 권한 실패를 두 단계로 나눠 오진을 줄인다 |
+| 지금 보이는 장면 | 먼저 붙일 고정 라벨 | 내부 책임 키워드 | 바로 이어서 볼 문서 | 왜 그 문서로 재진입하나 |
+|---|---|---|---|---|
+| 브라우저 페이지가 `/login`으로 튄다 | `pre-login-302` | `authenticationentrypoint` | [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md) | "아직 인증 안 됨"을 누가 `302`나 `401`로 번역하는지 핵심 책임을 다시 잡는다 |
+| `api인데 로그인 html 와요`, `fetch("/api/me")`가 `401` 대신 login HTML이나 `302`를 받는다 | `response-contract-split` | `authenticationentrypoint + chain split` | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | API가 브라우저용 entry point를 잘못 타는지 경로 분리 관점으로 바로 내려간다 |
+| 이미 로그인했는데 마지막 응답이 `403`이다 | `plain-403` | `accessdeniedhandler` | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) | "인증 안 됨"과 "권한 부족"을 먼저 끊은 뒤 denied handler 축으로 재진입한다 |
+| 로그인 후 원래 URL로 돌아왔는데 마지막에 `403`이다 | `login-success-final-403` | `savedrequest 다음 denied handler` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | 복귀 자체와 마지막 권한 실패를 두 단계로 나눠 오진을 줄인다 |
 
-- 이 문서의 중심은 `authenticationentrypoint` 축이다.
-- `403`이 전면에 나오면 이 문서를 오래 붙잡기보다 denied handler primer로 잠깐 빠졌다가, 필요할 때만 advanced 문서로 다시 올라오는 편이 beginner-safe하다.
+- 이 문서의 라벨은 `response-contract-split`이고, 내부 키워드는 `authenticationentrypoint`다.
+- `403`이 전면에 나오면 이 문서를 오래 붙잡기보다 `plain-403` 또는 `login-success-final-403` primer로 먼저 갈아타는 편이 beginner-safe하다.
 
 ## 상세 분해
 
@@ -122,10 +141,10 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 - 처음엔 "`브라우저는 왜 `302`고 API는 왜 `401`이지?`"로 시작했다.
 - 그런데 로그나 DevTools를 더 보니 사실 마지막 실패가 `403`이었다.
 
-이때는 "`같은 인증 실패의 다른 표현`"을 더 파기보다, 질문을 바로 바꿔야 한다.
+이때는 `response-contract-split`을 더 파기보다, 라벨을 바로 갈아타야 한다.
 
-- 아직 비로그인인가 -> entry point 축
-- 이미 로그인했고 권한이 부족한가 -> denied handler 축
+- 아직 비로그인인가 -> `pre-login-302` 또는 `response-contract-split`
+- 이미 로그인했고 권한이 부족한가 -> `plain-403` 또는 `login-success-final-403`
 
 즉 `403`이 중심이면 이 문서를 계속 읽는 것보다 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)에서 `302 /login`과 `403`을 먼저 분리한 뒤, 필요할 때만 [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)로 다시 올라오는 편이 빠르다.
 
@@ -152,34 +171,34 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 - 로그인은 됨
 - 하지만 권한이 없음
 
-즉 `403`은 "`302`냐 `401`이냐"와 다른 축이다.  
+즉 `403`은 "`302`냐 `401`이냐"와 다른 축이다.
 초급자는 먼저 "`아직 인증 안 됨` vs `이미 로그인했지만 권한 없음`"을 분리한 뒤, 그다음 "`인증 안 됨`을 page 계약으로 보일지 API 계약으로 보일지"를 보면 된다.
 
 ## 다음 문서 분기
 
-이 문서 다음에는 `SavedRequest` deep dive로 바로 점프하기보다, 지금 막힌 질문을 한 번 더 잘라서 가는 편이 안전하다.
+이 문서 다음에는 `SavedRequest` deep dive로 바로 점프하기보다, 지금 막힌 질문을 고정 라벨 한 번 더 붙여서 가는 편이 안전하다.
 
-| 지금 가장 막히는 질문 | 다음 문서 | 왜 그 문서가 먼저인가 |
-|---|---|---|
-| "`/api/**`는 `401`, `/admin/**`는 `302 /login`으로 실제 설정을 어떻게 나눠요?" | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | 이 문서의 `브라우저 계약 vs API 계약`을 실제 체인 분리 설정으로 옮기는 다음 단계다 |
-| "`/admin`이 `302 /login`으로 갔다가 로그인 후 다시 돌아오는데 마지막엔 `403`이 나요" | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | `원래 URL 복귀`와 `최종 권한 실패`를 먼저 두 단계로 끊어야 `RequestCache` 오진입을 줄일 수 있다 |
-| "`왜 로그인 후 원래 주소로 다시 가요?`, `SavedRequest`가 뭐예요?" | [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) | 여기서부터는 `redirect / navigation memory` 축을 깊게 보는 advanced follow-up이다 |
+| 지금 가장 막히는 질문 | 먼저 붙일 고정 라벨 | 다음 문서 | 왜 그 문서가 먼저인가 |
+|---|---|---|---|
+| "`/api/**`는 `401`, `/admin/**`는 `302 /login`으로 실제 설정을 어떻게 나눠요?" | `response-contract-split` | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | 이 문서의 `브라우저 계약 vs API 계약`을 실제 체인 분리 설정으로 옮기는 다음 단계다 |
+| "`/admin`이 `302 /login`으로 갔다가 로그인 후 다시 돌아오는데 마지막엔 `403`이 나요" | `login-success-final-403` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | `원래 URL 복귀`와 `최종 권한 실패`를 먼저 두 단계로 끊어야 `RequestCache` 오진입을 줄일 수 있다 |
+| "`왜 로그인 후 원래 주소로 다시 가요?`, `SavedRequest`가 뭐예요?" | `redirect / navigation memory` | [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) | 여기서부터는 `redirect / navigation memory` 축을 깊게 보는 advanced follow-up이다 |
 
-- 짧게 고정하면 이 순서다: `401 vs 302 계약 구분` -> 필요하면 `final 403 primer` -> 그다음에만 `RequestCache / SavedRequest` deep dive.
+- 짧게 고정하면 이 순서다: `response-contract-split` -> 필요하면 `login-success-final-403` -> 그다음에만 `redirect / navigation memory` deep dive.
 - 특히 "`로그인 성공 후 원래 /admin 으로 복귀했는데 마지막에 403`"처럼 `SavedRequest`와 권한 실패가 한 문장에 같이 보이면 advanced 문서보다 `final 403 primer`를 먼저 보는 편이 beginner-safe하다.
 
 ## 흔한 오해와 함정
 
-- "`302 /login`이면 무조건 브라우저 쪽 문제다"라고 생각하기 쉽다.  
+- "`302 /login`이면 무조건 브라우저 쪽 문제다"라고 생각하기 쉽다.
   실제로는 API 경로에 form login용 entry point가 섞였다는 Spring 설정 문제일 수 있다.
 
-- "`401`이 더 HTTP스럽으니 페이지도 전부 `401`로 통일해야 한다"라고 생각하기 쉽다.  
+- "`401`이 더 HTTP스럽으니 페이지도 전부 `401`로 통일해야 한다"라고 생각하기 쉽다.
   브라우저 화면 흐름에서는 로그인 페이지 이동 UX가 더 자연스러울 수 있다.
 
-- "`302`와 `401`은 전혀 다른 원인이다"라고 생각하기 쉽다.  
+- "`302`와 `401`은 전혀 다른 원인이다"라고 생각하기 쉽다.
   같은 "인증 안 됨"을 서로 다른 클라이언트 계약으로 표현한 결과일 수 있다.
 
-- "`fetch`가 login HTML을 받았으니 컨트롤러가 HTML을 반환했다"라고 생각하기 쉽다.  
+- "`fetch`가 login HTML을 받았으니 컨트롤러가 HTML을 반환했다"라고 생각하기 쉽다.
   실제로는 컨트롤러 전에 Spring Security가 redirect를 만들고, 브라우저가 그 결과를 따라간 것일 수 있다.
 
 ## 실무에서 쓰는 모습

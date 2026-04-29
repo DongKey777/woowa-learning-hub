@@ -2,15 +2,17 @@
 
 > 한 줄 요약: 브라우저는 보통 cookie session과 BFF를 통해 로그인 상태를 전달하고, 모바일/API는 bearer token을 직접 보내는 경우가 많아서 같은 인증이라도 상태 위치, 위협 모델, 운영 방식이 달라진다.
 
-retrieval-anchor-keywords: browser bff session boundary primer, cookie session, session cookie, opaque session cookie, browser auth path, mobile auth path, api token flow, bearer token flow, bff token translation, backend for frontend auth, browser cookie vs mobile token, browser auth vs api auth, server-side refresh token, session revocation basics, beginner system design auth
+retrieval-anchor-keywords: browser bff session boundary primer, cookie session, session cookie, opaque session cookie, browser auth path, mobile auth path, api token flow, bearer token flow, bff token translation, backend for frontend auth, browser cookie vs mobile token, browser auth vs api auth, server-side refresh token, cookie 있는데 서버 token 뭐예요, bff 뭐예요
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
-- `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+- `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md)
+- `[primer]` [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md)
 - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 - `[primer bridge]` [Auth Session Troubleshooting Bridge (`SavedRequest loop` / `cookie-missing` / `server-anonymous`)](./README.md#system-design-auth-session-troubleshooting-bridge)
+- `[follow-up comparison]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 - `[primer]` [Stateless Sessions Primer](./stateless-sessions-primer.md)
 - `[primer]` [Session Revocation Basics](./session-revocation-basics.md)
 - `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)
@@ -30,22 +32,23 @@ browser/session bridge 문서에서 공통으로 쓰는 mini decision matrix다.
 | `Application > Cookies`에는 값이 있는데 같은 실패 요청의 request `Cookie` header가 비어 있음 | `전송 / cookie-missing` branch다. `cookie-not-sent`는 retrieval alias다 | [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
 | request `Cookie` header는 붙어 있는데도 raw `401` 또는 `302 -> /login`이 반복됨 | `조회 / server-anonymous` branch다 | 이 문서 |
 
-## 막히면 여기로 돌아오기: Beginner 3단계 사다리
+## 막히면 여기로 돌아오기: Beginner 4단계 사다리
 
 초보자용 mental model은 `기억 -> 전송 -> 조회`다.
-session-store 문서로 바로 내려가지 말고 먼저 증상을 세 갈래로 고정한다.
+session-store 문서로 바로 내려가지 말고 먼저 기본 primer와 증상 branch를 고정한다.
 
 | 단계 | 문서 | 지금 확정할 것 |
 |---|---|---|
-| 1. primer | [Browser BFF Session Boundary Primer](./browser-bff-session-boundary-primer.md) | browser cookie와 BFF token translation의 큰 그림 |
-| 2. primer bridge | [Auth Session Troubleshooting Bridge](./README.md#system-design-auth-session-troubleshooting-bridge) | `SavedRequest loop`(기억) / `cookie-missing`(전송) / `server-anonymous`(조회) 중 어디인지 |
-| 3. deep dive | [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md), [Session Store Design at Scale](./session-store-design-at-scale.md) | 2단계에서 `server-anonymous` 증거가 잡혔을 때만 session-store로 내려가기 |
+| 1. broad primer | [Cookie / Session / JWT 브라우저 흐름 입문](../network/cookie-session-jwt-browser-flow-primer.md) -> [세션·쿠키·JWT 기초](../security/session-cookie-jwt-basics.md) | cookie는 운반 수단이고 session/JWT는 복원 방식이라는 큰 그림 |
+| 2. symptom primer bridge | [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) | `SavedRequest loop`(기억) / `cookie-missing`(전송) / `server-anonymous`(조회) 중 어디인지 |
+| 3. cross-category bridge | 이 문서 | browser cookie와 BFF token translation이 왜 다른 층위인지 |
+| 4. deep dive | [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md), [Session Store Design at Scale](./session-store-design-at-scale.md) | 2단계에서 `server-anonymous` 증거가 잡히고 3단계 큰 그림도 맞췄을 때만 session-store로 내려가기 |
 
-## 막히면 여기로 돌아오기: Beginner 3단계 사다리 (계속 2)
+## 막히면 여기로 돌아오기: Beginner 4단계 사다리 (계속 2)
 
 `SavedRequest loop`로 확정되면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) 순서로 간다. 이때 browser/session 계열의 `safe next step`은 security README의 [Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)에서 초보자 branch 이름을 먼저 맞춘 뒤 [Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 넘어가는 것이다.
 `cookie-missing`으로 확정되면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)를 먼저 본다.
-`server-anonymous`로 확정되면 [Stateless Sessions Primer](./stateless-sessions-primer.md)로 돌아가 local session 복원과 downstream token translation을 먼저 다시 맞춘다.
+`server-anonymous`로 확정되면 이 문서에서 browser cookie와 server-side token translation이 다른 층위라는 점을 먼저 맞춘 뒤 [Stateless Sessions Primer](./stateless-sessions-primer.md)와 [Browser / BFF Token Boundary / Session Translation](../security/browser-bff-token-boundary-session-translation.md)로 내려간다.
 
 ---
 

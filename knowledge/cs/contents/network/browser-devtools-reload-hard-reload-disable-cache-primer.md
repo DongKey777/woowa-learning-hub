@@ -15,12 +15,13 @@
 - [Security: Session / Cookie / JWT basics](../security/session-cookie-jwt-basics.md)
 - [카테고리 README](./README.md#브라우저--쿠키--캐시에서-막히면-여기서-시작)
 
-retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard reload, disable cache reload effect, reload basics, devtools reload cache, cache trace primer, chrome hard reload, edge hard reload, browser refresh vs hard refresh, empty cache hard reload meaning, disable cache checkbox meaning, 일반 새로고침 하드 새로고침 차이, 캐시 비우고 새로고침, 처음 배우는데 reload 차이
+retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard reload, disable cache reload effect, disable cache service worker state, disable cache cache storage, devtools reload cache, chrome hard reload, browser refresh vs hard refresh, empty cache hard reload meaning, disable cache checkbox meaning, disable cache clears service worker, disable cache 뭐예요, 처음 배우는데 disable cache service worker, 왜 disable cache인데 from serviceworker
 
 <details>
 <summary>Table of Contents</summary>
 
 - [먼저 잡는 멘탈 모델](#먼저-잡는-멘탈-모델)
+- [`Disable cache`가 지우지 않는 것](#disable-cache가-지우지-않는-것)
 - [이 문서가 일부러 미루는 질문](#이-문서가-일부러-미루는-질문)
 - [같은 URL 1분 분기표](#같은-url-1분-분기표)
 - [reload 모드와 진짜 cache 정책을 분리하는 1표](#reload-모드와-진짜-cache-정책을-분리하는-1표)
@@ -63,6 +64,26 @@ retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard relo
 - reload는 주로 `body를 다시 받았나` 질문을 흔든다.
 - cookie/session은 `누가 로그인했나` 질문이다.
 - 둘이 동시에 보여도 같은 버튼 효과로 묶지 않는다.
+
+## `Disable cache`가 지우지 않는 것
+
+여기서 초급자가 특히 많이 오해하는 문장은 "`Disable cache` 켰으니 Service Worker도 지워졌죠? Cache Storage도 비워졌죠?"다. 보통 아니다.
+
+`Disable cache`는 **DevTools가 열린 동안 HTTP cache 재사용을 덜 보게 만드는 실험 스위치**에 가깝고, Service Worker 등록 상태나 Application 탭의 Cache Storage entry를 자동으로 비우는 버튼으로 읽으면 빠르다.
+
+| 내가 헷갈린 대상 | `Disable cache` ON이 보통 하는 일 | 보통 하지 않는 일 | 어디서 따로 확인하나 |
+|---|---|---|---|
+| HTTP cache | 같은 URL의 cache hit 관찰을 흔든다 | 서버 cache 정책 자체를 바꾸지 않는다 | Network row, `Cache-Control`, `ETag`, `304` |
+| Service Worker 등록/개입 | SW가 있어도 HTTP cache 실험과 별도로 남아 있을 수 있다 | 등록 해제, scope 삭제, fetch handler 제거 | Application > Service Workers, `from ServiceWorker` row |
+| Cache Storage | entry가 보여도 그대로 남아 있을 수 있다 | Cache Storage key 자동 삭제 | Application > Cache Storage |
+
+짧게 외우면 아래 3줄이면 된다.
+
+- `Disable cache` = HTTP cache 실험 스위치
+- Service Worker 등록 상태 = 별도 축
+- Cache Storage entry 존재 여부 = 또 다른 별도 축
+
+그래서 `Disable cache` ON인데도 `from ServiceWorker`가 보이거나, Application 탭에 Cache Storage key가 그대로 남아 있어도 모순이 아니다. 이 장면은 "`Disable cache`가 안 먹었다"보다 "`HTTP cache 실험`과 `SW/Cache Storage 상태`를 같은 상자로 읽었다" 쪽에 더 가깝다.
 
 ## 이 문서가 일부러 미루는 질문
 

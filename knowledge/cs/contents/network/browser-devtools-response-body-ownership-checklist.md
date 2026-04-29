@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Browser Asset `404` vs API `404` Mix-up Mini Card](./browser-asset-404-vs-api-404-mixup-mini-card.md)
 - [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)
 - [CDN Error HTML vs App Error JSON Decision Card](./cdn-error-html-vs-app-json-decision-card.md)
 - [Gateway Default HTML First-Line Card](./gateway-default-html-first-line-card.md)
@@ -13,11 +14,12 @@
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
+- [Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge](./spring-404-problemdetail-framework-vs-domain-bridge.md)
 - [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: devtools response body ownership, gateway json vs app json, proxy json error devtools, login html instead of json, gateway default page devtools, response preview checklist, api response body beginner, why html instead of json, why gateway returns json, application/json but not app, gateway problem+json vs app error contract, vendor error envelope example, 처음 devtools body, 헷갈리는 login html, browser devtools response owner
+retrieval-anchor-keywords: devtools response body ownership, gateway json vs app json, proxy json error devtools, login html instead of json, fetch got login html 200, gateway default page devtools, response preview checklist, api response body beginner, why html instead of json, application/json but not app, gateway problem+json vs app error contract, 헷갈리는 login html, final url vs original url devtools, gateway html vs login html, app html vs login html
 
 ## 핵심 개념
 
@@ -55,7 +57,34 @@ login form/html + /login 흔적 -> auth/login HTML 후보
 짧은 Bad Gateway/Gateway Timeout html -> gateway 기본 페이지 후보
 ```
 
+`200 text/html` 장면에서는 10초 cue를 하나 더 붙인다.
+
+- original request URL이 `/api/**`
+- final URL이 `/login`
+- body가 login form HTML
+
+이 조합이면 지금 보는 `200`은 성공 결과보다 redirect 도착점일 가능성이 크다.
+
 `502`/`504` JSON에서 `title/detail/status`와 `errorCode/message/traceId`를 30초 안에 가르고 싶다면 [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)를 바로 붙여 읽으면 된다.
+
+## HTML body owner 15초 브리지
+
+login HTML `200` 증상을 본 뒤 가장 자주 생기는 두 번째 오진은 "`text/html`이면 다 같은 HTML"이라고 읽는 것이다.
+초급자 first pass에서는 아래 3가지만 분리해도 출발점이 크게 달라진다.
+
+| HTML 증상 | 먼저 볼 단서 | owner 첫 후보 | 왜 이렇게 읽나 |
+|---|---|---|---|
+| original URL이 `/api/**`, final URL이 `/login`, preview에 `<form`, `login`, `password` | original vs final URL | redirect-follow login HTML | API가 성공한 게 아니라 auth redirect 도착점일 가능성이 크다 |
+| `502`/`504` + `text/html` + `Bad Gateway`, `Gateway Timeout` 같은 짧은 기본 문구 | status + first line | gateway 기본 HTML | upstream 실패를 proxy/gateway가 대신 말하는 장면과 잘 맞는다 |
+| `200` + `text/html`인데 final URL도 그대로고, preview가 서비스 화면/SSR 마크업 | final URL 불변 + preview 말투 | app/page HTML | login redirect보다 원래 page 응답일 가능성이 크다 |
+
+짧은 기억법은 이것이다.
+
+- `/api/** -> /login`이면 login HTML 후보
+- `502/504 + 기본 문구`면 gateway HTML 후보
+- final URL이 그대로면 app HTML 후보를 같이 연다
+
+이 브리지는 "HTML이 왔다"에서 멈추지 않고, **redirect-follow login HTML인지, gateway 기본 HTML인지, 원래 app/page HTML인지**를 15초 안에 나누기 위한 것이다.
 
 ## 1분 체크리스트
 
@@ -137,6 +166,7 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 ## payload 미니 예시 3개
 
 처음 질문은 "JSON이면 다 app 에러 아닌가요?"다. 아래 3개를 나란히 보면 **필드 말투**가 다르다.
+헤더 카드에서 넘어왔다면 여기서는 `Server`/`Via` 가설을 payload 말투로 확인한다고 생각하면 된다.
 
 | 장면 | payload 예시 | 초급자 첫 해석 |
 |---|---|---|
@@ -144,9 +174,9 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 | gateway generic `problem+json` | `{ "type": "about:blank", "title": "Gateway Timeout", "status": 504, "detail": "Upstream service did not respond in time." }` | `type/title/status/detail`만 있고 `504`면 app보다 gateway local reply 후보를 같이 연다 |
 | vendor/gateway envelope | `{ "error": "upstream_failure", "reason": "connection reset before headers", "request_id": "gw-12ab34cd", "upstream": "order-service" }` | `reason`, `request_id`, `upstream`가 먼저 보이면 운영용 gateway/vendor envelope 후보가 강하다 |
 
-짧게 외우면 `errorCode/message/traceId -> app`, `type/title/status/detail -> generic problem+json`, `error/reason/request_id -> vendor envelope`이다. 그래도 필드만 보지 말고 **status와 `Server`/`Via`를 같이 묶어 owner를 본다**.
+짧게 외우면 `errorCode/message/traceId -> app`, `type/title/status/detail -> generic problem+json`, `error/reason/request_id -> vendor envelope`이다. 그래도 필드만 보지 말고 **status와 `Server`/`Via`를 같이 묶어 owner를 본다**. `gateway도 JSON을 주나요?`, `이 problem+json이 Spring이 만든 건가요?`가 바로 다음 질문이면 [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)로 이어 가면 된다. `404 problem+json`의 `No static resource`는 [Browser Asset `404` vs API `404` Mix-up Mini Card](./browser-asset-404-vs-api-404-mixup-mini-card.md)와 [Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge](./spring-404-problemdetail-framework-vs-domain-bridge.md)에서 한 번 더 자른다.
 
-## HTML owner를 이렇게 읽는다
+## Login HTML owner를 이렇게 읽는다
 
 ### 3. login HTML
 
@@ -164,6 +194,22 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 ```
 
 즉 owner를 "원래 API"로 잡기보다 "브라우저가 따라간 login page"로 먼저 잡는 편이 안전하다.
+
+여기서 learner의 첫 질문이 "`왜 JSON 대신 HTML이 왔지?`"라면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)이 가장 안전한 첫 primer다.
+이미 auth failure 표면(`401`/`302`/login HTML)을 같이 보고 있다면 [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)으로 이어 붙이면 된다.
+
+짧은 메모 템플릿은 이렇게 남기면 된다.
+
+```text
+original: /api/me
+final: /login
+final content-type: text/html
+=> api success가 아니라 login redirect 도착점 후보
+```
+
+redirect-follow login HTML을 더 빨리 분리하고 싶다면 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)를 바로 붙여 읽는 편이 안전하다.
+
+## CDN/gateway HTML owner를 이렇게 읽는다
 
 ### 4. CDN 에러 HTML
 
@@ -229,7 +275,10 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 ## 더 깊이 가려면
 
 - login HTML `200`이 왜 API 성공이 아닐 수 있는지 이어서 보려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
+- hidden login HTML `200`을 `401 JSON`, `302 /login`과 한 묶음으로 다시 고르려면 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
+- "`왜 HTML이 왔는지`"보다 "`이게 auth failure 표면인지`"를 먼저 보고 싶다면 [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)
 - `502`/`504`에서 gateway 기본 페이지와 app 실패를 더 정확히 가르려면 [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
+- gateway `problem+json`과 app `ProblemDetail`을 먼저 가르려면 [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)
 - auth failure가 `401`/`403`, `302`, login HTML `200`으로 어떻게 달라 보이는지 보려면 [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)
 - header 기준으로 CDN/proxy/app 흔적을 더 붙여 읽고 싶으면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - browser page auth UX와 raw auth 계약 차이를 보려면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
@@ -237,13 +286,13 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 
 ## 면접/시니어 질문 미리보기
 
-**Q. DevTools에서 HTML body가 보이면 왜 먼저 owner를 가려야 하나요?**  
+**Q. DevTools에서 HTML body가 보이면 왜 먼저 owner를 가려야 하나요?**
 같은 `text/html`이어도 login page, CDN error page, gateway 기본 페이지가 모두 섞여 보일 수 있어서, owner를 틀리면 조사 시작점이 완전히 달라진다.
 
-**Q. login HTML `200`은 왜 API 성공으로 읽으면 안 되나요?**  
+**Q. login HTML `200`은 왜 API 성공으로 읽으면 안 되나요?**
 보호된 API가 먼저 `302`로 `/login`으로 보냈고, 브라우저가 그 redirect를 따라간 최종 page일 수 있기 때문이다.
 
-**Q. `502`/`504`에서 response preview가 짧은 기본 HTML이면 무엇을 뜻하나요?**  
+**Q. `502`/`504`에서 response preview가 짧은 기본 HTML이면 무엇을 뜻하나요?**
 app JSON 에러보다 gateway/proxy가 upstream 문제를 대신 말한 기본 페이지 후보가 크다는 뜻이다.
 
 ## 한 줄 정리

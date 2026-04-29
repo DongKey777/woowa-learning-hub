@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 질문이 한 영역만 건드리지 않을 때, 어떤 카테고리를 먼저 읽고 어떤 문서를 같이 묶어야 하는지 정리한 교차 연결 지도다.
 
+**난이도: 🟢 Beginner**
+
 > 관련 문서:
 > - [Query Playbook](./query-playbook.md)
 > - [Navigation Taxonomy](./navigation-taxonomy.md)
@@ -86,6 +88,7 @@
 | `data-structure` | `algorithm`, `database` | `data-structure/README.md`, `hashmap-internals.md`, `lru-cache-design.md` |
 | `system-design` | `database`, `security` | `payment-system-ledger-idempotency-reconciliation-design.md`, `idempotency-key-and-deduplication.md`, `service-to-service-auth-mtls-jwt-spiffe.md` |
 | `algorithm` | `data-structure`, `system-design` | `algorithm/README.md`, `sliding-window-patterns.md`, `topological-sort-patterns.md` |
+| `algorithm`, `design-pattern`, `system-design` | `software-engineering` | `algorithm/README.md#bfs-queue-map-먼저-분리하기`, `command-pattern-undo-queue.md`, `message-queue-basics.md`, `software-engineering/README.md#연결해서-보면-좋은-문서-cross-category-bridge` |
 
 ## 브리지 예시
 
@@ -148,6 +151,28 @@
 1. [Spring EventListener, TransactionalEventListener, Outbox](../contents/spring/spring-eventlistener-transaction-phase-outbox.md)
 2. [Domain Events, Outbox, Inbox](../contents/software-engineering/outbox-inbox-domain-events.md)
 3. [Outbox, Saga, Eventual Consistency](../contents/database/outbox-saga-eventual-consistency.md)
+
+### Algorithm + Design Pattern + System Design + Software Engineering
+
+질문 예시:
+
+`queue가 왜 알고리즘, Command 패턴, 메시지 큐에서 다 나와요? 처음엔 어디서 끊어 읽어야 해요?`
+
+읽는 순서:
+
+1. [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../contents/algorithm/README.md#bfs-queue-map-먼저-분리하기)
+2. [커맨드 패턴 기초](../contents/design-pattern/command-pattern-basics.md)
+3. [Per-Key Queue vs Direct API Primer](../contents/system-design/per-key-queue-vs-direct-api-primer.md)
+4. [메시지 큐 기초](../contents/system-design/message-queue-basics.md)
+5. [Software Engineering README - 연결해서 보면 좋은 문서](../contents/software-engineering/README.md#연결해서-보면-좋은-문서-cross-category-bridge)
+
+짧은 mental model:
+
+- `가까운 칸부터`, `visited`면 알고리즘 queue다.
+- `실행 요청을 나중에 실행`, `undo/redo`면 command queue다.
+- `왜 어떤 요청은 API로 끝내고 어떤 요청은 큐로 보내요?`면 direct API vs per-key queue를 먼저 자른다.
+- `producer/consumer`, `비동기 후처리`면 메시지 큐다.
+- 아직 한 문장을 못 자르겠으면 software-engineering bridge로 돌아가 `계산 규칙`과 `서비스 책임`을 먼저 나눈다.
 
 ### System Design + Database + Security
 
@@ -422,14 +447,21 @@ role guardrail:
 읽는 순서:
 
 1. `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](../contents/network/http-state-session-cache.md)
-2. `[primer]` [세션·쿠키·JWT 기초](../contents/security/session-cookie-jwt-basics.md)
-3. `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-4. `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
-5. `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md)
-6. `[deep dive]` [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
-7. `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
-8. `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-9. `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../contents/security/browser-bff-token-boundary-session-translation.md)
+2. `[primer]` [Cookie / Session / JWT 브라우저 흐름 입문](../contents/network/cookie-session-jwt-browser-flow-primer.md)
+3. `[primer]` [세션·쿠키·JWT 기초](../contents/security/session-cookie-jwt-basics.md)
+4. `[follow-up primer]` [인증·인가·세션 기초 흐름](../contents/security/authentication-authorization-session-foundations.md)
+5. `[follow-up]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+6. `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+7. `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md)
+8. `[deep dive]` [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
+9. `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
+10. `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+11. `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../contents/security/browser-bff-token-boundary-session-translation.md)
+
+초보자용 stop line:
+
+- `cookie`, `session`, `JWT` 정의가 아직 헷갈리면 5번 이후로 바로 내려가지 않는다.
+- `로그인됐는데 왜 403`, `token valid인데 왜 거부`가 먼저 보이면 4번에서 authn/authz를 먼저 분리하고, 그다음 필요할 때만 `401/403/404` guide나 Spring deep dive를 붙인다.
 
 증상으로 갈라지면:
 

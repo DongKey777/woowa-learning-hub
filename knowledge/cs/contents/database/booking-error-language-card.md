@@ -1,11 +1,14 @@
-# Booking Error Language Card
+# MySQL Booking Error Wording Card
 
-> 한 줄 요약: 예약 경로에서 `duplicate key`, `23P01`, `lock timeout`, `deadlock`이 보이면 "이미 같은 요청이 있다", "이미 겹치는 시간대가 있다", "지금 줄이 길다", "이번 시도만 다시 하면 된다"로 먼저 번역하면 제품 문장과 재시도 정책이 덜 흔들린다.
+> 한 줄 요약: MySQL 예약 경로에서 `1062`, `1205`, `1213`을 보면 초보자는 먼저 "이미 같은 slot이 잡혔다", "지금 guard 줄이 막혔다", "이번 시도만 다시 하면 된다"로 번역해야 slot-row 구현과 guard-row 구현의 제품 문장이 덜 섞인다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
+- [Guard Row Booking Timeline Card](./guard-row-booking-timeline-card.md)
+- [Booking Guard Row Retry Card](./booking-guard-row-retry-card.md)
 - [PostgreSQL `23P01` vs `23505` Product Language Card](./postgresql-23p01-vs-23505-product-language-card.md)
 - [Duplicate Key vs Busy Response Mapping](./duplicate-key-vs-busy-response-mapping.md)
 - [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
@@ -13,25 +16,40 @@
 - [database 카테고리 인덱스](./README.md)
 - [Inventory Reservation System Design](../system-design/inventory-reservation-system-design.md)
 
-retrieval-anchor-keywords: booking error language card, booking duplicate key 23p01 lock timeout deadlock, 예약 오류 문구 처음, booking duplicate key 뭐예요, 23p01 already booked why, lock timeout 예약 바쁨, deadlock retry booking basics, beginner booking conflict primer, 예약 중복 락 타임아웃 차이, product wording duplicate overlap timeout deadlock, booking error message what is, booking sqlstate language intro
+retrieval-anchor-keywords: mysql booking error wording card, mysql 1062 1205 1213 booking, mysql booking duplicate timeout deadlock, slot row guard row error wording, booking error language card, 예약 오류 문구 처음, mysql 1062 예약 뭐예요, mysql 1205 already booked 아니에요, mysql 1213 retry booking basics, beginner booking conflict primer, 예약 중복 락 타임아웃 차이, slot row duplicate key, guard row lock timeout, 왜 1205는 이미 예약됨이 아니에요, 처음 slot row guard row 차이
 
 ## 핵심 개념
 
-예약에서 에러 이름을 그대로 사용자 문장으로 옮기면 초보자가 가장 먼저 헷갈린다.
+예약에서 MySQL 에러 번호를 그대로 사용자 문장으로 옮기면 초보자가 가장 먼저 헷갈린다.
 
-- `duplicate key`: 같은 요청 키나 같은 slot key를 누가 먼저 차지했다
-- `23P01`: 같은 room/day/time range를 다른 예약이 이미 겹치게 차지했다
-- `lock timeout`: 누가 이겼는지 확인하기 전에 줄 서다 이번 시도가 끝났다
-- `deadlock`: 줄을 서로 반대로 잡아서 이번 시도 하나만 희생됐다
+특히 booking 구현을 아래 두 갈래로 나눠 놓지 않으면 더 쉽게 섞인다.
 
-이 문서는 "`예약 저장에서 duplicate key, 23P01, lock timeout, deadlock 차이가 뭐예요?`" 같은 질문에 바로 답하는 entrypoint다.
+- slot-row 구현: `room_id + slot_start` 같은 exact key에 `UNIQUE`를 둔다
+- guard-row 구현: `(room_type_id, stay_day)` 같은 대표 row를 먼저 잠그고 그 아래에서 재검사한다
+
+이때 MySQL에서는 보통 이런 surface가 먼저 보인다.
+
+- `1062`: 같은 요청 키나 같은 slot key winner가 이미 있다
+- `1205`: 누가 이겼는지 확인하기 전에 guard 줄에서 오래 기다렸다
+- `1213`: 줄을 서로 반대로 잡아 이번 시도 하나만 희생됐다
+- PostgreSQL `23P01`: 같은 room/day/time range가 이미 겹친다
+
+이 문서는 "`MySQL 예약 저장에서 1062, 1205, 1213 차이가 뭐예요?`", "`slot row면 왜 duplicate key가 보이고 guard row면 왜 timeout/deadlock이 보여요?`" 같은 질문에 바로 답하는 beginner bridge다.
 
 짧게 기억하면:
 
-> duplicate key = 같은 열쇠가 이미 있음
+> `1062` = 같은 slot 또는 같은 요청 winner가 이미 있음
+> `1205` = 아직 줄이 안 빠짐
+> `1213` = 이번 판만 다시
 > `23P01` = 같은 시간대가 이미 겹침
-> lock timeout = 아직 줄이 안 빠짐
-> deadlock = 이번 판만 다시
+
+## 이 문서가 먼저 맞는 질문
+
+- "`1062`가 뜨면 사용자에게 이미 예약됐다고 말해도 되나요?"
+- "`1205`가 떴는데 이게 이미 만석이라는 뜻인가요?"
+- "`1213`이 guard row 설계가 틀렸다는 뜻인가요?"
+- "slot-row 구현과 guard-row 구현에서 에러 문구를 어떻게 다르게 잡나요?"
+- "처음 booking 오류를 제품 언어로 번역하는 표가 필요해요"
 
 ## 한눈에 보기
 
@@ -44,11 +62,28 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 핵심은 하나다.
 
-`duplicate key`와 `23P01`은 둘 다 "이미 다른 누군가가 자리를 차지했다"에 가깝지만, `duplicate key`는 **같은 키 중복**, `23P01`은 **겹치는 시간 충돌**이라는 점이 다르다. 반대로 `lock timeout`과 `deadlock`은 아직 최종 상태를 사용자 문장으로 확정하기보다 `busy` 또는 `retryable`로 먼저 읽는 편이 안전하다.
+`duplicate key`와 `23P01`은 둘 다 "이미 다른 누군가가 자리를 차지했다"에 가깝지만, `duplicate key`는 **같은 키 중복**, `23P01`은 **겹치는 시간 충돌**이라는 점이 다르다. 반대로 `1205`와 `1213`은 아직 최종 상태를 사용자 문장으로 확정하기보다 `busy` 또는 `retryable`로 먼저 읽는 편이 안전하다.
+
+## slot-row 구현 vs guard-row 구현
+
+초보자가 가장 덜 헷갈리는 첫 그림은 이것이다.
+
+| 구현 | 보통 먼저 보이는 MySQL 신호 | 제품 문장 첫 후보 | 왜 이런 신호가 잘 보이나 |
+|---|---|---|---|
+| slot row + `UNIQUE` | `1062` | `이미 같은 시간 슬롯이 선점되었습니다.` | 충돌 truth를 `(room_id, slot_start)` 같은 exact key 중복으로 내렸기 때문이다 |
+| guard row + `FOR UPDATE` | `1205` | `지금 예약 요청이 몰려 잠시 후 다시 시도해 주세요.` | 먼저 줄을 세운 뒤 lock 아래에서 남은 수량이나 overlap을 재검사하기 때문이다 |
+| guard row + 여러 row/여러 day 전이 | `1213` | 보통 내부 재시도 후 결과만 노출 | old/new day나 여러 guard key를 엇갈리게 잡으면 순환 대기가 생길 수 있다 |
+
+다만 이것은 **보통의 첫 표면**이지 절대 규칙은 아니다.
+
+- guard-row 구현에도 `idempotency_key`나 guard 생성용 `UNIQUE`가 있으면 `1062`가 보일 수 있다
+- slot-row 구현도 reschedule처럼 여러 slot을 한 번에 만지면 `1205`, `1213`이 나타날 수 있다
+
+즉 "어떤 에러 번호가 나왔는가"와 "원래 어떤 충돌 surface를 설계했는가"를 같이 봐야 한다.
 
 ## 상세 분해
 
-### 1. `duplicate key`: 같은 예약 요청이 이미 있다
+### 1. MySQL `1062`: 같은 예약 요청이나 같은 slot winner가 이미 있다
 
 대표 장면:
 
@@ -62,7 +97,17 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 여기서 질문은 "겹치는 시간대인가?"보다 **"같은 key winner가 이미 있나?"** 다.
 
-### 2. `23P01`: 같은 시간대가 이미 겹친다
+slot-row 구현에서는 이 문장이 특히 잘 맞는다.
+
+- `이미 같은 시간 슬롯이 선점되었습니다.`
+- `같은 예약 요청이 이미 처리되었습니다.`
+
+중요한 caveat:
+
+- `1062`만 보고 곧바로 `already booked`로 닫지 말고, winner가 `idempotency_key` 중복인지 실제 slot 중복인지 한 번 더 본다
+- 같은 `1062`라도 `idempotency_key`면 replay가 자연스럽고, `slot key`면 다른 시간 제안이 자연스럽다
+
+### 2. PostgreSQL `23P01`: 같은 시간대가 이미 겹친다
 
 대표 장면:
 
@@ -77,7 +122,7 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 여기서 중요한 점은 key가 달라도 에러가 날 수 있다는 것이다. 그래서 `23P01`을 `중복 키`로만 번역하면 예약 도메인에서는 거의 항상 오해를 만든다.
 
-### 3. `lock timeout`: 이미 찼다는 뜻이 아니라 줄이 길다는 뜻
+### 3. MySQL `1205`: 이미 찼다는 뜻이 아니라 guard 줄이 길다는 뜻
 
 대표 장면:
 
@@ -89,9 +134,11 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 - `현재 예약 요청이 몰려 잠시 후 다시 시도해 주세요.`
 - `지금은 처리 지연이 있어 예약을 완료하지 못했습니다.`
 
-즉 `lock timeout`은 "이미 예약이 있다"가 아니라 **"이번 시도에서는 확인을 못 끝냈다"** 에 가깝다.
+즉 `1205`는 "이미 예약이 있다"가 아니라 **"이번 시도에서는 확인을 못 끝냈다"** 에 가깝다.
 
-### 4. `deadlock`: 이번 시도만 다시 하면 되는 경우가 많다
+guard-row 구현에서 이 문장이 잘 맞는 이유는, 먼저 guard row queue를 지나가야 실제 남은 재고나 overlap 결론을 볼 수 있기 때문이다.
+
+### 4. MySQL `1213`: 이번 시도만 다시 하면 되는 경우가 많다
 
 대표 장면:
 
@@ -101,16 +148,38 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 이 경우 사용자에게 바로 `이미 예약이 있습니다`라고 말하면 틀릴 수 있다. 실제로는 겹침이 아니라 **락 순서 충돌**일 수 있기 때문이다. 보통은 서버가 짧게 내부 재시도한 뒤 성공/실패 결과만 보여 주는 편이 낫다.
 
+## 구현별 작은 예시
+
+회의실 예약 API를 예로 들면 아래처럼 읽으면 된다.
+
+| 구현 장면 | 실제 충돌 surface | 먼저 보이는 신호 | 제품 문장 첫 후보 |
+|---|---|---|---|
+| slot-row: `(room_id, slot_start)` slot claim insert | 같은 slot key를 다른 요청이 먼저 insert | MySQL `1062` | `선택한 시간 슬롯이 이미 선점되었습니다.` |
+| guard-row: `(room_type_id, stay_day)` guard row `FOR UPDATE` 대기 | 앞선 요청이 같은 day 재고 guard를 오래 잡음 | MySQL `1205` | `지금 예약 요청이 몰려 잠시 후 다시 시도해 주세요.` |
+| guard-row reschedule: old day guard와 new day guard를 다른 순서로 잠금 | 두 요청이 서로 반대 순서로 guard를 잡음 | MySQL `1213` | 내부 재시도 후 성공/실패 결과만 노출 |
+
+이 표는 booking 제품 문장을 정할 때 매우 중요하다.
+
+- slot-row의 `1062`는 보통 `conflict/already exists` 축이다
+- guard-row의 `1205`는 보통 `busy` 축이다
+- guard-row의 `1213`은 보통 `retryable` 축이다
+
+그래서 "`예약 실패`" 한 문장으로 묶기보다, **이미 선점됨 / 지금 혼잡함 / 이번 시도만 재시도**를 먼저 갈라야 한다.
+
 ## 흔한 오해와 함정
 
 - `23P01`도 class `23`이니까 `duplicate key`와 같은 문장으로 보내도 된다
   - 아니다. 예약 도메인에서는 key 중복이 아니라 시간대 겹침을 말해야 한다.
-- `lock timeout`이면 누군가 이미 예약을 끝냈다고 봐도 된다
+- `1205`면 누군가 이미 예약을 끝냈다고 봐도 된다
   - 아니다. winner를 확인하기 전에 기다리다 끝난 것일 수 있다.
-- `deadlock`도 결국 실패했으니 `이미 예약이 있습니다`로 닫아도 된다
+- `1213`도 결국 실패했으니 `이미 예약이 있습니다`로 닫아도 된다
   - 아니다. 같은 재시도 한 번으로 성공할 수 있는 `retryable`일 수 있다.
-- `duplicate key`가 보이면 무조건 사용자 잘못이다
+- `1062`가 보이면 무조건 사용자 잘못이다
   - 아니다. 같은 멱등 요청 재전송이면 기존 성공 replay가 더 자연스럽다.
+- slot-row 구현이면 `1205`, `1213`은 절대 안 나온다
+  - 아니다. 여러 slot을 함께 잡는 변경 경로나 긴 트랜잭션이 있으면 충분히 나올 수 있다.
+- guard-row 구현이면 `1062`는 절대 안 나온다
+  - 아니다. guard 아래에서 쓰는 slot claim, idempotency key, side table `UNIQUE`에서 `1062`가 다시 보일 수 있다.
 
 ## 실무에서 쓰는 모습
 
@@ -118,20 +187,23 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 | 장면 | 내부 신호 | 제품/서비스 첫 문장 |
 |---|---|---|
-| 같은 `idempotency_key` 재전송 | `duplicate key` | `이미 처리된 예약 요청입니다.` |
+| 같은 `idempotency_key` 재전송 | MySQL `1062` | `이미 처리된 예약 요청입니다.` |
 | 다른 사람이 같은 시간대를 먼저 선점 | `23P01` | `선택한 시간대에 이미 예약이 있습니다.` |
-| 퇴실 정리 배치가 row를 오래 잡아 후행 요청이 기다리다 종료 | `lock timeout` | `지금 예약이 몰려 잠시 후 다시 시도해 주세요.` |
-| 예약 변경과 취소가 락 순서를 엇갈리게 잡음 | `deadlock` | 내부 재시도 후 성공이면 정상 응답, 실패면 일시 장애 문장 |
+| 퇴실 정리 배치가 row를 오래 잡아 후행 요청이 기다리다 종료 | MySQL `1205` | `지금 예약이 몰려 잠시 후 다시 시도해 주세요.` |
+| 예약 변경과 취소가 락 순서를 엇갈리게 잡음 | MySQL `1213` | 내부 재시도 후 성공이면 정상 응답, 실패면 일시 장애 문장 |
 
 제품 문장만 먼저 고정하면 서비스 동작도 따라오기 쉽다.
 
 - `duplicate key`: replay 가능한지 본다
 - `23P01`: 다른 시간 제안을 하거나 conflict로 닫는다
-- `lock timeout`: 혼잡 완화나 짧은 재시도 budget을 본다
-- `deadlock`: whole-transaction retry와 canonical lock ordering을 본다
+- `1205`: 혼잡 완화나 짧은 재시도 budget을 본다
+- `1213`: whole-transaction retry와 canonical lock ordering을 본다
 
 ## 더 깊이 가려면
 
+- slot-row와 guard-row를 어떤 기준으로 고르는지 먼저 보고 싶다면 [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
+- guard row가 왜 queue surface인지 booking timeline으로 보고 싶다면 [Guard Row Booking Timeline Card](./guard-row-booking-timeline-card.md)
+- guard row 충돌 뒤에 언제 기다리고, 언제 `busy`/retry로 갈라야 하는지 보려면 [Booking Guard Row Retry Card](./booking-guard-row-retry-card.md)
 - `23P01`과 `23505`를 제품 문장 기준으로 더 정확히 나누려면 [PostgreSQL `23P01` vs `23505` Product Language Card](./postgresql-23p01-vs-23505-product-language-card.md)
 - `lock timeout`을 왜 `already exists`가 아니라 `busy`로 읽는지 짧게 고정하려면 [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - 예약 모델을 slot/constraint/guard row 관점에서 먼저 고르려면 [Constraint-First Booking Primer](./constraint-first-booking-primer.md)
@@ -139,4 +211,4 @@ retrieval-anchor-keywords: booking error language card, booking duplicate key 23
 
 ## 한 줄 정리
 
-예약 경로에서 `duplicate key`, `23P01`, `lock timeout`, `deadlock`을 보면 "같은 요청 중복", "시간대 겹침", "혼잡으로 대기 종료", "이번 시도만 재시도"로 먼저 번역해야 제품 문장과 처리 전략이 함께 안정된다.
+MySQL 예약 경로에서 `1062`, `1205`, `1213`을 보면 slot-row와 guard-row의 충돌 surface를 먼저 떠올리고, "이미 선점됨", "지금 혼잡함", "이번 시도만 재시도"로 번역해야 제품 문장과 처리 전략이 함께 안정된다.

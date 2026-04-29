@@ -4,24 +4,20 @@
 
 **난이도: 🟢 Beginner**
 
+> Beginner Route: `[entrypoint]` 이 문서 -> `[bridge]` [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md) -> `[cross-category]` [의존성 주입 기초](../software-engineering/dependency-injection-basics.md) -> `[spring bridge]` [DispatcherServlet vs HandlerInterceptor](../spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
+- [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
+- [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
+- [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md)
+- [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
+- [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
+- [DispatcherServlet vs HandlerInterceptor](../spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
 
-> 관련 문서:
-> - [Registry Pattern: 객체를 찾는 이름표와 저장소](./registry-pattern.md)
-> - [Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계](./service-locator-antipattern.md)
-> - [Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기](./injected-registry-vs-service-locator-checklist.md)
-> - [Request Dispatch Naming: `Router`, `Dispatcher`, `HandlerMapping`이 `Selector`나 `Factory`보다 맞을 때](./router-dispatcher-handlermapping-vs-selector-factory.md)
-> - [Strategy vs Policy Selector Naming: `Factory`보다 의도가 잘 보이는 이름들](./strategy-policy-selector-naming.md)
-> - [Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기](./bean-name-vs-domain-key-lookup.md)
-> - [디자인 패턴 카테고리 인덱스](./README.md)
-
-retrieval-anchor-keywords: registry primer lookup table resolver router service locator, lookup table vs registry beginner, resolver vs registry beginner, router vs registry beginner, service locator vs registry beginner, registry service locator difference, lookup table resolver router service locator difference, registry pattern beginner, registry 큰 그림, registry 기초, registry 언제 쓰는지, registry 처음 배우는데, lookup table 처음 배우는데, resolver router registry 처음 배우는데, service locator 처음 배우는데
-retrieval-anchor-keywords: router vs selector naming, router vs dispatcher naming, request dispatch router handler mapping, handler mapping beginner, request routing naming bridge
+retrieval-anchor-keywords: registry primer lookup table resolver router service locator, lookup table vs registry beginner, resolver vs registry beginner, router vs registry beginner, service locator vs registry beginner, registry service locator difference, lookup table resolver router service locator difference, registry pattern beginner, registry 언제 쓰는지, registry 처음 배우는데, lookup table 처음 배우는데, resolver router registry 처음 배우는데, service locator 처음 배우는데, router vs dispatcher naming, request routing naming bridge
 
 ---
 
@@ -33,6 +29,17 @@ retrieval-anchor-keywords: router vs selector naming, router vs dispatcher namin
 - 코드 본문에서 전역 조회소로 의존성을 꺼내면 `service locator` 냄새
 
 헷갈리면 먼저 "`무엇을 찾나`"보다 "`어떤 질문에 답하나`"로 자르면 된다.
+
+처음 읽는 사람 기준으로는 아래 비유가 가장 빠르다.
+
+- `registry`: 주소록에서 이름표를 보고 연락처를 찾는다.
+- `resolver`: 줄임말이나 별명을 실제 사람 이름으로 풀어 준다.
+- `router`: 이 손님을 어느 창구로 보낼지 정한다.
+- `service locator`: 필요한 사람을 그때그때 몰래 사내 전체 주소록에서 찾아온다.
+
+이 비유는 입문용이다. 실제 코드에서는 "찾는다"는 겉모양보다 **의존성이 드러나는지**, **입력 해석이 섞였는지**를 더 중요하게 본다.
+
+이번 문서도 beginner scope까지만 다룬다. service locator를 운영 anti-pattern 전체로 확장하지 않고, 여기서는 "좁은 registry인지 숨은 전역 조회인지"를 가르는 경고 표지판 역할만 한다.
 
 ## 먼저 큰 그림
 
@@ -75,6 +82,17 @@ retrieval-anchor-keywords: router vs selector naming, router vs dispatcher namin
 가장 초보자 친화적인 기준은 이것이다.
 
 **"작고 명시적인 key 조회는 registry, 넓고 숨은 의존성 조회는 service locator."**
+
+## 처음 보는 코드에서 10초 판단표
+
+| 코드에서 먼저 보이는 것 | 먼저 붙일 이름 | 왜 그렇게 보나 |
+|---|---|---|
+| `registry.get(method)` 뒤에 바로 handler를 사용한다 | `registry` | domain key로 이미 등록된 대상을 찾는다 |
+| `"CARD"`를 enum이나 도메인 값으로 바꾼다 | `resolver` | raw 입력을 의미 있는 값으로 해석한다 |
+| `/payments/card`를 어느 controller로 보낼지 결정한다 | `router` | 요청 흐름 분기가 중심이다 |
+| 메서드 안에서 `ApplicationContext.getBean(...)`을 직접 호출한다 | `service locator` 냄새 | 숨은 의존성 조회가 생긴다 |
+
+처음에는 "같은 `Map`을 쓰는가"보다 "호출자가 지금 무엇을 부탁하고 있나"를 먼저 읽으면 된다.
 
 ---
 
@@ -128,6 +146,8 @@ PaymentHandler handler = applicationContext.getBean(beanName, PaymentHandler.cla
   registry는 좁은 대상과 domain key가 드러난다. service locator는 코드 본문에서 넓은 조회소를 뒤져 실제 의존성을 숨긴다.
 - **"Spring이 `Map<String, Handler>`를 주입하면 바로 domain registry인가요?"**
   보통 `String` key는 bean name이다. 서비스 분기 기준으로 쓰려면 [Bean Name vs Domain Key Lookup](./bean-name-vs-domain-key-lookup.md)처럼 domain key registry로 감싼다.
+- **"왜 `service locator`만 안 좋은 이름으로 따로 빼나요?"**
+  registry, resolver, router는 책임이 드러나면 도구가 될 수 있다. 반대로 service locator는 호출 지점에서 실제 의존성이 숨어 버려 테스트와 리뷰가 어려워지는 점이 핵심 문제다.
 
 ---
 
@@ -139,6 +159,18 @@ PaymentHandler handler = applicationContext.getBean(beanName, PaymentHandler.cla
 | `resolver vs registry`, `router vs registry`, `이름이 헷갈림` | 이 문서 | 용어를 먼저 자르고 다음 문서로 보낸다 |
 | `ApplicationContext getBean`, `전역 조회소`, `service locator 처음 배우는데` | [Service Locator Antipattern](./service-locator-antipattern.md) | 숨은 의존성 조회 문제를 바로 봐야 한다 |
 | `주입된 registry가 locator인지 모르겠음` | [Injected Registry vs Service Locator Checklist](./injected-registry-vs-service-locator-checklist.md) | 생성자 주입과 숨은 lookup을 코드 리뷰 기준으로 자른다 |
+
+다음 단계는 이렇게 잡으면 안전하다.
+
+- "용어가 왜 갈리는지"가 아직 헷갈리면 이 문서를 한 번 더 보고, 바로 아래 체크리스트 문서로 내려간다.
+- Spring 코드에서 실제로 어디가 router인지 보고 싶으면 [DispatcherServlet vs HandlerInterceptor](../spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)로 이어간다.
+- `getBean()`이 왜 위험한지 감이 안 오면 [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)를 먼저 보고 다시 service locator 문서로 들어간다.
+
+처음 읽는 사람 기준의 안전한 종료선은 이렇다.
+
+- 용어만 구분되면 여기서 멈춘다.
+- 생성자 주입과 숨은 lookup 리뷰 기준이 더 필요할 때만 `Injected Registry vs Service Locator Checklist`로 간다.
+- request dispatch나 Spring lifecycle까지 함께 보려 할 때만 `DispatcherServlet vs HandlerInterceptor` 같은 framework bridge로 넘긴다.
 
 ## 한 줄 정리
 

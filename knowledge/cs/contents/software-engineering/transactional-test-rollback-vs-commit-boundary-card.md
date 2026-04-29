@@ -13,6 +13,7 @@
 - [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)
 - [DataJpaTest Flush/Clear Batch Checklist](./datajpatest-flush-clear-batch-checklist.md)
 - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
+- [`TestTransaction.end()` vs `@Commit` 선택 미니 카드](./testtransaction-vs-commit-choice-mini-card.md)
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
 - [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md)
 - [Spring Transactional Test Rollback Misconceptions](../spring/spring-transactional-test-rollback-misconceptions.md)
@@ -126,6 +127,7 @@ retrieval-anchor-keywords: flush vs commit beginner, flush is not commit, after_
 
 - 짧게 외우면 `commit 순간만 열고 싶다 -> TestTransaction.end()`, `테스트 1개를 commit 기준으로 남기고 싶다 -> @Commit`이다.
 - 둘 다 "모든 테스트를 큰 시나리오로 키우는 것"과는 다르다. commit 경로 질문 1개만 최소로 꺼내는 보강이다.
+- 여기서 바로 "`둘 중 정확히 언제 무엇을 고르죠?`"가 다음 질문이라면, 이 문서보다 [별도 선택 카드](./testtransaction-vs-commit-choice-mini-card.md)로 좁혀 보는 편이 덜 헷갈린다.
 
 ## 왜 `flush()`가 `AFTER_COMMIT`를 대신하지 못하나
 
@@ -139,68 +141,22 @@ retrieval-anchor-keywords: flush vs commit beginner, flush is not commit, after_
 즉 `flush()` 뒤에 insert SQL 로그가 보여도, 테스트 전체가 rollback되면 `AFTER_COMMIT` listener는 안 돌 수 있다.
 outbox도 마찬가지다. row를 중간에 `flush()`로 볼 수는 있어도, "정말 commit 뒤에도 남는가"는 별도 질문이다.
 
-## 초심자용 미니 예시
+## `TestTransaction.end()` vs `@Commit`는 어디서 갈라지나
 
-예를 들어 "`주문 저장 후 AFTER_COMMIT 동기화 레코드가 남는지`"만 보고 싶다고 하자.
-이때 처음부터 브라우저, HTTP, 외부 broker까지 다 올릴 필요는 없다.
+이 문서의 역할은 "`rollback 테스트와 commit-visible 테스트를 왜 분리하나`"까지다.
+그 다음 초심자 질문은 보통 "`둘 중 뭘 고르죠?`"로 좁아진다.
 
-```java
-@SpringBootTest
-@Transactional
-class OrderServiceCommitVisibleTest {
+그 판단표는 [별도 선택 카드](./testtransaction-vs-commit-choice-mini-card.md)에 분리해 두었다.
 
-    @Autowired
-    OrderService orderService;
+- 한 테스트 안에서 commit 전/후를 이어 보고 싶다 -> `TestTransaction.end()`
+- 테스트 메서드 전체를 commit 기준으로 한 번 끝내면 된다 -> `@Commit`
+- 둘 다 필요 없을 수 있는 질문인지 먼저 보고 싶다 -> 이 문서의 `트랜잭션 안 vs commit 뒤` 표로 돌아간다
 
-    @Autowired
-    SyncRecordRepository syncRecordRepository;
-
-    @Test
-    void commit_후에만_sync_record가_보인다() {
-        orderService.placeOrder();
-
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-
-        assertThat(syncRecordRepository.findAll()).hasSize(1);
-    }
-}
-```
-
-이 테스트가 답하는 질문은 하나다.
-
-- "같은 테스트 트랜잭션 안 저장"이 아니라
-- "**commit이 실제로 끝난 뒤에도 결과가 보이느냐**"다.
-
-반대로 메서드 전체가 commit 기준이면 이렇게 더 짧게 갈 수도 있다.
-
-```java
-@SpringBootTest
-@Commit
-class OrderServiceCommitTest {
-
-    @Test
-    void commit_뒤_outbox_row가_남는다() {
-        // ...
-    }
-}
-```
-
-핵심은 `@Commit`이 "항상 더 큰 테스트"라는 뜻이 아니라, **rollback 기본값을 잠깐 바꿔 commit 질문만 드러내는 스위치**라는 점이다.
-
-## 언제 `TestTransaction.end()`가 더 낫고, 언제 `@Commit`이면 충분한가
-
-| 질문 | 더 잘 맞는 선택 |
-|---|---|
-| "한 테스트 안에서 commit 전/후를 이어서 비교하고 싶다" | `TestTransaction.end()` |
-| "이 테스트는 결과만 commit 기준으로 보면 된다" | `@Commit` |
-| "commit 뒤 DB 오염 정리가 부담된다" | 가능하면 `TestTransaction.end()`로 범위를 더 좁혀 본다 |
-
-안전한 시작점은 이렇다.
+안전한 시작점은 그대로 같다.
 
 1. 먼저 rollback 테스트로 트랜잭션 안 규칙을 잠근다.
 2. 정말 commit 뒤 질문이 남을 때만 `TestTransaction.end()` 또는 `@Commit`으로 얇게 1장 더 붙인다.
-3. 그래도 답이 안 나올 때만 더 넓은 통합 시나리오로 올린다.
+3. 세부 선택이 헷갈리면 [별도 선택 카드](./testtransaction-vs-commit-choice-mini-card.md)에서 중간 commit 필요 여부만 먼저 본다.
 
 ## 흔한 오해와 함정
 
@@ -237,6 +193,7 @@ class OrderServiceCommitTest {
 - [DataJpaTest Flush/Clear Batch Checklist](./datajpatest-flush-clear-batch-checklist.md): `flush()`와 `clear()`가 어디까지 보여 주는지 짧게 복습할 때
 - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md): outbox 검증을 unit/integration/contract로 어디서 나눌지 더 크게 보고 싶을 때
 - [Domain Events, Outbox, Inbox](./outbox-inbox-domain-events.md): outbox/inbox 자체를 아직 "왜 필요한가" 수준에서 먼저 다시 잡고 싶을 때
+- [`TestTransaction.end()` vs `@Commit` 선택 미니 카드](./testtransaction-vs-commit-choice-mini-card.md): commit-visible 테스트 안에서 두 선택지 중 무엇을 먼저 고를지 바로 정하고 싶을 때
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md): `@SpringBootTest`를 바로 E2E처럼 키우지 않고 어디까지 붙였는지부터 구분할 때
 - [왜 rollback 테스트에서 `AFTER_COMMIT` listener가 안 보이나요](./after-commit-listener-rollback-test-beginner-bridge.md): rollback 기반 테스트에서 보이는 증상 문장을 먼저 분리하고 싶을 때
 - [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md): `@DataJpaTest`나 slice test에서 `AFTER_COMMIT`이 왜 안 보이는지 한 장 더 짧게 확인할 때

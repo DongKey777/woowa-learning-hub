@@ -20,6 +20,7 @@
 - [Timeout 에러코드 매핑 미니카드](./timeout-errorcode-mapping-mini-card.md)
 - [`CannotAcquireLockException` / `40001` 혼동 FAQ](./cannotacquirelockexception-40001-insert-if-absent-faq.md)
 - [`NOWAIT`와 짧은 `lock timeout`은 왜 자동 retry보다 `busy`에 더 가깝게 볼까?](./nowait-vs-short-lock-timeout-busy-guide.md)
+- [Spring/JPA에서 PostgreSQL `55P03`를 `NOWAIT`와 `lock_timeout`으로 나눠 읽는 Retry Policy Bridge](./spring-jpa-postgresql-55p03-retry-policy-bridge.md)
 - [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - [Spring/JPA 락킹 예제 가이드](./spring-jpa-locking-example-guide.md)
 - [Spring Retry Proxy Boundary Pitfalls](./spring-retry-proxy-boundary-pitfalls.md)
@@ -178,6 +179,8 @@ lock timeout은 "지금 줄이 너무 길다"는 신호일 때가 많다.
 - retry budget이 작다: 보통 1~2회, 짧은 jitter
 
 이 의도를 "짧은 lock budget" 관점에서 더 짧게 설명한 beginner 문서는 [`NOWAIT`와 짧은 `lock timeout`은 왜 자동 retry보다 `busy`에 더 가깝게 볼까?](./nowait-vs-short-lock-timeout-busy-guide.md)다.
+
+PostgreSQL `55P03` 안에서 `NOWAIT`와 `lock_timeout`이 Spring/JPA surface에서는 왜 비슷하게 보이면서도 retry 정책은 다르게 읽어야 하는지 한 단계 중간 다리로 보고 싶다면 [Spring/JPA에서 PostgreSQL `55P03`를 `NOWAIT`와 `lock_timeout`으로 나눠 읽는 Retry Policy Bridge](./spring-jpa-postgresql-55p03-retry-policy-bridge.md)를 이어서 보면 된다.
 
 반대로 일반적인 OLTP request에서 우연히 `1205`/`55P03`가 보인다면 먼저 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 가는 편이 맞다.
 

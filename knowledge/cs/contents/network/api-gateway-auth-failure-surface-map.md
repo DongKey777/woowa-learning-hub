@@ -7,6 +7,7 @@
 관련 문서:
 
 - [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
@@ -14,7 +15,7 @@
 - [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: api gateway auth failure map, gateway 401 vs app 401, gateway 403 vs app 403, raw 401 json vs login html 200, raw 401 vs 302 login, api gets login html, api got login html 200, final 200 login page after auth failure, proxy rewrite auth response, browser redirect hides 401, edge auth reject beginner, 왜 api가 html을 받아요, gateway local reply auth
+retrieval-anchor-keywords: api gateway auth failure map, gateway 401 vs app 401, gateway 403 vs app 403, raw 401 json vs login html 200, raw 401 vs 302 login, api got login html 200, fetch got login html 200, fetch auth failure html instead of json, final 200 login page after auth failure, final html 200 != api success, proxy rewrite auth response, browser redirect hides 401, edge auth reject beginner, 왜 api가 html을 받아요, gateway local reply auth
 
 ## 핵심 개념
 
@@ -25,19 +26,19 @@ retrieval-anchor-keywords: api gateway auth failure map, gateway 401 vs app 401,
 - DevTools 마지막 줄은 login HTML `200`처럼 보인다
 - gateway 로그에는 auth reject가 먼저 남아 있다
 
-이 네 장면은 서로 모순이 아닐 수 있다.  
+이 네 장면은 서로 모순이 아닐 수 있다.
 하나의 요청을 서로 다른 층이 다르게 보여 준 것일 수 있다.
 
 먼저 3층으로 나누면 덜 헷갈린다.
 
-1. **결정 층**: 누가 막았는가  
+1. **결정 층**: 누가 막았는가
    gateway auth filter인지, upstream API인지
-2. **표면 층**: 밖으로 어떤 모양으로 보였는가  
+2. **표면 층**: 밖으로 어떤 모양으로 보였는가
    raw `401`, raw `403`, `302 -> /login`, final login HTML `200`
-3. **호출자 층**: 누가 그 응답을 받았는가  
+3. **호출자 층**: 누가 그 응답을 받았는가
    브라우저 page인지, `fetch`/XHR인지, 모바일 앱인지
 
-핵심은 "`401`이 맞냐 `302`가 맞냐"가 아니다.  
+핵심은 "`401`이 맞냐 `302`가 맞냐"가 아니다.
 "**원래 auth 결정**"과 "**사용자가 본 최종 표면**"을 분리해서 읽는 것이 먼저다.
 
 ## 한눈에 보기
@@ -55,13 +56,14 @@ retrieval-anchor-keywords: api gateway auth failure map, gateway 401 vs app 401,
 - raw `401/403`은 **계약이 바로 보인 표면**
 - `302`는 **브라우저 이동 UX가 끼어든 표면**
 - login HTML `200`은 **redirect를 따라간 마지막 도착점**
+- 초보자 handoff는 `final HTML 200 != API success`
 - "`API got login HTML 200` vs `raw 401 JSON`"은 서로 다른 장애 둘이라기보다, 같은 auth 실패가 다른 호출자 계약으로 번역된 경우부터 의심한다
 
 ## 상세 분해
 
 ### 1. raw `401`과 raw `403`은 "누가 막았는지"가 아직 안 보인다
 
-초보자는 `401`을 보면 곧바로 "앱이 거절했구나"라고 읽기 쉽다.  
+초보자는 `401`을 보면 곧바로 "앱이 거절했구나"라고 읽기 쉽다.
 하지만 gateway도 `401`/`403`을 직접 만들 수 있다.
 
 예를 들어:
@@ -120,7 +122,7 @@ Content-Type: text/html
 | learner symptom | 먼저 붙일 해석 | safe next doc |
 |---|---|---|
 | `curl`/Postman에서는 raw `401` JSON | API 계약이 직접 보인다 | [Spring API는 `401` JSON인데 브라우저 페이지는 `302 /login`인 이유: 초급 브리지](../spring/spring-api-401-vs-browser-302-beginner-bridge.md) |
-| 브라우저 `fetch`에서는 login HTML `200` | redirect follow 뒤 마지막 login page를 받은 것일 수 있다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) |
+| 브라우저 `fetch`에서는 login HTML `200` | redirect follow 뒤 마지막 login page를 받은 것일 수 있다 | [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md) |
 | 같은 엔드포인트인데 브라우저와 API client 표면이 다르다 | auth 원인보다 호출자 계약 차이를 먼저 의심한다 | 이 문서 -> 위 두 문서 순서로 분기 |
 
 초급자 mental model은 한 줄이면 충분하다.
@@ -129,6 +131,9 @@ Content-Type: text/html
 - login HTML `200`은 "실패 뒤 이동한 도착점"
 
 그래서 `200`이라는 숫자만 보고 success로 읽으면 오진이 커진다.
+
+첫 질문이 "`왜 auth 실패가 HTML로 보이지?`"라면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)부터 보고,
+"`이 HTML이 login redirect 때문인지, gateway/app owner가 누구인지`"를 더 가르려면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)를 바로 붙이면 된다.
 
 ## gateway가 표면을 바꾸는 방식
 
@@ -141,7 +146,7 @@ gateway는 크게 두 방식으로 auth 실패를 밖으로 보낼 수 있다.
 | pass-through | upstream이 만든 `401/403`을 거의 그대로 전달 | app 계약이 바깥까지 보인다 |
 | local reply / rewrite | gateway가 직접 `401/403`을 만들거나 `302` 등으로 바꾼다 | edge 정책이 바깥 표면을 결정한다 |
 
-그래서 "API 스펙에는 `401`인데 브라우저에서는 `/login`으로 간다"는 말은 틀린 관찰이 아니다.  
+그래서 "API 스펙에는 `401`인데 브라우저에서는 `/login`으로 간다"는 말은 틀린 관찰이 아니다.
 단지 raw 계약 위에 browser/gateway 표면 번역이 한 겹 더 있는 것이다.
 
 ### 6. `401`과 `403`의 beginner 기준은 먼저 유지하고, source는 그다음에 본다
@@ -162,19 +167,19 @@ gateway는 크게 두 방식으로 auth 실패를 밖으로 보낼 수 있다.
 
 ## 흔한 오해와 함정
 
-- `302 /login`을 보면 raw `401`이 없었다고 생각한다.  
+- `302 /login`을 보면 raw `401`이 없었다고 생각한다.
   실제로는 auth failure가 browser UX redirect로 번역됐을 수 있다.
 
-- 최종 login HTML `200`을 보면 API 성공으로 읽는다.  
+- 최종 login HTML `200`을 보면 API 성공으로 읽는다.
   redirect follow 뒤 마지막 page 응답만 본 것일 수 있다.
 
-- gateway 로그에 `401`이 있으니 upstream은 절대 안 봐도 된다고 생각한다.  
+- gateway 로그에 `401`이 있으니 upstream은 절대 안 봐도 된다고 생각한다.
   pass-through인지 local reply인지 먼저 구분해야 한다.
 
-- `403`이 보이면 무조건 앱 권한 로직 문제라고 생각한다.  
+- `403`이 보이면 무조건 앱 권한 로직 문제라고 생각한다.
   gateway policy, scope filter, WAF/edge authz도 `403`을 만들 수 있다.
 
-- page 요청과 API 요청을 같은 기대 계약으로 읽는다.  
+- page 요청과 API 요청을 같은 기대 계약으로 읽는다.
   page는 login 이동 UX가 흔하고, API는 raw `401/403` 계약이 더 흔하다.
 
 ## 실무에서 쓰는 모습
@@ -206,6 +211,8 @@ gateway는 크게 두 방식으로 auth 실패를 밖으로 보낼 수 있다.
 ## 더 깊이 가려면
 
 - `401`/`403`/`302` 기본 계약부터 다시 잡으려면 [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- "`왜 JSON 대신 login HTML이 보이지?`"를 먼저 자르려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
+- DevTools에서 login HTML, gateway JSON, app JSON owner를 먼저 가르려면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - login HTML `200`이 hidden redirect 결과로 보이는 흐름은 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - browser redirect와 cookie/session 분기는 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 - gateway가 직접 응답을 만들었는지 blame을 더 정확히 가르려면 [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
@@ -213,13 +220,13 @@ gateway는 크게 두 방식으로 auth 실패를 밖으로 보낼 수 있다.
 
 ## 면접/시니어 질문 미리보기
 
-**Q. 브라우저에서는 `/login`으로 가는데 API 문서에는 왜 `401`이라고 적혀 있나요?**  
+**Q. 브라우저에서는 `/login`으로 가는데 API 문서에는 왜 `401`이라고 적혀 있나요?**
 raw auth 계약은 `401`인데, browser page UX나 gateway rewrite가 그 실패를 `302 /login`으로 감싸 보여 줄 수 있기 때문이다.
 
-**Q. 최종 응답이 login HTML `200`이면 성공인가요?**  
+**Q. 최종 응답이 login HTML `200`이면 성공인가요?**
 아니다. 앞단의 `302`를 따라간 마지막 도착점일 수 있어서, 원래 API 계약은 실패였을 가능성이 있다.
 
-**Q. `403`은 항상 애플리케이션 권한 로직이 만든 것인가요?**  
+**Q. `403`은 항상 애플리케이션 권한 로직이 만든 것인가요?**
 아니다. gateway나 edge policy도 `403`을 만들 수 있으므로, upstream pass-through인지 local reply인지 먼저 본다.
 
 ## 한 줄 정리

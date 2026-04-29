@@ -8,6 +8,7 @@
 
 - [인증과 인가의 차이](./authentication-vs-authorization.md)
 - [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
+- [리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant](./resource-level-authz-decision-practice.md)
 - [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md)
 - [OAuth Scope vs API Audience vs Application Permission](./oauth-scope-vs-api-audience-vs-application-permission.md)
 - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
@@ -47,6 +48,7 @@ retrieval-anchor-keywords: role vs scope vs ownership primer, role check vs scop
 - `권한을 방금 줬는데 still 403`처럼 freshness 쪽 증상이 더 강하면 [Grant Path Freshness and Stale Deny Basics](./grant-path-freshness-stale-deny-basics.md)로 옮겨 타면 된다.
 - `같은 사용자 다른 tenant`, `workspace 바꿨는데 왜 403인지`가 더 가깝다면 [Tenant Membership Change vs Session Scope Basics](./tenant-membership-change-session-scope-basics.md)로 먼저 분기하면 된다.
 - `같은 사용자, 다른 tenant`가 왜 IDOR/BOLA 초입 감각인지까지 바로 붙이고 싶으면 [IDOR / BOLA Patterns and Fixes](./idor-bola-patterns-and-fixes.md#1분-브리지-ownership-누락이-왜-바로-취약점인가)로 돌아가 early example부터 읽으면 된다.
+- 용어는 이해했지만 `어느 요청에서 action gate가 막히고 어느 요청에서 resource gate가 막히는지`를 실제 판단 연습으로 넘어가고 싶으면 [리소스 단위 인가 판단 연습: Role / Scope / Ownership / Tenant](./resource-level-authz-decision-practice.md)로 이어 가면 된다.
 - 분기 자체를 다시 고르고 싶으면 [Security README: 기본 primer](./README.md#기본-primer)로 돌아가면 된다.
 
 ## 이 문서 다음에 보면 좋은 문서

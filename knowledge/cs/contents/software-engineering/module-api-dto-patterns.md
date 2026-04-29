@@ -19,7 +19,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, cross module dto self check, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, cross module dto 어떻게 판단해요, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, what is module api dto, 처음 모듈 api 계약
+retrieval-anchor-keywords: module api dto patterns, cross module dto contract, module boundary dto, command query result dto, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, cross module dto 어떻게 판단해요, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, what is module api dto, 공개 api에서 entity 누수, public api entity leak, 모듈 공개 api entity 누수
 <details>
 <summary>Table of Contents</summary>
 
@@ -67,11 +67,13 @@ retrieval-anchor-keywords: module api dto patterns, cross module dto contract, m
 ## 이 문서가 바로 답하는 질문
 
 처음 검색할 때는 용어보다 증상 문장으로 들어오는 경우가 많다.
+이 문서는 특히 "모듈 API 계약이 뭐예요?"보다 "같은 코드베이스인데도 모듈 API 계약을 DTO로 따로 잘라야 하나요?" 같은 본문형 질문에 바로 붙도록 쓰였다.
 이 문서는 특히 아래 질문에 바로 답하도록 쓰였다.
 
 | 학습자가 실제로 묻는 말 | 이 문서의 짧은 답 |
 |---|---|
-| "다른 모듈에 `Entity`나 aggregate를 그냥 넘겨도 되나요?" | 보통 아니다. 모듈 간 계약은 `Command/Query/Result DTO`로 끊는다. |
+| "다른 모듈에 `Entity`나 aggregate를 그냥 넘겨도 되나요? 모듈 API 계약도 따로 봐야 하나요?" | 보통 아니다. 모듈 API 계약은 `Command/Query/Result DTO`로 끊는다. |
+| "`공개 API에서 entity 누수`가 보이는데 다음에 뭘 봐야 하나요?" | 모듈 공개 API라면 이 문서에서 `Command/Query/Result DTO` 기본값으로 다시 자른다. |
 | "같은 코드베이스인데 DTO를 왜 또 만들어요?" | 같은 저장소여도 모듈이 다르면 변경 이유를 분리해야 해서다. |
 | "모듈 API 계약이 뭐예요?" | 상대 모듈이 알아도 되는 입력/출력 언어만 공개한 public API다. |
 | "언제 value object를 같이 써도 되나요?" | 의미가 완전히 같고 작은 불변 shared kernel일 때만 예외다. |
@@ -115,6 +117,7 @@ service 계약 냄새에서 한 단계 더 들어오면, 이제 질문은 "`serv
 - "이건 내부 service 협력이 아니라 모듈 공개 계약이네요."
 - "의도를 보내는 요청이니 entity 말고 command가 먼저예요."
 - "이 타입은 공통 value object가 아니라 aggregate라서 경계를 넘기기 무거워요."
+- `cross-module dto`가 맞는지 다시 좁히고 싶으면 [Software Engineering README의 30초 아키텍처 vs 계약 경계 결정표](./README.md#30초-아키텍처-vs-계약-경계-결정표)로 돌아가 `다른 모듈에 aggregate나 Entity를 그대로 넘기고 있다` 행과 `Service 시그니처 leak` 행을 다시 비교하면 된다.
 
 ## 먼저: 이 문서에서 말하는 module facade는 뭐예요?
 
@@ -497,6 +500,7 @@ public record MarkOrderPaidResult(
 - 읽기 모델이 비대해지기 시작했다면: [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 - entity/ORM 세부가 API로 새면: [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 - service와 repository 계약을 어디서 더 끊을지 이어서 보려면: [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+- 증상 기준으로 다시 출발하려면: [Software Engineering README의 30초 아키텍처 vs 계약 경계 결정표](./README.md#30초-아키텍처-vs-계약-경계-결정표)
 
 ## 꼬리질문
 

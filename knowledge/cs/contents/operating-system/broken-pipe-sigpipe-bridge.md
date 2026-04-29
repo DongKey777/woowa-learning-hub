@@ -17,7 +17,7 @@
 - [Client Disconnect, 499, Broken Pipe, Cancellation in Proxy Chains](../network/client-disconnect-499-broken-pipe-cancellation-proxy-chain.md)
 - [operating-system 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: operating-system-00069, broken pipe sigpipe bridge, broken pipe beginner, sigpipe beginner, epipe beginner, reader disappeared first pipe, child writes to closed pipe, pipe reader closed writer behavior, no readers on pipe write, broken pipe vs backpressure, sigpipe vs epipe, brokenpipeerror subprocess, child dies on sigpipe, yes head sigpipe, write to closed stdout pipe
+retrieval-anchor-keywords: operating-system-00069, broken pipe 뭐예요, sigpipe 뭐예요, epipe 뭐예요, broken pipe 처음 배우는데, broken pipe 헷갈려요, subprocess broken pipe 뭐예요, child writes to closed pipe, no readers on pipe write, broken pipe vs backpressure, sigpipe vs epipe, brokenpipeerror subprocess, yes head sigpipe, reader가 먼저 닫히면 뭐가 와요, 왜 갑자기 broken pipe 가 나요
 
 ## Subprocess Primer Handoff
 
@@ -26,6 +26,8 @@ retrieval-anchor-keywords: operating-system-00069, broken pipe sigpipe bridge, b
 > - 바로 앞 문서: [Subprocess Pipe Backpressure Primer](./subprocess-pipe-backpressure-primer.md)에서 "reader가 너무 느려서 pipe가 꽉 차는 경우"를 먼저 본다
 > - 지금 문서의 질문: "reader가 아예 사라졌는데 child가 계속 쓰면 무슨 일이 일어나지?"
 > - 다음 문서: [`/proc/<pid>/status` Signal Fields Debugging Primer](./proc-pid-status-signal-fields-debugging-primer.md)에서 `SIGPIPE`를 ignore/catch/block 했는지 실제 프로세스 상태로 확인할 수 있다
+>
+> 검색 질문을 초급자 말투로 바꾸면 "`broken pipe`가 뭐예요?", "`왜 갑자기 `BrokenPipeError`가 나요?`", "`reader가 먼저 닫히면 `SIGPIPE`가 와요?`"에 가깝다. 이런 첫 질문이면 signal deep dive보다 이 문서가 먼저 맞다.
 
 ## 먼저 잡는 멘탈 모델
 

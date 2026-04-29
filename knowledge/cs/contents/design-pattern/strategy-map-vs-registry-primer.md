@@ -46,6 +46,8 @@ retrieval-anchor-keywords: strategy map vs registry, map<string, strategy> begin
 
 즉 `Map`은 겉모양일 뿐이고, 설계의 중심은 **behavior swapping인지, keyed lookup인지**다.
 
+이 문서의 범위도 여기까지다. bootstrap fail-fast, 전역 locator drift, 운영 규칙 같은 다음 단계는 관련 문서로 넘기고, 여기서는 "지금 보이는 `Map`이 행동 교체용인지 lookup용인지"만 판별한다.
+
 ---
 
 ## 30초 구분표
@@ -160,6 +162,14 @@ return strategy.pay(order);
 
 즉 `Map<Key, Strategy>`를 봤을 때는 먼저 "자료구조 이름"보다 **값들이 정말 교체 가능한 행동인가**를 확인하면 된다.
 
+한 번 더 짧게 자르면 아래 표로 바로 판별할 수 있다.
+
+| 코드에서 지금 먼저 읽히는 동사 | 더 먼저 떠올릴 개념 | 짧은 예시 |
+|---|---|---|
+| `select`, `choose`, `pay`, `calculate` | strategy selection | `strategy.pay(order)` |
+| `get`, `lookup`, `findByKey` | plain registry | `channelRegistry.get(method)` |
+| `create`, `new`, `assemble` | factory | `clientFactory.create(provider)` |
+
 ---
 
 ## 헷갈릴 때 바로 쓰는 체크리스트
@@ -183,6 +193,8 @@ return strategy.pay(order);
   - 자료구조만 보면 registry-like lookup이 맞다. 하지만 설계 의도가 행동 교체라면 중심 개념은 strategy다.
 - **"`get()` 메서드가 있으니 strategy일 수 없지 않나요?"**
   - 아니다. strategy를 고르는 과정이 `get()` 모양일 수 있다. 중요한 것은 꺼낸 뒤 같은 역할의 행동을 실행하는지다.
+- **"`Registry`와 `Selector`를 같이 두면 중복 아닌가요?"**
+  - 아니다. registry는 등록 lookup을 맡고, selector는 주문 상태나 조건을 보고 어떤 후보를 쓸지 고를 수 있다. lookup과 selection은 같은 단계가 아니다.
 - **"registry 값도 메서드를 가지면 바로 strategy인가요?"**
   - 아니다. 값이 메서드를 가진다고 끝이 아니다. 그 값들이 같은 행동 계약을 공유하고, 교체 대상인지가 핵심이다.
 - **"`Map<String, Strategy>`면 이름을 `Registry`로 해야 하나요, `Selector`로 해야 하나요?"**
@@ -199,6 +211,12 @@ return strategy.pay(order);
 - `Map<String, Handler>`가 factory인지 registry인지 헷갈리면 [주입된 Handler Map에서 Registry vs Factory](./registry-vs-factory-injected-handler-maps.md)
 - strategy lookup helper가 전역 조회소처럼 커지는 냄새는 [Strategy Registry vs Service Locator Drift Note](./strategy-registry-vs-service-locator-drift.md)
 - registry를 전역 조회로 오남용하는 위험은 [Service Locator Antipattern](./service-locator-antipattern.md)에서 이어서 보면 된다
+
+처음 읽는 단계라면 순서를 이렇게 잡으면 된다.
+
+- 이름만 헷갈리면 이 문서에서 멈춘다.
+- 클래스 이름까지 정하고 싶으면 `Map-backed 네이밍 체크리스트`로 간다.
+- 전역 조회, Spring bean name, locator 냄새가 보일 때만 service locator 쪽 follow-up으로 내려간다.
 
 ## 한 줄 정리
 

@@ -10,6 +10,8 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [메시지 큐 기초](../system-design/message-queue-basics.md)
+- [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)
 
 > 관련 문서:
 > - [Command Handler Pattern](./command-handler-pattern.md)
@@ -19,9 +21,23 @@
 > - [옵저버, Pub/Sub, ApplicationEvent](./observer-pubsub-application-events.md)
 > - [안티 패턴](./anti-pattern.md)
 
-retrieval-anchor-keywords: command pattern, command object, undo redo command, command queue, command history stack, invoker receiver, retryable job command, text editor undo, queued work item, command vs event, command pattern undo queue basics, command pattern undo queue beginner, command pattern undo queue intro, design pattern basics, beginner design pattern
+retrieval-anchor-keywords: command pattern, command queue, undo redo command, queued work item, command vs event, command pattern basics, queue vs message queue, command queue vs message queue, queue vs bfs, 처음 command queue 뭐예요, 헷갈려요 queue가 왜 두 군데 나와요, why queue appears in pattern and system design, text editor undo, retryable job command, beginner design pattern
 
 ---
+
+## 처음 헷갈리는 `queue` 세 갈래
+
+`queue`라는 단어가 보여도 같은 층위는 아니다. 초심자는 먼저 "무엇을 줄 세우는가"를 자르면 덜 헷갈린다.
+
+| 지금 보이는 문장 | 실제 중심 질문 | 여기서 먼저 볼 문서 | safe next step |
+|---|---|---|---|
+| `가까운 칸부터 탐색`, `최소 이동 횟수`, `visited` | 탐색 규칙이 BFS인지 | [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기) | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `실행 요청을 나중에 실행`, `undo`, `redo`, `작업 이력` | 요청을 객체로 감싸서 실행/기록할지 | 이 문서 | [Command Handler Pattern](./command-handler-pattern.md) |
+| `producer`, `consumer`, `broker`, `재시도`, `비동기 후처리` | 서비스 간 handoff를 큐로 분리할지 | [메시지 큐 기초](../system-design/message-queue-basics.md) | [Per-Key Queue vs Direct API Primer](../system-design/per-key-queue-vs-direct-api-primer.md) |
+
+- mental model: 알고리즘의 queue는 `탐색 순서를 담는 도구`, Command의 queue는 `실행할 요청 객체를 미루는 도구`, 메시지 큐는 `프로세스/서비스 사이 handoff 채널`이다.
+- misconception guard: `queue`라는 이름이 같아도 broker가 곧 Command 패턴인 것은 아니다. 메시지 브로커는 전달 인프라이고, Command 패턴은 요청 모델링 방식이다.
+- safe stop: 아직 `queue에 무엇이 들어가고 누가 꺼내는지`를 한 문장으로 못 말하면 이벤트 버스, saga, 운영 큐 튜닝 문서로 바로 내려가지 않는다.
 
 ## 핵심 개념
 

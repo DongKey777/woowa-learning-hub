@@ -1,6 +1,6 @@
 # Collections, Equality, and Mutable-State Foundations
 
-> 한 줄 요약: `List`/`Set`/`Map`을 고른 뒤 바로 따라오는 `equals()`/`hashCode()`와 mutable key 위험을 초보자 기준으로 한 장에 묶은 primer다.
+> 한 줄 요약: `List`/`Set`/`Map`을 고른 뒤 바로 따라오는 `equals()`/`hashCode()`와 mutable key 위험만 먼저 묶고, sorted collection/comparator 세부는 관련 문서로 미루게 돕는 primer다.
 
 **난이도: 🟢 Beginner**
 
@@ -37,6 +37,18 @@ retrieval-anchor-keywords: collections equality mutable state foundations, java 
 
 즉 첫 route는 `컬렉션 선택 -> 무엇을 같은 값으로 볼지 -> 넣은 뒤 바꿔도 되는지` 세 칸이다.
 
+## 컬렉션 문제처럼 보여도 먼저 다른 축을 의심할 때
+
+초보자는 `List`/`Set`/`Map` 버그처럼 보이는 장면을 전부 컬렉션 문서 안에서 해결하려고 하기 쉽다. 하지만 첫 증상이 아래라면 출발 문서를 잘라서 보는 편이 더 빠르다.
+
+| 지금 보이는 말 | 사실 먼저 의심할 축 | 왜 먼저 그쪽으로 가나 | 다음 문서 |
+|---|---|---|---|
+| "`new`는 한 번인데 왜 둘 다 같이 바뀌죠?" | 실행 모델 / 별칭 | 아직 컬렉션보다 같은 객체 공유가 먼저다 | [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md) |
+| "`==`는 false인데 눈으로 보면 같아요" | equality | "같은 객체"와 "같은 값"을 먼저 자르지 않으면 `Set`/`Map`도 계속 흔들린다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "`HashSet`은 하나인데 `HashMap#get(...)`은 null이에요" | 컬렉션 + equality | 여기서부터 이 문서 축이 맞다 | 이 문서 계속 |
+
+한 줄로 줄이면 "`같이 바뀐다`는 실행 모델, `같아 보이는데 비교가 다르다`는 equality, `중복/조회가 깨진다`는 collections" 순서다.
+
 ## 먼저 잡는 멘탈 모델
 
 컬렉션 문제를 읽을 때는 "자료구조 이름"보다 아래 3가지를 먼저 본다.
@@ -59,6 +71,16 @@ retrieval-anchor-keywords: collections equality mutable state foundations, java 
 1. 요구가 순서인지, 중복 제거인지, key 조회인지 먼저 고른다.
 2. 그다음 "무엇을 같은 값으로 볼지"를 정한다.
 3. 마지막으로 넣은 뒤 값을 바꿔도 되는지 확인한다.
+
+## 처음엔 정렬 컬렉션을 잠깐 미뤄도 된다
+
+beginner가 가장 자주 scope creep 되는 지점은 `HashSet`/`HashMap` 첫 버그를 보다가 곧바로 `TreeSet`, `TreeMap`, comparator tie-breaker까지 한 번에 붙드는 경우다.
+
+- `HashSet` 중복/`HashMap#get(...)` 조회가 먼저 막혔다면 해시 규칙부터 본다.
+- 정렬된 순서가 정말 요구사항 중심일 때만 sorted collection follow-up으로 간다.
+- `compareTo()`/`Comparator`는 "다음 한 칸"이지, 이 primer의 중심이 아니다.
+
+즉 처음엔 `List`/`Set`/`Map` 선택과 해시 컬렉션의 equality 규칙만 붙여도 충분하다.
 
 ## 왜 `HashSet`은 하나인데 `HashMap#get(...)`은 `null`일까
 
@@ -226,7 +248,7 @@ Map   // Collection 계층 밖
 | 방문 순서대로 출력해야 한다 | `List` | 인덱스/순서만 중요하면 중복 허용 여부를 명시 |
 | 이미 본 id는 다시 처리하면 안 된다 | `Set` | id 클래스의 `equals()`/`hashCode()` |
 | id로 객체를 바로 찾는다 | `Map` | key 필드가 mutable인지 |
-| 이름순으로 보여 준다 | `TreeSet`/`TreeMap` 또는 정렬된 `List` | `compareTo()`/`Comparator`와 tie-breaker |
+| 이름순으로 보여 준다 | 정렬된 `List`인지 sorted collection인지 먼저 분리 | 정렬 기준은 follow-up 문서로 넘김 |
 
 중요한 포인트는 마지막 줄이 "이 문서의 중심"은 아니라는 점이다. "정렬해서 보여 준다"는 요구는 정렬 기준 문서로 넘기고, 여기서는 순서/중복/key 조회와 mutable key까지만 먼저 붙인다.
 

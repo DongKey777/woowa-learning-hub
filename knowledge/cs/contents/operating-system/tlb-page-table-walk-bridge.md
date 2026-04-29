@@ -12,7 +12,7 @@
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 
-retrieval-anchor-keywords: tlb page table walk bridge basics, tlb page table walk bridge beginner, tlb page table walk bridge intro, operating system basics, beginner operating system, 처음 배우는데 tlb page table walk bridge, tlb page table walk bridge 입문, tlb page table walk bridge 기초, what is tlb page table walk bridge, how to tlb page table walk bridge
+retrieval-anchor-keywords: tlb가 뭐예요, tlb란, tlb 처음, tlb miss 뭐예요, tlb miss는 왜 나요, tlb miss와 page fault 차이, page table walk 뭐예요, 주소 변환 큰 그림, 가상 주소를 물리 주소로 언제 바꿔요, 가상 주소 변환이 왜 느려져요, mmu가 주소를 어떻게 바꿔요, tlb hit miss basics, tlb miss vs page fault, what is tlb, what is page table walk
 > 관련 문서:
 > - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 > - [가상 메모리 기초](./virtual-memory-basics.md)
@@ -22,9 +22,11 @@ retrieval-anchor-keywords: tlb page table walk bridge basics, tlb page table wal
 > - [THP, Huge Pages, TLB Latency](./thp-huge-pages-tlb-latency.md)
 > - [가상 메모리](./README.md#가상-메모리)
 
-> retrieval-anchor-keywords: tlb bridge, page table walk bridge, tlb miss vs page fault, virtual address translation, address translation hardware, tlb hit miss basics, page table walk basics, virtual page number, physical frame number, translation cache, present bit, permission fault, copy-on-write fault, minor vs major page fault, tlb refill, virtual memory follow-up, beginner handoff box, memory handoff, 주소 변환 후속 학습, 가상 메모리 다음 문서
+> retrieval-anchor-keywords: tlb bridge, page table walk bridge, tlb miss vs page fault, tlb miss는 에러인가요, tlb miss가 많으면 무슨 뜻인가요, page fault는 항상 tlb miss 뒤에 오나요, virtual address translation, address translation hardware, tlb hit miss basics, page table walk basics, virtual page number, physical frame number, translation cache, present bit, permission fault, copy-on-write fault, minor vs major page fault, tlb refill, virtual memory follow-up, beginner handoff box, memory handoff, 주소 변환 후속 학습, 가상 메모리 다음 문서, 처음 배우는데 주소 변환, 큰 그림으로 tlb
 
 ## 핵심 개념
+
+이 문서는 "`TLB가 뭐예요?`", "`TLB miss랑 page fault가 같은 건가요?`", "`가상 주소를 물리 주소로 언제 바꾸나요?`" 같은 첫 질문에서 deep dive 문서 대신 먼저 걸리도록 만든 개념 브리지다.
 
 가상 메모리를 처음 배울 때는 보통 "프로세스는 가상 주소를 본다"까지 이해하고 넘어간다. 그런데 실제 CPU 입장에서는 다음 질문이 바로 붙는다.
 

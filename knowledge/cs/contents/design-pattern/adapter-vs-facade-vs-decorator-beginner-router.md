@@ -24,6 +24,9 @@ retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern co
 - Facade: 여러 단계의 **사용 순서**를 한 창구로 단순화한다.
 - Decorator: 같은 인터페이스 위에 **기능을 하나 더 얹는다**.
 
+짧게 말하면 이 문서는 "정답 설명"보다 **첫 분기표**다.
+처음에는 패턴 정의를 외우기보다 "지금 바꾸려는 게 형태인지, 입구인지, 기능인지"만 먼저 자르면 된다.
+
 이 문서는 정의를 깊게 파기보다, 처음 검색했을 때 어느 문서로 들어가야 하는지 빨리 고르는 entrypoint다.
 
 ## 한눈에 보기
@@ -43,6 +46,14 @@ retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern co
 복잡해서 입구를 줄이면 Facade
 같은 틀에 기능을 더하면 Decorator
 ```
+
+### 30초 상황표
+
+| 코드에서 보이는 장면 | 더 가까운 패턴 | 이유 |
+|---|---|---|
+| `charge(double dollar)`를 `pay(int won)`으로 바꾼다 | Adapter | 메서드 이름, 타입, 단위를 번역한다 |
+| `placeOrder()` 하나가 재고/결제/배송 순서를 감춘다 | Facade | 복잡한 사용 순서를 한 창구로 줄인다 |
+| `FileStore` 앞에 압축/로그 래퍼를 덧씌운다 | Decorator | 같은 인터페이스를 유지한 채 기능을 추가한다 |
 
 ## 상세 분해
 
@@ -70,6 +81,17 @@ retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern co
 - 원본 기능을 없애지 않고 더 얹는다
 - 기능을 여러 겹으로 쌓을 수도 있다
 
+## 자주 헷갈리는 말 바꾸기
+
+초보자가 많이 하는 말은 아래처럼 다시 번역하면 판단이 쉬워진다.
+
+| 학습자 표현 | 다시 물어볼 질문 | 더 가까운 쪽 |
+|---|---|---|
+| "중간에 하나 감쌌어요" | 무엇을 위해 감쌌나요? | 목적을 다시 본다 |
+| "메서드 하나로 단순하게 만들었어요" | 번역인가요, 절차 숨김인가요? | 절차 숨김이면 Facade |
+| "기능을 조금 더 붙였어요" | 같은 인터페이스를 유지하나요? | 예면 Decorator |
+| "외부 API가 우리 코드와 안 맞아요" | 타입/단위를 맞추나요? | 예면 Adapter |
+
 ## 흔한 오해와 함정
 
 - "감싸기만 하면 다 Adapter 아닌가요?" 아니다. 번역이 없고 사용 순서만 감추면 Facade일 수 있다.
@@ -93,6 +115,7 @@ retrieval-anchor-keywords: adapter facade decorator beginner, wrapper pattern co
 
 - Adapter 쪽이 더 가깝다면 [어댑터 패턴 기초](./adapter-basics.md)에서 `Target / Adapter / Adaptee` 그림부터 본다.
 - Decorator 쪽이 더 가깝다면 [데코레이터와 프록시 기초](./decorator-proxy-basics.md)에서 기능 추가와 접근 제어를 먼저 나눈다.
+- Facade 쪽이 더 가깝다면 [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)에서 "단순 창구" 감각을 먼저 잡는다.
 - Proxy까지 같이 섞여 헷갈리면 [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)로 넘어가 wrapper 비교를 마무리한다.
 
 ## 면접/시니어 질문 미리보기

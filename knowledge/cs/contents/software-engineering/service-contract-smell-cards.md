@@ -1,6 +1,6 @@
 # Service Contract Smell Cards
 
-> 한 줄 요약: "`구조는 맞는데 계약이 샌다`", "`service 시그니처에 `ResponseEntity`, `Pageable`, `MultipartFile`, `OrderEntity`가 보여요`"처럼 읽힐 때, service 메서드가 유스케이스 계약 대신 웹/프레임워크/영속 세부를 말하고 있는지 먼저 점검하는 문서다.
+> 한 줄 요약: "`구조는 맞는데 계약이 샌다`", "`service에서 `ResponseEntity`를 반환해요`", "`service가 `Pageable`을 받아요`", "`service가 `Entity`를 그대로 받아요`"처럼 들릴 때, service 메서드가 유스케이스 계약 대신 웹/프레임워크/영속 세부를 말하고 있는지 먼저 점검하는 문서다.
 
 **난이도: 🟢 Beginner**
 
@@ -8,12 +8,13 @@
 
 - [Service 계층 기초](./service-layer-basics.md)
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- [`Pageable` leak vs query-model pagination bridge](./pageable-service-contract-vs-query-model-pagination-bridge.md)
 - [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)
 - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 - [spring request pipeline / bean container 입문](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
-retrieval-anchor-keywords: service contract smell, service signature smell, service 시그니처 leak, service signature leak, 계약이 샌다, 구조는 맞는데 계약이 샌다, responseentity in service, pageable in service, multipartfile in service, entity in service parameter, service boundary review, 처음 배우는데 service 계약 냄새, service 계약 뭐예요, 레이어 문제인가 계약 문제인가, service 구조 문제인지 계약 문제인지
+retrieval-anchor-keywords: service contract smell, service signature smell, service 시그니처 leak, 계약이 샌다, 구조는 맞는데 계약이 샌다, service에서 responseentity를 반환해요, service가 pageable을 받아요, service가 entity를 받아요, service가 page entity를 반환해요, responseentity in service, pageable in service, entity in service parameter, 처음 배우는데 service 계약 냄새, service 계약 뭐예요, 왜 service에서 responseentity를 반환하나요
 
 ## 핵심 개념
 
@@ -51,6 +52,15 @@ service 메서드는 보통 아래 질문에 답해야 한다.
 
 핵심 판단 기준은 타입 이름이 멋진가가 아니라, **그 타입이 어느 계층 질문에 답하는가**다.
 
+초심자 symptom 문장을 바로 붙이면 더 빨리 읽힌다.
+
+| 리뷰나 질문에서 자주 나오는 말 | 이 문서에서 번역하는 뜻 |
+|---|---|
+| "`service에서 ResponseEntity를 반환해요`" | service가 HTTP 응답 계약까지 들고 있다 |
+| "`service가 Pageable을 받아요`" | 조회 의도보다 Spring Data API가 앞에 나왔다 |
+| "`service가 Entity를 그대로 받아요`" | 저장 모델이 유스케이스 입력 역할까지 먹고 있다 |
+| "`service가 Page<Entity>를 반환해요`" | 조회 결과 계약과 JPA/Spring Data 세부가 한 타입에 묶였다 |
+
 ## 이건 레이어 문제인가 계약 문제인가 self-check 3문항
 
 README의 결정표에서 이 문서로 넘어왔을 때는, 바로 리팩토링 방향을 고르기보다 아래 3문항으로 **"자리 문제"와 "시그니처 문제"를 분리**하면 판단 비용이 줄어든다.
@@ -63,7 +73,22 @@ README의 결정표에서 이 문서로 넘어왔을 때는, 바로 리팩토링
 
 - 짧게 외우면 `자리면 레이어`, `말투면 계약`, `한 타입이 여러 뜻이면 DTO 흐름`이다.
 - beginner safe 기본값은 "둘 다 보이면 레이어를 먼저, 그다음 계약"이다. 자리가 안 정해진 상태에서 타입 이름만 바꾸면 다시 섞이기 쉽다.
-- target query: `이건 레이어 문제인가 계약 문제인가`, `구조는 맞는데 계약이 샌다`, `service 시그니처 leak`, `responseentity pageable entity service beginner`.
+- target query: `이건 레이어 문제인가 계약 문제인가`, `구조는 맞는데 계약이 샌다`, `service 시그니처 leak`, `service에서 responseentity를 반환해요`, `service가 pageable을 받아요`, `service가 entity를 받아요`.
+- 증상 기준 entrypoint를 다시 고르고 싶으면 [Software Engineering README의 30초 아키텍처 vs 계약 경계 결정표](./README.md#30초-아키텍처-vs-계약-경계-결정표)로 돌아가 `Service 시그니처 leak`가 맞는지, 아니면 `DTO 흐름`이나 `레이어 문제`가 먼저인지 한 번 더 자른다.
+
+## 리뷰 코멘트를 초심자 문장으로 번역하기
+
+코드리뷰에서 아래처럼 한 줄만 남아도, 초심자는 "그래서 뭘 고치라는 거지?"에서 막히기 쉽다. 이 문서는 그 코멘트를 **유스케이스 계약 관점 질문**으로 바꿔 읽게 돕는다.
+
+| 리뷰 코멘트/증상 문장 | 바로 떠올릴 질문 | 첫 기본값 |
+|---|---|---|
+| "`ResponseEntity`가 service에 있네요" | 이 메서드가 HTTP 상태/헤더를 알아야 하나, 아니면 결과만 돌려주면 되나 | service는 `Result DTO`, controller가 `ResponseEntity` |
+| "`Pageable`이 service까지 들어갔네요" | pagination 기능이 필요한 건가, 아니면 Spring Data 타입이 계약을 대신한 건가 | `FindOrdersQuery`, `OrderPageResult` 같은 query/result |
+| "`Entity`를 service 파라미터로 바로 받네요" | 정말 필요한 입력이 엔티티 전체인가, 아니면 `id`나 command 몇 개 값인가 | `OrderId`, `ApproveOrderCommand` |
+| "`Page<Entity>`를 service가 바로 반환하네요" | 목록 화면 계약이 필요한가, 아니면 저장 모델을 그대로 보여 주는가 | 응답용 view/result DTO |
+
+- 한 줄 번역 규칙은 `프레임워크 타입이 보이면 책임 질문으로`, `엔티티가 보이면 입력/출력 질문으로`다.
+- 이 문서의 target query는 review comment 원문보다도 `service에서 responseentity를 반환해요`, `service가 pageable을 받아요`, `service가 entity를 받아요` 같은 초심자 질문형 문장을 직접 잡는 쪽에 맞춰져 있다.
 
 ## 냄새 카드 1: 웹 타입이 service에 보인다
 
@@ -127,12 +152,18 @@ public OrderPageResult findOrders(FindOrdersQuery query) { ... }
 
 - "작은 프로젝트인데 service에 `Pageable` 정도는 괜찮지 않나요?"
   - 당장 동작은 하지만, service를 다른 진입점이나 테스트에서 읽을 때 Spring Data 의미를 같이 알아야 한다.
+- "`service에서 ResponseEntity를 반환해요`라는 리뷰를 받았는데 뭐가 문제죠?"
+  - 보통은 service가 HTTP 응답 책임까지 가진다는 뜻이다. 결과 의미는 service가 만들고, HTTP 포장은 controller가 맡는 쪽이 기본값이다.
+- "`service가 Entity를 받아요`라고 하면 무조건 잘못인가요?"
+  - 절대 규칙은 아니지만, 초심자 기본값으로는 `id`나 command로 더 좁혀 보는 편이 안전하다. 전체 엔티티가 꼭 필요한지부터 다시 묻는다.
 - "업로드는 결국 `MultipartFile`로 들어오는데 왜 바로 못 받나요?"
   - 들어오는 입구는 웹이지만, service는 "프로필 이미지를 바꾼다"는 작업을 재사용 가능하게 가져가는 쪽이 보통 더 안전하다.
 - "service가 `Entity`를 받아야 수정이 쉬운 것 아닌가요?"
   - 수정 편의보다 계약 선명도가 먼저다. `orderId`, `command`, domain method가 보통 더 읽기 쉽다.
 - "조회니까 `Page<OrderEntity>`를 그냥 반환해도 되지 않나요?"
   - 목록 컬럼, 조인, 직렬화 요구가 붙는 순간 읽기 모델이 금방 달라진다. query/result DTO가 흔들림을 줄인다.
+- "`service가 Pageable을 받아요`라는 리뷰를 받았는데, 그럼 pagination 자체가 잘못인가요?"
+  - 아니다. 초심자 기본값은 pagination 기능을 없애는 게 아니라, service 계약에서 `FindOrdersQuery` 같은 조회 언어로 한 번 좁히고 실제 `Pageable` 번역은 query repository/adapter 쪽에 두는 것이다. 다음 단계는 [`Pageable` leak vs query-model pagination bridge](./pageable-service-contract-vs-query-model-pagination-bridge.md)다.
 
 ## 실무에서 쓰는 모습
 
@@ -156,6 +187,8 @@ public OrderPageResult findOrders(FindOrdersQuery query) { ... }
 - `@Entity` 누수만 빠르게 체크하려면: [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)
 - repository/service 경계에서 JPA 타입을 어떻게 끊는지 보려면: [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - request DTO, command, entity 흐름을 다시 보려면: [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
+- `Pageable` leak와 legitimate query-model pagination을 구분하려면: [`Pageable` leak vs query-model pagination bridge](./pageable-service-contract-vs-query-model-pagination-bridge.md)
+- symptom-first 분기로 다시 시작하려면: [Software Engineering README의 30초 아키텍처 vs 계약 경계 결정표](./README.md#30초-아키텍처-vs-계약-경계-결정표)
 
 ## 면접/시니어 질문 미리보기
 

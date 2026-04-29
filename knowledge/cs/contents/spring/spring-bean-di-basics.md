@@ -27,6 +27,12 @@ retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배
 - 지금 중심이 아닌 것: BeanPostProcessor 체인, `BeanDefinition` 내부, `proxyBeanMethods`, 스코프 세부 함정
 - 위 단어가 먼저 궁금하면 이 문서를 더 늘리기보다 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md), [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)로 내려가는 편이 안전하다.
 
+| 먼저 보인 단어 | 이 primer에서 내릴 1차 판단 | 바로 넘길 문서 |
+|---|---|---|
+| `BeanPostProcessor`, `BeanDefinition`, `proxyBeanMethods` | beginner 큰 그림보다 컨테이너 내부/설정 심화 신호다 | [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md) |
+| `request scope`, `prototype`, lifecycle hook | "누가 연결하나"보다 생명주기/스코프 follow-up 질문이다 | [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md) |
+| `프록시가 왜 생겨요?`, `@Transactional`이 왜 연결돼요? | Bean 등록보다 프록시 적용 축 질문이다 | [@Transactional 기초](./spring-transactional-basics.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md) |
+
 ## 먼저 이 3문장만 분리한다
 
 처음에는 아래 세 문장이 같은 말처럼 들리지만, 실제로는 다른 단계다.
@@ -73,6 +79,20 @@ Spring 입문 초반에는 아래 다섯 개만 먼저 구분하면 된다.
 - "트랜잭션이 적용된다"는 말은
 
 모두 같은 시점의 얘기가 아니다.
+
+---
+
+## 앱 시작 때 준비되는 것과 요청 때 일어나는 것은 다르다
+
+beginner가 특히 많이 헷갈리는 지점은 "`POST /orders`가 왔을 때 `OrderService`가 그제야 만들어지나요?`" 같은 질문이다. 처음에는 **객체 조립 타임라인**과 **요청 처리 타임라인**만 분리해도 충분하다.
+
+| 타임라인 | 여기서 보는 것 | 초급자용 한 줄 |
+|---|---|---|
+| 앱 시작 | component scan, `@Bean`, 생성자 주입 | controller/service/repository를 미리 올리고 연결한다 |
+| 요청 도착 | `DispatcherServlet`, controller 호출 | 이미 준비된 Bean을 사용해 요청을 처리한다 |
+| service 실행 중 | 프록시, `@Transactional` | 필요하면 이미 준비된 Bean 호출 앞뒤를 감싼다 |
+
+짧게 외우면 `Bean은 보통 먼저 준비되고, 요청은 나중에 그 조립품을 사용한다`다. 그래서 "`service`가 안 들어가요"는 요청 처리보다 Bean 등록/주입 질문일 가능성이 크다.
 
 ---
 

@@ -12,11 +12,11 @@
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dummy vs stub, dummy stub beginner, test double basics, fixed input mock confusion, 처음 dummy stub 헷갈려, 왜 이건 mock 아니에요, what is dummy, what is stub, beginner test double primer, 자리만 채우는 객체, 고정된 반환값 더블, basics
+retrieval-anchor-keywords: dummy vs stub, dummy stub beginner, test double basics, fixed input mock confusion, fixed input test double, 처음 dummy stub 헷갈려, 왜 이건 mock 아니에요, what is dummy, what is stub, beginner test double primer, 자리만 채우는 객체, 고정된 반환값 더블, 모든 고정값 더블이 mock인가요, basics
 
 ## 핵심 개념
 
-이 문서의 질문은 "`값을 하나 넣어 둔 테스트 객체`를 왜 다 mock이라고 부르면 안 되죠?`"다. 초심자는 아직 stub, spy, fake 용어를 만나기 전이라 `실제 객체 대신 넣은 것`을 전부 mock으로 부르는 경우가 많다.
+이 문서의 질문은 "`값을 하나 넣어 둔 테스트 객체`를 왜 다 mock이라고 부르면 안 되죠?`"다. 초심자는 아직 stub, spy, fake 용어를 만나기 전이라 `실제 객체 대신 넣은 것`, 특히 `고정값을 넣은 것`을 전부 mock으로 부르는 경우가 많다.
 
 가장 먼저 자를 기준은 `테스트가 그 객체를 읽느냐`다. 테스트 흐름에서 **아예 읽히지 않고 자리만 채우면 dummy**, **그 객체가 돌려주는 값 덕분에 테스트가 굴러가면 stub**이다. 둘 다 "진짜 대신 넣은 것"이지만 역할이 다르다.
 
@@ -30,6 +30,7 @@ retrieval-anchor-keywords: dummy vs stub, dummy stub beginner, test double basic
 
 - 비유로 시작하면 dummy는 `출석부 인원 맞추기용 이름표`, stub은 `미리 써 둔 답안지`에 가깝다.
 - 다만 이 비유는 어디까지나 입문용이다. 실제 테스트 더블은 사람 역할이 아니라 `테스트 질문에 어떤 정보를 주는가`로 구분해야 한다.
+- 그래서 "`값이 들어 있으면 다 mock`"이 아니라 "`값이 테스트 설명에 실제로 쓰이면 stub`"으로 읽는 편이 초심자에게 더 안전하다.
 
 ## 상세 분해
 

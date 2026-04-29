@@ -5,6 +5,8 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+> - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring OAuth2 + JWT 통합](./spring-oauth2-jwt-integration.md)
 > - [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)
@@ -22,6 +24,17 @@
 > - [Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
 retrieval-anchor-keywords: SecurityContextRepository, SessionCreationPolicy, stateless spring security, HttpSessionSecurityContextRepository, NullSecurityContextRepository, security context persistence, request cache, oauth2 login state, hidden session, hidden JSESSIONID, hidden session beginner bridge, hidden session creation, auth session troubleshooting, BFF session cookie, logout propagation, session revocation lag, session store debugging, JSESSIONID stateless api, security readme session bridge, security session boundary bridge, session boundary replay bundle, session basics to SecurityContextRepository, session basics to Spring Security, why JSESSIONID appears, cookie exists but session missing, cookie 있는데 다시 로그인, browser 401 302 /login bounce, 401 302 bounce starter, hidden JSESSIONID next step, SavedRequest beginner bridge, post-login session persistence, next request anonymous after login, browser session troubleshooting return path, security browser session troubleshooting path, login loop return path, spring security primer ladder return, spring readme security route, beginner return path to spring readme, first spring deep dive after browser guide, first spring deep dive after safe next doc, after browser 401 302 guide, after safe next doc server anonymous, before spring deep dive already checked cookie header, spring deep dive 전에는 browser guide 먼저, safe next doc before securitycontextrepository, beginner-safe handoff, safe next doc before security context deep dive, server persistence session mapping deep dive, spring deep dive after cookie header gate, securitycontext 뭐예요, security context 뭐예요, securitycontext 처음, security context 처음, securitycontextholder 넣었는데 왜 다음 요청 anonymous, 로그인했는데 다음 요청 anonymous, 세션 있는데 왜 다시 로그인, stateless인데 왜 세션 생겨요
+
+## Beginner-safe entry ladder
+
+이 문서는 `첫 Spring deep dive`다.
+`SavedRequest`, `cookie-missing`, `server-anonymous`가 아직 안 갈렸다면 여기서 시작하지 않고 `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../network/login-redirect-hidden-jsessionid-savedrequest-primer.md) -> `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) 순서로 먼저 올라간다.
+
+| 지금 보이는 말 | 먼저 확정할 route | 이 문서를 여는 시점 |
+|---|---|---|
+| `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | `redirect / navigation memory` | 아직 아님. 먼저 [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| `Application`에는 cookie가 있는데 request `Cookie` header가 비어 있음 | `cookie-missing` | 아직 아님. 먼저 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) 또는 [Secure Cookie Behind Proxy Guide](../security/secure-cookie-behind-proxy-guide.md) |
+| request `Cookie` header는 있는데 `next request anonymous after login`, `cookie exists but session missing` | `server persistence / session mapping` | 지금 이 문서가 맞다 |
 
 ## 입문 브리지
 

@@ -9,6 +9,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
+- [`List.indexOf()` / `List.remove()` vs `Set.remove()` 증상 브리지](./list-indexof-remove-vs-set-remove-symptom-bridge.md)
 - [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 - [Mutable Element Pitfalls in List and Set](./mutable-element-pitfalls-list-set-primer.md)
 - [Map vs Set Requirement Bridge](../../data-structure/map-vs-set-requirement-bridge.md)
@@ -144,6 +145,7 @@ System.out.println(memberSet.contains(new Member(1L))); // true
 
 ## 더 깊이 가려면
 
+- `contains()` 다음으로 `indexOf()`/`remove()`까지 묶어서 헷갈린다면 [`List.indexOf()` / `List.remove()` vs `Set.remove()` 증상 브리지](./list-indexof-remove-vs-set-remove-symptom-bridge.md)
 - `HashSet.contains(...)`가 왜 `hashCode()`까지 보는지 바로 이어서 읽으려면 [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 - `contains()`가 mutable 상태 때문에 깨지는 장면을 보려면 [Mutable Element Pitfalls in List and Set](./mutable-element-pitfalls-list-set-primer.md)
 - `List`/`Set`/`Map`을 아예 처음 다시 고르고 싶으면 [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)

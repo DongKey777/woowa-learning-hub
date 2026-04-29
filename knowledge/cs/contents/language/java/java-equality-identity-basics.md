@@ -14,6 +14,7 @@
 - [Collections, Equality, and Mutable-State Foundations](./collections-equality-mutable-state-foundations.md)
 - [Java Array Equality Basics](./java-array-equality-basics.md)
 - [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
+- [`new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill](./new-aliasing-equality-hashset-hashmap-get-bridge-drill.md)
 - [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md)
 - [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md)
@@ -22,7 +23,7 @@
 - [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md)
 - [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md)
 
-retrieval-anchor-keywords: java equality basics, java identity basics, java == vs equals, java hashcode basics, same object vs same value, same fields but == false java, two objects same fields compare differently java, new twice same value false, what is equals hashcode java, 자바 == equals 차이, 같은 필드인데 왜 false예요, 객체 두 개 값은 같은데 비교가 달라요, string 같은데 왜 false예요, hashset 왜 하나로 보여요, 처음 배우는데 == equals 뭐가 달라요
+retrieval-anchor-keywords: java equality basics, java identity basics, java == vs equals, java hashcode basics, same object vs same value, same fields but == false java, two objects same fields compare differently java, 자바 == equals 차이, 같은 필드인데 왜 false예요, 객체 두 개 값은 같은데 비교가 달라요, 문자열 비교가 왜 안 돼요, string 같은데 왜 false예요, string equals가 뭐예요, hashset 왜 하나로 보여요, 처음 배우는데 == equals 뭐가 달라요
 
 처음 읽는 초보자라면 `객체 모델에서 비교로 넘어가기 -> 30초 분기표 -> 같은 값과 같은 객체는 다르다 -> 문자열 비교 -> 빠른 체크리스트` 순서만 먼저 따라가도 대부분의 첫 비교 버그를 자를 수 있다. wrapper cache, `intern()`, comparator 계약은 이 문서에서 깊게 파지 않고 관련 문서로 넘긴다.
 
@@ -249,7 +250,7 @@ side effect를 본 경험이 있으면, 이제 그 경험을 "`==`는 같은 객
 
 | 지금 보이는 증상 | 먼저 의심할 것 | 다음 문서 |
 |---|---|---|
-| `"ADMIN"`인데 조건문이 안 돈다 | 문자열 내용을 `==`로 비교했는지 | [String Intern and Pool Pitfalls](./string-intern-pool-pitfalls.md) |
+| `"문자열 비교가 왜 안 돼요"`, `"String 같은데 왜 false예요"` | 문자열 내용을 `==`로 비교했는지 | [Java String 기초](./java-string-basics.md) |
 | 배열 값이 같아 보이는데 `==`나 `array.equals(...)`가 `false`다 | 배열 비교를 일반 객체 `equals()`처럼 읽었는지 | [Java Array Equality Basics](./java-array-equality-basics.md) |
 | `Integer`/`Long` 비교가 값에 따라 들쭉날쭉하다 | wrapper를 primitive처럼 `==`로 비교했는지 | [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md) |
 | enum 비교에서 `equals()`를 써야 할지 `==`를 써야 할지 멈칫한다 | enum 상수 비교인지, 문자열 입력이나 외부 코드값 비교인지 섞었는지 | [Enum equality quick bridge](./enum-equality-quick-bridge.md), [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md) |
@@ -264,6 +265,8 @@ side effect를 본 경험이 있으면, 이제 그 경험을 "`==`는 같은 객
 - "`같은 값인가`"가 질문이면 `equals()`
 - "`같은 객체인가`"가 질문이면 `==`
 - "`HashSet`/`HashMap`에서 왜 안 맞지?"가 질문이면 `hashCode()`와 `equals()`를 같이 본다
+
+문자열 쪽에서 질문이 "`String equals가 뭐예요`"로 바로 들어오면 [Java String 기초](./java-string-basics.md)의 같은 증상 문구 표부터 먼저 읽고, 다시 이 문서로 돌아와 참조형 전체 규칙으로 넓히면 된다.
 
 처음 읽는 단계에서는 아래 세 문장을 바로 말할 수 있으면 충분하다.
 
@@ -667,6 +670,7 @@ public class EqualityExample {
 
 - 초급 흐름을 먼저 이어가려면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - `hashCode()`와 `equals()`가 `HashMap`/`HashSet`에서 실제로 어떤 순서로 쓰이는지 바로 잇고 싶다면 [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
+- `new`, aliasing, `==`, `equals()`, `HashSet`, `HashMap#get`을 한 번에 예측하는 연습이 필요하면 [`new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill](./new-aliasing-equality-hashset-hashmap-get-bridge-drill.md)
 - 값 객체 관점에서 equality를 확장해 보고 싶다면 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - 배열 비교 함정을 따로 정리해서 보려면 [Java Array Equality Basics](./java-array-equality-basics.md)
 - 정렬 기준과 `equals()` 관계까지 이어서 보려면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)

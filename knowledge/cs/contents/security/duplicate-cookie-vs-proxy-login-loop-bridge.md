@@ -139,7 +139,7 @@ Set-Cookie: SESSION=abc; Secure; HttpOnly
 
 - [Secure Cookie Behind Proxy Guide](./secure-cookie-behind-proxy-guide.md)
 
-## 읽고 나서 돌아오는 길
+## 다음 단계와 복귀 경로
 
 > `Duplicate Cookie Name Shadowing`이나 `Secure Cookie Behind Proxy Guide`로 잠깐 detour했더라도, 다음 한 걸음은 다시 같은 browser/session 라우터에서 고른다.
 

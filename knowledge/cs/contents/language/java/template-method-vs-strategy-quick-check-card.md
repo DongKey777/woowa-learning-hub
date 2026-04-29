@@ -11,6 +11,7 @@
 - [객체지향 핵심 원리](./object-oriented-core-principles.md) - 상속과 다형성 큰 그림이 아직 흐리면 한 칸 뒤로 돌아가는 primer
 - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) - 부모가 흐름을 쥐는 구조를 더 길게 보고 싶을 때
 - [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md) - 전략 객체를 주입해 교체하는 구조를 더 길게 보고 싶을 때
+- [`beforeX`/`afterX`/`shouldX`가 늘어날 때: Template Method Hook Mini Smell Card](./template-method-hook-explosion-mini-smell-card.md) - `hook`가 늘어나는 초입을 beginner 카드로 먼저 짚고 싶을 때
 - [Template Hook Smells](../../design-pattern/template-hook-smells.md) - `hook`가 늘어나서 전략 분리 신호인지 점검할 때
 - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) - 둘 다 아닌데 조합이 기본값처럼 보일 때 보는 안전한 다음 단계
 - [language 카테고리 인덱스 - Java primer](../README.md#java-primer)
@@ -91,7 +92,7 @@ retrieval-anchor-keywords: template method vs strategy quick check, template met
 
 - "배치 끝나고 슬랙 알림만 가끔 붙이면 된다"면 `hook`가 충분하다.
 - "할인 계산식이 회원 등급마다 다르고 테스트에서도 쉽게 바꿔야 한다"면 전략 객체로 빼는 편이 낫다.
-- "처음엔 알림 하나였는데, 나중엔 조건 분기와 우회 규칙까지 hook로 넣고 있다"면 이미 전략 후보에 가깝다.
+- "처음엔 알림 하나였는데, 나중엔 조건 분기와 우회 규칙까지 hook로 넣고 있다"면 이미 전략 후보에 가깝다. 이 초입 냄새만 짧게 잡고 싶다면 [`beforeX`/`afterX`/`shouldX`가 늘어날 때: Template Method Hook Mini Smell Card](./template-method-hook-explosion-mini-smell-card.md)를 먼저 본다.
 
 ## 흔한 오해와 함정
 
@@ -105,6 +106,7 @@ retrieval-anchor-keywords: template method vs strategy quick check, template met
 - 아직 `공통 상태 vs 계약`이 더 헷갈리면 [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md)
 - "부모가 흐름을 쥔다"를 템플릿 메소드 예제로 더 보고 싶다면 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
 - "구현을 주입해 바꾼다"를 전략 예제로 더 보고 싶다면 [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md)
+- `beforeX`/`afterX`/`shouldX` 이름이 늘어나기 시작한 초입을 짧게 점검하고 싶다면 [`beforeX`/`afterX`/`shouldX`가 늘어날 때: Template Method Hook Mini Smell Card](./template-method-hook-explosion-mini-smell-card.md)
 - `hook`가 많은데 왜 냄새처럼 느껴지는지 보고 싶다면 [Template Hook Smells](../../design-pattern/template-hook-smells.md)
 - 둘 다 아닌데 왜 자꾸 조합을 먼저 보라고 하는지 남으면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
 

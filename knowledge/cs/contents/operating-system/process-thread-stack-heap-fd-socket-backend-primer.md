@@ -11,20 +11,23 @@
 - [프로세스와 스레드 기초](./process-thread-basics.md)
 - [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
 - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
+- [동기/비동기와 블로킹/논블로킹 기초](./sync-async-blocking-nonblocking-basics.md)
 - [파일 디스크립터 기초](./file-descriptor-basics.md)
 - [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
 - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 - [operating-system 카테고리 인덱스](./README.md)
-
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [Spring WebFlux vs MVC](../spring/spring-webflux-vs-mvc.md)
 
-retrieval-anchor-keywords: process thread stack heap fd socket primer, backend request mental model, process vs thread stack vs heap, file descriptor vs socket beginner, 서버 요청 처리 기초, 프로세스 스레드 스택 힙 파일 디스크립터 소켓, 스택 힙 fd 소켓 차이, 스레드 힙 공유, 소켓은 fd인가, spring boot process thread heap socket, woowacourse backend os primer, process thread stack heap fd socket backend primer basics, process thread stack heap fd socket backend primer beginner, process thread stack heap fd socket backend primer intro, operating system basics
+retrieval-anchor-keywords: process thread stack heap fd socket primer, backend request mental model, process vs thread stack vs heap, file descriptor vs socket beginner, 서버 요청 처리 기초, 프로세스 스레드 스택 힙 파일 디스크립터 소켓, 스택 힙 fd 소켓 차이, 스레드 힙 공유, heap vs stack 언제 달라요, 지역 변수 객체 어디 저장돼요, fd가 뭐예요, socket이 뭐예요, process thread fd socket 처음, spring boot process thread heap socket, operating system basics
 
 ## 먼저 잡는 멘탈 모델
 
 이 주제가 자꾸 섞이는 이유는 process, thread, stack, heap, fd, socket을 보통 서로 다른 장에서 따로 배우기 때문이다.
 처음에는 용어 정의를 따로 외우기보다 "요청 하나가 서버 안을 어떻게 지나가는가"라는 한 장면으로 묶어 보는 편이 쉽다.
 즉, 서버 요청 하나를 아래 그림처럼 따라가면서 누가 실행하고, 어디에 쌓이고, 어떤 자원을 잡는지만 먼저 구분하면 된다.
+
+질문이 "`heap vs stack 언제 달라요?`", "`지역 변수랑 객체는 왜 따로 말해요?`"처럼 메모리 용어 비교에서 시작해도, 이 문서는 그 질문을 요청 처리 장면으로 다시 묶는 entrypoint로 읽으면 된다.
 
 ```text
 하나의 서버 프로세스
@@ -65,6 +68,15 @@ Spring Boot를 예로 들면 보통 이렇게 단순화할 수 있다.
 - **fd**는 열린 자원에 대한 프로세스 로컬 번호다
 - **socket**은 그 fd가 가리킬 수 있는 대표적인 네트워크 자원이다
 
+## 30초 분기표: 지금 내가 헷갈리는 축은 어디인가
+
+| 지금 드는 질문 | 먼저 잡을 축 | 이 문서에서 붙잡을 핵심 문장 | 다음 문서 |
+|---|---|---|---|
+| "`요청 하나를 누가 실행하지?`" | process vs thread | 보통은 새 프로세스가 아니라 기존 프로세스 안의 worker thread가 맡는다 | [프로세스와 스레드 기초](./process-thread-basics.md) |
+| "`지역 변수와 공유 객체가 왜 다르게 말해지지?`" | stack vs heap | stack은 스레드 로컬 호출 상태, heap은 프로세스 공유 객체 공간이다 | [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md) |
+| "`socket`이랑 `fd`가 같은 말 아니었어?`" | fd vs socket | fd는 번호이고 socket은 그 번호가 가리키는 자원 종류 중 하나다 | [파일 디스크립터 기초](./file-descriptor-basics.md) |
+| "`왜 요청이 많아지면 thread 수, 메모리, 연결 수를 같이 보지?`" | runtime 자원 연결 | 한 요청은 thread, heap, socket/fd를 한 장면에서 같이 건드린다 | [동기/비동기와 블로킹/논블로킹 기초](./sync-async-blocking-nonblocking-basics.md) |
+
 ## 1. process vs thread: 누가 무엇을 소유하나
 
 프로세스와 스레드를 헷갈리면 서버 구조가 전부 흐려진다.
@@ -87,6 +99,8 @@ Spring Boot를 예로 들면 보통 이렇게 단순화할 수 있다.
 즉 "요청이 하나 들어왔다 = 프로세스 하나 생성"이 아니다. 보통은 **기존 서버 프로세스 안의 스레드 하나가 그 요청을 맡는다**.
 
 ## 2. stack vs heap: 어느 메모리가 누구 것인가
+
+이 구간은 "`heap vs stack 언제 달라요?`"라는 질문에 바로 답하려고 만든 비교 구간이다. 짧게 말하면 "함수 호출 중인 각 스레드의 현재 상태를 따로 들고 있으면 stack, 여러 스레드가 함께 보는 객체 상태면 heap"이라고 먼저 잡으면 된다.
 
 stack과 heap은 둘 다 프로세스 메모리 안에 있지만 역할이 다르다.
 
@@ -262,6 +276,7 @@ socket과 파일은 fd로 관리된다.
 - `fork()` / `exec()` / IPC로 내려가려면 [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 - fd 자체를 먼저 단단히 잡으려면 [파일 디스크립터 기초](./file-descriptor-basics.md)
 - socket/fd가 성능과 운영에 미치는 영향을 보려면 [File Descriptor, Socket, Syscall Cost, and Server Impact](./file-descriptor-socket-syscall-cost-server-impact.md)
+- 요청 처리 모델을 Spring 관점에서 다시 붙여 보려면 [Spring WebFlux vs MVC](../spring/spring-webflux-vs-mvc.md)
 - 운영체제 입문 primer 묶음으로 돌아가려면 [Operating System README - 입문 primer](./README.md#입문-primer)
 
 ## 한 줄 정리

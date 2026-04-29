@@ -13,7 +13,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
 
-retrieval-anchor-keywords: http cache vs keep-alive vs session, cache reuse vs connection reuse, session persistence basics, keep-alive 로그인 유지 아니에요, 304 vs cookie login state, 브라우저가 뭘 다시 쓰나요, http cache body reuse, connection reuse same tcp socket, session persistence cookie session id, cache랑 keep-alive 차이, session이랑 cache 차이, beginner http confusion
+retrieval-anchor-keywords: http cache vs keep-alive vs session, cache reuse vs connection reuse, session persistence basics, keep-alive 로그인 유지 아니에요, 304가 로그인 상태랑 상관있어요, 브라우저가 뭘 다시 쓰나요, http cache body reuse, connection reuse same tcp socket, session persistence cookie session id, cache랑 keep-alive 차이, session이랑 cache 차이, keep-alive랑 session 차이 뭐예요, 304랑 쿠키 차이 뭐예요, 처음 배우는데 cache keep-alive session이 헷갈려요, what is keep-alive vs session
 
 ## 핵심 개념
 

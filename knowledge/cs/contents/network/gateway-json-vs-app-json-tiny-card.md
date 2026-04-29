@@ -8,6 +8,7 @@
 
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
+- [Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge](./spring-404-problemdetail-framework-vs-domain-bridge.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [network 카테고리 인덱스](./README.md)
@@ -164,6 +165,7 @@ Spring 6+/Boot 3+ 계열에서는 `ProblemDetail`을 통해 app도 비슷한 모
 | C | `{ \"title\": \"Not Found\", \"status\": 404, \"detail\": \"No static resource\" }` | Spring 기본 `/error`나 framework 경로일 수도 있음 | gateway로 단정하지 말고 app/framework 경계 재확인 |
 
 여기서 C 같은 장면이 중요하다. `problem+json` 모양이어도 반드시 "우리 도메인 controller가 만들었다"는 뜻은 아니다. app 내부에서도 framework 기본 경로와 커스텀 advice가 나뉠 수 있다.
+이 분기를 더 자세히 보면 [Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge](./spring-404-problemdetail-framework-vs-domain-bridge.md)가 바로 다음 단계다.
 
 ## 흔한 오해와 함정
 
@@ -197,6 +199,7 @@ DevTools `Preview`에서 아래 둘을 봤다고 하자.
 - JSON/HTML/login/CDN까지 body owner를 넓게 가르려면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - header 단서까지 묶어 보고 싶으면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - 서비스 error DTO와 `ProblemDetail` 경계를 app 쪽에서 보고 싶으면 [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
+- `404 problem+json` 안에서도 framework `No static resource`와 domain not found를 나누려면 [Spring `404` `ProblemDetail`: framework `No static resource` vs domain not found bridge](./spring-404-problemdetail-framework-vs-domain-bridge.md)
 - Spring app 내부에서도 `ProblemDetail`, framework 기본 오류, commit 이후 실패가 어떻게 갈리는지 더 보려면 [Spring `ProblemDetail` Error Response Design](../spring/spring-problemdetail-error-response-design.md)
 
 ## 한 줄 정리

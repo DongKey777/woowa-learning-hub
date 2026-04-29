@@ -15,7 +15,7 @@
 - [Spring MVC Request Lifecycle Basics](../spring/spring-mvc-request-lifecycle-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stub fake difference, first test checklist follow-up, unit slice integration e2e balance, springboottest not e2e, webmvctest datajpatest next step, fake outbound port, contract test basics, hexagonal testing seam, beginner test routing follow-up
+retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stub fake difference, first test checklist follow-up, unit slice integration e2e balance, springboottest not e2e, webmvctest datajpatest next step, fake outbound port, contract test basics, hexagonal testing seam, repository fake vs mock example, beginner test routing follow-up
 
 `테스트 전략 기초`에서 첫 테스트를 고른 뒤 "왜 그 테스트가 맞는지", "mock 대신 fake를 언제 써야 하는지"가 더 궁금할 때 이 문서로 올라오면 된다. 특히 `@WebMvcTest` 경계는 [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md), `@DataJpaTest`에서 테스트 DB 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md)로 바로 내려가면 된다.
 
@@ -83,6 +83,7 @@ retrieval-anchor-keywords: test strategy follow-up, test double basics, mock stu
 
 중요한 건 이름 암기가 아니라 **어떤 의존성을 왜 대체하는가**다.
 Ports and Adapters 구조에서 이 질문을 더 좁히면 "유스케이스는 어떤 outbound port를 fake로 대체하고, 어떤 adapter는 통합 환경에서 검증해야 하는가"가 된다. 이 흐름은 [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)에서 이어서 다룬다.
+특히 repository 경계에서는 같은 질문을 fake와 mock으로 각각 써 보면 차이가 빨리 드러난다. 아래 예시는 [Repository Fake Design Guide](./repository-fake-design-guide.md)와 같은 주문번호 중복 시나리오를 그대로 재사용한다.
 
 ### 4. Mock은 유용하지만 남발하면 설계를 망칠 수 있다
 
@@ -123,11 +124,59 @@ mock만으로는 부족하고, 실제 계약 검증과 stub 서버를 같이 써
 
 E2E는 최소 핵심 시나리오만 두고, 나머지는 contract/app integration으로 분해한다.
 
+## Repository Fake와 Mock 비교 예시
+
+같은 주문번호면 생성이 실패해야 한다는 질문은 `호출을 몇 번 했는가`보다 `저장 계약 결과가 무엇인가`를 읽는 편이 더 중요하다.
+그래서 repository 경계에서는 mock보다 fake가 먼저 읽히는 경우가 많다.
+
+| 같은 질문을 볼 때 | fake repository | mock repository |
+|---|---|---|
+| 테스트가 먼저 말하는 것 | "`이미 저장된 ORDER-001이 있으니 생성이 실패한다`" | "`existsByOrderNumber()`를 호출했고 `save()`는 안 불렀다`" |
+| 초심자가 읽기 쉬운 중심 | 상태/결과 | 상호작용/호출 |
+| 보통 더 잘 맞는 질문 | 중복, 저장 후 재조회, 정렬 같은 계약 결과 | 알림 전송, 이벤트 발행처럼 호출 자체가 결과인 경우 |
+
+fake 쪽 테스트는 보통 이렇게 읽힌다.
+
+```java
+@Test
+void duplicate_order_number_is_rejected() {
+    FakeOrderRepository repository = new FakeOrderRepository();
+    repository.save(existingOrder("ORDER-001"));
+
+    PlaceOrderService service = new PlaceOrderService(repository, fixedIdGenerator("order-2"));
+
+    assertThatThrownBy(() -> service.place(command("ORDER-001")))
+            .isInstanceOf(DuplicateOrderNumberException.class);
+}
+```
+
+반대로 mock으로 같은 질문을 쓰면 테스트의 시선이 결과보다 상호작용 쪽으로 이동한다.
+
+```java
+@Test
+void duplicate_order_number_is_rejected() {
+    OrderRepository repository = mock(OrderRepository.class);
+    given(repository.existsByOrderNumber(new OrderNumber("ORDER-001"))).willReturn(true);
+
+    PlaceOrderService service = new PlaceOrderService(repository, fixedIdGenerator("order-2"));
+
+    assertThatThrownBy(() -> service.place(command("ORDER-001")))
+            .isInstanceOf(DuplicateOrderNumberException.class);
+
+    then(repository).should(never()).save(any(Order.class));
+}
+```
+
+둘 다 가능하지만, repository처럼 `저장하고 다시 읽는 경계`는 fake가 더 직접적인 설명이 된다.
+이 concrete example을 더 자세히 따라가고 싶다면 [Repository Fake Design Guide](./repository-fake-design-guide.md)로 이어서 보면 된다.
+
 ---
 
 ## 코드로 보기
 
 ```java
+// repository 경계는 fake로 결과 중심을 읽고,
+// 순수 계산 로직은 작은 unit test로 빠르게 닫는다.
 @Test
 void calculates_discount_correctly() {
     Order order = new Order(...);
@@ -137,6 +186,7 @@ void calculates_discount_correctly() {
 ```
 
 좋은 테스트는 구현 세부보다 시나리오와 기대 결과를 보여 준다.
+위 할인 예시는 "순수 로직은 작은 unit test로 충분하다"를, 앞의 주문번호 예시는 "repository 경계는 fake와 mock 중 질문에 맞는 쪽을 고른다"를 보여 주는 짝이다.
 
 ---
 

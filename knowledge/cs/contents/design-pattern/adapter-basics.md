@@ -34,6 +34,10 @@ retrieval-anchor-keywords: adapter pattern basics, 어댑터 패턴, adapter pat
 
 입문자가 자주 막히는 부분은 "번역이 필요하지 않으면 어댑터가 필요 없다"는 점이다. 인터페이스가 이미 맞는다면 어댑터를 만들 필요가 없고, 그냥 바로 쓰면 된다.
 
+처음엔 아래 한 줄만 잡아도 충분하다.
+
+- **서비스는 우리 언어만 말하고, 어댑터가 외부 언어를 번역한다.**
+
 <a id="adapter-quick-entry"></a>
 
 ## 빠른 진입: 10초/30초/1분
@@ -83,6 +87,8 @@ Client → Target 인터페이스 → Adapter → Adaptee (외부/레거시)
 | Facade | 복잡한 서브시스템을 단순 창구로 감싸는가 | "사용법을 단순화한다" |
 | Decorator | 같은 인터페이스에 기능을 덧붙이는가 | "기능을 추가한다" |
 
+처음 검색어가 `adapter vs facade`, `adapter vs decorator`, `wrapper 패턴 헷갈려요`라면 비교 라우터 문서인 [Adapter vs Facade vs Decorator: 처음 배우는 래퍼 패턴 큰 그림](./adapter-vs-facade-vs-decorator-beginner-router.md)로 먼저 가도 된다.
+
 ### 1분 예시: 외부 PG 응답을 우리 표준으로 번역하기
 
 아래처럼 상태, 금액, 에러 코드를 우리 쪽 언어로 바꾸는 장면이면 adapter를 떠올리면 된다.
@@ -122,6 +128,9 @@ public class LegacyPgAdapter implements PaymentGateway {
 }
 ```
 
+이 코드에서 중요한 건 `LegacyPgAdapter`가 "결제 정책"을 결정하지 않는다는 점이다.
+`원 -> 달러 변환`, `메서드 이름 맞춤`처럼 **호출 모양을 맞추는 일**까지만 맡는다.
+
 ## 흔한 오해와 함정
 
 - **"어댑터와 데코레이터는 같다"** — 어댑터는 인터페이스를 맞추는 것이고, 데코레이터는 기능을 추가하는 것이다. 어댑터는 두 인터페이스가 달라야 의미가 있다.
@@ -129,6 +138,18 @@ public class LegacyPgAdapter implements PaymentGateway {
 - **"레거시 코드는 무조건 어댑터로 감싸야 한다"** — 레거시를 직접 쓰는 게 더 단순하다면 어댑터가 오히려 불필요한 간접층이 된다.
 - **"DTO 변환 코드도 전부 어댑터 패턴인가요?"** — 단순 매핑 유틸리티일 수도 있다. 핵심은 "외부 인터페이스 불일치를 안정적으로 경계화하는가"다.
 - **"ACL(안티 부패 계층) = 어댑터 하나인가요?"** — ACL은 여러 번역 규칙/검증/정책을 포함한 경계 설계다. 어댑터는 그 안에서 인터페이스 번역을 맡는 한 조각일 수 있다.
+
+## 언제 먼저 의심하면 좋은가
+
+아래 증상이 보이면 adapter 후보인지 먼저 체크하면 된다.
+
+| 보이는 증상 | 먼저 던질 질문 | adapter 쪽 신호 |
+|---|---|---|
+| 외부 SDK 메서드 이름이 우리 서비스 언어와 다르다 | "서비스가 외부 타입을 직접 알아야 하나?" | 아니오. Target 인터페이스 뒤로 숨기고 싶다 |
+| 금액/상태/에러 코드 단위가 다르다 | "이 변환을 한 군데로 모을 수 있나?" | 예. 번역 책임을 adapter에 모은다 |
+| 공급자 교체 때 서비스 코드도 같이 흔들린다 | "수정 범위를 adapter 구현체로 모을 수 있나?" | 예. 공급자별 adapter를 둔다 |
+
+반대로 단순히 메서드 여러 개를 한 입구로 묶는 게 중심이면 facade를 먼저 의심한다.
 
 ## 실무에서 쓰는 모습
 
@@ -150,6 +171,7 @@ gateway.pay(12_000);
 
 - `GoF adapter`는 알겠는데 `controller adapter`, `repository adapter`라는 말이 왜 나오는지 막히면: [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)
 - `adapter`라는 같은 단어가 왜 패턴/아키텍처에서 다르게 쓰이는지 자르고 싶으면: [Ports and Adapters vs GoF 패턴: 경계에서 책임을 자르는 법](./ports-and-adapters-vs-classic-patterns.md)
+- `wrapper`처럼 보여서 facade/decorator와 계속 섞이면: [Adapter vs Facade vs Decorator: 처음 배우는 래퍼 패턴 큰 그림](./adapter-vs-facade-vs-decorator-beginner-router.md)
 - adapter 기본 틀은 이해했고 객체/클래스 adapter 차이가 궁금하면: [Adapter (어댑터) — 심화](./adapter.md)
 - wrapper 패턴끼리 계속 헷갈리면: [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 - 번역층이 너무 길어져 책임이 흐려지면: [Adapter Chaining Smells](./adapter-chaining-smells.md)

@@ -10,13 +10,13 @@
 - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
-- [Spring `404`/`405` vs Bean Wiring Error Confusion Card: 요청 매핑 실패와 DI 예외를 먼저 분리하기](./spring-404-405-vs-bean-wiring-confusion-card.md)
+- [Spring 요청 파이프라인 기초의 `404`/`400`/`bean missing` 혼동 분리표](./spring-request-pipeline-bean-container-foundations-primer.md#mvc-di-transaction-confusion-card)
 - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [Database First-Step Bridge](../database/database-first-step-bridge.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet basics, bean container basics, spring di basics, controller service repository basics, spring 요청 흐름 뭐예요, bean di 뭐예요, 처음 spring 구조 헷갈려요, 왜 404 bean missing 같이 보여요, controller 다음 save 어디서 봐요, spring basics what is, request pipeline what is
+retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet basics, bean container basics, spring di basics, controller service repository basics, spring 요청 흐름 뭐예요, bean di 뭐예요, 처음 spring 구조 헷갈려요, 왜 404 bean missing 같이 보여요, controller 다음 save 어디서 봐요, 요청마다 bean 만들어요, dispatcherservlet이 service 넣어줘요, mvc di transaction 차이, spring basics what is, request pipeline what is
 
 ## 핵심 개념
 
@@ -44,6 +44,18 @@ retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet b
 
 `404`는 보통 길찾기 문제이고, `bean missing`은 객체 조립 문제다. 같은 요청에서 보였다고 같은 원인이라고 보면 안 된다.
 
+## mental model 3줄
+
+처음에는 아래 세 줄만 먼저 고정하면 된다.
+
+| 장면 | 누가 맡나 | 여기서 멈춰서 할 첫 질문 |
+|---|---|---|
+| 요청이 들어온다 | MVC | "`어느 controller로 가지?`" |
+| controller 안에 service가 이미 있다 | Bean 컨테이너 + DI | "`누가 미리 만들어 연결했지?`" |
+| 여러 저장을 같이 묶는다 | `@Transactional` 프록시 | "`어디까지 한 작업으로 보지?`" |
+
+비유를 쓰면 "MVC는 길안내", "DI는 무대 뒤 준비", "`@Transactional`은 장면 사이에 묶는 컷" 정도다. 다만 이 비유는 책임을 나누는 데만 유용하고, 실제 실행 순서와 예외 규칙까지 모두 설명해 주지는 않는다.
+
 ## 먼저 머리에 넣을 4문장
 
 이 문서는 용어 설명을 늘리기보다 같은 주문 요청을 네 문장으로 다시 자르는 데 목적이 있다.
@@ -52,7 +64,13 @@ retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet b
 - `controller`와 `service` 연결은 Bean 컨테이너가 미리 끝낸다.
 - DB 작업 묶음은 보통 service의 `@Transactional` 경계에서 정한다.
 - `302`/`cookie`가 먼저면 network/security 쪽으로, `save()` 다음 SQL이 궁금하면 database 쪽으로 넘긴다.
-- `deadlock`, `timeout`, `observability` 같은 단어가 먼저면 이 primer를 더 파지 말고 관련 follow-up 문서로 넘긴다.
+
+여기서 바로 멈추고 넘겨야 하는 질문도 같이 기억하면 초반 과적재를 줄일 수 있다.
+
+| 먼저 보인 단어 | 이 primer에서 내릴 1차 판단 | 바로 넘길 문서 |
+|---|---|---|
+| `deadlock`, `timeout`, `observability` | 요청 파이프라인 primer 범위를 넘는 운영/incident 신호다 | [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md), [Spring Async MVC Streaming Observability Playbook](./spring-async-mvc-streaming-observability-playbook.md) |
+| `302 /login`, `cookie`, `saved request` | Spring 내부보다 browser/security handoff 질문일 수 있다 | [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md), [Security README](../security/README.md#browser--session-beginner-ladder) |
 
 | 지금 막힌 질문 | 이 문서에서 먼저 남길 한 줄 | 다음 한 걸음 |
 |---|---|---|
@@ -74,6 +92,49 @@ retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet b
 짧게 외우면 `404`는 길찾기, `400`은 값 채우기, `bean missing`은 객체 조립, `@Transactional`은 작업 묶기다.
 
 브라우저 `cookie`, `302`, `304`가 먼저 보이면 Spring 내부보다 [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)이나 network primer로 잠깐 되돌아가는 편이 빠르다. 반대로 controller 다음 `save()`와 SQL이 궁금하면 이 문서에서 멈추지 말고 [Database First-Step Bridge](../database/database-first-step-bridge.md)로 한 칸만 넘긴다.
+
+## 네 문서를 한 요청에 붙이는 가장 짧은 읽기 순서
+
+이 문서는 primer 4장을 다시 한 화면에 붙이는 용도라서, "`어디부터 어디까지 읽고 멈출지`"를 같이 정해 두는 편이 beginner에게 안전하다.
+
+| 같은 `POST /orders` 장면에서 남은 질문 | 먼저 열 문서 | 여기서 멈추면 되는 이유 |
+|---|---|---|
+| "`왜 이 URL이 저 컨트롤러로 가요?`" | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) | 요청 길찾기와 바인딩만 먼저 복구한다 |
+| "`OrderService`는 누가 넣어 둔 거예요?`" | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) | 객체 조립 타임라인만 따로 본다 |
+| "`save()` 둘이 왜 같이 rollback돼요?`" | [@Transactional 기초](./spring-transactional-basics.md) | 작업 묶음 경계만 따로 본다 |
+| "`세 문서가 다 맞는 말 같은데 한 화면에서 어떻게 이어져요?`" | 이 문서 | MVC, DI, 트랜잭션을 한 요청 타임라인으로 다시 붙인다 |
+
+짧게 외우면 `요청 길찾기 -> 객체 조립 -> 작업 묶기 -> 다시 합치기`다. beginner에게는 이 순서가 glossary식 정의 나열보다 훨씬 덜 무겁다.
+
+<a id="mvc-di-transaction-confusion-card"></a>
+## `404` / `400` / `bean missing` / `@Transactional` 빠른 혼동 분리표
+
+초급자는 같은 `POST /orders` 기능을 보다가도 "`404`도 나오고, `bean missing`도 봤고, 어떤 날은 `@Transactional`도 안 먹어요"처럼 한 덩어리로 말하기 쉽다. 이때는 "무슨 기술을 쓰는가"보다 "**어느 시점에서 먼저 실패했는가**"로 자르면 훨씬 덜 헷갈린다.
+
+| 눈앞에 먼저 보인 장면 | 보통 어디서 먼저 실패했나 | 가장 먼저 던질 질문 | 바로 갈 문서 |
+|---|---|---|---|
+| `POST /orders`가 `404`다 | 요청 처리 타임라인의 길찾기 | URL과 HTTP 메서드가 맞나 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| 컨트롤러 로그도 찍히기 전에 `400`이다 | 요청 처리 타임라인의 바인딩 | JSON/body/type이 DTO로 바뀌었나 | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md) |
+| 앱 시작부터 `OrderService` Bean을 못 찾는다 | Bean 준비 타임라인의 등록/주입 | scan이나 `@Bean` 등록이 됐나 | [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md) |
+| 요청은 처리되는데 commit/rollback이 기대와 다르다 | 이미 실행 중인 service 경계 | 프록시를 타고 `public` service 메서드로 들어갔나 | [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md) |
+
+같은 주문 예시를 한 줄씩 붙이면 더 또렷하다.
+
+- `404`: `OrderController`까지 못 갔다. 요청 길찾기부터 다시 본다.
+- `400`: `OrderController.create()`에 들어가기 전 DTO 변환에서 막혔을 수 있다.
+- `bean missing`: `OrderController`가 뜨기 전에 `OrderService`나 `OrderRepository` 조립이 끝나지 않았다.
+- `@Transactional` 오해: `OrderService`는 있어도 `this.placeOrder()`처럼 프록시를 우회하면 트랜잭션 경계가 기대와 다를 수 있다.
+
+## 흔한 혼동 4개
+
+- "`404`가 났으니 Bean도 없는 것 아닌가?"
+  아니다. `404`는 보통 "요청이 어느 컨트롤러로 가야 하는가" 문제다. Bean은 잘 떠 있어도 URL 매핑이 틀리면 `404`가 난다.
+- "`bean missing`도 요청 보내다 본 거니까 MVC 문제 아닌가?"
+  대개 아니다. 많은 경우는 앱 시작 시점 주입 실패라서, 요청을 받기 전 Bean 준비 타임라인에서 이미 막힌다.
+- "`@Transactional`이 안 먹으니 controller 매핑도 잘못된 것 아닌가?"
+  보통 아니다. controller까지는 정상 진입했지만 service 호출 경계와 프록시 통과 방식이 달라서 commit/rollback만 기대와 다를 수 있다.
+- "`400`도 DI 실패처럼 Spring 내부 자동화가 깨진 거 아닌가?"
+  `400`은 대개 요청 값을 DTO나 파라미터로 바꾸는 바인딩 단계 문제다. 객체 조립 실패와는 층위가 다르다.
 
 ## 한 요청, 두 타임라인으로 보면 덜 헷갈린다
 
@@ -106,6 +167,32 @@ retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet b
 | controller 다음 SQL이 궁금하다 | DB 접근 기술이 어디서 시작되나 | repository 이후를 database bridge로 이어 보기 |
 
 초급자 mental model은 "요청은 MVC가 받고, 객체는 DI가 준비하고, 저장 묶음은 service 트랜잭션이 정한다" 정도면 충분하다.
+
+## beginner가 특히 많이 섞는 3문장
+
+같은 `POST /orders` 장면을 보고도 초급자는 종종 "누가 controller를 찾는가"와 "누가 service를 넣어 두는가"를 같은 자동화로 말한다. 아래 세 문장을 먼저 분리해 두면 `DispatcherServlet`, Bean 컨테이너, `@Transactional` 역할이 덜 섞인다.
+
+| 초급자가 실제로 말하는 문장 | 실제로는 누구 이야기인가 | 바로잡는 한 줄 |
+|---|---|---|
+| "`DispatcherServlet`이 `OrderService`도 넣어 주나요?" | Bean 컨테이너 + DI 이야기다 | `DispatcherServlet`은 길을 찾고, 주입은 시작 시점에 끝난다 |
+| "요청 올 때마다 `OrderController`나 `OrderService`를 새로 만들어요?" | Bean 준비 타임라인 이야기다 | 보통 singleton Bean은 앱 시작 때 준비되고, 요청은 그 조립품을 사용한다 |
+| "`@Transactional` 붙이면 Bean도 자동으로 생겨요?" | 프록시 적용 이야기다 | `@Transactional`은 이미 있는 service Bean 호출을 감싸지, Bean 후보를 등록해 주지는 않는다 |
+
+아래 짧은 예시로 보면 더 선명하다.
+
+```text
+앱 시작:
+  OrderController Bean 생성
+  -> OrderService Bean 주입
+  -> 필요하면 트랜잭션 프록시 준비
+
+요청 도착:
+  DispatcherServlet
+  -> 이미 준비된 OrderController 선택
+  -> controller 가 service 호출
+```
+
+즉 "`누가 찾아서 실행하나`"는 MVC 질문이고, "`누가 미리 만들어 연결했나`"는 DI 질문이며, "`호출 앞뒤를 누가 감싸나`"는 트랜잭션 프록시 질문이다.
 
 ## 흔한 오해와 바로잡기
 

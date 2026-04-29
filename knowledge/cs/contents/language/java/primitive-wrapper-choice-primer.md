@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md)
 - [`Boolean`이 `null`일 수도 있을 때 조건문을 어떻게 읽을까 beginner bridge](./boolean-wrapper-null-condition-primer.md)
 - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
@@ -13,9 +14,19 @@
 - [Validation Boundary: Input vs Domain Invariant 미니 브리지](../../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: int integer 차이, int vs integer beginner, int 대신 integer 왜, integer null 왜 필요해요, boolean vs boolean wrapper, primitive vs wrapper choice, primitive wrapper 언제 써요, boolean wrapper 헷갈려요, java 기본형 wrapper 처음, what is primitive wrapper, field parameter return type java, java field type basics
+retrieval-anchor-keywords: int integer 차이, 자바 int integer 차이, int integer 차이 뭐예요, int vs integer beginner, int 대신 integer 왜, integer null 왜 필요해요, int integer null 차이, primitive vs wrapper choice, primitive wrapper 언제 써요, wrapper 왜 써요, java 기본형 wrapper 처음, what is primitive wrapper, field parameter return type java, java field type basics
 
-## 핵심 개념
+## `int` / `Integer` 차이로 바로 들어왔다면
+
+이 문서는 "`int Integer 차이`", "`왜 `int` 대신 `Integer` 써요?`", "`primitive랑 wrapper 뭐가 달라요?`" 같은 검색 질문에 바로 답하는 beginner entrypoint다.
+
+먼저 아래 세 줄만 잡으면 검색 의도 대부분이 풀린다.
+
+| 검색에서 실제로 묻는 것 | 먼저 붙일 한 문장 | 바로 다음 문서 |
+|---|---|---|
+| "`int`와 `Integer`가 뭐가 달라요?" | primitive는 값이 항상 있고, wrapper는 `null`도 상태로 담을 수 있다 | 이 문서의 [한눈에 보기](#한눈에-보기) |
+| "`왜 `Integer`를 써요?" | 미입력, 선택값, PATCH 같은 경계에서 `null` 의미를 보존하려고 쓴다 | [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md) |
+| "`비교는 뭐가 달라요?" | 타입 선택 질문과 `==`/`equals()` 질문은 분리해서 본다 | [Wrapper 값 비교 입문 브리지 (`Integer` / `Long` / `Boolean`)](./wrapper-value-comparison-beginner-bridge.md) |
 
 처음 고를 때는 "primitive가 더 저수준이고 wrapper가 더 객체지향적이다"처럼 어렵게 볼 필요가 없다.
 

@@ -19,7 +19,7 @@
 - [Database: Incremental Summary Table Refresh and Watermark Discipline](../database/incremental-summary-table-refresh-watermark.md)
 - [system design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: projection applied watermark basics, applied watermark beginner, read model checkpoint basics, projection watermark row, required watermark vs applied watermark, read model watermark state, projector checkpoint beginner, applied watermark expose api, projection catch up marker, read model freshness compare, shard aware applied watermark, per shard checkpoint beginner, outbox token companion, applied watermark cache entry metadata, cache refill watermark persistence
+retrieval-anchor-keywords: projection applied watermark basics, applied watermark 뭐예요, read model watermark 뭐예요, required watermark vs applied watermark, read model 어디까지 반영됐나, 처음 배우는데 watermark, 처음 read model freshness 헷갈려요, 왜 방금 쓴 값이 stale 인가요, projection checkpoint 큰 그림, read model checkpoint basics, watermark 비교는 언제 쓰나요, cache hit 전에 watermark 왜 봐요, read-after-write watermark 기초, what is applied watermark, beginner watermark primer
 
 ---
 
@@ -27,6 +27,8 @@ retrieval-anchor-keywords: projection applied watermark basics, applied watermar
 
 초보자는 `applied_watermark`를 어렵게 생각하기 쉽다.
 하지만 실제 뜻은 단순하다.
+
+질문이 "`applied_watermark`가 뭐예요?", "왜 방금 저장했는데 read model은 아직 예전 값이죠?"라면 이 문서를 먼저 읽는 편이 맞다. cache refill 때 어떤 metadata를 같이 저장해야 하는지는 [Watermark Metadata Persistence Basics](./watermark-metadata-persistence-basics.md)로 바로 이어진다.
 
 > "이 projection은 여기까지는 반영을 끝냈다"라고 적어 두는 체크포인트다.
 

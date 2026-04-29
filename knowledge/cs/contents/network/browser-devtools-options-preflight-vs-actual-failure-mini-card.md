@@ -49,7 +49,7 @@ OPTIONS status보다 actual request 존재 여부를 먼저 본다
 2. 그 뒤에 actual `GET`/`POST`/`PUT` row가 실제로 생겼는지 본다.
 3. actual row가 없으면 `OPTIONS` status를 preflight lane으로 읽는다.
 4. actual row가 있으면 그 row의 `401`/`403`/`404`를 읽는다.
-5. actual row가 있는데 콘솔은 CORS라고 하면 error-path CORS bridge로 한 칸 더 내려간다.
+5. actual row가 `401`/`403`인데 콘솔은 CORS라고 하면 [Browser DevTools에서 CORS처럼 보이지만 actual `401`/`403`이 있는 경우: Error-Path CORS 브리지](./browser-devtools-error-path-cors-vs-actual-401-403-bridge.md)로 내려가고, auth 의미는 [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](../security/auth-failure-response-401-403-404.md)에서 먼저 고정한다.
 
 이 순서가 중요한 이유는, `OPTIONS 401`과 `POST 401`이 같은 질문에 답하지 않기 때문이다.
 

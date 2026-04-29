@@ -12,7 +12,7 @@
 - [운영체제 카테고리 인덱스](../operating-system/README.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dns basics, dns 기초, 도메인 ip 변환, dns 란, dns 조회 흐름, dns resolver, dns cache, dns ttl 기초, a record, cname record, https rr, svcb, dns h3 hint, 도메인 이름 서버, nslookup 기초
+retrieval-anchor-keywords: dns basics, dns 기초, dns 뭐예요, dns 왜 필요해요, 도메인 ip 변환, 도메인을 왜 ip로 바꿔요, url 입력하면 dns가 먼저 뭐 해요, dns 처음 배우는데, dns 큰 그림, dns 조회 흐름, dns resolver, dns cache, dns ttl 기초, cname record, nslookup 기초
 
 ## 핵심 개념
 
@@ -89,6 +89,7 @@ nslookup example.com
 
 ## 더 깊이 가려면
 
+- "`URL 입력 후 무슨 일이 일어나요?`를 DNS 앞뒤까지 한 번에 보고 싶다면 [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)"
 - [DNS TTL과 캐시 실패 패턴](./dns-ttl-cache-failure-patterns.md) — TTL 오설정, 전파 지연, 부정 캐시 등 운영 이슈
 - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md) — DNS의 HTTPS RR과 HTTP 응답의 `Alt-Svc`가 H3 discovery에 어떻게 이어지는지
 - [network 카테고리 인덱스](./README.md) — 다음 단계 주제 탐색

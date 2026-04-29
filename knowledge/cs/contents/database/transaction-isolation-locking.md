@@ -2,7 +2,7 @@
 
 > 한 줄 요약: 이 문서는 [트랜잭션 기초](./transaction-basics.md)와 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) 다음 단계에서, "무엇을 같이 되돌릴까"와 "동시에 실행될 때 무엇이 보일까"가 실제 락/incident 대응으로 어떻게 이어지는지 묶어 주는 심화 bridge다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟡 Intermediate**
 
 transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할 때 보는 심화 primer다. 처음 DB를 배우는 단계라면 [트랜잭션 기초](./transaction-basics.md)에서 `commit`/`rollback` 경계를 먼저 잡고, [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)에서 row 재조회와 범위 재조회 차이를 먼저 분리한 뒤 이 문서로 올라오는 편이 안전하다.
 
@@ -11,6 +11,7 @@ transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할
 - [트랜잭션 기초](./transaction-basics.md)
 - [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)
 - [락 기초](./lock-basics.md)
+- [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 - [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
 - [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md)
 - [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)
@@ -20,13 +21,16 @@ transaction, ACID, isolation level, locking을 한 흐름으로 설명해야 할
 - [Transaction Boundary, Isolation, and Locking Decision Framework](./transaction-boundary-isolation-locking-decision-framework.md)
 - [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md)
 
-retrieval-anchor-keywords: transaction basics next step, transaction isolation basics next, transaction acid, acid, atomicity consistency isolation durability, transaction isolation, isolation level, dirty read, non-repeatable read, phantom read, read committed, repeatable read, serializable, locking read, select for update, optimistic lock, pessimistic lock, when to lock, lost update, deadlock, lock timeout, serialization failure, incident handling, transaction primer 다음 뭐 읽어요, 격리 수준 기초 다음 뭐 봐요, 처음 트랜잭션 다음 단계, isolation basics after beginner, what is select for update, commit 했는데 왜 두 번 팔려요, select 두 번 했는데 값이 달라요, 언제 for update 써요, deadlock 나면 다음 뭐 봐요, transaction lock isolation difference
+retrieval-anchor-keywords: transaction isolation locking bridge, transaction basics next step, transaction isolation basics next, 격리 수준 다음 단계, for update next step, locking read follow-up, what is select for update, 언제 for update 써요, locking read 다음 문서, select 두 번 했는데 값이 달라요, commit 했는데 왜 두 번 팔려요, deadlock 나면 다음 뭐 봐요, transaction lock isolation difference, lock timeout retry follow-up, phantom read booking range
 
 <details>
 <summary>Table of Contents</summary>
 
 - [기초에서 incident로 올라가는 읽기 순서](#기초에서-incident로-올라가는-읽기-순서)
 - [이 문서 다음에 보면 좋은 문서](#이-문서-다음에-보면-좋은-문서)
+- [격리 수준 다음 단계](#격리-수준-다음-단계)
+- [FOR UPDATE 다음 단계](#for-update-다음-단계)
+- [locking read follow-up](#locking-read-follow-up)
 - [왜 중요한가](#왜-중요한가)
 - [트랜잭션이란](#트랜잭션이란)
 - [ACID를 어떻게 이해해야 하나](#acid를-어떻게-이해해야-하나)
@@ -84,6 +88,44 @@ retrieval-anchor-keywords: transaction basics next step, transaction isolation b
 - raw JDBC에서 `autoCommit`, `commit/rollback`, batch와 transaction boundary를 코드로 확인하려면 [JDBC 실전 코드 패턴](./jdbc-code-patterns.md)을 붙여 읽는 편이 좋다.
 - 실제 증상이 `deadlock`, `lock timeout`, `waiting for lock`에 가까우면 [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)으로 바로 내려가서 incident 순서대로 확인한다.
 - 실제 증상이 `40001`, serialization failure, "retry를 어디에 둘까"라면 [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)과 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)를 이어 본다.
+
+## 격리 수준 다음 단계
+
+"격리 수준 표는 봤는데 그래서 다음에 뭘 읽지?"가 남는 학습자를 위한 symptom anchor다. 이 문서는 beginner primer 다음 단계 bridge이므로, 다음 한 칸도 질문 모양대로 자르는 편이 안전하다.
+
+| 지금 남은 질문 | 이 문서에서 붙일 축 | 바로 다음 문서 |
+|---|---|---|
+| "`READ COMMITTED`와 `REPEATABLE READ` 차이는 알겠는데, 언제 락까지 같이 생각해야 하지?" | 가시성 규칙과 선점 규칙 분리 | [락 기초](./lock-basics.md), [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) |
+| "`phantom read`가 왜 예약/부재 판단 문제로 이어지지?" | 범위/부재 규칙은 row 재조회와 다르다 | [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md), [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md) |
+| "`SERIALIZABLE`까지 올리면 끝나는지, retry가 필요한지" | 강한 격리는 대기나 재시도 비용과 같이 본다 | [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) |
+
+짧게 기억하면 "`같은 row 재조회`에서 막히면 anomaly 비교 문서, `부재/범위 판단`에서 막히면 phantom/gap lock 문서, `실패 코드와 retry`가 보이면 incident 문서" 순서다.
+
+## FOR UPDATE 다음 단계
+
+`SELECT ... FOR UPDATE`를 처음 본 뒤 "`언제 FOR UPDATE 써요?`", "`그냥 transaction만 있으면 안 돼요?`", "`없는 row도 막아 주나요?`"가 바로 이어질 때 쓰는 anchor다.
+
+| `FOR UPDATE`를 보고 생긴 질문 | 먼저 고정할 한 줄 | 바로 다음 문서 |
+|---|---|---|
+| "`FOR UPDATE`는 plain `SELECT`와 뭐가 달라요?" | 읽으면서 경쟁 자원을 선점하는 locking read다 | [락 기초](./lock-basics.md) |
+| "충돌이 적은데도 무조건 `FOR UPDATE`를 써야 하나요?" | 충돌 빈도와 retry 비용에 따라 optimistic/pessimistic lock이 갈린다 | [Compare-and-Swap과 Pessimistic Locks](./compare-and-swap-vs-pessimistic-locks.md) |
+| "`FOR UPDATE`면 없는 예약도 막아 주나요?" | 보통 아니다. absence/range 보호는 constraint나 range-safe 전략을 같이 본다 | [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Write Skew와 Phantom Read 사례](./write-skew-phantom-read-case-studies.md) |
+| "`FOR UPDATE`를 걸었는데도 deadlock이나 timeout이 떠요" | 이미 개념 학습을 넘어 incident routing 단계다 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+
+오해 방지 한 줄도 같이 붙여 두면 안전하다. `FOR UPDATE`는 많은 엔진에서 existing row를 강하게 보호하는 도구로 자주 쓰이지만, "없는 row"나 "범위 전체 부재" 보호는 엔진 구현과 쿼리 패턴에 따라 별도 전략이 필요하다.
+
+## locking read follow-up
+
+질문이 "`locking read`가 뭐예요?"보다 한 칸 더 나아가 "`locking read 다음에는 뭘 봐야 하지?`"라면 아래 갈림길이 retrieval에서 바로 잡히도록 문구를 맞춰 둔다.
+
+| locking read follow-up 질문 | 여기서 분리할 축 | 다음 문서 |
+|---|---|---|
+| "plain `SELECT`와 locking read를 같이 보면 자꾸 섞여요" | 가시성 표와 선점 읽기는 다른 문제다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [락 기초](./lock-basics.md) |
+| "locking read 뒤에 retry 정책까지 같이 정해야 하나요?" | lock acquisition과 retry policy는 붙어 보이지만 다른 레이어다 | [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md) |
+| "엔진마다 locking read 동작이 왜 달라 보여요?" | 같은 SQL 이름이어도 구현은 엔진별로 다를 수 있다 | [Gap Lock과 Next-Key Lock](./gap-lock-next-key-lock.md), [Read Committed vs Repeatable Read Anomalies](./read-committed-vs-repeatable-read-anomalies.md) |
+| "JPA에서 locking read가 어디서 보이죠?" | DB 개념과 프레임워크 표면을 연결해야 한다 | [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md) |
+
+검색용으로 줄이면 이 섹션은 "`locking read next step`", "`locking read follow-up`", "`FOR UPDATE 다음 문서`" 질문을 이 문서에서 먼저 받기 위한 bridge다.
 
 ## 왜 중요한가
 
@@ -384,3 +426,7 @@ WHERE id = 1
 
 - 가장 강한 격리수준이지만 비용이 크다.
 - 막아야 하는 이상 현상에 맞춰 필요한 수준만 선택하는 편이 실무적으로 낫다.
+
+## 한 줄 정리
+
+이 문서는 `격리 수준 표 다음 단계`, `FOR UPDATE 다음 문서`, `locking read follow-up` 검색을 한 자리에서 받아, 가시성 문제와 선점/incident 문제를 안전하게 다음 문서로 연결하는 bridge다.

@@ -17,7 +17,7 @@
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring exception handling basics, spring exceptionhandler vs restcontrolleradvice, 스프링 예외 처리 처음, exceptionhandler 입문, restcontrolleradvice 뭐예요, spring 400 404 409 응답, requestbody 400 왜 나요, binding failure vs business exception, validation 400 vs conflict 409, not found 404 spring api, roomescape admin api error handling, bindingresult local vs global validation handling, global 400 translation spring, 전역 400 번역 어디서 하나, methodargumentnotvalidexception advice flow
+retrieval-anchor-keywords: spring exception handling basics, spring exceptionhandler vs restcontrolleradvice, 스프링 예외 처리 처음, exceptionhandler 입문, restcontrolleradvice 뭐예요, spring 400 404 409 응답, requestbody 400 왜 나요, validation 400 vs conflict 409, bindingresult local vs global validation handling, global 400 translation spring, 전역 400 번역 어디서 하나, methodargumentnotvalidexception advice flow, problemdetail 다음 validation pipeline, problemdetail 다음 bindingresult, 전역 400 번역 다음 뭐 읽어요
 
 ## 핵심 개념
 
@@ -193,6 +193,8 @@ public record ErrorResponse(String code, String message) {
 
 이 감각을 RoomEscape 예시와 함께 한 장으로 보고 싶으면 [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)를 바로 이어서 보면 된다.
 
+> return path: `ProblemDetail`에서 응답 바디 계약과 shaping을 잡았으면, 이 문서에서 전역 `400` 번역을 다시 묶은 뒤 바로 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)으로 돌아가 "`이 `400`이 binding인지 validation인지, `BindingResult` 로컬 처리였는지`"를 validation pipeline 내부 단계 기준으로 다시 분해하면 된다.
+
 ## 상태 코드 감각
 
 ### 1. `400`과 `404`와 `409`는 실패 의미가 다르다
@@ -271,6 +273,7 @@ RoomEscape 관리자 예약 API를 예로 들면 보통 이렇게 나눈다.
 - "`전역 `400` 번역까지는 알겠는데, 왜 어떤 요청은 `BindingResult`로 들어오고 어떤 요청은 `MethodArgumentNotValidException`으로 번지나요?`"가 다음 질문이면 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 이어간다.
 - "`BindingResult`가 있을 때와 없을 때를 다시 초급자 눈높이로 비교하고 싶다`"면 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나](./spring-bindingresult-local-validation-400-primer.md)를 먼저 복습한다.
 - "`validation `400``과 business `404`/`409`를 한 API 계약으로 어떻게 묶지?`"가 궁금하면 [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)로 넘어간다.
+- "`ProblemDetail`까지 봤고 이제 `binding` vs `validation`, `BindingResult` 로컬 처리 vs 전역 번역 순서를 다시 복기하고 싶다`"면 README follow-up route와 같은 표현으로, 이 문서를 거쳐 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)으로 돌아가면 된다.
 
 그래서 초반 설계도 아래처럼 잡으면 충분하다.
 

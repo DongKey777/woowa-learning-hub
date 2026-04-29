@@ -7,6 +7,7 @@
 관련 문서:
 
 - [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md)
+- [`TestTransaction.end()` vs `@Commit` 선택 미니 카드](./testtransaction-vs-commit-choice-mini-card.md)
 - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
 - [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md)
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
@@ -94,11 +95,13 @@ rollback 기반 테스트에서 `send()`가 안 불렸다면, 첫 해석은 "`AF
 
 1. 현재 테스트가 rollback 기반인지 확인한다.
 2. 질문이 `AFTER_COMMIT` 호출 여부라면 commit-visible 테스트를 한 장만 추가한다.
-3. 구현 디테일이 더 필요하면 Spring mini card로 넘어간다.
+3. "`그 장을 `TestTransaction.end()`로 열지, `@Commit`으로 끝낼지`"가 헷갈리면 [선택 미니 카드](./testtransaction-vs-commit-choice-mini-card.md)로 바로 좁힌다.
+4. 구현 디테일이 더 필요하면 Spring mini card로 넘어간다.
 
 ## 더 깊이 가려면
 
 - [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md): `flush`와 commit 차이를 먼저 더 크게 잡고 싶을 때
+- [`TestTransaction.end()` vs `@Commit` 선택 미니 카드](./testtransaction-vs-commit-choice-mini-card.md): commit-visible 테스트를 추가하기로 했는데 둘 중 무엇을 먼저 고를지 막힐 때
 - [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md): `@DataJpaTest`, `TestTransaction`, `@Commit` 같은 Spring 쪽 구체 수단으로 바로 들어갈 때
 - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md): `AFTER_COMMIT` 다음 질문이 outbox 검증으로 이어질 때
 

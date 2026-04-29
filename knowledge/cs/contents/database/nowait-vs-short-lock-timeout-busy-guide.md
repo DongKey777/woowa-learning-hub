@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [PostgreSQL `55P03`에서 `NOWAIT`와 `lock_timeout`을 어떻게 나눠 읽을까?](./postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md)
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
@@ -45,6 +46,9 @@ retrieval-anchor-keywords: nowait vs short lock timeout busy guide, nowait busy 
 핵심은 이것이다.
 
 > `NOWAIT`와 짧은 `lock timeout`은 "이번 시도가 대기 예산을 다 썼다"는 공통점이 더 크다.
+
+다만 PostgreSQL에서는 둘 다 `55P03`로 보일 수 있어서, 초보자에게는 "둘이 완전히 같은 시간축"이라고 가르치면 오해가 남는다.
+`NOWAIT`는 **거의 즉시 실패**, 짧은 `lock timeout`은 **조금 기다린 뒤 실패**라는 분리선은 따로 기억해 두는 편이 안전하다.
 
 ## 왜 자동 retry보다 `busy`가 기본인가
 
@@ -152,6 +156,7 @@ retrieval-anchor-keywords: nowait vs short lock timeout busy guide, nowait busy 
 
 - `busy` 자체의 fail-fast 기준을 더 짧게 보면 [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - `insert-if-absent` 전체 3버킷 표로 돌아가려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
+- PostgreSQL `55P03` 하나 안에서 `NOWAIT`와 실제 대기 실패를 먼저 떼어 보려면 [PostgreSQL `55P03`에서 `NOWAIT`와 `lock_timeout`을 어떻게 나눠 읽을까?](./postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md)
 - Spring 예외 표면에서 `55P03` / `1205` / `40P01` / `40001`을 다시 나누려면 [MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑](./spring-jpa-lock-timeout-deadlock-exception-mapping.md)
 
 ## 한 줄 정리

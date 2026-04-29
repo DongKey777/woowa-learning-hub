@@ -2,7 +2,7 @@
 
 > 한 줄 요약: sticky session, external session store, token-based auth를 비교해 왜 stateless app tier가 load balancer, autoscaling, failover에 더 잘 맞는지 설명하는 입문 문서다.
 
-retrieval-anchor-keywords: stateless sessions primer, sticky session, session affinity, load balancer session routing, external session store, shared session store, token-based auth, signed cookie, server session, jwt basics, stateless app tier, sticky vs stateless, session scaling, app tier scaling, read-after-write consistency basics
+retrieval-anchor-keywords: stateless sessions primer, what is stateless session, stateless session beginner, stateless 큰 그림, stateless 처음 배우는데, 세션이 뭐예요, 로그인 상태 어디 저장, 왜 stateless를 써요, sticky session, sticky session 왜 문제, external session store, token-based auth, jwt랑 session 차이, sticky vs stateless, session scaling
 
 **난이도: 🟢 Beginner**
 

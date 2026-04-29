@@ -8,6 +8,7 @@ retrieval-anchor-keywords: retry amplification primer, retry storm containment, 
 
 관련 문서:
 
+- [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)
 - [System Design Foundations](./system-design-foundations.md)
 - [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md)
 - [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md)
@@ -277,7 +278,7 @@ retry storm 때는 HTTP request count만 보면 착시가 생긴다.
 - 추천/집계는 shed한다
 - queue 기반 후처리는 bounded queue로 제한한다
 
-## 여기서 다음으로 갈 것
+## 다음 읽기
 
 처음이면 이 문서에서 "`왜 재시도가 장애를 키우는지`"까지만 잡으면 충분하다. 다음 질문이 생길 때만 아래로 내려가면 된다.
 
@@ -289,6 +290,10 @@ retry storm 때는 HTTP request count만 보면 착시가 생긴다.
 
 이 시나리오는 beginner 기준으로 `Request Path Failure Modes Primer -> Request Deadline and Timeout Budget Primer -> Retry Amplification and Backpressure Primer` 사다리를 그대로 다시 보여 준다.
 처음 읽는 단계라면 여기서 `왜 DB가 맞는가`, `왜 남은 budget 없이 retry하면 겹치는가`까지만 설명할 수 있으면 충분하다.
+
+safe return path:
+
+- timeout, retry, degrade 사다리로 다시 붙이려면 [System Design README - Beginner Bridge Ladder: Timeout -> Retry -> Degrade](./README.md#beginner-bridge-ladder-timeout---retry---degrade)로 돌아간다.
 
 ### 시나리오 2: webhook provider outage가 worker storm를 만든다
 

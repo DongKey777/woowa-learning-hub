@@ -9,6 +9,7 @@
 - [입력값 검증 기초](../security/input-validation-basics.md)
 - [Spring Validation and Binding Error Pipeline](../spring/spring-validation-binding-error-pipeline.md)
 - [Layered Validation Pattern: 입력, 도메인, 정책을 층별로 검증하기](../design-pattern/layered-validation-pattern.md)
+- [주문 예시로 보는 `@Valid`/바인딩 에러 vs 도메인 규칙 첫 테스트 카드](./order-validation-annotation-vs-domain-rule-card.md)
 - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
 
 retrieval-anchor-keywords: validation boundary mini bridge, input validation vs domain invariant beginner, 형식 검증 vs 도메인 불변식, 요청 검증 도메인 규칙 차이, validation boundary card, dto validation vs invariant, @valid vs domain invariant, beginner validation invariant bridge, 입력 검증 경계 입문, 도메인 불변식 입문 브리지, validation boundary input vs domain invariant mini bridge basics, validation boundary input vs domain invariant mini bridge beginner, validation boundary input vs domain invariant mini bridge intro, software engineering basics, beginner software engineering
@@ -84,6 +85,7 @@ void pay(Long orderId, String paymentMethod) {
 |---|---|
 | 서버 입력 검증 자체가 아직 흐리다 | [입력값 검증 기초](../security/input-validation-basics.md) |
 | `@Valid`, 바인딩 실패, 검증 실패 순서가 헷갈린다 | [Spring Validation and Binding Error Pipeline](../spring/spring-validation-binding-error-pipeline.md) |
+| 주문 예시로 `@WebMvcTest`와 단위 테스트를 어디서 가를지 헷갈린다 | [주문 예시로 보는 `@Valid`/바인딩 에러 vs 도메인 규칙 첫 테스트 카드](./order-validation-annotation-vs-domain-rule-card.md) |
 | 입력, 도메인, 정책을 세 층으로 더 넓게 보고 싶다 | [Layered Validation Pattern: 입력, 도메인, 정책을 층별로 검증하기](../design-pattern/layered-validation-pattern.md) |
 | 도메인 불변식을 계약 수준으로 더 깊게 보고 싶다 | [Domain Invariants as Contracts](./domain-invariants-as-contracts.md) |
 

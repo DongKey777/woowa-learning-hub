@@ -282,6 +282,7 @@ _RULES: list[Rule] = [
             "@service",
             "@component",
             "@componentscan",
+            "@springbootapplication",
             "ioc",
             "di",
             "dependency injection",
@@ -303,8 +304,11 @@ _RULES: list[Rule] = [
             "application context",
             "component scan",
             "componentscan",
+            "springbootapplication",
+            "spring boot application",
             "컴포넌트 스캔",
             "컴포넌트스캔",
+            "스프링부트 애플리케이션",
             "filter chain",
             "spring security",
         },
@@ -1663,8 +1667,12 @@ _SPRING_FRAMEWORK_COMPONENT_SCAN_TRIGGERS = {
     "component scan",
     "componentscan",
     "@componentscan",
+    "springbootapplication",
+    "@springbootapplication",
+    "spring boot application",
     "컴포넌트 스캔",
     "컴포넌트스캔",
+    "스프링부트 애플리케이션",
 }
 
 _SPRING_FRAMEWORK_AOP_TRIGGERS = {
@@ -1737,6 +1745,9 @@ _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES = {
     "component scan",
     "componentscan",
     "@componentscan",
+    "springbootapplication",
+    "@springbootapplication",
+    "spring boot application",
 }
 
 _BEGINNER_INTENT_PHRASES = {
@@ -1836,6 +1847,7 @@ _TRANSACTIONAL_BEGINNER_PLAIN_ALIAS_CUES = {
     "what is transactional",
     "what's transactional",
     "what does transactional mean",
+    "what does @transactional mean",
 }
 
 _TRANSACTIONAL_BEGINNER_MECHANICS_CUES = {
@@ -2566,6 +2578,18 @@ _QUERY_SERVICE_BEGINNER_ROLE_RE = re.compile(
     r"\bwhat\s+does\s+(?:a\s+)?query\s+service\s+do\b"
 )
 
+_QUERY_MODEL_BEGINNER_ROLE_RE = re.compile(
+    r"\bwhat\s+does\s+(?:a\s+)?query\s+model\s+do\b"
+)
+
+_QUERY_SERVICE_BEGINNER_MEANING_RE = re.compile(
+    r"\bwhat\s+does\s+(?:a\s+)?query\s+service\s+mean\b"
+)
+
+_QUERY_MODEL_BEGINNER_MEANING_RE = re.compile(
+    r"\bwhat\s+does\s+(?:a\s+)?query\s+model\s+mean\b"
+)
+
 _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "query service 무슨 역할",
     "query service는 무슨 역할",
@@ -3104,6 +3128,23 @@ def _transaction_isolation_expand(
             "concurrent read write visibility basics",
         ]
 
+    if _is_mvcc_beginner_meaning_prompt(haystack):
+        return [
+            "transaction isolation basics",
+            "transaction isolation beginner primer",
+            "transaction isolation simple mental model",
+            "transaction isolation level basics",
+            "mvcc",
+            "mvcc basics",
+            "mvcc beginner",
+            "mvcc concept overview",
+            "what does mvcc mean",
+            "what is mvcc",
+            "concurrent read write visibility basics",
+            "read committed beginner",
+            "repeatable read beginner",
+        ]
+
     if generic_transaction_beginner_prompt:
         return [
             "transaction",
@@ -3267,6 +3308,21 @@ def _has_spring_foundation_english_role_intent(
     )
 
 
+def _has_spring_component_scan_english_role_intent(
+    haystack: str,
+    matched_triggers: set[str],
+) -> bool:
+    if not (matched_triggers & _SPRING_FRAMEWORK_COMPONENT_SCAN_TRIGGERS):
+        return False
+    return bool(
+        re.search(
+            r"\bwhat\s+does\s+(?:@component\s*scan|component\s+scan|"
+            r"@?springbootapplication|spring\s+boot\s+application)\s+do\b",
+            haystack,
+        )
+    )
+
+
 def _spring_framework_expand(
     haystack: str,
     matched_triggers: set[str],
@@ -3391,6 +3447,7 @@ def _spring_framework_expand(
             beginner_intent
             or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
             or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+            or _has_spring_component_scan_english_role_intent(haystack, matched_triggers)
         ):
             expand.extend(
                 [
@@ -4200,7 +4257,11 @@ def _projection_freshness_compound_matches(haystack: str, tokens: set[str]) -> s
 def _mvcc_beginner_primer_matches(haystack: str, tokens: set[str]) -> set[str]:
     if "mvcc" not in haystack:
         return set()
-    if not (_has_beginner_intent(haystack, tokens) or _has_beginner_confusion_intent(haystack)):
+    if not (
+        _has_beginner_intent(haystack, tokens)
+        or _has_beginner_confusion_intent(haystack)
+        or _is_mvcc_beginner_meaning_prompt(haystack)
+    ):
         return set()
     return {"__mvcc_beginner_primer__"}
 
@@ -4226,6 +4287,14 @@ def _is_mvcc_beginner_why_use_prompt(haystack: str) -> bool:
             "왜 쓰죠",
         }
     )
+
+
+def _is_mvcc_beginner_meaning_prompt(haystack: str) -> bool:
+    if "mvcc" not in haystack:
+        return False
+    if any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES):
+        return False
+    return bool(re.search(r"\bwhat\s+does\s+mvcc\s+mean\b", haystack))
 
 
 def _spring_framework_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
@@ -4624,10 +4693,20 @@ def _is_beginner_query_model_filter_sort_prompt(haystack: str, tokens: set[str])
 
 
 def _is_beginner_query_model_meaning_prompt(haystack: str, tokens: set[str]) -> bool:
+    query_model_beginner_role_prompt = bool(
+        any(cue in haystack for cue in {"query model", "쿼리 모델"})
+        and (
+            _QUERY_MODEL_BEGINNER_ROLE_RE.search(haystack)
+            or _QUERY_MODEL_BEGINNER_MEANING_RE.search(haystack)
+            or "query model role" in haystack
+            or "query model responsibility" in haystack
+        )
+    )
     query_service_beginner_role_prompt = bool(
         any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES)
         and (
             _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
+            or _QUERY_SERVICE_BEGINNER_MEANING_RE.search(haystack)
             or "query service role" in haystack
             or "query service responsibility" in haystack
             or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
@@ -4639,6 +4718,7 @@ def _is_beginner_query_model_meaning_prompt(haystack: str, tokens: set[str]) -> 
         or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
         or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
         or _has_korean_definition_shortform(haystack)
+        or query_model_beginner_role_prompt
         or query_service_beginner_role_prompt
     )
     if not has_beginner_cue:
@@ -5410,8 +5490,6 @@ def _is_transactional_beginner_why_use_prompt(haystack: str) -> bool:
 
 
 def _is_transactional_beginner_plain_alias_prompt(haystack: str) -> bool:
-    if "@transactional" in haystack:
-        return False
     if not any(cue in haystack for cue in _TRANSACTIONAL_BEGINNER_PLAIN_ALIAS_CUES):
         return False
     if "spring" not in haystack:
@@ -5444,7 +5522,9 @@ def _is_spring_transaction_beginner_shortform_prompt(
         or _has_korean_definition_shortform(haystack)
     ):
         return False
-    if not ({"spring", "transaction"} <= tokens or ("스프링" in haystack and "트랜잭션" in haystack)):
+    has_spring_cue = "spring" in tokens or "스프링" in haystack
+    has_transaction_cue = "transaction" in tokens or "트랜잭션" in haystack
+    if not (has_spring_cue and has_transaction_cue):
         return False
     return not any(cue in haystack for cue in _TRANSACTIONAL_ADVANCED_CUES)
 
@@ -5489,9 +5569,10 @@ def _is_spring_foundation_english_role_prompt(haystack: str) -> bool:
 
 
 def _is_spring_ioc_di_beginner_shortform_prompt(haystack: str) -> bool:
-    return any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES) and any(
-        cue in haystack for cue in _SPRING_FRAMEWORK_IOC_DI_TRIGGERS
-    )
+    return (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
+    ) and any(cue in haystack for cue in _SPRING_FRAMEWORK_IOC_DI_TRIGGERS)
 
 
 def _is_projection_freshness_primer_prompt(haystack: str) -> bool:
@@ -5851,8 +5932,23 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
                 "list search filter sort beginner guide",
             ]
         )
+        if any(cue in haystack for cue in {"query model", "쿼리 모델"}) and (
+            _QUERY_MODEL_BEGINNER_ROLE_RE.search(haystack)
+            or _QUERY_MODEL_BEGINNER_MEANING_RE.search(haystack)
+            or "query model role" in haystack
+            or "query model responsibility" in haystack
+        ):
+            primer_hit["expand"].extend(
+                [
+                    "what does query model do",
+                    "what does query model mean",
+                    "query model role",
+                    "query model responsibility",
+                ]
+            )
         if any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES) and (
             _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
+            or _QUERY_SERVICE_BEGINNER_MEANING_RE.search(haystack)
             or "query service role" in haystack
             or "query service responsibility" in haystack
             or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
@@ -5860,6 +5956,7 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
             primer_hit["expand"].extend(
                 [
                     "what does query service do",
+                    "what does query service mean",
                     "query service role",
                     "query service responsibility",
                     "query service 무슨 역할",

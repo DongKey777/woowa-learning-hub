@@ -14,7 +14,7 @@
 - [Hybrid Top-Index / Leaf Layouts](../data-structure/hybrid-top-index-leaf-layouts.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: postgresql index only scan heap fetches, why heap fetches remain, heap fetches beginner, index only scan basics, mvcc visibility basics, visibility map what is, visibility map beginner, postgresql heap table basics, why index only scan still reads heap, 처음 보는 heap fetches, heap fetches 뭐예요, autovacuum why index only scan got slower, vacuum after explain got faster, index only scan 왜 느려졌어요
+retrieval-anchor-keywords: postgresql index only scan heap fetches, why heap fetches remain, heap fetches beginner, index only scan basics, mvcc visibility basics, visibility map what is, visibility map beginner, postgresql heap table basics, why index only scan still reads heap, 처음 보는 heap fetches, heap fetches 뭐예요, autovacuum why index only scan got slower, vacuum after explain got faster, heap fetches 늘었는데 왜 안 느려져요
 
 ## 핵심 개념
 
@@ -115,6 +115,22 @@ Heap Fetches: 37
 반대로 `VACUUM (ANALYZE)` 뒤에 plan이 좋아졌다면
 "인덱스를 새로 만들었기 때문"이 아니라 **visibility map이 다시 정리돼 heap 재확인이 줄었기 때문**일 가능성이 크다.
 
+## `Heap Fetches`가 늘었는데 왜 `buffers`나 시간이 같이 안 오르죠?
+
+초보자가 여기서 가장 자주 하는 오해는 "`Heap Fetches`가 늘었으니 무조건 느려져야 한다"는 단정이다.
+하지만 `Heap Fetches`는 heap 재확인 횟수이고, 실제 체감 속도는 그 재확인이 어떤 page에서 일어났는지와 cache 상태까지 같이 봐야 한다.
+
+| 관찰 | 안전한 첫 해석 |
+| --- | --- |
+| `Heap Fetches` 증가 + `Buffers`도 증가 + 시간도 증가 | heap 재확인이 실제 page touch와 지연으로 이어졌을 가능성이 크다 |
+| `Heap Fetches` 증가 + `Buffers`는 비슷 | 같은 heap page를 메모리에서 다시 확인해 횟수는 늘어도 page touch 증가는 작을 수 있다 |
+| `Heap Fetches` 증가 + 시간은 거의 그대로 | 재확인이 shared hit 위주라 추가 disk read가 없었을 수 있다 |
+
+즉 `Heap Fetches`는 원인 단서이고, `Buffers`와 실행 시간은 결과 신호다.
+셋이 자주 같이 움직이지만, PostgreSQL `EXPLAIN ANALYZE`에서는 항상 같은 비율로 오르지는 않는다.
+
+이 연결을 한 장으로 다시 보고 싶으면 [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md)을 같이 보면 된다.
+
 ## 흔한 오해와 함정
 
 - "`Index Only Scan`이면 heap fetch가 0이어야 정상이다" -> 아니다. 이름과 실제 heap 재확인 횟수는 분리해서 본다.
@@ -124,6 +140,7 @@ Heap Fetches: 37
 - "커버링 인덱스를 만들었는데 왜 또 읽지?" -> PostgreSQL에서는 커버링 설계와 visibility 확인이 같은 층이 아니다.
 - "visibility map이 있으면 heap을 영원히 안 본다" -> 아니다. 최근 쓰기나 vacuum 상태에 따라 다시 heap 확인이 생긴다.
 - "`Heap Fetches`가 조금이라도 있으면 plan이 완전히 나쁘다" -> 아니다. 0이 아니어도 여전히 index path가 유리할 수 있다.
+- "`Heap Fetches`가 늘면 `Buffers`와 시간도 반드시 같이 오른다" -> 아니다. 같은 page 재확인인지, cache hit인지에 따라 같이 안 움직일 수 있다.
 
 ## 다음에 무엇을 보면 되나요?
 

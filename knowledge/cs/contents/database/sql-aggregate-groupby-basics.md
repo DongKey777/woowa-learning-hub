@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [HAVING vs WHERE 초보자 비교 카드](./having-vs-where-beginner-card.md)
 - [DISTINCT vs GROUP BY 초보자 비교 카드](./distinct-vs-group-by-beginner-card.md)
 - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
@@ -53,6 +54,8 @@ ORDER BY AVG(salary) DESC;
 
 - `WHERE department = 'tech'` — 그룹 묶기 전에 개별 행 필터. 집계 함수를 조건으로 쓸 수 없다.
 - `HAVING COUNT(*) > 5` — 그룹 묶은 후 그룹 단위 필터. 집계 함수를 조건으로 쓸 수 있다.
+
+`HAVING`을 언제 써야 하는지 1분 decision card로 다시 잡고 싶다면 [HAVING vs WHERE 초보자 비교 카드](./having-vs-where-beginner-card.md)를 먼저 보면 된다.
 
 **`GROUP BY` + `NULL`**:
 

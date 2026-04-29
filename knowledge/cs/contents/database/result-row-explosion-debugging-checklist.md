@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [JOIN 뒤 row가 늘었을 때 DISTINCT로 덮으면 안 되는 이유 카드](./join-row-increase-distinct-symptom-card.md)
 - [SQL 조인 기초](./sql-join-basics.md)
 - [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md)
 - [SQL 읽기와 관계형 모델링 기초](./sql-reading-relational-modeling-primer.md)
@@ -177,6 +178,8 @@ HAVING COUNT(*) > 1;
 | 고객별 주문 수처럼 요약 결과가 필요 | `GROUP BY`로 결과 단위를 명시 |
 | 같은 연결 자체가 중복 저장됨 | `PRIMARY KEY`/`UNIQUE` 제약을 점검 |
 | 원인 파악 전 임시로 결과만 줄이고 싶음 | `DISTINCT`는 임시 확인용으로만 보고, 근본 원인을 따로 찾기 |
+
+`"왜 DISTINCT로 덮으면 안 되죠?"`처럼 증상 한 문장부터 빠르게 분리하고 싶다면 [JOIN 뒤 row가 늘었을 때 DISTINCT로 덮으면 안 되는 이유 카드](./join-row-increase-distinct-symptom-card.md)를 먼저 보고 돌아오면 된다.
 
 ## 더 깊이 가려면
 

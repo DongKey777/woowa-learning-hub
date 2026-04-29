@@ -79,6 +79,7 @@ _SPRING_FOUNDATION_ROLE_BEGINNER_QUERY_IDS = (
 _BEGINNER_INFRA_PRIMER_QUERY_IDS = (
     "beginner_keepalive_shortform_lockin",
     "beginner_keepalive_colloquial_shortform_lockin",
+    "beginner_keepalive_merged_alias_lockin",
     "beginner_keepalive_english_meaning_lockin",
     "beginner_keep_alive_spacing_shortform_lockin",
     "beginner_connection_pool_shortform_lockin",
@@ -92,9 +93,12 @@ _BEGINNER_INFRA_PRIMER_QUERY_IDS = (
 _BEGINNER_QUERY_MODEL_BROAD_QUERY_IDS = (
     "beginner_query_model_shortform_lockin",
     "beginner_query_model_english_meaning_lockin",
+    "beginner_query_model_english_role_shortform_lockin",
     "beginner_query_service_english_shortform_lockin",
+    "beginner_query_service_english_meaning_alias_lockin",
     "beginner_query_service_korean_why_use_lockin",
     "beginner_query_service_korean_role_shortform_lockin",
+    "beginner_query_service_korean_role_colloquial_lockin",
     "beginner_query_model_filter_sort_entrypoint_lockin",
 )
 
@@ -341,6 +345,11 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "HTTP keep-alive 뭔데?",
                 "contents/network/keepalive-connection-reuse-basics.md",
                 "contents/network/http2-http3-connection-reuse-coalescing.md",
+            ),
+            "beginner_keepalive_merged_alias_lockin": (
+                "HTTP keepalive가 뭐야?",
+                "contents/network/keepalive-connection-reuse-basics.md",
+                "contents/network/http-keep-alive-vs-tcp-keepalive-idle-timeout-heartbeat-primer.md",
             ),
             "beginner_keepalive_english_meaning_lockin": (
                 "What does HTTP keep-alive mean?",
@@ -805,6 +814,14 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                     "contents/database/mvcc-read-view-consistent-read-internals.md",
                 ],
             },
+            "beginner_mvcc_english_meaning_lockin": {
+                "prompt_cue": "What does MVCC mean",
+                "expected_path": "contents/database/transaction-isolation-basics.md",
+                "companion_paths": [
+                    "contents/database/transaction-isolation-locking.md",
+                    "contents/database/mvcc-read-view-consistent-read-internals.md",
+                ],
+            },
             "beginner_mvcc_korean_why_needed_lockin": {
                 "prompt_cue": "MVCC가 왜 필요한데",
                 "expected_path": "contents/database/transaction-isolation-locking.md",
@@ -847,6 +864,15 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertIn("mvcc beginner", mvcc_expanded)
         self.assertNotIn("locking strategy", mvcc_expanded)
         self.assertNotIn("rollback", mvcc_expanded)
+
+        mvcc_english_meaning_expanded = signal_rules.expand_query(
+            queries_by_id["beginner_mvcc_english_meaning_lockin"]["prompt"]
+        )
+        self.assertIn("what does mvcc mean", mvcc_english_meaning_expanded)
+        self.assertIn("transaction isolation beginner primer", mvcc_english_meaning_expanded)
+        self.assertIn("mvcc concept overview", mvcc_english_meaning_expanded)
+        self.assertNotIn("locking strategy", mvcc_english_meaning_expanded)
+        self.assertNotIn("rollback", mvcc_english_meaning_expanded)
 
         mvcc_why_needed_expanded = signal_rules.expand_query(
             queries_by_id["beginner_mvcc_korean_why_needed_lockin"]["prompt"]
@@ -1065,26 +1091,50 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "beginner_query_model_shortform_lockin": (
                 "query model 이 뭐야? 처음 배우는데 read-heavy API 큰 그림부터 알려줘",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
             ),
             "beginner_query_model_english_meaning_lockin": (
                 "What is a query model in backend APIs?",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
+            ),
+            "beginner_query_model_english_role_shortform_lockin": (
+                "What does a query model do in backend APIs?",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
             ),
             "beginner_query_service_english_shortform_lockin": (
                 "What is a query service in backend APIs?",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
+            ),
+            "beginner_query_service_english_meaning_alias_lockin": (
+                "What does a query service mean?",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
             ),
             "beginner_query_service_korean_why_use_lockin": (
                 "query service 는 왜 써?",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
             ),
             "beginner_query_service_korean_role_shortform_lockin": (
                 "query service는 무슨 역할이야?",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
+            ),
+            "beginner_query_service_korean_role_colloquial_lockin": (
+                "쿼리 서비스 역할이 뭐야?",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                [
+                    "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                    "contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md",
+                ],
             ),
             "beginner_query_model_filter_sort_entrypoint_lockin": (
                 "목록 조회에서 필터 정렬은 왜 query model로 빼요? 처음 배우는데",
                 "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
             ),
         }
 
@@ -1092,21 +1142,15 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             with self.subTest(query_id=query_id):
                 self.assertIn(query_id, queries_by_id)
                 self.assertIn(query_id, stable_contract)
-                prompt, expected_path = expected[query_id]
+                prompt, expected_path, companion_paths = expected[query_id]
                 query = queries_by_id[query_id]
                 self.assertEqual(query.get("experience_level"), "beginner")
                 self.assertEqual(query.get("prompt"), prompt)
                 self.assertEqual(query.get("expected_path"), expected_path)
                 self.assertEqual(query.get("max_rank"), 1)
-                self.assertEqual(
-                    query.get("companion_paths"),
-                    ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
-                )
+                self.assertEqual(query.get("companion_paths"), companion_paths)
                 self.assertEqual(query.get("companion_max_rank"), 4)
-                self.assertEqual(
-                    stable_contract[query_id].get("companion_paths"),
-                    ["contents/software-engineering/query-model-separation-read-heavy-apis.md"],
-                )
+                self.assertEqual(stable_contract[query_id].get("companion_paths"), companion_paths)
                 self.assertEqual(stable_contract[query_id].get("companion_max_rank"), 4)
 
         meaning_expanded = signal_rules.expand_query(
@@ -1138,6 +1182,16 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertNotIn("query model separation", korean_role_expanded)
         self.assertNotIn("aggregate boundary leak", korean_role_expanded)
 
+        korean_colloquial_role_expanded = signal_rules.expand_query(
+            queries_by_id["beginner_query_service_korean_role_colloquial_lockin"]["prompt"]
+        )
+        self.assertIn("dao vs query model", korean_colloquial_role_expanded)
+        self.assertIn("query service role", korean_colloquial_role_expanded)
+        self.assertIn("query service responsibility", korean_colloquial_role_expanded)
+        self.assertIn("what does query service do", korean_colloquial_role_expanded)
+        self.assertNotIn("query model separation", korean_colloquial_role_expanded)
+        self.assertNotIn("aggregate boundary leak", korean_colloquial_role_expanded)
+
         query_model_expanded = signal_rules.expand_query(
             queries_by_id["beginner_query_model_english_meaning_lockin"]["prompt"]
         )
@@ -1146,6 +1200,17 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
         self.assertIn("query model basics", query_model_expanded)
         self.assertIn("query model mental model", query_model_expanded)
         self.assertNotIn("query model separation", query_model_expanded)
+
+        query_model_role_expanded = signal_rules.expand_query(
+            queries_by_id["beginner_query_model_english_role_shortform_lockin"]["prompt"]
+        )
+        self.assertIn("dao vs query model", query_model_role_expanded)
+        self.assertIn("query model entrypoint primer", query_model_role_expanded)
+        self.assertIn("what does query model do", query_model_role_expanded)
+        self.assertIn("query model role", query_model_role_expanded)
+        self.assertIn("query model responsibility", query_model_role_expanded)
+        self.assertNotIn("query model separation", query_model_role_expanded)
+        self.assertNotIn("aggregate boundary leak", query_model_role_expanded)
 
         filter_sort_expanded = signal_rules.expand_query(
             queries_by_id["beginner_query_model_filter_sort_entrypoint_lockin"]["prompt"]
@@ -3385,6 +3450,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "prompt_terms": ["Why use", "MVCC"],
                 "expected_path": "contents/database/transaction-isolation-locking.md",
             },
+            "beginner_mvcc_english_meaning_lockin": {
+                "prompt_terms": ["What does", "MVCC", "mean"],
+                "expected_path": "contents/database/transaction-isolation-basics.md",
+            },
             "beginner_di_vs_ioc_shortform_lockin": {
                 "prompt_terms": ["DI vs IoC", "차이가 뭐야"],
                 "expected_path": "contents/spring/spring-ioc-di-basics.md",
@@ -3457,6 +3526,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
                 "prompt_terms": ["keep-alive", "뭔데"],
                 "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
             },
+            "beginner_keepalive_merged_alias_lockin": {
+                "prompt_terms": ["keepalive", "뭐야"],
+                "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
+            },
             "beginner_keep_alive_spacing_shortform_lockin": {
                 "prompt_terms": ["keep alive", "뭐야"],
                 "expected_path": "contents/network/keepalive-connection-reuse-basics.md",
@@ -3475,6 +3548,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             },
             "beginner_query_service_korean_role_shortform_lockin": {
                 "prompt_terms": ["query service", "무슨 역할이야"],
+                "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            },
+            "beginner_query_model_english_role_shortform_lockin": {
+                "prompt_terms": ["What does", "query model", "do"],
                 "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
             },
             "beginner_di_and_ioc_shortform_lockin": {

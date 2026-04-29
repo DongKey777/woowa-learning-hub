@@ -2,30 +2,31 @@
 
 > 한 줄 요약: 인증은 `누구인가`를 확인하는 일이고, 인가는 `무엇을 할 수 있는가`를 판단하는 일이다. 이 둘 사이에 `principal`, `session`, `permission model`이 끼어든다는 점까지 같이 잡아야 실제 서비스가 안전해진다.
 
-**난이도: 🟡 Intermediate**
+**난이도: 🟢 Beginner**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [인증·인가·세션 기초 흐름](./authentication-authorization-session-foundations.md)
+- [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
+- [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
+- [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+- [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
+- [Security README 기본 primer 묶음](./README.md#기본-primer)
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
-> 관련 문서:
-> - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
-> - [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
-> - [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md)
-> - [Signed Cookies / Server Sessions / JWT Tradeoffs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
-> - [Session Revocation at Scale](./session-revocation-at-scale.md)
-> - [Permission Model Drift / AuthZ Graph Design](./permission-model-drift-authz-graph-design.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [Spring Security 아키텍처](../spring/spring-security-architecture.md)
-> - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
-> - [TLS, 로드밸런싱, 프록시](../network/tls-loadbalancing-proxy.md)
-> - [Security README 기본 primer 묶음](./README.md#기본-primer)
-> - [시스템 설계 면접 프레임워크](../system-design/system-design-framework.md)
-
 retrieval-anchor-keywords: authentication vs authorization, authn vs authz, authn/authz primer, authn / authz primer, authn/authz boundary, authn / authz boundary, authn authz beginner primer, 인증과 인가 primer, 인증과 인가 기본 primer, authn은 이해했는데 why 403, authn은 이해했는데 왜 403인지, authn / authz 경계가 섞일 때, principal meaning, principal vs user, principal vs session
+
+## 10초 분리표
+
+처음에는 용어 정의를 길게 외우기보다 "`지금 막힌 게 누구 확인인지, 행동 허용인지`"만 먼저 가르면 된다.
+
+| 지금 보이는 장면 | 먼저 의심할 것 | 왜 그런가 | 다음 문서 |
+|---|---|---|---|
+| `로그인 자체가 안 된다` | 인증(authn) | 아직 principal이 만들어지지 않았다 | [인증·인가·세션 기초 흐름](./authentication-authorization-session-foundations.md) |
+| `로그인은 됐는데 왜 403이지?` | 인가(authz) | principal은 있지만 허용 규칙에서 막힐 수 있다 | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md) |
+| `token valid인데 왜 거부되지?` | 인증 결과와 권한 판단을 섞는 중인지 | 서명 검증 성공이 곧 허용은 아니다 | [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md) |
+| `권한을 바꿨는데 바로 반영이 안 된다` | session / claim freshness | 로그인 상태 지속과 최신 권한 반영은 다른 문제다 | [Role Change and Session Freshness Basics](./role-change-session-freshness-basics.md) |
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -44,6 +45,10 @@ retrieval-anchor-keywords: authentication vs authorization, authn vs authz, auth
 
 초심자가 가장 자주 헷갈리는 지점은 `인증 -> principal -> session -> 인가`가 하나의 흐름이라는 점이다.
 로그인 성공 화면만 보고 끝내면 중간의 핵심 객체들이 다 사라져 보이는데, 실제 서버는 그 중간 단계를 기준으로 권한을 판단한다.
+
+한 줄로 먼저 붙이면 이렇다.
+
+`인증 = 누구인가 확인` -> `principal/session = 그 결과를 다음 요청에 이어 붙임` -> `인가 = 이 행동을 허용할지 판단`
 
 ### 먼저 5개 용어를 한 번에 잡기
 

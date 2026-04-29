@@ -15,7 +15,7 @@
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, 문자열 비교 방법, 자바 문자열 비교 equals, string == 왜 false, 문자열 같은데 왜 false, 문자열 비교 왜 안돼요, 문자열 equals 뭐예요, 자바 문자열 기초, enum vs string beginner, dto string to enum boundary, 상태 문자열 enum 변환, enum 문자열 비교 헷갈림, status string payload 왜 바로 비교하면 안돼요
+retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, 문자열 비교 방법, 자바 문자열 비교 equals, string == 왜 false, string 같은데 왜 false예요, 문자열 비교가 왜 안 돼요, string equals가 뭐예요, 자바 문자열 기초, enum vs string beginner, dto string to enum boundary, 상태 문자열 enum 변환, enum 문자열 비교 헷갈림, status string payload 왜 바로 비교하면 안돼요
 
 ## 핵심 개념
 
@@ -23,7 +23,7 @@ Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(
 
 입문자가 가장 자주 저지르는 실수 두 가지가 있다. 첫째, `"왜 문자열이 같은데 `==`는 false지?"` 상태에서 문자열 내용을 `==`로 비교하는 것. 둘째, 반복문 안에서 `+`로 문자열을 이어 붙이는 것. 첫 번째는 결과가 틀리고, 두 번째는 성능이 나빠진다.
 
-질문을 더 넓게 보면 이 문서는 `String` 버전의 `==` vs `equals()` 입문 문서다. "`문자열 비교가 왜 안 돼요`", "`String equals가 뭐예요`", "`같아 보이는데 왜 false예요`"처럼 들어오면 먼저 여기서 문자열 증상을 자르고, 그다음 [Java Equality and Identity Basics](./java-equality-identity-basics.md)로 넘어가서 문자열 밖의 객체 비교까지 같은 규칙으로 확장하면 된다.
+질문을 더 넓게 보면 이 문서는 `String` 버전의 `==` vs `equals()` 입문 문서다. "`문자열 비교가 왜 안 돼요`", "`String 같은데 왜 false예요`", "`String equals가 뭐예요`"처럼 들어오면 먼저 여기서 문자열 증상을 자르고, 그다음 [Java Equality and Identity Basics](./java-equality-identity-basics.md)로 넘어가서 문자열 밖의 객체 비교까지 같은 규칙으로 확장하면 된다.
 
 ## 한눈에 보기
 
@@ -42,10 +42,11 @@ Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(
 |---|---|---|
 | `"문자열 비교가 왜 안 돼요"` | 내용 비교면 `equals()` | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
 | `"String 같은데 왜 false예요"` | `==`가 객체 비교인지 먼저 본다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| `"왜 `==`가 가끔 맞아 보여요"` | 리터럴과 constant expression은 String Pool을 탈 수 있지만, 비교 기본값은 여전히 `equals()`다 | [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md) |
 | `"String equals가 뭐예요"` | 문자열 값 비교 기본 도구다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
 | `"status가 String인데 enum처럼 비교해도 되나요"` | 외부 payload면 먼저 enum으로 변환한다 | [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md) |
 
-이 세 문장은 [Java Equality and Identity Basics](./java-equality-identity-basics.md)의 문자열 증상 표에서도 같은 표현으로 다시 이어진다. 여기서 `String` 로컬 규칙을 먼저 자르고, equality primer에서 참조형 일반 규칙으로 넓히는 양방향 브리지라고 생각하면 된다.
+이 세 문장은 [Java Equality and Identity Basics](./java-equality-identity-basics.md)의 문자열 증상 표에서도 같은 표현으로 이어진다. 여기서 `String` 로컬 규칙을 먼저 자르고, equality primer에서 참조형 일반 규칙으로 넓히는 양방향 브리지라고 생각하면 된다.
 
 문자열이 "상태 이름처럼 보이는 값"일 때도 바로 비교부터 들어가면 헷갈리기 쉽다. 예를 들어 DTO의 `"PAID"`나 `"P"`는 아직 `OrderStatus.PAID`가 아니라 외부 payload 문자열이다. 이 경우에는 문자열 비교 규칙을 알고 있더라도, 다음 단계에서는 [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md)처럼 "어디서 enum으로 올릴지"를 먼저 정해야 한다.
 
@@ -159,6 +160,16 @@ String result = sb.toString(); // "Hello, World"
 
 **Q. `StringBuilder`와 `StringBuffer` 차이는?**
 `StringBuffer`는 모든 메서드가 `synchronized`라 스레드 안전하지만 느리다. `StringBuilder`는 동기화가 없어 빠르다. 단일 스레드에서는 항상 `StringBuilder`를 쓴다.
+
+## 다음 질문 handoff
+
+이 문서를 읽고 바로 이어지는 2차 질문은 아래 표처럼 넘기면 된다.
+
+| 여기까지 읽고 생기는 질문 | 여기서 먼저 붙잡을 한 줄 | 바로 다음 문서 |
+|---|---|---|
+| "`==`가 가끔 맞아 보이는 이유가 뭐예요" | 리터럴과 constant expression은 pool을 탈 수 있어서 `==`가 우연히 참처럼 보일 수 있지만, 내용 비교 규칙 자체가 바뀐 것은 아니다 | [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md) |
+| "`String`만 그런가요, 다른 객체도 같은가요" | `==`는 참조 비교, `equals()`는 내용 비교라는 큰 규칙으로 넓혀 본다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| "외부에서 들어온 상태 문자열은 어디서 정리하나요" | 비교 전에 boundary에서 enum 같은 도메인 타입으로 올릴지 먼저 정한다 | [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md) |
 
 ## 한 줄 정리
 

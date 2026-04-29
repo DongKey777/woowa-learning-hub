@@ -13,10 +13,11 @@
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
+- [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md)
 - [Java Optional 입문](./java-optional-basics.md)
 - [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
 
-retrieval-anchor-keywords: java map get null containskey getordefault difference, map get returns null missing key null value, hashmap null value beginner, map containskey 언제 쓰나, map getordefault 언제 쓰나, key 없음 null 값 차이, 자바 map get null 의미, 자바 map containskey getordefault 차이, 자바 hashmap null 처리 기초, map null safety beginner, keyset get null confusion, map iteration null beginner, map null vs missing semantics, optional to map null handling bridge, map get null beginner intro
+retrieval-anchor-keywords: java map get null containskey getordefault difference, map get returns null missing key null value, hashmap null value beginner, map containskey 언제 쓰나, map getordefault 언제 쓰나, key 없음 null 값 차이, 자바 map get null 의미, 자바 map containskey getordefault 차이, 자바 hashmap null 처리 기초, map null safety beginner, map null vs missing semantics, optional to map null handling bridge, map get null beginner intro, optional list vs empty list, 빈 리스트 optional 차이
 
 ## 먼저 잡는 멘탈 모델
 
@@ -266,6 +267,7 @@ for (Map.Entry<String, String> entry : statusByUser.entrySet()) {
 
 | 지금 더 헷갈리는 질문 | 다음 문서 |
 |---|---|
+| "`Map<Integer, V>`에서 `containsKey(1)` / `get(1)` / `getOrDefault(1, ...)`를 숫자 key 장면으로 다시 보고 싶다" | [`Map<Integer, V>`에서 `containsKey(1)` / `get(1)` / `getOrDefault(1, ...)`를 언제 갈라 읽을까](./map-integer-containskey-get-getordefault-bridge.md) |
 | "`put()`/`get()`/`remove()`/`containsKey()` 반환값을 한 번에 외우고 싶다" | [Map `put()` / `get()` / `remove()` / `containsKey()` 반환값 치트시트](./map-put-get-remove-containskey-return-cheat-sheet.md) |
 | "`Map` 반복에서 `entrySet()`/`keySet()`/`values()`를 언제 고르죠?" | [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md) |
 | "`Map` 자체가 `Collection`이 아니라는 말부터 다시 잡고 싶다" | [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md) |

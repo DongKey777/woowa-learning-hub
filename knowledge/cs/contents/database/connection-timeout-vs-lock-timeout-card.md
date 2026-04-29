@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Lock Timeout 났을 때 blocker 먼저 보는 미니카드](./lock-timeout-blocker-first-check-mini-card.md)
 - [Timeout 로그 타임라인 체크리스트 카드](./timeout-log-timeline-first-failure-checklist-card.md)
 - [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
@@ -94,6 +95,7 @@ retrieval-anchor-keywords: connection timeout vs lock timeout, pool timeout vs d
 - `busy`인데 pool 신호가 먼저 보이면: "아직 DB winner를 본 것도 아니고, 커넥션부터 못 빌렸다"
 - `busy`인데 lock timeout이 먼저 보이면: "DB 안까지는 들어갔지만 same key/row 경쟁에서 오래 막혔다"
 - `duplicate key`와 다르게 둘 다 winner 확정 신호는 아니다. 분류 기준이 필요하면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)로 바로 이어서 본다.
+- `lock timeout`인데 "그러면 blocker는 어디서 보지?"가 바로 궁금하면 [Lock Timeout 났을 때 blocker 먼저 보는 미니카드](./lock-timeout-blocker-first-check-mini-card.md)로 이어서 본다.
 
 ## `busy` 뒤에 바로 보는 원인 카드
 

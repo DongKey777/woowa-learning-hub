@@ -42,6 +42,16 @@ retrieval-anchor-keywords: consistency idempotency async workflow foundations, s
 - 중복은 `항상 온다`
 - 그래서 `idempotency와 dedup이 필요`
 
+처음 읽는 사람은 완료 시점을 세 칸으로 나누면 훨씬 덜 헷갈린다.
+
+| 상태 | 뜻 | 주문 예시 |
+|---|---|---|
+| 접수됨 | 요청이나 메시지를 받았다 | API가 주문 요청을 받음 |
+| 핵심 상태 확정 | source of truth에 기준 상태가 기록됨 | 주문 row 저장, 결제 승인 확정 |
+| 후처리 완료 | 알림/검색/메일 같은 뒤쪽 작업까지 따라옴 | 메일 발송, 검색 반영 완료 |
+
+이 세 칸을 섞지 않으면 `큐에 넣었는데 왜 안 끝났죠?`, `검색에 왜 아직 안 보여요?` 같은 질문을 더 정확히 자를 수 있다.
+
 ---
 
 ## 한눈에 보기
@@ -57,6 +67,15 @@ retrieval-anchor-keywords: consistency idempotency async workflow foundations, s
 
 핵심은 sync와 async를 적으로 보지 않는 것이다.
 보통은 둘 다 필요하고, 어디까지를 sync로 확정하고 어디부터를 async로 넘길지 경계를 정하는 것이 설계다.
+
+처음 읽을 때는 증상 문장 기준으로도 한 번 자르면 더 빠르다.
+
+| 학습자 증상 문장 | 먼저 의심할 것 | 이 문서에서 잡는 1차 답 |
+|---|---|---|
+| `주문은 됐는데 메일이 아직 안 와요` | async 후처리 지연 | sync 완료와 async 완료는 다르다 |
+| `queue에 넣었는데 왜 안 끝났죠?` | 전달 완료와 업무 완료 혼동 | broker 적재 성공은 끝이 아니라 handoff 시작이다 |
+| `같은 요청을 다시 보냈는데 왜 두 번 처리돼요?` | retry + duplicate | idempotency와 dedup이 필요하다 |
+| `검색에는 늦게 보이는데 데이터가 틀린 건가요?` | eventual consistency | source of truth와 read model 완료 시점을 나눠 봐야 한다 |
 
 ---
 
@@ -95,6 +114,14 @@ Relay / Worker
 2. 하지만 이메일, 알림, 검색 반영까지 모두 끝났다는 뜻은 아니다.
 3. 따라서 주문 상세는 바로 보이는데 이메일은 늦게 오거나 검색에는 잠깐 안 보일 수 있다.
 
+같은 흐름을 `저장됨 / 전달됨 / 반영됨`으로 다시 보면 더 명확하다.
+
+| 체크 지점 | 질문 | 주문 생성 예시 |
+|---|---|---|
+| 저장됨 | 핵심 상태가 source of truth에 기록됐나 | `orders` row commit 완료 |
+| 전달됨 | downstream이 따라갈 사건을 받았나 | outbox relay가 `order.created` 발행 |
+| 반영됨 | 각 read model/후처리가 끝났나 | 이메일 전송, 검색 반영, 알림 생성 완료 |
+
 이때 초보자가 흔히 "데이터가 틀렸다"와 "아직 안 따라왔다"를 섞어 말한다.
 하지만 실무에서는 둘을 구분해야 한다.
 
@@ -102,6 +129,15 @@ Relay / Worker
 - 주문 row는 있는데 search index가 늦으면 eventual consistency에 가깝다.
 
 즉, eventual consistency는 "무조건 틀린 시스템"이 아니라 **downstream이 뒤에서 합류하는 구조**를 뜻한다.
+
+### 30초 판단표: sync에 남길까, async로 보낼까
+
+| 작업 | 초보자용 첫 선택 | 이유 |
+|---|---|---|
+| 주문 생성 결과, 결제 승인 결과 | sync | 사용자가 지금 확답을 기다린다 |
+| 이메일, 푸시, webhook | async | 조금 늦어도 제품 의미가 유지된다 |
+| 검색 인덱싱, 대시보드 반영 | async | read model은 뒤에서 따라오는 경우가 많다 |
+| 재고 확정, 권한 박탈 같은 핵심 판정 | sync 또는 매우 강한 보장 | 틀리면 사고 비용이 크다 |
 
 ---
 
@@ -134,6 +170,11 @@ API와 consumer는 멱등성을 잡는 위치도 다르다.
 - ordering은 **서로 다른 요청의 순서 보장**
 
 즉 idempotency가 있어도 `A -> B` 순서가 뒤집히는 문제는 따로 남을 수 있다.
+
+초심자용 한 줄로 더 줄이면:
+
+- `같은 것 두 번 막기`는 idempotency
+- `다른 것 순서 지키기`는 ordering
 
 ---
 
@@ -195,6 +236,12 @@ beginner 단계에서는 아래 정도로 나누면 충분하다.
 - `idempotency가 있으면 순서도 안전하다`: 아니다. 중복과 순서는 다른 문제다.
 - `queue를 쓰면 duplicate는 broker가 해결한다`: 아니다. consumer dedup이 필요하다.
 - `outbox를 넣으면 exactly-once가 된다`: 아니다. 보통은 handoff를 더 안전하게 만들 뿐이고, 중복 처리 설계는 여전히 필요하다.
+
+처음 읽은 뒤 다음 문서를 고를 때는 이렇게 자르면 안전하다.
+
+- `queue 적재와 consumer 완료를 더 보고 싶다`면 [메시지 큐 기초](./message-queue-basics.md)
+- `방금 쓴 값이 왜 안 보이는지`가 더 크면 [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md)
+- `중복 재시도와 dedup 저장소를 더 구체적으로 보고 싶다`면 [Idempotency Key Store / Dedup Window / Replay-Safe Retry](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
 
 ---
 

@@ -2,6 +2,8 @@
 
 > 한 줄 요약: 같은 aggregate의 순서를 꼭 지켜야 할 때도, 먼저 물어볼 질문은 항상 같다. "사용자가 지금 결과를 바로 알아야 하나?" 그렇다면 동기 API 계약에서 순서를 다루고, "잠깐 늦어도 되지만 한 줄 처리와 재시도가 더 중요하나?"라면 per-key queue 쪽이 더 잘 맞는다.
 
+> 이 문서는 `왜 어떤 요청은 바로 처리하고 어떤 요청은 큐로 보내요?`, `처음 배우는데 api랑 queue를 언제 갈라요?` 같은 첫 질문이 심화 문서보다 먼저 이 primer에 닿게 하려는 entrypoint다.
+
 **난이도: 🟢 Beginner**
 
 관련 문서:
@@ -13,11 +15,12 @@
 - [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md)
 - [Change Data Capture / Outbox Relay 설계](./change-data-capture-outbox-relay-design.md)
 - [Idempotency Key Store / Dedup Window / Replay-Safe Retry](./idempotency-key-store-dedup-window-replay-safe-retry-design.md)
+- [커맨드 패턴 기초](../design-pattern/command-pattern-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: per-key queue vs direct api primer, per-aggregate queue vs sync api, ordering in api contract, ordering in queue, single writer queue beginner, same aggregate ordering decision, cart ordering sync vs async, account command queue primer, aggregate queue why, direct api ordering when, queue ordering when, per-key queue beginner, direct api contract ordering, immediate response vs queued command, sync ordering vs per aggregate queue
+retrieval-anchor-keywords: per-key queue vs direct api, direct api vs queue beginner, per-aggregate queue beginner, same key ordering beginner, sync api vs async queue, immediate response vs accepted response, 언제 api로 바로 처리하고 언제 queue로 보내요, 처음 배우는데 queue를 왜 써요, 처음 시스템 설계 배우는데 동기 api 비동기 queue 차이, 왜 어떤 요청은 바로 처리하고 어떤 요청은 큐로 보내요, 주문 취소 api queue 뭐가 맞나요, 같은 account 요청 순서 왜 queue로 묶어요, queue를 쓰면 순서가 자동 보장되나요, checkout은 왜 queue보다 api가 먼저인가요, command queue ordering primer
 
 ---
 
@@ -39,6 +42,24 @@ retrieval-anchor-keywords: per-key queue vs direct api primer, per-aggregate que
 
 - 지금 답해야 하면 `direct API`
 - 한 줄 처리와 재시도가 더 중요하면 `per-key queue`
+
+## beginner bridge: command queue -> per-key queue -> message queue
+
+`queue`가 Command 패턴, system design primer, message broker 설명에서 연달아 보여도 같은 층위를 뜻하지는 않는다.
+처음에는 아래 3칸만 고정하면 된다.
+
+| 단계 | 역할 | 먼저 볼 문서 | 여기서 멈춰도 되는 기준 |
+|---|---|---|---|
+| 1 | `entry primer` | [커맨드 패턴 기초](../design-pattern/command-pattern-basics.md) | `실행 요청을 객체로 들고 다닌다`를 이해했다 |
+| 2 | `bridge primer` | 이 문서 | `지금 결과를 바로 알려야 하는가`와 `나중에 처리해도 되는가`를 자를 수 있다 |
+| 3 | `follow-up primer` | [메시지 큐 기초](./message-queue-basics.md) | `큐 적재 성공`과 `업무 완료`를 분리해 설명할 수 있다 |
+
+- symptom phrase anchors:
+  `처음`, `헷갈려요`, `왜 어떤 요청은 api로 끝내고 어떤 요청은 queue로 보내요`, `queue를 쓰면 끝난 거예요`, `what is direct api vs queue`
+- misconception guard:
+  per-key queue는 "같은 key를 한 줄로 보내는 운영 방식"이지, 모든 명령을 무조건 비동기로 바꿔야 한다는 뜻이 아니다.
+- safe next step:
+  아직 `응답 약속`을 한 문장으로 못 말하면 job queue 설계, CDC relay, replay-safe retry 설계로 내려가지 않는다.
 
 ---
 
@@ -241,6 +262,7 @@ POST /cart/commands
 - 큐를 아직 입문 단계에서 다시 보고 싶다면 [Message Queue Basics](./message-queue-basics.md)
 - worker retry, DLQ, backpressure까지 가려면 [Job Queue 설계](./job-queue-design.md)
 - DB 저장과 큐 발행을 같이 묶는 안전한 전달은 [Change Data Capture / Outbox Relay 설계](./change-data-capture-outbox-relay-design.md)
+- "실행 요청 객체" 관점이 같이 헷갈린다면 [커맨드 패턴 기초](../design-pattern/command-pattern-basics.md)
 
 ---
 

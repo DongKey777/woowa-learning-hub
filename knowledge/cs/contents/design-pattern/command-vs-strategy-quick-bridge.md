@@ -2,23 +2,20 @@
 
 > 한 줄 요약: 둘 다 `execute()` 같은 모양을 가질 수 있지만, **커맨드는 실행 요청을 담아 저장/전달하는 쪽**이고 **전략은 알고리즘을 바꿔 끼우는 쪽**이다.
 
-**난이도: 🟢 Beginner**
+**난이도: 🟡 Intermediate**
 
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [커맨드 패턴 기초](./command-pattern-basics.md)
+- [전략 패턴 기초](./strategy-pattern-basics.md)
+- [옵저버 vs 커맨드: 알림과 실행 요청을 가르는 비교 브리지](./observer-vs-command-beginner-bridge.md)
+- [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
+- [실전 패턴 선택 가이드](./pattern-selection.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
+- [컬렉션 업데이트 전략 프라이머](../language/java/collection-update-strategy-primer.md)
 
-> 관련 문서:
-> - [커맨드 패턴 기초](./command-pattern-basics.md)
-> - [전략 패턴 기초](./strategy-pattern-basics.md)
-> - [옵저버 vs 커맨드: 처음 선택을 줄이는 1페이지 브리지](./observer-vs-command-beginner-bridge.md)
-> - [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-> - [실전 패턴 선택 가이드](./pattern-selection.md)
-
-retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy beginner, execute method looks same command strategy, request object vs algorithm swap, queue command vs strategy beginner, undo retry command strategy, command execute strategy execute difference, 커맨드 vs 전략 차이, execute 모양이 비슷한데 차이, 실행 요청 저장 vs 알고리즘 교체, command strategy 초보자 비교, command or strategy first choice, execute 같은데 command strategy, command pattern vs strategy pattern beginner, command vs strategy quick bridge basics
+retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy intermediate, execute method looks same command strategy, request object vs algorithm swap, queue command vs strategy, undo retry command strategy, command execute strategy execute difference, 커맨드 vs 전략 차이, execute 모양이 비슷한데 차이, 실행 요청 저장 vs 알고리즘 교체, command or strategy first choice, execute 같은데 command strategy, command query boundary pattern, 언제 command 언제 strategy, what is command vs strategy
 
 ---
 
@@ -34,6 +31,18 @@ retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy
 
 첫 질문이면 커맨드 쪽, 둘째 질문이면 전략 쪽이다.
 
+## 왜 beginner 다음 단계 문서인가
+
+기초 문서에서는 Command와 Strategy를 각각 따로 보면 덜 어렵다.
+하지만 실제 코드에서는 둘 다 인터페이스 하나에 `execute()`나 `run()` 같은 메서드가 달려 있어서, **겉모양만 보면 같은 패턴처럼 보이는 구간**이 생긴다.
+
+이 문서는 그 지점에서 다음 두 혼동을 줄이는 데 초점을 둔다.
+
+- 작업 큐/재시도/undo를 풀어야 하는데 `Strategy`처럼 이름 붙이는 혼동
+- 단순 계산 방식 교체인데 `Command` 클래스를 불필요하게 늘리는 혼동
+
+즉 entrypoint primer가 아니라, **비슷한 모양의 타입을 리뷰에서 빠르게 가르는 intermediate bridge**다.
+
 ## 30초 비교표
 
 | 질문 | Command | Strategy |
@@ -45,6 +54,15 @@ retrieval-anchor-keywords: command vs strategy quick bridge, command vs strategy
 | 대표 예 | 주문 취소 작업 큐 | 할인 계산 방식 교체 |
 
 핵심은 메서드 이름이 아니라 **왜 객체를 분리했는가**다.
+
+## 리뷰에서 바로 쓰는 판별 질문
+
+| 먼저 볼 질문 | Yes면 더 가까운 쪽 | 이유 |
+|---|---|---|
+| 이 객체를 큐에 넣거나 저장소에 적재하나 | Command | 실행 시점과 실행 주체가 분리된다 |
+| 실패 후 같은 요청을 다시 실행해야 하나 | Command | 요청 자체가 재시도 단위가 된다 |
+| 같은 입력을 다른 규칙으로 계산만 바꾸나 | Strategy | 실행 흐름보다 알고리즘 교체가 핵심이다 |
+| 호출자가 구현체를 주입/선택하나 | Strategy | 요청 저장보다 교체 가능한 행동에 가깝다 |
 
 ## 1분 예시
 
@@ -108,6 +126,16 @@ fee = feeStrategy.calculate(payment);
 - 바깥 문제: 환불 요청을 저장하고 워커가 실행한다 → Command
 - 안쪽 문제: 환불 금액 계산 공식을 고른다 → Strategy
 
+## Command-Query 경계와 같이 볼 포인트
+
+같은 `execute()` 모양이더라도, 아래처럼 읽으면 더 덜 섞인다.
+
+- 상태를 바꾸는 요청을 담고 있으면 Command 쪽이다.
+- 단순 조회 조건이나 계산 공식을 고르는 타입이면 Strategy나 Query Object 쪽이다.
+- 조회 로직을 큐에 넣어 재실행해야 하는 특별한 운영 요구가 없다면, 보통은 Command보다 Strategy/Query 모델이 더 단순하다.
+
+즉 "객체로 감쌌다"보다 **상태 변경 요청을 운반하느냐**를 먼저 보는 편이 안전하다.
+
 ## 아주 짧은 선택 루틴
 
 - 큐, undo, retry, 예약 실행이 먼저 보이면 → Command
@@ -115,12 +143,18 @@ fee = feeStrategy.calculate(payment);
 - 객체가 "나중에 실행될 요청"처럼 보이면 → Command
 - 객체가 "이번에 쓸 계산법"처럼 보이면 → Strategy
 
+## 흔한 오해와 함정
+
+- 동기 메서드 호출이라고 해서 항상 Strategy는 아니다. 동기로 바로 실행해도 "실행 요청" 의미가 강하면 Command일 수 있다.
+- `CommandHandler` 안의 세부 계산은 Strategy로 분리할 수 있다. 그래서 둘을 같이 쓴다고 패턴이 흐려지는 것은 아니다.
+- 모든 `execute()`를 `Command`로 부르면, 단순 계산 정책 타입까지 큐/재시도 문맥으로 오해하게 된다.
+
 ## 다음 읽기
 
 - 커맨드 쪽 예시를 더 보고 싶으면 [커맨드 패턴 기초](./command-pattern-basics.md)
 - 전략 쪽 예시를 더 보고 싶으면 [전략 패턴 기초](./strategy-pattern-basics.md)
 - 전략과 템플릿 메소드가 섞이면 [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
-- "알림"까지 섞이면 [옵저버 vs 커맨드: 처음 선택을 줄이는 1페이지 브리지](./observer-vs-command-beginner-bridge.md)
+- "알림"까지 섞이면 [옵저버 vs 커맨드: 알림과 실행 요청을 가르는 비교 브리지](./observer-vs-command-beginner-bridge.md)
 
 ## 한 줄 정리
 

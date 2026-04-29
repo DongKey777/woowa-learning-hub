@@ -13,10 +13,10 @@
 - [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
 - [signals, process supervision](./signals-process-supervision.md)
 - [operating-system 카테고리 인덱스](./README.md)
-
+- [Direct Buffer / Off-Heap Memory Troubleshooting](../language/java/direct-buffer-offheap-memory-troubleshooting.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oomkilled, app log killed meaning, kubernetes oomkilled meaning, memory.events oom_kill beginner, cgroup memory events primer, oom beginner mental model, oom 표기 해석, killed 로그 의미, oomkilled 뜻, memory.events 읽는 법 입문, 메모리 한도 초과 멘탈 모델, cgroup oom beginner bridge, normal exit vs killed, signal stop vs oom kill
+retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oomkilled, app log killed meaning, kubernetes oomkilled meaning, memory.events oom_kill beginner, cgroup memory events primer, oom beginner mental model, oom 표기 해석, killed 로그 의미, oomkilled 뜻, memory.events 읽는 법 입문, 메모리 한도 초과 멘탈 모델, cgroup oom beginner bridge, 왜 outofmemoryerror 없는데 oomkilled, signal stop vs oom kill
 
 ## 먼저 잡는 멘탈 모델
 
@@ -65,11 +65,29 @@ retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oo
 
 이 셋은 서로 다른 원인이 아니라, 같은 사건을 다른 관찰 지점에서 본 것이다.
 
+## Java `OutOfMemoryError`와도 같은 말은 아니다
+
+초보자가 운영체제 표면 증상과 JVM 내부 증상을 한 덩어리로 묶는 경우가 많아서, 여기서 한 번 끊어 두는 편이 안전하다.
+
+| 지금 보이는 것 | 먼저 뜻하는 범위 | 바로 같은 말이 아닌 것 |
+| --- | --- | --- |
+| `OOMKilled` | 컨테이너/cgroup 메모리 한도 쪽에서 프로세스가 kill됨 | 곧바로 "Java heap이 찼다" |
+| `OutOfMemoryError: Java heap space` | JVM heap 한도 안에서 객체를 더 못 담음 | 곧바로 "컨테이너가 kill됐다" |
+| `memory.events`의 `oom_kill` 증가 | 커널/cgroup 기록에 kill 사건이 남음 | 애플리케이션이 스스로 예외를 던졌다는 뜻 |
+
+작은 반례를 하나만 기억하면 된다.
+
+- JVM heap은 아직 여유가 있어도 direct buffer, native memory, thread stack 같은 **heap 바깥 메모리**가 커지면 컨테이너는 `OOMKilled` 될 수 있다.
+- 반대로 JVM이 `OutOfMemoryError`를 내고도 프로세스가 바로 kill되지 않는 실행 설정도 있다.
+
+즉 beginner 1차 분류는 "`애플리케이션 예외`인지, `커널/cgroup kill`인지"를 먼저 나누는 것이다.
+
 ## 자주 헷갈리는 포인트
 
 - `Killed`만 봤다고 해서 항상 OOM이라고 단정하면 안 된다. 다만 메모리 문맥이라면 가장 먼저 연결해 볼 표지판은 맞다.
 - 종료 코드 `137`도 단독으로는 OOM 확정이 아니다. 일반 `SIGKILL`과 OOM kill이 같은 숫자로 보일 수 있다.
 - `OOMKilled`가 보인다고 해서 호스트 전체 메모리가 바닥났다는 뜻은 아니다. 컨테이너 cgroup 한도만 넘겨도 이렇게 보일 수 있다.
+- Java 애플리케이션이라도 `OutOfMemoryError` 로그가 없다고 OOM을 배제하면 안 된다. kill이 JVM 바깥(cgroup/커널)에서 일어나면 예외 로그를 남기기 전에 끝날 수 있다.
 - `memory.events`는 로그 문장이 아니라 누적 카운터다. 값이 늘었는지 전후 비교로 읽어야 한다.
 - `oom`과 `oom_kill`은 같은 글자가 아니어도 된다. 초보자 1차 독해에서는 "`oom_kill`이 늘었는가"를 더 직접적인 신호로 보면 된다.
 
@@ -90,6 +108,7 @@ retrieval-anchor-keywords: killed oomkilled memory.events beginner, killed vs oo
 > - "`OOMKilled`가 왜 호스트 전체 OOM과 다를 수 있는지"가 궁금하면: [OOM Killer, cgroup Memory Pressure](./oom-killer-cgroup-memory-pressure.md)
 > - "`SIGTERM`/`SIGKILL` 같은 일반 종료와 무엇이 다른지"를 더 보려면: [signals, process supervision](./signals-process-supervision.md)
 > - "`memory.high`와 `memory.max`가 어떻게 다른지"까지 이어서 보려면: [memory.high vs memory.max, Cgroup Behavior](./memory-high-vs-memory-max-cgroup-behavior.md)
+> - "Java 서비스인데 `OutOfMemoryError` 없이도 컨테이너가 죽는 이유"를 이어서 보려면: [Direct Buffer / Off-Heap Memory Troubleshooting](../language/java/direct-buffer-offheap-memory-troubleshooting.md)
 > - 메모리 primer부터 다시 잡고 싶으면: [메모리 관리 기초](./memory-management-basics.md)
 
 ## 한 줄 정리

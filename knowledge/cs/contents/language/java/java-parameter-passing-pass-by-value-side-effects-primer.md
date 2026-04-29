@@ -355,6 +355,7 @@ update(base);
 - 배열 전달과 복사에서 side effect가 어떻게 달라지는지 함께 보려면 [Java Array Copy and Clone Basics](./java-array-copy-clone-basics.md)
 - 상태를 바꾸지 않는 설계가 왜 side effect를 줄이는지 보고 싶다면 [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - `==`, identity, 같은 객체를 본다는 의미가 비교 연산에서 어떻게 나타나는지 보고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- `new`/별칭에서 출발해 `==`, `equals()`, `HashSet`, `HashMap#get`까지 한 흐름으로 예측해 보고 싶다면 [`new`/별칭에서 `HashSet`/`HashMap#get`까지: Equality Lookup Bridge Drill](./new-aliasing-equality-hashset-hashmap-get-bridge-drill.md)
 - 메서드를 인스턴스에 둘지 `static`으로 둘지, `this` 의존성과 side effect 관점으로 이어서 보고 싶다면 [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)
 
 ## 한 줄 정리

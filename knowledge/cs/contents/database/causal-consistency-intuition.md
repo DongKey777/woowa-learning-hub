@@ -1,4 +1,4 @@
-# Causal Consistency Intuition
+# Causal Consistency 입문: 원인보다 결과가 먼저 보이면 무엇을 막아야 하나
 
 > 한 줄 요약: causal consistency는 "원인보다 결과를 먼저 보지 않게 한다"는 약속이고, 한 번 본 원인의 효과는 그 뒤에도 계속 보여야 한다.
 
@@ -12,9 +12,11 @@
 - [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
 
 관련 문서: [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md), [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md), [Monotonic Write Guarantees](./monotonic-write-guarantees.md), [Client Consistency Tokens](./client-consistency-tokens.md), [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)
-retrieval-anchor-keywords: causal consistency, happens-before, session causality, session consistency, causal order, cause before effect, effect before cause, dependency token, causal token, read-your-writes, monotonic reads, monotonic writes, causal consistency vs strong consistency, causal consistency intuition basics, causal consistency intuition beginner
+retrieval-anchor-keywords: causal consistency, causal consistency 뭐예요, causal consistency 처음 배우는데, causal consistency 큰 그림, causal consistency 왜 필요해요, what is causal consistency, session causality, read-your-writes, monotonic reads, causal consistency vs strong consistency, 원인보다 결과가 먼저 보여요, 게시글보다 댓글이 먼저 보여요, 주문보다 결제 결과가 먼저 보여요, 분산 시스템 일관성 처음, consistency 종류 헷갈려요
 
 ## 증상별 바로 가기
+
+이 문서는 `causal consistency 뭐예요`, `원인보다 결과가 먼저 보여요`, `처음 배우는데 consistency 종류가 헷갈려요` 같은 첫 질문에서 바로 들어오는 primer다.
 
 - `write는 성공했는데 최신값이 안 보인다`처럼 freshness 확보가 먼저면 [Read-Your-Writes와 Session Pinning 전략](./read-your-writes-session-pinning.md)과 [Replica Read Routing Anomalies와 세션 일관성](./replica-read-routing-anomalies.md)부터 본다.
 - `한 번 본 최신선보다 뒤로 간다`가 핵심이면 [Monotonic Reads와 Session Guarantees](./monotonic-reads-session-guarantees.md)에서 session guarantee를 먼저 잡는다.

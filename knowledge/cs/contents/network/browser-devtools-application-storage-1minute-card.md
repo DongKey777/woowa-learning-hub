@@ -1,6 +1,6 @@
 # Browser DevTools Application 탭 저장소 읽기 1분 카드
 
-> 한 줄 요약: Application 탭의 `Cookies`, `Local Storage`, `Session Storage`, `Cache Storage`는 모두 "값이 있다"를 보여 주지만, 각각 답하는 질문이 달라서 먼저 "브라우저가 자동 전송하나, JS가 직접 읽나, Service Worker가 꺼내 쓰나"를 갈라 읽어야 한다.
+> 한 줄 요약: Application 탭의 `Cookies`, `Local Storage`, `Session Storage`, `Cache Storage`는 모두 "값이 저장돼 있다"를 보여 주지만, "이번 요청에 실제로 전송되거나 쓰였나"는 따로라서 먼저 `stored`와 `sent/used`를 갈라 읽어야 한다.
 
 **난이도: 🟢 Beginner**
 
@@ -14,7 +14,7 @@
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
 
-retrieval-anchor-keywords: application tab storage quick check, devtools cookies local storage session storage cache storage, application cookies vs request cookie, local storage token but no authorization, session storage tab scoped, cache storage service worker quick check, browser storage map beginner, devtools application tab 뭐 봐요, cookie stored but not sent, sessionstorage vs localstorage basics, cache storage entry not proof, cache storage vs 304, application tab vs network tab cache, beginner devtools storage card, 처음 application 탭 뭐 봐요
+retrieval-anchor-keywords: application tab storage quick check, devtools cookies local storage session storage cache storage, application cookies vs request cookie, local storage token but no authorization, session storage tab scoped, cache storage service worker quick check, browser storage map beginner, devtools application tab 뭐 봐요, cookie stored but not sent, stored vs sent devtools, sessionstorage vs localstorage basics, cache storage entry not proof, cache storage vs 304, application tab vs network tab cache, 처음 application 탭 뭐 봐요
 
 ## 핵심 개념
 
@@ -59,6 +59,23 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 
 같은 구조를 `localStorage`에 평행하게 붙이면:
 `Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 비면, 토큰 만료보다 먼저 프런트 코드의 헤더 조립 경로를 의심한다.
+
+## stored vs sent 15초 분기
+
+먼저 이 한 줄만 고정하면 follow-up 선택이 빨라진다.
+
+```text
+Application = stored(저장돼 있나)
+Network = sent/used(이번 요청에 실제로 실렸나, 이번 응답에 실제로 쓰였나)
+```
+
+작게 끊어 읽는 결정표:
+
+| 지금 헷갈리는 장면 | 먼저 볼 탭 | 바로 이어서 갈 follow-up |
+|---|---|---|
+| `Application > Cookies`에는 있는데 요청 `Cookie`가 비어 있다 | `Application`으로 저장 확인 후 같은 요청 `Network` row | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) |
+| `Local Storage`에는 token이 있는데 `Authorization`이 비어 있다 | `Application > Local Storage` 후 같은 요청 `Request Headers > Authorization` | 프런트의 헤더 조립 경로 확인 |
+| `Cache Storage`에 entry가 있는데도 네트워크가 또 간다 | `Application > Cache Storage` 후 같은 row의 `from ServiceWorker`/`304`/`from disk cache` | [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md) |
 
 ## 로그인 실패 장면에서 30초 분리
 

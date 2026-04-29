@@ -289,12 +289,17 @@ Set-Cookie: session=; Domain=example.com; Path=/; Max-Age=0; Expires=Thu, 01 Jan
 
 ---
 
-## 다음 한 걸음
+## 다음 단계와 복귀 경로
 
 - old cookie 정리 header를 exact scope로 어떻게 보내야 할지 막히면 [Cookie Scope Migration Cleanup](./cookie-scope-migration-cleanup.md)
 - 이미 raw `Cookie` header에 old/new가 같이 보이면 [Duplicate Cookie Name Shadowing](./duplicate-cookie-name-shadowing.md)
 - `auth -> app` 구조 자체를 shared cookie로 볼지 handoff로 볼지 헷갈리면 [Subdomain Callback Handoff Chooser](./subdomain-callback-handoff-chooser.md)
 - `Application`에는 보이는데 요청에 안 붙는다면 [Cookie Scope Mismatch Guide](./cookie-scope-mismatch-guide.md)
+
+복귀 기준:
+
+- cookie cleanup이나 handoff 한 칸을 본 뒤에는 [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)로 돌아와 지금 남은 증상을 다시 고른다.
+- subdomain callback 흐름과 session handoff를 다시 넓게 붙이고 싶으면 [Security README: Browser / Session Beginner Ladder](./README.md#browser--session-beginner-ladder)에서 beginner 사다리로 복귀한다.
 
 ## 한 줄 정리
 

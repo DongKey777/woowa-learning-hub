@@ -34,6 +34,7 @@ Service 책임이 어느 정도 감으로 잡혔다면, 다음 질문은 거의 
 | 계산 규칙이 바뀌었다 | [테스트 전략 기초](./test-strategy-basics.md) | [첫 테스트 선택표의 `계산식/검증 로직 변경`](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준) |
 | Service가 여러 저장/호출 순서를 바꿨다 | [테스트 전략 기초](./test-strategy-basics.md) | [첫 테스트 선택표의 `트랜잭션 경계/여러 컴포넌트 협력 흐름 변경`](./test-strategy-basics.md#첫-테스트-선택표-변경-1건-기준) |
 | Controller까지 같이 바뀌었다 | [테스트 전략 기초](./test-strategy-basics.md) | [30초 자가진단 카드](./test-strategy-basics.md#30초-자가진단-카드-4문항-yesno) |
+| `service 리팩터링인데 fake/mock/spy를 뭘 먼저 고를지 모르겠다` | [Service Refactor First-Test Examples Pack](./service-refactor-first-test-examples-pack.md) | [한눈에 보기](./service-refactor-first-test-examples-pack.md#한눈에-보기) |
 
 - 짧게 외우면: `규칙`이 중심이면 unit test, `협력/롤백`이 중심이면 integration test부터 본다.
 - Controller, Service, Test를 같은 주문 예시로 한 번에 잇고 싶다면 `계층형 아키텍처 기초 -> Service 계층 기초 -> 테스트 전략 기초` 순서가 beginner 동선이다.
