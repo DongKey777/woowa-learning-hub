@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage: bin/rag-eval --fast | --baseline-only [--fixture PATH] [--top-k N]
+# Output:
+#   --fast: stderr-only PASS/FAIL summary, exit code 0/1
+#   --baseline-only: writes reports/rag_eval/baseline_quality.json (committed)
+#                    and state/cs_rag/baseline_machine.json (gitignored)
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_rag_eval.py" "$@"
