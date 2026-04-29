@@ -1,0 +1,63 @@
+name: rag-eval contract
+
+# Plan §P1.1 step 7 — fast CI contract for the RAG evaluation harness.
+# This workflow does NOT do live retrieval (no model downloads). It
+# validates fixture schema, metric math, manifest contracts, and
+# regression-gate logic. Live retrieval lives in `bin/rag-eval
+# --regression` / `--full` and is run locally or on a self-hosted
+# runner with the model cache already warm.
+
+on:
+  pull_request:
+    paths:
+      - "scripts/learning/rag/**"
+      - "scripts/learning/cli_rag_eval.py"
+      - "tests/unit/test_rag_eval_*.py"
+      - "tests/fixtures/cs_rag_golden_queries.json"
+      - "bin/rag-eval"
+      - "pyproject.toml"
+      - ".github/workflows/rag-contract.yml"
+  push:
+    branches: [main]
+
+jobs:
+  fast-contract:
+    name: rag-eval --fast + unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install minimal eval dependencies
+        # Intentionally minimal — the eval harness modules under
+        # scripts/learning/rag/eval/ depend only on stdlib + jsonschema.
+        # We add pytest for the unit suite. Heavy ML deps
+        # (sentence-transformers, torch) are NOT needed for --fast or
+        # the unit tests; they live on a separate path exercised by
+        # bin/rag-eval --regression locally.
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install jsonschema pytest
+
+      - name: Run rag-eval unit suite
+        run: |
+          pytest tests/unit/test_rag_eval_metrics.py \
+                 tests/unit/test_rag_eval_dataset.py \
+                 tests/unit/test_rag_eval_buckets.py \
+                 tests/unit/test_rag_eval_manifest.py \
+                 tests/unit/test_rag_eval_cache.py \
+                 tests/unit/test_rag_eval_split.py \
+                 tests/unit/test_rag_eval_hard_regression.py \
+                 tests/unit/test_rag_eval_runner.py \
+                 tests/unit/test_rag_eval_cli.py \
+                 -v
+
+      - name: Run bin/rag-eval --fast (fixture/schema gate)
+        run: bin/rag-eval --fast
