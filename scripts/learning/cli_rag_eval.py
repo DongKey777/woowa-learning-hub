@@ -170,6 +170,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Rebuild candidate indexes even if state/cs_rag_eval/<id>/ exists.",
     )
+    parser.add_argument(
+        "--cleanup-after",
+        action="store_true",
+        help=(
+            "After each candidate is measured, delete its eval index and "
+            "(for non-control candidates) its HF model cache. Use on "
+            "disk-constrained machines so a 4-candidate sweep doesn't "
+            "exhaust free space."
+        ),
+    )
     return parser
 
 
@@ -604,7 +614,7 @@ def run_embedding_ab(
     )
 
     def _print_progress(stage: str, info: dict) -> None:
-        if stage in ("candidate_start", "candidate_done"):
+        if stage in ("candidate_start", "candidate_done", "candidate_cleanup"):
             print(f"  [{stage}] {info}", file=sys.stderr)
 
     # 5. Sweep
@@ -618,6 +628,7 @@ def run_embedding_ab(
         thresholds=GateThresholds(),
         model_factory=factory,
         force_rebuild=args.force_rebuild,
+        cleanup_after=args.cleanup_after,
         progress=_print_progress,
     )
 

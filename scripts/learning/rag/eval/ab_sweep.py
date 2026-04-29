@@ -30,6 +30,7 @@ from typing import Any
 from . import runner as R
 from .ab_retriever import ABRetriever
 from .candidates import EmbeddingCandidate
+from .cleanup import CleanupReport, cleanup_candidate_artifacts
 from .dataset import GradedQuery
 from .gate import (
     BaselineScore,
@@ -301,6 +302,7 @@ def run_ab_sweep(
     thresholds: GateThresholds = GateThresholds(),
     model_factory: Callable[[str, int], Any] | None = None,
     force_rebuild: bool = False,
+    cleanup_after: bool = False,
     progress: Callable[[str, dict], None] | None = None,
 ) -> ABReport:
     """Run every candidate, gate them, return an ABReport.
@@ -339,6 +341,21 @@ def run_ab_sweep(
                     "primary_ndcg_macro": score.primary_ndcg_macro,
                 },
             )
+
+        # Per-candidate cleanup (disk pressure mitigation). Run AFTER
+        # the run report has been computed and aggregated, so the
+        # report's run_report_blob is already in memory and the on-disk
+        # index is no longer needed.
+        if cleanup_after:
+            cl = cleanup_candidate_artifacts(
+                candidate, base_dir=base_dir, drop_hf_cache=True
+            )
+            if progress:
+                progress("candidate_cleanup", {
+                    "candidate_id": candidate.candidate_id,
+                    "freed_mb": cl.total_freed_mb,
+                    "skipped_hf_cache": cl.skipped_hf_cache_due_to_control,
+                })
 
     # Pareto select among passers
     passers = [r for r in results if r.gate_result.passed]

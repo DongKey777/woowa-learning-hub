@@ -377,6 +377,46 @@ def test_ab_report_to_dict_round_trips_json(tmp_path, fake_corpus, monkeypatch):
 # Progress callback
 # ---------------------------------------------------------------------------
 
+def test_cleanup_after_removes_index_after_each_candidate(tmp_path, fake_corpus, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus)
+
+    cand = _candidate(cid="cleanup-me", is_control=False)
+    base_dir = tmp_path / "ab"
+
+    S.run_ab_sweep(
+        [cand], [_query()], _baseline(),
+        base_dir=base_dir, top_k=5, forbidden_window=2,
+        thresholds=GateThresholds(min_primary_uplift=-1.0,
+                                   max_p95_warm_ms=1e9, max_rss_mb=1e9),
+        model_factory=_fake_factory,
+        cleanup_after=True,
+    )
+
+    # Index dir for that candidate should be gone
+    assert not (base_dir / "cleanup-me").exists()
+
+
+def test_cleanup_after_skipped_when_flag_false(tmp_path, fake_corpus, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus)
+
+    cand = _candidate(cid="keep-me")
+    base_dir = tmp_path / "ab"
+
+    S.run_ab_sweep(
+        [cand], [_query()], _baseline(),
+        base_dir=base_dir, top_k=5, forbidden_window=2,
+        thresholds=GateThresholds(min_primary_uplift=-1.0,
+                                   max_p95_warm_ms=1e9, max_rss_mb=1e9),
+        model_factory=_fake_factory,
+        cleanup_after=False,  # default
+    )
+
+    # Index dir survives for reuse
+    assert (base_dir / "keep-me").exists()
+
+
 def test_progress_called_on_candidate_lifecycle(tmp_path, fake_corpus, monkeypatch):
     from scripts.learning.rag import corpus_loader
     monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus)
