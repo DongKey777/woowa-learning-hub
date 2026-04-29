@@ -279,6 +279,12 @@ class FleetSpecTest(unittest.TestCase):
         self.assertTrue(all(entry["name"].startswith("expansion-") for entry in EXPANSION_FLEET))
         self.assertTrue(_fleet_can_enqueue("expansion"))
 
+    def test_expansion_content_gates_include_balance_contract(self) -> None:
+        content_workers = [entry for entry in EXPANSION_FLEET if entry["role"] == "content"]
+        self.assertTrue(content_workers)
+        self.assertTrue(all("difficulty_balance" in entry["quality_gates"] for entry in content_workers))
+        self.assertTrue(all("category_balance" in entry["quality_gates"] for entry in content_workers))
+
     def test_expansion_profile_lookup_finds_expansion_workers(self) -> None:
         profile = _profile_for_worker("expansion-spring-mvc-roomescape", "spring", "expansion")
         self.assertEqual(profile["role"], "content")
@@ -312,6 +318,24 @@ class FleetSpecTest(unittest.TestCase):
         self.assertEqual(roles.count("ops"), 4)
         self.assertTrue(all(entry["name"].startswith("expansion60-") for entry in EXPANSION60_FLEET))
         self.assertTrue(_fleet_can_enqueue("expansion60"))
+
+    def test_expansion60_worker_prompt_includes_balance_snapshot(self) -> None:
+        prompt = ow._worker_prompt(
+            "expansion60-database-jdbc",
+            "database",
+            {
+                "item_id": "database-test",
+                "title": "JDBC first read",
+                "goal": "Fill a backend learner corpus gap without overproducing beginner primers",
+                "tags": ["jdbc", "intermediate", "bridge"],
+            },
+            "expansion60",
+        )
+        self.assertIn("Corpus balance snapshot:", prompt)
+        self.assertIn("Target mix for new work", prompt)
+        self.assertIn("Do not keep expanding Beginner docs blindly", prompt)
+        self.assertIn("entrypoint primer, bridge, practice drill, deep dive, playbook, or recovery note", prompt)
+        self.assertIn("difficulty_balance", prompt)
 
     def test_expansion60_content_workers_use_granular_non_readme_scopes(self) -> None:
         content_workers = [entry for entry in EXPANSION60_FLEET if entry["role"] == "content"]

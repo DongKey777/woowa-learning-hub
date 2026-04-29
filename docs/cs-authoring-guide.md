@@ -6,7 +6,7 @@
 - woowa-learning-hub의 카테고리별 입문/주니어 문서를 추가하는 AI 워커
 - 기존 Advanced 문서를 입문층 진입 문서로 짝지을 때 참고가 필요한 사람
 
-이 가이드는 **Beginner 문서를 추가하는 작업에만** 적용된다. Advanced/Expert 문서는 별도 컨벤션이 누적된 상태이며, 본 사이클의 비목표다.
+이 가이드는 **Beginner 또는 Intermediate 문서를 추가하는 작업**에 적용된다. Advanced/Expert 문서는 별도 컨벤션이 누적된 상태이며, 새로 추가할 때는 워커 프롬프트의 corpus balance snapshot을 보고 정말 deep dive가 필요한지 먼저 판단한다.
 
 ---
 
@@ -152,12 +152,12 @@ Transaction, ACID, Commit, Rollback   # 4개뿐, 대문자, 너무 일반적
 
 각 카테고리 워커는 단일 호출 안에서:
 
-1. **갭 분석 (read-only)** — `knowledge/cs/contents/<category>/README.md` + 기존 Beginner 파일 3개 + `JUNIOR-BACKEND-ROADMAP.md`의 해당 stage + 본 가이드
-2. **5장 토픽 결정** — 로드맵이 가리키지만 입문 진입 문서가 없는 토픽 5개. 선정 근거를 한 단락으로 기록
-3. **작성 + lint** — 5장을 표준 시퀀스로 작성, commit 전에 본인이 `python3 scripts/lint_cs_authoring.py <path>` 실행
-4. **README 등록** — 카테고리 README의 "빠른 탐색" 또는 인덱스 섹션에 새 5편 링크 추가
+1. **갭 분석 (read-only)** — `knowledge/cs/contents/<category>/README.md` + 기존 Beginner/Intermediate 파일 + `JUNIOR-BACKEND-ROADMAP.md`의 해당 stage + 본 가이드 + worker prompt의 corpus balance snapshot
+2. **문서 역할 결정** — 부족한 층에 맞춰 `entrypoint primer`, `bridge`, `practice drill`, `deep dive`, `playbook`, `recovery note` 중 하나를 고른다
+3. **작성 + lint** — 새 문서 또는 기존 문서 보강을 표준 시퀀스로 작성하고, 완료 전에 `python3 scripts/lint_cs_authoring.py --strict --quiet <path>`를 실행한다
+4. **발견성 연결** — 카테고리 README 등록이 필요하지만 target path가 아니면 summary 또는 `next_candidates`에 README QA follow-up으로 남긴다
 
-워커는 `knowledge/cs/contents/<자기카테고리>/` 외의 파일을 수정하지 않는다(README 1곳 제외).
+워커는 자신의 target path 밖을 수정하지 않는다. Beginner가 이미 충분한 카테고리에서는 새 Beginner 문서를 반복 생성하지 말고 Intermediate bridge나 기존 문서 강화로 균형을 맞춘다.
 
 ---
 
@@ -166,7 +166,7 @@ Transaction, ACID, Commit, Rollback   # 4개뿐, 대문자, 너무 일반적
 ```
 [ ] H1 1줄
 [ ] > 한 줄 요약: 블록쿼트
-[ ] **난이도: 🟢 Beginner** (정확히)
+[ ] **난이도: 🟢 Beginner** 또는 **난이도: 🟡 Intermediate** (정확히)
 [ ] 관련 문서: + 불릿 ≥ 3 (cross-category bridge ≥ 1 포함)
 [ ] retrieval-anchor-keywords: 8~15 lowercase (증상 키워드 ≥ 2)
 [ ] ## 한눈에 보기 코드 블록 < 60%
@@ -174,7 +174,8 @@ Transaction, ACID, Commit, Rollback   # 4개뿐, 대문자, 너무 일반적
 [ ] ## 한 줄 정리 마지막 H2
 [ ] python3 scripts/lint_cs_authoring.py 통과 (FAIL 없음)
 [ ] python3 scripts/lint_cs_authoring.py --strict 통과 (WARN 없음)
-[ ] 카테고리 README 등록
+[ ] 문서 역할을 summary에 명시: entrypoint primer / bridge / practice drill / deep dive / playbook / recovery note
+[ ] 카테고리 README 등록 또는 README QA follow-up 후보 남김
 ```
 
 이 체크리스트가 끝나면 머지 가능. 의심스러운 부분은 `knowledge/cs/contents/database/transaction-basics.md`(본 가이드와 함께 머지된 살아있는 reference) 를 보고 비교한다.

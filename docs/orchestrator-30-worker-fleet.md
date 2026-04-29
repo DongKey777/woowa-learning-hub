@@ -54,6 +54,8 @@ This prevents the expansion fleet from draining old QA-repair pending work. If s
 
 `expansion60` is not "60 writers". It is a higher-throughput pipeline with writers, QA, RAG, and ops scaled together.
 
+`expansion` and `expansion60` are balance-aware profiles. Each worker prompt includes the current difficulty/category distribution and asks the worker to choose the appropriate document role instead of always creating another Beginner primer.
+
 | Group | Count | Purpose |
 |---|---:|---|
 | Curriculum | 2 | Keep Level 2, RoomEscape Admin, learner-profile, and module-gap priorities explicit. |
@@ -95,6 +97,8 @@ Examples:
 - QA tasks should make the smallest patch that reduces a named failing contract.
 - `next_candidates` are ignored for the quality fleet because `can_enqueue=false` on every quality profile.
 - A Beginner primer is not ready until it satisfies the authoring contract: H1, `> 한 줄 요약`, exact difficulty, `관련 문서:` with at least three bullets, 8..15 lowercase `retrieval-anchor-keywords`, H2 bodies under 1600 characters, and final `## 한 줄 정리`.
+- Expansion content is not ready until it fits the corpus balance target. If the category is still below the Beginner floor, prefer an entrypoint primer; if the category is already Beginner-saturated, prefer an Intermediate bridge, practice drill, comparison card, or targeted strengthening patch.
+- New content summaries must name the document role: `entrypoint primer`, `bridge`, `practice drill`, `deep dive`, `playbook`, or `recovery note`.
 - Golden fixtures and signal rules are singleton surfaces.
 - Release is not ready until link checks, authoring lint, RAG unit/golden tests, and `bin/cs-index-build` are green.
 - Expansion content is not ready until it is discoverable: README registration, non-duplicate topic choice, symptom-style anchors, and a targeted RAG query/golden candidate must be considered by the paired RAG/QA workers.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import signal
 import shutil
 import subprocess
@@ -30,6 +31,15 @@ CONTENT_DOC_PREFIX = "knowledge/cs/contents/"
 RAG_CODE_PREFIX = "scripts/learning/rag/"
 CS_RAG_TEST_PREFIX = "tests/unit/test_cs_rag_"
 CS_RAG_FIXTURE = "tests/fixtures/cs_rag_golden_queries.json"
+DIFFICULTY_RE = re.compile(r"\*\*난이도:\s*([^*]+)\*\*")
+
+DIFFICULTY_BALANCE_TARGETS = {
+    "Beginner": (0.35, 0.45),
+    "Intermediate": (0.15, 0.25),
+}
+CATEGORY_BEGINNER_FLOOR = 0.35
+CATEGORY_BEGINNER_CEILING = 0.50
+CATEGORY_INTERMEDIATE_FLOOR = 0.10
 
 WORKER_PROFILES: list[dict[str, Any]] = [
     {
@@ -675,14 +685,21 @@ QUALITY_REPAIR_FLEET: list[dict[str, Any]] = [
 
 def _default_expansion_gates(role: str) -> list[str]:
     if role == "content":
-        return ["authoring_lint", "readme_registration", "duplicate_topic_check", "targeted_rag_query"]
+        return [
+            "authoring_lint",
+            "difficulty_balance",
+            "category_balance",
+            "readme_registration",
+            "duplicate_topic_check",
+            "targeted_rag_query",
+        ]
     if role == "qa":
-        return ["beginner_first", "symptom_phrase_anchors", "cross_category_bridge"]
+        return ["difficulty_balance", "beginner_first", "symptom_phrase_anchors", "cross_category_bridge"]
     if role == "rag":
         return ["beginner_query_precision", "golden_fixture_contract", "unit_regression"]
     if role == "ops":
         return ["pending_cap", "index_health", "release_readiness"]
-    return ["learner_profile_gap_map", "level2_roomescape_alignment", "no_content_edits"]
+    return ["learner_profile_gap_map", "balanced_backlog", "level2_roomescape_alignment", "no_content_edits"]
 
 
 def _expansion_profile(
@@ -906,6 +923,107 @@ def _profile_list(profile: dict[str, Any], key: str) -> list[str]:
     if isinstance(value, str) and value.strip():
         return [value]
     return []
+
+
+def _normalize_difficulty_label(raw_label: str) -> str:
+    if "Beginner" in raw_label or "🟢" in raw_label:
+        return "Beginner"
+    if "Intermediate" in raw_label or "🟡" in raw_label:
+        return "Intermediate"
+    if "Advanced" in raw_label or "🔴" in raw_label:
+        return "Advanced"
+    if "Expert" in raw_label or "⚫" in raw_label or "🟣" in raw_label:
+        return "Expert"
+    return raw_label.strip() or "Unspecified"
+
+
+def _doc_category(path: Path, contents_root: Path) -> str:
+    relpath = path.relative_to(contents_root)
+    return relpath.parts[0] if relpath.parts else "unknown"
+
+
+def _corpus_balance_snapshot() -> str:
+    contents_root = ROOT / CONTENT_DOC_PREFIX
+    if not contents_root.exists():
+        return "Corpus balance snapshot: unavailable (knowledge/cs/contents missing)."
+
+    difficulty_counts: dict[str, int] = {}
+    category_counts: dict[str, dict[str, int]] = {}
+    total_docs = 0
+    for path in contents_root.rglob("*.md"):
+        if path.name == "README.md":
+            continue
+        total_docs += 1
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        match = DIFFICULTY_RE.search(text)
+        difficulty = _normalize_difficulty_label(match.group(1)) if match else "Unspecified"
+        category = _doc_category(path, contents_root)
+        difficulty_counts[difficulty] = difficulty_counts.get(difficulty, 0) + 1
+        category_bucket = category_counts.setdefault(category, {})
+        category_bucket[difficulty] = category_bucket.get(difficulty, 0) + 1
+
+    if total_docs == 0:
+        return "Corpus balance snapshot: no CS content docs found."
+
+    def ratio(count: int, denominator: int) -> float:
+        return count / denominator if denominator else 0.0
+
+    beginner_count = difficulty_counts.get("Beginner", 0)
+    intermediate_count = difficulty_counts.get("Intermediate", 0)
+    advanced_count = difficulty_counts.get("Advanced", 0) + difficulty_counts.get("Expert", 0)
+    beginner_target = DIFFICULTY_BALANCE_TARGETS["Beginner"]
+    intermediate_target = DIFFICULTY_BALANCE_TARGETS["Intermediate"]
+    category_rows: list[tuple[str, int, float, float]] = []
+    for category, counts in category_counts.items():
+        category_total = sum(counts.values())
+        category_rows.append(
+            (
+                category,
+                category_total,
+                ratio(counts.get("Beginner", 0), category_total),
+                ratio(counts.get("Intermediate", 0), category_total),
+            )
+        )
+    beginner_gaps = sorted(
+        (row for row in category_rows if row[2] < CATEGORY_BEGINNER_FLOOR),
+        key=lambda row: row[2],
+    )[:5]
+    beginner_saturated = sorted(
+        (row for row in category_rows if row[2] > CATEGORY_BEGINNER_CEILING),
+        key=lambda row: row[2],
+        reverse=True,
+    )[:5]
+    intermediate_gaps = sorted(
+        (row for row in category_rows if row[3] < CATEGORY_INTERMEDIATE_FLOOR),
+        key=lambda row: row[3],
+    )[:5]
+
+    def category_summary(rows: list[tuple[str, int, float, float]]) -> str:
+        if not rows:
+            return "none"
+        return ", ".join(f"{name} B{beginner:.0%}/I{intermediate:.0%}" for name, _, beginner, intermediate in rows)
+
+    return "\n".join(
+        [
+            "Corpus balance snapshot:",
+            f"- Total docs: {total_docs}",
+            (
+                "- Difficulty mix: "
+                f"Beginner {beginner_count} ({ratio(beginner_count, total_docs):.0%}), "
+                f"Intermediate {intermediate_count} ({ratio(intermediate_count, total_docs):.0%}), "
+                f"Advanced/Expert {advanced_count} ({ratio(advanced_count, total_docs):.0%})"
+            ),
+            (
+                "- Target mix for new work: "
+                f"Beginner {beginner_target[0]:.0%}-{beginner_target[1]:.0%}, "
+                f"Intermediate {intermediate_target[0]:.0%}-{intermediate_target[1]:.0%}, "
+                "Advanced/Expert as curated deep dives."
+            ),
+            f"- Beginner gap categories: {category_summary(beginner_gaps)}",
+            f"- Beginner-saturated categories: {category_summary(beginner_saturated)}",
+            f"- Intermediate gap categories: {category_summary(intermediate_gaps)}",
+        ]
+    )
 
 
 def _worker_root() -> Path:
@@ -1243,6 +1361,7 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
     mode = str(profile.get("mode", "write"))
     role = str(profile.get("role", "ad-hoc"))
     tags = ", ".join(item.get("tags", []))
+    balance_snapshot = _corpus_balance_snapshot()
     lowered_text = f"{item['title']} {item['goal']} {' '.join(item.get('tags', []))}".lower()
     beginner_rules = ""
     if any(
@@ -1296,6 +1415,14 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
 - Retrieval anchors must include canonical terms and learner symptom phrases such as "처음", "헷갈", "왜", "언제", "뭐예요", "basics", or "what is" when relevant.
 - Keep advanced incident, operations, and edge-case material behind follow-up links unless the task is explicitly advanced.
 - If a doc is meant to win a RAG query, state the target query shape in the summary and make the title/anchors/body align with that query.
+"""
+    corpus_balance_rules = """Corpus balance contract:
+- Do not keep expanding Beginner docs blindly. Use the snapshot below to decide whether this item should create a Beginner entrypoint, an Intermediate application bridge, an Advanced deep dive, or a QA strengthening patch.
+- If the target category is below the Beginner floor, prefer a clear entrypoint primer or symptom-to-concept bridge.
+- If the target category is already Beginner-saturated, prefer Intermediate bridges, exercises, comparison cards, or strengthening existing docs unless the item explicitly requires a missing Beginner entrypoint.
+- If the topic already has a Beginner primer but lacks a next step, create or improve an Intermediate bridge rather than another primer.
+- Every new content item should declare its role in the summary: entrypoint primer, bridge, practice drill, deep dive, playbook, or recovery note.
+- next_candidates should prioritize underrepresented category/difficulty pairs and include tags such as `balance-gap`, `intermediate`, `bridge`, or `advanced` when appropriate.
 """
     if mode == "report":
         mode_rules = """- Report-only mode: do not edit knowledge content files.
@@ -1366,6 +1493,8 @@ Execution rules:
 - Platform completion gates run after your JSON response. Touched content docs under `knowledge/cs/contents/**` must pass `scripts/lint_cs_authoring.py`, and touched CS RAG code/tests/fixtures must pass the narrow related pytest target. Gate failures requeue this item.
 - Report every modified path in `changed_files`; missing paths can hide a failing gate and will be treated as worker-quality debt.
 {corpus_quality_rules}
+{balance_snapshot}
+{corpus_balance_rules}
 {mode_rules}
 {beginner_rules}{qa_beginner_rules}Output contract:
 - Final response must be JSON only.
