@@ -35,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_FIXTURE = REPO_ROOT / "tests" / "fixtures" / "cs_rag_golden_queries.json"
 DEFAULT_QUALITY_OUT = REPO_ROOT / "reports" / "rag_eval" / "baseline_quality.json"
 DEFAULT_MACHINE_OUT = REPO_ROOT / "state" / "cs_rag" / "baseline_machine.json"
+DEFAULT_PRECHECK_OUT = REPO_ROOT / "state" / "cs_rag" / "embedding_precheck.json"
 
 
 # ---------------------------------------------------------------------------
@@ -59,6 +60,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--baseline-only",
         action="store_true",
         help="Measure current production stack and emit baseline_quality.json.",
+    )
+    mode.add_argument(
+        "--embedding-precheck",
+        action="store_true",
+        help=(
+            "Pre-flight: load each P2 embedding candidate, time cold-load + "
+            "warm-encode, measure RSS. Emits embedding_precheck.json under state/."
+        ),
     )
     parser.add_argument(
         "--fixture",
@@ -95,6 +104,21 @@ def build_parser() -> argparse.ArgumentParser:
         default="auto",
         choices=("auto", "cpu", "mps", "cuda"),
         help="Embedder device (default: auto).",
+    )
+    parser.add_argument(
+        "--precheck-out",
+        type=Path,
+        default=DEFAULT_PRECHECK_OUT,
+        help=(
+            "Embedding precheck output path "
+            f"(default: {DEFAULT_PRECHECK_OUT})."
+        ),
+    )
+    parser.add_argument(
+        "--encode-iterations",
+        type=int,
+        default=10,
+        help="Warm-encode samples per candidate in precheck (default: 10).",
     )
     return parser
 
@@ -367,9 +391,15 @@ def run_baseline_only(args: argparse.Namespace) -> int:
         json.dumps(machine_view, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
+    def _display(path: Path) -> str:
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return str(path)
+
     print(
-        f"  wrote: {args.out_quality.relative_to(REPO_ROOT)}",
-        f"  wrote: {args.out_machine.relative_to(REPO_ROOT)}",
+        f"  wrote: {_display(args.out_quality)}",
+        f"  wrote: {_display(args.out_machine)}",
         sep="\n",
         file=sys.stderr,
     )
@@ -390,6 +420,88 @@ def run_baseline_only(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Mode: --embedding-precheck (4 candidate models, no index build)
+# ---------------------------------------------------------------------------
+
+def _default_st_factory(device: str) -> Callable[[str, int], Any]:
+    """Build a SentenceTransformer factory bound to ``device``."""
+
+    def _factory(hf_model_id: str, embed_dim: int):  # noqa: ARG001 - dim unused at load
+        from sentence_transformers import SentenceTransformer  # type: ignore
+        return SentenceTransformer(hf_model_id, device=device)
+
+    return _factory
+
+
+def run_embedding_precheck(
+    args: argparse.Namespace,
+    *,
+    model_factory: Callable[[str, int], Any] | None = None,
+) -> int:
+    """Pre-flight measure each candidate's load + warm + RSS.
+
+    ``model_factory`` is dependency-injected for tests; real CLI runs
+    use _default_st_factory which wires SentenceTransformer.
+    """
+    from scripts.learning.rag.eval import candidates as C, precheck as P
+
+    device = _resolve_device(args.device)
+    factory = model_factory or _default_st_factory(device)
+
+    print(
+        f"[rag-eval --embedding-precheck] device={device}",
+        f"  encode_iterations={args.encode_iterations}",
+        f"  candidates: {[c.candidate_id for c in C.CANDIDATES]}",
+        sep="\n",
+        file=sys.stderr,
+    )
+
+    results: list[P.PrecheckResult] = []
+    for candidate in C.CANDIDATES:
+        print(f"  measuring {candidate.candidate_id}...", file=sys.stderr)
+        result = P.measure_candidate(
+            candidate,
+            model_factory=factory,
+            encode_iterations=args.encode_iterations,
+        )
+        results.append(result)
+
+    blob = {
+        "device": device,
+        "encode_iterations": args.encode_iterations,
+        "candidates": [r.to_dict() for r in results],
+    }
+    args.precheck_out.parent.mkdir(parents=True, exist_ok=True)
+    args.precheck_out.write_text(
+        json.dumps(blob, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    def _display(path: Path) -> str:
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return str(path)
+
+    # Human-readable summary
+    print(
+        "",
+        f"{'candidate':25s} {'load(ms)':>10s} {'p50(ms)':>10s} "
+        f"{'p95(ms)':>10s} {'RSS-load(MB)':>14s} {'RSS-encode(MB)':>16s}",
+        sep="\n",
+        file=sys.stderr,
+    )
+    for r in results:
+        print(
+            f"{r.candidate_id:25s} {r.model_load_ms:10.0f} "
+            f"{r.warm_encode_p50_ms:10.1f} {r.warm_encode_p95_ms:10.1f} "
+            f"{r.rss_after_load_mb:14.0f} {r.rss_after_encode_mb:16.0f}",
+            file=sys.stderr,
+        )
+    print(f"\n  wrote: {_display(args.precheck_out)}", file=sys.stderr)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Entry
 # ---------------------------------------------------------------------------
 
@@ -400,6 +512,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_fast(args)
     if args.baseline_only:
         return run_baseline_only(args)
+    if args.embedding_precheck:
+        return run_embedding_precheck(args)
     parser.error("no mode selected")
     return 2
 

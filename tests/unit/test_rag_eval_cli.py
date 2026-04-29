@@ -179,3 +179,75 @@ def test_resolve_device_auto_returns_string():
     the test machine."""
     resolved = CLI._resolve_device("auto")
     assert resolved in ("cpu", "mps")
+
+
+# ---------------------------------------------------------------------------
+# --embedding-precheck mode
+# ---------------------------------------------------------------------------
+
+class _FakeEnc:
+    """Lightweight fake encoder for precheck CLI tests."""
+
+    def encode(self, sentences, **kwargs):
+        import numpy as np
+        return np.zeros((len(sentences), 4), dtype="float32")
+
+
+def test_parser_embedding_precheck_mode():
+    args = CLI.build_parser().parse_args(["--embedding-precheck"])
+    assert args.embedding_precheck is True
+    assert args.fast is False
+    assert args.baseline_only is False
+
+
+def test_parser_precheck_defaults(tmp_path):
+    args = CLI.build_parser().parse_args(["--embedding-precheck"])
+    assert args.encode_iterations == 10
+    assert args.precheck_out == CLI.DEFAULT_PRECHECK_OUT
+
+
+def test_parser_precheck_three_way_mutually_exclusive():
+    parser = CLI.build_parser()
+    with pytest.raises(SystemExit):
+        parser.parse_args(["--fast", "--embedding-precheck"])
+    with pytest.raises(SystemExit):
+        parser.parse_args(["--baseline-only", "--embedding-precheck"])
+
+
+def test_run_embedding_precheck_writes_json_for_all_candidates(tmp_path):
+    """End-to-end with injected fake factory — measures all four
+    candidates and writes the report file."""
+    out = tmp_path / "precheck.json"
+    args = CLI.build_parser().parse_args([
+        "--embedding-precheck",
+        "--precheck-out", str(out),
+        "--encode-iterations", "3",
+    ])
+    rc = CLI.run_embedding_precheck(args, model_factory=lambda *_: _FakeEnc())
+    assert rc == 0
+    assert out.exists()
+
+    blob = json.loads(out.read_text())
+    assert "device" in blob
+    assert blob["encode_iterations"] == 3
+    assert len(blob["candidates"]) == 4
+    ids = [c["candidate_id"] for c in blob["candidates"]]
+    assert "MiniLM-L12-v2" in ids
+    assert "bge-m3" in ids
+    # Each candidate carries the precheck fields
+    for entry in blob["candidates"]:
+        assert "model_load_ms" in entry
+        assert "warm_encode_p50_ms" in entry
+        assert "rss_after_load_mb" in entry
+
+
+def test_run_embedding_precheck_creates_parent_dir(tmp_path):
+    out = tmp_path / "nested" / "deep" / "precheck.json"
+    args = CLI.build_parser().parse_args([
+        "--embedding-precheck",
+        "--precheck-out", str(out),
+        "--encode-iterations", "2",
+    ])
+    rc = CLI.run_embedding_precheck(args, model_factory=lambda *_: _FakeEnc())
+    assert rc == 0
+    assert out.exists()
