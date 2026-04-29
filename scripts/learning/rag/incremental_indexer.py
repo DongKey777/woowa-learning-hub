@@ -173,3 +173,110 @@ def save_chunk_hashes(
         json.dumps(fingerprints, ensure_ascii=False, indent=2, sort_keys=True),
         encoding="utf-8",
     )
+
+
+# ---------------------------------------------------------------------------
+# Dense matrix merge (numpy)
+# ---------------------------------------------------------------------------
+
+def merge_dense_arrays(
+    *,
+    prev_embeddings,  # np.ndarray, shape (N_prev, D)
+    prev_row_ids,  # np.ndarray, shape (N_prev,) int64
+    prev_chunk_id_by_row_id: dict[int, str],
+    unchanged_chunk_ids: set[str],
+    delta_chunk_ids,  # Sequence[str], len = N_delta
+    delta_embeddings,  # np.ndarray, shape (N_delta, D)
+    delta_row_ids,  # Sequence[int], len = N_delta
+):
+    """Merge unchanged previous rows + delta rows into a new dense matrix.
+
+    Args:
+        prev_embeddings: previous dense.npz embeddings array (N_prev, D)
+        prev_row_ids: matching row_ids array (N_prev,)
+        prev_chunk_id_by_row_id: lookup from row_id to chunk_id for prev
+            rows. Caller computes from old SQLite snapshot.
+        unchanged_chunk_ids: chunk_ids the diff classified as unchanged
+            — these rows are kept from prev.
+        delta_chunk_ids: chunk_ids that were re-encoded (added + modified)
+            — these are the rows in delta_embeddings, in matching order.
+        delta_embeddings: new embeddings for delta chunks (N_delta, D)
+        delta_row_ids: row_ids assigned to delta chunks by the SQLite
+            insert step (caller responsibility)
+
+    Returns:
+        ``(merged_embeddings, merged_row_ids)`` — np.ndarray pair.
+        merged_embeddings has shape (N_kept + N_delta, D); rows are
+        ordered by row_id ascending for deterministic dense.npz layout.
+
+    Raises:
+        ValueError on shape / length mismatches.
+    """
+    import numpy as np  # type: ignore
+
+    # Validate shapes
+    if prev_embeddings.shape[0] != prev_row_ids.shape[0]:
+        raise ValueError(
+            f"prev shape mismatch: embeddings={prev_embeddings.shape[0]} "
+            f"row_ids={prev_row_ids.shape[0]}"
+        )
+    if delta_embeddings.shape[0] != len(delta_chunk_ids):
+        raise ValueError(
+            f"delta length mismatch: embeddings={delta_embeddings.shape[0]} "
+            f"chunk_ids={len(delta_chunk_ids)}"
+        )
+    if len(delta_chunk_ids) != len(delta_row_ids):
+        raise ValueError(
+            f"delta length mismatch: chunk_ids={len(delta_chunk_ids)} "
+            f"row_ids={len(delta_row_ids)}"
+        )
+    if (
+        prev_embeddings.shape[0] > 0
+        and delta_embeddings.shape[0] > 0
+        and prev_embeddings.shape[1] != delta_embeddings.shape[1]
+    ):
+        raise ValueError(
+            f"dim mismatch: prev D={prev_embeddings.shape[1]} "
+            f"delta D={delta_embeddings.shape[1]}"
+        )
+
+    # Pick prev rows whose chunk_id is in unchanged set
+    kept_mask = np.array(
+        [
+            prev_chunk_id_by_row_id.get(int(rid)) in unchanged_chunk_ids
+            for rid in prev_row_ids
+        ],
+        dtype=bool,
+    )
+    kept_embeddings = prev_embeddings[kept_mask]
+    kept_row_ids = prev_row_ids[kept_mask]
+
+    # Normalise dtypes before concatenation (output is always float32 / int64
+    # regardless of caller dtype — the on-disk np.savez format is fixed).
+    kept_embeddings = kept_embeddings.astype("float32", copy=False)
+    kept_row_ids = kept_row_ids.astype("int64", copy=False)
+    delta_embeddings_norm = np.asarray(delta_embeddings, dtype="float32")
+    delta_row_ids_norm = np.asarray(delta_row_ids, dtype="int64")
+
+    # Stack with delta
+    if kept_embeddings.shape[0] == 0:
+        # First build or all-changed corpus
+        merged_embeddings = delta_embeddings_norm
+        merged_row_ids = delta_row_ids_norm
+    elif delta_embeddings_norm.shape[0] == 0:
+        # No-op or pure delete (caller should still rewrite to drop deleted rows)
+        merged_embeddings = kept_embeddings
+        merged_row_ids = kept_row_ids
+    else:
+        merged_embeddings = np.concatenate(
+            [kept_embeddings, delta_embeddings_norm],
+            axis=0,
+        )
+        merged_row_ids = np.concatenate(
+            [kept_row_ids, delta_row_ids_norm],
+            axis=0,
+        )
+
+    # Sort by row_id ascending for deterministic on-disk layout
+    order = np.argsort(merged_row_ids, kind="stable")
+    return merged_embeddings[order], merged_row_ids[order]

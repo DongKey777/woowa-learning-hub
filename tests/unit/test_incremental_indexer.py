@@ -253,3 +253,154 @@ def test_integration_modified_when_body_changes():
     assert diff.modified == ("doc1#0",)
     assert diff.added == ()
     assert diff.deleted == ()
+
+
+# ---------------------------------------------------------------------------
+# merge_dense_arrays
+# ---------------------------------------------------------------------------
+
+import numpy as np  # noqa: E402
+
+
+def test_merge_dense_keeps_unchanged_and_appends_delta():
+    prev_emb = np.array([[1.0, 0.0], [0.0, 1.0], [0.5, 0.5]], dtype="float32")
+    prev_ids = np.array([10, 20, 30], dtype="int64")
+    prev_lookup = {10: "a", 20: "b", 30: "c"}
+    delta_emb = np.array([[0.7, 0.3]], dtype="float32")
+    delta_ids = [40]
+    delta_chunk_ids = ["d"]
+
+    merged_emb, merged_ids = I.merge_dense_arrays(
+        prev_embeddings=prev_emb,
+        prev_row_ids=prev_ids,
+        prev_chunk_id_by_row_id=prev_lookup,
+        unchanged_chunk_ids={"a", "c"},  # b dropped (modified or deleted)
+        delta_chunk_ids=delta_chunk_ids,
+        delta_embeddings=delta_emb,
+        delta_row_ids=delta_ids,
+    )
+
+    # Kept: a (rid=10), c (rid=30); Delta: d (rid=40)
+    assert merged_ids.tolist() == [10, 30, 40]
+    np.testing.assert_array_equal(merged_emb[0], prev_emb[0])  # a
+    np.testing.assert_array_equal(merged_emb[1], prev_emb[2])  # c
+    np.testing.assert_array_equal(merged_emb[2], delta_emb[0])  # d
+
+
+def test_merge_dense_first_build_only_delta():
+    """Empty prev = first ever build. Result = delta verbatim."""
+    prev_emb = np.zeros((0, 4), dtype="float32")
+    prev_ids = np.array([], dtype="int64")
+    delta_emb = np.array([[1, 0, 0, 0], [0, 1, 0, 0]], dtype="float32")
+    delta_ids = [1, 2]
+
+    merged_emb, merged_ids = I.merge_dense_arrays(
+        prev_embeddings=prev_emb,
+        prev_row_ids=prev_ids,
+        prev_chunk_id_by_row_id={},
+        unchanged_chunk_ids=set(),
+        delta_chunk_ids=["a", "b"],
+        delta_embeddings=delta_emb,
+        delta_row_ids=delta_ids,
+    )
+    assert merged_ids.tolist() == [1, 2]
+    np.testing.assert_array_equal(merged_emb, delta_emb)
+
+
+def test_merge_dense_pure_delete_keeps_unchanged_only():
+    """No delta = pure delete. Some prev rows dropped, others kept."""
+    prev_emb = np.array([[1, 0], [0, 1]], dtype="float32")
+    prev_ids = np.array([10, 20], dtype="int64")
+    prev_lookup = {10: "keep", 20: "drop"}
+
+    merged_emb, merged_ids = I.merge_dense_arrays(
+        prev_embeddings=prev_emb,
+        prev_row_ids=prev_ids,
+        prev_chunk_id_by_row_id=prev_lookup,
+        unchanged_chunk_ids={"keep"},
+        delta_chunk_ids=[],
+        delta_embeddings=np.zeros((0, 2), dtype="float32"),
+        delta_row_ids=[],
+    )
+    assert merged_ids.tolist() == [10]
+    np.testing.assert_array_equal(merged_emb, prev_emb[0:1])
+
+
+def test_merge_dense_sorted_by_row_id_for_determinism():
+    """Even if delta_row_ids interleave with kept row_ids, result is
+    sorted by row_id ascending (deterministic on-disk layout)."""
+    prev_emb = np.array([[1, 0], [0, 1]], dtype="float32")
+    prev_ids = np.array([10, 30], dtype="int64")
+    prev_lookup = {10: "a", 30: "c"}
+    delta_emb = np.array([[0.5, 0.5]], dtype="float32")
+    delta_ids = [20]  # interleaves between 10 and 30
+
+    merged_emb, merged_ids = I.merge_dense_arrays(
+        prev_embeddings=prev_emb,
+        prev_row_ids=prev_ids,
+        prev_chunk_id_by_row_id=prev_lookup,
+        unchanged_chunk_ids={"a", "c"},
+        delta_chunk_ids=["b"],
+        delta_embeddings=delta_emb,
+        delta_row_ids=delta_ids,
+    )
+    assert merged_ids.tolist() == [10, 20, 30]
+
+
+def test_merge_dense_dim_mismatch_raises():
+    prev_emb = np.zeros((1, 4), dtype="float32")
+    delta_emb = np.zeros((1, 8), dtype="float32")
+    with pytest.raises(ValueError, match="dim mismatch"):
+        I.merge_dense_arrays(
+            prev_embeddings=prev_emb,
+            prev_row_ids=np.array([10], dtype="int64"),
+            prev_chunk_id_by_row_id={10: "a"},
+            unchanged_chunk_ids={"a"},
+            delta_chunk_ids=["b"],
+            delta_embeddings=delta_emb,
+            delta_row_ids=[20],
+        )
+
+
+def test_merge_dense_row_count_mismatch_raises():
+    with pytest.raises(ValueError, match="prev shape mismatch"):
+        I.merge_dense_arrays(
+            prev_embeddings=np.zeros((2, 4), dtype="float32"),
+            prev_row_ids=np.array([10], dtype="int64"),  # only 1 id
+            prev_chunk_id_by_row_id={10: "a"},
+            unchanged_chunk_ids={"a"},
+            delta_chunk_ids=[],
+            delta_embeddings=np.zeros((0, 4), dtype="float32"),
+            delta_row_ids=[],
+        )
+
+
+def test_merge_dense_delta_length_mismatch_raises():
+    with pytest.raises(ValueError, match="delta length mismatch"):
+        I.merge_dense_arrays(
+            prev_embeddings=np.zeros((0, 4), dtype="float32"),
+            prev_row_ids=np.array([], dtype="int64"),
+            prev_chunk_id_by_row_id={},
+            unchanged_chunk_ids=set(),
+            delta_chunk_ids=["a", "b"],  # 2 ids
+            delta_embeddings=np.zeros((1, 4), dtype="float32"),  # 1 emb
+            delta_row_ids=[10, 20],
+        )
+
+
+def test_merge_dense_dtype_normalization():
+    """Output is float32 / int64 regardless of input dtype."""
+    prev_emb = np.zeros((1, 2), dtype="float64")  # wrong dtype intentionally
+    prev_ids = np.array([10], dtype="int32")
+    delta_emb = np.zeros((1, 2), dtype="float64")
+    merged_emb, merged_ids = I.merge_dense_arrays(
+        prev_embeddings=prev_emb,
+        prev_row_ids=prev_ids,
+        prev_chunk_id_by_row_id={10: "a"},
+        unchanged_chunk_ids={"a"},
+        delta_chunk_ids=["b"],
+        delta_embeddings=delta_emb,
+        delta_row_ids=[20],
+    )
+    assert merged_emb.dtype == np.float32
+    assert merged_ids.dtype == np.int64
