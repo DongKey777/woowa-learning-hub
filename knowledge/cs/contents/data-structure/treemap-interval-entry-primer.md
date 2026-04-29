@@ -16,7 +16,7 @@
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)
 
-retrieval-anchor-keywords: treemap interval primer, reservation overlap check, calendar booking treemap, floorentry ceilingentry booking, left right neighbor overlap rule, online interval insert beginner, booking conflict decision rule, room reservation gap check, treemap booking 뭐예요, interval insert 처음 배우기, my calendar beginner, non overlapping reservation map
+retrieval-anchor-keywords: treemap interval primer, reservation overlap check, calendar booking treemap, floorentry ceilingentry booking, floorentry ceilingentry exact match, exact match floorentry ceilingentry stop, left right neighbor overlap rule, online interval insert beginner, booking conflict decision rule, room reservation gap check, treemap booking 뭐예요, interval insert 처음 배우기, my calendar beginner, non overlapping reservation map
 
 ## 핵심 개념
 
@@ -65,6 +65,15 @@ boolean canBook =
 
 - 왼쪽 예약은 새 예약 시작 전에 끝나야 한다.
 - 오른쪽 예약은 새 예약 끝난 뒤에 시작해야 한다.
+
+exact match에서 두 메서드가 어디에 멈추는지도 같이 고정해 두면 retrieval이 더 안정적이다.
+
+| 기준 시각 `t`에 이미 예약 시작 key가 있다면 | 어디에 멈추나 | interval check에서 읽는 포인트 |
+|---|---|---|
+| `floorEntry(t)` | exact match인 `t` 엔트리 | `prev`가 `t`보다 왼쪽 줄이 아닐 수 있다. 그래서 `prev.end <= start`를 그대로 읽어야 한다 |
+| `ceilingEntry(t)` | exact match인 `t` 엔트리 | `next`도 같은 줄에서 멈출 수 있다. 그래서 `end <= next.start`를 그대로 읽어야 한다 |
+
+즉 exact match라고 해서 `floorEntry`가 자동으로 한 칸 더 왼쪽으로, `ceilingEntry`가 한 칸 더 오른쪽으로 밀리지 않는다.
 
 ## 왜 왼쪽과 오른쪽만 보면 되나
 

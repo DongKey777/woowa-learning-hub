@@ -21,6 +21,21 @@ retrieval-anchor-keywords: request path failure modes, cache outage primer, queu
 
 ---
 
+## 막히면 여기로 돌아오기: Beginner 4단계 사다리
+
+초심자가 이 주제에서 가장 많이 뛰어넘는 구간은 `primer`를 읽고 바로 분산 캐시 설계나 resilience platform 같은 운영형 문서로 내려가는 점이다.
+먼저 아래 사다리에서 한 칸만 움직이면 된다.
+
+| 단계 | 문서 | 지금 확정할 것 |
+|---|---|---|
+| 1. primer | [System Design Foundations](./system-design-foundations.md) | app, cache, DB, queue가 왜 다른 박스로 나뉘는지 |
+| 2. primer | [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md) | cache/queue/app/db 중 어디가 먼저 흔들리는지 |
+| 3. primer bridge | [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md) | 남은 시간이 왜 하위 호출에 더 짧게 나뉘어야 하는지 |
+| 4. primer bridge | [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md) | 느린 장애가 왜 retry storm와 backlog로 커지는지 |
+
+- safe next step: `기능을 줄여서 핵심 경로를 살릴지`가 질문이면 [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md)로, `queue watermark / shed policy`까지 잡아야 하면 [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md)로 이동한다.
+- stop rule: 아직 `어느 레이어가 첫 absorber인지` 설명이 안 되면 distributed-cache, queue, failure-injection deep dive로 바로 내려가지 않는다.
+
 ## 핵심 개념
 
 초보자가 request path를 볼 때 자주 놓치는 점은, 시스템이 모든 장애를 같은 방식으로 다루지 않는다는 것이다.

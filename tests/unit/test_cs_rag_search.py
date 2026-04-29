@@ -2000,6 +2000,25 @@ class CsRagSearchTest(unittest.TestCase):
         self.assert_path_rank_at_most(hits, primer_doc, 1)
         self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
 
+    def test_english_ioc_and_di_meaning_queries_prefer_ioc_di_basics_over_companions(
+        self,
+    ) -> None:
+        deep_dive_doc = "contents/spring/spring-bean-definition-overriding-semantics.md"
+        companion_doc = "contents/software-engineering/dependency-injection-basics.md"
+
+        for query_id in (
+            "beginner_ioc_english_meaning_lockin",
+            "beginner_dependency_injection_english_meaning_lockin",
+        ):
+            query = _load_golden_fixture_query(query_id)
+            with self.subTest(query_id=query_id):
+                hits = self._search(query["prompt"], top_k=4)
+
+                primer_doc = query["expected_path"]
+                self.assert_path_rank_at_most(hits, primer_doc, query["max_rank"])
+                self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+                self.assert_ranks_ahead(hits, primer_doc, companion_doc)
+
     def test_spring_foundation_english_meaning_queries_prefer_foundation_primer_over_deep_dive(
         self,
     ) -> None:
@@ -3939,6 +3958,102 @@ class CsRagSearchTest(unittest.TestCase):
         self,
     ) -> None:
         query = _load_golden_fixture_query("beginner_query_service_korean_role_shortform_lockin")
+        fixtures = [
+            _chunk(
+                "query-model-primer",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "DAO vs Query Model Entrypoint Primer",
+                "software-engineering",
+                "Query service beginner entrypoint",
+                (
+                    "dao vs query model entrypoint primer explains what query service does, "
+                    "what role query service plays, when dao is enough, when dedicated query "
+                    "repository is better, and beginner backend api read path choices."
+                ),
+            ),
+            _chunk(
+                "query-model-companion",
+                "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "Query Model Separation for Read-Heavy APIs",
+                "software-engineering",
+                "Query service beginner primer",
+                (
+                    "query model separation beginner primer explains why query service "
+                    "exists, query service vs repository, read-heavy api overview, list "
+                    "search filter sort, and browser filter state for beginners."
+                ),
+            ),
+            _chunk(
+                "repo-boundary",
+                "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md",
+                "Repository Boundary: Aggregate Persistence vs Read Model",
+                "design-pattern",
+                "Aggregate persistence vs read model",
+                (
+                    "repository boundary explains aggregate persistence, read model, query "
+                    "service boundary, join dto, remote lookup, and repository vs read "
+                    "model separation."
+                ),
+            ),
+            _chunk(
+                "layering",
+                "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+                "Spring Service Layer Transaction Boundary Patterns",
+                "spring",
+                "Layer responsibility deep dive",
+                (
+                    "service layer transaction boundary patterns explain service layer "
+                    "responsibilities, layered architecture, separation of concerns, and "
+                    "transaction boundary decisions."
+                ),
+            ),
+        ]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            sqlite_path, dense_path, manifest_path = indexer._paths(tmp)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, fixtures)
+            finally:
+                conn.close()
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": len(fixtures),
+                        "corpus_hash": "fixture",
+                        "corpus_root": "fixture",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            dense_path.touch()
+
+            hits = searcher.search(
+                query["prompt"],
+                learning_points=[],
+                mode="cheap",
+                index_root=tmp,
+                top_k=4,
+            )
+
+        primer_doc = "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+        companion_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        repository_doc = "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+        layering_doc = "contents/spring/spring-service-layer-transaction-boundary-patterns.md"
+
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, companion_doc)
+        self.assert_ranks_ahead(hits, primer_doc, repository_doc)
+        self.assert_ranks_ahead(hits, primer_doc, layering_doc)
+
+    def test_beginner_query_service_colloquial_role_query_prefers_query_model_primer_in_isolated_fixture(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("beginner_query_service_korean_role_colloquial_lockin")
         fixtures = [
             _chunk(
                 "query-model-primer",

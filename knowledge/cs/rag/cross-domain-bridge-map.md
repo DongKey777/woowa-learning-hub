@@ -422,13 +422,14 @@ role guardrail:
 읽는 순서:
 
 1. `[primer]` [HTTP의 무상태성과 쿠키, 세션, 캐시](../contents/network/http-state-session-cache.md)
-2. `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-3. `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
-4. `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md)
-5. `[deep dive]` [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
-6. `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
-7. `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
-8. `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../contents/security/browser-bff-token-boundary-session-translation.md)
+2. `[primer]` [세션·쿠키·JWT 기초](../contents/security/session-cookie-jwt-basics.md)
+3. `[primer]` [Signed Cookies / Server Sessions / JWT Tradeoffs](../contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+4. `[primer]` [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](../contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md)
+5. `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../contents/security/browser-401-vs-302-login-redirect-guide.md)
+6. `[deep dive]` [Spring Security 아키텍처](../contents/spring/spring-security-architecture.md)
+7. `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../contents/spring/spring-security-requestcache-savedrequest-boundaries.md)
+8. `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
+9. `[deep dive]` [Browser / BFF Token Boundary / Session Translation](../contents/security/browser-bff-token-boundary-session-translation.md)
 
 증상으로 갈라지면:
 

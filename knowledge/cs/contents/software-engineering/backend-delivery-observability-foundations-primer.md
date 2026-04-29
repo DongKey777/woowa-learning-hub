@@ -16,7 +16,9 @@
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [System Design Foundations](../system-design/system-design-foundations.md)
 
-retrieval-anchor-keywords: backend delivery observability primer, logs vs metrics beginner, feature flag vs deploy, rollout rollback beginner, incident response beginner, change safety beginner, backend operations primer, observability entrypoint, canary rollback starter, kill switch basics, deployment safety flow, software engineering beginner ops, 처음 운영 용어 헷갈려요, rollback 왜 말해요, what is feature flag
+retrieval-anchor-keywords: backend delivery observability primer, software engineering entrypoint primer, logs vs metrics beginner, 로그랑 메트릭 뭐가 달라요, observability가 뭐예요, feature flag vs deploy, 배포와 릴리스 차이, rollout rollback beginner, rollout이 뭐예요, rollback은 언제 해요, canary가 뭐예요, incident response beginner, 장애 대응 처음 배우는데, 운영 용어 큰 그림, feature flag가 뭐예요
+
+> 이 문서는 `로그랑 메트릭 뭐가 달라요`, `배포와 릴리스는 왜 따로 말해요`, `rollback은 언제 하고 canary는 왜 써요` 같은 첫 질문이 들어왔을 때 deep dive보다 먼저 걸리도록 만든 entrypoint primer다.
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

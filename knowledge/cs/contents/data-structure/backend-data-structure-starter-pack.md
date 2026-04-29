@@ -14,10 +14,11 @@
 - [큐 기초](./queue-basics.md)
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
 - [Service 계층 기초](../software-engineering/service-layer-basics.md)
 
-retrieval-anchor-keywords: backend data structure starter pack, backend junior data structure, map set queue primer, 자료구조 기초, 자료구조 뭐부터, 처음 배우는데 자료구조 뭐부터, map set queue 뭐예요, map set queue 언제 쓰는지, queue는 왜 bfs에도 나오나요, queue가 왜 둘 다 나와요, 자료구조 처음 헷갈려요, service 규칙보다 자료구조가 먼저 막혀요, 조회 중복제거 순서, queue handoff vs bfs, 자료구조 다음 알고리즘 뭐부터
+retrieval-anchor-keywords: backend data structure starter pack, backend junior data structure, map set queue primer, 자료구조 기초, 자료구조 뭐부터, 처음 배우는데 자료구조 뭐부터, map set queue 뭐예요, queue는 왜 bfs에도 나오나요, queue가 왜 둘 다 나와요, 자료구조 처음 헷갈려요, service 규칙보다 자료구조가 먼저 막혀요, 조회 중복제거 순서, trie hashmap exact lookup prefix search, 문자열 key인데 trie 써야 하나요, 자동완성 아니면 trie 필요 없나요
 
 ## 길 잃었을 때 복귀
 
@@ -327,6 +328,8 @@ PriorityQueue<RetryTask> retryTasks =
 즉 문자열 key라고 해서 항상 `trie`가 아니라,
 **질문이 exact lookup이면 `map`, prefix lookup이면 `trie`**다.
 
+`Backend Data-Structure Starter Pack`에서 `trie`까지 왔는데도 "`문자열 key면 trie부터 떠올려야 하나요?`", "`자동완성 아니면 map이면 되나요?`"가 남아 있으면, 바로 [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)로 이어서 `exact lookup`과 `prefix search`를 한 번 더 분리하면 된다. broad primer에서 넘어온 초급자에게는 이 한 장이 `문자열`이라는 표면 단어보다 `질문 모양`을 다시 고정해 주는 안전한 bridge다.
+
 ## 자주 헷갈리는 분기
 
 - `array/list` vs `set`
@@ -368,6 +371,7 @@ PriorityQueue<RetryTask> retryTasks =
 - exact lookup과 hash 감각을 먼저 잡고 싶다면: [해시 테이블 기초](./hash-table-basics.md)
 - map의 ordered 변형까지 보고 싶다면: [TreeMap, HashMap, LinkedHashMap 비교](./treemap-vs-hashmap-vs-linkedhashmap.md)
 - queue, deque, priority queue 분기를 더 또렷하게 보고 싶다면: [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- broad primer에서 넘어와 `문자열 key`가 계속 헷갈리면: [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)
 - prefix search와 autocomplete를 더 보고 싶다면: [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
 - `top-k`, heap 방향, streaming heavy hitters처럼 한 단계 더 들어간 선택 문제는 카테고리 README의 deep-dive 라우트에서 이어 보면 된다: [자료구조 정리](./README.md)
 

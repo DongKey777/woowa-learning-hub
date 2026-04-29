@@ -30,6 +30,9 @@ retrieval-anchor-keywords: 401 403 404 beginner, 401 vs 403 vs 404, auth failure
 - `403`: 인증은 됐지만 이 요청은 안 된다.
 - `404`: 진짜 없거나, 있다고 알려 주지 않는다.
 
+초보자 mental model은 `AuthN -> AuthZ -> concealment/absence` 순서다.
+다만 `404`가 항상 숨김이라는 뜻은 아니다. 진짜 없는 리소스일 수도 있으니 ownership 문맥과 resource ID를 같이 본다.
+
 ## 한 장 비교표
 
 | 상태 코드 | 초보자용 의미 | 흔한 예시 | 첫 행동 |
@@ -61,6 +64,14 @@ retrieval-anchor-keywords: 401 403 404 beginner, 401 vs 403 vs 404, auth failure
 user-owned 또는 multi-tenant 리소스는 존재를 숨기기 위해 `403` 대신 `404`를 쓸 수 있다. 이 문서에서는 여기까지만 기억하고, 자세한 정책은 관련 문서로 넘긴다.
 - `OPTIONS 401`만 봤다:
 처음 보는 auth status라도 바로 `401` 의미를 해석하지 말고, actual `GET`/`POST`가 있었는지 먼저 본다. preflight 문제일 수 있다.
+
+## 15초 다음 행동표
+
+| 지금 눈앞의 문장 | 바로 할 일 |
+|---|---|
+| `로그인하라고 다시 보낸다` | `401`로 보고 credential 전달 경로를 먼저 확인한다 |
+| `로그인은 됐는데 이 API만 안 된다` | `403`로 보고 role, scope, ownership을 순서대로 본다 |
+| `내 건 되는데 남의 것만 404다` | concealment 가능성을 열고 ownership/tenant 문맥을 확인한다 |
 
 ## 어디까지가 이 문서 범위인가
 

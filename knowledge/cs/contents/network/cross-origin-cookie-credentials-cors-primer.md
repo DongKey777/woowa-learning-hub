@@ -108,21 +108,24 @@ cookie 속성 자체의 의미가 먼저 헷갈리면 [Cookie Attribute Matrix: 
 |---|---|---|
 | `Application > Cookies`에는 값이 있고, cross-origin `fetch` 코드에 `credentials: "include"`가 없다 | "요청 옵션이 credential 전송을 막았나?" | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) |
 | `Application > Cookies`에는 값이 있고, `credentials: "include"`도 있는데 같은 actual request의 request `Cookie` header가 비어 있다 | "`credentials`는 통과했고, 이제 cookie `Domain`/`Path`/`SameSite` scope가 안 맞나?" | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
-| request `Cookie`는 실렸는데 콘솔이 CORS 에러를 말한다 | "응답을 JS가 읽을 수 있나?" | [CORS 기초](../security/cors-basics.md) |
+| request `Cookie`는 실렸고 actual `401`/`403`도 보이는데 콘솔이 CORS 에러를 말한다 | "actual auth failure가 error-path CORS에 가려졌나?" | [Browser DevTools에서 CORS처럼 보이지만 actual `401`/`403`이 있는 경우: Error-Path CORS 브리지](./browser-devtools-error-path-cors-vs-actual-401-403-bridge.md) -> [Error-Path CORS Primer](../security/error-path-cors-primer.md) |
+| request `Cookie`는 실렸는데 status 숫자보다 먼저 그냥 CORS만 보인다 | "응답을 JS가 읽을 수 있나?" | [CORS 기초](../security/cors-basics.md) |
 | `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | "실제 요청이 아직 출발했나?" | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) |
 | 용어는 알겠는데 다음 branch를 다시 고르고 싶다 | "지금 symptom 기준 return path가 있나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
 
-짧게 외우면 `Application`에는 cookie가 보이는데 `include`가 없으면 먼저 `credentials` 갈래고, `include`도 있는데 request `Cookie` header가 비면 `Domain`/`Path` 같은 cookie scope 갈래다. `request Cookie 있음 + CORS 콘솔 에러`는 응답 읽기 갈래다. 갈래를 잃으면 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)로 돌아간다.
+## 10초 chooser를 읽는 법
+
+짧게 외우면 `Application`에는 cookie가 보이는데 `include`가 없으면 먼저 `credentials` 갈래고, `include`도 있는데 request `Cookie` header가 비면 `Domain`/`Path` 같은 cookie scope 갈래다. `request Cookie 있음 + actual 401/403 + CORS 콘솔 에러`는 error-path CORS bridge 갈래다. status를 아직 못 읽겠으면 응답 읽기 CORS 갈래다. 갈래를 잃으면 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)로 돌아간다.
 
 ## 여기까지 이해했다면 다음 갈래
 
 | 장면 | 먼저 볼 문서 | 질문 | 복귀 |
 |---|---|---|---|
-| actual request는 보이는데 CORS 콘솔 에러가 난다 | [CORS 기초](../security/cors-basics.md) | "응답 읽기 문제인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
-| `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | "실제 요청이 출발했나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
-| `Application > Cookies`에는 값이 있고, 코드에 `credentials: "include"`가 없다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) | "`credentials` 누락인가?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
-| `Application > Cookies`에는 값이 있고, `include`도 있는데 request `Cookie`가 비어 있다 | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | "`include`도 있는데 scope 문제인가?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
-| 어느 칸을 봐야 할지부터 헷갈린다 | [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md) | "지금 비교해야 할 칸이 어디인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| actual request + CORS 콘솔 에러 | [CORS 기초](../security/cors-basics.md), [Error-Path CORS 브리지](./browser-devtools-error-path-cors-vs-actual-401-403-bridge.md) | "응답 읽기 문제인가, actual auth failure가 같이 있나?" | [Security Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `OPTIONS`만 있고 actual이 없다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | "실제 요청이 출발했나?" | [Security Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| cookie는 보이고 `credentials: "include"`가 없다 | [Request `Cookie` 헤더 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) | "`credentials` 누락인가?" | [Security Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| cookie도 있고 `include`도 있는데 request `Cookie`가 비어 있다 | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | "cookie scope 문제인가?" | [Security Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| 어느 칸부터 볼지 헷갈린다 | [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md) | "비교해야 할 칸이 어디인가?" | [Security Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 
 ## 여기까지 이해했다면 다음 갈래 (계속 2)
 

@@ -12,6 +12,7 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../database/transaction-basics.md)
+- [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
 > 관련 문서:
 > - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
@@ -20,7 +21,19 @@
 > - [Spring Persistence Context Flush / Clear / Detach Boundaries](./spring-persistence-context-flush-clear-detach-boundaries.md)
 > - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
-retrieval-anchor-keywords: jpa scan boundary, entityscan, enablejparepositories, component scan vs entity scan, component scan vs repository scan, scanbasepackages no effect entity scan, scanbasepackages no effect repository scan, multi module jpa spring boot, not a managed type, repository bean not found, nosuchbeandefinitionexception repository, entitymanagerfactory entity package, auto configuration package, spring jpa entityscan enablejparepositories boundaries basics, spring jpa entityscan enablejparepositories boundaries beginner
+retrieval-anchor-keywords: jpa scan boundary, entityscan, enablejparepositories, @entityscan 뭐예요, @enablejparepositories 뭐예요, entityscan enablejparepositories 차이, component scan vs entity scan, component scan이랑 entity scan 차이 헷갈려요, repository scan이 뭐예요, spring jpa scan 큰 그림, jpa scan 처음 배우는데, scanbasepackages no effect entity scan, not a managed type, repository bean not found, 처음 jpa scan 설정할 때 뭐부터 봐요
+
+## 이 문서가 먼저 맞는 질문
+
+아래처럼 "개념은 아직 큰 그림이 필요하고, 증상은 이미 보인다" 같은 첫 질문이면 이 문서가 먼저 맞다.
+
+- "`@EntityScan`이 뭐예요?"
+- "`@EnableJpaRepositories`는 언제 써요?"
+- "`component scan`이랑 뭐가 달라요? 헷갈려요"
+- "`scanBasePackages`를 넓혔는데 왜 `Not a managed type`가 나요?"
+- "처음 배우는데 repository bean은 뜨는데 entity만 안 잡혀요"
+
+반대로 "`JPA`가 뭐예요?", "`repository`가 왜 필요한가요?"처럼 더 앞단 개념이 먼저 막히면 [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)에서 접근 기술의 큰 그림을 먼저 잡고 돌아오는 편이 덜 헷갈린다.
 
 ## 이 문서 다음에 보면 좋은 문서
 

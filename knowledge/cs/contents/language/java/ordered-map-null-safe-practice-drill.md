@@ -1,6 +1,6 @@
 # Ordered Map Null-Safe Practice Drill
 
-> 한 줄 요약: `TreeMap`/`NavigableMap`에서 `floorEntry`/`ceilingEntry`/`lowerEntry`/`higherEntry`가 언제 `null`이 되고 언제 non-null이 되는지, 경계 3개만 먼저 손으로 예측해 보는 초급 연습 카드다.
+> 한 줄 요약: `TreeMap`/`NavigableMap`에서 `floorEntry`/`ceilingEntry`/`lowerEntry`/`higherEntry`가 언제 `null`이 되고 언제 non-null이 되는지, 왼쪽 경계와 오른쪽 경계를 분리해서 먼저 손으로 예측해 보는 초급 연습 카드다.
 
 **난이도: 🟢 Beginner**
 
@@ -10,10 +10,11 @@
 - [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
+- [`ceiling` vs `higher` Exact Match 미니 드릴](./ceiling-vs-higher-exact-match-mini-drill.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
-retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, lowerentry null when, higherentry null when, ordered map boundary card beginner, treemap predict null before answer, java ordered map null practice, boundary null vs null key treemap, floorentry null does not mean null key, 왜 floorentry null 이 나와요, 처음 treemap null 헷갈림, what is boundary null in ordered map
+retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, higherentry null when, ceilingentry null right boundary, higherentry null max key, ordered map boundary card beginner, boundary null vs null key treemap, floorentry null does not mean null key, 왜 ceilingentry null 이 나와요, 왜 higherentry null 이 나와요, 처음 treemap null 헷갈림, what is boundary null in ordered map
 
 ## 먼저 잡을 mental model
 
@@ -47,7 +48,7 @@ gradeByMinimumScore.put(90, "A");
 60   70   80   90
 ```
 
-아래 3문항은 정답을 보기 전에 먼저 `null` / `non-null`만 예측해 보자.
+아래 4문항은 정답을 보기 전에 먼저 `null` / `non-null`만 예측해 보자.
 
 ## 경계 예제 1: 빈 map
 
@@ -112,6 +113,29 @@ System.out.println(gradeByMinimumScore.floorEntry(87));
 - 왼쪽 이웃은 `80`, 오른쪽 이웃은 `90`이므로 둘 다 non-null이다
 - exact match가 아니어도 양쪽에 이웃이 있으면 `floorEntry`와 `ceilingEntry`가 모두 값을 줄 수 있다
 
+## 경계 예제 4: 마지막 key보다 더 오른쪽
+
+```java
+System.out.println(gradeByMinimumScore.ceilingEntry(95));
+System.out.println(gradeByMinimumScore.higherEntry(90));
+```
+
+| 호출 | 내 예측 |
+|---|---|
+| `gradeByMinimumScore.ceilingEntry(95)` |  |
+| `gradeByMinimumScore.higherEntry(90)` |  |
+
+정답:
+
+- `gradeByMinimumScore.ceilingEntry(95)` -> `null`
+- `gradeByMinimumScore.higherEntry(90)` -> `null`
+
+이유:
+
+- `95`의 오른쪽에는 key가 없다
+- `higherEntry(90)`도 `90` 자신은 제외하고 더 오른쪽만 찾는데, `90`이 마지막 key라 후보가 없다
+- 여기서의 `null`도 `null` key 허용이나 `null` value 저장과는 무관하고, 단지 **오른쪽 경계 밖이라 이웃이 없음**을 뜻한다
+
 ## 10초 정리표
 
 | 경계 상황 | 대표 호출 | 결과 감각 |
@@ -119,11 +143,15 @@ System.out.println(gradeByMinimumScore.floorEntry(87));
 | map이 비어 있음 | `ceilingEntry(x)` | 항상 `null` |
 | query가 첫 key보다 작음 | `floorEntry(x)` | 왼쪽 이웃이 없어서 `null` |
 | query가 key 사이에 있음 | `floorEntry(x)`, `ceilingEntry(x)` | 양옆 이웃이 있으면 둘 다 non-null 가능 |
+| query가 마지막 key보다 큼 | `ceilingEntry(x)` | 오른쪽 이웃이 없어서 `null` |
+| query가 마지막 key와 exact match | `higherEntry(x)` | strict하게 오른쪽만 보므로 `null` 가능 |
 
 ## 자주 헷갈리는 지점
 
 - `floorEntry`가 "`작은 값 하나는 주겠지`"라고 느껴져도, 첫 key보다 더 왼쪽이면 바로 `null`이다.
 - `ceilingEntry`가 non-null이라고 해서 exact match라는 뜻은 아니다. 오른쪽 이웃만 있어도 non-null이다.
+- `ceilingEntry(95) == null`이나 `higherEntry(90) == null`은 "`TreeMap`이 `null`을 저장했다"는 뜻이 아니다.
+  오른쪽 경계 밖이라 더 볼 key가 없다는 boundary result다.
 - 여기서 `null`이 나왔다고 해서 "`TreeMap`은 `null` key를 허용하나?"로 점프하면 안 된다.
   이 카드의 `null`은 "반환 결과가 비었다"는 뜻이고, `null` key 규칙은 "애초에 어떤 key를 map에 넣을 수 있나?" 문제다.
 - `get(key)`의 `null`과 `floorEntry`의 `null`은 이유가 다르다.
@@ -134,6 +162,7 @@ System.out.println(gradeByMinimumScore.floorEntry(87));
 - "`boundary null`과 `null` key 규칙이 자꾸 섞인다"면: [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)
 - 네 메서드 전체 그림을 다시 고정하려면: [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - exact match에서 `lower`와 `floor` 차이만 더 짧게 보고 싶다면: [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
+- exact match에서 `ceiling`과 `higher` 차이만 더 짧게 보고 싶다면: [`ceiling` vs `higher` Exact Match 미니 드릴](./ceiling-vs-higher-exact-match-mini-drill.md)
 - range 경계와 연결해서 읽고 싶다면: [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
 ## 한 줄 정리

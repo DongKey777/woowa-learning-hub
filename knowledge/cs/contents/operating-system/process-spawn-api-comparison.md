@@ -14,7 +14,7 @@
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 
-retrieval-anchor-keywords: process spawn api comparison basics, process spawn api comparison beginner, process spawn api comparison intro, operating system basics, beginner operating system, 처음 배우는데 process spawn api comparison, process spawn api comparison 입문, process spawn api comparison 기초, what is process spawn api comparison, how to process spawn api comparison
+retrieval-anchor-keywords: fork exec 차이, fork와 exec 뭐가 달라요, exec는 새 프로세스인가요, posix_spawn 뭐예요, vfork 뭐예요, clone 뭐예요, subprocess 실행 큰 그림, 새 프로세스 생성 vs 교체, process spawn mental model, process launch basics, 처음 배우는데 fork exec 헷갈려요, 프로세스 실행 api 큰 그림, child process 생성 기초, beginner operating system, operating system primer
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Fork, Exec, Copy-on-Write Behavior](./fork-exec-copy-on-write-behavior.md)
@@ -26,8 +26,9 @@ retrieval-anchor-keywords: process spawn api comparison basics, process spawn ap
 > - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 > - [`clone()` Flags Mental Model: Thread-Like, Process-Like, Namespace-Isolated](./clone-flags-thread-like-process-like-namespace-isolated.md)
 > - [pidfd Basics: Race-Free Process Handles](./pidfd-basics-race-free-process-handles.md)
+> - [PID 1, SIGTERM, and Container Reaping Basics](./container-pid-1-sigterm-zombie-reaping-basics.md)
 
-> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement, spawn api fd hygiene, posix_spawn fd inheritance basics, fork exec signal inheritance, signal mask vs disposition bridge, beginner handoff box, primer handoff box, process spawn comparison 다음 문서, subprocess api 다음 단계
+> retrieval-anchor-keywords: process spawn api comparison, process spawn comparison, spawn api mental model, subprocess mental model, child creation api, process launch basics, fork vs vfork, fork vs posix_spawn, fork vs exec, exec vs fork, exec is not spawn, posix_spawn basics, posix_spawn mental model, vfork basics, vfork mental model, clone basics, clone mental model, clone vs fork, clone flags mental model, clone thread-like process-like, clone namespace isolated, new pid or not, process image replacement, spawn api fd hygiene, posix_spawn fd inheritance basics, fork exec signal inheritance, fork exec 뭐예요, exec가 프로세스를 새로 만들어요, 처음 subprocess를 띄울 때, beginner handoff box, primer handoff box, process spawn comparison 다음 문서, subprocess api 다음 단계
 
 ## 먼저 잡는 멘탈 모델
 

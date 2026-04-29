@@ -1,15 +1,8 @@
 # Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드
 
-> 한 줄 요약: "`BindingResult` 있으면 뭐가 달라져요?", "왜 `MethodArgumentNotValidException` 안 나요?", "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?", "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?" 같은 첫 질문은 `@Valid` 옆 `BindingResult`가 validation 실패를 전역 `400` 예외 대신 컨트롤러 로컬 분기로 바꾸는지부터 보면 풀린다.
+> 한 줄 요약: "`BindingResult` 있으면 뭐가 달라져요?", "왜 `MethodArgumentNotValidException` 안 나요?", "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?", "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?" 같은 검색형 증상은 `@Valid` 옆 `BindingResult`가 validation 실패를 전역 `400` 예외 대신 컨트롤러 로컬 분기로 바꾸는지부터 보면 풀린다.
 
 **난이도: 🟢 Beginner**
-
-이 문서를 바로 찾는 질문:
-
-- "왜 `MethodArgumentNotValidException` 안 나요?"
-- "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?"
-- "`BindingResult` 있으면 뭐가 달라져요?"
-- "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?"
 
 관련 문서:
 
@@ -29,9 +22,21 @@
 - 현재 문서: 3단계. validation 실패가 전역 예외로 가는지, 컨트롤러 로컬 분기로 들어오는지 가른다.
 - 이전 문서: [2단계 `@Valid` primer](./spring-valid-400-vs-message-conversion-400-primer.md)
 - 다음 문서: [4단계 `ProblemDetail` handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)
+- README 바인딩 follow-up 증상표 순서: "`BindingResult` 있으면 뭐가 달라져요?", "왜 `MethodArgumentNotValidException` 안 나요?", "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?", "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?"면 이 문서를 먼저 보고, 응답 계약까지 맞춰야 하면 `ProblemDetail` handoff primer로 넘긴다.
 - README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
 
-retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner, bindingresult 있으면 뭐가 달라져요, methodargumentnotvalidexception vs bindingresult, 왜 methodargumentnotvalidexception 안 나요, @valid 실패인데 컨트롤러는 타요, 왜 @valid 실패인데 controller 들어와요, bindingresult 붙였는데 왜 400 먼저 나요, controller local validation handling, validation error local response spring, @valid bindingresult order, requestbody bindingresult 400 spring, controller advice 대신 bindingresult, dto 변환 실패는 왜 before controller, problemdetail validation 400
+retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner, bindingresult 있으면 뭐가 달라져요, 왜 methodargumentnotvalidexception 안 나요, @valid 실패인데 컨트롤러 안으로 왜 들어와요, bindingresult 붙였는데 왜 어떤 400은 여전히 컨트롤러 전에 끝나요, methodargumentnotvalidexception vs bindingresult, controller local validation handling, validation error local response spring, @valid bindingresult order, requestbody bindingresult 400 spring, controller advice 대신 bindingresult, dto 변환 실패는 왜 before controller, problemdetail validation 400
+
+## 질문 그대로 먼저 답하기
+
+README 바인딩 follow-up 증상표와 같은 검색 문장 세트에 바로 답하려는 문서다. 앞 단계 `@Valid` primer가 "validation까지 왔는가"를 가르면, 이 문서는 그다음 한 칸인 "`같은 validation 400인데 왜 이번엔 컨트롤러 안으로 들어왔지?`"를 고정 문장으로 받는다.
+
+| 학습자가 보통 이렇게 말해요 | 먼저 붙잡을 질문 | 더 가까운 원인 |
+|---|---|---|
+| "`BindingResult` 있으면 뭐가 달라져요?" | validation 실패가 예외로 바로 번지지 않고 메서드 안으로 들어온 건가? | `BindingResult`가 validation 실패를 로컬 분기로 받은 경우 |
+| "왜 `MethodArgumentNotValidException` 안 나요?" | 전역 `400` 예외 대신 현재 컨트롤러가 먼저 에러를 잡은 건가? | `@Valid` 바로 뒤 `BindingResult`가 있는 흐름 |
+| "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?" | DTO는 이미 만들어졌고, 그 뒤 validation 실패만 로컬로 받은 건가? | validation `400` + 컨트롤러 로컬 처리 |
+| "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?" | 이번 실패는 validation이 아니라 DTO 변환 실패인가? | message conversion / parse 단계의 앞단 `400` |
 
 ## 핵심 개념
 

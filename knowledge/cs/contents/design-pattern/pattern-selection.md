@@ -11,13 +11,16 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
+- [객체지향 디자인 패턴 기초: 전략, 템플릿 메소드, 팩토리, 빌더, 옵저버](./object-oriented-design-pattern-basics.md)
 
 
-retrieval-anchor-keywords: pattern selection basics, pattern selection beginner, pattern selection intro, design pattern basics, beginner design pattern, 처음 배우는데 pattern selection, pattern selection 입문, pattern selection 기초, what is pattern selection, how to pattern selection
+retrieval-anchor-keywords: pattern selection guide, design pattern decision guide, pattern choosing checklist, 디자인 패턴 선택 기준, 디자인 패턴 고르는 법, 어떤 패턴을 골라야 하나요, 패턴 선택 뭐예요, 패턴 이름보다 바뀌는 것, change axis pattern, what changes most pattern, strategy template method factory builder router, adapter vs ports and adapters, pattern comparison map, 패턴 비교표, 왜 이 패턴을 고르나요
 >
 > 문서 역할: 이 문서는 개별 패턴을 깊게 설명하는 문서가 아니라, 어떤 축의 문제인지 먼저 분류하는 **survey / decision guide**다.
 
 이 문서는 패턴의 이름을 외우는 대신, **어떤 문제에 어떤 구조를 쓰는지**를 빠르게 판단하기 위한 실전 비교표다.
+
+처음 질문이 `"디자인 패턴이 뭐예요?"`, `"처음 배우는데 큰 그림이 필요해요"`, `"전략/팩토리/빌더 차이부터 잡고 싶어요"`처럼 primer 성격이면 이 문서보다 [객체지향 디자인 패턴 기초](./object-oriented-design-pattern-basics.md)를 먼저 읽는 편이 안전하다.
 
 <details>
 <summary>Table of Contents</summary>

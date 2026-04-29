@@ -6,12 +6,13 @@
 
 관련 문서:
 
+- [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 - [System Design Foundations](./system-design-foundations.md)
 - [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md)
 - [Cross-Primer Glossary Anchors](./cross-primer-glossary-anchors.md)
 - [database 카테고리 인덱스](../database/README.md)
 
-retrieval-anchor-keywords: system design catalog, system design reading route, beginner consistency route, notification watermark route, system design bridge index, 처음 배우는데 system design 뭐부터 읽어요, basics route, 알림 숫자 해석 뭐예요, consistency route primer
+retrieval-anchor-keywords: system design catalog, system design reading route, beginner consistency route, notification watermark route, system design bridge index, 처음 배우는데 system design 뭐부터 읽어요, basics route, 알림 숫자 해석 뭐예요, consistency route primer, system design 뭐부터, system design 처음, backend mission system design first route, service repository 다음에 system design, 왜 queue가 system design에서도 나와요, queue handoff vs bfs, what is system design basics
 
 > retrieval-anchor-keywords: system design catalog, system design interview, system design foundations, stateless backend cache database queue starter pack, stateless backend architecture primer, backend box mental model, request path failure modes, request deadline and timeout budget primer, timeout budget primer, client timeout budget, app timeout budget, cache timeout fallback, db timeout budget, partial failure retry storm, deadline ladder, cache outage primer, queue outage primer, app instance failure primer, database outage primer, failure absorption order, read-only mode, graceful degradation patterns, stale-if-error, partial feature disablement, brownout pattern, database incident read-only, cache incident stale read, stateless sessions primer, sticky session, external session store, token-based auth, load balancer drain and affinity primer, load balancer health check basics, connection draining, deregistration delay, sticky affinity deploy tail, sticky affinity failover, session revocation basics, logout basics, logout propagation basics, oidc back-channel logout handoff, oidc logout primer bridge, short-lived access token basics, token lifecycle state, database scaling primer, caching vs read replica, cache vs replica, cache invalidation basics, stale read basics, read-after-write consistency basics, read-after-write routing primer, monotonic reads and session guarantees primer, monotonic writes ordering primer, per-session write ordering primer, session write sequence primer, session guarantees primer, session guarantees decision matrix, session policy implementation sketches, gateway app database hint propagation, session hint envelope, recent-write min-version write-sequence propagation, list detail monotonicity bridge, list detail search min-version floor, value regression across pages, session guarantee policy bundle, writes-follow-reads beginner, monotonic writes beginner, idempotency key vs sequence number, simple queue fence ordering, product flow consistency matrix, beginner consistency self-check worksheet, estimation invalidation monotonic guard dashboard check, causal consistency primer, notification causal token walkthrough, notification click watermark check, cache acceptance rules for causal reads, causal read cache hit check, causal token cache hit miss refill, required watermark cache acceptance, causal cache refill guard, notification badge vs source freshness, unread badge count read model, badge count stale independently, notification count projection lag, badge count vs causal consistency, read-after-write vs monotonic reads, mixed cache replica read path, mixed cache+replica read path pitfalls, mixed cache replica freshness bridge, cache hit miss refill consistency, rejected hit observability primer, rejected cache hit logging, cache hit reject reason, replica fallback reason, refill no-fill reason, recent write min version causal token, dual stale source, cache miss stale replica, stale refill from replica, source selection rules, freshness routing observability, read your writes basics, primary replica basics, primary fallback, session stickiness, session pinning primer, monotonic reads primer, strong read consistency, read write split, indexing basics, partitioning vs sharding, shard key selection basics, partition key basics, hot partition detection, tenant key sharding pitfall, user key sharding pitfall, load balancer basics, horizontal scaling intuition, stateless app, cache database queue basics, learning tracks, migration cutover, replay repair, control plane, stateful platform, consistency, reliability, observability, dual read verification, cdc outbox, auth failover, session store, security bridge, security + system design route, spring + security route, database security bridge, identity / delegation / lifecycle route, identity / authority transfer bridge, authority transfer / security bridge, database / security authority bridge, verification / shadowing / authority bridge, authority route parity, round-trip handoff parity, security-side role badge parity, beginner handoff ladder, bridge sequence parity, incident ladder parity, catalog to system design handoff, auth session handoff ladder, database + system design route, database + security + system design route, design pattern / read model + database + system design route, identity capability rollout, auth shadow evaluation, backfill verification, analytics correction, dashboard restatement ux, alert reevaluation after backfill, projection freshness slo, read model cutover guardrail, session revocation, claim version cutover, session store migration, revocation cleanup timing, revocation bus regional lag, revoke redrive, cache invalidation replay, canonical revocation plane, token generation coexistence, generation-aware revoke fan-out, alias projection backlog, family quarantine release gate, tenant split out, dedicated cell migration, dedicated cell promotion verification ladder, mirrored traffic dual read auth drift, workload identity allowlist, SPIFFE allowlist, SPIFFE trust bundle overlap, SPIRE bundle propagation, trust bundle rollback, mesh trust root rotation, auth drift soak, verification cluster, traffic shadowing bridge, decision parity, shadow evaluation path, shadow exit signal, parity exit signal, verification evidence chain, jwks overlap reading order, verifier overlap, verifier overlap end threshold, legacy parser hard reject threshold, parser dark observe, unexpected legacy claim, workload identity rollout, hard reject timing, capability sunset gate matrix, capability overlap soak cleanup, dark deny probe, sunset silence window, bridge sunset ladder, verifier overlap hard reject retirement gates, bounded fallback retirement, overlap drained cutoff, scoped reject canary, emergency re-enable handle, cleanup handoff before code deletion, spring security session boundary, request cache login loop, 302 login loop, savedrequest loop vs cookie not sent, savedrequest loop vs server mapping missing, cookie-not-sent login loop, server-mapping-missing login loop, browser bff session troubleshooting, browser session troubleshooting path, logout tail, revocation tail, refresh family rotation cutover, refresh exchange idempotency, refresh exchange lease, duplicate response replay, same-context duplicate, cross-context duplicate, refresh reauth escalation matrix, silent refresh migration, refresh step-up, full reauthentication during migration, forced refresh reissue, mixed-version auth rollout, replay containment during migration, edge verifier claim skew fallback, unknown claim handling, origin introspection fallback, fallback storm, overlap window latency budget, tenant move background path hygiene, tenant caller class rollout matrix, foreground background caller checklist, principal issuance checklist, caller class allowlist checklist, caller class drift soak, stale route cache drain, legacy principal drain, replay worker route cache, support tooling route hygiene, search indexer cutover hygiene, webhook sender principal rollover, dedicated cell drain, shared cell retirement, rollback closure after tenant split out, bridge cluster toc, security incident bundle toc, auth session bridge toc, authority bridge toc, verification shadowing auth bridge toc, decommission retirement cluster, bridge sunset quick navigation, irreversible cleanup path, compatibility bridge sunset, retirement rollback closure, destructive cleanup gate, donor drain retirement bundle, hardware trust recovery bundle, replay session defense bundle, service delegation boundary bundle, hardware attestation recovery, trust bundle recovery, replay store down, nonce store down, acting on behalf of, delegated admin, support access notification, break glass, cleanup evidence, retirement evidence, scim reconciliation close, decision log join key, audit hold evidence, bridge retirement evidence packet, database repair signals, security tail signals, retirement approval packet, repair before cleanup, session auth gate path, verification ladder, read parity gate, revoke propagation parity, auth shadow exit criteria, system design drill label, system design incident matrix label, system design recovery label, mixed incident catalog, mixed incident bridge, inline badge normalization, SavedRequest cookie-missing server-anonymous, savedrequest cookie missing server anonymous beginner split, server anonymous after cookie
 > retrieval-anchor-keywords: incident / recovery / trust route, incident bridge role order, playbook drill incident matrix system design recovery ladder, session / boundary / replay route, browser / session troubleshooting route, auth session troubleshooting bridge parity, catalog primer primer bridge deep dive recovery system design ladder, identity / delegation / lifecycle route, authority bridge role order, cross-category bridge to system design handoff, verification shadowing authority evidence ladder, security readme badge parity, beginner bridge role map, consistency idempotency async workflow foundations, cache basics beginner, message queue basics beginner, beginner first session route
@@ -23,14 +24,25 @@ retrieval-anchor-keywords: system design catalog, system design reading route, b
 <details>
 <summary>Table of Contents</summary>
 
-- [빠른 탐색](#빠른-탐색)
-- [초심자 1회차 라우트](#초심자-1회차-라우트)
-- [Security / System-Design Incident Bridge](#system-design-security-incident-bridge)
-- [Auth Session Troubleshooting Bridge](#system-design-auth-session-troubleshooting-bridge)
-- [Database / Security Authority Bridge](#system-design-database-security-authority-bridge)
-- [Capability Rollout Deepening](#system-design-capability-rollout-deepening)
-- [Verification / Shadowing / Authority Bridge](#system-design-verification-shadowing-authority-bridge)
-- [Decommission / Retirement Cluster](#system-design-decommission-retirement-cluster)
+- [빠른 탐색 (`navigator` / role map)](#빠른-탐색)
+- [초심자 1회차 라우트 (`survey` / `primer`, first click)](#초심자-1회차-라우트)
+- [Consistency Primer Route (`primer`, first click)](#consistency-primer-route)
+- [Notification Consistency Route (`primer`, first click)](#notification-consistency-route)
+- [Session Guarantee Route (`primer` -> `primer bridge`)](#session-guarantee-route)
+- [Stale Triage Entrypoints (`primer bridge`, first-click troubleshooting)](#stale-triage-entrypoints-primer-bridge)
+- [Beginner Entrypoints (`primer`, first click)](#beginner-entrypoints)
+- [Case Study Entrypoints (`deep dive`, follow-up)](#case-study-entrypoints-deep-dive-follow-up)
+- [Replay and Cutover Entrypoints (`system design`, follow-up)](#replay-and-cutover-entrypoints-system-design-follow-up)
+- [Analytics Correction Entrypoints (`system design`, follow-up)](#analytics-correction-entrypoints-system-design-follow-up)
+- [Security / System-Design Incident Bridge (`playbook` / `recovery`, follow-up)](#system-design-security-incident-bridge)
+- [Auth Session Troubleshooting Bridge (`primer bridge` -> `recovery` / `system design`)](#system-design-auth-session-troubleshooting-bridge)
+- [Security + System Design Route (`cross-category bridge`, follow-up)](#security--system-design-route-cross-category-bridge-follow-up)
+- [Spring + Security Route (`cross-category bridge`, follow-up)](#spring--security-route-cross-category-bridge-follow-up)
+- [Database / Security Authority Bridge (`cross-category bridge`, follow-up)](#system-design-database-security-authority-bridge)
+- [Capability Rollout Deepening (`deep dive`, follow-up)](#system-design-capability-rollout-deepening)
+- [Verification / Shadowing / Authority Bridge (`cross-category bridge`, advanced follow-up)](#system-design-verification-shadowing-authority-bridge)
+- [Retirement Route (`system design`, advanced follow-up)](#retirement-route-system-design-advanced-follow-up)
+- [Decommission / Retirement Cluster (`retirement` cluster)](#system-design-decommission-retirement-cluster)
 - [카테고리 목차](#카테고리-목차)
 - [학습 순서 추천](#학습-순서-추천)
 - [심화 트랙 추천](#심화-트랙-추천)
@@ -67,9 +79,12 @@ beginner troubleshooting route는 `[catalog] -> [primer] -> [primer bridge] -> [
 | 이 README에서 보이는 섹션 이름 | 실제 역할 | 처음 읽는 독자에게 안전한가 |
 |---|---|---|
 | `초심자 1회차 라우트`, `Primer Route`, `Beginner Entrypoints` | `survey` + `primer` | 예. 첫 클릭 후보다 |
+| `Stale Triage Entrypoints` | `primer bridge` | 예. symptom을 incident bridge 대신 beginner-safe troubleshooting branch로 자를 때 쓴다 |
 | `Case Study Entrypoints` | 설계형 `deep dive` follow-up | 아니오. primer 뒤에 연다 |
 | `Replay and Cutover Entrypoints`, `Analytics Correction Entrypoints`, `Retirement Route` | cutover / replay / 운영형 `[system design]` follow-up | 아니오. entrypoint가 아니다 |
-| `Security / System-Design Incident Bridge` | mixed incident ladder | 아니오. 실제 incident/복구 맥락일 때만 연다 |
+| `Security / System-Design Incident Bridge`, `Auth Session Troubleshooting Bridge` | mixed incident / recovery follow-up ladder | 아니오. 실제 incident/복구 맥락이거나 primer bridge 다음 handoff가 필요할 때만 연다 |
+
+TOC를 볼 때도 같은 기준을 그대로 쓴다. `first click`, `primer`, `primer bridge`가 보이면 entry shelf이고, `follow-up`, `incident`, `recovery`, `cutover`, `retirement`가 보이면 advanced shelf다.
 
 ## 초심자 1회차 라우트
 
@@ -81,6 +96,20 @@ beginner troubleshooting route는 `[catalog] -> [primer] -> [primer bridge] -> [
 | 2 | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md) | app/cache/db/queue 역할을 요청 흐름으로 묶는다 |
 | 3 | [캐시 기초](./caching-basics.md) + [메시지 큐 기초](./message-queue-basics.md) | "반복 읽기 최적화"와 "후처리 분리"를 분리해서 이해한다 |
 | 4 | [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md) | sync/async 경계와 duplicate 흡수 원리를 고정한다 |
+
+## Backend Mission -> System Design 안전 handoff
+
+`controller -> service -> repository` 흐름은 보이는데 `cache`, `queue`, `load balancer`가 갑자기 한꺼번에 나오면, cutover나 incident 문서로 점프하지 말고 아래 3칸만 먼저 탄다.
+
+| 지금 막힌 문장 | primer | follow-up | 아직 미루는 것 |
+|---|---|---|---|
+| `처음 system design인데 박스가 왜 이렇게 많아요?`, `what is system design basics` | [System Design Foundations](./system-design-foundations.md) | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md) | replay, cutover, control plane, incident recovery |
+| `Service 코드는 읽히는데 queue/cache가 어디 붙는지 헷갈려요`, `왜 queue가 system design에서도 나와요` | [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md) | [메시지 큐 기초](./message-queue-basics.md) 또는 [캐시 기초](./caching-basics.md) | backlog tuning, queue watermark, cache outage playbook |
+| `방금 쓴 값이 왜 바로 안 보여요?`, `헷갈려요: cache냐 replica냐` | [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md) | [Read-After-Write Consistency Basics](./read-after-write-consistency-basics.md) | dual-read verification, replay repair, migration cutover |
+
+- cross-category bridge: 백엔드 미션 입문 사다리에서 막혔다면 [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)으로 한 칸 복귀해 `입력 -> 규칙 -> 저장/응답` 흐름부터 다시 고정한다.
+- misconception guard: 여기서 말하는 `queue`는 대개 `후처리 handoff`나 `buffer` 역할이다. `최소 이동 횟수`, `BFS`, `visited`가 보이면 system design보다 [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)로 우회하는 편이 안전하다.
+- safe next step: 이 handoff 구간에서는 `primer -> follow-up 1개`까지만 읽고 멈춘다. 아직 `왜 cache를 두는지`, `왜 queue를 뒤로 미루는지`를 한 문장으로 못 말하면 `recovery`, `cutover`, `incident` 섹션으로 내려가지 않는다.
 
 ## Primer Route
 
@@ -98,6 +127,22 @@ survey / primer부터 읽고 싶다면:
   - [Load Balancer Drain and Affinity Primer](./load-balancer-drain-and-affinity-primer.md)
   - [Browser BFF Session Boundary Primer](./browser-bff-session-boundary-primer.md)
   - [Session Revocation Basics](./session-revocation-basics.md)
+
+## Beginner Bridge Ladder: Timeout -> Retry -> Degrade
+
+`timeout`, `retry`, `queue backlog`, `왜 느린 장애가 더 커져요` 같은 질문은 아래 사다리만 먼저 탄다.
+이 구간의 목표는 incident 대응 절차를 외우는 것이 아니라, `요청 경로 -> 남은 시간 -> 증폭 차단` 순서를 beginner 문장으로 고정하는 데 있다.
+
+| 단계 | 역할 | 문서 | 여기서 멈춰도 되는 기준 |
+|---|---|---|---|
+| 1 | primer | [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md) | cache/queue/app/db 중 어디가 먼저 흔들리는지 한 줄로 말할 수 있다 |
+| 2 | primer bridge | [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md) | `전체 마감`과 `하위 timeout`을 같은 값으로 두면 왜 겹치는지 설명할 수 있다 |
+| 3 | primer bridge | [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md) | `logical request 1개가 여러 시도로 불어나는 장면`을 예시로 말할 수 있다 |
+| 4 | deep dive follow-up | [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md) | 어떤 기능을 줄여 core path를 살릴지 정리해야 할 때만 내려간다 |
+| 5 | deep dive follow-up | [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md) | queue watermark, shed policy, 운영 계약까지 설계해야 할 때만 내려간다 |
+
+- safe stop rule: 아직 `어디가 먼저 흔들렸는지`와 `남은 시간이 왜 겹쳤는지`를 못 말하면 `[deep dive]`와 `[recovery]` 문서로 내려가지 않는다.
+- cross-category bridge: `queue`가 자료구조인지 운영 큐인지 헷갈리면 [메시지 큐 기초](./message-queue-basics.md)로, `retry/backoff` HTTP hop 전파가 먼저 궁금하면 [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)으로 옆 카테고리를 짧게 찍고 다시 이 사다리로 돌아온다.
 ## Consistency Primer Route
 
   - [Database Scaling Primer](./database-scaling-primer.md)

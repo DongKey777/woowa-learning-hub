@@ -1,6 +1,6 @@
 # JDBC · JPA · MyBatis 기초
 
-> 한 줄 요약: JDBC · JPA · MyBatis의 첫 차이는 "SQL을 코드 어디서 만들고 찾느냐"로 보면 가장 덜 헷갈린다.
+> 한 줄 요약: JDBC · JPA · MyBatis의 첫 차이는 "SQL을 코드 어디서 만들고 찾느냐"로 보면 가장 덜 헷갈린다. `deadlock`, `pool timeout`, `OSIV`는 이 입문 문서의 본문이 아니라 다음 관련 문서 가지다.
 
 **난이도: 🟢 Beginner**
 
@@ -47,15 +47,18 @@ Controller / Service
 
 즉 `Entity`는 "무엇을 저장하나", `Repository`는 "어디서 저장을 시작하나", SQL 문자열은 "실행 문장이 지금 보이느냐"를 알려 주는 단서다.
 
-같은 저장 기능을 세 기술로 아주 짧게 비교하면 아래처럼 읽으면 된다.
+## 용어를 너무 크게 읽지 않기
 
-| 기술 | SQL이 처음 보이는 자리 | 초보자용 첫 파일 | 자주 하는 오해 |
-|---|---|---|---|
-| JDBC | 현재 메서드 본문 | DAO/repository 메서드 | "`jdbcTemplate.update(...)` 뒤에 다른 숨은 SQL이 더 있겠지?" |
-| JPA | repository 호출 뒤, 실행 시점 | repository 인터페이스 + `@Entity` | "`save()`를 봤으니 insert SQL이 바로 코드에 있어야지" |
-| MyBatis | `mapper.xml` 또는 어노테이션 | mapper 인터페이스 + XML | "`Mapper`도 repository처럼 구현체가 숨어 있겠지" |
+처음 보는 용어를 아주 짧게 끊으면 아래 정도면 충분하다.
 
-첫 독해에서는 "누가 더 좋나?"보다 "SQL을 어느 파일에서 찾나?"만 먼저 확정하면 충분하다.
+| 용어 | 초보자용 첫 뜻 | 여기서 과하게 들어가지 않는 것 |
+|---|---|---|
+| `Entity` | DB에 저장될 대상의 모양을 보여 주는 클래스 | 영속성 컨텍스트, dirty checking 내부 메커니즘 |
+| `Repository` | 저장/조회 요청을 시작하는 창구 | 구현체 생성 원리, proxy 내부 동작 |
+| `Mapper` | SQL과 객체를 이어 주는 번역기 | 동적 SQL 최적화 세부 |
+| JDBC | SQL을 실제로 보내는 기본 통로 | driver 내부 구현 |
+
+핵심은 "`Entity`를 봤다 = JPA를 다 이해했다"가 아니라, "`무엇을 저장하나`를 본 상태" 정도로만 읽는 것이다.
 
 ## beginner-safe 사다리
 
@@ -71,6 +74,22 @@ Controller / Service
 
 `HTTP 요청-응답 기본 흐름 -> Spring 요청 파이프라인과 Bean Container 기초 -> Database First-Step Bridge -> JDBC · JPA · MyBatis 기초`
 
+## 이 문서에서 딱 답하는 것
+
+처음 읽기에서는 아래 3가지만 확정하면 충분하다.
+
+| 지금 답하는 질문 | 초보자용 첫 답 |
+|---|---|
+| SQL을 어디서 찾나? | `repository 뒤`인지, `mapper/xml`인지, `메서드 본문`인지부터 적는다 |
+| `Repository`는 무슨 역할인가? | 저장/조회 시작점이다 |
+| `Entity`는 무슨 역할인가? | 저장 대상과 매핑 단서다 |
+
+아래 질문은 아직 이 문서의 본문 목표가 아니다.
+
+- "`왜 deadlock이 났죠?`" -> 동시성/락 축으로 넘긴다.
+- "`왜 flush 시점이 이래요?`" -> JPA 런타임 축으로 넘긴다.
+- "`왜 connection pool timeout이 나요?`" -> 운영/성능 축으로 넘긴다.
+
 ## 여기서 미루는 질문
 
 처음에는 `deadlock`, `retry`, `failover`, `cutover`, `OSIV`, `N+1`, `connection pool timeout`으로 바로 가지 않는다. 이 문서의 목표는 "SQL을 어디서 찾을지"와 "`Repository`/`Entity`가 어떤 역할인지"까지 고정하는 것이다.
@@ -82,6 +101,8 @@ Controller / Service
 | `deadlock`, `lock timeout`, `retry` | 접근 기술 구분이 아니라 동시성/증상 대응 질문이다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [락 기초](./lock-basics.md) |
 | `OSIV`, lazy loading, persistence context | JPA 내부 동작을 먼저 파면 SQL 위치 감각이 흐려진다 | [Spring Persistence / Transaction Mental Model Primer](../spring/spring-persistence-transaction-web-service-repository-primer.md), [JDBC, JPA, MyBatis 심화](./jdbc-jpa-mybatis.md) |
 | pool timeout, connection leak | 운영 증상 단계라서 beginner entrypoint 중심이 바뀐다 | [Connection Pool, Transaction Propagation, Bulk Write](./connection-pool-transaction-propagation-bulk-write.md) |
+
+핵심은 "입문 문서가 부족해서"가 아니라 "질문 축이 이미 다음 단계로 이동했다"는 해석이다.
 
 ## 30초 판별표
 
@@ -109,6 +130,25 @@ Controller / Service
 
 핵심은 "`Entity`가 보인다 = JPA를 다 이해했다"가 아니라 "`무엇을 저장하는지`, `어디서 저장을 시작하는지`, `어디까지 같이 실패하는지`를 따로 본다"는 점이다.
 
+## 같은 저장 요청을 세 기술로 한 번에 보기
+
+처음엔 이름보다 코드 모양 차이를 보는 편이 빠르다. 아래 세 줄은 "회원 1명을 저장한다"는 같은 목적을 서로 다른 기술로 적은 것이다.
+
+| 기술 | 코드에서 먼저 보이는 줄 | 초보자용 첫 해석 | 다음 확인 포인트 |
+|---|---|---|---|
+| JDBC | `jdbcTemplate.update("insert ...", ...)` | SQL이 지금 여기서 보인다 | 파라미터와 `WHERE`/`VALUES`를 읽는다 |
+| JPA | `memberRepository.save(member)` | 저장 요청은 보이지만 SQL은 뒤로 숨을 수 있다 | `@Entity`, `@Id`, service 앞뒤 흐름을 본다 |
+| MyBatis | `memberMapper.insert(member)` | SQL이 XML/어노테이션 바깥 파일에 있을 수 있다 | `mapper.xml` 또는 `@Insert`를 연다 |
+
+```java
+jdbcTemplate.update("insert into member(email) values (?)", email);
+memberRepository.save(new Member(email));
+memberMapper.insert(new MemberRow(email));
+```
+
+비유를 쓰면, JDBC는 "영수증을 직접 적어 내는 방식", JPA는 "접수 창구에 신청서를 내면 뒤에서 처리되는 방식", MyBatis는 "신청서와 처리 양식(SQL)을 따로 보관하는 방식"에 가깝다.
+이 비유는 **SQL 위치를 찾는 데까지만** 유효하고, 실제 트랜잭션 경계나 성능 문제까지 자동으로 설명해 주지는 않는다.
+
 ## `save()`가 insert인지 update인지 왜 바로 안 보일까
 
 초보자가 JPA repository에서 자주 멈추는 이유는 `save()` 한 단어가 "저장 반영 요청"만 보여 주고, 실제 SQL 종류는 바로 드러내지 않기 때문이다. 이때는 메서드 이름보다 "지금 넘기는 객체가 새것인가, 이미 있던 것인가"를 먼저 본다.
@@ -124,6 +164,24 @@ Controller / Service
 - `save()`는 "DB에 반영 요청"이지, 항상 insert만 뜻하는 단어는 아니다.
 - JPA는 SQL이 바로 안 보여도 entity 상태와 트랜잭션 문맥에 따라 insert/update를 나눌 수 있다.
 - insert인지 update인지부터 막히면 SQL 튜닝 문서보다 service 코드와 entity `@Id`를 먼저 다시 본다.
+
+## transaction과 접근 기술을 같은 질문으로 섞지 않기
+
+처음 보면 `@Transactional`, `save()`, `@Entity`가 한 장면에 같이 붙어서 "전부 JPA 설명"처럼 느껴지기 쉽다. 하지만 초보자용 첫 해석은 아래처럼 역할을 끊는 편이 안전하다.
+
+| 코드 단서 | 지금 답하는 질문 | 아직 답하지 않는 질문 |
+|---|---|---|
+| `@Transactional` | 어디까지 같이 성공/실패하나? | 이 저장이 JPA인지 MyBatis인지 |
+| `Repository` / `Mapper` / `JdbcTemplate` | SQL을 어디서 찾나? | lock/retry가 왜 필요한가 |
+| `@Entity` | 무엇을 저장하려는가? | 언제 flush되고 SQL이 정확히 언제 나가나 |
+
+짧게 말하면 아래 순서다.
+
+1. `@Transactional`이면 실패 범위를 읽는다.
+2. `save()` / `mapper` / `jdbcTemplate`이면 SQL 위치를 읽는다.
+3. `@Entity`면 저장 대상을 읽는다.
+
+이 순서가 안 잡히면 `Repository`, `Entity`, 트랜잭션이 한 문장으로 뭉쳐 보여서 "`JPA가 다 알아서 해 주는 것 같다`"는 오해가 커지기 쉽다.
 
 ## JPA repository를 처음 읽을 때 1분 예시
 
@@ -150,6 +208,13 @@ memberRepository.save(new Member(...));
 | `JpaRepository<Member, Long>` | Spring Data JPA가 기본 CRUD 구현체를 만들어 줄 수 있다 | repository 인터페이스 선언 |
 | `findByEmail(...)` | 메서드 이름으로 조회 쿼리를 만들 가능성이 높다 | 메서드 이름, 엔티티 필드명 |
 | `memberRepository.save(...)` | SQL이 호출문에 직접 보이지 않아도 ORM 뒤에서 insert/update가 준비될 수 있다 | service 호출 위치, SQL 로그 필요 여부 |
+
+이 예시에서 초보자가 특히 많이 섞는 질문은 아래 두 개다.
+
+| 헷갈리는 말 | 먼저 붙일 답 |
+|---|---|
+| "`Repository` 구현체가 안 보이는데 코드가 빠진 건가요?" | 꼭 그렇진 않다. Spring Data JPA가 런타임 구현체를 만들 수도 있다. |
+| "`Entity`가 있으니 이 클래스가 곧 SQL이라고 봐도 되나요?" | 아니다. `Entity`는 저장 모양 단서이고, 실제 SQL 시점과 문장은 프레임워크가 나중에 만들 수 있다. |
 
 ## 구현체가 안 보일 때 읽는 순서
 
@@ -214,6 +279,14 @@ public void register(String email) {
 한 줄로 줄이면 아래 pass cycle이다.
 
 `트랜잭션 경계 확인 -> 저장 시작점 확인 -> 저장 대상 확인 -> SQL 위치 확정`
+
+이 pass cycle에서 1분 안에 답이 안 나오면 아래 한 칸만 더 간다.
+
+| 여기까지 봤는데도 막힌다 | 다음 한 칸 |
+|---|---|
+| `Repository`와 `Entity` 이름 자체가 아직 헷갈린다 | [Repository, DAO, Entity](../software-engineering/repository-dao-entity.md) |
+| `save()` 뒤 SQL 시점이 왜 늦는지 궁금하다 | [JDBC, JPA, MyBatis 심화](./jdbc-jpa-mybatis.md) |
+| `@Transactional`이 붙었는데 rollback 범위가 헷갈린다 | [트랜잭션 기초](./transaction-basics.md) |
 
 ## service와 `@Transactional`이 같이 보일 때
 

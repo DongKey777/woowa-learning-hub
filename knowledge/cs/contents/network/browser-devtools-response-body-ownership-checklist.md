@@ -8,6 +8,7 @@
 
 - [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)
 - [CDN Error HTML vs App Error JSON Decision Card](./cdn-error-html-vs-app-json-decision-card.md)
+- [Gateway Default HTML First-Line Card](./gateway-default-html-first-line-card.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)

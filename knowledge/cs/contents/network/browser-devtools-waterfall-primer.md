@@ -9,6 +9,7 @@
 - [HTTP 요청-응답 기본 흐름: URL, DNS, TCP/TLS, 상태 코드, Keep-Alive](./http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [HTTP Keep-Alive와 커넥션 재사용 기초](./keepalive-connection-reuse-basics.md)
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- [Browser DevTools `Request Sent` vs `Waiting` 미니 카드](./browser-devtools-request-sent-vs-waiting-mini-card.md)
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 - [Timeout 타입: connect, read, write](./timeout-types-connect-read-write.md)
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
@@ -152,6 +153,8 @@ waterfall 문서는 "어디서 오래 걸렸나"다
 - `content download`는 응답 body가 실제로 내려오는 시간이다
 
 초급자에게 가장 중요한 구분은 `waiting`과 `content download`다. `waiting`은 응답 시작이 늦은 이유를, `content download`는 응답이 시작된 뒤 끝까지 받는 데 걸린 시간을 보여 준다.
+
+여기에 한 줄을 더 붙이면 실수가 줄어든다. `request sent`가 길면 **slow upload/request body send**를 먼저 의심하고, `waiting`이 길면 그다음에야 **slow response start**를 의심한다. 특히 `POST`/multipart upload에서는 `request sent`가 길다는 사실 자체가 서버 think time이 아니라는 점을 먼저 고정해 두는 편이 안전하다. 이 분기만 따로 짧게 연습하려면 [Browser DevTools `Request Sent` vs `Waiting` 미니 카드](./browser-devtools-request-sent-vs-waiting-mini-card.md)를 보면 된다.
 
 ### 처음 볼 때 바로 쓰는 1차 판독
 

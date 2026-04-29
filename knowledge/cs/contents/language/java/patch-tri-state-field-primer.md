@@ -1,6 +1,6 @@
-# PATCH DTO에서 `missing` / `null` / 값 있음 을 구분하는 첫 입문
+# PATCH DTO에서 `missing` / explicit `null` / 값 있음 결정 카드
 
-> 한 줄 요약: PATCH 요청에서는 "필드가 안 왔다", "`null`이 명시적으로 왔다", "새 값이 왔다"가 서로 다른 의도일 수 있으므로, beginner는 먼저 `missing = 유지`, `null = 비우기`, `value = 변경` 3칸 표부터 잡는 편이 덜 헷갈린다.
+> 한 줄 요약: PATCH의 JSON이 Java DTO로 들어올 때 beginner가 먼저 잡아야 할 표는 `missing = 유지`, `explicit null = 비우기`, `value = 변경`이다. 이 3칸을 구분하지 못하면 부분 수정 의도가 DTO 경계에서 바로 섞인다.
 
 **난이도: 🟢 Beginner**
 
@@ -13,7 +13,7 @@
 - [DTO, VO, Entity 기초](../../software-engineering/dto-vo-entity-basics.md)
 - [Spring Controller에서 Entity를 바로 반환하지 않고 DTO를 두는 이유](../../spring/spring-controller-entity-return-vs-dto-return-primer.md)
 
-retrieval-anchor-keywords: patch dto tri-state, patch missing null value beginner, missing vs explicit null patch, partial update beginner java, fieldpatch primer, patch dto 뭐예요, patch null 왜 구분해, patch missing keep value, patch beginner basics, dto partial update 처음, json patch null missing beginner, update dto clear field, present value patch primer, what is patch tri-state
+retrieval-anchor-keywords: patch dto tri-state, patch missing explicit null value beginner, missing vs explicit null patch, partial update beginner java, json to java patch boundary, fieldpatch primer, patch dto 뭐예요, patch null 왜 구분해, patch missing keep value, patch beginner basics, dto partial update 처음, json patch null missing beginner, update dto clear field, present value patch primer, what is patch tri-state
 
 ## 핵심 개념
 
@@ -34,31 +34,20 @@ retrieval-anchor-keywords: patch dto tri-state, patch missing null value beginne
 
 > PATCH의 첫 질문은 "값이 뭐냐"보다 "건드리지 말라는 건지, 지우라는 건지, 바꾸라는 건지"다.
 
-## 한눈에 보기
+## 결정 카드
 
-| payload 상태 | 초보자용 첫 해석 | 서버가 보통 하는 일 |
+PATCH에서는 JSON 모양과 Java에서 읽는 뜻을 같이 봐야 덜 헷갈린다.
+
+| JSON payload | Java 쪽에서 먼저 읽을 뜻 | 서비스에서 보통 하는 일 |
 |---|---|---|
-| 필드 누락 | 이번 요청에서는 안 만짐 | 기존 값 유지 |
-| `"nickname": null` | 값을 비우려는 요청일 수 있음 | clear 또는 remove |
-| `"nickname": "neo"` | 새 값으로 교체 | change |
+| `{}` | `nickname`이 이번 요청에 아예 없음 | 기존 값 유지 |
+| `{"nickname": null}` | `nickname`을 명시적으로 비우려는 요청일 수 있음 | clear 또는 remove |
+| `{"nickname": "neo"}` | 새 값이 실제로 들어옴 | change |
 
-닉네임 수정 예시를 한 줄씩 보면 더 쉽다.
+위 세 요청은 "값이 없네"로 한 번에 묶으면 안 된다.
+PATCH beginner의 첫 질문은 "값이 뭐냐"보다 "유지냐, 비우기냐, 변경이냐"다.
 
-```json
-{}
-```
-
-```json
-{"nickname": null}
-```
-
-```json
-{"nickname": "neo"}
-```
-
-위 세 요청은 겉보기엔 비슷해 보여도, 보통은 같은 요청이 아니다.
-
-## 왜 `String nickname` 하나로는 자꾸 헷갈릴까
+## 왜 JSON -> Java 경계에서 바로 섞일까
 
 beginner가 흔히 처음 쓰는 DTO는 이런 모양이다.
 
@@ -66,12 +55,12 @@ beginner가 흔히 처음 쓰는 DTO는 이런 모양이다.
 public record UpdateProfileRequest(String nickname) {}
 ```
 
-문제는 이 타입만 봐서는 아래 둘을 쉽게 구분하지 못한다는 점이다.
+문제는 `String nickname` 하나만 보면 아래 둘이 Java 안에서 비슷하게 보여질 수 있다는 점이다.
 
 - 클라이언트가 `nickname` 필드를 아예 안 보냈다
 - 클라이언트가 `nickname: null`을 명시적으로 보냈다
 
-둘 다 결국 `null`처럼 들어오면 service는 의도를 잃는다.
+JSON 바인딩 방식이나 DTO 설계에 따라 둘 다 결국 `null`처럼 취급되면 service는 의도를 잃는다.
 
 - "기존 닉네임 유지"를 원했는데 지워 버릴 수 있다
 - "명시적으로 비우기"를 원했는데 그냥 무시할 수 있다
@@ -79,7 +68,7 @@ public record UpdateProfileRequest(String nickname) {}
 즉 문제의 핵심은 `String`이 나쁜 타입이라는 뜻이 아니라,
 PATCH가 필요한 표현 공간이 `String 하나`보다 넓다는 데 있다.
 
-## beginner는 tri-state를 어떻게 읽으면 되나
+## beginner는 tri-state를 이렇게 읽으면 된다
 
 처음부터 복잡한 직렬화 구현을 외울 필요는 없다.
 먼저 "한 필드에 상태가 3개 있다"는 감각만 잡으면 된다.
@@ -105,10 +94,10 @@ public record Present<T>(T value) implements FieldPatch<T> {}
 핵심은 문법이 아니라 이름이다.
 
 - `Missing`은 "값이 없다"가 아니라 "이번엔 안 건드림"이다
-- `NullValue`는 "실수로 비었다"가 아니라 "비우기 요청"일 수 있다
+- `NullValue`는 "실수로 비었다"가 아니라 "명시적으로 비우기"일 수 있다
 - `Present`는 "새 값이 실제로 왔다"는 뜻이다
 
-## 실무에서 쓰는 모습
+## DTO 결정 카드를 코드로 옮기면
 
 프로필 수정 요청을 아주 작게 보면 이런 흐름이다.
 
@@ -132,9 +121,9 @@ public Profile apply(UpdateProfileRequest request, Profile profile) {
 - `NullValue`면 clear 메서드처럼 "삭제 의도"를 따로 읽는다
 - `Present`면 그때만 새 값을 검증하고 바꾼다
 
-이후에 값 객체를 붙이면 더 안정적이다.
-예를 들어 `Present<String>`에서 바로 domain으로 넘기지 않고 `new Nickname(...)`으로 바꾸면,
+이후에 `Present<String>`을 바로 domain으로 넘기지 않고 `new Nickname(...)` 같은 값 객체로 올리면,
 공백 문자열 처리나 같은 값 판단을 한곳에 모을 수 있다.
+즉 PATCH 결정 카드와 value object 경계는 따로 노는 이야기가 아니다.
 
 ## 흔한 오해와 함정
 
@@ -152,20 +141,11 @@ public Profile apply(UpdateProfileRequest request, Profile profile) {
 - raw DTO를 값 객체로 넘기는 감각은 [Request DTO에서 raw string을 값 객체로 올리는 경계 입문](./request-dto-to-value-object-boundary-primer.md)
 - 값 객체가 왜 `equals()`/`hashCode()`와 이어지는지는 [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - `==`와 `equals()`를 먼저 분리하고 싶다면 [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- primitive/wrapper가 JSON 의도를 얼마나 보존하는지는 [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+- `""`, blank, `null`, missing을 더 촘촘히 나누고 싶다면 [Empty String, Blank, `null`, and Missing Payload Semantics](./empty-string-blank-null-missing-payload-semantics.md)
 - DTO와 도메인 역할 분리는 [DTO, VO, Entity 기초](../../software-engineering/dto-vo-entity-basics.md)
 - Spring 요청/응답 DTO 감각은 [Spring Controller에서 Entity를 바로 반환하지 않고 DTO를 두는 이유](../../spring/spring-controller-entity-return-vs-dto-return-primer.md)
 
-## 면접/시니어 질문 미리보기
-
-> Q: PATCH에서 missing과 `null`을 왜 굳이 나누나요?
-> 핵심: "유지"와 "삭제"가 다른 명령이기 때문이다.
-
-> Q: create DTO에도 tri-state가 꼭 필요할까요?
-> 핵심: 보통은 아니다. partial update처럼 "안 건드림" 상태가 중요한 경우에 더 자주 등장한다.
-
-> Q: `Present<String>`를 바로 domain에 넣어도 되나요?
-> 핵심: 가능은 하지만, 값 규칙이 있으면 value object로 한 번 올려 두는 편이 더 안전하다.
-
 ## 한 줄 정리
 
-PATCH beginner의 첫 멘탈 모델은 `missing = 유지`, `null = 비우기`, `value = 변경`이고, 이 3칸을 DTO에서 잃지 않아야 부분 수정 의도를 안전하게 읽을 수 있다.
+PATCH beginner의 첫 멘탈 모델은 `missing = 유지`, `explicit null = 비우기`, `value = 변경`이고, 이 3칸을 JSON -> Java DTO 경계에서 잃지 않아야 부분 수정 의도를 안전하게 읽을 수 있다.

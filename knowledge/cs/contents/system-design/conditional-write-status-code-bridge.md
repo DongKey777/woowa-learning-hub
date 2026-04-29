@@ -13,7 +13,7 @@
 - [Strong vs Weak ETag: validator 정밀도와 cache correctness](../network/strong-vs-weak-etag-validator-precision-cache-correctness.md)
 - [409 vs 422 선택 기준 짧은 가이드](../software-engineering/http-409-vs-422-selection-guide.md)
 
-retrieval-anchor-keywords: conditional write status code bridge, 409 vs 412 vs 428, conditional write beginner, if-match status code, precondition required vs precondition failed, optimistic concurrency status code, stale save status code, etag mismatch 412, missing if-match 428, conflict after latest read 409, conditional patch api guide, write precondition response code, http conditional write primer, beginner conditional update table, optimistic lock 409 412 428
+retrieval-anchor-keywords: conditional write status code bridge, 409 vs 412 vs 428, conditional write beginner, if-match status code, precondition required vs precondition failed, optimistic concurrency status code, stale save status code, etag mismatch 412, missing if-match 428, conflict after latest read 409, 처음 409 412 헷갈림, 왜 428 나와요, conditional patch api guide, write precondition response code, optimistic lock 409 412 428
 
 ---
 
@@ -36,6 +36,14 @@ conditional write에서 서버는 세 단계로 생각하면 된다.
 - `428` = 조건을 안 가져왔다
 - `412` = 조건이 깨졌다
 - `409` = 조건이 맞아도 동작이 충돌한다
+
+비유로 보면:
+
+- `428`은 "안전벨트 없이 출발하려 한다"
+- `412`는 "표를 들고 왔지만 이미 지난 열차 표다"
+- `409`는 "최신 표로 와도 이 칸은 이미 만석이다"
+
+이 비유는 입문용이다. 실제 구현에서는 HTTP 헤더 대신 `expected_version` 필드를 쓰거나, 팀 정책상 `428` 대신 `400`/`409`를 택할 수도 있다. 중요한 것은 숫자 자체보다 "누락", "stale", "도메인 충돌"을 분리해 주는 계약이다.
 
 ## 한눈에 비교
 
@@ -114,6 +122,12 @@ HTTP/1.1 409 Conflict
 6. 최신 상태 기준으로도 쿠폰 소진, 이미 배송됨, 이미 취소됨 같은 충돌이 남나?
 7. 그렇다면 `409`
 
+처음이라 "`왜 409랑 412가 둘 다 충돌처럼 들리죠?`"가 헷갈리면 이렇게 다시 물으면 된다.
+
+- 최신 상태를 다시 읽으면 같은 요청이 풀릴까?
+- 풀리면 `412` 쪽
+- 안 풀리고 요청 의미나 사용자 선택을 바꿔야 하면 `409` 쪽
+
 ## 장바구니 예시로 한 번에 보기
 
 | 상황 | 추천 | 이유 |
@@ -149,8 +163,11 @@ HTTP/1.1 409 Conflict
   - `409` 뒤에는 비즈니스 규칙 설명이나 다른 사용자 선택지가 먼저다.
 - `428`을 생략하고 모든 조건 누락을 `400`이나 `409`로 보내는 팀도 있다.
   - 가능은 하지만 "이 API는 조건부 저장이 필수"라는 계약 신호는 약해진다.
+  - 즉 `428`은 자주 쓰이는 선택지이지, 모든 제품과 프레임워크가 반드시 그렇게 해야 하는 규칙은 아니다.
 - `412`가 나오면 자동 재시도하면 된다고 생각하기 쉽다.
   - 위험하다. payload 자체가 stale read 기반 판단일 수 있다.
+- `409`를 보면 항상 optimistic lock이라고 생각하기 쉽다.
+  - 아니다. `409`는 최신 상태 기준으로도 남는 비즈니스 충돌을 표현할 때 더 자주 유용하다.
 
 ## 최소 응답 계약 예시
 
@@ -178,6 +195,12 @@ HTTP/1.1 409 Conflict
 - "read 뒤 write precondition 자체"를 먼저 이해하려면 [Writes-Follow-Reads Primer](./writes-follow-reads-primer.md)
 - "write 순서 보호와 precondition을 구분"하려면 [Write Order vs Precondition Primer](./write-order-vs-precondition-primer.md)
 - "DB row version / compare-and-set 구현"으로 내려가려면 [Compare-and-Set와 Version Columns](../database/compare-and-set-version-columns.md)
+
+처음 읽는 단계의 안전한 다음 질문은 이것이다.
+
+- "`왜 stale save를 막으려면 read 뒤 write가 한 묶음처럼 보이나요?`" -> [Writes-Follow-Reads Primer](./writes-follow-reads-primer.md)
+- "`409 말고 422를 쓰는 장면은 언제예요?`" -> [409 vs 422 선택 기준 짧은 가이드](../software-engineering/http-409-vs-422-selection-guide.md)
+- "`ETag랑 DB version column은 어떻게 이어지나요?`" -> [Compare-and-Set와 Version Columns](../database/compare-and-set-version-columns.md)
 
 ## 한 줄 정리
 

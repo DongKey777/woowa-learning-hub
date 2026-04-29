@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
+- [Browser DevTools `OPTIONS` Preflight vs Actual Request Failure 미니 카드](./browser-devtools-options-preflight-vs-actual-failure-mini-card.md)
 - [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
 - [HTTP와 HTTPS 기초](./http-https-basics.md)
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
@@ -41,7 +42,7 @@ cors = cross-origin 응답 읽기 규칙을 막음
 |---|---|---|---|
 | `Mixed Content: The page at 'https://...' was loaded over HTTPS, but requested an insecure resource 'http://...'` | HTTPS 페이지가 HTTP 자원을 불렀다 | 아예 안 갔을 수 있다 | 요청 URL 스킴, `http://` 여부 |
 | `Access to fetch at ... from origin ... has been blocked by CORS policy` | cross-origin 응답 읽기가 정책에 막혔다 | 갔을 수도 있다 | `Origin`, preflight, CORS 응답 헤더 |
-| `Response to preflight request doesn't pass access control check` | 본 요청 전 `OPTIONS` 확인 단계에서 막혔다 | actual 요청은 안 갔을 수 있다 | `OPTIONS` row, allow-method/header |
+| `Response to preflight request doesn't pass access control check` | 본 요청 전 `OPTIONS` 확인 단계에서 막혔다 | actual 요청은 안 갔을 수 있다 | [Browser DevTools `OPTIONS` Preflight vs Actual Request Failure 미니 카드](./browser-devtools-options-preflight-vs-actual-failure-mini-card.md), `OPTIONS` row, allow-method/header |
 | 광고 차단 확장 프로그램 관련 문구 | 브라우저 확장/보안 툴이 막았다 | 안 갔을 수 있다 | 확장 프로그램 끄기, 다른 브라우저 |
 
 짧게 외우면:
@@ -118,6 +119,7 @@ cross-origin 응답 읽기 문제 = cors
 ## 더 깊이 가려면
 
 - `(blocked)` 전체 묶음을 먼저 익히려면 [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
+- `OPTIONS` preflight와 actual request failure를 DevTools row 기준으로 바로 가르고 싶다면 [Browser DevTools `OPTIONS` Preflight vs Actual Request Failure 미니 카드](./browser-devtools-options-preflight-vs-actual-failure-mini-card.md)
 - cookie, `credentials`, CORS를 한 표로 더 붙여 보려면 [Cross-Origin Cookie, `fetch credentials`, CORS 입문](./cross-origin-cookie-credentials-cors-primer.md)
 - `http`와 `https` 차이 자체가 아직 낯설면 [HTTP와 HTTPS 기초](./http-https-basics.md)
 - 첫 판독 순서를 1분 카드로 고정하려면 [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)

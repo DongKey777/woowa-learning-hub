@@ -170,7 +170,13 @@ service는 "주문을 저장/조회할 수 있다"는 계약만 알면 된다.
 ## contract 질문 vs persistence 질문 30초 분기
 
 `Repository Interface Contract Primer`를 읽고 나면 초심자는 종종 "`그래서 다음에 fake를 보나요, JPA를 더 보나요?`"에서 다시 멈춘다.
-이때는 "저장 계약을 더 분명히 하고 싶은가, 아니면 저장 기술 동작을 더 알고 싶은가"만 나눠 보면 된다.
+이때는 후속 문서를 3갈래로만 보면 된다.
+
+- **fake 문서로 간다**: "`이 저장 계약을 test에서 어떻게 재현하지?`"가 막힐 때
+- **mapping 문서로 간다**: "`domain`과 `Entity`를 어디서 나누지?`"가 막힐 때
+- **leakage 문서로 간다**: "`서비스/API에 `Entity`가 보이는데 이게 왜 문제지?`"가 막힐 때
+
+즉 초심자 기준 후속 선택표는 "`계약 재현` vs `매핑 경계` vs `ORM 누수`" 3갈래로 읽으면 된다.
 
 | 지금 막힌 질문 | 먼저 볼 문서 | 이유 |
 |---|---|---|
@@ -198,6 +204,7 @@ service는 "주문을 저장/조회할 수 있다"는 계약만 알면 된다.
 
 ## 다음에 읽을 문서
 
+- `Repository Interface Contract Primer`를 막 끝냈다면 test 계약 재현은 [Repository Fake Design Guide](./repository-fake-design-guide.md), JPA 번역 경계는 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md), 서비스/API의 `Entity` 노출은 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)로 가면 된다.
 - 큰 분류부터 다시 잡고 싶다면 [Repository, DAO, Entity](./repository-dao-entity.md)
 - repository port와 adapter mapping 경계를 바로 점검하고 싶다면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - repository를 outbound port로 읽는 감각을 넓히고 싶다면 [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)

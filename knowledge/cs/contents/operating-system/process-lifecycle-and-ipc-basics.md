@@ -21,7 +21,7 @@
 - [O_CLOEXEC, FD Inheritance, Exec-Time Leaks](./o-cloexec-fd-inheritance-exec-leaks.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: process lifecycle basics, process lifecycle mental model, fork exec wait mental model, process creation mental model, fork exec basics, fork exec wait, parent child process basics, zombie vs orphan, zombie orphan basics, waitpid basics, sigchld basics, ipc basics, pipe basics, socketpair basics, unix domain socket basics
+retrieval-anchor-keywords: process lifecycle basics, fork exec wait mental model, process creation mental model, 프로세스는 어떻게 만들어지나요, fork랑 exec 차이 뭐예요, 부모 자식 프로세스 큰 그림, zombie orphan 차이 헷갈려요, waitpid는 왜 필요해요, 자식 프로세스 종료 회수 기초, sigchld basics, ipc basics, pipe랑 socketpair 언제 써요, 처음 배우는데 fork exec wait, 프로세스 생명주기 기초, 프로세스 통신 기초
 
 ## 먼저 잡는 멘탈 모델
 
@@ -35,6 +35,18 @@ retrieval-anchor-keywords: process lifecycle basics, process lifecycle mental mo
 이 네 질문은 사실 하나의 흐름이다.
 프로세스는 생성되고, 필요하면 자식을 만들고, 새 프로그램으로 갈아타고, 통신하고, 종료 후 회수된다.
 이 생명주기 전체를 같이 봐야 runtime 문서와 subprocess 버그를 덜 헷갈린다.
+
+## 이 문서가 먼저 맞는 질문
+
+아래처럼 "용어를 처음 묻는 질문"이면 deep dive보다 이 문서가 먼저다.
+
+- "프로세스는 어떻게 만들어지나요?"
+- "`fork()`랑 `exec()`는 뭐가 달라요?"
+- "zombie랑 orphan이 왜 따로 나오죠?"
+- "`waitpid()`는 왜 필요해요?"
+- "부모/자식 프로세스는 pipe랑 socketpair 중 뭘 먼저 떠올려야 해요?"
+
+반대로 copy-on-write 비용, PID 1 재수거, FD 상속 누수처럼 운영 디테일이 궁금하면 관련 문서로 내려가는 편이 안전하다.
 
 ## 한눈에 보는 전체 흐름
 

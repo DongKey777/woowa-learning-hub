@@ -19,7 +19,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs explain analyze, explain plan first read, explain 해석 순서, explain 처음인데 뭐부터 봐요, explain analyze 뭐예요, explain 왜 느려요, key = null 이 보여요, key null 뭐예요, using filesort 가 보여요, using filesort 왜 보여요, rows가 너무 커 보여요, type all key null, mysql extra vs postgresql explain
+retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs explain analyze, explain plan first read, explain 해석 순서, explain 처음인데 뭐부터 봐요, explain analyze 뭐예요, explain 왜 느려요, key = null 이 보여요, key null 뭐예요, using filesort 가 보여요, using filesort 왜 보여요, using temporary 왜 보여요, using temporary beginner, rows가 너무 커 보여요
 
 <details>
 <summary>Table of Contents</summary>
@@ -112,12 +112,11 @@ retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs 
 
 | 지금 보이는 신호 | 먼저 볼 문서 | 바로 이어서 볼 문서 |
 | --- | --- | --- |
-| "`key = NULL`이 보여요" | [인덱스와 실행 계획](./index-and-explain.md) | [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
-| "`Using filesort`가 보여요" | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
-| `Using index`가 보이는데도 기대보다 느리거나 커버링 여부가 헷갈림 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md) |
+| "`key = NULL`이 보여요" | [인덱스와 실행 계획](./index-and-explain.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| "`Using filesort`가 보여요" | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md) |
+| "`Using temporary`가 보여요" | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md) |
 | "`rows가 너무 커 보여요`" | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
-| "`actual rows`, `Buffers`, `Heap Fetches`가 같이 나오는데 서로 무슨 뜻이죠?" | [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md) | [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md), [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) |
-| DB가 느린지, 앱 레이어가 느린지부터 애매함 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
+| PostgreSQL에서 `actual rows`, `Buffers`, `Heap Fetches`가 헷갈림 | [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md) | [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md) |
 
 ## 처음 읽는 4칸
 
@@ -166,6 +165,31 @@ MySQL은 `Extra` 같은 **신호 칸**으로 힌트를 많이 주고, PostgreSQL
 | `Extra = Using where` | `Filter` | 인덱스로 다 못 줄여서 읽은 뒤 한 번 더 거른다 | "인덱스를 아예 안 탔다" |
 | `key`는 잡혔는데 `rows`가 크다 | `Bitmap Heap Scan`, `Index Scan`인데 actual/estimated rows가 큼 | 인덱스는 시작점일 뿐이고, 실제 읽는 양은 여전히 클 수 있다 | "인덱스가 보였으니 빠르다" |
 
+## `Using temporary; Using filesort`가 같이 뜨는 대표 장면
+
+초보자가 가장 많이 헷갈리는 조합 중 하나가 `Using temporary; Using filesort`다.
+보통은 `GROUP BY`로 먼저 묶은 뒤, 그 묶인 결과를 `ORDER BY`로 다시 정렬해야 할 때 함께 보인다.
+
+| SQL 모양 | 왜 `Using temporary`가 붙나 | 왜 `Using filesort`가 붙나 | 초보자용 첫 판단 |
+| --- | --- | --- | --- |
+| `GROUP BY status ORDER BY COUNT(*) DESC` | 집계 중간 결과를 먼저 모아야 한다 | 집계 결과를 `COUNT(*)` 기준으로 다시 정렬해야 한다 | "묶기"와 "정렬"이 다른 축이라 한 번에 안 끝난다 |
+| `GROUP BY customer_id ORDER BY MAX(created_at) DESC` | 고객별로 최근 주문 시각을 먼저 계산해야 한다 | 계산된 `MAX(created_at)` 순서로 다시 줄 세워야 한다 | 인덱스가 있어도 집계 결과 재정렬은 남을 수 있다 |
+| `SELECT DISTINCT city ORDER BY created_at DESC` | 중복 제거용 중간 결과가 필요할 수 있다 | 남은 결과를 `created_at` 순서로 다시 맞춰야 한다 | `DISTINCT`도 초보자 관점에서는 `GROUP BY`와 비슷한 묶기 신호로 읽어도 된다 |
+
+대표 예시는 아래 한 줄이면 충분하다.
+
+```sql
+SELECT status, COUNT(*)
+FROM orders
+GROUP BY status
+ORDER BY COUNT(*) DESC;
+```
+
+이 쿼리에서는 MySQL 계열에서 `Extra = Using temporary; Using filesort`가 같이 보이는 경우가 흔하다.
+핵심은 "인덱스가 아예 없다"가 아니라 "집계 기준과 정렬 기준이 달라서 중간 결과를 한 번 더 정리한다"는 뜻으로 읽는 것이다.
+
+처음 `Using temporary`를 본 단계라면, 여기서 바로 고급 원인표로 내려가기보다 [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md)의 `Using temporary` snapshot을 먼저 보고 "`묶기` 때문에 중간 결과를 한 번 더 만든다"는 감각부터 고정하는 편이 안전하다.
+
 ## PostgreSQL node 이름은 이렇게 먼저 읽으면 된다
 
 한 줄 감각으로 묶으면 이렇다.
@@ -201,6 +225,7 @@ LIMIT 20;
 | --- | --- | --- |
 | `key = NULL`, `type = ALL` | `user_id`로 찾는 길 자체가 약할 수 있다 | [인덱스 기초](./index-basics.md)로 돌아가 `WHERE` 컬럼 인덱스를 먼저 본다 |
 | `key = idx_user_id`인데 `Using filesort` | 찾는 길은 있지만 `ORDER BY created_at` 정렬 길이가 따로 논다 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)로 이어 간다 |
+| `Extra = Using temporary; Using filesort` | `GROUP BY`나 `DISTINCT`로 먼저 묶은 뒤 다른 기준으로 다시 정렬하는 장면일 수 있다 | [EXPLAIN 첫 판독 미니카드](./explain-first-read-timeout-mini-card.md)로 초보자 해석을 먼저 고정한 뒤, [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [SQL 집계 함수와 GROUP BY 기초](./sql-aggregate-groupby-basics.md)로 이어 간다 |
 | `key`는 잡혔는데 `rows`가 여전히 큼 | 조건이 넓거나 통계가 빗나가 실제 읽는 양이 클 수 있다 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 
 핵심은 plan을 "정답표"가 아니라 "`찾는 길`, `정렬 길`, `읽는 양` 중 어디가 먼저 어긋났나"를 고르는 체크리스트로 읽는 것이다.

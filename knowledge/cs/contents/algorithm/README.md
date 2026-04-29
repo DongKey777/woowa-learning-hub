@@ -58,6 +58,7 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | 지금 보이는 증상 | 먼저 볼 문서 | 여기서 얻는 mental model |
 |---|---|---|
 | `그래프가 뭐예요?`, `정점/간선이 아직 추상적이에요` | [그래프 기초](../data-structure/graph-basics.md) | 그래프는 구조라는 감각 |
+| `트리 DFS랑 그래프 DFS가 같은 말 같아요` | [트리 기초](../data-structure/tree-basics.md) -> [Tree DFS Template Cheat Sheet](./tree-dfs-template-cheat-sheet.md) | 계층 순회와 일반 그래프 탐색을 분리 |
 | `왜 queue가 나오죠?`, `bfs랑 queue가 같은 말인가요?` | [큐 기초](../data-structure/queue-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) | queue는 도구, BFS는 탐색 규칙이라는 분리 |
 | `갈 수 있나`와 `최소 이동 횟수`를 자꾸 섞어요 | [DFS와 BFS 입문](./dfs-bfs-intro.md) -> [Connectivity Question Router](../data-structure/connectivity-question-router.md) | 연결 여부와 shortest path를 다른 질문으로 자르기 |
 | `가중치`, `비용 합 최소`까지 같이 보여요 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) | `간선 수 최소`와 `비용 합 최소`를 먼저 자르기 |
@@ -81,6 +82,7 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | 지금 먼저 보이는 것 | 먼저 붙일 mental model | 바로 다음 문서 |
 |---|---|---|
 | `graph`, `정점`, `간선`, `격자` | 연결 그림 자체가 구조다 | [그래프 기초](../data-structure/graph-basics.md) |
+| `root`, `parent`, `left/right`, `전위/중위/후위` | 트리 순회 vocabulary가 먼저다 | [트리 기초](../data-structure/tree-basics.md), [Tree DFS Template Cheat Sheet](./tree-dfs-template-cheat-sheet.md) |
 | `갈 수 있나`, `최소 이동 횟수`, `경로 하나` | 답의 모양을 먼저 자른다 | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
 | `queue`, `set/map`, `visited` | 구현 도구는 질문을 고른 뒤 붙인다 | [BFS, Queue, Map 먼저 분리하기](#bfs-queue-map-먼저-분리하기) |
 
@@ -93,8 +95,20 @@ retrieval-anchor-keywords: algorithm readme, beginner algorithm routing, time co
 | 헷갈린 첫 문장 | 먼저 고칠 생각 | 첫 문서 |
 |---|---|---|
 | `queue가 보이니까 BFS죠?` | queue는 BFS 구현 도구일 수 있지만, 작업 FIFO일 수도 있다 | [큐 기초](../data-structure/queue-basics.md) |
+| `전위/중위/후위도 DFS니까 graph DFS랑 완전히 같죠?` | 트리는 순회 패턴, 일반 그래프는 visited를 둔 탐색이라는 차이를 먼저 본다 | [Tree DFS Template Cheat Sheet](./tree-dfs-template-cheat-sheet.md), [DFS와 BFS 입문](./dfs-bfs-intro.md) |
 | `graph가 보이니까 최단 경로죠?` | graph 문제도 연결 여부, 경로 하나, 최단 경로로 갈라진다 | [그래프 기초](../data-structure/graph-basics.md) -> [DFS와 BFS 입문](./dfs-bfs-intro.md) |
 | `최소면 다 BFS죠?` | `최소 이동 횟수`와 `최소 비용`은 다르다 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) |
+
+같은 물류 장면이라도 질문이 달라지면 출발점도 바로 달라진다.
+
+| 같은 장면에서 나온 문장 | 실제로 먼저 답할 것 | 첫 출발점 |
+|---|---|---|
+| `창고 A에서 B로 갈 수 있나?` | yes/no 연결 여부 | [Connectivity Question Router](../data-structure/connectivity-question-router.md) |
+| `창고 A에서 B까지 아무 경로 하나만 보여줘` | 경로 하나 복원 | [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md) |
+| `창고 A에서 B까지 최소 몇 번 이동하나?` | 최소 간선 수 | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| `창고 A에서 B까지 비용 합이 최소인가?` | 최소 비용 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) |
+
+`창고-도로` 비유는 entry ramp일 뿐이다. 실제 graph는 화면 칸, 사용자 상태 전이, 서비스 간 연결처럼 눈에 안 보이는 관계도 포함하므로, 비유를 그대로 구현 규칙으로 오해하면 다시 헷갈린다.
 
 ## 먼저 자를 질문
 

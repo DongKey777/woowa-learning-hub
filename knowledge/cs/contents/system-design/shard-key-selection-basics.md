@@ -2,7 +2,7 @@
 
 > 한 줄 요약: partition key와 shard key는 "무슨 엔티티 이름을 고를까"가 아니라, 어떤 읽기/쓰기 경로를 함께 묶고 시간이 지나도 얼마나 고르게 퍼질지를 정하는 설계 선택이다.
 
-retrieval-anchor-keywords: shard key selection basics, partition key basics, choosing shard key, choosing partition key, hot partition detection, hot shard early warning, tenant_id sharding pitfall, user_id sharding pitfall, access pattern first, key skew, scatter gather basics, resharding cost, beginner sharding, shard key selection basics basics, shard key selection basics beginner
+retrieval-anchor-keywords: shard key selection basics, partition key basics, choosing shard key, choosing partition key, hot partition detection, hot shard early warning, tenant_id sharding pitfall, user_id sharding pitfall, access pattern first, key skew, scatter gather basics, resharding cost, 처음 shard key 뭐예요, 왜 tenant id만 쓰면 안 돼요, beginner sharding
 
 **난이도: 🟢 Beginner**
 
@@ -29,6 +29,12 @@ retrieval-anchor-keywords: shard key selection basics, partition key basics, cho
 
 초보자가 자주 하는 실수는 `tenant_id`, `user_id`, `created_at`처럼 눈에 잘 띄는 필드를 바로 key로 고르는 것이다.
 하지만 key는 "식별자가 유명한가"보다 **access pattern, skew, 운영 탈출 경로**를 먼저 봐야 한다.
+
+처음이면 아래 한 줄 그림으로 시작하면 된다.
+
+> shard key는 "어떤 데이터끼리 같이 살게 할지"와 "어느 한쪽으로 몰릴 때 어떻게 빠져나올지"를 동시에 정하는 선택이다.
+
+비유로 보면 좌석 배치표를 짜는 것과 비슷하다. 함께 움직이는 사람은 가깝게 앉히고, 한 줄에만 사람이 몰리지 않게 해야 한다. 다만 실제 시스템은 좌석처럼 한 번 배치하면 끝이 아니어서, 나중에 hot tenant나 hot user가 생길 때 옮길 수 있는 경로도 같이 봐야 한다.
 
 ---
 
@@ -57,6 +63,15 @@ shard key는 "지금 편한 필드"보다 "나중에 바꾸기 어려운 필드"
 | 사용자 자신의 주문/세션/장바구니 조회 | `user_id` | 운영자 화면, 정산은 scatter될 수 있다 |
 | tenant 단위 admin, billing 작업 | `tenant_id` | 상위 몇 개 tenant가 전체 부하를 흔들 수 있다 |
 | 이벤트 로그, 시계열 retention | `created_at` 또는 time bucket | 최신 bucket 하나에 write가 몰리기 쉽다 |
+
+처음 "`뭘 기준으로 고르죠?`"가 막히면 아래 표부터 채우면 된다.
+
+| 질문 | 예시 답 |
+|---|---|
+| 가장 많은 write는 누가 만드나? | 상위 3개 tenant |
+| 꼭 한 파티션에서 끝나야 하는 read는 뭔가? | 사용자 자신의 최근 주문 조회 |
+| 여러 파티션을 조회해도 되는가? | 운영자 정산 배치, 전체 통계 |
+| 몰리면 어떻게 뺄 수 있나? | hot tenant 전용 shard 승격 |
 
 ### 3. `tenant_id`, `user_id`가 자주 틀리는 이유
 
@@ -180,6 +195,25 @@ function evaluateKey(candidate):
 | 시간 bucket 중심 | pruning과 retention이 쉽다 | newest partition이 뜨거워진다 | 시계열 데이터 정리용 partitioning |
 | hash 또는 composite key | 분산이 좋아진다 | 사람이 reasoning하기 어렵고 lookup이 복잡해진다 | locality보다 spread가 더 중요할 때 |
 | directory + 승격 가능한 hybrid | hot owner 탈출 경로가 좋다 | control plane이 필요하다 | tenant/user skew가 큰 성장형 시스템 |
+
+## 흔한 헷갈림
+
+- `cardinality가 높으면 안전하다`고 생각하기 쉽다.
+  - 아니다. 상위 소수 user가 대부분의 write를 만들면 높은 cardinality여도 hot shard가 생긴다.
+- `tenant_id면 설명이 쉬우니 정답이다`라고 보기 쉽다.
+  - 아니다. B2B SaaS에서는 자주 좋은 출발점이지만, 큰 tenant 분리 경로가 없으면 운영이 빠르게 어려워진다.
+- `시간 bucket을 쓰면 분산까지 같이 해결된다`고 오해하기 쉽다.
+  - 보통은 retention/pruning 문제와 write spread 문제를 따로 봐야 한다.
+
+## 여기서 다음으로 갈 것
+
+이 문서의 종료 조건은 "`왜 유명한 ID 하나만 보고 고르면 위험한지`"를 설명할 수 있는 상태다.
+
+| 지금 질문 | 다음 문서 | 이유 |
+|---|---|---|
+| "`hot key가 생기면 어떻게 완화하죠?`" | [Consistent Hashing / Hot Key 전략](./consistent-hashing-hot-key-strategies.md) | 분산과 hotspot 완화 기법으로 이어진다 |
+| "`이미 잘못 고른 shard key는 어떻게 옮기죠?`" | [Shard Rebalancing / Partition Relocation](./shard-rebalancing-partition-relocation-design.md) | 이동 비용과 운영 절차를 본다 |
+| "`tenant별로 따로 떼는 전략은 언제 쓰죠?`" | [Tenant Partition Strategy / Reassignment](./tenant-partition-strategy-reassignment-design.md) | dedicated shard, reassignment 경로를 더 구체화한다 |
 
 ## 꼬리질문
 

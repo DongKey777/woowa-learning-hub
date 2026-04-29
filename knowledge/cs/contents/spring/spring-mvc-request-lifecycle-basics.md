@@ -7,11 +7,12 @@
 관련 문서:
 
 - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
+- [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
+- [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)
 - [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드: 폼/query 바인딩과 JSON body를 한 장으로 분리하기](./spring-modelattribute-vs-requestbody-binding-primer.md)
 - [Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기](./spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md)
-- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
-- [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
+- [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [spring 카테고리 인덱스](./README.md)
 
@@ -70,7 +71,7 @@ HTTP 요청
 | 1 | `Filter` | 요청을 입구에서 먼저 검사한다 | 로그인 전 차단, CORS, 공통 로깅 |
 | 2 | `DispatcherServlet` + `HandlerMapping` | 어느 컨트롤러 메서드로 갈지 찾는다 | `404`, `405` |
 | 3 | `HandlerInterceptor` | 컨트롤러 전후 공통 작업을 붙인다 | 접근 로그, 처리 시간 측정 |
-| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | `415`=`Content-Type` 계약, `400`=`parse/type`, 그 뒤 `@Valid`면 validation `400` |
+| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | `415`=`Content-Type` 계약, `400`=`parse/type`, 객체가 만들어진 뒤 `@Valid`면 validation `400` |
 | 5 | `Controller` | 서비스 호출과 응답 반환을 한다 | 도메인 규칙 위반, 조회 실패 |
 | 6 | exception resolver / advice | 예외를 HTTP 응답으로 번역한다 | `400`/`404`/`409` 응답 모양 불일치 |
 
@@ -130,7 +131,7 @@ HTTP 요청
 |---|---|---|
 | `@PathVariable Long id` | URL 경로 `/rooms/1` | `abc`처럼 숫자로 못 바꾸는 값 |
 | `@RequestParam String date` | 쿼리스트링 `?date=2026-04-28` | 이름 오타, 필수값 누락 |
-| `@RequestBody ReservationRequest` | JSON body | [`415 Unsupported Media Type` first split](./spring-requestbody-415-unsupported-media-type-primer.md) -> [`Content negotiation` 확장 보기](./spring-content-negotiation-pitfalls.md), [`400` before controller](./spring-requestbody-400-before-controller-primer.md) |
+| `@RequestBody ReservationRequest` | JSON body | [`415 Unsupported Media Type` first split](./spring-requestbody-415-unsupported-media-type-primer.md) 또는 [`400` before controller](./spring-requestbody-400-before-controller-primer.md) |
 
 이 단계 실패는 아직 비즈니스 규칙 위반이 아닐 수 있다. 문자열을 숫자로 못 바꾸거나 JSON 모양이 DTO와 안 맞는 식의 **binding failure**일 수 있다.
 
@@ -200,7 +201,7 @@ query/form은 `@ModelAttribute`, JSON body는 `@RequestBody`로 먼저만 나눠
 - 객체로는 바꿨지만 규칙을 어기면 validation 실패다.
 - 둘 다 최종적으로는 `400`처럼 비슷하게 보일 수 있어서, 초반에는 "컨트롤러에 들어오기 전 실패인지"를 먼저 따져야 한다.
 
-`@RequestBody`가 왜 컨트롤러 전에 `400`으로 끝나는지 JSON 문법, DTO 타입, `Content-Type` 예시로 따로 보고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)를 바로 이어서 보면 된다. 반대로 `415 Unsupported Media Type`이 먼저 보이면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)에서 `Content-Type`과 `consumes`를 먼저 가르고, 그 다음 단계에서 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 넘어가 `Accept`까지 넓혀 본 뒤, 다시 이 문서의 binding 칸으로 돌아와 "지금 막힌 게 `@RequestBody` media type 계약인지, 그 이후 JSON/validation인지"를 정리하면 초급자 동선이 끊기지 않는다.
+`@RequestBody`가 왜 컨트롤러 전에 `400`으로 끝나는지 JSON 문법, DTO 타입, `Content-Type` 예시로 따로 보고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)를 바로 이어서 보면 된다. 반대로 `415 Unsupported Media Type`이 먼저 보이면 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)에서 `Content-Type`과 `consumes`만 먼저 가르고, `Accept`까지 넓힐 때만 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 내려가면 초급자 동선이 덜 무거워진다.
 
 ## 흔한 오해와 함정
 

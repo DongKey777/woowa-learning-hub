@@ -7,6 +7,7 @@
 관련 문서:
 
 - [그래프 기초](./graph-basics.md)
+- [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - [BFS vs Dijkstra shortest path mini card](../algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md)
 - [0-1 BFS grid-conversion primer](../algorithm/zero-one-bfs-grid-conversion-primer.md)

@@ -3211,7 +3211,10 @@ class CsRagGoldenFixtureContract(unittest.TestCase):
             "contents/database/deadlock-case-study.md",
         )
         self.assertEqual(deadlock_query.get("max_rank"), 1)
-        self.assertNotIn("acceptable_paths", deadlock_query)
+        self.assertEqual(
+            deadlock_query.get("acceptable_paths"),
+            ["contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md"],
+        )
 
         self.assertIn("innodb_lock_wait_timeout_range_locking", queries_by_id)
         gap_lock_query = queries_by_id["innodb_lock_wait_timeout_range_locking"]

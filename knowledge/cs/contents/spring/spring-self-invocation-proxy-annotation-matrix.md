@@ -26,7 +26,7 @@
 >
 > | 지금 상태 | 먼저 볼 문서 |
 > |---|---|
-> | "`@Transactional`이 왜 안 먹는지"부터 막힌다 | [`@Transactional 기초`](./spring-transactional-basics.md) |
+> | "`왜 `@Transactional`이 안 먹어요?`부터 막힌다" | [`@Transactional 기초`](./spring-transactional-basics.md) |
 > | "프록시/내부 호출" 개념이 아직 헷갈린다 | [`AOP 기초`](./spring-aop-basics.md) |
 > | 증상이 `@Async`/`@Cacheable`/보안까지 번진다 | 이 문서를 계속 읽기 |
 
@@ -40,19 +40,25 @@
 > - [Spring Security Method Security Deep Dive](./spring-security-method-security-deep-dive.md)
 > - [Spring Cache 추상화 함정](./spring-cache-abstraction-traps.md)
 
-retrieval-anchor-keywords: self invocation, proxy trap, internal call bypass proxy, transactional self invocation, async self invocation, cacheable self invocation, validated self invocation, preauthorize self invocation, AopContext, self injection, self-injection, private transactional, this method call proxy bypass, transactional basics, beginner routing, primer bridge, aop 3문항 진단, this.method private new 체크, self invocation quick triage, private vs this call, self injection vs self invocation, private method transactional faq, this call transactional faq, self injection beginner faq, 프라이빗 메서드 트랜잭션, this 내부 호출 트랜잭션, self injection 우회, aop 내부 호출 함정, aop 30초 진단, transactional cacheable async 비교표, bean public external call proxy, spring aop public method only, aop primer to self invocation matrix, caller worker pattern, facade worker pattern, transactional internal call 2 patterns, beginner reverse link, matrix to primer bridge, private vs this 한눈표, private this self invocation 차이, 프록시 우회 비교표, private vs self invocation faq
+retrieval-anchor-keywords: self invocation, proxy trap, internal call bypass proxy, transactional self invocation, async self invocation, cacheable self invocation, validated self invocation, preauthorize self invocation, AopContext, self injection, self-injection, private transactional, this method call proxy bypass, transactional basics, beginner routing, primer bridge, 왜 @Transactional이 안 먹어요, @Transactional이 왜 안 먹어요, aop 3문항 진단, this.method private new 체크, self invocation quick triage, private vs this call, self injection vs self invocation, private method transactional faq, this call transactional faq, self injection beginner faq, 프라이빗 메서드 트랜잭션, this 내부 호출 트랜잭션, self injection 우회, aop 내부 호출 함정, aop 30초 진단, transactional cacheable async 비교표, bean public external call proxy, spring aop public method only, 프록시 경로 먼저, aop primer to self invocation matrix, caller worker pattern, facade worker pattern, transactional internal call 2 patterns, beginner reverse link, matrix to primer bridge, private vs this 한눈표, private this self invocation 차이, 프록시 우회 비교표, private vs self invocation faq
 
-## 먼저 붙여두는 한 줄 규칙
+## 초급자용 공통 라우팅 한 줄
 
-이 문서는 고급 매트릭스지만, 아래 한 줄은 `AOP 기초`와 동일하게 가져가면 된다.
+이 문서는 고급 매트릭스지만, 아래 한 줄은 프라이머와 `AOP 기초`에서 쓰는 문구를 그대로 둔다.
+
+beginner symptom spine도 primer와 같은 질문인 `왜 `@Transactional`이 안 먹어요?`로 맞춘다.
 
 `Bean + public + external call`이 안 맞으면, `@Transactional`, `@Async`, `@Cacheable` 같은 프록시 기반 annotation은 같은 뿌리에서 실패한다.
 
-| 빠르게 보는 항목 | 초급자용 해석 | 이 문서에서 이어서 볼 것 |
+`this.method()`, `private`, `new Foo()`가 보이면 옵션보다 먼저 `Bean + public + external call`이 깨졌는지 본다.
+
+프라이머 두 문서와 같은 순서로 이 세 신호를 묶어 **프록시 정문 3문항**이라고 읽는다.
+
+| 프록시 정문 3문항 신호 | 초급자용 해석 | 이 문서에서 이어서 볼 것 |
 |---|---|---|
-| Bean이 아닌 객체를 `new`로 만들었다 | 프록시를 붙일 Spring 관리 경계가 없다 | `new` 생성 vs DI 주입 |
-| `private` 메서드에 붙였다 | 프록시가 서야 할 메서드 경계가 닫혀 있다 | `private`와 `public` 경계 |
 | 같은 클래스에서 `this.method()`로 불렀다 | 프록시 정문을 안 지났다 | self-invocation과 Bean 분리 |
+| `private` 메서드에 붙였다 | 프록시가 서야 할 메서드 경계가 닫혀 있다 | `private`와 `public` 경계 |
+| Bean이 아닌 객체를 `new`로 만들었다 | 프록시를 붙일 Spring 관리 경계가 없다 | `new` 생성 vs DI 주입 |
 
 ## 핵심 개념
 
@@ -79,20 +85,22 @@ Spring에서 self-invocation 문제를 처음 배울 때 보통 `@Transactional`
 - "애노테이션을 더 붙이면 해결된다"가 아니다. 핵심은 애노테이션 개수보다 **호출 경로가 프록시를 타는지**다.
 - 용어가 먼저 버거우면 이 문서를 붙잡기보다 [`@Transactional 기초`](./spring-transactional-basics.md)로 돌아가 한 번 정리하고 다시 오는 편이 빠르다.
 
-## 공통 오해 FAQ (3문항)
+## 공통 오해 FAQ
 
 먼저 아주 짧은 mental model부터 잡는다.
 
-- `private`은 "메서드 문 앞에 경비가 설 수 있나?" 문제다.
 - `this` 호출은 "그 문을 통과하나, 그냥 옆문으로 들어가나?" 문제다.
+- `private`은 "메서드 문 앞에 경비가 설 수 있나?" 문제다.
+- 직접 `new`는 "애초에 그 문이 Spring 관리 경계 안에 있나?" 문제다.
 - `self-injection`은 "같은 집 안에서도 정문으로 다시 들어오게 만드는 우회"다.
 
-즉 셋은 비슷해 보여도 서로 다른 질문이다.
+즉 `this` / `private` / 직접 `new`는 비슷해 보여도 서로 다른 질문이고, `self-injection`은 그다음에 보는 우회책 질문이다.
 
 | 항목 | 지금 묻는 핵심 | 초급자용 한 줄 해석 | 기본 권장 |
 |---|---|---|---|
-| `private` 메서드 | 프록시가 메서드 경계에 끼어들 수 있나 | 문이 닫혀 있어서 프록시가 못 선다 | `public` 경계 메서드로 올린다 |
 | `this.save()` 호출 | 호출이 프록시를 거치나 | 같은 집 안에서 바로 들어가서 정문을 안 지난다 | 다른 Bean으로 경계를 나눈다 |
+| `private` 메서드 | 프록시가 메서드 경계에 끼어들 수 있나 | 문이 닫혀 있어서 프록시가 못 선다 | `public` 경계 메서드로 올린다 |
+| 직접 `new Foo()` | Spring 관리 객체인가 | 컨테이너 밖 객체라 프록시를 붙일 자리가 없다 | DI 받은 Bean으로 바꾼다 |
 | `self-injection` | 프록시를 일부러 다시 타게 할까 | 자기 자신 대신 프록시 버전을 주입받아 정문으로 돌린다 | 가능하지만 기본 해법은 아님 |
 
 ### `private` vs `this` 한눈 비교표
@@ -116,49 +124,21 @@ Spring에서 self-invocation 문제를 처음 배울 때 보통 `@Transactional`
 
 | 내가 지금 본 코드/질문 | 먼저 판단할 포인트 | 첫 답변 |
 |---|---|---|
-| "`private`에 `@Transactional` 붙였어요" | 메서드 경계 자체가 프록시에 열려 있는가 | 우선 `public` 경계로 올리고, 호출 경로를 다시 본다 |
 | "`public`인데도 내부 호출에서 안 먹어요" | `this`로 직접 불렀는가 | `public` 여부보다 프록시 경유 여부가 먼저다 |
+| "`private`에 `@Transactional` 붙였어요" | 메서드 경계 자체가 프록시에 열려 있는가 | 우선 `public` 경계로 올리고, 호출 경로를 다시 본다 |
+| "`new OrderService()`로 만들었는데 안 먹어요" | Spring Bean이 아니라 직접 생성한 객체인가 | Bean 등록/주입부터 다시 본다 |
 | "`self-injection` 하면 해결되죠?" | 우회책을 기본 해법으로 착각했는가 | 가능은 하지만 보통은 Bean 분리가 더 낫다 |
 
 초급자가 많이 섞는 문장을 먼저 분해하면 더 빨라진다.
 
 - "`private`이라서 안 된다"는 절반만 맞다. `private` 문제와 `this` 내부 호출 문제는 별개다.
 - "`public`으로 바꿨는데도 안 된다"면 대부분 호출 경로가 여전히 `this`다.
+- "`public`이고 외부 호출처럼 보이는데도 안 된다"면 그 객체가 진짜 Spring Bean인지까지 본다.
 - "`self-injection`을 썼다"는 말은 문제 원인이 아니라 우회 방식이다.
 
-### Q1. `private` 메서드에 `@Transactional`을 붙였는데 왜 안 되나요?
+### Q1. 같은 클래스 안에서 `this.save()`처럼 불렀나요?
 
-짧게 말하면, Spring AOP 프록시는 보통 이런 `private` 메서드 경계에 끼어들지 못한다.
-
-```java
-@Service
-public class OrderService {
-
-    public void place() {
-        save(); // 같은 클래스 내부 호출
-    }
-
-    @Transactional
-    private void save() {
-    }
-}
-```
-
-이 코드에서 초급자가 흔히 하는 오해는 "`private`을 `public`으로만 바꾸면 끝"이라고 생각하는 것이다. 하지만 실제 핵심은 두 가지다.
-
-- `private`이면 프록시가 메서드 경계에 개입하기 어렵다.
-- 게다가 같은 클래스 내부 호출이면 `this` 경로로 프록시까지 우회한다.
-
-즉 `private`은 "메서드 경계 문제"이고, self-invocation은 "호출 경로 문제"다. 둘이 한 코드에서 같이 나타날 수는 있지만 같은 원인은 아니다.
-
-바로 연결해서 보면:
-
-- 접근 제한자 감각이 먼저 필요하면 [`AOP 기초`의 `private` 메서드 체크](./spring-aop-basics.md#checklist-private-method)
-- `@Transactional` 입문 설명으로 다시 잡으려면 [`@Transactional 기초`](./spring-transactional-basics.md#증상-라우팅-카드-내부-호출프록시-우회)
-
-### Q2. `this.save()`는 왜 문제인가요? `public`이어도 안 되나요?
-
-네. `public`이어도 `this.save()`면 문제일 수 있다.
+프라이머와 같은 첫 질문은 항상 호출 경로다. `public`이어도 `this.save()`면 문제일 수 있다.
 
 ```java
 @Service
@@ -190,7 +170,60 @@ public class OrderService {
 
 그래서 초급 단계의 기본 답은 "`public`으로 바꿀까?"보다 "호출을 다른 Bean 경계로 빼야 하나?"다.
 
-### Q3. `self-injection`은 정답인가요?
+### Q2. `private` 메서드에 annotation을 붙였나요?
+
+짧게 말하면, Spring AOP 프록시는 보통 이런 `private` 메서드 경계에 끼어들지 못한다.
+
+```java
+@Service
+public class OrderService {
+
+    public void place() {
+        save(); // 같은 클래스 내부 호출
+    }
+
+    @Transactional
+    private void save() {
+    }
+}
+```
+
+이 코드에서 초급자가 흔히 하는 오해는 "`private`을 `public`으로만 바꾸면 끝"이라고 생각하는 것이다. 하지만 실제 핵심은 두 가지다.
+
+- `private`이면 프록시가 메서드 경계에 개입하기 어렵다.
+- 게다가 같은 클래스 내부 호출이면 `this` 경로로 프록시까지 우회한다.
+
+즉 `private`은 "메서드 경계 문제"이고, self-invocation은 "호출 경로 문제"다. 둘이 한 코드에서 같이 나타날 수는 있지만 같은 원인은 아니다.
+
+바로 연결해서 보면:
+
+- 접근 제한자 감각이 먼저 필요하면 [`AOP 기초`의 `private` 메서드 체크](./spring-aop-basics.md#checklist-private-method)
+- `@Transactional` 입문 설명으로 다시 잡으려면 [`@Transactional 기초`](./spring-transactional-basics.md#증상-라우팅-카드-내부-호출프록시-우회)
+
+### Q3. annotation을 기대한 객체를 직접 `new Foo()`로 만들었나요?
+
+`public` 메서드고 내부 호출도 아닌데 annotation이 안 먹는다면, 프록시를 기대한 객체를 아예 Spring 밖에서 직접 만든 경우도 자주 나온다.
+
+```java
+OrderService orderService = new OrderService(); // 컨테이너 밖에서 직접 생성
+orderService.save();
+```
+
+이 경우 초급자용 핵심은 간단하다.
+
+- `public`은 있어도, Spring Bean이 아니면 프록시를 붙일 시작점이 없다.
+- annotation은 메서드에 적혀 있어도, 그 객체가 컨테이너 밖이면 프록시 기반 기능을 기대하기 어렵다.
+
+짧게 보면:
+
+| 객체 생성 방식 | 프록시 기대 가능성 | 첫 판단 |
+|---|---|---|
+| Spring이 DI로 주입한 Bean | 높다 | 호출 경로를 계속 본다 |
+| `new Foo()`로 직접 생성 | 낮다 | Bean 등록/주입부터 다시 본다 |
+
+그래서 `this.method()`도 아니고 `private`도 아닌데 안 먹는다면, "이 객체가 진짜 Spring Bean인가?"를 세 번째로 바로 확인하는 편이 빠르다.
+
+### Q4. `self-injection`은 정답인가요?
 
 정답이라기보다 "제한적으로 쓸 수 있는 우회책"에 가깝다.
 
@@ -229,11 +262,12 @@ public class OrderService {
 
 한 줄로 묶으면:
 
-- `private`은 "메서드 경계가 프록시에 열려 있나?"
 - `this` 호출은 "호출이 프록시를 지나가나?"
+- `private`은 "메서드 경계가 프록시에 열려 있나?"
+- 직접 `new`는 "Spring 관리 경계 안 객체인가?"
 - `self-injection`은 "프록시를 다시 지나가게 만드는 우회가 필요한가?"
 
-이 셋을 분리해서 보면 self-invocation FAQ가 glossary처럼 보이지 않고, 어디를 고쳐야 하는지 바로 잡힌다.
+이 네 질문을 분리해서 보면 self-invocation FAQ가 glossary처럼 보이지 않고, 어디를 고쳐야 하는지 바로 잡힌다.
 
 ### 자주 나오는 오해 문장 바로잡기
 

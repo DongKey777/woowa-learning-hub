@@ -23,6 +23,10 @@ retrieval-anchor-keywords: treemap key entry bridge, lowerkey lowerentry beginne
 
 > `Key`는 "어느 예약 줄인가"를 찾고, `Entry`는 "그 예약 줄의 시작과 끝을 같이" 준다.
 
+여기서 beginner가 놓치기 쉬운 연결은 하나 더 있다.
+
+> `TreeSet.floor(x)`를 이해했다면 `TreeMap.floorKey(x)`도 같은 exact-match 규칙이고, `TreeMap.floorEntry(x)`는 그 자리에 value만 붙여 읽는 다음 칸이다.
+
 strictness도 바뀌지 않는다.
 
 - `lower` / `higher`는 exact match를 제외한다.
@@ -44,6 +48,13 @@ ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 | `entry로 바꾸면 exact match 포함 여부도 바뀌나요?` | 아니다. `lower/floor/ceiling/higher` 이름이 포함 여부를 정한다 |
 | `왜 lowerEntry랑 floorEntry가 달라요?` | `entry` 차이가 아니라 strict/inclusive 차이다 |
 
+특히 `floorKey -> floorEntry`에서 멈칫하는 초보자는 아래처럼 세 칸을 이어 읽으면 된다.
+
+| 이미 익힌 칸 | 다음 칸 | 그대로 유지되는 규칙 |
+|---|---|---|
+| `TreeSet.floor(10:30)` -> `10:30` | `TreeMap.floorKey(10:30)` -> `10:30` | exact match 포함 |
+| `TreeMap.floorKey(10:30)` -> `10:30` | `TreeMap.floorEntry(10:30)` -> `10:30 -> 11:00` | exact match 포함 |
+
 ## 한눈에 보기
 
 `TreeMap<start, end>` 예약표가 아래처럼 있다고 하자.
@@ -63,6 +74,9 @@ ordered map query로 다시 쓰면 아래처럼 읽으면 된다.
 | 같거나 바로 이전 예약 | `floorKey(10:30)` -> `10:30` | `floorEntry(10:30)` -> `10:30 -> 11:00` | 포함 |
 | 같거나 바로 다음 예약 | `ceilingKey(10:30)` -> `10:30` | `ceilingEntry(10:30)` -> `10:30 -> 11:00` | 포함 |
 | 바로 다음 예약 | `higherKey(10:30)` -> `13:00` | `higherEntry(10:30)` -> `13:00 -> 14:00` | 제외 |
+
+`floorKey(10:30)`와 `floorEntry(10:30)`가 둘 다 같은 줄에서 멈춘다는 점을 먼저 고정하면 value-read 단계에서 덜 흔들린다.
+차이는 "`exact match를 포함하나`"가 아니라 "`그 줄의 끝 시각까지 같이 받나`"뿐이다.
 
 초보자용으로 줄이면 이렇게 외우면 된다.
 
@@ -140,6 +154,7 @@ boolean noRightOverlap = next == null || !end.isAfter(next.getKey());
 
 - `Entry`가 더 똑똑한 검색이라고 느끼기 쉽지만, 실제 검색 기준은 여전히 key다. `value`를 비교해서 찾는 것이 아니다.
 - `lowerEntry`와 `floorEntry` 차이가 `Entry`라서 생긴다고 오해하기 쉽다. 차이는 여전히 strict vs inclusive다.
+- `floorKey`에서 `floorEntry`로 바꾸는 순간 exact-match 규칙을 새로 외워야 한다고 느끼기 쉽다. 실제로는 같은 줄에서 멈춘 뒤 value를 같이 읽기만 하면 된다.
 - `higherEntry(t)`를 "무조건 다음 줄"로 외우면 exact match에서 틀린다. 같은 key는 strict하게 건너뛴다.
 - `Entry`를 받았으면 바로 `getValue()`부터 읽고 싶어지지만, 경계 시각에서는 `null` 먼저 확인해야 한다.
 - 충돌 검사 전체를 한 번에 외우려 하면 더 막힌다. 먼저 `Key/Entry` 대응표를 붙이고, 그다음 `prev.end <= start`, `end <= next.start`로 넘어가는 편이 낫다.

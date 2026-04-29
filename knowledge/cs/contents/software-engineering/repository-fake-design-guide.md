@@ -19,7 +19,9 @@
 retrieval-anchor-keywords: repository fake design guide, repository fake intermediate, fake repository example, memory repository example, repository port contract, outbound port fake, mock vs fake repository, 처음 repository fake 다음, repository interface 다음 문서, mock 대신 fake 왜, what is repository fake, fake repository contract, service repository contract test, jpa 흉내 말고 계약 재현
 
 이 문서는 Beginner 입문서 다음 칸에 놓인 Intermediate 가이드다.
-`Repository Interface Contract Primer`에서 "`service가 기대하는 저장 계약을 test에서는 어떻게 재현하지?`"까지 왔다면 여기로 올라오면 된다.
+`Repository Interface Contract Primer`를 읽고 난 뒤 후속 선택표에서 "`service가 기대하는 저장 계약을 test에서는 어떻게 재현하지?`"에 걸렸다면 여기로 오면 된다.
+반대로 막힌 질문이 "`domain`과 `Entity`를 어디서 나누지?`"라면 fake보다 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) 쪽이 먼저다.
+서비스나 API에 `Entity`가 직접 보이는 증상이 이미 보이면 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)부터 보는 편이 더 빠르다.
 아직 질문이 "`첫 failing test에서 fake와 mock 중 뭐부터 집어야 하지?`"라면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)로 먼저 내려가 결과 중심 선택 기준부터 짧게 잡는 편이 더 안전하다.
 질문이 `flush`, dirty checking, `cascade`, `Entity` 매핑 자체로 기울어 있으면 fake 설계보다 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)나 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)를 먼저 보는 편이 맞다.
 <details>

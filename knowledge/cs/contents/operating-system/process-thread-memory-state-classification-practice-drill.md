@@ -1,0 +1,115 @@
+# Process, Thread, Stack, Heap, Virtual Memory, Runnable, Blocked 분류 연습
+
+> 한 줄 요약: process/thread/memory/state 용어가 한꺼번에 섞일 때, "무엇을 가리키는 말인가"와 "지금 어떤 상태인가"를 분리해서 짧은 예시로 분류해 보는 practice drill이다.
+>
+> 문서 역할: 이 문서는 operating-system 입문 축의 `process vs thread`, `stack vs heap`, `virtual memory`, `runnable vs blocked`를 한 번 더 묶어 손으로 분류해 보는 beginner practice drill이다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)
+- [메모리 관리 기초](./memory-management-basics.md)
+- [Linux Process State, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
+- [operating-system 카테고리 인덱스](./README.md)
+- [Java Thread Basics](../language/java/java-thread-basics.md)
+
+retrieval-anchor-keywords: process thread memory state classification, process thread stack heap virtual memory runnable blocked, 운영체제 분류 연습, process vs thread practice, stack vs heap practice, runnable vs blocked practice, virtual memory basics practice, 처음 운영체제 헷갈림, 뭐예요 process thread memory, what is runnable blocked, beginner os drill, process thread state self check
+
+## 핵심 개념
+
+이 주제가 헷갈리는 가장 큰 이유는 서로 다른 축의 단어를 한 줄에서 같이 보기 때문이다.
+
+- `process`, `thread`는 **실행 주체/경계**를 가리킨다.
+- `stack`, `heap`, `virtual memory`는 **메모리 위치나 주소 공간 관점**을 가리킨다.
+- `runnable`, `blocked`는 **지금 실행 가능한 상태인지**를 가리킨다.
+
+즉 "Tomcat worker thread가 DB 응답을 기다린다"는 문장에는 이미 두 축이 같이 들어 있다.
+
+- `worker thread`는 **thread**
+- `DB 응답을 기다린다`는 **blocked**
+
+먼저 축을 분리하면 용어가 덜 섞인다.
+
+## 한눈에 보기
+
+| 용어 | 초보자용 한 줄 감각 | 분류 질문 |
+| --- | --- | --- |
+| process | 주소 공간과 자원을 가진 실행 단위 | "이건 독립된 앱 인스턴스인가?" |
+| thread | 같은 process 안의 실행 흐름 | "같은 힙을 공유한 채 따로 실행되나?" |
+| stack | 각 thread의 호출 메모장 | "지역 변수와 호출 흐름이 쌓이는가?" |
+| heap | process가 공유하는 객체 창고 | "여러 thread가 같이 볼 수 있는 객체인가?" |
+| virtual memory | process가 보는 논리 주소 공간 | "실제 RAM과 분리된 주소 추상화 이야기인가?" |
+| runnable | 지금 실행 가능하지만 CPU 차례를 기다릴 수도 있는 상태 | "이벤트는 끝났고 CPU만 받으면 되나?" |
+| blocked | I/O나 이벤트를 기다려 아직 바로 못 도는 상태 | "외부 완료 신호가 와야 다시 움직이나?" |
+
+짧게 외우면 이렇다.
+
+- `process/thread`는 "누가 실행하나"
+- `stack/heap/virtual memory`는 "어디에 있나"
+- `runnable/blocked`는 "지금 돌 수 있나"
+
+## 분류 연습
+
+먼저 직접 답해 보고, 바로 아래 해설로 확인해 보자. 몇 문제는 답이 2개일 수 있다. 그럴 때는 "축이 다르기 때문"이라고 이해하면 된다.
+
+| 예시 | 먼저 분류해 보기 | 해설 |
+| --- | --- | --- |
+| `java -jar app.jar`로 실행된 JVM 한 개 | `process` | 독립 주소 공간, 열린 fd, 힙을 가진 실행 인스턴스다. |
+| 같은 JVM 안에서 요청 하나를 처리하는 worker 하나 | `thread` | 같은 process 안에서 CPU를 받아 코드를 실행하는 흐름이다. |
+| `reserve()` 메서드 안의 `reservationId` 지역 변수 | `stack` | 함수 호출 동안 각 thread의 stack frame에 붙는 값으로 이해하면 안전하다. |
+| 여러 요청 thread가 함께 보는 `ConcurrentHashMap` 캐시 | `heap` | process가 공유하는 객체 공간에 있으므로 thread끼리 함께 본다. |
+| `mmap()`으로 2GB 주소 공간을 잡았지만 아직 대부분 touch하지 않음 | `virtual memory` | 실제 RAM보다 먼저 주소 공간을 예약하고 매핑하는 이야기다. |
+| DB 응답을 기다리느라 `read()`에서 잠든 worker thread | `thread` + `blocked` | 주체는 thread이고, 지금 상태는 외부 I/O 완료를 기다리므로 blocked다. |
+| DB 응답은 왔지만 다른 runnable thread가 많아 CPU 차례를 기다리는 worker | `thread` + `runnable` | 이미 다시 실행 가능하지만 CPU를 아직 못 받았으므로 runnable이다. |
+| 같은 process의 두 thread가 서로 다른 메서드를 실행하며 각자 지역 변수를 가짐 | `thread` + `stack` | 실행 주체는 thread이고, 각자의 지역 상태는 각 thread stack에 따로 쌓인다. |
+
+### 미니 체크: 한 문장 분류
+
+- "싱글톤 서비스 객체"라고 들리면 먼저 `heap`을 떠올린다.
+- "함수 안 지역 변수"라고 들리면 먼저 `stack`을 떠올린다.
+- "CPU만 받으면 바로 실행 가능"이면 `runnable`이다.
+- "디스크/소켓/락 이벤트를 기다려야 함"이면 보통 `blocked` 쪽이다.
+
+## 흔한 오해와 함정
+
+- "`blocked`는 메모리 위치 이름이다"라고 섞으면 안 된다. `blocked`는 상태고, `heap`이나 `stack`은 메모리 구분이다.
+- "`thread`와 `runnable`은 같은 종류 단어다"도 틀리다. `thread`는 실행 주체, `runnable`은 그 주체의 현재 상태다.
+- "`virtual memory`는 swap이 있을 때만 의미 있다"도 틀리다. 보통은 swap 유무와 별개로 주소 추상화와 격리를 위해 항상 쓰는 기본 구조다.
+- "`지역 변수는 무조건 안전하다`"는 표현도 과하다. 보통은 thread별 stack에 있어 공유 위험이 낮지만, 그 변수가 가리키는 객체가 heap 공유 객체일 수는 있다.
+
+## 실무에서 쓰는 모습
+
+Spring Boot 서버를 떠올리면 분류가 가장 쉽다.
+
+- JVM 하나는 보통 `process`
+- 요청을 처리하는 각 worker는 `thread`
+- 컨트롤러 메서드의 파라미터와 지역 변수는 `stack`
+- 싱글톤 빈, 캐시, 커넥션 풀은 `heap`
+- 앱이 보는 넓은 주소 공간은 `virtual memory`
+- JDBC 응답을 기다리는 worker는 `blocked`
+- 응답을 받아 다시 실행 대기열로 돌아왔지만 CPU를 기다리면 `runnable`
+
+여기서 중요한 점은 같은 장면도 축을 바꿔 두 번 분류할 수 있다는 것이다. 예를 들어 "DB를 기다리는 worker"는 `thread`이면서 동시에 `blocked`다.
+
+## 더 깊이 가려면
+
+- [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md) — 오늘 분류한 7개 용어를 한 장면으로 다시 묶는 primer
+- [메모리 관리 기초](./memory-management-basics.md) — `stack`, `heap`, `virtual memory`, `RSS/VSZ`를 메모리 관점에서 더 또렷하게 정리
+- [Linux Process State, Zombie, Orphan](./linux-process-state-zombie-orphan.md) — `running/runnable/blocked/zombie` 같은 상태 축을 더 자세히 분리
+- [Java Thread Basics](../language/java/java-thread-basics.md) — backend 코드에서 thread가 실제로 어떻게 보이는지 연결
+
+## Self-check (자가 점검 4문항)
+
+1. "요청을 처리하는 worker"와 "그 worker가 CPU를 기다리는 상태"를 각각 다른 축의 단어로 말할 수 있는가?
+   힌트: 주체는 `thread`, 상태는 `runnable` 또는 `blocked`처럼 따로 붙는다.
+2. "지역 변수"와 "공유 캐시"를 들었을 때 `stack`과 `heap` 중 무엇을 먼저 떠올려야 하는지 설명할 수 있는가?
+   힌트: 함수 호출에 붙는 값인지, 여러 thread가 함께 보는 객체인지부터 나눈다.
+3. `virtual memory`를 "RAM 부족 대책"이 아니라 "주소 공간 추상화와 격리"로 설명할 수 있는가?
+   힌트: 아직 touch하지 않은 주소도 process 입장에서는 자기 공간처럼 보인다는 점을 떠올리면 된다.
+4. 같은 예시가 `thread`이면서 동시에 `blocked`일 수 있는 이유를 말할 수 있는가?
+   힌트: 하나는 "무엇인가", 다른 하나는 "지금 어떤 상태인가"를 묻는 말이다.
+
+## 한 줄 정리
+
+process/thread는 실행 주체 축, stack/heap/virtual memory는 메모리 축, runnable/blocked는 상태 축이라고 분리해서 보면 운영체제 입문 용어 분류가 훨씬 쉬워진다.

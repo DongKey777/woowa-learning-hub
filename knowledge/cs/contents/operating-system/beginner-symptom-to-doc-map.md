@@ -17,7 +17,7 @@
 - [인터럽트 기초](./interrupt-basics.md)
 - [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
 
-retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, command first quick check, slow response first triage, oom first triage, too many open files first triage, interrupt confusion primer, syscall vs context switch confusion, process vs thread confusion, 운영체제 증상 라우팅, 증상별 관찰 명령, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
+retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, command first quick check, slow response first triage, oom first triage, too many open files first triage, interrupt confusion primer, syscall vs context switch confusion, process vs thread confusion, 왜 느려요 운영체제, 처음 뭐부터 봐요, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
 
 ## 먼저 잡는 멘탈 모델
 
@@ -28,6 +28,17 @@ retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner sym
 - 마지막에 deep dive로 원인/복구를 좁힌다.
 
 즉, **처음부터 고급 분석 문서로 뛰어들기보다, 증상 -> primer -> deep dive 순서가 실패율이 낮다.**
+
+## 30초 결정표: 처음엔 이 질문만 던지면 된다
+
+초보자가 첫 턴에 전부 맞출 필요는 없다. 아래처럼 "무슨 자원이 막힌 것처럼 보이는가?"만 거칠게 고르면 다음 문서가 훨씬 잘 맞는다.
+
+| 지금 보이는 말 | 먼저 떠올릴 축 | 바로 갈 primer |
+|---|---|---|
+| "왜 이렇게 느려요?", "`load`가 높대요" | CPU / scheduler / I/O wait | [Scheduler Observation Starter Guide](./scheduler-observation-starter-guide.md), [CPU 스케줄링 기초](./cpu-scheduling-basics.md) |
+| "`Killed`, `OOMKilled`가 떠요" | memory pressure | [메모리 관리 기초](./memory-management-basics.md) |
+| "`Too many open files`가 떠요" | fd / socket / limit | [파일 디스크립터 기초](./file-descriptor-basics.md) |
+| "`프로세스`, `스레드`, `시스템 콜`이 자꾸 섞여요" | 개념 축 재정렬 | [프로세스와 스레드 기초](./process-thread-basics.md), [시스템 콜 기초](./syscall-basics.md) |
 
 ## 어디로 바로 점프하면 되나
 
@@ -115,6 +126,8 @@ retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner sym
 - "시스템 콜 = 컨텍스트 스위치"가 아니다. syscall은 경계 진입이고, 컨텍스트 스위치는 CPU 실행 주체 전환이다.
 - "프로세스 = 스레드"가 아니다. 프로세스는 격리 단위, 스레드는 같은 프로세스 안 실행 단위다.
 - "인터럽트 = 시그널"이 아니다. 인터럽트는 커널 이벤트 처리 메커니즘이고, 시그널은 유저 공간 전달 인터페이스다.
+
+비유도 여기까지만 유효하다. 이 문서의 "병원 접수" 비유는 **첫 문서 고르기**에는 도움이 되지만, 실제 원인 판정은 `vmstat`, `memory.events`, `/proc/<pid>/fd` 같은 관찰값으로 다시 확인해야 한다.
 
 ## 다음으로 어디를 읽을까?
 

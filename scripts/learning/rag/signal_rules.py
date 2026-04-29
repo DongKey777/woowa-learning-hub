@@ -1259,6 +1259,7 @@ _RULES: list[Rule] = [
             "커넥션 풀",
             "db connection pool",
             "hikari",
+            "hikaricp",
             "hikari cp",
             "datasource pool",
             "pool exhaustion",
@@ -1725,6 +1726,9 @@ _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES = {
     "springmvc",
     "dispatcher servlet",
     "dispatcherservlet",
+    "ioc",
+    "dependency injection",
+    "inversion of control",
     "spring bean",
     "beanfactory",
     "bean factory",
@@ -1929,6 +1933,9 @@ _WOOWA_BACKEND_FOUNDATION_TOPIC_CUES = {
 }
 
 _DATABASE_MODELING_BEGINNER_TOPIC_CUES = {
+    "schema",
+    "스키마",
+    "table",
     "normalization",
     "정규화",
     "index",
@@ -2563,6 +2570,8 @@ _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "query service 무슨 역할",
     "query service는 무슨 역할",
     "query service 는 무슨 역할",
+    "query service 역할이 뭐야",
+    "query service 역할이 뭐예요",
     "query service 역할이야",
     "query service 역할이에요",
     "query service 뭐 하는 거야",
@@ -2570,9 +2579,12 @@ _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "query service 는 뭐 하는 거야",
     "query service가 뭘 해",
     "query service 는 뭘 해",
+    "query service 무슨 역할을 해",
     "쿼리 서비스 무슨 역할",
     "쿼리 서비스는 무슨 역할",
     "쿼리 서비스 는 무슨 역할",
+    "쿼리 서비스 역할이 뭐야",
+    "쿼리 서비스 역할이 뭐예요",
     "쿼리 서비스 역할이야",
     "쿼리 서비스 역할이에요",
     "쿼리 서비스 뭐 하는 거야",
@@ -2580,6 +2592,7 @@ _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
     "쿼리 서비스 는 뭐 하는 거야",
     "쿼리 서비스가 뭘 해",
     "쿼리 서비스 는 뭘 해",
+    "쿼리 서비스 무슨 역할을 해",
 }
 
 _QUERY_SERVICE_TOPIC_CUES = {
@@ -2902,10 +2915,18 @@ def _is_short_ascii_trigger(trigger: str) -> bool:
     return len(trigger) <= 2 and trigger.isascii() and trigger.isalnum()
 
 
+def _is_single_ascii_word_trigger(trigger: str) -> bool:
+    return trigger.isascii() and trigger.isalnum()
+
+
 def _matched_triggers(haystack: str, tokens: set[str], triggers: set[str]) -> set[str]:
     matched: set[str] = set()
     for trig in triggers:
         if _is_short_ascii_trigger(trig):
+            if trig in tokens:
+                matched.add(trig)
+            continue
+        if _is_single_ascii_word_trigger(trig):
             if trig in tokens:
                 matched.add(trig)
             continue
@@ -3044,6 +3065,10 @@ def _transaction_isolation_expand(
     *,
     beginner_intent: bool = False,
 ) -> list[str]:
+    generic_transaction_beginner_prompt = _is_generic_transaction_beginner_intro_prompt(
+        haystack,
+        tokens,
+    )
     expand = [
         "transaction",
         "isolation level",
@@ -3077,6 +3102,24 @@ def _transaction_isolation_expand(
             "mvcc concept overview",
             "why use mvcc",
             "concurrent read write visibility basics",
+        ]
+
+    if generic_transaction_beginner_prompt:
+        return [
+            "transaction",
+            "transaction isolation basics",
+            "transaction isolation beginner primer",
+            "transaction isolation simple mental model",
+            "transaction basics",
+            "transaction locking connection pool primer",
+            "transaction boundary connection pool",
+            "트랜잭션 기초 개념",
+            "트랜잭션이 뭐예요",
+            "all or nothing unit of work",
+            "commit rollback basics",
+            "read committed beginner",
+            "repeatable read beginner",
+            "mvcc",
         ]
 
     if _is_transaction_isolation_beginner_meaning_prompt(haystack, tokens):
@@ -3169,7 +3212,7 @@ def _connection_pool_expand(
     beginner_intent: bool = False,
 ) -> list[str]:
     beginner_hikari_shortform = bool(
-        matched_triggers & {"hikari", "hikari cp"}
+        matched_triggers & {"hikari", "hikaricp", "hikari cp"}
         and (
             any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
             or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
@@ -3193,7 +3236,9 @@ def _connection_pool_expand(
             ]
         )
 
-    if matched_triggers & {"hikari", "hikari cp"} and (beginner_intent or beginner_hikari_shortform):
+    if matched_triggers & {"hikari", "hikaricp", "hikari cp"} and (
+        beginner_intent or beginner_hikari_shortform
+    ):
         expand.extend(
             [
                 "hikaricp basics",
@@ -4222,11 +4267,18 @@ def _spring_framework_compound_matches(haystack: str, tokens: set[str]) -> set[s
 
 
 def _os_sync_async_blocking_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
-    if not (_has_beginner_intent(haystack, tokens) or _has_beginner_confusion_intent(haystack)):
+    has_beginnerish_intent = (
+        _has_beginner_intent(haystack, tokens)
+        or _has_beginner_confusion_intent(haystack)
+        or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or "차이" in haystack
+        or "difference" in haystack
+    )
+    if not has_beginnerish_intent:
         return set()
     has_sync_async_family = any(cue in haystack for cue in _SYNC_ASYNC_TOPIC_CUES)
     has_blocking_family = any(cue in haystack for cue in _BLOCKING_NONBLOCKING_TOPIC_CUES)
-    if not (has_sync_async_family and has_blocking_family):
+    if not (has_sync_async_family or has_blocking_family):
         return set()
     return {"__sync_async_blocking_beginner_primer__"}
 
@@ -5254,6 +5306,63 @@ def _is_transaction_primer_shortform_prompt(haystack: str) -> bool:
     return True
 
 
+def _is_generic_transaction_beginner_intro_prompt(
+    haystack: str,
+    tokens: set[str],
+) -> bool:
+    has_beginnerish_intent = (
+        _has_beginner_intent(haystack, tokens)
+        or _has_beginner_confusion_intent(haystack)
+        or _has_korean_definition_shortform(haystack)
+        or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+    )
+    if not has_beginnerish_intent:
+        return False
+    has_transaction_term = bool({"transaction", "트랜잭션"} & tokens) or bool(
+        re.search(r"\btransaction\b", haystack)
+    ) or "트랜잭션" in haystack
+    if not has_transaction_term:
+        return False
+    if _is_projection_freshness_primer_prompt(haystack):
+        return False
+    if any(cue in haystack for cue in _PROJECTION_ROLLBACK_WINDOW_CUES):
+        return False
+    if any(cue in haystack for cue in _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES):
+        return False
+    if any(trigger in haystack for trigger in _SPRING_FRAMEWORK_TRANSACTIONAL_TRIGGERS):
+        return False
+    if any(
+        cue in haystack
+        for cue in {
+            "spring",
+            "jpa",
+            "hibernate",
+            "remote call",
+            "rollbackfor",
+            "self invocation",
+            "self-invocation",
+            "optimistic lock",
+            "pessimistic lock",
+            "낙관적 락",
+            "비관적 락",
+            "select for update",
+            "for update",
+            "locking strategy",
+            "isolation level",
+            "격리 수준",
+            "격리수준",
+        }
+    ):
+        return False
+    return (
+        any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
+        or _has_korean_definition_shortform(haystack)
+        or any(cue in haystack for cue in _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES)
+        or _has_beginner_confusion_intent(haystack)
+        or "큰 그림" in haystack
+    )
+
+
 def _is_transaction_propagation_beginner_shortform_prompt(
     haystack: str,
     tokens: set[str],
@@ -5694,10 +5803,15 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
     transaction_beginner_meaning_prompt = _is_transaction_isolation_beginner_meaning_prompt(
         haystack, tokens
     )
+    generic_transaction_beginner_prompt = _is_generic_transaction_beginner_intro_prompt(
+        haystack,
+        tokens,
+    )
     if not _has_beginner_intent(haystack, tokens):
         if not (
             _is_beginner_query_model_meaning_prompt(haystack, tokens)
             or transaction_beginner_meaning_prompt
+            or generic_transaction_beginner_prompt
         ):
             return set()
 
@@ -5771,6 +5885,19 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
             ]
         )
         suppressed_tags.update(present_tags & {"transaction_isolation"})
+    if generic_transaction_beginner_prompt and "transaction_isolation" in present_tags:
+        primer_hit = hits_by_tag["transaction_isolation"]
+        primer_hit["score"] += 4
+        primer_hit["expand"].extend(
+            [
+                "transaction basics",
+                "transaction beginner primer",
+                "트랜잭션 기초 개념",
+                "트랜잭션이 뭐예요",
+                "all or nothing unit of work",
+                "commit rollback basics",
+            ]
+        )
     for primer_tag, config in _BEGINNER_PRIMER_OVERRIDES.items():
         if primer_tag not in present_tags:
             continue

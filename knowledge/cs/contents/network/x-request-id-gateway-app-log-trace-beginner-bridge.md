@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Browser DevTools `traceparent` vs `tracestate` 초급 미니 카드](./browser-devtools-traceparent-vs-tracestate-mini-card.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - [API Gateway, Reverse Proxy 운영 포인트](./api-gateway-reverse-proxy-operational-points.md)
 - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
@@ -123,6 +124,7 @@ traceparent = 시스템들이 같은 trace를 이어 붙이는 표준 표식
 즉 DevTools에 `traceparent`만 보인다고 해서 추적이 약한 것이 아니다.
 오히려 tracing 표준이 먼저 드러난 장면일 수 있다.
 다만 `traceparent` 전체 문자열을 로그에서 그대로 찾기보다, 그 안의 `traceId`를 log field나 tracing 화면에서 찾는 흐름이 더 흔하다.
+`tracestate`까지 같이 보여도 초급자는 보통 `traceparent`부터 읽으면 충분하고, `tracestate` 상세 값은 vendor별 메타데이터일 수 있어 팀 문서가 필요할 수 있다.
 
 ## 흔한 오해와 함정
 

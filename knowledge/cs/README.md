@@ -16,17 +16,26 @@
 > retrieval-anchor-keywords: social login primer route, social login beginner route, oauth oidc social login root route, google login beginner route, auth app subdomain login, auth app subdomain callback, auth callback app anonymous root route, auth.example.com callback app.example.com anonymous root route, subdomain callback beginner detour, callback success app anonymous primer, broad cs entry social login primer, oauth oidc before callback hardening, social login before advanced callback docs
 
 처음 들어온 junior reader가 가장 먼저 볼 것은 "설명 본문"이 아니라 "어느 shelf에서 멈춰야 안전한가"다.
-이 루트 `README`는 `meta navigator`이고, 아래 4칸만 먼저 구분하면 `primer`, `deep dive`, `playbook`이 한 화면에 섞여 있어도 첫 클릭을 덜 헷갈린다.
+이 루트 `README`는 `meta navigator`이고, 아래 4칸만 먼저 구분하면 `survey`, `primer`, `deep dive`, `playbook/recovery`가 한 화면에 섞여 있어도 첫 클릭을 덜 헷갈린다.
+
+처음 30초에는 아래 안전 규칙만 먼저 적용한다.
+
+| 지금 보이는 표지판 | beginner-safe 해석 | 바로 다음 한 걸음 |
+|---|---|---|
+| `survey`, `roadmap`, `뭐부터`, `big picture` | 학습 순서를 고르는 entry shelf | [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md) |
+| `primer`, `basics`, `what is`, `헷갈려요` | 개념 축을 세우는 entry shelf | 각 category `README`에서 primer 구간 열기 |
+| `deep dive`, `playbook`, `recovery`, `incident`, `master note`, `senior` | first click이 아니라 follow-up shelf | 루트에서는 한 칸 물러나 `survey`나 category `README`부터 다시 고르기 |
 
 | 지금 검색한 말 | 루트에서 먼저 붙일 역할 | 여기서 먼저 여는 문서 | 아직 첫 클릭으로 올리지 않는 것 |
 |---|---|---|---|
 | `처음`, `뭐부터`, `학습 순서`, `big picture` | `survey` | [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md) | incident / recovery 문서, master note |
-| `what is`, `basics`, `헷갈려요`, `왜 이렇게 나뉘어요` | `category README -> primer` | 각 category `README` | deep dive catalog, senior question bank |
-| 증상은 있는데 카테고리가 헷갈림 | `category navigator` | [Quick Routes](#quick-routes) 아래 beginner shortcut | recovery playbook를 primer처럼 읽기 |
+| `what is`, `basics`, `헷갈려요`, `왜 이렇게 나뉘어요` | `category README -> primer` | 각 category `README` | deep-dive catalog, senior question bank |
+| 증상은 있는데 카테고리가 헷갈림 | `category navigator` | [Beginner Entrypoints](#quick-routes) 아래 beginner shortcut | recovery playbook를 primer처럼 읽기 |
 | 이미 원인 축을 알고 한 경계만 더 파고 싶음 | `deep dive follow-up` | category `README` 안의 deep-dive 구간 | 루트에서 advanced shelf를 첫 클릭으로 쓰기 |
 
 - 루트에서 안전한 순서는 `survey -> category README -> primer -> primer bridge -> deep dive`다.
 - `advanced`, `incident`, `recovery`, `cutover`, `master note`, `senior`가 제목 앞에 보이면 beginner entrypoint가 아니라 follow-up shelf로 읽는다.
+- `rag/*.md`는 role decoder용 `routing helper`다. 역할을 해석한 뒤 category `README`나 linked `primer`로 내려가는 것이 기본 경로다.
 
 처음 검색 결과에서 `README`만 보여도 아래처럼 파일 역할부터 나누면 incident 문서를 entrypoint로 오해할 가능성이 줄어든다.
 
@@ -46,16 +55,16 @@
   - [Repository Rule](#repository-rule)
   - [Collaborator](#collaborator)
   - [Reference](#reference)
-- [Beginner Entrypoints / Quick Routes](#quick-routes)
+- [Beginner Entrypoints / Quick Routes (`entry shelf`)](#quick-routes)
   - [Woowacourse Backend Beginner Ladder](#woowacourse-backend-beginner-ladder)
   - [Auth / Session Beginner Shortcut](#auth--session-beginner-shortcut)
-  - [Symptom-First Primer Bridge Routes](#symptom-first-quick-routes)
-- [Junior Backend Roadmap](#junior-backend-roadmap)
-- [Advanced Backend Roadmap](#advanced-backend-roadmap)
-- [Master Notes](#master-notes)
-- [Senior-Level Questions](#senior-level-questions)
-- [RAG Ready](#rag-ready)
-- [Category Catalog Snapshots](#category-catalog-snapshots)
+  - [Symptom-First Primer Bridge Routes (`bridge shelf`)](#symptom-first-quick-routes)
+- [Junior Backend Roadmap (`survey`, first click)](#junior-backend-roadmap)
+- [Advanced Backend Roadmap (`survey`, follow-up shelf)](#advanced-backend-roadmap)
+- [Master Notes (`synthesis`, follow-up shelf)](#master-notes)
+- [Senior-Level Questions (`question bank`, follow-up shelf)](#senior-level-questions)
+- [RAG Ready (`routing helper`, role decoder only)](#rag-ready)
+- [Category Catalog Snapshots (`catalog snapshot`, choose after route selection)](#category-catalog-snapshots)
 - [Data Structure (자료구조)](#data-structure-자료구조)
 - [Algorithm (알고리즘)](#algorithm-알고리즘)
 - [Operating System (운영체제)](#operating-system-운영체제)
@@ -115,7 +124,7 @@
 
 <a id="quick-routes"></a>
 
-## Beginner Entrypoints / Quick Routes (`meta navigator`)
+## Beginner Entrypoints / Quick Routes (`entry shelf`, `meta navigator`)
 
 이 루트 `README`는 저장소 전체의 **meta navigator**다.
 여기서 설명을 끝내기보다, 필요한 역할 문서로 한 단계 더 내려 보내는 것이 목적이다.
@@ -133,6 +142,15 @@
 
 `처음`, `뭐부터`, `헷갈려요`, `what is`, `basics`처럼 broad하게 묻는 상태라면 이 문서에서 바로 incident 문서로 점프하지 않는다.
 먼저 `survey -> category README -> primer -> primer bridge`까지로 질문 축을 자르고, `deep dive`와 `playbook/recovery`는 그 다음 단계로 미룬다.
+
+역할 이름이 비슷해 보여도 초심자 관점에서는 아래처럼 짧게 번역하면 덜 헷갈린다.
+
+| 보이는 역할 라벨 | 초심자용 짧은 해석 | 지금 기대할 것 | 아직 기대하지 말 것 |
+|---|---|---|---|
+| `survey` | "순서 잡는 문서" | 큰 그림, 다음 카테고리 | 세부 원인 분석 |
+| `primer` / `primer bridge` | "첫 설명 + 다음 한 걸음" | 기본 개념, symptom 분기 | 운영 절차 |
+| `deep dive` | "한 원인 심화" | 경계, trade-off, failure mode | broad 입문 |
+| `playbook` / `runbook` / `recovery` | "장애/운영 follow-up" | 대응 순서, 복구 기준 | 첫 개념 설명 |
 
 초심자가 가장 먼저 기억할 규칙은 단순하다.
 루트에서는 `survey -> category README -> primer -> primer bridge -> deep dive` 순서로 내려가고, `advanced`, `incident`, `cutover`, `recovery`, `case study`가 보이면 첫 클릭이 아니라 follow-up shelf로 본다.
@@ -182,6 +200,11 @@ beginner 안전 규칙도 한 줄로 고정해 둔다.
 - 첫 클릭은 가능하면 `survey`, `primer`, `primer bridge`, `catalog` 중 하나로 시작한다.
 - `Advanced Backend Roadmap`, `Master Notes`, `Senior-Level Questions`는 useful하지만 beginner entrypoint는 아니다.
 - `playbook`, `runbook`, `drill`, `recovery`는 "지금 장애/운영 순서가 먼저 필요한가?"가 맞을 때만 연다.
+
+TOC에서도 같은 규칙으로 읽는다.
+
+- `first click`이나 `catalog snapshot` 표기가 있으면 입문 shelf로 본다.
+- `advanced follow-up`, `routing helper`, `question bank` 표기가 있으면 첫 클릭이 아니라 역할 확인용 shelf로 본다.
 
 처음 보는 주제에서 멈출 shelf를 더 짧게 외우면 아래 셋만 기억해도 된다.
 

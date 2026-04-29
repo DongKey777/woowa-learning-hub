@@ -12,19 +12,21 @@
 - [Modular Monolith Boundary Enforcement](./modular-monolith-boundary-enforcement.md)
 - [Shared Module Guardrails](./shared-module-guardrails.md)
 - [Service 계층 기초](./service-layer-basics.md)
+- [Service Contract Smell Cards](./service-contract-smell-cards.md)
 - [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
 - [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, module facade 언제 써요, service끼리 바로 호출해도 되나요, what is module api dto, 처음 모듈 api 계약
+retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, cross module dto self check, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, cross module dto 어떻게 판단해요, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, what is module api dto, 처음 모듈 api 계약
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
 - [이 문서가 바로 답하는 질문](#이-문서가-바로-답하는-질문)
 - [초심자 30초 결정 흐름](#초심자-30초-결정-흐름)
+- [beginner self-check 3문항](#beginner-self-check-3문항)
 - [먼저 세 가지 질문으로 고르기](#먼저-세-가지-질문으로-고르기)
 - [한 장으로 보는 선택 기준](#한-장으로-보는-선택-기준)
 - [Command DTO를 쓰는 경우](#command-dto를-쓰는-경우)
@@ -77,6 +79,7 @@ retrieval-anchor-keywords: module api dto patterns, cross module dto contract, m
 
 짧게 말하면, 이 문서는 "모듈 간 DTO 계약을 왜 만들고 어디까지 공개해야 하냐"는 beginner 질문의 첫 진입점이다.
 코드 리뷰에서 이미 "`Entity`가 다른 모듈 API로 넘어간다"는 냄새를 잡아 둔 상태라면, 먼저 [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)로 누수 위치를 확인하고 다시 돌아오면 더 덜 헷갈린다.
+이전 단계에서 "`service` 계약 냄새는 알겠는데, 이제 이게 cross-module DTO 문제인가요?"가 헷갈린다면 [Service Contract Smell Cards](./service-contract-smell-cards.md)와 이 문서를 바로 이어서 보면 된다.
 
 ## 초심자 30초 결정 흐름
 
@@ -89,6 +92,29 @@ retrieval-anchor-keywords: module api dto patterns, cross module dto contract, m
 | "모든 모듈이 같은 의미로 쓰는 작은 값" | 작은 불변 value object | primitive 오염보다 의미가 선명하다 |
 
 즉 초심자 기준 기본값은 "aggregate를 넘긴다"가 아니라 "`의도/조회/공유값`을 분리한다"다.
+
+## beginner self-check 3문항
+
+service 계약 냄새에서 한 단계 더 들어오면, 이제 질문은 "`service` 시그니처가 이상하다"가 아니라 "**모듈 경계를 넘을 때 무엇을 계약으로 삼아야 하나**"로 바뀐다.
+아래 3문항만 먼저 보면 `cross-module dto` 판단이 빨라진다.
+
+| 질문 | `예`면 첫 선택 | `아니오`면 |
+|---|---|---|
+| 이 호출이 **같은 모듈 내부 협력**이 아니라, 다른 모듈이 공개 API를 통해 들어오는 요청인가 | module API 계약으로 본다. `Command/Query/Result DTO`를 기본값으로 둔다 | 아직 모듈 내부면 aggregate나 domain object를 그대로 써도 될 가능성이 크다 |
+| 상대 모듈이 원하는 것이 "`이 작업을 해 달라`" 또는 "`이 상태를 알려 달라`"처럼 **의도/조회** 문장으로 말할 수 있나 | `Command DTO` 또는 `Query + Result DTO`로 좁힌다 | 타입이 테이블 patch, entity 복사본, 범용 `Map`처럼 보이면 계약을 다시 자른다 |
+| 지금 넘기려는 타입이 다른 모듈에서도 **같은 의미로 안정적인 작은 불변 값**인가 | `OrderId`, `Money` 같은 value object shared kernel은 예외적으로 건널 수 있다 | aggregate, entity, mutable domain object는 보통 건너지 않는다 |
+
+짧게 외우면 이렇다.
+
+- **모듈 밖이면 DTO를 먼저 의심한다**
+- **의도/조회로 말할 수 있으면 DTO로 자른다**
+- **작은 불변 공통값만 예외다**
+
+리뷰에서 10초 안에 말하려면 이렇게 줄이면 된다.
+
+- "이건 내부 service 협력이 아니라 모듈 공개 계약이네요."
+- "의도를 보내는 요청이니 entity 말고 command가 먼저예요."
+- "이 타입은 공통 value object가 아니라 aggregate라서 경계를 넘기기 무거워요."
 
 ## 먼저: 이 문서에서 말하는 module facade는 뭐예요?
 

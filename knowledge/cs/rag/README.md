@@ -91,6 +91,17 @@ junior-safe reading order는 더 보수적으로 잡는다.
 
 ## 역할 우선 바로가기
 
+먼저 아래 3칸만 고르면 긴 목록이 mixed catalog처럼 보여도 첫 클릭을 덜 잘못 잡는다.
+
+| 지금 상태 | 먼저 고를 shelf | 안전한 다음 한 걸음 |
+|---|---|---|
+| `처음`, `뭐예요`, `what is`, `basics` | `entry shelf` | 루트 `README`나 category `README`의 `survey` / `primer` |
+| `README 역할이 헷갈려요`, `primer vs deep dive` | `helper shelf` | 이 문서나 [Navigation Taxonomy](./navigation-taxonomy.md) |
+| `incident`, `recovery`, `cutover`, `master note`가 먼저 보여요 | `follow-up shelf` 경고 | 먼저 category `README`나 linked `primer bridge`로 한 칸 돌아가기 |
+
+이 문서 아래의 긴 링크 목록은 "읽는 순서"가 아니라 "역할별 찾아가기"다.
+beginner first click은 `entry shelf -> helper shelf -> follow-up shelf` 순서가 아니라, 보통 `entry shelf`에서 끝나거나 필요한 경우에만 `helper shelf`를 잠깐 거친다.
+
 | 질문 | 먼저 볼 문서 | 기대하는 역할 |
 |---|---|---|
 | 이 README가 설명 문서인지, 길찾기 문서인지 헷갈린다 | [Navigation Taxonomy](./navigation-taxonomy.md) | 역할 판별 기준 |
@@ -151,10 +162,16 @@ link hygiene follow-up이 헷갈리면 아래 순서로 시작점을 고른다. 
 6. 필요하면 코드/재료로 보강
 7. 인용은 가장 가까운 원문으로 고정
 
-## 바로 읽을 문서
+## 바로 읽을 문서 (`starter set` -> `follow-up shelf`)
 
-- [CS Root README](../README.md) - 저장소 전체 meta navigator와 role-first quick routes
-- [Navigation Taxonomy](./navigation-taxonomy.md) - README 역할 경계, root snapshot heading normalization, incident badge vocabulary, mixed incident catalog의 `[deep dive]` cue 기준, audit checklist, role alias 힌트, database / network routing summary와 cross-category bridge handoff 예시, security `Identity / Delegation / Lifecycle` -> database `Identity / Authority Transfer 브리지` -> system-design `Database / Security Authority Bridge` -> `Verification / Shadowing / Authority Bridge` 같은 cross-README route-name parity
+먼저 읽는 순서를 짧게 고정하면 아래와 같다.
+
+- `starter set`: [CS Root README](../README.md) -> category `README` -> linked `primer`
+- `helper shelf`: [Navigation Taxonomy](./navigation-taxonomy.md), [Query Playbook](./query-playbook.md)
+- `follow-up shelf`: cross-category bridge, metadata lint, retrieval QA 문서들
+
+- [`starter set`] [CS Root README](../README.md) - 저장소 전체 meta navigator와 role-first quick routes
+- [`helper shelf`] [Navigation Taxonomy](./navigation-taxonomy.md) - README 역할 경계, root snapshot heading normalization, incident badge vocabulary, mixed incident catalog의 `[deep dive]` cue 기준, audit checklist, role alias 힌트, database / network routing summary와 cross-category bridge handoff 예시, security `Identity / Delegation / Lifecycle` -> database `Identity / Authority Transfer 브리지` -> system-design `Database / Security Authority Bridge` -> `Verification / Shadowing / Authority Bridge` 같은 cross-README route-name parity
 - [Chunking and Metadata](./chunking-and-metadata.md) - section chunking, `linked_paths`, 그리고 repo-local `img/`·`code/` 또는 local HTML asset form이 들어간 chunk에서 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md) route를 같이 남기는 기준
 - [Source Priority and Citation](./source-priority-and-citation.md) - 1차/2차/3차 source 우선순위와 `img/`·`code/`·local HTML asset evidence를 인용하기 전에 [Auxiliary Asset Filename Audit](./auxiliary-asset-filename-audit.md)으로 path QA를 먼저 고정하는 기준
 - [Topic Map](./topic-map.md) - category cluster label과 stale read / transaction isolation / `@Transactional` / client disconnect / auth-outage / login loop / JWKS outage / revoke lag / stale authz cache / authority transfer symptom alias, 특히 login-loop/auth-outage를 `SavedRequest` primer -> browser `401` vs `302` follow-up -> spring deep dive 순서로 고정한 beginner-first safe next-step ladder, authority alias(`SCIM disable but still access`, `deprovision tail`, `backfill is green but access tail remains`)를 표에서 바로 `[primer] Identity Lifecycle / Provisioning Primer`로 연결한 direct starter link, security README의 `Incident / Recovery / Trust` / `Browser / Session Troubleshooting Path` / `Session / Boundary / Replay` / `Identity / Delegation / Lifecycle` / `AuthZ / Tenant / Response Contracts` route label, authority route를 `cross-category bridge -> system design -> deep dive`로 시작하고 `master note`는 scope 확장 시에만 붙이는 beginner-safe label path, `database ↔ spring` transaction ladder, LIS/subsequence vs subarray/subwindow/binary-search adjacency를 같이 본다

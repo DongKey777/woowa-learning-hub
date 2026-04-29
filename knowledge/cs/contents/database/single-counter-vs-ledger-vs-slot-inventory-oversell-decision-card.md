@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Lost Update vs Oversell vs Duplicate Insert Beginner Bridge](./lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md)
+- [Single Counter Oversell First-Fix Card](./single-counter-oversell-first-fix-card.md)
 - [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
 - [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
 - [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md)
@@ -123,6 +124,7 @@ slot inventory는 애매한 시간 범위를 작은 exact key 집합으로 바�
 ## 더 깊이 가려면
 
 - oversell이 lost update인지부터 헷갈리면 [Lost Update vs Oversell vs Duplicate Insert Beginner Bridge](./lost-update-vs-oversell-vs-duplicate-insert-beginner-bridge.md)
+- single counter에서 조건부 `UPDATE`, version CAS, `FOR UPDATE` 중 첫 선택이 헷갈리면 [Single Counter Oversell First-Fix Card](./single-counter-oversell-first-fix-card.md)
 - exact key, slot row, guard row 중 충돌 surface를 고르려면 [UNIQUE vs Slot Row vs Guard Row 빠른 선택 가이드](./unique-vs-slot-row-vs-guard-row-quick-chooser.md)
 - multi-day booking에서 guard row key를 어떻게 잡는지 보려면 [Guard-Row Scope Design for Multi-Day Bookings](./guard-row-scope-design-multi-day-bookings.md)
 - pooled inventory + ledger + later assignment를 함께 보려면 [Shared-Pool Guard Design for Room-Type Inventory](./shared-pool-guard-design-room-type-inventory.md)

@@ -7,7 +7,7 @@
 
 ## 시작점 한 줄 분기
 
-- "`문자열 비교가 왜 안 돼요`, `String 같은데 왜 false예요`처럼 equality 증상부터 막히면" [Java Equality and Identity Basics](./java-equality-identity-basics.md)에서 `==`/`equals()` route를 먼저 탄다
+- "`같은 객체예요, 같은 값이에요?`, `String 같은데 왜 false예요`처럼 같은 객체 vs 같은 값 증상부터 막히면" [Java Equality and Identity Basics](./java-equality-identity-basics.md)에서 `==`/`equals()` route를 먼저 탄다
 
 ## 컬렉션 빠른 탐색
 
@@ -42,6 +42,7 @@
 
 - "`floor`/`ceiling`/`lower`/`higher`가 자꾸 섞인다"면 [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - "`ordered map에서 왜 null이 나오는지`를 경계 예제로 먼저 붙이고 싶다"면 [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
+- "`exact match인데 ceiling은 자기 자신이고 higher는 왜 다음 key로 가죠?`가 헷갈린다"면 [`ceiling` vs `higher` Exact Match 미니 드릴](./ceiling-vs-higher-exact-match-mini-drill.md)
 - "`subMap`/`headMap` 경계 포함 여부가 헷갈린다"면 [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 - "`HashMap`과 `TreeMap`의 조회/덮어쓰기 기준 차이`를 더 짧게 다시 보고 싶다"면 [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
 

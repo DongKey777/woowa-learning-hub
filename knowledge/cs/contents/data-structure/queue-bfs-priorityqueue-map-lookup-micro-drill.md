@@ -9,12 +9,13 @@
 - [자료구조 카테고리 인덱스](./README.md)
 - [큐 기초](./queue-basics.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드](./bfs-zero-one-bfs-dijkstra-one-line-classification-card.md)
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [알고리즘 카테고리 인덱스](../algorithm/README.md)
 
-retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue bfs difference beginner, bfs queue 헷갈림, priority queue 언제 써요, map lookup 뭐예요, one line problem classification, 자료구조 처음 분류, queue bfs priority queue map drill, what is map lookup, why is this bfs not queue, closest first bfs, earliest first priority queue, key lookup basics, beginner self check card, 처음 queue bfs 헷갈림
+retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue bfs difference beginner, bfs queue 헷갈림, priority queue 언제 써요, map lookup 뭐예요, one line problem classification, 자료구조 처음 분류, queue bfs priority queue map drill, what is map lookup, why is this bfs not queue, closest first bfs, earliest first priority queue, key lookup basics, shortest path handoff, bfs dijkstra 어디로 넘어가요
 
 ## 핵심 개념
 
@@ -65,10 +66,35 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 | `priority queue` | 도착 순서보다 우선순위 key가 먼저다 |
 | `map lookup` | 순서보다 `key -> value` 조회가 핵심이다 |
 
+## BFS 다음 갈림길: shortest-path handoff
+
+여기서 learner가 자주 멈추는 지점은 `BFS인 건 알겠는데, 최단 경로라고 하면 다 BFS인가요?`다.
+
+이때는 `BFS`라는 이름을 그대로 붙잡지 말고, 질문을 한 번 더 자르면 된다.
+
+| 지금 읽은 문장 | 다음 질문 | 이어질 첫 선택 |
+|---|---|---|
+| `미로에서 최소 몇 칸인가?` | `이동 1번 = 비용 1번`처럼 같은가? | `BFS` |
+| `순간이동은 0초, 걷기는 1초다` | 비용이 `0/1`뿐인가? | `0-1 BFS` |
+| `도로마다 요금이 다르다` | 비용이 `2, 5, 17`처럼 일반 숫자인가? | `Dijkstra` |
+
+짧게 연결하면 이렇게 외우면 된다.
+
+> `가까운 칸부터`까지 보이면 먼저 BFS로 읽고, 그다음 `비용이 모두 같은가 / 0과 1뿐인가 / 일반 숫자인가`를 확인한다.
+
+여기서 `queue`, `deque`, `priority queue`는 정답 이름이 아니라 힌트다.
+
+- 같은 이동 비용이면 `queue`로 퍼지는 BFS
+- 비용이 `0/1`뿐이면 `deque`로 다루는 0-1 BFS
+- 일반 비용 합이면 `priority queue`를 쓰는 Dijkstra
+
+비유로 보면 `BFS`는 같은 층을 한 줄씩 도는 느낌이지만, 이 비유는 비용이 서로 달라지는 순간부터는 더 이상 맞지 않는다.
+
 ## 흔한 오해와 함정
 
 - `BFS도 queue를 쓰니까 queue가 정답이다` -> 반만 맞다. 구현 도구는 queue지만, 문제 분류는 `BFS`가 먼저다.
 - `priority queue도 queue니까 FIFO와 비슷하다` -> 아니다. 먼저 꺼내는 기준이 도착 순서가 아니라 우선순위다.
+- `최단 경로라고 쓰여 있으면 BFS부터 고르면 된다` -> 아니다. `최단` 앞에 붙는 것이 `이동 횟수`인지 `비용 합`인지 먼저 봐야 한다.
 - `map`은 그냥 저장소라서 분류 대상이 아니다` -> 아니다. `key로 바로 찾기`가 핵심이면 map lookup 문제가 맞다.
 - `queue`와 `map`은 둘 중 하나만 나온다` -> 아니다. 예를 들어 BFS는 `queue + visited map/set`으로 함께 간다.
 
@@ -76,6 +102,7 @@ retrieval-anchor-keywords: queue vs bfs vs priority queue vs map lookup, queue b
 
 - `queue`와 `priority queue`를 더 또렷하게 나누고 싶다면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - `queue`와 `BFS`가 계속 섞이면 [큐 기초](./queue-basics.md) 다음 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- `BFS 다음에 0-1 BFS와 Dijkstra로 언제 갈라지는지`까지 바로 이어 보고 싶다면 [BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드](./bfs-zero-one-bfs-dijkstra-one-line-classification-card.md)
 - `map lookup`과 ordered map 선택까지 이어 보고 싶다면 [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 
 ## 한 줄 정리

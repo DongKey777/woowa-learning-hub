@@ -1,17 +1,32 @@
 # 프로세스와 스레드 기초
 
 > 한 줄 요약: 프로세스는 독립된 메모리 공간과 자원을 가진 실행 단위이고, 스레드는 같은 프로세스 안에서 메모리를 공유하며 동시에 실행되는 더 가벼운 흐름이다.
+>
+> 문서 역할: 이 문서는 operating-system 카테고리에서 "`프로세스`와 `스레드`가 뭐예요?", "`둘 차이`가 뭐예요?", "`언제 프로세스를 나누고 언제 스레드를 늘려요?`" 같은 첫 질문을 먼저 받는 beginner primer다. `stack`, `heap`, `virtual memory`, `context switch`까지 한꺼번에 섞이면 [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)로 이어진다.
 
 **난이도: 🟢 Beginner**
 
 관련 문서:
 
+- [Beginner Symptom-to-Doc Map](./beginner-symptom-to-doc-map.md)
 - [컨텍스트 스위칭, 데드락, lock-free](./context-switching-deadlock-lockfree.md)
 - [Linux Process State, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
 - [operating-system 카테고리 인덱스](./README.md)
+- [Spring WebFlux vs MVC](../spring/spring-webflux-vs-mvc.md)
 - [Java Thread Basics](../language/java/java-thread-basics.md)
 
-retrieval-anchor-keywords: 프로세스 스레드 차이, process thread difference, 프로세스란 뭐예요, 스레드란 뭐예요, process beginner, thread beginner, 멀티스레드 기초, 프로세스 메모리 공간, 스레드 공유 메모리, process vs thread intro, process thread self check, 프로세스 스레드 자가 점검, 프로세스 스레드 다음 문서 추천, process thread branch question, 프로세스 스레드 분기 질문
+retrieval-anchor-keywords: 프로세스 스레드 차이, process thread difference, 프로세스란 뭐예요, 스레드란 뭐예요, process beginner, thread beginner, 멀티스레드 기초, 프로세스 메모리 공간, 스레드 공유 메모리, 처음 배우는데 프로세스 스레드 차이, 프로세스 스레드 뭐가 달라요, 프로세스랑 스레드 언제 써요, 프로세스 스레드 헷갈려요, process vs thread basics, what is process vs thread
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 **첫 질문이 process/thread 비교 자체**일 때 먼저 읽는 primer다.
+
+- "`프로세스`가 뭐예요? 프로그램이랑 같은 말인가요?"
+- "`스레드`가 뭐예요? 프로세스 안에 왜 또 있죠?"
+- "`프로세스`와 `스레드` 차이가 뭐예요?"
+- "`언제 프로세스를 나누고 언제 스레드를 늘려요?`"
+
+반대로 "`stack`/`heap`/`virtual memory`/`context switch`까지 한 번에 헷갈린다"면 이 문서 하나보다 [Process, Thread, Virtual Memory, Context Switch, Scheduler Basics](./process-thread-virtual-memory-context-switch-scheduler-basics.md)에서 큰 그림을 먼저 다시 묶는 편이 안전하다.
 
 ## 먼저 잡는 멘탈 모델
 
@@ -71,6 +86,8 @@ retrieval-anchor-keywords: 프로세스 스레드 차이, process thread differe
 가장 흔한 시나리오는 **웹 서버의 요청 처리**다. Tomcat 같은 서블릿 컨테이너는 하나의 JVM 프로세스 안에서 요청마다 스레드를 하나씩 배정한다. 스레드가 힙의 서비스 빈을 공유하기 때문에 빠르게 응답할 수 있지만, 스레드 안전성을 보장하지 않으면 공유 데이터가 꼬인다.
 
 또 다른 시나리오는 **멀티프로세스 격리**다. Nginx는 마스터 프로세스가 워커 프로세스를 여러 개 띄운다. 워커 하나가 죽어도 다른 워커와 마스터는 살아 있다.
+
+Spring에서 왜 `thread-per-request`와 event loop가 다른지 바로 붙여 보고 싶다면 [Spring WebFlux vs MVC](../spring/spring-webflux-vs-mvc.md)를 같이 보면 "같은 백엔드 서버" 안에서도 프로세스/스레드 모델을 어떻게 체감하는지 연결하기 쉽다.
 
 ## 여기까지 이해했으면 다음 deep-dive
 

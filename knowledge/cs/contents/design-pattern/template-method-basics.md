@@ -20,7 +20,7 @@
 - [프레임워크 안의 템플릿 메소드: Servlet, Filter, Test Lifecycle](./template-method-framework-lifecycle-examples.md)
 - [템플릿 메소드 (Template Method) 심화](./template-method.md)
 
-retrieval-anchor-keywords: template method basics, template method beginner, template method big picture, template method when to use beginner, report template pattern, export report template, 보고서 내보내기 템플릿, 리포트 템플릿, hook method beginner, abstract step beginner, template method vs strategy beginner, 처음 배우는데 템플릿 메소드, 처음 배우는데 템플릿 메소드 언제 쓰는지, 템플릿 메소드 기초, 추상 클래스면 다 템플릿 메소드인가요
+retrieval-anchor-keywords: template method basics, template method beginner, template method big picture, template method when to use beginner, report template pattern, export report template, 보고서 내보내기 템플릿, 리포트 템플릿, hook method beginner, abstract step beginner, template method vs strategy beginner, 처음 배우는데 템플릿 메소드, 템플릿 메소드 기초, 추상 클래스면 다 템플릿 메소드인가요, 추상 클래스 보이면 template method 인가요
 
 ---
 
@@ -79,6 +79,16 @@ retrieval-anchor-keywords: template method basics, template method beginner, tem
 |---|---|
 | 부모가 순서 메서드를 직접 실행하는가 | 예 |
 | 자식이 오버라이드하는 지점이 흐름 내부 슬롯인가 | 예 |
+
+### 반례를 같이 보면 더 빨리 안 헷갈린다
+
+| 코드 모양 | 템플릿 메소드 여부 | 이유 |
+|---|---|---|
+| `AbstractRepository`에 공통 로그 메서드와 `protected connection()`만 있다 | 아니다 | 공통 기반 클래스일 뿐, 부모가 고정 흐름을 실행하지 않는다 |
+| `AbstractReport.export()`가 `validate -> format -> save`를 직접 돌린다 | 맞다 | 부모가 순서를 고정하고 자식은 단계만 채운다 |
+| `CheckoutService`가 `DiscountStrategy`를 주입받는다 | 아니다 | 핵심은 상속이 아니라 호출자가 규칙 객체를 고르는 구조다 |
+
+그래서 beginner 기준으로는 `추상 클래스가 있나?`보다 `부모가 순서를 실행하나?`, `규칙을 밖에서 갈아끼우나?`를 먼저 보면 된다.
 
 ## hook 과 abstract step
 

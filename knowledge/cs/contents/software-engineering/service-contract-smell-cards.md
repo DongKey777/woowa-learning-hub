@@ -1,6 +1,6 @@
 # Service Contract Smell Cards
 
-> 한 줄 요약: service 메서드 시그니처에 `ResponseEntity`, `Pageable`, `MultipartFile`, `OrderEntity` 같은 타입이 보이면 "유스케이스 계약" 대신 웹/프레임워크/영속 세부가 새고 있는지 먼저 의심하면 된다.
+> 한 줄 요약: "`구조는 맞는데 계약이 샌다`", "`service 시그니처에 `ResponseEntity`, `Pageable`, `MultipartFile`, `OrderEntity`가 보여요`"처럼 읽힐 때, service 메서드가 유스케이스 계약 대신 웹/프레임워크/영속 세부를 말하고 있는지 먼저 점검하는 문서다.
 
 **난이도: 🟢 Beginner**
 

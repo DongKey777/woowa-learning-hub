@@ -8,17 +8,14 @@
 
 관련 문서:
 
+- [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](./spring-ioc-di-basics.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md)
+- [Spring DI 예외 빠른 판별](./spring-di-exception-quick-triage.md)
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md)
 - [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)
-- [Spring Boot 자동 구성 (Auto-configuration)](./spring-boot-autoconfiguration.md)
-- [Spring Bean Definition Overriding Semantics](./spring-bean-definition-overriding-semantics.md)
-- [Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드](./spring-primary-qualifier-collection-injection-decision-guide.md)
-- [Spring DI 예외 빠른 판별](./spring-di-exception-quick-triage.md)
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
-- [팩토리 패턴 기초](../design-pattern/factory-basics.md)
 
 retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배우는데 bean 이 뭐예요, spring bean 큰 그림, component scan 뭐예요, component scan 처음, bean 이랑 di 차이 헷갈려요, bean registration vs dependency injection, controller service repository 누가 연결해요, controller service repository 뭐예요, 왜 new 대신 주입받아요, spring bean 언제 만들어져요, configuration vs bean registration, beginner spring bean, spring 객체를 누가 연결해요
 
@@ -40,7 +37,7 @@ retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배
 | "`DI`가 된다" | 등록된 후보 중 맞는 객체를 연결한다 | 이 문서 |
 | "`@Transactional`이 붙는다" | 이미 만들어진 Bean 호출 앞뒤를 프록시가 감싼다 | [@Transactional 기초](./spring-transactional-basics.md) |
 
-짧게 외우면 `scan은 찾기`, `DI는 연결`, `proxy는 감싸기`다. 이 세 단계를 섞지 않으면 "`bean`이랑 `@Transactional`이 같은 건가요?" 같은 beginner 혼동이 훨씬 줄어든다.
+짧게 외우면 `scan은 찾기`, `DI는 연결`, `proxy는 감싸기`다. 이 문서에서는 앞의 두 칸만 먼저 끝내고, proxy 세부는 [@Transactional 기초](./spring-transactional-basics.md)나 [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)로 넘긴다.
 
 ## 이 문서가 먼저 잡아야 하는 질문
 
@@ -85,18 +82,15 @@ Spring 입문 초반에는 아래 다섯 개만 먼저 구분하면 된다.
 
 ```text
 @SpringBootApplication 시작
--> component scan + configuration + auto-configuration으로 BeanDefinition 등록
+-> component scan + configuration으로 Bean 후보 등록
 -> 컨테이너가 의존성 후보를 찾음
--> Bean 생성자 호출
--> 의존성 주입
--> 초기화 콜백 실행
--> 필요한 Bean은 프록시로 감쌈
+-> 생성자 호출과 의존성 주입
 -> 애플리케이션이 Bean 사용
 ```
 
 처음에는 아래 순서만 머리에 남겨 두면 충분하다.
 
-**등록 -> 주입 -> 초기화 -> 프록시 -> 사용**
+**등록 -> 주입 -> 사용**
 
 beginner 검색 질문을 이 흐름에 붙이면 더 덜 헷갈린다.
 
@@ -105,7 +99,7 @@ beginner 검색 질문을 이 흐름에 붙이면 더 덜 헷갈린다.
 | "`bean`이 언제 만들어져요?" | 등록 / 주입 | 보통 앱 시작 때 컨테이너가 먼저 준비한다 |
 | "`component scan`이 뭐예요?" | 등록 | stereotype이 붙은 후보를 찾아 Bean 설계도를 올리는 단계다 |
 | "`DI`가 뭐예요?" | 주입 | 등록된 후보 중 맞는 의존성을 연결하는 단계다 |
-| "`왜 transactional이 안 먹어요?`" | 프록시 | Bean은 있어도 프록시 경계를 우회했을 수 있다 |
+| "`왜 transactional이 안 먹어요?`" | 프록시 | 이 문서보다 [@Transactional 기초](./spring-transactional-basics.md)로 가는 신호다 |
 
 처음 배우는 단계에서는 이 다섯 단어를 아래처럼 대응시키면 덜 헷갈린다.
 
@@ -113,8 +107,8 @@ beginner 검색 질문을 이 흐름에 붙이면 더 덜 헷갈린다.
 |---|---|---|
 | "bean 등록" | 컨테이너가 객체 설계도와 생성 규칙을 올린다 | 이 객체는 scan으로 찾았나, `@Bean`으로 만들었나 |
 | "DI" | 등록된 후보 중 맞는 의존성을 연결한다 | 누구를 누구에게 넣었나 |
-| "초기화" | 주입이 끝난 뒤 준비 작업을 한다 | 연결 확인이나 캐시 예열이 필요한가 |
-| "프록시" | 메서드 호출 앞에서 부가기능을 가로챈다 | 트랜잭션/캐시/보안이 왜 붙었나 |
+| "초기화" | 주입이 끝난 뒤 준비 작업을 한다 | 지금 문서보다 lifecycle follow-up이 필요한가 |
+| "프록시" | 메서드 호출 앞에서 부가기능을 가로챈다 | 트랜잭션/보안이 왜 붙었나 |
 | "사용" | 컨트롤러, 서비스, 스케줄러가 Bean을 호출한다 | 지금 문제는 요청 길찾기인가, 객체 조립인가 |
 
 ---

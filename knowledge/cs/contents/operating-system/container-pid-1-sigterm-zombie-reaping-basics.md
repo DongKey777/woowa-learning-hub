@@ -14,7 +14,7 @@
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 
-retrieval-anchor-keywords: container pid 1 sigterm zombie reaping basics basics, container pid 1 sigterm zombie reaping basics beginner, container pid 1 sigterm zombie reaping basics intro, operating system basics, beginner operating system, 처음 배우는데 container pid 1 sigterm zombie reaping basics, container pid 1 sigterm zombie reaping basics 입문, container pid 1 sigterm zombie reaping basics 기초, what is container pid 1 sigterm zombie reaping basics, how to container pid 1 sigterm zombie reaping basics
+retrieval-anchor-keywords: container pid 1 뭐예요, docker pid 1 뭐예요, docker stop 왜 안 꺼져요, 컨테이너 sigterm 왜 못 받아요, 컨테이너 좀비 프로세스, zombie reaping basics, shell form cmd 왜 문제, exec form cmd 왜 써요, entrypoint exec 큰 그림, pid 1 signal forwarding, waitpid container basics, 처음 배우는데 docker pid 1 헷갈려요, 컨테이너 종료 큰 그림, beginner operating system, container shutdown primer
 > 관련 문서:
 > - [Process Lifecycle and IPC Basics](./process-lifecycle-and-ipc-basics.md)
 > - [Linux Process State Machine, Zombie, Orphan](./linux-process-state-zombie-orphan.md)
@@ -24,7 +24,7 @@ retrieval-anchor-keywords: container pid 1 sigterm zombie reaping basics basics,
 > - [Wrapper `exec` Handoff Timeline](./wrapper-exec-handoff-timeline.md)
 > - [Subprocess FD Hygiene Basics](./subprocess-fd-hygiene-basics.md)
 
-> retrieval-anchor-keywords: PID 1 container basics, container PID 1, docker PID 1, container SIGTERM, docker stop SIGTERM, graceful shutdown in container, zombie reaping basics, container zombie reaping, child reaping expectation, waitpid container, SIGCHLD container, shell form CMD, exec form CMD, exec entrypoint, entrypoint exec, init wrapper, tini, dumb-init, PID 1 signal forwarding, orphan adoption in container, 컨테이너 PID 1, 컨테이너 SIGTERM, 좀비 회수, 시그널 전달
+> retrieval-anchor-keywords: PID 1 container basics, container PID 1, docker PID 1, container SIGTERM, docker stop SIGTERM, graceful shutdown in container, zombie reaping basics, container zombie reaping, child reaping expectation, waitpid container, SIGCHLD container, shell form CMD, exec form CMD, exec entrypoint, entrypoint exec, init wrapper, tini, dumb-init, PID 1 signal forwarding, orphan adoption in container, 컨테이너 PID 1, 컨테이너 SIGTERM, 좀비 회수, 시그널 전달, docker stop timeout, 컨테이너가 안 꺼져요, pid 1 헷갈려요, entrypoint shell wrapper
 
 ## 핵심 개념
 

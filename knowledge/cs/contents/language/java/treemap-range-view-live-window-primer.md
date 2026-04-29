@@ -44,6 +44,7 @@ retrieval-anchor-keywords: language-java-00117, treemap range view live window, 
 | backing data가 원본과 같은가 | 예 | 아니오 |
 | 원본 수정이 반영되는가 | 예 | 아니오 |
 | view 수정이 원본에 반영되는가 | 예 | 아니오 |
+| 범위에 맞는 key가 하나도 없을 때 | 비어 있는 view가 된다 | 비어 있는 복사본이 될 수 있다 |
 | 범위 밖 key를 넣을 수 있는가 | 아니오 | 복사본이면 가능 |
 
 짧게 줄이면:
@@ -97,6 +98,18 @@ System.out.println(window); // {20=C, 25=C+}
 
 > `TreeMap` range API는 전부 "구간 복사"보다 "구간 view"로 읽는 편이 안전하다.
 
+그리고 "결과가 비었다"는 것도 view 성질 안에서 읽어야 한다.
+
+```java
+System.out.println(grades.headMap(10));              // {}
+System.out.println(grades.tailMap(40, false));       // {}
+System.out.println(grades.subMap(20, false, 30, false)); // {}
+```
+
+- 셋 다 `null`이 아니라 **비어 있는 live view**다
+- "`30`을 제외했다"는 말은 null 처리 규칙이 아니라 경계 exact match를 창에서 빼는 뜻이다
+- 그래서 empty result와 `Map.get()`의 `null` 의미를 섞어 읽지 않는 편이 안전하다
+
 ## 초급자용 주의점 3가지
 
 ### 1. 결과를 새 map으로 착각하지 말기
@@ -125,6 +138,11 @@ view는 "아무 key나 받는 작은 map"이 아니다. 자기 범위 규칙을 
 
 - view는 연결돼 있지만
 - **허용 범위도 같이 들고 있는 창**이다
+
+여기서 막히는 오해도 하나 더 있다.
+
+- 실패 이유는 "null을 못 넣어서"가 아니라 "그 key가 이 view 범위 밖이라서"다
+- 즉 range 제약과 null 허용 정책은 별개로 읽어야 한다
 
 ### 3. 순회 중 수정은 여전히 조심하기
 

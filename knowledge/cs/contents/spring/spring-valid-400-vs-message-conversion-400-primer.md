@@ -1,6 +1,6 @@
 # Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer
 
-> 한 줄 요약: `@Valid`는 DTO 바인딩이 끝난 뒤에만 탈 수 있으므로, 같은 `400 Bad Request`라도 먼저 DTO를 못 만든 **DTO 변환 실패**인지 DTO를 만든 뒤 규칙을 어긴 **validation 실패**인지부터 갈라야 한다.
+> 한 줄 요약: "`왜 @Valid 안 타요?`", "`같은 400인데 뭐가 다른가요?`", "`@NotBlank가 왜 안 먹어요?`" 같은 검색형 증상은 `@Valid`가 DTO 바인딩 뒤에만 돈다는 사실로 풀린다. 먼저 DTO를 못 만든 **DTO 변환 실패**인지 DTO를 만든 뒤 규칙을 어긴 **validation 실패**인지부터 가른다.
 
 **난이도: 🟢 Beginner**
 
@@ -35,15 +35,17 @@
 | "`date` 형식이 틀렸어요", "`enum`/숫자 변환이 안 돼요" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) |
 | "`DTO는 만들어진 것 같은데 `@NotBlank`/`@Positive`에서 막혀요`" | 이 문서 계속 읽기 |
 
-retrieval-anchor-keywords: 왜 @valid 안 타요, @valid 언제 타요, @notblank 왜 안 먹어요, spring binding failure vs validation failure, spring 400 first branch beginner, methodargumentnotvalidexception beginner, httpmessagenotreadableexception beginner, 같은 400인데 뭐가 다른가요, dto 변환 실패 vs validation 실패, binding 실패면 @valid 안 타요, validation message not blank beginner, json parse error 400 spring, 날짜 형식 틀리면 @valid 안 타요, requestbody 400 primer reverse link, roomescape admin 400 primer
+retrieval-anchor-keywords: 왜 @valid 안 타요, 같은 400인데 뭐가 다른가요, @notblank가 왜 안 먹어요, @valid 언제 타요, spring binding failure vs validation failure, spring 400 first branch beginner, methodargumentnotvalidexception beginner, httpmessagenotreadableexception beginner, dto 변환 실패 vs validation 실패, binding 실패면 @valid 안 타요, validation message not blank beginner, json parse error 400 spring, 날짜 형식 틀리면 @valid 안 타요, requestbody 400 primer reverse link, roomescape admin 400 primer
 
-## 이 문서가 바로 맞는 질문
+## 질문 그대로 먼저 답하기
 
-README 바인딩 증상표 기준으로는 아래 검색 문장 세트에 바로 답하려는 문서다.
+README 바인딩 follow-up 증상표와 같은 검색 문장 세트에 바로 답하려는 문서다. `@RequestBody 400` primer와 `415` primer에서 쓰는 것과 같은 방식으로, 먼저 학습자가 실제로 말하는 증상 문장을 그대로 붙잡는다.
 
-- "`왜 `@Valid` 안 타요?`"
-- "`같은 `400`인데 뭐가 다른가요?`"
-- "`@NotBlank`가 왜 안 먹어요?`"
+| 학습자가 보통 이렇게 말해요 | 먼저 붙잡을 질문 | 더 가까운 원인 |
+|---|---|---|
+| "`왜 @Valid 안 타요?`" | DTO를 만들기 전에 body 변환에서 먼저 멈춘 건가? | DTO 변환 실패 `400` 가능성 |
+| "`같은 400인데 뭐가 다른가요?`" | DTO를 아예 못 만든 `400`인가, 만든 뒤 규칙을 어긴 `400`인가? | DTO 변환 실패 `400` vs validation `400` 분기 |
+| "`@NotBlank가 왜 안 먹어요?`" | 제약이 고장난 게 아니라 `@Valid`까지 도달했는가? | validation 전 단계에서 끊긴 것일 수 있음 |
 
 처음 분기는 하나만 잡으면 된다.
 
@@ -75,9 +77,9 @@ RoomEscape 관리자 예약 생성 API를 예로 들면, `POST /admin/reservatio
 
 | 내가 지금 하는 말 | 첫 판단 |
 |---|---|
-| "`왜 `@Valid` 안 타요`" | DTO 생성 전에 막혔는지부터 본다 |
-| "`같은 `400`인데 뭐가 달라요`" | DTO 변환 실패 `400`인지 validation `400`인지 먼저 가른다 |
-| "`@NotBlank`가 왜 안 먹어요`" | 제약이 고장난 게 아니라 `@Valid`까지 못 갔는지 먼저 본다 |
+| "`왜 @Valid 안 타요?`" | DTO 생성 전에 막혔는지부터 본다 |
+| "`같은 400인데 뭐가 다른가요?`" | DTO 변환 실패 `400`인지 validation `400`인지 먼저 가른다 |
+| "`@NotBlank가 왜 안 먹어요?`" | 제약이 고장난 게 아니라 `@Valid`까지 못 갔는지 먼저 본다 |
 
 ```text
 HTTP 요청

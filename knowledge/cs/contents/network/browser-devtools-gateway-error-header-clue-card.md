@@ -9,6 +9,7 @@
 - [Browser DevTools `(blocked)` / `canceled` / `(failed)` 입문](./browser-devtools-blocked-canceled-failed-primer.md)
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
+- [Browser DevTools `traceparent` vs `tracestate` 초급 미니 카드](./browser-devtools-traceparent-vs-tracestate-mini-card.md)
 - [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - [DevTools 뒤 `X-Request-Id`는 어디로 가나요? Gateway -> App Log -> Trace Beginner Bridge](./x-request-id-gateway-app-log-trace-beginner-bridge.md)
 - [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
@@ -17,7 +18,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Spring MVC 요청 생명주기 기초](../spring/spring-mvc-request-lifecycle-basics.md)
 
-retrieval-anchor-keywords: server via x-request-id, devtools response header first pass, x-request-id 뭐예요, via 헤더 뭐예요, server 헤더 뭐예요, browser proxy app attribution, gateway error first check, response header who made this, 처음 devtools header, proxy 흔적 헤더, what is x-request-id, application/problem+json beginner, vendor error envelope, server via stronger than json shape, 처음 에러 헤더 볼 때
+retrieval-anchor-keywords: server via x-request-id, devtools response header first pass, x-request-id 뭐예요, via 헤더 뭐예요, server 헤더 뭐예요, browser proxy app attribution, gateway error first check, response header who made this, 처음 devtools header, proxy 흔적 헤더, what is x-request-id, traceparent only no x-request-id, traceparent 처음, application/problem+json beginner, 처음 에러 헤더 볼 때
 
 ## 핵심 개념
 
@@ -37,6 +38,7 @@ retrieval-anchor-keywords: server via x-request-id, devtools response header fir
 | `Server: nginx` 같은 값이 눈에 띈다 | proxy나 web server가 응답을 만든 장면 후보다 | proxy | body가 gateway 기본 HTML인가 |
 | `Via: 1.1 varnish` 같은 값이 있다 | 중간 hop을 거쳤다는 뜻이다 | proxy | 이 응답이 app 원본인지, intermediary가 만든 응답인지 |
 | `X-Request-Id`가 있다 | 적어도 추적용 식별자를 남길 만큼 서버 체인을 탔을 가능성이 크다 | app 또는 gateway | app/log/trace에서 같은 ID를 찾을 수 있는가 |
+| `traceparent`는 있는데 `X-Request-Id`는 없다 | request ID 누락으로 단정하기보다 trace 중심 추적 구성을 먼저 의심한다 | gateway 또는 app tracing chain | tracing UI나 로그의 `traceId` 필드로 같은 요청을 찾을 수 있는가 |
 
 짧게 외우면 이렇게 보면 된다.
 
@@ -51,6 +53,7 @@ X-Request-Id 있음 -> 서버 체인 추적 가능성 먼저
 - "헤더가 비어 있으면 browser 쪽부터"
 - "`Server`/`Via`가 먼저 보이면 proxy 쪽부터"
 - "`X-Request-Id`가 있으면 app/gateway 로그 추적부터"
+- "`traceparent`만 있으면 request ID 누락 단정보다 traceId 추적부터"
 
 ## JSON이어도 헤더가 더 강한 장면
 
@@ -107,6 +110,8 @@ X-Request-Id -> gateway log와 app log 둘 다 대조
 - gateway access log에 같은 ID가 있는지 본다
 - app 로그에 같은 ID가 찍히는지 본다
 - tracing 화면이 있으면 request ID나 연결된 trace를 찾는다
+
+`traceparent`가 있고 `X-Request-Id`가 없으면 한 줄 분기는 이것이면 충분하다: "`request id`가 빠졌다고 단정하지 말고, 이 서비스는 `traceId`를 주 검색 키로 쓰는지부터 본다."
 
 ## 실전 예시 한 장
 

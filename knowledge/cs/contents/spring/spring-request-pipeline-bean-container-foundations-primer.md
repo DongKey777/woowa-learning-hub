@@ -9,6 +9,7 @@
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./spring-bean-di-basics.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
+- [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 - [Spring `404`/`405` vs Bean Wiring Error Confusion Card: 요청 매핑 실패와 DI 예외를 먼저 분리하기](./spring-404-405-vs-bean-wiring-confusion-card.md)
 - [Spring `@Value` vs `@ConfigurationProperties` Env Guide](./spring-value-vs-configurationproperties-env-guide.md)
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
@@ -51,6 +52,7 @@ retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet b
 - `controller`와 `service` 연결은 Bean 컨테이너가 미리 끝낸다.
 - DB 작업 묶음은 보통 service의 `@Transactional` 경계에서 정한다.
 - `302`/`cookie`가 먼저면 network/security 쪽으로, `save()` 다음 SQL이 궁금하면 database 쪽으로 넘긴다.
+- `deadlock`, `timeout`, `observability` 같은 단어가 먼저면 이 primer를 더 파지 말고 관련 follow-up 문서로 넘긴다.
 
 | 지금 막힌 질문 | 이 문서에서 먼저 남길 한 줄 | 다음 한 걸음 |
 |---|---|---|

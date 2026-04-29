@@ -245,6 +245,20 @@
           ],
           "companion_max_rank": 4
         },
+        "beginner_ioc_english_meaning_lockin": {
+          "companion_paths": [
+            "contents/spring/ioc-di-container.md",
+            "contents/software-engineering/dependency-injection-basics.md"
+          ],
+          "companion_max_rank": 4
+        },
+        "beginner_dependency_injection_english_meaning_lockin": {
+          "companion_paths": [
+            "contents/spring/ioc-di-container.md",
+            "contents/software-engineering/dependency-injection-basics.md"
+          ],
+          "companion_max_rank": 4
+        },
         "beginner_beanfactory_vs_applicationcontext_shortform_lockin": {
           "companion_paths": [
             "contents/spring/spring-bean-definition-overriding-semantics.md"
@@ -1209,6 +1223,9 @@
       "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
       "learning_points": [],
       "expected_path": "contents/database/deadlock-case-study.md",
+      "acceptable_paths": [
+        "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md"
+      ],
       "max_rank": 1
     },
     {
@@ -3061,6 +3078,19 @@
       "companion_max_rank": 4
     },
     {
+      "id": "beginner_query_service_korean_role_colloquial_lockin",
+      "prompt": "쿼리 서비스 역할이 뭐야?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        "contents/software-engineering/bulk-helper-ports-vs-query-model-separation.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
       "id": "beginner_query_model_filter_sort_entrypoint_lockin",
       "prompt": "목록 조회에서 필터 정렬은 왜 query model로 빼요? 처음 배우는데",
       "learning_points": [],
@@ -3323,6 +3353,32 @@
     {
       "id": "beginner_dependency_injection_english_shortform_lockin",
       "prompt": "What is dependency injection in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/software-engineering/dependency-injection-basics.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_ioc_english_meaning_lockin",
+      "prompt": "What does IoC mean in Spring?",
+      "learning_points": [],
+      "experience_level": "beginner",
+      "expected_path": "contents/spring/spring-ioc-di-basics.md",
+      "max_rank": 1,
+      "companion_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/software-engineering/dependency-injection-basics.md"
+      ],
+      "companion_max_rank": 4
+    },
+    {
+      "id": "beginner_dependency_injection_english_meaning_lockin",
+      "prompt": "What does dependency injection mean in Spring?",
       "learning_points": [],
       "experience_level": "beginner",
       "expected_path": "contents/spring/spring-ioc-di-basics.md",

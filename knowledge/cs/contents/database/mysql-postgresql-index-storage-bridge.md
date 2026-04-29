@@ -239,7 +239,8 @@ write-heavy table이라면 비교 질문도 조금 달라진다.
 
 - InnoDB에서 PK locality가 왜 중요한지 더 보려면 [Clustered Index Locality](./clustered-index-locality.md)
 - MySQL `Using index`와 PostgreSQL `Index Only Scan` 차이를 plan 관점에서 더 보려면 [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)
-- PostgreSQL에서 update-heavy workload가 왜 index churn으로 번지는지 더 보려면 [HOT UPDATE와 Secondary Index Churn](./hot-update-secondary-index-churn.md)
+- PostgreSQL에서 `fillfactor`, heap page 여유 공간, `HOT update`를 초급 눈높이로 먼저 붙이고 싶다면 [PostgreSQL `HOT update`는 뭐예요?](./postgresql-hot-update-beginner-bridge.md)
+- PostgreSQL에서 update-heavy workload가 왜 secondary index churn으로 번지는지 더 깊게 보려면 [HOT UPDATE와 Secondary Index Churn](./hot-update-secondary-index-churn.md)
 - 인덱스, secondary lookup, `EXPLAIN`의 기본 감각부터 다시 잡으려면 [인덱스 기초 (Index Basics)](./index-basics.md)
 - leaf/page locality를 자료구조 관점에서 더 넓게 보려면 [Hybrid Top-Index / Leaf Layouts](../data-structure/hybrid-top-index-leaf-layouts.md)
 

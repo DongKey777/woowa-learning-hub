@@ -49,6 +49,7 @@ retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mis
 | `Controller / Service / Repository를 어디서 나누죠?` | [Service 계층 기초](./service-layer-basics.md) |
 | `Map/Queue가 먼저 보여서 Service 흐름이 흐려져요` | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
 | `가까운 칸부터`, `최소 이동 횟수`처럼 계산 질문이 보여요 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
+| `controller -> service -> repository`는 읽히는데 이제 `cache`, `queue`, `load balancer`가 왜 필요한지 궁금해요 | [System Design README - Backend Mission -> System Design 안전 handoff](../system-design/README.md#backend-mission---system-design-안전-handoff) |
 
 ## 먼저 잡는 한 줄 멘탈 모델
 

@@ -1,6 +1,6 @@
 # 트랜잭션 기초 (Transaction Basics)
 
-> 한 줄 요약: 트랜잭션은 "여기까지 같이 성공하거나 같이 실패한다"를 정하는 묶음이고, 동시성 충돌 제어와는 먼저 분리해서 봐야 한다.
+> 한 줄 요약: 트랜잭션은 "여기까지 같이 성공하거나 같이 실패한다"를 정하는 묶음이고, 동시성 충돌 제어와는 먼저 분리해서 봐야 한다. `deadlock`, `retry`, `savepoint`는 이 primer의 본문보다 다음 관련 문서 가지에 가깝다.
 
 **난이도: 🟢 Beginner**
 
@@ -49,6 +49,16 @@ retrieval-anchor-keywords: transaction basics, transaction beginner, acid basics
 | "`save()`는 보이는데 SQL은 안 보여요" | 접근 기술 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
 
 입문 목표는 여기서 끝이다. 실패 범위만 분리되면 1차 이해는 충분하다.
+
+## 여기서 바로 깊게 안 가는 이유
+
+초보자 입문에서는 트랜잭션을 "실패 단위"로 먼저 고정해야, 뒤에서 나오는 동시성 문서를 덜 섞어 읽는다.
+
+| 먼저 튀는 단어 | 지금 이 문서에서 할 일 | 관련 문서 |
+|---|---|---|
+| `deadlock`, `lock wait`, `retry` | "동시에 실행될 때 생기는 충돌 follow-up"으로만 분류한다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [락 기초](./lock-basics.md) |
+| `savepoint` | "부분 롤백 세부"라는 것만 확인한다 | [Savepoint Rollback, Lock Retention, and Escalation Edge Cases](./savepoint-lock-retention-edge-cases.md) |
+| `@Transactional` | DB 개념과 Spring 표면 이름을 연결하는 단서로만 본다 | [Spring @Transactional 기초](../spring/spring-transactional-basics.md) |
 
 초보자가 가장 자주 섞는 두 문장을 바로 붙여 보면 차이가 더 선명해진다.
 
@@ -139,6 +149,8 @@ createOrder()
 이 장면에서 "결제 이력 저장에서 예외가 나면 앞의 두 작업도 같이 취소할까?"가 트랜잭션 질문이다.  
 "두 사람이 동시에 마지막 재고를 잡으면 누가 이기나?"는 트랜잭션만으로 끝나지 않고, 격리 수준과 락 문서로 넘어가는 질문이다.
 
+## 초보자 오해 먼저 끊기
+
 주문 생성 코드라면 아래 3줄로 끝낸다.
 
 1. `@Transactional`이 붙은 service 메서드를 찾는다.
@@ -156,6 +168,18 @@ createOrder()
 
 - 트랜잭션은 "같이 되돌릴 범위"를 정한다.
 - "누가 먼저 이기나"는 격리 수준, 락, 제약 조건 문서로 넘긴다.
+
+## 접근 기술이 달라도 경계 질문은 같다
+
+같은 경계를 접근 기술별로 보면 아래처럼 읽을 수 있다.
+
+| 코드 표면 | 초보자용 첫 해석 | 여기서 먼저 답하는 질문 |
+|---|---|---|
+| `@Transactional` + `memberRepository.save(...)` | JPA를 쓰더라도 "여기까지 같이 commit/rollback"이 핵심이다 | 무엇을 같이 성공/실패시킬까? |
+| `@Transactional` + `memberMapper.insert(...)` | MyBatis여도 경계 질문은 같다 | 이 insert와 다음 update를 같이 취소할까? |
+| `connection.setAutoCommit(false)` + `commit()` | JDBC에서 경계를 직접 적어 둔 상태다 | 어느 SQL 묶음이 한 사건인가? |
+
+즉 트랜잭션은 JPA 전용 기능이 아니라, JDBC/JPA/MyBatis 위에 공통으로 얹히는 "실패 범위" 질문이다.
 
 ## 언제 락 이야기까지 가야 하나
 

@@ -2,7 +2,7 @@
 
 > 한 줄 요약: client, app, worker가 각자 재시도를 시작하면 하나의 느린 장애가 여러 겹의 동시 시도로 증폭되고, bounded queue와 load shedding은 그 증폭을 잘라 blast radius를 제한한다.
 
-retrieval-anchor-keywords: retry amplification primer, retry storm containment, client retry, app retry, worker retry, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, retry amplification and backpressure primer basics, retry amplification and backpressure primer beginner
+retrieval-anchor-keywords: retry amplification primer, retry storm containment, client retry, app retry, worker retry, retry budget, bounded queue, queue backlog, queue age limit, load shedding, overload containment, blast radius control, deadline-aware retry, 처음 retry storm 뭐예요, 왜 재시도가 장애를 키워요
 
 **난이도: 🟢 Beginner**
 
@@ -19,6 +19,20 @@ retrieval-anchor-keywords: retry amplification primer, retry storm containment, 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
 ---
+
+## 막히면 여기로 돌아오기: Beginner 3단계 사다리
+
+retry 문서를 읽다가 바로 queue 설계나 outage playbook으로 내려가기 전에, 먼저 `느린 요청 -> 남은 시간 -> 증폭 차단` 사다리를 한 번만 고정하는 편이 안전하다.
+
+| 단계 | 문서 | 지금 확정할 것 |
+|---|---|---|
+| 1. primer | [Request Path Failure Modes Primer](./request-path-failure-modes-primer.md) | cache/queue/app/db 중 어디서 장애가 시작돼 다른 레이어로 번지는지 |
+| 2. primer bridge | [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md) | 첫 시도가 아직 살아 있을 때 새 시도를 열면 왜 겹치는지 |
+| 3. primer bridge | [Retry Amplification and Backpressure Primer](./retry-amplification-and-backpressure-primer.md) | logical request 1개가 여러 attempt로 늘어나는 장면과 bounded queue의 필요성 |
+
+- safe next step: `어떤 기능을 먼저 포기할지`가 궁금하면 [Read-Only and Graceful Degradation Patterns](./read-only-and-graceful-degradation-patterns.md), `queue depth/age watermark와 shed 계약`이 궁금하면 [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md)로 이어간다.
+- cross-category bridge: `retry/backoff/jitter` HTTP 호출 규칙을 먼저 보고 싶다면 [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md), queue의 기본 역할이 먼저 헷갈리면 [메시지 큐 기초](./message-queue-basics.md)를 짧게 보고 다시 이 문서로 돌아온다.
+- stop rule: 아직 `같은 logical request가 몇 개 attempt로 번졌는지` 계산이 안 되면 job queue, idempotency store, recovery deep dive로 바로 내려가지 않는다.
 
 ## 핵심 개념
 
@@ -47,6 +61,15 @@ logical request 1개
 
 1. retry amplification은 partial failure를 outage로 키우는 대표 메커니즘이다.
 2. bounded queue, retry budget, load shedding은 그 증폭을 끊는 containment 장치다.
+
+처음 읽는다면 아래 그림으로 충분하다.
+
+| 질문 | 초보자용 답 |
+|---|---|
+| retry amplification이 뭐예요? | 요청 1개가 시도 여러 개로 불어나는 것 |
+| 왜 위험해요? | 첫 시도가 아직 살아 있는데 새 시도가 겹쳐 같은 장애를 더 누른다 |
+| backpressure는 뭐예요? | 지금 더 받으면 핵심 경로까지 죽는다고 보고 속도를 줄이거나 거절하는 것 |
+| bounded queue는 왜 써요? | 나중에 처리해도 의미 없는 일을 무한히 쌓지 않기 위해서 |
 
 ---
 
@@ -103,6 +126,7 @@ logical request 1개
 ### 3. bounded queue가 왜 중요한가
 
 queue는 burst를 흡수하는 도구지만, 무한 버퍼가 되면 장애 증폭기가 된다.
+다만 모든 시스템이 같은 임계치를 쓰는 것은 아니다. `max_depth`, `max_age`, shed 정책은 제품 가치와 복구 목표에 따라 달라진다.
 
 unbounded queue의 문제:
 
@@ -175,6 +199,15 @@ fail-fast on low-value work
 3. idempotency가 없는 write는 retry보다 recover-first를 우선한다.
 4. worker는 "언젠가 성공하겠지" 대신 max attempts와 DLQ를 명시한다.
 
+## 흔한 헷갈림
+
+- "`retry를 끄면 더 안전한가요?`"라고 묻기 쉽다.
+  - 아니다. 짧은 네트워크 흔들림에는 제한된 retry가 유용할 수 있다. 문제는 owner 없이 여러 레이어가 동시에 retry하는 경우다.
+- `queue가 있으니 일단 다 받아 두자`고 생각하기 쉽다.
+  - 위험하다. deadline이 지난 work까지 쌓이면 복구 뒤에도 tail latency와 backlog가 길어진다.
+- `load shedding`을 실패 숨기기로 오해하기 쉽다.
+  - 실제 목적은 저가치 작업을 먼저 포기해 로그인, 결제 같은 핵심 경로를 살리는 것이다.
+
 ### 6. queue는 depth만이 아니라 age로도 잘라야 한다
 
 queue depth만 보면 "많이 쌓였는가"만 보게 된다.
@@ -243,6 +276,19 @@ retry storm 때는 HTTP request count만 보면 착시가 생긴다.
 - 남은 budget이 작으면 DB fallback을 시작하지 않는다
 - 추천/집계는 shed한다
 - queue 기반 후처리는 bounded queue로 제한한다
+
+## 여기서 다음으로 갈 것
+
+처음이면 이 문서에서 "`왜 재시도가 장애를 키우는지`"까지만 잡으면 충분하다. 다음 질문이 생길 때만 아래로 내려가면 된다.
+
+| 지금 질문 | 다음 문서 | 이유 |
+|---|---|---|
+| "`timeout budget이랑 같이 보면 어떤 순서로 끊어야 해요?`" | [Request Deadline and Timeout Budget Primer](./request-deadline-timeout-budget-primer.md) | retry 전에 남은 시간을 먼저 보는 감각을 붙인다 |
+| "`queue에서 뭘 버리고 뭘 살리죠?`" | [Backpressure and Load Shedding 설계](./backpressure-and-load-shedding-design.md) | watermark, shed 계약을 더 구체화한다 |
+| "`중복 실행을 완전히 막으려면요?`" | [Idempotency Key Store / Dedup Window / Replay-Safe Retry](./idempotency-key-store-dedup-window-replay-safe-retry-design.md) | retry를 허용해도 부작용을 줄이는 저장소 설계로 이어진다 |
+
+이 시나리오는 beginner 기준으로 `Request Path Failure Modes Primer -> Request Deadline and Timeout Budget Primer -> Retry Amplification and Backpressure Primer` 사다리를 그대로 다시 보여 준다.
+처음 읽는 단계라면 여기서 `왜 DB가 맞는가`, `왜 남은 budget 없이 retry하면 겹치는가`까지만 설명할 수 있으면 충분하다.
 
 ### 시나리오 2: webhook provider outage가 worker storm를 만든다
 

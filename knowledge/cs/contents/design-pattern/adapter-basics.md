@@ -6,15 +6,27 @@
 
 관련 문서:
 
+- [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)
+- [Ports and Adapters vs GoF 패턴: 경계에서 책임을 자르는 법](./ports-and-adapters-vs-classic-patterns.md)
 - [Adapter (어댑터) — 심화](./adapter.md)
 - [Adapter Chaining Smells](./adapter-chaining-smells.md)
 - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [소프트웨어 공학 카테고리 인덱스](../software-engineering/README.md)
 
-retrieval-anchor-keywords: adapter pattern basics, 어댑터 패턴, adapter pattern beginner, 인터페이스 변환, legacy api adapter, 외부 라이브러리 연결, adapter vs wrapper, adapter vs facade, adapter vs decorator, 어댑터가 뭔가요, interface translation, incompatible interface, 기존 코드 바꾸지 않고, object adapter class adapter, adapter pattern example
+retrieval-anchor-keywords: adapter pattern basics, 어댑터 패턴, adapter pattern beginner, 인터페이스 변환, legacy api adapter, 외부 라이브러리 연결, adapter vs wrapper, adapter vs facade, adapter vs decorator, 어댑터가 뭔가요, incompatible interface, 기존 코드 바꾸지 않고, 처음 adapter 배우고 헷갈려요, ports and adapters beginner route, what is adapter basics
 
 ---
+
+## Beginner Route
+
+이 문서는 `GoF Adapter` 입문이다.
+처음 배우는데 `controller`, `repository`, `inbound/outbound adapter` 같은 아키텍처 용어까지 한꺼번에 섞이면 아래 순서로만 올라가면 된다.
+
+- `[entrypoint]` 이 문서: 인터페이스 번역이 왜 필요한지 먼저 잡는다
+- `[cross-category bridge]` [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md): HTTP controller, message consumer, repository adapter를 같은 beginner 언어로 묶는다
+- `[comparison bridge]` [Ports and Adapters vs GoF 패턴: 경계에서 책임을 자르는 법](./ports-and-adapters-vs-classic-patterns.md): "번역용 adapter"와 "경계 구조의 adapter"를 분리한다
+- `[deep dive]` [Adapter (어댑터) — 심화](./adapter.md) 또는 [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md): 기초를 잡은 뒤 세부 구조로 내려간다
 
 ## 먼저 멘탈 모델
 
@@ -136,6 +148,8 @@ gateway.pay(12_000);
 
 ## 다음 학습 경로 (막히는 지점별)
 
+- `GoF adapter`는 알겠는데 `controller adapter`, `repository adapter`라는 말이 왜 나오는지 막히면: [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)
+- `adapter`라는 같은 단어가 왜 패턴/아키텍처에서 다르게 쓰이는지 자르고 싶으면: [Ports and Adapters vs GoF 패턴: 경계에서 책임을 자르는 법](./ports-and-adapters-vs-classic-patterns.md)
 - adapter 기본 틀은 이해했고 객체/클래스 adapter 차이가 궁금하면: [Adapter (어댑터) — 심화](./adapter.md)
 - wrapper 패턴끼리 계속 헷갈리면: [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 - 번역층이 너무 길어져 책임이 흐려지면: [Adapter Chaining Smells](./adapter-chaining-smells.md)

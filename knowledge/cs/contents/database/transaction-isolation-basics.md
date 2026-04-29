@@ -94,6 +94,24 @@ retrieval-anchor-keywords: transaction isolation level basics, isolation level b
 
 그래서 이 문서를 읽는 동안에는 `40001 retry`, `deadlock`, `gap lock`을 해결하려 들지 않는 편이 낫다. 그런 단어가 나오면 "격리 수준만으로 끝나지 않는다"까지만 잡고 follow-up으로 넘긴다.
 
+## 다음 단계 progression
+
+이 문서는 beginner primer의 2단계다. follow-up도 아래 순서로 붙이면 `트랜잭션 기초`, `트랜잭션 격리수준과 락`과 같은 4단계 표현으로 이어져 beginner 이동 경로가 덜 흔들린다.
+
+| 학습 단계 | 지금 막힌 질문 | 먼저 볼 문서 | 이 문서를 읽은 뒤 다음 단계 |
+|---|---|---|---|
+| 1단계. 경계 이해 | "무엇을 같이 `commit`/`rollback`하지?" | [트랜잭션 기초](./transaction-basics.md) | 같은 row/범위를 다시 읽을 때 왜 달라지는지 궁금해지면 이 문서 |
+| 2단계. 가시성 이해 | "`select`를 두 번 했는데 왜 값이나 행 수가 달라지지?" | 이 문서 | plain `SELECT`와 locking read를 같이 봐야 하면 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
+| 3단계. bridge | "`@Transactional`도 있는데 언제 `FOR UPDATE`, version, constraint까지 붙이지?" | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) | 엔진 차이, retry, deadlock처럼 증상이 구체화되면 incident 문서로 내려간다 |
+| 4단계. incident handling | "`lock timeout`, `deadlock`, `40001`이 실제로 떴다" | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | 증상별 재현과 retry 정책까지 분리한다 |
+
+짧게 기억하면 progression은 아래 네 줄이다.
+
+1. [트랜잭션 기초](./transaction-basics.md): 같이 성공/실패할 경계를 먼저 잡는다.
+2. 이 문서: 같은 row 재조회와 범위 재조회 차이를 먼저 분리한다.
+3. [트랜잭션 격리수준과 락](./transaction-isolation-locking.md): 격리 수준, locking read, optimistic/pessimistic lock, constraint를 한 프레임으로 묶는다.
+4. incident 문서: `deadlock`, `lock timeout`, `40001 retry`처럼 실제 증상이 붙었을 때만 내려간다.
+
 ## 먼저 이렇게 기억하면 덜 헷갈린다
 
 | 지금 생긴 질문 | 먼저 떠올릴 문장 | 다음 문서 |

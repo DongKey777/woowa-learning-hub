@@ -1,42 +1,30 @@
 # Java 접근 제한자와 멤버 모델 입문
 
-> 한 줄 요약: Java 입문자가 접근 제한자, 인스턴스 vs `static` 멤버, `final`의 의미를 하나의 클래스 모델로 연결해서 이해하도록 정리한 primer다. 특히 `field`, 인스턴스 멤버, 객체 상태를 같은 흐름으로 묶어 첫 Java route의 용어 혼선을 줄이는 데 초점을 둔다.
+> 한 줄 요약: Java 입문자가 `private`/`protected` 같은 접근 제한자, 인스턴스 vs `static` 멤버, `final`을 "클래스 멤버를 어떻게 설계할지"라는 한 장의 그림으로 먼저 잡도록 돕는 entrypoint primer다. "`field`가 뭐예요", "객체 상태는 왜 인스턴스 필드라고 해요" 같은 첫 질문을 정리하고, 인스턴스/`static`/factory 선택 자체는 다음 primer로 넘긴다.
 
 **난이도: 🟢 Beginner**
 
-
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
+- [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)
+- [접근 제한자 오해 미니 퀴즈: top-level vs member](./java-access-modifier-top-level-member-mini-quiz.md)
+- [Java 접근 제한자 경계 실습](./java-access-modifier-boundary-lab.md)
+- [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)
+- [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
 
-
-retrieval-anchor-keywords: java access modifiers member model basics basics, java access modifiers member model basics beginner, java access modifiers member model basics intro, java basics, beginner java, 처음 배우는데 java access modifiers member model basics, java access modifiers member model basics 입문, java access modifiers member model basics 기초, what is java access modifiers member model basics, how to java access modifiers member model basics
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
-> - [Java package와 import 경계 입문](./java-package-import-boundary-basics.md)
-> - [Java 패키지 경계 퀵체크 카드](./java-package-boundary-quickcheck-card.md)
-> - [접근 제한자 오해 미니 퀴즈: top-level vs member](./java-access-modifier-top-level-member-mini-quiz.md)
-> - [Java 접근 제한자 경계 실습](./java-access-modifier-boundary-lab.md) - 아래 `protected` follow-up 예제를 그대로 손으로 확인하는 실습
-> - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
-> - [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md)
-> - [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)
-> - [객체지향 핵심 원리](./object-oriented-core-principles.md)
-> - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
-> - [추상 클래스 vs 인터페이스](./abstract-class-vs-interface.md)
-> - [Records, Sealed Classes, Pattern Matching](./records-sealed-pattern-matching.md)
-
-> retrieval-anchor-keywords: java access modifier basics, java access modifiers and member model, java modifier decision table, java public private protected package-private, java package private default access, java instance member vs static member, java static field vs instance field, java static method vs instance method, java static utility method basics, java static factory method basics, java final field method class, java beginner class member basics, java private static final constant, java encapsulation basics, access modifier beginner, class member model basics, java member modifier decision flow, java field instance member object state, java field vs object state beginner, field가 인스턴스 멤버인가요, 객체 상태는 뭐예요, java top-level vs member private protected, java top-level member mini quiz bridge, java protected access confusion, protected other package subclass access, protected field this vs parent reference, java protected this field access, java protected base reference compile error, java protected other package baseRef access, java protected child reference access, java protected this childRef parentRef table, java protected same package different package summary table, java protected compile success fail prediction, java protected method call same rule as field access, java protected method vs field same context rule, java access modifier follow-up example, java access modifier lab bridge, java protected lab entrypoint, java protected worksheet, java protected follow-up worksheet, java this protected vs parentRef protected, java this protected vs baseRef protected, java protected 3 question follow-up, java protected wrong answer note, java import does not change access protected, java subpackage same package misconception, java package name similarity protected confusion, java same package subclass non subclass, java package boundary quick card, 자바 protected this baseRef 차이, 자바 protected 워크시트, 자바 접근제한자 후속 문제, 자바 top-level member 구분, 자바 top-level private protected 불가 member 가능, 자바 import 해도 protected 안 보임, 자바 패키지명 비슷해도 다른 패키지, 자바 패키지 경계 퀵체크, java final reference vs immutable
+retrieval-anchor-keywords: java access modifier member model basics, java class member basics, java public private protected package-private, java field method member basics, java instance field object state basics, java static field class shared state, java final field method class basics, field가 인스턴스 멤버인가요, 객체 상태는 뭐예요, 처음 접근제한자 헷갈려요, 처음 static 필드 헷갈려요, java member basics what is, java access modifier basics, java beginner member model, why private first java
 
 <details>
 <summary>Table of Contents</summary>
 
 - [왜 이 문서가 필요한가](#왜-이-문서가-필요한가)
+- [이 문서와 instance/static/factory primer의 경계](#이-문서와-instancestaticfactory-primer의-경계)
 - [먼저 보는 3축 모델](#먼저-보는-3축-모델)
 - [접근 제한자는 무엇을 막고 무엇을 열어 주나](#접근-제한자는-무엇을-막고-무엇을-열어-주나)
-- [멤버 모델: 인스턴스 vs static](#멤버-모델-인스턴스-vs-static)
+- [인스턴스 필드와 객체 상태](#인스턴스-필드와-객체-상태)
+- [static 멤버와 클래스 공유 상태](#static-멤버와-클래스-공유-상태)
 - [final은 어디에 붙고 무엇을 고정하나](#final은-어디에-붙고-무엇을-고정하나)
 - [코드로 한 번에 보기](#코드로-한-번에-보기)
 - [초보자가 자주 하는 실수](#초보자가-자주-하는-실수)
@@ -67,6 +55,15 @@ Java 초보자는 클래스를 배우기 시작하면 비슷해 보이는 modifi
 - 객체 상태(object state): 그 객체의 인스턴스 field 값 묶음
 
 즉 beginner 기준으로는 "`constructor`가 인스턴스 field를 채워 객체 상태를 만들고, 인스턴스 메서드가 그 상태를 읽거나 바꾼다"는 흐름 위에 modifier를 얹는다고 보면 된다.
+
+## 이 문서와 instance/static/factory primer의 경계
+
+이 문서는 "멤버를 어떤 칸에 놓을까?"를 먼저 정리하는 문서다.
+
+- 이 문서가 답하는 질문: "`field`가 뭐예요?", "`private`부터 시작하라는 이유가 뭐예요?", "객체 상태와 `static` 공유 상태를 어떻게 구분해요?"
+- 다음 primer가 답하는 질문: "메서드를 인스턴스에 둘까, `static` utility로 뺄까, `of()` 같은 factory로 열까?"
+
+즉 여기서는 **멤버의 소속과 공개 범위**까지만 먼저 잡고, 호출 문장과 생성 책임 비교는 [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)으로 넘기는 편이 덜 헷갈린다.
 
 ## 먼저 보는 3축 모델
 
@@ -139,9 +136,10 @@ same package / subclass / non-subclass를 먼저 빠르게 자르고 싶다면 [
 
 즉 "일단 모두 열어 두고 필요하면 닫는 것"보다, **"일단 최소한만 열고 필요할 때 넓히는 것"** 이 안전하다.
 
-## 멤버 모델: 인스턴스 vs static
+## 인스턴스 필드와 객체 상태
 
 멤버를 이해할 때 가장 중요한 축은 **객체 소속인지, 클래스 소속인지**다.
+여기서는 "상태가 누구 소유인가"까지만 먼저 잡고, `of()` 같은 생성 메서드 선택은 다음 primer로 넘긴다.
 
 여기서는 아래 네 말을 한 묶음으로 읽으면 된다.
 
@@ -171,6 +169,11 @@ public class BankAccount {
 `accountNumber`, `balance`는 계좌 객체마다 다른 인스턴스 field다.
 이 둘의 현재 값 묶음이 곧 그 `BankAccount` 객체의 상태다.
 `BankAccount`를 두 개 만들면 각자 자기 `balance`를 가진다.
+
+## static 멤버와 클래스 공유 상태
+
+인스턴스 필드와 대비해서 보면 `static`은 "객체 하나"가 아니라 **클래스 전체가 공유하는 칸**이다.
+그래서 객체 상태를 담는 자리라기보다, 공통 규칙이나 공유 카운트처럼 모두가 함께 보는 정보를 둘 때 쓴다.
 
 ### static 필드는 모든 객체가 함께 본다
 
@@ -202,11 +205,11 @@ int created = BankAccount.getCreatedCount();
 보통 다음 용도로 쓴다.
 
 - 공용 규칙 검사
-- 팩터리 메서드
 - 공유 상태 조회
 - 객체 상태와 무관한 유틸리티 동작
 
 반대로 현재 객체의 `balance`처럼 인스턴스 상태를 다뤄야 한다면 인스턴스 메서드가 자연스럽다.
+`static factory method`도 기술적으로는 `static` 메서드지만, 초보자에게는 "클래스 소속"보다 **생성 입구를 왜 분리하는가**가 핵심이라 [Java 인스턴스 메서드, `static` 유틸리티, 팩터리 메서드 입문](./java-instance-static-factory-methods-primer.md)에서 따로 읽는 편이 안전하다.
 
 ### static 메서드는 인스턴스 멤버를 직접 다룰 수 없다
 

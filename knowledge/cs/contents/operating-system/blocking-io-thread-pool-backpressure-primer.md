@@ -12,7 +12,7 @@
 - [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md)
 - [Spring `TaskExecutor` / `TaskScheduler` Overload, Queue, and Rejection Semantics](../spring/spring-taskexecutor-taskscheduler-overload-rejection-semantics.md)
 
-retrieval-anchor-keywords: blocking i/o primer, non-blocking i/o primer, request per thread, thread-per-request, request per thread beginner, thread pool basics, executor queue saturation, queue saturation basics, backpressure primer, java http thread pool, java server thread pool, tomcat thread pool basics, servlet thread waiting, worker thread blocking, slow downstream causes thread exhaustion
+retrieval-anchor-keywords: blocking i/o primer, non-blocking i/o primer, request per thread, thread-per-request, request per thread beginner, thread pool basics, executor queue saturation, queue saturation basics, backpressure primer, java http thread pool, java server thread pool, tomcat thread pool basics, 왜 cpu는 낮은데 느려요, worker thread blocking, queue grows timeout why
 
 ## 먼저 잡는 멘탈 모델
 
@@ -61,6 +61,14 @@ return orderClient.fetchAsync(orderId)      // 요청 스레드는 대기 전용
 ```
 
 핵심은 "non-blocking이면 무조건 빠르다"가 아니다. 대기 동안 스레드를 반납할 수 있어 **적은 스레드로 더 많은 대기 I/O를 겹쳐 다룰 수 있다**는 뜻이다.
+
+### 10초 판별표: 지금 병목이 어디에 가까운가
+
+| 보이는 현상 | 초보자 1차 해석 | 다음으로 확인할 문서 |
+| --- | --- | --- |
+| CPU는 낮은데 active thread와 queue가 함께 증가 | 계산보다 blocking I/O 대기 가능성 | [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md) |
+| 스레드는 적은데 연결 수가 많고 event loop 용어가 나온다 | non-blocking/event-loop 모델 가능성 | [I/O Models and Event Loop](./io-models-and-event-loop.md) |
+| queue가 길어지고 timeout 뒤 retry까지 붙는다 | 단순 튜닝보다 backpressure 경계 부족 | [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md) |
 
 ## 2. request-per-thread 직관: 왜 blocking 호출 하나가 풀 전체 문제로 번질까
 
@@ -185,6 +193,10 @@ backpressure가 없는 시스템은 흔히 이렇게 무너진다.
   - 짧은 burst에는 유리할 수 있지만, 지속 포화에서는 tail latency를 숨기며 복구를 늦춘다.
 - "backpressure는 사용자를 거절하니 나쁘다"
   - 무제한 대기보다 빠른 실패가 전체 시스템 품질을 더 잘 지키는 경우가 많다.
+- "queue만 크게 잡으면 안전하다"
+  - 보통은 아니다. 짧은 burst 완충에는 도움이 되지만, 지속 포화에서는 timeout을 늦게 드러내고 retry 증폭을 키울 수 있다.
+
+여기서 은행 창구 비유도 어디까지나 입문용이다. 실제 서버는 thread pool 하나만으로 끝나지 않고, DB pool, HTTP client connection pool, upstream timeout 정책까지 함께 얽힌다. 그래서 "스레드가 꽉 찼다"는 관찰은 출발점이지 최종 원인 선언이 아니다.
 
 ## 다음으로 어디를 읽을까? (초심자 라우팅)
 

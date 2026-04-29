@@ -1,6 +1,6 @@
-# Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: "`json`인데 `415 Unsupported Media Type`가 떠요", "`Content-Type: application/json` 안 붙였는데 `415`예요"
+# Spring `@RequestBody 415 Unsupported Media Type` 초급 primer: `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`
 
-> 한 줄 요약: "`json`인데 `415 Unsupported Media Type`가 떠요", "`Content-Type: application/json` 안 붙였는데 `415`예요" 같은 질문은 JSON 값보다 먼저 "`이 요청 body가 JSON이라고 선언됐나?`"를 확인하면 가장 빨리 풀린다.
+> 한 줄 요약: README 첫 증상표의 `JSON인데 415 Unsupported Media Type가 떠요`, `Content-Type: application/json 안 붙였는데 415예요`, `Content-Type 때문에 막힌 것 같아요`는 body 값보다 먼저 `이 요청 body가 JSON이라고 선언됐나?`라는 `Content-Type` 헤더/계약 질문으로 자르게 하는 entrypoint다.
 
 **난이도: 🟢 Beginner**
 
@@ -15,7 +15,7 @@
 - [Database First-Step Bridge](../database/database-first-step-bridge.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: json인데 415 unsupported media type, content-type application/json 안 붙였는데 415, content-type 때문에 막힌 것 같아요, @requestbody 415 unsupported media type, 컨트롤러 전에 415 spring, requestbody 400 vs 415 first split, @requestbody 400 왜 바로 나요, json parse error가 보여요, consumes application/json mismatch, content-type application/json 왜, accept vs content-type spring, 406 not acceptable 처음, requestbody media type 처음, postman 415 spring beginner, 왜 415가 나와요
+retrieval-anchor-keywords: json인데 415 unsupported media type가 떠요, content-type: application/json 안 붙였는데 415예요, content-type 때문에 막힌 것 같아요, json인데 415 unsupported media type, content-type application/json 안 붙였는데 415, @requestbody 415 unsupported media type, 컨트롤러 전에 415 spring, requestbody 400 vs 415 first split, json parse error가 보여요, consumes application/json mismatch, content-type application/json 왜, accept vs content-type spring, requestbody media type 처음, postman 415 spring beginner, 왜 415가 나와요
 
 ## 핵심 개념
 
@@ -24,7 +24,7 @@ retrieval-anchor-keywords: json인데 415 unsupported media type, content-type a
 - `@RequestBody`는 body 내용만 보는 기능이 아니라, 먼저 `Content-Type`을 보고 어떤 형식인지 판단한다.
 - 그래서 body가 JSON처럼 보여도 헤더가 `application/json`이 아니면 Spring은 JSON으로 읽지 않을 수 있다.
 - 이때 자주 보이는 응답이 `415 Unsupported Media Type`이다.
-- README 바인딩 증상표 순서로는 "`@RequestBody 400` first hit" 다음의 첫 분기 카드가 아니라, 검색어가 처음부터 `415`와 `Content-Type`을 직접 말할 때 바로 들어오는 전용 entrypoint다.
+- README 바인딩 첫 증상표 순서로는 "`@RequestBody 400` first hit" 다음의 follow-up 카드가 아니라, 검색어가 처음부터 `415`와 `Content-Type`을 직접 말할 때 바로 들어오는 전용 entrypoint다.
 
 즉 "`JSON 문법이 틀렸나?`"보다 "`이 요청이 JSON이라고 제대로 선언됐나?`"를 먼저 묻는 문서다. 초급자 기준으로 `415`는 보통 "값 해석 실패"보다 "body 형식 계약 실패"에 가깝다.
 
@@ -32,10 +32,10 @@ retrieval-anchor-keywords: json인데 415 unsupported media type, content-type a
 
 이 문서는 아래처럼 검색하는 초급자를 바로 받기 위한 entrypoint다.
 
-- "`json`인데 `415 Unsupported Media Type`가 떠요" -> JSON 모양보다 `Content-Type` 선언을 먼저 본다.
-- "`Content-Type: application/json` 안 붙였는데 `415`예요" -> 거의 바로 `Content-Type: application/json` 누락을 먼저 확인하면 된다.
-- "`Content-Type` 때문에 막힌 것 같아요" -> body 값보다 request header와 `consumes` 계약을 먼저 점검한다.
-- "컨트롤러 전에 `415 Unsupported Media Type`가 나요" -> 컨트롤러 로직보다 message converter가 요청 형식을 고르기 전에 막힌 장면일 수 있다.
+- `JSON인데 415 Unsupported Media Type가 떠요` -> JSON 모양보다 `Content-Type` 선언을 먼저 본다.
+- `Content-Type: application/json 안 붙였는데 415예요` -> 거의 바로 `Content-Type: application/json` 누락을 먼저 확인하면 된다.
+- `Content-Type 때문에 막힌 것 같아요` -> body 값보다 request header와 `consumes` 계약을 먼저 점검한다.
+- `컨트롤러 전에 415 Unsupported Media Type가 나요` -> 컨트롤러 로직보다 message converter가 요청 형식을 고르기 전에 막힌 장면일 수 있다.
 
 짧게 말해 "`JSON처럼 생겼다`"와 "`JSON이라고 선언했다`"는 다른 질문이다.
 
@@ -51,16 +51,16 @@ retrieval-anchor-keywords: json인데 415 unsupported media type, content-type a
 
 | 학습자가 보통 이렇게 말해요 | 먼저 붙잡을 질문 | 더 가까운 원인 |
 |---|---|---|
-| "`json`인데 `415 Unsupported Media Type`가 떠요" | JSON처럼 생긴 것과 JSON이라고 선언한 것이 둘 다 맞나 | `Content-Type` 누락/불일치 |
-| "`Content-Type: application/json` 안 붙였는데 `415`예요" | 요청 헤더에 `Content-Type`이 실제로 비어 있나 | media type 계약 |
-| "`application/json`인데도 `415`예요" | 컨트롤러 `consumes`와 실제 헤더가 정말 같은가 | `consumes` mismatch |
-| "컨트롤러 로그가 안 찍히고 바로 `415`예요" | binding 전에 막힌 것인가 | message converter 선택 전 단계 |
+| `JSON인데 415 Unsupported Media Type가 떠요` | JSON처럼 생긴 것과 JSON이라고 선언한 것이 둘 다 맞나 | `Content-Type` 누락/불일치 |
+| `Content-Type: application/json 안 붙였는데 415예요` | 요청 헤더에 `Content-Type`이 실제로 비어 있나 | media type 계약 |
+| `application/json인데도 415예요` | 컨트롤러 `consumes`와 실제 헤더가 정말 같은가 | `consumes` mismatch |
+| `컨트롤러 로그가 안 찍히고 바로 415예요` | binding 전에 막힌 것인가 | message converter 선택 전 단계 |
 
 짧게 외우면 이렇다.
 
-- "`json`인데 `415 Unsupported Media Type`가 떠요"면 body 값보다 헤더 계약을 먼저 본다.
-- "`Content-Type: application/json` 안 붙였는데 `415`예요"면 첫 수정은 body가 아니라 헤더다.
-- "`application/json`인데도 `415`예요"면 `consumes`까지 같이 본다.
+- `JSON인데 415 Unsupported Media Type가 떠요`면 body 값보다 헤더 계약을 먼저 본다.
+- `Content-Type: application/json 안 붙였는데 415예요`면 첫 수정은 body가 아니라 헤더다.
+- `application/json인데도 415예요`면 `consumes`까지 같이 본다.
 
 ## primer -> 다음 한 칸 -> DB 한 칸 멈춤
 
@@ -68,7 +68,7 @@ retrieval-anchor-keywords: json인데 415 unsupported media type, content-type a
 
 | 지금 장면 | 여기서 먼저 끝내는 질문 | 다음 한 걸음 |
 |---|---|---|
-| "`json`인데 `415 Unsupported Media Type`가 떠요" | request `Content-Type`이 정말 JSON로 선언됐나 | [Browser DevTools `Accept` vs Response `Content-Type` 미니 카드](../network/browser-devtools-accept-vs-content-type-mini-card.md) 또는 이 문서의 체크리스트 |
+| `JSON인데 415 Unsupported Media Type가 떠요` | request `Content-Type`이 정말 JSON로 선언됐나 | [Browser DevTools `Accept` vs Response `Content-Type` 미니 카드](../network/browser-devtools-accept-vs-content-type-mini-card.md) 또는 이 문서의 체크리스트 |
 | `415`를 고쳤더니 이제 controller 로그가 찍힌다 | 이제야 Spring 내부 바인딩/컨트롤러 단계로 들어왔다 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
 | controller까지는 들어오고 `save()`/SQL 위치가 헷갈린다 | 그때부터 DB 입구 질문으로 바뀐다 | [Database First-Step Bridge](../database/database-first-step-bridge.md) |
 
@@ -100,7 +100,7 @@ Content-Type: text/plain
 
 body 예쁘게 정리하기보다 이 세 줄을 먼저 보는 편이 빠르다.
 
-### 2-1. "`Content-Type: application/json` 안 붙였는데 `415`예요"면 거의 여기서 끝난다
+### 2-1. `Content-Type: application/json 안 붙였는데 415예요`면 거의 여기서 끝난다
 
 아래처럼 보내면 body 내용이 JSON이어도 Spring은 JSON 요청으로 읽지 못할 수 있다.
 
@@ -131,19 +131,19 @@ public void create(@RequestBody CreateReservationRequest request) {
 
 ## 흔한 오해와 함정
 
-- "`json`인데 `415 Unsupported Media Type`가 떠도 JSON 모양이면 Spring이 알아서 읽어 주겠지"
+- `JSON인데 415 Unsupported Media Type가 떠도 JSON 모양이면 Spring이 알아서 읽어 주겠지`
   아니다. `Content-Type` 선언이 먼저 맞아야 한다.
 
-- "`415 Unsupported Media Type`도 그냥 `400` 비슷한 거 아닌가요?"
+- `415 Unsupported Media Type도 그냥 400 비슷한 거 아닌가요?`
   아니다. 초급 첫 분기로는 `400 = 값 해석`, `415 = 형식 계약`으로 나누는 편이 좋다.
 
 - "`@RequestBody`면 query/form도 같이 보겠지"
   아니다. 이 문서의 축은 JSON body와 media type 계약이다. query/form 바인딩과는 입구가 다르다.
 
-- "`Content-Type: application/json`인데도 `415`예요"
+- `Content-Type: application/json인데도 415예요`
   이때는 실제 전송 헤더와 컨트롤러 `consumes`를 같이 봐야 한다.
 
-- "`json`인데 `415 Unsupported Media Type`가 떠요. 그럼 JSON 문법부터 봐야 하나요?"
+- `JSON인데 415 Unsupported Media Type가 떠요. 그럼 JSON 문법부터 봐야 하나요?`
   아니다. 그 문장은 오히려 `400`보다 `415` 쪽에 가깝다. JSON 문법보다 media type 계약부터 본다.
 
 ## 실무에서 쓰는 모습
@@ -152,9 +152,9 @@ RoomEscape 관리자 예약 생성 요청을 예로 들면 이렇게 본다.
 
 | 장면 | 요청 모습 | 먼저 볼 것 |
 |---|---|---|
-| "`json`인데 `415 Unsupported Media Type`가 떠요" | body는 JSON처럼 보이지만 `Content-Type`이 없거나 다름 | 헤더 선언 수정 |
-| "`Content-Type: application/json` 안 붙였는데 `415`예요" | `Content-Type` 누락 | `application/json` 추가 |
-| "`application/json`인데도 `415`예요" | 헤더는 맞아 보이지만 `consumes` 불일치 | 컨트롤러 계약과 클라이언트 설정 비교 |
+| `JSON인데 415 Unsupported Media Type가 떠요` | body는 JSON처럼 보이지만 `Content-Type`이 없거나 다름 | 헤더 선언 수정 |
+| `Content-Type: application/json 안 붙였는데 415예요` | `Content-Type` 누락 | `application/json` 추가 |
+| `application/json인데도 415예요` | 헤더는 맞아 보이지만 `consumes` 불일치 | 컨트롤러 계약과 클라이언트 설정 비교 |
 | 정상 요청이에요 | `Content-Type: application/json` + JSON body | 다음 단계로 DTO 변환 진행 |
 
 초급자 디버그 순서는 보통 이쪽이 가장 안전하다.

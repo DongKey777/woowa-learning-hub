@@ -19,6 +19,17 @@
 
 retrieval-anchor-keywords: web security starter pack, backend junior web security, beginner web security route, spring security before deep dive, https password hashing xss csrf cors secrets primer, 웹 보안 스타터 팩, 백엔드 주니어 보안 입문, 스프링 시큐리티 전에 뭐부터, https 비밀번호 해시 csrf xss cors 시크릿, secret config handling beginner, woowacourse backend security starter, security primer bundle, return to security readme, 뭘 먼저 공부해야 하나, 보안 공부를 시작할 때
 
+## 첫 질문으로 고르기
+
+처음에는 보안 용어를 전부 외우려 하지 말고 "지금 막힌 장면"으로 첫 문서를 고르면 된다.
+
+| 지금 떠오르는 질문 | 먼저 볼 문서 | 왜 여기서 시작하나 |
+|---|---|---|
+| `로그인 상태가 왜 유지돼요`, `cookie가 왜 따라가요` | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) | 브라우저 자동 전송과 로그인 상태 유지부터 알아야 CSRF, logout, redirect를 덜 헷갈린다 |
+| `게시글 댓글이 왜 위험해요`, `사용자 입력을 어디서 막아요` | [XSS와 CSRF 기초](./xss-csrf-basics.md) | 브라우저 안에서 실행되는 공격과 자동 요청 공격을 먼저 분리해야 한다 |
+| `프론트에서 호출하면 막히는데 Postman은 돼요` | [CORS 기초](./cors-basics.md) | browser 읽기 제한 문제인지 서버 인가 문제인지 먼저 갈라야 한다 |
+| `Spring Security 설정을 왜 켜는지 감이 없어요` | 이 문서부터 읽고 [XSS / CSRF / Spring Security](./xss-csrf-spring-security.md)로 이어 간다 | 기능 설명보다 "무슨 문제를 막는가"를 먼저 연결해야 설정이 덜 암기처럼 보인다 |
+
 ## 이 문서 다음에 보면 좋은 문서
 
 - `[return]` security 전체 beginner primer 묶음으로 돌아가고 싶으면 [[survey] Security README: 기본 primer](./README.md#기본-primer)으로 간다.
@@ -76,6 +87,8 @@ retrieval-anchor-keywords: web security starter pack, backend junior web securit
 - **CORS != 인가**: `Access-Control-Allow-Origin`을 맞춰도 서버 인가 규칙이 열리는 것은 아니다.
 - **config != secret**: 포트, 타임아웃, feature flag는 일반 설정이고, DB 비밀번호, API 키, signing key는 secret이다.
 - **Spring Security != 웹 보안 전체**: 필터와 헤더를 잘 켜도, 비밀번호를 평문 저장하거나 시크릿을 Git에 올리면 이미 실패다.
+
+처음에는 이 다섯 줄만 기억해도 `왜 CORS를 고쳤는데 403은 그대로지`, `왜 HTTPS인데도 XSS가 되지` 같은 질문을 더 빨리 분해할 수 있다.
 
 ## 작은 예시로 연결하기
 

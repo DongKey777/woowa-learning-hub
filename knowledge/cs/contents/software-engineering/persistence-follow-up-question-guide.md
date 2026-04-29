@@ -19,6 +19,7 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 - [왜 이 가이드가 필요한가](#왜-이-가이드가-필요한가)
 - [먼저 잡는 한 줄 멘탈 모델](#먼저-잡는-한-줄-멘탈-모델)
 - [한 질문씩 내려가는 결정표](#한-질문씩-내려가는-결정표)
+- [Repository Primer 다음 3갈래](#repository-primer-다음-3갈래)
 - [짧은 예시: 주문 저장 코드를 보고 어디로 갈까](#짧은-예시-주문-저장-코드를-보고-어디로-갈까)
 - [자주 헷갈리는 지점](#자주-헷갈리는-지점)
 - [초심자용 가장 안전한 읽기 순서](#초심자용-가장-안전한-읽기-순서)
@@ -69,7 +70,7 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 
 ## 한 질문씩 내려가는 결정표
 
-한 번에 문서 제목을 다 비교하지 말고, 아래 질문을 위에서 아래로 한 줄씩만 따라가면 된다.
+특히 `Repository Interface Contract Primer`를 막 읽은 직후라면, 한 번에 문서 제목을 다 비교하지 말고 아래 질문을 위에서 아래로 한 줄씩만 따라가면 된다.
 
 | 순서 | 먼저 스스로 묻는 질문 | `예`면 읽을 문서 | `아니오`면 다음 질문 |
 |---|---|---|---|
@@ -86,6 +87,14 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 - **"지금 막힌 지점이 계약인가, 이름인가, 조회 분리인가, 매핑인가, 누수인가?"**
 
 이 한 질문에 대한 답만 고르면 다음 문서가 정해진다.
+
+## Repository Primer 다음 3갈래
+
+`Repository Interface Contract Primer` 이후 후속 선택표만 다시 말하면 아래 3갈래다.
+
+- "테스트에서 이 계약을 어떻게 재현하지?"면 [Repository Fake Design Guide](./repository-fake-design-guide.md)
+- "`domain`과 `Entity`를 어디서 끊지?"면 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+- "서비스/API에 `Entity`가 이미 새고 있네?"면 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 
 ## 빠른 보조 표
 
@@ -151,7 +160,7 @@ public class OrderService {
 영속성 감이 거의 없으면 아래 순서가 가장 무난하다.
 
 1. [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
-2. "계약은 알겠는데 test fake가 막힌다"면 [Repository Fake Design Guide](./repository-fake-design-guide.md)로 옆길 한 칸만 샌다
+2. `Repository Interface Contract Primer` 직후 "`계약은 알겠는데 test fake가 막힌다`"면 [Repository Fake Design Guide](./repository-fake-design-guide.md)로 옆길 한 칸만 샌다
 3. [Repository, DAO, Entity](./repository-dao-entity.md)
 4. [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 5. [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)

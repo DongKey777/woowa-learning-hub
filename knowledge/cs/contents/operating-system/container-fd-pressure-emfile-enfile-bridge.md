@@ -14,10 +14,9 @@
 - [RLIMIT NOFILE, NPROC Governance](./rlimit-nofile-nproc-governance.md)
 - [container, cgroup, namespace](./container-cgroup-namespace.md)
 - [operating-system 카테고리 인덱스](./README.md)
-
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: qa-content-operating-system-00039, container fd pressure bridge, container fd limit confusion, emfile vs enfile container, host vs container fd pressure, container too many open files host looks fine, host file-nr container fd, file-max in container setup, rlimit_nofile container beginner, file-nr beginner bridge, container looks fine host fd pressure, kubernetes node fd pressure beginner, pod fd looks normal but host file table full, per-process fd limit vs host file table, container fd visibility confusion
+retrieval-anchor-keywords: qa-content-operating-system-00039, container fd pressure bridge, container fd limit confusion, emfile vs enfile container, host vs container fd pressure, container too many open files host looks fine, host file-nr container fd, file-max in container setup, rlimit_nofile container beginner, file-nr beginner bridge, pod fd looks normal but host file table full, per-process fd limit vs host file table, 처음 fd 에러 뭐부터 봐요, 왜 컨테이너만 멀쩡해 보여요, container fd visibility confusion
 
 ## 먼저 잡는 멘탈 모델
 
@@ -47,6 +46,8 @@ retrieval-anchor-keywords: qa-content-operating-system-00039, container fd press
 
 - 컨테이너는 "내 프로세스 상태"를 보기 쉽게 해 준다
 - 하지만 "노드 전체 공용 fd pressure"는 컨테이너 안 숫자만 보면 놓치기 쉽다
+
+여기서 "컨테이너는 내 방" 비유는 입문용이다. 실제 Linux 컨테이너는 보통 같은 호스트 커널을 공유하므로, fd 한도도 "프로세스 로컬"과 "호스트 전역"이 섞여 보인다. 다른 가상화 방식이나 운영 환경 세부는 별도 문서에서 다시 확인하면 된다.
 
 ## 한눈에 보는 비교표
 
@@ -128,6 +129,8 @@ cat /proc/sys/fs/file-max
 - "컨테이너 restart를 했는데 잠깐 괜찮아졌으니 내 앱만의 문제다" -> 꼭 그렇지는 않다. 재시작으로 일시적으로 내 fd 수가 줄어도, 노드 전체 pressure가 남아 있으면 같은 혼동이 다시 나온다.
 - "컨테이너별 `ulimit -n`만 올리면 끝난다" -> `EMFILE`에는 도움이 될 수 있지만, 호스트 공용 풀이 문제면 `ENFILE` 쪽 관찰이 먼저다.
 
+소켓도 fd라는 점을 잊기 쉽다. 그래서 "파일을 많이 안 열었는데 왜 fd가 차지?"라는 질문은 네트워크 연결 누수, keep-alive 과다, subprocess pipe 미정리까지 같이 보라는 신호다.
+
 ## 여기까지 이해했으면 다음 deep-dive
 
 > **Beginner handoff box**
@@ -135,6 +138,7 @@ cat /proc/sys/fs/file-max
 > - "`EMFILE`과 `ENFILE`을 숫자와 명령으로 더 또렷하게 가르고 싶으면": [FD Exhaustion, ulimit, Diagnostics](./fd-exhaustion-ulimit-diagnostics.md)
 > - "컨테이너가 무엇을 분리하고 무엇을 공유하는지 다시 묶고 싶으면": [container, cgroup, namespace](./container-cgroup-namespace.md)
 > - "`nofile`을 어디서 어떻게 거는지 운영 관점으로 보고 싶으면": [RLIMIT NOFILE, NPROC Governance](./rlimit-nofile-nproc-governance.md)
+> - "네트워크 연결과 socket fd가 왜 같이 묶이는지"를 보려면: [Keepalive, Connection Reuse Basics](../network/keepalive-connection-reuse-basics.md)
 > - 이 카테고리 안에서 다시 고르려면: [operating-system 카테고리 인덱스](./README.md)
 
 ## 한 줄 정리

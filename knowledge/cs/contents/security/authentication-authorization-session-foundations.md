@@ -1,31 +1,32 @@
 # 인증·인가·세션 기초 흐름
 
-> 한 줄 요약: 로그인은 `누구인가`를 확인하는 단계이고, 세션·쿠키·JWT·BFF는 그 결과를 다음 요청으로 이어 가는 방법이며, 인가는 매 요청마다 `이 행동을 허용할까`를 다시 판단하는 단계다.
+> 한 줄 요약: 인증은 `누구인가`를 확인하고 principal을 만들며, 세션·쿠키·JWT·BFF는 그 결과를 다음 요청으로 이어 가고, 인가는 permission model을 기준으로 `이 행동을 허용할까`를 다시 판단하는 단계다.
 
 **난이도: 🟢 Beginner**
 
 
 관련 문서:
 
+- [인증과 인가의 차이](./authentication-vs-authorization.md)
+- [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
+- [Permission Model Bridge: AuthN에서 Role/Scope/Ownership로 넘어가기](./permission-model-bridge-authn-to-role-scope-ownership.md)
+- [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
 - [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 
 > 문서 역할: 이 문서는 security 카테고리에서 browser page, SPA + BFF, bearer API 흐름을 한 장으로 먼저 연결하는 beginner `primer`다. authn / authz, session / cookie / JWT, login / logout, permission check가 따로따로 보일 때 가장 먼저 읽는 entrypoint로 쓴다.
 
-> 관련 문서:
-> - [인증과 인가의 차이](./authentication-vs-authorization.md)
-> - [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md)
-> - [Signed Cookies / Server Sessions / JWT Trade-offs](./signed-cookies-server-sessions-jwt-tradeoffs.md)
-> - [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md)
-> - [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md)
-> - [Browser / BFF Token Boundary / Session Translation](./browser-bff-token-boundary-session-translation.md)
-> - [OAuth2 기초](./oauth2-basics.md)
-> - [OAuth2 Authorization Code Grant](./oauth2-authorization-code-grant.md)
-> - [Security README 기본 primer 묶음](./README.md#기본-primer)
-> - [Security README: Browser / Session Troubleshooting Path](./README.md#browser--session-troubleshooting-path)
+retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, principal session permission model basics, principal meaning beginner, session이 뭐예요, principal이 뭐예요, permission model 뭐예요, authentication vs authorization what is, 로그인 됐는데 왜 403, token valid but 403 basics, browser api auth flow primer, browser page auth flow, spa bff auth basics, login logout permission check primer
 
-retrieval-anchor-keywords: authentication authorization session foundations, auth foundation primer, authn authz session primer, login logout permission check primer, browser api auth flow primer, browser api session flow, browser page auth flow, spa bff auth basics, api bearer token basics, session cookie jwt bff boundary, login state boundary primer, 인증 인가 세션 기초, 로그인 로그아웃 권한검사 기초, 브라우저 api 인증 흐름, 브라우저 bff 경계 입문
+## 10초 선택표
+
+이 문서는 `인증 -> 세션 전달 -> 인가`를 한 장으로 연결하는 entrypoint다. 아래 질문이 더 직접적이면 해당 문서로 먼저 가도 된다.
+
+| 지금 더 궁금한 것 | 먼저 볼 문서 | 이 문서를 먼저 볼 필요가 없는 경우 |
+|---|---|---|
+| `인증이랑 인가가 정확히 뭐가 달라요` | [인증과 인가의 차이](./authentication-vs-authorization.md) | authn/authz 용어 차이만 빠르게 확인하면 될 때 |
+| `쿠키, 세션, JWT가 뭐예요` | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md) | 저장/전달 방식만 먼저 잡으면 될 때 |
+| `웹 보안을 어디서부터 공부해요` | [백엔드 주니어를 위한 웹 보안 스타터 팩](./web-security-starter-pack-backend-juniors.md) | 로그인 흐름보다 HTTPS/XSS/CSRF/CORS 큰 그림이 먼저일 때 |
 
 ## 이 문서 다음에 보면 좋은 문서
 
@@ -61,6 +62,20 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 - BFF는 보안을 자동으로 해결하는 마법이 아니라, browser와 server 사이의 credential 경계를 다시 나누는 패턴이다.
 - 로그아웃 버튼은 단순히 화면 전환이 아니라 session/token 상태를 실제로 끊는 작업이어야 한다.
 
+## 용어 5개를 한 줄로 붙이기
+
+용어를 따로 외우면 금방 섞인다. 초보자에게는 아래처럼 `한 요청 안에서 어떤 역할을 하느냐`로 붙여서 보는 편이 더 안전하다.
+
+| 용어 | 한 줄 뜻 | 이 문서에서 기억할 핵심 |
+|---|---|---|
+| authentication | 증명 정보를 검사해 `누구인지` 확인 | 비밀번호, 세션 복원, JWT 검증이 여기에 속한다 |
+| principal | 현재 요청을 대표하는 주체 정보 | `userId`만이 아니라 tenant, role 힌트, 인증 시각이 함께 갈 수 있다 |
+| session | 인증 결과를 다음 요청에도 이어 주는 장치 | 서버 세션일 수도 있고, 토큰 기반 복원일 수도 있다 |
+| authorization | 지금 이 action을 허용할지 결정 | 같은 principal이어도 resource/action에 따라 결과가 달라진다 |
+| permission model | 허용 규칙을 표현하는 문법 | role, scope, ownership, tenant 같은 축을 어떤 조합으로 볼지 정한다 |
+
+`입장권` 비유는 여기까지는 유용하지만, 실제 서비스에서는 같은 사람이어도 `어떤 자원인지`, `어떤 행동인지`, `어느 tenant인지`에 따라 매 요청 결론이 달라진다는 점에서 비유가 멈춘다.
+
 ## 30초 분리표: 인증 성공 신호 vs 인가 성공 신호
 
 `로그인 성공`과 `요청 허용`을 같은 의미로 읽는 실수를 줄이기 위해, 성공 신호를 둘로 분리해서 본다.
@@ -75,6 +90,12 @@ retrieval-anchor-keywords: authentication authorization session foundations, aut
 ## 초보자 디버깅 시작점 20초 버전
 
 같은 증상에서도 시작 질문을 고정하면 헤매는 시간을 줄일 수 있다.
+
+| 보이는 증상 | 먼저 확인할 질문 | 다음 문서 |
+|---|---|---|
+| `로그인은 성공했는데 왜 403이지?` | 인증은 됐고 인가에서 막힌 것인가? | [인증과 인가의 차이](./authentication-vs-authorization.md), [Role vs Scope vs Ownership Primer](./role-vs-scope-vs-ownership-primer.md) |
+| `쿠키는 있는데 왜 다시 로그인하지?` | browser가 보낸 증거를 server가 다시 복원했는가? | [세션·쿠키·JWT 기초](./session-cookie-jwt-basics.md), [Browser `401` vs `302` Login Redirect Guide](./browser-401-vs-302-login-redirect-guide.md) |
+| `JWT는 valid라는데 왜 API는 거부하지?` | 토큰 검증과 permission check를 섞어 보고 있지 않은가? | [Beginner Guide to Auth Failure Responses: `401` / `403` / `404`](./auth-failure-response-401-403-404.md), [JWT Claims vs Roles vs Spring Authorities vs Application Permissions](./jwt-claims-roles-authorities-permissions-mapping.md) |
 
 1. 지금 실패 요청에서 credential(`Cookie` 또는 `Authorization`)이 실제로 전송됐는가.
 2. 서버가 그 credential로 principal 복원에 성공했는가.
@@ -234,6 +255,16 @@ BFF를 처음 볼 때는 "JWT 대신 cookie를 쓴다" 정도로만 이해하기
 
 - 인증은 보통 "입장권 확인"이다.
 - 인가는 "좌석 구역, 관람 권한, 본인 좌석인지"까지 다시 보는 단계다.
+
+아래처럼 같은 주문 API라도 어떤 축에서 막히는지 이유가 다를 수 있다.
+
+| 요청 | 통과에 필요한 대표 조건 | 왜 하나만으로 부족한가 |
+|---|---|---|
+| `GET /orders/123` | `order.read` + 같은 tenant + 본인 주문이거나 허용된 지원 관계 | `role`이나 `scope`만으로는 객체 소유권을 설명하지 못한다 |
+| `POST /orders/123/refund` | `refund.approve` + 같은 tenant + 필요 시 step-up/MFA | 읽기 권한과 환불 승인 권한은 보통 분리된다 |
+| `GET /admin/users` | 관리자 role/permission + 내부 관리 경로 허용 정책 | owner 규칙이 없어도 관리자 기능 여부를 따로 봐야 한다 |
+
+특히 `scope`는 공급자나 게이트웨이 설계에 따라 "API 진입 범위"로만 쓰일 때가 많다. 그래서 `scope가 있다 = 앱 내부 모든 permission check가 끝났다`로 읽으면 위험하다.
 
 ## 제일 많이 헷갈리는 문장 6개
 

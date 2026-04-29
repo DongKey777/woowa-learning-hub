@@ -4,6 +4,10 @@
 
 **난이도: 🟢 Beginner**
 
+> 문서 역할: 이 문서는 외부 API 연동을 처음 고를 때 API 키, 사용자 위임 OAuth, Client Credentials를 구분하는 beginner primer다. 공급자별 세부 스펙과 토큰 운영 심화는 관련 문서로 넘긴다.
+
+> target query shape: `api key vs oauth 차이`, `client credentials 뭐예요`, `외부 api 붙이려는데 뭐 써야 하나`, `what is api key vs oauth vs client credentials`
+
 관련 문서:
 
 - [API 키 기초](./api-key-basics.md)
@@ -28,6 +32,9 @@ retrieval-anchor-keywords: api key vs oauth, api key vs client credentials, oaut
 - API 키는 서비스용 출입증
 - 사용자 위임 OAuth는 사용자가 써 준 위임장
 - Client Credentials는 서버 법인카드로 발급받는 업무용 토큰
+
+비유는 여기까지만 맞다.
+실제 판단은 "누구를 대표하나"와 "공급자가 어떤 계약을 요구하나"로 해야지, 토큰 모양이나 헤더 이름만 보고 고르면 안 된다.
 
 ## 한눈에 보기
 
@@ -106,6 +113,14 @@ Client Credentials도 OAuth지만, 앞에 사용자가 없다. 우리 서버가 
 - "이 요청이 특정 사용자의 외부 자원을 대신 다루는가?"
 
 `Yes`면 사용자 위임 OAuth를 먼저 본다. `No`면 API 키와 Client Credentials 중 공급자 계약을 보면 된다.
+
+## 자주 헷갈리는 한 문장 분리
+
+| 헷갈리는 문장 | 먼저 바로잡을 말 |
+|---|---|
+| `OAuth면 다 로그인 아닌가요?` | 아니다. Client Credentials는 OAuth지만 사용자 로그인 흐름이 없다 |
+| `Bearer면 전부 OAuth 토큰 아닌가요?` | 아니다. 공급자에 따라 API 키도 Bearer 헤더에 넣는다 |
+| `서버-서버면 무조건 Client Credentials인가요?` | 아니다. 공급자가 고정 secret 계약이면 API 키가 더 단순한 경우도 있다 |
 
 ## 실무에서 쓰는 모습
 

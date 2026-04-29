@@ -7,21 +7,28 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
+- [디자인 패턴 카테고리 인덱스](./README.md)
+- [상속보다 조합 기초](./composition-over-inheritance-basics.md)
+- [전략 패턴](./strategy-pattern.md)
+- [실전 패턴 선택 가이드](./pattern-selection.md)
+- [Java Optional 입문](../language/java/java-optional-basics.md)
+- [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](../language/java/optional-collections-domain-null-handling-bridge.md)
 - [연결 입문 문서](../software-engineering/oop-design-basics.md)
 
 
-retrieval-anchor-keywords: null object pattern basics, null object pattern beginner, null object pattern intro, design pattern basics, beginner design pattern, 처음 배우는데 null object pattern, null object pattern 입문, null object pattern 기초, what is null object pattern, how to null object pattern
+retrieval-anchor-keywords: null object pattern, null object 뭐예요, null 대신 객체 넣는 패턴, null 체크 없애는 패턴, 처음 배우는데 null object, 왜 null check가 많아져요, optional vs null object, null object vs optional, null object 언제 쓰는지, noop object, no-op notifier, 기본 동작 객체 패턴, 없는 대신 아무 일도 안 하는 객체, collaborator default object, if null check 줄이기
 > 관련 문서:
 > - [전략 패턴](./strategy-pattern.md)
-> - [Composition over Inheritance](./composition-over-inheritance-practical.md)
-> - [안티 패턴](./anti-pattern.md)
+> - [상속보다 조합 기초](./composition-over-inheritance-basics.md)
 > - [실전 패턴 선택 가이드](./pattern-selection.md)
+> - [Java Optional 입문](../language/java/java-optional-basics.md)
+> - [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](../language/java/optional-collections-domain-null-handling-bridge.md)
 
 ---
 
 ## 핵심 개념
+
+이 문서는 `null object pattern 뭐예요`, `null 대신 객체를 넣어도 돼요?`, `optional이랑 뭐가 달라요?` 같은 첫 질문을 먼저 받는 primer다.
 
 Null Object 패턴은 **null을 특별 취급하지 않도록 "아무 일도 하지 않는 객체"를 제공**하는 패턴이다.
 핵심은 호출부가 `if (x != null)`에 매번 신경 쓰지 않게 만드는 것이다.

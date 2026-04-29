@@ -26,6 +26,10 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 
 > 시작 시각만 찾지 말고, 그 예약이 언제 끝나는지도 바로 읽을 수 있나?
 
+여기서 핵심 handoff는 새 규칙 추가가 아니다.
+
+> `floorKey(t)`가 exact match에서 그 자리에 멈춘다고 이해했다면, `floorEntry(t)`도 같은 자리에 멈춘다. 달라지는 것은 `value`를 같이 읽을 수 있느냐뿐이다.
+
 초보자 검색 문장으로 바꾸면 거의 아래 둘이다.
 
 - `exact match가 있으면 floorEntry도 그 자리를 잡아요?`
@@ -44,6 +48,15 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 - `floorEntry(11:00)` -> `10:30 -> 11:00`
 
 즉 `Key`는 "어느 줄인지"만 알려 주고, `Entry`는 "그 줄의 시작과 끝"을 같이 준다.
+
+exact match가 있는 시각에서는 아래처럼 한 칸 더 또렷하게 읽으면 된다.
+
+| 이미 맞히던 질문 | key 단계 | entry 단계 |
+|---|---|---|
+| `10:30`이 딱 있으면 왼쪽 포함 버전은 어디서 멈추나 | `floorKey(10:30)` -> `10:30` | `floorEntry(10:30)` -> `10:30 -> 11:00` |
+| `13:00`이 딱 있으면 오른쪽 포함 버전은 어디서 멈추나 | `ceilingKey(13:00)` -> `13:00` | `ceilingEntry(13:00)` -> `13:00 -> 14:00` |
+
+즉 `floorKey -> floorEntry`, `ceilingKey -> ceilingEntry`는 "같은 줄을 다시 찾되 이번에는 value까지 같이 들고 나온다"는 handoff다.
 
 ## 핵심 개념
 
@@ -81,6 +94,15 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 | `ceilingKey(11:00)` | `13:00` | 오른쪽 시작 시각만 읽는다 |
 | `ceilingEntry(11:00)` | `13:00 -> 14:00` | 오른쪽 예약의 시작과 끝을 같이 읽는다 |
 
+exact match가 있는 시각도 한 번 더 붙여 두면 안전하다.
+
+| 호출 | 결과 | beginner 체크포인트 |
+|---|---|---|
+| `floorKey(10:30)` | `10:30` | `floor`라서 exact match 포함 |
+| `floorEntry(10:30)` | `10:30 -> 11:00` | exact match 규칙은 같고 value만 추가 |
+| `ceilingKey(13:00)` | `13:00` | `ceiling`도 exact match 포함 |
+| `ceilingEntry(13:00)` | `13:00 -> 14:00` | exact match 규칙은 같고 value만 추가 |
+
 즉 `Key`는 "시간표 줄 번호"만 주고, `Entry`는 "그 줄의 내용"까지 같이 준다고 보면 된다.
 
 `entry로 바꾸면` 생기는 변화와 안 생기는 변화를 같이 보면 더 안전하다.
@@ -104,6 +126,7 @@ if (prev != null) {
 ```
 
 `floorKey()`를 먼저 읽고 다시 `map.get(...)`로 한 번 더 들어가는 대신, `floorEntry()` 하나에서 시작 시각과 종료 시각을 같이 꺼낸다고 생각하면 된다.
+즉 `floorKey`에서 exact match를 이미 맞혔다면, 다음에는 같은 줄의 `getValue()`만 더 읽는다고 보면 된다.
 
 ## 5문제 워크시트
 
@@ -217,6 +240,7 @@ if (prev != null) {
 ## 흔한 오해와 함정
 
 - `floorEntry(t)`가 value 기준으로 가까운 예약을 찾는다고 느끼기 쉽다. 실제 기준은 여전히 key인 시작 시각이다.
+- `floorKey`는 exact match를 포함하지만 `floorEntry`는 또 다를 것 같다고 느끼기 쉽다. 실제로는 둘 다 `floor`라서 exact match를 포함하고, 차이는 value를 같이 읽느냐뿐이다.
 - `ceilingEntry(t).getValue()`를 읽을 수 있다고 해서 "다음 빈 시간"이 바로 계산되는 것은 아니다. 빈 시간은 왼쪽 종료 시각과 오른쪽 시작 시각을 같이 봐야 한다. 그 한 단계만 따로 연습하려면 [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)로 이어 가면 된다.
 - `entry.getValue()`를 읽기 전에 `entry == null` 확인을 빼면 경계 시각에서 바로 NPE로 이어질 수 있다.
 - `floorKey(t)`를 구한 뒤 `map.get(...)`를 다시 하는 방식도 가능하지만, 초보자 기준으로는 entry 한 번에서 시작/끝을 같이 읽는 편이 사고 흐름이 덜 끊긴다.

@@ -1,6 +1,6 @@
 # Database First-Step Bridge
 
-> 한 줄 요약: 백엔드 미션 초반 DB 학습은 `트랜잭션 기본 감각 -> JDBC/JPA/MyBatis 역할 구분 -> 인덱스 기본 감각` 순서로 잡아야, 코드와 SQL을 같이 볼 때 덜 헷갈린다.
+> 한 줄 요약: 백엔드 미션 초반 DB 학습은 `트랜잭션 기본 감각 -> JDBC/JPA/MyBatis 역할 구분 -> 인덱스 기본 감각` 순서로 잡아야, 코드와 SQL을 같이 볼 때 덜 헷갈린다. `deadlock`/`failover`/`cdc`는 이 입구를 지난 뒤에만 연다.
 
 **난이도: 🟢 Beginner**
 
@@ -105,6 +105,17 @@ beginner stop signal도 같이 기억하면 안전하다.
 - `playbook`, `runbook`, `failover`, `cdc`, `replay`, `case study`가 먼저 보이면 이 문서의 primer/follow-up까지만 읽고 멈춘다.
 - "`처음`", "`헷갈려`", "`뭐예요`", "`save()`만 보여요`", "`controller 다음에 뭐 봐요?`"가 질문에 있으면 deep dive보다 위 표의 primer 한 칸이 우선이다.
 - 길을 잃으면 [Network -> Spring handoff](../network/README.md#network---spring-handoff) 또는 [database 카테고리 인덱스](./README.md)로 돌아가서 질문을 다시 하나만 고른다.
+
+## 지금은 관련 문서로만 넘기는 가지
+
+아래 단어는 beginner entrypoint 본문에서 길게 풀지 않는다. "무슨 축인지"만 확인하고 관련 문서 링크로 넘기는 편이 초보자에게 안전하다.
+
+| 먼저 보인 단어 | 지금 여기서 확정할 최소 해석 | 관련 문서 |
+|---|---|---|
+| `deadlock`, `retry`, `lock wait` | 트랜잭션 입문 다음의 동시성/충돌 축이다 | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md), [락 기초](./lock-basics.md) |
+| `flush`, OSIV, lazy loading | 접근 기술 구분 다음의 JPA 런타임 축이다 | [JDBC, JPA, MyBatis 심화](./jdbc-jpa-mybatis.md), [Spring Persistence / Transaction Mental Model Primer](../spring/spring-persistence-transaction-web-service-repository-primer.md) |
+| `replica lag`, `failover` | 조회 일관성과 운영 경로 축이다 | [Replica Lag와 Read-after-Write](./replica-lag-read-after-write-strategies.md), [database 카테고리 인덱스](./README.md) |
+| `cdc`, `replay`, `backfill`, `cutover` | 데이터 이동/운영 설계 축이다 | [Schema Migration, Partitioning, CDC, CQRS](./schema-migration-partitioning-cdc-cqrs.md), [database 카테고리 인덱스](./README.md) |
 
 ## spring 용어가 다시 섞일 때 한 칸 복귀
 

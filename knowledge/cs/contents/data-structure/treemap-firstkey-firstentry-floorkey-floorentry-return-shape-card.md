@@ -7,6 +7,7 @@
 관련 문서:
 
 - [자료구조 카테고리 인덱스](./README.md)
+- [TreeMap `ceilingKey` vs `ceilingEntry` Return-Shape Twin Card](./treemap-ceilingkey-ceilingentry-return-shape-twin-card.md)
 - [TreeSet, TreeMap Null-Boundary Quick Reference](./treeset-treemap-null-boundary-quick-reference.md)
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
@@ -131,6 +132,7 @@ if (first == null) {
 
 ## 더 깊이 가려면
 
+- 오른쪽 lookup을 같은 방식으로 짝지어 보고 싶다면 [TreeMap `ceilingKey` vs `ceilingEntry` Return-Shape Twin Card](./treemap-ceilingkey-ceilingentry-return-shape-twin-card.md)
 - `firstKey()`/`firstEntry()` empty behavior만 더 짧게 고정하고 싶다면 [`firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge](../language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md)
 - `floorKey()`/`floorEntry()`에서 strict/inclusive 감각까지 같이 붙이고 싶다면 [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - `floorEntry()`에서 `getValue()`를 꺼내 예약 종료 시각까지 읽는 연습을 하려면 [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)

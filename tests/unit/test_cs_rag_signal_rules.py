@@ -251,6 +251,30 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         ),
     ),
     _chunk(
+        "schema-primer",
+        "contents/database/database-schema-basics.md",
+        "Database Schema Basics",
+        "database",
+        "Schema beginner big picture",
+        (
+            "database schema basics primer explains schema, table, column, row, relation, "
+            "schema design, and how a schema organizes stored data before normalization "
+            "details."
+        ),
+    ),
+    _chunk(
+        "schema-deep",
+        "contents/database/schema-evolution-contract-safe-rollout.md",
+        "Schema Evolution Contract-Safe Rollout",
+        "database",
+        "Advanced schema change rollout",
+        (
+            "schema evolution deep dive covers expand contract rollout, backward "
+            "compatible payload, online ddl, data backfill, and production migration "
+            "guardrails."
+        ),
+    ),
+    _chunk(
         "tx-isolation-primer",
         "contents/database/transaction-isolation-basics.md",
         "Transaction Isolation Basics",
@@ -4406,6 +4430,40 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("read committed", expanded)
         self.assertIn("repeatable read", expanded)
 
+    def test_generic_transaction_shortform_query_adds_transaction_primer_vocabulary(self) -> None:
+        prompt = "트랜잭션이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_isolation",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("transaction isolation basics", expanded)
+        self.assertIn("transaction basics", expanded)
+        self.assertIn("트랜잭션 기초 개념", expanded)
+        self.assertIn("commit rollback basics", expanded)
+
+    def test_generic_transaction_shortform_query_ranks_database_primer_ahead_of_spring_and_ops_docs(
+        self,
+    ) -> None:
+        hits = self._search("트랜잭션이 뭐야?", top_k=8)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            "contents/database/transaction-locking-connection-pool-primer.md",
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/transaction-isolation-basics.md",
+            "contents/spring/spring-transaction-propagation-deep-dive.md",
+        )
+
     def test_introductory_mvcc_query_uses_transaction_primer_signal(self) -> None:
         prompt = "MVCC 를 처음 배우는데 read view, undo chain 같은 내부 용어 전에 큰 그림부터 설명해줘"
 
@@ -4515,6 +4573,32 @@ class CsRagSignalRulesTest(unittest.TestCase):
             hits,
             "contents/database/transaction-isolation-basics.md",
             "contents/database/mvcc-read-view-undo-chain-internals.md",
+        )
+
+    def test_schema_shortform_query_adds_beginner_modeling_vocabulary(self) -> None:
+        prompt = "스키마가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "db_modeling",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("database schema basics", expanded)
+        self.assertIn("db modeling beginner", expanded)
+        self.assertIn("큰 그림", expanded)
+
+    def test_schema_shortform_query_ranks_primer_ahead_of_schema_evolution_deep_dive(self) -> None:
+        hits = self._search("스키마가 뭐야?", top_k=8)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/database/database-schema-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/database/database-schema-basics.md",
+            "contents/database/schema-evolution-contract-safe-rollout.md",
         )
 
     def test_english_mvcc_why_use_query_uses_transaction_primer_signal(self) -> None:
@@ -4819,6 +4903,16 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "must_exclude": set(),
             },
             {
+                "prompt": "쿼리 서비스 역할이 뭐야?",
+                "top_tag": "persistence_boundary",
+                "must_include": {
+                    "query service role",
+                    "query service responsibility",
+                    "what does query service do",
+                },
+                "must_exclude": set(),
+            },
+            {
                 "prompt": "AOP가 뭐야?",
                 "top_tag": "spring_framework",
                 "must_include": {
@@ -5041,6 +5135,12 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "top_k": 8,
             },
             {
+                "prompt": "쿼리 서비스 역할이 뭐야?",
+                "primer_doc": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "deep_dive_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "top_k": 8,
+            },
+            {
                 "prompt": "@Transactional 뭔데?",
                 "primer_doc": "contents/spring/spring-transactional-basics.md",
                 "deep_dive_doc": "contents/spring/spring-transaction-propagation-deep-dive.md",
@@ -5254,6 +5354,54 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "동기 비동기 블로킹 논블로킹 차이가 뭐예요? 처음 배우는데 큰 그림 잡고 싶어",
             top_k=6,
         )
+
+        self.assert_path_rank_at_most(
+            hits,
+            "knowledge/cs/contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead_or_absent(
+            hits,
+            "knowledge/cs/contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+            "knowledge/cs/contents/operating-system/epoll-kqueue-io-uring.md",
+        )
+
+    def test_sync_async_shortform_query_prefers_basics_primer_signal(self) -> None:
+        prompt = "동기 비동기 차이가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "os_sync_async_blocking_basics",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("os_sync_async_blocking_basics", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("sync async blocking nonblocking basics", expanded)
+        self.assertIn("synchronous vs asynchronous", expanded)
+        self.assertNotIn("locking strategy", expanded)
+
+    def test_blocking_nonblocking_shortform_query_prefers_basics_primer_over_locking_noise(
+        self,
+    ) -> None:
+        prompt = "What is blocking vs non-blocking?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "os_sync_async_blocking_basics",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("os_sync_async_blocking_basics", tags)
+        self.assertNotIn("transaction_isolation", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("sync async blocking nonblocking basics", expanded)
+        self.assertIn("blocking vs non-blocking", expanded)
+        self.assertNotIn("locking strategy", expanded)
+
+    def test_blocking_nonblocking_shortform_query_ranks_os_primer_ahead_of_async_io_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search("What is blocking vs non-blocking?", top_k=6)
 
         self.assert_path_rank_at_most(
             hits,
@@ -6157,6 +6305,26 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "contents/spring/spring-ioc-di-basics.md",
             "contents/spring/spring-bean-di-basics.md",
         )
+
+    def test_english_ioc_and_di_meaning_queries_add_ioc_beginner_primer_vocabulary(self) -> None:
+        prompts = (
+            "What does IoC mean in Spring?",
+            "What does dependency injection mean in Spring?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "spring_framework",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("spring ioc di basics", expanded)
+                self.assertIn("dependency injection", expanded)
+                self.assertIn("inversion of control", expanded)
+                self.assertIn("spring ioc di beginner primer", expanded)
+                self.assertIn("ioc 제어 역전 입문", expanded)
+                self.assertIn("dependency injection 입문", expanded)
 
     def test_component_scan_vs_bean_registration_query_prefers_intro_primer_vocabulary(self) -> None:
         prompt = "@Bean이랑 component scan 차이가 뭐야?"

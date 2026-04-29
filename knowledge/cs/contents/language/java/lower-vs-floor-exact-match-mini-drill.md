@@ -138,6 +138,7 @@ System.out.println(gradeByMinimumScore.lowerEntry(87));
 
 - 전체 네 쌍을 같이 묶고 싶으면: [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - boundary-result `null`과 `null` key 규칙을 분리해서 보고 싶다면: [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
+- 오른쪽 exact match 대응편을 같이 보고 싶다면: [`ceiling` vs `higher` Exact Match 미니 드릴](./ceiling-vs-higher-exact-match-mini-drill.md)
 - `TreeMap`의 `null` key와 nullable field 차이를 따로 정리한 입문 카드가 필요하면: [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)
 - reverse order에서 왜 더 헷갈리는지 보려면: [`descendingSet()` / `descendingMap()` View Mental Model](./descending-view-mental-model.md)
 - range API와 같이 섞일 때 경계 감각을 고정하려면: [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)

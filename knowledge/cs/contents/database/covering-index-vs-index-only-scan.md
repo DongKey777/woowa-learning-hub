@@ -1,214 +1,166 @@
 # Covering Index vs Index-Only Scan
 
-> 한 줄 요약: 커버링 인덱스는 "인덱스만으로 답을 만들 수 있는 설계"이고, index-only scan은 "실제로 테이블 본문을 안 읽고 끝나는 실행"이다.
+> 한 줄 요약: MySQL `Using index`는 보통 "이 조회가 인덱스 값만으로 답이 되나"를 읽는 신호이고, PostgreSQL `Index Only Scan`은 "이번 실행에서 heap 재방문을 얼마나 줄였나"를 읽는 plan node라서 같은 칸에 놓고 바로 번역하면 헷갈린다.
 
-**난이도: 🔴 Advanced**
+**난이도: 🟢 Beginner**
 
-retrieval-anchor-keywords: covering index, index-only scan, using index, using index vs index only scan, mysql using index vs postgresql index only scan, visibility map, heap fetches, heap fetches not zero, MVCC visibility, covering index but still heap fetches, covering index but still reads table, why heap fetches remain, using index but still table lookup, secondary index lookup, EXPLAIN ANALYZE, postgresql cluster vs index only scan, postgresql cluster physical row order, cluster does not mean index only scan, cluster 한번 하면 계속 정렬되나요, postgresql cluster 헷갈림, physical row order index only scan, 커버링 인덱스와 index only scan 차이, using index 의미
+관련 문서:
 
-## 증상별 바로 가기
+- [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
+- [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md)
+- [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+- [인덱스 기초 (Index Basics)](./index-basics.md)
+- [Hybrid Top-Index / Leaf Layouts](../data-structure/hybrid-top-index-leaf-layouts.md)
+- [database 카테고리 인덱스](./README.md)
 
-- `Using index`와 `Index Only Scan`을 같은 뜻으로 읽고 있거나, MySQL `Extra`와 PostgreSQL plan node를 같은 신호로 해석하고 있다면 이 문서에서 용어부터 분리한다.
-- `covering index를 만들었는데 PostgreSQL에서 Heap Fetches가 남는다`, `visibility map 때문에 heap/table를 다시 읽는다` 같은 follow-up이면 먼저 [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md)에서 초급 멘탈모델을 잡고, 그다음 이 문서에서 MVCC visibility와 vacuum 상태를 함께 본다.
-- PostgreSQL `CLUSTER`, `Index Only Scan`, physical row order를 한 덩어리로 헷갈리고 있다면 먼저 [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)의 비교표로 저장 구조 층을 분리한 뒤 이 문서를 읽는다.
-- `Using index`는 보이는데도 읽기 p95가 그대로이거나, 컬럼을 더 넣은 뒤 write가 무거워졌다면 [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)으로 이동한다.
-- `Using filesort`, `ORDER BY ... LIMIT`, left-prefix 문제가 먼저면 [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)로 돌아가서 인덱스 shape부터 다시 잡는다.
+retrieval-anchor-keywords: covering index vs index only scan, using index meaning, mysql using index vs postgresql index only scan, explain checklist beginner, plan reading checklist, heap fetches basics, index only scan 뭐예요, using index 헷갈림, 왜 using index인데도 느려요, why heap fetches remain, covering index beginner, beginner explain reading, what is index only scan
 
 ## 핵심 개념
 
-- 관련 문서:
-  - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
-  - [Covering Index Width, Leaf Fanout, and Write Amplification](./covering-index-width-fanout-write-amplification.md)
-  - [인덱스와 실행 계획](./index-and-explain.md)
-  - [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
-  - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
-  - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
-  - [Autovacuum Freeze Debt, XID Age, and Wraparound Playbook](./autovacuum-freeze-debt-wraparound-playbook.md)
+초보자가 가장 많이 섞는 질문은 이것이다.
 
-커버링 인덱스와 index-only scan은 비슷하게 들리지만, 같은 문장이 아니다.
+- "`Using index`면 PostgreSQL `Index Only Scan`이랑 같은 말 아닌가요?"
+- "둘 다 인덱스만 읽는다는 뜻 아닌가요?"
 
-- 커버링 인덱스는 쿼리에 필요한 컬럼이 인덱스 안에 모두 들어 있는 상태를 뜻한다.
-- index-only scan은 실행 엔진이 실제로 heap/table 본문을 읽지 않고 끝내는 실행 경로를 뜻한다.
+안전한 첫 답은 "비슷한 방향의 좋은 신호일 수는 있지만, 같은 층의 용어는 아니다"이다.
 
-즉, 커버링 인덱스는 설계이고 index-only scan은 실행 결과다.
+- covering index: 쿼리에 필요한 컬럼이 인덱스 안에 다 들어 있는 설계
+- MySQL `Using index`: MySQL `EXPLAIN`의 `Extra`에서 보는 신호
+- PostgreSQL `Index Only Scan`: PostgreSQL 실행 계획 node 이름
 
-이 차이를 모르면 "인덱스는 다 같은 거 아닌가?"라는 착각에 빠진다.
+즉 먼저 "컬럼 설계"와 "실행 계획"을 분리해서 읽어야 한다.
+비유하자면 covering index는 "재료를 가방에 다 챙겼나"이고, index-only scan은 "이번 이동에서 창고를 다시 안 갔나"에 가깝다. 다만 실제 엔진 동작은 가방과 창고 같은 단순 비유보다 더 복잡하므로, 비유는 설계와 실행을 분리하는 시작점까지만 유효하다.
 
-## 초급자용 30초 구분
+## 한눈에 보기
 
-PostgreSQL에서 아래 셋을 같은 층으로 묶으면 거의 항상 헷갈린다.
+| plan-reading 질문 | MySQL에서 먼저 보는 말 | PostgreSQL에서 먼저 보는 말 | 바로 따라붙는 체크 |
+| --- | --- | --- | --- |
+| 필요한 컬럼이 인덱스에 다 있나 | `Extra: Using index` 가능성 | `Index Only Scan` 후보 여부 | `SELECT *`인지, 필요한 컬럼이 늘었는지 |
+| 이번 실행에서 테이블 본문 접근을 줄였나 | secondary lookup이 줄었는지 | `Heap Fetches`가 남았는지 | 실행 시간, rows, buffers/heap 재확인 |
+| 이 신호를 무조건 좋은 결과로 봐도 되나 | 아니다. row 수와 정렬 비용은 남을 수 있다 | 아니다. visibility 확인 때문에 heap을 다시 볼 수 있다 | 다른 병목이 같이 남는지 |
 
-| 헷갈리는 말 | 실제로 답하는 질문 | 안전한 첫 문장 |
-|------|------|------|
-| covering index | "이 쿼리에 필요한 컬럼이 인덱스에 다 있나?" | 컬럼 구성에 대한 설계 이야기다 |
-| `Index Only Scan` | "이번 실행에서 heap을 안 읽고 끝내려는 경로를 탔나?" | 실행 계획 이름이다 |
-| `CLUSTER` / physical row order | "table heap row를 어떤 순서로 다시 써 뒀나?" | 저장 배치나 maintenance 이야기다 |
+짧게 외우면 아래 두 줄이면 된다.
 
-짧게 말하면 이렇다.
-
-- covering index: 인덱스 안에 무엇을 넣었는가
-- `Index Only Scan`: 그 인덱스로 이번 실행을 어떻게 끝냈는가
-- `CLUSTER`: heap row 순서를 한 번 어떻게 정리했는가
-
-즉 `CLUSTER`는 row 배치 쪽 이야기이고, `Index Only Scan`은 heap 생략 실행 이야기다. 이름에 `index`가 같이 보여도 같은 버튼이 아니다.
-
-## 깊이 들어가기
-
-### 1. MySQL InnoDB에서 커버링 인덱스가 빠른 이유
-
-InnoDB secondary index의 leaf에는 인덱스 키와 primary key가 들어 있다.  
-쿼리가 필요한 컬럼을 모두 secondary index에서 해결할 수 있으면, 테이블 본문으로 내려가는 추가 탐색을 줄일 수 있다.
-
-예를 들어:
-
-```sql
-SELECT user_id, status, created_at
-FROM orders
-WHERE user_id = 10
-ORDER BY created_at DESC
-LIMIT 20;
+```text
+MySQL `Using index` = 인덱스 값만으로 답을 만들 가능성이 큰가
+PostgreSQL `Index Only Scan` = 이번 실행에서 heap 재방문을 줄이는 경로를 탔는가
 ```
 
-여기서 필요한 컬럼이 인덱스에 다 들어 있으면 `Using index`가 나타날 수 있다.  
-이건 테이블 접근을 줄인다는 의미에서 매우 중요하다.
-다만 커버링을 위해 컬럼을 계속 추가하면 leaf entry 폭이 커지고, write path와 cache residency 비용도 같이 늘어난다.
+## 표준 읽기 순서 카드
 
-### 2. PostgreSQL index-only scan은 visibility 확인이 핵심이다
+실행 계획에서 둘을 만나면 아래 순서로 읽으면 된다.
 
-PostgreSQL은 단순히 컬럼이 인덱스에 있다는 이유만으로 테이블 본문을 완전히 건너뛰지 않는다.  
-MVCC 때문에 해당 heap tuple이 현재 스냅샷에서 보이는지 확인해야 하고, 이때 visibility map이 중요하다.
+1. 엔진부터 분리한다.
+   MySQL `EXPLAIN Extra`인지, PostgreSQL plan node인지 먼저 확인한다.
+2. 필요한 컬럼이 인덱스에 다 있는지 본다.
+   `SELECT *`, 계산식, 추가 DTO 컬럼 때문에 covering이 깨졌는지 본다.
+3. "실제로 본문 재방문이 줄었나"를 따로 본다.
+   MySQL은 lookup 수와 row 수를, PostgreSQL은 `Heap Fetches`와 heap 관련 buffer 접근을 같이 본다.
+4. 신호를 절대화하지 않는다.
+   `Using index`가 있어도 row를 너무 많이 읽으면 느릴 수 있고, PostgreSQL `Index Only Scan`이어도 visibility 확인 때문에 heap 접근이 남을 수 있다.
+5. 다음 행동을 결정한다.
+   컬럼 구성이 문제면 인덱스/조회 컬럼을 다시 보고, PostgreSQL에서 `Heap Fetches`가 크면 vacuum/visibility 문맥까지 이어 본다.
 
-핵심은 이렇다.
+이 카드의 핵심은 "`Using index`를 보면 컬럼 구성을 먼저", "`Index Only Scan`을 보면 `Heap Fetches`를 같이" 보는 습관이다.
 
-- page가 all-visible이면 heap 방문을 생략할 가능성이 커진다
-- vacuum이 덜 됐거나 page가 아직 visible로 표시되지 않으면 heap fetch가 다시 생긴다
+## 상세 분해
 
-그래서 PostgreSQL에서 index-only scan은 "이론상 가능"과 "실제로 heap fetch 0"이 다르다.
+### 1. MySQL `Using index`를 읽는 기본선
 
-### 3. 같은 "인덱스만 읽는다"라도 엔진마다 조건이 다르다
+MySQL, 특히 InnoDB 문맥에서는 `Using index`를 보면 "이 조회가 인덱스 리프에 있는 값만으로 답을 만들 수 있나"를 먼저 떠올리면 된다.
 
-실무에서는 아래처럼 구분하면 안전하다.
-
-| 관점 | MySQL InnoDB | PostgreSQL |
-|------|------|------|
-| 용어 | `Using index`가 커버링 인덱스 신호 | `Index Only Scan` 실행 경로 |
-| 핵심 조건 | 필요한 컬럼이 모두 인덱스에 있어야 함 | 인덱스 + visibility map + heap fetch 최소화 |
-| MVCC 영향 | 읽기 경로에 따라 추가 확인 비용이 남을 수 있음 | heap visibility 확인이 핵심 병목이 될 수 있음 |
-
-### 4. 설계와 실행은 같지 않다
-
-커버링 인덱스를 설계했다고 해서 항상 index-only scan이 되는 것은 아니다.
-
-- 쿼리에 `SELECT *`가 있으면 깨진다
-- 함수나 계산식이 들어가면 필요한 컬럼이 늘어난다
-- MVCC/visibility 확인 때문에 heap 접근이 생길 수 있다
-- 옵티마이저가 더 싸다고 판단하면 다른 경로를 고를 수 있다
-
-### 5. retrieval anchors
-
-이 문서를 다시 찾을 때 유용한 키워드는 다음이다.
-
-- `covering index`
-- `index-only scan`
-- `Using index`
-- `visibility map`
-- `heap fetches`
-- `MVCC visibility`
-- `EXPLAIN ANALYZE`
-
-## 실전 시나리오
-
-### 시나리오 1. MySQL에서는 빨라졌는데 PostgreSQL에서는 덜 빨라 보인다
-
-같은 API라도 엔진이 다르면 실행 경로가 다르다.  
-MySQL에서는 커버링 인덱스로 테이블 접근을 줄였는데, PostgreSQL에서는 visibility 확인 때문에 heap fetch가 남을 수 있다.
-
-### 시나리오 2. 인덱스를 추가했는데도 `SELECT *` 때문에 효과가 없다
-
-조회 API에서 필요한 컬럼이 조금이라도 늘어나면 커버링이 깨질 수 있다.  
-특히 목록 API는 처음엔 작아 보여도 나중에 DTO가 커지면서 테이블 본문을 다시 읽게 되는 일이 많다.
-
-### 시나리오 3. vacuum이 밀리면 index-only scan 효과가 떨어진다
-
-PostgreSQL에서 index-only scan을 기대했는데 heap fetch가 계속 보인다면, vacuum과 visibility map 상태를 먼저 봐야 한다.  
-쿼리만 고쳐서는 안 되는 경우가 많다.
-
-## 코드로 보기
-
-### MySQL 예시
+예를 들어 아래처럼 필요한 컬럼이 인덱스에 모두 있으면 커버링 쪽 신호가 될 수 있다.
 
 ```sql
-CREATE INDEX idx_orders_user_status_created_at
-ON orders (user_id, status, created_at);
-
 EXPLAIN
 SELECT user_id, status, created_at
 FROM orders
 WHERE user_id = 10
-  AND status = 'PAID'
 ORDER BY created_at DESC
 LIMIT 20;
 ```
 
-확인 포인트:
+하지만 `Using index`가 보여도 아래는 별개다.
 
-- `Extra`에 `Using index`가 보이는지
-- `type`이 불필요하게 넓지 않은지
+- 읽는 row 수가 너무 많은가
+- `ORDER BY`가 여전히 비싼가
+- 인덱스 폭이 커져 write 비용이 늘었는가
 
-### PostgreSQL 예시
+즉 MySQL에서는 `Using index`를 "좋은 출발 신호"로 읽되, "무조건 가장 빠른 상태"라고 단정하면 안 된다.
+
+### 2. PostgreSQL `Index Only Scan`을 읽는 기본선
+
+PostgreSQL에서는 `Index Only Scan`이라는 node 이름이 직접 보인다.
+이때 초보자가 바로 놓치는 숫자가 `Heap Fetches`다.
+
+이 node는 "가능하면 인덱스만으로 끝내려는 경로"를 뜻하지만, PostgreSQL의 MVCC visibility 확인 때문에 heap 재확인이 남을 수 있다. 특히 page가 all-visible로 충분히 표시되지 않았으면 heap을 다시 볼 수 있다.
+
+그래서 PostgreSQL에서는 아래처럼 묶어 읽는 편이 안전하다.
+
+- `Index Only Scan`이 보였나
+- `Heap Fetches`가 0에 가까운가
+- `BUFFERS`나 실행 시간상 heap 재확인이 체감 병목인가
+
+즉 PostgreSQL에서는 node 이름 하나보다 "heap을 정말 덜 읽었나"를 끝까지 확인해야 한다.
+
+### 3. 둘을 같은 말로 번역하면 생기는 오해
+
+| 자주 하는 말 | 왜 틀어지나 | 더 안전한 표현 |
+| --- | --- | --- |
+| "`Using index` = `Index Only Scan`이죠?" | MySQL의 `Extra` 신호와 PostgreSQL node 이름을 같은 층으로 묶는다 | 둘 다 본문 접근을 줄이는 쪽 신호일 수 있지만, 읽는 위치와 조건이 다르다 |
+| "covering index를 만들었으니 PostgreSQL도 heap을 안 보겠죠?" | 설계와 실행을 섞는다 | covering은 후보 조건이고, 실제 heap 생략은 visibility와 실행 결과를 같이 본다 |
+| "`Index Only Scan`이면 무조건 빠르죠?" | heap fetch와 row 수를 놓친다 | `Heap Fetches`, rows, buffers를 같이 봐야 한다 |
+
+## 흔한 오해와 함정
+
+- "`Using index`가 보이면 튜닝 끝이다"
+  아니다. row 수가 크거나 정렬/범위 스캔이 크면 여전히 느릴 수 있다.
+- "`Index Only Scan`이면 heap을 절대 안 읽는다"
+  아니다. PostgreSQL에서는 visibility 확인 때문에 heap 재확인이 남을 수 있다.
+- "covering index와 index-only scan은 같은 단어의 영어/영어 차이일 뿐이다"
+  아니다. covering은 설계 관점, index-only scan은 실행 경로 관점이다.
+- "`SELECT *`여도 인덱스만 잘 만들면 커버링이 된다"
+  보통은 아니다. 필요한 컬럼이 많아지면 커버링이 쉽게 깨진다.
+
+## 실무에서 쓰는 모습
+
+목록 API를 본다고 하자.
 
 ```sql
-CREATE INDEX idx_orders_user_status_created_at
-ON orders (user_id, status, created_at);
-
-EXPLAIN (ANALYZE, BUFFERS)
 SELECT user_id, status, created_at
 FROM orders
 WHERE user_id = 10
-  AND status = 'PAID'
 ORDER BY created_at DESC
 LIMIT 20;
 ```
 
-확인 포인트:
+이 쿼리를 볼 때 초보자는 아래처럼 읽으면 된다.
 
-- `Index Only Scan`인지
-- `Heap Fetches`가 얼마나 있는지
-- `BUFFERS`에서 heap read가 남는지
+- MySQL `EXPLAIN`에서 `Using index`가 보이면 "인덱스 컬럼만으로 답이 되나"를 먼저 본다.
+- PostgreSQL `EXPLAIN (ANALYZE, BUFFERS)`에서 `Index Only Scan`이 보이면 "`Heap Fetches`가 얼마나 남았나"를 바로 같이 본다.
+- 둘 다 plan이 좋아 보여도 실제 row 수가 크면 latency가 기대만큼 줄지 않을 수 있다.
 
-### visibility를 개선하는 쪽
+follow-up이 아래처럼 갈리면 다음 문서가 안전하다.
 
-```sql
-VACUUM (ANALYZE) orders;
-```
+- "`Using index`인데도 왜 느려요?" -> [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+- "`Index Only Scan`인데 `Heap Fetches`가 왜 남아요?" -> [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md)
+- "MySQL 감각이 PostgreSQL에서 왜 안 맞죠?" -> [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
 
-이 작업은 커버링 인덱스를 만드는 것과 다른 층의 최적화다.
+## 더 깊이 가려면
 
-## 트레이드오프
+- MySQL의 커버링 설계와 복합 인덱스 순서를 더 보려면 [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
+- PostgreSQL에서 `Heap Fetches`가 남는 이유를 더 보려면 [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md)
+- 실행 계획을 처음부터 읽는 순서를 넓게 잡고 싶으면 [인덱스 기초 (Index Basics)](./index-basics.md)
+- B+Tree 리프와 상단 인덱스 모양을 그림 감각으로 다시 보고 싶으면 [Hybrid Top-Index / Leaf Layouts](../data-structure/hybrid-top-index-leaf-layouts.md)
 
-| 선택지 | 장점 | 단점 | 언제 선택하는가 |
-|------|------|------|------|
-| 커버링 인덱스 추가 | 테이블 접근을 줄인다 | 인덱스 크기와 쓰기 비용이 늘어난다 | 목록/검색 API가 반복될 때 |
-| index-only scan 기대 | 읽기 비용을 크게 줄일 수 있다 | visibility 조건이 맞아야 한다 | PostgreSQL + vacuum 상태가 좋을 때 |
-| `SELECT *` 유지 | 코드 변경이 적다 | 커버링이 깨진다 | 개발 초기, 임시 도구 |
-| 필요한 컬럼만 명시 | 실행 계획이 좋아진다 | DTO/쿼리 관리가 더 필요하다 | 운영 API |
+## 면접/시니어 질문 미리보기
 
-핵심은 "인덱스에 컬럼이 있느냐"보다, **실제로 heap/table 본문을 얼마나 안 읽게 되는가**다.
-
-## 꼬리질문
-
-> Q: 커버링 인덱스와 index-only scan은 같은 말인가요?
-> 의도: 설계와 실행 경로를 구분하는지 확인
-> 핵심: 커버링 인덱스는 설계이고, index-only scan은 실행 결과다
-
-> Q: PostgreSQL에서 index-only scan이 있어도 heap fetch가 생기는 이유는 무엇인가요?
-> 의도: MVCC visibility와 visibility map 이해 여부 확인
-> 핵심: 모든 heap page가 all-visible로 표시된 상태가 아니기 때문이다
-
-> Q: MySQL에서 `Using index`가 보이면 항상 최고 성능인가요?
-> 의도: 실행 계획 신호를 절대화하지 않는지 확인
-> 핵심: 인덱스만 읽어도 정렬, 범위, 통계, 다른 병목은 남을 수 있다
+| 질문 | 의도 | 핵심 답 |
+| --- | --- | --- |
+| "`Using index`와 `Index Only Scan`의 차이를 한 문장으로 설명해 보세요." | 설계와 실행을 분리하는지 본다 | MySQL 신호와 PostgreSQL 실행 노드를 분리해서 설명한다 |
+| "PostgreSQL에서 `Index Only Scan`인데도 왜 느릴 수 있나요?" | visibility와 heap 재확인을 연결하는지 본다 | `Heap Fetches`와 heap buffer 재방문이 남을 수 있다고 답한다 |
+| "covering index를 넓히면 항상 좋은가요?" | 읽기 최적화와 쓰기 비용 균형을 보는지 본다 | 읽기는 좋아질 수 있지만 인덱스 폭과 유지 비용이 늘 수 있다고 답한다 |
 
 ## 한 줄 정리
 
-커버링 인덱스는 테이블 본문을 덜 읽게 만드는 설계이고, index-only scan은 그 설계가 실제 실행에서 테이블 접근을 얼마나 없앴는지를 보여주는 결과다.
+`Using index`는 "인덱스 컬럼만으로 답이 되는가"를 읽는 MySQL 쪽 신호이고, `Index Only Scan`은 "이번 실행에서 heap을 얼마나 생략했는가"를 읽는 PostgreSQL 쪽 실행 경로다.

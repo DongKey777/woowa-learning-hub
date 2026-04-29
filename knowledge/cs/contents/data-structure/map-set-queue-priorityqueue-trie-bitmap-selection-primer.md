@@ -10,13 +10,15 @@
 - [Backend Data-Structure Starter Pack](./backend-data-structure-starter-pack.md)
 - [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md)
+- [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)
 - [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
 - [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitmap, 자료구조 처음 배우는데 뭐부터, 자료구조 큰 그림, 자료구조 헷갈림, 처음 배우는데 map set queue 차이, map set queue 뭐예요, map set queue 언제 쓰는지, trie bitmap 뭐예요, priority queue가 뭐예요, queue가 왜 bfs에도 나와요, queue가 service 코드에도 왜 나와요, set이랑 map이 왜 달라요, bitmap은 언제 써요, what is bitmap, 첫 자료구조 선택 기준
+retrieval-anchor-keywords: map vs set vs queue, priority queue가 뭐예요, trie bitmap 뭐예요, 자료구조 처음 배우는데, 처음 배우는데 map set queue 차이, queue가 왜 bfs에도 나와요, bfs인데 왜 queue를 써요, 왜 이 문제는 queue가 아니라 bfs예요, set이랑 map이 왜 달라요, bitmap은 언제 써요, 첫 자료구조 선택 기준, exact lookup vs prefix search, what is queue vs bfs, beginner selection primer, basics
 
 ## 이 문서가 먼저 잡아야 하는 첫 질문
 
@@ -25,6 +27,8 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
 - `자료구조 처음인데 뭐부터 봐요?`
 - `map set queue 차이가 뭐예요?`
 - `queue가 왜 bfs에도 나오고 service 코드에도 나와요?`
+- `최소 이동 횟수라는데 queue 문제예요, BFS 문제예요?`
+- `가까운 칸부터 탐색이라는데 왜 queue만 알면 안 되나요?`
 - `trie랑 bitmap은 언제 쓰는지 큰 그림만 먼저 알고 싶어요`
 
 한 줄로 줄이면 `구현 디테일`보다 `질문 모양 번역`을 먼저 끝내는 문서다.
@@ -51,6 +55,23 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
 | `다음 재시도 시각이 가장 이른 작업` | `priority queue` | 우선순위 키가 순서를 바꾼다 |
 | `"app"`로 시작하는 검색어 후보` | `trie` | prefix 자체를 구조에 녹여 둔다 |
 | `active 사용자 집합 ∩ premium 사용자 집합` | `bitmap` | 큰 집합의 교집합/합집합을 비트 연산으로 처리하기 쉽다 |
+
+## queue vs BFS를 먼저 자르는 20초 분기
+
+이 broad primer에서 retrieval이 자주 빗나가는 지점이 `queue`와 `BFS`를 같은 층위로 읽는 경우다.
+처음에는 아래 네 줄만 먼저 자르면 된다.
+
+| 질문 신호 | 먼저 읽을 이름 | 이유 | 다음 문서 |
+|---|---|---|---|
+| `먼저 들어온 작업부터 처리` | `queue` | FIFO 순서가 답을 정한다 | [큐 기초](./queue-basics.md) |
+| `미로에서 가까운 칸부터`, `최소 이동 횟수` | `BFS` | queue는 구현 도구이고 핵심은 거리 순서 탐색이다 | [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md), [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `가장 이른 재시도 시각`, `가장 작은 값` | `priority queue` | 도착 순서보다 우선순위 key가 먼저다 | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
+| `orderId로 값 조회` | `map lookup` | 순서보다 `key -> value`가 핵심이다 | [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md) |
+
+한 줄로 줄이면 이렇다.
+
+- `누가 먼저 나가나?`를 묻는다면 `queue`
+- `어떤 칸을 먼저 퍼뜨리나?`를 묻는다면 `BFS`
 
 ## 한눈에 보기
 
@@ -110,7 +131,7 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
   - key가 `0..n` 범위의 정수 id이고 교집합/합집합을 자주 하면 `bitmap`
 - `queue` vs `BFS용 queue`
   - 둘 다 queue를 쓰지만, `최소 이동 횟수`가 핵심이면 자료구조보다 알고리즘 질문이 먼저다
-  - 이 경우는 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)으로 이어서 보는 편이 빠르다
+  - 이 경우는 [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) 순서로 이어서 보는 편이 빠르다
 - `bitmap`이 항상 최고 성능은 아니다
   - row 수가 작거나 id가 문자열 중심이면 구현 복잡도만 늘 수 있다
   - `bitmap`은 "정수 id 집합을 정말 많이 합치나?"를 먼저 확인할 때 의미가 있다
@@ -122,8 +143,8 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
 | 지금 가장 막히는 말 | 다음 한 칸 | 왜 여기로 가나 |
 |---|---|---|
 | `set이랑 map이 아직 헷갈려요` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | `있나?`와 `무슨 값이지?`를 다시 분리한다 |
-| `queue가 왜 BFS랑 service 둘 다에 나와요?` | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | FIFO 도구와 탐색 규칙을 다른 질문으로 자른다 |
-| `trie가 map이랑 뭐가 달라요?` | [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md) | exact lookup과 prefix lookup을 분리한다 |
+| `queue가 왜 BFS랑 service 둘 다에 나와요?`, `최소 이동 횟수면 queue예요 BFS예요?` | [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | FIFO 도구와 거리 순서 탐색을 먼저 분리한 뒤 BFS로 넘긴다 |
+| `trie가 map이랑 뭐가 달라요?`, `문자열 key면 trie부터 봐야 하나요?` | [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md) | broad primer 다음 단계에서 exact lookup과 prefix lookup을 먼저 분리한다 |
 | `bitmap이 set보다 왜 유리할 수 있죠?` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) | 정수 id 집합 연산이라는 전제를 붙인다 |
 
 주니어가 특히 기억하면 좋은 분기 하나만 더 적으면:
@@ -141,10 +162,13 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
 |---|---|
 | `map`과 `set`을 더 또렷하게 나누고 싶다 | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) |
 | `set`으로 충분한지, dense integer id라서 bitmap을 볼지 헷갈린다 | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) |
+| `queue`가 자료구조 질문인지 BFS 도구인지부터 헷갈린다 | [Queue vs BFS vs Priority Queue vs Map Lookup Micro Drill](./queue-bfs-priorityqueue-map-lookup-micro-drill.md) |
 | `queue`와 `priority queue`를 실수 없이 고르고 싶다 | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) |
+| `문자열 key 조회에서 trie와 hashmap을 먼저 자르고 싶다` | [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md) |
 | `trie`가 자동완성에서 왜 자연스러운지 보고 싶다 | [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md) |
 | `bitmap`을 실무에서 언제 꺼내는지 감을 잡고 싶다 | [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md) |
-| `queue`가 자료구조 질문인지 BFS 도구인지 헷갈린다 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
+| `BFS 다음에 0-1 BFS / Dijkstra로 언제 갈라지는지 보고 싶다` | [BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드](./bfs-zero-one-bfs-dijkstra-one-line-classification-card.md) |
+| `queue`와 `BFS` 차이를 잡은 뒤 알고리즘 본문으로 내려가고 싶다 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) |
 | 검색 자동완성 전체 흐름이 궁금하다 | [Search 시스템 설계](../system-design/search-system-design.md) |
 
 ## 한 줄 정리

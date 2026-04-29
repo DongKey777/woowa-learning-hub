@@ -17,7 +17,7 @@
 - [추상 클래스냐 인터페이스+주입이냐: 템플릿 메소드·전략·조합 브리지](./abstract-class-vs-interface-injection-bridge.md)
 - [Template Hook Smells](./template-hook-smells.md) - `hook 하나 추가할까, 전략으로 뺄까`가 이미 `beforeX`/`afterX` 폭증으로 넘어간 상태면 바로 이어지는 smell 문서
 
-retrieval-anchor-keywords: template method vs strategy, template method beginner, strategy beginner, hook vs strategy beginner, parent controls flow, caller chooses strategy, 상속 vs 객체 주입, 처음 배우는데 템플릿 메소드 vs 전략, 처음 배우는데 부모가 흐름을 쥔다 vs 호출자가 전략을 고른다, 템플릿 메소드 전략 언제 쓰는지, 추상 클래스 다음 템플릿 메소드 vs 전략, 부모가 순서를 고정한다 vs 외부에서 구현을 넣어준다, 호출자가 구현을 넣어준다, 주입으로 구현 고르기, 밖에서 넣어주나요 템플릿 메소드 전략
+retrieval-anchor-keywords: template method vs strategy, template method beginner, strategy beginner, hook vs strategy beginner, parent controls flow, caller chooses strategy, 상속 vs 객체 주입, 처음 배우는데 템플릿 메소드 vs 전략, 처음 배우는데 부모가 흐름을 쥔다 vs 호출자가 전략을 고른다, 템플릿 메소드 전략 언제 쓰는지, 추상 클래스 다음 템플릿 메소드 vs 전략, 추상 클래스 보이면 템플릿 메소드인가요, 왜 추상 클래스인데 전략인가요, 부모가 순서를 고정한다 vs 외부에서 구현을 넣어준다, 호출자가 구현을 넣어준다
 
 ---
 
@@ -88,6 +88,19 @@ retrieval-anchor-keywords: template method vs strategy, template method beginner
 |---|---|
 | 고정 순서를 담은 부모 메서드가 있는가? | 없다 |
 | 하위 클래스가 오버라이드하는 위치가 "흐름 내부 슬롯"인가? | 아니고, 그냥 독립 메서드 구현이다 |
+
+### 짧은 비교 카드: "추상 클래스가 보여도 strategy일 수 있나요?"
+
+| 보이는 모양 | 실제 판단 | 왜 그렇게 보나 |
+|---|---|---|
+| `AbstractExporter`가 `validate()`, `save()` 유틸만 모아 둔다 | 템플릿 메소드 아님 | 부모가 실행 순서를 직접 쥐지 않는다 |
+| `PaymentContext`가 `PayStrategy`를 주입받아 `pay()`를 위임한다 | 전략 | 추상 클래스가 없어도 호출자가 규칙 객체를 고른다 |
+| `AbstractCheckout`가 `validate -> pay -> persist`를 고정하고 `pay()` 안에서 또 전략을 주입받는다 | 둘 다 | 바깥 흐름은 템플릿, 내부 규칙 교체는 전략이다 |
+
+반대로 말하면 `추상 클래스가 보인다`는 것은 힌트일 뿐이다. 실제 분기 질문은 항상 두 개다.
+
+1. 부모가 고정 순서를 직접 실행하는가?
+2. 교체 규칙을 호출자/설정/DI가 밖에서 넣어주는가?
 
 ## 이 문서는 언제 읽으면 좋은가
 

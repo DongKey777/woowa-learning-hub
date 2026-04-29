@@ -7,13 +7,14 @@
 관련 문서:
 
 - [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
+- [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md)
 - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md)
 - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md)
 - [Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기](../spring/spring-service-layer-external-io-after-commit-outbox-primer.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: outbound notifier mock boundary, notifier mock first, event publisher mock first, 알림 mock 왜 먼저, 이벤트 발행 mock 먼저, notifier fake vs mock, 처음 notifier 테스트, interaction verification beginner, outbound port side effect basics, notification boundary test, what is notifier mock, mock spy notifier basics
+retrieval-anchor-keywords: outbound notifier mock boundary, notifier mock first, event publisher mock first, 알림 mock 왜 먼저, 이벤트 발행 mock 먼저, notifier fake vs mock, 처음 notifier 테스트, interaction verification beginner, outbound port side effect basics, notification boundary test, what is notifier mock, mock spy notifier basics, notifier mock vs spy, mock spy payload capture, one call payload capture beginner
 
 ## 핵심 개념
 
@@ -62,6 +63,46 @@ then(notifier).should().notifyOrderPlaced("ORDER-001");
 이 테스트가 먼저 말하는 문장은 "`주문 성공 시 알림 요청이 간다`"다.
 repository fake 문서처럼 저장 semantics를 재현할 필요가 없으니, 초심자에게는 이 편이 경계를 덜 흐린다.
 
+## mock vs spy 미니 카드
+
+여기서 beginner가 바로 막히는 다음 질문은 "`notifier는 mock으로 잡아야 한다는 건 알겠는데, 한 번 호출됐는지랑 payload 확인은 mock이냐 spy냐?`"다.
+
+짧게 자르면 이 카드만 기억하면 된다.
+
+| 지금 확인하려는 것 | 먼저 떠올릴 선택 | 왜 이렇게 자르나 |
+|---|---|---|
+| "`주문 성공 시 notifier가 호출됐나?`" | mock 또는 spy 둘 다 가능 | 핵심은 `호출 여부 검증`이다 |
+| "`1번 호출됐고 orderNumber가 ORDER-001인가?`" | spy starter 또는 mock + captor | `호출 기록`과 `전달 값`을 같이 읽어야 한다 |
+| "`호출 자체가 있었는가`만 짧게 말하고 싶다" | mock | 검증 문장이 가장 직접적이다 |
+| "`마지막으로 넘어간 payload를 눈으로 읽고 싶다`" | spy | count와 last payload를 한 객체에서 같이 읽기 쉽다 |
+
+- 이 문서에서는 `mock vs spy`를 "누가 더 정답인가"로 외우지 않는다.
+- notifier 경계에서는 둘 다 `상호작용 확인` 계열이고, starter에서는 `검증 문장을 더 짧게 읽히는 쪽`을 먼저 고르면 된다.
+- `ArgumentCaptor` 같은 도구를 쓰는 mock 스타일도 가능하지만, beginner 첫 카드에서는 "`호출 수 + 마지막 payload 기록`"이면 spy가 더 직관적일 때가 많다.
+
+예를 들면 spy는 아래처럼 읽힌다.
+
+```java
+NotifierSpy notifier = new NotifierSpy();
+
+service.place(command("ORDER-001"));
+
+assertThat(notifier.count()).isEqualTo(1);
+assertThat(notifier.lastMessage().orderNumber()).isEqualTo("ORDER-001");
+```
+
+mock은 아래처럼 "`호출 계약`"을 더 직접적으로 쓴다.
+
+```java
+OrderNotifier notifier = mock(OrderNotifier.class);
+
+service.place(command("ORDER-001"));
+
+then(notifier).should().notifyOrderPlaced("ORDER-001");
+```
+
+둘의 차이는 역할보다 **읽는 방식**에 가깝다. spy는 "무슨 호출 기록이 남았나"를 보고, mock은 "어떤 호출을 기대했나"를 먼저 읽는다. 다만 이 비유는 entrypoint까지만 유효하다. 실제 도구에서는 spy도 stub처럼 값을 돌려줄 수 있고, mock도 captor로 payload를 잡을 수 있어서 경계가 완전히 칼같이 갈리지는 않는다.
+
 ## repository fake와 어디서 갈라지나
 
 같은 service 안에서도 질문이 다르면 test double 선택이 달라진다.
@@ -83,6 +124,8 @@ repository fake는 저장 계약을 읽기 위해 유리하고, notifier mock은
   경우에 따라 가능하지만, beginner의 첫 질문이 호출 여부라면 mock이 더 짧고 직접적이다.
 - "`event publisher니까 무조건 mock이면 끝인가요?`"
   아니다. payload 매핑, schema 호환성, outbox relay, consumer 계약은 별도 테스트 층이 필요하다.
+- "`한 번 호출 + payload 캡처`면 무조건 mock인가요?"
+  아니다. beginner starter에서는 spy가 더 짧게 읽히는 경우가 많다. 반대로 팀이 이미 `then(...).should()`와 captor 스타일을 표준으로 쓰면 mock이 더 자연스러울 수 있다.
 - "`알림을 1번 보냈는지만 보면 충분한가요?`"
   아니다. `언제` 보내는지, 실패 시 보내지 말아야 하는지, commit 뒤로 미뤄야 하는지도 함께 봐야 한다.
 - "`mock을 쓰면 구현 상세에 묶이지 않나요?`"
@@ -113,6 +156,7 @@ void place(PlaceOrderCommand command) {
 ## 더 깊이 가려면
 
 - [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md): `결과를 읽는가 / 호출을 읽는가` 기준을 먼저 짧게 잡고 싶을 때
+- [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md): `호출 여부`와 `호출 기록`을 더 짧게 나눠 보고 싶을 때
 - [Repository Fake Design Guide](./repository-fake-design-guide.md): repository fake를 어디까지 재현해야 하는지 이어서 볼 때
 - [Domain Event, Outbox, Inbox](./outbox-inbox-domain-events.md): notifier mock 다음 단계인 전달 보장과 비동기 경계를 배우고 싶을 때
 - [옵저버, Pub/Sub, ApplicationEvent](../design-pattern/observer-pubsub-application-events.md): 같은 프로세스 notification과 event-driven 분기를 더 넓게 비교하고 싶을 때

@@ -76,32 +76,20 @@ RoomEscape 관리자 API를 예로 들면:
 
 핵심은 "`302 /login`과 `SavedRequest`는 대개 Security filter chain 안에서 만들어지고, `HandlerInterceptor`는 그 뒤에야 온다"는 점이다.
 
-## `addFilterBefore` / `addFilterAfter`가 갑자기 보일 때
+## 이 문서에서 멈추고 다음 문서로 넘길 신호
 
-초급자 기준으로는 "`내 커스텀 필터가 기준 인증 필터보다 먼저 필요한가, 나중에 필요한가`"만 먼저 잡으면 된다.
+이 문서는 "`누가 먼저 막는가`"까지만 설명한다. 아래 질문이 앞에 나오면 여기서 더 파고들지 말고 관련 문서로 넘기는 편이 초급자에게 안전하다.
 
-| 지금 코드에서 보인 표현 | 초급 해석 | 먼저 떠올릴 질문 |
+| 지금 막힌 질문 | 여기서 길게 다루지 않는 이유 | 바로 갈 문서 |
 |---|---|---|
-| `.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)` | "`UsernamePasswordAuthenticationFilter`보다 앞에서 인증 재료를 준비하자" | "로그인 필터가 돌기 전에 토큰/헤더/쿠키를 먼저 읽어야 하나?" |
-| `.addFilterAfter(customFilter, UsernamePasswordAuthenticationFilter.class)` | "`UsernamePasswordAuthenticationFilter`가 한 일 뒤에서 후속 처리를 하자" | "로그인 성공/실패가 정리된 뒤 추가 기록이나 후처리가 필요한가?" |
-| `.addFilterBefore(customFilter, BearerTokenAuthenticationFilter.class)` | "`BearerTokenAuthenticationFilter`보다 앞에서 bearer token용 준비를 하자" | "헤더를 읽기 전에 tenant/context를 먼저 정리해야 하나?" |
-| `.addFilterAfter(customFilter, BearerTokenAuthenticationFilter.class)` | "`BearerTokenAuthenticationFilter`가 한 일 뒤에서 후속 처리를 하자" | "JWT claim을 authority로 바꾼 뒤 추가 검사를 붙일까?" |
+| `addFilterBefore`, `addFilterAfter`, `jwt filter 어디에 둬요` | filter ordering은 개념 구분보다 한 단계 더 깊은 설정 질문이다 | [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md) |
+| `SavedRequest`가 왜 생기고 로그인 후 어디로 돌아가요 | redirect 기억 장치는 security chain 안에서도 별도 축이다 | [Spring Security `RequestCache` / `SavedRequest` Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| `POST /admin/reservations`가 왜 controller 전에 `400`이에요 | 인증 통과 뒤에는 JSON 바인딩 축으로 넘어간다 | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md) |
 
-- `UsernamePasswordAuthenticationFilter`: 폼 로그인 인증 기준점
-- `BearerTokenAuthenticationFilter`: bearer token 인증 기준점
+짧게 외우면 이렇다.
 
-`jwt filter 어디에 둬요`는 먼저 "`form login` 기준인가, `bearer token` 기준인가"로 번역하면 된다.
-
-```text
-브라우저 요청
--> 바깥 Filter
--> Spring Security filter chain
-   -> custom filter 앞/뒤
-   -> UsernamePasswordAuthenticationFilter 또는 BearerTokenAuthenticationFilter
--> DispatcherServlet
-```
-
-폼 로그인 체인이면 `UsernamePasswordAuthenticationFilter`, bearer token 체인이면 `BearerTokenAuthenticationFilter`를 기준점으로 잡는다. 아직 `302`/`403` 분기가 더 헷갈리면 이 문서의 관리자 분기부터 끝내고, 기준 필터 앞뒤가 핵심일 때만 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md#addfilterbefore--addfilterafter와-usernamepasswordauthenticationfilter--bearertokenauthenticationfilter-기준점-브리지)로 내려가면 된다.
+- 이 문서: `Filter`, security chain, `HandlerInterceptor` 역할 구분
+- 다음 문서: filter ordering, redirect 기억, JSON 바인딩 같은 세부 원인
 
 ## 관리자 API 실패 지점 빠른 분기
 
@@ -220,20 +208,6 @@ http.authorizeHttpRequests(auth -> auth
 - `filter`와 `interceptor`의 일반 경계를 더 보고 싶다면 [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)로 간다.
 - "그래서 Security filter chain 안에서 어느 필터가 먼저 도는가?"가 궁금하면 [Spring Security Filter Chain Ordering](./spring-security-filter-chain-ordering.md)로 내려간다.
 - 쿠키 기반 관리자 로그인 흐름이 낯설면 [쿠키 속성 매트릭스: `SameSite`, `HttpOnly`, `Secure`, `Domain`, `Path`](../network/cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)로 같이 보면 좋다.
-
-## 면접/시니어 질문 미리보기
-
-> Q: 관리자 인증을 인터셉터가 아니라 Spring Security filter chain에서 처리하는 이유는 무엇인가?
-> 의도: 보안 책임 위치 이해 확인
-> 핵심: 인증/인가와 `401`/`403` 결정은 컨트롤러 전에 일어나야 하고, Security가 그 계약을 이미 제공한다.
-
-> Q: `Filter`와 Spring Security filter chain의 관계는 무엇인가?
-> 의도: servlet 레이어와 security 레이어 연결 이해 확인
-> 핵심: Security filter chain은 servlet filter 위에서 동작하는 보안 특화 filter 묶음이다.
-
-> Q: 관리자 감사 로그는 왜 인터셉터에 두는가?
-> 의도: 인증과 후처리 책임 분리 확인
-> 핵심: 누가 통과했는지가 정해진 뒤 컨트롤러 주변 메타데이터를 다루기 좋기 때문이다.
 
 ## 한 줄 정리
 

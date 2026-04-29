@@ -5,6 +5,7 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)
 > - [Adapter (어댑터) 패턴](./adapter.md)
 > - [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md)
 > - [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md)
@@ -13,9 +14,21 @@
 > - [Composition over Inheritance](./composition-over-inheritance-practical.md)
 > - [안티 패턴](./anti-pattern.md)
 
-> retrieval-anchor-keywords: ports and adapters, hexagonal architecture, hexagonal vs adapter pattern, boundary architecture, clean architecture boundary, inbound port, outbound port, driving adapter, driven adapter, application service port, interface translation vs boundary architecture, anti-corruption boundary
+> retrieval-anchor-keywords: ports and adapters, hexagonal architecture, hexagonal vs adapter pattern, boundary architecture, clean architecture boundary, inbound port, outbound port, driving adapter, driven adapter, application service port, interface translation vs boundary architecture, anti-corruption boundary, gof adapter vs ports and adapters beginner, adapter pattern vs architecture adapter, controller adapter repository adapter difference, 처음 adapter 배우고 hexagonal 헷갈려요, adapter 다음 뭐 봐요
 
 ---
+
+## 안전한 시작 순서
+
+이 문서는 비교용 bridge다.
+처음 배우는데 `adapter pattern`과 `controller adapter`가 한 검색 결과에서 같이 보여도, 바로 운영 문서나 expert hexagonal 문서로 내려가기보다 아래 사다리로 읽는 편이 안전하다.
+
+| 단계 | 먼저 볼 문서 | 왜 이 순서가 안전한가 |
+|---|---|---|
+| 1단계 | [어댑터 패턴 기초](./adapter-basics.md) | 인터페이스 번역이라는 가장 작은 책임부터 잡는다 |
+| 2단계 | [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md) | `controller`, `consumer`, `repository`를 같은 유스케이스 경계 언어로 묶는다 |
+| 3단계 | 이 문서 | 같은 `adapter`라는 단어가 두 층위에서 왜 다르게 쓰이는지 비교한다 |
+| 4단계 | [Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](./hexagonal-ports-pattern-language.md) | port naming과 경계 설계를 더 깊게 읽는다 |
 
 ## 핵심 개념
 
@@ -30,6 +43,8 @@ GoF Adapter와 이름은 비슷하지만 역할은 다르다.
 
 ### 질문 분기
 
+- `어댑터가 뭐예요`, `SDK wrapper`, `메서드 시그니처 번역`처럼 첫 진입 질문이면 [어댑터 패턴 기초](./adapter-basics.md)부터 본다.
+- `controller-service-repository 다음 단계`, `message consumer도 같은 유스케이스인가요`처럼 구조 입문 질문이면 [Ports and Adapters Beginner Primer](../software-engineering/ports-and-adapters-beginner-primer.md)부터 본다.
 - 메서드 시그니처 하나를 맞추거나 SDK wrapper가 필요하면 [Adapter (어댑터) 패턴](./adapter.md)이나 [퍼사드 vs 어댑터 vs 프록시](./facade-vs-adapter-vs-proxy.md) 범주다.
 - inbound/outbound port, controller adapter, repository adapter처럼 경계와 의존성 방향이 핵심이면 이 문서와 [Hexagonal Ports](./hexagonal-ports-pattern-language.md)를 본다.
 - port는 맞지만 adapter, translator, facade가 너무 많아 책임이 흐리면 [Adapter Chaining Smells](./adapter-chaining-smells.md)나 [Anti-Corruption Adapter Layering](./anti-corruption-adapter-layering.md)로 내려간다.

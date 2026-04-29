@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Dummy vs Stub 초심자 미니 카드](./dummy-vs-stub-beginner-mini-card.md)
 - [테스트 전략 기초](./test-strategy-basics.md)
 - [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
 - [Outbound Notifier Mock Boundary Primer](./outbound-notifier-mock-boundary-primer.md)
@@ -18,6 +19,8 @@ retrieval-anchor-keywords: stub vs spy first test, stub spy beginner, stub retur
 ## 핵심 개념
 
 이 문서의 질문은 "`fake`와 `mock`은 대충 알겠는데, `stub`과 `spy`는 첫 테스트에서 어떻게 구분하죠?`"다. 초심자가 가장 자주 섞는 장면은 "`값 하나만 돌려주면 되는데 spy를 붙이거나`, `호출 기록을 봐야 하는데 stub만 두는 경우`"다.
+
+만약 아직 `stub` 자체가 낯설고 "`그냥 고정값 넣은 mock 아닌가요?`" 단계라면 [Dummy vs Stub 초심자 미니 카드](./dummy-vs-stub-beginner-mini-card.md)부터 먼저 보고 오는 편이 덜 헷갈린다.
 
 짧게 자르면 기준은 하나다.
 

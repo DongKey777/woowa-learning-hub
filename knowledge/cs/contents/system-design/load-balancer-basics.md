@@ -7,11 +7,13 @@
 관련 문서:
 
 - [Load Balancer Drain and Affinity Primer](./load-balancer-drain-and-affinity-primer.md)
+- [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md)
+- [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md)
 - [System Design Foundations](./system-design-foundations.md)
 - [HTTP/HTTPS 기초](../network/http-https-basics.md)
 - [system-design 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load balancer 뭐예요, round robin 알고리즘, least connection, l4 l7 로드밸런서, health check 기초, 서버 부하 분산, 수평 확장 입문, beginner load balancing, 트래픽 분산, sticky session 기초, load balancer basics basics, load balancer basics beginner, load balancer basics intro
+retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load balancer 뭐예요, round robin 알고리즘, least connection, l4 l7 로드밸런서, health check 기초, 서버 부하 분산, 수평 확장 입문, beginner load balancing, 트래픽 분산, sticky session 기초, stateless app load balancer, 왜 sticky session 필요한가요, horizontal scaling with load balancer
 
 ---
 
@@ -47,6 +49,14 @@ retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load b
 | Least Connection | 현재 연결 수가 적은 서버에 보냄 | 요청 처리 시간이 들쭉날쭉할 때 |
 | IP Hash | 클라이언트 IP 기반으로 고정 | Sticky Session이 필요할 때 |
 
+초보자가 자주 묶어서 묻는 질문은 "로드 밸런서가 있으면 왜 또 stateless app 이야기를 하나요?"이다. 연결은 아래 표로 보면 된다.
+
+| 상황 | 로드 밸런서가 하는 일 | 앱 설계에서 같이 봐야 할 점 | 결과 |
+|---|---|---|---|
+| stateless app 여러 대 | 건강한 인스턴스로 요청을 고르게 나눈다 | 중요한 상태를 서버 메모리 대신 DB, Redis, 토큰 같은 바깥 저장소에 둔다 | 어느 서버가 받아도 처리 가능해서 수평 확장이 쉽다 |
+| sticky session 사용 | 같은 사용자를 같은 서버에 붙여 보낸다 | 세션이 서버 로컬에 있으면 일단 동작하지만 서버 교체와 장애 대응이 불편해진다 | 로그인 유지 문제는 줄지만 scale-out 이점이 일부 줄어든다 |
+| horizontal scaling 시작 | 인스턴스 수가 늘어나도 입구를 하나처럼 유지한다 | 새 서버가 들어와도 같은 규칙으로 처리되도록 stateless에 가깝게 설계한다 | 트래픽 증가 시 서버를 추가하는 방식이 단순해진다 |
+
 ---
 
 ## 상세 분해
@@ -54,7 +64,8 @@ retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load b
 - **L4 로드 밸런서**: TCP/UDP 레이어에서 동작한다. 패킷 내용을 보지 않고 IP/포트 기반으로 분배한다. 빠르지만 HTTP 헤더나 쿠키를 볼 수 없다.
 - **L7 로드 밸런서**: HTTP 레이어에서 동작한다. URL 경로, 헤더, 쿠키를 보고 분배할 수 있다. API Gateway와 역할이 겹치기도 한다.
 - **헬스 체크**: 로드 밸런서는 주기적으로 각 서버에 헬스 체크 요청을 보낸다. 응답이 없거나 에러가 나면 해당 서버를 분배 대상에서 제외한다.
-- **Sticky Session**: 동일 사용자의 요청을 항상 같은 서버로 보내는 방식이다. 세션 상태를 서버 로컬에 저장할 때 필요하지만, 서버 장애 시 세션도 날아가는 단점이 있다.
+- **Sticky Session**: 동일 사용자의 요청을 항상 같은 서버로 보내는 방식이다. 세션 상태를 서버 로컬에 저장할 때 자주 쓰지만, 서버 장애나 교체 시 세션도 함께 영향을 받기 쉽다.
+- **Stateless app과의 연결**: 로드 밸런서는 요청을 나눌 뿐이고, 어느 서버로 가도 처리되게 만드는 책임은 애플리케이션 설계에 있다. 그래서 "로드 밸런서 도입"과 "상태 외부화"는 보통 한 묶음으로 설명된다.
 
 ---
 
@@ -63,6 +74,7 @@ retrieval-anchor-keywords: load balancer basics, 로드 밸런서 입문, load b
 - **"로드 밸런서를 쓰면 서버가 무한 확장된다"**: 로드 밸런서 자체가 단일 장애점이 될 수 있다. 로드 밸런서도 이중화(Active-Passive, Active-Active)가 필요하다.
 - **"L7 로드 밸런서가 항상 낫다"**: 처리 비용이 L4보다 크다. 단순 TCP 트래픽을 L7으로 처리하면 불필요한 오버헤드가 생긴다.
 - **"Sticky Session을 쓰면 부하 분산이 안 된다"**: 일부 서버에 특정 사용자가 몰릴 수 있다. 세션은 외부 저장소(Redis 등)에 두고 서버를 stateless로 만드는 편이 낫다.
+- **"Sticky Session은 무조건 나쁜 설계다"**: 꼭 그렇지는 않다. 기존 세션 기반 앱을 급하게 여러 대로 늘릴 때 임시 완충책이 될 수 있다. 다만 장기적으로는 stateless app 또는 외부 세션 저장소 쪽이 보통 운영과 배포에 유리하다.
 
 ---
 
@@ -83,6 +95,8 @@ AWS에서는 ALB(Application Load Balancer)가 L7, NLB(Network Load Balancer)가
 
 - [Load Balancer Drain and Affinity Primer](./load-balancer-drain-and-affinity-primer.md) — 연결 드레이닝, Sticky 배포 시 꼬리 문제, 실무 함정
 - [System Design Foundations](./system-design-foundations.md) — 로드 밸런서가 전체 시스템 구조에서 어디에 위치하는지
+- [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](./stateless-backend-cache-database-queue-starter-pack.md) — 로드 밸런서가 stateless app, DB, cache, queue와 한 그림에서 어떻게 이어지는지
+- [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md) — sticky session이 왜 scale-out 제약으로 이어지는지
 
 ---
 
