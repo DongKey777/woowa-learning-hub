@@ -251,3 +251,140 @@ def test_run_embedding_precheck_creates_parent_dir(tmp_path):
     rc = CLI.run_embedding_precheck(args, model_factory=lambda *_: _FakeEnc())
     assert rc == 0
     assert out.exists()
+
+
+# ---------------------------------------------------------------------------
+# --embedding-ab mode
+# ---------------------------------------------------------------------------
+
+def test_parser_embedding_ab_mode():
+    args = CLI.build_parser().parse_args(["--embedding-ab"])
+    assert args.embedding_ab is True
+
+
+def test_parser_ab_defaults():
+    args = CLI.build_parser().parse_args(["--embedding-ab"])
+    assert args.ab_out == CLI.DEFAULT_AB_OUT
+    assert args.ab_base_dir == CLI.DEFAULT_AB_BASE_DIR
+    assert args.baseline_quality_path == CLI.DEFAULT_BASELINE_QUALITY_PATH
+    assert args.candidate_id is None
+    assert args.force_rebuild is False
+
+
+def test_parser_candidate_id_repeatable():
+    args = CLI.build_parser().parse_args([
+        "--embedding-ab",
+        "--candidate-id", "MiniLM-L12-v2",
+        "--candidate-id", "bge-m3",
+    ])
+    assert args.candidate_id == ["MiniLM-L12-v2", "bge-m3"]
+
+
+def test_parser_force_rebuild_flag():
+    args = CLI.build_parser().parse_args(["--embedding-ab", "--force-rebuild"])
+    assert args.force_rebuild is True
+
+
+def test_run_embedding_ab_fails_when_baseline_missing(tmp_path):
+    args = CLI.build_parser().parse_args([
+        "--embedding-ab",
+        "--baseline-quality-path", str(tmp_path / "missing.json"),
+        "--ab-out", str(tmp_path / "ab.json"),
+    ])
+    rc = CLI.run_embedding_ab(args, model_factory=lambda *_: _FakeEnc())
+    assert rc == 2  # missing baseline → exit 2
+
+
+def test_run_embedding_ab_invokes_sweep_and_writes_report(tmp_path, monkeypatch):
+    """CLI-level smoke: --embedding-ab loads baseline, restricts
+    candidates, calls ab_sweep, writes the report. The sweep itself
+    is monkey-patched to a fake so this test doesn't build any
+    indexes — sweep behaviour is covered by test_rag_eval_ab_sweep."""
+    from scripts.learning.rag.eval import ab_sweep
+    from scripts.learning.rag.eval.gate import (
+        BaselineScore,
+        GateThresholds,
+    )
+
+    # Synthetic baseline JSON (matches baseline_from_quality_blob shape)
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(
+        json.dumps({
+            "macro_reports": {
+                "primary_ndcg": {
+                    "category": {
+                        "axis": "category", "macro_mean": 0.95,
+                        "micro_mean": 0.95,
+                        "per_bucket_mean": {"spring": 0.95},
+                        "per_bucket_count": {"spring": 50},
+                        "included_buckets": ["spring"], "excluded_buckets": [],
+                    }
+                }
+            },
+            "overall_means": {"forbidden_rate": 0.0},
+            "regression_summary": {"failed_count": 5},
+        }),
+        encoding="utf-8",
+    )
+
+    # Fixture (real legacy or graded — load_queries handles both)
+    fixture_path = tmp_path / "fx.json"
+    fixture_path.write_text(
+        json.dumps({"queries": [{
+            "id": "q1",
+            "prompt": "test",
+            "learning_points": [],
+            "expected_path": "contents/spring/bean.md",
+            "max_rank": 10,
+        }]}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    # Capture call args + return a fake report
+    captured: dict = {}
+
+    fake_report = ab_sweep.ABReport(
+        baseline=BaselineScore(
+            primary_ndcg_macro=0.95,
+            primary_ndcg_by_category={"spring": 0.95},
+            primary_ndcg_category_counts={"spring": 50},
+            forbidden_rate_overall=0.0,
+            hard_regression_failures=5,
+        ),
+        thresholds=GateThresholds(),
+        candidates=(),
+        pareto_order=("MiniLM-L12-v2",),
+        selected_candidate_id="MiniLM-L12-v2",
+        selection_rationale="fake",
+    )
+
+    def fake_sweep(candidates, queries, baseline, **kwargs):
+        captured["candidate_ids"] = [c.candidate_id for c in candidates]
+        captured["query_count"] = len(list(queries))
+        captured["baseline_macro"] = baseline.primary_ndcg_macro
+        return fake_report
+
+    monkeypatch.setattr(ab_sweep, "run_ab_sweep", fake_sweep)
+
+    ab_out = tmp_path / "ab.json"
+    args = CLI.build_parser().parse_args([
+        "--embedding-ab",
+        "--fixture", str(fixture_path),
+        "--baseline-quality-path", str(baseline_path),
+        "--ab-out", str(ab_out),
+        "--ab-base-dir", str(tmp_path / "ab_base"),
+        "--candidate-id", "MiniLM-L12-v2",
+    ])
+    rc = CLI.run_embedding_ab(args, model_factory=lambda *_: _FakeEnc())
+
+    # Selection set → exit 0
+    assert rc == 0
+    # Sweep invoked with restricted candidates
+    assert captured["candidate_ids"] == ["MiniLM-L12-v2"]
+    assert captured["query_count"] == 1
+    assert captured["baseline_macro"] == 0.95
+
+    # Report written
+    assert ab_out.exists()
+    blob = json.loads(ab_out.read_text())
+    assert blob["selected_candidate_id"] == "MiniLM-L12-v2"

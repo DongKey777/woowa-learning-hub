@@ -64,7 +64,7 @@ def build_eval_index(
     model_id: str,
     embed_dim: int,
     index_root: Path | str,
-    corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
+    corpus_root: Path | str | None = None,
     progress: Callable[[str, dict], None] | None = None,
     batch_size: int = 32,
 ) -> dict:
@@ -98,6 +98,11 @@ def build_eval_index(
         import numpy as np  # type: ignore
     except ImportError as exc:
         raise IndexDependencyMissing("numpy not installed.") from exc
+
+    # Lazy default lookup so callers / tests that monkey-patch
+    # corpus_loader.DEFAULT_CORPUS_ROOT see their override.
+    if corpus_root is None:
+        corpus_root = corpus_loader.DEFAULT_CORPUS_ROOT
 
     root = Path(index_root)
     root.mkdir(parents=True, exist_ok=True)

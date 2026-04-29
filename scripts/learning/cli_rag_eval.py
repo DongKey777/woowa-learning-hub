@@ -36,6 +36,9 @@ DEFAULT_FIXTURE = REPO_ROOT / "tests" / "fixtures" / "cs_rag_golden_queries.json
 DEFAULT_QUALITY_OUT = REPO_ROOT / "reports" / "rag_eval" / "baseline_quality.json"
 DEFAULT_MACHINE_OUT = REPO_ROOT / "state" / "cs_rag" / "baseline_machine.json"
 DEFAULT_PRECHECK_OUT = REPO_ROOT / "state" / "cs_rag" / "embedding_precheck.json"
+DEFAULT_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "embedding_ab_report.json"
+DEFAULT_AB_BASE_DIR = REPO_ROOT / "state" / "cs_rag_eval"
+DEFAULT_BASELINE_QUALITY_PATH = REPO_ROOT / "reports" / "rag_eval" / "baseline_quality.json"
 
 
 # ---------------------------------------------------------------------------
@@ -67,6 +70,15 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Pre-flight: load each P2 embedding candidate, time cold-load + "
             "warm-encode, measure RSS. Emits embedding_precheck.json under state/."
+        ),
+    )
+    mode.add_argument(
+        "--embedding-ab",
+        action="store_true",
+        help=(
+            "Run the full P2.1 embedding A/B sweep: build per-candidate "
+            "indexes, evaluate against the fixture, gate against baseline, "
+            "emit embedding_ab_report.json under reports/rag_eval/."
         ),
     )
     parser.add_argument(
@@ -119,6 +131,44 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=10,
         help="Warm-encode samples per candidate in precheck (default: 10).",
+    )
+    parser.add_argument(
+        "--ab-out",
+        type=Path,
+        default=DEFAULT_AB_OUT,
+        help=f"A/B report path (default: {DEFAULT_AB_OUT}).",
+    )
+    parser.add_argument(
+        "--ab-base-dir",
+        type=Path,
+        default=DEFAULT_AB_BASE_DIR,
+        help=(
+            "Per-candidate index parent directory "
+            f"(default: {DEFAULT_AB_BASE_DIR})."
+        ),
+    )
+    parser.add_argument(
+        "--baseline-quality-path",
+        type=Path,
+        default=DEFAULT_BASELINE_QUALITY_PATH,
+        help=(
+            "Path to the committed baseline_quality.json that supplies "
+            f"BaselineScore for the gate (default: {DEFAULT_BASELINE_QUALITY_PATH})."
+        ),
+    )
+    parser.add_argument(
+        "--candidate-id",
+        action="append",
+        default=None,
+        help=(
+            "Restrict A/B sweep to specific candidate_ids "
+            "(repeatable). Default: run all four candidates."
+        ),
+    )
+    parser.add_argument(
+        "--force-rebuild",
+        action="store_true",
+        help="Rebuild candidate indexes even if state/cs_rag_eval/<id>/ exists.",
     )
     return parser
 
@@ -505,6 +555,117 @@ def run_embedding_precheck(
 # Entry
 # ---------------------------------------------------------------------------
 
+def run_embedding_ab(
+    args: argparse.Namespace,
+    *,
+    model_factory: Callable[[str, int], Any] | None = None,
+) -> int:
+    """Run the full P2.1 embedding A/B sweep against the committed
+    baseline. Returns exit 0 when at least one candidate passes the
+    gate, else exit 1 (so CI / local automation can branch)."""
+    from scripts.learning.rag.eval import (
+        ab_sweep,
+        candidates as C,
+    )
+    from scripts.learning.rag.eval.gate import GateThresholds
+
+    # 1. Baseline
+    if not args.baseline_quality_path.exists():
+        print(
+            f"FAIL: baseline_quality.json not found at "
+            f"{args.baseline_quality_path}. Run --baseline-only first.",
+            file=sys.stderr,
+        )
+        return 2
+    baseline = ab_sweep.baseline_from_quality_blob(
+        json.loads(args.baseline_quality_path.read_text(encoding="utf-8"))
+    )
+
+    # 2. Candidate selection
+    if args.candidate_id:
+        cands = [C.get(cid) for cid in args.candidate_id]
+    else:
+        cands = list(C.CANDIDATES)
+
+    # 3. Queries
+    queries = load_queries(args.fixture)
+
+    # 4. Factory + device
+    device = _resolve_device(args.device)
+    factory = model_factory or _default_st_factory(device)
+
+    print(
+        f"[rag-eval --embedding-ab] device={device}",
+        f"  candidates: {[c.candidate_id for c in cands]}",
+        f"  fixture: {args.fixture.name}  queries={len(queries)}",
+        f"  baseline primary_nDCG_macro={baseline.primary_ndcg_macro:.4f}",
+        sep="\n",
+        file=sys.stderr,
+    )
+
+    def _print_progress(stage: str, info: dict) -> None:
+        if stage in ("candidate_start", "candidate_done"):
+            print(f"  [{stage}] {info}", file=sys.stderr)
+
+    # 5. Sweep
+    report = ab_sweep.run_ab_sweep(
+        cands, queries, baseline,
+        base_dir=args.ab_base_dir,
+        top_k=args.top_k,
+        forbidden_window=args.forbidden_window,
+        device=device,
+        mode="full",
+        thresholds=GateThresholds(),
+        model_factory=factory,
+        force_rebuild=args.force_rebuild,
+        progress=_print_progress,
+    )
+
+    # 6. Persist
+    blob = ab_sweep.ab_report_to_dict(report)
+    args.ab_out.parent.mkdir(parents=True, exist_ok=True)
+    args.ab_out.write_text(
+        json.dumps(blob, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    def _display(path: Path) -> str:
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return str(path)
+
+    # 7. Summary
+    print("", file=sys.stderr)
+    print(
+        f"{'candidate':25s} {'primary_nDCG':>13s} {'p95(ms)':>10s} "
+        f"{'RSS(MB)':>10s} {'gate':>8s}",
+        file=sys.stderr,
+    )
+    for cr in report.candidates:
+        score = cr.candidate_score
+        gate = "PASS" if cr.gate_result.passed else "FAIL"
+        print(
+            f"{cr.candidate.candidate_id:25s} "
+            f"{score.primary_ndcg_macro:13.4f} {score.warm_p95_ms:10.1f} "
+            f"{score.rss_mb:10.0f} {gate:>8s}",
+            file=sys.stderr,
+        )
+    print(
+        "",
+        f"  selection: {report.selected_candidate_id or '(none — stay on baseline)'}",
+        f"  rationale: {report.selection_rationale}",
+        f"  pareto_order: {list(report.pareto_order)}",
+        f"  wrote: {_display(args.ab_out)}",
+        sep="\n",
+        file=sys.stderr,
+    )
+    return 0 if report.selected_candidate_id else 1
+
+
+# ---------------------------------------------------------------------------
+# Entry
+# ---------------------------------------------------------------------------
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -514,6 +675,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_baseline_only(args)
     if args.embedding_precheck:
         return run_embedding_precheck(args)
+    if args.embedding_ab:
+        return run_embedding_ab(args)
     parser.error("no mode selected")
     return 2
 

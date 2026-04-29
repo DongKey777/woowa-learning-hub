@@ -151,6 +151,7 @@ def run_one_candidate(
     queries: Sequence[GradedQuery],
     *,
     base_dir: Path | str = DEFAULT_AB_BASE_DIR,
+    corpus_root: Path | str | None = None,
     top_k: int = 10,
     forbidden_window: int = 5,
     device: str = "cpu",
@@ -215,6 +216,7 @@ def run_one_candidate(
             model_id=candidate.hf_model_id,
             embed_dim=candidate.embed_dim,
             index_root=index_root,
+            corpus_root=corpus_root,
             progress=progress,
         )
         # The builder model is also used as the query embedder below.
@@ -291,6 +293,7 @@ def run_ab_sweep(
     baseline: BaselineScore,
     *,
     base_dir: Path | str = DEFAULT_AB_BASE_DIR,
+    corpus_root: Path | str | None = None,
     top_k: int = 10,
     forbidden_window: int = 5,
     device: str = "cpu",
@@ -313,7 +316,8 @@ def run_ab_sweep(
             progress("candidate_start", {"candidate_id": candidate.candidate_id})
         blob, rss = run_one_candidate(
             candidate, queries,
-            base_dir=base_dir, top_k=top_k, forbidden_window=forbidden_window,
+            base_dir=base_dir, corpus_root=corpus_root,
+            top_k=top_k, forbidden_window=forbidden_window,
             device=device, mode=mode, model_factory=model_factory,
             force_rebuild=force_rebuild, progress=progress,
         )
