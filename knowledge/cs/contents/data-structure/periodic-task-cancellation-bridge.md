@@ -10,9 +10,10 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [느린 주기 작업 입문](./slow-periodic-task-primer.md)
 
 
-retrieval-anchor-keywords: periodic task cancellation bridge basics, periodic task cancellation bridge beginner, periodic task cancellation bridge intro, data structure basics, beginner data structure, 처음 배우는데 periodic task cancellation bridge, periodic task cancellation bridge 입문, periodic task cancellation bridge 기초, what is periodic task cancellation bridge, how to periodic task cancellation bridge
+retrieval-anchor-keywords: scheduledfuture cancel periodic task, scheduleatfixedrate cancel next run, schedulewithfixeddelay cancel next run, periodic task cancel basics, 주기 작업 취소 뭐예요, cancel하면 왜 다음 실행이 멈춰요, 처음 scheduledfuture cancel 헷갈려요, periodic task re-enqueue stop, future 하나로 반복 작업 취소, 다음 실행 재등록 중단, cancel false running task difference, periodic scheduler cancel beginner
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)

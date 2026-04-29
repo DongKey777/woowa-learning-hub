@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [Booking Error Language Card](./booking-error-language-card.md)
 - [PostgreSQL `23P01` Handling Note](./postgresql-23p01-handling-note.md)
 - [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - [DB 신호 -> 서비스 결과 enum -> HTTP 응답 브리지](./db-signal-service-result-http-bridge.md)
@@ -129,6 +130,7 @@ EXCLUDE USING gist (
 
 ## 다음에 이어서 볼 문서
 
+- 예약 제품 문장으로 `duplicate key` / `23P01` / `lock timeout` / `deadlock`을 한 장에서 묶어 보려면 [Booking Error Language Card](./booking-error-language-card.md)
 - `23505` 뒤 winner row를 어떻게 다시 읽는지 보려면 [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
 - `23P01`을 왜 retryable보다 conflict로 닫는지 더 보려면 [PostgreSQL `23P01` Handling Note](./postgresql-23p01-handling-note.md)
 - overlap 자체를 exact-key와 다른 모델로 이해하려면 [Exclusion Constraint vs Slot Row 빠른 선택 가이드](./exclusion-constraint-vs-slot-row-quick-chooser.md)

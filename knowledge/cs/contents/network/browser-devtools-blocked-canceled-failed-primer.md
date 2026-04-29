@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- [Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드](./browser-devtools-blocked-mixed-content-vs-cors-mini-card.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
@@ -55,6 +56,13 @@ retrieval-anchor-keywords: browser devtools blocked canceled failed, devtools st
 - 광고 차단기나 보안 확장 프로그램이 막는 경우
 
 즉 `(blocked)`를 보면 app의 `404` body를 찾기보다 브라우저 정책과 콘솔 메시지를 먼저 본다.
+
+초급자가 특히 많이 헷갈리는 두 갈래는 아래다.
+
+- `Mixed Content ... requested an insecure resource 'http://...'`
+- `... has been blocked by CORS policy`
+
+둘 다 `(blocked)`처럼 보여도 앞은 **HTTPS 페이지가 HTTP 자원을 부른 장면**, 뒤는 **cross-origin 응답 읽기 정책 장면**이다. 이 둘을 짧게 가르고 싶으면 [Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드](./browser-devtools-blocked-mixed-content-vs-cors-mini-card.md)를 먼저 보면 된다.
 
 ### `canceled`
 
@@ -132,6 +140,7 @@ retrieval-anchor-keywords: browser devtools blocked canceled failed, devtools st
 - 숫자 응답이 있을 때만 헤더 3칸으로 browser/proxy/app을 가르려면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - body owner를 app/gateway/login HTML로 가르고 싶다면 [Browser DevTools Response Body Ownership 체크리스트](./browser-devtools-response-body-ownership-checklist.md)
 - CORS와 브라우저 정책 차단을 더 또렷하게 보고 싶다면 [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
+- `(blocked)` 안에서 mixed content와 CORS를 콘솔 문구로 더 빨리 가르고 싶다면 [Browser DevTools `(blocked)` Mixed Content vs CORS 미니 카드](./browser-devtools-blocked-mixed-content-vs-cors-mini-card.md)
 - request/response header 자체가 아직 낯설다면 [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 
 ## 한 줄 정리

@@ -1,8 +1,15 @@
 # Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드
 
-> 한 줄 요약: `@Valid` 옆에 `BindingResult`를 두면 validation 실패가 곧바로 전역 `400` 예외로 번지지 않고, 컨트롤러 메서드 안으로 들어와서 로컬 분기 처리로 바뀐다.
+> 한 줄 요약: "`BindingResult` 있으면 뭐가 달라져요?", "왜 `MethodArgumentNotValidException` 안 나요?", "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?", "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?" 같은 첫 질문은 `@Valid` 옆 `BindingResult`가 validation 실패를 전역 `400` 예외 대신 컨트롤러 로컬 분기로 바꾸는지부터 보면 풀린다.
 
 **난이도: 🟢 Beginner**
+
+이 문서를 바로 찾는 질문:
+
+- "왜 `MethodArgumentNotValidException` 안 나요?"
+- "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?"
+- "`BindingResult` 있으면 뭐가 달라져요?"
+- "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?"
 
 관련 문서:
 
@@ -14,15 +21,23 @@
 - [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
+- [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner, bindingresult 있으면 뭐가 달라져요, methodargumentnotvalidexception vs bindingresult, 왜 methodargumentnotvalidexception 안 나요, @valid 실패인데 컨트롤러는 타요, controller local validation handling, validation error local response spring, @valid bindingresult order, requestbody bindingresult 400 spring, controller advice 대신 bindingresult, dto 변환 실패는 왜 before controller, problemdetail validation 400, localdate json parse bindingresult 안 타요, requestbody message conversion before controller
+## 이 라우트에서 보는 위치
+
+- 현재 문서: 3단계. validation 실패가 전역 예외로 가는지, 컨트롤러 로컬 분기로 들어오는지 가른다.
+- 이전 문서: [2단계 `@Valid` primer](./spring-valid-400-vs-message-conversion-400-primer.md)
+- 다음 문서: [4단계 `ProblemDetail` handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)
+- README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
+
+retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner, bindingresult 있으면 뭐가 달라져요, methodargumentnotvalidexception vs bindingresult, 왜 methodargumentnotvalidexception 안 나요, @valid 실패인데 컨트롤러는 타요, 왜 @valid 실패인데 controller 들어와요, bindingresult 붙였는데 왜 400 먼저 나요, controller local validation handling, validation error local response spring, @valid bindingresult order, requestbody bindingresult 400 spring, controller advice 대신 bindingresult, dto 변환 실패는 왜 before controller, problemdetail validation 400
 
 ## 핵심 개념
 
 처음에는 `BindingResult`를 "`검증 실패를 메서드 안으로 들여오는 바구니`"라고 이해하면 된다.
 
-핵심 비교 기준은 하나다. `BindingResult`가 끼어드는 것은 **DTO를 이미 만든 뒤의 validation 실패**이고, JSON 문법 오류나 타입 불일치 같은 **DTO 변환 실패**는 여전히 컨트롤러 전에 끝난다.
+핵심 비교 기준은 하나다. `BindingResult`는 **DTO를 이미 만든 뒤의 validation 실패**에 끼어들고, JSON 문법 오류나 타입 불일치 같은 **DTO 변환 실패**는 여전히 컨트롤러 전에 끝난다.
 
 > 먼저 못 박기: `LocalDate`에 `"tomorrow"`를 넣거나 JSON parse 자체가 깨진 경우는 `BindingResult` 차례가 오기 전에 요청이 종료된다. 이 문서는 그 반대편인 "`DTO는 만들었고, 그다음 validation이 실패한 경우`"를 설명한다.
 
@@ -36,11 +51,12 @@ retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner
 
 즉 핵심 차이는 "`검증 실패 = 즉시 전역 400`"이 아니라 "`검증 실패 = 컨트롤러 로컬 분기 가능`"으로 바뀐다는 점이다. 반대로 "`DTO 변환 실패 = `BindingResult`로 받는다`"는 틀린 기억이다. 그 경우는 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)에서 다루는 앞단 문제다.
 
-초급자 질문으로 바꾸면 이 문서가 맡는 증상은 아래 쪽이다.
+초급자 질문으로 바꾸면 이 문서가 맡는 증상은 README 바인딩 follow-up 증상표와 같은 아래 네 줄이다.
 
+- "`BindingResult` 있으면 뭐가 달라져요?"
 - "왜 `MethodArgumentNotValidException`이 안 나요?"
-- "`@Valid` 실패인데 컨트롤러 로그는 왜 찍혀요?"
-- "`BindingResult` 넣으니 갑자기 메서드 안으로 들어오네요?"
+- "`@Valid` 실패인데 컨트롤러 안으로 왜 들어와요?"
+- "`BindingResult` 붙였는데 왜 어떤 `400`은 여전히 컨트롤러 전에 끝나요?"
 
 읽는 순서를 짧게 고정하면 이렇다.
 
@@ -56,12 +72,11 @@ retrieval-anchor-keywords: bindingresult 400 flow, spring bindingresult beginner
     -> BindingResult 있음: controller 진입 -> if (bindingResult.hasErrors()) 분기
 ```
 
-| 비교 질문 | `BindingResult` 없음 | `BindingResult` 있음 |
-|---|---|---|
-| validation 실패 직후 | 예외로 번진다 | 에러가 `BindingResult`에 담긴다 |
-| 컨트롤러 메서드 호출 | 보통 안 된다 | 된다 |
-| 보통 누가 응답을 결정하나 | 전역 예외 처리 | 현재 컨트롤러 메서드 |
-| 잘 맞는 장면 | 공통 API 에러 포맷 | 화면 재렌더, 엔드포인트별 다른 응답 |
+| 경우 | DTO는 만들어졌나 | `BindingResult` 개입 가능? | 전역 vs 로컬 |
+|---|---|---|---|
+| `@Valid` 뒤에 `BindingResult` 없음 | 예 | 아니오 | 전역 예외 `400`으로 간다 |
+| `@Valid` 뒤에 `BindingResult` 있음 | 예 | 예 | 컨트롤러 로컬 분기가 가능하다 |
+| JSON parse, 타입 변환 같은 앞단 실패 | 아니오 | 아니오 | 컨트롤러 전에 전역 `400`으로 끝난다 |
 
 단, 이것은 **validation 실패** 이야기다. `LocalDate`에 `"tomorrow"`를 넣거나 JSON 중괄호가 깨진 경우처럼 DTO를 아예 못 만든 message conversion/parse 실패는 여전히 컨트롤러 전에 끝난다.
 

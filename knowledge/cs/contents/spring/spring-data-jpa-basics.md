@@ -14,17 +14,35 @@
 
 retrieval-anchor-keywords: spring data jpa basics, 스프링 jpa 처음, jparepository 입문, spring data jpa 왜 써요, repository 인터페이스 입문, 쿼리 메서드 뭐예요, findby 메서드 입문, @entity 입문, spring jpa beginner primer, crud repository 입문, jpql 처음, spring jpa 설정 없이 쿼리 만드는법, spring data repository vs domain repository, jparepository vs domain repository, 처음 배우는데 repository가 두개
 
+## 이 문서가 먼저 답하는 질문
+
+처음엔 용어보다 막힌 문장을 먼저 잡는 편이 덜 헷갈린다.
+
+- "`JpaRepository`는 인터페이스뿐인데 왜 동작해요?"
+- "`save()` 안 불렀는데 왜 수정이 반영돼요?"
+- "repository가 두 개처럼 보여요. `JpaRepository`와 도메인 repository는 뭐가 달라요?"
+
+이 문서는 위 세 질문을 한 장으로 묶는 입문 entrypoint다.
+
 ## 핵심 개념
 
-JDBC로 조회하려면 SQL 작성, `PreparedStatement` 생성, `ResultSet` 파싱까지 반복 코드가 많다. JPA는 객체를 DB 테이블에 매핑하고, Spring Data JPA는 그 위에 Repository 패턴을 더해 **인터페이스만 선언하면 기본 CRUD 구현체를 자동 생성**한다.
+Spring Data JPA를 처음 읽을 때는 "`repository 인터페이스를 내가 선언하고, 실제 DB 작업은 Spring이 대신 연결한다`"라는 그림부터 잡으면 된다.
 
-`extends JpaRepository<Member, Long>` 한 줄이면 `save`, `findById`, `findAll`, `delete` 등이 즉시 사용 가능하다. 추가 쿼리는 메서드 이름 규칙만 따르면 SQL 없이 만들 수 있다.
+JDBC로 조회하려면 SQL 작성, `PreparedStatement` 생성, `ResultSet` 파싱까지 반복 코드가 많다. JPA는 객체와 테이블을 연결하고, Spring Data JPA는 그 위에 repository 구현을 자동화해 **인터페이스만 선언하면 기본 CRUD 구현체를 프록시로 만들어 준다**.
+
+그래서 beginner는 처음에 아래 세 층만 분리하면 된다.
+
+- JPA: 엔티티를 어떤 테이블과 어떻게 연결할지 정하는 층
+- Spring Data JPA: repository 구현 반복을 줄여 주는 층
+- `JpaRepository`: 그 자동화 기능을 쓰기 위한 대표 인터페이스
+
+즉 `extends JpaRepository<Member, Long>` 한 줄은 "`Member`를 DB에서 읽고 쓰는 기본 리모컨을 Spring에게 만들어 달라"에 가깝다.
 
 ## 한눈에 보기
 
 ```text
 MemberRepository extends JpaRepository<Member, Long>
-    ↓ Spring Data JPA가 구현체 자동 생성
+    ↓ Spring Data JPA가 프록시 구현체 생성
     ↓
 findById(1L)   → SELECT * FROM member WHERE id = 1
 save(member)   → INSERT / UPDATE (id 유무에 따라)
@@ -46,13 +64,24 @@ findByEmail(email) → SELECT * FROM member WHERE email = ?
 | Spring Data JPA | JPA 위에서 repository 구현을 줄여 주는 도구 | 인터페이스 선언, 쿼리 메서드 작성 |
 | `JpaRepository` | Spring Data JPA가 제공하는 기본 repository 계약 | `save`, `findById`, `findAll` 같은 메서드 사용 |
 
+처음 실무에서 무엇을 어디에 적어야 하는지만 빠르게 고르면 아래 표로 충분하다.
+
+| 내가 하려는 일 | 보통 첫 선택 | 왜 |
+|---|---|---|
+| 기본 저장/조회/삭제 | `JpaRepository` 기본 메서드 | 이미 준비된 CRUD라서 가장 짧다 |
+| 단순 조건 조회 | 쿼리 메서드 `findBy...` | 이름만으로 의도가 읽힌다 |
+| JOIN, 복잡한 조건, projection | `@Query` 또는 커스텀 repository | 메서드 이름만으로는 표현이 길어지기 쉽다 |
+| 도메인 언어로 감싼 계약 만들기 | 도메인 repository interface + 구현체 위임 | 프레임워크 타입을 도메인 바깥으로 숨기기 쉽다 |
+
 ## 상세 분해
 
-- **`@Entity`**: 클래스를 JPA 엔티티로 표시. DB 테이블과 매핑된다.
-- **`@Id`와 `@GeneratedValue`**: 기본 키 필드와 자동 증가 전략 지정.
-- **쿼리 메서드**: `findByUsername`, `findByEmailAndStatus` 처럼 메서드 이름에서 쿼리를 자동 생성한다. `And`, `Or`, `Like`, `Between` 등 키워드를 지원한다.
-- **`@Query`**: 복잡한 JPQL이나 네이티브 SQL을 직접 작성하고 싶을 때 메서드에 붙인다.
-- **페이징**: `findAll(Pageable pageable)`을 사용하면 `LIMIT / OFFSET` 처리를 자동으로 해준다.
+Spring Data JPA를 읽을 때는 "엔티티", "repository 계약", "실행 방식"을 분리해서 보면 된다.
+
+- **`@Entity`**: 클래스를 JPA 엔티티로 표시한다. DB 테이블 한 행을 자바 객체로 읽고 쓰기 위한 출발점이다.
+- **`@Id`와 `@GeneratedValue`**: 어떤 필드가 식별자이고, id를 누가 채우는지 정한다.
+- **쿼리 메서드**: `findByUsername`, `findByEmailAndStatus`처럼 메서드 이름을 보고 조회 규칙을 만든다. 초반에는 "짧은 where 절 자동 생성기" 정도로 이해해도 충분하다.
+- **`@Query`**: 메서드 이름이 길어지거나 JOIN 조건이 복잡할 때 직접 JPQL/SQL을 적는 탈출구다.
+- **페이징**: `findAll(Pageable pageable)`은 페이지 요청을 전달하면 정렬과 개수를 함께 다루게 해 준다.
 
 ## 흔한 오해와 함정
 
@@ -67,6 +96,12 @@ findByEmail(email) → SELECT * FROM member WHERE email = ?
 
 **오해 4: `JpaRepository`가 곧 도메인 Repository다**
 작은 앱에서는 바로 써도 되지만, 설계상으로는 `JpaRepository`는 프레임워크 쪽 도구이고 도메인 repository 계약은 별도로 둘 수 있다. 이 큰 그림은 [Spring Data Repository vs Domain Repository Bridge](./spring-data-vs-domain-repository-bridge.md)에서 먼저 분리해 보면 덜 헷갈린다.
+
+초급자 체크 질문으로 바꾸면 더 쉽다.
+
+- "`왜 interface만 있는데 동작하지?`" -> Spring Data JPA가 구현체를 프록시로 만든다.
+- "`왜 update SQL을 내가 안 적었지?`" -> 영속 상태 + 트랜잭션이면 Dirty Checking이 반영한다.
+- "`왜 repository가 두 종류처럼 보이지?`" -> 하나는 프레임워크 도구, 다른 하나는 설계 경계일 수 있다.
 
 ## 실무에서 쓰는 모습
 
@@ -104,10 +139,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 3. 결과가 없으면 새 `Member`를 `save()`한다.
 4. 같은 트랜잭션 안에서 회원 정보를 다시 바꿨다면, 커밋 시 Dirty Checking이 UPDATE 여부를 결정한다.
 
+이 장면에서 beginner가 가져가면 되는 멘탈 모델은 이것이다.
+
+- service는 "무엇을 찾고 저장할지"를 말한다.
+- repository는 "DB 접근 창구" 역할을 한다.
+- SQL 조립과 실행 세부는 Spring Data JPA와 JPA 구현체가 맡는다.
+
 ## 더 깊이 가려면
 
 - Dirty Checking이 실제로 어떻게 동작하는지는 [JPA Dirty Checking / Version Strategy](./jpa-dirty-checking-version-strategy.md)에서 이어서 본다.
 - JPA가 JDBC, MyBatis와 어떤 계층에 있는지는 [JDBC, JPA, MyBatis](../database/jdbc-jpa-mybatis.md)를 참고한다.
+- "`JpaRepository`를 바로 노출해도 되는가?" 같은 설계 질문은 [Spring Data Repository vs Domain Repository Bridge](./spring-data-vs-domain-repository-bridge.md)로 이어 본다.
 
 ## 면접/시니어 질문 미리보기
 

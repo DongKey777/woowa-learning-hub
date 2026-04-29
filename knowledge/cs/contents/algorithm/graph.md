@@ -1,10 +1,10 @@
 # 그래프 관련 알고리즘
 
-> 한 줄 요약: 그래프 문제를 보면 먼저 연결성, 최단 경로, MST, 위상 정렬, flow 중 무엇을 묻는지부터 가르는 라우터 문서다.
+> 한 줄 요약: 그래프 문제를 보면 먼저 `연결`, `경로`, `최소 이동 횟수`, `최소 비용`, `전체 연결`, `흐름` 중 무엇을 묻는지부터 자르는 follow-up 라우터 문서다.
 
 **난이도: 🟡 Intermediate**
 
-retrieval-anchor-keywords: graph router, shortest path router, weighted shortest path, unweighted shortest path, dag shortest path, mst router, topological sort, dsu vs bfs, same group vs actual path, 그래프 라우터, 최단 경로, 최소 비용 경로, 연결성 질문, 처음 배우는데, 뭐예요
+retrieval-anchor-keywords: graph router, graph follow-up router, shortest path router, weighted shortest path, unweighted shortest path, mst router, topological sort, dsu vs bfs, same group vs actual path, graph basics next step, 왜 bfs예요, graph 뭐예요 다음, 그래프 라우터, 최단 경로, 연결성 질문
 
 관련 문서:
 - [그래프 기초](../data-structure/graph-basics.md)
@@ -21,18 +21,14 @@ retrieval-anchor-keywords: graph router, shortest path router, weighted shortest
 <details>
 <summary>Table of Contents</summary>
 
+- [beginner stop line](#beginner-stop-line)
 - [그래프 문제 Decision Router](#그래프-문제-decision-router)
 - [Shortest Path Router: Unweighted vs DAG vs Weighted](#shortest-path-router-unweighted-vs-dag-vs-weighted)
 - [Weighted Shortest Path Density Router: Sparse vs Dense](#weighted-shortest-path-density-router-sparse-vs-dense)
-- [다익스트라 알고리즘 (Dijkstra Algorithm)](#다익스트라-알고리즘-dijkstra-algorithm)
-- [벨만-포드 알고리즘 (Bellman-Ford-Moore Algorithm)](#벨만-포드-알고리즘-bellman-ford-moore-algorithm)
-- [플로이드-워셜 알고리즘 (Floyd-Warshall Algorithm)](#플로이드-워셜-알고리즘-floyd-warshall-algorithm)
-- [분리 집합(Union Find)과 크루스칼(Kruskal) 알고리즘](#분리-집합Union-Find과-크루스칼Kruskal-알고리즘)
-- [위상 정렬 패턴](#위상-정렬-패턴)
 
 </details>
 
-> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **graph basics primer + routing entrypoint** 역할을 한다.
+> 문서 역할: 이 문서는 algorithm 카테고리 안에서 **graph basics/dfs-bfs primer 다음 단계의 그래프 라우터** 역할을 한다.
 
 ---
 
@@ -51,11 +47,49 @@ retrieval-anchor-keywords: graph router, shortest path router, weighted shortest
 
 짧게 외우면 `구조가 낯설면 graph basics`, `yes/no면 connectivity`, `최소 이동 횟수면 BFS`, `최소 비용이면 Dijkstra 계열`이다.
 
+## beginner stop line
+
+백엔드 주니어가 첫 회독에서 이 문서를 끝까지 읽어야 하는 경우는 드물다. 아래 중 하나가 정리되면 여기서 멈추고 관련 문서 한 장만 내려가는 편이 beginner-safe 하다.
+
+| 지금 정리된 것 | 여기서 멈추고 갈 문서 | 왜 더 내려가지 않나 |
+|---|---|---|
+| `갈 수 있나`와 `최소 몇 번`을 구분했다 | [DFS와 BFS 입문](./dfs-bfs-intro.md) | BFS/DFS 판단까지면 첫 분기로 충분하다 |
+| `최소 이동 횟수`와 `최소 비용`을 구분했다 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) | weighted shortest path 전체 비교는 다음 단계다 |
+| `모든 정점을 연결`이 shortest path가 아니라는 걸 알았다 | [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md) | MST 세부 구현은 별도 문서가 더 직접적이다 |
+| `한 번에 얼마나 많이 보내나`가 path가 아니라 flow라는 걸 알았다 | [Network Flow Intuition](./network-flow-intuition.md) | flow는 용량과 절단 vocabulary가 먼저다 |
+
+이 아래의 legacy 설명은 `심화 비교나 옛 정리까지 이어 읽고 싶을 때만` 참고하면 된다. beginner primer로는 `그래프 기초 -> DFS와 BFS 입문 -> 이 문서 상단 라우터`까지만 잡아도 충분하다.
+
+## 같은 장면 30초 예시
+
+백엔드 주니어가 `창고 네트워크`, `미로`, `지하철` 문장을 읽을 때는 장면보다 **무엇을 답해야 하는지**를 먼저 자르는 편이 안전하다.
+
+| 같은 장면에서 들린 말 | 실제로 답할 것 | 첫 문서 |
+|---|---|---|
+| `A 창고에서 B 창고로 갈 수 있나?` | yes/no 연결 여부 | [Connectivity Question Router](../data-structure/connectivity-question-router.md) |
+| `A에서 B까지 아무 경로 하나만 보여줘` | actual path 하나 | [Shortest Path Reconstruction Bridge](./shortest-path-reconstruction-bridge.md) |
+| `A에서 B까지 최소 몇 번 만에 가나?` | unweighted shortest path | [DFS와 BFS 입문](./dfs-bfs-intro.md) |
+| `모든 창고를 가장 싸게 연결해 줘` | spanning tree 비용 최소 | [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md) |
+| `한 번에 얼마나 많이 흘려보낼 수 있나?` | total throughput / bottleneck | [Network Flow Intuition](./network-flow-intuition.md) |
+
+- `왜 bfs예요?`, `왜 mst가 아니죠?`, `왜 shortest path가 아니고 flow예요?` 같은 symptom은 장면이 아니라 **답의 모양**을 잘못 잡았을 때 생긴다.
+
+## 자주 섞는 오해
+
+| 헷갈린 첫 판단 | 바로 고칠 한 줄 | 돌아갈 문서 |
+|---|---|---|
+| `graph가 보이니까 bfs겠지` | graph는 구조 이름일 뿐이라 연결, 경로, 비용, 흐름으로 다시 잘라야 한다 | [그래프 기초](../data-structure/graph-basics.md) |
+| `최소면 다 bfs겠지` | `최소 이동 횟수`와 `최소 비용`은 다른 질문이다 | [BFS vs Dijkstra shortest path mini card](./bfs-vs-dijkstra-shortest-path-mini-card.md) |
+| `같은 그룹인가`도 shortest path겠지 | yes/no connectivity는 path 자체를 묻지 않을 수 있다 | [Connectivity Question Router](../data-structure/connectivity-question-router.md) |
+| `모든 정점을 연결`도 shortest path겠지 | 한 쌍 경로가 아니라 전체 연결 비용이면 MST 질문이다 | [Minimum Spanning Tree: Prim vs Kruskal](./minimum-spanning-tree-prim-vs-kruskal.md) |
+
+- beginner 기준 1차 분기는 `갈 수 있나`, `어떻게 가나`, `최소 몇 번/얼마`, `전부 연결하나`, `얼마나 많이 보내나` 다섯 줄이면 충분하다.
+
 ## 이 문서 다음에 보면 좋은 문서
 
 - `same-component`, `connected yes/no`, `경로 하나 복원`, `최단 경로` phrasing가 한데 섞이면 [Connectivity Question Router](../data-structure/connectivity-question-router.md)에서 먼저 답의 모양을 `yes/no vs actual path vs minimum`으로 가르는 편이 빠르다.
 - `same component query`, `same set query`, `connected yes/no`, `connected components`, `connected component count`, `union-find`, `dsu`, `유니온파인드`, `서로소 집합`, `같은 그룹인가`, `컴포넌트 크기`, `컴포넌트 개수`처럼 DSU 초보 phrasing가 먼저 보이면 [Connectivity Question Router](../data-structure/connectivity-question-router.md)로 바로 가서 `yes/no vs size/count vs actual path vs minimum path`를 먼저 고르는 편이 빠르다.
-- `unweighted shortest path`, `bfs shortest path`, `최소 칸 수`, `미로 최단 경로`처럼 무가중치 shortest path가 먼저면 [알고리즘 기본](./basic.md#dfs와-bfs)에서 BFS 레벨 탐색을 먼저 보는 편이 빠르다.
+- `unweighted shortest path`, `bfs shortest path`, `최소 칸 수`, `미로 최단 경로`처럼 무가중치 shortest path가 먼저면 [DFS와 BFS 입문](./dfs-bfs-intro.md)에서 BFS 레벨 탐색을 먼저 보는 편이 빠르다.
 - `dag shortest path`, `topological shortest path`, `의존성 그래프 최소 비용`처럼 DAG 위 path optimization이 핵심이면 [Topological DP](./topological-dp.md)와 [위상 정렬 패턴](./topological-sort-patterns.md)을 같이 보면 좋다.
 - `weighted shortest path`, `single-source shortest path`, `single-source routing`, `all-pairs shortest path`, `negative-edge shortest path`처럼 가중치 shortest path 선택 기준이 핵심이면 [Dijkstra, Bellman-Ford, Floyd-Warshall](./dijkstra-bellman-ford-floyd-warshall.md)로 이어지면 좋다.
 

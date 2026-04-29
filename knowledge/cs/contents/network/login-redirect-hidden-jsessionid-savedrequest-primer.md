@@ -18,6 +18,8 @@
 - `[primer bridge]` [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
 - `[primer]` [Browser `302` vs `304` vs `401` 새로고침 분기표](./browser-302-304-401-reload-decision-table-primer.md)
 - `[mini card]` [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)
+- `[chooser]` [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
+- `[mini card]` [Fetch `redirect: "error"` tiny card](./fetch-redirect-error-choice-card.md)
 - `[primer bridge]` [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
   - `Application > Cookies`에는 값이 보이는데 같은 실패 요청의 request `Cookie` header가 비면, guide 안의 `Application vs Network 15초 미니 체크`를 먼저 거쳐 `cookie-header gate`를 통과시킨다
 - `[primer]` [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
@@ -84,7 +86,7 @@ retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, 
 | cue | 지금 확인할 질문 | 안전한 다음 문서 |
 |---|---|---|
 | `기억` | 로그인 전 원래 URL(`SavedRequest`)을 서버가 기억하고 있나? | 이 문서의 redirect 흐름을 먼저 읽고 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)로 넘어간다 |
-| `전송` | 브라우저가 다음 요청의 `Cookie` header에 session reference를 실제로 실었나? | request `Cookie` header가 비면 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md#application-vs-network-15초-미니-체크)의 `cookie-header gate`에서 `stored` vs `sent`를 고정하고, 그다음 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)로 간다 |
+| `전송` | 브라우저가 다음 요청의 `Cookie` header에 session reference를 실제로 실었나? | request `Cookie` header가 비면 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md#application-vs-network-15초-미니-체크)의 `cookie-header gate`에서 `stored` vs `sent`를 고정한다. cross-origin `fetch`면 [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)에서 `credentials` 누락부터 자르고, `include`도 있는데 비면 그다음 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)로 간다 |
 | `복원` | 서버가 받은 cookie reference로 auth/session을 복원했나? | cookie가 실렸는데도 익명이면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `server-anonymous` 갈래로 넘긴다 |
 
 ## Spring deep dive 전에 고정할 safe next doc
@@ -97,7 +99,7 @@ retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, 
 | 지금 막힌 말 | 먼저 고정할 safe next doc | 그다음 문서 |
 |---|---|---|
 | `SavedRequest`, `saved request bounce`, `원래 URL 복귀` | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `redirect / navigation memory` branch를 고른다 | [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md) |
-| `cookie 있는데 다시 로그인`, `hidden session`, `next request anonymous after login` | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `Application` cookie와 request `Cookie` header를 먼저 가른다 | request `Cookie` header가 비면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md), 실리면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
+| `cookie 있는데 다시 로그인`, `hidden session`, `next request anonymous after login` | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 `Application` cookie와 request `Cookie` header를 먼저 가른다 | request `Cookie` header가 비면 cross-origin `fetch`의 `credentials` 누락부터 [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)에서 자르고, `include`도 있는데 비면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md), 실리면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
 | `API가 login HTML을 받음`, `browser 401 -> 302 /login bounce` | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)에서 page redirect와 API contract를 먼저 분리한다 | redirect memory면 [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md), session persistence면 [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md) |
 
 ## Retrieval Anchors
@@ -121,7 +123,7 @@ retrieval-anchor-keywords: login redirect primer, savedrequest beginner bridge, 
 | `302` 응답에 `Set-Cookie: JSESSIONID=...`가 있다 | redirect 응답에서도 browser는 cookie를 저장할 수 있다 | login 전 임시 session인지 |
 | 로그인 직후 원래 URL로 다시 `302` 된다 | `SavedRequest`가 원래 URL 복귀를 시도하는 장면일 수 있다 | 그 다음 요청이 `200`인지 다시 `302`인지 |
 | `hidden session`처럼 cookie가 있는데 또 `/login`으로 간다 | cookie 존재와 인증 성립은 다르다 | cookie가 실제 전송됐는지, 서버가 session을 찾았는지 |
-| `Application > Cookies`에는 값이 있는데 다음 request `Cookie` header가 비어 있다 | `SavedRequest`보다 먼저 browser cookie 전송/범위 문제를 의심한다 | 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md#application-vs-network-15초-미니-체크)의 `cookie-header gate`로 가서 `stored` vs `sent`를 고정한 뒤 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
+| `Application > Cookies`에는 값이 있는데 다음 request `Cookie` header가 비어 있다 | `SavedRequest`보다 먼저 browser cookie 전송 문제를 의심한다 | 먼저 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md#application-vs-network-15초-미니-체크)의 `cookie-header gate`로 가서 `stored` vs `sent`를 고정한다. cross-origin `fetch`면 [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)에서 `credentials` 누락부터 보고, `include`도 있는데 비면 그다음 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
 | `fetch('/api/...')`가 JSON `401` 대신 login HTML을 받는다 | browser page redirect 정책이 API 계약에 섞였을 가능성이 크다 | page 체인과 API 체인을 분리했는지 |
 
 초보자용 핵심 규칙은 이것이다.
@@ -501,6 +503,7 @@ cross-origin fetch에서 흔한 함정은 아래 순서다.
 - API 계약상 redirect 자체가 오면 안 되면 `error` mental model이 가장 선명하다.
 
 `response.redirected`, `response.url`, `opaqueredirect`를 어느 칸에서 읽어야 하는지 1분 안에 다시 고정하고 싶으면 [Fetch `response.redirected` vs `response.url` vs `opaqueredirect` 미니 카드](./fetch-redirected-response-url-opaqueredirect-mini-card.md)를 바로 이어서 보면 된다.
+"이 호출은 redirect가 오면 안 된다"는 계약을 더 선명하게 정리하고 싶으면 [Fetch `redirect: "error"` tiny card](./fetch-redirect-error-choice-card.md)로 이어 읽으면 된다.
 
 ---
 
@@ -548,6 +551,7 @@ Network 탭과 Application 탭에서 아래 순서대로 보면 대부분 풀린
 ## 기초 용어로 되돌아가기
 
 - `cookie`, `session`, `JWT` 기본 용어가 아직 흐리면 [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md) -> [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md) 순으로 먼저 본다.
+- `fetch`에서 `401 JSON`, `302 /login`, 숨은 login HTML `200` 중 무엇을 먼저 읽어야 할지 헷갈리면 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)로 한 번 더 잘라 본다.
 - `browser 401 -> 302 /login bounce`, `API가 login HTML을 받음`을 사례 중심으로 다시 읽고 싶으면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)로 먼저 간다.
 - Spring deep dive로 바로 내려가기보다, beginner symptom route는 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)로 한 번 돌아와 branch 이름을 다시 고르고 필요할 때만 [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)로 넓히는 편이 안전하다.
 

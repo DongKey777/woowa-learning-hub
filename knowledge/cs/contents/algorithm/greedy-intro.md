@@ -7,6 +7,7 @@
 관련 문서:
 
 - [탐욕 / Greedy 알고리즘 개요](./greedy.md)
+- [그리디 vs DP 결정 카드](./greedy-vs-dp-decision-card.md)
 - [동적 계획법 입문](./dp-intro.md)
 - [algorithm 카테고리 인덱스](./README.md)
 - [힙 기초](../data-structure/heap-basics.md)
@@ -64,6 +65,7 @@ retrieval-anchor-keywords: 그리디 입문, 그리디 알고리즘 기초, gree
 
 ## 더 깊이 가려면
 
+- 반례 신호와 상태 정의 신호를 한 표로 보고 싶다면 [그리디 vs DP 결정 카드](./greedy-vs-dp-decision-card.md)
 - 그리디 증명 기법(exchange argument)과 심화 패턴 → [탐욕 / Greedy 알고리즘 개요](./greedy.md)
 - 그리디가 통하지 않을 때의 DP 접근 → [동적 계획법 입문](./dp-intro.md)
 

@@ -65,7 +65,7 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 | `Path` 불일치 | 같은 host라면 저장 row는 계속 남아 있다 | 요청 path가 cookie 범위 밖이다 | `/api` 요청인데 cookie `Path=/auth` 같은지 |
 | `SameSite`/`Secure` | 속성은 저장 metadata라서 Application에 그대로 보인다 | 현재 문맥이 cross-site이거나 HTTPS가 아니다 | top-level 이동인지 `fetch`인지, `https://`인지 |
 | `credentials` 누락 | cookie는 저장돼 있다 | cross-origin `fetch`에서 브라우저가 credential 전송을 안 한다 | `fetch(..., { credentials: "include" })` 여부 |
-| `credentials` 누락 vs `Domain`/`Path` mismatch 구분 | 둘 다 Application row는 그대로 남아 있을 수 있다 | cross-origin `fetch` 전체에서 빠지면 `credentials` 쪽, 특정 host/path에서만 빠지면 scope 쪽일 가능성이 크다 | 요청이 cross-origin인지, 같은 cookie가 다른 path나 host에서는 붙는지 |
+| `credentials` 누락 vs cookie scope mismatch 구분 | 둘 다 Application row는 그대로 남아 있을 수 있다 | cross-origin `fetch` 전체에서 빠지면 `credentials` 쪽, `include`도 있는데 특정 host/path/site에서만 빠지면 scope 쪽일 가능성이 크다 | 요청이 cross-origin인지, `include`가 있는지, 같은 cookie가 다른 path나 host에서는 붙는지 |
 
 초급자에게 가장 중요한 감각은 "Application 탭 row는 과거 저장 사실이고, request `Cookie` 헤더는 이번 요청 판정 결과"라는 점이다.
 
@@ -74,7 +74,7 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 1. 실패한 **같은 요청 row**를 연다.
 2. `Application > Cookies`에서 cookie 이름과 `Domain`/`Path`/`SameSite`/`Secure`를 본다.
 3. `Network > Request Headers > Cookie`가 비었는지 본다.
-4. 비어 있으면 요청 URL, 스킴, 서브도메인, `fetch credentials`를 cookie 속성과 비교한다.
+4. 비어 있으면 먼저 cross-origin `fetch`인지와 `credentials: "include"` 유무를 확인하고, 그다음 요청 URL, 스킴, 서브도메인, cookie 속성을 비교한다.
 5. `Cookie`가 실렸다면 그다음부터는 브라우저 문제가 아니라 서버 세션 복원이나 인증 매핑 문제로 본다.
 
 포인트는 "저장소 화면"과 "실패한 실제 요청"을 반드시 같은 턴에 맞춰 보는 것이다. `Application` 탭만 보고 있으면 과거에 저장된 cookie row 때문에 오진하기 쉽다.
@@ -94,7 +94,7 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 
 - `HttpOnly`라서 request `Cookie`가 비는 것은 아니다. `HttpOnly`는 JS 읽기만 막는다.
 - `Application > Cookies`에 보인다고 그 요청에 자동 전송되는 것은 아니다.
-- request `Cookie`가 비어 있으면 CORS 응답 읽기보다 먼저 cookie scope와 `credentials`를 본다.
+- request `Cookie`가 비어 있으면 CORS 응답 읽기보다 먼저 `credentials missing`과 `cookie scope mismatch`를 따로 본다.
 - request `Cookie`가 이미 있다면 `SameSite` 추측을 멈추고 서버 쪽 인증 복원으로 넘어가는 편이 빠르다.
 
 ## 더 깊이 가려면
@@ -102,8 +102,8 @@ retrieval-anchor-keywords: application tab cookie but no request cookie, request
 - 저장소 화면 전체를 먼저 읽고 싶으면 [Browser DevTools Application 탭 저장소 읽기 1분 카드](./browser-devtools-application-storage-1minute-card.md)
 - cookie 자동 전송 흐름 자체를 다시 잡으려면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - `SameSite`, `Domain`, `Path`, `Secure` 의미를 속성별로 보려면 [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
-- cross-origin `fetch`에서 `credentials`와 scope를 같이 보려면 [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
-- 실전 증상 분기를 더 자세히 타려면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
+- cross-origin `fetch`에서 먼저 `credentials missing`을 자르려면 [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md)
+- `include`도 있는데 비는 장면을 scope로 좁히려면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
 
 ## 한 줄 정리
 

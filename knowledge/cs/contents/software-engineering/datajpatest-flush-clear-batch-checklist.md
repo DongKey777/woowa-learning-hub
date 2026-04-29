@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: datajpatest flush clear batch checklist basics, datajpatest flush clear batch checklist beginner, datajpatest flush clear batch checklist intro, software engineering basics, beginner software engineering, 처음 배우는데 datajpatest flush clear batch checklist, datajpatest flush clear batch checklist 입문, datajpatest flush clear batch checklist 기초, what is datajpatest flush clear batch checklist, how to datajpatest flush clear batch checklist
+retrieval-anchor-keywords: datajpatest flush clear basics, datajpatest에서 flush clear 왜 해요, flush clear 뭐예요, flush는 commit인가요, clear는 왜 같이 써요, jpa flush clear 기초, datajpatest batch test beginner, datajpatest bulk update stale state, 같은 영속성 컨텍스트 착시, save 했는데 db 검증 끝난 거 아니에요, 테스트에서 stale state 왜 나오나요, bulk update 뒤 clear 왜 필요해요, 처음 datajpatest batch 헷갈림, 처음 배우는데 flush clear, datajpatest 큰 그림
 `@DataJpaTest`를 이미 쓰고 있는데 batch 저장 루프나 bulk update 테스트가 "초록인데도 운영 감각과 다르다"면, 대개 새 개념이 부족한 것이 아니라 **무엇을 검증한 테스트인지 경계가 흐린 상태**다.
 이 문서는 초심자 기준으로 "`flush()`와 `clear()`를 넣으면 `@DataJpaTest`가 무엇을 더 검증하게 되나"만 짧게 연결해 준다.
 DB 종류 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./datajpatest-db-difference-checklist.md), JPA batch 설정 자체가 궁금하면 [JPA Batch Config Pitfalls](./jpa-batch-config-pitfalls.md)를 먼저 보면 된다.
@@ -39,6 +39,7 @@ DB 종류 차이가 먼저 의심되면 [DataJpaTest DB 차이 가이드](./data
 > - [IDENTITY vs SEQUENCE Batch Verification Example](./identity-vs-sequence-batch-verification-example.md)
 > - [Batch Result Testing Checklist](./batch-result-testing-checklist.md)
 > - [Retry Queue Assertions Primer](./retry-queue-assertions-primer.md)
+> - [Java 실행 모델과 객체 메모리 mental model 입문](../language/java/java-execution-object-memory-mental-model-primer.md)
 >
 > retrieval-anchor-keywords: datajpatest flush clear batch checklist, datajpatest flush clear beginner, datajpatest batch insert test, datajpatest bulk update stale state, flush clear what does datajpatest verify, jpa batch test flush clear, entitymanager flush clear loop test, testentitymanager flush clear batch, datajpatest same persistence context illusion, datajpatest save and find illusion batch, datajpatest batch verification, beginner jpa batch test primer, flush clear rollback datajpatest, datajpatest bulk update clear needed, datajpatest batch insert constraint check, datajpatest stale state checklist, jpa flush clear test meaning, datajpatest beginner bridge, flush commit difference datajpatest batch
 

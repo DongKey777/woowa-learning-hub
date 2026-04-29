@@ -100,6 +100,30 @@ FIXTURES = [
         ),
     ),
     _chunk(
+        "b1",
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+        "DAO vs Query Model Entrypoint Primer",
+        "software-engineering",
+        "Query model beginner entrypoint",
+        (
+            "dao vs query model entrypoint primer 는 query model 이 뭐고 query service 를 왜 두는지, "
+            "when dao is enough, when dedicated query repository is better 같은 입문자 "
+            "기준의 read path 선택 큰 그림을 설명한다."
+        ),
+    ),
+    _chunk(
+        "b2",
+        "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        "Query Model Separation for Read-Heavy APIs",
+        "software-engineering",
+        "List search filter sort beginner guide",
+        (
+            "query model separation 은 list search filter sort, query conditions, browser "
+            "filter state, local sort state, read-heavy api query service vs repository 를 "
+            "설명하는 가까운 companion primer 다."
+        ),
+    ),
+    _chunk(
         "c",
         "contents/database/transaction-isolation-locking.md",
         "트랜잭션 격리수준과 락",
@@ -1681,6 +1705,19 @@ class CsRagSearchTest(unittest.TestCase):
     def test_spring_mvc_shortform_query_prefers_beginner_request_pipeline_primer(self) -> None:
         hits = self._search(
             "Spring MVC 뭐야?",
+            top_k=4,
+        )
+
+        primer_doc = "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+        deep_dive_doc = "contents/spring/spring-mvc-controller-basics.md"
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, deep_dive_doc)
+
+    def test_spring_mvc_english_meaning_query_prefers_beginner_request_pipeline_primer(
+        self,
+    ) -> None:
+        hits = self._search(
+            "What does Spring MVC mean?",
             top_k=4,
         )
 
@@ -3632,6 +3669,18 @@ class CsRagSearchTest(unittest.TestCase):
         fixtures = [
             _chunk(
                 "query-model-primer",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "DAO vs Query Model Entrypoint Primer",
+                "software-engineering",
+                "Query model beginner entrypoint",
+                (
+                    "dao vs query model entrypoint primer explains what query model means, "
+                    "what query service is, when dao is enough, when dedicated query "
+                    "repository is better, and beginner backend api read path choices."
+                ),
+            ),
+            _chunk(
+                "query-model-companion",
                 "contents/software-engineering/query-model-separation-read-heavy-apis.md",
                 "Query Model Separation for Read-Heavy APIs",
                 "software-engineering",
@@ -3688,9 +3737,11 @@ class CsRagSearchTest(unittest.TestCase):
             )
 
         primer_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        companion_doc = "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
         projection_doc = "contents/design-pattern/read-model-staleness-read-your-writes.md"
 
         self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, companion_doc)
         self.assert_ranks_ahead(hits, primer_doc, projection_doc)
 
     def test_beginner_query_model_meaning_query_prefers_query_model_primer_in_isolated_fixture(
@@ -3700,6 +3751,18 @@ class CsRagSearchTest(unittest.TestCase):
         fixtures = [
             _chunk(
                 "query-model-primer",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "DAO vs Query Model Entrypoint Primer",
+                "software-engineering",
+                "Query model beginner entrypoint",
+                (
+                    "dao vs query model entrypoint primer explains what query model means, "
+                    "what query service is, when dao is enough, when dedicated query "
+                    "repository is better, and beginner backend api read path choices."
+                ),
+            ),
+            _chunk(
+                "query-model-companion",
                 "contents/software-engineering/query-model-separation-read-heavy-apis.md",
                 "Query Model Separation for Read-Heavy APIs",
                 "software-engineering",
@@ -3766,11 +3829,13 @@ class CsRagSearchTest(unittest.TestCase):
                 top_k=4,
             )
 
-        primer_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        primer_doc = "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+        companion_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
         repository_doc = "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
         api_doc = "contents/network/rest-api-boundary-deep-dive.md"
 
         self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, companion_doc)
         self.assert_ranks_ahead(hits, primer_doc, repository_doc)
         self.assert_ranks_ahead(hits, primer_doc, api_doc)
 
@@ -3781,6 +3846,18 @@ class CsRagSearchTest(unittest.TestCase):
         fixtures = [
             _chunk(
                 "query-model-primer",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "DAO vs Query Model Entrypoint Primer",
+                "software-engineering",
+                "Query service beginner entrypoint",
+                (
+                    "dao vs query model entrypoint primer explains what query service is, "
+                    "why query service exists, when dao is enough, when dedicated query "
+                    "repository is better, and beginner backend api read path choices."
+                ),
+            ),
+            _chunk(
+                "query-model-companion",
                 "contents/software-engineering/query-model-separation-read-heavy-apis.md",
                 "Query Model Separation for Read-Heavy APIs",
                 "software-engineering",
@@ -3848,11 +3925,109 @@ class CsRagSearchTest(unittest.TestCase):
                 top_k=4,
             )
 
-        primer_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        primer_doc = "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+        companion_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
         repository_doc = "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
         layering_doc = "contents/spring/spring-service-layer-transaction-boundary-patterns.md"
 
         self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, companion_doc)
+        self.assert_ranks_ahead(hits, primer_doc, repository_doc)
+        self.assert_ranks_ahead(hits, primer_doc, layering_doc)
+
+    def test_beginner_query_service_role_query_prefers_query_model_primer_in_isolated_fixture(
+        self,
+    ) -> None:
+        query = _load_golden_fixture_query("beginner_query_service_korean_role_shortform_lockin")
+        fixtures = [
+            _chunk(
+                "query-model-primer",
+                "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "DAO vs Query Model Entrypoint Primer",
+                "software-engineering",
+                "Query service beginner entrypoint",
+                (
+                    "dao vs query model entrypoint primer explains what query service does, "
+                    "what role query service plays, when dao is enough, when dedicated query "
+                    "repository is better, and beginner backend api read path choices."
+                ),
+            ),
+            _chunk(
+                "query-model-companion",
+                "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+                "Query Model Separation for Read-Heavy APIs",
+                "software-engineering",
+                "Query service beginner primer",
+                (
+                    "query model separation beginner primer explains why query service "
+                    "exists, query service vs repository, read-heavy api overview, list "
+                    "search filter sort, and browser filter state for beginners."
+                ),
+            ),
+            _chunk(
+                "repo-boundary",
+                "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md",
+                "Repository Boundary: Aggregate Persistence vs Read Model",
+                "design-pattern",
+                "Aggregate persistence vs read model",
+                (
+                    "repository boundary explains aggregate persistence, read model, query "
+                    "service boundary, join dto, remote lookup, and repository vs read "
+                    "model separation."
+                ),
+            ),
+            _chunk(
+                "layering",
+                "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+                "Spring Service Layer Transaction Boundary Patterns",
+                "spring",
+                "Layer responsibility deep dive",
+                (
+                    "service layer transaction boundary patterns explain service layer "
+                    "responsibilities, layered architecture, separation of concerns, and "
+                    "transaction boundary decisions."
+                ),
+            ),
+        ]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            sqlite_path, dense_path, manifest_path = indexer._paths(tmp)
+            conn = indexer._open_sqlite(sqlite_path)
+            try:
+                indexer._insert_chunks(conn, fixtures)
+            finally:
+                conn.close()
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": len(fixtures),
+                        "corpus_hash": "fixture",
+                        "corpus_root": "fixture",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            dense_path.touch()
+
+            hits = searcher.search(
+                query["prompt"],
+                learning_points=[],
+                mode="cheap",
+                index_root=tmp,
+                top_k=4,
+            )
+
+        primer_doc = "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+        companion_doc = "contents/software-engineering/query-model-separation-read-heavy-apis.md"
+        repository_doc = "contents/design-pattern/repository-boundary-aggregate-vs-read-model.md"
+        layering_doc = "contents/spring/spring-service-layer-transaction-boundary-patterns.md"
+
+        self.assert_path_rank_at_most(hits, primer_doc, 1)
+        self.assert_ranks_ahead(hits, primer_doc, companion_doc)
         self.assert_ranks_ahead(hits, primer_doc, repository_doc)
         self.assert_ranks_ahead(hits, primer_doc, layering_doc)
 

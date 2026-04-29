@@ -16,7 +16,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: review comment pattern cards, review feedback cards beginner, service가 너무 비대함, controller가 일을 너무 많이 함, validation 위치가 섞여 있음, dto entity 경계 모호, 리뷰 문장 해석 카드, 첫 수정 체크리스트, review feedback translation beginner, 우테코 리뷰 문장 해석, service too big checklist, fat service beginner, fat controller beginner, review comment first fix, beginner review feedback router
+retrieval-anchor-keywords: review comment pattern cards, review feedback cards beginner, service가 너무 비대함, service가 너무 많은 걸 알아요, controller가 일을 너무 많이 함, 응답 조립 책임이 섞였어요, validation 위치가 섞여 있음, dto entity 경계 모호, 리뷰 문장 해석 카드, 첫 수정 체크리스트, review feedback translation beginner, 우테코 리뷰 문장 해석, service too big checklist, review phrase bridge, beginner review feedback router
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -27,9 +27,25 @@ retrieval-anchor-keywords: review comment pattern cards, review feedback cards b
 | 자주 보는 리뷰 문장 | 보통 뜻 | 첫 질문 |
 |---|---|---|
 | `service가 너무 비대합니다` | 유스케이스 조립, 규칙, 저장 세부, 외부 연동이 한곳에 몰렸다 | "이 메서드가 지금 몇 단계 일을 동시에 하나?" |
+| `Service가 너무 많은 걸 알아요` | Service가 유스케이스 순서 말고도 웹 응답 모양, JPA 저장 세부, DTO 조립까지 같이 안다 | "Service 시그니처나 본문에 `Response DTO`, `Entity`, 저장 옵션이 한꺼번에 보이나?" |
 | `controller가 일을 너무 많이 합니다` | HTTP 입력 처리 바깥의 규칙이나 저장 판단이 controller에 들어왔다 | "이 로직이 웹 말고 다른 진입점에서도 필요할까?" |
+| `응답 조립 책임이 섞였어요` | 응답 DTO/직렬화 모양을 정하는 책임이 Controller 밖 Service나 Repository까지 내려갔다 | "밖으로 나갈 필드 모양을 지금 누가 결정하고 있나?" |
 | `validation 위치가 섞여 있어요` | 형식 검증과 업무 규칙 검증이 뒤섞였다 | "포맷 검사인가, 도메인 규칙인가?" |
 | `DTO / Entity 경계가 모호합니다` | API 계약과 내부 저장 모델이 한 타입으로 묶였다 | "응답 모양이 DB 구조에 끌려가고 있나?" |
+
+## 리뷰 문장 미니 브리지
+
+정확한 문장을 들었을 때는 "이론 전체"보다 **어느 primer를 먼저 열지**가 더 중요하다. 아래 표는 이번 item의 target query인 `Service가 너무 많은 걸 알아요`, `응답 조립 책임이 섞였어요`를 바로 다음 문서로 연결하는 mini bridge다.
+
+| 리뷰 문장 | 먼저 붙일 이름 | 첫 primer | 여기서 먼저 볼 줄 |
+|---|---|---|---|
+| `Service가 너무 많은 걸 알아요` | Service 책임 + 레이어 경계 | [Service 계층 기초](./service-layer-basics.md) | [같은 주문 장면으로 보는 `Controller / Service / Repository` 빠른 비교](./service-layer-basics.md#같은-주문-장면으로-보는-controller--service--repository-빠른-비교) |
+| `Service가 너무 많은 걸 알아요`인데 `Request DTO`, `Entity`, `Response DTO`가 한 메서드에 같이 보인다 | 계약 경계도 같이 섞임 | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) | [어디서 변환하나 quick check](./dto-vo-entity-basics.md#어디서-변환하나-quick-check) |
+| `응답 조립 책임이 섞였어요` | DTO/응답 계약 문제 | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) | [구조는 맞는데 계약이 샌다 싶을 때 decision row](./dto-vo-entity-basics.md#구조는-맞는데-계약이-샌다-싶을-때-decision-row) |
+| `응답 조립 책임이 섞였어요`인데 Controller도 규칙/저장을 같이 하고 있다 | 레이어 문제부터 | [계층형 아키텍처 기초](./layered-architecture-basics.md) | [Controller에 남길 것 / Service로 옮길 것 빠른 비교](./layered-architecture-basics.md#controller에-남길-것--service로-옮길-것-빠른-비교) |
+
+- 짧게 외우면 `많이 안다 -> Service primer`, `응답 모양이 섞인다 -> DTO primer`, `Controller도 같이 무겁다 -> layering primer`다.
+- stop rule: 첫 primer를 읽고 `입력 / 규칙 / 저장 / 응답 조립` 중 어디가 섞였는지 한 문장으로 말할 수 있으면 다음 문서로 넘어가지 않아도 된다.
 
 ## 카드 1. `service가 너무 비대합니다`
 

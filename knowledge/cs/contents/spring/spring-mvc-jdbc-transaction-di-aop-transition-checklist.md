@@ -6,8 +6,10 @@
 
 관련 문서:
 
+- [Network -> Spring handoff](../network/README.md#network---spring-handoff)
 - [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md)
 - [Spring MVC 컨트롤러 기초](./spring-mvc-controller-basics.md)
+- [Database First-Step Bridge](../database/database-first-step-bridge.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [트랜잭션 기초](../database/transaction-basics.md)
 - [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
@@ -16,6 +18,7 @@
 - [@Transactional 기초](./spring-transactional-basics.md)
 - [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [spring 카테고리 인덱스](./README.md)
+- [spring primer 되돌아가기](./README.md#spring-primer-되돌아가기)
 
 retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc jdbc di aop beginner bridge, mvc to jdbc confusion checklist, jdbc to di aop confusion checklist, controller service repository mental model, @transactional is aop beginner, transaction is not jdbc call, request is not transaction, service owns transaction boundary beginner, proxy before deep dive, beginner spring ladder transition, mvc jdbc transaction di aop ladder, beginner handoff ladder, 처음 spring jdbc transaction, 왜 service 에서 transaction
 
@@ -27,6 +30,19 @@ retrieval-anchor-keywords: mvc jdbc transaction di aop transition checklist, mvc
 - JDBC/Repository: DB에 어떻게 말 거나
 - Transaction: 어디까지 한 덩어리로 성공/실패하나
 - DI/AOP: 객체를 누가 연결하고, 호출 사이에 누가 끼어드나
+
+## beginner-safe 사다리
+
+이 체크리스트는 `network primer -> spring bridge -> database bridge` 뒤에 붙는 정리용 bridge다. 처음에는 아래 한 칸 사다리만 유지하고, deep dive 단어는 링크만 저장한다.
+
+| 지금 막힌 beginner 문장 | primer | follow-up 한 칸 | deeper는 나중에 |
+|---|---|---|---|
+| "`HTTP 다음에 Spring은 뭐부터 봐요?`" | [Network -> Spring handoff](../network/README.md#network---spring-handoff) | [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md) | filter ordering, async timeout |
+| "`controller` 다음 `save()`와 SQL은 어디서 봐요?" | [Database First-Step Bridge](../database/database-first-step-bridge.md) | [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md) | ORM flush, failover, replay |
+| "`왜 service에서 transaction을 봐요?`" | [트랜잭션 기초](../database/transaction-basics.md) | [@Transactional 기초](./spring-transactional-basics.md) | propagation, self-invocation, rollback-only |
+| "`Bean`, `주입`, `프록시`가 한꺼번에 섞여 보여요" | [IoC와 DI 기초](./spring-ioc-di-basics.md) | [AOP 기초](./spring-aop-basics.md) | proxy internals |
+
+짧게 외우면 `요청 처리 -> DB 호출 -> 트랜잭션 경계 -> 프록시` 순서다.
 
 ## mental model 4칸
 
@@ -150,6 +166,17 @@ HTTP 요청
 | `commit`과 `rollback`이 어느 service 범위에서 묶이는지 헷갈린다 | [트랜잭션 기초](../database/transaction-basics.md) | [@Transactional 기초](./spring-transactional-basics.md) | propagation / rollback-only / self-invocation |
 | `Bean`, `주입`, `프록시`가 한꺼번에 섞인다 | [IoC와 DI 기초](./spring-ioc-di-basics.md) | [AOP 기초](./spring-aop-basics.md) | AOP proxy mechanism 세부 |
 | `@Transactional`이 왜 안 먹는지 모르겠다 | [@Transactional 기초](./spring-transactional-basics.md) | [Spring Self-Invocation 공통 오해 1페이지 카드](./spring-self-invocation-transactional-only-misconception-primer.md) | self-invocation matrix / propagation |
+
+## 길을 잃었을 때 복귀점
+
+같은 요청에서 `302`, `controller`, `save()`, `commit/rollback`이 한 번에 떠오르면 이 문서를 더 깊게 읽기보다 아래 복귀점으로 질문을 다시 하나만 고른다.
+
+| 지금 다시 막힌 말 | 돌아갈 문서 | 왜 이 복귀점이 안전한가 |
+|---|---|---|
+| "`302`, `304`, `cookie`가 먼저 헷갈려요" | [Network -> Spring handoff](../network/README.md#network---spring-handoff) | browser/network 질문을 먼저 떼어 낸다 |
+| "`controller -> service -> repository`까지만 다시 보고 싶어요" | [Spring 요청 파이프라인과 Bean Container 기초](./spring-request-pipeline-bean-container-foundations-primer.md) | 요청 처리와 객체 준비를 다시 분리한다 |
+| "`save()`와 `commit/rollback`만 다시 정리하고 싶어요" | [Database First-Step Bridge](../database/database-first-step-bridge.md) | DB 입구 3축으로 돌아가 질문을 다시 고른다 |
+| "문서가 많아서 Spring beginner 입구로 돌아가고 싶어요" | [spring primer 되돌아가기](./README.md#spring-primer-되돌아가기) | 같은 category에서 primer 한 칸만 다시 고르게 한다 |
 
 ## 3개만 기억하고 끝내기
 

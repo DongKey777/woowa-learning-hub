@@ -15,7 +15,7 @@
 - [HTTP 요청-응답 기본 흐름](../network/http-request-response-basics-url-dns-tcp-tls-keepalive.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring mvc request lifecycle basics, spring mvc 큰 그림, dispatcherservlet basics, spring request flow beginner, spring mvc 처음 배우는데, 요청이 컨트롤러까지 어떻게 가요, filter interceptor 차이 basics, requestbody 400 왜 나요, binding basics, exception handling basics, controller 전에 400 왜, 415 content negotiation primer
+retrieval-anchor-keywords: spring mvc request lifecycle basics, spring mvc 큰 그림, dispatcherservlet basics, spring request flow beginner, spring mvc 처음 배우는데, 요청이 컨트롤러까지 어떻게 가요, spring mvc 파라미터 누가 채워요, requestparam pathvariable requestbody 누가 넣어줘요, argument resolver 뭐예요 처음, filter interceptor 차이 basics, requestbody 400 왜 나요, controller 전에 400 왜, 415 content negotiation primer, 415 400 차이, @valid 전에 400 왜
 
 ## 먼저 여기까지만 잡는다
 
@@ -70,7 +70,7 @@ HTTP 요청
 | 1 | `Filter` | 요청을 입구에서 먼저 검사한다 | 로그인 전 차단, CORS, 공통 로깅 |
 | 2 | `DispatcherServlet` + `HandlerMapping` | 어느 컨트롤러 메서드로 갈지 찾는다 | `404`, `405` |
 | 3 | `HandlerInterceptor` | 컨트롤러 전후 공통 작업을 붙인다 | 접근 로그, 처리 시간 측정 |
-| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | controller 전에 [`400` first split](./spring-requestbody-400-before-controller-primer.md), [`415 Unsupported Media Type` first split](./spring-requestbody-415-unsupported-media-type-primer.md) -> [`Content negotiation` 확장 보기](./spring-content-negotiation-pitfalls.md) |
+| 4 | argument binding / message conversion | `@PathVariable`, `@RequestParam`, `@RequestBody`를 채운다 | `415`=`Content-Type` 계약, `400`=`parse/type`, 그 뒤 `@Valid`면 validation `400` |
 | 5 | `Controller` | 서비스 호출과 응답 반환을 한다 | 도메인 규칙 위반, 조회 실패 |
 | 6 | exception resolver / advice | 예외를 HTTP 응답으로 번역한다 | `400`/`404`/`409` 응답 모양 불일치 |
 
@@ -134,9 +134,11 @@ HTTP 요청
 
 이 단계 실패는 아직 비즈니스 규칙 위반이 아닐 수 있다. 문자열을 숫자로 못 바꾸거나 JSON 모양이 DTO와 안 맞는 식의 **binding failure**일 수 있다.
 
-특히 `415 Unsupported Media Type`은 "JSON 값이 틀렸다"보다 "`@RequestBody`가 기대한 요청 형식과 `Content-Type` 계약이 안 맞았다"에 더 가깝다. 그래서 `415`가 보이면 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)로 넘어가 검색 증상부터 분리하고, 그다음 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 이어가 `Accept`, `produces`, `consumes`까지 넓혀 보면 된다.
+README에서 내려왔다면 binding 칸은 이렇게 먼저 끊으면 된다: `415`는 `Content-Type` 계약, 컨트롤러 전 `400`은 JSON parse/type, 객체가 들어온 뒤 `@Valid` `400`은 validation.
 
-여기서 초급자가 한 번 더 섞는 지점은 "`객체로 받는다`면 다 같은 바인딩 아닌가?"다. query/form 입력을 묶는 쪽은 `@ModelAttribute`, JSON body를 읽는 쪽은 `@RequestBody`라고만 먼저 나눠도 훨씬 덜 헷갈린다. 이 비교를 표로 보고 싶다면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)를 같이 보면 된다.
+`415`는 JSON 값 오류보다 `Content-Type` 계약 문제에 더 가깝다. 먼저 [Spring `@RequestBody 415 Unsupported Media Type` 초급 primer](./spring-requestbody-415-unsupported-media-type-primer.md)로 가고, `Accept`/`produces`/`consumes`까지 넓힐 때만 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 내려가면 된다.
+
+query/form은 `@ModelAttribute`, JSON body는 `@RequestBody`로 먼저만 나눠도 덜 헷갈린다. 표 비교가 필요하면 [Spring `@ModelAttribute` vs `@RequestBody` 초급 비교 카드](./spring-modelattribute-vs-requestbody-binding-primer.md)를 보면 된다.
 
 짧게 끊어 기억하면 된다.
 

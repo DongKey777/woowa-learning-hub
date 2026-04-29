@@ -11,6 +11,7 @@
 - [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
+- [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)
 - [Disjoint Interval Set](./disjoint-interval-set.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)
@@ -32,6 +33,7 @@ retrieval-anchor-keywords: treemap interval primer, reservation overlap check, c
 > 왼쪽 예약의 끝이 `start`보다 늦지 않고, 오른쪽 예약의 시작이 `end`보다 빠르지 않으면 넣을 수 있다.
 
 즉 이웃 조회를 overlap 판단으로 번역하는 것이 이 문서의 목표다.
+질문이 "`겹치나?`"보다 "`30분 빈 시간 있나?`"에 더 가깝다면 [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)부터 읽는 편이 빠르다.
 
 ## 한눈에 보기
 
@@ -148,6 +150,7 @@ if (noLeftOverlap && noRightOverlap) {
 - 아직 `floorKey`와 `ceilingKey` 자체가 헷갈리면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - `lowerKey/floorKey/ceilingKey/higherKey`를 `Entry` 네 쌍으로 바꾸는 중간 브리지가 필요하면 [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
 - 시작 시각을 찾은 뒤 종료 시각을 읽는 감각이 약하면 [TreeMap `floorEntry`/`ceilingEntry` Value-Read Micro Drill](./treemap-floorentry-ceilingentry-value-read-micro-drill.md)
+- `floorEntry(start)`와 `ceilingEntry(start)`를 바로 free-slot 길이 판단으로 바꾸는 짧은 드릴이 필요하면 [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)
 - insert할 때 merge와 gap tracking까지 같이 유지하려면 [Disjoint Interval Set](./disjoint-interval-set.md)
 - 한 번 정렬해서 끝나는 offline 구간 문제와 구분하려면 [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)
 

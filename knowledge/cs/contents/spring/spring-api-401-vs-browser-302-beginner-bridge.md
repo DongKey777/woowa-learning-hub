@@ -15,7 +15,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, fetch 401 대신 302, browser page 302 login spring, spring mixed mvc app auth failure, api authentication entry point beginner, form login api separation spring, 처음 배우는데 401 302 차이, spring browser redirect api json, login page redirect vs api error, savedrequest 처음, 로그인 후 원래 주소 기억, 왜 login 갔다가 다시 와요, requestcache 뭐예요
+retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect vs json api, api가 login html을 받아요, fetch 401 대신 302, browser page 302 login spring, spring mixed mvc app auth failure, authenticationentrypoint beginner, accessdeniedhandler beginner, exceptiontranslationfilter 처음, form login api separation spring, 처음 배우는데 401 302 차이, spring browser redirect api json, login page redirect vs api error, 왜 login 갔다가 다시 와요, requestcache 뭐예요
 
 ## 핵심 개념
 
@@ -54,6 +54,22 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 핵심은 `302`와 `401`이 서로 경쟁하는 답이 아니라, **같은 인증 실패를 다른 계약으로 표현한 결과**일 수 있다는 점이다.
 
 이 차이를 실제 설정에서 안전하게 유지하려면 `/admin/**`와 `/api/**`를 서로 다른 `SecurityFilterChain`으로 분리해 각 경로가 자기 `AuthenticationEntryPoint`를 타게 하는 구성이 흔하다.
+
+## entry point / denied handler 재진입 지도
+
+이 문서를 읽다 보면 결국 "`그래서 지금은 entry point 얘기예요, denied handler 얘기예요?`"에서 다시 헷갈리기 쉽다.
+
+처음 재진입은 아래 표처럼 잡으면 된다.
+
+| 지금 보이는 장면 | 먼저 붙일 라벨 | 바로 이어서 볼 문서 | 왜 그 문서로 재진입하나 |
+|---|---|---|---|
+| 브라우저 페이지가 `/login`으로 튄다 | `authenticationentrypoint` | [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md) | "아직 인증 안 됨"을 누가 `302`나 `401`로 번역하는지 핵심 책임을 다시 잡는다 |
+| `fetch("/api/me")`가 `401` 대신 login HTML이나 `302`를 받는다 | `authenticationentrypoint + chain split` | [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md) | API가 브라우저용 entry point를 잘못 타는지 경로 분리 관점으로 바로 내려간다 |
+| 이미 로그인했는데 마지막 응답이 `403`이다 | `accessdeniedhandler` | [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md) | "인증 안 됨"과 "권한 부족"을 먼저 끊은 뒤 denied handler 축으로 재진입한다 |
+| 로그인 후 원래 URL로 돌아왔는데 마지막에 `403`이다 | `savedrequest 다음 denied handler` | [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md) | 복귀 자체와 마지막 권한 실패를 두 단계로 나눠 오진을 줄인다 |
+
+- 이 문서의 중심은 `authenticationentrypoint` 축이다.
+- `403`이 전면에 나오면 이 문서를 오래 붙잡기보다 denied handler primer로 잠깐 빠졌다가, 필요할 때만 advanced 문서로 다시 올라오는 편이 beginner-safe하다.
 
 ## 상세 분해
 
@@ -98,6 +114,20 @@ retrieval-anchor-keywords: spring api 401 vs browser 302, spring login redirect 
 즉 "`앱이 하나니까 인증 실패도 하나로 통일돼야지`"보다 "`클라이언트 계약이 다르니 응답도 갈릴 수 있구나`"가 beginner 기준 더 정확하다.
 
 그리고 이 감각을 실제 Spring Security 설정으로 옮길 때는 `/admin/**`와 `/api/**`를 별도 `SecurityFilterChain`으로 나눠 각 경로가 자기 entry point를 타게 하는 구성이 가장 흔하다.
+
+## `403`이 앞에 보이면 denied handler 문서로 한 번 끊는다
+
+이 문서를 읽는 도중에도 장면이 바뀔 수 있다.
+
+- 처음엔 "`브라우저는 왜 `302`고 API는 왜 `401`이지?`"로 시작했다.
+- 그런데 로그나 DevTools를 더 보니 사실 마지막 실패가 `403`이었다.
+
+이때는 "`같은 인증 실패의 다른 표현`"을 더 파기보다, 질문을 바로 바꿔야 한다.
+
+- 아직 비로그인인가 -> entry point 축
+- 이미 로그인했고 권한이 부족한가 -> denied handler 축
+
+즉 `403`이 중심이면 이 문서를 계속 읽는 것보다 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)에서 `302 /login`과 `403`을 먼저 분리한 뒤, 필요할 때만 [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)로 다시 올라오는 편이 빠르다.
 
 ## redirect 기억과 권한 축 분리
 
@@ -192,9 +222,9 @@ SecurityFilterChain webChain(HttpSecurity http) throws Exception {
 
 ## 더 깊이 가려면
 
-- `302 /login`과 `403`을 먼저 갈라야 한다면 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)를 먼저 본다.
+- `302 /login`과 `403`을 먼저 갈라야 한다면 [Spring 관리자 요청이 `302 /login`이 될 때와 `403`이 될 때: 초급 브리지](./spring-admin-302-login-vs-403-beginner-bridge.md)를 먼저 본다. 이 경로는 beginner 기준 `accessdeniedhandler` 재진입점으로 생각하면 된다.
 - `/admin/**`는 login redirect, `/api/**`는 `401` JSON으로 안전하게 분리하는 실제 설정 감각이 필요하면 [Spring `SecurityFilterChain`을 둘로 나눠 `/admin/**`은 `302 /login`, `/api/**`는 `401` JSON으로 안전하게 다루는 입문 primer](./spring-securityfilterchain-multiple-entrypoints-primer.md)로 이어 간다.
-- "결국 누가 `302`와 `401`을 최종 결정하나?"가 궁금해지면 [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)로 내려간다.
+- "결국 누가 `302`와 `401`을 최종 결정하나?"가 궁금해지면 [Spring Security `ExceptionTranslationFilter`, `AuthenticationEntryPoint`, `AccessDeniedHandler`](./spring-security-exceptiontranslation-entrypoint-accessdeniedhandler.md)로 내려간다. 이 경로는 `authenticationentrypoint` 책임을 다시 잡는 재진입점이다.
 - 로그인 후 원래 URL 복귀 자체가 궁금하면 [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)를 이어 본다.
 - 로그인 후 원래 URL로 돌아왔는데 마지막 `403`이 섞여 보인다면 [Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer](./spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md)를 먼저 거친다.
 - 브라우저 DevTools 기준으로 `401`과 `302` 증상을 먼저 나누고 싶다면 [Security: Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)를 먼저 본다.

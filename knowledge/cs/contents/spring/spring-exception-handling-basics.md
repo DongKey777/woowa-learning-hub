@@ -9,6 +9,7 @@
 - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
 - [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유: JSON, 타입, `Content-Type` 첫 분리](./spring-requestbody-400-before-controller-primer.md)
 - [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)
+- [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [Spring RoomEscape validation `400` vs business conflict `409` 분리 primer](./spring-roomescape-validation-400-vs-business-conflict-409-primer.md)
 - [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
@@ -16,7 +17,7 @@
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring exception handling basics, spring exceptionhandler vs restcontrolleradvice, 스프링 예외 처리 처음, exceptionhandler 입문, restcontrolleradvice 뭐예요, responseentityexceptionhandler beginner, responseentityexceptionhandler vs restcontrolleradvice, spring 400 404 409 응답, requestbody 400 왜 나요, binding failure vs business exception, validation 400 vs conflict 409, not found 404 spring api, global error response beginner, roomescape admin api error handling, bindingresult local vs global validation handling
+retrieval-anchor-keywords: spring exception handling basics, spring exceptionhandler vs restcontrolleradvice, 스프링 예외 처리 처음, exceptionhandler 입문, restcontrolleradvice 뭐예요, spring 400 404 409 응답, requestbody 400 왜 나요, binding failure vs business exception, validation 400 vs conflict 409, not found 404 spring api, roomescape admin api error handling, bindingresult local vs global validation handling, global 400 translation spring, 전역 400 번역 어디서 하나, methodargumentnotvalidexception advice flow
 
 ## 핵심 개념
 
@@ -121,6 +122,12 @@ public class ApiExceptionHandler {
 `@RestControllerAdvice`는 `@ControllerAdvice`에 `@ResponseBody` 감각이 합쳐진 형태라서 JSON API에 더 자연스럽다.
 
 validation `400` 관점에서는 여기가 "`BindingResult`가 없을 때 주로 도착하는 다음 정류장`"이다. 즉 `@Valid` 실패가 `MethodArgumentNotValidException`으로 번졌다면, 초급자는 이 문단과 [Spring `BindingResult` primer](./spring-bindingresult-local-validation-400-primer.md)를 한 세트로 읽으면 된다.
+
+## 전역 `400` 다음 질문
+
+여기까지 이해했다면 다음 질문은 보통 "`그 전역 `400`이 Spring 내부에서 어느 순서로 만들어졌지?`"로 바뀐다. 그때는 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 다시 올라가서, 바인딩 실패와 validation 실패가 `BindingResult`/`MethodArgumentNotValidException`/전역 advice로 갈라지는 순서를 한 장으로 정리하면 된다.
+
+beginner 기준으로는 이 문서가 "전역 `400` 번역의 의미"를 잡아 주고, pipeline 문서가 "그 번역이 생기기 전 내부 분기"를 설명해 준다고 기억하면 충분하다.
 
 ## `ResponseEntityExceptionHandler` 브리지
 
@@ -258,6 +265,12 @@ RoomEscape 관리자 예약 API를 예로 들면 보통 이렇게 나눈다.
 3. 이미 예약된 시간에 다시 생성하면 `409`
 
 컨트롤러와 서비스는 예외를 "던지는 쪽"에 가깝고, `@RestControllerAdvice`는 그 예외를 "API 계약으로 번역하는 쪽"에 가깝다.
+
+## 다음 단계
+
+- "`전역 `400` 번역까지는 알겠는데, 왜 어떤 요청은 `BindingResult`로 들어오고 어떤 요청은 `MethodArgumentNotValidException`으로 번지나요?`"가 다음 질문이면 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 이어간다.
+- "`BindingResult`가 있을 때와 없을 때를 다시 초급자 눈높이로 비교하고 싶다`"면 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나](./spring-bindingresult-local-validation-400-primer.md)를 먼저 복습한다.
+- "`validation `400``과 business `404`/`409`를 한 API 계약으로 어떻게 묶지?`"가 궁금하면 [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](./spring-custom-error-dto-to-problemdetail-handoff-primer.md)로 넘어간다.
 
 그래서 초반 설계도 아래처럼 잡으면 충분하다.
 

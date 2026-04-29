@@ -18,7 +18,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, module facade basics, service to service call basics, 모듈 간 dto 계약, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, module api 뭐예요, module facade 언제 써요, service끼리 바로 호출해도 되나요, what is module api dto, 처음 모듈 간 엔티티 전달
+retrieval-anchor-keywords: module api dto patterns, cross module dto contract, modular monolith dto contract, module boundary dto, command query result dto, 모듈 api 계약이 뭐예요, 모듈 api 계약 왜 dto로 나눠요, 모듈 api 계약 예시, 모듈 간 dto 계약, 다른 모듈에 entity 넘겨도 되나요, 같은 코드베이스인데 dto 왜 써요, module facade 언제 써요, service끼리 바로 호출해도 되나요, what is module api dto, 처음 모듈 api 계약
 <details>
 <summary>Table of Contents</summary>
 

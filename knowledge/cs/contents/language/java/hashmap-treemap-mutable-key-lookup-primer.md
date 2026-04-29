@@ -12,7 +12,7 @@
 - [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
 
 
-retrieval-anchor-keywords: hashmap treemap mutable key lookup primer basics, hashmap treemap mutable key lookup primer beginner, hashmap treemap mutable key lookup primer intro, java basics, beginner java, 처음 배우는데 hashmap treemap mutable key lookup primer, hashmap treemap mutable key lookup primer 입문, hashmap treemap mutable key lookup primer 기초, what is hashmap treemap mutable key lookup primer, how to hashmap treemap mutable key lookup primer
+retrieval-anchor-keywords: hashmap mutable key beginner, treemap mutable key beginner, hashmap get null 왜, hashmap containskey false 왜, treemap get null 왜, treemap key 바꿨더니 조회가 안 돼요, map에 넣은 key 바꿨더니 get null, map에 넣은 key 바꿨더니 containskey false, 같은 객체인데 containskey false, hashmap key 변경 왜 안 돼요, treemap key 수정 왜 안 돼요, 처음 배우는데 map key 왜 불변이어야 하나요, map key mutation primer, immutable key beginner, java map key mutation basics
 > 관련 문서:
 > - [Language README](../README.md)
 > - [HashMap vs LinkedHashMap vs TreeMap Key Contract Bridge](./hashmap-vs-linkedhashmap-vs-treemap-key-contract-bridge.md)
@@ -60,6 +60,8 @@ Map을 처음 배울 때는 보통 이렇게 이해한다.
 - 같은 key 객체 reference를 넘겼는데도 `containsKey(key)`가 `false`다
 - `TreeMap`에서 key를 바꾼 뒤 `get(...)`이 실패한다
 - `TreeMap.firstKey()`가 현재 값 기준으로 가장 앞 key처럼 보이지 않는다
+
+첫 질문이 `"HashMap get이 왜 null이에요?"`, `"같은 객체인데 containsKey가 왜 false예요?"`, `"TreeMap key 바꿨더니 조회가 왜 안 돼요?"`라면 깊은 구현 문서보다 이 primer가 먼저 잡히는 것이 목표다.
 
 핵심은 하나다.
 

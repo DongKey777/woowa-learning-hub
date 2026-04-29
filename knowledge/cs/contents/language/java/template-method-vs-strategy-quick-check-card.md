@@ -11,10 +11,11 @@
 - [객체지향 핵심 원리](./object-oriented-core-principles.md) - 상속과 다형성 큰 그림이 아직 흐리면 한 칸 뒤로 돌아가는 primer
 - [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md) - 부모가 흐름을 쥐는 구조를 더 길게 보고 싶을 때
 - [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md) - 전략 객체를 주입해 교체하는 구조를 더 길게 보고 싶을 때
+- [Template Hook Smells](../../design-pattern/template-hook-smells.md) - `hook`가 늘어나서 전략 분리 신호인지 점검할 때
 - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) - 둘 다 아닌데 조합이 기본값처럼 보일 때 보는 안전한 다음 단계
 - [language 카테고리 인덱스 - Java primer](../README.md#java-primer)
 
-retrieval-anchor-keywords: template method vs strategy quick check, template method strategy card, template method strategy beginner, parent owns flow vs injected behavior, parent controls flow caller chooses strategy, template method strategy 4 cases, 템플릿 메소드 전략 퀵체크, 템플릿 메소드 전략 언제 쓰는지, 부모가 흐름을 쥔다 호출자가 구현을 고른다, 밖에서 구현을 넣어주나요, 처음 배우는데 템플릿 메소드 전략, 왜 템플릿 메소드 말고 전략, what is template method vs strategy, strategy injected behavior basics
+retrieval-anchor-keywords: template method vs strategy quick check, template method strategy beginner, hook vs strategy beginner, when is hook enough, when move behavior to strategy object, 템플릿 메소드 전략 퀵체크, 템플릿 메소드 전략 언제 쓰는지, 부모가 흐름을 쥔다 호출자가 구현을 고른다, 밖에서 구현을 넣어주나요, 처음 배우는데 템플릿 메소드 전략, 왜 템플릿 메소드 말고 전략, hook 으로 충분한가, 언제 strategy 로 빼나요, hook 이 계속 늘어나요
 
 ## 핵심 개념
 
@@ -76,6 +77,22 @@ retrieval-anchor-keywords: template method vs strategy quick check, template met
 - 부모 흐름보다 교체 가능한 행동 객체가 중심이다
 - 새 결제 수단은 새 전략 구현으로 늘리는 편이 안전하다
 
+## hook로 충분한가, 전략으로 빼야 하나
+
+처음 헷갈릴 때는 "바뀌는 게 덧붙임인가, 규칙 전체인가"만 보면 된다.
+
+| 지금 보이는 모습 | 먼저 선택 | 이유 |
+|---|---|---|
+| 기본 흐름은 그대로고 `afterSave()` 로그, 알림 같은 선택 기능만 붙인다 | `hook` | no-op 기본값이 자연스럽고 부모 흐름도 그대로다 |
+| 고객 등급, 결제 수단, 국가마다 핵심 규칙이 달라진다 | 전략 | 어떤 행동을 쓸지 밖에서 골라 끼워야 한다 |
+| `beforeX`, `afterX`, `shouldSkipX` 같은 `hook` 이름이 계속 늘어난다 | 전략 재검토 | 선택적 확장을 넘어서 규칙 자체가 갈라지고 있다는 신호다 |
+
+### 15초 판단 예시
+
+- "배치 끝나고 슬랙 알림만 가끔 붙이면 된다"면 `hook`가 충분하다.
+- "할인 계산식이 회원 등급마다 다르고 테스트에서도 쉽게 바꿔야 한다"면 전략 객체로 빼는 편이 낫다.
+- "처음엔 알림 하나였는데, 나중엔 조건 분기와 우회 규칙까지 hook로 넣고 있다"면 이미 전략 후보에 가깝다.
+
 ## 흔한 오해와 함정
 
 - 추상 클래스를 쓴다고 자동으로 템플릿 메소드가 되지는 않는다. 부모가 고정 순서를 쥐어야 템플릿 메소드다.
@@ -88,6 +105,7 @@ retrieval-anchor-keywords: template method vs strategy quick check, template met
 - 아직 `공통 상태 vs 계약`이 더 헷갈리면 [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md)
 - "부모가 흐름을 쥔다"를 템플릿 메소드 예제로 더 보고 싶다면 [템플릿 메소드 패턴 기초](../../design-pattern/template-method-basics.md)
 - "구현을 주입해 바꾼다"를 전략 예제로 더 보고 싶다면 [전략 패턴 기초](../../design-pattern/strategy-pattern-basics.md)
+- `hook`가 많은데 왜 냄새처럼 느껴지는지 보고 싶다면 [Template Hook Smells](../../design-pattern/template-hook-smells.md)
 - 둘 다 아닌데 왜 자꾸 조합을 먼저 보라고 하는지 남으면 [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
 
 ## 한 줄 정리

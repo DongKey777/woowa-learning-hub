@@ -9,26 +9,22 @@
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [Browser DevTools `Disable cache` ON/OFF 실험 카드](./browser-devtools-disable-cache-on-off-experiment-card.md)
 - [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
-- [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
-- [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
 - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
 - [Cache-Control 실전](./cache-control-practical.md)
 - [Vary와 Content Negotiation 기초: 언어, 압축, 응답 variant](./vary-content-negotiation-basics-language-compression.md)
-- [브라우저의 HTTP 버전 선택: ALPN, Alt-Svc, Fallback 입문](./browser-http-version-selection-alpn-alt-svc-fallback.md)
-- [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)
 - [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 - [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md)
+- [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
 
 retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cache, browser cache revalidation, 304 devtools, conditional request trace, from memory cache, from disk cache, if-none-match, 304 vs memory cache, waterfall vs cache signal, waiting vs 304, 같은 url 재방문 304 vs memory cache, 새로고침했는데 304 왜 떠요, 처음 배우는데 memory cache 뭐예요
 
 > [!TIP]
-> `Protocol h3`를 보고 있는 순간에도 질문은 두 개다.
+> 이 primer는 **browser HTTP cache trace**만 읽는다.
 >
-> - 전송 경로 질문: "`h3`로 갔나, `h2`로 갔나"
-> - body 출처 질문: "서버에서 다시 받았나, browser cache를 썼나"
+> - 이 문서의 질문: "`from memory cache`, `from disk cache`, `304`가 각각 무슨 뜻인가?"
+> - 다음 문서로 미루는 질문: "`왜 h2/h3로 갔지?`", "`왜 CDN 헤더가 같이 보이지?`"
 >
-> 이 문서는 두 번째 질문을 푼다. 첫 번째 질문에서 `Alt-Svc`/HTTPS RR/SVCB를 같이 읽어야 하면 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)로 간다.
-> waterfall의 `dns`/`connect`/`ssl`/`waiting` 라벨 자체가 아직 헷갈리면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)부터 보고 돌아오면 된다.
+> 즉 먼저 **body를 어디서 썼는지**만 분리하고, 전송 경로나 CDN ownership은 follow-up 문서로 넘긴다.
 
 <details>
 <summary>Table of Contents</summary>
@@ -40,7 +36,6 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 - [한 번에 보는 trace 판독표](#한-번에-보는-trace-판독표)
 - [같은 URL 재방문에서 `304` vs `from memory cache` 30초 구분법](#같은-url-재방문에서-304-vs-from-memory-cache-30초-구분법)
 - [DevTools 듀얼-시그널 미니 체크리스트](#devtools-듀얼-시그널-미니-체크리스트)
-- [1분 분리 체크리스트: `Protocol=h3` vs `from memory cache` vs `304`](#1분-분리-체크리스트-protocolh3-vs-from-memory-cache-vs-304)
 - [Waterfall 타이밍 vs cache 신호 1분 브리지](#waterfall-타이밍-vs-cache-신호-1분-브리지)
 - [memory cache 읽는 법](#memory-cache-읽는-법)
 - [disk cache 읽는 법](#disk-cache-읽는-법)
@@ -51,8 +46,6 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 - [실전 추적 순서](#실전-추적-순서)
 - [자주 헷갈리는 포인트](#자주-헷갈리는-포인트)
 - [다음에 이어서 볼 문서](#다음에-이어서-볼-문서)
-- [면접에서 자주 나오는 질문](#면접에서-자주-나오는-질문)
-
 </details>
 
 > [!TIP]
@@ -130,21 +123,45 @@ retrieval-anchor-keywords: browser devtools cache trace, memory cache, disk cach
 
 즉 `304`는 서버 왕복이 있었고, `memory cache`/`disk cache`는 아예 서버에 안 갔을 수 있다.
 
-## 먼저 자를 세 가지 축
+## 먼저 자를 두 가지 축과 실험 스위치
 
-처음 읽을 때 가장 많이 섞이는 것은 `cache`, `protocol`, `실험 스위치`다. 이 셋을 먼저 분리하면 Network 탭이 glossary처럼 보이지 않는다.
+처음 읽을 때 가장 많이 섞이는 것은 `cache`와 `실험 스위치`다. `protocol`은 여기서 깊게 들어가지 않고, "다음 질문"으로만 남겨 둔다.
 
 | 지금 보는 축 | 이 축이 답하는 질문 | 바로 보는 단서 | 헷갈리기 쉬운 오해 |
 |---|---|---|---|
 | cache | body를 어디서 가져왔나 | `from memory cache`, `from disk cache`, `304`, validator | `Protocol h3`면 cache도 새로 받은 것이라고 생각함 |
-| protocol | 어떤 전송 길로 갔나 | `Protocol`, `Connection ID`, `Remote Address` | `h2`/`h3`가 body 출처까지 말해 준다고 생각함 |
 | 실험 스위치 | 지금 결과가 자연 사용자 흐름인가 | `Disable cache`, hard reload, query string 변경 | 실험 결과를 평소 cache 정책으로 단정함 |
 
 짧게 외우면 아래처럼 읽으면 된다.
 
 - `304`, `memory cache`, `disk cache`는 **body 출처 질문**
-- `h2`, `h3`는 **전송 경로 질문**
 - `Disable cache`는 **실험 조건 질문**
+- `Protocol` 열은 여기서 결론내리지 않고 follow-up으로 넘기는 **다음 질문**이다.
+
+## 브라우저 cache와 CDN cache는 같은 단어지만 다른 층이다
+
+이 문서는 `304`, `from memory cache`, `from disk cache`처럼 **브라우저 cache** 쪽 신호를 읽는 primer다.
+반대로 `X-Cache`, `Age`, `CF-Cache-Status`는 보통 **CDN/edge/shared cache** 쪽 단서다.
+
+| 지금 보인 단서 | 먼저 붙일 라벨 | 같은 것으로 보면 안 되는 것 |
+|---|---|---|
+| `from memory cache`, `from disk cache`, `304` | browser cache / revalidation | `X-Cache`, `Age` |
+| `X-Cache: Hit`, `Age: 120`, `CF-Cache-Status: HIT` | edge/CDN cache | `from disk cache`, `304` |
+
+짧게 외우면:
+
+```text
+브라우저가 자기 사본을 썼나? -> 304 / memory cache / disk cache
+중간 CDN이 origin 대신 줬나? -> X-Cache / Age / CF-Cache-Status
+```
+
+둘이 같이 보여도 모순은 아니다.
+브라우저 재검증 row를 읽는 중일 수도 있고, 그 재검증 대상 응답이 이전에 CDN cache를 거쳤을 수도 있다.
+다만 초급자 first pass에서는 한 줄에 두 층을 섞어 쓰지 않는 것이 중요하다.
+
+- "`304`가 떴다"라고 적을 때는 browser cache 메모다.
+- "`X-Cache: Hit`가 보인다"라고 적을 때는 edge/CDN cache 메모다.
+- 두 신호를 더 직접 비교하는 일은 여기서 멈추고, 필요할 때만 [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)로 내려간다.
 
 ### Retrieval Anchors
 
@@ -284,41 +301,19 @@ from memory cache  = 안 물어보고 바로 씀
 
 ---
 
-## 1분 분리 체크리스트: `Protocol=h3` vs `from memory cache` vs `304`
+## `Protocol` 열은 다음 질문으로 미룬다
 
-이 장면에서 초급자가 가장 많이 섞는 것은 "길"과 "body 출처"다.
+이 장면에서 초급자가 가장 많이 섞는 것은 "길"과 "body 출처"다. 이 문서에서는 `Protocol`보다 cache 신호를 먼저 읽는다.
 
-```text
-Protocol=h3        -> 어떤 길로 갔는가
-from memory cache  -> body를 브라우저 메모리에서 바로 썼는가
-304 Not Modified   -> 서버에 다시 물어본 뒤 기존 body를 써도 된다고 확인받았는가
-```
-
-같은 층위로 읽지 않으려면 아래 3문장만 먼저 확인하면 된다.
-
-1. `Protocol` 열은 body 출처가 아니라 전송 경로다.
-2. `from memory cache`/`from disk cache`는 body 출처다.
-3. `304`는 cache 저장 위치가 아니라 서버 재검증 결과다.
-
-| 보이는 신호 | 먼저 답하는 질문 | 바로 내려도 되는 결론 | 아직 모르는 것 |
-|---|---|---|---|
-| `Protocol = h3` | 이번 요청이 어떤 HTTP 길로 갔나 | HTTP/3 경로를 탔다 | body를 서버에서 다시 받았는지 |
-| `from memory cache` | body를 어디서 꺼냈나 | 브라우저 메모리 사본을 썼다 | 이번 row에서 서버 재검증이 있었는지 |
-| `304 Not Modified` | 서버에 다시 물어본 결과가 무엇인가 | 기존 body를 계속 써도 된다고 확인받았다 | memory cache였는지 disk cache였는지 |
-
-가장 짧은 판독 순서:
-
-1. `Protocol`은 옆에 잠깐 두고 `Size`/badge에 `from memory cache`나 `from disk cache`가 있는지 먼저 본다.
+1. `from memory cache`/`from disk cache`가 보이면 body 출처부터 확정한다.
 2. cache 표기가 없으면 `Headers`에서 `If-None-Match`/`If-Modified-Since`와 `304`를 본다.
-3. 마지막에 "`그 재사용 또는 재검증이 h2였나 h3였나`"를 `Protocol`로 붙인다.
+3. 마지막에만 "`그 재사용 또는 재검증이 어떤 HTTP 길에서 일어났나`"를 `Protocol`로 붙인다.
 
-짧은 예시:
+짧게 외우면 아래 한 줄이면 충분하다.
 
-| 장면 | 첫 해석 |
-|---|---|
-| `Protocol=h3` + `from memory cache` | H3가 보여도 body는 로컬 메모리 사본이다 |
-| `Protocol=h3` + `304` | H3로 서버 재검증까지 갔고 body는 기존 cache 사본을 다시 쓴다 |
-| `Protocol=h3` + `200` | H3로 실제 새 body를 내려받았을 가능성을 먼저 본다 |
+- `Protocol` 열 = 전송 경로 단서
+- `from memory cache`/`from disk cache` = body 출처
+- `304` = 서버 재검증 결과
 
 자주 하는 오해:
 
@@ -600,11 +595,11 @@ HTTP spec이 `memory cache`/`disk cache` 헤더를 주는 것은 아니다.
 DevTools가 보여 주는 내용은 기존 cache 사본을 렌더링한 결과일 수 있다.
 그래서 `Status`는 이번 서버 확인 결과로, `Response` 탭 내용은 브라우저가 재사용한 기존 body로 따로 읽는 습관이 필요하다.
 
-### `Protocol=h3`를 보고 cache 원인까지 단정하면 안 된다
+### `Protocol` 표기를 보고 cache 원인까지 단정하면 안 된다
 
-- `Protocol=h3`는 "`이번 요청이 H3 경로를 탔다`"는 뜻이다.
+- `Protocol` 열은 전송 경로 단서일 뿐이다.
 - 하지만 그 row가 새 body 다운로드였는지, `304` 재검증이었는지, local cache reuse였는지는 별도 판독이다.
-- `Alt-Svc`, HTTPS RR/SVCB, 첫 요청/다음 새 연결 타임라인까지 읽어야 하면 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)로 이어 본다.
+- 프로토콜 자체가 궁금하면 이 문서에서 멈추고 관련 follow-up으로 내려간다.
 
 ### `no-cache`는 저장 금지가 아니다
 
@@ -630,33 +625,11 @@ row가 `from ServiceWorker` 같은 표면을 보이면 이 문서의 memory/disk
 - `Disable cache` ON/OFF를 같은 URL 기준 3단계로 재현하고 싶다면 [Browser DevTools `Disable cache` ON/OFF 실험 카드](./browser-devtools-disable-cache-on-off-experiment-card.md)
 - `max-age`, `no-cache`, `immutable` 같은 directive 차이를 더 보고 싶다면 [Cache-Control 실전](./cache-control-practical.md)
 - `Vary`나 언어/압축 variant 때문에 trace가 갈라지면 [Vary와 Content Negotiation 기초: 언어, 압축, 응답 variant](./vary-content-negotiation-basics-language-compression.md)
-- 운영형 edge case까지 확장하려면 [Cache, Vary, Accept-Encoding Edge Case Playbook](./cache-vary-accept-encoding-edge-case-playbook.md)
-- H3 discovery/Alt-Svc 관찰과 cache trace가 섞여 헷갈리면 [H3 Discovery Observability Primer](./h3-discovery-observability-primer.md)
+- 브라우저 cache와 CDN/edge cache ownership이 섞이면 [Browser DevTools `X-Cache` / `Age` 1분 헤더 카드](./browser-devtools-x-cache-age-ownership-1minute-card.md)
+- `Protocol` 열이나 버전 선택이 궁금하면 [Browser DevTools `Protocol` 열 표기 차이 보조노트](./browser-devtools-protocol-column-labels-primer.md)
 
 ---
 
-## 면접에서 자주 나오는 질문
-
-### Q. `memory cache`와 `304 Not Modified`의 차이는 무엇인가요?
-
-- `memory cache`는 브라우저가 서버에 가지 않고 메모리 사본을 바로 재사용한 경우다.
-- `304 Not Modified`는 브라우저가 조건부 요청을 보내고, 서버가 기존 사본을 계속 써도 된다고 확인한 경우다.
-
-### Q. DevTools에서 어떤 신호를 보면 재검증 여부를 알 수 있나요?
-
-- request header에 `If-None-Match`나 `If-Modified-Since`가 있는지 본다.
-- 있으면 재검증 경로고, response가 `304`면 cached body 재사용이다.
-
-### Q. `disk cache`와 `memory cache` 차이는 HTTP semantics 차이인가요?
-
-- 아니다. 둘 다 브라우저 cache tier 차이에 가깝다.
-- HTTP 관점에서 더 중요한 것은 fresh hit인지, 재검증이 필요한지, validator가 무엇인지다.
-
-### Q. 왜 `304`인데도 서버 로그가 남나요?
-
-- 브라우저가 조건부 요청을 실제로 서버로 보냈기 때문이다.
-- 서버는 body 대신 "안 바뀜"만 응답했을 뿐, 요청은 처리했다.
-
 ## 한 줄 정리
 
-`Protocol=h3`는 "어떤 길로 갔나", `from memory cache`는 "body를 어디서 꺼냈나", `304`는 "서버가 기존 body 재사용을 확인했나"를 말한다.
+`from memory cache`와 `from disk cache`는 브라우저가 기존 body를 바로 쓴 경우이고, `304`는 서버에 다시 물어본 뒤 기존 body를 계속 써도 된다고 확인받은 경우다.

@@ -3,6 +3,8 @@
 > 한 줄 요약: `@SpringBootTest`는 애플리케이션 실제 경계에서 시작하지만, `@WebMvcTest`와 `@DataJpaTest`는 미리 잘라 둔 slice에서 시작하므로 같은 package에 있어도 service/repository가 자동으로 보이지 않으며, custom `@Import`/`@TestConfiguration`은 그 경계를 명시적으로 바꾸는 버튼이다.
 >
 > 문서 역할: 이 문서는 spring 카테고리 안에서 **test slice scan boundary beginner primer**를 담당한다.
+>
+> target query shape: "`webmvctest 뭐예요`", "`왜 service bean not found`", "`datajpatest 뭐예요`", "`슬라이스 테스트 헷갈려요`"
 
 **난이도: 🟢 Beginner**
 
@@ -14,11 +16,12 @@
 - [테스트 전략과 테스트 더블](../software-engineering/testing-strategy-and-test-doubles.md)
 - [Spring Test Slices와 Context Caching](./spring-test-slices-context-caching.md)
 - [Spring Test Slice `@Import` / `@TestConfiguration` Boundary Leaks](./spring-test-slice-import-testconfiguration-boundaries.md)
+- [Spring `@Transactional` Self-invocation 검증 테스트 브리지: `@Bean` self-call identity 테스트와 무엇이 다른가](./spring-transactional-self-invocation-test-bridge-primer.md)
 - [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)
 - [Spring JPA Scan Boundary 함정: `@EntityScan`, `@EnableJpaRepositories`, Component Scan은 서로 다르다](./spring-jpa-entityscan-enablejparepositories-boundaries.md)
 - [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md)
 
-retrieval-anchor-keywords: test slice scan boundary, spring test slice beginner, webmvctest scan, webmvctest service not found, datajpatest scan, datajpatest service bean not found, springboottest full context, test configuration boundary, testconfiguration component scan, import in slice test, slice vs full context, controller slice, repository slice, 왜 service bean not found, spring test slice scan boundaries basics
+retrieval-anchor-keywords: test slice 뭐예요, spring test slice beginner, webmvctest 뭐예요, webmvctest service not found, 처음 배우는데 webmvctest, datajpatest 뭐예요, datajpatest service bean not found, springboottest full context, springboottest랑 webmvctest 차이, testconfiguration 뭐예요, import in slice test, 슬라이스 테스트 헷갈려요, 왜 service bean not found, controller slice vs repository slice, spring test slice scan boundaries basics
 
 ## 처음엔 이 표부터 고른다
 
@@ -47,6 +50,38 @@ retrieval-anchor-keywords: test slice scan boundary, spring test slice beginner,
 | 주문 API 호출부터 service, repository, transaction 연결까지 한 번에 맞는지 | `@SpringBootTest` | 안 된다. 전체 wiring을 확인해야 한다 |
 
 즉 "`왜 같은 package인데 `OrderService`가 안 보여요?`"라는 질문은 종종 scan 고장보다 **테스트 목적과 slice 선택이 어긋난 상태**에서 나온다.
+
+## 같은 `OrderService` 이름인데 질문은 두 갈래다
+
+처음에는 "`service`에서 터졌다"는 공통점 때문에 test slice 문제와 transaction 프록시 문제를 같은 고장처럼 읽기 쉽다. 하지만 초급자 기준으로는 **무엇을 띄웠나**와 **어떻게 호출했나**를 먼저 분리해야 한다.
+
+| 지금 보이는 말 | 실제로 먼저 볼 축 | 자주 맞는 테스트 상태 | 바로 갈 문서 |
+|---|---|---|---|
+| "`@WebMvcTest`인데 `OrderService` bean not found예요" | slice 경계 | controller만 띄운 상태라 service가 기본 제외됨 | [Spring 테스트 기초](./spring-testing-basics.md) |
+| "`@SpringBootTest`에서는 service가 보이는데 `@Transactional`만 안 먹어요" | 프록시 호출 경로 | Bean은 떴지만 `this.method()` 같은 내부 호출일 수 있음 | [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
+| "`assertSame`은 맞는데 rollback 결과가 이상해요" | identity vs behavior 혼동 | 같은 Bean 확인과 transaction 동작 확인을 섞은 상태 | [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
+
+짧게 외우면 이렇다.
+
+- service가 **아예 안 보이면** slice 질문일 가능성이 크다.
+- service는 **보이는데 동작이 이상하면** 프록시 질문일 가능성이 크다.
+- "`service`"라는 단어가 같아도 scan 문제와 transaction 문제는 같은 종류의 실패가 아니다.
+
+## 한 번에 갈라 보기: 같은 `OrderService`로도 실패 장면이 다르다
+
+같은 주문 기능이라도 초급자는 "`OrderService`에서 터졌다"는 공통점 때문에 원인을 한 덩어리로 묶기 쉽다. 아래처럼 **Bean을 띄우지 못한 장면**과 **Bean은 있는데 프록시 동작이 빠진 장면**을 먼저 가르면 다음 문서가 빨라진다.
+
+| 같은 주문 기능에서 보이는 장면 | 실제로 일어난 일 | 지금 붙잡을 질문 | 바로 갈 문서 |
+|---|---|---|---|
+| `@WebMvcTest(OrderController.class)`에서 `NoSuchBeanDefinitionException: OrderService` | web slice라 service Bean이 기본 제외됐다 | "이 테스트가 원래 service까지 띄우는가?" | [Spring 테스트 기초](./spring-testing-basics.md) |
+| `@SpringBootTest`에서는 `OrderService`가 주입되지만 `this.placeOrder()` 안 `@Transactional`이 안 먹는다 | Bean은 있지만 내부 호출이라 프록시를 우회했다 | "이 호출이 프록시 정문을 지났는가?" | [Spring `@Transactional` Self-invocation 검증 테스트 브리지](./spring-transactional-self-invocation-test-bridge-primer.md) |
+| `@DataJpaTest`에서 `OrderRepository`는 보이는데 controller가 없다 | JPA slice라 web Bean이 기본 제외됐다 | "지금 repository 경계만 확인하면 되는가?" | [Spring `@DataJpaTest` Flush / Clear / Rollback Visibility Pitfalls](./spring-datajpatest-flush-clear-rollback-visibility-pitfalls.md) |
+
+짧게 줄이면 이렇다.
+
+- Bean이 없으면 slice 선택부터 다시 본다.
+- Bean은 있는데 transaction이 이상하면 호출 경로를 다시 본다.
+- controller/service/repository를 한 번에 보고 싶을 때만 `@SpringBootTest`로 올라간다.
 
 ## 이 문서 다음에 보면 좋은 문서
 

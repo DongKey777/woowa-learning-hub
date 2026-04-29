@@ -7,6 +7,7 @@
 관련 문서:
 
 - [자료구조 카테고리 인덱스](./README.md)
+- [TreeMap `firstKey` vs `firstEntry`, `floorKey` vs `floorEntry` Return-Shape Card](./treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card.md)
 - [TreeMap Null Boundary Micro Drill](./treemap-null-boundary-micro-drill.md)
 - [TreeSet Exact-Match Drill](./treeset-exact-match-drill.md)
 - [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
@@ -134,6 +135,7 @@ return next.getValue().name();
 - `TreeSet` 쪽 exact match 감각을 먼저 손으로 맞히고 싶다면 [TreeSet Exact-Match Drill](./treeset-exact-match-drill.md)
 - `TreeMap` 쪽 strict/inclusive 차이를 예약표로 보고 싶다면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - `entry` 반환이 왜 `null`인지 더 짧게 분리하고 싶다면 [Ordered Map Null-Safe Practice Drill](../language/java/ordered-map-null-safe-practice-drill.md)
+- `firstKey()`/`firstEntry()`와 `floorKey()`/`floorEntry()`를 반환 shape 기준으로 한 장에서 같이 보고 싶다면 [TreeMap `firstKey` vs `firstEntry`, `floorKey` vs `floorEntry` Return-Shape Card](./treemap-firstkey-firstentry-floorkey-floorentry-return-shape-card.md)
 - `firstKey()`와 `firstEntry()` empty behavior만 따로 고정하고 싶다면 [`firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge](../language/java/firstentry-lastentry-vs-firstkey-lastkey-bridge.md)
 
 ## 한 줄 정리

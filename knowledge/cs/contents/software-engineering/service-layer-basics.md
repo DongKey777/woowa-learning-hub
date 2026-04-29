@@ -17,7 +17,7 @@
 - [Spring IoC 컨테이너와 DI](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: service layer basics, 서비스 계층 입문, 서비스 레이어 뭐하는 곳, controller vs service 차이, service validation boundary, service transaction boundary, service 테스트 어디서 시작, service unit test integration test 선택, 서비스 첫 테스트 선택, 주문 생성 재고 차감 서비스 예시, 서비스 변경 테스트 시작점, 서비스 변경 무조건 통합테스트, service 흔한 오해, 얇은 controller 오해, 저장 세부를 service가 아는 경우
+retrieval-anchor-keywords: service layer basics, 서비스 계층 입문, 서비스 레이어 뭐하는 곳, controller vs service 차이, service validation boundary, service transaction boundary, service 테스트 어디서 시작, service unit test integration test 선택, 서비스 첫 테스트 선택, 주문 생성 재고 차감 서비스 예시, 서비스 변경 테스트 시작점, service 흔한 오해, queue가 service 코드에 왜 나와요, list set map 때문에 service가 흐려져요, service 전에 자료구조 primer
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
@@ -37,6 +37,20 @@ Service 책임이 어느 정도 감으로 잡혔다면, 다음 질문은 거의 
 
 - 짧게 외우면: `규칙`이 중심이면 unit test, `협력/롤백`이 중심이면 integration test부터 본다.
 - Controller, Service, Test를 같은 주문 예시로 한 번에 잇고 싶다면 `계층형 아키텍처 기초 -> Service 계층 기초 -> 테스트 전략 기초` 순서가 beginner 동선이다.
+
+## Service 설명보다 자료구조가 먼저 막힐 때
+
+처음에는 Service 책임을 읽다가도 `List`, `Map`, `queue` 같은 단어가 더 크게 보여서 규칙 설명이 흐려질 수 있다.
+그럴 때는 이 문서에서 바로 deep dive로 내려가지 말고, 아래처럼 한 칸만 옆 카테고리에 갔다가 다시 돌아오는 편이 안전하다.
+
+| 지금 더 크게 보이는 말 | 먼저 끊을 질문 | 잠깐 다녀올 문서 | 다시 돌아올 자리 |
+|---|---|---|---|
+| `List`/`Set`/`Map` 자체가 아직 흐리다 | 순서 / 중복 / key 조회 중 무엇이 먼저인가 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) -> [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 문서의 [한눈에 보기](#한눈에-보기) |
+| `queue`가 worker handoff인지 BFS 도구인지 모르겠다 | FIFO 규칙인가, 최소 이동 횟수인가 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) -> `worker 순서`면 [큐 기초](../data-structure/queue-basics.md), `최소 이동 횟수`면 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 이 문서의 [같은 주문 장면으로 보는 `Controller / Service / Repository` 빠른 비교](#같은-주문-장면으로-보는-controller--service--repository-빠른-비교) |
+| `가장 급한 것부터`, `다음 시각이 가장 이른 것부터`가 보여 Service보다 자료구조 선택이 먼저다 | FIFO가 아니라 우선순위인가 | [Queue vs Deque vs Priority Queue Primer](../data-structure/queue-vs-deque-vs-priority-queue-primer.md) | 이 문서의 [Service 변경이면 첫 테스트를 어디서 시작할까](#service-변경이면-첫-테스트를-어디서-시작할까) |
+
+- 짧게 외우면 `자료구조 이름을 자른다 -> Service 책임으로 돌아온다 -> 그다음 테스트를 고른다` 순서다.
+- `queue가 service 코드에 왜 나와요`, `service 전에 list/set/map이 막혀요`, `왜 bfs 문서가 같이 떠요` 같은 beginner query는 이 복귀 사다리를 먼저 탄다.
 
 ## 핵심 개념
 

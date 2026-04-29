@@ -47,7 +47,11 @@ retrieval-anchor-keywords: mockmvc vs webtestclient, spring mockmvc beginner, sp
 |---|---|
 | `@WebMvcTest`, `@Controller`, servlet MVC 요청/응답 | `MockMvc` |
 | `@WebFluxTest`, `Mono`, `Flux`, reactive endpoint | `WebTestClient` |
-| 실제 서버를 띄워 end-to-end HTTP 호출 | `WebTestClient` 또는 다른 HTTP client |
+| 실제 서버를 띄운 HTTP 호출 | `WebTestClient` 또는 다른 HTTP client |
+
+- 여기서 중요한 용어 정리는 하나다. **실제 서버를 띄운 HTTP 호출이라고 바로 E2E는 아니다.**
+- 테스트 코드가 서버를 직접 호출해 wiring, 직렬화, 보안 경계를 보는 경우는 보통 **앱 통합 테스트(App Integration Test)** 다.
+- 브라우저나 실제 사용자 클라이언트가 로그인부터 주문 완료까지 바깥에서 끝까지 검증할 때만 E2E라고 부르는 편이, [Spring 테스트 기초](./spring-testing-basics.md)와 정의가 정확히 맞는다.
 
 ## 상세 분해
 
@@ -134,6 +138,7 @@ class OrderControllerTest {
 |---|---|
 | `@WebMvcTest`, `MockBean`, `DispatcherServlet` | `MockMvc` |
 | `@WebFluxTest`, `Mono`, `Flux`, `RouterFunction` | `WebTestClient` |
+| 실제 서버를 띄워 HTTP 경계와 bean wiring을 함께 본다 | `WebTestClient` 기반 앱 통합 테스트 |
 | 외부 API를 호출하는 운영 코드 `WebClient` | 테스트 도구 선택 질문이 아니라 [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md) 질문 |
 
 ## 더 깊이 가려면

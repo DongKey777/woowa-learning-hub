@@ -13,6 +13,7 @@
 - [HTTP 상태 코드 기초](./http-status-codes-basics.md)
 - [HTTP 요청·응답 헤더 기초](./http-request-response-headers-basics.md)
 - [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)
+- [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [Browser `302` vs `304` vs `401` 새로고침 분기표](./browser-302-304-401-reload-decision-table-primer.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)
@@ -61,7 +62,7 @@ retrieval-anchor-keywords: browser request lifecycle basics, browser to server b
 | DNS | host에 대한 IP를 찾는다 | DNS 서버가 이름 해석을 돕는다 | DNS가 느리면 요청 시작 자체가 늦다 |
 | TCP/TLS | 연결을 만들고 HTTPS면 암호화를 붙인다 | 서버가 연결과 인증서를 받아준다 | `connect`, `ssl` 지연이 여기다 |
 | HTTP 요청 | 메서드, 헤더, 바디를 보낸다 | 프록시/앱이 요청을 읽는다 | `GET/POST`, `Host`, `Cookie`, `Content-Type` |
-| HTTP 응답 | 상태 코드, 헤더, 바디를 받는다 | 프록시/앱이 결과를 돌려준다 | `302`, `401`, `502`, `504`, `Set-Cookie` |
+| HTTP 응답 | 상태 코드, 헤더, 바디를 받는다 | 프록시/앱이 결과를 돌려준다 | `302`, `303`, `401`, `304`, `Set-Cookie` |
 | 다음 행동 | 쿠키 저장, redirect, 연결 재사용, 렌더링 | 필요하면 같은 연결에서 다음 요청 대기 | 쿠키 전송과 keep-alive는 다른 개념이다 |
 
 간단히 그리면 아래 순서다.
@@ -78,6 +79,24 @@ retrieval-anchor-keywords: browser request lifecycle basics, browser to server b
   -> HTTP response
   -> 쿠키 저장 / redirect / 화면 렌더링 / 연결 재사용
 ```
+
+## 처음 보는 trace를 4칸으로 자르기
+
+request lifecycle 문서를 읽다가 beginner가 바로 부딪히는 말은 "`302` `304` `401`이 한 장면에서 같이 보여요", "`왜 `POST` 다음 `GET`이 붙어요?`"다. 이때는 용어를 더 늘리지 말고 아래 4칸만 먼저 자른다.
+
+| 먼저 볼 변화 | 이 변화가 뜻하는 첫 질문 | 먼저 갈 문서 |
+|---|---|---|
+| URL이 바뀌었는가 | redirect가 있었는가 | [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md) |
+| `POST` 뒤 `GET`이 붙었는가 | PRG처럼 결과 화면을 다시 열었는가 | [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md) |
+| 같은 URL인데 body를 다시 안 받았는가 | cache 재사용 또는 재검증인가 | [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md) |
+| 그 자리에서 `401`이나 `/login`으로 멈췄는가 | 인증 부재인가 | [HTTP 상태 코드 기초](./http-status-codes-basics.md) |
+
+짧게 외우면 이렇다.
+
+- URL 변화는 redirect 축이다.
+- `POST -> GET` 변화는 PRG 축이다.
+- 같은 URL body 재사용은 cache 축이다.
+- 인증 부재는 status와 cookie/session 축이다.
 
 ## URL과 DNS
 
@@ -137,11 +156,11 @@ Cache-Control: no-cache
 
 ## 프록시, 상태 코드, Keep-Alive
 
-브라우저가 항상 Spring 앱에 직접 붙는다고 생각하면 트래픽을 읽기 어렵다. 실제 경로는 자주 `브라우저 -> CDN/LB/reverse proxy -> app server`다. 이 중간 프록시는 TLS를 대신 끝내고, path나 host로 라우팅하고, 필요하면 자기 판단으로 응답을 돌려준다.
+브라우저가 항상 Spring 앱에 직접 붙는다고 생각하면 트래픽을 읽기 어렵다. 실제 경로는 자주 `브라우저 -> CDN/LB/reverse proxy -> app server`다. 다만 beginner는 여기서 프록시 세부 동작을 다 외우기보다 "`중간 계층도 응답을 만들 수 있다`"까지만 먼저 잡으면 충분하다.
 
-상태 코드는 "현재 hop이 바깥에 내보낸 결과"다. `200/201/204`는 성공, `301/302/304`는 이동이나 캐시 재사용, `400/401/403/404`는 요청 측 문제, `500/502/503/504`는 서버 측 문제다. `502`와 `504`는 프록시가 upstream 앱 대신 낸 응답일 수 있다.
+상태 코드는 "현재 hop이 바깥에 내보낸 결과"다. `200/201/204`는 성공, `301/302/303/304`는 이동이나 cache 재사용, `400/401/403/404`는 요청 측 문제, `5xx`는 서버 측 문제다.
 
-입문 단계에서는 `502`/`504`의 내부 원인을 깊게 파지 말고, "브라우저와 앱 사이 중간 계층도 응답을 만들 수 있다"까지만 먼저 잡으면 충분하다.
+입문 단계에서는 `5xx` 내부 분류를 깊게 파지 말고, "브라우저와 앱 사이 중간 계층도 응답을 만들 수 있다"까지만 먼저 잡으면 충분하다. `502`/`504`, gateway timeout, upstream blame 같은 운영형 질문은 이 문서의 중심이 아니다.
 
 브라우저에서 자주 먼저 읽는 상태 코드는 아래 정도다.
 
@@ -153,8 +172,8 @@ Cache-Control: no-cache
 | `401 Unauthorized` | 인증이 없거나 실패했다 | 로그인 상태, 토큰, 쿠키 |
 | `403 Forbidden` | 누군지는 알지만 허용되지 않는다 | 권한, 역할 |
 | `404 Not Found` | 경로나 자원이 없다 | path, id |
-| `502 Bad Gateway` | 앱 앞단 어딘가에서 응답 연결이 어긋났다 | 프록시/LB 존재부터 확인 |
-| `504 Gateway Timeout` | 앱 앞단 어딘가에서 기다리다 timeout 났다 | timeout과 느린 upstream 여부 확인 |
+| `500 Internal Server Error` | 서버 내부 처리에 실패했다 | 서버 로그, 예외 처리 |
+| `5xx Gateway 계열` | 앱 앞단 중간 계층에서 막혔을 수 있다 | 프록시/LB가 있는지만 먼저 확인 |
 
 `keep-alive`는 로그인 상태 유지가 아니라 연결 재사용이다. 한 요청이 끝난 뒤 같은 TCP 연결을 다시 써서 다음 요청 비용을 줄이는 개념이다. 쿠키는 사용자 상태 전달, 세션은 서버 상태 저장, keep-alive는 네트워크 연결 재사용이므로 서로 다른 층이다. 이 셋이 자꾸 섞이면 [HTTP 캐시 재사용 vs 연결 재사용 vs 세션 유지 입문](./http-cache-reuse-vs-connection-reuse-vs-session-persistence-primer.md)부터 먼저 보면 된다.
 
@@ -175,6 +194,7 @@ redirect와 auth failure를 한 표로 고정해 두면 DevTools를 볼 때 덜 
 |---|---|---|
 | `302 Found` + `Location: /login` | 다른 URL로 이동한다 | page navigation redirect일 가능성이 크다 |
 | `303 See Other` + `Location: /orders/42` | `POST` 뒤 결과 화면 `GET`으로 이동한다 | PRG 흐름이다 |
+| `304 Not Modified` | 같은 URL body를 다시 받지 않고 기존 사본을 쓴다 | redirect가 아니라 cache 재검증 흐름이다 |
 | raw `401 Unauthorized` | 자동 이동 없이 실패를 surface한다 | API나 보호 자원 인증 실패부터 본다 |
 | raw `403 Forbidden` | 자동 이동 없이 거절한다 | 인증은 됐지만 권한이 부족하다 |
 
@@ -184,7 +204,7 @@ redirect와 auth failure를 한 표로 고정해 두면 DevTools를 볼 때 덜 
 - `#fragment`는 같은 URL 문자열에 보여도 보통 서버로 전송되지 않는다.
 - 쿠키가 있다고 로그인 상태가 자동으로 이해되는 것은 아니다. 서버가 그 값을 어떻게 해석하는지가 핵심이다.
 - `401`은 인증이 없거나 실패한 상태이고, `403`은 인증과 별개로 금지된 상태다.
-- `502`나 `504`를 보면 앱 코드만 볼 것이 아니라 프록시와 upstream 연결도 같이 봐야 한다.
+- `5xx`를 봤다고 바로 운영 추적 문서로 내려가지 않는다. beginner 단계에서는 먼저 "`클라이언트 문제인가, 서버 쪽 문제인가`"만 구분해도 충분하다.
 - keep-alive와 session timeout은 다른 문제다. 하나는 연결 수명이고, 다른 하나는 로그인 상태 수명이다.
 - HTTP keep-alive와 TCP keepalive도 다른 말이다. 초급 문서에서 keep-alive가 나오면 먼저 "연결 재사용"인지 확인한다.
 
@@ -212,7 +232,7 @@ Host: shop.example.com
 Cookie: JSESSIONID=abc123
 ```
 
-여기서 읽을 포인트는 세 가지다. 첫째, 로그인 응답이 `302`면 브라우저가 곧바로 다음 URL로 이동한다. 둘째, `Set-Cookie`가 있으면 브라우저가 저장하고 다음 요청에서 `Cookie`로 되돌려 보낸다. 셋째, 이 문서 단계에서는 `504` 같은 운영형 추적보다 `redirect`, `cookie`, `request/response` 역할 분리를 먼저 익히는 편이 안전하다. 이 습관이 잡히면 이후 Spring MVC 요청 생명주기 문서를 읽을 때도 네트워크와 프레임워크 경계가 분리된다.
+여기서 읽을 포인트는 세 가지다. 첫째, 로그인 응답이 `302`면 브라우저가 곧바로 다음 URL로 이동한다. 둘째, `Set-Cookie`가 있으면 브라우저가 저장하고 다음 요청에서 `Cookie`로 되돌려 보낸다. 셋째, 이 문서 단계에서는 timeout incident보다 `redirect`, `cookie`, `request/response` 역할 분리를 먼저 익히는 편이 안전하다. 이 습관이 잡히면 이후 Spring MVC 요청 생명주기 문서를 읽을 때도 네트워크와 프레임워크 경계가 분리된다.
 
 폼 제출 뒤 결과 화면을 보여 주는 브라우저 흐름은 PRG로 보면 더 깔끔하다.
 
@@ -259,25 +279,32 @@ Cookie: JSESSIONID=abc123
 - 학습 흐름으로 돌아가려면 [Network README: HTTP 요청-응답 기본 흐름](./README.md#http-요청-응답-기본-흐름), [Junior Backend Roadmap](../../JUNIOR-BACKEND-ROADMAP.md#2단계-운영체제와-네트워크-기초)를 먼저 본다.
 - 브라우저 waterfall에서 `dns`/`connect`/`ssl`/`waiting`을 바로 읽고 싶다면 [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
 - 쿠키와 세션을 브라우저 기준으로 더 보고 싶다면 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-- 프록시가 어디서 응답을 만들어내는지 더 보고 싶다면 [프록시와 리버스 프록시 기초](./proxy-reverse-proxy-basics.md), [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
+- 프록시가 어디서 응답을 만들어내는지 한 칸만 더 보고 싶다면 [프록시와 리버스 프록시 기초](./proxy-reverse-proxy-basics.md)
+- TLS 종료 지점, 로드밸런서, gateway 계층까지 함께 보고 싶다면 [TLS, 로드밸런싱, 프록시](./tls-loadbalancing-proxy.md)
 - 상태 코드와 request/response를 더 잘 읽고 싶다면 [HTTP 상태 코드 기초](./http-status-codes-basics.md), [HTTP 요청/응답 헤더 기초](./http-request-response-headers-basics.md)
 - 브라우저 form submit과 redirect 후 `GET` 흐름을 더 보고 싶다면 [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)
 - `502`/`504`를 beginner 단계에서 한 칸만 더 나누고 싶다면 [Browser DevTools `502` `504` 앱 `500` 결정 카드](./browser-devtools-502-504-app-500-decision-card.md)
+
+## Spring/DB로 이어 가기
+
 - Spring 코드로 처음 이어 가려면 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md) -> [Spring MVC 컨트롤러 기초](../spring/spring-mvc-controller-basics.md) 순으로 간다.
 - `DispatcherServlet`, binding, 예외 처리 전체 흐름까지 펼치려면 그다음에 [Spring MVC 요청 생명주기](../spring/spring-mvc-request-lifecycle.md)로 간다.
 - Spring 다음에 DB 코드 독해를 처음 붙일 때는 [Database First-Step Bridge](../database/database-first-step-bridge.md)로 넘어가 `트랜잭션 -> 접근 기술 -> 인덱스` 순서만 먼저 잡는다.
 - DB 조회 문서가 왜 그런 SQL 모양이 되는지 미리 잡으려면 [SQL 읽기와 관계형 모델링 기초](../database/sql-reading-relational-modeling-primer.md)를 먼저 본다.
 
-## 면접/시니어 질문 미리보기
+## 여기서는 뒤로 미루는 질문
 
-**Q. 브라우저 주소창에 URL을 입력하면 HTTP 요청이 바로 나가나요?**
-아니다. URL 해석과 DNS 조회가 먼저 오고, 그다음 TCP 연결과 HTTPS라면 TLS handshake가 끝난 뒤에 HTTP 요청이 전송된다.
+아래 질문은 자주 따라오지만, beginner 첫 읽기에서는 본문 중심에 두지 않는 편이 안전하다.
 
-**Q. 쿠키와 세션의 차이를 설명해 주세요.**
-쿠키는 브라우저가 저장하고 전송하는 데이터고, 세션은 서버가 사용자 상태를 저장하는 방식이다. 보통 세션 ID가 쿠키에 담겨 전달된다.
+- `502`와 `504`를 누가 만든 건가요?
+- 프록시가 TLS를 어디서 끝내나요?
+- gateway timeout과 app timeout은 어떻게 다른가요?
 
-**Q. `502`와 `504`는 언제 자주 보나요?**
-브라우저와 앱 서버 사이에 프록시나 게이트웨이가 있을 때 자주 보인다. 프록시가 upstream 연결 실패나 timeout을 바깥에 표현할 때 쓰는 대표 코드다.
+이 질문은 request lifecycle 큰 그림을 잡은 뒤 follow-up 문서로 넘긴다.
+
+- 프록시 기초부터 다시 보려면 [프록시와 리버스 프록시 기초](./proxy-reverse-proxy-basics.md)
+- timeout/gateway 응답을 beginner 기준으로 한 칸만 나누려면 [Browser DevTools `502` `504` 앱 `500` 결정 카드](./browser-devtools-502-504-app-500-decision-card.md)
+- Spring 쪽 요청 흐름으로 넘어가려면 [Spring 요청 파이프라인과 Bean Container 기초](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 ## 한 줄 정리
 

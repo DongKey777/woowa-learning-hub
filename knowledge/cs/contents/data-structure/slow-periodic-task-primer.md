@@ -10,9 +10,10 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [Timer Vocabulary Bridge](./timer-vocabulary-delay-timeout-deadline-dueat-bridge.md)
 
 
-retrieval-anchor-keywords: slow periodic task primer basics, slow periodic task primer beginner, slow periodic task primer intro, data structure basics, beginner data structure, 처음 배우는데 slow periodic task primer, slow periodic task primer 입문, slow periodic task primer 기초, what is slow periodic task primer, how to slow periodic task primer
+retrieval-anchor-keywords: fixed-rate vs fixed-delay basics, 주기보다 실행 시간이 길어요, fixed-rate 끝나자마자 다시 실행, fixed-delay 왜 쉬고 실행, scheduleatfixedrate vs schedulewithfixeddelay, periodic task overrun beginner, 처음 periodic task 헷갈려요, 느린 스케줄 작업 큰 그림, fixed-rate catch up, fixed-delay breathing room, period보다 task가 오래 걸리면, timer queue overdue deadline
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [Fixed Rate vs Fixed Delay Overrun Primer](./fixed-rate-vs-fixed-delay-overrun-primer.md)

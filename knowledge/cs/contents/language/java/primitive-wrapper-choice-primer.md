@@ -1,6 +1,6 @@
 # Primitive-wrapper choice primer: `int`/`long`/`boolean` vs `Integer`/`Long`/`Boolean`
 
-> 한 줄 요약: 값이 반드시 있어야 하고 계산/비교가 중심이면 primitive를 먼저 보고, "비어 있음", "미입력", "선택값" 같은 상태를 표현해야 하면 wrapper를 검토하면 된다.
+> 한 줄 요약: "`int`와 `Integer` 차이가 뭐예요?"라는 질문은 결국 "이 값이 항상 있어야 하나, 아니면 `null`도 상태인가?"를 묻는 것이고, 값이 반드시 있어야 하면 primitive를 먼저 보고 "비어 있음", "미입력", "선택값" 같은 상태를 표현해야 하면 wrapper를 검토하면 된다.
 
 **난이도: 🟢 Beginner**
 
@@ -13,11 +13,20 @@
 - [Validation Boundary: Input vs Domain Invariant 미니 브리지](../../software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: int vs integer beginner, long vs long wrapper basics, boolean vs boolean wrapper, primitive vs wrapper choice, field parameter return type java, primitive wrapper 언제 써요, integer null 왜 필요해요, boolean wrapper 헷갈려요, java 기본형 wrapper 처음, what is primitive wrapper, method signature primitive wrapper, java field type basics
+retrieval-anchor-keywords: int integer 차이, int vs integer beginner, int 대신 integer 왜, integer null 왜 필요해요, boolean vs boolean wrapper, primitive vs wrapper choice, primitive wrapper 언제 써요, boolean wrapper 헷갈려요, java 기본형 wrapper 처음, what is primitive wrapper, field parameter return type java, java field type basics
 
 ## 핵심 개념
 
 처음 고를 때는 "primitive가 더 저수준이고 wrapper가 더 객체지향적이다"처럼 어렵게 볼 필요가 없다.
+
+학습자가 실제로는 이렇게 많이 묻는다.
+
+- "`int`와 `Integer` 차이가 뭐예요?"
+- "왜 `int` 대신 `Integer`를 써요?"
+- "`Boolean`은 왜 `null`이 될 수 있어요?"
+
+이 세 질문은 전부 같은 축으로 정리된다.
+값이 항상 있어야 하면 primitive, 값이 비어 있을 수도 있으면 wrapper다.
 
 먼저 질문을 하나만 던지면 된다.
 
@@ -64,6 +73,10 @@ retrieval-anchor-keywords: int vs integer beginner, long vs long wrapper basics,
 
 필드에서는 "이 객체가 살아 있는 동안 값이 항상 있어야 하나?"를 먼저 본다.
 
+즉 "`int` 대신 `Integer`를 왜 쓰나요?"라는 질문을 필드 문맥으로 바꾸면 아래 한 줄이 된다.
+
+> 이 필드는 비어 있으면 안 되는가, 아니면 비어 있음 자체가 의미인가?
+
 ```java
 public class Attendance {
     private final long sessionId;
@@ -96,7 +109,8 @@ public record UpdateNotificationRequest(Boolean enabled) {
 }
 ```
 
-이 DTO에서 `enabled`가 `Boolean`인 이유는 대개 "필드가 안 올 수도 있다"를 열어 두기 위해서다.  
+이 DTO에서 `enabled`가 `Boolean`인 이유는 대개 "필드가 안 올 수도 있다"를 열어 두기 위해서다.
+그래서 beginner가 보는 "`Boolean`은 왜 `null`이 되죠?"라는 질문도 사실은 "이 요청에서 미전달 상태를 살려야 하나?"라는 질문과 거의 같다.
 하지만 beginner가 여기서 바로 자주 헷갈리는 질문은 이것이다.
 
 - `null`이면 기존 값을 유지하나?
@@ -136,7 +150,7 @@ int size()
 Long findManagerId()
 ```
 
-`size()`는 항상 숫자가 있으니 primitive가 자연스럽다.  
+`size()`는 항상 숫자가 있으니 primitive가 자연스럽다.
 `findManagerId()`처럼 결과가 없을 수도 있는 질문은 wrapper가 가능하지만, beginner 단계에서도 "`없음`을 돌려준다"는 뜻이 중요하면 `Optional<Long>`이나 별도 결과 타입이 더 또렷할 수 있다.
 
 즉 메서드 시그니처에서 wrapper를 쓰는 순간, 그 메서드는 `null` 의미까지 계약에 포함한다.
@@ -208,16 +222,16 @@ public void updateMarketingConsent(User user, Boolean requested) {
 
 ## 면접/시니어 질문 미리보기
 
-Q. 필드에서 primitive를 기본값으로 두는 이유는 뭔가요?  
+Q. 필드에서 primitive를 기본값으로 두는 이유는 뭔가요?
 A. 값이 항상 있어야 하는 모델이라면 `null` 상태를 열지 않고 더 단순한 계약을 만들 수 있기 때문이다.
 
-Q. 그럼 wrapper는 언제 쓰나요?  
+Q. 그럼 wrapper는 언제 쓰나요?
 A. 미입력, 선택값, nullable 경계를 표현해야 할 때 쓴다.
 
-Q. 메서드 반환값이 없을 수도 있으면 wrapper면 충분한가요?  
+Q. 메서드 반환값이 없을 수도 있으면 wrapper면 충분한가요?
 A. 충분할 때도 있지만, "없음" 의미를 분명히 드러내려면 `Optional`이나 별도 타입이 더 읽기 쉬울 수 있다.
 
-Q. DTO와 도메인 필드 타입이 꼭 같아야 하나요?  
+Q. DTO와 도메인 필드 타입이 꼭 같아야 하나요?
 A. 아니다. DTO는 입력 의도를 보존하고, 도메인은 내부 규칙에 맞게 더 단순하거나 더 명시적인 타입으로 바꿀 수 있다.
 
 ## 한 줄 정리

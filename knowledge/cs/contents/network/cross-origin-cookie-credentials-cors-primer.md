@@ -102,30 +102,27 @@ cookie 속성 자체의 의미가 먼저 헷갈리면 [Cookie Attribute Matrix: 
 
 ## 10초 chooser: cookie scope vs CORS vs `credentials`
 
-이 입문 문서는 세 단어의 경계를 먼저 잡는 지도다. 아래 표에서 증거를 고른 뒤, 필요한 follow-up primer로 한 칸만 내려가면 된다.
+이 입문 문서는 세 단어의 경계를 먼저 잡는 지도다. 아래 표에서 증거를 고른 뒤, 필요한 primer로 한 칸만 내려가면 된다.
 
 | 지금 먼저 보이는 장면 | 먼저 보는 질문 | 다음 문서 |
 |---|---|---|
-| `Application > Cookies`에는 값이 있는데 같은 actual request의 request `Cookie` header가 비어 있다 | "`include`가 빠졌나, 아니면 cookie scope가 안 맞나?" | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) |
+| `Application > Cookies`에는 값이 있고, cross-origin `fetch` 코드에 `credentials: "include"`가 없다 | "요청 옵션이 credential 전송을 막았나?" | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) |
+| `Application > Cookies`에는 값이 있고, `credentials: "include"`도 있는데 같은 actual request의 request `Cookie` header가 비어 있다 | "`credentials`는 통과했고, 이제 cookie `Domain`/`Path`/`SameSite` scope가 안 맞나?" | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) |
 | request `Cookie`는 실렸는데 콘솔이 CORS 에러를 말한다 | "응답을 JS가 읽을 수 있나?" | [CORS 기초](../security/cors-basics.md) |
 | `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | "실제 요청이 아직 출발했나?" | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) |
 | 용어는 알겠는데 다음 branch를 다시 고르고 싶다 | "지금 symptom 기준 return path가 있나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
 
-짧게 외우면 `Application`에는 cookie가 보이는데 같은 실패 요청의 request `Cookie` header가 비면 cookie scope/`credentials` 갈래고, `request Cookie 있음 + CORS 콘솔 에러`는 응답 읽기 갈래다. category로 다시 올라가려면 [Network README](./README.md#network-네트워크)와 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)를 같이 본다.
+짧게 외우면 `Application`에는 cookie가 보이는데 `include`가 없으면 먼저 `credentials` 갈래고, `include`도 있는데 request `Cookie` header가 비면 `Domain`/`Path` 같은 cookie scope 갈래다. `request Cookie 있음 + CORS 콘솔 에러`는 응답 읽기 갈래다. 갈래를 잃으면 [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder)로 돌아간다.
 
 ## 여기까지 이해했다면 다음 갈래
 
-여기까지 읽고 나면 beginner가 다음으로 가장 많이 막히는 지점은 "이제 무엇을 더 봐야 하지?"다.
-아래 한눈표만 보면 세 문서 차이를 먼저 고정할 수 있다.
-
-| 지금 DevTools에서 먼저 보이는 장면 | 먼저 볼 문서 | 이 문서가 답하는 질문 | 읽고 나면 복귀 |
+| 장면 | 먼저 볼 문서 | 질문 | 복귀 |
 |---|---|---|---|
-| actual request는 보이는데 콘솔이 CORS 에러를 말한다 | [CORS 기초](../security/cors-basics.md) | "응답을 JS가 읽을 수 있나?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
-| `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | "실제 요청이 아직 출발했나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
-| `Application > Cookies`에는 값이 있는데 같은 actual request의 request `Cookie` header가 비어 있다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) | "`include`와 cookie scope 중 어디서 막혔나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| actual request는 보이는데 CORS 콘솔 에러가 난다 | [CORS 기초](../security/cors-basics.md) | "응답 읽기 문제인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `OPTIONS`만 있고 actual `GET`/`POST`가 안 보인다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | "실제 요청이 출발했나?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| `Application > Cookies`에는 값이 있고, 코드에 `credentials: "include"`가 없다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) | "`credentials` 누락인가?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
+| `Application > Cookies`에는 값이 있고, `include`도 있는데 request `Cookie`가 비어 있다 | [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | "`include`도 있는데 scope 문제인가?" | [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |
 | 어느 칸을 봐야 할지부터 헷갈린다 | [Cookie DevTools Field Checklist Primer](../security/cookie-devtools-field-checklist-primer.md) | "지금 비교해야 할 칸이 어디인가?" | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
-
-짧게 외우면 이것만 기억하면 된다.
 
 ## 여기까지 이해했다면 다음 갈래 (계속 2)
 
@@ -458,7 +455,7 @@ GET /me
 | request `Cookie` header 체크 결과 | 바로 다음 문서 | 복귀할 같은 anchor |
 |---|---|---|
 | actual request 자체가 없다 | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
-| `Application > Cookies`에는 값이 있는데 같은 actual request의 `Cookie` header가 비어 있다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `Application > Cookies`에는 값이 있는데 같은 actual request의 `Cookie` header가 비어 있다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크)로 `credentials` 누락부터 자른다. `include`도 있는데 비면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 | request `Cookie`는 실렸는데 login HTML fallback, `302 -> /login`, anonymous가 남는다 | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 | request `Cookie`는 실렸는데 JS만 CORS 에러로 응답을 못 읽는다 | [CORS, SameSite, Preflight](../security/cors-samesite-preflight.md) | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 
@@ -473,7 +470,7 @@ GET /me
 
 | 먼저 보이는 증거 | beginner 기준 해석 | 다음 한 걸음 |
 |---|---|---|
-| `Application > Cookies`에는 값이 있는데 같은 실패 요청의 request `Cookie` header가 비어 있다 | `cookie-not-sent` branch | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크) -> [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) -> [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
+| `Application > Cookies`에는 값이 있는데 같은 실패 요청의 request `Cookie` header가 비어 있다 | `cookie-not-sent` branch다. 여기서도 `credentials missing`과 `cookie scope mismatch`를 따로 자른다 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) -> [Fetch Credentials vs Cookie Scope](../security/fetch-credentials-vs-cookie-scope.md#application-vs-network-15초-미니-체크)로 `credentials` 누락부터 확인 -> `include`도 있는데 비면 [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md) -> [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 | request `Cookie`는 실렸는데 `302 -> /login`이나 login HTML fallback이 남는다 | `server-mapping-missing` 또는 redirect branch | [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md) -> [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) |
 | `OPTIONS`만 실패하고 actual 요청이 없다 | preflight/CORS branch | [Preflight Debug Checklist](../security/preflight-debug-checklist.md) |
 | 갈래를 잃었다 | category 라우터로 복귀 | [Security README: Browser / Session Beginner Ladder](../security/README.md#browser--session-beginner-ladder) -> [Security README: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path) |

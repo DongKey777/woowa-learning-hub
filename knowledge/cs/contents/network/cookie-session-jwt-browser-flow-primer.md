@@ -54,6 +54,20 @@ beginner가 실제로 자주 묻는 질문은 정의보다 아래 세 문장에 
 2. `Cookie` 헤더는 전송 신호다.
 3. `200/401/302`는 인증 결과 신호다.
 
+## beginner 멈춤선
+
+처음 읽는 단계라면 이 문서에서 먼저 고정할 것은 세 가지뿐이다.
+
+- cookie는 브라우저 저장/전송 수단이다
+- session은 서버 복원 방식이다
+- JWT는 토큰 형식이다
+
+여기서 scope가 커지면 바로 아래 갈래로 넘긴다.
+
+- `SameSite`, `Secure`, `Domain`, `Path`가 왜 전송을 막는지 자세히 보려면 [Cookie Attribute Matrix: SameSite, HttpOnly, Secure, Domain, Path](./cookie-attribute-matrix-samesite-httponly-secure-domain-path.md)
+- hidden `JSESSIONID`, login redirect, 원래 URL 복귀가 붙으면 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
+- token 저장 전략, CSRF, BFF 같은 운영형 비교로 커지면 [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
+
 ## 한 번에 보는 전체 흐름
 
 로그인 이후 브라우저 요청 흐름을 아주 단순화하면 아래 셋 중 하나다.

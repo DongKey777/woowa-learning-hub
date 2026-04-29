@@ -20,7 +20,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [팩토리 패턴 기초](../design-pattern/factory-basics.md)
 
-retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, spring bean 처음, component scan 뭐예요, component scan vs di difference, bean registration vs dependency injection, controller service repository 누가 연결해요, 왜 new 대신 주입받아요, springbootapplication component scan basics, spring bean 언제 만들어져요, configuration vs bean registration, bean wiring beginner, what is spring bean, component scan what is, beginner spring bean
+retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, 처음 배우는데 bean 이 뭐예요, spring bean 큰 그림, component scan 뭐예요, component scan 처음, bean 이랑 di 차이 헷갈려요, bean registration vs dependency injection, controller service repository 누가 연결해요, controller service repository 뭐예요, 왜 new 대신 주입받아요, spring bean 언제 만들어져요, configuration vs bean registration, beginner spring bean, spring 객체를 누가 연결해요
 
 ## 먼저 여기까지만 잡는다
 
@@ -30,9 +30,23 @@ retrieval-anchor-keywords: spring bean basics, spring bean 뭐예요, spring bea
 - 지금 중심이 아닌 것: BeanPostProcessor 체인, `BeanDefinition` 내부, `proxyBeanMethods`, 스코프 세부 함정
 - 위 단어가 먼저 궁금하면 이 문서를 더 늘리기보다 [Spring Configuration vs Auto-configuration 입문: `@Configuration`, `@Bean`, `proxyBeanMethods`](./spring-configuration-vs-autoconfiguration-primer.md), [Bean 생명주기와 스코프 함정](./spring-bean-lifecycle-scope-traps.md), [AOP와 프록시 메커니즘](./aop-proxy-mechanism.md)로 내려가는 편이 안전하다.
 
+## 먼저 이 3문장만 분리한다
+
+처음에는 아래 세 문장이 같은 말처럼 들리지만, 실제로는 다른 단계다.
+
+| 초급자가 한꺼번에 섞는 말 | 지금 여기서 자를 뜻 | 다음에 볼 문서 |
+|---|---|---|
+| "`bean`이 등록된다" | Spring이 후보 객체를 컨테이너에 올린다 | 이 문서 |
+| "`DI`가 된다" | 등록된 후보 중 맞는 객체를 연결한다 | 이 문서 |
+| "`@Transactional`이 붙는다" | 이미 만들어진 Bean 호출 앞뒤를 프록시가 감싼다 | [@Transactional 기초](./spring-transactional-basics.md) |
+
+짧게 외우면 `scan은 찾기`, `DI는 연결`, `proxy는 감싸기`다. 이 세 단계를 섞지 않으면 "`bean`이랑 `@Transactional`이 같은 건가요?" 같은 beginner 혼동이 훨씬 줄어든다.
+
 ## 이 문서가 먼저 잡아야 하는 질문
 
 이 문서는 아래처럼 **Bean 등록과 DI를 한 덩어리로 물어보는 beginner 검색 질문**에서 먼저 걸리도록 조정한 primer다.
+
+첫 검색이 "`spring bean`이 뭐예요", "`component scan`이 뭐예요", "`bean`이랑 DI가 뭐가 달라요?"처럼 **개념 큰 그림**이면 이 문서가 먼저 맞다. "`bean`이 아예 안 떠요"처럼 증상 중심이면 [Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정](./spring-component-scan-failure-patterns.md)으로 바로 넘기는 편이 빠르다.
 
 | 학습자 질문 모양 | 이 문서에서 먼저 주는 답 |
 |---|---|

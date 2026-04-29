@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [PostgreSQL `visibility map`과 `all-visible`은 뭐예요?](./postgresql-visibility-map-all-visible-beginner-card.md)
 - [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
 - [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)
 - [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)
@@ -13,7 +14,7 @@
 - [Hybrid Top-Index / Leaf Layouts](../data-structure/hybrid-top-index-leaf-layouts.md)
 - [database 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: postgresql index only scan heap fetches, why heap fetches remain, heap fetches beginner, index only scan basics, mvcc visibility basics, visibility map what is, visibility map beginner, postgresql heap table basics, why index only scan still reads heap, 처음 보는 heap fetches, heap fetches 뭐예요, covering index but still heap fetches, explain analyze heap fetches why, index only scan 왜 heap read
+retrieval-anchor-keywords: postgresql index only scan heap fetches, why heap fetches remain, heap fetches beginner, index only scan basics, mvcc visibility basics, visibility map what is, visibility map beginner, postgresql heap table basics, why index only scan still reads heap, 처음 보는 heap fetches, heap fetches 뭐예요, autovacuum why index only scan got slower, vacuum after explain got faster, index only scan 왜 느려졌어요
 
 ## 핵심 개념
 
@@ -50,6 +51,8 @@ retrieval-anchor-keywords: postgresql index only scan heap fetches, why heap fet
 
 visibility map은 초급에서는 "heap page 옆에 붙어 있는 체크 스티커" 정도로 이해하면 충분하다.
 "이 페이지는 지금 있는 tuple들이 다 visible하니, index만 보고 지나가도 될 가능성이 높다"는 빠른 힌트를 주는 장치다.
+
+`visibility map`과 `all-visible` 용어 자체가 아직 헷갈리면 [PostgreSQL `visibility map`과 `all-visible`은 뭐예요?](./postgresql-visibility-map-all-visible-beginner-card.md)부터 짧게 보고 다시 이 문단으로 돌아오면 된다.
 
 중요한 건 이 메모가 **row별 메모가 아니라 page 단위 메모**라는 점이다.
 그래서 index에 필요한 컬럼이 다 있어도, 해당 page가 all-visible로 보증되지 않으면 PostgreSQL은 heap을 다시 본다.
@@ -93,10 +96,30 @@ Heap Fetches: 37
 즉 이 plan은 "이름은 index only였는데 실패"가 아니라,
 "대부분 인덱스로 가되, visibility map이 확신하지 못한 일부 page는 heap 검증이 붙었다"로 읽는 편이 맞다.
 
+## 왜 시간이 지나면 빨라지거나 다시 느려지나요?
+
+초급자 입장에서는 여기서 vacuum과 autovacuum를 "청소"보다
+"index only scan이 heap을 얼마나 덜 다시 보게 만들지에 영향을 주는 정리 작업"으로 연결하면 된다.
+
+아주 단순하게 보면 흐름은 이렇다.
+
+| 시점 | heap page 쪽에서 일어나는 일 | `Index Only Scan` 체감 |
+| --- | --- | --- |
+| `UPDATE`/`DELETE`가 많이 일어난 직후 | page의 `all-visible` 보증이 깨지기 쉽다 | `Heap Fetches`가 다시 늘 수 있다 |
+| autovacuum/VACUUM가 지나간 뒤 | dead tuple 정리와 visibility map 갱신이 따라온다 | heap 재확인이 줄어 더 빨라질 수 있다 |
+| 다시 쓰기 churn이 커진 뒤 | 새 변경이 쌓여 page 상태가 다시 흔들린다 | 예전보다 느려졌다고 느낄 수 있다 |
+
+즉 "어제는 `Heap Fetches: 0`에 가까웠는데 오늘은 늘었다"가 꼭 인덱스 설계가 망가졌다는 뜻은 아니다.
+최근 쓰기 흔적이 많아졌거나, autovacuum가 아직 그 변화를 정리하지 못했을 수 있다.
+
+반대로 `VACUUM (ANALYZE)` 뒤에 plan이 좋아졌다면
+"인덱스를 새로 만들었기 때문"이 아니라 **visibility map이 다시 정리돼 heap 재확인이 줄었기 때문**일 가능성이 크다.
+
 ## 흔한 오해와 함정
 
 - "`Index Only Scan`이면 heap fetch가 0이어야 정상이다" -> 아니다. 이름과 실제 heap 재확인 횟수는 분리해서 본다.
 - "`Heap Fetches`가 있으면 인덱스를 새로 만들어야 한다" -> 꼭 그렇지 않다. storage layout과 MVCC visibility 문제가 먼저일 수 있다.
+- "`VACUUM`은 디스크 청소라서 plan 성능과는 별개다" -> 초급 단계에서는 아니다. vacuum/autovacuum가 visibility map을 갱신하면 index-only scan의 heap 재확인이 줄 수 있다.
 - "heap이니까 자바 heap 메모리 얘기다" -> 아니다. 여기서 heap은 PostgreSQL table body 쪽을 가리킨다.
 - "커버링 인덱스를 만들었는데 왜 또 읽지?" -> PostgreSQL에서는 커버링 설계와 visibility 확인이 같은 층이 아니다.
 - "visibility map이 있으면 heap을 영원히 안 본다" -> 아니다. 최근 쓰기나 vacuum 상태에 따라 다시 heap 확인이 생긴다.
@@ -113,6 +136,7 @@ Heap Fetches: 37
 문서 연결은 이렇게 가져가면 안전하다.
 
 - 저장 구조 감각이 약하면 [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
+- `visibility map`, `all-visible` 용어가 아직 추상적으로 들리면 [PostgreSQL `visibility map`과 `all-visible`은 뭐예요?](./postgresql-visibility-map-all-visible-beginner-card.md)
 - 커버링 인덱스와 `Index Only Scan`을 같은 말로 읽고 있었다면 [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md)
 - `vacuum`, dead tuple, cleanup debt가 같이 보여서 운영 신호까지 이어지면 [Vacuum / Purge Debt Forensics and Symptom Map](./vacuum-purge-debt-forensics-symptom-map.md)
 

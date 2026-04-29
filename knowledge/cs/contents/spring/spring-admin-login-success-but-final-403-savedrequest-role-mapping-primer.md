@@ -1,6 +1,6 @@
 # Spring 로그인 성공 후 원래 관리자 URL로 돌아왔는데도 마지막에 `403`이 나는 이유: `SavedRequest`와 역할 매핑 초급 primer
 
-> 한 줄 요약: 로그인 성공과 `SavedRequest` 복귀는 "원래 URL로 다시 보내기"까지의 이야기이고, 마지막 `403`은 별도로 남아 있는 역할 매핑 문제라서 `redirect 복귀`와 `ROLE_ADMIN` 검사 실패를 두 단계로 끊어 봐야 한다.
+> 한 줄 요약: 로그인 성공과 `SavedRequest`라는 `주소 메모` 복귀는 "원래 URL로 다시 보내기"까지의 이야기이고, 마지막 `403`은 별도로 남아 있는 역할 매핑 문제라서 `redirect 복귀`와 `ROLE_ADMIN` 검사 실패를 두 단계로 끊어 봐야 한다.
 
 **난이도: 🟢 Beginner**
 
@@ -14,7 +14,7 @@
 - [HTTP의 무상태성과 쿠키, 세션, 캐시](../network/http-state-session-cache.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring login success but 403, savedrequest after login 403, admin login restored url forbidden, spring role mapping beginner, role_admin prefix mismatch, hasrole admin 403, 로그인 성공했는데 403, 로그인 성공 후 원래 url 복귀 403, 복귀는 됐는데 403, 복귀는 됐는데 권한 없음, savedrequest 복귀 후 권한 없음, savedrequest role mismatch, admin 권한 매핑 오류, spring security 역할 매핑 기초, savedrequest 성공했는데 403
+retrieval-anchor-keywords: spring login success but final 403, savedrequest after login 403, redirect navigation memory, 로그인 성공 후 원래 url 복귀 403, 원래 url 복귀 후 403, 복귀는 됐는데 403, 복귀는 됐는데 권한 없음, savedrequest 복귀 후 권한 없음, spring role mapping beginner, role_admin prefix mismatch, hasrole admin 403, 왜 login 갔다가 마지막 403, savedrequest는 성공했는데 마지막 403, savedrequest 됐는데 왜 403
 
 ## 핵심 개념
 
@@ -29,7 +29,7 @@ retrieval-anchor-keywords: spring login success but 403, savedrequest after logi
 1. `SavedRequest`가 원래 URL 복귀를 처리했다.
 2. 복귀한 그 URL에서 Spring Security가 역할을 다시 검사했고, 여기서 실패했다.
 
-즉 "`로그인 성공` = `관리자 권한 통과`"가 아니다.  
+즉 "`로그인 성공` = `관리자 권한 통과`"가 아니다.
 이 문서에서도 용어를 이렇게 고정해 두면 덜 헷갈린다.
 
 | 용어 | 초급 표현 | 여기서 맡는 역할 |
@@ -38,21 +38,43 @@ retrieval-anchor-keywords: spring login success but 403, savedrequest after logi
 | `SecurityContext` | 이번 요청에서 바로 꺼내 쓰는 로그인 메모 | 지금 `/admin/**`에 들어온 사용자가 누구인지 들고 가는 자리 |
 | `SavedRequest` | 로그인 전에 가려던 주소 메모 | 로그인 성공 뒤 원래 관리자 URL로 다시 보내는 힌트 |
 
-즉 로그인 성공 뒤 `403`이 나는 장면은 "보관함에서 로그인 메모는 잘 꺼냈지만, 주소 메모를 따라 돌아간 관리자 URL에서 권한 검사가 막혔다"로 읽으면 된다.
+즉 로그인 성공 뒤 `403`이 나는 장면은 "보관함에서 로그인 메모는 잘 꺼냈고, `주소 메모`를 따라 돌아가기는 했지만, 돌아간 관리자 URL에서 권한 검사가 막혔다"로 읽으면 된다.
 
 이 문서의 고정 역할도 함께 기억하면 좋다.
 
 - 이 문서는 `redirect / navigation memory` 갈래가 이미 맞다고 본 뒤, 복귀 직후 남은 final `403`을 설명하는 **safe next doc**이다.
 - 반대로 "`cookie 있는데 다시 로그인`", "`next request anonymous after login`"이 먼저 보이면 이 문서보다 `server persistence / session mapping` 갈래가 우선이다.
 
-이 문서는 특히 "`로그인 성공 후 원래 URL 복귀 403`", "`복귀는 됐는데 권한 없음`", "`원래 URL로 돌아왔는데 마지막만 막혀요`" 같은 검색 문장을 가장 짧게 받아 주는 primer다.
+즉 초급자 기준 첫 문장만 다시 쓰면 이렇게 된다.
+
+- "`복귀는 됐는데 권한 없음`" = 이 문서가 맞다.
+- "`next request anonymous after login`" = 이 문서가 아니라 세션 복원 갈래를 먼저 봐야 한다.
+
+이 문서는 특히 "`로그인 성공 후 원래 URL 복귀 403`", "`복귀는 됐는데 권한 없음`", "`원래 URL로 돌아왔는데 마지막만 막혀요`", "`SavedRequest는 성공했는데 마지막 403`" 같은 검색 문장을 가장 짧게 받아 주는 primer다.
+
+## 먼저 갈라 보기: `redirect / navigation memory` 안에서 어디서 막혔나
+
+같은 redirect 계열이라도 실패 위치가 다르면 첫 질문이 달라진다.
+
+| 먼저 보인 장면 | 첫 라벨 | 지금 먼저 묻는 질문 | 바로 갈 문서 |
+|---|---|---|---|
+| 로그인은 성공했는데 원래 `/admin/**`로 안 돌아간다 | `원래 URL 복귀 실패` | "`SavedRequest`가 원래 주소를 저장했나, success handler가 다른 URL로 덮어썼나?" | [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md) |
+| 로그인 성공 후 원래 `/admin/**`로 돌아오긴 했다 | `redirect / navigation memory 복귀 성공` | "복귀는 성공했고, 이제 마지막 `ADMIN` 검사만 남았나?" | 이 문서 계속 |
+| 원래 `/admin/**`로 복귀한 직후 final `403`이 난다 | `복귀는 됐는데 403` | "authority가 `ROLE_ADMIN`인지, `hasRole`/`hasAuthority` 규칙과 맞는지?" | 이 문서 계속 |
+
+짧게 기억하면 이렇다.
+
+- `원래 URL 복귀 실패`는 `redirect / navigation memory` 재생 문제다.
+- `복귀는 됐는데 403`은 `주소 메모`가 아니라 마지막 역할 매핑 문제다.
+- "`SavedRequest`는 성공했는데 마지막 `403`"도 바로 이 두 번째 줄에 들어간다.
 
 ## 한눈에 보기
 
 | 지금 보인 현상 | 실제로 통과한 단계 | 아직 남아 있는 단계 | 먼저 볼 포인트 |
 |---|---|---|---|
 | `/login`까지 갔다가 로그인 성공 | 인증 단계 | 관리자 권한 검사 | 세션/인증 객체가 만들어졌는가 |
-| 로그인 후 원래 `/admin/reservations`로 복귀 | `SavedRequest` 복귀 단계 | `/admin/**` 인가 검사 | 주소 메모가 정상인가 |
+| 로그인 성공 후 홈이나 기본 페이지로 가서 원래 `/admin/**`로 못 돌아감 | 인증 단계 | `SavedRequest` 재생 또는 success handler 우선순위 | 원래 주소를 저장했는가, 기본 target URL이 덮어썼는가 |
+| 로그인 후 원래 `/admin/reservations`로 복귀 | `SavedRequest`라는 `주소 메모` 복귀 단계 | `/admin/**` 인가 검사 | 주소 메모가 정상인가 |
 | 복귀 직후 최종 `403` | URL 복귀까지는 성공 | `hasRole("ADMIN")` 또는 authority 매핑 실패 | `ROLE_ADMIN`이 실제로 들어 있는가 |
 
 ```text
@@ -70,9 +92,11 @@ GET /admin/reservations
 
 브리지 문서에서 "`302 /login`은 이해했는데 로그인 성공 후 원래 URL 복귀 `403`이 남아요"까지 왔다면, 여기서부터는 질문을 한 문장 더 줄여 "`복귀는 됐는데 권한 없음`"으로 읽으면 된다. 그 순간 `SavedRequest` deep dive보다 authority 이름 확인이 먼저다.
 
+반대로 "`로그인은 성공했는데 왜 원래 `/admin`으로 안 돌아가요?`", "`왜 login 갔다가 홈으로 가요?`"가 먼저 보이면 아직 이 문서보다 `SavedRequest` 재생 경계가 앞선다. 그때는 final `403` primer가 아니라 [Spring Security `RequestCache`, `SavedRequest`, and Login Redirect Boundaries](./spring-security-requestcache-savedrequest-boundaries.md)로 먼저 간다.
+
 초급자용 한 줄로 더 줄이면 이렇다.
 
-- `SavedRequest`가 성공했다 = 로그인 전 가려던 주소를 다시 열었다.
+- `SavedRequest`라는 `주소 메모`가 성공했다 = 로그인 전 가려던 주소를 다시 열었다.
 - final `403`이 났다 = 그 주소를 열 권한 이름은 아직 안 맞았다.
 
 따라서 초급자용 라벨을 고정하면 이렇게 된다.
@@ -92,7 +116,7 @@ GET /admin/reservations
 
 ## 증상: 로그인 성공 후 원래 `/admin` URL로 돌아왔는데도 `403`
 
-이 장면은 보통 `SavedRequest`가 망가진 것이 아니다. 오히려 반대로 `SavedRequest`는 주소 메모 역할을 잘 끝낸 경우가 많다.
+이 장면은 보통 `SavedRequest`가 망가진 것이 아니다. 오히려 반대로 `SavedRequest`는 `주소 메모` 역할을 잘 끝낸 경우가 많다.
 
 - 처음 보호 URL을 기억했다.
 - 로그인 성공 뒤 그 URL로 다시 보냈다.
@@ -107,11 +131,16 @@ GET /admin/reservations
 
 둘 다 아니다. `/admin/**`는 돌아온 뒤에도 다시 검사한다.
 
+여기서 중요한 대비 문구를 하나 더 고정하면 RAG 결과도 덜 섞인다.
+
+- "`원래 URL 복귀 실패`"는 아직 `SavedRequest`나 success handler 우선순위를 보는 질문이다.
+- "`원래 URL 복귀 후 403`"은 복귀 자체는 성공했으니 authority 문자열과 `hasRole("ADMIN")` 규칙을 보는 질문이다.
+
 ## 상세 분해
 
 ### 1. `SavedRequest`는 역할을 올려 주지 않는다
 
-`SavedRequest`는 "로그인 전에 어디를 가려고 했는지"만 기억하는 주소 메모다.  
+`SavedRequest`는 "로그인 전에 어디를 가려고 했는지"만 기억하는 `주소 메모`다.
 사용자 권한을 `USER`에서 `ADMIN`으로 바꾸지 않는다.
 
 그래서 일반 사용자 계정으로 로그인해도:
@@ -127,7 +156,7 @@ GET /admin/reservations
 .requestMatchers("/admin/**").hasRole("ADMIN")
 ```
 
-이 설정은 문자열 `"ADMIN"`을 그대로 비교하는 감각이 아니다.  
+이 설정은 문자열 `"ADMIN"`을 그대로 비교하는 감각이 아니다.
 실제로는 보통 `ROLE_ADMIN` authority가 있는지를 본다.
 
 그래서 아래처럼 어긋날 수 있다.
@@ -186,16 +215,16 @@ GET /admin/reservations
 
 ## 흔한 오해와 함정
 
-- "`SavedRequest`가 `/admin`으로 돌려보냈으니 Security도 관리자라고 인정한 것이다"라고 생각하기 쉽다.  
+- "`SavedRequest`라는 `주소 메모`가 `/admin`으로 돌려보냈으니 Security도 관리자라고 인정한 것이다"라고 생각하기 쉽다.
   아니다. 주소 메모는 복귀만 돕고, 관리자 여부는 그 뒤 로그인 메모의 권한으로 다시 본다.
 
-- "`403`이니 로그인이 사실 실패한 것이다"라고 생각하기 쉽다.  
+- "`403`이니 로그인이 사실 실패한 것이다"라고 생각하기 쉽다.
   아니다. 로그인 실패였다면 보통 `/login` 재이동이나 인증 실패 응답이 먼저 보인다.
 
-- "DB에 `ADMIN` 문자열이 있으니 `hasRole(\"ADMIN\")`도 자동으로 맞는다"라고 생각하기 쉽다.  
+- "DB에 `ADMIN` 문자열이 있으니 `hasRole(\"ADMIN\")`도 자동으로 맞는다"라고 생각하기 쉽다.
   아니다. `ROLE_` prefix 규칙 때문에 `GrantedAuthority`로 바뀌는 순간 이름이 달라질 수 있다.
 
-- "권한이 부족하면 `SavedRequest`가 원래 URL로 복귀하지 않아야 한다"라고 생각하기 쉽다.  
+- "권한이 부족하면 `SavedRequest`가 원래 URL로 복귀하지 않아야 한다"라고 생각하기 쉽다.
   주소 메모는 복귀까지만 담당하므로, 복귀 후 막혀도 이상한 동작이 아니다.
 
 ## 실무에서 쓰는 모습

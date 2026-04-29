@@ -13,7 +13,7 @@
 - [Spring WebClient vs RestTemplate](./spring-webclient-vs-resttemplate.md)
 - [Timeout types: connect/read/write](../network/timeout-types-connect-read-write.md)
 
-retrieval-anchor-keywords: boot customizer vs replace, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 webclient builder, webclient builder customizer, restclient builder customizer, customizer keeps boot defaults, top-level bean replacement ownership, shared builder owner, 공용 baseline vs 전용 client, 헤더 하나만 추가하고 싶어요, spring boot customizer vs top level bean replacement primer basics, spring boot customizer vs top level bean replacement primer beginner, spring boot customizer vs top level bean replacement primer intro
+retrieval-anchor-keywords: boot customizer vs replace, builder vs template, resttemplatebuilder vs webclient builder, 언제 커스터마이징하는지, 처음 배우는데 webclient builder, webclient builder customizer, restclient builder customizer, customizer keeps boot defaults, top-level bean replacement ownership, shared builder owner, 공용 baseline vs 전용 client, 헤더 하나만 추가하고 싶어요, @bean 직접 등록 다음 뭐 고르나요, bean 직접 등록 후 customizer replacement 차이, spring boot customizer vs top level bean replacement primer basics
 
 ## 먼저 mental model
 
@@ -46,6 +46,26 @@ retrieval-anchor-keywords: boot customizer vs replace, builder vs template, rest
 | 둘 다 공통 | 특정 downstream 하나만 별도 인증/base URL이 필요한가? | Boot-managed builder를 주입받아 전용 client bean 생성 |
 
 즉 `RestClient.Builder`는 "`WebClient.Builder`의 동기 버전 cousin"처럼 보면 된다. 실행 모델은 다르지만, **"공용 baseline은 customizer, 특정 client는 builder로 개별 생성, owner 교체는 마지막"** 이라는 선택 규칙은 거의 같다.
+
+## `@Bean` 직접 등록까지 봤다면 바로 이 표
+
+직전 문서에서 "`@Bean`을 직접 등록하면 Boot 기본 조립이 back-off될 수 있다"까지 봤다면, 다음 질문은 하나다.
+
+**"정말 owner 교체가 필요한가, 아니면 옵션만 덧칠하면 되는가?"**
+
+| 지금 하려는 변화 | 먼저 고를 것 | 왜 이 선택이 더 작고 안전한가 |
+|---|---|---|
+| Boot가 만든 기본 bean은 유지하고 옵션 한두 개만 바꾸기 | customizer bean | 기본 조립은 Boot에 두고, 내가 바꾸려는 부분만 덧칠한다 |
+| 공용 기본값은 유지하고 특정 client 하나만 따로 만들기 | Boot-managed builder를 주입받아 전용 client bean 생성 | shared builder owner는 건드리지 않고 예외 케이스만 분리한다 |
+| 생성 방식, 기본 connector, lifecycle까지 내가 직접 책임지기 | top-level `@Bean` 직접 등록 | 이제는 옵션 추가가 아니라 owner 교체라서 back-off 이후 책임을 직접 진다 |
+
+초보자용으로 줄이면 이렇게 읽으면 된다.
+
+- "조금 바꾼다"면 customizer
+- "하나만 따로 만든다"면 builder로 전용 bean 생성
+- "내가 전체를 책임진다"면 top-level bean 교체
+
+이 표가 바로 "`@Bean` 직접 등록도 가능한데, 왜 customizer를 또 보지?"라는 다음 질문의 답이다.
 
 ---
 

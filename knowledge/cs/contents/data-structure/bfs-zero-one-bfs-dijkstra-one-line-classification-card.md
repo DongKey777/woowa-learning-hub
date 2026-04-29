@@ -1,0 +1,98 @@
+# BFS vs 0-1 BFS vs Dijkstra 한 줄 분류 카드
+
+> 한 줄 요약: shortest-path 문제를 읽을 때 `최소 이동 횟수`, `0/1 비용`, `일반 비용 합` 중 무엇을 묻는지만 먼저 자르면 BFS, 0-1 BFS, Dijkstra를 초보자도 덜 섞는다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [그래프 기초](./graph-basics.md)
+- [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- [BFS vs Dijkstra shortest path mini card](../algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md)
+- [0-1 BFS grid-conversion primer](../algorithm/zero-one-bfs-grid-conversion-primer.md)
+- [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- [자료구조 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: bfs vs 0-1 bfs vs dijkstra, shortest path one line classification, deque vs priority queue shortest path, bfs dijkstra 차이 처음, 0-1 bfs 언제 써요, shortest path 헷갈림, 최소 이동 횟수 bfs, 0 1 cost shortest path, weighted shortest path beginner, priority queue shortest path basics, 최단 경로 뭐예요, 비용 합 왜 다익스트라, what is 0-1 bfs, shortest path beginner card
+
+## 핵심 개념
+
+이 카드는 구현 디테일보다 `문제 문장을 어떻게 읽을지`를 먼저 잡는 용도다.
+
+- `최소 몇 번 이동하나?` -> BFS
+- `비용이 0 아니면 1인가?` -> 0-1 BFS
+- `비용이 2, 5, 17처럼 일반 숫자인가?` -> Dijkstra
+
+짧게 외우면 아래 한 줄이다.
+
+> `횟수면 BFS, 0/1 합이면 0-1 BFS, 일반 비용 합이면 Dijkstra`
+
+초보자가 자주 틀리는 이유는 `최단`이라는 단어만 보고 BFS로 가기 때문이다. 먼저 `무엇이 짧은가`를 잘라야 한다.
+
+## 한눈에 보기
+
+| 먼저 볼 질문 | BFS | 0-1 BFS | Dijkstra |
+|---|---|---|---|
+| 무엇을 최소화하나 | 이동 횟수, 간선 수 | 0/1 비용 합 | 일반 비용 합 |
+| 간선 비용 모양 | 모두 동일, 보통 1 | 0 또는 1만 존재 | 0 이상 일반 가중치 |
+| 먼저 떠올릴 도구 | queue | deque | priority queue |
+| 문제 문장 신호 | `최소 몇 칸`, `최소 환승 횟수` | `순간이동 0초`, `문 열기 1초` | `최소 요금`, `최소 시간`, `최소 비용` |
+
+이 표에서 beginner가 가장 먼저 붙잡아야 하는 축은 두 개뿐이다.
+
+1. `횟수`를 세는가, `비용 합`을 세는가
+2. 비용 합이라면 그 값이 `0/1`뿐인가, 일반 숫자인가
+
+## 5문장 셀프 드릴
+
+| 한 줄 문제 | 첫 선택 | 이유 |
+|---|---|---|
+| `미로에서 출구까지 최소 몇 칸인가?` | BFS | 한 칸 이동을 같은 1번으로 센다 |
+| `지하철에서 최소 환승 횟수는?` | BFS | 환승 횟수는 간선 수를 세는 질문이다 |
+| `순간이동은 0초, 걷기는 1초다` | 0-1 BFS | 비용이 0과 1만 나온다 |
+| `방을 옮길 때 흰 방은 0, 검은 방은 1 비용이 든다` | 0-1 BFS | binary weight shortest path다 |
+| `도로마다 통행료가 다를 때 최소 비용은?` | Dijkstra | 비용이 일반 가중치다 |
+
+5초 안에 못 고르겠다면 문장을 이렇게 다시 번역하면 된다.
+
+- `몇 번 움직였나`를 세면 BFS
+- `움직일 때마다 드는 값`이 0/1뿐이면 0-1 BFS
+- `움직일 때마다 드는 값`이 제각각이면 Dijkstra
+
+## 문제 문장을 자료구조 신호로 번역하기
+
+초보자에게는 알고리즘 이름보다 `꺼내는 순서`가 더 잘 보일 때가 많다. 그럴 때는 자료구조 신호로 다시 읽어도 된다.
+
+| 문제 문장 신호 | 먼저 떠올릴 자료구조 | 왜 그 도구가 보이나 |
+|---|---|---|
+| `가까운 칸부터 한 겹씩 퍼진다` | queue | 같은 거리 레벨을 FIFO로 밀어낸다 |
+| `0 비용 이동은 앞에, 1 비용 이동은 뒤에 둔다` | deque | 앞뒤 양쪽 삽입으로 비용 0/1을 바로 반영한다 |
+| `현재까지 비용이 가장 작은 상태를 먼저 꺼낸다` | priority queue | 최소 비용 상태를 계속 뽑아야 한다 |
+
+이 표의 핵심은 `queue/deque/priority queue`가 답 그 자체가 아니라, shortest-path 분기를 읽게 해 주는 힌트라는 점이다.
+
+## 흔한 혼동 바로 교정하기
+
+- `queue가 나오니까 BFS겠지` -> 아니다. `priority queue`가 보이면 Dijkstra 쪽일 수 있다.
+- `최단 경로니까 다 BFS 아닌가요` -> 아니다. `최소 비용`, `최소 시간`, `최소 요금`은 비용 합 문제다.
+- `0/1도 가중치니까 바로 Dijkstra만 생각하면 되죠` -> 맞게 풀 수는 있어도, beginner 분류 카드에서는 0-1 BFS를 먼저 떠올리는 편이 더 직접적이다.
+- `간선이 적은 경로가 비용도 제일 작겠지` -> 아니다. 한 번에 가는 비싼 길보다 두 번 가는 싼 길이 더 좋을 수 있다.
+
+아래처럼 같은 그림을 다른 질문으로 읽으면 왜 분기가 갈리는지 더 쉽게 보인다.
+
+| 같은 그래프 | 질문 | 정답 축 |
+|---|---|---|
+| `S -> T` 비용 5, `S -> A -> T` 비용 0 + 1 | `몇 번 만에 가나?` | BFS |
+| 같은 그래프 | `최소 비용은?` | 0-1 BFS |
+| 같은 그래프인데 비용이 `2`와 `7`도 섞임 | `최소 비용은?` | Dijkstra |
+
+## 다음 한 걸음
+
+- `queue`와 `priority queue` 자체가 왜 다른지 다시 붙이고 싶다면 [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
+- `그래프가 왜 shortest-path 문제로 번역되는지`가 먼저 막히면 [그래프 기초](./graph-basics.md)
+- BFS와 Dijkstra의 목적 함수 차이를 더 또렷하게 비교하고 싶다면 [BFS vs Dijkstra shortest path mini card](../algorithm/bfs-vs-dijkstra-shortest-path-mini-card.md)
+- 0-1 BFS를 실제 예시로 한 번 더 보고 싶다면 [0-1 BFS grid-conversion primer](../algorithm/zero-one-bfs-grid-conversion-primer.md)
+
+## 한 줄 정리
+
+shortest-path 문제를 보면 `횟수면 BFS`, `0/1 비용 합이면 0-1 BFS`, `일반 비용 합이면 Dijkstra`로 먼저 자르고, 그다음에 queue, deque, priority queue를 구현 도구로 붙이면 beginner 오분류가 크게 줄어든다.

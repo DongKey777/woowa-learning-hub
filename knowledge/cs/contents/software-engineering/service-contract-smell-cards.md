@@ -7,16 +7,19 @@
 관련 문서:
 
 - [Service 계층 기초](./service-layer-basics.md)
+- [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
 - [Entity Leakage Review Checklist](./entity-leakage-review-checklist.md)
 - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 - [spring request pipeline / bean container 입문](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
-retrieval-anchor-keywords: service contract smell, service contract basics, service signature smell, service method exposes framework type, responseentity in service, pageable in service, multipartfile in service, entity in service parameter, use case input output beginner, service boundary review, service contract primer, 처음 배우는데 service 계약 냄새, service가 jpa 타입을 안다, service가 spring 타입을 안다
+retrieval-anchor-keywords: service contract smell, service signature smell, service 시그니처 leak, service signature leak, 계약이 샌다, 구조는 맞는데 계약이 샌다, responseentity in service, pageable in service, multipartfile in service, entity in service parameter, service boundary review, 처음 배우는데 service 계약 냄새, service 계약 뭐예요, 레이어 문제인가 계약 문제인가, service 구조 문제인지 계약 문제인지
 
 ## 핵심 개념
 
 처음에는 어려운 용어보다 **"service는 유스케이스를 말해야 하고, controller/repository/adapter 세부를 그대로 말하면 경계가 흐려진다"**만 잡으면 된다.
+
+리뷰 코멘트에서 `계약이 샌다`, `service 시그니처 leak`처럼 들리면, 이 문서는 그 말을 **"service 시그니처에 웹/JPA 타입이 남아 있나?"**로 번역해 읽는 entrypoint다.
 
 service 메서드는 보통 아래 질문에 답해야 한다.
 
@@ -47,6 +50,20 @@ service 메서드는 보통 아래 질문에 답해야 한다.
 | `HttpServletRequest`, `Authentication` | request/security 프레임워크 문맥이 안쪽으로 샌다 | 필요한 값만 추출한 command |
 
 핵심 판단 기준은 타입 이름이 멋진가가 아니라, **그 타입이 어느 계층 질문에 답하는가**다.
+
+## 이건 레이어 문제인가 계약 문제인가 self-check 3문항
+
+README의 결정표에서 이 문서로 넘어왔을 때는, 바로 리팩토링 방향을 고르기보다 아래 3문항으로 **"자리 문제"와 "시그니처 문제"를 분리**하면 판단 비용이 줄어든다.
+
+| 질문 | Yes면 | No면 |
+|---|---|---|
+| `Controller`가 규칙/저장 호출까지 직접 하고 있나 | 레이어 문제가 먼저다. [계층형 아키텍처 기초](./layered-architecture-basics.md)로 가서 `입력 / 규칙 / 저장` 자리를 먼저 나눈다 | 2번으로 간다 |
+| `Service` 메서드 이름은 유스케이스인데, 파라미터/반환 타입이 `ResponseEntity`, `Pageable`, `MultipartFile`, `OrderEntity`처럼 웹/JPA 언어를 말하나 | 계약 문제가 먼저다. 이 문서의 냄새 카드 순서대로 `Command`, `Query`, `Result` 후보 1개만 고른다 | 3번으로 간다 |
+| 자리는 대충 맞는데 `Request DTO -> Entity -> ResponseEntity`처럼 한 타입이 여러 계층 뜻을 동시에 떠안고 있나 | 계약 + DTO 흐름 혼합 문제다. [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)로 가서 `요청 모양 / 업무 의미 / 저장 모양`을 다시 자른다 | 지금 시그니처는 급한 냄새가 아닐 가능성이 크다. 테스트나 규칙 위치를 먼저 본다 |
+
+- 짧게 외우면 `자리면 레이어`, `말투면 계약`, `한 타입이 여러 뜻이면 DTO 흐름`이다.
+- beginner safe 기본값은 "둘 다 보이면 레이어를 먼저, 그다음 계약"이다. 자리가 안 정해진 상태에서 타입 이름만 바꾸면 다시 섞이기 쉽다.
+- target query: `이건 레이어 문제인가 계약 문제인가`, `구조는 맞는데 계약이 샌다`, `service 시그니처 leak`, `responseentity pageable entity service beginner`.
 
 ## 냄새 카드 1: 웹 타입이 service에 보인다
 

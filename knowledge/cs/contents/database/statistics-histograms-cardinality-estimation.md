@@ -1,12 +1,13 @@
 # Statistics, Histograms, and Cardinality Estimation
 
-> 한 줄 요약: 옵티마이저는 감으로 인덱스를 고르지 않고 통계로 고르기 때문에, 통계가 틀리면 좋은 인덱스도 나쁜 계획으로 보인다.
+> 한 줄 요약: `rows`는 "DB가 이 조건이면 이 정도 row가 남을 것 같다"고 적어 둔 추정치라서, 실제 분포와 통계가 어긋나면 같은 인덱스도 전혀 다른 계획으로 보일 수 있다.
 >
 > 관련 문서:
 > - [인덱스와 실행 계획](./index-and-explain.md)
 > - [쿼리 튜닝 체크리스트](./query-tuning-checklist.md)
 > - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
 > - [Secondary Index Maintenance Cost and ANALYZE Statistics Skew](./secondary-index-maintenance-cost-analyze-skew.md)
+> - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 > - [MySQL Optimizer Hints and Index Merge](./mysql-optimizer-hints-index-merge.md)
 > - [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md)
 >
@@ -60,9 +61,48 @@
 | `type = ALL`, `key = NULL`, predicate가 sargable 한지부터 의심됨 | 통계 이전의 접근 경로 문제 | [인덱스와 실행 계획](./index-and-explain.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 | DB time이 아니라 앱 레이어 병목일 수도 있음 | 통계 문제로 과잉 해석하지 말고 triage 순서 점검 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 
+## 먼저 그림부터: 왜 `rows`와 actual rows가 다를까
+
+초보자 기준으로는 "`rows`는 정답"이라고 보기보다, **옵티마이저가 실행 전에 적어 둔 예상 인원수**라고 생각하면 쉽다.
+
+예를 들어 주문 테이블에 10만 건이 있고, 예전에는 `status = 'PAID'`가 10%였다고 하자.
+
+```sql
+EXPLAIN ANALYZE
+SELECT id
+FROM orders
+WHERE status = 'PAID';
+```
+
+그런데 서비스가 커지면서 실제로는 `PAID`가 85%가 됐다면 이런 일이 생길 수 있다.
+
+| plan에서 보이는 값 | 뜻 | 왜 어긋날 수 있나 |
+| --- | --- | --- |
+| `rows = 10000` | DB는 "`PAID`면 1만 건쯤 남겠지"라고 예상했다 | 예전 통계 기준으로 아직 10%라고 믿고 있다 |
+| `actual rows = 85000` | 실제 실행해 보니 8만 5천 건이 나왔다 | 데이터 분포는 바뀌었는데 통계는 덜 따라왔다 |
+
+이 mismatch가 커지면 옵티마이저는 "조금만 읽겠네"라고 착각해서 인덱스를 고르거나 조인 순서를 정한다.
+문제는 실제로는 훨씬 많이 읽어서, **인덱스를 탔는데도 느리거나 조인 순서가 이상해 보이는** 결과가 나온다는 점이다.
+
+## 초보자가 먼저 읽는 3단계
+
+`EXPLAIN`이나 `EXPLAIN ANALYZE`에서 `rows`가 헷갈리면, 처음에는 아래 3가지만 분리하면 된다.
+
+1. 이 숫자는 예상치인가, 실제 실행 결과인가?
+2. 틀렸다면 인덱스가 나빠서가 아니라 통계가 현실을 잘못 보고 있는 건 아닌가?
+3. 한쪽 값에 데이터가 몰렸거나 최근 분포가 바뀐 건 아닌가?
+
+짧게 연결하면 이렇다.
+
+```text
+rows = 실행 전 예상
+actual rows = 실행 후 실제
+mismatch = 통계/분포를 의심할 신호
+```
+
 ## 핵심 개념
 
-옵티마이저는 "이 인덱스가 좋아 보인다"는 직감으로 실행 계획을 고르지 않는다.  
+옵티마이저는 "이 인덱스가 좋아 보인다"는 직감으로 실행 계획을 고르지 않는다.
 통계와 비용 모델을 바탕으로 cardinality를 추정한다.
 
 그래서 이 문서의 핵심은 하나다.
@@ -75,7 +115,7 @@
 
 ### 1. cardinality estimation이 왜 중요한가
 
-cardinality는 "조건을 만족하는 row가 얼마나 남는가"에 대한 추정이다.  
+cardinality는 "조건을 만족하는 row가 얼마나 남는가"에 대한 추정이다.
 이 값이 틀리면 다음이 전부 틀어진다.
 
 - 인덱스 선택
@@ -85,7 +125,7 @@ cardinality는 "조건을 만족하는 row가 얼마나 남는가"에 대한 추
 
 ### 2. 통계는 실제 분포의 근사치다
 
-DB는 모든 row를 매번 세지 않는다.  
+DB는 모든 row를 매번 세지 않는다.
 대신 샘플링과 누적 통계로 대략의 분포를 본다.
 
 그래서 다음 상황이 오면 어긋날 수 있다.
@@ -108,36 +148,36 @@ DB는 모든 row를 매번 세지 않는다.
 
 ### 4. persistent statistics는 왜 필요한가
 
-통계가 재시작마다 흔들리면 계획도 흔들린다.  
+통계가 재시작마다 흔들리면 계획도 흔들린다.
 지속 통계를 유지하면 예측 가능성이 높아진다.
 
-### 5. retrieval anchors
+### 5. actual rows mismatch를 보면 바로 떠올릴 질문
 
-이 문서를 다시 찾을 때 유용한 키워드는 다음이다.
+`EXPLAIN ANALYZE`에서 mismatch를 봤다고 해서 바로 "옵티마이저가 멍청하다"로 가면 초보자가 길을 잃기 쉽다.
+보통은 아래 질문 순서가 더 안전하다.
 
-- `statistics`
-- `histogram`
-- `cardinality estimation`
-- `persistent statistics`
-- `selectivity`
-- `ANALYZE TABLE`
-- `optimizer cost model`
+- 최근 배포나 적재 이후 데이터 분포가 달라졌나?
+- `status`, `tenant_id`, `category`처럼 한쪽으로 쏠린 컬럼이 조건에 있나?
+- 같은 SQL인데 특정 값에서만 느리다면 histogram이나 skew 문제인가?
+- 조인 결과가 많아진 이유가 통계 mismatch인지, 원래 관계 cardinality 때문인지는 분리했나?
+
+마지막 질문이 헷갈리면 실행 계획의 `cardinality estimation`과 모델링/조인의 cardinality를 구분해 두는 [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md), [SQL 읽기, 관계형 모델링, 정규화 프라이머](./sql-reading-relational-modeling-primer.md)를 같이 보는 편이 안전하다.
 
 ## 실전 시나리오
 
 ### 시나리오 1. 같은 쿼리가 배포 후 갑자기 느려졌다
 
-코드는 안 바뀌었는데 데이터 분포가 바뀌면 통계가 더 이상 맞지 않을 수 있다.  
+코드는 안 바뀌었는데 데이터 분포가 바뀌면 통계가 더 이상 맞지 않을 수 있다.
 이때는 인덱스보다 먼저 ANALYZE와 통계를 본다.
 
 ### 시나리오 2. status 조건이 너무 흔해져 인덱스가 안 탄다
 
-예전에는 `status='PAID'`가 희귀했는데 이제는 대부분이라면, 선택도가 낮아져 인덱스 효과가 줄 수 있다.  
+예전에는 `status='PAID'`가 희귀했는데 이제는 대부분이라면, 선택도가 낮아져 인덱스 효과가 줄 수 있다.
 통계는 이 변화를 따라가야 한다.
 
 ### 시나리오 3. 조인 순서가 이상하다
 
-잘못된 cardinality estimation은 조인 순서를 바꿔버린다.  
+잘못된 cardinality estimation은 조인 순서를 바꿔버린다.
 결과적으로 큰 테이블이 먼저 와서 비용이 폭증할 수 있다.
 
 ## 코드로 보기

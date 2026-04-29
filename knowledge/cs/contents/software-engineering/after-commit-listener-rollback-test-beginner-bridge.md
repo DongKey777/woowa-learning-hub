@@ -1,0 +1,107 @@
+# 왜 rollback 테스트에서 `AFTER_COMMIT` listener가 안 보이나요
+
+> 한 줄 요약: rollback 기반 테스트는 보통 commit을 만들지 않으므로, `@TransactionalEventListener(AFTER_COMMIT)`가 안 보일 때는 listener 버그보다 "아직 commit 세계로 안 나갔다"를 먼저 의심해야 한다.
+
+**난이도: 🟢 Beginner**
+
+관련 문서:
+
+- [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md)
+- [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
+- [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md)
+- [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
+- [software-engineering 카테고리 인덱스](./README.md)
+
+retrieval-anchor-keywords: after commit listener rollback test, after_commit listener not called, transactional event listener rollback, rollback test commit visible, why after commit not triggered, 왜 rollback 테스트에서 안 보여요, 처음 after_commit 헷갈려요, spring after commit beginner, transactional test rollback beginner, commit path test basics
+
+## 핵심 개념
+
+이 질문의 핵심은 listener 자체보다 **테스트가 어느 세계를 보고 있느냐**다.
+
+- rollback 기반 테스트는 보통 "트랜잭션 안"을 본다
+- `AFTER_COMMIT` listener는 이름 그대로 "commit 뒤"를 본다
+
+그래서 테스트가 초록이어도, 또는 listener 호출이 안 보여도, 그 사실만으로 listener 품질을 바로 판단하면 안 된다.
+먼저 "`이 테스트에 진짜 commit이 있었나?`"를 물어야 한다.
+
+## 한눈에 보기
+
+| 지금 본 장면 | 먼저 해석할 뜻 | 아직 말할 수 없는 것 |
+|---|---|---|
+| `save()` 뒤 이벤트를 발행했다 | 같은 트랜잭션 안 로직은 흘렀다 | commit 뒤 listener가 돌았다 |
+| `flush()` 뒤 SQL 로그가 보인다 | DB로 중간 동기화는 됐다 | `AFTER_COMMIT`이 실행됐다 |
+| 테스트 끝에 rollback된다 | commit 세계까지는 안 갔다 | 운영과 같은 후속 처리까지 검증됐다 |
+
+짧게 외우면 `rollback test = 트랜잭션 안`, `AFTER_COMMIT = commit 뒤`다.
+
+## 왜 안 보이는지 3단계로 분해
+
+1. 이벤트 발행은 transaction 안에서 일어날 수 있다.
+2. 하지만 `AFTER_COMMIT` listener는 commit이 끝나야 실행된다.
+3. 테스트 기본값이 rollback이면 2번까지 못 가고 끝난다.
+
+즉 "listener가 안 보인다"는 증상은 자주 아래 둘 중 하나다.
+
+- 진짜 버그
+- 아직 commit이 없어서 원래 안 보이는 것
+
+초심자는 이 둘을 먼저 분리해야 한다.
+
+## 어떤 테스트 질문인지 먼저 고르기
+
+| 내가 진짜 묻는 것 | 먼저 맞는 테스트 |
+|---|---|
+| repository 저장/조회, 매핑, 제약 조건이 맞나 | rollback 기반 테스트 또는 slice test |
+| 예외가 나면 같은 트랜잭션 안 작업이 취소되나 | rollback 기반 테스트 |
+| commit 뒤 listener가 실제로 실행되나 | commit-visible 테스트 |
+| outbox row나 후속 알림이 commit 뒤에도 남나 | commit-visible 테스트 |
+
+핵심은 테스트 종류 이름보다 **질문이 commit 전인지 후인지**다.
+
+## 초심자 예시
+
+주문 저장 뒤 이벤트를 발행한다고 하자.
+
+```java
+@Transactional
+void placeOrder() {
+    orderRepository.save(order);
+    applicationEventPublisher.publishEvent(new OrderPlacedEvent(order.getId()));
+}
+```
+
+그리고 listener가 이렇게 붙어 있다.
+
+```java
+@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+void on(OrderPlacedEvent event) {
+    notificationClient.send(event.orderId());
+}
+```
+
+rollback 기반 테스트에서 `send()`가 안 불렸다면, 첫 해석은 "`AFTER_COMMIT`이 고장났다"가 아니라 "`이 테스트는 commit을 만들었나?`"여야 한다.
+
+## 흔한 오해와 안전한 다음 한 걸음
+
+- "`flush()`까지 했으니 거의 commit을 본 셈이다"
+  - 아니다. `flush`와 commit은 다른 질문이다.
+- "rollback 테스트에서 listener가 안 돌았으니 버그다"
+  - 아니다. commit이 없어서 원래 안 도는지 먼저 봐야 한다.
+- "그럼 모든 테스트를 `@Commit`으로 바꿔야 하나"
+  - 아니다. rollback 테스트로 안쪽 규칙을 잠그고, commit 질문만 얇게 추가하면 된다.
+
+안전한 다음 한 걸음은 이 순서다.
+
+1. 현재 테스트가 rollback 기반인지 확인한다.
+2. 질문이 `AFTER_COMMIT` 호출 여부라면 commit-visible 테스트를 한 장만 추가한다.
+3. 구현 디테일이 더 필요하면 Spring mini card로 넘어간다.
+
+## 더 깊이 가려면
+
+- [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md): `flush`와 commit 차이를 먼저 더 크게 잡고 싶을 때
+- [Spring Mini Card: 왜 rollback 기반 slice test만으로 `AFTER_COMMIT`를 끝까지 믿기 어려운가](../spring/spring-after-commit-rollback-slice-test-mini-card.md): `@DataJpaTest`, `TestTransaction`, `@Commit` 같은 Spring 쪽 구체 수단으로 바로 들어갈 때
+- [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md): `AFTER_COMMIT` 다음 질문이 outbox 검증으로 이어질 때
+
+## 한 줄 정리
+
+rollback 테스트에서 `AFTER_COMMIT` listener가 안 보이면, listener를 의심하기 전에 그 테스트가 commit 뒤 세계를 실제로 열었는지부터 확인해야 한다.

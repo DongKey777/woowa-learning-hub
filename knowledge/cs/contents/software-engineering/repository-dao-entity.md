@@ -21,6 +21,23 @@ retrieval-anchor-keywords: repository dao entity beginner, repository dao entity
 
 처음에는 용어 뜻을 길게 외우기보다, **"주문 생성 흐름에서 누가 무엇을 맡는지"**만 구분하면 된다. 이 문서는 [계층형 아키텍처 기초](./layered-architecture-basics.md)의 같은 주문 생성 시나리오를 저장 책임 쪽으로 한 칸 더 내려서 연결하고, 더 큰 설계 그림이 필요하면 [Architecture and Layering Fundamentals](./architecture-layering-fundamentals.md)로 다시 올라가면 된다.
 
+## 처음 막힐 때 바로 고르는 질문
+
+초급자가 실제로 많이 하는 말은 정의보다 아래 증상에 가깝다.
+
+| 지금 머리에 떠오르는 말 | 먼저 붙일 이름 | 이 문서에서 바로 볼 자리 | 다음 한 걸음 |
+|---|---|---|---|
+| "`service`가 `dao`를 바로 알아도 되나요?" | 저장 책임 경계 문제 | [같은 주문 생성 시나리오로 이어 보기](#같은-주문-생성-시나리오로-이어-보기) | [Service 계층 기초](./service-layer-basics.md) |
+| "`entity`를 DTO처럼 그냥 넘기면 안 돼요?" | 타입 섞임 문제 | [레이어 계약까지 같이 보면](#레이어-계약까지-같이-보면) | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) |
+| "`dao`가 너무 많아졌는데 이게 맞나요?" | 읽기/쓰기 모델 분리 문제 | [언제 어디까지 나누면 되나](#언제-어디까지-나누면-되나) | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) |
+| "`repository`, `dao`, `entity`가 다 저장 아니에요?" | 용어 층위 구분 문제 | [한 표로 먼저 보기](#한-표로-먼저-보기) | 이 문서 끝까지 |
+
+짧게 외우면 이렇다.
+
+- `Repository`는 서비스가 말 거는 저장 창구다.
+- `DAO`는 SQL을 실행하는 손발이다.
+- `Entity`는 DB에 맞춘 저장 모양이다.
+
 ## 먼저 잡는 한 줄 멘탈 모델
 
 서비스는 "주문을 저장해 주세요"라고 부탁하고, 저장 계층 내부는 그 부탁을 **Repository -> DAO -> Entity** 흐름으로 DB 친화적인 모양으로 바꿔 처리한다고 보면 된다.
@@ -108,6 +125,19 @@ class JdbcOrderRepository implements OrderRepository {
 - Repository 구현체가 DAO와 Mapper를 조립해 저장 기술 세부를 숨긴다.
 - `Entity`는 도메인 의미 전체보다 DB 저장 모양에 더 가깝다.
 
+## 20초 판단표: 지금 이 코드는 어디 말투인가
+
+코드를 읽다 헷갈리면 "이 줄이 누구 말투인가?"만 먼저 보면 된다.
+
+| 코드/문장 신호 | 더 가까운 자리 | 왜 그렇게 보나 |
+|---|---|---|
+| `save(order)`, `findByMemberId(memberId)` | Repository | 도메인 의미로 저장을 부탁한다 |
+| `SELECT * FROM orders`, `insert(...)` | DAO | 테이블과 SQL이 직접 보인다 |
+| `OrderEntity(orderId, status)` | Entity | 컬럼 모양에 맞춘 저장 데이터다 |
+| `CreateOrderRequest`, `OrderResponse` | DTO | 웹/API 계약 말투다 |
+
+처음에는 완벽히 나누려 하지 말고, `도메인 말투 / SQL 말투 / 저장 모양 / 요청-응답 말투` 네 칸으로만 자르면 충분하다.
+
 ## 각 용어를 짧게 풀기
 
 `Repository`는 도메인 언어로 저장을 부탁받는 계약이다. `DAO`는 SQL과 테이블 접근을 직접 담당하는 구현 도구다. `Entity`는 DB에 저장하기 쉬운 납작한 데이터 모양이고, `Mapper`는 도메인 객체와 이 저장 모양을 서로 바꾼다.
@@ -144,6 +174,7 @@ class JdbcOrderRepository implements OrderRepository {
 - "지금 막힌 질문부터 고르고 싶으면": [Persistence Follow-up Question Guide](./persistence-follow-up-question-guide.md)
 - "메서드 이름만 봐도 Repository와 DAO를 구분하고 싶으면": [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
 - "도메인 객체와 JPA Entity를 어디서 나눌지"가 궁금하면: [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+- "Spring에서 이 연결을 누가 주입하나요?"가 다음 질문이면: [의존성 주입 기초](./dependency-injection-basics.md)
 - "읽기 모델 분리까지 이어서 보고 싶으면": [Design Pattern: Repository Boundary: Aggregate Persistence vs Read Model](../design-pattern/repository-boundary-aggregate-vs-read-model.md)
 
 ## 한 줄 정리

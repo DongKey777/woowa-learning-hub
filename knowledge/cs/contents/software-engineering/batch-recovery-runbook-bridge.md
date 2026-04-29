@@ -12,8 +12,9 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: batch recovery runbook bridge basics, batch recovery runbook bridge beginner, batch recovery runbook bridge intro, software engineering basics, beginner software engineering, 처음 배우는데 batch recovery runbook bridge, batch recovery runbook bridge 입문, batch recovery runbook bridge 기초, what is batch recovery runbook bridge, how to batch recovery runbook bridge
+retrieval-anchor-keywords: batch recovery runbook bridge, batch failure runbook beginner, batch 실패하면 처음 뭐해요, batch 재실행 전에 뭐 확인해요, safe rerun checklist basics, batch stop or rerun decision, operator batch recovery steps, checkpoint resume runbook beginner, retry queue to runbook bridge, batch recovery 큰 그림
 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md)에서 per-item retry, retry queue, checkpoint를 구분했다면, 이 문서는 그다음 질문인 "그 정책을 운영자가 따라 할 runbook으로 어떻게 바꿀까"만 좁혀서 본다.
+첫 질문이 `batch 실패했는데 처음 뭘 확인해요`, `재실행 전에 왜 멈춰요`, `resume이랑 새 run은 언제 갈라요`처럼 운영 판단의 첫 순서를 묻는 단계라면 이 bridge가 먼저 맞다.
 실패 reason code를 `retryable`, `manual-review`, `permanent` 세 묶음으로 먼저 단순화하고 싶다면 [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)를 같이 보면 runbook의 분기 문장을 더 짧게 적기 쉽다.
 실제 결과 타입 이름이 필요하면 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md)를 먼저 보고, 재실행 중복 부작용이 걱정되면 [Batch Idempotency Key Boundaries](./batch-idempotency-key-boundaries.md)를 같이 보면 된다.
 beginner 기준으로는 [Primer On Retry Queue Assertions](./retry-queue-assertions-primer.md)에서 retryable/manual-review/terminal 분기부터 잠그고, 이어서 [Batch Result Testing Checklist](./batch-result-testing-checklist.md)에서 duplicate run start, chunk timeout retry, item dedup recovery까지 넓히면 정책 -> runbook -> 테스트 루프가 짧게 이어진다.
@@ -50,6 +51,16 @@ runbook, playbook, automation의 일반 경계는 [Runbook, Playbook, Automation
 >
 > retrieval-anchor-keywords:
 > - batch recovery runbook bridge
+> - batch 실패하면 처음 뭐해요
+> - batch 실패했는데 처음 뭘 확인해요
+> - batch 재실행 전에 뭐 확인해요
+> - batch rerun 전에 왜 멈춰요
+> - resume이랑 새 run 언제 갈라요
+> - batch 복구 runbook 기초
+> - operator batch recovery steps beginner
+> - safe rerun checklist 뭐예요
+> - batch stop or rerun decision beginner
+> - checkpoint resume runbook 처음 배우는데
 > - batch failure runbook
 > - batch rerun checklist
 > - safe batch rerun

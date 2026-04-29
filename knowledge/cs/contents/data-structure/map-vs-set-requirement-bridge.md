@@ -14,11 +14,12 @@
 - [해시 테이블 기초](./hash-table-basics.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: map vs set beginner, map or set choice, dedupe vs key value lookup, key value vs membership, hashmap or hashset first, set으로 충분한가, map이 필요한가, 중복 제거만 필요한가, 값까지 저장해야 하나, map set selection primer, beginner map set bridge, lookup vs dedupe basics
+retrieval-anchor-keywords: map vs set beginner, map set primer, map set 큰 그림, map vs set 뭐예요, map이랑 set 차이 뭐예요, 처음 배우는데 map set 차이, 자료구조 map set 큰 그림, map or set choice, dedupe vs key value lookup, key value vs membership, set으로 충분한가, map이 필요한가, 값까지 저장해야 하나, 언제 map 쓰고 언제 set 써요, 왜 set 말고 map 써요
 
 ## 핵심 개념
 
 `Map`과 `Set`을 처음 배울 때 이름으로 외우면 자주 막힌다.
+이 문서는 `map이랑 set 차이 뭐예요?`, `처음 배우는데 언제 map이고 언제 set이에요?` 같은 첫 질문이 들어왔을 때 가장 먼저 닿아야 하는 entry primer를 목표로 한다.
 더 쉬운 출발점은 "내 질문이 어디서 끝나는가"다.
 
 - `"이 값 이미 있나?"`에서 끝나면 `Set`

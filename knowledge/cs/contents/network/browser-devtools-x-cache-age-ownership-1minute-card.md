@@ -13,11 +13,11 @@
 - [network 카테고리 인덱스](./README.md)
 - [CDN 기초 (CDN Basics)](../system-design/cdn-basics.md)
 
-retrieval-anchor-keywords: x-cache age header, x-cache 뭐예요, age header 뭐예요, cf-cache-status hit meaning, devtools cache ownership first pass, cdn cache ownership beginner, app ownership vs edge cache, cache hit header beginner, why x-cache hit but app not called, age header first check, 처음 devtools cache header, cache header 보고 누가 응답했나, what is x-cache, what is age header, cache ownership 헷갈려요
+retrieval-anchor-keywords: x-cache age header, x-cache 뭐예요, age header 뭐예요, cf-cache-status hit meaning, devtools cache ownership first pass, cdn cache ownership beginner, app ownership vs edge cache, why x-cache hit but app not called, 처음 devtools cache header, cache header 보고 누가 응답했나, what is x-cache, what is age header, 304 vs x-cache, from disk cache vs age, browser cache vs cdn cache
 
 ## 핵심 개념
 
-`X-Cache`, `Age`, `CF-Cache-Status`는 보통 "cache를 거쳤다"는 단서다.  
+`X-Cache`, `Age`, `CF-Cache-Status`는 보통 "cache를 거쳤다"는 단서다.
 초급자 first pass에서는 이걸 보고 바로 "`app이 응답했다`"보다 "`edge/CDN cache가 이번 body를 재사용했을 수도 있다`"로 번역하면 덜 틀린다.
 
 한 줄 멘탈 모델:
@@ -49,6 +49,37 @@ cache hit 표기 -> edge cache 후보 먼저
 age 값 -> 이전에 저장된 응답 후보 먼저
 miss 표기 -> cache 계층은 있었지만 owner는 더 봐야 함
 ```
+
+## `304` / `from disk cache`와 `X-Cache` / `Age`를 30초 안에 가르는 법
+
+이 카드에서 가장 자주 붙는 follow-up 질문은 "`304`도 cache고 `X-Cache: Hit`도 cache인데 뭐가 달라요?"다.
+초급자에게는 먼저 "**브라우저 안 cache냐, CDN/edge cache냐**"만 나눠도 충분하다.
+
+| DevTools 단서 | 먼저 뜻하는 것 | ownership 질문 | 초급자용 안전한 한 줄 |
+|---|---|---|---|
+| `from memory cache` / `from disk cache` | 브라우저가 자기 사본을 바로 재사용 | browser cache | 브라우저가 body를 다시 썼다 |
+| `304 Not Modified` | 브라우저가 서버에 재확인한 뒤 기존 body를 재사용 | browser cache + revalidation | 브라우저 cache를 서버가 다시 확인했다 |
+| `X-Cache: Hit`, `CF-Cache-Status: HIT` | CDN/edge/shared cache가 응답을 재사용했을 후보 | edge/CDN cache | 중간 cache가 origin 대신 줄 수 있다 |
+| `Age: 120` | 그 응답이 shared cache에 머문 시간 단서 | edge/CDN cache | 이미 edge 쪽에 있던 응답 후보다 |
+
+짧게 압축하면:
+
+```text
+304 / from disk cache  -> 브라우저 cache 질문
+X-Cache / Age          -> CDN/edge cache 질문
+```
+
+둘은 같은 "cache" 단어를 쓰지만 같은 층이 아니다.
+
+- `304`, `from memory cache`, `from disk cache`는 보통 **브라우저가 body를 어떻게 재사용했는지**를 읽는 단서다.
+- `X-Cache`, `CF-Cache-Status`, `Age`는 보통 **중간 CDN/edge가 응답을 재사용했는지**를 읽는 단서다.
+- 그래서 "`304`가 떴으니 CDN hit다" 또는 "`Age`가 있으니 browser disk cache다"라고 연결하면 층이 섞인다.
+
+초급자 first pass에서는 아래 한 줄 메모가 가장 안전하다.
+
+1. `304`/`from disk cache`가 보이면 "브라우저 cache 동작"이라고 적는다.
+2. `X-Cache`/`Age`가 보이면 "edge/CDN cache 동작"이라고 적는다.
+3. 둘이 같이 보여도 "같은 cache 증거가 두 번 나온다"가 아니라 "브라우저층과 edge층 단서가 함께 보인다"라고 적는다.
 
 ## 왜 첫 pass에서 app ownership을 보류하나
 
@@ -96,7 +127,8 @@ Content-Type: text/css
 - `X-Cache: Hit`를 보고 "원본 app은 완전히 무관하다"고 단정한다. 원본 정책과 이전 origin 응답이 바탕일 수 있다.
 - `X-Cache: Miss`를 보고 "그러면 무조건 app이 직접 응답했다"고 단정한다. gateway나 CDN error translation도 가능하다.
 - cache 관련 헤더가 보이는데도 body owner를 먼저 app JSON/app HTML로 고정한다. 첫 pass에서는 cache ownership 후보를 먼저 적는 편이 안전하다.
-- `304`와 `Age`를 같은 뜻으로 읽는다. `304`는 재검증 결과이고, `Age`는 cache된 응답의 나이 단서다.
+- `304`와 `Age`를 같은 뜻으로 읽는다. `304`는 브라우저 cache 재검증 결과이고, `Age`는 shared cache에 머문 시간 단서다.
+- `from disk cache`를 보고 "`X-Cache: Hit`와 같은 장면이네"라고 묶는다. 전자는 브라우저 로컬 cache, 후자는 보통 CDN/edge cache 쪽 단서다.
 
 ## 실무에서 쓰는 모습
 
@@ -124,10 +156,10 @@ Content-Type: text/css
 
 ## 면접/시니어 질문 미리보기
 
-**Q. `X-Cache: Hit`이면 app은 아예 호출되지 않았다고 봐도 되나요?**  
+**Q. `X-Cache: Hit`이면 app은 아예 호출되지 않았다고 봐도 되나요?**
 이번 요청 처리에서는 edge 재사용일 수 있지만, 어떤 응답이 cache에 들어갔는지는 origin 정책과 이전 fetch가 결정했으므로 app과 완전히 무관하다고 단정하긴 이르다.
 
-**Q. `Age`는 왜 first pass에서 중요하나요?**  
+**Q. `Age`는 왜 first pass에서 중요하나요?**
 `Age`가 보이면 "지금 막 app이 계산한 응답"보다 "이미 cache에 있던 응답" 후보를 먼저 떠올릴 수 있어서 owner 오판을 줄인다.
 
 ## 한 줄 정리

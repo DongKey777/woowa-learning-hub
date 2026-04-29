@@ -14,7 +14,7 @@
 - [HTTP 메서드와 REST 멱등성 입문](../network/http-methods-rest-idempotency-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: requestparam vs pathvariable beginner, @requestparam 뭐예요, @pathvariable 뭐예요, query string path variable 차이, spring mvc url parameter basics, path value vs query value intro, get mapping id query beginner, requestparam pathvariable 헷갈려요, roomescape path query primer, spring controller parameter difference, query parameter basics, path variable basics
+retrieval-anchor-keywords: requestparam vs pathvariable beginner, @requestparam 뭐예요, @pathvariable 뭐예요, query string path variable 차이, spring mvc url parameter basics, path value vs query value intro, get mapping id query beginner, requestparam pathvariable 헷갈려요, url path query 차이 처음 배우는데, path랑 query 뭐가 달라요, 컨트롤러 파라미터에서 path query 차이, roomescape path query primer, spring controller parameter difference, query parameter basics, path variable basics
 
 ## 핵심 개념
 

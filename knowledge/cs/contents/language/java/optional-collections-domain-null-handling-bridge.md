@@ -8,6 +8,7 @@
 
 - [language 카테고리 인덱스](../README.md)
 - [Java Optional 입문](./java-optional-basics.md)
+- [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
 - [Java enum 기초](./java-enum-basics.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
@@ -18,10 +19,12 @@ retrieval-anchor-keywords: optional collection bridge, optional list beginner, o
 
 ## 먼저 잡는 멘탈 모델
 
-초보자 기준으로는 `Optional`을 "한 칸짜리 상자", 컬렉션을 "여러 칸짜리 상자"로 보면 된다.
+초보자 기준으로는 이 문서를 "`없음`을 4갈래로 자르는 첫 입구"로 보면 된다.
 
 - `Optional<T>`: 값이 0개 또는 1개
 - `List<T>`, `Set<T>`, `Map<K, V>`: 값이 0개 이상
+- `Map.get(...) == null`: key 없음과 value `null`을 다시 나눠야 함
+- 상태 타입: "왜 없는지"까지 이름 붙여야 할 때
 
 여기서 한 번 더 분기해야 한다.
 
@@ -29,6 +32,13 @@ retrieval-anchor-keywords: optional collection bridge, optional list beginner, o
 - 아니면 "왜 없는지", "없음도 상태 중 하나인지"를 같이 표현해야 하는가
 
 첫 번째면 `Optional`이 맞고, 두 번째면 컬렉션 설계나 도메인 타입으로 한 단계 올려서 표현하는 편이 더 읽기 쉽다.
+
+처음 읽는 순서는 이 정도면 충분하다.
+
+1. 한 건의 없음이면 `Optional`
+2. 여러 건의 0개면 빈 컬렉션
+3. `Map#get(...) == null`이면 key 없음과 value `null`을 분리
+4. 없음의 이유가 중요하면 상태 타입으로 올리기
 
 ## 10초 판단 표
 
@@ -39,6 +49,19 @@ retrieval-anchor-keywords: optional collection bridge, optional list beginner, o
 | 연락처가 없음 / 비공개 / 아직 미입력처럼 이유가 다르다 | 도메인 타입 또는 `enum` 포함 타입 | 단순 present/absent보다 상태 의미가 더 중요하다 |
 
 핵심은 "비어 있음"이 데이터 개수 문제인지, 비즈니스 의미 문제인지 먼저 나누는 것이다.
+
+## 같은 주문 화면을 네 문장으로 번역해 보기
+
+초보자가 가장 덜 헷갈리는 방법은 "같은 화면 요구를 타입마다 한 문장씩 다시 말해 보기"다.
+
+| 화면에서 실제로 묻는 것 | 첫 타입 | 한 문장 해석 |
+|---|---|---|
+| 주문 한 건을 찾았는데 없을 수도 있다 | `Optional<Order>` | 주문이 `0` 또는 `1`건이다 |
+| 주문의 상품 줄이 하나도 없을 수 있다 | `List<OrderLine>` | 상품 줄은 `0`개 이상이다 |
+| 주문 id별 배송 메시지를 조회하는데 값이 비어 보인다 | `Map<Long, String>` | key 없음과 value `null`을 따로 봐야 한다 |
+| 주문이 없는 이유가 `미결제`/`취소`/`숨김`처럼 다르다 | 상태 `enum`을 포함한 타입 | "없음" 자체가 비즈니스 상태다 |
+
+이 표를 먼저 붙이면 "`없다`는 말이 왜 문서마다 다르게 나오죠?"라는 질문이 줄어든다. 같은 "없음"이어도 단건 조회, 다건 결과, key 조회, 상태 의미가 서로 다른 문제이기 때문이다.
 
 ## `Optional`에 머물러도 되는 경우
 
@@ -84,6 +107,7 @@ String nickname = user.map(User::getNickname)
 - 회원 조회 결과가 없을 수 있으면 `Optional<User>`
 - 회원의 쿠폰이 0개일 수 있으면 `List<Coupon>`
 - 회원 id별 상태를 찾는데 `Map<Long, String>`에 `null`도 넣을 수 있으면 `get(id) == null`만으로는 부족
+- "없음"의 이유가 `NOT_FOUND`, `HIDDEN`, `BLOCKED`처럼 갈리면 `Optional.empty()`보다 enum 상태가 더 직접적
 
 이 마지막 분기를 더 자세히 보는 문서가 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)다.
 
@@ -114,7 +138,8 @@ if (orderLines.isEmpty()) {
 | `Optional<Set<T>>` | `Set<T>` | 중복 제거된 결과가 없으면 빈 집합이면 된다 |
 | `Optional<Map<K, V>>` | `Map<K, V>` | 조회 테이블이 비어 있는 상태는 맵 자체가 표현한다 |
 
-예외는 있다. "목록 자체가 아직 로드되지 않음"과 "로드했지만 0개"를 정말 구분해야 하면 별도 상태 타입이 더 낫다. `Optional<List<T>>`로 억지로 두 의미를 붙이지 않는 편이 좋다.
+예외는 있다. "목록 자체가 아직 로드되지 않음"과 "로드했지만 0개"를 정말 구분해야 하면 별도 상태 타입이 더 낫다. beginner 첫 읽기에서는 이 정도까지만 기억하고, `Optional<List<T>>`로 두 의미를 한 번에 밀어 넣지 않는 편이 좋다.
+`Optional<List<T>>`와 빈 컬렉션만 따로 짧게 다시 보고 싶다면 [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md)로 바로 이어 가면 된다.
 
 ## 도메인 타입으로 옮겨야 하는 경우
 
@@ -145,7 +170,7 @@ record NicknameInfo(NicknameStatus status, String value) {
 - 테스트에서 "왜 없는지"를 바로 검증할 수 있다
 - 나중에 상태가 늘어나도 `enum`과 타입이 의도를 붙잡아 준다
 
-즉 비즈니스 의미가 커질수록 `Optional`보다 도메인 타입이 더 설명력이 좋다.
+즉 비즈니스 의미가 커질수록 `Optional`보다 도메인 타입이 더 설명력이 좋다. 다만 이 문서에서는 "이유가 중요하면 상태 타입으로 간다"까지만 잡고, 값 객체 설계 세부는 follow-up으로 넘겨도 충분하다.
 
 ## 흔한 오해와 함정
 
@@ -164,6 +189,15 @@ record NicknameInfo(NicknameStatus status, String value) {
 4. "왜 없는지"가 중요한 순간부터는 `enum`, `record`, value object 같은 도메인 타입을 검토한다.
 
 이 순서로 보면 `Optional`, 컬렉션, 도메인 타입이 경쟁 관계가 아니라 서로 다른 층에서 null 혼동을 줄이는 도구라는 점이 보인다.
+
+## 다음 한 칸
+
+| 지금 막힌 문장 | 다음 문서 |
+|---|---|
+| "`Optional` API 자체가 아직 낯설다" | [Java Optional 입문](./java-optional-basics.md) |
+| "`Optional<List<T>>`가 왜 어색한지 짧게 더 보고 싶다" | [`Optional<List<T>>` vs 빈 컬렉션 증상 카드](./optional-list-empty-collection-symptom-card.md) |
+| "`HashMap#get(...) == null`이 왜 또 헷갈리죠?" | [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md) |
+| "`없음`의 이유를 상태 이름으로 올리고 싶다" | [Java enum 기초](./java-enum-basics.md) |
 
 ## 더 깊이 가려면
 

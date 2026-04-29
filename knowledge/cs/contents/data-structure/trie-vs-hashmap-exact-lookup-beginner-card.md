@@ -1,6 +1,6 @@
-# Trie vs HashMap: exact lookup이냐 prefix search냐
+# 문자열 검색인데 Trie 써야 하나요? exact lookup이면 HashMap, prefix search면 Trie
 
-> 한 줄 요약: 문자열을 찾는다고 해서 항상 `Trie`가 필요한 것은 아니다. `"이 key 하나의 값"`을 찾으면 `HashMap`, `"이 prefix로 시작하는 후보들"`을 찾으면 `Trie`로 먼저 자르면 된다.
+> 한 줄 요약: 문자열 key 조회라고 해서 항상 `Trie`가 필요한 것은 아니다. `"이 key 하나의 값"`을 찾으면 `HashMap`, `"이 prefix로 시작하는 후보들"`을 찾으면 `Trie`로 먼저 자르면 된다.
 
 **난이도: 🟢 Beginner**
 
@@ -14,7 +14,7 @@
 - [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix search, hashmap or trie choice, string lookup basics, autocomplete basics, startswith search beginner, 문자열 lookup 처음, trie hashmap 헷갈림, 왜 trie가 아니고 hashmap, what is prefix search, exact string match map, beginner autocomplete primer
+retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix search, hashmap or trie choice, string key lookup basics, 문자열 key 조회 자료구조, 문자열 검색인데 trie 써야 하나요, 자동완성 아니면 trie 필요 없나요, trie는 언제 쓰고 hashmap은 언제 써요, 접두사 검색 말고 정확한 키 조회, 정확히 같은 문자열 찾기 trie hashmap, startswith 아니고 key 하나 찾기, 왜 trie가 아니고 hashmap, exact string match map, what is prefix search
 
 ## 핵심 개념
 
@@ -45,9 +45,22 @@ retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix sear
 - `한 단어 정확히 찾기` -> `HashMap`
 - `앞부분이 같은 단어 묶기` -> `Trie`
 
+## 막힌 문장별 빠른 답
+
+검색창에서 헷갈릴 때는 용어보다 질문 문장을 그대로 다시 읽는 편이 빠르다.
+
+| 학습자 질문 | 먼저 떠올릴 답 | 왜 이렇게 자르나 |
+|---|---|---|
+| `문자열 검색인데 trie 써야 하나요?` | 보통 `HashMap`부터 본다 | 검색이 아니라 exact key lookup이면 map 기본값이 더 단순하다 |
+| `자동완성 아니면 trie 필요 없나요?` | prefix search가 없으면 대개 `HashMap` | `Trie`의 강점은 후보를 prefix로 묶는 데 있다 |
+| `trie는 언제 쓰고 hashmap은 언제 써요?` | `exact lookup -> HashMap`, `prefix search -> Trie` | 문자열이라는 사실보다 반복 질문 모양이 더 중요하다 |
+| `접두사 검색 말고 정확한 키 조회` | `HashMap` | `"이 key 하나의 값"`이면 prefix tree를 먼저 들고 올 이유가 약하다 |
+
+짧게 외우면 `문자열 key`가 아니라 `질문이 exact냐 prefix냐`를 먼저 본다.
+
 ## 같은 문자열도 질문이 달라지면 구조가 달라진다
 
-검색창 예시로 보면 차이가 바로 보인다.
+검색창 예시로 보면 차이가 바로 보인다. 특히 `문자열 key 조회 자료구조`, `정확히 같은 문자열 찾기`, `startswith 아니고 key 하나 찾기` 같은 질문은 prefix보다 exact lookup에 가깝다.
 
 | 같은 문자열 데이터 | 질문 | 첫 구조 |
 |---|---|---|
@@ -67,6 +80,8 @@ retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix sear
 
 - `문자열이면 Trie가 더 전문 구조 아닌가요?`
   아니다. exact lookup만 하면 `HashMap`이 더 단순한 기본값이다.
+- `문자열 key 조회 자료구조를 물으면 Trie부터 떠올려야 하나요?`
+  아니다. exact key -> value인지, prefix 후보 수집인지부터 먼저 자르는 편이 안전하다.
 - `HashMap으로도 startsWith를 쓰면 되지 않나요?`
   key 개수가 작으면 가능하다. 하지만 prefix 질의가 반복되면 전체 key를 자주 훑게 된다.
 - `Trie면 exact lookup도 되니까 무조건 Trie가 상위호환인가요?`
@@ -78,9 +93,9 @@ retrieval-anchor-keywords: trie vs hashmap beginner, exact lookup vs prefix sear
 
 ## 실무에서 쓰는 모습
 
-로그인 캐시, `couponCode -> Coupon`, `userId -> User`처럼 `"이 key 하나의 값"`을 바로 꺼내는 장면은 보통 `HashMap`으로 충분하다.
+로그인 캐시, `couponCode -> Coupon`, `userId -> User`처럼 `"이 key 하나의 값"`을 바로 꺼내는 장면은 보통 `HashMap`으로 충분하다. 그래서 `자동완성 아니고 exact key lookup`, `정확한 문자열 매치만 필요` 같은 운영 질문이면 `Trie`보다 먼저 `HashMap`이 나온다.
 
-반대로 검색창 자동완성, 명령어 추천, 사전 후보 제안처럼 `"이 prefix로 시작하는 후보들"`을 빠르게 모아야 하는 장면은 `Trie`가 더 자연스럽다.
+반대로 검색창 자동완성, 명령어 추천, 사전 후보 제안처럼 `"이 prefix로 시작하는 후보들"`을 빠르게 모아야 하는 장면은 `Trie`가 더 자연스럽다. 즉 `trie는 언제 쓰고 hashmap은 언제 써요?`라는 질문의 초급 답은 `autocomplete/prefix search면 Trie, exact lookup이면 HashMap`이다.
 만약 여기서 질문이 `"이 prefix로 시작하는 후보들"`이 아니라 `"이 문자열 다음 사전순 key"`나 `"이 구간의 문자열 key"`라면 `HashMap` 대신 `TreeMap`과 비교해야 하므로 [Trie Prefix Search vs TreeMap Ordered Map Beginner Card](./trie-prefix-search-vs-treemap-ordered-map-beginner-card.md)로 이어 보는 편이 맞다.
 
 실무에서 첫 분기를 짧게 적으면 이렇게 된다.

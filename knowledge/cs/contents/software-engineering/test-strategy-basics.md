@@ -12,9 +12,12 @@
 - [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
 - [Controller 계약 변경 vs Service 규칙 변경 첫 failing test 미니 카드](./controller-contract-vs-service-rule-first-test-mini-card.md)
 - [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
+- [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md)
 - [계층형 아키텍처 기초](./layered-architecture-basics.md)
 - [Service 계층 기초](./service-layer-basics.md)
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
+- [Browser E2E cost-vs-signal checklist](./browser-e2e-cost-vs-signal-checklist.md)
+- [컴포넌트 테스트 vs 브라우저 E2E 경계 카드](./component-test-vs-browser-e2e-boundary-card.md)
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
 - [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
 - [Servlet Filter vs MVC Interceptor Beginner Bridge](./servlet-filter-vs-mvc-interceptor-beginner-bridge.md)
@@ -247,6 +250,8 @@ Unit             ▌▌▌▌▌ 많이
 
 - 반대로 "`응답 코드가 맞나?`", "`직렬화가 맞나?`", "`보안 필터가 붙나?`"가 질문의 전부라면 `MockMvc`나 `TestRestTemplate` 기반 **슬라이스/앱 통합 테스트**가 먼저다.
 - 한 줄 기준: `브라우저 동작이 핵심이면 E2E`, `HTTP 계약이나 서버 wiring이 핵심이면 slice/app integration`이다.
+- "`버튼 비활성화`나 `에러 배너` 같은 로컬 UI 상호작용을 어디에 둘지 헷갈린다"면 [컴포넌트 테스트 vs 브라우저 E2E 경계 카드](./component-test-vs-browser-e2e-boundary-card.md)에서 한 화면 안에서 닫히는 질문부터 먼저 분리하면 된다.
+- "브라우저 E2E를 몇 개만 남겨야 하죠?"가 다음 질문이면 [Browser E2E cost-vs-signal checklist](./browser-e2e-cost-vs-signal-checklist.md)에서 flaky cost와 핵심 사용자 흐름 선별 기준만 따로 보면 된다.
 
 ### 주문 생성 예시로 30초 구분
 
@@ -283,7 +288,8 @@ Unit             ▌▌▌▌▌ 많이
 
 - 초심자 첫 선택 규칙은 간단하다. **결과를 검증하면 stub/fake 쪽, 호출 자체를 검증하면 mock/spy 쪽**이다.
 - fake가 왜 자주 추천되냐면, 구현 세부 호출 순서보다 "저장 후 다시 읽었을 때 어떤 결과가 나오는가"를 더 자연스럽게 읽게 해 주기 때문이다.
-- `작은 service 리팩토링에서 mock을 먼저 잡아야 하나, fake를 먼저 잡아야 하나`가 막히면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)에서 `결과를 읽는가 / 호출을 읽는가` 기준만 먼저 잡고 돌아오면 된다.
+- `mock`과 `fake` 시작 기준이 막히면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)로 이어 가면 된다.
+- `stub`과 `spy` 차이가 막히면 [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md)로 이어 가면 된다.
 - 메모리 repository 예시를 한 단계 더 보고 싶다면 [Repository Fake Design Guide](./repository-fake-design-guide.md)의 `처음 3분 요약`, `메모리 repository 예시: 같은 질문을 fake로 읽기`, `같은 질문을 mock으로 읽으면 무엇이 달라지나`부터 이어서 보면 된다.
 - 용어 차이를 조금 더 정밀하게 정리하고 싶다면 [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)로 올라가면 된다.
 

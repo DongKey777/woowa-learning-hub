@@ -17,7 +17,7 @@
 - [Spring Self-Invocation Proxy Trap Matrix](./spring-self-invocation-proxy-annotation-matrix.md)
 - [Spring Service-Layer Transaction Boundary Patterns](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴)
 
-retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, spring aop 뭐예요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean public external call proxy, self invocation vs self injection, spring aop basics beginner, spring aop basics intro
+retrieval-anchor-keywords: aop basics, 스프링 aop 처음, 횡단 관심사 입문, spring aop 왜 써요, spring aop 뭐예요, proxy aop beginner, self invocation internal call, aop 내부 호출 함정, this method self invocation, private method aop, new service proxy bypass, bean + public + external call, 프록시 경로 먼저, self invocation vs self injection, proxy path first spring
 
 초급자용 공통 라우팅 한 줄:
 
@@ -49,7 +49,7 @@ AOP 입문에서 `@Transactional`로 넘어갈 때는 용어보다 아래 순서
 | "AOP가 왜 필요한가?" | 이 문서 | [`@Transactional 기초`](./spring-transactional-basics.md) |
 | "`@Transactional`이 왜 AOP 이야기와 같이 나오지?" | [`@Transactional 기초`](./spring-transactional-basics.md) | [`Service-Layer 2패턴`](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴) |
 | "`this.method()`를 구조적으로 어떻게 고치지?" | [`Service-Layer 2패턴`](./spring-service-layer-transaction-boundary-patterns.md#초급-빠른-수정-내부-호출-프록시-우회-2패턴) | 이 문서의 `Bean + public + external call` 체크로 다시 복귀 |
-| "트랜잭션은 열리는 것 같은데 rollback/readOnly/전파가 헷갈린다" | [`@Transactional 기초`](./spring-transactional-basics.md) | [`@Transactional 깊이 파기`](./transactional-deep-dive.md) |
+| "트랜잭션은 열리는 것 같은데 rollback/readOnly/전파가 헷갈린다" | [`@Transactional 기초`](./spring-transactional-basics.md) | [`Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only`](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md) |
 
 짧게 기억하면:
 
@@ -129,9 +129,9 @@ public class OrderService {
 }
 ```
 
-## 질문별 바로가기
+## 프록시 정문 3문항 바로가기
 
-아래 3문항은 이제 각각 바로 점프할 수 있다.
+이 문서에서는 `this.method()` / `private` / 직접 `new Foo()`를 같은 이름으로 묶어 **프록시 정문 3문항**이라고 부른다.
 
 | 질문별 바로가기 | 언제 누르면 좋은가 |
 |---|---|
@@ -228,7 +228,7 @@ public class OrderService {
 
 이 문서는 초급자가 "`왜 annotation이 안 먹지?`"를 프록시 관점으로 분리하는 입구다. `@Cacheable`, `@Async`도 같은 프록시 전제를 공유하지만, 캐시 키나 executor 설정까지 여기서 같이 설명하면 입문 문서의 중심이 흐려진다.
 
-초급자용으로는 이 3문항만 남기면 충분하다.
+초급자용으로는 **프록시 정문 3문항**만 남기면 충분하다.
 
 ```text
 1. 이 객체는 Spring Bean인가?
@@ -248,7 +248,7 @@ public class OrderService {
 
 `Bean + public + external call`이 안 맞으면, 세 annotation 모두 같은 뿌리(프록시 우회)에서 실패한다.
 
-초급자용으로 다시 한 번만 줄이면 아래 표다.
+초급자용으로 다시 한 번만 줄이면 아래 표가 곧 **프록시 정문 3문항**이다.
 
 | 눈에 먼저 들어온 단서 | 먼저 고정할 질문 |
 |---|---|

@@ -19,6 +19,7 @@
 
 > 관련 문서:
 > - [Software Engineering README: Domain Event, Outbox, Inbox](./README.md#domain-event-outbox-inbox)
+> - [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md)
 > - [Outbox and Message Adapter Test Matrix](./outbox-message-adapter-test-matrix.md)
 > - [Message-Driven Adapter Example](./message-driven-adapter-example.md)
 > - [Idempotency, Retry, Consistency Boundaries](./idempotency-retry-consistency-boundaries.md)
@@ -36,8 +37,21 @@
 > - outbox inbox testing
 > - outbox producer contract
 > - inbox dedup test
+> - outbox 왜 필요한가 beginner
+> - rollback commit 헷갈릴 때 outbox
+> - 메시지 side effect 한 번만 처리
 
 ## 왜 중요한가
+
+초심자 기준으로는 먼저 이렇게만 잡아도 충분하다.
+
+| 지금 헷갈리는 말 | 먼저 떠올릴 한 문장 |
+|---|---|
+| "`flush()`는 했는데 왜 메시지 쪽이 아직 애매하죠?" | `flush`는 SQL 동기화이고, outbox/inbox는 commit 뒤 side effect까지 보는 이야기다 |
+| "예외가 나면 메시지도 같이 없어져야 하나요?" | outbox는 `업무 데이터 + 보낼 메시지 기록`을 같은 트랜잭션에 묶으려는 패턴이다 |
+| "같은 메시지가 또 오면 또 처리되나요?" | inbox는 `중복이 와도 결과를 한 번처럼 만들기` 위한 장치다 |
+
+이 감각이 아직 약하면, 구조를 깊게 읽기 전에 [`flush()` vs commit: `AFTER_COMMIT` 초심자 브리지 카드](./transactional-test-rollback-vs-commit-boundary-card.md)에서 `트랜잭션 안 질문`과 `commit 뒤 질문`을 먼저 나누고 다시 오면 된다.
 
 서비스가 하나의 데이터베이스 안에서만 끝나면 트랜잭션 하나로 설명이 된다. 하지만 실제 시스템은 보통 그렇지 않다.
 

@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: persistence model leakage anti patterns basics, persistence model leakage anti patterns beginner, persistence model leakage anti patterns intro, software engineering basics, beginner software engineering, 처음 배우는데 persistence model leakage anti patterns, persistence model leakage anti patterns 입문, persistence model leakage anti patterns 기초, what is persistence model leakage anti patterns, how to persistence model leakage anti patterns
+retrieval-anchor-keywords: jpa entity leakage basics, jpa entity를 api로 바로 반환하면 안 되는 이유, entity dto 차이, entity와 domain model 차이, persistence model leakage beginner, domain model persistence model api model 차이, jpa entity 왜 분리하나요, 처음 jpa 경계 헷갈림, 처음 배우는데 entity 분리, lazy loading api 응답 왜 터지나요, n+1 entity response beginner, service에서 entity setxxx 괜찮나요, entity to dto first question, 왜 엔티티를 바로 반환하면 안 돼요, jpa boundary 큰 그림
 <details>
 <summary>Table of Contents</summary>
 
@@ -43,6 +43,7 @@ retrieval-anchor-keywords: persistence model leakage anti patterns basics, persi
 > - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 > - [API 설계와 예외 처리](./api-design-error-handling.md)
 > - [Domain Invariants as Contracts](./domain-invariants-as-contracts.md)
+> - [Java 실행 모델과 객체 메모리 mental model 입문](../language/java/java-execution-object-memory-mental-model-primer.md)
 >
 > retrieval-anchor-keywords: persistence model leakage, JPA entity leakage, entity leakage anti-pattern, domain model vs persistence model, entity to dto separation, orm leakage, lazy loading api response, repository adapter mapping, beginner jpa boundary, persistence boundary smell, persistence adapter mapping checklist, aggregate persistence mapping pitfalls, bidirectional association domain leak, cascade type all smell, orphanRemoval smell, domain object to jpa entity, jpa entity mapper checklist, lazy initialization exception, n+1 query smell, fetch join boundary, entity serialization smell, query repository separation, read-heavy api query model, list detail response model, beginner persistence separation order, entity api response smell, service entity setxxx smell, persistence follow-up question guide, ORM 누수 다음 문서
 

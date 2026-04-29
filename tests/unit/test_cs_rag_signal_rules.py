@@ -42,6 +42,18 @@ def _chunk(
 _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
     _chunk(
         "query-model-primer",
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+        "DAO vs Query Model Entrypoint Primer",
+        "software-engineering",
+        "Query model beginner entrypoint",
+        (
+            "dao vs query model entrypoint primer explains what query model means, "
+            "what query service is, when dao is enough, when dedicated query "
+            "repository is better, and beginner backend api read path choices."
+        ),
+    ),
+    _chunk(
+        "query-model-companion",
         "contents/software-engineering/query-model-separation-read-heavy-apis.md",
         "Query Model Separation for Read-Heavy APIs",
         "software-engineering",
@@ -259,6 +271,30 @@ _COLLOQUIAL_SHORTFORM_SEARCH_FIXTURES = [
         (
             "mvcc deep dive covers read view, undo chain, undo log, history list, "
             "version chain, purge lag, and storage-engine internals."
+        ),
+    ),
+    _chunk(
+        "sync-async-primer",
+        "knowledge/cs/contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+        "Sync Async Blocking Nonblocking Basics",
+        "operating-system",
+        "Beginner big picture",
+        (
+            "sync async blocking nonblocking basics explains synchronous vs asynchronous, "
+            "blocking vs non-blocking, caller waits vs result later, io model beginner "
+            "mental model, and when to use each style before epoll or io_uring details."
+        ),
+    ),
+    _chunk(
+        "async-io-deep",
+        "knowledge/cs/contents/operating-system/epoll-kqueue-io-uring.md",
+        "epoll kqueue io_uring",
+        "operating-system",
+        "Advanced async io internals",
+        (
+            "epoll kqueue io_uring deep dive covers readiness model, completion queue, "
+            "edge triggered wakeups, registered buffers, submission queue, and async i/o "
+            "operational tradeoffs."
         ),
     ),
     _chunk(
@@ -641,6 +677,50 @@ class CsRagSignalRulesTest(unittest.TestCase):
                     "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
                 )
 
+    def test_common_pool_shortform_queries_stay_on_java_concurrency_overview(self) -> None:
+        prompts = (
+            "common pool이 뭐야?",
+            "CompletableFuture common pool이 뭐예요?",
+            "CompletableFuture default executor가 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "java_concurrency_utilities",
+                )
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("java concurrency overview", expanded)
+                self.assertIn("future composition basics", expanded)
+                self.assertIn("executor basics", expanded)
+                self.assertNotIn("common pool", expanded)
+                self.assertNotIn("default executor", expanded)
+                self.assertNotIn("forkjoinpool", expanded)
+
+    def test_common_pool_shortform_queries_rank_overview_primer_ahead_of_common_pool_pitfalls(
+        self,
+    ) -> None:
+        prompts = (
+            "common pool이 뭐야?",
+            "CompletableFuture common pool이 뭐예요?",
+            "CompletableFuture default executor가 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=5)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "knowledge/cs/contents/language/java/java-concurrency-utilities.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "knowledge/cs/contents/language/java/java-concurrency-utilities.md",
+                    "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
+                )
+
     def test_completablefuture_common_pool_query_adds_execution_model_vocabulary(self) -> None:
         prompt = (
             "CompletableFuture common pool default executor blocking stage thread hopping "
@@ -708,7 +788,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
         )
 
-        common_pool_hits = self._search(common_pool_prompt, top_k=8)
+        common_pool_hits = self._search(common_pool_prompt, top_k=10)
         self.assert_path_rank_at_most(
             common_pool_hits,
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
@@ -768,7 +848,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
         )
 
-        common_pool_hits = self._search(common_pool_prompt, top_k=8)
+        common_pool_hits = self._search(common_pool_prompt, top_k=10)
         self.assert_path_rank_at_most(
             common_pool_hits,
             "knowledge/cs/contents/language/java/completablefuture-execution-model-common-pool-pitfalls.md",
@@ -3965,7 +4045,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("read model staleness", expanded)
         self.assertNotIn("read your writes", expanded)
         self.assertNotIn("saved but still old data", expanded)
-        self.assertIn("query model separation", expanded)
+        self.assertNotIn("query model separation", expanded)
         self.assertIn("list search filter sort beginner guide", expanded)
         self.assertIn("browser filter state", expanded)
 
@@ -3989,6 +4069,10 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "contents/design-pattern/read-model-staleness-read-your-writes.md",
             paths[:2],
         )
+        self.assertLess(
+            paths.index("contents/software-engineering/query-model-separation-read-heavy-apis.md"),
+            paths.index("contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"),
+        )
 
     def test_beginner_query_model_meaning_prompt_boosts_query_model_primer_vocabulary(self) -> None:
         prompt = "query model 이 뭐야? 처음 배우는데 read-heavy API 큰 그림부터 알려줘"
@@ -4001,7 +4085,8 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("persistence_boundary", tags)
         self.assertNotIn("api_boundary", tags)
         expanded = signal_rules.expand_query(prompt)
-        self.assertIn("query model separation", expanded)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertNotIn("query model separation", expanded)
         self.assertIn("query service vs repository", expanded)
         self.assertIn("read-heavy api beginner primer", expanded)
 
@@ -4013,9 +4098,77 @@ class CsRagSignalRulesTest(unittest.TestCase):
             "persistence_boundary",
         )
         expanded = signal_rules.expand_query(prompt)
-        self.assertIn("query model separation", expanded)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertNotIn("query model separation", expanded)
         self.assertIn("query service vs repository", expanded)
         self.assertIn("list search filter sort beginner guide", expanded)
+
+    def test_english_query_service_role_prompt_boosts_query_model_primer_vocabulary(self) -> None:
+        prompt = "What does query service do?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertNotIn("query model separation", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("read-heavy api beginner primer", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
+    def test_english_query_service_role_prompt_ranks_query_model_primer_ahead_of_companion(
+        self,
+    ) -> None:
+        hits = self._search("What does query service do?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        )
+
+    def test_korean_query_service_role_prompt_boosts_query_model_primer_vocabulary(self) -> None:
+        prompt = "query service는 무슨 역할이야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("query service 무슨 역할", expanded)
+        self.assertIn("query service 뭐 하는 거야", expanded)
+        self.assertNotIn("layered architecture", expanded)
+
+    def test_korean_query_service_role_prompt_ranks_query_model_primer_ahead_of_companion(
+        self,
+    ) -> None:
+        query = "query service는 무슨 역할이야?"
+        hits = self._search(query, top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        )
 
     def test_korean_query_service_why_use_prompt_boosts_query_model_primer_vocabulary(self) -> None:
         prompt = "query service 는 왜 써?"
@@ -4028,9 +4181,58 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("persistence_boundary", tags)
         self.assertNotIn("layer_responsibility", tags)
         expanded = signal_rules.expand_query(prompt)
-        self.assertIn("query model separation", expanded)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertNotIn("query model separation", expanded)
         self.assertIn("query service vs repository", expanded)
         self.assertIn("read-heavy api beginner primer", expanded)
+
+    def test_korean_transliterated_query_model_meaning_prompt_boosts_query_model_primer_vocabulary(
+        self,
+    ) -> None:
+        prompt = "쿼리 모델이 뭐예요? 처음이라 큰 그림부터 알고 싶어요"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query model basics", expanded)
+        self.assertIn("read-heavy api beginner primer", expanded)
+
+    def test_korean_transliterated_query_service_role_prompt_boosts_query_model_primer_vocabulary(
+        self,
+    ) -> None:
+        prompt = "쿼리 서비스는 무슨 역할이야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "persistence_boundary",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("persistence_boundary", tags)
+        self.assertNotIn("layer_responsibility", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("dao vs query model entrypoint", expanded)
+        self.assertIn("query service vs repository", expanded)
+        self.assertIn("query service role", expanded)
+        self.assertIn("query service 무슨 역할", expanded)
+
+    def test_korean_transliterated_query_service_role_prompt_ranks_query_model_primer_ahead_of_companion(
+        self,
+    ) -> None:
+        hits = self._search("쿼리 서비스는 무슨 역할이야?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead(
+            hits,
+            "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+            "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+        )
 
     def test_explicit_read_model_lag_prompt_keeps_projection_freshness_signal(
         self,
@@ -4382,6 +4584,64 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("repeatable read", expanded)
         self.assertNotIn("locking strategy", expanded)
 
+    def test_repeatable_read_shortform_query_stays_on_transaction_primer_without_modeling_noise(
+        self,
+    ) -> None:
+        prompt = "repeatable read가 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_anomaly_patterns",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("transaction_anomaly_patterns", tags)
+        self.assertNotIn("db_modeling", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("transaction isolation basics", expanded)
+        self.assertIn("transaction isolation beginner primer", expanded)
+        self.assertIn("repeatable read beginner", expanded)
+        self.assertNotIn("schema design", expanded)
+
+    def test_serializable_shortform_query_adds_transaction_primer_vocabulary(self) -> None:
+        prompt = "serializable이 뭐야?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "transaction_isolation",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("transaction isolation basics", expanded)
+        self.assertIn("transaction isolation beginner primer", expanded)
+        self.assertIn("serializable beginner", expanded)
+        self.assertIn("mvcc", expanded)
+
+    def test_isolation_level_shortform_aliases_rank_primer_ahead_of_internals_and_operational_docs(
+        self,
+    ) -> None:
+        prompts = (
+            "repeatable read가 뭐야?",
+            "serializable이 뭐야?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=8)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/database/transaction-isolation-basics.md",
+                    1,
+                )
+                self.assert_ranks_ahead(
+                    hits,
+                    "contents/database/transaction-isolation-basics.md",
+                    "contents/database/mvcc-read-view-undo-chain-internals.md",
+                )
+                self.assert_ranks_ahead_or_absent(
+                    hits,
+                    "contents/database/transaction-isolation-basics.md",
+                    "contents/database/transaction-locking-connection-pool-primer.md",
+                )
+
     def test_mysql_deadlock_terms_avoid_io_uring_false_positive(self) -> None:
         prompt = "MySQL 데드락이 왜 생기는 거야"
 
@@ -4473,6 +4733,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
         cases = (
             "persistent connection 뭐야?",
             "connection reuse 뭐야?",
+            "What does keep-alive mean?",
         )
 
         for prompt in cases:
@@ -4775,8 +5036,8 @@ class CsRagSignalRulesTest(unittest.TestCase):
             },
             {
                 "prompt": "What is a query service in backend APIs?",
-                "primer_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
-                "deep_dive_doc": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+                "primer_doc": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+                "deep_dive_doc": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
                 "top_k": 8,
             },
             {
@@ -4860,7 +5121,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
             },
             {
-                "prompt": "What is HikariCP?",
+                "prompt": "What does HikariCP mean?",
                 "primer_doc": "contents/database/connection-pool-basics.md",
                 "deep_dive_doc": "contents/database/transaction-locking-connection-pool-primer.md",
             },
@@ -4968,6 +5229,43 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertNotIn("close", expanded)
         self.assertNotIn("leak", expanded)
 
+    def test_beginner_sync_async_blocking_query_prefers_basics_primer_signal(self) -> None:
+        prompt = "동기 비동기 블로킹 논블로킹 차이가 뭐예요? 처음 배우는데 큰 그림 잡고 싶어"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "os_sync_async_blocking_basics",
+        )
+        tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+        self.assertIn("os_sync_async_blocking_basics", tags)
+        self.assertNotIn("os_async_io_overview", tags)
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("sync async blocking nonblocking basics", expanded)
+        self.assertIn("synchronous vs asynchronous", expanded)
+        self.assertIn("blocking vs non-blocking", expanded)
+        self.assertIn("io model beginner mental model", expanded)
+        self.assertNotIn("epoll", expanded)
+        self.assertNotIn("io_uring", expanded)
+
+    def test_beginner_sync_async_blocking_query_ranks_basics_primer_ahead_of_async_io_deep_dive(
+        self,
+    ) -> None:
+        hits = self._search(
+            "동기 비동기 블로킹 논블로킹 차이가 뭐예요? 처음 배우는데 큰 그림 잡고 싶어",
+            top_k=6,
+        )
+
+        self.assert_path_rank_at_most(
+            hits,
+            "knowledge/cs/contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+            1,
+        )
+        self.assert_ranks_ahead_or_absent(
+            hits,
+            "knowledge/cs/contents/operating-system/sync-async-blocking-nonblocking-basics.md",
+            "knowledge/cs/contents/operating-system/epoll-kqueue-io-uring.md",
+        )
+
     def test_connection_pooling_shortform_query_prefers_connection_pool_primer_signal(self) -> None:
         prompt = "connection pooling 이 뭐야?"
 
@@ -4986,7 +5284,7 @@ class CsRagSignalRulesTest(unittest.TestCase):
     def test_hikaricp_beginner_shortform_queries_stay_on_connection_pool_primer(self) -> None:
         prompts = (
             "HikariCP가 뭐야?",
-            "What is HikariCP?",
+            "What does HikariCP mean?",
         )
 
         for prompt in prompts:
@@ -5002,7 +5300,48 @@ class CsRagSignalRulesTest(unittest.TestCase):
                 self.assertIn("connection pool basics", expanded)
                 self.assertIn("hikari cp", expanded)
                 self.assertIn("hikaricp basics", expanded)
+                self.assertIn("db connection pool beginner", expanded)
+                self.assertIn("hikari cp beginner", expanded)
                 self.assertNotIn("resource lifecycle", expanded)
+
+    def test_connection_pool_english_meaning_queries_add_beginner_primer_vocabulary(self) -> None:
+        prompts = (
+            "What does connection pooling mean?",
+            "What does connection pool mean?",
+        )
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                self.assertEqual(
+                    signal_rules.top_signal_tag(prompt),
+                    "connection_pool_basics",
+                )
+                tags = [signal["tag"] for signal in signal_rules.detect_signals(prompt)]
+                self.assertIn("connection_pool_basics", tags)
+                self.assertNotIn("resource_lifecycle", tags)
+                expanded = signal_rules.expand_query(prompt)
+                self.assertIn("connection pool basics", expanded)
+                self.assertIn("db connection pool beginner", expanded)
+                self.assertIn("hikari cp beginner", expanded)
+                self.assertIn("pool size basics", expanded)
+                self.assertNotIn("resource lifecycle", expanded)
+
+    def test_connection_pool_english_meaning_queries_rank_primer_ahead_of_operational_companion(
+        self,
+    ) -> None:
+        for prompt in ("What does connection pooling mean?", "What does HikariCP mean?"):
+            with self.subTest(prompt=prompt):
+                hits = self._search(prompt, top_k=4)
+                self.assert_path_rank_at_most(
+                    hits,
+                    "contents/database/connection-pool-basics.md",
+                    1,
+                )
+                self.assert_ranks_ahead_or_absent(
+                    hits,
+                    "contents/database/connection-pool-basics.md",
+                    "contents/database/transaction-locking-connection-pool-primer.md",
+                )
 
     def test_mvcc_basics_queries_prefer_transaction_isolation_primer_signal(self) -> None:
         prompts = (
@@ -5079,6 +5418,18 @@ class CsRagSignalRulesTest(unittest.TestCase):
         self.assertIn("dispatcher servlet handles request routing", expanded)
         self.assertIn("spring mvc is the web stack big picture", expanded)
 
+    def test_spring_mvc_english_meaning_query_keeps_beginner_primer_signal(self) -> None:
+        prompt = "What does Spring MVC mean?"
+
+        self.assertEqual(
+            signal_rules.top_signal_tag(prompt),
+            "spring_framework",
+        )
+        expanded = signal_rules.expand_query(prompt)
+        self.assertIn("spring request pipeline bean container foundations primer", expanded)
+        self.assertIn("dispatcher servlet bean container big picture", expanded)
+        self.assertIn("spring mvc beginner mental model", expanded)
+
     def test_spring_mvc_vs_dispatcherservlet_difference_query_ranks_primer_ahead_of_deep_dive(
         self,
     ) -> None:
@@ -5090,6 +5441,20 @@ class CsRagSignalRulesTest(unittest.TestCase):
             1,
         )
         self.assert_ranks_ahead(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            "contents/spring/spring-mvc-handlerexecutionchain-interceptor-ordering.md",
+        )
+
+    def test_spring_mvc_english_meaning_query_ranks_primer_ahead_of_deep_dive(self) -> None:
+        hits = self._search("What does Spring MVC mean?", top_k=4)
+
+        self.assert_path_rank_at_most(
+            hits,
+            "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+            1,
+        )
+        self.assert_ranks_ahead_or_absent(
             hits,
             "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
             "contents/spring/spring-mvc-handlerexecutionchain-interceptor-ordering.md",

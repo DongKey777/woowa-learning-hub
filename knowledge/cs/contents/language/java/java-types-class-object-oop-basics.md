@@ -17,15 +17,30 @@
 - [Java enum 기초](./java-enum-basics.md)
 - [Java Optional 입문](./java-optional-basics.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
+- [우테코 백엔드 미션 선행 개념 입문](../../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) - Java 객체 감각을 `Controller -> Service -> Repository` 읽기로 넘기는 cross-category beginner bridge
+- [Service 계층 기초](../../software-engineering/service-layer-basics.md) - 객체 책임이 메서드 밖 조립 흐름으로 넘어갈 때 붙이는 다음 primer
 - [객체지향 핵심 원리](./object-oriented-core-principles.md) - 클래스/객체 감각을 OOP 큰 그림으로 묶고, 그다음 "상속 언제 쓰는지"로 넘어가게 만드는 handoff primer
 - [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) - "공통 흐름을 부모가 쥘지, 계약을 인터페이스로 열지"를 beginner 기준으로 나누는 다음 primer
 - [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
 
-retrieval-anchor-keywords: java oop primer, java syntax to oop bridge, java primitive vs reference type, java class object instance basics, java interface vs abstract class basics, java oop beginner route, 클래스 객체 인스턴스 차이, 기본형 참조형 차이, 처음 배우는데 클래스 객체 차이, 처음 배우는데 인터페이스 추상클래스 차이, 객체지향 기초 뭐예요, oop 큰 그림, 왜 참조형은 같이 바뀌지, 처음 배우는데 oop, java beginner class object interface abstract class
+retrieval-anchor-keywords: java oop primer, 자바 처음인데 oop 뭐부터, java class object instance basics, 클래스 객체 인스턴스 차이, student student 객체가 생긴 거 아닌가요, new 했는데 객체는 언제 생겨요, java primitive vs reference type, 기본형 참조형 차이, java interface vs abstract class basics, 처음 배우는데 인터페이스 추상클래스 차이, 객체지향 기초 뭐예요, oop 큰 그림, 왜 참조형은 같이 바뀌지, 자바 처음인데 service repository 왜 나뉘어요, java beginner class object interface abstract class
 
 처음 읽는 초보자라면 위에서 아래로 전부 훑기보다 `증상으로 먼저 자르기 -> 클래스/객체/인스턴스 3단계 브리지 -> 기본형/참조형 -> 한 줄 정리` 순서만 먼저 봐도 된다. 인터페이스, 추상 클래스, OOP 확장은 관련 문서로 한 칸씩 넘기면 충분하다.
+
+## 백엔드 미션으로 넘길 때의 3칸 사다리
+
+`class`, `object`, `instance`는 알겠는데 `왜 Service`, `왜 Repository`, `왜 queue/map 선택` 같은 말이 한꺼번에 나오기 시작하면 바로 Spring deep dive로 점프하지 않는 편이 안전하다.
+
+| 지금 막히는 문장 | primer | 바로 다음 한 걸음 | 아직 미루는 것 |
+|---|---|---|---|
+| `객체는 알겠는데 코드에서 누가 규칙을 조립하죠?` | [우테코 백엔드 미션 선행 개념 입문](../../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | [Service 계층 기초](../../software-engineering/service-layer-basics.md) | Spring 내부 동작, AOP, 운영 문서 |
+| `List`/`Set`/`Map`이 객체 책임보다 먼저 막혀요 | [Java 컬렉션 프레임워크 입문](./java-collections-basics.md) | [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md) | TreeMap/heap/operator 심화 |
+| `queue`가 자료구조인지 BFS 도구인지 헷갈려요 | [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md) | `최소 이동 횟수`면 [Backend Algorithm Starter Pack](../../algorithm/backend-algorithm-starter-pack.md), `worker/service 흐름`이면 [우테코 백엔드 미션 선행 개념 입문](../../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | weighted shortest path, broker/scheduler |
+
+- 짧게 외우면 `객체 감각 -> 컬렉션/자료구조 분리 -> Service 책임 복귀`다.
+- beginner query가 `처음`, `왜`, `헷갈려요`, `service 코드인데` 모양이면 이 표에서 한 칸만 이동한다.
 
 ## 왜 이 문서가 필요한가
 
@@ -42,7 +57,7 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 
 ## 처음 읽는 순서
 
-처음 배우는데 OOP 큰 그림이 한 번에 안 잡히면, 문서를 따로따로 외우기보다 **"타입과 객체 이해 -> OOP 큰 그림 연결 -> 상속 이해 -> 추상 클래스/인터페이스 구분"** 순서로 먼저 보면 된다. 디자인 패턴과 조합 설계는 그다음 단계로 미뤄도 충분하다.
+처음 배우는데 OOP 큰 그림이 안 잡히면, 문서를 따로 외우기보다 **"타입과 객체 이해 -> OOP 큰 그림 -> 상속 -> 추상 클래스/인터페이스"** 순서로 먼저 보면 된다. 조합 설계와 패턴은 그다음으로 미뤄도 충분하다.
 
 | 지금 막히는 질문 | 먼저 읽을 문서 | 이 문서가 하는 일 |
 |---|---|---|
@@ -54,10 +69,10 @@ Java 입문 구간에서 가장 흔한 막힘은 문법 자체보다도 "이 문
 | "추상 클래스와 인터페이스는 언제 나누지?" | [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) | 부모가 공통 흐름을 쥐는지, 계약을 열어 두는지로 자른다 |
 | "재사용하려면 일단 상속해야 하나?" | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) | 상속 기본기를 지난 뒤, 조합을 기본값으로 옮겨 붙인다 |
 
-첫 읽기 경로를 한 줄로 줄이면 이렇다.
-**이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)**
+한 줄 route는 이렇다.
+**이 문서 -> [객체지향 핵심 원리](./object-oriented-core-principles.md) -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md) -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md)**
 
-상속보다 조합, 템플릿 메소드, 전략 패턴 같은 설계 주제는 위 경로가 정리된 다음 단계로 넘기는 편이 초보자 과부하를 줄인다.
+`공통 상태 vs 계약` 판단이 실제로 맞는지 확인하고 싶다면 위 route 끝에서 quick check까지 붙인 뒤 설계 주제로 넘기면 된다.
 
 ## 먼저 잡을 mental model
 

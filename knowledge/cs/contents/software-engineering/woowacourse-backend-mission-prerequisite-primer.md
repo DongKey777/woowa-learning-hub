@@ -17,6 +17,7 @@
 - [DTO, VO, Entity 기초](./dto-vo-entity-basics.md)
 - [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md)
 - [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md)
+- [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 - [트랜잭션 격리 수준 기초](../database/transaction-isolation-basics.md)
@@ -24,13 +25,47 @@
 - [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) - 4레인 뒤 선택 확장
 - [AOP 기초: 관점 지향 프로그래밍이 왜 필요한가](../spring/spring-aop-basics.md) - 4레인 뒤 선택 확장
 - [Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩](../system-design/stateless-backend-cache-database-queue-starter-pack.md) - 첫 PR 뒤 선택 확장
-- [software-engineering 카테고리 인덱스](./README.md)
+- [software-engineering README - 처음 읽는다면 이 3단계부터](./README.md#처음-읽는다면-이-3단계부터)
 
-retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mission prerequisite primer, 우테코 백엔드 미션 선행지식, backend mission first reading, 처음 백엔드 미션 뭐부터, controller service repository beginner, dto vo entity beginner, service repository mental model, java oop before spring, jpa before backend mission, spring first route, beginner backend mission primer, woowacourse backend learning ladder, service 코드인데 queue가 왜 나와요, map set queue 헷갈려요
+retrieval-anchor-keywords: woowacourse backend mission prerequisite, backend mission prerequisite primer, 우테코 백엔드 미션 선행지식, backend mission first reading, 처음 백엔드 미션 뭐부터, controller service repository beginner, dto vo entity beginner, service repository mental model, java oop before spring, spring first route, beginner backend mission primer, woowacourse backend learning ladder, service 코드인데 queue가 왜 나와요, map set queue 헷갈려요, queue handoff vs bfs beginner
+
+## 길 잃었을 때 복귀
+
+이 primer는 미션 입문 사다리다. 읽다가 `처음`, `왜`, `헷갈려요`가 다시 커지면 아래 표처럼 software-engineering README나 옆 카테고리 primer로 한 칸만 복귀하면 된다.
+
+| 지금 다시 막히는 문장 | 여기로 되돌아오기 | 바로 다음 안전한 한 걸음 |
+|---|---|---|
+| `처음 백엔드 미션인데 문서가 너무 많아요` | [software-engineering README - 처음 읽는다면 이 3단계부터](./README.md#처음-읽는다면-이-3단계부터) | [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md) 한 장만 연다 |
+| `Controller/Service/Repository보다 Map/Queue가 먼저 보여요` | [Software Engineering README - 연결해서 보면 좋은 문서](./README.md#연결해서-보면-좋은-문서-cross-category-bridge) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
+| `queue가 worker handoff인지 BFS 도구인지 모르겠어요` | [Software Engineering README - 길 잃었을 때 복귀 경로](./README.md#길-잃었을-때-복귀-경로) | `worker 순서`면 [Service 계층 기초](./service-layer-basics.md), `최소 이동 횟수`면 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
+
+## 다음 읽기
+
+이 primer를 1회독했다면 deep dive로 넓히기보다 지금 막힌 질문에 맞는 문서 한 장만 더 여는 편이 beginner-safe 하다.
+
+| 지금 남은 질문 | 다음 안전한 문서 |
+|---|---|
+| `코드가 안 읽히고 리뷰 코멘트가 추상적이에요` | [읽기 좋은 코드, 레이어 분리, 테스트 피드백 루프 입문](./readable-code-layering-test-feedback-loop-primer.md) |
+| `Controller / Service / Repository를 어디서 나누죠?` | [Service 계층 기초](./service-layer-basics.md) |
+| `Map/Queue가 먼저 보여서 Service 흐름이 흐려져요` | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
+| `가까운 칸부터`, `최소 이동 횟수`처럼 계산 질문이 보여요 | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
 
 ## 먼저 잡는 한 줄 멘탈 모델
 
 미션 선행 학습의 핵심은 기술 백과사전이 아니라, **입력 -> 규칙 -> 조립 -> 저장/응답 흐름을 끊기지 않게 읽는 연습**이다.
+
+## Java 객체 감각에서 Service 읽기로 넘어가는 3칸
+
+처음 백엔드 미션에서 자주 생기는 점프는 `class/object`를 배우자마자 곧바로 Spring/DB deep dive로 넘어가는 것이다. beginner 기준으로는 아래 3칸만 먼저 붙이면 충분하다.
+
+| primer | follow-up | deep dive 대신 여기서 멈출 안전한 복귀 |
+|---|---|---|
+| [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md) | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | 이 문서의 [README 브리지 사다리](#readme-브리지-사다리) |
+| [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 문서의 [컬렉션/queue가 먼저 막힐 때 우회 사다리](#컬렉션queue가-먼저-막힐-때-우회-사다리) |
+| [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | `계산 질문`이면 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md), `책임 질문`이면 [Service 계층 기초](./service-layer-basics.md) | 이 문서의 [작은 예시로 묶어 보기](#작은-예시로-묶어-보기) |
+
+- 짧게 외우면 `객체 -> 컬렉션 -> 자료구조 -> 알고리즘 또는 Service`다.
+- 이 사다리의 목적은 beginner가 `queue`, `graph`, `transaction`, `system design` 문서를 같은 층위로 오해하지 않게 막는 것이다.
 
 ## README 브리지 사다리
 
@@ -52,7 +87,7 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 지금 먼저 막힌 문장 | 잠깐 다녀올 primer | 다음 한 걸음 | 여기로 복귀 |
 |---|---|---|---|
 | `List`/`Set`/`Map`을 왜 고르는지 모르겠어요 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 문서의 [README 브리지 사다리](#readme-브리지-사다리) |
-| `queue`가 작업 대기열인지 BFS 도구인지 헷갈려요 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) | 이 문서의 [안전한 다음 단계](#안전한-다음-단계) |
+| `queue`가 작업 대기열인지 BFS 도구인지 헷갈려요 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | `worker 순서`면 [Service 계층 기초](./service-layer-basics.md), `최소 이동 횟수`면 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 이 문서의 [queue 오해 3-way splitter](#queue-오해-3-way-splitter) |
 | `Service 규칙보다 자료구조/알고리즘 선택이 먼저 보여요` | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) 또는 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) | [Service 계층 기초](./service-layer-basics.md) | 이 문서의 [작은 예시로 묶어 보기](#작은-예시로-묶어-보기) |
 
 - 짧게 외우면 `구조 선택 -> 계산 규칙 분리 -> Service 책임 복귀` 순서다.
@@ -69,6 +104,18 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | `왜 queue가 둘 다 나오죠?`, `처음이라 헷갈려요` | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 문서의 [queue/BFS 분기까지 포함한 4칸 사다리](#queuebfs-분기까지-포함한-4칸-사다리) | system design, incident 문서 |
 
 - 짧게 외우면 `queue는 도구`, `BFS는 계산 규칙`, `Service는 책임 위치`다.
+
+## queue/map/BFS에서 beginner가 바로 복귀하는 3칸
+
+미션 코드를 읽다가 `queue`, `map`, `BFS`가 한 문장에 같이 보이면, 초심자는 보통 category를 잘못 고른 것이 아니라 질문 층위를 섞은 상태다. 아래 3칸만 지키면 `자료구조 primer -> 알고리즘 primer -> Service primer` 사이를 안전하게 왕복할 수 있다.
+
+| 지금 막힌 문장 | 먼저 갈 primer | 여기서 끝내야 하는 것 | 안전한 다음 한 걸음 |
+|---|---|---|---|
+| `List`/`Set`/`Map`이 먼저 눈에 들어와요 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | `순서 / 중복 / key 조회` 분리 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) |
+| `queue가 worker handoff인지 BFS 도구인지 모르겠어요` | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | `FIFO handoff`와 `최소 이동 횟수` 분리 | `handoff`면 [Service 계층 기초](./service-layer-basics.md), `계산`이면 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) |
+| `controller/service/repository 흐름보다 계산 문제처럼 보여요` | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) | `계산 질문`인지 `책임 질문`인지 재판정 | `책임 질문`이면 이 문서의 [작은 예시로 묶어 보기](#작은-예시로-묶어-보기) |
+
+- 짧게 외우면 `컬렉션 이름 -> 자료구조 질문 -> 알고리즘 또는 Service`다.
 
 ## 3칸 복귀 사다리
 
@@ -88,7 +135,7 @@ category `README`로 바로 점프할 때는 아래 handoff를 먼저 지키면 
 | 지금 먼저 막힌 질문 | primer | follow-up | 안전한 복귀 |
 |---|---|---|---|
 | `List`/`Set`/`Map`부터 아직 흔들린다 | [Java 컬렉션 프레임워크 입문](../language/java/java-collections-basics.md) | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | 이 문서의 [README 브리지 사다리](#readme-브리지-사다리) |
-| `queue`가 FIFO handoff인지 BFS 도구인지 헷갈린다 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 이 문서의 [안전한 다음 단계](#안전한-다음-단계) |
+| `queue`가 FIFO handoff인지 BFS 도구인지 헷갈린다 | [Backend Data-Structure Starter Pack](../data-structure/backend-data-structure-starter-pack.md) | `worker 순서`면 [Service 계층 기초](./service-layer-basics.md), `최소 이동 횟수`면 [Backend Algorithm Starter Pack](../algorithm/backend-algorithm-starter-pack.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 이 문서의 [queue 오해 3-way splitter](#queue-오해-3-way-splitter) |
 | `계산 문제`가 아니라 `Service에서 어디까지 맡나`가 질문이었다 | [Service 계층 기초](./service-layer-basics.md) | [DTO, VO, Entity 기초](./dto-vo-entity-basics.md) | 이 문서의 [작은 예시로 묶어 보기](#작은-예시로-묶어-보기) |
 
 - 짧게 외우면 `컬렉션 -> 자료구조 -> 알고리즘 또는 Service`다.

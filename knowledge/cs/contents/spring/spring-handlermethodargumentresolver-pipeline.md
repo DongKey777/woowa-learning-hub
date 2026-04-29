@@ -5,6 +5,8 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기](./spring-mvc-request-lifecycle-basics.md)
+> - [Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름](./spring-mvc-controller-basics.md)
 > - [Spring MVC Customizer Ladder 입문: `WebMvcConfigurer`로 덧붙이고, core MVC bean 교체는 마지막에 둔다](./spring-mvc-customizer-ladder-webmvcconfigurer-primer.md)
 > - [Spring MVC 요청 생명주기](./spring-mvc-request-lifecycle.md)
 > - [Spring MVC Filter, Interceptor, and ControllerAdvice Boundaries](./spring-mvc-filter-interceptor-controlleradvice-boundaries.md)
@@ -15,6 +17,8 @@
 retrieval-anchor-keywords: HandlerMethodArgumentResolver, argument resolution, MethodArgumentResolver, RequestParamMethodArgumentResolver, PathVariableMethodArgumentResolver, custom argument resolver, controller method parameter, resolver chain
 
 ## 핵심 개념
+
+처음 배우는 단계에서 "`@RequestParam`, `@PathVariable`, `@RequestBody` 값은 누가 넣어요?"가 궁금한 상태라면 이 문서보다 [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md)를 먼저 보는 편이 안전하다.
 
 컨트롤러 메서드의 파라미터는 Spring이 리플렉션으로 해석해 채운다.
 

@@ -1,22 +1,19 @@
 # Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload
 
-**난이도: 🟢 Beginner**
+> 한 줄 요약: 같은 URL도 `normal reload`, `hard reload`, `empty cache and hard reload`, `Disable cache` ON 여부에 따라 cache 신호가 달라지므로, 먼저 "사용자 기본선인지 실험 스위치 영향인지"를 분리해서 본다.
 
+**난이도: 🟢 Beginner**
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
-
-> 한 줄 요약: 같은 URL도 `normal reload`, `hard reload`, `empty cache and hard reload`, `Disable cache` ON 여부에 따라 cache 신호가 달라지므로, 먼저 "사용자 기본선인지 실험 스위치 영향인지"를 분리해서 본다.
-
-> 관련 문서:
-> - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
-> - [Browser DevTools `Disable cache` ON/OFF 실험 카드](./browser-devtools-disable-cache-on-off-experiment-card.md)
-> - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
-> - [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
-> - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
+- [Browser DevTools `Disable cache` ON/OFF 실험 카드](./browser-devtools-disable-cache-on-off-experiment-card.md)
+- [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)
+- [Browser DevTools Application 탭 저장소 읽기 1분 카드](./browser-devtools-application-storage-1minute-card.md)
+- [Security: Session / Cookie / JWT basics](../security/session-cookie-jwt-basics.md)
+- [카테고리 README](./README.md#브라우저--쿠키--캐시에서-막히면-여기서-시작)
 
 retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard reload, disable cache reload effect, reload basics, devtools reload cache, cache trace primer, chrome hard reload, edge hard reload, browser refresh vs hard refresh, empty cache hard reload meaning, disable cache checkbox meaning, 일반 새로고침 하드 새로고침 차이, 캐시 비우고 새로고침, 처음 배우는데 reload 차이
 
@@ -24,6 +21,7 @@ retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard relo
 <summary>Table of Contents</summary>
 
 - [먼저 잡는 멘탈 모델](#먼저-잡는-멘탈-모델)
+- [이 문서가 일부러 미루는 질문](#이-문서가-일부러-미루는-질문)
 - [같은 URL 1분 분기표](#같은-url-1분-분기표)
 - [reload 모드와 진짜 cache 정책을 분리하는 1표](#reload-모드와-진짜-cache-정책을-분리하는-1표)
 - [같은 `app.js`로 보는 작은 예시](#같은-appjs로-보는-작은-예시)
@@ -48,6 +46,32 @@ retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard relo
 
 그래서 cache trace를 읽기 전 첫 질문은 "`이 줄이 어떻게 만들어졌나`"다.
 같은 URL이라도 새로고침 방식이 다르면 `200`, `304`, `from memory cache`, `from disk cache`가 다르게 보일 수 있다.
+
+## reload가 바꾸는 것과 안 바꾸는 것
+
+초급자가 특히 자주 섞는 질문은 "`hard reload` 했더니 로그인도 풀린 거예요?`"다. 대부분의 경우 reload는 **HTTP cache 관찰 조건**을 더 크게 흔들고, cookie/session 자체를 없애는 동작은 아니다.
+
+| 지금 누른 것 | 먼저 바뀌는 축 | 보통 그대로인 것 | 헷갈리면 다음 문서 |
+|---|---|---|---|
+| `normal reload` | 같은 URL 재요청 방식 | cookie 저장, 서버 session 유무 | [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md) |
+| `hard reload` | cache hit 감소, 재검증/재다운로드 증가 가능성 | login cookie 자체, 서버 session 자체 | [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md) |
+| `empty cache and hard reload` | browser HTTP cache 비움 + 강한 재요청 | cookie 저장소, 서버가 기억하는 로그인 상태 | [Browser DevTools Application 탭 저장소 읽기 1분 카드](./browser-devtools-application-storage-1minute-card.md) |
+| `Disable cache` ON | DevTools 열린 동안 cache 재사용 실험 | response 헤더의 원래 cache 정책 의미 | [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md) |
+
+짧게 자르면 아래처럼 기억하면 된다.
+
+- reload는 주로 `body를 다시 받았나` 질문을 흔든다.
+- cookie/session은 `누가 로그인했나` 질문이다.
+- 둘이 동시에 보여도 같은 버튼 효과로 묶지 않는다.
+
+## 이 문서가 일부러 미루는 질문
+
+이 primer는 `reload`와 HTTP cache 관찰 조건까지만 다룬다. 아래 질문은 여기서 끝까지 파지 않고 관련 문서로 넘긴다.
+
+- "`Disable cache`를 켰는데 왜 아직 `h2`예요?`"는 cache보다 protocol/discovery 질문이므로 [Browser Cache Toggles vs Alt-Svc DNS Cache Primer](./browser-cache-toggles-vs-alt-svc-dns-cache-primer.md)로 간다.
+- "`from ServiceWorker`도 같은 cache예요?`"는 응답 주체가 다른 질문이므로 [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)로 분리한다.
+- "`304`가 왜 나왔는지 validator까지 보고 싶어요`"는 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)로 내려간다.
+- "쿠키, 세션, 로그인 유지까지 같이 흔들린 것 같아요"는 [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)로 넘긴다.
 
 ## 처음 헷갈릴 때 30초 체크
 
@@ -167,15 +191,25 @@ retrieval-anchor-keywords: normal reload, hard reload, empty cache and hard relo
 - `304`는 서버에 다시 물어봤다는 뜻이다
 - body는 기존 cache 사본을 계속 쓸 수 있다
 
-### 새로고침 방식보다 `Protocol`만 먼저 본다
+### `Protocol` 열부터 보고 H2/H3 문제로 점프한다
 
-`h2`/`h3`는 전송 경로 신호다.
-reload 종류와 cache 신호를 분리하지 않으면 `Protocol`만 보고 cache 결론을 잘못 내릴 수 있다.
+초급 단계에서는 아직 빠르다.
+
+- 먼저 reload 방식과 cache 신호를 분리한다
+- `h2`/`h3` 같은 전송 경로 질문은 그 다음 단계다
+- 버전 선택이 궁금하면 cache 결론을 먼저 적고, 프로토콜 follow-up 문서로 따로 내려간다
 
 ### `from ServiceWorker` 장면도 같은 표로 읽는다
 
 그 경우는 HTTP cache만의 질문이 아닐 수 있다.
 응답 주체부터 분리하려면 [Service Worker 혼선 1분 분기표: `from ServiceWorker` vs HTTP cache](./service-worker-vs-http-cache-devtools-primer.md)를 먼저 본다.
+
+## 다음 한 걸음
+
+- `304`, `ETag`, `Cache-Control` 자체가 아직 헷갈리면 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
+- `memory cache`, `disk cache`, `revalidation` 문구를 DevTools row에서 읽고 싶으면 [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
+- 저장소/쿠키/세션 질문이 섞이면 [HTTP의 무상태성과 쿠키, 세션, 캐시](./http-state-session-cache.md)
+- 로그인 유지와 브라우저 저장소 위치가 같이 헷갈리면 [Browser DevTools Application 탭 저장소 읽기 1분 카드](./browser-devtools-application-storage-1minute-card.md)
 
 ## 한 줄 정리
 

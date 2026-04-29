@@ -8,6 +8,7 @@
 
 - [HTTP 상태 코드 기초](./http-status-codes-basics.md)
 - [Browser DevTools 첫 확인 체크리스트 1분판](./browser-devtools-first-checklist-1minute-card.md)
+- [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - [Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기](./browser-devtools-waterfall-primer.md)
 - [Proxy Local Reply vs Upstream Error Attribution](./proxy-local-reply-vs-upstream-error-attribution.md)
@@ -25,6 +26,7 @@ retrieval-anchor-keywords: 502 vs 504 vs 500, gateway default html, gateway json
 - `504`: 보통 **proxy/gateway**가 "upstream을 기다렸는데 timeout이 났다"라고 대신 말한 장면이다.
 
 즉 `500`은 app 내부 예외에 더 가깝고, `502`/`504`는 app 앞단 hop의 관찰일 수 있다. 초급자가 가장 자주 하는 실수는 `502`나 `504`를 보고 바로 "컨트롤러가 502를 반환했구나"라고 읽는 것이다.
+응답이 JSON이어도 바로 app로 확정하지 말고, `title/detail/status` 같은 generic gateway 말투인지 `errorCode/message/traceId` 같은 서비스 계약 말투인지 한 번 더 가르는 편이 안전하다.
 
 ## 한눈에 보기
 

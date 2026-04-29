@@ -7,6 +7,8 @@
 관련 문서:
 
 - [인덱스 기초](./index-basics.md)
+- [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md)
+- [PostgreSQL `Seq Scan`, `Index Scan`, `Bitmap Heap Scan`, `Index Only Scan` 한 장 카드](./postgresql-plan-node-mini-card.md)
 - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
 - [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md)
 - [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md)
@@ -17,7 +19,7 @@
 - [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs explain analyze, explain plan first read, explain 해석 순서, explain 처음, explain analyze 뭐예요, explain 왜 느려요, key = null 이 보여요, using filesort 가 보여요, rows가 너무 커 보여요, type all key null, possible_keys key extra, postgresql explain node names, mysql extra vs postgresql explain
+retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs explain analyze, explain plan first read, explain 해석 순서, explain 처음인데 뭐부터 봐요, explain analyze 뭐예요, explain 왜 느려요, key = null 이 보여요, key null 뭐예요, using filesort 가 보여요, using filesort 왜 보여요, rows가 너무 커 보여요, type all key null, mysql extra vs postgresql explain
 
 <details>
 <summary>Table of Contents</summary>
@@ -44,6 +46,13 @@ retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs 
 - `EXPLAIN`의 `type`, `key`, `rows`, `Extra`를 어떤 순서로 읽어야 하는가
 - 인덱스 자체가 안 맞는 경우와, 인덱스는 타지만 정렬/커버링이 어긋난 경우를 어떻게 구분하는가
 - 실행 계획을 읽은 뒤 다음으로 어느 문서로 이동해야 하는가
+
+이 문서가 retrieval에서 먼저 이겨야 하는 beginner symptom query도 아래처럼 좁다.
+
+- `"EXPLAIN 처음인데 뭐부터 봐요?"`
+- ``"`key = NULL`이 뭐예요?"``
+- ``"`Using filesort`가 왜 보여요?"``
+- `"rows가 너무 커 보여요"`
 
 ## 처음 30초에 먼저 자를 질문
 
@@ -107,6 +116,7 @@ retrieval-anchor-keywords: explain basics, explain analyze beginner, explain vs 
 | "`Using filesort`가 보여요" | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Index Condition Pushdown, Filesort, Temporary Table](./index-condition-pushdown-filesort-temporary-table.md), [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
 | `Using index`가 보이는데도 기대보다 느리거나 커버링 여부가 헷갈림 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) | [Covering Index vs Index-Only Scan](./covering-index-vs-index-only-scan.md) |
 | "`rows가 너무 커 보여요`" | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) |
+| "`actual rows`, `Buffers`, `Heap Fetches`가 같이 나오는데 서로 무슨 뜻이죠?" | [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md) | [PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?](./postgresql-index-only-scan-heap-fetches-beginner-card.md), [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md) |
 | DB가 느린지, 앱 레이어가 느린지부터 애매함 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md) | [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
 
 ## 처음 읽는 4칸
@@ -156,6 +166,8 @@ MySQL은 `Extra` 같은 **신호 칸**으로 힌트를 많이 주고, PostgreSQL
 | `Extra = Using where` | `Filter` | 인덱스로 다 못 줄여서 읽은 뒤 한 번 더 거른다 | "인덱스를 아예 안 탔다" |
 | `key`는 잡혔는데 `rows`가 크다 | `Bitmap Heap Scan`, `Index Scan`인데 actual/estimated rows가 큼 | 인덱스는 시작점일 뿐이고, 실제 읽는 양은 여전히 클 수 있다 | "인덱스가 보였으니 빠르다" |
 
+## PostgreSQL node 이름은 이렇게 먼저 읽으면 된다
+
 한 줄 감각으로 묶으면 이렇다.
 
 ```text
@@ -168,6 +180,8 @@ PostgreSQL node name = 지금 실제로 어떤 작업 단계를 택했는지
 1. `Seq Scan`인가, `Index Scan`/`Index Only Scan`인가?
 2. `Sort`가 따로 붙었나?
 3. `Filter`, `Heap Fetches`, actual rows 때문에 "인덱스는 탔지만 아직 많이 읽는가?"가 보이나?
+
+PostgreSQL node 이름 네 가지를 `Seq Scan`/`Index Scan`/`Bitmap Heap Scan`/`Index Only Scan` 기준으로 한 번에 붙이고 싶다면 [PostgreSQL `Seq Scan`, `Index Scan`, `Bitmap Heap Scan`, `Index Only Scan` 한 장 카드](./postgresql-plan-node-mini-card.md)로 바로 이어 가면 된다.
 
 이 문서의 목적은 엔진별 내부 구현을 비교하는 게 아니라, 초보자가 "`Using filesort`는 알겠는데 PostgreSQL에서는 왜 갑자기 `Sort`라고 써 있지?" 같은 당황을 줄이는 것이다.
 
@@ -252,193 +266,17 @@ EXPLAIN ANALYZE = 실제 실행 확인
 
 이 표의 목적은 "원인을 확정"하는 게 아니라, 처음 5분 안에 엉뚱한 문서로 새지 않게 하는 것이다.
 
-## 왜 중요한가
+## 여기서 멈추고 넘길 질문
 
-백엔드에서 쿼리가 느려지는 가장 흔한 이유 중 하나는 **찾는 길과 정렬 길이 맞지 않는 것**이다.
+이 문서는 beginner entrypoint다. 아래 단어가 먼저 궁금하면 본문에서 더 파지 말고 관련 문서로 넘기는 편이 안전하다.
 
-즉,
-
-- 어떤 컬럼에 인덱스를 걸어야 하는지
-- 왜 어떤 쿼리는 빠르고 어떤 쿼리는 느린지
-- 실행 계획을 어떻게 읽어야 하는지
-
-를 설명할 수 있어야 한다.
-
----
-
-초보자에게 중요한 건 "인덱스가 있냐 없냐"를 넘어, **DB가 실제로 어떤 길을 선택했는지 근거를 갖고 말하는 것**이다.
-
-## 인덱스란
-
-인덱스는 **데이터를 빨리 찾기 위한 추가 자료구조**다.
-
-책으로 비유하면:
-
-- 테이블 전체 조회 = 책을 처음부터 끝까지 훑는 것
-- 인덱스 사용 = 책 뒤의 색인에서 키워드를 찾는 것
-
-즉 인덱스는 조회 성능을 높이는 대신
-
-- 저장 공간을 더 쓰고
-- `INSERT`, `UPDATE`, `DELETE` 비용이 약간 늘어난다
-
----
-
-## B-Tree 인덱스
-
-가장 기본적이고 자주 쓰는 인덱스는 보통 **B-Tree**다.
-
-특징:
-
-- 정렬 가능한 값에 적합
-- `=`, `<`, `>`, `BETWEEN`, `IN`
-같은 조건에서 잘 작동
-
-실무에서 “인덱스”라고 하면 대부분 먼저 B-Tree를 떠올리면 된다.
-
----
-
-## 언제 인덱스가 잘 타는가
-
-예:
-
-```sql
-SELECT * FROM member WHERE email = 'a@b.com';
-SELECT * FROM orders WHERE created_at BETWEEN ... AND ...;
-```
-
-즉 보통
-
-- 동등 조건
-- 범위 조건
-- 정렬 조건
-
-에서 잘 활용된다.
-
----
-
-## 인덱스가 잘 안 타는 경우
-
-### 1. 컬럼에 함수 적용
-
-```sql
-WHERE LOWER(name) = 'donkey'
-```
-
-이 경우는 일반 인덱스보다 generated column이나 functional index가 더 맞을 수 있다.
-
-### 2. 앞부분이 고정되지 않은 LIKE
-
-```sql
-WHERE name LIKE '%abc'
-```
-
-### 3. 타입 변환이 일어나는 경우
-
-예를 들어 숫자 컬럼을 문자열처럼 비교하는 경우
-
-### 4. 선택도가 너무 낮은 컬럼
-
-예:
-
-- 성별
-- boolean 값
-
-이런 컬럼은 인덱스를 걸어도 효과가 약할 수 있다.
-
----
-
-## 복합 인덱스와 왼쪽 접두어 규칙
-
-예:
-
-```sql
-INDEX (team, status, created_at)
-```
-
-이 인덱스가 있으면
-
-- `team`
-- `team, status`
-- `team, status, created_at`
-
-순서는 잘 활용된다.
-
-하지만
-
-- `status`만
-- `created_at`만
-
-이런 식은 잘 활용되지 않을 수 있다.
-
-이걸 보통 **왼쪽 접두어 규칙**이라고 설명한다.
-
----
-
-## 실행 계획 EXPLAIN
-
-`EXPLAIN`은 **DB가 이 쿼리를 어떻게 실행할지 보여주는 기능**이다.
-
-즉:
-
-- 인덱스를 쓰는지
-- full scan인지
-
-를 확인할 수 있다.
-
-### 먼저 보는 순서
-
-1. `key` / `possible_keys`: 후보 인덱스가 있었는지, 실제로 어떤 인덱스를 골랐는지 본다.
-2. `rows`: 얼마나 많은 row를 읽을 것으로 추정하는지 본다.
-3. `Extra`: `Using where`, `Using filesort`, `Using index` 같은 추가 신호를 읽는다.
-4. `type`: 마지막으로 full scan인지, range/index scan인지 확인한다.
-
-이 순서로 보면 "인덱스 자체가 없는가", "있는 인덱스를 안 탔는가", "탔지만 정렬/커버링이 새 병목인가"를 분리하기 쉽다.
-
-### 주문 목록 예시로 읽기
-
-아래처럼 최근 주문 목록을 뽑는 쿼리를 생각해 보자.
-
-```sql
-EXPLAIN
-SELECT member_id, status, created_at
-FROM orders
-WHERE member_id = 10
-ORDER BY created_at DESC
-LIMIT 20;
-```
-
-이때 초보자용 첫 해석은 아래 표면 충분하다.
-
-| 보인 신호 | 첫 판단 | 다음 액션 |
+| 지금 더 궁금한 것 | 이 문서에서 길게 안 파는 이유 | 다음 문서 |
 | --- | --- | --- |
-| `key = NULL` | 찾는 길이 안 잡혔을 수 있다 | `member_id`, 정렬 축, 함수 사용 여부를 다시 본다 |
-| `key`는 있는데 `Using filesort` | 찾기는 했지만 정렬 길이까지는 안 맞았을 수 있다 | 복합 인덱스 순서와 `ORDER BY`를 같이 본다 |
-| `Using index` | 인덱스만으로 해결하는 커버링 가능성이 있다 | 조회 컬럼 수와 인덱스 폭을 같이 본다 |
-| `rows`가 너무 큼 | 읽는 양이 너무 많다 | 조건식 선택도와 통계 흔들림을 의심한다 |
-
-같은 쿼리를 초보자용 질문으로 다시 적으면 아래처럼 된다.
-
-| 지금 물어볼 질문 | 왜 중요한가 |
-| --- | --- |
-| `member_id`를 찾는 인덱스가 아예 없나? | `key = NULL`이면 첫 출발부터 길이 없다 |
-| 인덱스는 탔는데 정렬 때문에 다시 모으고 있나? | `Using filesort`면 "찾기"와 "정렬"이 다른 길일 수 있다 |
-| 너무 많은 row를 읽고 나중에 버리나? | `rows`가 크면 인덱스를 타도 느릴 수 있다 |
-
-그래서 `EXPLAIN` 해석은 "좋은 칸/나쁜 칸 암기"보다, "DB가 어디서 시간을 쓸지 보는 질문 3개"로 읽는 편이 낫다.
-
-### 왜 중요하나
-
-인덱스를 걸었다고 무조건 빨라지는 게 아니다.  
-실제로 DB가 그 인덱스를 사용할지 확인해야 한다.
-
-즉 **성능 문제는 감으로 보지 말고 실행 계획으로 확인**하는 습관이 중요하다.
-
-예를 들어:
-
-- `type = ALL`과 `key = NULL`이면 인덱스 설계나 predicate shape부터 다시 본다.
-- `key`는 잡혔는데 `Extra`에 `Using filesort`가 남으면 복합 인덱스 순서와 정렬 축을 다시 본다.
-- `rows` 추정치가 수상하면 통계와 cardinality estimation 문제를 의심한다.
+| 인덱스가 왜 빠른지, B-Tree가 뭔지 | 자료구조 설명보다 `EXPLAIN` 읽기 순서가 먼저다 | [인덱스 기초](./index-basics.md), [Clustered Index와 PK Locality](./clustered-index-locality.md) |
+| 함수 조건, `%like`, 타입 변환 때문에 인덱스를 못 타는 것 같음 | 설계 패턴과 migration 판단이 따로 필요하다 | [Generated Columns, Functional Indexes, and Query-Safe Migration](./generated-columns-functional-index-migration.md) |
+| 복합 인덱스 순서와 covering까지 같이 보고 싶음 | `WHERE`와 `ORDER BY`를 같이 묶는 follow-up이 더 직접적이다 | [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md) |
+| estimate와 actual rows가 자꾸 어긋남 | 이미 통계와 엔진별 해석 단계다 | [Statistics, Histograms, and Cardinality Estimation](./statistics-histograms-cardinality-estimation.md), [PostgreSQL `EXPLAIN ANALYZE`에서 `actual rows`, `buffers`, `heap fetches`를 같이 읽는 법](./postgresql-explain-analyze-terms-mini-bridge.md) |
+| 실제 장애 대응이나 느린 쿼리 triage 순서가 필요함 | entrypoint보다 playbook 범위다 | [쿼리 튜닝 체크리스트](./query-tuning-checklist.md), [느린 쿼리 분석 플레이북](./slow-query-analysis-playbook.md) |
 
 ## 자주 섞이는 오해
 
@@ -481,28 +319,6 @@ cross-category bridge:
   - https://www.postgresql.org/docs/current/indexes-types.html
 - MySQL EXPLAIN:
   - https://dev.mysql.com/doc/en/explain.html
-
----
-
-## 면접에서 자주 나오는 질문
-
-### Q. 인덱스는 왜 빠른가요?
-
-- 테이블 전체를 훑지 않고 별도 자료구조를 통해 빠르게 탐색할 수 있기 때문이다.
-
-### Q. 인덱스가 무조건 좋은가요?
-
-- 아니다.
-- 조회는 빨라질 수 있지만 저장 공간이 늘고 쓰기 비용이 커질 수 있다.
-
-### Q. 복합 인덱스에서 컬럼 순서가 왜 중요한가요?
-
-- 왼쪽 접두어 규칙 때문에 인덱스 활용 가능 범위가 달라지기 때문이다.
-
-### Q. 인덱스를 걸었는데 왜 느릴 수 있나요?
-
-- DB가 그 인덱스를 실제로 사용하지 않을 수 있기 때문이다.
-- 함수 사용, LIKE 패턴, 선택도 문제, 타입 변환 등이 원인이 될 수 있다.
 
 ## 한 줄 정리
 

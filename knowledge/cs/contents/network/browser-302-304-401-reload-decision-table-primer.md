@@ -6,6 +6,9 @@
 
 관련 문서:
 
+- [HTTP 상태 코드 기초](./http-status-codes-basics.md)
+- [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
+- [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)
 - [Browser DevTools 새로고침 분기표: normal reload, hard reload, empty cache and hard reload](./browser-devtools-reload-hard-reload-disable-cache-primer.md)
 - [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
@@ -28,6 +31,12 @@ retrieval-anchor-keywords: browser 302 vs 304 vs 401, reload decision table, dev
 - `302`: 다음 목적지를 바꾼다
 - `304`: body를 다시 받을지 말지를 바꾼다
 - `401`: 로그인/인증 해석을 요구한다
+
+이 문서를 읽을 때 beginner가 한 줄만 더 기억하면 훨씬 덜 섞인다.
+
+- `302`는 **다른 URL** 질문이다.
+- `304`는 **같은 URL body 재사용** 질문이다.
+- `401`은 **이동이 아니라 인증 실패** 질문이다.
 
 새로고침 뒤 follow-up decision을 한 줄로 외우면 이렇다.
 
@@ -65,6 +74,18 @@ retrieval-anchor-keywords: browser 302 vs 304 vs 401, reload decision table, dev
 1. 다음 row URL이 바뀌면 `302`부터 의심한다.
 2. 같은 URL이고 validator가 보이면 `304`부터 의심한다.
 3. `Location`이 없고 `401`이면 redirect보다 auth failure부터 읽는다.
+
+## `POST -> 303 -> GET -> 304`와는 어떻게 다를까
+
+새로고침 문서에서 beginner가 자주 묻는 follow-up은 "`그럼 `303`은 왜 여기 표에 없어요?`"다. 이유는 간단하다. 이 문서는 **reload 뒤 보인 `302`/`304`/`401`을 먼저 자르는 문서**이고, `303`은 보통 form submit 마무리인 PRG 흐름에서 먼저 등장한다.
+
+| 지금 장면 | 먼저 붙일 이름 | 다음 문서 |
+|---|---|---|
+| 새로고침 뒤 `/login`으로 이동 | `302` reload/redirect 장면 | [HTTP 상태 코드 기초](./http-status-codes-basics.md) |
+| 새로고침 뒤 같은 URL `304` | cache revalidation 장면 | [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md) |
+| 제출 직후 `POST -> 303 -> GET` | PRG 장면 | [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md) |
+
+짧게 말하면 `303`은 "`왜 `POST` 다음에 `GET`이 보여요?`"를 푸는 문서로 보내고, 이 문서는 "`새로고침 뒤 왜 `/login`, `304`, `401`이 보여요?`"를 푸는 entry다.
 
 ## 페이지 새로고침에서 자주 보는 세 장면
 

@@ -6,6 +6,7 @@
 
 관련 문서:
 
+- [DISTINCT vs GROUP BY 초보자 비교 카드](./distinct-vs-group-by-beginner-card.md)
 - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [database 카테고리 인덱스](./README.md)
@@ -60,6 +61,7 @@ NULL을 가진 행은 하나의 그룹으로 묶인다. 예를 들어 부서가 
 **`DISTINCT` vs `GROUP BY`**:
 
 중복을 제거하는 `SELECT DISTINCT`와 `GROUP BY`는 결과가 같을 때도 있지만 의미가 다르다. 집계 함수 없이 유일한 값 목록만 필요하면 `DISTINCT`, 그룹별 요약이 필요하면 `GROUP BY`가 적합하다.
+이 구분만 빠르게 다시 잡고 싶다면 [DISTINCT vs GROUP BY 초보자 비교 카드](./distinct-vs-group-by-beginner-card.md)를 먼저 보면 된다.
 
 ## 흔한 오해와 함정
 

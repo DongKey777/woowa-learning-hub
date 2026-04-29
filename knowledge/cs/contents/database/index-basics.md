@@ -6,19 +6,26 @@
 
 관련 문서:
 
+- [database 카테고리 인덱스](./README.md)
 - [인덱스와 실행 계획](./index-and-explain.md)
 - [MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지](./mysql-postgresql-index-storage-bridge.md)
 - [커버링 인덱스와 복합 인덱스 컬럼 순서](./covering-index-composite-ordering.md)
 - [SQL 조인과 쿼리 실행 순서](./sql-joins-and-query-order.md)
-- [database 카테고리 인덱스](./README.md)
 - [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
-retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, explain 처음 읽는 법, clustered vs secondary index, covering index beginner, 왜 인덱스 안 타요, index 뭐예요, query plan basics, key = null 이 보여요, using filesort 가 보여요, rows가 너무 커 보여요, db index 처음, what is index
+retrieval-anchor-keywords: index basics, b-tree index beginner, clustered vs secondary index, covering index beginner, 왜 인덱스 안 타요, index 뭐예요, db index가 왜 필요해요, where 조건 하나인데 왜 느려요, full scan 이 왜 나와요, explain 전에 index basics, key = null 이 보여요, using filesort 가 보여요, rows가 너무 커 보여요, db index 처음, what is index
 
 ## 핵심 개념
 
 인덱스는 **테이블에서 원하는 row를 빨리 찾기 위한 추가 자료구조**다.  
 책 뒤의 찾아보기처럼 "어떤 값이 어디 있는지"를 미리 정리해 둔다고 보면 된다.
+
+이 문서가 retrieval에서 먼저 잡아야 하는 beginner query shape도 분명하다.
+
+- `"DB 인덱스가 왜 필요해요?"`
+- `"WHERE 조건 하나인데 왜 느려요?"`
+- `"full scan이 왜 나와요?"`
+- `"EXPLAIN 보기 전에 인덱스부터 다시 보고 싶어요"`
 
 입문자가 처음 헷갈리는 지점은 보통 두 가지다.
 
@@ -26,7 +33,7 @@ retrieval-anchor-keywords: index basics, b-tree index beginner, explain basics, 
 - 인덱스를 만들었다고 끝이 아니라, DB가 실제로 그 인덱스를 썼는지는 `EXPLAIN`으로 확인해야 한다.
 
 즉 이 문서의 큰 그림은 "`인덱스가 뭔지`"와 "`실행 계획에서 그 인덱스를 실제로 탔는지`"를 입문 눈높이에서 같이 잡는 것이다.
-`optimizer trace`, histogram, storage engine 차이처럼 운영 성격이 강한 가지는 follow-up 링크로 넘긴다.
+처음에는 `optimizer trace`, histogram, invisible index, plan stability처럼 운영 성격이 강한 가지를 본문에서 늘리지 않고 follow-up 링크로 넘긴다.
 
 ## 한눈에 보기
 
@@ -125,6 +132,8 @@ INDEX (member_id, status, created_at)
 
 `EXPLAIN`은 **DB가 이 SQL을 어떤 경로로 실행하려 하는지 보여 주는 표**다.
 
+입문 1회차에서는 "`왜 안 타요?`", "`key = NULL`이 뭐예요?`", "`Using filesort`가 왜 보여요?`" 정도만 풀리면 충분하다. 비용 모델, 통계 오차, optimizer switch는 이 문서의 바깥 단계다.
+
 처음에는 아래 네 칸만 봐도 충분하다.
 
 | 칸 | 초보자 해석 |
@@ -158,7 +167,7 @@ LIMIT 20;
 
 `EXPLAIN`은 정답지가 아니라 출발점이다.
 초급 단계에서는 `key -> rows -> Extra -> type` 네 칸만 읽어도 "왜 느린지"를 감으로 말하는 실수는 크게 줄어든다.
-`Using filesort` 내부 구현이나 통계 오차까지 바로 내려가기보다, 먼저 "인덱스가 없나 / 있는데도 정렬이 안 맞나"를 분리하는 데 집중하면 된다.
+`Using filesort` 내부 구현, histogram, optimizer switch까지 바로 내려가기보다, 먼저 "인덱스가 없나 / 있는데도 정렬이 안 맞나"를 분리하는 데 집중하면 된다.
 
 ## 흔한 오해와 함정
 
@@ -169,6 +178,11 @@ LIMIT 20;
 | "`SELECT *`여도 인덱스만 타면 빠르다" | 필요한 컬럼이 많으면 커버링이 깨진다 | 필요한 컬럼만 조회할 수 있는지 본다 |
 | "`Using filesort`면 무조건 인덱스가 없다" | 인덱스는 있어도 정렬 순서가 안 맞을 수 있다 | `ORDER BY`와 복합 인덱스 순서를 같이 본다 |
 | "함수만 써도 인덱스는 알아서 탄다" | `LOWER(name)`, `%abc` 같은 조건은 일반 인덱스를 깨기 쉽다 | 조건식 모양을 먼저 단순화한다 |
+
+처음에는 "DB가 왜 이런 plan을 골랐지?"를 깊게 파기보다, 아래 두 갈래만 먼저 고르면 충분하다.
+
+- 인덱스 자체가 없는가
+- 인덱스는 있는데 `WHERE`/`ORDER BY`/조회 컬럼 모양이 안 맞는가
 
 초급에서 가장 흔한 실수는 "인덱스 유무"만 보고 끝내는 것이다.  
 실제로는 **조건식 모양, 컬럼 순서, 조회 컬럼 수, 정렬 축**이 같이 맞아야 plan이 좋아진다.

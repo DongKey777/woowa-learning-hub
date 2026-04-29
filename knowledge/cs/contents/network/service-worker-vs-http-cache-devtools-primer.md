@@ -14,7 +14,7 @@
 - [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
 - [CDN 기초](../system-design/cdn-basics.md)
 
-retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, from serviceworker, service worker vs memory cache, service worker vs disk cache, service worker vs 304, cache storage vs cookie vs localstorage, sessionstorage localstorage cookie cache confusion, browser storage comparison beginner, who served the body, devtools service worker triage, service worker cache 뭐예요
+retrieval-anchor-keywords: from serviceworker quick check, service worker first minute card, disable cache before service worker, service worker vs http cache, cache storage vs http cache, service worker vs memory cache, service worker vs disk cache, service worker vs 304, cache storage vs from disk cache, application tab vs network tab cache, cache storage vs 304, service worker 뭐예요, 처음 배우는데 service worker cache 차이, devtools service worker triage, cache storage 있는데 304 떠요
 
 <details>
 <summary>Table of Contents</summary>
@@ -25,6 +25,7 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 - [`Disable cache`보다 먼저 보는 1분 카드](#disable-cache보다-먼저-보는-1분-카드)
 - [정말 먼저 볼 4가지](#정말-먼저-볼-4가지)
 - [1분 분기표](#1분-분기표)
+- [Application 탭 vs Network 탭 30초 분리](#application-탭-vs-network-탭-30초-분리)
 - [service worker, cache storage, http cache 한 줄 비교](#service-worker-cache-storage-http-cache-한-줄-비교)
 - [브라우저 저장소 전체 지도](#브라우저-저장소-전체-지도)
 - [짧은 예시](#짧은-예시)
@@ -165,6 +166,28 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 
 ---
 
+## Application 탭 vs Network 탭 30초 분리
+
+이 항목이 이번 문서의 가장 실전적인 bridge다. 초급자가 많이 섞는 이유는 `Application > Cache Storage`와 `Network > from disk cache`가 둘 다 "캐시"처럼 보이기 때문이다. 하지만 **탭이 다르면 먼저 답하는 질문도 다르다.**
+
+| 지금 본 위치 | 화면에 보이는 것 | 먼저 답하는 질문 | 여기서 바로 확정하면 안 되는 것 |
+|---|---|---|---|
+| `Network` row | `from ServiceWorker` | 이번 응답 경로에 Service Worker가 관여했나 | Cache Storage hit였다 |
+| `Application > Cache Storage` | cache key / cached response entry | SW나 앱 코드가 꺼내 쓸 entry가 있나 | 이번 row가 그 entry를 실제로 썼다 |
+| `Network` row | `from disk cache` / `from memory cache` | 브라우저 HTTP cache 사본을 바로 재사용했나 | Service Worker가 준 응답이다 |
+| `Network` row | `304 Not Modified` + validator | 서버 재검증 뒤 기존 HTTP cache body를 계속 써도 되나 | Application 탭 Cache Storage를 썼다 |
+
+짧게 외우면 아래처럼 자르면 된다.
+
+- `Application > Cache Storage`는 "상자 안에 뭐가 있나" 질문이다.
+- `Network > from disk cache`는 "이번 body를 브라우저 HTTP cache에서 바로 썼나" 질문이다.
+- `Network > 304`는 "서버에 물어본 뒤 기존 HTTP cache body를 계속 써도 되나" 질문이다.
+- `Network > from ServiceWorker`는 "응답 경로에 SW가 개입했나" 질문이다.
+
+즉 "`Application 탭에 Cache Storage가 있는데 왜 Network에는 304가 떠요?`"라는 질문은 모순이 아니다. 하나는 **저장 상자 존재 여부**, 다른 하나는 **이번 요청의 실제 body 경로**를 말하기 때문이다.
+
+---
+
 ## Service Worker, Cache Storage, HTTP cache 한 줄 비교
 
 | 질문 | Service Worker | Cache Storage | HTTP cache (`memory`/`disk`/`304`) |
@@ -191,7 +214,7 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 | HTTP cache | 브라우저 | HTTP 응답 사본 | 그렇다. 브라우저가 `Cache-Control`, `ETag`, `304` 규칙으로 재사용한다 | Network `from memory cache`, `from disk cache`, `304` | "cookie나 localStorage랑 같은 층이다" |
 | cookie | 브라우저 | session id, preference, token 같은 작은 값 | 그럴 수 있다. 조건이 맞는 요청에 `Cookie` 헤더로 자동 전송된다 | Application > Cookies, Network request headers | "cookie에 있으면 곧 cache hit다" |
 | `sessionStorage` | 페이지 스크립트 | 탭 단위 앱 상태 | 아니다. JS가 직접 읽어 헤더/본문에 넣지 않으면 네트워크에 안 실린다 | Application > Session Storage | "브라우저가 다음 요청에 알아서 보낸다" |
-| `localStorage` | 페이지 스크립트 | 브라우저에 남겨둘 앱 상태 | 아니다. JS가 직접 사용해야 한다 | Application > Local Storage | "cookie처럼 자동 전송된다" |
+| `localStorage` | 페이지 스크립트 | 브라우저에 남겨둘 앱 상태 | 아니다. JS가 직접 사용해야 한다 | Application > Local Storage, 같은 API 요청의 `Request Headers > Authorization` | "cookie처럼 자동 전송된다" |
 
 한 줄로 외우면:
 
@@ -199,7 +222,7 @@ retrieval-anchor-keywords: from serviceworker quick check, service worker first 
 - cookie는 "자동 전송될 수 있는 상태" 쪽이다.
 - `sessionStorage`/`localStorage`는 "JS가 직접 꺼내 쓰는 앱 상태" 쪽이다.
 
-즉 `localStorage`에 토큰이 있어도 브라우저는 그 값을 보고 자동으로 `Authorization` 헤더를 만들지 않는다. 반대로 cookie는 JS가 안 만져도 조건이 맞으면 요청에 실릴 수 있다.
+즉 `Application > Local Storage`에 access token이 있어도 같은 API 요청의 request `Authorization` header는 비어 있을 수 있다. 브라우저가 그 값을 보고 자동으로 `Authorization` 헤더를 만들지 않기 때문이다. 반대로 cookie는 JS가 안 만져도 조건이 맞으면 요청에 실릴 수 있다.
 
 ---
 
@@ -330,6 +353,16 @@ Service Worker는 여러 선택을 할 수 있다.
 ## 자주 헷갈리는 포인트 (계속 2)
 
 `304`는 서버 재검증 결과이고, `from ServiceWorker`는 브라우저 앱 계층 개입 여부다.
+
+### `Application > Cache Storage`에 entry가 보이면 `from disk cache`나 `304`의 원인이라고 생각한다
+
+이것도 자주 섞인다.
+
+- `Cache Storage` entry는 "SW나 앱이 쓸 수 있는 후보"다.
+- `from disk cache`는 브라우저 HTTP cache를 바로 쓴 장면이다.
+- `304`는 서버 재검증 뒤 기존 HTTP cache body를 유지한 장면이다.
+
+그래서 `Cache Storage` entry가 보여도 이번 row는 그냥 `304` revalidation일 수 있고, 반대로 `from ServiceWorker`가 보여도 SW가 내부에서 네트워크 fetch를 했을 수 있다.
 둘을 같은 bucket으로 묶으면 "누가 응답했는가"와 "서버에 다시 물어봤는가"를 동시에 놓친다.
 
 ---

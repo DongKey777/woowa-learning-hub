@@ -20,7 +20,7 @@
 > - 공식 기준: [Spring Boot Externalized Configuration - JSON Application Properties](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.json)
 > - 공식 기준: [Spring Boot Externalized Configuration - Binding Maps](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.relaxed-binding.maps)
 
-retrieval-anchor-keywords: spring application json primer, spring_application_json, spring.application.json, plain env var vs spring application json, nested configuration env var spring boot, complex map key spring boot, relaxed binding shape loss, bracket notation map key, configurationproperties env json, map key slash dot env var, beginner property configuration primer, spring spring application json primer basics, spring spring application json primer beginner, spring spring application json primer intro, spring basics
+retrieval-anchor-keywords: spring application json primer, spring_application_json, spring application json 뭐예요, spring application json 처음 배우는데, spring application json 언제 써요, spring application json 큰 그림, spring application json vs env var, plain env var vs spring application json, nested configuration env var spring boot, complex map key spring boot, map key slash dot env var, properties 많은데 env var 너무 길어요, 리스트 설정 env var 헷갈려요, beginner property configuration primer, what is spring application json
 
 ## 핵심 개념
 
@@ -39,6 +39,12 @@ SPRING_APPLICATION_JSON = 설정 객체를 JSON 한 덩어리로 넣기
 
 `SPRING_APPLICATION_JSON`은 "새로운 바인딩 규칙"이 아니라, **JSON을 property source로 먼저 풀어 주는 입구**다.
 즉 바인딩은 그대로 Spring Boot가 하지만, 운영체제 환경 변수 이름 제약을 한 번 우회할 수 있다.
+
+### 처음 많이 나오는 질문
+
+- "`SPRING_APPLICATION_JSON`이 뭐예요?" -> 복잡한 설정을 env var 하나에 담는 입구다.
+- "처음 배우는데 언제 써요?" -> nested object, list, map key shape 보존이 필요할 때 꺼낸다.
+- "큰 그림에서 일반 env var랑 뭐가 달라요?" -> 일반 env var는 key를 펼쳐 적고, `SPRING_APPLICATION_JSON`은 구조를 통째로 넣는다.
 
 ---
 

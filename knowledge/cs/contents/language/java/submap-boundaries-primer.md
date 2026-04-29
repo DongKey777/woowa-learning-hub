@@ -16,7 +16,7 @@
 - [BigDecimal NavigableMap Lookup Bridge: `floorKey`, `ceilingKey`, and Range Lookups](./bigdecimal-navigablemap-lookup-bridge.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 
-retrieval-anchor-keywords: language-java-00076, subset headset tailset beginner, submap headmap tailmap beginner, java inclusive exclusive boundary primer, treeset subset inclusive exclusive, treemap submap inclusive exclusive, sortedset subset from inclusive to exclusive, sortedmap submap from inclusive to exclusive, headset exclusive default, tailset inclusive default, headmap exclusive default, tailmap inclusive default, navigableset subset boolean overload, linkedhashmap vs treemap range query, linkedhashmap floorkey why not
+retrieval-anchor-keywords: subset headset tailset beginner, submap headmap tailmap beginner, treeset subset inclusive exclusive, treemap submap inclusive exclusive, submap 경계 뭐예요, submap inclusive exclusive 헷갈려요, headset는 왜 끝값 제외, tailmap은 왜 시작값 포함, 처음 배우는데 submap, 처음 배우는데 range view, treemap 범위 조회 기초, linkedhashmap은 왜 submap 이 없어요, ordered map 범위 자르기 basics, floor ceiling 다음 submap, collections to ordered map bridge
 
 ## 먼저 잡을 멘탈 모델
 

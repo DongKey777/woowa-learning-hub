@@ -12,10 +12,11 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: retry reason taxonomy primer basics, retry reason taxonomy primer beginner, retry reason taxonomy primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry reason taxonomy primer, retry reason taxonomy primer 입문, retry reason taxonomy primer 기초, what is retry reason taxonomy primer, how to retry reason taxonomy primer
+retrieval-anchor-keywords: retry reason taxonomy primer, retry reason taxonomy beginner, retryable manual review permanent 차이, retryable manual review permanent 뭐예요, retry reason code 처음 배우는데, batch 실패 분류 기초, retry 분류 큰 그림, manual review는 언제 쓰나요, permanent failure는 언제 끝내나요, batch retry reason basics
 retry 정책을 처음 잡을 때 가장 흔한 실수는 reason code 이름을 많이 만드는 것이다.
 초심자에게 더 중요한 일은 이름 개수보다 **다음 행동이 섞이지 않게 묶는 것**이다.
 이 문서는 beginner-safe 기준으로 `retryable`, `manual-review`, `permanent` 세 그룹만 먼저 설명한다.
+첫 질문이 `retryable이 뭐예요`, `manual review는 왜 따로 빼요`, `permanent failure는 언제 끝내요`처럼 분류의 큰 그림을 묻는 단계라면 deep dive보다 이 primer가 먼저 맞다.
 [Retry Queue Assertions Primer](./retry-queue-assertions-primer.md)에서 테스트 관점을 보고 있다면, 여기서는 그 테스트가 기대하는 분류표를 먼저 단순하게 만드는 데 집중한다.
 run 결과 타입을 먼저 보고 싶다면 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md), 운영 복구 흐름까지 연결하고 싶다면 [Batch Recovery Runbook Bridge](./batch-recovery-runbook-bridge.md)를 이어서 보면 된다.
 
@@ -44,6 +45,16 @@ run 결과 타입을 먼저 보고 싶다면 [Batch Run Result Modeling Examples
 >
 > retrieval-anchor-keywords:
 > - retry reason taxonomy primer
+> - retryable manual review permanent 차이
+> - retryable manual review permanent 뭐예요
+> - retryable이 뭐예요
+> - manual review는 왜 따로 빼요
+> - permanent failure는 언제 끝내요
+> - batch 실패 reason code 어떻게 나눠요
+> - batch 실패 분류 처음 뭐부터
+> - retry reason code 큰 그림
+> - retry reason code 기초
+> - retryable manual review permanent 처음 배우는데
 > - beginner retry reason code grouping
 > - retryable permanent manual review primer
 > - batch reason code grouping beginner

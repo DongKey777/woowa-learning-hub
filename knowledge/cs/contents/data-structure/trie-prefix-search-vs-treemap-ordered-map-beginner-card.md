@@ -8,6 +8,7 @@
 
 - [자료구조 카테고리 인덱스](./README.md)
 - [Trie vs HashMap: exact lookup이냐 prefix search냐](./trie-vs-hashmap-exact-lookup-beginner-card.md)
+- [TreeMap 문자열 Prefix vs 사전순 Range Mini Drill](./treemap-string-prefix-range-mini-drill.md)
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md)
@@ -43,6 +44,7 @@ retrieval-anchor-keywords: trie vs treemap beginner, prefix search vs ordered ma
 | `"ann"`이라는 exact key가 있나 | 보통 `HashMap` 또는 `TreeMap` | prefix보다 exact lookup이 더 직접적이다 |
 
 이 문서의 첫 분기는 "문자열이냐"가 아니라 "질문이 prefix냐, ordered range/neighbor냐"다.
+손으로 더 짧게 구분해 보고 싶다면 [TreeMap 문자열 Prefix vs 사전순 Range Mini Drill](./treemap-string-prefix-range-mini-drill.md)에서 `startsWith("app")`와 `subMap("app", "apq")`를 같은 key 줄 위에서 바로 비교해 보면 된다.
 
 ## 같은 문자열도 질문이 바뀌면 구조가 바뀐다
 

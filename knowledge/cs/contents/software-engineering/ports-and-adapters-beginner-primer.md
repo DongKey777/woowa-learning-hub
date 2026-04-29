@@ -35,10 +35,24 @@
 - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
 - [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md)
 
-retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, layered vs hexagonal beginner, controller service repository 다음 단계, 언제 outbound port가 필요한가, inbound port, outbound port, controller adapter, repository adapter, repository interface contract, queue가 왜 여기서 나오지, consumer queue beginner, bfs queue 차이, queue 뜻이 여러 개라 헷갈려요, what is inbound adapter
+retrieval-anchor-keywords: ports and adapters beginner, hexagonal architecture beginner, layered vs hexagonal basics, controller service repository 다음 단계, inbound port 뭐예요, outbound port 언제 쓰나요, controller adapter basics, repository adapter basics, queue가 왜 여기서 나오지, queue 뜻이 여러 개라 헷갈려요, consumer도 같은 유스케이스인가요, bfs queue 차이, message driven adapter 다음 뭐 봐요
 
+이 문서는 특히 `controller-service-repository 다음 단계가 뭐예요`, `queue가 왜 여기서 나오지`, `consumer도 같은 유스케이스인가요`처럼 처음 구조 이름이 섞이기 시작하는 질문을 먼저 끊는 beginner entrypoint다.
 입문 설명이 끝난 뒤 "adapter"라는 이름이 GoF 어댑터와 어떻게 다른지 헷갈리면 [Design Pattern: Ports and Adapters vs GoF 패턴](../design-pattern/ports-and-adapters-vs-classic-patterns.md), [Design Pattern: Hexagonal Ports: 유스케이스를 둘러싼 입출력 경계](../design-pattern/hexagonal-ports-pattern-language.md)로 이어서 보면 된다.
 처음 읽는 단계에서는 HTTP 요청 1개를 기준 예시로 붙잡으면 충분하다. queue, topic, consumer 운영 설계까지 커지는 순간은 [Message-Driven Adapter Example](./message-driven-adapter-example.md), [System Design: Job Queue 설계](../system-design/job-queue-design.md)가 다음 handoff다.
+
+## beginner 사다리: layered에서 message adapter까지
+
+처음부터 consumer 운영 설계나 distributed queue 문서로 점프하지 말고, 아래 3칸만 먼저 고정하면 된다.
+
+| 지금 막힌 문장 | primer | follow-up | 아직 미루는 것 |
+|---|---|---|---|
+| `Controller`, `Service`, `Repository` 책임이 아직 흐려요 | [계층형 아키텍처 기초](./layered-architecture-basics.md) | [Service 계층 기초](./service-layer-basics.md) | hexagonal 용어 비교, 운영 consumer |
+| `HTTP 말고 consumer도 같은 유스케이스를 열 수 있나요?` | 이 문서 | [Message-Driven Adapter Example](./message-driven-adapter-example.md) | distributed queue, saga, retry 운영 playbook |
+| `queue`가 worker handoff인지 BFS 도구인지 모르겠어요 | [큐 기초](../data-structure/queue-basics.md) 또는 [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | 질문이 service boundary로 돌아오면 이 문서 | weighted shortest path, job queue 운영 심화 |
+
+- 짧게 외우면 `레이어 책임 -> 같은 유스케이스 입구 묶기 -> 그다음 message adapter`다.
+- beginner 종료선은 `HTTP controller`와 `message consumer`가 둘 다 inbound adapter라는 감각까지만 잡는 것이다.
 
 ## `queue`라는 단어가 보여도 바로 운영 문서로 가지 않기
 

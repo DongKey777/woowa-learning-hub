@@ -6,19 +6,23 @@
 
 관련 문서:
 
+- [Backend Data-Structure Starter Pack](./backend-data-structure-starter-pack.md)
 - [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md)
 - [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](./arraydeque-vs-blockingqueue-service-handoff-primer.md)
 - [기본 자료 구조](./basic.md)
 - [자료구조 정리](./README.md)
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
+- [Service 계층 기초](../software-engineering/service-layer-basics.md)
+- [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 
-retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 가까운 칸부터 한 겹씩 퍼지는 탐색, queue vs bfs beginner, bfs visited set basics, bfs queue visited pair, queue만 쓰면 되나요, visited 왜 필요해요, 처음 bfs visited 헷갈림, arraydeque queue beginner
+retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, queue enqueue dequeue, bfs queue difference, queue는 fifo 순서를 만드는 도구, bfs는 가까운 칸부터 한 겹씩 퍼지는 탐색, queue vs bfs beginner, bfs visited set basics, queue만 쓰면 되나요, 처음 bfs visited 헷갈림, service 코드인데 queue가 보여요, queue가 worker handoff인지 bfs인지 헷갈려요, 받은 순서대로 처리 vs 최소 이동 횟수
 
 ## README 복귀 가이드
 
 - `queue인데 왜 BFS예요?`가 다시 나오면 [자료구조 README - 초급 10초 라우터](./README.md#초급-10초-라우터)로 먼저 복귀한다.
 - 문장이 `최소 이동 횟수`, `가까운 칸부터`로 바뀌면 [알고리즘 README - BFS, Queue, Map 먼저 분리하기](../algorithm/README.md#bfs-queue-map-먼저-분리하기)로 넘어간다.
+- 문장이 `worker가 꺼낸다`, `consumer가 처리한다`, `Service에서 handoff한다`로 바뀌면 [Backend Data-Structure Starter Pack](./backend-data-structure-starter-pack.md) -> [Service 계층 기초](../software-engineering/service-layer-basics.md) 순서로 잠깐 갔다가 돌아온다.
 
 ## beginner 다음 한 칸 사다리
 
@@ -32,6 +36,18 @@ retrieval-anchor-keywords: queue basics, fifo, 큐 입문, 큐가 뭐예요, que
 
 - 짧게 외우면 `FIFO 도구 -> handoff 계약 -> 유스케이스 입구` 또는 `FIFO 도구 -> BFS`다.
 - `처음`, `왜 queue가 또 나와요`, `queue가 보이는데 운영 문서로 가야 하나요` 같은 질문은 이 사다리에서 한 칸씩만 이동하면 beginner route가 무너지지 않는다.
+
+## queue가 Service 코드에 보일 때 한 번 더 자르기
+
+같은 `queue`라도 beginner가 읽는 장면은 둘로 갈린다. `문제 풀이`인지 `미션 코드 handoff`인지 먼저 자르면 follow-up 문서가 과하게 넓어지지 않는다.
+
+| 지금 보이는 장면 | 먼저 붙일 mental model | 다음 문서 | 아직 미루는 것 |
+|---|---|---|---|
+| `worker에게 순서대로 넘긴다`, `consumer가 꺼낸다` | FIFO handoff 규칙 | [ArrayDeque vs BlockingQueue 서비스 handoff 프라이머](./arraydeque-vs-blockingqueue-service-handoff-primer.md) -> [Service 계층 기초](../software-engineering/service-layer-basics.md) | broker 운영, scheduler deep dive |
+| `격자`, `최소 이동`, `가까운 칸부터` | BFS 구현 도구 | [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | weighted shortest path |
+| `처음 백엔드 미션인데 controller/service/repository 흐름이 먼저 흐려져요` | 미션 입문 primer 복귀 | [우테코 백엔드 미션 선행 개념 입문](../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | system design queue 문서 |
+
+- 짧게 외우면 `handoff면 Service`, `최소 이동이면 BFS`, `미션 흐름이면 선행 개념 primer`다.
 
 ## 핵심 개념
 

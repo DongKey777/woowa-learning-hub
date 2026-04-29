@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: query model basics, read model beginner, query repository basics, query model 뭐예요, read model 뭐예요, query repository 뭐예요, query model 큰 그림, 처음 query model 헷갈림, 조회 전용 모델 기초, 목록 api 엔티티 분리, 목록 api 때문에 repository가 비대해져요, write model read model 차이, query model과 response model 차이, 왜 query model을 나누나요, same database read model
+retrieval-anchor-keywords: query model basics, read model beginner, query model 뭐예요, read model 뭐예요, query repository 뭐예요, 처음 배우는데 query model, 처음 query model 헷갈림, query model 처음 질문, 목록 조회용 repository 뭐예요, dao랑 query repository 차이, 언제 query repository 쓰나요, 왜 query model을 나누나요, 목록 화면 때문에 엔티티가 커져요, query model과 response model 차이, same database read model
 <details>
 <summary>Table of Contents</summary>
 
@@ -39,7 +39,24 @@ retrieval-anchor-keywords: query model basics, read model beginner, query reposi
 > - [Event Sourcing, CQRS Adoption Criteria](./event-sourcing-cqrs-adoption-criteria.md)
 > - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 >
-> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model, helper snapshot bloat, helper snapshot vs response dto, command support data, dao vs query model, query repository 언제 쓰는지, read model 언제 필요해요, query model과 response model 차이, write model read model 차이, 목록 api에서 엔티티가 비대해져요, 조회 화면 때문에 repository 메서드가 많아져요, 처음 query model 헷갈림, query model 첫 질문, read model 큰 그림
+> retrieval-anchor-keywords: query model separation, read-heavy api, cqrs lite, dedicated query repository, query repository, read model separation, response model separation, list detail api model, projection repository, aggregate vs projection, write entity stretching, list screen query model, detail screen query model, beginner cqrs lite, same database read model, helper snapshot bloat, helper snapshot vs response dto, command support data, dao vs query model, dao랑 query repository 차이, query repository 언제 쓰는지, dao로 충분한 경우, read model 언제 필요해요, query model과 response model 차이, 조회용 dto와 query model 차이, write model read model 차이, 목록 api에서 엔티티가 비대해져요, 목록 화면 때문에 엔티티가 커져요, 조회 화면 때문에 repository 메서드가 많아져요, 목록 조회용 repository 뭐예요, 조회 화면용 repository 뭐예요, 처음 query model 헷갈림, 처음 배우는데 query model, query model 첫 질문, read model 큰 그림
+
+## 처음 질문이면 이렇게 잡기
+
+이 문서는 특히 아래 같은 첫 질문을 query model primer로 안전하게 받기 위해 만들어졌다.
+
+| 처음 나오는 말 | 이 문서의 먼저 볼 자리 | 바로 다음 안전한 문서 |
+|---|---|---|
+| "`query model`이 뭐예요?" | [왜 헷갈리는가](#왜-헷갈리는가) | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) |
+| "목록 조회용 `repository`를 따로 둬야 해요?" | [언제 query repository를 꺼낼까](#언제-query-repository를-꺼낼까) | [Same-DB Query Repository Vs Separate Read Store](./same-db-query-repository-vs-separate-read-store.md) |
+| "`DAO`랑 `query repository`는 뭐가 달라요?" | [한 장으로 보는 세 모델](#한-장으로-보는-세-모델) | [Repository, DAO, Entity](./repository-dao-entity.md) |
+| "응답 DTO만 나누면 안 돼요?" | [언제 아직 과한가](#언제-아직-과한가) | [Helper Snapshot Bloat Vs Response DTO Separation](./helper-snapshot-bloat-vs-response-dto-separation.md) |
+
+짧게 먼저 잡으면 이렇다.
+
+- `DAO`는 "테이블 row를 어떻게 읽고 쓰지?"에 가깝다.
+- `query repository`는 "이 목록/검색 화면이 무엇을 읽어야 하지?"에 가깝다.
+- `response DTO`는 "밖으로 어떤 JSON 계약을 보여 주지?"에 가깝다.
 
 ## 왜 헷갈리는가
 

@@ -21,7 +21,7 @@
 > - [Spring `@ConditionalOnProperty` 기본값 함정: `havingValue`, `matchIfMissing`, 환경별 property 차이](./spring-conditionalonproperty-havingvalue-matchifmissing-pitfalls-primer.md)
 > - [Spring `@ConfigurationProperties` Binding Internals](./spring-configurationproperties-binding-internals.md)
 
-retrieval-anchor-keywords: spring external config precedence, external application properties, packaged vs external application yml, application yml inside jar outside jar, external application yml overrides jar, config data order spring boot, spring boot config data precedence, spring config location beginner, spring.config.location replace default locations, spring.config.additional-location add not replace, spring config import beginner, spring.config.import precedence, import relative vs fixed, optional:file config import, external profile overrides packaged profile
+retrieval-anchor-keywords: spring external config precedence, spring application yml 우선순위 뭐예요, application.yml 어디 것이 이겨요, jar 안 application.yml jar 밖 application.yml 차이, packaged vs external application yml, external application yml overrides jar, spring config 큰 그림, spring config 처음 배우는데, spring.config.location 뭐예요, spring.config.import 뭐예요, spring.config.location spring.config.import 차이, application yml precedence 헷갈려요, import relative vs fixed, external profile overrides packaged profile, 언제 spring.config.location 쓰고 언제 spring.config.import 쓰나요
 
 ## 핵심 개념
 
@@ -33,6 +33,12 @@ jar 밖 파일 = 배포 환경이 위에 덧붙인 메모
 spring.config.location = 어떤 노트를 찾을지 선반 자체를 바꾸기
 spring.config.import = 지금 읽는 노트에 다른 노트 한 장 더 끼워 넣기
 ```
+
+처음 질문이 보통 이 셋으로 모인다.
+
+- "`application.yml`이 여러 군데 있으면 뭐가 이겨요?"
+- "`spring.config.location`이랑 `spring.config.import`가 뭐가 달라요?"
+- "jar 안 파일이랑 서버 밖 파일이 섞일 때 큰 그림이 헷갈려요"
 
 같은 key가 여러 곳에 있으면 Spring Boot는 그 값을 합치지 않는다.
 현재 precedence에서 더 높은 곳의 값 하나가 최종 값이 된다.

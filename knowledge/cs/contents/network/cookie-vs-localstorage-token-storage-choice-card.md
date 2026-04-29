@@ -14,7 +14,7 @@
 - [XSS와 CSRF 기초](../security/xss-csrf-basics.md)
 - [CSRF in SPA + BFF Architecture](../security/csrf-in-spa-bff-architecture.md)
 
-retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localstorage 차이, token storage beginner, localstorage token xss, cookie token csrf, httponly cookie vs localstorage, browser automatic cookie sending, authorization header from localstorage, devtools cookie localstorage 위치, application cookies local storage, cookie or localstorage 뭐가 나아요, token 어디 저장해요, cookie vs bearer storage, beginner browser token storage
+retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localstorage 차이, token storage beginner, localstorage token xss, cookie token csrf, httponly cookie vs localstorage, browser automatic cookie sending, authorization header from localstorage, devtools cookie localstorage 위치, application cookies local storage, cookie or localstorage 뭐가 나아요, token 어디 저장해요, 처음 배우는데 cookie localstorage 뭐예요, local storage token but authorization header empty, application local storage token 있는데 authorization header 비어요
 
 ## 핵심 개념
 
@@ -50,6 +50,11 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 - 자동 전송이 필요하면 `cookie` 쪽으로 기운다
 - JS가 직접 헤더를 조립해야 하면 `localStorage` 같은 앱 저장소 쪽 질문이 나온다
 
+증상을 평행하게 읽으면 더 덜 헷갈린다.
+
+- `cookie` 쪽 대표 증상: `Application > Cookies`에는 값이 있는데 같은 요청의 request `Cookie` header가 비어 있다
+- `localStorage` 쪽 대표 증상: `Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 비어 있다
+
 ## 상세 분해
 
 ### 1. `cookie`는 "저장"보다 "자동 전송"이 핵심이다
@@ -73,7 +78,7 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 3. 다음 API 호출 때 JS가 다시 읽는다
 4. JS가 `Authorization: Bearer ...` 헤더를 직접 붙인다
 
-그래서 `localStorage` 쪽은 "브라우저가 왜 안 보내지?"보다 "프런트 코드가 실제로 읽어서 헤더에 넣었나?"를 먼저 본다.
+그래서 `localStorage` 쪽은 "브라우저가 왜 안 보내지?"보다 "`Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 왜 비지?"를 먼저 묻는 편이 안전하다. 첫 확인 포인트는 결국 "프런트 코드가 실제로 읽어서 헤더에 넣었나?"다.
 
 ### 3. XSS와 CSRF가 같은 문제가 아니다
 
@@ -142,7 +147,7 @@ retrieval-anchor-keywords: cookie vs localstorage token storage, cookie localsto
 이 장면에서 초급자가 먼저 볼 곳:
 
 - `Application > Local Storage`에 값이 있는가
-- 실제 API 요청 `Network > Headers`에 `Authorization`이 붙었는가
+- 같은 API 요청 `Network > Headers > Request Headers > Authorization`이 비어 있지 않은가
 - 토큰 만료보다 먼저 "헤더를 코드가 붙였는가"를 확인했는가
 
 ## 더 깊이 가려면

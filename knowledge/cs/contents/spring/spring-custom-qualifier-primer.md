@@ -15,7 +15,7 @@
 - [IoC 컨테이너와 DI](./ioc-di-container.md)
 - [JDBC · JPA · MyBatis 기초](../database/jdbc-jpa-mybatis-basics.md)
 
-retrieval-anchor-keywords: custom qualifier, custom @qualifier, bean name string qualifier, role annotation qualifier, 고정 wiring qualifier, 역할 annotation, 같은 역할 bean 고정 주입, qualifier 반복되면 custom qualifier, bean 이름 계약 vs 역할 계약, 요청마다 선택 아님, nouniquebeandefinitionexception qualifier, custom qualifier not working, 처음 배우는데 qualifier가 반복돼요, custom qualifier 뭐예요, spring custom qualifier primer basics
+retrieval-anchor-keywords: custom qualifier, custom @qualifier, bean name string qualifier, role annotation qualifier, 고정 wiring qualifier, 역할 annotation, 같은 역할 bean 고정 주입, qualifier 반복되면 custom qualifier, bean 이름 계약 vs 역할 계약, 요청마다 선택 아님, nouniquebeandefinitionexception qualifier, custom qualifier not working, 처음 배우는데 qualifier가 반복돼요, 왜 qualifier 문자열이 늘어나요, custom qualifier 뭐예요
 
 ## 1분 비교 카드
 
@@ -336,13 +336,27 @@ beginner 기준으로는 이렇게 외우면 된다.
 
 ---
 
-## 7. 자주 하는 실수
+## 7. 왜 custom qualifier가 안 먹는 것처럼 보이나
 
-### 7-1. "문자열이 보기 싫으니 전부 annotation으로 바꾸자"
+처음에는 아래 표로 먼저 분기하면 된다.
+
+| 지금 보이는 증상 | 더 먼저 의심할 것 | 이유 |
+|---|---|---|
+| "`@Qualifier(\"...\")`가 서비스마다 복붙돼요" | 커스텀 qualifier로 역할 계약 올리기 | 이름 계약이 여러 곳에 새고 있다 |
+| "annotation도 만들었는데 여전히 `NoUniqueBeanDefinitionException`이에요" | `@Qualifier` meta-annotation 누락 또는 주입 지점 부착 누락 | 예쁜 라벨만 생기고 후보 매칭 규칙은 안 생겼을 수 있다 |
+| "왜 요청마다 다른 PG를 못 고르죠?" | qualifier가 아니라 runtime router 문제 | qualifier는 앱 시작 시점의 고정 wiring이다 |
+| "bean을 못 찾는데 qualifier만 바꾸고 있어요" | `scan`/조건 등록 누락 | 후보 자체가 없으면 qualifier 단계가 아니다 |
+
+한 줄 기준: **custom qualifier는 "항상 같은 역할을 미리 꽂아 두는 문제"를 푸는 도구**다.
+`왜 안 먹지?`가 아니라 `지금 문제 축이 고정 wiring인지, 후보 등록인지, runtime 선택인지`를 먼저 자르면 덜 헷갈린다.
+
+## 8. 자주 하는 실수
+
+### 8-1. "문자열이 보기 싫으니 전부 annotation으로 바꾸자"
 
 한두 군데만 쓰는 qualifier까지 전부 커스텀 annotation으로 만들면 타입 수만 늘고 의미는 늘지 않는다.
 
-### 7-2. 구현체 이름을 그대로 annotation 이름으로 옮긴다
+### 8-2. 구현체 이름을 그대로 annotation 이름으로 옮긴다
 
 `@KakaoPaymentClientQualifier`처럼 만들면 문자열을 annotation으로 감싼 것뿐이다.
 
@@ -352,14 +366,14 @@ beginner 기준으로는 이렇게 외우면 된다.
 - `@SettlementGateway`
 - `@WriteDataSource`
 
-### 7-3. runtime 선택 문제를 injection qualifier로 풀려고 한다
+### 8-3. runtime 선택 문제를 injection qualifier로 풀려고 한다
 
 사용자 입력에 따라 PG사를 바꾸는 문제는 커스텀 qualifier보다 strategy registry 문제다.
 
 `"qualifier를 또 추가하면 되지 않나?"`가 반복되면 거의 항상 이 케이스다.
 이때는 같은 주제 심화가 아니라 [Spring 런타임 전략 선택과 `@Qualifier` 경계 분리](./spring-runtime-strategy-router-vs-qualifier-boundaries.md)로 문서를 전환하는 편이 빠르다.
 
-### 7-4. 커스텀 annotation을 만들었는데 후보 선택에 반영되지 않는다
+### 8-4. 커스텀 annotation을 만들었는데 후보 선택에 반영되지 않는다
 
 아래 두 실수가 초반에 가장 흔하다.
 

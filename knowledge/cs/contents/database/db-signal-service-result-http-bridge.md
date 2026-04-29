@@ -11,13 +11,17 @@
 - [Hikari/JPA/MySQL 예외 3버킷 미니 매핑표](./hikari-jpa-mysql-three-bucket-mini-mapping.md)
 - [Version Column Retry Walkthrough](./version-column-retry-walkthrough.md)
 - [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
+- [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](../spring/spring-exception-handling-basics.md)
+- [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: db signal service result http response bridge, database signal to service enum, service outcome enum http mapping, duplicate key busy retryable http response, db exception api response primer, database signal translation beginner, duplicate key 409 200 201 mapping, lock timeout 503 429 mapping, optimistic lock 409 conflict beginner, service layer result enum bridge, db signal to controller response, api response enum translation db, beginner database application bridge, spring controller advice concurrency mapping, @controlleradvice busy retryable conflict mapping
+retrieval-anchor-keywords: db exception api response primer, db signal to service enum, service result enum http mapping, duplicate key busy retryable 차이, duplicate key 나오면 바로 409 인가요, lock timeout 이면 503 인가요, deadlock 이면 http 뭐예요, db 예외를 http로 바로 바꾸나요, db 예외 api 응답 처음 배우는데, service enum 뭐예요, controller advice 에서 뭘 바꿔요, spring db 예외 응답 헷갈려요, db signal to http 큰 그림, duplicate key busy retryable http response, what is service result enum for db exceptions
 
 ## 먼저 잡을 멘탈모델
+
+이 문서는 "`duplicate key`가 떴는데 왜 바로 `409`가 아니에요?", "DB 예외를 HTTP 응답으로 어떻게 옮겨요?" 같은 **첫 질문 모양**을 먼저 받는 beginner bridge다.
 
 초보자는 `duplicate key`나 `deadlock`을 보자마자 바로 `409`, `500` 같은 HTTP 코드로 점프하기 쉽다.
 하지만 중간에 **서비스 결과 enum** 한 층을 두면 해석이 훨씬 쉬워진다.

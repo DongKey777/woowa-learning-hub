@@ -15,7 +15,7 @@
 - [network 카테고리 인덱스](./README.md)
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 
-retrieval-anchor-keywords: redirect vs forward basics, spa navigation basics, redirect forward 차이, 302 vs forward, why url changes after login, why url does not change after login, client side navigation beginner, login redirect confusion, browser new request redirect, spa router navigate basics, 처음 redirect 뭐예요, 헷갈려요 redirect forward
+retrieval-anchor-keywords: redirect vs forward basics, spa navigation basics, redirect forward 차이, 302 vs forward, why url changes after login, why url does not change after login, client side navigation beginner, login redirect confusion, browser new request redirect, spa router navigate basics, 처음 redirect 뭐예요, 헷갈려요 redirect forward, 왜 화면만 바뀌고 url은 그대로예요, what is redirect vs forward
 
 ## 핵심 개념
 
@@ -47,6 +47,37 @@ retrieval-anchor-keywords: redirect vs forward basics, spa navigation basics, re
 | 화면은 홈처럼 보이는데 주소창이 여전히 `/login`이다 | forward | `3xx` 없이 요청 한 줄만 보인다 | 브라우저는 같은 요청 하나만 보냈다 |
 | login API는 `200`인데 URL과 화면이 바뀐다 | SPA navigation | API 성공 뒤 라우터 이동 | 서버 redirect가 아니라 프론트가 이동시켰다 |
 
+## redirect를 prg와 안 섞으려면 method 한 칸을 더 본다
+
+beginner가 자주 묻는 "`왜 화면 이동인데 redirect랑 prg가 둘 다 나오죠?`"는 이동 주체 질문과 `post -> get` 질문이 섞인 경우가 많다. 이 문서에서는 이동 주체를 가르고, `method`가 같이 바뀌면 prg 문서로 한 칸 더 가면 된다.
+
+| 지금 보인 변화 | 먼저 붙일 질문 | 여기서 답하는가 |
+|---|---|---|
+| `302/303`과 `Location`이 보인다 | 누가 브라우저를 다시 움직였는가 | 예, redirect 질문이다 |
+| `post -> get`까지 같이 보인다 | 왜 결과 화면을 `get`으로 다시 열었는가 | 아니오, [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)로 이어진다 |
+| `200` 뒤 프론트 라우터가 url을 바꾼다 | 서버가 아니라 js가 이동시켰는가 | 예, spa navigation 질문이다 |
+
+짧게 말하면 이렇다.
+
+- redirect 문서는 "`누가 이동시켰나`"를 답한다.
+- prg 문서는 "`왜 `post` 뒤 `get`이 보이나`"를 답한다.
+
+## 로그인 장면에서 가장 덜 헷갈리는 읽는 순서
+
+처음에는 "`로그인 성공`"이라는 결과보다 `주소창`, `Network 줄 수`, `누가 이동을 시켰는가`를 이 순서로 보면 된다.
+
+| 먼저 볼 것 | redirect 쪽 신호 | forward 쪽 신호 | SPA navigation 쪽 신호 |
+|---|---|---|---|
+| 주소창 | `/login`에서 `/home`으로 바뀐다 | 보통 `/login` 그대로다 | JS가 바꾸면 바뀔 수 있다 |
+| Network 줄 수 | `POST /login` 뒤 `GET /home`이 한 줄 더 보인다 | 요청 한 줄만 보인다 | login API 한 줄 뒤 문서 이동 없이 화면만 바뀔 수 있다 |
+| 이동 주체 | 서버 응답 `Location` | 서버 내부 dispatcher/view | 프론트 라우터 코드 |
+
+짧게 고정하면 이렇다.
+
+- 주소창과 요청이 둘 다 한 번 더 바뀌면 redirect부터 의심한다.
+- 주소창이 그대로인데 화면만 달라지면 forward 가능성을 먼저 본다.
+- API는 `200`인데 프론트가 알아서 넘기면 SPA navigation 질문이다.
+
 ## 처음 보는 사람용 10초 판별표
 
 | 먼저 던질 질문 | `예`면 더 가까운 쪽 | `아니오`면 다음 질문 |
@@ -73,6 +104,7 @@ retrieval-anchor-keywords: redirect vs forward basics, spa navigation basics, re
 | "`화면은 바뀌었는데 주소창이 그대로예요`" | forward | 서버 안에서 같은 요청을 넘겼을 가능성이 있다 |
 | "`API는 200인데 프론트가 알아서 페이지를 바꿔요`" | SPA navigation | 서버 redirect보다 프론트 라우터 질문일 가능성이 높다 |
 | "`왜 POST 다음 GET이 보여요?`" | PRG | 이동 주체보다 form submit 흐름 질문일 수 있다 |
+| "`왜 302도 보이고 화면도 성공처럼 떠요?`" | redirect | `302`는 중간 안내이고 최종 화면은 이어진 `get -> 200`일 수 있다 |
 
 ## 한 번에 보는 예시
 
@@ -81,6 +113,8 @@ retrieval-anchor-keywords: redirect vs forward basics, spa navigation basics, re
 | `POST /login -> 303 -> GET /home` | 요청이 두 줄이고 URL도 바뀐다 | redirect |
 | `POST /login -> 200` 한 줄인데 화면만 홈처럼 바뀐다 | 서버 안에서 view만 바뀌었다 | forward |
 | `POST /api/login -> 200` 뒤 `router.push('/home')` | API 성공 후 JS가 이동했다 | SPA navigation |
+
+여기서 "`왜 `POST` 다음에 `GET`이 보여요?`"까지 같이 붙으면 이동 방식 질문만으로는 부족하다. 그때는 이 문서에서 멈추지 말고 [Post/Redirect/Get(PRG) 패턴 입문](./post-redirect-get-prg-beginner-primer.md)으로 바로 넘어가 "`결과 화면을 왜 `GET`으로 다시 여는가`"를 같이 잡는 편이 더 빠르다.
 
 ## 흔한 오해
 

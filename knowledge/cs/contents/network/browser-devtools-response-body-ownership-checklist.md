@@ -6,14 +6,17 @@
 
 관련 문서:
 
+- [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)
+- [CDN Error HTML vs App Error JSON Decision Card](./cdn-error-html-vs-app-json-decision-card.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
 - [Browser DevTools `502` vs `504` vs App `500` 분기 카드](./browser-devtools-502-504-app-500-decision-card.md)
 - [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)
 - [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
+- [Spring 커스텀 Error DTO에서 `ProblemDetail`로 넘어가는 초급 handoff primer](../spring/spring-custom-error-dto-to-problemdetail-handoff-primer.md)
 - [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: devtools response body ownership, json or html devtools, gateway json vs app json, proxy json error devtools, login html instead of json, gateway default page devtools, response preview checklist, content-type first pass, api response body beginner, why html instead of json, why gateway returns json, application/json but not app, 처음 devtools body, 헷갈리는 login html, browser devtools response owner
+retrieval-anchor-keywords: devtools response body ownership, gateway json vs app json, proxy json error devtools, login html instead of json, gateway default page devtools, response preview checklist, api response body beginner, why html instead of json, why gateway returns json, application/json but not app, gateway problem+json vs app error contract, vendor error envelope example, 처음 devtools body, 헷갈리는 login html, browser devtools response owner
 
 ## 핵심 개념
 
@@ -50,6 +53,8 @@ login form/html + /login 흔적 -> auth/login HTML 후보
 브랜드된 edge 에러 html -> CDN 후보
 짧은 Bad Gateway/Gateway Timeout html -> gateway 기본 페이지 후보
 ```
+
+`502`/`504` JSON에서 `title/detail/status`와 `errorCode/message/traceId`를 30초 안에 가르고 싶다면 [Gateway JSON vs App JSON Tiny Card](./gateway-json-vs-app-json-tiny-card.md)를 바로 붙여 읽으면 된다.
 
 ## 1분 체크리스트
 
@@ -127,6 +132,18 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 - status가 app 내부 예외보다 gateway 계열 `502`/`503`/`504`에 가깝다
 - `Server`, `Via`, vendor header가 눈에 띈다
 - 서비스 공통 `errorCode`/`traceId` 규칙보다 generic `status`, `title`, `detail` 또는 vendor field가 더 강하다
+
+## payload 미니 예시 3개
+
+처음 질문은 "JSON이면 다 app 에러 아닌가요?"다. 아래 3개를 나란히 보면 **필드 말투**가 다르다.
+
+| 장면 | payload 예시 | 초급자 첫 해석 |
+|---|---|---|
+| app 커스텀 계약 | `{ "errorCode": "ORDER_NOT_FOUND", "message": "주문 42를 찾을 수 없습니다.", "traceId": "9f1c2a7e" }` | 도메인 `errorCode`와 서비스 문장이 보이면 app JSON 후보가 강하다 |
+| gateway generic `problem+json` | `{ "type": "about:blank", "title": "Gateway Timeout", "status": 504, "detail": "Upstream service did not respond in time." }` | `type/title/status/detail`만 있고 `504`면 app보다 gateway local reply 후보를 같이 연다 |
+| vendor/gateway envelope | `{ "error": "upstream_failure", "reason": "connection reset before headers", "request_id": "gw-12ab34cd", "upstream": "order-service" }` | `reason`, `request_id`, `upstream`가 먼저 보이면 운영용 gateway/vendor envelope 후보가 강하다 |
+
+짧게 외우면 `errorCode/message/traceId -> app`, `type/title/status/detail -> generic problem+json`, `error/reason/request_id -> vendor envelope`이다. 그래도 필드만 보지 말고 **status와 `Server`/`Via`를 같이 묶어 owner를 본다**.
 
 ## HTML owner를 이렇게 읽는다
 
@@ -215,6 +232,7 @@ gateway가 항상 기본 HTML만 준다고 외우면 초급자 분기가 쉽게 
 - auth failure가 `401`/`403`, `302`, login HTML `200`으로 어떻게 달라 보이는지 보려면 [API Gateway Auth Failure Surface Map: `401`/`403`, `302`, Login HTML 구분 입문](./api-gateway-auth-failure-surface-map.md)
 - header 기준으로 CDN/proxy/app 흔적을 더 붙여 읽고 싶으면 [Browser DevTools `Server` / `Via` / `X-Request-Id` 1분 헤더 카드](./browser-devtools-gateway-error-header-clue-card.md)
 - browser page auth UX와 raw auth 계약 차이를 보려면 [Browser `401` vs `302` Login Redirect Guide](../security/browser-401-vs-302-login-redirect-guide.md)
+- branded CDN 에러 HTML과 app-owned JSON만 30초 안에 먼저 가르고 싶으면 [CDN Error HTML vs App Error JSON Decision Card](./cdn-error-html-vs-app-json-decision-card.md)
 
 ## 면접/시니어 질문 미리보기
 

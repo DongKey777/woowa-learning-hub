@@ -12,6 +12,7 @@
 - [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md)
 - [Map 구현체 선택 미니 드릴](./map-implementation-selection-mini-drill.md)
 - [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
+- [`ConcurrentHashMap` Compound Actions and Hot-Key Contention](./concurrenthashmap-compound-actions-hot-key-contention.md)
 
 retrieval-anchor-keywords: hashmap null key null value, hashtable null not allowed, concurrenthashmap null key value, map.of null exception, java map null policy beginner, 자바 hashmap null 허용, 자바 concurrenthashmap null 왜 안돼, 자바 map.of null 안됨, map implementation null difference, map null safety bridge, null key value 비교표, beginner map null primer
 
@@ -74,7 +75,8 @@ Map<String, String> broken = Map.of("B", null); // NullPointerException
 - key는 있는데 value가 `null`
 
 `ConcurrentHashMap`은 이 모호함을 아예 막으려고 `null`을 금지한다.
-그래서 동시성 코드에서는 "`없음`과 `null 값` 구분" 문제를 줄이기 쉽다.
+그래서 beginner 첫 읽기에서는 "`동시성 map은 null 없이 읽는 쪽`"까지만 기억하면 충분하다.
+복합 연산이나 hot-key contention 같은 운영형 주제는 여기서 파지 말고 follow-up 문서로 넘긴다.
 
 ## `Map.of(...)`는 왜 `null`을 막을까
 
@@ -118,6 +120,7 @@ Map<String, String> broken = Map.of("B", null); // NullPointerException
 | "`Map.of(...)`와 `Map.copyOf(...)`는 읽기 전용에서 뭐가 다르지?" | [`Map.of` vs `Map.copyOf` vs `Collections.unmodifiableMap` 읽기 전용 브리지](./map-of-copyof-unmodifiablemap-readonly-bridge.md) |
 | "아예 어떤 map 구현체를 먼저 골라야 할지 헷갈린다" | [Map 구현체 선택 미니 드릴](./map-implementation-selection-mini-drill.md) |
 | "반복 순서까지 같이 비교하고 싶다" | [Map 구현체별 반복 순서 치트시트](./hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md) |
+| "`ConcurrentHashMap`을 실무에서 더 깊게 봐야 한다" | [`ConcurrentHashMap` Compound Actions and Hot-Key Contention](./concurrenthashmap-compound-actions-hot-key-contention.md) |
 
 ## 한 줄 정리
 

@@ -109,6 +109,37 @@ public class OrderService {
 | 테스트에서 가짜 객체 넣기 | 어렵다 | 생성자에 mock을 넣기 쉽다 |
 | 서비스 관심사 | 구현체 선택까지 같이 떠안음 | 비즈니스 로직에 더 집중 |
 
+## 같은 주문 요청에서 어디까지가 DI 질문인가
+
+처음에는 `POST /orders` 같은 한 장면에서 MVC, Bean 등록, `@Transactional`이 전부 같이 보여서 "`DI가 요청도 처리하나요?`"처럼 섞여 묻기 쉽다. 이럴 때는 아래 표로 질문 축부터 다시 자르면 된다.
+
+| 같은 주문 요청에서 보이는 장면 | 이걸 담당하는 축 | 지금 문서가 답하는가 |
+|---|---|---|
+| `/orders`가 어떤 컨트롤러로 가는가 | MVC 길찾기 | 아니오. [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
+| `OrderController` 안 `OrderService`는 누가 넣어 뒀나 | IoC/DI | 예. 이 문서 중심 질문이다 |
+| `OrderService`와 `OrderRepository`를 Spring이 후보로 등록했나 | Bean 등록 / component scan | 일부만 다룬다. 다음은 [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| `placeOrder()` 앞뒤에 commit/rollback이 왜 붙나 | 트랜잭션 프록시 | 아니오. [@Transactional 기초](./spring-transactional-basics.md) |
+
+짧게 외우면 이렇다.
+
+- MVC는 "`어디로 가나`"다.
+- IoC/DI는 "`누가 연결했나`"다.
+- Bean 문서는 "`그 후보를 어떻게 등록했나`"다.
+- `@Transactional`은 "`어디까지 묶나`"다.
+
+## 같은 `POST /orders`라도 먼저 보는 곳이 다르다
+
+초급자에게 가장 흔한 혼동은 "`controller`, `service`, `transaction`이 한 요청에서 같이 보이니까 다 DI 이야기겠지"라고 묶어 버리는 것이다. 실제로는 같은 주문 요청도 질문 축이 다르면 먼저 보는 문서가 달라진다.
+
+| 지금 먼저 튀어나온 말 | 먼저 보는 축 | 한 줄 판단 |
+|---|---|---|
+| "`/orders`가 왜 이 메서드로 안 가요?" | MVC | URL/HTTP 메서드 매핑과 바인딩 질문이다 |
+| "`OrderService`는 누가 넣어 둔 거예요?" | IoC/DI | 객체 조립 책임이 컨테이너로 넘어간 장면이다 |
+| "`bean missing`이 나요" | Bean 등록 | 후보를 scan하거나 `@Bean`으로 올렸는지 먼저 본다 |
+| "`save()`는 됐는데 rollback이 이상해요" | 트랜잭션 | DI보다 service 경계와 프록시 호출을 먼저 본다 |
+
+짧게 외우면 `요청은 MVC`, `연결은 DI`, `후보 등록은 Bean`, `작업 묶음은 @Transactional`이다. 그래서 같은 `POST /orders` 장면을 보더라도 "`누가 연결했나`"가 질문일 때만 이 문서가 정답에 가장 가깝다.
+
 ## 흔한 오해와 함정
 
 **오해 1: DI를 쓰면 코드가 복잡해진다**
@@ -169,6 +200,15 @@ HTTP 요청 (예: GET /orders/1)
 ```
 
 핵심은 "요청은 MVC가 받고, 객체 연결은 DI가 맡는다"는 분리다.
+
+처음 헷갈릴 때는 같은 장면을 아래처럼 다시 읽으면 된다.
+
+| 먼저 떠오른 말 | 1차 판단 | 지금 바로 볼 문서 |
+|---|---|---|
+| "`왜 new 대신 주입해요?`" | 구현체 선택 책임을 밖으로 밀고 싶은가 | 이 문서 |
+| "`bean`이 뭐예요?", "`component scan`은 뭐예요?" | 후보를 어떻게 등록하는지가 궁금한가 | [Spring Bean과 DI 기초](./spring-bean-di-basics.md) |
+| "`@Transactional`이 왜 안 먹어요?" | 호출 경계와 프록시 문제인가 | [@Transactional 기초](./spring-transactional-basics.md) |
+| "`404`, `400`이 먼저 보여요" | 요청 길찾기/바인딩 문제인가 | [Spring MVC 요청 생명주기 기초](./spring-mvc-request-lifecycle-basics.md) |
 
 ## 더 깊이 가려면
 

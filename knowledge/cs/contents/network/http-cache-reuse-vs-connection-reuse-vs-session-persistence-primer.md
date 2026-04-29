@@ -117,19 +117,9 @@ retrieval-anchor-keywords: http cache vs keep-alive vs session, cache reuse vs c
 
 - `304`, `ETag`, `Cache-Control` 흐름을 더 자세히 보려면 [HTTP 캐싱과 조건부 요청 기초: Cache-Control, ETag, Last-Modified, 304](./http-caching-conditional-request-basics.md)
 - 브라우저가 `Set-Cookie`를 저장하고 다음 요청에 `Cookie`를 붙이는 흐름은 [Cookie / Session / JWT 브라우저 흐름 입문](./cookie-session-jwt-browser-flow-primer.md)
-- keep-alive와 TCP keepalive 차이까지 보고 싶다면 [HTTP Keep-Alive와 커넥션 재사용 기초](./keepalive-connection-reuse-basics.md), [TCP Keepalive vs App Heartbeat](./tcp-keepalive-vs-app-heartbeat.md)
+- keep-alive를 먼저 기초 수준에서 분리하고 싶다면 [HTTP Keep-Alive와 커넥션 재사용 기초](./keepalive-connection-reuse-basics.md)
+- 운영형 keepalive 튜닝이나 heartbeat 차이는 그다음에 [TCP Keepalive vs App Heartbeat](./tcp-keepalive-vs-app-heartbeat.md)
 - session을 서버 저장 방식 관점에서 비교하려면 [Signed Cookies / Server Sessions / JWT Tradeoffs](../security/signed-cookies-server-sessions-jwt-tradeoffs.md)
-
-## 면접/시니어 질문 미리보기
-
-**Q. HTTP cache와 session의 차이는 무엇인가요?**
-cache는 응답 재사용으로 성능을 높이는 기능이고, session은 여러 요청 사이에서 사용자 상태를 이어 가는 방식이다.
-
-**Q. Keep-Alive가 켜져 있으면 로그인이 유지되나요?**
-아니다. keep-alive는 연결 재사용이다. 로그인 유지 여부는 cookie, session store, token 검증 같은 인증 상태 설계가 결정한다.
-
-**Q. `304 Not Modified`가 떴다는 것은 무엇이 유지됐다는 뜻인가요?**
-기존 응답 body를 계속 써도 된다는 뜻이다. 로그인 상태 유지나 연결 유지와는 다른 축이다.
 
 ## 한 줄 정리
 

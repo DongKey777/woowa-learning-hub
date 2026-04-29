@@ -48,6 +48,14 @@ beginner troubleshooting route는 `[catalog] -> [primer] -> [primer bridge] -> [
 `처음`, `system design 뭐부터`, `헷갈려요`, `what is`, `basics` 같은 질문이면 이 README 안에서도 `초심자 1회차 라우트`, `Primer Route`, `Beginner Entrypoints`만 먼저 본다.
 `case study`, `replay`, `cutover`, `retirement`, `incident`, `recovery`라는 단어가 먼저 보이는 구간은 "지금 advanced 운영/설계 과제가 붙었을 때 여는 follow-up"으로 해석하는 편이 안전하다.
 
+처음 3클릭만 고르면 아래처럼 고정하면 된다.
+
+| 지금 드는 질문 | 먼저 여는 shelf | 아직 첫 클릭으로 올리지 않는 것 |
+|---|---|---|
+| `system design 뭐예요`, `처음`, `basics` | `초심자 1회차 라우트` 또는 `Primer Route` | `Case Study`, `Replay and Cutover`, `Retirement` |
+| `왜 stale 해요`, `왜 숫자가 달라요`, `헷갈려요` | `Consistency Primer Route`, `Notification Consistency Route`, `Stale Triage Entrypoints` | incident bridge 전체를 primer처럼 읽기 |
+| `장애 대응`, `복구`, `cutover`, `retirement`가 이미 질문 중심 | 해당 follow-up bridge / route | beginner primer를 live response playbook처럼 기대하기 |
+
 | 헷갈리는 역할 | 이 README에서 뜻하는 것 | 초보자용 첫 진입점 |
 |---|---|---|
 | `survey` | 넓게 훑으며 다음 문서를 고르는 route overview | 아래 `survey / primer부터 읽고 싶다면` 묶음 |
@@ -198,14 +206,14 @@ consistency guarantee 용어를 먼저 구분하고 싶다면:
   - [캐시 기초](./caching-basics.md)
   - [수평 확장과 수직 확장 기초](./horizontal-vs-vertical-scaling-basics.md)
   - [Stateless vs Stateful 서비스 기초](./stateless-vs-stateful-basics.md)
-## Case Study Entrypoints
+## Case Study Entrypoints (`deep dive`, follow-up)
 
 `Beginner Entrypoints`를 한 번 돈 뒤, "설계를 문제 형태로 묶어 보고 싶다"는 시점에만 내려오는 follow-up 묶음이다.
   - [URL 단축기 설계](./url-shortener-design.md)
   - [Rate Limiter 설계](./rate-limiter-design.md)
   - [분산 캐시 설계](./distributed-cache-design.md)
   - [Payment System / Ledger / Idempotency / Reconciliation](./payment-system-ledger-idempotency-reconciliation-design.md)
-## Replay and Cutover Entrypoints
+## Replay and Cutover Entrypoints (`system design`, follow-up)
 
 이 구간은 primer가 아니라 migration / replay / cutover 고급 전환 묶음이다. junior reader는 consistency primer나 database bridge를 먼저 읽고, 실제 cutover owner 관점 질문이 붙을 때만 내려온다.
   - [Outbox Watermark Token Primer](./outbox-watermark-token-primer.md)
@@ -217,35 +225,35 @@ consistency guarantee 용어를 먼저 구분하고 싶다면:
   - [Dual-Read Comparison / Verification Platform](./dual-read-comparison-verification-platform-design.md)
   - [Tenant Split-Out with Service Identity Rollout](./tenant-split-out-service-identity-rollout-design.md)
   - [Dedicated Cell Drain and Retirement](./dedicated-cell-drain-retirement-design.md)
-## Analytics Correction Entrypoints
+## Analytics Correction Entrypoints (`system design`, follow-up)
 
 이 구간도 운영형 follow-up이다. 입문 질문이라면 `Notification Consistency Route`나 `Consistency Check Route`에서 용어를 먼저 고정한다.
   - [Historical Backfill / Replay Platform](./historical-backfill-replay-platform-design.md)
   - [Analytics Late Data Reconciliation](./analytics-late-data-reconciliation-design.md)
   - [Dashboard Restatement UX](./dashboard-restatement-ux-design.md)
   - [Alert Re-Evaluation / Correction](./alert-reevaluation-correction-design.md)
-## Stale Triage Entrypoints
+## Stale Triage Entrypoints (`primer bridge`)
 
 first-response stale triage를 먼저 익히려면:
   - [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
   - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
   - [First 15-Minute Triage Flow Card](./first-15-minute-triage-flow-card.md)
   - [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
-## Security + System Design Route
+## Security + System Design Route (`cross-category bridge`, follow-up)
 
 `[cross-category bridge]` [Security + System Design](../../rag/cross-domain-bridge-map.md#security--system-design) route로 바로 들어가려면:
   - `[system design]` [Security / System-Design Incident Bridge](#system-design-security-incident-bridge)
   - `[catalog]` [Security: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)
   - `[catalog]` [Security: Hardware Trust / Recovery deep dive catalog](../security/README.md#hardware-trust--recovery-deep-dive-catalog)
   - `[catalog]` [Security: Replay / Token Misuse / Session Defense deep dive catalog](../security/README.md#replay--token-misuse--session-defense-deep-dive-catalog)
-## Spring + Security Route
+## Spring + Security Route (`cross-category bridge`, follow-up)
 
 `[cross-category bridge]` [Spring + Security](../../rag/cross-domain-bridge-map.md#spring--security) route로 바로 들어가려면:
   - `[system design]` [Auth Session Troubleshooting Bridge](#system-design-auth-session-troubleshooting-bridge)
   - `[catalog]` [Security: Browser / Session Troubleshooting Path](../security/README.md#browser--session-troubleshooting-path)
   - `[deep dive]` [Spring `SecurityContextRepository` and `SessionCreationPolicy` Boundaries](../spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md)
   - `[deep dive]` [Spring Security `RequestCache` / `SavedRequest` Boundaries](../spring/spring-security-requestcache-savedrequest-boundaries.md)
-## Retirement Route
+## Retirement Route (`system design`, advanced follow-up)
 
 이 구간은 irreversible cleanup / retirement follow-up이다. beginner entrypoint가 아니며, overlap 검증과 cutover owner 경계가 이미 잡힌 뒤에만 연다.
   - [Decommission / Retirement Cluster](#system-design-decommission-retirement-cluster)
@@ -255,14 +263,14 @@ first-response stale triage를 먼저 익히려면:
   - [Adapter Retirement / Compatibility Bridge Decommission](./adapter-retirement-compatibility-bridge-decommission-design.md)
   - [Dedicated Cell Drain and Retirement](./dedicated-cell-drain-retirement-design.md)
   - [Cleanup Point-of-No-Return](./cleanup-point-of-no-return-design.md)
-## Database + Security + System Design Route
+## Database + Security + System Design Route (`cross-category bridge`)
 
 `[cross-category bridge]` [Database + Security + System Design](../../rag/cross-domain-bridge-map.md#database--security--system-design) route로 바로 들어가려면:
   - `[cross-category bridge]` [Database: Identity / Authority Transfer 브리지](../database/README.md#database-bridge-identity-authority)
   - `[cross-category bridge]` [Security: Identity / Delegation / Lifecycle](../security/README.md#identity--delegation--lifecycle)
   - `[system design]` [Database / Security Authority Bridge](#system-design-database-security-authority-bridge)
   - `[system design]` [Verification / Shadowing / Authority Bridge](#system-design-verification-shadowing-authority-bridge)
-## Database + System Design Route
+## Database + System Design Route (`primer -> deep dive`)
 
 [Database + System Design](../../rag/cross-domain-bridge-map.md#database--system-design) route부터 잡고 싶다면:
   - [Database Scaling Primer](./database-scaling-primer.md)
@@ -276,7 +284,7 @@ first-response stale triage를 먼저 익히려면:
   - [Session Guarantees Decision Matrix](./session-guarantees-decision-matrix.md)
   - [List-Detail Monotonicity Bridge](./list-detail-monotonicity-bridge.md)
   - [Search Hit Overlay Pattern](./search-hit-overlay-pattern.md)
-## Database + Notification Consistency Route
+## Database + Notification Consistency Route (`primer -> primer bridge`)
 
   - [Causal Consistency Notification Primer](./causal-consistency-notification-primer.md)
   - [Notification Causal Token Walkthrough](./notification-causal-token-walkthrough.md)
@@ -286,12 +294,12 @@ first-response stale triage를 먼저 익히려면:
   - [Trace Attribute Freshness / Read-Source Bridge](./trace-attribute-freshness-read-source-bridge.md)
   - [Rejected-Hit Observability Primer](./rejected-hit-observability-primer.md)
   - [Mixed Cache+Replica Read Path Pitfalls](./mixed-cache-replica-read-path-pitfalls.md)
-## Database + Read Model Expansion Route
+## Database + Read Model Expansion Route (`deep dive`, follow-up)
 
   - [Change Data Capture / Outbox Relay](./change-data-capture-outbox-relay-design.md)
   - [Dual-Read Comparison / Verification Platform](./dual-read-comparison-verification-platform-design.md)
   - [Database: Schema Migration, Partitioning, CDC, CQRS](../database/schema-migration-partitioning-cdc-cqrs.md)
-## Read Model Cross-Category Route
+## Read Model Cross-Category Route (`cross-category bridge`, follow-up)
 
 [Design Pattern / Read Model + Database + System Design](../../rag/cross-domain-bridge-map.md#design-pattern--read-model--database--system-design) route로 확장하려면:
   - [Design Pattern: Read Model Staleness and Read-Your-Writes](../design-pattern/read-model-staleness-read-your-writes.md)

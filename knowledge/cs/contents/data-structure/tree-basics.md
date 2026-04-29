@@ -8,10 +8,22 @@
 
 - [Binary Tree vs BST vs Heap Bridge](./binary-tree-vs-bst-vs-heap-bridge.md)
 - [Binary Tree Traversal Routing Guide](./binary-tree-traversal-routing-guide.md)
+- [그래프 기초](./graph-basics.md)
 - [자료구조 정리](./README.md)
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 
-retrieval-anchor-keywords: tree basics, binary tree intro, 트리 입문, 트리가 뭐예요, root node leaf node, parent child node, tree depth height, 트리 깊이 높이, 이진트리 설명, 트리 순회 입문, beginner tree, tree vs graph, tree basics basics, tree basics beginner, tree basics intro
+retrieval-anchor-keywords: tree basics, beginner tree, 트리 입문, 트리가 뭐예요, 트리 처음 배우는데, 트리 기초, 트리 큰 그림, 트리 왜 써요, 트리 언제 쓰는지, root node leaf node, tree depth height, 트리 순회 입문, tree vs graph, 트리와 그래프 차이, 부모 자식 구조 뭐예요
+
+## 이 문서가 먼저 잡는 질문
+
+이 문서는 아래처럼 `처음 배우는데 큰 그림이 없는 질문`에 먼저 답하려는 입문 프라이머다.
+
+| 처음 나온 질문 | 이 문서에서 먼저 잡을 한 줄 | 다음 문서 |
+|---|---|---|
+| `트리가 뭐예요?` | 부모-자식으로 내려가는 계층 구조다 | 이 문서 |
+| `트리와 그래프는 뭐가 달라요?` | 트리는 사이클이 없고 경로가 하나로 정해진다 | [그래프 기초](./graph-basics.md) |
+| `루트/리프/깊이`가 왜 자꾸 나와요? | 트리를 읽는 최소 어휘라서 그렇다 | 이 문서 |
+| `트리 순회는 언제 배워요?` | 구조를 먼저 이해한 뒤 탐색 순서를 붙인다 | [Binary Tree Traversal Routing Guide](./binary-tree-traversal-routing-guide.md) |
 
 ## 핵심 개념
 
@@ -22,6 +34,7 @@ retrieval-anchor-keywords: tree basics, binary tree intro, 트리 입문, 트리
 
 - 그래프는 사이클이 있을 수 있지만, 트리는 사이클이 없다.
 - 연결 리스트는 트리의 특수한 형태(각 노드의 자식이 최대 1개)로 볼 수 있다.
+- `왜 굳이 트리라고 따로 부르지?`라는 질문에는 `계층 관계를 잃지 않고 내려가기 쉬운 구조`라서라고 답하면 된다.
 
 핵심 용어를 먼저 잡아두면 이후 설명이 쉽다.
 

@@ -10,11 +10,12 @@
 - [HashMap, TreeMap, LinkedHashMap Beginner Selection Primer](./hashmap-treemap-linkedhashmap-beginner-selection-primer.md)
 - [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
+- [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)
 - [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 - [Interval Greedy Patterns](../algorithm/interval-greedy-patterns.md)
 
-retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, treemap reservation end time beginner, floorentry value reservation lookup, ceilingentry value next reservation end, treemap entry getvalue drill, treemap key to entry beginner, reservation gap check end time, floorentry getvalue null check, ceilingentry getvalue null check, floor key 찾았는데 종료 시각, treemap 종료 시각 읽기, ordered map reservation value read, calendar booking entry lookup, beginner treemap interval follow up, floorentry vs floorkey beginner
+retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, treemap exact match floorentry ceilingentry, floorentry exact match getvalue, ceilingentry exact match getvalue, entry로 바꾸면 종료 시각 읽기, treemap key to entry beginner, floorentry value reservation lookup, ceilingentry value next reservation end, floorentry getvalue null check, ceilingentry getvalue null check, floor key 찾았는데 종료 시각, exact match 포함 value read, treemap 종료 시각 읽기, ordered map reservation value read, floorentry vs floorkey beginner
 
 ## 왜 key에서 entry로 한 단계 더 가나
 
@@ -24,6 +25,11 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 이번에는 질문이 하나 더 붙는다.
 
 > 시작 시각만 찾지 말고, 그 예약이 언제 끝나는지도 바로 읽을 수 있나?
+
+초보자 검색 문장으로 바꾸면 거의 아래 둘이다.
+
+- `exact match가 있으면 floorEntry도 그 자리를 잡아요?`
+- `entry로 바꾸면 뭐가 더 읽혀요?`
 
 그래서 key-only 버전과 entry 버전을 이렇게 나눠 보면 된다.
 
@@ -49,6 +55,12 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 예약 문제에서 초보자가 자주 막히는 지점은 "`floorKey`로 `10:30`을 찾았는데, 그 예약이 몇 시에 끝나는지는 또 어디서 읽지?"다.
 이때 `floorEntry`/`ceilingEntry`를 쓰면 같은 질문 안에서 시작과 끝을 한 번에 붙일 수 있다.
 
+그리고 `exact match 포함 여부`는 여기서도 그대로다.
+
+- `floorEntry` / `ceilingEntry`는 exact match를 포함한다.
+- `lowerEntry` / `higherEntry`는 exact match를 제외한다.
+- `entry로 바꾸면` value를 같이 읽는 것이지, strict/inclusive 규칙이 바뀌는 것은 아니다.
+
 ## 한눈에 보기
 
 예약표를 `TreeMap<start, end>`로 저장했다고 하자.
@@ -70,6 +82,15 @@ retrieval-anchor-keywords: treemap floorentry ceilingentry value read drill, tre
 | `ceilingEntry(11:00)` | `13:00 -> 14:00` | 오른쪽 예약의 시작과 끝을 같이 읽는다 |
 
 즉 `Key`는 "시간표 줄 번호"만 주고, `Entry`는 "그 줄의 내용"까지 같이 준다고 보면 된다.
+
+`entry로 바꾸면` 생기는 변화와 안 생기는 변화를 같이 보면 더 안전하다.
+
+| 질문 | 바뀌는 것 | 안 바뀌는 것 |
+|---|---|---|
+| `floorKey` -> `floorEntry` | `getValue()`로 종료 시각까지 읽는다 | exact match 포함 |
+| `ceilingKey` -> `ceilingEntry` | 다음 예약의 종료 시각까지 읽는다 | exact match 포함 |
+
+즉 `entry로 바꾸면` "같은 자리를 더 많이 찾는 것"이 아니라 "찾은 자리에서 읽는 정보가 늘어나는 것"이다.
 
 ## 10초 코드 감각
 
@@ -103,6 +124,12 @@ if (prev != null) {
 
 왜냐하면 `floorEntry(10:30)`은 exact match인 `10:30 -> 11:00`을 돌려주기 때문이다.
 
+초보자 메모:
+
+- `floorKey(10:30)`은 `10:30`만 준다.
+- `floorEntry(10:30)`은 exact match인 `10:30 -> 11:00`을 준다.
+- 그래서 `entry로 바꾸면` exact match 규칙이 바뀌는 게 아니라 종료 시각을 바로 읽을 수 있게 된다.
+
 ### 문제 2. 두 예약 사이에서 바로 이전 예약 끝 읽기
 
 질문: `floorEntry(11:00)`의 `getValue()`는?
@@ -120,6 +147,14 @@ if (prev != null) {
 
 해석: 오른쪽 첫 예약은 `13:00 -> 14:00`이다.
 `ceilingKey(11:00)`만 보면 `13:00`까지만 알지만, `ceilingEntry(11:00)`를 쓰면 종료 시각까지 바로 붙는다.
+
+같은 감각으로 exact match도 확인해 보자.
+
+질문: `ceilingEntry(13:00)`의 `getValue()`는?
+
+정답: `14:00`
+
+이유: `ceiling`도 exact match를 포함하므로 `13:00 -> 14:00`에서 멈춘다.
 
 ### 문제 4. 빈 틈이 30분 이상인지 읽기
 
@@ -160,6 +195,14 @@ if (prev != null) {
 
 이 표에서 핵심은 "`key를 찾는 단계`와 `종료 시각까지 읽는 단계`를 분리해서 연습한다"는 점이다.
 
+초보자가 검색하는 문장으로 다시 쓰면 아래와 같다.
+
+| learner symptom | 바로 연결할 답 |
+|---|---|
+| `entry로 바꾸면 뭐가 달라요?` | 같은 예약 줄을 찾되 `getValue()`까지 바로 읽는다 |
+| `exact match면 floorEntry도 그 자리예요?` | 그렇다. `floor`라서 포함한다 |
+| `ceilingEntry도 exact match 포함해요?` | 그렇다. `ceiling`이라서 포함한다 |
+
 ## 상세 분해
 
 `Entry`를 처음 읽을 때는 아래 3단계로 자르면 덜 헷갈린다.
@@ -174,7 +217,7 @@ if (prev != null) {
 ## 흔한 오해와 함정
 
 - `floorEntry(t)`가 value 기준으로 가까운 예약을 찾는다고 느끼기 쉽다. 실제 기준은 여전히 key인 시작 시각이다.
-- `ceilingEntry(t).getValue()`를 읽을 수 있다고 해서 "다음 빈 시간"이 바로 계산되는 것은 아니다. 빈 시간은 왼쪽 종료 시각과 오른쪽 시작 시각을 같이 봐야 한다.
+- `ceilingEntry(t).getValue()`를 읽을 수 있다고 해서 "다음 빈 시간"이 바로 계산되는 것은 아니다. 빈 시간은 왼쪽 종료 시각과 오른쪽 시작 시각을 같이 봐야 한다. 그 한 단계만 따로 연습하려면 [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)로 이어 가면 된다.
 - `entry.getValue()`를 읽기 전에 `entry == null` 확인을 빼면 경계 시각에서 바로 NPE로 이어질 수 있다.
 - `floorKey(t)`를 구한 뒤 `map.get(...)`를 다시 하는 방식도 가능하지만, 초보자 기준으로는 entry 한 번에서 시작/끝을 같이 읽는 편이 사고 흐름이 덜 끊긴다.
 - `value`를 읽는 단계가 붙었다고 갑자기 복잡한 자료구조로 넘어간 것은 아니다. 여전히 "양옆 이웃 예약 두 개를 읽는다"가 핵심이다.
@@ -194,6 +237,7 @@ if (prev != null) {
 
 - 아직 `왼쪽 key`와 `오른쪽 key`가 먼저 헷갈리면 [TreeMap Neighbor-Query Micro Drill](./treemap-neighbor-query-micro-drill.md)
 - `lower/floor/ceiling/higher` 네 쌍을 `Entry`로 바꿔 읽는 compact 표가 먼저 필요하면 [TreeMap Key/Entry Strictness Bridge](./treemap-key-entry-strictness-bridge.md)
+- `floorEntry(start)`와 `ceilingEntry(start)`를 바로 "`30분 빈 시간 있나?`"로 번역하는 짧은 드릴이 필요하면 [TreeMap Gap Detection Mini Drill](./treemap-gap-detection-mini-drill.md)
 - 이웃 entry를 이용해 `subMap`, gap check, 충돌 검사까지 이어서 보고 싶으면 [TreeMap Interval Entry Primer](./treemap-interval-entry-primer.md)
 - `lower`/`floor`/`ceiling`/`higher` 이름 전체를 한 표로 정리하려면 [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 

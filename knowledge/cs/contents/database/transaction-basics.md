@@ -14,7 +14,7 @@
 - [미션 코드 독해용 DB 체크리스트](./mission-code-reading-db-checklist.md)
 - [Isolation Anomaly Cheat Sheet](./isolation-anomaly-cheat-sheet.md)
 
-retrieval-anchor-keywords: transaction basics, transaction beginner, acid basics, transaction vs isolation, what is transaction, 트랜잭션이 뭐예요, 트랜잭션 처음 배우는데, 트랜잭션 큰 그림, 트랜잭션이 왜 필요해요, 트랜잭션 언제 쓰는지, @transactional 뭐예요, @transactional 과 트랜잭션 차이, commit rollback 이 뭐예요, 주문 저장 재고 차감 같이 취소, save 만 보이는데 rollback
+retrieval-anchor-keywords: transaction basics, transaction beginner, acid basics, transaction vs isolation, transaction basics next step, what is transaction, 트랜잭션이 뭐예요, 트랜잭션 처음 배우는데, 트랜잭션이 왜 필요해요, 트랜잭션 기초 다음 뭐 읽어요, 처음 트랜잭션 다음 단계, @transactional 과 트랜잭션 차이, commit rollback 이 뭐예요, 주문 저장 재고 차감 같이 취소, 트랜잭션 다음 문서 헷갈려요
 
 ## 먼저 잡을 그림
 
@@ -49,6 +49,31 @@ retrieval-anchor-keywords: transaction basics, transaction beginner, acid basics
 | "`save()`는 보이는데 SQL은 안 보여요" | 접근 기술 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md) |
 
 입문 목표는 여기서 끝이다. 실패 범위만 분리되면 1차 이해는 충분하다.
+
+초보자가 가장 자주 섞는 두 문장을 바로 붙여 보면 차이가 더 선명해진다.
+
+| 같은 주문 생성 장면 | 이 문서에서 먼저 답하나? | 초보자용 한 문장 |
+|---|---|---|
+| "주문 저장 성공 후 결제 이력 저장이 실패하면 앞 작업도 같이 취소할까?" | 예 | 트랜잭션은 같이 rollback할 범위를 정한다 |
+| "두 요청이 마지막 재고 1개를 동시에 보면 누가 먼저 성공하지?" | 아니오 | 이건 동시성 충돌 규칙이라 다음 문서로 넘긴다 |
+
+## 다음 단계 progression
+
+이 문서는 beginner primer의 1단계다. follow-up도 아래 순서로 붙이면 심화 bridge와 같은 표현으로 덜 헷갈린다.
+
+| 학습 단계 | 지금 막힌 질문 | 먼저 볼 문서 | 이 문서를 읽은 뒤 다음 단계 |
+|---|---|---|---|
+| 1단계. 경계 이해 | "무엇을 같이 `commit`/`rollback`하지?" | 이 문서 | 같은 row/범위를 다시 읽을 때 왜 달라지는지 궁금해지면 [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) |
+| 2단계. 가시성 이해 | "`select`를 두 번 했는데 왜 값이나 행 수가 달라지지?" | [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md) | plain `SELECT`와 locking read를 같이 봐야 하면 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
+| 3단계. bridge | "`@Transactional`도 있는데 언제 `FOR UPDATE`, version, constraint까지 붙이지?" | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) | 엔진 차이, retry, deadlock처럼 증상이 구체화되면 incident 문서로 내려간다 |
+| 4단계. incident handling | "`lock timeout`, `deadlock`, `40001`이 실제로 떴다" | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md), [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md) | 증상별 재현과 retry 정책까지 분리한다 |
+
+짧게 기억하면 progression은 아래 네 줄이다.
+
+1. 이 문서: 같이 성공/실패할 경계를 먼저 잡는다.
+2. [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md): 같은 row 재조회와 범위 재조회 차이를 먼저 분리한다.
+3. [트랜잭션 격리수준과 락](./transaction-isolation-locking.md): 격리 수준, locking read, optimistic/pessimistic lock, constraint를 한 프레임으로 묶는다.
+4. incident 문서: `deadlock`, `lock timeout`, `40001 retry`처럼 실제 증상이 붙었을 때만 내려간다.
 
 ## 30초 구분 카드
 
@@ -152,9 +177,9 @@ createOrder()
 
 아래 세 줄이 분리되면 이 문서는 충분히 읽은 것이다.
 
-- 트랜잭션은 "무엇을 같이 `commit`/`rollback`할까"를 정한다.
-- 격리 수준과 락은 "동시에 실행될 때 왜 꼬이나"를 다룬다.
-- `deadlock`, `savepoint`, `40001 retry`는 입문 본문이 아니라 follow-up 링크로 넘긴다.
+- 트랜잭션은 "무엇을 같이 `commit`/`rollback`할까"를 정하는 1단계다.
+- 격리 수준과 락은 "동시에 실행될 때 왜 꼬이나"를 다루는 다음 단계다.
+- `deadlock`, `savepoint`, `40001 retry`는 beginner primer 본문이 아니라 progression의 incident 단계로 넘긴다.
 
 | 먼저 보인 단어 | 지금은 왜 넘기나 | 다음 문서 |
 |---|---|---|

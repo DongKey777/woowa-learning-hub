@@ -9,15 +9,13 @@
 
 관련 문서:
 
-- [카테고리 README](./README.md)
-- [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../database/transaction-basics.md)
-
-> 관련 문서:
-> - [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
-> - [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
-> - [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
-> - [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
+- [Spring External Config File Precedence Primer: packaged `application.yml`, external file, `spring.config.location`, `spring.config.import`](./spring-external-config-file-precedence-primer.md)
+- [Spring Property Source 우선순위 빠른 판별: `application.yml`, profile, env var, command-line, test property](./spring-property-source-precedence-quick-guide.md)
+- [Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer](./spring-multidocument-yaml-on-profile-primer.md)
+- [Spring `spring.config.additional-location` Primer: 기본값은 유지하고, 배포별 override만 더 얹고 싶을 때](./spring-config-additional-location-primer.md)
+- [Spring `@Value` vs `@ConfigurationProperties` vs env guide: 설정값을 어디까지 묶고 언제 무엇을 고를까](./spring-value-vs-configurationproperties-env-guide.md)
+- [Spring Docker Compose / K8s env injection basics primer: "파일 말고 환경변수로 주입된다"는 감각부터 잡기](./spring-docker-compose-k8s-env-injection-basics-primer.md)
+- [프로세스 생명주기와 IPC 기초](../operating-system/process-lifecycle-and-ipc-basics.md)
 
 retrieval-anchor-keywords: spring properties vs yaml precedence, spring same location properties yml, application.properties vs application.yml same folder, application.properties overrides application.yml, properties takes precedence over yml same location, properties takes precedence over yaml same location, spring mixed format config gotcha, spring boot config format precedence, application-prod.properties vs application-prod.yml, same location same key properties wins, spring recommended one config format, spring properties yaml coexist confusion, spring properties yaml merge behavior, spring properties vs yaml same location precedence primer basics, spring properties vs yaml same location precedence primer beginner
 
@@ -115,6 +113,40 @@ profile이 맞아서 둘 다 후보가 되면,
 
 ---
 
+## 2.5 처음 많이 묻는 "왜 YAML을 바꿨는데 안 바뀌죠?" 예시
+
+초급자는 아래 같은 장면에서 가장 많이 막힌다.
+
+```properties
+# application.properties
+feature.enabled=false
+```
+
+```yaml
+# application.yml
+feature:
+  enabled: true
+```
+
+그리고 `application.yml`만 보고 "`true`로 바꿨는데 왜 여전히 false예요?"라고 묻는다.
+
+이때 첫 답은 길지 않다.
+
+| 확인할 것 | 바로 읽는 법 |
+|---|---|
+| 같은 key가 `.properties`에도 있나 | 있으면 `.properties` 값이 먼저 이긴다 |
+| YAML에만 있는 key인가 | 그때는 YAML 값이 그대로 남는다 |
+| profile 파일이나 외부 파일인가 | format보다 source/location 우선순위를 먼저 본다 |
+
+즉 이 증상 문장은 보통 이렇게 번역된다.
+
+```text
+"YAML이 안 먹는다"가 아니라
+"같은 key를 가진 .properties가 이미 위에서 이기고 있다"
+```
+
+---
+
 ## 3. 자주 헷갈리는 비교 세 가지
 
 | 비교 | 맞는 이해 |
@@ -152,6 +184,15 @@ profile이 맞아서 둘 다 후보가 되면,
 - 외부 override 파일은 `.properties`, jar 안 기본 파일은 YAML이라서 읽는 사람이 format 규칙과 location 규칙을 같이 추적해야 한다
 
 그래서 팀 차원에서는 보통 한 애플리케이션 안에서 format을 통일하는 편이 안전하다.
+
+---
+
+## 4.5 자주 하는 오해
+
+- "`.properties`가 있으면 YAML 파일 전체가 무시된다"는 오해가 많다. 실제로는 겹치는 key에서 우선할 뿐이고, YAML에만 있는 key는 남을 수 있다.
+- "YAML 값을 바꿨는데 반영이 안 되면 YAML 문법이 틀린 것이다"라고 바로 결론 내리기 쉽다. 초급자 첫 확인은 문법보다 같은 key를 가진 `.properties` 존재 여부다.
+- "`application-prod.yml`보다 `application.properties`가 항상 세다"는 식으로 외우면 틀리기 쉽다. format보다 먼저 location과 profile-specific 여부를 봐야 한다.
+- "둘 다 있으면 Spring이 알아서 보기 좋게 합쳐 준다"는 기대도 위험하다. 파일 단위 merge가 아니라 최종적으로는 key별 우선순위 경쟁으로 보는 편이 안전하다.
 
 ---
 

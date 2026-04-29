@@ -2,6 +2,8 @@
 
 > Since 2020.09.04
 
+**난이도: 🟢 Beginner**
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/22045163/111120575-d9370f00-85ae-11eb-8fa3-54f47ed3caa3.png" alt="coding" width="150px" />
 </p>
@@ -13,16 +15,41 @@
 > retrieval-anchor-keywords: woowacourse backend learning ladder, woowacourse backend beginner ladder, 우테코 백엔드 사다리, 우테코 백엔드 학습 순서, java basics http web basics mvc jdbc transactions di aop system design ladder, java to http to mvc to jdbc transaction to di aop to system design, backend mission safe ladder
 > retrieval-anchor-keywords: social login primer route, social login beginner route, oauth oidc social login root route, google login beginner route, auth app subdomain login, auth app subdomain callback, auth callback app anonymous root route, auth.example.com callback app.example.com anonymous root route, subdomain callback beginner detour, callback success app anonymous primer, broad cs entry social login primer, oauth oidc before callback hardening, social login before advanced callback docs
 
+처음 들어온 junior reader가 가장 먼저 볼 것은 "설명 본문"이 아니라 "어느 shelf에서 멈춰야 안전한가"다.
+이 루트 `README`는 `meta navigator`이고, 아래 4칸만 먼저 구분하면 `primer`, `deep dive`, `playbook`이 한 화면에 섞여 있어도 첫 클릭을 덜 헷갈린다.
+
+| 지금 검색한 말 | 루트에서 먼저 붙일 역할 | 여기서 먼저 여는 문서 | 아직 첫 클릭으로 올리지 않는 것 |
+|---|---|---|---|
+| `처음`, `뭐부터`, `학습 순서`, `big picture` | `survey` | [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md) | incident / recovery 문서, master note |
+| `what is`, `basics`, `헷갈려요`, `왜 이렇게 나뉘어요` | `category README -> primer` | 각 category `README` | deep dive catalog, senior question bank |
+| 증상은 있는데 카테고리가 헷갈림 | `category navigator` | [Quick Routes](#quick-routes) 아래 beginner shortcut | recovery playbook를 primer처럼 읽기 |
+| 이미 원인 축을 알고 한 경계만 더 파고 싶음 | `deep dive follow-up` | category `README` 안의 deep-dive 구간 | 루트에서 advanced shelf를 첫 클릭으로 쓰기 |
+
+- 루트에서 안전한 순서는 `survey -> category README -> primer -> primer bridge -> deep dive`다.
+- `advanced`, `incident`, `recovery`, `cutover`, `master note`, `senior`가 제목 앞에 보이면 beginner entrypoint가 아니라 follow-up shelf로 읽는다.
+
+처음 검색 결과에서 `README`만 보여도 아래처럼 파일 역할부터 나누면 incident 문서를 entrypoint로 오해할 가능성이 줄어든다.
+
+| 검색 결과에서 먼저 보인 파일 | 이 파일의 역할 | beginner-safe first click? | 다음 안전한 한 걸음 |
+|---|---|---|---|
+| 루트 `README.md` | `meta navigator` | yes | `survey`나 category `README`로 내려가기 |
+| `contents/*/README.md` | `category navigator` | yes | 같은 README 안의 `primer` / `primer bridge` 고르기 |
+| `rag/README.md`, `rag/navigation-taxonomy.md` | `routing helper` | yes, but only for role decoding | 역할을 확인한 뒤 category `README`나 linked `primer`로 이동 |
+| `Advanced Backend Roadmap`, `Master Notes`, `Senior Questions` | advanced `survey` / `synthesis` / `question bank` | no | beginner 사다리(`survey -> category README -> primer`)를 먼저 끝낸 뒤 보기 |
+
+문서 이름이 아니라 제목 앞 역할 단어로 멈출 shelf를 판단한다.
+`survey`, `primer`, `primer bridge`, `navigator`면 entry shelf이고, `deep dive`, `playbook`, `recovery`, `master note`면 follow-up shelf다.
+
 ## Table of Contents
 
 - [About](#about)
   - [Repository Rule](#repository-rule)
   - [Collaborator](#collaborator)
   - [Reference](#reference)
-- [Quick Routes](#quick-routes)
+- [Beginner Entrypoints / Quick Routes](#quick-routes)
   - [Woowacourse Backend Beginner Ladder](#woowacourse-backend-beginner-ladder)
   - [Auth / Session Beginner Shortcut](#auth--session-beginner-shortcut)
-  - [Symptom-First Quick Routes](#symptom-first-quick-routes)
+  - [Symptom-First Primer Bridge Routes](#symptom-first-quick-routes)
 - [Junior Backend Roadmap](#junior-backend-roadmap)
 - [Advanced Backend Roadmap](#advanced-backend-roadmap)
 - [Master Notes](#master-notes)
@@ -86,10 +113,23 @@
 - [WeareSoft/tech-interview](https://github.com/WeareSoft/tech-interview)
 - [jobhope/TechnicalNote](https://github.com/jobhope/TechnicalNote)
 
-## Quick Routes
+<a id="quick-routes"></a>
+
+## Beginner Entrypoints / Quick Routes (`meta navigator`)
 
 이 루트 `README`는 저장소 전체의 **meta navigator**다.
 여기서 설명을 끝내기보다, 필요한 역할 문서로 한 단계 더 내려 보내는 것이 목적이다.
+
+처음 읽는 junior reader는 "지금 보이는 문서가 입문용인가, follow-up인가"만 먼저 구분하면 된다.
+루트에서는 아래 역할 사다리만 기억하고, `incident`, `recovery`, `playbook`, `master note`, `senior`가 보이면 첫 클릭 후보에서 잠깐 뺀다.
+
+| 역할 | 지금 하는 일 | beginner 첫 클릭 여부 |
+|---|---|---|
+| `survey` | 큰 그림과 학습 순서를 고른다 | yes |
+| `category README` | 카테고리 안에서 다음 primer를 고른다 | yes |
+| `primer` / `primer bridge` | 개념 축을 세우고 증상 말을 질문 축으로 자른다 | yes |
+| `deep dive` | 원인 하나를 깊게 판다 | not first |
+| `playbook` / `runbook` / `recovery` / `master note` | 운영 절차, 장애 대응, 종합 정리 | no |
 
 `처음`, `뭐부터`, `헷갈려요`, `what is`, `basics`처럼 broad하게 묻는 상태라면 이 문서에서 바로 incident 문서로 점프하지 않는다.
 먼저 `survey -> category README -> primer -> primer bridge`까지로 질문 축을 자르고, `deep dive`와 `playbook/recovery`는 그 다음 단계로 미룬다.
@@ -97,8 +137,17 @@
 초심자가 가장 먼저 기억할 규칙은 단순하다.
 루트에서는 `survey -> category README -> primer -> primer bridge -> deep dive` 순서로 내려가고, `advanced`, `incident`, `cutover`, `recovery`, `case study`가 보이면 첫 클릭이 아니라 follow-up shelf로 본다.
 
+처음 3클릭만 따로 자르면 아래처럼 보면 된다.
+
+| 지금 상태 | 이 루트에서 맡는 역할 | 안전한 다음 클릭 |
+|---|---|---|
+| "`처음`이라 전체 순서가 필요해요" | `meta navigator -> survey` | [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md) |
+| 카테고리는 대충 아는데 primer를 못 고르겠어요 | `meta navigator -> category navigator` | 각 category `README` |
+| 검색 결과가 `incident`, `recovery`, `master note`로 시작해요 | follow-up shelf 경고 | 루트에서 `survey`나 category `README`로 한 칸 되돌아가기 |
+
 `README.md`라는 파일명만으로 역할을 판단하지 않는다.
 루트 `README`는 `meta navigator`, 카테고리 `README`는 `catalog / navigator`, `rag/*.md`는 `routing helper`에 가깝다.
+이 역할 라벨이 헷갈리면 [Navigation Taxonomy](./rag/navigation-taxonomy.md)를 먼저 열어도 된다.
 
 처음 10초 해석만 따로 떼면 아래 표 하나로도 충분하다.
 
@@ -108,6 +157,14 @@
 | `primer` / `primer bridge` | 첫 개념 설명, 헷갈리는 분기 정리 | yes |
 | `deep dive` | 한 원인이나 경계를 깊게 파기 | 기본 축을 잡은 뒤 |
 | `playbook` / `runbook` / `recovery` | 운영 절차, 장애 대응, 복구 follow-up | no |
+
+초심자가 가장 자주 헷갈리는 오해도 한 번만 못 박아 둔다.
+
+| 검색 결과에서 먼저 보인 것 | beginner-safe 해석 | 바로 열지 않는 것 |
+|---|---|---|
+| `Security README` | category `navigator`로 읽고 `기본 primer`나 `증상별 바로 가기`부터 시작 | `운영 / Incident catalog`를 첫 클릭으로 여는 것 |
+| `navigation-taxonomy.md` | 역할 표지판을 읽는 `routing helper` | 개념 primer 본문처럼 끝까지 읽으려는 것 |
+| `Master Notes`, `Senior Questions` | follow-up synthesis / self-check shelf | broad `what is`, `처음`, `basics` 질문의 첫 답 |
 
 | 지금 필요한 것 | 문서 역할 | 먼저 볼 문서 | 아직 기대하지 말 것 |
 |---|---|---|---|
@@ -162,18 +219,19 @@ beginner 안전 규칙도 한 줄로 고정해 둔다.
 |---|---|---|---|
 | `처음`, `뭐부터`, `큰 그림` | `survey` | [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md), [Woowacourse Backend Beginner Ladder](#woowacourse-backend-beginner-ladder) | incident `playbook`, `recovery`, master note |
 | `what is`, `헷갈려요`, 개념 첫 설명 | `primer` / `primer bridge` | category `README`, [Auth / Session Beginner Shortcut](#auth--session-beginner-shortcut) | cutover, control-plane deep dive |
+| `service 코드인데 map/queue/BFS가 먼저 막혀요` | `cross-category primer bridge` | [Woowacourse Backend Beginner Ladder](#woowacourse-backend-beginner-ladder), [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | system design, weighted shortest path, 운영 queue 문서 |
 | 이미 기본 개념은 있고 한 경계만 깊게 봄 | `deep dive` | 각 category `README`의 deep-dive catalog | broad survey 재시작 |
 | live incident나 복구 순서가 먼저 필요함 | `playbook` / `runbook` / `recovery` | incident-heavy category `README`의 운영 catalog | beginner primer를 대응 절차로 착각하기 |
 
 - 학습 순서용 `survey`부터 보고 싶다면:
   - [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md)
-  - [Advanced Backend Roadmap](./ADVANCED-BACKEND-ROADMAP.md)
+  - [Advanced Backend Roadmap](./ADVANCED-BACKEND-ROADMAP.md) (`advanced` follow-up)
 - 카테고리별 `catalog / navigator`로 바로 들어가려면:
   - 각 카테고리 `contents/*/README.md`
 - 교차 도메인 `synthesis / master note`로 바로 들어가려면:
-  - [Master Notes](./master-notes/README.md)
+  - [Master Notes](./master-notes/README.md) (`advanced` follow-up)
 - 면접형 `question bank`로 점검하려면:
-  - [Senior-Level Questions](./SENIOR-QUESTIONS.md)
+  - [Senior-Level Questions](./SENIOR-QUESTIONS.md) (`advanced` self-check)
 - README / navigator 역할이 헷갈리면:
   - [Navigation Taxonomy](./rag/navigation-taxonomy.md)
   - [RAG Design](./rag/README.md)
@@ -183,7 +241,7 @@ beginner 안전 규칙도 한 줄로 고정해 둔다.
   - [Woowacourse Backend Beginner Ladder](#woowacourse-backend-beginner-ladder)
   - [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md)
 - incident 대응 badge 기준이 헷갈리면:
-  - [Incident Badge Vocabulary](./rag/navigation-taxonomy.md#incident-badge-vocabulary)
+  - [Incident Badge Vocabulary](./rag/navigation-taxonomy.md#incident-badge-vocabulary) (`playbook/runbook/recovery` follow-up helper)
 - 검색어가 역할 이름과 섞이면:
   - [Retrieval Anchor Keywords](./rag/retrieval-anchor-keywords.md)
 - 문서 역할 구분이나 retrieval 라우팅 규칙이 더 필요하면:
@@ -214,6 +272,8 @@ beginner 안전 규칙도 한 줄로 고정해 둔다.
 | "`HTTP 다음에 Spring은 뭐부터 봐요?`" | [HTTP 요청-응답 기본 흐름](./contents/network/http-request-response-basics-url-dns-tcp-tls-keepalive.md) | [Spring 요청 파이프라인과 Bean Container 기초](./contents/spring/spring-request-pipeline-bean-container-foundations-primer.md) | Spring deep dive catalog 전체 |
 | "`controller` 다음 `save()`가 보이는데 SQL은 어디서 봐요?" | [Database First-Step Bridge](./contents/database/database-first-step-bridge.md) | [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) | 락, failover, replay, cutover 문서 |
 | "`왜 같이 rollback돼요?`" | [Database First-Step Bridge](./contents/database/database-first-step-bridge.md) | [트랜잭션 기초](./contents/database/transaction-basics.md) | [트랜잭션 격리수준과 락](./contents/database/transaction-isolation-locking.md) |
+| "`service` 코드인데 `map/queue`가 먼저 막혀요", "`queue`가 worker handoff인지 BFS인지 헷갈려요" | [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | [Java 컬렉션 프레임워크 입문](./contents/language/java/java-collections-basics.md) -> [Backend Data-Structure Starter Pack](./contents/data-structure/backend-data-structure-starter-pack.md) -> `계산 질문`이면 [Backend Algorithm Starter Pack](./contents/algorithm/backend-algorithm-starter-pack.md), `책임 질문`이면 [Service 계층 기초](./contents/software-engineering/service-layer-basics.md) | weighted shortest path, broker/scheduler, system design 큐 심화 |
+| "`map null`이 왜 헷갈리는지", "`TreeMap`이 왜 필요한지", "`floor`/`ceiling`이 왜 어떤 때는 `null`인지" | [Java 컬렉션 프레임워크 입문](./contents/language/java/java-collections-basics.md) | `조회 null 해석`이면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./contents/language/java/map-get-null-containskey-getordefault-primer.md), `구현체별 null 정책`이면 [Map null 허용 여부 구현체 브리지](./contents/language/java/map-null-policy-hashmap-hashtable-concurrenthashmap-mapof-bridge.md), `ordered map 경계`면 [Ordered Map Null-Safe Practice Drill](./contents/language/java/ordered-map-null-safe-practice-drill.md) | comparator deep dive, concurrent map internals, JVM diagnostics |
 - MVC에서 JDBC/트랜잭션으로, 다시 DI/AOP로 넘어가며 `controller / service / repository / @Transactional / proxy`가 한 문장에 섞이면 [Spring MVC -> JDBC/트랜잭션 -> DI/AOP 전환 오해 체크리스트](./contents/spring/spring-mvc-jdbc-transaction-di-aop-transition-checklist.md)부터 보고, 그다음 [JDBC · JPA · MyBatis 기초](./contents/database/jdbc-jpa-mybatis-basics.md) -> [트랜잭션 기초](./contents/database/transaction-basics.md) -> [@Transactional 기초](./contents/spring/spring-transactional-basics.md) -> [AOP 기초](./contents/spring/spring-aop-basics.md) 순으로 간다.
 - 안전 사다리를 문서 하나로 보고 싶으면 [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md)으로 바로 간다.
 - 이 route를 roadmap 관점으로 다시 보면 [Junior Backend Roadmap](./JUNIOR-BACKEND-ROADMAP.md#우테코-백엔드-안전-사다리-동기화)에서 같은 순서를 따라갈 수 있다.
@@ -264,7 +324,18 @@ revoke-tail beginner split도 같은 규칙을 쓴다. `allowed after revoke`, `
 - 같은 beginner route를 category entrypoint에서 더 넓게 보고 싶으면 [Browser / Session Beginner Ladder](./contents/security/README.md#browser--session-beginner-ladder)에서 먼저 증상 이름을 맞춘 뒤 [Browser / Session Troubleshooting Path](./contents/security/README.md#browser--session-troubleshooting-path)로 이어 간다.
 - session-store나 large-scale cutover 설계까지 올라가면 [Auth Session Troubleshooting Bridge](./contents/system-design/README.md#system-design-auth-session-troubleshooting-bridge)로 handoff한다.
 
-### Symptom-First Quick Routes
+<a id="symptom-first-quick-routes"></a>
+
+### Symptom-First Primer Bridge Routes
+
+이 소제목의 역할은 "증상 문장을 beginner-safe 첫 문서로 번역하는 `primer bridge` 선반"이다.
+아직 `why`, `처음`, `뭐예요`, `basics` 단계라면 아래 bullet에서도 `[primer]`나 `[primer bridge]`부터 먼저 잡고, `[playbook]`, `[recovery]`, `[master note]`, `[system design]`는 follow-up으로 미룬다.
+
+| 지금 검색한 문장 | 여기서 먼저 붙일 역할 | 첫 클릭으로 미루는 것 |
+|---|---|---|
+| `로그인 됐는데 왜 403`, `cookie 있는데 다시 로그인`, `stale read` | `primer` / `primer bridge` | `recovery`, `cutover`, `master note` |
+| `증상은 있는데 어느 카테고리인지 모르겠다` | `catalog` / `cross-category bridge` | 여러 deep dive 동시 열기 |
+| `지금 장애 복구 순서가 먼저 필요하다` | `playbook` / `recovery` | broad primer 재시작 |
 
 루트 진입점에서도 자주 들어오는 증상 질의를 바로 route할 수 있게, 아래 route 묶음들은 [Master Notes](./master-notes/README.md), [Query Playbook](./rag/query-playbook.md), [Cross-Domain Bridge Map](./rag/cross-domain-bridge-map.md), category bridge `README` 기준을 한 번에 붙여 둔다.
 
@@ -340,7 +411,7 @@ junior reader라면 이 구간을 아래 순서로 읽는다.
 이 구간은 설명 본문이 아니라 self-check용 question bank다. 막히는 질문이 나오면 다시 `primer`나 `deep dive` 본문으로 돌아간다.
 첫 클릭으로 쓰기보다, 이미 읽은 내용을 점검하는 follow-up 용도라고 보면 된다.
 
-## RAG Ready
+## RAG Ready (`routing helper`)
 
 이 구간은 개념 primer가 아니라 `routing helper / retrieval helper` entrypoint다.
 검색 규칙, 역할 라벨, query 확장 키워드가 필요할 때 열고, 설명 본문은 다시 category `README`나 개별 `primer` / `deep dive`로 내려간다.
@@ -375,7 +446,7 @@ RAG 문서에서 멈추지 않는 안전 규칙도 같이 둔다.
 - `playbook`, `runbook`, `drill`, `recovery`가 검색 결과에 먼저 보여도, 지금 질문이 beginner `what is` / `처음` / `헷갈려요` 계열이면 entrypoint로 바로 열지 않는다.
 - 검색어가 `문서 역할`, `roadmap`, `README 차이`, `primer vs deep dive`, `incident badge`처럼 taxonomy 성격이면 이 구간에 머물고, 개념 질문이면 다시 본문으로 내려간다.
 
-## Category Catalog Snapshots
+## Category Catalog Snapshots (`catalog snapshot`)
 
 아래 대분류 섹션들은 루트 `README`에 남겨 둔 **catalog snapshot**이다.
 
@@ -432,11 +503,15 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 운영체제 README](./contents/operating-system/README.md) (`category navigator` snapshot)
 
-- `primer`: 프로세스와 스레드 / 멀티 프로세스와 멀티 스레드 / 프로세스 스케줄링 / CPU 스케줄링 / 프로세스 동기화 / 가상 메모리
-- `runtime catalog`: 컨텍스트 스위칭 / futex / off-CPU / run queue / scheduler latency / epoll / io_uring
-- `memory / durability`: false sharing / cache line / page cache / dirty writeback / fsync / mmap coherency / direct I/O
-- `container / pressure`: cgroup / namespace / container 격리 / overlayfs / tmpfs / OOM / pressure stall
-- `diagnostics`: NUMA 운영 디버깅 / eBPF / perf / strace / deleted-but-open files / signals / supervision
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [입문 primer](./contents/operating-system/README.md#입문-primer), [먼저 잡는 멘탈 모델](./contents/operating-system/README.md#먼저-잡는-멘탈-모델) | `프로세스 / 스레드 / 스케줄링 / 가상 메모리` 큰 그림을 먼저 잡고 runtime 용어를 덜 섞게 한다 |
+| `catalog / navigator` | [빠른 탐색](./contents/operating-system/README.md#빠른-탐색), [역할별 라우팅 요약](./contents/operating-system/README.md#역할별-라우팅-요약) | `runtime`, `memory`, `container`, `diagnostics` 중 지금 질문 축만 먼저 고를 수 있다 |
+| `deep dive` follow-up | [현대 runtime catalog](./contents/operating-system/README.md#현대-runtime-catalog) | `futex`, `off-CPU`, `epoll`, `io_uring`, `cgroup pressure`는 primer 뒤에 필요한 축만 내려간다 |
+
+- `처음`, `스레드가 뭐예요`, `왜 느려요`처럼 broad하면 primer부터 간다.
+- 운영체제 README 안의 `[playbook]`과 runtime diagnostics 링크는 entrypoint가 아니라 follow-up shelf다.
+- `OOM`, `page cache`, `eBPF`, `perf`, `pressure stall`은 첫 클릭보다 운영/진단 follow-up shelf로 본다.
 
 [🔝 목차로 돌아가기](#table-of-contents)
 
@@ -470,22 +545,14 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 디자인 패턴 README](./contents/design-pattern/README.md) (`category navigator` snapshot)
 
-- 디자인 패턴의 개념과 종류
-- beginner pattern route map: `조합 -> 템플릿 메소드 -> 전략 -> 어댑터`
-- 처음 배우는데 `템플릿 메소드 vs 전략`이 막히면: [템플릿 메소드 첫 질문 라우터](./contents/design-pattern/template-method-query-router-beginner.md) -> [템플릿 메소드 패턴 기초](./contents/design-pattern/template-method-basics.md) -> [템플릿 메소드 vs 전략](./contents/design-pattern/template-method-vs-strategy.md)
-- Strategy 패턴
-- Decorator vs Proxy
-- Observer / Pub-Sub / Application Event
-- Singleton 패턴
-- Factory 패턴
-- Builder 패턴
-- Template Method vs Strategy
-- God Object / Spaghetti / Golden Hammer
-- Facade / Adapter / Proxy 비교
-- Factory / Abstract Factory / Builder 비교
-- Composition over Inheritance
-- Command Pattern / Undo / Queue
-- MVC 패턴
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [Beginner 시작 순서](./contents/design-pattern/README.md#beginner-시작-순서), [Beginner primer 모음](./contents/design-pattern/README.md#beginner-primer-모음) | `객체지향 핵심 원리 -> 상속보다 조합 -> 패턴 기초` 사다리를 먼저 고정한다 |
+| `primer bridge` | [Template Method beginner route](./contents/design-pattern/README.md#template-method-beginner-route), [선택 기준부터 보는 진입](./contents/design-pattern/README.md#선택-기준부터-보는-진입) | `템플릿 메소드 vs 전략`, `factory vs selector`처럼 이름이 섞인 질문을 먼저 자른다 |
+| `deep dive` follow-up | [고전 패턴 primer](./contents/design-pattern/README.md#고전-패턴-primer), [백엔드 / DDD catalog](./contents/design-pattern/README.md#백엔드--ddd-catalog) | `Decorator`, `Observer`, `ACL`, `Projection` 같은 패턴/운영 문서는 primer 뒤에 필요한 것만 확장한다 |
+
+- beginner pattern route map은 `조합 -> 템플릿 메소드 -> 전략 -> 어댑터`다.
+- `Projection`, `cutover`, `playbook`, `read model`이 보이면 패턴 입문이 아니라 advanced follow-up shelf로 읽는다.
 
 [🔝 목차로 돌아가기](#table-of-contents)
 
@@ -493,21 +560,14 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 소프트웨어 공학 README](./contents/software-engineering/README.md) (`category navigator` snapshot)
 
-- 프로그래밍 패러다임
-  - 명령형 프로그래밍 vs 선언형 프로그래밍
-  - 함수형 프로그래밍
-  - 객체지향 프로그래밍
-- DDD 바운디드 컨텍스트 실패 패턴
-- Monolith → MSA 실패 패턴
-- Event Sourcing / CQRS 도입 기준
-- 기술 부채 / 리팩토링 타이밍
-- Anti-Corruption Layer 통합 패턴
-- Contract Testing / Modular Monolith / Feature Flag Cleanup / Idempotency Boundary
-- Strangler Fig / Contract / Cutover
-- Branch by Abstraction / Feature Flag / Strangler 선택 기준
-- Repository / DAO / Entity / Mapper
-- SOLID failure patterns
-- 애자일 개발 프로세스
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [역할별 시작선](./contents/software-engineering/README.md#역할별-시작선), [Beginner Starter Quick Path](./contents/software-engineering/README.md#beginner-starter-quick-path), [우테코 백엔드 미션 선행 개념 입문](./contents/software-engineering/woowacourse-backend-mission-prerequisite-primer.md) | `레이어 / 테스트 / 객체지향 / 리팩토링` 첫 축을 먼저 맞춘다 |
+| `survey` | [기초 survey 입구](./contents/software-engineering/README.md#기초-survey-입구), [Beginner 30-Minute Entry Subset](./contents/software-engineering/README.md#beginner-30-minute-entry-subset) | broad topic을 한 번에 펼치지 않고 `아키텍처 / persistence / API / 테스트` 중 필요한 묶음만 고를 수 있다 |
+| `deep dive` follow-up | [deep dive 바로가기](./contents/software-engineering/README.md#deep-dive-바로가기), [거버넌스/운영 deep dive 바로가기 (starter 이후)](./contents/software-engineering/README.md#거버넌스운영-deep-dive-바로가기-starter-이후) | `DDD`, `CQRS`, `cutover`, `거버넌스`는 starter 이후에 필요한 축만 확장한다 |
+
+- `처음`, `리뷰가 헷갈려요`, `테스트를 어디서부터 읽죠` 같은 질문은 primer route가 안전하다.
+- `MSA`, `event sourcing`, `cutover`, `governance`는 useful해도 beginner 첫 클릭은 아니다.
 
 [🔝 목차로 돌아가기](#table-of-contents)
 
@@ -515,22 +575,14 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 스프링 README](./contents/spring/README.md) (`category navigator` snapshot)
 
-- IoC 컨테이너와 DI
-- AOP 프록시 메커니즘
-- `@Transactional` 동작 원리와 함정
-- Spring MVC 요청 생명주기
-- Spring Boot 자동 구성
-- Spring Security 아키텍처
-- Spring MVC vs WebFlux
-- Async Servlet Dispatch / `Callable` / `DeferredResult`
-- Bean 생명주기 / Scope 함정
-- OAuth2 + JWT 통합
-- Security 401/403 번역 / `SessionCreationPolicy` / `SecurityContextRepository`
-- Test Slice / Context Caching
-- Cache Abstraction 함정 / Transaction Debugging
-- Startup Hook / Readiness Warmup / Routing DataSource / JDBC Exception Translation
-- Scheduler / Async / Batch / Observability / WebClient
-- Resilience4j / Retry / CircuitBreaker / Bulkhead
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [처음 20분 루트](./contents/spring/README.md#처음-20분-루트), [처음 10분 라우트](./contents/spring/README.md#처음-10분-라우트), [Beginner 입문 5편](./contents/spring/README.md#beginner-입문-5편) | `요청 흐름 -> Bean/DI -> MVC -> 트랜잭션` 순서를 먼저 잡아 Spring 이름들을 덜 섞게 한다 |
+| `primer bridge` | [트랜잭션과 persistence 라우트](./contents/spring/README.md#트랜잭션과-persistence-라우트), [요청 처리와 운영 라우트](./contents/spring/README.md#요청-처리와-운영-라우트), [Cross-domain Security 라우트](./contents/spring/README.md#cross-domain-security-라우트) | `@Transactional`, MVC, Security 증상을 다음 deep dive로 넘기기 전에 질문 축을 먼저 자른다 |
+| `deep dive` follow-up | [Spring `@Transactional` 기초](./contents/spring/spring-transactional-basics.md), [Spring MVC 요청 생명주기](./contents/spring/README.md#spring-mvc-요청-생명주기), [Spring Security 아키텍처](./contents/spring/README.md#spring-security-아키텍처) | proxy, async, Security internals는 primer와 bridge 뒤에 필요한 것만 내려간다 |
+
+- `self-invocation`, `SessionCreationPolicy`, `WebFlux`, `disconnect`, `Resilience4j`는 첫 클릭보다 follow-up shelf에 가깝다.
+- beginner route에서는 `IoC / DI / MVC / 트랜잭션` 사다리를 먼저 고정한다.
 
 [🔝 목차로 돌아가기](#table-of-contents)
 
@@ -538,21 +590,14 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 시스템 설계 README](./contents/system-design/README.md) (`category navigator` snapshot)
 
-- 시스템 설계 면접 프레임워크
-- Back-of-the-envelope 추정
-- URL 단축기 설계
-- Rate Limiter 설계
-- 분산 캐시 설계
-- 채팅 시스템 설계
-- 뉴스피드 시스템 설계
-- 알림 시스템 설계
-- Consistent Hashing / Hot Key 전략
-- Multi-tenant SaaS isolation
-- Payment System / Ledger / Idempotency / Reconciliation
-- Distributed Lock / Search / File Storage / Workflow
-- 요구사항을 숫자와 병목으로 바꾸는 사고법
-- 검색 / 분산 합의 / 워크플로우 / 멀티테넌시 주제로 확장
-- `bridge cluster`: [Security / System-Design Incident Bridge](./contents/system-design/README.md#system-design-security-incident-bridge), [Auth Session Troubleshooting Bridge](./contents/system-design/README.md#system-design-auth-session-troubleshooting-bridge), [Database / Security Authority Bridge](./contents/system-design/README.md#system-design-database-security-authority-bridge), [Capability Rollout Deepening](./contents/system-design/README.md#system-design-capability-rollout-deepening), [Verification / Shadowing / Authority Bridge](./contents/system-design/README.md#system-design-verification-shadowing-authority-bridge). authority-transfer route에서는 앞 bridge가 cutover 설계 입구, verification/shadowing bridge가 cleanup evidence 입구다.
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [초심자 1회차 라우트](./contents/system-design/README.md#초심자-1회차-라우트), [Primer Route](./contents/system-design/README.md#primer-route), [Beginner Entrypoints](./contents/system-design/README.md#beginner-entrypoints) | `요구사항 -> 숫자 추정 -> 저장소/캐시/큐` 기본 사고 순서를 먼저 맞춘다 |
+| `survey / navigator` | [빠른 탐색](./contents/system-design/README.md#빠른-탐색), [학습 순서 추천](./contents/system-design/README.md#학습-순서-추천) | `면접형 starter`, `consistency`, `session`, `notification` 중 어느 질문 축인지 먼저 고를 수 있다 |
+| `advanced follow-up` | [Case Study Entrypoints](./contents/system-design/README.md#case-study-entrypoints), [Replay and Cutover Entrypoints](./contents/system-design/README.md#replay-and-cutover-entrypoints), [Retirement Route](./contents/system-design/README.md#retirement-route) | `cutover`, `shadowing`, `retirement`, incident-heavy bridge는 primer 뒤에 필요한 상황에서만 내려간다 |
+
+- `URL 단축기`, `rate limiter`, `payment`, `workflow` 같은 개별 설계 주제도 primer route 뒤에 고르는 편이 beginner-safe 하다.
+- `bridge cluster`는 entrypoint 자체보다 cross-category handoff shelf다. `incident`, `authority`, `cutover`가 보이면 첫 클릭인지 한 번 더 확인한다.
 
 [🔝 목차로 돌아가기](#table-of-contents)
 
@@ -575,12 +620,14 @@ snapshot에서 raw topic 이름만 길게 보이면, 바로 개별 심화 문서
 
 ### [📖 언어 README](./contents/language/README.md) (`category navigator` snapshot)
 
-- Java
-  - Runtime / diagnostics: JVM / GC / JMM, G1 vs ZGC, JIT, JFR-JMC / event interpretation, thread dump / jcmd, async-profiler vs JFR, safepoint, OOM, off-heap, classloader leak
-  - Concurrency / async: 동시성 유틸리티, Java Memory Model, jcstress / happens-before 검증, executor sizing / queue / rejection, common pool / CompletableFuture, structured concurrency / virtual threads
-  - Concurrency quick links: [executor / common pool](./contents/language/README.md#java-concurrency-executor--common-pool-cluster), [cancellation / context propagation](./contents/language/README.md#java-concurrency-cancellation--context-propagation-cluster), [Loom / structured concurrency](./contents/language/README.md#java-concurrency-loom--structured-concurrency-cluster)
-  - Serialization / payload contracts: IO-NIO, native serialization evolution, JSON null-missing-unknown field, enum / record evolution
-  - Language / boundary design: 불변 객체, equals-hashCode-compareTo, parsing / numeric boundaries, reflection / generics / records / sealed
-- C++
+| 역할 | snapshot에서 먼저 고를 링크 | 왜 여기서 멈추면 안전한가 |
+|---|---|---|
+| `primer` | [Java primer](./contents/language/README.md#java-primer), [Java](./contents/language/README.md#java) | `타입 / 객체지향 / 컬렉션 / 메서드` 같은 Java 첫 질문을 먼저 자른다 |
+| `deep dive catalog` | [Java deep dive catalog](./contents/language/README.md#java-deep-dive-catalog) | `JVM`, `GC`, `concurrency`, `serialization`, `boundary design`은 primer 뒤에 필요한 축만 확장한다 |
+| `cross-category bridge` | [교차 카테고리 브리지](./contents/language/README.md#교차-카테고리-브리지), [C++ primer](./contents/language/README.md#c-primer) | Java basics에서 자료구조/패턴/시스템 질문으로 넘어가거나 언어 자체를 바꿔 읽을 때 길을 잃지 않게 한다 |
+
+- `자바 처음`, `객체지향 처음`, `컬렉션 뭐부터`는 `Java primer`가 첫 클릭이다.
+- `map null`, `TreeMap`, `ordered map`, `floor`/`ceiling` broad query는 `Java primer`에서 [Java 컬렉션 프레임워크 입문](./contents/language/java/java-collections-basics.md)으로 먼저 들어간 뒤, `조회 null 해석`이면 [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./contents/language/java/map-get-null-containskey-getordefault-primer.md), `정렬된 map 경계`면 [Ordered Map Null-Safe Practice Drill](./contents/language/java/ordered-map-null-safe-practice-drill.md)로 한 칸만 더 내려가면 된다.
+- `JFR`, `async-profiler`, `virtual threads`, `jcstress`는 입문보다 deep-dive/diagnostics shelf에 가깝다.
 
 [🔝 목차로 돌아가기](#table-of-contents)

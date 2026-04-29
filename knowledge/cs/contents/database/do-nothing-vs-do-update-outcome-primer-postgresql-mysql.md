@@ -12,11 +12,12 @@
 - [Read-Before-Write Race Timeline Across MySQL and PostgreSQL](./read-before-write-race-timeline-mysql-postgresql.md)
 - [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)
 - [Upsert Contention, Unique Index Arbitration, and Locking](./upsert-contention-unique-index-locking.md)
+- [Spring Beginner Bridge: 외부 승인 성공 뒤 DB 저장이 실패하면 rollback보다 보상 + 멱등성으로 닫기](../spring/spring-payment-approval-db-failure-compensation-idempotency-primer.md)
 - [database 카테고리 인덱스](./README.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: do nothing vs do update primer, postgres on conflict do nothing returning 0 row, postgres on conflict do update returning row, mysql on duplicate key update affected rows, upsert return value beginner, created existing conflict in progress upsert, do nothing loser signal, do update merge signal, mysql affectedrows 1 2 0, client_found_rows on duplicate key, postgresql returning existing row confusion, duplicate key replay conflict beginner, upsert outcome primer, insert if absent return pattern, on conflict return value pattern
+retrieval-anchor-keywords: do nothing vs do update primer, postgres on conflict do nothing returning 0 row, postgres on conflict do update returning row, mysql on duplicate key update affected rows, upsert return value beginner, created existing conflict in progress upsert, do nothing loser signal, do update merge signal, mysql affectedrows 1 2 0, postgresql returning existing row confusion, upsert 뭐예요, do nothing do update 차이 뭐예요, 처음 배우는데 upsert 결과가 헷갈려요, 왜 0 row가 나와요, do nothing 언제 써요
 
 ## 먼저 잡을 멘탈모델
 

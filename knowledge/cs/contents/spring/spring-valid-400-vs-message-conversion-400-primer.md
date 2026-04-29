@@ -14,9 +14,41 @@
 - [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
 - [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
+- [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: 왜 @valid 안 타요, @valid 언제 타요, @notblank 왜 안 먹어요, spring binding failure vs validation failure, spring 400 first branch beginner, methodargumentnotvalidexception beginner, httpmessagenotreadableexception beginner, 같은 400인데 뭐가 다른가요, dto 변환 실패 vs validation 실패, binding 실패면 @valid 안 타요, validation message not blank beginner, json parse error 400 spring, 날짜 형식 틀리면 @valid 안 타요, requestbody validation 400 difference, roomescape admin 400 primer
+## 이 라우트에서 보는 위치
+
+- 현재 문서: 2단계. DTO 변환 실패와 validation 실패를 가른다.
+- 이전 문서: [1단계 `@RequestBody` 400 primer](./spring-requestbody-400-before-controller-primer.md)
+- 다음 문서: [3단계 `BindingResult` primer](./spring-bindingresult-local-validation-400-primer.md)
+- README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
+
+## 먼저 되돌아갈지 10초 체크
+
+아래 증상이 먼저 보이면 이 문서보다 [1단계 `@RequestBody` 400 primer](./spring-requestbody-400-before-controller-primer.md)로 바로 되돌아가는 편이 빠르다.
+
+| 지금 보이는 단서 | 먼저 갈 곳 |
+|---|---|
+| "`컨트롤러 로그가 아예 안 찍혀요`" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) |
+| "`JSON parse error`", "`Cannot deserialize`", "`HttpMessageNotReadableException`" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) |
+| "`date` 형식이 틀렸어요", "`enum`/숫자 변환이 안 돼요" | [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) |
+| "`DTO는 만들어진 것 같은데 `@NotBlank`/`@Positive`에서 막혀요`" | 이 문서 계속 읽기 |
+
+retrieval-anchor-keywords: 왜 @valid 안 타요, @valid 언제 타요, @notblank 왜 안 먹어요, spring binding failure vs validation failure, spring 400 first branch beginner, methodargumentnotvalidexception beginner, httpmessagenotreadableexception beginner, 같은 400인데 뭐가 다른가요, dto 변환 실패 vs validation 실패, binding 실패면 @valid 안 타요, validation message not blank beginner, json parse error 400 spring, 날짜 형식 틀리면 @valid 안 타요, requestbody 400 primer reverse link, roomescape admin 400 primer
+
+## 이 문서가 바로 맞는 질문
+
+README 바인딩 증상표 기준으로는 아래 검색 문장 세트에 바로 답하려는 문서다.
+
+- "`왜 `@Valid` 안 타요?`"
+- "`같은 `400`인데 뭐가 다른가요?`"
+- "`@NotBlank`가 왜 안 먹어요?`"
+
+처음 분기는 하나만 잡으면 된다.
+
+- JSON/body를 DTO로 못 만들었으면 `@Valid` 전에 멈춘다.
+- DTO를 만든 뒤 규칙을 어겼으면 그때 `@Valid`를 탄다.
 
 ## 핵심 개념
 
@@ -39,6 +71,14 @@ RoomEscape 관리자 예약 생성 API를 예로 들면, `POST /admin/reservatio
 
 ## 한눈에 보기
 
+먼저 검색 문장을 분기표로 바로 바꾸면 이렇다.
+
+| 내가 지금 하는 말 | 첫 판단 |
+|---|---|
+| "`왜 `@Valid` 안 타요`" | DTO 생성 전에 막혔는지부터 본다 |
+| "`같은 `400`인데 뭐가 달라요`" | DTO 변환 실패 `400`인지 validation `400`인지 먼저 가른다 |
+| "`@NotBlank`가 왜 안 먹어요`" | 제약이 고장난 게 아니라 `@Valid`까지 못 갔는지 먼저 본다 |
+
 ```text
 HTTP 요청
   -> JSON body를 DTO로 바인딩
@@ -48,15 +88,10 @@ HTTP 요청
          -> 성공: controller/service 로직 실행
 ```
 
-| 질문 | DTO 변환 실패 | validation 실패 |
-|---|---|---|
-| `@Valid`를 탔나 | 아니오 | 예 |
-| 실패 시점 | JSON/body를 DTO로 바꾸는 바인딩·message conversion 단계 | DTO 생성 후 제약 검사 단계 |
-| 컨트롤러 첫 줄 로그 | 보통 안 찍힘 | 보통 안 찍힘 |
-| 대표 단서 | JSON parse, type mismatch, `HttpMessageNotReadableException` | field error, `must not be blank`, `MethodArgumentNotValidException` |
-| 초급자 첫 확인 | JSON 문법, 날짜/시간/enum/숫자 타입 | `@NotBlank`, `@Size`, `@Positive` 같은 제약 |
-| validation 실패 다음 갈림길 | 해당 없음. `BindingResult`도 못 끼어든다 | `BindingResult` 없으면 전역 예외 `400`, 있으면 컨트롤러 로컬 분기 |
-| 예시 | `"date": "tomorrow"` | `"name": ""`, `"partySize": 0` |
+| 지금 실패한 곳 | DTO는 만들어졌나 | `@Valid` 가능? | `BindingResult` 개입 가능? | 대표 예시 |
+|---|---|---|---|---|
+| JSON/body를 DTO로 바꾸는 바인딩·message conversion 단계 | 아니오 | 아니오 | 아니오 | `"date": "tomorrow"`, JSON parse 오류 |
+| DTO 생성 후 제약 검사 단계 | 예 | 예 | `BindingResult` 없으면 아니오, 있으면 예 | `"name": ""`, `"partySize": 0` |
 
 핵심은 "`400`이 났다"보다 먼저 "`@Valid`까지 갔나?`"를 묻는 것이다.
 
@@ -65,14 +100,20 @@ HTTP 요청
 1. "`DTO를 아예 못 만들었다`"면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md) 쪽 질문이다.
 2. "`DTO는 만들었고 그다음 규칙에서 막혔다`"면 `BindingResult` 없이는 전역 예외 `400`, 있으면 컨트롤러 로컬 분기다. 자세한 비교는 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나](./spring-bindingresult-local-validation-400-primer.md), 예외 이름 비교는 [Spring `MethodArgumentNotValidException` vs `HandlerMethodValidationException` 초급 브리지](./spring-methodargumentnotvalidexception-vs-handlermethodvalidationexception-beginner-bridge.md)로 이어 본다.
 
-즉 `BindingResult`는 이 둘 중 **DTO를 만든 뒤의 validation `400`에서만** 손을 댈 수 있다. `LocalDate` parse 실패, JSON parse 실패처럼 DTO 생성 전 단계에서 멈춘 `400`에는 끼어들지 못한다. 그때도 역할은 "`validation 실패를 로컬 처리로 받을지`, `전역 예외 처리로 넘길지`"를 가르는 handoff다.
+즉 `BindingResult`는 이 둘 중 **DTO를 만든 뒤의 validation `400`에서만** 손을 댈 수 있다. `LocalDate` parse 실패, JSON parse 실패처럼 DTO 생성 전 단계에서 멈춘 `400`에는 끼어들지 못한다. `@RequestBody 400` primer와 같은 기준으로 말하면, `BindingResult`는 "`DTO는 만들어졌나?`가 예일 때만 개입 가능한 handoff"다.
 
 ## 상세 분해
 
-초급자 검색 문장으로 바꾸면 이 문서가 맡는 증상은 아래 둘이다.
+초급자 검색 문장으로 바꾸면 이 문서가 맡는 증상은 README 바인딩 증상표와 같은 아래 세 줄이다.
 
 - "왜 `@Valid` 안 타요?"
-- "`@NotBlank` 붙였는데 왜 반응이 없어요?"
+- "같은 `400`인데 뭐가 다른가요?"
+- "`@NotBlank`가 왜 안 먹어요?"
+
+그리고 이 둘은 결국 같은 질문이다.
+
+- "`@Valid` 안 타요" = DTO 생성 전에 멈췄는지 묻는 질문
+- "`같은 `400`인데 뭐가 다른가요`" = DTO 생성 실패 `400`과 validation `400`을 갈라 달라는 질문
 
 ### 1. 바인딩이 실패하면 `@Valid`는 못 탄다
 

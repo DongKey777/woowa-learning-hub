@@ -7,18 +7,22 @@
 관련 문서:
 
 - [Language README: Java primer](../README.md#java-primer)
+- [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
 - [Map `get()` null 의미와 `containsKey()`/`getOrDefault()` 선택 프라이머](./map-get-null-containskey-getordefault-primer.md)
 - [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
-retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, lowerentry null when, higherentry null when, ordered map boundary card beginner, treemap predict null before answer, java ordered map null practice, java treemap boundary lookup drill, java floorentry ceilingentry beginner worksheet, 자바 ordered map null 연습 카드, 자바 treemap null non null 예측, 자바 floorentry ceilingentry 경계 예제
+retrieval-anchor-keywords: ordered map null safe practice drill, treemap null safe drill, navigablemap null vs non null boundary examples, floorentry null when, ceilingentry null when, lowerentry null when, higherentry null when, ordered map boundary card beginner, treemap predict null before answer, java ordered map null practice, boundary null vs null key treemap, floorentry null does not mean null key, 왜 floorentry null 이 나와요, 처음 treemap null 헷갈림, what is boundary null in ordered map
 
 ## 먼저 잡을 mental model
 
 이 카드에서는 복잡한 정렬 이론보다 이것 하나만 기억하면 된다.
 
 > ordered map lookup은 "정렬된 key 줄에서 왼쪽이나 오른쪽 이웃이 실제로 있으면 non-null, 없으면 null"이다.
+
+여기서 나오는 `null`은 "경계 밖이라 이웃이 없음"이라는 **조회 결과**다.
+`TreeMap`이 `null` key를 보통 막는 규칙과는 다른 이야기이므로, 그 감각이 섞이면 먼저 [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)를 한 번 같이 보는 편이 안전하다.
 
 짧게 번역하면:
 
@@ -120,15 +124,18 @@ System.out.println(gradeByMinimumScore.floorEntry(87));
 
 - `floorEntry`가 "`작은 값 하나는 주겠지`"라고 느껴져도, 첫 key보다 더 왼쪽이면 바로 `null`이다.
 - `ceilingEntry`가 non-null이라고 해서 exact match라는 뜻은 아니다. 오른쪽 이웃만 있어도 non-null이다.
+- 여기서 `null`이 나왔다고 해서 "`TreeMap`은 `null` key를 허용하나?"로 점프하면 안 된다.
+  이 카드의 `null`은 "반환 결과가 비었다"는 뜻이고, `null` key 규칙은 "애초에 어떤 key를 map에 넣을 수 있나?" 문제다.
 - `get(key)`의 `null`과 `floorEntry`의 `null`은 이유가 다르다.
   `get(key)`는 "없는 key"와 "null value"가 섞일 수 있지만, `floorEntry`/`ceilingEntry`의 `null`은 "그 방향 이웃이 없음"으로 읽는 편이 안전하다.
 
 ## 다음 읽기
 
+- "`boundary null`과 `null` key 규칙이 자꾸 섞인다"면: [TreeMap Null Key vs Nullable Field Primer](./treemap-null-key-vs-nullable-field-primer.md)
 - 네 메서드 전체 그림을 다시 고정하려면: [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - exact match에서 `lower`와 `floor` 차이만 더 짧게 보고 싶다면: [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
 - range 경계와 연결해서 읽고 싶다면: [`subSet`/`headSet`/`tailSet`, `subMap`/`headMap`/`tailMap` Boundary Primer](./submap-boundaries-primer.md)
 
 ## 한 줄 정리
 
-ordered map에서 `null` 안전하게 읽으려면 "왼쪽/오른쪽 이웃이 실제로 존재하나?"만 먼저 보고, 이웃이 없으면 `null`, 있으면 non-null이라고 판단하면 된다.
+ordered map에서 `null` 안전하게 읽으려면 "왼쪽/오른쪽 이웃이 실제로 존재하나?"만 먼저 보고, 이웃이 없으면 `null`, 있으면 non-null이라고 판단하되 이 결과를 `null` key 규칙과 섞지 않는 것이 핵심이다.

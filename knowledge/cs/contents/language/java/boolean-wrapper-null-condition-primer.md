@@ -1,6 +1,6 @@
 # `Boolean`이 `null`일 수도 있을 때 조건문을 어떻게 읽을까 beginner bridge
 
-> 한 줄 요약: `Boolean`은 `true`/`false`뿐 아니라 `null`도 담을 수 있어서, 조건문에서는 단순 wrapper 값 비교와 다르게 "지금 이 값이 참인가"와 "아직 상태가 비어 있나"를 분리해서 읽어야 한다.
+> 한 줄 요약: "`Boolean`이 왜 `null`일 수 있죠?"라는 질문은 대개 "이 값이 `true`/`false`만으로는 부족해서 미입력이나 미결정 상태도 표현하나요?"를 묻는 것이고, 조건문에서는 단순 wrapper 값 비교와 다르게 "지금 이 값이 참인가"와 "아직 상태가 비어 있나"를 분리해서 읽어야 한다.
 
 **난이도: 🟢 Beginner**
 
@@ -13,10 +13,11 @@
 - [Java enum 기초](./java-enum-basics.md)
 - [Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까](./domain-state-type-primer-enum-record-value-object.md)
 - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+- [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
 - [Null Object Pattern: null 대신 아무 일도 하지 않는 객체를 넣기](../../design-pattern/null-object-pattern.md)
 - [language 카테고리 인덱스](../README.md)
 
-retrieval-anchor-keywords: boolean null condition beginner, java boolean null semantics, if flag null npe, boolean true false null, boolean wrapper condition basics, boolean true equals null safe, boolean wrapper equality vs condition, tri state boolean beginner, boolean null 왜 터져요, boolean 조건문 처음, boolean null state enum optional, java boolean wrapper what is, true false null 헷갈림
+retrieval-anchor-keywords: boolean null 왜, boolean null condition beginner, java boolean null semantics, if flag null npe, boolean true false null, boolean wrapper condition basics, boolean true equals null safe, tri state boolean beginner, boolean null 왜 터져요, boolean 조건문 처음, true false null 헷갈림, patch boolean dto beginner, patch dto boolean null missing, boolean vs boolean patch awkward, tri state wrapper patch dto
 
 ## 핵심 개념
 
@@ -24,6 +25,12 @@ retrieval-anchor-keywords: boolean null condition beginner, java boolean null se
 
 - `boolean`은 항상 `true` 아니면 `false`다
 - `Boolean`은 `true`, `false`, `null` 세 상태를 가질 수 있다
+
+그래서 "`Boolean`이 왜 `null`일 수 있죠?"라는 질문에 대한 짧은 답은 이것이다.
+
+- 문법상 wrapper라서 `null`을 담을 수 있다
+- 실무에서는 주로 "안 왔음", "아직 안 정함", "변경 없음" 같은 상태를 보존하려고 그렇게 둔다
+- 그런데 그 상태가 커지면 `Boolean`보다 `enum`이 더 읽기 쉬워진다
 
 그래서 `Boolean approved`를 보면 먼저 두 질문을 나눠야 한다.
 
@@ -69,9 +76,15 @@ if (approved) {
 
 즉 `Boolean`에서 위험한 지점은 equality만이 아니라 조건문 진입 순간의 자동 unboxing이다.
 
-## `true` / `false` / `null`을 각각 어떻게 읽을까
+## `Boolean`이 `null`인 이유와 `true` / `false` / `null`을 읽는 법
 
 `Boolean`이 정말 필요한 이유는 보통 `null`이 "아직 모름" 또는 "안 왔음" 같은 별도 의미를 가질 때다.
+
+즉 초보자가 많이 묻는 "`Boolean null 왜`"를 자연어로 풀면 아래 세 경우가 많다.
+
+- 요청 DTO에서 필드가 안 왔음을 살리고 싶다
+- 아직 사용자가 선택하지 않았다는 초기 상태를 남기고 싶다
+- `true`/`false` 둘 중 하나로 바로 내리기엔 도메인 설명이 부족하다
 
 | 값 | beginner 해석 | 흔한 예 |
 |---|---|---|
@@ -112,6 +125,7 @@ if (marketingConsent == null) {
 | `null` | 변경 없음, 아직 미응답, 잘못된 요청 중 하나 | 팀 계약 없이는 뜻이 고정되지 않는다 |
 
 즉 `Boolean`의 `null`은 자바 문법 문제가 아니라, update API에서 "이 요청이 기존 상태를 건드리나"라는 계약 문제이기도 하다.
+그리고 그 계약 설명이 "`변경 없음`/`승인`/`거절`"처럼 이름 붙은 상태로 굳기 시작하면 다음 단계는 `enum` 쪽이다.
 
 ## wrapper 값 비교와 조건문 해석은 다른 문제다
 
@@ -217,7 +231,61 @@ public void updatePublishState(Post post, Boolean requested) {
 
 여기서 중요한 것은 "`Boolean`이라서 null-safe 비교를 쓴다"보다도 "`null`의 뜻을 먼저 정해 두고 그 정책에 맞는 분기를 둔다"는 점이다.
 
-만약 `null`이 "아직 리뷰 안 끝남", `false`가 "비공개", `true`가 "공개"처럼 계속 상태 의미를 품으면 `Boolean` 하나가 점점 답답해진다.  
+## 왜 `boolean`/`Boolean`만으로는 PATCH DTO가 어색할까
+
+PATCH DTO에서는 보통 세 가지를 구분하고 싶다.
+
+| 클라이언트가 보낸 뜻 | 예시 | 서비스가 읽는 질문 |
+|---|---|---|
+| 필드를 아예 안 보냄 | `{}` | "변경하지 말라는 뜻인가?" |
+| 필드를 보내고 `false`를 줌 | `{"published": false}` | "명시적으로 끄라는 뜻인가?" |
+| 필드를 보내고 `true`를 줌 | `{"published": true}` | "명시적으로 켜라는 뜻인가?" |
+
+이때 `boolean published`는 첫 줄부터 막힌다.
+
+- primitive라서 값이 꼭 있어야 한다
+- DTO 바인딩 뒤에는 "안 보냄"과 기본값 `false`가 쉽게 섞인다
+
+`Boolean published`로 올리면 한 칸 나아지지만, 여전히 질문이 남는다.
+
+- `null`이 "필드 미전달"인가
+- 아니면 "명시적으로 null을 보냄"인가
+- 팀이 이 둘을 같게 볼 것인가
+
+즉 PATCH 경계에서는 `boolean`은 상태가 모자라고, `Boolean`은 의미를 한 칸에 너무 많이 싣기 쉽다.
+
+## tri-state wrapper가 더 선명한 순간
+
+학습자 입문 기준으로는 아래 조건이 보이면 wrapper가 더 읽기 쉽다.
+
+1. "변경 없음"을 `false`와 절대 섞으면 안 된다.
+2. 필드 미전달과 명시적 값 전달을 서비스에서 분리해서 읽어야 한다.
+3. 나중에 "clear", "unknown", "review-needed" 같은 상태가 붙을 가능성이 있다.
+
+그럴 때는 "값"과 "전달 여부"를 분리한 작은 wrapper가 더 솔직하다.
+
+```java
+public record PatchField<T>(boolean present, T value) {
+    public static <T> PatchField<T> absent() {
+        return new PatchField<>(false, null);
+    }
+
+    public static <T> PatchField<T> of(T value) {
+        return new PatchField<>(true, value);
+    }
+}
+```
+
+`PatchField<Boolean>`라고 쓰면 질문이 바로 드러난다.
+
+- `present == false`면 변경 없음
+- `present == true && value == false`면 명시적 비활성화
+- `present == true && value == true`면 명시적 활성화
+
+초보자에게 중요한 포인트는 "무조건 wrapper를 만들자"가 아니다.
+PATCH에서 `false`와 "안 보냄"이 자꾸 헷갈리면, `Boolean` 한 칸에 뜻을 몰아넣기보다 **전달 여부와 값 자체를 분리하는 타입**이 더 선명하다는 것이다.
+
+만약 `null`이 "아직 리뷰 안 끝남", `false`가 "비공개", `true`가 "공개"처럼 계속 상태 의미를 품으면 `Boolean` 하나가 점점 답답해진다.
 그때는 다음 단계로 `enum`을 검토하면 된다.
 
 ```java
@@ -234,7 +302,7 @@ enum PublishDecision {
 - `Optional<Boolean>`가 왜 자주 어색해지는지 이어서 보려면 [Java Optional 입문](./java-optional-basics.md)과 [`Optional`에서 끝낼까, 컬렉션/도메인 타입으로 옮길까 beginner bridge](./optional-collections-domain-null-handling-bridge.md)
 - `Optional<Boolean>`만 따로 짧게 정리한 카드가 필요하면 [`Optional<Boolean>`가 왜 자주 어색할까 follow-up card](./optional-boolean-double-absence-follow-up-card.md)
 - `null`이 상태 의미를 가지기 시작할 때는 [Java enum 기초](./java-enum-basics.md)와 [Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까](./domain-state-type-primer-enum-record-value-object.md)
-- API payload에서 missing / explicit `null` / default가 어떻게 갈리는지는 [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
+- API payload에서 missing / explicit `null` / default가 어떻게 갈리는지는 [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)와 [JSON `null`, Missing Field, Unknown Property, and Schema Evolution](./json-null-missing-unknown-field-schema-evolution.md)
 - "아무 일도 하지 않음"이 자연스러운 협력 객체라면 [Null Object Pattern: null 대신 아무 일도 하지 않는 객체를 넣기](../../design-pattern/null-object-pattern.md)
 
 ## 한 줄 정리

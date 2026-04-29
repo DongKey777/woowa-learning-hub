@@ -13,7 +13,7 @@
 - [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: dependency injection basics, dependency injection what is, di 기초, di 처음, 의존성 주입 뭐예요, ioc랑 di 차이 헷갈림, 왜 new 하면 안 돼요, 객체 외부 주입, 생성자 주입 기초, 생성자 주입 언제 쓰나요, 필드 주입 vs 생성자 주입, 테스트 의존성 교체, service repository 연결 누가 해요, spring di 입문, beginner di
+retrieval-anchor-keywords: dependency injection basics, dependency injection what is, di 기초, di 처음, 의존성 주입 뭐예요, ioc랑 di 차이 헷갈림, di랑 bean 차이, spring 없이 di 가능한가, 왜 new 하면 안 돼요, 객체 외부 주입, 생성자 주입 기초, 생성자 주입 언제 쓰나요, 필드 주입 vs 생성자 주입, 테스트 의존성 교체, service repository 연결 누가 해요
 
 ## 먼저 잡는 멘탈 모델
 
@@ -33,6 +33,7 @@ DI를 처음 볼 때는 "어려운 프레임워크 기능"으로 외우기보다
 | "왜 그냥 `new`하면 안 돼요?" | 결합도와 테스트 교체 비용 | 이 문서의 `핵심 개념` |
 | "Service 안 `Repository`는 누가 넣어요?" | 주입과 컨테이너의 역할 분리 | [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](../spring/spring-ioc-di-basics.md) |
 | "Spring이 실제로 Bean을 어떻게 연결해요?" | DI와 컨테이너를 구분해서 보기 | [Spring IoC/DI 컨테이너](../spring/ioc-di-container.md) |
+| "`DI`, `IoC`, `Bean`이 다 같은 말 같아요" | 용어가 가리키는 층위 구분 | 이 문서의 `DI / IoC / Bean 20초 구분표` |
 | "Repository 인터페이스를 왜 두죠?" | 구현 교체와 책임 분리 | [Repository, DAO, Entity](./repository-dao-entity.md) |
 
 ## 핵심 개념
@@ -57,6 +58,19 @@ class OrderService {
 두 번째 방식이 DI다. 어떤 `OrderRepository`를 쓸지 결정권이 `OrderService` 밖으로 옮겨진다. 처음에는 "객체를 받는 문법"보다 **구현체 선택 책임이 서비스 밖으로 빠진다**는 점이 더 중요하다.
 
 IoC(Inversion of Control, 제어의 역전)는 이 패턴의 상위 개념이다. 객체가 자신의 의존 객체를 관리하던 제어권을 외부 컨테이너(예: Spring)가 가져간다는 의미다.
+
+## DI / IoC / Bean 20초 구분표
+
+처음에는 세 단어가 한 문장에 같이 나와서 같은 뜻처럼 들린다. 하지만 초급자 기준으로는 "설계 방식 / 더 큰 원리 / Spring 구현 단위"로만 자르면 충분하다.
+
+| 단어 | 가장 짧은 뜻 | 주문 예시로 붙이면 |
+|---|---|---|
+| DI | 필요한 협력 객체를 외부에서 받는 방식 | `OrderService`가 `OrderRepository`를 생성자에서 받는다 |
+| IoC | 객체 생성과 연결 제어권이 바깥으로 넘어간 상태 | `OrderService`가 직접 `new JdbcOrderRepository()`를 고르지 않는다 |
+| Bean | Spring 컨테이너가 관리하는 객체 | `@Service OrderService`, `@Repository JdbcOrderRepository` |
+
+- 짧게 외우면 `DI는 받는 방식`, `IoC는 제어권 이동`, `Bean은 Spring이 관리하는 객체`다.
+- 그래서 Spring 없이도 생성자에 `OrderRepository`를 넘기면 DI이고, Spring은 그 연결을 자동화해 주는 도구다.
 
 ## 한눈에 보기
 
@@ -96,9 +110,44 @@ Spring IoC 컨테이너는 `@Component`나 `@Bean`으로 등록된 객체를 관
 
 예를 들어 주문 저장 방식을 메모리 저장소에서 JPA 저장소로 바꾸고 싶을 때, DI가 없으면 `OrderService`를 수정해야 한다. DI가 있으면 주입되는 구현체만 바꾸고 서비스 코드는 그대로 둘 수 있다.
 
+## 테스트 더블로 바로 체감하는 작은 예시
+
+초심자가 "`그래서 테스트가 왜 쉬워지는데요?`"에서 막히면, fake 하나 끼워 넣는 장면만 보면 된다.
+
+```java
+class FakeOrderRepository implements OrderRepository {
+    private final List<Order> saved = new ArrayList<>();
+
+    @Override
+    public void save(Order order) {
+        saved.add(order);
+    }
+
+    boolean contains(Order order) {
+        return saved.contains(order);
+    }
+}
+
+@Test
+void 주문을_저장한다() {
+    FakeOrderRepository fakeRepo = new FakeOrderRepository();
+    OrderService service = new OrderService(fakeRepo);
+
+    Order order = new Order("A-100", 2);
+    service.place(order);
+
+    assertThat(fakeRepo.contains(order)).isTrue();
+}
+```
+
+- `OrderService`는 진짜 DB 대신 `FakeOrderRepository`를 받는다.
+- 그래서 "저장 명령을 보냈는가"를 빠르게 확인할 수 있고, DB 연결 실패 같은 주변 변수 없이 서비스 규칙만 먼저 본다.
+- 이 장면이 DI의 가장 실용적인 첫 이점이다.
+
 ## 흔한 오해와 함정
 
 - "DI와 IoC는 같은 말이다"는 오해가 많다. IoC는 넓은 패턴이고, DI는 IoC를 구현하는 한 가지 방법이다.
+- "DI는 Spring을 써야만 가능하다"는 오해도 많다. 생성자나 세터로 협력 객체를 외부에서 받으면 Spring 없이도 이미 DI다.
 - 필드 주입(`@Autowired`)은 코드가 짧아 보이지만 테스트에서 의존성을 교체하기 어렵고, `final`을 사용할 수 없다. Spring 공식 문서도 생성자 주입을 권장한다.
 - "DI를 쓰면 무조건 인터페이스가 필요하다"는 오해도 있다. 인터페이스 없이도 DI는 가능하다. 다만 교체 유연성을 얻으려면 인터페이스가 필요하다.
 - "DI를 쓰면 Service가 아무 일도 안 하는 얇은 껍데기가 되어야 한다"는 뜻은 아니다. DI는 책임 분리 도구이지, 비즈니스 로직 금지 규칙이 아니다.

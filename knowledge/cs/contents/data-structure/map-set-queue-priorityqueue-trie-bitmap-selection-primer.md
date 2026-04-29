@@ -16,7 +16,18 @@
 - [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md)
 - [Search 시스템 설계](../system-design/search-system-design.md)
 
-retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitmap, data structure choice basics, beginner structure selection, 자료구조 처음, 자료구조 헷갈림, map set queue 언제, trie bitmap 뭐예요, priority queue basics, what is bitmap, junior backend primer, lookup dedupe ordering, prefix search basics
+retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitmap, 자료구조 처음 배우는데 뭐부터, 자료구조 큰 그림, 자료구조 헷갈림, 처음 배우는데 map set queue 차이, map set queue 뭐예요, map set queue 언제 쓰는지, trie bitmap 뭐예요, priority queue가 뭐예요, queue가 왜 bfs에도 나와요, queue가 service 코드에도 왜 나와요, set이랑 map이 왜 달라요, bitmap은 언제 써요, what is bitmap, 첫 자료구조 선택 기준
+
+## 이 문서가 먼저 잡아야 하는 첫 질문
+
+이 문서는 아래처럼 **첫 질문 형태의 query**가 들어왔을 때 deep dive보다 먼저 잡히도록 만든 primer다.
+
+- `자료구조 처음인데 뭐부터 봐요?`
+- `map set queue 차이가 뭐예요?`
+- `queue가 왜 bfs에도 나오고 service 코드에도 나와요?`
+- `trie랑 bitmap은 언제 쓰는지 큰 그림만 먼저 알고 싶어요`
+
+한 줄로 줄이면 `구현 디테일`보다 `질문 모양 번역`을 먼저 끝내는 문서다.
 
 ## 핵심 개념
 
@@ -103,6 +114,17 @@ retrieval-anchor-keywords: map vs set vs queue vs priority queue vs trie vs bitm
 - `bitmap`이 항상 최고 성능은 아니다
   - row 수가 작거나 id가 문자열 중심이면 구현 복잡도만 늘 수 있다
   - `bitmap`은 "정수 id 집합을 정말 많이 합치나?"를 먼저 확인할 때 의미가 있다
+
+## beginner-safe 다음 한 칸
+
+처음 읽은 뒤에는 제일 헷갈린 경계 하나만 따라가면 된다.
+
+| 지금 가장 막히는 말 | 다음 한 칸 | 왜 여기로 가나 |
+|---|---|---|
+| `set이랑 map이 아직 헷갈려요` | [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md) | `있나?`와 `무슨 값이지?`를 다시 분리한다 |
+| `queue가 왜 BFS랑 service 둘 다에 나와요?` | [Queue vs Deque vs Priority Queue Primer](./queue-vs-deque-vs-priority-queue-primer.md) -> [DFS와 BFS 입문](../algorithm/dfs-bfs-intro.md) | FIFO 도구와 탐색 규칙을 다른 질문으로 자른다 |
+| `trie가 map이랑 뭐가 달라요?` | [Trie Prefix Search / Autocomplete](./trie-prefix-search-autocomplete.md) | exact lookup과 prefix lookup을 분리한다 |
+| `bitmap이 set보다 왜 유리할 수 있죠?` | [Bitmap vs Set Dense Integer ID Beginner Bridge](./bitmap-vs-set-dense-integer-id-beginner-bridge.md) | 정수 id 집합 연산이라는 전제를 붙인다 |
 
 주니어가 특히 기억하면 좋은 분기 하나만 더 적으면:
 

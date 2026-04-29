@@ -6,10 +6,13 @@
 
 관련 문서:
 
+- [트랜잭션 기초](./transaction-basics.md)
+- [트랜잭션 격리 수준 기초](./transaction-isolation-basics.md)
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
+- [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md)
+- [database 카테고리 인덱스](./README.md)
 - [Deadlock Case Study](./deadlock-case-study.md)
 - [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md)
-- [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 심화](../spring/transactional-deep-dive.md)
 
 retrieval-anchor-keywords: database lock basics, 락 기초, shared lock exclusive lock 처음 배우는데, 낙관적 락 비관적 락 차이, optimistic pessimistic lock 입문, 락이 뭐예요, 데드락 기초, deadlock what is, deadlock 처음, deadlock이 뭐예요, lock wait 왜 생겨요, lock timeout 처음, row lock table lock 입문, 잠금 기초, lock basics beginner
@@ -21,8 +24,8 @@ retrieval-anchor-keywords: database lock basics, 락 기초, shared lock exclusi
 입문자가 자주 혼동하는 지점:
 
 - 락은 DB 서버가 내부적으로 관리하는 것이지만, 개발자가 `SELECT ... FOR UPDATE`처럼 명시적으로 요청할 수도 있다
-- 락이 길어지면 다른 트랜잭션이 대기하고, 두 트랜잭션이 서로 상대의 락을 기다리면 **데드락(deadlock)** 이 발생한다
-- 격리 수준이 높아질수록 DB가 내부적으로 더 많은 락을 자동으로 건다
+- 락이 길어지면 다른 트랜잭션이 대기한다. 여기서는 "왜 기다리나"까지만 잡고, `deadlock` 대응은 관련 문서로 넘긴다
+- 격리 수준이 높아질수록 내부 동작이 더 복잡해질 수 있지만, 입문 1회차에서는 "락은 순서를 세운다"만 기억하면 충분하다
 
 ## 한눈에 보기 — 락 종류
 
@@ -50,15 +53,16 @@ retrieval-anchor-keywords: database lock basics, 락 기초, shared lock exclusi
 | "낙관적 락이 항상 더 빠르다" | 충돌이 잦은 상황에서는 재시도 비용이 쌓여 오히려 더 느리다 | 충돌 빈도를 먼저 예측하고 방식을 고른다 |
 | "테이블 락을 걸면 행 락보다 안전하다" | 테이블 전체가 잠기면 해당 테이블에 접근하는 모든 트랜잭션이 대기해 처리량이 급감한다 | InnoDB 행 락으로 최소 범위를 잡고, 테이블 락은 DDL 등 부득이한 경우로 제한한다 |
 
-## incident로 넘어가는 3단계 라우트
+## 지금 이 문서에서 답하는 것과 넘기는 것
 
-초보자는 `deadlock`, `lock wait timeout`, `FOR UPDATE` 같은 단어가 먼저 보여도 바로 운영 playbook으로 내려가기보다, 아래 3단계로 문서를 밟으면 "락 기초"와 "실제 incident 대응"이 덜 끊긴다.
+처음에는 `deadlock`, `lock wait timeout`, `FOR UPDATE` 같은 단어가 같이 보여도 전부 한 번에 해결하려 하지 않는 편이 낫다. 이 문서는 "락이 왜 필요하나"까지만 답하고, 실제 증상 대응은 링크로 넘긴다.
 
-| 단계 | 여기서 답할 질문 | 먼저 잡을 한 줄 | 다음 이동 |
-|---|---|---|---|
-| 1. primer | "락이 뭐예요? 왜 기다려요?" | 락은 같은 데이터를 동시에 바꾸지 못하게 순서를 세우는 장치다 | 이 문서에서 shared/exclusive, pessimistic/optimistic 차이를 먼저 정리한다 |
-| 2. symptom bridge | "`deadlock`인지 `lock wait timeout`인지 어떻게 읽어요?" | `deadlock`은 순환 대기이고 `lock wait timeout`은 오래 기다렸다는 신호다 | deadlock이면 [Deadlock Case Study](./deadlock-case-study.md), timeout이면 3단계로 바로 간다 |
-| 3. incident playbook | "지금 운영에서 무엇부터 확인하죠?" | 이제는 개념보다 blocker, wait graph, metadata lock 분류가 우선이다 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
+| 지금 보인 말 | 이 문서에서 먼저 잡을 것 | 자세한 대응 문서 |
+|---|---|---|
+| "`lock`이 뭐예요?" | 순서를 세워 같은 데이터를 동시에 망가뜨리지 않게 하는 장치 | 이 문서 |
+| "`FOR UPDATE`가 왜 필요해요?" | 읽으면서 경쟁 자원을 잡는 locking read라는 감각 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
+| "`deadlock`이 왜 떴어요?" | 여기서는 "서로 반대 순서로 기다리는 순환 대기"까지만 기억 | [Deadlock Case Study](./deadlock-case-study.md) |
+| "`lock wait timeout`이 떴어요" | 여기서는 "오래 기다렸다는 신호"까지만 기억 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
 
 증상 단어별 빠른 갈림길도 같이 기억하면 좋다.
 
@@ -68,11 +72,19 @@ retrieval-anchor-keywords: database lock basics, 락 기초, shared lock exclusi
 | `lock wait timeout` | 락 줄에서 너무 오래 기다렸다는 뜻이지, 이미 중복 성공했다는 뜻은 아니다 | [Lock Wait, Deadlock, and Latch Contention Triage Playbook](./lock-wait-deadlock-latch-triage-playbook.md) |
 | `FOR UPDATE` | 그냥 읽기와 달리 읽으면서 경쟁 자원을 잡는 locking read다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
 
-## 실무에서 쓰는 모습
+## 코드에서 처음 읽을 때는 여기까지만
 
-**(1) 재고 차감** — 동시에 여러 사용자가 재고를 차감하는 경우 `SELECT ... FOR UPDATE`로 해당 row에 배타 락을 건 뒤 재고 값을 확인하고 차감한다. 락을 잡기 때문에 하나씩 직렬 처리된다.
+처음 코드에서 락을 찾을 때는 복잡한 운영 사고보다 아래 두 장면만 보면 된다.
 
-**(2) 낙관적 락 + JPA** — 수정이 드문 프로필 정보 수정 등에서 `@Version` 컬럼을 두고 충돌 시 `OptimisticLockingFailureException`을 catch해 재시도하거나 사용자에게 재시도를 안내한다.
+| 보인 코드/단서 | 초보자용 첫 해석 | 다음 문서 |
+|---|---|---|
+| `SELECT ... FOR UPDATE` | 읽으면서 row를 먼저 잡아 다른 트랜잭션을 기다리게 할 수 있다 | [트랜잭션 격리수준과 락](./transaction-isolation-locking.md) |
+| JPA `@Version` | 지금 바로 잠그기보다 "나중에 쓸 때 충돌을 확인"하는 낙관적 락일 수 있다 | [JDBC · JPA · MyBatis 기초](./jdbc-jpa-mybatis-basics.md), [Spring @Transactional 심화](../spring/transactional-deep-dive.md) |
+
+짧은 예시도 이 정도면 충분하다.
+
+- 재고 차감: `SELECT ... FOR UPDATE`로 해당 row를 먼저 잡고 확인한 뒤 차감한다.
+- 프로필 수정: `@Version`으로 충돌을 뒤늦게 발견하고 재시도 여부를 판단한다.
 
 ## 여기서 멈추는 기준
 
@@ -80,7 +92,7 @@ retrieval-anchor-keywords: database lock basics, 락 기초, shared lock exclusi
 
 - plain `SELECT`와 locking read는 역할이 다르다.
 - 비관적 락은 기다리게 하고, 낙관적 락은 충돌 시 실패시키고 다시 판단한다.
-- deadlock, timeout, gap lock은 "락이 있다" 다음 단계의 심화 주제지만, `deadlock = 서로 반대 순서로 기다리는 순환 대기` 정도는 먼저 잡고 넘어가면 follow-up이 훨씬 덜 헷갈린다.
+- deadlock, timeout, gap lock은 "락이 있다" 다음 단계의 심화 주제다. 이 문서에서는 용어 뜻만 붙이고 대응 절차는 관련 문서로 넘긴다.
 
 ## 더 깊이 가려면
 

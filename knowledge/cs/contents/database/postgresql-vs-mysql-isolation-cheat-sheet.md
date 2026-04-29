@@ -8,14 +8,16 @@
 
 - [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)
 - [Read Committed와 Repeatable Read의 이상 현상 비교](./read-committed-vs-repeatable-read-anomalies.md)
+- [Lost Update vs Write Skew vs Phantom 타임라인 가이드](./lost-update-vs-write-skew-vs-phantom-timeline-guide.md)
 - [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)
 - [MySQL Gap-Lock Blind Spots Under READ COMMITTED](./mysql-gap-lock-blind-spots-read-committed.md)
 - [Engine Fallbacks for Overlap Enforcement](./engine-fallbacks-overlap-enforcement.md)
+- [Gap Lock / Next-Key Lock](./gap-lock-next-key-lock.md)
 - [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isolation, postgresql read committed, postgresql repeatable read, postgresql serializable, postgresql serializable retry playbook, sqlstate 40001, mysql read committed, mysql repeatable read, mysql serializable, snapshot isolation vs next-key lock, postgresql serializable ssi, mysql serializable locking read, beginner isolation comparison, postgresql vs mysql isolation cheat sheet basics
+retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isolation, isolation level 이름 같은데 왜 달라요, postgresql repeatable read 뭐가 달라요, mysql repeatable read 뭐가 달라요, 처음 isolation level 헷갈려요, postgresql serializable retry, mysql serializable lock wait, snapshot isolation vs next-key lock, read committed 뭐예요, repeatable read 뭐예요, serializable 뭐예요, write skew 왜 생겨요, gap lock 왜 나와요, beginner isolation comparison
 
 ## 핵심 개념
 
@@ -28,6 +30,14 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 이 질문에 대한 답이 PostgreSQL과 MySQL에서 다르다.
 그래서 "우리 DB에서 `REPEATABLE READ`면 괜찮았다"는 말은 엔진 이름이 빠지면 불완전한 설명이다.
 
+## 처음 막힐 때는 이 표부터 본다
+
+| 지금 헷갈리는 문장 | 먼저 잡을 핵심 |
+|---|---|
+| "`READ COMMITTED`면 그냥 둘 다 비슷한 것 아닌가?" | 둘 다 statement마다 새 snapshot을 볼 수 있지만, MySQL은 locking read에서 gap lock 기대가 더 빨리 깨진다. |
+| "`REPEATABLE READ`면 phantom도 끝난 것 아닌가?" | PostgreSQL은 snapshot consistency 쪽, MySQL은 next-key locking 체감 쪽이라 안전한 이유가 다르다. |
+| "`SERIALIZABLE`이면 그냥 제일 강한 락인가?" | PostgreSQL은 retry 계약 쪽, MySQL은 lock wait 증가 쪽으로 먼저 읽는 편이 안전하다. |
+
 ## 먼저 보는 치트 시트
 
 | 격리수준 | PostgreSQL | MySQL InnoDB | 초보자 기억법 |
@@ -36,9 +46,7 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 | `REPEATABLE READ` | transaction 시작 시점 기준 snapshot을 계속 본다. repeated plain `SELECT`에서는 non-repeatable read와 phantom을 보지 않지만, write skew나 predicate invariant 위반까지 자동으로 막아 주지는 않는다. | plain `SELECT`는 transaction snapshot을 유지한다. 하지만 locking read/range scan은 next-key/gap lock으로 scanned range insert를 막을 수 있어, 일부 부재 체크가 "엔진 구현 덕분에" 안전해 보일 수 있다. | 둘 다 재조회는 안정적이지만, PostgreSQL RR은 snapshot isolation 쪽이고 MySQL RR은 next-key locking 체감이 더 강하다. |
 | `SERIALIZABLE` | SSI(Serializable Snapshot Isolation)로 동작한다. 읽기가 무조건 락으로 바뀌기보다, 위험한 rw-dependency cycle을 감지해 한쪽을 abort시키므로 retry 계약이 중요하다. | `REPEATABLE READ`보다 lock-heavy하다. autocommit이 꺼진 plain `SELECT`는 사실상 `FOR SHARE`처럼 취급되어 더 많은 대기와 deadlock 가능성을 만든다. | 같은 `SERIALIZABLE`이어도 PostgreSQL은 "retry 중심", MySQL은 "locking 중심"으로 느껴진다. |
 
-## 격리수준별로 왜 다르게 느껴지나
-
-### 1. `READ COMMITTED`: 둘 다 statement snapshot이지만, MySQL은 range absence-check가 더 쉽게 깨진다
+## `READ COMMITTED`는 어디서 먼저 갈리나
 
 공통점:
 
@@ -57,7 +65,7 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 `READ COMMITTED`의 InnoDB에서는 이 가정이 틀릴 수 있다.
 기존 row는 잠가도, 아직 없는 row가 들어올 gap은 막지 못해 overlap check나 "비어 있으면 insert" 경로가 phantom에 취약해진다.
 
-### 2. `REPEATABLE READ`: PostgreSQL은 snapshot 쪽, MySQL은 next-key locking 체감이 더 강하다
+## `REPEATABLE READ`는 왜 같은 이름인데 체감이 다를까
 
 ### PostgreSQL `REPEATABLE READ`
 
@@ -82,18 +90,16 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 
 중요한 함정:
 
-## 격리수준별로 왜 다르게 느껴지나 (계속 2)
-
 - 이 안전성은 "추상적인 predicate 전체"가 아니라 **실제로 스캔한 index range**에 묶인다
-- 인덱스 prefix, access path, mixed write path가 달라지면 같은 논리 규칙도 깨질 수 있다
 - 따라서 "MySQL RR에서 괜찮았으니 PostgreSQL RR로 옮겨도 괜찮다"는 추론은 특히 위험하다
+- 인덱스 경로와 next-key lock이 왜 묶여 보이는지는 이 문서에서 다 열지 말고 [Gap Lock / Next-Key Lock](./gap-lock-next-key-lock.md)로 내려가면 된다
 
 한 줄로 줄이면 이렇다.
 
 - PostgreSQL RR: **snapshot consistency가 핵심**
 - MySQL RR: **snapshot + next-key locking 체감이 같이 따라온다**
 
-### 3. `SERIALIZABLE`: 같은 이름이지만 비용 모델이 가장 다르다
+## `SERIALIZABLE`은 무엇을 먼저 떠올려야 할까
 
 ### PostgreSQL `SERIALIZABLE`
 
@@ -103,8 +109,8 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 
 초보자가 기억할 점:
 
-- "더 강한 lock"만 생각하지 말고 `retry`를 계약으로 같이 둬야 한다
-- 애플리케이션은 serialization failure를 정상 경로로 다뤄야 한다
+- "더 강한 lock"보다 "`40001`이 나면 다시 시도하는 계약이 필요한가?"를 먼저 본다
+- retry 설계와 예외 처리 예시는 [PostgreSQL SERIALIZABLE Retry Playbook for Beginners](./postgresql-serializable-retry-playbook.md)로 내려가면 된다
 
 ### MySQL `SERIALIZABLE`
 
@@ -114,9 +120,9 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 초보자가 기억할 점:
 
 - PostgreSQL처럼 "읽기는 가볍고, 충돌 시 abort"라고 기대하면 안 된다
-- 긴 조회를 transaction 안에 넣으면 lock wait과 deadlock surface가 더 빨리 커진다
+- lock wait, deadlock, 긴 transaction 운영 해석은 이 치트 시트의 범위를 넘기므로 [트랜잭션 격리수준과 락](./transaction-isolation-locking.md)이나 [Transaction Retry와 Serialization Failure 패턴](./transaction-retry-serialization-failure-patterns.md)으로 넘긴다
 
-## 엔진을 바꿀 때 가장 위험한 오해
+## 엔진을 바꿀 때 자주 하는 오해
 
 ### 오해 1. "`REPEATABLE READ`면 phantom 걱정은 끝난다"
 
@@ -148,10 +154,10 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 - PostgreSQL은 retry/abort surface가 핵심이다
 - MySQL은 blocking/locking surface가 더 직접적으로 보인다
 
-같은 이름인데도 운영 지표가 달라진다.
+같은 이름이어도 초보자 첫 질문은 다르다.
 
-- PostgreSQL: serialization failure, retry count
-- MySQL: lock wait, deadlock, transaction duration
+- PostgreSQL: "retry를 정상 흐름으로 설계했나?"
+- MySQL: "긴 transaction과 locking read를 정말 필요한 곳에만 썼나?"
 
 ## 실전 시나리오
 
@@ -172,23 +178,18 @@ retrieval-anchor-keywords: postgresql vs mysql isolation, postgres vs mysql isol
 - PostgreSQL RC, MySQL RC 모두 statement마다 최신 committed view를 보는 감각이 맞다
 - 같은 transaction 안에서 값이 바뀌어도 이상이 아니라 격리수준의 성질이다
 
-이런 화면에서 꼭 필요한 건 RR보다도 다음인 경우가 많다.
+이런 화면에서 beginner가 먼저 기억할 것은 "재조회가 바뀌어도 격리수준상 이상이 아닐 수 있다"는 점이다.
+그다음 세부 운영 선택은 이 문서에서 깊게 열지 않는다.
 
 - 짧은 transaction
-- read replica consistency 정책
-- "현재 시각 기준"이라는 제품 의미의 명확화
+- 화면 문구에서 "현재 시각 기준" 의미를 분명히 하기
+- replica/캐시 최신성 정책은 별도 아키텍처 문서에서 다루기
 
-### 시나리오 3. 정합성이 가장 중요한 정산/배치에서 `SERIALIZABLE`을 검토할 때
+### 자주 하는 혼동
 
-PostgreSQL이면:
-
-- retry budget과 idempotency를 먼저 설계한다
-
-MySQL이면:
-
-- 긴 read transaction을 줄이고 lock wait surface를 먼저 본다
-
-같은 `SERIALIZABLE`인데도 장애 징후가 다르게 올라오기 때문이다.
+- "`REPEATABLE READ`면 둘 다 같은 수준으로 안전하다"는 오해가 가장 흔하다. 이름이 아니라 snapshot을 유지하는 방식과 range protection 방식이 다르다.
+- "`SERIALIZABLE`이면 둘 다 락만 세진다"도 오해다. PostgreSQL은 retry 계약, MySQL은 locking 비용을 먼저 떠올리는 편이 초보자에게 안전하다.
+- range invariant, deadlock telemetry, retry budget 같은 운영 설계는 바로 깊게 들어가기보다 관련 문서로 분리해서 보는 편이 덜 헷갈린다.
 
 ## 빠른 선택 기준
 

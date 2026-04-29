@@ -18,9 +18,17 @@
 - [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)
 - [Spring 예외 처리 기초: `@ExceptionHandler` vs `@RestControllerAdvice`로 `400`/`404`/`409` 나누기](./spring-exception-handling-basics.md)
 - [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)
+- [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: @requestbody 400 왜 바로 나요, @requestbody 400 vs 415 차이, @requestbody @valid 언제 타요, @valid 전에 400 나요, post /admin/reservations requestbody 400, roomescape admin reservations json example, requestbody type mismatch json, unsupported media type why spring, spring content-type application json beginner, json 보냈는데 415가 떠요, 컨트롤러 로그 안 찍힘 requestbody, 컨트롤러 진입 전 400 spring, httpmessageconverter basics, malformed json 400 spring, dto 변환 실패 400 spring
+## 이 라우트에서 보는 위치
+
+- 현재 문서: 1단계. "`@RequestBody`인데 컨트롤러 전에 `400`이 나요"를 먼저 가른다.
+- README 바인딩 증상표 순서: `@RequestBody 400`을 먼저 보고, 검색어가 직접 `415`/`Content-Type`을 말하면 바로 415 primer로 옮긴다.
+- 다음 문서: [2단계 `@Valid` primer](./spring-valid-400-vs-message-conversion-400-primer.md)
+- README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
+
+retrieval-anchor-keywords: @requestbody 400 왜 바로 나요, 컨트롤러 로그 안 찍힘, @requestbody인데 컨트롤러 전에 400이 나요, json parse error가 보여요, malformed json 400 spring, dto 변환 실패 400 spring, requestbody 400 vs 415 first split, json인데 415 unsupported media type, content-type application/json 안 붙였는데 415, requestbody media type mismatch, @valid 전에 400 나요, @requestbody @valid 언제 타요, 처음 requestbody 400 헷갈려요, httpmessageconverter basics
 
 ## 핵심 개념
 
@@ -36,6 +44,7 @@ retrieval-anchor-keywords: @requestbody 400 왜 바로 나요, @requestbody 400 
 
 초급자 검색 진입 문장은 README와 같은 증상 문장 세트로 아래처럼 고정한다.
 
+- "`컨트롤러 로그 안 찍힘`"
 - "`@RequestBody`인데 컨트롤러 전에 `400`이 나요"
 - "`JSON parse error`가 보여요"
 - "`json`인데 `415 Unsupported Media Type`가 떠요"
@@ -61,13 +70,14 @@ HTTP 요청
   -> controller 호출
 ```
 
-| 보이는 현상 | 첫 분기 | 먼저 볼 것 |
+| 내가 이렇게 말하고 있다면 | 첫 분기 | 먼저 볼 것 |
 |---|---|---|
-| `BindingResult`가 왜 못 받았지? | 아직 DTO 생성 전일 수 있음 | `BindingResult`는 validation handoff 지점이라 message conversion 실패에는 끼어들지 못함 |
-| `302`/`401`/`403` | 아직 body 단계 전 | security / filter |
-| `415 Unsupported Media Type` | body 형식 선언 실패 | `Content-Type: application/json` |
-| `400` + JSON parse / 날짜 / enum / 숫자 단서 | **DTO 변환 실패** | JSON 문법, 필드명, 타입 |
-| `400` + `@Valid`/field error 단서 | **validation 실패** | 제약 애너테이션, 입력값 |
+| "`컨트롤러 로그 안 찍힘`", "`@RequestBody`인데 컨트롤러 전에 `400`이 나요" | **DTO 변환 실패** 후보부터 본다 | JSON 문법, 필드명, 타입, `Content-Type` |
+| "`BindingResult`가 왜 못 받았지?" | 아직 DTO 생성 전일 수 있음 | `BindingResult`는 validation handoff 지점이라 message conversion 실패에는 끼어들지 못함 |
+| "`로그인했는데도 `/login`으로 가요`", "`권한 없다고 떠요`" | 아직 body 단계 전 | security / filter |
+| "`json` 보냈는데 `415 Unsupported Media Type`가 떠요" | body 형식 선언 실패 | `Content-Type: application/json` |
+| "`JSON parse error`가 보여요", "`날짜/enum/숫자에서 자꾸 `400` 나요`" | **DTO 변환 실패** | JSON 문법, 필드명, 타입 |
+| "`@Valid`는 붙였는데 field error가 보여요`", "`입력값 규칙에서 막힌 것 같아요`" | **validation 실패** | 제약 애너테이션, 입력값 |
 
 짧게 외우면 된다.
 
@@ -83,12 +93,12 @@ HTTP 요청
 "`@RequestBody`인데 컨트롤러 전에 `400`이 나요", "`JSON parse error`가 보여요"는 이 표의 왼쪽으로 보고,  
 "`json`인데 `415 Unsupported Media Type`가 떠요", "`Content-Type: application/json` 안 붙였는데 `415`예요"는 오른쪽으로 보면 된다.
 
-| 비교 축 | `400 Bad Request` parse/type 실패 | `415 Unsupported Media Type` 실패 |
+| 비교 축 | "`@RequestBody`인데 컨트롤러 전에 `400`이 나요" / "`JSON parse error`가 보여요" | "`json`인데 `415 Unsupported Media Type`가 떠요" / "`Content-Type: application/json` 안 붙였는데 `415`예요" |
 |---|---|---|
 | Spring이 먼저 못한 일 | JSON을 읽어 DTO로 바꾸기 | 이 body를 어떤 형식으로 읽을지 결정하기 |
-| 보통 이미 맞춰진 것 | `Content-Type: application/json` | body가 JSON처럼 보여도 상관없다. 핵심은 header 계약 |
-| 학습자 화면에서 자주 보이는 단서 | `JSON parse error`, `Cannot deserialize`, 날짜/enum/숫자 변환 실패 | "분명 JSON으로 보냈는데 `415 Unsupported Media Type`가 떠요", `Content-Type 'text/plain' is not supported` |
-| 가장 먼저 확인할 것 | 닫는 괄호, 쉼표, 필드 타입, 날짜/시간 형식 | 요청 헤더의 `Content-Type`, 컨트롤러의 `consumes` 계약 |
+| 학습자에게 먼저 확인시킬 질문 | "JSON 문법이나 값 형식이 DTO 타입과 맞나요?" | "이 요청이 JSON이라고 헤더로 제대로 선언됐나요?" |
+| 화면에서 자주 같이 보이는 단서 | `JSON parse error`, `Cannot deserialize`, 날짜/enum/숫자 변환 실패 | `Content-Type 'text/plain' is not supported`, `application/json` 누락, `consumes` mismatch |
+| 가장 먼저 손댈 곳 | 닫는 괄호, 쉼표, 필드 타입, 날짜/시간 형식 | 요청 헤더의 `Content-Type`, 컨트롤러의 `consumes` 계약 |
 | body를 JSON처럼 예쁘게 적어도 해결되나 | 아니오. 값 형식까지 DTO 타입과 맞아야 한다 | 아니오. 헤더가 틀리면 body 모양보다 먼저 막힌다 |
 | beginner 한 줄 판단 | "내용은 읽으려 했는데 값 해석에 실패했다" | "애초에 이 형식 body는 받지 않겠다고 판단했다" |
 
@@ -311,7 +321,8 @@ RoomEscape 관리자 예약 생성 API를 예로 들면 초반 점검 순서는 
 - 바인딩 실패와 validation 실패 순서를 더 자세히 보고 싶으면 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 이어간다.
 - `@Valid` `400`과 message conversion `400`을 로그 문구 기준으로 빠르게 가르는 카드가 필요하면 [Spring `@Valid`는 언제 타고 언제 못 타는가: `400` 첫 분기 primer](./spring-valid-400-vs-message-conversion-400-primer.md)를 본다.
 - "`BindingResult`가 왜 어떤 `400`에는 안 먹는지"를 controller 로컬 처리 관점에서 이어 보고 싶으면 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나: 컨트롤러 로컬 처리 초급 카드](./spring-bindingresult-local-validation-400-primer.md)를 바로 이어 읽는다.
-- `Accept`, `Content-Type`, `415` 경계를 더 분명히 보고 싶으면 [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)와 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)를 같이 본다.
+- `Content-Type` 확인은 끝났고 이제 "`Accept`는 또 뭐예요?", "`produces`는 언제 봐요?"가 헷갈리면 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)로 넘어간다.
+- `Accept`, `Content-Type`, `415` 경계를 한 장으로 다시 붙이고 싶으면 [HTTP 요청·응답 헤더 기초](../network/http-request-response-headers-basics.md)와 [Spring Content Negotiation Pitfalls](./spring-content-negotiation-pitfalls.md)를 같이 본다.
 
 ## 면접/시니어 질문 미리보기
 

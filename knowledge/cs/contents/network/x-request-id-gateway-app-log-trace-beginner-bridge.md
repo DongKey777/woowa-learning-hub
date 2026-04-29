@@ -14,7 +14,7 @@
 - [Spring Observability, Micrometer, Tracing](../spring/spring-observability-micrometer-tracing.md)
 - [network 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: x-request-id propagation, request id propagation basics, devtools x-request-id next step, gateway app log trace bridge, x-request-id 뭐예요, request id 처음, request id 왜 봐요, what is x-request-id, request id tracing beginner, gateway log app log trace, trace id vs request id, observability header basics, devtools after x-request-id, app log에서 request id 찾기
+retrieval-anchor-keywords: x-request-id propagation, request id propagation basics, devtools x-request-id next step, gateway app log trace bridge, x-request-id 뭐예요, request id 처음, what is x-request-id, gateway log app log trace, trace id vs request id, observability header basics, devtools after x-request-id, traceparent vs x-request-id, devtools traceparent 처음, traceparent 언제 보여요, 왜 x-request-id 대신 traceparent
 
 ## 핵심 개념
 
@@ -100,11 +100,36 @@ tracing 화면은 `X-Request-Id`와 **똑같은 문자열**이 그대로 보일 
 그래서 trace 화면에서 바로 같은 값이 안 보여도 이상한 것은 아니다.
 대신 request attribute, span tag, log-trace correlation로 연결되는지 보면 된다.
 
+## DevTools에 `X-Request-Id` 대신 `traceparent`가 보일 때
+
+처음 보는 사람은 "`request id`가 사라졌나?" 하고 헷갈리기 쉽다.
+하지만 많은 서비스는 `X-Request-Id` 대신 W3C tracing 표준 헤더인 `traceparent`를 먼저 노출한다.
+
+초급자는 이렇게만 구분하면 충분하다.
+
+| DevTools에서 보인 값 | 보통 이런 장면 | 초급자 첫 해석 | 바로 다음 확인 |
+|---|---|---|---|
+| `X-Request-Id: abc-123` | gateway나 app이 로그 검색용 ID를 따로 붙였다 | "로그 grep용 표식이 따로 있다" | gateway/app 로그에 같은 문자열이 찍히는지 |
+| `traceparent: 00-4bf9...-00f0...-01` | tracing SDK, gateway, browser fetch chain이 표준 분산 추적을 켰다 | "이 요청은 trace 중심으로 묶일 가능성이 크다" | tracing UI에서 `traceId` 또는 log correlation field를 찾기 |
+| 둘 다 있다 | request id와 tracing을 둘 다 운영한다 | "로그 검색 키와 trace 묶음 키가 따로 있을 수 있다" | 어떤 로그 필드가 실제 검색 키인지 팀 규칙 확인 |
+
+짧게 외우면 이렇다.
+
+```text
+X-Request-Id = 사람이 로그에서 복붙하기 쉬운 표식
+traceparent = 시스템들이 같은 trace를 이어 붙이는 표준 표식
+```
+
+즉 DevTools에 `traceparent`만 보인다고 해서 추적이 약한 것이 아니다.
+오히려 tracing 표준이 먼저 드러난 장면일 수 있다.
+다만 `traceparent` 전체 문자열을 로그에서 그대로 찾기보다, 그 안의 `traceId`를 log field나 tracing 화면에서 찾는 흐름이 더 흔하다.
+
 ## 흔한 오해와 함정
 
 - `X-Request-Id`가 있으면 app이 반드시 처리했다고 생각한다. gateway가 만든 에러 응답에도 붙을 수 있다.
 - gateway 로그와 app 로그의 ID가 다르면 무조건 장애라고 단정한다. 중간에서 새 ID를 만들거나 덮어쓰는 구성도 있다.
 - trace 화면에서 같은 문자열이 안 보이면 추적이 실패했다고 생각한다. `traceId`와 `requestId`는 역할이 다를 수 있다.
+- DevTools에 `traceparent`만 보이면 request ID가 누락됐다고 바로 걱정한다. 서비스가 표준 tracing 헤더만 노출하는 구성일 수도 있다.
 - app 로그에 ID가 안 보이면 요청이 app에 안 왔다고 결론낸다. 실제로는 로그 포맷에 ID 출력이 빠졌을 수도 있다.
 - request ID 하나만 보고 원인을 확정한다. 이 값은 원인 자체보다 **다음 증거를 찾는 열쇠**다.
 
@@ -127,6 +152,15 @@ tracing 화면은 `X-Request-Id`와 **똑같은 문자열**이 그대로 보일 
 | app log | `requestId=abc-123 NullPointerException` | "app 예외부터 본다" |
 | trace | `traceId=9fe...`, attribute `request.id=abc-123` | "같은 요청 흐름을 서비스 단위로 확장해 볼 수 있다" |
 
+`traceparent`만 먼저 보이는 장면도 한 번 보면 감이 빨라진다.
+
+| 관측 위치 | 보이는 값 | 초급자 첫 문장 |
+|---|---|---|
+| DevTools | `traceparent: 00-4bf9...-00f0...-01`, `500` | "request id 대신 trace 중심 추적이 켜진 서비스일 수 있다" |
+| gateway log | `trace_id=4bf9... span_id=00f0...` | "gateway도 같은 trace 묶음 안에서 요청을 봤다" |
+| app log | `traceId=4bf9... IllegalStateException` | "로그 검색 키가 requestId가 아니라 traceId일 수 있다" |
+| tracing UI | `traceId=4bf9...` | "trace 화면에서 같은 흐름을 바로 펼쳐 본다" |
+
 처음에는 이 순서만 지키면 된다.
 
 1. DevTools에서 ID와 status를 적는다.
@@ -144,4 +178,4 @@ tracing 화면은 `X-Request-Id`와 **똑같은 문자열**이 그대로 보일 
 
 ## 한 줄 정리
 
-DevTools에서 `X-Request-Id`를 봤다면 그 값은 원인 판결문이 아니라, gateway 로그 -> app 로그 -> trace 순서로 같은 요청을 다시 찾는 추적 표식이다.
+DevTools에서 `X-Request-Id`나 `traceparent`를 봤다면, 그 값은 원인 판결문이 아니라 gateway 로그 -> app 로그 -> trace 순서로 같은 요청을 다시 찾는 추적 표식이다.

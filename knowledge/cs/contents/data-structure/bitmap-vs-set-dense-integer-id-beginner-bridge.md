@@ -9,6 +9,8 @@
 - [자료구조 카테고리 인덱스](./README.md)
 - [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
 - [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
+- [Set vs Bitmap Audience Selection Mini Drill](./set-vs-bitmap-audience-selection-mini-drill.md)
+- [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md)
 - [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md)
 - [Roaring Bitmap](./roaring-bitmap.md)
 - [Bitset Optimization Patterns](../algorithm/bitset-optimization-patterns.md)
@@ -191,14 +193,15 @@ beginner가 자주 멈추는 follow-up은 이 질문이다.
 
 - `정수 id지만 집합 연산보다 membership이 대부분이다` -> 계속 `Set`
 - `정수 id가 촘촘하고 범위가 작다` -> plain `BitSet`
-- `정수 id가 sparse range인데도 exact 집합 연산을 반복한다` -> [Roaring Bitmap](./roaring-bitmap.md)으로 한 단계 내려가기
+- `정수 id가 sparse range인데도 exact 집합 연산을 반복한다` -> [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md)로 한 단계 더 안전하게 내려가기
 
 `Roaring Bitmap`은 "희소한 구간은 배열처럼, 조밀한 구간은 비트맵처럼" 다루는 쪽으로 이 간극을 메운다.
 더 넓게 비교하고 싶다면 아래 순서가 beginner-safe 하다.
 
-1. [Roaring Bitmap](./roaring-bitmap.md): sparse range에서 plain `BitSet`이 왜 아쉬운지
-2. [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md): `Roaring`, `BitSet`, 다른 압축 표현의 질문 차이
-3. [Compressed Bitmap Families: WAH, EWAH, CONCISE](./compressed-bitmap-families-wah-ewah-concise.md): run-heavy analytic bitmap까지 넓히기
+1. [BitSet vs Roaring Bitmap Beginner Handoff](./bitset-vs-roaring-bitmap-beginner-handoff.md): `BitSet` mental model에서 어디까지 멈추고 언제 handoff할지
+2. [Roaring Bitmap](./roaring-bitmap.md): sparse range에서 plain `BitSet`이 왜 아쉬운지
+3. [Roaring Bitmap Selection Playbook](./roaring-bitmap-selection-playbook.md): `Roaring`, `BitSet`, 다른 압축 표현의 질문 차이
+4. [Compressed Bitmap Families: WAH, EWAH, CONCISE](./compressed-bitmap-families-wah-ewah-concise.md): run-heavy analytic bitmap까지 넓히기
 
 ## 처음 도입할 때 쓰는 30초 체크
 
@@ -230,6 +233,7 @@ beginner가 자주 멈추는 follow-up은 이 질문이다.
 ## 더 깊이 가려면
 
 - `set` 자체가 아직 헷갈리면 [Map vs Set Requirement Bridge](./map-vs-set-requirement-bridge.md)
+- audience selection 문장에 decision table을 바로 적용해 보고 싶으면 [Set vs Bitmap Audience Selection Mini Drill](./set-vs-bitmap-audience-selection-mini-drill.md)
 - 자료구조 선택 큰 그림에서 `bitmap` 위치를 다시 보고 싶으면 [Map vs Set vs Queue vs Priority Queue vs Trie vs Bitmap 선택 프라이머](./map-set-queue-priorityqueue-trie-bitmap-selection-primer.md)
 - Java의 비트 기반 사고를 알고리즘 관점에서 보고 싶으면 [Bitset Optimization Patterns](../algorithm/bitset-optimization-patterns.md)
 - 큰 정수 집합에서 왜 `Roaring Bitmap`이 따로 나오는지 알고 싶으면 [Roaring Bitmap](./roaring-bitmap.md)

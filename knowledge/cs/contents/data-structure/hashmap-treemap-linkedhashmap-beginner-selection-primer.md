@@ -19,11 +19,12 @@
 - [Map 구현체별 반복 순서 치트시트](../language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md)
 - [NavigableMap and NavigableSet Mental Model](../language/java/navigablemap-navigableset-mental-model.md)
 
-retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, map selection primer, which map should i use, java map choice basics, hashmap vs treemap vs linkedhashmap intro, map order beginner, map range query beginner, ordered map router, lower floor difference ordered map, exact match inclusive 여부 map, 왜 lower랑 floor가 달라요, map 뭐 써야 해, map 처음 고르기, 같거나 이전 map, 같거나 다음 map
+retrieval-anchor-keywords: hashmap treemap linkedhashmap beginner, hashmap treemap linkedhashmap primer, hashmap treemap linkedhashmap 큰 그림, map selection primer, hashmap treemap linkedhashmap 차이 뭐예요, 처음 배우는데 hashmap treemap linkedhashmap 차이, map 구현체 처음 고르기, map 뭐 써야 해, 순서 없는 map 뭐예요, 넣은 순서 유지 map 뭐예요, 정렬되는 map 뭐예요, map range query beginner, 왜 lower랑 floor가 달라요, 언제 hashmap 말고 treemap 써요, 왜 linkedhashmap 써요
 
 ## 핵심 개념
 
 세 구현체 모두 `key -> value`를 저장하는 `Map`이지만, 먼저 지키는 약속이 다르다.
+이 문서는 `HashMap TreeMap LinkedHashMap 차이 뭐예요?`, `처음 map 구현체를 고를 때 뭐부터 봐요?` 같은 첫 질문이 deep dive보다 먼저 이 primer에 닿도록 설계돼 있다.
 
 - `HashMap`: 순서 약속 없이 key로 빨리 찾는 기본 map
 - `LinkedHashMap`: 넣은 순서를 기억하는 map

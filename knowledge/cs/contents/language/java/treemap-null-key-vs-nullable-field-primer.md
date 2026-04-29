@@ -7,24 +7,14 @@
 
 관련 문서:
 
-- [카테고리 README](../README.md)
-- [우아코스 백엔드 CS 로드맵](../../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../../data-structure/backend-data-structure-starter-pack.md)
+- [Language README](../README.md)
+- [HashMap vs TreeMap 초급 선택 브리지](./hashmap-vs-treemap-beginner-selection-bridge.md)
+- [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
+- [Comparator Null Reversal Primer](./comparator-null-reversal-primer.md)
+- [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
+- [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md)
 
-
-retrieval-anchor-keywords: treemap null key vs nullable field primer basics, treemap null key vs nullable field primer beginner, treemap null key vs nullable field primer intro, java basics, beginner java, 처음 배우는데 treemap null key vs nullable field primer, treemap null key vs nullable field primer 입문, treemap null key vs nullable field primer 기초, what is treemap null key vs nullable field primer, how to treemap null key vs nullable field primer
-> 관련 문서:
-> - [Language README](../README.md)
-> - [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
-> - [Comparator Null Reversal Primer](./comparator-null-reversal-primer.md)
-> - [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
-> - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
-> - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
-> - [Map `get == null`, `containsKey`, `getOrDefault` Primer](./map-get-null-containskey-getordefault-primer.md)
-> - [Map 조회 디버깅 미니 브리지: `containsKey() == false` / `get() == null` 다음 순서](./map-lookup-debug-equals-hashcode-compareto-mini-bridge.md)
-> - [Primitive vs Wrapper Fields in JSON Payload Semantics](./primitive-vs-wrapper-fields-json-payload-semantics.md)
-
-> retrieval-anchor-keywords: treemap null key vs nullable field, treemap null key beginner, java treemap null key comparator nullable field, treemap rejects null key but nullable field okay, java comparator nullsLast treemap key object, TreeMap null key vs null field, tree map null key natural ordering, tree map comparator nullable wrapper field, java sorted map null key vs null property, java Student rank null TreeMap comparator, Comparator.nullsLast TreeMap beginner, TreeMap non-null key nullable rank, TreeMap key object null field safe, treemap null key npe primer, nullable wrapper field sorted map primer, java TreeMap custom comparator null key allowed, java TreeMap Comparator.nullsFirst null key, tree map explicit null key comparator exception, 자바 treemap null key 왜 안됨, 자바 treemap nullable field comparator, 자바 null key 와 null 필드 차이, 자바 TreeMap null key beginner primer, 자바 TreeMap comparator 로 null key 허용
+retrieval-anchor-keywords: treemap null key vs nullable field, java treemap null key why, treemap rejects null key but nullable field okay, tree map comparator nullable wrapper field, comparator nullslast treemap key object, tree map null key natural ordering, 자바 treemap null key 왜 안됨, 자바 null key 와 null 필드 차이, 처음 treemap null 헷갈림, what is treemap null key, treemap nullable field beginner, ordered map null key basics
 
 <details>
 <summary>Table of Contents</summary>
@@ -48,14 +38,23 @@ retrieval-anchor-keywords: treemap null key vs nullable field primer basics, tre
 
 - "`TreeMap`은 `null` key를 싫어한다면서요?"
 - "그런데 왜 `Comparator.nullsLast(...)`로 `rank == null`인 객체는 정렬되나요?"
+- "`floorEntry(...)`가 `null`이면 이것도 같은 `null` 문제인가요?"
 - "둘 다 `null` 이야기인데 뭐가 다른 거죠?"
 
 핵심은 "`null`이 어디에 있느냐"다.
 
 - `null`이 **key 자체**면 `TreeMap`이 비교를 시작할 대상이 없다
 - `null`이 **key 객체 안 field**면 comparator가 그 field를 어떻게 다룰지 직접 정할 수 있다
+- `floorEntry(...) == null`처럼 **조회 결과가 비어 있는 것**이면, key 정책이 아니라 "경계 밖이라 이웃이 없음"을 뜻한다
 
 즉 "key가 `null`인 것"과 "key는 있는데 그 안의 field가 `null`인 것"은 완전히 같은 상황이 아니다.
+그리고 ordered map API가 돌려주는 boundary-`null`까지 합치면, 초보자가 섞기 쉬운 `null`이 세 종류가 된다.
+
+| `null`이 나온 위치 | 먼저 읽을 뜻 | 따라갈 문서 |
+|---|---|---|
+| `map.put(null, value)`의 key 자리 | key 자체가 비어 있음 | 이 문서 |
+| `new Student("Mina", null)`의 field 자리 | key는 있고 field만 비어 있음 | 이 문서 |
+| `floorEntry(...) == null` 같은 반환값 자리 | 경계 밖이라 이웃이 없음 | [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md) |
 
 ## 먼저 잡을 mental model
 
@@ -224,6 +223,8 @@ Map<Student, String> unsafe = new TreeMap<>(
 
 - "`Comparator.nullsLast(...)`가 있으니 `null` key도 다 받을 수 있겠네"
   - 아니다. 그 comparator가 **key 자체 타입**에 대해 `null`을 허용하도록 만들어졌는지가 별개다.
+- "`floorEntry(...) == null`도 결국 `TreeMap`이 `null`을 싫어해서 생긴 거겠네"
+  - 아니다. 그건 insert 규칙이 아니라 lookup 결과다. 정렬된 key 줄에서 해당 방향 이웃이 없어서 `null`이 나온 것이다.
 - "`new Student(\"Ria\", null)`도 null이니까 key로 못 쓰겠네"
   - 아니다. key 객체는 존재한다. `null`인 것은 field다.
 - "`TreeMap`이 field를 직접 정렬하나?"
@@ -236,6 +237,7 @@ Map<Student, String> unsafe = new TreeMap<>(
 ## 빠른 체크리스트
 
 - 지금 `null`인 것이 key 자체인지, key 안 field인지 먼저 구분했나?
+- 혹시 `floorEntry`/`ceilingEntry` 반환값의 `null`까지 같은 문제로 묶고 있지는 않나?
 - key 객체 자체가 `null`이면 `TreeMap` 기본 사용에서는 막힌다고 봐도 되나?
 - nullable wrapper field를 정렬한다면 `comparingInt` 대신 `Comparator.comparing(..., Comparator.nullsFirst/Last(...))` 쪽을 먼저 봤나?
 - `compare == 0`이 너무 쉽게 나오지 않게 tie-breaker도 붙였나?

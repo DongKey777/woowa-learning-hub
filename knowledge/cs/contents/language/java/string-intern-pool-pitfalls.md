@@ -5,13 +5,15 @@
 **난이도: 🔴 Advanced**
 
 > 관련 문서:
+> - [Java String 기초](./java-string-basics.md)
+> - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 > - [ClassLoader Memory Leak Playbook](./classloader-memory-leak-playbook.md)
 > - [JIT Warmup and Deoptimization](./jit-warmup-deoptimization.md)
 > - [Java IO, NIO, Serialization, JSON Mapping](./io-nio-serialization.md)
 > - [`Locale.ROOT`, Case Mapping, and Unicode Normalization Pitfalls](./locale-root-case-mapping-unicode-normalization.md)
 > - [Java Memory Model, Happens-Before, `volatile`, `final`](../java-memory-model-happens-before-volatile-final.md)
 
-> retrieval-anchor-keywords: String intern, string pool, canonical representation, string literal, `==`, equals, constant expression, pool lookup, deduplication, memory retention, class loader, canonicalization, Locale.ROOT, Unicode normalization
+> retrieval-anchor-keywords: string intern, string pool, string literal, string == why false, string equals what is, why string comparison fails, 문자열 비교가 왜 안 돼요, string 같은데 왜 false예요, string equals가 뭐예요, 왜 가끔 == 가 true예요, string pool 때문에 헷갈림, intern 언제 써요, canonical representation, pool lookup, memory retention
 
 <details>
 <summary>Table of Contents</summary>
@@ -37,10 +39,26 @@
 - 리터럴은 이미 intern되어 있을 수 있다
 - `==`는 내용 비교가 아니라 참조 비교다
 
+이 문서는 보통 문자열 primer를 본 뒤 생기는 2차 질문에서 이어진다.
+
+- "문자열 비교가 왜 안 돼요" 다음에 "그런데 왜 어떤 줄에서는 `==`가 맞아 보였지?"
+- "String 같은데 왜 false예요" 다음에 "리터럴은 왜 가끔 `true`지?"
+- "String equals가 뭐예요" 다음에 "그럼 `intern()`을 붙이면 비교가 쉬워지나?"
+
 문제는 "문자열을 하나로 묶는다"는 장점이 항상 이득이 되지는 않는다는 점이다.  
 특히 입력 종류가 많고 유니크 값이 큰 서비스에서는 오히려 손해가 된다.
 
+짧게 말하면 beginner 기본 규칙은 여전히 `문자열 내용 비교는 equals()`이고, 이 문서는 그다음 단계인 "왜 리터럴은 예외처럼 보이는가", "pool을 최적화 기본값으로 써도 되나"를 설명하는 follow-up bridge다.
+
 ## 깊이 들어가기
+
+초반에 보이는 증상을 먼저 2차 질문으로 번역하면 아래처럼 읽을 수 있다.
+
+| primer에서 막힌 말 | 여기서 이어지는 질문 | 먼저 붙잡을 규칙 |
+|---|---|---|
+| "문자열 비교가 왜 안 돼요" | 왜 어떤 경우엔 `==`가 맞아 보이나 | 리터럴과 constant expression은 pool을 탈 수 있지만, 비교 기본값은 여전히 `equals()`다 |
+| "String 같은데 왜 false예요" | 왜 `new String(...)`이나 외부 입력은 다른가 | 같은 내용과 같은 객체는 다르다 |
+| "String equals가 뭐예요" | 그럼 `intern()`으로 아예 같은 객체를 만들면 되나 | bounded set이 아니면 pool 비용이 더 커질 수 있다 |
 
 ### 1. 왜 `==`가 위험한가
 

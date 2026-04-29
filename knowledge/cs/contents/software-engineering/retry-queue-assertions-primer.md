@@ -14,8 +14,9 @@
 - [HTTP Coalescing Failure Mapping](./http-coalescing-failure-mapping.md)
 
 
-retrieval-anchor-keywords: retry queue assertions primer basics, retry queue assertions primer beginner, retry queue assertions primer intro, software engineering basics, beginner software engineering, 처음 배우는데 retry queue assertions primer, retry queue assertions primer 입문, retry queue assertions primer 기초, what is retry queue assertions primer, how to retry queue assertions primer, sourceindex stable itemid retry drift, retry queue stable item id example
+retrieval-anchor-keywords: retry queue assertions primer, retry queue assertion beginner, retry queue 테스트 뭐부터, item failure assertion 기초, manual review assertion 왜 따로, terminal failure assertion 기초, retryable failure assertion 예시, retry queue stable item id example, sourceindex stable itemid retry drift, batch failure routing assertion basics
 `ItemFailure`, `RetryCandidate`, `manual review`, `terminal failure`라는 이름을 이미 보고도 테스트를 어디서 시작해야 할지 막막하다면, 이 문서는 그 첫 묶음만 좁혀서 설명한다.
+첫 질문이 `retry queue 테스트 뭐부터 만들어요`, `manual review는 왜 queue에 넣지 않아요`, `terminal failure assertion은 뭘 봐요`처럼 테스트 첫 단추를 묻는 단계라면 이 primer가 먼저 맞다.
 [Primer On Retry Reason Taxonomy](./retry-reason-taxonomy-primer.md)에서 `retryable`, `manual-review`, `permanent` 분류표를 먼저 잡았다면, 여기서는 그 분류가 테스트에서 어떤 assertion으로 보이는지 이어서 읽으면 된다.
 [Testing Named Bulk Contracts](./testing-named-bulk-contracts.md)에서 failure mapping 자체를 봤다면, 여기서는 그다음 단계인 "실패를 다음 경로로 제대로 번역했는가"만 다룬다.
 batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Primer](./batch-partial-failure-policies-primer.md), 결과 타입 전체를 보고 싶다면 [Batch Run Result Modeling Examples](./batch-run-result-modeling-examples.md), 더 넓은 결과 체크리스트가 필요하면 [Batch Result Testing Checklist](./batch-result-testing-checklist.md)를 이어서 보면 된다.
@@ -52,6 +53,16 @@ batch 정책을 먼저 익히고 싶다면 [Batch Partial Failure Policies Prime
 >
 > retrieval-anchor-keywords:
 > - retry queue assertions primer
+> - retry queue 테스트 뭐부터
+> - retry queue 테스트 처음 뭐부터
+> - item failure assertion 뭐부터
+> - retryable failure assertion 예시
+> - manual review assertion 왜 따로
+> - terminal failure assertion 뭘 보나요
+> - retry queue가 뭐예요 테스트에서
+> - batch 실패 다음 경로 assertion
+> - retry queue stable item id 왜 중요해요
+> - 처음 배우는데 retry queue assertion
 > - item failure to retry candidate test
 > - item failure manual review bucket test
 > - terminal failure classification checklist

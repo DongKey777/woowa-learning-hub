@@ -30,12 +30,33 @@ beginner-safe 기본 흐름도 고정해 둔다.
 
 `routing helper`에서 멈추는 질문과 바로 내려가야 하는 질문을 분리해 읽으면 beginner 오독이 줄어든다.
 
+이 폴더 문서는 `primer` 본문이 아니라 "어느 shelf로 내려갈지 고르는 표지판"이다.
+특히 `incident`, `recovery`, `playbook`, `runbook`, `cutover`가 보이는 링크는 여기서 바로 첫 클릭으로 올리지 않고, 먼저 category `README`나 linked `primer bridge`로 질문 축을 고정한다.
+
+README / navigator 이름이 보여도 역할이 다르면 첫 클릭도 달라진다.
+
+| 지금 보고 있는 파일 | 이 문서에서 해야 하는 일 | 여기서 멈춰도 되나 |
+|---|---|---|
+| 루트 `README.md` | 저장소 전체 entry shelf를 고른다 | yes |
+| `contents/*/README.md` | category primer / primer bridge를 고른다 | yes |
+| `rag/README.md`, `navigation-taxonomy.md` | 역할 이름을 해석하고 safe next step을 고른다 | yes, but only for decoding |
+| incident-heavy 개별 문서 | 이미 좁혀진 질문 하나를 follow-up으로 판다 | usually no |
+
 | 지금 질문 | 여기서 멈춰도 되나 | 다음 안전한 한 걸음 |
 |---|---|---|
 | `README 차이`, `primer vs deep dive`, `문서 역할이 헷갈려요` | yes | `Navigation Taxonomy`, `Query Playbook` |
 | `처음`, `뭐예요`, `what is`, `basics` | no | category `README` 또는 linked `primer` |
 | 증상은 있는데 축이 헷갈린다 | no | category `README`의 `primer bridge` |
 | live incident 대응 순서가 먼저다 | no | incident-heavy category `README`의 `playbook` / `recovery` |
+
+검색 결과에 `README`가 여러 개 섞여 보일 때는 아래 4칸만 먼저 구분하면 된다.
+
+| 먼저 보인 파일 | 역할 | beginner-safe first click? | 여기서 기대할 것 |
+|---|---|---|---|
+| 루트 `README.md` | `meta navigator` | yes | 저장소 전체의 entry shelf 구분 |
+| `contents/*/README.md` | `category navigator` | yes | primer / primer bridge / deep-dive catalog 분기 |
+| `rag/README.md`, `navigation-taxonomy.md` | `routing helper` | yes, but only for decoding | 역할 라벨 해석, safe next step 선택 |
+| incident-heavy 개별 문서 | `deep dive` / `playbook` / `recovery` | usually no | 이미 질문 축이 좁혀진 뒤의 follow-up |
 
 ## 20초 역할 판별표
 

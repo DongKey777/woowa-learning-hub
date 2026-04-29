@@ -10,13 +10,14 @@
 - [Language README](../README.md)
 - [자바 언어의 구조와 기본 문법](./java-language-basics.md)
 - [Java parameter 전달, pass-by-value, side effect 입문](./java-parameter-passing-pass-by-value-side-effects-primer.md)
+- [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md)
 - [Java `Arrays` 메서드 선택 30초 카드](./java-arrays-method-choice-30-second-card.md)
 - [Java 배열 입문 공통 confusion 체크리스트](./java-array-common-confusion-checklist.md)
 - [Java Array Equality Basics](./java-array-equality-basics.md)
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
 - [배열 vs `List` 변환 엔트리 프라이머](./array-to-list-conversion-entrypoint-primer.md)
 
-retrieval-anchor-keywords: java array copy basics, java array clone basics, java arrays.copyof vs clone, java array assignment alias, java shallow copy deep copy, 배열 대입 복사 차이, 배열 복사 처음 배우는데, clone 과 copyof 차이 기초, 왜 clone해도 같이 바뀌나요, 배열 한쪽 바꾸면 다른 쪽도 바뀜, java nested array shallow copy, java array defensive copy, array copy changed together, 배열 equals 문제인 줄 알았는데 같이 바뀜, java array shared reference vs equality confusion
+retrieval-anchor-keywords: java array copy basics, java array clone basics, java arrays.copyof vs clone, java array assignment alias, java shallow copy deep copy, 배열 대입 복사 차이, 배열 복사 처음 배우는데, clone 과 copyof 차이 기초, 왜 clone해도 같이 바뀌나요, 배열 한쪽 바꾸면 다른 쪽도 바뀜, java nested array shallow copy, array copy changed together, 배열 equals 문제인 줄 알았는데 같이 바뀜, 배열 출력 문제인가 복사 문제인가, java array shared reference vs equality confusion
 
 <details>
 <summary>Table of Contents</summary>
@@ -67,6 +68,7 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 
 | 지금 보이는 증상 | 실제로 먼저 의심할 것 | 첫 확인 | 다음 문서 |
 |---|---|---|---|
+| `[I@...`처럼 출력이 이상하거나, 2차원 배열 로그가 `[[Ljava...`처럼 보인다 | 복사 문제가 아니라 출력 경로 문제 | 1차원은 `Arrays.toString(...)`, 중첩 배열은 `Arrays.deepToString(...)` | [Java Array Debug Printing Basics](./java-array-debug-printing-basics.md) |
 | `left == right`가 `true`고 한쪽 수정이 다른 쪽에도 바로 보인다 | 비교 실패가 아니라 같은 배열 alias | `left == right`와 수정 전후 출력 함께 보기 | 이 문서 |
 | 값이 달라진 이유를 `equals()` 탓으로 돌리고 싶은데, 변경이 양쪽에 동시에 퍼진다 | shared reference가 먼저 생겼는지 | `copied = original` 같은 대입이 있었는지 찾기 | 이 문서 |
 | 한쪽을 수정해도 다른 쪽은 안 바뀌는데 값 비교만 `false`다 | 진짜 equality/비교 문제 | 1차원은 `Arrays.equals()`, 중첩 배열은 `Arrays.deepEquals()` | [Java Array Equality Basics](./java-array-equality-basics.md) |
@@ -74,6 +76,7 @@ Java 입문자가 배열을 다루다가 자주 헷갈리는 질문은 대체로
 짧게 외우면 이렇다.
 
 - 같이 바뀌면 먼저 alias를 의심한다
+- 출력이 이상하면 copy보다 출력 경로를 먼저 자른다
 - 안 같이 바뀌는데 `false`면 그다음에 equality 도구를 본다
 
 즉 "같은 값인데 왜 false지?"와 "왜 둘 다 같이 바뀌지?"는 비슷해 보여도 출발 문서가 다르다.

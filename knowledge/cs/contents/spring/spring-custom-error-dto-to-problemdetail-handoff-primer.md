@@ -12,10 +12,21 @@
 - [Spring RoomEscape validation `400` vs business conflict `409` 분리 primer](./spring-roomescape-validation-400-vs-business-conflict-409-primer.md)
 - [software-engineering API 설계와 예외 처리](../software-engineering/api-design-error-handling.md)
 - [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)
+- [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)
 - [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)
+- [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring custom error dto problemdetail handoff, problemdetail beginner primer, errorresponse vs problemdetail, custom error dto 언제 problemdetail, spring 표준 에러 바디 언제 필요해요, roomescape error response beginner, restcontrolleradvice problemdetail 입문, responseentityexceptionhandler problemdetail beginner, spring mvc 기본 예외도 같은 바디로, validation 400 custom dto vs problemdetail, beginner error contract handoff, error body standardization spring, bindingresult vs methodargumentnotvalidexception, validation 400 contract 왜 달라요
+## 이 라우트에서 보는 위치
+
+- 현재 문서: 4단계. validation `400` 응답 바디를 팀 DTO로 둘지, `ProblemDetail`로 표준화할지 정한다.
+- 이전 문서: [3단계 `BindingResult` primer](./spring-bindingresult-local-validation-400-primer.md)
+- 더 깊게: [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)
+- README 복귀: [Spring MVC 바인딩/400 -> `ProblemDetail` 4단계 라우트](./README.md#validation-400-problemdetail-route)
+
+여기서 앞 단계 문장을 그대로 다시 잡고 시작하면 덜 헷갈린다. `BindingResult`는 DTO 생성 후 validation에서만 개입하므로, 이 4단계 문서는 그 다음 질문인 "`그 validation 400 응답 바디를 어떤 계약으로 보여 줄까?`"를 다룬다.
+
+retrieval-anchor-keywords: spring custom error dto problemdetail handoff, problemdetail beginner primer, errorresponse vs problemdetail, custom error dto 언제 problemdetail, spring 표준 에러 바디 언제 필요해요, roomescape error response beginner, restcontrolleradvice problemdetail 입문, responseentityexceptionhandler problemdetail beginner, spring mvc 기본 예외도 같은 바디로, validation 400 custom dto vs problemdetail, beginner error contract handoff, error body standardization spring, bindingresult vs methodargumentnotvalidexception, validation 400 contract 왜 달라요, problemdetail 배우고 validation pipeline 다시
 
 ## 핵심 개념
 
@@ -43,13 +54,13 @@ public record ErrorResponse(String code, String message) {
 
 ## 한눈에 보기
 
-| 지금 상황 | 커스텀 Error DTO로도 충분한가 | `ProblemDetail`이 더 잘 맞는가 |
-|---|---|---|
-| 컨트롤러 몇 개에서 `404`, `409`만 간단히 내려준다 | 예 | 아직 아님 |
-| 팀이 `code`, `message` 중심 JSON을 이미 합의했다 | 예 | 꼭 바로 갈 필요는 없음 |
-| `MethodArgumentNotValidException`, `HttpMessageNotReadableException`까지 한 정책으로 맞추고 싶다 | 점점 번거롭다 | 예 |
-| 상태 코드와 error body 의미를 표준 필드로 맞추고 싶다 | 제한적 | 예 |
-| Spring 기본 예외와 커스텀 예외를 같이 설명해야 한다 | 설명 비용이 커진다 | 예 |
+| 지금 상황 | DTO 생성 | `BindingResult` 개입 | 전역 vs 로컬 | 더 자연스러운 응답 계약 |
+|---|---|---|---|---|
+| 컨트롤러 몇 개에서 `404`, `409`만 간단히 내려준다 | 이미 비즈니스 로직까지 간 뒤다 | 보통 없음 | 전역 advice | 커스텀 Error DTO도 충분 |
+| validation 실패를 컨트롤러 안에서 `bindingResult.hasErrors()`로 직접 본다 | 예 | 예 | 로컬 분기 | 로컬에서 팀 DTO나 공통 helper를 맞추기 쉽다 |
+| validation 실패가 `MethodArgumentNotValidException`으로 넘어간다 | 예 | 아니오 | 전역 예외 처리 | 전역 `ProblemDetail` 통일이 쉬워진다 |
+| JSON parse, `LocalDate` 형식 오류까지 한 body로 묶고 싶다 | 아니오 | 아니오 | 컨트롤러 전 + 전역 예외 처리 | `ProblemDetail` 쪽이 설명과 통일이 쉽다 |
+| Spring 기본 예외와 커스텀 예외를 같이 설명해야 한다 | 경우마다 다름 | 경우마다 다름 | 로컬/전역 경로가 섞인다 | `ProblemDetail` 표준 필드 이점이 커진다 |
 
 짧게 기억하면 이렇다.
 
@@ -123,12 +134,12 @@ public class ApiExceptionHandler {
 
 ## RoomEscape 감각으로 보면
 
-| 실패 장면 | 초반 선택 | 그다음 표준화 욕구가 생길 때 |
-|---|---|---|
-| 없는 예약 id 조회 | `ErrorResponse("RESERVATION_NOT_FOUND", "...")` | `404` 의미를 `status/title/detail`로 더 공통화하고 싶다 |
-| 중복 예약 슬롯 | `ErrorResponse("RESERVATION_CONFLICT", "...")` | 다른 `409`도 같은 틀로 설명하고 싶다 |
-| JSON 날짜 형식 오류 | 별도 `400` 처리 필요 | Spring 기본 `400`까지 같은 형식으로 맞추고 싶다 |
-| validation 실패 | 필드 오류 응답을 따로 붙이기 시작 | framework 예외와 domain 예외를 같은 contract 아래 두고 싶다 |
+| 실패 장면 | DTO 생성 | `BindingResult` 개입 | 전역 vs 로컬 | 초반 선택 -> 다음 handoff |
+|---|---|---|---|---|
+| 없는 예약 id 조회 | 이미 서비스 로직까지 감 | 없음 | 전역 advice | `ErrorResponse("RESERVATION_NOT_FOUND", "...")` -> `404`를 `status/title/detail`로 더 공통화하고 싶다 |
+| 중복 예약 슬롯 | 이미 서비스 로직까지 감 | 없음 | 전역 advice | `ErrorResponse("RESERVATION_CONFLICT", "...")` -> 다른 `409`도 같은 틀로 설명하고 싶다 |
+| JSON 날짜 형식 오류 | 아니오 | 아니오 | 컨트롤러 전 전역 `400` | 별도 `400` 처리 필요 -> Spring 기본 `400`까지 같은 형식으로 맞추고 싶다 |
+| validation 실패 | 예 | 있으면 예, 없으면 아니오 | 로컬 또는 전역 `400` | 필드 오류 응답을 따로 붙이기 시작 -> framework 예외와 domain 예외를 같은 contract 아래 두고 싶다 |
 
 핵심은 "`ProblemDetail`은 고급 기능"이 아니라, **도메인 예외 밖의 실패까지 계약에 넣고 싶어질 때 자연스럽게 보이는 다음 단계**라는 점이다.
 
@@ -136,14 +147,17 @@ public class ApiExceptionHandler {
 
 `ProblemDetail`을 beginner가 헷갈리는 이유는 "`validation 실패면 다 전역 advice에서 같은 `400` body가 나오겠지`"라고 생각하기 쉽기 때문이다. 하지만 `BindingResult`가 있으면 같은 validation 실패라도 먼저 컨트롤러가 잡는다.
 
-| 질문 | `BindingResult` 로컬 처리 | `MethodArgumentNotValidException` 전역 처리 |
-|---|---|---|
-| validation 실패를 누가 먼저 받나 | 현재 컨트롤러 메서드 | `@RestControllerAdvice` / `ResponseEntityExceptionHandler` |
-| 대표 진입 조건 | `@Valid` 뒤에 `BindingResult`를 둠 | `BindingResult`가 없고 `@Valid`가 실패함 |
-| 컨트롤러 본문 실행 | 된다 | 보통 안 된다 |
-| `ProblemDetail`을 어디서 맞추나 | 컨트롤러에서 직접 만들거나 공통 helper를 호출 | 전역 advice에서 한 번에 만들기 쉽다 |
-| beginner가 느끼는 증상 | "`errors`를 직접 보고 분기하네" | "`MethodArgumentNotValidException`이 왜 바로 오지?" |
-| 잘 맞는 장면 | 폼 재표시, 엔드포인트별 다른 `400` | API 전체 공통 error contract |
+| 질문 | DTO 생성 | `BindingResult` 개입 | 전역 vs 로컬 | `ProblemDetail`을 어디서 맞추나 |
+|---|---|---|---|---|
+| `BindingResult` 로컬 처리 | 예 | 예 | 현재 컨트롤러 메서드 | 컨트롤러에서 직접 만들거나 공통 helper를 호출 |
+| `MethodArgumentNotValidException` 전역 처리 | 예 | 아니오 | `@RestControllerAdvice` / `ResponseEntityExceptionHandler` | 전역 advice에서 한 번에 만들기 쉽다 |
+| JSON parse, 타입 변환 같은 앞단 `400` | 아니오 | 아니오 | 컨트롤러 전 전역 `400` | `handleHttpMessageNotReadable` 같은 전역 경로에서 맞춘다 |
+
+이 표를 같은 축으로 다시 읽으면 더 단순해진다.
+
+- DTO를 못 만들었으면: `BindingResult` 차례가 아니고, 전역 `400` body 정책 쪽 질문이다.
+- DTO는 만들었고 `BindingResult`가 끼어들면: 로컬 `400` body도 같은 계약으로 직접 맞춰야 한다.
+- DTO는 만들었지만 `BindingResult`가 없으면: `MethodArgumentNotValidException` 전역 경로에서 `ProblemDetail` 통일이 쉽다.
 
 즉 `ProblemDetail`은 "validation이면 무조건 자동 생성"이 아니라, **전역 예외 처리 경로에 올라왔을 때 표준 body로 통일하기 쉬운 도구**에 가깝다. 로컬 `BindingResult` 경로를 택했다면 그 메서드도 같은 계약을 따르도록 직접 맞춰 줘야 한다.
 
@@ -194,12 +208,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 이 순서가 안전한 이유는 초급자가 처음부터 resolver chain 전체를 외우지 않아도 되기 때문이다.
 
+## 공통 전역 `400` 감각을 잡았으면 어디로 돌아가나
+
+이 문서를 읽고 나면 beginner는 보통 "`이제 `400` body를 공통 `ProblemDetail`로 맞추는 이유는 알겠는데, 그 `400`이 Spring 내부에서 어느 갈림길을 타고 여기까지 왔지?`"라는 다음 질문으로 넘어간다.
+
+그때의 return path는 한 칸으로 고정하면 된다.
+
+- "`전역 `400` shape를 왜 맞추는지`"는 이 문서에서 잡는다
+- "`그 `400`이 binding 실패인지, validation 실패인지, `BindingResult` 로컬 처리였는지`"는 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)에서 다시 분해한다
+
+즉 handoff 순서는 이렇게 기억하면 된다.
+
+```text
+BindingResult / MethodArgumentNotValidException 갈림길 이해
+-> 공통 전역 400 shape를 Error DTO / ProblemDetail로 정리
+-> 다시 pipeline 문서로 돌아가 "어느 실패가 이 shape로 들어왔는지" 복기
+```
+
+특히 "`왜 어떤 `400`은 `ProblemDetail` advice로 갔고, 어떤 `400`은 컨트롤러 로컬 `BindingResult`에서 끝났지?`", "`global 400 shaping`은 알겠는데 validation pipeline은 아직 헷갈려요`" 같은 질문이면 이 문서 다음 한 걸음은 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)이다.
+
 ## 더 깊이 가려면
 
 - "`404`, `409`, `400`을 advice에서 어떻게 나누는지"부터 다시 잡고 싶으면 [Spring 예외 처리 기초](./spring-exception-handling-basics.md)를 먼저 본다.
 - validation 실패가 왜 어떤 때는 컨트롤러 안으로 들어오고, 어떤 때는 `MethodArgumentNotValidException`으로 전역에 가는지 먼저 가르고 싶으면 [Spring `BindingResult`가 있으면 `400` 흐름이 어떻게 달라지나](./spring-bindingresult-local-validation-400-primer.md)를 바로 본다.
 - `@RequestBody` 변환 실패처럼 컨트롤러 전에 끝나는 `400`을 같이 묶고 싶다면 [Spring `@RequestBody`가 컨트롤러 전에 `400` 나는 이유](./spring-requestbody-400-before-controller-primer.md)를 본다.
 - `ProblemDetail` 필드와 설계 trade-off를 더 정확히 보려면 [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)로 이어간다.
+- 공통 전역 `400` shape를 잡은 뒤 "`그 shape 앞에서 binding / validation / `BindingResult`가 어떻게 갈렸지?`"를 다시 복기하려면 [Spring Validation and Binding Error Pipeline](./spring-validation-binding-error-pipeline.md)로 돌아간다.
 - resolver chain, `/error`, commit 경계까지 들어가려면 [Spring MVC Exception Resolver Chain Contract](./spring-mvc-exception-resolver-chain-contract.md)와 [Spring `ProblemDetail` Error Response Design](./spring-problemdetail-error-response-design.md)을 같이 본다.
 
 ## 면접/시니어 질문 미리보기

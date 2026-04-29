@@ -14,7 +14,7 @@
 - [Comparator Reversed Scope Primer](./comparator-reversed-scope-primer.md)
 - [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
 
-retrieval-anchor-keywords: language-java-00077, descendingset descendingmap mental model, java descendingset beginner, java descendingmap beginner, descending view not copy, descendingmap floor ceiling confusion, descendingset floor ceiling confusion, reverse order view lookup, comparator reverseorder treeset same lookup, comparator reverseorder treemap same lookup, descendingmap vs reverseorder beginner, java reversed navigation result beginner, descendingset common confusion, descendingmap common confusion, why is descendingmap floor bigger
+retrieval-anchor-keywords: descendingset descendingmap mental model, java descending view basics, descendingmap is it a copy, descendingset is it a copy, descendingmap floor 왜 더 큰 값, descendingset floor ceiling 헷갈려요, descendingmap first last 뭐예요, 처음 배우는데 descendingmap, 처음 배우는데 descendingset, reverse order view lookup, descendingmap vs reverseorder beginner, 같은 데이터 반대 순서 view, treemap 내림차순 조회 기초, submap 전에 descending view basics, ordered map reverse view beginner
 
 ## 먼저 잡을 mental model
 

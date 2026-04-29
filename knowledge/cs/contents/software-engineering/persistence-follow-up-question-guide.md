@@ -28,6 +28,7 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 > 관련 문서:
 > - [Software Engineering README: Persistence Follow-up Question Guide](./README.md#persistence-follow-up-question-guide)
 > - [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+> - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 > - [Repository Naming Smells Primer](./repository-naming-smells-primer.md)
 > - [Repository, DAO, Entity](./repository-dao-entity.md)
 > - [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md)
@@ -37,13 +38,14 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 > - [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md)
 > - [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md)
 >
-> retrieval-anchor-keywords: persistence follow-up question guide, persistence decision table beginner, single question persistence table, repository interface contract follow-up, repository naming smells follow-up, dao vs query model entrypoint guide, persistence adapter mapping checklist next step, aggregate persistence mapping pitfalls guide, persistence model leakage anti-patterns entrypoint, beginner persistence reading order, beginner persistence decision map, beginner persistence bridge, repository to leakage guide, repository interface to leakage path, persistence doc chooser beginner, 질문형 결정표 영속성, 영속성 follow-up 선택 가이드, 영속성 문서 선택표, repository primer 다음 문서, JPA 초심자 다음 문서 고르기, ORM 누수 문서 선택, persistence beginner wayfinding, 초심자 영속성 결정표, repository interface contract primer 다음, persistence leakage anti-patterns 전에 읽기, query model 뭐예요 영속성, read model 뭐예요 영속성, 목록 api 때문에 repository가 비대해져요, 조회 전용 모델 처음, dto record 이름이 헷갈려요
+> retrieval-anchor-keywords: persistence follow-up question guide, persistence decision table beginner, single question persistence table, repository interface contract follow-up, repository fake design guide handoff, repository naming smells follow-up, dao vs query model entrypoint guide, persistence adapter mapping checklist next step, aggregate persistence mapping pitfalls guide, persistence model leakage anti-patterns entrypoint, beginner persistence reading order, beginner persistence decision map, beginner persistence bridge, repository to leakage guide, repository interface to fake path, persistence doc chooser beginner, 질문형 결정표 영속성, 영속성 follow-up 선택 가이드, 영속성 문서 선택표, repository primer 다음 문서, repository fake 언제 읽어요, JPA 초심자 다음 문서 고르기, ORM 누수 문서 선택, persistence beginner wayfinding, 초심자 영속성 결정표, repository interface contract primer 다음, persistence leakage anti-patterns 전에 읽기, query model 뭐예요 영속성, read model 뭐예요 영속성, 목록 api 때문에 repository가 비대해져요, 조회 전용 모델 처음, dto record 이름이 헷갈려요
 
 ## 왜 이 가이드가 필요한가
 
 초심자는 보통 영속성 문서를 읽다가 이런 식으로 멈춘다.
 
 - "`Repository`를 왜 인터페이스로 두는지는 알겠는데, 다음엔 뭘 읽지?"
+- "`Repository` 계약은 이해했는데, test에서 fake를 어떻게 잡아야 할지 모르겠다"
 - "이건 repository 이름 문제인가, DAO 문제인가, JPA 매핑 문제인가?"
 - "조회 화면 때문에 복잡한 건데 왜 자꾸 엔티티 얘기만 나오지?"
 - "서비스 코드에 `Entity`가 보이는데 이게 그냥 흔한 코드인지, 누수인지 모르겠다"
@@ -72,11 +74,12 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 | 순서 | 먼저 스스로 묻는 질문 | `예`면 읽을 문서 | `아니오`면 다음 질문 |
 |---|---|---|---|
 | 1 | "`Repository`를 왜 인터페이스/계약으로 두는지부터 아직 흐릿한가?" | [Repository Interface Contract Primer](./repository-interface-contract-primer.md) | 2번으로 간다 |
-| 2 | "지금 헷갈리는 게 메서드 말투와 이름 냄새인가?" | [Repository Naming Smells Primer](./repository-naming-smells-primer.md) | 3번으로 간다 |
-| 3 | "문제가 저장보다 조회 화면, 목록, 검색 설계에 더 가깝나?" | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) | 4번으로 간다 |
-| 4 | "domain object와 `Entity`를 어디서 바꿔 끼워야 할지가 핵심인가?" | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | 5번으로 간다 |
-| 5 | "`cascade`, `orphanRemoval`, 양방향 연관관계가 도메인 규칙처럼 느껴지나?" | [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md) | 6번으로 간다 |
-| 6 | "서비스, 도메인, API 응답에 `@Entity`가 직접 보이는가?" | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | 아래 빠른 보조 표를 본다 |
+| 2 | "`Repository` 계약은 알겠는데, 그 계약을 test fake로 어떻게 재현할지가 막히나?" | [Repository Fake Design Guide](./repository-fake-design-guide.md) | 3번으로 간다 |
+| 3 | "지금 헷갈리는 게 메서드 말투와 이름 냄새인가?" | [Repository Naming Smells Primer](./repository-naming-smells-primer.md) | 4번으로 간다 |
+| 4 | "문제가 저장보다 조회 화면, 목록, 검색 설계에 더 가깝나?" | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) | 5번으로 간다 |
+| 5 | "domain object와 `Entity`를 어디서 바꿔 끼워야 할지가 핵심인가?" | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | 6번으로 간다 |
+| 6 | "`cascade`, `orphanRemoval`, 양방향 연관관계가 도메인 규칙처럼 느껴지나?" | [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md) | 7번으로 간다 |
+| 7 | "서비스, 도메인, API 응답에 `@Entity`가 직접 보이는가?" | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | 아래 빠른 보조 표를 본다 |
 
 위 표를 더 짧게 읽으면, 사실 질문은 하나다.
 
@@ -84,19 +87,17 @@ retrieval-anchor-keywords: persistence beginner guide, persistence primer next s
 
 이 한 질문에 대한 답만 고르면 다음 문서가 정해진다.
 
-### 빠른 보조 표
+## 빠른 보조 표
 
-## 한 질문씩 내려가는 결정표 (계속 2)
-
-| 지금 눈에 먼저 들어오는 신호 | 먼저 읽을 문서 | 바로 이어 읽을 문서 |
+| 보이는 신호 | 먼저 읽을 문서 | 다음 문서 |
 |---|---|---|
-| `Repository` 자체가 왜 필요한지 모르겠다 | [Repository Interface Contract Primer](./repository-interface-contract-primer.md) | [Repository, DAO, Entity](./repository-dao-entity.md) |
+| `Repository` 자체 이유가 흐리다 | [Repository Interface Contract Primer](./repository-interface-contract-primer.md) | [Repository, DAO, Entity](./repository-dao-entity.md) |
+| 계약은 알겠는데 test fake가 JPA 흉내 같다 | [Repository Fake Design Guide](./repository-fake-design-guide.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
 | `save/find`보다 `insert/select/update` 말투가 더 많다 | [Repository Naming Smells Primer](./repository-naming-smells-primer.md) | [Repository, DAO, Entity](./repository-dao-entity.md) |
-| 목록/검색 요구 때문에 repository 메서드가 계속 늘어난다 | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) | [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) |
-| 서비스가 `OrderEntity`를 직접 가져와 규칙을 수행한다 | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) |
-| `cascade`와 aggregate 규칙이 같은 말처럼 들린다 | [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
+| 목록/검색 때문에 repository 메서드가 불어난다 | [DAO vs Query Model Entrypoint](./dao-vs-query-model-entrypoint-primer.md) | [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) |
+| 서비스가 `OrderEntity`로 규칙을 수행한다 | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) |
+| `cascade`가 aggregate 규칙처럼 들린다 | [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
 | 컨트롤러 응답 타입이 `Entity`다 | [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md) | [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md) |
-| query view나 response DTO를 `record`로 둘지부터 헷갈린다 | [Query Model Separation for Read-Heavy APIs](./query-model-separation-read-heavy-apis.md) | [Record and Value Object Equality](../language/java/record-value-object-equality-basics.md) |
 
 ## 짧은 예시: 주문 저장 코드를 보고 어디로 갈까
 
@@ -150,9 +151,10 @@ public class OrderService {
 영속성 감이 거의 없으면 아래 순서가 가장 무난하다.
 
 1. [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
-2. [Repository, DAO, Entity](./repository-dao-entity.md)
-3. [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
-4. [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
+2. "계약은 알겠는데 test fake가 막힌다"면 [Repository Fake Design Guide](./repository-fake-design-guide.md)로 옆길 한 칸만 샌다
+3. [Repository, DAO, Entity](./repository-dao-entity.md)
+4. [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+5. [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
 
 중간에 이런 질문이 생기면 옆으로 새면 된다.
 

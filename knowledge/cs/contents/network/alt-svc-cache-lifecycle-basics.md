@@ -28,7 +28,7 @@
 > - [HTTP/2, HTTP/3 Downgrade Attribution, Alt-Svc, UDP Block](./http2-http3-downgrade-attribution-alt-svc-udp-block.md)
 > - [HTTP/3 Cross-Origin Reuse Guardrails Primer](./http3-cross-origin-reuse-guardrails-primer.md)
 
-retrieval-anchor-keywords: alt-svc cache lifecycle, alt-svc cache warming, alt-svc expiry, alt-svc stale hint, stale alt-svc cache, first visit vs repeat visit h3, first request h2 next request h3, repeat visit http/3, alt-svc ma max age, alt-svc cache invalidation, browser alt-svc cache, h3 cache warmup, alt-svc fallback, why repeat visit still h2, alt-svc beginner observability
+retrieval-anchor-keywords: alt-svc cache lifecycle, alt-svc cache warming, alt-svc expiry, alt-svc stale hint, first visit vs repeat visit h3, first request h2 next request h3, repeat visit http/3, alt-svc ma max age, browser alt-svc cache, alt-svc fallback, alt-svc 뭐예요, 처음 배우는데 alt-svc, alt-svc cache 헷갈려요, 왜 첫 요청은 h2고 다음 요청은 h3예요, alt-svc 언제 h3로 바뀌어요
 
 > [!IMPORTANT]
 > 먼저 경계부터 잡자. `Alt-Svc` cache는 "다음 새 connection에서 H3를 시도할 힌트 메모"이고, HTTP response cache는 "응답 본문(HTML/이미지/json) 재사용"이다.

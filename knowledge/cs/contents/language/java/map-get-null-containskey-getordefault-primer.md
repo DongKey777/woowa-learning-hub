@@ -77,6 +77,19 @@ retrieval-anchor-keywords: java map get null containskey getordefault difference
 
 `get()`은 값 조회이고, `containsKey()`는 존재 확인이다.
 
+## 15초 번역표: `Optional`과 어디서 갈라지나
+
+`Map.get()`이 헷갈릴 때는 "`Optional`이랑 뭐가 다르지?"를 같이 묻는 경우가 많다. 초보자 기준에서는 질문 자체를 아래처럼 번역하면 된다.
+
+| 지금 코드가 묻는 것 | 첫 타입/도구 | 왜 여기서 갈라지나 |
+|---|---|---|
+| 회원 한 명이 있나 없나 | `Optional<User>` | 단건의 있음/없음만 말한다 |
+| 주문 항목이 0개인가 | `List<OrderLine>` | 여러 건의 `0개`는 컬렉션이 이미 표현한다 |
+| 이 key가 없나, value가 `null`인가 | `Map.get()` + `containsKey()` | `null` 하나에 두 의미가 겹칠 수 있다 |
+| 왜 없는지까지 상태가 갈리나 | enum 상태 또는 상태 타입 | 부재 이유를 이름으로 드러내야 한다 |
+
+한 줄로 줄이면 `Optional`은 "한 칸", 컬렉션은 "여러 칸", `Map`은 "사물함 번호로 꺼내 보기", enum은 "없음의 이유 이름표"다.
+
 ## 왜 `get() == null`이 애매한가
 
 ```java

@@ -31,6 +31,8 @@ _RULES: list[Rule] = [
             "read model",
             "query model",
             "query service",
+            "쿼리 모델",
+            "쿼리 서비스",
         },
         "expand": [
             "repository",
@@ -1326,6 +1328,17 @@ _RULES: list[Rule] = [
         "category": "operating-system",
     },
     {
+        "tag": "os_sync_async_blocking_basics",
+        "triggers": set(),
+        "expand": [
+            "sync async blocking nonblocking basics",
+            "synchronous vs asynchronous",
+            "blocking vs non-blocking",
+            "caller waits vs result later",
+        ],
+        "category": "operating-system",
+    },
+    {
         "tag": "os_io_uring_queues",
         "triggers": {
             "sq",
@@ -1708,6 +1721,10 @@ _SPRING_FOUNDATION_ADVANCED_CUES = {
 }
 
 _SPRING_BEGINNER_ENGLISH_MEANING_TOPIC_CUES = {
+    "spring mvc",
+    "springmvc",
+    "dispatcher servlet",
+    "dispatcherservlet",
     "spring bean",
     "beanfactory",
     "bean factory",
@@ -1782,9 +1799,20 @@ _BEGINNER_WHY_USE_SHORTFORM_CUES = {
     "왜 사용",
     "왜 있어",
     "왜 필요해",
+    "왜 필요한데",
     "왜 필요하지",
     "왜 쓰는",
     "왜 쓰죠",
+}
+
+_BEGINNER_INFRA_ENGLISH_MEANING_TOPIC_CUES = {
+    "keep-alive",
+    "keep alive",
+    "keepalive",
+    "connection pool",
+    "connection pooling",
+    "hikaricp",
+    "hikari cp",
 }
 
 _KOREAN_DEFINITION_SHORTFORM_RE = re.compile(
@@ -1924,6 +1952,13 @@ _TRANSACTION_PRIMER_SHORTFORM_TOPIC_CUES = {
     "격리 수준",
     "격리수준",
     "isolation level",
+    "read committed",
+    "repeatable read",
+    "non-repeatable read",
+    "non repeatable read",
+    "phantom read",
+    "dirty read",
+    "serializable",
     "optimistic lock",
     "pessimistic lock",
     "낙관적 락",
@@ -1946,13 +1981,34 @@ _TRANSACTION_PRIMER_SHORTFORM_ADVANCED_CUES = {
 
 _JAVA_CONCURRENCY_BEGINNER_SHORTFORM_TOPIC_CUES = {
     "callable",
+    "common pool",
     "executorservice",
     "future",
     "completablefuture",
     "countdownlatch",
     "cyclicbarrier",
+    "default executor",
+    "forkjoinpool",
     "phaser",
     "stampedlock",
+}
+
+_SYNC_ASYNC_TOPIC_CUES = {
+    "sync",
+    "async",
+    "synchronous",
+    "asynchronous",
+    "동기",
+    "비동기",
+}
+
+_BLOCKING_NONBLOCKING_TOPIC_CUES = {
+    "blocking",
+    "nonblocking",
+    "non-blocking",
+    "block",
+    "블로킹",
+    "논블로킹",
 }
 
 _TRANSACTION_PRIMER_CONCEPT_EXPLANATION_CUES = {
@@ -2483,6 +2539,8 @@ _QUERY_MODEL_BEGINNER_FILTER_SORT_SCOPE_CUES = {
 _QUERY_MODEL_BEGINNER_MEANING_TOPIC_CUES = {
     "query model",
     "query service",
+    "쿼리 모델",
+    "쿼리 서비스",
 }
 
 _QUERY_MODEL_BEGINNER_MEANING_ADVANCED_CUES = {
@@ -2495,6 +2553,38 @@ _QUERY_MODEL_BEGINNER_MEANING_ADVANCED_CUES = {
     "cqrs",
     "projection",
     "eventual consistency",
+}
+
+_QUERY_SERVICE_BEGINNER_ROLE_RE = re.compile(
+    r"\bwhat\s+does\s+(?:a\s+)?query\s+service\s+do\b"
+)
+
+_QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES = {
+    "query service 무슨 역할",
+    "query service는 무슨 역할",
+    "query service 는 무슨 역할",
+    "query service 역할이야",
+    "query service 역할이에요",
+    "query service 뭐 하는 거야",
+    "query service가 뭐 하는 거야",
+    "query service 는 뭐 하는 거야",
+    "query service가 뭘 해",
+    "query service 는 뭘 해",
+    "쿼리 서비스 무슨 역할",
+    "쿼리 서비스는 무슨 역할",
+    "쿼리 서비스 는 무슨 역할",
+    "쿼리 서비스 역할이야",
+    "쿼리 서비스 역할이에요",
+    "쿼리 서비스 뭐 하는 거야",
+    "쿼리 서비스가 뭐 하는 거야",
+    "쿼리 서비스 는 뭐 하는 거야",
+    "쿼리 서비스가 뭘 해",
+    "쿼리 서비스 는 뭘 해",
+}
+
+_QUERY_SERVICE_TOPIC_CUES = {
+    "query service",
+    "쿼리 서비스",
 }
 
 _PROJECTION_BACKEND_FRESHNESS_ANCHOR_CUES = {
@@ -2759,6 +2849,18 @@ _BEGINNER_PRIMER_OVERRIDES: dict[str, dict[str, object]] = {
             "os_io_uring_queues",
             "os_io_uring_operational_hazards",
         },
+    },
+    "os_sync_async_blocking_basics": {
+        "expand": [
+            "sync async blocking nonblocking basics",
+            "synchronous vs asynchronous",
+            "blocking vs non-blocking",
+            "when to use sync vs async",
+            "when to use blocking vs non-blocking",
+            "io model beginner mental model",
+        ],
+        "score_bonus": 2,
+        "suppress": {"os_async_io_overview"},
     },
     "projection_freshness": {
         "expand": [
@@ -3383,6 +3485,9 @@ def _java_concurrency_expand(
         )
 
     if beginner_intent and matched_triggers & {
+        "common pool",
+        "default executor",
+        "forkjoinpool",
         "executorservice",
         "future",
         "callable",
@@ -4070,6 +4175,7 @@ def _is_mvcc_beginner_why_use_prompt(haystack: str) -> bool:
             "왜 사용",
             "왜 있어",
             "왜 필요해",
+            "왜 필요한데",
             "왜 필요하지",
             "왜 쓰는",
             "왜 쓰죠",
@@ -4113,6 +4219,16 @@ def _spring_framework_compound_matches(haystack: str, tokens: set[str]) -> set[s
     if _is_spring_transaction_beginner_shortform_prompt(haystack, tokens):
         matched.add("__spring_transaction_beginner_shortform__")
     return matched
+
+
+def _os_sync_async_blocking_compound_matches(haystack: str, tokens: set[str]) -> set[str]:
+    if not (_has_beginner_intent(haystack, tokens) or _has_beginner_confusion_intent(haystack)):
+        return set()
+    has_sync_async_family = any(cue in haystack for cue in _SYNC_ASYNC_TOPIC_CUES)
+    has_blocking_family = any(cue in haystack for cue in _BLOCKING_NONBLOCKING_TOPIC_CUES)
+    if not (has_sync_async_family and has_blocking_family):
+        return set()
+    return {"__sync_async_blocking_beginner_primer__"}
 
 
 def _is_spring_transaction_propagation_prompt(haystack: str, tokens: set[str]) -> bool:
@@ -4456,12 +4572,22 @@ def _is_beginner_query_model_filter_sort_prompt(haystack: str, tokens: set[str])
 
 
 def _is_beginner_query_model_meaning_prompt(haystack: str, tokens: set[str]) -> bool:
+    query_service_beginner_role_prompt = bool(
+        any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES)
+        and (
+            _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
+            or "query service role" in haystack
+            or "query service responsibility" in haystack
+            or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
+        )
+    )
     has_beginner_cue = (
         _has_beginner_intent(haystack, tokens)
         or _has_beginner_confusion_intent(haystack)
         or any(cue in haystack for cue in _BEGINNER_SHORTFORM_QUESTION_CUES)
         or any(cue in haystack for cue in _BEGINNER_WHY_USE_SHORTFORM_CUES)
         or _has_korean_definition_shortform(haystack)
+        or query_service_beginner_role_prompt
     )
     if not has_beginner_cue:
         return False
@@ -4596,6 +4722,26 @@ def _should_suppress_projection_rollback_transaction_noise(
     ):
         return bool(matched_triggers) and matched_triggers <= {"rollback"}
     return bool(matched_triggers) and matched_triggers <= _PROJECTION_TX_NOISE_TRIGGERS
+
+
+def _should_suppress_db_modeling_for_transaction_primer_aliases(
+    haystack: str,
+    tokens: set[str],
+    hits: list[dict],
+) -> bool:
+    if not _is_transaction_isolation_beginner_meaning_prompt(haystack, tokens):
+        return False
+
+    present_tags = {hit["tag"] for hit in hits}
+    if not ({"transaction_isolation", "transaction_anomaly_patterns"} & present_tags):
+        return False
+
+    modeling_hit = next((hit for hit in hits if hit["tag"] == "db_modeling"), None)
+    if not modeling_hit:
+        return False
+
+    matched_triggers = modeling_hit.get("_matched_triggers", set())
+    return bool(matched_triggers) and matched_triggers <= {"table"}
 
 
 def _projection_beginner_operational_noise_tags(
@@ -5029,6 +5175,8 @@ def _has_beginner_intent(haystack: str, tokens: set[str]) -> bool:
         return True
     if _has_korean_definition_shortform(haystack):
         return True
+    if _is_beginner_infra_english_meaning_prompt(haystack):
+        return True
     return (
         _is_woowa_backend_foundation_shortform_prompt(haystack)
         or _is_database_modeling_beginner_shortform_prompt(haystack)
@@ -5055,6 +5203,12 @@ def _has_beginner_confusion_intent(haystack: str) -> bool:
 
 def _has_korean_definition_shortform(haystack: str) -> bool:
     return bool(_KOREAN_DEFINITION_SHORTFORM_RE.search(haystack))
+
+
+def _is_beginner_infra_english_meaning_prompt(haystack: str) -> bool:
+    if not re.search(r"\bwhat\s+does\b.*\bmean\b", haystack):
+        return False
+    return any(cue in haystack for cue in _BEGINNER_INFRA_ENGLISH_MEANING_TOPIC_CUES)
 
 
 def _is_jwt_validation_order_prompt(haystack: str) -> bool:
@@ -5537,8 +5691,14 @@ def _is_projection_rollback_window_transaction_rollback_db_prompt(
 
 
 def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict]) -> set[str]:
+    transaction_beginner_meaning_prompt = _is_transaction_isolation_beginner_meaning_prompt(
+        haystack, tokens
+    )
     if not _has_beginner_intent(haystack, tokens):
-        if not _is_beginner_query_model_meaning_prompt(haystack, tokens):
+        if not (
+            _is_beginner_query_model_meaning_prompt(haystack, tokens)
+            or transaction_beginner_meaning_prompt
+        ):
             return set()
 
     hits_by_tag = {hit["tag"]: hit for hit in hits}
@@ -5549,14 +5709,68 @@ def _apply_beginner_primer_bias(haystack: str, tokens: set[str], hits: list[dict
         primer_hit["score"] += 3
         primer_hit["expand"].extend(
             [
-                "query model separation",
-                "query model separation read heavy apis",
+                "dao vs query model",
+                "dao vs query model entrypoint primer",
+                "dao vs query model entrypoint",
+                "dao",
+                "when dao is enough",
+                "when dedicated query repository is better",
+                "dao enough",
+                "dao enough vs query repository",
+                "query model entrypoint beginner",
+                "query model entrypoint primer",
+                "what is query model",
+                "what is query model primer",
+                "backend api query model beginner",
+                "backend api query model entrypoint",
+                "query model basics",
+                "query service basics",
+                "query service entrypoint primer",
+                "what is query service primer",
+                "query model mental model",
                 "query service vs repository",
                 "read-heavy api beginner primer",
+                "query repository when to use",
+                "dedicated query repository",
+                "what is query service",
+                "backend api query service beginner",
                 "list search filter sort beginner guide",
             ]
         )
+        if any(cue in haystack for cue in _QUERY_SERVICE_TOPIC_CUES) and (
+            _QUERY_SERVICE_BEGINNER_ROLE_RE.search(haystack)
+            or "query service role" in haystack
+            or "query service responsibility" in haystack
+            or any(cue in haystack for cue in _QUERY_SERVICE_BEGINNER_ROLE_KOREAN_CUES)
+        ):
+            primer_hit["expand"].extend(
+                [
+                    "what does query service do",
+                    "query service role",
+                    "query service responsibility",
+                    "query service 무슨 역할",
+                    "query service 뭐 하는 거야",
+                    "query service 뭘 해",
+                ]
+            )
         suppressed_tags.update(present_tags & {"api_boundary", "layer_responsibility"})
+    if transaction_beginner_meaning_prompt and "transaction_anomaly_patterns" in present_tags:
+        primer_hit = hits_by_tag["transaction_anomaly_patterns"]
+        primer_hit["score"] += 3
+        primer_hit["expand"].extend(
+            [
+                "transaction isolation basics",
+                "transaction isolation beginner primer",
+                "transaction isolation simple mental model",
+                "transaction isolation level basics",
+                "isolation level beginner",
+                "read committed beginner",
+                "repeatable read beginner",
+                "serializable beginner",
+                "dirty read beginner",
+            ]
+        )
+        suppressed_tags.update(present_tags & {"transaction_isolation"})
     for primer_tag, config in _BEGINNER_PRIMER_OVERRIDES.items():
         if primer_tag not in present_tags:
             continue
@@ -5620,6 +5834,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             matched_triggers.update(_security_authentication_compound_matches(haystack, tokens))
         if rule["tag"] == "spring_framework":
             matched_triggers.update(_spring_framework_compound_matches(haystack, tokens))
+        if rule["tag"] == "os_sync_async_blocking_basics":
+            matched_triggers.update(_os_sync_async_blocking_compound_matches(haystack, tokens))
         if rule["tag"] == "mysql_gap_locking":
             matched_triggers.update(_gap_lock_compound_matches(haystack))
         if rule["tag"] == "projection_freshness":
@@ -5759,6 +5975,8 @@ def detect_signals(prompt: str, topic_hints: list[str] | None = None) -> list[di
             suppressed_tags.add("transaction_isolation")
         if _should_suppress_projection_rollback_transaction_noise(haystack, tokens, hits):
             suppressed_tags.add("transaction_isolation")
+        if _should_suppress_db_modeling_for_transaction_primer_aliases(haystack, tokens, hits):
+            suppressed_tags.add("db_modeling")
         suppressed_tags.update(_spring_transactional_beginner_suppressions(haystack, tokens, hits))
         suppressed_tags.update(
             _projection_beginner_operational_noise_tags(haystack, tokens, hits)
@@ -5831,8 +6049,22 @@ def expand_query(prompt: str, topic_hints: list[str] | None = None) -> list[str]
     if _is_beginner_query_model_filter_sort_prompt(haystack, tokens):
         base.extend(
             [
-                "query model separation",
-                "query model separation read heavy apis",
+                "dao vs query model",
+                "dao vs query model entrypoint primer",
+                "dao vs query model entrypoint",
+                "query model entrypoint beginner",
+                "query model entrypoint primer",
+                "query model basics",
+                "query model mental model",
+                "query service basics",
+                "what query model means",
+                "what is query service",
+                "what query service is",
+                "backend api query service beginner",
+                "beginner backend api read path choices",
+                "query service vs repository",
+                "query repository when to use",
+                "dedicated query repository",
                 "list search filter sort beginner guide",
                 "browser filter state",
                 "local sort state",

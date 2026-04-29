@@ -1,6 +1,6 @@
 # N+1 Query Detection and Solutions
 
-> 한 줄 요약: N+1은 "ORM이 느리다"는 현상이 아니라, 지연 로딩이 "필요할 때 한 건씩" 가져오는 기본 계약 위에서 컬렉션을 순회할 때 필연적으로 터지는 구조적 실패이고, 탐지(로그/테스트)와 처방(fetch join / `@EntityGraph` / batch size)을 나눠 이해해야 자기 코드에서 발견할 수 있다.
+> 한 줄 요약: 이 문서는 `"N+1 뭐예요?"`, `"왜 조회 한 번 했는데 쿼리가 여러 번 나가요?"`, `"lazy loading 때문에 SQL이 갑자기 많이 찍혀요"` 같은 첫 질문에서 먼저 잡히는 primer를 목표로 하며, N+1을 "ORM이 느리다"가 아니라 지연 로딩과 fetch plan 경계가 어긋난 증상으로 설명한다.
 
 **난이도: 🟡 Intermediate**
 
@@ -10,9 +10,10 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../spring/spring-persistence-transaction-web-service-repository-primer.md)
+- [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
 
-retrieval-anchor-keywords: n plus one query detection solutions basics, n plus one query detection solutions beginner, n plus one query detection solutions intro, database basics, beginner database, 처음 배우는데 n plus one query detection solutions, n plus one query detection solutions 입문, n plus one query detection solutions 기초, what is n plus one query detection solutions, how to n plus one query detection solutions
+retrieval-anchor-keywords: n+1 뭐예요, n plus one 뭐예요, 처음 배우는데 n+1, jpa n+1 뭐예요, lazy loading 때문에 쿼리가 여러 번 나가요, 조회 한 번 했는데 sql이 여러 번 나가요, controller dto 만들 때 쿼리가 또 나가요, 엔티티 순회했더니 쿼리 많이 나가요, fetch join 언제 써요, entitygraph 언제 써요, batch fetch size 언제 써요, n+1 탐지 방법, query count test, 지연 로딩 sql 많이 찍힘, spring data jpa n+1 beginner
 > 관련 문서:
 > - [Spring Data JPA `save`, `persist`, `merge` State Transitions](../spring/spring-data-jpa-save-persist-merge-state-transitions.md)
 > - [JPA Dirty Checking, @Version, Cascade Trade-offs](../spring/jpa-dirty-checking-version-strategy.md)
@@ -36,6 +37,13 @@ retrieval-anchor-keywords: n plus one query detection solutions basics, n plus o
 - `N+1 탐지`
 
 ## 핵심 개념
+
+## 이 문서가 먼저 답하는 질문
+
+- "`N+1`이 뭐예요?"
+- "왜 repository는 한 번 호출한 것 같은데 SQL은 여러 번 나가요?"
+- "lazy loading이랑 N+1이 같은 말인가요?"
+- "fetch join, `@EntityGraph`, `@BatchSize` 중 뭘 먼저 골라야 해요?"
 
 N+1은 "쿼리가 1 + N번 발생한다"는 표면적 정의 이상의 의미가 있다.
 

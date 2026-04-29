@@ -25,7 +25,16 @@
 - [JVM, GC, JMM](./jvm-gc-jmm-overview.md)
 - [ClassLoader, Exception 경계, 객체 계약](./classloader-exception-boundaries-object-contracts.md)
 
-retrieval-anchor-keywords: java language basics, java source bytecode jvm flow, jdk vs jvm beginner, java primitive vs reference, java data type basics, java type conversion promotion demotion, java cast overflow beginner, java variable scope basics, java field vs local variable initialization, java local variable not initialized compile error, java array basics, java control flow basics, java array equality copy sorting route, java array next step guide, java array compare false with ==
+retrieval-anchor-keywords: java language basics, 자바 처음 배우는데 뭐부터, 자바 기초 큰 그림, jdk vs jvm beginner, 자바 처음인데 jdk jvm 차이, java source bytecode jvm flow, main 메서드 어디서 시작, java primitive vs reference, 기본형 참조형 처음 차이, java local variable not initialized compile error, 자바 컴파일 에러 왜 나요, java array basics, 배열 기초 어디부터, java array compare false with ==, 자바 처음인데 controller service repository 전 어디까지
+
+## 처음 질문으로 바로 고르기
+
+| 지금 떠오른 첫 질문 | 이 문서에서 먼저 볼 부분 | 바로 다음 한 걸음 |
+|---|---|---|
+| "`JDK`/`JVM` 차이?", "`main`은 어디서 시작돼요?`" | [먼저 잡는 mental model](#먼저-잡는-mental-model) | [Java 실행 모델과 객체 메모리 mental model 입문](./java-execution-object-memory-mental-model-primer.md) |
+| "`기본형`/`참조형`이 왜 달라요?", "`String`은 왜 객체예요?`" | [Java 데이터 타입 먼저 보는 큰 그림](#java-데이터-타입-먼저-보는-큰-그림) | [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) |
+| "`배열`이 왜 같이 바뀌죠?", "`==`가 왜 false죠?`" | [Java 배열: 먼저 잡는 감각](#java-배열-먼저-잡는-감각) | [Java Array Equality Basics](./java-array-equality-basics.md) |
+| "`자바 기초 다음에 백엔드 코드는 어디서 읽어요?`" | [한 줄 정리](#한-줄-정리) | [우테코 백엔드 미션 선행 개념 입문](../../software-engineering/woowacourse-backend-mission-prerequisite-primer.md) |
 
 <details>
 <summary>Table of Contents</summary>

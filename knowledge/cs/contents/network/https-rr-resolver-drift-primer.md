@@ -9,19 +9,17 @@
 
 관련 문서:
 
+- [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
+- [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
+- [DNS over HTTPS Operational Trade-offs](./dns-over-https-operational-tradeoffs.md)
+- [DNS Split-Horizon Behavior](./dns-split-horizon-behavior.md)
+- [DNS TTL Cache Failure Patterns](./dns-ttl-cache-failure-patterns.md)
+- [DNS 기초](./dns-basics.md)
+- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../security/session-cookie-jwt-basics.md)
 
-> 관련 문서:
-> - [H3 Discovery Observability Primer: Alt-Svc vs HTTPS RR 확인하기](./h3-discovery-observability-primer.md)
-> - [Alt-Svc와 HTTPS RR, SVCB: H3 discovery와 coalescing bridge](./alt-svc-https-rr-h3-discovery-coalescing-bridge.md)
-> - [DNS over HTTPS Operational Trade-offs](./dns-over-https-operational-tradeoffs.md)
-> - [DNS Split-Horizon Behavior](./dns-split-horizon-behavior.md)
-> - [DNS TTL Cache Failure Patterns](./dns-ttl-cache-failure-patterns.md)
-> - [DNS 기초](./dns-basics.md)
-
-retrieval-anchor-keywords: https rr resolver drift, browser doh vs dig, os resolver vs browser resolver, https rr svcb mismatch, browser secure dns answer differs, dig https different from browser, why dig and browser disagree, resolver path drift, doh resolver drift, https rr cache drift, svcb different answer, browser doh os dig primer, same host different https rr, split horizon https rr, https rr resolver drift primer basics
+retrieval-anchor-keywords: https rr 뭐예요, https rr resolver drift, browser doh vs dig, browser dns랑 dig 결과가 달라요, os resolver vs browser resolver, secure dns랑 system dns 차이, dig 결과랑 브라우저가 왜 달라요, https rr svcb mismatch, browser secure dns answer differs, same host different https rr, 처음 배우는데 doh랑 dig 헷갈려요, resolver path drift, split horizon https rr, dns view가 왜 달라요, what is https rr primer
 
 <details>
 <summary>Table of Contents</summary>

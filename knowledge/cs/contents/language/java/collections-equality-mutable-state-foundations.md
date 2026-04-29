@@ -11,6 +11,7 @@
 - [Iterable vs Collection vs Map 브리지 입문](./iterable-collection-map-iteration-bridge.md)
 - [List/Set/Map Requirement-to-Type Drill](./list-set-map-requirement-to-type-drill.md)
 - [Java Equality and Identity Basics](./java-equality-identity-basics.md)
+- [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md)
 - [`List.contains()` vs `Set.contains()` 증상 카드](./list-contains-vs-set-contains-symptom-card.md)
 - [`HashMap`/`HashSet` 조회 흐름 브리지: `hashCode()` 다음에 왜 `equals()`를 볼까](./hashmap-hashset-hashcode-equals-lookup-bridge.md)
 - [Stable ID as Map Key Primer](./stable-id-map-key-primer.md)
@@ -22,6 +23,19 @@
 - [Map Iteration Patterns Cheat Sheet](./map-iteration-patterns-cheat-sheet.md)
 
 retrieval-anchor-keywords: collections equality mutable state foundations, java collection hierarchy basics, java list set map hashmap basics, java list set map equals hashcode comparable, beginner collection equality contract, java set duplicate rule beginner, java map key mutation bug beginner, hashmap hashset equals hashcode why, comparable treeset treemap basics, map is not collection beginner, what is collection hierarchy java, 처음 배우는데 list set map 뭐예요, hashset 중복 제거 왜 안 됨, hashmap get null 왜 나옴
+
+## 처음 2분 route
+
+이 문서는 컬렉션 구현체 이름을 많이 외우게 하려는 문서가 아니다. 초보자 첫 읽기에서는 "`지금 내가 묻는 게 목록인가, 중복인가, key 조회인가`"만 먼저 자르면 된다.
+
+| 지금 막힌 질문 | 먼저 떠올릴 타입 | 바로 같이 볼 규칙 |
+|---|---|---|
+| "순서대로 담고 다시 꺼내고 싶어요" | `List` | `contains(...)`는 결국 `equals()`를 본다 |
+| "같은 값은 한 번만 담고 싶어요" | `Set` | `HashSet`이면 `hashCode()` + `equals()` |
+| "id로 바로 찾고 싶어요" | `Map` | key 비교 기준과 key 불변 여부 |
+| "`HashSet`은 하나인데 `HashMap#get(...)`은 null이에요" | 해시 컬렉션 공통 규칙 | 비교 기준 필드를 넣은 뒤 바꿨는지 |
+
+즉 첫 route는 `컬렉션 선택 -> 무엇을 같은 값으로 볼지 -> 넣은 뒤 바꿔도 되는지` 세 칸이다.
 
 ## 먼저 잡는 멘탈 모델
 
@@ -45,6 +59,22 @@ retrieval-anchor-keywords: collections equality mutable state foundations, java 
 1. 요구가 순서인지, 중복 제거인지, key 조회인지 먼저 고른다.
 2. 그다음 "무엇을 같은 값으로 볼지"를 정한다.
 3. 마지막으로 넣은 뒤 값을 바꿔도 되는지 확인한다.
+
+## 왜 `HashSet`은 하나인데 `HashMap#get(...)`은 `null`일까
+
+초보자에게 자주 보이는 증상은 "`같은 학생`인데 `Set`에서는 중복으로 막히고, `Map`에서는 방금 넣은 key를 못 찾는다"는 식으로 한 번에 섞여 나온다. 이때는 컬렉션을 따로따로 외우기보다 아래 한 줄로 먼저 자른다.
+
+- `Set`은 "이미 같은 값이 있나?"를 묻는다.
+- `Map`은 "같은 key로 다시 찾을 수 있나?"를 묻는다.
+- 둘 다 해시 컬렉션이면 `equals()`/`hashCode()`와 mutable 상태를 같이 본다.
+
+| 보이는 증상 | 먼저 볼 것 | 보통의 원인 |
+|---|---|---|
+| `HashSet` size가 기대보다 작다 | 중복 판단 규칙 | `equals()`/`hashCode()`가 같은 값으로 본다 |
+| `HashMap#get(key)`가 `null`이다 | 조회 기준과 key 상태 | 넣은 뒤 key 필드가 바뀌었거나 같은 key 규칙이 어긋났다 |
+| `contains(...)`는 되는데 `get(...)`가 흔들린다 | key로 쓰는 타입 설계 | 값 객체 경계보다 mutable key가 먼저 문제일 수 있다 |
+
+한 번 더 줄이면 "`같은 값` 질문은 `Set`, `다시 찾기` 질문은 `Map`"이다. 요구 문장을 자료구조 말로 바꾸는 감각이 아직 약하면 [Backend Data-Structure Starter Pack](../../data-structure/backend-data-structure-starter-pack.md)으로 한 칸 건너가도 된다.
 
 ## `Collection` 계층을 20초로 보면
 
@@ -222,6 +252,8 @@ Map   // Collection 계층 밖
 그래서 초보자용 기본 규칙은 아래 한 줄이다.
 
 - `equals()`를 오버라이드하면 `hashCode()`도 같은 필드로 같이 맞춘다
+
+여기서 흔한 오해는 "`List.contains(...)`도 비교를 하니까 모든 컬렉션이 같은 규칙으로 움직이겠지"라고 생각하는 것이다. 실제로는 `List`는 값 찾기, `Set`은 중복 판단, `Map`은 key 조회라는 질문이 다르다.
 
 ### 2. 정렬 규칙은 여기서 이름만 걸어 둔다
 

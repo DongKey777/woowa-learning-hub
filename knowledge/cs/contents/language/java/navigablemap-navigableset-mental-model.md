@@ -9,7 +9,7 @@
 - [Language README](../README.md)
 - [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
 - [Java 컬렉션 프레임워크 입문](./java-collections-basics.md)
-- [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
+- [TreeMap Interval Entry Primer](../../data-structure/treemap-interval-entry-primer.md)
 - [Navigable Range API 미니 드릴](./navigable-range-api-mini-drill.md)
 - [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
 - [`firstEntry()`/`lastEntry()` vs `firstKey()`/`lastKey()` Beginner Bridge](./firstentry-lastentry-vs-firstkey-lastkey-bridge.md)
@@ -24,7 +24,7 @@
 - [HashSet vs TreeSet Duplicate Semantics](./hashset-vs-treeset-duplicate-semantics.md)
 - [`Instant`, `LocalDateTime`, `OffsetDateTime`, `ZonedDateTime` Boundary Design](./java-time-instant-localdatetime-boundaries.md)
 
-retrieval-anchor-keywords: language-java-00062, navigablemap mental model, navigableset mental model, java navigablemap navigableset beginner, java treeset first last floor ceiling lower higher, java treemap firstkey lastkey floorkey ceilingkey lowerkey higherkey, java treemap floorentry ceilingentry lowerentry higherentry, floor ceiling comparator order, lower higher strict inclusive difference, reverse order floor ceiling worksheet, range lookup treemap beginner, empty treemap firstkey lastkey nosuchelementexception, empty treemap floor ceiling null, firstkey lastkey empty map warning, firstentry lastentry null empty treemap
+retrieval-anchor-keywords: navigablemap mental model, navigableset mental model, treemap floor ceiling lower higher basics, treeset first last floor ceiling basics, treemap floorkey ceilingkey 뭐예요, treemap floorentry higherentry 언제 쓰나요, floor ceiling lower higher 차이 헷갈려요, 처음 배우는데 navigablemap, 처음 배우는데 treeset 이웃 찾기, treemap 정렬된 key 근처 찾기, 빈 treemap firstkey 왜 예외, 빈 treemap floorkey 왜 null, comparator 순서 기준 조회, ordered map range lookup beginner, collection 다음 treemap range 기초
 
 <details>
 <summary>Table of Contents</summary>
@@ -240,7 +240,7 @@ navigation은 항상 key의 comparator 순서로 움직인다.
 - `lower`/`higher`: strict (같은 key 제외)
 - `floor`/`ceiling`: inclusive (같은 key 포함)
 
-이 워크시트 감각을 예약 시간표 문제로 바로 옮겨 보고 싶으면 [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)를 이어서 보면 된다. 여기서의 `timestamp` 줄이 그 문서에서는 `예약 시작 시각` 줄로 그대로 바뀐다.
+이 워크시트 감각을 예약 시간표 문제로 바로 옮겨 보고 싶으면 [TreeMap Interval Entry Primer](../../data-structure/treemap-interval-entry-primer.md)를 이어서 보면 된다. 여기서의 `timestamp` 줄이 그 문서에서는 `예약 시작 시각` 줄로 그대로 바뀐다.
 
 exact match에서 `lower`와 `floor`만 따로 더 짧게 손예측하고 싶다면 [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)을 먼저 보고 돌아와도 된다.
 
@@ -365,7 +365,7 @@ System.out.println(students.higher(query));  // Student[id=30, name=Sora]
 - exact match에서 `lower`와 `floor`만 먼저 굳히고 싶다면 [`lower` vs `floor` Exact Match 미니 드릴](./lower-vs-floor-exact-match-mini-drill.md)
 - `TreeSet`/`TreeMap`에서 comparator가 "같은 자리"까지 정한다는 감각을 이어서 보려면 [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 - comparator를 직접 넘기지 않은 `TreeSet`/`TreeMap`의 `compareTo()` 기준을 보려면 [Natural Ordering in TreeSet and TreeMap](./treeset-treemap-natural-ordering-compareto-bridge.md)
-- 워크시트에서 본 이웃 질의를 예약 충돌 검사, gap check, 시간창 조회로 연결하고 싶다면 [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
+- 워크시트에서 본 이웃 질의를 예약 충돌 검사, gap check, 시간창 조회로 연결하고 싶다면 [TreeMap Interval Entry Primer](../../data-structure/treemap-interval-entry-primer.md)
 
 ## 어떤 문서를 다음에 읽으면 좋은가 (계속 2)
 

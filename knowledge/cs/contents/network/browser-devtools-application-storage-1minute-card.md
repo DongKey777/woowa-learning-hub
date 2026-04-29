@@ -14,7 +14,7 @@
 - [Browser DevTools Cache Trace Primer: memory cache, disk cache, revalidation, 304 읽기](./browser-devtools-cache-trace-primer.md)
 - [Cookie Scope Mismatch Guide](../security/cookie-scope-mismatch-guide.md)
 
-retrieval-anchor-keywords: application tab storage quick check, devtools cookies local storage session storage cache storage, application cookies vs request cookie, local storage token but no authorization, session storage tab scoped, cache storage service worker quick check, browser storage map beginner, devtools application tab 뭐 봐요, cookie stored but not sent, sessionstorage vs localstorage basics, cache storage entry not proof, beginner devtools storage card, application cookie 있는데 include 빠짐, credentials include missing symptom, application tab cookie but request cookie empty
+retrieval-anchor-keywords: application tab storage quick check, devtools cookies local storage session storage cache storage, application cookies vs request cookie, local storage token but no authorization, session storage tab scoped, cache storage service worker quick check, browser storage map beginner, devtools application tab 뭐 봐요, cookie stored but not sent, sessionstorage vs localstorage basics, cache storage entry not proof, cache storage vs 304, application tab vs network tab cache, beginner devtools storage card, 처음 application 탭 뭐 봐요
 
 ## 핵심 개념
 
@@ -43,7 +43,7 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 | `Storage > Cookies` | 이 origin cookie가 브라우저에 저장돼 있나 | 이번 실패 요청에 실제 `Cookie` 헤더로 실렸나 |
 | `Storage > Local Storage` | 브라우저에 남는 앱 값이 있나 | 브라우저가 그 값을 자동으로 `Authorization` 헤더에 넣었나 |
 | `Storage > Session Storage` | 현재 탭에서만 쓰는 앱 값이 있나 | 새 탭/새 창에서도 그대로 이어지나 |
-| `Storage > Cache Storage` | Service Worker나 앱이 쓸 수 있는 cached response entry가 있나 | 이번 Network row가 그 entry를 실제로 사용했나 |
+| `Storage > Cache Storage` | Service Worker나 앱이 쓸 수 있는 cached response entry가 있나 | 이번 Network row의 `from ServiceWorker`, `from disk cache`, `304` 원인이 이것이라고 바로 확정 |
 
 1분 카드로 압축하면 이 순서다.
 
@@ -52,8 +52,13 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 3. `Cache Storage`가 보이면 Service Worker 경로와 함께 봐야 하는 질문이다.
 4. "이번 요청에 실제로 실렸나/쓰였나"는 반드시 Network 탭으로 내려가 확인한다.
 
+특히 `Application > Cache Storage`는 "상자에 entry가 있나"를, `Network > from disk cache`와 `Network > 304`는 "이번 body를 어디서 썼나"를 말한다. 둘 다 캐시처럼 보여도 같은 종류의 증거가 아니다.
+
 빠른 bridge 한 줄:
-`Application > Cookies`에는 값이 보이는데 같은 실패 요청의 request `Cookie` header가 비면, cookie 삭제보다 먼저 `credentials: "include"` 누락을 의심한다.
+`Application > Cookies`에는 값이 보이는데 같은 실패 요청의 request `Cookie` header가 비면, 먼저 cross-origin `fetch`의 `credentials: "include"` 누락인지 자르고, 그다음에야 cookie scope mismatch를 본다.
+
+같은 구조를 `localStorage`에 평행하게 붙이면:
+`Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 비면, 토큰 만료보다 먼저 프런트 코드의 헤더 조립 경로를 의심한다.
 
 ## 로그인 실패 장면에서 30초 분리
 
@@ -62,8 +67,8 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 | 지금 본 것 | 첫 해석 | 아직 모르는 것 | 다음 한 칸 |
 |---|---|---|---|
 | `Cookies`에 `JSESSIONID`가 있다 | 브라우저 저장은 됐다 | 이번 요청에 전송됐나 | 같은 row의 `Request Headers > Cookie` |
-| `Cookies`에는 있는데 cross-origin API request `Cookie`가 비어 있다 | 저장은 됐지만 전송 조건이 빠졌을 수 있다 | cookie scope 문제인지, `credentials: "include"` 누락인지 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) |
-| `Local Storage`에 access token이 있다 | 앱이 읽을 값은 있다 | 프런트가 `Authorization`을 붙였나 | 같은 row의 `Request Headers > Authorization` |
+| `Cookies`에는 있는데 cross-origin API request `Cookie`가 비어 있다 | 저장은 됐지만 전송 조건이 빠졌을 수 있다 | `credentials: "include"` 누락인지, `include`도 있는데 cookie scope 문제인지 | [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) |
+| `Local Storage`에 access token이 있는데 같은 API 요청의 request `Authorization` header가 비어 있다 | 앱이 읽을 값은 저장돼 있지만 이번 요청에는 안 실렸다 | 프런트가 `Authorization`을 붙였나 | 같은 row의 `Request Headers > Authorization` |
 | `Session Storage`에 redirect state가 있다 | 현재 탭 state는 남아 있다 | 새 탭에서도 유지되나 | 새 탭 재현 또는 앱 라우팅 확인 |
 | `Cache Storage`에 `/app.js`가 있다 | SW/app이 쓸 entry는 있다 | 이번 row가 그 entry를 썼나 | `from ServiceWorker` 또는 cache trace 확인 |
 | `304` 또는 `from memory cache`가 보인다 | body 재사용 질문이다 | 로그인/session도 유지됐나 | `/me` 같은 인증 요청 row를 따로 확인 |
@@ -91,9 +96,7 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 - `Cache Storage`는 Service Worker 경로 후보다.
 - `304`와 `memory cache`는 body 재사용 신호다.
 
-## 저장소별로 어떤 질문에 답하나
-
-### `Cookies`
+## Cookies는 무엇을 확인하나
 
 `Application > Cookies`는 "브라우저가 cookie를 저장했는가"에 답한다.
 
@@ -109,7 +112,7 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 
 즉 `Cookies`는 **stored?**를 잘 보여 주지만, **sent?**는 Network 탭의 같은 요청 row를 봐야 한다.
 
-### `Local Storage`
+## Local Storage / Session Storage는 무엇을 확인하나
 
 `Application > Local Storage`는 "브라우저에 남겨 둔 앱 상태가 있나"를 보여 준다.
 
@@ -143,7 +146,17 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 
 아니다. 여기의 `session`은 **브라우저 탭 수명**에 가깝다. 서버 session store와는 다른 층이다.
 
-### `Cache Storage`
+짧게 비교하면 이렇게 자른다.
+
+| 이름 | 어디에 있나 | 언제 같이 보나 | 지금 바로 뜻하는 것 |
+|---|---|---|---|
+| `sessionStorage` | 브라우저 탭 저장소 | OAuth redirect state, 현재 탭 wizard step | 이 탭에서만 JS가 읽는 값 |
+| session cookie | `Application > Cookies` | `JSESSIONID`, `SID` 같은 로그인 단서 | 브라우저가 자동 전송할 수 있는 값 |
+| server session | DevTools에 직접 안 보임 | `/me`, `200/401/302` 결과로 추론 | 서버가 사용자 상태를 복원했는지 |
+
+즉 `sessionStorage`, session cookie, server session은 이름만 비슷할 뿐 서로 다른 층이다. "`session`이란 단어가 보여서 같은 상자겠지"라고 읽으면 로그인 문제와 탭 상태 문제를 쉽게 섞는다.
+
+## Cache Storage는 무엇을 확인하나
 
 `Application > Cache Storage`는 "Service Worker나 앱 코드가 꺼내 쓸 수 있는 response entry가 있나"를 보여 준다.
 
@@ -162,8 +175,9 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 ## 흔한 오해와 함정
 
 - `Application > Cookies`에 값이 보여도 같은 실패 요청의 `Cookie` header는 비어 있을 수 있다.
-- `Local Storage`에 토큰이 보여도 브라우저는 그 값을 자동으로 보내지 않는다.
+- `Application > Local Storage`에 토큰이 보여도 같은 API 요청의 request `Authorization` header는 비어 있을 수 있다. 브라우저가 그 값을 자동으로 보내지 않기 때문이다.
 - `Session Storage`는 서버 session이 아니라 탭 범위 앱 상태다.
+- session cookie와 `sessionStorage`는 둘 다 이름에 `session`이 들어가지만, 하나는 cookie 수명/전송 규칙이고 다른 하나는 탭 저장소다.
 - `Cache Storage`에 entry가 있어도 이번 응답이 반드시 거기서 나온 것은 아니다.
 - Application 탭은 "저장 상태" 중심이고, Network 탭은 "이번 요청/응답에서 실제로 무슨 일이 있었나" 중심이다.
 - `304`나 `from memory cache`가 보여도 그건 로그인 유지 증거가 아니다. 인증 요청과 정적 파일 요청을 분리해서 봐야 한다.
@@ -173,7 +187,7 @@ Cache Storage = Service Worker 경로에서 쓸 수 있는 응답 상자
 | 보이는 증상 | 먼저 볼 저장소 | 바로 이어서 볼 곳 |
 |---|---|---|
 | "cookie는 저장된 것 같은데 요청에 안 실려요" | `Cookies` | 같은 요청의 `Request Headers > Cookie`, 그리고 [Application 탭에는 Cookie가 보이는데 Request `Cookie` 헤더는 비는 이유 미니 카드](./application-tab-vs-request-cookie-header-mini-card.md) |
-| "토큰은 있는데 API가 익명처럼 가요" | `Local Storage` | 같은 요청의 `Request Headers > Authorization` |
+| "`Application > Local Storage`에는 access token이 있는데 request `Authorization` header가 비어요" | `Local Storage` | 같은 요청의 `Request Headers > Authorization` |
 | "새 탭 열었더니 값이 사라졌어요" | `Session Storage` | 탭 단위 state인지, 서버 session인지 |
 | "Cache Storage에 있는데 왜 네트워크가 또 가요?" | `Cache Storage` | row의 `from ServiceWorker`, `memory cache`, `304` |
 
@@ -210,7 +224,7 @@ GET /app.js -> 304 Not Modified
 짧은 비교 예시:
 
 - `Cookies`에 session id가 있고 request `Cookie`도 있으면 저장/전송 단계는 통과한 것이다.
-- `Local Storage`에 access token이 있는데 request `Authorization`이 비면 프런트 코드 조립 경로를 먼저 의심한다.
+- `Application > Local Storage`에는 access token이 있는데 같은 API 요청의 request `Authorization` header가 비면 프런트 코드 조립 경로를 먼저 의심한다.
 - `Cache Storage`에 `/app.js`가 있어도 row가 `304`라면 지금 본 장면은 HTTP cache 재검증일 수 있다.
 
 ## 더 깊이 가려면

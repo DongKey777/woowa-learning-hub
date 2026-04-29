@@ -9,6 +9,7 @@
 - [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md)
 - [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md)
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
+- [Deadlock vs Lock Wait Timeout 입문 프라이머](./deadlock-vs-lock-wait-timeout-primer.md)
 - [3버킷 결정 트리 미니카드](./three-bucket-decision-tree-mini-card.md)
 - [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md)
 - [DuplicateKeyException 이후 Fresh-Read 재분류 미니 카드](./duplicate-key-fresh-read-classifier-mini-card.md)
@@ -86,6 +87,7 @@ retrieval-anchor-keywords: duplicate key vs lock timeout vs deadlock, duplicate 
 | 지금 막힌 질문 | 다음 문서 | 왜 여기로 가나 |
 |---|---|---|
 | "`duplicate key` 뒤 same payload / 다른 payload를 더 자세히 보고 싶다" | [MySQL Duplicate-Key Retry Handling Cheat Sheet](./mysql-duplicate-key-retry-handling-cheat-sheet.md) | duplicate loser가 `already exists` 안에서 replay와 conflict로 어떻게 갈리는지 본다 |
+| "`deadlock`과 `lock wait timeout` 차이만 먼저 한 장에서 보고 싶다" | [Deadlock vs Lock Wait Timeout 입문 프라이머](./deadlock-vs-lock-wait-timeout-primer.md) | lock 경로 안에서 `retryable`과 `busy`를 pairwise로 먼저 분리한다 |
 | "`lock timeout`을 왜 `already exists`로 보면 안 되지?" | [`lock timeout` != `already exists` 공통 오해 카드](./lock-timeout-not-already-exists-common-confusion-card.md) | `busy` 감각을 5줄로 더 짧게 고정한다 |
 | "`deadlock`과 `40001`을 같은 retryable로 묶는 이유?" | [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md) | `deadlock`과 `serialization failure`를 whole-transaction retry로 확장한다 |
 | "락이 왜 이렇게 오래 잡히는지부터 헷갈린다" | [트랜잭션 경계 체크리스트 카드](./transaction-boundary-external-io-checklist-card.md) | 긴 트랜잭션과 외부 I/O가 `busy` 신호를 키우는 원인을 먼저 본다 |

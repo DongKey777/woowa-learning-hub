@@ -4,20 +4,24 @@
 
 **난이도: 🟡 Intermediate**
 
-
 관련 문서:
 
-- [카테고리 README](./README.md)
 - [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)
+- [Outbound Notifier Mock Boundary Primer](./outbound-notifier-mock-boundary-primer.md)
+- [Repository Interface Contract Primer](./repository-interface-contract-primer.md)
+- [Repository, DAO, Entity](./repository-dao-entity.md)
+- [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
+- [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
+- [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
-- [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: repository fake design guide basics, repository fake design guide beginner, repository fake design guide intro, fake repository example, memory repository example, mock vs fake repository, 처음 repository fake, mock 대신 fake 왜, what is repository fake, beginner repository contract
+retrieval-anchor-keywords: repository fake design guide, repository fake intermediate, fake repository example, memory repository example, repository port contract, outbound port fake, mock vs fake repository, 처음 repository fake 다음, repository interface 다음 문서, mock 대신 fake 왜, what is repository fake, fake repository contract, service repository contract test, jpa 흉내 말고 계약 재현
 
-`Repository Interface Contract Primer`에서 "`service가 기대하는 저장 계약을 test에서는 어떻게 재현하지?`"까지 왔다면, 이 문서는 그 다음 한 걸음을 맡는다.
-반대로 아직 질문이 "`첫 failing test에서 fake와 mock 중 뭐부터 집어야 하지?`"라면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)로 먼저 내려가 결과 중심 선택 기준부터 짧게 잡는 편이 더 안전하다.
-반대로 질문이 `flush`, dirty checking, `cascade`, `Entity` 매핑 자체로 기울어 있으면 fake 설계보다 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)나 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)를 먼저 보는 편이 맞다.
+이 문서는 Beginner 입문서 다음 칸에 놓인 Intermediate 가이드다.
+`Repository Interface Contract Primer`에서 "`service가 기대하는 저장 계약을 test에서는 어떻게 재현하지?`"까지 왔다면 여기로 올라오면 된다.
+아직 질문이 "`첫 failing test에서 fake와 mock 중 뭐부터 집어야 하지?`"라면 [Fake vs Mock 첫 테스트 프라이머](./fake-vs-mock-first-test-primer.md)로 먼저 내려가 결과 중심 선택 기준부터 짧게 잡는 편이 더 안전하다.
+질문이 `flush`, dirty checking, `cascade`, `Entity` 매핑 자체로 기울어 있으면 fake 설계보다 [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)나 [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)를 먼저 보는 편이 맞다.
 <details>
 <summary>Table of Contents</summary>
 
@@ -31,18 +35,6 @@ retrieval-anchor-keywords: repository fake design guide basics, repository fake 
 - [기억할 기준](#기억할-기준)
 
 </details>
-
-> 관련 문서:
-> - [Software Engineering README: Repository Fake Design Guide](./README.md#repository-fake-design-guide)
-> - [Hexagonal Testing Seams Primer](./hexagonal-testing-seams-primer.md)
-> - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
-> - [Repository, DAO, Entity](./repository-dao-entity.md)
-> - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
-> - [Persistence Model Leakage Anti-Patterns](./persistence-model-leakage-anti-patterns.md)
-> - [Aggregate Persistence Mapping Pitfalls](./aggregate-persistence-mapping-pitfalls.md)
-> - [DDD, Hexagonal Architecture, Consistency Boundary](./ddd-hexagonal-consistency.md)
->
-> retrieval-anchor-keywords: repository fake design, repository fake design guide, repository fake, fake repository, in memory repository, fake outbound port, use case test repository fake, outbound port semantics, repository port contract, jpa leakage in tests, persistence detail leakage, dirty checking leakage, persistence context identity, detach copy fake, duplicate constraint fake, optimistic locking fake, explicit save semantics, hexagonal repository fake, fake vs jpa repository, repository fake should return domain object, repository fake snapshot copy
 
 ## 처음 3분 요약
 
@@ -232,7 +224,7 @@ void duplicate_order_number_is_rejected() {
 | beginner starter 적합도 | 높음 | 보조 수단 |
 
 - repository처럼 `상태를 저장하고 다시 읽는 경계`는 fake가 결과 중심 읽기에 유리하다.
-- notifier, event publisher처럼 `호출이 일 자체인 경계`는 mock/spy가 더 자연스럽다.
+- notifier, event publisher처럼 `호출이 일 자체인 경계`는 mock/spy가 더 자연스럽다. 이쪽은 저장 계약이 아니라 상호작용 계약을 읽는 문제라서 [Outbound Notifier Mock Boundary Primer](./outbound-notifier-mock-boundary-primer.md)로 따로 분리해 보는 편이 덜 헷갈린다.
 - 그래서 repository fake는 "mock보다 더 진짜 같아서"가 아니라, **현재 질문이 저장 계약 중심이라서** 선택하는 경우가 많다.
 
 ## 코드로 보기

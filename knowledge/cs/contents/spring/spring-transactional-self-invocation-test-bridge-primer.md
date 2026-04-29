@@ -7,6 +7,7 @@
 관련 문서:
 
 - [Spring 테스트 기초: @SpringBootTest부터 슬라이스 테스트까지](./spring-testing-basics.md)
+- [Spring Test Slice Scan Boundary 오해: `@WebMvcTest`, `@DataJpaTest`, custom test config는 full `@SpringBootTest`가 아니다](./spring-test-slice-scan-boundaries.md)
 - [Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기](./spring-self-call-verification-test-mini-guide.md)
 - [Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다](./spring-self-invocation-transactional-only-misconception-primer.md)
 - [@Transactional 기초: 트랜잭션 어노테이션이 하는 일](./spring-transactional-basics.md)
@@ -60,6 +61,33 @@ retrieval-anchor-keywords: transactional self invocation test, transactional sel
 - Bean이 없으면 먼저 test slice 문제다.
 - Bean은 있는데 transaction 동작이 이상하면 그다음이 프록시 문제다.
 - `assertSame`은 Bean 존재 힌트일 뿐, transaction 성공 증거는 아니다.
+
+## 처음 많이 섞는 두 문장
+
+같은 주문 기능 테스트에서도 아래 두 문장은 비슷해 보여서 자주 헷갈린다.
+
+| 학습자가 말하는 문장 | 실제 질문 | 먼저 고를 테스트/검증 |
+|---|---|---|
+| "`@WebMvcTest`인데 `OrderService`가 없어요" | service Bean을 이 테스트가 원래 띄우는가 | slice 선택 확인, 필요하면 `@MockBean` |
+| "`OrderService`는 있는데 `@Transactional`이 안 먹어요" | service 호출이 프록시 정문을 지났는가 | transaction active, rollback 결과 같은 behavior 확인 |
+
+안전한 순서는 늘 같다.
+
+1. service가 **있는지 없는지** 먼저 본다.
+2. service가 있으면 그다음에 **프록시를 탔는지** 본다.
+3. 그 뒤에야 `assertSame`, 로그, rollback 결과를 해석한다.
+
+## 같은 주문 예시로 1회전만 돌려 보면
+
+처음엔 용어보다 같은 `OrderService` 이름이 두 테스트에서 왜 다르게 보이는지만 잡아도 충분하다.
+
+| 테스트에서 보이는 첫 장면 | 여기서 바로 내릴 결론 | 더 정확한 해석 | 다음 행동 |
+|---|---|---|---|
+| `@WebMvcTest`에서 `OrderService`가 없다 | "`@Transactional`도 같이 안 먹나 보다" | 아직 아니다. 이 단계는 Bean을 띄우는 범위부터 다르다 | [Spring Test Slice Scan Boundary 오해](./spring-test-slice-scan-boundaries.md)로 돌아가 slice를 먼저 고른다 |
+| `@SpringBootTest`에서 `OrderService`는 있고 `assertSame`도 통과한다 | "그럼 transaction도 정상이다" | 아니다. identity 확인과 transaction behavior 확인은 다른 질문이다 | `transaction active`나 rollback 결과를 본다 |
+| `@SpringBootTest`에서 `OrderService`는 있는데 `this.placeOrder()` 내부 호출 후 rollback이 안 된다 | "테스트가 랜덤하게 실패하나?" | 대개 프록시를 우회한 self-invocation 가능성이 더 크다 | 호출을 다른 Bean으로 나누고 다시 behavior를 검증한다 |
+
+이 표가 말하는 핵심은 하나다. **Bean 존재 확인 -> 프록시 경로 확인 -> rollback/commit 결과 확인** 순서를 바꾸지 않는 편이 초급자에게 안전하다.
 
 ## 왜 `@Transactional`은 identity 테스트로 안 풀리나
 

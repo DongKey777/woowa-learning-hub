@@ -81,7 +81,7 @@ retrieval-anchor-keywords: object oriented core principles, oop big picture, jav
 | "재사용하려면 상속부터 해야 하나요?" | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) | 코드 재사용과 타입 관계를 분리해 본다 |
 
 한 줄 route로 줄이면 이렇다.
-**[Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) -> 이 문서 -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)**
+**[Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md) -> 이 문서 -> [Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)**
 
 처음 배우는데 여기서 바로 "디자인 패턴은 어디부터?"가 나오면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)를 붙여 본다. OOP 큰 그림에서 패턴으로 넘어갈 때도 **상속보다 조합 -> 패턴 기초** 순서를 먼저 고정해 주는 beginner route map이다.
 
@@ -345,7 +345,7 @@ Employee emp2 = new Employee("Alice", "design");
 | 상속을 쓰면 안 좋은 경우와 조합을 알고 싶다 | [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md) |
 | 객체가 책임을 나누고 협력한다는 설계 감각을 보고 싶다 | [객체지향 설계 기초](../../software-engineering/oop-design-basics.md) |
 
-핵심 route만 다시 적으면 **[Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)** 이다.
+핵심 route만 다시 적으면 **[Java 상속과 오버라이딩 기초](./java-inheritance-overriding-basics.md) -> [Java 추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)** 이다.
 
 ## 한 줄 정리
 

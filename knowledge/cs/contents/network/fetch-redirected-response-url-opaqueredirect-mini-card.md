@@ -7,6 +7,8 @@
 관련 문서:
 
 - [Network README](./README.md#fetch-response-redirected-vs-responseurl-vs-opaqueredirect-미니-카드)
+- [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
+- [Fetch `redirect: "error"` tiny card](./fetch-redirect-error-choice-card.md)
 - [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
 - [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)
@@ -93,6 +95,8 @@ retrieval-anchor-keywords: fetch redirected vs manual, response.redirected basic
 
 ## 더 깊이 가려면
 
+- `401 JSON`, `302 /login`, 숨은 login HTML `200`을 한 표에서 먼저 고르려면 [Fetch Auth Failure Chooser: `401 JSON` vs `302 /login` vs 숨은 Login HTML `200`](./fetch-auth-failure-401-json-vs-302-login-vs-hidden-login-html-200-chooser.md)
+- `redirect` 세 모드 중 "API 계약상 redirect가 오면 바로 실패시키는 편이 더 맞나?"를 따로 보고 싶으면 [Fetch `redirect: "error"` tiny card](./fetch-redirect-error-choice-card.md)
 - login redirect 전체 흐름과 `fetch redirect` 모드 비교는 [Login Redirect, Hidden `JSESSIONID`, `SavedRequest` 입문](./login-redirect-hidden-jsessionid-savedrequest-primer.md)
 - page 이동 자체가 redirect인지 SPA navigation인지 먼저 가르려면 [Redirect vs Forward vs SPA Router Navigation 입문](./redirect-vs-forward-vs-spa-navigation-basics.md)
 - login HTML `200`과 JSON API 성공 응답을 분리하려면 [SSR 뷰 렌더링 vs JSON API 응답 입문](./ssr-view-render-vs-json-api-response-basics.md)

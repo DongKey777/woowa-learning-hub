@@ -10,9 +10,10 @@
 - [카테고리 README](./README.md)
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 - [연결 입문 문서](../algorithm/backend-algorithm-starter-pack.md)
+- [느린 주기 작업 입문](./slow-periodic-task-primer.md)
 
 
-retrieval-anchor-keywords: timer vocabulary delay timeout deadline dueat bridge basics, timer vocabulary delay timeout deadline dueat bridge beginner, timer vocabulary delay timeout deadline dueat bridge intro, data structure basics, beginner data structure, 처음 배우는데 timer vocabulary delay timeout deadline dueat bridge, timer vocabulary delay timeout deadline dueat bridge 입문, timer vocabulary delay timeout deadline dueat bridge 기초, what is timer vocabulary delay timeout deadline dueat bridge, how to timer vocabulary delay timeout deadline dueat bridge
+retrieval-anchor-keywords: delay vs timeout vs deadline vs dueat, timeout이 뭐예요 scheduler, deadline이 뭐예요 queue, dueat이 뭐예요, delay timeout 차이, deadline dueat 차이, 처음 스케줄러 용어 헷갈려요, 타이머 용어 큰 그림, schedule delay vs timeout, timeout은 실패 규칙, dueat absolute time basics, deadline nanos basics
 > 관련 문서:
 > - [ScheduledExecutorService vs DelayQueue Bridge](./scheduledexecutorservice-vs-delayqueue-bridge.md)
 > - [DelayQueue Delayed Contract Primer](./delayqueue-delayed-contract-primer.md)

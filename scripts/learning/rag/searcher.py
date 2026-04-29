@@ -592,6 +592,32 @@ def _query_model_filter_sort_path_boosts(haystack: str) -> dict[str, float]:
     }
 
 
+def _query_model_beginner_entrypoint_path_boosts(haystack: str) -> dict[str, float]:
+    if not _contains_any(haystack, {"query model", "query service", "쿼리 모델", "쿼리 서비스"}):
+        return {}
+    if not _contains_any(
+        haystack,
+        {
+            "처음",
+            "입문",
+            "큰 그림",
+            "뭐야",
+            "뭐예요",
+            "왜",
+            "무슨 역할",
+            "what is",
+            "meaning",
+            "role",
+            "beginner",
+            "basics",
+        },
+    ):
+        return {}
+    return {
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md": 0.035,
+    }
+
+
 def _transaction_path_boosts(haystack: str, signal_tags: set[str]) -> dict[str, float]:
     if "projection_freshness" in signal_tags:
         return {}
@@ -1084,6 +1110,7 @@ def _contextual_signal_path_boosts(prompt: str, signals: list[dict]) -> dict[str
     for path_boosts in (
         _projection_path_boosts(haystack, signal_tags),
         _stateful_failover_path_boosts(haystack, signal_tags),
+        _query_model_beginner_entrypoint_path_boosts(haystack),
         _query_model_filter_sort_path_boosts(haystack),
         _transaction_path_boosts(haystack, signal_tags),
         _spring_framework_path_boosts(haystack, signal_tags),

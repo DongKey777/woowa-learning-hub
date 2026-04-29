@@ -8,6 +8,7 @@
 
 - [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md)
 - [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
+- [Deadlock vs Lock Wait Timeout 입문 프라이머](./deadlock-vs-lock-wait-timeout-primer.md)
 - [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - [UNIQUE vs Locking-Read Duplicate Primer](./unique-vs-locking-read-duplicate-primer.md)
 - [Connection Timeout vs Lock Timeout 비교 카드](./connection-timeout-vs-lock-timeout-card.md)
@@ -32,6 +33,7 @@ retrieval-anchor-keywords: lock timeout not already exists, lock timeout busy no
 
 ## 바로 이어서 볼 곳
 
+- `deadlock`과 `lock wait timeout`을 둘 다 락 경합 신호로 비교하고 싶으면 [Deadlock vs Lock Wait Timeout 입문 프라이머](./deadlock-vs-lock-wait-timeout-primer.md)
 - `busy`가 왜 기본은 fail fast이고, 언제 한 번만 짧게 retry할 수 있는지 보려면 [`busy`는 언제 즉시 실패하고, 언제 한 번만 짧게 재시도할까?](./busy-fail-fast-vs-one-short-retry-card.md)
 - duplicate 경로와 lock 경로를 한 장 표로 비교하려면 [Lock 예외와 Unique 예외 통합 미니 브리지](./lock-duplicate-three-bucket-mini-bridge.md)
 - `insert-if-absent`에서 `busy` / `retryable` / `already exists`를 같이 고정하려면 [Insert-if-Absent Retry Outcome Guide](./insert-if-absent-retry-outcome-guide.md)

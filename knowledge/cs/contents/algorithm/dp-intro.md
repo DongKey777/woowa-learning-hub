@@ -7,6 +7,7 @@
 관련 문서:
 
 - [알고리즘 기본](./basic.md)
+- [그리디 vs DP 결정 카드](./greedy-vs-dp-decision-card.md)
 - [그리디 알고리즘](./greedy.md)
 - [algorithm 카테고리 인덱스](./README.md)
 - [해시 테이블 기초](../data-structure/hash-table-basics.md)
@@ -58,6 +59,7 @@ DP:     dp[0]=0, dp[1]=1, dp[i]=dp[i-1]+dp[i-2] → n번 계산
 
 ## 더 깊이 가려면
 
+- 그리디 반례 신호와 DP 상태 정의 신호를 같이 보려면 [그리디 vs DP 결정 카드](./greedy-vs-dp-decision-card.md)
 - 탐욕 선택과 DP 선택의 트레이드오프는 [그리디 알고리즘](./greedy.md)
 - 알고리즘 기본 구조(분할 정복, 백트래킹 등)와의 비교는 [알고리즘 기본](./basic.md)
 

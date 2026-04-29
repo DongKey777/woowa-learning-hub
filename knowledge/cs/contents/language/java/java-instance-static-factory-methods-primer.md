@@ -9,6 +9,7 @@
 - [Language README](../README.md)
 - [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
 - [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
+- [생성자에서 값 객체 팩터리로 넘어가는 첫 브리지](./constructor-to-value-object-factory-bridge.md)
 - [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - [객체지향 핵심 원리](./object-oriented-core-principles.md)
 - [불변 객체와 방어적 복사](./immutable-objects-and-defensive-copying.md)
@@ -435,6 +436,7 @@ public final class EmailRules {
 ## 어떤 문서를 다음에 읽으면 좋은가
 
 - constructor와 인스턴스 메서드의 기본 흐름부터 다시 붙이고 싶다면 [Java 메서드와 생성자 실전 입문](./java-methods-constructors-practice-primer.md)
+- 생성자만 쓰다가 value object 검증/정규화 때문에 `of()` 이름이 왜 필요해지는지 보고 싶다면 [생성자에서 값 객체 팩터리로 넘어가는 첫 브리지](./constructor-to-value-object-factory-bridge.md)
 - `private`, 인스턴스 멤버, `static`, `final`의 기본 모델을 먼저 정리하고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 생성자 chaining과 `static`/instance 초기화 순서까지 이어서 보고 싶다면 [Java 생성자와 초기화 순서 입문](./java-constructors-initialization-order-basics.md)
 - 메시지 전달과 캡슐화 관점에서 "왜 객체에 메서드를 붙이는가"를 더 길게 읽고 싶다면 [객체지향 핵심 원리](./object-oriented-core-principles.md)

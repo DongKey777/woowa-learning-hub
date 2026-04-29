@@ -10,11 +10,12 @@
 - [string-intern-pool-pitfalls](./string-intern-pool-pitfalls.md)
 - [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
 - [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
-- [Hash Table Basics](../data-structure/hash-table-basics.md)
+- [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md)
+- [Hash Table Basics](../../data-structure/hash-table-basics.md)
 - [language 카테고리 인덱스](../README.md)
 - [Java 불변 객체와 방어적 복사 입문](./java-immutable-object-basics.md)
 
-retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, string equals beginner, 문자열 비교 방법, 문자열 비교 == equals 차이, 자바 문자열 비교 equals, string 왜 equals 써야 하나요, string == 왜 false, string 같은데 == false, 문자열 같은데 왜 false, 문자열 비교 왜 안돼요, 문자열 equals 뭐예요, string comparison what is, 자바 문자열 기초
+retrieval-anchor-keywords: java string basics, java string == vs equals, string comparison beginner, 문자열 비교 방법, 자바 문자열 비교 equals, string == 왜 false, 문자열 같은데 왜 false, 문자열 비교 왜 안돼요, 문자열 equals 뭐예요, 자바 문자열 기초, enum vs string beginner, dto string to enum boundary, 상태 문자열 enum 변환, enum 문자열 비교 헷갈림, status string payload 왜 바로 비교하면 안돼요
 
 ## 핵심 개념
 
@@ -42,8 +43,11 @@ Java의 `String`은 한 번 만들어지면 내용이 바뀌지 않는 **불변(
 | `"문자열 비교가 왜 안 돼요"` | 내용 비교면 `equals()` | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
 | `"String 같은데 왜 false예요"` | `==`가 객체 비교인지 먼저 본다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
 | `"String equals가 뭐예요"` | 문자열 값 비교 기본 도구다 | [Java Equality and Identity Basics](./java-equality-identity-basics.md) |
+| `"status가 String인데 enum처럼 비교해도 되나요"` | 외부 payload면 먼저 enum으로 변환한다 | [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md) |
 
 이 세 문장은 [Java Equality and Identity Basics](./java-equality-identity-basics.md)의 문자열 증상 표에서도 같은 표현으로 다시 이어진다. 여기서 `String` 로컬 규칙을 먼저 자르고, equality primer에서 참조형 일반 규칙으로 넓히는 양방향 브리지라고 생각하면 된다.
+
+문자열이 "상태 이름처럼 보이는 값"일 때도 바로 비교부터 들어가면 헷갈리기 쉽다. 예를 들어 DTO의 `"PAID"`나 `"P"`는 아직 `OrderStatus.PAID`가 아니라 외부 payload 문자열이다. 이 경우에는 문자열 비교 규칙을 알고 있더라도, 다음 단계에서는 [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md)처럼 "어디서 enum으로 올릴지"를 먼저 정해야 한다.
 
 ## 코드로 보는 예시
 
@@ -142,7 +146,8 @@ String result = sb.toString(); // "Hello, World"
 - "`문자열 비교가 왜 안 돼요`"에서 "`그럼 객체 비교 전체 규칙은 뭐예요`"로 확장하고 싶다면: [Java Equality and Identity Basics](./java-equality-identity-basics.md)
 - direct equality와 case-insensitive ordering을 분리해서 보고 싶다면 [`equalsIgnoreCase()` vs `CASE_INSENSITIVE_ORDER` Bridge](./equalsignorecase-vs-case-insensitive-order-bridge.md)
 - nullable `String` 정렬에서 `nullsLast`와 case-insensitive comparator를 함께 읽고 싶다면 [Nullable String Comparator Bridge](./nullable-string-comparator-bridge.md)
-- `"문자열도 결국 hash 기반 컬렉션에서 어떻게 비교되나?"`가 궁금하면: [Hash Table Basics](../data-structure/hash-table-basics.md)
+- `"PAID"` 같은 문자열이나 `"P"`, `"01"` 같은 외부 코드값을 언제 enum으로 올려야 하는지 궁금하면 [DTO boundary에서 문자열/코드값을 enum으로 넘기는 위치부터 잡기](./enum-string-boundary-bridge.md)
+- `"문자열도 결국 hash 기반 컬렉션에서 어떻게 비교되나?"`가 궁금하면: [Hash Table Basics](../../data-structure/hash-table-basics.md)
 
 ## 면접/시니어 질문 미리보기
 

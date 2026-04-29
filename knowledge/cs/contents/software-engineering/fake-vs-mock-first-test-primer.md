@@ -7,7 +7,9 @@
 관련 문서:
 
 - [테스트 전략 기초](./test-strategy-basics.md)
+- [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md)
 - [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md)
+- [Outbound Notifier Mock Boundary Primer](./outbound-notifier-mock-boundary-primer.md)
 - [Repository Fake Design Guide](./repository-fake-design-guide.md)
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 - [Spring 테스트 기초: `@SpringBootTest`부터 슬라이스 테스트까지](../spring/spring-testing-basics.md)
@@ -69,11 +71,12 @@ assertThatThrownBy(() -> service.place(command("ORDER-001")))
 
 이 테스트가 먼저 설명하는 것은 "`중복이면 실패한다`"다. 반면 mock repository로 시작하면 "`existsByOrderNumber()`를 호출했고 `save()`는 안 불렀다`"가 먼저 눈에 들어온다.
 
-반대로 "`주문이 성공하면 알림을 1번 보냈나`"를 확인하는 순간에는 mock/spy가 자연스럽다. 여기서는 결과 객체보다 `알림 전송 호출`이 바로 확인 대상이기 때문이다. 즉 같은 service 안에서도 repository 질문은 fake, notifier 질문은 mock으로 갈라질 수 있다.
+반대로 "`주문이 성공하면 알림을 1번 보냈나`"를 확인하는 순간에는 mock/spy가 자연스럽다. 여기서는 결과 객체보다 `알림 전송 호출`이 바로 확인 대상이기 때문이다. 즉 같은 service 안에서도 repository 질문은 fake, notifier 질문은 mock으로 갈라질 수 있다. 이 notifier 쪽 경계를 한 단계 더 짧게 보면 [Outbound Notifier Mock Boundary Primer](./outbound-notifier-mock-boundary-primer.md)가 바로 이어진다.
 
 ## 더 깊이 가려면
 
 - [테스트 전략 기초](./test-strategy-basics.md): 첫 failing test를 unit, slice, integration 중 어디에 둘지 먼저 고를 때
+- [Stub vs Spy 첫 테스트 프라이머](./stub-vs-spy-first-test-primer.md): 고정 반환 더블과 호출 기록 더블을 첫 테스트에서 어떻게 가를지 더 짧게 보고 싶을 때
 - [리팩토링과 첫 failing test 연결 브리지](./refactoring-first-failing-test-bridge.md): 리뷰 문장을 `질문 1개`로 줄이는 흐름이 먼저 필요할 때
 - [Repository Fake Design Guide](./repository-fake-design-guide.md): fake repository를 JPA clone이 아니라 port 계약으로 설계하는 법까지 이어 볼 때
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md): fake, stub, mock, spy 차이를 한 단계 더 정리하고 싶을 때

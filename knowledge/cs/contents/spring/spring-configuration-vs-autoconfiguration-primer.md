@@ -21,7 +21,7 @@
 
 - [우아코스 백엔드 CS 로드맵](../../JUNIOR-BACKEND-ROADMAP.md)
 
-retrieval-anchor-keywords: configuration vs autoconfiguration, @configuration @bean difference, component scan vs bean registration, spring configuration beginner, boot auto configuration beginner, 언제 @bean 써요, 언제 configuration 써요, configuration 뭐예요, auto configuration 뭐예요, 처음 spring 설정 헷갈, proxybeanmethods beginner, self-invocation internal call, self invocation vs parameter injection, @conditionalonmissingbean mental model, boot default bean registration
+retrieval-anchor-keywords: configuration vs autoconfiguration, spring configuration vs auto-configuration primer, @configuration @bean difference, component scan vs @bean vs auto-configuration, spring configuration beginner, 언제 @bean 써요, configuration 뭐예요, auto configuration 뭐예요, configuration 이랑 auto-configuration 차이 뭐예요, bean 은 내가 등록하는데 boot 는 왜 또 등록해요, 처음 spring 설정 헷갈, 처음 configuration bean auto-configuration 헷갈려요, spring bean 등록 방식 큰 그림, proxybeanmethods beginner, what is configuration vs autoconfiguration
 
 ## 이 문서 다음에 보면 좋은 문서
 

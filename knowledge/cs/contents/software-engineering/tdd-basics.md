@@ -7,13 +7,15 @@
 관련 문서:
 
 - [테스트 전략 기초](./test-strategy-basics.md)
+- [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md)
+- [트랜잭셔널 테스트 rollback vs commit 경계 카드](./transactional-test-rollback-vs-commit-boundary-card.md)
 - [리팩토링 기초](./refactoring-basics.md)
 - [리팩토링 커밋 분리 프라이머](./refactor-commit-split-primer.md)
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md)
 - [spring 테스트 기초](../spring/spring-testing-basics.md)
 - [software-engineering 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, tdd 사이클, beginner tdd, tdd example beginner, 처음 tdd 어떻게 시작해요, what is tdd basics, red green refactor example
+retrieval-anchor-keywords: tdd basics, test driven development 입문, red green refactor, tdd 처음 배우는데, tdd 왜 쓰나요, 테스트 먼저 작성, 단위 테스트 tdd, tdd 뭐예요, beginner tdd, 처음 tdd 어떻게 시작해요, what is tdd basics, tdd slice test app integration test, tdd 어디부터 테스트, tdd controller 말고 어디부터, tdd transaction test 언제
 
 ## 핵심 개념
 
@@ -103,11 +105,38 @@ public class OrderItem {
 
 ## 실무에서 쓰는 모습
 
-우아한형제들 미션에서 TDD를 연습할 때는 도메인 로직부터 시작한다. `OrderItem`의 금액 계산, 할인 적용 등 외부 의존이 없는 순수 도메인 로직을 TDD로 구현하면 사이클을 빠르게 돌릴 수 있다. DB나 HTTP가 연관된 부분은 통합 테스트로 별도 구성한다.
+우아한형제들 미션에서 TDD를 연습할 때는 도메인 로직부터 시작한다. `OrderItem`의 금액 계산, 할인 적용 등 외부 의존이 없는 순수 도메인 로직을 TDD로 구현하면 사이클을 빠르게 돌릴 수 있다. DB나 HTTP가 연관된 부분은 질문 성격에 맞춰 `slice test`나 `app integration test`로 별도 구성한다.
+
+## TDD에서 테스트 층을 같은 라벨로 고정하기
+
+초심자가 TDD를 배우면서 가장 자주 섞는 오해는 "`테스트 먼저`니까 controller, DB, 트랜잭션도 처음부터 한 번에 붙여야 하나?"다.
+여기서는 beginner primer들과 같은 라벨을 그대로 쓴다.
+
+| 지금 먼저 고정할 질문 | TDD의 첫 자리 | 왜 이 라벨이 안전한가 |
+|---|---|---|
+| 계산 규칙, 상태 전이, 예외 규칙이 맞나 | `unit test` | Red-Green-Refactor 사이클을 가장 짧게 돌릴 수 있다 |
+| 요청/응답, validation, JSON 번역이 맞나 | `slice test` | controller/web adapter 번역 책임만 따로 잠글 수 있다 |
+| 실제 트랜잭션, rollback, commit 뒤 효과가 맞나 | `app integration test` | 여러 빈 협력과 transaction 경계는 실제로 붙여 봐야 한다 |
+
+- 짧게 외우면 `규칙 -> unit test`, `adapter 번역 -> slice test`, `transaction/commit -> app integration test`다.
+- TDD 입문에서 기본 시작점은 거의 항상 `unit test`다.
+- "`AFTER_COMMIT`가 진짜 도나", "`rollback이 실제로 묶이나`" 같은 질문은 Red를 만들더라도 보통 `app integration test`로 올리는 편이 맞다.
+
+예를 들어 주문 기능을 TDD로 붙일 때도 이렇게 자르면 된다.
+
+| 장면 | 첫 failing test |
+|---|---|
+| 주문 금액은 0보다 커야 한다 | `unit test` |
+| `POST /orders`가 잘못된 JSON에 `400`을 준다 | `slice test` |
+| 주문 저장과 재고 차감이 같은 트랜잭션으로 롤백된다 | `app integration test` |
+
+즉 TDD의 핵심은 "모든 것을 테스트 먼저"가 아니라, **지금 바뀌는 질문에 맞는 가장 작은 테스트 층에서 Red를 만드는 것**이다.
 
 ## 더 깊이 가려면
 
-- [테스트 전략 기초](./test-strategy-basics.md) — TDD와 함께 쓰는 단위/통합 테스트 계층
+- [테스트 전략 기초](./test-strategy-basics.md) — TDD와 함께 쓰는 `unit test`/`slice test`/`app integration test` 기본 계층
+- [Inbound Adapter Test Slices Primer](./inbound-adapter-test-slices-primer.md) — controller/message handler를 `slice test`와 `app integration test` 중 어디에 둘지 더 좁혀 볼 때
+- [트랜잭셔널 테스트 rollback vs commit 경계 카드](./transactional-test-rollback-vs-commit-boundary-card.md) — "`flush()`와 commit, rollback 테스트가 어디까지 보이나"를 TDD 질문과 연결해서 볼 때
 - [테스트 전략과 테스트 더블](./testing-strategy-and-test-doubles.md) — Mock, Stub, Fake를 TDD에서 어떻게 쓰는지
 
 ## 면접/시니어 질문 미리보기

@@ -19,7 +19,7 @@
 - [의존성 주입 기초](../software-engineering/dependency-injection-basics.md)
 - [spring 카테고리 인덱스](./README.md)
 
-retrieval-anchor-keywords: spring boot autoconfiguration basics, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, starter 추가했는데 왜 바로 동작해요, starter 추가했는데 왜 bean 이 생겨요, starter 넣으면 왜 빈이 자동으로 등록돼요, spring boot 자동구성 뭐예요, spring boot 자동 설정 뭐예요, auto-configuration 입문, 자동 구성 큰 그림, 처음 배우는데 starter auto-configuration 헷갈려요, @springbootapplication 역할 입문, spring boot starter 뭐예요, 자동 빈 등록 입문, spring boot 설정 안 해도 되는 이유
+retrieval-anchor-keywords: spring boot autoconfiguration basics, spring boot auto-configuration primer, 스프링 부트 자동 설정 처음, spring starter 왜 동작해요, starter 추가했는데 왜 bean 이 생겨요, starter 넣으면 왜 빈이 자동으로 등록돼요, 설정 안 했는데 왜 bean이 생겨요, spring boot 자동구성 뭐예요, spring boot 자동 설정 뭐예요, 자동 구성 큰 그림, 자동 구성 처음 배우는데, 처음 배우는데 starter auto-configuration 헷갈려요, configuration 이랑 auto-configuration 차이 뭐예요, spring boot starter 뭐예요, what is spring boot autoconfiguration
 
 ## 핵심 개념
 

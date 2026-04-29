@@ -7,6 +7,8 @@
 관련 문서:
 
 - [language 카테고리 인덱스](../README.md)
+- [PATCH DTO에서 `missing` / `null` / 값 있음 을 구분하는 첫 입문](./patch-tri-state-field-primer.md)
+- [생성자에서 값 객체 팩터리로 넘어가는 첫 브리지](./constructor-to-value-object-factory-bridge.md)
 - [Record and Value Object Equality](./record-value-object-equality-basics.md)
 - [Domain-State Type Primer: `boolean`/`null` 대신 `enum`, `record`, 값 객체를 언제 쓸까](./domain-state-type-primer-enum-record-value-object.md)
 - [Money Value Object Basics](./money-value-object-basics.md)

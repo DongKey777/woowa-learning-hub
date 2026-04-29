@@ -12,7 +12,7 @@
 - [연결 입문 문서](../spring/spring-request-pipeline-bean-container-foundations-primer.md)
 
 
-retrieval-anchor-keywords: saveall sendall port smells safer alternatives basics, saveall sendall port smells safer alternatives beginner, saveall sendall port smells safer alternatives intro, software engineering basics, beginner software engineering, 처음 배우는데 saveall sendall port smells safer alternatives, saveall sendall port smells safer alternatives 입문, saveall sendall port smells safer alternatives 기초, what is saveall sendall port smells safer alternatives, how to saveall sendall port smells safer alternatives
+retrieval-anchor-keywords: saveall port smell basics, sendall port smell basics, saveall을 port에 올려도 되나요, sendall을 port에 올려도 되나요, bulk port vs per item port, 왜 saveall이 adapter detail인가요, list 받는 port 왜 위험해요, batch 성능 때문에 port를 bulk로 바꿔야 하나요, true bulk contract 뭐예요, saveall 언제 진짜 계약이 되나요, 처음 hexagonal bulk 헷갈림, beginner bulk port primer, per item invariant bulk smell, named bulk contract first question
 <details>
 <summary>Table of Contents</summary>
 

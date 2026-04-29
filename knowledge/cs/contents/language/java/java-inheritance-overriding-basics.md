@@ -290,7 +290,7 @@ field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 
 ## 어떤 문서를 다음에 읽으면 좋은가
 
-큰 그림 기준 기본 route는 **[객체지향 핵심 원리](./object-oriented-core-principles.md) -> 이 문서 -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)** 다.
+큰 그림 기준 기본 route는 **[객체지향 핵심 원리](./object-oriented-core-principles.md) -> 이 문서 -> [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md) -> [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md) -> [상속보다 조합 기초](../../design-pattern/composition-over-inheritance-basics.md)** 다.
 
 - 클래스, 객체, 인터페이스, 추상 클래스까지 OOP 지도를 먼저 잡고 싶다면 [Java 타입, 클래스, 객체, OOP 입문](./java-types-class-object-oop-basics.md)
 - method overloading과 method overriding의 차이만 짧게 다시 고정하고 싶다면 [Java 오버로딩 vs 오버라이딩 입문](./java-overloading-vs-overriding-beginner-primer.md)
@@ -298,6 +298,7 @@ field 접근과 static method는 같은 방식으로 dispatch되지 않는다.
 - `protected`, `final`, `static` 같은 멤버 규칙과 함께 상속 경계를 보고 싶다면 [Java 접근 제한자와 멤버 모델 입문](./java-access-modifiers-member-model-basics.md)
 - 처음 배우는데 "상속 다음 디자인 패턴은 어디부터?"가 붙으면 [디자인 패턴 카테고리 인덱스](../../design-pattern/README.md)에서 **상속보다 조합 -> 패턴 기초** route map부터 타면 된다
 - 추상 클래스와 인터페이스를 언제 나눠 써야 하는지 beginner 흐름으로 바로 보고 싶다면 [추상 클래스 vs 인터페이스 입문](./java-abstract-class-vs-interface-basics.md)
+- 추상 클래스와 인터페이스 기준이 머리로는 알겠는데 손으로 한 번 더 판별해 보고 싶다면 [추상 클래스 vs 인터페이스 Follow-up Quick Check](./abstract-class-vs-interface-follow-up-drill.md)
 
 ## 한 줄 정리
 
