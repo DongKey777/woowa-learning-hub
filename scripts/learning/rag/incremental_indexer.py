@@ -280,3 +280,92 @@ def merge_dense_arrays(
     # Sort by row_id ascending for deterministic on-disk layout
     order = np.argsort(merged_row_ids, kind="stable")
     return merged_embeddings[order], merged_row_ids[order]
+
+
+# ---------------------------------------------------------------------------
+# Atomic file write (POSIX rename semantics)
+# ---------------------------------------------------------------------------
+
+def atomic_save_dense_npz(
+    path,  # Path | str
+    embeddings,  # np.ndarray
+    row_ids,  # np.ndarray
+) -> None:
+    """Write a dense.npz atomically via tmp + rename.
+
+    Plan §P5.6 — incremental rebuilds must guarantee that an
+    interrupted write (SIGKILL, power loss, OOM) leaves the existing
+    index file untouched, not half-overwritten. POSIX rename(2) is
+    atomic within a filesystem so this pattern is the standard
+    "no torn writes" recipe.
+
+    Sequence:
+        1. np.savez to ``<path>.tmp`` (full write completes or fails
+           in isolation)
+        2. os.replace(tmp, path) — atomic rename on POSIX/macOS
+
+    On exception:
+        - tmp file is removed if it exists, so a failed call does
+          NOT leave orphan ``<path>.tmp`` files cluttering the index
+          directory.
+        - The original ``path`` is left untouched.
+    """
+    import numpy as np  # type: ignore
+    import os
+
+    final = Path(path)
+    final.parent.mkdir(parents=True, exist_ok=True)
+    # Use a tmp name in the same directory so rename stays within the
+    # filesystem. ``np.savez`` adds ``.npz`` if the path doesn't already
+    # end in it — passing an explicit ``.tmp.npz`` ensures the suffix
+    # is stable and predictable.
+    tmp = final.with_suffix(final.suffix + ".tmp")
+
+    try:
+        # np.savez writes to <tmp>.npz when given a path without that
+        # extension; passing a file-like object avoids the suffix surprise.
+        with open(tmp, "wb") as fh:
+            np.savez(fh, embeddings=embeddings, row_ids=row_ids)
+        os.replace(tmp, final)
+    except BaseException:
+        # Clean up tmp on any failure path (incl. KeyboardInterrupt)
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+        raise
+
+
+def atomic_save_chunk_hashes(
+    fingerprints: dict[str, str],
+    index_root: Path | str,
+) -> None:
+    """Write the chunk_hashes.json sidecar atomically.
+
+    Same tmp+rename pattern as atomic_save_dense_npz but for the JSON
+    sidecar so the dense.npz update and fingerprint sidecar update can
+    both be ordered: dense first, fingerprints last. If the process
+    crashes between, fingerprints stay stale → next incremental
+    rebuild will re-encode the affected chunks (safe over-work),
+    instead of incorrectly skipping them (data drift).
+    """
+    import os
+
+    final = Path(index_root) / CHUNK_HASHES_NAME
+    final.parent.mkdir(parents=True, exist_ok=True)
+    tmp = final.with_suffix(final.suffix + ".tmp")
+
+    try:
+        tmp.write_text(
+            json.dumps(fingerprints, ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        os.replace(tmp, final)
+    except BaseException:
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+        raise

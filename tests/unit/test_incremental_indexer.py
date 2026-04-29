@@ -404,3 +404,129 @@ def test_merge_dense_dtype_normalization():
     )
     assert merged_emb.dtype == np.float32
     assert merged_ids.dtype == np.int64
+
+
+# ---------------------------------------------------------------------------
+# atomic_save_dense_npz / atomic_save_chunk_hashes
+# ---------------------------------------------------------------------------
+
+def test_atomic_save_dense_creates_file_and_round_trips(tmp_path):
+    target = tmp_path / "dense.npz"
+    emb = np.array([[1.0, 0.0], [0.5, 0.5]], dtype="float32")
+    ids = np.array([10, 20], dtype="int64")
+
+    I.atomic_save_dense_npz(target, emb, ids)
+    assert target.exists()
+
+    with np.load(target) as data:
+        np.testing.assert_array_equal(data["embeddings"], emb)
+        np.testing.assert_array_equal(data["row_ids"], ids)
+
+
+def test_atomic_save_dense_overwrites_existing(tmp_path):
+    target = tmp_path / "dense.npz"
+    emb1 = np.zeros((1, 2), dtype="float32")
+    emb2 = np.ones((3, 2), dtype="float32")
+
+    I.atomic_save_dense_npz(target, emb1, np.array([1], dtype="int64"))
+    I.atomic_save_dense_npz(target, emb2, np.array([1, 2, 3], dtype="int64"))
+
+    with np.load(target) as data:
+        assert data["embeddings"].shape == (3, 2)
+        assert data["row_ids"].tolist() == [1, 2, 3]
+
+
+def test_atomic_save_dense_no_tmp_left_on_success(tmp_path):
+    target = tmp_path / "dense.npz"
+    I.atomic_save_dense_npz(
+        target,
+        np.zeros((1, 2), dtype="float32"),
+        np.array([1], dtype="int64"),
+    )
+    # Tmp variant should be cleaned up
+    assert not (tmp_path / "dense.npz.tmp").exists()
+
+
+def test_atomic_save_dense_creates_parent_dir(tmp_path):
+    nested = tmp_path / "a" / "b" / "c" / "dense.npz"
+    I.atomic_save_dense_npz(
+        nested,
+        np.zeros((1, 2), dtype="float32"),
+        np.array([1], dtype="int64"),
+    )
+    assert nested.exists()
+
+
+def test_atomic_save_dense_keeps_original_when_write_fails(tmp_path, monkeypatch):
+    """If np.savez raises mid-write, the original file should be
+    intact (atomic rename hasn't happened yet)."""
+    target = tmp_path / "dense.npz"
+    # First, write a known-good baseline
+    baseline = np.array([[1.0]], dtype="float32")
+    I.atomic_save_dense_npz(target, baseline, np.array([1], dtype="int64"))
+
+    # Now patch np.savez to raise mid-write
+    real_savez = np.savez
+
+    def boom(*args, **kwargs):
+        # Write enough so tmp file exists, then bail
+        real_savez(*args, **kwargs)
+        raise RuntimeError("simulated mid-write failure")
+
+    monkeypatch.setattr(np, "savez", boom)
+
+    with pytest.raises(RuntimeError, match="simulated"):
+        I.atomic_save_dense_npz(
+            target,
+            np.zeros((10, 1), dtype="float32"),
+            np.array(list(range(10)), dtype="int64"),
+        )
+
+    # Original file unchanged
+    with np.load(target) as data:
+        np.testing.assert_array_equal(data["embeddings"], baseline)
+
+    # No leftover tmp
+    assert not (tmp_path / "dense.npz.tmp").exists()
+
+
+def test_atomic_save_chunk_hashes_round_trips(tmp_path):
+    fps = {"a": "fp1", "b": "fp2"}
+    I.atomic_save_chunk_hashes(fps, tmp_path)
+
+    loaded = I.load_chunk_hashes(tmp_path)
+    assert loaded == fps
+    # No leftover tmp
+    assert not (tmp_path / (I.CHUNK_HASHES_NAME + ".tmp")).exists()
+
+
+def test_atomic_save_chunk_hashes_overwrites(tmp_path):
+    I.atomic_save_chunk_hashes({"a": "v1"}, tmp_path)
+    I.atomic_save_chunk_hashes({"a": "v2", "b": "v3"}, tmp_path)
+    loaded = I.load_chunk_hashes(tmp_path)
+    assert loaded == {"a": "v2", "b": "v3"}
+
+
+def test_atomic_save_chunk_hashes_keeps_original_on_failure(tmp_path, monkeypatch):
+    # Baseline
+    I.atomic_save_chunk_hashes({"keep": "me"}, tmp_path)
+
+    # Force write_text to fail
+    real_write_text = Path.write_text
+
+    def boom(self, *args, **kwargs):
+        if self.name.endswith(".tmp"):
+            real_write_text(self, *args, **kwargs)
+            raise IOError("simulated write failure")
+        return real_write_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", boom)
+
+    with pytest.raises(IOError, match="simulated"):
+        I.atomic_save_chunk_hashes({"new": "data"}, tmp_path)
+
+    # Original preserved
+    loaded = I.load_chunk_hashes(tmp_path)
+    assert loaded == {"keep": "me"}
+    # Tmp cleaned up
+    assert not (tmp_path / (I.CHUNK_HASHES_NAME + ".tmp")).exists()
