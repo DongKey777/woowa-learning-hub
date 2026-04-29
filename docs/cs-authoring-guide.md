@@ -159,6 +159,12 @@ Transaction, ACID, Commit, Rollback   # 4개뿐, 대문자, 너무 일반적
 
 워커는 자신의 target path 밖을 수정하지 않는다. Beginner가 이미 충분한 카테고리에서는 새 Beginner 문서를 반복 생성하지 말고 Intermediate bridge나 기존 문서 강화로 균형을 맞춘다.
 
+오개념 방지 규칙:
+- 버전/제품/프로토콜에 따라 달라지는 내용은 `항상`이라고 쓰지 말고 조건을 명시한다. 예: MySQL/InnoDB 기준, HTTP 캐시 설정 기준, Spring Security 기본 설정 기준.
+- 비유는 시작점으로만 쓴다. 비유가 더 이상 맞지 않는 지점을 한 문장으로 끊어준다.
+- Beginner 문서에는 예외를 모두 펼치지 말고, 핵심 규칙과 대표 예외를 분리한 뒤 deeper doc으로 연결한다.
+- content worker의 `next_candidates`는 같은 주제 자기복제를 막기 위해 필터링된다. 다음 후보는 현재 작업과 다른 각도를 가져야 하며 `balance-gap`, `intermediate`, `bridge`, `practice`, `accuracy`, `misconception`, `cross-category`, `retrieval` 중 하나 이상의 태그를 포함해야 한다.
+
 ---
 
 ## 9. 체크리스트 한 장
@@ -175,6 +181,7 @@ Transaction, ACID, Commit, Rollback   # 4개뿐, 대문자, 너무 일반적
 [ ] python3 scripts/lint_cs_authoring.py 통과 (FAIL 없음)
 [ ] python3 scripts/lint_cs_authoring.py --strict 통과 (WARN 없음)
 [ ] 문서 역할을 summary에 명시: entrypoint primer / bridge / practice drill / deep dive / playbook / recovery note
+[ ] 조건부 주장을 제품/버전/상황 기준으로 한정하고, 비유의 한계를 명시
 [ ] 카테고리 README 등록 또는 README QA follow-up 후보 남김
 ```
 

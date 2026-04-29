@@ -64,6 +64,32 @@ BEGINNER_FOUNDATION_TERMS = (
     "기초",
     "기본",
 )
+INTERMEDIATE_SIGNAL_TAGS = {
+    "intermediate",
+    "bridge",
+    "practice",
+    "application",
+    "comparison",
+}
+INTERMEDIATE_SIGNAL_TERMS = (
+    "intermediate",
+    "bridge",
+    "practice",
+    "application",
+    "comparison",
+    "trade-off",
+    "tradeoff",
+    "decision",
+    "applied",
+    "응용",
+    "연결",
+    "비교",
+    "선택",
+    "판단",
+)
+DIFFICULTY_RE = re.compile(r"\*\*난이도:\s*([^*]+)\*\*")
+CATEGORY_BEGINNER_CEILING = 0.50
+CATEGORY_INTERMEDIATE_FLOOR = 0.10
 
 
 def _utc_now() -> datetime:
@@ -126,6 +152,15 @@ def _is_beginner_focused(title: str, goal: str, tags: list[str]) -> bool:
     return _text_has_any(title, BEGINNER_SIGNAL_TERMS) or _text_has_any(goal, BEGINNER_SIGNAL_TERMS)
 
 
+def _is_intermediate_focused(title: str, goal: str, tags: list[str]) -> bool:
+    normalized_tags = {tag.strip().lower() for tag in tags if tag}
+    if normalized_tags & INTERMEDIATE_SIGNAL_TAGS:
+        return True
+    if normalized_tags & BEGINNER_SIGNAL_TAGS:
+        return False
+    return _text_has_any(title, INTERMEDIATE_SIGNAL_TERMS) or _text_has_any(goal, INTERMEDIATE_SIGNAL_TERMS)
+
+
 def _is_foundation_focused(title: str, goal: str, tags: list[str]) -> bool:
     normalized_tags = {tag.strip().lower() for tag in tags if tag}
     if normalized_tags & BEGINNER_SIGNAL_TAGS and (
@@ -148,12 +183,31 @@ def _normalize_candidate_tags(title: str, goal: str, tags: list[str]) -> list[st
             continue
         seen.add(cleaned)
         normalized.append(cleaned)
-    if _is_beginner_focused(title, goal, normalized):
+    is_beginner = _is_beginner_focused(title, goal, normalized)
+    is_intermediate = _is_intermediate_focused(title, goal, normalized)
+    if is_beginner and not is_intermediate:
         for tag in ("beginner", "primer"):
             if tag not in seen:
                 normalized.append(tag)
                 seen.add(tag)
+    if is_intermediate:
+        for tag in ("intermediate", "bridge"):
+            if tag not in seen:
+                normalized.append(tag)
+                seen.add(tag)
     return normalized
+
+
+def _normalize_difficulty_label(raw_label: str) -> str:
+    if "Beginner" in raw_label or "🟢" in raw_label:
+        return "Beginner"
+    if "Intermediate" in raw_label or "🟡" in raw_label:
+        return "Intermediate"
+    if "Advanced" in raw_label or "🔴" in raw_label:
+        return "Advanced"
+    if "Expert" in raw_label or "⚫" in raw_label or "🟣" in raw_label:
+        return "Expert"
+    return raw_label.strip() or "Unspecified"
 
 
 def _normalize_queue_profile(fleet_profile: str | None) -> str:
@@ -268,6 +322,54 @@ def _lane_has_beginner_template(lane: str) -> bool:
     )
 
 
+def _lane_content_prefixes(lane: str) -> tuple[str, ...]:
+    if lane == "language-java":
+        return ("language/",)
+    if lane == "data-structure":
+        return ("data-structure/", "algorithm/")
+    if lane in LANE_CATALOG and LANE_CATALOG[lane]["kind"] == "content":
+        return (f"{lane}/",)
+    return ()
+
+
+def _lane_difficulty_mix(lane: str) -> dict[str, int]:
+    prefixes = _lane_content_prefixes(lane)
+    counts: dict[str, int] = {}
+    if not prefixes or not KNOWLEDGE_CONTENTS_DIR.exists():
+        return counts
+    for path in KNOWLEDGE_CONTENTS_DIR.rglob("*.md"):
+        if path.name == "README.md":
+            continue
+        relpath = _relative_to_contents(path)
+        if not relpath.startswith(prefixes):
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        match = DIFFICULTY_RE.search(text)
+        difficulty = _normalize_difficulty_label(match.group(1)) if match else "Unspecified"
+        counts[difficulty] = counts.get(difficulty, 0) + 1
+    return counts
+
+
+def _template_difficulty(title: str, goal: str, tags: list[str]) -> str:
+    if _is_intermediate_focused(title, goal, tags):
+        return "Intermediate"
+    if _is_beginner_focused(title, goal, tags):
+        return "Beginner"
+    return "Advanced"
+
+
+def _preferred_template_difficulty(lane: str) -> str | None:
+    counts = _lane_difficulty_mix(lane)
+    total = sum(counts.values())
+    if total < 10:
+        return None
+    beginner_ratio = counts.get("Beginner", 0) / total
+    intermediate_ratio = counts.get("Intermediate", 0) / total
+    if beginner_ratio > CATEGORY_BEGINNER_CEILING or intermediate_ratio < CATEGORY_INTERMEDIATE_FLOOR:
+        return "Intermediate"
+    return None
+
+
 LANE_CATALOG: dict[str, dict[str, Any]] = {
     "database": {
         "kind": "content",
@@ -298,6 +400,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "goal": "Improve beginner explanations for joins, grouping, filtering order, and practical SQL reading before advanced engine-specific tuning topics.",
                 "tags": ["sql", "join", "group-by", "query-order", "beginner"],
             },
+            {
+                "title": "Database application bridge for mission code",
+                "goal": "Create intermediate bridges that connect SQL, transaction, index, and repository basics to concrete backend mission decisions without jumping into engine-internal deep dives.",
+                "tags": ["database", "sql", "transaction", "index", "repository", "intermediate", "bridge", "practice"],
+            },
         ],
     },
     "security": {
@@ -323,6 +430,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "title": "Identity lifecycle and provisioning basics",
                 "goal": "Make SCIM, account disable, role mapping drift, session revocation, and operator tooling easier for juniors to connect end-to-end.",
                 "tags": ["identity-lifecycle", "scim", "revocation", "roles", "beginner"],
+            },
+            {
+                "title": "Security application bridge for web backends",
+                "goal": "Build intermediate bridges from authentication, authorization, session, cookie, JWT, CORS, and CSRF basics to safe controller and API design choices.",
+                "tags": ["security", "authentication", "authorization", "session", "jwt", "intermediate", "bridge", "practice"],
             },
         ],
     },
@@ -350,6 +462,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "goal": "Clarify cache headers, CDN behavior, proxy/load-balancer roles, and common stale-data or timeout symptoms for juniors.",
                 "tags": ["cache", "cdn", "load-balancer", "proxy", "beginner"],
             },
+            {
+                "title": "Network troubleshooting bridge for backend missions",
+                "goal": "Add intermediate bridges that connect HTTP, browser DevTools, redirects, cookies, caching, timeout, retry, and idempotency basics to practical debugging decisions.",
+                "tags": ["network", "http", "browser", "timeout", "cache", "intermediate", "bridge", "practice"],
+            },
         ],
     },
     "system-design": {
@@ -375,6 +492,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "title": "Data pipeline and analytics foundations",
                 "goal": "Clarify basic event pipeline, replay, late data, and dashboard consistency concepts before advanced reconciliation UX topics.",
                 "tags": ["pipeline", "analytics", "late-data", "replay", "beginner"],
+            },
+            {
+                "title": "System design bridge for small backend services",
+                "goal": "Create intermediate bridges that connect cache, queue, consistency, idempotency, availability, and deployment basics to small but realistic backend architecture choices.",
+                "tags": ["system-design", "cache", "queue", "consistency", "availability", "intermediate", "bridge", "practice"],
             },
         ],
     },
@@ -402,6 +524,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "goal": "Strengthen intuition for socket, syscall, accept queue, interrupt, softirq, and kernel-user boundary concepts.",
                 "tags": ["socket", "syscall", "accept-queue", "interrupt", "kernel", "beginner"],
             },
+            {
+                "title": "Operating-system bridge for backend runtime symptoms",
+                "goal": "Add intermediate bridges from process/thread, memory, file descriptor, socket, I/O, and backpressure basics to concrete server-runtime debugging symptoms.",
+                "tags": ["operating-system", "thread", "memory", "io", "socket", "intermediate", "bridge", "practice"],
+            },
         ],
     },
     "spring": {
@@ -427,6 +554,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "title": "Spring security and web basics",
                 "goal": "Expand basic understanding of security filter chain, session policy, request cache, login/logout, and API vs browser differences.",
                 "tags": ["spring-security", "filter-chain", "session", "login", "beginner"],
+            },
+            {
+                "title": "Spring application bridge for Level 2 missions",
+                "goal": "Create intermediate bridges that connect DI, MVC binding, validation, transaction, repository, and test-slice basics to RoomEscape-style backend implementation choices.",
+                "tags": ["spring", "mvc", "transaction", "test", "roomescape", "intermediate", "bridge", "practice"],
             },
         ],
     },
@@ -454,6 +586,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "goal": "Expand pattern-level guidance for seams, dependency inversion, null object, specification, and refactoring-friendly design.",
                 "tags": ["testing", "refactoring", "dependency-inversion", "specification", "beginner"],
             },
+            {
+                "title": "Design-pattern decision bridge for mission code",
+                "goal": "Create intermediate bridges that help learners choose between strategy, factory, builder, repository, command-query, and event patterns without over-patterning small code.",
+                "tags": ["design-pattern", "strategy", "factory", "repository", "command-query", "intermediate", "bridge", "practice"],
+            },
         ],
     },
     "software-engineering": {
@@ -479,6 +616,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "title": "Observability and incident basics",
                 "goal": "Make logs, metrics, tracing, SLI/SLO, error budget, and incident review basics easier to learn before advanced governance topics.",
                 "tags": ["observability", "logging", "metrics", "sli", "incident", "beginner"],
+            },
+            {
+                "title": "Software-engineering practice bridge",
+                "goal": "Build intermediate bridges from readable code, testing, layering, refactoring, deployment, and observability basics to concrete review and delivery decisions.",
+                "tags": ["software-engineering", "testing", "layering", "refactoring", "delivery", "intermediate", "bridge", "practice"],
             },
         ],
     },
@@ -506,6 +648,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "goal": "Improve foundation docs for threads, synchronized, volatile, executor basics, CompletableFuture basics, and memory model intuition.",
                 "tags": ["thread", "synchronized", "volatile", "executor", "memory-model", "beginner"],
             },
+            {
+                "title": "Java application bridge for backend mission code",
+                "goal": "Create intermediate bridges that connect object model, equality, collections, optional/enum/null handling, exceptions, and concurrency basics to mission-code decisions.",
+                "tags": ["java", "collections", "equals-hashcode", "optional", "concurrency", "intermediate", "bridge", "practice"],
+            },
         ],
     },
     "data-structure": {
@@ -526,6 +673,11 @@ LANE_CATALOG: dict[str, dict[str, Any]] = {
                 "title": "Practical structure choice basics",
                 "goal": "Clarify when to choose map vs set vs queue vs priority queue vs trie vs bitmap from a junior engineer's point of view.",
                 "tags": ["selection", "map", "set", "priority-queue", "trie", "bitmap", "beginner"],
+            },
+            {
+                "title": "Algorithm and data-structure practice bridge",
+                "goal": "Create intermediate practice bridges that connect Big-O, BFS/DFS, binary search, heap, tree, map/set, and graph basics to small backend-style problem choices.",
+                "tags": ["algorithm", "data-structure", "bfs", "binary-search", "heap", "intermediate", "bridge", "practice"],
             },
         ],
     },
@@ -1007,17 +1159,21 @@ class Orchestrator:
             and _matches_fleet_profile(item, fleet_profile)
         ]
         recent = completed_titles[-RECENT_COMPLETION_WINDOW:]
+        preferred_difficulty = None if require_beginner else _preferred_template_difficulty(lane)
         best_template = templates[0]
         best_score = None
         for idx, template in enumerate(templates):
             base_title = _normalize_title(template["title"])
+            tags = list(template.get("tags", []))
             is_beginner = _is_beginner_focused(
                 template["title"],
                 template["goal"],
-                list(template.get("tags", [])),
+                tags,
             )
+            template_difficulty = _template_difficulty(template["title"], template["goal"], tags)
             score = (
                 1 if require_beginner and not is_beginner else 0,
+                0 if preferred_difficulty is None or template_difficulty == preferred_difficulty else 1,
                 100 if base_title in live_titles else 0,
                 recent.count(base_title),
                 0 if is_beginner else 1,

@@ -114,7 +114,7 @@ bin/orchestrator fleet-status --profile expansion60
 
 The `expansion60` fleet mixes 2 curriculum workers, 24 content workers, 22 QA workers, 8 RAG workers, and 4 ops workers. It is designed for high throughput without treating all workers as writers: content scopes are narrower, README registration is handled by QA workers, and singleton RAG mutation surfaces are owned by exactly one worker each.
 
-The expansion profiles are now balance-aware. Worker prompts include a live corpus distribution snapshot and should choose the right document role for the gap: Beginner entrypoint, Intermediate bridge/practice, Advanced deep dive, playbook, or recovery note. Once a category has enough Beginner entrypoints, new work should usually add Intermediate bridges or strengthen existing docs instead of creating another primer.
+The expansion profiles are now balance-aware and misconception-aware. Worker prompts include a live corpus distribution snapshot and should choose the right document role for the gap: Beginner entrypoint, Intermediate bridge/practice, Advanced deep dive, playbook, or recovery note. Once a category has enough Beginner entrypoints, new work should usually add Intermediate bridges or strengthen existing docs instead of creating another primer. Product/version/protocol-dependent claims must be qualified instead of taught as universal rules.
 
 Queue ownership is profile-isolated. Legacy items without `fleet_profile` are treated as `quality`, while expansion-created items carry `fleet_profile=expansion` or `fleet_profile=expansion60`. An expansion worker must not claim legacy `worker-suggestion:runtime-qa-*` pending items; those remain for the quality fleet.
 

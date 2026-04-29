@@ -59,8 +59,8 @@ This prevents the expansion fleet from draining old QA-repair pending work. If s
 | Group | Count | Purpose |
 |---|---:|---|
 | Curriculum | 2 | Keep Level 2, RoomEscape Admin, learner-profile, and module-gap priorities explicit. |
-| Content | 24 | Write focused Beginner/Junior docs across Spring, Network/Web, Database, Java, Algorithm/Data Structure, and Software Engineering. |
-| QA | 22 | Review beginner scope, symptom anchors, cross-category bridges, duplicate taxonomy, README registration, and code density. |
+| Content | 24 | Write balanced Beginner/Intermediate docs across Spring, Network/Web, Database, Java, Algorithm/Data Structure, Software Engineering, Operating System, Security, Design Pattern, and System Design. |
+| QA | 22 | Review learning-level balance, misconception risk, symptom anchors, cross-category bridges, duplicate taxonomy, README registration, and code density. |
 | RAG | 8 | Evaluate targeted beginner queries, maintain the single signal-rules mutator and single golden-fixture mutator, and run router/index smoke checks. |
 | Ops | 4 | Govern queue growth, watch write-scope contention, handle index readiness, and run release gates. |
 
@@ -99,6 +99,8 @@ Examples:
 - A Beginner primer is not ready until it satisfies the authoring contract: H1, `> 한 줄 요약`, exact difficulty, `관련 문서:` with at least three bullets, 8..15 lowercase `retrieval-anchor-keywords`, H2 bodies under 1600 characters, and final `## 한 줄 정리`.
 - Expansion content is not ready until it fits the corpus balance target. If the category is still below the Beginner floor, prefer an entrypoint primer; if the category is already Beginner-saturated, prefer an Intermediate bridge, practice drill, comparison card, or targeted strengthening patch.
 - New content summaries must name the document role: `entrypoint primer`, `bridge`, `practice drill`, `deep dive`, `playbook`, or `recovery note`.
+- Accuracy beats coverage. Workers must qualify product/version/protocol-dependent claims, separate usual behavior from guarantees, and avoid teaching with analogies that hide important caveats.
+- Content-worker `next_candidates` are anti-drift filtered. A follow-up candidate must add a new angle and carry at least one balance/quality tag such as `balance-gap`, `intermediate`, `bridge`, `practice`, `accuracy`, `misconception`, `cross-category`, or `retrieval`.
 - Golden fixtures and signal rules are singleton surfaces.
 - Release is not ready until link checks, authoring lint, RAG unit/golden tests, and `bin/cs-index-build` are green.
 - Expansion content is not ready until it is discoverable: README registration, non-duplicate topic choice, symptom-style anchors, and a targeted RAG query/golden candidate must be considered by the paired RAG/QA workers.

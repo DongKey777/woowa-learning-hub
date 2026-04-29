@@ -235,6 +235,26 @@ class OrchestratorTest(unittest.TestCase):
         self.assertIn("curriculum-foundation", java_item["tags"])
         self.assertGreaterEqual(int(java_item["priority"]), 100)
 
+    def test_choose_template_prefers_intermediate_when_lane_needs_bridge_layer(self) -> None:
+        orchestrator = self._make_orchestrator()
+        with mock.patch.object(
+            orchestrator_module,
+            "_lane_difficulty_mix",
+            return_value={"Beginner": 60, "Intermediate": 3, "Advanced": 40},
+        ):
+            template = orchestrator._choose_template("database", [], fleet_profile="expansion60")
+        self.assertIn("intermediate", template["tags"])
+        self.assertIn("bridge", template["tags"])
+
+    def test_intermediate_candidate_tags_are_normalized(self) -> None:
+        tags = orchestrator_module._normalize_candidate_tags(
+            "Database application bridge",
+            "Connect transaction basics to mission-code decisions",
+            ["database"],
+        )
+        self.assertIn("intermediate", tags)
+        self.assertIn("bridge", tags)
+
     def test_pid_alive_treats_permission_error_as_alive(self) -> None:
         with mock.patch.object(orchestrator_module.os, "kill", side_effect=PermissionError):
             self.assertTrue(orchestrator_module._pid_alive(12345))
@@ -284,6 +304,7 @@ class FleetSpecTest(unittest.TestCase):
         self.assertTrue(content_workers)
         self.assertTrue(all("difficulty_balance" in entry["quality_gates"] for entry in content_workers))
         self.assertTrue(all("category_balance" in entry["quality_gates"] for entry in content_workers))
+        self.assertTrue(all("misconception_guard" in entry["quality_gates"] for entry in content_workers))
 
     def test_expansion_profile_lookup_finds_expansion_workers(self) -> None:
         profile = _profile_for_worker("expansion-spring-mvc-roomescape", "spring", "expansion")
@@ -319,6 +340,17 @@ class FleetSpecTest(unittest.TestCase):
         self.assertTrue(all(entry["name"].startswith("expansion60-") for entry in EXPANSION60_FLEET))
         self.assertTrue(_fleet_can_enqueue("expansion60"))
 
+    def test_expansion60_content_workers_cover_balance_gap_categories(self) -> None:
+        content_lanes = {entry["lane"] for entry in EXPANSION60_FLEET if entry["role"] == "content"}
+        self.assertTrue(
+            {
+                "operating-system",
+                "security",
+                "design-pattern",
+                "system-design",
+            }.issubset(content_lanes)
+        )
+
     def test_expansion60_worker_prompt_includes_balance_snapshot(self) -> None:
         prompt = ow._worker_prompt(
             "expansion60-database-jdbc",
@@ -336,6 +368,35 @@ class FleetSpecTest(unittest.TestCase):
         self.assertIn("Do not keep expanding Beginner docs blindly", prompt)
         self.assertIn("entrypoint primer, bridge, practice drill, deep dive, playbook, or recovery note", prompt)
         self.assertIn("difficulty_balance", prompt)
+        self.assertIn("misconception_guard", prompt)
+        self.assertIn("separate \"usually\" from \"guaranteed\"", prompt)
+
+    def test_expansion_content_next_candidates_are_anti_drift_filtered(self) -> None:
+        profile = _profile_for_worker("expansion60-database-jdbc", "database", "expansion60")
+        item = {
+            "title": "JDBC first read",
+            "goal": "Explain JDBC basics",
+            "tags": ["jdbc", "database", "beginner"],
+        }
+        candidates = [
+            {
+                "title": "Another JDBC beginner primer",
+                "goal": "Repeat the same JDBC basics",
+                "tags": ["jdbc", "database", "beginner"],
+            },
+            {
+                "title": "JDBC transaction bridge",
+                "goal": "Connect JDBC basics to transaction boundary decisions",
+                "tags": ["jdbc", "transaction", "intermediate", "bridge"],
+            },
+            {
+                "title": "Database README registration",
+                "goal": "Register the learning path in the README",
+                "tags": ["database", "readme"],
+            },
+        ]
+        filtered = ow._anti_drift_next_candidates(item, candidates, profile)
+        self.assertEqual([candidate["title"] for candidate in filtered], ["JDBC transaction bridge"])
 
     def test_expansion60_content_workers_use_granular_non_readme_scopes(self) -> None:
         content_workers = [entry for entry in EXPANSION60_FLEET if entry["role"] == "content"]

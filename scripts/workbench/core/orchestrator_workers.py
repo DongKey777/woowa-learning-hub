@@ -40,6 +40,29 @@ DIFFICULTY_BALANCE_TARGETS = {
 CATEGORY_BEGINNER_FLOOR = 0.35
 CATEGORY_BEGINNER_CEILING = 0.50
 CATEGORY_INTERMEDIATE_FLOOR = 0.10
+ANTI_DRIFT_NEXT_CANDIDATE_TAGS = {
+    "accuracy",
+    "advanced",
+    "balance-gap",
+    "bridge",
+    "cross-category",
+    "deep-dive",
+    "intermediate",
+    "misconception",
+    "practice",
+    "qa",
+    "recovery",
+    "retrieval",
+}
+GENERIC_DRIFT_TAGS = {
+    "beginner",
+    "basics",
+    "foundation",
+    "foundations",
+    "junior",
+    "primer",
+    "woowacourse-backend",
+}
 
 WORKER_PROFILES: list[dict[str, Any]] = [
     {
@@ -689,12 +712,14 @@ def _default_expansion_gates(role: str) -> list[str]:
             "authoring_lint",
             "difficulty_balance",
             "category_balance",
+            "misconception_guard",
+            "context_qualified_claims",
             "readme_registration",
             "duplicate_topic_check",
             "targeted_rag_query",
         ]
     if role == "qa":
-        return ["difficulty_balance", "beginner_first", "symptom_phrase_anchors", "cross_category_bridge"]
+        return ["difficulty_balance", "misconception_guard", "beginner_first", "symptom_phrase_anchors", "cross_category_bridge"]
     if role == "rag":
         return ["beginner_query_precision", "golden_fixture_contract", "unit_regression"]
     if role == "ops":
@@ -795,13 +820,13 @@ EXPANSION60_FLEET: list[dict[str, Any]] = [
     _expansion60_profile("expansion60-spring-di-bean", "spring", "content", "expand", ["spring", "di", "bean", "ioc", "component-scan"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:di-bean"], can_enqueue=True),
     _expansion60_profile("expansion60-spring-mvc-binding", "spring", "content", "expand", ["spring-mvc", "controller", "binding", "requestbody", "modelattribute"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:mvc-binding"], can_enqueue=True),
     _expansion60_profile("expansion60-spring-validation-error", "spring", "content", "expand", ["validation", "bindingresult", "exception", "problemdetail", "400"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:validation-error"], can_enqueue=True),
-    _expansion60_profile("expansion60-spring-security-admin", "spring", "content", "expand", ["security", "admin", "302", "403", "session", "savedrequest"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:security-admin"], can_enqueue=True),
+    _expansion60_profile("expansion60-security-session-auth", "security", "content", "expand", ["security", "authentication", "authorization", "session", "jwt", "csrf"], ["knowledge/cs/contents/security/**"], write_scopes=["expansion60:content:security:session-auth"], can_enqueue=True),
     _expansion60_profile("expansion60-spring-transaction-aop", "spring", "content", "expand", ["transaction", "transactional", "aop", "proxy", "self-invocation"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:transaction-aop"], can_enqueue=True),
     _expansion60_profile("expansion60-spring-test-slice", "spring", "content", "expand", ["spring-test", "slice", "mockmvc", "test", "profile"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:test-slice"], can_enqueue=True),
-    _expansion60_profile("expansion60-spring-roomescape-flow", "spring", "content", "expand", ["roomescape", "request-flow", "admin", "controller", "service"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:roomescape-flow"], can_enqueue=True),
+    _expansion60_profile("expansion60-system-design-backend-foundations", "system-design", "content", "expand", ["system-design", "cache", "queue", "consistency", "idempotency", "availability"], ["knowledge/cs/contents/system-design/**"], write_scopes=["expansion60:content:system-design:backend-foundations"], can_enqueue=True),
     _expansion60_profile("expansion60-network-http-status", "network", "content", "expand", ["http", "status-code", "redirect", "prg", "401", "403"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:http-status"], can_enqueue=True),
     _expansion60_profile("expansion60-network-browser-devtools", "network", "content", "expand", ["browser", "devtools", "waterfall", "cache", "application"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:browser-devtools"], can_enqueue=True),
-    _expansion60_profile("expansion60-network-cookie-session-cache", "network", "content", "expand", ["cookie", "session", "cache", "localstorage", "storage"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:cookie-session-cache"], can_enqueue=True),
+    _expansion60_profile("expansion60-operating-system-runtime-io", "operating-system", "content", "expand", ["operating-system", "process", "thread", "memory", "io", "backpressure"], ["knowledge/cs/contents/operating-system/**"], write_scopes=["expansion60:content:operating-system:runtime-io"], can_enqueue=True),
     _expansion60_profile("expansion60-network-api-browser-boundary", "network", "content", "expand", ["api", "browser", "json", "html", "redirect"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:api-browser-boundary"], can_enqueue=True),
     _expansion60_profile("expansion60-database-jdbc", "database", "content", "expand", ["jdbc", "sql", "datasource", "connection"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jdbc"], can_enqueue=True),
     _expansion60_profile("expansion60-database-jpa-repository", "database", "content", "expand", ["jpa", "repository", "entity", "dao", "mapper"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jpa-repository"], can_enqueue=True),
@@ -810,32 +835,32 @@ EXPANSION60_FLEET: list[dict[str, Any]] = [
     _expansion60_profile("expansion60-java-object-model", "language-java", "content", "expand", ["java", "object", "reference", "memory", "class"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:object-model"], can_enqueue=True),
     _expansion60_profile("expansion60-java-equality-hashcode", "language-java", "content", "expand", ["equals", "hashcode", "identity", "value", "set"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:equality-hashcode"], can_enqueue=True),
     _expansion60_profile("expansion60-java-collections-map-set", "language-java", "content", "expand", ["collections", "map", "set", "list", "queue"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:collections-map-set"], can_enqueue=True),
-    _expansion60_profile("expansion60-java-optional-enum-null", "language-java", "content", "expand", ["optional", "enum", "null", "state", "value-object"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:optional-enum-null"], can_enqueue=True),
+    _expansion60_profile("expansion60-design-pattern-boundary-patterns", "design-pattern", "content", "expand", ["design-pattern", "strategy", "factory", "repository", "command-query", "event"], ["knowledge/cs/contents/design-pattern/**"], write_scopes=["expansion60:content:design-pattern:boundary-patterns"], can_enqueue=True),
     _expansion60_profile("expansion60-algo-bfs-dfs-graph", "data-structure", "content", "expand", ["algorithm", "bfs", "dfs", "graph", "visited"], ["knowledge/cs/contents/algorithm/**"], write_scopes=["expansion60:content:algorithm:bfs-dfs-graph"], can_enqueue=True),
     _expansion60_profile("expansion60-ds-queue-deque-map", "data-structure", "content", "expand", ["queue", "deque", "map", "set", "treemap"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:queue-deque-map"], can_enqueue=True),
     _expansion60_profile("expansion60-ds-tree-heap-unionfind", "data-structure", "content", "expand", ["tree", "heap", "union-find", "priority-queue"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:tree-heap-unionfind"], can_enqueue=True),
     _expansion60_profile("expansion60-se-layering-dto-contract", "software-engineering", "content", "expand", ["layering", "dto", "contract", "service", "repository"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:layering-dto-contract"], can_enqueue=True),
     _expansion60_profile("expansion60-se-testing-refactoring", "software-engineering", "content", "expand", ["testing", "refactoring", "readable-code", "tdd"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:testing-refactoring"], can_enqueue=True),
     _expansion60_profile("expansion60-qa-spring-di-bean", "qa-content-spring", "qa", "fix", ["spring", "di", "bean", "ioc"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:di-bean"]),
-    _expansion60_profile("expansion60-qa-spring-mvc-binding", "qa-content-spring", "qa", "fix", ["spring-mvc", "binding", "controller"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:mvc-binding"]),
-    _expansion60_profile("expansion60-qa-spring-security-admin", "qa-content-spring", "qa", "fix", ["security", "admin", "302", "403"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:security-admin"]),
+    _expansion60_profile("expansion60-qa-system-design-backend-foundations", "qa-content-system-design", "qa", "fix", ["system-design", "cache", "queue", "consistency"], ["knowledge/cs/contents/system-design/**"], write_scopes=["expansion60:content:system-design:backend-foundations"]),
+    _expansion60_profile("expansion60-qa-security-session-auth", "qa-content-security", "qa", "fix", ["security", "authentication", "authorization", "session"], ["knowledge/cs/contents/security/**"], write_scopes=["expansion60:content:security:session-auth"]),
     _expansion60_profile("expansion60-qa-spring-transaction-test", "qa-content-spring", "qa", "fix", ["transaction", "aop", "test", "slice"], ["knowledge/cs/contents/spring/**"], write_scopes=["expansion60:content:spring:transaction-aop", "expansion60:content:spring:test-slice"]),
     _expansion60_profile("expansion60-qa-network-status-redirect", "qa-content-network", "qa", "fix", ["http", "status", "redirect", "prg"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:http-status"]),
-    _expansion60_profile("expansion60-qa-network-browser-storage", "qa-content-network", "qa", "fix", ["browser", "devtools", "cookie", "session", "cache"], ["knowledge/cs/contents/network/**"], write_scopes=["expansion60:content:network:browser-devtools", "expansion60:content:network:cookie-session-cache"]),
+    _expansion60_profile("expansion60-qa-operating-system-runtime-io", "qa-content-operating-system", "qa", "fix", ["operating-system", "process", "thread", "io"], ["knowledge/cs/contents/operating-system/**"], write_scopes=["expansion60:content:operating-system:runtime-io"]),
     _expansion60_profile("expansion60-qa-database-jdbc-jpa", "qa-content-database", "qa", "fix", ["jdbc", "jpa", "repository", "entity"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:jdbc", "expansion60:content:database:jpa-repository"]),
     _expansion60_profile("expansion60-qa-database-transaction-index", "qa-content-database", "qa", "fix", ["transaction", "lock", "index", "explain"], ["knowledge/cs/contents/database/**"], write_scopes=["expansion60:content:database:transaction-lock", "expansion60:content:database:index-explain"]),
     _expansion60_profile("expansion60-qa-java-object-equality", "qa-content-language-java", "qa", "fix", ["java", "object", "equals", "hashcode"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:object-model", "expansion60:content:language-java:equality-hashcode"]),
-    _expansion60_profile("expansion60-qa-java-collections-null", "qa-content-language-java", "qa", "fix", ["collections", "optional", "enum", "null"], ["knowledge/cs/contents/language/java/**"], write_scopes=["expansion60:content:language-java:collections-map-set", "expansion60:content:language-java:optional-enum-null"]),
+    _expansion60_profile("expansion60-qa-design-pattern-boundary-patterns", "qa-content-design-pattern", "qa", "fix", ["design-pattern", "strategy", "factory", "repository"], ["knowledge/cs/contents/design-pattern/**"], write_scopes=["expansion60:content:design-pattern:boundary-patterns"]),
     _expansion60_profile("expansion60-qa-algorithm-graph", "qa-content-data-structure", "qa", "fix", ["algorithm", "bfs", "dfs", "graph"], ["knowledge/cs/contents/algorithm/**"], write_scopes=["expansion60:content:algorithm:bfs-dfs-graph"]),
     _expansion60_profile("expansion60-qa-ds-map-tree", "qa-content-data-structure", "qa", "fix", ["queue", "map", "treemap", "heap", "union-find"], ["knowledge/cs/contents/data-structure/**"], write_scopes=["expansion60:content:data-structure:queue-deque-map", "expansion60:content:data-structure:tree-heap-unionfind"]),
     _expansion60_profile("expansion60-qa-se-layering-testing", "qa-content-software-engineering", "qa", "fix", ["layering", "dto", "testing", "refactoring"], ["knowledge/cs/contents/software-engineering/**"], write_scopes=["expansion60:content:software-engineering:layering-dto-contract", "expansion60:content:software-engineering:testing-refactoring"]),
-    _expansion60_profile("expansion60-qa-readme-spring-network", "qa-link", "qa", "script", ["readme", "registration", "spring", "network"], ["knowledge/cs/contents/spring/README.md", "knowledge/cs/contents/network/README.md"], write_scopes=["expansion60:readme:spring", "expansion60:readme:network"]),
+    _expansion60_profile("expansion60-qa-readme-web-runtime", "qa-link", "qa", "script", ["readme", "registration", "spring", "network", "security", "operating-system"], ["knowledge/cs/contents/spring/README.md", "knowledge/cs/contents/network/README.md", "knowledge/cs/contents/security/README.md", "knowledge/cs/contents/operating-system/README.md"], write_scopes=["expansion60:readme:spring", "expansion60:readme:network", "expansion60:readme:security", "expansion60:readme:operating-system"]),
     _expansion60_profile("expansion60-qa-readme-data-java", "qa-link", "qa", "script", ["readme", "registration", "database", "java"], ["knowledge/cs/contents/database/README.md", "knowledge/cs/contents/language/README.md"], write_scopes=["expansion60:readme:database", "expansion60:readme:language-java"]),
-    _expansion60_profile("expansion60-qa-readme-algo-se", "qa-link", "qa", "script", ["readme", "registration", "algorithm", "data-structure", "software-engineering"], ["knowledge/cs/contents/algorithm/README.md", "knowledge/cs/contents/data-structure/README.md", "knowledge/cs/contents/software-engineering/README.md"], write_scopes=["expansion60:readme:algorithm", "expansion60:readme:data-structure", "expansion60:readme:software-engineering"]),
-    _expansion60_profile("expansion60-qa-anchor-symptoms-a", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "뭐예요", "헷갈"], ["knowledge/cs/contents/{spring,network,database}/**"], write_scopes=["expansion60:qa:anchor:a"]),
-    _expansion60_profile("expansion60-qa-anchor-symptoms-b", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "처음", "왜"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering}/**"], write_scopes=["expansion60:qa:anchor:b"]),
-    _expansion60_profile("expansion60-qa-cross-category-a", "qa-bridge", "qa", "script", ["bridge", "cross-category", "spring", "database", "network"], ["knowledge/cs/contents/{spring,database,network}/**"], write_scopes=["expansion60:qa:bridge:a"]),
-    _expansion60_profile("expansion60-qa-cross-category-b", "qa-bridge", "qa", "script", ["bridge", "cross-category", "java", "algorithm", "software-engineering"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering}/**"], write_scopes=["expansion60:qa:bridge:b"]),
+    _expansion60_profile("expansion60-qa-readme-architecture-practice", "qa-link", "qa", "script", ["readme", "registration", "algorithm", "data-structure", "software-engineering", "system-design", "design-pattern"], ["knowledge/cs/contents/algorithm/README.md", "knowledge/cs/contents/data-structure/README.md", "knowledge/cs/contents/software-engineering/README.md", "knowledge/cs/contents/system-design/README.md", "knowledge/cs/contents/design-pattern/README.md"], write_scopes=["expansion60:readme:algorithm", "expansion60:readme:data-structure", "expansion60:readme:software-engineering", "expansion60:readme:system-design", "expansion60:readme:design-pattern"]),
+    _expansion60_profile("expansion60-qa-anchor-symptoms-a", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "뭐예요", "헷갈"], ["knowledge/cs/contents/{spring,network,database,security,operating-system}/**"], write_scopes=["expansion60:qa:anchor:a"]),
+    _expansion60_profile("expansion60-qa-anchor-symptoms-b", "qa-anchor", "qa", "script", ["anchor", "symptom", "beginner", "처음", "왜"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering,system-design,design-pattern}/**"], write_scopes=["expansion60:qa:anchor:b"]),
+    _expansion60_profile("expansion60-qa-cross-category-a", "qa-bridge", "qa", "script", ["bridge", "cross-category", "spring", "database", "network", "security"], ["knowledge/cs/contents/{spring,database,network,security,operating-system}/**"], write_scopes=["expansion60:qa:bridge:a"]),
+    _expansion60_profile("expansion60-qa-cross-category-b", "qa-bridge", "qa", "script", ["bridge", "cross-category", "java", "algorithm", "software-engineering", "system-design"], ["knowledge/cs/contents/{language,data-structure,algorithm,software-engineering,system-design,design-pattern}/**"], write_scopes=["expansion60:qa:bridge:b"]),
     _expansion60_profile("expansion60-qa-duplicate-taxonomy", "qa-taxonomy", "qa", "fix", ["duplicate", "taxonomy", "overlap", "navigation"], ["knowledge/cs/**"], write_scopes=["expansion60:qa:taxonomy"]),
     _expansion60_profile("expansion60-qa-code-density", "qa-content", "qa", "fix", ["code", "example", "beginner", "clarity"], ["knowledge/cs/contents/**"], write_scopes=["expansion60:qa:code-density"]),
     _expansion60_profile("expansion60-rag-spring-query-eval", "qa-retrieval", "rag", "fix", ["spring", "di", "mvc", "transaction", "query"], ["tests/unit/test_cs_rag_search.py", "tests/unit/test_cs_rag_signal_rules.py"], write_scopes=["expansion60:rag:eval:spring"]),
@@ -923,6 +948,34 @@ def _profile_list(profile: dict[str, Any], key: str) -> list[str]:
     if isinstance(value, str) and value.strip():
         return [value]
     return []
+
+
+def _candidate_tags(candidate: dict[str, Any]) -> set[str]:
+    return {str(tag).strip().lower() for tag in candidate.get("tags", []) if str(tag).strip()}
+
+
+def _non_generic_tags(tags: set[str]) -> set[str]:
+    return {tag for tag in tags if tag not in GENERIC_DRIFT_TAGS}
+
+
+def _anti_drift_next_candidates(
+    item: dict[str, Any],
+    candidates: list[dict[str, Any]],
+    profile: dict[str, Any],
+) -> list[dict[str, Any]]:
+    if profile.get("role") != "content" or profile.get("mode") != "expand":
+        return candidates
+
+    current_tags = _non_generic_tags({str(tag).strip().lower() for tag in item.get("tags", []) if str(tag).strip()})
+    filtered: list[dict[str, Any]] = []
+    for candidate in candidates:
+        tags = _candidate_tags(candidate)
+        non_generic = _non_generic_tags(tags)
+        has_balance_signal = bool(tags & ANTI_DRIFT_NEXT_CANDIDATE_TAGS)
+        has_new_angle = bool(non_generic - current_tags)
+        if has_balance_signal and has_new_angle:
+            filtered.append(candidate)
+    return filtered
 
 
 def _normalize_difficulty_label(raw_label: str) -> str:
@@ -1415,6 +1468,8 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
 - Retrieval anchors must include canonical terms and learner symptom phrases such as "처음", "헷갈", "왜", "언제", "뭐예요", "basics", or "what is" when relevant.
 - Keep advanced incident, operations, and edge-case material behind follow-up links unless the task is explicitly advanced.
 - If a doc is meant to win a RAG query, state the target query shape in the summary and make the title/anchors/body align with that query.
+- Prevent misconceptions: qualify claims that depend on product/version/protocol/vendor behavior, separate "usually" from "guaranteed", and name the caveat or link to a deeper doc instead of making absolute statements.
+- Use analogies only as entry ramps. State where the analogy stops being true before the learner could overgeneralize it.
 """
     corpus_balance_rules = """Corpus balance contract:
 - Do not keep expanding Beginner docs blindly. Use the snapshot below to decide whether this item should create a Beginner entrypoint, an Intermediate application bridge, an Advanced deep dive, or a QA strengthening patch.
@@ -1423,6 +1478,7 @@ def _worker_prompt(worker: str, lane: str, item: dict[str, Any], fleet_profile: 
 - If the topic already has a Beginner primer but lacks a next step, create or improve an Intermediate bridge rather than another primer.
 - Every new content item should declare its role in the summary: entrypoint primer, bridge, practice drill, deep dive, playbook, or recovery note.
 - next_candidates should prioritize underrepresented category/difficulty pairs and include tags such as `balance-gap`, `intermediate`, `bridge`, or `advanced` when appropriate.
+- Anti-drift rule: next_candidates from content workers must add a genuinely different angle from the current item and include at least one balance/quality tag such as `balance-gap`, `intermediate`, `bridge`, `practice`, `accuracy`, `misconception`, `cross-category`, or `retrieval`; otherwise the platform will not enqueue them.
 """
     if mode == "report":
         mode_rules = """- Report-only mode: do not edit knowledge content files.
@@ -1705,10 +1761,16 @@ def run_worker_loop(
                 summary = task.get("summary") or f"completed {item['item_id']}"
                 orchestrator.complete(item["item_id"], worker, summary, refresh_backlog=refresh_backlog)
                 next_candidates = task.get("next_candidates") or []
+                valid_next_candidates: list[dict[str, Any]] = []
                 if profile.get("can_enqueue", True) and isinstance(next_candidates, list) and next_candidates:
+                    valid_next_candidates = _anti_drift_next_candidates(
+                        item,
+                        [candidate for candidate in next_candidates if isinstance(candidate, dict)],
+                        profile,
+                    )
                     orchestrator.enqueue_candidates(
                         lane,
-                        [candidate for candidate in next_candidates if isinstance(candidate, dict)],
+                        valid_next_candidates,
                         source=f"worker-suggestion:{worker}",
                         fleet_profile=fleet_profile,
                         pending_cap=pending_cap,
@@ -1717,6 +1779,7 @@ def run_worker_loop(
                 status["last_summary"] = summary
                 status["last_changed_files"] = validation.get("changed_files", task.get("changed_files", []))
                 status["last_next_candidates"] = next_candidates
+                status["last_enqueued_next_candidates"] = valid_next_candidates if isinstance(next_candidates, list) else []
                 status["last_error"] = None
             else:
                 error_summary = task.get("summary") or "worker backend failed"
