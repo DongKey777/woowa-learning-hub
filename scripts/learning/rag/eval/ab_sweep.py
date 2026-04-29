@@ -157,6 +157,7 @@ def run_one_candidate(
     forbidden_window: int = 5,
     device: str = "cpu",
     mode: str = "full",
+    batch_size: int = 32,
     model_factory: Callable[[str, int], Any] | None = None,
     force_rebuild: bool = False,
     progress: Callable[[str, dict], None] | None = None,
@@ -211,13 +212,14 @@ def run_one_candidate(
         cold_load_ms = (time.perf_counter() - t0) * 1000.0
         _tick("model_loaded", {"cold_ms": cold_load_ms})
 
-        _tick("build_index", {"index_root": str(index_root)})
+        _tick("build_index", {"index_root": str(index_root), "batch_size": batch_size})
         build_eval_index(
             model=builder_model,
             model_id=candidate.hf_model_id,
             embed_dim=candidate.embed_dim,
             index_root=index_root,
             corpus_root=corpus_root,
+            batch_size=batch_size,
             progress=progress,
         )
         # The builder model is also used as the query embedder below.
@@ -299,6 +301,7 @@ def run_ab_sweep(
     forbidden_window: int = 5,
     device: str = "cpu",
     mode: str = "full",
+    batch_size: int = 32,
     thresholds: GateThresholds = GateThresholds(),
     model_factory: Callable[[str, int], Any] | None = None,
     force_rebuild: bool = False,
@@ -320,7 +323,8 @@ def run_ab_sweep(
             candidate, queries,
             base_dir=base_dir, corpus_root=corpus_root,
             top_k=top_k, forbidden_window=forbidden_window,
-            device=device, mode=mode, model_factory=model_factory,
+            device=device, mode=mode, batch_size=batch_size,
+            model_factory=model_factory,
             force_rebuild=force_rebuild, progress=progress,
         )
         score = aggregate_to_candidate_score(candidate, blob, rss_mb=rss)

@@ -180,6 +180,16 @@ def build_parser() -> argparse.ArgumentParser:
             "exhaust free space."
         ),
     )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=32,
+        help=(
+            "Batch size for index-build embedding (default: 32). Larger "
+            "values raise per-batch matmul size, which gives BLAS more "
+            "thread parallelism on CPU. Bumps memory roughly linearly."
+        ),
+    )
     return parser
 
 
@@ -625,6 +635,7 @@ def run_embedding_ab(
         forbidden_window=args.forbidden_window,
         device=device,
         mode="full",
+        batch_size=args.batch_size,
         thresholds=GateThresholds(),
         model_factory=factory,
         force_rebuild=args.force_rebuild,
