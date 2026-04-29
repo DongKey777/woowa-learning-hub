@@ -85,7 +85,10 @@ def test_cleanup_removes_index_for_upgrade(tmp_path):
     assert report.skipped_hf_cache_due_to_control is False
 
 
-def test_cleanup_preserves_hf_cache_for_control(tmp_path):
+def test_cleanup_preserves_everything_for_control(tmp_path):
+    """Control gets a full pass-through: index + HF cache both
+    preserved (production depends on the cache, repeat sweeps reuse
+    the index)."""
     base = tmp_path / "ab"
     cache_root = tmp_path / "hf_cache"
 
@@ -97,12 +100,12 @@ def test_cleanup_preserves_hf_cache_for_control(tmp_path):
         cand, base_dir=base, drop_hf_cache=True, hf_cache_root=cache_root
     )
 
-    # Index dir gone (still safe)
-    assert not (base / "ctrl").exists()
-    # HF cache PRESERVED — production depends on it
+    # Both preserved
+    assert (base / "ctrl").exists()
     assert (cache_root / "models--org--ctrl").exists()
-    # Skipped flag set
+    # Skipped flag set, no bytes accounted as freed
     assert report.skipped_hf_cache_due_to_control is True
+    assert report.index_dir_freed_mb == 0.0
     assert report.hf_cache_freed_mb == 0.0
 
 

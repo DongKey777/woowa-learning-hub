@@ -100,27 +100,35 @@ def cleanup_candidate_artifacts(
     base = Path(base_dir)
     cache_root = hf_cache_root if hf_cache_root is not None else HF_CACHE_ROOT
 
-    # 1. Index dir
+    # Control gets a full pass-through: production depends on its HF
+    # cache, and repeat sweeps reuse its eval index without rebuild
+    # cost. Preserve everything.
+    if candidate.is_control:
+        return CleanupReport(
+            candidate_id=candidate.candidate_id,
+            index_dir_freed_mb=0.0,
+            hf_cache_freed_mb=0.0,
+            skipped_hf_cache_due_to_control=True,
+        )
+
+    # 1. Index dir (upgrade candidates only — repeat sweeps will rebuild
+    # if needed, but the disk-pressure win matters more here)
     idx_dir = base / candidate.index_dir_name()
     index_freed = _du_mb(idx_dir)
     if idx_dir.exists():
         shutil.rmtree(idx_dir, ignore_errors=False)
 
-    # 2. HF cache
-    skipped = False
+    # 2. HF cache (optional)
     cache_freed = 0.0
     if drop_hf_cache:
-        if candidate.is_control:
-            skipped = True
-        else:
-            cache_dir = hf_cache_dir_for(candidate.hf_model_id, root=cache_root)
-            cache_freed = _du_mb(cache_dir)
-            if cache_dir.exists():
-                shutil.rmtree(cache_dir, ignore_errors=False)
+        cache_dir = hf_cache_dir_for(candidate.hf_model_id, root=cache_root)
+        cache_freed = _du_mb(cache_dir)
+        if cache_dir.exists():
+            shutil.rmtree(cache_dir, ignore_errors=False)
 
     return CleanupReport(
         candidate_id=candidate.candidate_id,
         index_dir_freed_mb=index_freed,
         hf_cache_freed_mb=cache_freed,
-        skipped_hf_cache_due_to_control=skipped,
+        skipped_hf_cache_due_to_control=False,
     )
