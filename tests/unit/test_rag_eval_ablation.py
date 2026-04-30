@@ -74,9 +74,11 @@ def test_parse_modality_sets_rejects_unknown():
 def test_run_modality_ablation_scores_each_subset(monkeypatch, tmp_path):
     root = tmp_path / "idx"
     _lance_manifest(root)
+    calls: list[tuple[str, ...]] = []
 
     def fake_search(prompt, **kwargs):
         modalities = kwargs["modalities"]
+        calls.append(modalities)
         if modalities == ("fts", "dense"):
             return [{"path": "contents/spring/bean.md"}]
         return [{"path": "contents/spring/other.md"}]
@@ -95,7 +97,10 @@ def test_run_modality_ablation_scores_each_subset(monkeypatch, tmp_path):
     assert report.runs[0].primary_ndcg_macro == 0.0
     assert report.runs[1].primary_ndcg_macro == 1.0
     assert report.best_modalities == ("fts", "dense")
+    # Each modality gets one cold warm-up call plus one measured eval call.
+    assert calls == [("fts",), ("fts",), ("fts", "dense"), ("fts", "dense")]
 
     blob = A.ablation_report_to_dict(report)
     assert blob["runs"][1]["run_report"]["manifest"]["backend"] == "lance"
     assert blob["runs"][1]["run_report"]["manifest"]["modalities"] == ["fts", "dense"]
+    assert blob["runs"][1]["run_report"]["manifest"]["cold_start_ms"] >= 0.0

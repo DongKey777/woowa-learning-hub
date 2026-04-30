@@ -773,6 +773,51 @@ Remaining H7/H8 work:
 - Run full H7 ablation on tune split.
 - Use the full ablation result to lock H8 candidate stack/modality decisions.
 
+## H7d Warm Latency Semantics Fix
+
+Implemented after H7c:
+
+- `run_modality_ablation(...)` now performs one warm-up retrieval per modality subset before measured evaluation.
+- The warm-up duration is recorded as `manifest.cold_start_ms`.
+- `latency_p50_warm` / `latency_p95_warm` now measure only the subsequent evaluation calls.
+- Added a unit assertion that each modality set receives one warm-up call plus one measured call in the one-query fixture.
+
+Reason:
+
+- H7c smoke showed `fts,dense` p95 included lazy bge-m3 query encoder load.
+- That would make H8 latency decisions compare "cold dense" against "warm FTS", which is not a valid steady-state retrieval comparison.
+
+H7d verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_rag_eval_ablation.py tests/unit/test_rag_eval_cli.py tests/unit/test_rag_eval_ab_retriever.py -q
+.venv/bin/python -m pytest tests/unit/test_rag_eval_ablation.py tests/unit/test_rag_eval_cli.py tests/unit/test_rag_eval_manifest.py tests/unit/test_rag_eval_ab_retriever.py tests/unit/test_rag_eval_ab_sweep.py -q
+
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 bin/rag-eval \
+  --ablate \
+  --fixture /tmp/woowa-h7-smoke-1777536356/fixture.json \
+  --embedding-index-root /tmp/woowa-h7-smoke-1777536356/index \
+  --ablation-out /tmp/woowa-h7-smoke-1777536356/ablation-warm.json \
+  --ablation-split full \
+  --ablation-modalities fts \
+  --ablation-modalities fts,dense \
+  --device cpu
+```
+
+Results:
+
+```text
+54 passed in 0.91s
+88 passed, 2 warnings in 10.02s
+
+modalities                    primary_nDCG    p95(ms)  failures
+fts                                 1.0000        3.8         0
+fts,dense                           1.0000       94.3         0
+
+['fts'] cold=852.8ms p95=3.8ms
+['fts', 'dense'] cold=6300.9ms p95=94.3ms
+```
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

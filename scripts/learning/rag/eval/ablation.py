@@ -167,6 +167,9 @@ def run_modality_ablation(
             backend="lance",
             modalities=mods,
         ) as retrieve:
+            cold_started_at = time.perf_counter()
+            retrieve(query_list[0])
+            cold_start_ms = (time.perf_counter() - cold_started_at) * 1000.0
             per_query, regressions, timings = R.evaluate_queries(
                 query_list,
                 retrieve,
@@ -188,7 +191,7 @@ def run_modality_ablation(
             mode=mode,
             latency_p50_warm=p50,
             latency_p95_warm=p95,
-            cold_start_ms=0.0,
+            cold_start_ms=cold_start_ms,
             backend="lance",
             modalities=mods,
             encoder=encoder_info,
