@@ -898,6 +898,16 @@ class RunPodHarness:
             "cd /workspace/repo && pip install --break-system-packages -e .",
             "cd /workspace/repo && pip install --break-system-packages "
             "lancedb pyarrow FlagEmbedding kiwipiepy",
+            # CVE-2025-32434 mitigation: transformers >= 4.50 refuses
+            # torch.load on .bin checkpoints unless torch >= 2.6
+            # (BGE-M3 ships pytorch_model.bin, no .safetensors). Pod's
+            # preinstalled torch is 2.4.1+cu124. Upgrade to 2.6.x from
+            # the cu124 wheel index — DO NOT let pip pull the default
+            # cu130 wheel (R1 v1: cu130 vs Pod driver 12.4 → CUDA
+            # disabled → CPU fallback, 38min CPU build).
+            "pip install --break-system-packages --upgrade "
+            "--index-url https://download.pytorch.org/whl/cu124 "
+            "\"torch>=2.6.0,<2.7\"",
             # Step 7: warm BGE-M3 weights (skip for FTS-only).
             # R1 v2/v3 hit HF Hub rate limits on community-Pod IPs at
             # ~57-60% download. _warm_bge_m3 retries 5x with 30/60/90/

@@ -181,6 +181,35 @@ def test_remote_commands_use_system_python_not_venv():
     assert "pip install --break-system-packages" in full
 
 
+def test_remote_commands_upgrade_torch_to_at_least_2_6_with_cu124(_=None):
+    """R1 v5 bug fix: transformers 5.x raises CVE-2025-32434 when loading
+    .bin checkpoints with torch < 2.6 (BGE-M3 ships only pytorch_model.bin,
+    no safetensors). Pod's preinstalled torch is 2.4.1+cu124 → must upgrade.
+
+    Also: pin to cu124 wheel index — never let pip pull the default cu130
+    wheel onto a 12.4-driver Pod (R1 v1 lesson)."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense"),
+        run_id="r1", r_phase="r1",
+    )
+    full = "\n".join(cmds)
+    assert "https://download.pytorch.org/whl/cu124" in full
+    assert "torch>=2.6.0" in full
+    # The upgrade must run BEFORE the warm step (which is what triggers
+    # the CVE check via transformers' from_pretrained)
+    upgrade_idx = next(
+        i for i, c in enumerate(cmds)
+        if "torch>=2.6.0" in c
+    )
+    warm_idx = next(
+        i for i, c in enumerate(cmds)
+        if "scripts.remote._warm_bge_m3" in c
+    )
+    assert upgrade_idx < warm_idx
+
+
 def test_remote_commands_for_r1_includes_warm_and_eval():
     client = H.MockRunPodClient()
     h = H.RunPodHarness(client, dry_run=True)
