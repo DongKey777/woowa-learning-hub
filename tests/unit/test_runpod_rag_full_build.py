@@ -194,6 +194,73 @@ def test_remote_commands_modalities_passed_to_build():
     assert "--modalities fts,dense,sparse" in full
 
 
+def test_remote_commands_passes_lance_max_length_when_set():
+    """R1 plan prescribes max_length=512 (cs-index-build default is 1024)."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense"),
+        run_id="r1", r_phase="r1",
+        lance_max_length=512,
+    )
+    build_cmd = next(c for c in cmds if "cli_cs_index_build" in c)
+    assert "--lance-max-length 512" in build_cmd
+
+
+def test_remote_commands_omits_lance_args_when_none():
+    """When no override given, build command keeps cs-index-build's
+    own defaults (R0 path)."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts",),
+        run_id="r0", r_phase="r0",
+    )
+    build_cmd = next(c for c in cmds if "cli_cs_index_build" in c)
+    assert "--lance-max-length" not in build_cmd
+    assert "--lance-batch-size" not in build_cmd
+
+
+def test_resolve_defaults_r1_picks_max_length_512():
+    """R1 default max_length must be 512 (plan v5 §3 R1)."""
+    args = type("A", (), {
+        "r_phase": "r1", "modalities": None, "gpu_type": None,
+        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 90,
+        "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
+        "max_length": None, "batch_size": None, "precision": None,
+        "colbert_dtype": None,
+    })()
+    config = H.resolve_defaults(args)
+    assert config.lance_max_length == 512
+
+
+def test_resolve_defaults_r0_no_max_length_default():
+    """R0 is FTS-only — no encoder, max_length irrelevant. Default None
+    keeps cs-index-build defaults (which end up being unused in FTS path)."""
+    args = type("A", (), {
+        "r_phase": "r0", "modalities": None, "gpu_type": None,
+        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 60,
+        "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
+        "max_length": None, "batch_size": None, "precision": None,
+        "colbert_dtype": None,
+    })()
+    config = H.resolve_defaults(args)
+    assert config.lance_max_length is None
+
+
+def test_resolve_defaults_explicit_max_length_overrides_phase_default():
+    """User-provided --max-length wins over R-phase default."""
+    args = type("A", (), {
+        "r_phase": "r1", "modalities": None, "gpu_type": None,
+        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 60,
+        "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
+        "max_length": 1024, "batch_size": None, "precision": None,
+        "colbert_dtype": None,
+    })()
+    config = H.resolve_defaults(args)
+    assert config.lance_max_length == 1024  # explicit wins
+
+
 # ---------------------------------------------------------------------------
 # Lifecycle — full dry-run run() invocation
 # ---------------------------------------------------------------------------
@@ -352,26 +419,28 @@ def test_run_cost_zero_when_pod_never_created(tmp_path):
     assert ledger[0]["estimated_cost_usd"] == 0.0
 
 
-def test_resolve_defaults_picks_r_phase_appropriate_gpu():
-    args = type("A", (), {
-        "r_phase": "r3", "modalities": None, "gpu_type": None,
-        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 180,
+def _build_args(**overrides):
+    """Helper — base args namespace for resolve_defaults tests."""
+    base = {
+        "r_phase": "r1", "modalities": None, "gpu_type": None,
+        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 60,
         "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
-    })()
-    config = H.resolve_defaults(args)
+        "max_length": None, "batch_size": None, "precision": None,
+        "colbert_dtype": None,
+    }
+    base.update(overrides)
+    return type("A", (), base)()
+
+
+def test_resolve_defaults_picks_r_phase_appropriate_gpu():
+    config = H.resolve_defaults(_build_args(r_phase="r3", max_duration=180))
     assert config.gpu_type == "RTX A6000"     # R3 default
     assert config.gpu_cloud == "community"
     assert "colbert" in config.modalities
 
 
 def test_resolve_defaults_explicit_modalities_override():
-    args = type("A", (), {
-        "r_phase": "r1", "modalities": "fts,dense,sparse",
-        "gpu_type": None, "gpu_cloud": None,
-        "max_cost": 10.0, "max_duration": 60,
-        "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
-    })()
-    config = H.resolve_defaults(args)
+    config = H.resolve_defaults(_build_args(modalities="fts,dense,sparse"))
     assert config.modalities == ("fts", "dense", "sparse")
 
 

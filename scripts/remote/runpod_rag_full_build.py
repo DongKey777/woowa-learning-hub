@@ -652,6 +652,12 @@ class BuildConfig:
     container_disk_gb: int = 20
     repo_root: Path = field(default_factory=lambda: Path.cwd())
     ledger_path: Path = field(default_factory=lambda: Path("state/cs_rag_remote/cost_ledger.json"))
+    # bge-m3 build params — passed to cs-index-build on Pod (R1 needs
+    # max_length=512 per plan v5 §R1, R0 used cs-index-build default 1024)
+    lance_max_length: int | None = None       # None → cs-index-build default
+    lance_batch_size: int | None = None
+    lance_precision: str | None = None         # "auto"|"fp16"|"fp32"
+    lance_colbert_dtype: str | None = None     # "float16"|"float32"
 
 
 class RunPodHarness:
@@ -767,6 +773,10 @@ class RunPodHarness:
         r_phase: str,
         repo_root: Path,
         ssh_executor=None,  # injected for tests; default = paramiko
+        lance_max_length: int | None = None,
+        lance_batch_size: int | None = None,
+        lance_precision: str | None = None,
+        lance_colbert_dtype: str | None = None,
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
 
@@ -778,6 +788,10 @@ class RunPodHarness:
         commands = self._build_remote_commands(
             commit_sha=commit_sha, modalities=modalities,
             run_id=run_id, r_phase=r_phase,
+            lance_max_length=lance_max_length,
+            lance_batch_size=lance_batch_size,
+            lance_precision=lance_precision,
+            lance_colbert_dtype=lance_colbert_dtype,
         )
 
         if self.dry_run:
@@ -841,6 +855,10 @@ class RunPodHarness:
         modalities: tuple[str, ...],
         run_id: str,
         r_phase: str,
+        lance_max_length: int | None = None,
+        lance_batch_size: int | None = None,
+        lance_precision: str | None = None,
+        lance_colbert_dtype: str | None = None,
     ) -> list[str]:
         """Sequence of shell commands the Pod will run.
 
@@ -848,6 +866,17 @@ class RunPodHarness:
         what Pod-side execution looks like without real SSH.
         """
         modalities_arg = ",".join(modalities)
+        # Build the cs-index-build command with optional bge-m3 tuning
+        build_extra = []
+        if lance_max_length is not None:
+            build_extra.append(f"--lance-max-length {lance_max_length}")
+        if lance_batch_size is not None:
+            build_extra.append(f"--lance-batch-size {lance_batch_size}")
+        if lance_precision is not None:
+            build_extra.append(f"--lance-precision {lance_precision}")
+        if lance_colbert_dtype is not None:
+            build_extra.append(f"--lance-colbert-dtype {lance_colbert_dtype}")
+        build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
         return [
             # Step 5: clone + system deps. zstd is required by
             # package_rag_artifact (R0 v4 bug — Pod's Ubuntu image lacks
@@ -865,7 +894,8 @@ class RunPodHarness:
               else []),
             # Step 8: build
             f"cd /workspace/repo && .venv/bin/python -m scripts.learning.cli_cs_index_build "
-            f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/",
+            f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/"
+            f"{build_extra_str}",
             # Step 9: eval (only on r1+; r0 skips)
             *([
                 f"cd /workspace/repo && .venv/bin/python -m scripts.learning.cli_rag_eval "
@@ -965,6 +995,10 @@ class RunPodHarness:
                 modalities=config.modalities,
                 run_id=run_id, r_phase=config.r_phase,
                 repo_root=config.repo_root,
+                lance_max_length=config.lance_max_length,
+                lance_batch_size=config.lance_batch_size,
+                lance_precision=config.lance_precision,
+                lance_colbert_dtype=config.lance_colbert_dtype,
             )
             result.artifact_path = artifact
 
@@ -1027,6 +1061,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--ledger-path", type=Path,
                         default=Path("state/cs_rag_remote/cost_ledger.json"))
+    # bge-m3 build tuning (forwarded to cs-index-build on Pod)
+    parser.add_argument("--max-length", type=int, default=None,
+                        help="bge-m3 max_length. R1 plan default: 512.")
+    parser.add_argument("--batch-size", type=int, default=None,
+                        help="bge-m3 encode batch size.")
+    parser.add_argument("--precision", choices=("auto", "fp16", "fp32"), default=None,
+                        help="bge-m3 precision (auto picks fp16 on GPU).")
+    parser.add_argument("--colbert-dtype", choices=("float16", "float32"), default=None)
     parser.add_argument("--verbose", action="store_true")
     return parser
 
@@ -1043,6 +1085,9 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
     else:
         modalities = default_modalities
 
+    # R-phase default tuning (plan v5 §3 R1 prescribes max_length=512)
+    default_max_length = {"r1": 512, "r2": 512, "r3": 512, "r4": 512}.get(args.r_phase)
+
     return BuildConfig(
         r_phase=args.r_phase,
         modalities=modalities,
@@ -1052,6 +1097,10 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         max_duration_min=args.max_duration,
         repo_root=args.repo_root,
         ledger_path=args.ledger_path,
+        lance_max_length=args.max_length if args.max_length is not None else default_max_length,
+        lance_batch_size=args.batch_size,
+        lance_precision=args.precision,
+        lance_colbert_dtype=args.colbert_dtype,
     )
 
 
