@@ -198,6 +198,31 @@ def test_lance_default_modalities_honor_explicit_ablation_request():
     assert out == ("fts", "dense", "sparse")
 
 
+def test_lance_default_modalities_can_change_with_policy_file(tmp_path, monkeypatch):
+    policy = tmp_path / "lance_modalities_policy.json"
+    policy.write_text(
+        """{
+          "cheap_default_modalities": ["fts"],
+          "full_default_modalities": ["fts"],
+          "dense_default_modalities": ["fts", "dense"],
+          "dense_default_categories": ["spring"]
+        }""",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(searcher, "LANCE_MODALITY_POLICY_PATH", policy)
+    monkeypatch.setattr(searcher, "_LANCE_MODALITY_POLICY_CACHE", None)
+
+    out = searcher._resolve_lance_modalities(
+        manifest_modalities=("fts", "dense", "sparse", "colbert"),
+        requested_modalities=None,
+        mode="full",
+        learning_points=None,
+        signals=[{"category": "spring"}],
+    )
+
+    assert out == ("fts", "dense")
+
+
 def test_lance_default_modalities_do_not_load_encoder_for_unmeasured_full_query(
     tmp_path,
     monkeypatch,

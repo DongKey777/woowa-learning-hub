@@ -1159,6 +1159,9 @@ Operational interpretation:
 
 Implemented policy after the sweep:
 
+- The policy is now data-driven in
+  `scripts/learning/rag/lance_modalities_policy.json`; this is intentional
+  because the CS corpus and graded fixture will keep expanding.
 - `searcher._resolve_lance_modalities(...)` now keeps explicit modality
   requests unchanged, so ablation/test callers can still force any modality set.
 - Production-style LanceDB defaults no longer mean "use every modality in the
@@ -1169,6 +1172,9 @@ Implemented policy after the sweep:
   `database`, `network`, `operating-system`.
 - Full mode stays `fts` for `spring`, `software-engineering`, `data-structure`,
   and uncategorised prompts until more evidence justifies dense.
+- When future sampled/holdout sweeps show a stable gain for another category,
+  update `dense_default_categories` in the JSON policy instead of changing
+  search code.
 
 Verification:
 

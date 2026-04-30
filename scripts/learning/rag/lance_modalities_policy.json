@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "description": "Default LanceDB modality policy derived from sampled CS RAG ablation. Keep this data-driven because the corpus and graded fixture continue to grow.",
+  "updated_at": "2026-04-30",
+  "source": "docs/worklogs/rag-sota-handoff-2026-04-30.md",
+  "cheap_default_modalities": ["fts"],
+  "full_default_modalities": ["fts"],
+  "dense_default_modalities": ["fts", "dense"],
+  "dense_default_categories": [
+    "database",
+    "network",
+    "operating-system"
+  ],
+  "minimum_queries_per_category_for_policy": 10,
+  "holdout_required_before_global_dense": true
+}

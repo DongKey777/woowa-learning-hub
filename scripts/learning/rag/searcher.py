@@ -1650,9 +1650,44 @@ def _fallback_tokens(prompt: str) -> list[str]:
     return [tok for tok in _FTS_TOKEN_RE.findall(prompt) if len(tok) >= 2]
 
 
-LANCE_DENSE_DEFAULT_CATEGORIES = frozenset(
-    {"database", "network", "operating-system"}
-)
+LANCE_MODALITY_POLICY_PATH = Path(__file__).with_name("lance_modalities_policy.json")
+_FALLBACK_LANCE_MODALITY_POLICY = {
+    "cheap_default_modalities": ["fts"],
+    "full_default_modalities": ["fts"],
+    "dense_default_modalities": ["fts", "dense"],
+    "dense_default_categories": ["database", "network", "operating-system"],
+}
+_LANCE_MODALITY_POLICY_CACHE: dict | None = None
+
+
+def _load_lance_modality_policy(path: Path | None = None) -> dict:
+    """Load data-driven LanceDB modality defaults.
+
+    The corpus is expected to keep growing, so the default dense policy must be
+    updateable from evaluation output without editing search logic.
+    """
+    global _LANCE_MODALITY_POLICY_CACHE
+    policy_path = path or LANCE_MODALITY_POLICY_PATH
+    if path is None and _LANCE_MODALITY_POLICY_CACHE is not None:
+        return dict(_LANCE_MODALITY_POLICY_CACHE)
+    try:
+        loaded = json.loads(policy_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        loaded = {}
+    policy = {**_FALLBACK_LANCE_MODALITY_POLICY, **loaded}
+    if path is None:
+        _LANCE_MODALITY_POLICY_CACHE = dict(policy)
+    return policy
+
+
+def _modalities_from_policy(
+    policy: dict,
+    key: str,
+    manifest_modalities: tuple[str, ...],
+) -> tuple[str, ...]:
+    raw = policy.get(key) or []
+    resolved = tuple(str(modality) for modality in raw if modality in manifest_modalities)
+    return resolved or tuple(m for m in ("fts",) if m in manifest_modalities)
 
 
 def _resolve_lance_modalities(
@@ -1674,10 +1709,14 @@ def _resolve_lance_modalities(
         requested = tuple(requested_modalities)
         return tuple(m for m in requested if m in manifest_modalities)
 
+    policy = _load_lance_modality_policy()
+
     if "fts" not in manifest_modalities:
         return tuple(manifest_modalities)
     if mode == "cheap" or "dense" not in manifest_modalities:
-        return ("fts",)
+        return _modalities_from_policy(
+            policy, "cheap_default_modalities", manifest_modalities
+        )
 
     routed_categories = _collect_categories(learning_points)
     routed_categories.update(
@@ -1685,9 +1724,18 @@ def _resolve_lance_modalities(
         for signal in signals
         if signal.get("category")
     )
-    if routed_categories & LANCE_DENSE_DEFAULT_CATEGORIES:
-        return ("fts", "dense")
-    return ("fts",)
+    dense_categories = {
+        str(category)
+        for category in policy.get("dense_default_categories", [])
+        if category
+    }
+    if routed_categories & dense_categories:
+        return _modalities_from_policy(
+            policy, "dense_default_modalities", manifest_modalities
+        )
+    return _modalities_from_policy(
+        policy, "full_default_modalities", manifest_modalities
+    )
 
 
 def _collect_categories(learning_points: list[str] | None) -> set[str]:
