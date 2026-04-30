@@ -497,6 +497,54 @@ Recommended next handoff point:
 - Start H5 only after deciding whether to implement LanceDB incremental upsert now or first run a non-production full build under `state/cs_rag_lance/` for H7/H8 harness measurements.
 - Do not flip default `search()` backend, `integration.augment()`, or `indexer.is_ready()` until H7/H8 metrics and cutover gates are met.
 
+## H5a LanceDB Incremental Upsert Core
+
+Implemented after checkpoint:
+
+- Added LanceDB v3 per-model fingerprint sidecar:
+  - `chunk_hashes_per_model.json`
+  - shape: `{model_version: {chunk_id: fingerprint}}`
+  - atomic writer: `atomic_save_model_chunk_hashes(...)`
+  - loader helpers: `load_chunk_hashes_per_model(...)`, `load_model_chunk_hashes(...)`
+- Extended `IncrementalBuildResult` with optional LanceDB version fields:
+  - `lance_version_before`
+  - `lance_version_after`
+  - Existing v2 tests remain compatible because fields default to `None`.
+- Added `incremental_lance_build_index(...)`.
+  - Full fallback when v3 manifest/table/model sidecar is missing or incompatible.
+  - No-op fast path when fingerprints match.
+  - Delta encode only for added/modified chunks.
+  - `merge_insert("chunk_id")` for added/modified rows.
+  - `when_not_matched_by_source_delete(chunk_id IN (...))` for deleted rows when there is a delta source.
+  - Pure-delete path uses `table.delete(...)`.
+  - Tracks LanceDB table version before/after.
+  - Attempts `restore(version_before)` / `checkout(version_before)` on merge/delete failure.
+  - Writes fingerprint sidecar only after the LanceDB write succeeds.
+- Added tests in `tests/unit/test_lance_incremental_indexer.py`.
+  - Per-model sidecar isolation.
+  - First run full fallback then no-op incremental.
+  - Add path with delta encode/upsert.
+  - Pure-delete path with zero encoding and row-count decrease.
+
+H5a verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_incremental_indexer.py -q
+.venv/bin/python -m pytest tests/unit/test_lance_incremental_indexer.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_lance_search_path.py tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_incremental_indexer.py -q
+```
+
+Results:
+
+```text
+3 passed in 1.62s
+79 passed in 1.84s
+```
+
+Important H5a design choice:
+
+- CLI still rejects `--backend lance --mode incremental` at this point.
+- Next commit should wire the CLI to `incremental_lance_build_index(...)` and then update tests/operational smoke.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

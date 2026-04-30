@@ -30,6 +30,9 @@ from .corpus_loader import CorpusChunk
 CHUNK_HASHES_NAME = "chunk_hashes.json"
 """Filename of the per-chunk fingerprint sidecar inside an index root."""
 
+CHUNK_HASHES_PER_MODEL_NAME = "chunk_hashes_per_model.json"
+"""LanceDB v3 sidecar: ``{encoder_model_version: {chunk_id: fingerprint}}``."""
+
 
 # ---------------------------------------------------------------------------
 # Fingerprinting
@@ -173,6 +176,69 @@ def save_chunk_hashes(
         json.dumps(fingerprints, ensure_ascii=False, indent=2, sort_keys=True),
         encoding="utf-8",
     )
+
+
+def load_chunk_hashes_per_model(index_root: Path | str) -> dict[str, dict[str, str]]:
+    """Read the LanceDB v3 per-model fingerprint sidecar.
+
+    Missing file means no v3 incremental history exists yet. Malformed model
+    entries are ignored defensively so a partial manual edit does not crash
+    readiness checks; the affected model will simply full-rebuild.
+    """
+    path = Path(index_root) / CHUNK_HASHES_PER_MODEL_NAME
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        return {}
+    out: dict[str, dict[str, str]] = {}
+    for model_version, fingerprints in data.items():
+        if not isinstance(model_version, str) or not isinstance(fingerprints, dict):
+            continue
+        out[model_version] = {
+            str(chunk_id): str(fingerprint)
+            for chunk_id, fingerprint in fingerprints.items()
+        }
+    return out
+
+
+def load_model_chunk_hashes(index_root: Path | str, model_version: str) -> dict[str, str]:
+    """Return fingerprints for one encoder model version."""
+    return load_chunk_hashes_per_model(index_root).get(model_version, {})
+
+
+def atomic_save_model_chunk_hashes(
+    *,
+    index_root: Path | str,
+    model_version: str,
+    fingerprints: dict[str, str],
+) -> None:
+    """Atomically update one model entry in chunk_hashes_per_model.json.
+
+    Fingerprints are written only after the LanceDB transaction succeeds.
+    If this write fails, the next incremental run treats the model as stale
+    and safely reprocesses the affected chunks.
+    """
+    import os
+
+    final = Path(index_root) / CHUNK_HASHES_PER_MODEL_NAME
+    final.parent.mkdir(parents=True, exist_ok=True)
+    tmp = final.with_suffix(final.suffix + ".tmp")
+    data = load_chunk_hashes_per_model(index_root)
+    data[model_version] = dict(sorted(fingerprints.items()))
+    try:
+        tmp.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        os.replace(tmp, final)
+    except BaseException:
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -498,6 +564,8 @@ class IncrementalBuildResult:
     diff_stats: dict[str, int]  # added/modified/deleted/unchanged counts
     encoded_chunk_count: int
     fallback_reason: str | None  # set when mode == "full"
+    lance_version_before: int | None = None
+    lance_version_after: int | None = None
 
 
 def _full_rebuild_reason(
@@ -539,6 +607,294 @@ def _full_rebuild_reason(
     if int(prev.get("embed_dim", -1)) != embed_dim:
         return "embed_dim_changed"
     return None
+
+
+def _quote_lance_sql(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
+
+
+def _chunk_id_filter(chunk_ids: Iterable[str]) -> str:
+    ids = sorted({str(chunk_id) for chunk_id in chunk_ids})
+    if not ids:
+        return "chunk_id IN ('__woowa_noop__')"
+    return "chunk_id IN (" + ", ".join(_quote_lance_sql(chunk_id) for chunk_id in ids) + ")"
+
+
+def _lance_full_rebuild_reason(
+    *,
+    index_root_path: Path,
+    encoder,
+    modalities: tuple[str, ...],
+    indexer_module,
+) -> str | None:
+    manifest_path = index_root_path / indexer_module.MANIFEST_NAME
+    lance_path = index_root_path / indexer_module.LANCE_DIR_NAME
+    if not manifest_path.exists():
+        return "no_manifest"
+    if not lance_path.exists():
+        return "no_lance"
+    try:
+        manifest = indexer_module.read_manifest_v3(index_root_path)
+    except Exception:
+        return "manifest_not_lance_v3"
+    if manifest.get("encoder", {}).get("model_version") != encoder.model_version:
+        return "encoder_version_changed"
+    existing_modalities = set(manifest.get("modalities") or ())
+    if not set(modalities).issubset(existing_modalities):
+        return "modalities_changed"
+    try:
+        table = indexer_module.open_lance_table(index_root_path)
+        table.count_rows()
+    except Exception:
+        return "lance_table_missing"
+    return None
+
+
+def _update_lance_manifest_incremental_stats(
+    *,
+    index_root_path: Path,
+    corpus_root,
+    row_count: int,
+    diff: ChunkDiff,
+    encoded_chunk_count: int,
+    indexer_module,
+) -> dict:
+    from . import corpus_loader
+
+    manifest_path = index_root_path / indexer_module.MANIFEST_NAME
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["row_count"] = int(row_count)
+    manifest["corpus_hash"] = corpus_loader.corpus_hash(corpus_root)
+    manifest["incremental_stats"] = {
+        "added": len(diff.added),
+        "modified": len(diff.modified),
+        "deleted": len(diff.deleted),
+        "unchanged": len(diff.unchanged),
+        "encoded": encoded_chunk_count,
+    }
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return manifest
+
+
+def _restore_lance_version(table, version: int | None) -> None:
+    if version is None:
+        return
+    try:
+        table.restore(version)
+    except Exception:
+        try:
+            table.checkout(version)
+        except Exception:
+            pass
+
+
+def incremental_lance_build_index(
+    *,
+    encoder,
+    index_root,
+    corpus_root=None,
+    modalities: tuple[str, ...] = ("dense", "sparse", "colbert", "fts"),
+    progress=None,
+    colbert_dtype: str = "float16",
+) -> IncrementalBuildResult:
+    """Incrementally update a v3 LanceDB index.
+
+    This is the H5 path. It is intentionally separate from the legacy
+    SQLite/NPZ incremental path so current production behavior stays stable
+    until the final cutover gate.
+    """
+    from . import corpus_loader, indexer
+
+    def _tick(stage: str, info: dict | None = None) -> None:
+        if progress is not None:
+            progress(stage, info or {})
+
+    corpus_root = _normalise_corpus_root(corpus_root)
+    index_root_path = Path(index_root)
+
+    _tick("load_corpus", {"corpus_root": str(corpus_root)})
+    chunks = corpus_loader.load_corpus(corpus_root)
+    if not chunks:
+        raise RuntimeError(f"corpus at {corpus_root} is empty")
+    new_chunks_by_id = {chunk.chunk_id: chunk for chunk in chunks}
+    new_fingerprints = compute_chunk_fingerprints(chunks)
+    _tick("corpus_loaded", {"chunk_count": len(chunks)})
+
+    fallback_reason = _lance_full_rebuild_reason(
+        index_root_path=index_root_path,
+        encoder=encoder,
+        modalities=modalities,
+        indexer_module=indexer,
+    )
+    if fallback_reason is not None:
+        _tick("fallback_to_full", {"reason": fallback_reason})
+        manifest = indexer.build_lance_index(
+            index_root=index_root_path,
+            corpus_root=corpus_root,
+            encoder=encoder,
+            modalities=modalities,
+            progress=progress,
+            colbert_dtype=colbert_dtype,
+        )
+        table = indexer.open_lance_table(index_root_path)
+        atomic_save_model_chunk_hashes(
+            index_root=index_root_path,
+            model_version=encoder.model_version,
+            fingerprints=new_fingerprints,
+        )
+        return IncrementalBuildResult(
+            mode="full",
+            manifest=manifest,
+            diff_stats={
+                "added": len(chunks),
+                "modified": 0,
+                "deleted": 0,
+                "unchanged": 0,
+            },
+            encoded_chunk_count=len(chunks),
+            fallback_reason=fallback_reason,
+            lance_version_before=None,
+            lance_version_after=int(table.version),
+        )
+
+    old_fingerprints = load_model_chunk_hashes(index_root_path, encoder.model_version)
+    if not old_fingerprints:
+        # The table exists, but this encoder has no sidecar state. Rebuilding
+        # is safer than treating every row as an upsert against unknown history.
+        _tick("fallback_to_full", {"reason": "no_model_fingerprints"})
+        manifest = indexer.build_lance_index(
+            index_root=index_root_path,
+            corpus_root=corpus_root,
+            encoder=encoder,
+            modalities=modalities,
+            progress=progress,
+            colbert_dtype=colbert_dtype,
+        )
+        table = indexer.open_lance_table(index_root_path)
+        atomic_save_model_chunk_hashes(
+            index_root=index_root_path,
+            model_version=encoder.model_version,
+            fingerprints=new_fingerprints,
+        )
+        return IncrementalBuildResult(
+            mode="full",
+            manifest=manifest,
+            diff_stats={
+                "added": len(chunks),
+                "modified": 0,
+                "deleted": 0,
+                "unchanged": 0,
+            },
+            encoded_chunk_count=len(chunks),
+            fallback_reason="no_model_fingerprints",
+            lance_version_before=None,
+            lance_version_after=int(table.version),
+        )
+
+    diff = diff_chunks(old_fingerprints, new_fingerprints)
+    _tick(
+        "diff",
+        {
+            "added": len(diff.added),
+            "modified": len(diff.modified),
+            "deleted": len(diff.deleted),
+            "unchanged": len(diff.unchanged),
+        },
+    )
+
+    table = indexer.open_lance_table(index_root_path, mode="rw")
+    lance_version_before = int(table.version)
+    if diff.is_noop():
+        _tick("noop", {"lance_version": lance_version_before})
+        manifest = _update_lance_manifest_incremental_stats(
+            index_root_path=index_root_path,
+            corpus_root=corpus_root,
+            row_count=table.count_rows(),
+            diff=diff,
+            encoded_chunk_count=0,
+            indexer_module=indexer,
+        )
+        return IncrementalBuildResult(
+            mode="incremental",
+            manifest=manifest,
+            diff_stats=manifest["incremental_stats"],
+            encoded_chunk_count=0,
+            fallback_reason=None,
+            lance_version_before=lance_version_before,
+            lance_version_after=lance_version_before,
+        )
+
+    delta_chunk_ids = list(diff.needs_encoding)
+    delta_chunks = [new_chunks_by_id[chunk_id] for chunk_id in delta_chunk_ids]
+    records = []
+    if delta_chunks:
+        texts = [indexer._embed_text(chunk) for chunk in delta_chunks]
+        _tick("encode_delta", {"count": len(texts), "model": encoder.model_id})
+        encoding = encoder.encode_corpus(
+            texts,
+            modalities=tuple(modality for modality in modalities if modality != "fts"),
+            progress=progress,
+        )
+        records = indexer._lance_records(
+            delta_chunks,
+            encoding,
+            encoder_version=encoder.model_version,
+        )
+
+    try:
+        if records:
+            builder = (
+                table.merge_insert("chunk_id")
+                .when_matched_update_all()
+                .when_not_matched_insert_all()
+            )
+            if diff.deleted:
+                builder = builder.when_not_matched_by_source_delete(
+                    _chunk_id_filter(diff.deleted)
+                )
+            result = builder.execute(records)
+            _tick(
+                "lance_merge_insert",
+                {
+                    "updated": getattr(result, "num_updated_rows", None),
+                    "inserted": getattr(result, "num_inserted_rows", None),
+                    "deleted": getattr(result, "num_deleted_rows", None),
+                },
+            )
+        elif diff.deleted:
+            table.delete(_chunk_id_filter(diff.deleted))
+            _tick("lance_delete", {"deleted": len(diff.deleted)})
+    except Exception:
+        _restore_lance_version(table, lance_version_before)
+        raise
+
+    lance_version_after = int(table.version)
+    atomic_save_model_chunk_hashes(
+        index_root=index_root_path,
+        model_version=encoder.model_version,
+        fingerprints=new_fingerprints,
+    )
+    manifest = _update_lance_manifest_incremental_stats(
+        index_root_path=index_root_path,
+        corpus_root=corpus_root,
+        row_count=table.count_rows(),
+        diff=diff,
+        encoded_chunk_count=len(delta_chunk_ids),
+        indexer_module=indexer,
+    )
+    _tick("manifest_updated", manifest["incremental_stats"])
+    return IncrementalBuildResult(
+        mode="incremental",
+        manifest=manifest,
+        diff_stats=manifest["incremental_stats"],
+        encoded_chunk_count=len(delta_chunk_ids),
+        fallback_reason=None,
+        lance_version_before=lance_version_before,
+        lance_version_after=lance_version_after,
+    )
 
 
 def incremental_build_index(
