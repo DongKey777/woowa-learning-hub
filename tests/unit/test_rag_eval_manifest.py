@@ -111,6 +111,35 @@ def test_validate_accepts_null_reranker():
     M.validate_manifest(blob)
 
 
+def test_validate_accepts_h7_modal_blocks():
+    """H7 ablation reports must capture the measured backend, modality
+    subset, encoder identity, and LanceDB index metadata."""
+    blob = _good_blob()
+    blob.update(
+        {
+            "backend": "lance",
+            "modalities": ["fts", "dense", "sparse", "colbert"],
+            "encoder": {
+                "model_id": "BAAI/bge-m3",
+                "model_version": "BAAI/bge-m3@sha",
+            },
+            "lancedb": {
+                "version": "0.30.2",
+                "table_name": "chunks",
+                "indices": {"dense": {"type": "unindexed"}},
+            },
+        }
+    )
+    M.validate_manifest(blob)
+
+
+def test_validate_rejects_unknown_modality():
+    blob = _good_blob()
+    blob["modalities"] = ["fts", "bogus"]
+    with pytest.raises(jsonschema.ValidationError):
+        M.validate_manifest(blob)
+
+
 def test_validate_rejects_fusion_weights_missing_k():
     blob = _good_blob()
     blob["fusion_weights"] = {"w_bm25": 1.0, "w_dense": 1.0}
@@ -139,6 +168,25 @@ def test_dict_to_manifest_preserves_all_fields():
     assert manifest.fusion_weights.w_bm25 == 1.0
     assert manifest.top_k == 5
     assert manifest.mode == "full"
+    assert manifest.backend == "legacy"
+    assert manifest.modalities == ()
+
+
+def test_dict_to_manifest_preserves_h7_modal_blocks():
+    blob = _good_blob()
+    blob.update(
+        {
+            "backend": "lance",
+            "modalities": ["fts", "dense"],
+            "encoder": {"model_id": "BAAI/bge-m3"},
+            "lancedb": {"table_name": "chunks"},
+        }
+    )
+    manifest = M.dict_to_manifest(blob)
+    assert manifest.backend == "lance"
+    assert manifest.modalities == ("fts", "dense")
+    assert manifest.encoder == {"model_id": "BAAI/bge-m3"}
+    assert manifest.lancedb == {"table_name": "chunks"}
 
 
 def test_round_trip_dataclass_to_dict_to_dataclass():

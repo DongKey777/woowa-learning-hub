@@ -47,6 +47,33 @@ def _good_manifest(tmp_path: Path, *, model: str, dim: int) -> Path:
     return root
 
 
+def _good_lance_manifest(tmp_path: Path, *, model: str = "BAAI/bge-m3") -> Path:
+    root = tmp_path / "lance-idx"
+    root.mkdir()
+    manifest = {
+        "index_version": indexer.LANCE_INDEX_VERSION,
+        "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+        "row_count": 0,
+        "corpus_hash": "x",
+        "corpus_root": "x",
+        "built_at": "2026-04-30T00:00:00Z",
+        "encoder": {
+            "model_id": model,
+            "model_version": f"{model}@test",
+            "max_length": 8192,
+        },
+        "lancedb": {
+            "version": "0.30.2",
+            "table_name": indexer.LANCE_TABLE_NAME,
+            "indices": {},
+        },
+        "modalities": ["fts", "dense", "sparse", "colbert"],
+        "ingest": {"chunk_max_chars": 1600, "chunk_overlap": 0},
+    }
+    (root / indexer.MANIFEST_NAME).write_text(json.dumps(manifest), encoding="utf-8")
+    return root
+
+
 # ---------------------------------------------------------------------------
 # Swap + restore semantics
 # ---------------------------------------------------------------------------
@@ -198,6 +225,85 @@ def test_retrieve_calls_searcher_with_correct_kwargs(monkeypatch, tmp_path):
     assert captured["mode"] == "full"  # retriever mode wins, not query.mode
     assert captured["experience_level"] == "beginner"
     assert captured["index_root"] == root
+
+
+def test_retrieve_forwards_backend_and_modalities(monkeypatch, tmp_path):
+    monkeypatch.setattr(searcher, "_QUERY_EMBEDDER", None)
+    root = _good_manifest(tmp_path, model="m", dim=4)
+
+    captured: dict = {}
+
+    def fake_search(prompt, **kwargs):
+        captured.update(kwargs)
+        return [{"path": "a.md"}]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    with AB.ABRetriever(
+        index_root=root,
+        model=object(),
+        model_id="m",
+        embed_dim=4,
+        top_k=3,
+        mode="full",
+        backend="legacy",
+        modalities=("fts", "dense"),
+    ) as retrieve:
+        assert retrieve(_fake_query()) == ["a.md"]
+
+    assert captured["backend"] == "legacy"
+    assert captured["modalities"] == ("fts", "dense")
+
+
+def test_lance_backend_binds_modal_encoder_cache(monkeypatch, tmp_path):
+    sentinel = object()
+    cache_key = "BAAI/bge-m3@test"
+    monkeypatch.setitem(searcher._LANCE_QUERY_ENCODER_CACHE, cache_key, sentinel)
+    root = _good_lance_manifest(tmp_path)
+
+    fake_model = object()
+    with AB.ABRetriever(
+        index_root=root,
+        model=fake_model,
+        model_id="BAAI/bge-m3",
+        embed_dim=1024,
+        backend="lance",
+        modalities=("fts", "dense"),
+    ):
+        assert searcher._LANCE_QUERY_ENCODER_CACHE[cache_key] is fake_model
+
+    assert searcher._LANCE_QUERY_ENCODER_CACHE[cache_key] is sentinel
+
+
+def test_lance_backend_removes_new_cache_key_on_exit(tmp_path):
+    cache_key = "BAAI/bge-m3@test"
+    searcher._LANCE_QUERY_ENCODER_CACHE.pop(cache_key, None)
+    root = _good_lance_manifest(tmp_path)
+
+    with AB.ABRetriever(
+        index_root=root,
+        model=object(),
+        model_id="BAAI/bge-m3",
+        embed_dim=1024,
+        backend="lance",
+    ):
+        assert cache_key in searcher._LANCE_QUERY_ENCODER_CACHE
+
+    assert cache_key not in searcher._LANCE_QUERY_ENCODER_CACHE
+
+
+def test_lance_manifest_mismatch_blocks_cache_swap(tmp_path):
+    root = _good_lance_manifest(tmp_path, model="BAAI/bge-m3")
+
+    with pytest.raises(IndexCompatibilityError, match="embed_model"):
+        with AB.ABRetriever(
+            index_root=root,
+            model=object(),
+            model_id="fake/other",
+            embed_dim=1024,
+            backend="lance",
+        ):
+            pass
 
 
 def test_retrieve_extracts_path_field_only(monkeypatch, tmp_path):

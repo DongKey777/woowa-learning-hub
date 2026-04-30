@@ -629,6 +629,44 @@ Remaining:
 - H6 only provides the modal PRF primitive.
 - Searcher integration of modal PRF is still future work and should be measured in H7/H8 rather than silently enabled.
 
+## H7a Eval Harness Modal Metadata + Scoped Lance Retriever
+
+Implemented after H6:
+
+- Extended `RunManifest` with optional H7 fields:
+  - `backend`: `legacy` or `lance`
+  - `modalities`: measured subset of `dense`, `sparse`, `colbert`, `fts`
+  - `encoder`: copied encoder identity/config block from the index manifest
+  - `lancedb`: copied LanceDB table/index metadata from the index manifest
+- Kept backward compatibility:
+  - older baseline/report manifests without the new fields still validate and materialize with `backend="legacy"`.
+  - schema still rejects unknown modalities.
+- Extended `ABRetriever`:
+  - forwards `backend` and `modalities` into `searcher.search(...)`;
+  - preserves the existing legacy `_QUERY_EMBEDDER` swap path;
+  - adds a scoped LanceDB encoder cache bind for `backend="lance"` so A/B/eval runs can inject the modal encoder without loading production bge-m3 implicitly;
+  - restores or removes the LanceDB cache key on context exit.
+- Extended `ab_sweep.run_one_candidate` / `run_ab_sweep` plumbing to pass `backend`/`modalities` and capture index `encoder`/`lancedb` blocks into each run report.
+
+H7a verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_rag_eval_manifest.py tests/unit/test_rag_eval_ab_retriever.py tests/unit/test_rag_eval_ab_sweep.py -q
+```
+
+Result:
+
+```text
+46 passed, 2 warnings in 9.79s
+```
+
+Remaining H7 work:
+
+- Add the actual `rag-eval ablate` CLI mode.
+- Generate singleton/pair/full modality combinations automatically.
+- Persist `reports/cs_rag/eval/ablation_<runid>.json`.
+- Run the modality ablation against a prebuilt LanceDB index and feed the result into H8 stack selection.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

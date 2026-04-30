@@ -9,6 +9,9 @@ Required fields:
     embedding_dim, device, reranker_model, fusion_weights, top_k, mode,
     latency_p50_warm, latency_p95_warm, cold_start_ms
 
+Optional H7 fields:
+    backend, modalities, encoder, lancedb
+
 The dataclass and JSON Schema are kept in lock-step — the schema is
 the contract for validating untrusted dicts (loaded reports), the
 dataclass is the in-memory builder used by runner code.
@@ -74,6 +77,20 @@ MANIFEST_SCHEMA: dict[str, Any] = {
         "latency_p50_warm": {"type": "number", "minimum": 0},
         "latency_p95_warm": {"type": "number", "minimum": 0},
         "cold_start_ms": {"type": "number", "minimum": 0},
+        "backend": {"type": "string", "enum": ["legacy", "lance"]},
+        "modalities": {
+            "type": "array",
+            "items": {"enum": ["dense", "sparse", "colbert", "fts"]},
+            "uniqueItems": True,
+        },
+        "encoder": {
+            "type": "object",
+            "additionalProperties": True,
+        },
+        "lancedb": {
+            "type": "object",
+            "additionalProperties": True,
+        },
     },
 }
 
@@ -119,6 +136,10 @@ class RunManifest:
     latency_p50_warm: float
     latency_p95_warm: float
     cold_start_ms: float
+    backend: str = "legacy"
+    modalities: tuple[str, ...] = field(default_factory=tuple)
+    encoder: dict[str, Any] = field(default_factory=dict)
+    lancedb: dict[str, Any] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -131,6 +152,7 @@ def manifest_to_dict(manifest: RunManifest) -> dict[str, Any]:
     blob = asdict(manifest)
     # asdict turns FusionWeights into nested dict already; ensure shape.
     blob["fusion_weights"] = manifest.fusion_weights.to_dict()
+    blob["modalities"] = list(manifest.modalities)
     validate_manifest(blob)
     return blob
 
@@ -158,6 +180,10 @@ def dict_to_manifest(blob: dict[str, Any]) -> RunManifest:
         latency_p50_warm=float(blob["latency_p50_warm"]),
         latency_p95_warm=float(blob["latency_p95_warm"]),
         cold_start_ms=float(blob["cold_start_ms"]),
+        backend=blob.get("backend", "legacy"),
+        modalities=tuple(blob.get("modalities") or ()),
+        encoder=dict(blob.get("encoder") or {}),
+        lancedb=dict(blob.get("lancedb") or {}),
     )
 
 

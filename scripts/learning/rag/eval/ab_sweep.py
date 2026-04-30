@@ -157,6 +157,8 @@ def run_one_candidate(
     forbidden_window: int = 5,
     device: str = "cpu",
     mode: str = "full",
+    backend: str = "legacy",
+    modalities: list[str] | tuple[str, ...] | None = None,
     batch_size: int = 32,
     model_factory: Callable[[str, int], Any] | None = None,
     force_rebuild: bool = False,
@@ -174,6 +176,9 @@ def run_one_candidate(
         top_k / forbidden_window: forwarded to evaluate_queries
         device: forwarded to model_factory + manifest
         mode: searcher mode for this run
+        backend / modalities: forwarded to ABRetriever and captured in
+            the run manifest. Defaults preserve the legacy v2 SQLite/NPZ
+            embedding A/B path.
         model_factory: callable(hf_model_id, embed_dim) -> encoder.
             Tests pass a fake; production uses
             cli_rag_eval._default_st_factory(device).
@@ -239,6 +244,8 @@ def run_one_candidate(
         embed_dim=candidate.embed_dim,
         top_k=top_k,
         mode=mode,
+        backend=backend,
+        modalities=modalities,
     ) as retrieve:
         per_query, regressions, timings_warm = R.evaluate_queries(
             queries, retrieve,
@@ -257,9 +264,10 @@ def run_one_candidate(
         p95 = 0.0
 
     # 4. Build manifest + run report
+    raw_index_manifest = json.loads(manifest_path.read_text())
     manifest = RunManifest(
-        corpus_hash=json.loads(manifest_path.read_text())["corpus_hash"],
-        index_version=int(json.loads(manifest_path.read_text())["index_version"]),
+        corpus_hash=raw_index_manifest["corpus_hash"],
+        index_version=int(raw_index_manifest["index_version"]),
         embedding_model=candidate.hf_model_id,
         model_revision=None,
         embedding_dim=candidate.embed_dim,
@@ -271,6 +279,10 @@ def run_one_candidate(
         latency_p50_warm=p50,
         latency_p95_warm=p95,
         cold_start_ms=cold_load_ms,
+        backend=backend,
+        modalities=tuple(modalities or ()),
+        encoder=dict(raw_index_manifest.get("encoder") or {}),
+        lancedb=dict(raw_index_manifest.get("lancedb") or {}),
     )
     report = R.build_run_report(
         queries, per_query, regressions,
@@ -301,6 +313,8 @@ def run_ab_sweep(
     forbidden_window: int = 5,
     device: str = "cpu",
     mode: str = "full",
+    backend: str = "legacy",
+    modalities: list[str] | tuple[str, ...] | None = None,
     batch_size: int = 32,
     thresholds: GateThresholds = GateThresholds(),
     model_factory: Callable[[str, int], Any] | None = None,
@@ -323,7 +337,8 @@ def run_ab_sweep(
             candidate, queries,
             base_dir=base_dir, corpus_root=corpus_root,
             top_k=top_k, forbidden_window=forbidden_window,
-            device=device, mode=mode, batch_size=batch_size,
+            device=device, mode=mode, backend=backend, modalities=modalities,
+            batch_size=batch_size,
             model_factory=model_factory,
             force_rebuild=force_rebuild, progress=progress,
         )

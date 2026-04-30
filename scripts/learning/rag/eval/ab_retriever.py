@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from scripts.learning.rag import indexer, searcher
-from scripts.learning.rag.eval.cache import assert_index_compat
+from scripts.learning.rag.eval.cache import IndexCompatibilityError, assert_index_compat
 
 
 class ABRetriever(AbstractContextManager):
@@ -61,6 +61,8 @@ class ABRetriever(AbstractContextManager):
         embed_dim: int,
         top_k: int = 10,
         mode: str = "full",
+        backend: str = "legacy",
+        modalities: list[str] | tuple[str, ...] | None = None,
     ) -> None:
         self.index_root = Path(index_root)
         self.model = model
@@ -68,7 +70,12 @@ class ABRetriever(AbstractContextManager):
         self.embed_dim = embed_dim
         self.top_k = top_k
         self.mode = mode
+        self.backend = backend
+        self.modalities = tuple(modalities) if modalities is not None else None
         self._original_embedder: Any = None
+        self._original_lance_encoder: Any = None
+        self._lance_cache_key: str | None = None
+        self._lance_cache_had_key = False
         self._entered = False
 
     # ------------------------------------------------------------------
@@ -77,28 +84,62 @@ class ABRetriever(AbstractContextManager):
 
     def __enter__(self) -> Callable[[Any], list[str]]:
         # 1. Manifest compat (fail-fast before binding the swap)
-        manifest = indexer.load_manifest(self.index_root)
-        assert_index_compat(
-            manifest_embed_model=manifest["embed_model"],
-            manifest_embed_dim=int(manifest["embed_dim"]),
-            manifest_index_version=int(manifest["index_version"]),
-            runtime_embed_model=self.model_id,
-            runtime_embed_dim=self.embed_dim,
-            runtime_index_version=indexer.INDEX_VERSION,
-        )
+        if self.backend == "legacy":
+            manifest = indexer.load_manifest(self.index_root)
+            assert_index_compat(
+                manifest_embed_model=manifest["embed_model"],
+                manifest_embed_dim=int(manifest["embed_dim"]),
+                manifest_index_version=int(manifest["index_version"]),
+                runtime_embed_model=self.model_id,
+                runtime_embed_dim=self.embed_dim,
+                runtime_index_version=indexer.INDEX_VERSION,
+            )
 
-        # 2. Swap the module-level query embedder
-        self._original_embedder = searcher._QUERY_EMBEDDER
-        searcher._QUERY_EMBEDDER = self.model
+            # 2a. Swap the legacy module-level query embedder.
+            self._original_embedder = searcher._QUERY_EMBEDDER
+            searcher._QUERY_EMBEDDER = self.model
+        elif self.backend == "lance":
+            manifest = indexer.read_manifest_v3(self.index_root)
+            encoder = manifest.get("encoder") or {}
+            manifest_model = str(encoder.get("model_id") or "")
+            if manifest_model != self.model_id:
+                raise IndexCompatibilityError(
+                    f"embed_model mismatch: manifest={manifest_model!r} "
+                    f"runtime={self.model_id!r}"
+                )
+
+            # 2b. Bind the LanceDB modal query encoder cache to the candidate.
+            # searcher._get_lance_query_encoder resolves this exact key from
+            # the v3 manifest, so no production BGE-M3 load happens during
+            # tests or scoped A/B runs.
+            model_version = str(encoder.get("model_version") or manifest_model)
+            cache_key = model_version or manifest_model
+            self._lance_cache_key = cache_key
+            self._lance_cache_had_key = cache_key in searcher._LANCE_QUERY_ENCODER_CACHE
+            self._original_lance_encoder = searcher._LANCE_QUERY_ENCODER_CACHE.get(cache_key)
+            searcher._LANCE_QUERY_ENCODER_CACHE[cache_key] = self.model
+        else:
+            raise ValueError(f"unknown backend: {self.backend}")
         self._entered = True
         return self._retrieve
 
     def __exit__(self, exc_type, exc, tb) -> None:
         if not self._entered:
             return
-        # Always restore, even on exception
-        searcher._QUERY_EMBEDDER = self._original_embedder
+        # Always restore, even on exception.
+        if self.backend == "legacy":
+            searcher._QUERY_EMBEDDER = self._original_embedder
+        elif self.backend == "lance" and self._lance_cache_key is not None:
+            if self._lance_cache_had_key:
+                searcher._LANCE_QUERY_ENCODER_CACHE[self._lance_cache_key] = (
+                    self._original_lance_encoder
+                )
+            else:
+                searcher._LANCE_QUERY_ENCODER_CACHE.pop(self._lance_cache_key, None)
         self._original_embedder = None
+        self._original_lance_encoder = None
+        self._lance_cache_key = None
+        self._lance_cache_had_key = False
         self._entered = False
         # Do not swallow — propagate exceptions
         return None
@@ -125,6 +166,8 @@ class ABRetriever(AbstractContextManager):
             learning_points=list(query.learning_points),
             top_k=self.top_k,
             mode=self.mode,
+            backend=self.backend,
+            modalities=self.modalities,
             experience_level=query.experience_level,
             index_root=self.index_root,
         )
