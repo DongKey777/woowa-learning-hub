@@ -374,6 +374,51 @@ Important H4a design choice:
 - The weight is deliberately small (`0.03`) until H7/H8 ablation tunes the blend.
 - H4 remaining work is quality/latency measurement: exact candidate MaxSim vs LanceDB indexed multivector vs possible sidecar.
 
+## H2.2 CLI Wrapper Runtime Fix + Real bge-m3 Smoke
+
+Issue found during operational smoke:
+
+- `bin/cs-index-build` used system `python3`.
+- The active dependencies (`lancedb`, `pyarrow`, `FlagEmbedding`, `kiwipiepy`) are installed in repo `.venv`.
+- Result: unit tests passed under `.venv/bin/python`, but the real CLI failed with `IndexDependencyMissing: lancedb/pyarrow not installed`.
+
+Fix:
+
+- `bin/cs-index-build` now resolves Python in this order:
+  1. `$PYTHON` env override,
+  2. repo `.venv/bin/python`,
+  3. system `python3`.
+- `bin/cs-index-build.ps1` now resolves Python in this order:
+  1. `$env:PYTHON`,
+  2. repo `.venv\Scripts\python.exe`,
+  3. repo `.venv\bin\python`,
+  4. system `python`.
+
+Operational smoke:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+  bin/cs-index-build --backend lance --mode full \
+  --corpus /tmp/woowa-lance-corpus-... \
+  --out /tmp/woowa-lance-index-... \
+  --modalities dense,sparse,colbert,fts
+```
+
+Result:
+
+```text
+[cs-index] state=missing reason=first_run
+[cs-index] mode=full
+[cs-index] 1/5 코퍼스 스캔 완료 — chunks=4
+[cs-index] 4/5 임베딩 진행 — 4/4 (100.0%)
+[cs-index] 5/6 LanceDB 테이블 작성 중 (4 chunks)…
+[cs-index] 6/6 LanceDB 인덱스 생성 중 (4 chunks)…
+[cs-index] 5/5 manifest 저장 — row_count=4, corpus_hash=f905eff95d2d…
+[cs-index] 완료 — mode=lance-full row_count=4 — encoder=BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181 modalities=dense,sparse,colbert,fts (7.6s)
+```
+
+This smoke used real cached bge-m3 in offline mode and did not touch production `state/cs_rag`.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

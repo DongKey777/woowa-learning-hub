@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-python3 "$ROOT/scripts/learning/cli_cs_index_build.py" "$@"
+if [[ -n "${PYTHON:-}" ]]; then
+  PY="$PYTHON"
+elif [[ -x "$ROOT/.venv/bin/python" ]]; then
+  PY="$ROOT/.venv/bin/python"
+else
+  PY="python3"
+fi
+exec "$PY" "$ROOT/scripts/learning/cli_cs_index_build.py" "$@"
