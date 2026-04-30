@@ -896,8 +896,14 @@ class RunPodHarness:
             # Python — which has torch+CUDA matching the image's
             # driver. NO venv (avoids cu130-vs-driver12.4 mismatch).
             "cd /workspace/repo && pip install --break-system-packages -e .",
+            # Pin transformers <5.0 — FlagEmbedding's import chain
+            # imports BloomPreTrainedModel and TrainingArguments via
+            # transformers' lazy import system. transformers 5.x
+            # refactored both away (R1 v6 SSH-debug:
+            # ModuleNotFoundError on import FlagEmbedding alone). The
+            # latest 4.x is the supported target.
             "cd /workspace/repo && pip install --break-system-packages "
-            "lancedb pyarrow FlagEmbedding kiwipiepy",
+            "lancedb pyarrow \"transformers<5.0\" FlagEmbedding kiwipiepy",
             # CVE-2025-32434 mitigation: transformers >= 4.50 refuses
             # torch.load on .bin checkpoints unless torch >= 2.6
             # (BGE-M3 ships pytorch_model.bin, no .safetensors). Pod's

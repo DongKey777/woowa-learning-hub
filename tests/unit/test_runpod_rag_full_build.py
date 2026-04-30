@@ -181,6 +181,21 @@ def test_remote_commands_use_system_python_not_venv():
     assert "pip install --break-system-packages" in full
 
 
+def test_remote_commands_pin_transformers_below_5_0():
+    """R1 v6 bug fix: transformers 5.x removed Bloom/TrainingArguments
+    in a way that breaks FlagEmbedding's import chain
+    (ModuleNotFoundError before any download even starts). Pin to 4.x
+    latest, the supported target."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense"),
+        run_id="r1", r_phase="r1",
+    )
+    full = "\n".join(cmds)
+    assert "\"transformers<5.0\"" in full or "'transformers<5.0'" in full
+
+
 def test_remote_commands_upgrade_torch_to_at_least_2_6_with_cu124(_=None):
     """R1 v5 bug fix: transformers 5.x raises CVE-2025-32434 when loading
     .bin checkpoints with torch < 2.6 (BGE-M3 ships only pytorch_model.bin,
