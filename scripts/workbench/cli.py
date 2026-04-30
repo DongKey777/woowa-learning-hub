@@ -645,6 +645,7 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
                 learning_points=None,
                 topic_hints=None,
                 readiness=readiness,
+                learner_context=out["learner_context"],
             )
         except Exception as exc:  # noqa: BLE001 — surface any failure as note
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}

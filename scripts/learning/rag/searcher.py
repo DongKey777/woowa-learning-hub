@@ -45,6 +45,9 @@ from pathlib import Path
 from typing import Iterable
 
 from . import category_mapping, indexer, signal_rules
+from .conversation_window import recent_rag_ask_context
+from .follow_up import is_follow_up
+from .multi_query import build_query_candidates, weighted_rrf_merge
 
 RRF_K = 60
 DEFAULT_TOP_K = 5
@@ -1474,6 +1477,7 @@ def search(
             modalities=modalities,
             index_root=index_root,
             experience_level=experience_level,
+            learner_context=learner_context,
             debug=debug,
         )
 
@@ -1592,6 +1596,7 @@ def _search_lance(
     modalities: list[str] | tuple[str, ...] | None,
     index_root: Path | str,
     experience_level: str | None,
+    learner_context: dict | None,
     debug: dict | None,
 ) -> list[dict]:
     try:
@@ -1609,22 +1614,14 @@ def _search_lance(
         learning_points=learning_points,
         signals=signals,
     )
-    query_modalities = tuple(m for m in resolved_modalities if m != "fts")
-    query_encoding = None
-    if query_modalities:
-        try:
-            encoder = _get_lance_query_encoder(index_root)
-            query_text = prompt if not topic_hints else f"{prompt}\n\n" + "\n".join(topic_hints)
-            query_encoding = encoder.encode_query(query_text, modalities=query_modalities)
-        except Exception:
-            query_encoding = None
-
-    scored, chunks = _lance_candidate_pool(
+    scored, chunks, query_debug = _lance_candidate_pool_for_query_plan(
         table,
         prompt,
-        query_encoding=query_encoding,
-        modalities=resolved_modalities,
+        topic_hints=topic_hints,
+        resolved_modalities=resolved_modalities,
+        index_root=index_root,
         pool_size=max(FTS_POOL_SIZE, top_k * 20),
+        learner_context=learner_context,
     )
     if not scored:
         return []
@@ -1639,11 +1636,179 @@ def _search_lance(
     if debug is not None:
         debug["backend"] = "lance"
         debug["modalities"] = list(resolved_modalities)
+        debug.update(query_debug)
         debug["category_filter_fallback"] = filter_fallback_used
         debug["allowed_categories"] = sorted(allowed_categories)
 
     deduped = _dedupe_by_path(filtered, chunks)
     return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
+
+
+def _lance_candidate_pool_for_query_plan(
+    table,
+    prompt: str,
+    *,
+    topic_hints: list[str] | None,
+    resolved_modalities: tuple[str, ...],
+    index_root: Path | str,
+    pool_size: int,
+    learner_context: dict | None,
+) -> tuple[list[tuple[int, float]], dict[int, dict], dict]:
+    """Run the LanceDB candidate layer for one or more query candidates.
+
+    The common path stays single-query. Short follow-up prompts can add a
+    bounded context candidate, then merge per-candidate rankings with weighted
+    RRF instead of concatenating the query strings.
+    """
+    candidates = _build_lance_query_candidates(
+        prompt,
+        topic_hints=topic_hints,
+        learner_context=learner_context,
+        index_root=index_root,
+    )
+    if not candidates:
+        return [], {}, {"query_candidate_kinds": []}
+
+    query_modalities = tuple(m for m in resolved_modalities if m != "fts")
+    encoder = None
+    if query_modalities:
+        try:
+            encoder = _get_lance_query_encoder(index_root)
+        except Exception:
+            encoder = None
+
+    if len(candidates) == 1:
+        candidate = candidates[0]
+        query_encoding = _encode_lance_query_candidate(
+            encoder,
+            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
+            query_modalities,
+        )
+        scored, chunks = _lance_candidate_pool(
+            table,
+            candidate.text,
+            query_encoding=query_encoding,
+            modalities=resolved_modalities,
+            pool_size=pool_size,
+        )
+        return scored, chunks, {"query_candidate_kinds": [candidate.kind]}
+
+    chunks: dict[int, dict] = {}
+    rankings: list[tuple[list[tuple[int, float]], float]] = []
+    for candidate in candidates:
+        query_encoding = _encode_lance_query_candidate(
+            encoder,
+            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
+            query_modalities,
+        )
+        candidate_scored, candidate_chunks = _lance_candidate_pool(
+            table,
+            candidate.text,
+            query_encoding=query_encoding,
+            modalities=resolved_modalities,
+            pool_size=pool_size,
+        )
+        if not candidate_scored:
+            continue
+        chunks.update(candidate_chunks)
+        rankings.append((candidate_scored, candidate.weight))
+
+    if not rankings:
+        return [], {}, {"query_candidate_kinds": [c.kind for c in candidates]}
+    return (
+        weighted_rrf_merge(rankings),
+        chunks,
+        {"query_candidate_kinds": [c.kind for c in candidates]},
+    )
+
+
+def _encode_lance_query_candidate(
+    encoder,
+    text: str,
+    query_modalities: tuple[str, ...],
+) -> dict | None:
+    if encoder is None or not query_modalities:
+        return None
+    try:
+        return encoder.encode_query(text, modalities=query_modalities)
+    except Exception:
+        return None
+
+
+def _lance_encode_text_for_candidate(
+    text: str,
+    kind: str,
+    topic_hints: list[str] | None,
+) -> str:
+    if kind == "original" and topic_hints:
+        return f"{text}\n\n" + "\n".join(topic_hints)
+    return text
+
+
+def _build_lance_query_candidates(
+    prompt: str,
+    *,
+    topic_hints: list[str] | None,
+    learner_context: dict | None,
+    index_root: Path | str,
+):
+    follow_up_context = _follow_up_context_for_prompt(prompt, learner_context)
+    rewrites = _cached_rewrite_texts(prompt, index_root)
+    return build_query_candidates(
+        prompt,
+        topic_hints=None,
+        follow_up_context=follow_up_context,
+        rewrites=rewrites,
+        max_candidates=4,
+    )
+
+
+def _follow_up_context_for_prompt(
+    prompt: str,
+    learner_context: dict | None,
+) -> list[str]:
+    if not is_follow_up(prompt):
+        return []
+    if isinstance(learner_context, dict):
+        for key in ("recent_rag_ask_context", "recent_topics"):
+            raw = learner_context.get(key)
+            if isinstance(raw, list):
+                values = [str(item).strip() for item in raw if str(item).strip()]
+                if values:
+                    return values[:2]
+    return recent_rag_ask_context(limit=2)
+
+
+def _cached_rewrite_texts(prompt: str, index_root: Path | str) -> list[str]:
+    repo_root = _repo_root_from_index_root(index_root)
+    if repo_root is None:
+        return []
+    try:
+        from . import query_rewrites  # noqa: WPS433
+    except Exception:
+        return []
+
+    out: list[str] = []
+    for mode in ("normalize", "decompose", "hyde"):
+        try:
+            cached = query_rewrites.read_rewrites(
+                prompt,
+                mode,
+                repo_root=repo_root,
+            )
+        except Exception:
+            cached = None
+        if cached is None:
+            continue
+        out.extend(cached.texts)
+    return out[:3]
+
+
+def _repo_root_from_index_root(index_root: Path | str) -> Path | None:
+    root = Path(index_root)
+    if root.name == "cs_rag" and root.parent.name == "state":
+        return root.parent.parent
+    return None
 
 
 def _fallback_tokens(prompt: str) -> list[str]:

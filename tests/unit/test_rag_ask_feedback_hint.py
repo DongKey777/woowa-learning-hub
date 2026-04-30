@@ -148,3 +148,56 @@ def test_feedback_hint_unclear_signal_does_not_include_hits():
     # But helpful/not_helpful do include hit args
     assert "--hit" in hint["commands"]["helpful"]
     assert "--hit" in hint["commands"]["not_helpful"]
+
+
+def test_cmd_rag_ask_passes_learner_context_to_augment(monkeypatch, capsys):
+    cli = _import_cli()
+    from core import interactive_rag_router, learner_memory  # type: ignore  # noqa: WPS433
+    from scripts.learning import integration  # type: ignore  # noqa: WPS433
+    from scripts.learning.rag import indexer as rag_indexer  # type: ignore  # noqa: WPS433
+
+    expected_context = {"recent_rag_ask_context": ["concepts=concept:spring/bean"]}
+    captured: dict = {}
+
+    class ReadyReport:
+        state = "ready"
+        reason = "ready"
+        corpus_hash = "fixture"
+        index_manifest_hash = "fixture"
+        next_command = None
+
+    monkeypatch.setattr(
+        interactive_rag_router,
+        "classify",
+        lambda *args, **kwargs: interactive_rag_router.RouterDecision(
+            tier=1,
+            mode="cheap",
+            reason="fixture",
+            experience_level="beginner",
+            override_active=False,
+        ),
+    )
+    monkeypatch.setattr(learner_memory, "load_learner_profile", lambda: {"total_events": 1})
+    monkeypatch.setattr(
+        learner_memory,
+        "build_learner_context",
+        lambda *args, **kwargs: expected_context,
+    )
+    monkeypatch.setattr(rag_indexer, "is_ready", lambda *args, **kwargs: ReadyReport())
+
+    def fake_augment(**kwargs):
+        captured.update(kwargs)
+        return {"by_learning_point": {}, "by_fallback_key": {}, "cs_categories_hit": []}
+
+    monkeypatch.setattr(integration, "augment", fake_augment)
+    monkeypatch.setattr(cli, "_record_rag_ask_event", lambda *args, **kwargs: None)
+    monkeypatch.setattr(cli, "_record_routing_log", lambda *args, **kwargs: None)
+
+    rc = cli.cmd_rag_ask(
+        argparse.Namespace(prompt="Bean이 뭐야?", repo=None, module=None),
+    )
+
+    assert rc == 0
+    assert captured["learner_context"] == expected_context
+    out = capsys.readouterr().out
+    assert '"learner_context"' in out

@@ -299,6 +299,68 @@ def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkey
     assert hits[0]["path"] == "contents/database/transaction-basics.md"
 
 
+def test_lance_follow_up_query_uses_recent_context_candidate(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=encoder,
+    )
+    monkeypatch.setattr(
+        searcher,
+        "recent_rag_ask_context",
+        lambda limit=2: ["concepts=concept:spring/bean"],
+    )
+    debug = {}
+
+    hits = searcher.search(
+        "그럼 왜 그래?",
+        mode="cheap",
+        backend="lance",
+        index_root=index_root,
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/spring/bean-basics.md"
+    assert debug["query_candidate_kinds"] == ["original", "follow_up"]
+
+
+def test_lance_query_plan_uses_learner_context_before_memory(monkeypatch):
+    def fail_if_memory_read(limit=2):
+        raise AssertionError("learner_context should provide the follow-up context")
+
+    monkeypatch.setattr(searcher, "recent_rag_ask_context", fail_if_memory_read)
+
+    context = searcher._follow_up_context_for_prompt(
+        "그럼 왜 그래?",
+        {"recent_rag_ask_context": ["concepts=concept:database/transaction"]},
+    )
+
+    assert context == ["concepts=concept:database/transaction"]
+
+
+def test_lance_original_candidate_encodes_topic_hints_without_rewriting_followups():
+    assert (
+        searcher._lance_encode_text_for_candidate(
+            "Spring Bean이 뭐야?",
+            "original",
+            ["spring-core"],
+        )
+        == "Spring Bean이 뭐야?\n\nspring-core"
+    )
+    assert (
+        searcher._lance_encode_text_for_candidate(
+            "Previous context: concepts=concept:spring/bean\nCurrent question: 왜?",
+            "follow_up",
+            ["spring-core"],
+        )
+        == "Previous context: concepts=concept:spring/bean\nCurrent question: 왜?"
+    )
+
+
 def test_sparse_rescore_promotes_matching_sparse_tokens():
     scored = [(1, 0.1), (2, 0.2)]
     chunks = {
