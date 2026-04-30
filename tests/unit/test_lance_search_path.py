@@ -162,6 +162,74 @@ def test_public_search_can_use_explicit_lance_backend(tmp_path, monkeypatch):
     assert debug["modalities"] == ["fts", "dense", "sparse", "colbert"]
 
 
+def test_lance_default_modalities_enable_dense_for_measured_categories():
+    out = searcher._resolve_lance_modalities(
+        manifest_modalities=("fts", "dense", "sparse", "colbert"),
+        requested_modalities=None,
+        mode="full",
+        learning_points=None,
+        signals=[{"category": "database"}],
+    )
+
+    assert out == ("fts", "dense")
+
+
+def test_lance_default_modalities_keep_spring_on_fts_until_more_evidence():
+    out = searcher._resolve_lance_modalities(
+        manifest_modalities=("fts", "dense", "sparse", "colbert"),
+        requested_modalities=None,
+        mode="full",
+        learning_points=None,
+        signals=[{"category": "spring"}],
+    )
+
+    assert out == ("fts",)
+
+
+def test_lance_default_modalities_honor_explicit_ablation_request():
+    out = searcher._resolve_lance_modalities(
+        manifest_modalities=("fts", "dense", "sparse", "colbert"),
+        requested_modalities=("fts", "dense", "sparse"),
+        mode="full",
+        learning_points=None,
+        signals=[{"category": "spring"}],
+    )
+
+    assert out == ("fts", "dense", "sparse")
+
+
+def test_lance_default_modalities_do_not_load_encoder_for_unmeasured_full_query(
+    tmp_path,
+    monkeypatch,
+):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=encoder,
+    )
+
+    def fail_if_loaded(_root):
+        raise AssertionError("spring default should remain FTS-only")
+
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", fail_if_loaded)
+    debug = {}
+
+    hits = searcher.search(
+        "Spring Bean이 뭐야?",
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/spring/bean-basics.md"
+    assert debug["modalities"] == ["fts"]
+
+
 def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkeypatch):
     corpus_root = _fake_corpus(tmp_path)
     index_root = tmp_path / "index"

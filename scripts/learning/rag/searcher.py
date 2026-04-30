@@ -1599,8 +1599,15 @@ def _search_lance(
     except (FileNotFoundError, indexer.IncompatibleIndexError):
         return []
 
+    signals = signal_rules.detect_signals(prompt, topic_hints)
     manifest_modalities = tuple(manifest.get("modalities") or ("fts",))
-    resolved_modalities = tuple(modalities or (("fts",) if mode == "cheap" else manifest_modalities))
+    resolved_modalities = _resolve_lance_modalities(
+        manifest_modalities=manifest_modalities,
+        requested_modalities=modalities,
+        mode=mode,
+        learning_points=learning_points,
+        signals=signals,
+    )
     query_modalities = tuple(m for m in resolved_modalities if m != "fts")
     query_encoding = None
     if query_modalities:
@@ -1624,7 +1631,6 @@ def _search_lance(
     allowed_categories = _collect_categories(learning_points)
     boosted = _apply_category_boost(scored, chunks, allowed_categories)
     boosted = _apply_difficulty_boost(boosted, chunks, experience_level)
-    signals = signal_rules.detect_signals(prompt, topic_hints)
     boosted = _apply_signal_boost(boosted, chunks, prompt, signals)
     filtered, filter_fallback_used = _filter_allowed_categories(
         boosted, chunks, allowed_categories, top_k
@@ -1642,6 +1648,46 @@ def _search_lance(
 def _fallback_tokens(prompt: str) -> list[str]:
     """When signal_rules.expand_query returns empty (short prompt)."""
     return [tok for tok in _FTS_TOKEN_RE.findall(prompt) if len(tok) >= 2]
+
+
+LANCE_DENSE_DEFAULT_CATEGORIES = frozenset(
+    {"database", "network", "operating-system"}
+)
+
+
+def _resolve_lance_modalities(
+    *,
+    manifest_modalities: tuple[str, ...],
+    requested_modalities: list[str] | tuple[str, ...] | None,
+    mode: str,
+    learning_points: list[str] | None,
+    signals: list[dict],
+) -> tuple[str, ...]:
+    """Resolve default LanceDB modalities without making dense global.
+
+    Sampled H7.5 measurements showed bge-m3 dense helps some conceptual
+    categories but hurts or only slows others. Explicit eval/caller modality
+    requests are still honoured; this policy only affects production-style
+    default LanceDB searches.
+    """
+    if requested_modalities is not None:
+        requested = tuple(requested_modalities)
+        return tuple(m for m in requested if m in manifest_modalities)
+
+    if "fts" not in manifest_modalities:
+        return tuple(manifest_modalities)
+    if mode == "cheap" or "dense" not in manifest_modalities:
+        return ("fts",)
+
+    routed_categories = _collect_categories(learning_points)
+    routed_categories.update(
+        str(signal.get("category"))
+        for signal in signals
+        if signal.get("category")
+    )
+    if routed_categories & LANCE_DENSE_DEFAULT_CATEGORIES:
+        return ("fts", "dense")
+    return ("fts",)
 
 
 def _collect_categories(learning_points: list[str] | None) -> set[str]:

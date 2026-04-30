@@ -1157,6 +1157,35 @@ Operational interpretation:
   previous k-means empty-cluster warning flood. They use exact scan, which is
   more appropriate for these small local ablation indexes.
 
+Implemented policy after the sweep:
+
+- `searcher._resolve_lance_modalities(...)` now keeps explicit modality
+  requests unchanged, so ablation/test callers can still force any modality set.
+- Production-style LanceDB defaults no longer mean "use every modality in the
+  manifest".
+- Cheap mode remains `fts` only.
+- Full mode defaults to `fts,dense` only when learning-point or signal routing
+  lands in categories where sampled evidence showed dense gains:
+  `database`, `network`, `operating-system`.
+- Full mode stays `fts` for `spring`, `software-engineering`, `data-structure`,
+  and uncategorised prompts until more evidence justifies dense.
+
+Verification:
+
+```bash
+.venv/bin/python -m pytest \
+  tests/unit/test_lance_search_path.py \
+  tests/unit/test_rag_eval_ab_retriever.py \
+  tests/unit/test_rag_eval_ablation.py \
+  -q
+```
+
+Result:
+
+```text
+27 passed in 1.98s
+```
+
 Next practical step:
 
 - Run sampled vector ablations category-by-category before any full-corpus
