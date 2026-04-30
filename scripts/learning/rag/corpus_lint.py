@@ -354,8 +354,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--with-dedupe",
         action="store_true",
-        help="(reserved) run cosine-0.92 dedupe candidate check — "
-             "requires the dense index and is much slower.",
+        help=(
+            "Run embedding-cosine dedupe candidate check using "
+            "state/cs_rag/dense.npz. Requires the production index "
+            "to be built (bin/cs-index-build)."
+        ),
+    )
+    parser.add_argument(
+        "--dedupe-threshold",
+        type=float,
+        default=0.92,
+        help="Cosine similarity threshold (default: 0.92, plan §P5.4).",
+    )
+    parser.add_argument(
+        "--dedupe-cross-category",
+        action="store_true",
+        help=(
+            "Allow cross-category dedupe pairs. Default scope is "
+            "same-category only — cuts compute and avoids accidental "
+            "false positives across unrelated domains."
+        ),
     )
     parser.add_argument(
         "--strict",
@@ -376,12 +394,12 @@ def main(argv: list[str] | None = None) -> int:
     dedupe_fn = None
     if args.with_dedupe:
         # Lazy import keeps the lint module standalone-testable.
-        from scripts.learning.rag.eval import dedupe_candidates  # type: ignore  # noqa: F401
-        dedupe_fn = None  # placeholder until the dedupe module lands (P5.5)
-        print(
-            "[corpus-lint] --with-dedupe requested — dedupe scanner is "
-            "scheduled for P5.5; running other checks only.",
-            file=sys.stderr,
+        from scripts.learning.rag.corpus_dedupe_runner import make_lint_callback  # noqa: WPS433
+        index_root = repo_root / "state" / "cs_rag"
+        dedupe_fn = make_lint_callback(
+            index_root=index_root,
+            threshold=args.dedupe_threshold,
+            same_category_only=not args.dedupe_cross_category,
         )
 
     report = lint_corpus(corpus_root, repo_root=repo_root, dedupe_candidates_fn=dedupe_fn)
