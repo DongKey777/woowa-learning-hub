@@ -857,6 +857,22 @@ class RunPodHarness:
             except Exception as exc:
                 logger.warning("[runpod] sidecar %s pull failed: %s", sidecar, exc)
 
+        # Pull eval outputs (R1 v9 lesson: harness skipped these and we
+        # had to re-run eval locally because the Pod already terminated).
+        # The build commands write eval to /workspace/eval/<phase>_holdout.json.
+        if r_phase != "r0":
+            eval_dir = local_artifact_dir / "eval"
+            eval_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                executor.scp_from_pod(
+                    pod, keypath,
+                    f"/workspace/eval/{r_phase}_holdout.json",
+                    eval_dir / f"{r_phase}_holdout.json",
+                )
+            except Exception as exc:
+                logger.warning("[runpod] eval %s_holdout.json pull failed: %s",
+                               r_phase, exc)
+
         return local_artifact_dir
 
     def _build_remote_commands(
