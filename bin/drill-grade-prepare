@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/drill-grade-prepare \
+#       --drill-session-id <id> \
+#       --question "<text>" --answer "<text>" \
+#       [--expected-terms "term1,term2"] \
+#       [--learning-point "<concept_id>"] \
+#       [--source-doc "<path>"] \
+#       [--out <dir>]
+#
+# Wraps scripts/learning/cli_drill_grade_prepare.py. The wrapper writes
+# the input artifact and prints the expected output path; the AI
+# session reads the input, follows skills/woowa-drill-grade/SKILL.md,
+# and writes the output JSON. The downstream caller appends the
+# validated output to state/repos/<repo>/memory/drill-history.jsonl.
+# See docs/ai-behavior-contracts.md §drill-grade-v1.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_drill_grade_prepare.py" "$@"
