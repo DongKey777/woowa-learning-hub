@@ -545,6 +545,52 @@ Important H5a design choice:
 - CLI still rejects `--backend lance --mode incremental` at this point.
 - Next commit should wire the CLI to `incremental_lance_build_index(...)` and then update tests/operational smoke.
 
+## H5b LanceDB Incremental CLI Wiring
+
+Implemented after H5a:
+
+- `bin/cs-index-build --backend lance --mode incremental` now calls `incremental_lance_build_index(...)`.
+- `--backend lance --mode auto` resolves against the v3 LanceDB manifest/table instead of legacy SQLite readiness:
+  - v3 exists → incremental,
+  - v3 missing/incompatible → full.
+- `--backend lance --mode full` seeds `chunk_hashes_per_model.json` after the full build.
+  - This fixed an operational gap discovered during smoke: full build created the table but no sidecar, so the next incremental fell back to full with `no_model_fingerprints`.
+- Full builds still run the disk budget gate before loading bge-m3.
+- Incremental summary now prints LanceDB version transition, e.g. `lance_version=3→4`.
+
+H5b verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_incremental_indexer.py -q
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_incremental_indexer.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_search_path.py tests/unit/test_incremental_indexer.py -q
+```
+
+Results:
+
+```text
+14 passed in 1.66s
+76 passed in 1.84s
+```
+
+Operational smoke with real cached bge-m3:
+
+```text
+FULL
+[cs-index] 완료 — mode=lance-full row_count=4 — encoder=BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181 modalities=dense,sparse,colbert,fts (6.0s)
+
+NOOP
+[cs-index] diff {'added': 0, 'modified': 0, 'deleted': 0, 'unchanged': 4}
+[cs-index] noop {'lance_version': 3}
+[cs-index] 완료 — mode=lance-incremental row_count=4 — added=0 modified=0 deleted=0 unchanged=4 encoded=0 lance_version=3→3 (0.6s)
+
+ADD
+[cs-index] encode_delta {'count': 2, 'model': 'BAAI/bge-m3'}
+[cs-index] lance_merge_insert {'updated': 0, 'inserted': 2, 'deleted': 0}
+[cs-index] 완료 — mode=lance-incremental row_count=6 — added=2 modified=0 deleted=0 unchanged=4 encoded=2 lance_version=3→4 (5.2s)
+```
+
+This smoke used temporary `/tmp` corpus/index paths and did not touch production `state/cs_rag`.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

@@ -192,6 +192,30 @@ def _print_lance_disk_budget(budget: dict) -> None:
     )
 
 
+def _is_lance_ready(indexer_module, out_root: str) -> bool:
+    try:
+        indexer_module.read_manifest_v3(out_root)
+        table = indexer_module.open_lance_table(out_root)
+        table.count_rows()
+    except Exception:
+        return False
+    return True
+
+
+def _seed_lance_fingerprints(index_root: str, corpus_root: str, model_version: str) -> None:
+    """Seed H5 fingerprint sidecar after an explicit LanceDB full build."""
+    from scripts.learning.rag import corpus_loader  # noqa: WPS433
+    from scripts.learning.rag import incremental_indexer  # noqa: WPS433
+
+    chunks = corpus_loader.load_corpus(corpus_root)
+    fingerprints = incremental_indexer.compute_chunk_fingerprints(chunks)
+    incremental_indexer.atomic_save_model_chunk_hashes(
+        index_root=index_root,
+        model_version=model_version,
+        fingerprints=fingerprints,
+    )
+
+
 def main(
     argv: list[str] | None = None,
     *,
@@ -281,10 +305,10 @@ def main(
         else:
             effective_mode = "full"
     if args.backend == "lance" and args.mode == "auto" and not args.force:
-        # v3 readiness is not the production readiness contract yet.  An
-        # explicit LanceDB build should therefore mean "build v3 now", not
-        # "reuse the legacy v2 readiness result and choose incremental".
-        effective_mode = "full"
+        # v3 readiness is not the production readiness contract yet. Resolve
+        # LanceDB auto mode against the v3 manifest/table explicitly instead
+        # of reusing the legacy SQLite readiness result above.
+        effective_mode = "incremental" if _is_lance_ready(indexer, args.out) else "full"
 
     if effective_mode == "full" and readiness.state == "ready" and not args.force:
         # Explicit --mode full but no actual reason to rebuild: still
@@ -299,41 +323,77 @@ def main(
     start = time.time()
     try:
         if args.backend == "lance":
-            if effective_mode == "incremental":
-                print(
-                    "[cs-index] ERROR: --backend lance supports only full builds until "
-                    "the LanceDB incremental wrapper lands. Use --mode full.",
-                    file=sys.stderr,
-                    flush=True,
+            if effective_mode == "full":
+                budget = _estimate_lance_disk_budget(args.corpus, args.out)
+                _print_lance_disk_budget(budget)
+                if not budget["ok"]:
+                    print(
+                        "[cs-index] ERROR: INSUFFICIENT_DISK for LanceDB rebuild "
+                        f"(need >= {_format_bytes(budget['required_free_bytes'])}, "
+                        f"free {_format_bytes(budget['free_bytes'])})",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    return 2
+                factory = lance_encoder_factory or _default_lance_encoder
+                encoder = factory()
+                manifest = indexer.build_lance_index(
+                    index_root=args.out,
+                    corpus_root=args.corpus,
+                    encoder=encoder,
+                    modalities=args.modalities,
+                    progress=_progress,
+                    colbert_dtype=args.lance_colbert_dtype,
                 )
-                return 2
-            budget = _estimate_lance_disk_budget(args.corpus, args.out)
-            _print_lance_disk_budget(budget)
-            if not budget["ok"]:
-                print(
-                    "[cs-index] ERROR: INSUFFICIENT_DISK for LanceDB rebuild "
-                    f"(need >= {_format_bytes(budget['required_free_bytes'])}, "
-                    f"free {_format_bytes(budget['free_bytes'])})",
-                    file=sys.stderr,
-                    flush=True,
+                try:
+                    model_version = manifest.get("encoder", {}).get("model_version")
+                    if not model_version:
+                        model_version = encoder.model_version
+                    _seed_lance_fingerprints(
+                        args.out,
+                        args.corpus,
+                        model_version,
+                    )
+                except Exception as exc:  # noqa: BLE001 - safe over-work on next run
+                    print(
+                        f"[cs-index] WARN: fingerprint sidecar seed failed: {type(exc).__name__}: {exc}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                row_count = manifest["row_count"]
+                mode_descriptor = "lance-full"
+                extra_summary = (
+                    f" — encoder={manifest.get('encoder', {}).get('model_version', args.encoder)} "
+                    f"modalities={','.join(args.modalities)}"
                 )
-                return 2
-            factory = lance_encoder_factory or _default_lance_encoder
-            encoder = factory()
-            manifest = indexer.build_lance_index(
-                index_root=args.out,
-                corpus_root=args.corpus,
-                encoder=encoder,
-                modalities=args.modalities,
-                progress=_progress,
-                colbert_dtype=args.lance_colbert_dtype,
-            )
-            row_count = manifest["row_count"]
-            mode_descriptor = "lance-full"
-            extra_summary = (
-                f" — encoder={manifest.get('encoder', {}).get('model_version', args.encoder)} "
-                f"modalities={','.join(args.modalities)}"
-            )
+            else:
+                factory = lance_encoder_factory or _default_lance_encoder
+                encoder = factory()
+                result = incremental_indexer.incremental_lance_build_index(
+                    encoder=encoder,
+                    index_root=args.out,
+                    corpus_root=args.corpus,
+                    modalities=args.modalities,
+                    progress=_progress,
+                    colbert_dtype=args.lance_colbert_dtype,
+                )
+                row_count = result.manifest["row_count"]
+                mode_descriptor = f"lance-{result.mode}"
+                stats = result.diff_stats
+                extra_summary = (
+                    f" — added={stats.get('added', 0)} "
+                    f"modified={stats.get('modified', 0)} "
+                    f"deleted={stats.get('deleted', 0)} "
+                    f"unchanged={stats.get('unchanged', 0)} "
+                    f"encoded={result.encoded_chunk_count}"
+                )
+                if result.lance_version_before is not None:
+                    extra_summary += (
+                        f" lance_version={result.lance_version_before}"
+                        f"→{result.lance_version_after}"
+                    )
+                if result.fallback_reason:
+                    extra_summary += f" (fallback: {result.fallback_reason})"
         elif effective_mode == "full":
             manifest = indexer.build_index(
                 index_root=args.out,

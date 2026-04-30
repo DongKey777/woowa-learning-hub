@@ -107,6 +107,28 @@ def stub_incremental(monkeypatch):
     monkeypatch.setattr(
         incremental_indexer, "incremental_build_index", fake_incremental
     )
+
+    state["lance_called"] = False
+    state["lance_kwargs"] = None
+
+    def fake_lance_incremental(**kwargs):
+        state["lance_called"] = True
+        state["lance_kwargs"] = kwargs
+        result = state.get("lance_result_override") or incremental_indexer.IncrementalBuildResult(
+            mode="incremental",
+            manifest={"row_count": 200},
+            diff_stats={"added": 1, "modified": 0, "deleted": 0, "unchanged": 199},
+            encoded_chunk_count=1,
+            fallback_reason=None,
+            lance_version_before=2,
+            lance_version_after=3,
+        )
+        state["lance_result"] = result
+        return result
+
+    monkeypatch.setattr(
+        incremental_indexer, "incremental_lance_build_index", fake_lance_incremental
+    )
     return state
 
 
@@ -216,6 +238,7 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
         next_command=None,
     )
     fake_encoder = object()
+    seed_state = {"called": False, "args": None}
     monkeypatch.setattr(
         CLI,
         "_estimate_lance_disk_budget",
@@ -231,6 +254,11 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
             "disk_root": str(tmp_path),
             "ok": True,
         },
+    )
+    monkeypatch.setattr(
+        CLI,
+        "_seed_lance_fingerprints",
+        lambda *args: seed_state.update({"called": True, "args": args}),
     )
 
     rc = CLI.main(
@@ -251,6 +279,8 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     assert stub_indexer["build_lance_args"]["encoder"] is fake_encoder
     assert stub_indexer["build_lance_args"]["modalities"] == ("dense", "fts")
     assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
+    assert seed_state["called"] is True
+    assert seed_state["args"][2] == "fake/bge-m3@test"
     assert "mode=lance-full" in capsys.readouterr().out
 
 
@@ -291,9 +321,11 @@ def test_main_lance_backend_aborts_when_disk_budget_is_insufficient(
     assert "INSUFFICIENT_DISK" in captured.err
 
 
-def test_main_lance_backend_rejects_incremental_until_v3_upsert_lands(
+def test_main_lance_backend_incremental_uses_v3_incremental_builder(
     tmp_path, stub_indexer, stub_incremental, capsys
 ):
+    fake_encoder = object()
+
     rc = CLI.main(
         [
             "--corpus", str(tmp_path),
@@ -301,14 +333,15 @@ def test_main_lance_backend_rejects_incremental_until_v3_upsert_lands(
             "--backend", "lance",
             "--mode", "incremental",
         ],
-        lance_encoder_factory=lambda: object(),
+        lance_encoder_factory=lambda: fake_encoder,
     )
 
-    captured = capsys.readouterr()
-    assert rc == 2
+    assert rc == 0
     assert stub_indexer.get("build_lance_index_called") is not True
     assert stub_incremental["called"] is False
-    assert "supports only full builds" in captured.err
+    assert stub_incremental["lance_called"] is True
+    assert stub_incremental["lance_kwargs"]["encoder"] is fake_encoder
+    assert "mode=lance-incremental" in capsys.readouterr().out
 
 
 def test_main_explicit_incremental_mode(
