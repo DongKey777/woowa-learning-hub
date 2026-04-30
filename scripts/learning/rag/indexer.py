@@ -110,7 +110,7 @@ def is_ready(
     """
     root = Path(index_root)
     sqlite_path, dense_path, manifest_path = _paths(root)
-    if not (sqlite_path.exists() and dense_path.exists() and manifest_path.exists()):
+    if not manifest_path.exists():
         return ReadinessReport(
             state="missing",
             reason="first_run",
@@ -138,11 +138,49 @@ def is_ready(
             index_manifest_hash=stored_hash,
             next_command="bin/cs-index-build",
         )
-    # Schema upgrades (e.g. v1 → v2 added the `difficulty` column) require a
-    # rebuild even when the corpus content itself is unchanged. Without this,
-    # searcher.py would crash on a SELECT against a column that does not
-    # exist in the legacy table.
-    if manifest.get("index_version") != INDEX_VERSION:
+
+    version = manifest.get("index_version")
+    if version == LANCE_INDEX_VERSION:
+        lance_root = root / LANCE_DIR_NAME
+        if not lance_root.exists():
+            return ReadinessReport(
+                state="corrupt",
+                reason="index_corrupt",
+                corpus_hash=current_hash,
+                index_manifest_hash=stored_hash,
+                next_command="bin/cs-index-build",
+            )
+        try:
+            read_manifest_v3(root)
+        except (OSError, json.JSONDecodeError, IncompatibleIndexError):
+            return ReadinessReport(
+                state="corrupt",
+                reason="index_corrupt",
+                corpus_hash=current_hash,
+                index_manifest_hash=stored_hash,
+                next_command="bin/cs-index-build",
+            )
+        return ReadinessReport(
+            state="ready",
+            reason="ready",
+            corpus_hash=current_hash,
+            index_manifest_hash=stored_hash,
+            next_command=None,
+        )
+
+    if version == INDEX_VERSION and not (sqlite_path.exists() and dense_path.exists()):
+        return ReadinessReport(
+            state="missing",
+            reason="first_run",
+            corpus_hash=current_hash,
+            index_manifest_hash=stored_hash,
+            next_command="bin/cs-index-build",
+        )
+
+    # Schema upgrades (e.g. v1 → v2 added the `difficulty` column, and v2 → v3
+    # moved production search to LanceDB) require a rebuild even when the corpus
+    # content itself is unchanged.
+    if version != INDEX_VERSION:
         return ReadinessReport(
             state="stale",
             reason="index_schema_changed",

@@ -87,6 +87,7 @@ def augment(
     top_k: int = 5,
     readiness: rag_indexer.ReadinessReport | None = None,
     experience_level: str | None = None,
+    learner_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run CS RAG search and shape results for coach_run payload assembly."""
     if cs_search_mode not in ("skip", "cheap", "full"):
@@ -115,6 +116,7 @@ def augment(
         return _empty_result("import_error", cs_search_mode)
 
     start = time.time()
+    backend = _detect_backend(index_root)
 
     by_lp: dict[str, list[dict]] = {}
     by_fallback: dict[str, list[dict]] = {}
@@ -134,9 +136,11 @@ def augment(
                     learning_points=[lp],
                     topic_hints=topic_hints,
                     mode=cs_search_mode,
+                    backend=backend,
                     index_root=index_root,
                     top_k=top_k,
                     experience_level=experience_level,
+                    learner_context=learner_context,
                     debug=lp_debug,
                 )
                 if lp_debug.get("category_filter_fallback"):
@@ -166,9 +170,11 @@ def augment(
                         learning_points=None,
                         topic_hints=topic_hints,
                         mode=cs_search_mode,
+                        backend=backend,
                         index_root=index_root,
                         top_k=top_k,
                         experience_level=experience_level,
+                        learner_context=learner_context,
                     )
                     if hits:
                         by_fallback[key] = hits
@@ -187,9 +193,11 @@ def augment(
                     learning_points=None,
                     topic_hints=topic_hints,
                     mode=cs_search_mode,
+                    backend=backend,
                     index_root=index_root,
                     top_k=top_k,
                     experience_level=experience_level,
+                    learner_context=learner_context,
                 )
                 if hits:
                     by_fallback[key] = hits
@@ -213,6 +221,7 @@ def augment(
         sidecar = {
             "generated_by": "scripts.learning.integration.augment",
             "mode_used": cs_search_mode,
+            "backend": backend,
             "hits": [_sidecar_hit(h) for h in all_hits],
         }
 
@@ -227,6 +236,7 @@ def augment(
             "rag_ready": True,
             "reason": "ready",
             "mode_used": cs_search_mode,
+            "backend": backend,
             "category_filter_fallback": category_filter_fallback,
         },
     }
@@ -235,6 +245,19 @@ def augment(
 def _top_token(prompt: str) -> str:
     tokens = signal_rules._tokenize(prompt)  # internal tokenizer is fine here
     return tokens[0] if tokens else "unknown"
+
+
+def _detect_backend(index_root: Path | str) -> str:
+    """Infer the search backend from the index manifest version."""
+    try:
+        manifest = rag_indexer.load_manifest(index_root)
+    except Exception:
+        return "legacy"
+    try:
+        version = int(manifest.get("index_version", rag_indexer.INDEX_VERSION))
+    except (TypeError, ValueError):
+        return "legacy"
+    return "lance" if version >= rag_indexer.LANCE_INDEX_VERSION else "legacy"
 
 
 def _sidecar_hit(hit: dict) -> dict:

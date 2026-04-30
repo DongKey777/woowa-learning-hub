@@ -208,5 +208,67 @@ class IntegrationAugmentDegradeTest(unittest.TestCase):
             integration.augment(prompt="x", cs_search_mode="bogus")
 
 
+class LanceReadinessTest(unittest.TestCase):
+    def test_lance_v3_manifest_with_lance_store_is_ready(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "corpus"
+            index_root = root / "index"
+            corpus_root.mkdir()
+            index_root.mkdir()
+            (index_root / indexer.LANCE_DIR_NAME).mkdir()
+            (corpus_root / "tx.md").write_text("# TX\n\n트랜잭션", encoding="utf-8")
+            corpus_hash = corpus_loader.corpus_hash(corpus_root)
+            (index_root / indexer.MANIFEST_NAME).write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.LANCE_INDEX_VERSION,
+                        "row_count": 1,
+                        "corpus_hash": corpus_hash,
+                        "corpus_root": str(corpus_root),
+                        "encoder": {"model_id": "BAAI/bge-m3"},
+                        "lancedb": {"table_name": indexer.LANCE_TABLE_NAME},
+                        "modalities": ["fts", "dense", "sparse"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            report = indexer.is_ready(index_root, corpus_root)
+
+        self.assertEqual(report.state, "ready")
+        self.assertEqual(report.reason, "ready")
+        self.assertEqual(report.index_manifest_hash, corpus_hash)
+
+    def test_lance_v3_manifest_without_lance_store_is_corrupt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "corpus"
+            index_root = root / "index"
+            corpus_root.mkdir()
+            index_root.mkdir()
+            (corpus_root / "tx.md").write_text("# TX\n\n트랜잭션", encoding="utf-8")
+            corpus_hash = corpus_loader.corpus_hash(corpus_root)
+            (index_root / indexer.MANIFEST_NAME).write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.LANCE_INDEX_VERSION,
+                        "row_count": 1,
+                        "corpus_hash": corpus_hash,
+                        "corpus_root": str(corpus_root),
+                        "encoder": {"model_id": "BAAI/bge-m3"},
+                        "lancedb": {"table_name": indexer.LANCE_TABLE_NAME},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            report = indexer.is_ready(index_root, corpus_root)
+
+        self.assertEqual(report.state, "corrupt")
+        self.assertEqual(report.reason, "index_corrupt")
+        self.assertEqual(report.next_command, "bin/cs-index-build")
+
+
 if __name__ == "__main__":
     unittest.main()

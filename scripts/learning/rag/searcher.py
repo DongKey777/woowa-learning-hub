@@ -1446,6 +1446,7 @@ def search(
     index_root: Path | str = indexer.DEFAULT_INDEX_ROOT,
     use_reranker: bool | None = None,
     experience_level: str | None = None,
+    learner_context: dict | None = None,
     debug: dict | None = None,
 ) -> list[dict]:
     """Run a hybrid CS RAG search and return top-K chunk dicts.
