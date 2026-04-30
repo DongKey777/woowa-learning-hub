@@ -667,6 +667,47 @@ Remaining H7 work:
 - Persist `reports/cs_rag/eval/ablation_<runid>.json`.
 - Run the modality ablation against a prebuilt LanceDB index and feed the result into H8 stack selection.
 
+## H7b LanceDB Modality Ablation CLI
+
+Implemented after H7a:
+
+- Added `scripts/learning/rag/eval/ablation.py`.
+  - Generates the H7 schedule: 4 singleton + 6 pairwise + full quad modality sets.
+  - Parses repeatable CLI modality overrides such as `--ablation-modalities fts,dense`.
+  - Runs each modality subset through `ABRetriever(backend="lance")` and the shared graded eval runner.
+  - Captures per-run `RunManifest` with backend/modalities/encoder/lancedb metadata.
+  - Selects a deterministic `best_modalities` by primary nDCG macro, then failures, latency, and smaller modality set.
+- Added `bin/rag-eval` mode `--ablate`.
+  - Uses deterministic tune/holdout split support already present in `eval/split.py`.
+  - Default split is `tune`.
+  - Default output is `reports/cs_rag/eval/ablation_<UTC-runid>.json`.
+  - Reuses `--embedding-index-root` for the prebuilt LanceDB v3 index.
+  - Real runtime encoder is `BgeM3Encoder` injected into the scoped LanceDB searcher cache.
+- Added unit coverage for:
+  - modality schedule and CLI modality parsing,
+  - per-modality report/manifest shape,
+  - parser support for `--ablate`,
+  - CLI write path with injected fake ablation runner.
+
+H7b verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_rag_eval_ablation.py tests/unit/test_rag_eval_cli.py tests/unit/test_rag_eval_manifest.py tests/unit/test_rag_eval_ab_retriever.py -q
+.venv/bin/python -m pytest tests/unit/test_rag_eval_ablation.py tests/unit/test_rag_eval_cli.py tests/unit/test_rag_eval_manifest.py tests/unit/test_rag_eval_ab_retriever.py tests/unit/test_rag_eval_ab_sweep.py -q
+```
+
+Results:
+
+```text
+75 passed in 0.80s
+88 passed, 2 warnings in 8.54s
+```
+
+Remaining H7 work:
+
+- Run a real ablation smoke against a small LanceDB index to verify the end-to-end CLI path outside monkeypatched tests.
+- Then run the full production ablation after production `state/cs_rag` has been rebuilt as LanceDB v3.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

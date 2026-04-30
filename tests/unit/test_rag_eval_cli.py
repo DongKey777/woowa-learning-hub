@@ -40,6 +40,14 @@ def test_parser_baseline_only_mode():
     assert args.fast is False
 
 
+def test_parser_ablate_mode():
+    parser = CLI.build_parser()
+    args = parser.parse_args(["--ablate", "--ablation-modalities", "fts,dense"])
+    assert args.ablate is True
+    assert args.ablation_split == "tune"
+    assert args.ablation_modalities == ["fts,dense"]
+
+
 def test_parser_modes_are_mutually_exclusive():
     parser = CLI.build_parser()
     with pytest.raises(SystemExit):
@@ -594,6 +602,61 @@ def test_run_embedding_ab_invokes_sweep_and_writes_report(tmp_path, monkeypatch)
     assert ab_out.exists()
     blob = json.loads(ab_out.read_text())
     assert blob["selected_candidate_id"] == "MiniLM-L12-v2"
+
+
+def test_run_ablate_invokes_modal_ablation_and_writes_report(tmp_path, monkeypatch):
+    from scripts.learning.rag.eval import ablation as A
+
+    fixture_path = tmp_path / "fx.json"
+    fixture_path.write_text(
+        json.dumps({"queries": [{
+            "id": "q1",
+            "prompt": "test",
+            "learning_points": [],
+            "expected_path": "contents/spring/bean.md",
+            "max_rank": 10,
+        }]}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    captured: dict = {}
+    fake_report = A.AblationReport(
+        index_root=str(tmp_path / "idx"),
+        split="tune",
+        query_count=1,
+        top_k=10,
+        forbidden_window=5,
+        mode="full",
+        runs=(),
+        best_modalities=("fts", "dense"),
+        selection_rationale="fake",
+    )
+
+    def fake_ablate(queries, **kwargs):
+        captured["query_count"] = len(list(queries))
+        captured["index_root"] = kwargs["index_root"]
+        captured["modality_sets"] = kwargs["modality_sets"]
+        captured["embedding_dim"] = kwargs["embedding_dim"]
+        return fake_report
+
+    monkeypatch.setattr(A, "run_modality_ablation", fake_ablate)
+
+    out = tmp_path / "ablation.json"
+    args = CLI.build_parser().parse_args([
+        "--ablate",
+        "--fixture", str(fixture_path),
+        "--embedding-index-root", str(tmp_path / "idx"),
+        "--ablation-out", str(out),
+        "--ablation-modalities", "fts,dense",
+    ])
+    rc = CLI.run_ablate(args, encoder_factory=lambda: object())
+
+    assert rc == 0
+    assert captured["query_count"] == 1
+    assert captured["modality_sets"] == (("fts", "dense"),)
+    assert captured["embedding_dim"] == 1024
+    blob = json.loads(out.read_text(encoding="utf-8"))
+    assert blob["best_modalities"] == ["fts", "dense"]
 
 
 # ---------------------------------------------------------------------------

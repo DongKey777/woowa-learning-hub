@@ -41,6 +41,7 @@ DEFAULT_AB_BASE_DIR = REPO_ROOT / "state" / "cs_rag_eval"
 DEFAULT_BASELINE_QUALITY_PATH = REPO_ROOT / "reports" / "rag_eval" / "baseline_quality.json"
 DEFAULT_RERANKER_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "reranker_ab_report.json"
 DEFAULT_EMBEDDING_INDEX_ROOT = REPO_ROOT / "state" / "cs_rag"
+DEFAULT_ABLATION_DIR = REPO_ROOT / "reports" / "cs_rag" / "eval"
 
 
 def _format_encode_progress(info: dict) -> str:
@@ -110,6 +111,14 @@ def build_parser() -> argparse.ArgumentParser:
             "Run the P3.1 reranker A/B sweep: bind each reranker candidate "
             "against a fixed embedding index, evaluate, gate, emit "
             "reranker_ab_report.json under reports/rag_eval/."
+        ),
+    )
+    mode.add_argument(
+        "--ablate",
+        action="store_true",
+        help=(
+            "Run the H7 LanceDB modality ablation: singleton, pairwise, "
+            "and full modality combinations against one v3 index."
         ),
     )
     parser.add_argument(
@@ -256,6 +265,43 @@ def build_parser() -> argparse.ArgumentParser:
             "(bge-reranker-v2-m3) in the default sweep. Off by "
             "default to avoid OOM on 16GB machines."
         ),
+    )
+    # ---- --ablate specific ----
+    parser.add_argument(
+        "--ablation-out",
+        type=Path,
+        default=None,
+        help=(
+            "Ablation report path. Default: "
+            "reports/cs_rag/eval/ablation_<UTC-runid>.json."
+        ),
+    )
+    parser.add_argument(
+        "--ablation-split",
+        choices=("tune", "holdout", "full"),
+        default="tune",
+        help="Fixture split to evaluate for --ablate (default: tune).",
+    )
+    parser.add_argument(
+        "--ablation-seed",
+        type=int,
+        default=0,
+        help="Deterministic tune/holdout split seed for --ablate.",
+    )
+    parser.add_argument(
+        "--ablation-modalities",
+        action="append",
+        default=None,
+        help=(
+            "Restrict --ablate to a comma-separated modality set "
+            "(repeatable), e.g. --ablation-modalities fts,dense."
+        ),
+    )
+    parser.add_argument(
+        "--ablation-embed-dim",
+        type=int,
+        default=1024,
+        help="Embedding dimension recorded for LanceDB ablation manifests.",
     )
     return parser
 
@@ -885,6 +931,120 @@ def run_reranker_ab(
 
 
 # ---------------------------------------------------------------------------
+# Mode: --ablate (H7 LanceDB modality decomposition)
+# ---------------------------------------------------------------------------
+
+def _default_bge_m3_factory(device: str) -> Callable[[], Any]:
+    """Build the modal bge-m3 encoder used by LanceDB ablation."""
+
+    def _factory():
+        from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder
+
+        return BgeM3Encoder(devices=device, use_fp16=(device != "cpu"))
+
+    return _factory
+
+
+def _default_ablation_out() -> Path:
+    run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    return DEFAULT_ABLATION_DIR / f"ablation_{run_id}.json"
+
+
+def run_ablate(
+    args: argparse.Namespace,
+    *,
+    encoder_factory: Callable[[], Any] | None = None,
+) -> int:
+    """Run H7 modality ablation against one prebuilt LanceDB index."""
+    from scripts.learning.rag.eval import ablation as A
+    from scripts.learning.rag.eval.split import split_tune_holdout
+
+    queries_all = load_queries(args.fixture)
+    tune, holdout = split_tune_holdout(queries_all, seed=args.ablation_seed)
+    if args.ablation_split == "tune":
+        queries = tune
+    elif args.ablation_split == "holdout":
+        queries = holdout
+    else:
+        queries = queries_all
+
+    if not queries:
+        print(
+            f"FAIL: --ablation-split {args.ablation_split!r} produced 0 queries.",
+            file=sys.stderr,
+        )
+        return 2
+
+    device = _resolve_device(args.device)
+    factory = encoder_factory or _default_bge_m3_factory(device)
+    encoder = factory()
+    modality_sets = A.parse_modality_sets(args.ablation_modalities)
+
+    print(
+        f"[rag-eval --ablate] device={device}",
+        f"  split={args.ablation_split} queries={len(queries)} "
+        f"(all={len(queries_all)} tune={len(tune)} holdout={len(holdout)})",
+        f"  index_root: {args.embedding_index_root}",
+        f"  modality_sets: {[','.join(m) for m in modality_sets]}",
+        sep="\n",
+        file=sys.stderr,
+    )
+
+    def _print_progress(stage: str, info: dict) -> None:
+        if stage in ("ablation_start", "ablation_done"):
+            print(f"  [{stage}] {info}", file=sys.stderr)
+
+    report = A.run_modality_ablation(
+        queries,
+        index_root=args.embedding_index_root,
+        encoder=encoder,
+        modality_sets=modality_sets,
+        top_k=args.top_k,
+        forbidden_window=args.forbidden_window,
+        device=device,
+        mode="full",
+        split=args.ablation_split,
+        embedding_dim=args.ablation_embed_dim,
+        progress=_print_progress,
+    )
+    blob = A.ablation_report_to_dict(report)
+
+    out = args.ablation_out or _default_ablation_out()
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(blob, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    def _display(path: Path) -> str:
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return str(path)
+
+    print("", file=sys.stderr)
+    print(
+        f"{'modalities':28s} {'primary_nDCG':>13s} {'p95(ms)':>10s} "
+        f"{'failures':>9s}",
+        file=sys.stderr,
+    )
+    for run in report.runs:
+        print(
+            f"{','.join(run.modalities):28s} "
+            f"{run.primary_ndcg_macro:13.4f} "
+            f"{run.latency_p95_warm:10.1f} "
+            f"{run.hard_regression_failures:9d}",
+            file=sys.stderr,
+        )
+    print(
+        "",
+        f"  best_modalities: {list(report.best_modalities or ())}",
+        f"  rationale: {report.selection_rationale}",
+        f"  wrote: {_display(out)}",
+        sep="\n",
+        file=sys.stderr,
+    )
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Entry
 # ---------------------------------------------------------------------------
 
@@ -901,6 +1061,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_embedding_ab(args)
     if args.reranker_ab:
         return run_reranker_ab(args)
+    if args.ablate:
+        return run_ablate(args)
     parser.error("no mode selected")
     return 2
 
