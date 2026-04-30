@@ -409,11 +409,18 @@ class RealRunPodClient:
     # ----- Pod lifecycle -----
 
     def create_pod(self, spec: PodSpec, ssh_public_key: str) -> Pod:
-        """Map our PodSpec to runpod.create_pod kwargs.
+        """Map our PodSpec to runpod.create_pod, then poll until the
+        Pod exposes its public SSH port.
 
-        SDK kwargs of interest:
-          name, image_name, gpu_type_id, cloud_type ("ALL"|"COMMUNITY"|"SECURE"),
-          gpu_count, container_disk_in_gb, ports, start_ssh, support_public_ip
+        Why poll: ``runpod.create_pod()`` returns immediately after the
+        API accepts the request, BEFORE the Pod has booted enough for
+        ``runtime.ports`` to be populated with public IP + port. R0
+        smoke caught this — the initial SDK response had ``runtime``
+        absent / empty, so SSH wait got stuck on ``0.0.0.0:22``.
+
+        We poll ``get_pod(id)`` every 5s for up to 5 min, looking for
+        a port entry with ``privatePort=22`` AND ``isIpPublic=True``.
+        That's the SSH endpoint paramiko can reach.
         """
         cloud_map = {"community": "COMMUNITY", "secure": "SECURE"}
         gpu_type_id = self._resolve_gpu_type_id(spec.gpu_type, spec.gpu_cloud)
@@ -428,7 +435,71 @@ class RealRunPodClient:
             start_ssh=True,
             support_public_ip=True,
         )
-        return self._normalise_pod(result, gpu_type=spec.gpu_type)
+        pod_id = result.get("id")
+        if not pod_id:
+            raise RuntimeError(f"create_pod returned no id: {result}")
+
+        return self._wait_for_ssh_port(pod_id, gpu_type=spec.gpu_type,
+                                       timeout_s=300, poll_interval_s=5)
+
+    def _wait_for_ssh_port(
+        self, pod_id: str, *, gpu_type: str,
+        timeout_s: int = 300, poll_interval_s: int = 5,
+    ) -> Pod:
+        """Poll get_pod(id) until runtime.ports has a public SSH entry."""
+        deadline = time.time() + timeout_s
+        last_pod_data: dict = {}
+        while time.time() < deadline:
+            try:
+                pod_data = self._sdk.get_pod(pod_id) or {}
+            except Exception as exc:
+                logger.warning("[runpod] get_pod(%s) error: %s", pod_id, exc)
+                time.sleep(poll_interval_s)
+                continue
+            last_pod_data = pod_data
+            ssh_endpoint = self._find_public_ssh_endpoint(pod_data)
+            if ssh_endpoint:
+                ip, port = ssh_endpoint
+                logger.info("[runpod] Pod %s SSH endpoint: %s:%s "
+                            "(uptime=%ss, status=%s)",
+                            pod_id, ip, port,
+                            pod_data.get("uptimeSeconds"),
+                            pod_data.get("desiredStatus"))
+                return self._build_pod(pod_data, ip=ip, port=port, gpu_type=gpu_type)
+            logger.debug("[runpod] Pod %s SSH not yet exposed (status=%s)",
+                         pod_id, pod_data.get("desiredStatus"))
+            time.sleep(poll_interval_s)
+        raise TimeoutError(
+            f"Pod {pod_id} did not expose public SSH port within {timeout_s}s. "
+            f"Last desiredStatus={last_pod_data.get('desiredStatus')}, "
+            f"runtime={last_pod_data.get('runtime')}"
+        )
+
+    @staticmethod
+    def _find_public_ssh_endpoint(pod_data: dict) -> tuple[str, int] | None:
+        """Find a port entry that's public + maps SSH (private 22)."""
+        runtime = pod_data.get("runtime") or {}
+        ports = runtime.get("ports") or []
+        for port in ports:
+            if (port.get("privatePort") == 22
+                    and port.get("isIpPublic")
+                    and port.get("ip")
+                    and port.get("publicPort")):
+                return str(port["ip"]), int(port["publicPort"])
+        return None
+
+    @staticmethod
+    def _build_pod(pod_data: dict, *, ip: str, port: int, gpu_type: str) -> Pod:
+        started = pod_data.get("createdAt") or datetime.now(timezone.utc).isoformat()
+        try:
+            started_at = datetime.fromisoformat(str(started).replace("Z", "+00:00"))
+        except Exception:
+            started_at = datetime.now(timezone.utc)
+        return Pod(
+            pod_id=pod_data.get("id", "unknown"),
+            ip=ip, ssh_port=port,
+            gpu_type=gpu_type, started_at=started_at,
+        )
 
     def _resolve_gpu_type_id(self, display_name: str, cloud: str) -> str:
         """Find SDK gpu_type_id by displayName substring match."""

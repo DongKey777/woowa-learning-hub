@@ -368,8 +368,25 @@ class _FakeRunpodModule:
             "name": kwargs.get("name", "fake"),
             "machineType": kwargs.get("gpu_type_id", "?"),
             "createdAt": "2026-05-01T08:30:00Z",
-            "runtime": {"ports": [{"privatePort": 22, "publicPort": 22001,
-                                   "ip": "10.0.0.1", "type": "tcp"}]},
+            # initial response — ports often empty until Pod boots
+            "runtime": None,
+        }
+
+    def get_pod(self, pod_id: str):
+        """By default returns a Pod with SSH port populated.
+        Tests can override this to simulate slow boot."""
+        self.calls.append(("get_pod", pod_id))
+        return {
+            "id": pod_id,
+            "desiredStatus": "RUNNING",
+            "uptimeSeconds": 60,
+            "createdAt": "2026-05-01T08:30:00Z",
+            "runtime": {
+                "ports": [{
+                    "privatePort": 22, "publicPort": 22001,
+                    "ip": "1.2.3.4", "isIpPublic": True, "type": "tcp",
+                }],
+            },
         }
 
     def terminate_pod(self, pod_id: str):
@@ -472,8 +489,9 @@ def test_real_client_create_pod_maps_to_sdk_kwargs():
     )
     pod = client.create_pod(spec, ssh_public_key="ssh-ed25519 fake")
     assert pod.pod_id == "pod-fake-001"
+    # Public IP/port comes from get_pod() polling, NOT initial create_pod
     assert pod.ssh_port == 22001
-    assert pod.ip == "10.0.0.1"
+    assert pod.ip == "1.2.3.4"
     assert pod.gpu_type == "RTX A5000"
 
     create_call = next(c for c in fake.calls if c[0] == "create_pod")
@@ -483,6 +501,108 @@ def test_real_client_create_pod_maps_to_sdk_kwargs():
     assert kwargs["cloud_type"] == "COMMUNITY"
     assert kwargs["start_ssh"] is True
     assert kwargs["container_disk_in_gb"] == 20
+
+    # Polled get_pod at least once (the R0-fix bug — initial response
+    # has runtime=None so we MUST poll until ports populate)
+    assert any(c[0] == "get_pod" for c in fake.calls)
+
+
+def test_real_client_create_pod_polls_until_ssh_port_available(monkeypatch):
+    """Bug fix from R0 smoke: create_pod's initial response had
+    runtime=None, but the lifecycle assumed runtime.ports was
+    immediately available. Now we poll get_pod() until SSH port
+    is exposed."""
+    fake = _FakeRunpodModule()
+
+    # Simulate slow boot: first 2 get_pod calls return no ports,
+    # 3rd returns SSH endpoint
+    boot_states = [
+        # Call 1: pod created but not yet running
+        {"id": "pod-fake-001", "desiredStatus": "PENDING",
+         "createdAt": "2026-05-01T08:30:00Z", "runtime": None},
+        # Call 2: running but ports not exposed yet
+        {"id": "pod-fake-001", "desiredStatus": "RUNNING",
+         "createdAt": "2026-05-01T08:30:00Z",
+         "runtime": {"ports": []}},
+        # Call 3: SSH port public
+        {"id": "pod-fake-001", "desiredStatus": "RUNNING",
+         "createdAt": "2026-05-01T08:30:00Z",
+         "runtime": {"ports": [{"privatePort": 22, "publicPort": 22001,
+                                "ip": "5.6.7.8", "isIpPublic": True}]}},
+    ]
+    state_iter = iter(boot_states)
+
+    def slow_get_pod(pod_id: str):
+        fake.calls.append(("get_pod", pod_id))
+        return next(state_iter)
+    fake.get_pod = slow_get_pod  # type: ignore[assignment]
+
+    # Skip real sleeping
+    import scripts.remote.runpod_rag_full_build as H_mod
+    monkeypatch.setattr(H_mod.time, "sleep", lambda *a, **k: None)
+
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    spec = H.PodSpec(
+        name="rag-r0", gpu_type="RTX A5000", gpu_cloud="community",
+        image="img", container_disk_gb=20, ports="22/tcp",
+    )
+    pod = client.create_pod(spec, ssh_public_key="ssh-ed25519 fake")
+
+    assert pod.ip == "5.6.7.8"
+    assert pod.ssh_port == 22001
+
+    # 3 polls total
+    get_pod_calls = [c for c in fake.calls if c[0] == "get_pod"]
+    assert len(get_pod_calls) == 3
+
+
+def test_real_client_create_pod_times_out_when_ssh_never_exposed(monkeypatch):
+    """If Pod never exposes SSH within timeout, raise so caller's
+    finally-block can terminate the Pod."""
+    fake = _FakeRunpodModule()
+    fake.get_pod = lambda pod_id: {  # type: ignore[assignment]
+        "id": pod_id, "desiredStatus": "PENDING", "runtime": None,
+    }
+    import scripts.remote.runpod_rag_full_build as H_mod
+    monkeypatch.setattr(H_mod.time, "sleep", lambda *a, **k: None)
+    monkeypatch.setattr(H_mod.time, "time", iter([0, 1, 2, 3, 100, 200, 400]).__next__)
+
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    spec = H.PodSpec(
+        name="rag-r0", gpu_type="RTX A5000", gpu_cloud="community",
+        image="img", container_disk_gb=20, ports="22/tcp",
+    )
+    with pytest.raises(TimeoutError, match="did not expose public SSH port"):
+        client.create_pod(spec, ssh_public_key="ssh-ed25519 fake")
+
+
+def test_find_public_ssh_endpoint_filters_non_public_ports():
+    """Multi-port Pod — only the public SSH port qualifies."""
+    pod_data = {
+        "runtime": {
+            "ports": [
+                # Internal-only port — skip
+                {"privatePort": 22, "publicPort": 22, "ip": "10.0.0.1",
+                 "isIpPublic": False, "type": "tcp"},
+                # HTTP port — skip (not SSH)
+                {"privatePort": 8888, "publicPort": 8888, "ip": "1.2.3.4",
+                 "isIpPublic": True, "type": "http"},
+                # The public SSH port — pick this
+                {"privatePort": 22, "publicPort": 22001, "ip": "1.2.3.4",
+                 "isIpPublic": True, "type": "tcp"},
+            ]
+        }
+    }
+    result = H.RealRunPodClient._find_public_ssh_endpoint(pod_data)
+    assert result == ("1.2.3.4", 22001)
+
+
+def test_find_public_ssh_endpoint_returns_none_when_unavailable():
+    assert H.RealRunPodClient._find_public_ssh_endpoint(
+        {"runtime": {"ports": []}}) is None
+    assert H.RealRunPodClient._find_public_ssh_endpoint(
+        {"runtime": None}) is None
+    assert H.RealRunPodClient._find_public_ssh_endpoint({}) is None
 
 
 def test_real_client_terminate_swallows_sdk_error():
