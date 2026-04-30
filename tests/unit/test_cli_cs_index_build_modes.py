@@ -145,6 +145,14 @@ def test_parser_default_mode_is_auto():
     assert args.mode == "auto"
 
 
+def test_lance_precision_auto_uses_fp16_only_on_accelerators():
+    assert CLI._resolve_lance_fp16("auto", "mps") is True
+    assert CLI._resolve_lance_fp16("auto", "cuda") is True
+    assert CLI._resolve_lance_fp16("auto", "cpu") is False
+    assert CLI._resolve_lance_fp16("fp16", "cpu") is True
+    assert CLI._resolve_lance_fp16("fp32", "mps") is False
+
+
 # ---------------------------------------------------------------------------
 # main() — mode resolution
 # ---------------------------------------------------------------------------
@@ -268,6 +276,8 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
             "--backend", "lance",
             "--modalities", "dense,fts",
             "--lance-colbert-dtype", "float32",
+            "--lance-device", "mps",
+            "--lance-precision", "fp16",
         ],
         lance_encoder_factory=lambda: fake_encoder,
     )
@@ -281,7 +291,9 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
     assert seed_state["called"] is True
     assert seed_state["args"][2] == "fake/bge-m3@test"
-    assert "mode=lance-full" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "lance runtime — device=mps fp16=True" in out
+    assert "mode=lance-full" in out
 
 
 def test_main_lance_backend_aborts_when_disk_budget_is_insufficient(

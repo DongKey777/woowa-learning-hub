@@ -818,6 +818,52 @@ fts,dense                           1.0000       94.3         0
 ['fts', 'dense'] cold=6300.9ms p95=94.3ms
 ```
 
+## H7e LanceDB Build Device Controls
+
+Attempted a full-corpus H7 eval index build:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 bin/cs-index-build \
+  --backend lance \
+  --mode full \
+  --corpus knowledge/cs \
+  --out state/cs_rag_eval/bge-m3-h7 \
+  --modalities fts,dense,sparse,colbert
+```
+
+Result:
+
+```text
+[cs-index] disk budget estimate (27155 chunks): total estimate 931.6 MB, free 30.2 GB ✓
+[cs-index] 4/5 임베딩 진행 — 16/27155 (0.1%) rate=0.81/s eta=557m37s
+```
+
+The build was stopped because the default bge-m3 encoder path selected CPU and was not viable for full ColBERT corpus encoding.
+
+Implemented fix:
+
+- Added `--lance-device auto|cpu|mps|cuda` to `bin/cs-index-build`.
+- Added `--lance-precision auto|fp16|fp32`.
+- `auto` now prefers MPS, then CUDA, then CPU.
+- `auto` precision uses fp16 on MPS/CUDA and fp32 on CPU.
+- Lance builds print the resolved runtime before loading the model:
+  - `[cs-index] lance runtime — device=mps fp16=True`
+
+Verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_incremental_indexer.py -q
+bin/cs-index-build --help | rg "lance-device|lance-precision|backend"
+```
+
+Results:
+
+```text
+18 passed in 3.40s
+--lance-device {auto,cpu,mps,cuda}
+--lance-precision {auto,fp16,fp32}
+```
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

@@ -105,11 +105,42 @@ def _default_production_embedder():
     return SentenceTransformer(indexer.EMBED_MODEL)
 
 
-def _default_lance_encoder():
+def _resolve_lance_device(raw: str) -> str:
+    if raw != "auto":
+        return raw
+    try:
+        import torch  # type: ignore
+
+        if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+            return "mps"
+        if torch.cuda.is_available():
+            return "cuda"
+    except Exception:
+        pass
+    return "cpu"
+
+
+def _resolve_lance_fp16(precision: str, device: str) -> bool:
+    if precision == "fp16":
+        return True
+    if precision == "fp32":
+        return False
+    return device in {"mps", "cuda"}
+
+
+def _default_lance_encoder(
+    *,
+    device: str = "auto",
+    precision: str = "auto",
+):
     """Production bge-m3 encoder factory for the explicit LanceDB backend."""
     from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder  # noqa: WPS433
 
-    return BgeM3Encoder()
+    resolved_device = _resolve_lance_device(device)
+    return BgeM3Encoder(
+        devices=resolved_device,
+        use_fp16=_resolve_lance_fp16(precision, resolved_device),
+    )
 
 
 def _parse_modalities(raw: str) -> tuple[str, ...]:
@@ -279,6 +310,18 @@ def main(
         default="float16",
         help="ColBERT token storage dtype for --backend lance.",
     )
+    parser.add_argument(
+        "--lance-device",
+        choices=("auto", "cpu", "mps", "cuda"),
+        default="auto",
+        help="Device for bge-m3 LanceDB builds (default: auto prefers MPS/CUDA).",
+    )
+    parser.add_argument(
+        "--lance-precision",
+        choices=("auto", "fp16", "fp32"),
+        default="auto",
+        help="bge-m3 precision for LanceDB builds (default: auto uses fp16 on MPS/CUDA).",
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -323,6 +366,12 @@ def main(
     start = time.time()
     try:
         if args.backend == "lance":
+            lance_device = _resolve_lance_device(args.lance_device)
+            lance_fp16 = _resolve_lance_fp16(args.lance_precision, lance_device)
+            print(
+                f"[cs-index] lance runtime — device={lance_device} fp16={lance_fp16}",
+                flush=True,
+            )
             if effective_mode == "full":
                 budget = _estimate_lance_disk_budget(args.corpus, args.out)
                 _print_lance_disk_budget(budget)
@@ -335,7 +384,12 @@ def main(
                         flush=True,
                     )
                     return 2
-                factory = lance_encoder_factory or _default_lance_encoder
+                factory = lance_encoder_factory or (
+                    lambda: _default_lance_encoder(
+                        device=lance_device,
+                        precision=args.lance_precision,
+                    )
+                )
                 encoder = factory()
                 manifest = indexer.build_lance_index(
                     index_root=args.out,
@@ -367,7 +421,12 @@ def main(
                     f"modalities={','.join(args.modalities)}"
                 )
             else:
-                factory = lance_encoder_factory or _default_lance_encoder
+                factory = lance_encoder_factory or (
+                    lambda: _default_lance_encoder(
+                        device=lance_device,
+                        precision=args.lance_precision,
+                    )
+                )
                 encoder = factory()
                 result = incremental_indexer.incremental_lance_build_index(
                     encoder=encoder,
