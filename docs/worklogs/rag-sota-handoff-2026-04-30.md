@@ -973,6 +973,30 @@ Results:
 23 passed in 2.81s
 ```
 
+Final focused verification after H7h:
+
+```bash
+.venv/bin/python -m pytest \
+  tests/unit/test_rag_eval_ablation.py \
+  tests/unit/test_rag_eval_cli.py \
+  tests/unit/test_rag_eval_manifest.py \
+  tests/unit/test_rag_eval_ab_retriever.py \
+  tests/unit/test_rag_eval_ab_sweep.py \
+  tests/unit/test_cli_cs_index_build_modes.py \
+  tests/unit/test_bge_m3_encoder.py \
+  tests/unit/test_lance_index_builder.py \
+  tests/unit/test_lance_incremental_indexer.py \
+  tests/unit/test_lance_search_path.py \
+  tests/unit/test_prf.py \
+  -q
+```
+
+Result:
+
+```text
+139 passed, 2 warnings in 11.54s
+```
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
