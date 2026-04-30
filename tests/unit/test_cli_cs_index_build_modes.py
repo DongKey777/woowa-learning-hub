@@ -53,8 +53,32 @@ def stub_indexer(monkeypatch, tmp_path):
         }
         return {"row_count": 100, "embed_model": "fake", "embed_dim": 4}
 
+    def fake_build_lance_index(
+        *,
+        index_root,
+        corpus_root,
+        encoder,
+        modalities,
+        progress=None,
+        colbert_dtype="float16",
+    ):
+        state["build_lance_index_called"] = True
+        state["build_lance_args"] = {
+            "index_root": index_root,
+            "corpus_root": corpus_root,
+            "encoder": encoder,
+            "modalities": modalities,
+            "colbert_dtype": colbert_dtype,
+        }
+        return {
+            "row_count": 200,
+            "encoder": {"model_version": "fake/bge-m3@test"},
+            "modalities": list(modalities),
+        }
+
     monkeypatch.setattr(indexer, "is_ready", fake_is_ready)
     monkeypatch.setattr(indexer, "build_index", fake_build_index)
+    monkeypatch.setattr(indexer, "build_lance_index", fake_build_lance_index)
     return state
 
 
@@ -179,6 +203,59 @@ def test_main_explicit_full_mode(tmp_path, stub_indexer, stub_incremental):
     assert rc == 0
     assert stub_indexer["build_index_called"] is True
     assert stub_incremental["called"] is False
+
+
+def test_main_lance_backend_uses_explicit_v3_full_builder(
+    tmp_path, stub_indexer, stub_incremental, capsys
+):
+    from scripts.learning.rag import indexer
+
+    stub_indexer["readiness"] = indexer.ReadinessReport(
+        state="ready", reason="ok",
+        corpus_hash="abc", index_manifest_hash="abc",
+        next_command=None,
+    )
+    fake_encoder = object()
+
+    rc = CLI.main(
+        [
+            "--corpus", str(tmp_path),
+            "--out", str(tmp_path / "out"),
+            "--backend", "lance",
+            "--modalities", "dense,fts",
+            "--lance-colbert-dtype", "float32",
+        ],
+        lance_encoder_factory=lambda: fake_encoder,
+    )
+
+    assert rc == 0
+    assert stub_indexer["build_index_called"] is False
+    assert stub_indexer["build_lance_index_called"] is True
+    assert stub_incremental["called"] is False
+    assert stub_indexer["build_lance_args"]["encoder"] is fake_encoder
+    assert stub_indexer["build_lance_args"]["modalities"] == ("dense", "fts")
+    assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
+    assert "mode=lance-full" in capsys.readouterr().out
+
+
+def test_main_lance_backend_rejects_incremental_until_v3_upsert_lands(
+    tmp_path, stub_indexer, stub_incremental, capsys
+):
+    rc = CLI.main(
+        [
+            "--corpus", str(tmp_path),
+            "--out", str(tmp_path / "out"),
+            "--backend", "lance",
+            "--mode", "incremental",
+        ],
+        lance_encoder_factory=lambda: object(),
+    )
+
+    captured = capsys.readouterr()
+    assert rc == 2
+    assert stub_indexer.get("build_lance_index_called") is not True
+    assert stub_incremental["called"] is False
+    assert "supports only full builds" in captured.err
 
 
 def test_main_explicit_incremental_mode(

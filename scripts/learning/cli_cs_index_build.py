@@ -4,6 +4,7 @@ Usage
 -----
     bin/cs-index-build [--corpus knowledge/cs] [--out state/cs_rag]
                        [--force] [--mode auto|full|incremental]
+                       [--backend legacy|lance]
 
 The AI session — not the learner — runs this during the First-Run Protocol
 or when cs_readiness.state != "ready".
@@ -19,6 +20,12 @@ Modes (plan §P5.6):
 
 The legacy ``--force`` flag still works and means "full rebuild even
 when ready"; equivalent to ``--mode full --force``.
+
+Experimental LanceDB v3 backend:
+- ``--backend lance`` explicitly builds the bge-m3/LanceDB index path.
+- It is full-build only until the LanceDB incremental wrapper is implemented.
+- Default remains ``legacy`` so First-Run Protocol and production readiness
+  continue to use the SQLite/NPZ v2 path during the SOTA migration.
 """
 
 from __future__ import annotations
@@ -73,6 +80,10 @@ def _progress(stage: str, info: dict) -> None:
         )
     elif stage == "write_dense":
         print(f"[cs-index] 5/5 dense 벡터 저장 — shape={info.get('shape')}", flush=True)
+    elif stage == "write_lance":
+        print(f"[cs-index] 5/6 LanceDB 테이블 작성 중 ({info.get('count')} chunks)…", flush=True)
+    elif stage == "create_indices":
+        print(f"[cs-index] 6/6 LanceDB 인덱스 생성 중 ({info.get('count')} chunks)…", flush=True)
     elif stage == "write_manifest":
         print(
             f"[cs-index] 5/5 manifest 저장 — row_count={info.get('row_count')}, "
@@ -93,10 +104,31 @@ def _default_production_embedder():
     return SentenceTransformer(indexer.EMBED_MODEL)
 
 
+def _default_lance_encoder():
+    """Production bge-m3 encoder factory for the explicit LanceDB backend."""
+    from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder  # noqa: WPS433
+
+    return BgeM3Encoder()
+
+
+def _parse_modalities(raw: str) -> tuple[str, ...]:
+    allowed = {"dense", "sparse", "colbert", "fts"}
+    modalities = tuple(part.strip() for part in raw.split(",") if part.strip())
+    unknown = sorted(set(modalities) - allowed)
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            f"unknown modalities: {', '.join(unknown)}; allowed: {', '.join(sorted(allowed))}"
+        )
+    if not modalities:
+        raise argparse.ArgumentTypeError("at least one modality is required")
+    return modalities
+
+
 def main(
     argv: list[str] | None = None,
     *,
     embedder_factory=None,
+    lance_encoder_factory=None,
 ) -> int:
     repo_root = _find_repo_root()
     parser = argparse.ArgumentParser(description="Build the CS RAG index.")
@@ -127,6 +159,34 @@ def main(
             "(falls back to full on schema/model mismatch)."
         ),
     )
+    parser.add_argument(
+        "--backend",
+        choices=("legacy", "lance"),
+        default="legacy",
+        help=(
+            "Index backend (default: legacy). "
+            "legacy: SQLite FTS5 + dense.npz v2. "
+            "lance: experimental LanceDB v3 bge-m3 full build only."
+        ),
+    )
+    parser.add_argument(
+        "--encoder",
+        choices=("bge-m3",),
+        default="bge-m3",
+        help="Encoder for --backend lance (default: bge-m3).",
+    )
+    parser.add_argument(
+        "--modalities",
+        type=_parse_modalities,
+        default=("dense", "sparse", "colbert", "fts"),
+        help="Comma-separated modalities for --backend lance.",
+    )
+    parser.add_argument(
+        "--lance-colbert-dtype",
+        choices=("float16", "float32"),
+        default="float16",
+        help="ColBERT token storage dtype for --backend lance.",
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -152,6 +212,11 @@ def main(
             effective_mode = "incremental"
         else:
             effective_mode = "full"
+    if args.backend == "lance" and args.mode == "auto" and not args.force:
+        # v3 readiness is not the production readiness contract yet.  An
+        # explicit LanceDB build should therefore mean "build v3 now", not
+        # "reuse the legacy v2 readiness result and choose incremental".
+        effective_mode = "full"
 
     if effective_mode == "full" and readiness.state == "ready" and not args.force:
         # Explicit --mode full but no actual reason to rebuild: still
@@ -165,7 +230,32 @@ def main(
     print(f"[cs-index] mode={effective_mode}", flush=True)
     start = time.time()
     try:
-        if effective_mode == "full":
+        if args.backend == "lance":
+            if effective_mode == "incremental":
+                print(
+                    "[cs-index] ERROR: --backend lance supports only full builds until "
+                    "the LanceDB incremental wrapper lands. Use --mode full.",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return 2
+            factory = lance_encoder_factory or _default_lance_encoder
+            encoder = factory()
+            manifest = indexer.build_lance_index(
+                index_root=args.out,
+                corpus_root=args.corpus,
+                encoder=encoder,
+                modalities=args.modalities,
+                progress=_progress,
+                colbert_dtype=args.lance_colbert_dtype,
+            )
+            row_count = manifest["row_count"]
+            mode_descriptor = "lance-full"
+            extra_summary = (
+                f" — encoder={manifest.get('encoder', {}).get('model_version', args.encoder)} "
+                f"modalities={','.join(args.modalities)}"
+            )
+        elif effective_mode == "full":
             manifest = indexer.build_index(
                 index_root=args.out,
                 corpus_root=args.corpus,

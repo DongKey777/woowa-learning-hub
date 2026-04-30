@@ -216,6 +216,46 @@ Remaining after H2:
 - Production full build with bge-m3 and manifest row-count/corpus-hash validation.
 - Sparse rescoring and ColBERT MaxSim integration are not implemented yet; H2 only stores the required columns.
 
+## H2.1 Explicit LanceDB Build Entrypoint
+
+Implemented after H2 writer foundation:
+
+- Added `bin/cs-index-build --backend legacy|lance`.
+  - Default stays `legacy`, so the First-Run Protocol and current production readiness path remain v2 SQLite/NPZ.
+  - `--backend lance` is opt-in and routes to `indexer.build_lance_index(...)`.
+- Added Lance-specific CLI options:
+  - `--encoder bge-m3` (single supported production choice for now).
+  - `--modalities dense,sparse,colbert,fts` with validation.
+  - `--lance-colbert-dtype float16|float32`.
+- `--backend lance --mode auto` resolves to full build even if legacy v2 readiness is `ready`.
+  - Reason: v3 readiness is not the production readiness contract yet; explicit LanceDB build should not reuse legacy v2 readiness to pick incremental.
+- `--backend lance --mode incremental` returns exit code 2 with a clear error until the LanceDB upsert wrapper lands.
+- Added CLI tests covering:
+  - Opt-in LanceDB full builder dispatch.
+  - Modalities and ColBERT dtype propagation.
+  - Incremental rejection for LanceDB backend.
+  - Legacy mode behavior remains covered by the existing mode tests.
+
+H2.1 verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py -q
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_encoder_protocol.py tests/unit/test_bge_m3_encoder.py tests/unit/test_cs_readiness.py -q
+```
+
+Results:
+
+```text
+10 passed in 0.03s
+32 passed in 1.63s
+```
+
+Important H2.1 design choice:
+
+- This is still not a production cutover.
+- `indexer.is_ready()` still validates the legacy v2 index only.
+- A real bge-m3 production LanceDB build should be run explicitly with `bin/cs-index-build --backend lance --mode full` after disk budget is checked.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
