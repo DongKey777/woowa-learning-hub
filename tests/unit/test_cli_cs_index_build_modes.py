@@ -206,7 +206,7 @@ def test_main_explicit_full_mode(tmp_path, stub_indexer, stub_incremental):
 
 
 def test_main_lance_backend_uses_explicit_v3_full_builder(
-    tmp_path, stub_indexer, stub_incremental, capsys
+    tmp_path, stub_indexer, stub_incremental, monkeypatch, capsys
 ):
     from scripts.learning.rag import indexer
 
@@ -216,6 +216,22 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
         next_command=None,
     )
     fake_encoder = object()
+    monkeypatch.setattr(
+        CLI,
+        "_estimate_lance_disk_budget",
+        lambda _corpus, _out: {
+            "chunk_count": 2,
+            "dense_bytes": 8192,
+            "sparse_bytes": 1920,
+            "colbert_bytes": 55296,
+            "overhead_bytes": 6540,
+            "total_bytes": 71948,
+            "required_free_bytes": 143896,
+            "free_bytes": 999999999,
+            "disk_root": str(tmp_path),
+            "ok": True,
+        },
+    )
 
     rc = CLI.main(
         [
@@ -236,6 +252,43 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     assert stub_indexer["build_lance_args"]["modalities"] == ("dense", "fts")
     assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
     assert "mode=lance-full" in capsys.readouterr().out
+
+
+def test_main_lance_backend_aborts_when_disk_budget_is_insufficient(
+    tmp_path, stub_indexer, stub_incremental, monkeypatch, capsys
+):
+    monkeypatch.setattr(
+        CLI,
+        "_estimate_lance_disk_budget",
+        lambda _corpus, _out: {
+            "chunk_count": 100,
+            "dense_bytes": 409600,
+            "sparse_bytes": 96000,
+            "colbert_bytes": 2764800,
+            "overhead_bytes": 327040,
+            "total_bytes": 3597440,
+            "required_free_bytes": 7194880,
+            "free_bytes": 1024,
+            "disk_root": str(tmp_path),
+            "ok": False,
+        },
+    )
+
+    rc = CLI.main(
+        [
+            "--corpus", str(tmp_path),
+            "--out", str(tmp_path / "out"),
+            "--backend", "lance",
+            "--mode", "full",
+        ],
+        lance_encoder_factory=lambda: (_ for _ in ()).throw(AssertionError("should not load")),
+    )
+
+    captured = capsys.readouterr()
+    assert rc == 2
+    assert stub_indexer.get("build_lance_index_called") is not True
+    assert stub_incremental["called"] is False
+    assert "INSUFFICIENT_DISK" in captured.err
 
 
 def test_main_lance_backend_rejects_incremental_until_v3_upsert_lands(

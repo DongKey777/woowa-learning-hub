@@ -31,6 +31,7 @@ Experimental LanceDB v3 backend:
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -122,6 +123,73 @@ def _parse_modalities(raw: str) -> tuple[str, ...]:
     if not modalities:
         raise argparse.ArgumentTypeError("at least one modality is required")
     return modalities
+
+
+def _format_bytes(size: int) -> str:
+    units = ("B", "KB", "MB", "GB", "TB")
+    value = float(size)
+    for unit in units:
+        if value < 1024 or unit == units[-1]:
+            return f"{value:.1f} {unit}" if unit != "B" else f"{int(value)} B"
+        value /= 1024
+    return f"{value:.1f} TB"
+
+
+def _existing_disk_root(path: Path) -> Path:
+    current = path
+    while not current.exists() and current != current.parent:
+        current = current.parent
+    return current
+
+
+def _estimate_lance_disk_budget(corpus_root: str, out_root: str) -> dict:
+    """Estimate LanceDB v3 footprint before loading bge-m3.
+
+    The estimate is intentionally conservative enough for an abort gate, not a
+    precise storage model. It mirrors the H2 plan: dense vectors + learned
+    sparse payload + candidate ColBERT storage + LanceDB overhead, then requires
+    2x free space for safe rebuild/write amplification.
+    """
+    from scripts.learning.rag import corpus_loader  # noqa: WPS433
+
+    chunk_count = len(corpus_loader.load_corpus(corpus_root))
+    dense_bytes = chunk_count * 1024 * 4
+    sparse_bytes = chunk_count * 120 * (4 + 4)
+    colbert_bytes = chunk_count * 27 * 1024
+    overhead_bytes = int((dense_bytes + sparse_bytes + colbert_bytes) * 0.10)
+    total_bytes = dense_bytes + sparse_bytes + colbert_bytes + overhead_bytes
+    required_free_bytes = total_bytes * 2
+    disk_root = _existing_disk_root(Path(out_root).expanduser()).resolve()
+    free_bytes = shutil.disk_usage(disk_root).free
+    return {
+        "chunk_count": chunk_count,
+        "dense_bytes": dense_bytes,
+        "sparse_bytes": sparse_bytes,
+        "colbert_bytes": colbert_bytes,
+        "overhead_bytes": overhead_bytes,
+        "total_bytes": total_bytes,
+        "required_free_bytes": required_free_bytes,
+        "free_bytes": free_bytes,
+        "disk_root": str(disk_root),
+        "ok": free_bytes >= required_free_bytes,
+    }
+
+
+def _print_lance_disk_budget(budget: dict) -> None:
+    print(
+        f"[cs-index] disk budget estimate ({budget['chunk_count']} chunks):",
+        flush=True,
+    )
+    print(f"  dense (1024 fp32):      {_format_bytes(budget['dense_bytes'])}", flush=True)
+    print(f"  sparse (~120 nonzero):  {_format_bytes(budget['sparse_bytes'])}", flush=True)
+    print(f"  colbert candidate data: {_format_bytes(budget['colbert_bytes'])}", flush=True)
+    print(f"  LanceDB overhead (~10%): {_format_bytes(budget['overhead_bytes'])}", flush=True)
+    print(f"  total estimate:         {_format_bytes(budget['total_bytes'])}", flush=True)
+    marker = "✓" if budget["ok"] else "✗"
+    print(
+        f"  free at {budget['disk_root']}: {_format_bytes(budget['free_bytes'])} {marker}",
+        flush=True,
+    )
 
 
 def main(
@@ -235,6 +303,17 @@ def main(
                 print(
                     "[cs-index] ERROR: --backend lance supports only full builds until "
                     "the LanceDB incremental wrapper lands. Use --mode full.",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                return 2
+            budget = _estimate_lance_disk_budget(args.corpus, args.out)
+            _print_lance_disk_budget(budget)
+            if not budget["ok"]:
+                print(
+                    "[cs-index] ERROR: INSUFFICIENT_DISK for LanceDB rebuild "
+                    f"(need >= {_format_bytes(budget['required_free_bytes'])}, "
+                    f"free {_format_bytes(budget['free_bytes'])})",
                     file=sys.stderr,
                     flush=True,
                 )

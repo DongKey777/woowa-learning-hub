@@ -419,6 +419,51 @@ Result:
 
 This smoke used real cached bge-m3 in offline mode and did not touch production `state/cs_rag`.
 
+## H2.3 LanceDB Disk Budget Gate
+
+Implemented after H2.2:
+
+- Added a pre-build disk estimate for `bin/cs-index-build --backend lance`.
+- The gate runs before loading bge-m3.
+- Estimate components:
+  - dense: `chunk_count * 1024 * 4`,
+  - sparse: `chunk_count * 120 * (indices+values fp32/int32)`,
+  - ColBERT candidate storage: conservative per-chunk estimate,
+  - LanceDB overhead: 10%.
+- Required free space is `2x total_estimate` to leave room for rebuild/write amplification.
+- If insufficient, CLI exits with code 2 and `INSUFFICIENT_DISK`.
+
+H2.3 verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py -q
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_search_path.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py -q
+```
+
+Results:
+
+```text
+11 passed in 0.03s
+24 passed in 1.68s
+```
+
+Operational smoke with budget output:
+
+```text
+[cs-index] disk budget estimate (2 chunks):
+  dense (1024 fp32):      8.0 KB
+  sparse (~120 nonzero):  1.9 KB
+  colbert candidate data: 54.0 KB
+  LanceDB overhead (~10%): 6.4 KB
+  total estimate:         70.3 KB
+  free at /private/tmp/woowa-lance-index-...: 30.2 GB ✓
+[cs-index] 완료 — mode=lance-full row_count=2 — encoder=BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181 modalities=dense,sparse,colbert,fts (5.5s)
+```
+
+Remaining:
+
+- The budget estimate is intentionally conservative and coarse. H8 production sweep should record actual LanceDB footprint and tune the constants if needed.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
