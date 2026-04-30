@@ -1478,6 +1478,7 @@ def search(
             index_root=index_root,
             experience_level=experience_level,
             learner_context=learner_context,
+            use_reranker=use_reranker,
             debug=debug,
         )
 
@@ -1599,6 +1600,7 @@ def _search_lance(
     index_root: Path | str,
     experience_level: str | None,
     learner_context: dict | None,
+    use_reranker: bool | None,
     debug: dict | None,
 ) -> list[dict]:
     try:
@@ -1641,6 +1643,18 @@ def _search_lance(
         debug.update(query_debug)
         debug["category_filter_fallback"] = filter_fallback_used
         debug["allowed_categories"] = sorted(allowed_categories)
+
+    if mode == "full" and _rerank_enabled(use_reranker):
+        anchor = category_mapping.anchor_phrase_for(learning_points)
+        rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
+        filtered = _rerank(rerank_prompt, filtered, chunks, top_n=top_k * 2)
+        filtered = _apply_signal_boost(
+            filtered,
+            chunks,
+            prompt,
+            signals,
+            multiplier=POST_RERANK_SIGNAL_BOOST_MULTIPLIER,
+        )
 
     deduped = _dedupe_by_path(filtered, chunks)
     return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]

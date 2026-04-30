@@ -299,6 +299,45 @@ def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkey
     assert hits[0]["path"] == "contents/database/transaction-basics.md"
 
 
+def test_public_lance_full_mode_applies_reranker_when_enabled(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=encoder,
+    )
+
+    rerank_calls = []
+
+    def fake_rerank(prompt, ranked, chunks, top_n):
+        rerank_calls.append(
+            {
+                "prompt": prompt,
+                "ranked_len": len(ranked),
+                "top_n": top_n,
+            }
+        )
+        return ranked
+
+    monkeypatch.setattr(searcher, "_rerank_enabled", lambda flag: True)
+    monkeypatch.setattr(searcher, "_rerank", fake_rerank)
+
+    hits = searcher.search(
+        "트랜잭션이 뭐예요?",
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        top_k=2,
+        use_reranker=True,
+    )
+
+    assert hits
+    assert rerank_calls
+    assert rerank_calls[0]["top_n"] == 4
+
+
 def test_lance_follow_up_query_uses_recent_context_candidate(tmp_path, monkeypatch):
     corpus_root = _fake_corpus(tmp_path)
     index_root = tmp_path / "index"
