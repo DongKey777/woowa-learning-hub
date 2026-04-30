@@ -131,6 +131,15 @@ class BgeM3Encoder:
                 "sparse": [],
                 "colbert": [],
             }
+        if not want_dense and not want_sparse and not want_colbert:
+            return {
+                "dense": np.zeros((total, self.dense_dim), dtype=np.float32),
+                "sparse": [{} for _ in range(total)],
+                "colbert": [
+                    np.zeros((0, self.colbert_dim), dtype=np.float16)
+                    for _ in range(total)
+                ],
+            }
 
         model = self._load_model()
         dense_parts: list[np.ndarray] = []

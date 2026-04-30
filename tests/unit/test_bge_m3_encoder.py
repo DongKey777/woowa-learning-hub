@@ -68,3 +68,16 @@ def test_bge_m3_encoder_respects_modalities(monkeypatch):
     assert out["sparse"] == [{}]
     assert out["colbert"][0].shape == (0, 1024)
 
+
+def test_bge_m3_encoder_fts_only_does_not_load_model(monkeypatch):
+    def fail_load(self):
+        raise AssertionError("model should not load without vector modalities")
+
+    monkeypatch.setattr(BgeM3Encoder, "_load_model", fail_load)
+
+    encoder = BgeM3Encoder(devices="cpu")
+    out = encoder.encode_corpus(["a", "b"], modalities=())
+
+    assert out["dense"].shape == (2, 1024)
+    assert out["sparse"] == [{}, {}]
+    assert out["colbert"][0].shape == (0, 1024)
