@@ -946,6 +946,33 @@ Implication for next work:
   - remote/GPU build machine;
   - corpus-level staged build by high-value categories only.
 
+## H7h Encode ETA Abort Gate
+
+Implemented after H7g:
+
+- Added `--lance-max-eta-minutes`.
+- The regular progress printer is now wrapped by an optional ETA gate.
+- On `encode_progress`, if `done > 0`, work remains, and `eta_s` exceeds the configured budget, the build raises `EncodeTimeBudgetExceeded` and exits with code 2.
+
+Reason:
+
+- H7g showed the first 1% of a full encode is enough to detect a multi-hour local run.
+- This prevents future agents from accidentally letting a 3-9 hour local encode continue.
+
+Verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py -q
+.venv/bin/python -m pytest tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_bge_m3_encoder.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_incremental_indexer.py -q
+```
+
+Results:
+
+```text
+14 passed in 0.86s
+23 passed in 2.81s
+```
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

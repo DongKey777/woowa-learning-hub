@@ -95,6 +95,29 @@ def _progress(stage: str, info: dict) -> None:
         print(f"[cs-index] {stage} {info}", flush=True)
 
 
+class EncodeTimeBudgetExceeded(RuntimeError):
+    """Raised when observed encode ETA exceeds the caller's time budget."""
+
+
+def _progress_with_eta_gate(max_eta_minutes: float | None):
+    """Wrap the standard progress printer with an optional ETA abort gate."""
+
+    def _wrapped(stage: str, info: dict) -> None:
+        _progress(stage, info)
+        if stage != "encode_progress" or not max_eta_minutes:
+            return
+        eta_s = float(info.get("eta_s") or 0.0)
+        done = int(info.get("done") or 0)
+        total = int(info.get("total") or 0)
+        if done > 0 and total > done and eta_s > max_eta_minutes * 60:
+            raise EncodeTimeBudgetExceeded(
+                f"encode ETA {eta_s / 60:.1f}m exceeds budget "
+                f"{max_eta_minutes:.1f}m at {done}/{total}"
+            )
+
+    return _wrapped
+
+
 def _default_production_embedder():
     """Production-side lazy SentenceTransformer factory bound to the
     embed model declared in indexer.EMBED_MODEL. Tests inject fakes
@@ -346,6 +369,15 @@ def main(
         default=64,
         help="Batch size for bge-m3 LanceDB corpus encoding (default: 64).",
     )
+    parser.add_argument(
+        "--lance-max-eta-minutes",
+        type=float,
+        default=0.0,
+        help=(
+            "Abort LanceDB encoding if observed remaining ETA exceeds this "
+            "many minutes after a progress event. 0 disables the gate."
+        ),
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -392,6 +424,9 @@ def main(
         if args.backend == "lance":
             lance_device = _resolve_lance_device(args.lance_device)
             lance_fp16 = _resolve_lance_fp16(args.lance_precision, lance_device)
+            lance_progress = _progress_with_eta_gate(
+                args.lance_max_eta_minutes if args.lance_max_eta_minutes > 0 else None
+            )
             print(
                 f"[cs-index] lance runtime — device={lance_device} fp16={lance_fp16}",
                 flush=True,
@@ -430,7 +465,7 @@ def main(
                     corpus_root=args.corpus,
                     encoder=encoder,
                     modalities=args.modalities,
-                    progress=_progress,
+                    progress=lance_progress,
                     colbert_dtype=args.lance_colbert_dtype,
                 )
                 try:
@@ -477,7 +512,7 @@ def main(
                     index_root=args.out,
                     corpus_root=args.corpus,
                     modalities=args.modalities,
-                    progress=_progress,
+                    progress=lance_progress,
                     colbert_dtype=args.lance_colbert_dtype,
                 )
                 row_count = result.manifest["row_count"]
@@ -531,6 +566,9 @@ def main(
             if result.fallback_reason:
                 extra_summary += f" (fallback: {result.fallback_reason})"
     except indexer.IndexDependencyMissing as exc:
+        print(f"[cs-index] ERROR: {exc}", file=sys.stderr, flush=True)
+        return 2
+    except EncodeTimeBudgetExceeded as exc:
         print(f"[cs-index] ERROR: {exc}", file=sys.stderr, flush=True)
         return 2
     except Exception as exc:  # pragma: no cover - defensive

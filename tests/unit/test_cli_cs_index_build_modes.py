@@ -346,6 +346,54 @@ def test_main_lance_backend_aborts_when_disk_budget_is_insufficient(
     assert "INSUFFICIENT_DISK" in captured.err
 
 
+def test_main_lance_backend_aborts_when_encode_eta_exceeds_budget(
+    tmp_path, stub_indexer, stub_incremental, monkeypatch, capsys
+):
+    from scripts.learning.rag import indexer
+
+    monkeypatch.setattr(
+        CLI,
+        "_estimate_lance_disk_budget",
+        lambda _corpus, _out: {
+            "chunk_count": 100,
+            "dense_bytes": 409600,
+            "sparse_bytes": 96000,
+            "colbert_bytes": 2764800,
+            "overhead_bytes": 327040,
+            "total_bytes": 3597440,
+            "required_free_bytes": 7194880,
+            "free_bytes": 999999999,
+            "disk_root": str(tmp_path),
+            "ok": True,
+        },
+    )
+
+    def slow_build_lance_index(**kwargs):
+        kwargs["progress"](
+            "encode_progress",
+            {"done": 10, "total": 100, "eta_s": 6000, "rate_per_s": 1.0},
+        )
+        raise AssertionError("ETA gate should abort before build continues")
+
+    monkeypatch.setattr(indexer, "build_lance_index", slow_build_lance_index)
+
+    rc = CLI.main(
+        [
+            "--corpus", str(tmp_path),
+            "--out", str(tmp_path / "out"),
+            "--backend", "lance",
+            "--mode", "full",
+            "--lance-max-eta-minutes", "30",
+        ],
+        lance_encoder_factory=lambda: object(),
+    )
+
+    captured = capsys.readouterr()
+    assert rc == 2
+    assert "exceeds budget 30.0m" in captured.err
+    assert stub_incremental["called"] is False
+
+
 def test_main_lance_backend_incremental_uses_v3_incremental_builder(
     tmp_path, stub_indexer, stub_incremental, capsys
 ):
