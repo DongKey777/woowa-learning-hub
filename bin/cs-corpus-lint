@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage: bin/cs-corpus-lint [--corpus PATH] [--with-dedupe]
+#
+# Static integrity lint over knowledge/cs/contents. Exits non-zero on
+# any violation. See plan §P5.4 + scripts/learning/rag/corpus_lint.py
+# for check definitions.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" -m scripts.learning.rag.corpus_lint "$@"

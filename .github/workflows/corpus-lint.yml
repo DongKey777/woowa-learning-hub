@@ -1,0 +1,33 @@
+name: corpus-lint
+
+on:
+  pull_request:
+    paths:
+      - 'knowledge/cs/**'
+      - 'scripts/learning/rag/corpus_lint.py'
+      - 'tests/unit/test_corpus_lint.py'
+      - '.github/workflows/corpus-lint.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'knowledge/cs/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run corpus lint (links + frontmatter + concept_id uniqueness)
+        # Report-only until P5.5 cleanup finishes — drop the explicit
+        # exit-0 gate by adding --strict once the corpus is clean.
+        run: |
+          python -m scripts.learning.rag.corpus_lint \
+            --corpus knowledge/cs/contents
+      - name: Run lint unit tests
+        run: |
+          python -m pytest tests/unit/test_corpus_lint.py -q
