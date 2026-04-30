@@ -708,6 +708,71 @@ Remaining H7 work:
 - Run a real ablation smoke against a small LanceDB index to verify the end-to-end CLI path outside monkeypatched tests.
 - Then run the full production ablation after production `state/cs_rag` has been rebuilt as LanceDB v3.
 
+## H7c Real End-to-End Ablation Smoke
+
+Executed after H7b against temporary `/tmp` data only. Production `state/cs_rag` was not modified.
+
+Smoke setup:
+
+- Created `/tmp/woowa-h7-smoke-1777536356/corpus` with 2 Spring docs.
+- Created `/tmp/woowa-h7-smoke-1777536356/fixture.json` with 1 query:
+  - prompt: `Spring Bean이 뭐야?`
+  - expected: `contents/spring/bean.md`
+
+Commands:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 bin/cs-index-build \
+  --backend lance \
+  --mode full \
+  --corpus /tmp/woowa-h7-smoke-1777536356/corpus \
+  --out /tmp/woowa-h7-smoke-1777536356/index \
+  --modalities fts,dense
+
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 bin/rag-eval \
+  --ablate \
+  --fixture /tmp/woowa-h7-smoke-1777536356/fixture.json \
+  --embedding-index-root /tmp/woowa-h7-smoke-1777536356/index \
+  --ablation-out /tmp/woowa-h7-smoke-1777536356/ablation.json \
+  --ablation-split full \
+  --ablation-modalities fts \
+  --ablation-modalities fts,dense \
+  --device cpu
+```
+
+Results:
+
+```text
+[cs-index] 완료 — mode=lance-full row_count=2 — encoder=BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181 modalities=fts,dense (10.5s)
+
+modalities                    primary_nDCG    p95(ms)  failures
+fts                                 1.0000      728.8         0
+fts,dense                           1.0000     4042.9         0
+
+best_modalities: ['fts']
+wrote: /tmp/woowa-h7-smoke-1777536356/ablation.json
+```
+
+Output JSON spot-check:
+
+```text
+full 1 ['fts']
+['fts'] 1.0 lance ['fts']
+['fts', 'dense'] 1.0 lance ['fts', 'dense']
+```
+
+Interpretation:
+
+- The new `--ablate` path works end-to-end with a real LanceDB v3 index and real cached bge-m3 encoder.
+- The tiny smoke is not a quality decision. It only proves CLI/report plumbing.
+- Dense had higher p95 on the first query because bge-m3 query encoding loaded lazily inside that modality run. Full production measurement should either include this cost explicitly or add a warm-up pass before reporting steady-state p95.
+
+Remaining H7/H8 work:
+
+- Rebuild production `state/cs_rag` as LanceDB v3.
+- Run full H7 ablation on tune split.
+- Use the full ablation result to lock H8 candidate stack/modality decisions.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
