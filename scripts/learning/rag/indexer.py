@@ -27,7 +27,9 @@ A mismatch → ``state="stale"``.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import shutil
 import sqlite3
 import time
 from dataclasses import dataclass
@@ -63,6 +65,9 @@ class IndexDependencyMissing(RuntimeError):
 
 class IncompatibleIndexError(RuntimeError):
     """Raised when an index root does not contain the expected v3 LanceDB format."""
+
+
+_KIWI_ANALYZER = None
 
 
 @dataclass
@@ -422,6 +427,286 @@ def _embed_text(chunk: corpus_loader.CorpusChunk) -> str:
     """Compose the text fed to the embedder: title + section + body."""
     head = " > ".join(chunk.section_path) if chunk.section_path else chunk.title
     return f"{head}\n\n{chunk.body}"
+
+
+# ---------------------------------------------------------------------------
+# LanceDB v3 build path (H2 foundation)
+# ---------------------------------------------------------------------------
+
+def _search_terms(text: str) -> str:
+    """Return Korean-friendly terms for the LanceDB FTS column."""
+    global _KIWI_ANALYZER
+    try:
+        import kiwipiepy  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency path
+        raise IndexDependencyMissing(
+            "kiwipiepy not installed. Run `.venv/bin/python -m pip install kiwipiepy`."
+        ) from exc
+
+    if _KIWI_ANALYZER is None:
+        _KIWI_ANALYZER = kiwipiepy.Kiwi()
+    return " ".join(tok.form for tok in _KIWI_ANALYZER.tokenize(text))
+
+
+def _lance_schema(dense_dim: int, colbert_dim: int, *, colbert_dtype: str = "float16"):
+    import pyarrow as pa  # type: ignore
+
+    item_type = pa.float16() if colbert_dtype == "float16" else pa.float32()
+    return pa.schema(
+        [
+            ("chunk_id", pa.string()),
+            ("doc_id", pa.string()),
+            ("path", pa.string()),
+            ("title", pa.string()),
+            ("category", pa.string()),
+            ("difficulty", pa.string()),
+            ("section_path", pa.string()),
+            ("body", pa.string()),
+            ("search_terms", pa.string()),
+            ("char_len", pa.int64()),
+            ("anchors", pa.string()),
+            ("dense_vec", pa.list_(pa.float32(), dense_dim)),
+            (
+                "sparse_vec",
+                pa.struct(
+                    [
+                        ("indices", pa.list_(pa.int32())),
+                        ("values", pa.list_(pa.float32())),
+                    ]
+                ),
+            ),
+            ("colbert_tokens", pa.list_(pa.list_(item_type, colbert_dim))),
+            ("encoder_version", pa.string()),
+            ("content_sha1", pa.string()),
+        ]
+    )
+
+
+def _content_sha1(chunk: corpus_loader.CorpusChunk) -> str:
+    payload = json.dumps(chunk.to_dict(), ensure_ascii=False, sort_keys=True)
+    return hashlib.sha1(payload.encode("utf-8")).hexdigest()
+
+
+def _lance_records(
+    chunks: list[corpus_loader.CorpusChunk],
+    encoding,
+    *,
+    encoder_version: str,
+) -> list[dict]:
+    records: list[dict] = []
+    for i, chunk in enumerate(chunks):
+        sparse = encoding["sparse"][i]
+        records.append(
+            {
+                "chunk_id": chunk.chunk_id,
+                "doc_id": chunk.doc_id,
+                "path": chunk.path,
+                "title": chunk.title,
+                "category": chunk.category,
+                "difficulty": chunk.difficulty,
+                "section_path": json.dumps(chunk.section_path, ensure_ascii=False),
+                "body": chunk.body,
+                "search_terms": _search_terms(_embed_text(chunk)),
+                "char_len": chunk.char_len,
+                "anchors": json.dumps(chunk.anchors, ensure_ascii=False),
+                "dense_vec": encoding["dense"][i].astype("float32").tolist(),
+                "sparse_vec": {
+                    "indices": [int(k) for k in sparse.keys()],
+                    "values": [float(v) for v in sparse.values()],
+                },
+                "colbert_tokens": encoding["colbert"][i].tolist(),
+                "encoder_version": encoder_version,
+                "content_sha1": _content_sha1(chunk),
+            }
+        )
+    return records
+
+
+def _create_lance_indices(
+    table,
+    *,
+    row_count: int,
+    dense_num_partitions: int = 256,
+    dense_num_sub_vectors: int = 64,
+) -> dict:
+    """Create best-effort LanceDB indices and return manifest metadata."""
+    # LanceDB can build ANN indices on tiny fixtures, but it emits noisy
+    # k-means warnings and the resulting index is not meaningful.  Production
+    # corpus builds are large enough to use ANN; small tests keep exact scan.
+    should_build_ann = row_count >= 32
+    dense_type = "IVF_PQ" if row_count >= 256 else "IVF_FLAT"
+    dense_partitions = dense_num_partitions
+    dense_sub_vectors = dense_num_sub_vectors
+    if not should_build_ann:
+        dense_type = "unindexed"
+        dense_partitions = max(1, min(row_count, dense_num_partitions))
+        dense_sub_vectors = 1
+    else:
+        try:
+            if dense_type == "IVF_PQ":
+                table.create_index(
+                    vector_column_name="dense_vec",
+                    metric="cosine",
+                    index_type="IVF_PQ",
+                    num_partitions=dense_num_partitions,
+                    num_sub_vectors=dense_num_sub_vectors,
+                )
+            else:
+                dense_partitions = max(1, min(row_count, 16))
+                dense_sub_vectors = 1
+                table.create_index(
+                    vector_column_name="dense_vec",
+                    metric="cosine",
+                    index_type="IVF_FLAT",
+                    num_partitions=dense_partitions,
+                )
+        except Exception:
+            dense_type = "unindexed"
+            dense_partitions = max(1, min(row_count, dense_num_partitions))
+            dense_sub_vectors = 1
+
+    try:
+        # LanceDB 0.30 exposes List[str] in the Python signature, but native
+        # FTS only builds one inverted index per call.  Build both fields
+        # explicitly so later search can fuse raw body BM25 and kiwipiepy terms.
+        for column in ("search_terms", "body"):
+            table.create_fts_index(
+                column,
+                replace=True,
+                base_tokenizer="ngram",
+                ngram_min_length=2,
+                ngram_max_length=3,
+                stem=False,
+                remove_stop_words=False,
+                ascii_folding=False,
+            )
+        fts_tokenizer = "ngram"
+    except Exception:
+        fts_tokenizer = "kiwipiepy_external"
+
+    colbert_type = "MULTI_VECTOR" if should_build_ann else "sidecar"
+    colbert_index_type = "IVF_FLAT" if row_count < 256 else "IVF_PQ"
+    if should_build_ann:
+        try:
+            table.create_index(
+                vector_column_name="colbert_tokens",
+                metric="cosine",
+                index_type=colbert_index_type,
+                num_partitions=max(1, min(row_count, dense_num_partitions)),
+                num_sub_vectors=1 if row_count < 256 else dense_num_sub_vectors,
+            )
+        except Exception:
+            colbert_type = "sidecar"
+
+    return {
+        "dense": {
+            "type": dense_type,
+            "num_partitions": dense_partitions,
+            "num_sub_vectors": dense_sub_vectors,
+        },
+        "fts": {
+            "type": "tantivy",
+            "tokenizer": fts_tokenizer,
+        },
+        "colbert": {
+            "type": colbert_type,
+            "metric": "max_sim",
+            "dtype": "float16",
+        },
+    }
+
+
+def build_lance_index(
+    index_root: Path | str = DEFAULT_INDEX_ROOT,
+    corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
+    *,
+    encoder,
+    modalities: tuple[str, ...] = ("dense", "sparse", "colbert", "fts"),
+    progress=None,
+    colbert_dtype: str = "float16",
+) -> dict:
+    """Build the v3 LanceDB index from scratch.
+
+    This function is the H2 writer path.  It is not wired into
+    ``bin/cs-index-build`` until the cutover commit, so the legacy v2 path
+    remains available while the LanceDB stack is built and tested.
+    """
+    try:
+        import lancedb  # type: ignore
+        import pyarrow as pa  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency path
+        raise IndexDependencyMissing(
+            "lancedb/pyarrow not installed. Run `.venv/bin/python -m pip install lancedb pyarrow`."
+        ) from exc
+
+    def _tick(stage: str, info: dict | None = None) -> None:
+        if progress is not None:
+            progress(stage, info or {})
+
+    root = Path(index_root)
+    lance_root = root / LANCE_DIR_NAME
+    manifest_path = root / MANIFEST_NAME
+    root.mkdir(parents=True, exist_ok=True)
+
+    if lance_root.exists():
+        shutil.rmtree(lance_root)
+    if manifest_path.exists():
+        manifest_path.unlink()
+
+    _tick("load_corpus", {})
+    chunks = corpus_loader.load_corpus(corpus_root)
+    if not chunks:
+        raise RuntimeError(f"corpus at {corpus_root} is empty")
+    _tick("load_corpus_done", {"chunk_count": len(chunks)})
+
+    _tick("encode", {"count": len(chunks), "model": encoder.model_id})
+    texts = [_embed_text(chunk) for chunk in chunks]
+    encoding = encoder.encode_corpus(texts, modalities=tuple(m for m in modalities if m != "fts"), progress=progress)
+
+    if encoding["dense"].shape != (len(chunks), encoder.dense_dim):
+        raise RuntimeError(
+            f"unexpected dense shape {encoding['dense'].shape}, "
+            f"expected ({len(chunks)}, {encoder.dense_dim})"
+        )
+
+    _tick("write_lance", {"count": len(chunks)})
+    schema = _lance_schema(encoder.dense_dim, encoder.colbert_dim, colbert_dtype=colbert_dtype)
+    records = _lance_records(chunks, encoding, encoder_version=encoder.model_version)
+    table_data = pa.Table.from_pylist(records, schema=schema)
+    db = lancedb.connect(lance_root)
+    table = db.create_table(LANCE_TABLE_NAME, data=table_data, schema=schema, mode="overwrite")
+
+    _tick("create_indices", {"count": len(chunks)})
+    indices = _create_lance_indices(table, row_count=len(chunks))
+
+    manifest = {
+        "index_version": LANCE_INDEX_VERSION,
+        "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+        "row_count": len(chunks),
+        "corpus_hash": corpus_loader.corpus_hash(corpus_root),
+        "corpus_root": str(corpus_root),
+        "built_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "encoder": {
+            "model_id": encoder.model_id,
+            "model_version": encoder.model_version,
+            "max_length": 8192,
+        },
+        "lancedb": {
+            "version": getattr(lancedb, "__version__", "unknown"),
+            "table_name": LANCE_TABLE_NAME,
+            "indices": indices,
+        },
+        "modalities": list(modalities),
+        "ingest": {
+            "chunk_max_chars": corpus_loader.MAX_CHARS_PER_CHUNK,
+            "chunk_overlap": 0,
+        },
+    }
+    _tick("write_manifest", manifest)
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return manifest
 
 
 # ---------------------------------------------------------------------------

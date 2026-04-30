@@ -61,7 +61,7 @@
               "type": "object",
               "required": ["type", "num_partitions", "num_sub_vectors"],
               "properties": {
-                "type": {"enum": ["IVF_PQ", "IVF_FLAT", "IVF_HNSW_PQ", "IVF_HNSW_SQ"]},
+                "type": {"enum": ["IVF_PQ", "IVF_FLAT", "IVF_HNSW_PQ", "IVF_HNSW_SQ", "unindexed"]},
                 "num_partitions": {"type": "integer", "minimum": 1},
                 "num_sub_vectors": {"type": "integer", "minimum": 1}
               }
@@ -103,4 +103,3 @@
     }
   }
 }
-

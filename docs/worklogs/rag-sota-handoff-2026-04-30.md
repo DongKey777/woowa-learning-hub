@@ -164,6 +164,58 @@ Remaining for H2:
 - Move `INDEX_VERSION`/readiness cutover only once H2 writer can build a v3-ready index.
 - Update `bin/cs-index-build` CLI only when full writer path exists.
 
+## H2 LanceDB Writer Foundation
+
+Implemented after H1:
+
+- Added `indexer.build_lance_index(...)`.
+  - Loads the existing Markdown corpus through `corpus_loader.load_corpus`.
+  - Calls an injected `EncoderProtocol` implementation for dense/sparse/ColBERT modalities.
+  - Writes `state/cs_rag/lance/cs_chunks.lance` through LanceDB.
+  - Writes v3 `manifest.json` matching `schemas/cs-index-manifest-v3.json`.
+- Added LanceDB row schema helpers:
+  - `dense_vec`: fixed-size `float32` list.
+  - `sparse_vec`: `{indices: list[int32], values: list[float32]}` for later sparse dot-product rescoring.
+  - `colbert_tokens`: nested fixed-size `float16` vectors.
+  - `content_sha1`: stable chunk payload hash for future incremental diffing.
+  - `search_terms`: cached kiwipiepy token string for Korean BM25 support.
+- Added FTS/index creation helper.
+  - LanceDB 0.30.2 Python signature accepts `List[str]`, but native FTS rejects multi-field creation with `ValueError`.
+  - Writer therefore creates two separate FTS indexes: `search_terms` and `body`.
+  - Tiny test corpora skip ANN vector indexing and record `dense.type="unindexed"`, because LanceDB can emit noisy/meaningless k-means warnings on very small row counts.
+  - Production-size corpora still attempt dense IVF and ColBERT multivector indexing.
+- Extended v3 manifest schema to allow `dense.type="unindexed"` for tiny fixture/exact-scan builds.
+- Added `tests/unit/test_lance_index_builder.py`.
+  - Fake multimodal encoder covers dense, sparse, and ColBERT writes without loading bge-m3.
+  - Verifies manifest schema, table row count, sparse round-trip, FTS query, rebuild replacement, and empty-corpus failure.
+
+H2 verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py -q
+.venv/bin/python -m pytest tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_encoder_protocol.py tests/unit/test_bge_m3_encoder.py tests/unit/test_cs_readiness.py tests/unit/test_cli_cs_index_build_modes.py -q
+```
+
+Results:
+
+```text
+6 passed in 1.58s
+30 passed in 1.64s
+```
+
+Important H2 design choice:
+
+- `build_lance_index` is still not wired into `bin/cs-index-build`.
+- Legacy `INDEX_VERSION=2`, legacy `is_ready()`, and SQLite/NPZ production path remain untouched.
+- The cutover should happen only in the later phase that updates CLI/build/readiness together, so the project never enters a state where `bin/cs-index-build` cannot produce the format expected by readiness.
+
+Remaining after H2:
+
+- H3/H4 searcher-side LanceDB read/query path.
+- CLI cutover flag or mode for building v3 with real `BgeM3Encoder`.
+- Production full build with bge-m3 and manifest row-count/corpus-hash validation.
+- Sparse rescoring and ColBERT MaxSim integration are not implemented yet; H2 only stores the required columns.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
