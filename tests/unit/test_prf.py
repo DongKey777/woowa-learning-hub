@@ -248,3 +248,63 @@ def test_rm3_expand_records_alpha_and_doc_count():
     )
     assert result.alpha == 0.3
     assert result.pseudo_relevant_doc_count == 2
+
+
+def test_rm3_expand_modal_keeps_text_expansion_compatible():
+    pseudo = ["mvcc snapshot snapshot", "mvcc snapshot isolation"]
+    bg = _bg_freqs(("mvcc", 1), ("snapshot", 1), ("isolation", 100))
+
+    text = prf.rm3_expand(
+        query="mvcc",
+        pseudo_relevant_docs=pseudo,
+        background_token_freq=bg,
+        background_total_tokens=1000,
+        max_expansion_terms=2,
+        min_pseudo_freq=1,
+    )
+    modal = prf.rm3_expand_modal(
+        query="mvcc",
+        pseudo_relevant_docs=pseudo,
+        pseudo_relevant_sparse=[{10: 0.8}, {10: 0.2, 20: 0.9}],
+        background_token_freq=bg,
+        background_total_tokens=1000,
+        max_expansion_terms=2,
+        min_pseudo_freq=1,
+    )
+
+    assert modal.expanded_query_text == text.expanded_query
+    assert modal.text_expansion == text
+    assert modal.expansion_terms == tuple((term.term, term.score) for term in text.expansion_terms)
+
+
+def test_rm3_expand_modal_uses_top_sparse_tokens_from_pseudo_docs():
+    modal = prf.rm3_expand_modal(
+        query="origin",
+        pseudo_relevant_docs=["alpha beta", "alpha gamma"],
+        pseudo_relevant_sparse=[{100: 0.2, 200: 5.0}, {100: 4.0, 300: 0.1}],
+        background_token_freq={"alpha": 1, "beta": 1, "gamma": 1},
+        background_total_tokens=1000,
+        max_expansion_terms=2,
+        min_pseudo_freq=1,
+    )
+
+    assert set(modal.sparse_expansion_tokens) == {200, 100}
+    assert modal.sparse_expansion_tokens[200] > modal.sparse_expansion_tokens[100]
+
+
+def test_rm3_expand_modal_can_map_text_terms_to_sparse_tokens():
+    def fake_sparse_tokenizer(term: str):
+        return {"alpha": {11: 1.0}, "beta": {22: 2.0}}.get(term, {})
+
+    modal = prf.rm3_expand_modal(
+        query="origin",
+        pseudo_relevant_docs=["alpha beta", "alpha beta"],
+        pseudo_relevant_sparse=[],
+        background_token_freq={"alpha": 1, "beta": 1},
+        background_total_tokens=1000,
+        max_expansion_terms=2,
+        min_pseudo_freq=1,
+        tokenizer_for_sparse=fake_sparse_tokenizer,
+    )
+
+    assert set(modal.sparse_expansion_tokens) == {11, 22}

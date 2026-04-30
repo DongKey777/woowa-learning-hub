@@ -48,6 +48,7 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
+from collections.abc import Callable
 from typing import Iterable, Sequence
 
 
@@ -107,6 +108,21 @@ class RM3Expansion:
     @property
     def added_tokens(self) -> tuple[str, ...]:
         return tuple(t.term for t in self.expansion_terms)
+
+
+@dataclass(frozen=True)
+class ModalExpansion:
+    """Modal-aware PRF result for bge-m3 hybrid retrieval.
+
+    ``rm3_expand`` remains the text-only compatibility API.  This wrapper adds
+    sparse token expansion so the LanceDB/bge-m3 path can feed both the dense
+    query text and learned sparse rescore.
+    """
+
+    expanded_query_text: str
+    sparse_expansion_tokens: dict[int, float]
+    expansion_terms: tuple[tuple[str, float], ...]
+    text_expansion: RM3Expansion
 
 
 # ---------------------------------------------------------------------------
@@ -276,4 +292,92 @@ def rm3_expand(
         expanded_query=expanded_query,
         alpha=alpha,
         pseudo_relevant_doc_count=len(pseudo_relevant_docs),
+    )
+
+
+def _coerce_sparse_tokens(value) -> dict[int, float]:
+    if value is None:
+        return {}
+    if isinstance(value, dict):
+        return {int(k): float(v) for k, v in value.items()}
+    if isinstance(value, int):
+        return {int(value): 1.0}
+    out: dict[int, float] = {}
+    try:
+        iterator = iter(value)
+    except TypeError:
+        return {}
+    for token_id in iterator:
+        out[int(token_id)] = 1.0
+    return out
+
+
+def _top_sparse_tokens(
+    sparse_docs: Sequence[dict[int, float]] | None,
+    *,
+    limit: int,
+) -> dict[int, float]:
+    if not sparse_docs or limit <= 0:
+        return {}
+    totals: dict[int, float] = {}
+    for sparse in sparse_docs:
+        for token_id, weight in sparse.items():
+            totals[int(token_id)] = totals.get(int(token_id), 0.0) + float(weight)
+    ranked = sorted(totals.items(), key=lambda item: (-item[1], item[0]))
+    return dict(ranked[:limit])
+
+
+def rm3_expand_modal(
+    query: str,
+    *,
+    pseudo_relevant_docs: Sequence[str],
+    pseudo_relevant_sparse: Sequence[dict[int, float]] | None = None,
+    background_token_freq: dict[str, int],
+    background_total_tokens: int | None = None,
+    alpha: float = 0.5,
+    max_expansion_terms: int = 8,
+    stop_tokens: frozenset[str] = DEFAULT_STOP_TOKENS,
+    min_token_length: int = 2,
+    min_pseudo_freq: int = 2,
+    tokenizer_for_sparse: Callable[[str], object] | None = None,
+) -> ModalExpansion:
+    """Build text + sparse PRF expansion for hybrid retrieval.
+
+    ``tokenizer_for_sparse`` is optional because bge-m3 learned sparse token IDs
+    are model-specific. When provided, each selected text expansion term is
+    mapped to sparse token IDs. Regardless of tokenizer availability, the
+    highest-weight sparse IDs from pseudo-relevant docs are included as a
+    deterministic fallback.
+    """
+    text_expansion = rm3_expand(
+        query,
+        pseudo_relevant_docs=pseudo_relevant_docs,
+        background_token_freq=background_token_freq,
+        background_total_tokens=background_total_tokens,
+        alpha=alpha,
+        max_expansion_terms=max_expansion_terms,
+        stop_tokens=stop_tokens,
+        min_token_length=min_token_length,
+        min_pseudo_freq=min_pseudo_freq,
+    )
+
+    sparse_tokens = _top_sparse_tokens(
+        pseudo_relevant_sparse,
+        limit=max_expansion_terms,
+    )
+    if tokenizer_for_sparse is not None:
+        for term in text_expansion.expansion_terms:
+            for token_id, weight in _coerce_sparse_tokens(tokenizer_for_sparse(term.term)).items():
+                sparse_tokens[token_id] = sparse_tokens.get(token_id, 0.0) + weight * term.score
+
+    sparse_tokens = dict(
+        sorted(sparse_tokens.items(), key=lambda item: (-item[1], item[0]))[
+            :max_expansion_terms
+        ]
+    )
+    return ModalExpansion(
+        expanded_query_text=text_expansion.expanded_query,
+        sparse_expansion_tokens=sparse_tokens,
+        expansion_terms=tuple((term.term, term.score) for term in text_expansion.expansion_terms),
+        text_expansion=text_expansion,
     )

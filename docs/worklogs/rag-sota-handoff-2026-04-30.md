@@ -591,6 +591,44 @@ ADD
 
 This smoke used temporary `/tmp` corpus/index paths and did not touch production `state/cs_rag`.
 
+## H6 Modal-Aware PRF Expansion
+
+Implemented after H5b:
+
+- Added `ModalExpansion`.
+  - `expanded_query_text`
+  - `sparse_expansion_tokens`
+  - `expansion_terms`
+  - `text_expansion`
+- Added `rm3_expand_modal(...)`.
+  - Calls existing `rm3_expand(...)` for text expansion, preserving backward compatibility.
+  - Adds sparse token expansion from pseudo-relevant sparse vectors.
+  - Optionally maps selected text expansion terms through a model-specific `tokenizer_for_sparse`.
+- Existing `rm3_expand(...)` behavior is unchanged.
+- Added PRF tests for:
+  - text compatibility with `rm3_expand`,
+  - sparse token selection from pseudo-relevant docs,
+  - optional text-term to sparse-token mapping.
+
+H6 verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_prf.py -q
+.venv/bin/python -m pytest tests/unit/test_prf.py tests/unit/test_lance_search_path.py tests/unit/test_cs_rag_search.py -q
+```
+
+Results:
+
+```text
+21 passed in 0.03s
+222 passed, 185 subtests passed in 2.82s
+```
+
+Remaining:
+
+- H6 only provides the modal PRF primitive.
+- Searcher integration of modal PRF is still future work and should be measured in H7/H8 rather than silently enabled.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
