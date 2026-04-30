@@ -181,11 +181,11 @@ def test_remote_commands_use_system_python_not_venv():
     assert "pip install --break-system-packages" in full
 
 
-def test_remote_commands_pin_transformers_below_5_0():
-    """R1 v6 bug fix: transformers 5.x removed Bloom/TrainingArguments
-    in a way that breaks FlagEmbedding's import chain
-    (ModuleNotFoundError before any download even starts). Pin to 4.x
-    latest, the supported target."""
+def test_remote_commands_pin_transformers_to_safe_band():
+    """R1 v6/v7 bug fixes: transformers 4.50+ refactored
+    BloomPreTrainedModel, TrainingArguments, and integrations modules
+    — FlagEmbedding 1.4.0 doesn't tolerate either. Pin >=4.40,<4.46
+    (safe middle band that still imports cleanly)."""
     client = H.MockRunPodClient()
     h = H.RunPodHarness(client, dry_run=True)
     cmds = h._build_remote_commands(
@@ -193,7 +193,27 @@ def test_remote_commands_pin_transformers_below_5_0():
         run_id="r1", r_phase="r1",
     )
     full = "\n".join(cmds)
-    assert "\"transformers<5.0\"" in full or "'transformers<5.0'" in full
+    assert "transformers>=4.40,<4.46" in full
+
+
+def test_remote_commands_upgrade_torch_torchvision_torchaudio_together():
+    """R1 v7 bug fix: upgrading torch alone leaves torchvision/torchaudio
+    on the old 2.4 ABI → `operator torchvision::nms does not exist` when
+    transformers tries to import torchvision-backed ops. Upgrade all 3
+    in lockstep from the same cu124 wheel index."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense"),
+        run_id="r1", r_phase="r1",
+    )
+    full = "\n".join(cmds)
+    assert "torchvision>=0.21" in full
+    assert "torchaudio>=2.6" in full
+    # Same step as torch upgrade (one pip resolve)
+    upgrade_cmd = next(c for c in cmds if "torch>=2.6.0" in c)
+    assert "torchvision>=0.21" in upgrade_cmd
+    assert "torchaudio>=2.6" in upgrade_cmd
 
 
 def test_remote_commands_upgrade_torch_to_at_least_2_6_with_cu124(_=None):

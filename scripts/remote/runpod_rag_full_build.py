@@ -818,9 +818,20 @@ class RunPodHarness:
                         cmd[:80] + ("…" if len(cmd) > 80 else ""))
             rc, stdout, stderr = executor.run(pod, keypath, cmd, timeout_s=3600)
             if rc != 0:
-                # Log + raise so finally block still terminates Pod
-                logger.error("[runpod] command failed (rc=%d): %s\nstderr: %s",
-                             rc, cmd[:200], stderr[:500])
+                # Log + raise so finally block still terminates Pod.
+                # Print BOTH ends of stderr — Python tracebacks have
+                # the type/message at the END, but paramiko's buffer
+                # may have trimmed the middle. R1 v1-v7 lesson:
+                # stderr[:500] alone shows the call site, not the
+                # actual ImportError text we need.
+                head = stderr[:600]
+                tail = stderr[-2000:] if len(stderr) > 2600 else ""
+                logger.error(
+                    "[runpod] command failed (rc=%d): %s\n"
+                    "stderr head: %s\n%s",
+                    rc, cmd[:200], head,
+                    f"stderr tail: {tail}" if tail else "(no separate tail; stderr small)",
+                )
                 raise RuntimeError(f"remote command failed (rc={rc}): {cmd[:80]}")
 
         # Step 11: scp artifact back
@@ -896,24 +907,28 @@ class RunPodHarness:
             # Python — which has torch+CUDA matching the image's
             # driver. NO venv (avoids cu130-vs-driver12.4 mismatch).
             "cd /workspace/repo && pip install --break-system-packages -e .",
-            # Pin transformers <5.0 — FlagEmbedding's import chain
-            # imports BloomPreTrainedModel and TrainingArguments via
-            # transformers' lazy import system. transformers 5.x
-            # refactored both away (R1 v6 SSH-debug:
-            # ModuleNotFoundError on import FlagEmbedding alone). The
-            # latest 4.x is the supported target.
+            # FlagEmbedding (1.4.0) compat: transformers must be
+            # well below the 4.50+ refactor where lazy modules like
+            # 'BloomPreTrainedModel' and 'get_reporting_integration_callbacks'
+            # were renamed/removed (R1 v6/v7 SSH-debug).
+            # 4.40-4.45 is the safe band — old enough that FlagEmbedding's
+            # imports still resolve, new enough to support BGE-M3 features.
+            # NOTE: 4.40-4.49 has no CVE-2025-32434 check, so the torch
+            # upgrade below is technically optional, but we keep it for
+            # security hygiene + ABI alignment with torchvision/audio.
             "cd /workspace/repo && pip install --break-system-packages "
-            "lancedb pyarrow \"transformers<5.0\" FlagEmbedding kiwipiepy",
-            # CVE-2025-32434 mitigation: transformers >= 4.50 refuses
-            # torch.load on .bin checkpoints unless torch >= 2.6
-            # (BGE-M3 ships pytorch_model.bin, no .safetensors). Pod's
-            # preinstalled torch is 2.4.1+cu124. Upgrade to 2.6.x from
-            # the cu124 wheel index — DO NOT let pip pull the default
-            # cu130 wheel (R1 v1: cu130 vs Pod driver 12.4 → CUDA
-            # disabled → CPU fallback, 38min CPU build).
+            "lancedb pyarrow \"transformers>=4.40,<4.46\" FlagEmbedding kiwipiepy",
+            # Upgrade torch + torchvision + torchaudio together —
+            # they share an ABI, so partial upgrades break
+            # `torchvision::nms` and other ops (R1 v7 SSH-debug:
+            # transformers' integrations.integration_utils imports
+            # torchvision and crashed on missing operator).
+            # Pin cu124 wheel index to match Pod driver 12.4 (R1 v1
+            # lesson: never let pip pull cu130 onto a 12.4 driver).
             "pip install --break-system-packages --upgrade "
             "--index-url https://download.pytorch.org/whl/cu124 "
-            "\"torch>=2.6.0,<2.7\"",
+            "\"torch>=2.6.0,<2.7\" \"torchvision>=0.21,<0.22\" "
+            "\"torchaudio>=2.6,<2.7\"",
             # Step 7: warm BGE-M3 weights (skip for FTS-only).
             # R1 v2/v3 hit HF Hub rate limits on community-Pod IPs at
             # ~57-60% download. _warm_bge_m3 retries 5x with 30/60/90/
