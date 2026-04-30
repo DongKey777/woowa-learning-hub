@@ -319,11 +319,264 @@ def test_cli_dry_run_reports_success(tmp_path, capsys):
     assert payload["error"] is None
 
 
-def test_cli_real_mode_blocked_pending_v5_6(tmp_path, capsys):
-    """Real mode must error out cleanly until v5-6 lands."""
+def test_cli_real_mode_requires_api_key(tmp_path, capsys, monkeypatch):
+    """Real mode without RUNPOD_API_KEY must error cleanly."""
+    monkeypatch.delenv("RUNPOD_API_KEY", raising=False)
     rc = H.main([
         "--r-phase", "r0",
         "--repo-root", str(tmp_path),
         "--ledger-path", str(tmp_path / "ledger.json"),
     ])
     assert rc == 2
+
+
+# ---------------------------------------------------------------------------
+# RealRunPodClient — SDK wrapping with mocked SDK module
+# ---------------------------------------------------------------------------
+
+class _FakeRunpodModule:
+    """Pretends to be the runpod SDK. Records calls + returns
+    structured fake data so we can assert RealRunPodClient maps correctly
+    without ever hitting the network."""
+
+    def __init__(self):
+        self.api_key = None
+        self.calls: list[tuple] = []
+        self._user_pubkey = ""        # current account pubKey field
+
+    def get_user(self):
+        self.calls.append(("get_user",))
+        return {"id": "u1", "pubKey": self._user_pubkey}
+
+    def get_gpus(self):
+        self.calls.append(("get_gpus",))
+        return [
+            {"id": "NVIDIA RTX A5000", "displayName": "RTX A5000",
+             "communityPrice": 0.16, "securePrice": 0.29},
+            {"id": "NVIDIA RTX A6000", "displayName": "RTX A6000",
+             "communityPrice": 0.49, "securePrice": 0.79},
+        ]
+
+    def update_user_settings(self, pubkey: str):
+        self.calls.append(("update_user_settings", pubkey))
+        self._user_pubkey = pubkey
+
+    def create_pod(self, **kwargs):
+        self.calls.append(("create_pod", kwargs))
+        return {
+            "id": "pod-fake-001",
+            "name": kwargs.get("name", "fake"),
+            "machineType": kwargs.get("gpu_type_id", "?"),
+            "createdAt": "2026-05-01T08:30:00Z",
+            "runtime": {"ports": [{"privatePort": 22, "publicPort": 22001,
+                                   "ip": "10.0.0.1", "type": "tcp"}]},
+        }
+
+    def terminate_pod(self, pod_id: str):
+        self.calls.append(("terminate_pod", pod_id))
+
+
+def test_real_client_requires_api_key(monkeypatch):
+    monkeypatch.delenv("RUNPOD_API_KEY", raising=False)
+    fake = _FakeRunpodModule()
+    with pytest.raises(ValueError, match="RUNPOD_API_KEY"):
+        H.RealRunPodClient(runpod_module=fake)
+
+
+def test_real_client_sets_sdk_api_key():
+    fake = _FakeRunpodModule()
+    H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    assert fake.api_key == "rpa_test"
+
+
+def test_real_client_estimate_hourly_rate_uses_sdk():
+    fake = _FakeRunpodModule()
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    assert client.estimate_hourly_rate("RTX A5000", "community") == 0.16
+    assert client.estimate_hourly_rate("RTX A6000", "secure") == 0.79
+
+
+def test_real_client_estimate_falls_back_when_sdk_fails():
+    fake = _FakeRunpodModule()
+
+    def _broken():
+        raise RuntimeError("network down")
+    fake.get_gpus = _broken  # type: ignore[assignment]
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    # Should return capability-probe default, not crash
+    assert client.estimate_hourly_rate("RTX A5000", "community") == 0.16
+
+
+def test_real_client_estimate_unknown_gpu_returns_default():
+    fake = _FakeRunpodModule()
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    assert client.estimate_hourly_rate("Imaginary GPU", "community") == 0.50
+
+
+def test_real_client_add_ssh_key_appends_to_existing():
+    fake = _FakeRunpodModule()
+    fake._user_pubkey = "ssh-ed25519 PRE_EXISTING user@laptop"
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+
+    new_key = "ssh-ed25519 NEW_KEY rag-build-r0"
+    returned_id = client.add_ssh_key(new_key, label="rag-build-r0")
+
+    # New pubKey should preserve existing AND append new
+    assert "PRE_EXISTING" in fake._user_pubkey
+    assert "NEW_KEY" in fake._user_pubkey
+    # Returned key_id is the public-key text itself
+    assert returned_id == new_key.strip()
+
+
+def test_real_client_add_ssh_key_idempotent():
+    """Adding the same key twice is a no-op (don't duplicate lines)."""
+    fake = _FakeRunpodModule()
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    key = "ssh-ed25519 KEY1 a"
+    client.add_ssh_key(key, label="x")
+    update_calls_first = sum(1 for c in fake.calls if c[0] == "update_user_settings")
+    client.add_ssh_key(key, label="x")  # second add — already present
+    update_calls_second = sum(1 for c in fake.calls if c[0] == "update_user_settings")
+    # Second add must NOT trigger another update
+    assert update_calls_second == update_calls_first
+
+
+def test_real_client_remove_ssh_key_preserves_other_keys():
+    fake = _FakeRunpodModule()
+    fake._user_pubkey = (
+        "ssh-ed25519 KEEP_ME user@laptop\n"
+        "ssh-ed25519 DELETE_ME rag-build-r0"
+    )
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    client.remove_ssh_key("ssh-ed25519 DELETE_ME rag-build-r0")
+
+    assert "KEEP_ME" in fake._user_pubkey
+    assert "DELETE_ME" not in fake._user_pubkey
+
+
+def test_real_client_remove_missing_ssh_key_is_no_op():
+    fake = _FakeRunpodModule()
+    fake._user_pubkey = "ssh-ed25519 KEEP_ME user@laptop"
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    # No exception, no state change
+    client.remove_ssh_key("ssh-ed25519 NEVER_EXISTED foo")
+    assert "KEEP_ME" in fake._user_pubkey
+
+
+def test_real_client_create_pod_maps_to_sdk_kwargs():
+    fake = _FakeRunpodModule()
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    spec = H.PodSpec(
+        name="rag-r0", gpu_type="RTX A5000", gpu_cloud="community",
+        image="runpod/pytorch:img", container_disk_gb=20, ports="22/tcp",
+    )
+    pod = client.create_pod(spec, ssh_public_key="ssh-ed25519 fake")
+    assert pod.pod_id == "pod-fake-001"
+    assert pod.ssh_port == 22001
+    assert pod.ip == "10.0.0.1"
+    assert pod.gpu_type == "RTX A5000"
+
+    create_call = next(c for c in fake.calls if c[0] == "create_pod")
+    kwargs = create_call[1]
+    assert kwargs["name"] == "rag-r0"
+    assert kwargs["image_name"] == "runpod/pytorch:img"
+    assert kwargs["cloud_type"] == "COMMUNITY"
+    assert kwargs["start_ssh"] is True
+    assert kwargs["container_disk_in_gb"] == 20
+
+
+def test_real_client_terminate_swallows_sdk_error():
+    """terminate is best-effort — if SDK fails (already terminated /
+    rate-limit etc) we log and continue."""
+    fake = _FakeRunpodModule()
+    def _broken(pod_id):
+        raise RuntimeError("pod not found")
+    fake.terminate_pod = _broken  # type: ignore[assignment]
+    client = H.RealRunPodClient(api_key="rpa_test", runpod_module=fake)
+    # No exception
+    client.terminate_pod("pod-x")
+
+
+# ---------------------------------------------------------------------------
+# Step 5-11 SSH execution path (with injected fake executor)
+# ---------------------------------------------------------------------------
+
+class _FakeSshExecutor:
+    """Records every command without touching network."""
+
+    def __init__(self, *, fail_on: int | None = None):
+        self.commands: list[str] = []
+        self.scp_calls: list[tuple[str, str]] = []
+        self.fail_on = fail_on  # 1-based command index that should fail
+        self._waited = False
+
+    def wait_for_ssh(self, pod, keypath, *, timeout_s):
+        self._waited = True
+
+    def run(self, pod, keypath, command, *, timeout_s):
+        self.commands.append(command)
+        if self.fail_on is not None and len(self.commands) == self.fail_on:
+            return 1, "", "simulated remote failure"
+        return 0, "ok", ""
+
+    def scp_from_pod(self, pod, keypath, remote, local):
+        self.scp_calls.append((remote, str(local)))
+        # Simulate file creation locally
+        Path(local).parent.mkdir(parents=True, exist_ok=True)
+        Path(local).write_bytes(b"fake artifact")
+
+
+def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
+    """Live (non-dry-run) executes every Pod command via SSH and
+    pulls the artifact back."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A5000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor()
+
+    artifact = h.step_5_to_11_remote_build(
+        pod, keypath,
+        commit_sha="abc1234",
+        modalities=("fts",),
+        run_id="r0-test",
+        r_phase="r0",
+        repo_root=tmp_path,
+        ssh_executor=fake_ssh,
+    )
+
+    assert fake_ssh._waited is True
+    assert len(fake_ssh.commands) >= 5  # clone + checkout + venv + pip + build + package
+    assert any("git clone" in c for c in fake_ssh.commands)
+    assert any("cs-index-build" in c or "cli_cs_index_build" in c
+               for c in fake_ssh.commands)
+    # Artifact returned
+    assert artifact is not None
+    assert (artifact / "cs_rag_index_root.tar.zst").exists()
+
+
+def test_step_5_to_11_raises_on_command_failure(tmp_path):
+    """If a remote command returns non-zero, raise to trigger
+    finally-block Pod cleanup."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A5000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor(fail_on=2)  # 2nd command fails (git checkout)
+
+    with pytest.raises(RuntimeError, match="remote command failed"):
+        h.step_5_to_11_remote_build(
+            pod, keypath,
+            commit_sha="abc1234",
+            modalities=("fts",),
+            run_id="r0-test",
+            r_phase="r0",
+            repo_root=tmp_path,
+            ssh_executor=fake_ssh,
+        )

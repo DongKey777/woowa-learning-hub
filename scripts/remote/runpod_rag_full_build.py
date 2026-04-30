@@ -197,6 +197,301 @@ class MockRunPodClient:
 
 
 # ---------------------------------------------------------------------------
+# SSH executor (task v5-6) — paramiko-based remote command execution
+# ---------------------------------------------------------------------------
+
+class SshExecutor(Protocol):
+    """Abstract SSH executor — Protocol for dependency injection in tests."""
+
+    def wait_for_ssh(self, pod: Pod, keypath: Path, *, timeout_s: int) -> None: ...
+
+    def run(
+        self, pod: Pod, keypath: Path, command: str, *, timeout_s: int,
+    ) -> tuple[int, str, str]:
+        """Returns (returncode, stdout, stderr)."""
+        ...
+
+    def scp_from_pod(
+        self, pod: Pod, keypath: Path, remote_path: str, local_path: Path,
+    ) -> None:
+        """Pull a file from Pod to local."""
+        ...
+
+
+class _ParamikoSshExecutor:
+    """Production SSH executor using paramiko (already installed via
+    runpod SDK deps).
+
+    Does NOT use a known_hosts file — Pod hosts are ephemeral and
+    rotate per build. Instead we accept the host key on first connect
+    (paramiko.AutoAddPolicy). This is acceptable because we own the
+    Pod and the SSH key registration was just done by us.
+    """
+
+    def __init__(self):
+        import paramiko  # noqa: WPS433 — lazy import keeps mock tests light
+        self._paramiko = paramiko
+
+    def _client(self, pod: Pod, keypath: Path):
+        client = self._paramiko.SSHClient()
+        client.set_missing_host_key_policy(self._paramiko.AutoAddPolicy())
+        pkey = self._paramiko.Ed25519Key.from_private_key_file(str(keypath))
+        client.connect(
+            hostname=pod.ip,
+            port=pod.ssh_port,
+            username="root",
+            pkey=pkey,
+            timeout=30,
+            auth_timeout=30,
+        )
+        return client
+
+    def wait_for_ssh(self, pod: Pod, keypath: Path, *, timeout_s: int) -> None:
+        deadline = time.time() + timeout_s
+        last_err = None
+        while time.time() < deadline:
+            try:
+                client = self._client(pod, keypath)
+                client.close()
+                return
+            except Exception as exc:
+                last_err = exc
+                time.sleep(5)
+        raise TimeoutError(
+            f"SSH not reachable on {pod.ip}:{pod.ssh_port} after {timeout_s}s "
+            f"(last error: {last_err})"
+        )
+
+    def run(self, pod: Pod, keypath: Path, command: str, *,
+            timeout_s: int) -> tuple[int, str, str]:
+        client = self._client(pod, keypath)
+        try:
+            stdin, stdout, stderr = client.exec_command(command, timeout=timeout_s)
+            stdout_text = stdout.read().decode("utf-8", errors="replace")
+            stderr_text = stderr.read().decode("utf-8", errors="replace")
+            rc = stdout.channel.recv_exit_status()
+            return rc, stdout_text, stderr_text
+        finally:
+            client.close()
+
+    def scp_from_pod(self, pod: Pod, keypath: Path, remote_path: str,
+                     local_path: Path) -> None:
+        client = self._client(pod, keypath)
+        try:
+            sftp = client.open_sftp()
+            try:
+                local_path.parent.mkdir(parents=True, exist_ok=True)
+                sftp.get(remote_path, str(local_path))
+            finally:
+                sftp.close()
+        finally:
+            client.close()
+
+
+# ---------------------------------------------------------------------------
+# Real RunPod client (task v5-6) — wraps runpod-python SDK
+# ---------------------------------------------------------------------------
+
+class RealRunPodClient:
+    """Production wrapper around the runpod-python SDK (1.9+).
+
+    Uses ``RUNPOD_API_KEY`` env var or explicit ``api_key`` argument.
+    All methods are thin SDK wrappers + response normalisation to our
+    ``PodSpec`` / ``Pod`` dataclasses.
+
+    SSH key handling — peer concern from R-1 capability probe:
+    the SDK's ``update_user_settings(pubkey)`` writes a single string
+    to the account's ``pubKey`` field. Multiple keys are concatenated
+    with newline. So *append* means: read existing, "\\n".join with new,
+    write back. *Remove* means: read existing, drop matching line,
+    write back. We never blow away pre-existing user keys.
+
+    Tested against a real API key in unit tests via dependency injection
+    (``runpod_module`` argument). Tests use a fake module that records
+    calls — no live network in unit tests.
+    """
+
+    def __init__(self, *, api_key: str | None = None, runpod_module=None):
+        if runpod_module is None:
+            import runpod as runpod_module  # type: ignore  # noqa: WPS433
+        self._sdk = runpod_module
+        self._api_key = api_key or os.environ.get("RUNPOD_API_KEY")
+        if not self._api_key:
+            raise ValueError(
+                "RUNPOD_API_KEY env var not set and api_key arg not provided"
+            )
+        self._sdk.api_key = self._api_key
+
+    # ----- GPU pricing -----
+
+    def estimate_hourly_rate(self, gpu_type: str, cloud: str) -> float:
+        """Query live SDK for GPU type pricing.
+
+        SDK returns a list of GPU types with per-hour rates for
+        secure / community / spot tiers. We pick by name + cloud type.
+        Falls back to capability-probe defaults when SDK can't resolve.
+        """
+        try:
+            gpus = self._sdk.get_gpus()
+        except Exception as exc:
+            logger.warning(
+                "[runpod] get_gpus failed (%s) — using probe-default rate", exc,
+            )
+            return self._fallback_rate(gpu_type, cloud)
+
+        for gpu in gpus or []:
+            display_name = gpu.get("displayName", "")
+            if gpu_type.lower() in display_name.lower():
+                # Field naming varies across SDK versions; check both
+                if cloud == "community":
+                    rate = (gpu.get("communityPrice")
+                            or gpu.get("lowestPrice", {}).get("uninterruptablePrice")
+                            or 0)
+                else:
+                    rate = (gpu.get("securePrice")
+                            or gpu.get("lowestPrice", {}).get("uninterruptablePrice")
+                            or 0)
+                if rate:
+                    return float(rate)
+        return self._fallback_rate(gpu_type, cloud)
+
+    @staticmethod
+    def _fallback_rate(gpu_type: str, cloud: str) -> float:
+        """Capability-probe defaults — used when SDK price query fails."""
+        rates = {
+            ("RTX A5000", "community"): 0.16,
+            ("RTX A5000", "secure"): 0.29,
+            ("RTX A6000", "community"): 0.49,
+            ("RTX A6000", "secure"): 0.79,
+            ("A100 80GB", "community"): 1.50,
+            ("A100 80GB", "secure"): 1.99,
+        }
+        return rates.get((gpu_type, cloud), 0.50)
+
+    # ----- SSH key management (newline-separated single-string field) -----
+
+    def add_ssh_key(self, public_key: str, *, label: str) -> str:
+        """Append our public key to the account's pubKey string.
+
+        Returns the public-key text itself as the "key id" so
+        ``remove_ssh_key`` can find it. The SDK doesn't return a
+        per-key handle.
+        """
+        existing = self._read_pubkey_field()
+        new_key_line = public_key.strip()
+        if new_key_line in existing:
+            return new_key_line  # idempotent — already present
+        merged = existing + ("\n" if existing else "") + new_key_line
+        self._sdk.update_user_settings(pubkey=merged)
+        return new_key_line
+
+    def remove_ssh_key(self, key_id: str) -> None:
+        """Remove our key (key_id is the public-key text we returned
+        from add_ssh_key). Safely no-op if the key isn't there."""
+        existing = self._read_pubkey_field()
+        target = key_id.strip()
+        if target not in existing:
+            return
+        # Filter line-by-line to preserve unrelated keys
+        kept = [line for line in existing.splitlines() if line.strip() != target]
+        self._sdk.update_user_settings(pubkey="\n".join(kept))
+
+    def _read_pubkey_field(self) -> str:
+        try:
+            user = self._sdk.get_user()
+        except Exception as exc:
+            logger.warning("[runpod] get_user failed (%s); assuming empty pubKey", exc)
+            return ""
+        if isinstance(user, dict):
+            return user.get("pubKey", "") or ""
+        return ""
+
+    # ----- Pod lifecycle -----
+
+    def create_pod(self, spec: PodSpec, ssh_public_key: str) -> Pod:
+        """Map our PodSpec to runpod.create_pod kwargs.
+
+        SDK kwargs of interest:
+          name, image_name, gpu_type_id, cloud_type ("ALL"|"COMMUNITY"|"SECURE"),
+          gpu_count, container_disk_in_gb, ports, start_ssh, support_public_ip
+        """
+        cloud_map = {"community": "COMMUNITY", "secure": "SECURE"}
+        gpu_type_id = self._resolve_gpu_type_id(spec.gpu_type, spec.gpu_cloud)
+        result = self._sdk.create_pod(
+            name=spec.name,
+            image_name=spec.image,
+            gpu_type_id=gpu_type_id,
+            cloud_type=cloud_map.get(spec.gpu_cloud, "ALL"),
+            gpu_count=1,
+            container_disk_in_gb=spec.container_disk_gb,
+            ports=spec.ports,
+            start_ssh=True,
+            support_public_ip=True,
+        )
+        return self._normalise_pod(result, gpu_type=spec.gpu_type)
+
+    def _resolve_gpu_type_id(self, display_name: str, cloud: str) -> str:
+        """Find SDK gpu_type_id by displayName substring match."""
+        try:
+            gpus = self._sdk.get_gpus()
+        except Exception as exc:
+            logger.warning("[runpod] get_gpus failed: %s — passing display name", exc)
+            return display_name
+        for gpu in gpus or []:
+            if display_name.lower() in gpu.get("displayName", "").lower():
+                return gpu.get("id") or display_name
+        return display_name
+
+    def terminate_pod(self, pod_id: str) -> None:
+        """Hard-stop the Pod. Idempotent — SDK errors on missing pod
+        are swallowed and logged (we may be cleaning up a Pod that
+        already self-terminated)."""
+        try:
+            self._sdk.terminate_pod(pod_id)
+        except Exception as exc:
+            logger.warning("[runpod] terminate_pod(%s) error: %s", pod_id, exc)
+
+    def list_pods(self) -> list[Pod]:
+        try:
+            pods = self._sdk.get_pods()
+        except Exception as exc:
+            logger.warning("[runpod] get_pods failed: %s", exc)
+            return []
+        return [self._normalise_pod(p, gpu_type=p.get("machineType", "unknown"))
+                for p in (pods or [])]
+
+    @staticmethod
+    def _normalise_pod(sdk_pod: dict, *, gpu_type: str) -> Pod:
+        """Convert SDK response dict to our Pod dataclass.
+
+        SDK response shape (varies by version):
+          {id, name, machineType, runtime: {ports: [{ip, publicPort, ...}]}, ...}
+        """
+        pod_id = sdk_pod.get("id", "unknown")
+        # SSH port + ip live under runtime.ports
+        ip = "0.0.0.0"
+        ssh_port = 22
+        runtime = sdk_pod.get("runtime") or {}
+        for port in runtime.get("ports") or []:
+            if port.get("privatePort") == 22 or port.get("type") == "tcp":
+                ip = port.get("ip", ip)
+                ssh_port = int(port.get("publicPort", ssh_port))
+                break
+        started = sdk_pod.get("createdAt") or datetime.now(timezone.utc).isoformat()
+        try:
+            started_at = datetime.fromisoformat(started.replace("Z", "+00:00"))
+        except Exception:
+            started_at = datetime.now(timezone.utc)
+        return Pod(
+            pod_id=pod_id,
+            ip=ip,
+            ssh_port=ssh_port,
+            gpu_type=gpu_type,
+            started_at=started_at,
+        )
+
+
+# ---------------------------------------------------------------------------
 # Helpers — git state, run_id, cost ledger
 # ---------------------------------------------------------------------------
 
@@ -400,11 +695,14 @@ class RunPodHarness:
         run_id: str,
         r_phase: str,
         repo_root: Path,
+        ssh_executor=None,  # injected for tests; default = paramiko
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
 
         In dry-run mode we *log* what would be executed but don't SSH.
-        Returns the local artifact path on success, None on failure.
+        In live mode we paramiko-SSH each command, then scp back the
+        artifact. Returns the local artifact path on success, None on
+        failure.
         """
         commands = self._build_remote_commands(
             commit_sha=commit_sha, modalities=modalities,
@@ -420,12 +718,50 @@ class RunPodHarness:
             local_artifact = repo_root / "artifacts" / "rag-full-build" / run_id
             return local_artifact
 
-        # Real execution path lives in v5-6 (RealRunPodClient + ssh
-        # subprocess). For now this method is only called in dry-run.
-        raise NotImplementedError(
-            "Real (non-dry-run) execution lives in v5-6 task. "
-            "Use --dry-run for now."
+        # Live SSH execution
+        executor = ssh_executor or _ParamikoSshExecutor()
+        local_artifact_dir = repo_root / "artifacts" / "rag-full-build" / run_id
+        local_artifact_dir.mkdir(parents=True, exist_ok=True)
+
+        # Wait for SSH to be reachable (Pod boot can take 30-90s)
+        executor.wait_for_ssh(pod, keypath, timeout_s=180)
+        logger.info("[runpod] Pod %s SSH reachable; running %d commands",
+                    pod.pod_id, len(commands))
+
+        for i, cmd in enumerate(commands, 1):
+            logger.info("[runpod] step %d/%d: %s", i, len(commands),
+                        cmd[:80] + ("…" if len(cmd) > 80 else ""))
+            rc, stdout, stderr = executor.run(pod, keypath, cmd, timeout_s=3600)
+            if rc != 0:
+                # Log + raise so finally block still terminates Pod
+                logger.error("[runpod] command failed (rc=%d): %s\nstderr: %s",
+                             rc, cmd[:200], stderr[:500])
+                raise RuntimeError(f"remote command failed (rc={rc}): {cmd[:80]}")
+
+        # Step 11: scp artifact back
+        # The packaging step (step 10 inside commands) wrote to
+        # /workspace/repo/artifacts/rag-full-build/{run_id}/cs_rag_index_root.tar.zst
+        remote_artifact = (
+            f"/workspace/repo/artifacts/rag-full-build/{run_id}/"
+            f"cs_rag_index_root.tar.zst"
         )
+        local_archive = local_artifact_dir / "cs_rag_index_root.tar.zst"
+        executor.scp_from_pod(pod, keypath, remote_artifact, local_archive)
+        logger.info("[runpod] artifact downloaded: %s", local_archive)
+
+        # Also pull the manifest.json + run.log + environment.json
+        for sidecar in ("manifest.json", "run.log", "environment.json",
+                        "repo.commit_or_diff.txt"):
+            try:
+                executor.scp_from_pod(
+                    pod, keypath,
+                    f"/workspace/repo/artifacts/rag-full-build/{run_id}/{sidecar}",
+                    local_artifact_dir / sidecar,
+                )
+            except Exception as exc:
+                logger.warning("[runpod] sidecar %s pull failed: %s", sidecar, exc)
+
+        return local_artifact_dir
 
     def _build_remote_commands(
         self,
@@ -654,12 +990,24 @@ def main(argv: list[str] | None = None) -> int:
         client: RunPodApiClient = MockRunPodClient()
         logger.info("[runpod] DRY RUN — no API calls, no Pod created")
     else:
-        # v5-6 will install RealRunPodClient here. For now refuse.
-        logger.error(
-            "[runpod] real (non-dry-run) execution requires the RealRunPodClient "
-            "implementation from task v5-6. Use --dry-run for now."
+        # Real execution path — task v5-6.
+        if not os.environ.get("RUNPOD_API_KEY"):
+            logger.error(
+                "[runpod] RUNPOD_API_KEY env var not set. "
+                "Either `export RUNPOD_API_KEY=\"$(cat ~/.runpod/api_key)\"` "
+                "or add --dry-run."
+            )
+            return 2
+        try:
+            client = RealRunPodClient()
+        except ValueError as exc:
+            logger.error("[runpod] failed to initialise SDK: %s", exc)
+            return 2
+        logger.warning(
+            "[runpod] LIVE MODE — Pod creation will incur real cost. "
+            "max_cost=$%.2f max_duration=%dm",
+            args.max_cost, args.max_duration,
         )
-        return 2
 
     harness = RunPodHarness(client, dry_run=args.dry_run)
     result = harness.run(config)
