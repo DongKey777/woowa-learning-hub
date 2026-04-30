@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/rag-route-fallback "<learner prompt>" \
+#       [--heuristic-tier N] [--heuristic-confidence X.XX] \
+#       [--matched-tokens "tok1,tok2"] \
+#       [--candidate-tiers "0,1,2,3"] \
+#       [--history-summary "<text>"] \
+#       [--repo <repo-id>] [--out <dir>]
+#
+# Wraps scripts/learning/cli_rag_route_fallback.py. The wrapper writes
+# the input artifact and prints the expected output path; the AI
+# session reads the input, follows skills/woowa-rag-route/SKILL.md,
+# and writes the output JSON. The router caller is responsible for
+# appending the validated output to
+# state/repos/<repo>/logs/routing_ai_decisions.jsonl.
+# See docs/ai-behavior-contracts.md §router-fallback-v1.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_rag_route_fallback.py" "$@"
