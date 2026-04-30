@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Usage: bin/rag-remote-build --r-phase r1 [--dry-run] [runpod args...]
+# Output: JSON build result from scripts.remote.runpod_rag_full_build
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+cd "$ROOT"
+"$PY" -m scripts.remote.runpod_rag_full_build "$@"
