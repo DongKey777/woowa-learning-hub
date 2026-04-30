@@ -692,14 +692,15 @@ def incremental_build_index(
     delta_texts = [indexer._embed_text(c) for c in delta_chunks]
     _tick("encode_delta", {"count": len(delta_texts), "batch_size": batch_size})
     if delta_texts:
-        delta_embeddings = model.encode(
+        # Use indexer._encode_all so encode-progress callbacks fire on
+        # the same contract as full builds. Re-using the helper keeps
+        # incremental + full encoding behavior identical.
+        delta_embeddings = indexer._encode_all(
+            model,
             delta_texts,
-            batch_size=batch_size,
-            show_progress_bar=False,
-            normalize_embeddings=True,
-            convert_to_numpy=True,
+            progress=progress,
+            encode_batch_size=batch_size,
         )
-        delta_embeddings = np.asarray(delta_embeddings, dtype="float32")
         if delta_embeddings.shape != (len(delta_texts), embed_dim):
             raise RuntimeError(
                 f"unexpected delta shape {delta_embeddings.shape}, "

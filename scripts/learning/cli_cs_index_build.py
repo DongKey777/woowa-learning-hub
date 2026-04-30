@@ -53,6 +53,24 @@ def _progress(stage: str, info: dict) -> None:
         print(f"[cs-index] 4/5 임베딩 모델 로드 중 — {info.get('model')}", flush=True)
     elif stage == "encode":
         print(f"[cs-index] 4/5 임베딩 계산 중 ({info.get('count')} chunks, 수 분 소요)…", flush=True)
+    elif stage == "encode_progress":
+        done = info.get("done", 0)
+        total = info.get("total", 0)
+        pct = (done / total * 100) if total else 0
+        eta_s = info.get("eta_s", 0)
+        rate = info.get("rate_per_s", 0)
+        # Format ETA as min:sec when long, raw seconds when short
+        if eta_s >= 60:
+            mins, secs = divmod(int(eta_s), 60)
+            eta_str = f"{mins}m{secs:02d}s"
+        else:
+            eta_str = f"{eta_s:.1f}s"
+        print(
+            f"[cs-index] 4/5 임베딩 진행 — "
+            f"{done}/{total} ({pct:.1f}%) "
+            f"rate={rate}/s eta={eta_str}",
+            flush=True,
+        )
     elif stage == "write_dense":
         print(f"[cs-index] 5/5 dense 벡터 저장 — shape={info.get('shape')}", flush=True)
     elif stage == "write_manifest":

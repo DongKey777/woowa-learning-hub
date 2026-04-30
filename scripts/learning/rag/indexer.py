@@ -29,11 +29,20 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 from . import corpus_loader
+
+# Default chunk size for encode-progress callbacks. Independent of
+# ``model.encode``'s internal ``batch_size`` — we call encode() with a
+# slice of this many texts so we can emit a progress callback between
+# slices. 256 is small enough to feel responsive (a CPU encode of 256
+# 1024-dim vectors finishes in seconds even on 0.6B-param models) but
+# large enough that the callback overhead is negligible.
+ENCODE_PROGRESS_CHUNK = 256
 
 DEFAULT_INDEX_ROOT = Path("state/cs_rag")
 SQLITE_NAME = "index.sqlite3"
@@ -256,19 +265,73 @@ def _load_embedder():
     return SentenceTransformer(EMBED_MODEL)
 
 
-def _encode_all(model, texts: list[str]):
+def _encode_all(
+    model,
+    texts: list[str],
+    *,
+    progress=None,
+    progress_chunk: int = ENCODE_PROGRESS_CHUNK,
+    encode_batch_size: int = 32,
+):
+    """Encode ``texts`` via ``model.encode``, emitting periodic
+    ``progress("encode_progress", info)`` callbacks so long sweeps
+    surface % done + ETA instead of running blind.
+
+    ``info`` shape::
+
+        {
+            "done": int,
+            "total": int,
+            "elapsed_s": float,
+            "eta_s": float,
+            "rate_per_s": float,
+        }
+
+    The encode is split into slices of ``progress_chunk`` texts; each
+    slice goes to ``model.encode`` with the same ``batch_size`` /
+    ``normalize_embeddings`` / ``convert_to_numpy`` settings the
+    pre-progress code used. Behavior on the wire is identical
+    (concatenated final array is bit-equivalent up to numpy
+    concatenation order, which preserves input order).
+    """
     try:
         import numpy as np  # type: ignore
     except ImportError as exc:  # pragma: no cover
         raise IndexDependencyMissing("numpy not installed.") from exc
-    embeddings = model.encode(
-        texts,
-        batch_size=32,
-        show_progress_bar=False,
-        normalize_embeddings=True,
-        convert_to_numpy=True,
-    )
-    return np.asarray(embeddings, dtype="float32")
+
+    total = len(texts)
+    if total == 0:
+        return np.zeros((0, EMBED_DIM), dtype="float32")
+
+    start = time.time()
+    chunks_out: list = []
+    for i in range(0, total, progress_chunk):
+        slice_texts = texts[i : i + progress_chunk]
+        embs = model.encode(
+            slice_texts,
+            batch_size=encode_batch_size,
+            show_progress_bar=False,
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+        )
+        chunks_out.append(np.asarray(embs, dtype="float32"))
+        done = min(i + len(slice_texts), total)
+        if progress is not None:
+            elapsed = time.time() - start
+            rate = (done / elapsed) if elapsed > 0 else 0.0
+            eta = ((total - done) / rate) if rate > 0 else 0.0
+            try:
+                progress("encode_progress", {
+                    "done": done,
+                    "total": total,
+                    "elapsed_s": round(elapsed, 1),
+                    "eta_s": round(eta, 1),
+                    "rate_per_s": round(rate, 2),
+                })
+            except Exception:
+                # Progress callback errors must never break the encode.
+                pass
+    return np.concatenate(chunks_out, axis=0)
 
 
 def build_index(
@@ -317,7 +380,7 @@ def build_index(
 
         _tick("encode", {"count": len(chunks)})
         texts = [_embed_text(chunk) for chunk in chunks]
-        embeddings = _encode_all(embedder, texts)
+        embeddings = _encode_all(embedder, texts, progress=progress)
         if embeddings.shape != (len(chunks), EMBED_DIM):
             raise RuntimeError(
                 f"unexpected embedding shape {embeddings.shape}, "
