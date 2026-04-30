@@ -76,6 +76,8 @@ class BgeM3Encoder:
     sparse_vocab_size: int = DEFAULT_SPARSE_VOCAB_SIZE
     colbert_storage_dtype: str = "float16"
     query_instruction_for_retrieval: str | None = None
+    max_length: int = 8192
+    batch_size: int = 16
 
     def __post_init__(self) -> None:
         ref = _hf_cache_model_ref(self.model_id)
@@ -102,8 +104,8 @@ class BgeM3Encoder:
             return_dense=True,
             return_sparse=True,
             return_colbert_vecs=True,
-            passage_max_length=8192,
-            query_max_length=8192,
+            passage_max_length=self.max_length,
+            query_max_length=self.max_length,
         )
         return self._model
 
@@ -111,8 +113,8 @@ class BgeM3Encoder:
         self,
         texts: Iterable[str],
         *,
-        batch_size: int = 16,
-        max_length: int = 8192,
+        batch_size: int | None = None,
+        max_length: int | None = None,
         modalities: tuple[str, ...] = ("dense", "sparse", "colbert"),
         progress=None,
     ) -> ModalEncoding:
@@ -121,6 +123,7 @@ class BgeM3Encoder:
         want_dense = "dense" in modalities
         want_sparse = "sparse" in modalities
         want_colbert = "colbert" in modalities
+        effective_batch_size = batch_size or self.batch_size
 
         if total == 0:
             return {
@@ -135,12 +138,12 @@ class BgeM3Encoder:
         colbert_parts: list[np.ndarray] = []
         start = time.time()
 
-        for offset in range(0, total, batch_size):
-            batch = text_list[offset : offset + batch_size]
+        for offset in range(0, total, effective_batch_size):
+            batch = text_list[offset : offset + effective_batch_size]
             raw = model.encode(
                 batch,
-                batch_size=batch_size,
-                max_length=max_length,
+                batch_size=effective_batch_size,
+                max_length=max_length or self.max_length,
                 return_dense=want_dense,
                 return_sparse=want_sparse,
                 return_colbert_vecs=want_colbert,
@@ -204,4 +207,3 @@ class BgeM3Encoder:
         modalities: tuple[str, ...] = ("dense", "sparse", "colbert"),
     ) -> ModalEncoding:
         return self.encode_corpus([text], batch_size=1, modalities=modalities)
-

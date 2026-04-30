@@ -153,6 +153,19 @@ def test_lance_precision_auto_uses_fp16_only_on_accelerators():
     assert CLI._resolve_lance_fp16("fp32", "mps") is False
 
 
+def test_default_lance_encoder_passes_mps_as_device_list():
+    encoder = CLI._default_lance_encoder(
+        device="mps",
+        precision="fp32",
+        max_length=512,
+        batch_size=32,
+    )
+    assert encoder.devices == ["mps"]
+    assert encoder.use_fp16 is False
+    assert encoder.max_length == 512
+    assert encoder.batch_size == 32
+
+
 # ---------------------------------------------------------------------------
 # main() — mode resolution
 # ---------------------------------------------------------------------------

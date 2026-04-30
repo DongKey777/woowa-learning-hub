@@ -864,6 +864,48 @@ Results:
 --lance-precision {auto,fp16,fp32}
 ```
 
+## H7f LanceDB Encoder Length/Batch Controls
+
+Implemented after H7e:
+
+- `BgeM3Encoder` now carries default `max_length` and `batch_size` fields.
+- `encode_corpus(..., max_length=None, batch_size=None)` now falls back to those instance defaults.
+- `bin/cs-index-build --backend lance` now accepts:
+  - `--lance-max-length` (default 1024)
+  - `--lance-batch-size` (default 64)
+- LanceDB v3 manifest now records:
+  - `encoder.max_length`
+  - `encoder.batch_size`
+- CLI prints the resolved encoder config:
+  - `[cs-index] lance encoder — devices=['mps'] use_fp16=False max_length=512 batch_size=64`
+
+Verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_bge_m3_encoder.py tests/unit/test_lance_index_builder.py tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_lance_incremental_indexer.py -q
+```
+
+Result:
+
+```text
+22 passed in 2.50s
+```
+
+Small real smoke via imported `CLI.main([...])`:
+
+```text
+[cs-index] lance encoder — devices=['mps'] use_fp16=False max_length=512 batch_size=64
+[cs-index] 완료 — mode=lance-full row_count=2 — encoder=BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181 modalities=fts,dense (8.4s)
+```
+
+Important caveat:
+
+- Calling `CLI.main([...])` from an imported module works with `devices=['mps']`.
+- Direct `bin/cs-index-build ... --lance-device mps` still reproduced a `FlagEmbedding` MPS macOS-version error in this environment, even though it prints the same encoder config.
+- Full-corpus H7 build was therefore not retried yet. Next AI should either:
+  - run the full build through imported `CLI.main([...])`, or
+  - isolate why `FlagEmbedding` behaves differently when launched through the wrapper/script path.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

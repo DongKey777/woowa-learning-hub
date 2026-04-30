@@ -689,7 +689,8 @@ def build_lance_index(
         "encoder": {
             "model_id": encoder.model_id,
             "model_version": encoder.model_version,
-            "max_length": 8192,
+            "max_length": getattr(encoder, "max_length", 8192),
+            "batch_size": getattr(encoder, "batch_size", None),
         },
         "lancedb": {
             "version": getattr(lancedb, "__version__", "unknown"),

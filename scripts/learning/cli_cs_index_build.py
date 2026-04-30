@@ -132,14 +132,23 @@ def _default_lance_encoder(
     *,
     device: str = "auto",
     precision: str = "auto",
+    max_length: int = 1024,
+    batch_size: int = 64,
 ):
     """Production bge-m3 encoder factory for the explicit LanceDB backend."""
     from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder  # noqa: WPS433
 
     resolved_device = _resolve_lance_device(device)
+    # FlagEmbedding accepts CPU as a plain string, but MPS/CUDA are more
+    # reliable as an explicit device list. In this environment
+    # ``devices="mps"`` raises a misleading macOS-version error while
+    # ``devices=["mps"]`` works.
+    devices = [resolved_device] if resolved_device in {"mps", "cuda"} else resolved_device
     return BgeM3Encoder(
-        devices=resolved_device,
+        devices=devices,
         use_fp16=_resolve_lance_fp16(precision, resolved_device),
+        max_length=max_length,
+        batch_size=batch_size,
     )
 
 
@@ -322,6 +331,21 @@ def main(
         default="auto",
         help="bge-m3 precision for LanceDB builds (default: auto uses fp16 on MPS/CUDA).",
     )
+    parser.add_argument(
+        "--lance-max-length",
+        type=int,
+        default=1024,
+        help=(
+            "Max token length for bge-m3 corpus/query encoding in LanceDB builds "
+            "(default: 1024; CS chunks are capped at 1600 chars)."
+        ),
+    )
+    parser.add_argument(
+        "--lance-batch-size",
+        type=int,
+        default=64,
+        help="Batch size for bge-m3 LanceDB corpus encoding (default: 64).",
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -388,9 +412,19 @@ def main(
                     lambda: _default_lance_encoder(
                         device=lance_device,
                         precision=args.lance_precision,
+                        max_length=args.lance_max_length,
+                        batch_size=args.lance_batch_size,
                     )
                 )
                 encoder = factory()
+                print(
+                    "[cs-index] lance encoder — "
+                    f"devices={getattr(encoder, 'devices', None)!r} "
+                    f"use_fp16={getattr(encoder, 'use_fp16', None)!r} "
+                    f"max_length={getattr(encoder, 'max_length', None)!r} "
+                    f"batch_size={getattr(encoder, 'batch_size', None)!r}",
+                    flush=True,
+                )
                 manifest = indexer.build_lance_index(
                     index_root=args.out,
                     corpus_root=args.corpus,
@@ -425,9 +459,19 @@ def main(
                     lambda: _default_lance_encoder(
                         device=lance_device,
                         precision=args.lance_precision,
+                        max_length=args.lance_max_length,
+                        batch_size=args.lance_batch_size,
                     )
                 )
                 encoder = factory()
+                print(
+                    "[cs-index] lance encoder — "
+                    f"devices={getattr(encoder, 'devices', None)!r} "
+                    f"use_fp16={getattr(encoder, 'use_fp16', None)!r} "
+                    f"max_length={getattr(encoder, 'max_length', None)!r} "
+                    f"batch_size={getattr(encoder, 'batch_size', None)!r}",
+                    flush=True,
+                )
                 result = incremental_indexer.incremental_lance_build_index(
                     encoder=encoder,
                     index_root=args.out,

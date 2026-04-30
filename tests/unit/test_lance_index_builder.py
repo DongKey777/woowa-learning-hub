@@ -16,6 +16,8 @@ class FakeMultiModalEncoder:
     dense_dim = 8
     colbert_dim = 8
     sparse_vocab_size = 128
+    max_length = 512
+    batch_size = 32
 
     def encode_corpus(
         self,
@@ -104,6 +106,8 @@ def test_build_lance_index_writes_v3_manifest_and_table(tmp_path):
     assert manifest["index_version"] == 3
     assert manifest["row_count"] == expected_count
     assert manifest["encoder"]["model_version"] == "fake/bge-m3@test"
+    assert manifest["encoder"]["max_length"] == 512
+    assert manifest["encoder"]["batch_size"] == 32
     assert manifest["modalities"] == ["dense", "sparse", "colbert", "fts"]
     assert (index_root / indexer.LANCE_DIR_NAME).exists()
 
