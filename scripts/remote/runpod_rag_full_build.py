@@ -849,10 +849,14 @@ class RunPodHarness:
         """
         modalities_arg = ",".join(modalities)
         return [
-            # Step 5: clone
+            # Step 5: clone + system deps. zstd is required by
+            # package_rag_artifact (R0 v4 bug — Pod's Ubuntu image lacks
+            # zstd by default). Run apt FIRST so failures surface
+            # before we waste time on git/pip.
+            "apt-get update -qq && apt-get install -y -qq zstd git",
             f"git clone https://github.com/DongKey777/woowa-learning-hub.git /workspace/repo",
             f"cd /workspace/repo && git checkout {commit_sha}",
-            # Step 6: deps
+            # Step 6: python deps
             f"cd /workspace/repo && python -m venv .venv && .venv/bin/python -m pip install -e .",
             f"cd /workspace/repo && .venv/bin/python -m pip install lancedb pyarrow FlagEmbedding kiwipiepy",
             # Step 7: warm (skip for FTS-only)
@@ -929,6 +933,7 @@ class RunPodHarness:
             wallclock_s=0.0,
         )
 
+        hourly = 0.0
         try:
             # Cost pre-check
             hourly = self.client.estimate_hourly_rate(config.gpu_type, config.gpu_cloud)
@@ -963,12 +968,6 @@ class RunPodHarness:
             )
             result.artifact_path = artifact
 
-            # Cost rough estimate (real timing in v5-6)
-            ended_at = datetime.now(timezone.utc)
-            wallclock_s = (ended_at - started_at).total_seconds()
-            result.estimated_cost_usd = hourly * (wallclock_s / 3600.0)
-            result.wallclock_s = wallclock_s
-
         except Exception as exc:
             logger.error("[runpod] build failed: %s", exc)
             result.error = str(exc)
@@ -978,8 +977,18 @@ class RunPodHarness:
             self._cleanup()
             result.pod_terminated = True
 
-            # Append to cost ledger
+            # Compute actual wallclock + cost — even on failure (R0 v4
+            # bug: was 0.0 on exception because cost calc lived after
+            # the failing step).
             ended_at = datetime.now(timezone.utc)
+            wallclock_s = (ended_at - started_at).total_seconds()
+            result.wallclock_s = wallclock_s
+            if result.pod_id is not None:
+                # Pod was actually created → real cost
+                result.estimated_cost_usd = hourly * (wallclock_s / 3600.0)
+            # else: cost cap aborted before Pod creation → cost stays 0
+
+            # Append to cost ledger
             append_cost_ledger(
                 config.ledger_path,
                 run_id=run_id,

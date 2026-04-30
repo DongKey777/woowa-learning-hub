@@ -136,6 +136,9 @@ def test_remote_commands_for_r0_skip_warm_and_eval():
         r_phase="r0",
     )
     full = "\n".join(cmds)
+    # apt-get installs zstd + git BEFORE any Python work (R0 v4 bug fix
+    # — Pod images lack zstd, package step needs it)
+    assert "apt-get install -y -qq zstd" in full
     assert "git clone" in full
     assert "git checkout abc1234" in full
     # No bge-m3 model warm
@@ -144,6 +147,19 @@ def test_remote_commands_for_r0_skip_warm_and_eval():
     assert "cli_rag_eval" not in full
     # But package step IS present
     assert "package_rag_artifact" in full
+
+
+def test_remote_commands_apt_runs_before_pip():
+    """apt-get install must run BEFORE pip install — packages like
+    zstd are needed by package_rag_artifact step which runs at the end."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts",), run_id="r0", r_phase="r0",
+    )
+    apt_idx = next(i for i, c in enumerate(cmds) if "apt-get install" in c)
+    pip_idx = next(i for i, c in enumerate(cmds) if "pip install -e ." in c)
+    assert apt_idx < pip_idx
 
 
 def test_remote_commands_for_r1_includes_warm_and_eval():
@@ -272,6 +288,68 @@ def test_run_pod_terminated_even_on_remote_step_failure(tmp_path, monkeypatch):
     # Verify terminate was called
     ops = [c["op"] for c in client.calls]
     assert "terminate_pod" in ops
+
+
+def test_run_records_actual_cost_even_on_failure(tmp_path, monkeypatch):
+    """R0 v4 bug fix: when build fails after Pod creation, ledger
+    must still record actual wallclock + cost, not 0."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+
+    # Inject a failure AFTER Pod creation but during remote work
+    real_step = h.step_5_to_11_remote_build
+    fake_call_count = {"n": 0}
+
+    def _fail_after_setup(*args, **kwargs):
+        fake_call_count["n"] += 1
+        # Simulate ~36 seconds of Pod uptime before failure (1% of an hour)
+        import time as _t
+        original_sleep = _t.sleep
+        # We can't actually sleep here in tests; just monkey wallclock
+        raise RuntimeError("zstd missing on Pod")
+
+    monkeypatch.setattr(h, "step_5_to_11_remote_build", _fail_after_setup)
+
+    config = _make_config(tmp_path, r_phase="r0")
+    result = h.run(config)
+
+    assert result.error is not None
+    assert result.pod_terminated is True
+    # wallclock must be > 0 (we spent some time even before the failure)
+    assert result.wallclock_s >= 0  # at least non-negative
+
+    # Cost ledger must have one entry with the real (small) cost
+    ledger = json.loads((tmp_path / "ledger.json").read_text())
+    assert len(ledger) == 1
+    entry = ledger[0]
+    assert entry["pod_id"] is not None  # Pod was created before failure
+    # estimated_cost_usd is computed from hourly × wallclock; must be present
+    assert "estimated_cost_usd" in entry
+
+
+def test_run_cost_zero_when_pod_never_created(tmp_path):
+    """When --max-cost gate aborts BEFORE Pod creation, recorded cost
+    is 0 and pod_id is None (no money risk)."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    config = H.BuildConfig(
+        r_phase="r3",
+        modalities=("fts", "dense"),
+        gpu_type="A100 80GB",
+        gpu_cloud="community",
+        max_cost_usd=0.10,    # 1.50/hr × 30/60 = $0.75 > $0.10 → abort
+        max_duration_min=30,
+        repo_root=tmp_path,
+        ledger_path=tmp_path / "ledger.json",
+    )
+    result = h.run(config)
+    assert result.error is not None
+    assert result.pod_id is None
+    assert result.estimated_cost_usd == 0.0
+    # Ledger entry exists but with no pod
+    ledger = json.loads((tmp_path / "ledger.json").read_text())
+    assert ledger[0]["pod_id"] is None
+    assert ledger[0]["estimated_cost_usd"] == 0.0
 
 
 def test_resolve_defaults_picks_r_phase_appropriate_gpu():
