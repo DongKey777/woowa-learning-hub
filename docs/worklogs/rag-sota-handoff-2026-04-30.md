@@ -1003,3 +1003,74 @@ Result:
 - Do not delete `~/.cache/huggingface/hub/models--BAAI--bge-m3`; it is needed for offline H0/H2.
 - The direct Python `tantivy` module is not installed. This is not currently a blocker because LanceDB FTS smoke passed.
 - `state/orchestrator/queue.json` and status metadata were preserved, but inactive worker sandboxes were removed to satisfy disk gate.
+
+## H7.5 Sampled Ablation Harness
+
+Full 27K-chunk bge-m3 re-encoding is not a practical local development loop
+on this machine, so H7.5 adds a low-cost sampled path before any production
+cutover decision:
+
+- `scripts/learning/rag/eval/sampled_ablation.py` materialises a judged subset
+  from the graded fixture.
+- Default categories are backend-core: `spring`, `database`, `network`,
+  `operating-system`, `data-structure`, `algorithm`, `software-engineering`.
+- The sample copies every qrel/forbidden doc for matching queries, then adds a
+  deterministic small number of beginner/intermediate decoy docs per category.
+- `bin/rag-eval --sampled-ablate` builds a LanceDB index under
+  `state/cs_rag_eval/sampled_core/index` and runs the H7 modality ablation
+  against the matching sampled fixture.
+- The sampled corpus cleaner preserves the sibling `index/` directory; reuse is
+  allowed only when the v3 manifest modalities cover the requested modalities
+  and the manifest `corpus_hash` matches the current sampled corpus hash.
+- FTS-only sampled ablation never loads bge-m3. `BgeM3Encoder.encode_corpus(...,
+  modalities=())` returns zero/empty vector payloads without calling
+  `FlagEmbedding`.
+
+Verification:
+
+```bash
+.venv/bin/python -m pytest \
+  tests/unit/test_bge_m3_encoder.py \
+  tests/unit/test_rag_eval_sampled_ablation.py \
+  tests/unit/test_rag_eval_cli.py \
+  -q
+```
+
+Result:
+
+```text
+50 passed in 1.02s
+```
+
+Real FTS-only sampled smoke:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+  .venv/bin/python scripts/learning/cli_rag_eval.py \
+  --sampled-ablate \
+  --sample-categories spring \
+  --sample-extra-docs-per-category 1 \
+  --sample-root /tmp/woowa-sampled-ablate-smoke \
+  --ablation-modalities fts \
+  --ablation-split full \
+  --ablation-out /tmp/woowa-sampled-ablate-smoke/report.json \
+  --sample-force-rebuild \
+  --sample-lance-max-eta-minutes 1
+```
+
+Result:
+
+```text
+sample: queries=72 docs=17 required=16 extra=1
+row_count=429 modalities=fts
+primary_ndcg_macro=0.8885849248145147
+p95_ms=34.72008400422055
+```
+
+Next practical step:
+
+- Run sampled vector ablations category-by-category before any full-corpus
+  production rebuild, e.g. `--ablation-modalities fts,dense --sample-categories
+  spring,database --sample-lance-max-eta-minutes 10`.
+- Only after sampled results justify the stack should a remote/GPU or overnight
+  full-corpus encode be scheduled.
