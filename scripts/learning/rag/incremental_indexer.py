@@ -398,6 +398,15 @@ def load_prev_chunk_id_lookup(conn) -> dict[int, str]:
     }
 
 
+def _normalise_corpus_root(corpus_root):
+    """Lazy default lookup so monkey-patches on
+    corpus_loader.DEFAULT_CORPUS_ROOT take effect."""
+    if corpus_root is None:
+        from .corpus_loader import DEFAULT_CORPUS_ROOT
+        return DEFAULT_CORPUS_ROOT
+    return corpus_root
+
+
 def apply_chunk_diff_to_sqlite(
     conn,
     diff,  # ChunkDiff
@@ -469,3 +478,299 @@ def apply_chunk_diff_to_sqlite(
     except BaseException:
         conn.rollback()
         raise
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator — full incremental rebuild pipeline
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class IncrementalBuildResult:
+    """Outcome of a single incremental_build_index call.
+
+    ``mode`` is "incremental" when the delta path executed, "full"
+    when fallback to a full rebuild fired (first build, model
+    mismatch, schema bump, missing dense.npz, etc.).
+    """
+
+    mode: str  # "incremental" | "full"
+    manifest: dict
+    diff_stats: dict[str, int]  # added/modified/deleted/unchanged counts
+    encoded_chunk_count: int
+    fallback_reason: str | None  # set when mode == "full"
+
+
+def _full_rebuild_reason(
+    *,
+    index_root_path,  # Path
+    model_id: str,
+    embed_dim: int,
+    indexer_module,
+) -> str | None:
+    """Return a reason string when the index requires a full rebuild,
+    or ``None`` when incremental is safe.
+
+    Reasons checked in priority order:
+    - missing manifest / dense / sqlite (first build or corruption)
+    - manifest INDEX_VERSION mismatch (schema bumped)
+    - manifest embed_model mismatch (different candidate)
+    - manifest embed_dim mismatch (model swap broke compatibility)
+    """
+    manifest_path = index_root_path / indexer_module.MANIFEST_NAME
+    dense_path = index_root_path / indexer_module.DENSE_NAME
+    sqlite_path = index_root_path / indexer_module.SQLITE_NAME
+
+    if not manifest_path.exists():
+        return "no_manifest"
+    if not dense_path.exists():
+        return "no_dense"
+    if not sqlite_path.exists():
+        return "no_sqlite"
+
+    try:
+        prev = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception:
+        return "manifest_unparseable"
+
+    if int(prev.get("index_version", -1)) != indexer_module.INDEX_VERSION:
+        return "index_version_changed"
+    if prev.get("embed_model") != model_id:
+        return "embed_model_changed"
+    if int(prev.get("embed_dim", -1)) != embed_dim:
+        return "embed_dim_changed"
+    return None
+
+
+def incremental_build_index(
+    *,
+    model,  # SentenceTransformer-like
+    model_id: str,
+    embed_dim: int,
+    index_root,  # Path | str
+    corpus_root=None,
+    progress=None,
+    batch_size: int = 32,
+) -> IncrementalBuildResult:
+    """Re-encode only changed chunks, atomically merge into the index.
+
+    Step order (designed so that any single failure leaves a recoverable
+    state):
+
+        1. Compute new corpus fingerprints
+        2. Decide full vs incremental (manifest/schema sanity)
+        3. If full: delegate to build_eval_index
+        4. Diff against previous chunk_hashes sidecar
+        5. Short-circuit when no changes (refresh manifest, return)
+        6. Encode delta chunks (added + modified) via ``model.encode``
+        7. Read prev row_id → chunk_id lookup from SQLite
+        8. SQLite transaction: DELETE deleted+modified, INSERT
+           added+modified — atomic at the SQL layer. New row_ids are
+           captured for delta_row_ids.
+        9. merge_dense_arrays: keep unchanged prev rows + delta rows
+       10. atomic_save_dense_npz (tmp + rename; if step 8 succeeded
+           but step 10 fails, the SQLite tx is committed but the
+           dense file is the previous one — operator must
+           force_rebuild to recover)
+       11. atomic_save_chunk_hashes (final commit point for "next
+           incremental call sees these fingerprints")
+       12. Update manifest with new corpus_hash + diff_stats
+
+    The ordering is "weakest atomic last": SQLite tx is the only true
+    atomic operation, so it goes before file writes that can fail. If
+    step 10 (dense write) fails after step 8 succeeded, the index is
+    inconsistent. Plan §P5.6 documents this corner: in that rare case
+    operator runs ``bin/cs-index-build --mode full`` to recover.
+
+    Args:
+        model: encoder with .encode() (SentenceTransformer-like).
+        model_id / embed_dim: must match the existing manifest for
+            the incremental path. Mismatch triggers full rebuild.
+        index_root: index directory (e.g. state/cs_rag/).
+        corpus_root: source corpus directory. Defaults lazily to
+            corpus_loader.DEFAULT_CORPUS_ROOT.
+        progress: optional ``(stage, info)`` callback.
+        batch_size: forwarded to model.encode for the delta encoder.
+
+    Returns:
+        IncrementalBuildResult with mode + manifest + diff_stats.
+    """
+    import numpy as np  # type: ignore
+    from . import corpus_loader, indexer
+
+    def _tick(stage: str, info: dict | None = None) -> None:
+        if progress is not None:
+            progress(stage, info or {})
+
+    corpus_root = _normalise_corpus_root(corpus_root)
+    index_root_path = Path(index_root)
+
+    # 1. Compute new corpus fingerprints
+    _tick("load_corpus", {"corpus_root": str(corpus_root)})
+    chunks = corpus_loader.load_corpus(corpus_root)
+    if not chunks:
+        raise RuntimeError(f"corpus at {corpus_root} is empty")
+    new_chunks_by_id = {c.chunk_id: c for c in chunks}
+    new_fingerprints = compute_chunk_fingerprints(chunks)
+    _tick("corpus_loaded", {"chunk_count": len(chunks)})
+
+    # 2. Full-rebuild gate
+    fallback_reason = _full_rebuild_reason(
+        index_root_path=index_root_path,
+        model_id=model_id,
+        embed_dim=embed_dim,
+        indexer_module=indexer,
+    )
+
+    # 3. Full rebuild fallback
+    if fallback_reason is not None:
+        _tick("fallback_to_full", {"reason": fallback_reason})
+        from .eval.index_builder import build_eval_index
+
+        manifest = build_eval_index(
+            model=model,
+            model_id=model_id,
+            embed_dim=embed_dim,
+            index_root=index_root_path,
+            corpus_root=corpus_root,
+            batch_size=batch_size,
+            progress=progress,
+        )
+        # Persist fingerprints so the next call can take the
+        # incremental fast-path
+        atomic_save_chunk_hashes(new_fingerprints, index_root_path)
+        return IncrementalBuildResult(
+            mode="full",
+            manifest=manifest,
+            diff_stats={
+                "added": len(chunks),
+                "modified": 0,
+                "deleted": 0,
+                "unchanged": 0,
+            },
+            encoded_chunk_count=len(chunks),
+            fallback_reason=fallback_reason,
+        )
+
+    # 4. Diff
+    old_fingerprints = load_chunk_hashes(index_root_path)
+    diff = diff_chunks(old_fingerprints, new_fingerprints)
+    _tick("diff", {
+        "added": len(diff.added),
+        "modified": len(diff.modified),
+        "deleted": len(diff.deleted),
+        "unchanged": len(diff.unchanged),
+    })
+
+    # 5. No-op short-circuit: refresh manifest with current corpus_hash
+    # and return early. fingerprints are already aligned (load == compute).
+    if diff.is_noop():
+        _tick("noop", {})
+        manifest_path = index_root_path / indexer.MANIFEST_NAME
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["corpus_hash"] = corpus_loader.corpus_hash(corpus_root)
+        manifest["incremental_stats"] = {
+            "added": 0,
+            "modified": 0,
+            "deleted": 0,
+            "unchanged": len(diff.unchanged),
+        }
+        manifest_path.write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return IncrementalBuildResult(
+            mode="incremental",
+            manifest=manifest,
+            diff_stats=manifest["incremental_stats"],
+            encoded_chunk_count=0,
+            fallback_reason=None,
+        )
+
+    # 6. Encode delta
+    delta_chunk_ids = list(diff.needs_encoding)
+    delta_chunks = [new_chunks_by_id[cid] for cid in delta_chunk_ids]
+    delta_texts = [indexer._embed_text(c) for c in delta_chunks]
+    _tick("encode_delta", {"count": len(delta_texts), "batch_size": batch_size})
+    if delta_texts:
+        delta_embeddings = model.encode(
+            delta_texts,
+            batch_size=batch_size,
+            show_progress_bar=False,
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+        )
+        delta_embeddings = np.asarray(delta_embeddings, dtype="float32")
+        if delta_embeddings.shape != (len(delta_texts), embed_dim):
+            raise RuntimeError(
+                f"unexpected delta shape {delta_embeddings.shape}, "
+                f"expected ({len(delta_texts)}, {embed_dim})"
+            )
+    else:
+        # Pure-delete case: still execute SQLite tx + dense rewrite to
+        # drop deleted rows.
+        delta_embeddings = np.zeros((0, embed_dim), dtype="float32")
+
+    # 7. prev row_id → chunk_id lookup (read BEFORE the tx so deleted
+    # rows are still observable for merge_dense_arrays' kept_mask)
+    sqlite_path = index_root_path / indexer.SQLITE_NAME
+    conn = indexer._open_sqlite(sqlite_path)
+    try:
+        prev_lookup = load_prev_chunk_id_lookup(conn)
+        _tick("prev_lookup", {"row_count": len(prev_lookup)})
+
+        # 8. SQLite tx (atomic at SQL layer)
+        new_row_ids_dict = apply_chunk_diff_to_sqlite(
+            conn, diff, new_chunks_by_id
+        )
+        _tick("sqlite_tx", {
+            "inserted_count": len(new_row_ids_dict),
+        })
+    finally:
+        conn.close()
+
+    # 9. merge_dense_arrays
+    delta_row_ids = [new_row_ids_dict[cid] for cid in delta_chunk_ids]
+    prev_embeddings, prev_row_ids = indexer.load_dense(index_root_path)
+    merged_embeddings, merged_row_ids = merge_dense_arrays(
+        prev_embeddings=prev_embeddings,
+        prev_row_ids=prev_row_ids,
+        prev_chunk_id_by_row_id=prev_lookup,
+        unchanged_chunk_ids=set(diff.unchanged),
+        delta_chunk_ids=delta_chunk_ids,
+        delta_embeddings=delta_embeddings,
+        delta_row_ids=delta_row_ids,
+    )
+    _tick("dense_merged", {"shape": list(merged_embeddings.shape)})
+
+    # 10. Atomic dense.npz write
+    dense_path = index_root_path / indexer.DENSE_NAME
+    atomic_save_dense_npz(dense_path, merged_embeddings, merged_row_ids)
+
+    # 11. Atomic fingerprints write — final commit point for
+    # "next incremental call sees these fingerprints"
+    atomic_save_chunk_hashes(new_fingerprints, index_root_path)
+
+    # 12. Manifest update
+    manifest_path = index_root_path / indexer.MANIFEST_NAME
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["row_count"] = int(merged_embeddings.shape[0])
+    manifest["corpus_hash"] = corpus_loader.corpus_hash(corpus_root)
+    manifest["incremental_stats"] = {
+        "added": len(diff.added),
+        "modified": len(diff.modified),
+        "deleted": len(diff.deleted),
+        "unchanged": len(diff.unchanged),
+    }
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    _tick("manifest_updated", manifest["incremental_stats"])
+
+    return IncrementalBuildResult(
+        mode="incremental",
+        manifest=manifest,
+        diff_stats=manifest["incremental_stats"],
+        encoded_chunk_count=len(delta_chunk_ids),
+        fallback_reason=None,
+    )

@@ -707,3 +707,255 @@ def test_apply_diff_chunks_fts_stays_in_sync(sqlite_conn):
         ("감마",),
     )]
     assert "c" in c_hits
+
+
+# ---------------------------------------------------------------------------
+# incremental_build_index orchestrator (integration-ish: fake corpus + fake
+# encoder, real SQLite, real numpy)
+# ---------------------------------------------------------------------------
+
+class _DeterministicEncoder:
+    """Fake encoder yielding chunk-id hashed vectors so equal text →
+    equal vector across calls (necessary for unchanged equivalence)."""
+
+    def __init__(self, dim: int = 4):
+        self.dim = dim
+        self.encode_calls: list[int] = []
+
+    def encode(self, sentences, **kwargs):
+        import hashlib
+        self.encode_calls.append(len(sentences))
+        out = np.zeros((len(sentences), self.dim), dtype="float32")
+        for i, s in enumerate(sentences):
+            h = int(hashlib.sha1(s.encode("utf-8")).hexdigest()[:8], 16)
+            for j in range(self.dim):
+                out[i, j] = ((h >> (j * 4)) & 0xF) / 16.0
+        return out
+
+
+@pytest.fixture
+def fake_corpus_dir(tmp_path):
+    """Build a corpus tree under tmp/corpus/contents/spring/."""
+    corpus_root = tmp_path / "corpus"
+    cat = corpus_root / "contents" / "spring"
+    cat.mkdir(parents=True)
+    body = (
+        "Spring Bean은 IoC 컨테이너에 의해 관리되는 객체이다. "
+        "@Component / @Bean으로 등록한다. 라이프사이클 관리 + DI를 받는다."
+    )
+    (cat / "bean.md").write_text(f"# Bean\n\n## 정의\n\n{body}\n", encoding="utf-8")
+    (cat / "ioc.md").write_text(f"# IoC\n\n## 정의\n\nIoC: {body}\n", encoding="utf-8")
+    return corpus_root
+
+
+def test_orchestrator_first_build_falls_back_to_full(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    result = I.incremental_build_index(
+        model=encoder,
+        model_id="fake/test",
+        embed_dim=4,
+        index_root=index_root,
+        corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "full"
+    assert result.fallback_reason == "no_manifest"
+    assert result.encoded_chunk_count > 0
+    # All produced files exist
+    from scripts.learning.rag import indexer
+    assert (index_root / indexer.SQLITE_NAME).exists()
+    assert (index_root / indexer.DENSE_NAME).exists()
+    assert (index_root / indexer.MANIFEST_NAME).exists()
+    # chunk_hashes was persisted so the next call can take the
+    # incremental path
+    assert (index_root / I.CHUNK_HASHES_NAME).exists()
+
+
+def test_orchestrator_second_call_with_no_changes_is_noop(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    # First build (full)
+    I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+    encoder.encode_calls.clear()
+
+    # Second build with same corpus → no-op
+    result = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "incremental"
+    assert result.encoded_chunk_count == 0
+    assert result.diff_stats["added"] == 0
+    assert result.diff_stats["modified"] == 0
+    assert result.diff_stats["deleted"] == 0
+    # Encoder was NOT called for the second build
+    assert encoder.encode_calls == []
+
+
+def test_orchestrator_added_chunk_only_re_encodes_delta(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    # First build
+    first = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+    initial_chunks = first.encoded_chunk_count
+    encoder.encode_calls.clear()
+
+    # Add a new doc
+    new_body = (
+        "AOP은 횡단 관심사를 모듈화하는 패러다임이다. "
+        "Spring AOP는 프록시 기반으로 트랜잭션·로깅·보안 등을 적용한다."
+    )
+    (fake_corpus_dir / "contents" / "spring" / "aop.md").write_text(
+        f"# AOP\n\n## 정의\n\n{new_body}\n",
+        encoding="utf-8",
+    )
+
+    # Second build → only new chunks encoded
+    result = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "incremental"
+    assert result.encoded_chunk_count > 0
+    assert result.encoded_chunk_count < initial_chunks  # NOT full re-encode
+    assert result.diff_stats["added"] >= 1
+    assert result.diff_stats["modified"] == 0
+    assert result.diff_stats["deleted"] == 0
+    # Encoder called exactly once with the delta count
+    assert sum(encoder.encode_calls) == result.encoded_chunk_count
+
+
+def test_orchestrator_modified_chunk_only_re_encodes_delta(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    # First build
+    first = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+    initial_chunks = first.encoded_chunk_count
+    encoder.encode_calls.clear()
+
+    # Modify bean.md body — changes its chunk fingerprint
+    new_body = (
+        "Spring Bean은 IoC 컨테이너에 의해 관리되는 객체이다. "
+        "@Component / @Bean으로 등록한다. 라이프사이클 관리 + DI를 받는다. "
+        "추가된 본문 — 본문 길이를 충분히 늘려 청크가 살아남도록 한다."
+    )
+    (fake_corpus_dir / "contents" / "spring" / "bean.md").write_text(
+        f"# Bean\n\n## 정의\n\n{new_body}\n",
+        encoding="utf-8",
+    )
+
+    result = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "incremental"
+    # The modified chunk re-encoded (and possibly some siblings if the
+    # H2 split changed). Should still be far less than full.
+    assert result.encoded_chunk_count < initial_chunks
+    assert result.diff_stats["modified"] >= 1 or result.diff_stats["added"] >= 1
+
+
+def test_orchestrator_deleted_chunk_no_re_encode(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    # First build
+    I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+    encoder.encode_calls.clear()
+
+    # Delete ioc.md
+    (fake_corpus_dir / "contents" / "spring" / "ioc.md").unlink()
+
+    result = I.incremental_build_index(
+        model=encoder, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "incremental"
+    assert result.encoded_chunk_count == 0  # No new content to encode
+    assert result.diff_stats["deleted"] >= 1
+    assert result.diff_stats["added"] == 0
+    assert result.diff_stats["modified"] == 0
+    assert encoder.encode_calls == []  # encoder bypassed for pure-delete
+
+
+def test_orchestrator_model_id_mismatch_triggers_full_rebuild(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    encoder = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+
+    # First build with model A
+    I.incremental_build_index(
+        model=encoder, model_id="fake/model-A", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+    encoder.encode_calls.clear()
+
+    # Second build with model B (different model_id)
+    result = I.incremental_build_index(
+        model=encoder, model_id="fake/model-B", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "full"
+    assert result.fallback_reason == "embed_model_changed"
+
+
+def test_orchestrator_dim_mismatch_triggers_full_rebuild(tmp_path, fake_corpus_dir, monkeypatch):
+    from scripts.learning.rag import corpus_loader
+    monkeypatch.setattr(corpus_loader, "DEFAULT_CORPUS_ROOT", fake_corpus_dir)
+
+    # First build with dim=4
+    encoder4 = _DeterministicEncoder(dim=4)
+    index_root = tmp_path / "idx"
+    I.incremental_build_index(
+        model=encoder4, model_id="fake/test", embed_dim=4,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    # Second call declares dim=8 → fallback (model swap broke compat)
+    encoder8 = _DeterministicEncoder(dim=8)
+    result = I.incremental_build_index(
+        model=encoder8, model_id="fake/test", embed_dim=8,
+        index_root=index_root, corpus_root=fake_corpus_dir,
+    )
+
+    assert result.mode == "full"
+    assert result.fallback_reason == "embed_dim_changed"
