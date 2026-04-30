@@ -133,6 +133,61 @@ def test_lance_candidate_search_returns_empty_when_modalities_miss(tmp_path):
     )
 
 
+def test_public_search_can_use_explicit_lance_backend(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=encoder,
+    )
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", lambda _root: encoder)
+    debug = {}
+
+    hits = searcher.search(
+        "트랜잭션이 뭐예요?",
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        modalities=("fts", "dense", "sparse"),
+        top_k=1,
+        use_reranker=False,
+        experience_level="beginner",
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/database/transaction-basics.md"
+    assert debug["backend"] == "lance"
+    assert debug["modalities"] == ["fts", "dense", "sparse"]
+
+
+def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=encoder,
+    )
+
+    def fail_if_loaded(_root):
+        raise AssertionError("cheap LanceDB mode should use FTS only")
+
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", fail_if_loaded)
+
+    hits = searcher.search(
+        "트랜잭션",
+        mode="cheap",
+        backend="lance",
+        index_root=index_root,
+        top_k=1,
+    )
+
+    assert hits[0]["path"] == "contents/database/transaction-basics.md"
+
+
 def test_sparse_rescore_promotes_matching_sparse_tokens():
     scored = [(1, 0.1), (2, 0.2)]
     chunks = {

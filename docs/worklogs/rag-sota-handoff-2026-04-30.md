@@ -298,6 +298,47 @@ Remaining after H3a:
 - Category/difficulty/signal boosts need to be applied on the LanceDB path before production cutover.
 - ColBERT MaxSim is still stored but not used in ranking; this remains H4.
 
+## H3b Explicit Public LanceDB Search Backend
+
+Implemented after H3a:
+
+- Added `search(..., backend="legacy"|"lance", modalities=...)`.
+  - Default remains `backend="legacy"` so all current callers keep the SQLite/NPZ path.
+  - `backend="lance"` explicitly opens the v3 manifest/table and uses the H3a candidate pool.
+- Added `_get_lance_query_encoder(index_root)` with cache keyed by manifest encoder version.
+  - Current supported production encoder is `BAAI/bge-m3`.
+  - Tests monkeypatch this helper with a fake encoder, so no heavy model load occurs in unit tests.
+- LanceDB path now applies existing post-retrieval contracts:
+  - category boost,
+  - difficulty boost,
+  - signal boost,
+  - category filter fallback debug fields,
+  - path-level dedupe,
+  - legacy formatted hit shape.
+- `mode="cheap"` with `backend="lance"` resolves to FTS-only and does not load the query encoder.
+  - This preserves the cheap-mode latency intent for future runtime routing.
+
+H3b verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py -q
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_cs_rag_search.py tests/unit/test_cs_rag_golden.py -q
+```
+
+Results:
+
+```text
+5 passed in 1.52s
+268 passed, 2 warnings, 548 subtests passed in 101.69s
+```
+
+Important H3b design choice:
+
+- This is still explicit opt-in only.
+- `scripts.learning.integration.augment()` does not pass `backend="lance"` yet.
+- `bin/rag-ask` and `coach-run` therefore remain on the legacy backend until a later cutover commit.
+- ColBERT is not used in scoring yet; `modalities=("fts","dense","sparse")` is the meaningful H3 path. H4 owns MaxSim/ColBERT quality and latency decisions.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

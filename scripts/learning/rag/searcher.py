@@ -200,6 +200,7 @@ def _first_chunk_ids_for_paths(conn: sqlite3.Connection, paths: Iterable[str]) -
 # ---------------------------------------------------------------------------
 
 _QUERY_EMBEDDER = None  # module-level cache to avoid reloading per query
+_LANCE_QUERY_ENCODER_CACHE: dict[str, object] = {}
 
 
 def _get_query_embedder():
@@ -210,6 +211,23 @@ def _get_query_embedder():
 
     _QUERY_EMBEDDER = SentenceTransformer(indexer.EMBED_MODEL)
     return _QUERY_EMBEDDER
+
+
+def _get_lance_query_encoder(index_root: Path | str):
+    manifest = indexer.read_manifest_v3(index_root)
+    encoder_info = manifest.get("encoder", {})
+    model_id = str(encoder_info.get("model_id") or "")
+    model_version = str(encoder_info.get("model_version") or model_id)
+    cache_key = model_version or model_id
+    if cache_key in _LANCE_QUERY_ENCODER_CACHE:
+        return _LANCE_QUERY_ENCODER_CACHE[cache_key]
+    if model_id != "BAAI/bge-m3":
+        raise indexer.IncompatibleIndexError(f"unsupported LanceDB encoder: {model_id}")
+    from .encoders.bge_m3 import BgeM3Encoder  # type: ignore
+
+    encoder = BgeM3Encoder(model_id=model_id)
+    _LANCE_QUERY_ENCODER_CACHE[cache_key] = encoder
+    return encoder
 
 
 def _load_query_vector(prompt: str, topic_hints: list[str] | None):
@@ -395,20 +413,19 @@ def _sparse_rescore(
     return rescored
 
 
-def _lance_candidate_search(
+def _lance_candidate_pool(
     table,
     prompt: str,
     *,
     query_encoding: dict | None = None,
     modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
-    top_k: int = DEFAULT_TOP_K,
     pool_size: int = FTS_POOL_SIZE,
-) -> list[dict]:
-    """Return formatted candidate hits from a v3 LanceDB table.
+) -> tuple[list[tuple[int, float]], dict[int, dict]]:
+    """Return ``(scored, chunks)`` from a v3 LanceDB table.
 
-    This side-by-side helper is intentionally not wired into public
-    ``search()`` yet.  H3 uses it to prove the LanceDB read path before
-    replacing the legacy SQLite/NPZ ranking pipeline.
+    H3 uses this as the shared candidate layer for explicit
+    ``search(..., backend="lance")`` calls while the default backend remains
+    the legacy SQLite/NPZ path.
     """
     chunks: dict[int, dict] = {}
     rankings: list[list[tuple[int, float]]] = []
@@ -428,13 +445,35 @@ def _lance_candidate_search(
                 rankings.append(dense_ranking)
 
     if not rankings:
-        return []
+        return [], {}
 
     fused = _rrf_merge(rankings)
     if "sparse" in modalities and query_encoding is not None:
         sparse_list = query_encoding.get("sparse") or []
         query_sparse = sparse_list[0] if sparse_list else {}
         fused = _sparse_rescore(fused, chunks, query_sparse)
+    return fused, chunks
+
+
+def _lance_candidate_search(
+    table,
+    prompt: str,
+    *,
+    query_encoding: dict | None = None,
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
+    top_k: int = DEFAULT_TOP_K,
+    pool_size: int = FTS_POOL_SIZE,
+) -> list[dict]:
+    """Return formatted candidate hits from a v3 LanceDB table."""
+    fused, chunks = _lance_candidate_pool(
+        table,
+        prompt,
+        query_encoding=query_encoding,
+        modalities=modalities,
+        pool_size=pool_size,
+    )
+    if not fused:
+        return []
 
     deduped = _dedupe_by_path(fused, chunks)
     return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
@@ -1362,6 +1401,8 @@ def search(
     topic_hints: list[str] | None = None,
     top_k: int = DEFAULT_TOP_K,
     mode: str = "full",
+    backend: str = "legacy",
+    modalities: list[str] | tuple[str, ...] | None = None,
     index_root: Path | str = indexer.DEFAULT_INDEX_ROOT,
     use_reranker: bool | None = None,
     experience_level: str | None = None,
@@ -1379,6 +1420,21 @@ def search(
     """
     if mode not in ("cheap", "full"):
         raise ValueError(f"unknown mode: {mode}")
+    if backend not in ("legacy", "lance"):
+        raise ValueError(f"unknown backend: {backend}")
+
+    if backend == "lance":
+        return _search_lance(
+            prompt,
+            learning_points=learning_points,
+            topic_hints=topic_hints,
+            top_k=top_k,
+            mode=mode,
+            modalities=modalities,
+            index_root=index_root,
+            experience_level=experience_level,
+            debug=debug,
+        )
 
     try:
         conn = indexer.open_readonly(index_root)
@@ -1483,6 +1539,64 @@ def search(
         return [_format_hit(chunks[rid], score) for rid, score in deduped[:top_k]]
     finally:
         conn.close()
+
+
+def _search_lance(
+    prompt: str,
+    *,
+    learning_points: list[str] | None,
+    topic_hints: list[str] | None,
+    top_k: int,
+    mode: str,
+    modalities: list[str] | tuple[str, ...] | None,
+    index_root: Path | str,
+    experience_level: str | None,
+    debug: dict | None,
+) -> list[dict]:
+    try:
+        manifest = indexer.read_manifest_v3(index_root)
+        table = indexer.open_lance_table(index_root)
+    except (FileNotFoundError, indexer.IncompatibleIndexError):
+        return []
+
+    manifest_modalities = tuple(manifest.get("modalities") or ("fts",))
+    resolved_modalities = tuple(modalities or (("fts",) if mode == "cheap" else manifest_modalities))
+    query_modalities = tuple(m for m in resolved_modalities if m != "fts")
+    query_encoding = None
+    if query_modalities:
+        try:
+            encoder = _get_lance_query_encoder(index_root)
+            query_text = prompt if not topic_hints else f"{prompt}\n\n" + "\n".join(topic_hints)
+            query_encoding = encoder.encode_query(query_text, modalities=query_modalities)
+        except Exception:
+            query_encoding = None
+
+    scored, chunks = _lance_candidate_pool(
+        table,
+        prompt,
+        query_encoding=query_encoding,
+        modalities=resolved_modalities,
+        pool_size=max(FTS_POOL_SIZE, top_k * 20),
+    )
+    if not scored:
+        return []
+
+    allowed_categories = _collect_categories(learning_points)
+    boosted = _apply_category_boost(scored, chunks, allowed_categories)
+    boosted = _apply_difficulty_boost(boosted, chunks, experience_level)
+    signals = signal_rules.detect_signals(prompt, topic_hints)
+    boosted = _apply_signal_boost(boosted, chunks, prompt, signals)
+    filtered, filter_fallback_used = _filter_allowed_categories(
+        boosted, chunks, allowed_categories, top_k
+    )
+    if debug is not None:
+        debug["backend"] = "lance"
+        debug["modalities"] = list(resolved_modalities)
+        debug["category_filter_fallback"] = filter_fallback_used
+        debug["allowed_categories"] = sorted(allowed_categories)
+
+    deduped = _dedupe_by_path(filtered, chunks)
+    return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
 
 
 def _fallback_tokens(prompt: str) -> list[str]:
