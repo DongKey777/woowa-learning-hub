@@ -339,6 +339,41 @@ Important H3b design choice:
 - `bin/rag-ask` and `coach-run` therefore remain on the legacy backend until a later cutover commit.
 - ColBERT is not used in scoring yet; `modalities=("fts","dense","sparse")` is the meaningful H3 path. H4 owns MaxSim/ColBERT quality and latency decisions.
 
+## H4a Exact ColBERT MaxSim Candidate Rescore
+
+Implemented after H3b:
+
+- Added `_colbert_maxsim(query_tokens, doc_tokens)`.
+  - Converts query/doc token matrices to float32.
+  - L2-normalizes token vectors.
+  - Computes query-token max similarity over document tokens and averages over query tokens.
+- Added `_colbert_rescore(...)`.
+  - Applies exact MaxSim only over the already retrieved LanceDB candidate pool.
+  - This avoids full-corpus ColBERT scans and keeps H4a as a post-candidate rerank step.
+- LanceDB row conversion now carries `colbert_tokens` into the internal chunk dict.
+- `_lance_candidate_pool` applies ColBERT rescore when `modalities` includes `colbert` and query encoding contains ColBERT tokens.
+- Public explicit LanceDB search tests now exercise `modalities=("fts","dense","sparse","colbert")`.
+
+H4a verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py -q
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_cs_rag_search.py -q
+```
+
+Results:
+
+```text
+7 passed in 1.65s
+217 passed, 185 subtests passed in 2.70s
+```
+
+Important H4a design choice:
+
+- This is exact MaxSim over candidates, not LanceDB multivector ANN cutover.
+- The weight is deliberately small (`0.03`) until H7/H8 ablation tunes the blend.
+- H4 remaining work is quality/latency measurement: exact candidate MaxSim vs LanceDB indexed multivector vs possible sidecar.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.

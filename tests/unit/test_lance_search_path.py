@@ -150,7 +150,7 @@ def test_public_search_can_use_explicit_lance_backend(tmp_path, monkeypatch):
         mode="full",
         backend="lance",
         index_root=index_root,
-        modalities=("fts", "dense", "sparse"),
+        modalities=("fts", "dense", "sparse", "colbert"),
         top_k=1,
         use_reranker=False,
         experience_level="beginner",
@@ -159,7 +159,7 @@ def test_public_search_can_use_explicit_lance_backend(tmp_path, monkeypatch):
 
     assert hits[0]["path"] == "contents/database/transaction-basics.md"
     assert debug["backend"] == "lance"
-    assert debug["modalities"] == ["fts", "dense", "sparse"]
+    assert debug["modalities"] == ["fts", "dense", "sparse", "colbert"]
 
 
 def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkeypatch):
@@ -198,3 +198,23 @@ def test_sparse_rescore_promotes_matching_sparse_tokens():
     rescored = searcher._sparse_rescore(scored, chunks, {10: 1.0}, weight=0.05)
 
     assert rescored[0][0] == 1
+
+
+def test_colbert_maxsim_uses_best_doc_token_per_query_token():
+    query = np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32)
+    doc = np.array([[1.0, 0.0], [1.0, 0.0]], dtype=np.float32)
+
+    assert searcher._colbert_maxsim(query, doc) == 0.5
+
+
+def test_colbert_rescore_promotes_candidate_with_higher_maxsim():
+    scored = [(1, 0.2), (2, 0.2)]
+    query = np.array([[1.0, 0.0]], dtype=np.float32)
+    chunks = {
+        1: {"colbert_tokens": np.array([[0.0, 1.0]], dtype=np.float32)},
+        2: {"colbert_tokens": np.array([[1.0, 0.0]], dtype=np.float32)},
+    }
+
+    rescored = searcher._colbert_rescore(scored, chunks, query, weight=0.03)
+
+    assert rescored[0][0] == 2

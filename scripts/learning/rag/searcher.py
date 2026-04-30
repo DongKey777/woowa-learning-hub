@@ -338,6 +338,7 @@ def _lance_row_to_chunk(row: dict) -> dict:
         "anchors": anchors,
         "difficulty": row.get("difficulty"),
         "sparse_vec": row.get("sparse_vec"),
+        "colbert_tokens": row.get("colbert_tokens"),
     }
 
 
@@ -413,6 +414,41 @@ def _sparse_rescore(
     return rescored
 
 
+def _colbert_maxsim(query_tokens, doc_tokens) -> float:
+    if query_tokens is None or doc_tokens is None:
+        return 0.0
+    try:
+        import numpy as np  # type: ignore
+    except ImportError:
+        return 0.0
+    query = np.asarray(query_tokens, dtype=np.float32)
+    doc = np.asarray(doc_tokens, dtype=np.float32)
+    if query.ndim != 2 or doc.ndim != 2 or query.size == 0 or doc.size == 0:
+        return 0.0
+    query_norm = query / np.maximum(np.linalg.norm(query, axis=1, keepdims=True), 1e-12)
+    doc_norm = doc / np.maximum(np.linalg.norm(doc, axis=1, keepdims=True), 1e-12)
+    similarities = query_norm @ doc_norm.T
+    return float(np.max(similarities, axis=1).mean())
+
+
+def _colbert_rescore(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+    query_tokens,
+    *,
+    weight: float = 0.03,
+) -> list[tuple[int, float]]:
+    if query_tokens is None:
+        return scored
+    rescored: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        maxsim = _colbert_maxsim(query_tokens, (chunk or {}).get("colbert_tokens"))
+        rescored.append((row_id, score + weight * maxsim))
+    rescored.sort(key=lambda item: (-item[1], item[0]))
+    return rescored
+
+
 def _lance_candidate_pool(
     table,
     prompt: str,
@@ -452,6 +488,10 @@ def _lance_candidate_pool(
         sparse_list = query_encoding.get("sparse") or []
         query_sparse = sparse_list[0] if sparse_list else {}
         fused = _sparse_rescore(fused, chunks, query_sparse)
+    if "colbert" in modalities and query_encoding is not None:
+        colbert_list = query_encoding.get("colbert") or []
+        query_colbert = colbert_list[0] if colbert_list else None
+        fused = _colbert_rescore(fused, chunks, query_colbert)
     return fused, chunks
 
 
