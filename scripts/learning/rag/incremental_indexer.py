@@ -369,3 +369,103 @@ def atomic_save_chunk_hashes(
             except OSError:
                 pass
         raise
+
+
+# ---------------------------------------------------------------------------
+# SQLite chunks delete + insert (transactional)
+# ---------------------------------------------------------------------------
+
+_INSERT_CHUNK_SQL = """
+INSERT INTO chunks (
+    doc_id, chunk_id, path, title, category,
+    section_title, section_path, body, char_len, anchors, difficulty
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+"""
+
+
+def load_prev_chunk_id_lookup(conn) -> dict[int, str]:
+    """Read ``{row_id: chunk_id}`` from chunks table.
+
+    merge_dense_arrays needs this to project the previous dense.npz
+    rows by chunk_id (since dense.npz is keyed by row_id, not
+    chunk_id).
+    """
+    return {
+        int(row_id): str(chunk_id)
+        for row_id, chunk_id in conn.execute(
+            "SELECT id, chunk_id FROM chunks"
+        )
+    }
+
+
+def apply_chunk_diff_to_sqlite(
+    conn,
+    diff,  # ChunkDiff
+    new_chunks_by_id: dict,  # dict[chunk_id, CorpusChunk]
+) -> dict[str, int]:
+    """Apply a ChunkDiff to the chunks table within a single transaction.
+
+    Args:
+        conn: open sqlite3 connection (already running ``_open_sqlite``
+            so the schema + AI/AD triggers are present)
+        diff: ChunkDiff result from diff_chunks(prev_fingerprints,
+            new_fingerprints)
+        new_chunks_by_id: lookup by chunk_id covering at least the
+            ``diff.added`` and ``diff.modified`` sets
+
+    Returns:
+        ``{chunk_id: row_id}`` for the newly inserted (added +
+        modified) rows. Caller passes these row_ids to
+        merge_dense_arrays.
+
+    Behaviour:
+        - DELETE rows for ``diff.deleted`` and ``diff.modified``
+          (modified will re-insert with new content + new row_id)
+        - INSERT rows for ``diff.added`` and ``diff.modified``
+        - chunks_fts is kept in sync automatically via the AI/AD
+          triggers defined in indexer._SCHEMA
+        - Wraps the whole sequence in BEGIN/COMMIT; ROLLBACK on
+          exception so a partial failure leaves the table at the
+          pre-call state.
+
+    Raises:
+        KeyError if new_chunks_by_id is missing a chunk_id that diff
+            classifies as added/modified (caller bug).
+        sqlite3.* exceptions propagate after rollback.
+    """
+    import json as _json
+
+    inserted: dict[str, int] = {}
+    cur = conn.cursor()
+    cur.execute("BEGIN")
+    try:
+        # Delete: deleted ∪ modified (modified will re-insert)
+        for cid in (*diff.deleted, *diff.modified):
+            cur.execute("DELETE FROM chunks WHERE chunk_id = ?", (cid,))
+
+        # Insert: added ∪ modified
+        for cid in (*diff.added, *diff.modified):
+            chunk = new_chunks_by_id[cid]
+            cur.execute(
+                _INSERT_CHUNK_SQL,
+                (
+                    chunk.doc_id,
+                    chunk.chunk_id,
+                    chunk.path,
+                    chunk.title,
+                    chunk.category,
+                    chunk.section_title,
+                    _json.dumps(chunk.section_path, ensure_ascii=False),
+                    chunk.body,
+                    chunk.char_len,
+                    _json.dumps(chunk.anchors, ensure_ascii=False),
+                    chunk.difficulty,
+                ),
+            )
+            inserted[cid] = cur.lastrowid
+
+        conn.commit()
+        return inserted
+    except BaseException:
+        conn.rollback()
+        raise

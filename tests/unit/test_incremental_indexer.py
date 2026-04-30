@@ -530,3 +530,180 @@ def test_atomic_save_chunk_hashes_keeps_original_on_failure(tmp_path, monkeypatc
     assert loaded == {"keep": "me"}
     # Tmp cleaned up
     assert not (tmp_path / (I.CHUNK_HASHES_NAME + ".tmp")).exists()
+
+
+# ---------------------------------------------------------------------------
+# SQLite tx (apply_chunk_diff_to_sqlite + load_prev_chunk_id_lookup)
+# ---------------------------------------------------------------------------
+
+import sqlite3
+
+from scripts.learning.rag import indexer  # for _open_sqlite + schema
+
+
+@pytest.fixture
+def sqlite_conn(tmp_path):
+    """Open a fresh in-file SQLite with full chunks + FTS schema."""
+    conn = indexer._open_sqlite(tmp_path / "idx.sqlite3")
+    yield conn
+    conn.close()
+
+
+def _add_chunk_to_db(conn, chunk):
+    """Helper: insert a chunk via the production INSERT SQL."""
+    cur = conn.cursor()
+    import json as _json
+
+    cur.execute(
+        I._INSERT_CHUNK_SQL,
+        (
+            chunk.doc_id, chunk.chunk_id, chunk.path, chunk.title,
+            chunk.category, chunk.section_title,
+            _json.dumps(chunk.section_path, ensure_ascii=False),
+            chunk.body, chunk.char_len,
+            _json.dumps(chunk.anchors, ensure_ascii=False),
+            chunk.difficulty,
+        ),
+    )
+    conn.commit()
+    return cur.lastrowid
+
+
+def test_load_prev_chunk_id_lookup_returns_row_id_to_chunk_id(sqlite_conn):
+    rid_a = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="a"))
+    rid_b = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="b"))
+    lookup = I.load_prev_chunk_id_lookup(sqlite_conn)
+    assert lookup == {rid_a: "a", rid_b: "b"}
+
+
+def test_load_prev_chunk_id_lookup_empty_for_fresh_db(sqlite_conn):
+    assert I.load_prev_chunk_id_lookup(sqlite_conn) == {}
+
+
+def test_apply_diff_inserts_added_chunks(sqlite_conn):
+    diff = I.ChunkDiff(
+        added=("new1", "new2"),
+        modified=(),
+        deleted=(),
+        unchanged=(),
+    )
+    new_chunks = {
+        "new1": _chunk(chunk_id="new1"),
+        "new2": _chunk(chunk_id="new2"),
+    }
+    inserted = I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, new_chunks)
+    assert set(inserted) == {"new1", "new2"}
+    # Both rows exist
+    rows = list(sqlite_conn.execute("SELECT chunk_id FROM chunks ORDER BY id"))
+    assert [r[0] for r in rows] == ["new1", "new2"]
+
+
+def test_apply_diff_deletes_chunks(sqlite_conn):
+    rid_a = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="a"))
+    rid_b = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="b"))
+    diff = I.ChunkDiff(added=(), modified=(), deleted=("a",), unchanged=("b",))
+    inserted = I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, {})
+    assert inserted == {}
+    remaining = [r[0] for r in sqlite_conn.execute("SELECT chunk_id FROM chunks")]
+    assert remaining == ["b"]
+
+
+def test_apply_diff_modifies_chunks(sqlite_conn):
+    """Modified chunks should be deleted then re-inserted with new row_id."""
+    rid_orig = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="m", body="old body"))
+
+    diff = I.ChunkDiff(added=(), modified=("m",), deleted=(), unchanged=())
+    new_chunks = {"m": _chunk(chunk_id="m", body="new body content here long")}
+    inserted = I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, new_chunks)
+
+    # New row_id assigned (≠ original)
+    assert "m" in inserted
+    assert inserted["m"] != rid_orig
+    # Body updated
+    body = sqlite_conn.execute(
+        "SELECT body FROM chunks WHERE chunk_id = ?", ("m",)
+    ).fetchone()[0]
+    assert body == "new body content here long"
+
+
+def test_apply_diff_combined_added_modified_deleted(sqlite_conn):
+    rid_keep = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="keep"))
+    rid_drop = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="drop"))
+    rid_old = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="m", body="old"))
+
+    diff = I.ChunkDiff(
+        added=("new1",),
+        modified=("m",),
+        deleted=("drop",),
+        unchanged=("keep",),
+    )
+    new_chunks = {
+        "new1": _chunk(chunk_id="new1"),
+        "m": _chunk(chunk_id="m", body="updated content thats long enough"),
+    }
+    inserted = I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, new_chunks)
+
+    assert set(inserted) == {"new1", "m"}
+
+    final_ids = {
+        r[0] for r in sqlite_conn.execute("SELECT chunk_id FROM chunks")
+    }
+    assert final_ids == {"keep", "new1", "m"}
+
+
+def test_apply_diff_rollback_on_missing_chunk(sqlite_conn):
+    """If new_chunks_by_id is missing an added chunk_id, the function
+    must rollback so partial inserts don't leak into the DB."""
+    rid_a = _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="a"))
+
+    diff = I.ChunkDiff(
+        added=("new1", "missing"),
+        modified=(),
+        deleted=(),
+        unchanged=("a",),
+    )
+    new_chunks = {"new1": _chunk(chunk_id="new1")}  # 'missing' absent
+
+    with pytest.raises(KeyError):
+        I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, new_chunks)
+
+    # 'a' still there, 'new1' rolled back, 'missing' never inserted
+    final_ids = {
+        r[0] for r in sqlite_conn.execute("SELECT chunk_id FROM chunks")
+    }
+    assert final_ids == {"a"}
+
+
+def test_apply_diff_chunks_fts_stays_in_sync(sqlite_conn):
+    """The AI/AD triggers in indexer._SCHEMA keep chunks_fts in sync.
+    After diff apply, FTS5 MATCH must find newly inserted chunks and
+    miss deleted ones."""
+    _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="a", body="알파 본문 길이 충분"))
+    _add_chunk_to_db(sqlite_conn, _chunk(chunk_id="b", body="베타 본문"))
+
+    diff = I.ChunkDiff(
+        added=("c",),
+        modified=(),
+        deleted=("a",),
+        unchanged=("b",),
+    )
+    new_chunks = {
+        "c": _chunk(chunk_id="c", body="감마 본문 텍스트 길게 작성됨 매우 길게"),
+    }
+    I.apply_chunk_diff_to_sqlite(sqlite_conn, diff, new_chunks)
+
+    # 'a' deleted → FTS won't match
+    a_hits = list(sqlite_conn.execute(
+        "SELECT chunks.chunk_id FROM chunks JOIN chunks_fts "
+        "ON chunks.id = chunks_fts.rowid WHERE chunks_fts MATCH ?",
+        ("알파",),
+    ))
+    assert not a_hits
+
+    # 'c' inserted → FTS matches
+    c_hits = [r[0] for r in sqlite_conn.execute(
+        "SELECT chunks.chunk_id FROM chunks JOIN chunks_fts "
+        "ON chunks.id = chunks_fts.rowid WHERE chunks_fts MATCH ?",
+        ("감마",),
+    )]
+    assert "c" in c_hits
