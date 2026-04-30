@@ -906,6 +906,46 @@ Important caveat:
   - run the full build through imported `CLI.main([...])`, or
   - isolate why `FlagEmbedding` behaves differently when launched through the wrapper/script path.
 
+## H7g Full-Corpus Dense+FTS Build Attempt Stopped
+
+Attempted a narrower full-corpus eval build using only `fts,dense` to see whether the new length/batch controls made a production-sized run practical:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python - <<'PY'
+from scripts.learning import cli_cs_index_build as CLI
+raise SystemExit(CLI.main([
+    '--backend','lance','--mode','full',
+    '--corpus','knowledge/cs',
+    '--out','state/cs_rag_eval/bge-m3-dense-fts-h7',
+    '--modalities','fts,dense',
+    '--lance-device','mps',
+    '--lance-precision','fp32',
+    '--lance-max-length','512',
+    '--lance-batch-size','64',
+]))
+PY
+```
+
+Observed progress:
+
+```text
+[cs-index] lance encoder — devices=['mps'] use_fp16=False max_length=512 batch_size=64
+[cs-index] 4/5 임베딩 진행 — 64/27155 (0.2%) rate=2.33/s eta=194m11s
+[cs-index] 4/5 임베딩 진행 — 320/27155 (1.2%) rate=1.76/s eta=253m39s
+```
+
+The process was stopped (`kill 79580 79791`) because even dense-only bge-m3 encoding is not practical on this local setup. This means the original H8 assumption ("full 27K encode in ~2h on MPS") is false for this environment.
+
+Implication for next work:
+
+- Do not spend another full run on local bge-m3 full-corpus encoding without a new speed lever.
+- H8 should be recut around one of these:
+  - sampled tune/holdout ablation first, with explicit "sampled" label;
+  - offline precomputed embeddings/import path;
+  - smaller candidate stack that avoids full bge-m3 re-encoding;
+  - remote/GPU build machine;
+  - corpus-level staged build by high-value categories only.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
