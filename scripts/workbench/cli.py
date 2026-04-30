@@ -659,8 +659,24 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
         )
 
     _record_rag_ask_event(args, decision, out)
+    _record_routing_log(args, decision)
     print(json.dumps(out, ensure_ascii=False))
     return 0
+
+
+def _record_routing_log(args: argparse.Namespace, decision) -> None:
+    """Append the classify decision to state/repos/<repo>/logs/routing.jsonl
+    (plan §P5.2). Best-effort — never breaks the primary CLI."""
+    try:
+        from core.routing_log import record_routing_decision  # type: ignore
+        record_routing_decision(
+            prompt=args.prompt,
+            decision=decision,
+            repo=args.repo or None,
+            repo_root=ROOT,
+        )
+    except Exception:
+        pass
 
 
 def _record_rag_ask_event(

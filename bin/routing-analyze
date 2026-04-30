@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Usage: bin/routing-analyze [--repo <repo>] [--top-n N]
+#
+# Reads state/repos/<repo>/logs/routing.jsonl (or
+# state/cs_rag/logs/routing.jsonl when --repo omitted) and prints:
+#   - tier distribution
+#   - top-N matched tokens per bucket
+#
+# See plan §P5.2 — used weekly to surface heuristic gaps.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_routing_analyze.py" "$@"
