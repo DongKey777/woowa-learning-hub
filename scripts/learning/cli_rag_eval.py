@@ -39,6 +39,8 @@ DEFAULT_PRECHECK_OUT = REPO_ROOT / "state" / "cs_rag" / "embedding_precheck.json
 DEFAULT_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "embedding_ab_report.json"
 DEFAULT_AB_BASE_DIR = REPO_ROOT / "state" / "cs_rag_eval"
 DEFAULT_BASELINE_QUALITY_PATH = REPO_ROOT / "reports" / "rag_eval" / "baseline_quality.json"
+DEFAULT_RERANKER_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "reranker_ab_report.json"
+DEFAULT_EMBEDDING_INDEX_ROOT = REPO_ROOT / "state" / "cs_rag"
 
 
 # ---------------------------------------------------------------------------
@@ -79,6 +81,15 @@ def build_parser() -> argparse.ArgumentParser:
             "Run the full P2.1 embedding A/B sweep: build per-candidate "
             "indexes, evaluate against the fixture, gate against baseline, "
             "emit embedding_ab_report.json under reports/rag_eval/."
+        ),
+    )
+    mode.add_argument(
+        "--reranker-ab",
+        action="store_true",
+        help=(
+            "Run the P3.1 reranker A/B sweep: bind each reranker candidate "
+            "against a fixed embedding index, evaluate, gate, emit "
+            "reranker_ab_report.json under reports/rag_eval/."
         ),
     )
     parser.add_argument(
@@ -188,6 +199,42 @@ def build_parser() -> argparse.ArgumentParser:
             "Batch size for index-build embedding (default: 32). Larger "
             "values raise per-batch matmul size, which gives BLAS more "
             "thread parallelism on CPU. Bumps memory roughly linearly."
+        ),
+    )
+    # ---- --reranker-ab specific ----
+    parser.add_argument(
+        "--reranker-out",
+        type=Path,
+        default=DEFAULT_RERANKER_AB_OUT,
+        help=f"Reranker A/B report path (default: {DEFAULT_RERANKER_AB_OUT}).",
+    )
+    parser.add_argument(
+        "--embedding-index-root",
+        type=Path,
+        default=DEFAULT_EMBEDDING_INDEX_ROOT,
+        help=(
+            "Fixed embedding index for reranker A/B "
+            f"(default: {DEFAULT_EMBEDDING_INDEX_ROOT})."
+        ),
+    )
+    parser.add_argument(
+        "--reranker-candidate-id",
+        action="append",
+        default=None,
+        help=(
+            "Restrict reranker A/B to specific candidate_ids "
+            "(repeatable). Default: low_memory_only (skips "
+            "high_memory_risk candidates like bge-reranker-v2-m3 "
+            "on constrained hardware)."
+        ),
+    )
+    parser.add_argument(
+        "--reranker-include-high-memory",
+        action="store_true",
+        help=(
+            "Include high_memory_risk reranker candidates "
+            "(bge-reranker-v2-m3) in the default sweep. Off by "
+            "default to avoid OOM on 16GB machines."
         ),
     )
     return parser
@@ -688,6 +735,135 @@ def run_embedding_ab(
 # Entry
 # ---------------------------------------------------------------------------
 
+def _default_cross_encoder_factory(device: str) -> Callable[[str], Any]:
+    """Production factory for CrossEncoder reranker.
+
+    Lazy-imports sentence_transformers; tests inject fakes.
+    """
+
+    def _factory(hf_model_id: str):
+        from sentence_transformers import CrossEncoder  # type: ignore
+
+        return CrossEncoder(hf_model_id, device=device)
+
+    return _factory
+
+
+def run_reranker_ab(
+    args: argparse.Namespace,
+    *,
+    model_factory: Callable[[str], Any] | None = None,
+) -> int:
+    """Run the P3.1 reranker A/B sweep.
+
+    Returns 0 when at least one candidate passes the gate, else 1.
+    """
+    from scripts.learning.rag.eval import (
+        reranker_ab,
+        reranker_candidates as RC,
+    )
+    from scripts.learning.rag.eval import ab_sweep  # for baseline_from_quality_blob
+    from scripts.learning.rag.eval.gate import GateThresholds
+
+    # 1. Baseline (reuse embedding A/B's baseline parser — same shape)
+    if not args.baseline_quality_path.exists():
+        print(
+            f"FAIL: baseline_quality.json not found at "
+            f"{args.baseline_quality_path}. Run --baseline-only first.",
+            file=sys.stderr,
+        )
+        return 2
+    baseline = ab_sweep.baseline_from_quality_blob(
+        json.loads(args.baseline_quality_path.read_text(encoding="utf-8"))
+    )
+
+    # 2. Candidate selection
+    if args.reranker_candidate_id:
+        cands = [RC.get(cid) for cid in args.reranker_candidate_id]
+    elif args.reranker_include_high_memory:
+        cands = list(RC.CANDIDATES)
+    else:
+        cands = list(RC.low_memory_only())
+
+    # 3. Queries
+    queries = load_queries(args.fixture)
+
+    # 4. Factory + device
+    device = _resolve_device(args.device)
+    factory = model_factory or _default_cross_encoder_factory(device)
+
+    print(
+        f"[rag-eval --reranker-ab] device={device}",
+        f"  candidates: {[c.candidate_id for c in cands]}",
+        f"  fixture: {args.fixture.name}  queries={len(queries)}",
+        f"  embedding_index_root: {args.embedding_index_root}",
+        f"  baseline primary_nDCG_macro={baseline.primary_ndcg_macro:.4f}",
+        sep="\n",
+        file=sys.stderr,
+    )
+
+    def _print_progress(stage: str, info: dict) -> None:
+        if stage in ("candidate_start", "candidate_done"):
+            print(f"  [{stage}] {info}", file=sys.stderr)
+
+    # 5. Sweep
+    report = reranker_ab.run_reranker_ab_sweep(
+        cands, queries, baseline,
+        embedding_index_root=args.embedding_index_root,
+        top_k=args.top_k,
+        forbidden_window=args.forbidden_window,
+        device=device,
+        mode="full",
+        thresholds=GateThresholds(),
+        model_factory=factory,
+        progress=_print_progress,
+    )
+
+    # 6. Persist
+    blob = reranker_ab.reranker_ab_report_to_dict(report)
+    args.reranker_out.parent.mkdir(parents=True, exist_ok=True)
+    args.reranker_out.write_text(
+        json.dumps(blob, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    def _display(path: Path) -> str:
+        try:
+            return str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            return str(path)
+
+    # 7. Summary
+    print("", file=sys.stderr)
+    print(
+        f"{'reranker':25s} {'primary_nDCG':>13s} {'p95(ms)':>10s} "
+        f"{'RSS(MB)':>10s} {'gate':>8s}",
+        file=sys.stderr,
+    )
+    for cr in report.candidates:
+        score = cr.candidate_score
+        gate = "PASS" if cr.gate_result.passed else "FAIL"
+        print(
+            f"{cr.candidate.candidate_id:25s} "
+            f"{score.primary_ndcg_macro:13.4f} {score.warm_p95_ms:10.1f} "
+            f"{score.rss_mb:10.0f} {gate:>8s}",
+            file=sys.stderr,
+        )
+    print(
+        "",
+        f"  selection: {report.selected_candidate_id or '(none — stay on baseline reranker)'}",
+        f"  rationale: {report.selection_rationale}",
+        f"  pareto_order: {list(report.pareto_order)}",
+        f"  wrote: {_display(args.reranker_out)}",
+        sep="\n",
+        file=sys.stderr,
+    )
+    return 0 if report.selected_candidate_id else 1
+
+
+# ---------------------------------------------------------------------------
+# Entry
+# ---------------------------------------------------------------------------
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -699,6 +875,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_embedding_precheck(args)
     if args.embedding_ab:
         return run_embedding_ab(args)
+    if args.reranker_ab:
+        return run_reranker_ab(args)
     parser.error("no mode selected")
     return 2
 

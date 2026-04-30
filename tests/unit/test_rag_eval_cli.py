@@ -295,6 +295,212 @@ def test_run_embedding_ab_fails_when_baseline_missing(tmp_path):
     assert rc == 2  # missing baseline → exit 2
 
 
+# ---------------------------------------------------------------------------
+# --reranker-ab mode
+# ---------------------------------------------------------------------------
+
+def test_parser_reranker_ab_mode():
+    args = CLI.build_parser().parse_args(["--reranker-ab"])
+    assert args.reranker_ab is True
+
+
+def test_parser_reranker_ab_defaults():
+    args = CLI.build_parser().parse_args(["--reranker-ab"])
+    assert args.reranker_out == CLI.DEFAULT_RERANKER_AB_OUT
+    assert args.embedding_index_root == CLI.DEFAULT_EMBEDDING_INDEX_ROOT
+    assert args.reranker_candidate_id is None
+    assert args.reranker_include_high_memory is False
+
+
+def test_parser_reranker_candidate_id_repeatable():
+    args = CLI.build_parser().parse_args([
+        "--reranker-ab",
+        "--reranker-candidate-id", "mxbai-rerank-base-v1",
+        "--reranker-candidate-id", "bge-reranker-v2-m3",
+    ])
+    assert args.reranker_candidate_id == [
+        "mxbai-rerank-base-v1",
+        "bge-reranker-v2-m3",
+    ]
+
+
+def test_parser_five_way_mutually_exclusive():
+    parser = CLI.build_parser()
+    pairs = [
+        ["--fast", "--reranker-ab"],
+        ["--baseline-only", "--reranker-ab"],
+        ["--embedding-precheck", "--reranker-ab"],
+        ["--embedding-ab", "--reranker-ab"],
+    ]
+    for pair in pairs:
+        with pytest.raises(SystemExit):
+            parser.parse_args(pair)
+
+
+def test_run_reranker_ab_fails_when_baseline_missing(tmp_path):
+    args = CLI.build_parser().parse_args([
+        "--reranker-ab",
+        "--baseline-quality-path", str(tmp_path / "missing.json"),
+        "--reranker-out", str(tmp_path / "ra.json"),
+    ])
+    rc = CLI.run_reranker_ab(args, model_factory=lambda _id: object())
+    assert rc == 2
+
+
+def test_run_reranker_ab_invokes_sweep(tmp_path, monkeypatch):
+    """CLI-level smoke: --reranker-ab loads baseline, restricts
+    candidates by low_memory_only default, calls reranker_ab_sweep,
+    writes the report. Sweep itself is monkey-patched so this test
+    doesn't load any reranker model."""
+    from scripts.learning.rag.eval import reranker_ab
+    from scripts.learning.rag.eval.gate import (
+        BaselineScore,
+        GateThresholds,
+    )
+
+    # Synthetic baseline JSON
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(
+        json.dumps({
+            "macro_reports": {
+                "primary_ndcg": {
+                    "category": {
+                        "axis": "category", "macro_mean": 0.95,
+                        "micro_mean": 0.95,
+                        "per_bucket_mean": {"spring": 0.95},
+                        "per_bucket_count": {"spring": 50},
+                        "included_buckets": ["spring"], "excluded_buckets": [],
+                    }
+                }
+            },
+            "overall_means": {"forbidden_rate": 0.0},
+            "regression_summary": {"failed_count": 5},
+        }),
+        encoding="utf-8",
+    )
+
+    # Fixture
+    fixture_path = tmp_path / "fx.json"
+    fixture_path.write_text(
+        json.dumps({"queries": [{
+            "id": "q1",
+            "prompt": "test",
+            "learning_points": [],
+            "expected_path": "contents/spring/bean.md",
+            "max_rank": 10,
+        }]}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    captured: dict = {}
+
+    fake_report = reranker_ab.RerankerABReport(
+        baseline=BaselineScore(
+            primary_ndcg_macro=0.95,
+            primary_ndcg_by_category={"spring": 0.95},
+            primary_ndcg_category_counts={"spring": 50},
+            forbidden_rate_overall=0.0,
+            hard_regression_failures=5,
+        ),
+        thresholds=GateThresholds(),
+        embedding_index_root=str(tmp_path),
+        candidates=(),
+        pareto_order=("mxbai-rerank-base-v1",),
+        selected_candidate_id="mxbai-rerank-base-v1",
+        selection_rationale="fake",
+    )
+
+    def fake_sweep(candidates, queries, baseline, **kwargs):
+        captured["candidate_ids"] = [c.candidate_id for c in candidates]
+        captured["embedding_index_root"] = kwargs.get("embedding_index_root")
+        return fake_report
+
+    monkeypatch.setattr(reranker_ab, "run_reranker_ab_sweep", fake_sweep)
+
+    out = tmp_path / "ra.json"
+    args = CLI.build_parser().parse_args([
+        "--reranker-ab",
+        "--fixture", str(fixture_path),
+        "--baseline-quality-path", str(baseline_path),
+        "--reranker-out", str(out),
+        "--embedding-index-root", str(tmp_path / "fake_index"),
+    ])
+    rc = CLI.run_reranker_ab(args, model_factory=lambda _id: object())
+
+    assert rc == 0
+    # Default = low_memory_only → bge-reranker-v2-m3 excluded
+    assert "bge-reranker-v2-m3" not in captured["candidate_ids"]
+    assert "mxbai-rerank-base-v1" in captured["candidate_ids"]
+    assert "mmarco-mMiniLMv2" in captured["candidate_ids"]
+
+    # Report written
+    assert out.exists()
+    blob = json.loads(out.read_text())
+    assert blob["selected_candidate_id"] == "mxbai-rerank-base-v1"
+
+
+def test_run_reranker_ab_include_high_memory_flag(tmp_path, monkeypatch):
+    """--reranker-include-high-memory adds bge-reranker-v2-m3."""
+    from scripts.learning.rag.eval import reranker_ab
+    from scripts.learning.rag.eval.gate import BaselineScore, GateThresholds
+
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(
+        json.dumps({
+            "macro_reports": {"primary_ndcg": {"category": {
+                "axis": "category", "macro_mean": 0.95, "micro_mean": 0.95,
+                "per_bucket_mean": {"spring": 0.95},
+                "per_bucket_count": {"spring": 50},
+                "included_buckets": ["spring"], "excluded_buckets": [],
+            }}},
+            "overall_means": {"forbidden_rate": 0.0},
+            "regression_summary": {"failed_count": 5},
+        }),
+        encoding="utf-8",
+    )
+
+    fixture_path = tmp_path / "fx.json"
+    fixture_path.write_text(
+        json.dumps({"queries": [{
+            "id": "q", "prompt": "p", "learning_points": [],
+            "expected_path": "contents/spring/x.md", "max_rank": 10,
+        }]}),
+        encoding="utf-8",
+    )
+
+    captured: dict = {}
+
+    def fake_sweep(candidates, queries, baseline, **kwargs):
+        captured["candidate_ids"] = [c.candidate_id for c in candidates]
+        return reranker_ab.RerankerABReport(
+            baseline=BaselineScore(0.95, {"spring": 0.95}, {"spring": 50}, 0.0, 5),
+            thresholds=GateThresholds(),
+            embedding_index_root=str(tmp_path),
+            candidates=(),
+            pareto_order=(),
+            selected_candidate_id=None,
+            selection_rationale="none",
+        )
+
+    monkeypatch.setattr(reranker_ab, "run_reranker_ab_sweep", fake_sweep)
+
+    args = CLI.build_parser().parse_args([
+        "--reranker-ab",
+        "--fixture", str(fixture_path),
+        "--baseline-quality-path", str(baseline_path),
+        "--reranker-out", str(tmp_path / "ra.json"),
+        "--reranker-include-high-memory",
+    ])
+    CLI.run_reranker_ab(args, model_factory=lambda _id: object())
+
+    # All 3 candidates present (control + mxbai + bge-reranker)
+    assert set(captured["candidate_ids"]) == {
+        "mmarco-mMiniLMv2",
+        "mxbai-rerank-base-v1",
+        "bge-reranker-v2-m3",
+    }
+
+
 def test_run_embedding_ab_invokes_sweep_and_writes_report(tmp_path, monkeypatch):
     """CLI-level smoke: --embedding-ab loads baseline, restricts
     candidates, calls ab_sweep, writes the report. The sweep itself
