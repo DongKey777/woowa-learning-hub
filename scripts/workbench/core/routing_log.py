@@ -154,6 +154,11 @@ def build_log_row(
             "blocked": getattr(decision, "blocked", False),
             "promoted_by_profile": getattr(decision, "promoted_by_profile", False),
         }
+    matched = collect_matched_tokens(prompt)
+    # Compute confidence post-hoc so analysis can correlate
+    # heuristic uncertainty with AI fallback usage (P4.4).
+    from . import routing_confidence as _conf  # local import to avoid cycle
+    conf = _conf.score_decision(decision=d, matched_tokens=matched)
     return {
         "schema_id": SCHEMA_ID,
         "logged_at": (now or datetime.now(timezone.utc)).isoformat(),
@@ -166,7 +171,10 @@ def build_log_row(
         "override_active": bool(d.get("override_active", False)),
         "blocked": bool(d.get("blocked", False)),
         "promoted_by_profile": bool(d.get("promoted_by_profile", False)),
-        "matched_tokens": collect_matched_tokens(prompt),
+        "matched_tokens": matched,
+        "confidence": conf.score,
+        "confidence_rationale": conf.rationale,
+        "should_fallback": conf.should_fallback,
         "ai_unavailable": bool(ai_unavailable),
     }
 

@@ -100,6 +100,30 @@ def test_build_log_row_records_ai_unavailable():
     assert row["ai_unavailable"] is True
 
 
+def test_build_log_row_includes_confidence_score():
+    """The post-hoc heuristic confidence ride along on every row so
+    analysis can correlate certainty with AI fallback usage (P4.4)."""
+    row = routing_log.build_log_row(
+        prompt="DI vs IoC 차이가 뭐야?",
+        decision=_decision(tier=2, mode="full", reason="domain + depth signal"),
+        repo="tobys-mission-1",
+    )
+    assert "confidence" in row
+    assert 0.0 <= row["confidence"] <= 1.0
+    assert isinstance(row["confidence_rationale"], str)
+    assert isinstance(row["should_fallback"], bool)
+
+
+def test_build_log_row_confidence_high_for_clear_tier2():
+    row = routing_log.build_log_row(
+        prompt="MVCC vs 트랜잭션 격리수준 차이",
+        decision=_decision(tier=2, mode="full"),
+        repo=None,
+    )
+    assert row["confidence"] >= 0.8
+    assert row["should_fallback"] is False
+
+
 def test_build_log_row_accepts_dict_decision():
     """Caller can pass a plain dict (e.g. asdict result) — useful when
     rag-ask carries the decision through a JSON stop."""
