@@ -1067,6 +1067,50 @@ primary_ndcg_macro=0.8885849248145147
 p95_ms=34.72008400422055
 ```
 
+Spring sampled `fts` vs `fts+dense` check:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+  .venv/bin/python scripts/learning/cli_rag_eval.py \
+  --sampled-ablate \
+  --sample-categories spring \
+  --sample-extra-docs-per-category 1 \
+  --sample-root /tmp/woowa-sampled-ablate-spring-dense-cpu \
+  --ablation-modalities fts \
+  --ablation-modalities fts,dense \
+  --ablation-split full \
+  --ablation-out /tmp/woowa-sampled-ablate-spring-dense-cpu/report.json \
+  --sample-force-rebuild \
+  --sample-lance-max-length 512 \
+  --sample-lance-batch-size 64 \
+  --sample-lance-max-eta-minutes 10 \
+  --device cpu
+```
+
+Result:
+
+```text
+sample: queries=72 docs=17 chunks=429
+fts:       primary_ndcg_macro=0.8885849248145147 p95_ms=38.1568749944563 failures=14
+fts+dense: primary_ndcg_macro=0.8247506676955979 p95_ms=157.7006670049741 failures=23
+best_modalities=fts
+```
+
+MPS caveat remains active:
+
+```text
+--device mps failed during FlagEmbedding load:
+The MPS backend is supported on MacOS 14.0+. Current OS version can be queried using `sw_vers`
+```
+
+Interpretation:
+
+- The sampled harness is now sufficient for low-cost local modality checks.
+- This single Spring sample does **not** justify enabling dense retrieval by
+  default. Dense made this sample worse and slower.
+- Do not generalise from Spring alone; run category-by-category sampled checks
+  before the final stack decision.
+
 Next practical step:
 
 - Run sampled vector ablations category-by-category before any full-corpus
