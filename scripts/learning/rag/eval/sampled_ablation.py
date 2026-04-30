@@ -203,8 +203,14 @@ def materialize_sampled_corpus(
         per_category=extra_docs_per_category,
     )
 
-    if clean and target.exists():
-        shutil.rmtree(target)
+    if clean:
+        # Keep sibling build artifacts (notably ``target/index``) intact so
+        # repeated sampled ablation can reuse a still-compatible LanceDB index.
+        # Staleness is guarded by the index manifest corpus_hash in the CLI.
+        if corpus_root.exists():
+            shutil.rmtree(corpus_root)
+        if fixture_path.exists():
+            fixture_path.unlink()
     corpus_root.mkdir(parents=True, exist_ok=True)
     _copy_docs(
         source_corpus_root=source,

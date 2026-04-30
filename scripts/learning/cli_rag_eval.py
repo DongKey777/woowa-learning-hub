@@ -42,6 +42,7 @@ DEFAULT_BASELINE_QUALITY_PATH = REPO_ROOT / "reports" / "rag_eval" / "baseline_q
 DEFAULT_RERANKER_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "reranker_ab_report.json"
 DEFAULT_EMBEDDING_INDEX_ROOT = REPO_ROOT / "state" / "cs_rag"
 DEFAULT_ABLATION_DIR = REPO_ROOT / "reports" / "cs_rag" / "eval"
+DEFAULT_SAMPLED_ABLATION_ROOT = REPO_ROOT / "state" / "cs_rag_eval" / "sampled_core"
 
 
 def _format_encode_progress(info: dict) -> str:
@@ -119,6 +120,14 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Run the H7 LanceDB modality ablation: singleton, pairwise, "
             "and full modality combinations against one v3 index."
+        ),
+    )
+    mode.add_argument(
+        "--sampled-ablate",
+        action="store_true",
+        help=(
+            "Materialise a judged category subset, build a LanceDB index, "
+            "then run modality ablation on that sampled corpus."
         ),
     )
     parser.add_argument(
@@ -302,6 +311,47 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=1024,
         help="Embedding dimension recorded for LanceDB ablation manifests.",
+    )
+    # ---- --sampled-ablate specific ----
+    parser.add_argument(
+        "--sample-root",
+        type=Path,
+        default=DEFAULT_SAMPLED_ABLATION_ROOT,
+        help=f"Sample workspace root (default: {DEFAULT_SAMPLED_ABLATION_ROOT}).",
+    )
+    parser.add_argument(
+        "--sample-categories",
+        default=None,
+        help="Comma-separated categories for sampled ablation (default: backend core).",
+    )
+    parser.add_argument(
+        "--sample-extra-docs-per-category",
+        type=int,
+        default=10,
+        help="Additional deterministic decoy docs per sampled category (default: 10).",
+    )
+    parser.add_argument(
+        "--sample-force-rebuild",
+        action="store_true",
+        help="Rebuild the sampled LanceDB index even when a v3 manifest exists.",
+    )
+    parser.add_argument(
+        "--sample-lance-max-length",
+        type=int,
+        default=512,
+        help="bge-m3 max length for sampled LanceDB builds (default: 512).",
+    )
+    parser.add_argument(
+        "--sample-lance-batch-size",
+        type=int,
+        default=64,
+        help="bge-m3 batch size for sampled LanceDB builds (default: 64).",
+    )
+    parser.add_argument(
+        "--sample-lance-max-eta-minutes",
+        type=float,
+        default=30.0,
+        help="Abort sampled LanceDB build when observed ETA exceeds this budget.",
     )
     return parser
 
@@ -938,9 +988,14 @@ def _default_bge_m3_factory(device: str) -> Callable[[], Any]:
     """Build the modal bge-m3 encoder used by LanceDB ablation."""
 
     def _factory():
-        from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder
+        from scripts.learning import cli_cs_index_build as CSB
 
-        return BgeM3Encoder(devices=device, use_fp16=(device != "cpu"))
+        return CSB._default_lance_encoder(
+            device=device,
+            precision="auto",
+            max_length=1024,
+            batch_size=64,
+        )
 
     return _factory
 
@@ -948,6 +1003,11 @@ def _default_bge_m3_factory(device: str) -> Callable[[], Any]:
 def _default_ablation_out() -> Path:
     run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     return DEFAULT_ABLATION_DIR / f"ablation_{run_id}.json"
+
+
+def _default_sampled_ablation_out() -> Path:
+    run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    return DEFAULT_ABLATION_DIR / f"sampled_ablation_{run_id}.json"
 
 
 def run_ablate(
@@ -1044,6 +1104,149 @@ def run_ablate(
     return 0
 
 
+def _union_modalities(modality_sets: Sequence[Sequence[str]]) -> tuple[str, ...]:
+    order = ("fts", "dense", "sparse", "colbert")
+    used = {modality for mods in modality_sets for modality in mods}
+    return tuple(modality for modality in order if modality in used)
+
+
+def _lance_index_ready_for_modalities(
+    index_root: Path,
+    modalities: Sequence[str],
+    *,
+    corpus_root: Path | None = None,
+) -> bool:
+    from scripts.learning.rag import corpus_loader
+    from scripts.learning.rag import indexer
+
+    try:
+        manifest = indexer.read_manifest_v3(index_root)
+        table = indexer.open_lance_table(index_root)
+        table.count_rows()
+    except Exception:
+        return False
+    if corpus_root is not None:
+        if manifest.get("corpus_hash") != corpus_loader.corpus_hash(corpus_root):
+            return False
+    return set(modalities).issubset(set(manifest.get("modalities") or ()))
+
+
+def _needs_vector_encoder(modality_sets: Sequence[Sequence[str]]) -> bool:
+    return any(any(modality != "fts" for modality in mods) for mods in modality_sets)
+
+
+def run_sampled_ablate(
+    args: argparse.Namespace,
+    *,
+    encoder_factory: Callable[[], Any] | None = None,
+    build_main: Callable[[list[str]], int] | None = None,
+) -> int:
+    """Materialise a judged subset, build its LanceDB index, run ablation."""
+    from scripts.learning import cli_cs_index_build as CSB
+    from scripts.learning.rag.eval import ablation as A
+    from scripts.learning.rag.eval import sampled_ablation as S
+    from scripts.learning.rag.eval.split import split_tune_holdout
+
+    categories = S.parse_categories(args.sample_categories)
+    queries_all = load_queries(args.fixture)
+    sample = S.materialize_sampled_corpus(
+        source_corpus_root=REPO_ROOT / "knowledge" / "cs",
+        target_root=args.sample_root,
+        queries=queries_all,
+        categories=categories,
+        extra_docs_per_category=args.sample_extra_docs_per_category,
+        clean=True,
+    )
+
+    modality_sets = A.parse_modality_sets(args.ablation_modalities)
+    index_modalities = _union_modalities(modality_sets)
+    index_root = args.sample_root / "index"
+
+    print(
+        f"[rag-eval --sampled-ablate] categories={list(categories)}",
+        f"  sample: queries={len(sample.queries)} docs={sample.doc_count} "
+        f"required={len(sample.required_doc_paths)} extra={len(sample.extra_doc_paths)}",
+        f"  sample_root: {args.sample_root}",
+        f"  index_modalities: {list(index_modalities)}",
+        sep="\n",
+        file=sys.stderr,
+    )
+
+    if args.sample_force_rebuild or not _lance_index_ready_for_modalities(
+        index_root, index_modalities, corpus_root=sample.corpus_root
+    ):
+        build_args = [
+            "--backend", "lance",
+            "--mode", "full",
+            "--corpus", str(sample.corpus_root),
+            "--out", str(index_root),
+            "--modalities", ",".join(index_modalities),
+            "--lance-device", args.device,
+            "--lance-precision", "auto",
+            "--lance-max-length", str(args.sample_lance_max_length),
+            "--lance-batch-size", str(args.sample_lance_batch_size),
+            "--lance-max-eta-minutes", str(args.sample_lance_max_eta_minutes),
+        ]
+        rc = (build_main or CSB.main)(build_args)
+        if rc != 0:
+            return rc
+    else:
+        print(f"  reuse sampled index: {index_root}", file=sys.stderr)
+
+    tune, holdout = split_tune_holdout(sample.queries, seed=args.ablation_seed)
+    if args.ablation_split == "tune":
+        queries = tune
+    elif args.ablation_split == "holdout":
+        queries = holdout
+    else:
+        queries = list(sample.queries)
+    if not queries:
+        print(
+            f"FAIL: sampled --ablation-split {args.ablation_split!r} produced 0 queries.",
+            file=sys.stderr,
+        )
+        return 2
+
+    device = _resolve_device(args.device)
+    if _needs_vector_encoder(modality_sets):
+        encoder = (encoder_factory or _default_bge_m3_factory(device))()
+    else:
+        encoder = object()
+
+    def _print_progress(stage: str, info: dict) -> None:
+        if stage in ("ablation_start", "ablation_done"):
+            print(f"  [{stage}] {info}", file=sys.stderr)
+
+    report = A.run_modality_ablation(
+        queries,
+        index_root=index_root,
+        encoder=encoder,
+        modality_sets=modality_sets,
+        top_k=args.top_k,
+        forbidden_window=args.forbidden_window,
+        device=device,
+        mode="full",
+        split=args.ablation_split,
+        embedding_dim=args.ablation_embed_dim,
+        progress=_print_progress,
+    )
+    blob = A.ablation_report_to_dict(report)
+    blob["sample"] = sample.to_summary()
+    blob["sample"]["index_modalities"] = list(index_modalities)
+
+    out = args.ablation_out or _default_sampled_ablation_out()
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(blob, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(
+        f"  best_modalities: {list(report.best_modalities or ())}",
+        f"  wrote: {out}",
+        sep="\n",
+        file=sys.stderr,
+    )
+    return 0
+
+
 # ---------------------------------------------------------------------------
 # Entry
 # ---------------------------------------------------------------------------
@@ -1063,6 +1266,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_reranker_ab(args)
     if args.ablate:
         return run_ablate(args)
+    if args.sampled_ablate:
+        return run_sampled_ablate(args)
     parser.error("no mode selected")
     return 2
 

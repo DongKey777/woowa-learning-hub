@@ -87,6 +87,32 @@ def test_materialize_sampled_corpus_rejects_empty_query_selection(tmp_path):
         )
 
 
+def test_materialize_sampled_corpus_clean_preserves_index_sibling(tmp_path):
+    source = tmp_path / "source"
+    _write_doc(source, "contents/spring/bean.md")
+
+    target = tmp_path / "sample"
+    stale_doc = target / "corpus" / "contents" / "spring" / "stale.md"
+    stale_doc.parent.mkdir(parents=True)
+    stale_doc.write_text("stale", encoding="utf-8")
+    marker = target / "index" / "manifest.json"
+    marker.parent.mkdir(parents=True)
+    marker.write_text("{}", encoding="utf-8")
+
+    result = S.materialize_sampled_corpus(
+        source_corpus_root=source,
+        target_root=target,
+        queries=[_query(path="contents/spring/bean.md")],
+        categories=("spring",),
+        extra_docs_per_category=0,
+        clean=True,
+    )
+
+    assert (result.corpus_root / "contents/spring/bean.md").exists()
+    assert not stale_doc.exists()
+    assert marker.exists()
+
+
 def test_select_extra_docs_prefers_beginner_then_intermediate(tmp_path):
     source = tmp_path / "source"
     _write_doc(source, "contents/spring/advanced.md", "**난이도: 🔴 Advanced**")

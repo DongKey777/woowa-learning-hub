@@ -48,6 +48,20 @@ def test_parser_ablate_mode():
     assert args.ablation_modalities == ["fts,dense"]
 
 
+def test_parser_sampled_ablate_mode():
+    parser = CLI.build_parser()
+    args = parser.parse_args([
+        "--sampled-ablate",
+        "--sample-categories", "spring,database",
+        "--sample-extra-docs-per-category", "3",
+        "--ablation-modalities", "fts",
+    ])
+    assert args.sampled_ablate is True
+    assert args.sample_categories == "spring,database"
+    assert args.sample_extra_docs_per_category == 3
+    assert args.ablation_modalities == ["fts"]
+
+
 def test_parser_modes_are_mutually_exclusive():
     parser = CLI.build_parser()
     with pytest.raises(SystemExit):
@@ -332,13 +346,15 @@ def test_parser_reranker_candidate_id_repeatable():
     ]
 
 
-def test_parser_five_way_mutually_exclusive():
+def test_parser_modes_are_mutually_exclusive_for_expensive_modes():
     parser = CLI.build_parser()
     pairs = [
         ["--fast", "--reranker-ab"],
         ["--baseline-only", "--reranker-ab"],
         ["--embedding-precheck", "--reranker-ab"],
         ["--embedding-ab", "--reranker-ab"],
+        ["--ablate", "--sampled-ablate"],
+        ["--reranker-ab", "--sampled-ablate"],
     ]
     for pair in pairs:
         with pytest.raises(SystemExit):
@@ -657,6 +673,144 @@ def test_run_ablate_invokes_modal_ablation_and_writes_report(tmp_path, monkeypat
     assert captured["embedding_dim"] == 1024
     blob = json.loads(out.read_text(encoding="utf-8"))
     assert blob["best_modalities"] == ["fts", "dense"]
+
+
+def test_run_sampled_ablate_builds_sample_index_and_skips_encoder_for_fts_only(
+    tmp_path,
+    monkeypatch,
+):
+    from scripts.learning.rag.eval import ablation as A
+    from scripts.learning.rag.eval import sampled_ablation as S
+
+    fixture_path = _graded_fixture(tmp_path)
+    sample_root = tmp_path / "sample"
+    captured: dict = {}
+
+    def fake_materialize(**kwargs):
+        sample_corpus = sample_root / "corpus"
+        sample_corpus.mkdir(parents=True)
+        captured["categories"] = kwargs["categories"]
+        captured["extra_docs_per_category"] = kwargs["extra_docs_per_category"]
+        return S.SampledCorpusResult(
+            corpus_root=sample_corpus,
+            fixture_path=sample_root / "fixture.json",
+            categories=("spring",),
+            queries=tuple(kwargs["queries"]),
+            required_doc_paths=("contents/spring/bean.md",),
+            extra_doc_paths=("contents/spring/ioc.md",),
+        )
+
+    def fake_build(build_args):
+        captured["build_args"] = build_args
+        return 0
+
+    fake_report = A.AblationReport(
+        index_root=str(sample_root / "index"),
+        split="full",
+        query_count=1,
+        top_k=10,
+        forbidden_window=5,
+        mode="full",
+        runs=(),
+        best_modalities=("fts",),
+        selection_rationale="fake",
+    )
+
+    def fake_ablate(queries, **kwargs):
+        captured["query_count"] = len(list(queries))
+        captured["index_root"] = kwargs["index_root"]
+        captured["encoder"] = kwargs["encoder"]
+        captured["modality_sets"] = kwargs["modality_sets"]
+        return fake_report
+
+    def fail_encoder_factory():
+        raise AssertionError("FTS-only sampled ablation must not load bge-m3")
+
+    monkeypatch.setattr(S, "materialize_sampled_corpus", fake_materialize)
+    monkeypatch.setattr(CLI, "_lance_index_ready_for_modalities", lambda *_a, **_k: False)
+    monkeypatch.setattr(A, "run_modality_ablation", fake_ablate)
+
+    out = tmp_path / "sampled-ablation.json"
+    args = CLI.build_parser().parse_args([
+        "--sampled-ablate",
+        "--fixture", str(fixture_path),
+        "--sample-root", str(sample_root),
+        "--sample-categories", "spring",
+        "--sample-extra-docs-per-category", "2",
+        "--ablation-split", "full",
+        "--ablation-out", str(out),
+        "--ablation-modalities", "fts",
+        "--device", "cpu",
+    ])
+    rc = CLI.run_sampled_ablate(
+        args,
+        encoder_factory=fail_encoder_factory,
+        build_main=fake_build,
+    )
+
+    assert rc == 0
+    assert captured["categories"] == ("spring",)
+    assert captured["extra_docs_per_category"] == 2
+    assert "--backend" in captured["build_args"]
+    assert captured["build_args"][captured["build_args"].index("--modalities") + 1] == "fts"
+    assert captured["query_count"] == 1
+    assert captured["modality_sets"] == (("fts",),)
+    assert captured["encoder"].__class__ is object
+
+    blob = json.loads(out.read_text(encoding="utf-8"))
+    assert blob["best_modalities"] == ["fts"]
+    assert blob["sample"]["doc_count"] == 2
+    assert blob["sample"]["index_modalities"] == ["fts"]
+
+
+def test_run_sampled_ablate_reuses_matching_sample_index(tmp_path, monkeypatch):
+    from scripts.learning.rag.eval import ablation as A
+    from scripts.learning.rag.eval import sampled_ablation as S
+
+    fixture_path = _graded_fixture(tmp_path)
+    sample_root = tmp_path / "sample"
+
+    def fake_materialize(**kwargs):
+        sample_corpus = sample_root / "corpus"
+        sample_corpus.mkdir(parents=True)
+        return S.SampledCorpusResult(
+            corpus_root=sample_corpus,
+            fixture_path=sample_root / "fixture.json",
+            categories=("spring",),
+            queries=tuple(kwargs["queries"]),
+            required_doc_paths=("contents/spring/bean.md",),
+            extra_doc_paths=(),
+        )
+
+    def fail_build(_build_args):
+        raise AssertionError("matching sampled index should be reused")
+
+    fake_report = A.AblationReport(
+        index_root=str(sample_root / "index"),
+        split="full",
+        query_count=1,
+        top_k=10,
+        forbidden_window=5,
+        mode="full",
+        runs=(),
+        best_modalities=("fts",),
+        selection_rationale="fake",
+    )
+
+    monkeypatch.setattr(S, "materialize_sampled_corpus", fake_materialize)
+    monkeypatch.setattr(CLI, "_lance_index_ready_for_modalities", lambda *_a, **_k: True)
+    monkeypatch.setattr(A, "run_modality_ablation", lambda queries, **kwargs: fake_report)
+
+    args = CLI.build_parser().parse_args([
+        "--sampled-ablate",
+        "--fixture", str(fixture_path),
+        "--sample-root", str(sample_root),
+        "--sample-categories", "spring",
+        "--ablation-split", "full",
+        "--ablation-out", str(tmp_path / "sampled-ablation.json"),
+        "--ablation-modalities", "fts",
+    ])
+    assert CLI.run_sampled_ablate(args, build_main=fail_build) == 0
 
 
 # ---------------------------------------------------------------------------
