@@ -660,8 +660,65 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
 
     _record_rag_ask_event(args, decision, out)
     _record_routing_log(args, decision)
+    out["feedback_hint"] = _build_feedback_hint(args, out)
     print(json.dumps(out, ensure_ascii=False))
     return 0
+
+
+def _build_feedback_hint(args: argparse.Namespace, out: dict) -> dict | None:
+    """When rag-ask returned hits, surface a ready-to-run command set
+    so the AI session can offer the learner a one-line relevance
+    signal (helpful / not_helpful / unclear). Closes the rag-ask →
+    feedback loop. See plan §P7.1 + scripts/learning/rag/feedback.py.
+
+    Returns None when there's nothing to provide feedback on (Tier 0,
+    Tier 3 coach handoff, or empty hits).
+    """
+    import shlex
+    hits = out.get("hits")
+    if not isinstance(hits, dict):
+        return None
+    paths: list[str] = []
+    seen: set[str] = set()
+    for bucket_key in ("by_learning_point", "by_fallback_key"):
+        bucket = hits.get(bucket_key)
+        if not isinstance(bucket, dict):
+            continue
+        for entries in bucket.values():
+            if not isinstance(entries, list):
+                continue
+            for h in entries:
+                if not isinstance(h, dict):
+                    continue
+                p = h.get("path")
+                if p and p not in seen:
+                    seen.add(p)
+                    paths.append(p)
+    if not paths:
+        return None
+    learn_feedback = str(ROOT / "bin" / "learn-feedback")
+    qprompt = shlex.quote(args.prompt)
+    qrepo = ("--repo " + shlex.quote(args.repo)) if args.repo else ""
+    hit_args = " ".join(f"--hit {shlex.quote(p)}" for p in paths)
+    return {
+        "instructions": (
+            "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. "
+            "AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해."
+        ),
+        "commands": {
+            "helpful": (
+                f"{learn_feedback} {qprompt} --signal helpful "
+                f"{hit_args} {qrepo}".strip()
+            ),
+            "not_helpful": (
+                f"{learn_feedback} {qprompt} --signal not_helpful "
+                f"{hit_args} {qrepo}".strip()
+            ),
+            "unclear": (
+                f"{learn_feedback} {qprompt} --signal unclear {qrepo}".strip()
+            ),
+        },
+    }
 
 
 def _record_routing_log(args: argparse.Namespace, decision) -> None:
