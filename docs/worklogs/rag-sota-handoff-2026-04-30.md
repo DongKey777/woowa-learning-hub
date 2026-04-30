@@ -1111,6 +1111,52 @@ Interpretation:
 - Do not generalise from Spring alone; run category-by-category sampled checks
   before the final stack decision.
 
+Follow-up core category sampled checks after exact-scan threshold fix:
+
+```bash
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+  .venv/bin/python scripts/learning/cli_rag_eval.py \
+  --sampled-ablate \
+  --sample-categories <category> \
+  --sample-extra-docs-per-category 1 \
+  --sample-root /tmp/woowa-sampled-ablate-<category>-dense-cpu-v2 \
+  --ablation-modalities fts \
+  --ablation-modalities fts,dense \
+  --ablation-split full \
+  --sample-force-rebuild \
+  --sample-lance-max-length 512 \
+  --sample-lance-batch-size 64 \
+  --sample-lance-max-eta-minutes 10 \
+  --device cpu
+```
+
+Measured results:
+
+| Category | Queries | Docs | Best | FTS nDCG / p95 / failures | FTS+dense nDCG / p95 / failures |
+| --- | ---: | ---: | --- | --- | --- |
+| spring | 72 | 17 | fts | 0.8886 / 38.2ms / 14 | 0.8248 / 157.7ms / 23 |
+| database | 48 | 25 | fts+dense | 0.7825 / 114.2ms / 14 | 0.8968 / 478.7ms / 8 |
+| network | 10 | 8 | fts+dense | 0.7655 / 44.8ms / 5 | 0.9262 / 134.4ms / 1 |
+| operating-system | 7 | 7 | fts+dense | 0.7517 / 28.0ms / 1 | 0.9473 / 152.4ms / 1 |
+| software-engineering | 16 | 10 | fts | 1.0000 / 40.1ms / 0 | 1.0000 / 165.2ms / 0 |
+| data-structure | 2 | 3 | fts | 1.0000 / 21.0ms / 0 | 1.0000 / 138.5ms / 0 |
+
+Operational interpretation:
+
+- Dense is useful for some conceptual categories (`database`, `network`,
+  `operating-system`) but harmful or unnecessary for others (`spring`,
+  `software-engineering`, `data-structure`).
+- The current evidence argues against a global `fts+dense` default. Better next
+  step: category-aware or fallback-based dense activation, e.g. use dense only
+  after weak FTS confidence, or only for categories where sampled/holdout data
+  shows a consistent gain.
+- Small-query categories remain weak evidence. `data-structure` has only 2
+  judged queries; it needs more graded fixture coverage before making retrieval
+  policy decisions.
+- After raising `LANCE_ANN_MIN_ROWS` to 1024, sampled builds no longer emit the
+  previous k-means empty-cluster warning flood. They use exact scan, which is
+  more appropriate for these small local ablation indexes.
+
 Next practical step:
 
 - Run sampled vector ablations category-by-category before any full-corpus
