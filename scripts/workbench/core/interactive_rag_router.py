@@ -24,8 +24,24 @@ DEPTH_SIGNALS). Signal-only prompts like "오늘 점심 왜 없어?" stay Tier 0
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
+
+# Token vocabularies + match helper now live in scripts/workbench/core/
+# lexicon.py — single source of truth (plan §P5.1). Re-exported under
+# their previous names so callers that did `from interactive_rag_router
+# import DEFINITION_SIGNALS` keep working.
+from .lexicon import (  # noqa: F401 — re-exports (used by tests + cli)
+    ADVANCED_HINTS,
+    BEGINNER_HINTS,
+    COACH_REQUEST_TOKENS,
+    CS_DOMAIN_TOKENS,
+    DEFINITION_SIGNALS,
+    DEPTH_SIGNALS,
+    LEARNING_CONCEPT_TOKENS,
+    OVERRIDE_TOKENS,
+    TOOL_TOKENS,
+    match_word_boundary_one as _match_token,
+)
 
 
 @dataclass(frozen=True)
@@ -44,159 +60,8 @@ class RouterDecision:
                                         # before (closed-loop signal)
 
 
-# === 1. Definition signals (Tier 1 trigger — ANDed with domain) ===
-DEFINITION_SIGNALS = frozenset([
-    # Korean (≥2 chars; "란" 1-char excluded to avoid "이란" / "한란" noise)
-    "뭐야", "뭐예요", "뭐임", "뭐냐", "머야", "머냐",
-    "알려줘", "설명해", "정의가", "정의는", "이란", "이라고",
-    # "어떤" / "무슨" + 명사 — definitional intent (다 multi-char로 묶어 false positive 방지)
-    "어떤거야", "어떤 거야", "어떤 건가",
-    "어떤 의미", "무슨 의미",
-    "어떤 역할", "무슨 역할",
-    "어떤 개념", "무슨 개념",
-    # English (word boundary applied)
-    "what is", "what's", "define", "definition of", "explain briefly",
-])
-
-# === 2. Depth/comparison signals (Tier 2 trigger — ANDed with domain) ===
-DEPTH_SIGNALS = frozenset([
-    # Korean
-    "vs", "차이", "비교", "왜 필요", "왜 써", "왜 사용", "왜 쓰",
-    "어떻게 동작", "어떻게 작동", "어떻게 돼", "어떻게 처리",
-    "방법", "해결 방법", "원리", "내부 구조", "트레이드오프",
-    # 비교 표현 (학습 세션에서 자주 등장: "@Component vs @Repository 뭐가 다른데?")
-    "뭐가 다른", "뭐가 달라", "어떻게 달라",
-    # 사용 시점 묻기 ("@Repository 언제 붙이는거야?")
-    "언제 쓰는", "언제 써", "언제 붙이는", "언제 사용",
-    # English
-    "vs.", "difference between", "why use", "why does", "how does",
-    "trade-off", "tradeoff", "under the hood",
-])
-
-# === 3. CS domain tokens (concrete concept terms — ≥2 Korean chars) ===
-CS_DOMAIN_TOKENS = frozenset([
-    # Korean (1-char "락" excluded — collides with "연락"/"호락호락")
-    "트랜잭션", "격리수준", "정규화", "인덱스", "캐시", "동기화", "비동기",
-    "재시도", "타임아웃", "아키텍처", "데드락", "교착", "쓰레드",
-    "스레드", "병행성", "동시성", "락(", "잠금",
-    "큐", "스택", "트리", "그래프", "해시", "힙", "연결리스트",
-    "예외", "예외처리",
-    # 인프라 / 서버 (학습자가 "웹서버와 WAS 차이" 같은 질문할 때 자주 등장)
-    "웹서버", "웹 서버", "애플리케이션 서버",
-    "톰캣", "서블릿", "리버스 프록시",
-    # English
-    "transaction", "isolation", "normalization", "index", "cache",
-    "deadlock", "thread", "concurrency", "synchronization",
-    "throttle", "timeout", "architecture",
-    "queue", "stack", "tree", "graph", "hash", "heap", "linked list",
-    "exception", "exception handling",
-    # Infrastructure / servers
-    "web server", "application server", "was",
-    "tomcat", "nginx", "apache", "servlet", "reverse proxy",
-])
-
-# === 4. Learning concept tokens (Spring/JPA + Java basics + DS — woowa context) ===
-LEARNING_CONCEPT_TOKENS = frozenset([
-    # Spring core/web
-    "spring", "bean", "di", "ioc", "aop", "autowired", "component", "applicationcontext",
-    "controller", "service", "repository", "restcontroller", "dispatcherservlet",
-    "filter", "interceptor",
-    # DI 방식별 phrase — 학습자가 자주 쓰는 표현 (multi-word라 false positive 거의 없음)
-    "constructor injection", "setter injection", "field injection",
-    "생성자 주입", "세터 주입", "필드 주입",
-    # Spring concept 한글 phrase — 영문 토큰만 있어 한글로 물으면 도메인 매치 실패
-    "컴포넌트 스캔", "컴포넌트스캔", "의존성 주입", "어노테이션",
-    # Spring core annotations / proxy (학습 세션 중 자주 등장하는 표현)
-    "configuration", "@configuration", "@bean", "프록시", "횡단 관심사",
-    "rest controller", "@restcontroller",
-    # Persistence
-    "jpa", "hibernate", "jdbc", "jdbctemplate", "entity", "dto", "vo",
-    "transactional", "savepoint", "mvcc",
-    # Java basics (covers woowa level-2 learning tests)
-    "java", "interface", "abstract", "static", "final", "generic",
-    "collection", "stream", "lambda", "optional", "enum",
-    "record", "sealed",
-    # Java collection concrete classes (HashMap, ArrayList etc — common questions)
-    "list", "set", "map", "hashmap", "linkedhashmap", "treemap",
-    "arraylist", "linkedlist", "hashset", "treeset",
-    # Patterns
-    "service locator", "factory", "singleton", "observer", "strategy",
-    "adapter", "decorator", "proxy", "template method",
-    # Architecture
-    "layered architecture", "hexagonal", "ddd", "cqrs",
-    # Network/protocol
-    "rest", "graphql", "websocket", "tls",
-    # Security
-    "oauth", "jwt", "csrf", "xss",
-    # Algorithms / DS
-    "big-o", "binary search", "dfs", "bfs", "dynamic programming",
-])
-
-# === 5. Coaching request tokens (Tier 3 — multi-word strong patterns) ===
-COACH_REQUEST_TOKENS = frozenset([
-    # Korean (multi-word; bare "리뷰"/"PR"/"리뷰어가" too broad)
-    "내 pr", "내 PR", "내 코드 리뷰", "내 미션", "내 풀리퀘",
-    "pr 리뷰", "PR 리뷰", "pr 코칭", "PR 코칭",
-    "리뷰어 코멘트", "리뷰어가 남긴", "리뷰어 피드백",
-    "리뷰 응답", "리뷰 답변", "스레드 해결", "unresolved 리뷰",
-    # English
-    "my pr", "my pull request", "review my", "reviewer comment",
-    "unresolved review", "review thread",
-])
-
-# === 6. Tool tokens (Tier 0) ===
-TOOL_TOKENS = frozenset([
-    "gradle", "maven", "sbt", "build.gradle", "settings.gradle", "pom.xml",
-    "intellij", "vscode", "eclipse", "ide",
-    "git", "rebase", "merge conflict", "git commit", "git branch",
-    "npm", "yarn", "pip", "conda", "brew",
-    "terminal", "shell", "bash", "zsh", "path 설정",
-])
-
-
-# === Override tokens (highest priority — short-circuits classification) ===
-# Order: stronger intent first. First match wins.
-OVERRIDE_TOKENS: dict[str, list[str]] = {
-    "force_coach": ["코치 모드", "coach mode"],                          # → Tier 3 attempt
-    "force_full":  ["RAG로 깊게", "심도 있게", "depth", "full RAG"],     # → Tier 2
-    "force_min1":  ["RAG로 답해", "근거 보여줘", "with RAG"],            # → at least Tier 1
-    "force_skip":  ["그냥 답해", "RAG 빼고", "skip RAG"],                # → Tier 0
-}
-
-
-# === Experience level inference ===
-BEGINNER_HINTS = frozenset([
-    "처음 배우는데", "처음 보는데", "왜 필요해요", "기초", "입문",
-    "뭐야", "뭐예요", "어떻게 시작",
-    "beginner", "intro", "first time",
-])
-ADVANCED_HINTS = frozenset([
-    "edge case", "trade-off", "internals", "under the hood",
-    "MVCC", "WAL", "CAS", "두 번째 단계", "심화",
-])
-
-
-def _match_token(prompt: str, token: str) -> bool:
-    """Return True iff `token` matches `prompt`.
-
-    ASCII tokens: ASCII-only lookaround word boundary + escape + IGNORECASE.
-        Python's `\\b` is unicode word boundary, which fails for `\\bdi\\b`
-        against "DI가" (Hangul is a word character in unicode). The lookaround
-        forces the boundary to be a non-ASCII-alnum/underscore character or
-        start/end of string.
-
-    Non-ASCII tokens: casefold() substring match. Korean tokens are multi-char
-        and distinctive enough that substring is safe (1-char Korean tokens
-        like "락" are excluded from the vocabularies above).
-    """
-    is_ascii = all(ord(c) < 128 for c in token)
-    if is_ascii:
-        pattern = rf"(?<![A-Za-z0-9_]){re.escape(token)}(?![A-Za-z0-9_])"
-        return bool(re.search(pattern, prompt, re.IGNORECASE))
-    return token.casefold() in prompt.casefold()
-
-
 def _any_match(prompt: str, tokens) -> bool:
+    """Module-internal shim — delegates to lexicon.match_word_boundary."""
     return any(_match_token(prompt, t) for t in tokens)
 
 
