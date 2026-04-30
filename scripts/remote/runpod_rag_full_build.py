@@ -898,8 +898,13 @@ class RunPodHarness:
             "cd /workspace/repo && pip install --break-system-packages -e .",
             "cd /workspace/repo && pip install --break-system-packages "
             "lancedb pyarrow FlagEmbedding kiwipiepy",
-            # Step 7: warm (skip for FTS-only)
-            *(["cd /workspace/repo && python -c 'from FlagEmbedding import BGEM3FlagModel; BGEM3FlagModel(\"BAAI/bge-m3\")'"]
+            # Step 7: warm BGE-M3 weights (skip for FTS-only).
+            # R1 v2/v3 hit HF Hub rate limits on community-Pod IPs at
+            # ~57-60% download. _warm_bge_m3 retries 5x with 30/60/90/
+            # 120s backoff; HF cache accumulates partial downloads
+            # across attempts so each retry resumes where the last
+            # left off.
+            *(["cd /workspace/repo && python -m scripts.remote._warm_bge_m3"]
               if "dense" in modalities or "sparse" in modalities or "colbert" in modalities
               else []),
             # Step 8: build (uses system Python, has CUDA torch)

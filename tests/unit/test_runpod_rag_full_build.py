@@ -142,7 +142,7 @@ def test_remote_commands_for_r0_skip_warm_and_eval():
     assert "git clone" in full
     assert "git checkout abc1234" in full
     # No bge-m3 model warm
-    assert "BGEM3FlagModel" not in full
+    assert "scripts.remote._warm_bge_m3" not in full
     # No eval step in r0
     assert "cli_rag_eval" not in full
     # But package step IS present
@@ -191,8 +191,8 @@ def test_remote_commands_for_r1_includes_warm_and_eval():
         r_phase="r1",
     )
     full = "\n".join(cmds)
-    # Model warm present for dense
-    assert "BGEM3FlagModel" in full
+    # Model warm present for dense (via retry-capable helper module)
+    assert "scripts.remote._warm_bge_m3" in full
     # Eval present for r1
     assert "cli_rag_eval" in full
     assert "--ablate" in full
