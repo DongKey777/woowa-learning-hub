@@ -877,35 +877,45 @@ class RunPodHarness:
         if lance_colbert_dtype is not None:
             build_extra.append(f"--lance-colbert-dtype {lance_colbert_dtype}")
         build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
+        # CRITICAL (R1 v1 bug): we used to create our own venv and
+        # `pip install -e .`, which dragged in PyPI's *default* torch
+        # (latest = 2.11.0+cu130). The Pod's NVIDIA driver is 12.4, so
+        # cu130 torch raised "driver too old" → torch.cuda.is_available
+        # returned False → bge-m3 ran on CPU at ~12% of GPU speed,
+        # blowing the build budget.
+        # Fix: install into Pod's system Python, which already has
+        # torch + matching CUDA from the runpod/pytorch image. Our
+        # extra deps go on top.
         return [
-            # Step 5: clone + system deps. zstd is required by
-            # package_rag_artifact (R0 v4 bug — Pod's Ubuntu image lacks
-            # zstd by default). Run apt FIRST so failures surface
-            # before we waste time on git/pip.
+            # Step 5: system deps (zstd for packaging, git in case the
+            # image is thin)
             "apt-get update -qq && apt-get install -y -qq zstd git",
             f"git clone https://github.com/DongKey777/woowa-learning-hub.git /workspace/repo",
             f"cd /workspace/repo && git checkout {commit_sha}",
-            # Step 6: python deps
-            f"cd /workspace/repo && python -m venv .venv && .venv/bin/python -m pip install -e .",
-            f"cd /workspace/repo && .venv/bin/python -m pip install lancedb pyarrow FlagEmbedding kiwipiepy",
+            # Step 6: install our package + extras into Pod's system
+            # Python — which has torch+CUDA matching the image's
+            # driver. NO venv (avoids cu130-vs-driver12.4 mismatch).
+            "cd /workspace/repo && pip install --break-system-packages -e .",
+            "cd /workspace/repo && pip install --break-system-packages "
+            "lancedb pyarrow FlagEmbedding kiwipiepy",
             # Step 7: warm (skip for FTS-only)
-            *(["cd /workspace/repo && .venv/bin/python -c 'from FlagEmbedding import BGEM3FlagModel; BGEM3FlagModel(\"BAAI/bge-m3\")'"]
+            *(["cd /workspace/repo && python -c 'from FlagEmbedding import BGEM3FlagModel; BGEM3FlagModel(\"BAAI/bge-m3\")'"]
               if "dense" in modalities or "sparse" in modalities or "colbert" in modalities
               else []),
-            # Step 8: build
-            f"cd /workspace/repo && .venv/bin/python -m scripts.learning.cli_cs_index_build "
+            # Step 8: build (uses system Python, has CUDA torch)
+            f"cd /workspace/repo && python -m scripts.learning.cli_cs_index_build "
             f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/"
             f"{build_extra_str}",
             # Step 9: eval (only on r1+; r0 skips)
             *([
-                f"cd /workspace/repo && .venv/bin/python -m scripts.learning.cli_rag_eval "
+                f"cd /workspace/repo && python -m scripts.learning.cli_rag_eval "
                 f"--ablate --embedding-index-root /workspace/cs_rag/ "
                 f"--ablation-split holdout "
                 f"{' '.join(f'--ablation-modalities {m}' for m in [','.join(modalities[:i+1]) for i in range(len(modalities))])} "
                 f"--ablation-out /workspace/eval/{r_phase}_holdout.json"
             ] if r_phase != "r0" else []),
             # Step 10: package
-            f"cd /workspace/repo && .venv/bin/python -m scripts.remote.package_rag_artifact "
+            f"cd /workspace/repo && python -m scripts.remote.package_rag_artifact "
             f"--index-root /workspace/cs_rag/ --run-id {run_id} --r-phase {r_phase}",
             # Step 11: caller scp/runpodctl receive (logged separately)
         ]

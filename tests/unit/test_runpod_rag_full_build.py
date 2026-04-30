@@ -158,8 +158,27 @@ def test_remote_commands_apt_runs_before_pip():
         commit_sha="x", modalities=("fts",), run_id="r0", r_phase="r0",
     )
     apt_idx = next(i for i, c in enumerate(cmds) if "apt-get install" in c)
-    pip_idx = next(i for i, c in enumerate(cmds) if "pip install -e ." in c)
+    pip_idx = next(i for i, c in enumerate(cmds) if "pip install" in c and "-e ." in c)
     assert apt_idx < pip_idx
+
+
+def test_remote_commands_use_system_python_not_venv():
+    """R1 v1 bug fix: we must NOT create a venv on the Pod, because
+    PyPI's default torch wheel (cu130) doesn't match the Pod's CUDA
+    12.4 driver → falls back to CPU. Use Pod's system Python, which
+    has torch+CUDA pre-installed by the runpod/pytorch image."""
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense"),
+        run_id="r1", r_phase="r1",
+    )
+    full = "\n".join(cmds)
+    # No venv creation
+    assert "python -m venv" not in full
+    assert ".venv/bin/python" not in full
+    # System python (with --break-system-packages for PEP 668)
+    assert "pip install --break-system-packages" in full
 
 
 def test_remote_commands_for_r1_includes_warm_and_eval():
