@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+  "title": "CS RAG LanceDB Index Manifest v3",
+  "type": "object",
+  "required": [
+    "index_version",
+    "schema_uri",
+    "row_count",
+    "corpus_hash",
+    "corpus_root",
+    "built_at",
+    "encoder",
+    "lancedb",
+    "modalities",
+    "ingest"
+  ],
+  "properties": {
+    "index_version": {
+      "const": 3
+    },
+    "schema_uri": {
+      "const": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json"
+    },
+    "row_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "corpus_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "corpus_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "built_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "encoder": {
+      "type": "object",
+      "required": ["model_id", "model_version", "max_length"],
+      "properties": {
+        "model_id": {"type": "string", "minLength": 1},
+        "model_version": {"type": "string", "minLength": 1},
+        "max_length": {"type": "integer", "minimum": 1}
+      }
+    },
+    "lancedb": {
+      "type": "object",
+      "required": ["version", "table_name", "indices"],
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "table_name": {"type": "string", "minLength": 1},
+        "indices": {
+          "type": "object",
+          "required": ["dense", "fts", "colbert"],
+          "properties": {
+            "dense": {
+              "type": "object",
+              "required": ["type", "num_partitions", "num_sub_vectors"],
+              "properties": {
+                "type": {"enum": ["IVF_PQ", "IVF_FLAT", "IVF_HNSW_PQ", "IVF_HNSW_SQ"]},
+                "num_partitions": {"type": "integer", "minimum": 1},
+                "num_sub_vectors": {"type": "integer", "minimum": 1}
+              }
+            },
+            "fts": {
+              "type": "object",
+              "required": ["type", "tokenizer"],
+              "properties": {
+                "type": {"const": "tantivy"},
+                "tokenizer": {"enum": ["ngram", "kiwipiepy_external", "lucene_kr", "simple"]}
+              }
+            },
+            "colbert": {
+              "type": "object",
+              "required": ["type", "metric", "dtype"],
+              "properties": {
+                "type": {"enum": ["MULTI_VECTOR", "sidecar"]},
+                "metric": {"enum": ["max_sim", "cosine"]},
+                "dtype": {"enum": ["float16", "float32"]}
+              }
+            }
+          }
+        }
+      }
+    },
+    "modalities": {
+      "type": "array",
+      "items": {"enum": ["dense", "sparse", "colbert", "fts"]},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "ingest": {
+      "type": "object",
+      "required": ["chunk_max_chars", "chunk_overlap"],
+      "properties": {
+        "chunk_max_chars": {"type": "integer", "minimum": 1},
+        "chunk_overlap": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
+

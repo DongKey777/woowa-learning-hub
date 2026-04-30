@@ -48,6 +48,9 @@ DEFAULT_INDEX_ROOT = Path("state/cs_rag")
 SQLITE_NAME = "index.sqlite3"
 DENSE_NAME = "dense.npz"
 MANIFEST_NAME = "manifest.json"
+LANCE_DIR_NAME = "lance"
+LANCE_TABLE_NAME = "cs_chunks"
+LANCE_INDEX_VERSION = 3
 
 INDEX_VERSION = 2  # bumped when chunks schema changed (added `difficulty` column).
 EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
@@ -56,6 +59,10 @@ EMBED_DIM = 384
 
 class IndexDependencyMissing(RuntimeError):
     """Raised when sentence-transformers/numpy cannot be imported at build time."""
+
+
+class IncompatibleIndexError(RuntimeError):
+    """Raised when an index root does not contain the expected v3 LanceDB format."""
 
 
 @dataclass
@@ -445,6 +452,62 @@ def load_dense(index_root: Path | str = DEFAULT_INDEX_ROOT):
 def load_manifest(index_root: Path | str = DEFAULT_INDEX_ROOT) -> dict:
     path = Path(index_root) / MANIFEST_NAME
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def read_manifest_v3(index_root: Path | str = DEFAULT_INDEX_ROOT) -> dict:
+    """Read and validate the v3 LanceDB manifest header.
+
+    This is intentionally stricter than ``load_manifest``.  It is used by
+    the upcoming LanceDB search/index path and must fail fast when pointed at
+    a legacy v2 SQLite/NPZ index.
+    """
+    manifest = load_manifest(index_root)
+    version = manifest.get("index_version")
+    if version != LANCE_INDEX_VERSION:
+        raise IncompatibleIndexError(
+            f"expected LanceDB index_version {LANCE_INDEX_VERSION}, got {version!r}"
+        )
+    if "lancedb" not in manifest:
+        raise IncompatibleIndexError("manifest missing required 'lancedb' block")
+    if "encoder" not in manifest:
+        raise IncompatibleIndexError("manifest missing required 'encoder' block")
+    return manifest
+
+
+def open_lance_table(
+    index_root: Path | str = DEFAULT_INDEX_ROOT,
+    *,
+    mode: str = "r",
+    table_name: str = LANCE_TABLE_NAME,
+):
+    """Open the v3 LanceDB table lazily.
+
+    ``mode`` is deliberately tiny for now:
+    - ``"r"``: require an existing table.
+    - ``"rw"``: return a connection + table when it exists; H2 writer will
+      create the table before calling this helper for read/write use.
+
+    Importing ``indexer`` remains safe without LanceDB installed; the import
+    happens only here.
+    """
+    if mode not in {"r", "rw"}:
+        raise ValueError(f"unsupported LanceDB open mode: {mode}")
+    try:
+        import lancedb  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency path
+        raise IndexDependencyMissing(
+            "lancedb not installed. Run `.venv/bin/python -m pip install lancedb pyarrow`."
+        ) from exc
+
+    root = Path(index_root)
+    read_manifest_v3(root)
+    db = lancedb.connect(root / LANCE_DIR_NAME)
+    try:
+        return db.open_table(table_name)
+    except Exception as exc:
+        raise IncompatibleIndexError(
+            f"LanceDB table {table_name!r} not found under {root / LANCE_DIR_NAME}"
+        ) from exc
 
 
 def fetch_chunks_by_rowid(

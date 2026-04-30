@@ -121,16 +121,48 @@ Result:
 
 H0 capability proof is implemented and manually verified.
 
+Additional H1 foundation work after commit `0739416`:
+
+- Added `schemas/cs-index-manifest-v3.json`.
+- Added `indexer.LANCE_INDEX_VERSION = 3`, `LANCE_DIR_NAME`, `LANCE_TABLE_NAME`.
+- Added `indexer.IncompatibleIndexError`.
+- Added `indexer.read_manifest_v3(index_root)`.
+- Added `indexer.open_lance_table(index_root, mode="r"|"rw")`.
+- Added `tests/unit/test_lance_index_format.py`.
+
+Important H1 design choice:
+
+- Did **not** flip legacy `INDEX_VERSION = 2` yet.
+- Did **not** make `is_ready()` reject v2 yet.
+- Reason: the current production writer still builds SQLite/NPZ v2. Flipping readiness before H2 writer exists would make `bin/cs-index-build` unable to produce a ready index. The readiness flip should happen in H2 together with the LanceDB writer.
+
+H1 verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_index_format.py tests/unit/test_encoder_protocol.py tests/unit/test_bge_m3_encoder.py -q
+.venv/bin/python -m pytest tests/unit/test_cs_readiness.py tests/unit/test_cli_cs_index_build_modes.py -q
+```
+
+Results:
+
+```text
+12 passed in 0.87s
+15 passed in 0.04s
+```
+
 Remaining before H1:
 
-- Commit the H0 files.
-- Optional: re-run H0 smoke after commit if desired.
-- Start H1:
-  - Add `schemas/cs-index-manifest-v3.json`
-  - Define LanceDB schema using `dep_probe` result
-  - Treat FTS tokenizer as `ngram` / `search_terms` path
-  - Treat sparse as `rescore_only`
-  - Use `float16` for multivector storage unless H1 fake-table test finds a regression
+None for H1 foundation. Next phase is H2 writer.
+
+Remaining for H2:
+
+- Implement LanceDB table build path using the H1 manifest shape.
+- Use `dep_probe` result:
+  - FTS tokenizer path: `ngram` over `search_terms`.
+  - Sparse mode: `rescore_only`.
+  - Multivector storage dtype: `float16`.
+- Move `INDEX_VERSION`/readiness cutover only once H2 writer can build a v3-ready index.
+- Update `bin/cs-index-build` CLI only when full writer path exists.
 
 ## Notes for Next AI
 
@@ -138,4 +170,3 @@ Remaining before H1:
 - Do not delete `~/.cache/huggingface/hub/models--BAAI--bge-m3`; it is needed for offline H0/H2.
 - The direct Python `tantivy` module is not installed. This is not currently a blocker because LanceDB FTS smoke passed.
 - `state/orchestrator/queue.json` and status metadata were preserved, but inactive worker sandboxes were removed to satisfy disk gate.
-
