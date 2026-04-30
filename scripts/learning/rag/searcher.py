@@ -35,6 +35,8 @@ Contracts
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import os
 import re
@@ -269,6 +271,173 @@ def _rrf_merge(
         for rank, (row_id, _) in enumerate(ranking, start=1):
             fused[row_id] = fused.get(row_id, 0.0) + 1.0 / (k + rank)
     return sorted(fused.items(), key=lambda t: (-t[1], t[0]))
+
+
+# ---------------------------------------------------------------------------
+# LanceDB v3 candidate search helpers (side-by-side path, not public cutover)
+# ---------------------------------------------------------------------------
+
+def _plain_list(value) -> list:
+    if value is None:
+        return []
+    if hasattr(value, "tolist"):
+        return value.tolist()
+    return list(value)
+
+
+def _stable_lance_row_id(chunk_id: str) -> int:
+    digest = hashlib.sha1(chunk_id.encode("utf-8")).hexdigest()[:12]
+    return int(digest, 16)
+
+
+def _json_list(value) -> list:
+    if isinstance(value, list):
+        return value
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+    except (TypeError, json.JSONDecodeError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
+def _lance_row_to_chunk(row: dict) -> dict:
+    section_path = _json_list(row.get("section_path"))
+    anchors = _json_list(row.get("anchors"))
+    row_id = _stable_lance_row_id(str(row.get("chunk_id", "")))
+    return {
+        "row_id": row_id,
+        "doc_id": row.get("doc_id"),
+        "chunk_id": row.get("chunk_id"),
+        "path": row.get("path"),
+        "title": row.get("title"),
+        "category": row.get("category"),
+        "section_title": section_path[-1] if len(section_path) > 1 else "",
+        "section_path": section_path,
+        "body": row.get("body") or "",
+        "char_len": row.get("char_len") or 0,
+        "anchors": anchors,
+        "difficulty": row.get("difficulty"),
+        "sparse_vec": row.get("sparse_vec"),
+    }
+
+
+def _lance_rows_to_ranking(
+    rows: list[dict],
+    chunks: dict[int, dict],
+    *,
+    score_key: str,
+    distance_key: str = "_distance",
+) -> list[tuple[int, float]]:
+    ranking: list[tuple[int, float]] = []
+    for rank, row in enumerate(rows, start=1):
+        chunk = _lance_row_to_chunk(row)
+        row_id = chunk["row_id"]
+        chunks[row_id] = chunk
+        if score_key in row:
+            score = float(row[score_key])
+        elif distance_key in row:
+            score = 1.0 / (1.0 + max(float(row[distance_key]), 0.0))
+        else:
+            score = 1.0 / rank
+        ranking.append((row_id, score))
+    return ranking
+
+
+def _lance_fts_search(table, prompt: str, limit: int) -> list[dict]:
+    try:
+        return table.search(prompt, query_type="fts").limit(limit).to_list()
+    except Exception:
+        return []
+
+
+def _lance_dense_search(table, dense_vec, limit: int) -> list[dict]:
+    try:
+        query = dense_vec[0] if getattr(dense_vec, "ndim", 1) == 2 else dense_vec
+        if hasattr(query, "tolist"):
+            query = query.tolist()
+        return (
+            table.search(query, vector_column_name="dense_vec")
+            .limit(limit)
+            .to_list()
+        )
+    except Exception:
+        return []
+
+
+def _sparse_dot(query_sparse: dict[int, float], doc_sparse) -> float:
+    if not query_sparse or not doc_sparse:
+        return 0.0
+    indices = _plain_list(doc_sparse.get("indices") if isinstance(doc_sparse, dict) else [])
+    values = _plain_list(doc_sparse.get("values") if isinstance(doc_sparse, dict) else [])
+    score = 0.0
+    for token_id, value in zip(indices, values):
+        score += float(query_sparse.get(int(token_id), 0.0)) * float(value)
+    return score
+
+
+def _sparse_rescore(
+    scored: list[tuple[int, float]],
+    chunks: dict[int, dict],
+    query_sparse: dict[int, float],
+    *,
+    weight: float = 0.05,
+) -> list[tuple[int, float]]:
+    if not query_sparse:
+        return scored
+    rescored: list[tuple[int, float]] = []
+    for row_id, score in scored:
+        chunk = chunks.get(row_id)
+        sparse_score = _sparse_dot(query_sparse, (chunk or {}).get("sparse_vec"))
+        rescored.append((row_id, score + weight * sparse_score))
+    rescored.sort(key=lambda item: (-item[1], item[0]))
+    return rescored
+
+
+def _lance_candidate_search(
+    table,
+    prompt: str,
+    *,
+    query_encoding: dict | None = None,
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
+    top_k: int = DEFAULT_TOP_K,
+    pool_size: int = FTS_POOL_SIZE,
+) -> list[dict]:
+    """Return formatted candidate hits from a v3 LanceDB table.
+
+    This side-by-side helper is intentionally not wired into public
+    ``search()`` yet.  H3 uses it to prove the LanceDB read path before
+    replacing the legacy SQLite/NPZ ranking pipeline.
+    """
+    chunks: dict[int, dict] = {}
+    rankings: list[list[tuple[int, float]]] = []
+
+    if "fts" in modalities:
+        fts_rows = _lance_fts_search(table, prompt, pool_size)
+        fts_ranking = _lance_rows_to_ranking(fts_rows, chunks, score_key="_score")
+        if fts_ranking:
+            rankings.append(fts_ranking)
+
+    if "dense" in modalities and query_encoding is not None:
+        dense = query_encoding.get("dense")
+        if dense is not None:
+            dense_rows = _lance_dense_search(table, dense, pool_size)
+            dense_ranking = _lance_rows_to_ranking(dense_rows, chunks, score_key="_score")
+            if dense_ranking:
+                rankings.append(dense_ranking)
+
+    if not rankings:
+        return []
+
+    fused = _rrf_merge(rankings)
+    if "sparse" in modalities and query_encoding is not None:
+        sparse_list = query_encoding.get("sparse") or []
+        query_sparse = sparse_list[0] if sparse_list else {}
+        fused = _sparse_rescore(fused, chunks, query_sparse)
+
+    deduped = _dedupe_by_path(fused, chunks)
+    return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
 
 
 # ---------------------------------------------------------------------------

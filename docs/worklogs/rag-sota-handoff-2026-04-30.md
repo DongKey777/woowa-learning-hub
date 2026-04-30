@@ -256,6 +256,48 @@ Important H2.1 design choice:
 - `indexer.is_ready()` still validates the legacy v2 index only.
 - A real bge-m3 production LanceDB build should be run explicitly with `bin/cs-index-build --backend lance --mode full` after disk budget is checked.
 
+## H3a LanceDB Read Path Candidate Helper
+
+Implemented after H2.1:
+
+- Added side-by-side LanceDB candidate helpers in `searcher.py`.
+  - `_lance_fts_search`: queries v3 FTS indexes.
+  - `_lance_dense_search`: queries `dense_vec`.
+  - `_sparse_dot` / `_sparse_rescore`: post-candidate bge-m3 sparse dot-product rescoring.
+  - `_lance_candidate_search`: fuses FTS/dense with existing RRF, optionally applies sparse rescore, dedupes by path, and returns the same formatted hit shape as legacy search.
+- The public `search()` function is still unchanged.
+  - Reason: H3a proves v3 read semantics without risking legacy RAG behavior.
+  - H3b should wire this helper behind manifest/backend detection or an explicit modality/backend switch.
+- LanceDB rows do not have SQLite row IDs.
+  - H3a assigns a deterministic synthetic row ID from `sha1(chunk_id)` for internal ranking compatibility.
+  - Output still includes the original `chunk_id`, `path`, `title`, `category`, and snippet fields.
+- Added `tests/unit/test_lance_search_path.py`.
+  - Builds a fake LanceDB v3 index through `indexer.build_lance_index`.
+  - Verifies formatted FTS+dense+sparse hits.
+  - Verifies missing modality/encoding returns empty instead of raising.
+  - Verifies sparse rescore can promote a candidate with matching sparse token IDs.
+
+H3a verification:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py -q
+.venv/bin/python -m pytest tests/unit/test_lance_search_path.py tests/unit/test_lance_index_builder.py tests/unit/test_lance_index_format.py tests/unit/test_cli_cs_index_build_modes.py tests/unit/test_cs_rag_search.py -q
+```
+
+Results:
+
+```text
+3 passed in 2.03s
+213 passed, 185 subtests passed in 3.04s
+```
+
+Remaining after H3a:
+
+- H3b public search wiring for v3 indexes.
+- Query encoder cache keyed by manifest encoder version.
+- Category/difficulty/signal boosts need to be applied on the LanceDB path before production cutover.
+- ColBERT MaxSim is still stored but not used in ranking; this remains H4.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
