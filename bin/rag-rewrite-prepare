@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Usage: bin/rag-rewrite-prepare "<learner prompt>" \
+#            [--mode hyde|decompose|normalize] \
+#            [--out state/cs_rag/query_rewrites] \
+#            [--learner-context '<json string>']
+#
+# Wraps scripts/learning/cli_rag_rewrite_prepare.py. Wrapper writes the
+# input artifact to disk and prints the expected output path; the AI
+# session reads the input, follows skills/woowa-rag-rewrite/SKILL.md,
+# and writes the output JSON. See docs/ai-behavior-contracts.md for the
+# query-rewrite-v1 contract.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_rag_rewrite_prepare.py" "$@"
