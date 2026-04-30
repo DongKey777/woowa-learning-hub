@@ -907,28 +907,25 @@ class RunPodHarness:
             # Python — which has torch+CUDA matching the image's
             # driver. NO venv (avoids cu130-vs-driver12.4 mismatch).
             "cd /workspace/repo && pip install --break-system-packages -e .",
-            # FlagEmbedding (1.4.0) compat: transformers must be
-            # well below the 4.50+ refactor where lazy modules like
-            # 'BloomPreTrainedModel' and 'get_reporting_integration_callbacks'
-            # were renamed/removed (R1 v6/v7 SSH-debug).
-            # 4.40-4.45 is the safe band — old enough that FlagEmbedding's
-            # imports still resolve, new enough to support BGE-M3 features.
-            # NOTE: 4.40-4.49 has no CVE-2025-32434 check, so the torch
-            # upgrade below is technically optional, but we keep it for
-            # security hygiene + ABI alignment with torchvision/audio.
+            # FlagEmbedding 1.3.5 + transformers <4.50 — verified
+            # against upstream docs (R1 v8 SSH-debug):
+            # - FlagEmbedding 1.4.0's runner.py:71 calls
+            #   AutoModel.from_pretrained(..., dtype=torch_dtype) which
+            #   needs transformers 4.50+, but transformers 4.50+
+            #   refactored lazy imports (BloomPreTrainedModel, etc.) in
+            #   ways FlagEmbedding 1.4.0's import chain doesn't tolerate
+            #   — i.e., 1.4.0 is self-conflicting.
+            # - FlagEmbedding 1.3.5's runner.py uses the older
+            #   from_pretrained(... trust_remote_code=...) call (no
+            #   dtype kwarg), and accepts transformers 4.44.2+.
+            # - Pin transformers <4.50 to dodge the lazy-import refactor.
+            # Pod's preinstalled torch 2.4.1+cu124 stack stays as-is —
+            # CVE-2025-32434 only affects transformers 4.50+, so no
+            # torch upgrade is needed. Keeping the original ABI also
+            # avoids the torchvision/torchaudio ABI mismatch from R1 v7.
             "cd /workspace/repo && pip install --break-system-packages "
-            "lancedb pyarrow \"transformers>=4.40,<4.46\" FlagEmbedding kiwipiepy",
-            # Upgrade torch + torchvision + torchaudio together —
-            # they share an ABI, so partial upgrades break
-            # `torchvision::nms` and other ops (R1 v7 SSH-debug:
-            # transformers' integrations.integration_utils imports
-            # torchvision and crashed on missing operator).
-            # Pin cu124 wheel index to match Pod driver 12.4 (R1 v1
-            # lesson: never let pip pull cu130 onto a 12.4 driver).
-            "pip install --break-system-packages --upgrade "
-            "--index-url https://download.pytorch.org/whl/cu124 "
-            "\"torch>=2.6.0,<2.7\" \"torchvision>=0.21,<0.22\" "
-            "\"torchaudio>=2.6,<2.7\"",
+            "lancedb pyarrow \"transformers>=4.44.2,<4.50\" "
+            "\"FlagEmbedding==1.3.5\" kiwipiepy",
             # Step 7: warm BGE-M3 weights (skip for FTS-only).
             # R1 v2/v3 hit HF Hub rate limits on community-Pod IPs at
             # ~57-60% download. _warm_bge_m3 retries 5x with 30/60/90/

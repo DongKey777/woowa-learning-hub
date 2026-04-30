@@ -181,11 +181,25 @@ def test_remote_commands_use_system_python_not_venv():
     assert "pip install --break-system-packages" in full
 
 
-def test_remote_commands_pin_transformers_to_safe_band():
-    """R1 v6/v7 bug fixes: transformers 4.50+ refactored
-    BloomPreTrainedModel, TrainingArguments, and integrations modules
-    — FlagEmbedding 1.4.0 doesn't tolerate either. Pin >=4.40,<4.46
-    (safe middle band that still imports cleanly)."""
+def test_remote_commands_pin_flagembedding_and_transformers_per_docs():
+    """Verified against FlagEmbedding GitHub source (R1 v8 SSH-debug):
+
+    - FlagEmbedding 1.3.5 setup.py: transformers>=4.44.2 (no upper bound)
+    - FlagEmbedding 1.3.5 m3/runner.py:69 — AutoModel.from_pretrained(
+          ..., trust_remote_code=...)  # no dtype kwarg
+    - FlagEmbedding 1.4.0 m3/runner.py:71 — AutoModel.from_pretrained(
+          ..., dtype=torch_dtype)  # transformers 4.50+ only
+
+    But transformers 4.50+ refactored lazy imports in ways
+    FlagEmbedding 1.4.0's own import chain doesn't tolerate
+    (BloomPreTrainedModel, get_reporting_integration_callbacks).
+    1.4.0 is self-conflicting. 1.3.5 + transformers 4.44.2-4.49 is
+    the actually-working pin.
+
+    Live SSH validation: BGEM3FlagModel('BAAI/bge-m3') instance
+    constructed, encode() returned (2, 1024) tensor, 1.09 GiB GPU
+    allocated.
+    """
     client = H.MockRunPodClient()
     h = H.RunPodHarness(client, dry_run=True)
     cmds = h._build_remote_commands(
@@ -193,56 +207,13 @@ def test_remote_commands_pin_transformers_to_safe_band():
         run_id="r1", r_phase="r1",
     )
     full = "\n".join(cmds)
-    assert "transformers>=4.40,<4.46" in full
-
-
-def test_remote_commands_upgrade_torch_torchvision_torchaudio_together():
-    """R1 v7 bug fix: upgrading torch alone leaves torchvision/torchaudio
-    on the old 2.4 ABI → `operator torchvision::nms does not exist` when
-    transformers tries to import torchvision-backed ops. Upgrade all 3
-    in lockstep from the same cu124 wheel index."""
-    client = H.MockRunPodClient()
-    h = H.RunPodHarness(client, dry_run=True)
-    cmds = h._build_remote_commands(
-        commit_sha="x", modalities=("fts", "dense"),
-        run_id="r1", r_phase="r1",
-    )
-    full = "\n".join(cmds)
-    assert "torchvision>=0.21" in full
-    assert "torchaudio>=2.6" in full
-    # Same step as torch upgrade (one pip resolve)
-    upgrade_cmd = next(c for c in cmds if "torch>=2.6.0" in c)
-    assert "torchvision>=0.21" in upgrade_cmd
-    assert "torchaudio>=2.6" in upgrade_cmd
-
-
-def test_remote_commands_upgrade_torch_to_at_least_2_6_with_cu124(_=None):
-    """R1 v5 bug fix: transformers 5.x raises CVE-2025-32434 when loading
-    .bin checkpoints with torch < 2.6 (BGE-M3 ships only pytorch_model.bin,
-    no safetensors). Pod's preinstalled torch is 2.4.1+cu124 → must upgrade.
-
-    Also: pin to cu124 wheel index — never let pip pull the default cu130
-    wheel onto a 12.4-driver Pod (R1 v1 lesson)."""
-    client = H.MockRunPodClient()
-    h = H.RunPodHarness(client, dry_run=True)
-    cmds = h._build_remote_commands(
-        commit_sha="x", modalities=("fts", "dense"),
-        run_id="r1", r_phase="r1",
-    )
-    full = "\n".join(cmds)
-    assert "https://download.pytorch.org/whl/cu124" in full
-    assert "torch>=2.6.0" in full
-    # The upgrade must run BEFORE the warm step (which is what triggers
-    # the CVE check via transformers' from_pretrained)
-    upgrade_idx = next(
-        i for i, c in enumerate(cmds)
-        if "torch>=2.6.0" in c
-    )
-    warm_idx = next(
-        i for i, c in enumerate(cmds)
-        if "scripts.remote._warm_bge_m3" in c
-    )
-    assert upgrade_idx < warm_idx
+    assert "FlagEmbedding==1.3.5" in full
+    assert "transformers>=4.44.2,<4.50" in full
+    # No torch upgrade needed — CVE-2025-32434 only affects
+    # transformers 4.50+, and our pin is below that. Keep Pod's
+    # preinstalled torch 2.4.1+cu124 trio (avoids ABI churn).
+    assert "torch>=2.6" not in full
+    assert "download.pytorch.org/whl/cu124" not in full
 
 
 def test_remote_commands_for_r1_includes_warm_and_eval():
