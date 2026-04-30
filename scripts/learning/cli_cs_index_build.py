@@ -2,10 +2,23 @@
 
 Usage
 -----
-    bin/cs-index-build [--corpus knowledge/cs] [--out state/cs_rag] [--force]
+    bin/cs-index-build [--corpus knowledge/cs] [--out state/cs_rag]
+                       [--force] [--mode auto|full|incremental]
 
 The AI session — not the learner — runs this during the First-Run Protocol
 or when cs_readiness.state != "ready".
+
+Modes (plan §P5.6):
+- ``auto`` (default): full rebuild if is_ready != ready, else
+  incremental rebuild (re-encode only changed chunks).
+- ``full``: force a full rebuild regardless of state. Use when the
+  on-disk index is suspected corrupt or after embedding model swap.
+- ``incremental``: force the incremental path. Falls back to full
+  internally if the index is missing / model_id mismatch / schema
+  bump (see incremental_indexer._full_rebuild_reason).
+
+The legacy ``--force`` flag still works and means "full rebuild even
+when ready"; equivalent to ``--mode full --force``.
 """
 
 from __future__ import annotations
@@ -52,7 +65,21 @@ def _progress(stage: str, info: dict) -> None:
         print(f"[cs-index] {stage} {info}", flush=True)
 
 
-def main(argv: list[str] | None = None) -> int:
+def _default_production_embedder():
+    """Production-side lazy SentenceTransformer factory bound to the
+    embed model declared in indexer.EMBED_MODEL. Tests inject fakes
+    via the ``embedder_factory`` parameter on ``main``."""
+    from scripts.learning.rag import indexer  # noqa: WPS433
+    from sentence_transformers import SentenceTransformer  # type: ignore
+
+    return SentenceTransformer(indexer.EMBED_MODEL)
+
+
+def main(
+    argv: list[str] | None = None,
+    *,
+    embedder_factory=None,
+) -> int:
     repo_root = _find_repo_root()
     parser = argparse.ArgumentParser(description="Build the CS RAG index.")
     parser.add_argument(
@@ -68,7 +95,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Rebuild even if is_ready() reports ready.",
+        help="Rebuild even if is_ready() reports ready (forces --mode full).",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("auto", "full", "incremental"),
+        default="auto",
+        help=(
+            "Build mode (default: auto). "
+            "auto: full when is_ready != ready, else incremental. "
+            "full: always full rebuild. "
+            "incremental: re-encode only changed chunks "
+            "(falls back to full on schema/model mismatch)."
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -76,25 +115,71 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(repo_root))
 
     from scripts.learning.rag import indexer  # noqa: WPS433
+    from scripts.learning.rag import incremental_indexer  # noqa: WPS433
 
     readiness = indexer.is_ready(args.out, args.corpus)
-    if readiness.state == "ready" and not args.force:
+    print(
+        f"[cs-index] state={readiness.state} reason={readiness.reason}",
+        flush=True,
+    )
+
+    # Resolve effective mode
+    effective_mode = args.mode
+    if args.force:
+        effective_mode = "full"
+    elif args.mode == "auto":
+        # auto: ready → incremental (will short-circuit if no changes);
+        # not ready → full
+        if readiness.state == "ready":
+            effective_mode = "incremental"
+        else:
+            effective_mode = "full"
+
+    if effective_mode == "full" and readiness.state == "ready" and not args.force:
+        # Explicit --mode full but no actual reason to rebuild: still
+        # rebuild (caller asked) but log clearly.
         print(
-            f"[cs-index] already ready — corpus_hash={readiness.corpus_hash[:12]}… "
-            "(use --force to rebuild)",
+            "[cs-index] --mode full requested even though index is ready; "
+            "proceeding with full rebuild",
             flush=True,
         )
-        return 0
 
-    print(f"[cs-index] state={readiness.state} reason={readiness.reason} → rebuild", flush=True)
-
+    print(f"[cs-index] mode={effective_mode}", flush=True)
     start = time.time()
     try:
-        manifest = indexer.build_index(
-            index_root=args.out,
-            corpus_root=args.corpus,
-            progress=_progress,
-        )
+        if effective_mode == "full":
+            manifest = indexer.build_index(
+                index_root=args.out,
+                corpus_root=args.corpus,
+                progress=_progress,
+            )
+            row_count = manifest["row_count"]
+            mode_descriptor = "full"
+            extra_summary = ""
+        else:
+            # incremental
+            factory = embedder_factory or _default_production_embedder
+            model = factory()
+            result = incremental_indexer.incremental_build_index(
+                model=model,
+                model_id=indexer.EMBED_MODEL,
+                embed_dim=indexer.EMBED_DIM,
+                index_root=args.out,
+                corpus_root=args.corpus,
+                progress=_progress,
+            )
+            row_count = result.manifest["row_count"]
+            mode_descriptor = result.mode  # "incremental" or "full" (fallback)
+            stats = result.diff_stats
+            extra_summary = (
+                f" — added={stats.get('added', 0)} "
+                f"modified={stats.get('modified', 0)} "
+                f"deleted={stats.get('deleted', 0)} "
+                f"unchanged={stats.get('unchanged', 0)} "
+                f"encoded={result.encoded_chunk_count}"
+            )
+            if result.fallback_reason:
+                extra_summary += f" (fallback: {result.fallback_reason})"
     except indexer.IndexDependencyMissing as exc:
         print(f"[cs-index] ERROR: {exc}", file=sys.stderr, flush=True)
         return 2
@@ -104,8 +189,8 @@ def main(argv: list[str] | None = None) -> int:
 
     elapsed = time.time() - start
     print(
-        f"[cs-index] 완료 — row_count={manifest['row_count']} "
-        f"({elapsed:.1f}s)",
+        f"[cs-index] 완료 — mode={mode_descriptor} row_count={row_count}"
+        f"{extra_summary} ({elapsed:.1f}s)",
         flush=True,
     )
     return 0
