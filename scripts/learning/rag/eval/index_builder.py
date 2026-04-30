@@ -33,6 +33,7 @@ from typing import Any, Protocol
 from scripts.learning.rag import corpus_loader
 from scripts.learning.rag.indexer import (
     _embed_text,
+    _encode_all,
     _insert_chunks,
     _open_sqlite,
     _paths,
@@ -127,14 +128,16 @@ def build_eval_index(
 
         _tick("encode", {"model_id": model_id, "count": len(chunks)})
         texts = [_embed_text(chunk) for chunk in chunks]
-        embeddings = model.encode(
+        # Delegate to indexer._encode_all so encode-progress callbacks
+        # surface % done + ETA on the same contract as the production
+        # build path (plan §P2/P3 visibility fix). Without this, A/B
+        # sweeps run blind for hours on CPU.
+        embeddings = _encode_all(
+            model,
             texts,
-            batch_size=batch_size,
-            show_progress_bar=False,
-            normalize_embeddings=True,
-            convert_to_numpy=True,
+            progress=progress,
+            encode_batch_size=batch_size,
         )
-        embeddings = np.asarray(embeddings, dtype="float32")
         if embeddings.shape != (len(chunks), embed_dim):
             raise RuntimeError(
                 f"unexpected embedding shape {embeddings.shape}, "

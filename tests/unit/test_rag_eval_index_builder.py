@@ -139,6 +139,40 @@ def test_build_eval_index_invokes_progress_callback(tmp_path, fake_corpus):
     assert "write_manifest" in stages
 
 
+def test_build_eval_index_emits_encode_progress(tmp_path, fake_corpus):
+    """Plan §P2/P3 visibility fix: the A/B sweep encoder must emit
+    chunk-level progress so multi-hour CPU sweeps don't run blind.
+    The eval index_builder delegates to indexer._encode_all which
+    enforces this contract."""
+    from scripts.learning.rag.eval.index_builder import build_eval_index
+
+    progress_events: list[tuple[str, dict]] = []
+
+    def progress(stage, info):
+        progress_events.append((stage, info))
+
+    build_eval_index(
+        model=_FakeEncoder(),
+        model_id="m",
+        embed_dim=4,
+        index_root=tmp_path / "idx",
+        corpus_root=fake_corpus,
+        progress=progress,
+    )
+
+    encode_progress_events = [
+        info for stage, info in progress_events if stage == "encode_progress"
+    ]
+    assert encode_progress_events, "encode_progress callback never fired"
+    last = encode_progress_events[-1]
+    # Final callback should report done == total
+    assert last["done"] == last["total"]
+    assert last["done"] > 0
+    # Required fields per the contract
+    for key in ("done", "total", "elapsed_s", "eta_s", "rate_per_s"):
+        assert key in last, f"missing field {key!r} in encode_progress info"
+
+
 def test_build_eval_index_passes_batch_size_to_encoder(tmp_path, fake_corpus):
     from scripts.learning.rag.eval.index_builder import build_eval_index
 

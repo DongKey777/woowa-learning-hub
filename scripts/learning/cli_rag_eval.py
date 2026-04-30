@@ -43,6 +43,26 @@ DEFAULT_RERANKER_AB_OUT = REPO_ROOT / "reports" / "rag_eval" / "reranker_ab_repo
 DEFAULT_EMBEDDING_INDEX_ROOT = REPO_ROOT / "state" / "cs_rag"
 
 
+def _format_encode_progress(info: dict) -> str:
+    """Render an encode_progress callback (from indexer._encode_all)
+    as a single Korean status line for the rag-eval sweep stderr.
+
+    Without this, the A/B sweep was running blind on CPU for hours —
+    plan §P2/§P3 visibility fix.
+    """
+    done = info.get("done", 0)
+    total = info.get("total", 0)
+    pct = (done / total * 100) if total else 0.0
+    rate = info.get("rate_per_s", 0)
+    eta_s = info.get("eta_s", 0)
+    if eta_s >= 60:
+        mins, secs = divmod(int(eta_s), 60)
+        eta = f"{mins}m{secs:02d}s"
+    else:
+        eta = f"{eta_s:.1f}s"
+    return f"  [encode] {done}/{total} ({pct:.1f}%) rate={rate}/s eta={eta}"
+
+
 # ---------------------------------------------------------------------------
 # Argument parsing
 # ---------------------------------------------------------------------------
@@ -673,6 +693,8 @@ def run_embedding_ab(
     def _print_progress(stage: str, info: dict) -> None:
         if stage in ("candidate_start", "candidate_done", "candidate_cleanup"):
             print(f"  [{stage}] {info}", file=sys.stderr)
+        elif stage == "encode_progress":
+            print(_format_encode_progress(info), file=sys.stderr, flush=True)
 
     # 5. Sweep
     report = ab_sweep.run_ab_sweep(
@@ -805,6 +827,8 @@ def run_reranker_ab(
     def _print_progress(stage: str, info: dict) -> None:
         if stage in ("candidate_start", "candidate_done"):
             print(f"  [{stage}] {info}", file=sys.stderr)
+        elif stage == "encode_progress":
+            print(_format_encode_progress(info), file=sys.stderr, flush=True)
 
     # 5. Sweep
     report = reranker_ab.run_reranker_ab_sweep(

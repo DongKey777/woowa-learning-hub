@@ -594,3 +594,44 @@ def test_run_embedding_ab_invokes_sweep_and_writes_report(tmp_path, monkeypatch)
     assert ab_out.exists()
     blob = json.loads(ab_out.read_text())
     assert blob["selected_candidate_id"] == "MiniLM-L12-v2"
+
+
+# ---------------------------------------------------------------------------
+# encode_progress formatter (P2/P3 visibility fix)
+# ---------------------------------------------------------------------------
+
+class TestFormatEncodeProgress:
+    def test_renders_basic_fields(self):
+        out = CLI._format_encode_progress({
+            "done": 1024, "total": 27155,
+            "elapsed_s": 60.0, "eta_s": 1500.0, "rate_per_s": 17.07,
+        })
+        assert "1024/27155" in out
+        assert "3.8%" in out  # 1024/27155
+        assert "rate=17.07/s" in out
+
+    def test_long_eta_formatted_as_min_sec(self):
+        out = CLI._format_encode_progress({
+            "done": 100, "total": 1000,
+            "elapsed_s": 10.0, "eta_s": 1230.0, "rate_per_s": 10.0,
+        })
+        # 1230s = 20m30s
+        assert "eta=20m30s" in out
+
+    def test_short_eta_formatted_as_seconds(self):
+        out = CLI._format_encode_progress({
+            "done": 950, "total": 1000,
+            "elapsed_s": 95.0, "eta_s": 5.0, "rate_per_s": 10.0,
+        })
+        assert "eta=5.0s" in out
+
+    def test_zero_total_does_not_divide_by_zero(self):
+        """Defensive — total==0 shouldn't blow up the formatter."""
+        out = CLI._format_encode_progress({
+            "done": 0, "total": 0,
+            "elapsed_s": 0, "eta_s": 0, "rate_per_s": 0,
+        })
+        assert "0/0" in out
+        # No exception, no inf/nan in output
+        assert "inf" not in out
+        assert "nan" not in out
