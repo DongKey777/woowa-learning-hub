@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Usage: bin/feedback-mine [--repo <repo-id>] [--top-n N] [--min-helpful N] [--min-not-helpful N]
+#
+# Reads state/cs_rag/feedback.jsonl (or state/repos/<repo>/logs/
+# rag_feedback.jsonl) and surfaces:
+#   - signal distribution
+#   - top-N negative pairs (corpus or signal_rules.py refinement targets)
+#   - top-N positive pairs (eval golden promotion candidates)
+# See plan §P7.2 + scripts/learning/rag/feedback.py.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_feedback_mine.py" "$@"

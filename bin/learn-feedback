@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Usage:
+#   bin/learn-feedback "<learner prompt>" --signal helpful|not_helpful|unclear \
+#       [--hit <doc-path>] [--hit <doc-path> ...] \
+#       [--note "<one-line note>"] \
+#       [--repo <repo-id>]
+#
+# Appends one row to state/cs_rag/feedback.jsonl (and to
+# state/repos/<repo>/logs/rag_feedback.jsonl when --repo is set).
+# See plan §P7.1 + scripts/learning/rag/feedback.py for the schema.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    PY="$(command -v python3)"
+fi
+"$PY" "$ROOT/scripts/learning/cli_learn_feedback.py" "$@"
