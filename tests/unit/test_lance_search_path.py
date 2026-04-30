@@ -174,7 +174,13 @@ def test_lance_default_modalities_enable_dense_for_measured_categories():
     assert out == ("fts", "dense")
 
 
-def test_lance_default_modalities_keep_spring_on_fts_until_more_evidence():
+def test_lance_default_modalities_global_dense_on_after_r1_holdout():
+    """R1 holdout (artifact c352271, 101 queries) confirmed dense
+    modality production-ready globally: primary_nDCG@10 0.6862 → 0.7890
+    (+0.103). Policy schema_version 2 lifts dense from per-category
+    (sampled) to global default. Spring specifically: n=26, fts 0.7429
+    vs fts+dense 0.7415 — neutral. We keep dense ON globally for
+    consistency and let routing skip dense per-call when needed."""
     out = searcher._resolve_lance_modalities(
         manifest_modalities=("fts", "dense", "sparse", "colbert"),
         requested_modalities=None,
@@ -183,7 +189,7 @@ def test_lance_default_modalities_keep_spring_on_fts_until_more_evidence():
         signals=[{"category": "spring"}],
     )
 
-    assert out == ("fts",)
+    assert out == ("fts", "dense")
 
 
 def test_lance_default_modalities_honor_explicit_ablation_request():
@@ -223,10 +229,16 @@ def test_lance_default_modalities_can_change_with_policy_file(tmp_path, monkeypa
     assert out == ("fts", "dense")
 
 
-def test_lance_default_modalities_do_not_load_encoder_for_unmeasured_full_query(
+def test_lance_default_modalities_load_encoder_for_global_dense(
     tmp_path,
     monkeypatch,
 ):
+    """After R1 holdout schema-v2 update: global dense ON. Spring is no
+    longer a special case — encoder loads, retrieval mixes FTS + dense.
+
+    Use a minimal spy encoder so the call is recorded but cheap. The
+    older 'fail_if_loaded' guard would have asserted the sampled-era
+    policy which is no longer correct."""
     corpus_root = _fake_corpus(tmp_path)
     index_root = tmp_path / "index"
     encoder = FakeMultiModalEncoder()
@@ -236,10 +248,14 @@ def test_lance_default_modalities_do_not_load_encoder_for_unmeasured_full_query(
         encoder=encoder,
     )
 
-    def fail_if_loaded(_root):
-        raise AssertionError("spring default should remain FTS-only")
+    encoder_load_calls = []
+    real_encoder = searcher._get_lance_query_encoder
 
-    monkeypatch.setattr(searcher, "_get_lance_query_encoder", fail_if_loaded)
+    def spy_encoder(root):
+        encoder_load_calls.append(str(root))
+        return real_encoder(root)
+
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", spy_encoder)
     debug = {}
 
     hits = searcher.search(
@@ -252,7 +268,9 @@ def test_lance_default_modalities_do_not_load_encoder_for_unmeasured_full_query(
     )
 
     assert hits[0]["path"] == "contents/spring/bean-basics.md"
-    assert debug["modalities"] == ["fts"]
+    assert "fts" in debug["modalities"]
+    assert "dense" in debug["modalities"]
+    assert len(encoder_load_calls) >= 1
 
 
 def test_public_lance_cheap_mode_does_not_require_query_encoder(tmp_path, monkeypatch):

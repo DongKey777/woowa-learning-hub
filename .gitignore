@@ -1,6 +1,9 @@
 # Runtime state (per-repo archives, packets, contexts, actions, memory, CS RAG index)
 state/
 
+# Remote build artifacts (downloaded LanceDB index roots, large binaries)
+artifacts/
+
 # HuggingFace model cache (sentence-transformers, cross-encoder)
 .hf_cache/
 .cache/huggingface/

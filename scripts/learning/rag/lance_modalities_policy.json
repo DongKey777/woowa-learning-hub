@@ -1,16 +1,63 @@
 {
-  "schema_version": 1,
-  "description": "Default LanceDB modality policy derived from sampled CS RAG ablation. Keep this data-driven because the corpus and graded fixture continue to grow.",
+  "schema_version": 2,
+  "description": "LanceDB modality policy. R1 holdout (101 queries on R1 v9 artifact c352271, BGE-M3 fp16 1024-dim, RTX A4000) confirmed dense modality production-ready globally: primary_nDCG@10 0.6862 → 0.7890 (+0.103, +15% relative), no category regressed materially. Cutover gate moves dense from per-category (sampled) to global default.",
   "updated_at": "2026-04-30",
-  "source": "docs/worklogs/rag-sota-handoff-2026-04-30.md",
+  "source": [
+    "docs/worklogs/rag-sota-handoff-2026-04-30.md",
+    "reports/rag_eval/r1_holdout_c352271.json"
+  ],
   "cheap_default_modalities": ["fts"],
-  "full_default_modalities": ["fts"],
+  "full_default_modalities": ["fts", "dense"],
   "dense_default_modalities": ["fts", "dense"],
   "dense_default_categories": [
     "database",
+    "design-pattern",
+    "language",
     "network",
-    "operating-system"
+    "operating-system",
+    "security",
+    "software-engineering",
+    "spring",
+    "system-design"
   ],
+  "category_holdout_results": {
+    "database":          { "n": 12, "fts_ndcg": 0.4802, "fts_dense_ndcg": 0.8026, "delta": 0.3224, "verdict": "dense_strong_win" },
+    "network":           { "n":  4, "fts_ndcg": 0.5154, "fts_dense_ndcg": 1.0000, "delta": 0.4846, "verdict": "dense_strong_win" },
+    "language":          { "n":  6, "fts_ndcg": 0.7500, "fts_dense_ndcg": 0.8333, "delta": 0.0833, "verdict": "dense_helps" },
+    "operating-system":  { "n":  3, "fts_ndcg": 0.8333, "fts_dense_ndcg": 0.8770, "delta": 0.0437, "verdict": "dense_helps" },
+    "spring":            { "n": 26, "fts_ndcg": 0.7429, "fts_dense_ndcg": 0.7415, "delta": -0.0014, "verdict": "neutral_fts_already_strong" },
+    "software-engineering": { "n": 3, "fts_ndcg": 0.6667, "fts_dense_ndcg": 0.6667, "delta": 0.0, "verdict": "neutral" },
+    "security":          { "n":  6, "fts_ndcg": 1.0000, "fts_dense_ndcg": 1.0000, "delta": 0.0, "verdict": "neutral_already_perfect" },
+    "system-design":     { "n":  2, "fts_ndcg": 1.0000, "fts_dense_ndcg": 1.0000, "delta": 0.0, "verdict": "neutral_already_perfect" },
+    "design-pattern":    { "n": 39, "fts_ndcg": 0.1869, "fts_dense_ndcg": 0.1795, "delta": -0.0074, "verdict": "dense_no_help_query_too_generic_R3_candidate" }
+  },
+  "language_holdout_results": {
+    "ko":    { "n": 30, "fts_ndcg": 0.1333, "fts_dense_ndcg": 0.1333, "delta": 0.0, "verdict": "dense_no_help_for_korean_R3_or_corpus_boost" },
+    "en":    { "n": 14, "fts_ndcg": 0.6698, "fts_dense_ndcg": 0.7781, "delta": 0.1083, "verdict": "dense_strong_win" },
+    "mixed": { "n": 57, "fts_ndcg": 0.6676, "fts_dense_ndcg": 0.7482, "delta": 0.0806, "verdict": "dense_helps" }
+  },
   "minimum_queries_per_category_for_policy": 10,
-  "holdout_required_before_global_dense": true
+  "holdout_required_before_global_dense": false,
+  "global_dense_holdout_confirmed": {
+    "confirmed_at": "2026-04-30",
+    "artifact_run_id": "r1-c352271-2026-04-30T1400",
+    "corpus_hash": "904a974f74ec661cb0f29f274e507408f93587c0ad7668d4d2be19972cbe8179",
+    "primary_ndcg_macro": { "fts": 0.6862, "fts_dense": 0.7890, "delta": 0.1028 },
+    "p95_warm_ms": { "fts": 85.5, "fts_dense": 303.1 },
+    "hard_regression_failures": { "fts": 54, "fts_dense": 47 }
+  },
+  "open_R3_candidates": [
+    {
+      "axis": "language.ko",
+      "issue": "korean_holdout_ndcg_0.133_unchanged_by_dense",
+      "rationale": "BGE-M3 multilingual embedding doesn't lift Korean retrieval here. Possible R3 ColBERT path or sparse term-weight; or corpus boost (Korean docs underrepresented).",
+      "evidence": "reports/rag_eval/r1_holdout_c352271.json"
+    },
+    {
+      "axis": "category.design-pattern",
+      "issue": "ndcg_~0.18_query_too_generic_for_chunk_match",
+      "rationale": "Design-pattern queries are highly conceptual (Strategy vs Template, etc.). Both FTS and dense fail to discriminate. Query rewriting or sparse term-emphasis may help.",
+      "evidence": "reports/rag_eval/r1_holdout_c352271.json"
+    }
+  ]
 }
