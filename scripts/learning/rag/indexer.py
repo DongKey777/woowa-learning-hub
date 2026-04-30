@@ -522,6 +522,9 @@ def _lance_records(
     return records
 
 
+LANCE_ANN_MIN_ROWS = 1024
+
+
 def _create_lance_indices(
     table,
     *,
@@ -533,7 +536,11 @@ def _create_lance_indices(
     # LanceDB can build ANN indices on tiny fixtures, but it emits noisy
     # k-means warnings and the resulting index is not meaningful.  Production
     # corpus builds are large enough to use ANN; small tests keep exact scan.
-    should_build_ann = row_count >= 32
+    # Category-sampled ablations are intentionally small. Building ANN
+    # structures for a few hundred rows is slower, noisy (k-means empty-cluster
+    # warnings), and less representative than exact scan. Production-sized
+    # corpora still get ANN indices.
+    should_build_ann = row_count >= LANCE_ANN_MIN_ROWS
     dense_type = "IVF_PQ" if row_count >= 256 else "IVF_FLAT"
     dense_partitions = dense_num_partitions
     dense_sub_vectors = dense_num_sub_vectors

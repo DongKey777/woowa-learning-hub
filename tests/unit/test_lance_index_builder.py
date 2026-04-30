@@ -177,3 +177,43 @@ def test_build_lance_index_rejects_empty_corpus(tmp_path):
             corpus_root=tmp_path / "empty-corpus",
             encoder=FakeMultiModalEncoder(),
         )
+
+
+def test_create_lance_indices_uses_exact_scan_for_small_samples():
+    class FakeTable:
+        def __init__(self):
+            self.vector_index_calls = 0
+            self.fts_columns = []
+
+        def create_index(self, **_kwargs):
+            self.vector_index_calls += 1
+
+        def create_fts_index(self, column, **_kwargs):
+            self.fts_columns.append(column)
+
+    table = FakeTable()
+    indices = indexer._create_lance_indices(table, row_count=283)
+
+    assert table.vector_index_calls == 0
+    assert table.fts_columns == ["search_terms", "body"]
+    assert indices["dense"]["type"] == "unindexed"
+    assert indices["colbert"]["type"] == "sidecar"
+
+
+def test_create_lance_indices_builds_ann_for_production_sized_tables():
+    class FakeTable:
+        def __init__(self):
+            self.vector_index_calls = 0
+
+        def create_index(self, **_kwargs):
+            self.vector_index_calls += 1
+
+        def create_fts_index(self, *_args, **_kwargs):
+            pass
+
+    table = FakeTable()
+    indices = indexer._create_lance_indices(table, row_count=indexer.LANCE_ANN_MIN_ROWS)
+
+    assert table.vector_index_calls == 2
+    assert indices["dense"]["type"] in {"IVF_FLAT", "IVF_PQ"}
+    assert indices["colbert"]["type"] == "MULTI_VECTOR"
