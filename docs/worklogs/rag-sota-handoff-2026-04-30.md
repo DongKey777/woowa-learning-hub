@@ -464,6 +464,39 @@ Remaining:
 
 - The budget estimate is intentionally conservative and coarse. H8 production sweep should record actual LanceDB footprint and tune the constants if needed.
 
+## Checkpoint Verification After H4a/H2.3
+
+Full unit verification after the current continuation stack:
+
+```bash
+.venv/bin/python -m pytest tests/unit -q
+```
+
+Result:
+
+```text
+1786 passed, 2 warnings, 772 subtests passed in 139.72s
+```
+
+Current committed stack on top of `origin/main`:
+
+```text
+0739416 feat(rag): add bge-m3 encoder H0 capability proof
+631de57 feat(rag): add LanceDB v3 manifest foundation
+1a99b34 feat(rag): add LanceDB v3 writer foundation for bge-m3 hybrid index
+97989a8 feat(rag): expose opt-in LanceDB cs-index-build backend
+5e75105 feat(rag): add side-by-side LanceDB candidate search path
+226df64 feat(rag): wire explicit LanceDB backend into search API
+3e79934 feat(rag): add exact ColBERT MaxSim rescore for LanceDB candidates
+f02942a fix(rag): run cs-index-build through repo virtualenv when available
+ee8be67 feat(rag): add disk budget gate for LanceDB index builds
+```
+
+Recommended next handoff point:
+
+- Start H5 only after deciding whether to implement LanceDB incremental upsert now or first run a non-production full build under `state/cs_rag_lance/` for H7/H8 harness measurements.
+- Do not flip default `search()` backend, `integration.augment()`, or `indexer.is_ready()` until H7/H8 metrics and cutover gates are met.
+
 ## Notes for Next AI
 
 - Do not re-run old Qwen CPU sweep. The plan says Qwen3-0.6B remains an H8 candidate, but it must be measured later under the new LanceDB/index format.
