@@ -98,3 +98,31 @@ def test_augment_uses_lance_backend_for_v3_manifest(tmp_path, monkeypatch):
     assert calls
     assert calls[0]["backend"] == "lance"
     assert calls[0]["learner_context"] == {"experience_level": "beginner"}
+
+
+def test_augment_surfaces_query_candidate_debug_from_searcher(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root, indexer.LANCE_INDEX_VERSION)
+
+    def fake_search(prompt, **kwargs):
+        kwargs["debug"]["query_candidate_kinds"] = ["original", "rewrite"]
+        return [_hit()]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="그거 왜 안 보여?",
+        learning_points=None,
+        cs_search_mode="cheap",
+        index_root=index_root,
+        readiness=ReadyReport(),
+    )
+
+    assert result["meta"]["query_candidate_kinds"] == ["original", "rewrite"]
+    assert result["meta"]["query_plans"] == [
+        {
+            "bucket": "fallback:general:그거",
+            "query_candidate_kinds": ["original", "rewrite"],
+        }
+    ]
+    assert result["sidecar"]["query_candidate_kinds"] == ["original", "rewrite"]

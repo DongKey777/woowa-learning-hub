@@ -128,6 +128,7 @@ def test_augment_legacy_uses_cached_rewrite_candidate(tmp_path):
     )
 
     assert result["meta"]["backend"] == "legacy"
+    assert result["meta"]["query_candidate_kinds"] == ["original", "rewrite"]
     bucket_hits = next(iter(result["by_fallback_key"].values()))
     assert bucket_hits[0]["path"] == (
         "contents/design-pattern/read-model-staleness-read-your-writes.md"

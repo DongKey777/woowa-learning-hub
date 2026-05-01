@@ -124,6 +124,25 @@ def augment(
     all_hits: list[dict] = []
     seen_paths: set[str] = set()
     category_filter_fallback = False
+    query_candidate_kinds: list[str] = []
+    query_plans: list[dict[str, Any]] = []
+
+    def record_query_debug(bucket: str, search_debug: dict) -> None:
+        raw_kinds = search_debug.get("query_candidate_kinds")
+        if not isinstance(raw_kinds, list):
+            return
+        kinds = [str(kind) for kind in raw_kinds if str(kind)]
+        if not kinds:
+            return
+        query_plans.append(
+            {
+                "bucket": bucket,
+                "query_candidate_kinds": kinds,
+            }
+        )
+        for kind in kinds:
+            if kind not in query_candidate_kinds:
+                query_candidate_kinds.append(kind)
 
     try:
         if learning_points:
@@ -145,6 +164,7 @@ def augment(
                 )
                 if lp_debug.get("category_filter_fallback"):
                     category_filter_fallback = True
+                record_query_debug(f"learning_point:{lp}", lp_debug)
                 if hits:
                     by_lp[lp] = hits
                     for h in hits:
@@ -165,6 +185,7 @@ def augment(
                 # Use the top 2 signal tags as bucket keys.
                 for sig in signals[:2]:
                     key = f"{sig['category']}:{sig['tag']}"
+                    fallback_debug: dict = {}
                     hits = searcher.search(
                         prompt,
                         learning_points=None,
@@ -175,7 +196,11 @@ def augment(
                         top_k=top_k,
                         experience_level=experience_level,
                         learner_context=learner_context,
+                        debug=fallback_debug,
                     )
+                    if fallback_debug.get("category_filter_fallback"):
+                        category_filter_fallback = True
+                    record_query_debug(f"fallback:{key}", fallback_debug)
                     if hits:
                         by_fallback[key] = hits
                         for h in hits:
@@ -188,6 +213,7 @@ def augment(
                         break
             else:
                 key = f"general:{_top_token(prompt)}"
+                fallback_debug = {}
                 hits = searcher.search(
                     prompt,
                     learning_points=None,
@@ -198,7 +224,11 @@ def augment(
                     top_k=top_k,
                     experience_level=experience_level,
                     learner_context=learner_context,
+                    debug=fallback_debug,
                 )
+                if fallback_debug.get("category_filter_fallback"):
+                    category_filter_fallback = True
+                record_query_debug(f"fallback:{key}", fallback_debug)
                 if hits:
                     by_fallback[key] = hits
                     for h in hits:
@@ -224,6 +254,21 @@ def augment(
             "backend": backend,
             "hits": [_sidecar_hit(h) for h in all_hits],
         }
+        if query_candidate_kinds:
+            sidecar["query_candidate_kinds"] = query_candidate_kinds
+            sidecar["query_plans"] = query_plans
+
+    meta = {
+        "latency_ms": latency_ms,
+        "rag_ready": True,
+        "reason": "ready",
+        "mode_used": cs_search_mode,
+        "backend": backend,
+        "category_filter_fallback": category_filter_fallback,
+    }
+    if query_candidate_kinds:
+        meta["query_candidate_kinds"] = query_candidate_kinds
+        meta["query_plans"] = query_plans
 
     return {
         "by_learning_point": by_lp,
@@ -231,14 +276,7 @@ def augment(
         "fallback_reason": fallback_reason,
         "cs_categories_hit": categories_hit,
         "sidecar": sidecar,
-        "meta": {
-            "latency_ms": latency_ms,
-            "rag_ready": True,
-            "reason": "ready",
-            "mode_used": cs_search_mode,
-            "backend": backend,
-            "category_filter_fallback": category_filter_fallback,
-        },
+        "meta": meta,
     }
 
 
