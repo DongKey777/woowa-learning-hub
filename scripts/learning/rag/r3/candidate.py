@@ -7,6 +7,26 @@ from typing import Any
 
 
 @dataclass(frozen=True)
+class R3Document:
+    """Minimal document/chunk shape consumed by R3 retriever prototypes."""
+
+    path: str
+    chunk_id: str | None = None
+    title: str = ""
+    section_title: str = ""
+    body: str = ""
+    aliases: tuple[str, ...] = ()
+    dense_vector: tuple[float, ...] | None = None
+    sparse_terms: dict[str, float] = field(default_factory=dict)
+    signals: tuple[str, ...] = ()
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.path:
+            raise ValueError("document path is required")
+
+
+@dataclass(frozen=True)
 class Candidate:
     """One document/chunk candidate emitted by an independent retriever."""
 

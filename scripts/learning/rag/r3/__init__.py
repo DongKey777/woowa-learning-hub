@@ -5,7 +5,8 @@ diagnostic gates pass.  Public runtime entrypoints should route here only when
 the caller explicitly selects the experimental R3 backend.
 """
 
+from .candidate import Candidate, R3Document
 from .config import R3Config
 from .query_plan import QueryPlan, build_query_plan
 
-__all__ = ["R3Config", "QueryPlan", "build_query_plan"]
+__all__ = ["Candidate", "R3Document", "R3Config", "QueryPlan", "build_query_plan"]
