@@ -12,7 +12,11 @@ from pathlib import Path
 from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
-from .index.runtime_loader import load_runtime_documents
+from .index.runtime_loader import (
+    encode_runtime_sparse_query,
+    load_runtime_documents,
+    load_runtime_sparse_documents,
+)
 from .index.lexical_store import LexicalStore
 from .query_plan import build_query_plan
 from .retrievers import LexicalRetriever, SignalRetriever, SparseRetriever
@@ -56,6 +60,9 @@ def search(
     query_plan = build_query_plan(prompt)
     candidates = []
     fused = []
+    sparse_documents = []
+    query_sparse_terms: dict[str, float] = {}
+    sparse_source = "lexical_terms"
     try:
         documents = (
             load_runtime_documents(
@@ -69,9 +76,26 @@ def search(
     except FileNotFoundError:
         documents = []
 
-    if documents:
+    sparse_encoder_allowed = mode == "full" or config.sparse_encoder_in_cheap_mode
+    if index_root is not None and sparse_encoder_allowed:
+        try:
+            query_sparse_terms = encode_runtime_sparse_query(index_root, query_plan.raw_query)
+        except Exception:
+            query_sparse_terms = {}
+        if query_sparse_terms:
+            try:
+                sparse_documents = load_runtime_sparse_documents(index_root)
+                sparse_source = "bge_m3_sparse_vec_sidecar"
+            except FileNotFoundError:
+                sparse_documents = []
+    if not sparse_documents:
+        sparse_documents = documents
+        query_sparse_terms = {}
+        sparse_source = "lexical_terms"
+
+    if documents or sparse_documents:
         lexical = LexicalRetriever(LexicalStore.from_documents(documents))
-        sparse = SparseRetriever(documents)
+        sparse = SparseRetriever(sparse_documents)
         signal = SignalRetriever(documents)
         fusion_limit = max(
             top_k,
@@ -80,7 +104,7 @@ def search(
         )
         candidates = [
             *lexical.retrieve(query_plan),
-            *sparse.retrieve(query_plan),
+            *sparse.retrieve(query_plan, query_terms=query_sparse_terms or None),
             *signal.retrieve([*query_plan.route_tags, *(topic_hints or [])]),
         ]
         fused = fuse_candidates(candidates, limit=fusion_limit)
@@ -110,6 +134,10 @@ def search(
             "reranker_model": reranker_model,
             "fused_paths": list(fused_paths),
             "rerank_input_paths": list(rerank_input_paths),
+            "sparse_source": sparse_source,
+            "sparse_sidecar_document_count": len(sparse_documents),
+            "sparse_query_terms_count": len(query_sparse_terms),
+            "sparse_encoder_allowed": sparse_encoder_allowed,
         },
     )
 
@@ -122,6 +150,10 @@ def search(
         debug["r3_candidate_count"] = len(candidates)
         debug["r3_final_paths"] = list(trace.final_paths)
         debug["r3_reranker_model"] = reranker_model
+        debug["r3_sparse_source"] = sparse_source
+        debug["r3_sparse_sidecar_document_count"] = len(sparse_documents)
+        debug["r3_sparse_query_terms_count"] = len(query_sparse_terms)
+        debug["r3_sparse_encoder_allowed"] = sparse_encoder_allowed
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k
         debug["mode"] = mode

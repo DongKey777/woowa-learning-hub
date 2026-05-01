@@ -150,6 +150,7 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
                     "body": "latency bandwidth throughput",
                     "search_terms": "latency 지연 처리량",
                     "anchors": '["latency", "지연"]',
+                    "sparse_vec": {"indices": [101, 202], "values": [2.5, 1.25]},
                 }
             ]
 
@@ -181,12 +182,69 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
         "body",
         "search_terms",
         "anchors",
+        "sparse_vec",
     ]
     assert documents[0].path == "contents/network/latency-bandwidth-throughput-basics.md"
     assert documents[0].section_title == "Primer"
     assert documents[0].aliases == ("latency", "지연")
-    assert documents[0].sparse_terms["latency"] == 1.0
+    assert documents[0].sparse_terms == {"101": 2.5, "202": 1.25}
     assert documents[0].metadata["index_backend"] == "lance"
+
+
+def test_r3_lance_sparse_sidecar_omits_body_for_full_sparse_scan(
+    monkeypatch,
+    tmp_path,
+):
+    captured = {}
+
+    class FakeFrame:
+        def to_dict(self, orient):
+            assert orient == "records"
+            return [
+                {
+                    "chunk_id": "sparse#0",
+                    "path": "contents/network/sparse-only.md",
+                    "title": "Sparse Only",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Sparse Only"]',
+                    "search_terms": "",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [42], "values": [9.0]},
+                }
+            ]
+
+    class FakeTable:
+        version = 9
+
+        def to_pandas(self, **kwargs):
+            captured["columns"] = kwargs["columns"]
+            return FakeFrame()
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: {"corpus_hash": "hash"},
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+
+    documents = load_lance_documents(tmp_path, sparse_sidecar=True)
+
+    assert captured["columns"] == [
+        "chunk_id",
+        "path",
+        "title",
+        "category",
+        "difficulty",
+        "section_path",
+        "search_terms",
+        "anchors",
+        "sparse_vec",
+    ]
+    assert documents[0].body == ""
+    assert documents[0].sparse_terms == {"42": 9.0}
 
 
 def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):
@@ -209,6 +267,7 @@ def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_pa
                     "body": "latency",
                     "search_terms": "latency",
                     "anchors": "[]",
+                    "sparse_vec": {"indices": [7], "values": [1.0]},
                 }
             ]
 
@@ -237,3 +296,167 @@ def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_pa
         "limit": 25,
     }
     assert documents[0].path == "contents/network/latency-bandwidth-throughput-basics.md"
+
+
+def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
+    monkeypatch,
+    tmp_path,
+):
+    class FakeSearch:
+        def limit(self, value):
+            return self
+
+        def to_list(self):
+            return [
+                {
+                    "chunk_id": "prefetch#0",
+                    "path": "contents/network/prefetch-only.md",
+                    "title": "Prefetch Only",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Prefetch Only"]',
+                    "body": "surface terms only",
+                    "search_terms": "surface terms",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [11], "values": [1.0]},
+                }
+            ]
+
+    class FakeFrame:
+        def to_dict(self, orient):
+            assert orient == "records"
+            return [
+                {
+                    "chunk_id": "prefetch#0",
+                    "path": "contents/network/prefetch-only.md",
+                    "title": "Prefetch Only",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Prefetch Only"]',
+                    "search_terms": "surface terms",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [11], "values": [1.0]},
+                },
+                {
+                    "chunk_id": "sparse#0",
+                    "path": "contents/network/sparse-only.md",
+                    "title": "Sparse Only",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Sparse Only"]',
+                    "search_terms": "",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [42], "values": [8.0]},
+                },
+            ]
+
+    class FakeTable:
+        version = 10
+
+        def search(self, query, *, query_type):
+            return FakeSearch()
+
+        def to_pandas(self, **kwargs):
+            return FakeFrame()
+
+    manifest = {
+        "index_version": indexer.LANCE_INDEX_VERSION,
+        "corpus_hash": "hash",
+        "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fixture"},
+    }
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.load_manifest",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.encode_runtime_sparse_query",
+        lambda root, query: {"42": 5.0},
+    )
+    debug: dict = {}
+
+    hits = searcher.search(
+        "opaque-query",
+        backend="r3",
+        index_root=tmp_path,
+        mode="full",
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/sparse-only.md"
+    assert hits[0]["r3_sources"] == [{"retriever": "sparse", "rank": 1, "score": 40.0}]
+    assert debug["r3_sparse_source"] == "bge_m3_sparse_vec_sidecar"
+    assert debug["r3_sparse_sidecar_document_count"] == 2
+    assert debug["r3_sparse_query_terms_count"] == 1
+
+
+def test_r3_cheap_mode_does_not_load_sparse_encoder(monkeypatch, tmp_path):
+    class FakeSearch:
+        def limit(self, value):
+            return self
+
+        def to_list(self):
+            return [
+                {
+                    "chunk_id": "latency#0",
+                    "path": "contents/network/latency.md",
+                    "title": "Latency",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Latency"]',
+                    "body": "latency",
+                    "search_terms": "latency",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [42], "values": [1.0]},
+                }
+            ]
+
+    class FakeTable:
+        version = 11
+
+        def search(self, query, *, query_type):
+            return FakeSearch()
+
+    manifest = {
+        "index_version": indexer.LANCE_INDEX_VERSION,
+        "corpus_hash": "hash",
+        "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fixture"},
+    }
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.load_manifest",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.encode_runtime_sparse_query",
+        lambda root, query: (_ for _ in ()).throw(AssertionError("encoder loaded")),
+    )
+    debug: dict = {}
+
+    hits = searcher.search(
+        "latency가 뭐야?",
+        backend="r3",
+        index_root=tmp_path,
+        mode="cheap",
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/latency.md"
+    assert debug["r3_sparse_encoder_allowed"] is False
+    assert debug["r3_sparse_source"] == "lexical_terms"

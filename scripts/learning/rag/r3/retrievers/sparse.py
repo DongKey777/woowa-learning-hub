@@ -21,7 +21,9 @@ class SparseRetriever:
             for term, weight in doc.sparse_terms.items():
                 if weight <= 0:
                     continue
-                self._postings[term.casefold()].append(((doc.path, doc.chunk_id), float(weight)))
+                self._postings[str(term).casefold()].append(
+                    ((doc.path, doc.chunk_id), float(weight))
+                )
 
     def retrieve(
         self,
@@ -41,7 +43,7 @@ class SparseRetriever:
                 continue
             for doc_key, doc_weight in self._postings.get(term, []):
                 scores[doc_key] = scores.get(doc_key, 0.0) + query_weight * doc_weight
-                matched[doc_key].add(term)
+                matched[doc_key].add(str(term))
         ranked = sorted(
             scores.items(),
             key=lambda item: (-item[1], item[0][0], item[0][1] or ""),

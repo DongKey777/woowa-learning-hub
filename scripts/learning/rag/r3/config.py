@@ -70,6 +70,7 @@ class R3Config:
     local_rerank_input_window: int = 50
     offline_rerank_input_window: int = 100
     runtime_lance_prefetch_limit: int = 100
+    sparse_encoder_in_cheap_mode: bool = False
     trace_dir: Path = Path("reports/rag_eval/r3_traces")
 
     @classmethod
@@ -103,6 +104,10 @@ class R3Config:
             runtime_lance_prefetch_limit=_int_from_env(
                 "WOOWA_RAG_R3_LANCE_PREFETCH_LIMIT",
                 100,
+            ),
+            sparse_encoder_in_cheap_mode=_bool_from_env(
+                "WOOWA_RAG_R3_SPARSE_ENCODER_IN_CHEAP",
+                False,
             ),
             trace_dir=Path(
                 os.environ.get("WOOWA_RAG_R3_TRACE_DIR", "reports/rag_eval/r3_traces")
