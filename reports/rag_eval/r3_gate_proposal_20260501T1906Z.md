@@ -12,6 +12,7 @@ Evidence:
 - Daemon sidecar window-20 runtime smoke: `reports/rag_eval/r3_daemon_full_runtime_sidecar_window20_smoke_20260501T2005Z.md`
 - Auto sidecar rerank policy quality gate: `reports/rag_eval/r3_rerank_auto_policy_summary_20260501T2025Z.md`
 - Auto sidecar daemon smoke: `reports/rag_eval/r3_daemon_full_runtime_auto_sidecar_smoke_20260501T2005Z.md`
+- Auto sidecar daemon RSS smoke: `reports/rag_eval/r3_daemon_auto_sidecar_rss_smoke_20260501T2017Z.md`
 - Sparse retriever cache runtime profile: `reports/rag_eval/r3_sparse_retriever_cache_profile_20260501T1915Z.md`
 - Lexical sidecar gate: `reports/rag_eval/r3_lexical_sidecar_summary_20260501T1955Z.md`
 - Strict artifact import smoke: `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md`
@@ -46,6 +47,7 @@ Observed Expanded Pilot:
 | auto sidecar Korean-only final_hit_relevant@5 | 1.0000 |
 | auto sidecar mixed Korean/English final_hit_relevant@5 | 1.0000 |
 | auto sidecar warm daemon latency | 476ms |
+| auto sidecar warm daemon RSS | 2951.547MB |
 | Qdrant local candidate_recall_primary@100 | 1.0000 |
 | Qdrant local sparse query p95 | 302.123ms |
 | Qdrant local RSS peak after eval | 3398.422MB |
@@ -67,6 +69,7 @@ Current Provisional Gates:
 | auto sidecar local policy | `use_reranker=null` skips cross-encoder only when verified sidecar is loaded and keeps relevant@5 gate green | pass | pass |
 | local long-lived runtime architecture | daemon path exists and reports R3 debug fields | pass | pass |
 | local full-mode latency | accepted M5 interactive budget | auto sidecar first request 12.30s, warm 476ms internal latency | pass |
+| local full-mode memory | M5 16GB unified memory | auto sidecar warm daemon RSS 2951.547MB | pass |
 | strict artifact import contract | strict manifest + checksum + extracted index manifest verify locally | local artifact pass | pass |
 | remote harness strict gate | R3 remote build must strict-package and verify downloaded artifact before success | dry-run + unit pass | pass |
 | backend decision | production candidate selected with Qdrant comparator measured | LanceDB-improved R3 selected; Qdrant local not first production candidate | pass |

@@ -17,7 +17,7 @@ step-by-step commits.
 | Korean/mixed learner query distribution represented | 100q Corpus v2 gate: 16 Korean-only, 84 mixed Korean/English prompts | pass |
 | BGE reranker as target quality path with safe fallback framing | `scripts/learning/rag/r3/rerankers/*`, reranker profile reports, forced reranker quality report | pass |
 | Local interactive latency on M5 target | auto sidecar daemon smoke: first request 12296ms, warm request 476ms | pass for latency |
-| Local RSS peak for selected default path | no dedicated auto-daemon RSS artifact found; Qdrant RSS was measured but it is not selected | weak |
+| Local RSS for selected default path | `reports/rag_eval/r3_daemon_auto_sidecar_rss_smoke_20260501T2017Z.md`: warm daemon RSS 2951.547MB | pass |
 | Corpus v2 pilot and qrels | `r3_corpus_v2_qrels_20260501T1640Z.json`, `r3_corpus_field_lift_20260501T1640Z.json`; pilot has 25 docs and 100 qrels | partial |
 | Broad corpus expansion C1-C5 | no full wave completion artifact found | not complete |
 | Backend spike and production candidate decision | Qdrant local probe + `docs/worklogs/rag-r3-backend-decision-2026-05-02.md` | pass |
@@ -39,8 +39,7 @@ validated, but the full plan still has non-proxy blockers:
 3. Production cutover is intentionally blocked until that artifact exists.
 4. Broad corpus expansion waves are not complete; only the pilot/qrel gate is
    implemented.
-5. A selected-path RSS artifact should be added before final cutover if the
-   M5 memory budget is treated as a hard gate.
+5. Broad corpus expansion waves are still outside the completed pilot scope.
 
 Next productive action once credentials are available:
 
