@@ -273,6 +273,50 @@ Decision:
   for the repeated primer targets. Additional query-candidate plumbing is not
   indicated by the current evidence.
 
+## Option A No-Reranker Same-Query Diagnostic
+
+Lance report:
+`reports/rag_eval/r2_no_rerank_same_queries_20260501T0540Z.json`
+
+Comparison summary:
+`reports/rag_eval/cutover_legacy_vs_lance_no_rerank_20260501T0540Z.json`
+
+Method:
+
+- Reused the same 101-query Korean rewritten holdout fixture from the
+  same-query cutover diagnostic:
+  `/private/tmp/cutover_holdout_ko_rewritten_applied.json`.
+- Reused the same extracted Lance R2 index:
+  `/private/tmp/rag_ivf_sweep_20260501T0401/current`.
+- Set `WOOWA_RAG_NO_RERANK=1` and evaluated only `fts,dense,sparse`.
+- Compared the result against
+  `reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json`.
+
+Measurement:
+
+| metric | reranker-on same-code | no-reranker | legacy |
+|---|---:|---:|---:|
+| primary nDCG macro | 0.9103 | 0.8081 | 0.9624 |
+| delta vs legacy | -0.0521 | -0.1543 | n/a |
+| regression buckets | 7 | 8 | n/a |
+| hard regression failures | 13 | 50 | n/a |
+| local CPU P95 | 692.6 ms | 285.9 ms | n/a |
+
+Important observations:
+
+- The qrel review's three rank-1 direct-diagnostic cases were explained by
+  the diagnostic search running without reranker.
+- Disabling the current reranker improves local CPU latency, but it severely
+  hurts quality and hard-regression count on the same 101-query holdout.
+- No-reranker Lance is therefore not a viable cutover path.
+
+Decision:
+
+- Keep reranker enabled for the current Lance R2 candidate.
+- Do not use `WOOWA_RAG_NO_RERANK=1` as a cutover recovery lever.
+- The remaining blocker is still qrel/gate review or stronger document
+  structure, not reranker removal.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

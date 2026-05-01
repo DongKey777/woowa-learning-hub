@@ -48,7 +48,7 @@ Runtime state:
   - `index_version=2`
   - `embed_model=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
   - `embed_dim=384`
-  - `row_count=27155`
+  - `row_count=27157`
 - `state/cs_rag_archive/` does not exist.
 - `docs/worklogs/rag-r2-cutover-2026-05-01.md` does not exist.
 - `config/rag_models.json` has R2 candidate metadata, but not the final
@@ -85,6 +85,15 @@ Runtime state:
   - 4 same-category wrong-doc cases
   - 1 primary-below-rank5 case
   - 3 direct rank-1 divergences needing runner-condition inspection
+- Option A no-reranker same-query diagnostic was measured:
+  `reports/rag_eval/cutover_legacy_vs_lance_no_rerank_20260501T0540Z.json`
+  - no-reranker Lance primary nDCG macro: `0.8081397290`
+  - delta versus legacy: `-0.1543011520`
+  - bucket regressions: `8`
+  - hard-regression failures: `50`
+  - interpretation: disabling the current reranker explains the direct
+    diagnostic divergence but makes the gate worse, so it is not a cutover
+    recovery path
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.
