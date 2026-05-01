@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "IoC 컨테이너와 의존성 주입"
+concept_id: "spring/ioc-container-internals"
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+aliases:
+  - IoC container
+  - ApplicationContext
+  - BeanFactory
+  - BeanDefinition
+  - Spring 컨테이너
+expected_queries:
+  - ApplicationContext가 뭐야?
+  - BeanFactory랑 ApplicationContext 차이가 뭐야?
+  - Spring 컨테이너 안에서는 DI가 어떻게 일어나?
+  - BeanDefinition이 뭐야?
+forbidden_neighbors:
+  - contents/spring/spring-ioc-di-basics.md
+  - contents/spring/spring-bean-di-basics.md
+---
+
 # IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)
 
 

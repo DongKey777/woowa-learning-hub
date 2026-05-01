@@ -1,3 +1,28 @@
+---
+schema_version: 2
+title: "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB"
+concept_id: "network/request-timing-decomposition"
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+aliases:
+  - request timing decomposition
+  - TTFB
+  - TTLB
+  - DNS time
+  - connect time
+  - TLS handshake
+  - latency breakdown
+expected_queries:
+  - TTFB랑 TTLB는 뭐가 달라?
+  - 요청 latency를 DNS connect TLS로 어떻게 나눠?
+  - latency breakdown은 어떻게 봐?
+  - time_starttransfer는 뭐야?
+forbidden_neighbors:
+  - contents/network/browser-devtools-waterfall-primer.md
+  - contents/network/latency-bandwidth-throughput-basics.md
+---
+
 # Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB
 
 > 한 줄 요약: "요청이 2초 걸렸다"는 말만으로는 원인을 못 찾는다. DNS, connect, TLS, queue wait, TTFB, TTLB를 분리해 봐야 어느 계층이 실제로 시간을 태웠는지 보인다.

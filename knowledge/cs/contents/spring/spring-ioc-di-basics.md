@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가"
+concept_id: "spring/ioc-di-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - IoC
+  - DI
+  - dependency injection
+  - 의존성 주입
+  - 제어 역전
+expected_queries:
+  - DI가 뭐야?
+  - 의존성 주입이 뭐야?
+  - 왜 new 대신 DI를 써?
+  - IoC랑 DI 차이가 뭐야?
+forbidden_neighbors:
+  - contents/spring/ioc-di-container.md
+  - contents/design-pattern/service-locator-antipattern.md
+---
+
 # IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가
 
 > 한 줄 요약: IoC는 객체 생성과 조립의 제어권을 개발자에서 컨테이너로 넘기는 원칙이고, DI는 그 구현 방법으로 컨테이너가 필요한 의존 객체를 주입해 결합도를 낮춘다.

@@ -1,3 +1,29 @@
+---
+schema_version: 2
+title: "락 기초"
+concept_id: "database/lock-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - database lock
+  - row lock
+  - shared lock
+  - exclusive lock
+  - optimistic lock
+  - pessimistic lock
+  - 락
+  - 잠금
+expected_queries:
+  - DB lock이 뭐야?
+  - 공유 락과 배타 락은 뭐가 달라?
+  - 낙관적 락과 비관적 락은 뭐가 달라?
+  - lock wait은 왜 생겨?
+forbidden_neighbors:
+  - contents/database/transaction-basics.md
+  - contents/database/transaction-isolation-basics.md
+---
+
 # 락 기초 (Database Lock Basics)
 
 > 한 줄 요약: 데이터베이스 락은 동시에 실행되는 트랜잭션이 같은 데이터를 충돌 없이 변경할 수 있도록 순서를 강제하는 메커니즘이다.

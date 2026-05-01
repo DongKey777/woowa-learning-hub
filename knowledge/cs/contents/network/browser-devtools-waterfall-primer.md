@@ -1,3 +1,27 @@
+---
+schema_version: 2
+title: "Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기"
+concept_id: "network/devtools-waterfall-primer"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - DevTools waterfall
+  - waterfall
+  - waiting
+  - TTFB
+  - DNS connect SSL
+  - 네트워크 탭
+expected_queries:
+  - DevTools waterfall이 뭐야?
+  - waiting이 길면 서버가 느린 거야?
+  - DNS connect SSL이 안 보이면 왜 그래?
+  - Network 탭 timing은 어떻게 읽어?
+forbidden_neighbors:
+  - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+  - contents/network/latency-bandwidth-throughput-basics.md
+---
+
 # Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기
 
 > 한 줄 요약: 브라우저 Network 탭 waterfall은 "요청 전체 시간" 한 덩어리가 아니라 `dns -> connect -> ssl -> request sent -> waiting -> content download`로 잘라 읽는 시간표이며, 각 칸이 답하는 질문을 먼저 분리해야 병목을 잘못 찍지 않는다.

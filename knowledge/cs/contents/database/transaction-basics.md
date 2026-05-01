@@ -1,3 +1,28 @@
+---
+schema_version: 2
+title: "트랜잭션 기초"
+concept_id: "database/transaction-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - transaction
+  - commit
+  - rollback
+  - ACID
+  - 트랜잭션
+  - 커밋
+  - 롤백
+expected_queries:
+  - transaction이 뭐야?
+  - 트랜잭션이 뭐야?
+  - commit이랑 rollback은 뭐야?
+  - 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
+forbidden_neighbors:
+  - contents/database/transaction-isolation-basics.md
+  - contents/database/lock-basics.md
+---
+
 # 트랜잭션 기초 (Transaction Basics)
 
 > 한 줄 요약: 트랜잭션은 "여기까지 같이 성공하거나 같이 실패한다"를 정하는 묶음이다. `deadlock`, `retry`, `savepoint`는 이 primer의 본문보다 다음 관련 문서 가지에 가깝다.

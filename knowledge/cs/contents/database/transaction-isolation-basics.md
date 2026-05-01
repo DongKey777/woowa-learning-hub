@@ -1,3 +1,27 @@
+---
+schema_version: 2
+title: "트랜잭션 격리 수준 기초"
+concept_id: "database/transaction-isolation-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - isolation level
+  - Read Committed
+  - Repeatable Read
+  - MVCC
+  - 격리 수준
+  - 팬텀 리드
+expected_queries:
+  - 격리 수준이 뭐야?
+  - Read Committed랑 Repeatable Read는 뭐가 달라?
+  - MVCC가 뭐야?
+  - phantom read가 뭐야?
+forbidden_neighbors:
+  - contents/database/transaction-basics.md
+  - contents/database/lock-basics.md
+---
+
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)
 
 > 한 줄 요약: 격리 수준은 "같은 row나 범위를 다시 읽을 때 왜 값이 달라지지?"를 설명하는 동시성 가시성 규칙이다.

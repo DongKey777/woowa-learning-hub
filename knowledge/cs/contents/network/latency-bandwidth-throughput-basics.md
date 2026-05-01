@@ -1,3 +1,28 @@
+---
+schema_version: 2
+title: "지연·대역폭·처리량 기초"
+concept_id: "network/latency-bandwidth-throughput-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - latency
+  - bandwidth
+  - throughput
+  - RTT
+  - 지연
+  - 대역폭
+  - 처리량
+expected_queries:
+  - latency가 뭐야?
+  - 대역폭이랑 처리량은 뭐가 달라?
+  - RTT가 뭐야?
+  - bandwidth를 늘리면 항상 빨라져?
+forbidden_neighbors:
+  - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
+  - contents/network/browser-devtools-waterfall-primer.md
+---
+
 # 지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)
 
 > 한 줄 요약: 지연(latency)은 얼마나 빠른가, 대역폭(bandwidth)은 얼마나 넓은 파이프인가, 처리량(throughput)은 실제로 얼마나 통과됐는가를 각각 측정한다.

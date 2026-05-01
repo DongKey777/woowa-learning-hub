@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "Spring Bean 생명주기 기초: 생성부터 소멸까지"
+concept_id: "spring/bean-lifecycle-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - bean lifecycle
+  - Spring Bean lifecycle
+  - PostConstruct
+  - PreDestroy
+  - 빈 생명주기
+expected_queries:
+  - Spring Bean은 언제 만들어져?
+  - Bean 생명주기가 뭐야?
+  - PostConstruct는 언제 실행돼?
+  - prototype Bean도 PreDestroy가 호출돼?
+forbidden_neighbors:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/ioc-di-container.md
+---
+
 # Spring Bean 생명주기 기초: 생성부터 소멸까지
 
 > 한 줄 요약: Spring Bean은 컨테이너 시작 시 생성되고, `@PostConstruct`로 초기화 작업을 할 수 있으며, `@PreDestroy`로 소멸 전 정리 작업을 할 수 있다.

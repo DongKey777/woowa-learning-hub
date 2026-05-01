@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "@Transactional 기초: 트랜잭션 어노테이션이 하는 일"
+concept_id: "spring/transactional-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - Transactional
+  - @Transactional
+  - Spring transaction
+  - 트랜잭션 어노테이션
+  - transactional proxy
+expected_queries:
+  - Transactional이 뭐야?
+  - Spring에서 transaction이 뭐야?
+  - 왜 Transactional이 안 먹어?
+  - self invocation이면 왜 트랜잭션이 안 걸려?
+forbidden_neighbors:
+  - contents/database/transaction-basics.md
+  - contents/spring/ioc-di-container.md
+---
+
 # @Transactional 기초: 트랜잭션 어노테이션이 하는 일
 
 > 한 줄 요약: `@Transactional`은 메서드 실행을 하나의 트랜잭션으로 묶어 주는 어노테이션이고, 실제 동작은 Spring이 생성한 프록시가 메서드 호출 전후로 begin/commit/rollback을 대신 처리하는 것이다.

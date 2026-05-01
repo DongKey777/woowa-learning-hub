@@ -1,3 +1,28 @@
+---
+schema_version: 2
+title: "SQL 읽기와 관계형 모델링 기초"
+concept_id: "database/sql-relational-modeling-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - SQL
+  - SELECT
+  - JOIN
+  - GROUP BY
+  - PK
+  - FK
+  - 관계형 모델링
+expected_queries:
+  - SQL SELECT는 어떻게 읽어?
+  - JOIN하면 왜 row가 늘어나?
+  - PK랑 FK가 뭐야?
+  - GROUP BY는 왜 쓰는 거야?
+forbidden_neighbors:
+  - contents/database/sql-join-basics.md
+  - contents/database/sql-aggregate-groupby-basics.md
+---
+
 # SQL 읽기와 관계형 모델링 기초 (SQL Reading & Relational Modeling Foundations)
 
 > 한 줄 요약: `SELECT`는 어떤 테이블에서 어떤 행을 읽고 어떻게 묶어서 보여줄지 선언하는 문장이고, PK/FK·cardinality·정규화는 그 문장이 왜 그런 모양이 되는지를 설명하는 모델링 언어다.

@@ -1,3 +1,27 @@
+---
+schema_version: 2
+title: "Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기"
+concept_id: "spring/bean-di-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - spring bean
+  - bean
+  - component scan
+  - DI
+  - 빈 등록
+  - 컴포넌트 스캔
+expected_queries:
+  - Spring Bean이 뭐야?
+  - Bean이랑 DI는 뭐가 달라?
+  - component scan이 뭐야?
+  - controller랑 service는 누가 연결해?
+forbidden_neighbors:
+  - contents/spring/ioc-di-container.md
+  - contents/spring/spring-bean-lifecycle-basics.md
+---
+
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기
 
 > 한 줄 요약: Spring Bean은 "내가 `new`로 직접 만든 객체"가 아니라, 컨테이너가 등록하고 조립하고 필요하면 프록시로 감싸서 꺼내 주는 객체다.
