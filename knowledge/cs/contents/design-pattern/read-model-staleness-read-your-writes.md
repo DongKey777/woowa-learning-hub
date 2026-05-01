@@ -26,6 +26,7 @@
 > - [System Design: Session Store Design at Scale](../system-design/session-store-design-at-scale.md)
 
 retrieval-anchor-keywords: read model staleness, read your writes, projection lag, freshness budget, eventual consistency UX, projection watermark, projection rebuild, read model cutover, projection lag budget, summary table refresh, session pinning, strict screen fallback, fallback ownership, fallback routing, fallback rate contract, dual read verification, dual read parity, projection freshness slo, old data after write, saved but still old data, write succeeded but old data
+retrieval-anchor-keywords: 목록이 안 바뀜, 삭제했는데 검색 결과에 남아 있어요, 저장했는데 새 값이 안 보여요, 리스트가 늦게 갱신돼요, 당겨서 새로고침해야 보여요, 모바일 swipe refresh lag, read model freshness beginner, read model staleness primer, projection freshness intro, 쓴 직후 읽기 보장, 읽기 모델 최신성 입문
 
 ---
 

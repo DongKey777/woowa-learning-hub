@@ -14,6 +14,7 @@
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
 retrieval-anchor-keywords: connection pool basics, 커넥션 풀이란, hikari cp 입문, db connection reuse, pool size 설정, 커넥션 고갈, connection timeout beginner, jdbc connection pool, 스프링 커넥션 풀, maxpoolsize beginner, connection close returns pool, thread pool vs connection pool, 커넥션 풀 왜 필요해요, connection pool basics basics, connection pool basics beginner
+retrieval-anchor-keywords: what does hikaricp mean, hikaricp meaning beginner, hikari cp meaning, hikaricp가 뭐야, hikaricp란, hikaricp connection pool, spring hikaricp beginner
 
 ## 핵심 개념
 

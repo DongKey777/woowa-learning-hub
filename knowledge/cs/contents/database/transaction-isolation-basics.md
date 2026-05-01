@@ -17,6 +17,7 @@
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
 
 retrieval-anchor-keywords: transaction isolation level basics, isolation level beginner, read committed beginner, repeatable read beginner, 트랜잭션 격리 수준 처음 배우는데, 격리 수준이 뭐예요, 같은 row 다시 읽었는데 값이 달라요, isolation 4단계 입문, 격리 수준 다음 단계, for update 다음 단계, locking read follow-up, locking read 다음 문서, deadlock 나면 다음 뭐 봐요, lock timeout retry follow-up, 40001 retry beginner
+retrieval-anchor-keywords: mvcc가 뭐야, mvcc 개념 설명, what does mvcc mean, mvcc meaning beginner, mvcc concept explanation, mvcc isolation beginner, mvcc와 격리 수준, mvcc 처음 배우는데, multi version concurrency control beginner, transaction visibility mvcc
 
 ## 핵심 개념
 

@@ -20,6 +20,7 @@
 > - [Spring Open Session In View Trade-offs](./spring-open-session-in-view-tradeoffs.md)
 
 retrieval-anchor-keywords: transaction boundary, service layer transaction boundary, application service, transactional placement, propagation, rollback rules, isolation level, transaction manager, synchronization callback, afterCommit, savepoint, rollback-only, qualifier, self invocation, test rollback
+retrieval-anchor-keywords: transactional propagation, @transactional propagation, spring transaction propagation, transactional propagation 동작, propagation required requires_new, transaction propagation deep dive, spring propagation 어떻게 동작해
 
 ---
 

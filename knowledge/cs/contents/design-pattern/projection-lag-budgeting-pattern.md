@@ -17,6 +17,7 @@
 > - [Consistency Repair / Anti-Entropy Platform 설계](../system-design/consistency-repair-anti-entropy-platform-design.md)
 
 retrieval-anchor-keywords: projection lag budget, freshness budget decomposition, consumer backlog budget, watermark headroom, mode specific lag budget, projection budget burn, cutover lag reserve, fallback headroom contract, fallback reserve sizing
+retrieval-anchor-keywords: consumer backlog budget, freshness budget 나누기, projection lag budget 나누기, projection lag budget consumer backlog freshness budget, projection lag reserve, lag budget decomposition, projection freshness budget
 
 ---
 

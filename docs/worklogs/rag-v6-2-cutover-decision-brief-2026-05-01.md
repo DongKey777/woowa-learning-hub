@@ -70,6 +70,10 @@ Runtime state:
     `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json`
 - Same-query failure taxonomy was generated to target the next Option A work:
   `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json`
+- Option A anchor-alias pilot was measured:
+  `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`
+  - sampled failure fixture quality delta: `+0.0000`
+  - cutover gate impact: none
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

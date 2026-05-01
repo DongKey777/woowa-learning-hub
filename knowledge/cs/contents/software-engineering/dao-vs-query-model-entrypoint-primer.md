@@ -14,6 +14,7 @@
 - [Spring Data vs Domain Repository Bridge](../spring/spring-data-vs-domain-repository-bridge.md)
 
 retrieval-anchor-keywords: dao vs query model, dao enough, dedicated query repository, read model beginner, query repository 언제 쓰는지, dao로 충분한 경우, dao 뭐예요, query model 뭐예요, dao와 repository 차이, dao랑 query repository 차이, 처음 read model 헷갈림, list search dashboard query model, same db read model, 목록 조회 때문에 dao가 커져요, query model separation basics
+retrieval-anchor-keywords: what does a query service mean, query service meaning beginner, query service란, query service가 뭐예요, query service vs dao, query service vs query repository, read service entrypoint, query model entrypoint beginner
 
 ## 핵심 개념
 

@@ -139,6 +139,60 @@ Decision:
   improve repeated failing primer/anchor targets, then rerun the same-query
   comparison.
 
+## Option A Anchor Alias Pilot On Failure Fixture
+
+Fixture: `tests/fixtures/cs_rag_cutover_failure_queries.json`
+
+Summary JSON: `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`
+
+Change:
+
+- Added learner shortform `retrieval-anchor-keywords` aliases to repeated
+  expected-path docs from the same-query failure taxonomy:
+  - `contents/design-pattern/read-model-staleness-read-your-writes.md`
+  - `contents/database/transaction-isolation-basics.md`
+  - `contents/spring/spring-request-pipeline-bean-container-foundations-primer.md`
+  - `contents/software-engineering/dao-vs-query-model-entrypoint-primer.md`
+  - `contents/spring/spring-transactional-basics.md`
+  - `contents/database/connection-pool-basics.md`
+  - `contents/design-pattern/projection-lag-budgeting-pattern.md`
+  - `contents/spring/transactional-deep-dive.md`
+
+Validation:
+
+```bash
+HF_HUB_OFFLINE=1 bin/rag-eval --fast \
+  --fixture tests/fixtures/cs_rag_cutover_failure_queries.json
+
+.venv/bin/python -m pytest \
+  tests/unit/test_corpus_loader.py \
+  tests/unit/test_corpus_lint.py \
+  -q
+```
+
+Measurement:
+
+| metric | delta |
+|---|---:|
+| primary nDCG micro | +0.0000 |
+| category macro | +0.0000 |
+| language macro | +0.0000 |
+| database bucket | +0.0000 |
+| design-pattern bucket | +0.0000 |
+| spring bucket | +0.0000 |
+| software-engineering bucket | +0.0000 |
+| hard regression failures | 0 |
+| local CPU P95 | +8.5 ms |
+
+Decision:
+
+- Keep the aliases because they document real learner shortforms and did not
+  regress the sampled failure fixture.
+- Do not count this as a cutover unblocker. Alias-only corpus edits did not
+  change ranking on the 14-query failure fixture.
+- The next Option A lever likely needs stronger document structure, qrel/gate
+  review, or generated query rewrites tied to these exact failure prompts.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

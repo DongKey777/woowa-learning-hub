@@ -1,0 +1,386 @@
+{
+  "_meta": {
+    "description": "Same-query cutover failure fixture: regressed legacy-vs-Lance items used to target Option A retrieval quality work.",
+    "source_report": "reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json",
+    "created_for": "rag-v6.2 Option A cutover blocker reduction",
+    "top_k": 10
+  },
+  "queries": [
+    {
+      "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+      "prompt": "What does ApplicationContext do in Spring?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_mvcc_concept_explanation_intro",
+      "prompt": "MVCC 개념 설명해줘",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "qrels": [
+        {
+          "path": "contents/database/transaction-isolation-basics.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_mvcc_english_meaning_lockin",
+      "prompt": "What does MVCC mean?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/database/transaction-isolation-basics.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_mvcc_meaning_shortform_basics",
+      "prompt": "MVCC가 뭐야?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "qrels": [
+        {
+          "path": "contents/database/transaction-isolation-basics.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_query_service_english_meaning_alias_lockin",
+      "prompt": "What does a query service mean?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "software-engineering",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+      "prompt": "스프링 transaction이 뭐야?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "qrels": [
+        {
+          "path": "contents/spring/spring-transactional-basics.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델 최신성 read model staleness 쓴 직후 읽기 보장 read your writes 프로젝션 재빌드 백필 컷오버 projection rebuild backfill cutover",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+      "prompt": "목록이 안 바뀜",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+      "prompt": "삭제했는데 검색 결과나 목록에 아직 남아 있어. 입문자 기준으로 왜 이럴 수 있는지 먼저 알고 싶어",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+      "prompt": "모바일에서 저장은 됐는데 당겨서 새로고침해야 새 값이 보여. swipe refresh 없이는 리스트가 늦게 갱신돼. 입문자 기준으로 먼저 어떤 개념을 보면 돼?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "qrels": [
+        {
+          "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "beginner_hikaricp_english_meaning_lockin",
+      "prompt": "What does HikariCP mean?",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/database/connection-pool-basics.md",
+          "grade": 3,
+          "role": "primary"
+        },
+        {
+          "path": "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md",
+          "grade": 2,
+          "role": "acceptable"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "projection_lag_budgeting",
+      "prompt": "projection lag budget, consumer backlog budget, freshness budget 을 어떻게 나눠?",
+      "mode": "full",
+      "experience_level": null,
+      "learning_points": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "mysql_deadlock_lock_ordering",
+      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
+      "mode": "full",
+      "experience_level": null,
+      "learning_points": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "qrels": [
+        {
+          "path": "contents/database/deadlock-case-study.md",
+          "grade": 3,
+          "role": "primary"
+        },
+        {
+          "path": "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md",
+          "grade": 2,
+          "role": "acceptable"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    },
+    {
+      "query_id": "spring_tx_propagation",
+      "prompt": "@Transactional propagation 은 어떻게 동작해?",
+      "mode": "full",
+      "experience_level": null,
+      "learning_points": [
+        "transaction_consistency"
+      ],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "deep-dive"
+      },
+      "qrels": [
+        {
+          "path": "contents/spring/transactional-deep-dive.md",
+          "grade": 3,
+          "role": "primary"
+        }
+      ],
+      "forbidden_paths": [],
+      "rank_budget": {
+        "primary_max_rank": 1,
+        "companion_max_rank": 5
+      },
+      "bucket_source": "cutover_failure_taxonomy_20260501T0625Z"
+    }
+  ]
+}

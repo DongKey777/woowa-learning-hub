@@ -15,6 +15,7 @@
 - [트랜잭션 기초](../database/transaction-basics.md)
 
 retrieval-anchor-keywords: transactional basics, spring transaction beginner, spring 트랜잭션이 뭐예요, transactional 처음, 왜 @transactional이 안 먹어요, transactional 왜 안 먹어요, spring proxy transaction, begin commit rollback spring, transactional rollback default, transactional 내부 호출, transactional proxy bypass, 프록시 경로 먼저, bean public external call, transactional service method 어디에 붙여요, transactional self invocation beginner
+retrieval-anchor-keywords: 스프링 transaction이 뭐야, spring transaction이 뭐야, spring transaction what is, spring transaction meaning beginner, transactional annotation beginner, spring transactional primer, transaction in spring beginner
 
 ## beginner 정지선
 

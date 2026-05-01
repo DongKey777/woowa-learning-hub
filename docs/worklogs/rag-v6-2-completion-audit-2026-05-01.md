@@ -35,6 +35,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 1 gate | Compare report gate: `pass=false`, `global_gate_pass=false`, `bucket_gate_pass=false`, `regression_count=8` | Blocked |
 | Phase 1 same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json` compares the same 101 query IDs; gate still fails with delta `-0.0521` and 7 bucket regressions | Blocked |
 | Phase 1 failure taxonomy | `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json` identifies 14 regressed same-query items and 10 Lance zero-primary items | Complete |
+| Phase 1 failure fixture | `tests/fixtures/cs_rag_cutover_failure_queries.json`; `bin/rag-eval --fast` passed with 14 queries | Complete |
 | Phase 1 worklog | `docs/worklogs/rag-r2-cutover-regression-2026-05-01.md` tracked | Complete |
 | Phase 2 IVF tuning flags | Commit `7b80366`; CLI help exposes local and remote IVF flags | Complete |
 | Phase 2 sweep report | `reports/rag_eval/r2_ivf_sweep_20260501T0401.json` tracked | Complete |
@@ -53,6 +54,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4.3 Korean query-side `search_terms` candidate | `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`; same-code weights `0.3` and `0.7` had `+0.0000` macro/ko delta versus weight `0.0` | Measured, not accepted |
 | Phase 4 structural `query-rewrite-v1` sidecar pilot | `WOOWA_RAG_QUERY_REWRITE_ROOT` override added for temp Lance eval indexes; `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json` shows `+0.0000` sampled quality delta and +91.1 ms local CPU P95 | Measured, not accepted |
 | Cutover decision handoff | `docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` records the failed gates, current runtime state, and the three allowed product decision paths | Complete |
+| Option A anchor alias pilot | `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`; aliases added to 8 repeated failure docs; sampled failure fixture quality delta `+0.0000` | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -94,6 +96,11 @@ evaluation indexes can consume rewrite sidecars. The 10-query multi-turn pilot
 validated the wiring but produced no sampled ranking lift over the anchor
 baseline, so it remains evaluation instrumentation rather than a default
 quality improvement.
+
+Subsequent Option A anchor-alias work targeted the same-query failure taxonomy.
+The aliases were kept because they describe real learner shortforms and did not
+regress the sampled failure fixture, but the measured ranking delta was still
+`+0.0000`; this does not unblock Phase 3.
 
 ## Next Required Decision
 

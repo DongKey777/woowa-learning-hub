@@ -17,6 +17,7 @@
 - [spring 카테고리 인덱스](./README.md)
 
 retrieval-anchor-keywords: spring request pipeline beginner, dispatcherservlet basics, bean container basics, spring di basics, controller service repository basics, spring 요청 흐름 뭐예요, bean di 뭐예요, 처음 spring 구조 헷갈려요, 왜 404 bean missing 같이 보여요, controller 다음 save 어디서 봐요, 요청마다 bean 만들어요, dispatcherservlet이 service 넣어줘요, mvc di transaction 차이, spring basics what is, request pipeline what is
+retrieval-anchor-keywords: applicationcontext role beginner, what does applicationcontext do, applicationcontext do in spring, spring applicationcontext 역할, applicationcontext가 뭐예요, bean factory applicationcontext beginner, spring container role, applicationcontext request pipeline, applicationcontext bean container
 
 ## 핵심 개념
 

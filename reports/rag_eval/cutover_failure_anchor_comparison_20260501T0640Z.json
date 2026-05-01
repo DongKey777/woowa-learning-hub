@@ -1,0 +1,77 @@
+{
+  "created_at": "2026-05-01T05:21:34Z",
+  "feature": "Option A cutover failure anchor alias pilot",
+  "fixture": "tests/fixtures/cs_rag_cutover_failure_queries.json",
+  "baseline_report": "reports/rag_eval/cutover_failure_anchor_baseline_20260501T0640Z.json",
+  "after_report": "reports/rag_eval/cutover_failure_anchor_after_20260501T0640Z.json",
+  "changed_docs": [
+    "knowledge/cs/contents/design-pattern/read-model-staleness-read-your-writes.md",
+    "knowledge/cs/contents/database/transaction-isolation-basics.md",
+    "knowledge/cs/contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+    "knowledge/cs/contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+    "knowledge/cs/contents/spring/spring-transactional-basics.md",
+    "knowledge/cs/contents/database/connection-pool-basics.md",
+    "knowledge/cs/contents/design-pattern/projection-lag-budgeting-pattern.md",
+    "knowledge/cs/contents/spring/transactional-deep-dive.md"
+  ],
+  "baseline": {
+    "primary_ndcg_micro": 0.8983803131377603,
+    "primary_ndcg_macro_category": 0.9165638776488141,
+    "primary_ndcg_macro_language": 0.9407218493303602,
+    "category": {
+      "spring": 0.8769765845238192,
+      "database": 0.9261859507142916,
+      "software-engineering": 1.0,
+      "design-pattern": 0.8630929753571458
+    },
+    "language": {
+      "en": 1.0,
+      "mixed": 0.8221655479910804,
+      "ko": 1.0
+    },
+    "latency_p95_warm_ms": 614.9023330071941,
+    "hard_regression_failures": 3
+  },
+  "after": {
+    "primary_ndcg_micro": 0.8983803131377603,
+    "primary_ndcg_macro_category": 0.9165638776488141,
+    "primary_ndcg_macro_language": 0.9407218493303602,
+    "category": {
+      "spring": 0.8769765845238192,
+      "database": 0.9261859507142916,
+      "software-engineering": 1.0,
+      "design-pattern": 0.8630929753571458
+    },
+    "language": {
+      "en": 1.0,
+      "mixed": 0.8221655479910804,
+      "ko": 1.0
+    },
+    "latency_p95_warm_ms": 623.3696670096833,
+    "hard_regression_failures": 3
+  },
+  "delta": {
+    "primary_ndcg_micro": 0.0,
+    "primary_ndcg_macro_category": 0.0,
+    "primary_ndcg_macro_language": 0.0,
+    "category": {
+      "database": 0.0,
+      "design-pattern": 0.0,
+      "software-engineering": 0.0,
+      "spring": 0.0
+    },
+    "language": {
+      "en": 0.0,
+      "ko": 0.0,
+      "mixed": 0.0
+    },
+    "latency_p95_warm_ms": 8.467334002489224,
+    "hard_regression_failures": 0
+  },
+  "per_query_primary_ndcg_changes": [],
+  "decision": {
+    "accepted_for_corpus": true,
+    "accepted_for_cutover_gate": false,
+    "reason": "The aliases document real learner shortforms and caused no sampled quality regression, but the 14-query failure fixture shows +0.0000 quality delta, so this does not unblock Phase 3 cutover."
+  }
+}
