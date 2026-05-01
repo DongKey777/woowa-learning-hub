@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Literal
+
+from scripts.learning.rag.corpus_lint import parse_frontmatter
 
 
 QrelRole = Literal["primary", "acceptable", "companion"]
 VALID_ROLES = {"primary", "acceptable", "companion"}
 VALID_GRADES = {1, 2, 3}
+_QUERY_ID_RE = re.compile(r"[^a-zA-Z0-9_.:/-]+")
 
 
 @dataclass(frozen=True)
@@ -105,3 +109,73 @@ def load_qrels(path: Path) -> list[R3QueryJudgement]:
     if not isinstance(records, list):
         raise ValueError(f"unexpected qrel root in {path}")
     return [_record_to_query(record) for record in records]
+
+
+def _query_id(concept_id: str, index: int) -> str:
+    safe = _QUERY_ID_RE.sub("-", concept_id.strip()).strip("-")
+    return f"{safe}:expected:{index + 1}"
+
+
+def qrels_from_frontmatter_doc(
+    file_path: Path,
+    text: str,
+    *,
+    corpus_root: Path | None = None,
+) -> list[R3QueryJudgement]:
+    """Generate primary/forbidden qrel seeds from Corpus v2 frontmatter."""
+
+    fm = parse_frontmatter(text)
+    if not fm or str(fm.get("schema_version")) != "2":
+        return []
+    concept_id = str(fm.get("concept_id") or "").strip()
+    expected_queries = fm.get("expected_queries") or []
+    if not concept_id or not isinstance(expected_queries, list):
+        return []
+
+    if corpus_root is not None:
+        try:
+            qrel_path = str(file_path.relative_to(corpus_root))
+        except ValueError:
+            qrel_path = str(file_path)
+    else:
+        qrel_path = str(file_path)
+    if not qrel_path.startswith("contents/") and corpus_root is not None:
+        qrel_path = f"contents/{qrel_path}"
+
+    forbidden = tuple(str(path) for path in (fm.get("forbidden_neighbors") or []))
+    tags = tuple(
+        str(tag)
+        for tag in (
+            "corpus_v2",
+            f"concept:{concept_id}",
+            f"doc_role:{fm.get('doc_role', 'unknown')}",
+            f"level:{fm.get('level', 'unknown')}",
+        )
+    )
+    out: list[R3QueryJudgement] = []
+    for index, prompt in enumerate(expected_queries):
+        if not isinstance(prompt, str) or not prompt.strip():
+            continue
+        out.append(
+            R3QueryJudgement(
+                query_id=_query_id(concept_id, index),
+                prompt=prompt.strip(),
+                qrels=(R3Qrel(path=qrel_path, grade=3, role="primary"),),
+                forbidden_paths=forbidden,
+                tags=tags,
+            )
+        )
+    return out
+
+
+def qrels_from_corpus(corpus_root: Path) -> list[R3QueryJudgement]:
+    out: list[R3QueryJudgement] = []
+    for path in sorted(corpus_root.rglob("*.md")):
+        out.extend(
+            qrels_from_frontmatter_doc(
+                path,
+                path.read_text(encoding="utf-8"),
+                corpus_root=corpus_root,
+            )
+        )
+    return out

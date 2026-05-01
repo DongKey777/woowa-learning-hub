@@ -8,7 +8,12 @@ import pytest
 from scripts.learning.rag import searcher
 from scripts.learning.rag.r3.candidate import Candidate
 from scripts.learning.rag.r3.config import resolve_rerank_input_window
-from scripts.learning.rag.r3.eval.qrels import R3Qrel, load_qrels
+from scripts.learning.rag.r3.eval.qrels import (
+    R3Qrel,
+    load_qrels,
+    qrels_from_corpus,
+    qrels_from_frontmatter_doc,
+)
 from scripts.learning.rag.r3.eval.trace import R3Trace, read_jsonl, write_jsonl
 from scripts.learning.rag.r3.eval.trace_fixture import build_traces_from_qrels, main
 from scripts.learning.rag.r3.query_plan import build_query_plan
@@ -129,3 +134,40 @@ def test_build_traces_from_qrels_keeps_qrel_metadata():
     traces = build_traces_from_qrels(Path("tests/fixtures/r3_qrels_pilot.json"))
 
     assert traces[0].metadata["qrels"][0]["role"] == "primary"
+
+
+def test_qrels_from_corpus_v2_expected_queries(tmp_path):
+    corpus = tmp_path / "contents"
+    spring = corpus / "spring"
+    spring.mkdir(parents=True)
+    doc = spring / "di.md"
+    doc.write_text(
+        "---\n"
+        "schema_version: 2\n"
+        "concept_id: spring/di\n"
+        "doc_role: primer\n"
+        "level: beginner\n"
+        "aliases: [DI]\n"
+        "expected_queries:\n"
+        "  - DI가 뭐야?\n"
+        "forbidden_neighbors:\n"
+        "  - contents/design-pattern/service-locator.md\n"
+        "---\n\nbody",
+        encoding="utf-8",
+    )
+
+    qrels = qrels_from_corpus(corpus)
+
+    assert len(qrels) == 1
+    assert qrels[0].query_id == "spring/di:expected:1"
+    assert qrels[0].prompt == "DI가 뭐야?"
+    assert qrels[0].primary_paths() == {"contents/spring/di.md"}
+    assert qrels[0].forbidden_paths == (
+        "contents/design-pattern/service-locator.md",
+    )
+
+
+def test_qrels_from_frontmatter_doc_ignores_non_v2(tmp_path):
+    doc = tmp_path / "x.md"
+
+    assert qrels_from_frontmatter_doc(doc, "# no frontmatter") == []
