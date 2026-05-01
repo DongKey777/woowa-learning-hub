@@ -78,13 +78,17 @@ def search(
         fused = fuse_candidates(candidates, limit=fusion_limit)
 
     reranker_model = None
+    fused_paths = tuple(candidate.path for candidate in fused)
+    rerank_input_paths: tuple[str, ...] = ()
     if use_reranker is True and fused:
         reranker = CrossEncoderReranker.for_language(query_plan.language)
         reranker_model = reranker.model_id
+        rerank_window = min(len(fused), config.rerank_input_window(offline=False))
+        rerank_input_paths = tuple(candidate.path for candidate in fused[:rerank_window])
         fused = reranker.rerank(
             query_plan.raw_query,
             fused,
-            top_n=min(len(fused), config.rerank_input_window(offline=False)),
+            top_n=rerank_window,
         )
 
     trace = R3Trace(
@@ -96,6 +100,8 @@ def search(
             "backend": "r3",
             "source_index": "legacy",
             "reranker_model": reranker_model,
+            "fused_paths": list(fused_paths),
+            "rerank_input_paths": list(rerank_input_paths),
         },
     )
 

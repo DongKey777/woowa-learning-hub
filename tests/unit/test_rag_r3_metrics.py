@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from scripts.learning.rag.r3.eval.metrics import (
+    RetrievalEvaluationQuery,
     RerankerComparison,
+    retrieval_summary,
     reranker_demotion_summary,
 )
 
@@ -56,3 +58,44 @@ def test_reranker_demotion_counts_missing_after_as_demoted():
 
     assert summary["overall"]["demoted"] == 1
     assert summary["overall"]["missing_after"] == 1
+
+
+def test_retrieval_summary_reports_candidate_final_and_forbidden_rates():
+    summary = retrieval_summary(
+        [
+            RetrievalEvaluationQuery(
+                query_id="mixed-ok",
+                language="mixed",
+                level="beginner",
+                category="network",
+                primary_paths=("latency.md",),
+                acceptable_paths=("latency-overview.md",),
+                forbidden_paths=("throughput.md",),
+                candidate_paths=("latency-overview.md", "latency.md"),
+                final_paths=("latency.md", "other.md"),
+            ),
+            RetrievalEvaluationQuery(
+                query_id="ko-forbidden",
+                language="ko",
+                level="beginner",
+                category="spring",
+                primary_paths=("di.md",),
+                acceptable_paths=(),
+                forbidden_paths=("service-locator.md",),
+                candidate_paths=("other.md",),
+                final_paths=("service-locator.md",),
+            ),
+        ],
+        windows=(1, 2),
+        forbidden_window=1,
+    )
+
+    assert summary["overall"]["total"] == 2
+    assert summary["overall"]["candidate_recall_primary"]["1"] == 0.0
+    assert summary["overall"]["candidate_recall_primary"]["2"] == 0.5
+    assert summary["overall"]["candidate_recall_relevant"]["1"] == 0.5
+    assert summary["overall"]["final_hit_primary"]["1"] == 0.5
+    assert summary["overall"]["forbidden_rate"] == 0.5
+    assert summary["by_language"]["mixed"]["candidate_recall_primary"]["2"] == 1.0
+    assert summary["missing_candidate_primary_query_ids"] == ["ko-forbidden"]
+    assert summary["forbidden_query_ids"] == ["ko-forbidden"]
