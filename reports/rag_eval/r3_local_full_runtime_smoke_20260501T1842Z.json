@@ -1,0 +1,115 @@
+{
+  "artifact_kind": "r3_local_full_runtime_smoke",
+  "cheap_mode_control": {
+    "command": "bin/rag-ask \"latency가 뭐야?\" --rag-backend r3",
+    "decision": {
+      "blocked": false,
+      "experience_level": "beginner",
+      "mode": "cheap",
+      "override_active": false,
+      "promoted_by_profile": false,
+      "reason": "domain + definition signal",
+      "tier": 1
+    },
+    "first_hit_path": "contents/network/latency-bandwidth-throughput-basics.md",
+    "first_hit_sources": [
+      {
+        "rank": 3,
+        "retriever": "lexical:title",
+        "score": 3.0
+      },
+      {
+        "rank": 1,
+        "retriever": "lexical:section",
+        "score": 2.0
+      },
+      {
+        "rank": 1,
+        "retriever": "lexical:body",
+        "score": 2.0
+      }
+    ],
+    "hits_meta": {
+      "backend": "r3",
+      "category_filter_fallback": false,
+      "latency_ms": 1835,
+      "mode_used": "cheap",
+      "rag_ready": true,
+      "reason": "ready"
+    },
+    "hits_meta_latency_ms": 1835,
+    "source_output": "/tmp/r3_rag_ask_cheap_latency_20260502.json",
+    "time_p_real_seconds": 2.42
+  },
+  "command": "bin/rag-ask \"RAG로 깊게 latency가 뭐야?\" --rag-backend r3",
+  "decision": {
+    "blocked": false,
+    "experience_level": "beginner",
+    "mode": "full",
+    "override_active": true,
+    "promoted_by_profile": false,
+    "reason": "user override: full RAG",
+    "tier": 2
+  },
+  "first_hit": {
+    "path": "contents/network/latency-bandwidth-throughput-basics.md",
+    "r3_sources": [
+      {
+        "rank": 1,
+        "retriever": "lexical:title",
+        "score": 3.0
+      },
+      {
+        "rank": 1,
+        "retriever": "lexical:section",
+        "score": 2.0
+      },
+      {
+        "rank": 4,
+        "retriever": "lexical:body",
+        "score": 2.0
+      },
+      {
+        "rank": 1,
+        "retriever": "dense",
+        "score": 0.6906458804020259
+      },
+      {
+        "rank": 7,
+        "retriever": "sparse",
+        "score": 0.12381980046779972
+      }
+    ],
+    "score": 0.03278688524590164,
+    "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+  },
+  "generated_at_utc": "2026-05-01T18:42Z",
+  "hits_meta": {
+    "backend": "r3",
+    "category_filter_fallback": false,
+    "latency_ms": 22162,
+    "mode_used": "full",
+    "rag_ready": true,
+    "reason": "ready"
+  },
+  "hits_meta_latency_ms": 22162,
+  "index_build_before_smoke": {
+    "added": 1,
+    "chunk_count": 27170,
+    "command": "bin/cs-index-build --mode incremental --backend lance --lance-max-eta-minutes 20",
+    "deleted": 0,
+    "elapsed_seconds": 19.7,
+    "encoded": 13,
+    "lance_version": "8->9",
+    "modified": 12,
+    "unchanged": 27157
+  },
+  "runtime_decision": {
+    "one_shot_full_runtime": "block",
+    "quality_smoke": "pass",
+    "reason": "full R3 one-shot CLI cold start took 22.162s inside hits.meta and 23.34s wall time; quality is correct, but interactive default cutover needs long-lived or amortized local runtime."
+  },
+  "schema_version": 1,
+  "source_output": "/tmp/r3_rag_ask_full_rerank_latency_20260502.json",
+  "time_p_real_seconds": 23.34
+}

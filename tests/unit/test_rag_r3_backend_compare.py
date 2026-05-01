@@ -36,6 +36,7 @@ def _qrels() -> list[R3QueryJudgement]:
 def test_backend_comparison_uses_r3_trace_fused_paths_for_candidate_recall():
     def fake_search(prompt, **kwargs):
         assert prompt == "latency가 뭐야?"
+        assert kwargs["use_reranker"] is False
         debug = kwargs["debug"]
         debug["r3_trace"] = {
             "trace_id": "debug-id",

@@ -29,7 +29,7 @@ class BackendSpec:
     name: str
     backend: str
     index_root: Path | None = None
-    use_reranker: bool | None = None
+    use_reranker: bool | None = False
     modalities: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:

@@ -90,6 +90,7 @@ def test_r3_backend_reads_legacy_index_and_returns_traced_hits(tmp_path):
         backend="r3",
         index_root=tmp_path,
         top_k=1,
+        use_reranker=False,
         debug=debug,
     )
 
@@ -103,7 +104,7 @@ def test_r3_backend_reads_legacy_index_and_returns_traced_hits(tmp_path):
     ]
 
 
-def test_r3_backend_reranks_only_when_explicitly_enabled(tmp_path, monkeypatch):
+def test_r3_backend_reranks_full_mode_by_default(tmp_path, monkeypatch):
     _build_legacy_index(tmp_path)
 
     class FakeReranker:
@@ -128,12 +129,35 @@ def test_r3_backend_reranks_only_when_explicitly_enabled(tmp_path, monkeypatch):
         backend="r3",
         index_root=tmp_path,
         top_k=1,
-        use_reranker=True,
         debug=debug,
     )
 
     assert hits[0]["path"] == "contents/network/latency-deep-dive.md"
+    assert debug["r3_reranker_enabled"] is True
     assert debug["r3_reranker_model"] == "fake-reranker"
+
+
+def test_r3_backend_skips_reranker_in_cheap_mode(tmp_path, monkeypatch):
+    _build_legacy_index(tmp_path)
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.CrossEncoderReranker.for_language",
+        lambda language: (_ for _ in ()).throw(AssertionError("reranker loaded")),
+    )
+    debug: dict = {}
+
+    hits = searcher.search(
+        "latency가 뭐야?",
+        backend="r3",
+        index_root=tmp_path,
+        mode="cheap",
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/latency-primer.md"
+    assert debug["r3_reranker_enabled"] is False
+    assert debug["r3_reranker_model"] is None
 
 
 def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path):
@@ -517,6 +541,7 @@ def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
         index_root=tmp_path,
         mode="full",
         top_k=1,
+        use_reranker=False,
         debug=debug,
     )
 
@@ -609,6 +634,7 @@ def test_r3_dense_candidate_can_return_candidate_absent_from_fts_prefetch(
         index_root=tmp_path,
         mode="full",
         top_k=1,
+        use_reranker=False,
         debug=debug,
     )
 

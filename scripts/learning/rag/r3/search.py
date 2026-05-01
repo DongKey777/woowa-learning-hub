@@ -7,6 +7,7 @@ production legacy/Lance search behavior.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from .config import R3Config
@@ -22,6 +23,16 @@ from .index.lexical_store import LexicalStore
 from .query_plan import build_query_plan
 from .retrievers import LexicalRetriever, SignalRetriever, SparseRetriever
 from .rerankers import CrossEncoderReranker
+
+
+def _reranker_enabled(mode: str, use_reranker: bool | None) -> bool:
+    if use_reranker is False:
+        return False
+    if mode != "full":
+        return False
+    if os.environ.get("WOOWA_RAG_NO_RERANK") == "1":
+        return False
+    return use_reranker is True or use_reranker is None
 
 
 def _hit_from_candidate(candidate) -> dict:
@@ -65,6 +76,7 @@ def search(
     query_sparse_terms: dict[str, float] = {}
     dense_candidates = []
     sparse_source = "lexical_terms"
+    reranker_active = _reranker_enabled(mode, use_reranker)
     try:
         documents = (
             load_runtime_documents(
@@ -107,7 +119,7 @@ def search(
         signal = SignalRetriever(documents)
         fusion_limit = max(
             top_k,
-            config.rerank_input_window(offline=False) if use_reranker is True else top_k,
+            config.rerank_input_window(offline=False) if reranker_active else top_k,
             1,
         )
         candidates = [
@@ -121,7 +133,7 @@ def search(
     reranker_model = None
     fused_paths = tuple(candidate.path for candidate in fused)
     rerank_input_paths: tuple[str, ...] = ()
-    if use_reranker is True and fused:
+    if reranker_active and fused:
         reranker = CrossEncoderReranker.for_language(query_plan.language)
         reranker_model = reranker.model_id
         rerank_window = min(len(fused), config.rerank_input_window(offline=False))
@@ -160,6 +172,7 @@ def search(
         debug["r3_candidate_count"] = len(candidates)
         debug["r3_final_paths"] = list(trace.final_paths)
         debug["r3_reranker_model"] = reranker_model
+        debug["r3_reranker_enabled"] = reranker_active
         debug["r3_sparse_source"] = sparse_source
         debug["r3_sparse_sidecar_document_count"] = len(sparse_documents)
         debug["r3_sparse_query_terms_count"] = len(query_sparse_terms)
