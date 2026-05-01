@@ -84,12 +84,17 @@ def test_augment_surfaces_r3_runtime_debug(monkeypatch, tmp_path):
                 "mode": "full",
                 "r3_reranker_enabled": True,
                 "r3_reranker_model": "BAAI/bge-reranker-v2-m3",
+                "r3_rerank_policy": "auto",
+                "r3_reranker_skip_reason": None,
                 "rerank_input_window": 20,
                 "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
                 "r3_sparse_sidecar_document_count": 27170,
                 "r3_sparse_query_terms_count": 11,
                 "r3_sparse_retriever_cache_hit": True,
                 "r3_dense_candidate_count": 100,
+                "r3_lexical_sidecar_used": True,
+                "r3_lexical_sidecar": {"document_count": 27170},
+                "r3_lexical_sidecar_error": None,
                 "r3_stage_ms": {"rerank": 123.0},
             }
         )
@@ -109,9 +114,13 @@ def test_augment_surfaces_r3_runtime_debug(monkeypatch, tmp_path):
     assert runtime_debug["backend"] == "r3"
     assert runtime_debug["r3_reranker_enabled"] is True
     assert runtime_debug["r3_reranker_model"] == "BAAI/bge-reranker-v2-m3"
+    assert runtime_debug["r3_rerank_policy"] == "auto"
+    assert runtime_debug["r3_reranker_skip_reason"] is None
     assert runtime_debug["rerank_input_window"] == 20
     assert runtime_debug["r3_sparse_source"] == "bge_m3_sparse_vec_sidecar"
     assert runtime_debug["r3_sparse_retriever_cache_hit"] is True
+    assert runtime_debug["r3_lexical_sidecar_used"] is True
+    assert runtime_debug["r3_lexical_sidecar"] == {"document_count": 27170}
     assert runtime_debug["r3_stage_ms"] == {"rerank": 123.0}
 
 

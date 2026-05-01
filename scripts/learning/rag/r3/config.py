@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 
 DEFAULT_RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
@@ -13,6 +14,7 @@ DEFAULT_MULTILINGUAL_FALLBACK = DEFAULT_COMPATIBILITY_FALLBACK
 DEFAULT_ENGLISH_ONLY_EXPERIMENT = "mixedbread-ai/mxbai-rerank-base-v1"
 EXPERIMENTAL_GTE_MULTILINGUAL_RERANKER = "Alibaba-NLP/gte-multilingual-reranker-base"
 RERANK_INPUT_WINDOW_ENV = "WOOWA_RAG_RERANK_INPUT_WINDOW"
+RerankPolicy = Literal["auto", "always", "off"]
 
 
 def _int_from_env(name: str, default: int) -> int:
@@ -31,6 +33,16 @@ def _bool_from_env(name: str, default: bool = False) -> bool:
     if raw is None:
         return default
     return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _rerank_policy_from_env(name: str, default: RerankPolicy) -> RerankPolicy:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    value = raw.strip().lower()
+    if value in {"auto", "always", "off"}:
+        return value  # type: ignore[return-value]
+    return default
 
 
 def resolve_rerank_input_window(top_k: int, *, default: int | None = None) -> int:
@@ -72,6 +84,7 @@ class R3Config:
     english_only_experiment_model: str = DEFAULT_ENGLISH_ONLY_EXPERIMENT
     local_rerank_input_window: int = 20
     offline_rerank_input_window: int = 100
+    local_rerank_policy: RerankPolicy = "auto"
     runtime_lance_prefetch_limit: int = 100
     sparse_encoder_in_cheap_mode: bool = False
     lexical_sidecar_enabled: bool = True
@@ -104,6 +117,10 @@ class R3Config:
             offline_rerank_input_window=_int_from_env(
                 "WOOWA_RAG_R3_OFFLINE_RERANK_INPUT_WINDOW",
                 100,
+            ),
+            local_rerank_policy=_rerank_policy_from_env(
+                "WOOWA_RAG_R3_RERANK_POLICY",
+                "auto",
             ),
             runtime_lance_prefetch_limit=_int_from_env(
                 "WOOWA_RAG_R3_LANCE_PREFETCH_LIMIT",

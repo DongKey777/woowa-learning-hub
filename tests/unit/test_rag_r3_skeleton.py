@@ -134,6 +134,20 @@ def test_r3_local_rerank_window_defaults_to_verified_m5_budget(monkeypatch):
     assert R3Config.from_env().local_rerank_input_window == 50
 
 
+def test_r3_rerank_policy_defaults_to_auto(monkeypatch):
+    monkeypatch.delenv("WOOWA_RAG_R3_RERANK_POLICY", raising=False)
+    assert R3Config.from_env().local_rerank_policy == "auto"
+
+    monkeypatch.setenv("WOOWA_RAG_R3_RERANK_POLICY", "always")
+    assert R3Config.from_env().local_rerank_policy == "always"
+
+    monkeypatch.setenv("WOOWA_RAG_R3_RERANK_POLICY", "off")
+    assert R3Config.from_env().local_rerank_policy == "off"
+
+    monkeypatch.setenv("WOOWA_RAG_R3_RERANK_POLICY", "bad")
+    assert R3Config.from_env().local_rerank_policy == "auto"
+
+
 def test_trace_fixture_cli_writes_jsonl(tmp_path):
     out = tmp_path / "r3_trace.jsonl"
 

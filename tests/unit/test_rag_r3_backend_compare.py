@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 
+from scripts.learning.rag.r3.eval import backend_compare as BC
 from scripts.learning.rag.r3.eval.backend_compare import (
     BackendSpec,
     run_backend_comparison,
@@ -36,7 +37,7 @@ def _qrels() -> list[R3QueryJudgement]:
 def test_backend_comparison_uses_r3_trace_fused_paths_for_candidate_recall():
     def fake_search(prompt, **kwargs):
         assert prompt == "latency가 뭐야?"
-        assert kwargs["use_reranker"] is False
+        assert kwargs["use_reranker"] is None
         debug = kwargs["debug"]
         debug["r3_trace"] = {
             "trace_id": "debug-id",
@@ -141,6 +142,29 @@ def test_backend_comparison_reports_reranker_demotion_from_trace():
     assert demotion["overall"]["demoted"] == 1
     assert demotion["by_language"]["mixed"]["rate"] == 1.0
     assert demotion["demoted_query_ids"] == ["latency:mixed"]
+
+
+def test_backend_compare_cli_preserves_reranker_tristate(monkeypatch, tmp_path):
+    captured: list[list[bool | None]] = []
+
+    def fake_run_backend_comparison(specs, qrels, **kwargs):
+        del qrels, kwargs
+        captured.append([spec.use_reranker for spec in specs])
+        return {"schema_version": 1, "backends": []}
+
+    monkeypatch.setattr(BC, "load_qrels", lambda path: [])
+    monkeypatch.setattr(BC, "run_backend_comparison", fake_run_backend_comparison)
+
+    cases = [
+        ([], [None]),
+        (["--use-reranker"], [True]),
+        (["--no-reranker"], [False]),
+    ]
+    for index, (flags, expected) in enumerate(cases):
+        out = tmp_path / f"report-{index}.json"
+        assert BC.main(["--qrels", "qrels.json", "--out", str(out), *flags]) == 0
+        assert json.loads(out.read_text(encoding="utf-8"))["schema_version"] == 1
+        assert captured[-1] == expected
 
 
 def test_write_backend_traces_emits_jsonl(tmp_path):

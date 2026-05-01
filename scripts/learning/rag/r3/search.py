@@ -54,14 +54,28 @@ def _cached_sparse_retriever(
     return retriever, False
 
 
-def _reranker_enabled(mode: str, use_reranker: bool | None) -> bool:
+def _reranker_decision(
+    mode: str,
+    use_reranker: bool | None,
+    *,
+    config: R3Config,
+    lexical_sidecar_used: bool,
+) -> tuple[bool, str | None]:
     if use_reranker is False:
-        return False
+        return False, "caller_disabled"
     if mode != "full":
-        return False
+        return False, "mode_not_full"
     if os.environ.get("WOOWA_RAG_NO_RERANK") == "1":
-        return False
-    return use_reranker is True or use_reranker is None
+        return False, "legacy_no_rerank_env"
+    if use_reranker is True:
+        return True, None
+    if config.local_rerank_policy == "off":
+        return False, "policy_off"
+    if config.local_rerank_policy == "always":
+        return True, None
+    if lexical_sidecar_used:
+        return False, "policy_auto_sidecar_first_stage_gate"
+    return True, None
 
 
 def _hit_from_candidate(candidate) -> dict:
@@ -112,7 +126,8 @@ def search(
     lexical_sidecar = None
     lexical_sidecar_used = False
     lexical_sidecar_error = None
-    reranker_active = _reranker_enabled(mode, use_reranker)
+    reranker_active = False
+    reranker_skip_reason = None
     try:
         started = time.perf_counter()
         documents = (
@@ -138,6 +153,13 @@ def search(
             lexical_sidecar = None
             lexical_sidecar_error = f"{type(exc).__name__}: {exc}"
         _record_stage(stage_ms, "load_lexical_sidecar", started)
+
+    reranker_active, reranker_skip_reason = _reranker_decision(
+        mode,
+        use_reranker,
+        config=config,
+        lexical_sidecar_used=lexical_sidecar_used,
+    )
 
     sparse_encoder_allowed = mode == "full" or config.sparse_encoder_in_cheap_mode
     if index_root is not None and sparse_encoder_allowed:
@@ -260,6 +282,8 @@ def search(
             "lexical_sidecar_used": lexical_sidecar_used,
             "lexical_sidecar": lexical_sidecar.metadata if lexical_sidecar is not None else None,
             "lexical_sidecar_error": lexical_sidecar_error,
+            "rerank_policy": config.local_rerank_policy,
+            "reranker_skip_reason": reranker_skip_reason,
         },
     )
 
@@ -273,6 +297,8 @@ def search(
         debug["r3_final_paths"] = list(trace.final_paths)
         debug["r3_reranker_model"] = reranker_model
         debug["r3_reranker_enabled"] = reranker_active
+        debug["r3_rerank_policy"] = config.local_rerank_policy
+        debug["r3_reranker_skip_reason"] = reranker_skip_reason
         debug["r3_sparse_source"] = sparse_source
         debug["r3_sparse_sidecar_document_count"] = len(sparse_documents)
         debug["r3_sparse_query_terms_count"] = len(query_sparse_terms)

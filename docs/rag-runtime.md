@@ -26,7 +26,8 @@ export HF_HUB_OFFLINE=1
 | cheap | 50-200ms | 50-200ms | 50-200ms |
 | Lance full | 500ms-2s | 2-8s | 10-25s |
 | R3 full, one-shot CLI | 2.3-3.0s after OS cache | 15-24s | 18-25s |
-| R3 full, local daemon | 2.4-2.7s | first daemon request 15-24s | first daemon request 18-25s |
+| R3 full, local daemon, auto sidecar default | 450-550ms | first daemon request 12-15s | first daemon request 18-25s |
+| R3 full, local daemon, forced BGE reranker | 2.4-2.7s | first daemon request 15-24s | first daemon request 18-25s |
 
 cheap 모드는 ML 의존성을 안 타므로 (FTS BM25만) 네트워크/캐시 상태와 무관.
 
@@ -35,16 +36,26 @@ full 모드는 첫 호출 시 BGE-M3 query encoder + cross-encoder reranker를
 
 ## R3 Local Daemon
 
-R3 full 모드는 `BAAI/bge-m3` query encoder와
-`BAAI/bge-reranker-v2-m3` cross-encoder를 모두 쓰므로, 매번 새 Python
-프로세스로 `bin/rag-ask`를 실행하면 모델 로드가 반복된다. R3 실사용
-프로파일은 장기 프로세스를 기준으로 봐야 한다.
+R3 full 모드는 `BAAI/bge-m3` query encoder, dense/sparse/lexical candidate
+discovery, metadata lexical sidecar를 쓴다. `BAAI/bge-reranker-v2-m3`
+cross-encoder는 R3의 기본 품질 reranker로 유지하지만, 로컬 interactive
+기본값은 검증된 lexical sidecar가 있을 때 reranker를 자동으로 건너뛰는
+`auto` 정책이다. 매번 새 Python 프로세스로 `bin/rag-ask`를 실행하면 모델
+로드가 반복되므로 R3 실사용 프로파일은 장기 프로세스를 기준으로 봐야 한다.
 
 ```bash
 bin/rag-daemon start
 bin/rag-ask "RAG로 깊게 latency가 뭐야?" --rag-backend r3 --via-daemon
 bin/rag-daemon stop
 ```
+
+Rerank policy:
+
+| Policy | Meaning |
+|---|---|
+| `WOOWA_RAG_R3_RERANK_POLICY=auto` | default. Use BGE reranker unless the verified metadata lexical sidecar is loaded; with sidecar, skip cross-encoder reranking for local interactive latency. |
+| `WOOWA_RAG_R3_RERANK_POLICY=always` | force `BAAI/bge-reranker-v2-m3` for quality experiments or suspected ranking failures. |
+| `WOOWA_RAG_R3_RERANK_POLICY=off` | disable reranking for controlled candidate-discovery or latency-only runs. |
 
 2026-05-01 R3 프로파일:
 
@@ -69,10 +80,19 @@ bin/rag-daemon stop
 - 2026-05-01 daemon sidecar smoke: first sidecar-enabled daemon request was
   18.33s; warm requests were 2.65-2.68s. Warm sidecar load was under 0.2ms;
   the dominant warm stage remained cross-encoder reranking at about 2.0s.
+- 2026-05-01 auto rerank policy gate: with `use_reranker=null`, policy `auto`,
+  and the metadata lexical sidecar present, all 100 qrels used
+  `policy_auto_sidecar_first_stage_gate`, no rerank stage ran, and
+  `final_hit_relevant@5=1.0` overall, Korean-only, and mixed Korean/English.
+  The learner-facing daemon smoke showed 12.30s for the first request and
+  476ms for the warm request, with runtime JSON exposing policy, skip reason,
+  sidecar presence, and stage timing.
 
-Therefore R3 local default rerank window is 20 pairs. 50-pair local reranking
-is still available through `WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW=50`, but it
-is an explicit profiling/quality mode rather than the local default.
+Therefore R3 local default rerank policy is `auto`; the local default rerank
+window remains 20 pairs when reranking is forced or when the sidecar is absent.
+50-pair local reranking is still available through
+`WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW=50`, but it is an explicit
+profiling/quality mode rather than the local default.
 
 R3 remote artifacts must include `r3_lexical_sidecar.json`. The sidecar is
 metadata-only by default because full-body JSON sidecars took about 60s to

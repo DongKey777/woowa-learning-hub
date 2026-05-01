@@ -1,0 +1,64 @@
+{
+  "artifact_kind": "r3_daemon_full_runtime_auto_sidecar_smoke",
+  "schema_version": 1,
+  "timestamp_utc": "2026-05-01T20:05:00Z",
+  "environment": {
+    "HF_HUB_OFFLINE": "1",
+    "WOOWA_RAG_R3_RERANK_POLICY": "auto",
+    "backend": "r3",
+    "transport": "bin/rag-ask --via-daemon",
+    "local_hardware_target": "M5 MacBook Air 13, 16GB unified memory"
+  },
+  "samples": [
+    {
+      "prompt": "RAG로 깊게 latency가 뭐야?",
+      "latency_ms": 12296,
+      "runtime_debug": {
+        "r3_reranker_enabled": false,
+        "r3_rerank_policy": "auto",
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "r3_lexical_sidecar_used": true,
+        "r3_lexical_sidecar_document_count": 27170,
+        "r3_stage_ms": {
+          "query_plan": 793.199,
+          "load_runtime_documents": 727.621,
+          "load_lexical_sidecar": 4258.375,
+          "encode_runtime_query": 4587.605,
+          "load_runtime_dense_candidates": 27.9,
+          "load_runtime_sparse_documents": 906.62,
+          "construct_retrievers": 931.805,
+          "retrieve_candidates": 55.331,
+          "fuse_candidates": 0.328
+        }
+      }
+    },
+    {
+      "prompt": "RAG로 깊게 TCP 3-way handshake가 뭐야?",
+      "latency_ms": 476,
+      "runtime_debug": {
+        "r3_reranker_enabled": false,
+        "r3_rerank_policy": "auto",
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "r3_lexical_sidecar_used": true,
+        "r3_lexical_sidecar_document_count": 27170,
+        "r3_stage_ms": {
+          "query_plan": 0.19,
+          "load_runtime_documents": 40.217,
+          "load_lexical_sidecar": 0.143,
+          "encode_runtime_query": 99.928,
+          "load_runtime_dense_candidates": 22.817,
+          "load_runtime_sparse_documents": 0.913,
+          "construct_retrievers": 251.695,
+          "retrieve_candidates": 58.616,
+          "fuse_candidates": 0.271
+        }
+      }
+    }
+  ],
+  "interpretation": {
+    "cold_first_request_ms": 12296,
+    "warm_request_ms": 476,
+    "rerank_stage_present": false,
+    "quality_reference": "reports/rag_eval/r3_backend_compare_100q_sidecar_auto_policy_20260501T2025Z.json"
+  }
+}

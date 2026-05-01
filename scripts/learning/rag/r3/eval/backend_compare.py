@@ -29,7 +29,7 @@ class BackendSpec:
     name: str
     backend: str
     index_root: Path | None = None
-    use_reranker: bool | None = False
+    use_reranker: bool | None = None
     modalities: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
@@ -248,7 +248,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--top-k", type=int, default=100)
     parser.add_argument("--window", type=int, action="append", default=None)
     parser.add_argument("--forbidden-window", type=int, default=5)
-    parser.add_argument("--use-reranker", action="store_true")
+    reranker_group = parser.add_mutually_exclusive_group()
+    reranker_group.add_argument(
+        "--use-reranker",
+        action="store_true",
+        help="Force reranker use, bypassing the backend's default runtime policy.",
+    )
+    reranker_group.add_argument(
+        "--no-reranker",
+        action="store_true",
+        help="Disable reranker use for candidate-discovery or latency-only runs.",
+    )
     args = parser.parse_args(argv)
 
     windows = tuple(args.window or [20, 50, 100])
@@ -256,13 +266,13 @@ def main(argv: list[str] | None = None) -> int:
         _parse_backend(value, args.index_root)
         for value in (args.backend or ["r3"])
     ]
-    if args.use_reranker:
+    if args.use_reranker or args.no_reranker:
         specs = [
             BackendSpec(
                 name=spec.name,
                 backend=spec.backend,
                 index_root=spec.index_root,
-                use_reranker=True,
+                use_reranker=args.use_reranker,
                 modalities=spec.modalities,
             )
             for spec in specs

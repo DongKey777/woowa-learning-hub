@@ -158,12 +158,17 @@ def augment(
             "mode",
             "r3_reranker_enabled",
             "r3_reranker_model",
+            "r3_rerank_policy",
+            "r3_reranker_skip_reason",
             "rerank_input_window",
             "r3_sparse_source",
             "r3_sparse_sidecar_document_count",
             "r3_sparse_query_terms_count",
             "r3_sparse_retriever_cache_hit",
             "r3_dense_candidate_count",
+            "r3_lexical_sidecar_used",
+            "r3_lexical_sidecar",
+            "r3_lexical_sidecar_error",
             "r3_stage_ms",
         )
         captured = {

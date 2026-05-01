@@ -406,6 +406,93 @@ def test_r3_search_uses_prebuilt_lexical_sidecar(monkeypatch, tmp_path):
     assert debug["r3_lexical_sidecar"]["document_count"] == 1
 
 
+def test_r3_auto_policy_skips_reranker_when_sidecar_is_available(
+    monkeypatch,
+    tmp_path,
+):
+    documents = [
+        R3Document(
+            path="contents/network/latency-sidecar.md",
+            chunk_id="latency#0",
+            title="Latency Sidecar",
+            body="tail latency timeout",
+            metadata={"body": "tail latency timeout", "category": "network"},
+        )
+    ]
+    loaded = LoadedLexicalSidecar(
+        store=LexicalStore.from_documents(documents),
+        metadata={"path": str(tmp_path / "r3_lexical_sidecar.json"), "document_count": 1},
+    )
+    monkeypatch.setattr(r3_search, "load_runtime_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "encode_runtime_query", lambda *a, **kw: {})
+    monkeypatch.setattr(r3_search, "load_runtime_dense_candidates", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_runtime_sparse_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_lexical_sidecar", lambda *a, **kw: loaded)
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.CrossEncoderReranker.for_language",
+        lambda language: (_ for _ in ()).throw(AssertionError("reranker loaded")),
+    )
+
+    debug: dict = {}
+    hits = r3_search.search(
+        "latency가 뭐야?",
+        index_root=tmp_path,
+        top_k=1,
+        mode="full",
+        use_reranker=None,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/latency-sidecar.md"
+    assert debug["r3_reranker_enabled"] is False
+    assert debug["r3_reranker_skip_reason"] == "policy_auto_sidecar_first_stage_gate"
+
+
+def test_r3_explicit_reranker_overrides_auto_sidecar_skip(monkeypatch, tmp_path):
+    documents = [
+        R3Document(
+            path="contents/network/latency-sidecar.md",
+            chunk_id="latency#0",
+            title="Latency Sidecar",
+            body="tail latency timeout",
+            metadata={"body": "tail latency timeout", "category": "network"},
+        )
+    ]
+    loaded = LoadedLexicalSidecar(
+        store=LexicalStore.from_documents(documents),
+        metadata={"path": str(tmp_path / "r3_lexical_sidecar.json"), "document_count": 1},
+    )
+
+    class FakeReranker:
+        model_id = "fake-reranker"
+
+        def rerank(self, query, candidates, *, top_n):
+            return list(candidates[:top_n])
+
+    monkeypatch.setattr(r3_search, "load_runtime_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "encode_runtime_query", lambda *a, **kw: {})
+    monkeypatch.setattr(r3_search, "load_runtime_dense_candidates", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_runtime_sparse_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_lexical_sidecar", lambda *a, **kw: loaded)
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.CrossEncoderReranker.for_language",
+        lambda language: FakeReranker(),
+    )
+
+    debug: dict = {}
+    r3_search.search(
+        "latency가 뭐야?",
+        index_root=tmp_path,
+        top_k=1,
+        mode="full",
+        use_reranker=True,
+        debug=debug,
+    )
+
+    assert debug["r3_reranker_enabled"] is True
+    assert debug["r3_reranker_model"] == "fake-reranker"
+
+
 def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):
     captured = {}
 
