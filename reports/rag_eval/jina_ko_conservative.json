@@ -1,0 +1,3215 @@
+{
+  "index_root": "state/cs_rag_eval/r1_5_jina",
+  "split": "holdout",
+  "query_count": 101,
+  "top_k": 10,
+  "forbidden_window": 5,
+  "mode": "full",
+  "runs": [
+    {
+      "modalities": [
+        "fts",
+        "dense"
+      ],
+      "primary_ndcg_macro": 0.7930470155313074,
+      "latency_p95_warm": 667.7833330031717,
+      "hard_regression_failures": 47,
+      "run_report": {
+        "manifest": {
+          "corpus_hash": "904a974f74ec661cb0f29f274e507408f93587c0ad7668d4d2be19972cbe8179",
+          "index_version": 3,
+          "embedding_model": "jinaai/jina-embeddings-v5-text-small",
+          "model_revision": "jinaai/jina-embeddings-v5-text-small@dd76d535f5447ca3897a9c893fb1e612ead98192",
+          "embedding_dim": 1024,
+          "device": "mps",
+          "reranker_model": null,
+          "fusion_weights": {
+            "k": 60,
+            "w_bm25": 1.0,
+            "w_dense": 1.0
+          },
+          "top_k": 10,
+          "mode": "full",
+          "latency_p50_warm": 210.99337500345428,
+          "latency_p95_warm": 667.7833330031717,
+          "cold_start_ms": 15520.892415996059,
+          "backend": "lance",
+          "modalities": [
+            "fts",
+            "dense"
+          ],
+          "encoder": {
+            "model_id": "jinaai/jina-embeddings-v5-text-small",
+            "model_version": "jinaai/jina-embeddings-v5-text-small@dd76d535f5447ca3897a9c893fb1e612ead98192",
+            "max_length": 512,
+            "batch_size": 192
+          },
+          "lancedb": {
+            "version": "0.30.2",
+            "table_name": "cs_chunks",
+            "indices": {
+              "dense": {
+                "type": "IVF_PQ",
+                "num_partitions": 256,
+                "num_sub_vectors": 64
+              },
+              "fts": {
+                "type": "tantivy",
+                "tokenizer": "ngram"
+              },
+              "colbert": {
+                "type": "sidecar",
+                "metric": "max_sim",
+                "dtype": "float16"
+              }
+            }
+          }
+        },
+        "top_k": 10,
+        "forbidden_window": 5,
+        "overall_means": {
+          "primary_ndcg": 0.5803852658887334,
+          "graded_ndcg": 0.5665782131552303,
+          "mrr": 0.5690711928335691,
+          "recall": 0.6089108910891089,
+          "companion_coverage": 0.19801980198019803,
+          "forbidden_rate": 0.0,
+          "hit": 0.6138613861386139
+        },
+        "macro_reports": {
+          "primary_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "software-engineering": 0.6666666666666666,
+                "spring": 0.7843380484890143,
+                "database": 0.8025774794642881,
+                "network": 1.0,
+                "security": 0.9384882922619097,
+                "design-pattern": 0.1794871794871795,
+                "operating-system": 0.8769765845238192,
+                "system-design": 1.0,
+                "language": 0.8888888888888888
+              },
+              "per_bucket_count": {
+                "software-engineering": 3,
+                "spring": 26,
+                "database": 12,
+                "network": 4,
+                "security": 6,
+                "design-pattern": 39,
+                "operating-system": 3,
+                "system-design": 2,
+                "language": 6
+              },
+              "macro_mean": 0.7930470155313074,
+              "micro_mean": 0.5803852658887334,
+              "included_buckets": [
+                "software-engineering",
+                "spring",
+                "database",
+                "network",
+                "security",
+                "design-pattern",
+                "operating-system",
+                "system-design",
+                "language"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "unknown": 0.9704743802857166,
+                "beginner": 0.45206647825814694
+              },
+              "per_bucket_count": {
+                "unknown": 25,
+                "beginner": 76
+              },
+              "macro_mean": 0.45206647825814694,
+              "micro_mean": 0.5803852658887334,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "mixed": 0.7583530279657493,
+                "en": 0.8664949823979613,
+                "ko": 0.10872865023809716
+              },
+              "per_bucket_count": {
+                "mixed": 57,
+                "en": 14,
+                "ko": 30
+              },
+              "macro_mean": 0.5778588868672693,
+              "micro_mean": 0.5803852658887334,
+              "included_buckets": [
+                "mixed",
+                "en",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.5627280674450561,
+                "definition": 0.8282280600340177,
+                "comparison": 0.2612770045739364,
+                "deep-dive": 0.6666666666666666,
+                "symptom": 0.8333333333333334
+              },
+              "per_bucket_count": {
+                "unknown": 52,
+                "definition": 21,
+                "comparison": 19,
+                "deep-dive": 3,
+                "symptom": 6
+              },
+              "macro_mean": 0.6473762661519885,
+              "micro_mean": 0.5803852658887334,
+              "included_buckets": [
+                "definition",
+                "comparison",
+                "deep-dive",
+                "symptom"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "graded_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "software-engineering": 0.6942268624290143,
+                "spring": 0.7529646727788616,
+                "database": 0.7935005716702705,
+                "network": 0.9586597063564786,
+                "security": 0.9308795324257609,
+                "design-pattern": 0.1794871794871795,
+                "operating-system": 0.8769765845238192,
+                "system-design": 0.9588300803300535,
+                "language": 0.8456874424809202
+              },
+              "per_bucket_count": {
+                "software-engineering": 3,
+                "spring": 26,
+                "database": 12,
+                "network": 4,
+                "security": 6,
+                "design-pattern": 39,
+                "operating-system": 3,
+                "system-design": 2,
+                "language": 6
+              },
+              "macro_mean": 0.7768014036091508,
+              "micro_mean": 0.5665782131552303,
+              "included_buckets": [
+                "software-engineering",
+                "spring",
+                "database",
+                "network",
+                "security",
+                "design-pattern",
+                "operating-system",
+                "system-design",
+                "language"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "unknown": 0.9578665299854666,
+                "beginner": 0.43786495104002093
+              },
+              "per_bucket_count": {
+                "unknown": 25,
+                "beginner": 76
+              },
+              "macro_mean": 0.43786495104002093,
+              "micro_mean": 0.5665782131552303,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "mixed": 0.7453144401118611,
+                "en": 0.8249710202481708,
+                "ko": 0.10639607196092603
+              },
+              "per_bucket_count": {
+                "mixed": 57,
+                "en": 14,
+                "ko": 30
+              },
+              "macro_mean": 0.558893844106986,
+              "micro_mean": 0.5665782131552303,
+              "included_buckets": [
+                "mixed",
+                "en",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.5481937981418799,
+                "definition": 0.8055913500622884,
+                "comparison": 0.25703075059365715,
+                "deep-dive": 0.6666666666666666,
+                "symptom": 0.8195532354521595
+              },
+              "per_bucket_count": {
+                "unknown": 52,
+                "definition": 21,
+                "comparison": 19,
+                "deep-dive": 3,
+                "symptom": 6
+              },
+              "macro_mean": 0.6372105006936929,
+              "micro_mean": 0.5665782131552303,
+              "included_buckets": [
+                "definition",
+                "comparison",
+                "deep-dive",
+                "symptom"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "mrr": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "software-engineering": 0.6666666666666666,
+                "spring": 0.7628205128205128,
+                "database": 0.7916666666666666,
+                "network": 1.0,
+                "security": 0.9166666666666666,
+                "design-pattern": 0.1794871794871795,
+                "operating-system": 0.8333333333333334,
+                "system-design": 1.0,
+                "language": 0.8571428571428572
+              },
+              "per_bucket_count": {
+                "software-engineering": 3,
+                "spring": 26,
+                "database": 12,
+                "network": 4,
+                "security": 6,
+                "design-pattern": 39,
+                "operating-system": 3,
+                "system-design": 2,
+                "language": 6
+              },
+              "macro_mean": 0.7786426536426536,
+              "micro_mean": 0.5690711928335691,
+              "included_buckets": [
+                "software-engineering",
+                "spring",
+                "database",
+                "network",
+                "security",
+                "design-pattern",
+                "operating-system",
+                "system-design",
+                "language"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "unknown": 0.96,
+                "beginner": 0.44047619047619047
+              },
+              "per_bucket_count": {
+                "unknown": 25,
+                "beginner": 76
+              },
+              "macro_mean": 0.44047619047619047,
+              "micro_mean": 0.5690711928335691,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "mixed": 0.7481203007518797,
+                "en": 0.8452380952380952,
+                "ko": 0.1
+              },
+              "per_bucket_count": {
+                "mixed": 57,
+                "en": 14,
+                "ko": 30
+              },
+              "macro_mean": 0.564452798663325,
+              "micro_mean": 0.5690711928335691,
+              "included_buckets": [
+                "mixed",
+                "en",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.5576923076923077,
+                "definition": 0.8015873015873015,
+                "comparison": 0.2443609022556391,
+                "deep-dive": 0.6666666666666666,
+                "symptom": 0.8333333333333334
+              },
+              "per_bucket_count": {
+                "unknown": 52,
+                "definition": 21,
+                "comparison": 19,
+                "deep-dive": 3,
+                "symptom": 6
+              },
+              "macro_mean": 0.6364870509607352,
+              "micro_mean": 0.5690711928335691,
+              "included_buckets": [
+                "definition",
+                "comparison",
+                "deep-dive",
+                "symptom"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "recall": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "software-engineering": 0.6666666666666666,
+                "spring": 0.8461538461538461,
+                "database": 0.8333333333333334,
+                "network": 1.0,
+                "security": 1.0,
+                "design-pattern": 0.1794871794871795,
+                "operating-system": 1.0,
+                "system-design": 1.0,
+                "language": 0.9166666666666666
+              },
+              "per_bucket_count": {
+                "software-engineering": 3,
+                "spring": 26,
+                "database": 12,
+                "network": 4,
+                "security": 6,
+                "design-pattern": 39,
+                "operating-system": 3,
+                "system-design": 2,
+                "language": 6
+              },
+              "macro_mean": 0.826923076923077,
+              "micro_mean": 0.6089108910891089,
+              "included_buckets": [
+                "software-engineering",
+                "spring",
+                "database",
+                "network",
+                "security",
+                "design-pattern",
+                "operating-system",
+                "system-design",
+                "language"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "unknown": 0.98,
+                "beginner": 0.4868421052631579
+              },
+              "per_bucket_count": {
+                "unknown": 25,
+                "beginner": 76
+              },
+              "macro_mean": 0.4868421052631579,
+              "micro_mean": 0.6089108910891089,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "mixed": 0.7807017543859649,
+                "en": 0.9285714285714286,
+                "ko": 0.13333333333333333
+              },
+              "per_bucket_count": {
+                "mixed": 57,
+                "en": 14,
+                "ko": 30
+              },
+              "macro_mean": 0.614202172096909,
+              "micro_mean": 0.6089108910891089,
+              "included_buckets": [
+                "mixed",
+                "en",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.5673076923076923,
+                "definition": 0.9047619047619048,
+                "comparison": 0.3157894736842105,
+                "deep-dive": 0.6666666666666666,
+                "symptom": 0.8333333333333334
+              },
+              "per_bucket_count": {
+                "unknown": 52,
+                "definition": 21,
+                "comparison": 19,
+                "deep-dive": 3,
+                "symptom": 6
+              },
+              "macro_mean": 0.6801378446115288,
+              "micro_mean": 0.6089108910891089,
+              "included_buckets": [
+                "definition",
+                "comparison",
+                "deep-dive",
+                "symptom"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          }
+        },
+        "regression_summary": {
+          "total": 101,
+          "passed_count": 54,
+          "failed_count": 47,
+          "all_passed": false,
+          "violations_by_kind": {
+            "primary_over_budget": 8,
+            "primary_not_present": 39
+          },
+          "warnings_by_kind": {
+            "companion_before_primary": 1
+          },
+          "failed_query_ids": [
+            "beginner_applicationcontext_english_shortform_lockin",
+            "beginner_bean_korean_shortform_lockin",
+            "beginner_mvcc_korean_why_needed_lockin",
+            "beginner_query_service_english_meaning_alias_lockin",
+            "beginner_session_korean_meaning_lockin",
+            "beginner_spring_bean_role_shortform_lockin",
+            "beginner_springbootapplication_annotation_definition_lockin",
+            "generic_crud_korean_list_read_but_update_fails",
+            "generic_crud_korean_list_read_vs_update_boundary",
+            "generic_crud_korean_update_vs_read_api_difference",
+            "io_uring_intro_before_sq_cq",
+            "java_completablefuture_allof_join_timeout_hazards",
+            "mvcc_beginner_shortform_before_internals",
+            "projection_freshness_cutover_safety_shortform_anchor",
+            "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+            "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+            "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare",
+            "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+            "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+            "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+            "projection_freshness_intro_korean_cache_confusion",
+            "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard",
+            "projection_freshness_intro_korean_list_still_same",
+            "projection_freshness_intro_korean_old_value_only_visible",
+            "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+            "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+            "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+            "projection_freshness_intro_korean_recent_write_not_visible_compact",
+            "projection_freshness_intro_korean_stale_list_after_update",
+            "projection_freshness_intro_mixed_cutover_safety_vs_failover_visibility_compare",
+            "projection_freshness_intro_primer_vs_guardrail_compare",
+            "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+            "projection_freshness_intro_vs_failover_visibility_alias_compare",
+            "projection_freshness_intro_vs_stateful_failover_placement_compare",
+            "projection_freshness_symptom_only_delete_still_visible_in_search",
+            "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+            "projection_freshness_symptom_only_detail_updated_list_card_stale",
+            "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+            "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+            "projection_freshness_symptom_only_no_jargon_list_stuck",
+            "projection_freshness_symptom_only_old_screen_state_primer",
+            "projection_freshness_symptom_only_saved_not_visible_old_screen_state_korean",
+            "spring_mvc_shortform_korean_alias_beginner_primer",
+            "strict_read_fallback_contract_intro",
+            "tx_isolation"
+          ]
+        },
+        "regressions": [
+          {
+            "query_id": "api_versioning",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_applicationcontext_english_shortform_lockin",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_bean_factory_spacing_english_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_bean_korean_shortform_lockin",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_component_scan_vs_bean_registration_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_component_scanning_english_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_connection_pool_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_connection_pooling_english_meaning_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_connection_pooling_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_database_connection_pool_primer",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_db_index_intro",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_dependency_injection_english_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_dependency_injection_korean_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_ioc_english_meaning_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_keep_alive_spacing_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_keepalive_english_meaning_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_mvcc_korean_why_needed_lockin",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/database/transaction-isolation-locking.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_network_keepalive_primer",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_network_tcp_udp_intro",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_query_model_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_query_service_english_meaning_alias_lockin",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/software-engineering/dao-vs-query-model-entrypoint-primer.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_session_korean_meaning_lockin",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/security/session-cookie-jwt-basics.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_session_mental_model_confusion_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_session_vs_jwt_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_aop_english_why_use_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_aop_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_bean_role_shortform_lockin",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_dispatcherservlet_primer",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_dispatcherservlet_why_exists_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_ioc_di_intro",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_transactional_basics",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_springbootapplication_annotation_definition_lockin",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/spring/spring-bean-di-basics.md' at rank 3, budget=1"
+            ],
+            "warnings": [
+              "companion_before_primary: companion 'contents/spring/spring-component-scan-failure-patterns.md' at rank 2 ahead of primary at rank 3"
+            ]
+          },
+          {
+            "query_id": "beginner_transactional_colloquial_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_transactional_english_meaning_with_annotation_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_transactional_english_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_transactional_mental_model_confusion_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_transactional_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "cdc_schema_evolution_expand_contract",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "deadlock_case",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "event_upcaster_compatibility",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "event_upcaster_snapshot_mixed_replay",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "failover_old_primary_read_beginner_alias",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "futex_offcpu_debugging",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "generic_crud_korean_list_read_but_update_fails",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/spring/spring-service-layer-transaction-boundary-patterns.md' missing from ranking (budget=3)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "generic_crud_korean_list_read_vs_update_boundary",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/spring/spring-service-layer-transaction-boundary-patterns.md' missing from ranking (budget=3)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "generic_crud_korean_update_vs_read_api_difference",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' missing from ranking (budget=3)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "global_traffic_failover_control_plane",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "io_uring_intro_before_sq_cq",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/operating-system/epoll-kqueue-io-uring.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "io_uring_operational_hazards",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "java_completablefuture_allof_join_timeout_hazards",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/language/java/completablefuture-allof-join-timeout-exception-handling-hazards.md' at rank 7, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "java_concurrency_intro_before_executor_tuning",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "java_concurrency_overview",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "java_jfr_loom_incident_signal_map",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "java_virtual_thread_migration_boundaries",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "java_virtual_threads_project_loom_intro",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "jwks_recovery_ladder",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "jwks_rotation_failure_recovery",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "jwt_basics",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "legacy_event_replay_upcast_chain",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "mvcc_beginner_shortform_before_internals",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/database/transaction-isolation-locking.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "payment_ledger_idempotency",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_advanced_slo_tuning_without_beginner_cues",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_budget",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_cutover_safety_shortform_anchor",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_cache_confusion",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_list_still_same",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_old_value_only_visible",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_recent_write_not_visible_compact",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_stale_list_after_update",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_mixed_cutover_safety_vs_failover_visibility_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_primer_vs_guardrail_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_vs_failover_visibility_alias_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_vs_stateful_failover_placement_compare",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_detail_updated_list_card_stale",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_no_jargon_list_stuck",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_old_screen_state_primer",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_saved_not_visible_old_screen_state_korean",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_rebuild_cutover",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "read_model_staleness",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "spring_mvc_shortform_korean_alias_beginner_primer",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "spring_mvc_vs_dispatcherservlet_difference_beginner_primer",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "strict_read_fallback_contract_intro",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/design-pattern/strict-read-fallback-contracts.md' missing from ranking (budget=1)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "tx_intro_isolation_locking_primer",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "tx_isolation",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/database/read-committed-vs-repeatable-read-anomalies.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          }
+        ],
+        "per_query": [
+          {
+            "query_id": "api_versioning",
+            "bucket": {
+              "category": "software-engineering",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_applicationcontext_english_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.5787641110093001,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_bean_factory_spacing_english_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9173194127129571,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_bean_korean_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_component_scan_vs_bean_registration_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9828422279067397,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_component_scanning_english_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_connection_pool_shortform_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_connection_pooling_english_meaning_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9737576937588317,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_connection_pooling_shortform_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_database_connection_pool_primer",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_db_index_intro",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_dependency_injection_english_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9795021391503893,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_dependency_injection_korean_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.938506417451168,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_ioc_english_meaning_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9795021391503893,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_keep_alive_spacing_shortform_lockin",
+            "bucket": {
+              "category": "network",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9173194127129571,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_keepalive_english_meaning_lockin",
+            "bucket": {
+              "category": "network",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9173194127129571,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_mvcc_korean_why_needed_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_network_keepalive_primer",
+            "bucket": {
+              "category": "network",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_network_tcp_udp_intro",
+            "bucket": {
+              "category": "network",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_query_model_shortform_lockin",
+            "bucket": {
+              "category": "software-engineering",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_query_service_english_meaning_alias_lockin",
+            "bucket": {
+              "category": "software-engineering",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.08268058728704288,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_session_korean_meaning_lockin",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.6224459878051551,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_session_mental_model_confusion_lockin",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_session_vs_jwt_shortform_lockin",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9828422279067397,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_aop_english_why_use_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9173194127129571,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_aop_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9567680782603095,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_bean_role_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.5787641110093001,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_dispatcherservlet_primer",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_dispatcherservlet_why_exists_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_ioc_di_intro",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_transactional_basics",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_springbootapplication_annotation_definition_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.5,
+              "graded_ndcg": 0.5413402936435214,
+              "mrr": 0.3333333333333333,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_transactional_colloquial_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9224037382324788,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_transactional_english_meaning_with_annotation_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9138778446351128,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_transactional_english_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9084880857554961,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_transactional_mental_model_confusion_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9047190678134756,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_transactional_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9084880857554961,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.5,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "cdc_schema_evolution_expand_contract",
+            "bucket": {
+              "category": "database",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "deadlock_case",
+            "bucket": {
+              "category": "database",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "event_upcaster_compatibility",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "event_upcaster_snapshot_mixed_replay",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "failover_old_primary_read_beginner_alias",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9173194127129571,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "futex_offcpu_debugging",
+            "bucket": {
+              "category": "operating-system",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "generic_crud_korean_list_read_but_update_fails",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "generic_crud_korean_list_read_vs_update_boundary",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "generic_crud_korean_update_vs_read_api_difference",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "global_traffic_failover_control_plane",
+            "bucket": {
+              "category": "system-design",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "io_uring_intro_before_sq_cq",
+            "bucket": {
+              "category": "operating-system",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.6309297535714575,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "io_uring_operational_hazards",
+            "bucket": {
+              "category": "operating-system",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_completablefuture_allof_join_timeout_hazards",
+            "bucket": {
+              "category": "language",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.3333333333333333,
+              "graded_ndcg": 0.28697005189454894,
+              "mrr": 0.14285714285714285,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_concurrency_intro_before_executor_tuning",
+            "bucket": {
+              "category": "language",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_concurrency_overview",
+            "bucket": {
+              "category": "language",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.7871546029909718,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 0.5,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_jfr_loom_incident_signal_map",
+            "bucket": {
+              "category": "language",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_virtual_thread_migration_boundaries",
+            "bucket": {
+              "category": "language",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "java_virtual_threads_project_loom_intro",
+            "bucket": {
+              "category": "language",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "jwks_recovery_ladder",
+            "bucket": {
+              "category": "security",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "jwks_rotation_failure_recovery",
+            "bucket": {
+              "category": "security",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "jwt_basics",
+            "bucket": {
+              "category": "security",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9799889788426707,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "legacy_event_replay_upcast_chain",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "mvcc_beginner_shortform_before_internals",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "payment_ledger_idempotency",
+            "bucket": {
+              "category": "system-design",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 0.9176601606601069,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_advanced_slo_tuning_without_beginner_cues",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_budget",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_cutover_safety_shortform_anchor",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_cutover_safety_failover_rollback_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_cutover_safety_key_rotation_rollback_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_projection_vs_stateful_leader_placement_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_slo_lag_budget_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_cache_confusion",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_cutover_safety_window_key_rotation_noise_guard",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_list_still_same",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_old_value_only_visible",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_only_primer_vs_guardrail_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_only_primer_vs_rebuild_backfill_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_recent_write_not_visible_compact",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_stale_list_after_update",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_mixed_cutover_safety_vs_failover_visibility_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_primer_vs_guardrail_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_rollback_window_vs_transaction_rollback",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_vs_failover_visibility_alias_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_vs_stateful_failover_placement_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_detail_screen_updated_list_card_old_value",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_detail_updated_list_card_stale",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_once_variant",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_no_jargon_cached_screen_after_save_confusion",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_no_jargon_list_stuck",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_old_screen_state_primer",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_saved_not_visible_old_screen_state_korean",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_rebuild_cutover",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "read_model_staleness",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "spring_mvc_shortform_korean_alias_beginner_primer",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.6484763270513091,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "spring_mvc_vs_dispatcherservlet_difference_beginner_primer",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 1.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "strict_read_fallback_contract_intro",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "tx_intro_isolation_locking_primer",
+            "bucket": {
+              "category": "database",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "tx_isolation",
+            "bucket": {
+              "category": "database",
+              "difficulty": "unknown",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.6309297535714575,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          }
+        ],
+        "timing_warm_per_query_ms": [
+          162.08924999227747,
+          1056.5524590056157,
+          848.0914579995442,
+          848.7284169968916,
+          216.3995829905616,
+          206.13700000103563,
+          149.4786659895908,
+          188.35750001017004,
+          175.2571670076577,
+          408.38962500856724,
+          273.7997920048656,
+          180.1799169916194,
+          667.7833330031717,
+          181.87879100150894,
+          166.90537499380298,
+          168.9817089936696,
+          168.05929198744707,
+          235.7502079976257,
+          217.16624998953193,
+          229.25424999266397,
+          180.66095799440518,
+          635.0516250095097,
+          642.4913340015337,
+          661.4280420035357,
+          186.3184590038145,
+          179.0067080000881,
+          174.7975000034785,
+          507.6090829970781,
+          176.88454200106207,
+          243.7225000030594,
+          247.09470900415909,
+          179.50929200742394,
+          178.42862498946488,
+          192.8148750012042,
+          1077.017124989652,
+          184.06904200674035,
+          151.03904200077523,
+          272.80449999670964,
+          172.49241599347442,
+          227.41083400615025,
+          570.433332992252,
+          253.5707079950953,
+          726.3732499995967,
+          235.12858300819062,
+          193.3914580004057,
+          174.00033299054485,
+          235.31966700102203,
+          251.9751250074478,
+          193.95683299808297,
+          280.86916598840617,
+          293.22675000003073,
+          289.4112499925541,
+          248.5948340035975,
+          210.56091699574608,
+          228.0992920132121,
+          209.13541701156646,
+          199.62658299482428,
+          209.7103749983944,
+          176.33733300317544,
+          165.19520799920429,
+          194.47983399732038,
+          239.77904199273326,
+          191.8841250007972,
+          172.04379200120457,
+          507.6161670003785,
+          214.64091600500979,
+          273.2538340060273,
+          158.67591700225603,
+          185.22037500224542,
+          149.59054099745117,
+          162.83837500668596,
+          273.14033299626317,
+          484.3096659897128,
+          245.17416700837202,
+          297.53162499400787,
+          139.3231659894809,
+          252.09300000278745,
+          511.0801669943612,
+          162.71241700451355,
+          139.10425000358373,
+          174.58016599994153,
+          243.3732079953188,
+          276.02583399857394,
+          278.1719170016004,
+          258.4107500006212,
+          542.5456669909181,
+          210.99337500345428,
+          214.185709002777,
+          149.52283300226554,
+          181.2863330123946,
+          142.51104199502151,
+          203.47666699672118,
+          343.7524999899324,
+          227.41016699001193,
+          169.79391699715052,
+          196.1215409974102,
+          147.66333300212864,
+          333.61016599519644,
+          204.41845800087322,
+          248.39341700135265,
+          180.38216700369958
+        ]
+      }
+    }
+  ],
+  "best_modalities": [
+    "fts",
+    "dense"
+  ],
+  "selection_rationale": "selected by primary_nDCG_macro, then hard-regression count, latency, and smaller modality set: fts,dense",
+  "created_at": "2026-04-30T16:46:23Z"
+}

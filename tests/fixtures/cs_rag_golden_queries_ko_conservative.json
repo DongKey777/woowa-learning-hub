@@ -1,0 +1,24 @@
+{
+  "_comment": "Conservative ko rewrite — keep Korean, strip filler/conversational words, keep doc-aligned Korean terminology only. Tests whether minimal cleanup of ko queries (without English jargon injection) is enough to lift retrieval.",
+  "_query_rewrites": {
+    "_format": "query_id -> rewritten_prompt",
+    "beginner_db_index_intro": null,
+    "beginner_di_why_use_shortform_lockin": null,
+    "beginner_inversion_of_control_korean_shortform_lockin": null,
+    "normalization": null,
+    "projection_freshness_cutover_safety_shortform_anchor": "컷오버 안전 구간 읽기 모델 최신성",
+    "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard": "읽기 모델 최신성 전환 안전 윈도우 쓴 직후 읽기 보장",
+    "projection_freshness_intro_full_korean_projection_vs_stateful_workload_failover_compare": "읽기 모델 최신성 상태 있는 워크로드 장애 전환 비교",
+    "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare": "읽기 모델 최신성 장애 전환 읽기 보임 구간",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare": "읽기 모델 최신성 롤백 윈도우 트랜잭션 롤백 차이 쓴 직후 읽기 보장",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish": "읽기 모델 최신성 롤백 윈도우 트랜잭션 롤백 구분 쓴 직후 읽기 보장",
+    "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare": "읽기 모델 최신성 입문 쓴 직후 읽기 보장 프로젝션 재빌드 백필 컷오버",
+    "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare": "읽기 모델 입문 쓴 직후 읽기 보장 전환 안전 구간",
+    "projection_freshness_intro_korean_query_old_data": "읽기 모델 최신성 저장 직후 예전 데이터 방금 쓴 값",
+    "projection_freshness_symptom_only_detail_updated_list_card_stale": "상세 변경 목록 카드 예전 값 읽기 모델 최신성",
+    "projection_freshness_symptom_only_detail_updated_list_old_value": "상세 변경 목록 예전 값 읽기 모델 최신성",
+    "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant": "모바일 저장 화면 업데이트 지연 예전 목록 읽기 모델 최신성",
+    "projection_freshness_symptom_only_no_jargon_delayed_screen": "수정 저장 새로고침 이전 상태 화면 반영 지연 읽기 모델 최신성",
+    "read_after_write_korean_saved_but_old_value_visible": "저장했는데 옛값이 보인다 읽은 후 쓰기 복제 지연"
+  }
+}

@@ -34,6 +34,9 @@ __pycache__/
 tmp/
 .tmp/
 
+# Regenerated Korean rewrite fixture derivatives
+tests/fixtures/cs_rag_golden_queries_ko_*_applied.json
+
 # Claude Code runtime locks
 .claude/scheduled_tasks.lock
 

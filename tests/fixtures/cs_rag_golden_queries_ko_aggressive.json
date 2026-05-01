@@ -1,0 +1,24 @@
+{
+  "_comment": "Aggressive ko rewrite — convert to pure English canonical search terms (using doc retrieval-anchor-keywords). Tests whether converting Korean queries to English unleashes Jina v5's English advantage. UX trade-off: this no longer reflects natural learner language; ranks queries as system search rather than user expression.",
+  "_query_rewrites": {
+    "_format": "query_id -> rewritten_prompt",
+    "beginner_db_index_intro": null,
+    "beginner_di_why_use_shortform_lockin": null,
+    "beginner_inversion_of_control_korean_shortform_lockin": null,
+    "normalization": null,
+    "projection_freshness_cutover_safety_shortform_anchor": "cutover safety window read model staleness",
+    "projection_freshness_intro_full_korean_cutover_safety_window_korean_key_rotation_noise_guard": "read model staleness cutover safety window read-your-writes projection lag",
+    "projection_freshness_intro_full_korean_projection_vs_stateful_workload_failover_compare": "read model staleness projection freshness stateful workload failover",
+    "projection_freshness_intro_full_korean_projection_vs_visibility_window_compare": "read model staleness projection freshness failover visibility window",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_compare": "read model staleness rollback window transaction rollback compare read-your-writes",
+    "projection_freshness_intro_full_korean_rollback_window_transaction_rollback_distinguish": "read model staleness rollback window vs transaction rollback distinguish read-your-writes",
+    "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare": "read model staleness primer read-your-writes projection rebuild backfill cutover",
+    "projection_freshness_intro_korean_phrase_only_primer_vs_guardrail_compare": "read model staleness primer read-your-writes cutover safety window guardrail",
+    "projection_freshness_intro_korean_query_old_data": "read model staleness old data after write read-your-writes",
+    "projection_freshness_symptom_only_detail_updated_list_card_stale": "detail updated list card stale read model staleness projection lag",
+    "projection_freshness_symptom_only_detail_updated_list_old_value": "detail updated list old value read model staleness projection lag",
+    "projection_freshness_symptom_only_mobile_screen_update_delay_jiyeon_variant": "mobile screen update delay old list read model staleness projection lag",
+    "projection_freshness_symptom_only_no_jargon_delayed_screen": "save refresh delayed screen read model staleness projection lag",
+    "read_after_write_korean_saved_but_old_value_visible": "saved but still old data read after write replica lag read-your-writes"
+  }
+}
