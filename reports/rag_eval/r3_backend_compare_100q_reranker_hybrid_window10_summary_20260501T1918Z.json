@@ -1,0 +1,346 @@
+{
+  "artifact_kind": "r3_backend_compare_100q_reranker_hybrid_window10_summary",
+  "backend": "r3",
+  "query_count": 100,
+  "spec": {
+    "backend": "r3",
+    "index_root": "state/cs_rag",
+    "modalities": [],
+    "name": "r3",
+    "use_reranker": true
+  },
+  "rerank_input_window_stats": {
+    "min": 10,
+    "max": 10,
+    "avg": 10
+  },
+  "summary": {
+    "by_category": {
+      "unknown": {
+        "candidate_recall_primary": {
+          "10": 0.99,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.91
+        },
+        "candidate_recall_relevant": {
+          "10": 0.99,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.96
+        },
+        "final_hit_primary": {
+          "10": 0.99,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.94
+        },
+        "final_hit_relevant": {
+          "10": 0.99,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.98
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 100
+      }
+    },
+    "by_language": {
+      "ko": {
+        "candidate_recall_primary": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "candidate_recall_relevant": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "final_hit_primary": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "final_hit_relevant": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      },
+      "mixed": {
+        "candidate_recall_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9047619047619048
+        },
+        "candidate_recall_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9642857142857143
+        },
+        "final_hit_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9404761904761905
+        },
+        "final_hit_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9880952380952381
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 84
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "candidate_recall_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9166666666666666
+        },
+        "candidate_recall_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9166666666666666
+        },
+        "final_hit_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 12
+      },
+      "beginner": {
+        "candidate_recall_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9027777777777778
+        },
+        "candidate_recall_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9722222222222222
+        },
+        "final_hit_primary": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9305555555555556
+        },
+        "final_hit_relevant": {
+          "10": 1.0,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9861111111111112
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 72
+      },
+      "intermediate": {
+        "candidate_recall_primary": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "candidate_recall_relevant": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "final_hit_primary": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "final_hit_relevant": {
+          "10": 0.9375,
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9375
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      }
+    },
+    "forbidden_query_ids": [],
+    "missing_candidate_primary_query_ids": [],
+    "missing_final_primary_query_ids": [],
+    "overall": {
+      "candidate_recall_primary": {
+        "10": 0.99,
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.91
+      },
+      "candidate_recall_relevant": {
+        "10": 0.99,
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.96
+      },
+      "final_hit_primary": {
+        "10": 0.99,
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.94
+      },
+      "final_hit_relevant": {
+        "10": 0.99,
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.98
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 100
+    },
+    "windows": [
+      5,
+      10,
+      20,
+      100
+    ]
+  },
+  "reranker_demotion": {
+    "by_category": {
+      "unknown": {
+        "demoted": 20,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.2,
+        "total": 100
+      }
+    },
+    "by_language": {
+      "ko": {
+        "demoted": 1,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.0625,
+        "total": 16
+      },
+      "mixed": {
+        "demoted": 19,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.2261904761904762,
+        "total": 84
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "demoted": 2,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.16666666666666666,
+        "total": 12
+      },
+      "beginner": {
+        "demoted": 15,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.20833333333333334,
+        "total": 72
+      },
+      "intermediate": {
+        "demoted": 3,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.1875,
+        "total": 16
+      }
+    },
+    "demoted_query_ids": [
+      "database/transaction-isolation-basics:expected:1",
+      "design-pattern/factory-vs-di-container-wiring:expected:2",
+      "network/devtools-waterfall-primer:expected:2",
+      "spring/aop-proxy-mechanism:expected:4",
+      "spring/ioc-container-internals:expected:2",
+      "spring/aop-basics:expected:4",
+      "spring/application-context-refresh-phases:expected:2",
+      "spring/application-context-refresh-phases:expected:3",
+      "spring/bean-di-basics:expected:3",
+      "spring/bean-di-basics:expected:4",
+      "spring/component-scan-failure-patterns:expected:3",
+      "spring/component-scan-failure-patterns:expected:4",
+      "spring/ioc-di-basics:expected:3",
+      "spring/mvc-controller-basics:expected:2",
+      "spring/request-pipeline-bean-container:expected:1",
+      "spring/request-pipeline-bean-container:expected:4",
+      "spring/self-invocation-proxy-misconception:expected:2",
+      "spring/self-invocation-proxy-misconception:expected:3",
+      "spring/transactional-basics:expected:3",
+      "spring/transactional-basics:expected:4"
+    ],
+    "lost_top20_query_ids": [],
+    "lost_top5_query_ids": [],
+    "overall": {
+      "demoted": 20,
+      "lost_top20": 0,
+      "lost_top20_rate": 0.0,
+      "lost_top5": 0,
+      "lost_top5_rate": 0.0,
+      "missing_after": 0,
+      "rate": 0.2,
+      "total": 100
+    }
+  }
+}
