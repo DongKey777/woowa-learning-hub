@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
 
-from scripts.learning.rag import indexer, searcher
+from scripts.learning.rag import indexer, query_rewrites, searcher
 
 
 class FakeMultiModalEncoder:
@@ -45,6 +46,41 @@ class FakeMultiModalEncoder:
         return {"dense": dense, "sparse": sparse, "colbert": colbert}
 
 
+class SpyQueryEncoder(FakeMultiModalEncoder):
+    def __init__(self):
+        self.encode_corpus_calls = []
+        self.encode_query_calls = []
+
+    def encode_corpus(
+        self,
+        texts,
+        *,
+        batch_size=16,
+        max_length=8192,
+        modalities=("dense", "sparse", "colbert"),
+        progress=None,
+    ):
+        text_list = list(texts)
+        self.encode_corpus_calls.append(
+            {
+                "texts": text_list,
+                "batch_size": batch_size,
+                "modalities": modalities,
+            }
+        )
+        return super().encode_corpus(
+            text_list,
+            batch_size=batch_size,
+            max_length=max_length,
+            modalities=modalities,
+            progress=progress,
+        )
+
+    def encode_query(self, text, *, modalities=("dense", "sparse", "colbert")):
+        self.encode_query_calls.append({"text": text, "modalities": modalities})
+        raise AssertionError("Lance multi-query search should batch encode candidates")
+
+
 def _write_doc(root: Path, category: str, slug: str, title: str, body: str) -> None:
     path = root / "contents" / category / f"{slug}.md"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -82,6 +118,47 @@ def _fake_corpus(tmp_path: Path) -> Path:
         "스프링 빈은 컨테이너가 생성하고 의존성을 연결하는 객체입니다. " * 4,
     )
     return root
+
+
+def _write_cached_rewrite(
+    repo_root: Path,
+    *,
+    prompt: str,
+    mode: str,
+    texts: list[str],
+) -> None:
+    storage = repo_root / "state" / "cs_rag" / "query_rewrites"
+    storage.mkdir(parents=True, exist_ok=True)
+    prompt_hash = query_rewrites.compute_prompt_hash(prompt, mode)
+    payload = {
+        "schema_id": query_rewrites.SCHEMA_ID_OUTPUT,
+        "prompt_hash": prompt_hash,
+        "rewrites": [
+            {"text": text, "rationale": "fixture rewrite"} for text in texts
+        ],
+        "confidence": 0.8,
+        "scored_by": "ai_session",
+        "produced_at": "2026-05-01T00:00:00+00:00",
+    }
+    (storage / f"{prompt_hash}.output.json").write_text(
+        json.dumps(payload, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
+def _write_malformed_cached_rewrite(
+    repo_root: Path,
+    *,
+    prompt: str,
+    mode: str,
+) -> None:
+    storage = repo_root / "state" / "cs_rag" / "query_rewrites"
+    storage.mkdir(parents=True, exist_ok=True)
+    prompt_hash = query_rewrites.compute_prompt_hash(prompt, mode)
+    (storage / f"{prompt_hash}.output.json").write_text(
+        "{malformed json",
+        encoding="utf-8",
+    )
 
 
 def test_lance_candidate_search_returns_formatted_hits(tmp_path):
@@ -379,6 +456,79 @@ def test_lance_query_plan_uses_learner_context_before_memory(monkeypatch):
     )
 
     assert context == ["concepts=concept:database/transaction"]
+
+
+def test_lance_cached_rewrite_candidates_are_batch_encoded_once(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "state" / "cs_rag"
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeMultiModalEncoder(),
+    )
+    prompt = "그거 왜 안 보여?"
+    _write_cached_rewrite(
+        tmp_path,
+        prompt=prompt,
+        mode="normalize",
+        texts=["Spring Bean dependency injection"],
+    )
+    spy_encoder = SpyQueryEncoder()
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", lambda _root: spy_encoder)
+    debug = {}
+
+    hits = searcher.search(
+        prompt,
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        modalities=("fts", "dense", "sparse"),
+        top_k=2,
+        use_reranker=False,
+        debug=debug,
+    )
+
+    assert hits
+    assert debug["query_candidate_kinds"] == ["original", "rewrite"]
+    assert len(spy_encoder.encode_corpus_calls) == 1
+    assert spy_encoder.encode_corpus_calls[0]["texts"] == [
+        prompt,
+        "Spring Bean dependency injection",
+    ]
+    assert spy_encoder.encode_corpus_calls[0]["batch_size"] == 2
+    assert spy_encoder.encode_query_calls == []
+
+
+def test_lance_malformed_rewrite_keeps_single_query_path(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "state" / "cs_rag"
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeMultiModalEncoder(),
+    )
+    prompt = "트랜잭션이 뭐예요?"
+    _write_malformed_cached_rewrite(tmp_path, prompt=prompt, mode="normalize")
+    spy_encoder = SpyQueryEncoder()
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", lambda _root: spy_encoder)
+    debug = {}
+
+    hits = searcher.search(
+        prompt,
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        modalities=("fts", "dense"),
+        top_k=1,
+        use_reranker=False,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/database/transaction-basics.md"
+    assert debug["query_candidate_kinds"] == ["original"]
+    assert len(spy_encoder.encode_corpus_calls) == 1
+    assert spy_encoder.encode_corpus_calls[0]["texts"] == [prompt]
+    assert spy_encoder.encode_query_calls == []
 
 
 def test_lance_original_candidate_encodes_topic_hints_without_rewriting_followups():

@@ -1763,17 +1763,22 @@ def _lance_candidate_pool_for_query_plan(
         except Exception:
             encoder = None
 
+    encoded_texts = [
+        _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints)
+        for candidate in candidates
+    ]
+    query_encodings = _encode_lance_query_candidates(
+        encoder,
+        encoded_texts,
+        query_modalities,
+    )
+
     if len(candidates) == 1:
         candidate = candidates[0]
-        query_encoding = _encode_lance_query_candidate(
-            encoder,
-            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
-            query_modalities,
-        )
         scored, chunks = _lance_candidate_pool(
             table,
             candidate.text,
-            query_encoding=query_encoding,
+            query_encoding=query_encodings[0] if query_encodings else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
         )
@@ -1781,16 +1786,11 @@ def _lance_candidate_pool_for_query_plan(
 
     chunks: dict[int, dict] = {}
     rankings: list[tuple[list[tuple[int, float]], float]] = []
-    for candidate in candidates:
-        query_encoding = _encode_lance_query_candidate(
-            encoder,
-            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
-            query_modalities,
-        )
+    for idx, candidate in enumerate(candidates):
         candidate_scored, candidate_chunks = _lance_candidate_pool(
             table,
             candidate.text,
-            query_encoding=query_encoding,
+            query_encoding=query_encodings[idx] if idx < len(query_encodings) else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
         )
@@ -1806,6 +1806,54 @@ def _lance_candidate_pool_for_query_plan(
         chunks,
         {"query_candidate_kinds": [c.kind for c in candidates]},
     )
+
+
+def _encode_lance_query_candidates(
+    encoder,
+    texts: list[str],
+    query_modalities: tuple[str, ...],
+) -> list[dict | None]:
+    if not texts:
+        return []
+    if encoder is None or not query_modalities:
+        return [None for _ in texts]
+    try:
+        batch_encoding = encoder.encode_corpus(
+            texts,
+            batch_size=len(texts),
+            modalities=query_modalities,
+        )
+    except Exception:
+        return [
+            _encode_lance_query_candidate(encoder, text, query_modalities)
+            for text in texts
+        ]
+    return [
+        _slice_lance_query_encoding(batch_encoding, idx, query_modalities)
+        for idx in range(len(texts))
+    ]
+
+
+def _slice_lance_query_encoding(
+    encoding: dict,
+    idx: int,
+    query_modalities: tuple[str, ...],
+) -> dict:
+    out: dict = {}
+    if "dense" in query_modalities:
+        dense = encoding.get("dense")
+        if dense is not None:
+            try:
+                out["dense"] = dense[idx : idx + 1]
+            except Exception:
+                out["dense"] = dense
+    if "sparse" in query_modalities:
+        sparse = encoding.get("sparse") or []
+        out["sparse"] = [sparse[idx]] if idx < len(sparse) else [{}]
+    if "colbert" in query_modalities:
+        colbert = encoding.get("colbert") or []
+        out["colbert"] = [colbert[idx]] if idx < len(colbert) else []
+    return out
 
 
 def _encode_lance_query_candidate(
