@@ -116,3 +116,74 @@ Decision:
 
 - Keep `config/rag_models.json` unchanged.
 - Keep production lock at current `256/64` until a target-environment latency run and the legacy-to-Lance cutover gate both pass.
+
+## Phase 4 Chunk Context Pilot
+
+Summary JSON: `reports/rag_eval/chunk_context_pilot_comparison_20260501T0416Z.json`
+
+Artifacts:
+
+- Contract doc: `docs/ai-behavior-contracts.md`
+- Wrapper: `bin/chunk-context-prepare`
+- Skill: `skills/woowa-chunk-context/SKILL.md`
+- Fixture: `tests/fixtures/cs_rag_multi_turn_queries.json`
+- No-context report: `reports/rag_eval/chunk_context_pilot_noctx_20260501T0416Z.json`
+- With-context report: `reports/rag_eval/chunk_context_pilot_withctx_20260501T0416Z.json`
+
+Method:
+
+- Prepared `chunk-context-v1.input` artifacts for 5 pilot docs.
+- Wrote 130 matching `chunk-context-v1.output` sidecars under `state/cs_rag/chunk_contexts`.
+- Rebuilt a 5-document sampled Lance index twice: once with `WOOWA_CHUNK_CONTEXT_ROOT` pointing at an empty directory, once with the generated sidecars.
+- Ran `bin/rag-eval --sampled-ablate` on 10 Korean/mixed multi-turn prompts, modalities `fts,dense,sparse`.
+
+Commands:
+
+```bash
+bin/chunk-context-prepare \
+  --path contents/data-structure/applied-data-structures-overview.md \
+  --path contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md \
+  --path contents/system-design/README.md \
+  --path contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md \
+  --path contents/security/cookie-rejection-reason-primer.md
+
+env HF_HUB_OFFLINE=1 WOOWA_CHUNK_CONTEXT_ROOT=/private/tmp/woowa_chunk_context_empty \
+  bin/rag-eval --sampled-ablate \
+  --fixture tests/fixtures/cs_rag_multi_turn_queries.json \
+  --sample-root /private/tmp/woowa_chunk_context_eval_noctx \
+  --sample-categories data-structure,design-pattern,system-design,security \
+  --sample-extra-docs-per-category 0 \
+  --sample-force-rebuild \
+  --ablation-split full \
+  --ablation-modalities fts,dense,sparse \
+  --ablation-out reports/rag_eval/chunk_context_pilot_noctx_20260501T0416Z.json \
+  --top-k 10 \
+  --device auto
+
+env HF_HUB_OFFLINE=1 \
+  bin/rag-eval --sampled-ablate \
+  --fixture tests/fixtures/cs_rag_multi_turn_queries.json \
+  --sample-root /private/tmp/woowa_chunk_context_eval_withctx \
+  --sample-categories data-structure,design-pattern,system-design,security \
+  --sample-extra-docs-per-category 0 \
+  --sample-force-rebuild \
+  --ablation-split full \
+  --ablation-modalities fts,dense,sparse \
+  --ablation-out reports/rag_eval/chunk_context_pilot_withctx_20260501T0416Z.json \
+  --top-k 10 \
+  --device auto
+```
+
+Measurement:
+
+| run | primary nDCG micro | category macro | language macro | ko bucket | mixed bucket | CPU P95 |
+|---|---:|---:|---:|---:|---:|---:|
+| no sidecar | 0.2000 | 0.2500 | 0.2083 | 0.1667 | 0.2500 | 395.3 ms |
+| with sidecar | 0.2000 | 0.2500 | 0.2083 | 0.1667 | 0.2500 | 397.9 ms |
+| delta | +0.0000 | +0.0000 | +0.0000 | +0.0000 | +0.0000 | +2.7 ms |
+
+Interpretation:
+
+- `chunk-context-v1` is wired into dense embedding text and Lance `search_terms`, and malformed sidecars fall back to raw chunk text.
+- This small sampled pilot did not move rankings. The result is useful as wiring evidence, not as production approval.
+- The weak multi-turn pilot fixture suggests context generation alone is insufficient; the next likely lever is query rewriting or higher-quality per-chunk context generation before a full R2 rebuild.

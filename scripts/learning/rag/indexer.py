@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import sqlite3
 import time
@@ -461,9 +462,38 @@ def build_index(
     return manifest
 
 
+def _chunk_context_root() -> Path:
+    default = DEFAULT_INDEX_ROOT / "chunk_contexts"
+    return Path(os.environ.get("WOOWA_CHUNK_CONTEXT_ROOT", default))
+
+
+def _load_chunk_context(chunk: corpus_loader.CorpusChunk) -> str | None:
+    path = _chunk_context_root() / f"{chunk.chunk_id}.output.json"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if payload.get("schema_id") != "chunk-context-v1.output":
+        return None
+    if payload.get("chunk_id") != chunk.chunk_id:
+        return None
+    if payload.get("retrieval_only") is not True:
+        return None
+    if payload.get("scored_by") != "ai_session":
+        return None
+    context = payload.get("context")
+    if not isinstance(context, str):
+        return None
+    context = " ".join(context.split())
+    return context or None
+
+
 def _embed_text(chunk: corpus_loader.CorpusChunk) -> str:
     """Compose the text fed to the embedder: title + section + body."""
     head = " > ".join(chunk.section_path) if chunk.section_path else chunk.title
+    context = _load_chunk_context(chunk)
+    if context:
+        return f"{head}\n\n[retrieval context] {context}\n\n{chunk.body}"
     return f"{head}\n\n{chunk.body}"
 
 

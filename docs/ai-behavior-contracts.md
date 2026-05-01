@@ -26,6 +26,7 @@ Plan reference: `/Users/idonghun/.claude/plans/abundant-humming-lovelace.md`
 | Contract id | Phase | Wrapper | Skill | Storage | Fallback |
 |-------------|-------|---------|-------|---------|----------|
 | `query-rewrite-v1` | P4.2 | `bin/rag-rewrite-prepare` | `skills/woowa-rag-rewrite/SKILL.md` | `state/cs_rag/query_rewrites/<key>.{input,output}.json` | PRF / RM3 (P4.3) |
+| `chunk-context-v1` | P4.1 | `bin/chunk-context-prepare` | `skills/woowa-chunk-context/SKILL.md` | `state/cs_rag/chunk_contexts/<chunk_id>.{input,output}.json` | raw chunk text only |
 | `router-fallback-v1` | P4.4 | `bin/rag-route-fallback` | `skills/woowa-rag-route/SKILL.md` | `state/repos/<repo>/logs/routing_ai_decisions.jsonl` | heuristic raw decision (P5.2 logs `ai_unavailable=true`) |
 | `drill-grade-v1` | P7.3 | `bin/drill-grade-prepare` | `skills/woowa-drill-grade/SKILL.md` | `state/repos/<repo>/memory/drill-history.jsonl` | rule baseline (`scripts/learning/scoring.py`) |
 
@@ -106,7 +107,73 @@ retrieval pass alongside the original query.
 
 ---
 
-## Contract 2 — `router-fallback-v1`
+## Contract 2 — `chunk-context-v1`
+
+**Purpose**: Generate short, chunk-specific Korean retrieval context before
+embedding and FTS term generation. The context is retrieval-only and must not
+be appended to rendered learner-facing markdown.
+
+**Trigger flow**:
+1. AI invokes `bin/chunk-context-prepare --path <corpus path>` for selected
+   pilot documents or a larger rebuild batch.
+2. Wrapper writes one input artifact per chunk and prints expected output paths.
+3. AI reads each input, follows `skills/woowa-chunk-context/SKILL.md`, and writes
+   the corresponding output JSON.
+4. `scripts.learning.rag.indexer._embed_text()` prepends valid output context
+   when building dense vectors and LanceDB `search_terms`.
+5. Missing or malformed output falls back to the raw chunk text.
+
+**Input schema** (`<chunk_id>.input.json`):
+```json
+{
+  "schema_id": "chunk-context-v1.input",
+  "chunk_id": "doc-sha#chunk-index",
+  "path": "contents/category/doc.md",
+  "title": "document title",
+  "category": "database",
+  "section_path": ["H1", "H2"],
+  "body": "chunk markdown body",
+  "anchors": ["local headings"],
+  "difficulty": "beginner|intermediate|advanced|expert|null",
+  "requirements": {
+    "retrieval_only": true,
+    "language": "ko",
+    "token_budget": {"min": 50, "max": 100},
+    "do_not_repeat_body_verbatim": true
+  },
+  "expected_output_path": "state/cs_rag/chunk_contexts/<chunk_id>.output.json",
+  "produced_at": "ISO 8601"
+}
+```
+
+**Output schema** (`<chunk_id>.output.json`):
+```json
+{
+  "schema_id": "chunk-context-v1.output",
+  "chunk_id": "matches input",
+  "context": "50-100 Korean tokens of retrieval-only chunk context",
+  "retrieval_only": true,
+  "scored_by": "ai_session",
+  "produced_at": "ISO 8601"
+}
+```
+
+**Validation rules**:
+- `chunk_id` in output MUST equal input `chunk_id`
+- `context` is a non-empty string
+- `retrieval_only` is the literal `true`
+- `scored_by` is the literal `"ai_session"`
+
+**Storage location**:
+- Input: `state/cs_rag/chunk_contexts/<chunk_id>.input.json`
+- Output: `state/cs_rag/chunk_contexts/<chunk_id>.output.json`
+- Runtime override: `WOOWA_CHUNK_CONTEXT_ROOT=/path/to/chunk_contexts`
+
+**Fallback**: raw chunk text only. Invalid sidecars are ignored.
+
+---
+
+## Contract 3 — `router-fallback-v1`
 
 **Purpose**: When the heuristic Tier router (`interactive_rag_router.py`)
 returns low confidence, defer to AI session classification. Used only for
@@ -171,7 +238,7 @@ classifications from pure-heuristic.
 
 ---
 
-## Contract 3 — `drill-grade-v1`
+## Contract 4 — `drill-grade-v1`
 
 **Purpose**: AI session grades a learner's drill answer on the 4-dimension
 rubric (accuracy / depth / practicality / completeness) and emits scores +

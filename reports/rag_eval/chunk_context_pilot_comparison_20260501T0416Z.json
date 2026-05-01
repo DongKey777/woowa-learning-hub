@@ -1,0 +1,172 @@
+{
+  "created_at": "2026-05-01T04:22:24Z",
+  "fixture": "tests/fixtures/cs_rag_multi_turn_queries.json",
+  "sample": {
+    "corpus_root": "/private/tmp/woowa_chunk_context_eval_withctx/corpus",
+    "fixture_path": "/private/tmp/woowa_chunk_context_eval_withctx/fixture.json",
+    "categories": [
+      "data-structure",
+      "design-pattern",
+      "system-design",
+      "security"
+    ],
+    "query_count": 10,
+    "required_doc_count": 5,
+    "extra_doc_count": 0,
+    "doc_count": 5,
+    "index_modalities": [
+      "fts",
+      "dense",
+      "sparse"
+    ]
+  },
+  "sidecar_coverage": {
+    "input_count": 130,
+    "output_count": 130,
+    "document_count": 5,
+    "paths": [
+      "contents/data-structure/applied-data-structures-overview.md",
+      "contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md",
+      "contents/security/cookie-rejection-reason-primer.md",
+      "contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md",
+      "contents/system-design/README.md"
+    ]
+  },
+  "reports": {
+    "no_context": "reports/rag_eval/chunk_context_pilot_noctx_20260501T0416Z.json",
+    "with_context": "reports/rag_eval/chunk_context_pilot_withctx_20260501T0416Z.json"
+  },
+  "metrics": {
+    "no_context": {
+      "overall_primary_ndcg_micro": 0.2,
+      "overall_graded_ndcg_micro": 0.2,
+      "overall_mrr_micro": 0.2,
+      "primary_ndcg_macro_category": 0.25,
+      "primary_ndcg_macro_language": 0.20833333333333331,
+      "primary_ndcg_ko_bucket": 0.16666666666666666,
+      "primary_ndcg_mixed_bucket": 0.25,
+      "latency_p95_warm_ms": 395.25933300319593,
+      "hard_regression_failures": 8
+    },
+    "with_context": {
+      "overall_primary_ndcg_micro": 0.2,
+      "overall_graded_ndcg_micro": 0.2,
+      "overall_mrr_micro": 0.2,
+      "primary_ndcg_macro_category": 0.25,
+      "primary_ndcg_macro_language": 0.20833333333333331,
+      "primary_ndcg_ko_bucket": 0.16666666666666666,
+      "primary_ndcg_mixed_bucket": 0.25,
+      "latency_p95_warm_ms": 397.92358299018815,
+      "hard_regression_failures": 8
+    },
+    "delta_with_minus_no_context": {
+      "overall_primary_ndcg_micro": 0.0,
+      "overall_graded_ndcg_micro": 0.0,
+      "overall_mrr_micro": 0.0,
+      "primary_ndcg_macro_category": 0.0,
+      "primary_ndcg_macro_language": 0.0,
+      "primary_ndcg_ko_bucket": 0.0,
+      "primary_ndcg_mixed_bucket": 0.0,
+      "latency_p95_warm_ms": 2.6642499869922176,
+      "hard_regression_failures": 0
+    }
+  },
+  "per_query_delta": [
+    {
+      "query_id": "multi_turn_cookie_domain_path_followup",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_cookie_not_sent_server_anonymous",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_cookie_rejection_devtools_reason",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_data_structure_collection_choice",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_data_structure_queue_stack_followup",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_duplicate_cookie_proxy_login_loop",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_strict_list_canary_metric_followup",
+      "primary_ndcg_noctx": 1.0,
+      "primary_ndcg_withctx": 1.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 1.0,
+      "hit_withctx": 1.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_strict_list_safe_rollout_followup",
+      "primary_ndcg_noctx": 1.0,
+      "primary_ndcg_withctx": 1.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 1.0,
+      "hit_withctx": 1.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_system_design_auth_session_route",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    },
+    {
+      "query_id": "multi_turn_system_design_route_after_cache_queue",
+      "primary_ndcg_noctx": 0.0,
+      "primary_ndcg_withctx": 0.0,
+      "primary_ndcg_delta": 0.0,
+      "hit_noctx": 0.0,
+      "hit_withctx": 0.0,
+      "hit_delta": 0.0
+    }
+  ],
+  "interpretation": {
+    "gate": "observational_pilot_only",
+    "result": "no measured ranking change on this 5-document/10-query sampled Lance run",
+    "ko_bucket_delta_primary_ndcg": 0.0,
+    "note": "chunk-context-v1 sidecars were loaded during index build; this pilot records wiring and measurement, not production acceptance."
+  }
+}

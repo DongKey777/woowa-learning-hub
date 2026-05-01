@@ -1,0 +1,129 @@
+{
+  "_meta": {
+    "description": "Small Korean multi-turn retrieval fixture for chunk-context-v1 pilot evaluation. Prompts preserve prior-turn wording so retrieval can be measured on conversational follow-up questions.",
+    "created_for": "rag-r2 Phase 4 chunk context pilot",
+    "top_k": 10
+  },
+  "queries": [
+    {
+      "query_id": "multi_turn_data_structure_collection_choice",
+      "prompt": "방금 도메인에서 List랑 Set 중 뭐 써야 하냐고 물었잖아. 중복 제거랑 순서 보존을 같이 생각할 때 자료구조 선택 기준 정리된 문서 찾아줘.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["data-structure-choice", "collection-semantics"],
+      "bucket": {"category": "data-structure", "difficulty": "beginner", "language": "ko", "intent": "comparison"},
+      "qrels": [{"path": "contents/data-structure/applied-data-structures-overview.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_data_structure_queue_stack_followup",
+      "prompt": "이전 답변에서 큐랑 스택 얘기가 나왔는데, 미션 코드에서 작업 대기열과 되돌리기 흐름을 어떤 자료구조로 설명하면 좋을지 이어서 보고 싶어.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["queue", "stack", "mission-code"],
+      "bucket": {"category": "data-structure", "difficulty": "beginner", "language": "ko", "intent": "comparison"},
+      "qrels": [{"path": "contents/data-structure/applied-data-structures-overview.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_strict_list_canary_metric_followup",
+      "prompt": "앞에서 strict-list를 바로 켜지 말고 canary로 보자고 했어. 다음 턴에서는 어떤 지표가 나빠지면 롤백해야 하는지 기준 문서를 찾고 싶어.",
+      "mode": "full",
+      "experience_level": "advanced",
+      "learning_points": ["canary", "rollback-trigger", "observability"],
+      "bucket": {"category": "design-pattern", "difficulty": "advanced", "language": "ko", "intent": "deep-dive"},
+      "qrels": [{"path": "contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_strict_list_safe_rollout_followup",
+      "prompt": "방금 strict list 패턴은 이해했어. 운영에서 일부 트래픽만 켜고 실패율, latency, mismatch를 보고 확대할지 판단하는 흐름은 어디 있어?",
+      "mode": "full",
+      "experience_level": "advanced",
+      "learning_points": ["strict-list", "safe-rollout", "canary"],
+      "bucket": {"category": "design-pattern", "difficulty": "advanced", "language": "mixed", "intent": "deep-dive"},
+      "qrels": [{"path": "contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_system_design_route_after_cache_queue",
+      "prompt": "이전 턴에서 캐시랑 큐를 따로 봤는데, 이제 시스템 디자인 관점에서 일관성, 장애 복구, 관측 지표를 어떤 순서로 읽을지 경로가 필요해.",
+      "mode": "full",
+      "experience_level": "intermediate",
+      "learning_points": ["system-design-route", "cache", "queue", "reliability"],
+      "bucket": {"category": "system-design", "difficulty": "intermediate", "language": "ko", "intent": "definition"},
+      "qrels": [{"path": "contents/system-design/README.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_system_design_auth_session_route",
+      "prompt": "방금 로그인 세션 장애를 봤고, 이어서 인증 세션이 시스템 디자인에서 어디로 연결되는지 catalog나 bridge index를 보고 싶어.",
+      "mode": "full",
+      "experience_level": "intermediate",
+      "learning_points": ["auth-session", "system-design-catalog"],
+      "bucket": {"category": "system-design", "difficulty": "intermediate", "language": "mixed", "intent": "definition"},
+      "qrels": [{"path": "contents/system-design/README.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_duplicate_cookie_proxy_login_loop",
+      "prompt": "아까 SavedRequest 루프라고만 했는데, 이번에는 쿠키가 두 개 찍히는 상황이랑 프록시 헤더 문제를 어떻게 분리하는지 보고 싶어.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["duplicate-cookie", "proxy-header", "login-loop"],
+      "bucket": {"category": "security", "difficulty": "beginner", "language": "ko", "intent": "symptom"},
+      "qrels": [{"path": "contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_cookie_not_sent_server_anonymous",
+      "prompt": "이전 답에서 서버가 anonymous로 본다고 했어. 다음에는 브라우저가 쿠키를 안 보낸 건지 서버 매핑이 없는 건지 증거를 나누는 문서를 찾아줘.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["cookie-not-sent", "server-anonymous", "evidence-split"],
+      "bucket": {"category": "security", "difficulty": "beginner", "language": "ko", "intent": "symptom"},
+      "qrels": [{"path": "contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_cookie_rejection_devtools_reason",
+      "prompt": "방금 Set-Cookie는 내려왔는데 로그인 유지가 안 된다고 했잖아. DevTools에서 blocked reason을 보고 SameSite나 Secure 문제를 확인하는 입문 문서가 필요해.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["cookie-rejection", "devtools", "samesite-secure"],
+      "bucket": {"category": "security", "difficulty": "beginner", "language": "mixed", "intent": "symptom"},
+      "qrels": [{"path": "contents/security/cookie-rejection-reason-primer.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    },
+    {
+      "query_id": "multi_turn_cookie_domain_path_followup",
+      "prompt": "이어서 쿠키가 저장됐는데 특정 URL에서만 안 붙는다고 했어. Domain, Path, Secure 속성 때문에 거부되는 케이스를 초보자 기준으로 찾고 싶어.",
+      "mode": "full",
+      "experience_level": "beginner",
+      "learning_points": ["cookie-domain", "cookie-path", "secure-cookie"],
+      "bucket": {"category": "security", "difficulty": "beginner", "language": "mixed", "intent": "symptom"},
+      "qrels": [{"path": "contents/security/cookie-rejection-reason-primer.md", "grade": 3, "role": "primary"}],
+      "forbidden_paths": [],
+      "rank_budget": {"primary_max_rank": 5, "companion_max_rank": 5},
+      "bucket_source": "manual"
+    }
+  ]
+}
