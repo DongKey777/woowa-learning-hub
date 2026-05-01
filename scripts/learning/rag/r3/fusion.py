@@ -67,6 +67,12 @@ def fuse_candidates(
         if exemplar.path in seen_paths:
             continue
         seen_paths.add(exemplar.path)
+        metadata = {
+            key: value
+            for key, value in exemplar.metadata.items()
+            if key != "sources"
+        }
+        metadata["sources"] = [source.to_dict() for source in sources[key]]
         fused.append(
             Candidate(
                 path=exemplar.path,
@@ -76,9 +82,7 @@ def fuse_candidates(
                 score=float(score),
                 title=exemplar.title,
                 section_title=exemplar.section_title,
-                metadata={
-                    "sources": [source.to_dict() for source in sources[key]],
-                },
+                metadata=metadata,
             )
         )
         if len(fused) >= limit:

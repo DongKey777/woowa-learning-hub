@@ -58,7 +58,10 @@ class SparseRetriever:
                     score=float(score),
                     title=doc.title,
                     section_title=doc.section_title,
-                    metadata={"matched_terms": sorted(matched[doc_key])},
+                    metadata={
+                        "matched_terms": sorted(matched[doc_key]),
+                        "document": dict(doc.metadata),
+                    },
                 )
             )
         return candidates

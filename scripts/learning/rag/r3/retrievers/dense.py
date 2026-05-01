@@ -43,6 +43,7 @@ class DenseRetriever:
                 score=float(score),
                 title=doc.title,
                 section_title=doc.section_title,
+                metadata={"document": dict(doc.metadata)},
             )
             for rank, (doc, score) in enumerate(hits[: self.limit], start=1)
         ]

@@ -94,7 +94,11 @@ class LexicalStore:
                 score=hit.score,
                 title=hit.document.title,
                 section_title=hit.document.section_title,
-                metadata={"field": field, "matched_terms": list(hit.matched_terms)},
+                metadata={
+                    "field": field,
+                    "matched_terms": list(hit.matched_terms),
+                    "document": dict(hit.document.metadata),
+                },
             )
             for rank, hit in enumerate(hits[:limit], start=1)
         ]

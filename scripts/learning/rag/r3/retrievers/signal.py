@@ -32,7 +32,10 @@ class SignalRetriever:
                 score=float(score),
                 title=doc.title,
                 section_title=doc.section_title,
-                metadata={"matched_signals": sorted(requested & set(doc.signals))},
+                metadata={
+                    "matched_signals": sorted(requested & set(doc.signals)),
+                    "document": dict(doc.metadata),
+                },
             )
             for rank, (doc, score) in enumerate(hits[: self.limit], start=1)
         ]
