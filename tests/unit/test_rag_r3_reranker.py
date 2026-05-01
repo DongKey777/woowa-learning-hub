@@ -10,6 +10,7 @@ from scripts.learning.rag.r3.rerankers import (
     default_model_factory,
     reranker_chain_for_language,
 )
+from scripts.learning.rag.r3.rerankers import cross_encoder
 
 
 class FakeCrossEncoder:
@@ -38,6 +39,7 @@ def test_english_chain_can_include_mxbai_experiment():
 
 def test_default_model_factory_allows_remote_code_only_for_gte(monkeypatch):
     calls = []
+    cross_encoder._MODEL_CACHE.clear()
 
     class FakeFactory:
         def __init__(self, model_id, **kwargs):
@@ -57,6 +59,27 @@ def test_default_model_factory_allows_remote_code_only_for_gte(monkeypatch):
         "Alibaba-NLP/gte-multilingual-reranker-base",
         {"trust_remote_code": True, "device": "cpu"},
     )
+
+
+def test_default_model_factory_reuses_model_cache(monkeypatch):
+    calls = []
+    cross_encoder._MODEL_CACHE.clear()
+
+    class FakeFactory:
+        def __init__(self, model_id, **kwargs):
+            calls.append((model_id, kwargs))
+
+    monkeypatch.setitem(
+        sys.modules,
+        "sentence_transformers",
+        SimpleNamespace(CrossEncoder=FakeFactory),
+    )
+
+    first = default_model_factory("BAAI/bge-reranker-v2-m3")
+    second = default_model_factory("BAAI/bge-reranker-v2-m3")
+
+    assert first is second
+    assert calls == [("BAAI/bge-reranker-v2-m3", {})]
 
 
 def test_cross_encoder_reranker_sorts_candidates_and_keeps_metadata():

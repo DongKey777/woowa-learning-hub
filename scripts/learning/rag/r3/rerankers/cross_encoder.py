@@ -18,6 +18,7 @@ REMOTE_CODE_RERANKER_MODELS = {
 CPU_ONLY_RERANKER_MODELS = {
     "Alibaba-NLP/gte-multilingual-reranker-base",
 }
+_MODEL_CACHE: dict[str, Any] = {}
 
 
 def reranker_chain_for_language(
@@ -58,6 +59,9 @@ def reranker_chain_for_language(
 
 
 def default_model_factory(model_id: str) -> Any:
+    cached = _MODEL_CACHE.get(model_id)
+    if cached is not None:
+        return cached
     from sentence_transformers import CrossEncoder  # type: ignore
 
     kwargs = {}
@@ -65,7 +69,9 @@ def default_model_factory(model_id: str) -> Any:
         kwargs["trust_remote_code"] = True
     if model_id in CPU_ONLY_RERANKER_MODELS:
         kwargs["device"] = "cpu"
-    return CrossEncoder(model_id, **kwargs)
+    model = CrossEncoder(model_id, **kwargs)
+    _MODEL_CACHE[model_id] = model
+    return model
 
 
 def _candidate_passage(candidate: Candidate) -> str:
