@@ -68,6 +68,13 @@ def test_build_run_id_handles_missing_git():
     assert rid.startswith("r0-")
 
 
+def test_resolve_source_mode_uses_bundle_when_commit_ahead():
+    assert H.resolve_source_mode("auto", {"commits_ahead_of_origin": 2}) == "bundle"
+    assert H.resolve_source_mode("auto", {"commits_ahead_of_origin": 0}) == "git"
+    assert H.resolve_source_mode("git", {"commits_ahead_of_origin": 2}) == "git"
+    assert H.resolve_source_mode("bundle", {"commits_ahead_of_origin": 0}) == "bundle"
+
+
 # ---------------------------------------------------------------------------
 # Cost ledger append
 # ---------------------------------------------------------------------------
@@ -147,6 +154,23 @@ def test_remote_commands_for_r0_skip_warm_and_eval():
     assert "cli_rag_eval" not in full
     # But package step IS present
     assert "package_rag_artifact" in full
+
+
+def test_remote_commands_can_clone_from_uploaded_git_bundle():
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="abc1234",
+        modalities=("fts",),
+        run_id="r0-test",
+        r_phase="r0",
+        source_mode="bundle",
+    )
+    full = "\n".join(cmds)
+
+    assert f"git clone {H.REMOTE_BUNDLE_PATH} /workspace/repo" in full
+    assert "https://github.com/DongKey777/woowa-learning-hub.git" not in full
+    assert "git checkout abc1234" in full
 
 
 def test_remote_commands_apt_runs_before_pip():
@@ -876,6 +900,7 @@ class _FakeSshExecutor:
     def __init__(self, *, fail_on: int | None = None):
         self.commands: list[str] = []
         self.scp_calls: list[tuple[str, str]] = []
+        self.scp_to_calls: list[tuple[str, str]] = []
         self.fail_on = fail_on  # 1-based command index that should fail
         self._waited = False
 
@@ -893,6 +918,9 @@ class _FakeSshExecutor:
         # Simulate file creation locally
         Path(local).parent.mkdir(parents=True, exist_ok=True)
         Path(local).write_bytes(b"fake artifact")
+
+    def scp_to_pod(self, pod, keypath, local, remote):
+        self.scp_to_calls.append((str(local), remote))
 
 
 def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
@@ -925,6 +953,43 @@ def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
     # Artifact returned
     assert artifact is not None
     assert (artifact / "cs_rag_index_root.tar.zst").exists()
+
+
+def test_step_5_to_11_uploads_source_bundle_before_commands(
+    tmp_path,
+    monkeypatch,
+):
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A5000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor()
+    bundle_created: list[list[str]] = []
+
+    def fake_subprocess_run(cmd, *, cwd, check):
+        del cwd, check
+        bundle_created.append(list(cmd))
+        Path(cmd[3]).write_bytes(b"bundle")
+
+    monkeypatch.setattr(H.subprocess, "run", fake_subprocess_run)
+
+    h.step_5_to_11_remote_build(
+        pod, keypath,
+        commit_sha="abc1234",
+        modalities=("fts",),
+        run_id="r0-bundle",
+        r_phase="r0",
+        repo_root=tmp_path,
+        ssh_executor=fake_ssh,
+        source_mode="bundle",
+    )
+
+    assert bundle_created == [["git", "bundle", "create", "/tmp/r0-bundle.bundle", "abc1234"]]
+    assert fake_ssh.scp_to_calls == [("/tmp/r0-bundle.bundle", H.REMOTE_BUNDLE_PATH)]
+    assert fake_ssh.commands[1] == f"git clone {H.REMOTE_BUNDLE_PATH} /workspace/repo"
 
 
 def test_step_5_to_11_verifies_strict_r3_artifact_after_download(

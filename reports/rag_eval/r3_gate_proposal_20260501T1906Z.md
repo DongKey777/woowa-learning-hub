@@ -17,6 +17,7 @@ Evidence:
 - Strict artifact import smoke: `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md`
 - Remote strict harness dry run: `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md`
 - Remote live build blocker check: `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md`
+- Remote source bundle dry run: `reports/rag_eval/r3_remote_source_bundle_dry_run_20260501T2015Z.md`
 - Qdrant local-mode spike: `reports/rag_eval/r3_qdrant_local_probe_summary_20260501T2010Z.md`
 - Backend decision: `docs/worklogs/rag-r3-backend-decision-2026-05-02.md`
 
@@ -69,10 +70,10 @@ Current Provisional Gates:
 | strict artifact import contract | strict manifest + checksum + extracted index manifest verify locally | local artifact pass | pass |
 | remote harness strict gate | R3 remote build must strict-package and verify downloaded artifact before success | dry-run + unit pass | pass |
 | backend decision | production candidate selected with Qdrant comparator measured | LanceDB-improved R3 selected; Qdrant local not first production candidate | pass |
-| actual remote artifact import | RunPod-built artifact verifies with the same strict contract | blocked: `RUNPOD_API_KEY` unset; selected commits also need push or source-tar/bundle fallback | block |
+| actual remote artifact import | RunPod-built artifact verifies with the same strict contract | blocked: `RUNPOD_API_KEY` unset; source bundle fallback dry-run passes for local commits ahead of origin | block |
 
 Decision:
 
 R3 quality gates pass on the expanded 100q pilot. The selected production candidate is LanceDB-improved R3 with BGE-M3 dense retrieval, BGE-M3 sparse sidecar, metadata lexical sidecar, signal retrieval, deterministic fusion, and sidecar-first `auto` rerank policy. Qdrant remains a comparator, but the local-mode spike does not justify making it the first production backend for the M5 16GB target. The local interactive default preserves dense, sparse, lexical sidecar, and signal candidate discovery, then skips `BAAI/bge-reranker-v2-m3` only when the verified metadata lexical sidecar is loaded. Forced BGE reranking remains the R3 target quality path through explicit `use_reranker=True` or `WOOWA_RAG_R3_RERANK_POLICY=always`. The root cause of one-shot CLI cold start is addressed by `bin/rag-daemon` and `bin/rag-ask --via-daemon`; runtime metadata now proves backend, reranker, rerank policy, reranker skip reason, lexical sidecar state, sparse sidecar, rerank window, sparse retriever cache state, and per-stage timing in the learner-facing JSON.
 
-Do not cut over by default yet. The remaining blocker is an actual RunPod-built artifact verified with the strict import contract. The remote harness now enforces strict R3 packaging and local import verification before reporting success, but a live RunPod run is blocked in this environment because `RUNPOD_API_KEY` is unset. The current implementation commits are also ahead of `origin/main`, so a live `git clone + checkout` Pod run needs either push access or a source-tar/bundle fallback before it can see the selected SHA. If a future qrel slice exposes an ordering failure under the auto policy, the root-cause track is reranker serving optimization or a locally validated smaller/distilled multilingual reranker, not disabling sparse or weakening candidate discovery.
+Do not cut over by default yet. The remaining blocker is an actual RunPod-built artifact verified with the strict import contract. The remote harness now enforces strict R3 packaging and local import verification before reporting success, and it can dry-run a git bundle source transfer for committed local changes ahead of `origin/main`. A live RunPod run is still blocked in this environment because `RUNPOD_API_KEY` is unset. If a future qrel slice exposes an ordering failure under the auto policy, the root-cause track is reranker serving optimization or a locally validated smaller/distilled multilingual reranker, not disabling sparse or weakening candidate discovery.

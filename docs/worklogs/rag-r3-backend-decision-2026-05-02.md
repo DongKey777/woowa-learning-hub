@@ -36,7 +36,8 @@ first-stage candidate sources.
 | Qdrant summary | `reports/rag_eval/r3_qdrant_local_probe_summary_20260501T2010Z.md` | local mode warning after 20,000 points; Docker server mode unavailable because daemon was not running |
 | Strict local artifact import | `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md` | local strict import contract passes |
 | Remote harness dry run | `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md` | remote package/verify path is enforced in dry run |
-| Remote live blocker | `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md` | live mode fails closed without `RUNPOD_API_KEY`; Pod also needs pushed commit or source-tar/bundle fallback |
+| Remote live blocker | `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md` | live mode fails closed without `RUNPOD_API_KEY` |
+| Remote source fallback | `reports/rag_eval/r3_remote_source_bundle_dry_run_20260501T2015Z.md` | git bundle dry-run passes for committed local changes ahead of origin |
 
 ## Why Not Qdrant First
 
@@ -91,6 +92,7 @@ with a remote-built artifact imported and served locally.
 The only current cutover blocker is a live remote GPU artifact build and local
 strict import verification. The code path is dry-run verified, but this
 environment has no `RUNPOD_API_KEY`, so the actual RunPod build cannot be
-executed here. The implementation commits are also ahead of `origin/main`; a
-live Pod can only `git checkout` the selected SHA after the branch is pushed or
-after the harness grows a source-tar/bundle transfer path.
+executed here. The implementation commits are ahead of `origin/main`, but this
+is no longer a hard blocker for committed changes because the harness now
+supports git bundle transfer in `auto` source mode. Dirty uncommitted work is
+not bundled by design.

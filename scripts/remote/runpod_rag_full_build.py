@@ -51,6 +51,8 @@ from scripts.remote.artifact_contract import verify_artifact_dir
 logger = logging.getLogger(__name__)
 
 R_PHASES = ("r-1", "r0", "r1", "r2", "r3", "r4")
+SOURCE_MODES = ("auto", "git", "bundle")
+REMOTE_BUNDLE_PATH = "/workspace/woowa-learning-hub.bundle"
 
 # GPU defaults per R-phase (capability probe §4)
 DEFAULT_GPU_PER_PHASE = {
@@ -222,6 +224,12 @@ class SshExecutor(Protocol):
         """Pull a file from Pod to local."""
         ...
 
+    def scp_to_pod(
+        self, pod: Pod, keypath: Path, local_path: Path, remote_path: str,
+    ) -> None:
+        """Push a file from local to Pod."""
+        ...
+
 
 class _ParamikoSshExecutor:
     """Production SSH executor using paramiko (already installed via
@@ -287,6 +295,18 @@ class _ParamikoSshExecutor:
             try:
                 local_path.parent.mkdir(parents=True, exist_ok=True)
                 sftp.get(remote_path, str(local_path))
+            finally:
+                sftp.close()
+        finally:
+            client.close()
+
+    def scp_to_pod(self, pod: Pod, keypath: Path, local_path: Path,
+                   remote_path: str) -> None:
+        client = self._client(pod, keypath)
+        try:
+            sftp = client.open_sftp()
+            try:
+                sftp.put(str(local_path), remote_path)
             finally:
                 sftp.close()
         finally:
@@ -608,6 +628,27 @@ def build_run_id(r_phase: str, git_state: dict) -> str:
     return f"{r_phase}-{sha7}-{ts}"
 
 
+def resolve_source_mode(source_mode: str, git_state: dict) -> str:
+    """Choose how the Pod receives the repository source.
+
+    ``git`` is cheapest when the selected commit is already reachable from
+    GitHub.  ``bundle`` is the safer fallback for local commits ahead of
+    origin: it transfers the committed HEAD history directly to the Pod without
+    pushing.  Dirty working-tree changes are deliberately not bundled; the
+    remote build should be based on an explicit commit.
+    """
+
+    if source_mode not in SOURCE_MODES:
+        raise ValueError(f"unknown source mode: {source_mode}")
+    if source_mode != "auto":
+        return source_mode
+    try:
+        ahead = int(git_state.get("commits_ahead_of_origin") or 0)
+    except (TypeError, ValueError):
+        ahead = 0
+    return "bundle" if ahead > 0 else "git"
+
+
 def append_cost_ledger(
     ledger_path: Path,
     *,
@@ -665,6 +706,7 @@ class BuildConfig:
     lance_colbert_dtype: str | None = None     # "float16"|"float32"
     ivf_num_partitions: int | None = None
     ivf_num_sub_vectors: int | None = None
+    source_mode: str = "auto"
 
 
 class RunPodHarness:
@@ -786,6 +828,7 @@ class RunPodHarness:
         lance_colbert_dtype: str | None = None,
         ivf_num_partitions: int | None = None,
         ivf_num_sub_vectors: int | None = None,
+        source_mode: str = "git",
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
 
@@ -803,11 +846,19 @@ class RunPodHarness:
             lance_colbert_dtype=lance_colbert_dtype,
             ivf_num_partitions=ivf_num_partitions,
             ivf_num_sub_vectors=ivf_num_sub_vectors,
+            source_mode=source_mode,
         )
 
         if self.dry_run:
             logger.info("[runpod] (dry-run) would execute %d commands on Pod:",
                         len(commands))
+            if source_mode == "bundle":
+                logger.info(
+                    "[runpod] (dry-run) would create git bundle for %s and "
+                    "upload it to %s",
+                    commit_sha,
+                    REMOTE_BUNDLE_PATH,
+                )
             for i, cmd in enumerate(commands, 1):
                 logger.info("  [%d] %s", i, cmd[:120] + ("…" if len(cmd) > 120 else ""))
             # Synthesize artifact path so finally block doesn't choke
@@ -823,6 +874,25 @@ class RunPodHarness:
         executor.wait_for_ssh(pod, keypath, timeout_s=180)
         logger.info("[runpod] Pod %s SSH reachable; running %d commands",
                     pod.pod_id, len(commands))
+
+        bundle_path: Path | None = None
+        if source_mode == "bundle":
+            bundle_path = Path(f"/tmp/{run_id}.bundle")
+            try:
+                subprocess.run(
+                    ["git", "bundle", "create", str(bundle_path), commit_sha],
+                    cwd=repo_root,
+                    check=True,
+                )
+                executor.scp_to_pod(pod, keypath, bundle_path, REMOTE_BUNDLE_PATH)
+                logger.info(
+                    "[runpod] source bundle uploaded: %s -> %s",
+                    bundle_path,
+                    REMOTE_BUNDLE_PATH,
+                )
+            finally:
+                if bundle_path is not None:
+                    bundle_path.unlink(missing_ok=True)
 
         for i, cmd in enumerate(commands, 1):
             logger.info("[runpod] step %d/%d: %s", i, len(commands),
@@ -912,6 +982,7 @@ class RunPodHarness:
         lance_colbert_dtype: str | None = None,
         ivf_num_partitions: int | None = None,
         ivf_num_sub_vectors: int | None = None,
+        source_mode: str = "git",
     ) -> list[str]:
         """Sequence of shell commands the Pod will run.
 
@@ -966,12 +1037,24 @@ class RunPodHarness:
         # Fix: install into Pod's system Python, which already has
         # torch + matching CUDA from the runpod/pytorch image. Our
         # extra deps go on top.
+        if source_mode == "git":
+            source_commands = [
+                "git clone https://github.com/DongKey777/woowa-learning-hub.git /workspace/repo",
+                f"cd /workspace/repo && git checkout {commit_sha}",
+            ]
+        elif source_mode == "bundle":
+            source_commands = [
+                f"git clone {REMOTE_BUNDLE_PATH} /workspace/repo",
+                f"cd /workspace/repo && git checkout {commit_sha}",
+            ]
+        else:
+            raise ValueError(f"unknown source mode: {source_mode}")
+
         return [
             # Step 5: system deps (zstd for packaging, git in case the
             # image is thin)
             "apt-get update -qq && apt-get install -y -qq zstd git",
-            f"git clone https://github.com/DongKey777/woowa-learning-hub.git /workspace/repo",
-            f"cd /workspace/repo && git checkout {commit_sha}",
+            *source_commands,
             # Step 6: install our package + extras into Pod's system
             # Python — which has torch+CUDA matching the image's
             # driver. NO venv (avoids cu130-vs-driver12.4 mismatch).
@@ -1072,6 +1155,12 @@ class RunPodHarness:
         git_state = self.step_1_2_verify_repo_state(config.repo_root)
         run_id = build_run_id(config.r_phase, git_state)
         commit_sha = git_state["commit_sha"]
+        source_mode = resolve_source_mode(config.source_mode, git_state)
+        if source_mode == "bundle":
+            logger.info(
+                "[runpod] using git bundle source transfer for commit %s",
+                commit_sha[:12],
+            )
 
         result = BuildResult(
             run_id=run_id,
@@ -1121,6 +1210,7 @@ class RunPodHarness:
                 lance_colbert_dtype=config.lance_colbert_dtype,
                 ivf_num_partitions=config.ivf_num_partitions,
                 ivf_num_sub_vectors=config.ivf_num_sub_vectors,
+                source_mode=source_mode,
             )
             result.artifact_path = artifact
 
@@ -1195,6 +1285,15 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Forward dense LanceDB IVF num_partitions to cs-index-build.")
     parser.add_argument("--ivf-num-sub-vectors", type=int, default=None,
                         help="Forward dense LanceDB IVF num_sub_vectors to cs-index-build.")
+    parser.add_argument(
+        "--source-mode",
+        choices=SOURCE_MODES,
+        default="auto",
+        help=(
+            "How the Pod receives repo source. auto uses git when the commit "
+            "is reachable from origin and bundle when local commits are ahead."
+        ),
+    )
     parser.add_argument("--verbose", action="store_true")
     return parser
 
@@ -1229,6 +1328,7 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         lance_colbert_dtype=args.colbert_dtype,
         ivf_num_partitions=getattr(args, "ivf_num_partitions", None),
         ivf_num_sub_vectors=getattr(args, "ivf_num_sub_vectors", None),
+        source_mode=getattr(args, "source_mode", "auto"),
     )
 
 

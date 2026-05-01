@@ -32,12 +32,23 @@ Observed dry-run result:
   - working tree not clean, so a fallback path is needed for uncommitted local changes;
   - local branch is `47` commits ahead of `origin/main`, so live `git clone + checkout` requires push or a source-tar/bundle fallback before RunPod can see the selected SHA.
 
+Superseding dry-run:
+
+`reports/rag_eval/r3_remote_source_bundle_dry_run_20260501T2015Z.md` verifies
+that committed local changes ahead of `origin/main` now use git bundle source
+transfer in dry-run:
+
+- `git clone /workspace/woowa-learning-hub.bundle /workspace/repo`
+- `git checkout fde5b6aea757ac9b78ecac3f6ed2cb74b5d62205`
+
 Decision:
 
 The remote harness is fail-closed and still enforces strict R3 packaging in
 dry-run, but the actual cutover artifact gate is not complete. A live RunPod
-build requires both:
+build now requires:
 
 1. `RUNPOD_API_KEY` available in the AI session environment.
-2. The selected implementation commit reachable by the Pod, either by pushing
-   to origin or by adding and using a source-tar/bundle fallback.
+
+Committed local changes ahead of origin are covered by the git bundle fallback.
+Dirty uncommitted work is intentionally not included in the bundle; remote
+builds must be based on an explicit commit.
