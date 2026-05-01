@@ -433,7 +433,7 @@ Non-negotiable behavior:
 - Sparse retrieval must be able to return a document absent from lexical+dense candidates.
 - Reranking must never be hard-coded to `top_k * 2`; the input window is a profile setting.
 - Local production reranking assumes Apple Silicon MPS and fp16/bf16-capable model loading. CPU-only operation is a degraded mode, not the target serving configuration.
-- On the learner's M5 16GB machine, the default rerank input window is 50 pairs. 100-pair reranking is reserved for offline evaluation or explicit local acceptance after profiling.
+- On the learner's M5 16GB machine, the default rerank input window is 20 pairs after the 2026-05-01 100q Corpus v2 gate preserved `final_hit_relevant@5=1.0`, `forbidden_rate@5=0`, and `lost_top20_rate=0` against the earlier 50-pair profile. 50-pair local reranking remains an explicit profiling mode; 100-pair reranking is reserved for offline evaluation.
 - Heavy index/model-build work runs on remote GPU infrastructure. The resulting artifacts must be reproducible, manifest-versioned, and usable on the learner's local M5 machine without requiring local rebuild.
 - Fusion must preserve retriever provenance so later analysis can say which retriever found or missed the primary.
 - Context expansion cannot displace the primary answer document; it only adds companions.
@@ -991,7 +991,7 @@ Implement:
 
 - config-driven reranker input size replacing `top_k * 2`;
 - pre-rerank doc-level diversity;
-- top-50 local reranker input experiments and top-100 offline experiments;
+- top-20 default local reranker input, top-50 local profiling experiments, and top-100 offline experiments;
 - make `BAAI/bge-reranker-v2-m3` the R3 target reranker and validate memory/latency against the fallback candidates;
 - implement language-aware fallback: Korean/mixed queries use target, verified multilingual fallback, or `mmarco`; English-only queries may use `mxbai` if it wins locally;
 - late-interaction rerank comparison;
@@ -1001,7 +1001,7 @@ Gate:
 
 - reranker improves or preserves primary rank on hard cohorts;
 - demotions are explainable and not concentrated in Korean/beginner buckets;
-- M5 16GB MPS warm p95 target is explicit before cutover. Provisional target: top-50 rerank p95 <= 700 ms and RSS peak <= accepted local budget; revise only by explicit decision with measurement.
+- M5 16GB MPS warm p95 target is explicit before cutover. Provisional target: top-20 full R3 warm p95 <= accepted interactive budget and RSS peak <= accepted local budget; top-50 remains a profiling/quality comparator, not the local default.
 
 ### Phase 6 - Corpus Expansion Waves
 
@@ -1207,7 +1207,7 @@ Serving:
 
 - hard local serving target: M5 MacBook Air 13-inch, 16GB unified memory, Apple Silicon MPS;
 - build target: remote GPU instance such as RunPod L40S or equivalent. Build-time memory and compute are not constraints, but the artifact must satisfy the local serving constraints;
-- all target model profiling must record dtype, device, RSS peak, model load time, top-50 rerank p50/p95, and CPU-only degraded latency;
+- all target model profiling must record dtype, device, RSS peak, model load time, top-20 default rerank p50/p95, top-50 comparator p50/p95, and CPU-only degraded latency;
 - CPU-only serving is allowed as emergency/degraded mode only, not as the production target for `bge-reranker-v2-m3`;
 - keep query encoder warm in a daemon or service process;
 - separate cold-start metrics from warm metrics;

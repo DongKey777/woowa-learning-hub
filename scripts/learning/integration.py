@@ -131,6 +131,7 @@ def augment(
     category_filter_fallback = False
     query_candidate_kinds: list[str] = []
     query_plans: list[dict[str, Any]] = []
+    runtime_debug: dict[str, Any] = {}
 
     def record_query_debug(bucket: str, search_debug: dict) -> None:
         raw_kinds = search_debug.get("query_candidate_kinds")
@@ -148,6 +149,28 @@ def augment(
         for kind in kinds:
             if kind not in query_candidate_kinds:
                 query_candidate_kinds.append(kind)
+
+    def record_runtime_debug(search_debug: dict) -> None:
+        if runtime_debug:
+            return
+        fields = (
+            "backend",
+            "mode",
+            "r3_reranker_enabled",
+            "r3_reranker_model",
+            "rerank_input_window",
+            "r3_sparse_source",
+            "r3_sparse_sidecar_document_count",
+            "r3_sparse_query_terms_count",
+            "r3_dense_candidate_count",
+        )
+        captured = {
+            field: search_debug[field]
+            for field in fields
+            if field in search_debug
+        }
+        if captured:
+            runtime_debug.update(captured)
 
     try:
         if learning_points:
@@ -170,6 +193,7 @@ def augment(
                 if lp_debug.get("category_filter_fallback"):
                     category_filter_fallback = True
                 record_query_debug(f"learning_point:{lp}", lp_debug)
+                record_runtime_debug(lp_debug)
                 if hits:
                     by_lp[lp] = hits
                     for h in hits:
@@ -206,6 +230,7 @@ def augment(
                     if fallback_debug.get("category_filter_fallback"):
                         category_filter_fallback = True
                     record_query_debug(f"fallback:{key}", fallback_debug)
+                    record_runtime_debug(fallback_debug)
                     if hits:
                         by_fallback[key] = hits
                         for h in hits:
@@ -234,6 +259,7 @@ def augment(
                 if fallback_debug.get("category_filter_fallback"):
                     category_filter_fallback = True
                 record_query_debug(f"fallback:{key}", fallback_debug)
+                record_runtime_debug(fallback_debug)
                 if hits:
                     by_fallback[key] = hits
                     for h in hits:
@@ -274,6 +300,8 @@ def augment(
     if query_candidate_kinds:
         meta["query_candidate_kinds"] = query_candidate_kinds
         meta["query_plans"] = query_plans
+    if runtime_debug:
+        meta["runtime_debug"] = runtime_debug
 
     return {
         "by_learning_point": by_lp,

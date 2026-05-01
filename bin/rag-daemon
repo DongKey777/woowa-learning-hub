@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Usage: bin/rag-daemon start|status|stop
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [[ -n "${PYTHON:-}" ]]; then
+  PY="$PYTHON"
+elif [[ -x "$ROOT/.venv/bin/python" ]]; then
+  PY="$ROOT/.venv/bin/python"
+else
+  PY="python3"
+fi
+exec "$PY" "$ROOT/scripts/workbench/cli.py" rag-daemon "$@"

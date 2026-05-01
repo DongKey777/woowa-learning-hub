@@ -60,7 +60,9 @@ class R3Config:
 
     The local default rerank window is deliberately smaller than offline
     evaluation.  The plan's hard runtime target is an M5 MacBook Air with 16GB
-    unified memory, so broad top-100 reranking must be opt-in.
+    unified memory, so broad top-100 reranking must be opt-in.  The 20-pair
+    default is backed by the 2026-05-01 100q Corpus v2 gate: final relevant@5
+    and lost_top20_rate matched the earlier 50-pair local profile.
     """
 
     enabled: bool = False
@@ -68,7 +70,7 @@ class R3Config:
     multilingual_fallback_model: str = DEFAULT_MULTILINGUAL_FALLBACK
     compatibility_fallback_model: str = DEFAULT_COMPATIBILITY_FALLBACK
     english_only_experiment_model: str = DEFAULT_ENGLISH_ONLY_EXPERIMENT
-    local_rerank_input_window: int = 50
+    local_rerank_input_window: int = 20
     offline_rerank_input_window: int = 100
     runtime_lance_prefetch_limit: int = 100
     sparse_encoder_in_cheap_mode: bool = False
@@ -96,7 +98,7 @@ class R3Config:
             ),
             local_rerank_input_window=_int_from_env(
                 "WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW",
-                50,
+                20,
             ),
             offline_rerank_input_window=_int_from_env(
                 "WOOWA_RAG_R3_OFFLINE_RERANK_INPUT_WINDOW",

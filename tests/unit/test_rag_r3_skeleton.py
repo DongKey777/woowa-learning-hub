@@ -126,6 +126,14 @@ def test_r3_lance_prefetch_limit_defaults_to_local_runtime_budget(monkeypatch):
     assert R3Config.from_env().runtime_lance_prefetch_limit == 25
 
 
+def test_r3_local_rerank_window_defaults_to_verified_m5_budget(monkeypatch):
+    monkeypatch.delenv("WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW", raising=False)
+    assert R3Config.from_env().local_rerank_input_window == 20
+
+    monkeypatch.setenv("WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW", "50")
+    assert R3Config.from_env().local_rerank_input_window == 50
+
+
 def test_trace_fixture_cli_writes_jsonl(tmp_path):
     out = tmp_path / "r3_trace.jsonl"
 

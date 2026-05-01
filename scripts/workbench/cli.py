@@ -705,10 +705,10 @@ def _build_repo_context(repo: str | None) -> dict | None:
     }
 
 
-def cmd_rag_ask(args: argparse.Namespace) -> int:
-    """Tier-based RAG router for learning sessions.
+def build_rag_ask_output(args: argparse.Namespace) -> dict:
+    """Build one rag-ask JSON payload without printing it.
 
-    Returns one-line JSON: {decision, hits, next_command}.
+    Contract: {decision, hits, next_command}.
     - tier 0 / blocked: hits=null, next_command=null
     - tier 1/2: hits = augment() result, next_command=null
     - tier 3: hits=null, next_command = bin/coach-run absolute path
@@ -775,7 +775,7 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
                 topic_hints=None,
                 readiness=readiness,
                 learner_context=out["learner_context"],
-                backend=args.rag_backend,
+                backend=getattr(args, "rag_backend", None),
             )
         except Exception as exc:  # noqa: BLE001 — surface any failure as note
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
@@ -792,7 +792,47 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
     _record_rag_ask_event(args, decision, out)
     _record_routing_log(args, decision)
     out["feedback_hint"] = _build_feedback_hint(args, out)
+    return out
+
+
+def cmd_rag_ask(args: argparse.Namespace) -> int:
+    """Tier-based RAG router for learning sessions."""
+    if getattr(args, "via_daemon", False):
+        from core.rag_daemon_control import ensure_daemon, request_rag_ask  # type: ignore
+
+        ensure_daemon()
+        out = request_rag_ask({
+            "prompt": args.prompt,
+            "repo": args.repo,
+            "module": args.module,
+            "rag_backend": getattr(args, "rag_backend", None),
+        })
+        print(json.dumps(out, ensure_ascii=False))
+        return 0
+
+    out = build_rag_ask_output(args)
     print(json.dumps(out, ensure_ascii=False))
+    return 0
+
+
+def cmd_rag_daemon(args: argparse.Namespace) -> int:
+    """Manage the local long-lived RAG runtime daemon."""
+    from core.rag_daemon_control import (  # type: ignore
+        ensure_daemon,
+        start_daemon,
+        status_daemon,
+        stop_daemon,
+    )
+
+    if args.rag_daemon_command == "start":
+        payload = start_daemon(timeout_s=args.timeout)
+    elif args.rag_daemon_command == "ensure":
+        payload = ensure_daemon(timeout_s=args.timeout)
+    elif args.rag_daemon_command == "stop":
+        payload = stop_daemon(timeout_s=args.timeout)
+    else:
+        payload = status_daemon()
+    print(json.dumps(payload, ensure_ascii=False))
     return 0
 
 
@@ -1733,7 +1773,25 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional CS RAG backend override. Default follows manifest/env.",
     )
+    rag_ask_parser.add_argument(
+        "--via-daemon",
+        action="store_true",
+        help="Route through the local long-lived RAG runtime daemon.",
+    )
     rag_ask_parser.set_defaults(func=cmd_rag_ask)
+
+    rag_daemon_parser = subparsers.add_parser(
+        "rag-daemon",
+        help="Manage the local long-lived RAG runtime daemon.",
+    )
+    rag_daemon_subparsers = rag_daemon_parser.add_subparsers(
+        dest="rag_daemon_command",
+        required=True,
+    )
+    for command in ("start", "ensure", "status", "stop"):
+        command_parser = rag_daemon_subparsers.add_parser(command)
+        command_parser.add_argument("--timeout", type=float, default=10.0)
+        command_parser.set_defaults(func=cmd_rag_daemon)
 
     learner_profile_parser = subparsers.add_parser(
         "learner-profile",
