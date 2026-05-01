@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -9,6 +10,7 @@ from scripts.learning.rag.r3.candidate import Candidate
 from scripts.learning.rag.r3.config import resolve_rerank_input_window
 from scripts.learning.rag.r3.eval.qrels import R3Qrel, load_qrels
 from scripts.learning.rag.r3.eval.trace import R3Trace, read_jsonl, write_jsonl
+from scripts.learning.rag.r3.eval.trace_fixture import build_traces_from_qrels, main
 from scripts.learning.rag.r3.query_plan import build_query_plan
 
 
@@ -69,7 +71,7 @@ def test_trace_jsonl_roundtrip(tmp_path):
 
 
 def test_r3_qrel_fixture_validates_primary_and_forbidden_paths():
-    queries = load_qrels(__import__("pathlib").Path("tests/fixtures/r3_qrels_pilot.json"))
+    queries = load_qrels(Path("tests/fixtures/r3_qrels_pilot.json"))
 
     assert len(queries) == 1
     query = queries[0]
@@ -102,3 +104,28 @@ def test_rerank_input_window_is_profile_configurable(monkeypatch):
 
     monkeypatch.setenv("WOOWA_RAG_RERANK_INPUT_WINDOW", "not-an-int")
     assert resolve_rerank_input_window(5) == 10
+
+
+def test_trace_fixture_cli_writes_jsonl(tmp_path):
+    out = tmp_path / "r3_trace.jsonl"
+
+    exit_code = main(
+        [
+            "--qrels",
+            "tests/fixtures/r3_qrels_pilot.json",
+            "--out",
+            str(out),
+        ]
+    )
+
+    assert exit_code == 0
+    traces = read_jsonl(out)
+    assert traces[0].trace_id == "r3-mixed-latency-definition"
+    assert traces[0].query_plan.language == "mixed"
+    assert traces[0].metadata["forbidden_paths"]
+
+
+def test_build_traces_from_qrels_keeps_qrel_metadata():
+    traces = build_traces_from_qrels(Path("tests/fixtures/r3_qrels_pilot.json"))
+
+    assert traces[0].metadata["qrels"][0]["role"] == "primary"
