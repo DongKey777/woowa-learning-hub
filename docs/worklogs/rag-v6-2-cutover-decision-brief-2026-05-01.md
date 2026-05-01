@@ -79,6 +79,12 @@ Runtime state:
   - sampled failure fixture quality delta: `+0.0000`
   - local CPU P95 delta: `+275.0 ms`
   - cutover gate impact: none
+- Option A qrel review packet was generated:
+  `reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json`
+  - 6 cross-category wrong-doc cases
+  - 4 same-category wrong-doc cases
+  - 1 primary-below-rank5 case
+  - 3 direct rank-1 divergences needing runner-condition inspection
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

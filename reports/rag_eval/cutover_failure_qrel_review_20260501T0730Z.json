@@ -1,0 +1,1799 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-01T05:35:41Z",
+  "phase": "phase-4-option-a-qrel-review",
+  "source_fixture": "tests/fixtures/cs_rag_cutover_failure_queries.json",
+  "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/current",
+  "modalities": [
+    "fts",
+    "dense",
+    "sparse"
+  ],
+  "top_k": 10,
+  "query_count": 14,
+  "classification_counts": {
+    "same_category_wrong_document": 4,
+    "cross_category_wrong_document": 6,
+    "primary_present_below_rank5": 1,
+    "strict_primary_rank1_passes_now": 3
+  },
+  "classification_by_category": {
+    "database": {
+      "same_category_wrong_document": 1,
+      "cross_category_wrong_document": 2,
+      "primary_present_below_rank5": 1,
+      "strict_primary_rank1_passes_now": 1
+    },
+    "design-pattern": {
+      "cross_category_wrong_document": 4,
+      "strict_primary_rank1_passes_now": 1
+    },
+    "software-engineering": {
+      "same_category_wrong_document": 1
+    },
+    "spring": {
+      "same_category_wrong_document": 2,
+      "strict_primary_rank1_passes_now": 1
+    }
+  },
+  "primary_path_counts": [
+    {
+      "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "count": 4
+    },
+    {
+      "path": "contents/database/transaction-isolation-basics.md",
+      "count": 3
+    },
+    {
+      "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "count": 1
+    },
+    {
+      "path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "count": 1
+    },
+    {
+      "path": "contents/spring/spring-transactional-basics.md",
+      "count": 1
+    },
+    {
+      "path": "contents/database/connection-pool-basics.md",
+      "count": 1
+    },
+    {
+      "path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+      "count": 1
+    },
+    {
+      "path": "contents/database/deadlock-case-study.md",
+      "count": 1
+    },
+    {
+      "path": "contents/spring/transactional-deep-dive.md",
+      "count": 1
+    }
+  ],
+  "rows": [
+    {
+      "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+      "prompt": "What does ApplicationContext do in Spring?",
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "same_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/spring/spring-multidocument-yaml-on-profile-primer.md",
+          "title": "Spring Multi-Document `application.yml` and `spring.config.activate.on-profile` Primer",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.073676,
+          "snippet_preview": "retrieval-anchor-keywords: spring multi document yaml primer, multi-document application.yml, spring.config.activate.on-profile beginner, yaml document separator spring boot, application yml three hyphens spring, on-profile does not activate profile,…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-spring-application-json-primer.md",
+          "title": "Spring `SPRING_APPLICATION_JSON` Primer: plain env var보다 나은 순간",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.071125,
+          "snippet_preview": "운영체제 환경 변수는 보통 대문자, 숫자, underscore 중심으로 이름을 만든다. 그래서 Spring property key를 env var로 옮길 때는 relaxed binding 규칙에 맞춰 **평평하게 펼치는 과정**이 필요하다.  예를 들어 이 정도는 괜찮다.  ```text app.cache.enabled -> APP_CACHE_ENABLED app.payment-timeout -> APP_PAYMENTTIMEOUT ```  하지…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/spring/spring-test-property-override-boundaries-primer.md",
+          "title": "Spring Test Property Override Boundaries: `@SpringBootTest(properties)`, `@TestPropertySource`, `@DynamicPropertySource`, context cache",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.063211,
+          "snippet_preview": "Spring TestContext는 \"완전히 같은 설정 레시피\"일 때 컨텍스트를 재사용한다. 즉 property override 방식이 달라지면 테스트 자체는 비슷해 보여도 새 컨텍스트가 뜰 수 있다.  ### 1. `@TestPropertySource`는 문자열 모양까지 cache에 영향을 준다  이 부분은 beginner가 가장 쉽게 놓친다.  ```java @TestPropertySource(properties = \"timezone = G…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/spring/spring-self-call-verification-test-mini-guide.md",
+          "title": "Spring Self-invocation(내부 호출) 검증 테스트 미니 가이드: `assertSame` / `assertNotSame`로 수정 전후를 바로 확인하기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.061501,
+          "snippet_preview": "### 2. 수정 후 확인: 파라미터 주입이면 `assertSame`  ```java import org.junit.jupiter.api.Test; import org.springframework.context.annotation.AnnotationConfigApplicationContext; import org.springframework.context.annotation.Bean; import org.springframework.contex…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/spring/README.md",
+          "title": "Spring Framework (스프링 프레임워크)",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.060761,
+          "snippet_preview": "> startup code를 `@PostConstruct`, runner, `SmartLifecycle`, `ApplicationReadyEvent` 중 어디에 둘지와 readiness/liveness 기준을 같이 본다  - [Spring Startup Hooks: `CommandLineRunner`, `ApplicationRunner`, `SmartLifecycle`, and Readiness Warmup](./spring-startup-ru…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/spring/spring-payment-approval-db-failure-compensation-idempotency-primer.md",
+          "title": "Spring Beginner Bridge: 외부 승인 성공 뒤 DB 저장이 실패하면 rollback보다 보상 + 멱등성으로 닫기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.060544,
+          "snippet_preview": "이 문서는 초급자 첫 판단까지만 다룬다. 아래부터는 일부러 다음 문서로 넘긴다.  - 외부 I/O를 왜 메인 트랜잭션 밖으로 빼는지: [Spring Service-Layer Primer: 외부 I/O는 트랜잭션 밖으로, 후속 부작용은 `AFTER_COMMIT` vs Outbox로 나누기](./spring-service-layer-external-io-after-commit-outbox-primer.md) - `flush`와 commit 차이가…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md",
+          "title": "Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.059291,
+          "snippet_preview": "초보자 기준으로는 **positive/negative match 문장을 한 줄씩 읽는 것**만으로도 충분하다.  | 어디서 보나 | positive일 때 읽는 뜻 | negative일 때 읽는 뜻 | |---|---|---| | `--debug` Condition Evaluation Report | \"`PaymentClient`가 있어서 등록 경로를 열었다\" | \"`PaymentClient`가 없어서 등록 경로를 닫았다\" | | Actuator…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/design-pattern/injected-registry-vs-service-locator-checklist.md",
+          "title": "Injected Registry vs Service Locator Checklist: 명시적 주입과 숨은 조회 구분하기",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.059214,
+          "snippet_preview": "```java @Service public class CheckoutService {     private final ApplicationContext context;      public CheckoutService(ApplicationContext context) {         this.context = context;     }      public void pay(Order order) {         String beanName…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/design-pattern/bean-name-vs-domain-key-lookup.md",
+          "title": "Bean Name vs Domain Key Lookup: Spring handler map을 domain registry로 감싸기",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.058915,
+          "snippet_preview": "retrieval-anchor-keywords: bean name vs domain key lookup, spring bean name handler map, map<string handler> bean name, autowired map bean names, spring injected map domain key registry, domain key registry, handler supports domain key, bean name lea…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/spring/spring-bean-di-basics.md",
+          "title": "Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.058597,
+          "snippet_preview": "애플리케이션 시작부터 Bean 사용까지를 아주 단순화하면 이 순서다.  ```text @SpringBootApplication 시작 -> component scan + configuration으로 Bean 후보 등록 -> 컨테이너가 의존성 후보를 찾음 -> 생성자 호출과 의존성 주입 -> 애플리케이션이 Bean 사용 ```  처음에는 아래 순서만 머리에 남겨 두면 충분하다.  **등록 -> 주입 -> 사용**  beginner 검색 질문을 이…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_mvcc_concept_explanation_intro",
+      "prompt": "MVCC 개념 설명해줘",
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/database/transaction-isolation-basics.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "same_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/database/postgresql-visibility-map-all-visible-beginner-card.md",
+          "title": "PostgreSQL `visibility map`과 `all-visible`은 뭐예요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.061189,
+          "snippet_preview": "`Heap Fetches` 설명을 읽고도 막히는 지점은 보통 여기다. \"그래서 visibility map이 정확히 뭐고, all-visible은 무슨 체크인가?\"  초급에서는 먼저 층을 둘로 나누면 덜 헷갈린다.  - heap page: row 본문이 들어 있는 페이지 - tuple visibility: \"이 row 버전이 내 현재 snapshot에서 보여도 되나?\"를 따지는 MVCC 규칙 - `visibility map`: \"이 페이지는 지금…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-mockmvc-vs-webtestclient-beginner-bridge.md",
+          "title": "Spring beginner bridge: `MockMvc`와 `WebTestClient`를 언제 구분해서 부르나",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.060542,
+          "snippet_preview": "처음에는 도구 이름보다 **서버 stack**을 먼저 보면 된다.  - `MockMvc`: Spring MVC, 즉 servlet stack 테스트에서 자주 만난다. - `WebTestClient`: WebFlux 테스트에서 기본 선택지처럼 등장한다.  입문자가 많이 섞어 부르는 이유는 둘 다 \"`HTTP 요청을 흉내 내서 응답을 본다`\"는 겉모습이 비슷하기 때문이다. 하지만 mental model은 다르다.  - `MockMvc`는 **Spr…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/system-design/stateless-vs-stateful-basics.md",
+          "title": "Stateless vs Stateful 서비스 기초",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.055249,
+          "snippet_preview": "> Q: Stateless 서비스와 Stateful 서비스의 차이를 설명해 주세요. > 의도: 기본 개념 구분 능력 확인 > 핵심: Stateless는 서버가 요청 간 상태를 기억하지 않아 어느 서버에서도 처리 가능하고 수평 확장이 쉽다. Stateful은 서버 내부에 상태가 있어 같은 서버로만 요청이 가야 한다.  > Q: JWT를 쓰면 왜 Stateless가 되는 건가요? > 의도: 토큰 기반 인증이 서버 상태를 없애는 원리 이해 확인 >…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/spring/spring-mvc-jdbc-transaction-di-aop-transition-checklist.md",
+          "title": "Spring MVC -> JDBC/트랜잭션 -> DI/AOP 전환 오해 체크리스트",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.053779,
+          "snippet_preview": "| 지금 드는 생각 | 실제로 먼저 봐야 하는 칸 | |---|---| | \"`Controller`에서 DB까지 바로 한 번에 이어지는 것 같다\" | MVC vs Service/Repository 분리 | | SQL 한 번 실행했으니 트랜잭션도 끝난 것 같다 | JDBC 호출 vs Transaction 경계 분리 | | `@Transactional`은 DB 기능 같고 Spring은 부가 기능 같다 | Transaction 개념 vs AOP 적용…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/spring/spring-component-scan-failure-patterns.md",
+          "title": "Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.053602,
+          "snippet_preview": "Spring DI 축을 처음 따라올 때는 보통 아래 순서가 덜 헷갈린다.  1. 왜 직접 `new`하지 않는지부터 잡고 싶으면 [IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가](./spring-ioc-di-basics.md) 2. Bean 등록과 component scan의 큰 그림을 먼저 잡고 싶으면 [Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기](./sprin…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/network/README.md",
+          "title": "Network (네트워크)",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.053593,
+          "snippet_preview": "아래 구간은 네트워크 입문 설명과 기본 개념 복습용 primer다.  바로 아래 본문은 교재형 설명이 길어서, 초심자는 먼저 아래 짧은 진입표로 시작한 뒤 필요한 구간만 내려가는 편이 덜 흔들린다.  [retrieval anchors] network readme basics | network beginner | network 뭐부터 읽지 | network 처음 헷갈려요 | browser request lifecycle basics | http…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "title": "Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.053468,
+          "snippet_preview": "Spring MVC는 웹 요청을 처리하는 프레임워크이고, 중심에는 `DispatcherServlet`이 있다. 모든 HTTP 요청이 이 서블릿 하나로 들어오고, 그 안에서 적절한 컨트롤러를 찾아 실행하고 응답을 만든다.  입문자가 자주 헷갈리는 이유는 `@Controller`와 `@RestController`의 차이, 그리고 요청이 어떤 순서로 처리되는지 보이지 않기 때문이다.  처음 배우는 기준에서는 용어를 다 외우기보다 아래 3문장만 먼저…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/database/mysql-postgresql-index-storage-bridge.md",
+          "title": "MySQL clustered index와 PostgreSQL heap + index 저장 구조 브리지",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.053052,
+          "snippet_preview": "> Q: 왜 InnoDB clustered index 직관을 PostgreSQL에 그대로 옮기면 안 되나요?   > 의도: index 존재와 row 저장 구조를 구분하는지 확인   > 핵심: PostgreSQL은 기본적으로 heap과 index가 분리돼 있어서 PK index가 곧 테이블 저장 순서를 뜻하지 않는다.  > Q: PostgreSQL에서 index-only scan을 볼 때 heap fetch를 같이 보는 이유는 무엇인가요?   >…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/system-design/message-queue-basics.md",
+          "title": "메시지 큐 기초 (Message Queue Basics)",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.052725,
+          "snippet_preview": "```text 생산자 A  ─┐ 생산자 B  ─┼──> [메시지 큐] ──> 소비자 1 생산자 C  ─┘              └──> 소비자 2 ```  핵심 개념 비교:  | 개념 | 설명 | |---|---| | Producer | 메시지를 큐에 넣는 쪽 | | Consumer | 큐에서 메시지를 꺼내 처리하는 쪽 | | Broker | 큐를 관리하는 서버 | | Topic/Queue | 메시지가 쌓이는 논리적 공간 |  직접 호출과 큐…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md",
+          "title": "PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.052571,
+          "snippet_preview": "# PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?  > 한 줄 요약: PostgreSQL에서 `Index Only Scan`인데도 `Heap Fetches`가 남는 건 이상 동작이 아니라, visibility map이 \"이 page는 모두 보여도 된다\"를 아직 보증하지 못하면 heap에서 MVCC visibility를 다시 확인하기 때문이다.  **난이도: 🟢 Beginner**  관련 문서:…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_mvcc_english_meaning_lockin",
+      "prompt": "What does MVCC mean?",
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/database/transaction-isolation-basics.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md",
+          "title": "Alt-Svc `ma`, Cache Scope, 421 Reuse Primer",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.064578,
+          "snippet_preview": "이 표는 `ma`/scope/`421` 질문이 섞였을 때 \"지금 내 질문이 discovery인지, reuse 경계인지, recovery인지\"를 30초 안에 가르는 용도다.  [retrieval anchors] alt-svc ma meaning | alt-svc cache scope | alt-svc origin scope | alt-svc host scope | alt-svc shared cache misunderstanding | alt-sv…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-mockmvc-vs-webtestclient-beginner-bridge.md",
+          "title": "Spring beginner bridge: `MockMvc`와 `WebTestClient`를 언제 구분해서 부르나",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.060738,
+          "snippet_preview": "MVC 컨트롤러를 테스트할 때는 이런 그림이 가장 흔하다.  ```java @WebMvcTest(OrderController.class) class OrderControllerTest {     @Autowired MockMvc mockMvc; } ```  이 코드는 \"`주문 컨트롤러의 요청 매핑, 검증, JSON 응답을 MVC 기준으로 보겠다`\"는 뜻에 가깝다.  WebFlux endpoint를 테스트할 때는 이런 그림이 흔하다.  ```ja…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/database/postgresql-visibility-map-all-visible-beginner-card.md",
+          "title": "PostgreSQL `visibility map`과 `all-visible`은 뭐예요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.059595,
+          "snippet_preview": "- \"`all-visible`이면 row가 아예 고정됐다\" -> 아니다. 나중에 쓰기가 생기면 상태가 다시 바뀔 수 있다. - \"`visibility map`은 row 하나하나의 visible 여부를 적어 둔다\" -> 아니다. page 단위 메모다. - \"`all-visible`과 tuple visibility는 같은 말이다\" -> 아니다. `all-visible`은 page-level 요약이고, tuple visibility는 row-leve…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/spring/spring-mvc-customizer-ladder-webmvcconfigurer-primer.md",
+          "title": "Spring MVC Customizer Ladder 입문: `WebMvcConfigurer`로 덧붙이고, core MVC bean 교체는 마지막에 둔다",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.057183,
+          "snippet_preview": "| 하고 싶은 일 | 보통의 첫 선택 | 왜 이 단계가 먼저인가 | |---|---|---| | 컨트롤러 전후 공통 로깅, 추적 | `WebMvcConfigurer#addInterceptors` | 기존 handler 실행 흐름은 유지하고 인터셉터만 추가한다 | | 경로별 CORS 정책 | `WebMvcConfigurer#addCorsMappings` | MVC 라우트 기준 정책을 추가하는 문제다 | | 문자열-객체 변환 규칙 | `WebMvc…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md",
+          "title": "PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.056898,
+          "snippet_preview": "PostgreSQL에서 `Index Only Scan`인데도 `Heap Fetches`가 남는 이유는 index가 row를 찾는 일과 MVCC visibility를 확인하는 일이 분리돼 있어서, 일부 row는 heap에서 다시 검증해야 하기 때문이다.  [retrieval anchors] postgresql index only scan heap fetches | why heap fetches remain | heap fetches beginne…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/database/nosql-basics.md",
+          "title": "NoSQL 기초 (NoSQL Basics)",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.050531,
+          "snippet_preview": "- 복제·샤딩 등 분산 DB 아키텍처 → [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)  cross-category bridge:  - Spring Data Redis, Spring Data MongoDB 같은 추상화를 어떻게 사용하는지는 spring 카테고리 참고  [retrieval anchors] nosql basics | nosql 이란 | nosql vs rdb | doc…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/database/postgresql-hot-update-beginner-bridge.md",
+          "title": "PostgreSQL `HOT update`는 뭐예요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.049544,
+          "snippet_preview": "- \"`HOT update`면 index를 절대 안 건드린다\" -> 보통 그 방향의 최적화지만, 조건이 안 맞으면 그냥 일반 update 경로로 간다. - \"빈 공간만 있으면 무조건 `HOT update`다\" -> 아니다. 바뀌는 컬럼이 index key에 걸리면 막힐 수 있다. - \"`fillfactor`만 낮추면 다 해결된다\" -> 아니다. 읽기 밀도와 공간 효율 trade-off가 있고, indexed column 변경이 많으면 한계가 있…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/spring/spring-mvc-request-lifecycle-basics.md",
+          "title": "Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.047813,
+          "snippet_preview": "Spring MVC 요청 생명주기 기초는 \"`Filter`가 입구를 보고, `DispatcherServlet`이 길을 정하고, Spring이 값을 바인딩해 컨트롤러를 실행하고, 예외 처리기가 실패를 HTTP 응답으로 바꾼다\"는 한 문장으로 먼저 잡으면 된다.  [retrieval anchors] spring mvc request lifecycle basics | spring mvc 큰 그림 | spring mvc 처음 배우는데 | 요청이 컨트롤…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "title": "Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.047246,
+          "snippet_preview": "> Q: `@Controller`와 `@RestController`의 차이는 무엇인가? > 의도: 어노테이션 의미 이해 확인 > 핵심: `@RestController`는 `@ResponseBody`가 기본 포함되어 반환 객체가 JSON으로 직렬화된다.  > Q: `DispatcherServlet`은 어떤 역할을 하는가? > 의도: MVC 요청 흐름 이해 확인 > 핵심: 모든 요청의 진입점으로 HandlerMapping, HandlerAdapte…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/spring/spring-conditionalonbean-activation-vs-di-candidate-selection-primer.md",
+          "title": "Spring `@ConditionalOnBean` 경계 노트: activation과 DI 후보 선택은 다르다",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.047085,
+          "snippet_preview": "retrieval-anchor-keywords: @conditionalonbean activation vs di candidate selection, conditionalonbean does not choose bean, conditionalonbean vs @primary, conditionalonbean vs @qualifier, conditionalonbean name type annotation match, condition passes…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_mvcc_meaning_shortform_basics",
+      "prompt": "MVCC가 뭐야?",
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/database/transaction-isolation-basics.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "title": "Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.064586,
+          "snippet_preview": "Spring MVC 컨트롤러는 `DispatcherServlet`이 찾아 실행하는 요청 처리 진입점이고, `@RestController`는 반환 객체를 JSON으로 바로 응답한다.  [retrieval anchors] spring mvc 처음 배우는데 | spring mvc 큰 그림 | spring mvc 기초 | spring mvc는 언제 쓰는지 | dispatcherservlet 뭐예요 | handlermapping이 뭐예요 | handle…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-mvc-customizer-ladder-webmvcconfigurer-primer.md",
+          "title": "Spring MVC Customizer Ladder 입문: `WebMvcConfigurer`로 덧붙이고, core MVC bean 교체는 마지막에 둔다",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.061429,
+          "snippet_preview": "| 하고 싶은 일 | 보통의 첫 선택 | 왜 이 단계가 먼저인가 | |---|---|---| | 컨트롤러 전후 공통 로깅, 추적 | `WebMvcConfigurer#addInterceptors` | 기존 handler 실행 흐름은 유지하고 인터셉터만 추가한다 | | 경로별 CORS 정책 | `WebMvcConfigurer#addCorsMappings` | MVC 라우트 기준 정책을 추가하는 문제다 | | 문자열-객체 변환 규칙 | `WebMvc…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/spring/spring-mockmvc-vs-webtestclient-beginner-bridge.md",
+          "title": "Spring beginner bridge: `MockMvc`와 `WebTestClient`를 언제 구분해서 부르나",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.059046,
+          "snippet_preview": "처음에는 도구 이름보다 **서버 stack**을 먼저 보면 된다.  - `MockMvc`: Spring MVC, 즉 servlet stack 테스트에서 자주 만난다. - `WebTestClient`: WebFlux 테스트에서 기본 선택지처럼 등장한다.  입문자가 많이 섞어 부르는 이유는 둘 다 \"`HTTP 요청을 흉내 내서 응답을 본다`\"는 겉모습이 비슷하기 때문이다. 하지만 mental model은 다르다.  - `MockMvc`는 **Spr…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/spring/spring-dispatcherservlet-handlerinterceptor-beginner-bridge.md",
+          "title": "Spring `DispatcherServlet` / `HandlerInterceptor` 입문 브리지: 큰 그림부터 잡기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.058642,
+          "snippet_preview": "처음에는 이렇게만 잡으면 된다.  - `DispatcherServlet`: 들어온 HTTP 요청을 받아 \"어느 컨트롤러로 보낼지\" 정하는 MVC의 관문 - `HandlerInterceptor`: 컨트롤러를 실행하기 전후에 공통 작업을 넣는 도우미 - `HandlerMapping` / `HandlerAdapter`: 관문 안에서 각각 \"누구를 찾는지\"와 \"어떻게 실행하는지\"를 나누는 내부 단계  즉 둘은 경쟁 관계가 아니라 **같은 요청 흐름 안…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/language/java/hashmap-linkedhashmap-treemap-iteration-order-cheat-sheet.md",
+          "title": "Map 구현체별 반복 순서 치트시트",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.056129,
+          "snippet_preview": "입문자 기준으로는 두 구현체를 \"둘 다 순서가 있는 map\"으로 묶지 말고, **어떤 질문에 답하는 map인지**로 나누는 편이 더 안전하다.  | 내가 실제로 묻는 것 | 첫 선택 | 이유 | |---|---|---| | \"넣은 순서대로 다시 보여 줘\" | `LinkedHashMap` | 삽입 순서를 보장한다 | | \"방금 읽은 것을 뒤로 보내고 싶어\" | `LinkedHashMap(access-order=true)` | 접근 순서를 기록한다…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/database/postgresql-visibility-map-all-visible-beginner-card.md",
+          "title": "PostgreSQL `visibility map`과 `all-visible`은 뭐예요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.0548,
+          "snippet_preview": "- \"`all-visible`이면 row가 아예 고정됐다\" -> 아니다. 나중에 쓰기가 생기면 상태가 다시 바뀔 수 있다. - \"`visibility map`은 row 하나하나의 visible 여부를 적어 둔다\" -> 아니다. page 단위 메모다. - \"`all-visible`과 tuple visibility는 같은 말이다\" -> 아니다. `all-visible`은 page-level 요약이고, tuple visibility는 row-leve…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/database/postgresql-index-only-scan-heap-fetches-beginner-card.md",
+          "title": "PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.053082,
+          "snippet_preview": "# PostgreSQL `Index Only Scan`인데 왜 `Heap Fetches`가 남아요?  > 한 줄 요약: PostgreSQL에서 `Index Only Scan`인데도 `Heap Fetches`가 남는 건 이상 동작이 아니라, visibility map이 \"이 page는 모두 보여도 된다\"를 아직 보증하지 못하면 heap에서 MVCC visibility를 다시 확인하기 때문이다.  **난이도: 🟢 Beginner**  관련 문서:…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/spring/spring-mvc-request-lifecycle-basics.md",
+          "title": "Spring MVC 요청 생명주기 기초: `DispatcherServlet`, 필터, 인터셉터, 바인딩, 예외 처리 한 장으로 잡기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.052693,
+          "snippet_preview": "이 문서는 Spring MVC beginner가 \"입구 -> 길찾기 -> 값 채우기 -> 컨트롤러 -> 실패 번역\" 순서를 한 장으로 잡는 primer다. 특히 \"`ConversionService`가 뭐예요?\", \"`WebDataBinder`는 언제 나와요?\", \"`query parameter`는 누가 `LocalDate`로 바꿔줘요?\" 같은 첫 질문이 deep dive보다 먼저 여기로 오게 하는 entrypoint 역할도 맡는다.  - 먼저…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "title": "IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.051841,
+          "snippet_preview": "IoC/DI 문서를 따로 외우지 말고, 아래 한 장으로 붙여 읽으면 덜 헷갈린다.  ```text HTTP 요청 (예: GET /orders/1) -> DispatcherServlet 이 OrderController 메서드로 라우팅 -> OrderController 가 OrderService 호출 -> OrderService 안의 orderRepository는 컨테이너가 이미 주입해 둔 Bean ```  핵심은 \"요청은 MVC가 받고, 객체 연…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/database/nosql-basics.md",
+          "title": "NoSQL 기초 (NoSQL Basics)",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.051212,
+          "snippet_preview": "- 복제·샤딩 등 분산 DB 아키텍처 → [MVCC, Replication, Sharding](./mvcc-replication-sharding.md)  cross-category bridge:  - Spring Data Redis, Spring Data MongoDB 같은 추상화를 어떻게 사용하는지는 spring 카테고리 참고  [retrieval anchors] nosql basics | nosql 이란 | nosql vs rdb | doc…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_query_service_english_meaning_alias_lockin",
+      "prompt": "What does a query service mean?",
+      "bucket": {
+        "category": "software-engineering",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "same_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/software-engineering/repository-dao-entity.md",
+          "title": "Repository, DAO, Entity",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.06305,
+          "snippet_preview": "`Repository`, `DAO`, `Entity`만 따로 외우면 다시 \"`그럼 request DTO는 어디까지 가나요?`\"가 막히기 쉽다. 같은 주문 생성 장면을 한 줄로 펼치면 아래처럼 읽으면 된다.  | 경계 | 기본 타입 | 이 문서에서 기억할 포인트 | |---|---|---| | Controller -> Service | `CreateOrderRequest`, `CreateOrderCommand` | 요청 계약은 저장 계층까지 그대…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/software-engineering/service-contract-smell-cards.md",
+          "title": "Service Contract Smell Cards",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.061332,
+          "snippet_preview": "- \"작은 프로젝트인데 service에 `Pageable` 정도는 괜찮지 않나요?\"   - 당장 동작은 하지만, service를 다른 진입점이나 테스트에서 읽을 때 Spring Data 의미를 같이 알아야 한다. - \"`service에서 ResponseEntity를 반환해요`라는 리뷰를 받았는데 뭐가 문제죠?\"   - 보통은 service가 HTTP 응답 책임까지 가진다는 뜻이다. 결과 의미는 service가 만들고, HTTP 포장은 contr…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/network/alt-svc-ma-cache-scope-421-reuse-primer.md",
+          "title": "Alt-Svc `ma`, Cache Scope, 421 Reuse Primer",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.058659,
+          "snippet_preview": "이 표는 `ma`/scope/`421` 질문이 섞였을 때 \"지금 내 질문이 discovery인지, reuse 경계인지, recovery인지\"를 30초 안에 가르는 용도다.  [retrieval anchors] alt-svc ma meaning | alt-svc cache scope | alt-svc origin scope | alt-svc host scope | alt-svc shared cache misunderstanding | alt-sv…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/system-design/stateless-backend-cache-database-queue-starter-pack.md",
+          "title": "Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.058253,
+          "snippet_preview": "# Stateless 백엔드, 캐시, 데이터베이스, 큐 스타터 팩  > 한 줄 요약: 로드 밸런서가 stateless app 여러 대에 요청을 나누고, database는 정답을 보관하고, cache는 반복 읽기를 덜어 주고, queue는 느린 후처리를 뒤로 미루는 구조로 보면 백엔드 scale basics가 한 그림에 잡힌다.  retrieval-anchor-keywords: stateless backend scale basics, load b…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/system-design/message-queue-basics.md",
+          "title": "메시지 큐 기초 (Message Queue Basics)",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.057484,
+          "snippet_preview": "- **비동기 처리**: 생산자는 소비자의 응답을 기다리지 않는다. 주문 생성 API가 이메일 발송 서비스를 직접 호출하는 대신 큐에 이벤트를 넣으면, 이메일 서비스는 자신의 속도로 처리한다. - **버퍼링**: 트래픽 피크에 메시지가 큐에 쌓이고, 소비자는 처리 가능한 속도로 꺼내간다. 소비자 서버가 다운돼도 메시지는 큐에 보존된다. - **Pub/Sub 패턴**: 한 메시지를 여러 소비자가 동시에 받는 방식이다. 주문 완료 이벤트를 이메일…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/software-engineering/query-model-separation-read-heavy-apis.md",
+          "title": "Query Model Separation for Read-Heavy APIs",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.055619,
+          "snippet_preview": "| 모델 | 답해야 하는 질문 | 잘 어울리는 예 | 여기 넣지 않는 편이 좋은 것 | |---|---|---|---| | Write model | \"이 변경이 규칙을 지키나?\" | `Order`, `OrderRepository`, `cancel()`, `changeAddress()` | 목록 컬럼, 검색 정렬 전용 값, 화면용 별칭 | | Query model | \"이 화면이 빨리 읽어야 하는 값이 뭔가?\" | `OrderSummaryView…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/software-engineering/module-api-dto-patterns.md",
+          "title": "Module API DTO Patterns (모듈 간 DTO 계약 입문)",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.055612,
+          "snippet_preview": "`service-to-service call`이라는 말이 항상 \"나쁜 냄새\"는 아니다. 문제는 **어느 경계에서, 무엇을 직접 아느냐**다.  | 장면 | 괜찮은가 | 이유 | |---|---|---| | 같은 모듈 내부에서 application service가 domain service를 호출 | 대체로 괜찮다 | 아직 모듈 내부 협력이라 외부 계약 문제가 아니다 | | 같은 모듈 내부에서 service가 repository를 호출 | 대체로…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/language/java/ordered-map-null-safe-practice-drill.md",
+          "title": "Ordered Map Null-Safe Practice Drill",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.055424,
+          "snippet_preview": "| 경계 상황 | 대표 호출 | 결과 감각 | |---|---|---| | map이 비어 있음 | `ceilingEntry(x)` | 항상 `null` | | query가 첫 key보다 작음 | `floorEntry(x)` | 왼쪽 이웃이 없어서 `null` | | query가 key 사이에 있음 | `floorEntry(x)`, `ceilingEntry(x)` | 양옆 이웃이 있으면 둘 다 non-null 가능 | | query가 마지막 ke…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/system-design/system-design-foundations.md",
+          "title": "System Design Foundations",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.055021,
+          "snippet_preview": "- `load balancer를 넣으면 DB도 자동으로 확장된다`는 오해가 흔하다. 분산은 주로 app tier부터 쉬워진다. - `stateless면 상태가 아예 없다`는 표현은 부정확하다. 상태를 바깥 저장소로 옮긴다는 뜻에 더 가깝다. - `cache가 있으면 DB가 필요 없다`는 말도 틀리다. cache는 복사본이어서 비거나 오래될 수 있다. - `queue에 넣었으니 비즈니스 완료다`도 위험하다. 핵심 완료 기준은 보통 DB commi…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/data-structure/ready-queue-starvation-primer.md",
+          "title": "Ready Queue Starvation Primer",
+          "category": "data-structure",
+          "difficulty": null,
+          "score": 0.053776,
+          "snippet_preview": "starvation은 작업이 ready 상태인데도 **계속 뒤로 밀려 실제로는 거의 실행되지 못하는 상태**다.  특히 strict priority ready queue에서는 아래 상황이 생긴다.  - high priority 작업은 오자마자 바로 앞쪽에 선다. - low priority 작업은 이미 줄 안에 있어도 계속 뒤로 밀린다. - high priority 작업이 끊임없이 들어오면 low priority 작업은 \"언젠가\"가 오지 않을 수…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+      "prompt": "스프링 transaction이 뭐야?",
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/spring/spring-transactional-basics.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "same_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/spring/README.md",
+          "title": "Spring Framework (스프링 프레임워크)",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.075209,
+          "snippet_preview": "> 전파 수준, 롤백 규칙, readOnly의 진짜 의미까지  - [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md) - [Database to Spring Transaction Master N…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-template-classes-beginner-primer.md",
+          "title": "Spring Template 클래스 입문: `JdbcTemplate`, `RestTemplate`, `TransactionTemplate` 큰 그림",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.065248,
+          "snippet_preview": "Spring의 `...Template` 클래스는 \"반복되는 인프라 절차는 Spring이 맡고, 내가 바꾸고 싶은 핵심 작업만 채우게 하는 틀\"이라고 보면 초반 큰 그림을 잡기 쉽다.  [retrieval anchors] spring template class beginner | spring template 클래스 입문 | spring template 큰 그림 | 스프링 템플릿 클래스 뭐예요 | 스프링 template 언제 쓰는지 | 처음 배우는…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/spring/spring-bean-lifecycle-basics.md",
+          "title": "Spring Bean 생명주기 기초: 생성부터 소멸까지",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.06195,
+          "snippet_preview": "```text BeanDefinition 등록   -> 생성자 호출 (객체 생성)   -> 의존성 주입 완료   -> @PostConstruct 메서드 실행 (초기화 콜백)   -> 프록시 적용 (AOP 등)   -> 사용   -> 컨테이너 종료 시 @PreDestroy 메서드 실행   -> 소멸 ```  | 시점 | 콜백 | 역할 | |---|---|---| | 의존성 주입 완료 직후 | `@PostConstruct` | 초기화, 연결 검증,…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md",
+          "title": "Spring Self-Invocation 공통 오해 1페이지 카드: \"`@Transactional`만 문제\"가 아니다",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.060008,
+          "snippet_preview": "이 카드에서는 `this.method()` / `private` / 직접 `new Foo()`를 따로 외우기보다, 아래 **프록시 정문 3문항**으로 묶어 읽는다.  | 코드에서 먼저 보이는 신호 | 초급자용 라우팅 문구 | 첫 확인 | |---|---|---| | `this.method()` | 같은 집 안에서 바로 다시 부르기 | 호출을 다른 Bean으로 꺼냈는지 본다 | | `private` 메서드 | 문이 닫힌 메서드 | `public`…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/database/transaction-basics.md",
+          "title": "트랜잭션 기초 (Transaction Basics)",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.05997,
+          "snippet_preview": "트랜잭션 기초의 핵심은 \"무엇을 같이 `commit`/`rollback`할까\"를 먼저 고정하는 것이고, 충돌 대응이나 재시도 전략은 관련 follow-up 문서로 넘기는 것이다.  [retrieval anchors] transaction basics | transaction beginner | commit rollback basics | transaction vs isolation | what is transaction | 트랜잭션이 뭐예요 |…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/spring/spring-aop-basics.md",
+          "title": "AOP 기초: 관점 지향 프로그래밍이 왜 필요한가",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.0579,
+          "snippet_preview": "초급자에게 AOP는 독립된 큰 새 단원보다 \"`왜 `@Transactional` 설명에 프록시가 끼어드는가`\"를 풀어 주는 연결 문서에 가깝다.  | 지금 보인 말 | 이 문서에서의 초급자용 뜻 | 바로 다음 문서 | |---|---|---| | \"`AOP`가 뭐예요?\" | 공통 코드를 메서드 앞뒤에 붙이는 방식 | [`Spring @Transactional 기초`](./spring-transactional-basics.md) | | \"`프록시…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "title": "IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.057823,
+          "snippet_preview": "처음에는 \"`왜 new 대신 주입해요?`\", \"`bean`이 뭐예요?\", \"`왜 `@Transactional`이 안 먹어요?`\"가 전부 비슷한 Spring 자동화처럼 보인다. 아래 표처럼 \"지금 묻는 문장이 무엇인가\"만 나눠도 첫 문서를 훨씬 덜 헤맨다.  | 지금 입에서 먼저 나오는 말 | 이 질문의 중심 | 먼저 볼 문서 | |---|---|---| | \"`왜 new 대신 주입해요?`\" | 객체 조립 책임을 왜 밖으로 밀어내나 | 이 문서…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md",
+          "title": "Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.057431,
+          "snippet_preview": "전파(propagation)는 \"안쪽 메서드를 부를 때 트랜잭션을 **합칠지**, **새로 딸지**, 아니면 **이미 실패 예정 상태를 그대로 이어받을지**\"를 정하는 규칙이다.  초급자는 용어보다 아래 세 문장부터 잡으면 된다.  - `REQUIRED`: 지금 트랜잭션이 있으면 같이 탄다. - `REQUIRES_NEW`: 바깥 것을 잠깐 멈추고 새 트랜잭션을 하나 더 연다. - rollback-only: 지금 트랜잭션은 이미 커밋 불가라고 표…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "title": "Spring Persistence / Transaction Mental Model Primer: Web, Service, Repository를 한 장으로 묶기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.056493,
+          "snippet_preview": "- \"`@Transactional` = SQL 한 줄마다 commit\"이 아니다. 보통 service 메서드 전체가 한 transaction이다. - \"`flush` = commit\"이 아니다. SQL을 보냈어도 rollback될 수 있다. - \"`repository.save()`를 안 했으니 update가 안 된다\"가 아니다. managed 엔티티는 dirty checking으로 반영될 수 있다. - \"`lazy loading`은 그냥 성능…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/spring/spring-boot-autoconfiguration-basics.md",
+          "title": "Spring Boot 자동 구성 기초: starter를 추가하면 왜 바로 동작하나",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.055431,
+          "snippet_preview": "이 문서는 특히 아래처럼 묻는 초급 질문을 빠르게 받쳐 주는 용도다.  - \"starter 추가했는데 왜 바로 동작해요?\" - \"자동 설정이 뭐예요?\" - \"내가 Bean 등록 안 했는데 왜 생겨요?\"  Spring Boot 이전에는 `DataSource`, `JdbcTemplate`, `TransactionManager` 등 기본 인프라 Bean을 개발자가 XML이나 `@Configuration` 클래스에 직접 등록해야 했다. Spring B…"
+        }
+      ]
+    },
+    {
+      "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델 최신성 read model staleness 쓴 직후 읽기 보장 read your writes 프로젝션 재빌드 백필 컷오버 projection rebuild backfill cutover",
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/design-pattern/read-model-staleness-read-your-writes.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/system-design/read-after-write-consistency-basics.md",
+          "title": "Read-After-Write Consistency Basics",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.070061,
+          "snippet_preview": "### 시나리오 1: 프로필 수정 후 내 프로필 화면  - 사용자는 프로필 저장 후 바로 자기 프로필을 다시 본다 - stale이 나와도 금전 사고는 아니지만 UX가 크게 깨진다  이때는 전체 강한 읽기보다 **짧은 recent-write routing**이 잘 맞는다.  ### 시나리오 2: 결제 완료 후 주문 확인 페이지  - 결제 직후 주문이 안 보이면 사용자는 다시 결제할 수 있다 - support 문의와 환불 이슈로 바로 이어질 수 있…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/system-design/read-after-write-routing-primer.md",
+          "title": "Read-After-Write Routing Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.069644,
+          "snippet_preview": "### 10초 구분표: `read-after-write` vs `recent-write` vs `min-version floor`  먼저 mental model을 한 줄로 고정하자.  - `read-after-write`: \"어떤 보장을 원하는가\"를 말하는 요구사항 이름 - `recent-write`: 그 보장을 맞추려고 write 직후 잠깐 read 경로를 더 신선하게 고르는 힌트 - `min-version floor`: 이미 본 값보다 뒤로…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/software-engineering/same-db-query-repository-vs-separate-read-store.md",
+          "title": "Same-DB Query Repository Vs Separate Read Store",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.062989,
+          "snippet_preview": "이 단계는 \"쿼리 분리\"보다 훨씬 큰 결정이다.  - 다른 PostgreSQL read DB - Elasticsearch 같은 검색 엔진 - 분석용 warehouse - 캐시가 아니라 재구성 가능한 read model 저장소  보통 아래 신호가 여러 개 겹칠 때만 검토한다.  | 신호 | 왜 separate read store 신호인가 | |---|---| | 읽기 트래픽이 write DB를 실제로 압박한다 | query path 분리만으로는…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/system-design/cross-primer-glossary-anchors.md",
+          "title": "Cross-Primer Glossary Anchors",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.060799,
+          "snippet_preview": "먼저 네 용어를 \"한 문장\"으로 잡자.  - `recent-write`: 내가 방금 쓴 값이 안 사라지게 read 경로를 잠깐 더 신선하게 고르는 힌트 - `min-version floor`: 내가 이미 본 값보다 뒤로 가지 않게 세션이 기억하는 최소선 - `stale window`: write는 성공했지만 read 경로가 아직 예전 값을 낼 수 있는 시간 구간 - `headroom`: 보호 동작(예: primary fallback)을 늘려도…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/system-design/writes-follow-reads-primer.md",
+          "title": "Writes-Follow-Reads Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.060417,
+          "snippet_preview": "가장 쉬운 mental model은 이렇다.  - read할 때는 \"판단 근거가 되는 번호표\"를 같이 받는다 - write할 때는 \"아직 그 번호표가 유효할 때만 저장해 달라\"고 요청한다  예를 들어 사용자가 장바구니를 열었을 때 `cart_version=12`를 봤다면, 쿠폰 적용이나 수량 변경 write는 \"`version 12`를 기준으로 계산했다\"는 사실을 함께 보내야 한다. 서버는 현재 version이 여전히 `12`일 때만 write…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/system-design/projection-applied-watermark-basics.md",
+          "title": "Projection Applied Watermark Basics",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.056717,
+          "snippet_preview": "# Projection Applied Watermark Basics  > 한 줄 요약: `applied_watermark`는 \"이 read model이 안전하게 반영을 끝낸 마지막 기준선\"이고, projection은 이 값을 저장하고 조금씩 전진시키며, read path는 이 값을 밖으로 꺼내 `required_watermark`와 비교해 stale 여부를 단순하게 판단한다.  **난이도: 🟢 Beginner**  관련 문서:  - [Outbo…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/system-design/badge-freshness-observability-primer.md",
+          "title": "Badge Freshness Observability Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.056078,
+          "snippet_preview": "- 작은 delta가 드물게 생기면 projection의 자연스러운 늦음일 수 있다. - 큰 delta가 자주 생기면 read receipt 중복 처리, collapse 규칙, idempotency 누락 같은 구조 문제를 의심한다.  예를 들어 `0 -> 6` 보정이 자주 보이면 \"잠깐 늦었다\"보다 \"중간 경로가 자주 빠진다\"에 더 가깝다.  ---  [retrieval anchors] badge freshness observability pr…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/system-design/checkout-consistency-walkthrough.md",
+          "title": "Checkout Consistency Walkthrough",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.053628,
+          "snippet_preview": "그래서 checkout 직후 confirmation read는 일반 목록 조회보다 더 신선한 경로가 필요하다.  | 확인 화면 정책 | 장점 | 주의할 점 | |---|---|---| | 짧은 primary fallback | 가장 이해하기 쉽다 | primary read 부하 관리 필요 | | recent-write pinning | 필요한 세션만 보호 가능 | 세션/엔티티별 freshness 힌트 관리 필요 | | stale 허용 repli…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/system-design/rejected-hit-observability-primer.md",
+          "title": "Rejected-Hit Observability Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.049496,
+          "snippet_preview": "replica fallback은 \"replica가 항상 나쁘다\"가 아니라, **이번 요청에서는 replica를 믿을 근거가 부족했다**는 뜻이다.  대표 reason:  | reason | 의미 | 확인할 metric | |---|---|---| | `recent_write` | write 직후 읽기라 replica lag window를 피한다 | `primary_fallback_total{reason=\"recent_write\"}` | | `m…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/security/support-access-alert-router-primer.md",
+          "title": "Support Access Alert Router Primer",
+          "category": "security",
+          "difficulty": null,
+          "score": 0.048396,
+          "snippet_preview": "짧은 기억법:  - `read-only`는 `확인했습니다`, `검토했습니다`처럼 읽기 동사를 쓴다. - `write`는 `변경했습니다`, `재설정했습니다`, `복구했습니다`처럼 결과가 드러나는 동사를 쓴다. - `break-glass`는 `접근했습니다`보다 `긴급 접근이 승인되었습니다` / `종료되었습니다`처럼 lifecycle을 드러낸다.  [retrieval anchors] support access alert router primer |…"
+        }
+      ]
+    },
+    {
+      "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+      "prompt": "목록이 안 바뀜",
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/design-pattern/read-model-staleness-read-your-writes.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/language/java/arrays-aslist-fixed-size-list-checklist.md",
+          "title": "`Arrays.asList()` 고정 크기 리스트 함정 체크리스트",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.07301,
+          "snippet_preview": "### 1. `add/remove`가 필요하면  ```java List<String> names = new ArrayList<>(Arrays.asList(\"kim\", \"lee\")); names.add(\"park\"); // 가능 ```  체크:  - 이후 원소를 더 넣거나 뺄 건가? - 정렬, 필터링 뒤 다시 수정할 가능성이 있나?  둘 중 하나라도 `Yes`면 `new ArrayList<>(...)`로 시작하는 편이 안전하다.  그리고 \"배열과…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/language/java/array-to-list-conversion-entrypoint-primer.md",
+          "title": "배열 vs `List` 변환 엔트리 프라이머",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.071564,
+          "snippet_preview": "```java String[] names = {\"kim\", \"lee\"};  List<String> view = Arrays.asList(names); List<String> editableCopy = new ArrayList<>(Arrays.asList(names)); List<String> readonly = List.of(\"kim\", \"lee\");  names[0] = \"park\";  System.out.println(view);…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/language/java/stream-filter-vs-map-decision-mini-card.md",
+          "title": "`filter` vs `map` 결정 미니 카드",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.063618,
+          "snippet_preview": "문제: 주문 목록에서 `PAID` 상태만 골라서 고객 이름만 대문자로 뽑는다.  ```java List<String> names = orders.stream()     .filter(order -> order.getStatus() == OrderStatus.PAID)     .map(order -> order.getCustomerName().toUpperCase())     .toList(); ```  한 줄씩 읽으면:  - `filter(..…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/system-design/beginner-consistency-self-check-worksheet.md",
+          "title": "Beginner Consistency Self-Check Worksheet",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.062877,
+          "snippet_preview": "여기서는 `candidate < floor`를 봤는데도 손이 멈추는 오답을 하나만 직접 걸러 본다. 핵심 기억법은 `floor 미달 = 그냥 노출 금지`다.  문제:  > 알림 상세에서 `read=true, version=211`을 본 뒤 목록 후보가 `unread, version=209`로 왔다. > `min_version(notif:u1:n88)=211`일 때, 초보자용 첫 답으로 가장 틀린 것은?  | 선택지 | 판단 | |---|---|…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/language/java/stable-id-vs-natural-key-bridge.md",
+          "title": "Stable ID vs Natural Key Bridge",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.060798,
+          "snippet_preview": "- \"이메일은 거의 안 바뀌니까 무조건 key로 써도 되지 않나요?\"   - \"거의 안 바뀐다\"와 \"정책상 안 바뀐다\"는 다르다. - \"name도 `String`이라 immutable인데 왜 안 되나요?\"   - `String`의 불변성과 도메인 값의 안정성은 다른 문제다. - \"business key가 더 자연스러우니 surrogate ID보다 항상 좋은 것 아닌가요?\"   - 읽기 쉬울 수는 있지만, 변경 정책이 불명확하면 오히려 위험하다.…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/security/tenant-membership-change-session-scope-basics.md",
+          "title": "Tenant Membership Change vs Session Scope Basics",
+          "category": "security",
+          "difficulty": null,
+          "score": 0.059301,
+          "snippet_preview": "### 1. tenant selector만 바꾸면 session scope도 바뀐다  아니다. selector는 화면 상태일 수 있고, backend authz context는 별도 refresh가 필요하다.  ### 2. membership 제거는 다음 로그인 때 반영해도 된다  위험하다. old tenant allow가 살아 있는 시간이 바로 보안 노출 시간이다.  ### 3. 같은 사람의 이동이니 cross-tenant 문제가 아니다  아…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/language/java/list-copyof-listof-unmodifiablelist-beginner-bridge.md",
+          "title": "`List.copyOf(...)` vs `Collections.unmodifiableList(...)` vs `List.of(...)` beginner bridge",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.057018,
+          "snippet_preview": "- \"`unmodifiableList`면 원본도 안전하게 안 바뀐다\"  아니다. `Collections.unmodifiableList(...)`는 복사본이 아니라 wrapper다. 원본 `source`를 다른 코드가 계속 바꾸면, 그 변화가 `view`에도 보일 수 있다.  - \"`List.copyOf(...)`면 요소 객체까지 깊게 복사된다\"  이것도 아니다. 바뀌지 않는 것은 리스트 구조다. 요소 객체 자체가 mutable이면 그 내부 상태…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/language/java/java-overloading-vs-overriding-beginner-primer.md",
+          "title": "Java 오버로딩 vs 오버라이딩 입문",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.0566,
+          "snippet_preview": "### 이름이 같다고 모두 overriding은 아니다  같은 이름이어도 parameter 목록이 다르면 overloading이다. 상속 관계 안에 있다고 해서 자동으로 overriding이 되지 않는다.  ### return type만 바꿔서는 overloading이 되지 않는다  Java는 메서드 호출을 구분할 때 parameter 목록을 본다. return type만 다르게 두는 것은 허용되지 않는다.  ### 변수 타입과 실제 객체 타입…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/language/java/mutable-element-pitfalls-list-set-primer.md",
+          "title": "Mutable Element Pitfalls in List and Set",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.056474,
+          "snippet_preview": "```java import java.util.Comparator; import java.util.TreeSet;  final class Task {     private final long id;     private int priority;      Task(long id, int priority) {         this.id = id;         this.priority = priority;     }      long id() {…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/language/java/treeset-treemap-mutable-comparator-fields-primer.md",
+          "title": "Mutable Fields Inside Sorted Collections",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.05451,
+          "snippet_preview": "| 바꾸는 대상 | 보통 안전한가 | 이유 | |---|---|---| | comparator가 보지 않는 필드 | 대체로 안전 | 트리 안의 순서 기준이 변하지 않는다 | | comparator가 보는 필드, 삽입 전 | 안전 | 아직 트리 안의 자리가 정해지지 않았다 | | comparator가 보는 필드, 삽입 후 | 위험 | 트리 안의 기존 위치와 현재 비교 결과가 어긋난다 | | `TreeMap`의 value 객체 | key 조회 기준…"
+        }
+      ]
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+      "prompt": "삭제했는데 검색 결과나 목록에 아직 남아 있어. 입문자 기준으로 왜 이럴 수 있는지 먼저 알고 싶어",
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/design-pattern/read-model-staleness-read-your-writes.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/system-design/search-hit-overlay-pattern.md",
+          "title": "Search Hit Overlay Pattern",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.072015,
+          "snippet_preview": "| 보이는 문제 | 왜 search만 믿으면 깨지나 | overlay가 하는 일 | |---|---|---| | 검색 결과 제목이 상세보다 오래됨 | index refresh lag가 있다 | fresher title로 덮어쓴다 | | 상태가 `PENDING`인데 상세는 `PAID`다 | summary document가 아직 안 따라왔다 | 최신 status만 교체한다 | | 비공개/삭제 문서가 잠깐 남아 보인다 | delete/update t…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/database/distinct-vs-group-by-beginner-card.md",
+          "title": "DISTINCT vs GROUP BY 초보자 비교 카드",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.066256,
+          "snippet_preview": "초보자 기준으로는 이렇게 먼저 잡으면 된다.  - `DISTINCT`는 **같은 결과 row를 한 번만 보여 달라**는 요청이다. - `GROUP BY`는 **같은 값을 묶어서 그룹 단위로 본다**는 요청이다.  둘 다 결과가 비슷해 보일 때가 있어서 헷갈리지만, 질문이 다르다.  - \"이 값 목록에서 중복만 없애고 싶다\"면 `DISTINCT` - \"부서별 몇 명인지, 상태별 몇 건인지 보고 싶다\"면 `GROUP BY`  즉 beginner m…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/system-design/database-scaling-primer.md",
+          "title": "Database Scaling Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.065035,
+          "snippet_preview": "이때 초보자가 놓치기 쉬운 점은 `split`의 본질이 DB 구조가 아니라 **라우팅 정책**이라는 것이다.  대표 정책:  - 일반 목록/검색/통계성 조회는 replica - 주문 직후 상세 조회처럼 최신성이 중요한 요청은 primary - 최근 write가 있었던 세션만 일정 시간 primary - 아주 중요한 경로만 read-your-writes를 보장  가장 흔한 함정은 stale read다.  - 방금 저장했는데 목록에 안 보인다 -…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/system-design/beginner-consistency-self-check-worksheet.md",
+          "title": "Beginner Consistency Self-Check Worksheet",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.063693,
+          "snippet_preview": "`display_name` 같은 설정 값은 보통 한 군데만 바뀌지 않는다. 초보자 기준으로는 \"저장 성공\" 다음에 **어디에 같은 값이 퍼져 보여야 하는지**부터 3칸으로 적어 두면 놓침이 줄어든다.  | 칸 | 지금 적을 것 | 왜 먼저 적나 | |---|---|---| | `프로필` | `내 프로필 상세 / 프로필 편집 완료 화면` | write 직후 제일 먼저 다시 보는 화면이라 `read-after-write` 체감이 강하다. | | `…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/system-design/notification-source-missing-decision-table.md",
+          "title": "Notification Source Missing Decision Table",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.063364,
+          "snippet_preview": "| 의심 원인 | 사용자 화면에서 자주 보이는 모습 | 서버/데이터 쪽 의미 | 먼저 볼 신호 | 첫 대응 | |---|---|---|---|---| | stale read | 새 댓글 알림을 눌렀는데 상세는 잠깐 옛값 또는 404, 새로고침/잠시 후 재시도하면 보임 | cache나 replica가 causal 기준선보다 뒤처짐 | `required_watermark`, `read.source`, cache reject, primary fall…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/algorithm/sort-intro.md",
+          "title": "정렬 알고리즘 입문 (Sorting Algorithms Basics)",
+          "category": "algorithm",
+          "difficulty": null,
+          "score": 0.061724,
+          "snippet_preview": "정렬을 처음 배우면 \"`버블 정렬부터 다 외워야 하나요?`\"에서 자주 멈춘다. 처음에는 알고리즘 이름을 다 외우기보다 **\"왜 정렬하나 -> 어떤 기준으로 고르나 -> 정렬 뒤 무엇을 하나\"**만 잡는 편이 안전하다.  | 지금 드는 질문 | 먼저 붙일 답 | |---|---| | 정렬이 왜 필요해요? | 검색, 순위, 중복 처리 전에 순서를 맞추는 전처리다. | | 어떤 정렬을 써야 해요? | 코딩 테스트와 실무에서는 먼저 언어 내장 정렬을…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/algorithm/binary-search-intro.md",
+          "title": "이분 탐색 입문 (Binary Search Basics)",
+          "category": "algorithm",
+          "difficulty": null,
+          "score": 0.060994,
+          "snippet_preview": "Java로 처음 이분 탐색을 접하면 알고리즘 문법보다 \"`정렬은 했는데 왜 `binarySearch(...)` 결과가 이상하지?`\"에서 먼저 막히는 경우가 많다.  처음에는 아래처럼 `primer -> follow-up -> deep dive` 한 칸씩만 가는 편이 안전하다.  | 지금 보이는 증상 | 먼저 볼 문서 | 바로 다음 한 칸 | 더 깊이 갈 문서 | |---|---|---|---| | `Arrays.sort()` 뒤 원본 순서가 왜…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/system-design/caching-vs-read-replica-primer.md",
+          "title": "Caching vs Read Replica Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.060473,
+          "snippet_preview": "### 1. 둘 다 읽기 확장이지만 푸는 문제는 다르다  예를 들어 상품 상세 페이지처럼 같은 `product:123`을 수없이 읽는 상황을 보자. 이때는 cache가 특히 잘 맞는다.  - 같은 결과를 반복 재사용할 수 있다 - DB에 가지 않아도 되는 요청이 많아진다 - hot key를 잘 흡수하면 latency도 크게 줄어든다  반대로 검색 목록, 관리자 조회, 리포트처럼 요청마다 조건이 꽤 다르면 cache hit율이 낮을 수 있다. 이…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/language/java/java-array-sorting-searching-basics.md",
+          "title": "Sorting and Searching Arrays Basics",
+          "category": "language",
+          "difficulty": null,
+          "score": 0.060022,
+          "snippet_preview": "Java 입문자가 배열 정렬과 검색을 배우다가 자주 막히는 질문은 대체로 비슷하다.  - `Arrays.sort()`를 했더니 왜 원본 배열 순서가 바뀔까? - `Arrays.binarySearch()`는 왜 정렬되지 않은 배열에서 이상한 값을 줄까? - 내림차순으로 정렬했는데 왜 검색 결과가 틀릴까? - 검색 결과가 `-3`처럼 나오면 이게 무슨 뜻일까? - 중복값이 있을 때 왜 첫 번째 인덱스를 보장하지 않을까?  핵심은 간단하다.  - `…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/security/concealment-404-entry-cues.md",
+          "title": "Concealment `404` Entry Cues",
+          "category": "security",
+          "difficulty": null,
+          "score": 0.059483,
+          "snippet_preview": "먼저 이 카드만 보면 초보자도 \"`404`가 떴다 = 무조건 없다\"로 단정하는 실수를 줄일 수 있다.  | 지금 보는 단서 | 진짜 없음에 더 가까운 쪽 | 숨김 `404`에 더 가까운 쪽 | |---|---|---| | 같은 ID를 다른 계정으로 열어 봤을 때 | 누구에게도 안 열린다 | owner/admin 같은 다른 문맥에서는 열린다 | | 목록/검색/최근 기록에서 보이는지 | 내 목록에도 없고, 최근 경로에도 안 나온다 | owner 목…"
+        }
+      ]
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+      "prompt": "모바일에서 저장은 됐는데 당겨서 새로고침해야 새 값이 보여. swipe refresh 없이는 리스트가 늦게 갱신돼. 입문자 기준으로 먼저 어떤 개념을 보면 돼?",
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/design-pattern/read-model-staleness-read-your-writes.md": null
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": null,
+      "best_acceptable_rank": null,
+      "classification": "cross_category_wrong_document",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/system-design/cache-invalidation-patterns-primer.md",
+          "title": "Cache Invalidation Patterns Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.076243,
+          "snippet_preview": "write-through는 새 값을 저장할 때 cache도 바로 같은 값으로 갱신하는 방식이다.  ```text PUT /settings   -> DB update   -> SET user:123:settings = newValue ttl=300s ```  간단한 시나리오:  - 사용자가 알림 설정을 바꾼다 - 저장 직후 같은 설정 화면을 다시 연다 - 캐시가 이미 새 값으로 갱신되어 있으니 다음 read가 자연스럽다  write-through…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/system-design/beginner-consistency-self-check-worksheet.md",
+          "title": "Beginner Consistency Self-Check Worksheet",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.075165,
+          "snippet_preview": "`display_name` 같은 설정 값은 보통 한 군데만 바뀌지 않는다. 초보자 기준으로는 \"저장 성공\" 다음에 **어디에 같은 값이 퍼져 보여야 하는지**부터 3칸으로 적어 두면 놓침이 줄어든다.  | 칸 | 지금 적을 것 | 왜 먼저 적나 | |---|---|---| | `프로필` | `내 프로필 상세 / 프로필 편집 완료 화면` | write 직후 제일 먼저 다시 보는 화면이라 `read-after-write` 체감이 강하다. | | `…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/system-design/caching-vs-read-replica-primer.md",
+          "title": "Caching vs Read Replica Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.074875,
+          "snippet_preview": "- 저장 직후 예전 값이 보인다 - 새로고침할 때 값이 뒤집힌다 - 목록과 상세가 서로 다른 상태를 보여 준다  하지만 진단 질문은 다르다.  | 증상 확인 질문 | Cache 쪽 질문 | Replica 쪽 질문 | |---|---|---| | 왜 옛 값이 보였나 | invalidation이 늦었나? TTL이 남았나? | replication lag가 있었나? | | 왜 요청마다 값이 달랐나 | 서로 다른 key가 섞였나? local cache…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/network/browser-504-retry-vs-refresh-vs-duplicate-submit-beginner-bridge.md",
+          "title": "Browser `504` 뒤 재시도 vs 새로고침 vs 중복 제출 Beginner Bridge",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.061474,
+          "snippet_preview": "초급자가 먼저 분리해야 할 질문은 세 개다. 특히 `504`를 본 직후에는 \"브라우저가 알아서 다시 보내 주겠지\"와 \"한 번 실패했으니 다시 눌러도 안전하겠지\"를 같은 말처럼 취급하지 않는 것이 중요하다.  - **자동 재시도인가?** 브라우저나 client가 transport 복구 차원에서 다시 보냈는가 - **사용자 새로고침인가?** 사용자가 `F5`나 새로고침 버튼으로 같은 URL을 다시 요청했는가 - **중복 제출인가?** 같은 `POS…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/data-structure/basic.md",
+          "title": "기본 자료 구조",
+          "category": "data-structure",
+          "difficulty": null,
+          "score": 0.060044,
+          "snippet_preview": "연결 리스트는 노드가 `next` 또는 `prev` 포인터로 이어지는 구조다. 배열처럼 붙어 있지 않으므로 `3번째 값`을 바로 읽는 데는 약하지만, 이미 잡고 있는 노드 주변을 바꾸는 데는 자연스럽다.  - 잘 맞는 상황:   - 노드 삽입/삭제가 자주 일어나는 흐름   - LRU처럼 순서를 자주 앞뒤로 옮기는 구조 - 주의할 점:   - \"삽입/삭제가 O(1)\"은 위치를 이미 알고 있을 때 이야기다   - 위치를 찾는 순회 비용까지 합치면…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/system-design/list-detail-monotonicity-bridge.md",
+          "title": "List-Detail Monotonicity Bridge",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.059817,
+          "snippet_preview": "세 화면은 같은 주문을 보여 주지만 보통 읽는 저장소가 다르다.  | 화면 | 흔한 빠른 read path | 오래된 값이 나오는 이유 | |---|---|---| | 상세 | primary fallback 또는 detail replica | 상세는 비교적 fresh하게 읽도록 보호하기 쉽다 | | 목록 | summary cache 또는 list replica | row summary cache가 아직 `PENDING`일 수 있다 | | 검색…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/operating-system/README.md",
+          "title": "Operating System (운영체제)",
+          "category": "operating-system",
+          "difficulty": null,
+          "score": 0.058229,
+          "snippet_preview": "`Beginner Symptom-to-Doc Map`에서 \"증상은 잡았지만 개념 축이 다시 흔들린다\"는 handoff를 타고 올라왔다면, 아래 순서에서 지금 막힌 축의 primer부터 다시 집어 `Self-check`로 재진입하면 된다.  처음부터 전부 읽지 말고, 아래 4개만 순서대로 훑은 뒤 각 문서 말미 `Self-check`를 먼저 풀어 보면 재복습 진입 비용이 가장 낮다. 특히 1번 primer는 용어 축을 한 번에 묶는 대신 본문과…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/system-design/mixed-cache-replica-freshness-bridge.md",
+          "title": "Mixed Cache+Replica Freshness Bridge",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.057842,
+          "snippet_preview": "이 주제에서 초보자가 가장 많이 놓치는 점은 하나다.  > freshness 힌트는 \"DB 읽기 전에만 쓰는 옵션\"이 아니라, 요청이 끝날 때까지 들고 다니는 **문맥**이다.  즉, 아래 세 힌트는 어느 한 갈래에서만 쓰면 안 된다.  - `recent-write`: 방금 쓴 값이 바로 사라지지 않게 하는 힌트 - `min-version`: 내가 이미 본 최신선보다 뒤로 가지 않게 하는 힌트 - `causal token`: 먼저 본 결과의 원…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/operating-system/memory-management-basics.md",
+          "title": "메모리 관리 기초",
+          "category": "operating-system",
+          "difficulty": null,
+          "score": 0.056753,
+          "snippet_preview": "\"메모리\"는 여러 의미로 쓰인다. 입문 수준에서 꼭 정리해야 하는 세 가지 질문이 있다.  1. 프로세스는 왜 서로의 메모리를 볼 수 없는가 2. 힙과 스택은 어떻게 다른가 3. 프로그램이 쓰는 주소와 실제 RAM 주소는 같은가  이 세 질문이 운영체제 메모리 관리의 입문 핵심이다.  [retrieval anchors] 메모리 관리 기초 | virtual memory beginner | page table basics | heap vs stac…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/data-structure/linked-list-basics.md",
+          "title": "연결 리스트 기초 (Linked List Basics)",
+          "category": "data-structure",
+          "difficulty": null,
+          "score": 0.056694,
+          "snippet_preview": "| 연산 | 배열 | 연결 리스트 | |---|---|---| | 임의 접근 (index) | O(1) | O(n) | | 앞/중간 삽입 | O(n) | O(1) (위치 알 때) | | 앞/중간 삭제 | O(n) | O(1) (위치 알 때) | | 끝에 삽입 | O(1) (amortized) | O(1) (tail 포인터 있을 때) | | 메모리 | 연속 블록 | 노드별 분산 |  [retrieval anchors] linked list bas…"
+        }
+      ]
+    },
+    {
+      "query_id": "beginner_hikaricp_english_meaning_lockin",
+      "prompt": "What does HikariCP mean?",
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "experience_level": "beginner",
+      "primary_paths": [
+        "contents/database/connection-pool-basics.md"
+      ],
+      "acceptable_paths": [
+        "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md"
+      ],
+      "primary_ranks": {
+        "contents/database/connection-pool-basics.md": 7
+      },
+      "acceptable_ranks": {
+        "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md": 1
+      },
+      "best_primary_rank": 7,
+      "best_acceptable_rank": 1,
+      "classification": "primary_present_below_rank5",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md",
+          "title": "Hikari/JPA/MySQL 예외 3버킷 미니 매핑표",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.062326,
+          "snippet_preview": "# Hikari/JPA/MySQL 예외 3버킷 미니 매핑표  > 한 줄 요약: 초보자는 예외 클래스 이름을 길게 외우기보다, Hikari/JPA/MySQL에서 보이는 대표 메시지를 먼저 `busy` / `retryable` / `already exists`로 번역하면 대응이 훨씬 덜 흔들린다.  **난이도: 🟢 Beginner**  관련 문서:  - [3버킷 공통 용어 카드](./three-bucket-terms-common-card.md) -…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/network/README.md",
+          "title": "Network (네트워크)",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.059791,
+          "snippet_preview": "> 참고 : [[Network] TCP 3-way handshaking과 4-way handshaking](https://gmlwjd9405.github.io/2018/09/19/tcp-connection.html)  TCP는 네트워크 계층 중 **전송 계층에서 사용하는 프로토콜** 중 하나로, **신뢰성을 보장하는 연결형 서비스**이다.  TCP의 **3-way-handshake**란 TCP 통신을 시작하기 전에 논리적인 경로 **연결을 수립…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/network/tcp-udp-basics.md",
+          "title": "TCP와 UDP 기초",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.057838,
+          "snippet_preview": "**Q. TCP와 UDP의 차이를 설명해 주세요.** 핵심은 연결 지향 여부와 신뢰성 보장이다. TCP는 3-way handshake로 연결을 맺고 순서·재전송을 보장한다. UDP는 연결 없이 즉시 전송하며 신뢰성은 애플리케이션 몫이다.  **Q. HTTP/3는 왜 UDP를 쓰나요?** QUIC 프로토콜이 UDP 위에서 자체적으로 신뢰성과 멀티플렉싱을 구현해 TCP의 HOL blocking 문제를 피하면서 속도를 높이기 위해서다.  **Q. T…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/software-engineering/README.md",
+          "title": "Software Engineering (소프트웨어 공학)",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.057704,
+          "snippet_preview": "1. SRP(단일 책임의 원칙 : Single Responsibility Principle) : 작성된 클래스는 하나의 기능만 가지며 클래스가 제공하는 모든 서비스는 그 하나의 책임을 수행하는데 집중되어 있어야 한다는 원칙  2. OCP(개방폐쇄의 원칙 : Open Close Principle) : 소프트웨어의 구성요소는 확장에는 열려있고, 변경에는 닫혀있어야 한다는 원칙. 변경은 최소화 하고 확장을 최대화  3. LSP(리스코브 치환의 원칙…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/network/tcp-three-way-handshake-basics.md",
+          "title": "TCP 3-way handshake 기초",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.057657,
+          "snippet_preview": "TCP는 데이터를 보내기 전에 반드시 **연결을 먼저 확립**한다. 이 연결 과정을 3-way handshake라 부른다. 총 세 번의 패킷을 교환해서 양쪽이 서로 준비됐음을 확인한다. 입문자가 헷갈리는 지점은 \"왜 2번이 아니라 3번이냐\"인데, 한쪽만 보내도 됐다는 확인을 상대방이 받았음을 확인하는 단계가 별도로 필요하기 때문이다.  [retrieval anchors] tcp three way handshake | syn syn-ack ack…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md",
+          "title": "Pool 지표 읽기 미니 브리지 (active/idle/awaiting + lock wait timeout)",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.056599,
+          "snippet_preview": "아래는 초보자가 가장 많이 헷갈리는 조합인 `threads awaiting connection` + `lock wait timeout`을 한 번에 읽는 예시다.  ```text 2026-04-24 14:02:11.842  INFO [checkout-api] [http-nio-8080-exec-17] com.zaxxer.hikari.pool.HikariPool : HikariPool-1 - Pool stats (total=20, active=18…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/database/connection-pool-basics.md",
+          "title": "커넥션 풀 기초 (Connection Pool Basics)",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.056073,
+          "snippet_preview": "**풀 크기 (pool size)**  - `maximumPoolSize`: 최대로 유지할 커넥션 수 - `minimumIdle`: 유휴 상태에서도 유지할 최소 커넥션 수  시작점은 작은 값에서 시작해 부하 테스트로 조정하는 것이다. 공식(예: 코어 수 기반)은 출발점일 뿐 정답이 아니다.  **대기 타임아웃 (connectionTimeout)**  - 풀에 여유 커넥션이 없을 때 스레드가 기다리는 최대 시간 - 초과하면 예외가 발생한다  기본…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/network/grpc-keepalive-vs-http2-ping-vs-tcp-keepalive-beginner-bridge.md",
+          "title": "gRPC keepalive vs HTTP/2 PING vs TCP keepalive",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.055728,
+          "snippet_preview": "gRPC keepalive는 정책, HTTP/2 PING은 그 정책이 쓰는 프레임, TCP keepalive는 더 아래층 소켓 안전망이라고 나눠 기억해야 초급자가 용어를 덜 섞는다.  [retrieval anchors] grpc keepalive vs http2 ping | http2 ping vs tcp keepalive | grpc keepalive 뭐예요 | grpc ping basics | tcp keepalive basics | grp…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/database/transaction-locking-connection-pool-primer.md",
+          "title": "트랜잭션, 락, 커넥션 풀 첫 그림",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.054964,
+          "snippet_preview": "프레임워크 이름이 달라져도 같은 이야기를 다른 레이어에서 하는 것이다.  | 코드에서 보이는 이름 | 실제로 무슨 뜻인가 | |---|---| | JDBC `Connection` | 풀에서 빌린 DB 연결 | | `setAutoCommit(false)` | 명시적으로 트랜잭션 경계를 잡기 시작 | | `commit()` / `rollback()` | 트랜잭션 종료 | | Spring `@Transactional` | begin/commit/ro…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/network/keepalive-connection-reuse-basics.md",
+          "title": "HTTP Keep-Alive와 커넥션 재사용 기초",
+          "category": "network",
+          "difficulty": null,
+          "score": 0.05383,
+          "snippet_preview": "HTTP/1.0까지는 요청 하나를 보내고 응답을 받으면 TCP 연결을 바로 끊었다. 다음 요청이 오면 새로 연결을 맺었다. 웹페이지 하나에 이미지·CSS·JS가 수십 개라면, 파일마다 TCP 핸드셰이크(3-way handshake)와 TLS 핸드셰이크가 반복된다. 이 비용은 꽤 크다.  **Keep-Alive**는 TCP 연결을 열어두고 여러 HTTP 요청/응답을 같은 연결로 처리하는 방식이다. HTTP/1.1부터 기본값이 됐다. 입문자가 헷갈…"
+        }
+      ]
+    },
+    {
+      "query_id": "projection_lag_budgeting",
+      "prompt": "projection lag budget, consumer backlog budget, freshness budget 을 어떻게 나눠?",
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "experience_level": null,
+      "primary_paths": [
+        "contents/design-pattern/projection-lag-budgeting-pattern.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/design-pattern/projection-lag-budgeting-pattern.md": 1
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": 1,
+      "best_acceptable_rank": null,
+      "classification": "strict_primary_rank1_passes_now",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+          "title": "Projection Lag Budgeting Pattern",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.066602,
+          "snippet_preview": "lag는 여러 층의 합이다.  - outbox relay 지연 - broker 지연 - consumer backlog - projector 처리 시간 - DB/검색 인덱스 반영 시간  그래서 end-to-end freshness budget으로 보는 편이 더 맞다.  | Budget slice | 대표 질문 | 흔한 guardrail | |---|---|---| | relay budget | outbox -> broker 전달이 얼마나 늦어도…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+          "title": "Projection Freshness SLO Pattern",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.061153,
+          "snippet_preview": "lag budget이 설계 trade-off라면, freshness SLO는 운영 계약이다.  - 무엇을 측정할 것인가 - 어느 수준까지 허용할 것인가 - 초과 시 무엇을 할 것인가  Projection Freshness SLO 패턴은 read model 최신성을 다음처럼 운영 지표로 다루게 한다.  - SLI: 현재 freshness를 어떻게 측정 - SLO: 어느 수준을 목표 - error budget: 얼마나 초과를 허용 - burn po…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+          "title": "Read Model Staleness and Read-Your-Writes",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.040757,
+          "snippet_preview": "read model staleness는 느낌으로 관리하면 안 된다.  - 마지막 processed event offset - projection updated at - command version vs projection version 차이 - consumer backlog size  이런 신호가 있어야 freshness budget을 운영적으로 다룰 수 있다.  ---  [retrieval anchors] read model staleness…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/system-design/badge-freshness-observability-primer.md",
+          "title": "Badge Freshness Observability Primer",
+          "category": "system-design",
+          "difficulty": null,
+          "score": 0.032101,
+          "snippet_preview": "### 1. Projection lag: source와 read model 사이 거리  projection lag는 source write가 끝난 시점과 count read model이 그 write를 반영한 시점 사이의 거리다.  | 보고 싶은 것 | 시작 필드 | |---|---| | 최신 반영 시각 | `projection_watermark` 또는 `last_applied_event_at` | | 응답 생성 시각 | `generated_a…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/design-pattern/fallback-capacity-and-headroom-contracts.md",
+          "title": "Fallback Capacity and Headroom Contracts",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.028,
+          "snippet_preview": "# Fallback Capacity and Headroom Contracts  > 한 줄 요약: strict-path fallback은 단순 우회 경로가 아니라 write-side나 old projection에 미리 예약된 용량 계약이어야 하며, activation ratio, burst multiplier, concurrency, circuit breaker, degraded UX를 함께 고정해야 freshness incident가 overl…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/software-engineering/cross-service-nfr-budget-negotiation.md",
+          "title": "Cross-Service NFR Budget Negotiation",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.022311,
+          "snippet_preview": "### 1. user-facing budget과 supporting budget을 분리해야 한다  end-to-end 목표는 보통 user-facing owner가 가진다. 하지만 그 목표는 supporting service budget으로 분해돼야 한다.  예:  - checkout flow p95 300ms - inventory service 60ms - pricing service 40ms - payment adapter 90ms  이 분…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/design-pattern/canary-promotion-thresholds-projection-cutover.md",
+          "title": "Canary Promotion Thresholds for Projection Cutover",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.021032,
+          "snippet_preview": "| Stage | 트래픽 slice | 최소 sample size 예시 | 최소 dwell time 예시 | 다음 단계 승격 조건 | freeze / rollback trigger 예시 | |---|---|---|---|---|---| | SHADOW SMOKE | 사용자 응답은 old path, new path는 mirror/dual-read만 수행 | 총 500 compare, strict path 50건, cursor chain 20쌍 |…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/design-pattern/strict-read-fallback-contracts.md",
+          "title": "Strict Read Fallback Contracts",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.020254,
+          "snippet_preview": "# Strict Read Fallback Contracts  > 한 줄 요약: strict screen fallback은 임시 우회가 아니라 운영 계약이므로, 어떤 화면이 strict한지, 누가 fallback을 소유하는지, 어떤 조건에서 어느 경로로 라우팅하는지, fallback rate를 freshness SLO에 어떻게 연결하는지를 함께 고정해야 read-your-writes 보장이 흔들리지 않는다.  **난이도: 🔴 Expert**  >…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/software-engineering/non-functional-requirements-budgeting.md",
+          "title": "Non-Functional Requirements as Budgets",
+          "category": "software-engineering",
+          "difficulty": null,
+          "score": 0.020183,
+          "snippet_preview": "### 1. budget은 end-to-end 목표를 경로별로 쪼개는 일이다  사용자에게 300ms 응답이 필요하다면, 그 안에서 각 hop이 얼마나 쓸 수 있는지 나눠야 한다.  예:  - edge/BFF: 40ms - application logic: 80ms - database: 120ms - external dependency: 60ms  이런 분배가 없으면 모든 구성요소가 각자 \"조금만 느리게\" 되다가 전체 목표를 넘긴다.  ### 2…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md",
+          "title": "Projection Rebuild, Backfill, and Cutover Pattern",
+          "category": "design-pattern",
+          "difficulty": null,
+          "score": 0.019564,
+          "snippet_preview": "### 시나리오 1: 주문 검색 read model 재구축  정렬 필드와 집계 컬럼을 새로 추가해야 한다면, 새 테이블에 backfill 후 old/new 결과를 비교하고 cutover한다.   기존 테이블을 바로 덮어쓰면 rollback 지점이 약해진다.  ### 시나리오 2: 신규 projection consumer 도입  기존 consumer가 취약해 새 consumer를 다시 짜는 경우, 같은 이벤트 스트림을 dual-run 하며 out…"
+        }
+      ]
+    },
+    {
+      "query_id": "mysql_deadlock_lock_ordering",
+      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
+      "bucket": {
+        "category": "database",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "experience_level": null,
+      "primary_paths": [
+        "contents/database/deadlock-case-study.md"
+      ],
+      "acceptable_paths": [
+        "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md"
+      ],
+      "primary_ranks": {
+        "contents/database/deadlock-case-study.md": 1
+      },
+      "acceptable_ranks": {
+        "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md": 2
+      },
+      "best_primary_rank": 1,
+      "best_acceptable_rank": 2,
+      "classification": "strict_primary_rank1_passes_now",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/database/deadlock-case-study.md",
+          "title": "Deadlock Case Study",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.050153,
+          "snippet_preview": "- 락을 잡는 SQL 순서가 서비스 전반에서 일관적인가 - 트랜잭션 안에 외부 호출이 들어가 있지 않은가 - deadlock/timeout 에러가 재시도 가능한 유형으로 처리되는가 - 배치와 실시간 요청의 충돌 구간이 분리되어 있는가 - 같은 요청이 재시도돼도 결과가 안전한가  ---  [retrieval anchors] deadlock case study | deadlock lock timeout difference | deadlock beg…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md",
+          "title": "Hibernate Lock SQL Log to Deadlock Triage Bridge",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.04311,
+          "snippet_preview": "| 보인 신호 | 지금 뜻하는 것 | 다음 한 걸음 | |---|---|---| | MySQL `1205` lock wait timeout | 내 SQL이 오래 기다렸지만 상대는 아직 살아 있을 수 있다 | 현재 blocker를 찾는다 | | MySQL `1213` deadlock found | 순환 대기가 났고 DB가 희생자를 골랐다 | 가장 최근 deadlock 기록을 본다 | | Spring `CannotAcquireLockExceptio…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/database/lock-wait-deadlock-latch-triage-playbook.md",
+          "title": "Lock Wait, Deadlock, and Latch Contention Triage Playbook",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.040299,
+          "snippet_preview": "```sql -- MySQL 계열 예시 SHOW ENGINE INNODB STATUS\\G SHOW FULL PROCESSLIST; ```  ```sql -- metadata lock 관찰 예시 SELECT * FROM performance_schema.metadata_locks; ```  ```text 관찰 체크리스트 - blocker transaction id - waiting SQL shape - timeout vs deadlock erro…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/database/ordered-guard-row-upsert-patterns-postgresql-mysql.md",
+          "title": "Ordered Guard-Row Upsert Patterns Across PostgreSQL and MySQL",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.036054,
+          "snippet_preview": "### \"없으면 만들고 끝, lock은 다음 statement에서 알아서 맞겠지\"  guard creation과 lock acquisition 사이가 protocol로 연결되지 않으면,   missing-row race만 해결하고 multi-key ordering bug는 그대로 남는다.  ### \"`WHERE key IN (...) FOR UPDATE`에 key를 정렬해서 넣었으니 괜찮다\"  application list order와 실제 l…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md",
+          "title": "MySQL/PostgreSQL Lock Timeout과 Deadlock의 Spring/JPA 예외 매핑",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.035479,
+          "snippet_preview": "| 엔진 | 현상 | DB 코드 | DB 쪽 rollback 의미 | 1차 해석 | |---|---|---|---|---| | MySQL | lock wait timeout | errno `1205`, SQLSTATE `HY000` | 기본값에서는 현재 statement만 rollback, `innodb_rollback_on_timeout`이면 transaction 전체 rollback | 경합이 오래 풀리지 않았다는 뜻이다. 건강한 경쟁이라기…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/database/deadlock-vs-lock-wait-timeout-primer.md",
+          "title": "Deadlock vs Lock Wait Timeout 입문 프라이머",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.03118,
+          "snippet_preview": "둘 다 \"한 번 더 보내 볼까?\"라는 유혹이 있지만, 같은 retry로 묶으면 초보자가 더 헷갈린다.  | 에러 | 초보자용 첫 판단 | retry를 볼 때 붙여야 할 질문 | |---|---|---| | `deadlock` | \"이번 시도는 이미 희생자로 끝났다\" | transaction 전체를 다시 시작하나? backoff가 있나? lock ordering을 같이 고치나? | | `lock wait timeout` | \"지금 줄이 너무 길거…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/database/timeout-errorcode-mapping-mini-card.md",
+          "title": "Timeout 에러코드 매핑 미니카드",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.029131,
+          "snippet_preview": "| DB 신호 | 보통 뜻 | 3버킷 | 첫 대응 | |---|---|---|---| | MySQL `1205` `Lock wait timeout exceeded` | 락을 기다리다 실패 | `busy` | 누가 오래 잠그는지, hot row인지 먼저 본다 | | PostgreSQL `55P03` `lock_not_available` / lock timeout | 락을 바로 못 얻음 | `busy` | `NOWAIT`인지, 짧은 lock tim…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/database/insert-if-absent-log-reading-examples-primer.md",
+          "title": "Insert-if-Absent 로그 읽기 예시 프라이머",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.029025,
+          "snippet_preview": "```text 2026-04-27 10:18:22.504 WARN  --- [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper : SQL Error: 1213, SQLState: 40001  2026-04-27 10:18:22.505 ERROR --- [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper : Deadlock fou…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/database/hibernate-sql-log-explain-lock-verification-primer.md",
+          "title": "Hibernate SQL Log + EXPLAIN Lock Verification Primer",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.026889,
+          "snippet_preview": "beginner 기준 종료 조건은 생각보다 단순하다.  1. Hibernate 로그에서 내가 기대한 locking SQL이 실제로 찍혔다. 2. MySQL `EXPLAIN`에서 intended index path가 유지됐다. 3. correctness backstop이 `UNIQUE`나 다른 명시적 constraint로 분리돼 있다.  이 셋이 맞으면 \"이 repository 메서드는 적어도 지금은 의도한 locking path로 보인다\"라고…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/database/spring-cannotacquirelockexception-root-sql-code-card.md",
+          "title": "Spring `CannotAcquireLockException`에서 root SQL 코드 먼저 읽는 초간단 카드",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.026427,
+          "snippet_preview": "| 로그 조각 | 실제 해석 | 바로 하면 안 되는 것 | |---|---|---| | `CannotAcquireLockException` + root `55P03` | 지금 lock을 못 얻은 `busy` | deadlock이라고 단정하고 무한 retry | | `CannotAcquireLockException` + root `40P01` | deadlock victim | lock timeout이라고 보고 blocker만 찾기 | | `Ca…"
+        }
+      ]
+    },
+    {
+      "query_id": "spring_tx_propagation",
+      "prompt": "@Transactional propagation 은 어떻게 동작해?",
+      "bucket": {
+        "category": "spring",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "deep-dive"
+      },
+      "experience_level": null,
+      "primary_paths": [
+        "contents/spring/transactional-deep-dive.md"
+      ],
+      "acceptable_paths": [],
+      "primary_ranks": {
+        "contents/spring/transactional-deep-dive.md": 1
+      },
+      "acceptable_ranks": {},
+      "best_primary_rank": 1,
+      "best_acceptable_rank": null,
+      "classification": "strict_primary_rank1_passes_now",
+      "debug": {
+        "query_candidate_kinds": [
+          "original"
+        ],
+        "fts_candidate_kinds": [
+          "original"
+        ]
+      },
+      "top_hits": [
+        {
+          "rank": 1,
+          "path": "contents/spring/transactional-deep-dive.md",
+          "title": "@Transactional 깊이 파기",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.041688,
+          "snippet_preview": "`@Transactional`은 \"메서드 앞뒤로 트랜잭션을 열고 닫는 기능\"처럼 보이지만, 실제로는 **Spring AOP 프록시가 메서드 호출을 가로채는 방식**으로 동작한다.  핵심은 다음 네 가지다.  - 트랜잭션은 보통 메서드 단위로 시작하고 종료된다. - 프록시를 거친 호출에서만 트랜잭션 어드바이스가 적용된다. - 전파 규칙(propagation)은 \"이미 트랜잭션이 있으면 어떻게 할지\"를 정한다. - 롤백 규칙은 \"예외가 났을 때 실…"
+        },
+        {
+          "rank": 2,
+          "path": "contents/spring/spring-transaction-debugging-playbook.md",
+          "title": "Spring Transaction Debugging Playbook",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.038042,
+          "snippet_preview": "초급자가 가장 자주 새는 지점은 `REQUIRES_NEW`, `NESTED`, rollback 옵션부터 파고드는 것이다. 그 전에 먼저 확인할 질문은 하나다.  `이 호출이 정말 프록시를 지나 `@Transactional`까지 도달했는가?`  전파 옵션은 **트랜잭션 interception이 시작된 뒤**에야 의미가 있다. 프록시를 우회했다면 propagation을 아무리 바꿔도 출발점이 없다.  | 코드/증상 단서 | 첫 판단 | 지금 바로…"
+        },
+        {
+          "rank": 3,
+          "path": "contents/spring/spring-transactional-basics.md",
+          "title": "@Transactional 기초: 트랜잭션 어노테이션이 하는 일",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.035277,
+          "snippet_preview": "- 트랜잭션 전파(propagation), rollback-only 함정, 중첩 트랜잭션은 [Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only](./spring-transaction-propagation-required-requires-new-rollbackonly-primer.md)와 [Spring Transaction Propaga…"
+        },
+        {
+          "rank": 4,
+          "path": "contents/database/connection-pool-transaction-propagation-bulk-write.md",
+          "title": "Connection Pool, Transaction Propagation, Bulk Write",
+          "category": "database",
+          "difficulty": null,
+          "score": 0.033991,
+          "snippet_preview": "- 이 병목은 쿼리 문제인가, 커넥션 점유 문제인가? - 트랜잭션을 줄였을 때 정합성이 깨지지 않는가? - bulk 작업을 chunk로 나눌 때 실패 복구는 어떻게 하는가? - 전파 설정을 바꾸면 커밋 경계가 어떻게 바뀌는가? - 단건 API를 배치로 바꿨을 때 운영 난이도는 얼마나 올라가는가?  [retrieval anchors] connection pool starvation | transaction propagation | transact…"
+        },
+        {
+          "rank": 5,
+          "path": "contents/spring/spring-transaction-propagation-nested-requires-new-case-studies.md",
+          "title": "Spring Transaction Propagation: NESTED / REQUIRES_NEW Case Studies",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.030173,
+          "snippet_preview": "### `REQUIRES_NEW` 감사 로그  ```java @Service public class OrderService {     private final AuditService auditService;      public OrderService(AuditService auditService) {         this.auditService = auditService;     }      @Transactional     public v…"
+        },
+        {
+          "rank": 6,
+          "path": "contents/spring/spring-service-layer-transaction-boundary-patterns.md",
+          "title": "Spring Service-Layer Transaction Boundary Patterns",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.030149,
+          "snippet_preview": "결제 승인 API, 배송 예약 API, 알림 전송 같은 외부 호출을 DB 쓰기와 한 트랜잭션처럼 취급하면 설계가 꼬이기 쉽다.  - DB 트랜잭션은 로컬 자원에 대한 원자성만 보장한다 - 외부 시스템은 같은 롤백 경계에 자연스럽게 들어오지 않는다 - 실패 시 보상 트랜잭션이나 outbox가 더 현실적인 선택이다  `@Transactional`을 붙였다고 시스템 전체가 분산 트랜잭션처럼 동작하는 것은 아니다.  [retrieval anchors]…"
+        },
+        {
+          "rank": 7,
+          "path": "contents/spring/spring-transaction-propagation-mandatory-supports-not-supported-boundaries.md",
+          "title": "Spring Transaction Propagation: `MANDATORY` / `SUPPORTS` / `NOT_SUPPORTED` Boundaries",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.026462,
+          "snippet_preview": "# Spring Transaction Propagation: `MANDATORY` / `SUPPORTS` / `NOT_SUPPORTED` Boundaries  > 한 줄 요약: `MANDATORY`, `SUPPORTS`, `NOT_SUPPORTED`는 \"새 트랜잭션을 만들까\"보다, **이 메서드가 요청 흐름 어디에서 어떤 트랜잭션 문맥으로 실행되어야 하는가**를 선명하게 고정하는 전파 계약이다.  **난이도: 🔴 Advanced**  > 관련…"
+        },
+        {
+          "rank": 8,
+          "path": "contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md",
+          "title": "Spring Transaction Propagation Beginner Primer: `REQUIRED`, `REQUIRES_NEW`, rollback-only",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.025362,
+          "snippet_preview": "### `REQUIRED`는 대부분 \"기본 참여\"다  ```java @Transactional public void placeOrder() {     couponService.useCoupon(); // 기본값 REQUIRED     orderService.saveOrder();  // 기본값 REQUIRED } ```  별도 설정이 없으면 보통 같은 트랜잭션으로 이해하면 된다.  ### `REQUIRES_NEW`는 \"이 메서드만 독립 경계\"다…"
+        },
+        {
+          "rank": 9,
+          "path": "contents/spring/README.md",
+          "title": "Spring Framework (스프링 프레임워크)",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.02499,
+          "snippet_preview": "> `@Transactional`이 왜 안 먹는지, 어디서부터 추적할지 정리한 실전 디버깅 절차. 초급자는 propagation 전에 `this.method()`/`private`/직접 `new` 30초 진단 카드로 먼저 내려가면 오진입을 줄일 수 있다.  - `[playbook]` [Spring Transaction Debugging Playbook](./spring-transaction-debugging-playbook.md) - [30초…"
+        },
+        {
+          "rank": 10,
+          "path": "contents/spring/aop-proxy-mechanism.md",
+          "title": "AOP와 프록시 메커니즘",
+          "category": "spring",
+          "difficulty": null,
+          "score": 0.023068,
+          "snippet_preview": "### 시나리오 1: `@Transactional`이 내부 호출에서 안 먹는다  ```java @Service public class OrderService {      public void placeOrder() {         validate();         saveOrder(); // 같은 클래스 내부 호출     }      @Transactional     public void saveOrder() {         // DB i…"
+        }
+      ]
+    }
+  ],
+  "interpretation": {
+    "cutover_decision": "This is diagnostic only. It does not change the gate or approve cutover.",
+    "next_use": "Use classifications to decide whether the next action should be qrel/gate review, document structure work, or targeted content additions."
+  }
+}

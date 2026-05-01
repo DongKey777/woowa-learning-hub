@@ -232,6 +232,47 @@ Decision:
   it is qrel/gate review or stronger document-level structure for the
   repeated failing primers.
 
+## Option A Qrel Review Packet
+
+Summary JSON: `reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json`
+
+Method:
+
+- Queried the full extracted R2 Lance index
+  `/private/tmp/rag_ivf_sweep_20260501T0401/current`.
+- Used the 14-query failure fixture:
+  `tests/fixtures/cs_rag_cutover_failure_queries.json`.
+- Recorded top-10 paths, primary ranks, and a diagnostic classification for
+  each prompt.
+- This is diagnostic only. It does not change qrels, gates, or cutover status.
+
+Classification:
+
+| classification | count |
+|---|---:|
+| cross-category wrong document | 6 |
+| same-category wrong document | 4 |
+| primary present below rank 5 | 1 |
+| strict primary rank 1 passes in direct diagnostic | 3 |
+
+Important observations:
+
+- Projection freshness prompts often route to system-design/read-after-write
+  docs instead of `contents/design-pattern/read-model-staleness-read-your-writes.md`.
+- MVCC beginner prompts route to other database/Spring primer docs instead of
+  `contents/database/transaction-isolation-basics.md`.
+- Three previously flagged prompts now appear at rank 1 under direct
+  no-reranker diagnostic search:
+  `projection_lag_budgeting`, `mysql_deadlock_lock_ordering`,
+  `spring_tx_propagation`. Treat that as runner-condition divergence to
+  inspect, not as gate passage.
+
+Decision:
+
+- The next useful work is a qrel/gate review packet or document-structure work
+  for the repeated primer targets. Additional query-candidate plumbing is not
+  indicated by the current evidence.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

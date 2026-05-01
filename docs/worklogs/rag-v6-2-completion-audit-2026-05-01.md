@@ -56,6 +56,7 @@ The plan's Definition of Done requires all of the following:
 | Cutover decision handoff | `docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` records the failed gates, current runtime state, and the three allowed product decision paths | Complete |
 | Option A anchor alias pilot | `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`; aliases added to 8 repeated failure docs; sampled failure fixture quality delta `+0.0000` | Measured, not accepted |
 | Option A exact failure query-rewrite pilot | `reports/rag_eval/cutover_failure_rewrite_comparison_20260501T0715Z.json`; 14 sidecars consumed by Lance search path; sampled failure fixture quality delta `+0.0000`, local CPU P95 `+275.0 ms` | Measured, not accepted |
+| Option A qrel review packet | `reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json`; top-10 diagnostics classify 6 cross-category wrong-doc, 4 same-category wrong-doc, 1 primary-below-rank5, and 3 direct rank-1 divergences | Complete |
 
 ## Blocking Evidence
 
@@ -107,6 +108,11 @@ Subsequent exact failure query-rewrite work validated that temp sidecars are
 consumed by the Lance search path, but the measured ranking delta was again
 `+0.0000` with much higher local CPU latency. Query-candidate plumbing is not
 the current blocker.
+
+Subsequent qrel-review work recorded top-10 rankings for the 14 failure
+prompts. It did not change the gate, but it narrowed the remaining work toward
+qrel/gate review or document-structure changes rather than more candidate
+plumbing.
 
 ## Next Required Decision
 
