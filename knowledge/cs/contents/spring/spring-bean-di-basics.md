@@ -17,6 +17,13 @@ expected_queries:
   - Bean이랑 DI는 뭐가 달라?
   - component scan이 뭐야?
   - controller랑 service는 누가 연결해?
+acceptable_neighbors:
+  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+  - contents/spring/spring-mvc-controller-basics.md
+  - contents/software-engineering/layered-architecture-basics.md
+  - contents/software-engineering/service-layer-basics.md
+companion_neighbors:
+  - contents/spring/spring-persistence-transaction-web-service-repository-primer.md
 ---
 
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기

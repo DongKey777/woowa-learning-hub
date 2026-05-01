@@ -584,6 +584,21 @@
           "grade": 3,
           "path": "contents/spring/ioc-di-container.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-application-context-refresh-phases.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-container-internals:expected:1",
@@ -602,6 +617,21 @@
           "grade": 3,
           "path": "contents/spring/ioc-di-container.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-application-context-refresh-phases.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-container-internals:expected:2",
@@ -620,6 +650,21 @@
           "grade": 3,
           "path": "contents/spring/ioc-di-container.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-application-context-refresh-phases.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-container-internals:expected:3",
@@ -638,6 +683,21 @@
           "grade": 3,
           "path": "contents/spring/ioc-di-container.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-application-context-refresh-phases.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-container-internals:expected:4",
@@ -656,6 +716,31 @@
           "grade": 3,
           "path": "contents/spring/spring-bean-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/layered-architecture-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/service-layer-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/bean-di-basics:expected:1",
@@ -674,6 +759,31 @@
           "grade": 3,
           "path": "contents/spring/spring-bean-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/layered-architecture-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/service-layer-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/bean-di-basics:expected:2",
@@ -692,6 +802,31 @@
           "grade": 3,
           "path": "contents/spring/spring-bean-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/layered-architecture-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/service-layer-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/bean-di-basics:expected:3",
@@ -710,6 +845,31 @@
           "grade": 3,
           "path": "contents/spring/spring-bean-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-mvc-controller-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/layered-architecture-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/service-layer-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/bean-di-basics:expected:4",
@@ -802,6 +962,21 @@
           "grade": 3,
           "path": "contents/spring/spring-ioc-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/dependency-injection-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/design-pattern/factory-vs-di-container-wiring.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-di-basics:expected:1",
@@ -822,6 +997,21 @@
           "grade": 3,
           "path": "contents/spring/spring-ioc-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/dependency-injection-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/design-pattern/factory-vs-di-container-wiring.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-di-basics:expected:2",
@@ -842,6 +1032,21 @@
           "grade": 3,
           "path": "contents/spring/spring-ioc-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/dependency-injection-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/design-pattern/factory-vs-di-container-wiring.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-di-basics:expected:3",
@@ -862,6 +1067,21 @@
           "grade": 3,
           "path": "contents/spring/spring-ioc-di-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/software-engineering/dependency-injection-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/design-pattern/factory-vs-di-container-wiring.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/ioc-di-basics:expected:4",
@@ -880,6 +1100,31 @@
           "grade": 3,
           "path": "contents/spring/spring-transactional-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-transaction-debugging-playbook.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/aop-proxy-mechanism.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/transactional-deep-dive.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/transactional-basics:expected:1",
@@ -898,6 +1143,31 @@
           "grade": 3,
           "path": "contents/spring/spring-transactional-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-transaction-debugging-playbook.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/aop-proxy-mechanism.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/transactional-deep-dive.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/transactional-basics:expected:2",
@@ -916,6 +1186,31 @@
           "grade": 3,
           "path": "contents/spring/spring-transactional-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-transaction-debugging-playbook.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/aop-proxy-mechanism.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/transactional-deep-dive.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/transactional-basics:expected:3",
@@ -934,6 +1229,31 @@
           "grade": 3,
           "path": "contents/spring/spring-transactional-basics.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/spring-transaction-debugging-playbook.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/aop-proxy-mechanism.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/spring/transactional-deep-dive.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 1,
+          "path": "contents/spring/spring-persistence-transaction-web-service-repository-primer.md",
+          "role": "companion"
         }
       ],
       "query_id": "spring/transactional-basics:expected:4",

@@ -165,6 +165,10 @@ def test_qrels_from_corpus_v2_expected_queries(tmp_path):
         "aliases: [DI]\n"
         "expected_queries:\n"
         "  - DI가 뭐야?\n"
+        "acceptable_neighbors:\n"
+        "  - contents/software-engineering/dependency-injection-basics.md\n"
+        "companion_neighbors:\n"
+        "  - contents/spring/ioc-di-container.md\n"
         "forbidden_neighbors:\n"
         "  - contents/design-pattern/service-locator.md\n"
         "---\n\nbody",
@@ -177,6 +181,10 @@ def test_qrels_from_corpus_v2_expected_queries(tmp_path):
     assert qrels[0].query_id == "spring/di:expected:1"
     assert qrels[0].prompt == "DI가 뭐야?"
     assert qrels[0].primary_paths() == {"contents/spring/di.md"}
+    assert qrels[0].acceptable_paths() == {
+        "contents/software-engineering/dependency-injection-basics.md"
+    }
+    assert qrels[0].companion_paths() == {"contents/spring/ioc-di-container.md"}
     assert qrels[0].forbidden_paths == (
         "contents/design-pattern/service-locator.md",
     )

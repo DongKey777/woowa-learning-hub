@@ -16,6 +16,11 @@ expected_queries:
   - BeanFactory랑 ApplicationContext 차이가 뭐야?
   - Spring 컨테이너 안에서는 DI가 어떻게 일어나?
   - BeanDefinition이 뭐야?
+acceptable_neighbors:
+  - contents/spring/spring-application-context-refresh-phases.md
+  - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+companion_neighbors:
+  - contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md
 ---
 
 # IoC 컨테이너와 의존성 주입 (IoC Container & Dependency Injection)

@@ -16,6 +16,11 @@ expected_queries:
   - 의존성 주입이 뭐야?
   - 왜 new 대신 DI를 써?
   - IoC랑 DI 차이가 뭐야?
+acceptable_neighbors:
+  - contents/software-engineering/dependency-injection-basics.md
+  - contents/spring/ioc-di-container.md
+companion_neighbors:
+  - contents/design-pattern/factory-vs-di-container-wiring.md
 forbidden_neighbors:
   - contents/design-pattern/service-locator-antipattern.md
 ---

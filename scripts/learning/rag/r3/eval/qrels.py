@@ -156,6 +156,8 @@ def qrels_from_frontmatter_doc(
     if not qrel_path.startswith("contents/") and corpus_root is not None:
         qrel_path = f"contents/{qrel_path}"
 
+    acceptable = tuple(str(path) for path in (fm.get("acceptable_neighbors") or []))
+    companion = tuple(str(path) for path in (fm.get("companion_neighbors") or []))
     forbidden = tuple(str(path) for path in (fm.get("forbidden_neighbors") or []))
     tags = tuple(
         str(tag)
@@ -174,7 +176,17 @@ def qrels_from_frontmatter_doc(
             R3QueryJudgement(
                 query_id=_query_id(concept_id, index),
                 prompt=prompt.strip(),
-                qrels=(R3Qrel(path=qrel_path, grade=3, role="primary"),),
+                qrels=(
+                    R3Qrel(path=qrel_path, grade=3, role="primary"),
+                    *(
+                        R3Qrel(path=path, grade=2, role="acceptable")
+                        for path in acceptable
+                    ),
+                    *(
+                        R3Qrel(path=path, grade=1, role="companion")
+                        for path in companion
+                    ),
+                ),
                 forbidden_paths=forbidden,
                 tags=tags,
             )
