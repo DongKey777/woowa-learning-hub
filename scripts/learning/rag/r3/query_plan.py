@@ -6,12 +6,13 @@ import re
 from dataclasses import asdict, dataclass
 from typing import Literal
 
+from .tokenization import tokenize_text
+
 
 Language = Literal["ko", "en", "mixed", "unknown"]
 
 _HANGUL_RE = re.compile(r"[가-힣]")
 _LATIN_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_+./-]*")
-_TERM_RE = re.compile(r"[A-Za-z][A-Za-z0-9_+./-]*|[가-힣]{2,}|[0-9]+")
 _SPACE_RE = re.compile(r"\s+")
 
 
@@ -41,15 +42,7 @@ def normalize_query(prompt: str) -> str:
 
 
 def extract_terms(prompt: str) -> tuple[str, ...]:
-    seen: set[str] = set()
-    terms: list[str] = []
-    for raw in _TERM_RE.findall(prompt):
-        term = raw.casefold()
-        if term in seen:
-            continue
-        seen.add(term)
-        terms.append(term)
-    return tuple(terms)
+    return tokenize_text(prompt)
 
 
 def preserved_english_terms(prompt: str) -> tuple[str, ...]:

@@ -61,6 +61,22 @@ def test_lexical_retriever_keeps_field_provenance_visible():
     assert all("field" in hit.metadata for hit in hits)
 
 
+def test_lexical_retriever_uses_symmetric_korean_tokenization():
+    docs = [
+        R3Document(
+            path="contents/spring/di.md",
+            title="DI Primer",
+            body="의존성 주입 기본 개념",
+        )
+    ]
+    plan = build_query_plan("의존성주입이 뭐야?")
+
+    hits = LexicalRetriever(LexicalStore.from_documents(docs)).retrieve(plan)
+
+    assert hits
+    assert hits[0].path == "contents/spring/di.md"
+
+
 def test_sparse_retriever_can_discover_doc_absent_from_lexical_results():
     plan = build_query_plan("latency가 뭐야?")
     docs = _docs()

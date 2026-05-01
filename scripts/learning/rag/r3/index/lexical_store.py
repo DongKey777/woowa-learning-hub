@@ -2,16 +2,13 @@
 
 from __future__ import annotations
 
-import re
 from collections import Counter
 from dataclasses import dataclass
 from typing import Iterable
 
 from ..candidate import Candidate, R3Document
 from ..query_plan import QueryPlan
-
-
-_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_+./-]*|[가-힣]{2,}|[0-9]+")
+from ..tokenization import tokenize_text
 
 
 FIELD_WEIGHTS = {
@@ -23,7 +20,7 @@ FIELD_WEIGHTS = {
 
 
 def tokenize(text: str) -> tuple[str, ...]:
-    return tuple(token.casefold() for token in _TOKEN_RE.findall(text or ""))
+    return tokenize_text(text)
 
 
 @dataclass(frozen=True)
