@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-01T04:09:58Z",
+  "phase": "phase-2-ivf-sweep",
+  "source_artifact": "artifacts/rag-full-build/r2-6eb3764-2026-04-30T1436/cs_rag_index_root.tar.zst",
+  "source_artifact_sha256": "1fed316557c86ccae81684d5c7f11f4d801cf3a032cd8812c07788a5c0f090c3",
+  "method": "Extracted the preserved R2 LanceDB artifact, copied the index root per variant, dropped/recreated only dense_vec_idx where applicable, then ran bin/rag-eval --ablate on the same holdout fixture.",
+  "fixture": "tests/fixtures/cs_rag_golden_queries_ko_rewritten_applied.json",
+  "split": "holdout(seed=20240202), 101 queries",
+  "modalities": [
+    "fts",
+    "dense",
+    "sparse"
+  ],
+  "device_note": "Local evaluation resolved to CPU. Latency values are useful for relative local comparison only; production MPS/GPU latency still requires target-environment confirmation.",
+  "variants": [
+    {
+      "name": "current_256_64",
+      "status": "measured",
+      "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/current",
+      "ivf": {
+        "type": "IVF_PQ",
+        "num_partitions": 256,
+        "num_sub_vectors": 64
+      },
+      "eval_report_path": "/private/tmp/rag_ivf_sweep_20260501T0401/eval_current.json",
+      "disk_kib": 356464,
+      "disk_mb": 348.11,
+      "primary_ndcg_macro": 0.8897525076770467,
+      "latency_p95_warm_ms": 720.7614999933867,
+      "hard_regression_failures": 16,
+      "overall_means": {
+        "primary_ndcg": 0.8603246461456868,
+        "graded_ndcg": 0.8586977742994061,
+        "mrr": 0.8762376237623762,
+        "recall": 0.8696369636963696,
+        "companion_coverage": 0.3118811881188119,
+        "forbidden_rate": 0.0,
+        "hit": 0.8910891089108911
+      },
+      "category_primary_ndcg": {
+        "software-engineering": 0.6666666666666666,
+        "spring": 0.8461538461538461,
+        "database": 0.7718216255952429,
+        "network": 1.0,
+        "security": 1.0,
+        "design-pattern": 0.8461538461538461,
+        "operating-system": 0.8769765845238192,
+        "system-design": 1.0,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.9201998321986621,
+        "en": 0.8571428571428571,
+        "ko": 0.6956521739130435
+      },
+      "manifest": {
+        "backend": "lance",
+        "embedding_model": "BAAI/bge-m3",
+        "embedding_dim": 1024,
+        "device": "cpu",
+        "modalities": [
+          "fts",
+          "dense",
+          "sparse"
+        ],
+        "lancedb_indices": {
+          "dense": {
+            "type": "IVF_PQ",
+            "num_partitions": 256,
+            "num_sub_vectors": 64
+          },
+          "fts": {
+            "type": "tantivy",
+            "tokenizer": "ngram"
+          },
+          "colbert": {
+            "type": "sidecar",
+            "metric": "max_sim",
+            "dtype": "float16"
+          }
+        }
+      },
+      "delta_vs_current_primary_ndcg_macro": 0.0,
+      "delta_vs_current_p95_ms": 0.0,
+      "bucket_regressions_vs_current": [],
+      "gate_vs_current": {
+        "quality_not_worse": true,
+        "p95_under_500ms_local_cpu": false,
+        "bucket_regression_count": 0,
+        "pass": false
+      }
+    },
+    {
+      "name": "official_start_7_128",
+      "status": "measured",
+      "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/ivf_7_128",
+      "ivf": {
+        "type": "IVF_PQ",
+        "num_partitions": 7,
+        "num_sub_vectors": 128
+      },
+      "eval_report_path": "/private/tmp/rag_ivf_sweep_20260501T0401/eval_ivf_7_128.json",
+      "disk_kib": 361144,
+      "disk_mb": 352.68,
+      "primary_ndcg_macro": 0.928782360386143,
+      "latency_p95_warm_ms": 821.6129159991397,
+      "hard_regression_failures": 14,
+      "overall_means": {
+        "primary_ndcg": 0.873879797100425,
+        "graded_ndcg": 0.8738335880515368,
+        "mrr": 0.8910891089108911,
+        "recall": 0.8795379537953795,
+        "companion_coverage": 0.3118811881188119,
+        "forbidden_rate": 0.0,
+        "hit": 0.900990099009901
+      },
+      "category_primary_ndcg": {
+        "software-engineering": 1.0,
+        "spring": 0.8076923076923077,
+        "database": 0.8025774794642881,
+        "network": 1.0,
+        "security": 1.0,
+        "design-pattern": 0.8717948717948718,
+        "operating-system": 0.8769765845238192,
+        "system-design": 1.0,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.910341554799108,
+        "en": 0.9285714285714286,
+        "ko": 0.7391304347826086
+      },
+      "manifest": {
+        "backend": "lance",
+        "embedding_model": "BAAI/bge-m3",
+        "embedding_dim": 1024,
+        "device": "cpu",
+        "modalities": [
+          "fts",
+          "dense",
+          "sparse"
+        ],
+        "lancedb_indices": {
+          "dense": {
+            "type": "IVF_PQ",
+            "num_partitions": 7,
+            "num_sub_vectors": 128
+          },
+          "fts": {
+            "type": "tantivy",
+            "tokenizer": "ngram"
+          },
+          "colbert": {
+            "type": "sidecar",
+            "metric": "max_sim",
+            "dtype": "float16"
+          }
+        }
+      },
+      "delta_vs_current_primary_ndcg_macro": 0.03902985270909631,
+      "delta_vs_current_p95_ms": 100.85141600575298,
+      "bucket_regressions_vs_current": [
+        {
+          "axis": "category",
+          "bucket": "spring",
+          "delta": -0.038461538461538436
+        }
+      ],
+      "gate_vs_current": {
+        "quality_not_worse": true,
+        "p95_under_500ms_local_cpu": false,
+        "bucket_regression_count": 1,
+        "pass": false
+      }
+    },
+    {
+      "name": "smaller_ann_16_96",
+      "status": "invalid",
+      "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/ivf_16_96",
+      "ivf": {
+        "type": "IVF_PQ",
+        "num_partitions": 16,
+        "num_sub_vectors": 96
+      },
+      "error": "LanceDB rejected num_sub_vectors=96 because it must divide vector dimension 1024."
+    },
+    {
+      "name": "smaller_ann_adjusted_16_128",
+      "status": "measured",
+      "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/ivf_16_128",
+      "ivf": {
+        "type": "IVF_PQ",
+        "num_partitions": 16,
+        "num_sub_vectors": 128
+      },
+      "replacement_for": "smaller_ann_16_96",
+      "eval_report_path": "/private/tmp/rag_ivf_sweep_20260501T0401/eval_ivf_16_128.json",
+      "disk_kib": 361180,
+      "disk_mb": 352.71,
+      "primary_ndcg_macro": 0.928782360386143,
+      "latency_p95_warm_ms": 837.3017499980051,
+      "hard_regression_failures": 14,
+      "overall_means": {
+        "primary_ndcg": 0.873879797100425,
+        "graded_ndcg": 0.873532880290441,
+        "mrr": 0.8910891089108911,
+        "recall": 0.8795379537953795,
+        "companion_coverage": 0.3118811881188119,
+        "forbidden_rate": 0.0,
+        "hit": 0.900990099009901
+      },
+      "category_primary_ndcg": {
+        "software-engineering": 1.0,
+        "spring": 0.8076923076923077,
+        "database": 0.8025774794642881,
+        "network": 1.0,
+        "security": 1.0,
+        "design-pattern": 0.8717948717948718,
+        "operating-system": 0.8769765845238192,
+        "system-design": 1.0,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.910341554799108,
+        "en": 0.9285714285714286,
+        "ko": 0.7391304347826086
+      },
+      "manifest": {
+        "backend": "lance",
+        "embedding_model": "BAAI/bge-m3",
+        "embedding_dim": 1024,
+        "device": "cpu",
+        "modalities": [
+          "fts",
+          "dense",
+          "sparse"
+        ],
+        "lancedb_indices": {
+          "dense": {
+            "type": "IVF_PQ",
+            "num_partitions": 16,
+            "num_sub_vectors": 128
+          },
+          "fts": {
+            "type": "tantivy",
+            "tokenizer": "ngram"
+          },
+          "colbert": {
+            "type": "sidecar",
+            "metric": "max_sim",
+            "dtype": "float16"
+          }
+        }
+      },
+      "delta_vs_current_primary_ndcg_macro": 0.03902985270909631,
+      "delta_vs_current_p95_ms": 116.54025000461843,
+      "bucket_regressions_vs_current": [
+        {
+          "axis": "category",
+          "bucket": "spring",
+          "delta": -0.038461538461538436
+        }
+      ],
+      "gate_vs_current": {
+        "quality_not_worse": true,
+        "p95_under_500ms_local_cpu": false,
+        "bucket_regression_count": 1,
+        "pass": false
+      }
+    },
+    {
+      "name": "exact_scan",
+      "status": "measured",
+      "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/exact_scan",
+      "ivf": {
+        "type": "unindexed",
+        "num_partitions": null,
+        "num_sub_vectors": null
+      },
+      "eval_report_path": "/private/tmp/rag_ivf_sweep_20260501T0401/eval_exact_scan.json",
+      "disk_kib": 356472,
+      "disk_mb": 348.12,
+      "primary_ndcg_macro": 0.9341242407280235,
+      "latency_p95_warm_ms": 932.2689170076046,
+      "hard_regression_failures": 12,
+      "overall_means": {
+        "primary_ndcg": 0.8986322723479496,
+        "graded_ndcg": 0.8982296158544686,
+        "mrr": 0.9141914191419142,
+        "recall": 0.9092409240924092,
+        "companion_coverage": 0.3217821782178218,
+        "forbidden_rate": 0.0,
+        "hit": 0.9306930693069307
+      },
+      "category_primary_ndcg": {
+        "software-engineering": 1.0,
+        "spring": 0.8461538461538461,
+        "database": 0.7609108127976215,
+        "network": 1.0,
+        "security": 1.0,
+        "design-pattern": 0.9230769230769231,
+        "operating-system": 0.8769765845238192,
+        "system-design": 1.0,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.902529054799108,
+        "en": 0.9285714285714286,
+        "ko": 0.8695652173913043
+      },
+      "manifest": {
+        "backend": "lance",
+        "embedding_model": "BAAI/bge-m3",
+        "embedding_dim": 1024,
+        "device": "cpu",
+        "modalities": [
+          "fts",
+          "dense",
+          "sparse"
+        ],
+        "lancedb_indices": {
+          "dense": {
+            "type": "unindexed",
+            "num_partitions": null,
+            "num_sub_vectors": null
+          },
+          "fts": {
+            "type": "tantivy",
+            "tokenizer": "ngram"
+          },
+          "colbert": {
+            "type": "sidecar",
+            "metric": "max_sim",
+            "dtype": "float16"
+          }
+        }
+      },
+      "delta_vs_current_primary_ndcg_macro": 0.04437173305097675,
+      "delta_vs_current_p95_ms": 211.50741701421794,
+      "bucket_regressions_vs_current": [
+        {
+          "axis": "category",
+          "bucket": "database",
+          "delta": -0.010910812797621405
+        },
+        {
+          "axis": "language",
+          "bucket": "mixed",
+          "delta": -0.017670777399554027
+        }
+      ],
+      "gate_vs_current": {
+        "quality_not_worse": true,
+        "p95_under_500ms_local_cpu": false,
+        "bucket_regression_count": 2,
+        "pass": false
+      }
+    }
+  ],
+  "quality_winner": "exact_scan",
+  "production_lock_decision": {
+    "decision": "keep_current_256_64",
+    "reason": "No measured local variant passed the strict P95 <= 500ms gate; Phase 1 cutover gate also failed, so config/rag_models.json must not be changed for production.",
+    "production_gate_pass": false,
+    "passing_variants": []
+  },
+  "notes": [
+    "The planned smaller-ann 16/96 candidate is invalid for BGE-M3 1024-dimensional vectors because 96 does not divide 1024.",
+    "7/128 and adjusted 16/128 produced identical quality in this local run.",
+    "exact_scan had the best quality but the slowest local CPU P95."
+  ]
+}

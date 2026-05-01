@@ -83,3 +83,36 @@ Because the gate failed, Phase 3 cutover is blocked. Reasonable next options:
 1. Delay cutover and run Phase 4 Korean/contextual improvements first.
 2. Run Phase 2 IVF sweep as a performance/quality tuning experiment, but do not treat it as production approval unless the same cutover gate passes afterward.
 3. Revisit the gate design if the legacy fixture is considered too biased toward the old stack, then document the changed criterion before re-running.
+
+## Phase 2 IVF Sweep
+
+Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`
+
+Method:
+
+- Extracted the preserved R2 LanceDB artifact from `artifacts/rag-full-build/r2-6eb3764-2026-04-30T1436/cs_rag_index_root.tar.zst`.
+- Copied the index root per variant under `/private/tmp/rag_ivf_sweep_20260501T0401/`.
+- Dropped/recreated only `dense_vec_idx` for each IVF variant; no corpus re-encoding.
+- Ran `bin/rag-eval --ablate` on the same Korean rewritten holdout fixture, `fts,dense,sparse`, 101 queries.
+
+Local measurement note: this machine resolved the evaluator device to CPU. Treat latency as local relative evidence, not production MPS/GPU evidence.
+
+| variant | status | primary nDCG macro | local CPU P95 | failures | disk |
+|---|---|---:|---:|---:|---:|
+| current `256/64` | measured | 0.8898 | 720.8 ms | 16 | 348.1 MB |
+| official-start `7/128` | measured | 0.9288 | 821.6 ms | 14 | 352.7 MB |
+| smaller-ann `16/96` | invalid | n/a | n/a | n/a | n/a |
+| adjusted smaller-ann `16/128` | measured | 0.9288 | 837.3 ms | 14 | 352.7 MB |
+| exact-scan | measured | 0.9341 | 932.3 ms | 12 | 348.1 MB |
+
+Findings:
+
+- `16/96` is not a valid LanceDB IVF_PQ setting for BGE-M3 because `num_sub_vectors` must divide the 1024-dimensional vector size.
+- `7/128` and `16/128` produced identical quality in this run.
+- `exact-scan` had the best quality, especially Korean bucket, but the slowest local CPU P95.
+- No measured local variant passed the strict `P95 <= 500ms` gate. Also, Phase 1 cutover gate already failed against legacy v2.
+
+Decision:
+
+- Keep `config/rag_models.json` unchanged.
+- Keep production lock at current `256/64` until a target-environment latency run and the legacy-to-Lance cutover gate both pass.
