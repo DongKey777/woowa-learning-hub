@@ -291,6 +291,31 @@ def test_remote_commands_omits_lance_args_when_none():
     assert "--ivf-num-sub-vectors" not in build_cmd
 
 
+def test_remote_commands_for_r3_package_strict_artifact_metadata():
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+
+    cmds = h._build_remote_commands(
+        commit_sha="x",
+        modalities=("fts", "dense", "sparse"),
+        run_id="r3-test",
+        r_phase="r3",
+        lance_max_length=512,
+    )
+
+    package_cmd = next(c for c in cmds if "package_rag_artifact" in c)
+    assert "--strict-r3" in package_cmd
+    assert "--build-command" in package_cmd
+    assert "--lance-max-length 512" in package_cmd
+    assert "--package-lock" in package_cmd
+    assert "pyproject.toml:sha256:$(sha256sum pyproject.toml" in package_cmd
+    assert "--qrel-hash" in package_cmd
+    assert H.R3_QREL_PATH in package_cmd
+    assert "--local-runtime-machine 'M5 MacBook Air 13'" in package_cmd
+    assert "--local-runtime-memory-gb 16" in package_cmd
+    assert "--local-runtime-accelerator 'Apple Silicon MPS'" in package_cmd
+
+
 def test_resolve_defaults_r1_picks_max_length_512():
     """R1 default max_length must be 512 (plan v5 §3 R1)."""
     args = type("A", (), {
@@ -893,6 +918,78 @@ def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
     # Artifact returned
     assert artifact is not None
     assert (artifact / "cs_rag_index_root.tar.zst").exists()
+
+
+def test_step_5_to_11_verifies_strict_r3_artifact_after_download(
+    tmp_path,
+    monkeypatch,
+):
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A6000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor()
+    calls = []
+
+    def fake_verify_artifact_dir(path, *, strict_r3, verify_import):
+        calls.append((Path(path), strict_r3, verify_import))
+        return {
+            "artifact_dir": str(path),
+            "strict_r3": strict_r3,
+            "verify_import": verify_import,
+        }
+
+    monkeypatch.setattr(H, "verify_artifact_dir", fake_verify_artifact_dir)
+
+    artifact = h.step_5_to_11_remote_build(
+        pod, keypath,
+        commit_sha="abc1234",
+        modalities=("fts", "dense", "sparse"),
+        run_id="r3-test",
+        r_phase="r3",
+        repo_root=tmp_path,
+        ssh_executor=fake_ssh,
+    )
+
+    assert artifact is not None
+    assert calls == [(artifact, True, True)]
+    contract = json.loads((artifact / "artifact_contract.json").read_text())
+    assert contract["strict_r3"] is True
+    assert contract["verify_import"] is True
+
+
+def test_step_5_to_11_raises_when_strict_r3_artifact_verification_fails(
+    tmp_path,
+    monkeypatch,
+):
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A6000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor()
+
+    def fail_verify_artifact_dir(path, *, strict_r3, verify_import):
+        del path, strict_r3, verify_import
+        raise RuntimeError("strict import failed")
+
+    monkeypatch.setattr(H, "verify_artifact_dir", fail_verify_artifact_dir)
+
+    with pytest.raises(RuntimeError, match="strict import failed"):
+        h.step_5_to_11_remote_build(
+            pod, keypath,
+            commit_sha="abc1234",
+            modalities=("fts", "dense", "sparse"),
+            run_id="r3-test",
+            r_phase="r3",
+            repo_root=tmp_path,
+            ssh_executor=fake_ssh,
+        )
 
 
 def test_step_5_to_11_raises_on_command_failure(tmp_path):

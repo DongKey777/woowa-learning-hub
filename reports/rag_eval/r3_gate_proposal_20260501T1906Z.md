@@ -10,6 +10,7 @@ Evidence:
 - Warm same-process runtime profile: `reports/rag_eval/r3_warm_full_runtime_profile_20260501T1848Z.md`
 - Daemon window-20 runtime smoke: `reports/rag_eval/r3_daemon_full_runtime_window20_smoke_20260501T1906Z.md`
 - Strict artifact import smoke: `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md`
+- Remote strict harness dry run: `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md`
 
 Observed Expanded Pilot:
 
@@ -46,10 +47,11 @@ Current Provisional Gates:
 | local long-lived runtime architecture | daemon path exists and reports R3 debug fields | pass | pass |
 | local full-mode latency | accepted M5 interactive budget | cold 15.17s, warm 3.48-3.74s internal latency | review |
 | strict artifact import contract | strict manifest + checksum + extracted index manifest verify locally | local artifact pass | pass |
+| remote harness strict gate | R3 remote build must strict-package and verify downloaded artifact before success | dry-run + unit pass | pass |
 | actual remote artifact import | RunPod-built artifact verifies with the same strict contract | pending remote run | block |
 
 Decision:
 
 R3 quality gates pass on the expanded 100q pilot with the 20-pair local rerank default. The root cause of one-shot CLI cold start is addressed by `bin/rag-daemon` and `bin/rag-ask --via-daemon`; runtime metadata now proves backend, reranker, sparse sidecar, and rerank window in the learner-facing JSON.
 
-Do not cut over by default yet. Remaining blockers are an explicit local latency acceptance decision for about 4s warm full-mode responses, and an actual RunPod-built artifact verified with the strict import contract. If the accepted budget is below 4s, the next root-cause track is reranker serving optimization or a locally validated smaller/distilled multilingual reranker, not disabling sparse or weakening candidate discovery.
+Do not cut over by default yet. Remaining blockers are an explicit local latency acceptance decision for about 4s warm full-mode responses, and an actual RunPod-built artifact verified with the strict import contract. The remote harness now enforces strict R3 packaging and local import verification before reporting success, but a live RunPod run is still blocked in this environment because `RUNPOD_API_KEY` is unset. If the accepted latency budget is below 4s, the next root-cause track is reranker serving optimization or a locally validated smaller/distilled multilingual reranker, not disabling sparse or weakening candidate discovery.

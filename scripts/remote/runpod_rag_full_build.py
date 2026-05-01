@@ -35,6 +35,7 @@ import json
 import logging
 import os
 import signal
+import shlex
 import subprocess
 import sys
 import time
@@ -43,6 +44,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol
+
+from scripts.remote.artifact_contract import verify_artifact_dir
 
 
 logger = logging.getLogger(__name__)
@@ -66,6 +69,8 @@ DEFAULT_MODALITIES_PER_PHASE = {
     "r3": ("fts", "dense", "sparse", "colbert"),
     "r4": ("fts", "dense", "sparse"),  # rerank-only, build reuses R3 stack
 }
+
+R3_QREL_PATH = "reports/rag_eval/r3_corpus_v2_qrels_20260501T1640Z.json"
 
 
 # ---------------------------------------------------------------------------
@@ -879,6 +884,19 @@ class RunPodHarness:
                 logger.warning("[runpod] eval %s_holdout.json pull failed: %s",
                                r_phase, exc)
 
+        if r_phase == "r3":
+            verification = verify_artifact_dir(
+                local_artifact_dir,
+                strict_r3=True,
+                verify_import=True,
+            )
+            (local_artifact_dir / "artifact_contract.json").write_text(
+                json.dumps(verification, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            logger.info("[runpod] strict R3 artifact verified: %s",
+                        local_artifact_dir)
+
         return local_artifact_dir
 
     def _build_remote_commands(
@@ -916,6 +934,29 @@ class RunPodHarness:
         if ivf_num_sub_vectors is not None:
             build_extra.append(f"--ivf-num-sub-vectors {ivf_num_sub_vectors}")
         build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
+        build_command = (
+            "python -m scripts.learning.cli_cs_index_build "
+            f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/"
+            f"{build_extra_str}"
+        )
+        strict_package_args = ""
+        if r_phase == "r3":
+            strict_package_args = " ".join((
+                "--strict-r3",
+                "--build-command",
+                shlex.quote(build_command),
+                "--package-lock",
+                "\"pyproject.toml:sha256:$(sha256sum pyproject.toml | awk '{print $1}')\"",
+                "--qrel-hash",
+                f"\"{R3_QREL_PATH}:sha256:$(sha256sum {R3_QREL_PATH} | awk '{{print $1}}')\"",
+                "--local-runtime-machine",
+                shlex.quote("M5 MacBook Air 13"),
+                "--local-runtime-memory-gb",
+                "16",
+                "--local-runtime-accelerator",
+                shlex.quote("Apple Silicon MPS"),
+            ))
+            strict_package_args = " " + strict_package_args
         # CRITICAL (R1 v1 bug): we used to create our own venv and
         # `pip install -e .`, which dragged in PyPI's *default* torch
         # (latest = 2.11.0+cu130). The Pod's NVIDIA driver is 12.4, so
@@ -964,9 +1005,7 @@ class RunPodHarness:
               if "dense" in modalities or "sparse" in modalities or "colbert" in modalities
               else []),
             # Step 8: build (uses system Python, has CUDA torch)
-            f"cd /workspace/repo && python -m scripts.learning.cli_cs_index_build "
-            f"--backend lance --modalities {modalities_arg} --out /workspace/cs_rag/"
-            f"{build_extra_str}",
+            f"cd /workspace/repo && {build_command}",
             # Step 9: eval (only on r1+; r0 skips)
             *([
                 f"cd /workspace/repo && python -m scripts.learning.cli_rag_eval "
@@ -977,7 +1016,8 @@ class RunPodHarness:
             ] if r_phase != "r0" else []),
             # Step 10: package
             f"cd /workspace/repo && python -m scripts.remote.package_rag_artifact "
-            f"--index-root /workspace/cs_rag/ --run-id {run_id} --r-phase {r_phase}",
+            f"--index-root /workspace/cs_rag/ --run-id {run_id} --r-phase {r_phase}"
+            f"{strict_package_args}",
             # Step 11: caller scp/runpodctl receive (logged separately)
         ]
 
