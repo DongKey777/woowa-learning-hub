@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Mapping, Sequence
 
 from ..candidate import Candidate, R3Document
 from ..query_plan import QueryPlan
@@ -17,6 +17,7 @@ FIELD_WEIGHTS = {
     "aliases": 2.5,
     "body": 1.0,
 }
+LEXICAL_FIELDS = tuple(FIELD_WEIGHTS)
 
 
 def tokenize(text: str) -> tuple[str, ...]:
@@ -34,24 +35,62 @@ class LexicalFieldHit:
 class LexicalStore:
     """Small in-memory field index used before backend lock-in."""
 
-    def __init__(self, documents: Iterable[R3Document]) -> None:
+    def __init__(
+        self,
+        documents: Iterable[R3Document],
+        *,
+        field_terms: Mapping[tuple[str, str | None, str], Counter[str]] | None = None,
+    ) -> None:
         self._documents = tuple(documents)
         self._field_terms: dict[tuple[str, str | None, str], Counter[str]] = {}
+        if field_terms is not None:
+            self._field_terms = {
+                key: Counter(value)
+                for key, value in field_terms.items()
+            }
         for doc in self._documents:
-            self._field_terms[(doc.path, doc.chunk_id, "title")] = Counter(tokenize(doc.title))
-            self._field_terms[(doc.path, doc.chunk_id, "section")] = Counter(
-                tokenize(doc.section_title)
-            )
-            self._field_terms[(doc.path, doc.chunk_id, "aliases")] = Counter(
-                term
-                for alias in doc.aliases
-                for term in tokenize(alias)
-            )
-            self._field_terms[(doc.path, doc.chunk_id, "body")] = Counter(tokenize(doc.body))
+            for field, terms in self._terms_for_document(doc).items():
+                self._field_terms.setdefault((doc.path, doc.chunk_id, field), Counter(terms))
 
     @classmethod
     def from_documents(cls, documents: Iterable[R3Document]) -> "LexicalStore":
         return cls(documents)
+
+    @classmethod
+    def from_precomputed(
+        cls,
+        documents: Iterable[R3Document],
+        field_terms: Mapping[tuple[str, str | None, str], Iterable[str] | Mapping[str, int]],
+    ) -> "LexicalStore":
+        counters = {
+            key: Counter(value)
+            for key, value in field_terms.items()
+        }
+        return cls(documents, field_terms=counters)
+
+    @property
+    def documents(self) -> tuple[R3Document, ...]:
+        return self._documents
+
+    @staticmethod
+    def _terms_for_document(document: R3Document) -> dict[str, tuple[str, ...]]:
+        return {
+            "title": tokenize(document.title),
+            "section": tokenize(document.section_title),
+            "aliases": tuple(
+                term
+                for alias in document.aliases
+                for term in tokenize(alias)
+            ),
+            "body": tokenize(document.body),
+        }
+
+    def field_terms_for(self, document: R3Document) -> dict[str, tuple[str, ...]]:
+        terms: dict[str, tuple[str, ...]] = {}
+        for field in LEXICAL_FIELDS:
+            counter = self._field_terms.get((document.path, document.chunk_id, field), Counter())
+            terms[field] = tuple(counter)
+        return terms
 
     def search_field(
         self,
@@ -100,9 +139,15 @@ class LexicalStore:
             for rank, hit in enumerate(hits[:limit], start=1)
         ]
 
-    def search(self, query_plan: QueryPlan, *, limit_per_field: int = 20) -> list[Candidate]:
+    def search(
+        self,
+        query_plan: QueryPlan,
+        *,
+        limit_per_field: int = 20,
+        fields: Sequence[str] = LEXICAL_FIELDS,
+    ) -> list[Candidate]:
         candidates: list[Candidate] = []
-        for field in ("title", "section", "aliases", "body"):
+        for field in fields:
             candidates.extend(
                 self.search_field(query_plan, field=field, limit=limit_per_field)
             )

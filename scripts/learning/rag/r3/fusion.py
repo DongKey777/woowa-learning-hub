@@ -14,6 +14,9 @@ DEFAULT_RETRIEVER_WEIGHTS = {
     "lexical:section": 1.0,
     "lexical:aliases": 1.2,
     "lexical:body": 0.8,
+    "lexical_sidecar:title": 0.25,
+    "lexical_sidecar:section": 0.2,
+    "lexical_sidecar:aliases": 0.25,
     "dense": 1.0,
     "sparse": 1.1,
     "signal": 0.7,
@@ -28,6 +31,19 @@ class FusionSource:
 
     def to_dict(self) -> dict:
         return {"retriever": self.retriever, "rank": self.rank, "score": self.score}
+
+
+def _candidate_has_body(candidate: Candidate) -> bool:
+    if candidate.metadata.get("body") or candidate.metadata.get("passage"):
+        return True
+    document = candidate.metadata.get("document") or {}
+    return bool(document.get("body"))
+
+
+def _prefer_richer_exemplar(existing: Candidate, candidate: Candidate) -> Candidate:
+    if _candidate_has_body(candidate) and not _candidate_has_body(existing):
+        return candidate
+    return existing
 
 
 def fuse_candidates(
@@ -50,7 +66,10 @@ def fuse_candidates(
         if weight <= 0:
             continue
         scores[key] = scores.get(key, 0.0) + weight / (k + candidate.rank)
-        exemplars.setdefault(key, candidate)
+        if key in exemplars:
+            exemplars[key] = _prefer_richer_exemplar(exemplars[key], candidate)
+        else:
+            exemplars[key] = candidate
         sources[key].append(
             FusionSource(
                 retriever=candidate.retriever,

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
-from scripts.learning.rag.r3.candidate import R3Document
+import json
+
+from scripts.learning.rag.r3.candidate import Candidate, R3Document
 from scripts.learning.rag.r3.fusion import fuse_candidates
 from scripts.learning.rag.r3.index.lexical_store import LexicalStore
+from scripts.learning.rag.r3.index.lexical_sidecar import (
+    load_lexical_sidecar,
+    write_lexical_sidecar,
+)
 from scripts.learning.rag.r3.query_plan import build_query_plan
 from scripts.learning.rag.r3.retrievers import (
     DenseRetriever,
@@ -59,6 +65,21 @@ def test_lexical_retriever_keeps_field_provenance_visible():
     assert "lexical:title" in retrievers
     assert "lexical:aliases" in retrievers
     assert all("field" in hit.metadata for hit in hits)
+
+
+def test_lexical_retriever_can_namespace_sidecar_candidates():
+    plan = build_query_plan("latency가 뭐야?")
+    retriever = LexicalRetriever(
+        LexicalStore.from_documents(_docs()),
+        fields=("title",),
+        retriever_namespace="lexical_sidecar",
+    )
+
+    hits = retriever.retrieve(plan)
+
+    assert hits
+    assert hits[0].retriever == "lexical_sidecar:title"
+    assert hits[0].metadata["field"] == "title"
 
 
 def test_lexical_retriever_uses_symmetric_korean_tokenization():
@@ -121,3 +142,74 @@ def test_fusion_preserves_retriever_sources_and_doc_diversity():
         for source in candidate.metadata["sources"]
     }
     assert {"sparse", "dense"} <= source_names
+
+
+def test_fusion_keeps_richest_duplicate_candidate_for_reranker_passage():
+    fused = fuse_candidates(
+        [
+            Candidate(
+                path="contents/network/latency.md",
+                chunk_id="latency#0",
+                retriever="lexical_sidecar:title",
+                rank=1,
+                score=3.0,
+                title="Latency",
+                metadata={"document": {"category": "network"}},
+            ),
+            Candidate(
+                path="contents/network/latency.md",
+                chunk_id="latency#0",
+                retriever="dense",
+                rank=5,
+                score=0.7,
+                title="Latency",
+                metadata={"document": {"body": "latency body for reranker"}},
+            ),
+        ],
+        limit=1,
+    )
+
+    assert fused[0].metadata["document"]["body"] == "latency body for reranker"
+    assert {source["retriever"] for source in fused[0].metadata["sources"]} == {
+        "lexical_sidecar:title",
+        "dense",
+    }
+
+
+def test_lexical_sidecar_round_trips_precomputed_terms(tmp_path):
+    manifest = {
+        "index_version": 3,
+        "corpus_hash": "hash-sidecar",
+        "row_count": 1,
+        "lancedb": {"version": "fixture"},
+        "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fixture"},
+    }
+    (tmp_path / "manifest.json").write_text(
+        json.dumps(manifest),
+        encoding="utf-8",
+    )
+
+    write_lexical_sidecar(
+        tmp_path,
+        documents=[
+            R3Document(
+                path="contents/network/latency.md",
+                chunk_id="latency#0",
+                title="Latency",
+                section_title="Primer",
+                body="tail latency timeout",
+                aliases=("지연 시간",),
+                signals=("category:network",),
+                metadata={"category": "network"},
+            )
+        ],
+        manifest=manifest,
+    )
+
+    loaded = load_lexical_sidecar(tmp_path)
+    assert loaded is not None
+    hits = LexicalRetriever(loaded.store).retrieve(build_query_plan("latency가 뭐야?"))
+
+    assert loaded.metadata["document_count"] == 1
+    assert hits[0].path == "contents/network/latency.md"
+    assert "body" not in hits[0].metadata["document"]

@@ -17,6 +17,7 @@ def _write_artifact(tmp_path: Path, *, strict: bool = True) -> Path:
     artifact_dir.mkdir()
     archive = artifact_dir / "cs_rag_index_root.tar.zst"
     archive.write_bytes(b"fake archive")
+    sidecar_bytes = b'{"corpus_hash":"sha256:corpus","row_count":100,"document_count":1}'
     extra = {}
     if strict:
         extra = {
@@ -40,6 +41,15 @@ def _write_artifact(tmp_path: Path, *, strict: bool = True) -> Path:
             "index_version": 3,
             "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fake"},
             "corpus_hash": "sha256:corpus",
+            "r3_sidecars": {
+                "lexical": {
+                    "path": "r3_lexical_sidecar.json",
+                    "sha256": hashlib.sha256(sidecar_bytes).hexdigest(),
+                    "corpus_hash": "sha256:corpus",
+                    "row_count": 100,
+                    "document_count": 1,
+                }
+            },
         },
         "environment": {"python_version": "3.12.0"},
         "git_state": {"commit_sha": "abc123"},

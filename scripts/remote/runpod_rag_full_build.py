@@ -1006,6 +1006,15 @@ class RunPodHarness:
               else []),
             # Step 8: build (uses system Python, has CUDA torch)
             f"cd /workspace/repo && {build_command}",
+            # R3 serves on learner laptops. Build expensive lexical
+            # tokenization once on the remote machine and ship it inside
+            # the verified artifact instead of doing full-corpus Kiwi work
+            # during the first local query.
+            *([
+                "cd /workspace/repo && python -m "
+                "scripts.learning.rag.r3.index.lexical_sidecar "
+                "--index-root /workspace/cs_rag/"
+            ] if r_phase == "r3" else []),
             # Step 9: eval (only on r1+; r0 skips)
             *([
                 f"cd /workspace/repo && python -m scripts.learning.cli_rag_eval "

@@ -14,6 +14,7 @@ from pathlib import Path
 from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
+from .index.lexical_sidecar import load_lexical_sidecar
 from .index.runtime_loader import (
     encode_runtime_query,
     load_runtime_dense_candidates,
@@ -27,6 +28,8 @@ from .rerankers import CrossEncoderReranker
 
 _SPARSE_RETRIEVER_CACHE: dict[tuple[int, int, int], SparseRetriever] = {}
 _MAX_SPARSE_RETRIEVER_CACHE_ENTRIES = 4
+_LEXICAL_SIDECAR_FIELDS = ("title", "section", "aliases")
+_QUERY_PREFETCH_BODY_FIELDS = ("body",)
 
 
 def _record_stage(stage_ms: dict[str, float], name: str, started_at: float) -> None:
@@ -106,6 +109,9 @@ def search(
     dense_candidates = []
     sparse_source = "lexical_terms"
     sparse_retriever_cache_hit = False
+    lexical_sidecar = None
+    lexical_sidecar_used = False
+    lexical_sidecar_error = None
     reranker_active = _reranker_enabled(mode, use_reranker)
     try:
         started = time.perf_counter()
@@ -122,6 +128,16 @@ def search(
     except FileNotFoundError:
         documents = []
         _record_stage(stage_ms, "load_runtime_documents", started)
+
+    if index_root is not None and config.lexical_sidecar_enabled:
+        started = time.perf_counter()
+        try:
+            lexical_sidecar = load_lexical_sidecar(index_root)
+            lexical_sidecar_used = lexical_sidecar is not None
+        except Exception as exc:
+            lexical_sidecar = None
+            lexical_sidecar_error = f"{type(exc).__name__}: {exc}"
+        _record_stage(stage_ms, "load_lexical_sidecar", started)
 
     sparse_encoder_allowed = mode == "full" or config.sparse_encoder_in_cheap_mode
     if index_root is not None and sparse_encoder_allowed:
@@ -154,10 +170,34 @@ def search(
         query_sparse_terms = {}
         sparse_source = "lexical_terms"
 
-    if documents or sparse_documents:
+    if documents or sparse_documents or lexical_sidecar is not None:
         started = time.perf_counter()
-        lexical = LexicalRetriever(LexicalStore.from_documents(documents))
-        signal = SignalRetriever(documents)
+        signal_documents = (
+            lexical_sidecar.store.documents
+            if lexical_sidecar is not None
+            else documents
+        )
+        lexical_retrievers = []
+        if lexical_sidecar is not None:
+            lexical_retrievers.append(
+                LexicalRetriever(
+                    lexical_sidecar.store,
+                    fields=_LEXICAL_SIDECAR_FIELDS,
+                    retriever_namespace="lexical_sidecar",
+                )
+            )
+            if documents:
+                lexical_retrievers.append(
+                    LexicalRetriever(
+                        LexicalStore.from_documents(documents),
+                        fields=_QUERY_PREFETCH_BODY_FIELDS,
+                    )
+                )
+        else:
+            lexical_retrievers.append(
+                LexicalRetriever(LexicalStore.from_documents(documents))
+            )
+        signal = SignalRetriever(signal_documents)
         sparse, sparse_retriever_cache_hit = _cached_sparse_retriever(
             sparse_documents,
         )
@@ -169,7 +209,11 @@ def search(
         )
         started = time.perf_counter()
         candidates = [
-            *lexical.retrieve(query_plan),
+            *[
+                candidate
+                for lexical in lexical_retrievers
+                for candidate in lexical.retrieve(query_plan)
+            ],
             *dense_candidates,
             *sparse.retrieve(query_plan, query_terms=query_sparse_terms or None),
             *signal.retrieve([*query_plan.route_tags, *(topic_hints or [])]),
@@ -213,6 +257,9 @@ def search(
             "sparse_encoder_allowed": sparse_encoder_allowed,
             "dense_candidate_count": len(dense_candidates),
             "sparse_retriever_cache_hit": sparse_retriever_cache_hit,
+            "lexical_sidecar_used": lexical_sidecar_used,
+            "lexical_sidecar": lexical_sidecar.metadata if lexical_sidecar is not None else None,
+            "lexical_sidecar_error": lexical_sidecar_error,
         },
     )
 
@@ -232,6 +279,11 @@ def search(
         debug["r3_sparse_encoder_allowed"] = sparse_encoder_allowed
         debug["r3_sparse_retriever_cache_hit"] = sparse_retriever_cache_hit
         debug["r3_dense_candidate_count"] = len(dense_candidates)
+        debug["r3_lexical_sidecar_used"] = lexical_sidecar_used
+        debug["r3_lexical_sidecar"] = (
+            lexical_sidecar.metadata if lexical_sidecar is not None else None
+        )
+        debug["r3_lexical_sidecar_error"] = lexical_sidecar_error
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k

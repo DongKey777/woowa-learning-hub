@@ -60,10 +60,23 @@ bin/rag-daemon stop
   to `hits.meta.latency_ms=2401-2605` on the two post-warm mixed prompts;
   `r3_stage_ms` now reports query encoding, candidate retrieval, fusion, and
   reranker timing.
+- 2026-05-01 lexical sidecar gate: remote-prebuilt metadata lexical sidecar
+  (`title`, `section`, `aliases`; no body terms) is 26,966,603 bytes for
+  27,170 chunks. Cold local load was about 4.25s; warm sidecar load is
+  effectively cached. The 100q window-20 reranker gate stayed green:
+  `final_hit_relevant@5=1.0`, Korean-only `=1.0`, mixed Korean/English `=1.0`,
+  `forbidden_rate@5=0`, `lost_top20_rate=0`.
 
 Therefore R3 local default rerank window is 20 pairs. 50-pair local reranking
 is still available through `WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW=50`, but it
 is an explicit profiling/quality mode rather than the local default.
+
+R3 remote artifacts must include `r3_lexical_sidecar.json`. The sidecar is
+metadata-only by default because full-body JSON sidecars took about 60s to
+cold-load locally. Body lexical recall stays on Lance FTS/query prefetch;
+sidecar candidates use `lexical_sidecar:*` provenance and lower fusion weights
+so corpus metadata can add recall without replacing richer body-bearing
+candidates before reranking.
 
 Production default runtime modalities are `fts,dense,sparse`. Sparse is
 default-on after the 2026-05-01 decision; the next gate is explicit sparse

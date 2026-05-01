@@ -19,7 +19,12 @@ from scripts.remote.artifact_contract import verify_artifact_dir
 # Helpers — synthesize a minimal LanceDB-style index root
 # ---------------------------------------------------------------------------
 
-def _build_fake_index_root(tmp_path: Path, *, valid: bool = True) -> Path:
+def _build_fake_index_root(
+    tmp_path: Path,
+    *,
+    valid: bool = True,
+    r3_sidecar: bool = False,
+) -> Path:
     """Create a directory that *looks* like an index root v3.
 
     `valid=True`: includes manifest.json + lance/ + chunk_hashes_per_model.json
@@ -46,6 +51,38 @@ def _build_fake_index_root(tmp_path: Path, *, valid: bool = True) -> Path:
                 "corpus_hash": "sha1:fake",
                 "lancedb": {"version": "0.30.2"},
             }),
+            encoding="utf-8",
+        )
+    if r3_sidecar:
+        (root / "r3_lexical_sidecar.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "artifact_kind": "r3_lexical_sidecar",
+                    "corpus_hash": "sha1:fake",
+                    "row_count": 100,
+                    "document_count": 1,
+                    "fields": ["title", "section", "aliases", "body"],
+                    "documents": [
+                        {
+                            "path": "contents/network/latency.md",
+                            "chunk_id": "latency#0",
+                            "title": "Latency",
+                            "section_title": "Primer",
+                            "body": "latency",
+                            "aliases": [],
+                            "signals": [],
+                            "metadata": {"body": "latency"},
+                            "field_terms": {
+                                "title": ["latency"],
+                                "section": ["primer"],
+                                "aliases": [],
+                                "body": ["latency"],
+                            },
+                        }
+                    ],
+                }
+            ),
             encoding="utf-8",
         )
     return root
@@ -220,8 +257,27 @@ def test_package_artifact_produces_expected_layout(tmp_path):
     assert manifest["archive"]["sha256"] == result.sha256
     assert manifest["index_root_summary"]["index_version"] == 3
     assert manifest["index_root_summary"]["modalities"] == ["fts", "dense"]
+    assert manifest["index_root_summary"]["r3_sidecars"] == {}
     assert manifest["environment"]["gpu_type"] == "RTX A5000"
     assert "git_state" in manifest
+
+
+def test_package_artifact_summarizes_r3_lexical_sidecar(tmp_path):
+    root = _build_fake_index_root(tmp_path, r3_sidecar=True)
+    result = P.package_artifact(
+        index_root=root,
+        run_id="r3-sidecar-test",
+        r_phase="r3",
+        output_parent=tmp_path / "art",
+        compression_level=3,
+    )
+
+    manifest = json.loads(result.manifest_path.read_text())
+    lexical = manifest["index_root_summary"]["r3_sidecars"]["lexical"]
+
+    assert lexical["path"] == "r3_lexical_sidecar.json"
+    assert lexical["document_count"] == 1
+    assert len(lexical["sha256"]) == 64
 
 
 def test_package_artifact_rejects_invalid_index_root(tmp_path):
@@ -277,7 +333,7 @@ def test_strict_r3_metadata_requires_all_fields():
 
 
 def test_package_cli_strict_r3_output_passes_import_contract(tmp_path, capsys):
-    root = _build_fake_index_root(tmp_path)
+    root = _build_fake_index_root(tmp_path, r3_sidecar=True)
     out_parent = tmp_path / "art"
 
     rc = P.main(
@@ -319,6 +375,42 @@ def test_package_cli_strict_r3_output_passes_import_contract(tmp_path, capsys):
     assert result["verify_import"] is True
     assert result["import_check"]["index_root_name"] == "cs_rag"
     assert result["import_check"]["row_count"] == 100
+    assert result["import_check"]["r3_sidecars"]["lexical"]["document_count"] == 1
+
+
+def test_package_cli_strict_r3_requires_lexical_sidecar(tmp_path, capsys):
+    root = _build_fake_index_root(tmp_path)
+
+    rc = P.main(
+        [
+            "--index-root",
+            str(root),
+            "--run-id",
+            "r3-strict-missing-sidecar",
+            "--r-phase",
+            "r3",
+            "--output-parent",
+            str(tmp_path / "art"),
+            "--compression-level",
+            "3",
+            "--strict-r3",
+            "--build-command",
+            "bin/cs-index-build --backend lance",
+            "--package-lock",
+            "requirements-lock:fake",
+            "--qrel-hash",
+            "sha256:qrels",
+            "--local-runtime-machine",
+            "M5 MacBook Air 13",
+            "--local-runtime-memory-gb",
+            "16",
+            "--local-runtime-accelerator",
+            "Apple Silicon MPS",
+        ]
+    )
+
+    assert rc == 2
+    assert "r3_lexical_sidecar.json" in capsys.readouterr().err
 
 
 def test_package_artifact_compression_actually_compresses(tmp_path):

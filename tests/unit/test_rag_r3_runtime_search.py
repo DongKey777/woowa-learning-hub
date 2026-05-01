@@ -6,6 +6,8 @@ from pathlib import Path
 from scripts.learning.rag import corpus_loader, indexer, searcher
 from scripts.learning.rag.r3 import search as r3_search
 from scripts.learning.rag.r3.candidate import R3Document
+from scripts.learning.rag.r3.index.lexical_sidecar import LoadedLexicalSidecar
+from scripts.learning.rag.r3.index.lexical_store import LexicalStore
 from scripts.learning.rag.r3.index.runtime_loader import (
     load_lance_documents,
     load_runtime_dense_candidates,
@@ -367,6 +369,41 @@ def test_r3_sparse_retriever_cache_reuses_inverted_index():
     assert first is second
     assert first_hit is False
     assert second_hit is True
+
+
+def test_r3_search_uses_prebuilt_lexical_sidecar(monkeypatch, tmp_path):
+    documents = [
+        R3Document(
+            path="contents/network/latency-sidecar.md",
+            chunk_id="latency#0",
+            title="Latency Sidecar",
+            body="tail latency timeout",
+            metadata={"body": "tail latency timeout", "category": "network"},
+        )
+    ]
+    loaded = LoadedLexicalSidecar(
+        store=LexicalStore.from_documents(documents),
+        metadata={"path": str(tmp_path / "r3_lexical_sidecar.json"), "document_count": 1},
+    )
+    monkeypatch.setattr(r3_search, "load_runtime_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "encode_runtime_query", lambda *a, **kw: {})
+    monkeypatch.setattr(r3_search, "load_runtime_dense_candidates", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_runtime_sparse_documents", lambda *a, **kw: [])
+    monkeypatch.setattr(r3_search, "load_lexical_sidecar", lambda *a, **kw: loaded)
+
+    debug: dict = {}
+    hits = r3_search.search(
+        "latency가 뭐야?",
+        index_root=tmp_path,
+        top_k=1,
+        mode="cheap",
+        use_reranker=False,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/latency-sidecar.md"
+    assert debug["r3_lexical_sidecar_used"] is True
+    assert debug["r3_lexical_sidecar"]["document_count"] == 1
 
 
 def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):

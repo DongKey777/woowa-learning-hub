@@ -73,6 +73,7 @@ REQUIRED_INDEX_ROOT_PATHS = (
 OPTIONAL_INDEX_ROOT_PATHS = (
     "chunk_hashes_per_model.json",  # incremental fingerprint sidecar
 )
+R3_LEXICAL_SIDECAR = "r3_lexical_sidecar.json"
 
 
 def validate_index_root(index_root: Path) -> None:
@@ -128,6 +129,29 @@ def _compute_sha256(path: Path) -> str:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def _r3_sidecar_summary(index_root: Path) -> dict:
+    sidecars = {}
+    lexical = index_root / R3_LEXICAL_SIDECAR
+    if lexical.exists():
+        try:
+            payload = json.loads(lexical.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise IndexRootInvalid(f"{R3_LEXICAL_SIDECAR} is corrupt: {exc}") from exc
+        sidecars["lexical"] = {
+            "path": R3_LEXICAL_SIDECAR,
+            "schema_version": payload.get("schema_version"),
+            "artifact_kind": payload.get("artifact_kind"),
+            "corpus_hash": payload.get("corpus_hash"),
+            "row_count": payload.get("row_count"),
+            "document_count": payload.get("document_count"),
+            "body_terms_included": payload.get("body_terms_included"),
+            "fields": payload.get("fields"),
+            "bytes": lexical.stat().st_size,
+            "sha256": _compute_sha256(lexical),
+        }
+    return sidecars
 
 
 def _create_tar_zst(
@@ -279,6 +303,7 @@ def package_artifact(
     repo_root: Path | None = None,
     extra_environment: dict | None = None,
     extra_metadata: dict | None = None,
+    strict_r3: bool = False,
     compression_level: int = COMPRESSION_LEVEL,
 ) -> PackageResult:
     """Package an index root into the standard artifact layout.
@@ -304,6 +329,12 @@ def package_artifact(
         raise PackagingError(f"unknown r_phase: {r_phase!r}")
 
     validate_index_root(index_root)
+    r3_sidecars = _r3_sidecar_summary(index_root)
+    if strict_r3 and "lexical" not in r3_sidecars:
+        raise PackagingError(
+            f"--strict-r3 requires {R3_LEXICAL_SIDECAR}; run "
+            "python -m scripts.learning.rag.r3.index.lexical_sidecar first"
+        )
 
     out_parent = output_parent or DEFAULT_OUTPUT_PARENT
     out_dir = out_parent / run_id
@@ -346,6 +377,7 @@ def package_artifact(
             "row_count": index_manifest.get("row_count"),
             "corpus_hash": index_manifest.get("corpus_hash"),
             "lancedb": index_manifest.get("lancedb"),
+            "r3_sidecars": r3_sidecars,
         },
         "environment": env,
         "git_state": git_state,
@@ -464,6 +496,7 @@ def main(argv: list[str] | None = None) -> int:
             output_parent=args.output_parent,
             extra_environment=extra_env or None,
             extra_metadata=strict_r3_metadata,
+            strict_r3=args.strict_r3,
             compression_level=args.compression_level,
         )
     except PackagingError as exc:

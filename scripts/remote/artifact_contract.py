@@ -103,6 +103,40 @@ def _verify_extracted_index_root(
                 f"expected {wanted!r}, got {actual_encoder.get(key)!r}"
             )
 
+    sidecar_checks = {}
+    lexical = (expected.get("r3_sidecars") or {}).get("lexical")
+    if lexical:
+        sidecar_path = index_root / str(lexical.get("path"))
+        if not sidecar_path.exists():
+            raise ArtifactVerificationError(
+                f"extracted index missing R3 lexical sidecar: {sidecar_path.name}"
+            )
+        expected_sha = lexical.get("sha256")
+        actual_sha = _sha256(sidecar_path)
+        if expected_sha and actual_sha != expected_sha:
+            raise ArtifactVerificationError(
+                f"R3 lexical sidecar sha256 mismatch: expected {expected_sha}, got {actual_sha}"
+            )
+        try:
+            sidecar_payload = json.loads(sidecar_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise ArtifactVerificationError(
+                f"R3 lexical sidecar is corrupt: {exc}"
+            ) from exc
+        for key in ("corpus_hash", "row_count", "document_count"):
+            wanted = lexical.get(key)
+            if wanted is not None and sidecar_payload.get(key) != wanted:
+                raise ArtifactVerificationError(
+                    f"R3 lexical sidecar {key} mismatch: "
+                    f"expected {wanted!r}, got {sidecar_payload.get(key)!r}"
+                )
+        sidecar_checks["lexical"] = {
+            "path": str(sidecar_path.relative_to(index_root)),
+            "sha256": actual_sha,
+            "document_count": sidecar_payload.get("document_count"),
+            "row_count": sidecar_payload.get("row_count"),
+        }
+
     return {
         "index_root_name": index_root.name,
         "index_version": index_manifest.get("index_version"),
@@ -111,6 +145,7 @@ def _verify_extracted_index_root(
         "encoder": actual_encoder,
         "has_lance_dir": (index_root / "lance").is_dir(),
         "has_chunk_hashes": (index_root / "chunk_hashes_per_model.json").exists(),
+        "r3_sidecars": sidecar_checks,
     }
 
 
@@ -133,6 +168,11 @@ R3_STRICT_REQUIRED_FIELDS = (
     "extra.local_runtime_profile.machine",
     "extra.local_runtime_profile.memory_gb",
     "extra.local_runtime_profile.accelerator",
+    "index_root_summary.r3_sidecars.lexical.path",
+    "index_root_summary.r3_sidecars.lexical.sha256",
+    "index_root_summary.r3_sidecars.lexical.corpus_hash",
+    "index_root_summary.r3_sidecars.lexical.row_count",
+    "index_root_summary.r3_sidecars.lexical.document_count",
 )
 
 

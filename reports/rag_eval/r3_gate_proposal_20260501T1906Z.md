@@ -1,6 +1,6 @@
 # R3 Gate Proposal - 2026-05-01T19:06Z
 
-Scope: expanded 100q Corpus v2 gate after dense discovery, BGE-M3 sparse sidecar discovery, SQL child-topic qrel calibration, hybrid RRF reranking, local daemon runtime, and verified 20-pair local rerank default.
+Scope: expanded 100q Corpus v2 gate after dense discovery, BGE-M3 sparse sidecar discovery, metadata-only lexical sidecar artifact, SQL child-topic qrel calibration, hybrid RRF reranking, local daemon runtime, and verified 20-pair local rerank default.
 
 Evidence:
 
@@ -10,6 +10,7 @@ Evidence:
 - Warm same-process runtime profile: `reports/rag_eval/r3_warm_full_runtime_profile_20260501T1848Z.md`
 - Daemon window-20 runtime smoke: `reports/rag_eval/r3_daemon_full_runtime_window20_smoke_20260501T1906Z.md`
 - Sparse retriever cache runtime profile: `reports/rag_eval/r3_sparse_retriever_cache_profile_20260501T1915Z.md`
+- Lexical sidecar gate: `reports/rag_eval/r3_lexical_sidecar_summary_20260501T1955Z.md`
 - Strict artifact import smoke: `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md`
 - Remote strict harness dry run: `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md`
 
@@ -31,6 +32,8 @@ Observed Expanded Pilot:
 | reranked final_hit_relevant@20 | 1.0000 |
 | reranked forbidden_rate@5 | 0.0000 |
 | harmful lost_top20_rate | 0.0000 |
+| metadata lexical sidecar docs | 27170 |
+| metadata lexical sidecar bytes | 26966603 |
 
 Current Provisional Gates:
 
@@ -45,6 +48,7 @@ Current Provisional Gates:
 | reranked final_hit_relevant@20 | 1.00 overall | 1.0000 | pass |
 | forbidden_rate@5 | 0.00 | 0.0000 | pass |
 | harmful lost_top20_rate | <= 0.02 | 0.0000 | pass |
+| metadata lexical sidecar | remote-prebuilt, body terms excluded, no reranker quality regression | pass | pass |
 | local long-lived runtime architecture | daemon path exists and reports R3 debug fields | pass | pass |
 | local full-mode latency | accepted M5 interactive budget | cold 14.68s, warm 2.40-2.61s internal latency | review |
 | strict artifact import contract | strict manifest + checksum + extracted index manifest verify locally | local artifact pass | pass |
