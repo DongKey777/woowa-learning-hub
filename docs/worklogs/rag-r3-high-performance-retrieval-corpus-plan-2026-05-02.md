@@ -52,6 +52,27 @@ Reasoning:
 - LanceDB remains useful as a local/offline artifact and vector/FTS baseline if we add true sparse discovery through a sidecar or proven native path.
 - Vespa is strongest when retrieval, ranking features, phased ranking, BM25, vectors, and result diversity need to be controlled together, but the JVM/YQL/service-operation cost is probably too high as the first move for a local learning hub.
 
+Implementation update after R3 spike:
+
+- Backend decision: `docs/worklogs/rag-r3-backend-decision-2026-05-02.md`.
+- First production candidate is now LanceDB-improved R3, not Qdrant:
+  LanceDB v3 artifact + BGE-M3 dense retrieval + BGE-M3 sparse first-stage
+  sidecar + metadata lexical sidecar + signal retriever + deterministic fusion
+  + sidecar-first `auto` rerank policy.
+- Qdrant remains a measured comparator. The 100q local-mode spike reached
+  `candidate_recall_primary@100=1.0`, but local mode warned above 20,000
+  points, RSS peak reached 3398.422MB, sparse query p95 was 302.123ms, and
+  Korean-only relevant@5 trailed the selected R3 path.
+- `BAAI/bge-reranker-v2-m3` remains the target quality reranker. Local
+  interactive default is now `WOOWA_RAG_R3_RERANK_POLICY=auto`: force the BGE
+  reranker for quality investigation or suspected ranking failures, but skip it
+  by default when the verified metadata lexical sidecar is loaded and the 100q
+  gate stays green.
+- Remaining cutover blocker: live RunPod build and local strict import of the
+  remote-built artifact. The source-visibility problem for local commits ahead
+  of origin is addressed by git bundle source transfer; `RUNPOD_API_KEY` is
+  still required for the live build.
+
 ## Current System Facts
 
 Current production/cutover state is documented across:
