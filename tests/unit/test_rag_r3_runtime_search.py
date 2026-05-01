@@ -51,6 +51,13 @@ def _build_legacy_index(index_root: Path) -> None:
                     "language",
                     "class object polymorphism",
                 ),
+                _chunk(
+                    "latency_deep",
+                    "contents/network/latency-deep-dive.md",
+                    "Latency Deep Dive",
+                    "network",
+                    "latency queueing model advanced internals",
+                ),
             ],
         )
     finally:
@@ -61,7 +68,7 @@ def _build_legacy_index(index_root: Path) -> None:
                 "index_version": indexer.INDEX_VERSION,
                 "embed_model": "fixture",
                 "embed_dim": 0,
-                "row_count": 2,
+                "row_count": 3,
                 "corpus_hash": "fixture",
                 "corpus_root": "fixture",
             }
@@ -90,3 +97,36 @@ def test_r3_backend_reads_legacy_index_and_returns_traced_hits(tmp_path):
     assert debug["r3_trace"]["final_paths"] == [
         "contents/network/latency-primer.md"
     ]
+
+
+def test_r3_backend_reranks_only_when_explicitly_enabled(tmp_path, monkeypatch):
+    _build_legacy_index(tmp_path)
+
+    class FakeReranker:
+        model_id = "fake-reranker"
+
+        def rerank(self, query, candidates, *, top_n):
+            del query, top_n
+            return sorted(
+                candidates,
+                key=lambda candidate: candidate.path == "contents/network/latency-deep-dive.md",
+                reverse=True,
+            )
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.CrossEncoderReranker.for_language",
+        lambda language: FakeReranker(),
+    )
+    debug: dict = {}
+
+    hits = searcher.search(
+        "latency가 뭐야?",
+        backend="r3",
+        index_root=tmp_path,
+        top_k=1,
+        use_reranker=True,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/latency-deep-dive.md"
+    assert debug["r3_reranker_model"] == "fake-reranker"

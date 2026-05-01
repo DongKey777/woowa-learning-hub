@@ -16,6 +16,7 @@ from .index.runtime_loader import load_legacy_documents
 from .index.lexical_store import LexicalStore
 from .query_plan import build_query_plan
 from .retrievers import LexicalRetriever, SignalRetriever, SparseRetriever
+from .rerankers import CrossEncoderReranker
 
 
 def _hit_from_candidate(candidate) -> dict:
@@ -64,19 +65,38 @@ def search(
         lexical = LexicalRetriever(LexicalStore.from_documents(documents))
         sparse = SparseRetriever(documents)
         signal = SignalRetriever(documents)
+        fusion_limit = max(
+            top_k,
+            config.rerank_input_window(offline=False) if use_reranker is True else top_k,
+            1,
+        )
         candidates = [
             *lexical.retrieve(query_plan),
             *sparse.retrieve(query_plan),
             *signal.retrieve([*query_plan.route_tags, *(topic_hints or [])]),
         ]
-        fused = fuse_candidates(candidates, limit=max(top_k, 1))
+        fused = fuse_candidates(candidates, limit=fusion_limit)
+
+    reranker_model = None
+    if use_reranker is True and fused:
+        reranker = CrossEncoderReranker.for_language(query_plan.language)
+        reranker_model = reranker.model_id
+        fused = reranker.rerank(
+            query_plan.raw_query,
+            fused,
+            top_n=min(len(fused), config.rerank_input_window(offline=False)),
+        )
 
     trace = R3Trace(
         trace_id=query_plan.normalized_query,
         query_plan=query_plan,
         candidates=tuple(candidates),
         final_paths=tuple(candidate.path for candidate in fused[:top_k]),
-        metadata={"backend": "r3", "source_index": "legacy"},
+        metadata={
+            "backend": "r3",
+            "source_index": "legacy",
+            "reranker_model": reranker_model,
+        },
     )
 
     if debug is not None:
@@ -87,6 +107,7 @@ def search(
         debug["r3_trace"] = trace.to_dict()
         debug["r3_candidate_count"] = len(candidates)
         debug["r3_final_paths"] = list(trace.final_paths)
+        debug["r3_reranker_model"] = reranker_model
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k
         debug["mode"] = mode
