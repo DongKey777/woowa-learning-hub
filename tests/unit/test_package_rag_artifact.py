@@ -6,11 +6,13 @@ import json
 import shutil
 import subprocess
 import tarfile
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
 
 from scripts.remote import package_rag_artifact as P
+from scripts.remote.artifact_contract import verify_artifact_dir
 
 
 # ---------------------------------------------------------------------------
@@ -257,6 +259,59 @@ def test_package_artifact_extra_metadata_passed_through(tmp_path):
     manifest = json.loads(result.manifest_path.read_text())
     assert manifest["extra"]["build_started_at"] == "2026-05-01T07:00Z"
     assert manifest["extra"]["encoder_revision"] == "abc123"
+
+
+def test_strict_r3_metadata_requires_all_fields():
+    args = Namespace(
+        strict_r3=True,
+        build_command="bin/cs-index-build --backend lance",
+        package_lock=None,
+        qrel_hash="sha256:qrels",
+        local_runtime_machine="M5 MacBook Air 13",
+        local_runtime_memory_gb=16,
+        local_runtime_accelerator="Apple Silicon MPS",
+    )
+
+    with pytest.raises(P.PackagingError, match="--package-lock"):
+        P._strict_r3_metadata_from_args(args)
+
+
+def test_package_cli_strict_r3_output_passes_import_contract(tmp_path, capsys):
+    root = _build_fake_index_root(tmp_path)
+    out_parent = tmp_path / "art"
+
+    rc = P.main(
+        [
+            "--index-root",
+            str(root),
+            "--run-id",
+            "r3-strict-test",
+            "--r-phase",
+            "r3",
+            "--output-parent",
+            str(out_parent),
+            "--compression-level",
+            "3",
+            "--strict-r3",
+            "--build-command",
+            "bin/cs-index-build --backend lance",
+            "--package-lock",
+            "requirements-lock:fake",
+            "--qrel-hash",
+            "sha256:qrels",
+            "--local-runtime-machine",
+            "M5 MacBook Air 13",
+            "--local-runtime-memory-gb",
+            "16",
+            "--local-runtime-accelerator",
+            "Apple Silicon MPS",
+        ]
+    )
+
+    assert rc == 0
+    assert "r3-strict-test" in capsys.readouterr().out
+    result = verify_artifact_dir(out_parent / "r3-strict-test", strict_r3=True)
+    assert result["strict_r3"] is True
 
 
 def test_package_artifact_compression_actually_compresses(tmp_path):

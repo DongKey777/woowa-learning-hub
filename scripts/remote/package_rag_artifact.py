@@ -390,6 +390,34 @@ def package_artifact(
 # CLI
 # ---------------------------------------------------------------------------
 
+def _strict_r3_metadata_from_args(args: argparse.Namespace) -> dict | None:
+    if not args.strict_r3:
+        return None
+    missing = []
+    for attr in (
+        "build_command",
+        "package_lock",
+        "qrel_hash",
+        "local_runtime_machine",
+        "local_runtime_memory_gb",
+        "local_runtime_accelerator",
+    ):
+        if getattr(args, attr) in (None, ""):
+            missing.append(f"--{attr.replace('_', '-')}")
+    if missing:
+        raise PackagingError("--strict-r3 requires " + ", ".join(missing))
+    return {
+        "build_command": args.build_command,
+        "package_lock": args.package_lock,
+        "qrel_hash": args.qrel_hash,
+        "local_runtime_profile": {
+            "machine": args.local_runtime_machine,
+            "memory_gb": args.local_runtime_memory_gb,
+            "accelerator": args.local_runtime_accelerator,
+        },
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__.split("\n\n")[0],
@@ -408,6 +436,17 @@ def main(argv: list[str] | None = None) -> int:
                         help="GPU type for environment metadata (Pod side)")
     parser.add_argument("--cuda-version", default=None,
                         help="CUDA version for environment metadata (Pod side)")
+    parser.add_argument(
+        "--strict-r3",
+        action="store_true",
+        help="Require and embed R3 remote-build/local-serve metadata.",
+    )
+    parser.add_argument("--build-command", default=None)
+    parser.add_argument("--package-lock", default=None)
+    parser.add_argument("--qrel-hash", default=None)
+    parser.add_argument("--local-runtime-machine", default=None)
+    parser.add_argument("--local-runtime-memory-gb", type=float, default=None)
+    parser.add_argument("--local-runtime-accelerator", default=None)
     args = parser.parse_args(argv)
 
     extra_env = {}
@@ -417,12 +456,14 @@ def main(argv: list[str] | None = None) -> int:
         extra_env["cuda_version"] = args.cuda_version
 
     try:
+        strict_r3_metadata = _strict_r3_metadata_from_args(args)
         result = package_artifact(
             index_root=args.index_root,
             run_id=args.run_id,
             r_phase=args.r_phase,
             output_parent=args.output_parent,
             extra_environment=extra_env or None,
+            extra_metadata=strict_r3_metadata,
             compression_level=args.compression_level,
         )
     except PackagingError as exc:
