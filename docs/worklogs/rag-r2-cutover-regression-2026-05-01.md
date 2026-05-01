@@ -196,6 +196,7 @@ Artifacts:
 
 - Code: `scripts/learning/rag/searcher.py`
 - Unit coverage: `tests/unit/test_lance_search_path.py`
+- Weight `0.0` same-code baseline: `reports/rag_eval/r2_korean_terms_w00_holdout_20260501T0450Z.json`
 - Weight `0.7` report: `reports/rag_eval/r2_korean_terms_holdout_20260501T0450Z.json`
 - Weight `0.3` report: `reports/rag_eval/r2_korean_terms_w03_holdout_20260501T0450Z.json`
 
@@ -206,11 +207,14 @@ Method:
 - Fused the raw-prompt FTS ranking and the Korean terms FTS ranking with
   weighted RRF before dense/sparse fusion.
 - Left the feature opt-in through `WOOWA_KOREAN_FTS_TERMS_WEIGHT`; default
-  weight is `0.0` because the pilot did not pass bucket-regression gates.
+  weight is `0.0` because the same-code A/B did not show ranking lift.
 - Reused the extracted R2 `current_256_64` index under
   `/private/tmp/rag_ivf_sweep_20260501T0401/current`.
 - Ran holdout ablation on the Korean rewritten applied fixture, split seed
   `20240202`, modalities `fts,dense,sparse`.
+- Important correction: the initial comparison against the Phase 2 IVF sweep
+  baseline mixed code vintages. The valid feature delta is the same-code
+  `WOOWA_KOREAN_FTS_TERMS_WEIGHT=0` baseline versus opt-in weights.
 
 Commands:
 
@@ -226,27 +230,20 @@ env HF_HUB_OFFLINE=1 WOOWA_KOREAN_FTS_TERMS_WEIGHT=0.3 \
   --device auto
 ```
 
-Measurement versus the Phase 2 `current_256_64` baseline:
+Same-code measurement:
 
 | run | primary nDCG macro | primary nDCG micro | ko bucket | failures | local CPU P95 |
 |---|---:|---:|---:|---:|---:|
-| baseline `current_256_64` | 0.8898 | 0.8603 | 0.6957 | 16 | 720.8 ms |
-| Korean terms candidate | 0.9103 | 0.8766 | 0.8571 | 13 | 759.0-810.0 ms |
-| delta | +0.0205 | +0.0163 | +0.1615 | -3 | +38.3 to +89.3 ms |
-
-Bucket regressions:
-
-| bucket axis | bucket | delta |
-|---|---|---:|
-| category | database | -0.1065 |
-| category | system-design | -0.0923 |
-| language | en | -0.0697 |
-| language | mixed | -0.0180 |
+| weight `0.0` baseline | 0.9103 | 0.8766 | 0.8571 | 13 | 692.6 ms |
+| weight `0.3` | 0.9103 | 0.8766 | 0.8571 | 13 | 810.0 ms |
+| weight `0.7` | 0.9103 | 0.8766 | 0.8571 | 13 | 759.0 ms |
+| feature delta | +0.0000 | +0.0000 | +0.0000 | 0 | local latency noise only |
 
 Decision:
 
-- Do not enable by default yet.
-- Keep the opt-in code path because it proves the Korean bucket can move
-  materially without rebuilding the index.
-- Next tuning needs either structural triggers for Korean-only symptom prompts
-  or per-category guards so database/system-design do not regress.
+- Do not enable by default.
+- Keep the opt-in code path as instrumentation for future experiments, but do
+  not count it as a Phase 4 quality improvement.
+- The next useful lever is not weight tuning; it needs either better Korean
+  anchors in the indexed corpus or structural query rewrites that introduce
+  terms missing from the existing Lance FTS fields.
