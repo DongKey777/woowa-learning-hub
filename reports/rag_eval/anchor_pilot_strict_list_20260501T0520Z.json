@@ -1,0 +1,760 @@
+{
+  "index_root": "/private/tmp/woowa_anchor_eval_strict_list_20260501T0520/index",
+  "split": "full",
+  "query_count": 10,
+  "top_k": 10,
+  "forbidden_window": 5,
+  "mode": "full",
+  "runs": [
+    {
+      "modalities": [
+        "fts",
+        "dense",
+        "sparse"
+      ],
+      "primary_ndcg_macro": 0.25,
+      "latency_p95_warm": 383.15495899587404,
+      "hard_regression_failures": 8,
+      "run_report": {
+        "manifest": {
+          "corpus_hash": "4e84155720b2b0ae540e248114668bc6a67ca994252655f8d3a26bd77d76725c",
+          "index_version": 3,
+          "embedding_model": "BAAI/bge-m3",
+          "model_revision": "BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+          "embedding_dim": 1024,
+          "device": "cpu",
+          "reranker_model": null,
+          "fusion_weights": {
+            "k": 60,
+            "w_bm25": 1.0,
+            "w_dense": 1.0
+          },
+          "top_k": 10,
+          "mode": "full",
+          "latency_p50_warm": 375.2344170061406,
+          "latency_p95_warm": 383.15495899587404,
+          "cold_start_ms": 2303.0423329910263,
+          "backend": "lance",
+          "modalities": [
+            "fts",
+            "dense",
+            "sparse"
+          ],
+          "encoder": {
+            "model_id": "BAAI/bge-m3",
+            "model_version": "BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+            "max_length": 512,
+            "batch_size": 64
+          },
+          "lancedb": {
+            "version": "0.30.2",
+            "table_name": "cs_chunks",
+            "indices": {
+              "dense": {
+                "type": "unindexed",
+                "num_partitions": 130,
+                "num_sub_vectors": 1
+              },
+              "fts": {
+                "type": "tantivy",
+                "tokenizer": "ngram"
+              },
+              "colbert": {
+                "type": "sidecar",
+                "metric": "max_sim",
+                "dtype": "float16"
+              }
+            }
+          }
+        },
+        "top_k": 10,
+        "forbidden_window": 5,
+        "overall_means": {
+          "primary_ndcg": 0.2,
+          "graded_ndcg": 0.2,
+          "mrr": 0.2,
+          "recall": 0.2,
+          "companion_coverage": 0.0,
+          "forbidden_rate": 0.0,
+          "hit": 0.2
+        },
+        "macro_reports": {
+          "primary_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "data-structure": 0.0,
+                "design-pattern": 1.0,
+                "system-design": 0.0,
+                "security": 0.0
+              },
+              "per_bucket_count": {
+                "data-structure": 2,
+                "design-pattern": 2,
+                "system-design": 2,
+                "security": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "data-structure",
+                "design-pattern",
+                "system-design",
+                "security"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.0,
+                "advanced": 1.0,
+                "intermediate": 0.0
+              },
+              "per_bucket_count": {
+                "beginner": 6,
+                "advanced": 2,
+                "intermediate": 2
+              },
+              "macro_mean": 0.3333333333333333,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "beginner",
+                "advanced",
+                "intermediate"
+              ],
+              "excluded_buckets": []
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "ko": 0.16666666666666666,
+                "mixed": 0.25
+              },
+              "per_bucket_count": {
+                "ko": 6,
+                "mixed": 4
+              },
+              "macro_mean": 0.20833333333333331,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "ko",
+                "mixed"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "comparison": 0.0,
+                "deep-dive": 1.0,
+                "definition": 0.0,
+                "symptom": 0.0
+              },
+              "per_bucket_count": {
+                "comparison": 2,
+                "deep-dive": 2,
+                "definition": 2,
+                "symptom": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "comparison",
+                "deep-dive",
+                "definition",
+                "symptom"
+              ],
+              "excluded_buckets": []
+            }
+          },
+          "graded_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "data-structure": 0.0,
+                "design-pattern": 1.0,
+                "system-design": 0.0,
+                "security": 0.0
+              },
+              "per_bucket_count": {
+                "data-structure": 2,
+                "design-pattern": 2,
+                "system-design": 2,
+                "security": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "data-structure",
+                "design-pattern",
+                "system-design",
+                "security"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.0,
+                "advanced": 1.0,
+                "intermediate": 0.0
+              },
+              "per_bucket_count": {
+                "beginner": 6,
+                "advanced": 2,
+                "intermediate": 2
+              },
+              "macro_mean": 0.3333333333333333,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "beginner",
+                "advanced",
+                "intermediate"
+              ],
+              "excluded_buckets": []
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "ko": 0.16666666666666666,
+                "mixed": 0.25
+              },
+              "per_bucket_count": {
+                "ko": 6,
+                "mixed": 4
+              },
+              "macro_mean": 0.20833333333333331,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "ko",
+                "mixed"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "comparison": 0.0,
+                "deep-dive": 1.0,
+                "definition": 0.0,
+                "symptom": 0.0
+              },
+              "per_bucket_count": {
+                "comparison": 2,
+                "deep-dive": 2,
+                "definition": 2,
+                "symptom": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "comparison",
+                "deep-dive",
+                "definition",
+                "symptom"
+              ],
+              "excluded_buckets": []
+            }
+          },
+          "mrr": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "data-structure": 0.0,
+                "design-pattern": 1.0,
+                "system-design": 0.0,
+                "security": 0.0
+              },
+              "per_bucket_count": {
+                "data-structure": 2,
+                "design-pattern": 2,
+                "system-design": 2,
+                "security": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "data-structure",
+                "design-pattern",
+                "system-design",
+                "security"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.0,
+                "advanced": 1.0,
+                "intermediate": 0.0
+              },
+              "per_bucket_count": {
+                "beginner": 6,
+                "advanced": 2,
+                "intermediate": 2
+              },
+              "macro_mean": 0.3333333333333333,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "beginner",
+                "advanced",
+                "intermediate"
+              ],
+              "excluded_buckets": []
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "ko": 0.16666666666666666,
+                "mixed": 0.25
+              },
+              "per_bucket_count": {
+                "ko": 6,
+                "mixed": 4
+              },
+              "macro_mean": 0.20833333333333331,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "ko",
+                "mixed"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "comparison": 0.0,
+                "deep-dive": 1.0,
+                "definition": 0.0,
+                "symptom": 0.0
+              },
+              "per_bucket_count": {
+                "comparison": 2,
+                "deep-dive": 2,
+                "definition": 2,
+                "symptom": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "comparison",
+                "deep-dive",
+                "definition",
+                "symptom"
+              ],
+              "excluded_buckets": []
+            }
+          },
+          "recall": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "data-structure": 0.0,
+                "design-pattern": 1.0,
+                "system-design": 0.0,
+                "security": 0.0
+              },
+              "per_bucket_count": {
+                "data-structure": 2,
+                "design-pattern": 2,
+                "system-design": 2,
+                "security": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "data-structure",
+                "design-pattern",
+                "system-design",
+                "security"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.0,
+                "advanced": 1.0,
+                "intermediate": 0.0
+              },
+              "per_bucket_count": {
+                "beginner": 6,
+                "advanced": 2,
+                "intermediate": 2
+              },
+              "macro_mean": 0.3333333333333333,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "beginner",
+                "advanced",
+                "intermediate"
+              ],
+              "excluded_buckets": []
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "ko": 0.16666666666666666,
+                "mixed": 0.25
+              },
+              "per_bucket_count": {
+                "ko": 6,
+                "mixed": 4
+              },
+              "macro_mean": 0.20833333333333331,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "ko",
+                "mixed"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "comparison": 0.0,
+                "deep-dive": 1.0,
+                "definition": 0.0,
+                "symptom": 0.0
+              },
+              "per_bucket_count": {
+                "comparison": 2,
+                "deep-dive": 2,
+                "definition": 2,
+                "symptom": 4
+              },
+              "macro_mean": 0.25,
+              "micro_mean": 0.2,
+              "included_buckets": [
+                "comparison",
+                "deep-dive",
+                "definition",
+                "symptom"
+              ],
+              "excluded_buckets": []
+            }
+          }
+        },
+        "regression_summary": {
+          "total": 10,
+          "passed_count": 2,
+          "failed_count": 8,
+          "all_passed": false,
+          "violations_by_kind": {
+            "primary_not_present": 8
+          },
+          "warnings_by_kind": {},
+          "failed_query_ids": [
+            "multi_turn_data_structure_collection_choice",
+            "multi_turn_data_structure_queue_stack_followup",
+            "multi_turn_system_design_route_after_cache_queue",
+            "multi_turn_system_design_auth_session_route",
+            "multi_turn_duplicate_cookie_proxy_login_loop",
+            "multi_turn_cookie_not_sent_server_anonymous",
+            "multi_turn_cookie_rejection_devtools_reason",
+            "multi_turn_cookie_domain_path_followup"
+          ]
+        },
+        "regressions": [
+          {
+            "query_id": "multi_turn_data_structure_collection_choice",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/data-structure/applied-data-structures-overview.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_data_structure_queue_stack_followup",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/data-structure/applied-data-structures-overview.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_strict_list_canary_metric_followup",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_strict_list_safe_rollout_followup",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_system_design_route_after_cache_queue",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/system-design/README.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_system_design_auth_session_route",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/system-design/README.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_duplicate_cookie_proxy_login_loop",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_cookie_not_sent_server_anonymous",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/security/duplicate-cookie-vs-proxy-login-loop-bridge.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_cookie_rejection_devtools_reason",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/security/cookie-rejection-reason-primer.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "multi_turn_cookie_domain_path_followup",
+            "passed": false,
+            "violations": [
+              "primary_not_present: 'contents/security/cookie-rejection-reason-primer.md' missing from ranking (budget=5)"
+            ],
+            "warnings": []
+          }
+        ],
+        "per_query": [
+          {
+            "query_id": "multi_turn_data_structure_collection_choice",
+            "bucket": {
+              "category": "data-structure",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_data_structure_queue_stack_followup",
+            "bucket": {
+              "category": "data-structure",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "comparison"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_strict_list_canary_metric_followup",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "advanced",
+              "language": "ko",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_strict_list_safe_rollout_followup",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "advanced",
+              "language": "mixed",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_system_design_route_after_cache_queue",
+            "bucket": {
+              "category": "system-design",
+              "difficulty": "intermediate",
+              "language": "ko",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_system_design_auth_session_route",
+            "bucket": {
+              "category": "system-design",
+              "difficulty": "intermediate",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_duplicate_cookie_proxy_login_loop",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_cookie_not_sent_server_anonymous",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_cookie_rejection_devtools_reason",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "multi_turn_cookie_domain_path_followup",
+            "bucket": {
+              "category": "security",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "symptom"
+            },
+            "metrics": {
+              "primary_ndcg": 0.0,
+              "graded_ndcg": 0.0,
+              "mrr": 0.0,
+              "hit": 0.0,
+              "recall": 0.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          }
+        ],
+        "timing_warm_per_query_ms": [
+          371.35145800129976,
+          377.02274999173824,
+          380.0089580036001,
+          373.0903749965364,
+          382.64820899348706,
+          364.7211670031538,
+          372.5770419987384,
+          373.4070829959819,
+          383.15495899587404,
+          375.2344170061406
+        ]
+      }
+    }
+  ],
+  "best_modalities": [
+    "fts",
+    "dense",
+    "sparse"
+  ],
+  "selection_rationale": "selected by primary_nDCG_macro, then hard-regression count, latency, and smaller modality set: fts,dense,sparse",
+  "created_at": "2026-05-01T04:48:34Z",
+  "sample": {
+    "corpus_root": "/private/tmp/woowa_anchor_eval_strict_list_20260501T0520/corpus",
+    "fixture_path": "/private/tmp/woowa_anchor_eval_strict_list_20260501T0520/fixture.json",
+    "categories": [
+      "data-structure",
+      "design-pattern",
+      "system-design",
+      "security"
+    ],
+    "query_count": 10,
+    "required_doc_count": 5,
+    "extra_doc_count": 0,
+    "doc_count": 5,
+    "index_modalities": [
+      "fts",
+      "dense",
+      "sparse"
+    ]
+  }
+}

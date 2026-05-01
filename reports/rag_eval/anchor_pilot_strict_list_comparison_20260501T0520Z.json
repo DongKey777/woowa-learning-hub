@@ -1,0 +1,61 @@
+{
+  "created_at": "2026-05-01T04:48:52Z",
+  "feature": "Phase 4.2 strict-list Korean retrieval-anchor-keywords pilot",
+  "baseline_report": "reports/rag_eval/chunk_context_pilot_noctx_20260501T0416Z.json",
+  "new_report": "reports/rag_eval/anchor_pilot_strict_list_20260501T0520Z.json",
+  "baseline": {
+    "primary_ndcg_micro": 0.2,
+    "primary_ndcg_macro_category": 0.25,
+    "primary_ndcg_macro_language": 0.20833333333333331,
+    "category": {
+      "data-structure": 0.0,
+      "design-pattern": 1.0,
+      "system-design": 0.0,
+      "security": 0.0
+    },
+    "language": {
+      "ko": 0.16666666666666666,
+      "mixed": 0.25
+    },
+    "latency_p95_warm_ms": 395.25933300319593,
+    "hard_regression_failures": 8
+  },
+  "new": {
+    "primary_ndcg_micro": 0.2,
+    "primary_ndcg_macro_category": 0.25,
+    "primary_ndcg_macro_language": 0.20833333333333331,
+    "category": {
+      "data-structure": 0.0,
+      "design-pattern": 1.0,
+      "system-design": 0.0,
+      "security": 0.0
+    },
+    "language": {
+      "ko": 0.16666666666666666,
+      "mixed": 0.25
+    },
+    "latency_p95_warm_ms": 383.15495899587404,
+    "hard_regression_failures": 8
+  },
+  "delta": {
+    "primary_ndcg_micro": 0.0,
+    "primary_ndcg_macro_category": 0.0,
+    "primary_ndcg_macro_language": 0.0,
+    "category": {
+      "data-structure": 0.0,
+      "design-pattern": 0.0,
+      "security": 0.0,
+      "system-design": 0.0
+    },
+    "language": {
+      "ko": 0.0,
+      "mixed": 0.0
+    },
+    "latency_p95_warm_ms": -12.104374007321894,
+    "hard_regression_failures": 0
+  },
+  "decision": {
+    "accepted_for_corpus": true,
+    "reason": "Adds Korean retrieval anchors to the one pilot doc that lacked them; sampled eval shows no quality regression versus the prior no-sidecar pilot."
+  }
+}

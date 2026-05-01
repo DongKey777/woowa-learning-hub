@@ -247,3 +247,51 @@ Decision:
 - The next useful lever is not weight tuning; it needs either better Korean
   anchors in the indexed corpus or structural query rewrites that introduce
   terms missing from the existing Lance FTS fields.
+
+## Phase 4.2 Korean Retrieval Anchor Pilot
+
+Summary JSON: `reports/rag_eval/anchor_pilot_strict_list_comparison_20260501T0520Z.json`
+
+Change:
+
+- Added Korean entries to the existing `retrieval-anchor-keywords` field in
+  `knowledge/cs/contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md`.
+- The other four pilot docs already had Korean or mixed-language retrieval
+  anchors in the same supported field.
+- No new frontmatter field was introduced.
+
+Validation:
+
+```bash
+.venv/bin/python -m pytest tests/unit/test_corpus_loader.py tests/unit/test_corpus_lint.py -q
+
+env HF_HUB_OFFLINE=1 WOOWA_CHUNK_CONTEXT_ROOT=/private/tmp/woowa_chunk_context_empty \
+  bin/rag-eval --sampled-ablate \
+  --fixture tests/fixtures/cs_rag_multi_turn_queries.json \
+  --sample-root /private/tmp/woowa_anchor_eval_strict_list_20260501T0520 \
+  --sample-categories data-structure,design-pattern,system-design,security \
+  --sample-extra-docs-per-category 0 \
+  --sample-force-rebuild \
+  --ablation-split full \
+  --ablation-modalities fts,dense,sparse \
+  --ablation-out reports/rag_eval/anchor_pilot_strict_list_20260501T0520Z.json \
+  --top-k 10 \
+  --device auto
+```
+
+Measurement versus the prior no-sidecar pilot
+`reports/rag_eval/chunk_context_pilot_noctx_20260501T0416Z.json`:
+
+| metric | delta |
+|---|---:|
+| primary nDCG micro | +0.0000 |
+| category macro | +0.0000 |
+| language macro | +0.0000 |
+| ko bucket | +0.0000 |
+| mixed bucket | +0.0000 |
+| hard regression failures | 0 |
+
+Decision:
+
+- Keep the Korean anchors. They complete the 5-doc Phase 4.2 pilot without
+  measured sampled-regression.

@@ -47,6 +47,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4 5-doc sidecar pilot | `reports/rag_eval/chunk_context_pilot_comparison_20260501T0416Z.json` records 130 inputs and 130 outputs over 5 docs | Complete |
 | Phase 4 multi-turn fixture | `tests/fixtures/cs_rag_multi_turn_queries.json`; `bin/rag-eval --fast` passed with 10 queries | Complete |
 | Phase 4 ko bucket delta | Comparison report records `ko_bucket_delta_primary_ndcg=0.0` | Complete |
+| Phase 4.2 Korean retrieval-anchor pilot | `knowledge/cs/contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md` Korean anchors added; `reports/rag_eval/anchor_pilot_strict_list_comparison_20260501T0520Z.json` shows `+0.0000` sampled quality delta and no hard-regression increase | Complete |
 | Phase 4.3 Korean query-side `search_terms` candidate | `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`; same-code weights `0.3` and `0.7` had `+0.0000` macro/ko delta versus weight `0.0` | Measured, not accepted |
 
 ## Blocking Evidence
