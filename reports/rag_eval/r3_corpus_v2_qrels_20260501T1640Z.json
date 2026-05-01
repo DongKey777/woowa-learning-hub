@@ -80,6 +80,21 @@
           "grade": 3,
           "path": "contents/database/sql-reading-relational-modeling-primer.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-join-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/primary-foreign-key-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-aggregate-groupby-basics.md",
+          "role": "acceptable"
         }
       ],
       "query_id": "database/sql-relational-modeling-basics:expected:1",
@@ -98,6 +113,21 @@
           "grade": 3,
           "path": "contents/database/sql-reading-relational-modeling-primer.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-join-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/primary-foreign-key-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-aggregate-groupby-basics.md",
+          "role": "acceptable"
         }
       ],
       "query_id": "database/sql-relational-modeling-basics:expected:2",
@@ -116,6 +146,21 @@
           "grade": 3,
           "path": "contents/database/sql-reading-relational-modeling-primer.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-join-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/primary-foreign-key-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-aggregate-groupby-basics.md",
+          "role": "acceptable"
         }
       ],
       "query_id": "database/sql-relational-modeling-basics:expected:3",
@@ -134,6 +179,21 @@
           "grade": 3,
           "path": "contents/database/sql-reading-relational-modeling-primer.md",
           "role": "primary"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-join-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/primary-foreign-key-basics.md",
+          "role": "acceptable"
+        },
+        {
+          "grade": 2,
+          "path": "contents/database/sql-aggregate-groupby-basics.md",
+          "role": "acceptable"
         }
       ],
       "query_id": "database/sql-relational-modeling-basics:expected:4",

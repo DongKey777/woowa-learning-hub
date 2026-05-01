@@ -112,3 +112,41 @@ def test_cross_encoder_reranker_sorts_candidates_and_keeps_metadata():
     assert reranked[0].retriever == "reranker:BAAI/bge-reranker-v2-m3"
     assert reranked[0].metadata["reranker_model"] == "BAAI/bge-reranker-v2-m3"
     assert reranked[0].metadata["pre_rerank_rank"] == 2
+    assert reranked[0].metadata["cross_encoder_score"] == len("much longer passage")
+    assert reranked[0].metadata["cross_encoder_rank"] == 1
+    assert reranked[0].metadata["rerank_fusion_score"] == reranked[0].score
+
+
+def test_cross_encoder_reranker_blends_model_rank_with_fusion_rank():
+    candidates = [
+        Candidate(
+            path="stable.md",
+            retriever="fusion",
+            rank=1,
+            score=0.2,
+            title="Stable",
+            metadata={"passage": "medium passage"},
+        ),
+        Candidate(
+            path="model-favorite.md",
+            retriever="fusion",
+            rank=2,
+            score=0.1,
+            title="Model favorite",
+            metadata={"passage": "much longer passage"},
+        ),
+    ]
+    reranker = CrossEncoderReranker(
+        model_id="BAAI/bge-reranker-v2-m3",
+        model_factory=lambda _: FakeCrossEncoder(),
+        fusion_rank_weight=2.0,
+        reranker_rank_weight=1.0,
+    )
+
+    reranked = reranker.rerank("latency가 뭐야?", candidates, top_n=2)
+
+    assert [candidate.path for candidate in reranked] == [
+        "stable.md",
+        "model-favorite.md",
+    ]
+    assert reranked[1].metadata["cross_encoder_rank"] == 1

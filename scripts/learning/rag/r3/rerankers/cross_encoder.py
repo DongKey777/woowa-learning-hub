@@ -92,6 +92,9 @@ class CrossEncoderReranker:
     model_id: str
     model_factory: ModelFactory = default_model_factory
     max_pair_len: int = 512
+    fusion_rank_weight: float = 1.0
+    reranker_rank_weight: float = 1.0
+    rank_fusion_k: int = 60
 
     _model: Any | None = field(default=None, init=False, repr=False)
 
@@ -128,15 +131,40 @@ class CrossEncoderReranker:
             [query, _candidate_passage(candidate)[: self.max_pair_len]]
             for candidate in head
         ]
-        scores = self._get_model().predict(pairs, show_progress_bar=False)
+        scores = [
+            float(score)
+            for score in self._get_model().predict(pairs, show_progress_bar=False)
+        ]
+        scored: list[tuple[Candidate, float]] = list(zip(head, scores))
+        model_ranked = sorted(scored, key=lambda item: (-item[1], item[0].path))
+        model_ranks = {
+            candidate.candidate_id: rank
+            for rank, (candidate, _score) in enumerate(model_ranked, start=1)
+        }
+        cross_encoder_scores = {
+            candidate.candidate_id: score
+            for candidate, score in scored
+        }
+
         reranked: list[Candidate] = []
         for candidate, score in zip(head, scores):
+            model_rank = model_ranks[candidate.candidate_id]
+            fusion_rank_score = self.fusion_rank_weight / (
+                self.rank_fusion_k + candidate.rank
+            )
+            reranker_rank_score = self.reranker_rank_weight / (
+                self.rank_fusion_k + model_rank
+            )
+            hybrid_score = fusion_rank_score + reranker_rank_score
             metadata = dict(candidate.metadata)
             metadata.update(
                 {
                     "reranker_model": self.model_id,
                     "pre_rerank_rank": candidate.rank,
                     "pre_rerank_score": candidate.score,
+                    "cross_encoder_score": score,
+                    "cross_encoder_rank": model_rank,
+                    "rerank_fusion_score": hybrid_score,
                 }
             )
             reranked.append(
@@ -145,13 +173,19 @@ class CrossEncoderReranker:
                     chunk_id=candidate.chunk_id,
                     retriever=f"reranker:{self.model_id}",
                     rank=candidate.rank,
-                    score=float(score),
+                    score=hybrid_score,
                     title=candidate.title,
                     section_title=candidate.section_title,
                     metadata=metadata,
                 )
             )
-        reranked.sort(key=lambda candidate: (-candidate.score, candidate.path))
+        reranked.sort(
+            key=lambda candidate: (
+                -candidate.score,
+                -cross_encoder_scores[candidate.candidate_id],
+                candidate.path,
+            )
+        )
         out: list[Candidate] = []
         for rank, candidate in enumerate([*reranked, *tail], start=1):
             out.append(
