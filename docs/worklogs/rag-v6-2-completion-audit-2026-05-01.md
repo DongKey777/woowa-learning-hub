@@ -50,6 +50,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4.2 Korean retrieval-anchor pilot | `knowledge/cs/contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md` Korean anchors added; `reports/rag_eval/anchor_pilot_strict_list_comparison_20260501T0520Z.json` shows `+0.0000` sampled quality delta and no hard-regression increase | Complete |
 | Phase 4.3 Korean query-side `search_terms` candidate | `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`; same-code weights `0.3` and `0.7` had `+0.0000` macro/ko delta versus weight `0.0` | Measured, not accepted |
 | Phase 4 structural `query-rewrite-v1` sidecar pilot | `WOOWA_RAG_QUERY_REWRITE_ROOT` override added for temp Lance eval indexes; `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json` shows `+0.0000` sampled quality delta and +91.1 ms local CPU P95 | Measured, not accepted |
+| Cutover decision handoff | `docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` records the failed gates, current runtime state, and the three allowed product decision paths | Complete |
 
 ## Blocking Evidence
 
@@ -97,3 +98,6 @@ productive step requires a user/product decision:
 3. Explicitly approve a risky cutover despite the failed gate.
 
 Until one of those decisions is made, the active goal remains incomplete.
+The handoff artifact
+`docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` is the current
+decision packet for that input.
