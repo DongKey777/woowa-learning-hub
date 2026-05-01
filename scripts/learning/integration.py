@@ -52,12 +52,16 @@ enforced in the plan's Phase 2.1 "책임 경계" clause and verified by
 
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 from typing import Any
 
 from .rag import category_mapping, signal_rules
 from .rag import indexer as rag_indexer
+
+RAG_RUNTIME_BACKEND_ENV = "WOOWA_RAG_RUNTIME_BACKEND"
+VALID_SEARCH_BACKENDS = {"auto", "legacy", "lance", "r3"}
 
 
 def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
@@ -88,6 +92,7 @@ def augment(
     readiness: rag_indexer.ReadinessReport | None = None,
     experience_level: str | None = None,
     learner_context: dict[str, Any] | None = None,
+    backend: str | None = None,
 ) -> dict[str, Any]:
     """Run CS RAG search and shape results for coach_run payload assembly."""
     if cs_search_mode not in ("skip", "cheap", "full"):
@@ -116,7 +121,7 @@ def augment(
         return _empty_result("import_error", cs_search_mode)
 
     start = time.time()
-    backend = _detect_backend(index_root)
+    backend = resolve_search_backend(index_root, override=backend)
 
     by_lp: dict[str, list[dict]] = {}
     by_fallback: dict[str, list[dict]] = {}
@@ -296,6 +301,21 @@ def _detect_backend(index_root: Path | str) -> str:
     except (TypeError, ValueError):
         return "legacy"
     return "lance" if version >= rag_indexer.LANCE_INDEX_VERSION else "legacy"
+
+
+def resolve_search_backend(
+    index_root: Path | str,
+    *,
+    override: str | None = None,
+) -> str:
+    """Resolve the runtime search backend with explicit R3 opt-in."""
+
+    candidate = override or os.environ.get(RAG_RUNTIME_BACKEND_ENV)
+    if candidate and candidate not in VALID_SEARCH_BACKENDS:
+        raise ValueError(f"unknown RAG runtime backend: {candidate}")
+    if candidate and candidate != "auto":
+        return candidate
+    return _detect_backend(index_root)
 
 
 def _sidecar_hit(hit: dict) -> dict:

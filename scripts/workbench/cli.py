@@ -775,6 +775,7 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
                 topic_hints=None,
                 readiness=readiness,
                 learner_context=out["learner_context"],
+                backend=args.rag_backend,
             )
         except Exception as exc:  # noqa: BLE001 — surface any failure as note
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
@@ -1726,6 +1727,12 @@ def build_parser() -> argparse.ArgumentParser:
     rag_ask_parser.add_argument("prompt", help="Learner prompt to classify and answer.")
     rag_ask_parser.add_argument("--repo", help="Optional onboarded repo name (for Tier 3 PR coaching).")
     rag_ask_parser.add_argument("--module", help="Optional learning module hint (e.g. spring-core-1).")
+    rag_ask_parser.add_argument(
+        "--rag-backend",
+        choices=("auto", "legacy", "lance", "r3"),
+        default=None,
+        help="Optional CS RAG backend override. Default follows manifest/env.",
+    )
     rag_ask_parser.set_defaults(func=cmd_rag_ask)
 
     learner_profile_parser = subparsers.add_parser(
