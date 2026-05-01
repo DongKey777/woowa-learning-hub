@@ -1542,8 +1542,24 @@ def search(
     """
     if mode not in ("cheap", "full"):
         raise ValueError(f"unknown mode: {mode}")
-    if backend not in ("legacy", "lance"):
+    if backend not in ("legacy", "lance", "r3"):
         raise ValueError(f"unknown backend: {backend}")
+
+    if backend == "r3":
+        from .r3.search import search as r3_search
+
+        return r3_search(
+            prompt,
+            learning_points=learning_points,
+            topic_hints=topic_hints,
+            top_k=top_k,
+            mode=mode,
+            index_root=index_root,
+            use_reranker=use_reranker,
+            experience_level=experience_level,
+            learner_context=learner_context,
+            debug=debug,
+        )
 
     if backend == "lance":
         return _search_lance(

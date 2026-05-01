@@ -1,0 +1,24 @@
+{
+  "queries": [
+    {
+      "query_id": "r3-mixed-latency-definition",
+      "prompt": "latency가 뭐야?",
+      "qrels": [
+        {
+          "path": "contents/network/timeout-retry-backoff-practical.md",
+          "grade": 3,
+          "role": "primary"
+        },
+        {
+          "path": "contents/system-design/service-latency-slo-basics.md",
+          "grade": 2,
+          "role": "acceptable"
+        }
+      ],
+      "forbidden_paths": [
+        "contents/language/java/object-oriented-core-principles.md"
+      ],
+      "tags": ["mixed", "definition", "pilot"]
+    }
+  ]
+}
