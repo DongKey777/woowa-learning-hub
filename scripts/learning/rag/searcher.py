@@ -48,6 +48,7 @@ from . import category_mapping, indexer, signal_rules
 from .conversation_window import recent_rag_ask_context
 from .follow_up import is_follow_up
 from .multi_query import QueryCandidate, build_query_candidates, weighted_rrf_merge
+from .r3.config import resolve_rerank_input_window
 
 RRF_K = 60
 DEFAULT_TOP_K = 5
@@ -1660,9 +1661,10 @@ def search(
         #    domain terms (fixes e.g. "책임 분리" collapsing onto
         #    "Chain of Responsibility" on raw token overlap).
         if mode == "full" and _rerank_enabled(use_reranker):
+            rerank_top_n = resolve_rerank_input_window(top_k)
             anchor = category_mapping.anchor_phrase_for(learning_points)
             rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
-            filtered = _rerank(rerank_prompt, filtered, chunks, top_n=top_k * 2)
+            filtered = _rerank(rerank_prompt, filtered, chunks, top_n=rerank_top_n)
             # Cross-encoder scores are not calibrated against our route
             # contract. Re-apply signal boosts after rerank so explicit
             # beginner/family routing survives final polishing.
@@ -1739,9 +1741,10 @@ def _search_lance(
         debug["allowed_categories"] = sorted(allowed_categories)
 
     if mode == "full" and _rerank_enabled(use_reranker):
+        rerank_top_n = resolve_rerank_input_window(top_k)
         anchor = category_mapping.anchor_phrase_for(learning_points)
         rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
-        filtered = _rerank(rerank_prompt, filtered, chunks, top_n=top_k * 2)
+        filtered = _rerank(rerank_prompt, filtered, chunks, top_n=rerank_top_n)
         filtered = _apply_signal_boost(
             filtered,
             chunks,

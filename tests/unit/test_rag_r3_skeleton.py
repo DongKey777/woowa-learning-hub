@@ -6,6 +6,7 @@ import pytest
 
 from scripts.learning.rag import searcher
 from scripts.learning.rag.r3.candidate import Candidate
+from scripts.learning.rag.r3.config import resolve_rerank_input_window
 from scripts.learning.rag.r3.eval.qrels import R3Qrel, load_qrels
 from scripts.learning.rag.r3.eval.trace import R3Trace, read_jsonl, write_jsonl
 from scripts.learning.rag.r3.query_plan import build_query_plan
@@ -91,3 +92,13 @@ def test_searcher_explicit_r3_backend_routes_without_index():
     assert debug["backend"] == "r3"
     assert debug["r3_skeleton"] is True
     assert debug["r3_query_plan"]["language"] == "mixed"
+
+
+def test_rerank_input_window_is_profile_configurable(monkeypatch):
+    assert resolve_rerank_input_window(5) == 10
+
+    monkeypatch.setenv("WOOWA_RAG_RERANK_INPUT_WINDOW", "50")
+    assert resolve_rerank_input_window(5) == 50
+
+    monkeypatch.setenv("WOOWA_RAG_RERANK_INPUT_WINDOW", "not-an-int")
+    assert resolve_rerank_input_window(5) == 10

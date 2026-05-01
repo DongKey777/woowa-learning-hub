@@ -11,6 +11,7 @@ DEFAULT_RERANKER_MODEL = "BAAI/bge-reranker-v2-m3"
 DEFAULT_MULTILINGUAL_FALLBACK = "Alibaba-NLP/gte-multilingual-reranker-base"
 DEFAULT_COMPATIBILITY_FALLBACK = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 DEFAULT_ENGLISH_ONLY_EXPERIMENT = "mixedbread-ai/mxbai-rerank-base-v1"
+RERANK_INPUT_WINDOW_ENV = "WOOWA_RAG_RERANK_INPUT_WINDOW"
 
 
 def _int_from_env(name: str, default: int) -> int:
@@ -29,6 +30,27 @@ def _bool_from_env(name: str, default: bool = False) -> bool:
     if raw is None:
         return default
     return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def resolve_rerank_input_window(top_k: int, *, default: int | None = None) -> int:
+    """Resolve the reranker pair window without hard-coding ``top_k * 2``.
+
+    Existing production behavior stays the fallback default, while experiments
+    can set ``WOOWA_RAG_RERANK_INPUT_WINDOW`` to values such as 10, 50, or 100
+    and observe a real change in reranker input size.
+    """
+
+    fallback = default if default is not None else max(top_k * 2, 1)
+    raw = os.environ.get(RERANK_INPUT_WINDOW_ENV)
+    if raw is None:
+        return fallback
+    try:
+        value = int(raw)
+    except ValueError:
+        return fallback
+    if value <= 0:
+        return fallback
+    return value
 
 
 @dataclass(frozen=True)
