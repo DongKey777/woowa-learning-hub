@@ -5,6 +5,16 @@ Objective: `/Users/idonghun/.claude/plans/abundant-humming-lovelace.md`
 External review packet:
 `docs/worklogs/rag-v6-2-external-review-packet-2026-05-01.md`
 
+External review result:
+
+- Option A was strongly supported.
+- No defensible gate change or product reason for risky cutover was identified.
+- The reviewer raised a reranker-hook rebuild hypothesis, but current
+  same-query evidence resolves it: reranker-on Lance scored `0.9102958204`,
+  while the same index and fixture with `WOOWA_RAG_NO_RERANK=1` scored
+  `0.8081397290`. Current same-query measurements are therefore exercising the
+  post-fix Lance reranker path.
+
 ## Current Decision
 
 Do not run Phase 3 production cutover yet.

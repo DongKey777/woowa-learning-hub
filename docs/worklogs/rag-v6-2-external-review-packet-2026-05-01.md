@@ -18,6 +18,42 @@ Choose one path:
 Current recommendation: choose option 1 unless there is a product reason to
 accept weaker retrieval quality.
 
+## External Review Response
+
+Reviewer position received after this packet:
+
+- Option A is strongly supported by the current evidence.
+- No defensible replacement gate was identified. Any gate that lets this R2
+  candidate pass would effectively abandon the quality criterion.
+- No product reason was identified for a risky cutover.
+- The next work should target cross-category mis-retrieval first.
+
+Correction to one reviewer hypothesis:
+
+- The reviewer suggested rebuilding the R2 artifact because the original R2
+  artifact predated the Lance reranker hook fix.
+- That is true for the historical artifact provenance, but not enough to
+  justify an immediate rebuild by itself. The same-query recovery diagnostics
+  already evaluated the preserved R2 index through the current `main` Lance
+  search path, after the hook fix had been merged.
+- Evidence:
+  - reranker-on same-query report:
+    `reports/rag_eval/r2_korean_terms_w00_holdout_20260501T0450Z.json`
+    scored `0.9102958204`.
+  - same index and fixture with `WOOWA_RAG_NO_RERANK=1`:
+    `reports/rag_eval/r2_no_rerank_same_queries_20260501T0540Z.json`
+    scored `0.8081397290`.
+  - The large delta proves the current same-query measurement is not silently
+    skipping reranker. A rebuild solely to pick up the reranker hook is
+    therefore not the next required step.
+
+Updated next step:
+
+- Keep Option A as the product recommendation.
+- If continuing technically before product input, prioritize cross-category
+  mis-retrieval diagnostics and then a true reranker A/B (`mmarco` vs
+  `bge-reranker-v2-m3`), not a same-artifact rebuild for hook provenance.
+
 ## Current Runtime State
 
 Production runtime is still legacy v2:
