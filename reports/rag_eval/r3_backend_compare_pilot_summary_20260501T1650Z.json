@@ -1,0 +1,212 @@
+{
+  "backends": [
+    {
+      "backend": "r3",
+      "query_count": 52,
+      "spec": {
+        "backend": "r3",
+        "index_root": "state/cs_rag",
+        "modalities": [],
+        "name": "r3",
+        "use_reranker": null
+      },
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "forbidden_hits": 20,
+            "forbidden_rate": 0.38461538461538464,
+            "forbidden_window": 5,
+            "total": 52
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 4,
+            "forbidden_rate": 0.4,
+            "forbidden_window": 5,
+            "total": 10
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "forbidden_hits": 16,
+            "forbidden_rate": 0.38095238095238093,
+            "forbidden_window": 5,
+            "total": 42
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "forbidden_hits": 3,
+            "forbidden_rate": 0.375,
+            "forbidden_window": 5,
+            "total": 8
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "forbidden_hits": 16,
+            "forbidden_rate": 0.4,
+            "forbidden_window": 5,
+            "total": 40
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.25,
+            "forbidden_window": 5,
+            "total": 4
+          }
+        },
+        "forbidden_query_ids": [
+          "database/sql-relational-modeling-basics:expected:1",
+          "database/sql-relational-modeling-basics:expected:2",
+          "database/sql-relational-modeling-basics:expected:4",
+          "database/transaction-basics:expected:1",
+          "database/transaction-basics:expected:2",
+          "database/transaction-case-studies:expected:4",
+          "database/transaction-isolation-basics:expected:1",
+          "network/devtools-waterfall-primer:expected:3",
+          "network/devtools-waterfall-primer:expected:4",
+          "network/request-timing-decomposition:expected:2",
+          "network/request-timing-decomposition:expected:3",
+          "spring/ioc-container-internals:expected:3",
+          "spring/bean-di-basics:expected:1",
+          "spring/bean-lifecycle-basics:expected:1",
+          "spring/bean-lifecycle-basics:expected:2",
+          "spring/bean-lifecycle-basics:expected:3",
+          "spring/bean-lifecycle-basics:expected:4",
+          "spring/ioc-di-basics:expected:2",
+          "spring/ioc-di-basics:expected:3",
+          "spring/ioc-di-basics:expected:4"
+        ],
+        "missing_candidate_primary_query_ids": [],
+        "missing_final_primary_query_ids": [],
+        "overall": {
+          "candidate_recall_primary": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "candidate_recall_relevant": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "final_hit_primary": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "final_hit_relevant": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "forbidden_hits": 20,
+          "forbidden_rate": 0.38461538461538464,
+          "forbidden_window": 5,
+          "total": 52
+        },
+        "windows": [
+          5,
+          20
+        ]
+      }
+    }
+  ],
+  "forbidden_window": 5,
+  "schema_version": 1,
+  "top_k": 20,
+  "windows": [
+    5,
+    20
+  ]
+}

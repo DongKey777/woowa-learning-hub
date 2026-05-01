@@ -27,14 +27,21 @@ class FakeMultiModalEncoder:
         progress=None,
     ):
         self.encode_calls.append(list(texts))
+        want_dense = "dense" in modalities
+        want_sparse = "sparse" in modalities
+        want_colbert = "colbert" in modalities
         dense = np.zeros((len(texts), self.dense_dim), dtype=np.float32)
         sparse = []
         colbert = []
         for i, text in enumerate(texts):
-            dense[i, i % self.dense_dim] = 1.0
-            sparse.append({i + 1: 1.0, 42: 0.25})
-            token_value = float((len(text) % 7) + 1)
-            colbert.append(np.full((2, self.colbert_dim), token_value, dtype=np.float16))
+            if want_dense:
+                dense[i, i % self.dense_dim] = 1.0
+            sparse.append({i + 1: 1.0, 42: 0.25} if want_sparse else {})
+            if want_colbert:
+                token_value = float((len(text) % 7) + 1)
+                colbert.append(np.full((2, self.colbert_dim), token_value, dtype=np.float16))
+            else:
+                colbert.append(np.zeros((0, self.colbert_dim), dtype=np.float16))
         return {"dense": dense, "sparse": sparse, "colbert": colbert}
 
     def encode_query(self, text, *, modalities=("dense", "sparse", "colbert")):
@@ -179,3 +186,35 @@ def test_incremental_lance_build_handles_add_and_pure_delete(tmp_path):
     assert deleted.encoded_chunk_count == 0
     assert deleted.lance_version_after > deleted.lance_version_before
     assert indexer.open_lance_table(index_root).count_rows() == initial_count
+
+
+def test_incremental_lance_build_handles_sparse_without_colbert_modalities(tmp_path):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "index"
+    encoder = FakeMultiModalEncoder()
+    initial = incremental_indexer.incremental_lance_build_index(
+        encoder=encoder,
+        index_root=index_root,
+        corpus_root=corpus_root,
+        modalities=("fts", "dense", "sparse"),
+    )
+    initial_count = initial.manifest["row_count"]
+
+    _write_doc(
+        corpus_root,
+        "network",
+        "latency-basics",
+        "Latency 기초",
+        "Latency는 요청과 응답 사이에 걸리는 시간입니다. " * 4,
+    )
+    added = incremental_indexer.incremental_lance_build_index(
+        encoder=encoder,
+        index_root=index_root,
+        corpus_root=corpus_root,
+        modalities=("fts", "dense", "sparse"),
+    )
+    final_count = indexer.open_lance_table(index_root).count_rows()
+
+    assert added.mode == "incremental"
+    assert added.encoded_chunk_count == final_count - initial_count
+    assert final_count > initial_count

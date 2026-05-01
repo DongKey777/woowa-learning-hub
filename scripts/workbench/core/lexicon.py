@@ -121,6 +121,7 @@ CS_DOMAIN_TOKENS: frozenset[str] = frozenset([
     # 인프라 / 서버 (학습자가 "웹서버와 WAS 차이" 같은 질문할 때 자주 등장)
     "웹서버", "웹 서버", "애플리케이션 서버",
     "톰캣", "서블릿", "리버스 프록시",
+    "네트워크", "지연", "대역폭", "처리량",
     # English
     "transaction", "isolation", "normalization", "index", "cache",
     "deadlock", "thread", "concurrency", "synchronization",
@@ -130,6 +131,9 @@ CS_DOMAIN_TOKENS: frozenset[str] = frozenset([
     # Infrastructure / servers
     "web server", "application server", "was",
     "tomcat", "nginx", "apache", "servlet", "reverse proxy",
+    # Network/protocol performance terms frequently asked in mixed Korean.
+    "network", "latency", "bandwidth", "throughput", "rtt",
+    "ttfb", "ttlb", "dns", "tcp", "tls", "http",
 ])
 
 

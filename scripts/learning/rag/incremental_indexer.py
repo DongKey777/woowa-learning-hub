@@ -620,6 +620,23 @@ def _chunk_id_filter(chunk_ids: Iterable[str]) -> str:
     return "chunk_id IN (" + ", ".join(_quote_lance_sql(chunk_id) for chunk_id in ids) + ")"
 
 
+def _lance_delta_table(
+    records: list[dict],
+    *,
+    encoder,
+    colbert_dtype: str,
+    indexer_module,
+):
+    import pyarrow as pa  # type: ignore
+
+    schema = indexer_module._lance_schema(
+        encoder.dense_dim,
+        encoder.colbert_dim,
+        colbert_dtype=colbert_dtype,
+    )
+    return pa.Table.from_pylist(records, schema=schema)
+
+
 def _lance_full_rebuild_reason(
     *,
     index_root_path: Path,
@@ -846,6 +863,12 @@ def incremental_lance_build_index(
 
     try:
         if records:
+            source = _lance_delta_table(
+                records,
+                encoder=encoder,
+                colbert_dtype=colbert_dtype,
+                indexer_module=indexer,
+            )
             builder = (
                 table.merge_insert("chunk_id")
                 .when_matched_update_all()
@@ -855,7 +878,7 @@ def incremental_lance_build_index(
                 builder = builder.when_not_matched_by_source_delete(
                     _chunk_id_filter(diff.deleted)
                 )
-            result = builder.execute(records)
+            result = builder.execute(source)
             _tick(
                 "lance_merge_insert",
                 {

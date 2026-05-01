@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, searcher
+from scripts.learning.rag.r3.index.runtime_loader import load_lance_documents
 
 
 def _chunk(
@@ -130,3 +131,109 @@ def test_r3_backend_reranks_only_when_explicitly_enabled(tmp_path, monkeypatch):
 
     assert hits[0]["path"] == "contents/network/latency-deep-dive.md"
     assert debug["r3_reranker_model"] == "fake-reranker"
+
+
+def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path):
+    captured = {}
+
+    class FakeFrame:
+        def to_dict(self, orient):
+            assert orient == "records"
+            return [
+                {
+                    "chunk_id": "latency#0",
+                    "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                    "title": "Latency",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Latency", "Primer"]',
+                    "body": "latency bandwidth throughput",
+                    "search_terms": "latency 지연 처리량",
+                    "anchors": '["latency", "지연"]',
+                }
+            ]
+
+    class FakeTable:
+        version = 7
+
+        def to_pandas(self, **kwargs):
+            captured["columns"] = kwargs["columns"]
+            return FakeFrame()
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: {"corpus_hash": "hash"},
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+
+    documents = load_lance_documents(tmp_path)
+
+    assert captured["columns"] == [
+        "chunk_id",
+        "path",
+        "title",
+        "category",
+        "difficulty",
+        "section_path",
+        "body",
+        "search_terms",
+        "anchors",
+    ]
+    assert documents[0].path == "contents/network/latency-bandwidth-throughput-basics.md"
+    assert documents[0].section_title == "Primer"
+    assert documents[0].aliases == ("latency", "지연")
+    assert documents[0].sparse_terms["latency"] == 1.0
+    assert documents[0].metadata["index_backend"] == "lance"
+
+
+def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):
+    captured = {}
+
+    class FakeSearch:
+        def limit(self, value):
+            captured["limit"] = value
+            return self
+
+        def to_list(self):
+            return [
+                {
+                    "chunk_id": "latency#0",
+                    "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                    "title": "Latency",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Latency", "Primer"]',
+                    "body": "latency",
+                    "search_terms": "latency",
+                    "anchors": "[]",
+                }
+            ]
+
+    class FakeTable:
+        version = 8
+
+        def search(self, query, *, query_type):
+            captured["query"] = query
+            captured["query_type"] = query_type
+            return FakeSearch()
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: {"corpus_hash": "hash"},
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+
+    documents = load_lance_documents(tmp_path, query="latency가 뭐야?", limit=25)
+
+    assert captured == {
+        "query": "latency가 뭐야?",
+        "query_type": "fts",
+        "limit": 25,
+    }
+    assert documents[0].path == "contents/network/latency-bandwidth-throughput-basics.md"

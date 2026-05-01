@@ -69,6 +69,7 @@ class R3Config:
     english_only_experiment_model: str = DEFAULT_ENGLISH_ONLY_EXPERIMENT
     local_rerank_input_window: int = 50
     offline_rerank_input_window: int = 100
+    runtime_lance_prefetch_limit: int = 100
     trace_dir: Path = Path("reports/rag_eval/r3_traces")
 
     @classmethod
@@ -97,6 +98,10 @@ class R3Config:
             ),
             offline_rerank_input_window=_int_from_env(
                 "WOOWA_RAG_R3_OFFLINE_RERANK_INPUT_WINDOW",
+                100,
+            ),
+            runtime_lance_prefetch_limit=_int_from_env(
+                "WOOWA_RAG_R3_LANCE_PREFETCH_LIMIT",
                 100,
             ),
             trace_dir=Path(

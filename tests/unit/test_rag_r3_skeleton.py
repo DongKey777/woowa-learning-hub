@@ -7,7 +7,7 @@ import pytest
 
 from scripts.learning.rag import searcher
 from scripts.learning.rag.r3.candidate import Candidate
-from scripts.learning.rag.r3.config import resolve_rerank_input_window
+from scripts.learning.rag.r3.config import R3Config, resolve_rerank_input_window
 from scripts.learning.rag.r3.eval.qrels import (
     R3Qrel,
     load_qrels,
@@ -92,10 +92,15 @@ def test_r3_qrel_rejects_role_grade_mismatch():
         R3Qrel(path="a.md", grade=1, role="primary")
 
 
-def test_searcher_explicit_r3_backend_routes_without_index():
+def test_searcher_explicit_r3_backend_routes_without_index(tmp_path):
     debug: dict = {}
 
-    results = searcher.search("latency가 뭐야?", backend="r3", debug=debug)
+    results = searcher.search(
+        "latency가 뭐야?",
+        backend="r3",
+        index_root=tmp_path / "missing",
+        debug=debug,
+    )
 
     assert results == []
     assert debug["backend"] == "r3"
@@ -111,6 +116,14 @@ def test_rerank_input_window_is_profile_configurable(monkeypatch):
 
     monkeypatch.setenv("WOOWA_RAG_RERANK_INPUT_WINDOW", "not-an-int")
     assert resolve_rerank_input_window(5) == 10
+
+
+def test_r3_lance_prefetch_limit_defaults_to_local_runtime_budget(monkeypatch):
+    monkeypatch.delenv("WOOWA_RAG_R3_LANCE_PREFETCH_LIMIT", raising=False)
+    assert R3Config.from_env().runtime_lance_prefetch_limit == 100
+
+    monkeypatch.setenv("WOOWA_RAG_R3_LANCE_PREFETCH_LIMIT", "25")
+    assert R3Config.from_env().runtime_lance_prefetch_limit == 25
 
 
 def test_trace_fixture_cli_writes_jsonl(tmp_path):

@@ -136,6 +136,16 @@ class AsciiBoundaryRegressionTests(unittest.TestCase):
         d = classify("HashMap이 뭐야?")
         self.assertEqual(d.tier, 1)
 
+    def test_latency_followed_by_korean_particle_routes_to_tier1(self) -> None:
+        d = classify("latency가 뭐야?")
+        self.assertEqual(d.tier, 1)
+        self.assertEqual(d.mode, "cheap")
+
+    def test_ttfb_ttlb_comparison_routes_to_tier2(self) -> None:
+        d = classify("TTFB랑 TTLB는 뭐가 달라?")
+        self.assertEqual(d.tier, 2)
+        self.assertEqual(d.mode, "full")
+
 
 class ExpandedDefinitionSignalTests(unittest.TestCase):
     """학습 세션에서 발견된 자연 한국어 표현이 router에서 빠지지 않도록.

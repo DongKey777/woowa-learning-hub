@@ -12,7 +12,7 @@ from pathlib import Path
 from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
-from .index.runtime_loader import load_legacy_documents
+from .index.runtime_loader import load_runtime_documents
 from .index.lexical_store import LexicalStore
 from .query_plan import build_query_plan
 from .retrievers import LexicalRetriever, SignalRetriever, SparseRetriever
@@ -57,7 +57,15 @@ def search(
     candidates = []
     fused = []
     try:
-        documents = load_legacy_documents(index_root) if index_root is not None else []
+        documents = (
+            load_runtime_documents(
+                index_root,
+                query=query_plan.raw_query,
+                limit=config.runtime_lance_prefetch_limit,
+            )
+            if index_root is not None
+            else []
+        )
     except FileNotFoundError:
         documents = []
 
@@ -98,7 +106,7 @@ def search(
         final_paths=tuple(candidate.path for candidate in fused[:top_k]),
         metadata={
             "backend": "r3",
-            "source_index": "legacy",
+            "source_index": documents[0].metadata.get("index_backend") if documents else None,
             "reranker_model": reranker_model,
             "fused_paths": list(fused_paths),
             "rerank_input_paths": list(rerank_input_paths),
