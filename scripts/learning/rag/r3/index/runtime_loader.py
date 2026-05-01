@@ -12,6 +12,7 @@ from ..candidate import R3Document
 from ..tokenization import tokenize_text
 
 _DOCUMENT_CACHE: dict[tuple[str, str, str, str, str, str], list[R3Document]] = {}
+_MAX_QUERY_DOCUMENT_CACHE_ENTRIES = 32
 _SPARSE_QUERY_ENCODER_CACHE: dict[str, Any] = {}
 
 
@@ -126,6 +127,21 @@ def _records_from_lance_table(
     return frame.to_dict("records")
 
 
+def _cache_lance_documents(
+    cache_key: tuple[str, str, str, str, str, str],
+    documents: list[R3Document],
+) -> None:
+    _DOCUMENT_CACHE[cache_key] = documents
+    query_keys = [
+        key
+        for key in _DOCUMENT_CACHE
+        if key[-1] == "documents" and key[3]
+    ]
+    while len(query_keys) > _MAX_QUERY_DOCUMENT_CACHE_ENTRIES:
+        oldest = query_keys.pop(0)
+        _DOCUMENT_CACHE.pop(oldest, None)
+
+
 def load_lance_documents(
     index_root: Path | str,
     *,
@@ -179,8 +195,7 @@ def load_lance_documents(
                 },
             )
         )
-    _DOCUMENT_CACHE.clear()
-    _DOCUMENT_CACHE[cache_key] = documents
+    _cache_lance_documents(cache_key, documents)
     return documents
 
 

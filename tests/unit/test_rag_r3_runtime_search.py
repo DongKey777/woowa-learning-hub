@@ -247,6 +247,79 @@ def test_r3_lance_sparse_sidecar_omits_body_for_full_sparse_scan(
     assert documents[0].sparse_terms == {"42": 9.0}
 
 
+def test_r3_lance_sparse_sidecar_cache_survives_query_prefetches(
+    monkeypatch,
+    tmp_path,
+):
+    counts = {"to_pandas": 0}
+
+    class FakeSearch:
+        def __init__(self, query):
+            self.query = query
+
+        def limit(self, value):
+            return self
+
+        def to_list(self):
+            return [
+                {
+                    "chunk_id": f"{self.query}#0",
+                    "path": f"contents/network/{self.query}.md",
+                    "title": self.query,
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": f'["{self.query}"]',
+                    "body": self.query,
+                    "search_terms": self.query,
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [1], "values": [1.0]},
+                }
+            ]
+
+    class FakeFrame:
+        def to_dict(self, orient):
+            assert orient == "records"
+            return [
+                {
+                    "chunk_id": "sparse#0",
+                    "path": "contents/network/sparse.md",
+                    "title": "Sparse",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Sparse"]',
+                    "search_terms": "",
+                    "anchors": "[]",
+                    "sparse_vec": {"indices": [42], "values": [9.0]},
+                }
+            ]
+
+    class FakeTable:
+        version = 12
+
+        def search(self, query, *, query_type):
+            return FakeSearch(query)
+
+        def to_pandas(self, **kwargs):
+            counts["to_pandas"] += 1
+            return FakeFrame()
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: {"corpus_hash": "cache-hash"},
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+
+    load_lance_documents(tmp_path, sparse_sidecar=True)
+    for idx in range(40):
+        load_lance_documents(tmp_path, query=f"q{idx}", limit=1)
+    load_lance_documents(tmp_path, sparse_sidecar=True)
+
+    assert counts["to_pandas"] == 1
+
+
 def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):
     captured = {}
 
