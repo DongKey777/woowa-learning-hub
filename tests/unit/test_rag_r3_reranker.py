@@ -1,0 +1,64 @@
+from __future__ import annotations
+
+from scripts.learning.rag.r3.candidate import Candidate
+from scripts.learning.rag.r3.config import R3Config
+from scripts.learning.rag.r3.rerankers import (
+    CrossEncoderReranker,
+    reranker_chain_for_language,
+)
+
+
+class FakeCrossEncoder:
+    def predict(self, pairs, show_progress_bar=False):
+        del show_progress_bar
+        return [len(pair[1]) for pair in pairs]
+
+
+def test_korean_and_mixed_reranker_chain_excludes_english_only_mxbai():
+    config = R3Config()
+
+    for language in ("ko", "mixed"):
+        chain = reranker_chain_for_language(language, config)
+        assert chain[0] == "BAAI/bge-reranker-v2-m3"
+        assert "Alibaba-NLP/gte-multilingual-reranker-base" in chain
+        assert "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1" in chain
+        assert "mixedbread-ai/mxbai-rerank-base-v1" not in chain
+
+
+def test_english_chain_can_include_mxbai_experiment():
+    chain = reranker_chain_for_language("en", R3Config())
+
+    assert chain[0] == "BAAI/bge-reranker-v2-m3"
+    assert "mixedbread-ai/mxbai-rerank-base-v1" in chain
+
+
+def test_cross_encoder_reranker_sorts_candidates_and_keeps_metadata():
+    candidates = [
+        Candidate(
+            path="short.md",
+            retriever="fusion",
+            rank=1,
+            score=0.2,
+            title="Short",
+            metadata={"passage": "tiny"},
+        ),
+        Candidate(
+            path="long.md",
+            retriever="fusion",
+            rank=2,
+            score=0.1,
+            title="Long",
+            metadata={"passage": "much longer passage"},
+        ),
+    ]
+    reranker = CrossEncoderReranker(
+        model_id="BAAI/bge-reranker-v2-m3",
+        model_factory=lambda _: FakeCrossEncoder(),
+    )
+
+    reranked = reranker.rerank("latency가 뭐야?", candidates, top_n=2)
+
+    assert [candidate.path for candidate in reranked] == ["long.md", "short.md"]
+    assert reranked[0].retriever == "reranker:BAAI/bge-reranker-v2-m3"
+    assert reranked[0].metadata["reranker_model"] == "BAAI/bge-reranker-v2-m3"
+    assert reranked[0].metadata["pre_rerank_rank"] == 2
