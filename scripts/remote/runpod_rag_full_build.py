@@ -880,7 +880,7 @@ class RunPodHarness:
             bundle_path = Path(f"/tmp/{run_id}.bundle")
             try:
                 subprocess.run(
-                    ["git", "bundle", "create", str(bundle_path), commit_sha],
+                    ["git", "bundle", "create", str(bundle_path), "HEAD"],
                     cwd=repo_root,
                     check=True,
                 )

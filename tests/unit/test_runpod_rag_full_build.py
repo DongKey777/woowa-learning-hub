@@ -987,7 +987,7 @@ def test_step_5_to_11_uploads_source_bundle_before_commands(
         source_mode="bundle",
     )
 
-    assert bundle_created == [["git", "bundle", "create", "/tmp/r0-bundle.bundle", "abc1234"]]
+    assert bundle_created == [["git", "bundle", "create", "/tmp/r0-bundle.bundle", "HEAD"]]
     assert fake_ssh.scp_to_calls == [("/tmp/r0-bundle.bundle", H.REMOTE_BUNDLE_PATH)]
     assert fake_ssh.commands[1] == f"git clone {H.REMOTE_BUNDLE_PATH} /workspace/repo"
 
