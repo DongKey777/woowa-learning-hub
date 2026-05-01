@@ -26,8 +26,8 @@ The plan's Definition of Done requires all of the following:
 | Commit and ignore untracked Korean rewrite artifacts | Commit `e8d9a1a`; `.gitignore` contains `tests/fixtures/cs_rag_golden_queries_ko_*_applied.json` | Complete |
 | Merge `feature/rag-v6-improve` | Merge commit `bb5ba3a`; `git log` shows feature branch commits behind `main` | Complete |
 | Phase 0 recommended 7-test suite | Session output: 94 passed before merge; post-merge related RAG suite later passed | Complete |
-| Phase 0 full unit suite | Session output after Phase 4: `1937 passed, 2 warnings, 772 subtests passed` | Complete |
-| Push `main` | `git status --short --branch` shows `main...origin/main`; latest pushed commit `f2a100d` | Complete |
+| Phase 0 full unit suite | Latest full unit run after Phase 4 structural rewrite wiring: `1940 passed, 2 warnings, 772 subtests passed` | Complete |
+| Push `main` | Completed phase commits are pushed and current branch tracking is verified with `git status --short --branch` before final handoff | Complete |
 | `bin/rag-remote-build --help` available | Help output includes `--ivf-num-partitions` and `--ivf-num-sub-vectors` | Complete |
 | `bin/doctor` model-lock check | Current output reports expected WARN: config expects Lance v3/BGE-M3, state is legacy v2/MiniLM | Complete |
 | Phase 1 legacy report | `reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json` tracked | Complete |
@@ -49,6 +49,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4 ko bucket delta | Comparison report records `ko_bucket_delta_primary_ndcg=0.0` | Complete |
 | Phase 4.2 Korean retrieval-anchor pilot | `knowledge/cs/contents/design-pattern/strict-list-canary-metrics-rollback-triggers.md` Korean anchors added; `reports/rag_eval/anchor_pilot_strict_list_comparison_20260501T0520Z.json` shows `+0.0000` sampled quality delta and no hard-regression increase | Complete |
 | Phase 4.3 Korean query-side `search_terms` candidate | `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`; same-code weights `0.3` and `0.7` had `+0.0000` macro/ko delta versus weight `0.0` | Measured, not accepted |
+| Phase 4 structural `query-rewrite-v1` sidecar pilot | `WOOWA_RAG_QUERY_REWRITE_ROOT` override added for temp Lance eval indexes; `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json` shows `+0.0000` sampled quality delta and +91.1 ms local CPU P95 | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -77,6 +78,12 @@ Subsequent Phase 4.3 work measured an opt-in Korean query-side `search_terms`
 candidate. A same-code baseline rerun showed weights `0.3` and `0.7` produced
 no ranking lift over weight `0.0`; only local latency varied. The feature is
 therefore left behind `WOOWA_KOREAN_FTS_TERMS_WEIGHT`; default weight is `0.0`.
+
+Subsequent structural `query-rewrite-v1` work added an override so temp Lance
+evaluation indexes can consume rewrite sidecars. The 10-query multi-turn pilot
+validated the wiring but produced no sampled ranking lift over the anchor
+baseline, so it remains evaluation instrumentation rather than a default
+quality improvement.
 
 ## Next Required Decision
 

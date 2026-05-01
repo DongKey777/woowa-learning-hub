@@ -126,8 +126,9 @@ def _write_cached_rewrite(
     prompt: str,
     mode: str,
     texts: list[str],
+    storage: Path | None = None,
 ) -> None:
-    storage = repo_root / "state" / "cs_rag" / "query_rewrites"
+    storage = storage or repo_root / "state" / "cs_rag" / "query_rewrites"
     storage.mkdir(parents=True, exist_ok=True)
     prompt_hash = query_rewrites.compute_prompt_hash(prompt, mode)
     payload = {
@@ -609,6 +610,47 @@ def test_lance_cached_rewrite_candidates_are_batch_encoded_once(tmp_path, monkey
     ]
     assert spy_encoder.encode_corpus_calls[0]["batch_size"] == 2
     assert spy_encoder.encode_query_calls == []
+
+
+def test_lance_cached_rewrite_can_use_env_storage_for_eval_index(tmp_path, monkeypatch):
+    corpus_root = _fake_corpus(tmp_path)
+    index_root = tmp_path / "scratch" / "lance"
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeMultiModalEncoder(),
+    )
+    prompt = "그거 왜 안 보여?"
+    rewrite_storage = tmp_path / "rewrite-cache"
+    _write_cached_rewrite(
+        tmp_path,
+        prompt=prompt,
+        mode="normalize",
+        texts=["Spring Bean dependency injection"],
+        storage=rewrite_storage,
+    )
+    spy_encoder = SpyQueryEncoder()
+    monkeypatch.setattr(searcher, "_get_lance_query_encoder", lambda _root: spy_encoder)
+    monkeypatch.setenv("WOOWA_RAG_QUERY_REWRITE_ROOT", str(rewrite_storage))
+    debug = {}
+
+    hits = searcher.search(
+        prompt,
+        mode="full",
+        backend="lance",
+        index_root=index_root,
+        modalities=("fts", "dense", "sparse"),
+        top_k=2,
+        use_reranker=False,
+        debug=debug,
+    )
+
+    assert hits
+    assert debug["query_candidate_kinds"] == ["original", "rewrite"]
+    assert spy_encoder.encode_corpus_calls[0]["texts"] == [
+        prompt,
+        "Spring Bean dependency injection",
+    ]
 
 
 def test_lance_malformed_rewrite_keeps_single_query_path(tmp_path, monkeypatch):

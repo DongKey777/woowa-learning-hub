@@ -96,6 +96,7 @@ retrieval pass alongside the original query.
 **Storage location**:
 - Input: `state/cs_rag/query_rewrites/<prompt_hash>.input.json`
 - Output: `state/cs_rag/query_rewrites/<prompt_hash>.output.json`
+- Runtime override: `WOOWA_RAG_QUERY_REWRITE_ROOT=/path/to/query_rewrites`
 - TTL: 30 days (caller cleans up; sidecar is gitignored under `state/`)
 
 **Schema regression test**: `tests/unit/test_query_rewrite_contract.py`

@@ -295,3 +295,61 @@ Decision:
 
 - Keep the Korean anchors. They complete the 5-doc Phase 4.2 pilot without
   measured sampled-regression.
+
+## Phase 4 Structural Query-Rewrite Sidecar Pilot
+
+Summary JSON: `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json`
+
+Change:
+
+- Added `WOOWA_RAG_QUERY_REWRITE_ROOT` as an eval/runtime override for
+  `query-rewrite-v1` sidecar storage.
+- This keeps the production default unchanged while allowing temp LanceDB
+  sampled indexes outside `state/cs_rag` to consume AI-written rewrite
+  candidates.
+- Added unit coverage proving a temp Lance eval index reads rewrite candidates
+  from the override storage and batch-encodes them with the original query.
+
+Validation:
+
+```bash
+.venv/bin/python -m pytest \
+  tests/unit/test_lance_search_path.py \
+  tests/unit/test_query_rewrites_reader.py \
+  tests/unit/test_query_rewrite_contract.py \
+  -q
+
+env HF_HUB_OFFLINE=1 \
+  WOOWA_CHUNK_CONTEXT_ROOT=/private/tmp/woowa_chunk_context_empty \
+  WOOWA_RAG_QUERY_REWRITE_ROOT=/private/tmp/woowa_query_rewrite_pilot_20260501T0610/query_rewrites \
+  bin/rag-eval --sampled-ablate \
+  --fixture tests/fixtures/cs_rag_multi_turn_queries.json \
+  --sample-root /private/tmp/woowa_query_rewrite_eval_20260501T0610 \
+  --sample-categories data-structure,design-pattern,system-design,security \
+  --sample-extra-docs-per-category 0 \
+  --sample-force-rebuild \
+  --ablation-split full \
+  --ablation-modalities fts,dense,sparse \
+  --ablation-out reports/rag_eval/query_rewrite_pilot_20260501T0610Z.json \
+  --top-k 10 \
+  --device auto
+```
+
+Measurement versus the prior anchor/no-context pilot
+`reports/rag_eval/anchor_pilot_strict_list_20260501T0520Z.json`:
+
+| metric | delta |
+|---|---:|
+| primary nDCG micro | +0.0000 |
+| category macro | +0.0000 |
+| language macro | +0.0000 |
+| ko bucket | +0.0000 |
+| mixed bucket | +0.0000 |
+| hard regression failures | 0 |
+| local CPU P95 | +91.1 ms |
+
+Decision:
+
+- Do not enable a default rewrite sidecar requirement from this pilot.
+- Keep the env override and unit coverage because they make future structural
+  rewrite experiments measurable against temp LanceDB indexes.

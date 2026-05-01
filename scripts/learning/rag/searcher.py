@@ -57,6 +57,7 @@ CATEGORY_BOOST = 0.15  # added to final score when category matches a learning p
 SIGNAL_CATEGORY_BOOST = 0.0015
 POST_RERANK_SIGNAL_BOOST_MULTIPLIER = 1000.0
 KOREAN_FTS_TERMS_WEIGHT = 0.0
+QUERY_REWRITE_ROOT_ENV = "WOOWA_RAG_QUERY_REWRITE_ROOT"
 
 # Difficulty boost ladder — applied as a tie-breaker inside the top pool only,
 # so it never promotes an unrelated doc into the candidate set. Experience
@@ -2009,7 +2010,10 @@ def _follow_up_context_for_prompt(
 
 
 def _cached_rewrite_texts(prompt: str, index_root: Path | str) -> list[str]:
+    storage = _query_rewrite_storage_root()
     repo_root = _repo_root_from_index_root(index_root)
+    if repo_root is None and storage is not None:
+        repo_root = _default_repo_root()
     if repo_root is None:
         return []
     try:
@@ -2024,6 +2028,7 @@ def _cached_rewrite_texts(prompt: str, index_root: Path | str) -> list[str]:
                 prompt,
                 mode,
                 repo_root=repo_root,
+                storage=storage,
             )
         except Exception:
             cached = None
@@ -2031,6 +2036,17 @@ def _cached_rewrite_texts(prompt: str, index_root: Path | str) -> list[str]:
             continue
         out.extend(cached.texts)
     return out[:3]
+
+
+def _query_rewrite_storage_root() -> Path | None:
+    raw = os.environ.get(QUERY_REWRITE_ROOT_ENV)
+    if raw is None or not raw.strip():
+        return None
+    return Path(raw).expanduser()
+
+
+def _default_repo_root() -> Path:
+    return Path(__file__).resolve().parents[3]
 
 
 def _repo_root_from_index_root(index_root: Path | str) -> Path | None:
