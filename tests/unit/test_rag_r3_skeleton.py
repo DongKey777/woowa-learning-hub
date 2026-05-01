@@ -11,8 +11,10 @@ from scripts.learning.rag.r3.config import resolve_rerank_input_window
 from scripts.learning.rag.r3.eval.qrels import (
     R3Qrel,
     load_qrels,
+    main as qrels_main,
     qrels_from_corpus,
     qrels_from_frontmatter_doc,
+    write_qrels,
 )
 from scripts.learning.rag.r3.eval.trace import R3Trace, read_jsonl, write_jsonl
 from scripts.learning.rag.r3.eval.trace_fixture import build_traces_from_qrels, main
@@ -165,6 +167,55 @@ def test_qrels_from_corpus_v2_expected_queries(tmp_path):
     assert qrels[0].forbidden_paths == (
         "contents/design-pattern/service-locator.md",
     )
+
+
+def test_write_qrels_roundtrips_with_schema_wrapper(tmp_path):
+    out = tmp_path / "qrels.json"
+    qrel = R3Qrel(path="contents/spring/di.md", grade=3, role="primary")
+
+    write_qrels(
+        [
+            qrels_from_frontmatter_doc(
+                tmp_path / "contents" / "spring" / "di.md",
+                "---\n"
+                "schema_version: 2\n"
+                "concept_id: spring/di\n"
+                "doc_role: primer\n"
+                "level: beginner\n"
+                "aliases: [DI]\n"
+                "expected_queries: [DI가 뭐야?]\n"
+                "---\n\nbody",
+                corpus_root=tmp_path / "contents",
+            )[0]
+        ],
+        out,
+    )
+
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["schema_version"] == 1
+    assert payload["query_count"] == 1
+    assert load_qrels(out)[0].qrels == (qrel,)
+
+
+def test_qrels_cli_writes_corpus_qrels(tmp_path):
+    corpus = tmp_path / "contents"
+    doc = corpus / "spring" / "di.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text(
+        "---\n"
+        "schema_version: 2\n"
+        "concept_id: spring/di\n"
+        "doc_role: primer\n"
+        "level: beginner\n"
+        "aliases: [DI]\n"
+        "expected_queries: [DI가 뭐야?]\n"
+        "---\n\nbody",
+        encoding="utf-8",
+    )
+    out = tmp_path / "reports" / "qrels.json"
+
+    assert qrels_main(["--corpus-root", str(corpus), "--out", str(out)]) == 0
+    assert load_qrels(out)[0].query_id == "spring/di:expected:1"
 
 
 def test_qrels_from_frontmatter_doc_ignores_non_v2(tmp_path):

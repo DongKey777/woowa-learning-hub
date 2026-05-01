@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 from dataclasses import asdict, dataclass
@@ -111,6 +112,19 @@ def load_qrels(path: Path) -> list[R3QueryJudgement]:
     return [_record_to_query(record) for record in records]
 
 
+def write_qrels(qrels: list[R3QueryJudgement], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_version": 1,
+        "query_count": len(qrels),
+        "queries": [query.to_dict() for query in qrels],
+    }
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+
+
 def _query_id(concept_id: str, index: int) -> str:
     safe = _QUERY_ID_RE.sub("-", concept_id.strip()).strip("-")
     return f"{safe}:expected:{index + 1}"
@@ -179,3 +193,19 @@ def qrels_from_corpus(corpus_root: Path) -> list[R3QueryJudgement]:
             )
         )
     return out
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--corpus-root", type=Path, required=True)
+    parser.add_argument("--out", type=Path, required=True)
+    args = parser.parse_args(argv)
+
+    qrels = qrels_from_corpus(args.corpus_root)
+    write_qrels(qrels, args.out)
+    print(f"wrote {len(qrels)} R3 qrel(s) to {args.out}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,1098 @@
+{
+  "queries": [
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "DB lock이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/lock-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/lock-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:database/lock-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "공유 락과 배타 락은 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/lock-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/lock-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:database/lock-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "낙관적 락과 비관적 락은 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/lock-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/lock-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:database/lock-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "lock wait은 왜 생겨?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/lock-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/lock-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:database/lock-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/sql-join-basics.md",
+        "contents/database/sql-aggregate-groupby-basics.md"
+      ],
+      "prompt": "SQL SELECT는 어떻게 읽어?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/sql-reading-relational-modeling-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/sql-relational-modeling-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:database/sql-relational-modeling-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/sql-join-basics.md",
+        "contents/database/sql-aggregate-groupby-basics.md"
+      ],
+      "prompt": "JOIN하면 왜 row가 늘어나?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/sql-reading-relational-modeling-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/sql-relational-modeling-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:database/sql-relational-modeling-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/sql-join-basics.md",
+        "contents/database/sql-aggregate-groupby-basics.md"
+      ],
+      "prompt": "PK랑 FK가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/sql-reading-relational-modeling-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/sql-relational-modeling-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:database/sql-relational-modeling-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/sql-join-basics.md",
+        "contents/database/sql-aggregate-groupby-basics.md"
+      ],
+      "prompt": "GROUP BY는 왜 쓰는 거야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/sql-reading-relational-modeling-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/sql-relational-modeling-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:database/sql-relational-modeling-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "transaction이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "트랜잭션이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "commit이랑 rollback은 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "중복 결제는 트랜잭션만으로 막을 수 있어?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-case-studies.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-case-studies:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-case-studies",
+        "doc_role:playbook",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "재고 차감은 어떤 트랜잭션 경계로 묶어야 해?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-case-studies.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-case-studies:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-case-studies",
+        "doc_role:playbook",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "idempotency key랑 transaction은 어떻게 같이 봐?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-case-studies.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-case-studies:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-case-studies",
+        "doc_role:playbook",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "주문 생성 정합성은 어디까지 같은 트랜잭션이야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-case-studies.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-case-studies:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-case-studies",
+        "doc_role:playbook",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "격리 수준이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-isolation-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-isolation-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-isolation-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "Read Committed랑 Repeatable Read는 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-isolation-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-isolation-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-isolation-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "MVCC가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-isolation-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-isolation-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-isolation-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "phantom read가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/database/transaction-isolation-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "database/transaction-isolation-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:database/transaction-isolation-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "DevTools waterfall이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/browser-devtools-waterfall-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/devtools-waterfall-primer:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:network/devtools-waterfall-primer",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "waiting이 길면 서버가 느린 거야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/browser-devtools-waterfall-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/devtools-waterfall-primer:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:network/devtools-waterfall-primer",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "DNS connect SSL이 안 보이면 왜 그래?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/browser-devtools-waterfall-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/devtools-waterfall-primer:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:network/devtools-waterfall-primer",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "Network 탭 timing은 어떻게 읽어?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/browser-devtools-waterfall-primer.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/devtools-waterfall-primer:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:network/devtools-waterfall-primer",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/browser-devtools-waterfall-primer.md"
+      ],
+      "prompt": "latency가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/latency-bandwidth-throughput-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/latency-bandwidth-throughput-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:network/latency-bandwidth-throughput-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/browser-devtools-waterfall-primer.md"
+      ],
+      "prompt": "대역폭이랑 처리량은 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/latency-bandwidth-throughput-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/latency-bandwidth-throughput-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:network/latency-bandwidth-throughput-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/browser-devtools-waterfall-primer.md"
+      ],
+      "prompt": "RTT가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/latency-bandwidth-throughput-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/latency-bandwidth-throughput-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:network/latency-bandwidth-throughput-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+        "contents/network/browser-devtools-waterfall-primer.md"
+      ],
+      "prompt": "bandwidth를 늘리면 항상 빨라져?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/latency-bandwidth-throughput-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/latency-bandwidth-throughput-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:network/latency-bandwidth-throughput-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/browser-devtools-waterfall-primer.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "TTFB랑 TTLB는 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/request-timing-decomposition:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:network/request-timing-decomposition",
+        "doc_role:deep_dive",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/browser-devtools-waterfall-primer.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "요청 latency를 DNS connect TLS로 어떻게 나눠?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/request-timing-decomposition:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:network/request-timing-decomposition",
+        "doc_role:deep_dive",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/browser-devtools-waterfall-primer.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "latency breakdown은 어떻게 봐?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/request-timing-decomposition:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:network/request-timing-decomposition",
+        "doc_role:deep_dive",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/network/browser-devtools-waterfall-primer.md",
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "time_starttransfer는 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "network/request-timing-decomposition:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:network/request-timing-decomposition",
+        "doc_role:deep_dive",
+        "level:advanced"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-ioc-di-basics.md",
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "ApplicationContext가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-container-internals:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-container-internals",
+        "doc_role:deep_dive",
+        "level:intermediate"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-ioc-di-basics.md",
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "BeanFactory랑 ApplicationContext 차이가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-container-internals:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-container-internals",
+        "doc_role:deep_dive",
+        "level:intermediate"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-ioc-di-basics.md",
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "Spring 컨테이너 안에서는 DI가 어떻게 일어나?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-container-internals:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-container-internals",
+        "doc_role:deep_dive",
+        "level:intermediate"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-ioc-di-basics.md",
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "BeanDefinition이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/ioc-di-container.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-container-internals:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-container-internals",
+        "doc_role:deep_dive",
+        "level:intermediate"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "Spring Bean이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-di-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "Bean이랑 DI는 뭐가 달라?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-di-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "component scan이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-di-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "controller랑 service는 누가 연결해?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-di-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "Spring Bean은 언제 만들어져?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-lifecycle-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-lifecycle-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-lifecycle-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "Bean 생명주기가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-lifecycle-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-lifecycle-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-lifecycle-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "PostConstruct는 언제 실행돼?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-lifecycle-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-lifecycle-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-lifecycle-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "prototype Bean도 PreDestroy가 호출돼?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-bean-lifecycle-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/bean-lifecycle-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/bean-lifecycle-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "DI가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-di-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "의존성 주입이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-di-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "왜 new 대신 DI를 써?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-di-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "IoC랑 DI 차이가 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-ioc-di-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/ioc-di-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/ioc-di-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "Transactional이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-transactional-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/transactional-basics:expected:1",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/transactional-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "Spring에서 transaction이 뭐야?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-transactional-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/transactional-basics:expected:2",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/transactional-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "왜 Transactional이 안 먹어?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-transactional-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/transactional-basics:expected:3",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/transactional-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    },
+    {
+      "forbidden_paths": [
+        "contents/database/transaction-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "prompt": "self invocation이면 왜 트랜잭션이 안 걸려?",
+      "qrels": [
+        {
+          "grade": 3,
+          "path": "contents/spring/spring-transactional-basics.md",
+          "role": "primary"
+        }
+      ],
+      "query_id": "spring/transactional-basics:expected:4",
+      "tags": [
+        "corpus_v2",
+        "concept:spring/transactional-basics",
+        "doc_role:primer",
+        "level:beginner"
+      ]
+    }
+  ],
+  "query_count": 52,
+  "schema_version": 1
+}
