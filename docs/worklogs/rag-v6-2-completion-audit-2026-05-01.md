@@ -58,6 +58,7 @@ The plan's Definition of Done requires all of the following:
 | Option A exact failure query-rewrite pilot | `reports/rag_eval/cutover_failure_rewrite_comparison_20260501T0715Z.json`; 14 sidecars consumed by Lance search path; sampled failure fixture quality delta `+0.0000`, local CPU P95 `+275.0 ms` | Measured, not accepted |
 | Option A qrel review packet | `reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json`; top-10 diagnostics classify 6 cross-category wrong-doc, 4 same-category wrong-doc, 1 primary-below-rank5, and 3 direct rank-1 divergences | Complete |
 | Option A no-reranker same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_no_rerank_20260501T0540Z.json`; no-reranker Lance macro `0.8081`, delta vs legacy `-0.1543`, 8 bucket regressions, 50 hard-regression failures | Measured, not accepted |
+| Option B gate-relaxation review | `reports/rag_eval/cutover_gate_review_20260501T0543Z.json`; graded category macro delta `-0.0515`, graded micro delta `-0.0958`, graded language macro delta `-0.1311` | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -120,6 +121,11 @@ Subsequent no-reranker same-query work resolved the qrel review's direct
 diagnostic divergence. Turning reranker off produced faster local CPU latency
 but worse same-query quality (`0.8081` macro) and many more hard-regression
 failures (`50`), so reranker removal is not a cutover recovery lever.
+
+Subsequent Option B gate-relaxation work checked whether a less strict graded
+metric would unblock cutover. It did not: graded category macro still trails
+legacy by `-0.0515`, graded micro by `-0.0958`, and graded language macro by
+`-0.1311`.
 
 ## Next Required Decision
 

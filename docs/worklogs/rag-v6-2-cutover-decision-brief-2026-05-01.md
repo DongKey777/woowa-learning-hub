@@ -94,6 +94,13 @@ Runtime state:
   - interpretation: disabling the current reranker explains the direct
     diagnostic divergence but makes the gate worse, so it is not a cutover
     recovery path
+- Option B gate-relaxation review was measured:
+  `reports/rag_eval/cutover_gate_review_20260501T0543Z.json`
+  - graded category macro delta: `-0.0515191445`
+  - graded micro delta: `-0.0958228031`
+  - graded language macro delta: `-0.1311489525`
+  - interpretation: switching to a reasonable graded-nDCG gate does not
+    unblock cutover
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

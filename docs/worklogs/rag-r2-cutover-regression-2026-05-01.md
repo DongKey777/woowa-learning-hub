@@ -317,6 +317,40 @@ Decision:
 - The remaining blocker is still qrel/gate review or stronger document
   structure, not reranker removal.
 
+## Option B Gate-Relaxation Review
+
+Summary JSON: `reports/rag_eval/cutover_gate_review_20260501T0543Z.json`
+
+Method:
+
+- Reused the same 101-query legacy report and Lance same-query report.
+- Compared the current primary category macro gate with plausible relaxed
+  metric variants already present in the run reports:
+  graded category macro, primary micro, graded micro, and graded language
+  macro.
+- Reused the qrel review and no-reranker diagnostic to check whether the
+  failures are mostly qrel-only artifacts.
+
+Measurement:
+
+| scenario | legacy | Lance | delta | pass |
+|---|---:|---:|---:|---|
+| current primary category macro | 0.9624 | 0.9103 | -0.0521 | false |
+| graded category macro | 0.9541 | 0.9026 | -0.0515 | false |
+| primary micro | 0.9717 | 0.8766 | -0.0951 | false |
+| graded micro | 0.9690 | 0.8732 | -0.0958 | false |
+| graded language macro | 0.9825 | 0.8514 | -0.1311 | false |
+
+Decision:
+
+- Do not switch to a graded-nDCG gate just to unblock cutover; the reasonable
+  relaxed metrics still fail.
+- Qrel-only acceptable-path edits are not enough for the current primary gate.
+  Most inspected misses are wrong-document or wrong-category retrievals.
+- The next useful Option A work is stronger document-level structure for the
+  repeated primer targets, or an explicit product decision to accept a weaker
+  gate.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

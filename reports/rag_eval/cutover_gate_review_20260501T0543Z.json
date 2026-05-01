@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-01T05:43:00Z",
+  "phase": "phase-4-option-b-gate-review",
+  "objective": "Decide whether qrel or gate relaxation can unblock the Lance R2 production cutover.",
+  "source_reports": {
+    "legacy": "reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json",
+    "lance_same_query": "reports/rag_eval/r2_korean_terms_w00_holdout_20260501T0450Z.json",
+    "primary_gate_compare": "reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json",
+    "qrel_review": "reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json",
+    "no_reranker_compare": "reports/rag_eval/cutover_legacy_vs_lance_no_rerank_20260501T0540Z.json"
+  },
+  "same_query_coverage": {
+    "query_count": 101,
+    "legacy_and_lance_reports_use_same_query_set": true
+  },
+  "metric_scenarios": [
+    {
+      "scenario": "current_primary_category_macro_gate",
+      "legacy": 0.9624408810077163,
+      "lance": 0.9102958203915194,
+      "delta": -0.05214506061619695,
+      "gate_pass": false,
+      "interpretation": "This is the current same-query cutover gate; it fails."
+    },
+    {
+      "scenario": "graded_category_macro_relaxation",
+      "legacy": 0.9540773300620943,
+      "lance": 0.9025581855355791,
+      "delta": -0.05151914452651519,
+      "gate_pass": false,
+      "interpretation": "Switching the headline category macro from primary nDCG to graded nDCG still fails."
+    },
+    {
+      "scenario": "primary_micro_relaxation",
+      "legacy": 0.971700848599374,
+      "lance": 0.8766485304464537,
+      "delta": -0.09505231815292033,
+      "gate_pass": false,
+      "interpretation": "A micro-average primary gate would still fail."
+    },
+    {
+      "scenario": "graded_micro_relaxation",
+      "legacy": 0.9689866871834171,
+      "lance": 0.8731638840694578,
+      "delta": -0.09582280311395934,
+      "gate_pass": false,
+      "interpretation": "A micro-average graded gate would still fail."
+    },
+    {
+      "scenario": "graded_language_macro_relaxation",
+      "legacy": 0.9825453228591741,
+      "lance": 0.8513963703520128,
+      "delta": -0.1311489525071613,
+      "gate_pass": false,
+      "interpretation": "A language-axis graded macro gate would still fail, with the largest remaining weakness in Korean/English buckets."
+    }
+  ],
+  "qrel_review_summary": {
+    "classification_counts": {
+      "same_category_wrong_document": 4,
+      "cross_category_wrong_document": 6,
+      "primary_present_below_rank5": 1,
+      "strict_primary_rank1_passes_now": 3
+    },
+    "obvious_qrel_only_unblockers": 0,
+    "notes": [
+      "Most top-1 misses are wrong-document or wrong-category retrievals, not merely missing acceptable_paths.",
+      "The HikariCP case already has the top-1 document listed as acceptable, but the primary gate remains strict by design.",
+      "Three direct diagnostic rank-1 cases were explained by running the diagnostic without reranker; the no-reranker same-query report made the overall gate worse."
+    ]
+  },
+  "decision": {
+    "qrel_or_metric_relaxation_unblocks_cutover": false,
+    "reason": "The reasonable graded-nDCG relaxations still trail legacy by about 0.052 category macro and 0.096 micro. Qrel-only acceptable-path edits would not fix the current primary gate, and reranker removal worsens quality.",
+    "recommended_next_step": "Do not change the gate just to cut over. Continue Option A with stronger document-level structure, or request explicit product approval for a weaker gate or risky cutover."
+  }
+}
