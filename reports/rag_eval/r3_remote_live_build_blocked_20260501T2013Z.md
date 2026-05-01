@@ -1,0 +1,43 @@
+# R3 Remote Live Build Blocked - 2026-05-01T20:13Z
+
+Scope: verify that the live RunPod build path fails closed when required
+credentials are absent, and record remaining prerequisites for the actual R3
+remote artifact gate.
+
+Live command:
+
+```bash
+RUNPOD_API_KEY= bin/rag-remote-build --r-phase r3
+```
+
+Observed result:
+
+- exit code: `2`
+- error: `[runpod] RUNPOD_API_KEY env var not set. Either export RUNPOD_API_KEY="$(cat ~/.runpod/api_key)" or add --dry-run.`
+
+Dry-run command:
+
+```bash
+bin/rag-remote-build --r-phase r3 --dry-run
+```
+
+Observed dry-run result:
+
+- exit code: `0`
+- run id: `r3-350fb25-2026-05-01T2013`
+- strict R3 package command includes `--strict-r3`
+- remote command sequence includes `scripts.learning.rag.r3.index.lexical_sidecar`
+- Pod cleanup path reports `pod_terminated=true`
+- warnings:
+  - working tree not clean, so a fallback path is needed for uncommitted local changes;
+  - local branch is `47` commits ahead of `origin/main`, so live `git clone + checkout` requires push or a source-tar/bundle fallback before RunPod can see the selected SHA.
+
+Decision:
+
+The remote harness is fail-closed and still enforces strict R3 packaging in
+dry-run, but the actual cutover artifact gate is not complete. A live RunPod
+build requires both:
+
+1. `RUNPOD_API_KEY` available in the AI session environment.
+2. The selected implementation commit reachable by the Pod, either by pushing
+   to origin or by adding and using a source-tar/bundle fallback.
