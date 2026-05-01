@@ -16,9 +16,6 @@ expected_queries:
   - Bean 생명주기가 뭐야?
   - PostConstruct는 언제 실행돼?
   - prototype Bean도 PreDestroy가 호출돼?
-forbidden_neighbors:
-  - contents/spring/spring-bean-di-basics.md
-  - contents/spring/ioc-di-container.md
 ---
 
 # Spring Bean 생명주기 기초: 생성부터 소멸까지

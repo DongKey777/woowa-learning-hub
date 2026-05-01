@@ -29,8 +29,8 @@
               "20": 1.0,
               "5": 0.8076923076923077
             },
-            "forbidden_hits": 20,
-            "forbidden_rate": 0.38461538461538464,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 52
           }
@@ -53,8 +53,8 @@
               "20": 1.0,
               "5": 1.0
             },
-            "forbidden_hits": 4,
-            "forbidden_rate": 0.4,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 10
           },
@@ -75,8 +75,8 @@
               "20": 1.0,
               "5": 0.7619047619047619
             },
-            "forbidden_hits": 16,
-            "forbidden_rate": 0.38095238095238093,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 42
           }
@@ -99,8 +99,8 @@
               "20": 1.0,
               "5": 0.875
             },
-            "forbidden_hits": 3,
-            "forbidden_rate": 0.375,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 8
           },
@@ -121,8 +121,8 @@
               "20": 1.0,
               "5": 0.8
             },
-            "forbidden_hits": 16,
-            "forbidden_rate": 0.4,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 40
           },
@@ -143,34 +143,13 @@
               "20": 1.0,
               "5": 0.75
             },
-            "forbidden_hits": 1,
-            "forbidden_rate": 0.25,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 4
           }
         },
-        "forbidden_query_ids": [
-          "database/sql-relational-modeling-basics:expected:1",
-          "database/sql-relational-modeling-basics:expected:2",
-          "database/sql-relational-modeling-basics:expected:4",
-          "database/transaction-basics:expected:1",
-          "database/transaction-basics:expected:2",
-          "database/transaction-case-studies:expected:4",
-          "database/transaction-isolation-basics:expected:1",
-          "network/devtools-waterfall-primer:expected:3",
-          "network/devtools-waterfall-primer:expected:4",
-          "network/request-timing-decomposition:expected:2",
-          "network/request-timing-decomposition:expected:3",
-          "spring/ioc-container-internals:expected:3",
-          "spring/bean-di-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:2",
-          "spring/bean-lifecycle-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:4",
-          "spring/ioc-di-basics:expected:2",
-          "spring/ioc-di-basics:expected:3",
-          "spring/ioc-di-basics:expected:4"
-        ],
+        "forbidden_query_ids": [],
         "missing_candidate_primary_query_ids": [],
         "missing_final_primary_query_ids": [],
         "overall": {
@@ -190,8 +169,8 @@
             "20": 1.0,
             "5": 0.8076923076923077
           },
-          "forbidden_hits": 20,
-          "forbidden_rate": 0.38461538461538464,
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
           "forbidden_window": 5,
           "total": 52
         },

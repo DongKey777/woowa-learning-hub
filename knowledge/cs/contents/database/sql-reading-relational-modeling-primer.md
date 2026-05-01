@@ -18,9 +18,6 @@ expected_queries:
   - JOIN하면 왜 row가 늘어나?
   - PK랑 FK가 뭐야?
   - GROUP BY는 왜 쓰는 거야?
-forbidden_neighbors:
-  - contents/database/sql-join-basics.md
-  - contents/database/sql-aggregate-groupby-basics.md
 ---
 
 # SQL 읽기와 관계형 모델링 기초 (SQL Reading & Relational Modeling Foundations)

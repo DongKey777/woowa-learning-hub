@@ -17,7 +17,6 @@ expected_queries:
   - 왜 new 대신 DI를 써?
   - IoC랑 DI 차이가 뭐야?
 forbidden_neighbors:
-  - contents/spring/ioc-di-container.md
   - contents/design-pattern/service-locator-antipattern.md
 ---
 

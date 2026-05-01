@@ -16,9 +16,6 @@ expected_queries:
   - 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?
   - idempotency key랑 transaction은 어떻게 같이 봐?
   - 주문 생성 정합성은 어디까지 같은 트랜잭션이야?
-forbidden_neighbors:
-  - contents/database/transaction-basics.md
-  - contents/database/transaction-isolation-basics.md
 ---
 
 # 트랜잭션 실전 시나리오

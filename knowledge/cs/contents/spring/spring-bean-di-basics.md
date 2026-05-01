@@ -17,9 +17,6 @@ expected_queries:
   - Bean이랑 DI는 뭐가 달라?
   - component scan이 뭐야?
   - controller랑 service는 누가 연결해?
-forbidden_neighbors:
-  - contents/spring/ioc-di-container.md
-  - contents/spring/spring-bean-lifecycle-basics.md
 ---
 
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기

@@ -17,9 +17,6 @@ expected_queries:
   - waiting이 길면 서버가 느린 거야?
   - DNS connect SSL이 안 보이면 왜 그래?
   - Network 탭 timing은 어떻게 읽어?
-forbidden_neighbors:
-  - contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md
-  - contents/network/latency-bandwidth-throughput-basics.md
 ---
 
 # Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기

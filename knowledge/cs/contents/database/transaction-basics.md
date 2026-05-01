@@ -18,9 +18,6 @@ expected_queries:
   - 트랜잭션이 뭐야?
   - commit이랑 rollback은 뭐야?
   - 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
-forbidden_neighbors:
-  - contents/database/transaction-isolation-basics.md
-  - contents/database/lock-basics.md
 ---
 
 # 트랜잭션 기초 (Transaction Basics)

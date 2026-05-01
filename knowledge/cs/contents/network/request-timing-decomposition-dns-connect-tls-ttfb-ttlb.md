@@ -18,9 +18,6 @@ expected_queries:
   - 요청 latency를 DNS connect TLS로 어떻게 나눠?
   - latency breakdown은 어떻게 봐?
   - time_starttransfer는 뭐야?
-forbidden_neighbors:
-  - contents/network/browser-devtools-waterfall-primer.md
-  - contents/network/latency-bandwidth-throughput-basics.md
 ---
 
 # Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB

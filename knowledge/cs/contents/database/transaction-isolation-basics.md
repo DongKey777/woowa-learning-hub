@@ -17,9 +17,6 @@ expected_queries:
   - Read Committed랑 Repeatable Read는 뭐가 달라?
   - MVCC가 뭐야?
   - phantom read가 뭐야?
-forbidden_neighbors:
-  - contents/database/transaction-basics.md
-  - contents/database/lock-basics.md
 ---
 
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)

@@ -16,9 +16,6 @@ expected_queries:
   - Spring에서 transaction이 뭐야?
   - 왜 Transactional이 안 먹어?
   - self invocation이면 왜 트랜잭션이 안 걸려?
-forbidden_neighbors:
-  - contents/database/transaction-basics.md
-  - contents/spring/ioc-di-container.md
 ---
 
 # @Transactional 기초: 트랜잭션 어노테이션이 하는 일

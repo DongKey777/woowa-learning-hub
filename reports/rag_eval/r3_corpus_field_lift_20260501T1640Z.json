@@ -26,8 +26,8 @@
               "1": 0.7884615384615384,
               "5": 1.0
             },
-            "forbidden_hits": 44,
-            "forbidden_rate": 0.8461538461538461,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 52
           }
@@ -50,8 +50,8 @@
               "1": 0.6,
               "5": 1.0
             },
-            "forbidden_hits": 9,
-            "forbidden_rate": 0.9,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 10
           },
@@ -72,8 +72,8 @@
               "1": 0.8333333333333334,
               "5": 1.0
             },
-            "forbidden_hits": 35,
-            "forbidden_rate": 0.8333333333333334,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 42
           }
@@ -96,8 +96,8 @@
               "1": 0.25,
               "5": 1.0
             },
-            "forbidden_hits": 8,
-            "forbidden_rate": 1.0,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 8
           },
@@ -118,8 +118,8 @@
               "1": 0.875,
               "5": 1.0
             },
-            "forbidden_hits": 33,
-            "forbidden_rate": 0.825,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 40
           },
@@ -140,58 +140,13 @@
               "1": 1.0,
               "5": 1.0
             },
-            "forbidden_hits": 3,
-            "forbidden_rate": 0.75,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 4
           }
         },
-        "forbidden_query_ids": [
-          "database/lock-basics:expected:1",
-          "database/lock-basics:expected:2",
-          "database/lock-basics:expected:3",
-          "database/lock-basics:expected:4",
-          "database/transaction-basics:expected:1",
-          "database/transaction-basics:expected:2",
-          "database/transaction-basics:expected:3",
-          "database/transaction-basics:expected:4",
-          "database/transaction-case-studies:expected:1",
-          "database/transaction-case-studies:expected:2",
-          "database/transaction-case-studies:expected:3",
-          "database/transaction-case-studies:expected:4",
-          "database/transaction-isolation-basics:expected:1",
-          "database/transaction-isolation-basics:expected:2",
-          "database/transaction-isolation-basics:expected:4",
-          "network/devtools-waterfall-primer:expected:1",
-          "network/devtools-waterfall-primer:expected:2",
-          "network/devtools-waterfall-primer:expected:3",
-          "network/devtools-waterfall-primer:expected:4",
-          "network/latency-bandwidth-throughput-basics:expected:1",
-          "network/latency-bandwidth-throughput-basics:expected:3",
-          "network/latency-bandwidth-throughput-basics:expected:4",
-          "network/request-timing-decomposition:expected:1",
-          "network/request-timing-decomposition:expected:2",
-          "network/request-timing-decomposition:expected:3",
-          "network/request-timing-decomposition:expected:4",
-          "spring/ioc-container-internals:expected:2",
-          "spring/ioc-container-internals:expected:3",
-          "spring/ioc-container-internals:expected:4",
-          "spring/bean-di-basics:expected:1",
-          "spring/bean-di-basics:expected:2",
-          "spring/bean-di-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:2",
-          "spring/bean-lifecycle-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:4",
-          "spring/ioc-di-basics:expected:1",
-          "spring/ioc-di-basics:expected:2",
-          "spring/ioc-di-basics:expected:3",
-          "spring/ioc-di-basics:expected:4",
-          "spring/transactional-basics:expected:1",
-          "spring/transactional-basics:expected:2",
-          "spring/transactional-basics:expected:3",
-          "spring/transactional-basics:expected:4"
-        ],
+        "forbidden_query_ids": [],
         "missing_candidate_primary_query_ids": [],
         "missing_final_primary_query_ids": [],
         "overall": {
@@ -211,8 +166,8 @@
             "1": 0.7884615384615384,
             "5": 1.0
           },
-          "forbidden_hits": 44,
-          "forbidden_rate": 0.8461538461538461,
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
           "forbidden_window": 5,
           "total": 52
         },
@@ -246,8 +201,8 @@
               "1": 0.4807692307692308,
               "5": 0.9423076923076923
             },
-            "forbidden_hits": 44,
-            "forbidden_rate": 0.8461538461538461,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 52
           }
@@ -270,8 +225,8 @@
               "1": 0.5,
               "5": 1.0
             },
-            "forbidden_hits": 9,
-            "forbidden_rate": 0.9,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 10
           },
@@ -292,8 +247,8 @@
               "1": 0.47619047619047616,
               "5": 0.9285714285714286
             },
-            "forbidden_hits": 35,
-            "forbidden_rate": 0.8333333333333334,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 42
           }
@@ -316,8 +271,8 @@
               "1": 0.375,
               "5": 0.875
             },
-            "forbidden_hits": 8,
-            "forbidden_rate": 1.0,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 8
           },
@@ -338,8 +293,8 @@
               "1": 0.5,
               "5": 0.95
             },
-            "forbidden_hits": 33,
-            "forbidden_rate": 0.825,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 40
           },
@@ -360,58 +315,13 @@
               "1": 0.5,
               "5": 1.0
             },
-            "forbidden_hits": 3,
-            "forbidden_rate": 0.75,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 4
           }
         },
-        "forbidden_query_ids": [
-          "database/lock-basics:expected:1",
-          "database/lock-basics:expected:2",
-          "database/lock-basics:expected:3",
-          "database/lock-basics:expected:4",
-          "database/transaction-basics:expected:1",
-          "database/transaction-basics:expected:2",
-          "database/transaction-basics:expected:3",
-          "database/transaction-basics:expected:4",
-          "database/transaction-case-studies:expected:1",
-          "database/transaction-case-studies:expected:2",
-          "database/transaction-case-studies:expected:3",
-          "database/transaction-case-studies:expected:4",
-          "database/transaction-isolation-basics:expected:1",
-          "database/transaction-isolation-basics:expected:2",
-          "database/transaction-isolation-basics:expected:4",
-          "network/devtools-waterfall-primer:expected:1",
-          "network/devtools-waterfall-primer:expected:2",
-          "network/devtools-waterfall-primer:expected:3",
-          "network/devtools-waterfall-primer:expected:4",
-          "network/latency-bandwidth-throughput-basics:expected:1",
-          "network/latency-bandwidth-throughput-basics:expected:3",
-          "network/latency-bandwidth-throughput-basics:expected:4",
-          "network/request-timing-decomposition:expected:1",
-          "network/request-timing-decomposition:expected:2",
-          "network/request-timing-decomposition:expected:3",
-          "network/request-timing-decomposition:expected:4",
-          "spring/ioc-container-internals:expected:2",
-          "spring/ioc-container-internals:expected:3",
-          "spring/ioc-container-internals:expected:4",
-          "spring/bean-di-basics:expected:1",
-          "spring/bean-di-basics:expected:2",
-          "spring/bean-di-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:2",
-          "spring/bean-lifecycle-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:4",
-          "spring/ioc-di-basics:expected:1",
-          "spring/ioc-di-basics:expected:2",
-          "spring/ioc-di-basics:expected:3",
-          "spring/ioc-di-basics:expected:4",
-          "spring/transactional-basics:expected:1",
-          "spring/transactional-basics:expected:2",
-          "spring/transactional-basics:expected:3",
-          "spring/transactional-basics:expected:4"
-        ],
+        "forbidden_query_ids": [],
         "missing_candidate_primary_query_ids": [
           "network/request-timing-decomposition:expected:3",
           "spring/ioc-di-basics:expected:1",
@@ -439,8 +349,8 @@
             "1": 0.4807692307692308,
             "5": 0.9423076923076923
           },
-          "forbidden_hits": 44,
-          "forbidden_rate": 0.8461538461538461,
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
           "forbidden_window": 5,
           "total": 52
         },
@@ -475,8 +385,8 @@
               "1": 0.5384615384615384,
               "5": 0.9807692307692307
             },
-            "forbidden_hits": 43,
-            "forbidden_rate": 0.8269230769230769,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 52
           }
@@ -499,8 +409,8 @@
               "1": 0.5,
               "5": 1.0
             },
-            "forbidden_hits": 9,
-            "forbidden_rate": 0.9,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 10
           },
@@ -521,8 +431,8 @@
               "1": 0.5476190476190477,
               "5": 0.9761904761904762
             },
-            "forbidden_hits": 34,
-            "forbidden_rate": 0.8095238095238095,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 42
           }
@@ -545,8 +455,8 @@
               "1": 0.5,
               "5": 0.875
             },
-            "forbidden_hits": 8,
-            "forbidden_rate": 1.0,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 8
           },
@@ -567,8 +477,8 @@
               "1": 0.575,
               "5": 1.0
             },
-            "forbidden_hits": 32,
-            "forbidden_rate": 0.8,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 40
           },
@@ -589,57 +499,13 @@
               "1": 0.25,
               "5": 1.0
             },
-            "forbidden_hits": 3,
-            "forbidden_rate": 0.75,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 4
           }
         },
-        "forbidden_query_ids": [
-          "database/lock-basics:expected:1",
-          "database/lock-basics:expected:2",
-          "database/lock-basics:expected:3",
-          "database/lock-basics:expected:4",
-          "database/transaction-basics:expected:1",
-          "database/transaction-basics:expected:2",
-          "database/transaction-basics:expected:3",
-          "database/transaction-basics:expected:4",
-          "database/transaction-case-studies:expected:1",
-          "database/transaction-case-studies:expected:2",
-          "database/transaction-case-studies:expected:3",
-          "database/transaction-case-studies:expected:4",
-          "database/transaction-isolation-basics:expected:1",
-          "database/transaction-isolation-basics:expected:2",
-          "database/transaction-isolation-basics:expected:4",
-          "network/devtools-waterfall-primer:expected:1",
-          "network/devtools-waterfall-primer:expected:2",
-          "network/devtools-waterfall-primer:expected:3",
-          "network/devtools-waterfall-primer:expected:4",
-          "network/latency-bandwidth-throughput-basics:expected:1",
-          "network/latency-bandwidth-throughput-basics:expected:3",
-          "network/latency-bandwidth-throughput-basics:expected:4",
-          "network/request-timing-decomposition:expected:1",
-          "network/request-timing-decomposition:expected:2",
-          "network/request-timing-decomposition:expected:3",
-          "network/request-timing-decomposition:expected:4",
-          "spring/ioc-container-internals:expected:2",
-          "spring/ioc-container-internals:expected:3",
-          "spring/ioc-container-internals:expected:4",
-          "spring/bean-di-basics:expected:1",
-          "spring/bean-di-basics:expected:2",
-          "spring/bean-di-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:2",
-          "spring/bean-lifecycle-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:4",
-          "spring/ioc-di-basics:expected:1",
-          "spring/ioc-di-basics:expected:2",
-          "spring/ioc-di-basics:expected:3",
-          "spring/ioc-di-basics:expected:4",
-          "spring/transactional-basics:expected:1",
-          "spring/transactional-basics:expected:3",
-          "spring/transactional-basics:expected:4"
-        ],
+        "forbidden_query_ids": [],
         "missing_candidate_primary_query_ids": [
           "network/request-timing-decomposition:expected:3"
         ],
@@ -663,8 +529,8 @@
             "1": 0.5384615384615384,
             "5": 0.9807692307692307
           },
-          "forbidden_hits": 43,
-          "forbidden_rate": 0.8269230769230769,
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
           "forbidden_window": 5,
           "total": 52
         },
@@ -700,8 +566,8 @@
               "1": 0.7307692307692307,
               "5": 1.0
             },
-            "forbidden_hits": 44,
-            "forbidden_rate": 0.8461538461538461,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 52
           }
@@ -724,8 +590,8 @@
               "1": 0.6,
               "5": 1.0
             },
-            "forbidden_hits": 9,
-            "forbidden_rate": 0.9,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 10
           },
@@ -746,8 +612,8 @@
               "1": 0.7619047619047619,
               "5": 1.0
             },
-            "forbidden_hits": 35,
-            "forbidden_rate": 0.8333333333333334,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 42
           }
@@ -770,8 +636,8 @@
               "1": 0.375,
               "5": 1.0
             },
-            "forbidden_hits": 8,
-            "forbidden_rate": 1.0,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 8
           },
@@ -792,8 +658,8 @@
               "1": 0.8,
               "5": 1.0
             },
-            "forbidden_hits": 33,
-            "forbidden_rate": 0.825,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 40
           },
@@ -814,58 +680,13 @@
               "1": 0.75,
               "5": 1.0
             },
-            "forbidden_hits": 3,
-            "forbidden_rate": 0.75,
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
             "forbidden_window": 5,
             "total": 4
           }
         },
-        "forbidden_query_ids": [
-          "database/lock-basics:expected:1",
-          "database/lock-basics:expected:2",
-          "database/lock-basics:expected:3",
-          "database/lock-basics:expected:4",
-          "database/transaction-basics:expected:1",
-          "database/transaction-basics:expected:2",
-          "database/transaction-basics:expected:3",
-          "database/transaction-basics:expected:4",
-          "database/transaction-case-studies:expected:1",
-          "database/transaction-case-studies:expected:2",
-          "database/transaction-case-studies:expected:3",
-          "database/transaction-case-studies:expected:4",
-          "database/transaction-isolation-basics:expected:1",
-          "database/transaction-isolation-basics:expected:2",
-          "database/transaction-isolation-basics:expected:4",
-          "network/devtools-waterfall-primer:expected:1",
-          "network/devtools-waterfall-primer:expected:2",
-          "network/devtools-waterfall-primer:expected:3",
-          "network/devtools-waterfall-primer:expected:4",
-          "network/latency-bandwidth-throughput-basics:expected:1",
-          "network/latency-bandwidth-throughput-basics:expected:3",
-          "network/latency-bandwidth-throughput-basics:expected:4",
-          "network/request-timing-decomposition:expected:1",
-          "network/request-timing-decomposition:expected:2",
-          "network/request-timing-decomposition:expected:3",
-          "network/request-timing-decomposition:expected:4",
-          "spring/ioc-container-internals:expected:2",
-          "spring/ioc-container-internals:expected:3",
-          "spring/ioc-container-internals:expected:4",
-          "spring/bean-di-basics:expected:1",
-          "spring/bean-di-basics:expected:2",
-          "spring/bean-di-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:1",
-          "spring/bean-lifecycle-basics:expected:2",
-          "spring/bean-lifecycle-basics:expected:3",
-          "spring/bean-lifecycle-basics:expected:4",
-          "spring/ioc-di-basics:expected:1",
-          "spring/ioc-di-basics:expected:2",
-          "spring/ioc-di-basics:expected:3",
-          "spring/ioc-di-basics:expected:4",
-          "spring/transactional-basics:expected:1",
-          "spring/transactional-basics:expected:2",
-          "spring/transactional-basics:expected:3",
-          "spring/transactional-basics:expected:4"
-        ],
+        "forbidden_query_ids": [],
         "missing_candidate_primary_query_ids": [],
         "missing_final_primary_query_ids": [],
         "overall": {
@@ -885,8 +706,8 @@
             "1": 0.7307692307692307,
             "5": 1.0
           },
-          "forbidden_hits": 44,
-          "forbidden_rate": 0.8461538461538461,
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
           "forbidden_window": 5,
           "total": 52
         },

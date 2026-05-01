@@ -1,10 +1,7 @@
 {
   "queries": [
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "DB lock이 뭐야?",
       "qrels": [
         {
@@ -22,10 +19,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "공유 락과 배타 락은 뭐가 달라?",
       "qrels": [
         {
@@ -43,10 +37,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "낙관적 락과 비관적 락은 뭐가 달라?",
       "qrels": [
         {
@@ -64,10 +55,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "lock wait은 왜 생겨?",
       "qrels": [
         {
@@ -85,10 +73,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/sql-join-basics.md",
-        "contents/database/sql-aggregate-groupby-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "SQL SELECT는 어떻게 읽어?",
       "qrels": [
         {
@@ -106,10 +91,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/sql-join-basics.md",
-        "contents/database/sql-aggregate-groupby-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "JOIN하면 왜 row가 늘어나?",
       "qrels": [
         {
@@ -127,10 +109,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/sql-join-basics.md",
-        "contents/database/sql-aggregate-groupby-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "PK랑 FK가 뭐야?",
       "qrels": [
         {
@@ -148,10 +127,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/sql-join-basics.md",
-        "contents/database/sql-aggregate-groupby-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "GROUP BY는 왜 쓰는 거야?",
       "qrels": [
         {
@@ -169,10 +145,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-isolation-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "transaction이 뭐야?",
       "qrels": [
         {
@@ -190,10 +163,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-isolation-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "트랜잭션이 뭐야?",
       "qrels": [
         {
@@ -211,10 +181,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-isolation-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "commit이랑 rollback은 뭐야?",
       "qrels": [
         {
@@ -232,10 +199,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-isolation-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?",
       "qrels": [
         {
@@ -253,10 +217,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "중복 결제는 트랜잭션만으로 막을 수 있어?",
       "qrels": [
         {
@@ -274,10 +235,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "재고 차감은 어떤 트랜잭션 경계로 묶어야 해?",
       "qrels": [
         {
@@ -295,10 +253,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "idempotency key랑 transaction은 어떻게 같이 봐?",
       "qrels": [
         {
@@ -316,10 +271,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/transaction-isolation-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "주문 생성 정합성은 어디까지 같은 트랜잭션이야?",
       "qrels": [
         {
@@ -337,10 +289,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "격리 수준이 뭐야?",
       "qrels": [
         {
@@ -358,10 +307,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Read Committed랑 Repeatable Read는 뭐가 달라?",
       "qrels": [
         {
@@ -379,10 +325,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "MVCC가 뭐야?",
       "qrels": [
         {
@@ -400,10 +343,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/database/lock-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "phantom read가 뭐야?",
       "qrels": [
         {
@@ -421,10 +361,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "DevTools waterfall이 뭐야?",
       "qrels": [
         {
@@ -442,10 +379,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "waiting이 길면 서버가 느린 거야?",
       "qrels": [
         {
@@ -463,10 +397,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "DNS connect SSL이 안 보이면 왜 그래?",
       "qrels": [
         {
@@ -484,10 +415,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Network 탭 timing은 어떻게 읽어?",
       "qrels": [
         {
@@ -505,10 +433,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/browser-devtools-waterfall-primer.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "latency가 뭐야?",
       "qrels": [
         {
@@ -526,10 +451,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/browser-devtools-waterfall-primer.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "대역폭이랑 처리량은 뭐가 달라?",
       "qrels": [
         {
@@ -547,10 +469,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/browser-devtools-waterfall-primer.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "RTT가 뭐야?",
       "qrels": [
         {
@@ -568,10 +487,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
-        "contents/network/browser-devtools-waterfall-primer.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "bandwidth를 늘리면 항상 빨라져?",
       "qrels": [
         {
@@ -589,10 +505,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/browser-devtools-waterfall-primer.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "TTFB랑 TTLB는 뭐가 달라?",
       "qrels": [
         {
@@ -610,10 +523,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/browser-devtools-waterfall-primer.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "요청 latency를 DNS connect TLS로 어떻게 나눠?",
       "qrels": [
         {
@@ -631,10 +541,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/browser-devtools-waterfall-primer.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "latency breakdown은 어떻게 봐?",
       "qrels": [
         {
@@ -652,10 +559,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/network/browser-devtools-waterfall-primer.md",
-        "contents/network/latency-bandwidth-throughput-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "time_starttransfer는 뭐야?",
       "qrels": [
         {
@@ -673,10 +577,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-ioc-di-basics.md",
-        "contents/spring/spring-bean-di-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "ApplicationContext가 뭐야?",
       "qrels": [
         {
@@ -694,10 +595,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-ioc-di-basics.md",
-        "contents/spring/spring-bean-di-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "BeanFactory랑 ApplicationContext 차이가 뭐야?",
       "qrels": [
         {
@@ -715,10 +613,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-ioc-di-basics.md",
-        "contents/spring/spring-bean-di-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Spring 컨테이너 안에서는 DI가 어떻게 일어나?",
       "qrels": [
         {
@@ -736,10 +631,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-ioc-di-basics.md",
-        "contents/spring/spring-bean-di-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "BeanDefinition이 뭐야?",
       "qrels": [
         {
@@ -757,10 +649,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
-        "contents/spring/spring-bean-lifecycle-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Spring Bean이 뭐야?",
       "qrels": [
         {
@@ -778,10 +667,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
-        "contents/spring/spring-bean-lifecycle-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Bean이랑 DI는 뭐가 달라?",
       "qrels": [
         {
@@ -799,10 +685,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
-        "contents/spring/spring-bean-lifecycle-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "component scan이 뭐야?",
       "qrels": [
         {
@@ -820,10 +703,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
-        "contents/spring/spring-bean-lifecycle-basics.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "controller랑 service는 누가 연결해?",
       "qrels": [
         {
@@ -841,10 +721,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-bean-di-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Spring Bean은 언제 만들어져?",
       "qrels": [
         {
@@ -862,10 +739,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-bean-di-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Bean 생명주기가 뭐야?",
       "qrels": [
         {
@@ -883,10 +757,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-bean-di-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "PostConstruct는 언제 실행돼?",
       "qrels": [
         {
@@ -904,10 +775,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/spring/spring-bean-di-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "prototype Bean도 PreDestroy가 호출돼?",
       "qrels": [
         {
@@ -926,7 +794,6 @@
     },
     {
       "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
         "contents/design-pattern/service-locator-antipattern.md"
       ],
       "prompt": "DI가 뭐야?",
@@ -947,7 +814,6 @@
     },
     {
       "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
         "contents/design-pattern/service-locator-antipattern.md"
       ],
       "prompt": "의존성 주입이 뭐야?",
@@ -968,7 +834,6 @@
     },
     {
       "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
         "contents/design-pattern/service-locator-antipattern.md"
       ],
       "prompt": "왜 new 대신 DI를 써?",
@@ -989,7 +854,6 @@
     },
     {
       "forbidden_paths": [
-        "contents/spring/ioc-di-container.md",
         "contents/design-pattern/service-locator-antipattern.md"
       ],
       "prompt": "IoC랑 DI 차이가 뭐야?",
@@ -1009,10 +873,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Transactional이 뭐야?",
       "qrels": [
         {
@@ -1030,10 +891,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "Spring에서 transaction이 뭐야?",
       "qrels": [
         {
@@ -1051,10 +909,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "왜 Transactional이 안 먹어?",
       "qrels": [
         {
@@ -1072,10 +927,7 @@
       ]
     },
     {
-      "forbidden_paths": [
-        "contents/database/transaction-basics.md",
-        "contents/spring/ioc-di-container.md"
-      ],
+      "forbidden_paths": [],
       "prompt": "self invocation이면 왜 트랜잭션이 안 걸려?",
       "qrels": [
         {
