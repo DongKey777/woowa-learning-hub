@@ -193,6 +193,45 @@ Decision:
 - The next Option A lever likely needs stronger document structure, qrel/gate
   review, or generated query rewrites tied to these exact failure prompts.
 
+## Option A Exact Failure Query-Rewrite Pilot
+
+Summary JSON: `reports/rag_eval/cutover_failure_rewrite_comparison_20260501T0715Z.json`
+
+Method:
+
+- Wrote 14 `query-rewrite-v1.output` sidecars under
+  `/private/tmp/woowa_cutover_failure_rewrites_20260501T0715/query_rewrites`.
+- Each sidecar targets one prompt from
+  `tests/fixtures/cs_rag_cutover_failure_queries.json`.
+- Evaluated the same sampled corpus as the anchor-alias pilot with
+  `WOOWA_RAG_QUERY_REWRITE_ROOT` pointing at that temp sidecar root.
+- Verified the Lance search path consumed rewrite candidates with debug output:
+  `query_candidate_kinds=['original','rewrite','rewrite']`.
+
+Measurement versus the post-anchor baseline
+`reports/rag_eval/cutover_failure_anchor_after_20260501T0640Z.json`:
+
+| metric | delta |
+|---|---:|
+| primary nDCG micro | +0.0000 |
+| category macro | +0.0000 |
+| language macro | +0.0000 |
+| database bucket | +0.0000 |
+| design-pattern bucket | +0.0000 |
+| spring bucket | +0.0000 |
+| software-engineering bucket | +0.0000 |
+| hard regression failures | 0 |
+| local CPU P95 | +275.0 ms |
+
+Decision:
+
+- Do not enable exact-prompt query rewrites by default.
+- The eval path consumed the sidecars, but the sampled failure fixture showed
+  no ranking improvement and substantially higher local CPU latency.
+- This reinforces that the next useful work is not query-candidate plumbing;
+  it is qrel/gate review or stronger document-level structure for the
+  repeated failing primers.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

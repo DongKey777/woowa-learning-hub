@@ -55,6 +55,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4 structural `query-rewrite-v1` sidecar pilot | `WOOWA_RAG_QUERY_REWRITE_ROOT` override added for temp Lance eval indexes; `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json` shows `+0.0000` sampled quality delta and +91.1 ms local CPU P95 | Measured, not accepted |
 | Cutover decision handoff | `docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` records the failed gates, current runtime state, and the three allowed product decision paths | Complete |
 | Option A anchor alias pilot | `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`; aliases added to 8 repeated failure docs; sampled failure fixture quality delta `+0.0000` | Measured, not accepted |
+| Option A exact failure query-rewrite pilot | `reports/rag_eval/cutover_failure_rewrite_comparison_20260501T0715Z.json`; 14 sidecars consumed by Lance search path; sampled failure fixture quality delta `+0.0000`, local CPU P95 `+275.0 ms` | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -101,6 +102,11 @@ Subsequent Option A anchor-alias work targeted the same-query failure taxonomy.
 The aliases were kept because they describe real learner shortforms and did not
 regress the sampled failure fixture, but the measured ranking delta was still
 `+0.0000`; this does not unblock Phase 3.
+
+Subsequent exact failure query-rewrite work validated that temp sidecars are
+consumed by the Lance search path, but the measured ranking delta was again
+`+0.0000` with much higher local CPU latency. Query-candidate plumbing is not
+the current blocker.
 
 ## Next Required Decision
 

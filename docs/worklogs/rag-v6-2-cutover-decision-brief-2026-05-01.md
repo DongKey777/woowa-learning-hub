@@ -74,6 +74,11 @@ Runtime state:
   `reports/rag_eval/cutover_failure_anchor_comparison_20260501T0640Z.json`
   - sampled failure fixture quality delta: `+0.0000`
   - cutover gate impact: none
+- Option A exact failure query-rewrite pilot was measured:
+  `reports/rag_eval/cutover_failure_rewrite_comparison_20260501T0715Z.json`
+  - sampled failure fixture quality delta: `+0.0000`
+  - local CPU P95 delta: `+275.0 ms`
+  - cutover gate impact: none
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

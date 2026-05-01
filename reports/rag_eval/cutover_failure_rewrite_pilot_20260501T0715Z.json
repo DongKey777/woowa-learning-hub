@@ -1,0 +1,841 @@
+{
+  "index_root": "/private/tmp/woowa_cutover_failure_rewrite_eval_20260501T0715/index",
+  "split": "full",
+  "query_count": 14,
+  "top_k": 10,
+  "forbidden_window": 5,
+  "mode": "full",
+  "runs": [
+    {
+      "modalities": [
+        "fts",
+        "dense",
+        "sparse"
+      ],
+      "primary_ndcg_macro": 0.9165638776488141,
+      "latency_p95_warm": 898.3880419982597,
+      "hard_regression_failures": 3,
+      "run_report": {
+        "manifest": {
+          "corpus_hash": "2930521598f8db9a3ce88a1b30234873e5ad79f5f81fcaf027f2968265f449e6",
+          "index_version": 3,
+          "embedding_model": "BAAI/bge-m3",
+          "model_revision": "BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+          "embedding_dim": 1024,
+          "device": "cpu",
+          "reranker_model": null,
+          "fusion_weights": {
+            "k": 60,
+            "w_bm25": 1.0,
+            "w_dense": 1.0
+          },
+          "top_k": 10,
+          "mode": "full",
+          "latency_p50_warm": 755.1227079966338,
+          "latency_p95_warm": 898.3880419982597,
+          "cold_start_ms": 2879.262208007276,
+          "backend": "lance",
+          "modalities": [
+            "fts",
+            "dense",
+            "sparse"
+          ],
+          "encoder": {
+            "model_id": "BAAI/bge-m3",
+            "model_version": "BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181",
+            "max_length": 512,
+            "batch_size": 64
+          },
+          "lancedb": {
+            "version": "0.30.2",
+            "table_name": "cs_chunks",
+            "indices": {
+              "dense": {
+                "type": "unindexed",
+                "num_partitions": 162,
+                "num_sub_vectors": 1
+              },
+              "fts": {
+                "type": "tantivy",
+                "tokenizer": "ngram"
+              },
+              "colbert": {
+                "type": "sidecar",
+                "metric": "max_sim",
+                "dtype": "float16"
+              }
+            }
+          }
+        },
+        "top_k": 10,
+        "forbidden_window": 5,
+        "overall_means": {
+          "primary_ndcg": 0.8983803131377603,
+          "graded_ndcg": 0.9128847044825239,
+          "mrr": 0.9017857142857143,
+          "recall": 1.0,
+          "companion_coverage": 0.0,
+          "forbidden_rate": 0.0,
+          "hit": 1.0
+        },
+        "macro_reports": {
+          "primary_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "spring": 0.8769765845238192,
+                "database": 0.9261859507142916,
+                "software-engineering": 1.0,
+                "design-pattern": 0.8630929753571458
+              },
+              "per_bucket_count": {
+                "spring": 3,
+                "database": 5,
+                "software-engineering": 1,
+                "design-pattern": 5
+              },
+              "macro_mean": 0.9165638776488141,
+              "micro_mean": 0.8983803131377603,
+              "included_buckets": [
+                "spring",
+                "database",
+                "software-engineering",
+                "design-pattern"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.937769534253248,
+                "unknown": 0.7539531690476383
+              },
+              "per_bucket_count": {
+                "beginner": 11,
+                "unknown": 3
+              },
+              "macro_mean": 0.937769534253248,
+              "micro_mean": 0.8983803131377603,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "en": 1.0,
+                "mixed": 0.8221655479910804,
+                "ko": 1.0
+              },
+              "per_bucket_count": {
+                "en": 4,
+                "mixed": 8,
+                "ko": 2
+              },
+              "macro_mean": 0.9407218493303602,
+              "micro_mean": 0.8983803131377603,
+              "included_buckets": [
+                "en",
+                "mixed",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.8829327367063541,
+                "definition": 1.0,
+                "deep-dive": 0.6309297535714575
+              },
+              "per_bucket_count": {
+                "unknown": 9,
+                "definition": 4,
+                "deep-dive": 1
+              },
+              "macro_mean": 0.8154648767857288,
+              "micro_mean": 0.8983803131377603,
+              "included_buckets": [
+                "definition",
+                "deep-dive"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "graded_ndcg": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "spring": 0.8769765845238192,
+                "database": 0.9667982464796298,
+                "software-engineering": 1.0,
+                "design-pattern": 0.8630929753571458
+              },
+              "per_bucket_count": {
+                "spring": 3,
+                "database": 5,
+                "software-engineering": 1,
+                "design-pattern": 5
+              },
+              "macro_mean": 0.9267169515901487,
+              "micro_mean": 0.9128847044825239,
+              "included_buckets": [
+                "spring",
+                "database",
+                "software-engineering",
+                "design-pattern"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.937769534253248,
+                "unknown": 0.8216403286565354
+              },
+              "per_bucket_count": {
+                "beginner": 11,
+                "unknown": 3
+              },
+              "macro_mean": 0.937769534253248,
+              "micro_mean": 0.9128847044825239,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "en": 1.0,
+                "mixed": 0.8475482328444168,
+                "ko": 1.0
+              },
+              "per_bucket_count": {
+                "en": 4,
+                "mixed": 8,
+                "ko": 2
+              },
+              "macro_mean": 0.9491827442814723,
+              "micro_mean": 0.9128847044825239,
+              "included_buckets": [
+                "en",
+                "mixed",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.905495123242653,
+                "definition": 1.0,
+                "deep-dive": 0.6309297535714575
+              },
+              "per_bucket_count": {
+                "unknown": 9,
+                "definition": 4,
+                "deep-dive": 1
+              },
+              "macro_mean": 0.8154648767857288,
+              "micro_mean": 0.9128847044825239,
+              "included_buckets": [
+                "definition",
+                "deep-dive"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "mrr": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "spring": 0.8333333333333334,
+                "database": 1.0,
+                "software-engineering": 1.0,
+                "design-pattern": 0.825
+              },
+              "per_bucket_count": {
+                "spring": 3,
+                "database": 5,
+                "software-engineering": 1,
+                "design-pattern": 5
+              },
+              "macro_mean": 0.9145833333333333,
+              "micro_mean": 0.9017857142857143,
+              "included_buckets": [
+                "spring",
+                "database",
+                "software-engineering",
+                "design-pattern"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 0.9204545454545454,
+                "unknown": 0.8333333333333334
+              },
+              "per_bucket_count": {
+                "beginner": 11,
+                "unknown": 3
+              },
+              "macro_mean": 0.9204545454545454,
+              "micro_mean": 0.9017857142857143,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "en": 1.0,
+                "mixed": 0.828125,
+                "ko": 1.0
+              },
+              "per_bucket_count": {
+                "en": 4,
+                "mixed": 8,
+                "ko": 2
+              },
+              "macro_mean": 0.9427083333333334,
+              "micro_mean": 0.9017857142857143,
+              "included_buckets": [
+                "en",
+                "mixed",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 0.9027777777777778,
+                "definition": 1.0,
+                "deep-dive": 0.5
+              },
+              "per_bucket_count": {
+                "unknown": 9,
+                "definition": 4,
+                "deep-dive": 1
+              },
+              "macro_mean": 0.75,
+              "micro_mean": 0.9017857142857143,
+              "included_buckets": [
+                "definition",
+                "deep-dive"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          },
+          "recall": {
+            "category": {
+              "axis": "category",
+              "per_bucket_mean": {
+                "spring": 1.0,
+                "database": 1.0,
+                "software-engineering": 1.0,
+                "design-pattern": 1.0
+              },
+              "per_bucket_count": {
+                "spring": 3,
+                "database": 5,
+                "software-engineering": 1,
+                "design-pattern": 5
+              },
+              "macro_mean": 1.0,
+              "micro_mean": 1.0,
+              "included_buckets": [
+                "spring",
+                "database",
+                "software-engineering",
+                "design-pattern"
+              ],
+              "excluded_buckets": []
+            },
+            "difficulty": {
+              "axis": "difficulty",
+              "per_bucket_mean": {
+                "beginner": 1.0,
+                "unknown": 1.0
+              },
+              "per_bucket_count": {
+                "beginner": 11,
+                "unknown": 3
+              },
+              "macro_mean": 1.0,
+              "micro_mean": 1.0,
+              "included_buckets": [
+                "beginner"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            },
+            "language": {
+              "axis": "language",
+              "per_bucket_mean": {
+                "en": 1.0,
+                "mixed": 1.0,
+                "ko": 1.0
+              },
+              "per_bucket_count": {
+                "en": 4,
+                "mixed": 8,
+                "ko": 2
+              },
+              "macro_mean": 1.0,
+              "micro_mean": 1.0,
+              "included_buckets": [
+                "en",
+                "mixed",
+                "ko"
+              ],
+              "excluded_buckets": []
+            },
+            "intent": {
+              "axis": "intent",
+              "per_bucket_mean": {
+                "unknown": 1.0,
+                "definition": 1.0,
+                "deep-dive": 1.0
+              },
+              "per_bucket_count": {
+                "unknown": 9,
+                "definition": 4,
+                "deep-dive": 1
+              },
+              "macro_mean": 1.0,
+              "micro_mean": 1.0,
+              "included_buckets": [
+                "definition",
+                "deep-dive"
+              ],
+              "excluded_buckets": [
+                "unknown"
+              ]
+            }
+          }
+        },
+        "regression_summary": {
+          "total": 14,
+          "passed_count": 11,
+          "failed_count": 3,
+          "all_passed": false,
+          "violations_by_kind": {
+            "primary_over_budget": 3
+          },
+          "warnings_by_kind": {},
+          "failed_query_ids": [
+            "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "mysql_deadlock_lock_ordering",
+            "spring_tx_propagation"
+          ]
+        },
+        "regressions": [
+          {
+            "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_mvcc_concept_explanation_intro",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_mvcc_english_meaning_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_mvcc_meaning_shortform_basics",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_query_service_english_meaning_alias_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/design-pattern/read-model-staleness-read-your-writes.md' at rank 8, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "beginner_hikaricp_english_meaning_lockin",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "projection_lag_budgeting",
+            "passed": true,
+            "violations": [],
+            "warnings": []
+          },
+          {
+            "query_id": "mysql_deadlock_lock_ordering",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/database/deadlock-case-study.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          },
+          {
+            "query_id": "spring_tx_propagation",
+            "passed": false,
+            "violations": [
+              "primary_over_budget: 'contents/spring/transactional-deep-dive.md' at rank 2, budget=1"
+            ],
+            "warnings": []
+          }
+        ],
+        "per_query": [
+          {
+            "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_mvcc_concept_explanation_intro",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_mvcc_english_meaning_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_mvcc_meaning_shortform_basics",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_query_service_english_meaning_alias_lockin",
+            "bucket": {
+              "category": "software-engineering",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.31546487678572877,
+              "graded_ndcg": 0.31546487678572877,
+              "mrr": 0.125,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "ko",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "beginner",
+              "language": "mixed",
+              "intent": "definition"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "beginner_hikaricp_english_meaning_lockin",
+            "bucket": {
+              "category": "database",
+              "difficulty": "beginner",
+              "language": "en",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "projection_lag_budgeting",
+            "bucket": {
+              "category": "design-pattern",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 1.0,
+              "graded_ndcg": 1.0,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "mysql_deadlock_lock_ordering",
+            "bucket": {
+              "category": "database",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "unknown"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.8339912323981488,
+              "mrr": 1.0,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          },
+          {
+            "query_id": "spring_tx_propagation",
+            "bucket": {
+              "category": "spring",
+              "difficulty": "unknown",
+              "language": "mixed",
+              "intent": "deep-dive"
+            },
+            "metrics": {
+              "primary_ndcg": 0.6309297535714575,
+              "graded_ndcg": 0.6309297535714575,
+              "mrr": 0.5,
+              "hit": 1.0,
+              "recall": 1.0,
+              "companion_coverage": 0.0,
+              "forbidden_rate": 0.0
+            }
+          }
+        ],
+        "timing_warm_per_query_ms": [
+          676.8187080015196,
+          735.0493330013705,
+          716.9652499869699,
+          744.0782080084318,
+          755.1227079966338,
+          851.0887089942116,
+          898.3880419982597,
+          754.9386250029784,
+          774.959124988527,
+          1010.5476669996278,
+          840.9772079903632,
+          689.4637500081444,
+          691.4831670001149,
+          862.3892499890644
+        ]
+      }
+    }
+  ],
+  "best_modalities": [
+    "fts",
+    "dense",
+    "sparse"
+  ],
+  "selection_rationale": "selected by primary_nDCG_macro, then hard-regression count, latency, and smaller modality set: fts,dense,sparse",
+  "created_at": "2026-05-01T05:33:23Z",
+  "sample": {
+    "corpus_root": "/private/tmp/woowa_cutover_failure_rewrite_eval_20260501T0715/corpus",
+    "fixture_path": "/private/tmp/woowa_cutover_failure_rewrite_eval_20260501T0715/fixture.json",
+    "categories": [
+      "database",
+      "design-pattern",
+      "spring",
+      "software-engineering"
+    ],
+    "query_count": 14,
+    "required_doc_count": 11,
+    "extra_doc_count": 0,
+    "doc_count": 11,
+    "index_modalities": [
+      "fts",
+      "dense",
+      "sparse"
+    ]
+  }
+}
