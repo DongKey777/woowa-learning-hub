@@ -25,8 +25,8 @@ export HF_HUB_OFFLINE=1
 |------|------|------------------|---------------|
 | cheap | 50-200ms | 50-200ms | 50-200ms |
 | Lance full | 500ms-2s | 2-8s | 10-25s |
-| R3 full, one-shot CLI | 3-7s after OS cache | 18-24s | 18-25s |
-| R3 full, local daemon | 3-7s | first daemon request 18-24s | first daemon request 18-25s |
+| R3 full, one-shot CLI | 2.3-3.0s after OS cache | 15-24s | 18-25s |
+| R3 full, local daemon | 2.4-2.7s | first daemon request 15-24s | first daemon request 18-25s |
 
 cheap 모드는 ML 의존성을 안 타므로 (FTS BM25만) 네트워크/캐시 상태와 무관.
 
@@ -56,6 +56,10 @@ bin/rag-daemon stop
 - 100q Corpus v2 gate with 20-pair local rerank preserved
   `final_hit_relevant@5=1.0`, `forbidden_rate@5=0`, and
   `lost_top20_rate=0`
+- 2026-05-01 sparse retriever cache profile: daemon warm full latency improved
+  to `hits.meta.latency_ms=2401-2605` on the two post-warm mixed prompts;
+  `r3_stage_ms` now reports query encoding, candidate retrieval, fusion, and
+  reranker timing.
 
 Therefore R3 local default rerank window is 20 pairs. 50-pair local reranking
 is still available through `WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW=50`, but it

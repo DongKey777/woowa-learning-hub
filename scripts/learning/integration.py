@@ -162,7 +162,9 @@ def augment(
             "r3_sparse_source",
             "r3_sparse_sidecar_document_count",
             "r3_sparse_query_terms_count",
+            "r3_sparse_retriever_cache_hit",
             "r3_dense_candidate_count",
+            "r3_stage_ms",
         )
         captured = {
             field: search_debug[field]

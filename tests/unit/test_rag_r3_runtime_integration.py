@@ -88,7 +88,9 @@ def test_augment_surfaces_r3_runtime_debug(monkeypatch, tmp_path):
                 "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
                 "r3_sparse_sidecar_document_count": 27170,
                 "r3_sparse_query_terms_count": 11,
+                "r3_sparse_retriever_cache_hit": True,
                 "r3_dense_candidate_count": 100,
+                "r3_stage_ms": {"rerank": 123.0},
             }
         )
         return [_fake_hit()]
@@ -109,6 +111,8 @@ def test_augment_surfaces_r3_runtime_debug(monkeypatch, tmp_path):
     assert runtime_debug["r3_reranker_model"] == "BAAI/bge-reranker-v2-m3"
     assert runtime_debug["rerank_input_window"] == 20
     assert runtime_debug["r3_sparse_source"] == "bge_m3_sparse_vec_sidecar"
+    assert runtime_debug["r3_sparse_retriever_cache_hit"] is True
+    assert runtime_debug["r3_stage_ms"] == {"rerank": 123.0}
 
 
 def test_resolve_search_backend_rejects_unknown_backend(tmp_path):

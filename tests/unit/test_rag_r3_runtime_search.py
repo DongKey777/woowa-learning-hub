@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, searcher
+from scripts.learning.rag.r3 import search as r3_search
+from scripts.learning.rag.r3.candidate import R3Document
 from scripts.learning.rag.r3.index.runtime_loader import (
     load_lance_documents,
     load_runtime_dense_candidates,
@@ -347,6 +349,24 @@ def test_r3_lance_sparse_sidecar_cache_survives_query_prefetches(
     load_lance_documents(tmp_path, sparse_sidecar=True)
 
     assert counts["to_pandas"] == 1
+
+
+def test_r3_sparse_retriever_cache_reuses_inverted_index():
+    documents = [
+        R3Document(
+            path="contents/network/latency.md",
+            chunk_id="latency#0",
+            title="Latency",
+            sparse_terms={"101": 2.0},
+        )
+    ]
+
+    first, first_hit = r3_search._cached_sparse_retriever(documents)
+    second, second_hit = r3_search._cached_sparse_retriever(documents)
+
+    assert first is second
+    assert first_hit is False
+    assert second_hit is True
 
 
 def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_path):
