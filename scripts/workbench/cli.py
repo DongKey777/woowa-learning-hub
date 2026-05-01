@@ -34,6 +34,134 @@ from core.orchestrator import Orchestrator  # type: ignore
 from core.orchestrator_workers import fleet_status, run_supervisor_loop, run_worker_loop, start_fleet_background, stop_fleet  # type: ignore
 
 
+def _read_json_object(path: Path) -> tuple[dict | None, str | None]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001 - doctor should report, not fail
+        return None, f"{type(exc).__name__}: {exc}"
+    if not isinstance(payload, dict):
+        return None, "JSON root is not an object"
+    return payload, None
+
+
+def _nested_get(payload: dict, path: tuple[str, ...]) -> object | None:
+    current: object = payload
+    for key in path:
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
+
+
+def _manifest_value(manifest: dict, field: str) -> object | None:
+    if field == "encoder.model_id":
+        encoder_model_id = _nested_get(manifest, ("encoder", "model_id"))
+        return encoder_model_id if encoder_model_id is not None else manifest.get("embed_model")
+    if field == "encoder.model_version":
+        return _nested_get(manifest, ("encoder", "model_version"))
+    return manifest.get(field)
+
+
+def _normalize_lock_value(field: str, value: object) -> object:
+    if field == "modalities" and isinstance(value, list):
+        return sorted(str(item) for item in value)
+    return value
+
+
+def _rag_model_lock_report(root: Path | None = None) -> dict:
+    if root is None:
+        root = ROOT
+    config_rel = Path("config") / "rag_models.json"
+    manifest_rel = Path("state") / "cs_rag" / "manifest.json"
+    config_path = root / config_rel
+    manifest_path = root / manifest_rel
+
+    base: dict = {
+        "config": str(config_rel),
+        "manifest": str(manifest_rel),
+        "status": "SKIP",
+        "line": f"SKIP rag_model_lock: {config_rel} missing",
+        "warnings": [],
+        "compared": {},
+        "skipped_fields": [],
+    }
+
+    if not config_path.exists():
+        return base
+
+    config, config_error = _read_json_object(config_path)
+    if config_error is not None or config is None:
+        warning = f"{config_rel} unreadable: {config_error}"
+        base.update({
+            "status": "WARN",
+            "line": f"WARN rag_model_lock: {warning}",
+            "warnings": [warning],
+        })
+        return base
+
+    if not manifest_path.exists():
+        warning = f"{manifest_rel} missing; live index comparison skipped"
+        base.update({
+            "status": "WARN",
+            "line": f"WARN rag_model_lock: {config_rel} found; {warning}",
+            "warnings": [warning],
+        })
+        return base
+
+    manifest, manifest_error = _read_json_object(manifest_path)
+    if manifest_error is not None or manifest is None:
+        warning = f"{manifest_rel} unreadable: {manifest_error}"
+        base.update({
+            "status": "WARN",
+            "line": f"WARN rag_model_lock: {warning}",
+            "warnings": [warning],
+        })
+        return base
+
+    expected_fields = {
+        "index_version": _nested_get(config, ("index", "index_version")),
+        "encoder.model_id": _nested_get(config, ("encoder", "model_id")),
+        "encoder.model_version": _nested_get(config, ("encoder", "model_version")),
+        "modalities": _nested_get(config, ("index", "modalities")),
+        "row_count": _nested_get(config, ("index", "row_count")),
+    }
+    warnings: list[str] = []
+    compared: dict[str, dict[str, object]] = {}
+    skipped_fields: list[str] = []
+
+    for field, expected in expected_fields.items():
+        actual = _manifest_value(manifest, field)
+        if expected is None or actual is None:
+            skipped_fields.append(field)
+            continue
+        normalized_expected = _normalize_lock_value(field, expected)
+        normalized_actual = _normalize_lock_value(field, actual)
+        compared[field] = {
+            "expected": expected,
+            "actual": actual,
+        }
+        if normalized_expected != normalized_actual:
+            warnings.append(f"{field} expected {expected!r}, got {actual!r}")
+
+    if warnings:
+        base.update({
+            "status": "WARN",
+            "line": f"WARN rag_model_lock: {len(warnings)} mismatch(es) against {config_rel}",
+            "warnings": warnings,
+            "compared": compared,
+            "skipped_fields": skipped_fields,
+        })
+        return base
+
+    base.update({
+        "status": "OK",
+        "line": f"OK rag_model_lock: {config_rel} matches {manifest_rel} ({len(compared)} field(s) checked)",
+        "compared": compared,
+        "skipped_fields": skipped_fields,
+    })
+    return base
+
+
 def cmd_bootstrap(_: argparse.Namespace) -> int:
     ensure_global_layout()
     print(json.dumps({
@@ -54,6 +182,7 @@ def cmd_doctor(_: argparse.Namespace) -> int:
         "registry": REGISTRY_PATH.exists(),
         "pr_archive": PR_ARCHIVE_DIR.exists(),
     }
+    checks["rag_model_lock"] = _rag_model_lock_report(ROOT)
     gh_auth = None
     if checks["gh"]:
         result = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True)

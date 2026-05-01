@@ -47,7 +47,7 @@ from typing import Iterable
 from . import category_mapping, indexer, signal_rules
 from .conversation_window import recent_rag_ask_context
 from .follow_up import is_follow_up
-from .multi_query import build_query_candidates, weighted_rrf_merge
+from .multi_query import QueryCandidate, build_query_candidates, weighted_rrf_merge
 
 RRF_K = 60
 DEFAULT_TOP_K = 5
@@ -1478,6 +1478,7 @@ def search(
             index_root=index_root,
             experience_level=experience_level,
             learner_context=learner_context,
+            use_reranker=use_reranker,
             debug=debug,
         )
 
@@ -1487,29 +1488,31 @@ def search(
         return []
 
     try:
-        # 1. Query expansion
-        tokens = signal_rules.expand_query(prompt, topic_hints)
         signals = signal_rules.detect_signals(prompt, topic_hints)
-        fts_query = _to_fts_query(tokens or _fallback_tokens(prompt))
+        query_candidates = _build_legacy_query_candidates(prompt, index_root=index_root)
 
-        # 2. FTS ranking
-        fts_hits = _fts_search(conn, fts_query, FTS_POOL_SIZE)
+        if query_candidates:
+            fused = _legacy_candidate_pool_for_query_plan(
+                conn,
+                index_root=index_root,
+                prompt=prompt,
+                topic_hints=topic_hints,
+                mode=mode,
+                candidates=query_candidates,
+            )
+            if debug is not None:
+                debug["query_candidate_kinds"] = [c.kind for c in query_candidates]
+        else:
+            fused = _legacy_candidate_pool(
+                conn,
+                index_root=index_root,
+                query_text=prompt,
+                topic_hints=topic_hints,
+                mode=mode,
+            )
 
-        rankings: list[list[tuple[int, float]]] = []
-        if fts_hits:
-            rankings.append(fts_hits)
-
-        # 3. Dense ranking (full mode only)
-        if mode == "full":
-            dense_hits = _dense_search(index_root, prompt, topic_hints, DENSE_POOL_SIZE)
-            if dense_hits:
-                rankings.append(dense_hits)
-
-        if not rankings:
+        if not fused:
             return []
-
-        # 4. RRF fusion
-        fused = _rrf_merge(rankings)
 
         # Resolve the full FTS+dense fusion pool for boost + output. Corpus
         # growth can push the right primer below the old top-20 pre-boost
@@ -1597,6 +1600,7 @@ def _search_lance(
     index_root: Path | str,
     experience_level: str | None,
     learner_context: dict | None,
+    use_reranker: bool | None,
     debug: dict | None,
 ) -> list[dict]:
     try:
@@ -1640,8 +1644,90 @@ def _search_lance(
         debug["category_filter_fallback"] = filter_fallback_used
         debug["allowed_categories"] = sorted(allowed_categories)
 
+    if mode == "full" and _rerank_enabled(use_reranker):
+        anchor = category_mapping.anchor_phrase_for(learning_points)
+        rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
+        filtered = _rerank(rerank_prompt, filtered, chunks, top_n=top_k * 2)
+        filtered = _apply_signal_boost(
+            filtered,
+            chunks,
+            prompt,
+            signals,
+            multiplier=POST_RERANK_SIGNAL_BOOST_MULTIPLIER,
+        )
+
     deduped = _dedupe_by_path(filtered, chunks)
     return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
+
+
+def _legacy_candidate_pool(
+    conn: sqlite3.Connection,
+    *,
+    index_root: Path | str,
+    query_text: str,
+    topic_hints: list[str] | None,
+    mode: str,
+) -> list[tuple[int, float]]:
+    """Return one legacy FTS+dense fused ranking for a single query text."""
+    tokens = signal_rules.expand_query(query_text, topic_hints)
+    fts_query = _to_fts_query(tokens or _fallback_tokens(query_text))
+    fts_hits = _fts_search(conn, fts_query, FTS_POOL_SIZE)
+
+    rankings: list[list[tuple[int, float]]] = []
+    if fts_hits:
+        rankings.append(fts_hits)
+
+    if mode == "full":
+        dense_hits = _dense_search(index_root, query_text, topic_hints, DENSE_POOL_SIZE)
+        if dense_hits:
+            rankings.append(dense_hits)
+
+    if not rankings:
+        return []
+    return _rrf_merge(rankings)
+
+
+def _legacy_candidate_pool_for_query_plan(
+    conn: sqlite3.Connection,
+    *,
+    index_root: Path | str,
+    prompt: str,
+    topic_hints: list[str] | None,
+    mode: str,
+    candidates: list[QueryCandidate],
+) -> list[tuple[int, float]]:
+    """Run bounded legacy rewrite candidates and merge them with weighted RRF."""
+    rankings: list[tuple[list[tuple[int, float]], float]] = []
+    for candidate in candidates:
+        candidate_topic_hints = topic_hints if candidate.kind == "original" else None
+        candidate_scored = _legacy_candidate_pool(
+            conn,
+            index_root=index_root,
+            query_text=prompt if candidate.kind == "original" else candidate.text,
+            topic_hints=candidate_topic_hints,
+            mode=mode,
+        )
+        if candidate_scored:
+            rankings.append((candidate_scored, candidate.weight))
+    if not rankings:
+        return []
+    return weighted_rrf_merge(rankings)
+
+
+def _build_legacy_query_candidates(
+    prompt: str,
+    *,
+    index_root: Path | str,
+) -> list[QueryCandidate]:
+    rewrites = _cached_rewrite_texts(prompt, index_root)
+    if not rewrites:
+        return []
+    candidates = build_query_candidates(
+        prompt,
+        rewrites=rewrites,
+        max_candidates=4,
+    )
+    return candidates if len(candidates) > 1 else []
 
 
 def _lance_candidate_pool_for_query_plan(
@@ -1677,17 +1763,22 @@ def _lance_candidate_pool_for_query_plan(
         except Exception:
             encoder = None
 
+    encoded_texts = [
+        _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints)
+        for candidate in candidates
+    ]
+    query_encodings = _encode_lance_query_candidates(
+        encoder,
+        encoded_texts,
+        query_modalities,
+    )
+
     if len(candidates) == 1:
         candidate = candidates[0]
-        query_encoding = _encode_lance_query_candidate(
-            encoder,
-            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
-            query_modalities,
-        )
         scored, chunks = _lance_candidate_pool(
             table,
             candidate.text,
-            query_encoding=query_encoding,
+            query_encoding=query_encodings[0] if query_encodings else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
         )
@@ -1695,16 +1786,11 @@ def _lance_candidate_pool_for_query_plan(
 
     chunks: dict[int, dict] = {}
     rankings: list[tuple[list[tuple[int, float]], float]] = []
-    for candidate in candidates:
-        query_encoding = _encode_lance_query_candidate(
-            encoder,
-            _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints),
-            query_modalities,
-        )
+    for idx, candidate in enumerate(candidates):
         candidate_scored, candidate_chunks = _lance_candidate_pool(
             table,
             candidate.text,
-            query_encoding=query_encoding,
+            query_encoding=query_encodings[idx] if idx < len(query_encodings) else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
         )
@@ -1720,6 +1806,54 @@ def _lance_candidate_pool_for_query_plan(
         chunks,
         {"query_candidate_kinds": [c.kind for c in candidates]},
     )
+
+
+def _encode_lance_query_candidates(
+    encoder,
+    texts: list[str],
+    query_modalities: tuple[str, ...],
+) -> list[dict | None]:
+    if not texts:
+        return []
+    if encoder is None or not query_modalities:
+        return [None for _ in texts]
+    try:
+        batch_encoding = encoder.encode_corpus(
+            texts,
+            batch_size=len(texts),
+            modalities=query_modalities,
+        )
+    except Exception:
+        return [
+            _encode_lance_query_candidate(encoder, text, query_modalities)
+            for text in texts
+        ]
+    return [
+        _slice_lance_query_encoding(batch_encoding, idx, query_modalities)
+        for idx in range(len(texts))
+    ]
+
+
+def _slice_lance_query_encoding(
+    encoding: dict,
+    idx: int,
+    query_modalities: tuple[str, ...],
+) -> dict:
+    out: dict = {}
+    if "dense" in query_modalities:
+        dense = encoding.get("dense")
+        if dense is not None:
+            try:
+                out["dense"] = dense[idx : idx + 1]
+            except Exception:
+                out["dense"] = dense
+    if "sparse" in query_modalities:
+        sparse = encoding.get("sparse") or []
+        out["sparse"] = [sparse[idx]] if idx < len(sparse) else [{}]
+    if "colbert" in query_modalities:
+        colbert = encoding.get("colbert") or []
+        out["colbert"] = [colbert[idx]] if idx < len(colbert) else []
+    return out
 
 
 def _encode_lance_query_candidate(
