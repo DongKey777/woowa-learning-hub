@@ -925,9 +925,20 @@ class RunPodHarness:
         for i, cmd in enumerate(commands, 1):
             logger.info("[runpod] step %d/%d: %s", i, len(commands),
                         cmd[:80] + ("…" if len(cmd) > 80 else ""))
-            rc, stdout, stderr = executor.run(
-                pod, keypath, cmd, timeout_s=remote_command_timeout_s,
-            )
+            if self._should_run_detached(cmd):
+                rc, stdout, stderr = self._run_detached_remote_command(
+                    executor,
+                    pod,
+                    keypath,
+                    cmd,
+                    run_id=run_id,
+                    step_index=i,
+                    timeout_s=remote_command_timeout_s,
+                )
+            else:
+                rc, stdout, stderr = executor.run(
+                    pod, keypath, cmd, timeout_s=remote_command_timeout_s,
+                )
             if rc != 0:
                 # Log + raise so finally block still terminates Pod.
                 # Print BOTH ends of stderr — Python tracebacks have
@@ -998,6 +1009,127 @@ class RunPodHarness:
                         local_artifact_dir)
 
         return local_artifact_dir
+
+    @staticmethod
+    def _should_run_detached(command: str) -> bool:
+        """Run long, noisy remote jobs as Pod-local background tasks."""
+
+        long_markers = (
+            "scripts.learning.cli_cs_index_build",
+            "scripts.learning.rag.r3.index.lexical_sidecar",
+            "scripts.learning.cli_rag_eval",
+        )
+        return any(marker in command for marker in long_markers)
+
+    def _run_detached_remote_command(
+        self,
+        executor,
+        pod: Pod,
+        keypath: Path,
+        command: str,
+        *,
+        run_id: str,
+        step_index: int,
+        timeout_s: int,
+    ) -> tuple[int, str, str]:
+        """Start a long command in the Pod and poll status/log files.
+
+        This avoids binding multi-hour R3 builds to one SSH channel. If a
+        status poll gets reset, the Pod-local job keeps running and the next
+        poll can recover.
+        """
+
+        log_dir = "/workspace/rag-build-logs"
+        prefix = f"{log_dir}/{run_id}-step-{step_index}"
+        log_path = f"{prefix}.log"
+        rc_path = f"{prefix}.rc"
+        pid_path = f"{prefix}.pid"
+        start_cmd = (
+            f"mkdir -p {shlex.quote(log_dir)} && "
+            f"rm -f {shlex.quote(log_path)} {shlex.quote(rc_path)} {shlex.quote(pid_path)} && "
+            f"nohup bash -lc {shlex.quote(command)} > {shlex.quote(log_path)} 2>&1 "
+            f"< /dev/null & echo $! > {shlex.quote(pid_path)}"
+        )
+        rc, stdout, stderr = executor.run(pod, keypath, start_cmd, timeout_s=60)
+        if rc != 0:
+            return rc, stdout, stderr
+
+        logger.info(
+            "[runpod] step %d detached; pid file=%s log=%s",
+            step_index,
+            pid_path,
+            log_path,
+        )
+        started = time.monotonic()
+        poll_interval_s = 60
+        last_status = ""
+        last_poll_error = ""
+
+        while True:
+            if time.monotonic() - started > timeout_s:
+                kill_cmd = (
+                    f"test -f {shlex.quote(pid_path)} && "
+                    f"kill $(cat {shlex.quote(pid_path)}) >/dev/null 2>&1 || true"
+                )
+                try:
+                    executor.run(pod, keypath, kill_cmd, timeout_s=30)
+                except Exception:
+                    pass
+                return (
+                    124,
+                    "",
+                    f"detached remote command timed out after {timeout_s}s; "
+                    f"log={log_path}; last_status={last_status}; "
+                    f"last_poll_error={last_poll_error}",
+                )
+
+            status_cmd = (
+                "set +e; "
+                f"if [ -f {shlex.quote(rc_path)} ]; then "
+                f"echo __RAG_DONE__; cat {shlex.quote(rc_path)}; "
+                f"echo __RAG_LOG_TAIL__; tail -n 120 {shlex.quote(log_path)} 2>/dev/null; "
+                "else "
+                f"echo __RAG_RUNNING__; "
+                f"test -f {shlex.quote(pid_path)} && echo pid=$(cat {shlex.quote(pid_path)}); "
+                f"test -f {shlex.quote(pid_path)} && ps -p $(cat {shlex.quote(pid_path)}) "
+                "-o pid=,etime=,pcpu=,pmem=,cmd= 2>/dev/null; "
+                f"echo __RAG_LOG_TAIL__; tail -n 40 {shlex.quote(log_path)} 2>/dev/null; "
+                "fi"
+            )
+            try:
+                _poll_rc, poll_stdout, poll_stderr = executor.run(
+                    pod, keypath, status_cmd, timeout_s=60,
+                )
+            except Exception as exc:
+                last_poll_error = repr(exc)
+                logger.warning(
+                    "[runpod] step %d status poll failed; detached job may still be running: %s",
+                    step_index,
+                    exc,
+                )
+                time.sleep(poll_interval_s)
+                continue
+
+            last_status = poll_stdout[-4000:]
+            if poll_stderr.strip():
+                last_poll_error = poll_stderr[-2000:]
+            if "__RAG_DONE__" in poll_stdout:
+                done_after = poll_stdout.split("__RAG_DONE__", 1)[1].strip().splitlines()
+                try:
+                    remote_rc = int(done_after[0].strip())
+                except (IndexError, ValueError):
+                    remote_rc = 1
+                if remote_rc == 0:
+                    logger.info("[runpod] step %d detached job completed", step_index)
+                    return 0, poll_stdout, poll_stderr
+                return remote_rc, "", poll_stdout + poll_stderr
+
+            logger.info(
+                "[runpod] step %d still running; status tail:\n%s",
+                step_index,
+                poll_stdout[-2000:],
+            )
+            time.sleep(poll_interval_s)
 
     def _build_remote_commands(
         self,

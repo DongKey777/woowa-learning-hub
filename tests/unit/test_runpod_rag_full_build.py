@@ -913,6 +913,8 @@ class _FakeSshExecutor:
         self.timeouts.append(timeout_s)
         if self.fail_on is not None and len(self.commands) == self.fail_on:
             return 1, "", "simulated remote failure"
+        if "__RAG_DONE__" in command:
+            return 0, "__RAG_DONE__\n0\n__RAG_LOG_TAIL__\nok", ""
         return 0, "ok", ""
 
     def scp_from_pod(self, pod, keypath, remote, local):
@@ -953,7 +955,7 @@ def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
     assert any("git clone" in c for c in fake_ssh.commands)
     assert any("cs-index-build" in c or "cli_cs_index_build" in c
                for c in fake_ssh.commands)
-    assert fake_ssh.timeouts and set(fake_ssh.timeouts) == {7200}
+    assert 7200 in fake_ssh.timeouts
     # Artifact returned
     assert artifact is not None
     assert (artifact / "cs_rag_index_root.tar.zst").exists()
