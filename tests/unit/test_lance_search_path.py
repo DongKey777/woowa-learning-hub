@@ -210,6 +210,118 @@ def test_lance_candidate_search_returns_empty_when_modalities_miss(tmp_path):
     )
 
 
+def test_lance_fts_adds_korean_search_terms_candidate(monkeypatch):
+    def row(chunk_id: str, path: str, title: str) -> dict:
+        return {
+            "chunk_id": chunk_id,
+            "doc_id": chunk_id.split("#", 1)[0],
+            "path": path,
+            "title": title,
+            "category": "database",
+            "difficulty": "beginner",
+            "section_path": json.dumps([title]),
+            "body": f"{title} body",
+            "char_len": 20,
+            "anchors": "[]",
+            "_score": 1.0,
+        }
+
+    class FakeLanceQuery:
+        def __init__(self, rows):
+            self._rows = rows
+
+        def limit(self, _limit):
+            return self
+
+        def to_list(self):
+            return self._rows
+
+    class FakeLanceTable:
+        def __init__(self):
+            self.prompts = []
+
+        def search(self, prompt, *, query_type="fts"):
+            self.prompts.append((prompt, query_type))
+            if prompt == "트랜잭션 격리 수준":
+                return FakeLanceQuery(
+                    [
+                        row(
+                            "terms#0",
+                            "contents/database/transaction-isolation-locking.md",
+                            "격리 수준",
+                        )
+                    ]
+                )
+            return FakeLanceQuery(
+                [
+                    row(
+                        "raw#0",
+                        "contents/database/read-committed-vs-repeatable-read-anomalies.md",
+                        "트랜잭션 증상",
+                    )
+                ]
+            )
+
+    monkeypatch.setattr(
+        searcher,
+        "_korean_search_terms_query",
+        lambda _prompt: "트랜잭션 격리 수준",
+    )
+    monkeypatch.setenv("WOOWA_KOREAN_FTS_TERMS_WEIGHT", "0.7")
+    debug = {}
+    table = FakeLanceTable()
+
+    scored, chunks = searcher._lance_candidate_pool(
+        table,
+        "트랜잭션 격리수준이란",
+        modalities=("fts",),
+        debug=debug,
+    )
+
+    assert table.prompts == [
+        ("트랜잭션 격리수준이란", "fts"),
+        ("트랜잭션 격리 수준", "fts"),
+    ]
+    assert debug["fts_candidate_kinds"] == ["original", "korean_terms"]
+    assert {chunks[row_id]["path"] for row_id, _ in scored} == {
+        "contents/database/read-committed-vs-repeatable-read-anomalies.md",
+        "contents/database/transaction-isolation-locking.md",
+    }
+
+
+def test_lance_fts_can_disable_korean_search_terms_candidate(monkeypatch):
+    class EmptyLanceQuery:
+        def limit(self, _limit):
+            return self
+
+        def to_list(self):
+            return []
+
+    class SpyLanceTable:
+        def __init__(self):
+            self.prompts = []
+
+        def search(self, prompt, *, query_type="fts"):
+            self.prompts.append((prompt, query_type))
+            return EmptyLanceQuery()
+
+    monkeypatch.setenv("WOOWA_KOREAN_FTS_TERMS_WEIGHT", "0")
+    monkeypatch.setattr(
+        searcher,
+        "_korean_search_terms_query",
+        lambda _prompt: "트랜잭션 격리 수준",
+    )
+    table = SpyLanceTable()
+
+    searcher._lance_candidate_pool(
+        table,
+        "트랜잭션 격리수준이란",
+        modalities=("fts",),
+    )
+
+    assert table.prompts == [("트랜잭션 격리수준이란", "fts")]
+
+
 def test_public_search_can_use_explicit_lance_backend(tmp_path, monkeypatch):
     corpus_root = _fake_corpus(tmp_path)
     index_root = tmp_path / "index"

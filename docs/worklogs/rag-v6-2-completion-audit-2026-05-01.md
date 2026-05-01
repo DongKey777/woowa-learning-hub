@@ -47,6 +47,7 @@ The plan's Definition of Done requires all of the following:
 | Phase 4 5-doc sidecar pilot | `reports/rag_eval/chunk_context_pilot_comparison_20260501T0416Z.json` records 130 inputs and 130 outputs over 5 docs | Complete |
 | Phase 4 multi-turn fixture | `tests/fixtures/cs_rag_multi_turn_queries.json`; `bin/rag-eval --fast` passed with 10 queries | Complete |
 | Phase 4 ko bucket delta | Comparison report records `ko_bucket_delta_primary_ndcg=0.0` | Complete |
+| Phase 4.3 Korean query-side `search_terms` candidate | `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`; ko bucket delta `+0.1615`, macro delta `+0.0205`, but category/language regressions exceed gate | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -70,6 +71,13 @@ when Phase 1 and Phase 2 gates pass. Current measured evidence blocks that:
   - `state/cs_rag/manifest.json` is legacy v2 MiniLM, not Lance v3 BGE-M3.
   - `state/cs_rag_archive` is absent.
   - `docs/worklogs/rag-r2-cutover-2026-05-01.md` is absent.
+
+Subsequent Phase 4.3 work measured an opt-in Korean query-side `search_terms`
+candidate. It improved the ko bucket materially (`+0.1615`) and macro nDCG
+(`+0.0205`) on the R2 holdout, but it is not accepted for default behavior
+because database, system-design, English, and mixed-language buckets regressed
+beyond the plan's `-0.01` limit. The feature is therefore left behind
+`WOOWA_KOREAN_FTS_TERMS_WEIGHT`; default weight is `0.0`.
 
 ## Next Required Decision
 

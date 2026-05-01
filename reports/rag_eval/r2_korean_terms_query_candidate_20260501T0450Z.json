@@ -1,0 +1,168 @@
+{
+  "created_at": "2026-05-01T04:35:33Z",
+  "feature": "Lance Korean query-side search_terms FTS candidate",
+  "code_flag": {
+    "env": "WOOWA_KOREAN_FTS_TERMS_WEIGHT",
+    "default_weight": 0.0,
+    "reason": "Opt-in only until bucket-regression gate passes."
+  },
+  "fixture": "tests/fixtures/cs_rag_golden_queries_ko_rewritten_applied.json",
+  "split": {
+    "name": "holdout",
+    "seed": 20240202,
+    "queries": 101
+  },
+  "index_root": "/private/tmp/rag_ivf_sweep_20260501T0401/current",
+  "modalities": [
+    "fts",
+    "dense",
+    "sparse"
+  ],
+  "baseline": {
+    "report_path": "reports/rag_eval/r2_ivf_sweep_20260501T0401.json#variants.current_256_64",
+    "primary_ndcg_macro": 0.8897525076770467,
+    "primary_ndcg_micro": 0.8603246461456868,
+    "category_primary_ndcg": {
+      "software-engineering": 0.6666666666666666,
+      "spring": 0.8461538461538461,
+      "database": 0.7718216255952429,
+      "network": 1.0,
+      "security": 1.0,
+      "design-pattern": 0.8461538461538461,
+      "operating-system": 0.8769765845238192,
+      "system-design": 1.0,
+      "language": 1.0
+    },
+    "language_primary_ndcg": {
+      "mixed": 0.9201998321986621,
+      "en": 0.8571428571428571,
+      "ko": 0.6956521739130435
+    },
+    "latency_p95_warm_ms": 720.7614999933867,
+    "hard_regression_failures": 16
+  },
+  "experiments": {
+    "weight_0_7": {
+      "report_path": "reports/rag_eval/r2_korean_terms_holdout_20260501T0450Z.json",
+      "primary_ndcg_macro": 0.9102958203915194,
+      "primary_ndcg_micro": 0.8766485304464537,
+      "category_primary_ndcg": {
+        "system-design": 0.9077324383928644,
+        "spring": 0.8815464876785729,
+        "database": 0.6652855626444197,
+        "network": 1.0,
+        "operating-system": 1.0,
+        "software-engineering": 0.75,
+        "security": 1.0,
+        "data-structure": 1.0,
+        "design-pattern": 0.8983937151993362,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.902209268112247,
+        "en": 0.787461929837326,
+        "ko": 0.8571428571428571
+      },
+      "latency_p95_warm_ms": 759.0401249908609,
+      "hard_regression_failures": 13
+    },
+    "weight_0_3": {
+      "report_path": "reports/rag_eval/r2_korean_terms_w03_holdout_20260501T0450Z.json",
+      "primary_ndcg_macro": 0.9102958203915194,
+      "primary_ndcg_micro": 0.8766485304464537,
+      "category_primary_ndcg": {
+        "system-design": 0.9077324383928644,
+        "spring": 0.8815464876785729,
+        "database": 0.6652855626444197,
+        "network": 1.0,
+        "operating-system": 1.0,
+        "software-engineering": 0.75,
+        "security": 1.0,
+        "data-structure": 1.0,
+        "design-pattern": 0.8983937151993362,
+        "language": 1.0
+      },
+      "language_primary_ndcg": {
+        "mixed": 0.902209268112247,
+        "en": 0.787461929837326,
+        "ko": 0.8571428571428571
+      },
+      "latency_p95_warm_ms": 810.0460409914376,
+      "hard_regression_failures": 13
+    }
+  },
+  "delta_vs_baseline": {
+    "weight_0_7": {
+      "primary_ndcg_macro": 0.020543312714472628,
+      "primary_ndcg_micro": 0.016323884300766922,
+      "language_primary_ndcg": {
+        "en": -0.0696809273055311,
+        "ko": 0.16149068322981364,
+        "mixed": -0.017990564086415084
+      },
+      "category_primary_ndcg": {
+        "data-structure": 1.0,
+        "database": -0.10653606295082318,
+        "design-pattern": 0.05223986904549005,
+        "language": 0.0,
+        "network": 0.0,
+        "operating-system": 0.12302341547618079,
+        "security": 0.0,
+        "software-engineering": 0.08333333333333337,
+        "spring": 0.035392641524726765,
+        "system-design": -0.09226756160713556
+      },
+      "latency_p95_warm_ms": 38.27862499747425,
+      "hard_regression_failures": -3,
+      "bucket_regressions_below_minus_0_01": {
+        "category": {
+          "database": -0.10653606295082318,
+          "system-design": -0.09226756160713556
+        },
+        "language": {
+          "en": -0.0696809273055311,
+          "mixed": -0.017990564086415084
+        }
+      }
+    },
+    "weight_0_3": {
+      "primary_ndcg_macro": 0.020543312714472628,
+      "primary_ndcg_micro": 0.016323884300766922,
+      "language_primary_ndcg": {
+        "en": -0.0696809273055311,
+        "ko": 0.16149068322981364,
+        "mixed": -0.017990564086415084
+      },
+      "category_primary_ndcg": {
+        "data-structure": 1.0,
+        "database": -0.10653606295082318,
+        "design-pattern": 0.05223986904549005,
+        "language": 0.0,
+        "network": 0.0,
+        "operating-system": 0.12302341547618079,
+        "security": 0.0,
+        "software-engineering": 0.08333333333333337,
+        "spring": 0.035392641524726765,
+        "system-design": -0.09226756160713556
+      },
+      "latency_p95_warm_ms": 89.28454099805094,
+      "hard_regression_failures": -3,
+      "bucket_regressions_below_minus_0_01": {
+        "category": {
+          "database": -0.10653606295082318,
+          "system-design": -0.09226756160713556
+        },
+        "language": {
+          "en": -0.0696809273055311,
+          "mixed": -0.017990564086415084
+        }
+      }
+    }
+  },
+  "decision": {
+    "accepted_for_default": false,
+    "reason": "Korean bucket improved, but category regressions exceeded -0.01 and latency remained above the Phase 2/3 gate.",
+    "best_observed_ko_delta": 0.16149068322981364,
+    "best_observed_macro_delta": 0.020543312714472628
+  }
+}

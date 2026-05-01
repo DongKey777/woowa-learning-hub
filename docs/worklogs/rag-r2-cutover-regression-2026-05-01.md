@@ -187,3 +187,66 @@ Interpretation:
 - `chunk-context-v1` is wired into dense embedding text and Lance `search_terms`, and malformed sidecars fall back to raw chunk text.
 - This small sampled pilot did not move rankings. The result is useful as wiring evidence, not as production approval.
 - The weak multi-turn pilot fixture suggests context generation alone is insufficient; the next likely lever is query rewriting or higher-quality per-chunk context generation before a full R2 rebuild.
+
+## Phase 4.3 Korean Query-Side `search_terms` Candidate
+
+Summary JSON: `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`
+
+Artifacts:
+
+- Code: `scripts/learning/rag/searcher.py`
+- Unit coverage: `tests/unit/test_lance_search_path.py`
+- Weight `0.7` report: `reports/rag_eval/r2_korean_terms_holdout_20260501T0450Z.json`
+- Weight `0.3` report: `reports/rag_eval/r2_korean_terms_w03_holdout_20260501T0450Z.json`
+
+Method:
+
+- Added a query-side analogue of Lance `search_terms`: Korean prompts can be
+  analyzed with `kiwipiepy` and searched as a separate FTS candidate.
+- Fused the raw-prompt FTS ranking and the Korean terms FTS ranking with
+  weighted RRF before dense/sparse fusion.
+- Left the feature opt-in through `WOOWA_KOREAN_FTS_TERMS_WEIGHT`; default
+  weight is `0.0` because the pilot did not pass bucket-regression gates.
+- Reused the extracted R2 `current_256_64` index under
+  `/private/tmp/rag_ivf_sweep_20260501T0401/current`.
+- Ran holdout ablation on the Korean rewritten applied fixture, split seed
+  `20240202`, modalities `fts,dense,sparse`.
+
+Commands:
+
+```bash
+env HF_HUB_OFFLINE=1 WOOWA_KOREAN_FTS_TERMS_WEIGHT=0.3 \
+  bin/rag-eval --ablate \
+  --fixture tests/fixtures/cs_rag_golden_queries_ko_rewritten_applied.json \
+  --embedding-index-root /private/tmp/rag_ivf_sweep_20260501T0401/current \
+  --ablation-split holdout \
+  --ablation-seed 20240202 \
+  --ablation-modalities fts,dense,sparse \
+  --ablation-out reports/rag_eval/r2_korean_terms_w03_holdout_20260501T0450Z.json \
+  --device auto
+```
+
+Measurement versus the Phase 2 `current_256_64` baseline:
+
+| run | primary nDCG macro | primary nDCG micro | ko bucket | failures | local CPU P95 |
+|---|---:|---:|---:|---:|---:|
+| baseline `current_256_64` | 0.8898 | 0.8603 | 0.6957 | 16 | 720.8 ms |
+| Korean terms candidate | 0.9103 | 0.8766 | 0.8571 | 13 | 759.0-810.0 ms |
+| delta | +0.0205 | +0.0163 | +0.1615 | -3 | +38.3 to +89.3 ms |
+
+Bucket regressions:
+
+| bucket axis | bucket | delta |
+|---|---|---:|
+| category | database | -0.1065 |
+| category | system-design | -0.0923 |
+| language | en | -0.0697 |
+| language | mixed | -0.0180 |
+
+Decision:
+
+- Do not enable by default yet.
+- Keep the opt-in code path because it proves the Korean bucket can move
+  materially without rebuilding the index.
+- Next tuning needs either structural triggers for Korean-only symptom prompts
+  or per-category guards so database/system-design do not regress.

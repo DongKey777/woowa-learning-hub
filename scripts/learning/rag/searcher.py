@@ -56,6 +56,7 @@ DENSE_POOL_SIZE = 80
 CATEGORY_BOOST = 0.15  # added to final score when category matches a learning point
 SIGNAL_CATEGORY_BOOST = 0.0015
 POST_RERANK_SIGNAL_BOOST_MULTIPLIER = 1000.0
+KOREAN_FTS_TERMS_WEIGHT = 0.0
 
 # Difficulty boost ladder — applied as a tie-breaker inside the top pool only,
 # so it never promotes an unrelated doc into the candidate set. Experience
@@ -116,6 +117,9 @@ SIGNAL_PATH_BOOSTS: dict[str, dict[str, float]] = {
 # ---------------------------------------------------------------------------
 
 _FTS_TOKEN_RE = re.compile(r"[0-9A-Za-z가-힣]+")
+_KOREAN_TEXT_RE = re.compile(r"[가-힣]")
+_QUERY_TERM_RE = re.compile(r"[0-9A-Za-z가-힣]{2,}")
+_KIWI_QUERY_ANALYZER = None
 
 
 def _to_fts_query(tokens: Iterable[str]) -> str:
@@ -135,6 +139,53 @@ def _to_fts_query(tokens: Iterable[str]) -> str:
             seen.add(key)
             quoted.append(f'"{piece}"')
     return " OR ".join(quoted)
+
+
+def _korean_search_terms_query(prompt: str) -> str | None:
+    """Build the query-side analogue of Lance ``search_terms``.
+
+    Lance FTS searches the raw prompt, while the corpus also stores a
+    kiwipiepy-tokenized ``search_terms`` field.  For Korean prompts, run the
+    same analyzer on the query and search it as a separate FTS candidate.
+    Missing kiwipiepy degrades to the raw prompt path.
+    """
+    if not _KOREAN_TEXT_RE.search(prompt):
+        return None
+
+    global _KIWI_QUERY_ANALYZER
+    try:
+        import kiwipiepy  # type: ignore
+    except ImportError:
+        return None
+
+    if _KIWI_QUERY_ANALYZER is None:
+        _KIWI_QUERY_ANALYZER = kiwipiepy.Kiwi()
+
+    seen: set[str] = set()
+    terms: list[str] = []
+    for token in _KIWI_QUERY_ANALYZER.tokenize(prompt):
+        for piece in _QUERY_TERM_RE.findall(str(token.form)):
+            key = piece.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            terms.append(piece)
+
+    query = " ".join(terms)
+    if not query or query.casefold() == " ".join(prompt.split()).casefold():
+        return None
+    return query
+
+
+def _korean_fts_terms_weight() -> float:
+    raw = os.environ.get("WOOWA_KOREAN_FTS_TERMS_WEIGHT")
+    if raw is None:
+        return KOREAN_FTS_TERMS_WEIGHT
+    try:
+        value = float(raw)
+    except ValueError:
+        return KOREAN_FTS_TERMS_WEIGHT
+    return max(value, 0.0)
 
 
 # ---------------------------------------------------------------------------
@@ -459,6 +510,7 @@ def _lance_candidate_pool(
     query_encoding: dict | None = None,
     modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
     pool_size: int = FTS_POOL_SIZE,
+    debug: dict | None = None,
 ) -> tuple[list[tuple[int, float]], dict[int, dict]]:
     """Return ``(scored, chunks)`` from a v3 LanceDB table.
 
@@ -470,10 +522,35 @@ def _lance_candidate_pool(
     rankings: list[list[tuple[int, float]]] = []
 
     if "fts" in modalities:
+        fts_rankings: list[tuple[list[tuple[int, float]], float]] = []
+        fts_candidate_kinds: list[str] = []
+
         fts_rows = _lance_fts_search(table, prompt, pool_size)
         fts_ranking = _lance_rows_to_ranking(fts_rows, chunks, score_key="_score")
         if fts_ranking:
-            rankings.append(fts_ranking)
+            fts_rankings.append((fts_ranking, 1.0))
+            fts_candidate_kinds.append("original")
+
+        korean_terms_weight = _korean_fts_terms_weight()
+        korean_terms = (
+            _korean_search_terms_query(prompt)
+            if korean_terms_weight > 0
+            else None
+        )
+        if korean_terms and korean_terms_weight > 0:
+            terms_rows = _lance_fts_search(table, korean_terms, pool_size)
+            terms_ranking = _lance_rows_to_ranking(terms_rows, chunks, score_key="_score")
+            if terms_ranking:
+                fts_rankings.append((terms_ranking, korean_terms_weight))
+                fts_candidate_kinds.append("korean_terms")
+
+        if fts_rankings:
+            if len(fts_rankings) == 1:
+                rankings.append(fts_rankings[0][0])
+            else:
+                rankings.append(weighted_rrf_merge(fts_rankings))
+        if debug is not None:
+            debug["fts_candidate_kinds"] = fts_candidate_kinds
 
     if "dense" in modalities and query_encoding is not None:
         dense = query_encoding.get("dense")
@@ -1775,28 +1852,43 @@ def _lance_candidate_pool_for_query_plan(
 
     if len(candidates) == 1:
         candidate = candidates[0]
+        query_debug: dict = {}
         scored, chunks = _lance_candidate_pool(
             table,
             candidate.text,
             query_encoding=query_encodings[0] if query_encodings else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
+            debug=query_debug,
         )
-        return scored, chunks, {"query_candidate_kinds": [candidate.kind]}
+        return (
+            scored,
+            chunks,
+            {
+                "query_candidate_kinds": [candidate.kind],
+                **query_debug,
+            },
+        )
 
     chunks: dict[int, dict] = {}
     rankings: list[tuple[list[tuple[int, float]], float]] = []
+    fts_candidate_kinds: list[str] = []
     for idx, candidate in enumerate(candidates):
+        candidate_debug: dict = {}
         candidate_scored, candidate_chunks = _lance_candidate_pool(
             table,
             candidate.text,
             query_encoding=query_encodings[idx] if idx < len(query_encodings) else None,
             modalities=resolved_modalities,
             pool_size=pool_size,
+            debug=candidate_debug,
         )
         if not candidate_scored:
             continue
         chunks.update(candidate_chunks)
+        for kind in candidate_debug.get("fts_candidate_kinds") or []:
+            if kind not in fts_candidate_kinds:
+                fts_candidate_kinds.append(kind)
         rankings.append((candidate_scored, candidate.weight))
 
     if not rankings:
@@ -1804,7 +1896,10 @@ def _lance_candidate_pool_for_query_plan(
     return (
         weighted_rrf_merge(rankings),
         chunks,
-        {"query_candidate_kinds": [c.kind for c in candidates]},
+        {
+            "query_candidate_kinds": [c.kind for c in candidates],
+            "fts_candidate_kinds": fts_candidate_kinds,
+        },
     )
 
 
