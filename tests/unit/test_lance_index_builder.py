@@ -217,3 +217,47 @@ def test_create_lance_indices_builds_ann_for_production_sized_tables():
     assert table.vector_index_calls == 2
     assert indices["dense"]["type"] in {"IVF_FLAT", "IVF_PQ"}
     assert indices["colbert"]["type"] == "MULTI_VECTOR"
+
+
+def test_create_lance_indices_honors_dense_ivf_overrides():
+    class FakeTable:
+        def __init__(self):
+            self.vector_index_calls = []
+
+        def create_index(self, **kwargs):
+            self.vector_index_calls.append(kwargs)
+
+        def create_fts_index(self, *_args, **_kwargs):
+            pass
+
+    table = FakeTable()
+    indices = indexer._create_lance_indices(
+        table,
+        row_count=indexer.LANCE_ANN_MIN_ROWS,
+        dense_num_partitions=7,
+        dense_num_sub_vectors=128,
+    )
+
+    dense_call = table.vector_index_calls[0]
+    colbert_call = table.vector_index_calls[1]
+    assert dense_call["index_type"] == "IVF_PQ"
+    assert dense_call["num_partitions"] == 7
+    assert dense_call["num_sub_vectors"] == 128
+    assert colbert_call["num_partitions"] == 7
+    assert colbert_call["num_sub_vectors"] == 128
+    assert indices["dense"]["num_partitions"] == 7
+    assert indices["dense"]["num_sub_vectors"] == 128
+
+
+def test_create_lance_indices_rejects_non_positive_ivf_values():
+    class FakeTable:
+        def create_index(self, **_kwargs):
+            pass
+
+        def create_fts_index(self, *_args, **_kwargs):
+            pass
+
+    with pytest.raises(ValueError, match="dense_num_partitions"):
+        indexer._create_lance_indices(FakeTable(), row_count=2048, dense_num_partitions=0)
+    with pytest.raises(ValueError, match="dense_num_sub_vectors"):
+        indexer._create_lance_indices(FakeTable(), row_count=2048, dense_num_sub_vectors=0)

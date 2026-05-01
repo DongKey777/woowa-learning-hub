@@ -188,6 +188,13 @@ def _parse_modalities(raw: str) -> tuple[str, ...]:
     return modalities
 
 
+def _positive_int(raw: str) -> int:
+    value = int(raw)
+    if value <= 0:
+        raise argparse.ArgumentTypeError("value must be a positive integer")
+    return value
+
+
 def _format_bytes(size: int) -> str:
     units = ("B", "KB", "MB", "GB", "TB")
     value = float(size)
@@ -378,6 +385,18 @@ def main(
             "many minutes after a progress event. 0 disables the gate."
         ),
     )
+    parser.add_argument(
+        "--ivf-num-partitions",
+        type=_positive_int,
+        default=None,
+        help="Dense LanceDB IVF num_partitions override for --backend lance full builds.",
+    )
+    parser.add_argument(
+        "--ivf-num-sub-vectors",
+        type=_positive_int,
+        default=None,
+        help="Dense LanceDB IVF num_sub_vectors override for --backend lance full builds.",
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -467,6 +486,8 @@ def main(
                     modalities=args.modalities,
                     progress=lance_progress,
                     colbert_dtype=args.lance_colbert_dtype,
+                    dense_num_partitions=args.ivf_num_partitions,
+                    dense_num_sub_vectors=args.ivf_num_sub_vectors,
                 )
                 try:
                     model_version = manifest.get("encoder", {}).get("model_version")

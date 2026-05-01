@@ -61,6 +61,8 @@ def stub_indexer(monkeypatch, tmp_path):
         modalities,
         progress=None,
         colbert_dtype="float16",
+        dense_num_partitions=None,
+        dense_num_sub_vectors=None,
     ):
         state["build_lance_index_called"] = True
         state["build_lance_args"] = {
@@ -69,6 +71,8 @@ def stub_indexer(monkeypatch, tmp_path):
             "encoder": encoder,
             "modalities": modalities,
             "colbert_dtype": colbert_dtype,
+            "dense_num_partitions": dense_num_partitions,
+            "dense_num_sub_vectors": dense_num_sub_vectors,
         }
         return {
             "row_count": 200,
@@ -291,6 +295,8 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
             "--lance-colbert-dtype", "float32",
             "--lance-device", "mps",
             "--lance-precision", "fp16",
+            "--ivf-num-partitions", "7",
+            "--ivf-num-sub-vectors", "128",
         ],
         lance_encoder_factory=lambda: fake_encoder,
     )
@@ -302,6 +308,8 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     assert stub_indexer["build_lance_args"]["encoder"] is fake_encoder
     assert stub_indexer["build_lance_args"]["modalities"] == ("dense", "fts")
     assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
+    assert stub_indexer["build_lance_args"]["dense_num_partitions"] == 7
+    assert stub_indexer["build_lance_args"]["dense_num_sub_vectors"] == 128
     assert seed_state["called"] is True
     assert seed_state["args"][2] == "fake/bge-m3@test"
     out = capsys.readouterr().out

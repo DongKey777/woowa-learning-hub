@@ -658,6 +658,8 @@ class BuildConfig:
     lance_batch_size: int | None = None
     lance_precision: str | None = None         # "auto"|"fp16"|"fp32"
     lance_colbert_dtype: str | None = None     # "float16"|"float32"
+    ivf_num_partitions: int | None = None
+    ivf_num_sub_vectors: int | None = None
 
 
 class RunPodHarness:
@@ -777,6 +779,8 @@ class RunPodHarness:
         lance_batch_size: int | None = None,
         lance_precision: str | None = None,
         lance_colbert_dtype: str | None = None,
+        ivf_num_partitions: int | None = None,
+        ivf_num_sub_vectors: int | None = None,
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
 
@@ -792,6 +796,8 @@ class RunPodHarness:
             lance_batch_size=lance_batch_size,
             lance_precision=lance_precision,
             lance_colbert_dtype=lance_colbert_dtype,
+            ivf_num_partitions=ivf_num_partitions,
+            ivf_num_sub_vectors=ivf_num_sub_vectors,
         )
 
         if self.dry_run:
@@ -886,6 +892,8 @@ class RunPodHarness:
         lance_batch_size: int | None = None,
         lance_precision: str | None = None,
         lance_colbert_dtype: str | None = None,
+        ivf_num_partitions: int | None = None,
+        ivf_num_sub_vectors: int | None = None,
     ) -> list[str]:
         """Sequence of shell commands the Pod will run.
 
@@ -903,6 +911,10 @@ class RunPodHarness:
             build_extra.append(f"--lance-precision {lance_precision}")
         if lance_colbert_dtype is not None:
             build_extra.append(f"--lance-colbert-dtype {lance_colbert_dtype}")
+        if ivf_num_partitions is not None:
+            build_extra.append(f"--ivf-num-partitions {ivf_num_partitions}")
+        if ivf_num_sub_vectors is not None:
+            build_extra.append(f"--ivf-num-sub-vectors {ivf_num_sub_vectors}")
         build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
         # CRITICAL (R1 v1 bug): we used to create our own venv and
         # `pip install -e .`, which dragged in PyPI's *default* torch
@@ -1058,6 +1070,8 @@ class RunPodHarness:
                 lance_batch_size=config.lance_batch_size,
                 lance_precision=config.lance_precision,
                 lance_colbert_dtype=config.lance_colbert_dtype,
+                ivf_num_partitions=config.ivf_num_partitions,
+                ivf_num_sub_vectors=config.ivf_num_sub_vectors,
             )
             result.artifact_path = artifact
 
@@ -1128,6 +1142,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--precision", choices=("auto", "fp16", "fp32"), default=None,
                         help="bge-m3 precision (auto picks fp16 on GPU).")
     parser.add_argument("--colbert-dtype", choices=("float16", "float32"), default=None)
+    parser.add_argument("--ivf-num-partitions", type=int, default=None,
+                        help="Forward dense LanceDB IVF num_partitions to cs-index-build.")
+    parser.add_argument("--ivf-num-sub-vectors", type=int, default=None,
+                        help="Forward dense LanceDB IVF num_sub_vectors to cs-index-build.")
     parser.add_argument("--verbose", action="store_true")
     return parser
 
@@ -1160,6 +1178,8 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         lance_batch_size=args.batch_size,
         lance_precision=args.precision,
         lance_colbert_dtype=args.colbert_dtype,
+        ivf_num_partitions=getattr(args, "ivf_num_partitions", None),
+        ivf_num_sub_vectors=getattr(args, "ivf_num_sub_vectors", None),
     )
 
 

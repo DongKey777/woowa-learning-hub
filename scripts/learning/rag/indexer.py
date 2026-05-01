@@ -561,16 +561,33 @@ def _lance_records(
 
 
 LANCE_ANN_MIN_ROWS = 1024
+DEFAULT_LANCE_DENSE_NUM_PARTITIONS = 256
+DEFAULT_LANCE_DENSE_NUM_SUB_VECTORS = 64
 
 
 def _create_lance_indices(
     table,
     *,
     row_count: int,
-    dense_num_partitions: int = 256,
-    dense_num_sub_vectors: int = 64,
+    dense_num_partitions: int | None = None,
+    dense_num_sub_vectors: int | None = None,
 ) -> dict:
     """Create best-effort LanceDB indices and return manifest metadata."""
+    dense_num_partitions = (
+        DEFAULT_LANCE_DENSE_NUM_PARTITIONS
+        if dense_num_partitions is None
+        else dense_num_partitions
+    )
+    dense_num_sub_vectors = (
+        DEFAULT_LANCE_DENSE_NUM_SUB_VECTORS
+        if dense_num_sub_vectors is None
+        else dense_num_sub_vectors
+    )
+    if dense_num_partitions <= 0:
+        raise ValueError("dense_num_partitions must be positive")
+    if dense_num_sub_vectors <= 0:
+        raise ValueError("dense_num_sub_vectors must be positive")
+
     # LanceDB can build ANN indices on tiny fixtures, but it emits noisy
     # k-means warnings and the resulting index is not meaningful.  Production
     # corpus builds are large enough to use ANN; small tests keep exact scan.
@@ -669,6 +686,8 @@ def build_lance_index(
     modalities: tuple[str, ...] = ("dense", "sparse", "colbert", "fts"),
     progress=None,
     colbert_dtype: str = "float16",
+    dense_num_partitions: int | None = None,
+    dense_num_sub_vectors: int | None = None,
 ) -> dict:
     """Build the v3 LanceDB index from scratch.
 
@@ -722,7 +741,12 @@ def build_lance_index(
     table = db.create_table(LANCE_TABLE_NAME, data=table_data, schema=schema, mode="overwrite")
 
     _tick("create_indices", {"count": len(chunks)})
-    indices = _create_lance_indices(table, row_count=len(chunks))
+    indices = _create_lance_indices(
+        table,
+        row_count=len(chunks),
+        dense_num_partitions=dense_num_partitions,
+        dense_num_sub_vectors=dense_num_sub_vectors,
+    )
 
     manifest = {
         "index_version": LANCE_INDEX_VERSION,

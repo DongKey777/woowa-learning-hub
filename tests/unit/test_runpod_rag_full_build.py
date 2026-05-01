@@ -261,6 +261,20 @@ def test_remote_commands_passes_lance_max_length_when_set():
     assert "--lance-max-length 512" in build_cmd
 
 
+def test_remote_commands_passes_ivf_overrides_when_set():
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=True)
+    cmds = h._build_remote_commands(
+        commit_sha="x", modalities=("fts", "dense", "sparse"),
+        run_id="r2", r_phase="r2",
+        ivf_num_partitions=7,
+        ivf_num_sub_vectors=128,
+    )
+    build_cmd = next(c for c in cmds if "cli_cs_index_build" in c)
+    assert "--ivf-num-partitions 7" in build_cmd
+    assert "--ivf-num-sub-vectors 128" in build_cmd
+
+
 def test_remote_commands_omits_lance_args_when_none():
     """When no override given, build command keeps cs-index-build's
     own defaults (R0 path)."""
@@ -273,6 +287,8 @@ def test_remote_commands_omits_lance_args_when_none():
     build_cmd = next(c for c in cmds if "cli_cs_index_build" in c)
     assert "--lance-max-length" not in build_cmd
     assert "--lance-batch-size" not in build_cmd
+    assert "--ivf-num-partitions" not in build_cmd
+    assert "--ivf-num-sub-vectors" not in build_cmd
 
 
 def test_resolve_defaults_r1_picks_max_length_512():
