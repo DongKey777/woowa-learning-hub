@@ -257,6 +257,9 @@ class _ParamikoSshExecutor:
             timeout=30,
             auth_timeout=30,
         )
+        transport = client.get_transport()
+        if transport is not None:
+            transport.set_keepalive(30)
         return client
 
     def wait_for_ssh(self, pod: Pod, keypath: Path, *, timeout_s: int) -> None:
@@ -279,10 +282,34 @@ class _ParamikoSshExecutor:
             timeout_s: int) -> tuple[int, str, str]:
         client = self._client(pod, keypath)
         try:
-            stdin, stdout, stderr = client.exec_command(command, timeout=timeout_s)
-            stdout_text = stdout.read().decode("utf-8", errors="replace")
-            stderr_text = stderr.read().decode("utf-8", errors="replace")
-            rc = stdout.channel.recv_exit_status()
+            stdin, stdout, stderr = client.exec_command(command)
+            stdin.close()
+            channel = stdout.channel
+            stdout_chunks: list[bytes] = []
+            stderr_chunks: list[bytes] = []
+            deadline = time.monotonic() + timeout_s
+
+            while True:
+                if channel.recv_ready():
+                    stdout_chunks.append(channel.recv(65536))
+                if channel.recv_stderr_ready():
+                    stderr_chunks.append(channel.recv_stderr(65536))
+                if channel.exit_status_ready():
+                    while channel.recv_ready():
+                        stdout_chunks.append(channel.recv(65536))
+                    while channel.recv_stderr_ready():
+                        stderr_chunks.append(channel.recv_stderr(65536))
+                    break
+                if time.monotonic() > deadline:
+                    channel.close()
+                    raise TimeoutError(
+                        f"remote command timed out after {timeout_s}s: {command[:120]}"
+                    )
+                time.sleep(0.1)
+
+            rc = channel.recv_exit_status()
+            stdout_text = b"".join(stdout_chunks).decode("utf-8", errors="replace")
+            stderr_text = b"".join(stderr_chunks).decode("utf-8", errors="replace")
             return rc, stdout_text, stderr_text
         finally:
             client.close()
