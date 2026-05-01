@@ -310,8 +310,15 @@ def test_package_cli_strict_r3_output_passes_import_contract(tmp_path, capsys):
 
     assert rc == 0
     assert "r3-strict-test" in capsys.readouterr().out
-    result = verify_artifact_dir(out_parent / "r3-strict-test", strict_r3=True)
+    result = verify_artifact_dir(
+        out_parent / "r3-strict-test",
+        strict_r3=True,
+        verify_import=True,
+    )
     assert result["strict_r3"] is True
+    assert result["verify_import"] is True
+    assert result["import_check"]["index_root_name"] == "cs_rag"
+    assert result["import_check"]["row_count"] == 100
 
 
 def test_package_artifact_compression_actually_compresses(tmp_path):
