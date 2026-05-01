@@ -2,6 +2,9 @@
 
 Objective: `/Users/idonghun/.claude/plans/abundant-humming-lovelace.md`
 
+External review packet:
+`docs/worklogs/rag-v6-2-external-review-packet-2026-05-01.md`
+
 ## Current Decision
 
 Do not run Phase 3 production cutover yet.
