@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "Factory와 DI 컨테이너 Wiring"
+concept_id: "design-pattern/factory-vs-di-container-wiring"
+difficulty: intermediate
+doc_role: contrast
+level: intermediate
+aliases:
+  - factory vs DI
+  - factory pattern
+  - DI container
+  - object creation
+expected_queries:
+  - Factory랑 DI 컨테이너는 뭐가 달라?
+  - 객체 생성은 어디까지 Factory로 둬야 해?
+  - 왜 new 대신 DI 컨테이너가 조립하게 해?
+  - Factory Pattern과 Spring DI 차이가 뭐야?
+acceptable_neighbors:
+  - contents/spring/spring-ioc-di-basics.md
+  - contents/software-engineering/dependency-injection-basics.md
+  - contents/spring/ioc-di-container.md
+---
+
 # Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성
 
 > 한 줄 요약: 애플리케이션 시작 시 고정되는 객체 그래프는 DI 컨테이너가 맡고, 요청마다 달라지는 선택과 짧은 생명주기 생성은 여전히 hand-written factory나 builder가 맡는다.

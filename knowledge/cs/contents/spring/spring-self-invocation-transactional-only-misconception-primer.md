@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "Spring Self-Invocation 공통 오해 1페이지 카드"
+concept_id: "spring/self-invocation-proxy-misconception"
+difficulty: beginner
+doc_role: troubleshooting
+level: beginner
+aliases:
+  - self invocation
+  - this method call
+  - proxy bypass
+  - 내부 호출
+expected_queries:
+  - self invocation이 뭐야?
+  - 같은 클래스 내부 호출이면 왜 Transactional이 안 먹어?
+  - this.method 호출은 왜 프록시를 우회해?
+  - Transactional이 안 먹을 때 먼저 뭘 봐야 해?
+acceptable_neighbors:
+  - contents/spring/spring-transactional-basics.md
+  - contents/spring/aop-proxy-mechanism.md
+  - contents/spring/spring-transaction-debugging-playbook.md
+---
+
 # Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다
 
 > 한 줄 요약: self-invocation(내부 호출)은 `@Transactional` 전용 버그가 아니라, "프록시를 안 지나면 annotation 기능이 빠질 수 있다"는 공통 규칙이다.

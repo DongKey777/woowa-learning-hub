@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "AOP와 프록시 메커니즘"
+concept_id: "spring/aop-proxy-mechanism"
+difficulty: intermediate
+doc_role: deep_dive
+level: intermediate
+aliases:
+  - AOP proxy
+  - Spring proxy
+  - JDK dynamic proxy
+  - CGLIB
+expected_queries:
+  - Spring 프록시는 어떻게 동작해?
+  - AOP랑 프록시는 무슨 관계야?
+  - JDK proxy랑 CGLIB 차이가 뭐야?
+  - Transactional은 왜 프록시가 필요해?
+acceptable_neighbors:
+  - contents/spring/spring-aop-basics.md
+  - contents/spring/spring-transactional-basics.md
+  - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+---
+
 # AOP와 프록시 메커니즘
 
 > 한 줄 요약: Spring AOP는 "마법"이 아니라, 빈 앞뒤에 프록시를 끼워 넣어 호출을 가로채는 구조다.

@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "Service 계층 기초"
+concept_id: "software-engineering/service-layer-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - service layer
+  - service 계층
+  - business logic
+  - application service
+expected_queries:
+  - Service 계층은 뭐야?
+  - 비즈니스 로직은 어디에 둬?
+  - controller와 service는 어떻게 나눠?
+  - service에서 transaction을 잡는 이유가 뭐야?
+acceptable_neighbors:
+  - contents/software-engineering/layered-architecture-basics.md
+  - contents/spring/spring-transactional-basics.md
+---
+
 # Service 계층 기초 (Service Layer Basics)
 
 > 한 줄 요약: Service 계층은 여러 도메인 객체와 저장소를 조합해 하나의 유스케이스를 완성하는 곳이며, 비즈니스 규칙이 Controller나 Repository로 새지 않도록 막는 경계선이다.

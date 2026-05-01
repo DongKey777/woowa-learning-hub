@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "AOP 기초: 관점 지향 프로그래밍이 왜 필요한가"
+concept_id: "spring/aop-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - AOP
+  - aspect
+  - advice
+  - cross-cutting concern
+expected_queries:
+  - AOP가 뭐야?
+  - 관점 지향 프로그래밍은 왜 써?
+  - 공통 로직을 AOP로 빼는 이유가 뭐야?
+  - AOP랑 Transactional은 무슨 관계야?
+acceptable_neighbors:
+  - contents/spring/aop-proxy-mechanism.md
+  - contents/spring/spring-transactional-basics.md
+---
+
 # AOP 기초: 관점 지향 프로그래밍이 왜 필요한가
 
 > 한 줄 요약: AOP는 로깅·트랜잭션·보안처럼 여러 곳에 반복되는 "횡단 관심사"를 비즈니스 로직과 분리해 한 곳에서 관리하는 프로그래밍 기법이다.

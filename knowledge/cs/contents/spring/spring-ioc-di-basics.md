@@ -21,7 +21,6 @@ acceptable_neighbors:
   - contents/spring/ioc-di-container.md
 companion_neighbors:
   - contents/design-pattern/factory-vs-di-container-wiring.md
-forbidden_neighbors:
   - contents/design-pattern/service-locator-antipattern.md
 ---
 

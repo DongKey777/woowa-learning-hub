@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "Spring Component Scan 실패 패턴"
+concept_id: "spring/component-scan-failure-patterns"
+difficulty: beginner
+doc_role: troubleshooting
+level: beginner
+aliases:
+  - component scan
+  - ComponentScan
+  - NoSuchBeanDefinitionException
+  - service bean not found
+expected_queries:
+  - component scan이 안 되는 이유가 뭐야?
+  - service bean not found는 왜 나?
+  - Spring이 Bean을 못 찾는 이유가 뭐야?
+  - SpringBootApplication 패키지 위치가 왜 중요해?
+acceptable_neighbors:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/spring-di-exception-quick-triage.md
+---
+
 # Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정
 
 > 한 줄 요약: component scan은 "프로젝트 전체 검색"이 아니라 `@SpringBootApplication`이나 `@ComponentScan`이 정한 base package 아래에서 stereotype 후보만 찾는 과정이므로, 패키지 위치 하나만 어긋나도 `NoSuchBeanDefinitionException`이나 "service bean not found" 같은 증상으로 바로 드러난다.

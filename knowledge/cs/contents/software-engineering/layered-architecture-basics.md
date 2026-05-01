@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "계층형 아키텍처 기초"
+concept_id: "software-engineering/layered-architecture-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - layered architecture
+  - controller service repository
+  - layer
+  - 계층형 아키텍처
+expected_queries:
+  - 계층형 아키텍처가 뭐야?
+  - controller service repository는 왜 나눠?
+  - controller에서 바로 repository를 부르면 안 돼?
+  - service layer는 무슨 일을 해?
+acceptable_neighbors:
+  - contents/software-engineering/service-layer-basics.md
+  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+---
+
 # 계층형 아키텍처 기초 (Layered Architecture Basics)
 
 > 한 줄 요약: 계층형 아키텍처는 코드를 역할별로 쌓아 올려 각 계층이 바로 아래 계층에만 의존하도록 구조를 나누는 가장 흔한 설계 패턴이다.

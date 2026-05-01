@@ -1,3 +1,26 @@
+---
+schema_version: 2
+title: "Spring ApplicationContext Refresh Phases"
+concept_id: "spring/application-context-refresh-phases"
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+aliases:
+  - ApplicationContext refresh
+  - refresh phases
+  - BeanFactoryPostProcessor
+  - BeanPostProcessor
+expected_queries:
+  - ApplicationContext refresh는 어떤 순서로 진행돼?
+  - BeanFactoryPostProcessor는 언제 실행돼?
+  - BeanPostProcessor는 언제 적용돼?
+  - ApplicationContext 시작 과정을 단계별로 설명해줘
+acceptable_neighbors:
+  - contents/spring/ioc-di-container.md
+  - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+  - contents/spring/spring-bean-lifecycle-basics.md
+---
+
 # Spring ApplicationContext Refresh Phases
 
 > 한 줄 요약: ApplicationContext refresh는 한 번의 "시작"이 아니라 Bean 정의, 후처리, 초기화, 이벤트 발행이 순서대로 맞물리는 부팅 파이프라인이다.

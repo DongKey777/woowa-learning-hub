@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "의존성 주입(DI) 기초"
+concept_id: "software-engineering/dependency-injection-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - DI
+  - Dependency Injection
+  - 의존성 주입
+  - constructor injection
+expected_queries:
+  - DI가 뭐야?
+  - 왜 new 대신 주입받아?
+  - 생성자 주입은 왜 써?
+  - Spring 없이도 DI가 가능해?
+acceptable_neighbors:
+  - contents/spring/spring-ioc-di-basics.md
+  - contents/spring/ioc-di-container.md
+---
+
 # 의존성 주입(DI) 기초 (Dependency Injection Basics)
 
 > 한 줄 요약: 의존성 주입은 객체가 필요한 협력 객체를 스스로 생성하지 않고 외부에서 받는 설계 방식이며, 테스트와 교체를 쉽게 만든다.

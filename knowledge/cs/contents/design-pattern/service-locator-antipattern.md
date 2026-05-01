@@ -1,3 +1,25 @@
+---
+schema_version: 2
+title: "Service Locator Antipattern"
+concept_id: "design-pattern/service-locator-antipattern"
+difficulty: intermediate
+doc_role: contrast
+level: intermediate
+aliases:
+  - Service Locator
+  - service locator antipattern
+  - hidden dependency
+  - 숨은 의존성
+expected_queries:
+  - Service Locator가 왜 안 좋아?
+  - Service Locator랑 DI는 뭐가 달라?
+  - 숨은 의존성이 왜 문제야?
+  - 컨테이너에서 직접 꺼내 쓰면 왜 위험해?
+acceptable_neighbors:
+  - contents/spring/spring-ioc-di-basics.md
+  - contents/software-engineering/dependency-injection-basics.md
+---
+
 # Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계
 
 > 한 줄 요약: Service Locator는 필요한 객체를 전역 조회하게 만들어 의존성을 숨기고 테스트와 추적을 어렵게 하는 안티 패턴이다.
