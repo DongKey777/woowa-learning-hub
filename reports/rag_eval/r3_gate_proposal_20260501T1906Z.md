@@ -9,6 +9,7 @@ Evidence:
 - Window-20 interpretation: `reports/rag_eval/r3_reranker_window20_summary_20260501T1855Z.md`
 - Warm same-process runtime profile: `reports/rag_eval/r3_warm_full_runtime_profile_20260501T1848Z.md`
 - Daemon window-20 runtime smoke: `reports/rag_eval/r3_daemon_full_runtime_window20_smoke_20260501T1906Z.md`
+- Daemon sidecar window-20 runtime smoke: `reports/rag_eval/r3_daemon_full_runtime_sidecar_window20_smoke_20260501T2005Z.md`
 - Sparse retriever cache runtime profile: `reports/rag_eval/r3_sparse_retriever_cache_profile_20260501T1915Z.md`
 - Lexical sidecar gate: `reports/rag_eval/r3_lexical_sidecar_summary_20260501T1955Z.md`
 - Strict artifact import smoke: `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md`
@@ -50,7 +51,7 @@ Current Provisional Gates:
 | harmful lost_top20_rate | <= 0.02 | 0.0000 | pass |
 | metadata lexical sidecar | remote-prebuilt, body terms excluded, no reranker quality regression | pass | pass |
 | local long-lived runtime architecture | daemon path exists and reports R3 debug fields | pass | pass |
-| local full-mode latency | accepted M5 interactive budget | cold 14.68s, warm 2.40-2.61s internal latency | review |
+| local full-mode latency | accepted M5 interactive budget | sidecar cold 18.33s, warm 2.65-2.68s internal latency | review |
 | strict artifact import contract | strict manifest + checksum + extracted index manifest verify locally | local artifact pass | pass |
 | remote harness strict gate | R3 remote build must strict-package and verify downloaded artifact before success | dry-run + unit pass | pass |
 | actual remote artifact import | RunPod-built artifact verifies with the same strict contract | pending remote run | block |

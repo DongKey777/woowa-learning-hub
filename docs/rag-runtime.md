@@ -66,6 +66,9 @@ bin/rag-daemon stop
   effectively cached. The 100q window-20 reranker gate stayed green:
   `final_hit_relevant@5=1.0`, Korean-only `=1.0`, mixed Korean/English `=1.0`,
   `forbidden_rate@5=0`, `lost_top20_rate=0`.
+- 2026-05-01 daemon sidecar smoke: first sidecar-enabled daemon request was
+  18.33s; warm requests were 2.65-2.68s. Warm sidecar load was under 0.2ms;
+  the dominant warm stage remained cross-encoder reranking at about 2.0s.
 
 Therefore R3 local default rerank window is 20 pairs. 50-pair local reranking
 is still available through `WOOWA_RAG_R3_LOCAL_RERANK_INPUT_WINDOW=50`, but it

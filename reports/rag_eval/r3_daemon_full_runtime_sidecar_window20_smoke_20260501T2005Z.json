@@ -1,0 +1,107 @@
+{
+  "artifact_kind": "r3_daemon_full_runtime_sidecar_window20_smoke",
+  "timestamp": "2026-05-01T20:05:00Z",
+  "command": "HF_HUB_OFFLINE=1 bin/rag-daemon start && bin/rag-ask <prompt> --rag-backend r3 --via-daemon",
+  "daemon": {
+    "host": "127.0.0.1",
+    "status_after_smoke": "stopped"
+  },
+  "environment": {
+    "HF_HUB_OFFLINE": "1",
+    "rerank_input_window": 20,
+    "backend": "r3"
+  },
+  "queries": [
+    {
+      "prompt": "RAG로 깊게 latency가 뭐야?",
+      "latency_ms": 18333,
+      "sparse_retriever_cache_hit": false,
+      "lexical_sidecar_document_count": 27170,
+      "top_paths": [
+        "contents/network/latency-bandwidth-throughput-basics.md",
+        "contents/network/ecn-congestion-signal-tail-latency.md",
+        "contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md",
+        "contents/operating-system/softirq-hardirq-latency-server-debugging.md",
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md"
+      ],
+      "stage_ms": {
+        "query_plan": 808.168,
+        "load_runtime_documents": 642.643,
+        "load_lexical_sidecar": 4261.259,
+        "encode_runtime_query": 5455.068,
+        "load_runtime_dense_candidates": 30.996,
+        "load_runtime_sparse_documents": 998.039,
+        "construct_retrievers": 929.912,
+        "retrieve_candidates": 55.553,
+        "fuse_candidates": 0.323,
+        "rerank": 5135.276
+      }
+    },
+    {
+      "prompt": "RAG로 깊게 Spring Bean lifecycle 설명해줘",
+      "latency_ms": 2652,
+      "sparse_retriever_cache_hit": true,
+      "lexical_sidecar_document_count": 27170,
+      "top_paths": [
+        "contents/spring/spring-bean-lifecycle-scope-traps.md",
+        "contents/spring/spring-bean-lifecycle-basics.md",
+        "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-early-bean-reference-circular-proxy-traps.md"
+      ],
+      "stage_ms": {
+        "query_plan": 1.355,
+        "load_runtime_documents": 57.689,
+        "load_lexical_sidecar": 0.162,
+        "encode_runtime_query": 287.51,
+        "load_runtime_dense_candidates": 28.704,
+        "load_runtime_sparse_documents": 0.986,
+        "construct_retrievers": 220.912,
+        "retrieve_candidates": 95.998,
+        "fuse_candidates": 0.328,
+        "rerank": 1954.586
+      }
+    },
+    {
+      "prompt": "RAG로 깊게 transaction isolation이 왜 필요해?",
+      "latency_ms": 2678,
+      "sparse_retriever_cache_hit": true,
+      "lexical_sidecar_document_count": 27170,
+      "top_paths": [
+        "contents/database/transaction-boundary-isolation-locking-decision-framework.md",
+        "contents/spring/transactional-deep-dive.md",
+        "contents/spring/spring-transaction-isolation-readonly-pitfalls.md",
+        "contents/database/transaction-isolation-basics.md",
+        "contents/database/transaction-isolation-locking.md"
+      ],
+      "stage_ms": {
+        "query_plan": 0.22,
+        "load_runtime_documents": 46.609,
+        "load_lexical_sidecar": 0.157,
+        "encode_runtime_query": 79.701,
+        "load_runtime_dense_candidates": 27.003,
+        "load_runtime_sparse_documents": 0.922,
+        "construct_retrievers": 333.007,
+        "retrieve_candidates": 82.726,
+        "fuse_candidates": 0.367,
+        "rerank": 2101.289
+      }
+    }
+  ],
+  "summary": {
+    "cold_latency_ms": 18333,
+    "warm_latency_ms": {
+      "min": 2652,
+      "max": 2678
+    },
+    "warm_lexical_sidecar_load_ms": {
+      "min": 0.157,
+      "max": 0.162
+    },
+    "warm_rerank_ms": {
+      "min": 1954.586,
+      "max": 2101.289
+    },
+    "dominant_warm_bottleneck": "rerank"
+  }
+}
