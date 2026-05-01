@@ -856,6 +856,7 @@ class RunPodHarness:
         ivf_num_partitions: int | None = None,
         ivf_num_sub_vectors: int | None = None,
         source_mode: str = "git",
+        remote_command_timeout_s: int = 3600,
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
 
@@ -924,7 +925,9 @@ class RunPodHarness:
         for i, cmd in enumerate(commands, 1):
             logger.info("[runpod] step %d/%d: %s", i, len(commands),
                         cmd[:80] + ("…" if len(cmd) > 80 else ""))
-            rc, stdout, stderr = executor.run(pod, keypath, cmd, timeout_s=3600)
+            rc, stdout, stderr = executor.run(
+                pod, keypath, cmd, timeout_s=remote_command_timeout_s,
+            )
             if rc != 0:
                 # Log + raise so finally block still terminates Pod.
                 # Print BOTH ends of stderr — Python tracebacks have
@@ -1238,6 +1241,7 @@ class RunPodHarness:
                 ivf_num_partitions=config.ivf_num_partitions,
                 ivf_num_sub_vectors=config.ivf_num_sub_vectors,
                 source_mode=source_mode,
+                remote_command_timeout_s=max(3600, config.max_duration_min * 60),
             )
             result.artifact_path = artifact
 

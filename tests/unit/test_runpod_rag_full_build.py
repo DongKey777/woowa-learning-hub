@@ -899,6 +899,7 @@ class _FakeSshExecutor:
 
     def __init__(self, *, fail_on: int | None = None):
         self.commands: list[str] = []
+        self.timeouts: list[int] = []
         self.scp_calls: list[tuple[str, str]] = []
         self.scp_to_calls: list[tuple[str, str]] = []
         self.fail_on = fail_on  # 1-based command index that should fail
@@ -909,6 +910,7 @@ class _FakeSshExecutor:
 
     def run(self, pod, keypath, command, *, timeout_s):
         self.commands.append(command)
+        self.timeouts.append(timeout_s)
         if self.fail_on is not None and len(self.commands) == self.fail_on:
             return 1, "", "simulated remote failure"
         return 0, "ok", ""
@@ -943,6 +945,7 @@ def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
         r_phase="r0",
         repo_root=tmp_path,
         ssh_executor=fake_ssh,
+        remote_command_timeout_s=7200,
     )
 
     assert fake_ssh._waited is True
@@ -950,6 +953,7 @@ def test_step_5_to_11_runs_all_commands_in_live_mode(tmp_path):
     assert any("git clone" in c for c in fake_ssh.commands)
     assert any("cs-index-build" in c or "cli_cs_index_build" in c
                for c in fake_ssh.commands)
+    assert fake_ssh.timeouts and set(fake_ssh.timeouts) == {7200}
     # Artifact returned
     assert artifact is not None
     assert (artifact / "cs_rag_index_root.tar.zst").exists()
