@@ -36,9 +36,11 @@ def test_reranker_demotion_summary_buckets_by_language_level_category():
     assert summary["overall"]["demoted"] == 1
     assert summary["overall"]["rate"] == 0.5
     assert summary["by_language"]["mixed"]["demoted"] == 1
+    assert summary["by_language"]["mixed"]["lost_top5"] == 0
     assert summary["by_level"]["beginner"]["total"] == 2
     assert summary["by_category"]["network"]["rate"] == 1.0
     assert summary["demoted_query_ids"] == ["ko-1"]
+    assert summary["lost_top5_query_ids"] == []
 
 
 def test_reranker_demotion_counts_missing_after_as_demoted():
@@ -58,6 +60,9 @@ def test_reranker_demotion_counts_missing_after_as_demoted():
 
     assert summary["overall"]["demoted"] == 1
     assert summary["overall"]["missing_after"] == 1
+    assert summary["overall"]["lost_top5"] == 1
+    assert summary["overall"]["lost_top20"] == 1
+    assert summary["lost_top5_query_ids"] == ["missing"]
 
 
 def test_retrieval_summary_reports_candidate_final_and_forbidden_rates():

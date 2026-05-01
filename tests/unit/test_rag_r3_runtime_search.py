@@ -192,6 +192,8 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
     assert documents[0].aliases == ("latency", "지연")
     assert documents[0].sparse_terms == {"101": 2.5, "202": 1.25}
     assert documents[0].metadata["index_backend"] == "lance"
+    assert documents[0].metadata["body"] == "latency bandwidth throughput"
+    assert documents[0].metadata["aliases"] == ("latency", "지연")
 
 
 def test_r3_lance_sparse_sidecar_omits_body_for_full_sparse_scan(

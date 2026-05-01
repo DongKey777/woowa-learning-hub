@@ -51,6 +51,8 @@ def load_legacy_documents(index_root: Path | str) -> list[R3Document]:
                     "category": category,
                     "difficulty": difficulty,
                     "index_backend": "legacy",
+                    "body": body,
+                    "aliases": tuple(str(anchor) for anchor in anchors),
                 },
             )
         )
@@ -216,6 +218,8 @@ def load_lance_documents(
                     "category": category,
                     "difficulty": row.get("difficulty"),
                     "index_backend": "lance",
+                    "body": str(row.get("body") or ""),
+                    "aliases": anchors,
                 },
             )
         )
