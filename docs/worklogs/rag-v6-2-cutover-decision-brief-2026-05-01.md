@@ -17,11 +17,12 @@ External review result:
 
 ## Current Decision
 
-Do not run Phase 3 production cutover yet.
+Option C risky cutover was explicitly approved by the user on 2026-05-01 and
+has been executed.
 
-The v6.2 Definition of Done requires production cutover, but the same plan
-allows cutover only after the Phase 1 cutover gate and Phase 2 production gate
-pass. Both gates currently fail.
+The historical v6.2 gates below remain useful evidence, but they no longer
+block Phase 3 because the user/product owner accepted the risk and prioritized
+completing the Lance production runtime first.
 
 ## Blocking Evidence
 
@@ -55,7 +56,7 @@ Same-query diagnostic:
 - Bucket regressions: `7`
 - Lance zero-primary items: `10`
 
-Runtime state:
+Historical runtime state before approval:
 
 - `state/cs_rag/manifest.json` is still legacy v2:
   - `index_version=2`
@@ -67,6 +68,24 @@ Runtime state:
 - `config/rag_models.json` has R2 candidate metadata, but not the final
   top-level Phase 3 production lock fields required by the plan
   (`artifact_sha256`, `ivf`).
+
+Runtime state after approved cutover:
+
+- `state/cs_rag/manifest.json` is Lance v3:
+  - `index_version=3`
+  - `encoder.model_id=BAAI/bge-m3`
+  - `row_count=27157`
+  - `corpus_hash=5e0eb308e60102df545a8f8c8f3ab326fb3d270b29080ba4d8072dcb7047d794`
+- Legacy v2 archive:
+  `state/cs_rag_archive/v2_20260501T063445Z`
+- Remote production artifact:
+  `artifacts/rag-full-build/r2-181d7b9-2026-05-01T0618/cs_rag_index_root.tar.zst`
+- Artifact sha256:
+  `a1f61d6c8b891eb5a254461eb501f82ec14e47f0d3595e590b074321985533b3`
+- Integrated cutover worklog:
+  `docs/worklogs/rag-r2-cutover-2026-05-01.md`
+- Production lock:
+  `config/rag_models.json`
 
 ## Work Already Completed
 
@@ -153,11 +172,11 @@ Required before cutover:
 Proceed with Phase 3 despite failed gates only if explicitly approved by the
 user/product owner.
 
-Required if approved:
+Approved and completed:
 
 - Use the plan's unique `state/cs_rag_next_<stamp>` staging directory.
 - Verify the R2 artifact SHA-256:
-  `1fed316557c86ccae81684d5c7f11f4d801cf3a032cd8812c07788a5c0f090c3`
+  `a1f61d6c8b891eb5a254461eb501f82ec14e47f0d3595e590b074321985533b3`
 - Atomic swap `state/cs_rag` and preserve `state/cs_rag_archive/v2_<stamp>`.
 - Run three Lance smoke queries and verify `meta.backend == "lance"`.
 - Update `config/rag_models.json` with the final production lock.
@@ -166,6 +185,6 @@ Required if approved:
 
 ## Recommended Next Step
 
-Choose Option A unless there is a product reason to prefer a weaker gate or a
-known-risk cutover. The current evidence says legacy v2 is still the better
-production stack for the measured learner workload.
+Proceed with post-cutover optimization: monitor latency, diagnose the
+cross-category failure cohort, evaluate `bge-reranker-v2-m3`, and continue
+Korean/context corpus expansion.

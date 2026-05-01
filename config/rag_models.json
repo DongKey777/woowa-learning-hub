@@ -1,19 +1,25 @@
 {
   "schema_version": 1,
-  "purpose": "Measured R2 CS RAG production candidate lock. This file is reference metadata for doctor/cutover checks; runtime code does not depend on it yet.",
-  "produced_from": "r2-6eb3764-2026-04-30T1436",
-  "produced_at": "2026-04-30T14:36:00Z",
-  "selected_at": "2026-05-01T00:00:00+09:00",
+  "purpose": "Production R2 CS RAG lock after explicit risky-cutover approval. Runtime uses LanceDB v3 with BGE-M3 fts+dense+sparse.",
+  "produced_from": "r2-181d7b9-2026-05-01T0618",
+  "produced_at": "2026-05-01T06:33:27Z",
+  "selected_at": "2026-05-01T15:34:45+09:00",
+  "artifact_sha256": "a1f61d6c8b891eb5a254461eb501f82ec14e47f0d3595e590b074321985533b3",
   "artifact": {
-    "path": "artifacts/rag-full-build/r2-6eb3764-2026-04-30T1436/cs_rag_index_root.tar.zst",
-    "sha256": "1fed3165",
-    "compressed_size_mb": 109,
-    "extracted_size_mb": 323
+    "path": "artifacts/rag-full-build/r2-181d7b9-2026-05-01T0618/cs_rag_index_root.tar.zst",
+    "sha256": "a1f61d6c8b891eb5a254461eb501f82ec14e47f0d3595e590b074321985533b3",
+    "compressed_size_mb": 126,
+    "extracted_size_mb": 348
+  },
+  "ivf": {
+    "num_partitions": 256,
+    "num_sub_vectors": 64
   },
   "index": {
     "backend": "lance",
     "index_version": 3,
-    "row_count": 27155,
+    "row_count": 27157,
+    "corpus_hash": "5e0eb308e60102df545a8f8c8f3ab326fb3d270b29080ba4d8072dcb7047d794",
     "modalities": [
       "fts",
       "dense",
@@ -30,6 +36,11 @@
       "fts_index": {
         "type": "tantivy",
         "tokenizer": "ngram"
+      },
+      "colbert": {
+        "type": "sidecar",
+        "metric": "max_sim",
+        "dtype": "float16"
       }
     }
   },
@@ -49,23 +60,56 @@
     "status": "kept until R4 reranker A/B"
   },
   "measured_quality": {
-    "report": "reports/rag_eval/r2_holdout_ko_rewritten.json",
+    "report": "reports/rag_eval/r2_181d7b9_remote_holdout_20260501T0618.json",
     "split": "holdout",
     "query_count": 101,
     "top_k": 10,
-    "primary_ndcg_macro": 0.8102647781159563,
-    "latency_p95_warm_ms": 233.91212499700487,
-    "hard_regression_failures": 46,
+    "primary_ndcg_category_macro": 0.9416028732066558,
+    "primary_ndcg_language_macro": 0.9278471316207187,
+    "primary_ndcg_micro": 0.9134837574964645,
+    "latency_p95_warm_ms": 1107.5207106769085,
+    "hard_regression_failures": 10,
+    "forbidden_rate": 0.0,
     "language_primary_ndcg": {
-      "ko": 0.157866511024846,
-      "en": 0.7516942153061308,
-      "mixed": 0.7632356716363343
+      "ko": 0.8666666666666667,
+      "en": 1.0,
+      "mixed": 0.9168747281954898
     }
   },
+  "cutover": {
+    "approved_mode": "risky_product_override",
+    "approved_at": "2026-05-01T15:10:00+09:00",
+    "legacy_archive": "state/cs_rag_archive/v2_20260501T063445Z",
+    "stale_attempt_retained": "state/cs_rag_lance_stale_20260501T061201Z",
+    "rollback_runbook": "docs/runbooks/rag-rollback.md",
+    "smoke": [
+      {
+        "prompt": "트랜잭션 격리수준이란",
+        "tier": 2,
+        "backend": "lance",
+        "rag_ready": true,
+        "hit_count": 5
+      },
+      {
+        "prompt": "Spring Bean이 뭐야",
+        "tier": 2,
+        "backend": "lance",
+        "rag_ready": true,
+        "hit_count": 5
+      },
+      {
+        "prompt": "RAG로 깊게 What is dependency injection",
+        "tier": 2,
+        "backend": "lance",
+        "rag_ready": true,
+        "hit_count": 5
+      }
+    ]
+  },
   "next_checks": [
-    "Run cutover comparator against a freshly measured legacy v2 holdout report.",
-    "Run offline Korean and English rag-ask smoke after swapping state/cs_rag.",
-    "Run LanceDB index-parameter sweep because official IVF_PQ starting guidance differs from the measured R2 256/64 settings.",
-    "Benchmark Qwen3 Embedding/Reranker as frontier candidates after R2 cutover is stable."
+    "Monitor local CPU latency for bin/rag-ask after Lance cutover; first warm full-mode smoke took 6-10 seconds locally.",
+    "Investigate cross-category mis-retrieval and qrel quality using the 14-query failure cohort.",
+    "Benchmark bge-reranker-v2-m3 as the next reranker candidate.",
+    "Keep Phase 4 Korean/context tracks independent of cutover and rerun holdout after corpus expansion."
   ]
 }

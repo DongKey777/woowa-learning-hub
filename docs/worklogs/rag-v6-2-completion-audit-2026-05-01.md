@@ -2,6 +2,11 @@
 
 Objective: `/Users/idonghun/.claude/plans/abundant-humming-lovelace.md`
 
+Post-review update: the user explicitly approved Option C risky cutover on
+2026-05-01 despite the earlier failed gates. Phase 3 was then executed with a
+fresh remote R2 artifact built from current `main` (`181d7b9`) and current
+corpus hash.
+
 ## Concrete Success Criteria
 
 The plan's Definition of Done requires all of the following:
@@ -29,22 +34,23 @@ The plan's Definition of Done requires all of the following:
 | Phase 0 full unit suite | Latest full unit run after Phase 4 structural rewrite wiring: `1940 passed, 2 warnings, 772 subtests passed` | Complete |
 | Push `main` | Completed phase commits are pushed and current branch tracking is verified with `git status --short --branch` before final handoff | Complete |
 | `bin/rag-remote-build --help` available | Help output includes `--ivf-num-partitions` and `--ivf-num-sub-vectors` | Complete |
-| `bin/doctor` model-lock check | Current output reports expected WARN: config expects Lance v3/BGE-M3, state is legacy v2/MiniLM | Complete |
+| `bin/doctor` model-lock check | Re-run after cutover; config/state now both point at Lance v3/BGE-M3 | Complete |
 | Phase 1 legacy report | `reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json` tracked | Complete |
 | Phase 1 compare report | `reports/rag_eval/cutover_legacy_vs_lance_20260501T035453Z.json` tracked | Complete |
-| Phase 1 gate | Compare report gate: `pass=false`, `global_gate_pass=false`, `bucket_gate_pass=false`, `regression_count=8` | Blocked |
-| Phase 1 same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json` compares the same 101 query IDs; gate still fails with delta `-0.0521` and 7 bucket regressions | Blocked |
+| Phase 1 gate | Historical compare report gate: `pass=false`, `global_gate_pass=false`, `bucket_gate_pass=false`, `regression_count=8`; later overridden by explicit user approval | Overridden |
+| Phase 1 same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json` compares the same 101 query IDs; gate still fails with delta `-0.0521` and 7 bucket regressions | Overridden |
 | Phase 1 failure taxonomy | `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json` identifies 14 regressed same-query items and 10 Lance zero-primary items | Complete |
 | Phase 1 failure fixture | `tests/fixtures/cs_rag_cutover_failure_queries.json`; `bin/rag-eval --fast` passed with 14 queries | Complete |
 | Phase 1 worklog | `docs/worklogs/rag-r2-cutover-regression-2026-05-01.md` tracked | Complete |
 | Phase 2 IVF tuning flags | Commit `7b80366`; CLI help exposes local and remote IVF flags | Complete |
 | Phase 2 sweep report | `reports/rag_eval/r2_ivf_sweep_20260501T0401.json` tracked | Complete |
 | Phase 2 decision | Report decision is `keep_current_256_64`; `production_gate_pass=false`; no variant passed P95 gate | Complete |
-| Phase 3 production cutover | `state/cs_rag/manifest.json` is still `index_version=2`, MiniLM 384-dim | Not done |
-| Phase 3 archive preservation | `state/cs_rag_archive` does not exist | Not done |
-| Phase 3 smoke on Lance | Not run because production cutover gate failed; `bin/doctor` confirms current backend state is legacy v2 | Not done |
-| Phase 3 `config/rag_models.json` full production lock update | File exists and points to R2 config, but current state is not cut over; `ivf` and top-level `artifact_sha256` are absent | Not done |
-| Phase 3 integrated worklog | `docs/worklogs/rag-r2-cutover-2026-05-01.md` does not exist | Not done |
+| Phase 3 remote R2 rebuild | `artifacts/rag-full-build/r2-181d7b9-2026-05-01T0618/`; artifact sha256 `a1f61d6c8b891eb5a254461eb501f82ec14e47f0d3595e590b074321985533b3`; copied eval report `reports/rag_eval/r2_181d7b9_remote_holdout_20260501T0618.json` | Complete |
+| Phase 3 production cutover | `state/cs_rag/manifest.json` is `index_version=3`, `BAAI/bge-m3`, 27,157 rows, corpus hash `5e0eb3...` | Complete |
+| Phase 3 archive preservation | `state/cs_rag_archive/v2_20260501T063445Z` preserves legacy v2 | Complete |
+| Phase 3 smoke on Lance | Three `bin/rag-ask` smokes returned `meta.backend=lance`, `rag_ready=true`, 5 hits | Complete |
+| Phase 3 `config/rag_models.json` full production lock update | Includes top-level `artifact_sha256`, `ivf`, current corpus hash, archive path, and smoke summary | Complete |
+| Phase 3 integrated worklog | `docs/worklogs/rag-r2-cutover-2026-05-01.md` | Complete |
 | Phase 4 `chunk-context-v1` contract | `docs/ai-behavior-contracts.md` and `skills/woowa-chunk-context/SKILL.md` tracked in `f2a100d` | Complete |
 | Phase 4 sidecar preparation CLI | `bin/chunk-context-prepare` and `scripts/learning/cli_chunk_context_prepare.py` tracked | Complete |
 | Phase 4 5-doc sidecar pilot | `reports/rag_eval/chunk_context_pilot_comparison_20260501T0416Z.json` records 130 inputs and 130 outputs over 5 docs | Complete |
@@ -61,9 +67,11 @@ The plan's Definition of Done requires all of the following:
 | Option B gate-relaxation review | `reports/rag_eval/cutover_gate_review_20260501T0543Z.json`; graded category macro delta `-0.0515`, graded micro delta `-0.0958`, graded language macro delta `-0.1311` | Measured, not accepted |
 | Option A document-structure candidate | `reports/rag_eval/cutover_failure_doc_structure_comparison_20260501T0545Z.json`; temporary body blocks over 4 repeated target docs yielded `+0.0000` sampled quality delta and were reverted | Measured, not accepted |
 
-## Blocking Evidence
+## Gate Evidence And Product Override
 
-The objective is not complete.
+The original gate evidence did not support cutover. The user later explicitly
+approved Option C risky cutover, so the missing Phase 3 work was executed and
+documented rather than continuing to block the objective.
 
 Phase 3 is a required DoD item, but the plan also says cutover only proceeds
 when Phase 1 and Phase 2 gates pass. Current measured evidence blocks that:
@@ -86,11 +94,13 @@ when Phase 1 and Phase 2 gates pass. Current measured evidence blocks that:
   - decision: `keep_current_256_64`
   - production gate pass: `false`
   - passing variants: `[]`
-- Current runtime state:
-  - `state/cs_rag/manifest.json` is legacy v2 MiniLM, not Lance v3 BGE-M3
-    (`index_version=2`, `embed_dim=384`, `row_count=27157`).
-  - `state/cs_rag_archive` is absent.
-  - `docs/worklogs/rag-r2-cutover-2026-05-01.md` is absent.
+- Current runtime state after approved cutover:
+  - `state/cs_rag/manifest.json` is Lance v3 BGE-M3
+    (`index_version=3`, `row_count=27157`).
+  - `state/cs_rag_archive/v2_20260501T063445Z` preserves legacy v2.
+  - `docs/worklogs/rag-r2-cutover-2026-05-01.md` records the cutover.
+  - `config/rag_models.json` is the production lock for
+    `r2-181d7b9-2026-05-01T0618`.
 
 Subsequent Phase 4.3 work measured an opt-in Korean query-side `search_terms`
 candidate. A same-code baseline rerun showed weights `0.3` and `0.7` produced
@@ -133,18 +143,10 @@ blocks for four repeated target docs. The sampled 14-query failure fixture did
 not move (`+0.0000` quality delta), so those body changes were reverted and no
 corpus change was retained.
 
-## Next Required Decision
+## Final Status
 
-Production cutover should not be run from the current evidence. The next
-productive step requires a user/product decision:
-
-1. Delay cutover and keep improving Korean/contextual retrieval until the
-   cutover gate passes.
-2. Change the gate and document the revised acceptance criteria, then rerun the
-   comparison.
-3. Explicitly approve a risky cutover despite the failed gate.
-
-Until one of those decisions is made, the active goal remains incomplete.
-The handoff artifact
-`docs/worklogs/rag-v6-2-cutover-decision-brief-2026-05-01.md` is the current
-decision packet for that input.
+The user chose option 3: explicitly approve a risky cutover despite the failed
+gate. With that product override, all actionable Phase 0-4 work and the Phase 3
+production cutover are complete. Remaining work is follow-up optimization:
+latency monitoring, cross-category retrieval diagnosis, reranker swap
+evaluation, and Korean/context corpus expansion.
