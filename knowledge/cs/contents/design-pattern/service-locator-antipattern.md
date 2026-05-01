@@ -3,7 +3,7 @@ schema_version: 2
 title: "Service Locator Antipattern"
 concept_id: "design-pattern/service-locator-antipattern"
 difficulty: intermediate
-doc_role: contrast
+doc_role: comparison
 level: intermediate
 aliases:
   - Service Locator

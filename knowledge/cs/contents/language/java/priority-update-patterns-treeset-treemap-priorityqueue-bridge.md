@@ -19,8 +19,8 @@ retrieval-anchor-keywords: priority update patterns treeset treemap priorityqueu
 > - [Comparator in TreeSet and TreeMap](./treeset-treemap-comparator-tie-breaker-basics.md)
 > - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 > - [`PriorityBlockingQueue` Cancellation/Update Mini Bridge](./priorityblockingqueue-cancellation-stale-entry-mini-bridge.md)
-> - [Java PriorityQueue Pitfalls](../data-structure/java-priorityqueue-pitfalls.md)
-> - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](../data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
+> - [Java PriorityQueue Pitfalls](../../data-structure/java-priorityqueue-pitfalls.md)
+> - [Heap vs Priority Queue vs Ordered Map Beginner Bridge](../../data-structure/heap-vs-priority-queue-vs-ordered-map-beginner-bridge.md)
 
 > retrieval-anchor-keywords: language-java-00080, priority update patterns, treeset priority update, treemap key priority update, priorityqueue priority update, priorityblockingqueue priority update, priorityblockingqueue cancellation update, priorityblockingqueue duplicate entries, java reorder after priority change, remove and reinsert treeset, remove and reinsert treemap, stale entry priorityqueue, decrease key java priorityqueue, mutable priority sorted collection, mutable priority queue item beginner, tree set priority mutation safe pattern, tree map priority mutation safe pattern, priority queue lazy deletion pattern, versioned entry priority queue, ordered collection priority change, 자바 우선순위 변경 패턴, TreeSet priority 변경, TreeMap key priority 변경, PriorityQueue 우선순위 변경, PriorityBlockingQueue 취소 패턴, stale entry 패턴
 

@@ -12,7 +12,7 @@
 - [HTTP/2 ORIGIN Frame와 421 입문](./http2-origin-frame-421-primer.md)
 - [Alt-Svc vs HTTPS RR Freshness Bridge](./alt-svc-vs-https-rr-freshness-bridge.md)
 - [Stale HTTPS RR H3 Fallback Primer](./stale-https-rr-h3-fallback-primer.md)
-- [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
+- [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: alt-svc vs https rr, https rr, svcb, h3 discovery, first request h3, first request h2 next h3, first clean request h2 alt-svc next h3, next new connection h3, alt-svc timeline, https rr timeline, discovery before coalescing, dns h3 hint, beginner h3 primer, what is alt-svc, alt svc https rr h3 discovery bridge intro
 

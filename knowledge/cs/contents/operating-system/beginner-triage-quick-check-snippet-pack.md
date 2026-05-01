@@ -13,7 +13,7 @@
 - [메모리 관리 기초](./memory-management-basics.md)
 - [파일 디스크립터 기초](./file-descriptor-basics.md)
 - [인터럽트 기초](./interrupt-basics.md)
-- [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
+- [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 
 retrieval-anchor-keywords: beginner triage quick check, os quick check snippet pack, 처음 운영체제 점검, 뭐부터 봐요, 왜 느려요, 왜 killed, too many open files first check, interrupt signal confusion, beginner self-check route, symptom first routing, quick observation mental model, what to check first, basics triage route, 헷갈릴 때 보는 문서, beginner primer route
 

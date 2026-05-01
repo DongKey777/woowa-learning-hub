@@ -1,3 +1,35 @@
+---
+schema_version: 2
+title: "템플릿 메소드 vs 전략: 부모가 흐름을 쥐는가, 호출자가 전략을 고르는가"
+concept_id: "design-pattern/template-method-vs-strategy"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - template method vs strategy
+  - template method
+  - strategy pattern
+  - hook vs strategy
+  - 템플릿 메소드 vs 전략
+  - 부모가 흐름을 쥔다
+  - 호출자가 전략을 고른다
+expected_queries:
+  - 처음 배우는데 템플릿 메소드랑 전략 패턴이 뭐가 달라?
+  - template method vs strategy 차이가 뭐야?
+  - 부모가 흐름을 쥐는 패턴이랑 호출자가 구현을 고르는 패턴을 어떻게 나눠?
+  - hook 하나 추가할지 strategy로 뺄지 어떻게 판단해?
+acceptable_neighbors:
+  - contents/design-pattern/template-method-basics.md
+  - contents/design-pattern/strategy-pattern-basics.md
+  - contents/design-pattern/composition-over-inheritance-basics.md
+  - contents/design-pattern/object-oriented-design-pattern-basics.md
+companion_neighbors:
+  - contents/language/java/java-abstract-class-vs-interface-basics.md
+  - contents/language/java/template-method-vs-strategy-quick-check-card.md
+forbidden_neighbors:
+  - contents/design-pattern/service-locator-antipattern.md
+---
+
 # 템플릿 메소드 vs 전략
 
 > 한 줄 요약: 템플릿 메소드는 **부모가 흐름을 쥐고**, 전략은 **호출자가 전략을 고른다**. 즉 템플릿 메소드는 고정된 흐름 안의 필수 단계/선택적 hook을 상속으로 열고, 전략은 바뀌는 규칙 전체를 조합으로 갈아낀다.

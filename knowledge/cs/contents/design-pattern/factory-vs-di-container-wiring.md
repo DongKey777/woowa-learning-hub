@@ -3,7 +3,7 @@ schema_version: 2
 title: "Factory와 DI 컨테이너 Wiring"
 concept_id: "design-pattern/factory-vs-di-container-wiring"
 difficulty: intermediate
-doc_role: contrast
+doc_role: comparison
 level: intermediate
 aliases:
   - factory vs DI

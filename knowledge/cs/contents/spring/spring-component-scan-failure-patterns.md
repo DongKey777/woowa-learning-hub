@@ -3,7 +3,7 @@ schema_version: 2
 title: "Spring Component Scan 실패 패턴"
 concept_id: "spring/component-scan-failure-patterns"
 difficulty: beginner
-doc_role: troubleshooting
+doc_role: playbook
 level: beginner
 aliases:
   - component scan

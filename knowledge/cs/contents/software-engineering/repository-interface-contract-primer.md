@@ -28,7 +28,7 @@
 - [Persistence Adapter Mapping Checklist](./persistence-adapter-mapping-checklist.md)
 - [Ports and Adapters Beginner Primer](./ports-and-adapters-beginner-primer.md)
 - [Java 타입, 클래스, 객체, OOP 입문](../language/java/java-types-class-object-oop-basics.md)
-- [Spring Data JPA 기초](../database/spring-data-jpa-basics.md)
+- [Spring Data JPA 기초](../spring/spring-data-jpa-basics.md)
 
 retrieval-anchor-keywords: repository interface beginner, repository interface contract, repository interface vs implementation, repository port beginner, dao vs repository interface, spring data jpa repository interface, domain repository contract, repository adapter beginner, 왜 repository를 인터페이스로 만들어요, repository가 interface인 이유, 처음 배우는데 repository interface 뭐예요, 처음 배우는데 왜 구현체가 또 있죠, repository interface 언제 쓰는지, jparepository랑 repository interface 차이, 인터페이스 왜 쓰는지 저장소 예시
 

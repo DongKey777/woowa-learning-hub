@@ -1,3 +1,35 @@
+---
+schema_version: 2
+title: "Spring @Primary vs @Qualifier vs 컬렉션 주입 결정 가이드"
+concept_id: "spring/primary-qualifier-collection-injection"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - @Primary
+  - @Qualifier
+  - collection injection
+  - NoUniqueBeanDefinitionException
+  - 같은 타입 bean 후보
+  - 주입 시점 선택
+  - runtime router
+expected_queries:
+  - Spring에서 같은 타입 bean이 두 개면 @Primary랑 @Qualifier 중 뭘 써?
+  - NoUniqueBeanDefinitionException found 2가 나오면 어떻게 판단해?
+  - @Qualifier랑 Map으로 구현체 고르는 router는 뭐가 달라?
+  - 요청마다 구현체가 바뀌면 qualifier로 풀어도 돼?
+acceptable_neighbors:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/spring-runtime-strategy-router-vs-qualifier-boundaries.md
+  - contents/spring/spring-custom-qualifier-primer.md
+  - contents/spring/spring-di-exception-quick-triage.md
+companion_neighbors:
+  - contents/spring/spring-bean-naming-qualifier-rename-pitfalls-primer.md
+  - contents/design-pattern/bean-name-vs-domain-key-lookup.md
+forbidden_neighbors:
+  - contents/spring/spring-allow-bean-definition-overriding-test-boundaries-primer.md
+---
+
 # Spring `@Primary` vs `@Qualifier` vs 컬렉션 주입 결정 가이드: 기본값, 명시 선택, 다중 후보 수집
 
 > 한 줄 요약: 같은 타입 bean이 여러 개일 때 `@Primary`는 "기본으로 하나", `@Qualifier`는 "이번 주입에서 이걸", `List<T>`/`Map<String, T>`는 "후보를 전부 달라"에 가깝다.

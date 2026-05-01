@@ -1,3 +1,35 @@
+---
+schema_version: 2
+title: "세션·쿠키·JWT 기초"
+concept_id: "security/session-cookie-jwt-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - session cookie jwt
+  - cookie session jwt
+  - 세션 쿠키 JWT
+  - 로그인 상태 유지
+  - HTTP stateless
+  - JSESSIONID
+  - server session vs JWT
+expected_queries:
+  - 쿠키 세션 JWT가 뭐가 달라?
+  - 왜 로그인 상태가 유지돼?
+  - JSESSIONID는 뭐고 JWT랑은 뭐가 달라?
+  - cookie는 있는데 왜 다시 로그인되는지 보려면 어디서 시작해?
+acceptable_neighbors:
+  - contents/security/authentication-authorization-session-foundations.md
+  - contents/network/cookie-session-jwt-browser-flow-primer.md
+  - contents/security/signed-cookies-server-sessions-jwt-tradeoffs.md
+  - contents/security/browser-401-vs-302-login-redirect-guide.md
+companion_neighbors:
+  - contents/network/http-state-session-cache.md
+  - contents/network/login-redirect-hidden-jsessionid-savedrequest-primer.md
+forbidden_neighbors:
+  - contents/security/xss-csrf-basics.md
+---
+
 # 세션·쿠키·JWT 기초
 
 > 한 줄 요약: HTTP는 기본적으로 상태가 없어서, 로그인 상태를 유지하려면 쿠키·서버 세션 또는 JWT 중 하나로 "이전에 인증된 사람이 다시 왔다"는 사실을 서버에게 알려야 한다.

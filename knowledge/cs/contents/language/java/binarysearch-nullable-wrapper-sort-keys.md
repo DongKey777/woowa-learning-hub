@@ -528,7 +528,7 @@ int lastNull = afterLastNull - 1;                               // 6
 - `nullsFirst`, `nullsLast`, `reversed`, `thenComparing` 조립 연습을 더 하고 싶다면 [Comparator Utility Patterns](./java-comparator-utility-patterns.md)
 - wrapper 숫자 필드에서 `null` 정책 자체를 먼저 분리해서 보고 싶다면 [Nullable Wrapper Comparator Bridge](./nullable-wrapper-comparator-bridge.md)
 - 배열 정렬과 음수 반환값, insertion point를 더 넓게 다시 보고 싶다면 [Sorting and Searching Arrays Basics](./java-array-sorting-searching-basics.md)
-- `first true`, `lower_bound`, `upper_bound`를 더 일반적인 경계 탐색 패턴으로 넓혀 보고 싶다면 [Binary Search Patterns](../algorithm/binary-search-patterns.md)
+- `first true`, `lower_bound`, `upper_bound`를 더 일반적인 경계 탐색 패턴으로 넓혀 보고 싶다면 [Binary Search Patterns](../../algorithm/binary-search-patterns.md)
 - 같은 comparator를 list 정렬과 stream 정렬에 재사용하는 감각까지 이어서 보려면 [`List.sort` vs `Stream.sorted` Comparator Bridge](./list-sort-vs-stream-sorted-comparator-bridge.md)
 - wrapper unboxing 함정을 comparator 밖까지 넓혀 보고 싶다면 [Autoboxing, `IntegerCache`, `==`, and Null Unboxing Pitfalls](./autoboxing-integercache-null-unboxing-pitfalls.md)
 

@@ -1,3 +1,35 @@
+---
+schema_version: 2
+title: "Read Model Staleness and Read-Your-Writes"
+concept_id: "design-pattern/read-model-staleness-read-your-writes"
+difficulty: advanced
+doc_role: bridge
+level: advanced
+aliases:
+  - read model staleness
+  - read your writes
+  - projection lag
+  - freshness budget
+  - stale read
+  - 방금 썼는데 조회가 옛값
+  - 저장했는데 새 값이 안 보여요
+expected_queries:
+  - 저장했는데 목록에 바로 안 보이면 read model staleness 문제야?
+  - read-your-writes 보장은 projection 구조에서 어떻게 설계해?
+  - projection lag랑 cache staleness를 어떻게 구분해?
+  - 방금 쓴 데이터가 조회에 안 보일 때 어떤 freshness 전략을 봐야 해?
+acceptable_neighbors:
+  - contents/design-pattern/projection-freshness-slo-pattern.md
+  - contents/database/replica-lag-read-after-write-strategies.md
+  - contents/system-design/read-after-write-consistency-basics.md
+  - contents/system-design/projection-applied-watermark-basics.md
+companion_neighbors:
+  - contents/design-pattern/strict-read-fallback-contracts.md
+  - contents/design-pattern/projection-rebuild-backfill-cutover-pattern.md
+forbidden_neighbors:
+  - contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+---
+
 # Read Model Staleness and Read-Your-Writes
 
 > 한 줄 요약: CQRS나 projection 기반 read model을 쓰면 staleness는 피할 수 없는 운영 성질이 되고, 사용자 경험과 정합성 기대치에 맞는 read-your-writes 전략을 따로 설계해야 한다.

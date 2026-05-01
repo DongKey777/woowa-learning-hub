@@ -3,7 +3,7 @@ schema_version: 2
 title: "Spring Self-Invocation 공통 오해 1페이지 카드"
 concept_id: "spring/self-invocation-proxy-misconception"
 difficulty: beginner
-doc_role: troubleshooting
+doc_role: playbook
 level: beginner
 aliases:
   - self invocation

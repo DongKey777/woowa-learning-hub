@@ -68,7 +68,7 @@ return orderClient.fetchAsync(orderId)      // 요청 스레드는 대기 전용
 | --- | --- | --- |
 | CPU는 낮은데 active thread와 queue가 함께 증가 | 계산보다 blocking I/O 대기 가능성 | [Run Queue, Load Average, CPU Saturation](./run-queue-load-average-cpu-saturation.md) |
 | 스레드는 적은데 연결 수가 많고 event loop 용어가 나온다 | non-blocking/event-loop 모델 가능성 | [I/O Models and Event Loop](./io-models-and-event-loop.md) |
-| queue가 길어지고 timeout 뒤 retry까지 붙는다 | 단순 튜닝보다 backpressure 경계 부족 | [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md) |
+| queue가 길어지고 timeout 뒤 retry까지 붙는다 | 단순 튜닝보다 backpressure 경계 부족 | [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md) |
 
 ## 2. request-per-thread 직관: 왜 blocking 호출 하나가 풀 전체 문제로 번질까
 

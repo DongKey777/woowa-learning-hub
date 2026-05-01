@@ -441,7 +441,7 @@ comparator tie-breaker나 nullable key까지 같이 들어오면,
 - comparator 정렬 배열에서 같은 comparator를 검색에도 재사용하는 감각을 다시 잡고 싶다면 [Comparable and Comparator Basics](./java-comparable-comparator-basics.md)
 - nullable wrapper sort key와 repeated `null` 경계까지 같이 보고 싶다면 [BinarySearch With Nullable Wrapper Sort Keys](./binarysearch-nullable-wrapper-sort-keys.md)
 - primitive 배열에서 descending search 전제까지 같이 정리하고 싶다면 [Primitive Array Descending Search Primer](./primitive-array-descending-binarysearch-primer.md)
-- `lower_bound`, `upper_bound` 같은 일반 경계 탐색 패턴으로 넓히고 싶다면 [Binary Search Patterns](../algorithm/binary-search-patterns.md)
+- `lower_bound`, `upper_bound` 같은 일반 경계 탐색 패턴으로 넓히고 싶다면 [Binary Search Patterns](../../algorithm/binary-search-patterns.md)
 
 ## 한 줄 정리
 

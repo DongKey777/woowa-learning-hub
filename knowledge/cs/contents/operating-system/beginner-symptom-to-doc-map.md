@@ -15,7 +15,7 @@
 - [`Killed`, `OOMKilled`, `memory.events`를 한 장면으로 읽는 입문 메모](./killed-oomkilled-memory-events-beginner-bridge.md)
 - [파일 디스크립터 기초](./file-descriptor-basics.md)
 - [인터럽트 기초](./interrupt-basics.md)
-- [Timeout, Retry, Idempotency](../network/timeout-retry-idempotency.md)
+- [Timeout, Retry, Backoff 실전](../network/timeout-retry-backoff-practical.md)
 
 retrieval-anchor-keywords: beginner symptom map, os symptom triage, beginner symptom routing mental model, beginner triage quick check, slow response first triage, oom first triage, too many open files first triage, syscall vs context switch confusion, process vs thread confusion, 왜 context switch 느려요, heap vs stack 언제 달라요, 왜 느려요 운영체제, 처음 뭐부터 봐요, 운영체제 빠른 점검 루트 점프, beginner symptom to doc map basics
 

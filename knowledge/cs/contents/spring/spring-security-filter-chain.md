@@ -8,7 +8,7 @@
 > - [Spring Security 아키텍처](./spring-security-architecture.md)
 > - [Spring Actuator Exposure Security](./spring-actuator-exposure-security.md)
 > - [Spring CORS / Security vs MVC Ownership](./spring-cors-security-vs-mvc-ownership.md)
-> - [JWKS Validation and Key Rotation](../security/jwks-validation-and-key-rotation.md)
+> - [JWK Rotation / Cache Invalidation / `kid` Rollover](../security/jwk-rotation-cache-invalidation-kid-rollover.md)
 
 ### Retrieval Anchors
 

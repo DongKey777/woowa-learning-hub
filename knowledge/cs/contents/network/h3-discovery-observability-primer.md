@@ -11,7 +11,7 @@
 - [H3 Fallback Trace Bridge: Discovery Evidence에서 UDP Block과 H2 Fallback 읽기](./h3-fallback-trace-bridge.md)
 - [HTTPS RR Resolver Drift Primer: browser DoH, OS resolver, `dig`가 왜 다르게 보이나](./https-rr-resolver-drift-primer.md)
 - [Browser NetLog H3 Appendix: Alt-Svc Cache와 HTTPS RR 흔적 확인](./browser-netlog-h3-alt-svc-https-rr-appendix.md)
-- [브라우저 DNS / TLS / 인증서 흐름 입문](../security/browser-dns-tls-certificate-flow-primer.md)
+- [Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB](./request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md)
 
 retrieval-anchor-keywords: h3 discovery observability, alt-svc vs https rr trace, devtools h3 discovery, dns https rr h3, dig https rr, https rr 없음, https rr 있음, curl alt-svc h3 trace, first request h2 next request h3, alt-svc driven h3, https rr driven h3, 처음 배우는데 h3, h3 뭐예요, browser netlog h3 appendix, curl http3 unsupported build
 

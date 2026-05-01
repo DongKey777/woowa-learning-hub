@@ -16,9 +16,9 @@ retrieval-anchor-keywords: priorityblockingqueue cancellation stale entry mini b
 > 관련 문서:
 > - [Priority Update Patterns](./priority-update-patterns-treeset-treemap-priorityqueue-bridge.md)
 > - [Thread Interruption and Cooperative Cancellation Playbook](./thread-interruption-cooperative-cancellation-playbook.md)
-> - [PriorityBlockingQueue Timer Misuse Primer](../data-structure/priorityblockingqueue-timer-misuse-primer.md)
-> - [Mutable Priority Stale Ticket Pattern](../data-structure/mutable-priority-stale-ticket-pattern.md)
-> - [Java PriorityQueue Pitfalls](../data-structure/java-priorityqueue-pitfalls.md)
+> - [PriorityBlockingQueue Timer Misuse Primer](../../data-structure/priorityblockingqueue-timer-misuse-primer.md)
+> - [Mutable Priority Stale Ticket Pattern](../../data-structure/mutable-priority-stale-ticket-pattern.md)
+> - [Java PriorityQueue Pitfalls](../../data-structure/java-priorityqueue-pitfalls.md)
 >
 > retrieval-anchor-keywords: language-java-00124, PriorityBlockingQueue cancellation update, priorityblockingqueue duplicate entries, priorityblockingqueue stale entry, priorityblockingqueue cancel pattern, priorityblockingqueue reprioritize, priorityblockingqueue lazy deletion, priorityblockingqueue versioned entry, priorityblockingqueue remove linear cost, priorityblockingqueue cancelled task stale skip, java priorityblockingqueue update priority safely, java priorityblockingqueue duplicate ticket normal, priorityblockingqueue beginner bridge, 자바 PriorityBlockingQueue 취소, 자바 PriorityBlockingQueue 중복 엔트리, 자바 PriorityBlockingQueue stale entry, 자바 PriorityBlockingQueue 우선순위 변경
 
@@ -151,7 +151,7 @@ if (!state.active()) {
 - queue 안 중복 entry를 보면 무조건 데이터 버그라고 생각한다.
 - cancel 후에도 queue 크기가 바로 안 줄면 취소가 실패했다고 생각한다.
 - `take()`로 꺼냈으면 바로 실행해도 된다고 생각한다.
-- deadline 기반 대기까지 기대한다. 이건 [PriorityBlockingQueue Timer Misuse Primer](../data-structure/priorityblockingqueue-timer-misuse-primer.md) 쪽 질문이다.
+- deadline 기반 대기까지 기대한다. 이건 [PriorityBlockingQueue Timer Misuse Primer](../../data-structure/priorityblockingqueue-timer-misuse-primer.md) 쪽 질문이다.
 
 ## 한 줄 정리
 

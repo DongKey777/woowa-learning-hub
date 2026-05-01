@@ -10,7 +10,7 @@
 - [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - [`pollFirst`/`pollLast` vs `first`/`last` Beginner Bridge](./pollfirst-polllast-vs-first-last-beginner-bridge.md)
 - [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
-- [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
+- [TreeMap Interval Entry Primer](../../data-structure/treemap-interval-entry-primer.md)
 - [Navigable Range API 미니 드릴](./navigable-range-api-mini-drill.md)
 
 retrieval-anchor-keywords: language-java-00122, firstentry lastentry vs firstkey lastkey, treemap empty firstentry null, treemap empty firstkey exception, lastentry lastkey empty treemap, java treemap entry null vs key exception, firstentry null firstkey nosuchelementexception, treemap beginner empty bridge, firstkey lastkey firstentry lastentry difference, 자바 treemap firstentry firstkey 차이, 빈 treemap firstentry null, 빈 treemap firstkey 예외, firstentry lastentry vs firstkey lastkey bridge basics, firstentry lastentry vs firstkey lastkey bridge beginner, firstentry lastentry vs firstkey lastkey bridge intro
@@ -146,7 +146,7 @@ if (schedule.isEmpty()) {
 
 - `TreeMap`의 `floorEntry`/`ceilingEntry`까지 한 장으로 연결하려면 [NavigableMap and NavigableSet Mental Model](./navigablemap-navigableset-mental-model.md)
 - `null` 반환 감각을 더 짧게 연습하려면 [Ordered Map Null-Safe Practice Drill](./ordered-map-null-safe-practice-drill.md)
-- 예약/시간표 예제로 entry 조회를 붙여 보고 싶다면 [TreeMap Interval Entry Primer](../data-structure/treemap-interval-entry-primer.md)
+- 예약/시간표 예제로 entry 조회를 붙여 보고 싶다면 [TreeMap Interval Entry Primer](../../data-structure/treemap-interval-entry-primer.md)
 - 제거 여부까지 같이 정리하려면 [`pollFirst`/`pollLast` vs `first`/`last` Beginner Bridge](./pollfirst-polllast-vs-first-last-beginner-bridge.md)
 
 ## 한 줄 정리
