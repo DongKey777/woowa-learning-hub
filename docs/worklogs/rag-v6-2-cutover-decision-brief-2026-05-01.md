@@ -101,6 +101,12 @@ Runtime state:
   - graded language macro delta: `-0.1311489525`
   - interpretation: switching to a reasonable graded-nDCG gate does not
     unblock cutover
+- Option A document-structure candidate was measured:
+  `reports/rag_eval/cutover_failure_doc_structure_comparison_20260501T0545Z.json`
+  - temporary body blocks across 4 repeated target docs
+  - sampled quality delta: `+0.0000`
+  - hard-regression delta: `0`
+  - interpretation: the candidate was reverted and is not a cutover unblocker
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

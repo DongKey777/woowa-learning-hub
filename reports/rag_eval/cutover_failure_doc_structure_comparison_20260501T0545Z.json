@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-01T06:02:00Z",
+  "phase": "phase-4-option-a-doc-structure-candidate",
+  "fixture": "tests/fixtures/cs_rag_cutover_failure_queries.json",
+  "baseline_report": "reports/rag_eval/cutover_failure_anchor_after_20260501T0640Z.json",
+  "candidate_report": "reports/rag_eval/cutover_failure_doc_structure_sampled_20260501T0545Z.json",
+  "candidate_patch_retained": false,
+  "candidate_patch_summary": [
+    {
+      "path": "knowledge/cs/contents/database/transaction-isolation-basics.md",
+      "change": "Temporarily added a beginner MVCC 30-second answer block near the top."
+    },
+    {
+      "path": "knowledge/cs/contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "change": "Temporarily added an ApplicationContext 30-second answer block near the top."
+    },
+    {
+      "path": "knowledge/cs/contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "change": "Temporarily added beginner symptom bullets for stale list/search/mobile refresh prompts."
+    },
+    {
+      "path": "knowledge/cs/contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "change": "Temporarily added a query-service meaning paragraph near the top."
+    }
+  ],
+  "sample": {
+    "query_count": 14,
+    "doc_count": 46,
+    "required_doc_count": 11,
+    "extra_doc_count": 35,
+    "categories": [
+      "spring",
+      "database",
+      "software-engineering",
+      "design-pattern",
+      "system-design",
+      "language",
+      "network"
+    ],
+    "modalities": [
+      "fts",
+      "dense",
+      "sparse"
+    ]
+  },
+  "metrics": {
+    "baseline": {
+      "primary_ndcg_macro": 0.9165638776488141,
+      "primary_ndcg_micro": 0.8983803131377603,
+      "graded_ndcg_micro": 0.9128847044825239,
+      "hard_regression_failures": 3,
+      "failed_query_ids": [
+        "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+        "mysql_deadlock_lock_ordering",
+        "spring_tx_propagation"
+      ],
+      "local_cpu_p95_ms": 623.3696670096833
+    },
+    "candidate": {
+      "primary_ndcg_macro": 0.9165638776488141,
+      "primary_ndcg_micro": 0.8983803131377603,
+      "graded_ndcg_micro": 0.9128847044825239,
+      "hard_regression_failures": 3,
+      "failed_query_ids": [
+        "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+        "mysql_deadlock_lock_ordering",
+        "spring_tx_propagation"
+      ],
+      "local_cpu_p95_ms": 741.9204999896465
+    },
+    "delta": {
+      "primary_ndcg_macro": 0.0,
+      "primary_ndcg_micro": 0.0,
+      "graded_ndcg_micro": 0.0,
+      "hard_regression_failures": 0,
+      "local_cpu_p95_ms": 118.5508329799632
+    }
+  },
+  "decision": {
+    "accepted_for_corpus": false,
+    "accepted_for_cutover_gate": false,
+    "reason": "The sampled 14-query failure fixture showed no ranking or failure-count improvement. The temporary body changes were reverted and should not be treated as a cutover unblocker."
+  }
+}

@@ -351,6 +351,42 @@ Decision:
   repeated primer targets, or an explicit product decision to accept a weaker
   gate.
 
+## Option A Document-Structure Candidate
+
+Candidate report:
+`reports/rag_eval/cutover_failure_doc_structure_sampled_20260501T0545Z.json`
+
+Comparison summary:
+`reports/rag_eval/cutover_failure_doc_structure_comparison_20260501T0545Z.json`
+
+Method:
+
+- Temporarily added beginner-facing body blocks to four repeated target docs:
+  MVCC/isolation, ApplicationContext, read-model staleness symptoms, and query
+  service meaning.
+- Built a sampled Lance index from 46 docs and the 14-query failure fixture.
+- Reused `fts,dense,sparse`, `top_k=10`, and full-mode reranker.
+- Reverted the candidate body changes after measurement because the sampled
+  metric did not move.
+
+Measurement versus
+`reports/rag_eval/cutover_failure_anchor_after_20260501T0640Z.json`:
+
+| metric | delta |
+|---|---:|
+| primary nDCG macro | +0.0000 |
+| primary nDCG micro | +0.0000 |
+| graded nDCG micro | +0.0000 |
+| hard regression failures | 0 |
+| local CPU P95 | +118.6 ms |
+
+Decision:
+
+- Do not keep the temporary body changes.
+- Do not count this as a cutover unblocker.
+- The remaining path is either a more substantive corpus restructure, a
+  product-approved gate change, or explicit risky cutover approval.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

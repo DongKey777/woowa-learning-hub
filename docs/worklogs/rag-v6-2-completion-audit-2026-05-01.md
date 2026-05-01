@@ -59,6 +59,7 @@ The plan's Definition of Done requires all of the following:
 | Option A qrel review packet | `reports/rag_eval/cutover_failure_qrel_review_20260501T0730Z.json`; top-10 diagnostics classify 6 cross-category wrong-doc, 4 same-category wrong-doc, 1 primary-below-rank5, and 3 direct rank-1 divergences | Complete |
 | Option A no-reranker same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_no_rerank_20260501T0540Z.json`; no-reranker Lance macro `0.8081`, delta vs legacy `-0.1543`, 8 bucket regressions, 50 hard-regression failures | Measured, not accepted |
 | Option B gate-relaxation review | `reports/rag_eval/cutover_gate_review_20260501T0543Z.json`; graded category macro delta `-0.0515`, graded micro delta `-0.0958`, graded language macro delta `-0.1311` | Measured, not accepted |
+| Option A document-structure candidate | `reports/rag_eval/cutover_failure_doc_structure_comparison_20260501T0545Z.json`; temporary body blocks over 4 repeated target docs yielded `+0.0000` sampled quality delta and were reverted | Measured, not accepted |
 
 ## Blocking Evidence
 
@@ -126,6 +127,11 @@ Subsequent Option B gate-relaxation work checked whether a less strict graded
 metric would unblock cutover. It did not: graded category macro still trails
 legacy by `-0.0515`, graded micro by `-0.0958`, and graded language macro by
 `-0.1311`.
+
+Subsequent document-structure candidate work tested temporary beginner body
+blocks for four repeated target docs. The sampled 14-query failure fixture did
+not move (`+0.0000` quality delta), so those body changes were reverted and no
+corpus change was retained.
 
 ## Next Required Decision
 
