@@ -8,7 +8,7 @@ from typing import Any
 
 from scripts.learning.rag import indexer
 
-from ..candidate import R3Document
+from ..candidate import Candidate, R3Document
 from ..tokenization import tokenize_text
 
 _DOCUMENT_CACHE: dict[tuple[str, str, str, str, str, str], list[R3Document]] = {}
@@ -95,6 +95,22 @@ def _parse_sparse_terms(row: dict[str, Any]) -> dict[str, float]:
     return {term: 1.0 for term in tokenize_text(search_terms)}
 
 
+def _dense_query_vector(value: Any) -> list[float] | None:
+    if value is None:
+        return None
+    try:
+        if getattr(value, "ndim", 1) == 2:
+            value = value[0]
+    except Exception:
+        pass
+    if hasattr(value, "tolist"):
+        value = value.tolist()
+    try:
+        return [float(item) for item in value]
+    except TypeError:
+        return None
+
+
 def _records_from_lance_table(
     table,
     *,
@@ -125,6 +141,14 @@ def _records_from_lance_table(
     except TypeError:
         frame = table.to_pandas()
     return frame.to_dict("records")
+
+
+def _lance_row_score(row: dict[str, Any], rank: int) -> float:
+    if "_score" in row:
+        return float(row["_score"])
+    if "_distance" in row:
+        return 1.0 / (1.0 + max(float(row["_distance"]), 0.0))
+    return 1.0 / rank
 
 
 def _cache_lance_documents(
@@ -211,11 +235,16 @@ def load_runtime_sparse_documents(index_root: Path | str) -> list[R3Document]:
     return load_legacy_documents(index_root)
 
 
-def encode_runtime_sparse_query(index_root: Path | str, query: str) -> dict[str, float]:
-    """Encode a query with the index encoder and return BGE sparse token ids.
+def encode_runtime_query(
+    index_root: Path | str,
+    query: str,
+    *,
+    modalities: tuple[str, ...] = ("dense", "sparse"),
+) -> dict[str, Any]:
+    """Encode a query with the index encoder for R3 first-stage retrieval.
 
-    The returned keys are strings so they share the same term space as
-    ``R3Document.sparse_terms`` and Qdrant sparse payload generation.
+    Sparse token ids are returned as strings so they share the same term space
+    as ``R3Document.sparse_terms`` and Qdrant sparse payload generation.
     """
 
     manifest = indexer.read_manifest_v3(index_root)
@@ -232,13 +261,86 @@ def encode_runtime_sparse_query(index_root: Path | str, query: str) -> dict[str,
         encoder = BgeM3Encoder(model_id=model_id)
         _SPARSE_QUERY_ENCODER_CACHE[cache_key] = encoder
     try:
-        encoding = encoder.encode_query(query, modalities=("sparse",))
+        encoding = encoder.encode_query(query, modalities=modalities)
     except Exception:
         return {}
+    out: dict[str, Any] = {}
+    if "dense" in modalities:
+        dense_vector = _dense_query_vector(encoding.get("dense"))
+        if dense_vector is not None:
+            out["dense"] = dense_vector
     sparse_list = encoding.get("sparse") or []
-    if not sparse_list:
-        return {}
-    return {str(int(token_id)): float(weight) for token_id, weight in sparse_list[0].items()}
+    if "sparse" in modalities and sparse_list:
+        out["sparse_terms"] = {
+            str(int(token_id)): float(weight)
+            for token_id, weight in sparse_list[0].items()
+        }
+    return out
+
+
+def encode_runtime_sparse_query(index_root: Path | str, query: str) -> dict[str, float]:
+    """Encode a query and return only BGE sparse token ids."""
+
+    encoding = encode_runtime_query(index_root, query, modalities=("sparse",))
+    return dict(encoding.get("sparse_terms") or {})
+
+
+def load_runtime_dense_candidates(
+    index_root: Path | str,
+    query_vector: Any,
+    *,
+    limit: int = 100,
+) -> list[Candidate]:
+    """Return independent dense candidates from the Lance vector index."""
+
+    dense_query = _dense_query_vector(query_vector)
+    if dense_query is None:
+        return []
+    try:
+        manifest = indexer.load_manifest(index_root)
+    except Exception:
+        return []
+    if manifest.get("index_version") != indexer.LANCE_INDEX_VERSION:
+        return []
+    table = indexer.open_lance_table(index_root)
+    try:
+        rows = (
+            table.search(dense_query, vector_column_name="dense_vec")
+            .limit(limit)
+            .to_list()
+        )
+    except Exception:
+        return []
+    candidates: list[Candidate] = []
+    for rank, row in enumerate(rows, start=1):
+        anchors = _parse_json_list(row.get("anchors"))
+        section_path = _parse_json_list(row.get("section_path"))
+        section_title = section_path[-1] if section_path else ""
+        category = str(row.get("category") or "unknown")
+        path = str(row.get("path") or "")
+        if not path:
+            continue
+        candidates.append(
+            Candidate(
+                path=path,
+                chunk_id=str(row.get("chunk_id") or ""),
+                retriever="dense",
+                rank=rank,
+                score=_lance_row_score(row, rank),
+                title=str(row.get("title") or ""),
+                section_title=section_title,
+                metadata={
+                    "document": {
+                        "category": category,
+                        "difficulty": row.get("difficulty"),
+                        "index_backend": "lance",
+                        "body": str(row.get("body") or ""),
+                        "aliases": anchors,
+                    }
+                },
+            )
+        )
+    return candidates
 
 
 def load_runtime_documents(

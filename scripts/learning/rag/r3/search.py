@@ -13,7 +13,8 @@ from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
 from .index.runtime_loader import (
-    encode_runtime_sparse_query,
+    encode_runtime_query,
+    load_runtime_dense_candidates,
     load_runtime_documents,
     load_runtime_sparse_documents,
 )
@@ -62,6 +63,7 @@ def search(
     fused = []
     sparse_documents = []
     query_sparse_terms: dict[str, float] = {}
+    dense_candidates = []
     sparse_source = "lexical_terms"
     try:
         documents = (
@@ -79,9 +81,15 @@ def search(
     sparse_encoder_allowed = mode == "full" or config.sparse_encoder_in_cheap_mode
     if index_root is not None and sparse_encoder_allowed:
         try:
-            query_sparse_terms = encode_runtime_sparse_query(index_root, query_plan.raw_query)
+            query_encoding = encode_runtime_query(index_root, query_plan.raw_query)
         except Exception:
-            query_sparse_terms = {}
+            query_encoding = {}
+        query_sparse_terms = dict(query_encoding.get("sparse_terms") or {})
+        dense_candidates = load_runtime_dense_candidates(
+            index_root,
+            query_encoding.get("dense"),
+            limit=config.runtime_lance_prefetch_limit,
+        )
         if query_sparse_terms:
             try:
                 sparse_documents = load_runtime_sparse_documents(index_root)
@@ -104,6 +112,7 @@ def search(
         )
         candidates = [
             *lexical.retrieve(query_plan),
+            *dense_candidates,
             *sparse.retrieve(query_plan, query_terms=query_sparse_terms or None),
             *signal.retrieve([*query_plan.route_tags, *(topic_hints or [])]),
         ]
@@ -138,6 +147,7 @@ def search(
             "sparse_sidecar_document_count": len(sparse_documents),
             "sparse_query_terms_count": len(query_sparse_terms),
             "sparse_encoder_allowed": sparse_encoder_allowed,
+            "dense_candidate_count": len(dense_candidates),
         },
     )
 
@@ -154,6 +164,7 @@ def search(
         debug["r3_sparse_sidecar_document_count"] = len(sparse_documents)
         debug["r3_sparse_query_terms_count"] = len(query_sparse_terms)
         debug["r3_sparse_encoder_allowed"] = sparse_encoder_allowed
+        debug["r3_dense_candidate_count"] = len(dense_candidates)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k
         debug["mode"] = mode

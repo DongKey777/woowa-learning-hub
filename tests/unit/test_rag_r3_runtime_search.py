@@ -4,7 +4,10 @@ import json
 from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, searcher
-from scripts.learning.rag.r3.index.runtime_loader import load_lance_documents
+from scripts.learning.rag.r3.index.runtime_loader import (
+    load_lance_documents,
+    load_runtime_dense_candidates,
+)
 
 
 def _chunk(
@@ -371,6 +374,57 @@ def test_r3_lance_runtime_loader_can_prefetch_with_fts_query(monkeypatch, tmp_pa
     assert documents[0].path == "contents/network/latency-bandwidth-throughput-basics.md"
 
 
+def test_r3_lance_dense_candidates_use_vector_search(monkeypatch, tmp_path):
+    captured = {}
+
+    class FakeSearch:
+        def limit(self, value):
+            captured["limit"] = value
+            return self
+
+        def to_list(self):
+            return [
+                {
+                    "chunk_id": "dense#0",
+                    "path": "contents/network/dense.md",
+                    "title": "Dense",
+                    "category": "network",
+                    "difficulty": "beginner",
+                    "section_path": '["Dense"]',
+                    "body": "dense body",
+                    "anchors": '["dense"]',
+                    "_distance": 0.25,
+                }
+            ]
+
+    class FakeTable:
+        def search(self, query, *, vector_column_name):
+            captured["query"] = query
+            captured["vector_column_name"] = vector_column_name
+            return FakeSearch()
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.load_manifest",
+        lambda root: {"index_version": indexer.LANCE_INDEX_VERSION},
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+
+    candidates = load_runtime_dense_candidates(tmp_path, [0.1, 0.2], limit=7)
+
+    assert captured == {
+        "query": [0.1, 0.2],
+        "vector_column_name": "dense_vec",
+        "limit": 7,
+    }
+    assert candidates[0].path == "contents/network/dense.md"
+    assert candidates[0].retriever == "dense"
+    assert candidates[0].score == 0.8
+    assert candidates[0].metadata["document"]["body"] == "dense body"
+
+
 def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
     monkeypatch,
     tmp_path,
@@ -450,8 +504,8 @@ def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
         lambda root: FakeTable(),
     )
     monkeypatch.setattr(
-        "scripts.learning.rag.r3.search.encode_runtime_sparse_query",
-        lambda root, query: {"42": 5.0},
+        "scripts.learning.rag.r3.search.encode_runtime_query",
+        lambda root, query: {"sparse_terms": {"42": 5.0}},
     )
     debug: dict = {}
 
@@ -469,6 +523,96 @@ def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
     assert debug["r3_sparse_source"] == "bge_m3_sparse_vec_sidecar"
     assert debug["r3_sparse_sidecar_document_count"] == 2
     assert debug["r3_sparse_query_terms_count"] == 1
+    assert debug["r3_dense_candidate_count"] == 0
+
+
+def test_r3_dense_candidate_can_return_candidate_absent_from_fts_prefetch(
+    monkeypatch,
+    tmp_path,
+):
+    class FakeSearch:
+        def __init__(self, rows):
+            self.rows = rows
+
+        def limit(self, value):
+            return self
+
+        def to_list(self):
+            return self.rows
+
+    class FakeTable:
+        version = 13
+
+        def search(self, query, **kwargs):
+            if kwargs.get("query_type") == "fts":
+                return FakeSearch(
+                    [
+                        {
+                            "chunk_id": "prefetch#0",
+                            "path": "contents/network/prefetch-only.md",
+                            "title": "Prefetch Only",
+                            "category": "network",
+                            "difficulty": "beginner",
+                            "section_path": '["Prefetch Only"]',
+                            "body": "surface terms only",
+                            "search_terms": "surface terms",
+                            "anchors": "[]",
+                            "sparse_vec": {"indices": [11], "values": [1.0]},
+                        }
+                    ]
+                )
+            assert kwargs == {"vector_column_name": "dense_vec"}
+            return FakeSearch(
+                [
+                    {
+                        "chunk_id": "dense#0",
+                        "path": "contents/network/dense-only.md",
+                        "title": "Dense Only",
+                        "category": "network",
+                        "difficulty": "beginner",
+                        "section_path": '["Dense Only"]',
+                        "body": "semantic candidate",
+                        "anchors": "[]",
+                        "_score": 0.99,
+                    }
+                ]
+            )
+
+    manifest = {
+        "index_version": indexer.LANCE_INDEX_VERSION,
+        "corpus_hash": "dense-hash",
+        "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fixture"},
+    }
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.load_manifest",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: manifest,
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.open_lance_table",
+        lambda root: FakeTable(),
+    )
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.search.encode_runtime_query",
+        lambda root, query: {"dense": [0.1, 0.2]},
+    )
+    debug: dict = {}
+
+    hits = searcher.search(
+        "semantic-query",
+        backend="r3",
+        index_root=tmp_path,
+        mode="full",
+        top_k=1,
+        debug=debug,
+    )
+
+    assert hits[0]["path"] == "contents/network/dense-only.md"
+    assert hits[0]["r3_sources"] == [{"retriever": "dense", "rank": 1, "score": 0.99}]
+    assert debug["r3_dense_candidate_count"] == 1
 
 
 def test_r3_cheap_mode_does_not_load_sparse_encoder(monkeypatch, tmp_path):
@@ -516,7 +660,7 @@ def test_r3_cheap_mode_does_not_load_sparse_encoder(monkeypatch, tmp_path):
         lambda root: FakeTable(),
     )
     monkeypatch.setattr(
-        "scripts.learning.rag.r3.search.encode_runtime_sparse_query",
+        "scripts.learning.rag.r3.search.encode_runtime_query",
         lambda root, query: (_ for _ in ()).throw(AssertionError("encoder loaded")),
     )
     debug: dict = {}
