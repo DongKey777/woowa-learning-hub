@@ -99,6 +99,49 @@ def test_backend_comparison_falls_back_to_hit_paths_for_non_r3_backends():
     assert report["backends"][0]["traces"][0]["metadata"]["backend"] == "legacy"
 
 
+def test_backend_comparison_reports_reranker_demotion_from_trace():
+    def fake_search(prompt, **kwargs):
+        debug = kwargs["debug"]
+        debug["r3_trace"] = {
+            "trace_id": "debug-id",
+            "query_plan": {
+                "raw_query": prompt,
+                "normalized_query": prompt,
+                "language": "mixed",
+                "lexical_terms": ["latency"],
+                "route_tags": [],
+                "metadata_filters": {},
+            },
+            "candidates": [],
+            "final_paths": [
+                "contents/network/other.md",
+                "contents/network/latency.md",
+            ],
+            "stage_ms": {},
+            "metadata": {
+                "fused_paths": [
+                    "contents/network/latency.md",
+                    "contents/network/other.md",
+                ]
+            },
+        }
+        return [{"path": "contents/network/other.md"}]
+
+    report = run_backend_comparison(
+        [BackendSpec(name="r3-rerank", backend="r3", use_reranker=True)],
+        _qrels(),
+        top_k=2,
+        windows=(1, 2),
+        search_fn=fake_search,
+    )
+
+    demotion = report["backends"][0]["reranker_demotion"]
+    assert demotion["overall"]["total"] == 1
+    assert demotion["overall"]["demoted"] == 1
+    assert demotion["by_language"]["mixed"]["rate"] == 1.0
+    assert demotion["demoted_query_ids"] == ["latency:mixed"]
+
+
 def test_write_backend_traces_emits_jsonl(tmp_path):
     report = run_backend_comparison(
         [BackendSpec(name="legacy", backend="legacy")],

@@ -10,7 +10,12 @@ from typing import Any, Callable, Iterable
 
 from scripts.learning.rag import indexer, searcher
 
-from ..eval.metrics import RetrievalEvaluationQuery, retrieval_summary
+from ..eval.metrics import (
+    RerankerComparison,
+    RetrievalEvaluationQuery,
+    reranker_demotion_summary,
+    retrieval_summary,
+)
 from ..eval.qrels import R3QueryJudgement, load_qrels
 from ..eval.trace import R3Trace, write_jsonl
 from ..query_plan import build_query_plan
@@ -125,6 +130,7 @@ def run_backend(
 ) -> dict[str, Any]:
     traces: list[R3Trace] = []
     evaluation_queries: list[RetrievalEvaluationQuery] = []
+    reranker_comparisons: list[RerankerComparison] = []
 
     for query in qrels:
         debug: dict[str, Any] = {}
@@ -146,9 +152,23 @@ def run_backend(
             hits=hits,
         )
         traces.append(trace)
-        evaluation_queries.append(_evaluation_query_from_trace(query, trace))
+        evaluation_query = _evaluation_query_from_trace(query, trace)
+        evaluation_queries.append(evaluation_query)
+        fused_paths = trace.metadata.get("fused_paths")
+        if spec.use_reranker and isinstance(fused_paths, list):
+            reranker_comparisons.append(
+                RerankerComparison(
+                    query_id=query.query_id,
+                    language=evaluation_query.language,
+                    level=evaluation_query.level,
+                    category=evaluation_query.category,
+                    primary_paths=evaluation_query.primary_paths,
+                    before_paths=tuple(str(path) for path in fused_paths),
+                    after_paths=trace.final_paths,
+                )
+            )
 
-    return {
+    result = {
         "backend": spec.name,
         "spec": spec.to_dict(),
         "query_count": len(qrels),
@@ -159,6 +179,9 @@ def run_backend(
         ),
         "traces": [trace.to_dict() for trace in traces],
     }
+    if spec.use_reranker:
+        result["reranker_demotion"] = reranker_demotion_summary(reranker_comparisons)
+    return result
 
 
 def run_backend_comparison(
