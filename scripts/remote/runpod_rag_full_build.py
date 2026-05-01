@@ -1047,8 +1047,8 @@ class RunPodHarness:
         start_cmd = (
             f"mkdir -p {shlex.quote(log_dir)} && "
             f"rm -f {shlex.quote(log_path)} {shlex.quote(rc_path)} {shlex.quote(pid_path)} && "
-            f"nohup bash -lc {shlex.quote(command)} > {shlex.quote(log_path)} 2>&1 "
-            f"< /dev/null & echo $! > {shlex.quote(pid_path)}"
+            f"( nohup bash -lc {shlex.quote(command)} > {shlex.quote(log_path)} 2>&1 "
+            f"< /dev/null & echo $! > {shlex.quote(pid_path)} )"
         )
         rc, stdout, stderr = executor.run(pod, keypath, start_cmd, timeout_s=60)
         if rc != 0:

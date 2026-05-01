@@ -998,6 +998,32 @@ def test_step_5_to_11_uploads_source_bundle_before_commands(
     assert fake_ssh.commands[1] == f"git clone {H.REMOTE_BUNDLE_PATH} /workspace/repo"
 
 
+def test_detached_remote_command_backgrounds_only_nohup_subshell(tmp_path):
+    client = H.MockRunPodClient()
+    h = H.RunPodHarness(client, dry_run=False)
+    pod = H.Pod(pod_id="pod-1", ip="10.0.0.1", ssh_port=22001,
+                gpu_type="RTX A6000",
+                started_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc))
+    keypath = tmp_path / "fake-key"
+    keypath.touch()
+    fake_ssh = _FakeSshExecutor()
+
+    h._run_detached_remote_command(
+        fake_ssh,
+        pod,
+        keypath,
+        "cd /workspace/repo && python -m scripts.learning.cli_cs_index_build --backend lance",
+        run_id="r3-test",
+        step_index=7,
+        timeout_s=3600,
+    )
+
+    start_cmd = fake_ssh.commands[0]
+    assert "mkdir -p /workspace/rag-build-logs && rm -f" in start_cmd
+    assert "&& ( nohup bash -lc" in start_cmd
+    assert "& echo $! > /workspace/rag-build-logs/r3-test-step-7.pid )" in start_cmd
+
+
 def test_step_5_to_11_verifies_strict_r3_artifact_after_download(
     tmp_path,
     monkeypatch,
