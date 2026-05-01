@@ -38,6 +38,23 @@ def test_parse_frontmatter_handles_quoted_strings_and_lists():
     assert fm["superseded_by"] is None
 
 
+def test_parse_frontmatter_handles_block_lists():
+    text = (
+        "---\n"
+        "schema_version: 2\n"
+        "aliases:\n"
+        "  - DI\n"
+        "  - 의존성 주입\n"
+        "expected_queries:\n"
+        "  - latency가 뭐야?\n"
+        "---\n\n"
+        "body\n"
+    )
+    fm = L.parse_frontmatter(text)
+    assert fm["aliases"] == ["DI", "의존성 주입"]
+    assert fm["expected_queries"] == ["latency가 뭐야?"]
+
+
 def test_parse_frontmatter_unescapes_quotes():
     text = '---\ntitle: "has \\"quote\\" inside"\n---\n\nbody'
     fm = L.parse_frontmatter(text)
@@ -197,6 +214,47 @@ def test_frontmatter_schema_accepts_full_valid(tmp_path):
         encoding="utf-8",
     )
     assert L.check_frontmatter_schema(file_path=src, text=src.read_text()) == []
+
+
+def test_corpus_v2_frontmatter_accepts_pilot_fields(tmp_path):
+    src = tmp_path / "x.md"
+    src.write_text(
+        "---\n"
+        "schema_version: 2\n"
+        'title: "T"\n'
+        'concept_id: "spring/di"\n'
+        'difficulty: "beginner"\n'
+        "doc_role: primer\n"
+        "level: beginner\n"
+        "aliases:\n"
+        "  - DI\n"
+        "  - 의존성 주입\n"
+        "expected_queries:\n"
+        "  - DI가 뭐야?\n"
+        "---\n\nbody",
+        encoding="utf-8",
+    )
+    assert L.check_frontmatter_schema(file_path=src, text=src.read_text()) == []
+
+
+def test_corpus_v2_frontmatter_rejects_missing_pilot_fields(tmp_path):
+    src = tmp_path / "x.md"
+    src.write_text(
+        "---\n"
+        "schema_version: 2\n"
+        'title: "T"\n'
+        'concept_id: "spring/di"\n'
+        'difficulty: "beginner"\n'
+        "doc_role: invalid\n"
+        "---\n\nbody",
+        encoding="utf-8",
+    )
+    violations = L.check_frontmatter_schema(file_path=src, text=src.read_text())
+    messages = [violation.message for violation in violations]
+    assert any("level" in message for message in messages)
+    assert any("aliases" in message for message in messages)
+    assert any("expected_queries" in message for message in messages)
+    assert any("doc_role 'invalid'" in message for message in messages)
 
 
 # ---------------------------------------------------------------------------

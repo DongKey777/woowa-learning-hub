@@ -54,6 +54,17 @@ REQUIRED_FRONTMATTER_FIELDS = (
     "difficulty",
 )
 VALID_DIFFICULTIES = {"beginner", "intermediate", "advanced", "unknown"}
+PILOT_V2_FIELDS = ("concept_id", "doc_role", "level", "aliases", "expected_queries")
+VALID_DOC_ROLES = {
+    "primer",
+    "deep_dive",
+    "chooser",
+    "comparison",
+    "playbook",
+    "bridge",
+    "drill",
+}
+VALID_LEVELS = {"beginner", "intermediate", "advanced"}
 
 
 def parse_frontmatter(text: str) -> dict | None:
@@ -65,15 +76,25 @@ def parse_frontmatter(text: str) -> dict | None:
         return None
     body = m.group(1)
     out: dict = {}
+    pending_list_key: str | None = None
     for line in body.splitlines():
         line = line.rstrip()
         if not line or line.startswith("#"):
             continue
+        if pending_list_key and line.startswith("  - "):
+            out[pending_list_key].append(_parse_yaml_scalar(line[4:].strip()))
+            continue
         kv = _LINE_KV_RE.match(line)
         if not kv:
+            pending_list_key = None
             continue
         key, raw_value = kv.group(1), kv.group(2).strip()
+        if raw_value == "":
+            out[key] = []
+            pending_list_key = key
+            continue
         out[key] = _parse_yaml_scalar(raw_value)
+        pending_list_key = None
     return out
 
 
@@ -257,6 +278,53 @@ def check_frontmatter_schema(
             file_path=str(file_path),
             message=f"frontmatter difficulty '{diff}' not in {sorted(VALID_DIFFICULTIES)}",
         ))
+    if str(fm.get("schema_version")) == "2":
+        out.extend(check_corpus_v2_pilot_frontmatter(file_path=file_path, frontmatter=fm))
+    return out
+
+
+def check_corpus_v2_pilot_frontmatter(
+    *,
+    file_path: Path,
+    frontmatter: dict,
+) -> list[LintViolation]:
+    """Validate the staged Corpus v2 pilot fields."""
+    out: list[LintViolation] = []
+    for field_name in PILOT_V2_FIELDS:
+        value = frontmatter.get(field_name)
+        if value in (None, "", []):
+            out.append(LintViolation(
+                check="corpus_v2_frontmatter",
+                file_path=str(file_path),
+                message=f"corpus v2 missing pilot field: {field_name}",
+            ))
+
+    doc_role = frontmatter.get("doc_role")
+    if doc_role not in (None, "") and doc_role not in VALID_DOC_ROLES:
+        out.append(LintViolation(
+            check="corpus_v2_frontmatter",
+            file_path=str(file_path),
+            message=f"doc_role '{doc_role}' not in {sorted(VALID_DOC_ROLES)}",
+        ))
+
+    level = frontmatter.get("level")
+    if level not in (None, "") and level not in VALID_LEVELS:
+        out.append(LintViolation(
+            check="corpus_v2_frontmatter",
+            file_path=str(file_path),
+            message=f"level '{level}' not in {sorted(VALID_LEVELS)}",
+        ))
+
+    for list_field in ("aliases", "expected_queries"):
+        value = frontmatter.get(list_field)
+        if value in (None, ""):
+            continue
+        if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+            out.append(LintViolation(
+                check="corpus_v2_frontmatter",
+                file_path=str(file_path),
+                message=f"{list_field} must be a non-empty string list",
+            ))
     return out
 
 
