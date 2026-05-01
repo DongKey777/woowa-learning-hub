@@ -1,0 +1,11 @@
+{
+  "model_id": "BAAI/bge-reranker-v2-m3",
+  "pair_count": 50,
+  "machine": "arm64",
+  "python_version": "3.12.12",
+  "load_ms": 8034.831,
+  "score_ms": 1350.097,
+  "per_pair_p50_ms": 24.515,
+  "per_pair_p95_ms": 24.898,
+  "rss_peak_mb": 1021.391
+}

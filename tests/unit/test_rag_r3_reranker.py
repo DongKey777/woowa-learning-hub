@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import sys
+from types import SimpleNamespace
+
 from scripts.learning.rag.r3.candidate import Candidate
 from scripts.learning.rag.r3.config import R3Config
 from scripts.learning.rag.r3.rerankers import (
     CrossEncoderReranker,
+    default_model_factory,
     reranker_chain_for_language,
 )
 
@@ -20,8 +24,8 @@ def test_korean_and_mixed_reranker_chain_excludes_english_only_mxbai():
     for language in ("ko", "mixed"):
         chain = reranker_chain_for_language(language, config)
         assert chain[0] == "BAAI/bge-reranker-v2-m3"
-        assert "Alibaba-NLP/gte-multilingual-reranker-base" in chain
         assert "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1" in chain
+        assert len(chain) == len(set(chain))
         assert "mixedbread-ai/mxbai-rerank-base-v1" not in chain
 
 
@@ -30,6 +34,29 @@ def test_english_chain_can_include_mxbai_experiment():
 
     assert chain[0] == "BAAI/bge-reranker-v2-m3"
     assert "mixedbread-ai/mxbai-rerank-base-v1" in chain
+
+
+def test_default_model_factory_allows_remote_code_only_for_gte(monkeypatch):
+    calls = []
+
+    class FakeFactory:
+        def __init__(self, model_id, **kwargs):
+            calls.append((model_id, kwargs))
+
+    monkeypatch.setitem(
+        sys.modules,
+        "sentence_transformers",
+        SimpleNamespace(CrossEncoder=FakeFactory),
+    )
+
+    default_model_factory("BAAI/bge-reranker-v2-m3")
+    default_model_factory("Alibaba-NLP/gte-multilingual-reranker-base")
+
+    assert calls[0] == ("BAAI/bge-reranker-v2-m3", {})
+    assert calls[1] == (
+        "Alibaba-NLP/gte-multilingual-reranker-base",
+        {"trust_remote_code": True, "device": "cpu"},
+    )
 
 
 def test_cross_encoder_reranker_sorts_candidates_and_keeps_metadata():

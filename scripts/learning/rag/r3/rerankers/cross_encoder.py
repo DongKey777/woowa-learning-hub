@@ -12,6 +12,12 @@ from ..query_plan import Language
 
 
 ModelFactory = Callable[[str], Any]
+REMOTE_CODE_RERANKER_MODELS = {
+    "Alibaba-NLP/gte-multilingual-reranker-base",
+}
+CPU_ONLY_RERANKER_MODELS = {
+    "Alibaba-NLP/gte-multilingual-reranker-base",
+}
 
 
 def reranker_chain_for_language(
@@ -24,30 +30,42 @@ def reranker_chain_for_language(
     English-only mxbai candidate.
     """
 
+    def _dedupe(models: tuple[str, ...]) -> tuple[str, ...]:
+        out: list[str] = []
+        for model in models:
+            if model and model not in out:
+                out.append(model)
+        return tuple(out)
+
     cfg = config or R3Config.from_env()
     if language in {"ko", "mixed"}:
-        return (
+        return _dedupe((
             cfg.reranker_model,
             cfg.multilingual_fallback_model,
             cfg.compatibility_fallback_model,
-        )
+        ))
     if language == "en":
-        return (
+        return _dedupe((
             cfg.reranker_model,
             cfg.english_only_experiment_model,
             cfg.compatibility_fallback_model,
-        )
-    return (
+        ))
+    return _dedupe((
         cfg.reranker_model,
         cfg.multilingual_fallback_model,
         cfg.compatibility_fallback_model,
-    )
+    ))
 
 
 def default_model_factory(model_id: str) -> Any:
     from sentence_transformers import CrossEncoder  # type: ignore
 
-    return CrossEncoder(model_id)
+    kwargs = {}
+    if model_id in REMOTE_CODE_RERANKER_MODELS:
+        kwargs["trust_remote_code"] = True
+    if model_id in CPU_ONLY_RERANKER_MODELS:
+        kwargs["device"] = "cpu"
+    return CrossEncoder(model_id, **kwargs)
 
 
 def _candidate_passage(candidate: Candidate) -> str:

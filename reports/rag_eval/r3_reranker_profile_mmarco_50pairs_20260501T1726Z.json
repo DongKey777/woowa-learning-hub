@@ -1,0 +1,11 @@
+{
+  "model_id": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+  "pair_count": 50,
+  "machine": "arm64",
+  "python_version": "3.12.12",
+  "load_ms": 7718.835,
+  "score_ms": 504.426,
+  "per_pair_p50_ms": 6.362,
+  "per_pair_p95_ms": 7.669,
+  "rss_peak_mb": 1026.938
+}
