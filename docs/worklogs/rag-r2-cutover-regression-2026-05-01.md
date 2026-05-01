@@ -84,6 +84,61 @@ Because the gate failed, Phase 3 cutover is blocked. Reasonable next options:
 2. Run Phase 2 IVF sweep as a performance/quality tuning experiment, but do not treat it as production approval unless the same cutover gate passes afterward.
 3. Revisit the gate design if the legacy fixture is considered too biased toward the old stack, then document the changed criterion before re-running.
 
+## Same-Query Diagnostic Comparison
+
+Summary JSON: `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json`
+
+Failure taxonomy: `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json`
+
+Why this exists:
+
+- The original Phase 1 comparison remains the historical cutover gate report.
+- For per-query diagnosis, I also compared legacy v2 against the later
+  same-code Lance baseline
+  `reports/rag_eval/r2_korean_terms_w00_holdout_20260501T0450Z.json`.
+- That later Lance report has the same 101 query IDs as
+  `reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json`, so it is safer
+  for failure taxonomy and next-experiment targeting.
+
+Result:
+
+| check | value |
+|---|---:|
+| query id intersection | 101 / 101 |
+| legacy primary nDCG macro | 0.9624 |
+| Lance same-code primary nDCG macro | 0.9103 |
+| delta | -0.0521 |
+| gate pass | false |
+| bucket regressions | 7 |
+| regressed per-query items | 14 |
+| Lance zero-primary items | 10 |
+
+Largest same-query bucket regressions:
+
+| bucket | delta |
+|---|---:|
+| database | -0.2779 |
+| software-engineering | -0.2500 |
+| en | -0.2125 |
+| ko | -0.1429 |
+| spring | -0.1000 |
+| design-pattern | -0.0781 |
+| mixed | -0.0570 |
+
+Top repeated expected paths in the failure taxonomy:
+
+1. `contents/design-pattern/read-model-staleness-read-your-writes.md` (4)
+2. `contents/database/transaction-isolation-basics.md` (3)
+3. `contents/spring/spring-request-pipeline-bean-container-foundations-primer.md` (1)
+4. `contents/software-engineering/dao-vs-query-model-entrypoint-primer.md` (1)
+5. `contents/spring/spring-transactional-basics.md` (1)
+
+Decision:
+
+- This does not unblock cutover. It only narrows the next Option A work:
+  improve repeated failing primer/anchor targets, then rerun the same-query
+  comparison.
+
 ## Phase 2 IVF Sweep
 
 Summary JSON: `reports/rag_eval/r2_ivf_sweep_20260501T0401.json`

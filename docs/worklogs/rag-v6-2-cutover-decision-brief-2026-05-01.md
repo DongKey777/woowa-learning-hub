@@ -29,6 +29,19 @@ Phase 2 IVF sweep:
 - Production gate pass: `false`
 - Passing variants: `[]`
 
+Same-query diagnostic:
+
+- Report:
+  `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json`
+- Failure taxonomy:
+  `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json`
+- Query ID intersection: `101/101`
+- Lance same-code primary nDCG macro: `0.9102958204`
+- Delta versus legacy: `-0.0521450606`
+- Gate pass: `false`
+- Bucket regressions: `7`
+- Lance zero-primary items: `10`
+
 Runtime state:
 
 - `state/cs_rag/manifest.json` is still legacy v2:
@@ -55,6 +68,8 @@ Runtime state:
     `reports/rag_eval/r2_korean_terms_query_candidate_20260501T0450Z.json`
   - Structural `query-rewrite-v1` sidecar pilot:
     `reports/rag_eval/query_rewrite_pilot_comparison_20260501T0610Z.json`
+- Same-query failure taxonomy was generated to target the next Option A work:
+  `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json`
 
 None of the additional Phase 4 pilots produced a sampled quality lift large
 enough to unblock production cutover.

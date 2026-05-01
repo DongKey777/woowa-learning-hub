@@ -33,6 +33,8 @@ The plan's Definition of Done requires all of the following:
 | Phase 1 legacy report | `reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json` tracked | Complete |
 | Phase 1 compare report | `reports/rag_eval/cutover_legacy_vs_lance_20260501T035453Z.json` tracked | Complete |
 | Phase 1 gate | Compare report gate: `pass=false`, `global_gate_pass=false`, `bucket_gate_pass=false`, `regression_count=8` | Blocked |
+| Phase 1 same-query diagnostic | `reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json` compares the same 101 query IDs; gate still fails with delta `-0.0521` and 7 bucket regressions | Blocked |
+| Phase 1 failure taxonomy | `reports/rag_eval/cutover_failure_taxonomy_20260501T0625Z.json` identifies 14 regressed same-query items and 10 Lance zero-primary items | Complete |
 | Phase 1 worklog | `docs/worklogs/rag-r2-cutover-regression-2026-05-01.md` tracked | Complete |
 | Phase 2 IVF tuning flags | Commit `7b80366`; CLI help exposes local and remote IVF flags | Complete |
 | Phase 2 sweep report | `reports/rag_eval/r2_ivf_sweep_20260501T0401.json` tracked | Complete |
@@ -66,6 +68,13 @@ when Phase 1 and Phase 2 gates pass. Current measured evidence blocks that:
   - gate pass: `false`
   - bucket gate pass: `false`
   - regression count: `8`
+- Same-query diagnostic comparison:
+  - query ID intersection: `101/101`
+  - Lance same-code primary nDCG macro: `0.9102958204`
+  - delta versus legacy: `-0.0521450606`
+  - gate pass: `false`
+  - bucket regressions: `7`
+  - Lance zero-primary items: `10`
 - Phase 2 IVF sweep:
   - decision: `keep_current_256_64`
   - production gate pass: `false`

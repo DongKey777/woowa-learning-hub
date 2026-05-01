@@ -1,0 +1,691 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-05-01T05:15:05Z",
+  "phase": "phase-4-option-a-cutover-failure-taxonomy",
+  "source_reports": {
+    "legacy": "reports/rag_eval/cutover_legacy_v2_20260501T035453Z.json",
+    "lance_same_code_baseline": "reports/rag_eval/r2_korean_terms_w00_holdout_20260501T0450Z.json",
+    "compare_same_queries": "reports/rag_eval/cutover_legacy_vs_lance_same_queries_20260501T0625Z.json",
+    "fixture": "tests/fixtures/cs_rag_golden_queries_ko_rewritten_applied.json"
+  },
+  "join_coverage": {
+    "legacy_query_count": 101,
+    "lance_query_count": 101,
+    "intersection_count": 101,
+    "legacy_only_count": 0,
+    "lance_only_count": 0,
+    "is_apples_to_apples_per_query": true
+  },
+  "global_gate": {
+    "pass": false,
+    "global_gate_pass": false,
+    "bucket_gate_pass": false,
+    "regression_count": 7
+  },
+  "global_delta": {
+    "legacy_primary_ndcg_macro": 0.9624408810077163,
+    "lance_primary_ndcg_macro": 0.9102958203915194,
+    "primary_ndcg_macro_delta": -0.05214506061619695,
+    "legacy_primary_ndcg_micro": 0.971700848599374,
+    "lance_primary_ndcg_micro": 0.8766485304464537,
+    "legacy_recall_micro": 0.995049504950495,
+    "lance_recall_micro": 0.8861386138613861,
+    "legacy_forbidden_rate_micro": 0.0,
+    "lance_forbidden_rate_micro": 0.0
+  },
+  "query_count_joined": 101,
+  "regressed_query_count": 14,
+  "lance_zero_primary_count": 10,
+  "regressed_by_category": {
+    "database": {
+      "count": 5,
+      "mean_delta": -0.7226294385530917,
+      "missing_primary": 3
+    },
+    "design-pattern": {
+      "count": 5,
+      "mean_delta": -0.8738140492857085,
+      "missing_primary": 4
+    },
+    "spring": {
+      "count": 3,
+      "mean_delta": -0.6666666666666666,
+      "missing_primary": 2
+    },
+    "software-engineering": {
+      "count": 1,
+      "mean_delta": -1.0,
+      "missing_primary": 1
+    }
+  },
+  "regressed_by_language": {
+    "mixed": {
+      "count": 8,
+      "mean_delta": -0.6711337808035678,
+      "missing_primary": 5
+    },
+    "en": {
+      "count": 4,
+      "mean_delta": -0.9032867981913646,
+      "missing_primary": 3
+    },
+    "ko": {
+      "count": 2,
+      "mean_delta": -1.0,
+      "missing_primary": 2
+    }
+  },
+  "top_expected_paths_in_regressions": [
+    {
+      "path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "count": 4
+    },
+    {
+      "path": "contents/database/transaction-isolation-basics.md",
+      "count": 3
+    },
+    {
+      "path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "count": 1
+    },
+    {
+      "path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "count": 1
+    },
+    {
+      "path": "contents/spring/spring-transactional-basics.md",
+      "count": 1
+    },
+    {
+      "path": "contents/database/connection-pool-basics.md",
+      "count": 1
+    },
+    {
+      "path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+      "count": 1
+    },
+    {
+      "path": "contents/database/deadlock-case-study.md",
+      "count": 1
+    },
+    {
+      "path": "contents/spring/transactional-deep-dive.md",
+      "count": 1
+    }
+  ],
+  "top_learning_points_in_regressions": [
+    {
+      "learning_point": "transaction_consistency",
+      "count": 1
+    }
+  ],
+  "worst_primary_ndcg_regressions": [
+    {
+      "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+      "prompt": "What does ApplicationContext do in Spring?",
+      "learning_points": [],
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_mvcc_concept_explanation_intro",
+      "prompt": "MVCC 개념 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_mvcc_english_meaning_lockin",
+      "prompt": "What does MVCC mean?",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_mvcc_meaning_shortform_basics",
+      "prompt": "MVCC가 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_query_service_english_meaning_alias_lockin",
+      "prompt": "What does a query service mean?",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "software-engineering",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/software-engineering/dao-vs-query-model-entrypoint-primer.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+      "prompt": "스프링 transaction이 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/spring/spring-transactional-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델 최신성 read model staleness 쓴 직후 읽기 보장 read your writes 프로젝션 재빌드 백필 컷오버 projection rebuild backfill cutover",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+      "prompt": "목록이 안 바뀜",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+      "prompt": "삭제했는데 검색 결과나 목록에 아직 남아 있어. 입문자 기준으로 왜 이럴 수 있는지 먼저 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+      "prompt": "모바일에서 저장은 됐는데 당겨서 새로고침해야 새 값이 보여. swipe refresh 없이는 리스트가 늦게 갱신돼. 입문자 기준으로 먼저 어떤 개념을 보면 돼?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_hikaricp_english_meaning_lockin",
+      "prompt": "What does HikariCP mean?",
+      "learning_points": [],
+      "expected_path": "contents/database/connection-pool-basics.md",
+      "acceptable_paths": [
+        "contents/database/hikari-jpa-mysql-three-bucket-mini-mapping.md"
+      ],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.38685280723454163,
+      "primary_ndcg_delta": -0.6131471927654584,
+      "legacy_recall": 1.0,
+      "lance_recall": 1.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_over_budget: 'contents/database/connection-pool-basics.md' at rank 5, budget=1"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_lag_budgeting",
+      "prompt": "projection lag budget, consumer backlog budget, freshness budget 을 어떻게 나눠?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/projection-lag-budgeting-pattern.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.6309297535714575,
+      "primary_ndcg_delta": -0.36907024642854247,
+      "legacy_recall": 1.0,
+      "lance_recall": 1.0,
+      "lance_regression_passed": true,
+      "lance_violations": [],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "mysql_deadlock_lock_ordering",
+      "prompt": "MySQL deadlock log 에서 wait graph 보고 lock ordering 을 어떻게 고쳐?",
+      "learning_points": [],
+      "expected_path": "contents/database/deadlock-case-study.md",
+      "acceptable_paths": [
+        "contents/database/hibernate-lock-sql-log-to-deadlock-triage-bridge.md"
+      ],
+      "bucket": {
+        "category": "database",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 0.6309297535714575,
+      "lance_primary_ndcg": 0.6309297535714575,
+      "primary_ndcg_delta": 0.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 1.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_over_budget: 'contents/database/deadlock-case-study.md' at rank 2, budget=1"
+      ],
+      "legacy_regression_passed": false
+    },
+    {
+      "query_id": "spring_tx_propagation",
+      "prompt": "@Transactional propagation 은 어떻게 동작해?",
+      "learning_points": [
+        "transaction_consistency"
+      ],
+      "expected_path": "contents/spring/transactional-deep-dive.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "unknown",
+        "language": "mixed",
+        "intent": "deep-dive"
+      },
+      "legacy_primary_ndcg": 0.6309297535714575,
+      "lance_primary_ndcg": 0.6309297535714575,
+      "primary_ndcg_delta": 0.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 1.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_over_budget: 'contents/spring/transactional-deep-dive.md' at rank 2, budget=1"
+      ],
+      "legacy_regression_passed": false
+    }
+  ],
+  "lance_zero_primary_queries": [
+    {
+      "query_id": "beginner_mvcc_concept_explanation_intro",
+      "prompt": "MVCC 개념 설명해줘",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_mvcc_english_meaning_lockin",
+      "prompt": "What does MVCC mean?",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_mvcc_meaning_shortform_basics",
+      "prompt": "MVCC가 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/database/transaction-isolation-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "database",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/database/transaction-isolation-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_intro_fully_korean_primer_vs_rebuild_backfill_compare",
+      "prompt": "읽기 모델 최신성 read model staleness 쓴 직후 읽기 보장 read your writes 프로젝션 재빌드 백필 컷오버 projection rebuild backfill cutover",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_intro_korean_list_not_changing_compact",
+      "prompt": "목록이 안 바뀜",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_delete_still_visible_in_search",
+      "prompt": "삭제했는데 검색 결과나 목록에 아직 남아 있어. 입문자 기준으로 왜 이럴 수 있는지 먼저 알고 싶어",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "ko",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "projection_freshness_symptom_only_mobile_swipe_refresh_lag",
+      "prompt": "모바일에서 저장은 됐는데 당겨서 새로고침해야 새 값이 보여. swipe refresh 없이는 리스트가 늦게 갱신돼. 입문자 기준으로 먼저 어떤 개념을 보면 돼?",
+      "learning_points": [],
+      "expected_path": "contents/design-pattern/read-model-staleness-read-your-writes.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "design-pattern",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/design-pattern/read-model-staleness-read-your-writes.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_query_service_english_meaning_alias_lockin",
+      "prompt": "What does a query service mean?",
+      "learning_points": [],
+      "expected_path": "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "software-engineering",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/software-engineering/dao-vs-query-model-entrypoint-primer.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_applicationcontext_english_role_shortform_lockin",
+      "prompt": "What does ApplicationContext do in Spring?",
+      "learning_points": [],
+      "expected_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "en",
+        "intent": "unknown"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/spring/spring-request-pipeline-bean-container-foundations-primer.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    },
+    {
+      "query_id": "beginner_spring_transaction_mixed_language_shortform_lockin",
+      "prompt": "스프링 transaction이 뭐야?",
+      "learning_points": [],
+      "expected_path": "contents/spring/spring-transactional-basics.md",
+      "acceptable_paths": [],
+      "bucket": {
+        "category": "spring",
+        "difficulty": "beginner",
+        "language": "mixed",
+        "intent": "definition"
+      },
+      "legacy_primary_ndcg": 1.0,
+      "lance_primary_ndcg": 0.0,
+      "primary_ndcg_delta": -1.0,
+      "legacy_recall": 1.0,
+      "lance_recall": 0.0,
+      "lance_regression_passed": false,
+      "lance_violations": [
+        "primary_not_present: 'contents/spring/spring-transactional-basics.md' missing from ranking (budget=1)"
+      ],
+      "legacy_regression_passed": true
+    }
+  ],
+  "interpretation": {
+    "primary_failure_shape": "Against the same 101 query IDs, Lance R2 still fails the cutover gate, but the gap is smaller than the older non-identical report comparison. Losses concentrate in database, software-engineering, spring, design-pattern, and ko/en shortform buckets.",
+    "next_experiment_candidates": [
+      "Prioritize expected paths that repeat in this taxonomy, especially database and spring primer lock-in docs, then rebuild a sampled Lance index around those docs.",
+      "Create query-rewrite-v1 sidecars for zero-primary queries using canonical anchors from expected docs, then measure against this same 101-query holdout.",
+      "Update the cutover worklog to distinguish the older bucket-level comparison from this same-query comparison before any gate redesign."
+    ],
+    "cutover_decision": "Do not cut over from this taxonomy alone; same-query gate still fails."
+  }
+}
