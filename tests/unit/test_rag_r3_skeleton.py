@@ -18,6 +18,11 @@ from scripts.learning.rag.r3.eval.qrels import (
 )
 from scripts.learning.rag.r3.eval.trace import R3Trace, read_jsonl, write_jsonl
 from scripts.learning.rag.r3.eval.trace_fixture import build_traces_from_qrels, main
+from scripts.learning.rag.r3.fusion import (
+    DEFAULT_RETRIEVER_WEIGHTS,
+    FUSION_VERSION,
+    fuse_candidates,
+)
 from scripts.learning.rag.r3.query_plan import build_query_plan
 
 
@@ -50,6 +55,31 @@ def test_candidate_requires_retriever_provenance():
 
     with pytest.raises(ValueError, match="retriever"):
         Candidate(path="a.md", retriever="", rank=1, score=1.0)
+
+
+def test_corpus_v2_alias_sidecar_matches_are_high_confidence():
+    assert FUSION_VERSION == "weighted-rrf-doc-diversity-v2"
+    assert DEFAULT_RETRIEVER_WEIGHTS["lexical_sidecar:aliases"] > DEFAULT_RETRIEVER_WEIGHTS["dense"]
+
+    fused = fuse_candidates(
+        [
+            Candidate(
+                path="contents/design-pattern/service-locator-antipattern.md",
+                retriever="lexical_sidecar:aliases",
+                rank=1,
+                score=20.0,
+            ),
+            Candidate(
+                path="contents/operating-system/container-cgroup-namespace.md",
+                retriever="dense",
+                rank=1,
+                score=0.55,
+            ),
+        ],
+        limit=2,
+    )
+
+    assert fused[0].path == "contents/design-pattern/service-locator-antipattern.md"
 
 
 def test_trace_jsonl_roundtrip(tmp_path):

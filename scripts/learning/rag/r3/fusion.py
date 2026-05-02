@@ -16,11 +16,15 @@ DEFAULT_RETRIEVER_WEIGHTS = {
     "lexical:body": 0.8,
     "lexical_sidecar:title": 0.25,
     "lexical_sidecar:section": 0.2,
-    "lexical_sidecar:aliases": 0.25,
+    # Corpus v2 aliases/expected_queries are reviewed retrieval contracts.
+    # Keep them out of dense embeddings, but let exact alias matches win
+    # first-stage fusion when they match the learner's wording.
+    "lexical_sidecar:aliases": 2.0,
     "dense": 1.0,
     "sparse": 1.1,
     "signal": 0.7,
 }
+FUSION_VERSION = "weighted-rrf-doc-diversity-v2"
 
 
 @dataclass(frozen=True)

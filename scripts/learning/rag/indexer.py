@@ -785,7 +785,7 @@ def _r3_manifest_metadata(
             "dense": f"bge-m3-dense:{encoder_version}",
             "sparse_sidecar": f"bge-m3-sparse:{encoder_version}",
             "signal": "route-tags-v1",
-            "fusion": "weighted-rrf-doc-diversity-v1",
+            "fusion": "weighted-rrf-doc-diversity-v2",
             "reranker": "bge-reranker-v2-m3:auto-policy-v1",
         },
         "concept_catalog": {
