@@ -53,6 +53,12 @@
   "bandwidth": [
     "network/latency-bandwidth-throughput-basics"
   ],
+  "baseball spring mvc": [
+    "spring/baseball-mvc-controller-binding-bridge"
+  ],
+  "baseball 입력 검증 mvc": [
+    "spring/baseball-mvc-controller-binding-bridge"
+  ],
   "bean": [
     "spring/bean-di-basics"
   ],
@@ -111,6 +117,9 @@
   "connection pool": [
     "database/connection-pool"
   ],
+  "connection pool 고갈": [
+    "database/connection-pool-starvation-symptom-router"
+  ],
   "consistent read": [
     "database/mvcc-read-view-consistent-read-internals"
   ],
@@ -165,6 +174,9 @@
   ],
   "database lock": [
     "database/lock-basics"
+  ],
+  "db connection leak": [
+    "database/connection-pool-starvation-symptom-router"
   ],
   "db lock vs spring proxy": [
     "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
@@ -280,6 +292,9 @@
   "hikaricp": [
     "database/connection-pool"
   ],
+  "hikaricp timeout": [
+    "database/connection-pool-starvation-symptom-router"
+  ],
   "hikaricp가 뭐야": [
     "database/connection-pool"
   ],
@@ -313,6 +328,9 @@
   "jdbc connection pool": [
     "database/connection-pool"
   ],
+  "jdbcreservationrepository 의도": [
+    "software-engineering/roomescape-dao-vs-repository-bridge"
+  ],
   "jdk dynamic proxy": [
     "spring/aop-proxy-mechanism"
   ],
@@ -324,6 +342,9 @@
   ],
   "jwt filter 어디에 두나": [
     "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "jwt 권한 안 바뀜": [
+    "security/forbidden-after-role-change-symptom-router"
   ],
   "latency": [
     "network/latency-bandwidth-throughput-basics"
@@ -354,6 +375,30 @@
   ],
   "lookup table vs registry": [
     "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "lotto 도메인 불변식": [
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
+  "lotto 등수 결정": [
+    "design-pattern/lotto-strategy-rank-decision-bridge"
+  ],
+  "lotto 생성자 대신": [
+    "design-pattern/lotto-static-factory-bridge"
+  ],
+  "lotto 정적 팩토리": [
+    "design-pattern/lotto-static-factory-bridge"
+  ],
+  "lotto 클래스 불변식": [
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
+  "lotto.auto": [
+    "design-pattern/lotto-static-factory-bridge"
+  ],
+  "lotto.from": [
+    "design-pattern/lotto-static-factory-bridge"
+  ],
+  "lottorank 결정 로직": [
+    "design-pattern/lotto-strategy-rank-decision-bridge"
   ],
   "m_low_limit_id": [
     "database/mvcc-read-view-consistent-read-internals"
@@ -397,6 +442,9 @@
   "plain select vs for update": [
     "database/mvcc-snapshot-vs-locking-read-portability"
   ],
+  "pool exhausted symptom": [
+    "database/connection-pool-starvation-symptom-router"
+  ],
   "pool size": [
     "database/connection-pool"
   ],
@@ -438,6 +486,9 @@
   ],
   "proxy bypass": [
     "spring/self-invocation-proxy-misconception"
+  ],
+  "rank enum": [
+    "design-pattern/lotto-strategy-rank-decision-bridge"
   ],
   "read committed": [
     "database/transaction-isolation-basics"
@@ -493,17 +544,59 @@
   "required watermark vs applied watermark": [
     "system-design/projection-applied-watermark-basics"
   ],
+  "reservationcontroller 생성자 주입": [
+    "spring/roomescape-di-bean-injection-bridge"
+  ],
+  "reservationdao": [
+    "software-engineering/roomescape-dao-vs-repository-bridge"
+  ],
+  "reservationservice @transactional 어디": [
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "reservationservice 주입": [
+    "spring/roomescape-di-bean-injection-bridge"
+  ],
+  "reservationservice 트랜잭션": [
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "reservationtime 슬롯 factory": [
+    "design-pattern/roomescape-strategy-vs-factory-bridge"
+  ],
   "resolver vs registry": [
     "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
   ],
   "restcontroller": [
     "spring/mvc-controller-basics"
   ],
+  "role change 403": [
+    "security/forbidden-after-role-change-symptom-router"
+  ],
   "rollback": [
     "database/transaction-basics"
   ],
   "rollback not working vs lock wait": [
     "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "roomescape dao": [
+    "software-engineering/roomescape-dao-vs-repository-bridge"
+  ],
+  "roomescape di": [
+    "spring/roomescape-di-bean-injection-bridge"
+  ],
+  "roomescape factory": [
+    "design-pattern/roomescape-strategy-vs-factory-bridge"
+  ],
+  "roomescape repository 분리": [
+    "software-engineering/roomescape-dao-vs-repository-bridge"
+  ],
+  "roomescape strategy": [
+    "design-pattern/roomescape-strategy-vs-factory-bridge"
+  ],
+  "roomescape transactional": [
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "roomescape 예약 동시성": [
+    "database/roomescape-reservation-concurrency-bridge"
   ],
   "router vs registry": [
     "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
@@ -570,6 +663,9 @@
   ],
   "shared lock": [
     "database/lock-basics"
+  ],
+  "shopping-cart rate limit": [
+    "network/shopping-cart-rate-limit-bridge"
   ],
   "snapshot read": [
     "database/mvcc-read-view-consistent-read-internals"
@@ -704,17 +800,26 @@
   "write then read routing": [
     "system-design/read-after-write-routing-primer"
   ],
+  "같은 시간 예약 락": [
+    "database/roomescape-reservation-concurrency-bridge"
+  ],
   "객체 생성 책임 분리": [
     "design-pattern/factory"
   ],
   "격리 수준": [
     "database/transaction-isolation-basics"
   ],
+  "결제 중복 방지 throttle": [
+    "network/shopping-cart-rate-limit-bridge"
+  ],
   "계층형 아키텍처": [
     "software-engineering/layered-architecture-basics"
   ],
   "관계형 모델링": [
     "database/sql-relational-modeling-basics"
+  ],
+  "권한 부여 후에도 권한 없음": [
+    "security/forbidden-after-role-change-symptom-router"
   ],
   "내가 바꾼 값이 안 보임": [
     "database/read-your-writes-session-pinning"
@@ -737,8 +842,41 @@
   "로그인 상태 유지": [
     "security/session-cookie-jwt-basics"
   ],
+  "로또 6개 중복 1-45 보장": [
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
+  "로또 당첨 strategy": [
+    "design-pattern/lotto-strategy-rank-decision-bridge"
+  ],
+  "로또 등수 분기 if": [
+    "design-pattern/lotto-strategy-rank-decision-bridge"
+  ],
+  "로또 번호 검증 위치": [
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
+  "로또 정적 팩토리 메소드": [
+    "design-pattern/lotto-static-factory-bridge"
+  ],
   "롤백": [
     "database/transaction-basics"
+  ],
+  "룸이스케이프 4단계 계층 분리": [
+    "software-engineering/roomescape-dao-vs-repository-bridge"
+  ],
+  "룸이스케이프 검증 전략": [
+    "design-pattern/roomescape-strategy-vs-factory-bridge"
+  ],
+  "룸이스케이프 동일 시간 예약": [
+    "database/roomescape-reservation-concurrency-bridge"
+  ],
+  "룸이스케이프 생성자 주입": [
+    "spring/roomescape-di-bean-injection-bridge"
+  ],
+  "룸이스케이프 예약 트랜잭션": [
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "룸이스케이프 의존성 주입": [
+    "spring/roomescape-di-bean-injection-bridge"
   ],
   "방금 썼는데 조회가 옛값": [
     "design-pattern/read-model-staleness-read-your-writes"
@@ -754,6 +892,12 @@
   ],
   "빈 생명주기": [
     "spring/bean-lifecycle-basics"
+  ],
+  "사용자별 요청 제한": [
+    "network/shopping-cart-rate-limit-bridge"
+  ],
+  "새 역할 반영 안 됨": [
+    "security/forbidden-after-role-change-symptom-router"
   ],
   "생성 vs 선택": [
     "design-pattern/factory"
@@ -782,13 +926,40 @@
   "스프링 커넥션 풀": [
     "database/connection-pool"
   ],
+  "야구 게임 requestbody 바인딩": [
+    "spring/baseball-mvc-controller-binding-bridge"
+  ],
+  "야구 미션 controller": [
+    "spring/baseball-mvc-controller-binding-bridge"
+  ],
+  "역할 변경 후 403": [
+    "security/forbidden-after-role-change-symptom-router"
+  ],
+  "예약 unique 제약": [
+    "database/roomescape-reservation-concurrency-bridge"
+  ],
+  "예약 검증 strategy": [
+    "design-pattern/roomescape-strategy-vs-factory-bridge"
+  ],
+  "예약 삭제 트랜잭션 경계": [
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "예약 중복 방지": [
+    "database/roomescape-reservation-concurrency-bridge"
+  ],
   "의존성 주입": [
     "software-engineering/dependency-injection-basics",
     "spring/bean-di-basics",
     "spring/ioc-di-basics"
   ],
+  "입력 검증 vs 도메인 검증": [
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
   "잠금": [
     "database/lock-basics"
+  ],
+  "장바구니 동시 추가": [
+    "network/shopping-cart-rate-limit-bridge"
   ],
   "저장했는데 새 값이 안 보여요": [
     "design-pattern/read-model-staleness-read-your-writes"
@@ -811,11 +982,17 @@
   "처리량": [
     "network/latency-bandwidth-throughput-basics"
   ],
+  "카트 add api rate": [
+    "network/shopping-cart-rate-limit-bridge"
+  ],
   "커넥션 고갈": [
     "database/connection-pool"
   ],
   "커넥션 풀": [
     "database/connection-pool"
+  ],
+  "커넥션 풀 부족": [
+    "database/connection-pool-starvation-symptom-router"
   ],
   "커넥션 풀이란": [
     "database/connection-pool"
@@ -828,6 +1005,9 @@
   ],
   "컴포넌트 스캔": [
     "spring/bean-di-basics"
+  ],
+  "콘솔 야구 → http": [
+    "spring/baseball-mvc-controller-binding-bridge"
   ],
   "쿠키는 있는데 왜 다시 로그인": [
     "security/browser-401-vs-302-login-redirect-guide"

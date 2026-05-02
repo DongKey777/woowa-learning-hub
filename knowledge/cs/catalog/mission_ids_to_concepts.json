@@ -1,1 +1,20 @@
-{}
+{
+  "missions/baseball": [
+    "spring/baseball-mvc-controller-binding-bridge"
+  ],
+  "missions/lotto": [
+    "design-pattern/lotto-static-factory-bridge",
+    "design-pattern/lotto-strategy-rank-decision-bridge",
+    "software-engineering/lotto-domain-invariant-bridge"
+  ],
+  "missions/roomescape": [
+    "database/roomescape-reservation-concurrency-bridge",
+    "design-pattern/roomescape-strategy-vs-factory-bridge",
+    "software-engineering/roomescape-dao-vs-repository-bridge",
+    "spring/roomescape-di-bean-injection-bridge",
+    "spring/roomescape-transactional-boundary-bridge"
+  ],
+  "missions/shopping-cart": [
+    "network/shopping-cart-rate-limit-bridge"
+  ]
+}

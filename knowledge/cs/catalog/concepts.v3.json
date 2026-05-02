@@ -1,5 +1,5 @@
 {
-  "concept_count": 53,
+  "concept_count": 65,
   "concepts": {
     "algorithm/README": {
       "aliases": [],
@@ -6925,6 +6925,52 @@
       "source_priority": 92,
       "symptoms": []
     },
+    "database/connection-pool-starvation-symptom-router": {
+      "aliases": [
+        "connection pool 고갈",
+        "HikariCP timeout",
+        "DB connection leak",
+        "커넥션 풀 부족",
+        "pool exhausted symptom"
+      ],
+      "canonical": true,
+      "category": "database",
+      "concept_id": "database/connection-pool-starvation-symptom-router",
+      "confusable_with": [],
+      "doc_path": "database/connection-pool-starvation-symptom-router.md",
+      "doc_role": "symptom_router",
+      "expected_queries": [
+        "HikariCP timed out 에러가 나는데 원인을 어떻게 찾아?",
+        "connection pool이 고갈되는 진짜 원인을 어떻게 진단해?",
+        "커넥션 풀 사이즈를 늘리면 해결되는 거야?",
+        "pool exhausted가 떴는데 어디부터 봐야 해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/database/pool-timeout-term-matching-card.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "symptom",
+        "troubleshooting"
+      ],
+      "language": "ko",
+      "level": "intermediate",
+      "linked_paths": [
+        "contents/database/connection-pool-basics.md",
+        "contents/database/hikari-connection-pool-tuning.md",
+        "contents/database/transaction-locking-connection-pool-primer.md"
+      ],
+      "mission_ids": [],
+      "next_docs": [],
+      "prerequisites": [],
+      "review_feedback_tags": [],
+      "source_priority": 80,
+      "symptoms": [
+        "'HikariPool: Connection is not available, request timed out after 30000ms 에러가 반복된다'",
+        "'평소엔 멀쩡하다가 트래픽이 늘면 응답 시간이 급격히 늘어난다'",
+        "'CPU/DB 부하는 낮은데 API 응답이 느려지고 timeout이 발생한다'"
+      ]
+    },
     "database/connection-pool-transaction-propagation-bulk-write": {
       "aliases": [],
       "canonical": false,
@@ -11241,6 +11287,55 @@
       "source_priority": null,
       "symptoms": []
     },
+    "database/roomescape-reservation-concurrency-bridge": {
+      "aliases": [
+        "roomescape 예약 동시성",
+        "룸이스케이프 동일 시간 예약",
+        "예약 중복 방지",
+        "같은 시간 예약 락",
+        "예약 unique 제약"
+      ],
+      "canonical": true,
+      "category": "database",
+      "concept_id": "database/roomescape-reservation-concurrency-bridge",
+      "confusable_with": [],
+      "doc_path": "database/roomescape-reservation-concurrency-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "룸이스케이프에서 같은 시간 예약이 두 개 들어오면 어떻게 막아?",
+        "예약 중복을 락으로 막을지 unique 제약으로 막을지 어떻게 골라?",
+        "비관적 락이랑 낙관적 락 중에 어떤 게 미션에 맞아?",
+        "@Transactional만 걸어도 동시 예약 막히는 거 아니야?"
+      ],
+      "forbidden_neighbors": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "intermediate",
+      "linked_paths": [
+        "contents/database/lock-basics.md",
+        "contents/database/constraint-first-booking-primer.md"
+      ],
+      "mission_ids": [
+        "missions/roomescape"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "database/lock-basics"
+      ],
+      "review_feedback_tags": [
+        "reservation-concurrency",
+        "unique-constraint-vs-lock",
+        "optimistic-vs-pessimistic"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
     "database/saga-pivot-transaction-design": {
       "aliases": [],
       "canonical": false,
@@ -14704,6 +14799,104 @@
       "source_priority": null,
       "symptoms": []
     },
+    "design-pattern/lotto-static-factory-bridge": {
+      "aliases": [
+        "lotto 정적 팩토리",
+        "Lotto.from",
+        "Lotto.auto",
+        "로또 정적 팩토리 메소드",
+        "Lotto 생성자 대신"
+      ],
+      "canonical": true,
+      "category": "design-pattern",
+      "concept_id": "design-pattern/lotto-static-factory-bridge",
+      "confusable_with": [],
+      "doc_path": "design-pattern/lotto-static-factory-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "로또에서 Lotto.from(numbers)랑 new Lotto(numbers) 차이가 뭐야?",
+        "정적 팩토리 메소드 이름은 어떻게 짓는 거야?",
+        "Lotto.auto()는 왜 생성자 대신 정적 메소드로 만들어?",
+        "미션에서 자동 생성과 수동 입력을 분리할 때 어떻게 표현해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/design-pattern/factory-misnaming-checklist.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md",
+        "contents/language/java/java-instance-static-factory-methods-primer.md"
+      ],
+      "mission_ids": [
+        "missions/lotto"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "design-pattern/constructor-vs-static-factory-vs-factory-pattern"
+      ],
+      "review_feedback_tags": [
+        "static-factory-naming",
+        "constructor-vs-from",
+        "intention-revealing"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
+    "design-pattern/lotto-strategy-rank-decision-bridge": {
+      "aliases": [
+        "lotto 등수 결정",
+        "Rank enum",
+        "로또 당첨 Strategy",
+        "로또 등수 분기 if",
+        "LottoRank 결정 로직"
+      ],
+      "canonical": true,
+      "category": "design-pattern",
+      "concept_id": "design-pattern/lotto-strategy-rank-decision-bridge",
+      "confusable_with": [],
+      "doc_path": "design-pattern/lotto-strategy-rank-decision-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "로또 등수 결정에 if 6개를 쓰는 게 맞아 enum이 맞아?",
+        "LottoRank를 enum으로 둘지 Strategy로 둘지 어떻게 골라?",
+        "일치 개수랑 보너스 매칭 분기를 깔끔하게 하려면 어떻게?",
+        "로또 당첨 결정 로직이 길어지는데 패턴이 필요해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/design-pattern/strategy-explosion-smell.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "comparison"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/design-pattern/strategy-pattern-basics.md",
+        "contents/design-pattern/strategy-vs-state-vs-policy-object.md"
+      ],
+      "mission_ids": [
+        "missions/lotto"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "design-pattern/strategy-pattern-basics"
+      ],
+      "review_feedback_tags": [
+        "enum-vs-strategy",
+        "rank-decision",
+        "if-cascade-smell"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
     "design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist": {
       "aliases": [],
       "canonical": false,
@@ -15935,6 +16128,55 @@
       "prerequisites": [],
       "review_feedback_tags": [],
       "source_priority": null,
+      "symptoms": []
+    },
+    "design-pattern/roomescape-strategy-vs-factory-bridge": {
+      "aliases": [
+        "roomescape Strategy",
+        "roomescape Factory",
+        "룸이스케이프 검증 전략",
+        "예약 검증 Strategy",
+        "ReservationTime 슬롯 Factory"
+      ],
+      "canonical": true,
+      "category": "design-pattern",
+      "concept_id": "design-pattern/roomescape-strategy-vs-factory-bridge",
+      "confusable_with": [],
+      "doc_path": "design-pattern/roomescape-strategy-vs-factory-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "룸이스케이프 검증 로직에 Strategy 패턴이 어울려?",
+        "예약 검증 규칙을 분기할 때 Factory를 써?",
+        "Strategy랑 Factory 중에 미션에서 뭐가 맞아?",
+        "시간 슬롯 결정에 어떤 패턴이 자연스러워?"
+      ],
+      "forbidden_neighbors": [
+        "contents/design-pattern/factory-misnaming-checklist.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "comparison"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/design-pattern/strategy-pattern-basics.md",
+        "contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md"
+      ],
+      "mission_ids": [
+        "missions/roomescape"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "design-pattern/strategy-pattern-basics"
+      ],
+      "review_feedback_tags": [
+        "strategy-vs-factory",
+        "validation-rule-set",
+        "runtime-behavior-vs-creation"
+      ],
+      "source_priority": 78,
       "symptoms": []
     },
     "design-pattern/router-dispatcher-handlermapping-vs-selector-factory": {
@@ -27702,6 +27944,55 @@
       "source_priority": null,
       "symptoms": []
     },
+    "network/shopping-cart-rate-limit-bridge": {
+      "aliases": [
+        "shopping-cart rate limit",
+        "장바구니 동시 추가",
+        "결제 중복 방지 throttle",
+        "사용자별 요청 제한",
+        "카트 add API rate"
+      ],
+      "canonical": true,
+      "category": "network",
+      "concept_id": "network/shopping-cart-rate-limit-bridge",
+      "confusable_with": [],
+      "doc_path": "network/shopping-cart-rate-limit-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "장바구니 추가 API에 rate limit이 필요해?",
+        "결제 버튼 두 번 누르면 두 번 결제되는데 어떻게 막아?",
+        "동일 사용자 동시 요청을 throttle로 막는 게 맞아?",
+        "shopping-cart에서 멱등성과 rate limit 중 뭘 먼저 적용해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "intermediate",
+      "linked_paths": [
+        "contents/network/api-gateway-auth-rate-limit-chain.md",
+        "contents/system-design/rate-limiter-design.md"
+      ],
+      "mission_ids": [
+        "missions/shopping-cart"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "system-design/rate-limiting-basics"
+      ],
+      "review_feedback_tags": [
+        "rate-limit-vs-idempotency",
+        "duplicate-add-checkout",
+        "per-user-throttle"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
     "network/sni-routing-mismatch-hostname-failure": {
       "aliases": [],
       "canonical": false,
@@ -34201,6 +34492,48 @@
       "source_priority": 88,
       "symptoms": []
     },
+    "security/forbidden-after-role-change-symptom-router": {
+      "aliases": [
+        "역할 변경 후 403",
+        "role change 403",
+        "권한 부여 후에도 권한 없음",
+        "JWT 권한 안 바뀜",
+        "새 역할 반영 안 됨"
+      ],
+      "canonical": true,
+      "category": "security",
+      "concept_id": "security/forbidden-after-role-change-symptom-router",
+      "confusable_with": [],
+      "doc_path": "security/403-after-role-change-symptom-router.md",
+      "doc_role": "symptom_router",
+      "expected_queries": [
+        "권한 변경 직후에 403이 뜨는 이유가 뭐야?",
+        "JWT를 바꾸지 않고도 새 역할이 반영되게 하려면?",
+        "DB는 admin인데 API는 USER로 보는 이유는?"
+      ],
+      "forbidden_neighbors": [],
+      "has_frontmatter": true,
+      "intents": [
+        "symptom",
+        "troubleshooting"
+      ],
+      "language": "ko",
+      "level": "intermediate",
+      "linked_paths": [
+        "contents/security/auth-failure-response-401-403-404.md",
+        "contents/spring/spring-admin-login-success-but-final-403-savedrequest-role-mapping-primer.md"
+      ],
+      "mission_ids": [],
+      "next_docs": [],
+      "prerequisites": [],
+      "review_feedback_tags": [],
+      "source_priority": 80,
+      "symptoms": [
+        "'관리자 권한 부여 직후에도 사용자가 403 Forbidden을 받는다'",
+        "'역할 변경했는데 로그아웃 후 다시 로그인해야 반영된다'",
+        "'백엔드 DB의 user_roles는 바뀌었는데 API 호출 시 권한이 그대로다'"
+      ]
+    },
     "security/forwarded-header-trust-boundary-primer": {
       "aliases": [],
       "canonical": false,
@@ -39271,6 +39604,55 @@
       "source_priority": null,
       "symptoms": []
     },
+    "software-engineering/lotto-domain-invariant-bridge": {
+      "aliases": [
+        "lotto 도메인 불변식",
+        "로또 번호 검증 위치",
+        "Lotto 클래스 불변식",
+        "입력 검증 vs 도메인 검증",
+        "로또 6개 중복 1-45 보장"
+      ],
+      "canonical": true,
+      "category": "software-engineering",
+      "concept_id": "software-engineering/lotto-domain-invariant-bridge",
+      "confusable_with": [],
+      "doc_path": "software-engineering/lotto-domain-invariant-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "로또 번호 6개 중복없음을 컨트롤러에서 검사할까 도메인에서 검사할까?",
+        "Lotto 생성자에서 던지는 게 맞아 정적 팩토리에서 던지는 게 맞아?",
+        "입력 파싱 검증이랑 도메인 불변식이 어떻게 달라?",
+        "1-45 범위는 어디에서 보장해야 해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/software-engineering/order-validation-annotation-vs-domain-rule-card.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/software-engineering/domain-invariants-as-contracts.md",
+        "contents/software-engineering/validation-boundary-input-vs-domain-invariant-mini-bridge.md"
+      ],
+      "mission_ids": [
+        "missions/lotto"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "software-engineering/domain-invariants-as-contracts"
+      ],
+      "review_feedback_tags": [
+        "domain-invariant",
+        "input-vs-domain-validation",
+        "private-constructor"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
     "software-engineering/manual-path-ratio-instrumentation": {
       "aliases": [],
       "canonical": false,
@@ -40633,6 +41015,55 @@
       "prerequisites": [],
       "review_feedback_tags": [],
       "source_priority": null,
+      "symptoms": []
+    },
+    "software-engineering/roomescape-dao-vs-repository-bridge": {
+      "aliases": [
+        "roomescape DAO",
+        "roomescape Repository 분리",
+        "룸이스케이프 4단계 계층 분리",
+        "ReservationDao",
+        "JdbcReservationRepository 의도"
+      ],
+      "canonical": true,
+      "category": "software-engineering",
+      "concept_id": "software-engineering/roomescape-dao-vs-repository-bridge",
+      "confusable_with": [],
+      "doc_path": "software-engineering/roomescape-dao-vs-repository-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "룸이스케이프 4단계에서 DAO랑 Repository 둘 다 만들어야 해?",
+        "ReservationDao를 ReservationRepository로 바꿔도 돼?",
+        "미션에서 JdbcTemplate 코드를 어디 클래스에 두는 게 맞아?",
+        "계층 분리할 때 DAO와 Repository 차이가 뭐야?"
+      ],
+      "forbidden_neighbors": [
+        "contents/software-engineering/repository-naming-smells-primer.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "comparison"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/software-engineering/repository-dao-entity.md",
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+      ],
+      "mission_ids": [
+        "missions/roomescape"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "software-engineering/repository-dao-entity"
+      ],
+      "review_feedback_tags": [
+        "DAO-vs-repository",
+        "layer-separation-step4",
+        "jdbc-template-leak"
+      ],
+      "source_priority": 78,
       "symptoms": []
     },
     "software-engineering/runbook-playbook-automation-boundaries": {
@@ -42215,6 +42646,56 @@
       "source_priority": 80,
       "symptoms": []
     },
+    "spring/baseball-mvc-controller-binding-bridge": {
+      "aliases": [
+        "baseball Spring MVC",
+        "야구 미션 Controller",
+        "콘솔 야구 → HTTP",
+        "야구 게임 RequestBody 바인딩",
+        "baseball 입력 검증 MVC"
+      ],
+      "canonical": true,
+      "category": "spring",
+      "concept_id": "spring/baseball-mvc-controller-binding-bridge",
+      "confusable_with": [],
+      "doc_path": "spring/baseball-mvc-controller-binding-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "콘솔 야구를 Spring MVC로 옮기면 입력 처리는 어디서 해?",
+        "3자리 숫자 추측을 RequestBody로 받을 때 어떻게 검증해?",
+        "@ModelAttribute랑 @RequestBody 중 야구 미션엔 뭐가 맞아?",
+        "BindingResult를 Controller에서 어떻게 다뤄야 해?"
+      ],
+      "forbidden_neighbors": [
+        "contents/spring/spring-requestbody-400-before-controller-primer.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/spring/spring-mvc-controller-basics.md",
+        "contents/spring/spring-modelattribute-vs-requestbody-binding-primer.md",
+        "contents/spring/spring-bindingresult-local-validation-400-primer.md"
+      ],
+      "mission_ids": [
+        "missions/baseball"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "spring/mvc-controller-basics"
+      ],
+      "review_feedback_tags": [
+        "request-binding",
+        "bean-validation",
+        "console-to-http"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
     "spring/bean-di-basics": {
       "aliases": [
         "spring bean",
@@ -42539,6 +43020,103 @@
       "prerequisites": [],
       "review_feedback_tags": [],
       "source_priority": 90,
+      "symptoms": []
+    },
+    "spring/roomescape-di-bean-injection-bridge": {
+      "aliases": [
+        "roomescape DI",
+        "ReservationController 생성자 주입",
+        "ReservationService 주입",
+        "룸이스케이프 의존성 주입",
+        "룸이스케이프 생성자 주입"
+      ],
+      "canonical": true,
+      "category": "spring",
+      "concept_id": "spring/roomescape-di-bean-injection-bridge",
+      "confusable_with": [],
+      "doc_path": "spring/roomescape-di-bean-injection-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "룸이스케이프 미션에서 ReservationService를 어떻게 주입해?",
+        "roomescape에서 DI가 어디에 적용되는 거야?",
+        "ReservationController는 왜 생성자 주입을 써?",
+        "미션 코드에서 @Autowired가 안 보이는데 어떻게 주입되는 거야?"
+      ],
+      "forbidden_neighbors": [
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "definition"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "mission_ids": [
+        "missions/roomescape"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "spring/bean-di-basics"
+      ],
+      "review_feedback_tags": [
+        "DI-vs-locator",
+        "field-injection-vs-constructor"
+      ],
+      "source_priority": 78,
+      "symptoms": []
+    },
+    "spring/roomescape-transactional-boundary-bridge": {
+      "aliases": [
+        "roomescape Transactional",
+        "ReservationService 트랜잭션",
+        "룸이스케이프 예약 트랜잭션",
+        "예약 삭제 트랜잭션 경계",
+        "ReservationService @Transactional 어디"
+      ],
+      "canonical": true,
+      "category": "spring",
+      "concept_id": "spring/roomescape-transactional-boundary-bridge",
+      "confusable_with": [],
+      "doc_path": "spring/roomescape-transactional-boundary-bridge.md",
+      "doc_role": "mission_bridge",
+      "expected_queries": [
+        "룸이스케이프 ReservationService에 @Transactional 붙여야 해?",
+        "예약 한 줄짜리 INSERT만 있는데 트랜잭션 필요해?",
+        "create랑 delete 메소드 어디에 트랜잭션을 그어야 해?",
+        "repository에 @Transactional을 붙이면 안 되는 이유가 뭐야?"
+      ],
+      "forbidden_neighbors": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "has_frontmatter": true,
+      "intents": [
+        "mission_bridge",
+        "design"
+      ],
+      "language": "ko",
+      "level": "beginner",
+      "linked_paths": [
+        "contents/spring/spring-transactional-basics.md",
+        "contents/spring/spring-service-layer-transaction-boundary-patterns.md"
+      ],
+      "mission_ids": [
+        "missions/roomescape"
+      ],
+      "next_docs": [],
+      "prerequisites": [
+        "spring/transactional-basics"
+      ],
+      "review_feedback_tags": [
+        "transactional-boundary",
+        "service-vs-repository-tx",
+        "single-statement-tx"
+      ],
+      "source_priority": 78,
       "symptoms": []
     },
     "spring/self-invocation-proxy-misconception": {
