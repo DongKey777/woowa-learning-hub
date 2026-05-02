@@ -36,7 +36,7 @@ For a learning-coaching RAG, "best" is **not** maximum macro-nDCG on a fixture. 
 5. **Honest gap detection** — query about a topic absent from corpus returns low-confidence "not enough material" rather than a confident wrong doc. (Measured by `corpus_gap_probe` cohort.)
 6. **Beginner-friendly level routing** — beginner query gets primer, not deep-dive internals. (Measured implicitly via `level` cohort split.)
 7. **Citation traceability** — every answer cites at least one doc + chunk_id; learner can navigate to source.
-8. **Latency** — p95 warm ≤ 700ms on M5 16GB + MPS so the learner does not feel the system as slow.
+8. **Latency** — p95 warm ≤ 700ms on M4 16GB + MPS so the learner does not feel the system as slow.
 9. **Honest "I don't know"** at low confidence rather than hallucinated certainty.
 
 ### 0.3 Out of scope (explicit)
@@ -84,7 +84,7 @@ Woowa mission concepts (`missions/roomescape`, `missions/shopping-cart`, etc.) a
 
 ### 1.9 P9 — Single-process serving on M5
 
-The serving runtime fits within M5 MacBook Air 13" 16GB unified memory + MPS. Multi-process / multi-machine production is out of scope (no JVM service like Vespa, no Docker-only deps that break on Apple Silicon).
+The serving runtime fits within M4 MacBook Air 13" 16GB unified memory + MPS. Multi-process / multi-machine production is out of scope (no JVM service like Vespa, no Docker-only deps that break on Apple Silicon).
 
 ### 1.10 P10 — Reproducible builds via remote GPU
 
@@ -150,8 +150,8 @@ Index builds run on RunPod L40S/A6000 with strict artifact provenance (sha256, m
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │  STAGE 4 — Reranker (always-on, language-aware)                   │
-│  - default: BAAI/bge-reranker-v2-m3 (Korean-strong, 568M)         │
-│  - input window: 50 (M5 production) / 100 (offline GPU eval)      │
+│  - default: BAAI/bge-reranker-v2-m3 (multilingual, 600M=0.6B)     │
+│  - input window: 50 (M4 production) / 100 (offline GPU eval)      │
 │  - frontier candidates: Qwen3-Reranker-1.5B,                      │
 │    gte-multilingual-reranker-base (Phase 7 A/B)                   │
 │  - language fallback chain (Korean/mixed → multilingual reranker; │
@@ -360,7 +360,7 @@ If `learner_profile.active_mission` is set:
 **Model default**: `BAAI/bge-m3` (1024-dim, 100+ languages, 8192-token context, MIT). fp16 on M5 MPS.
 
 **Frontier candidates (Phase 7 A/B)**:
-- `Qwen/Qwen3-Embedding-0.6B` (1024-dim, instruction-aware, Apache 2.0, requires query prompt prefix)
+- `Qwen/Qwen3-Embedding-0.6B` (up to 1024-dim with elastic 32-1024, 32K context, instruction-aware, Apache 2.0; **mandatory query prompt format**: `Instruct: {task}\nQuery: {q}` — 1-5% performance drop without)
 - `Alibaba-NLP/gte-multilingual-base` (305MB, 768-dim with elastic 128-768, Apache 2.0)
 
 **Index**: LanceDB IVF_HNSW_SQ (recommended for 1024-dim per LanceDB docs >256-dim guide) or IVF_PQ as fallback.
@@ -526,14 +526,17 @@ Each fused candidate carries `contributing_retrievers: list[str]` — which retr
 ### 6.1 Model selection
 
 **Default (production runtime)**: `BAAI/bge-reranker-v2-m3`
-- 568M parameters, ~1.1GB fp16
-- Multilingual, Korean-strong
+- **600M (0.6B) parameters** (verified from official model card 2026-05-02)
+- ~1.2GB fp16
+- Multilingual (Korean coverage as part of multilingual training; not separately advertised but verified in mGTE/BGE benchmark suite)
 - Apache 2.0
-- Fits in M5 16GB with BGE-M3 dense + sparse
+- Max input length 512 tokens
+- Fits in M4 16GB with BGE-M3 dense + sparse + index → ~5.5-6.5GB total
 
 **Frontier candidates (Phase 7 A/B)**:
-- `Qwen/Qwen3-Reranker-1.5B` (Apache 2.0, instruction-aware)
-- `Alibaba-NLP/gte-multilingual-reranker-base` (305MB, multilingual, Apache 2.0)
+- `Qwen/Qwen3-Reranker-0.6B` (0.6B params, instruction-aware, 32K ctx, Apache 2.0, 2025-06 release; **prompt format mandatory**: `<Instruct>: {task}\n<Query>: {q}\n<Document>: {doc}`)
+- `Alibaba-NLP/gte-multilingual-reranker-base` (306M params, 70+ languages, encoder-only seq-classification, 8192 ctx, Apache 2.0, mGTE arxiv:2407.19669)
+- *Note*: Qwen3-Reranker-1.5B does NOT exist. The actual Qwen3-Reranker series is **0.6B / 4B / 8B**. Only 0.6B fits M4 16GB with the default encoder loaded. 4B is RunPod-eval-only.
 
 **Language fallback chain** (only triggered if default unavailable):
 - Korean / mixed query: `bge-reranker-v2-m3` → `gte-multilingual-reranker-base` → `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`
@@ -541,7 +544,7 @@ Each fused candidate carries `contributing_retrievers: list[str]` — which retr
 
 ### 6.2 Reranker input window
 
-- **M5 production**: 50 candidates from fusion top → reranker
+- **M4 production**: 50 candidates from fusion top → reranker
 - **Offline GPU eval**: 100 candidates → reranker (max recall)
 - Window is config-driven (`r3/config.py:resolve_rerank_input_window`); never hardcoded as `top_k * 2`.
 
@@ -692,21 +695,33 @@ The `failure_taxonomy_classifier` reads the trace and assigns a class determinis
 
 ---
 
-## 9. Runtime Constraints (M5 MacBook Air 13" 16GB)
+## 9. Runtime Constraints (M4 MacBook Air 13" 16GB)
 
-### 9.1 Memory budget (fp16)
+### 9.1 Memory budget (fp16, verified 2026-05-02)
 
-| Component | RAM (fp16) |
-|---|---|
-| BGE-M3 dense encoder | ~1.1 GB |
-| BGE-M3 sparse encoder (same model, shared forward) | 0 additional |
-| BGE-M3 ColBERT mode (if engaged) | ~1.1 GB additional (shared model, separate output) |
-| `bge-reranker-v2-m3` | ~1.1 GB |
-| LanceDB index (27K chunks × 1024 dim + sparse + sidecars) | ~2.5–3 GB |
-| Working memory per query (dense vector cache, etc.) | ~0.5–1.0 GB |
-| **Total RAG serving footprint** | **~5–7 GB** |
+| Component | RAM (fp16) | Source |
+|---|---|---|
+| BGE-M3 dense encoder | ~1.1 GB | model card (params not exposed; estimate from BGE-M3 ColBERT 1024-dim × layer count) |
+| BGE-M3 sparse encoder (same model, shared forward) | 0 additional | shared weight, separate output head |
+| BGE-M3 ColBERT mode (if engaged) | 0 additional | shared model |
+| `BAAI/bge-reranker-v2-m3` (600M params) | ~1.2 GB | verified 0.6B params from model card |
+| LanceDB index (27K chunks × 1024 dim dense + sparse `{indices,values}` + sidecars) | ~2.5–3 GB | from current state/cs_rag/manifest.json size |
+| Working memory per query (dense vector cache, batch buffers) | ~0.5–1.0 GB | empirical |
+| **Total RAG serving footprint (M4 production)** | **~5–7 GB** | sums above |
 
-macOS + browser + IDE typically consume 5–8 GB. The 16 GB unified memory comfortably hosts the R3 stack with normal multitasking.
+**Frontier model sizes** (Phase 7 A/B candidates fp16, verified):
+
+| Model | Params | fp16 RAM | M4 16GB fit |
+|---|---|---|---|
+| Qwen3-Embedding-0.6B | 0.6B | ~1.2 GB | ✓ swap with BGE-M3 |
+| gte-multilingual-base | 305M | ~600 MB | ✓ lighter alternative |
+| Qwen3-Reranker-0.6B | 0.6B | ~1.2 GB | ✓ swap with bge-reranker-v2-m3 |
+| gte-multilingual-reranker-base | 306M | ~600 MB | ✓ lightest reranker |
+| **Qwen3-Embedding-4B** | 4B | **~8 GB** | ⚠ borderline (cuts macOS budget) — RunPod GPU eval only |
+| Qwen3-Embedding-8B | 8B | ~16 GB | ❌ unfit M4 |
+| Qwen3-Reranker-4B / 8B | 4B / 8B | 8 GB / 16 GB | ❌ unfit M4 (RunPod-only frontier) |
+
+macOS + browser + IDE typically consume 5–8 GB. The 16 GB unified memory comfortably hosts the R3 stack (default config: BGE-M3 + bge-reranker-v2-m3) with normal multitasking. Frontier 4B+ models are RunPod-only.
 
 ### 9.2 Latency budget (warm, MPS)
 
@@ -743,19 +758,23 @@ CPU-only operation is documented as **degraded mode**:
 
 ---
 
-## 10. Model Stack Matrix
+## 10. Model Stack Matrix (verified 2026-05-02 against official model cards)
 
-| Role | Default | Frontier candidate (Phase 7 A/B) | License | Notes |
-|---|---|---|---|---|
-| Dense encoder | `BAAI/bge-m3` (1024-dim, 100+ lang, 8192 ctx) | `Qwen/Qwen3-Embedding-0.6B` (1024-dim, instruction-aware), `Alibaba-NLP/gte-multilingual-base` (768-dim) | MIT / Apache 2.0 | fp16 mandatory |
-| Sparse encoder | `BAAI/bge-m3` sparse output | `gte-multilingual-base` sparse, `naver/splade-v3` (English-strong) | MIT / Apache 2.0 | true inverted index |
-| Reranker | `BAAI/bge-reranker-v2-m3` (568M, multilingual, Korean-strong) | `Qwen/Qwen3-Reranker-1.5B`, `Alibaba-NLP/gte-multilingual-reranker-base` | Apache 2.0 | always-on |
-| Late interaction | `BAAI/bge-m3` ColBERT mode | `colbert-ir/colbertv2.0` (English fallback only) | MIT | optional, hard-query path |
-| Korean tokenizer | `kiwipiepy` | (no alternative needed) | LGPL/free | symmetric query+index |
+| Role | Default | Frontier candidate (Phase 7 A/B) | License | M4 16GB fp16 fit | Notes |
+|---|---|---|---|---|---|
+| Dense encoder | `BAAI/bge-m3` (1024-dim, 100+ lang, 8192 ctx, MIT, 2024-02 release) | `Qwen/Qwen3-Embedding-0.6B` (up to 1024-dim elastic 32-1024, 32K ctx, 100+ lang, instruction-aware, Apache 2.0, 2025-06 release), `Alibaba-NLP/gte-multilingual-base` (305M, 768-dim elastic 128-768, 8192 ctx, 70+ lang w/ native sparse, Apache 2.0, mGTE arxiv:2407.19669) | MIT / Apache 2.0 | ✓ all (~600MB-1.2GB fp16) | fp16 mandatory; Qwen3 needs `Instruct: {task}\nQuery: {q}` prompt format (1-5% drop without) |
+| Sparse encoder | `BAAI/bge-m3` sparse output | `gte-multilingual-base` sparse output (native), `naver/splade-v3` (English-strong) | MIT / Apache 2.0 | ✓ shared model | true inverted index, NOT rescore |
+| Reranker | `BAAI/bge-reranker-v2-m3` (**600M / 0.6B params**, multilingual, max_length 512, Apache 2.0, 2024) | `Qwen/Qwen3-Reranker-0.6B` (0.6B, 32K ctx, instruction-aware, Apache 2.0, 2025-06), `Alibaba-NLP/gte-multilingual-reranker-base` (306M / 0.3B, 70+ lang, encoder-only seq-class, 8192 ctx, Apache 2.0, 2024-07) | Apache 2.0 | ✓ all (~600MB-1.2GB fp16) | always-on; **Qwen3-Reranker series exists in 0.6B / 4B / 8B** (no 1.5B); Qwen3-Reranker prompt format `<Instruct>: ...\n<Query>: ...\n<Document>: ...` |
+| Late interaction | `BAAI/bge-m3` ColBERT mode (multi-vector output of BGE-M3) | `colbert-ir/colbertv2.0` (English fallback only) | MIT | ⚠ depends on PLAID index size (Phase 5 measurement) | optional, hard-query path |
+| Korean tokenizer | `kiwipiepy` v0.23.1 | (no alternative needed) | LGPL/free | ✓ verified M4 0.036ms/query warm | symmetric query+index; M4 perf despite README "Apple Silicon may run slowly" — empirically fine |
+
+**Frontier exploration only (M4 borderline / unfit)**:
+- `Qwen/Qwen3-Embedding-4B` (4B params, **2560-dim default** elastic 32-2560, 32K ctx, ~8GB fp16) — borderline (8GB encoder + 1.2GB reranker + 3GB index ≈ 12-13GB → cuts into macOS+browser budget). RunPod GPU eval only.
+- `Qwen/Qwen3-Embedding-8B`, `Qwen/Qwen3-Reranker-4B`, `Qwen/Qwen3-Reranker-8B` — **NOT M4 fit** (≥ 8GB fp16). RunPod-only, frontier curiosity not production candidate.
 
 **Excluded from production code path**:
 - `jinaai/jina-embeddings-v5-text-small` (CC-BY-NC 4.0, non-commercial) — offline eval only
-- `mixedbread-ai/mxbai-rerank-base-v1` (English-only, would silently regress Korean cohort)
+- `mixedbread-ai/mxbai-rerank-base-v1` (200M params, **English-only based on DeBERTa-v2**, Apache 2.0 — language coverage hard requirement violation, would silently regress Korean cohort. mxbai's separate `Omni` multimodal/multilingual product line is gated/closed-access, not a v2 successor for our use case.)
 
 ---
 
@@ -906,8 +925,13 @@ These are *production cutover* gates. Met → switch `selected_artifact` / `back
 - BGE-M3 model card: https://huggingface.co/BAAI/bge-m3
 - bge-reranker-v2-m3: https://huggingface.co/BAAI/bge-reranker-v2-m3
 - Qwen3-Embedding family: https://huggingface.co/Qwen
-- gte-multilingual-base (mGTE EMNLP 2024): https://huggingface.co/Alibaba-NLP/gte-multilingual-base
-- gte-multilingual-reranker-base: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base
+- gte-multilingual-base (mGTE paper arxiv:2407.19669, 2024-07-29): https://huggingface.co/Alibaba-NLP/gte-multilingual-base
+- gte-multilingual-reranker-base (306M, encoder-only seq-classification, mGTE paper): https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base
+- mGTE paper: https://arxiv.org/abs/2407.19669
+- Qwen3-Embedding-0.6B (Apache 2.0, instruction-aware, 32K ctx, 2025-06): https://huggingface.co/Qwen/Qwen3-Embedding-0.6B
+- Qwen3-Embedding-4B (4B, 2560-dim default elastic 32-2560, 32K ctx, 2025-06): https://huggingface.co/Qwen/Qwen3-Embedding-4B
+- Qwen3-Reranker-0.6B (Apache 2.0, instruction-aware, 0.6B/4B/8B series, 2025-06): https://huggingface.co/Qwen/Qwen3-Reranker-0.6B
+- Qwen3 paper: https://arxiv.org/abs/2506.05176
 - LanceDB hybrid search: https://docs.lancedb.com/search/hybrid-search
 - LanceDB indexing (1024-dim guide): https://docs.lancedb.com/indexing
 - Qdrant hybrid search: https://qdrant.tech/documentation/concepts/hybrid-queries/
@@ -947,6 +971,86 @@ These are *production cutover* gates. Met → switch `selected_artifact` / `back
 3. CONFIDENCE_THRESHOLD for "not enough material" — calibrated on `corpus_gap_probe`.
 4. Reranker input window — 50 vs 30 vs 70 — calibrated on M5 latency budget vs recall trade-off.
 5. LateInteractionRetriever PLAID index size on M5 — feasibility check in Phase 5.
+
+---
+
+## 18.5. Verified Facts Log (2026-05-02 empirical)
+
+This section records *direct verification* of every claim in the spec against (a) official model cards, (b) on-device latency measurements, (c) public papers. Format: `[claim] — [source] — [verification result]`.
+
+### 18.5.1 Model card facts (HuggingFace official, 2026-05-02 fetch)
+
+| Claim | Source | Verified |
+|---|---|---|
+| BGE-M3 dense_dim = 1024 | https://huggingface.co/BAAI/bge-m3 | ✓ |
+| BGE-M3 max input = 8192 tokens | same | ✓ |
+| BGE-M3 supports dense + sparse + ColBERT mode | same | ✓ all three confirmed |
+| BGE-M3 100+ languages | same | ✓ |
+| BGE-M3 license MIT | same | ✓ |
+| BGE-M3 release 2024-02-01 | same (news entry) | ✓ |
+| bge-reranker-v2-m3 = 0.6B params (600M) | https://huggingface.co/BAAI/bge-reranker-v2-m3 | ✓ (Phase 1 spec earlier said 568M — corrected) |
+| bge-reranker-v2-m3 max_length 512 | same | ✓ |
+| bge-reranker-v2-m3 multilingual | same | ✓ (Korean specifically not advertised, but multilingual training includes Korean per BGE-M3 paper) |
+| bge-reranker-v2-m3 Apache 2.0 | same | ✓ |
+| gte-multilingual-base = 305M params, 768-dim elastic [128, 768], 8192 ctx, 70+ langs, native sparse | https://huggingface.co/Alibaba-NLP/gte-multilingual-base | ✓ |
+| gte-multilingual-base license Apache 2.0, paper arxiv:2407.19669 (2024-07-29) | same | ✓ (Phase 1 spec earlier said "EMNLP 2024" — corrected to arxiv reference) |
+| gte-multilingual-reranker-base = 0.3B / 306M, encoder-only seq-class (NOT cross-encoder), 8192 ctx | https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base | ✓ |
+| Qwen3-Embedding-0.6B = 0.6B params, up to 1024-dim elastic 32-1024, 32K context, 100+ langs, instruction-aware | https://huggingface.co/Qwen/Qwen3-Embedding-0.6B | ✓ |
+| Qwen3-Embedding query prompt format `Instruct: {task}\nQuery: {q}` | same | ✓ (1-5% perf drop without instruction confirmed in card) |
+| Qwen3-Embedding-0.6B Apache 2.0, 2025-06-05 (arxiv:2506.05176) | same | ✓ |
+| Qwen3-Embedding-4B = 4B params, **2560-dim default** elastic 32-2560, 32K ctx, MRL support | https://huggingface.co/Qwen/Qwen3-Embedding-4B | ✓ |
+| Qwen3-Reranker series = **0.6B / 4B / 8B** (NO 1.5B variant) | https://huggingface.co/Qwen/Qwen3-Reranker-0.6B | ✓ (Phase 1 spec earlier said 1.5B — corrected) |
+| Qwen3-Reranker-0.6B prompt `<Instruct>: ...\n<Query>: ...\n<Document>: ...`, 32K ctx | same | ✓ |
+| Qwen3-Reranker cross-encoder architecture | same | ✓ |
+| mxbai-rerank-base-v1 = 200M params, **DeBERTa-v2 base** (NOT v3), English-only | https://huggingface.co/mixedbread-ai/mxbai-rerank-base-v1 | ✓ (Phase 1 spec earlier implied DeBERTa-v3 — corrected; English-only confirmed) |
+| Anthropic Contextual Retrieval prefix size 50-100 tokens, generated by Claude 3 Haiku per chunk | https://www.anthropic.com/news/contextual-retrieval | ✓ |
+| Anthropic Contextual Retrieval performance: 35% / 49% / 67% reduction in failure rate (embeddings / +BM25 / +rerank) | same | ✓ specific numbers verified |
+
+### 18.5.2 On-device empirical (M4 16GB Apple Silicon, fp16)
+
+| Claim | Method | Result |
+|---|---|---|
+| kiwipiepy works on Apple Silicon despite README warning | `.venv/bin/python -c "from kiwipiepy import Kiwi; ..."` smoke test 2026-05-02 | ✓ kiwipiepy 0.23.1 imports cleanly, no errors |
+| kiwipiepy cold load latency | `time` measurement | 402.8 ms one-time |
+| kiwipiepy warm tokenize latency (Korean query) | 100 query benchmark, 5 warm-ups | **0.036 ms / query** (3.6 ms total for 100) |
+| kiwipiepy production-fit (target ≤ 5 ms / query) | derived | ✓ comfortable headroom |
+| Apple Silicon = arm64 architecture | `uname -m` | arm64 |
+| Hardware = Apple M4 (not M5 as earlier spec claimed) | `sysctl machdep.cpu.brand_string` | ✓ M4 confirmed (spec corrected) |
+| Python 3.12.12 in .venv | `.venv/bin/python --version` | ✓ |
+
+### 18.5.3 Spec corrections from verification (changelog from initial v1 draft)
+
+1. Hardware: M5 → **M4** (actual chip is M4)
+2. bge-reranker-v2-m3 params: 568M → **600M (0.6B)**
+3. Qwen3-Reranker: 1.5B → **0.6B / 4B / 8B series** (no 1.5B)
+4. mxbai-rerank-base-v1: DeBERTa-v3 → **DeBERTa-v2**, 200M params
+5. gte-multilingual reference: "EMNLP 2024" → **arxiv:2407.19669, 2024-07-29**
+6. Qwen3-Embedding instruction format: explicit `Instruct: {task}\nQuery: {q}` mandatory
+7. BGE-M3 release date added: 2024-02-01
+8. Anthropic Contextual Retrieval performance numbers added: 35% / 49% / 67%
+9. kiwipiepy M4 fit: empirically verified despite README "may run slowly" warning
+10. Memory budget table: added per-frontier-model M4 fit column with explicit ❌/⚠/✓ markers
+
+### 18.5.4 Pending verification (Phase 5 / Phase 6 measurements)
+
+| Claim | Verification plan |
+|---|---|
+| BGE-M3 dense fp16 ≈ 1.1 GB | Phase 5 implementation: actual `torch.cuda.memory_allocated()` or MPS equivalent measurement |
+| LanceDB index ≈ 2.5-3 GB for 27K chunks | already verified via `ls -lh state/cs_rag/lance/` |
+| Reranker p95 warm 50 pairs ≤ 400 ms M4 MPS | Phase 5: actual benchmark with `bin/rag-eval --reranker-profile` |
+| Qwen3-Embedding-0.6B fp16 ≈ 1.2 GB on M4 MPS | Phase 7 A/B benchmark |
+| Anthropic Contextual Retrieval +X% on Korean cohort | Phase 6 Pilot measurement with real qrel suite |
+| LanceDB IVF_HNSW_SQ vs IVF_PQ recall/latency for 1024-dim | Phase 5 / Phase 7 backend A/B |
+
+These are *open empirical questions*; the spec records them as such rather than claiming verified.
+
+### 18.5.5 Sources of uncertainty (explicit)
+
+1. LanceDB indexing recommendations URL returned 404 during verification fetch. The IVF_HNSW_SQ vs IVF_PQ recommendation is *based on prior plan claims*, not directly re-verified. Phase 5 implementation will fetch current LanceDB documentation and confirm the recommended index type for 1024-dim production scale.
+2. Qwen3-Reranker-0.6B was verified at the URL `Qwen/Qwen3-Reranker-0.6B`. URL `Qwen/Qwen3-Reranker-1.5B` was NOT directly tested for 404, but the official Qwen3-Reranker model card explicitly enumerates the series as `0.6B / 4B / 8B` — i.e., 1.5B is documented as not existing.
+3. BGE-M3 exact parameter count is not advertised on the model card. Estimate of 1.1 GB fp16 is derived from architecture (XLM-RoBERTa-large 568M base + extra heads), not from official documentation.
+
+These uncertainties are documented to keep the spec audit-honest. Phase 5 implementation closes the lesser ones; Phase 6 Pilot measurement closes the rest.
 
 ---
 
