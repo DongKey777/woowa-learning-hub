@@ -1,3 +1,59 @@
+---
+schema_version: 3
+title: "팩토리 패턴 기초 (Factory Pattern Basics)"
+concept_id: "design-pattern/factory"
+canonical: true
+category: "design-pattern"
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 90
+aliases:
+  - factory pattern
+  - 팩토리 패턴
+  - 팩토리
+  - factory pattern basics
+  - 팩토리 패턴 기초
+  - 객체 생성 책임 분리
+  - new 대신 팩토리
+  - creation vs selection
+  - 생성 vs 선택
+intents:
+  - definition
+  - design
+prerequisites:
+  - software-engineering/oop-design-basics
+next_docs:
+  - design-pattern/factory-vs-static-factory
+  - design-pattern/factory-vs-abstract-factory
+linked_paths:
+  - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+  - contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md
+  - contents/design-pattern/factory-vs-di-container-wiring.md
+  - contents/design-pattern/factory.md
+confusable_with:
+  - design-pattern/strategy
+  - design-pattern/abstract-factory
+  - design-pattern/builder
+forbidden_neighbors:
+  - contents/design-pattern/factory-misnaming-checklist.md
+  - contents/design-pattern/factory-switch-registry-smell.md
+  - contents/design-pattern/factory-vs-abstract-factory-vs-builder.md
+expected_queries:
+  - Factory 패턴이 뭐야?
+  - 처음 배우는데 factory가 뭐야?
+  - 객체 생성 책임을 다른 클래스로 옮기는 방식 뭐 있어?
+  - 팩토리는 언제 써?
+  - new 대신 팩토리 쓰는 이유?
+contextual_chunk_prefix: |
+  이 문서는 OOP 기초를 배운 학습자가 "객체를 누가 어떻게 만드는가"라는 생성 책임
+  분리 감각을 처음 잡을 때 참고하는 primer다. 본 문서의 chunk는 호출 측에서 객체
+  타입을 직접 결정하는 방식 vs 생성 책임을 분리한 방식의 비교 또는 Factory의 큰
+  그림을 설명한다. 더 정밀한 비교(Static Factory Method, Abstract Factory,
+  Builder)는 후속 bridge 문서들이 다룬다.
+---
+
 # 팩토리 패턴 기초 (Factory Pattern Basics)
 
 > 한 줄 요약: 팩토리 패턴은 객체를 어떻게 만들지를 호출자로부터 숨기고, 생성 책임을 한 곳에 모아 변경이 생겨도 호출 측 코드를 건드리지 않게 해준다.
@@ -16,8 +72,6 @@
 - [Factory vs Abstract Factory vs Builder](./factory-vs-abstract-factory-vs-builder.md)
 - [디자인 패턴 카테고리 인덱스](./README.md)
 - [OOP 설계 원칙 기초](../software-engineering/oop-design-basics.md)
-
-retrieval-anchor-keywords: factory pattern basics, 팩토리 패턴 기초, 팩토리가 뭔가요, 팩토리 큰 그림, 팩토리 언제 쓰는지, 처음 배우는데 factory, new 대신 팩토리, creation vs selection, 생성 vs 선택, 새로 만들기 vs 고르기, factory vs static factory vs selector, selector is not factory, 생성 책임 vs 선택 책임, factory vs di container, 팩토리 패턴 30초 비교표
 
 ---
 

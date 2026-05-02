@@ -1,30 +1,51 @@
 ---
-schema_version: 2
+schema_version: 3
 title: "MVCC Snapshot vs Locking Read Portability Note"
-concept_id: "database/mvcc-snapshot-vs-locking-read-portability-note"
+concept_id: "database/mvcc-snapshot-vs-locking-read-portability"
+canonical: true
+category: "database"
 difficulty: advanced
-doc_role: comparison
+doc_role: bridge
 level: advanced
+language: mixed
+source_priority: 85
 aliases:
   - MVCC snapshot vs locking read
   - plain SELECT vs FOR UPDATE
   - snapshot semantics vs lock semantics
   - PostgreSQL MySQL isolation portability
   - consistent read vs locking read
+  - 스냅샷 읽기 vs 락 읽기
+intents:
+  - comparison
+  - design
+prerequisites:
+  - database/mvcc
+  - database/lock
+  - database/transaction-isolation
+next_docs:
+  - database/mvcc-read-view-consistent-read
+linked_paths:
+  - contents/database/mvcc-read-view-consistent-read-internals.md
+  - contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+  - contents/database/transaction-isolation-basics.md
+  - contents/database/gap-lock-next-key-lock.md
+  - contents/database/mysql-empty-result-locking-reads.md
+confusable_with:
+  - database/mvcc
+  - database/lock
+forbidden_neighbors:
+  - contents/spring/spring-transactional-basics.md
 expected_queries:
   - MVCC snapshot read와 locking read는 어떻게 달라?
   - plain SELECT에서 안 보인 row를 UPDATE가 건드릴 수 있어?
   - PostgreSQL과 MySQL에서 SELECT FOR UPDATE semantics 차이를 어디서 봐?
   - consistent read와 current row recheck가 헷갈려
-acceptable_neighbors:
-  - contents/database/mvcc-read-view-consistent-read-internals.md
-  - contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
-  - contents/database/transaction-isolation-basics.md
-companion_neighbors:
-  - contents/database/gap-lock-next-key-lock.md
-  - contents/database/mysql-empty-result-locking-reads.md
-forbidden_neighbors:
-  - contents/spring/spring-transactional-basics.md
+contextual_chunk_prefix: |
+  이 문서는 MVCC를 학습한 학습자가 "snapshot으로 안 보인 row를 UPDATE가 건드리면
+  말이 안 되는 것 아닌가?"라는 portability 함정을 풀 때 참고하는 bridge 문서다.
+  본 문서의 chunk는 PostgreSQL과 MySQL의 plain SELECT(스냅샷) vs locking read
+  (현재 row 재확인)가 어떻게 달라지는지를 한 단면씩 설명한다.
 ---
 
 # MVCC Snapshot vs Locking Read Portability Note

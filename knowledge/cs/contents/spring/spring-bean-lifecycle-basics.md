@@ -1,21 +1,47 @@
 ---
-schema_version: 2
+schema_version: 3
 title: "Spring Bean 생명주기 기초: 생성부터 소멸까지"
 concept_id: "spring/bean-lifecycle-basics"
+canonical: true
+category: "spring"
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
   - bean lifecycle
   - Spring Bean lifecycle
   - PostConstruct
   - PreDestroy
   - 빈 생명주기
+  - 빈 라이프사이클
+  - 스프링 빈 생성
+  - 스프링 빈 소멸
+intents:
+  - definition
+  - design
+prerequisites:
+  - spring/bean-di-basics
+next_docs:
+  - spring/bean-lifecycle-scope-traps
+linked_paths:
+  - contents/spring/spring-bean-di-basics.md
+  - contents/spring/ioc-di-container.md
+forbidden_neighbors:
+  - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+  - contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md
 expected_queries:
   - Spring Bean은 언제 만들어져?
   - Bean 생명주기가 뭐야?
   - PostConstruct는 언제 실행돼?
   - prototype Bean도 PreDestroy가 호출돼?
+  - 스프링이 객체를 어떻게 만들어?
+contextual_chunk_prefix: |
+  이 문서는 Spring DI를 학습한 입문자가 "Bean이 언제 만들어지고 언제 사라지는가"라는
+  생명주기 감각을 처음 잡을 때 참고하는 primer다. 본 문서의 chunk는 컨테이너 시작
+  시 Bean 생성 → @PostConstruct 초기화 콜백 → 사용 → @PreDestroy 정리 콜백 →
+  컨테이너 종료 시 소멸 흐름의 일부를 설명한다.
 ---
 
 # Spring Bean 생명주기 기초: 생성부터 소멸까지

@@ -469,6 +469,33 @@ class SourcePriorityTest(unittest.TestCase):
                     f"Expected error for {invalid}",
                 )
 
+    def test_source_priority_string_digit_accepted(self):
+        """parse_frontmatter (minimal YAML parser) returns scalars as
+        strings. Lint accepts numeric strings and converts to int.
+        """
+        for valid_str in ["0", "50", "90", "100"]:
+            with self.subTest(source_priority=valid_str):
+                fm = _valid_v3_minimal()
+                fm["source_priority"] = valid_str
+                out = check_corpus_v3_pilot_frontmatter(
+                    file_path=_path(), frontmatter=fm
+                )
+                sp_msgs = [m for m in _messages(out) if "source_priority" in m]
+                self.assertEqual(sp_msgs, [], f"{valid_str}: {sp_msgs}")
+
+    def test_source_priority_non_numeric_string_caught(self):
+        fm = _valid_v3_minimal()
+        fm["source_priority"] = "ninety"
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        self.assertTrue(any("source_priority" in m for m in _messages(out)))
+
+    def test_source_priority_bool_rejected(self):
+        """Python booleans are int subclasses; lint must reject them."""
+        fm = _valid_v3_minimal()
+        fm["source_priority"] = True  # would be int(1) without explicit reject
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        self.assertTrue(any("source_priority" in m for m in _messages(out)))
+
 
 class IntegrationWithCheckFrontmatterSchemaTest(unittest.TestCase):
     """Verify that ``check_frontmatter_schema`` dispatches to the v3 check

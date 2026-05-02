@@ -1,29 +1,56 @@
 ---
-schema_version: 2
+schema_version: 3
 title: "Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기"
 concept_id: "spring/bean-di-basics"
+canonical: true
+category: "spring"
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 92
 aliases:
   - spring bean
   - bean
   - component scan
   - DI
+  - dependency injection
+  - 의존성 주입
   - 빈 등록
   - 컴포넌트 스캔
+  - 컨테이너 조립
+intents:
+  - definition
+  - design
+prerequisites:
+  - software-engineering/oop-design-basics
+next_docs:
+  - spring/bean-lifecycle-basics
+  - spring/transactional
+linked_paths:
+  - contents/spring/ioc-di-container.md
+  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+  - contents/software-engineering/layered-architecture-basics.md
+confusable_with:
+  - design-pattern/service-locator
+  - design-pattern/factory
+forbidden_neighbors:
+  - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+  - contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md
+  - contents/design-pattern/object-oriented-design-pattern-basics.md
 expected_queries:
   - Spring Bean이 뭐야?
   - Bean이랑 DI는 뭐가 달라?
   - component scan이 뭐야?
   - controller랑 service는 누가 연결해?
-acceptable_neighbors:
-  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
-  - contents/spring/spring-mvc-controller-basics.md
-  - contents/software-engineering/layered-architecture-basics.md
-  - contents/software-engineering/service-layer-basics.md
-companion_neighbors:
-  - contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+  - 처음 배우는데 DI가 뭐야?
+  - 객체를 직접 만들지 않고 외부에서 받는 게 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 Spring을 처음 배우는 학습자가 "내가 만든 객체 vs 컨테이너가 만들어 주는
+  객체"의 감각을 잡을 때 참고하는 primer다. 본 문서의 chunk는 Bean 등록 / component
+  scan / configuration / proxy 흐름의 일부를 설명한다. DI 원리 자체는 ioc-di-container
+  primer가 먼저 다루며, 본 문서는 Spring 컨테이너 wiring 관점에서 그 위에 한 단계
+  실무 감각을 얹는다.
 ---
 
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기

@@ -619,9 +619,22 @@ def check_corpus_v3_pilot_frontmatter(
             ))
 
     # 14. source_priority range (when present)
+    # parse_frontmatter is a minimal YAML parser — numeric scalars come back
+    # as strings. Accept str digits and int alike.
     sp = frontmatter.get("source_priority")
     if sp is not None:
-        if not isinstance(sp, int) or sp < 0 or sp > 100:
+        sp_int: int | None = None
+        if isinstance(sp, bool):
+            # bool is a subclass of int in Python; reject it explicitly.
+            pass
+        elif isinstance(sp, int):
+            sp_int = sp
+        elif isinstance(sp, str) and sp.lstrip("-").isdigit():
+            try:
+                sp_int = int(sp)
+            except ValueError:
+                sp_int = None
+        if sp_int is None or sp_int < 0 or sp_int > 100:
             out.append(_v3_violation(
                 file_path,
                 f"source_priority must be int in [0, 100], got {sp!r}",

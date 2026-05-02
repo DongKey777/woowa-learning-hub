@@ -1,3 +1,60 @@
+---
+schema_version: 3
+title: "커넥션 풀 기초 (Connection Pool Basics)"
+concept_id: "database/connection-pool"
+canonical: true
+category: "database"
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: ko
+source_priority: 92
+aliases:
+  - connection pool
+  - 커넥션 풀
+  - 커넥션 풀이란
+  - DB 커넥션 재사용
+  - hikari cp
+  - hikaricp
+  - HikariCP
+  - hikaricp가 뭐야
+  - jdbc connection pool
+  - 스프링 커넥션 풀
+  - pool size
+  - maxpoolsize
+  - 커넥션 고갈
+  - connection close returns pool
+intents:
+  - definition
+  - design
+prerequisites: []
+next_docs:
+  - database/connection-pool-transaction-propagation
+  - database/connection-timeout-vs-lock-timeout
+linked_paths:
+  - contents/database/connection-pool-transaction-propagation-bulk-write.md
+  - contents/database/connection-timeout-vs-lock-timeout-card.md
+  - contents/database/transaction-locking-connection-pool-primer.md
+  - contents/database/jdbc-jpa-mybatis.md
+  - contents/spring/spring-transactional-basics.md
+confusable_with:
+  - operating-system/thread-pool
+forbidden_neighbors:
+  - contents/database/hikari-connection-pool-tuning.md
+  - contents/database/connection-pool-transaction-propagation-bulk-write.md
+expected_queries:
+  - Connection pool이 뭐야?
+  - DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?
+  - HikariCP가 뭐야?
+  - 커넥션 풀이 너무 작으면 어떻게 돼?
+  - 처음 배우는데 커넥션 풀
+contextual_chunk_prefix: |
+  이 문서는 Spring 또는 JDBC를 처음 배우는 학습자가 "DB 연결을 매 요청마다 새로
+  만드는 게 왜 비효율인가"라는 감각을 잡을 때 참고하는 primer다. 본 문서의 chunk는
+  연결 비용 / 풀 크기 결정 / 풀 고갈 / 반환 흐름 중 일부를 설명한다. tuning 심화는
+  hikari-connection-pool-tuning에서 다룬다 (본 primer는 큰 그림만).
+---
+
 # 커넥션 풀 기초 (Connection Pool Basics)
 
 > 한 줄 요약: 커넥션 풀은 DB 연결을 미리 만들어 재사용하는 캐시이고, 풀 크기가 너무 작으면 대기가, 너무 크면 DB 과부하가 생긴다.
@@ -12,9 +69,6 @@
 - [JDBC, JPA, MyBatis](./jdbc-jpa-mybatis.md)
 - [database 카테고리 인덱스](./README.md)
 - [Spring @Transactional 기초](../spring/spring-transactional-basics.md)
-
-retrieval-anchor-keywords: connection pool basics, 커넥션 풀이란, hikari cp 입문, db connection reuse, pool size 설정, 커넥션 고갈, connection timeout beginner, jdbc connection pool, 스프링 커넥션 풀, maxpoolsize beginner, connection close returns pool, thread pool vs connection pool, 커넥션 풀 왜 필요해요, connection pool basics basics, connection pool basics beginner
-retrieval-anchor-keywords: what does hikaricp mean, hikaricp meaning beginner, hikari cp meaning, hikaricp가 뭐야, hikaricp란, hikaricp connection pool, spring hikaricp beginner
 
 ## 핵심 개념
 
