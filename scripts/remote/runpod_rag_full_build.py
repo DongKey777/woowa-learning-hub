@@ -1289,7 +1289,8 @@ class RunPodHarness:
             ] if r_phase == "r3" else []),
             # Step 9: eval (only on r1+; r0 skips)
             *([
-                f"cd /workspace/repo && python -m scripts.learning.cli_rag_eval "
+                f"cd /workspace/repo && WOOWA_RAG_NO_RERANK=1 "
+                f"python -m scripts.learning.cli_rag_eval "
                 f"--ablate --embedding-index-root /workspace/cs_rag/ "
                 f"--ablation-split holdout "
                 f"{' '.join(f'--ablation-modalities {m}' for m in [','.join(modalities[:i+1]) for i in range(len(modalities))])} "

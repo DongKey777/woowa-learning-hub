@@ -254,6 +254,7 @@ def test_remote_commands_for_r1_includes_warm_and_eval():
     assert "scripts.remote._warm_bge_m3" in full
     # Eval present for r1
     assert "cli_rag_eval" in full
+    assert "WOOWA_RAG_NO_RERANK=1 python -m scripts.learning.cli_rag_eval" in full
     assert "--ablate" in full
     assert "--ablation-split holdout" in full
     # Repeatable flag (NOT semicolon)
