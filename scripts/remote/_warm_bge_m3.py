@@ -46,10 +46,31 @@ ATTEMPT_TIMEOUT_S = 900  # 15 min — generous for slow Pods, short
 
 
 _WARM_SCRIPT = (
-    "import os; "
+    "import os, sys, time; "
     "os.environ.setdefault('HF_HUB_DOWNLOAD_TIMEOUT', '300'); "
+    # Print every 5 seconds so SSH channel sees traffic and community-Pod
+    # sshd doesn't drop the connection during silent model load. R3 v1
+    # OOM was actually a silent SSH disconnect on the v3 build attempt
+    # (rc=-1 after 47s with 'Fetching 30 files: 100%' on stderr but no
+    # stdout for the constructor phase) — adding a keepalive print loop
+    # in a thread keeps the channel alive without pausing the load.
+    "import threading; "
+    "_alive = [True]; "
+    "def _heartbeat():\n"
+    "  i = 0\n"
+    "  while _alive[0]:\n"
+    "    print(f'[warm-child] heartbeat {i}', flush=True); i += 1; time.sleep(5)\n"
+    "; "
+    "threading.Thread(target=_heartbeat, daemon=True).start(); "
+    # Phase A: snapshot_download — pure HF cache I/O, no model load.
+    # If A succeeds, weights are on disk and any retry path can resume.
+    "from huggingface_hub import snapshot_download; "
+    "snapshot_download(repo_id={model_id!r}); "
+    "print('[warm-child] snapshot_download complete', flush=True); "
+    # Phase B: instantiate the constructor (validates GPU + tokenizer).
     "from FlagEmbedding import BGEM3FlagModel; "
     "BGEM3FlagModel({model_id!r}); "
+    "_alive[0] = False; "
     "print('[warm-child] BGEM3FlagModel constructed', flush=True)"
 )
 
