@@ -41,6 +41,21 @@ def _write_artifact(tmp_path: Path, *, strict: bool = True) -> Path:
             "index_version": 3,
             "encoder": {"model_id": "BAAI/bge-m3", "model_version": "fake"},
             "corpus_hash": "sha256:corpus",
+            "r3": {
+                "query_plan_version": "r3.0",
+                "retrievers": {
+                    "lexical_sidecar": "metadata-bm25-v1",
+                    "dense": "bge-m3-dense:fake",
+                    "sparse_sidecar": "bge-m3-sparse:fake",
+                    "signal": "route-tags-v1",
+                    "fusion": "weighted-rrf-doc-diversity-v1",
+                },
+                "concept_catalog": {"sha256": "0" * 64},
+                "qrels": {
+                    "sha256": "1" * 64,
+                    "query_count": 208,
+                },
+            },
             "r3_sidecars": {
                 "lexical": {
                     "path": "r3_lexical_sidecar.json",

@@ -104,6 +104,10 @@ def _verify_extracted_index_root(
             )
 
     sidecar_checks = {}
+    expected_r3 = expected.get("r3")
+    if expected_r3 is not None and index_manifest.get("r3") != expected_r3:
+        raise ArtifactVerificationError("extracted index r3 provenance mismatch")
+
     lexical = (expected.get("r3_sidecars") or {}).get("lexical")
     if lexical:
         sidecar_path = index_root / str(lexical.get("path"))
@@ -168,6 +172,15 @@ R3_STRICT_REQUIRED_FIELDS = (
     "extra.local_runtime_profile.machine",
     "extra.local_runtime_profile.memory_gb",
     "extra.local_runtime_profile.accelerator",
+    "index_root_summary.r3.query_plan_version",
+    "index_root_summary.r3.retrievers.lexical_sidecar",
+    "index_root_summary.r3.retrievers.dense",
+    "index_root_summary.r3.retrievers.sparse_sidecar",
+    "index_root_summary.r3.retrievers.signal",
+    "index_root_summary.r3.retrievers.fusion",
+    "index_root_summary.r3.concept_catalog.sha256",
+    "index_root_summary.r3.qrels.sha256",
+    "index_root_summary.r3.qrels.query_count",
     "index_root_summary.r3_sidecars.lexical.path",
     "index_root_summary.r3_sidecars.lexical.sha256",
     "index_root_summary.r3_sidecars.lexical.corpus_hash",

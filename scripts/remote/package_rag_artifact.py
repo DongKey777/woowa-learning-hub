@@ -377,6 +377,7 @@ def package_artifact(
             "row_count": index_manifest.get("row_count"),
             "corpus_hash": index_manifest.get("corpus_hash"),
             "lancedb": index_manifest.get("lancedb"),
+            "r3": index_manifest.get("r3"),
             "r3_sidecars": r3_sidecars,
         },
         "environment": env,
