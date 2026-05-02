@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://woowa-learning-hub/r3-corpus-v3-frontmatter-schema",
+  "title": "R3 Corpus v3 Frontmatter Schema",
+  "description": "Frontmatter contract for the R3 RAG system. Companion to docs/worklogs/rag-r3-corpus-v3-contract.md. Custom invariants (aliases ⊥ expected_queries, role-conditional requirements not expressible in pure JSON Schema) enforced separately by scripts/learning/rag/corpus_lint.py:check_corpus_v3_pilot_frontmatter.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "concept_id",
+    "doc_role",
+    "level",
+    "aliases",
+    "expected_queries"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 3,
+      "description": "Must be exactly 3 for v3 contract docs."
+    },
+    "concept_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*\\/[a-z][a-z0-9-]+$",
+      "description": "Stable concept identifier in 'category/slug' format. Both parts are kebab-case."
+    },
+    "canonical": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this is the canonical doc for concept_id (Wave 2)."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "algorithm",
+        "data-structure",
+        "database",
+        "design-pattern",
+        "language",
+        "network",
+        "operating-system",
+        "security",
+        "software-engineering",
+        "spring",
+        "system-design"
+      ],
+      "description": "Corpus category, must match folder placement under knowledge/cs/contents/."
+    },
+    "doc_role": {
+      "type": "string",
+      "enum": [
+        "primer",
+        "bridge",
+        "deep_dive",
+        "playbook",
+        "chooser",
+        "symptom_router",
+        "drill",
+        "mission_bridge"
+      ],
+      "description": "Doc role taxonomy (8 values). See contract §3."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"],
+      "description": "Learner level the doc is targeted at."
+    },
+    "language": {
+      "type": "string",
+      "enum": ["ko", "en", "mixed"],
+      "description": "Dominant language of the doc body. Wave 2 required."
+    },
+    "source_priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Citation authority weight. 90-100 canonical, 70-89 deep_dive/bridge, 50-69 supplementary, <50 legacy. Wave 2 required."
+    },
+    "mission_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^missions\\/[a-z][a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Woowa Tech Course mission identifiers. Required for doc_role=mission_bridge."
+    },
+    "review_feedback_tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "uniqueItems": true,
+      "description": "Mentor PR comment pattern slugs (kebab-case)."
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "The single lexical hint channel. Indexed into lexical_sidecar:aliases. MUST be disjoint from expected_queries (enforced by corpus_lint.py)."
+    },
+    "symptoms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Symptom phrases as a learner would describe the bug. Required for doc_role=symptom_router and doc_role=playbook."
+    },
+    "intents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "definition",
+          "comparison",
+          "symptom",
+          "mission_bridge",
+          "deep_dive",
+          "drill",
+          "design",
+          "troubleshooting"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Which query intents this doc serves. Wave 2 required."
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*\\/[a-z][a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Concept_id refs the learner should know before this. Optional graph metadata."
+    },
+    "next_docs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*\\/[a-z][a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Concept_id refs the learner should read after. Optional graph metadata."
+    },
+    "linked_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^contents\\/[a-z][a-z0-9-]*\\/[a-z0-9_.\\-/]+\\.md$"
+      },
+      "uniqueItems": true,
+      "description": "Direct path refs for companion expansion. Optional."
+    },
+    "confusable_with": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*\\/[a-z][a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Concept_id refs of confusable concepts. Required for doc_role=chooser (≥ 2)."
+    },
+    "forbidden_neighbors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^contents\\/[a-z][a-z0-9-]*\\/[a-z0-9_.\\-/]+\\.md$"
+      },
+      "uniqueItems": true,
+      "description": "Path refs that should NOT be retrieved for queries about this concept. Wave 2 required for qrel-risk cohort."
+    },
+    "expected_queries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Qrel seed strings. Used by r3.eval.qrels.qrels_from_frontmatter_doc to populate initial qrels. STRICTLY NOT INDEXED — corpus_loader._emit_chunks no longer accepts this as a parameter (commit 054a1a3). Disjoint from aliases (enforced by corpus_lint)."
+    },
+    "contextual_chunk_prefix": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional per-doc override for the contextual chunk prefix. By default, the indexer auto-generates per-chunk prefixes (Anthropic Contextual Retrieval pattern, 50-100 tokens via Claude 3 Haiku) at index build time. If this field is set, it is used instead for all chunks of this doc."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "doc_role": { "const": "symptom_router" } },
+        "required": ["doc_role"]
+      },
+      "then": {
+        "required": ["symptoms"],
+        "properties": {
+          "symptoms": { "minItems": 3 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "doc_role": { "const": "playbook" } },
+        "required": ["doc_role"]
+      },
+      "then": {
+        "required": ["symptoms"],
+        "properties": {
+          "symptoms": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "doc_role": { "const": "mission_bridge" } },
+        "required": ["doc_role"]
+      },
+      "then": {
+        "required": ["mission_ids"],
+        "properties": {
+          "mission_ids": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "doc_role": { "const": "chooser" } },
+        "required": ["doc_role"]
+      },
+      "then": {
+        "required": ["confusable_with"],
+        "properties": {
+          "confusable_with": { "minItems": 2 }
+        }
+      }
+    }
+  ]
+}
