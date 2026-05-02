@@ -17,6 +17,10 @@ aliases:
 intents:
 - troubleshooting
 - design
+symptoms:
+- '@Transactional이 붙었는데 같은 클래스 내부 호출하면 트랜잭션이 안 열려요'
+- this.method() 호출하면 @Async가 동기처럼 실행돼요
+- 프록시를 우회하니까 @Cacheable, @Validated 같은 기능이 안 먹어요
 linked_paths:
 - contents/spring/spring-transactional-basics.md
 - contents/spring/aop-proxy-mechanism.md

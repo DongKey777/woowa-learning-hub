@@ -17,6 +17,10 @@ aliases:
 intents:
 - troubleshooting
 - design
+symptoms:
+- 'NoSuchBeanDefinitionException: Bean을 못 찾아요'
+- '@SpringBootApplication이 있는데 다른 모듈의 Bean이 안 떠요'
+- package 구조는 맞는데 특정 환경에서만 Bean이 사라져요
 linked_paths:
 - contents/spring/spring-bean-di-basics.md
 - contents/spring/spring-di-exception-quick-triage.md

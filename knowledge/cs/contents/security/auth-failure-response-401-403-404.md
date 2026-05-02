@@ -26,6 +26,9 @@ linked_paths:
 - contents/security/concealment-404-entry-cues.md
 forbidden_neighbors:
 - contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+confusable_with:
+- security/authentication-vs-authorization
+- security/permission-model-bridge-authn-to-role-scope-ownership
 expected_queries:
 - 401 403 404 차이가 뭐야?
 - 로그인 됐는데 왜 403이 나와?

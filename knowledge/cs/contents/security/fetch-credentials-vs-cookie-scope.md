@@ -24,6 +24,9 @@ linked_paths:
 - contents/network/cross-origin-cookie-credentials-cors-primer.md
 - contents/security/preflight-debug-checklist.md
 - contents/security/browser-401-vs-302-login-redirect-guide.md
+confusable_with:
+- network/cross-origin-cookie-credentials-cors-primer
+- security/preflight-debug-checklist
 expected_queries:
 - fetch credentials include를 줬는데 cookie가 안 붙으면 뭘 봐?
 - credentials include와 cookie scope는 어떻게 달라?

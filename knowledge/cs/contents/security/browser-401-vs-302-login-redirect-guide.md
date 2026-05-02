@@ -26,6 +26,9 @@ linked_paths:
 - contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
 forbidden_neighbors:
 - contents/database/read-your-writes-session-pinning.md
+confusable_with:
+- network/login-redirect-hidden-jsessionid-savedrequest-primer
+- security/cookie-failure-three-way-splitter
 expected_queries:
 - 브라우저에서 401 대신 302 /login이 보이면 뭘 봐야 해?
 - fetch가 login HTML 200을 받았는데 API 성공이 아닌 이유가 뭐야?

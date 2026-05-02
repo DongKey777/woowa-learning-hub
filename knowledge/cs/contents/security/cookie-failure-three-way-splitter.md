@@ -26,6 +26,9 @@ linked_paths:
 - contents/security/cookie-rejection-reason-primer.md
 forbidden_neighbors:
 - contents/security/jwt-deep-dive.md
+confusable_with:
+- security/cookie-rejection-reason-primer
+- security/cookie-scope-mismatch-guide
 expected_queries:
 - cookie 문제가 Set-Cookie blocked인지 stored not sent인지 server anonymous인지 어떻게 나눠?
 - Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?

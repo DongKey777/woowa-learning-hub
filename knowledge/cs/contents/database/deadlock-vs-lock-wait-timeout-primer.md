@@ -25,6 +25,9 @@ linked_paths:
 - contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md
 forbidden_neighbors:
 - contents/spring/spring-transactional-basics.md
+confusable_with:
+- database/lock-basics
+- database/lock-timeout-not-already-exists-common-confusion-card
 expected_queries:
 - deadlock과 lock wait timeout은 뭐가 달라?
 - lock timeout이면 무조건 retry해도 돼?

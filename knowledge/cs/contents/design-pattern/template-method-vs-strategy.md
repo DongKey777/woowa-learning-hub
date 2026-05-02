@@ -29,6 +29,9 @@ linked_paths:
 - contents/language/java/template-method-vs-strategy-quick-check-card.md
 forbidden_neighbors:
 - contents/design-pattern/service-locator-antipattern.md
+confusable_with:
+- design-pattern/composition-over-inheritance-basics
+- design-pattern/abstract-class-vs-interface-injection-bridge
 expected_queries:
 - 처음 배우는데 템플릿 메소드랑 전략 패턴이 뭐가 달라?
 - template method vs strategy 차이가 뭐야?

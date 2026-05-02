@@ -23,6 +23,9 @@ linked_paths:
 - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
 - contents/design-pattern/strategy-pattern-basics.md
 - contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+confusable_with:
+- design-pattern/strategy-pattern-basics
+- design-pattern/factory-selector-resolver-beginner-entrypoint
 expected_queries:
 - Map<String, Strategy>는 registry야 strategy야?
 - 같은 Map 모양인데 행동 교체와 단순 lookup을 어떻게 구분해?

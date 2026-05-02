@@ -24,6 +24,9 @@ linked_paths:
 - contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
 - contents/security/browser-401-vs-302-login-redirect-guide.md
 - contents/security/session-cookie-jwt-basics.md
+confusable_with:
+- spring/spring-security-filter-chain-ordering
+- spring/spring-security-requestcache-savedrequest-boundaries
 expected_queries:
 - Spring Filter랑 SecurityFilterChain, HandlerInterceptor 차이가 뭐야?
 - 관리자 인증에서 302 403 400이 섞이면 어디서 먼저 나눠?

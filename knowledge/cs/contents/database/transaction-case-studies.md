@@ -18,6 +18,10 @@ aliases:
 intents:
 - troubleshooting
 - design
+symptoms:
+- 중복 결제 요청이 두 번 처리됐어요
+- 재고가 1개 남는데 두 요청이 동시에 성공해버렸어요
+- 포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요
 expected_queries:
 - 중복 결제는 트랜잭션만으로 막을 수 있어?
 - 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?

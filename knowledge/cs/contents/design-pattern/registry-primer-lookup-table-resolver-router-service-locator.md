@@ -23,6 +23,9 @@ linked_paths:
 - contents/design-pattern/service-locator-antipattern.md
 - contents/design-pattern/strategy-map-vs-registry-primer.md
 - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+confusable_with:
+- design-pattern/strategy-map-vs-registry-primer
+- design-pattern/injected-registry-vs-service-locator-checklist
 expected_queries:
 - registry랑 lookup table, resolver, router는 어떻게 달라?
 - service locator랑 registry가 왜 다른 냄새야?

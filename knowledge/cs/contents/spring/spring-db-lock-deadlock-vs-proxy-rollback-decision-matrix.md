@@ -24,6 +24,9 @@ linked_paths:
 - contents/spring/spring-transactional-basics.md
 - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
 - contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+confusable_with:
+- database/lock-wait-deadlock-latch-triage-playbook
+- spring/spring-self-invocation-transactional-only-misconception-primer
 expected_queries:
 - lock wait랑 @Transactional proxy 문제를 어떻게 먼저 구분해?
 - deadlock인지 self-invocation인지 헷갈릴 때 어떤 분기표를 봐?
