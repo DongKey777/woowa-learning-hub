@@ -3308,6 +3308,262 @@
       "prompt": "roomescape에서 컨트롤러가 직접 SQL 짜다가 4단계에서 분리하라는데 무슨 이득이 있어?",
       "query_id": "mission_bridge:roomescape_layer_separation_motivation:001",
       "rationale": "roomescape 4단계 분리 동기 = layered architecture"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/transformer-multihead-attention"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "ml_internals"
+      ],
+      "forbidden_paths": [],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "Transformer 모델의 multi-head attention 내부 dot-product가 어떻게 계산돼?",
+      "query_id": "corpus_gap_probe:transformer_attention:001",
+      "rationale": "ML 모델 내부 = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/rlhf-ppo-training"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "ml_training"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "RLHF에서 PPO objective가 reward model이랑 어떻게 결합돼?",
+      "query_id": "corpus_gap_probe:rlhf_ppo:001",
+      "rationale": "RLHF/PPO = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/react-fiber-reconciler"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "frontend_framework_internals"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "React useEffect의 cleanup 함수가 fiber reconciler 안에서 언제 호출돼?",
+      "query_id": "corpus_gap_probe:react_use_effect_internals:001",
+      "rationale": "React fiber 내부 = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/k8s-helm-chart-template"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "devops_tooling"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [],
+      "prompt": "Helm chart template에서 _helpers.tpl 같은 named template이 어떻게 동작해?",
+      "query_id": "corpus_gap_probe:k8s_helm_chart_template:001",
+      "rationale": "k8s Helm = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/terraform-state-locking"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "iac_tooling"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "Terraform state lock이 DynamoDB로 어떻게 구현돼?",
+      "query_id": "corpus_gap_probe:terraform_state_lock:001",
+      "rationale": "Terraform = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/ios-view-controller-lifecycle"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "mobile_platform"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [],
+      "prompt": "iOS UIViewController viewDidAppear vs viewWillAppear 호출 순서가 어떻게 돼?",
+      "query_id": "corpus_gap_probe:ios_view_lifecycle:001",
+      "rationale": "iOS = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/android-compose-recomposition"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "android_platform"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "Android Jetpack Compose recomposition skip 조건이 뭐야?",
+      "query_id": "corpus_gap_probe:android_compose_recomposition:001",
+      "rationale": "Android = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/llvm-loop-unrolling"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "compiler_internals"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "LLVM IR loop unrolling 패스가 cost model을 어떻게 평가해?",
+      "query_id": "corpus_gap_probe:llvm_ir_optimization:001",
+      "rationale": "LLVM = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/aws-lambda-cold-start"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "cloud_specific"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "AWS Lambda cold start에서 firecracker microVM init이 얼마나 걸려?",
+      "query_id": "corpus_gap_probe:aws_lambda_cold_start:001",
+      "rationale": "AWS Lambda 내부 = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/gcp-workload-identity"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "cloud_specific"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "GCP Workload Identity Federation 구성 단계가 어떻게 돼?",
+      "query_id": "corpus_gap_probe:gcp_iam_workload_identity:001",
+      "rationale": "GCP IAM = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/vector-db-hnsw-internals"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "vector_db_internals"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "벡터 DB의 HNSW 그래프 구축에서 efConstruction 파라미터가 뭘 결정해?",
+      "query_id": "corpus_gap_probe:vector_db_hnsw_internals:001",
+      "rationale": "HNSW 내부 = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/rust-borrow-checker-nll"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "rust_specifics"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "Rust borrow checker가 NLL(non-lexical lifetimes) 도입 후 뭐가 달라졌어?",
+      "query_id": "corpus_gap_probe:rust_borrow_checker:001",
+      "rationale": "Rust = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/graphql-dataloader-pattern"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "graphql_specifics"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "GraphQL N+1 문제를 DataLoader가 어떻게 batch+cache로 해결해?",
+      "query_id": "corpus_gap_probe:graphql_n_plus_one_dataloader:001",
+      "rationale": "GraphQL DataLoader = 우리 코퍼스 범위 밖 (Spring/JPA N+1과 다른 영역)"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/webrtc-ice-negotiation"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "realtime_protocol"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "WebRTC ICE candidate gathering에서 STUN/TURN이 어떻게 우선순위 정해져?",
+      "query_id": "corpus_gap_probe:webrtc_ice_negotiation:001",
+      "rationale": "WebRTC = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/kafka-cooperative-rebalance"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "messaging_system"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "Kafka cooperative rebalancing이 stop-the-world 대비 뭐가 달라?",
+      "query_id": "corpus_gap_probe:kafka_consumer_rebalance:001",
+      "rationale": "Kafka 내부 = 우리 코퍼스 범위 밖"
     }
   ],
   "schema_version": 1
