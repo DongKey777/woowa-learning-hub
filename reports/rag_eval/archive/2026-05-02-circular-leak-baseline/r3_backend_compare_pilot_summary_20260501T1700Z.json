@@ -1,0 +1,191 @@
+{
+  "backends": [
+    {
+      "backend": "r3",
+      "query_count": 52,
+      "spec": {
+        "backend": "r3",
+        "index_root": "state/cs_rag",
+        "modalities": [],
+        "name": "r3",
+        "use_reranker": null
+      },
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.8076923076923077
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 52
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 10
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.7619047619047619
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 42
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.875
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 8
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.8
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 40
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "candidate_recall_relevant": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "final_hit_primary": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "final_hit_relevant": {
+              "20": 1.0,
+              "5": 0.75
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 4
+          }
+        },
+        "forbidden_query_ids": [],
+        "missing_candidate_primary_query_ids": [],
+        "missing_final_primary_query_ids": [],
+        "overall": {
+          "candidate_recall_primary": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "candidate_recall_relevant": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "final_hit_primary": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "final_hit_relevant": {
+            "20": 1.0,
+            "5": 0.8076923076923077
+          },
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
+          "forbidden_window": 5,
+          "total": 52
+        },
+        "windows": [
+          5,
+          20
+        ]
+      }
+    }
+  ],
+  "forbidden_window": 5,
+  "schema_version": 1,
+  "top_k": 20,
+  "windows": [
+    5,
+    20
+  ]
+}

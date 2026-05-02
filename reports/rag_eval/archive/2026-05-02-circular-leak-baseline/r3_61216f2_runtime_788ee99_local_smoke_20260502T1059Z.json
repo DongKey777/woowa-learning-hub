@@ -1,0 +1,3226 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-02T10:59:06.194197+00:00",
+  "purpose": "Local smoke for remote-built R3 index r3-61216f2 served by current runtime commit 788ee99 with fusion v2.",
+  "index_root": "state/cs_rag",
+  "index_manifest": {
+    "row_count": 27158,
+    "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+    "modalities": [
+      "fts",
+      "dense",
+      "sparse"
+    ],
+    "query_plan_version": "r3.0",
+    "manifest_fusion": "weighted-rrf-doc-diversity-v1"
+  },
+  "runtime_expected_fusion": "weighted-rrf-doc-diversity-v2",
+  "records": [
+    {
+      "label": "direct_cheap_latency",
+      "command": [
+        "bin/rag-ask",
+        "latency가 뭐야?"
+      ],
+      "returncode": 0,
+      "wall_ms": 11715.558,
+      "payload": {
+        "decision": {
+          "tier": 1,
+          "mode": "cheap",
+          "reason": "domain + definition signal",
+          "experience_level": "beginner",
+          "override_active": false,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.04405962845287959,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 9,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 7,
+                    "score": 2.0
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "72b03a9289d70c2e#15",
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "한 줄 정리",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "한 줄 정리"
+                ],
+                "score": 0.042526518804243005,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 8,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 1,
+                    "score": 2.0
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b820483dc78206bb#1",
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "이 문서 다음에 보면 좋은 문서",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "이 문서 다음에 보면 좋은 문서"
+                ],
+                "score": 0.010666666666666668,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 15,
+                    "score": 2.0
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "network"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "cheap",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.04405962845287959,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "한 줄 정리",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "한 줄 정리"
+                ],
+                "score": 0.042526518804243005,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "이 문서 다음에 보면 좋은 문서",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "이 문서 다음에 보면 좋은 문서"
+                ],
+                "score": 0.010666666666666668,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 11309,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "cheap",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "cheap",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "mode_not_full",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "lexical_terms",
+              "r3_sparse_sidecar_document_count": 100,
+              "r3_sparse_query_terms_count": 0,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 0,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 769.74,
+                "load_runtime_documents": 578.271,
+                "load_lexical_sidecar": 9058.872,
+                "construct_retrievers": 306.645,
+                "retrieve_candidates": 52.962,
+                "fuse_candidates": 0.087
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "shallow",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'latency가 뭐야?' --signal helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'latency가 뭐야?' --signal not_helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "summary": {
+        "tier": 1,
+        "mode": "cheap",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 11309,
+        "hit_count": 3,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "lexical_terms",
+        "r3_dense_candidate_count": 0,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "mode_not_full",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "query_plan_version": null,
+        "stage_ms": {
+          "query_plan": 769.74,
+          "load_runtime_documents": 578.271,
+          "load_lexical_sidecar": 9058.872,
+          "construct_retrievers": 306.645,
+          "retrieve_candidates": 52.962,
+          "fuse_candidates": 0.087
+        }
+      }
+    },
+    {
+      "label": "direct_full_latency",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 latency가 뭐야?"
+      ],
+      "returncode": 0,
+      "wall_ms": 20682.42,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 12,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 13,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 6,
+                    "score": 0.5412606659030335
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 61,
+                    "score": 0.08826318603769323
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "72b03a9289d70c2e#5",
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 12,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 7,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 13,
+                    "score": 0.5378030235956476
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "35eb3d4e1d371135#2",
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 1,
+                    "score": 0.5580953402982194
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 1,
+                    "score": 0.17653034062095685
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "8d15c3ede4e1ef05#2",
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 11,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 9,
+                    "score": 0.5390701803337957
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 11,
+                    "score": 0.11055028063765349
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b820483dc78206bb#2",
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 22,
+                    "score": 0.535585626467658
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 9,
+                    "score": 0.11140362295554951
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "network",
+            "system-design"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 19097,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 11,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 789.904,
+                "load_runtime_documents": 619.601,
+                "load_lexical_sidecar": 9167.813,
+                "encode_runtime_query": 5806.884,
+                "load_runtime_dense_candidates": 49.794,
+                "load_runtime_sparse_documents": 1075.721,
+                "construct_retrievers": 956.64,
+                "retrieve_candidates": 75.889,
+                "fuse_candidates": 0.343
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal not_helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "stderr_tail": "\nLoading weights:   0%|          | 0/391 [00:00<?, ?it/s]\nLoading weights: 100%|██████████| 391/391 [00:00<00:00, 67319.60it/s]\n\npre tokenize:   0%|          | 0/1 [00:00<?, ?it/s]\npre tokenize: 100%|██████████| 1/1 [00:00<00:00, 1717.57it/s]\n\nInference Embeddings:   0%|          | 0/1 [00:00<?, ?it/s]\nInference Embeddings: 100%|██████████| 1/1 [00:00<00:00, 45.84it/s]\n",
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 19097,
+        "hit_count": 5,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "query_plan_version": null,
+        "stage_ms": {
+          "query_plan": 789.904,
+          "load_runtime_documents": 619.601,
+          "load_lexical_sidecar": 9167.813,
+          "encode_runtime_query": 5806.884,
+          "load_runtime_dense_candidates": 49.794,
+          "load_runtime_sparse_documents": 1075.721,
+          "construct_retrievers": 956.64,
+          "retrieve_candidates": 75.889,
+          "fuse_candidates": 0.343
+        }
+      }
+    },
+    {
+      "label": "direct_full_service_locator_mixed_ko",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?"
+      ],
+      "returncode": 0,
+      "wall_ms": 19648.551,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "general:rag": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "f9cba8941ce2a169#0",
+                "path": "contents/design-pattern/service-locator-antipattern.md",
+                "title": "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                "category": "design-pattern",
+                "section_title": "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                "section_path": [
+                  "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                  "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계"
+                ],
+                "score": 0.04590163934426229,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 1,
+                    "score": 20.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 1,
+                    "score": 8.0
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "d58c6c00dcb2ae07#3",
+                "path": "contents/security/sql-injection-beyond-preparedstatement.md",
+                "title": "SQL Injection beyond PreparedStatement",
+                "category": "security",
+                "section_title": "실전 시나리오",
+                "section_path": [
+                  "SQL Injection beyond PreparedStatement",
+                  "실전 시나리오"
+                ],
+                "score": 0.028985507246376812,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 9,
+                    "score": 7.5
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "1ea86f11634cd29b#10",
+                "path": "contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md",
+                "title": "Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검",
+                "category": "spring",
+                "section_title": "입문 확인용 미니 점검 (True / False)",
+                "section_path": [
+                  "Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검",
+                  "입문 확인용 미니 점검 (True / False)"
+                ],
+                "score": 0.028888888888888888,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 10,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 3,
+                    "score": 0.12761350208130295
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "dd5bf13de47ecc15#3",
+                "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+                "title": "Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle",
+                "category": "spring",
+                "section_title": "실전 시나리오",
+                "section_path": [
+                  "Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle",
+                  "실전 시나리오"
+                ],
+                "score": 0.02857142857142857,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 10,
+                    "score": 7.5
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "fbf90102a17c652f#5",
+                "path": "contents/spring/spring-jdbctemplate-sqlexception-translation.md",
+                "title": "Spring `JdbcTemplate` and `SQLException` Translation",
+                "category": "spring",
+                "section_title": "실무 정책으로 연결하기",
+                "section_path": [
+                  "Spring `JdbcTemplate` and `SQLException` Translation",
+                  "실무 정책으로 연결하기"
+                ],
+                "score": 0.028169014084507043,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 11,
+                    "score": 7.5
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "security",
+            "spring"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/design-pattern/service-locator-antipattern.md",
+                "title": "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                "category": "design-pattern",
+                "section_title": "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                "section_path": [
+                  "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계",
+                  "Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계"
+                ],
+                "score": 0.04590163934426229,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/security/sql-injection-beyond-preparedstatement.md",
+                "title": "SQL Injection beyond PreparedStatement",
+                "category": "security",
+                "section_title": "실전 시나리오",
+                "section_path": [
+                  "SQL Injection beyond PreparedStatement",
+                  "실전 시나리오"
+                ],
+                "score": 0.028985507246376812,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md",
+                "title": "Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검",
+                "category": "spring",
+                "section_title": "입문 확인용 미니 점검 (True / False)",
+                "section_path": [
+                  "Spring Legacy Self-invocation(내부 호출) 탐지 카드: `@Configuration`의 위험한 `@Bean` 직접 호출 빠른 점검",
+                  "입문 확인용 미니 점검 (True / False)"
+                ],
+                "score": 0.028888888888888888,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+                "title": "Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle",
+                "category": "spring",
+                "section_title": "실전 시나리오",
+                "section_path": [
+                  "Spring BeanFactoryPostProcessor vs BeanPostProcessor Lifecycle",
+                  "실전 시나리오"
+                ],
+                "score": 0.02857142857142857,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/spring/spring-jdbctemplate-sqlexception-translation.md",
+                "title": "Spring `JdbcTemplate` and `SQLException` Translation",
+                "category": "spring",
+                "section_title": "실무 정책으로 연결하기",
+                "section_path": [
+                  "Spring `JdbcTemplate` and `SQLException` Translation",
+                  "실무 정책으로 연결하기"
+                ],
+                "score": 0.028169014084507043,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 17731,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 18,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 835.36,
+                "load_runtime_documents": 726.967,
+                "load_lexical_sidecar": 9217.756,
+                "encode_runtime_query": 4166.34,
+                "load_runtime_dense_candidates": 59.532,
+                "load_runtime_sparse_documents": 1062.406,
+                "construct_retrievers": 964.485,
+                "retrieve_candidates": 90.605,
+                "fuse_candidates": 0.361
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?' --signal helpful --hit contents/design-pattern/service-locator-antipattern.md --hit contents/security/sql-injection-beyond-preparedstatement.md --hit contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md --hit contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md --hit contents/spring/spring-jdbctemplate-sqlexception-translation.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?' --signal not_helpful --hit contents/design-pattern/service-locator-antipattern.md --hit contents/security/sql-injection-beyond-preparedstatement.md --hit contents/spring/spring-legacy-configuration-bean-self-call-detection-card.md --hit contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md --hit contents/spring/spring-jdbctemplate-sqlexception-translation.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?' --signal unclear"
+          }
+        }
+      },
+      "stderr_tail": "\nLoading weights:   0%|          | 0/391 [00:00<?, ?it/s]\nLoading weights: 100%|██████████| 391/391 [00:00<00:00, 82023.25it/s]\n\npre tokenize:   0%|          | 0/1 [00:00<?, ?it/s]\npre tokenize: 100%|██████████| 1/1 [00:00<00:00, 1831.57it/s]\n\nInference Embeddings:   0%|          | 0/1 [00:00<?, ?it/s]\nInference Embeddings: 100%|██████████| 1/1 [00:00<00:00, 50.18it/s]\n",
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 17731,
+        "hit_count": 5,
+        "first_path": "contents/design-pattern/service-locator-antipattern.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "query_plan_version": null,
+        "stage_ms": {
+          "query_plan": 835.36,
+          "load_runtime_documents": 726.967,
+          "load_lexical_sidecar": 9217.756,
+          "encode_runtime_query": 4166.34,
+          "load_runtime_dense_candidates": 59.532,
+          "load_runtime_sparse_documents": 1062.406,
+          "construct_retrievers": 964.485,
+          "retrieve_candidates": 90.605,
+          "fuse_candidates": 0.361
+        }
+      }
+    },
+    {
+      "label": "daemon_start",
+      "command": [
+        "bin/rag-daemon",
+        "start"
+      ],
+      "returncode": 0,
+      "wall_ms": 212.695,
+      "payload": {
+        "status": "running",
+        "state": {
+          "schema_version": 1,
+          "pid": 14046,
+          "host": "127.0.0.1",
+          "port": 51184,
+          "started_at": 1777719497.070304,
+          "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+        },
+        "health": {
+          "ok": true,
+          "pid": 14046,
+          "uptime_s": 0.072
+        },
+        "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json",
+        "log_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.log",
+        "started_pid": 14046
+      }
+    },
+    {
+      "label": "daemon_warm_full_latency",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 latency가 뭐야?",
+        "--via-daemon"
+      ],
+      "returncode": 0,
+      "wall_ms": 18017.437,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 12,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 13,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 6,
+                    "score": 0.5412606659030335
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 61,
+                    "score": 0.08826318603769323
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "72b03a9289d70c2e#5",
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 12,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 7,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 13,
+                    "score": 0.5378030235956476
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "35eb3d4e1d371135#2",
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 1,
+                    "score": 0.5580953402982194
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 1,
+                    "score": 0.17653034062095685
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "8d15c3ede4e1ef05#2",
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 11,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 9,
+                    "score": 0.5390701803337957
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 11,
+                    "score": 0.11055028063765349
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b820483dc78206bb#2",
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 22,
+                    "score": 0.535585626467658
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 9,
+                    "score": 0.11140362295554951
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "network",
+            "system-design"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 17507,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 11,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 833.516,
+                "load_runtime_documents": 715.593,
+                "load_lexical_sidecar": 9238.402,
+                "encode_runtime_query": 3981.05,
+                "load_runtime_dense_candidates": 49.701,
+                "load_runtime_sparse_documents": 1062.47,
+                "construct_retrievers": 937.039,
+                "retrieve_candidates": 77.371,
+                "fuse_candidates": 0.367
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal not_helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 17507,
+        "hit_count": 5,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "query_plan_version": null,
+        "stage_ms": {
+          "query_plan": 833.516,
+          "load_runtime_documents": 715.593,
+          "load_lexical_sidecar": 9238.402,
+          "encode_runtime_query": 3981.05,
+          "load_runtime_dense_candidates": 49.701,
+          "load_runtime_sparse_documents": 1062.47,
+          "construct_retrievers": 937.039,
+          "retrieve_candidates": 77.371,
+          "fuse_candidates": 0.367
+        }
+      }
+    },
+    {
+      "label": "forced_bge_reranker_latency",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 latency가 뭐야?"
+      ],
+      "returncode": 0,
+      "wall_ms": 30653.078,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "35eb3d4e1d371135#2",
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.032266458495966696,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 1,
+                    "score": 0.5580953402982194
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 1,
+                    "score": 0.17653034062095685
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.03131881575727918,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 12,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 13,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 6,
+                    "score": 0.5412606659030335
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 61,
+                    "score": 0.08826318603769323
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "8d15c3ede4e1ef05#2",
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.030117753623188408,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 11,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 9,
+                    "score": 0.5390701803337957
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 11,
+                    "score": 0.11055028063765349
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b08b7bb6a40ac641#2",
+                "path": "contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md",
+                "title": "Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh",
+                  "깊이 들어가기"
+                ],
+                "score": 0.029957522915269395,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 3,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 15,
+                    "score": 0.10692757235653971
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "0a0fe201d96857a6#2",
+                "path": "contents/network/packet-loss-jitter-reordering-diagnostics.md",
+                "title": "Packet Loss, Jitter, Reordering Diagnostics",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Packet Loss, Jitter, Reordering Diagnostics",
+                  "깊이 들어가기"
+                ],
+                "score": 0.02964426877470356,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 17,
+                    "score": 0.5364111947322457
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 36,
+                    "score": 0.09577594575557669
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "network",
+            "system-design"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.032266458495966696,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.03131881575727918,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.030117753623188408,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md",
+                "title": "Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Adaptive Concurrency Limiter, Latency Signal, Gateway/Mesh",
+                  "깊이 들어가기"
+                ],
+                "score": 0.029957522915269395,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/packet-loss-jitter-reordering-diagnostics.md",
+                "title": "Packet Loss, Jitter, Reordering Diagnostics",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Packet Loss, Jitter, Reordering Diagnostics",
+                  "깊이 들어가기"
+                ],
+                "score": 0.02964426877470356,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 28067,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": true,
+              "r3_reranker_model": "BAAI/bge-reranker-v2-m3",
+              "r3_rerank_policy": "always",
+              "r3_reranker_skip_reason": null,
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 11,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 885.457,
+                "load_runtime_documents": 729.152,
+                "load_lexical_sidecar": 9919.119,
+                "encode_runtime_query": 7238.268,
+                "load_runtime_dense_candidates": 190.042,
+                "load_runtime_sparse_documents": 1082.404,
+                "construct_retrievers": 978.427,
+                "retrieve_candidates": 76.059,
+                "fuse_candidates": 0.409,
+                "rerank": 6304.254
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal helpful --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md --hit contents/network/packet-loss-jitter-reordering-diagnostics.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal not_helpful --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/adaptive-concurrency-limiter-latency-signal-gateway-mesh.md --hit contents/network/packet-loss-jitter-reordering-diagnostics.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "stderr_tail": "\nLoading weights:   0%|          | 0/391 [00:00<?, ?it/s]\nLoading weights: 100%|██████████| 391/391 [00:00<00:00, 66159.95it/s]\n\npre tokenize:   0%|          | 0/1 [00:00<?, ?it/s]\npre tokenize: 100%|██████████| 1/1 [00:00<00:00, 46.39it/s]\n\nInference Embeddings:   0%|          | 0/1 [00:00<?, ?it/s]\nInference Embeddings: 100%|██████████| 1/1 [00:00<00:00, 33.45it/s]\n\nLoading weights:   0%|          | 0/393 [00:00<?, ?it/s]\nLoading weights: 100%|██████████| 393/393 [00:00<00:00, 6053.99it/s]\n",
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 28067,
+        "hit_count": 5,
+        "first_path": "contents/system-design/knowledge-search-rag-platform-design.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": true,
+        "r3_reranker_model": "BAAI/bge-reranker-v2-m3",
+        "r3_reranker_skip_reason": null,
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "query_plan_version": null,
+        "stage_ms": {
+          "query_plan": 885.457,
+          "load_runtime_documents": 729.152,
+          "load_lexical_sidecar": 9919.119,
+          "encode_runtime_query": 7238.268,
+          "load_runtime_dense_candidates": 190.042,
+          "load_runtime_sparse_documents": 1082.404,
+          "construct_retrievers": 978.427,
+          "retrieve_candidates": 76.059,
+          "fuse_candidates": 0.409,
+          "rerank": 6304.254
+        }
+      }
+    },
+    {
+      "label": "daemon_stop",
+      "command": [
+        "bin/rag-daemon",
+        "stop"
+      ],
+      "returncode": 0,
+      "wall_ms": 296.629,
+      "payload": {
+        "status": "stopped",
+        "state": {
+          "schema_version": 1,
+          "pid": 14046,
+          "host": "127.0.0.1",
+          "port": 51184,
+          "started_at": 1777719497.070304,
+          "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+        }
+      }
+    },
+    {
+      "label": "daemon_status_after_stop",
+      "command": [
+        "bin/rag-daemon",
+        "status"
+      ],
+      "returncode": 0,
+      "wall_ms": 72.289,
+      "payload": {
+        "status": "stopped",
+        "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json"
+      }
+    },
+    {
+      "label": "daemon_start_warm_probe",
+      "command": [
+        "bin/rag-daemon",
+        "start"
+      ],
+      "returncode": 0,
+      "wall_ms": 186.967,
+      "payload": {
+        "status": "running",
+        "state": {
+          "schema_version": 1,
+          "pid": 14071,
+          "host": "127.0.0.1",
+          "port": 51194,
+          "started_at": 1777719560.898419,
+          "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+        },
+        "health": {
+          "ok": true,
+          "pid": 14071,
+          "uptime_s": 0.075
+        },
+        "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json",
+        "log_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.log",
+        "started_pid": 14071
+      }
+    },
+    {
+      "label": "daemon_warmup_full_latency",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 latency가 뭐야?",
+        "--via-daemon"
+      ],
+      "returncode": 0,
+      "wall_ms": 20773.305,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 12,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 13,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 6,
+                    "score": 0.5412606659030335
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 61,
+                    "score": 0.08826318603769323
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "72b03a9289d70c2e#5",
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 12,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 7,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 13,
+                    "score": 0.5378030235956476
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "35eb3d4e1d371135#2",
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 1,
+                    "score": 0.5580953402982194
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 1,
+                    "score": 0.17653034062095685
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "8d15c3ede4e1ef05#2",
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 11,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 9,
+                    "score": 0.5390701803337957
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 11,
+                    "score": 0.11055028063765349
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b820483dc78206bb#2",
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 22,
+                    "score": 0.535585626467658
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 9,
+                    "score": 0.11140362295554951
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "network",
+            "system-design"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 20267,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 11,
+              "r3_sparse_retriever_cache_hit": false,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 822.765,
+                "load_runtime_documents": 1023.857,
+                "load_lexical_sidecar": 9206.257,
+                "encode_runtime_query": 6561.11,
+                "load_runtime_dense_candidates": 45.026,
+                "load_runtime_sparse_documents": 1052.958,
+                "construct_retrievers": 901.128,
+                "retrieve_candidates": 75.826,
+                "fuse_candidates": 0.366
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal not_helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 20267,
+        "hit_count": 5,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "stage_ms": {
+          "query_plan": 822.765,
+          "load_runtime_documents": 1023.857,
+          "load_lexical_sidecar": 9206.257,
+          "encode_runtime_query": 6561.11,
+          "load_runtime_dense_candidates": 45.026,
+          "load_runtime_sparse_documents": 1052.958,
+          "construct_retrievers": 901.128,
+          "retrieve_candidates": 75.826,
+          "fuse_candidates": 0.366
+        }
+      }
+    },
+    {
+      "label": "daemon_second_warm_full_latency",
+      "command": [
+        "bin/rag-ask",
+        "RAG로 깊게 latency가 뭐야?",
+        "--via-daemon"
+      ],
+      "returncode": 0,
+      "wall_ms": 1208.599,
+      "payload": {
+        "decision": {
+          "tier": 2,
+          "mode": "full",
+          "reason": "user override: full RAG",
+          "experience_level": "beginner",
+          "override_active": true,
+          "blocked": false,
+          "promoted_by_profile": false
+        },
+        "hits": {
+          "by_learning_point": {},
+          "by_fallback_key": {
+            "network:network_and_reliability": [
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "c7b64831fe8b9244#0",
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 17,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:section",
+                    "rank": 12,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 17,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 13,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 6,
+                    "score": 0.5412606659030335
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 61,
+                    "score": 0.08826318603769323
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "72b03a9289d70c2e#5",
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:aliases",
+                    "rank": 12,
+                    "score": 5.0
+                  },
+                  {
+                    "retriever": "lexical:body",
+                    "rank": 7,
+                    "score": 2.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 13,
+                    "score": 0.5378030235956476
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "35eb3d4e1d371135#2",
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 1,
+                    "score": 0.5580953402982194
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 1,
+                    "score": 0.17653034062095685
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "8d15c3ede4e1ef05#2",
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "lexical_sidecar:title",
+                    "rank": 11,
+                    "score": 3.0
+                  },
+                  {
+                    "retriever": "dense",
+                    "rank": 9,
+                    "score": 0.5390701803337957
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 11,
+                    "score": 0.11055028063765349
+                  }
+                ]
+              },
+              {
+                "row_id": null,
+                "doc_id": null,
+                "chunk_id": "b820483dc78206bb#2",
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": "",
+                "anchors": [],
+                "r3_sources": [
+                  {
+                    "retriever": "dense",
+                    "rank": 22,
+                    "score": 0.535585626467658
+                  },
+                  {
+                    "retriever": "sparse",
+                    "rank": 9,
+                    "score": 0.11140362295554951
+                  }
+                ]
+              }
+            ]
+          },
+          "fallback_reason": "cs_only_no_peer_learning_point",
+          "cs_categories_hit": [
+            "design-pattern",
+            "network",
+            "system-design"
+          ],
+          "sidecar": {
+            "generated_by": "scripts.learning.integration.augment",
+            "mode_used": "full",
+            "backend": "r3",
+            "hits": [
+              {
+                "path": "contents/network/latency-bandwidth-throughput-basics.md",
+                "title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "category": "network",
+                "section_title": "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                "section_path": [
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)",
+                  "지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)"
+                ],
+                "score": 0.06719988535057028,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/design-pattern/projection-freshness-slo-pattern.md",
+                "title": "Projection Freshness SLO Pattern",
+                "category": "design-pattern",
+                "section_title": "4. budget burn은 incident 언어로 번역돼야 한다",
+                "section_path": [
+                  "Projection Freshness SLO Pattern",
+                  "4. budget burn은 incident 언어로 번역돼야 한다"
+                ],
+                "score": 0.05341670642222676,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/system-design/knowledge-search-rag-platform-design.md",
+                "title": "Knowledge Search / RAG Platform 설계",
+                "category": "system-design",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "Knowledge Search / RAG Platform 설계",
+                  "깊이 들어가기"
+                ],
+                "score": 0.03442622950819672,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/ecn-congestion-signal-tail-latency.md",
+                "title": "ECN, Congestion Signal, Tail Latency",
+                "category": "network",
+                "section_title": "깊이 들어가기",
+                "section_path": [
+                  "ECN, Congestion Signal, Tail Latency",
+                  "깊이 들어가기"
+                ],
+                "score": 0.033506838130230664,
+                "snippet_preview": ""
+              },
+              {
+                "path": "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+                "title": "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                "category": "network",
+                "section_title": "핵심 개념",
+                "section_path": [
+                  "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB",
+                  "핵심 개념"
+                ],
+                "score": 0.028137150936726762,
+                "snippet_preview": ""
+              }
+            ]
+          },
+          "meta": {
+            "latency_ms": 1020,
+            "rag_ready": true,
+            "reason": "ready",
+            "mode_used": "full",
+            "backend": "r3",
+            "category_filter_fallback": false,
+            "runtime_debug": {
+              "backend": "r3",
+              "mode": "full",
+              "r3_reranker_enabled": false,
+              "r3_reranker_model": null,
+              "r3_rerank_policy": "auto",
+              "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+              "rerank_input_window": 20,
+              "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+              "r3_sparse_sidecar_document_count": 27158,
+              "r3_sparse_query_terms_count": 11,
+              "r3_sparse_retriever_cache_hit": true,
+              "r3_dense_candidate_count": 100,
+              "r3_lexical_sidecar_used": true,
+              "r3_lexical_sidecar": {
+                "path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/cs_rag/r3_lexical_sidecar.json",
+                "schema_version": 1,
+                "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+                "row_count": 27158,
+                "document_count": 27158,
+                "fields": [
+                  "title",
+                  "section",
+                  "aliases",
+                  "body"
+                ],
+                "bytes": 94672711
+              },
+              "r3_lexical_sidecar_error": null,
+              "r3_stage_ms": {
+                "query_plan": 0.166,
+                "load_runtime_documents": 1.197,
+                "load_lexical_sidecar": 0.094,
+                "encode_runtime_query": 0.046,
+                "load_runtime_dense_candidates": 32.686,
+                "load_runtime_sparse_documents": 0.979,
+                "construct_retrievers": 328.119,
+                "retrieve_candidates": 78.633,
+                "fuse_candidates": 0.307
+              }
+            }
+          }
+        },
+        "next_command": null,
+        "learner_context": {
+          "experience_level": {
+            "current": "beginner",
+            "confidence": "high",
+            "rolling_window": "last_20_events",
+            "evidence": [
+              {
+                "signal": "BEGINNER_HINT 매치",
+                "count": 20,
+                "from": "rag_ask"
+              }
+            ]
+          },
+          "current_module": "spring-core-1",
+          "current_stage": "spring-core",
+          "module_progress": {
+            "turns": 66,
+            "tests_passed": 6,
+            "tests_failed": 0,
+            "first_active": "2026-04-27T08:57:21+00:00",
+            "last_active": "2026-04-29T01:19:04+00:00",
+            "completion_estimate": 1.0
+          },
+          "mastered_concepts": [],
+          "uncertain_concepts": [
+            {
+              "id": "concept:spring/bean",
+              "ask_count_7d": 25,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/component-scan",
+              "ask_count_7d": 16,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/configuration",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/di",
+              "ask_count_7d": 19,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/dispatcher-servlet",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/exception-handler",
+              "ask_count_7d": 4,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jdbc-template",
+              "ask_count_7d": 5,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/jpa-entity",
+              "ask_count_7d": 7,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/spring-security",
+              "ask_count_7d": 37,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            },
+            {
+              "id": "concept:spring/transactional",
+              "ask_count_7d": 23,
+              "guidance": "asked frequently — go deeper, surface common misconceptions"
+            }
+          ],
+          "underexplored_in_current_stage": [],
+          "skip_basics_for": [],
+          "deepen_for": [],
+          "tie_to_module": "spring-core-1",
+          "suggested_depth": "medium",
+          "next_recommendation": {
+            "type": "drill",
+            "value": "concept:spring/bean",
+            "reason": "asked 25x in 7d, no drill yet",
+            "priority": 0.85
+          },
+          "response_hints": {
+            "must_include_phrases": [],
+            "must_skip_explanations_of": [],
+            "header_required_tags": [],
+            "must_offer_next_action": "drill:concept:spring/bean"
+          }
+        },
+        "feedback_hint": {
+          "instructions": "원하면 한 줄 신호로 알려줘 — 시스템이 학습돼. AI 세션이 학습자 의사 확인 후 아래 명령 중 하나를 실행해.",
+          "commands": {
+            "helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "not_helpful": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal not_helpful --hit contents/network/latency-bandwidth-throughput-basics.md --hit contents/design-pattern/projection-freshness-slo-pattern.md --hit contents/system-design/knowledge-search-rag-platform-design.md --hit contents/network/ecn-congestion-signal-tail-latency.md --hit contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md",
+            "unclear": "/Users/idonghun/IdeaProjects/woowa-learning-hub/bin/learn-feedback 'RAG로 깊게 latency가 뭐야?' --signal unclear"
+          }
+        }
+      },
+      "summary": {
+        "tier": 2,
+        "mode": "full",
+        "backend": "r3",
+        "rag_ready": true,
+        "latency_ms": 1020,
+        "hit_count": 5,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_dense_candidate_count": 100,
+        "r3_reranker_enabled": false,
+        "r3_reranker_model": null,
+        "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+        "rerank_input_window": 20,
+        "r3_lexical_sidecar_used": true,
+        "stage_ms": {
+          "query_plan": 0.166,
+          "load_runtime_documents": 1.197,
+          "load_lexical_sidecar": 0.094,
+          "encode_runtime_query": 0.046,
+          "load_runtime_dense_candidates": 32.686,
+          "load_runtime_sparse_documents": 0.979,
+          "construct_retrievers": 328.119,
+          "retrieve_candidates": 78.633,
+          "fuse_candidates": 0.307
+        }
+      }
+    },
+    {
+      "label": "daemon_stop_after_warm_probe",
+      "command": [
+        "bin/rag-daemon",
+        "stop"
+      ],
+      "returncode": 0,
+      "wall_ms": 77.298,
+      "payload": {
+        "status": "stopped",
+        "state": {
+          "schema_version": 1,
+          "pid": 14071,
+          "host": "127.0.0.1",
+          "port": 51194,
+          "started_at": 1777719560.898419,
+          "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+        }
+      }
+    },
+    {
+      "label": "daemon_status_after_warm_probe",
+      "command": [
+        "bin/rag-daemon",
+        "status"
+      ],
+      "returncode": 0,
+      "wall_ms": 75.664,
+      "payload": {
+        "status": "stopped",
+        "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json"
+      }
+    }
+  ],
+  "warm_daemon_summary": {
+    "daemon_start_warm_probe": {
+      "status": "running",
+      "state": {
+        "schema_version": 1,
+        "pid": 14071,
+        "host": "127.0.0.1",
+        "port": 51194,
+        "started_at": 1777719560.898419,
+        "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+      },
+      "health": {
+        "ok": true,
+        "pid": 14071,
+        "uptime_s": 0.075
+      },
+      "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json",
+      "log_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.log",
+      "started_pid": 14071
+    },
+    "daemon_warmup_full_latency": {
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "latency_ms": 20267,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "r3_lexical_sidecar_used": true,
+      "stage_ms": {
+        "query_plan": 822.765,
+        "load_runtime_documents": 1023.857,
+        "load_lexical_sidecar": 9206.257,
+        "encode_runtime_query": 6561.11,
+        "load_runtime_dense_candidates": 45.026,
+        "load_runtime_sparse_documents": 1052.958,
+        "construct_retrievers": 901.128,
+        "retrieve_candidates": 75.826,
+        "fuse_candidates": 0.366
+      }
+    },
+    "daemon_second_warm_full_latency": {
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "latency_ms": 1020,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "r3_lexical_sidecar_used": true,
+      "stage_ms": {
+        "query_plan": 0.166,
+        "load_runtime_documents": 1.197,
+        "load_lexical_sidecar": 0.094,
+        "encode_runtime_query": 0.046,
+        "load_runtime_dense_candidates": 32.686,
+        "load_runtime_sparse_documents": 0.979,
+        "construct_retrievers": 328.119,
+        "retrieve_candidates": 78.633,
+        "fuse_candidates": 0.307
+      }
+    },
+    "daemon_stop_after_warm_probe": {
+      "status": "stopped",
+      "state": {
+        "schema_version": 1,
+        "pid": 14071,
+        "host": "127.0.0.1",
+        "port": 51194,
+        "started_at": 1777719560.898419,
+        "root": "/Users/idonghun/IdeaProjects/woowa-learning-hub"
+      }
+    },
+    "daemon_status_after_warm_probe": {
+      "status": "stopped",
+      "state_path": "/Users/idonghun/IdeaProjects/woowa-learning-hub/state/rag-daemon.json"
+    }
+  },
+  "runtime_commit": "788ee99e67b7131e647684592d53bd268eef93f0"
+}

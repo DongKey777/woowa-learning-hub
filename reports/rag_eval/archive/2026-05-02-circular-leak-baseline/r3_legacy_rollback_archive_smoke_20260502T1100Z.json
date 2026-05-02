@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-02T11:00:22.068610+00:00",
+  "purpose": "Legacy v2 rollback archive smoke after R3 runtime cutover",
+  "archive": "state/cs_rag_archive/v2_20260501T063445Z",
+  "returncode": 0,
+  "wall_ms": 3022.476,
+  "payload": {
+    "ready": {
+      "state": "stale",
+      "reason": "corpus_changed",
+      "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+      "index_manifest_hash": "5e0eb308e60102df545a8f8c8f3ab326fb3d270b29080ba4d8072dcb7047d794",
+      "next_command": "bin/cs-index-build"
+    },
+    "records": [
+      {
+        "prompt": "latency가 뭐야?",
+        "mode": "cheap",
+        "hit_count": 5,
+        "first_path": "contents/network/alb-elb-retry-amplification-proxy-chain.md",
+        "first_title": "ALB, ELB Retry Amplification, Proxy Chain",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.166,
+            "legacy_detect_signals": 0.395,
+            "legacy_query_candidates": 0.01,
+            "legacy_candidate_pool": 5.142,
+            "legacy_fetch_chunks": 0.405,
+            "legacy_boost_filter": 0.022,
+            "legacy_dedupe_format": 0.022
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      },
+      {
+        "prompt": "RAG로 깊게 latency가 뭐야?",
+        "mode": "full",
+        "hit_count": 5,
+        "first_path": "contents/network/alb-elb-retry-amplification-proxy-chain.md",
+        "first_title": "ALB, ELB Retry Amplification, Proxy Chain",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.072,
+            "legacy_detect_signals": 0.344,
+            "legacy_query_candidates": 0.007,
+            "legacy_candidate_pool": 2546.231,
+            "legacy_fetch_chunks": 0.44,
+            "legacy_boost_filter": 0.025,
+            "legacy_dedupe_format": 0.018
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts",
+            "dense"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      },
+      {
+        "prompt": "RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?",
+        "mode": "full",
+        "hit_count": 5,
+        "first_path": "contents/spring/spring-factorybean-smartinitializingsingleton-extension-points.md",
+        "first_title": "Spring `FactoryBean` and `SmartInitializingSingleton` Extension Points",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.099,
+            "legacy_detect_signals": 0.238,
+            "legacy_query_candidates": 0.007,
+            "legacy_candidate_pool": 7.702,
+            "legacy_fetch_chunks": 0.475,
+            "legacy_boost_filter": 0.021,
+            "legacy_dedupe_format": 0.017
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts",
+            "dense"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      }
+    ]
+  },
+  "stderr_tail": ""
+}

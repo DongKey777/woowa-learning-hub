@@ -1,0 +1,255 @@
+{
+  "artifact_kind": "r3_backend_compare_retrieval_fabric_summary",
+  "backend": "r3",
+  "caveats": [
+    "Pilot qrels cover 52 generated/reviewed queries from the current 13-document Corpus v2 seed, not the final cutover suite.",
+    "Full-mode CLI latency includes one-shot Python plus BGE-M3 model load; production full-mode latency must be measured with the intended long-lived/local runtime profile.",
+    "This run covers R3 lexical + Lance dense + BGE-M3 sparse sidecar + signal fusion before cross-encoder reranking."
+  ],
+  "command": ".venv/bin/python -m scripts.learning.rag.r3.eval.backend_compare --qrels reports/rag_eval/r3_corpus_v2_qrels_20260501T1640Z.json --out /tmp/r3_backend_compare_retrieval_fabric_20260502.json --backend r3 --top-k 100 --window 5 --window 20 --window 50 --window 100 --forbidden-window 5",
+  "elapsed_seconds_time_p": 93.35,
+  "generated_at_utc": "2026-05-01T1718Z",
+  "qrels": "reports/rag_eval/r3_corpus_v2_qrels_20260501T1640Z.json",
+  "query_count": 52,
+  "retrieval_fabric": {
+    "dense_candidate_count_max": 100,
+    "dense_candidate_count_min": 100,
+    "sparse_query_terms_max": 14,
+    "sparse_query_terms_min": 5,
+    "sparse_sidecar_document_counts": [
+      27162
+    ],
+    "sparse_source_values": [
+      "bge_m3_sparse_vec_sidecar"
+    ]
+  },
+  "schema_version": 1,
+  "source_report": "/tmp/r3_backend_compare_retrieval_fabric_20260502.json",
+  "summary": {
+    "by_category": {
+      "unknown": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9423076923076923,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9423076923076923,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9423076923076923,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9423076923076923,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 52
+      }
+    },
+    "by_language": {
+      "ko": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 10
+      },
+      "mixed": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9285714285714286,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9285714285714286,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9285714285714286,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9285714285714286,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 42
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.875,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.875,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.875,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.875,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 8
+      },
+      "beginner": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.95,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.95,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.95,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.95,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 40
+      },
+      "intermediate": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 4
+      }
+    },
+    "forbidden_query_ids": [],
+    "missing_candidate_primary_query_ids": [],
+    "missing_final_primary_query_ids": [],
+    "overall": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.9423076923076923,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.9423076923076923,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.9423076923076923,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.9423076923076923,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 52
+    },
+    "windows": [
+      5,
+      20,
+      50,
+      100
+    ]
+  }
+}

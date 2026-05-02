@@ -1,0 +1,240 @@
+{
+  "source": "reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1052Z.json",
+  "artifact_combo": "remote-built index r3-61216f2-2026-05-02T0937 imported at state/cs_rag + runtime commit a535981",
+  "backend": "production-r3",
+  "query_count": 208,
+  "spec": {
+    "backend": "r3",
+    "index_root": "state/cs_rag",
+    "modalities": [],
+    "name": "production-r3",
+    "use_reranker": false
+  },
+  "summary": {
+    "by_category": {
+      "unknown": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 208
+      }
+    },
+    "by_language": {
+      "ko": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 25
+      },
+      "mixed": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 183
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 44
+      },
+      "beginner": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 148
+      },
+      "intermediate": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0,
+          "50": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      }
+    },
+    "forbidden_query_ids": [],
+    "missing_candidate_primary_query_ids": [],
+    "missing_final_primary_query_ids": [],
+    "overall": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 208
+    },
+    "windows": [
+      5,
+      20,
+      50,
+      100
+    ]
+  }
+}

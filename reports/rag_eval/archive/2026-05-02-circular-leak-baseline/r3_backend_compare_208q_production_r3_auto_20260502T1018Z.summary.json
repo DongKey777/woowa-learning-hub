@@ -1,0 +1,220 @@
+{
+  "artifact": {
+    "archive_sha256": "5eab5b0fb9def8c0c58370eb64abbbbf6fb195c95bc6d4376832c654c3a78e0d",
+    "commit_sha": "5d17c78",
+    "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+    "lexical_sidecar_sha256": "8593b20f074d8d45f310b3f7a759004e727fa7ec71193b25c643bef830bb5934",
+    "row_count": 27158,
+    "run_id": "r3-61216f2-2026-05-02T0937-runtime-fusion-v2-prebuild-check"
+  },
+  "artifact_kind": "r3_backend_compare_208q_production_r3_auto_summary",
+  "backend": "production-r3",
+  "by_language": {
+    "ko": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 25
+    },
+    "mixed": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 183
+    }
+  },
+  "by_level": {
+    "advanced": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 44
+    },
+    "beginner": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 148
+    },
+    "intermediate": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0,
+        "50": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 16
+    }
+  },
+  "forbidden_query_ids": [],
+  "forbidden_window": 5,
+  "full_report": {
+    "path": "reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1018Z.json",
+    "status": "removed_after_summary_due_size"
+  },
+  "missing_candidate_primary_query_ids": [],
+  "missing_final_primary_query_ids": [],
+  "overall": {
+    "candidate_recall_primary": {
+      "100": 1.0,
+      "20": 1.0,
+      "5": 1.0,
+      "50": 1.0
+    },
+    "candidate_recall_relevant": {
+      "100": 1.0,
+      "20": 1.0,
+      "5": 1.0,
+      "50": 1.0
+    },
+    "final_hit_primary": {
+      "100": 1.0,
+      "20": 1.0,
+      "5": 1.0,
+      "50": 1.0
+    },
+    "final_hit_relevant": {
+      "100": 1.0,
+      "20": 1.0,
+      "5": 1.0,
+      "50": 1.0
+    },
+    "forbidden_hits": 0,
+    "forbidden_rate": 0.0,
+    "forbidden_window": 5,
+    "total": 208
+  },
+  "query_count": 208,
+  "schema_version": 1,
+  "spec": {
+    "backend": "r3",
+    "index_root": "state/cs_rag",
+    "modalities": [],
+    "name": "production-r3",
+    "use_reranker": false
+  },
+  "top_k": 100,
+  "windows": [
+    5,
+    20,
+    50,
+    100
+  ]
+}

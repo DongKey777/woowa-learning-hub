@@ -1,0 +1,332 @@
+{
+  "artifact_kind": "r3_backend_compare_100q_lexical_sidecar_rich_fusion_reranker_window20",
+  "backend": "r3",
+  "query_count": 100,
+  "spec": {
+    "backend": "r3",
+    "index_root": "state/cs_rag",
+    "modalities": [],
+    "name": "r3",
+    "use_reranker": true
+  },
+  "lexical_sidecar_stats": {
+    "min": 27170,
+    "max": 27170,
+    "avg": 27170
+  },
+  "rerank_input_window_stats": {
+    "min": 20,
+    "max": 20,
+    "avg": 20
+  },
+  "summary": {
+    "by_category": {
+      "unknown": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.99
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.97
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 100
+      }
+    },
+    "by_language": {
+      "ko": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      },
+      "mixed": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9880952380952381
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9642857142857143
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 84
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 12
+      },
+      "beginner": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9861111111111112
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9583333333333334
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 72
+      },
+      "intermediate": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      }
+    },
+    "forbidden_query_ids": [],
+    "missing_candidate_primary_query_ids": [],
+    "missing_final_primary_query_ids": [],
+    "overall": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.99
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.97
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 100
+    },
+    "windows": [
+      5,
+      20,
+      100
+    ]
+  },
+  "reranker_demotion": {
+    "by_category": {
+      "unknown": {
+        "demoted": 27,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 2,
+        "lost_top5_rate": 0.02,
+        "missing_after": 0,
+        "rate": 0.27,
+        "total": 100
+      }
+    },
+    "by_language": {
+      "ko": {
+        "demoted": 3,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.1875,
+        "total": 16
+      },
+      "mixed": {
+        "demoted": 24,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 2,
+        "lost_top5_rate": 0.023809523809523808,
+        "missing_after": 0,
+        "rate": 0.2857142857142857,
+        "total": 84
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "demoted": 1,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.08333333333333333,
+        "total": 12
+      },
+      "beginner": {
+        "demoted": 22,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 2,
+        "lost_top5_rate": 0.027777777777777776,
+        "missing_after": 0,
+        "rate": 0.3055555555555556,
+        "total": 72
+      },
+      "intermediate": {
+        "demoted": 4,
+        "lost_top20": 0,
+        "lost_top20_rate": 0.0,
+        "lost_top5": 0,
+        "lost_top5_rate": 0.0,
+        "missing_after": 0,
+        "rate": 0.25,
+        "total": 16
+      }
+    },
+    "demoted_query_ids": [
+      "database/sql-relational-modeling-basics:expected:4",
+      "database/transaction-basics:expected:4",
+      "database/transaction-isolation-basics:expected:1",
+      "design-pattern/factory-vs-di-container-wiring:expected:1",
+      "design-pattern/factory-vs-di-container-wiring:expected:2",
+      "design-pattern/factory-vs-di-container-wiring:expected:4",
+      "network/request-timing-decomposition:expected:2",
+      "software-engineering/dependency-injection-basics:expected:2",
+      "software-engineering/dependency-injection-basics:expected:3",
+      "software-engineering/layered-architecture-basics:expected:4",
+      "software-engineering/service-layer-basics:expected:3",
+      "spring/aop-proxy-mechanism:expected:4",
+      "spring/aop-basics:expected:4",
+      "spring/bean-di-basics:expected:2",
+      "spring/bean-di-basics:expected:4",
+      "spring/component-scan-failure-patterns:expected:2",
+      "spring/component-scan-failure-patterns:expected:3",
+      "spring/component-scan-failure-patterns:expected:4",
+      "spring/ioc-di-basics:expected:3",
+      "spring/ioc-di-basics:expected:4",
+      "spring/request-pipeline-bean-container:expected:1",
+      "spring/request-pipeline-bean-container:expected:3",
+      "spring/request-pipeline-bean-container:expected:4",
+      "spring/self-invocation-proxy-misconception:expected:2",
+      "spring/self-invocation-proxy-misconception:expected:4",
+      "spring/transactional-basics:expected:3",
+      "spring/transactional-basics:expected:4"
+    ],
+    "lost_top20_query_ids": [],
+    "lost_top5_query_ids": [
+      "spring/bean-di-basics:expected:4",
+      "spring/transactional-basics:expected:3"
+    ],
+    "overall": {
+      "demoted": 27,
+      "lost_top20": 0,
+      "lost_top20_rate": 0.0,
+      "lost_top5": 2,
+      "lost_top5_rate": 0.02,
+      "missing_after": 0,
+      "rate": 0.27,
+      "total": 100
+    }
+  }
+}

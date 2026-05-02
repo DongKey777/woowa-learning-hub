@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-05-02T11:04:01.628539+00:00",
+  "purpose": "Current-corpus legacy v2 rollback smoke after R3 runtime cutover",
+  "archive": "state/cs_rag_archive/v2_current_20260502T1101Z",
+  "returncode": 0,
+  "wall_ms": 4045.817,
+  "payload": {
+    "ready": {
+      "state": "ready",
+      "reason": "ready",
+      "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+      "index_manifest_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
+      "next_command": null
+    },
+    "records": [
+      {
+        "prompt": "latency가 뭐야?",
+        "mode": "cheap",
+        "hit_count": 5,
+        "first_path": "contents/network/alb-elb-retry-amplification-proxy-chain.md",
+        "first_title": "ALB, ELB Retry Amplification, Proxy Chain",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.16,
+            "legacy_detect_signals": 0.428,
+            "legacy_query_candidates": 0.011,
+            "legacy_candidate_pool": 4.842,
+            "legacy_fetch_chunks": 0.48,
+            "legacy_boost_filter": 0.025,
+            "legacy_dedupe_format": 0.023
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      },
+      {
+        "prompt": "RAG로 깊게 latency가 뭐야?",
+        "mode": "full",
+        "hit_count": 5,
+        "first_path": "contents/network/alb-elb-retry-amplification-proxy-chain.md",
+        "first_title": "ALB, ELB Retry Amplification, Proxy Chain",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.084,
+            "legacy_detect_signals": 0.35,
+            "legacy_query_candidates": 0.008,
+            "legacy_candidate_pool": 3439.898,
+            "legacy_fetch_chunks": 1.236,
+            "legacy_boost_filter": 0.041,
+            "legacy_dedupe_format": 0.034
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts",
+            "dense"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      },
+      {
+        "prompt": "RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?",
+        "mode": "full",
+        "hit_count": 5,
+        "first_path": "contents/database/gap-lock-starvation-and-fairness.md",
+        "first_title": "Gap Lock Starvation과 Fairness",
+        "debug": {
+          "stage_ms": {
+            "legacy_open_index": 0.14,
+            "legacy_detect_signals": 0.291,
+            "legacy_query_candidates": 0.01,
+            "legacy_candidate_pool": 36.212,
+            "legacy_fetch_chunks": 1.274,
+            "legacy_boost_filter": 0.036,
+            "legacy_dedupe_format": 0.033
+          },
+          "backend": "legacy",
+          "modalities": [
+            "fts",
+            "dense"
+          ],
+          "category_filter_fallback": false,
+          "allowed_categories": [],
+          "reranker_enabled": false,
+          "rerank_top_n": 0,
+          "rerank_input_count": 0
+        }
+      }
+    ]
+  },
+  "stderr_tail": "\nLoading weights:   0%|          | 0/199 [00:00<?, ?it/s]\nLoading weights: 100%|██████████| 199/199 [00:00<00:00, 21412.14it/s]\n"
+}

@@ -1,0 +1,55 @@
+{
+  "artifact_kind": "r3_strict_artifact_import_smoke",
+  "generated_at_utc": "2026-05-01T18:45Z",
+  "package_command": "python -m scripts.remote.package_rag_artifact --index-root state/cs_rag --run-id r3-local-87e8588-2026-05-01T1845 --r-phase r3 --strict-r3 ...",
+  "package_result": {
+    "archive_path": "artifacts/rag-full-build/r3-local-87e8588-2026-05-01T1845/cs_rag_index_root.tar.zst",
+    "bytes_compressed": 156104732,
+    "bytes_uncompressed": 367953920,
+    "compression_ratio": 0.4243,
+    "output_dir": "artifacts/rag-full-build/r3-local-87e8588-2026-05-01T1845",
+    "r_phase": "r3",
+    "run_id": "r3-local-87e8588-2026-05-01T1845",
+    "schema_id": "rag-build-artifact-v1",
+    "sha256": "c4f09836c2398ce4ae128c3c2abb8a4ed8da602310d04ab3548c0025068f44f5",
+    "wallclock_s": 1.17
+  },
+  "schema_version": 1,
+  "scope": "local strict artifact packaging/import contract smoke; actual remote RunPod artifact still requires a remote run",
+  "strict_metadata": {
+    "build_command": "bin/cs-index-build --mode incremental --backend lance --lance-max-eta-minutes 20",
+    "local_runtime_profile": {
+      "accelerator": "Apple Silicon MPS",
+      "machine": "M5 MacBook Air 13",
+      "memory_gb": 16
+    },
+    "package_lock": "pyproject.toml:sha256:6ebd2e94d461b728497be25cf3fb5689fef11c0726a2dc1bfa62f5572f4608a8",
+    "qrel_hash": "sha256:b0d215cbdb4606f074e0664faec2e023258da319162f1b6c4074c2af6afac7c1"
+  },
+  "verify_command": "python -m scripts.remote.artifact_contract artifacts/rag-full-build/r3-local-87e8588-2026-05-01T1845 --strict-r3 --verify-import",
+  "verify_result": {
+    "archive": "artifacts/rag-full-build/r3-local-87e8588-2026-05-01T1845/cs_rag_index_root.tar.zst",
+    "artifact_dir": "artifacts/rag-full-build/r3-local-87e8588-2026-05-01T1845",
+    "commit_sha": "87e8588a8cc64f7e74abbc52ad54db3b54d52807",
+    "import_check": {
+      "corpus_hash": "f829f2b4b5d02346ff391cf2ff085c2ec4d181eae77097500f216d784ac5334c",
+      "encoder": {
+        "batch_size": 64,
+        "colbert_dim": 1024,
+        "dense_dim": 1024,
+        "max_length": 512,
+        "model_id": "BAAI/bge-m3",
+        "model_version": "BAAI/bge-m3@5617a9f61b028005a4858fdac845db406aefb181"
+      },
+      "has_chunk_hashes": true,
+      "has_lance_dir": true,
+      "index_root_name": "cs_rag",
+      "index_version": 3,
+      "row_count": 27170
+    },
+    "index_version": 3,
+    "sha256": "c4f09836c2398ce4ae128c3c2abb8a4ed8da602310d04ab3548c0025068f44f5",
+    "strict_r3": true,
+    "verify_import": true
+  }
+}

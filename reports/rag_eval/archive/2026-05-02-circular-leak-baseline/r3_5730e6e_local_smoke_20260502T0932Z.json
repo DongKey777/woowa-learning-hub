@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "r3_local_smoke_summary",
+  "artifact_run_id": "r3-5730e6e-2026-05-02T0904",
+  "commit_sha": "5730e6e57940243074f227fb9ffc42b498136c53",
+  "index_root": "state/cs_rag",
+  "rows": [
+    {
+      "label": "cheap_latency",
+      "tier": 1,
+      "mode": "cheap",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 3,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "latency_ms": 11535,
+      "r3_sparse_source": "lexical_terms",
+      "r3_dense_candidate_count": 0,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "mode_not_full",
+      "rerank_input_window": 20,
+      "rerank_ms": null,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    },
+    {
+      "label": "full_latency_auto",
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "latency_ms": 17040,
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "rerank_ms": null,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    },
+    {
+      "label": "full_service_locator",
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 5,
+      "first_path": "contents/design-pattern/service-locator-antipattern.md",
+      "latency_ms": 17098,
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "rerank_ms": null,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    },
+    {
+      "label": "daemon_full_first",
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "latency_ms": 17073,
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "rerank_ms": null,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    },
+    {
+      "label": "daemon_full_warm",
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "latency_ms": 1064,
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": false,
+      "r3_reranker_model": null,
+      "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate",
+      "rerank_input_window": 20,
+      "rerank_ms": null,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    },
+    {
+      "label": "full_latency_forced_bge_reranker_direct",
+      "tier": 2,
+      "mode": "full",
+      "backend": "r3",
+      "rag_ready": true,
+      "hit_count": 5,
+      "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+      "latency_ms": 23336,
+      "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+      "r3_dense_candidate_count": 100,
+      "r3_reranker_enabled": true,
+      "r3_reranker_model": "BAAI/bge-reranker-v2-m3",
+      "r3_reranker_skip_reason": null,
+      "rerank_input_window": 20,
+      "rerank_ms": 5577.283,
+      "runtime_debug_keys_present": [
+        "r3_dense_candidate_count",
+        "r3_reranker_enabled",
+        "r3_sparse_source",
+        "r3_stage_ms"
+      ]
+    }
+  ],
+  "daemon_status_after": "stopped",
+  "notes": [
+    "cheap mode is lexical only by design",
+    "full auto mode uses bge_m3_sparse_vec_sidecar and skips reranker by sidecar first-stage gate",
+    "forced direct run verifies BAAI/bge-reranker-v2-m3 loads and reranks 20 pairs"
+  ]
+}

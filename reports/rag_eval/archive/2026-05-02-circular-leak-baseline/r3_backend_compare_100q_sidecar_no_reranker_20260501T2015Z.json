@@ -1,0 +1,215 @@
+{
+  "artifact_kind": "r3_backend_compare_100q_sidecar_no_reranker",
+  "backend": "r3",
+  "query_count": 100,
+  "spec": {
+    "backend": "r3",
+    "index_root": "state/cs_rag",
+    "modalities": [],
+    "name": "r3",
+    "use_reranker": false
+  },
+  "lexical_sidecar_stats": {
+    "min": 27170,
+    "max": 27170,
+    "avg": 27170
+  },
+  "summary": {
+    "by_category": {
+      "unknown": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.99
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.99
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 100
+      }
+    },
+    "by_language": {
+      "ko": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      },
+      "mixed": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9880952380952381
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9880952380952381
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 84
+      }
+    },
+    "by_level": {
+      "advanced": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 12
+      },
+      "beginner": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9861111111111112
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 0.9861111111111112
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 72
+      },
+      "intermediate": {
+        "candidate_recall_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "candidate_recall_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_primary": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "final_hit_relevant": {
+          "100": 1.0,
+          "20": 1.0,
+          "5": 1.0
+        },
+        "forbidden_hits": 0,
+        "forbidden_rate": 0.0,
+        "forbidden_window": 5,
+        "total": 16
+      }
+    },
+    "forbidden_query_ids": [],
+    "missing_candidate_primary_query_ids": [],
+    "missing_final_primary_query_ids": [],
+    "overall": {
+      "candidate_recall_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.99
+      },
+      "candidate_recall_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0
+      },
+      "final_hit_primary": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 0.99
+      },
+      "final_hit_relevant": {
+        "100": 1.0,
+        "20": 1.0,
+        "5": 1.0
+      },
+      "forbidden_hits": 0,
+      "forbidden_rate": 0.0,
+      "forbidden_window": 5,
+      "total": 100
+    },
+    "windows": [
+      5,
+      20,
+      100
+    ]
+  }
+}

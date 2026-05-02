@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "r3_legacy_rollback_archive_smoke",
+  "archive": "state/cs_rag_archive/v2_20260501T063445Z",
+  "rows": [
+    {
+      "prompt": "트랜잭션 격리수준",
+      "backend": "legacy",
+      "hit_count": 3,
+      "first_path": "contents/database/transaction-boundary-isolation-locking-decision-framework.md",
+      "latency_ms": 4931.04
+    },
+    {
+      "prompt": "Spring Bean이 뭐야",
+      "backend": "legacy",
+      "hit_count": 3,
+      "first_path": "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md",
+      "latency_ms": 159.625
+    },
+    {
+      "prompt": "What is dependency injection",
+      "backend": "legacy",
+      "hit_count": 3,
+      "first_path": "contents/spring/spring-ioc-di-basics.md",
+      "latency_ms": 141.884
+    }
+  ],
+  "passed": true
+}
