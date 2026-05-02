@@ -1653,6 +1653,672 @@
       "prompt": "Spring이 객체끼리 연결할 때 그냥 '필요해'라고만 적으면 알아서 채워주는 그게 뭐야?",
       "query_id": "paraphrase_human:bean_di_basics:002",
       "rationale": "DI/주입 단어 안 쓰고 '알아서 채워주는' 행동만 — 둘째 paraphrase 변형"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/service-locator-antipattern"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "service_locator_specific"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "Service Locator로 의존성 가져오는 패턴은 어떤 단점이 있어?",
+      "query_id": "confusable_pairs:di_vs_service_locator:002",
+      "rationale": "Service Locator 쪽이 primary, DI primer는 acceptable. DI primer가 primary로 나오면 의도와 어긋남."
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "factory_vs_strategy"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "객체 생성 책임을 따로 떼는 Factory랑, 행동을 끼워넣는 Strategy가 뭐가 달라?",
+      "query_id": "confusable_pairs:factory_vs_strategy:001",
+      "rationale": "Factory 입장에서의 비교. Strategy 본 doc은 acceptable."
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "factory_vs_builder"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "Factory 메서드랑 Builder는 어떤 상황에서 갈리는 거야?",
+      "query_id": "confusable_pairs:factory_vs_builder:001",
+      "rationale": "Factory primer가 두 패턴 갈리는 지점을 다룸"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/template-method-vs-strategy"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "inheritance_vs_composition_split"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/template-method-vs-strategy.md"
+      ],
+      "prompt": "Template Method랑 Strategy 패턴 둘 중 어느 게 부모 흐름을 잡는 거야?",
+      "query_id": "confusable_pairs:template_vs_strategy:001",
+      "rationale": "chooser doc 자체가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/composition-over-inheritance-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/template-method-vs-strategy"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "composition_over_inheritance"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/template-method-vs-strategy.md"
+      ],
+      "prompt": "상속으로 흐름 나누는 Template Method 대신 컴포지션으로 가는 게 왜 더 권장돼?",
+      "query_id": "confusable_pairs:composition_vs_inheritance:001",
+      "rationale": "template/strategy chooser doc이 primary; composition-over-inheritance는 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/factory-selector-resolver-beginner-entrypoint"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "naming_split"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md"
+      ],
+      "prompt": "Factory랑 Selector랑 Resolver 이름은 어떤 책임 차이로 나눠?",
+      "query_id": "confusable_pairs:factory_vs_selector:001",
+      "rationale": "naming chooser primer가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/strategy-map-vs-registry-primer.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/factory-selector-resolver-beginner-entrypoint"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "selector_vs_strategy"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md"
+      ],
+      "prompt": "Map<String, Strategy> 코드를 Selector라고 불러야 해 Strategy라고 불러야 해?",
+      "query_id": "confusable_pairs:selector_vs_strategy:001",
+      "rationale": "naming primer가 primary; strategy-map은 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/strategy-map-vs-registry-primer"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "intent_vs_shape"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/strategy-map-vs-registry-primer.md"
+      ],
+      "prompt": "같은 Map<K,V> 모양인데 Strategy 모음인지 Registry인지 어떻게 구분해?",
+      "query_id": "confusable_pairs:strategy_map_vs_registry:001",
+      "rationale": "strategy/registry chooser가 primary"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "registry_naming"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md"
+      ],
+      "prompt": "Registry랑 그냥 lookup table은 어떻게 달라?",
+      "query_id": "confusable_pairs:registry_vs_lookup_table:001",
+      "rationale": "registry primer가 primary"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "registry_vs_router"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md"
+      ],
+      "prompt": "Registry는 키로 찾고, Router는 입력 보고 보내는 거야?",
+      "query_id": "confusable_pairs:registry_vs_router:001",
+      "rationale": "registry primer가 router 차이도 다룸"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "injected_vs_service_locator"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/injected-registry-vs-service-locator-checklist.md"
+      ],
+      "prompt": "주입된 registry랑 service locator가 정확히 어디서 갈리는 거야?",
+      "query_id": "confusable_pairs:registry_vs_service_locator:002",
+      "rationale": "injected vs service locator 분리 doc이 primary; registry primer는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/lock-timeout-not-already-exists-common-confusion-card.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "exception_naming_confusion"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "prompt": "lock wait timeout이랑 already exists 같은 SQL 에러는 왜 자꾸 헷갈려?",
+      "query_id": "confusable_pairs:lock_wait_vs_already_exists:001",
+      "rationale": "deadlock/lock-wait chooser가 primary; lock-timeout-confusion-card는 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/mvcc-snapshot-vs-locking-read-portability"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "snapshot_vs_locking_read"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/mvcc-snapshot-vs-locking-read-portability-note.md"
+      ],
+      "prompt": "MVCC로 보는 거랑 lock 잡고 읽는 거랑 결과가 어떻게 달라?",
+      "query_id": "confusable_pairs:mvcc_vs_lock_read:001",
+      "rationale": "MVCC vs locking 비교 bridge가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/authentication-vs-authorization.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/auth-failure-response-401-403-404"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "authn_vs_authz"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/security/auth-failure-response-401-403-404.md"
+      ],
+      "prompt": "로그인은 됐는데 어떤 작업은 막히면 그건 인증 실패야 권한 실패야?",
+      "query_id": "confusable_pairs:authn_vs_authz:001",
+      "rationale": "401/403 chooser가 primary; authn vs authz primer는 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/auth-failure-response-401-403-404"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "status_403_vs_404"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/security/auth-failure-response-401-403-404.md"
+      ],
+      "prompt": "403이랑 404 둘 중 뭐가 권한 부족이고 뭐가 자원 없음이야?",
+      "query_id": "confusable_pairs:403_vs_404:001",
+      "rationale": "401/403/404 chooser가 직접 primary"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/browser-401-vs-302-login-redirect-guide"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "auth_redirect_distinction"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/browser-401-vs-302-login-redirect-guide.md"
+      ],
+      "prompt": "API는 401 같은데 브라우저는 302로 로그인 페이지로 가는 차이가 뭐야?",
+      "query_id": "confusable_pairs:browser_401_vs_302:001",
+      "rationale": "401 vs 302 chooser가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/browser-401-vs-302-login-redirect-guide"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "savedrequest_vs_cookie"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/browser-401-vs-302-login-redirect-guide.md"
+      ],
+      "prompt": "SavedRequest 흐름이랑 그냥 쿠키 누락이랑 어떻게 가려?",
+      "query_id": "confusable_pairs:savedrequest_vs_cookie:001",
+      "rationale": "401 vs 302 chooser가 primary; cookie-failure splitter는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/cookie-rejection-reason-primer.md",
+        "contents/security/cookie-scope-mismatch-guide.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/cookie-failure-three-way-splitter"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "rejection_vs_scope"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "prompt": "쿠키가 처음부터 막힌 건지, 저장됐는데 안 보내는 건지 어떻게 구분해?",
+      "query_id": "confusable_pairs:cookie_blocked_vs_scope:001",
+      "rationale": "cookie 3-way splitter가 primary; rejection / scope guide는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/cookie-scope-mismatch-guide.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/fetch-credentials-vs-cookie-scope"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "credentials_vs_scope_distinction"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/fetch-credentials-vs-cookie-scope.md"
+      ],
+      "prompt": "쿠키 스코프 안 맞는 거랑 fetch credentials 옵션 안 준 거랑 다른 문제야?",
+      "query_id": "confusable_pairs:cookie_scope_vs_credentials:001",
+      "rationale": "fetch credentials chooser가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/network/cross-origin-cookie-credentials-cors-primer.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/fetch-credentials-vs-cookie-scope"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "cors_vs_cookie_scope"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/security/fetch-credentials-vs-cookie-scope.md"
+      ],
+      "prompt": "Cross-origin에서 쿠키 안 붙는 게 CORS 문제인지 cookie scope 문제인지 어떻게 가려?",
+      "query_id": "confusable_pairs:cors_vs_cookie_scope:001",
+      "rationale": "fetch credentials chooser가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "db_lock_vs_proxy"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
+      ],
+      "prompt": "DB가 정말 락 잡은 건지, Spring 프록시가 트랜잭션 안 열어준 건지 어떻게 가려?",
+      "query_id": "confusable_pairs:db_lock_vs_proxy:001",
+      "rationale": "분기표 chooser가 primary; self-invocation primer는 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "rollback_vs_lock_priority"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
+      ],
+      "prompt": "rollback-only 표시랑 lock wait timeout이 같이 보이면 어디부터 봐야 해?",
+      "query_id": "confusable_pairs:rollback_only_vs_lock_wait:001",
+      "rationale": "분기표가 primary"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "filter_vs_interceptor"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md"
+      ],
+      "prompt": "Spring Filter랑 HandlerInterceptor 둘 다 비슷한데 인증 체크는 어디에 둬야 해?",
+      "query_id": "confusable_pairs:filter_vs_interceptor:001",
+      "rationale": "filter/interceptor chooser가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-security-filter-chain.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "filter_vs_security_chain"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md"
+      ],
+      "prompt": "일반 Filter 체인이랑 Spring Security Filter Chain이 어떻게 다른 거야?",
+      "query_id": "confusable_pairs:security_chain_vs_filter:001",
+      "rationale": "chooser가 primary; security chain primer는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/aop-proxy-mechanism.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/self-invocation-proxy-misconception"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "self_invocation_specific"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "prompt": "@Transactional이 안 먹어. self invocation 문제야 proxy 자체 문제야?",
+      "query_id": "confusable_pairs:self_invocation_vs_proxy:001",
+      "rationale": "self-invocation primer가 primary; AOP proxy mechanism은 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory-vs-di-container-wiring.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "di_vs_factory"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "DI랑 Factory 둘 다 객체 만들어주는 건데 같은 거야 다른 거야?",
+      "query_id": "confusable_pairs:di_vs_factory:001",
+      "rationale": "DI primer가 primary; factory-vs-di bridge는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-aop-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/transactional-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "transactional_uses_aop"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "prompt": "@Transactional이랑 AOP가 같은 거야? 둘이 어떻게 묶여?",
+      "query_id": "confusable_pairs:transactional_vs_aop:001",
+      "rationale": "transactional primer가 primary; aop는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/ioc-di-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "ioc_vs_di_relation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-ioc-di-basics.md"
+      ],
+      "prompt": "IoC랑 DI랑 같은 말이야 다른 말이야?",
+      "query_id": "confusable_pairs:ioc_vs_di:001",
+      "rationale": "ioc-di primer가 primary; bean-di primer는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/system-design/read-after-write-routing-primer.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/replica-lag-read-after-write-strategies"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "lag_vs_ryw_distinction"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/replica-lag-read-after-write-strategies.md"
+      ],
+      "prompt": "replica lag랑 read-after-write 깨짐이 같은 문제야 다른 문제야?",
+      "query_id": "confusable_pairs:replica_lag_vs_read_after_write:001",
+      "rationale": "replica-lag deep_dive가 primary; read-after-write routing primer는 acceptable"
+    },
+    {
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "security/session-cookie-jwt-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "session_vs_jwt"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/session-cookie-jwt-basics.md"
+      ],
+      "prompt": "세션 쿠키랑 JWT 토큰 어느 게 안전해?",
+      "query_id": "confusable_pairs:session_vs_jwt:001",
+      "rationale": "session-cookie-jwt primer가 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/aop-proxy-mechanism.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/aop-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "concept_vs_mechanism"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-aop-basics.md"
+      ],
+      "prompt": "AOP 개념이랑 그게 어떻게 동작하는 proxy 메커니즘은 같은 문서에서 다뤄?",
+      "query_id": "confusable_pairs:aop_basics_vs_proxy:001",
+      "rationale": "AOP basics가 primary; proxy mechanism은 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/ioc-di-container.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/bean-lifecycle-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "lifecycle_vs_container"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "Bean 라이프사이클 단계랑 컨테이너 내부 구조 둘 다 같은 거 다루는 거야?",
+      "query_id": "confusable_pairs:bean_lifecycle_vs_container_internals:001",
+      "rationale": "bean-lifecycle primer가 primary; container internals는 acceptable"
     }
   ],
   "schema_version": 1
