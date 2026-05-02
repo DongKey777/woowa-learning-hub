@@ -1,24 +1,30 @@
 ---
-schema_version: 2
-title: "Spring 요청 파이프라인과 Bean Container 기초"
-concept_id: "spring/request-pipeline-bean-container"
+schema_version: 3
+title: Spring 요청 파이프라인과 Bean Container 기초
+concept_id: spring/request-pipeline-bean-container
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - Spring request pipeline
-  - DispatcherServlet
-  - Bean Container
-  - controller service repository
+- Spring request pipeline
+- DispatcherServlet
+- Bean Container
+- controller service repository
+intents:
+- definition
+linked_paths:
+- contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-transactional-basics.md
 expected_queries:
-  - Spring 요청은 어떤 순서로 흘러?
-  - DispatcherServlet이랑 Bean Container는 무슨 관계야?
-  - controller service repository 흐름이 뭐야?
-  - 요청마다 Bean을 새로 만들어?
-acceptable_neighbors:
-  - contents/spring/spring-mvc-controller-basics.md
-  - contents/spring/spring-bean-di-basics.md
-  - contents/spring/spring-transactional-basics.md
+- Spring 요청은 어떤 순서로 흘러?
+- DispatcherServlet이랑 Bean Container는 무슨 관계야?
+- controller service repository 흐름이 뭐야?
+- 요청마다 Bean을 새로 만들어?
 ---
 
 # Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기

@@ -1,30 +1,36 @@
 ---
-schema_version: 2
-title: "Cookie Failure Three-Way Splitter"
-concept_id: "security/cookie-failure-three-way-splitter"
+schema_version: 3
+title: Cookie Failure Three-Way Splitter
+concept_id: security/cookie-failure-three-way-splitter
+canonical: false
+category: security
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - cookie failure splitter
-  - blocked Set-Cookie vs stored not sent vs sent but anonymous
-  - cookie sent but server anonymous
-  - login loop cookie splitter
-  - cookie debug first split
-expected_queries:
-  - cookie 문제가 Set-Cookie blocked인지 stored not sent인지 server anonymous인지 어떻게 나눠?
-  - Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?
-  - request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
-  - login loop cookie splitter가 뭐야?
-acceptable_neighbors:
-  - contents/security/browser-401-vs-302-login-redirect-guide.md
-  - contents/security/cookie-scope-mismatch-guide.md
-  - contents/security/fetch-credentials-vs-cookie-scope.md
-companion_neighbors:
-  - contents/security/cookie-devtools-field-checklist-primer.md
-  - contents/security/cookie-rejection-reason-primer.md
+- cookie failure splitter
+- blocked Set-Cookie vs stored not sent vs sent but anonymous
+- cookie sent but server anonymous
+- login loop cookie splitter
+- cookie debug first split
+intents:
+- comparison
+- design
+linked_paths:
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/cookie-scope-mismatch-guide.md
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-devtools-field-checklist-primer.md
+- contents/security/cookie-rejection-reason-primer.md
 forbidden_neighbors:
-  - contents/security/jwt-deep-dive.md
+- contents/security/jwt-deep-dive.md
+expected_queries:
+- cookie 문제가 Set-Cookie blocked인지 stored not sent인지 server anonymous인지 어떻게 나눠?
+- Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?
+- request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
+- login loop cookie splitter가 뭐야?
 ---
 
 # Cookie Failure Three-Way Splitter

@@ -1,27 +1,33 @@
 ---
-schema_version: 2
-title: "Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림"
-concept_id: "design-pattern/factory-selector-resolver-beginner-entrypoint"
+schema_version: 3
+title: 'Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림'
+concept_id: design-pattern/factory-selector-resolver-beginner-entrypoint
+canonical: false
+category: design-pattern
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - factory selector resolver
-  - Factory vs Selector vs Resolver
-  - 생성 vs 선택 네이밍
-  - selector naming
-  - factory 이름 언제 쓰나
+- factory selector resolver
+- Factory vs Selector vs Resolver
+- 생성 vs 선택 네이밍
+- selector naming
+- factory 이름 언제 쓰나
+intents:
+- comparison
+- design
+linked_paths:
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
 expected_queries:
-  - Factory랑 Selector, Resolver 이름은 어떻게 구분해?
-  - 새 객체를 만들지 않는데 Factory라고 불러도 돼?
-  - selector naming이 헷갈릴 때 처음 어디서 봐야 해?
-  - Map으로 하나 고르는 코드가 factory인지 selector인지 모르겠어
-acceptable_neighbors:
-  - contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
-  - contents/design-pattern/strategy-map-vs-registry-primer.md
-  - contents/design-pattern/factory-vs-di-container-wiring.md
-companion_neighbors:
-  - contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+- Factory랑 Selector, Resolver 이름은 어떻게 구분해?
+- 새 객체를 만들지 않는데 Factory라고 불러도 돼?
+- selector naming이 헷갈릴 때 처음 어디서 봐야 해?
+- Map으로 하나 고르는 코드가 factory인지 selector인지 모르겠어
 ---
 
 # Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림

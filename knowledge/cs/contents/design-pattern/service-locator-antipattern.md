@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "Service Locator Antipattern"
-concept_id: "design-pattern/service-locator-antipattern"
+schema_version: 3
+title: Service Locator Antipattern
+concept_id: design-pattern/service-locator-antipattern
+canonical: false
+category: design-pattern
 difficulty: intermediate
-doc_role: comparison
+doc_role: bridge
 level: intermediate
+language: mixed
+source_priority: 85
 aliases:
-  - Service Locator
-  - service locator antipattern
-  - hidden dependency
-  - 숨은 의존성
+- Service Locator
+- service locator antipattern
+- hidden dependency
+- 숨은 의존성
+intents:
+- comparison
+linked_paths:
+- contents/spring/spring-ioc-di-basics.md
+- contents/software-engineering/dependency-injection-basics.md
 expected_queries:
-  - Service Locator가 왜 안 좋아?
-  - Service Locator랑 DI는 뭐가 달라?
-  - 숨은 의존성이 왜 문제야?
-  - 컨테이너에서 직접 꺼내 쓰면 왜 위험해?
-acceptable_neighbors:
-  - contents/spring/spring-ioc-di-basics.md
-  - contents/software-engineering/dependency-injection-basics.md
+- Service Locator가 왜 안 좋아?
+- Service Locator랑 DI는 뭐가 달라?
+- 숨은 의존성이 왜 문제야?
+- 컨테이너에서 직접 꺼내 쓰면 왜 위험해?
 ---
 
 # Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계

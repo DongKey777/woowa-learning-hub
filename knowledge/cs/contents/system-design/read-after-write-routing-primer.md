@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Read-After-Write Routing Primer"
-concept_id: "system-design/read-after-write-routing-primer"
+schema_version: 3
+title: Read-After-Write Routing Primer
+concept_id: system-design/read-after-write-routing-primer
+canonical: true
+category: system-design
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - read-after-write routing
-  - primary fallback routing
-  - recent write routing
-  - session pinning primer
-  - write then read routing
-expected_queries:
-  - read-after-write routing이 뭐야?
-  - write 직후 read를 replica로 보내면 왜 문제가 생겨?
-  - primary fallback과 session pinning은 어떻게 다른 선택이야?
-  - 주문 생성 직후 조회가 stale할 때 라우팅을 어떻게 잡아?
-acceptable_neighbors:
-  - contents/database/replica-lag-read-after-write-strategies.md
-  - contents/database/read-your-writes-session-pinning.md
-  - contents/system-design/projection-applied-watermark-basics.md
-companion_neighbors:
-  - contents/system-design/post-write-stale-dashboard-primer.md
-  - contents/system-design/mixed-cache-replica-freshness-bridge.md
+- read-after-write routing
+- primary fallback routing
+- recent write routing
+- session pinning primer
+- write then read routing
+intents:
+- definition
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
 forbidden_neighbors:
-  - contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+expected_queries:
+- read-after-write routing이 뭐야?
+- write 직후 read를 replica로 보내면 왜 문제가 생겨?
+- primary fallback과 session pinning은 어떻게 다른 선택이야?
+- 주문 생성 직후 조회가 stale할 때 라우팅을 어떻게 잡아?
 ---
 
 # Read-After-Write Routing Primer

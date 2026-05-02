@@ -1,22 +1,28 @@
 ---
-schema_version: 2
-title: "트랜잭션 격리 수준 기초"
-concept_id: "database/transaction-isolation-basics"
+schema_version: 3
+title: 트랜잭션 격리 수준 기초
+concept_id: database/transaction-isolation-basics
+canonical: true
+category: database
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - isolation level
-  - Read Committed
-  - Repeatable Read
-  - MVCC
-  - 격리 수준
-  - 팬텀 리드
+- isolation level
+- Read Committed
+- Repeatable Read
+- MVCC
+- 격리 수준
+- 팬텀 리드
+intents:
+- definition
 expected_queries:
-  - 격리 수준이 뭐야?
-  - Read Committed랑 Repeatable Read는 뭐가 달라?
-  - MVCC가 뭐야?
-  - phantom read가 뭐야?
+- 격리 수준이 뭐야?
+- Read Committed랑 Repeatable Read는 뭐가 달라?
+- MVCC가 뭐야?
+- phantom read가 뭐야?
 ---
 
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)

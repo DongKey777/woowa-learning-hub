@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Projection Freshness SLO Pattern"
-concept_id: "design-pattern/projection-freshness-slo-pattern"
+schema_version: 3
+title: Projection Freshness SLO Pattern
+concept_id: design-pattern/projection-freshness-slo-pattern
+canonical: false
+category: design-pattern
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - projection freshness SLO
-  - read model freshness objective
-  - freshness SLI
-  - projection error budget
-  - strict fallback rate
-expected_queries:
-  - projection freshness SLO는 어떤 지표로 잡아?
-  - read model freshness를 SLI/SLO로 운영하려면 뭐가 필요해?
-  - strict fallback rate랑 projection lag를 같이 보는 이유가 뭐야?
-  - projection error budget burn이 커지면 어떤 대응을 해야 해?
-acceptable_neighbors:
-  - contents/design-pattern/read-model-staleness-read-your-writes.md
-  - contents/design-pattern/projection-lag-budgeting-pattern.md
-  - contents/system-design/projection-applied-watermark-basics.md
-companion_neighbors:
-  - contents/design-pattern/strict-read-fallback-contracts.md
-  - contents/system-design/post-write-stale-dashboard-primer.md
+- projection freshness SLO
+- read model freshness objective
+- freshness SLI
+- projection error budget
+- strict fallback rate
+intents:
+- deep_dive
+linked_paths:
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/design-pattern/projection-lag-budgeting-pattern.md
+- contents/system-design/projection-applied-watermark-basics.md
+- contents/design-pattern/strict-read-fallback-contracts.md
+- contents/system-design/post-write-stale-dashboard-primer.md
 forbidden_neighbors:
-  - contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+- contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+expected_queries:
+- projection freshness SLO는 어떤 지표로 잡아?
+- read model freshness를 SLI/SLO로 운영하려면 뭐가 필요해?
+- strict fallback rate랑 projection lag를 같이 보는 이유가 뭐야?
+- projection error budget burn이 커지면 어떤 대응을 해야 해?
 ---
 
 # Projection Freshness SLO Pattern

@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "의존성 주입(DI) 기초"
-concept_id: "software-engineering/dependency-injection-basics"
+schema_version: 3
+title: 의존성 주입(DI) 기초
+concept_id: software-engineering/dependency-injection-basics
+canonical: true
+category: software-engineering
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - DI
-  - Dependency Injection
-  - 의존성 주입
-  - constructor injection
+- DI
+- Dependency Injection
+- 의존성 주입
+- constructor injection
+intents:
+- definition
+linked_paths:
+- contents/spring/spring-ioc-di-basics.md
+- contents/spring/ioc-di-container.md
 expected_queries:
-  - DI가 뭐야?
-  - 왜 new 대신 주입받아?
-  - 생성자 주입은 왜 써?
-  - Spring 없이도 DI가 가능해?
-acceptable_neighbors:
-  - contents/spring/spring-ioc-di-basics.md
-  - contents/spring/ioc-di-container.md
+- DI가 뭐야?
+- 왜 new 대신 주입받아?
+- 생성자 주입은 왜 써?
+- Spring 없이도 DI가 가능해?
 ---
 
 # 의존성 주입(DI) 기초 (Dependency Injection Basics)

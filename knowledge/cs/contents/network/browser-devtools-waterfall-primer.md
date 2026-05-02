@@ -1,22 +1,28 @@
 ---
-schema_version: 2
-title: "Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기"
-concept_id: "network/devtools-waterfall-primer"
+schema_version: 3
+title: 'Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기'
+concept_id: network/devtools-waterfall-primer
+canonical: true
+category: network
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - DevTools waterfall
-  - waterfall
-  - waiting
-  - TTFB
-  - DNS connect SSL
-  - 네트워크 탭
+- DevTools waterfall
+- waterfall
+- waiting
+- TTFB
+- DNS connect SSL
+- 네트워크 탭
+intents:
+- definition
 expected_queries:
-  - DevTools waterfall이 뭐야?
-  - waiting이 길면 서버가 느린 거야?
-  - DNS connect SSL이 안 보이면 왜 그래?
-  - Network 탭 timing은 어떻게 읽어?
+- DevTools waterfall이 뭐야?
+- waiting이 길면 서버가 느린 거야?
+- DNS connect SSL이 안 보이면 왜 그래?
+- Network 탭 timing은 어떻게 읽어?
 ---
 
 # Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기

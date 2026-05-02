@@ -1,28 +1,33 @@
 ---
-schema_version: 2
-title: "@Transactional 기초: 트랜잭션 어노테이션이 하는 일"
-concept_id: "spring/transactional-basics"
+schema_version: 3
+title: '@Transactional 기초: 트랜잭션 어노테이션이 하는 일'
+concept_id: spring/transactional-basics
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - Transactional
-  - @Transactional
-  - Spring transaction
-  - 트랜잭션 어노테이션
-  - transactional proxy
+- Transactional
+- '@Transactional'
+- Spring transaction
+- 트랜잭션 어노테이션
+- transactional proxy
+intents:
+- definition
+linked_paths:
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-transaction-debugging-playbook.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/transactional-deep-dive.md
+- contents/spring/spring-persistence-transaction-web-service-repository-primer.md
 expected_queries:
-  - Transactional이 뭐야?
-  - Spring에서 transaction이 뭐야?
-  - 왜 Transactional이 안 먹어?
-  - self invocation이면 왜 트랜잭션이 안 걸려?
-acceptable_neighbors:
-  - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
-  - contents/spring/spring-transaction-debugging-playbook.md
-  - contents/spring/aop-proxy-mechanism.md
-  - contents/spring/transactional-deep-dive.md
-companion_neighbors:
-  - contents/spring/spring-persistence-transaction-web-service-repository-primer.md
+- Transactional이 뭐야?
+- Spring에서 transaction이 뭐야?
+- 왜 Transactional이 안 먹어?
+- self invocation이면 왜 트랜잭션이 안 걸려?
 ---
 
 # @Transactional 기초: 트랜잭션 어노테이션이 하는 일

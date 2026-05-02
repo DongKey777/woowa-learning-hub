@@ -1,27 +1,33 @@
 ---
-schema_version: 2
-title: "SQL 읽기와 관계형 모델링 기초"
-concept_id: "database/sql-relational-modeling-basics"
+schema_version: 3
+title: SQL 읽기와 관계형 모델링 기초
+concept_id: database/sql-relational-modeling-basics
+canonical: true
+category: database
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - SQL
-  - SELECT
-  - JOIN
-  - GROUP BY
-  - PK
-  - FK
-  - 관계형 모델링
+- SQL
+- SELECT
+- JOIN
+- GROUP BY
+- PK
+- FK
+- 관계형 모델링
+intents:
+- definition
+linked_paths:
+- contents/database/sql-join-basics.md
+- contents/database/primary-foreign-key-basics.md
+- contents/database/sql-aggregate-groupby-basics.md
 expected_queries:
-  - SQL SELECT는 어떻게 읽어?
-  - JOIN하면 왜 row가 늘어나?
-  - PK랑 FK가 뭐야?
-  - GROUP BY는 왜 쓰는 거야?
-acceptable_neighbors:
-  - contents/database/sql-join-basics.md
-  - contents/database/primary-foreign-key-basics.md
-  - contents/database/sql-aggregate-groupby-basics.md
+- SQL SELECT는 어떻게 읽어?
+- JOIN하면 왜 row가 늘어나?
+- PK랑 FK가 뭐야?
+- GROUP BY는 왜 쓰는 거야?
 ---
 
 # SQL 읽기와 관계형 모델링 기초 (SQL Reading & Relational Modeling Foundations)

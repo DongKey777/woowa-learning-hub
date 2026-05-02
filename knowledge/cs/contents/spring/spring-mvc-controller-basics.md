@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름"
-concept_id: "spring/mvc-controller-basics"
+schema_version: 3
+title: 'Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름'
+concept_id: spring/mvc-controller-basics
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - Spring MVC
-  - Controller
-  - RestController
-  - DispatcherServlet
+- Spring MVC
+- Controller
+- RestController
+- DispatcherServlet
+intents:
+- definition
+linked_paths:
+- contents/spring/spring-mvc-request-lifecycle-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
 expected_queries:
-  - Spring MVC가 뭐야?
-  - Controller는 요청을 어떻게 받아?
-  - DispatcherServlet이 뭐야?
-  - Controller랑 RestController 차이가 뭐야?
-acceptable_neighbors:
-  - contents/spring/spring-mvc-request-lifecycle-basics.md
-  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- Spring MVC가 뭐야?
+- Controller는 요청을 어떻게 받아?
+- DispatcherServlet이 뭐야?
+- Controller랑 RestController 차이가 뭐야?
 ---
 
 # Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름

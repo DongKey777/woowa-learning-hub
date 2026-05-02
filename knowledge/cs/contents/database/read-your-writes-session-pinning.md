@@ -1,28 +1,33 @@
 ---
-schema_version: 2
-title: "Read-Your-Writes와 Session Pinning 전략"
-concept_id: "database/read-your-writes-session-pinning"
+schema_version: 3
+title: Read-Your-Writes와 Session Pinning 전략
+concept_id: database/read-your-writes-session-pinning
+canonical: false
+category: database
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - read-your-writes
-  - session pinning
-  - sticky session
-  - recent write primary fallback
-  - 내가 바꾼 값이 안 보임
+- read-your-writes
+- session pinning
+- sticky session
+- recent write primary fallback
+- 내가 바꾼 값이 안 보임
+intents:
+- deep_dive
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/database/monotonic-reads-session-guarantees.md
+- contents/system-design/session-guarantees-decision-matrix.md
+- contents/system-design/projection-applied-watermark-basics.md
 expected_queries:
-  - read-your-writes는 session pinning으로 어떻게 보장해?
-  - 내가 방금 수정한 값이 새로고침하면 옛값으로 보일 때 뭘 봐?
-  - recent write가 있으면 primary로 pinning하는 기준은 뭐야?
-  - sticky session과 causal token은 read-your-writes에서 어떻게 달라?
-acceptable_neighbors:
-  - contents/database/replica-lag-read-after-write-strategies.md
-  - contents/system-design/read-after-write-routing-primer.md
-  - contents/database/monotonic-reads-session-guarantees.md
-companion_neighbors:
-  - contents/system-design/session-guarantees-decision-matrix.md
-  - contents/system-design/projection-applied-watermark-basics.md
+- read-your-writes는 session pinning으로 어떻게 보장해?
+- 내가 방금 수정한 값이 새로고침하면 옛값으로 보일 때 뭘 봐?
+- recent write가 있으면 primary로 pinning하는 기준은 뭐야?
+- sticky session과 causal token은 read-your-writes에서 어떻게 달라?
 ---
 
 # Read-Your-Writes와 Session Pinning 전략

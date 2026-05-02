@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Replica Lag and Read-after-write Strategies"
-concept_id: "database/replica-lag-read-after-write-strategies"
+schema_version: 3
+title: Replica Lag and Read-after-write Strategies
+concept_id: database/replica-lag-read-after-write-strategies
+canonical: false
+category: database
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - replica lag
-  - read-after-write
-  - stale read after write
-  - primary fallback
-  - read replica delay
-expected_queries:
-  - replica lag 때문에 write 직후 read가 stale하면 어떻게 설계해?
-  - 저장 직후 조회가 안 보일 때 replica lag와 cache 문제를 어떻게 나눠?
-  - read-after-write 전략에서 primary fallback은 언제 써?
-  - insert succeeded but select misses row면 어떤 freshness 문서를 봐야 해?
-acceptable_neighbors:
-  - contents/database/read-your-writes-session-pinning.md
-  - contents/system-design/read-after-write-routing-primer.md
-  - contents/design-pattern/read-model-staleness-read-your-writes.md
-companion_neighbors:
-  - contents/system-design/post-write-stale-dashboard-primer.md
-  - contents/database/replica-lag-observability-routing-slo.md
+- replica lag
+- read-after-write
+- stale read after write
+- primary fallback
+- read replica delay
+intents:
+- deep_dive
+linked_paths:
+- contents/database/read-your-writes-session-pinning.md
+- contents/system-design/read-after-write-routing-primer.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/system-design/post-write-stale-dashboard-primer.md
+- contents/database/replica-lag-observability-routing-slo.md
 forbidden_neighbors:
-  - contents/security/session-cookie-jwt-basics.md
+- contents/security/session-cookie-jwt-basics.md
+expected_queries:
+- replica lag 때문에 write 직후 read가 stale하면 어떻게 설계해?
+- 저장 직후 조회가 안 보일 때 replica lag와 cache 문제를 어떻게 나눠?
+- read-after-write 전략에서 primary fallback은 언제 써?
+- insert succeeded but select misses row면 어떤 freshness 문서를 봐야 해?
 ---
 
 # Replica Lag and Read-after-write Strategies

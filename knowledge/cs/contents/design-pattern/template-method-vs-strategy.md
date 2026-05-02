@@ -1,33 +1,39 @@
 ---
-schema_version: 2
-title: "템플릿 메소드 vs 전략: 부모가 흐름을 쥐는가, 호출자가 전략을 고르는가"
-concept_id: "design-pattern/template-method-vs-strategy"
+schema_version: 3
+title: '템플릿 메소드 vs 전략: 부모가 흐름을 쥐는가, 호출자가 전략을 고르는가'
+concept_id: design-pattern/template-method-vs-strategy
+canonical: false
+category: design-pattern
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: ko
+source_priority: 88
 aliases:
-  - template method vs strategy
-  - template method
-  - strategy pattern
-  - hook vs strategy
-  - 템플릿 메소드 vs 전략
-  - 부모가 흐름을 쥔다
-  - 호출자가 전략을 고른다
-expected_queries:
-  - 처음 배우는데 템플릿 메소드랑 전략 패턴이 뭐가 달라?
-  - template method vs strategy 차이가 뭐야?
-  - 부모가 흐름을 쥐는 패턴이랑 호출자가 구현을 고르는 패턴을 어떻게 나눠?
-  - hook 하나 추가할지 strategy로 뺄지 어떻게 판단해?
-acceptable_neighbors:
-  - contents/design-pattern/template-method-basics.md
-  - contents/design-pattern/strategy-pattern-basics.md
-  - contents/design-pattern/composition-over-inheritance-basics.md
-  - contents/design-pattern/object-oriented-design-pattern-basics.md
-companion_neighbors:
-  - contents/language/java/java-abstract-class-vs-interface-basics.md
-  - contents/language/java/template-method-vs-strategy-quick-check-card.md
+- template method vs strategy
+- template method
+- strategy pattern
+- hook vs strategy
+- 템플릿 메소드 vs 전략
+- 부모가 흐름을 쥔다
+- 호출자가 전략을 고른다
+intents:
+- comparison
+- design
+linked_paths:
+- contents/design-pattern/template-method-basics.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/composition-over-inheritance-basics.md
+- contents/design-pattern/object-oriented-design-pattern-basics.md
+- contents/language/java/java-abstract-class-vs-interface-basics.md
+- contents/language/java/template-method-vs-strategy-quick-check-card.md
 forbidden_neighbors:
-  - contents/design-pattern/service-locator-antipattern.md
+- contents/design-pattern/service-locator-antipattern.md
+expected_queries:
+- 처음 배우는데 템플릿 메소드랑 전략 패턴이 뭐가 달라?
+- template method vs strategy 차이가 뭐야?
+- 부모가 흐름을 쥐는 패턴이랑 호출자가 구현을 고르는 패턴을 어떻게 나눠?
+- hook 하나 추가할지 strategy로 뺄지 어떻게 판단해?
 ---
 
 # 템플릿 메소드 vs 전략

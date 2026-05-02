@@ -1,24 +1,30 @@
 ---
-schema_version: 2
-title: "AOP와 프록시 메커니즘"
-concept_id: "spring/aop-proxy-mechanism"
+schema_version: 3
+title: AOP와 프록시 메커니즘
+concept_id: spring/aop-proxy-mechanism
+canonical: false
+category: spring
 difficulty: intermediate
 doc_role: deep_dive
 level: intermediate
+language: mixed
+source_priority: 80
 aliases:
-  - AOP proxy
-  - Spring proxy
-  - JDK dynamic proxy
-  - CGLIB
+- AOP proxy
+- Spring proxy
+- JDK dynamic proxy
+- CGLIB
+intents:
+- deep_dive
+linked_paths:
+- contents/spring/spring-aop-basics.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
 expected_queries:
-  - Spring 프록시는 어떻게 동작해?
-  - AOP랑 프록시는 무슨 관계야?
-  - JDK proxy랑 CGLIB 차이가 뭐야?
-  - Transactional은 왜 프록시가 필요해?
-acceptable_neighbors:
-  - contents/spring/spring-aop-basics.md
-  - contents/spring/spring-transactional-basics.md
-  - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- Spring 프록시는 어떻게 동작해?
+- AOP랑 프록시는 무슨 관계야?
+- JDK proxy랑 CGLIB 차이가 뭐야?
+- Transactional은 왜 프록시가 필요해?
 ---
 
 # AOP와 프록시 메커니즘

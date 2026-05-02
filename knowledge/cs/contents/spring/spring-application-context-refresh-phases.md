@@ -1,24 +1,30 @@
 ---
-schema_version: 2
-title: "Spring ApplicationContext Refresh Phases"
-concept_id: "spring/application-context-refresh-phases"
+schema_version: 3
+title: Spring ApplicationContext Refresh Phases
+concept_id: spring/application-context-refresh-phases
+canonical: false
+category: spring
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - ApplicationContext refresh
-  - refresh phases
-  - BeanFactoryPostProcessor
-  - BeanPostProcessor
+- ApplicationContext refresh
+- refresh phases
+- BeanFactoryPostProcessor
+- BeanPostProcessor
+intents:
+- deep_dive
+linked_paths:
+- contents/spring/ioc-di-container.md
+- contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
+- contents/spring/spring-bean-lifecycle-basics.md
 expected_queries:
-  - ApplicationContext refresh는 어떤 순서로 진행돼?
-  - BeanFactoryPostProcessor는 언제 실행돼?
-  - BeanPostProcessor는 언제 적용돼?
-  - ApplicationContext 시작 과정을 단계별로 설명해줘
-acceptable_neighbors:
-  - contents/spring/ioc-di-container.md
-  - contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md
-  - contents/spring/spring-bean-lifecycle-basics.md
+- ApplicationContext refresh는 어떤 순서로 진행돼?
+- BeanFactoryPostProcessor는 언제 실행돼?
+- BeanPostProcessor는 언제 적용돼?
+- ApplicationContext 시작 과정을 단계별로 설명해줘
 ---
 
 # Spring ApplicationContext Refresh Phases

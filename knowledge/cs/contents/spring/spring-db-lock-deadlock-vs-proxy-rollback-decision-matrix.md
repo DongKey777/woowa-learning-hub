@@ -1,28 +1,34 @@
 ---
-schema_version: 2
-title: "DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표"
-concept_id: "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+schema_version: 3
+title: DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표
+concept_id: spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix
+canonical: false
+category: spring
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - db lock vs spring proxy
-  - deadlock vs self invocation
-  - lock timeout vs transactional not applied
-  - rollback not working vs lock wait
-  - spring db lock decision matrix
+- db lock vs spring proxy
+- deadlock vs self invocation
+- lock timeout vs transactional not applied
+- rollback not working vs lock wait
+- spring db lock decision matrix
+intents:
+- comparison
+- design
+linked_paths:
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/spring/spring-transactional-basics.md
+- contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+- contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
 expected_queries:
-  - lock wait랑 @Transactional proxy 문제를 어떻게 먼저 구분해?
-  - deadlock인지 self-invocation인지 헷갈릴 때 어떤 분기표를 봐?
-  - rollback이 안 된 것처럼 보이는데 DB lock 문제인지 Spring 문제인지 모르겠어
-  - CannotAcquireLockException과 rollback-only가 같이 보이면 어디서 시작해?
-acceptable_neighbors:
-  - contents/database/deadlock-vs-lock-wait-timeout-primer.md
-  - contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
-  - contents/spring/spring-transactional-basics.md
-companion_neighbors:
-  - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
-  - contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+- lock wait랑 @Transactional proxy 문제를 어떻게 먼저 구분해?
+- deadlock인지 self-invocation인지 헷갈릴 때 어떤 분기표를 봐?
+- rollback이 안 된 것처럼 보이는데 DB lock 문제인지 Spring 문제인지 모르겠어
+- CannotAcquireLockException과 rollback-only가 같이 보이면 어디서 시작해?
 ---
 
 # DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표

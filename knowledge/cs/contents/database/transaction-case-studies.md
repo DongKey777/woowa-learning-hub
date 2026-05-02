@@ -1,21 +1,28 @@
 ---
-schema_version: 2
-title: "트랜잭션 실전 시나리오"
-concept_id: "database/transaction-case-studies"
+schema_version: 3
+title: 트랜잭션 실전 시나리오
+concept_id: database/transaction-case-studies
+canonical: false
+category: database
 difficulty: advanced
 doc_role: playbook
 level: advanced
+language: ko
+source_priority: 78
 aliases:
-  - transaction boundary
-  - idempotency key
-  - inventory race
-  - duplicate payment
-  - 정합성 시나리오
+- transaction boundary
+- idempotency key
+- inventory race
+- duplicate payment
+- 정합성 시나리오
+intents:
+- troubleshooting
+- design
 expected_queries:
-  - 중복 결제는 트랜잭션만으로 막을 수 있어?
-  - 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?
-  - idempotency key랑 transaction은 어떻게 같이 봐?
-  - 주문 생성 정합성은 어디까지 같은 트랜잭션이야?
+- 중복 결제는 트랜잭션만으로 막을 수 있어?
+- 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?
+- idempotency key랑 transaction은 어떻게 같이 봐?
+- 주문 생성 정합성은 어디까지 같은 트랜잭션이야?
 ---
 
 # 트랜잭션 실전 시나리오

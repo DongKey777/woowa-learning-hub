@@ -6,8 +6,8 @@ difficulty: beginner
 doc_role: chooser
 level: beginner
 aliases:
-  - @Primary
-  - @Qualifier
+  - "@Primary"
+  - "@Qualifier"
   - collection injection
   - NoUniqueBeanDefinitionException
   - 같은 타입 bean 후보

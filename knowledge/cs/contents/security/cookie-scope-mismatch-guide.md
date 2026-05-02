@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Cookie Scope Mismatch Guide"
-concept_id: "security/cookie-scope-mismatch-guide"
+schema_version: 3
+title: Cookie Scope Mismatch Guide
+concept_id: security/cookie-scope-mismatch-guide
+canonical: false
+category: security
 difficulty: beginner
 doc_role: deep_dive
 level: beginner
+language: mixed
+source_priority: 80
 aliases:
-  - cookie scope mismatch
-  - cookie stored not sent
-  - Domain Path SameSite mismatch
-  - host-only cookie
-  - login loop cookie scope
-expected_queries:
-  - cookie scope mismatch는 어떻게 확인해?
-  - Domain Path SameSite가 안 맞아서 cookie가 request에 안 붙는 경우를 어디서 봐?
-  - host-only cookie와 subdomain cookie 차이가 login loop에 왜 중요해?
-  - Application에 cookie가 저장됐는데 요청에 안 실리면 어떤 범위를 봐?
-acceptable_neighbors:
-  - contents/security/fetch-credentials-vs-cookie-scope.md
-  - contents/security/cookie-failure-three-way-splitter.md
-  - contents/security/browser-401-vs-302-login-redirect-guide.md
-companion_neighbors:
-  - contents/security/secure-cookie-behind-proxy-guide.md
-  - contents/security/duplicate-cookie-name-shadowing.md
+- cookie scope mismatch
+- cookie stored not sent
+- Domain Path SameSite mismatch
+- host-only cookie
+- login loop cookie scope
+intents:
+- deep_dive
+linked_paths:
+- contents/security/fetch-credentials-vs-cookie-scope.md
+- contents/security/cookie-failure-three-way-splitter.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/security/secure-cookie-behind-proxy-guide.md
+- contents/security/duplicate-cookie-name-shadowing.md
 forbidden_neighbors:
-  - contents/security/jwt-deep-dive.md
+- contents/security/jwt-deep-dive.md
+expected_queries:
+- cookie scope mismatch는 어떻게 확인해?
+- Domain Path SameSite가 안 맞아서 cookie가 request에 안 붙는 경우를 어디서 봐?
+- host-only cookie와 subdomain cookie 차이가 login loop에 왜 중요해?
+- Application에 cookie가 저장됐는데 요청에 안 실리면 어떤 범위를 봐?
 ---
 
 # Cookie Scope Mismatch Guide

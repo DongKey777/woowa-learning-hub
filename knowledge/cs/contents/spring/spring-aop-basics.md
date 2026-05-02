@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "AOP 기초: 관점 지향 프로그래밍이 왜 필요한가"
-concept_id: "spring/aop-basics"
+schema_version: 3
+title: 'AOP 기초: 관점 지향 프로그래밍이 왜 필요한가'
+concept_id: spring/aop-basics
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - AOP
-  - aspect
-  - advice
-  - cross-cutting concern
+- AOP
+- aspect
+- advice
+- cross-cutting concern
+intents:
+- definition
+linked_paths:
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-transactional-basics.md
 expected_queries:
-  - AOP가 뭐야?
-  - 관점 지향 프로그래밍은 왜 써?
-  - 공통 로직을 AOP로 빼는 이유가 뭐야?
-  - AOP랑 Transactional은 무슨 관계야?
-acceptable_neighbors:
-  - contents/spring/aop-proxy-mechanism.md
-  - contents/spring/spring-transactional-basics.md
+- AOP가 뭐야?
+- 관점 지향 프로그래밍은 왜 써?
+- 공통 로직을 AOP로 빼는 이유가 뭐야?
+- AOP랑 Transactional은 무슨 관계야?
 ---
 
 # AOP 기초: 관점 지향 프로그래밍이 왜 필요한가

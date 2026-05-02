@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "계층형 아키텍처 기초"
-concept_id: "software-engineering/layered-architecture-basics"
+schema_version: 3
+title: 계층형 아키텍처 기초
+concept_id: software-engineering/layered-architecture-basics
+canonical: true
+category: software-engineering
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - layered architecture
-  - controller service repository
-  - layer
-  - 계층형 아키텍처
+- layered architecture
+- controller service repository
+- layer
+- 계층형 아키텍처
+intents:
+- definition
+linked_paths:
+- contents/software-engineering/service-layer-basics.md
+- contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
 expected_queries:
-  - 계층형 아키텍처가 뭐야?
-  - controller service repository는 왜 나눠?
-  - controller에서 바로 repository를 부르면 안 돼?
-  - service layer는 무슨 일을 해?
-acceptable_neighbors:
-  - contents/software-engineering/service-layer-basics.md
-  - contents/spring/spring-request-pipeline-bean-container-foundations-primer.md
+- 계층형 아키텍처가 뭐야?
+- controller service repository는 왜 나눠?
+- controller에서 바로 repository를 부르면 안 돼?
+- service layer는 무슨 일을 해?
 ---
 
 # 계층형 아키텍처 기초 (Layered Architecture Basics)

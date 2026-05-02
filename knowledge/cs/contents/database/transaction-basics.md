@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "트랜잭션 기초"
-concept_id: "database/transaction-basics"
+schema_version: 3
+title: 트랜잭션 기초
+concept_id: database/transaction-basics
+canonical: true
+category: database
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - transaction
-  - commit
-  - rollback
-  - ACID
-  - 트랜잭션
-  - 커밋
-  - 롤백
+- transaction
+- commit
+- rollback
+- ACID
+- 트랜잭션
+- 커밋
+- 롤백
+intents:
+- definition
 expected_queries:
-  - transaction이 뭐야?
-  - 트랜잭션이 뭐야?
-  - commit이랑 rollback은 뭐야?
-  - 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
+- transaction이 뭐야?
+- 트랜잭션이 뭐야?
+- commit이랑 rollback은 뭐야?
+- 주문 저장과 재고 차감은 왜 같은 트랜잭션으로 묶어?
 ---
 
 # 트랜잭션 기초 (Transaction Basics)

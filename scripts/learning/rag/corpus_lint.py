@@ -47,6 +47,9 @@ _FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 _LINE_KV_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.*)$")
 _FLOW_LIST_RE = re.compile(r"^\[(.*)\]$")
 _QUOTED_RE = re.compile(r'^"((?:[^"\\]|\\.)*)"$')
+# Match a YAML block sequence list item at any indentation, e.g.
+# ``- DI``, ``  - DI``, ``    - DI``. Group 1 is the value after ``- ``.
+_LIST_ITEM_RE = re.compile(r"^\s*-\s+(.+)$")
 
 REQUIRED_FRONTMATTER_FIELDS = (
     "title",
@@ -134,8 +137,12 @@ def parse_frontmatter(text: str) -> dict | None:
         line = line.rstrip()
         if not line or line.startswith("#"):
             continue
-        if pending_list_key and line.startswith("  - "):
-            out[pending_list_key].append(_parse_yaml_scalar(line[4:].strip()))
+        # Accept any indent for list items (0-space "- x" from PyYAML
+        # default dump, 2-space "  - x" from hand-authored frontmatter,
+        # 4-space etc.). The bare "- " token marks a list element.
+        list_item_match = _LIST_ITEM_RE.match(line)
+        if pending_list_key and list_item_match:
+            out[pending_list_key].append(_parse_yaml_scalar(list_item_match.group(1).strip()))
             continue
         kv = _LINE_KV_RE.match(line)
         if not kv:

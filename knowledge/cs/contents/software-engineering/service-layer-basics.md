@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "Service 계층 기초"
-concept_id: "software-engineering/service-layer-basics"
+schema_version: 3
+title: Service 계층 기초
+concept_id: software-engineering/service-layer-basics
+canonical: true
+category: software-engineering
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - service layer
-  - service 계층
-  - business logic
-  - application service
+- service layer
+- service 계층
+- business logic
+- application service
+intents:
+- definition
+linked_paths:
+- contents/software-engineering/layered-architecture-basics.md
+- contents/spring/spring-transactional-basics.md
 expected_queries:
-  - Service 계층은 뭐야?
-  - 비즈니스 로직은 어디에 둬?
-  - controller와 service는 어떻게 나눠?
-  - service에서 transaction을 잡는 이유가 뭐야?
-acceptable_neighbors:
-  - contents/software-engineering/layered-architecture-basics.md
-  - contents/spring/spring-transactional-basics.md
+- Service 계층은 뭐야?
+- 비즈니스 로직은 어디에 둬?
+- controller와 service는 어떻게 나눠?
+- service에서 transaction을 잡는 이유가 뭐야?
 ---
 
 # Service 계층 기초 (Service Layer Basics)

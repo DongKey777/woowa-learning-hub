@@ -1,29 +1,34 @@
 ---
-schema_version: 2
-title: "Post-Write Stale Dashboard Primer"
-concept_id: "system-design/post-write-stale-dashboard-primer"
+schema_version: 3
+title: Post-Write Stale Dashboard Primer
+concept_id: system-design/post-write-stale-dashboard-primer
+canonical: true
+category: system-design
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - post-write stale dashboard
-  - stale read dashboard
-  - read source distribution
-  - primary fallback headroom
-  - stale window dashboard
-expected_queries:
-  - post-write stale dashboard는 뭘 보여줘야 해?
-  - write 직후 stale read가 실제로 있었는지 어떤 화면에서 봐?
-  - primary fallback headroom을 stale dashboard에서 왜 같이 봐?
-  - stale window 안에서 read source distribution을 어떻게 해석해?
-acceptable_neighbors:
-  - contents/system-design/read-after-write-routing-primer.md
-  - contents/design-pattern/projection-freshness-slo-pattern.md
-  - contents/system-design/mixed-cache-replica-freshness-bridge.md
-companion_neighbors:
-  - contents/database/replica-lag-observability-routing-slo.md
+- post-write stale dashboard
+- stale read dashboard
+- read source distribution
+- primary fallback headroom
+- stale window dashboard
+intents:
+- definition
+linked_paths:
+- contents/system-design/read-after-write-routing-primer.md
+- contents/design-pattern/projection-freshness-slo-pattern.md
+- contents/system-design/mixed-cache-replica-freshness-bridge.md
+- contents/database/replica-lag-observability-routing-slo.md
 forbidden_neighbors:
-  - contents/security/audit-logging-auth-authz-traceability.md
+- contents/security/audit-logging-auth-authz-traceability.md
+expected_queries:
+- post-write stale dashboard는 뭘 보여줘야 해?
+- write 직후 stale read가 실제로 있었는지 어떤 화면에서 봐?
+- primary fallback headroom을 stale dashboard에서 왜 같이 봐?
+- stale window 안에서 read source distribution을 어떻게 해석해?
 ---
 
 # Post-Write Stale Dashboard Primer

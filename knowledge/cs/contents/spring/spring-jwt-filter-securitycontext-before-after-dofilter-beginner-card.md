@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Spring JWT 필터에서 filterChain.doFilter 전후에 무슨 일이 일어날까"
-concept_id: "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+schema_version: 3
+title: Spring JWT 필터에서 filterChain.doFilter 전후에 무슨 일이 일어날까
+concept_id: spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - Spring JWT filter beginner
-  - filterChain doFilter before after
-  - SecurityContext before controller
-  - BearerTokenAuthenticationFilter basics
-  - custom JWT filter vs built in bearer token
-expected_queries:
-  - Spring JWT filter에서 doFilter 전후에 무슨 일이 일어나?
-  - JWT filter는 SecurityContext를 언제 넣어야 해?
-  - custom JWT filter와 BearerTokenAuthenticationFilter는 어떻게 달라?
-  - controller 전에 AuthenticationPrincipal이 생기는 흐름을 어디서 봐?
-acceptable_neighbors:
-  - contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
-  - contents/spring/spring-security-filter-chain-ordering.md
-  - contents/spring/spring-security-filter-chain.md
-companion_neighbors:
-  - contents/security/session-cookie-jwt-basics.md
-  - contents/security/jwt-deep-dive.md
+- Spring JWT filter beginner
+- filterChain doFilter before after
+- SecurityContext before controller
+- BearerTokenAuthenticationFilter basics
+- custom JWT filter vs built in bearer token
+intents:
+- definition
+linked_paths:
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/spring/spring-security-filter-chain.md
+- contents/security/session-cookie-jwt-basics.md
+- contents/security/jwt-deep-dive.md
 forbidden_neighbors:
-  - contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+expected_queries:
+- Spring JWT filter에서 doFilter 전후에 무슨 일이 일어나?
+- JWT filter는 SecurityContext를 언제 넣어야 해?
+- custom JWT filter와 BearerTokenAuthenticationFilter는 어떻게 달라?
+- controller 전에 AuthenticationPrincipal이 생기는 흐름을 어디서 봐?
 ---
 
 # Spring JWT 필터에서 `filterChain.doFilter(...)` 전후에 무슨 일이 일어날까

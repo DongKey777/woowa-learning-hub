@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB"
-concept_id: "network/request-timing-decomposition"
+schema_version: 3
+title: 'Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB'
+concept_id: network/request-timing-decomposition
+canonical: false
+category: network
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - request timing decomposition
-  - TTFB
-  - TTLB
-  - DNS time
-  - connect time
-  - TLS handshake
-  - latency breakdown
+- request timing decomposition
+- TTFB
+- TTLB
+- DNS time
+- connect time
+- TLS handshake
+- latency breakdown
+intents:
+- deep_dive
 expected_queries:
-  - TTFB랑 TTLB는 뭐가 달라?
-  - 요청 latency를 DNS connect TLS로 어떻게 나눠?
-  - latency breakdown은 어떻게 봐?
-  - time_starttransfer는 뭐야?
+- TTFB랑 TTLB는 뭐가 달라?
+- 요청 latency를 DNS connect TLS로 어떻게 나눠?
+- latency breakdown은 어떻게 봐?
+- time_starttransfer는 뭐야?
 ---
 
 # Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB

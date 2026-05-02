@@ -1,27 +1,33 @@
 ---
-schema_version: 2
-title: "Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기"
-concept_id: "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+schema_version: 3
+title: 'Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기'
+concept_id: design-pattern/registry-primer-lookup-table-resolver-router-service-locator
+canonical: false
+category: design-pattern
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - registry primer
-  - lookup table vs registry
-  - resolver vs registry
-  - router vs registry
-  - service locator vs registry
+- registry primer
+- lookup table vs registry
+- resolver vs registry
+- router vs registry
+- service locator vs registry
+intents:
+- comparison
+- design
+linked_paths:
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/service-locator-antipattern.md
+- contents/design-pattern/strategy-map-vs-registry-primer.md
+- contents/design-pattern/injected-registry-vs-service-locator-checklist.md
 expected_queries:
-  - registry랑 lookup table, resolver, router는 어떻게 달라?
-  - service locator랑 registry가 왜 다른 냄새야?
-  - resolver router registry를 처음 구분하려면 어디서 봐야 해?
-  - 이미 등록된 객체를 key로 찾는 코드는 무슨 이름이 좋아?
-acceptable_neighbors:
-  - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
-  - contents/design-pattern/service-locator-antipattern.md
-  - contents/design-pattern/strategy-map-vs-registry-primer.md
-companion_neighbors:
-  - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+- registry랑 lookup table, resolver, router는 어떻게 달라?
+- service locator랑 registry가 왜 다른 냄새야?
+- resolver router registry를 처음 구분하려면 어디서 봐야 해?
+- 이미 등록된 객체를 key로 찾는 코드는 무슨 이름이 좋아?
 ---
 
 # Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기

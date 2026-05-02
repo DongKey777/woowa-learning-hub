@@ -1,23 +1,29 @@
 ---
-schema_version: 2
-title: "지연·대역폭·처리량 기초"
-concept_id: "network/latency-bandwidth-throughput-basics"
+schema_version: 3
+title: 지연·대역폭·처리량 기초
+concept_id: network/latency-bandwidth-throughput-basics
+canonical: true
+category: network
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - latency
-  - bandwidth
-  - throughput
-  - RTT
-  - 지연
-  - 대역폭
-  - 처리량
+- latency
+- bandwidth
+- throughput
+- RTT
+- 지연
+- 대역폭
+- 처리량
+intents:
+- definition
 expected_queries:
-  - latency가 뭐야?
-  - 대역폭이랑 처리량은 뭐가 달라?
-  - RTT가 뭐야?
-  - bandwidth를 늘리면 항상 빨라져?
+- latency가 뭐야?
+- 대역폭이랑 처리량은 뭐가 달라?
+- RTT가 뭐야?
+- bandwidth를 늘리면 항상 빨라져?
 ---
 
 # 지연·대역폭·처리량 기초 (Latency, Bandwidth, Throughput)

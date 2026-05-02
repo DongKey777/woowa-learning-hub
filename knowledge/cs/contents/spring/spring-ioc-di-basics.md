@@ -1,27 +1,32 @@
 ---
-schema_version: 2
-title: "IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가"
-concept_id: "spring/ioc-di-basics"
+schema_version: 3
+title: 'IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가'
+concept_id: spring/ioc-di-basics
+canonical: true
+category: spring
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: ko
+source_priority: 90
 aliases:
-  - IoC
-  - DI
-  - dependency injection
-  - 의존성 주입
-  - 제어 역전
+- IoC
+- DI
+- dependency injection
+- 의존성 주입
+- 제어 역전
+intents:
+- definition
+linked_paths:
+- contents/software-engineering/dependency-injection-basics.md
+- contents/spring/ioc-di-container.md
+- contents/design-pattern/factory-vs-di-container-wiring.md
+- contents/design-pattern/service-locator-antipattern.md
 expected_queries:
-  - DI가 뭐야?
-  - 의존성 주입이 뭐야?
-  - 왜 new 대신 DI를 써?
-  - IoC랑 DI 차이가 뭐야?
-acceptable_neighbors:
-  - contents/software-engineering/dependency-injection-basics.md
-  - contents/spring/ioc-di-container.md
-companion_neighbors:
-  - contents/design-pattern/factory-vs-di-container-wiring.md
-  - contents/design-pattern/service-locator-antipattern.md
+- DI가 뭐야?
+- 의존성 주입이 뭐야?
+- 왜 new 대신 DI를 써?
+- IoC랑 DI 차이가 뭐야?
 ---
 
 # IoC와 DI 기초: 제어 역전과 의존성 주입이 왜 필요한가

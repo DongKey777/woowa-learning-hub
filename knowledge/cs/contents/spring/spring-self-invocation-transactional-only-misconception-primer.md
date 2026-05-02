@@ -1,24 +1,31 @@
 ---
-schema_version: 2
-title: "Spring Self-Invocation 공통 오해 1페이지 카드"
-concept_id: "spring/self-invocation-proxy-misconception"
+schema_version: 3
+title: Spring Self-Invocation 공통 오해 1페이지 카드
+concept_id: spring/self-invocation-proxy-misconception
+canonical: false
+category: spring
 difficulty: beginner
 doc_role: playbook
 level: beginner
+language: mixed
+source_priority: 78
 aliases:
-  - self invocation
-  - this method call
-  - proxy bypass
-  - 내부 호출
+- self invocation
+- this method call
+- proxy bypass
+- 내부 호출
+intents:
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/spring-transactional-basics.md
+- contents/spring/aop-proxy-mechanism.md
+- contents/spring/spring-transaction-debugging-playbook.md
 expected_queries:
-  - self invocation이 뭐야?
-  - 같은 클래스 내부 호출이면 왜 Transactional이 안 먹어?
-  - this.method 호출은 왜 프록시를 우회해?
-  - Transactional이 안 먹을 때 먼저 뭘 봐야 해?
-acceptable_neighbors:
-  - contents/spring/spring-transactional-basics.md
-  - contents/spring/aop-proxy-mechanism.md
-  - contents/spring/spring-transaction-debugging-playbook.md
+- self invocation이 뭐야?
+- 같은 클래스 내부 호출이면 왜 Transactional이 안 먹어?
+- this.method 호출은 왜 프록시를 우회해?
+- Transactional이 안 먹을 때 먼저 뭘 봐야 해?
 ---
 
 # Spring Self-Invocation 공통 오해 1페이지 카드: "`@Transactional`만 문제"가 아니다

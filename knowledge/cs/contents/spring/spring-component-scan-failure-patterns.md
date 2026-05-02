@@ -1,23 +1,30 @@
 ---
-schema_version: 2
-title: "Spring Component Scan 실패 패턴"
-concept_id: "spring/component-scan-failure-patterns"
+schema_version: 3
+title: Spring Component Scan 실패 패턴
+concept_id: spring/component-scan-failure-patterns
+canonical: false
+category: spring
 difficulty: beginner
 doc_role: playbook
 level: beginner
+language: mixed
+source_priority: 78
 aliases:
-  - component scan
-  - ComponentScan
-  - NoSuchBeanDefinitionException
-  - service bean not found
+- component scan
+- ComponentScan
+- NoSuchBeanDefinitionException
+- service bean not found
+intents:
+- troubleshooting
+- design
+linked_paths:
+- contents/spring/spring-bean-di-basics.md
+- contents/spring/spring-di-exception-quick-triage.md
 expected_queries:
-  - component scan이 안 되는 이유가 뭐야?
-  - service bean not found는 왜 나?
-  - Spring이 Bean을 못 찾는 이유가 뭐야?
-  - SpringBootApplication 패키지 위치가 왜 중요해?
-acceptable_neighbors:
-  - contents/spring/spring-bean-di-basics.md
-  - contents/spring/spring-di-exception-quick-triage.md
+- component scan이 안 되는 이유가 뭐야?
+- service bean not found는 왜 나?
+- Spring이 Bean을 못 찾는 이유가 뭐야?
+- SpringBootApplication 패키지 위치가 왜 중요해?
 ---
 
 # Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정

@@ -1,33 +1,38 @@
 ---
-schema_version: 2
-title: "MVCC Read View and Consistent Read Internals"
-concept_id: "database/mvcc-read-view-consistent-read-internals"
+schema_version: 3
+title: MVCC Read View and Consistent Read Internals
+concept_id: database/mvcc-read-view-consistent-read-internals
+canonical: false
+category: database
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: ko
+source_priority: 80
 aliases:
-  - MVCC read view
-  - consistent read
-  - snapshot read
-  - undo chain
-  - InnoDB read view
-  - m_low_limit_id
-  - m_up_limit_id
-expected_queries:
-  - MVCC read view가 consistent read에서 무슨 역할을 해?
-  - InnoDB consistent read는 undo chain을 어떻게 따라가?
-  - repeatable read에서 snapshot read가 왜 같은 결과를 보여?
-  - m_low_limit_id랑 m_up_limit_id는 MVCC에서 어떤 경계야?
-acceptable_neighbors:
-  - contents/database/transaction-isolation-basics.md
-  - contents/database/transaction-isolation-locking.md
-  - contents/database/mvcc-history-list-snapshot-too-old.md
-  - contents/database/undo-record-version-chain-traversal.md
-companion_neighbors:
-  - contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
-  - contents/database/change-buffer-purge-history-length.md
+- MVCC read view
+- consistent read
+- snapshot read
+- undo chain
+- InnoDB read view
+- m_low_limit_id
+- m_up_limit_id
+intents:
+- deep_dive
+linked_paths:
+- contents/database/transaction-isolation-basics.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/mvcc-history-list-snapshot-too-old.md
+- contents/database/undo-record-version-chain-traversal.md
+- contents/database/redo-log-undo-log-checkpoint-crash-recovery.md
+- contents/database/change-buffer-purge-history-length.md
 forbidden_neighbors:
-  - contents/spring/spring-transactional-basics.md
+- contents/spring/spring-transactional-basics.md
+expected_queries:
+- MVCC read view가 consistent read에서 무슨 역할을 해?
+- InnoDB consistent read는 undo chain을 어떻게 따라가?
+- repeatable read에서 snapshot read가 왜 같은 결과를 보여?
+- m_low_limit_id랑 m_up_limit_id는 MVCC에서 어떤 경계야?
 ---
 
 # MVCC Read View and Consistent Read Internals

@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Spring Security Filter Chain"
-concept_id: "spring/spring-security-filter-chain"
+schema_version: 3
+title: Spring Security Filter Chain
+concept_id: spring/spring-security-filter-chain
+canonical: false
+category: spring
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - Spring Security filter chain
-  - SecurityFilterChain
-  - DelegatingFilterProxy
-  - ExceptionTranslationFilter
-  - AuthorizationFilter
-expected_queries:
-  - Spring Security filter chain은 어떤 순서로 인증과 인가를 처리해?
-  - ExceptionTranslationFilter가 401과 403을 어떻게 가르지?
-  - permitAll인데 invalid bearer token 때문에 401이 나는 이유가 뭐야?
-  - SecurityFilterChain과 서블릿 Filter는 어떻게 연결돼?
-acceptable_neighbors:
-  - contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
-  - contents/spring/spring-security-filter-chain-ordering.md
-  - contents/security/auth-failure-response-401-403-404.md
-companion_neighbors:
-  - contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
-  - contents/security/session-cookie-jwt-basics.md
+- Spring Security filter chain
+- SecurityFilterChain
+- DelegatingFilterProxy
+- ExceptionTranslationFilter
+- AuthorizationFilter
+intents:
+- deep_dive
+linked_paths:
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-security-filter-chain-ordering.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
+- contents/security/session-cookie-jwt-basics.md
 forbidden_neighbors:
-  - contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+expected_queries:
+- Spring Security filter chain은 어떤 순서로 인증과 인가를 처리해?
+- ExceptionTranslationFilter가 401과 403을 어떻게 가르지?
+- permitAll인데 invalid bearer token 때문에 401이 나는 이유가 뭐야?
+- SecurityFilterChain과 서블릿 Filter는 어떻게 연결돼?
 ---
 
 # Spring Security Filter Chain

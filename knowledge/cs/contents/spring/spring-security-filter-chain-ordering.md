@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Spring Security Filter Chain Ordering"
-concept_id: "spring/spring-security-filter-chain-ordering"
+schema_version: 3
+title: Spring Security Filter Chain Ordering
+concept_id: spring/spring-security-filter-chain-ordering
+canonical: false
+category: spring
 difficulty: advanced
 doc_role: deep_dive
 level: advanced
+language: mixed
+source_priority: 80
 aliases:
-  - Spring Security filter chain ordering
-  - security filter order
-  - addFilterBefore
-  - addFilterAfter
-  - BearerTokenAuthenticationFilter order
-expected_queries:
-  - Spring Security filter order는 왜 중요해?
-  - addFilterBefore와 addFilterAfter 기준 필터를 어떻게 고르지?
-  - JWT filter를 UsernamePasswordAuthenticationFilter 앞에 둬야 하는지 헷갈려
-  - ExceptionTranslationFilter와 AuthorizationFilter 순서를 어떻게 이해해?
-acceptable_neighbors:
-  - contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
-  - contents/spring/spring-security-filter-chain.md
-  - contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
-companion_neighbors:
-  - contents/security/auth-failure-response-401-403-404.md
-  - contents/security/session-cookie-jwt-basics.md
+- Spring Security filter chain ordering
+- security filter order
+- addFilterBefore
+- addFilterAfter
+- BearerTokenAuthenticationFilter order
+intents:
+- deep_dive
+linked_paths:
+- contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+- contents/spring/spring-security-filter-chain.md
+- contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
+- contents/security/auth-failure-response-401-403-404.md
+- contents/security/session-cookie-jwt-basics.md
 forbidden_neighbors:
-  - contents/spring/spring-mvc-controller-basics.md
+- contents/spring/spring-mvc-controller-basics.md
+expected_queries:
+- Spring Security filter order는 왜 중요해?
+- addFilterBefore와 addFilterAfter 기준 필터를 어떻게 고르지?
+- JWT filter를 UsernamePasswordAuthenticationFilter 앞에 둬야 하는지 헷갈려
+- ExceptionTranslationFilter와 AuthorizationFilter 순서를 어떻게 이해해?
 ---
 
 # Spring Security Filter Chain Ordering

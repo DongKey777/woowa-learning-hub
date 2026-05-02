@@ -1,30 +1,35 @@
 ---
-schema_version: 2
-title: "Projection Applied Watermark Basics"
-concept_id: "system-design/projection-applied-watermark-basics"
+schema_version: 3
+title: Projection Applied Watermark Basics
+concept_id: system-design/projection-applied-watermark-basics
+canonical: true
+category: system-design
 difficulty: beginner
 doc_role: primer
 level: beginner
+language: mixed
+source_priority: 90
 aliases:
-  - applied watermark
-  - projection watermark
-  - required watermark vs applied watermark
-  - read model checkpoint
-  - projection checkpoint
-expected_queries:
-  - applied_watermark가 뭐야?
-  - required watermark랑 applied watermark는 어떻게 달라?
-  - read model이 어디까지 반영됐는지 어떻게 판단해?
-  - 방금 저장했는데 read model이 stale인지 watermark로 어떻게 봐?
-acceptable_neighbors:
-  - contents/system-design/read-after-write-routing-primer.md
-  - contents/design-pattern/read-model-staleness-read-your-writes.md
-  - contents/system-design/watermark-metadata-persistence-basics.md
-companion_neighbors:
-  - contents/system-design/outbox-watermark-token-primer.md
-  - contents/system-design/shard-aware-watermark-scope-primer.md
+- applied watermark
+- projection watermark
+- required watermark vs applied watermark
+- read model checkpoint
+- projection checkpoint
+intents:
+- definition
+linked_paths:
+- contents/system-design/read-after-write-routing-primer.md
+- contents/design-pattern/read-model-staleness-read-your-writes.md
+- contents/system-design/watermark-metadata-persistence-basics.md
+- contents/system-design/outbox-watermark-token-primer.md
+- contents/system-design/shard-aware-watermark-scope-primer.md
 forbidden_neighbors:
-  - contents/security/session-cookie-jwt-basics.md
+- contents/security/session-cookie-jwt-basics.md
+expected_queries:
+- applied_watermark가 뭐야?
+- required watermark랑 applied watermark는 어떻게 달라?
+- read model이 어디까지 반영됐는지 어떻게 판단해?
+- 방금 저장했는데 read model이 stale인지 watermark로 어떻게 봐?
 ---
 
 # Projection Applied Watermark Basics

@@ -1,27 +1,33 @@
 ---
-schema_version: 2
-title: "Strategy Map vs Registry Primer: 같은 Map 모양인데 질문이 다르다"
-concept_id: "design-pattern/strategy-map-vs-registry-primer"
+schema_version: 3
+title: 'Strategy Map vs Registry Primer: 같은 Map 모양인데 질문이 다르다'
+concept_id: design-pattern/strategy-map-vs-registry-primer
+canonical: false
+category: design-pattern
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - strategy map vs registry
-  - Map<Key Strategy>
-  - strategy collection
-  - 행동 교체 vs keyed lookup
-  - 전략 맵 vs 레지스트리
+- strategy map vs registry
+- Map<Key Strategy>
+- strategy collection
+- 행동 교체 vs keyed lookup
+- 전략 맵 vs 레지스트리
+intents:
+- comparison
+- design
+linked_paths:
+- contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+- contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+- contents/design-pattern/strategy-pattern-basics.md
+- contents/design-pattern/strategy-registry-vs-service-locator-drift.md
 expected_queries:
-  - Map<String, Strategy>는 registry야 strategy야?
-  - 같은 Map 모양인데 행동 교체와 단순 lookup을 어떻게 구분해?
-  - strategy map과 registry 차이를 처음 배우는데 어디서 봐?
-  - 전략 컬렉션을 selector라고 불러도 되는지 헷갈려
-acceptable_neighbors:
-  - contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
-  - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
-  - contents/design-pattern/strategy-pattern-basics.md
-companion_neighbors:
-  - contents/design-pattern/strategy-registry-vs-service-locator-drift.md
+- Map<String, Strategy>는 registry야 strategy야?
+- 같은 Map 모양인데 행동 교체와 단순 lookup을 어떻게 구분해?
+- strategy map과 registry 차이를 처음 배우는데 어디서 봐?
+- 전략 컬렉션을 selector라고 불러도 되는지 헷갈려
 ---
 
 # Strategy Map vs Registry Primer: 같은 `Map` 모양인데 질문이 다르다

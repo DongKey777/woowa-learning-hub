@@ -1,24 +1,30 @@
 ---
-schema_version: 2
-title: "Factory와 DI 컨테이너 Wiring"
-concept_id: "design-pattern/factory-vs-di-container-wiring"
+schema_version: 3
+title: Factory와 DI 컨테이너 Wiring
+concept_id: design-pattern/factory-vs-di-container-wiring
+canonical: false
+category: design-pattern
 difficulty: intermediate
-doc_role: comparison
+doc_role: bridge
 level: intermediate
+language: mixed
+source_priority: 85
 aliases:
-  - factory vs DI
-  - factory pattern
-  - DI container
-  - object creation
+- factory vs DI
+- factory pattern
+- DI container
+- object creation
+intents:
+- comparison
+linked_paths:
+- contents/spring/spring-ioc-di-basics.md
+- contents/software-engineering/dependency-injection-basics.md
+- contents/spring/ioc-di-container.md
 expected_queries:
-  - Factory랑 DI 컨테이너는 뭐가 달라?
-  - 객체 생성은 어디까지 Factory로 둬야 해?
-  - 왜 new 대신 DI 컨테이너가 조립하게 해?
-  - Factory Pattern과 Spring DI 차이가 뭐야?
-acceptable_neighbors:
-  - contents/spring/spring-ioc-di-basics.md
-  - contents/software-engineering/dependency-injection-basics.md
-  - contents/spring/ioc-di-container.md
+- Factory랑 DI 컨테이너는 뭐가 달라?
+- 객체 생성은 어디까지 Factory로 둬야 해?
+- 왜 new 대신 DI 컨테이너가 조립하게 해?
+- Factory Pattern과 Spring DI 차이가 뭐야?
 ---
 
 # Factory와 DI 컨테이너 Wiring: 프레임워크가 대신하는 생성, 남겨야 하는 생성

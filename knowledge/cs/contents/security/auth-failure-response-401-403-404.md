@@ -1,30 +1,36 @@
 ---
-schema_version: 2
-title: "Beginner Guide to Auth Failure Responses: 401 / 403 / 404"
-concept_id: "security/auth-failure-response-401-403-404"
+schema_version: 3
+title: 'Beginner Guide to Auth Failure Responses: 401 / 403 / 404'
+concept_id: security/auth-failure-response-401-403-404
+canonical: false
+category: security
 difficulty: beginner
 doc_role: chooser
 level: beginner
+language: mixed
+source_priority: 88
 aliases:
-  - 401 vs 403 vs 404
-  - auth failure response
-  - 로그인 됐는데 왜 403
-  - token valid but forbidden
-  - 404 concealment
-expected_queries:
-  - 401 403 404 차이가 뭐야?
-  - 로그인 됐는데 왜 403이 나와?
-  - token valid인데 왜 forbidden이야?
-  - 남의 주문 조회를 404로 숨기는 건 언제 써?
-acceptable_neighbors:
-  - contents/security/authentication-vs-authorization.md
-  - contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
-  - contents/security/browser-401-vs-302-login-redirect-guide.md
-companion_neighbors:
-  - contents/spring/spring-security-filter-chain.md
-  - contents/security/concealment-404-entry-cues.md
+- 401 vs 403 vs 404
+- auth failure response
+- 로그인 됐는데 왜 403
+- token valid but forbidden
+- 404 concealment
+intents:
+- comparison
+- design
+linked_paths:
+- contents/security/authentication-vs-authorization.md
+- contents/security/permission-model-bridge-authn-to-role-scope-ownership.md
+- contents/security/browser-401-vs-302-login-redirect-guide.md
+- contents/spring/spring-security-filter-chain.md
+- contents/security/concealment-404-entry-cues.md
 forbidden_neighbors:
-  - contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+- contents/network/redirect-vs-forward-vs-spa-navigation-basics.md
+expected_queries:
+- 401 403 404 차이가 뭐야?
+- 로그인 됐는데 왜 403이 나와?
+- token valid인데 왜 forbidden이야?
+- 남의 주문 조회를 404로 숨기는 건 언제 써?
 ---
 
 # Beginner Guide to Auth Failure Responses: `401` / `403` / `404`
