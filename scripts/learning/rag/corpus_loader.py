@@ -503,3 +503,24 @@ def corpus_hash(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> str:
         h.update(hashlib.sha1(data).digest())
         h.update(b"\x00")
     return h.hexdigest()
+
+
+def indexed_corpus_hash(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> str:
+    """Stable hash for the markdown files that ``iter_corpus`` actually indexes."""
+
+    root = Path(corpus_root)
+    h = hashlib.sha256()
+    contents_root = root / CONTENTS_DIR
+    if not contents_root.exists():
+        return h.hexdigest()
+    for md_path in sorted(contents_root.rglob("*.md")):
+        try:
+            data = md_path.read_bytes()
+        except OSError:
+            continue
+        rel = md_path.relative_to(root).as_posix().encode("utf-8")
+        h.update(rel)
+        h.update(b"\x00")
+        h.update(hashlib.sha1(data).digest())
+        h.update(b"\x00")
+    return h.hexdigest()
