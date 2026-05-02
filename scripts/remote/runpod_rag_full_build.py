@@ -316,12 +316,101 @@ class _ParamikoSshExecutor:
 
     def scp_from_pod(self, pod: Pod, keypath: Path, remote_path: str,
                      local_path: Path) -> None:
+        """Pull a file from the Pod with resume support.
+
+        R3 archives are large enough that RunPod community SSH channels can
+        reset during transfer. Paramiko's plain ``SFTPClient.get`` leaves a
+        truncated file at the final path and gives the caller no chance to
+        resume, so we stream into ``*.part`` and reconnect from the current
+        offset when the channel drops.
+        """
+
+        local_path.parent.mkdir(parents=True, exist_ok=True)
+        part_path = local_path.with_name(f"{local_path.name}.part")
+        remote_size = self._remote_file_size(pod, keypath, remote_path)
+
+        if local_path.exists():
+            local_size = local_path.stat().st_size
+            if local_size == remote_size:
+                return
+            if part_path.exists():
+                part_path.unlink()
+            local_path.replace(part_path)
+
+        if part_path.exists() and part_path.stat().st_size > remote_size:
+            part_path.unlink()
+
+        attempts = 0
+        max_attempts = 8
+        chunk_size = 8 * 1024 * 1024
+        while (part_path.stat().st_size if part_path.exists() else 0) < remote_size:
+            offset = part_path.stat().st_size if part_path.exists() else 0
+            attempts += 1
+            try:
+                self._download_range(
+                    pod,
+                    keypath,
+                    remote_path,
+                    part_path,
+                    offset=offset,
+                    chunk_size=chunk_size,
+                )
+            except Exception as exc:
+                if attempts >= max_attempts:
+                    raise
+                logger.warning(
+                    "[runpod] transfer reset for %s at %d/%d bytes "
+                    "(attempt %d/%d): %s",
+                    remote_path,
+                    offset,
+                    remote_size,
+                    attempts,
+                    max_attempts,
+                    exc,
+                )
+                time.sleep(min(30, attempts * 5))
+                continue
+
+        if part_path.stat().st_size != remote_size:
+            raise RuntimeError(
+                f"download size mismatch for {remote_path}: "
+                f"{part_path.stat().st_size} != {remote_size}"
+            )
+        part_path.replace(local_path)
+
+    def _remote_file_size(self, pod: Pod, keypath: Path, remote_path: str) -> int:
         client = self._client(pod, keypath)
         try:
             sftp = client.open_sftp()
             try:
-                local_path.parent.mkdir(parents=True, exist_ok=True)
-                sftp.get(remote_path, str(local_path))
+                return int(sftp.stat(remote_path).st_size)
+            finally:
+                sftp.close()
+        finally:
+            client.close()
+
+    def _download_range(
+        self,
+        pod: Pod,
+        keypath: Path,
+        remote_path: str,
+        part_path: Path,
+        *,
+        offset: int,
+        chunk_size: int,
+    ) -> None:
+        client = self._client(pod, keypath)
+        try:
+            sftp = client.open_sftp()
+            try:
+                with sftp.open(remote_path, "rb") as remote_file:
+                    remote_file.seek(offset)
+                    with part_path.open("ab") as local_file:
+                        while True:
+                            chunk = remote_file.read(chunk_size)
+                            if not chunk:
+                                break
+                            local_file.write(chunk)
             finally:
                 sftp.close()
         finally:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -558,6 +559,93 @@ def test_run_cost_zero_when_pod_never_created(tmp_path):
     ledger = json.loads((tmp_path / "ledger.json").read_text())
     assert ledger[0]["pod_id"] is None
     assert ledger[0]["estimated_cost_usd"] == 0.0
+
+
+def test_paramiko_downloader_resumes_partial_transfer(tmp_path):
+    payload = b"0123456789" * 1024
+
+    class _Stat:
+        st_size = len(payload)
+
+    class _RemoteFile:
+        def __init__(self, owner):
+            self.owner = owner
+            self.pos = 0
+            self.reads = 0
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def seek(self, offset):
+            self.pos = offset
+
+        def read(self, size):
+            if self.owner.drop_once and self.reads == 0:
+                self.reads += 1
+                end = min(self.pos + 17, len(payload))
+                chunk = payload[self.pos:end]
+                self.pos = end
+                return chunk
+            if self.owner.drop_once:
+                self.owner.drop_once = False
+                raise OSError("simulated connection reset")
+            if self.pos >= len(payload):
+                return b""
+            end = min(self.pos + size, len(payload))
+            chunk = payload[self.pos:end]
+            self.pos = end
+            return chunk
+
+    class _Sftp:
+        def __init__(self, owner):
+            self.owner = owner
+
+        def stat(self, _path):
+            return _Stat()
+
+        def open(self, _path, _mode):
+            return _RemoteFile(self.owner)
+
+        def close(self):
+            pass
+
+    class _Client:
+        def __init__(self, owner):
+            self.owner = owner
+
+        def open_sftp(self):
+            return _Sftp(self.owner)
+
+        def close(self):
+            pass
+
+    class _Downloader(H._ParamikoSshExecutor):
+        def __init__(self):
+            self.drop_once = True
+            self.client_count = 0
+
+        def _client(self, _pod, _keypath):
+            self.client_count += 1
+            return _Client(self)
+
+    downloader = _Downloader()
+    pod = H.Pod(
+        pod_id="pod",
+        ip="127.0.0.1",
+        ssh_port=22,
+        gpu_type="gpu",
+        started_at=datetime.now(timezone.utc),
+    )
+    out = tmp_path / "archive.tar.zst"
+
+    downloader.scp_from_pod(pod, tmp_path / "key", "/remote/archive.tar.zst", out)
+
+    assert out.read_bytes() == payload
+    assert not out.with_name("archive.tar.zst.part").exists()
+    assert downloader.client_count >= 2
 
 
 def _build_args(**overrides):
