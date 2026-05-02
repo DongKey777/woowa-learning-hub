@@ -66,6 +66,59 @@ VALID_DOC_ROLES = {
 }
 VALID_LEVELS = {"beginner", "intermediate", "advanced"}
 
+# ---------------------------------------------------------------------------
+# Corpus v3 contract — see docs/worklogs/rag-r3-corpus-v3-contract.md
+# Companion JSON Schema: tests/fixtures/r3_corpus_v3_schema.json
+# ---------------------------------------------------------------------------
+PILOT_V3_FIELDS = (
+    "concept_id",
+    "doc_role",
+    "level",
+    "language",
+    "aliases",
+    "expected_queries",
+)
+# v3 doc roles: 8 explicit values (primer/bridge/deep_dive/playbook/chooser/
+# symptom_router/drill/mission_bridge). v2's "comparison" is dropped (use
+# bridge or chooser); v3 adds symptom_router and mission_bridge.
+VALID_DOC_ROLES_V3 = {
+    "primer",
+    "bridge",
+    "deep_dive",
+    "playbook",
+    "chooser",
+    "symptom_router",
+    "drill",
+    "mission_bridge",
+}
+VALID_LANGUAGES_V3 = {"ko", "en", "mixed"}
+VALID_INTENTS_V3 = {
+    "definition",
+    "comparison",
+    "symptom",
+    "mission_bridge",
+    "deep_dive",
+    "drill",
+    "design",
+    "troubleshooting",
+}
+VALID_CATEGORIES_V3 = {
+    "algorithm",
+    "data-structure",
+    "database",
+    "design-pattern",
+    "language",
+    "network",
+    "operating-system",
+    "security",
+    "software-engineering",
+    "spring",
+    "system-design",
+}
+_CONCEPT_ID_RE = re.compile(r"^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]+$")
+_MISSION_ID_RE = re.compile(r"^missions\/[a-z][a-z0-9-]+$")
+_CORPUS_PATH_RE = re.compile(r"^contents\/[a-z][a-z0-9-]*\/[a-z0-9_.\-/]+\.md$")
+
 
 def parse_frontmatter(text: str) -> dict | None:
     """Parse a minimal subset of YAML frontmatter — enough for
@@ -280,6 +333,8 @@ def check_frontmatter_schema(
         ))
     if str(fm.get("schema_version")) == "2":
         out.extend(check_corpus_v2_pilot_frontmatter(file_path=file_path, frontmatter=fm))
+    elif str(fm.get("schema_version")) == "3":
+        out.extend(check_corpus_v3_pilot_frontmatter(file_path=file_path, frontmatter=fm))
     return out
 
 
@@ -325,6 +380,253 @@ def check_corpus_v2_pilot_frontmatter(
                 file_path=str(file_path),
                 message=f"{list_field} must be a non-empty string list",
             ))
+    return out
+
+
+def _derive_category_from_path(file_path: Path) -> str | None:
+    """Walk the path to find the parent directly under ``contents/``.
+
+    Used to verify ``frontmatter.category`` matches folder placement.
+    Returns None if the path is not under ``contents/<category>/...``.
+    """
+    parts = file_path.as_posix().split("/")
+    if "contents" in parts:
+        idx = parts.index("contents")
+        if idx + 1 < len(parts):
+            return parts[idx + 1]
+    return None
+
+
+def _v3_violation(file_path: Path, message: str) -> LintViolation:
+    return LintViolation(
+        check="corpus_v3_frontmatter",
+        file_path=str(file_path),
+        message=message,
+    )
+
+
+def _is_non_empty_string_list(value: object) -> bool:
+    return (
+        isinstance(value, list)
+        and len(value) > 0
+        and all(isinstance(s, str) and s.strip() for s in value)
+    )
+
+
+def check_corpus_v3_pilot_frontmatter(
+    *,
+    file_path: Path,
+    frontmatter: dict,
+) -> list[LintViolation]:
+    """Validate the Corpus v3 pilot frontmatter (schema_version: 3).
+
+    Enforces:
+      - PILOT_V3_FIELDS all present and non-empty
+      - doc_role, level, language enum constraints
+      - aliases / expected_queries are non-empty string lists
+      - aliases ⊥ expected_queries (set disjointness — prevents the
+        circular-leak class of bug fixed in commit 054a1a3)
+      - category matches folder placement
+      - concept_id pattern (kebab-case category/slug)
+      - intents enum (each value)
+      - mission_ids pattern (kebab-case missions/slug)
+      - linked_paths / forbidden_neighbors path pattern
+      - prerequisites / next_docs / confusable_with concept_id pattern
+      - role-conditional requirements:
+        * doc_role=symptom_router → symptoms ≥ 3
+        * doc_role=playbook → symptoms ≥ 1
+        * doc_role=mission_bridge → mission_ids ≥ 1
+        * doc_role=chooser → confusable_with ≥ 2
+    """
+    out: list[LintViolation] = []
+
+    # 1. PILOT_V3_FIELDS all present + non-empty
+    for field_name in PILOT_V3_FIELDS:
+        value = frontmatter.get(field_name)
+        if value in (None, "", []):
+            out.append(_v3_violation(
+                file_path,
+                f"corpus v3 missing pilot field: {field_name}",
+            ))
+
+    # 2. concept_id pattern
+    concept_id = frontmatter.get("concept_id")
+    if isinstance(concept_id, str) and concept_id and not _CONCEPT_ID_RE.match(concept_id):
+        out.append(_v3_violation(
+            file_path,
+            f"concept_id '{concept_id}' does not match "
+            f"'^[a-z][a-z0-9-]*\\/[a-z][a-z0-9-]+$'",
+        ))
+
+    # 3. doc_role enum
+    doc_role = frontmatter.get("doc_role")
+    if doc_role not in (None, "") and doc_role not in VALID_DOC_ROLES_V3:
+        out.append(_v3_violation(
+            file_path,
+            f"doc_role '{doc_role}' not in {sorted(VALID_DOC_ROLES_V3)}",
+        ))
+
+    # 4. level enum
+    level = frontmatter.get("level")
+    if level not in (None, "") and level not in VALID_LEVELS:
+        out.append(_v3_violation(
+            file_path,
+            f"level '{level}' not in {sorted(VALID_LEVELS)}",
+        ))
+
+    # 5. language enum
+    language = frontmatter.get("language")
+    if language not in (None, "") and language not in VALID_LANGUAGES_V3:
+        out.append(_v3_violation(
+            file_path,
+            f"language '{language}' not in {sorted(VALID_LANGUAGES_V3)}",
+        ))
+
+    # 6. category enum + folder placement
+    category = frontmatter.get("category")
+    if category not in (None, "") and category not in VALID_CATEGORIES_V3:
+        out.append(_v3_violation(
+            file_path,
+            f"category '{category}' not in {sorted(VALID_CATEGORIES_V3)}",
+        ))
+    expected_category = _derive_category_from_path(file_path)
+    if (
+        expected_category is not None
+        and category not in (None, "")
+        and category != expected_category
+    ):
+        out.append(_v3_violation(
+            file_path,
+            f"category '{category}' does not match folder placement "
+            f"'{expected_category}' (path under contents/{expected_category}/)",
+        ))
+
+    # 7. aliases / expected_queries shape
+    aliases = frontmatter.get("aliases")
+    expected_queries = frontmatter.get("expected_queries")
+    aliases_valid = _is_non_empty_string_list(aliases)
+    eq_valid = _is_non_empty_string_list(expected_queries)
+    if aliases is not None and not aliases_valid:
+        out.append(_v3_violation(
+            file_path,
+            "aliases must be a non-empty list[str]",
+        ))
+    if expected_queries is not None and not eq_valid:
+        out.append(_v3_violation(
+            file_path,
+            "expected_queries must be a non-empty list[str]",
+        ))
+
+    # 8. CRITICAL invariant: aliases ⊥ expected_queries (case-insensitive,
+    # whitespace-normalized). This is the structural defense against the
+    # circular-leak class of bug.
+    if aliases_valid and eq_valid:
+        norm_aliases = {re.sub(r"\s+", " ", a.strip().casefold()) for a in aliases}
+        norm_eq = {re.sub(r"\s+", " ", q.strip().casefold()) for q in expected_queries}
+        overlap = norm_aliases & norm_eq
+        if overlap:
+            out.append(_v3_violation(
+                file_path,
+                f"aliases ⊥ expected_queries violation (overlap: "
+                f"{sorted(overlap)}). v3 contract requires structural "
+                f"separation (aliases = lexical hint channel, "
+                f"expected_queries = qrel seed only).",
+            ))
+
+    # 9. intents enum
+    intents = frontmatter.get("intents")
+    if intents is not None:
+        if not isinstance(intents, list):
+            out.append(_v3_violation(
+                file_path,
+                "intents must be a list[str]",
+            ))
+        else:
+            for intent in intents:
+                if intent not in VALID_INTENTS_V3:
+                    out.append(_v3_violation(
+                        file_path,
+                        f"intent '{intent}' not in "
+                        f"{sorted(VALID_INTENTS_V3)}",
+                    ))
+
+    # 10. mission_ids pattern
+    mission_ids = frontmatter.get("mission_ids")
+    if isinstance(mission_ids, list):
+        for mid in mission_ids:
+            if not (isinstance(mid, str) and _MISSION_ID_RE.match(mid)):
+                out.append(_v3_violation(
+                    file_path,
+                    f"mission_id '{mid}' does not match "
+                    f"'^missions\\/[a-z][a-z0-9-]+$'",
+                ))
+
+    # 11. linked_paths / forbidden_neighbors path pattern
+    for path_field in ("linked_paths", "forbidden_neighbors"):
+        value = frontmatter.get(path_field)
+        if isinstance(value, list):
+            for p in value:
+                if not (isinstance(p, str) and _CORPUS_PATH_RE.match(p)):
+                    out.append(_v3_violation(
+                        file_path,
+                        f"{path_field} entry '{p}' does not match "
+                        f"corpus path pattern",
+                    ))
+
+    # 12. prerequisites / next_docs / confusable_with concept_id pattern
+    for cid_field in ("prerequisites", "next_docs", "confusable_with"):
+        value = frontmatter.get(cid_field)
+        if isinstance(value, list):
+            for c in value:
+                if not (isinstance(c, str) and _CONCEPT_ID_RE.match(c)):
+                    out.append(_v3_violation(
+                        file_path,
+                        f"{cid_field} entry '{c}' does not match "
+                        f"concept_id pattern",
+                    ))
+
+    # 13. Role-conditional requirements
+    if doc_role == "symptom_router":
+        symptoms = frontmatter.get("symptoms")
+        if not (isinstance(symptoms, list) and len(symptoms) >= 3):
+            out.append(_v3_violation(
+                file_path,
+                "doc_role=symptom_router requires symptoms with at least "
+                "3 entries (per contract §3.2 symptom_router)",
+            ))
+    if doc_role == "playbook":
+        symptoms = frontmatter.get("symptoms")
+        if not (isinstance(symptoms, list) and len(symptoms) >= 1):
+            out.append(_v3_violation(
+                file_path,
+                "doc_role=playbook requires symptoms with at least 1 entry",
+            ))
+    if doc_role == "mission_bridge":
+        mids = frontmatter.get("mission_ids")
+        if not (isinstance(mids, list) and len(mids) >= 1):
+            out.append(_v3_violation(
+                file_path,
+                "doc_role=mission_bridge requires mission_ids with at least "
+                "1 entry",
+            ))
+    if doc_role == "chooser":
+        cw = frontmatter.get("confusable_with")
+        if not (isinstance(cw, list) and len(cw) >= 2):
+            out.append(_v3_violation(
+                file_path,
+                "doc_role=chooser requires confusable_with with at least 2 "
+                "candidates (per contract §3.2 chooser)",
+            ))
+
+    # 14. source_priority range (when present)
+    sp = frontmatter.get("source_priority")
+    if sp is not None:
+        if not isinstance(sp, int) or sp < 0 or sp > 100:
+            out.append(_v3_violation(
+                file_path,
+                f"source_priority must be int in [0, 100], got {sp!r}",
+            ))
+
     return out
 
 
