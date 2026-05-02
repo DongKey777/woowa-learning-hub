@@ -23,13 +23,55 @@ from .index.runtime_loader import (
 )
 from .index.lexical_store import LexicalStore
 from .query_plan import build_query_plan
-from .retrievers import LexicalRetriever, SignalRetriever, SparseRetriever
+from .retrievers import (
+    LexicalRetriever,
+    MissionBridgeRetriever,
+    SignalRetriever,
+    SparseRetriever,
+    SymptomRouterRetriever,
+)
 from .rerankers import CrossEncoderReranker
 
 _SPARSE_RETRIEVER_CACHE: dict[tuple[int, int, int], SparseRetriever] = {}
 _MAX_SPARSE_RETRIEVER_CACHE_ENTRIES = 4
 _LEXICAL_SIDECAR_FIELDS = ("title", "section", "aliases")
 _QUERY_PREFETCH_BODY_FIELDS = ("body",)
+_CATALOG_REQUIRED_FILES = (
+    "concepts.v3.json",
+    "mission_ids_to_concepts.json",
+    "symptom_to_concepts.json",
+)
+
+
+def _resolve_catalog_root(catalog_root: Path | str | None) -> Path | None:
+    """Find a v3 catalog directory by explicit override or repo-default.
+
+    Resolution order:
+      1. ``catalog_root`` argument when provided
+      2. ``WOOWA_RAG_CATALOG_ROOT`` env var
+      3. Repo default ``knowledge/cs/catalog`` (resolved relative to this
+         module's location)
+
+    Returns None when no candidate has the required catalog files —
+    callers must handle absence gracefully so search keeps working on
+    indexes built before Phase 4.5.
+    """
+    candidates: list[Path] = []
+    if catalog_root is not None:
+        candidates.append(Path(catalog_root))
+    env_override = os.environ.get("WOOWA_RAG_CATALOG_ROOT")
+    if env_override:
+        candidates.append(Path(env_override))
+    here = Path(__file__).resolve()
+    for parent in [here, *here.parents]:
+        candidate = parent / "knowledge" / "cs" / "catalog"
+        if candidate.exists():
+            candidates.append(candidate)
+            break
+    for cand in candidates:
+        if all((cand / name).exists() for name in _CATALOG_REQUIRED_FILES):
+            return cand
+    return None
 
 
 def _record_stage(stage_ms: dict[str, float], name: str, started_at: float) -> None:
@@ -104,6 +146,7 @@ def search(
     top_k: int = 5,
     mode: str = "full",
     index_root: Path | str | None = None,
+    catalog_root: Path | str | None = None,
     use_reranker: bool | None = None,
     experience_level: str | None = None,
     learner_context: dict | None = None,
@@ -128,6 +171,8 @@ def search(
     lexical_sidecar_error = None
     reranker_active = False
     reranker_skip_reason = None
+    catalog_channels_used: list[str] = []
+    catalog_error: str | None = None
     try:
         started = time.perf_counter()
         documents = (
@@ -234,6 +279,26 @@ def search(
             1,
         )
         started = time.perf_counter()
+        catalog_dir = _resolve_catalog_root(catalog_root)
+        catalog_candidates: list = []
+        if catalog_dir is not None:
+            try:
+                mission_retriever = MissionBridgeRetriever.from_catalog_dir(
+                    catalog_dir, signal_documents,
+                )
+                catalog_candidates.extend(mission_retriever.retrieve(query_plan))
+                catalog_channels_used.append("mission_bridge")
+                symptom_retriever = SymptomRouterRetriever.from_catalog_dir(
+                    catalog_dir, signal_documents,
+                )
+                catalog_candidates.extend(symptom_retriever.retrieve(query_plan))
+                catalog_channels_used.append("symptom_router")
+            except Exception as exc:
+                # Graceful degradation — never let catalog channel issues
+                # break the existing dense / lexical / sparse path.
+                catalog_error = f"{type(exc).__name__}: {exc}"
+                catalog_candidates = []
+
         candidates = [
             *[
                 candidate
@@ -243,6 +308,7 @@ def search(
             *dense_candidates,
             *sparse.retrieve(query_plan, query_terms=query_sparse_terms or None),
             *signal.retrieve([*query_plan.route_tags, *(topic_hints or [])]),
+            *catalog_candidates,
         ]
         _record_stage(stage_ms, "retrieve_candidates", started)
         started = time.perf_counter()
@@ -288,6 +354,8 @@ def search(
             "lexical_sidecar_error": lexical_sidecar_error,
             "rerank_policy": config.local_rerank_policy,
             "reranker_skip_reason": reranker_skip_reason,
+            "catalog_channels_used": list(catalog_channels_used),
+            "catalog_error": catalog_error,
         },
     )
 
@@ -314,6 +382,8 @@ def search(
             lexical_sidecar.metadata if lexical_sidecar is not None else None
         )
         debug["r3_lexical_sidecar_error"] = lexical_sidecar_error
+        debug["r3_catalog_channels_used"] = list(catalog_channels_used)
+        debug["r3_catalog_error"] = catalog_error
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k

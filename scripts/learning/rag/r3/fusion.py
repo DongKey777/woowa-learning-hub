@@ -23,8 +23,15 @@ DEFAULT_RETRIEVER_WEIGHTS = {
     "dense": 1.0,
     "sparse": 1.1,
     "signal": 0.7,
+    # v3 corpus channels (mission_bridge / symptom_router) — high weight
+    # because the catalog-driven match is intent-explicit. mission_bridge
+    # only fires when the query mentions the mission name; symptom_router
+    # only fires when the query phrase overlaps a curated symptom string.
+    # False positives are structurally rare, so the weight can be high.
+    "mission_bridge": 1.6,
+    "symptom_router": 1.5,
 }
-FUSION_VERSION = "weighted-rrf-doc-diversity-v2"
+FUSION_VERSION = "weighted-rrf-doc-diversity-v3"
 
 
 @dataclass(frozen=True)

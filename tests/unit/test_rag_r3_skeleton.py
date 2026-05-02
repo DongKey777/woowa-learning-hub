@@ -58,7 +58,10 @@ def test_candidate_requires_retriever_provenance():
 
 
 def test_corpus_v2_alias_sidecar_matches_are_high_confidence():
-    assert FUSION_VERSION == "weighted-rrf-doc-diversity-v2"
+    # v3 bumps the version because mission_bridge / symptom_router channels
+    # were added with their own weights. The legacy invariant
+    # (alias_sidecar > dense) must still hold.
+    assert FUSION_VERSION == "weighted-rrf-doc-diversity-v3"
     assert DEFAULT_RETRIEVER_WEIGHTS["lexical_sidecar:aliases"] > DEFAULT_RETRIEVER_WEIGHTS["dense"]
 
     fused = fuse_candidates(
@@ -80,6 +83,17 @@ def test_corpus_v2_alias_sidecar_matches_are_high_confidence():
     )
 
     assert fused[0].path == "contents/design-pattern/service-locator-antipattern.md"
+
+
+def test_v3_corpus_channels_registered_with_high_weights():
+    """mission_bridge / symptom_router channels must be registered with
+    weights ≥ dense — the catalog-driven match is intent-explicit so
+    false positives are structurally rare and the channels deserve
+    first-stage priority when they fire."""
+    assert "mission_bridge" in DEFAULT_RETRIEVER_WEIGHTS
+    assert "symptom_router" in DEFAULT_RETRIEVER_WEIGHTS
+    assert DEFAULT_RETRIEVER_WEIGHTS["mission_bridge"] >= DEFAULT_RETRIEVER_WEIGHTS["dense"]
+    assert DEFAULT_RETRIEVER_WEIGHTS["symptom_router"] >= DEFAULT_RETRIEVER_WEIGHTS["dense"]
 
 
 def test_trace_jsonl_roundtrip(tmp_path):
