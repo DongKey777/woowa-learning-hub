@@ -29,9 +29,11 @@ Retrieval anchors
 Woowa CS notes carry retrieval phrases in a few live markdown forms:
 ``### Retrieval Anchors`` sections, inline ``retrieval-anchor-keywords:``
 metadata, and inline ``Retrieval anchors:`` metadata. We extract those
-phrases once per document and append them to every chunk's body so FTS
-recall and dense embeddings both pick up the intent. Corpus v2
-``expected_queries`` are treated the same way because they are executable
+phrases once per document and append them to every chunk's persisted
+``body`` so FTS, lexical sidecars, and reranker passages can pick up the
+intent. The original section text is also kept as ``embedding_body`` so
+dense/ColBERT embeddings are trained on substantive content, not on
+qrel-like query strings. Corpus v2 ``expected_queries`` are treated as
 retrieval-contract phrases, not passive documentation — e.g. a
 "repository boundary" query hits every chunk of
 ``repository-pattern-vs-antipattern.md`` via the anchors even when the
@@ -98,6 +100,7 @@ class CorpusChunk:
     section_title: str      # e.g. "실전 시나리오"
     section_path: list[str] # ["H1 title", "H2 title", "H3 title"]
     body: str               # raw markdown body of the chunk
+    embedding_body: str | None = None  # body used for semantic vectors
     char_len: int = 0
     anchors: list[str] = field(default_factory=list)
     difficulty: str | None = None  # "beginner"|"intermediate"|"advanced"|"expert"|None
@@ -115,6 +118,7 @@ class CorpusChunk:
             "section_title": self.section_title,
             "section_path": list(self.section_path),
             "body": self.body,
+            "embedding_body": self.embedding_body,
             "char_len": self.char_len,
             "anchors": list(self.anchors),
             "difficulty": self.difficulty,
@@ -421,6 +425,7 @@ def _emit_chunks(
                 section_title=section_title,
                 section_path=section_path,
                 body=final_body,
+                embedding_body=chunk_body,
                 char_len=len(final_body),
                 anchors=chunk_anchors,
                 difficulty=difficulty,

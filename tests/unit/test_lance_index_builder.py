@@ -28,6 +28,7 @@ class FakeMultiModalEncoder:
         modalities=("dense", "sparse", "colbert"),
         progress=None,
     ):
+        self.last_corpus_texts = list(texts)
         dense = np.zeros((len(texts), self.dense_dim), dtype=np.float32)
         sparse = []
         colbert = []
@@ -210,10 +211,11 @@ why dependency injection makes object construction explicit in beginner code.
     )
     index_root = tmp_path / "index"
 
+    encoder = FakeMultiModalEncoder()
     indexer.build_lance_index(
         index_root=index_root,
         corpus_root=corpus_root,
-        encoder=FakeMultiModalEncoder(),
+        encoder=encoder,
     )
 
     rows = indexer.open_lance_table(index_root).to_pandas().to_dict("records")
@@ -232,6 +234,8 @@ why dependency injection makes object construction explicit in beginner code.
     ]
     assert "DI가 뭐야?" in row["body"]
     assert "schema_version" not in row["body"]
+    assert "DI가 뭐야?" not in encoder.last_corpus_texts[0]
+    assert "new 대신 주입" not in encoder.last_corpus_texts[0]
 
 
 def test_build_lance_index_replaces_previous_table_and_manifest(tmp_path):

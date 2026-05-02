@@ -138,6 +138,7 @@ Retrieval anchors: `gamma`, delta
         suffix = "[retrieval anchors] alpha | beta | gamma | delta"
         for chunk in chunks:
             self.assertIn(suffix, chunk.body)
+            self.assertNotIn(suffix, chunk.embedding_body or "")
 
     def test_iter_corpus_promotes_v2_frontmatter_into_chunk_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -196,6 +197,8 @@ why dependency injection makes object construction explicit in beginner code.
             "[retrieval anchors] DI가 뭐야? | new 대신 주입 | 객체 조립",
             chunk.body,
         )
+        self.assertNotIn("DI가 뭐야?", chunk.embedding_body or "")
+        self.assertNotIn("new 대신 주입", chunk.embedding_body or "")
 
 
 if __name__ == "__main__":

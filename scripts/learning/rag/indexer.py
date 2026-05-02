@@ -489,9 +489,26 @@ def _load_chunk_context(chunk: corpus_loader.CorpusChunk) -> str | None:
     return context or None
 
 
+def _chunk_head(chunk: corpus_loader.CorpusChunk) -> str:
+    return " > ".join(chunk.section_path) if chunk.section_path else chunk.title
+
+
+def _semantic_body(chunk: corpus_loader.CorpusChunk) -> str:
+    return chunk.embedding_body if chunk.embedding_body is not None else chunk.body
+
+
 def _embed_text(chunk: corpus_loader.CorpusChunk) -> str:
     """Compose the text fed to the embedder: title + section + body."""
-    head = " > ".join(chunk.section_path) if chunk.section_path else chunk.title
+    head = _chunk_head(chunk)
+    context = _load_chunk_context(chunk)
+    if context:
+        return f"{head}\n\n[retrieval context] {context}\n\n{_semantic_body(chunk)}"
+    return f"{head}\n\n{_semantic_body(chunk)}"
+
+
+def _searchable_text(chunk: corpus_loader.CorpusChunk) -> str:
+    """Compose text for lexical/FTS surfaces, including retrieval anchors."""
+    head = _chunk_head(chunk)
     context = _load_chunk_context(chunk)
     if context:
         return f"{head}\n\n[retrieval context] {context}\n\n{chunk.body}"
@@ -599,7 +616,7 @@ def _lance_record_slice(
                 "level": chunk.level,
                 "section_path": json.dumps(chunk.section_path, ensure_ascii=False),
                 "body": chunk.body,
-                "search_terms": _search_terms(_embed_text(chunk)),
+                "search_terms": _search_terms(_searchable_text(chunk)),
                 "char_len": chunk.char_len,
                 "anchors": json.dumps(chunk.anchors, ensure_ascii=False),
                 "dense_vec": encoding["dense"][i].astype("float32").tolist(),
