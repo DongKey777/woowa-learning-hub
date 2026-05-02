@@ -209,6 +209,131 @@ class BgeM3Encoder:
         )
         return {"dense": dense_out, "sparse": sparse_out, "colbert": colbert_out}
 
+    def encode_corpus_streaming(
+        self,
+        texts: Iterable[str],
+        *,
+        batch_size: int | None = None,
+        max_length: int | None = None,
+        modalities: tuple[str, ...] = ("dense", "sparse", "colbert"),
+        progress=None,
+    ):
+        """Stream a corpus in fixed-size batches without ever materialising
+        the full encoding in memory.
+
+        Unlike ``encode_corpus`` (which keeps every chunk's output in
+        ``dense_parts`` / ``sparse_parts`` / ``colbert_parts`` Python lists
+        and returns one combined ``ModalEncoding``), this method yields one
+        ``(start, stop, ModalEncoding)`` triple per batch. The caller is
+        expected to consume the triple and free it before the next yield.
+
+        Memory: O(batch_size) instead of O(corpus_size). For 27 K chunks
+        with 384-token ColBERT vectors at fp16, the AS-IS encode_corpus
+        accumulates ~21 GB; this streaming variant peaks at ~100 MB per
+        batch (batch_size=128) — over 200× lower.
+
+        Yields:
+            (start, stop, ModalEncoding) where ``ModalEncoding`` is the
+            same shape ``encode_corpus`` returns but for ``[start:stop]``
+            of the input texts only.
+        """
+        text_list = list(texts)
+        total = len(text_list)
+        want_dense = "dense" in modalities
+        want_sparse = "sparse" in modalities
+        want_colbert = "colbert" in modalities
+        effective_batch_size = batch_size or self.batch_size
+
+        if total == 0:
+            return
+
+        if not want_dense and not want_sparse and not want_colbert:
+            # Nothing requested — emit zero-shape batches to keep the
+            # contract uniform with encode_corpus's empty-modality path.
+            for offset in range(0, total, effective_batch_size):
+                stop = min(offset + effective_batch_size, total)
+                size = stop - offset
+                yield offset, stop, {
+                    "dense": np.zeros((size, self.dense_dim), dtype=np.float32),
+                    "sparse": [{} for _ in range(size)],
+                    "colbert": [
+                        np.zeros((0, self.colbert_dim), dtype=np.float16)
+                        for _ in range(size)
+                    ],
+                }
+            return
+
+        model = self._load_model()
+        start_time = time.time()
+        for offset in range(0, total, effective_batch_size):
+            stop = min(offset + effective_batch_size, total)
+            batch = text_list[offset:stop]
+            raw = model.encode(
+                batch,
+                batch_size=effective_batch_size,
+                max_length=max_length or self.max_length,
+                return_dense=want_dense,
+                return_sparse=want_sparse,
+                return_colbert_vecs=want_colbert,
+            )
+
+            if want_dense:
+                dense = np.asarray(raw.get("dense_vecs"), dtype=np.float32)
+                if dense.ndim == 1:
+                    dense = dense.reshape(1, -1)
+            else:
+                dense = np.zeros((len(batch), self.dense_dim), dtype=np.float32)
+
+            if want_sparse:
+                sparse_list = [
+                    _coerce_sparse_weights(weights)
+                    for weights in raw.get("lexical_weights", [])
+                ]
+            else:
+                sparse_list = [{} for _ in range(len(batch))]
+
+            if want_colbert:
+                colbert_dtype = (
+                    np.float16 if self.colbert_storage_dtype == "float16" else np.float32
+                )
+                colbert_list = [
+                    np.asarray(vecs, dtype=colbert_dtype)
+                    for vecs in raw.get("colbert_vecs", [])
+                ]
+            else:
+                colbert_list = [
+                    np.zeros((0, self.colbert_dim), dtype=np.float16)
+                    for _ in range(len(batch))
+                ]
+
+            if progress is not None:
+                elapsed = time.time() - start_time
+                rate = (stop / elapsed) if elapsed > 0 else 0.0
+                eta = ((total - stop) / rate) if rate > 0 else 0.0
+                try:
+                    progress(
+                        "encode_progress",
+                        {
+                            "done": stop,
+                            "total": total,
+                            "elapsed_s": round(elapsed, 1),
+                            "eta_s": round(eta, 1),
+                            "rate_per_s": round(rate, 2),
+                        },
+                    )
+                except Exception:
+                    pass
+
+            yield offset, stop, {
+                "dense": dense,
+                "sparse": sparse_list,
+                "colbert": colbert_list,
+            }
+            # Caller is expected to drop its reference to the yielded
+            # ModalEncoding before requesting the next one. Local
+            # references die when the loop iterates.
+            del dense, sparse_list, colbert_list, raw
+
     def encode_query(
         self,
         text: str,

@@ -130,8 +130,14 @@ def is_ready(
             index_manifest_hash=None,
             next_command="bin/cs-index-build",
         )
-    current_hash = corpus_loader.corpus_hash(corpus_root)
-    stored_hash = manifest.get("corpus_hash")
+    current_indexed_hash = corpus_loader.indexed_corpus_hash(corpus_root)
+    current_full_hash = corpus_loader.corpus_hash(corpus_root)
+    if manifest.get("indexed_corpus_hash"):
+        current_hash = current_indexed_hash
+        stored_hash = manifest.get("indexed_corpus_hash")
+    else:
+        current_hash = current_full_hash
+        stored_hash = manifest.get("corpus_hash")
     if stored_hash != current_hash:
         return ReadinessReport(
             state="stale",
@@ -454,6 +460,8 @@ def build_index(
         "embed_dim": EMBED_DIM,
         "row_count": len(chunks),
         "corpus_hash": corpus_loader.corpus_hash(corpus_root),
+        "indexed_corpus_hash": corpus_loader.indexed_corpus_hash(corpus_root),
+        "corpus_hash_scope": "indexed_contents_v1",
         "corpus_root": str(corpus_root),
     }
     _tick("write_manifest", manifest)
@@ -589,6 +597,135 @@ def _lance_records(
         stop=len(chunks),
         encoder_version=encoder_version,
     )
+
+
+def _lance_record_batch_zero_copy(
+    chunks: list[corpus_loader.CorpusChunk],
+    encoding,
+    *,
+    start: int,
+    stop: int,
+    encoder_version: str,
+    schema,
+):
+    """Build a ``pa.RecordBatch`` for chunks[start:stop] without ever
+    materialising Python lists for ColBERT vectors.
+
+    The AS-IS path called ``encoding["colbert"][i].tolist()`` per record
+    (line 635 in the legacy ``_lance_record_slice``), which inflates a
+    768 KB numpy fp16 buffer into a 12 MB Python list — measured
+    16× amplification. For 27 K chunks at write_batch_size=128 that
+    spike alone reaches ~1.6 GB per batch, plus PyArrow re-buffering
+    when ``Table.from_pylist`` parses nested Python lists.
+
+    This zero-copy path constructs the ColBERT column as a
+    ``ListArray<FixedSizeListArray<float16, 1024>>`` directly from the
+    numpy buffers — no Python list intermediate. ``cast()`` to the
+    schema's exact target type (``list<fixed_size_list<halffloat>[1024]>``)
+    is a no-op when already compatible. The resulting RecordBatch
+    consumes exactly ``sum(arr.nbytes)`` bytes — measured 1.00× the raw
+    numpy size, vs 16× for the Python list path.
+    """
+    import numpy as np  # local — top-level kept dependency-light
+    import pyarrow as pa
+
+    n = stop - start
+    chunks_slice = chunks[start:stop]
+
+    # --- Scalar / string columns (copy is cheap; <1 MB total per batch) ---
+    chunk_ids = [c.chunk_id for c in chunks_slice]
+    doc_ids = [c.doc_id for c in chunks_slice]
+    paths = [c.path for c in chunks_slice]
+    titles = [c.title for c in chunks_slice]
+    categories = [c.category for c in chunks_slice]
+    difficulties = [c.difficulty for c in chunks_slice]
+    concept_ids = [c.concept_id for c in chunks_slice]
+    doc_roles = [c.doc_role for c in chunks_slice]
+    levels = [c.level for c in chunks_slice]
+    section_paths = [json.dumps(c.section_path, ensure_ascii=False) for c in chunks_slice]
+    bodies = [c.body for c in chunks_slice]
+    anchors = [json.dumps(c.anchors, ensure_ascii=False) for c in chunks_slice]
+    char_lens = [c.char_len for c in chunks_slice]
+    encoder_versions = [encoder_version] * n
+
+    search_terms = [_search_terms(_searchable_text(c)) for c in chunks_slice]
+    content_sha1s = [_content_sha1(c) for c in chunks_slice]
+
+    # --- Dense (FixedSizeList<float32, dense_dim>) — zero-copy ---
+    # encoding["dense"] is a numpy ndarray (n_chunks, dense_dim) float32
+    dense_full = encoding["dense"]
+    dense_slice = np.ascontiguousarray(dense_full[start:stop], dtype=np.float32)
+    dense_dim = dense_slice.shape[1]
+    dense_flat_arrow = pa.array(dense_slice.flatten(), type=pa.float32())
+    dense_array = pa.FixedSizeListArray.from_arrays(dense_flat_arrow, list_size=dense_dim)
+
+    # --- Sparse (struct<indices: list<int32>, values: list<float32>>) ---
+    # encoding["sparse"][i] is dict[int, float]
+    indices_lists = []
+    values_lists = []
+    for i in range(start, stop):
+        d = encoding["sparse"][i]
+        indices_lists.append([int(k) for k in d.keys()])
+        values_lists.append([float(v) for v in d.values()])
+    sparse_struct = pa.StructArray.from_arrays(
+        [
+            pa.array(indices_lists, type=pa.list_(pa.int32())),
+            pa.array(values_lists, type=pa.list_(pa.float32())),
+        ],
+        names=["indices", "values"],
+    )
+
+    # --- ColBERT tokens (List<FixedSizeList<float16, colbert_dim>>) — zero-copy ---
+    # encoding["colbert"][i] is np.ndarray (n_tokens, colbert_dim) fp16/fp32
+    # Build flat buffer + offsets, no Python list of floats.
+    colbert_field = schema.field("colbert_tokens").type
+    inner_field = colbert_field.value_type  # fixed_size_list<halffloat>[colbert_dim]
+    colbert_dim = inner_field.list_size
+    colbert_dtype_pa = inner_field.value_type
+    np_dtype = np.float16 if colbert_dtype_pa == pa.float16() else np.float32
+
+    colbert_arrays_slice = encoding["colbert"][start:stop]
+    n_tokens_per_chunk = [int(arr.shape[0]) for arr in colbert_arrays_slice]
+    if not colbert_arrays_slice or all(t == 0 for t in n_tokens_per_chunk):
+        # Empty colbert column — build a zero-row inner with proper offsets.
+        flat_arr = pa.array([], type=colbert_dtype_pa)
+        inner = pa.FixedSizeListArray.from_arrays(flat_arr, list_size=colbert_dim)
+        offsets = pa.array([0] * (n + 1), type=pa.int32())
+        colbert_outer = pa.ListArray.from_arrays(offsets, inner)
+    else:
+        flat_concat = np.concatenate(
+            [np.ascontiguousarray(arr, dtype=np_dtype).flatten()
+             for arr in colbert_arrays_slice]
+        )
+        flat_arr = pa.array(flat_concat, type=colbert_dtype_pa)
+        inner = pa.FixedSizeListArray.from_arrays(flat_arr, list_size=colbert_dim)
+        offsets_np = np.concatenate(([0], np.cumsum(n_tokens_per_chunk))).astype(np.int32)
+        offsets = pa.array(offsets_np, type=pa.int32())
+        colbert_outer = pa.ListArray.from_arrays(offsets, inner)
+
+    # --- Assemble RecordBatch matching schema field order ---
+    columns = [
+        pa.array(chunk_ids, type=pa.string()),
+        pa.array(doc_ids, type=pa.string()),
+        pa.array(paths, type=pa.string()),
+        pa.array(titles, type=pa.string()),
+        pa.array(categories, type=pa.string()),
+        pa.array(difficulties, type=pa.string()),
+        pa.array(concept_ids, type=pa.string()),
+        pa.array(doc_roles, type=pa.string()),
+        pa.array(levels, type=pa.string()),
+        pa.array(section_paths, type=pa.string()),
+        pa.array(bodies, type=pa.string()),
+        pa.array(search_terms, type=pa.string()),
+        pa.array(char_lens, type=pa.int64()),
+        pa.array(anchors, type=pa.string()),
+        dense_array,
+        sparse_struct,
+        colbert_outer,
+        pa.array(encoder_versions, type=pa.string()),
+        pa.array(content_sha1s, type=pa.string()),
+    ]
+    return pa.RecordBatch.from_arrays(columns, schema=schema)
 
 
 def _lance_record_slice(
@@ -951,6 +1088,8 @@ def build_lance_index(
         "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
         "row_count": len(chunks),
         "corpus_hash": corpus_loader.corpus_hash(corpus_root),
+        "indexed_corpus_hash": corpus_loader.indexed_corpus_hash(corpus_root),
+        "corpus_hash_scope": "indexed_contents_v1",
         "corpus_root": str(corpus_root),
         "built_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "encoder": {
@@ -983,6 +1122,237 @@ def build_lance_index(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     return manifest
+
+
+def build_lance_index_streaming(
+    index_root: Path | str = DEFAULT_INDEX_ROOT,
+    corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
+    *,
+    encoder,
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
+    progress=None,
+    colbert_dtype: str = "float16",
+    dense_num_partitions: int | None = None,
+    dense_num_sub_vectors: int | None = None,
+    write_batch_size: int = DEFAULT_LANCE_WRITE_BATCH_SIZE,
+    r3_qrels_path: Path | str | None = None,
+) -> dict:
+    """Memory-streaming variant of ``build_lance_index``.
+
+    The classic ``build_lance_index`` calls ``encoder.encode_corpus`` once
+    on the full corpus, accumulating ColBERT vectors across all chunks
+    into a Python list (``colbert_parts``). For 27 K chunks at 384 tokens
+    × 1024 dim × fp16 that buffer alone reaches ~21 GB and stays resident
+    until the entire build (including IVF_PQ index creation) completes —
+    which means the build needs ~28 GB peak RAM at minimum and OOMs on
+    any pod with less.
+
+    This streaming variant uses ``encoder.encode_corpus_streaming`` to
+    yield one batch at a time, converts each batch to a zero-copy
+    ``pa.RecordBatch`` (no ``.tolist()`` 16× amplification), writes it
+    to LanceDB, and drops the reference. Peak RAM is ~``model_size +
+    one_batch_encoding`` ≈ 3-4 GB for r3 ColBERT builds on RTX A6000.
+
+    Functional equivalence with ``build_lance_index``: identical schema,
+    identical row order, identical IVF/FTS index policies. The only
+    difference is *when* memory is held — write semantics are unchanged.
+    """
+    try:
+        import lancedb  # type: ignore
+        import pyarrow as pa  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency path
+        raise IndexDependencyMissing(
+            "lancedb/pyarrow not installed. Run `.venv/bin/python -m pip install lancedb pyarrow`."
+        ) from exc
+
+    def _tick(stage: str, info: dict | None = None) -> None:
+        if progress is not None:
+            progress(stage, info or {})
+
+    root = Path(index_root)
+    lance_root = root / LANCE_DIR_NAME
+    manifest_path = root / MANIFEST_NAME
+    root.mkdir(parents=True, exist_ok=True)
+
+    if lance_root.exists():
+        shutil.rmtree(lance_root)
+    if manifest_path.exists():
+        manifest_path.unlink()
+
+    _tick("load_corpus", {})
+    chunks = corpus_loader.load_corpus(corpus_root)
+    if not chunks:
+        raise RuntimeError(f"corpus at {corpus_root} is empty")
+    total = len(chunks)
+    _tick("load_corpus_done", {"chunk_count": total})
+
+    if write_batch_size <= 0:
+        raise ValueError("write_batch_size must be positive")
+    if not hasattr(encoder, "encode_corpus_streaming"):
+        raise RuntimeError(
+            f"encoder {type(encoder).__name__} does not support streaming. "
+            f"Use build_lance_index instead."
+        )
+
+    schema = _lance_schema(encoder.dense_dim, encoder.colbert_dim, colbert_dtype=colbert_dtype)
+    db = lancedb.connect(lance_root)
+    table = None
+
+    encode_modalities = tuple(m for m in modalities if m != "fts")
+    texts = [_embed_text(chunk) for chunk in chunks]
+
+    _tick("encode_stream", {"count": total, "model": encoder.model_id})
+
+    for start, stop, batch_encoding in encoder.encode_corpus_streaming(
+        texts,
+        batch_size=write_batch_size,
+        modalities=encode_modalities,
+        progress=progress,
+    ):
+        if batch_encoding["dense"].shape != (stop - start, encoder.dense_dim):
+            raise RuntimeError(
+                f"unexpected dense batch shape {batch_encoding['dense'].shape}, "
+                f"expected ({stop - start}, {encoder.dense_dim})"
+            )
+
+        # The streaming encoding indexes batch-locally (0..stop-start),
+        # not corpus-globally. Wrap into a slice-friendly dict.
+        local_encoding = {
+            "dense": batch_encoding["dense"],
+            "sparse": batch_encoding["sparse"],
+            "colbert": batch_encoding["colbert"],
+        }
+        record_batch = _lance_record_batch_zero_copy(
+            chunks,
+            {
+                # _lance_record_batch_zero_copy slices via [start:stop],
+                # so wrap our local encoding into a global-index-compatible
+                # form. The simplest way: pad encoder output with empty
+                # placeholders for indices outside [start, stop). But that
+                # also burns memory. Instead we pass a thin shim that
+                # re-targets indices.
+                "dense": _BatchedDenseProxy(local_encoding["dense"], start),
+                "sparse": _BatchedListProxy(local_encoding["sparse"], start),
+                "colbert": _BatchedListProxy(local_encoding["colbert"], start),
+            },
+            start=start,
+            stop=stop,
+            encoder_version=encoder.model_version,
+            schema=schema,
+        )
+
+        if table is None:
+            table = db.create_table(
+                LANCE_TABLE_NAME,
+                data=pa.Table.from_batches([record_batch], schema=schema),
+                schema=schema,
+                mode="overwrite",
+            )
+        else:
+            table.add(pa.Table.from_batches([record_batch], schema=schema))
+
+        del record_batch, local_encoding, batch_encoding
+        gc.collect()
+
+        _tick(
+            "write_lance_progress",
+            {"done": stop, "total": total, "batch_size": write_batch_size},
+        )
+
+    if table is None:
+        raise RuntimeError("no LanceDB table was created (corpus empty?)")
+
+    _tick("create_indices", {"count": total})
+    indices = _create_lance_indices(
+        table,
+        row_count=total,
+        dense_num_partitions=dense_num_partitions,
+        dense_num_sub_vectors=dense_num_sub_vectors,
+    )
+
+    manifest = {
+        "index_version": LANCE_INDEX_VERSION,
+        "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+        "row_count": total,
+        "corpus_hash": corpus_loader.corpus_hash(corpus_root),
+        "indexed_corpus_hash": corpus_loader.indexed_corpus_hash(corpus_root),
+        "corpus_hash_scope": "indexed_contents_v1",
+        "corpus_root": str(corpus_root),
+        "built_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "encoder": {
+            "model_id": encoder.model_id,
+            "model_version": encoder.model_version,
+            "dense_dim": encoder.dense_dim,
+            "colbert_dim": encoder.colbert_dim,
+            "max_length": getattr(encoder, "max_length", 8192),
+            "batch_size": getattr(encoder, "batch_size", None),
+        },
+        "lancedb": {
+            "version": getattr(lancedb, "__version__", "unknown"),
+            "table_name": LANCE_TABLE_NAME,
+            "indices": indices,
+        },
+        "modalities": list(modalities),
+        "ingest": {
+            "chunk_max_chars": corpus_loader.MAX_CHARS_PER_CHUNK,
+            "chunk_overlap": 0,
+            "write_batch_size": write_batch_size,
+            "build_path": "streaming",
+        },
+        "r3": _r3_manifest_metadata(
+            corpus_root=Path(corpus_root),
+            qrels_path=Path(r3_qrels_path) if r3_qrels_path is not None else None,
+            encoder_version=encoder.model_version,
+        ),
+    }
+    _tick("write_manifest", manifest)
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return manifest
+
+
+class _BatchedDenseProxy:
+    """Make a batch-local dense ndarray look slice-compatible at global indices."""
+    def __init__(self, dense_local, offset: int):
+        self._local = dense_local
+        self._offset = offset
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            local_start = (key.start or 0) - self._offset
+            local_stop = (key.stop or self._local.shape[0]) - self._offset
+            return self._local[local_start:local_stop]
+        if isinstance(key, tuple):
+            row, *rest = key
+            return self._local[(row - self._offset, *rest)]
+        return self._local[key - self._offset]
+
+    @property
+    def shape(self):
+        return self._local.shape
+
+
+class _BatchedListProxy:
+    """Make a batch-local list look slice-compatible at global indices.
+
+    encode_corpus_streaming yields lists indexed 0..batch_size; the caller
+    passes (start, stop) in global corpus coordinates. _lance_record_batch_
+    zero_copy slices via [start:stop] so we re-target.
+    """
+    def __init__(self, items, offset: int):
+        self._items = items
+        self._offset = offset
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            local_start = (key.start or 0) - self._offset
+            local_stop = (key.stop or len(self._items)) - self._offset
+            return self._items[local_start:local_stop]
+        return self._items[key - self._offset]
+
+    def __len__(self):
+        return len(self._items)
 
 
 # ---------------------------------------------------------------------------

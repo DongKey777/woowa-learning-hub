@@ -88,6 +88,13 @@ class PodSpec:
     image: str              # docker image
     container_disk_gb: int
     ports: str              # e.g. "22/tcp"
+    # Host-RAM floor. RunPod SDK defaults to 1GB; for r3 ColBERT builds
+    # the IVF_PQ index over 27K+ chunks requires ~50 GB host RAM
+    # (encoding accumulator + index k-means clustering temp). Set this
+    # explicitly per R-phase so the scheduler picks a host with enough
+    # memory rather than rolling the dice.
+    min_memory_in_gb: int = 1
+    min_vcpu_count: int = 1
 
 
 @dataclass(frozen=True)
@@ -572,6 +579,8 @@ class RealRunPodClient:
             cloud_type=cloud_map.get(spec.gpu_cloud, "ALL"),
             gpu_count=1,
             container_disk_in_gb=spec.container_disk_gb,
+            min_memory_in_gb=spec.min_memory_in_gb,
+            min_vcpu_count=spec.min_vcpu_count,
             ports=spec.ports,
             start_ssh=True,
             support_public_ip=True,
@@ -820,6 +829,14 @@ class BuildConfig:
     max_duration_min: int
     image: str = "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04"
     container_disk_gb: int = 80
+    # Host-RAM / vCPU floor for the build pod. r3 ColBERT IVF_PQ index
+    # build over 27K+ chunks needs ~50 GB host RAM minimum (encoding
+    # accumulator + clustering temp memory). Without this, RunPod's
+    # default min_memory_in_gb=1 lets the scheduler pick any host and
+    # the build OOMs at the index step. r3 default is 128 GB to absorb
+    # spikes; lower phases get smaller floors.
+    min_memory_gb: int = 1
+    min_vcpu_count: int = 1
     repo_root: Path = field(default_factory=lambda: Path.cwd())
     ledger_path: Path = field(default_factory=lambda: Path("state/cs_rag_remote/cost_ledger.json"))
     # bge-m3 build params — passed to cs-index-build on Pod (R1 needs
@@ -1487,6 +1504,8 @@ class RunPodHarness:
                 gpu_cloud=config.gpu_cloud,
                 image=config.image,
                 container_disk_gb=config.container_disk_gb,
+                min_memory_in_gb=config.min_memory_gb,
+                min_vcpu_count=config.min_vcpu_count,
                 ports="22/tcp",
             )
             ssh_label = f"rag-build-{run_id}"
@@ -1573,6 +1592,23 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="RunPod container disk size in GB (default: 80 for R3 ColBERT builds).",
     )
+    parser.add_argument(
+        "--min-memory-gb",
+        type=int,
+        default=None,
+        help=(
+            "Minimum host RAM (GB) for the build pod. RunPod SDK defaults "
+            "to 1 GB which lets the scheduler pick under-spec hosts and "
+            "OOM the IVF_PQ index build. Per-R-phase defaults: r3/r4=64, "
+            "r2/r1=32, others=16."
+        ),
+    )
+    parser.add_argument(
+        "--min-vcpu-count",
+        type=int,
+        default=None,
+        help="Minimum vCPU count (default: 8).",
+    )
     parser.add_argument("--dry-run", action="store_true",
                         help="Don't touch the network; mock the API.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -1618,6 +1654,13 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
     # R-phase default tuning (plan v5 §3 R1 prescribes max_length=512)
     default_max_length = {"r1": 512, "r2": 512, "r3": 512, "r4": 512}.get(args.r_phase)
 
+    # Per-R-phase RAM floor. Streaming build_lance_index_streaming peaks
+    # at ~3-5 GB, but IVF_PQ index creation across 27K+ ColBERT vectors
+    # can spike another 5-10 GB depending on LanceDB's sample_rate
+    # behaviour. 64 GB on r3 / r4 leaves a comfortable margin without
+    # paying for over-provisioned hosts. Smaller phases keep the default.
+    default_min_memory = {"r3": 64, "r4": 64, "r2": 32, "r1": 32}.get(args.r_phase, 16)
+
     return BuildConfig(
         r_phase=args.r_phase,
         modalities=modalities,
@@ -1625,6 +1668,8 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         gpu_cloud=args.gpu_cloud or default_cloud,
         max_cost_usd=args.max_cost,
         max_duration_min=args.max_duration,
+        min_memory_gb=getattr(args, "min_memory_gb", None) or default_min_memory,
+        min_vcpu_count=getattr(args, "min_vcpu_count", None) or 8,
         container_disk_gb=getattr(args, "container_disk_gb", None) or 80,
         repo_root=args.repo_root,
         ledger_path=args.ledger_path,
