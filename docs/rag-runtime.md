@@ -45,9 +45,14 @@ cross-encoder는 R3의 기본 품질 reranker로 유지하지만, 로컬 interac
 
 ```bash
 bin/rag-daemon start
-bin/rag-ask "RAG로 깊게 latency가 뭐야?" --rag-backend r3 --via-daemon
+bin/rag-ask "RAG로 깊게 latency가 뭐야?" --via-daemon
 bin/rag-daemon stop
 ```
+
+As of the 2026-05-02 R3 cutover, `auto` selects the R3 runtime when
+`state/cs_rag` contains a valid `r3_lexical_sidecar.json` whose
+`corpus_hash`, `row_count`, and `document_count` match the index manifest.
+Use `--rag-backend lance` only for a controlled rollback comparison.
 
 Rerank policy:
 
@@ -87,6 +92,12 @@ Rerank policy:
   The learner-facing daemon smoke showed 12.30s for the first request and
   476ms for the warm request, with runtime JSON exposing policy, skip reason,
   sidecar presence, and stage timing.
+- 2026-05-02 production R3 artifact
+  `r3-e38e49b-2026-05-02T0707` is remote-built and local-served:
+  compressed size 133MiB, extracted size 377MiB, strict local import verified,
+  default `auto` backend resolves to `r3`, and daemon warm full smoke returned
+  in 808ms with dense candidates, sparse sidecar candidates, and reranker
+  skipped by `policy_auto_sidecar_first_stage_gate`.
 
 Therefore R3 local default rerank policy is `auto`; the local default rerank
 window remains 20 pairs when reranking is forced or when the sidecar is absent.
@@ -101,10 +112,9 @@ sidecar candidates use `lexical_sidecar:*` provenance and lower fusion weights
 so corpus metadata can add recall without replacing richer body-bearing
 candidates before reranking.
 
-Production default runtime modalities are `fts,dense,sparse`. Sparse is
-default-on after the 2026-05-01 decision; the next gate is explicit sparse
-bottleneck/effect analysis before any category-gated sparse or weight
-reduction.
+Production default backend is R3 over the LanceDB v3 storage artifact, with
+runtime modalities `fts,dense,sparse`. Sparse is a first-stage R3 signal when
+full mode encodes BGE-M3 query sparse terms; cheap mode stays lexical-only.
 
 ## Index Manifest
 

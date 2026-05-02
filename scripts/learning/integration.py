@@ -52,6 +52,7 @@ enforced in the plan's Phase 2.1 "책임 경계" clause and verified by
 
 from __future__ import annotations
 
+import json
 import os
 import time
 from pathlib import Path
@@ -62,6 +63,7 @@ from .rag import indexer as rag_indexer
 
 RAG_RUNTIME_BACKEND_ENV = "WOOWA_RAG_RUNTIME_BACKEND"
 VALID_SEARCH_BACKENDS = {"auto", "legacy", "lance", "r3"}
+R3_LEXICAL_SIDECAR_NAME = "r3_lexical_sidecar.json"
 
 
 def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
@@ -325,8 +327,23 @@ def _top_token(prompt: str) -> str:
     return tokens[0] if tokens else "unknown"
 
 
+def _has_valid_r3_sidecar(index_root: Path | str, manifest: dict[str, Any]) -> bool:
+    sidecar_path = Path(index_root) / R3_LEXICAL_SIDECAR_NAME
+    if not sidecar_path.exists():
+        return False
+    try:
+        sidecar = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    return (
+        sidecar.get("corpus_hash") == manifest.get("corpus_hash")
+        and sidecar.get("row_count") == manifest.get("row_count")
+        and sidecar.get("document_count") == manifest.get("row_count")
+    )
+
+
 def _detect_backend(index_root: Path | str) -> str:
-    """Infer the search backend from the index manifest version."""
+    """Infer the runtime backend from the manifest and R3 sidecar contract."""
     try:
         manifest = rag_indexer.load_manifest(index_root)
     except Exception:
@@ -335,7 +352,9 @@ def _detect_backend(index_root: Path | str) -> str:
         version = int(manifest.get("index_version", rag_indexer.INDEX_VERSION))
     except (TypeError, ValueError):
         return "legacy"
-    return "lance" if version >= rag_indexer.LANCE_INDEX_VERSION else "legacy"
+    if version < rag_indexer.LANCE_INDEX_VERSION:
+        return "legacy"
+    return "r3" if _has_valid_r3_sidecar(index_root, manifest) else "lance"
 
 
 def resolve_search_backend(
@@ -343,7 +362,13 @@ def resolve_search_backend(
     *,
     override: str | None = None,
 ) -> str:
-    """Resolve the runtime search backend with explicit R3 opt-in."""
+    """Resolve the runtime search backend.
+
+    Explicit overrides still win.  Without an override, a Lance v3 index is
+    promoted to R3 only when the remote-built lexical sidecar is present and
+    matches the index manifest, so stale or partial R3 artifacts fail back to
+    the plain Lance runtime.
+    """
 
     candidate = override or os.environ.get(RAG_RUNTIME_BACKEND_ENV)
     if candidate and candidate not in VALID_SEARCH_BACKENDS:

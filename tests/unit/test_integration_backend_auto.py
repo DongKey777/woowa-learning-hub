@@ -37,6 +37,28 @@ def _write_manifest(index_root: Path, version: int) -> None:
     )
 
 
+def _write_r3_sidecar(
+    index_root: Path,
+    *,
+    corpus_hash: str = "fixture",
+    row_count: int = 1,
+    document_count: int = 1,
+) -> None:
+    (index_root / "r3_lexical_sidecar.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "artifact_kind": "r3_lexical_sidecar",
+                "corpus_hash": corpus_hash,
+                "row_count": row_count,
+                "document_count": document_count,
+                "fields": ["title", "section", "aliases", "body"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
 def _hit() -> dict:
     return {
         "path": "contents/database/transaction-isolation-basics.md",
@@ -98,6 +120,60 @@ def test_augment_uses_lance_backend_for_v3_manifest(tmp_path, monkeypatch):
     assert calls
     assert calls[0]["backend"] == "lance"
     assert calls[0]["learner_context"] == {"experience_level": "beginner"}
+
+
+def test_augment_promotes_v3_manifest_to_r3_when_sidecar_matches(
+    tmp_path,
+    monkeypatch,
+):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root, indexer.LANCE_INDEX_VERSION)
+    _write_r3_sidecar(index_root)
+    calls = []
+
+    def fake_search(prompt, **kwargs):
+        calls.append(kwargs)
+        return [_hit()]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="latency가 뭐야?",
+        learning_points=None,
+        cs_search_mode="cheap",
+        index_root=index_root,
+        readiness=ReadyReport(),
+    )
+
+    assert result["meta"]["backend"] == "r3"
+    assert result["sidecar"]["backend"] == "r3"
+    assert calls
+    assert calls[0]["backend"] == "r3"
+
+
+def test_augment_keeps_lance_when_r3_sidecar_is_stale(tmp_path, monkeypatch):
+    index_root = tmp_path / "index"
+    _write_manifest(index_root, indexer.LANCE_INDEX_VERSION)
+    _write_r3_sidecar(index_root, corpus_hash="old-fixture")
+    calls = []
+
+    def fake_search(prompt, **kwargs):
+        calls.append(kwargs)
+        return [_hit()]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    result = integration.augment(
+        prompt="latency가 뭐야?",
+        learning_points=None,
+        cs_search_mode="cheap",
+        index_root=index_root,
+        readiness=ReadyReport(),
+    )
+
+    assert result["meta"]["backend"] == "lance"
+    assert calls
+    assert calls[0]["backend"] == "lance"
 
 
 def test_augment_surfaces_query_candidate_debug_from_searcher(tmp_path, monkeypatch):

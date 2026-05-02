@@ -154,10 +154,10 @@ ls artifacts/rag-full-build/${RUN_ID}/
 
 # 로컬 압축 해제
 mkdir -p /tmp/rag-r0-test
-tar --use-compress-program=zstd -xf artifacts/rag-full-build/${RUN_ID}/cs_rag_index_root.tar.zst -C /tmp/rag-r0-test/
+zstd -dc artifacts/rag-full-build/${RUN_ID}/cs_rag_index_root.tar.zst | tar -xf - -C /tmp/rag-r0-test/
 
 # manifest 확인
-cat /tmp/rag-r0-test/manifest.json | jq '.encoder, .modalities, .lancedb.version'
+cat /tmp/rag-r0-test/cs_rag/manifest.json | jq '.encoder, .modalities, .lancedb.version'
 ```
 
 **비용 reconciliation:**
@@ -193,15 +193,15 @@ bin/rag-remote-build \
 ```bash
 # 다운로드된 LanceDB 인덱스 root 압축 해제
 mkdir -p state/cs_rag_eval/r1
-tar --use-compress-program=zstd -xf artifacts/rag-full-build/${RUN_ID}/cs_rag_index_root.tar.zst \
-    -C state/cs_rag_eval/r1/
+zstd -dc artifacts/rag-full-build/${RUN_ID}/cs_rag_index_root.tar.zst \
+    | tar -xf - -C state/cs_rag_eval/r1/
 
 # 인덱스 root 전체 (manifest.json + lance/ + chunk_hashes_per_model.json) 풀렸는지 확인
-ls state/cs_rag_eval/r1/
+ls state/cs_rag_eval/r1/cs_rag/
 
 # Holdout ablation (fts 단독 vs fts+dense)
 bin/rag-eval --ablate \
-    --embedding-index-root state/cs_rag_eval/r1/ \
+    --embedding-index-root state/cs_rag_eval/r1/cs_rag/ \
     --ablation-split holdout \
     --ablation-modalities fts \
     --ablation-modalities fts,dense \
@@ -334,34 +334,71 @@ cp state/cs_rag_remote/cost_ledger.json state/cs_rag_remote/cost_ledger.backup.$
 
 ---
 
-## 8. Cutover Path (R0-R4 모두 통과 후만)
+## 8. Production Refresh / Cutover Path
 
-plan v5 §4 cutover gate 충족 시:
+R2 LanceDB v3 was promoted to production on 2026-05-01 by explicit risky
+product override. Future refreshes should use a staged directory and atomic
+swap, not in-place deletion.
 
 ```bash
-# 1. 기존 v2 인덱스 archive
-cp -r state/cs_rag state/cs_rag_archive/v2_$(date +%Y%m%d)/
+# 1. 다운받은 final stack artifact를 staging 위치로 압축 해제
+ts="$(date -u +%Y%m%dT%H%M%SZ)"
+stage="state/cs_rag_next_${ts}"
+mkdir -p "$stage"
+zstd -dc artifacts/rag-full-build/<final-run-id>/cs_rag_index_root.tar.zst \
+    | tar -xf - -C "$stage"
 
-# 2. 다운받은 final stack artifact를 production 위치로 압축 해제
-rm -rf state/cs_rag/lance state/cs_rag/manifest.json state/cs_rag/chunk_hashes_per_model.json
-tar --use-compress-program=zstd -xf artifacts/rag-full-build/<final-run-id>/cs_rag_index_root.tar.zst \
-    -C state/cs_rag/
+# 2. manifest 검증: index_version=3, corpus_hash=current, encoder=BGE-M3
+STAGE="$stage" .venv/bin/python - <<'PY'
+import os
+from scripts.learning.rag import indexer
+from scripts.learning.rag import corpus_loader
+from pathlib import Path
 
-# 3. config/rag_models.json 작성 (R-phase 결과 기반 stack 명시)
-# (별도 명령 또는 수동 작성)
+root = Path(os.environ["STAGE"]) / "cs_rag"
+manifest = indexer.read_manifest_v3(root)
+assert manifest["corpus_hash"] == corpus_loader.corpus_hash("knowledge/cs")
+assert manifest["encoder"]["model_id"] == "BAAI/bge-m3"
+print("lance_v3_manifest_ok")
+PY
 
-# 4. workbench 재시작 + smoke
+# 3. 기존 production을 archive로 보존 후 atomic swap
+mkdir -p state/cs_rag_archive
+mv state/cs_rag "state/cs_rag_archive/pre_refresh_${ts}"
+mv "$stage/cs_rag" state/cs_rag
+rmdir "$stage"
+
+# 4. config/rag_models.json 작성/갱신
+# - index built modalities: fts,dense,sparse
+# - production runtime default modalities: fts,dense,sparse
+# - measured quality + artifact sha256 + rollback archive 경로 기록
+
+# 5. workbench 재시작 + smoke
 HF_HUB_OFFLINE=1 bin/rag-ask "트랜잭션 격리수준"
 # → top hit category=database 확인
 
-# 5. (선택) Cutover regression 비교 report
+# 6. baseline-only runtime provenance smoke
+.venv/bin/python scripts/learning/cli_rag_eval.py \
+    --baseline-only \
+    --fixture tests/fixtures/cs_rag_cutover_failure_queries.json \
+    --eval-split holdout \
+    --index-root state/cs_rag \
+    --backend auto \
+    --out-quality /tmp/rag_eval_smoke_quality.json \
+    --out-machine /tmp/rag_eval_smoke_machine.json
+
+# 7. (선택) Cutover regression 비교 report
 .venv/bin/python scripts/learning/cli_rag_cutover_compare.py \
     --legacy reports/rag_eval/cutover_legacy_v2_${ts}.json \
     --lance reports/rag_eval/cutover_lance_${ts}.json \
     --out reports/rag_eval/cutover_legacy_vs_lance_${ts}.json
 ```
 
-**Rollback (필요 시):** `state/cs_rag_archive/v2_<date>/`를 `state/cs_rag/`로 복원, workbench 재시작. 10분 이내.
+`bin/cs-index-build` now defaults to `--backend lance`. Use
+`--backend legacy --mode full` only for rollback verification or archived v2
+comparison.
+
+**Rollback (필요 시):** [rag-rollback.md](rag-rollback.md) 절차를 사용한다.
 
 ---
 
