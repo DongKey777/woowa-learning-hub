@@ -586,5 +586,174 @@ content
         self.assertEqual(v3_violations, [], _messages(v3_violations))
 
 
+class StrictModeTaggingTest(unittest.TestCase):
+    """Per contract §2.1, role-conditional fields (symptoms / confusable_with /
+    mission_ids) are *Wave 2* requirements — they do not block Wave A
+    migration. Lint exposes this via the ``strict_mode`` parameter:
+
+    * ``strict_mode=False`` (default): role-conditional violations get
+      ``check="corpus_v3_frontmatter_wave2"`` (warnings).
+    * ``strict_mode=True`` (CI / pre-cutover): role-conditional violations
+      get ``check="corpus_v3_frontmatter"`` (blockers).
+
+    Pilot-required invariants (PILOT_V3_FIELDS, aliases ⊥ expected_queries,
+    enum/pattern checks) always block — strict_mode does not affect them.
+    """
+
+    def _tags(self, violations) -> list[str]:
+        return [v.check for v in violations]
+
+    def test_lenient_default_tags_chooser_as_wave2(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "chooser"
+        # missing confusable_with -> Wave 2 violation
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        chooser_msgs = [v for v in out if "chooser" in v.message
+                        and "confusable_with" in v.message]
+        self.assertEqual(len(chooser_msgs), 1, _messages(chooser_msgs))
+        self.assertEqual(chooser_msgs[0].check, "corpus_v3_frontmatter_wave2")
+
+    def test_strict_mode_tags_chooser_as_blocker(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "chooser"
+        out = check_corpus_v3_pilot_frontmatter(
+            file_path=_path(), frontmatter=fm, strict_mode=True,
+        )
+        chooser_msgs = [v for v in out if "chooser" in v.message
+                        and "confusable_with" in v.message]
+        self.assertEqual(len(chooser_msgs), 1, _messages(chooser_msgs))
+        self.assertEqual(chooser_msgs[0].check, "corpus_v3_frontmatter")
+
+    def test_lenient_default_tags_symptom_router_as_wave2(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "symptom_router"
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        sr_msgs = [v for v in out if "symptom_router" in v.message]
+        self.assertEqual(len(sr_msgs), 1, _messages(sr_msgs))
+        self.assertEqual(sr_msgs[0].check, "corpus_v3_frontmatter_wave2")
+
+    def test_strict_mode_tags_symptom_router_as_blocker(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "symptom_router"
+        out = check_corpus_v3_pilot_frontmatter(
+            file_path=_path(), frontmatter=fm, strict_mode=True,
+        )
+        sr_msgs = [v for v in out if "symptom_router" in v.message]
+        self.assertEqual(len(sr_msgs), 1, _messages(sr_msgs))
+        self.assertEqual(sr_msgs[0].check, "corpus_v3_frontmatter")
+
+    def test_lenient_default_tags_playbook_as_wave2(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "playbook"
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        pb_msgs = [v for v in out if "playbook" in v.message
+                   and "symptoms" in v.message]
+        self.assertEqual(len(pb_msgs), 1, _messages(pb_msgs))
+        self.assertEqual(pb_msgs[0].check, "corpus_v3_frontmatter_wave2")
+
+    def test_strict_mode_tags_playbook_as_blocker(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "playbook"
+        out = check_corpus_v3_pilot_frontmatter(
+            file_path=_path(), frontmatter=fm, strict_mode=True,
+        )
+        pb_msgs = [v for v in out if "playbook" in v.message
+                   and "symptoms" in v.message]
+        self.assertEqual(len(pb_msgs), 1, _messages(pb_msgs))
+        self.assertEqual(pb_msgs[0].check, "corpus_v3_frontmatter")
+
+    def test_lenient_default_tags_mission_bridge_as_wave2(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "mission_bridge"
+        out = check_corpus_v3_pilot_frontmatter(file_path=_path(), frontmatter=fm)
+        mb_msgs = [v for v in out if "mission_bridge" in v.message]
+        self.assertEqual(len(mb_msgs), 1, _messages(mb_msgs))
+        self.assertEqual(mb_msgs[0].check, "corpus_v3_frontmatter_wave2")
+
+    def test_strict_mode_tags_mission_bridge_as_blocker(self):
+        fm = _valid_v3_minimal()
+        fm["doc_role"] = "mission_bridge"
+        out = check_corpus_v3_pilot_frontmatter(
+            file_path=_path(), frontmatter=fm, strict_mode=True,
+        )
+        mb_msgs = [v for v in out if "mission_bridge" in v.message]
+        self.assertEqual(len(mb_msgs), 1, _messages(mb_msgs))
+        self.assertEqual(mb_msgs[0].check, "corpus_v3_frontmatter")
+
+    def test_pilot_required_always_blocker_regardless_of_mode(self):
+        """Missing PILOT_V3_FIELDS must block in both modes — Wave 2 only
+        downgrades role-conditional fields, never Pilot fields."""
+        for strict in (False, True):
+            with self.subTest(strict_mode=strict):
+                fm = _valid_v3_minimal()
+                del fm["language"]  # PILOT_V3_FIELD missing
+                out = check_corpus_v3_pilot_frontmatter(
+                    file_path=_path(), frontmatter=fm, strict_mode=strict,
+                )
+                lang_msgs = [v for v in out
+                             if "missing pilot field: language" in v.message]
+                self.assertEqual(len(lang_msgs), 1)
+                self.assertEqual(lang_msgs[0].check, "corpus_v3_frontmatter")
+
+    def test_circular_leak_invariant_always_blocker(self):
+        """aliases ⊥ expected_queries must block in both modes."""
+        for strict in (False, True):
+            with self.subTest(strict_mode=strict):
+                fm = _valid_v3_minimal()
+                fm["expected_queries"] = ["DI", "another"]  # overlap with aliases
+                out = check_corpus_v3_pilot_frontmatter(
+                    file_path=_path(), frontmatter=fm, strict_mode=strict,
+                )
+                leak_msgs = [v for v in out if "aliases ⊥" in v.message]
+                self.assertEqual(len(leak_msgs), 1)
+                self.assertEqual(leak_msgs[0].check, "corpus_v3_frontmatter")
+
+
+class StrictV3PropagationTest(unittest.TestCase):
+    """Verify ``check_frontmatter_schema`` propagates ``strict_v3`` to the
+    v3 lint, so CLI / lint_corpus integration paths can toggle it.
+    """
+
+    def _doc_with_chooser(self) -> str:
+        # chooser doc with no confusable_with -> Wave 2 violation
+        return """---
+schema_version: 3
+title: "Pattern chooser"
+concept_id: design-pattern/strategy-vs-template
+difficulty: intermediate
+doc_role: chooser
+level: intermediate
+language: ko
+aliases:
+  - strategy chooser
+expected_queries:
+  - 어떤 패턴 골라야 해?
+---
+
+# body
+"""
+
+    def test_check_frontmatter_schema_default_lenient(self):
+        out = check_frontmatter_schema(
+            file_path=_path("design-pattern", "x.md"),
+            text=self._doc_with_chooser(),
+        )
+        chooser_msgs = [v for v in out
+                        if "chooser" in v.message and "confusable_with" in v.message]
+        self.assertEqual(len(chooser_msgs), 1)
+        self.assertEqual(chooser_msgs[0].check, "corpus_v3_frontmatter_wave2")
+
+    def test_check_frontmatter_schema_strict_v3(self):
+        out = check_frontmatter_schema(
+            file_path=_path("design-pattern", "x.md"),
+            text=self._doc_with_chooser(),
+            strict_v3=True,
+        )
+        chooser_msgs = [v for v in out
+                        if "chooser" in v.message and "confusable_with" in v.message]
+        self.assertEqual(len(chooser_msgs), 1)
+        self.assertEqual(chooser_msgs[0].check, "corpus_v3_frontmatter")
+
+
 if __name__ == "__main__":
     unittest.main()

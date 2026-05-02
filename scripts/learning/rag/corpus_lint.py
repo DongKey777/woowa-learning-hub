@@ -317,9 +317,16 @@ def check_frontmatter_schema(
     *,
     file_path: Path,
     text: str,
+    strict_v3: bool = False,
 ) -> list[LintViolation]:
     """Frontmatter is optional during P5.3 rollout. Once present,
-    required fields and difficulty enum are enforced."""
+    required fields and difficulty enum are enforced.
+
+    ``strict_v3`` toggles the v3 lint between lenient (default — Wave A
+    migration; role-conditional requirements emit warnings) and strict
+    (CI / pre-cutover; role-conditional requirements block). See
+    ``check_corpus_v3_pilot_frontmatter`` for the full mode contract.
+    """
     out: list[LintViolation] = []
     fm = parse_frontmatter(text)
     if fm is None:
@@ -341,7 +348,9 @@ def check_frontmatter_schema(
     if str(fm.get("schema_version")) == "2":
         out.extend(check_corpus_v2_pilot_frontmatter(file_path=file_path, frontmatter=fm))
     elif str(fm.get("schema_version")) == "3":
-        out.extend(check_corpus_v3_pilot_frontmatter(file_path=file_path, frontmatter=fm))
+        out.extend(check_corpus_v3_pilot_frontmatter(
+            file_path=file_path, frontmatter=fm, strict_mode=strict_v3,
+        ))
     return out
 
 
@@ -424,26 +433,41 @@ def check_corpus_v3_pilot_frontmatter(
     *,
     file_path: Path,
     frontmatter: dict,
+    strict_mode: bool = False,
 ) -> list[LintViolation]:
     """Validate the Corpus v3 pilot frontmatter (schema_version: 3).
 
-    Enforces:
-      - PILOT_V3_FIELDS all present and non-empty
-      - doc_role, level, language enum constraints
-      - aliases / expected_queries are non-empty string lists
-      - aliases ⊥ expected_queries (set disjointness — prevents the
-        circular-leak class of bug fixed in commit 054a1a3)
-      - category matches folder placement
-      - concept_id pattern (kebab-case category/slug)
-      - intents enum (each value)
-      - mission_ids pattern (kebab-case missions/slug)
-      - linked_paths / forbidden_neighbors path pattern
+    Two modes (per contract §2.1 + §6 lint design):
+
+    * ``strict_mode=False`` (default — *lenient* / Wave A migration): only
+      Pilot-required invariants block. Role-conditional Wave 2 fields
+      (e.g. ``symptoms`` for symptom_router/playbook, ``confusable_with``
+      for chooser, ``mission_ids`` for mission_bridge) emit *warnings*
+      tagged as ``corpus_v3_frontmatter_wave2``. This lets Wave A
+      migration ship without holding for content authoring.
+
+    * ``strict_mode=True`` (CI / pre-cutover): every Pilot AND Wave 2
+      conditional invariant blocks. All checks promoted to
+      ``corpus_v3_frontmatter`` errors.
+
+    Pilot-required invariants (always blockers):
+      - PILOT_V3_FIELDS presence
+      - doc_role, level, language enum
+      - aliases / expected_queries shape
+      - aliases ⊥ expected_queries (the circular-leak structural defense)
+      - category matches folder placement (when category is set)
+      - concept_id pattern
+      - intents enum (when set)
+      - mission_ids pattern (when set)
+      - linked_paths / forbidden_neighbors path pattern (when set)
       - prerequisites / next_docs / confusable_with concept_id pattern
-      - role-conditional requirements:
-        * doc_role=symptom_router → symptoms ≥ 3
-        * doc_role=playbook → symptoms ≥ 1
-        * doc_role=mission_bridge → mission_ids ≥ 1
-        * doc_role=chooser → confusable_with ≥ 2
+      - source_priority range
+
+    Wave 2 conditional invariants (warnings in lenient, blockers in strict):
+      - doc_role=symptom_router → symptoms ≥ 3
+      - doc_role=playbook → symptoms ≥ 1
+      - doc_role=mission_bridge → mission_ids ≥ 1
+      - doc_role=chooser → confusable_with ≥ 2
     """
     out: list[LintViolation] = []
 
@@ -592,35 +616,46 @@ def check_corpus_v3_pilot_frontmatter(
                         f"concept_id pattern",
                     ))
 
-    # 13. Role-conditional requirements
+    # 13. Role-conditional requirements (Wave 2 fields).
+    #     In lenient mode (strict_mode=False), violations are tagged
+    #     ``corpus_v3_frontmatter_wave2`` so consumers can filter them as
+    #     warnings during Wave A migration. In strict mode they collapse
+    #     into the normal ``corpus_v3_frontmatter`` error track.
+    wave2_check = (
+        "corpus_v3_frontmatter" if strict_mode else "corpus_v3_frontmatter_wave2"
+    )
+
+    def _wave2_violation(message: str) -> LintViolation:
+        return LintViolation(
+            check=wave2_check,
+            file_path=str(file_path),
+            message=message,
+        )
+
     if doc_role == "symptom_router":
         symptoms = frontmatter.get("symptoms")
         if not (isinstance(symptoms, list) and len(symptoms) >= 3):
-            out.append(_v3_violation(
-                file_path,
+            out.append(_wave2_violation(
                 "doc_role=symptom_router requires symptoms with at least "
                 "3 entries (per contract §3.2 symptom_router)",
             ))
     if doc_role == "playbook":
         symptoms = frontmatter.get("symptoms")
         if not (isinstance(symptoms, list) and len(symptoms) >= 1):
-            out.append(_v3_violation(
-                file_path,
+            out.append(_wave2_violation(
                 "doc_role=playbook requires symptoms with at least 1 entry",
             ))
     if doc_role == "mission_bridge":
         mids = frontmatter.get("mission_ids")
         if not (isinstance(mids, list) and len(mids) >= 1):
-            out.append(_v3_violation(
-                file_path,
+            out.append(_wave2_violation(
                 "doc_role=mission_bridge requires mission_ids with at least "
                 "1 entry",
             ))
     if doc_role == "chooser":
         cw = frontmatter.get("confusable_with")
         if not (isinstance(cw, list) and len(cw) >= 2):
-            out.append(_v3_violation(
-                file_path,
+            out.append(_wave2_violation(
                 "doc_role=chooser requires confusable_with with at least 2 "
                 "candidates (per contract §3.2 chooser)",
             ))
@@ -688,6 +723,7 @@ def lint_corpus(
     *,
     repo_root: Path | None = None,
     dedupe_candidates_fn=None,  # optional callable -> list[LintViolation]
+    strict_v3: bool = False,
 ) -> LintReport:
     """Run all checks over ``corpus_root``. ``dedupe_candidates_fn``,
     when provided, is called with the list of (path, text) tuples and
@@ -699,6 +735,11 @@ def lint_corpus(
     (e.g. ``knowledge/cs/contents/.../doc.md`` linking to
     ``knowledge/cs/JUNIOR-BACKEND-ROADMAP.md``) are accepted when the
     target exists.
+
+    ``strict_v3`` toggles the v3 lint mode (default lenient — Wave 2
+    role-conditional requirements emit ``corpus_v3_frontmatter_wave2``
+    warnings; strict mode promotes them to ``corpus_v3_frontmatter``
+    blockers).
     """
     report = LintReport()
     files_with_text: list[tuple[Path, str]] = []
@@ -711,7 +752,7 @@ def lint_corpus(
             repo_root=repo_root,
         ))
         report.violations.extend(check_frontmatter_schema(
-            file_path=path, text=text,
+            file_path=path, text=text, strict_v3=strict_v3,
         ))
     report.violations.extend(check_concept_id_uniqueness(files_with_text))
 
@@ -774,6 +815,16 @@ def main(argv: list[str] | None = None) -> int:
             "the corpus so CI can gate on it."
         ),
     )
+    parser.add_argument(
+        "--strict-v3",
+        action="store_true",
+        help=(
+            "Promote v3 Wave 2 role-conditional warnings (symptoms / "
+            "confusable_with / mission_ids) to errors. Default is lenient "
+            "(warnings only) so Wave A migration ships without holding "
+            "for content authoring. Flip on for CI / pre-cutover gating."
+        ),
+    )
     args = parser.parse_args(argv)
 
     corpus_root = Path(args.corpus)
@@ -792,18 +843,32 @@ def main(argv: list[str] | None = None) -> int:
             same_category_only=not args.dedupe_cross_category,
         )
 
-    report = lint_corpus(corpus_root, repo_root=repo_root, dedupe_candidates_fn=dedupe_fn)
+    report = lint_corpus(
+        corpus_root,
+        repo_root=repo_root,
+        dedupe_candidates_fn=dedupe_fn,
+        strict_v3=args.strict_v3,
+    )
     print(f"[corpus-lint] scanned {report.files_scanned} files")
     by_check = report.by_check()
     if report.ok():
         print("[corpus-lint] OK — no violations")
         return 0
+    blocker_count = 0
     for check, n in sorted(by_check.items()):
-        print(f"[corpus-lint] {check}: {n} violations")
+        is_warning = check == "corpus_v3_frontmatter_wave2"
+        label = "warnings" if is_warning else "violations"
+        print(f"[corpus-lint] {check}: {n} {label}")
+        if not is_warning:
+            blocker_count += n
     for v in report.violations:
-        print(f"  [{v.check}] {v.file_path}: {v.message}")
+        prefix = "warn" if v.check == "corpus_v3_frontmatter_wave2" else v.check
+        print(f"  [{prefix}] {v.file_path}: {v.message}")
     if args.strict:
-        return 1
+        # Wave 2 warnings never block --strict in lenient v3 mode; only the
+        # combined --strict + --strict-v3 promotes them. Blockers always
+        # block in --strict mode.
+        return 1 if blocker_count > 0 else 0
     print("[corpus-lint] report-only mode (use --strict to fail on violations)")
     return 0
 
