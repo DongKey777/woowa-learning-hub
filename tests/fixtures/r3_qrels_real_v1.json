@@ -1,0 +1,1659 @@
+{
+  "authoring_method": "ai_first_ai_review",
+  "cohort_distribution_target": {
+    "confusable_pairs": 40,
+    "corpus_gap_probe": 20,
+    "forbidden_neighbor": 30,
+    "mission_bridge": 30,
+    "paraphrase_human": 50,
+    "symptom_to_cause": 30
+  },
+  "fixture_id": "r3_qrels_real_v1",
+  "generated_at": "2026-05-02T16:12:35.066813+00:00",
+  "queries": [
+    {
+      "acceptable_paths": [
+        "contents/spring/ioc-di-container.md"
+      ],
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "korean_no_alias_match"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "객체를 직접 만들지 않고 외부에서 받는 게 뭐야?",
+      "query_id": "paraphrase_human:spring_di:001",
+      "rationale": "학습자가 'DI', '의존성 주입' 단어를 모르고 *원리*만 paraphrase. alias 매칭으로 풀리면 안 됨."
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/bean-lifecycle-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "beginner_primer"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "스프링이 객체를 어떻게 만들어주는지 큰 그림이 궁금해",
+      "query_id": "paraphrase_human:spring_bean:001"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/connection-pool"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "concept_explanation"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/connection-pool-basics.md"
+      ],
+      "prompt": "DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?",
+      "query_id": "paraphrase_human:database_connection_pool:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/lock-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "concurrency_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "여러 사람이 같은 데이터 동시에 바꾸려 할 때 충돌 어떻게 막아?",
+      "query_id": "paraphrase_human:database_lock:001"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/transaction-isolation-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "intermediate_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "트랜잭션이 서로 어디까지 보고 어디까지 못 보게 할지 단계가 있다며",
+      "query_id": "paraphrase_human:database_isolation:001"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "no_alias_factory"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "객체 생성 책임을 다른 클래스로 옮기는 방식 뭐 있어?",
+      "query_id": "paraphrase_human:design_pattern_factory:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/software-engineering/repository-dao-entity.md"
+      ],
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "software-engineering/repository-interface-contract-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "ddd_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/software-engineering/repository-interface-contract-primer.md"
+      ],
+      "prompt": "도메인 객체 영속성 처리를 인터페이스로 추상화하는 패턴이 뭐야?",
+      "query_id": "paraphrase_human:repository_pattern:001"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "network/latency-bandwidth-throughput-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "performance_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/network/latency-bandwidth-throughput-basics.md"
+      ],
+      "prompt": "네트워크에서 응답이 느린 이유 어떤 종류로 나눠서 봐야 해?",
+      "query_id": "paraphrase_human:network_latency:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/ioc-di-container.md",
+        "contents/design-pattern/injected-registry-vs-service-locator-checklist.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "di_vs_locator_disambiguation"
+      ],
+      "forbidden_paths": [],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "스프링에서 컨테이너에서 직접 꺼내 쓰면 안 되는 이유 알려줘",
+      "query_id": "confusable_pairs:di_vs_service_locator:001",
+      "rationale": "DI vs Service Locator 짝 — DI 쪽이 primary, locator 비교 doc는 acceptable. locator 자체의 antipattern doc은 forbidden 케이스에서 정의."
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/factory",
+        "design-pattern/factory-vs-di-container-wiring"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "factory_di_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-vs-di-container-wiring.md"
+      ],
+      "prompt": "팩토리 메서드랑 스프링 DI 컨테이너가 같은 거야 다른 거야?",
+      "query_id": "confusable_pairs:factory_vs_di_container:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/bridge-strategy-vs-factory-runtime-selection",
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "strategy_factory_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md"
+      ],
+      "prompt": "런타임에 알고리즘 갈아끼우는 게 strategy야 factory야?",
+      "query_id": "confusable_pairs:strategy_vs_factory:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/lock-basics.md",
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/mvcc-snapshot-vs-locking-read-portability"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "mvcc_lock_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/mvcc-snapshot-vs-locking-read-portability-note.md"
+      ],
+      "prompt": "스냅샷으로 읽는 거랑 락 걸어서 읽는 거 차이가 뭐야?",
+      "query_id": "confusable_pairs:mvcc_vs_lock:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/lock-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "deadlock_timeout_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "prompt": "데드락이랑 락 대기 시간 초과 어떻게 구분해?",
+      "query_id": "confusable_pairs:deadlock_vs_lock_timeout:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/software-engineering/repository-interface-contract-primer.md",
+        "contents/software-engineering/repository-naming-smells-primer.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "software-engineering/repository-dao-entity"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "repository_dao_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/software-engineering/repository-dao-entity.md"
+      ],
+      "prompt": "리포지토리랑 DAO가 같은 거야 다른 거야?",
+      "query_id": "confusable_pairs:repository_vs_dao:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "design-pattern/injected-registry-vs-service-locator-checklist"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "registry_locator_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/design-pattern/injected-registry-vs-service-locator-checklist.md"
+      ],
+      "prompt": "주입받은 registry랑 service locator는 뭐가 달라?",
+      "query_id": "confusable_pairs:registry_vs_service_locator:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/lock-basics.md"
+      ],
+      "cohort_tag": "confusable_pairs",
+      "expected_concepts": [
+        "database/compare-and-swap-vs-pessimistic-locks"
+      ],
+      "failure_focus": [
+        "confusable_routing",
+        "cas_lock_disambiguation"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/compare-and-swap-vs-pessimistic-locks.md"
+      ],
+      "prompt": "compare-and-swap이랑 비관적 락은 어떤 상황에서 갈리는 거야?",
+      "query_id": "confusable_pairs:cas_vs_pessimistic_lock:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/ghost-reads-mixed-routing-write-fence-tokens.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/cache-replica-split-read-inconsistency"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "user_observable_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/cache-replica-split-read-inconsistency.md"
+      ],
+      "prompt": "수정은 됐는데 목록 화면에는 옛날 데이터가 보여",
+      "query_id": "symptom_to_cause:stale_list_after_update:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/connection-timeout-vs-lock-timeout-card.md",
+        "contents/database/lock-basics.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/lock-timeout-blocker-first-check-mini-card"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "outage_triage"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/lock-timeout-blocker-first-check-mini-card.md"
+      ],
+      "prompt": "갑자기 트랜잭션이 다 lock timeout으로 떨어지고 있어",
+      "query_id": "symptom_to_cause:lock_timeout_outage:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/duplicate-cookie-name-shadowing.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/cookie-failure-three-way-splitter"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "auth_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "prompt": "쿠키는 있는데 자꾸 로그인 페이지로 튀겨",
+      "query_id": "symptom_to_cause:cookie_login_loop:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/foreign-key-cascade-lock-surprises.md",
+        "contents/database/gap-lock-next-key-lock.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/deadlock-case-study"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "operational_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/deadlock-case-study.md"
+      ],
+      "prompt": "인덱스 추가했더니 데드락이 늘었어",
+      "query_id": "symptom_to_cause:deadlock_after_index_change:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/cannotacquirelockexception-40001-insert-if-absent-faq.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/spring-cannotacquirelockexception-root-sql-code-card"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "exception_root_cause"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/spring-cannotacquirelockexception-root-sql-code-card.md"
+      ],
+      "prompt": "Spring이 CannotAcquireLockException을 뱉었는데 진짜 문제가 뭔지 어떻게 봐?",
+      "query_id": "symptom_to_cause:cannot_acquire_lock_exception:001"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/cache-replica-split-read-inconsistency"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "beginner_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/cache-replica-split-read-inconsistency.md"
+      ],
+      "prompt": "방금 저장한 게 목록에는 안 보이고 새로고침해야 보여",
+      "query_id": "symptom_to_cause:replica_lag_visible:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/software-engineering/repository-interface-contract-primer.md",
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+      ],
+      "cohort_tag": "mission_bridge",
+      "expected_concepts": [
+        "software-engineering/repository-dao-entity"
+      ],
+      "failure_focus": [
+        "mission_term",
+        "dao_pattern_bridge"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "beginner",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/software-engineering/repository-dao-entity.md"
+      ],
+      "prompt": "roomescape 미션에서 DAO 패턴 쓰라는데 그게 뭔 의미야?",
+      "query_id": "mission_bridge:roomescape_dao_repository:001",
+      "rationale": "Pilot Phase 4에서 mission_bridge doc 신설 예정 (`contents/software-engineering/roomescape-dao-vs-repository-bridge.md`); 그 전까지는 기존 DAO/Repository primer로 라우팅."
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/injected-registry-vs-service-locator-checklist.md"
+      ],
+      "cohort_tag": "mission_bridge",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "mission_term",
+        "di_locator_mission_bridge"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "beginner",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "roomescape 미션 PR에서 멘토가 service locator 쓰지 말라는데 그게 뭐야?",
+      "query_id": "mission_bridge:roomescape_di_bean:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md"
+      ],
+      "cohort_tag": "mission_bridge",
+      "expected_concepts": [
+        "design-pattern/bridge-strategy-vs-factory-runtime-selection"
+      ],
+      "failure_focus": [
+        "mission_term",
+        "pattern_application"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "intermediate",
+      "mission_id": "missions/lotto",
+      "primary_paths": [
+        "contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md"
+      ],
+      "prompt": "lotto 미션에서 당첨 등급 매기는 부분 strategy 패턴이 적합한가?",
+      "query_id": "mission_bridge:lotto_strategy_pattern:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "cohort_tag": "mission_bridge",
+      "expected_concepts": [
+        "spring/transactional-basics"
+      ],
+      "failure_focus": [
+        "mission_term",
+        "transaction_boundary"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "intermediate",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "prompt": "roomescape 미션에서 예약/취소 메서드에 @Transactional 붙여야 하는 이유?",
+      "query_id": "mission_bridge:roomescape_transactional:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "cohort_tag": "mission_bridge",
+      "expected_concepts": [
+        "design-pattern/constructor-vs-static-factory-vs-factory-pattern"
+      ],
+      "failure_focus": [
+        "mission_term",
+        "static_factory_pattern"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "beginner",
+      "mission_id": "missions/lotto",
+      "primary_paths": [
+        "contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md"
+      ],
+      "prompt": "lotto 미션에서 LottoNumber 객체를 만드는 정적 팩토리 메서드 쓰는 이유?",
+      "query_id": "mission_bridge:lotto_factory_method:001"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/vector-quantization-research"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "out_of_corpus_probe"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "고차원 벡터 양자화 학습 방법론에서 RVQ vs PQ vs OPQ 차이가 뭐야?",
+      "query_id": "corpus_gap_probe:obscure_topic:001",
+      "rationale": "코퍼스에 RVQ/PQ/OPQ 비교 doc 없음 (의도적 gap). system은 confidence < threshold로 'not in corpus' 응답 반환해야 함."
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/cryptography-lattice-attacks"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "out_of_corpus_probe"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "RSA에서 lattice attack을 어떻게 막아? coppersmith short root attack 같은 거",
+      "query_id": "corpus_gap_probe:lattice_attack_crypto:001"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/react-concurrent-rendering"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "frontend_out_of_corpus"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "React concurrent mode에서 useTransition vs startTransition 어떻게 결정해?",
+      "query_id": "corpus_gap_probe:react_concurrent_mode:001",
+      "rationale": "Woowa CS hub는 backend 중심. React concurrent rendering은 코퍼스 scope 밖."
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/wasm-simd"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "frontier_topic"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "WebAssembly SIMD에서 v128.shuffle vs v128.swizzle 성능 차이?",
+      "query_id": "corpus_gap_probe:wasm_simd:001"
+    },
+    {
+      "cohort_tag": "corpus_gap_probe",
+      "expected_concepts": [
+        "frontier/gpu-cuda-attention"
+      ],
+      "failure_focus": [
+        "honest_gap",
+        "ml_infrastructure_out_of_corpus"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [],
+      "prompt": "CUDA에서 attention kernel fusion할 때 register pressure 어떻게 관리해?",
+      "query_id": "corpus_gap_probe:gpu_kernel_fusion:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/ioc-di-container.md"
+      ],
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "generic_oop_must_not_replace_di_primer"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/object-oriented-design-pattern-basics.md",
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "DI가 뭐야?",
+      "query_id": "forbidden_neighbor:di_query_must_not_return_oop_basics:001",
+      "rationale": "OOP 기초 또는 Factory primer가 'DI가 뭐야?'에 top-K로 나오면 안 됨 — DI는 IoC/Spring 맥락 specific. 일반 OOP doc는 너무 broad."
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/transactional-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "advanced_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/database/explain-checklist-exact-key-locking-reads.md",
+        "contents/database/persistent-stats-sampling-bias.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "prompt": "트랜잭션이 뭐야?",
+      "query_id": "forbidden_neighbor:transaction_must_not_return_isolation_levels:001"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/lock-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "level_filter_must_demote_advanced"
+      ],
+      "forbidden_paths": [
+        "contents/database/xa-two-phase-commit-pitfalls.md",
+        "contents/database/advisory-locks-vs-row-locks.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/lock-basics.md"
+      ],
+      "prompt": "락이 뭐야? 처음 배우는데",
+      "query_id": "forbidden_neighbor:lock_basic_must_not_return_xa_2pc:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/spring/spring-bean-di-basics.md",
+        "contents/spring/ioc-di-container.md"
+      ],
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/bean-lifecycle-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "deep_dive_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+        "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "Spring Bean이 뭐야?",
+      "query_id": "forbidden_neighbor:bean_must_not_return_postprocessor:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/design-pattern/factory.md"
+      ],
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "smell_doc_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/factory-misnaming-checklist.md",
+        "contents/design-pattern/factory-switch-registry-smell.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "Factory 패턴이 뭐야?",
+      "query_id": "forbidden_neighbor:factory_must_not_return_naming_smells:001"
+    },
+    {
+      "acceptable_paths": [
+        "contents/software-engineering/repository-dao-entity.md"
+      ],
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "software-engineering/repository-interface-contract-primer"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "advanced_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/software-engineering/repository-fake-design-guide.md",
+        "contents/software-engineering/repository-naming-smells-primer.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/software-engineering/repository-interface-contract-primer.md"
+      ],
+      "prompt": "Repository 패턴이 뭐야?",
+      "query_id": "forbidden_neighbor:repository_must_not_return_fake_design:001"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/transaction-isolation-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "cheatsheet_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/database/isolation-anomaly-cheat-sheet.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/transaction-isolation-basics.md"
+      ],
+      "prompt": "트랜잭션 격리 수준이 뭐야? 처음 배우는데",
+      "query_id": "forbidden_neighbor:isolation_level_must_not_return_anomaly_cheatsheet:001"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/connection-pool"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "tuning_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/database/hikari-connection-pool-tuning.md",
+        "contents/database/connection-pool-transaction-propagation-bulk-write.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/connection-pool-basics.md"
+      ],
+      "prompt": "Connection pool이 뭐야?",
+      "query_id": "forbidden_neighbor:connection_pool_must_not_return_tuning:001"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/transaction-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "transaction_principle"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/transaction-basics.md"
+      ],
+      "prompt": "여러 SQL 작업을 하나로 묶어서 다 되거나 다 취소되게 하는 게 뭐야?",
+      "query_id": "paraphrase_human:transaction_basics:001",
+      "rationale": "ACID/transaction 단어 없이 원리만 — atomicity 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/sql-relational-modeling-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "relational_modeling"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/sql-reading-relational-modeling-primer.md"
+      ],
+      "prompt": "테이블이랑 행, 열을 말로 어떻게 나누고 관계를 표시해?",
+      "query_id": "paraphrase_human:sql_basics:001",
+      "rationale": "관계형 모델링 알려줘가 아니라 schema/row/column 설명만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/replica-lag-read-after-write-strategies"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "replication_intuition"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/replica-lag-read-after-write-strategies.md"
+      ],
+      "prompt": "DB를 여러 대로 복사해서 읽기 부담을 나누면 일관성이 어떻게 깨져?",
+      "query_id": "paraphrase_human:replica_lag:001",
+      "rationale": "replica lag / read-after-write 단어 없이 증상만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/mvcc-read-view-consistent-read-internals"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "snapshot_versioning"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/mvcc-read-view-consistent-read-internals.md"
+      ],
+      "prompt": "동시에 여러 트랜잭션이 돌 때 각자 다른 시점의 데이터를 보게 하는 내부 구조가 어떻게 돼?",
+      "query_id": "paraphrase_human:mvcc_internals:001",
+      "rationale": "MVCC 단어 없이 snapshot/read view 내부 구조 설명만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/read-your-writes-session-pinning"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "session_pinning_intuition"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/read-your-writes-session-pinning.md"
+      ],
+      "prompt": "방금 내가 저장한 데이터를 바로 다시 읽었는데 안 보일 수 있는 상황을 어떻게 막아?",
+      "query_id": "paraphrase_human:read_your_writes:001",
+      "rationale": "session pinning / read-your-writes 용어 없이 증상→해결만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/transactional-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "annotation_pattern"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "prompt": "메서드 위에 짧은 표시 하나만 붙이면 그 안의 DB 작업이 묶여 처리된다는데 그게 뭐야?",
+      "query_id": "paraphrase_human:transactional_basics:001",
+      "rationale": "@Transactional 단어 안 쓰고 동작만 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/bean-lifecycle-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "lifecycle_phases"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "스프링이 객체를 만들고, 의존성 채우고, 다 쓰면 정리하는 시점들이 어떻게 정해져?",
+      "query_id": "paraphrase_human:bean_lifecycle:001",
+      "rationale": "lifecycle / bean 단어 안 쓰고 단계만 설명"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/aop-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "cross_cutting_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-aop-basics.md"
+      ],
+      "prompt": "여러 메서드에 공통으로 들어가는 로깅·권한 체크 같은 코드를 한 곳에 모아서 자동 적용하려면 뭘 써?",
+      "query_id": "paraphrase_human:aop_basics:001",
+      "rationale": "AOP 단어 없이 cross-cutting concern 묘사만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/aop-proxy-mechanism"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "proxy_intuition"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/aop-proxy-mechanism.md"
+      ],
+      "prompt": "내가 만든 객체가 아니라 다른 게 끼어들어서 메서드 호출을 가로채는 구조는 어떻게 돼?",
+      "query_id": "paraphrase_human:aop_proxy:001",
+      "rationale": "proxy 단어 없이 인터셉션 동작만 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/mvc-controller-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "request_handler_concept"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-mvc-controller-basics.md"
+      ],
+      "prompt": "URL과 메서드를 묶어 요청을 받아서 응답을 돌려주는 클래스를 어떻게 만들어?",
+      "query_id": "paraphrase_human:mvc_controller:001",
+      "rationale": "Controller / @RestController 안 쓰고 역할만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/ioc-di-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "ioc_principle"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-ioc-di-basics.md"
+      ],
+      "prompt": "객체를 누가 만드는지 통제권을 코드 밖에서 잡는다는 게 무슨 뜻이야?",
+      "query_id": "paraphrase_human:ioc_container:001",
+      "rationale": "IoC 단어 없이 inversion of control 원리"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/request-pipeline-bean-container"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "filter_chain_intuition"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-request-pipeline-bean-container-foundations-primer.md"
+      ],
+      "prompt": "HTTP 요청이 컨트롤러까지 도착하기 전에 어떤 단계들을 거쳐?",
+      "query_id": "paraphrase_human:request_pipeline:001",
+      "rationale": "filter chain / dispatcher 단어 없이 단계만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/application-context-refresh-phases"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "refresh_phases"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-application-context-refresh-phases.md"
+      ],
+      "prompt": "스프링이 시작할 때 환경설정 읽고, 객체 등록하고, 후처리까지 끝내는 순서가 어떻게 돼?",
+      "query_id": "paraphrase_human:application_context_refresh:001",
+      "rationale": "refresh 단어 없이 시작 phase 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "software-engineering/dependency-injection-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "testability_intuition"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/software-engineering/dependency-injection-basics.md"
+      ],
+      "prompt": "필요한 도구를 직접 만들지 않고 받아쓰면 코드가 어떻게 더 시험하기 쉬워져?",
+      "query_id": "paraphrase_human:dependency_injection_se:001",
+      "rationale": "DI / dependency injection 단어 없이 testability 결과 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "software-engineering/layered-architecture-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "separation_of_concerns"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/software-engineering/layered-architecture-basics.md"
+      ],
+      "prompt": "코드를 화면, 비즈니스 로직, DB 처리 같은 층으로 나누는 이유가 뭐야?",
+      "query_id": "paraphrase_human:layered_architecture:001",
+      "rationale": "layered / 계층 안 써도 의도 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "software-engineering/service-layer-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "service_layer_purpose"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/software-engineering/service-layer-basics.md"
+      ],
+      "prompt": "비즈니스 규칙은 컨트롤러나 DB 코드에 두지 말고 어디에 모아야 해?",
+      "query_id": "paraphrase_human:service_layer:001",
+      "rationale": "service layer 단어 없이 결과만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "creation_responsibility"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "객체를 어떻게 만들지 결정하는 책임을 따로 떼서 한 곳에 두는 패턴이 뭐야?",
+      "query_id": "paraphrase_human:factory_basics:001",
+      "rationale": "Factory 단어 없이 책임 분리만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/service-locator-antipattern"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "antipattern_intuition"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "prompt": "객체가 자기 의존성을 직접 어딘가에서 꺼내가면 왜 안 좋대?",
+      "query_id": "paraphrase_human:service_locator_antipattern:001",
+      "rationale": "Service Locator 단어 없이 antipattern 결과 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/projection-freshness-slo-pattern"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "freshness_slo"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/design-pattern/projection-freshness-slo-pattern.md"
+      ],
+      "prompt": "사용자가 화면에서 보는 요약 데이터가 원본 변경에 얼마나 늦게 따라가는지 어떻게 정해?",
+      "query_id": "paraphrase_human:projection_freshness:001",
+      "rationale": "projection / freshness SLO 안 쓰고 사용자 관점만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/read-model-staleness-read-your-writes"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "cqrs_staleness"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "prompt": "쓰기는 한 곳에서 하고 읽기는 다른 모델에서 한다고 했을 때 둘이 어긋나는 시간을 뭐라고 봐?",
+      "query_id": "paraphrase_human:read_model_staleness:001",
+      "rationale": "CQRS / read model 단어 없이 어긋남만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "network/devtools-waterfall-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "waterfall_visual"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/network/browser-devtools-waterfall-primer.md"
+      ],
+      "prompt": "브라우저 개발자 도구에서 요청들이 가로 막대로 줄줄이 보이는 그 그림을 어떻게 읽어야 해?",
+      "query_id": "paraphrase_human:devtools_waterfall:001",
+      "rationale": "waterfall 단어 없이 시각만 묘사"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "network/request-timing-decomposition"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "timing_breakdown"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/network/request-timing-decomposition-dns-connect-tls-ttfb-ttlb.md"
+      ],
+      "prompt": "한 HTTP 요청 시간이 DNS, 연결, 데이터 받기 같은 단계들로 어떻게 쪼개져?",
+      "query_id": "paraphrase_human:request_timing:001",
+      "rationale": "TTFB / TTLB 단어 없이 단계만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/session-cookie-jwt-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "auth_state_strategies"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/security/session-cookie-jwt-basics.md"
+      ],
+      "prompt": "로그인 한 번에 누가 누군지 기억하는 방법이 두세 가지 있는데 뭐가 어떻게 달라?",
+      "query_id": "paraphrase_human:session_cookie_jwt:001",
+      "rationale": "session vs cookie vs JWT 단어 없이 user-perspective만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/cookie-scope-mismatch-guide"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "scope_mismatch_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-scope-mismatch-guide.md"
+      ],
+      "prompt": "쿠키가 분명 저장됐는데 다른 페이지에선 안 따라가는 이유가 뭐야?",
+      "query_id": "paraphrase_human:cookie_scope:001",
+      "rationale": "cookie scope 용어 없이 증상만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/spring-security-filter-chain"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "security_chain_intuition"
+      ],
+      "intent": "deep_dive",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-security-filter-chain.md"
+      ],
+      "prompt": "보안 검사를 어떤 순서로 줄세워서 요청마다 통과시키는지 그 흐름이 어떻게 돼?",
+      "query_id": "paraphrase_human:spring_security_filter_chain:001",
+      "rationale": "filter chain 단어 없이 줄세움만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/spring-security-filter-chain-ordering"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "ordering_rule"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-security-filter-chain-ordering.md"
+      ],
+      "prompt": "여러 보안 검사가 있을 때 어느 게 먼저고 어느 게 뒤인지 정하는 규칙이 뭐야?",
+      "query_id": "paraphrase_human:filter_chain_ordering:001",
+      "rationale": "ordering 용어 없이 우선순위만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "system-design/read-after-write-routing-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "routing_decision"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/system-design/read-after-write-routing-primer.md"
+      ],
+      "prompt": "방금 쓴 데이터를 같은 사용자가 바로 읽을 때 어디로 보내야 일관성이 깨지지 않아?",
+      "query_id": "paraphrase_human:read_after_write_routing:001",
+      "rationale": "read-after-write / routing 단어 없이 사용자 시점만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "system-design/projection-applied-watermark-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "watermark_intuition"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/system-design/projection-applied-watermark-basics.md"
+      ],
+      "prompt": "원본이 어디까지 처리됐는지 표식만 두고 화면 데이터를 갱신하는 방식이 뭐야?",
+      "query_id": "paraphrase_human:projection_watermark:001",
+      "rationale": "watermark / applied 단어 없이 표식 묘사만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "system-design/post-write-stale-dashboard-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "ui_consistency_design"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/system-design/post-write-stale-dashboard-primer.md"
+      ],
+      "prompt": "관리자가 데이터 수정 직후 대시보드에서 값이 안 변해 보이면 어떻게 설계해야 그 헷갈림이 없어져?",
+      "query_id": "paraphrase_human:post_write_stale_dashboard:001",
+      "rationale": "stale dashboard 단어 없이 admin UX만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "deadlock_vs_timeout_distinction"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "prompt": "두 트랜잭션이 서로 막혀서 시스템이 한쪽을 죽이는 경우랑, 그냥 너무 오래 기다려서 끝난 경우는 뭐가 달라?",
+      "query_id": "paraphrase_human:deadlock_vs_lock_timeout_primer:001",
+      "rationale": "deadlock vs lock wait timeout 단어 없이 의미만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/factory-selector-resolver-beginner-entrypoint"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "creation_vs_selection"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md"
+      ],
+      "prompt": "객체를 *만드는* 책임이랑 이미 있는 객체 중 *고르는* 책임을 이름으로 어떻게 나눠?",
+      "query_id": "paraphrase_human:factory_selector_resolver:001",
+      "rationale": "Factory / Selector / Resolver 안 쓰고 책임만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "registry_vs_locator"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md"
+      ],
+      "prompt": "등록된 것들 중에 키로 찾아 쓰는 패턴이랑, 객체가 자기 의존성을 키로 꺼내가는 패턴은 어떻게 달라?",
+      "query_id": "paraphrase_human:registry_primer:001",
+      "rationale": "registry vs service locator 단어 없이 동작만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/strategy-map-vs-registry-primer"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "intent_distinction"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/strategy-map-vs-registry-primer.md"
+      ],
+      "prompt": "Map<String, X> 코드가 행동을 바꿔끼는 거인지 단순 조회인지 어떻게 구분해?",
+      "query_id": "paraphrase_human:strategy_map_vs_registry:001",
+      "rationale": "strategy / registry 패턴명 없이 의도만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "design-pattern/template-method-vs-strategy"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "inheritance_vs_composition"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/template-method-vs-strategy.md"
+      ],
+      "prompt": "부모가 큰 흐름 잡고 자식이 일부만 채우는 거랑, 외부가 통째로 한 가지 행동을 골라 끼는 건 어떻게 달라?",
+      "query_id": "paraphrase_human:template_method_vs_strategy:001",
+      "rationale": "Template Method / Strategy 단어 없이 흐름만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/auth-failure-response-401-403-404"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "status_code_meaning"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/security/auth-failure-response-401-403-404.md"
+      ],
+      "prompt": "로그인 안 한 거, 권한이 없는 거, 자원이 없는 거를 응답 코드로 어떻게 구분해?",
+      "query_id": "paraphrase_human:auth_failure_response:001",
+      "rationale": "401/403/404 직접 안 쓰고 의미만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/browser-401-vs-302-login-redirect-guide"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "redirect_symptom"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/browser-401-vs-302-login-redirect-guide.md"
+      ],
+      "prompt": "API는 분명 인증 실패라고 하는데 화면에는 갑자기 로그인 페이지로 옮겨지는 건 왜 그래?",
+      "query_id": "paraphrase_human:browser_401_vs_302:001",
+      "rationale": "401/302 직접 안 쓰고 사용자 시점 증상만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/cookie-failure-three-way-splitter"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "split_diagnosis"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "prompt": "쿠키가 안 찍힌 건지, 찍혔는데 안 보내진 건지, 보냈는데 서버가 못 읽은 건지 어떻게 나눠?",
+      "query_id": "paraphrase_human:cookie_failure_three_way:001",
+      "rationale": "Set-Cookie / Cookie header 안 쓰고 3단계 분기만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "security/fetch-credentials-vs-cookie-scope"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "credentials_vs_scope"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/fetch-credentials-vs-cookie-scope.md"
+      ],
+      "prompt": "fetch에 옵션 하나 줘서 쿠키 보내는 거랑, 쿠키가 그 도메인에 붙는 거랑 다른 거야?",
+      "query_id": "paraphrase_human:fetch_credentials_vs_cookie_scope:001",
+      "rationale": "credentials: include / scope 정확한 단어 안 쓰고 의도만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "lock_vs_proxy_split"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
+      ],
+      "prompt": "DB가 진짜 락 걸려서 막힌 건지, 트랜잭션 표시가 잘못 붙어서 안 풀린 건지 어떻게 먼저 가려?",
+      "query_id": "paraphrase_human:db_lock_vs_proxy_rollback:001",
+      "rationale": "lock wait / proxy / rollback-only 단어 없이 분기만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "filter_vs_interceptor_position"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md"
+      ],
+      "prompt": "관리자 페이지 접근을 막는 코드를 컨트롤러 들어가기 *전*에 둘지, *직전*에 둘지 어떻게 정해?",
+      "query_id": "paraphrase_human:filter_security_chain_interceptor:001",
+      "rationale": "Filter / Interceptor 안 쓰고 위치 결정만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "database/transaction-case-studies"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "concurrency_scenario"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/transaction-case-studies.md"
+      ],
+      "prompt": "동시 결제, 동시 재고 차감 같은 시나리오에서 데이터 깨지는 걸 어떻게 막아?",
+      "query_id": "paraphrase_human:transaction_case_studies:001",
+      "rationale": "transaction boundary / atomicity 단어 없이 시나리오만"
+    },
+    {
+      "cohort_tag": "paraphrase_human",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "paraphrase_robustness",
+        "auto_wiring_phrasing"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "Spring이 객체끼리 연결할 때 그냥 '필요해'라고만 적으면 알아서 채워주는 그게 뭐야?",
+      "query_id": "paraphrase_human:bean_di_basics:002",
+      "rationale": "DI/주입 단어 안 쓰고 '알아서 채워주는' 행동만 — 둘째 paraphrase 변형"
+    }
+  ],
+  "schema_version": 1
+}
