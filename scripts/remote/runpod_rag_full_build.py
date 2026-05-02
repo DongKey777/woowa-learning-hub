@@ -1044,10 +1044,17 @@ class RunPodHarness:
         log_path = f"{prefix}.log"
         rc_path = f"{prefix}.rc"
         pid_path = f"{prefix}.pid"
+        wrapped_command = (
+            "set +e; "
+            f"{command}; "
+            "rc=$?; "
+            f"printf '%s\\n' \"$rc\" > {shlex.quote(rc_path)}; "
+            "exit \"$rc\""
+        )
         start_cmd = (
             f"mkdir -p {shlex.quote(log_dir)} && "
             f"rm -f {shlex.quote(log_path)} {shlex.quote(rc_path)} {shlex.quote(pid_path)} && "
-            f"( nohup bash -lc {shlex.quote(command)} > {shlex.quote(log_path)} 2>&1 "
+            f"( nohup bash -lc {shlex.quote(wrapped_command)} > {shlex.quote(log_path)} 2>&1 "
             f"< /dev/null & echo $! > {shlex.quote(pid_path)} )"
         )
         rc, stdout, stderr = executor.run(pod, keypath, start_cmd, timeout_s=60)
@@ -1089,10 +1096,15 @@ class RunPodHarness:
                 f"echo __RAG_DONE__; cat {shlex.quote(rc_path)}; "
                 f"echo __RAG_LOG_TAIL__; tail -n 120 {shlex.quote(log_path)} 2>/dev/null; "
                 "else "
+                f"if test -f {shlex.quote(pid_path)} && kill -0 $(cat {shlex.quote(pid_path)}) "
+                ">/dev/null 2>&1; then "
                 f"echo __RAG_RUNNING__; "
-                f"test -f {shlex.quote(pid_path)} && echo pid=$(cat {shlex.quote(pid_path)}); "
-                f"test -f {shlex.quote(pid_path)} && ps -p $(cat {shlex.quote(pid_path)}) "
+                f"echo pid=$(cat {shlex.quote(pid_path)}); "
+                f"ps -p $(cat {shlex.quote(pid_path)}) "
                 "-o pid=,etime=,pcpu=,pmem=,cmd= 2>/dev/null; "
+                "else "
+                "echo __RAG_EXITED_WITHOUT_RC__; "
+                "fi; "
                 f"echo __RAG_LOG_TAIL__; tail -n 40 {shlex.quote(log_path)} 2>/dev/null; "
                 "fi"
             )
@@ -1123,6 +1135,13 @@ class RunPodHarness:
                     logger.info("[runpod] step %d detached job completed", step_index)
                     return 0, poll_stdout, poll_stderr
                 return remote_rc, "", poll_stdout + poll_stderr
+            if "__RAG_EXITED_WITHOUT_RC__" in poll_stdout:
+                return (
+                    137,
+                    "",
+                    "detached remote command exited without rc file; "
+                    f"log={log_path}; status={poll_stdout[-4000:]}{poll_stderr[-2000:]}",
+                )
 
             logger.info(
                 "[runpod] step %d still running; status tail:\n%s",

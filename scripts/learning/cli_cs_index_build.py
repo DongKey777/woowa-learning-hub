@@ -21,11 +21,10 @@ Modes (plan §P5.6):
 The legacy ``--force`` flag still works and means "full rebuild even
 when ready"; equivalent to ``--mode full --force``.
 
-Experimental LanceDB v3 backend:
-- ``--backend lance`` explicitly builds the bge-m3/LanceDB index path.
-- It is full-build only until the LanceDB incremental wrapper is implemented.
-- Default remains ``legacy`` so First-Run Protocol and production readiness
-  continue to use the SQLite/NPZ v2 path during the SOTA migration.
+Production LanceDB v3 backend:
+- Default backend is ``lance`` after the R2 production cutover.
+- ``--backend legacy`` remains available for rollback verification and
+  archived v2 comparisons only.
 """
 
 from __future__ import annotations
@@ -83,6 +82,15 @@ def _progress(stage: str, info: dict) -> None:
         print(f"[cs-index] 5/5 dense 벡터 저장 — shape={info.get('shape')}", flush=True)
     elif stage == "write_lance":
         print(f"[cs-index] 5/6 LanceDB 테이블 작성 중 ({info.get('count')} chunks)…", flush=True)
+    elif stage == "write_lance_progress":
+        done = info.get("done", 0)
+        total = info.get("total", 0)
+        pct = (done / total * 100) if total else 0
+        print(
+            f"[cs-index] 5/6 LanceDB 테이블 작성 진행 — "
+            f"{done}/{total} ({pct:.1f}%) batch={info.get('batch_size')}",
+            flush=True,
+        )
     elif stage == "create_indices":
         print(f"[cs-index] 6/6 LanceDB 인덱스 생성 중 ({info.get('count')} chunks)…", flush=True)
     elif stage == "write_manifest":
@@ -324,11 +332,11 @@ def main(
     parser.add_argument(
         "--backend",
         choices=("legacy", "lance"),
-        default="legacy",
+        default="lance",
         help=(
-            "Index backend (default: legacy). "
+            "Index backend (default: lance). "
             "legacy: SQLite FTS5 + dense.npz v2. "
-            "lance: experimental LanceDB v3 bge-m3 full build only."
+            "lance: LanceDB v3 + bge-m3 production index."
         ),
     )
     parser.add_argument(
@@ -340,8 +348,8 @@ def main(
     parser.add_argument(
         "--modalities",
         type=_parse_modalities,
-        default=("dense", "sparse", "colbert", "fts"),
-        help="Comma-separated modalities for --backend lance.",
+        default=("fts", "dense", "sparse"),
+        help="Comma-separated modalities for --backend lance (default: fts,dense,sparse).",
     )
     parser.add_argument(
         "--lance-colbert-dtype",
@@ -375,6 +383,12 @@ def main(
         type=int,
         default=64,
         help="Batch size for bge-m3 LanceDB corpus encoding (default: 64).",
+    )
+    parser.add_argument(
+        "--lance-write-batch-size",
+        type=_positive_int,
+        default=128,
+        help="Rows per LanceDB write batch after encoding (default: 128).",
     )
     parser.add_argument(
         "--lance-max-eta-minutes",
@@ -488,6 +502,7 @@ def main(
                     colbert_dtype=args.lance_colbert_dtype,
                     dense_num_partitions=args.ivf_num_partitions,
                     dense_num_sub_vectors=args.ivf_num_sub_vectors,
+                    write_batch_size=args.lance_write_batch_size,
                 )
                 try:
                     model_version = manifest.get("encoder", {}).get("model_version")

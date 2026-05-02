@@ -28,6 +28,7 @@ A mismatch → ``state="stale"``.
 from __future__ import annotations
 
 import hashlib
+import gc
 import json
 import os
 import shutil
@@ -561,8 +562,26 @@ def _lance_records(
     *,
     encoder_version: str,
 ) -> list[dict]:
+    return _lance_record_slice(
+        chunks,
+        encoding,
+        start=0,
+        stop=len(chunks),
+        encoder_version=encoder_version,
+    )
+
+
+def _lance_record_slice(
+    chunks: list[corpus_loader.CorpusChunk],
+    encoding,
+    *,
+    start: int,
+    stop: int,
+    encoder_version: str,
+) -> list[dict]:
     records: list[dict] = []
-    for i, chunk in enumerate(chunks):
+    for i in range(start, stop):
+        chunk = chunks[i]
         sparse = encoding["sparse"][i]
         records.append(
             {
@@ -593,6 +612,7 @@ def _lance_records(
 LANCE_ANN_MIN_ROWS = 1024
 DEFAULT_LANCE_DENSE_NUM_PARTITIONS = 256
 DEFAULT_LANCE_DENSE_NUM_SUB_VECTORS = 64
+DEFAULT_LANCE_WRITE_BATCH_SIZE = 128
 
 
 def _create_lance_indices(
@@ -713,17 +733,19 @@ def build_lance_index(
     corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
     *,
     encoder,
-    modalities: tuple[str, ...] = ("dense", "sparse", "colbert", "fts"),
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
     progress=None,
     colbert_dtype: str = "float16",
     dense_num_partitions: int | None = None,
     dense_num_sub_vectors: int | None = None,
+    write_batch_size: int = DEFAULT_LANCE_WRITE_BATCH_SIZE,
 ) -> dict:
     """Build the v3 LanceDB index from scratch.
 
-    This function is the H2 writer path.  It is not wired into
-    ``bin/cs-index-build`` until the cutover commit, so the legacy v2 path
-    remains available while the LanceDB stack is built and tested.
+    This is the production writer path after the R2 cutover.  The legacy v2
+    SQLite/NPZ builder remains available through ``--backend legacy`` for
+    rollback verification and archived comparisons.  ColBERT can still be
+    requested explicitly, but it is not part of the production default.
     """
     try:
         import lancedb  # type: ignore
@@ -762,13 +784,46 @@ def build_lance_index(
             f"unexpected dense shape {encoding['dense'].shape}, "
             f"expected ({len(chunks)}, {encoder.dense_dim})"
         )
+    if write_batch_size <= 0:
+        raise ValueError("write_batch_size must be positive")
 
     _tick("write_lance", {"count": len(chunks)})
     schema = _lance_schema(encoder.dense_dim, encoder.colbert_dim, colbert_dtype=colbert_dtype)
-    records = _lance_records(chunks, encoding, encoder_version=encoder.model_version)
-    table_data = pa.Table.from_pylist(records, schema=schema)
     db = lancedb.connect(lance_root)
-    table = db.create_table(LANCE_TABLE_NAME, data=table_data, schema=schema, mode="overwrite")
+    table = None
+    total = len(chunks)
+    for start in range(0, total, write_batch_size):
+        stop = min(start + write_batch_size, total)
+        records = _lance_record_slice(
+            chunks,
+            encoding,
+            start=start,
+            stop=stop,
+            encoder_version=encoder.model_version,
+        )
+        table_data = pa.Table.from_pylist(records, schema=schema)
+        if table is None:
+            table = db.create_table(
+                LANCE_TABLE_NAME,
+                data=table_data,
+                schema=schema,
+                mode="overwrite",
+            )
+        else:
+            table.add(table_data)
+        del records
+        del table_data
+        gc.collect()
+        _tick(
+            "write_lance_progress",
+            {
+                "done": stop,
+                "total": total,
+                "batch_size": write_batch_size,
+            },
+        )
+    if table is None:
+        raise RuntimeError("no LanceDB table was created")
 
     _tick("create_indices", {"count": len(chunks)})
     indices = _create_lance_indices(
@@ -788,6 +843,8 @@ def build_lance_index(
         "encoder": {
             "model_id": encoder.model_id,
             "model_version": encoder.model_version,
+            "dense_dim": encoder.dense_dim,
+            "colbert_dim": encoder.colbert_dim,
             "max_length": getattr(encoder, "max_length", 8192),
             "batch_size": getattr(encoder, "batch_size", None),
         },
@@ -800,6 +857,7 @@ def build_lance_index(
         "ingest": {
             "chunk_max_chars": corpus_loader.MAX_CHARS_PER_CHUNK,
             "chunk_overlap": 0,
+            "write_batch_size": write_batch_size,
         },
     }
     _tick("write_manifest", manifest)

@@ -106,9 +106,11 @@ def test_build_lance_index_writes_v3_manifest_and_table(tmp_path):
     assert manifest["index_version"] == 3
     assert manifest["row_count"] == expected_count
     assert manifest["encoder"]["model_version"] == "fake/bge-m3@test"
+    assert manifest["encoder"]["dense_dim"] == FakeMultiModalEncoder.dense_dim
+    assert manifest["encoder"]["colbert_dim"] == FakeMultiModalEncoder.colbert_dim
     assert manifest["encoder"]["max_length"] == 512
     assert manifest["encoder"]["batch_size"] == 32
-    assert manifest["modalities"] == ["dense", "sparse", "colbert", "fts"]
+    assert manifest["modalities"] == ["fts", "dense", "sparse"]
     assert (index_root / indexer.LANCE_DIR_NAME).exists()
 
     persisted = indexer.read_manifest_v3(index_root)
@@ -135,9 +137,41 @@ def test_build_lance_index_writes_v3_manifest_and_table(tmp_path):
         "load_corpus_done",
         "encode",
         "write_lance",
+        "write_lance_progress",
         "create_indices",
         "write_manifest",
     ]
+
+
+def test_build_lance_index_streams_lancedb_writes_in_batches(tmp_path):
+    corpus_root = _fake_corpus(tmp_path)
+    _write_doc(
+        corpus_root,
+        "network",
+        "http-basics",
+        "HTTP 기초",
+        "HTTP 요청과 응답, 헤더, 상태 코드의 기본 흐름입니다. " * 4,
+    )
+    index_root = tmp_path / "index"
+    progress = []
+    expected_count = len(corpus_loader.load_corpus(corpus_root))
+
+    manifest = indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeMultiModalEncoder(),
+        progress=lambda stage, info: progress.append((stage, info)),
+        write_batch_size=1,
+    )
+
+    write_progress = [
+        info for stage, info in progress if stage == "write_lance_progress"
+    ]
+    assert len(write_progress) == expected_count
+    assert write_progress[-1]["done"] == expected_count
+    assert write_progress[-1]["total"] == expected_count
+    assert manifest["ingest"]["write_batch_size"] == 1
+    assert indexer.open_lance_table(index_root).count_rows() == expected_count
 
 
 def test_build_lance_index_replaces_previous_table_and_manifest(tmp_path):

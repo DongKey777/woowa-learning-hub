@@ -63,6 +63,7 @@ def stub_indexer(monkeypatch, tmp_path):
         colbert_dtype="float16",
         dense_num_partitions=None,
         dense_num_sub_vectors=None,
+        write_batch_size=128,
     ):
         state["build_lance_index_called"] = True
         state["build_lance_args"] = {
@@ -73,6 +74,7 @@ def stub_indexer(monkeypatch, tmp_path):
             "colbert_dtype": colbert_dtype,
             "dense_num_partitions": dense_num_partitions,
             "dense_num_sub_vectors": dense_num_sub_vectors,
+            "write_batch_size": write_batch_size,
         }
         return {
             "row_count": 200,
@@ -187,6 +189,7 @@ def test_main_force_flag_forces_full_rebuild(tmp_path, stub_indexer, stub_increm
     rc = CLI.main([
         "--corpus", str(tmp_path),
         "--out", str(tmp_path / "out"),
+        "--backend", "legacy",
         "--force",
     ])
     assert rc == 0
@@ -210,6 +213,7 @@ def test_main_auto_mode_chooses_incremental_when_ready(
         [
             "--corpus", str(tmp_path),
             "--out", str(tmp_path / "out"),
+            "--backend", "legacy",
             # default --mode auto
         ],
         embedder_factory=lambda: fake_model,
@@ -227,6 +231,7 @@ def test_main_auto_mode_chooses_full_when_not_ready(
     rc = CLI.main([
         "--corpus", str(tmp_path),
         "--out", str(tmp_path / "out"),
+        "--backend", "legacy",
     ])
     assert rc == 0
     assert stub_indexer["build_index_called"] is True
@@ -245,10 +250,47 @@ def test_main_explicit_full_mode(tmp_path, stub_indexer, stub_incremental):
     rc = CLI.main([
         "--corpus", str(tmp_path),
         "--out", str(tmp_path / "out"),
+        "--backend", "legacy",
         "--mode", "full",
     ])
     assert rc == 0
     assert stub_indexer["build_index_called"] is True
+    assert stub_incremental["called"] is False
+
+
+def test_main_default_backend_is_lance_after_cutover(
+    tmp_path, stub_indexer, stub_incremental, monkeypatch
+):
+    monkeypatch.setattr(
+        CLI,
+        "_estimate_lance_disk_budget",
+        lambda _corpus, _out: {
+            "chunk_count": 2,
+            "dense_bytes": 8192,
+            "sparse_bytes": 1920,
+            "colbert_bytes": 55296,
+            "overhead_bytes": 6540,
+            "total_bytes": 71948,
+            "required_free_bytes": 143896,
+            "free_bytes": 999999999,
+            "disk_root": str(tmp_path),
+            "ok": True,
+        },
+    )
+    monkeypatch.setattr(CLI, "_seed_lance_fingerprints", lambda *args: None)
+    fake_encoder = object()
+
+    rc = CLI.main(
+        ["--corpus", str(tmp_path), "--out", str(tmp_path / "out")],
+        lance_encoder_factory=lambda: fake_encoder,
+    )
+
+    assert rc == 0
+    assert stub_indexer.get("build_lance_index_called") is True
+    assert stub_indexer["build_lance_args"]["encoder"] is fake_encoder
+    assert stub_indexer["build_lance_args"]["modalities"] == ("fts", "dense", "sparse")
+    assert stub_indexer["build_lance_args"]["write_batch_size"] == 128
+    assert stub_indexer["build_index_called"] is False
     assert stub_incremental["called"] is False
 
 
@@ -297,6 +339,7 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
             "--lance-precision", "fp16",
             "--ivf-num-partitions", "7",
             "--ivf-num-sub-vectors", "128",
+            "--lance-write-batch-size", "32",
         ],
         lance_encoder_factory=lambda: fake_encoder,
     )
@@ -310,6 +353,7 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     assert stub_indexer["build_lance_args"]["colbert_dtype"] == "float32"
     assert stub_indexer["build_lance_args"]["dense_num_partitions"] == 7
     assert stub_indexer["build_lance_args"]["dense_num_sub_vectors"] == 128
+    assert stub_indexer["build_lance_args"]["write_batch_size"] == 32
     assert seed_state["called"] is True
     assert seed_state["args"][2] == "fake/bge-m3@test"
     out = capsys.readouterr().out
@@ -441,6 +485,7 @@ def test_main_explicit_incremental_mode(
         [
             "--corpus", str(tmp_path),
             "--out", str(tmp_path / "out"),
+            "--backend", "legacy",
             "--mode", "incremental",
         ],
         embedder_factory=lambda: object(),
@@ -470,7 +515,7 @@ def test_main_incremental_summary_includes_diff_stats(
     )
 
     CLI.main(
-        ["--corpus", str(tmp_path), "--out", str(tmp_path / "out")],
+        ["--corpus", str(tmp_path), "--out", str(tmp_path / "out"), "--backend", "legacy"],
         embedder_factory=lambda: object(),
     )
     out = capsys.readouterr().out
@@ -501,7 +546,7 @@ def test_main_incremental_fallback_reason_surfaced(
     )
 
     CLI.main(
-        ["--corpus", str(tmp_path), "--out", str(tmp_path / "out")],
+        ["--corpus", str(tmp_path), "--out", str(tmp_path / "out"), "--backend", "legacy"],
         embedder_factory=lambda: object(),
     )
     out = capsys.readouterr().out
