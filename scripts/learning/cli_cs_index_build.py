@@ -220,21 +220,34 @@ def _existing_disk_root(path: Path) -> Path:
     return current
 
 
-def _estimate_lance_disk_budget(corpus_root: str, out_root: str) -> dict:
+def _estimate_lance_disk_budget(
+    corpus_root: str,
+    out_root: str,
+    *,
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
+    lance_max_length: int = 1024,
+    colbert_dtype: str = "float16",
+) -> dict:
     """Estimate LanceDB v3 footprint before loading bge-m3.
 
     The estimate is intentionally conservative enough for an abort gate, not a
-    precise storage model. It mirrors the H2 plan: dense vectors + learned
-    sparse payload + candidate ColBERT storage + LanceDB overhead, then requires
-    2x free space for safe rebuild/write amplification.
+    precise storage model. It mirrors the actual v3 columns: dense vectors,
+    learned sparse payload, optional ColBERT token vectors, and LanceDB
+    overhead, then requires 2x free space for safe rebuild/write amplification.
     """
     from scripts.learning.rag import corpus_loader  # noqa: WPS433
 
     chunk_count = len(corpus_loader.load_corpus(corpus_root))
-    dense_bytes = chunk_count * 1024 * 4
-    sparse_bytes = chunk_count * 120 * (4 + 4)
-    colbert_bytes = chunk_count * 27 * 1024
-    overhead_bytes = int((dense_bytes + sparse_bytes + colbert_bytes) * 0.10)
+    dense_bytes = chunk_count * 1024 * 4 if "dense" in modalities else 0
+    sparse_bytes = chunk_count * 120 * (4 + 4) if "sparse" in modalities else 0
+    colbert_item_bytes = 2 if colbert_dtype == "float16" else 4
+    estimated_colbert_tokens = max(32, int(lance_max_length * 0.75))
+    colbert_bytes = (
+        chunk_count * estimated_colbert_tokens * 1024 * colbert_item_bytes
+        if "colbert" in modalities
+        else 0
+    )
+    overhead_bytes = int((dense_bytes + sparse_bytes + colbert_bytes) * 0.20)
     total_bytes = dense_bytes + sparse_bytes + colbert_bytes + overhead_bytes
     required_free_bytes = total_bytes * 2
     disk_root = _existing_disk_root(Path(out_root).expanduser()).resolve()
@@ -244,6 +257,7 @@ def _estimate_lance_disk_budget(corpus_root: str, out_root: str) -> dict:
         "dense_bytes": dense_bytes,
         "sparse_bytes": sparse_bytes,
         "colbert_bytes": colbert_bytes,
+        "estimated_colbert_tokens": estimated_colbert_tokens if "colbert" in modalities else 0,
         "overhead_bytes": overhead_bytes,
         "total_bytes": total_bytes,
         "required_free_bytes": required_free_bytes,
@@ -261,7 +275,12 @@ def _print_lance_disk_budget(budget: dict) -> None:
     print(f"  dense (1024 fp32):      {_format_bytes(budget['dense_bytes'])}", flush=True)
     print(f"  sparse (~120 nonzero):  {_format_bytes(budget['sparse_bytes'])}", flush=True)
     print(f"  colbert candidate data: {_format_bytes(budget['colbert_bytes'])}", flush=True)
-    print(f"  LanceDB overhead (~10%): {_format_bytes(budget['overhead_bytes'])}", flush=True)
+    if budget.get("estimated_colbert_tokens"):
+        print(
+            f"  colbert token estimate: {budget['estimated_colbert_tokens']} tokens/chunk",
+            flush=True,
+        )
+    print(f"  LanceDB overhead (~20%): {_format_bytes(budget['overhead_bytes'])}", flush=True)
     print(f"  total estimate:         {_format_bytes(budget['total_bytes'])}", flush=True)
     marker = "✓" if budget["ok"] else "✗"
     print(
@@ -465,7 +484,13 @@ def main(
                 flush=True,
             )
             if effective_mode == "full":
-                budget = _estimate_lance_disk_budget(args.corpus, args.out)
+                budget = _estimate_lance_disk_budget(
+                    args.corpus,
+                    args.out,
+                    modalities=args.modalities,
+                    lance_max_length=args.lance_max_length,
+                    colbert_dtype=args.lance_colbert_dtype,
+                )
                 _print_lance_disk_budget(budget)
                 if not budget["ok"]:
                     print(

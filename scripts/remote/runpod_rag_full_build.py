@@ -730,7 +730,7 @@ class BuildConfig:
     max_cost_usd: float
     max_duration_min: int
     image: str = "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04"
-    container_disk_gb: int = 20
+    container_disk_gb: int = 80
     repo_root: Path = field(default_factory=lambda: Path.cwd())
     ledger_path: Path = field(default_factory=lambda: Path("state/cs_rag_remote/cost_ledger.json"))
     # bge-m3 build params — passed to cs-index-build on Pod (R1 needs
@@ -1458,6 +1458,12 @@ def build_parser() -> argparse.ArgumentParser:
                         help="Abort if estimated cost exceeds this (default: 10.0)")
     parser.add_argument("--max-duration", type=int, default=180,
                         help="Max minutes of pod life (default: 180)")
+    parser.add_argument(
+        "--container-disk-gb",
+        type=int,
+        default=None,
+        help="RunPod container disk size in GB (default: 80 for R3 ColBERT builds).",
+    )
     parser.add_argument("--dry-run", action="store_true",
                         help="Don't touch the network; mock the API.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -1510,6 +1516,7 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         gpu_cloud=args.gpu_cloud or default_cloud,
         max_cost_usd=args.max_cost,
         max_duration_min=args.max_duration,
+        container_disk_gb=getattr(args, "container_disk_gb", None) or 80,
         repo_root=args.repo_root,
         ledger_path=args.ledger_path,
         lance_max_length=args.max_length if args.max_length is not None else default_max_length,

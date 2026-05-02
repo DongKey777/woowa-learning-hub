@@ -387,6 +387,18 @@ def test_resolve_defaults_explicit_max_length_overrides_phase_default():
     assert config.lance_max_length == 1024  # explicit wins
 
 
+def test_resolve_defaults_uses_larger_disk_for_r3_colbert_builds():
+    args = type("A", (), {
+        "r_phase": "r3", "modalities": None, "gpu_type": None,
+        "gpu_cloud": None, "max_cost": 10.0, "max_duration": 60,
+        "repo_root": Path.cwd(), "ledger_path": Path("ledger.json"),
+        "max_length": None, "batch_size": None, "precision": None,
+        "colbert_dtype": None, "container_disk_gb": None,
+    })()
+    config = H.resolve_defaults(args)
+    assert config.container_disk_gb == 80
+
+
 # ---------------------------------------------------------------------------
 # Lifecycle — full dry-run run() invocation
 # ---------------------------------------------------------------------------

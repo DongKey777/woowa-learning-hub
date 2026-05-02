@@ -172,6 +172,25 @@ def test_default_lance_encoder_passes_mps_as_device_list():
     assert encoder.batch_size == 32
 
 
+def test_lance_disk_budget_scales_colbert_storage_by_token_vectors(
+    tmp_path, monkeypatch
+):
+    from scripts.learning.rag import corpus_loader
+
+    monkeypatch.setattr(corpus_loader, "load_corpus", lambda _root: [object()] * 10)
+    budget = CLI._estimate_lance_disk_budget(
+        str(tmp_path / "corpus"),
+        str(tmp_path / "out"),
+        modalities=("fts", "dense", "sparse", "colbert"),
+        lance_max_length=512,
+        colbert_dtype="float16",
+    )
+
+    assert budget["estimated_colbert_tokens"] == 384
+    assert budget["colbert_bytes"] == 10 * 384 * 1024 * 2
+    assert budget["required_free_bytes"] > budget["total_bytes"]
+
+
 # ---------------------------------------------------------------------------
 # main() — mode resolution
 # ---------------------------------------------------------------------------
@@ -264,7 +283,7 @@ def test_main_default_backend_is_lance_after_cutover(
     monkeypatch.setattr(
         CLI,
         "_estimate_lance_disk_budget",
-        lambda _corpus, _out: {
+        lambda _corpus, _out, **_kwargs: {
             "chunk_count": 2,
             "dense_bytes": 8192,
             "sparse_bytes": 1920,
@@ -309,7 +328,7 @@ def test_main_lance_backend_uses_explicit_v3_full_builder(
     monkeypatch.setattr(
         CLI,
         "_estimate_lance_disk_budget",
-        lambda _corpus, _out: {
+        lambda _corpus, _out, **_kwargs: {
             "chunk_count": 2,
             "dense_bytes": 8192,
             "sparse_bytes": 1920,
@@ -367,7 +386,7 @@ def test_main_lance_backend_aborts_when_disk_budget_is_insufficient(
     monkeypatch.setattr(
         CLI,
         "_estimate_lance_disk_budget",
-        lambda _corpus, _out: {
+        lambda _corpus, _out, **_kwargs: {
             "chunk_count": 100,
             "dense_bytes": 409600,
             "sparse_bytes": 96000,
@@ -406,7 +425,7 @@ def test_main_lance_backend_aborts_when_encode_eta_exceeds_budget(
     monkeypatch.setattr(
         CLI,
         "_estimate_lance_disk_budget",
-        lambda _corpus, _out: {
+        lambda _corpus, _out, **_kwargs: {
             "chunk_count": 100,
             "dense_bytes": 409600,
             "sparse_bytes": 96000,
