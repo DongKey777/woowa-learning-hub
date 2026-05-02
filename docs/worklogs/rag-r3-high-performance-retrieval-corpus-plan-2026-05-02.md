@@ -44,7 +44,10 @@ R3 target reranker:
 - English-only low-memory candidate: `mixedbread-ai/mxbai-rerank-base-v1`, but never as automatic fallback for Korean or mixed queries;
 - prerequisite: patch reranker input sizing so the target reranker can score calibrated top-K pools instead of the current `top_k * 2` window.
 
-Default backend recommendation: Qdrant + lexical sidecar or LanceDB-improved sparse sidecar as the first implementation spike; Vespa remains a high-ceiling comparator, not the default.
+Default backend recommendation after the first implementation spike:
+LanceDB-improved R3 as the local production candidate; Qdrant remains the
+measured dense+sparse comparator, and Vespa remains a high-ceiling comparator,
+not the default.
 
 Reasoning:
 
@@ -65,13 +68,24 @@ Implementation update after R3 spike:
   Korean-only relevant@5 trailed the selected R3 path.
 - `BAAI/bge-reranker-v2-m3` remains the target quality reranker. Local
   interactive default is now `WOOWA_RAG_R3_RERANK_POLICY=auto`: force the BGE
-  reranker for quality investigation or suspected ranking failures, but skip it
-  by default when the verified metadata lexical sidecar is loaded and the 100q
-  gate stays green.
-- Remaining cutover blocker: live RunPod build and local strict import of the
-  remote-built artifact. The source-visibility problem for local commits ahead
-  of origin is addressed by git bundle source transfer; `RUNPOD_API_KEY` is
-  still required for the live build.
+  reranker for quality investigation or suspected ranking failures. The local
+  default skips it when the verified metadata lexical sidecar is loaded and the
+  208q production gate stays green.
+- Cutover artifact: `r3-0c8fd9f-2026-05-02T0827`, built on RunPod L40S from
+  commit `0c8fd9f1bef5c3dd5b0bdd7a420bf5f60668d2ed`, imported into local
+  `state/cs_rag`, and selected in `config/rag_models.json`.
+- Expanded qrel gate:
+  `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json`
+  reports candidate and final primary/relevant hit/recall at 5/20/50/100 as
+  `1.0` overall and for Korean/mixed-language cohorts, with `forbidden_rate@5=0`.
+- Root-cause closure: Corpus v2 `expected_queries` are now indexed as
+  retrieval-contract anchors and chunk body phrases. The previously failing
+  service-locator query `컨테이너에서 직접 꺼내 쓰면 왜 위험해?` is now recovered
+  to final rank 1.
+- Local smoke:
+  `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` verifies
+  sparse sidecar discovery, daemon warm full latency of 1169ms, and a forced
+  `BAAI/bge-reranker-v2-m3` path with 20-pair reranking.
 
 ## Current System Facts
 
@@ -89,7 +103,7 @@ Observed current index/runtime:
 
 - backend: LanceDB v3
 - model: `BAAI/bge-m3`
-- row count: `27157`
+- row count: `27158`
 - indexed corpus root: `knowledge/cs`
 - indexed scope: `knowledge/cs/contents/**.md`
 - runtime default modalities: `fts,dense,sparse`
@@ -443,7 +457,7 @@ raw query
 -> SignalRetriever(limit=20)
 -> MetadataRanker/features
 -> Fusion(limit=120, doc_diversity=true)
--> Reranker(target=BAAI/bge-reranker-v2-m3, input=50 local / 100 offline)
+-> Reranker(target=BAAI/bge-reranker-v2-m3, input=20 local default / 50 local profiling / 100 offline)
 -> GraphExpander/context companions
 -> ContextAssembler(top_k=5)
 -> response/citation contract
@@ -465,27 +479,39 @@ Non-negotiable behavior:
 First production candidate:
 
 ```text
+LanceDB improved
++ BGE-M3 dense retrieval
++ BGE-M3 sparse first-stage sidecar
++ metadata lexical sidecar
++ signal/query-planning features
++ same R3 trace contract
+```
+
+Concrete default:
+
+- LanceDB remains the storage artifact for dense vectors and body FTS.
+- BGE-M3 sparse output is served through a true first-stage sidecar, not a
+  late rescore over the FTS+dense pool.
+- Metadata lexical sidecar stores title, section, aliases, and expected-query
+  anchors separately from full body text so local cold load stays bounded.
+- Korean and mixed Korean/English retrieval contract phrases are indexed from
+  Corpus v2 `aliases` and `expected_queries`.
+- Fusion happens in Python first so ranking features remain inspectable and
+  backend-independent.
+
+Comparator candidate:
+
+```text
 Qdrant dense+sparse store
 + lexical sidecar
 + external fusion/rerank pipeline
 ```
 
-Concrete default:
-
-- Qdrant collection stores dense vectors, sparse vectors, optional multivectors, and payload metadata.
-- Lexical sidecar stores title, section, aliases, symptoms, and body as separate searchable fields.
-- Korean lexical fields are indexed from pre-tokenized text produced by the same tokenizer used for query expansion.
-- Fusion happens in Python first so ranking features remain inspectable and backend-independent.
-- Qdrant deployment mode is a gate: test Python local mode, local server/Docker mode, and memory/RSS impact on the M5 16GB runtime. If Qdrant serving overhead is too high, prefer LanceDB-improved + sparse sidecar for production while keeping Qdrant as an evaluation backend.
-
-Fallback production candidate:
-
-```text
-LanceDB improved
-+ true sparse sidecar/native sparse path
-+ feature-equivalent signal/query planning
-+ same R3 trace contract
-```
+Qdrant remains useful for dense+sparse ergonomics and future multivector
+experiments. It is not the current local default because the measured local
+mode crossed the 20,000-point warning threshold, consumed about 3.4GB RSS in
+the probe, and did not beat the selected LanceDB-improved R3 path on the
+Korean-only relevant@5 gate.
 
 Vespa comparator:
 
@@ -679,7 +705,7 @@ The pilot must measure field-level lift before expanding the contract:
 - `doc_role`: primer/deep-dive/chooser routing;
 - `level`: beginner vs advanced ranking;
 - `aliases`: Korean/English lexical discovery;
-- `expected_queries`: qrel seed generation.
+- `expected_queries`: qrel seed generation and indexed retrieval-contract anchors.
 
 Full frontmatter target after pilot validation:
 
@@ -732,7 +758,7 @@ Field meanings and rollout:
 | `doc_role` | pilot required | primer/bridge/deep_dive/playbook/comparison/drill route |
 | `level` | pilot required | learner-level ranking and filtering |
 | `aliases` | pilot required | lexical alias field and query expansion |
-| `expected_queries` | pilot required | qrel seed generation |
+| `expected_queries` | pilot required | qrel seed generation and indexed retrieval-contract anchors |
 | `canonical` | wave 2 | canonical doc selection and duplicate control |
 | `language` | wave 2 | Korean/English/mixed routing |
 | `source_priority` | wave 2 | citation and final-answer source guard |

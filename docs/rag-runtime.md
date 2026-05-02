@@ -4,10 +4,11 @@
 
 ## HF_HUB_OFFLINE
 
-Full 모드(Tier 2) 첫 호출이 느린 이유는 LanceDB v3 production runtime이
-BGE-M3 query encoder와 cross-encoder reranker를 로드하고, HuggingFace Hub에
-모델 메타데이터 요청을 보낼 수 있기 때문이다. 모델 weights가 로컬 캐시에
-있으면 다음 환경 변수로 네트워크 확인을 차단할 수 있다:
+Full 모드(Tier 2) 첫 호출이 느린 이유는 R3 production runtime이 BGE-M3
+query encoder, dense/sparse sidecar metadata, 그리고 정책상 필요할 때
+cross-encoder reranker를 로드하고, HuggingFace Hub에 모델 메타데이터 요청을
+보낼 수 있기 때문이다. 모델 weights가 로컬 캐시에 있으면 다음 환경 변수로
+네트워크 확인을 차단할 수 있다:
 
 ```bash
 export HF_HUB_OFFLINE=1
@@ -26,13 +27,15 @@ export HF_HUB_OFFLINE=1
 | cheap | 50-200ms | 50-200ms | 50-200ms |
 | Lance full | 500ms-2s | 2-8s | 10-25s |
 | R3 full, one-shot CLI | 2.3-3.0s after OS cache | 15-24s | 18-25s |
-| R3 full, local daemon, auto sidecar default | 450-550ms | first daemon request 12-15s | first daemon request 18-25s |
-| R3 full, local daemon, forced BGE reranker | 2.4-2.7s | first daemon request 15-24s | first daemon request 18-25s |
+| R3 full, local daemon, auto sidecar default | about 1.2s on current artifact | first daemon request 18-20s | first daemon request 18-25s |
+| R3 full, forced BGE reranker direct | about 25s one-shot on current artifact | first daemon request 15-24s | first daemon request 18-25s |
 
 cheap 모드는 ML 의존성을 안 타므로 (FTS BM25만) 네트워크/캐시 상태와 무관.
 
-full 모드는 첫 호출 시 BGE-M3 query encoder + cross-encoder reranker를
-로드한다. 이후 같은 프로세스 안에서는 module-level cache로 재사용한다.
+full 모드는 첫 호출 시 BGE-M3 query encoder와 R3 sidecar를 로드한다. BGE
+reranker는 `WOOWA_RAG_R3_RERANK_POLICY=always`이거나 `auto` 정책이 sidecar
+skip 조건을 만족하지 못할 때 로드된다. 이후 같은 프로세스 안에서는
+module-level cache로 재사용한다.
 
 ## R3 Local Daemon
 
@@ -93,11 +96,14 @@ Rerank policy:
   476ms for the warm request, with runtime JSON exposing policy, skip reason,
   sidecar presence, and stage timing.
 - 2026-05-02 production R3 artifact
-  `r3-e38e49b-2026-05-02T0707` is remote-built and local-served:
-  compressed size 133MiB, extracted size 377MiB, strict local import verified,
-  default `auto` backend resolves to `r3`, and daemon warm full smoke returned
-  in 808ms with dense candidates, sparse sidecar candidates, and reranker
-  skipped by `policy_auto_sidecar_first_stage_gate`.
+  `r3-0c8fd9f-2026-05-02T0827` is the current selected artifact: remote-built
+  on RunPod L40S, imported into local `state/cs_rag`, `row_count=27158`, and
+  strict R3 verified. The 208q production gate reports candidate and final
+  primary/relevant hit/recall at 5/20/50/100 as `1.0` overall, Korean, and
+  mixed, with `forbidden_rate@5=0`. Local smoke returned 1169ms for the warm
+  daemon full request. A forced direct `BAAI/bge-reranker-v2-m3` run verified
+  the quality path, with 24958ms total latency and 5380.51ms rerank time for
+  20 pairs.
 
 Therefore R3 local default rerank policy is `auto`; the local default rerank
 window remains 20 pairs when reranking is forced or when the sidecar is absent.

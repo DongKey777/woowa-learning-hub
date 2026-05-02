@@ -29,6 +29,11 @@ first-stage candidate sources.
 
 | Area | Artifact | Result |
 |---|---|---|
+| Remote production artifact | `artifacts/rag-full-build/r3-0c8fd9f-2026-05-02T0827/artifact_contract.json` | strict R3 package built on RunPod L40S, local import verified, `row_count=27158`, `corpus_hash=c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb` |
+| Production 208q gate | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json` | `candidate_recall_primary@5/20/50/100=1.0`, `candidate_recall_relevant@5/20/50/100=1.0`, final primary/relevant hits all `1.0`, Korean and mixed cohorts all `1.0`, `forbidden_rate@5=0` |
+| Root-cause regression check | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json` | service-locator expected-query miss recovered to final rank 1 after indexing Corpus v2 `expected_queries` as retrieval anchors |
+| Local production smoke | `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` | default full `auto` uses BGE-M3 sparse sidecar, daemon warm request 1169ms, service-locator mixed Korean query returns `contents/design-pattern/service-locator-antipattern.md` first |
+| Forced BGE reranker smoke | `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` | `BAAI/bge-reranker-v2-m3` loads locally and reranks 20 pairs; direct one-shot latency 24958ms, rerank stage 5380.51ms |
 | R3 auto quality | `reports/rag_eval/r3_backend_compare_100q_sidecar_auto_policy_20260501T2025Z.json` | `final_hit_relevant@5=1.0` overall/Korean/mixed, `forbidden_rate@5=0`, auto sidecar skip 100/100 |
 | R3 local daemon | `reports/rag_eval/r3_daemon_full_runtime_auto_sidecar_smoke_20260501T2005Z.json` | first request 12296ms, warm request 476ms, sidecar loaded, reranker skipped by policy |
 | Forced BGE reranker | `reports/rag_eval/r3_backend_compare_100q_lexical_sidecar_rich_fusion_reranker_window20_20260501T1955Z.json` | BGE reranker quality path remains available and green |
@@ -36,7 +41,7 @@ first-stage candidate sources.
 | Qdrant summary | `reports/rag_eval/r3_qdrant_local_probe_summary_20260501T2010Z.md` | local mode warning after 20,000 points; Docker server mode unavailable because daemon was not running |
 | Strict local artifact import | `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md` | local strict import contract passes |
 | Remote harness dry run | `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md` | remote package/verify path is enforced in dry run |
-| Remote live blocker | `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md` | live mode fails closed without `RUNPOD_API_KEY` |
+| Remote harness fail-closed guard | `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md` | historical safety check; superseded by the successful live artifact above |
 | Remote source fallback | `reports/rag_eval/r3_remote_source_bundle_dry_run_20260501T2015Z.md` | git bundle dry-run passes for committed local changes ahead of origin |
 
 ## Why Not Qdrant First
@@ -65,8 +70,9 @@ decision for this learning hub and its M5 MacBook Air 16GB constraint.
 
 `BAAI/bge-reranker-v2-m3` remains the R3 target quality reranker. It is no
 longer the default local interactive stage when the verified metadata lexical
-sidecar is loaded, because the sidecar-first `auto` policy passed the 100q
-quality gate and reduced warm daemon latency to 476ms.
+sidecar is loaded, because the sidecar-first `auto` policy passed the expanded
+208q gate and the current remote-built artifact serves warm daemon requests in
+about 1.17s on the learner machine.
 
 Operational policy:
 
@@ -84,15 +90,17 @@ Current implementation snapshot: LanceDB v3.
 
 R3 production candidate: LanceDB-improved sidecar architecture described above.
 
-The rollback archive remains required until R3 passes the full cutover packet
-with a remote-built artifact imported and served locally.
+The rollback archive remains available as a safety reference, but the R3
+candidate has passed the live remote-build, local-import, 208q production gate,
+and local-serving smoke packet. Keep legacy v2 available for controlled
+comparisons and emergency rollback until at least two full holdout runs are
+recorded against the new artifact.
 
-## Remaining Blocker
+## Cutover Status
 
-The only current cutover blocker is a live remote GPU artifact build and local
-strict import verification. The code path is dry-run verified, but this
-environment has no `RUNPOD_API_KEY`, so the actual RunPod build cannot be
-executed here. The implementation commits are ahead of `origin/main`, but this
-is no longer a hard blocker for committed changes because the harness now
-supports git bundle transfer in `auto` source mode. Dirty uncommitted work is
-not bundled by design.
+Remote build, actual SSH verification, artifact import, expanded qrel gate, and
+local smoke are complete for `r3-0c8fd9f-2026-05-02T0827`.
+
+The only remaining work is routine post-cutover observation: run the full
+holdout suite repeatedly as the corpus grows, keep qrels calibrated, and treat
+new failures as root-cause bugs rather than one-off ranking tweaks.

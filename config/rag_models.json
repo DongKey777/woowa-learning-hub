@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "purpose": "Production R3 CS RAG lock. Runtime auto-selects the R3 retrieval fabric when the LanceDB v3 BGE-M3 fts+dense+sparse index has a matching remote-built lexical sidecar.",
-  "produced_from": "r3-e38e49b-2026-05-02T0707",
-  "produced_at": "2026-05-02T07:24:37Z",
-  "selected_at": "2026-05-02T16:26:20+09:00",
-  "artifact_sha256": "ec0bdb3fcde5f5784efea9feaf329cfc8da1db2caf0f7751fad3d83da17accb2",
+  "produced_from": "r3-0c8fd9f-2026-05-02T0827",
+  "produced_at": "2026-05-02T08:43:04Z",
+  "selected_at": "2026-05-02T17:44:47+09:00",
+  "artifact_sha256": "e33dfc3e13ab25dd0316432de7fc86a5a9452e9b6450e0af6ff0f6480f3eee28",
   "artifact": {
-    "path": "artifacts/rag-full-build/r3-e38e49b-2026-05-02T0707/cs_rag_index_root.tar.zst",
-    "sha256": "ec0bdb3fcde5f5784efea9feaf329cfc8da1db2caf0f7751fad3d83da17accb2",
-    "compressed_size_mb": 133,
-    "extracted_size_mb": 377,
-    "strict_contract": "artifacts/rag-full-build/r3-e38e49b-2026-05-02T0707/artifact_contract.json"
+    "path": "artifacts/rag-full-build/r3-0c8fd9f-2026-05-02T0827/cs_rag_index_root.tar.zst",
+    "sha256": "e33dfc3e13ab25dd0316432de7fc86a5a9452e9b6450e0af6ff0f6480f3eee28",
+    "compressed_size_mb": 134,
+    "extracted_size_mb": 446,
+    "strict_contract": "artifacts/rag-full-build/r3-0c8fd9f-2026-05-02T0827/artifact_contract.json"
   },
   "ivf": {
     "num_partitions": 256,
@@ -20,8 +20,8 @@
     "backend": "r3",
     "storage_backend": "lance",
     "index_version": 3,
-    "row_count": 27172,
-    "corpus_hash": "37a33d3a7d4d602fb34aa3ceef639f32bb7fe5c6fd6d3f7ebd2e8f755e3c58c1",
+    "row_count": 27158,
+    "corpus_hash": "c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb",
     "modalities": [
       "fts",
       "dense",
@@ -40,9 +40,9 @@
         "sparse"
       ],
       "preserved_non_default_modalities": [],
-      "verified_at": "2026-05-02T16:39:00+09:00",
+      "verified_at": "2026-05-02T17:52:00+09:00",
       "verification": {
-        "command": "HF_HUB_OFFLINE=1 WOOWA_RAG_R3_RERANK_POLICY=auto bin/rag-ask \"RAG로 깊게 latency가 뭐야?\"",
+        "command": "HF_HUB_OFFLINE=1 WOOWA_RAG_R3_RERANK_POLICY=auto bin/rag-ask \"RAG로 깊게 latency가 뭐야?\" --via-daemon",
         "backend": "r3",
         "runtime_modalities": [
           "fts",
@@ -52,7 +52,7 @@
         "query_count": 1,
         "rag_ready": true,
         "hit_count": 5,
-        "latency_ms": 13179,
+        "latency_ms": 1169,
         "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
         "r3_dense_candidate_count": 100,
         "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate"
@@ -97,7 +97,7 @@
     "status": "R3 target reranker; forced by WOOWA_RAG_R3_RERANK_POLICY=always for quality investigations"
   },
   "measured_quality": {
-    "report": "artifacts/rag-full-build/r3-e38e49b-2026-05-02T0707/eval/r3_holdout.json",
+    "report": "artifacts/rag-full-build/r3-0c8fd9f-2026-05-02T0827/eval/r3_holdout.json",
     "split": "holdout",
     "query_count": 101,
     "top_k": 10,
@@ -107,37 +107,48 @@
       "sparse"
     ],
     "reranker": "disabled for remote modality ablation",
-    "primary_ndcg_category_macro": 0.85384853768326,
-    "primary_ndcg_language_macro": 0.6275676219043392,
-    "primary_ndcg_micro": 0.640401169964425,
-    "latency_p95_warm_ms": 1181.0840927064419,
-    "hard_regression_failures": 43,
+    "primary_ndcg_category_macro": 0.8681049458204383,
+    "primary_ndcg_language_macro": 0.6759093279646774,
+    "primary_ndcg_micro": 0.6888552614297205,
+    "latency_p95_warm_ms": 1257.1497857570648,
+    "hard_regression_failures": 40,
     "forbidden_rate": 0.0,
-    "hit": 0.7029702970297029,
+    "hit": 0.7920792079207921,
     "language_primary_ndcg": {
-      "ko": 0.1543643251190486,
-      "en": 0.8945513581632737,
-      "mixed": 0.8337871824306955
+      "mixed": 0.8695243772422263,
+      "en": 0.9209135186224552,
+      "ko": 0.23729008802935056
     },
     "r3_fabric_qrel_gate": {
-      "report": "reports/rag_eval/r3_backend_compare_100q_production_r3_auto_20260502T0741Z.summary.json",
-      "query_count": 100,
+      "report": "reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json",
+      "query_count": 208,
+      "candidate_recall_primary_at_5": 1.0,
       "candidate_recall_primary_at_20": 1.0,
       "candidate_recall_primary_at_50": 1.0,
       "candidate_recall_primary_at_100": 1.0,
+      "candidate_recall_relevant_at_5": 1.0,
+      "candidate_recall_relevant_at_20": 1.0,
+      "candidate_recall_relevant_at_50": 1.0,
+      "candidate_recall_relevant_at_100": 1.0,
+      "final_hit_primary_at_5": 1.0,
       "final_hit_primary_at_20": 1.0,
       "final_hit_primary_at_50": 1.0,
       "final_hit_primary_at_100": 1.0,
+      "final_hit_relevant_at_5": 1.0,
+      "final_hit_relevant_at_20": 1.0,
+      "final_hit_relevant_at_50": 1.0,
+      "final_hit_relevant_at_100": 1.0,
       "forbidden_rate_at_5": 0.0,
       "missing_candidate_primary_count": 0,
-      "missing_final_primary_count": 0
+      "missing_final_primary_count": 0,
+      "root_cause_fix": "Corpus v2 expected_queries are now indexed as retrieval anchors; service-locator expected:4 recovered to final rank 1."
     }
   },
   "cutover": {
     "approved_mode": "r3_remote_build_local_serve",
     "approved_at": "2026-05-02T16:26:20+09:00",
     "legacy_archive": "state/cs_rag_archive/v2_20260501T063445Z",
-    "previous_production_archive": "state/cs_rag_archive/pre_r3_20260502T072620Z",
+    "previous_production_archive": "state/cs_rag_archive/pre_r3_0c8fd9f_20260502T084447Z",
     "stale_attempt_retained": "state/cs_rag_lance_stale_20260501T061201Z",
     "rollback_runbook": "docs/runbooks/rag-rollback.md",
     "smoke": [
@@ -147,7 +158,9 @@
         "backend": "r3",
         "rag_ready": true,
         "hit_count": 3,
-        "latency_ms": 6082
+        "latency_ms": 11627,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "lexical_terms"
       },
       {
         "prompt": "RAG로 깊게 latency가 뭐야?",
@@ -155,7 +168,18 @@
         "backend": "r3",
         "rag_ready": true,
         "hit_count": 5,
-        "latency_ms": 13179,
+        "latency_ms": 19651,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar"
+      },
+      {
+        "prompt": "RAG로 깊게 컨테이너에서 직접 꺼내 쓰면 왜 위험해?",
+        "tier": 2,
+        "backend": "r3",
+        "rag_ready": true,
+        "hit_count": 5,
+        "latency_ms": 17590,
+        "first_path": "contents/design-pattern/service-locator-antipattern.md",
         "r3_sparse_source": "bge_m3_sparse_vec_sidecar"
       },
       {
@@ -164,9 +188,24 @@
         "backend": "r3",
         "rag_ready": true,
         "hit_count": 5,
-        "latency_ms": 808,
+        "latency_ms": 1169,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
         "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
         "r3_reranker_skip_reason": "policy_auto_sidecar_first_stage_gate"
+      },
+      {
+        "prompt": "RAG로 깊게 latency가 뭐야? --forced BGE reranker direct",
+        "tier": 2,
+        "backend": "r3",
+        "rag_ready": true,
+        "hit_count": 5,
+        "latency_ms": 24958,
+        "first_path": "contents/network/latency-bandwidth-throughput-basics.md",
+        "r3_sparse_source": "bge_m3_sparse_vec_sidecar",
+        "r3_reranker_enabled": true,
+        "r3_reranker_model": "BAAI/bge-reranker-v2-m3",
+        "rerank_input_window": 20,
+        "rerank_ms": 5380.51
       }
     ]
   },
