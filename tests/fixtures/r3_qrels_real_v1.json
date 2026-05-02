@@ -2319,6 +2319,480 @@
       "prompt": "Bean 라이프사이클 단계랑 컨테이너 내부 구조 둘 다 같은 거 다루는 거야?",
       "query_id": "confusable_pairs:bean_lifecycle_vs_container_internals:001",
       "rationale": "bean-lifecycle primer가 primary; container internals는 acceptable"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/connection-pool-basics.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/connection-pool-starvation-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "hikari_starvation"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/connection-pool-starvation-symptom-router.md"
+      ],
+      "prompt": "HikariPool에서 'Connection is not available, request timed out after 30000ms' 에러가 반복돼요",
+      "query_id": "symptom_to_cause:hikari_timeout_30s:001",
+      "rationale": "정확한 에러 메시지 → starvation router로 라우팅"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/connection-pool-starvation-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "starvation_under_load"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/connection-pool-starvation-symptom-router.md"
+      ],
+      "prompt": "평소엔 멀쩡한데 트래픽이 늘면 응답 시간이 급격히 늘어요",
+      "query_id": "symptom_to_cause:traffic_spike_response_time:001",
+      "rationale": "트래픽 증가 → 풀 고갈 패턴"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/connection-pool-starvation-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "low_load_starvation"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/connection-pool-starvation-symptom-router.md"
+      ],
+      "prompt": "CPU도 DB도 한가한데 API 응답만 느리고 가끔 timeout이 나요",
+      "query_id": "symptom_to_cause:low_load_high_latency:001",
+      "rationale": "CPU/DB 한가한데 timeout → connection 누수/풀 고갈"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/transaction-case-studies"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "duplicate_payment_idempotency"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/transaction-case-studies.md"
+      ],
+      "prompt": "중복 결제 요청이 두 번 처리됐어요. 어디 트랜잭션 경계가 잘못된 거예요?",
+      "query_id": "symptom_to_cause:duplicate_payment:001",
+      "rationale": "중복 결제 = idempotency / atomicity 시나리오"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/lock-basics.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/transaction-case-studies"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "inventory_race"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/transaction-case-studies.md"
+      ],
+      "prompt": "재고가 1개 남았는데 두 요청이 동시에 성공해서 -1이 됐어요",
+      "query_id": "symptom_to_cause:inventory_race:001",
+      "rationale": "재고 동시성 = lock vs CAS vs serialization 시나리오"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/transaction-case-studies"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "partial_failure_atomicity"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/transaction-case-studies.md"
+      ],
+      "prompt": "포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요",
+      "query_id": "symptom_to_cause:partial_order_corrupt:001",
+      "rationale": "부분 실패 = atomicity boundary 결정 문제"
+    },
+    {
+      "acceptable_paths": [
+        "contents/security/auth-failure-response-401-403-404.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/forbidden-after-role-change-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "role_change_propagation"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/403-after-role-change-symptom-router.md"
+      ],
+      "prompt": "관리자 권한 부여 직후에도 사용자가 403 Forbidden을 받아요",
+      "query_id": "symptom_to_cause:role_change_403:001",
+      "rationale": "역할 변경 직후 403 = JWT TTL / 캐시 / role mapping"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/forbidden-after-role-change-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "session_token_caching"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/403-after-role-change-symptom-router.md"
+      ],
+      "prompt": "역할을 바꿨는데 로그아웃하고 다시 로그인해야만 권한이 반영돼요",
+      "query_id": "symptom_to_cause:relogin_required_for_role:001",
+      "rationale": "재로그인 필요 = JWT 캐싱 또는 SecurityContext 재발급 미실행"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/forbidden-after-role-change-symptom-router"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "stale_role_cache"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/security/403-after-role-change-symptom-router.md"
+      ],
+      "prompt": "DB user_roles는 바뀌었는데 API 호출 시 권한이 그대로예요",
+      "query_id": "symptom_to_cause:db_role_changed_api_old:001",
+      "rationale": "DB 변경 vs API 권한 = role cache or token claim drift"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/component-scan-failure-patterns"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "scan_boundary"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "prompt": "NoSuchBeanDefinitionException이 떠요. Bean을 못 찾는 거 같은데 왜죠?",
+      "query_id": "symptom_to_cause:no_such_bean_definition:001",
+      "rationale": "예외 메시지 → component scan failure playbook"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/component-scan-failure-patterns"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "multi_module_scan"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "prompt": "@SpringBootApplication이 있는데 다른 모듈의 Bean이 안 떠요",
+      "query_id": "symptom_to_cause:multi_module_bean_missing:001",
+      "rationale": "multi-module scan boundary"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/component-scan-failure-patterns"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "profile_conditional"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "prompt": "package 구조는 맞는데 특정 환경에서만 Bean이 사라져요",
+      "query_id": "symptom_to_cause:profile_dependent_bean_missing:001",
+      "rationale": "profile-conditional bean — scan 자체는 OK, conditional이 막음"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/self-invocation-proxy-misconception"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "self_invocation_transactional"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "prompt": "@Transactional이 붙었는데 같은 클래스 내부에서 호출하면 트랜잭션이 안 열려요",
+      "query_id": "symptom_to_cause:transactional_inner_call:001",
+      "rationale": "self-invocation 정확한 증상"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/self-invocation-proxy-misconception"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "self_invocation_async"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "prompt": "this.method() 호출하면 @Async가 동기처럼 실행돼요",
+      "query_id": "symptom_to_cause:async_acts_sync:001",
+      "rationale": "self-invocation은 @Async에도 동일"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/self-invocation-proxy-misconception"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "proxy_bypass_general"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "prompt": "프록시를 우회하니까 @Cacheable, @Validated 같은 기능이 안 먹어요",
+      "query_id": "symptom_to_cause:cacheable_validated_skipped:001",
+      "rationale": "self-invocation 일반 — 모든 proxy-based 기능 영향"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/cookie-failure-three-way-splitter"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "cookie_3way_split_diagnostic"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "prompt": "Application에는 쿠키가 있는데 서버 로그는 anonymous라고 떠요",
+      "query_id": "symptom_to_cause:cookie_present_but_anonymous:001",
+      "rationale": "쿠키 splitter chooser가 정확한 분기 doc"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/browser-401-vs-302-login-redirect-guide"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "redirect_302_after_api"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/browser-401-vs-302-login-redirect-guide.md"
+      ],
+      "prompt": "API 호출 후 갑자기 로그인 페이지 HTML로 redirect됐어요",
+      "query_id": "symptom_to_cause:browser_redirects_to_login_after_api_call:001",
+      "rationale": "401 vs 302 chooser가 정확한 분기 doc"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "security/fetch-credentials-vs-cookie-scope"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "credentials_include_no_cookie"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/fetch-credentials-vs-cookie-scope.md"
+      ],
+      "prompt": "credentials: 'include'를 줬는데도 cookie가 안 붙어요",
+      "query_id": "symptom_to_cause:fetch_credentials_omitted:001",
+      "rationale": "credentials chooser가 정확한 진단 doc"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/component-scan-failure-patterns"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "status_404_dispatch_or_bean"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-component-scan-failure-patterns.md"
+      ],
+      "prompt": "Spring에서 404가 나는데 컨트롤러는 분명히 등록돼 있어요",
+      "query_id": "symptom_to_cause:dispatcher_404_vs_bean_404:001",
+      "rationale": "404 / bean wiring confusion playbook"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "rollback_only_marker"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md"
+      ],
+      "prompt": "정상 흐름인데 'Transaction rolled back because it has been marked as rollback-only' 메시지가 떠요",
+      "query_id": "symptom_to_cause:rollback_only_on_existing_tx:001",
+      "rationale": "rollback-only 표시 = transaction propagation 문제 분기"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/replica-lag-read-after-write-strategies.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/replica-lag-read-after-write-strategies"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "stale_after_commit"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/cache-replica-split-read-inconsistency.md"
+      ],
+      "prompt": "분명 commit 후에 select했는데 옛날 값이 보여요",
+      "query_id": "symptom_to_cause:dirty_read_after_commit:001",
+      "rationale": "commit 직후 stale = replica lag / split read"
+    },
+    {
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/replica-lag-read-after-write-strategies"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "list_view_staleness"
+      ],
+      "intent": "symptom",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/cache-replica-split-read-inconsistency.md"
+      ],
+      "prompt": "저장은 됐는데 목록 화면에는 옛날 데이터가 그대로 보여요",
+      "query_id": "symptom_to_cause:list_view_stale_after_save:001",
+      "rationale": "list view stale = projection freshness / read-after-write"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "lock_wait_intermittent"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/lock-timeout-blocker-first-check-mini-card.md"
+      ],
+      "prompt": "특정 시간대에만 'Lock wait timeout exceeded' 에러가 자주 떠요",
+      "query_id": "symptom_to_cause:lock_wait_timeout_random:001",
+      "rationale": "lock wait timeout 단편적 — blocker 진단 카드 primary"
+    },
+    {
+      "acceptable_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "cohort_tag": "symptom_to_cause",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "symptom_routing",
+        "index_lock_order_change"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/deadlock-case-study.md"
+      ],
+      "prompt": "인덱스 추가 직후 deadlock이 자주 나요",
+      "query_id": "symptom_to_cause:deadlock_after_index_change:001",
+      "rationale": "인덱스 변경 → lock 순서 변경 → deadlock case study"
     }
   ],
   "schema_version": 1
