@@ -174,6 +174,61 @@ def test_build_lance_index_streams_lancedb_writes_in_batches(tmp_path):
     assert indexer.open_lance_table(index_root).count_rows() == expected_count
 
 
+def test_build_lance_index_persists_corpus_v2_metadata_columns(tmp_path):
+    corpus_root = tmp_path / "corpus"
+    path = corpus_root / "contents" / "spring" / "di-basics.md"
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        """---
+schema_version: 2
+title: "DI Basics"
+concept_id: "spring/di-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - DI
+  - dependency injection
+  - 의존성 주입
+expected_queries:
+  - DI가 뭐야?
+---
+
+# DI Basics
+
+retrieval-anchor-keywords: new 대신 주입, 객체 조립
+
+## Primer
+
+This section is intentionally long enough to survive chunking and explain
+why dependency injection makes object construction explicit in beginner code.
+""",
+        encoding="utf-8",
+    )
+    index_root = tmp_path / "index"
+
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeMultiModalEncoder(),
+    )
+
+    rows = indexer.open_lance_table(index_root).to_pandas().to_dict("records")
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["concept_id"] == "spring/di-basics"
+    assert row["doc_role"] == "primer"
+    assert row["level"] == "beginner"
+    assert json.loads(row["anchors"]) == [
+        "DI",
+        "dependency injection",
+        "의존성 주입",
+        "new 대신 주입",
+        "객체 조립",
+    ]
+    assert "schema_version" not in row["body"]
+
+
 def test_build_lance_index_replaces_previous_table_and_manifest(tmp_path):
     corpus_root = _fake_corpus(tmp_path)
     index_root = tmp_path / "index"

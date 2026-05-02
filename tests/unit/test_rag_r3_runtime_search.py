@@ -177,6 +177,9 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
                     "title": "Latency",
                     "category": "network",
                     "difficulty": "beginner",
+                    "concept_id": "network/latency",
+                    "doc_role": "primer",
+                    "level": "beginner",
                     "section_path": '["Latency", "Primer"]',
                     "body": "latency bandwidth throughput",
                     "search_terms": "latency 지연 처리량",
@@ -209,6 +212,9 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
         "title",
         "category",
         "difficulty",
+        "concept_id",
+        "doc_role",
+        "level",
         "section_path",
         "body",
         "search_terms",
@@ -222,6 +228,9 @@ def test_r3_lance_runtime_loader_reads_lightweight_columns(monkeypatch, tmp_path
     assert documents[0].metadata["index_backend"] == "lance"
     assert documents[0].metadata["body"] == "latency bandwidth throughput"
     assert documents[0].metadata["aliases"] == ("latency", "지연")
+    assert documents[0].metadata["concept_id"] == "network/latency"
+    assert "doc_role:primer" in documents[0].signals
+    assert "level:beginner" in documents[0].signals
 
 
 def test_r3_lance_sparse_sidecar_omits_body_for_full_sparse_scan(
@@ -271,6 +280,9 @@ def test_r3_lance_sparse_sidecar_omits_body_for_full_sparse_scan(
         "title",
         "category",
         "difficulty",
+        "concept_id",
+        "doc_role",
+        "level",
         "section_path",
         "search_terms",
         "anchors",

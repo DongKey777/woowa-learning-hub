@@ -113,6 +113,26 @@ def _dense_query_vector(value: Any) -> list[float] | None:
         return None
 
 
+def _lance_table_column_names(table) -> set[str] | None:
+    try:
+        schema = getattr(table, "schema", None)
+        if callable(schema):
+            schema = schema()
+        names = getattr(schema, "names", None)
+        if names is not None:
+            return {str(name) for name in names}
+    except Exception:
+        return None
+    return None
+
+
+def _select_existing_columns(table, columns: list[str]) -> list[str]:
+    names = _lance_table_column_names(table)
+    if names is None:
+        return columns
+    return [column for column in columns if column in names]
+
+
 def _records_from_lance_table(
     table,
     *,
@@ -126,22 +146,36 @@ def _records_from_lance_table(
         "title",
         "category",
         "difficulty",
+        "concept_id",
+        "doc_role",
+        "level",
         "section_path",
         "search_terms",
         "anchors",
         "sparse_vec",
     ]
     if not sparse_sidecar:
-        columns.insert(6, "body")
+        columns.insert(columns.index("search_terms"), "body")
     if query:
         search = table.search(query, query_type="fts")
         if limit is not None:
             search = search.limit(limit)
         return search.to_list()
+    selected_columns = _select_existing_columns(table, columns)
     try:
-        frame = table.to_pandas(columns=columns)
+        frame = table.to_pandas(columns=selected_columns)
     except TypeError:
         frame = table.to_pandas()
+    except Exception:
+        legacy_columns = [
+            column
+            for column in columns
+            if column not in {"concept_id", "doc_role", "level"}
+        ]
+        try:
+            frame = table.to_pandas(columns=_select_existing_columns(table, legacy_columns))
+        except TypeError:
+            frame = table.to_pandas()
     return frame.to_dict("records")
 
 
@@ -204,6 +238,14 @@ def load_lance_documents(
         section_title = section_path[-1] if section_path else ""
         sparse_terms = _parse_sparse_terms(row)
         category = str(row.get("category") or "unknown")
+        concept_id = str(row.get("concept_id") or "")
+        doc_role = str(row.get("doc_role") or "")
+        level = str(row.get("level") or "")
+        signals = [f"category:{category}"]
+        if doc_role:
+            signals.append(f"doc_role:{doc_role}")
+        if level:
+            signals.append(f"level:{level}")
         documents.append(
             R3Document(
                 path=str(row.get("path") or ""),
@@ -213,10 +255,13 @@ def load_lance_documents(
                 body=str(row.get("body") or ""),
                 aliases=anchors,
                 sparse_terms=sparse_terms,
-                signals=(f"category:{category}",),
+                signals=tuple(signals),
                 metadata={
                     "category": category,
                     "difficulty": row.get("difficulty"),
+                    "concept_id": concept_id or None,
+                    "doc_role": doc_role or None,
+                    "level": level or None,
                     "index_backend": "lance",
                     "body": str(row.get("body") or ""),
                     "aliases": anchors,
@@ -321,6 +366,9 @@ def load_runtime_dense_candidates(
         section_path = _parse_json_list(row.get("section_path"))
         section_title = section_path[-1] if section_path else ""
         category = str(row.get("category") or "unknown")
+        concept_id = str(row.get("concept_id") or "")
+        doc_role = str(row.get("doc_role") or "")
+        level = str(row.get("level") or "")
         path = str(row.get("path") or "")
         if not path:
             continue
@@ -337,6 +385,9 @@ def load_runtime_dense_candidates(
                     "document": {
                         "category": category,
                         "difficulty": row.get("difficulty"),
+                        "concept_id": concept_id or None,
+                        "doc_role": doc_role or None,
+                        "level": level or None,
                         "index_backend": "lance",
                         "body": str(row.get("body") or ""),
                         "aliases": anchors,

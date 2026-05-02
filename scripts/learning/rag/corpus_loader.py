@@ -45,6 +45,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterator
 
+from scripts.learning.rag.corpus_lint import parse_frontmatter
+
 DEFAULT_CORPUS_ROOT = Path("knowledge/cs")
 CONTENTS_DIR = "contents"
 
@@ -55,6 +57,7 @@ H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 H3_RE = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 DETAILS_RE = re.compile(r"<details>.*?</details>", re.DOTALL | re.IGNORECASE)
+FRONTMATTER_RE = re.compile(r"\A---\s*\n.*?\n---\s*\n", re.DOTALL)
 HEADING_START_RE = re.compile(r"^#{1,6}\s+", re.IGNORECASE)
 RETRIEVAL_ANCHOR_SECTION_RE = re.compile(
     r"^###\s+(?:\d+\.\s*)?retrieval anchors\s*$",
@@ -96,6 +99,9 @@ class CorpusChunk:
     char_len: int = 0
     anchors: list[str] = field(default_factory=list)
     difficulty: str | None = None  # "beginner"|"intermediate"|"advanced"|"expert"|None
+    concept_id: str | None = None
+    doc_role: str | None = None
+    level: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -110,6 +116,9 @@ class CorpusChunk:
             "char_len": self.char_len,
             "anchors": list(self.anchors),
             "difficulty": self.difficulty,
+            "concept_id": self.concept_id,
+            "doc_role": self.doc_role,
+            "level": self.level,
         }
 
 
@@ -134,6 +143,45 @@ def _doc_title(text: str, fallback: str) -> str:
 
 def _strip_navigation(text: str) -> str:
     return DETAILS_RE.sub("", text)
+
+
+def _strip_frontmatter(text: str) -> str:
+    return FRONTMATTER_RE.sub("", text, count=1)
+
+
+def _frontmatter_string(frontmatter: dict | None, key: str) -> str | None:
+    if not frontmatter:
+        return None
+    value = frontmatter.get(key)
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _frontmatter_list(frontmatter: dict | None, key: str) -> list[str]:
+    if not frontmatter:
+        return []
+    value = frontmatter.get(key)
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if isinstance(item, str) and item.strip()]
+
+
+def _dedupe_phrases(*groups: list[str]) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for group in groups:
+        for raw in group:
+            phrase = re.sub(r"\s+", " ", raw.strip())
+            if not phrase:
+                continue
+            key = phrase.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(phrase)
+    return out
 
 
 def _split_sections(text: str) -> list[tuple[str, str]]:
@@ -320,10 +368,15 @@ def _emit_chunks(
     sections: list[tuple[str, str]],
     retrieval_anchors: list[str] | None = None,
     difficulty: str | None = None,
+    concept_id: str | None = None,
+    doc_role: str | None = None,
+    level: str | None = None,
+    frontmatter_aliases: list[str] | None = None,
 ) -> Iterator[CorpusChunk]:
     anchor_suffix = ""
     if retrieval_anchors:
         anchor_suffix = "\n\n[retrieval anchors] " + " | ".join(retrieval_anchors)
+    document_aliases = _dedupe_phrases(frontmatter_aliases or [], retrieval_anchors or [])
     counter = 0
     for h2, body in sections:
         pieces: list[tuple[list[str], str]] = []
@@ -345,6 +398,7 @@ def _emit_chunks(
                 continue
             section_title = section_path[-1] if len(section_path) > 1 else ""
             final_body = chunk_body + anchor_suffix
+            chunk_anchors = _dedupe_phrases(_extract_anchors(chunk_body), document_aliases)
             yield CorpusChunk(
                 doc_id=doc_id,
                 chunk_id=f"{doc_id}#{counter}",
@@ -355,8 +409,11 @@ def _emit_chunks(
                 section_path=section_path,
                 body=final_body,
                 char_len=len(final_body),
-                anchors=_extract_anchors(chunk_body),
+                anchors=chunk_anchors,
                 difficulty=difficulty,
+                concept_id=concept_id,
+                doc_role=doc_role,
+                level=level,
             )
             counter += 1
 
@@ -379,6 +436,8 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             text = md_path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             continue
+        frontmatter = parse_frontmatter(text)
+        text = _strip_frontmatter(text)
         text = _strip_navigation(text)
         if not text.strip():
             continue
@@ -388,7 +447,7 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
         doc_id = hashlib.sha1(str(relpath.as_posix()).encode("utf-8")).hexdigest()[:16]
         sections = _split_sections(text)
         retrieval_anchors = _extract_retrieval_anchors(text)
-        difficulty = _extract_difficulty(text)
+        difficulty = _frontmatter_string(frontmatter, "difficulty") or _extract_difficulty(text)
         yield from _emit_chunks(
             doc_id=doc_id,
             path=relpath.as_posix(),
@@ -397,6 +456,10 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             sections=sections,
             retrieval_anchors=retrieval_anchors,
             difficulty=difficulty,
+            concept_id=_frontmatter_string(frontmatter, "concept_id"),
+            doc_role=_frontmatter_string(frontmatter, "doc_role"),
+            level=_frontmatter_string(frontmatter, "level"),
+            frontmatter_aliases=_frontmatter_list(frontmatter, "aliases"),
         )
 
 

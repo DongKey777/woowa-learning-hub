@@ -139,6 +139,53 @@ Retrieval anchors: `gamma`, delta
         for chunk in chunks:
             self.assertIn(suffix, chunk.body)
 
+    def test_iter_corpus_promotes_v2_frontmatter_into_chunk_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            doc = root / "contents" / "spring" / "di-basics.md"
+            doc.parent.mkdir(parents=True)
+            doc.write_text(
+                """---
+schema_version: 2
+title: "DI Basics"
+concept_id: "spring/di-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - DI
+  - dependency injection
+  - 의존성 주입
+expected_queries:
+  - DI가 뭐야?
+---
+
+# DI Basics
+
+retrieval-anchor-keywords: new 대신 주입, 객체 조립
+
+## Primer
+
+This section is intentionally long enough to survive chunking and explain
+why dependency injection makes object construction explicit in beginner code.
+""",
+                encoding="utf-8",
+            )
+
+            chunks = list(corpus_loader.iter_corpus(root))
+
+        self.assertEqual(len(chunks), 1)
+        chunk = chunks[0]
+        self.assertNotIn("schema_version", chunk.body)
+        self.assertEqual(chunk.concept_id, "spring/di-basics")
+        self.assertEqual(chunk.doc_role, "primer")
+        self.assertEqual(chunk.level, "beginner")
+        self.assertEqual(chunk.difficulty, "beginner")
+        self.assertEqual(
+            chunk.anchors,
+            ["DI", "dependency injection", "의존성 주입", "new 대신 주입", "객체 조립"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
