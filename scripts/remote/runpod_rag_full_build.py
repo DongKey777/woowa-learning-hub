@@ -72,7 +72,14 @@ DEFAULT_MODALITIES_PER_PHASE = {
     "r4": ("fts", "dense", "sparse"),  # rerank-only, build reuses R3 stack
 }
 
-R3_QREL_PATH = "reports/rag_eval/r3_corpus_v2_qrels_20260502T0757Z.json"
+# R3 qrel fixture used as the manifest's qrel-hash reference. Updated
+# 2026-05-03 from the legacy r3_corpus_v2_qrels_20260502T0757Z.json
+# (deleted; circular-leak baseline) to the Phase 4.7 v1 200-query
+# suite covering all 6 cohorts (paraphrase_human / confusable_pairs /
+# symptom_to_cause / mission_bridge / corpus_gap_probe /
+# forbidden_neighbor). The path must exist on the remote pod after
+# `git checkout` for the manifest sha256 step to succeed.
+R3_QREL_PATH = "tests/fixtures/r3_qrels_real_v1.json"
 
 
 # ---------------------------------------------------------------------------
