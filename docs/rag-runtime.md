@@ -70,7 +70,7 @@ Rerank policy:
 - one-shot full: 23.34s wall, `hits.meta.latency_ms=22162`
 - same-process warm full with 50-pair rerank: 6.1-6.9s
 - daemon full with 50-pair rerank: first request 18.9s, warm requests 6.2-6.9s
-- local M5 window profile: 20-pair rerank warmed at about 3.4-3.8s on the
+- local M4 window profile: 20-pair rerank warmed at about 3.4-3.8s on the
   three mixed Korean/English smoke prompts
 - 100q Corpus v2 gate with 20-pair local rerank preserved
   `final_hit_relevant@5=1.0`, `forbidden_rate@5=0`, and
@@ -95,15 +95,27 @@ Rerank policy:
   The learner-facing daemon smoke showed 12.30s for the first request and
   476ms for the warm request, with runtime JSON exposing policy, skip reason,
   sidecar presence, and stage timing.
-- 2026-05-02 production R3 artifact
-  `r3-0c8fd9f-2026-05-02T0827` is the current selected artifact: remote-built
-  on RunPod L40S, imported into local `state/cs_rag`, `row_count=27158`, and
-  strict R3 verified. The 208q production gate reports candidate and final
-  primary/relevant hit/recall at 5/20/50/100 as `1.0` overall, Korean, and
-  mixed, with `forbidden_rate@5=0`. Local smoke returned 1169ms for the warm
-  daemon full request. A forced direct `BAAI/bge-reranker-v2-m3` run verified
-  the quality path, with 24958ms total latency and 5380.51ms rerank time for
-  20 pairs.
+- 2026-05-02 final R3 selection:
+  `r3-61216f2-2026-05-02T0937` is the selected remote-built index artifact:
+  remote-built on RunPod, imported into local `state/cs_rag`, `row_count=27158`,
+  `corpus_hash=c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb`,
+  and strict R3 verified with `--verify-import`. The runtime commit
+  `788ee99e67b7131e647684592d53bd268eef93f0` serves this index with fusion v2.
+  The final 208q production gate
+  `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1052Z.summary.json`
+  reports candidate and final primary/relevant hit/recall at 5/20/50/100 as
+  `1.0` overall, Korean, and mixed, with `forbidden_rate@5=0`. Local smoke
+  `reports/rag_eval/r3_61216f2_runtime_788ee99_local_smoke_20260502T1059Z.json`
+  returned 1020ms for the second warm daemon full request. A forced direct
+  `BAAI/bge-reranker-v2-m3` run verified the quality path, with 28067ms total
+  latency and 6304.254ms rerank time for 20 pairs.
+- 2026-05-02 rollback refresh:
+  `state/cs_rag_archive/v2_current_20260502T1101Z` is the current-corpus legacy
+  v2 MiniLM + SQLite/NPZ rollback index. Smoke report
+  `reports/rag_eval/r3_legacy_rollback_current_corpus_smoke_20260502T1104Z.json`
+  shows `indexer.is_ready()` as `ready`. The older
+  `state/cs_rag_archive/v2_20260501T063445Z` remains preserved for historical
+  comparison but is stale against the expanded corpus.
 
 Therefore R3 local default rerank policy is `auto`; the local default rerank
 window remains 20 pairs when reranking is forced or when the sidecar is absent.

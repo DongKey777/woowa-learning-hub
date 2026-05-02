@@ -1318,7 +1318,7 @@ class RunPodHarness:
                 "--qrel-hash",
                 f"\"{R3_QREL_PATH}:sha256:$(sha256sum {R3_QREL_PATH} | awk '{{print $1}}')\"",
                 "--local-runtime-machine",
-                shlex.quote("M5 MacBook Air 13"),
+                shlex.quote("M4 MacBook Air 13"),
                 "--local-runtime-memory-gb",
                 "16",
                 "--local-runtime-accelerator",

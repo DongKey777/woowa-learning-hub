@@ -7,8 +7,8 @@ identifies *candidates*.
 
 Pure algorithmic core: takes pre-computed embeddings and returns
 ``DedupePair`` triples. The corpus_lint integration layer
-(``corpus_dedupe_runner``) loads ``state/cs_rag/dense.npz`` +
-SQLite chunk metadata and calls this. Keeping the algorithm
+(``corpus_dedupe_runner``) loads either the production LanceDB v3 table or an
+archived legacy SQLite/NPZ index and calls this. Keeping the algorithm
 embedding-source-agnostic lets tests use synthetic vectors.
 
 ## Granularity
@@ -146,7 +146,7 @@ def find_near_duplicate_pairs(
     normed = _normalize_rows(doc_means)
 
     # Pairwise cosine via single matmul. For 2K docs at 1024-dim this
-    # is a 2K×2K matrix = ~16MB — fine even on M5 16GB. For 100K+ docs
+    # is a 2K×2K matrix = ~16MB — fine even on M4 16GB. For 100K+ docs
     # we'd switch to a streaming approach, but P5.4 corpus is small.
     sims = normed @ normed.T  # shape (M, M)
     M = len(unique_paths)

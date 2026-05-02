@@ -59,33 +59,44 @@ Implementation update after R3 spike:
 
 - Backend decision: `docs/worklogs/rag-r3-backend-decision-2026-05-02.md`.
 - First production candidate is now LanceDB-improved R3, not Qdrant:
-  LanceDB v3 artifact + BGE-M3 dense retrieval + BGE-M3 sparse first-stage
-  sidecar + metadata lexical sidecar + signal retriever + deterministic fusion
-  + sidecar-first `auto` rerank policy.
-- Qdrant remains a measured comparator. The 100q local-mode spike reached
-  `candidate_recall_primary@100=1.0`, but local mode warned above 20,000
-  points, RSS peak reached 3398.422MB, sparse query p95 was 302.123ms, and
-  Korean-only relevant@5 trailed the selected R3 path.
-- `BAAI/bge-reranker-v2-m3` remains the target quality reranker. Local
-  interactive default is now `WOOWA_RAG_R3_RERANK_POLICY=auto`: force the BGE
-  reranker for quality investigation or suspected ranking failures. The local
-  default skips it when the verified metadata lexical sidecar is loaded and the
-  208q production gate stays green.
-- Cutover artifact: `r3-0c8fd9f-2026-05-02T0827`, built on RunPod L40S from
-  commit `0c8fd9f1bef5c3dd5b0bdd7a420bf5f60668d2ed`, imported into local
+  remote-built LanceDB v3 artifact + BGE-M3 dense retrieval + BGE-M3 sparse
+  first-stage sidecar + metadata lexical sidecar + signal retriever +
+  deterministic fusion v2 + sidecar-first `auto` rerank policy.
+- Selected artifact: `r3-61216f2-2026-05-02T0937`, built remotely from commit
+  `61216f25cc219bae945cbc49d7c06bb7d2f9d5be`, imported into local
   `state/cs_rag`, and selected in `config/rag_models.json`.
+- Runtime overlay: current runtime commit
+  `788ee99e67b7131e647684592d53bd268eef93f0` serves the verified `61216f2`
+  index with fusion v2. The later runtime changes affect fusion weighting and
+  remote harness robustness, not the selected index payload inputs.
+- Strict artifact gate:
+  `.venv/bin/python -m scripts.remote.artifact_contract artifacts/rag-full-build/r3-61216f2-2026-05-02T0937 --strict-r3 --verify-import`
+  passes with archive sha256
+  `5eab5b0fb9def8c0c58370eb64abbbbf6fb195c95bc6d4376832c654c3a78e0d`.
 - Expanded qrel gate:
-  `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json`
+  `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1052Z.summary.json`
   reports candidate and final primary/relevant hit/recall at 5/20/50/100 as
   `1.0` overall and for Korean/mixed-language cohorts, with `forbidden_rate@5=0`.
-- Root-cause closure: Corpus v2 `expected_queries` are now indexed as
-  retrieval-contract anchors and chunk body phrases. The previously failing
-  service-locator query `컨테이너에서 직접 꺼내 쓰면 왜 위험해?` is now recovered
-  to final rank 1.
+- Root-cause closure: dense embedding text is separated from retrieval anchors,
+  and Corpus v2 aliases/expected-query anchors are trusted through
+  `lexical_sidecar:aliases` fusion v2 instead of polluting dense vectors. The
+  previously failing service-locator query `컨테이너에서 직접 꺼내 쓰면 왜 위험해?`
+  is recovered to final rank 1 in the final gate and local smoke.
 - Local smoke:
-  `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` verifies
-  sparse sidecar discovery, daemon warm full latency of 1169ms, and a forced
+  `reports/rag_eval/r3_61216f2_runtime_788ee99_local_smoke_20260502T1059Z.json`
+  verifies cheap/full/direct mixed-Korean queries, BGE-M3 sparse sidecar
+  discovery, daemon warm full latency of 1020ms, and a forced
   `BAAI/bge-reranker-v2-m3` path with 20-pair reranking.
+- Rollback smoke:
+  `reports/rag_eval/r3_legacy_rollback_current_corpus_smoke_20260502T1104Z.json`
+  verifies a current-corpus legacy v2 MiniLM + SQLite/NPZ archive at
+  `state/cs_rag_archive/v2_current_20260502T1101Z` with `ready` status.
+- RunPod note: latest-HEAD rebuild attempts after `61216f2` were SSH-confirmed
+  on L40S/A6000 GPUs but provider pods vanished mid-build or mid-transfer.
+  Commits `a535981` and `788ee99` harden archive resume and fail-fast pod-loss
+  detection. The selected artifact remains the successful remote-built
+  production index until a stable/dedicated remote provider is used for the next
+  index-affecting rebuild.
 
 ## Current System Facts
 
@@ -468,8 +479,8 @@ Non-negotiable behavior:
 - Sparse retrieval must be able to return a document absent from lexical+dense candidates.
 - Reranking must never be hard-coded to `top_k * 2`; the input window is a profile setting.
 - Local production reranking assumes Apple Silicon MPS and fp16/bf16-capable model loading. CPU-only operation is a degraded mode, not the target serving configuration.
-- On the learner's M5 16GB machine, the default rerank input window is 20 pairs after the 2026-05-01 100q Corpus v2 gate preserved `final_hit_relevant@5=1.0`, `forbidden_rate@5=0`, and `lost_top20_rate=0` against the earlier 50-pair profile. 50-pair local reranking remains an explicit profiling mode; 100-pair reranking is reserved for offline evaluation.
-- Heavy index/model-build work runs on remote GPU infrastructure. The resulting artifacts must be reproducible, manifest-versioned, and usable on the learner's local M5 machine without requiring local rebuild.
+- On the learner's M4 16GB machine, the default rerank input window is 20 pairs after the 2026-05-01 100q Corpus v2 gate preserved `final_hit_relevant@5=1.0`, `forbidden_rate@5=0`, and `lost_top20_rate=0` against the earlier 50-pair profile. 50-pair local reranking remains an explicit profiling mode; 100-pair reranking is reserved for offline evaluation.
+- Heavy index/model-build work runs on remote GPU infrastructure. The resulting artifacts must be reproducible, manifest-versioned, and usable on the learner's local M4 machine without requiring local rebuild.
 - Fusion must preserve retriever provenance so later analysis can say which retriever found or missed the primary.
 - Context expansion cannot displace the primary answer document; it only adds companions.
 - A workaround-only fix cannot close an R3 ticket. Any observed failure must be traced to a root cause class and fixed at that layer, with a regression check that would fail before the fix.
@@ -528,7 +539,7 @@ Target model stack:
 | reranker | `BAAI/bge-reranker-v2-m3` | `gte-multilingual-reranker-base`, `mmarco`; `mxbai` only for English-only experiments | Korean-strong target reranker with language-aware operational fallback |
 | late interaction | BGE-M3/ColBERT-style multivector | disabled | only after candidate recall and latency are acceptable |
 
-The reranker decision is target-first: `bge-reranker-v2-m3` is the R3 default unless M5 memory/latency measurements force fallback. Fallback is language-aware: Korean and mixed queries must fall back to a multilingual model or the current multilingual `mmarco`, not to an English-focused reranker. `mxbai-rerank-base-v1` may remain as an English-only low-memory experiment, but it is not a safe Korean fallback.
+The reranker decision is target-first: `bge-reranker-v2-m3` is the R3 default unless M4 memory/latency measurements force fallback. Fallback is language-aware: Korean and mixed queries must fall back to a multilingual model or the current multilingual `mmarco`, not to an English-focused reranker. `mxbai-rerank-base-v1` may remain as an English-only low-memory experiment, but it is not a safe Korean fallback.
 
 ### R3 Eval Suite
 
@@ -857,7 +868,7 @@ Diagnostic work:
    - chunk/context representation: test contextual prefixes or separated anchor fields instead of appending anchors into every chunk body;
    - fixture bias/qrel incompleteness: verify whether retrieved documents are valid but unjudged.
 6. Patch or at least prove the reranker input-size path. Top-50 local and top-100 offline experiments are invalid until `top_n=top_k * 2` is replaced by a config-driven value.
-7. Run a local M5 feasibility probe for the target reranker and fallback chain: RSS peak, model load time, warm p95 for 50 pairs, CPU-only degraded behavior, and MPS/fp16 availability.
+7. Run a local M4 feasibility probe for the target reranker and fallback chain: RSS peak, model load time, warm p95 for 50 pairs, CPU-only degraded behavior, and MPS/fp16 availability.
 
 Implementation priority decision:
 
@@ -875,7 +886,7 @@ Done when:
 - the plan chooses first implementation track: `query_signal`, `korean_encoder_tokenizer`, `sparse_discovery`, `corpus_qrel`, or `full_fabric`;
 - candidate-recall symptom snapshots exist for legacy v2 and Lance v3 at `@20`, `@50`, and `@100`;
 - reranker-input experiments are either patched or explicitly deferred;
-- M5 runtime feasibility is recorded as a measurement artifact, not an estimate.
+- M4 runtime feasibility is recorded as a measurement artifact, not an estimate.
 
 ### Phase 0 - Freeze Snapshots And Rollback Anchor
 
@@ -1048,7 +1059,7 @@ Gate:
 
 - reranker improves or preserves primary rank on hard cohorts;
 - demotions are explainable and not concentrated in Korean/beginner buckets;
-- M5 16GB MPS warm p95 target is explicit before cutover. Provisional target: top-20 full R3 warm p95 <= accepted interactive budget and RSS peak <= accepted local budget; top-50 remains a profiling/quality comparator, not the local default.
+- M4 16GB MPS warm p95 target is explicit before cutover. Provisional target: top-20 full R3 warm p95 <= accepted interactive budget and RSS peak <= accepted local budget; top-50 remains a profiling/quality comparator, not the local default.
 
 ### Phase 6 - Corpus Expansion Waves
 
@@ -1069,7 +1080,7 @@ Required before cutover:
 - R3 production candidate passes the redesigned eval suite;
 - R3 candidate recall passes calibrated thresholds from validated qrels and hard cohorts;
 - rollback path tested;
-- remote-built index artifacts can be imported and served locally on the M5 target without local rebuild;
+- remote-built index artifacts can be imported and served locally on the M4 target without local rebuild;
 - cold/warm latency documented;
 - no cutover-blocking failure remains in "unknown root cause" state;
 - model cache and first-run protocol updated;
@@ -1084,8 +1095,8 @@ primary nDCG@10 >= calibrated_R3_threshold
 hit@10 >= calibrated_R3_threshold
 forbidden_rate@5 = 0
 hard_failures <= calibrated_R3_budget
-M5 16GB MPS warm p95 <= accepted budget
-M5 16GB RSS peak <= accepted budget
+M4 16GB MPS warm p95 <= accepted budget
+M4 16GB RSS peak <= accepted budget
 remote build artifact manifest verifies locally
 all phase verification artifacts exist
 no unresolved workaround-only fix is counted as pass
@@ -1148,7 +1159,7 @@ Tickets:
 | R3-012 | Reranker demotion metrics | `scripts/learning/rag/r3/eval/metrics.py` | demotion rate is reported by language/level/category |
 | R3-013 | Korean tokenization activation + targeted fix | `scripts/learning/rag/r3/query_plan.py`, `scripts/learning/rag/r3/index/lexical_store.py` | query-side Korean term generation is enabled, weighted, and verified against index-side fields |
 | R3-014 | Contextual chunk prefix experiment | `scripts/learning/rag/corpus_loader.py`, R3 index builder | anchors can be separated from dense body text |
-| R3-015 | M5 memory/latency profile | `reports/rag_eval/r3_reranker_profile_<timestamp>.json` | target reranker and fallback chain have MPS p95/RSS numbers or fallback decision is explicit |
+| R3-015 | M4 memory/latency profile | `reports/rag_eval/r3_reranker_profile_<timestamp>.json` | target reranker and fallback chain have MPS p95/RSS numbers or fallback decision is explicit |
 
 Week 3 gate:
 
@@ -1193,7 +1204,7 @@ Tickets:
 Weeks 5-6 gate:
 
 - backend decision includes quality, candidate recall, reranker demotion, forbidden rate, p95, RSS, rebuild time, and operational burden;
-- backend decision explicitly states Qdrant local/server viability on M5 16GB;
+- backend decision explicitly states Qdrant local/server viability on M4 16GB;
 - Vespa is only built in Phase 4b if Qdrant/Lance cannot satisfy the R3 gate proposal.
 
 ### Weeks 7-8 - Cutover Hardening
@@ -1252,7 +1263,7 @@ Learner data boundary:
 
 Serving:
 
-- hard local serving target: M5 MacBook Air 13-inch, 16GB unified memory, Apple Silicon MPS;
+- hard local serving target: M4 MacBook Air 13-inch, 16GB unified memory, Apple Silicon MPS;
 - build target: remote GPU instance such as RunPod L40S or equivalent. Build-time memory and compute are not constraints, but the artifact must satisfy the local serving constraints;
 - all target model profiling must record dtype, device, RSS peak, model load time, top-20 default rerank p50/p95, top-50 comparator p50/p95, and CPU-only degraded latency;
 - CPU-only serving is allowed as emergency/degraded mode only, not as the production target for `bge-reranker-v2-m3`;
@@ -1284,7 +1295,7 @@ Safety:
 | Risk | Impact | Mitigation |
 |---|---|---|
 | Carrying current defects into R3 | redesign preserves old failure modes | mandatory Phase -1 diagnostic and implementation-priority decision |
-| Target reranker does not fit local runtime | forced fallback damages Korean/mixed quality | M5 MPS p95/RSS gate and language-aware fallback policy |
+| Target reranker does not fit local runtime | forced fallback damages Korean/mixed quality | M4 MPS p95/RSS gate and language-aware fallback policy |
 | English-focused fallback handles Korean/mixed queries | regression versus current production | route Korean/mixed fallback to verified multilingual model or `mmarco`; use `mxbai` only for English-only experiments |
 | Qdrant runtime mode exceeds local budget | good backend design fails learner laptop serving | profile Qdrant local/server modes; fall back to Lance improved + sparse sidecar if needed |
 | Vespa operational complexity | slows delivery | treat Vespa as comparator unless Qdrant/Lance cannot meet gates |
@@ -1293,7 +1304,7 @@ Safety:
 | Multivector memory/latency | p95 regression | use as rerank-only first; disable HNSW where appropriate; hard-query gate |
 | Reranker demotes Korean/beginner docs | learner-facing regression | bucket demotion metrics; multilingual reranker A/B |
 | Reranker input experiment has no effect | false confidence in top-50/top-100 results | patch `top_k * 2` before reranker A/B |
-| Remote-built artifact fails locally | high-quality build cannot serve on learner machine | make remote-build manifest and M5 import smoke test a gate before backend lock-in |
+| Remote-built artifact fails locally | high-quality build cannot serve on learner machine | make remote-build manifest and M4 import smoke test a gate before backend lock-in |
 | Symptom-masking fix lands | regressions return under different queries | require root-cause classification, reproducer/trace, and regression check before closing the ticket |
 | Long-running implementation drifts | late discovery of broken quality/runtime behavior | verify after each ticket and commit only after verification evidence exists |
 | Qrels overfit current docs | false confidence | include acceptable/forbidden paths; mine disagreement queries |
@@ -1303,7 +1314,7 @@ Safety:
 
 1. Does the Phase -1 diagnostic split the plausible root causes enough to choose the first R3 implementation track?
 2. Should the first production spike be Qdrant + lexical sidecar or LanceDB-improved sparse sidecar?
-3. Which Qdrant runtime mode, if any, is acceptable on the M5 16GB local target?
+3. Which Qdrant runtime mode, if any, is acceptable on the M4 16GB local target?
 4. Under what measured result would Vespa's operational cost become justified for this local learning hub?
 5. Which Korean failure branch is most likely: encoder, query tokenization activation/weight, chunk/context representation, or fixture/qrel bias?
 6. What should the calibrated `candidate_recall@100` cutover threshold be after the redesigned qrel suite exists?
@@ -1315,11 +1326,11 @@ Safety:
 
 1. Execute Phase -1 diagnostic before backend implementation.
 2. Patch or explicitly defer reranker input configurability before any top-50/top-100 reranker experiment.
-3. Run the M5 reranker feasibility probe for `bge-reranker-v2-m3`, multilingual fallback, `mmarco`, and English-only `mxbai`.
+3. Run the M4 reranker feasibility probe for `bge-reranker-v2-m3`, multilingual fallback, `mmarco`, and English-only `mxbai`.
 4. Define the remote-build/local-serve artifact contract:
    - remote build command and environment capture,
    - manifest/checksum schema,
-   - local M5 import smoke command,
+   - local M4 import smoke command,
    - incompatible schema failure behavior.
 5. Create Phase 1 incremental trace tickets:
    - candidate recall symptom snapshots at `@20`, `@50`, `@100`,

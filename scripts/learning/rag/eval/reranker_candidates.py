@@ -5,7 +5,7 @@ component in the retrieval stack (after embedding). The current
 production reranker is from 2021; SOTA in 2026 is bge-reranker-v2-m3
 or jina-reranker-v2.
 
-Sizing constraints from this session's measured OOM events on M5 16GB:
+Sizing constraints from this session's measured OOM events on M4 16GB:
 - bge-reranker-v2-m3 (568M params, ~2.27GB fp32) stacked on a 1024-dim
   embedding (e5-base 5GB RSS, Qwen3 ~6GB) cannot coexist in 16GB
   unified memory. Trying causes the OOM-killer to take the process.

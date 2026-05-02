@@ -82,13 +82,13 @@ Korean is the dominant query language. Korean tokenization symmetry (kiwipiepy o
 
 Woowa mission concepts (`missions/roomescape`, `missions/shopping-cart`, etc.) are first-class metadata. A query that mentions a mission can hop to bridge docs that connect mission-specific terms to general CS concepts.
 
-### 1.9 P9 — Single-process serving on M5
+### 1.9 P9 — Single-process serving on M4
 
 The serving runtime fits within M4 MacBook Air 13" 16GB unified memory + MPS. Multi-process / multi-machine production is out of scope (no JVM service like Vespa, no Docker-only deps that break on Apple Silicon).
 
 ### 1.10 P10 — Reproducible builds via remote GPU
 
-Index builds run on RunPod L40S/A6000 with strict artifact provenance (sha256, manifest, contract verification). Builds are decoupled from local development (M5 only serves; never builds full index).
+Index builds run on RunPod L40S/A6000 with strict artifact provenance (sha256, manifest, contract verification). Builds are decoupled from local development (M4 only serves; never builds full index).
 
 ---
 
@@ -357,7 +357,7 @@ If `learner_profile.active_mission` is set:
 
 **Purpose**: semantic similarity, paraphrase recall.
 
-**Model default**: `BAAI/bge-m3` (1024-dim, 100+ languages, 8192-token context, MIT). fp16 on M5 MPS.
+**Model default**: `BAAI/bge-m3` (1024-dim, 100+ languages, 8192-token context, MIT). fp16 on M4 MPS.
 
 **Frontier candidates (Phase 7 A/B)**:
 - `Qwen/Qwen3-Embedding-0.6B` (up to 1024-dim with elastic 32-1024, 32K context, instruction-aware, Apache 2.0; **mandatory query prompt format**: `Instruct: {task}\nQuery: {q}` — 1-5% performance drop without)
@@ -437,7 +437,7 @@ If `learner_profile.active_mission` is set:
 **Model**: `BAAI/bge-m3` ColBERT mode output (multi-vector per chunk).
 
 **Implementation challenge**: ColBERT MaxSim retrieval is expensive (per-token comparison). For our 27K chunk corpus:
-- Chunk vectors: 27K × ~200 tokens × 1024 dim × fp16 = ~22GB raw → too large for M5
+- Chunk vectors: 27K × ~200 tokens × 1024 dim × fp16 = ~22GB raw → too large for M4
 - **Solution**: ColBERT used as *retrieval channel* only for queries flagged as "hard" by Phase 7 measurement; uses sidecar PLAID-style index built once on RunPod.
 - Default mode: rescore over top 50 from other retrievers (cheaper).
 
@@ -558,7 +558,7 @@ Auto-skip is allowed only in:
 
 ### 6.4 Latency expectation
 
-`bge-reranker-v2-m3` on M5 MPS, fp16, 50 pairs:
+`bge-reranker-v2-m3` on M4 MPS, fp16, 50 pairs:
 - Warm: 150–400ms (depends on context length)
 - Cold first call: ~2–5s (model load)
 
@@ -780,7 +780,7 @@ CPU-only operation is documented as **degraded mode**:
 
 ## 11. Backend Matrix
 
-| Backend | Role | Strength | Risk | M5 fit |
+| Backend | Role | Strength | Risk | M4 fit |
 |---|---|---|---|---|
 | **LanceDB-improved** | Primary candidate | Lowest migration cost (current artifact reusable). Native dense + Tantivy FTS; sparse via sidecar inverted index. | Sparse retrieval requires custom sidecar (in-memory index for Pilot, persisted PLAID-style for full corpus). | ✓ fits 16GB |
 | **Qdrant + lexical sidecar** | Comparator | Native dense + sparse + multivector. Simpler vector engine ergonomics. | Lexical BM25 requires sidecar (Qdrant payload-filter ≠ BM25 ranking). 2-store sync complexity. | ✓ fits with embedded mode |
@@ -884,7 +884,7 @@ forbidden_rate@5                       == 0.0
 corpus_gap_false_confidence_rate       <= 0.10
 reranker_demotion_rate (Korean)        <= 0.10
 paraphrase_robustness_drop             <= 0.05
-p95 warm latency (M5 MPS)              <= 700 ms
+p95 warm latency (M4 MPS)              <= 700 ms
 cold start latency                     <= 10 s (HF_HUB_OFFLINE=1)
 ```
 
@@ -952,7 +952,7 @@ These are *production cutover* gates. Met → switch `selected_artifact` / `back
 | Decision | Rationale | Source |
 |---|---|---|
 | LanceDB-improved as primary candidate | lowest migration cost; native dense+FTS; sparse via sidecar | Plan Section 0, Phase 5 dependency |
-| `bge-reranker-v2-m3` as default reranker | Korean-strong, multilingual, Apache 2.0, M5 fp16 fit | Plan Section 1.4 |
+| `bge-reranker-v2-m3` as default reranker | Korean-strong, multilingual, Apache 2.0, M4 fp16 fit | Plan Section 1.4 |
 | Always-on reranker | paraphrase robustness (P5) | Plan Section 0 (auto-skip 폐기) |
 | `expected_queries` qrel-seed only | structural circular leak fix (commit 054a1a3) | Plan Section 1 |
 | 200q × 6 cohort Real qrel | decouple from current corpus shape | Plan Section 6 |
@@ -969,8 +969,8 @@ These are *production cutover* gates. Met → switch `selected_artifact` / `back
 1. Does ColBERT-as-retrieval-channel add primary docs that other retrievers miss in `paraphrase_human`? If yes → engage as 7th retriever; if no → keep as rescore only.
 2. Per-cohort fusion weight profile — initial values are estimates; calibrated by Pilot.
 3. CONFIDENCE_THRESHOLD for "not enough material" — calibrated on `corpus_gap_probe`.
-4. Reranker input window — 50 vs 30 vs 70 — calibrated on M5 latency budget vs recall trade-off.
-5. LateInteractionRetriever PLAID index size on M5 — feasibility check in Phase 5.
+4. Reranker input window — 50 vs 30 vs 70 — calibrated on M4 latency budget vs recall trade-off.
+5. LateInteractionRetriever PLAID index size on M4 — feasibility check in Phase 5.
 
 ---
 
@@ -1015,12 +1015,12 @@ This section records *direct verification* of every claim in the spec against (a
 | kiwipiepy warm tokenize latency (Korean query) | 100 query benchmark, 5 warm-ups | **0.036 ms / query** (3.6 ms total for 100) |
 | kiwipiepy production-fit (target ≤ 5 ms / query) | derived | ✓ comfortable headroom |
 | Apple Silicon = arm64 architecture | `uname -m` | arm64 |
-| Hardware = Apple M4 (not M5 as earlier spec claimed) | `sysctl machdep.cpu.brand_string` | ✓ M4 confirmed (spec corrected) |
+| Hardware = Apple M4 (not M4 as earlier spec claimed) | `sysctl machdep.cpu.brand_string` | ✓ M4 confirmed (spec corrected) |
 | Python 3.12.12 in .venv | `.venv/bin/python --version` | ✓ |
 
 ### 18.5.3 Spec corrections from verification (changelog from initial v1 draft)
 
-1. Hardware: M5 → **M4** (actual chip is M4)
+1. Hardware: M4 → **M4** (actual chip is M4)
 2. bge-reranker-v2-m3 params: 568M → **600M (0.6B)**
 3. Qwen3-Reranker: 1.5B → **0.6B / 4B / 8B series** (no 1.5B)
 4. mxbai-rerank-base-v1: DeBERTa-v3 → **DeBERTa-v2**, 200M params
@@ -1056,7 +1056,7 @@ These uncertainties are documented to keep the spec audit-honest. Phase 5 implem
 
 ## 19. Verdict
 
-This spec defines the system the **ideal corpus** would deserve. It does not optimize against the current corpus; it does not chase the legacy v2 baseline; it does not gate on circular qrel measurements. It is Korean-first, learner-first, paraphrase-robust, mission-aware, honest about gaps, and runs on the learner's M5 + MPS within 700ms warm.
+This spec defines the system the **ideal corpus** would deserve. It does not optimize against the current corpus; it does not chase the legacy v2 baseline; it does not gate on circular qrel measurements. It is Korean-first, learner-first, paraphrase-robust, mission-aware, honest about gaps, and runs on the learner's M4 + MPS within 700ms warm.
 
 The corpus is brought into compliance via `rag-r3-corpus-v3-contract.md`. The Real qrel suite (`tests/fixtures/r3_qrels_real_v1.json`) measures whether the spec is met. Phase 6 establishes the Pilot baseline; Phase 7 selects frontier models against it; Phase 8 promotes Wave-migrated full corpus; Phase 10 cutovers production when full-corpus gates are met.
 

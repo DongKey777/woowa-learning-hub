@@ -71,7 +71,7 @@ class R3Config:
     """Typed knobs for R3 experiments.
 
     The local default rerank window is deliberately smaller than offline
-    evaluation.  The plan's hard runtime target is an M5 MacBook Air with 16GB
+    evaluation.  The plan's hard runtime target is an M4 MacBook Air with 16GB
     unified memory, so broad top-100 reranking must be opt-in.  The 20-pair
     default is backed by the 2026-05-01 100q Corpus v2 gate: final relevant@5
     and lost_top20_rate matched the earlier 50-pair local profile.

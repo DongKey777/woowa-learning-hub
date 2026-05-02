@@ -43,10 +43,10 @@ DEFAULT_MAX_BUCKET_REGRESSION = 0.05
 """No major bucket may regress more than -5% vs baseline (plan §P2.1)."""
 
 DEFAULT_MAX_P95_WARM_MS = 200.0
-"""Warm-query P95 latency budget on M5 MPS (plan §P2.1)."""
+"""Warm-query P95 latency budget on M4 MPS (plan §P2.1)."""
 
 DEFAULT_MAX_RSS_MB = 6144.0
-"""Total memory budget = 6 GB; safe margin on a 16 GB M5 Air after
+"""Total memory budget = 6 GB; safe margin on a 16 GB M4 Air after
 account for OS / IDE / browser baseline."""
 
 DEFAULT_PARETO_TOLERANCE = 0.02

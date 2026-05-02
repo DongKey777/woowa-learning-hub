@@ -1,20 +1,20 @@
 # R3 Backend Decision - 2026-05-02
 
-Decision: choose LanceDB-improved R3 as the first production candidate, keep
-legacy v2 as rollback, and keep Qdrant as a measured comparator rather than the
-local default.
+Decision: choose LanceDB-improved R3 as the first production candidate, keep a
+current-corpus legacy v2 index as rollback, and keep Qdrant as a measured
+comparator rather than the local default.
 
 ## Production Candidate
 
 The selected candidate is:
 
 ```text
-LanceDB v3 artifact
+remote-built LanceDB v3 artifact
 + BGE-M3 dense query retrieval
 + BGE-M3 sparse first-stage sidecar
-+ metadata lexical sidecar over title/section/aliases
++ metadata lexical sidecar over title/section/aliases/body
 + signal retriever
-+ deterministic RRF fusion preserving rich duplicate candidates
++ deterministic RRF fusion v2
 + sidecar-first auto rerank policy
 + optional forced BAAI/bge-reranker-v2-m3 quality path
 ```
@@ -22,27 +22,56 @@ LanceDB v3 artifact
 This preserves the fundamental R3 design: independent candidate generators,
 true sparse discovery, traceable fusion, calibrated qrels, and local-first
 serving. It does not treat the previous Lance v3 sparse-rescore behavior as
-sufficient; the sparse sidecar and metadata lexical sidecar are now separate
+sufficient; the sparse sidecar and metadata lexical sidecar are separate
 first-stage candidate sources.
+
+## Selected Artifact
+
+Selected remote index artifact:
+
+- run id: `r3-61216f2-2026-05-02T0937`
+- build commit: `61216f25cc219bae945cbc49d7c06bb7d2f9d5be`
+- runtime commit: `788ee99e67b7131e647684592d53bd268eef93f0`
+- archive: `artifacts/rag-full-build/r3-61216f2-2026-05-02T0937/cs_rag_index_root.tar.zst`
+- archive sha256: `5eab5b0fb9def8c0c58370eb64abbbbf6fb195c95bc6d4376832c654c3a78e0d`
+- row count: `27158`
+- corpus hash: `c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb`
+- lexical sidecar sha256: `8593b20f074d8d45f310b3f7a759004e727fa7ec71193b25c643bef830bb5934`
+
+Strict artifact verification:
+
+```bash
+.venv/bin/python -m scripts.remote.artifact_contract \
+  artifacts/rag-full-build/r3-61216f2-2026-05-02T0937 \
+  --strict-r3 --verify-import
+```
+
+Result: passed. The imported index root matches archive checksum, manifest
+metadata, `row_count`, `corpus_hash`, BGE-M3 model revision, and lexical sidecar
+checksum.
+
+Runtime overlay:
+
+- `61216f2` is the verified remote-built index payload.
+- `5d17c78` and later runtime commits changed fusion weighting and remote
+  harness behavior, not the selected index payload inputs.
+- Final runtime gate uses the imported `61216f2` index with current runtime
+  fusion v2 (`weighted-rrf-doc-diversity-v2`).
 
 ## Evidence
 
 | Area | Artifact | Result |
 |---|---|---|
-| Remote production artifact | `artifacts/rag-full-build/r3-0c8fd9f-2026-05-02T0827/artifact_contract.json` | strict R3 package built on RunPod L40S, local import verified, `row_count=27158`, `corpus_hash=c002a92b2b97033d5ff3f0a9c94d3c952586107337e3a07cd66e9c943643cacb` |
-| Production 208q gate | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json` | `candidate_recall_primary@5/20/50/100=1.0`, `candidate_recall_relevant@5/20/50/100=1.0`, final primary/relevant hits all `1.0`, Korean and mixed cohorts all `1.0`, `forbidden_rate@5=0` |
-| Root-cause regression check | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T0845Z.summary.json` | service-locator expected-query miss recovered to final rank 1 after indexing Corpus v2 `expected_queries` as retrieval anchors |
-| Local production smoke | `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` | default full `auto` uses BGE-M3 sparse sidecar, daemon warm request 1169ms, service-locator mixed Korean query returns `contents/design-pattern/service-locator-antipattern.md` first |
-| Forced BGE reranker smoke | `reports/rag_eval/r3_0c8fd9f_local_smoke_20260502T0852Z.json` | `BAAI/bge-reranker-v2-m3` loads locally and reranks 20 pairs; direct one-shot latency 24958ms, rerank stage 5380.51ms |
-| R3 auto quality | `reports/rag_eval/r3_backend_compare_100q_sidecar_auto_policy_20260501T2025Z.json` | `final_hit_relevant@5=1.0` overall/Korean/mixed, `forbidden_rate@5=0`, auto sidecar skip 100/100 |
-| R3 local daemon | `reports/rag_eval/r3_daemon_full_runtime_auto_sidecar_smoke_20260501T2005Z.json` | first request 12296ms, warm request 476ms, sidecar loaded, reranker skipped by policy |
-| Forced BGE reranker | `reports/rag_eval/r3_backend_compare_100q_lexical_sidecar_rich_fusion_reranker_window20_20260501T1955Z.json` | BGE reranker quality path remains available and green |
-| Qdrant local probe | `reports/rag_eval/r3_qdrant_local_probe_100q_20260501T2010Z.json` | `candidate_recall_primary@100=1.0`, but sparse query p95 302.123ms and RSS peak 3398.422MB |
-| Qdrant summary | `reports/rag_eval/r3_qdrant_local_probe_summary_20260501T2010Z.md` | local mode warning after 20,000 points; Docker server mode unavailable because daemon was not running |
-| Strict local artifact import | `reports/rag_eval/r3_strict_artifact_import_smoke_20260501T1845Z.md` | local strict import contract passes |
-| Remote harness dry run | `reports/rag_eval/r3_remote_strict_harness_dry_run_20260501T1911Z.md` | remote package/verify path is enforced in dry run |
-| Remote harness fail-closed guard | `reports/rag_eval/r3_remote_live_build_blocked_20260501T2013Z.md` | historical safety check; superseded by the successful live artifact above |
-| Remote source fallback | `reports/rag_eval/r3_remote_source_bundle_dry_run_20260501T2015Z.md` | git bundle dry-run passes for committed local changes ahead of origin |
+| Remote production artifact | `artifacts/rag-full-build/r3-61216f2-2026-05-02T0937/artifact_contract.json` and strict verifier rerun | remote-built R3 package, local import verified, `row_count=27158`, corpus hash matched |
+| Production 208q gate | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1052Z.summary.json` | candidate and final primary/relevant hit/recall at 5/20/50/100 are `1.0`; Korean and mixed cohorts are `1.0`; `forbidden_rate@5=0` |
+| Root-cause regression check | `reports/rag_eval/r3_backend_compare_208q_production_r3_auto_20260502T1052Z.summary.json` | no missing candidate primary, no missing final primary; service-locator mixed Korean query recovered through alias sidecar fusion v2 |
+| Local production smoke | `reports/rag_eval/r3_61216f2_runtime_788ee99_local_smoke_20260502T1059Z.json` | direct cheap/full, service-locator mixed Korean, daemon warm full, and forced BGE reranker paths all execute locally |
+| Local daemon warm profile | same smoke report | second daemon full request: `latency_ms=1020`, first hit `contents/network/latency-bandwidth-throughput-basics.md`, sparse source `bge_m3_sparse_vec_sidecar` |
+| Forced BGE reranker smoke | same smoke report | `BAAI/bge-reranker-v2-m3` loads locally, reranks 20 pairs, rerank stage `6304.254ms` |
+| Rollback current-corpus v2 | `reports/rag_eval/r3_legacy_rollback_current_corpus_smoke_20260502T1104Z.json` | rebuilt legacy v2 archive is `ready`, corpus hash matches current corpus, direct legacy search works |
+| Qdrant local probe | `reports/rag_eval/r3_qdrant_local_probe_100q_20260501T2010Z.json` | `candidate_recall_primary@100=1.0`, but local mode warned above 20,000 points, sparse p95 was 302.123ms, RSS peak was 3398.422MB |
+| Qdrant summary | `reports/rag_eval/r3_qdrant_local_probe_summary_20260501T2010Z.md` | Docker/server mode was not measured; requiring Docker is a worse learner-local default |
+| Remote harness hardening | commits `a535981`, `788ee99` | SFTP archive downloads now resume into `.part`; vanished RunPod pods fail fast instead of requiring manual stop |
 
 ## Why Not Qdrant First
 
@@ -53,26 +82,26 @@ confirmed it can reach primary recall @100 on the same 100q qrels.
 It is not the first local production candidate because:
 
 - local mode emitted a warning after the collection exceeded 20,000 points;
-- the measured RSS peak after evaluation was 3398.422MB before adding the
-  lexical sidecar, daemon process, and future learner context overhead;
-- sparse query p95 was 302.123ms, slower than the current in-process sparse
-  sidecar once cached;
+- RSS peak after evaluation was 3398.422MB before adding the lexical sidecar,
+  daemon process, and future learner-context overhead;
+- sparse query p95 was 302.123ms, slower than the in-process sparse sidecar once
+  cached;
 - relevant@5 was weaker than the selected R3 path, especially Korean-only
   `0.8750` versus the selected path's `1.0000`;
-- Docker/server mode could not be measured because the Docker daemon was not
-  running, and requiring Docker as the learner's default serving path is a
-  worse operational fit than a single local Python daemon.
+- Docker/server mode could not be measured, and requiring Docker as the
+  learner's default serving path is a worse operational fit than a single local
+  Python daemon.
 
 This is not a rejection of Qdrant as a technology. It is a local production
-decision for this learning hub and its M5 MacBook Air 16GB constraint.
+decision for this learning hub and its M4 MacBook Air 16GB constraint.
 
 ## Reranker Position
 
-`BAAI/bge-reranker-v2-m3` remains the R3 target quality reranker. It is no
-longer the default local interactive stage when the verified metadata lexical
-sidecar is loaded, because the sidecar-first `auto` policy passed the expanded
-208q gate and the current remote-built artifact serves warm daemon requests in
-about 1.17s on the learner machine.
+`BAAI/bge-reranker-v2-m3` remains the R3 target quality reranker. It is not the
+default local interactive stage when the verified metadata lexical sidecar is
+loaded, because the sidecar-first `auto` policy passed the expanded 208q gate
+and the current remote-built artifact serves warm daemon full requests at about
+1.0s on the learner machine.
 
 Operational policy:
 
@@ -82,25 +111,46 @@ Operational policy:
 - controlled no-reranker experiments: `WOOWA_RAG_R3_RERANK_POLICY=off` or
   backend comparison `--no-reranker`.
 
+## Remote Build Note
+
+The final selected index is remote-built. Later attempts to rebuild the exact
+latest HEAD on RunPod were not accepted as production evidence because provider
+pods disappeared mid-build/transfer:
+
+- `r3-5d17c78-2026-05-02T1010`: build and packaging completed, but SFTP
+  transfer dropped and left a truncated local archive;
+- `r3-a535981-2026-05-02T1031`, `1041`, and `1045`: SSH-confirmed GPU builds
+  started, then the RunPod API reported zero active pods before completion.
+
+Those failures hardened the harness, but they do not invalidate the selected
+remote-built `61216f2` artifact because the current runtime gate was run against
+that exact imported index and passed.
+
+Next full rebuild requirement: if any index-affecting file changes, use a
+stable/dedicated remote GPU provider or a RunPod network volume/persistent
+transfer path before replacing the selected artifact.
+
 ## Rollback
 
-Rollback anchor: legacy v2 MiniLM + SQLite/NPZ archive.
+Rollback anchor: current-corpus legacy v2 MiniLM + SQLite/NPZ archive:
+`state/cs_rag_archive/v2_current_20260502T1101Z`.
 
-Current implementation snapshot: LanceDB v3.
-
-R3 production candidate: LanceDB-improved sidecar architecture described above.
-
-The rollback archive remains available as a safety reference, but the R3
-candidate has passed the live remote-build, local-import, 208q production gate,
-and local-serving smoke packet. Keep legacy v2 available for controlled
-comparisons and emergency rollback until at least two full holdout runs are
-recorded against the new artifact.
+The older `state/cs_rag_archive/v2_20260501T063445Z` remains preserved for
+historical comparison, but it is stale against the expanded corpus. The new
+current-corpus v2 archive is the actual emergency rollback index because
+`indexer.is_ready()` reports `ready`.
 
 ## Cutover Status
 
-Remote build, actual SSH verification, artifact import, expanded qrel gate, and
-local smoke are complete for `r3-0c8fd9f-2026-05-02T0827`.
+Cutover is approved for:
 
-The only remaining work is routine post-cutover observation: run the full
-holdout suite repeatedly as the corpus grows, keep qrels calibrated, and treat
-new failures as root-cause bugs rather than one-off ranking tweaks.
+```text
+remote-built index r3-61216f2-2026-05-02T0937
++ local runtime commit 788ee99
++ fusion v2 runtime overlay
++ auto sidecar rerank policy
+```
+
+Post-cutover observation remains required as the corpus grows: run the full
+holdout suite repeatedly, keep qrels calibrated, and treat new failures as
+root-cause bugs rather than one-off ranking tweaks.

@@ -101,4 +101,4 @@ The R1 v8 logger fix (`stderr[-2000:]` instead of `[:500]`) was decisive — par
 1. **Subprocess + wall-clock timeout** is necessary for any "import + load model" warm step on shared/community Pod filesystems. A pure-Python try/except can't break a syscall hang.
 2. **paramiko buffers stderr**; `[:500]` shows the call site, never the exception text. Always log head + tail.
 3. **For framework version-pinning, read upstream `setup.py` + the call site that's failing**. R1 v1–v7 all guessed at version bands; R1 v8's docs-grounded fix landed in one shot.
-4. **Local M5 16 GB cannot run BGE-M3 on MPS** (FlagEmbedding macOS-version error); CPU is too slow for full encoding (3+ hours on 27K chunks). Remote build is the only viable path for hybrid encoders. The dual-loop model (sampled-local + full-remote) from Plan v5 is correct.
+4. **Local M4 16 GB cannot run BGE-M3 on MPS** (FlagEmbedding macOS-version error); CPU is too slow for full encoding (3+ hours on 27K chunks). Remote build is the only viable path for hybrid encoders. The dual-loop model (sampled-local + full-remote) from Plan v5 is correct.
