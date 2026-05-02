@@ -3564,6 +3564,501 @@
       "prompt": "Kafka cooperative rebalancing이 stop-the-world 대비 뭐가 달라?",
       "query_id": "corpus_gap_probe:kafka_consumer_rebalance:001",
       "rationale": "Kafka 내부 = 우리 코퍼스 범위 밖"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/connection-pool"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "tuning_must_not_replace_primer"
+      ],
+      "forbidden_paths": [
+        "contents/database/hikari-connection-pool-tuning.md",
+        "contents/database/connection-pool-transaction-propagation-bulk-write.md"
+      ],
+      "intent": "definition",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/database/connection-pool-basics.md"
+      ],
+      "prompt": "Hikari connection pool 처음 배우는데 어디부터 봐?",
+      "query_id": "forbidden_neighbor:hikari_tuning_must_not_be_primer:001",
+      "rationale": "처음 배우는 사람에게 tuning doc가 top1이면 의도와 어긋남"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/connection-pool-starvation-symptom-router"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "term_matching_card_not_diagnostic"
+      ],
+      "forbidden_paths": [
+        "contents/database/pool-timeout-term-matching-card.md"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/connection-pool-starvation-symptom-router.md"
+      ],
+      "prompt": "connection pool starvation 어떻게 진단해?",
+      "query_id": "forbidden_neighbor:pool_starvation_distinct_from_term_match:001",
+      "rationale": "term-matching card는 단어 카드일 뿐 — 진단 router로 가야 함"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/deadlock-vs-lock-wait-timeout-primer"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "transactional_too_general"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "prompt": "deadlock vs lock wait timeout 차이가 뭐야?",
+      "query_id": "forbidden_neighbor:deadlock_vs_lock_timeout_not_transactional:001",
+      "rationale": "@Transactional primer가 lock 비교 질문에 top1이면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/mvcc-read-view-consistent-read-internals"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "transactional_not_mvcc_internals"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-transactional-basics.md"
+      ],
+      "intent": "deep_dive",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/mvcc-read-view-consistent-read-internals.md"
+      ],
+      "prompt": "MVCC read view consistent read 내부 구조가 어떻게 돼?",
+      "query_id": "forbidden_neighbor:mvcc_internals_not_transactional:001",
+      "rationale": "@Transactional은 MVCC 내부와 다른 영역"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/replica-lag-read-after-write-strategies"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "auth_must_not_reach_replication"
+      ],
+      "forbidden_paths": [
+        "contents/security/session-cookie-jwt-basics.md"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/database/replica-lag-read-after-write-strategies.md"
+      ],
+      "prompt": "replica lag 처리 전략이 뭐가 있어?",
+      "query_id": "forbidden_neighbor:replica_lag_not_jwt:001",
+      "rationale": "session/jwt primer가 replica lag 질문에 나오면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "database/roomescape-reservation-concurrency-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "general_deadlock_not_mission_specific"
+      ],
+      "forbidden_paths": [
+        "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "advanced",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/database/roomescape-reservation-concurrency-bridge.md"
+      ],
+      "prompt": "roomescape에서 동시 예약 어떻게 막아?",
+      "query_id": "forbidden_neighbor:roomescape_concurrency_not_deadlock_primer:001",
+      "rationale": "deadlock primer가 mission_bridge 질문에 top1이면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/factory"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "checklist_smell_not_for_beginner"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/factory-misnaming-checklist.md",
+        "contents/design-pattern/factory-switch-registry-smell.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/design-pattern/factory-basics.md"
+      ],
+      "prompt": "Factory 패턴 처음 배우는데 어디부터 봐?",
+      "query_id": "forbidden_neighbor:factory_primer_not_misnaming:001",
+      "rationale": "checklist/smell doc은 입문자에게 부담"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/lotto-static-factory-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "misnaming_checklist_off_topic"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/factory-misnaming-checklist.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "mixed",
+      "level": "intermediate",
+      "mission_id": "missions/lotto",
+      "primary_paths": [
+        "contents/design-pattern/lotto-static-factory-bridge.md"
+      ],
+      "prompt": "lotto에서 Lotto.from / Lotto.auto 쓰는 의도?",
+      "query_id": "forbidden_neighbor:lotto_factory_not_misnaming:001",
+      "rationale": "lotto bridge에 misnaming checklist가 끼면 mission framing 잃음"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/lotto-strategy-rank-decision-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "explosion_smell_off_topic"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/strategy-explosion-smell.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "intermediate",
+      "mission_id": "missions/lotto",
+      "primary_paths": [
+        "contents/design-pattern/lotto-strategy-rank-decision-bridge.md"
+      ],
+      "prompt": "lotto 등수 결정에 Strategy가 어울리는 이유?",
+      "query_id": "forbidden_neighbor:lotto_strategy_not_explosion_smell:001",
+      "rationale": "긍정 적용 질문에 negative smell doc가 끼면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/projection-freshness-slo-pattern"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "client_cache_off_topic"
+      ],
+      "forbidden_paths": [
+        "contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/design-pattern/projection-freshness-slo-pattern.md"
+      ],
+      "prompt": "projection freshness SLO 어떻게 정해?",
+      "query_id": "forbidden_neighbor:projection_freshness_not_browser_reload:001",
+      "rationale": "browser cache primer는 server projection 영역과 무관"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/read-model-staleness-read-your-writes"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "client_cache_not_cqrs"
+      ],
+      "forbidden_paths": [
+        "contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "advanced",
+      "primary_paths": [
+        "contents/design-pattern/read-model-staleness-read-your-writes.md"
+      ],
+      "prompt": "read-your-writes vs read model staleness 어떻게 봐?",
+      "query_id": "forbidden_neighbor:read_model_staleness_not_browser_reload:001",
+      "rationale": "client browser cache는 CQRS staleness와 다름"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/roomescape-strategy-vs-factory-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "misnaming_checklist_not_mission"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/factory-misnaming-checklist.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "intermediate",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/design-pattern/roomescape-strategy-vs-factory-bridge.md"
+      ],
+      "prompt": "roomescape 검증에 Strategy 패턴 어떻게 적용해?",
+      "query_id": "forbidden_neighbor:roomescape_strategy_not_misnaming:001",
+      "rationale": "mission bridge에 misnaming checklist가 끼면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "design-pattern/template-method-vs-strategy"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "locator_antipattern_off_topic"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "intent": "comparison",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/design-pattern/template-method-vs-strategy.md"
+      ],
+      "prompt": "Template Method vs Strategy 차이",
+      "query_id": "forbidden_neighbor:template_strategy_not_locator:001",
+      "rationale": "Service Locator antipattern은 Template/Strategy 비교와 무관"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "network/shopping-cart-rate-limit-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "retry_storm_off_topic_for_simple_throttle"
+      ],
+      "forbidden_paths": [
+        "contents/network/retry-storm-containment-concurrency-limiter-load-shedding.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "mixed",
+      "level": "advanced",
+      "mission_id": "missions/shopping-cart",
+      "primary_paths": [
+        "contents/network/shopping-cart-rate-limit-bridge.md"
+      ],
+      "prompt": "shopping-cart 결제 throttle 어떻게 해?",
+      "query_id": "forbidden_neighbor:shopping_cart_rate_limit_not_retry_storm:001",
+      "rationale": "retry storm은 더 advanced 영역 — bridge 의도와 다름"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "security/auth-failure-response-401-403-404"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "redirect_vs_status_off_topic"
+      ],
+      "forbidden_paths": [
+        "contents/network/redirect-vs-forward-vs-spa-navigation-basics.md"
+      ],
+      "intent": "comparison",
+      "language": "mixed",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/security/auth-failure-response-401-403-404.md"
+      ],
+      "prompt": "401 403 404 차이",
+      "query_id": "forbidden_neighbor:auth_failure_not_redirect_primer:001",
+      "rationale": "redirect/forward primer는 status code 의미와 영역이 다름"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "security/browser-401-vs-302-login-redirect-guide"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "session_pinning_db_not_auth"
+      ],
+      "forbidden_paths": [
+        "contents/database/read-your-writes-session-pinning.md"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/browser-401-vs-302-login-redirect-guide.md"
+      ],
+      "prompt": "브라우저에서 401 대신 302가 보이면 어떻게 진단해?",
+      "query_id": "forbidden_neighbor:browser_401_302_not_session_pinning:001",
+      "rationale": "session pinning은 DB 영역 — 인증 redirect와 무관"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "security/cookie-failure-three-way-splitter"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "jwt_too_specific_for_cookie_diag"
+      ],
+      "forbidden_paths": [
+        "contents/security/jwt-deep-dive.md"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-failure-three-way-splitter.md"
+      ],
+      "prompt": "cookie loop 디버깅 어떻게 시작해?",
+      "query_id": "forbidden_neighbor:cookie_failure_not_jwt_deep_dive:001",
+      "rationale": "jwt deep dive는 cookie 진단 단계와 다름"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "security/cookie-scope-mismatch-guide"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "jwt_off_topic_for_cookie_scope"
+      ],
+      "forbidden_paths": [
+        "contents/security/jwt-deep-dive.md"
+      ],
+      "intent": "symptom",
+      "language": "mixed",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/security/cookie-scope-mismatch-guide.md"
+      ],
+      "prompt": "cookie가 안 따라가는 이유 — domain/path 어떻게 봐?",
+      "query_id": "forbidden_neighbor:cookie_scope_not_jwt:001",
+      "rationale": "cookie scope 문제에 jwt deep dive가 top1이면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/roomescape-di-bean-injection-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "locator_antipattern_must_not_replace_di"
+      ],
+      "forbidden_paths": [
+        "contents/design-pattern/service-locator-antipattern.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "ko",
+      "level": "beginner",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/spring/roomescape-di-bean-injection-bridge.md"
+      ],
+      "prompt": "roomescape에서 DI 어떻게 적용?",
+      "query_id": "forbidden_neighbor:roomescape_di_not_locator:001",
+      "rationale": "DI 긍정 적용 질문에 antipattern doc가 top1이면 안 됨"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/roomescape-transactional-boundary-bridge"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "self_invocation_too_advanced"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-self-invocation-transactional-only-misconception-primer.md"
+      ],
+      "intent": "mission_bridge",
+      "language": "mixed",
+      "level": "intermediate",
+      "mission_id": "missions/roomescape",
+      "primary_paths": [
+        "contents/spring/roomescape-transactional-boundary-bridge.md"
+      ],
+      "prompt": "roomescape에서 @Transactional 어디 붙여?",
+      "query_id": "forbidden_neighbor:roomescape_transactional_not_self_invocation:001",
+      "rationale": "self-invocation 함정은 @Transactional 처음 배울 때 너무 어려움"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/bean-di-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "postprocessor_too_advanced_for_beginner"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+        "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "beginner",
+      "primary_paths": [
+        "contents/spring/spring-bean-di-basics.md"
+      ],
+      "prompt": "Spring DI 처음 배우는데",
+      "query_id": "forbidden_neighbor:bean_di_not_postprocessor:001",
+      "rationale": "BeanFactoryPostProcessor는 입문 DI에 부담"
+    },
+    {
+      "cohort_tag": "forbidden_neighbor",
+      "expected_concepts": [
+        "spring/bean-lifecycle-basics"
+      ],
+      "failure_focus": [
+        "forbidden_routing",
+        "postprocessor_advanced_separation"
+      ],
+      "forbidden_paths": [
+        "contents/spring/spring-beanfactorypostprocessor-vs-beanpostprocessor-lifecycle.md",
+        "contents/spring/spring-bean-definition-registry-postprocessor-import-registrar.md"
+      ],
+      "intent": "definition",
+      "language": "ko",
+      "level": "intermediate",
+      "primary_paths": [
+        "contents/spring/spring-bean-lifecycle-basics.md"
+      ],
+      "prompt": "Spring Bean lifecycle 단계 알려줘",
+      "query_id": "forbidden_neighbor:bean_lifecycle_not_postprocessor:001",
+      "rationale": "BeanPostProcessor는 advanced 분리 영역"
     }
   ],
   "schema_version": 1
