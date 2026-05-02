@@ -41,6 +41,7 @@ import math
 import os
 import re
 import sqlite3
+import time
 from pathlib import Path
 from typing import Iterable
 
@@ -54,11 +55,47 @@ RRF_K = 60
 DEFAULT_TOP_K = 5
 FTS_POOL_SIZE = 80
 DENSE_POOL_SIZE = 80
+DEFAULT_LANCE_COLBERT_RESCORE_WINDOW = 20
 CATEGORY_BOOST = 0.15  # added to final score when category matches a learning point
 SIGNAL_CATEGORY_BOOST = 0.0015
 POST_RERANK_SIGNAL_BOOST_MULTIPLIER = 1000.0
 KOREAN_FTS_TERMS_WEIGHT = 0.0
 QUERY_REWRITE_ROOT_ENV = "WOOWA_RAG_QUERY_REWRITE_ROOT"
+
+_LANCE_LIGHT_COLUMNS = [
+    "chunk_id",
+    "doc_id",
+    "path",
+    "title",
+    "category",
+    "section_path",
+    "body",
+    "char_len",
+    "anchors",
+    "difficulty",
+]
+_LANCE_FTS_COLUMNS = [*_LANCE_LIGHT_COLUMNS, "_score"]
+_LANCE_DENSE_COLUMNS = [*_LANCE_LIGHT_COLUMNS, "_distance"]
+
+
+def _stage_started() -> float:
+    return time.perf_counter()
+
+
+def _add_stage_ms(debug: dict | None, name: str, started_at: float) -> None:
+    if debug is None:
+        return
+    elapsed_ms = (time.perf_counter() - started_at) * 1000.0
+    stage_ms = debug.setdefault("stage_ms", {})
+    stage_ms[name] = round(float(stage_ms.get(name, 0.0)) + elapsed_ms, 3)
+
+
+def _merge_stage_ms(debug: dict | None, source: dict | None) -> None:
+    if debug is None or not source:
+        return
+    for name, value in (source.get("stage_ms") or {}).items():
+        stage_ms = debug.setdefault("stage_ms", {})
+        stage_ms[name] = round(float(stage_ms.get(name, 0.0)) + float(value), 3)
 
 # Difficulty boost ladder — applied as a tie-breaker inside the top pool only,
 # so it never promotes an unrelated doc into the candidate set. Experience
@@ -422,7 +459,12 @@ def _lance_rows_to_ranking(
 
 def _lance_fts_search(table, prompt: str, limit: int) -> list[dict]:
     try:
-        return table.search(prompt, query_type="fts").limit(limit).to_list()
+        return (
+            table.search(prompt, query_type="fts")
+            .select(_LANCE_FTS_COLUMNS)
+            .limit(limit)
+            .to_list()
+        )
     except Exception:
         return []
 
@@ -434,11 +476,69 @@ def _lance_dense_search(table, dense_vec, limit: int) -> list[dict]:
             query = query.tolist()
         return (
             table.search(query, vector_column_name="dense_vec")
+            .select(_LANCE_DENSE_COLUMNS)
             .limit(limit)
             .to_list()
         )
     except Exception:
         return []
+
+
+def _lance_quote_sql_literal(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
+
+
+def _lance_fetch_payload_columns(
+    table,
+    chunks: dict[int, dict],
+    row_ids: Iterable[int],
+    columns: list[str] | tuple[str, ...],
+) -> None:
+    wanted = tuple(column for column in columns if column)
+    if not wanted:
+        return
+
+    row_id_list = list(row_ids)
+    chunk_ids: list[str] = []
+    seen: set[str] = set()
+    for row_id in row_id_list:
+        chunk = chunks.get(row_id)
+        if not chunk:
+            continue
+        if all(chunk.get(column) is not None for column in wanted):
+            continue
+        chunk_id = str(chunk.get("chunk_id") or "")
+        if not chunk_id or chunk_id in seen:
+            continue
+        seen.add(chunk_id)
+        chunk_ids.append(chunk_id)
+
+    if not chunk_ids:
+        return
+
+    where = "chunk_id IN (" + ", ".join(_lance_quote_sql_literal(cid) for cid in chunk_ids) + ")"
+    try:
+        rows = (
+            table.search()
+            .where(where)
+            .select(["chunk_id", *wanted])
+            .limit(len(chunk_ids))
+            .to_list()
+        )
+    except Exception:
+        return
+
+    by_chunk_id = {str(row.get("chunk_id") or ""): row for row in rows}
+    for row_id in row_id_list:
+        chunk = chunks.get(row_id)
+        if not chunk:
+            continue
+        row = by_chunk_id.get(str(chunk.get("chunk_id") or ""))
+        if not row:
+            continue
+        for column in wanted:
+            if column in row:
+                chunk[column] = row[column]
 
 
 def _sparse_dot(query_sparse: dict[int, float], doc_sparse) -> float:
@@ -505,6 +605,16 @@ def _colbert_rescore(
     return rescored
 
 
+def _lance_colbert_rescore_window() -> int:
+    raw = os.environ.get("WOOWA_RAG_LANCE_COLBERT_RESCORE_WINDOW")
+    if raw is None:
+        return DEFAULT_LANCE_COLBERT_RESCORE_WINDOW
+    try:
+        return max(0, int(raw))
+    except ValueError:
+        return DEFAULT_LANCE_COLBERT_RESCORE_WINDOW
+
+
 def _lance_candidate_pool(
     table,
     prompt: str,
@@ -524,11 +634,13 @@ def _lance_candidate_pool(
     rankings: list[list[tuple[int, float]]] = []
 
     if "fts" in modalities:
+        stage = _stage_started()
         fts_rankings: list[tuple[list[tuple[int, float]], float]] = []
         fts_candidate_kinds: list[str] = []
 
         fts_rows = _lance_fts_search(table, prompt, pool_size)
         fts_ranking = _lance_rows_to_ranking(fts_rows, chunks, score_key="_score")
+        _add_stage_ms(debug, "lance_fts_original", stage)
         if fts_ranking:
             fts_rankings.append((fts_ranking, 1.0))
             fts_candidate_kinds.append("original")
@@ -540,40 +652,72 @@ def _lance_candidate_pool(
             else None
         )
         if korean_terms and korean_terms_weight > 0:
+            stage = _stage_started()
             terms_rows = _lance_fts_search(table, korean_terms, pool_size)
             terms_ranking = _lance_rows_to_ranking(terms_rows, chunks, score_key="_score")
+            _add_stage_ms(debug, "lance_fts_korean_terms", stage)
             if terms_ranking:
                 fts_rankings.append((terms_ranking, korean_terms_weight))
                 fts_candidate_kinds.append("korean_terms")
 
         if fts_rankings:
+            stage = _stage_started()
             if len(fts_rankings) == 1:
                 rankings.append(fts_rankings[0][0])
             else:
                 rankings.append(weighted_rrf_merge(fts_rankings))
+            _add_stage_ms(debug, "lance_fts_fusion", stage)
         if debug is not None:
             debug["fts_candidate_kinds"] = fts_candidate_kinds
 
     if "dense" in modalities and query_encoding is not None:
         dense = query_encoding.get("dense")
         if dense is not None:
+            stage = _stage_started()
             dense_rows = _lance_dense_search(table, dense, pool_size)
             dense_ranking = _lance_rows_to_ranking(dense_rows, chunks, score_key="_score")
+            _add_stage_ms(debug, "lance_dense_search", stage)
             if dense_ranking:
                 rankings.append(dense_ranking)
 
     if not rankings:
         return [], {}
 
+    stage = _stage_started()
     fused = _rrf_merge(rankings)
+    _add_stage_ms(debug, "lance_rrf_merge", stage)
     if "sparse" in modalities and query_encoding is not None:
         sparse_list = query_encoding.get("sparse") or []
         query_sparse = sparse_list[0] if sparse_list else {}
+        stage = _stage_started()
+        _lance_fetch_payload_columns(
+            table,
+            chunks,
+            (row_id for row_id, _ in fused),
+            ["sparse_vec"],
+        )
+        _add_stage_ms(debug, "lance_sparse_payload_fetch", stage)
+        stage = _stage_started()
         fused = _sparse_rescore(fused, chunks, query_sparse)
+        _add_stage_ms(debug, "lance_sparse_rescore", stage)
     if "colbert" in modalities and query_encoding is not None:
         colbert_list = query_encoding.get("colbert") or []
         query_colbert = colbert_list[0] if colbert_list else None
-        fused = _colbert_rescore(fused, chunks, query_colbert)
+        colbert_window = min(len(fused), _lance_colbert_rescore_window())
+        stage = _stage_started()
+        _lance_fetch_payload_columns(
+            table,
+            chunks,
+            (row_id for row_id, _ in fused[:colbert_window]),
+            ["colbert_tokens"],
+        )
+        _add_stage_ms(debug, "lance_colbert_payload_fetch", stage)
+        stage = _stage_started()
+        rescored_head = _colbert_rescore(fused[:colbert_window], chunks, query_colbert)
+        fused = [*rescored_head, *fused[colbert_window:]]
+        if debug is not None:
+            debug["lance_colbert_rescore_window"] = colbert_window
+        _add_stage_ms(debug, "lance_colbert_rescore", stage)
     return fused, chunks
 
 
@@ -1516,6 +1660,19 @@ def _apply_signal_boost(
 # Public API
 # ---------------------------------------------------------------------------
 
+def _detect_backend(index_root: Path | str) -> str:
+    """Infer the search backend from the on-disk manifest.
+
+    Missing/corrupt manifests fall back to legacy so first-run probes degrade
+    to [] instead of raising before cs_readiness can trigger a rebuild.
+    """
+    try:
+        manifest = indexer.load_manifest(index_root)
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        return "legacy"
+    return "lance" if manifest.get("index_version") == indexer.LANCE_INDEX_VERSION else "legacy"
+
+
 def search(
     prompt: str,
     *,
@@ -1523,7 +1680,7 @@ def search(
     topic_hints: list[str] | None = None,
     top_k: int = DEFAULT_TOP_K,
     mode: str = "full",
-    backend: str = "legacy",
+    backend: str = "auto",
     modalities: list[str] | tuple[str, ...] | None = None,
     index_root: Path | str = indexer.DEFAULT_INDEX_ROOT,
     use_reranker: bool | None = None,
@@ -1543,10 +1700,12 @@ def search(
     """
     if mode not in ("cheap", "full"):
         raise ValueError(f"unknown mode: {mode}")
-    if backend not in ("legacy", "lance", "r3"):
+    if backend not in ("auto", "legacy", "lance", "r3"):
         raise ValueError(f"unknown backend: {backend}")
 
-    if backend == "r3":
+    resolved_backend = _detect_backend(index_root) if backend == "auto" else backend
+
+    if resolved_backend == "r3":
         from .r3.search import search as r3_search
 
         return r3_search(
@@ -1562,7 +1721,7 @@ def search(
             debug=debug,
         )
 
-    if backend == "lance":
+    if resolved_backend == "lance":
         return _search_lance(
             prompt,
             learning_points=learning_points,
@@ -1578,15 +1737,22 @@ def search(
         )
 
     try:
+        stage = _stage_started()
         conn = indexer.open_readonly(index_root)
+        _add_stage_ms(debug, "legacy_open_index", stage)
     except FileNotFoundError:
         return []
 
     try:
+        stage = _stage_started()
         signals = signal_rules.detect_signals(prompt, topic_hints)
+        _add_stage_ms(debug, "legacy_detect_signals", stage)
+        stage = _stage_started()
         query_candidates = _build_legacy_query_candidates(prompt, index_root=index_root)
+        _add_stage_ms(debug, "legacy_query_candidates", stage)
 
         if query_candidates:
+            stage = _stage_started()
             fused = _legacy_candidate_pool_for_query_plan(
                 conn,
                 index_root=index_root,
@@ -1595,9 +1761,11 @@ def search(
                 mode=mode,
                 candidates=query_candidates,
             )
+            _add_stage_ms(debug, "legacy_candidate_pool", stage)
             if debug is not None:
                 debug["query_candidate_kinds"] = [c.kind for c in query_candidates]
         else:
+            stage = _stage_started()
             fused = _legacy_candidate_pool(
                 conn,
                 index_root=index_root,
@@ -1605,6 +1773,7 @@ def search(
                 topic_hints=topic_hints,
                 mode=mode,
             )
+            _add_stage_ms(debug, "legacy_candidate_pool", stage)
 
         if not fused:
             return []
@@ -1615,9 +1784,12 @@ def search(
         signal_path_boosts = _contextual_signal_path_boosts(prompt, signals)
         signal_routed_ids = _first_chunk_ids_for_paths(conn, signal_path_boosts)
         top_pool_ids = [*signal_routed_ids, *[rid for rid, _ in fused]]
+        stage = _stage_started()
         chunks = indexer.fetch_chunks_by_rowid(conn, top_pool_ids)
+        _add_stage_ms(debug, "legacy_fetch_chunks", stage)
 
         # 5. Category boost
+        stage = _stage_started()
         allowed_categories = _collect_categories(learning_points)
         seeded_scores = {
             row_id: 0.0
@@ -1652,7 +1824,10 @@ def search(
         filtered, filter_fallback_used = _filter_allowed_categories(
             boosted, chunks, allowed_categories, top_k
         )
+        _add_stage_ms(debug, "legacy_boost_filter", stage)
         if debug is not None:
+            debug["backend"] = resolved_backend
+            debug["modalities"] = ["fts"] if mode == "cheap" else ["fts", "dense"]
             debug["category_filter_fallback"] = filter_fallback_used
             debug["allowed_categories"] = sorted(allowed_categories)
 
@@ -1660,11 +1835,18 @@ def search(
         #    learning-point anchor phrases so the reranker sees canonical
         #    domain terms (fixes e.g. "책임 분리" collapsing onto
         #    "Chain of Responsibility" on raw token overlap).
-        if mode == "full" and _rerank_enabled(use_reranker):
-            rerank_top_n = resolve_rerank_input_window(top_k)
+        reranker_active = mode == "full" and _rerank_enabled(use_reranker)
+        rerank_top_n = resolve_rerank_input_window(top_k) if reranker_active else 0
+        if debug is not None:
+            debug["reranker_enabled"] = reranker_active
+            debug["rerank_top_n"] = rerank_top_n
+            debug["rerank_input_count"] = min(len(filtered), rerank_top_n) if reranker_active else 0
+        if reranker_active:
             anchor = category_mapping.anchor_phrase_for(learning_points)
             rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
+            stage = _stage_started()
             filtered = _rerank(rerank_prompt, filtered, chunks, top_n=rerank_top_n)
+            _add_stage_ms(debug, "legacy_rerank", stage)
             # Cross-encoder scores are not calibrated against our route
             # contract. Re-apply signal boosts after rerank so explicit
             # beginner/family routing survives final polishing.
@@ -1677,10 +1859,13 @@ def search(
             )
 
         # 8. Document-level dedupe — one chunk per source path
+        stage = _stage_started()
         deduped = _dedupe_by_path(filtered, chunks)
 
         # 9. Compose output
-        return [_format_hit(chunks[rid], score) for rid, score in deduped[:top_k]]
+        hits = [_format_hit(chunks[rid], score) for rid, score in deduped[:top_k]]
+        _add_stage_ms(debug, "legacy_dedupe_format", stage)
+        return hits
     finally:
         conn.close()
 
@@ -1700,13 +1885,18 @@ def _search_lance(
     debug: dict | None,
 ) -> list[dict]:
     try:
+        stage = _stage_started()
         manifest = indexer.read_manifest_v3(index_root)
         table = indexer.open_lance_table(index_root)
+        _add_stage_ms(debug, "lance_open_index", stage)
     except (FileNotFoundError, indexer.IncompatibleIndexError):
         return []
 
+    stage = _stage_started()
     signals = signal_rules.detect_signals(prompt, topic_hints)
+    _add_stage_ms(debug, "lance_detect_signals", stage)
     manifest_modalities = tuple(manifest.get("modalities") or ("fts",))
+    stage = _stage_started()
     resolved_modalities = _resolve_lance_modalities(
         manifest_modalities=manifest_modalities,
         requested_modalities=modalities,
@@ -1714,6 +1904,8 @@ def _search_lance(
         learning_points=learning_points,
         signals=signals,
     )
+    _add_stage_ms(debug, "lance_resolve_modalities", stage)
+    stage = _stage_started()
     scored, chunks, query_debug = _lance_candidate_pool_for_query_plan(
         table,
         prompt,
@@ -1723,9 +1915,11 @@ def _search_lance(
         pool_size=max(FTS_POOL_SIZE, top_k * 20),
         learner_context=learner_context,
     )
+    _add_stage_ms(debug, "lance_candidate_plan", stage)
     if not scored:
         return []
 
+    stage = _stage_started()
     allowed_categories = _collect_categories(learning_points)
     boosted = _apply_category_boost(scored, chunks, allowed_categories)
     boosted = _apply_difficulty_boost(boosted, chunks, experience_level)
@@ -1733,18 +1927,29 @@ def _search_lance(
     filtered, filter_fallback_used = _filter_allowed_categories(
         boosted, chunks, allowed_categories, top_k
     )
+    _add_stage_ms(debug, "lance_boost_filter", stage)
     if debug is not None:
         debug["backend"] = "lance"
         debug["modalities"] = list(resolved_modalities)
-        debug.update(query_debug)
+        _merge_stage_ms(debug, query_debug)
+        for key, value in query_debug.items():
+            if key != "stage_ms":
+                debug[key] = value
         debug["category_filter_fallback"] = filter_fallback_used
         debug["allowed_categories"] = sorted(allowed_categories)
 
-    if mode == "full" and _rerank_enabled(use_reranker):
-        rerank_top_n = resolve_rerank_input_window(top_k)
+    reranker_active = mode == "full" and _rerank_enabled(use_reranker)
+    rerank_top_n = resolve_rerank_input_window(top_k) if reranker_active else 0
+    if debug is not None:
+        debug["reranker_enabled"] = reranker_active
+        debug["rerank_top_n"] = rerank_top_n
+        debug["rerank_input_count"] = min(len(filtered), rerank_top_n) if reranker_active else 0
+    if reranker_active:
         anchor = category_mapping.anchor_phrase_for(learning_points)
         rerank_prompt = f"{anchor}\n\n{prompt}" if anchor else prompt
+        stage = _stage_started()
         filtered = _rerank(rerank_prompt, filtered, chunks, top_n=rerank_top_n)
+        _add_stage_ms(debug, "lance_rerank", stage)
         filtered = _apply_signal_boost(
             filtered,
             chunks,
@@ -1753,8 +1958,11 @@ def _search_lance(
             multiplier=POST_RERANK_SIGNAL_BOOST_MULTIPLIER,
         )
 
+    stage = _stage_started()
     deduped = _dedupe_by_path(filtered, chunks)
-    return [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
+    hits = [_format_hit(chunks[row_id], score) for row_id, score in deduped[:top_k]]
+    _add_stage_ms(debug, "lance_dedupe_format", stage)
+    return hits
 
 
 def _legacy_candidate_pool(
@@ -1843,23 +2051,29 @@ def _lance_candidate_pool_for_query_plan(
     bounded context candidate, then merge per-candidate rankings with weighted
     RRF instead of concatenating the query strings.
     """
+    debug_info: dict = {}
+    stage = _stage_started()
     candidates = _build_lance_query_candidates(
         prompt,
         topic_hints=topic_hints,
         learner_context=learner_context,
         index_root=index_root,
     )
+    _add_stage_ms(debug_info, "lance_query_candidates", stage)
     if not candidates:
-        return [], {}, {"query_candidate_kinds": []}
+        return [], {}, {"query_candidate_kinds": [], **debug_info}
 
     query_modalities = tuple(m for m in resolved_modalities if m != "fts")
     encoder = None
     if query_modalities:
         try:
+            stage = _stage_started()
             encoder = _get_lance_query_encoder(index_root)
+            _add_stage_ms(debug_info, "lance_encoder_load", stage)
         except Exception:
             encoder = None
 
+    stage = _stage_started()
     encoded_texts = [
         _lance_encode_text_for_candidate(candidate.text, candidate.kind, topic_hints)
         for candidate in candidates
@@ -1869,6 +2083,7 @@ def _lance_candidate_pool_for_query_plan(
         encoded_texts,
         query_modalities,
     )
+    _add_stage_ms(debug_info, "lance_query_encode", stage)
 
     if len(candidates) == 1:
         candidate = candidates[0]
@@ -1881,6 +2096,7 @@ def _lance_candidate_pool_for_query_plan(
             pool_size=pool_size,
             debug=query_debug,
         )
+        _merge_stage_ms(query_debug, debug_info)
         return (
             scored,
             chunks,
@@ -1903,6 +2119,7 @@ def _lance_candidate_pool_for_query_plan(
             pool_size=pool_size,
             debug=candidate_debug,
         )
+        _merge_stage_ms(debug_info, candidate_debug)
         if not candidate_scored:
             continue
         chunks.update(candidate_chunks)
@@ -1912,13 +2129,17 @@ def _lance_candidate_pool_for_query_plan(
         rankings.append((candidate_scored, candidate.weight))
 
     if not rankings:
-        return [], {}, {"query_candidate_kinds": [c.kind for c in candidates]}
+        return [], {}, {"query_candidate_kinds": [c.kind for c in candidates], **debug_info}
+    stage = _stage_started()
+    merged = weighted_rrf_merge(rankings)
+    _add_stage_ms(debug_info, "lance_query_candidate_merge", stage)
     return (
-        weighted_rrf_merge(rankings),
+        merged,
         chunks,
         {
             "query_candidate_kinds": [c.kind for c in candidates],
             "fts_candidate_kinds": fts_candidate_kinds,
+            **debug_info,
         },
     )
 
@@ -2083,8 +2304,8 @@ def _fallback_tokens(prompt: str) -> list[str]:
 LANCE_MODALITY_POLICY_PATH = Path(__file__).with_name("lance_modalities_policy.json")
 _FALLBACK_LANCE_MODALITY_POLICY = {
     "cheap_default_modalities": ["fts"],
-    "full_default_modalities": ["fts"],
-    "dense_default_modalities": ["fts", "dense"],
+    "full_default_modalities": ["fts", "dense", "sparse"],
+    "dense_default_modalities": ["fts", "dense", "sparse"],
     "dense_default_categories": ["database", "network", "operating-system"],
 }
 _LANCE_MODALITY_POLICY_CACHE: dict | None = None
@@ -2128,12 +2349,12 @@ def _resolve_lance_modalities(
     learning_points: list[str] | None,
     signals: list[dict],
 ) -> tuple[str, ...]:
-    """Resolve default LanceDB modalities without making dense global.
+    """Resolve default LanceDB modalities from the data-driven policy.
 
-    Sampled H7.5 measurements showed bge-m3 dense helps some conceptual
-    categories but hurts or only slows others. Explicit eval/caller modality
-    requests are still honoured; this policy only affects production-style
-    default LanceDB searches.
+    Explicit eval/caller modality requests are still honoured; this policy
+    only affects production-style default LanceDB searches. Sparse is currently
+    default-on so the next measurement can isolate whether its neutral effect
+    is a weighting/category issue or pure latency overhead.
     """
     if requested_modalities is not None:
         requested = tuple(requested_modalities)
