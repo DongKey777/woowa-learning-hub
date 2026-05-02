@@ -24,6 +24,7 @@ from scripts.learning.rag.r3.query_plan import build_query_plan
 def test_query_plan_preserves_korean_first_mixed_terms():
     plan = build_query_plan("latency가 뭐야?")
 
+    assert plan.version == "r3.0"
     assert plan.language == "mixed"
     assert "latency" in plan.lexical_terms
     assert plan.preserved_english_terms == ("latency",)
@@ -105,6 +106,7 @@ def test_searcher_explicit_r3_backend_routes_without_index(tmp_path):
     assert results == []
     assert debug["backend"] == "r3"
     assert debug["r3_skeleton"] is True
+    assert debug["r3_query_plan"]["version"] == "r3.0"
     assert debug["r3_query_plan"]["language"] == "mixed"
 
 

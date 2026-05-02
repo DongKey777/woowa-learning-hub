@@ -10,6 +10,7 @@ from .tokenization import tokenize_text
 
 
 Language = Literal["ko", "en", "mixed", "unknown"]
+QUERY_PLAN_VERSION = "r3.0"
 
 _HANGUL_RE = re.compile(r"[가-힣]")
 _LATIN_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_+./-]*")
@@ -59,6 +60,7 @@ def preserved_english_terms(prompt: str) -> tuple[str, ...]:
 
 @dataclass(frozen=True)
 class QueryPlan:
+    version: str
     raw_query: str
     normalized_query: str
     language: Language
@@ -72,6 +74,7 @@ class QueryPlan:
     @classmethod
     def from_dict(cls, blob: dict) -> "QueryPlan":
         return cls(
+            version=str(blob.get("version") or QUERY_PLAN_VERSION),
             raw_query=str(blob["raw_query"]),
             normalized_query=str(blob["normalized_query"]),
             language=blob["language"],
@@ -90,6 +93,7 @@ def build_query_plan(prompt: str) -> QueryPlan:
     if preserved:
         route_tags.append("preserve_english_terms")
     return QueryPlan(
+        version=QUERY_PLAN_VERSION,
         raw_query=prompt,
         normalized_query=normalize_query(prompt),
         language=language,

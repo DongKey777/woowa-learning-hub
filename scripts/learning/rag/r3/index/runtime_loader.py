@@ -9,11 +9,17 @@ from typing import Any
 from scripts.learning.rag import indexer
 
 from ..candidate import Candidate, R3Document
+from ..query_plan import QUERY_PLAN_VERSION, normalize_query
 from ..tokenization import tokenize_text
 
 _DOCUMENT_CACHE: dict[tuple[str, str, str, str, str, str], list[R3Document]] = {}
 _MAX_QUERY_DOCUMENT_CACHE_ENTRIES = 32
 _SPARSE_QUERY_ENCODER_CACHE: dict[str, Any] = {}
+_QUERY_ENCODING_CACHE: dict[
+    tuple[str, str, str, tuple[str, ...], str, str],
+    dict[str, Any],
+] = {}
+_MAX_QUERY_ENCODING_CACHE_ENTRIES = 256
 
 
 def load_legacy_documents(index_root: Path | str) -> list[R3Document]:
@@ -289,26 +295,42 @@ def encode_runtime_query(
     query: str,
     *,
     modalities: tuple[str, ...] = ("dense", "sparse"),
+    query_plan_version: str = QUERY_PLAN_VERSION,
 ) -> dict[str, Any]:
     """Encode a query with the index encoder for R3 first-stage retrieval.
 
     Sparse token ids are returned as strings so they share the same term space
     as ``R3Document.sparse_terms`` and Qdrant sparse payload generation.
+    Encodings are cached by index identity, modalities, normalized query, and
+    QueryPlan version so warm daemon sessions do not re-encode repeated prompts.
     """
 
-    manifest = indexer.read_manifest_v3(index_root)
+    root = Path(index_root)
+    manifest = indexer.read_manifest_v3(root)
     encoder_info = manifest.get("encoder", {})
     model_id = str(encoder_info.get("model_id") or "")
     model_version = str(encoder_info.get("model_version") or model_id)
-    cache_key = model_version or model_id
+    encoder_cache_key = model_version or model_id
     if model_id != "BAAI/bge-m3":
         return {}
-    encoder = _SPARSE_QUERY_ENCODER_CACHE.get(cache_key)
+    encoding_cache_key = (
+        str(root),
+        str(manifest.get("corpus_hash") or ""),
+        encoder_cache_key,
+        tuple(modalities),
+        normalize_query(query),
+        query_plan_version,
+    )
+    cached = _QUERY_ENCODING_CACHE.get(encoding_cache_key)
+    if cached is not None:
+        return _copy_query_encoding(cached)
+
+    encoder = _SPARSE_QUERY_ENCODER_CACHE.get(encoder_cache_key)
     if encoder is None:
         from scripts.learning.rag.encoders.bge_m3 import BgeM3Encoder
 
         encoder = BgeM3Encoder(model_id=model_id)
-        _SPARSE_QUERY_ENCODER_CACHE[cache_key] = encoder
+        _SPARSE_QUERY_ENCODER_CACHE[encoder_cache_key] = encoder
     try:
         encoding = encoder.encode_query(query, modalities=modalities)
     except Exception:
@@ -324,6 +346,20 @@ def encode_runtime_query(
             str(int(token_id)): float(weight)
             for token_id, weight in sparse_list[0].items()
         }
+    _QUERY_ENCODING_CACHE[encoding_cache_key] = _copy_query_encoding(out)
+    while len(_QUERY_ENCODING_CACHE) > _MAX_QUERY_ENCODING_CACHE_ENTRIES:
+        oldest = next(iter(_QUERY_ENCODING_CACHE))
+        _QUERY_ENCODING_CACHE.pop(oldest, None)
+    return _copy_query_encoding(out)
+
+
+def _copy_query_encoding(encoding: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    if "dense" in encoding:
+        dense = encoding["dense"]
+        out["dense"] = list(dense) if isinstance(dense, list) else dense
+    if "sparse_terms" in encoding:
+        out["sparse_terms"] = dict(encoding["sparse_terms"])
     return out
 
 

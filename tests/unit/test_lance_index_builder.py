@@ -111,6 +111,9 @@ def test_build_lance_index_writes_v3_manifest_and_table(tmp_path):
     assert manifest["encoder"]["max_length"] == 512
     assert manifest["encoder"]["batch_size"] == 32
     assert manifest["modalities"] == ["fts", "dense", "sparse"]
+    assert manifest["r3"]["query_plan_version"] == "r3.0"
+    assert manifest["r3"]["retrievers"]["sparse_sidecar"].startswith("bge-m3-sparse:")
+    assert manifest["r3"]["concept_catalog"]["concept_count"] == 0
     assert (index_root / indexer.LANCE_DIR_NAME).exists()
 
     persisted = indexer.read_manifest_v3(index_root)

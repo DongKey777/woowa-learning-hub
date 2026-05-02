@@ -165,7 +165,11 @@ def search(
     if index_root is not None and sparse_encoder_allowed:
         try:
             started = time.perf_counter()
-            query_encoding = encode_runtime_query(index_root, query_plan.raw_query)
+            query_encoding = encode_runtime_query(
+                index_root,
+                query_plan.raw_query,
+                query_plan_version=query_plan.version,
+            )
             _record_stage(stage_ms, "encode_runtime_query", started)
         except Exception:
             query_encoding = {}

@@ -44,6 +44,8 @@
       "properties": {
         "model_id": {"type": "string", "minLength": 1},
         "model_version": {"type": "string", "minLength": 1},
+        "dense_dim": {"type": "integer", "minimum": 1},
+        "colbert_dim": {"type": "integer", "minimum": 1},
         "max_length": {"type": "integer", "minimum": 1}
       }
     },
@@ -99,6 +101,50 @@
       "properties": {
         "chunk_max_chars": {"type": "integer", "minimum": 1},
         "chunk_overlap": {"type": "integer", "minimum": 0}
+      }
+    },
+    "r3": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "query_plan_version",
+        "corpus_schema_versions",
+        "retrievers",
+        "concept_catalog"
+      ],
+      "properties": {
+        "schema_version": {"type": "integer", "minimum": 1},
+        "query_plan_version": {"type": "string", "minLength": 1},
+        "corpus_schema_versions": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "retrievers": {
+          "type": "object",
+          "required": ["lexical_sidecar", "dense", "sparse_sidecar", "signal", "fusion"],
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "concept_catalog": {
+          "type": "object",
+          "required": ["schema_version", "concept_count", "query_seed_count", "sha256"],
+          "properties": {
+            "schema_version": {"type": "string", "minLength": 1},
+            "concept_count": {"type": "integer", "minimum": 0},
+            "query_seed_count": {"type": "integer", "minimum": 0},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        },
+        "qrels": {
+          "type": "object",
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "schema_version": {"type": ["string", "null"]},
+            "query_count": {"type": ["integer", "null"], "minimum": 0}
+          }
+        }
       }
     }
   }

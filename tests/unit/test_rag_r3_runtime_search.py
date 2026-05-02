@@ -9,6 +9,9 @@ from scripts.learning.rag.r3.candidate import R3Document
 from scripts.learning.rag.r3.index.lexical_sidecar import LoadedLexicalSidecar
 from scripts.learning.rag.r3.index.lexical_store import LexicalStore
 from scripts.learning.rag.r3.index.runtime_loader import (
+    _QUERY_ENCODING_CACHE,
+    _SPARSE_QUERY_ENCODER_CACHE,
+    encode_runtime_query,
     load_lance_documents,
     load_runtime_dense_candidates,
 )
@@ -383,6 +386,48 @@ def test_r3_sparse_retriever_cache_reuses_inverted_index():
     assert second_hit is True
 
 
+def test_r3_runtime_query_encoding_cache_uses_normalized_query_and_plan_version(
+    monkeypatch,
+    tmp_path,
+):
+    _QUERY_ENCODING_CACHE.clear()
+    _SPARSE_QUERY_ENCODER_CACHE.clear()
+    calls = {"encode": 0}
+
+    class FakeEncoder:
+        def encode_query(self, query, *, modalities):
+            calls["encode"] += 1
+            return {
+                "dense": [[1.0, 2.0]],
+                "sparse": [{42: 3.0}],
+            }
+
+    monkeypatch.setattr(
+        "scripts.learning.rag.r3.index.runtime_loader.indexer.read_manifest_v3",
+        lambda root: {
+            "corpus_hash": "hash",
+            "encoder": {
+                "model_id": "BAAI/bge-m3",
+                "model_version": "BAAI/bge-m3@test",
+            },
+        },
+    )
+    _SPARSE_QUERY_ENCODER_CACHE["BAAI/bge-m3@test"] = FakeEncoder()
+
+    first = encode_runtime_query(tmp_path, "  Latency가 뭐야? ")
+    first["sparse_terms"]["42"] = 999.0
+    second = encode_runtime_query(tmp_path, "latency가 뭐야?")
+    third = encode_runtime_query(
+        tmp_path,
+        "latency가 뭐야?",
+        query_plan_version="r3.1",
+    )
+
+    assert calls["encode"] == 2
+    assert second["sparse_terms"] == {"42": 3.0}
+    assert third["sparse_terms"] == {"42": 3.0}
+
+
 def test_r3_search_uses_prebuilt_lexical_sidecar(monkeypatch, tmp_path):
     documents = [
         R3Document(
@@ -687,7 +732,7 @@ def test_r3_sparse_sidecar_can_return_candidate_absent_from_fts_prefetch(
     )
     monkeypatch.setattr(
         "scripts.learning.rag.r3.search.encode_runtime_query",
-        lambda root, query: {"sparse_terms": {"42": 5.0}},
+        lambda root, query, **kwargs: {"sparse_terms": {"42": 5.0}},
     )
     debug: dict = {}
 
@@ -780,7 +825,7 @@ def test_r3_dense_candidate_can_return_candidate_absent_from_fts_prefetch(
     )
     monkeypatch.setattr(
         "scripts.learning.rag.r3.search.encode_runtime_query",
-        lambda root, query: {"dense": [0.1, 0.2]},
+        lambda root, query, **kwargs: {"dense": [0.1, 0.2]},
     )
     debug: dict = {}
 
@@ -845,7 +890,7 @@ def test_r3_cheap_mode_does_not_load_sparse_encoder(monkeypatch, tmp_path):
     )
     monkeypatch.setattr(
         "scripts.learning.rag.r3.search.encode_runtime_query",
-        lambda root, query: (_ for _ in ()).throw(AssertionError("encoder loaded")),
+        lambda root, query, **kwargs: (_ for _ in ()).throw(AssertionError("encoder loaded")),
     )
     debug: dict = {}
 

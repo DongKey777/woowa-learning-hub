@@ -1193,6 +1193,8 @@ class RunPodHarness:
             build_extra.append(f"--ivf-num-partitions {ivf_num_partitions}")
         if ivf_num_sub_vectors is not None:
             build_extra.append(f"--ivf-num-sub-vectors {ivf_num_sub_vectors}")
+        if r_phase == "r3":
+            build_extra.append(f"--r3-qrels {shlex.quote(R3_QREL_PATH)}")
         build_extra_str = (" " + " ".join(build_extra)) if build_extra else ""
         build_command = (
             "python -m scripts.learning.cli_cs_index_build "

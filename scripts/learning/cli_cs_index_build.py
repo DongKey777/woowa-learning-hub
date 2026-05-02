@@ -410,6 +410,15 @@ def main(
         help="Rows per LanceDB write batch after encoding (default: 128).",
     )
     parser.add_argument(
+        "--r3-qrels",
+        type=Path,
+        default=None,
+        help=(
+            "R3 qrel fixture to record in the v3 index manifest. "
+            "Used by remote R3 production builds."
+        ),
+    )
+    parser.add_argument(
         "--lance-max-eta-minutes",
         type=float,
         default=0.0,
@@ -528,6 +537,7 @@ def main(
                     dense_num_partitions=args.ivf_num_partitions,
                     dense_num_sub_vectors=args.ivf_num_sub_vectors,
                     write_batch_size=args.lance_write_batch_size,
+                    r3_qrels_path=args.r3_qrels,
                 )
                 try:
                     model_version = manifest.get("encoder", {}).get("model_version")

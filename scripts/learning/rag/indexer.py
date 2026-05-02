@@ -734,6 +734,95 @@ def _create_lance_indices(
     }
 
 
+def _r3_manifest_metadata(
+    *,
+    corpus_root: Path,
+    qrels_path: Path | None,
+    encoder_version: str,
+) -> dict:
+    """Build R3 provenance required to trust a local-served artifact.
+
+    This keeps retrieval contract evidence beside the index that uses it: the
+    QueryPlan version, retriever versions, Corpus v2 catalog identity, and the
+    qrel fixture used for cutover gates.
+    """
+
+    from scripts.learning.rag.r3.corpus_catalog import build_concept_catalog_v2
+    from scripts.learning.rag.r3.query_plan import QUERY_PLAN_VERSION
+
+    catalog = build_concept_catalog_v2(corpus_root)
+    catalog_json = json.dumps(
+        catalog.to_dict(),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    schema_versions = _corpus_schema_versions(corpus_root)
+    metadata = {
+        "schema_version": 1,
+        "query_plan_version": QUERY_PLAN_VERSION,
+        "corpus_schema_versions": schema_versions,
+        "retrievers": {
+            "lexical_sidecar": "metadata-bm25-v1",
+            "body_fts_prefetch": "lancedb-tantivy-ngram-v1",
+            "dense": f"bge-m3-dense:{encoder_version}",
+            "sparse_sidecar": f"bge-m3-sparse:{encoder_version}",
+            "signal": "route-tags-v1",
+            "fusion": "weighted-rrf-doc-diversity-v1",
+            "reranker": "bge-reranker-v2-m3:auto-policy-v1",
+        },
+        "concept_catalog": {
+            "schema_version": catalog.schema_version,
+            "concept_count": catalog.concept_count,
+            "query_seed_count": catalog.query_seed_count,
+            "sha256": hashlib.sha256(catalog_json).hexdigest(),
+        },
+    }
+    if qrels_path is not None:
+        metadata["qrels"] = _qrel_manifest_metadata(qrels_path)
+    return metadata
+
+
+def _corpus_schema_versions(corpus_root: Path) -> list[str]:
+    from scripts.learning.rag.corpus_lint import parse_frontmatter
+
+    versions: set[str] = set()
+    contents_root = corpus_root / "contents"
+    search_root = contents_root if contents_root.exists() else corpus_root
+    for path in sorted(search_root.rglob("*.md")):
+        try:
+            fm = parse_frontmatter(path.read_text(encoding="utf-8"))
+        except OSError:
+            continue
+        if fm and fm.get("schema_version") is not None:
+            versions.add(str(fm["schema_version"]))
+    return sorted(versions)
+
+
+def _qrel_manifest_metadata(qrels_path: Path) -> dict:
+    payload = qrels_path.read_bytes()
+    query_count: int | None = None
+    schema_version: str | None = None
+    try:
+        qrels = json.loads(payload.decode("utf-8"))
+    except json.JSONDecodeError:
+        qrels = None
+    if isinstance(qrels, dict):
+        raw_count = qrels.get("query_count")
+        if isinstance(raw_count, int):
+            query_count = raw_count
+        elif isinstance(qrels.get("queries"), list):
+            query_count = len(qrels["queries"])
+        if qrels.get("schema_version") is not None:
+            schema_version = str(qrels["schema_version"])
+    return {
+        "path": str(qrels_path),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "schema_version": schema_version,
+        "query_count": query_count,
+    }
+
+
 def build_lance_index(
     index_root: Path | str = DEFAULT_INDEX_ROOT,
     corpus_root: Path | str = corpus_loader.DEFAULT_CORPUS_ROOT,
@@ -745,6 +834,7 @@ def build_lance_index(
     dense_num_partitions: int | None = None,
     dense_num_sub_vectors: int | None = None,
     write_batch_size: int = DEFAULT_LANCE_WRITE_BATCH_SIZE,
+    r3_qrels_path: Path | str | None = None,
 ) -> dict:
     """Build the v3 LanceDB index from scratch.
 
@@ -865,6 +955,11 @@ def build_lance_index(
             "chunk_overlap": 0,
             "write_batch_size": write_batch_size,
         },
+        "r3": _r3_manifest_metadata(
+            corpus_root=Path(corpus_root),
+            qrels_path=Path(r3_qrels_path) if r3_qrels_path is not None else None,
+            encoder_version=encoder.model_version,
+        ),
     }
     _tick("write_manifest", manifest)
     manifest_path.write_text(

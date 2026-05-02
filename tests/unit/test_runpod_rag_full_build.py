@@ -330,11 +330,13 @@ def test_remote_commands_for_r3_package_strict_artifact_metadata():
 
     package_cmd = next(c for c in cmds if "package_rag_artifact" in c)
     sidecar_cmd = next(c for c in cmds if "r3.index.lexical_sidecar" in c)
+    build_cmd = next(c for c in cmds if "cli_cs_index_build" in c)
     build_idx = next(i for i, c in enumerate(cmds) if "cli_cs_index_build" in c)
     sidecar_idx = cmds.index(sidecar_cmd)
     package_idx = cmds.index(package_cmd)
 
     assert build_idx < sidecar_idx < package_idx
+    assert f"--r3-qrels {H.R3_QREL_PATH}" in build_cmd
     assert "--index-root /workspace/cs_rag/" in sidecar_cmd
     assert "--strict-r3" in package_cmd
     assert "--build-command" in package_cmd
