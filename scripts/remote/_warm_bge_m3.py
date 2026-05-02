@@ -36,6 +36,7 @@ import os
 import signal
 import subprocess
 import sys
+import threading
 import time
 
 MODEL_ID = "BAAI/bge-m3"
@@ -45,34 +46,56 @@ ATTEMPT_TIMEOUT_S = 900  # 15 min — generous for slow Pods, short
                          # enough to recover from stalls within R1 budget
 
 
+# python -c expects single-line statements separated by ';'. Multi-line
+# 'def' / 'while' bodies don't fit. We keep the child script simple
+# (snapshot_download + constructor) and run the SSH-channel keepalive
+# from the *parent* process instead — see _start_parent_heartbeat.
 _WARM_SCRIPT = (
-    "import os, sys, time; "
+    "import os; "
     "os.environ.setdefault('HF_HUB_DOWNLOAD_TIMEOUT', '300'); "
-    # Print every 5 seconds so SSH channel sees traffic and community-Pod
-    # sshd doesn't drop the connection during silent model load. R3 v1
-    # OOM was actually a silent SSH disconnect on the v3 build attempt
-    # (rc=-1 after 47s with 'Fetching 30 files: 100%' on stderr but no
-    # stdout for the constructor phase) — adding a keepalive print loop
-    # in a thread keeps the channel alive without pausing the load.
-    "import threading; "
-    "_alive = [True]; "
-    "def _heartbeat():\n"
-    "  i = 0\n"
-    "  while _alive[0]:\n"
-    "    print(f'[warm-child] heartbeat {i}', flush=True); i += 1; time.sleep(5)\n"
-    "; "
-    "threading.Thread(target=_heartbeat, daemon=True).start(); "
     # Phase A: snapshot_download — pure HF cache I/O, no model load.
-    # If A succeeds, weights are on disk and any retry path can resume.
+    # If A succeeds, weights are on disk and any retry path resumes.
     "from huggingface_hub import snapshot_download; "
     "snapshot_download(repo_id={model_id!r}); "
     "print('[warm-child] snapshot_download complete', flush=True); "
     # Phase B: instantiate the constructor (validates GPU + tokenizer).
     "from FlagEmbedding import BGEM3FlagModel; "
     "BGEM3FlagModel({model_id!r}); "
-    "_alive[0] = False; "
     "print('[warm-child] BGEM3FlagModel constructed', flush=True)"
 )
+
+
+def _start_parent_heartbeat() -> tuple[threading.Thread, list[bool]]:
+    """Print a heartbeat to stdout every 5 seconds so the parent SSH
+    exec channel sees continuous traffic during the silent model load.
+
+    Why this lives in the parent (not the child subprocess): RunPod
+    community pod sshd kills exec channels with no stdout/stderr
+    traffic for ~30-60s. The child's snapshot_download phase is noisy
+    (30-file progress bars), but the BGEM3FlagModel constructor that
+    follows is silent for 30-90s while it loads ~3 GB of weights into
+    GPU/RAM. R3 v3 build (commit 1730e56) hit exactly this — rc=-1
+    after 47s with 'Fetching 30 files: 100%' on stderr, then nothing.
+
+    Earlier attempt (commit 32e92b5) put the heartbeat *inside* the
+    child via 'python -c' — but python -c can't execute multi-line
+    'def' / 'while' bodies, so the child died on SyntaxError (rc=1
+    after 2s, R3 v4 build). Putting the loop in the parent is the
+    right place anyway: it's the parent's stdout that the SSH channel
+    is reading.
+    """
+    alive = [True]
+
+    def _heartbeat() -> None:
+        i = 0
+        while alive[0]:
+            print(f"[warm] parent heartbeat {i}", flush=True)
+            time.sleep(5)
+            i += 1
+
+    thread = threading.Thread(target=_heartbeat, daemon=True)
+    thread.start()
+    return thread, alive
 
 
 def _warm_attempt(model_id: str, timeout_s: int) -> int:
@@ -107,6 +130,11 @@ def _warm_attempt(model_id: str, timeout_s: int) -> int:
 
 def main() -> int:
     os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "300")
+    # Start the SSH-channel keepalive once for the whole main() call.
+    # Daemon thread dies when the script returns, so we don't need to
+    # explicitly stop it on success — but we flip alive[0]=False as a
+    # courtesy for clean log tails.
+    _hb_thread, hb_alive = _start_parent_heartbeat()
     last_rc: int | None = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         print(
@@ -118,6 +146,7 @@ def main() -> int:
         last_rc = rc
         if rc == 0:
             print(f"[warm] success on attempt {attempt}", flush=True)
+            hb_alive[0] = False
             return 0
         print(f"[warm] attempt {attempt} failed (rc={rc})", flush=True)
         if attempt < MAX_ATTEMPTS:
@@ -126,6 +155,7 @@ def main() -> int:
             time.sleep(wait_s)
     print(f"[warm] all {MAX_ATTEMPTS} attempts failed; last_rc={last_rc}",
           flush=True)
+    hb_alive[0] = False
     return 1
 
 
