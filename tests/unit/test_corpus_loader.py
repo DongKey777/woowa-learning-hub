@@ -183,7 +183,18 @@ why dependency injection makes object construction explicit in beginner code.
         self.assertEqual(chunk.difficulty, "beginner")
         self.assertEqual(
             chunk.anchors,
-            ["DI", "dependency injection", "의존성 주입", "new 대신 주입", "객체 조립"],
+            [
+                "DI",
+                "dependency injection",
+                "의존성 주입",
+                "DI가 뭐야?",
+                "new 대신 주입",
+                "객체 조립",
+            ],
+        )
+        self.assertIn(
+            "[retrieval anchors] DI가 뭐야? | new 대신 주입 | 객체 조립",
+            chunk.body,
         )
 
 

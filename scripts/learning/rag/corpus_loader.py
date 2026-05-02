@@ -30,7 +30,9 @@ Woowa CS notes carry retrieval phrases in a few live markdown forms:
 ``### Retrieval Anchors`` sections, inline ``retrieval-anchor-keywords:``
 metadata, and inline ``Retrieval anchors:`` metadata. We extract those
 phrases once per document and append them to every chunk's body so FTS
-recall and dense embeddings both pick up the intent — e.g. a
+recall and dense embeddings both pick up the intent. Corpus v2
+``expected_queries`` are treated the same way because they are executable
+retrieval-contract phrases, not passive documentation — e.g. a
 "repository boundary" query hits every chunk of
 ``repository-pattern-vs-antipattern.md`` via the anchors even when the
 chunk text itself is discussing a tangential subtopic. Dedupe-by-path
@@ -372,11 +374,22 @@ def _emit_chunks(
     doc_role: str | None = None,
     level: str | None = None,
     frontmatter_aliases: list[str] | None = None,
+    frontmatter_expected_queries: list[str] | None = None,
 ) -> Iterator[CorpusChunk]:
+    document_retrieval_phrases = _dedupe_phrases(
+        frontmatter_expected_queries or [],
+        retrieval_anchors or [],
+    )
     anchor_suffix = ""
-    if retrieval_anchors:
-        anchor_suffix = "\n\n[retrieval anchors] " + " | ".join(retrieval_anchors)
-    document_aliases = _dedupe_phrases(frontmatter_aliases or [], retrieval_anchors or [])
+    if document_retrieval_phrases:
+        anchor_suffix = (
+            "\n\n[retrieval anchors] "
+            + " | ".join(document_retrieval_phrases)
+        )
+    document_aliases = _dedupe_phrases(
+        frontmatter_aliases or [],
+        document_retrieval_phrases,
+    )
     counter = 0
     for h2, body in sections:
         pieces: list[tuple[list[str], str]] = []
@@ -460,6 +473,9 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             doc_role=_frontmatter_string(frontmatter, "doc_role"),
             level=_frontmatter_string(frontmatter, "level"),
             frontmatter_aliases=_frontmatter_list(frontmatter, "aliases"),
+            frontmatter_expected_queries=_frontmatter_list(
+                frontmatter, "expected_queries"
+            ),
         )
 
 

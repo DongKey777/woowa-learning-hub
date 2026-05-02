@@ -72,7 +72,7 @@ DEFAULT_MODALITIES_PER_PHASE = {
     "r4": ("fts", "dense", "sparse"),  # rerank-only, build reuses R3 stack
 }
 
-R3_QREL_PATH = "reports/rag_eval/r3_corpus_v2_qrels_20260501T1640Z.json"
+R3_QREL_PATH = "reports/rag_eval/r3_corpus_v2_qrels_20260502T0757Z.json"
 
 
 # ---------------------------------------------------------------------------
