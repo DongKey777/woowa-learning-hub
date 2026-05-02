@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Spring Security Filter Chain"
+concept_id: "spring/spring-security-filter-chain"
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+aliases:
+  - Spring Security filter chain
+  - SecurityFilterChain
+  - DelegatingFilterProxy
+  - ExceptionTranslationFilter
+  - AuthorizationFilter
+expected_queries:
+  - Spring Security filter chain은 어떤 순서로 인증과 인가를 처리해?
+  - ExceptionTranslationFilter가 401과 403을 어떻게 가르지?
+  - permitAll인데 invalid bearer token 때문에 401이 나는 이유가 뭐야?
+  - SecurityFilterChain과 서블릿 Filter는 어떻게 연결돼?
+acceptable_neighbors:
+  - contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+  - contents/spring/spring-security-filter-chain-ordering.md
+  - contents/security/auth-failure-response-401-403-404.md
+companion_neighbors:
+  - contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
+  - contents/security/session-cookie-jwt-basics.md
+forbidden_neighbors:
+  - contents/spring/spring-mvc-controller-basics.md
+---
+
 # Spring Security Filter Chain
 
 > 한 줄 요약: Spring Security는 "체크리스트를 도는 인터셉터"가 아니라 서블릿 필터 체인 앞단에 끼워진 **별도의 필터 체인**이고, 인증과 인가는 체인 안의 서로 다른 단계에서 서로 다른 책임으로 돈다 — 이 순서를 이해해야 401과 403의 경계, JWT/OAuth 흐름, `permitAll()`이 통하지 않는 이유를 설명할 수 있다.

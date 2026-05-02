@@ -1,3 +1,29 @@
+---
+schema_version: 2
+title: "Strategy Registry vs Service Locator Drift Note"
+concept_id: "design-pattern/strategy-registry-vs-service-locator-drift"
+difficulty: beginner
+doc_role: bridge
+level: beginner
+aliases:
+  - strategy registry vs service locator
+  - strategy lookup helper smell
+  - strategy selector service locator
+  - 전역 조회소 냄새
+  - 숨은 의존성 조회
+expected_queries:
+  - strategy registry가 언제 service locator 냄새가 돼?
+  - Map으로 전략을 찾는 helper가 숨은 의존성이 되는 기준은 뭐야?
+  - payment strategy registry를 전역 조회소처럼 쓰면 왜 문제야?
+  - strategy selector와 service locator를 리뷰에서 어떻게 구분해?
+acceptable_neighbors:
+  - contents/design-pattern/strategy-map-vs-registry-primer.md
+  - contents/design-pattern/service-locator-antipattern.md
+  - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+companion_neighbors:
+  - contents/software-engineering/dependency-injection-basics.md
+---
+
 # Strategy Registry vs Service Locator Drift Note
 
 > 한 줄 요약: 전략을 key로 찾는 helper는 좁은 selector일 수 있지만, 아무 전략이나 전역에서 꺼내 주기 시작하면 service locator 냄새가 난다.

@@ -1,3 +1,30 @@
+---
+schema_version: 2
+title: "Fetch Credentials vs Cookie Scope"
+concept_id: "security/fetch-credentials-vs-cookie-scope"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - fetch credentials vs cookie scope
+  - credentials include cookie missing
+  - cookie stored but not sent
+  - same-origin vs same-site fetch
+  - CORS credential policy
+expected_queries:
+  - fetch credentials include를 줬는데 cookie가 안 붙으면 뭘 봐?
+  - credentials include와 cookie scope는 어떻게 달라?
+  - Application에는 cookie가 있는데 cross-origin request header가 비면 어디서 시작해?
+  - CORS credential policy와 cookie scope를 어떻게 구분해?
+acceptable_neighbors:
+  - contents/security/cookie-scope-mismatch-guide.md
+  - contents/security/cookie-failure-three-way-splitter.md
+  - contents/network/cross-origin-cookie-credentials-cors-primer.md
+companion_neighbors:
+  - contents/security/preflight-debug-checklist.md
+  - contents/security/browser-401-vs-302-login-redirect-guide.md
+---
+
 # Fetch Credentials vs Cookie Scope
 
 > 한 줄 요약: `credentials: "include"`는 "브라우저가 credential을 실어도 된다"는 요청 옵션일 뿐이다. 실제 cookie가 붙으려면 cookie scope도 맞아야 하고, JavaScript가 응답을 읽으려면 서버 CORS credential 정책도 따로 맞아야 한다.

@@ -1,3 +1,31 @@
+---
+schema_version: 2
+title: "Post-Write Stale Dashboard Primer"
+concept_id: "system-design/post-write-stale-dashboard-primer"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - post-write stale dashboard
+  - stale read dashboard
+  - read source distribution
+  - primary fallback headroom
+  - stale window dashboard
+expected_queries:
+  - post-write stale dashboard는 뭘 보여줘야 해?
+  - write 직후 stale read가 실제로 있었는지 어떤 화면에서 봐?
+  - primary fallback headroom을 stale dashboard에서 왜 같이 봐?
+  - stale window 안에서 read source distribution을 어떻게 해석해?
+acceptable_neighbors:
+  - contents/system-design/read-after-write-routing-primer.md
+  - contents/design-pattern/projection-freshness-slo-pattern.md
+  - contents/system-design/mixed-cache-replica-freshness-bridge.md
+companion_neighbors:
+  - contents/database/replica-lag-observability-routing-slo.md
+forbidden_neighbors:
+  - contents/security/audit-logging-auth-authz-traceability.md
+---
+
 # Post-Write Stale Dashboard Primer
 
 > 한 줄 요약: post-write stale dashboard는 write 직후 [stale window](./cross-primer-glossary-anchors.md#term-stale-window) 안에서 stale read가 실제로 보였는지, 그 read가 어느 source에서 왔는지, primary fallback이 늘어날 때 [headroom](./cross-primer-glossary-anchors.md#term-headroom)이 남는지를 한 화면으로 묶어 보는 초보자용 운영 대시보드 입문이다.

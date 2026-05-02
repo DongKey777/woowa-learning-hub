@@ -10,6 +10,9 @@
 - [System Design Foundations](./system-design-foundations.md)
 - [Consistency, Idempotency, and Async Workflow Foundations](./consistency-idempotency-async-workflow-foundations.md)
 - [Cross-Primer Glossary Anchors](./cross-primer-glossary-anchors.md)
+- [Read-After-Write Routing Primer](./read-after-write-routing-primer.md)
+- [Projection Applied Watermark Basics](./projection-applied-watermark-basics.md)
+- [Post-Write Stale Dashboard Primer](./post-write-stale-dashboard-primer.md)
 - [database 카테고리 인덱스](../database/README.md)
 
 retrieval-anchor-keywords: system design catalog, system design reading route, beginner consistency route, notification watermark route, system design bridge index, 처음 배우는데 system design 뭐부터 읽어요, basics route, 알림 숫자 해석 뭐예요, consistency route primer, system design 뭐부터, system design 처음, backend mission system design first route, service repository 다음에 system design, 왜 queue가 system design에서도 나와요, queue handoff vs bfs, what is system design basics

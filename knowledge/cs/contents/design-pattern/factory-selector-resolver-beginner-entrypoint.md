@@ -1,3 +1,29 @@
+---
+schema_version: 2
+title: "Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림"
+concept_id: "design-pattern/factory-selector-resolver-beginner-entrypoint"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - factory selector resolver
+  - Factory vs Selector vs Resolver
+  - 생성 vs 선택 네이밍
+  - selector naming
+  - factory 이름 언제 쓰나
+expected_queries:
+  - Factory랑 Selector, Resolver 이름은 어떻게 구분해?
+  - 새 객체를 만들지 않는데 Factory라고 불러도 돼?
+  - selector naming이 헷갈릴 때 처음 어디서 봐야 해?
+  - Map으로 하나 고르는 코드가 factory인지 selector인지 모르겠어
+acceptable_neighbors:
+  - contents/design-pattern/registry-primer-lookup-table-resolver-router-service-locator.md
+  - contents/design-pattern/strategy-map-vs-registry-primer.md
+  - contents/design-pattern/factory-vs-di-container-wiring.md
+companion_neighbors:
+  - contents/design-pattern/map-backed-selector-resolver-registry-factory-naming-checklist.md
+---
+
 # Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림
 
 > 한 줄 요약: 이름을 붙이기 전에 먼저 질문을 고정한다. **"지금 새로 만들고 있나?"**면 `Factory`, 아니면 선택/해석 책임을 먼저 본다.

@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Cookie Failure Three-Way Splitter"
+concept_id: "security/cookie-failure-three-way-splitter"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - cookie failure splitter
+  - blocked Set-Cookie vs stored not sent vs sent but anonymous
+  - cookie sent but server anonymous
+  - login loop cookie splitter
+  - cookie debug first split
+expected_queries:
+  - cookie 문제가 Set-Cookie blocked인지 stored not sent인지 server anonymous인지 어떻게 나눠?
+  - Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?
+  - request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
+  - login loop cookie splitter가 뭐야?
+acceptable_neighbors:
+  - contents/security/browser-401-vs-302-login-redirect-guide.md
+  - contents/security/cookie-scope-mismatch-guide.md
+  - contents/security/fetch-credentials-vs-cookie-scope.md
+companion_neighbors:
+  - contents/security/cookie-devtools-field-checklist-primer.md
+  - contents/security/cookie-rejection-reason-primer.md
+forbidden_neighbors:
+  - contents/security/jwt-deep-dive.md
+---
+
 # Cookie Failure Three-Way Splitter
 
 > 한 줄 요약: cookie 문제는 보통 하나가 아니라 세 갈래다. `Set-Cookie`가 아예 막혔는지, 저장은 됐지만 다음 요청에 안 붙는지, request에는 실렸는데 서버가 여전히 anonymous로 보는지를 먼저 갈라야 한다.

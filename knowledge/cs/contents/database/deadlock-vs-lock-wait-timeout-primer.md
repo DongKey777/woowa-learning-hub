@@ -1,3 +1,31 @@
+---
+schema_version: 2
+title: "Deadlock vs Lock Wait Timeout 입문 프라이머"
+concept_id: "database/deadlock-vs-lock-wait-timeout-primer"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - deadlock vs lock wait timeout
+  - deadlock vs lock timeout
+  - lock wait timeout vs deadlock
+  - deadlock victim
+  - waiting for lock basics
+expected_queries:
+  - deadlock과 lock wait timeout은 뭐가 달라?
+  - lock timeout이면 무조건 retry해도 돼?
+  - deadlock victim이 뭔지 처음 배우는데 어디서 봐?
+  - lock wait timeout과 already exists를 어떻게 구분해?
+acceptable_neighbors:
+  - contents/database/lock-basics.md
+  - contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+  - contents/database/lock-wait-deadlock-latch-triage-playbook.md
+companion_neighbors:
+  - contents/spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix.md
+forbidden_neighbors:
+  - contents/spring/spring-transactional-basics.md
+---
+
 # Deadlock vs Lock Wait Timeout 입문 프라이머
 
 > 한 줄 요약: `deadlock`은 서로가 서로를 막아 DB가 희생자 하나를 고른 경우이고, `lock wait timeout`은 줄이 안 빠져 이번 시도가 기다리다 끝난 경우다.

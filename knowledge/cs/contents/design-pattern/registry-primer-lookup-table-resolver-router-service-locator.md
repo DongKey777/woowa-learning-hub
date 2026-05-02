@@ -1,3 +1,29 @@
+---
+schema_version: 2
+title: "Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기"
+concept_id: "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - registry primer
+  - lookup table vs registry
+  - resolver vs registry
+  - router vs registry
+  - service locator vs registry
+expected_queries:
+  - registry랑 lookup table, resolver, router는 어떻게 달라?
+  - service locator랑 registry가 왜 다른 냄새야?
+  - resolver router registry를 처음 구분하려면 어디서 봐야 해?
+  - 이미 등록된 객체를 key로 찾는 코드는 무슨 이름이 좋아?
+acceptable_neighbors:
+  - contents/design-pattern/factory-selector-resolver-beginner-entrypoint.md
+  - contents/design-pattern/service-locator-antipattern.md
+  - contents/design-pattern/strategy-map-vs-registry-primer.md
+companion_neighbors:
+  - contents/design-pattern/injected-registry-vs-service-locator-checklist.md
+---
+
 # Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기
 
 > 한 줄 요약: 초보자가 `lookup table`, `resolver`, `router`, `service locator`를 모두 "어딘가에서 찾아오는 코드"로 묶어 헷갈릴 때, 먼저 "단순 조회인지, 입력 해석인지, 요청 분기인지, 숨은 의존성 조회인지"로 나누면 된다.

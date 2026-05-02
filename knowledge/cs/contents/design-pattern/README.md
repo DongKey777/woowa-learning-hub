@@ -64,8 +64,12 @@ retrieval-anchor-keywords: design pattern readme, design pattern beginner route,
 
 - 템플릿 메소드 vs 전략 경계: [템플릿 메소드 vs 전략](./template-method-vs-strategy.md)
 - 팩토리 이름 남용 점검: [Factory Misnaming Checklist: create 없는 `*Factory`를 리뷰에서 빨리 가르기](./factory-misnaming-checklist.md)
+- factory/selector/resolver 첫 분기: [Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림](./factory-selector-resolver-beginner-entrypoint.md)
+- registry/lookup/service locator 첫 분기: [Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기](./registry-primer-lookup-table-resolver-router-service-locator.md)
+- strategy map과 registry 경계: [Strategy Map vs Registry Primer](./strategy-map-vs-registry-primer.md)
 - registry와 wiring 분리: [주입된 Handler Map에서 Registry vs Factory: lookup과 creation을 분리하기](./registry-vs-factory-injected-handler-maps.md)
 - repository/read model follow-up: [Repository Boundary: Aggregate Persistence vs Read Model](./repository-boundary-aggregate-vs-read-model.md)
+- read model freshness 운영: [Read Model Staleness and Read-Your-Writes](./read-model-staleness-read-your-writes.md) -> [Projection Freshness SLO Pattern](./projection-freshness-slo-pattern.md)
 - backend/DDD 쪽 확장: [Design Pattern / Read Model + Database + System Design](../../rag/cross-domain-bridge-map.md#design-pattern--read-model--database--system-design)
 
 운영, cutover, incident 대응 성격의 문서는 여기서 바로 읽기보다 위 entrypoint를 통과한 뒤 필요한 주제만 따라가는 편이 beginner-first 동선에 맞다.

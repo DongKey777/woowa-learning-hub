@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Browser 401 vs 302 Login Redirect Guide"
+concept_id: "security/browser-401-vs-302-login-redirect-guide"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - browser 401 vs 302
+  - login redirect guide
+  - saved request bounce
+  - final html 200 is not api success
+  - 쿠키는 있는데 왜 다시 로그인
+expected_queries:
+  - 브라우저에서 401 대신 302 /login이 보이면 뭘 봐야 해?
+  - fetch가 login HTML 200을 받았는데 API 성공이 아닌 이유가 뭐야?
+  - 쿠키는 있는데 왜 다시 로그인되는지 3단계로 어떻게 나눠?
+  - SavedRequest bounce랑 cookie missing을 어떻게 구분해?
+acceptable_neighbors:
+  - contents/security/cookie-failure-three-way-splitter.md
+  - contents/security/cookie-scope-mismatch-guide.md
+  - contents/security/fetch-credentials-vs-cookie-scope.md
+companion_neighbors:
+  - contents/spring/spring-security-filter-chain.md
+  - contents/spring/spring-securitycontextrepository-sessioncreationpolicy-boundaries.md
+forbidden_neighbors:
+  - contents/database/read-your-writes-session-pinning.md
+---
+
 # Browser `401` vs `302` Login Redirect Guide
 
 > 한 줄 요약: 브라우저 앱에서 보이는 `302 -> /login`은 종종 raw `401`을 브라우저 UX로 감싼 `browser 401 -> 302 /login bounce`이고, `fetch` 최종 login HTML `200`은 API 성공이 아니라 redirect를 따라간 마지막 표면일 수 있으며, 초보자가 말하는 `hidden session`은 대개 cookie reference는 보이지만 서버가 auth/session을 못 복원하는 장면을 뜻한다.

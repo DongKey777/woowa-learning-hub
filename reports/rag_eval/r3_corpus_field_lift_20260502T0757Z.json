@@ -1,0 +1,850 @@
+{
+  "corpus_root": "knowledge/cs/contents",
+  "field_runs": {
+    "body_aliases": {
+      "document_count": 52,
+      "fields": [
+        "body",
+        "aliases"
+      ],
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "1": 0.6153846153846154,
+              "20": 1.0,
+              "5": 0.9759615384615384
+            },
+            "candidate_recall_relevant": {
+              "1": 0.8125,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.6153846153846154,
+              "20": 1.0,
+              "5": 0.9759615384615384
+            },
+            "final_hit_relevant": {
+              "1": 0.8125,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 208
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "1": 0.64,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "candidate_recall_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.64,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "final_hit_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 25
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "1": 0.6120218579234973,
+              "20": 1.0,
+              "5": 0.9781420765027322
+            },
+            "candidate_recall_relevant": {
+              "1": 0.825136612021858,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.6120218579234973,
+              "20": 1.0,
+              "5": 0.9781420765027322
+            },
+            "final_hit_relevant": {
+              "1": 0.825136612021858,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 183
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9772727272727273
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7727272727272727,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9772727272727273
+            },
+            "final_hit_relevant": {
+              "1": 0.7727272727272727,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 44
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "1": 0.6013513513513513,
+              "20": 1.0,
+              "5": 0.9797297297297297
+            },
+            "candidate_recall_relevant": {
+              "1": 0.8175675675675675,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.6013513513513513,
+              "20": 1.0,
+              "5": 0.9797297297297297
+            },
+            "final_hit_relevant": {
+              "1": 0.8175675675675675,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 148
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "1": 0.75,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "candidate_recall_relevant": {
+              "1": 0.875,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.75,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "final_hit_relevant": {
+              "1": 0.875,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 16
+          }
+        },
+        "forbidden_query_ids": [],
+        "missing_candidate_primary_query_ids": [],
+        "missing_final_primary_query_ids": [],
+        "overall": {
+          "candidate_recall_primary": {
+            "1": 0.6153846153846154,
+            "20": 1.0,
+            "5": 0.9759615384615384
+          },
+          "candidate_recall_relevant": {
+            "1": 0.8125,
+            "20": 1.0,
+            "5": 1.0
+          },
+          "final_hit_primary": {
+            "1": 0.6153846153846154,
+            "20": 1.0,
+            "5": 0.9759615384615384
+          },
+          "final_hit_relevant": {
+            "1": 0.8125,
+            "20": 1.0,
+            "5": 1.0
+          },
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
+          "forbidden_window": 5,
+          "total": 208
+        },
+        "windows": [
+          1,
+          5,
+          20
+        ]
+      }
+    },
+    "body_only": {
+      "document_count": 52,
+      "fields": [
+        "body"
+      ],
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "1": 0.3942307692307692,
+              "20": 0.9903846153846154,
+              "5": 0.8365384615384616
+            },
+            "candidate_recall_relevant": {
+              "1": 0.6394230769230769,
+              "20": 0.9951923076923077,
+              "5": 0.9086538461538461
+            },
+            "final_hit_primary": {
+              "1": 0.3942307692307692,
+              "20": 0.9903846153846154,
+              "5": 0.8365384615384616
+            },
+            "final_hit_relevant": {
+              "1": 0.6394230769230769,
+              "20": 0.9951923076923077,
+              "5": 0.9086538461538461
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.004807692307692308,
+            "forbidden_window": 5,
+            "total": 208
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "1": 0.56,
+              "20": 1.0,
+              "5": 0.88
+            },
+            "candidate_recall_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "final_hit_primary": {
+              "1": 0.56,
+              "20": 1.0,
+              "5": 0.88
+            },
+            "final_hit_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.04,
+            "forbidden_window": 5,
+            "total": 25
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "1": 0.37158469945355194,
+              "20": 0.9890710382513661,
+              "5": 0.8306010928961749
+            },
+            "candidate_recall_relevant": {
+              "1": 0.6284153005464481,
+              "20": 0.994535519125683,
+              "5": 0.9016393442622951
+            },
+            "final_hit_primary": {
+              "1": 0.37158469945355194,
+              "20": 0.9890710382513661,
+              "5": 0.8306010928961749
+            },
+            "final_hit_relevant": {
+              "1": 0.6284153005464481,
+              "20": 0.994535519125683,
+              "5": 0.9016393442622951
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 183
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "1": 0.4318181818181818,
+              "20": 1.0,
+              "5": 0.8863636363636364
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7727272727272727,
+              "20": 1.0,
+              "5": 0.9090909090909091
+            },
+            "final_hit_primary": {
+              "1": 0.4318181818181818,
+              "20": 1.0,
+              "5": 0.8863636363636364
+            },
+            "final_hit_relevant": {
+              "1": 0.7727272727272727,
+              "20": 1.0,
+              "5": 0.9090909090909091
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 44
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "1": 0.38513513513513514,
+              "20": 0.9864864864864865,
+              "5": 0.8175675675675675
+            },
+            "candidate_recall_relevant": {
+              "1": 0.6216216216216216,
+              "20": 0.9932432432432432,
+              "5": 0.9054054054054054
+            },
+            "final_hit_primary": {
+              "1": 0.38513513513513514,
+              "20": 0.9864864864864865,
+              "5": 0.8175675675675675
+            },
+            "final_hit_relevant": {
+              "1": 0.6216216216216216,
+              "20": 0.9932432432432432,
+              "5": 0.9054054054054054
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.006756756756756757,
+            "forbidden_window": 5,
+            "total": 148
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "1": 0.375,
+              "20": 1.0,
+              "5": 0.875
+            },
+            "candidate_recall_relevant": {
+              "1": 0.4375,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "final_hit_primary": {
+              "1": 0.375,
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_relevant": {
+              "1": 0.4375,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 16
+          }
+        },
+        "forbidden_query_ids": [
+          "design-pattern/template-method-vs-strategy:expected:1"
+        ],
+        "missing_candidate_primary_query_ids": [
+          "database/deadlock-vs-lock-wait-timeout-primer:expected:3",
+          "spring/primary-qualifier-collection-injection:expected:2"
+        ],
+        "missing_final_primary_query_ids": [
+          "database/deadlock-vs-lock-wait-timeout-primer:expected:3",
+          "spring/primary-qualifier-collection-injection:expected:2"
+        ],
+        "overall": {
+          "candidate_recall_primary": {
+            "1": 0.3942307692307692,
+            "20": 0.9903846153846154,
+            "5": 0.8365384615384616
+          },
+          "candidate_recall_relevant": {
+            "1": 0.6394230769230769,
+            "20": 0.9951923076923077,
+            "5": 0.9086538461538461
+          },
+          "final_hit_primary": {
+            "1": 0.3942307692307692,
+            "20": 0.9903846153846154,
+            "5": 0.8365384615384616
+          },
+          "final_hit_relevant": {
+            "1": 0.6394230769230769,
+            "20": 0.9951923076923077,
+            "5": 0.9086538461538461
+          },
+          "forbidden_hits": 1,
+          "forbidden_rate": 0.004807692307692308,
+          "forbidden_window": 5,
+          "total": 208
+        },
+        "windows": [
+          1,
+          5,
+          20
+        ]
+      }
+    },
+    "body_title": {
+      "document_count": 52,
+      "fields": [
+        "body",
+        "title"
+      ],
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "1": 0.4855769230769231,
+              "20": 0.9951923076923077,
+              "5": 0.8846153846153846
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7211538461538461,
+              "20": 0.9951923076923077,
+              "5": 0.9519230769230769
+            },
+            "final_hit_primary": {
+              "1": 0.4855769230769231,
+              "20": 0.9951923076923077,
+              "5": 0.8846153846153846
+            },
+            "final_hit_relevant": {
+              "1": 0.7211538461538461,
+              "20": 0.9951923076923077,
+              "5": 0.9519230769230769
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.004807692307692308,
+            "forbidden_window": 5,
+            "total": 208
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "1": 0.52,
+              "20": 1.0,
+              "5": 0.88
+            },
+            "candidate_recall_relevant": {
+              "1": 0.68,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "final_hit_primary": {
+              "1": 0.52,
+              "20": 1.0,
+              "5": 0.88
+            },
+            "final_hit_relevant": {
+              "1": 0.68,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.04,
+            "forbidden_window": 5,
+            "total": 25
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "1": 0.4808743169398907,
+              "20": 0.994535519125683,
+              "5": 0.8852459016393442
+            },
+            "candidate_recall_relevant": {
+              "1": 0.726775956284153,
+              "20": 0.994535519125683,
+              "5": 0.9508196721311475
+            },
+            "final_hit_primary": {
+              "1": 0.4808743169398907,
+              "20": 0.994535519125683,
+              "5": 0.8852459016393442
+            },
+            "final_hit_relevant": {
+              "1": 0.726775956284153,
+              "20": 0.994535519125683,
+              "5": 0.9508196721311475
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 183
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9318181818181818
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7954545454545454,
+              "20": 1.0,
+              "5": 0.9318181818181818
+            },
+            "final_hit_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9318181818181818
+            },
+            "final_hit_relevant": {
+              "1": 0.7954545454545454,
+              "20": 1.0,
+              "5": 0.9318181818181818
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 44
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "1": 0.47297297297297297,
+              "20": 0.9932432432432432,
+              "5": 0.8851351351351351
+            },
+            "candidate_recall_relevant": {
+              "1": 0.722972972972973,
+              "20": 0.9932432432432432,
+              "5": 0.9594594594594594
+            },
+            "final_hit_primary": {
+              "1": 0.47297297297297297,
+              "20": 0.9932432432432432,
+              "5": 0.8851351351351351
+            },
+            "final_hit_relevant": {
+              "1": 0.722972972972973,
+              "20": 0.9932432432432432,
+              "5": 0.9594594594594594
+            },
+            "forbidden_hits": 1,
+            "forbidden_rate": 0.006756756756756757,
+            "forbidden_window": 5,
+            "total": 148
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "1": 0.25,
+              "20": 1.0,
+              "5": 0.75
+            },
+            "candidate_recall_relevant": {
+              "1": 0.5,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "final_hit_primary": {
+              "1": 0.25,
+              "20": 1.0,
+              "5": 0.75
+            },
+            "final_hit_relevant": {
+              "1": 0.5,
+              "20": 1.0,
+              "5": 0.9375
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 16
+          }
+        },
+        "forbidden_query_ids": [
+          "design-pattern/template-method-vs-strategy:expected:1"
+        ],
+        "missing_candidate_primary_query_ids": [
+          "spring/primary-qualifier-collection-injection:expected:2"
+        ],
+        "missing_final_primary_query_ids": [
+          "spring/primary-qualifier-collection-injection:expected:2"
+        ],
+        "overall": {
+          "candidate_recall_primary": {
+            "1": 0.4855769230769231,
+            "20": 0.9951923076923077,
+            "5": 0.8846153846153846
+          },
+          "candidate_recall_relevant": {
+            "1": 0.7211538461538461,
+            "20": 0.9951923076923077,
+            "5": 0.9519230769230769
+          },
+          "final_hit_primary": {
+            "1": 0.4855769230769231,
+            "20": 0.9951923076923077,
+            "5": 0.8846153846153846
+          },
+          "final_hit_relevant": {
+            "1": 0.7211538461538461,
+            "20": 0.9951923076923077,
+            "5": 0.9519230769230769
+          },
+          "forbidden_hits": 1,
+          "forbidden_rate": 0.004807692307692308,
+          "forbidden_window": 5,
+          "total": 208
+        },
+        "windows": [
+          1,
+          5,
+          20
+        ]
+      }
+    },
+    "body_title_aliases": {
+      "document_count": 52,
+      "fields": [
+        "body",
+        "title",
+        "aliases"
+      ],
+      "summary": {
+        "by_category": {
+          "unknown": {
+            "candidate_recall_primary": {
+              "1": 0.6009615384615384,
+              "20": 1.0,
+              "5": 0.9519230769230769
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7932692307692307,
+              "20": 1.0,
+              "5": 0.9807692307692307
+            },
+            "final_hit_primary": {
+              "1": 0.6009615384615384,
+              "20": 1.0,
+              "5": 0.9519230769230769
+            },
+            "final_hit_relevant": {
+              "1": 0.7932692307692307,
+              "20": 1.0,
+              "5": 0.9807692307692307
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 208
+          }
+        },
+        "by_language": {
+          "ko": {
+            "candidate_recall_primary": {
+              "1": 0.64,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "candidate_recall_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.64,
+              "20": 1.0,
+              "5": 0.96
+            },
+            "final_hit_relevant": {
+              "1": 0.72,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 25
+          },
+          "mixed": {
+            "candidate_recall_primary": {
+              "1": 0.5956284153005464,
+              "20": 1.0,
+              "5": 0.9508196721311475
+            },
+            "candidate_recall_relevant": {
+              "1": 0.8032786885245902,
+              "20": 1.0,
+              "5": 0.9781420765027322
+            },
+            "final_hit_primary": {
+              "1": 0.5956284153005464,
+              "20": 1.0,
+              "5": 0.9508196721311475
+            },
+            "final_hit_relevant": {
+              "1": 0.8032786885245902,
+              "20": 1.0,
+              "5": 0.9781420765027322
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 183
+          }
+        },
+        "by_level": {
+          "advanced": {
+            "candidate_recall_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9772727272727273
+            },
+            "candidate_recall_relevant": {
+              "1": 0.8181818181818182,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "final_hit_primary": {
+              "1": 0.6136363636363636,
+              "20": 1.0,
+              "5": 0.9772727272727273
+            },
+            "final_hit_relevant": {
+              "1": 0.8181818181818182,
+              "20": 1.0,
+              "5": 1.0
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 44
+          },
+          "beginner": {
+            "candidate_recall_primary": {
+              "1": 0.6081081081081081,
+              "20": 1.0,
+              "5": 0.9594594594594594
+            },
+            "candidate_recall_relevant": {
+              "1": 0.7972972972972973,
+              "20": 1.0,
+              "5": 0.9864864864864865
+            },
+            "final_hit_primary": {
+              "1": 0.6081081081081081,
+              "20": 1.0,
+              "5": 0.9594594594594594
+            },
+            "final_hit_relevant": {
+              "1": 0.7972972972972973,
+              "20": 1.0,
+              "5": 0.9864864864864865
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 148
+          },
+          "intermediate": {
+            "candidate_recall_primary": {
+              "1": 0.5,
+              "20": 1.0,
+              "5": 0.8125
+            },
+            "candidate_recall_relevant": {
+              "1": 0.6875,
+              "20": 1.0,
+              "5": 0.875
+            },
+            "final_hit_primary": {
+              "1": 0.5,
+              "20": 1.0,
+              "5": 0.8125
+            },
+            "final_hit_relevant": {
+              "1": 0.6875,
+              "20": 1.0,
+              "5": 0.875
+            },
+            "forbidden_hits": 0,
+            "forbidden_rate": 0.0,
+            "forbidden_window": 5,
+            "total": 16
+          }
+        },
+        "forbidden_query_ids": [],
+        "missing_candidate_primary_query_ids": [],
+        "missing_final_primary_query_ids": [],
+        "overall": {
+          "candidate_recall_primary": {
+            "1": 0.6009615384615384,
+            "20": 1.0,
+            "5": 0.9519230769230769
+          },
+          "candidate_recall_relevant": {
+            "1": 0.7932692307692307,
+            "20": 1.0,
+            "5": 0.9807692307692307
+          },
+          "final_hit_primary": {
+            "1": 0.6009615384615384,
+            "20": 1.0,
+            "5": 0.9519230769230769
+          },
+          "final_hit_relevant": {
+            "1": 0.7932692307692307,
+            "20": 1.0,
+            "5": 0.9807692307692307
+          },
+          "forbidden_hits": 0,
+          "forbidden_rate": 0.0,
+          "forbidden_window": 5,
+          "total": 208
+        },
+        "windows": [
+          1,
+          5,
+          20
+        ]
+      }
+    }
+  },
+  "notes": [
+    "concept_id and expected_queries are measured through qrel generation.",
+    "doc_role and level are retained as metadata/routing fields; this lexical field-lift report does not claim standalone lift for them."
+  ],
+  "query_count": 208,
+  "schema_version": 1,
+  "windows": [
+    1,
+    5,
+    20
+  ]
+}

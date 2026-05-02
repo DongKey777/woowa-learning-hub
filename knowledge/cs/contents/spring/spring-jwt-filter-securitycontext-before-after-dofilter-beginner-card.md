@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Spring JWT 필터에서 filterChain.doFilter 전후에 무슨 일이 일어날까"
+concept_id: "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - Spring JWT filter beginner
+  - filterChain doFilter before after
+  - SecurityContext before controller
+  - BearerTokenAuthenticationFilter basics
+  - custom JWT filter vs built in bearer token
+expected_queries:
+  - Spring JWT filter에서 doFilter 전후에 무슨 일이 일어나?
+  - JWT filter는 SecurityContext를 언제 넣어야 해?
+  - custom JWT filter와 BearerTokenAuthenticationFilter는 어떻게 달라?
+  - controller 전에 AuthenticationPrincipal이 생기는 흐름을 어디서 봐?
+acceptable_neighbors:
+  - contents/spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge.md
+  - contents/spring/spring-security-filter-chain-ordering.md
+  - contents/spring/spring-security-filter-chain.md
+companion_neighbors:
+  - contents/security/session-cookie-jwt-basics.md
+  - contents/security/jwt-deep-dive.md
+forbidden_neighbors:
+  - contents/spring/spring-mvc-controller-basics.md
+---
+
 # Spring JWT 필터에서 `filterChain.doFilter(...)` 전후에 무슨 일이 일어날까
 
 > 한 줄 요약: 초급자 기준으로 custom JWT 필터는 `filterChain.doFilter(...)` 전에 "이 요청이 누구인지"를 `SecurityContext`에 넣어 두고, `BearerTokenAuthenticationFilter`를 쓰는 경우에는 그 역할을 Spring Security 내장 필터가 대신한다고 보면 된다.

@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Projection Freshness SLO Pattern"
+concept_id: "design-pattern/projection-freshness-slo-pattern"
+difficulty: advanced
+doc_role: deep_dive
+level: advanced
+aliases:
+  - projection freshness SLO
+  - read model freshness objective
+  - freshness SLI
+  - projection error budget
+  - strict fallback rate
+expected_queries:
+  - projection freshness SLO는 어떤 지표로 잡아?
+  - read model freshness를 SLI/SLO로 운영하려면 뭐가 필요해?
+  - strict fallback rate랑 projection lag를 같이 보는 이유가 뭐야?
+  - projection error budget burn이 커지면 어떤 대응을 해야 해?
+acceptable_neighbors:
+  - contents/design-pattern/read-model-staleness-read-your-writes.md
+  - contents/design-pattern/projection-lag-budgeting-pattern.md
+  - contents/system-design/projection-applied-watermark-basics.md
+companion_neighbors:
+  - contents/design-pattern/strict-read-fallback-contracts.md
+  - contents/system-design/post-write-stale-dashboard-primer.md
+forbidden_neighbors:
+  - contents/network/browser-devtools-reload-hard-reload-disable-cache-primer.md
+---
+
 # Projection Freshness SLO Pattern
 
 > 한 줄 요약: read model freshness는 기술 감각이 아니라 운영 SLO로 관리해야 하며, lag SLI, tier별 목표, error budget, budget burn 대응, degrade/rollback 정책이 함께 있어야 projection 운영이 설명 가능해진다.

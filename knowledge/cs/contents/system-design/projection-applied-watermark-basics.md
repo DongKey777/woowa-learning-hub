@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Projection Applied Watermark Basics"
+concept_id: "system-design/projection-applied-watermark-basics"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - applied watermark
+  - projection watermark
+  - required watermark vs applied watermark
+  - read model checkpoint
+  - projection checkpoint
+expected_queries:
+  - applied_watermark가 뭐야?
+  - required watermark랑 applied watermark는 어떻게 달라?
+  - read model이 어디까지 반영됐는지 어떻게 판단해?
+  - 방금 저장했는데 read model이 stale인지 watermark로 어떻게 봐?
+acceptable_neighbors:
+  - contents/system-design/read-after-write-routing-primer.md
+  - contents/design-pattern/read-model-staleness-read-your-writes.md
+  - contents/system-design/watermark-metadata-persistence-basics.md
+companion_neighbors:
+  - contents/system-design/outbox-watermark-token-primer.md
+  - contents/system-design/shard-aware-watermark-scope-primer.md
+forbidden_neighbors:
+  - contents/security/session-cookie-jwt-basics.md
+---
+
 # Projection Applied Watermark Basics
 
 > 한 줄 요약: `applied_watermark`는 "이 read model이 안전하게 반영을 끝낸 마지막 기준선"이고, projection은 이 값을 저장하고 조금씩 전진시키며, read path는 이 값을 밖으로 꺼내 `required_watermark`와 비교해 stale 여부를 단순하게 판단한다.

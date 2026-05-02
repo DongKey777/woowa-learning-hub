@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "Read-After-Write Routing Primer"
+concept_id: "system-design/read-after-write-routing-primer"
+difficulty: beginner
+doc_role: primer
+level: beginner
+aliases:
+  - read-after-write routing
+  - primary fallback routing
+  - recent write routing
+  - session pinning primer
+  - write then read routing
+expected_queries:
+  - read-after-write routing이 뭐야?
+  - write 직후 read를 replica로 보내면 왜 문제가 생겨?
+  - primary fallback과 session pinning은 어떻게 다른 선택이야?
+  - 주문 생성 직후 조회가 stale할 때 라우팅을 어떻게 잡아?
+acceptable_neighbors:
+  - contents/database/replica-lag-read-after-write-strategies.md
+  - contents/database/read-your-writes-session-pinning.md
+  - contents/system-design/projection-applied-watermark-basics.md
+companion_neighbors:
+  - contents/system-design/post-write-stale-dashboard-primer.md
+  - contents/system-design/mixed-cache-replica-freshness-bridge.md
+forbidden_neighbors:
+  - contents/security/browser-401-vs-302-login-redirect-guide.md
+---
+
 # Read-After-Write Routing Primer
 
 > 한 줄 요약: read-after-write routing은 write 직후 읽기를 무심코 replica로 보내지 않고, primary fallback, session pinning, monotonic reads로 필요한 경로만 더 신선한 read path에 태우는 입문 설계 문서다.

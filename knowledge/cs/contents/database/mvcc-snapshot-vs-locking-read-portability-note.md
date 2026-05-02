@@ -1,3 +1,32 @@
+---
+schema_version: 2
+title: "MVCC Snapshot vs Locking Read Portability Note"
+concept_id: "database/mvcc-snapshot-vs-locking-read-portability-note"
+difficulty: advanced
+doc_role: comparison
+level: advanced
+aliases:
+  - MVCC snapshot vs locking read
+  - plain SELECT vs FOR UPDATE
+  - snapshot semantics vs lock semantics
+  - PostgreSQL MySQL isolation portability
+  - consistent read vs locking read
+expected_queries:
+  - MVCC snapshot read와 locking read는 어떻게 달라?
+  - plain SELECT에서 안 보인 row를 UPDATE가 건드릴 수 있어?
+  - PostgreSQL과 MySQL에서 SELECT FOR UPDATE semantics 차이를 어디서 봐?
+  - consistent read와 current row recheck가 헷갈려
+acceptable_neighbors:
+  - contents/database/mvcc-read-view-consistent-read-internals.md
+  - contents/database/postgresql-vs-mysql-isolation-cheat-sheet.md
+  - contents/database/transaction-isolation-basics.md
+companion_neighbors:
+  - contents/database/gap-lock-next-key-lock.md
+  - contents/database/mysql-empty-result-locking-reads.md
+forbidden_neighbors:
+  - contents/spring/spring-transactional-basics.md
+---
+
 # MVCC Snapshot vs Locking Read Portability Note
 
 > 한 줄 요약: plain `SELECT`가 보는 MVCC snapshot과 `SELECT ... FOR UPDATE` / `FOR SHARE` / `UPDATE` / `DELETE`가 실제로 잠그고 바꾸는 row 기준은 PostgreSQL과 MySQL에서 같지 않다. 그래서 "조회에서 안 보였으니 DML도 못 건드린다" 같은 추론은 엔진을 바꾸는 순간 쉽게 깨진다.

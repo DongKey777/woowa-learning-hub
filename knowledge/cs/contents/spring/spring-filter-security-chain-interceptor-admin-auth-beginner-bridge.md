@@ -1,3 +1,30 @@
+---
+schema_version: 2
+title: "Spring Filter vs Spring Security Filter Chain vs HandlerInterceptor"
+concept_id: "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - Filter vs SecurityFilterChain vs HandlerInterceptor
+  - spring security filter chain beginner
+  - filter interceptor security 차이
+  - addFilterBefore 처음
+  - jwt filter 어디에 두나
+expected_queries:
+  - Spring Filter랑 SecurityFilterChain, HandlerInterceptor 차이가 뭐야?
+  - 관리자 인증에서 302 403 400이 섞이면 어디서 먼저 나눠?
+  - jwt filter를 어디에 두는지 처음 보기 전에 어떤 큰 그림을 봐?
+  - HandlerInterceptor에서 인증을 막아도 되는지 헷갈려
+acceptable_neighbors:
+  - contents/spring/spring-security-filter-chain.md
+  - contents/spring/spring-security-filter-chain-ordering.md
+  - contents/spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card.md
+companion_neighbors:
+  - contents/security/browser-401-vs-302-login-redirect-guide.md
+  - contents/security/session-cookie-jwt-basics.md
+---
+
 # Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지
 
 > 한 줄 요약: RoomEscape 관리자 인증 흐름을 처음 잡을 때는 "`Filter`는 웹 입구", "Spring Security filter chain은 인증/인가 묶음", "`HandlerInterceptor`는 컨트롤러 주변 보조 작업"으로 나누면 덜 헷갈린다.

@@ -1,3 +1,30 @@
+---
+schema_version: 2
+title: "DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표"
+concept_id: "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+difficulty: beginner
+doc_role: chooser
+level: beginner
+aliases:
+  - db lock vs spring proxy
+  - deadlock vs self invocation
+  - lock timeout vs transactional not applied
+  - rollback not working vs lock wait
+  - spring db lock decision matrix
+expected_queries:
+  - lock wait랑 @Transactional proxy 문제를 어떻게 먼저 구분해?
+  - deadlock인지 self-invocation인지 헷갈릴 때 어떤 분기표를 봐?
+  - rollback이 안 된 것처럼 보이는데 DB lock 문제인지 Spring 문제인지 모르겠어
+  - CannotAcquireLockException과 rollback-only가 같이 보이면 어디서 시작해?
+acceptable_neighbors:
+  - contents/database/deadlock-vs-lock-wait-timeout-primer.md
+  - contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+  - contents/spring/spring-transactional-basics.md
+companion_neighbors:
+  - contents/spring/spring-self-invocation-transactional-only-misconception-primer.md
+  - contents/spring/spring-transaction-propagation-required-requires-new-rollbackonly-primer.md
+---
+
 # DB Lock Wait / Deadlock vs Spring Proxy / Rollback 빠른 분기표
 
 > 한 줄 요약: `lock wait`, `deadlock`, `왜 @Transactional이 안 먹지`, `왜 안 롤백되지`가 한 문장에 섞여도 먼저 "DB가 실제로 기다리고 있나"와 "Spring 프록시/롤백 규칙이 깨졌나"를 분리하면 잘못된 branch로 깊게 들어가는 일을 줄일 수 있다.
