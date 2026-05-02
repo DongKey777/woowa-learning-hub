@@ -1211,6 +1211,14 @@ class RunPodHarness:
                 )
             except Exception as exc:
                 last_poll_error = repr(exc)
+                if not self._is_pod_listed(pod.pod_id):
+                    return (
+                        137,
+                        "",
+                        "detached remote command lost its Pod; "
+                        f"pod_id={pod.pod_id}; log={log_path}; "
+                        f"last_poll_error={last_poll_error}",
+                    )
                 logger.warning(
                     "[runpod] step %d status poll failed; detached job may still be running: %s",
                     step_index,
@@ -1246,6 +1254,15 @@ class RunPodHarness:
                 poll_stdout[-2000:],
             )
             time.sleep(poll_interval_s)
+
+    def _is_pod_listed(self, pod_id: str) -> bool:
+        """Return whether RunPod still reports the Pod as live."""
+
+        try:
+            return any(p.pod_id == pod_id for p in self.client.list_pods())
+        except Exception as exc:
+            logger.warning("[runpod] list_pods failed while checking %s: %s", pod_id, exc)
+            return True
 
     def _build_remote_commands(
         self,

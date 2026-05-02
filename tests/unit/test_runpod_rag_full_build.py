@@ -648,6 +648,49 @@ def test_paramiko_downloader_resumes_partial_transfer(tmp_path):
     assert downloader.client_count >= 2
 
 
+def test_detached_command_fails_fast_when_pod_disappears(tmp_path):
+    class _VanishingClient(H.MockRunPodClient):
+        def list_pods(self):
+            self.calls.append({"op": "list_pods"})
+            return []
+
+    class _Executor:
+        def __init__(self):
+            self.calls = 0
+
+        def run(self, _pod, _keypath, _command, *, timeout_s):
+            self.calls += 1
+            if self.calls == 1:
+                return 0, "", ""
+            raise OSError("connection refused")
+
+    client = _VanishingClient()
+    harness = H.RunPodHarness(client, dry_run=True)
+    pod = H.Pod(
+        pod_id="lost-pod",
+        ip="127.0.0.1",
+        ssh_port=22,
+        gpu_type="gpu",
+        started_at=datetime.now(timezone.utc),
+    )
+
+    rc, stdout, stderr = harness._run_detached_remote_command(
+        _Executor(),
+        pod,
+        tmp_path / "key",
+        "python build.py",
+        run_id="r3-test",
+        step_index=7,
+        timeout_s=120,
+    )
+
+    assert rc == 137
+    assert stdout == ""
+    assert "lost its Pod" in stderr
+    assert "lost-pod" in stderr
+    assert {"op": "list_pods"} in client.calls
+
+
 def _build_args(**overrides):
     """Helper — base args namespace for resolve_defaults tests."""
     base = {
