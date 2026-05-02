@@ -188,15 +188,13 @@ why dependency injection makes object construction explicit in beginner code.
                 "DI",
                 "dependency injection",
                 "의존성 주입",
-                "DI가 뭐야?",
-                "new 대신 주입",
-                "객체 조립",
             ],
         )
         self.assertIn(
-            "[retrieval anchors] DI가 뭐야? | new 대신 주입 | 객체 조립",
+            "[retrieval anchors] new 대신 주입 | 객체 조립",
             chunk.body,
         )
+        self.assertNotIn("DI가 뭐야?", chunk.body)
         self.assertNotIn("DI가 뭐야?", chunk.embedding_body or "")
         self.assertNotIn("new 대신 주입", chunk.embedding_body or "")
 

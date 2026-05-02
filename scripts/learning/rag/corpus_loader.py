@@ -33,12 +33,12 @@ phrases once per document and append them to every chunk's persisted
 ``body`` so FTS, lexical sidecars, and reranker passages can pick up the
 intent. The original section text is also kept as ``embedding_body`` so
 dense/ColBERT embeddings are trained on substantive content, not on
-qrel-like query strings. Corpus v2 ``expected_queries`` are treated as
-retrieval-contract phrases, not passive documentation — e.g. a
-"repository boundary" query hits every chunk of
-``repository-pattern-vs-antipattern.md`` via the anchors even when the
-chunk text itself is discussing a tangential subtopic. Dedupe-by-path
-downstream ensures only one chunk per doc still reaches top-K.
+qrel-like query strings. Corpus v2 ``expected_queries`` are kept out of
+the indexing path entirely — they are qrel seeds only, consumed by
+``r3.eval.qrels.qrels_from_frontmatter_doc`` so retrieval evaluation
+measures real semantic match rather than alias-indexing accuracy
+(circular validation). Dedupe-by-path downstream ensures only one chunk
+per doc still reaches top-K.
 """
 
 from __future__ import annotations
@@ -378,10 +378,8 @@ def _emit_chunks(
     doc_role: str | None = None,
     level: str | None = None,
     frontmatter_aliases: list[str] | None = None,
-    frontmatter_expected_queries: list[str] | None = None,
 ) -> Iterator[CorpusChunk]:
     document_retrieval_phrases = _dedupe_phrases(
-        frontmatter_expected_queries or [],
         retrieval_anchors or [],
     )
     anchor_suffix = ""
@@ -392,7 +390,6 @@ def _emit_chunks(
         )
     document_aliases = _dedupe_phrases(
         frontmatter_aliases or [],
-        document_retrieval_phrases,
     )
     counter = 0
     for h2, body in sections:
@@ -478,9 +475,6 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             doc_role=_frontmatter_string(frontmatter, "doc_role"),
             level=_frontmatter_string(frontmatter, "level"),
             frontmatter_aliases=_frontmatter_list(frontmatter, "aliases"),
-            frontmatter_expected_queries=_frontmatter_list(
-                frontmatter, "expected_queries"
-            ),
         )
 
 

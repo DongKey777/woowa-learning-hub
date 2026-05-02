@@ -228,11 +228,9 @@ why dependency injection makes object construction explicit in beginner code.
         "DI",
         "dependency injection",
         "의존성 주입",
-        "DI가 뭐야?",
-        "new 대신 주입",
-        "객체 조립",
     ]
-    assert "DI가 뭐야?" in row["body"]
+    assert "DI가 뭐야?" not in row["body"]
+    assert "new 대신 주입" in row["body"]
     assert "schema_version" not in row["body"]
     assert "DI가 뭐야?" not in encoder.last_corpus_texts[0]
     assert "new 대신 주입" not in encoder.last_corpus_texts[0]

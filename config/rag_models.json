@@ -141,7 +141,14 @@
       "forbidden_rate_at_5": 0.0,
       "missing_candidate_primary_count": 0,
       "missing_final_primary_count": 0,
-      "root_cause_fix": "Corpus v2 expected_queries are now indexed as retrieval anchors; service-locator expected:4 recovered to final rank 1."
+      "root_cause_fix": "Corpus v2 expected_queries are now indexed as retrieval anchors; service-locator expected:4 recovered to final rank 1.",
+      "reclassification_note": "DEPRECATED as retrieval-quality evidence. Interpret as alias-indexing regression check only. The 208q qrel set was auto-generated from corpus frontmatter expected_queries, and those same expected_queries were appended to chunk indexing channels (lexical_sidecar:aliases, chunk.body, FTS, sidecar:body). Query <concept_id>:expected:<n> matches doc <concept_id>.md by alias indexing alone, which guarantees recall=1.0 regardless of retrieval correctness. Real retrieval quality must be re-measured against a human-curated qrel suite after the circular-leak fix (corpus_loader._emit_chunks no longer accepts frontmatter_expected_queries).",
+      "next_checks": [
+        "Rebuild remote artifact + lexical sidecar with circular-leak fix applied (frontmatter_expected_queries removed from corpus_loader._emit_chunks signature).",
+        "Re-run 208q gate; expected drop from 1.0 to a realistic value. Predicted 0.50-0.84 indicates normal truth recovery; <0.50 indicates heavy alias dependence and motivates Phase γ Korean robustness work.",
+        "Run R3 backend against the original 101q human-curated holdout (next_legacy_v2 / next_lance_v3 baselines) for same-fixture comparison; pass condition is R3 primary_ndcg >= 0.989 (legacy v2 baseline).",
+        "Replace this measured_quality.r3_fabric_qrel_gate block with a real qrel suite result before populating selected_artifact / backend / runtime_policy in the production lock."
+      ]
     }
   },
   "cutover": {
