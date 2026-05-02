@@ -1,0 +1,95 @@
+{
+  "confusable_with": [
+    {
+      "doc_path": "database/connection-pool-basics.md",
+      "ref": "operating-system/thread-pool",
+      "source": "database/connection-pool"
+    },
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/mvcc",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/lock",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "design-pattern/factory-basics.md",
+      "ref": "design-pattern/strategy",
+      "source": "design-pattern/factory"
+    },
+    {
+      "doc_path": "design-pattern/factory-basics.md",
+      "ref": "design-pattern/abstract-factory",
+      "source": "design-pattern/factory"
+    },
+    {
+      "doc_path": "design-pattern/factory-basics.md",
+      "ref": "design-pattern/builder",
+      "source": "design-pattern/factory"
+    },
+    {
+      "doc_path": "spring/spring-bean-di-basics.md",
+      "ref": "design-pattern/service-locator",
+      "source": "spring/bean-di-basics"
+    }
+  ],
+  "mission_ids": [],
+  "next_docs": [
+    {
+      "doc_path": "database/connection-pool-basics.md",
+      "ref": "database/connection-pool-transaction-propagation",
+      "source": "database/connection-pool"
+    },
+    {
+      "doc_path": "database/connection-pool-basics.md",
+      "ref": "database/connection-timeout-vs-lock-timeout",
+      "source": "database/connection-pool"
+    },
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/mvcc-read-view-consistent-read",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "design-pattern/factory-basics.md",
+      "ref": "design-pattern/factory-vs-static-factory",
+      "source": "design-pattern/factory"
+    },
+    {
+      "doc_path": "design-pattern/factory-basics.md",
+      "ref": "design-pattern/factory-vs-abstract-factory",
+      "source": "design-pattern/factory"
+    },
+    {
+      "doc_path": "spring/spring-bean-di-basics.md",
+      "ref": "spring/transactional",
+      "source": "spring/bean-di-basics"
+    },
+    {
+      "doc_path": "spring/spring-bean-lifecycle-basics.md",
+      "ref": "spring/bean-lifecycle-scope-traps",
+      "source": "spring/bean-lifecycle-basics"
+    }
+  ],
+  "prerequisites": [
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/mvcc",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/lock",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    },
+    {
+      "doc_path": "database/mvcc-snapshot-vs-locking-read-portability-note.md",
+      "ref": "database/transaction-isolation",
+      "source": "database/mvcc-snapshot-vs-locking-read-portability"
+    }
+  ],
+  "total": 17
+}

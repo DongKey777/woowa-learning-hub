@@ -1,0 +1,90 @@
+{
+  "database/lock": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "database/lock-basics": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "database/lock-timeout-not-already-exists-common-confusion-card": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "database/lock-wait-deadlock-latch-triage-playbook": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "database/mvcc": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "design-pattern/abstract-class-vs-interface-injection-bridge": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "design-pattern/abstract-factory": [
+    "design-pattern/factory"
+  ],
+  "design-pattern/builder": [
+    "design-pattern/factory"
+  ],
+  "design-pattern/composition-over-inheritance-basics": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "design-pattern/factory": [
+    "spring/bean-di-basics"
+  ],
+  "design-pattern/factory-selector-resolver-beginner-entrypoint": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "design-pattern/injected-registry-vs-service-locator-checklist": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "design-pattern/registry-pattern": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "design-pattern/service-locator": [
+    "spring/bean-di-basics"
+  ],
+  "design-pattern/strategy": [
+    "design-pattern/factory"
+  ],
+  "design-pattern/strategy-map-vs-registry-primer": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "design-pattern/strategy-pattern-basics": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint",
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "network/cross-origin-cookie-credentials-cors-primer": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "network/login-redirect-hidden-jsessionid-savedrequest-primer": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "operating-system/thread-pool": [
+    "database/connection-pool"
+  ],
+  "security/authentication-vs-authorization": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "security/cookie-failure-three-way-splitter": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "security/cookie-rejection-reason-primer": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "security/cookie-scope-mismatch-guide": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "security/permission-model-bridge-authn-to-role-scope-ownership": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "security/preflight-debug-checklist": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "spring/self-invocation-proxy-misconception": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "spring/spring-security-filter-chain-ordering": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "spring/spring-security-requestcache-savedrequest-boundaries": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ]
+}

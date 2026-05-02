@@ -1,0 +1,29 @@
+{
+  "'@springbootapplication이 있는데 다른 모듈의 bean이 안 떠요'": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "'@transactional이 붙었는데 같은 클래스 내부 호출하면 트랜잭션이 안 열려요'": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "'nosuchbeandefinitionexception: bean을 못 찾아요'": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "package 구조는 맞는데 특정 환경에서만 bean이 사라져요": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "this.method() 호출하면 @async가 동기처럼 실행돼요": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "재고가 1개 남는데 두 요청이 동시에 성공해버렸어요": [
+    "database/transaction-case-studies"
+  ],
+  "중복 결제 요청이 두 번 처리됐어요": [
+    "database/transaction-case-studies"
+  ],
+  "포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요": [
+    "database/transaction-case-studies"
+  ],
+  "프록시를 우회하니까 @cacheable, @validated 같은 기능이 안 먹어요": [
+    "spring/self-invocation-proxy-misconception"
+  ]
+}

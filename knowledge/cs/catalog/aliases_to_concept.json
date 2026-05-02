@@ -1,0 +1,862 @@
+{
+  "'@transactional'": [
+    "spring/transactional-basics"
+  ],
+  "401 vs 403 vs 404": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "404 concealment": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "acid": [
+    "database/transaction-basics"
+  ],
+  "addfilterafter": [
+    "spring/spring-security-filter-chain-ordering"
+  ],
+  "addfilterbefore": [
+    "spring/spring-security-filter-chain-ordering"
+  ],
+  "addfilterbefore 처음": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "advice": [
+    "spring/aop-basics"
+  ],
+  "aop": [
+    "spring/aop-basics"
+  ],
+  "aop proxy": [
+    "spring/aop-proxy-mechanism"
+  ],
+  "application service": [
+    "software-engineering/service-layer-basics"
+  ],
+  "applicationcontext": [
+    "spring/ioc-container-internals"
+  ],
+  "applicationcontext refresh": [
+    "spring/application-context-refresh-phases"
+  ],
+  "applied watermark": [
+    "system-design/projection-applied-watermark-basics"
+  ],
+  "aspect": [
+    "spring/aop-basics"
+  ],
+  "auth failure response": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "authorizationfilter": [
+    "spring/spring-security-filter-chain"
+  ],
+  "bandwidth": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "bean": [
+    "spring/bean-di-basics"
+  ],
+  "bean container": [
+    "spring/request-pipeline-bean-container"
+  ],
+  "bean lifecycle": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "beandefinition": [
+    "spring/ioc-container-internals"
+  ],
+  "beanfactory": [
+    "spring/ioc-container-internals"
+  ],
+  "beanfactorypostprocessor": [
+    "spring/application-context-refresh-phases"
+  ],
+  "beanpostprocessor": [
+    "spring/application-context-refresh-phases"
+  ],
+  "bearertokenauthenticationfilter basics": [
+    "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+  ],
+  "bearertokenauthenticationfilter order": [
+    "spring/spring-security-filter-chain-ordering"
+  ],
+  "blocked set-cookie vs stored not sent vs sent but anonymous": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "browser 401 vs 302": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "business logic": [
+    "software-engineering/service-layer-basics"
+  ],
+  "cglib": [
+    "spring/aop-proxy-mechanism"
+  ],
+  "commit": [
+    "database/transaction-basics"
+  ],
+  "component scan": [
+    "spring/bean-di-basics",
+    "spring/component-scan-failure-patterns"
+  ],
+  "componentscan": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "connect time": [
+    "network/request-timing-decomposition"
+  ],
+  "connection close returns pool": [
+    "database/connection-pool"
+  ],
+  "connection pool": [
+    "database/connection-pool"
+  ],
+  "consistent read": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "consistent read vs locking read": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "constructor injection": [
+    "software-engineering/dependency-injection-basics"
+  ],
+  "controller": [
+    "spring/mvc-controller-basics"
+  ],
+  "controller service repository": [
+    "software-engineering/layered-architecture-basics",
+    "spring/request-pipeline-bean-container"
+  ],
+  "cookie debug first split": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "cookie failure splitter": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "cookie scope mismatch": [
+    "security/cookie-scope-mismatch-guide"
+  ],
+  "cookie sent but server anonymous": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "cookie session jwt": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "cookie stored but not sent": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "cookie stored not sent": [
+    "security/cookie-scope-mismatch-guide"
+  ],
+  "cors credential policy": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "creation vs selection": [
+    "design-pattern/factory"
+  ],
+  "credentials include cookie missing": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "cross-cutting concern": [
+    "spring/aop-basics"
+  ],
+  "custom jwt filter vs built in bearer token": [
+    "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+  ],
+  "database lock": [
+    "database/lock-basics"
+  ],
+  "db lock vs spring proxy": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "db 커넥션 재사용": [
+    "database/connection-pool"
+  ],
+  "deadlock victim": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "deadlock vs lock timeout": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "deadlock vs lock wait timeout": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "deadlock vs self invocation": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "delegatingfilterproxy": [
+    "spring/spring-security-filter-chain"
+  ],
+  "dependency injection": [
+    "software-engineering/dependency-injection-basics",
+    "spring/bean-di-basics",
+    "spring/ioc-di-basics"
+  ],
+  "devtools waterfall": [
+    "network/devtools-waterfall-primer"
+  ],
+  "di": [
+    "software-engineering/dependency-injection-basics",
+    "spring/bean-di-basics",
+    "spring/ioc-di-basics"
+  ],
+  "di container": [
+    "design-pattern/factory-vs-di-container-wiring"
+  ],
+  "dispatcherservlet": [
+    "spring/mvc-controller-basics",
+    "spring/request-pipeline-bean-container"
+  ],
+  "dns connect ssl": [
+    "network/devtools-waterfall-primer"
+  ],
+  "dns time": [
+    "network/request-timing-decomposition"
+  ],
+  "domain path samesite mismatch": [
+    "security/cookie-scope-mismatch-guide"
+  ],
+  "duplicate payment": [
+    "database/transaction-case-studies"
+  ],
+  "exceptiontranslationfilter": [
+    "spring/spring-security-filter-chain"
+  ],
+  "exclusive lock": [
+    "database/lock-basics"
+  ],
+  "factory pattern": [
+    "design-pattern/factory",
+    "design-pattern/factory-vs-di-container-wiring"
+  ],
+  "factory pattern basics": [
+    "design-pattern/factory"
+  ],
+  "factory selector resolver": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "factory vs di": [
+    "design-pattern/factory-vs-di-container-wiring"
+  ],
+  "factory vs selector vs resolver": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "factory 이름 언제 쓰나": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "fetch credentials vs cookie scope": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "filter interceptor security 차이": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "filter vs securityfilterchain vs handlerinterceptor": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "filterchain dofilter before after": [
+    "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+  ],
+  "final html 200 is not api success": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "fk": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "freshness budget": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "freshness sli": [
+    "design-pattern/projection-freshness-slo-pattern"
+  ],
+  "group by": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "hidden dependency": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "hikari cp": [
+    "database/connection-pool"
+  ],
+  "hikaricp": [
+    "database/connection-pool"
+  ],
+  "hikaricp가 뭐야": [
+    "database/connection-pool"
+  ],
+  "hook vs strategy": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "host-only cookie": [
+    "security/cookie-scope-mismatch-guide"
+  ],
+  "http stateless": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "idempotency key": [
+    "database/transaction-case-studies"
+  ],
+  "innodb read view": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "inventory race": [
+    "database/transaction-case-studies"
+  ],
+  "ioc": [
+    "spring/ioc-di-basics"
+  ],
+  "ioc container": [
+    "spring/ioc-container-internals"
+  ],
+  "isolation level": [
+    "database/transaction-isolation-basics"
+  ],
+  "jdbc connection pool": [
+    "database/connection-pool"
+  ],
+  "jdk dynamic proxy": [
+    "spring/aop-proxy-mechanism"
+  ],
+  "join": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "jsessionid": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "jwt filter 어디에 두나": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "latency": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "latency breakdown": [
+    "network/request-timing-decomposition"
+  ],
+  "layer": [
+    "software-engineering/layered-architecture-basics"
+  ],
+  "layered architecture": [
+    "software-engineering/layered-architecture-basics"
+  ],
+  "lock timeout vs transactional not applied": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "lock wait timeout vs deadlock": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "login loop cookie scope": [
+    "security/cookie-scope-mismatch-guide"
+  ],
+  "login loop cookie splitter": [
+    "security/cookie-failure-three-way-splitter"
+  ],
+  "login redirect guide": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "lookup table vs registry": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "m_low_limit_id": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "m_up_limit_id": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "map<key strategy>": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "maxpoolsize": [
+    "database/connection-pool"
+  ],
+  "mvcc": [
+    "database/transaction-isolation-basics"
+  ],
+  "mvcc read view": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "mvcc snapshot vs locking read": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "new 대신 팩토리": [
+    "design-pattern/factory"
+  ],
+  "nosuchbeandefinitionexception": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "object creation": [
+    "design-pattern/factory-vs-di-container-wiring"
+  ],
+  "optimistic lock": [
+    "database/lock-basics"
+  ],
+  "pessimistic lock": [
+    "database/lock-basics"
+  ],
+  "pk": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "plain select vs for update": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "pool size": [
+    "database/connection-pool"
+  ],
+  "post-write stale dashboard": [
+    "system-design/post-write-stale-dashboard-primer"
+  ],
+  "postconstruct": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "postgresql mysql isolation portability": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "predestroy": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "primary fallback": [
+    "database/replica-lag-read-after-write-strategies"
+  ],
+  "primary fallback headroom": [
+    "system-design/post-write-stale-dashboard-primer"
+  ],
+  "primary fallback routing": [
+    "system-design/read-after-write-routing-primer"
+  ],
+  "projection checkpoint": [
+    "system-design/projection-applied-watermark-basics"
+  ],
+  "projection error budget": [
+    "design-pattern/projection-freshness-slo-pattern"
+  ],
+  "projection freshness slo": [
+    "design-pattern/projection-freshness-slo-pattern"
+  ],
+  "projection lag": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "projection watermark": [
+    "system-design/projection-applied-watermark-basics"
+  ],
+  "proxy bypass": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "read committed": [
+    "database/transaction-isolation-basics"
+  ],
+  "read model checkpoint": [
+    "system-design/projection-applied-watermark-basics"
+  ],
+  "read model freshness objective": [
+    "design-pattern/projection-freshness-slo-pattern"
+  ],
+  "read model staleness": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "read replica delay": [
+    "database/replica-lag-read-after-write-strategies"
+  ],
+  "read source distribution": [
+    "system-design/post-write-stale-dashboard-primer"
+  ],
+  "read your writes": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "read-after-write": [
+    "database/replica-lag-read-after-write-strategies"
+  ],
+  "read-after-write routing": [
+    "system-design/read-after-write-routing-primer"
+  ],
+  "read-your-writes": [
+    "database/read-your-writes-session-pinning"
+  ],
+  "recent write primary fallback": [
+    "database/read-your-writes-session-pinning"
+  ],
+  "recent write routing": [
+    "system-design/read-after-write-routing-primer"
+  ],
+  "refresh phases": [
+    "spring/application-context-refresh-phases"
+  ],
+  "registry primer": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "repeatable read": [
+    "database/transaction-isolation-basics"
+  ],
+  "replica lag": [
+    "database/replica-lag-read-after-write-strategies"
+  ],
+  "request timing decomposition": [
+    "network/request-timing-decomposition"
+  ],
+  "required watermark vs applied watermark": [
+    "system-design/projection-applied-watermark-basics"
+  ],
+  "resolver vs registry": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "restcontroller": [
+    "spring/mvc-controller-basics"
+  ],
+  "rollback": [
+    "database/transaction-basics"
+  ],
+  "rollback not working vs lock wait": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "router vs registry": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "row lock": [
+    "database/lock-basics"
+  ],
+  "rtt": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "same-origin vs same-site fetch": [
+    "security/fetch-credentials-vs-cookie-scope"
+  ],
+  "saved request bounce": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "security filter order": [
+    "spring/spring-security-filter-chain-ordering"
+  ],
+  "securitycontext before controller": [
+    "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+  ],
+  "securityfilterchain": [
+    "spring/spring-security-filter-chain"
+  ],
+  "select": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "selector naming": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "self invocation": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "server session vs jwt": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "service bean not found": [
+    "spring/component-scan-failure-patterns"
+  ],
+  "service layer": [
+    "software-engineering/service-layer-basics"
+  ],
+  "service locator": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "service locator antipattern": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "service locator vs registry": [
+    "design-pattern/registry-primer-lookup-table-resolver-router-service-locator"
+  ],
+  "service 계층": [
+    "software-engineering/service-layer-basics"
+  ],
+  "session cookie jwt": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "session pinning": [
+    "database/read-your-writes-session-pinning"
+  ],
+  "session pinning primer": [
+    "system-design/read-after-write-routing-primer"
+  ],
+  "shared lock": [
+    "database/lock-basics"
+  ],
+  "snapshot read": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "snapshot semantics vs lock semantics": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "spring bean": [
+    "spring/bean-di-basics"
+  ],
+  "spring bean lifecycle": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "spring db lock decision matrix": [
+    "spring/spring-db-lock-deadlock-vs-proxy-rollback-decision-matrix"
+  ],
+  "spring jwt filter beginner": [
+    "spring/spring-jwt-filter-securitycontext-before-after-dofilter-beginner-card"
+  ],
+  "spring mvc": [
+    "spring/mvc-controller-basics"
+  ],
+  "spring proxy": [
+    "spring/aop-proxy-mechanism"
+  ],
+  "spring request pipeline": [
+    "spring/request-pipeline-bean-container"
+  ],
+  "spring security filter chain": [
+    "spring/spring-security-filter-chain"
+  ],
+  "spring security filter chain beginner": [
+    "spring/spring-filter-security-chain-interceptor-admin-auth-beginner-bridge"
+  ],
+  "spring security filter chain ordering": [
+    "spring/spring-security-filter-chain-ordering"
+  ],
+  "spring transaction": [
+    "spring/transactional-basics"
+  ],
+  "spring 컨테이너": [
+    "spring/ioc-container-internals"
+  ],
+  "sql": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "stale read": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "stale read after write": [
+    "database/replica-lag-read-after-write-strategies"
+  ],
+  "stale read dashboard": [
+    "system-design/post-write-stale-dashboard-primer"
+  ],
+  "stale window dashboard": [
+    "system-design/post-write-stale-dashboard-primer"
+  ],
+  "sticky session": [
+    "database/read-your-writes-session-pinning"
+  ],
+  "strategy collection": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "strategy lookup helper smell": [
+    "design-pattern/strategy-registry-vs-service-locator-drift"
+  ],
+  "strategy map vs registry": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "strategy pattern": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "strategy registry vs service locator": [
+    "design-pattern/strategy-registry-vs-service-locator-drift"
+  ],
+  "strategy selector service locator": [
+    "design-pattern/strategy-registry-vs-service-locator-drift"
+  ],
+  "strict fallback rate": [
+    "design-pattern/projection-freshness-slo-pattern"
+  ],
+  "template method": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "template method vs strategy": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "this method call": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "throughput": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "tls handshake": [
+    "network/request-timing-decomposition"
+  ],
+  "token valid but forbidden": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "transaction": [
+    "database/transaction-basics"
+  ],
+  "transaction boundary": [
+    "database/transaction-case-studies"
+  ],
+  "transactional": [
+    "spring/transactional-basics"
+  ],
+  "transactional proxy": [
+    "spring/transactional-basics"
+  ],
+  "ttfb": [
+    "network/devtools-waterfall-primer",
+    "network/request-timing-decomposition"
+  ],
+  "ttlb": [
+    "network/request-timing-decomposition"
+  ],
+  "undo chain": [
+    "database/mvcc-read-view-consistent-read-internals"
+  ],
+  "waiting": [
+    "network/devtools-waterfall-primer"
+  ],
+  "waiting for lock basics": [
+    "database/deadlock-vs-lock-wait-timeout-primer"
+  ],
+  "waterfall": [
+    "network/devtools-waterfall-primer"
+  ],
+  "write then read routing": [
+    "system-design/read-after-write-routing-primer"
+  ],
+  "객체 생성 책임 분리": [
+    "design-pattern/factory"
+  ],
+  "격리 수준": [
+    "database/transaction-isolation-basics"
+  ],
+  "계층형 아키텍처": [
+    "software-engineering/layered-architecture-basics"
+  ],
+  "관계형 모델링": [
+    "database/sql-relational-modeling-basics"
+  ],
+  "내가 바꾼 값이 안 보임": [
+    "database/read-your-writes-session-pinning"
+  ],
+  "내부 호출": [
+    "spring/self-invocation-proxy-misconception"
+  ],
+  "네트워크 탭": [
+    "network/devtools-waterfall-primer"
+  ],
+  "대역폭": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "락": [
+    "database/lock-basics"
+  ],
+  "로그인 됐는데 왜 403": [
+    "security/auth-failure-response-401-403-404"
+  ],
+  "로그인 상태 유지": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "롤백": [
+    "database/transaction-basics"
+  ],
+  "방금 썼는데 조회가 옛값": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "부모가 흐름을 쥔다": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "빈 등록": [
+    "spring/bean-di-basics"
+  ],
+  "빈 라이프사이클": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "빈 생명주기": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "생성 vs 선택": [
+    "design-pattern/factory"
+  ],
+  "생성 vs 선택 네이밍": [
+    "design-pattern/factory-selector-resolver-beginner-entrypoint"
+  ],
+  "세션 쿠키 jwt": [
+    "security/session-cookie-jwt-basics"
+  ],
+  "숨은 의존성": [
+    "design-pattern/service-locator-antipattern"
+  ],
+  "숨은 의존성 조회": [
+    "design-pattern/strategy-registry-vs-service-locator-drift"
+  ],
+  "스냅샷 읽기 vs 락 읽기": [
+    "database/mvcc-snapshot-vs-locking-read-portability"
+  ],
+  "스프링 빈 생성": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "스프링 빈 소멸": [
+    "spring/bean-lifecycle-basics"
+  ],
+  "스프링 커넥션 풀": [
+    "database/connection-pool"
+  ],
+  "의존성 주입": [
+    "software-engineering/dependency-injection-basics",
+    "spring/bean-di-basics",
+    "spring/ioc-di-basics"
+  ],
+  "잠금": [
+    "database/lock-basics"
+  ],
+  "저장했는데 새 값이 안 보여요": [
+    "design-pattern/read-model-staleness-read-your-writes"
+  ],
+  "전략 맵 vs 레지스트리": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "전역 조회소 냄새": [
+    "design-pattern/strategy-registry-vs-service-locator-drift"
+  ],
+  "정합성 시나리오": [
+    "database/transaction-case-studies"
+  ],
+  "제어 역전": [
+    "spring/ioc-di-basics"
+  ],
+  "지연": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "처리량": [
+    "network/latency-bandwidth-throughput-basics"
+  ],
+  "커넥션 고갈": [
+    "database/connection-pool"
+  ],
+  "커넥션 풀": [
+    "database/connection-pool"
+  ],
+  "커넥션 풀이란": [
+    "database/connection-pool"
+  ],
+  "커밋": [
+    "database/transaction-basics"
+  ],
+  "컨테이너 조립": [
+    "spring/bean-di-basics"
+  ],
+  "컴포넌트 스캔": [
+    "spring/bean-di-basics"
+  ],
+  "쿠키는 있는데 왜 다시 로그인": [
+    "security/browser-401-vs-302-login-redirect-guide"
+  ],
+  "템플릿 메소드 vs 전략": [
+    "design-pattern/template-method-vs-strategy"
+  ],
+  "트랜잭션": [
+    "database/transaction-basics"
+  ],
+  "트랜잭션 어노테이션": [
+    "spring/transactional-basics"
+  ],
+  "팩토리": [
+    "design-pattern/factory"
+  ],
+  "팩토리 패턴": [
+    "design-pattern/factory"
+  ],
+  "팩토리 패턴 기초": [
+    "design-pattern/factory"
+  ],
+  "팬텀 리드": [
+    "database/transaction-isolation-basics"
+  ],
+  "행동 교체 vs keyed lookup": [
+    "design-pattern/strategy-map-vs-registry-primer"
+  ],
+  "호출자가 전략을 고른다": [
+    "design-pattern/template-method-vs-strategy"
+  ]
+}
