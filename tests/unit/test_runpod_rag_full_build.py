@@ -830,8 +830,11 @@ def test_real_client_create_pod_polls_until_ssh_port_available(monkeypatch):
 
 
 def test_real_client_create_pod_times_out_when_ssh_never_exposed(monkeypatch):
-    """If Pod never exposes SSH within timeout, raise so caller's
-    finally-block can terminate the Pod."""
+    """If Pod never exposes SSH within timeout, terminate it immediately.
+
+    The harness cannot record ``self._pod_id`` until ``create_pod`` returns a
+    usable SSH endpoint, so the SDK wrapper owns this cleanup branch.
+    """
     fake = _FakeRunpodModule()
     fake.get_pod = lambda pod_id: {  # type: ignore[assignment]
         "id": pod_id, "desiredStatus": "PENDING", "runtime": None,
@@ -847,6 +850,7 @@ def test_real_client_create_pod_times_out_when_ssh_never_exposed(monkeypatch):
     )
     with pytest.raises(TimeoutError, match="did not expose public SSH port"):
         client.create_pod(spec, ssh_public_key="ssh-ed25519 fake")
+    assert ("terminate_pod", "pod-fake-001") in fake.calls
 
 
 def test_find_public_ssh_endpoint_filters_non_public_ports():

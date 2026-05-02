@@ -491,8 +491,16 @@ class RealRunPodClient:
         if not pod_id:
             raise RuntimeError(f"create_pod returned no id: {result}")
 
-        return self._wait_for_ssh_port(pod_id, gpu_type=spec.gpu_type,
-                                       timeout_s=300, poll_interval_s=5)
+        try:
+            return self._wait_for_ssh_port(
+                pod_id,
+                gpu_type=spec.gpu_type,
+                timeout_s=300,
+                poll_interval_s=5,
+            )
+        except Exception:
+            self.terminate_pod(pod_id)
+            raise
 
     def _wait_for_ssh_port(
         self, pod_id: str, *, gpu_type: str,
