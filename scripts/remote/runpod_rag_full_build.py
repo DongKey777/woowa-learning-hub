@@ -860,6 +860,16 @@ class BuildConfig:
     # in-build ablation. v7 build hit the 5400s SSH-command timeout
     # because cli_rag_eval re-encodes every query without caching.
     skip_eval: bool = False
+    # Skip the harness's built-in scp_from_pod step. Use when the
+    # caller will fetch the artifact directly via system `scp` (faster +
+    # more resilient than paramiko's SFTPClient.get on large transfers
+    # — v9 measured 5x throughput from system scp vs paramiko).
+    skip_auto_scp: bool = False
+    # Skip terminate_pod in cleanup. Use to keep the Pod alive after
+    # the build completes so the caller can fetch artifacts directly.
+    # Caller MUST call runpod.terminate_pod() manually afterwards or
+    # cost accrues indefinitely.
+    keep_pod: bool = False
 
 
 class RunPodHarness:
@@ -983,6 +993,7 @@ class RunPodHarness:
         ivf_num_sub_vectors: int | None = None,
         source_mode: str = "git",
         skip_eval: bool = False,
+        skip_auto_scp: bool = False,
         remote_command_timeout_s: int = 3600,
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
@@ -1087,6 +1098,15 @@ class RunPodHarness:
         # Step 11: scp artifact back
         # The packaging step (step 10 inside commands) wrote to
         # /workspace/repo/artifacts/rag-full-build/{run_id}/cs_rag_index_root.tar.zst
+        if skip_auto_scp:
+            logger.info(
+                "[runpod] skip_auto_scp=True — caller will fetch "
+                "/workspace/repo/artifacts/rag-full-build/%s/cs_rag_index_root.tar.zst "
+                "directly via system scp. Local artifact dir prepared at: %s",
+                run_id, local_artifact_dir,
+            )
+            local_artifact_dir.mkdir(parents=True, exist_ok=True)
+            return local_artifact_dir
         remote_artifact = (
             f"/workspace/repo/artifacts/rag-full-build/{run_id}/"
             f"cs_rag_index_root.tar.zst"
@@ -1557,6 +1577,7 @@ class RunPodHarness:
                 ivf_num_sub_vectors=config.ivf_num_sub_vectors,
                 source_mode=source_mode,
                 skip_eval=config.skip_eval,
+                skip_auto_scp=config.skip_auto_scp,
                 remote_command_timeout_s=max(3600, config.max_duration_min * 60),
             )
             result.artifact_path = artifact
@@ -1566,9 +1587,18 @@ class RunPodHarness:
             result.error = str(exc)
 
         finally:
-            # Step 12: ALWAYS terminate
-            self._cleanup()
-            result.pod_terminated = True
+            # Step 12: terminate (skip when --keep-pod for caller-driven cleanup)
+            if config.keep_pod:
+                logger.info(
+                    "[runpod] keep_pod=True — pod %s left RUNNING. "
+                    "Caller MUST terminate via runpod.terminate_pod() "
+                    "after fetching artifacts.",
+                    self._pod_id,
+                )
+                result.pod_terminated = False
+            else:
+                self._cleanup()
+                result.pod_terminated = True
 
             # Compute actual wallclock + cost — even on failure (R0 v4
             # bug: was 0.0 on exception because cost calc lived after
@@ -1649,6 +1679,28 @@ def build_parser() -> argparse.ArgumentParser:
             "locally via cohort_eval against the 200q real-qrel suite."
         ),
     )
+    parser.add_argument(
+        "--skip-auto-scp",
+        action="store_true",
+        help=(
+            "Skip the harness's built-in scp_from_pod step. v9 measured "
+            "paramiko's SFTPClient.get at ~5x slower than system scp on "
+            "a 10 GB transfer; combined with v8b's network drop during "
+            "scp, the auto-pull is the most fragile step. Use this with "
+            "--keep-pod to fetch the artifact via system scp instead."
+        ),
+    )
+    parser.add_argument(
+        "--keep-pod",
+        action="store_true",
+        help=(
+            "Skip the cleanup step's terminate_pod call so the Pod stays "
+            "RUNNING after the build completes. Required when using "
+            "--skip-auto-scp because the caller needs the Pod alive to "
+            "fetch the artifact. Caller MUST manually terminate the pod "
+            "afterwards or cost accrues indefinitely."
+        ),
+    )
     parser.add_argument("--dry-run", action="store_true",
                         help="Don't touch the network; mock the API.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -1721,6 +1773,8 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         ivf_num_sub_vectors=getattr(args, "ivf_num_sub_vectors", None),
         source_mode=getattr(args, "source_mode", "auto"),
         skip_eval=getattr(args, "skip_eval", False),
+        skip_auto_scp=getattr(args, "skip_auto_scp", False),
+        keep_pod=getattr(args, "keep_pod", False),
     )
 
 
