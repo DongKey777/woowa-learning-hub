@@ -855,6 +855,11 @@ class BuildConfig:
     ivf_num_partitions: int | None = None
     ivf_num_sub_vectors: int | None = None
     source_mode: str = "auto"
+    # Skip the in-build cli_rag_eval --ablate step (Step 9). Used when
+    # the real measurement happens locally via cohort_eval rather than
+    # in-build ablation. v7 build hit the 5400s SSH-command timeout
+    # because cli_rag_eval re-encodes every query without caching.
+    skip_eval: bool = False
 
 
 class RunPodHarness:
@@ -977,6 +982,7 @@ class RunPodHarness:
         ivf_num_partitions: int | None = None,
         ivf_num_sub_vectors: int | None = None,
         source_mode: str = "git",
+        skip_eval: bool = False,
         remote_command_timeout_s: int = 3600,
     ) -> Path | None:
         """Steps 5-11: clone, install, warm, build, eval, package, download.
@@ -996,6 +1002,7 @@ class RunPodHarness:
             ivf_num_partitions=ivf_num_partitions,
             ivf_num_sub_vectors=ivf_num_sub_vectors,
             source_mode=source_mode,
+            skip_eval=skip_eval,
         )
 
         if self.dry_run:
@@ -1302,11 +1309,18 @@ class RunPodHarness:
         ivf_num_partitions: int | None = None,
         ivf_num_sub_vectors: int | None = None,
         source_mode: str = "git",
+        skip_eval: bool = False,
     ) -> list[str]:
         """Sequence of shell commands the Pod will run.
 
         Captured as a list so dry-run can dump them and tests can assert
         what Pod-side execution looks like without real SSH.
+
+        ``skip_eval=True`` drops Step 9 (cli_rag_eval --ablate) from the
+        sequence. Use when the real measurement happens locally via
+        cohort_eval — see Phase 6 plan after v7 build hit the 5400s
+        SSH-command timeout because cli_rag_eval re-encodes every
+        query without caching (4 ablations × 338 q × ~10s ≈ 3.7 h).
         """
         modalities_arg = ",".join(modalities)
         # Build the cs-index-build command with optional bge-m3 tuning
@@ -1419,7 +1433,14 @@ class RunPodHarness:
                 "scripts.learning.rag.r3.index.lexical_sidecar "
                 "--index-root /workspace/cs_rag/"
             ] if r_phase == "r3" else []),
-            # Step 9: eval (only on r1+; r0 skips)
+            # Step 9: eval (only on r1+; r0 skips). Skipped entirely
+            # when skip_eval=True — used to short-circuit the multi-hour
+            # cli_rag_eval --ablate path on r3 builds where the real
+            # measurement happens locally via cohort_eval against the
+            # 200q real-qrel suite. v7 build (commit cca6a4c) hit the
+            # 5400s SSH command timeout in this step because each
+            # ablation re-encodes every query without caching, so
+            # 4 ablations × 338 queries × ~10s each ≈ 3.7 hours.
             *([
                 f"cd /workspace/repo && WOOWA_RAG_NO_RERANK=1 "
                 f"python -m scripts.learning.cli_rag_eval "
@@ -1427,7 +1448,7 @@ class RunPodHarness:
                 f"--ablation-split holdout "
                 f"{' '.join(f'--ablation-modalities {m}' for m in [','.join(modalities[:i+1]) for i in range(len(modalities))])} "
                 f"--ablation-out /workspace/eval/{r_phase}_holdout.json"
-            ] if r_phase != "r0" else []),
+            ] if r_phase != "r0" and not skip_eval else []),
             # Step 10: package
             f"cd /workspace/repo && python -m scripts.remote.package_rag_artifact "
             f"--index-root /workspace/cs_rag/ --run-id {run_id} --r-phase {r_phase}"
@@ -1535,6 +1556,7 @@ class RunPodHarness:
                 ivf_num_partitions=config.ivf_num_partitions,
                 ivf_num_sub_vectors=config.ivf_num_sub_vectors,
                 source_mode=source_mode,
+                skip_eval=config.skip_eval,
                 remote_command_timeout_s=max(3600, config.max_duration_min * 60),
             )
             result.artifact_path = artifact
@@ -1616,6 +1638,17 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Minimum vCPU count (default: 8).",
     )
+    parser.add_argument(
+        "--skip-eval",
+        action="store_true",
+        help=(
+            "Skip Step 9 (cli_rag_eval --ablate). The in-build ablation "
+            "step re-encodes every query without caching, so 4 ablations "
+            "× ~338 queries × ~10s ≈ 3.7 hours and trips the 5400s SSH "
+            "command timeout. Use this when the real measurement happens "
+            "locally via cohort_eval against the 200q real-qrel suite."
+        ),
+    )
     parser.add_argument("--dry-run", action="store_true",
                         help="Don't touch the network; mock the API.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
@@ -1687,6 +1720,7 @@ def resolve_defaults(args: argparse.Namespace) -> BuildConfig:
         ivf_num_partitions=getattr(args, "ivf_num_partitions", None),
         ivf_num_sub_vectors=getattr(args, "ivf_num_sub_vectors", None),
         source_mode=getattr(args, "source_mode", "auto"),
+        skip_eval=getattr(args, "skip_eval", False),
     )
 
 
