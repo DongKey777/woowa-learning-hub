@@ -47,6 +47,19 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 요지: AI 세션이 `bin/rag-ask` 호출 직전에 학습자 자연어 ↔ corpus 어휘 통역 한 번 emit. 학습자에게 보이는 답변 톤은 raw prompt 기준 유지.
 
+### Daemon Warm Service (cold 25s → warm 1.3s)
+
+`bin/rag-ask`는 daemon 모드 default — wrapper가 `--via-daemon` 자동 추가. 첫 호출 시 daemon spawn해서 BGE-M3 + reranker를 메모리에 keep, 두 번째 호출부터 학습자 query latency 25s → 1.3s.
+
+- AI 세션이 First-Run 끝에 `bin/rag-daemon start` 호출 권장 — 첫 질문도 warm
+- 학습자가 외울 명령 = 0. wrapper가 daemon ensure
+- 비활성: `WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."`
+- 상태/로그: `bin/rag-daemon status`, `state/rag-daemon.{json,log}`
+
+### Production R3 env defaults
+
+`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 4 env var를 default로 export — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`. 닫혀 있으면 95.5% baseline → 90.5%로 silent 후퇴라 wrapper 진입 시점에 강제. override는 calling shell의 `export`로.
+
 ## Adaptive Response (v3 closed loop)
 
 `bin/rag-ask` 출력에 `learner_context`가 들어 있으면 (cold-start가 아닐 때) **무시하지 말고** 다음 규약을 따른다:

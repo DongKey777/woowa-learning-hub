@@ -79,6 +79,30 @@ Learners use Gemini CLI on the **free tier or Google AI Pro ($20/mo) subscriptio
 - If already on Gemini 2.5 Pro (or auto-routing is handling it), just confirm it in one sentence and proceed with the First-Run Protocol.
 - Do not perform this check on follow-up turns of the same session — only on the very first turn.
 
+## Interactive Learning RAG — Pilot baseline 95.5%
+
+`bin/rag-ask` 호출 시 다음 두 lever가 95.5% 베이스라인을 만든다.
+
+### Query Reformulation (+5pp)
+
+학습자 raw 자연어 prompt와 함께 corpus 친화적 reformulation을 같이 전달:
+
+- `bin/rag-ask "$prompt" --reformulated-query "$ref"`
+- 작성 규칙 + 적용/미적용 + 이전 turn context fold-in: `docs/agent-query-reformulation-contract.md` (필수)
+- 누락 시 graceful degradation — 95.5% → 90.5%
+
+### Daemon Warm Service (cold 25s → warm 1.3s)
+
+`bin/rag-ask`는 daemon 모드 default — wrapper가 `--via-daemon` 자동 추가. 첫 호출에서 daemon spawn해서 BGE-M3 + reranker keep, 이후 warm latency 19× 단축.
+
+- AI 세션이 First-Run 끝에 `bin/rag-daemon start` 호출 권장
+- 학습자가 외울 명령 = 0
+- 비활성: `WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."`
+
+### Production R3 env defaults
+
+`bin/rag-ask` / `bin/coach-run` / `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1` 4개 default 강제. silent degradation 방지.
+
 ## Adaptive Response (v3 closed loop)
 
 `bin/rag-ask` 출력에 `learner_context`가 들어 있으면 (cold-start가 아닐 때) **무시하지 말고** 다음 규약을 따른다:

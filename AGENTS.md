@@ -82,6 +82,19 @@ Role:
 
 요지: AI 세션이 `bin/rag-ask` 호출 직전에 학습자 자연어 ↔ corpus 어휘 통역을 한 번 emit한다. 학습자에게 보이는 답변 톤은 raw prompt 기준으로 유지.
 
+### Daemon Warm Service (cold 25s → warm 1.3s)
+
+`bin/rag-ask`는 daemon 자동 활성화 — wrapper가 `--via-daemon`을 기본 추가한다. 첫 호출 시 daemon이 자동 spawn해서 BGE-M3 + reranker model을 메모리에 keep하므로, 두 번째 호출부터 학습자 query latency가 25s → 1.3s 수준으로 떨어진다 (19× 향상).
+
+- **AI 세션이 First-Run 끝에 `bin/rag-daemon start`를 한 번 호출하면** 학습자 첫 query latency도 cold 25s → ~1.3s로 단축. 권장 흐름이지만 강제 아님 — 학습자가 첫 질문을 던지면 wrapper가 알아서 spawn하니 학습이 막히진 않는다.
+- 학습자가 외울 명령 = 0. wrapper가 daemon ensure를 처리.
+- daemon 비활성: `WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."` (CI / debug).
+- 상세: `bin/rag-daemon status` / `start` / `stop`. 상태/로그는 `state/rag-daemon.json`, `state/rag-daemon.log`.
+
+### Production R3 env defaults (silent degradation 방지)
+
+`bin/rag-ask`, `bin/coach-run`, `bin/cs-index-build` wrapper는 `bin/_rag_env.sh`를 source해서 4 env var를 default로 export한다 — `WOOWA_RAG_R3_ENABLED=1`, `WOOWA_RAG_R3_RERANK_POLICY=always`, `WOOWA_RAG_R3_FORBIDDEN_FILTER=1`, `HF_HUB_OFFLINE=1`. 이 값들이 닫혀 있으면 95.5% Pilot baseline → 90.5% 또는 그 이하로 silent 후퇴하므로 wrapper 진입 시점에 강제한다. 다른 값을 명시적으로 원할 때만 calling shell에서 export로 override.
+
 ## Adaptive Response (v3 closed loop)
 
 `bin/rag-ask` 출력의 `learner_context`가 `null`이 아닐 때 **반드시** 다음을 충족시켜 답변을 작성한다:
