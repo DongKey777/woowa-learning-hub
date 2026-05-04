@@ -107,6 +107,7 @@ class CorpusChunk:
     concept_id: str | None = None
     doc_role: str | None = None
     level: str | None = None
+    contextual_chunk_prefix: str | None = None  # v3 frontmatter; prepended to embed text when no per-chunk context exists
 
     def to_dict(self) -> dict:
         return {
@@ -125,6 +126,7 @@ class CorpusChunk:
             "concept_id": self.concept_id,
             "doc_role": self.doc_role,
             "level": self.level,
+            "contextual_chunk_prefix": self.contextual_chunk_prefix,
         }
 
 
@@ -378,6 +380,7 @@ def _emit_chunks(
     doc_role: str | None = None,
     level: str | None = None,
     frontmatter_aliases: list[str] | None = None,
+    contextual_chunk_prefix: str | None = None,
 ) -> Iterator[CorpusChunk]:
     document_retrieval_phrases = _dedupe_phrases(
         retrieval_anchors or [],
@@ -429,6 +432,7 @@ def _emit_chunks(
                 concept_id=concept_id,
                 doc_role=doc_role,
                 level=level,
+                contextual_chunk_prefix=contextual_chunk_prefix,
             )
             counter += 1
 
@@ -475,6 +479,7 @@ def iter_corpus(corpus_root: Path | str = DEFAULT_CORPUS_ROOT) -> Iterator[Corpu
             doc_role=_frontmatter_string(frontmatter, "doc_role"),
             level=_frontmatter_string(frontmatter, "level"),
             frontmatter_aliases=_frontmatter_list(frontmatter, "aliases"),
+            contextual_chunk_prefix=_frontmatter_string(frontmatter, "contextual_chunk_prefix"),
         )
 
 

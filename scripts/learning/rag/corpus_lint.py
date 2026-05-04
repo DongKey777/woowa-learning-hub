@@ -133,13 +133,43 @@ def parse_frontmatter(text: str) -> dict | None:
     body = m.group(1)
     out: dict = {}
     pending_list_key: str | None = None
-    for line in body.splitlines():
+    pending_block_key: str | None = None
+    pending_block_indent: int | None = None
+    pending_block_lines: list[str] = []
+    pending_block_chomp: str = ""
+
+    def _flush_block() -> None:
+        nonlocal pending_block_key, pending_block_indent, pending_block_lines, pending_block_chomp
+        if pending_block_key is None:
+            return
+        text_block = "\n".join(pending_block_lines)
+        if pending_block_chomp != "+":
+            text_block = text_block.rstrip("\n")
+        if pending_block_chomp == "":
+            text_block = text_block.rstrip("\n") + "\n" if text_block else ""
+        out[pending_block_key] = text_block
+        pending_block_key = None
+        pending_block_indent = None
+        pending_block_lines = []
+        pending_block_chomp = ""
+
+    raw_lines = body.splitlines()
+    for line in raw_lines:
+        if pending_block_key is not None:
+            stripped = line.lstrip(" ")
+            indent = len(line) - len(stripped)
+            if line.strip() == "":
+                pending_block_lines.append("")
+                continue
+            if pending_block_indent is None and indent > 0:
+                pending_block_indent = indent
+            if pending_block_indent is not None and indent >= pending_block_indent:
+                pending_block_lines.append(line[pending_block_indent:])
+                continue
+            _flush_block()
         line = line.rstrip()
         if not line or line.startswith("#"):
             continue
-        # Accept any indent for list items (0-space "- x" from PyYAML
-        # default dump, 2-space "  - x" from hand-authored frontmatter,
-        # 4-space etc.). The bare "- " token marks a list element.
         list_item_match = _LIST_ITEM_RE.match(line)
         if pending_list_key and list_item_match:
             out[pending_list_key].append(_parse_yaml_scalar(list_item_match.group(1).strip()))
@@ -149,12 +179,20 @@ def parse_frontmatter(text: str) -> dict | None:
             pending_list_key = None
             continue
         key, raw_value = kv.group(1), kv.group(2).strip()
+        if raw_value in ("|", ">", "|-", ">-", "|+", ">+"):
+            pending_list_key = None
+            pending_block_key = key
+            pending_block_indent = None
+            pending_block_lines = []
+            pending_block_chomp = raw_value[1:] if len(raw_value) > 1 else ""
+            continue
         if raw_value == "":
             out[key] = []
             pending_list_key = key
             continue
         out[key] = _parse_yaml_scalar(raw_value)
         pending_list_key = None
+    _flush_block()
     return out
 
 

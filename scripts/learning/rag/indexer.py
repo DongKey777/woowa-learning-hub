@@ -505,10 +505,21 @@ def _semantic_body(chunk: corpus_loader.CorpusChunk) -> str:
     return chunk.embedding_body if chunk.embedding_body is not None else chunk.body
 
 
+def _resolve_chunk_context(chunk: corpus_loader.CorpusChunk) -> str | None:
+    """Pick the chunk-level context with per-chunk file taking precedence over the frontmatter doc-level override."""
+    per_chunk = _load_chunk_context(chunk)
+    if per_chunk:
+        return per_chunk
+    prefix = chunk.contextual_chunk_prefix
+    if prefix:
+        return " ".join(prefix.split())
+    return None
+
+
 def _embed_text(chunk: corpus_loader.CorpusChunk) -> str:
     """Compose the text fed to the embedder: title + section + body."""
     head = _chunk_head(chunk)
-    context = _load_chunk_context(chunk)
+    context = _resolve_chunk_context(chunk)
     if context:
         return f"{head}\n\n[retrieval context] {context}\n\n{_semantic_body(chunk)}"
     return f"{head}\n\n{_semantic_body(chunk)}"
@@ -517,7 +528,7 @@ def _embed_text(chunk: corpus_loader.CorpusChunk) -> str:
 def _searchable_text(chunk: corpus_loader.CorpusChunk) -> str:
     """Compose text for lexical/FTS surfaces, including retrieval anchors."""
     head = _chunk_head(chunk)
-    context = _load_chunk_context(chunk)
+    context = _resolve_chunk_context(chunk)
     if context:
         return f"{head}\n\n[retrieval context] {context}\n\n{chunk.body}"
     return f"{head}\n\n{chunk.body}"
