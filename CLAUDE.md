@@ -37,6 +37,15 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 **Phase 9.4 citation contract**: `bin/rag-ask` 출력 최상위에 `response_hints.citation_markdown`이 항상 존재한다. tier 1+에서 hits가 있으면 paste-ready `참고:\n- <path>\n- <path>` 문자열로 채워짐 (최대 3개). AI 세션은 이 문자열을 verbatim 복사 — 손으로 path 작성 ❌. null이면 인용 출력 ❌. 회귀 테스트: `tests/unit/test_citation_contract.py`.
 
+**Phase 9.3 tier downgrade contract**: R3가 cross-encoder top-1 점수가 `WOOWA_RAG_REFUSAL_THRESHOLD` 미만이면 sentinel hit을 emit하고, `bin/rag-ask`는 `decision.tier=0`으로 강제 + `response_hints.tier_downgrade="corpus_gap_no_confident_match"` + `response_hints.fallback_disclaimer`(한국어 한 줄)를 surface한다. AI 세션 행동:
+1. 헤더: `[RAG: tier-0 — corpus_gap, 훈련지식 기반]`
+2. 첫 줄: `fallback_disclaimer` verbatim
+3. 본문: 훈련지식으로 답변
+4. `참고:` 출력 ❌
+5. 마지막 줄: "이 답은 일반 지식 기반이라 정확성이 corpus-grounded보다 낮을 수 있어. 출처 확인이 필요하면 알려줘."
+
+활성화: `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` 또는 `off` (default off). Calibration 스크립트: `scripts/learning/rag/r3/eval/calibrate_refusal_threshold.py`. 회귀 테스트: `test_r3_refusal_threshold.py`, `test_integration_tier_downgrade.py`, `test_rag_ask_forces_tier_0_on_downgrade.py`, `test_cohort_eval_silent_failure.py`.
+
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
 ### Query Reformulation (Pilot baseline 95.5%의 +5pp 책임)

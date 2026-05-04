@@ -70,6 +70,15 @@ Role:
 
 **Citation contract** (Phase 9.4): `bin/rag-ask` 출력 최상위에 `response_hints` 객체가 항상 존재한다. tier 1+에서 hits가 있으면 `response_hints.citation_markdown`이 paste-ready `참고:\n- <path>\n- <path>` 형식으로 채워져 있다 (최대 3개). AI 세션은 이 문자열을 답변 끝에 verbatim 복사 — 스스로 인용을 작성하지 않는다. tier 0 / blocked / hits 비어있음에는 `citation_markdown=null`이고 인용 ❌.
 
+**Tier downgrade contract** (Phase 9.3): R3가 confidence-threshold 미만의 top-1을 받으면 `bin/rag-ask`가 `decision.tier`를 0으로 강제하고 `response_hints.tier_downgrade = "corpus_gap_no_confident_match"`, `response_hints.fallback_disclaimer`에 한국어 한 줄("코퍼스에 이 주제의 신뢰할 만한 자료가 없어 일반 지식 기반으로 답한다.")을 채운다. AI 세션 행동:
+1. 헤더: `[RAG: tier-0 — corpus_gap, 훈련지식 기반]`
+2. 첫 줄: `response_hints.fallback_disclaimer` verbatim
+3. 본문: AI 훈련 지식으로 답변
+4. `참고:` 블록 출력 ❌ (`citation_markdown=null`)
+5. 마지막 줄: "이 답은 일반 지식 기반이라 정확성이 corpus-grounded보다 낮을 수 있어. 출처 확인이 필요하면 알려줘."
+
+활성화: `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` env var. Default off (production-safe). Calibration: `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`. 회귀 테스트: `tests/unit/test_r3_refusal_threshold.py`, `test_integration_tier_downgrade.py`, `test_rag_ask_forces_tier_0_on_downgrade.py`, `test_cohort_eval_silent_failure.py`.
+
 학습자가 `RAG로 깊게`, `그냥 답해` 같은 override 키워드를 포함하면 라우터가 자동 강제 분기. 일반 코딩 작업(미션 코칭이나 학습 세션 외)에는 헤더 표기 안 함.
 
 전체 명세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.

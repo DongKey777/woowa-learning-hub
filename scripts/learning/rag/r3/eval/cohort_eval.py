@@ -147,6 +147,19 @@ def _first_matching_rank(
     return None
 
 
+def _hits_contain_refusal_sentinel(hits) -> bool:
+    """True when the search response carries the Phase 9.3 sentinel.
+
+    ``hits`` may be a list/tuple of dicts (real R3 output), an empty
+    sequence, or ``None`` (legacy callers that don't know about the
+    sentinel — fall through to the pre-9.3 grading).
+    """
+    if not hits:
+        return False
+    head = hits[0]
+    return isinstance(head, dict) and head.get("sentinel") == "no_confident_match"
+
+
 def _classify_outcome(
     *,
     cohort_tag: str,
@@ -155,9 +168,17 @@ def _classify_outcome(
     acceptable_paths: tuple[str, ...],
     forbidden_paths: tuple[str, ...],
     top_k: int,
+    hits: tuple | list | None = None,
 ) -> tuple[str, str, bool, int | None, int | None, int | None]:
     """Returns (expected_outcome, actual_outcome, pass_status,
-    primary_rank, acceptable_rank, forbidden_hit_rank)."""
+    primary_rank, acceptable_rank, forbidden_hit_rank).
+
+    ``hits`` is the raw search response. When provided, Phase 9.3
+    refusal-sentinel detection runs for ``corpus_gap_probe`` queries
+    so that real refusals get a ``tier_downgraded`` outcome (pass) and
+    irrelevant top-K returns get ``silent_failure`` (fail). Legacy
+    callers passing ``None`` see the pre-9.3 grading.
+    """
     primary_rank = _first_matching_rank(
         final_paths, set(primary_paths), top_k,
     ) if primary_paths else None
@@ -170,9 +191,11 @@ def _classify_outcome(
 
     # Refusal cohorts: primary may be empty by design.
     if cohort_tag == "corpus_gap_probe":
-        # Pass if NO forbidden hit and NO false primary (which doesn't exist)
-        # plus at most acceptable_paths in top_k. The honest outcome is
-        # "we did not surface anything we shouldn't have."
+        # Phase 9.3 — explicit refusal sentinel is the *real*
+        # tier_downgraded pass. Honest "no confident match" answer.
+        if hits is not None and _hits_contain_refusal_sentinel(hits):
+            return ("refusal_clean", "tier_downgraded", True,
+                    primary_rank, acceptable_rank, forbidden_rank)
         if forbidden_rank is not None:
             return ("refusal_clean", "forbidden_hit", False,
                     primary_rank, acceptable_rank, forbidden_rank)
@@ -183,6 +206,15 @@ def _classify_outcome(
         if acceptable_rank is not None:
             return ("refusal_clean", "acceptable_hit", True,
                     primary_rank, acceptable_rank, forbidden_rank)
+        # Phase 9.3 — when hits info is supplied (i.e. caller is on
+        # the v9.3 contract) and no sentinel was emitted but no
+        # primary/acceptable matched either, this is silent_failure:
+        # R3 returned top-K garbage that the pre-9.3 metric scored as
+        # refusal_clean=true. We now mark it as a regression.
+        if hits is not None:
+            return ("refusal_clean", "silent_failure", False,
+                    primary_rank, acceptable_rank, forbidden_rank)
+        # Legacy callers without hits info — preserve prior behavior.
         return ("refusal_clean", "refusal_clean", True,
                 primary_rank, acceptable_rank, forbidden_rank)
 
@@ -293,6 +325,7 @@ def evaluate_cohort_query(
         acceptable_paths=query.acceptable_paths,
         forbidden_paths=query.forbidden_paths,
         top_k=top_k,
+        hits=hits,
     )
     failure_class = _classify_failure(
         actual_outcome=actual,
