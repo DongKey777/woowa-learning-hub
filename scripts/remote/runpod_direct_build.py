@@ -486,7 +486,10 @@ def main(argv: list[str] | None = None) -> int:
         remote_hash = remote_sha256(pod, remote_artifact)
         logger.info("[direct] remote sha256 = %s", remote_hash)
 
-        scp_pull(pod, remote_artifact, local_artifact, timeout_s=3600)
+        # scp timeout 7200s (2h): v14 measured 9 Mbps over Korea↔US
+        # so 7.4 GB tar.zst needs ~110 min — 3600s default tripped at
+        # 4.6 GB / 7.4 GB. 7200s covers worst-case + retry headroom.
+        scp_pull(pod, remote_artifact, local_artifact, timeout_s=7200)
 
         for sidecar in ("manifest.json", "environment.json",
                         "repo.commit_or_diff.txt", "artifact_contract.json"):
