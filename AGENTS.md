@@ -15,10 +15,10 @@ Role:
 0. **OS 감지** — `uname` 실패 또는 `$env:OS == "Windows_NT"`이면 Windows native 모드.
    - Native Windows: 학습자에게 한국어로 동의 받은 후 `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` 자동 호출 (PowerShell 한 번만)
    - 이후 명령 호출은 OS별 자동 분기: `bin/<cmd>` (Unix) / `.\bin\<cmd>.ps1` (Windows native) / `python scripts/workbench/cli.py <cmd>` (universal fallback)
-1. Python 의존성 설치 — `pip install -e .` (sentence-transformers / numpy / scikit-learn)
+1. Python 의존성 설치 — `pip install -e .` (sentence-transformers / FlagEmbedding / LanceDB / numpy / scikit-learn)
 2. (필요 시) `gh auth login` 트리거 — 브라우저로 GitHub 인증
-3. HuggingFace 모델 캐시 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder reranker
-4. CS 인덱스 빌드 — `bin/cs-index-build` (또는 Windows native에서 `.ps1`)
+3. HuggingFace 모델 캐시 warm-up — `BAAI/bge-m3` + cross-encoder reranker
+4. CS 인덱스 빌드 — `bin/cs-index-build` (기본값 LanceDB v3; legacy는 rollback 때만 `--backend legacy`)
 5. 미션 저장소 clone + onboard-repo → bootstrap-repo
 6. Learner State Assessment
 7. coach-run

@@ -16,8 +16,8 @@ Do not operate as a generic coding assistant.
    이후 명령 OS별 자동 분기: `bin/<cmd>` / `.\bin\<cmd>.ps1` / `python scripts/workbench/cli.py <cmd>`.
 1. `pip install -e .`
 2. (필요시) `gh auth login` 트리거
-3. HF 모델 warm-up (MiniLM + cross-encoder)
-4. `bin/cs-index-build` (또는 `.ps1`)
+3. HF 모델 warm-up (`BAAI/bge-m3` + cross-encoder)
+4. `bin/cs-index-build` (기본 LanceDB v3, 또는 `.ps1`)
 5. mission clone → onboard → Learner State Assessment → coach-run
 
 각 단계를 한국어 한 줄로 학습자에게 보고.

@@ -139,6 +139,55 @@ Offline smoke results after the wrapper fix:
 The English DI smoke uses an explicit RAG override because the plain English
 prompt routes to tier 0.
 
+## Post-Cutover Hardening
+
+After production promotion, eval/runtime compatibility was tightened so
+reports cannot accidentally measure the legacy default path:
+
+- `rag-eval --baseline-only` now accepts `--index-root`, `--backend auto`, and
+  `--legacy-archive`.
+- v3 Lance manifests are normalized into eval manifests with
+  `embedding_model=BAAI/bge-m3`, `embedding_dim=1024`, backend, modalities,
+  encoder, and LanceDB metadata.
+- runtime debug records backend, resolved modalities, query candidate kinds,
+  reranker enabled state, and rerank pair counts.
+- `rag-eval --reranker-ab` now detects the fixed embedding index backend and
+  passes `backend=lance` for v3 indexes.
+- `bin/cs-index-build` default backend is now `lance`; `--backend legacy`
+  remains only for rollback verification and archived v2 comparisons.
+
+Validation smoke:
+
+```text
+HF_HUB_OFFLINE=1 .venv/bin/python scripts/learning/cli_rag_eval.py \
+  --baseline-only \
+  --fixture tests/fixtures/cs_rag_cutover_failure_queries.json \
+  --eval-split holdout \
+  --index-root state/cs_rag \
+  --backend auto \
+  --out-quality /private/tmp/rag_eval_sparse_smoke_quality.json \
+  --out-machine /private/tmp/rag_eval_sparse_smoke_machine.json \
+  --device cpu
+```
+
+Result:
+
+- selected queries: `4/14`
+- backend: `lance`
+- runtime modalities: `fts,dense,sparse`
+- primary nDCG@10: `1.0000`
+- hard regression: `4/4 passed`
+- warm P50: `484.9328534983215 ms`
+- warm P95: `524.0193750069011 ms`
+- cold start: `9966.204416996334 ms`
+- sparse rescore P95: `3.333 ms`
+
+Note: the R2 index stores `fts,dense,sparse`, and the production default
+runtime policy now resolves full-mode queries to `fts,dense,sparse`. Sparse
+showed neutral quality delta versus `fts,dense` in the holdout ablation, so the
+next work package is sparse bottleneck/effect analysis before any
+category-gated sparse or sparse weight reduction.
+
 ## Rollback
 
 Rollback runbook verified:
@@ -150,8 +199,17 @@ docs/runbooks/rag-rollback.md
 Use `state/cs_rag_archive/v2_20260501T063445Z` as the preserved legacy v2
 source if the Lance production runtime must be reverted.
 
+## 2026-05-01 Sparse Default Update
+
+The post-cutover policy was revised so production full-mode defaults to
+`fts,dense,sparse`, matching the selected R2 artifact. This intentionally keeps
+sparse in the runtime while the next measurement isolates its bottleneck and
+effect. If sparse remains neutral or negative, reduce it with category-gated
+sparse or sparse weight tuning instead of reverting the LanceDB v3 cutover.
+
 ## Follow-Up
 
+- Run sparse bottleneck/effect analysis before retrieval-boundary fixes.
 - Monitor local CPU latency. First warm full-mode Lance smoke took roughly
   6-10 seconds locally.
 - Investigate the 14-query failure taxonomy and cross-category mis-retrieval.

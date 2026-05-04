@@ -44,11 +44,11 @@ woowa-learning-hub/                    ← 학습자가 직접 클론
 
 시작 파일(`CLAUDE.md` / `AGENTS.md` / `GEMINI.md`)의 First-Run Protocol에 따라:
 
-1. `pip install -e .` — Python 의존성 설치 (sentence-transformers / numpy / scikit-learn)
-2. HuggingFace 모델 warm-up — `paraphrase-multilingual-MiniLM-L12-v2` + cross-encoder
+1. `pip install -e .` — Python 의존성 설치 (sentence-transformers / FlagEmbedding / LanceDB / numpy / scikit-learn)
+2. HuggingFace 모델 warm-up — `BAAI/bge-m3` + cross-encoder
    (첫 실행만 온라인, 이후 캐시 재사용)
-3. `bin/cs-index-build` — CS RAG 인덱스 생성 (`state/cs_rag/index.sqlite3`,
-   `dense.npz`, `manifest.json`). 87초 정도 소요 (cold)
+3. `bin/cs-index-build` — CS RAG LanceDB v3 인덱스 생성 (`state/cs_rag/manifest.json`,
+   `state/cs_rag/lance/`). 로컬 CPU에서는 오래 걸릴 수 있어 AI가 필요 시 remote GPU runbook을 사용
 4. **학습 테스트 / 미션 저장소 자동 클론** (학습자 의도에 따라):
    - 학습 테스트 흐름: `cd missions && git clone https://github.com/woowacourse/spring-learning-test.git`
    - PR 코칭 흐름: 학습자 fork (`https://github.com/내계정/<repo>.git`)을 `missions/<repo>/`에 클론
@@ -73,7 +73,7 @@ woowa-learning-hub/                    ← 학습자가 직접 클론
 
 ```bash
 bin/doctor                  # Python / gh 인증 / 디렉터리 상태
-bin/cs-index-build          # CS 인덱스 강제 재빌드
+bin/cs-index-build          # CS 인덱스 강제 재빌드 (기본 LanceDB v3)
 HF_HUB_OFFLINE=1 ...        # HF Hub 네트워크 차단 (cold latency 절약)
 ```
 

@@ -1,14 +1,26 @@
 {
   "schema_version": 2,
-  "description": "LanceDB modality policy. R1 holdout (101 queries on R1 v9 artifact c352271, BGE-M3 fp16 1024-dim, RTX A4000) confirmed dense modality production-ready globally: primary_nDCG@10 0.6862 → 0.7890 (+0.103, +15% relative), no category regressed materially. Cutover gate moves dense from per-category (sampled) to global default.",
-  "updated_at": "2026-04-30",
+  "description": "LanceDB modality policy. R1 holdout confirmed dense production-ready globally. R2 cutover evidence showed sparse had neutral quality delta against fts+dense but the production default is intentionally fts+dense+sparse after the 2026-05-01 product decision; the next gate is sparse bottleneck/effect analysis before any category-gated sparse or sparse weight reduction.",
+  "updated_at": "2026-05-01",
   "source": [
     "docs/worklogs/rag-sota-handoff-2026-04-30.md",
-    "reports/rag_eval/r1_holdout_c352271.json"
+    "reports/rag_eval/r1_holdout_c352271.json",
+    "reports/rag_eval/next_lance_modality_ablation_holdout_20260501T1700Z.json",
+    "reports/rag_eval/next_improvement_decision_20260501T1700Z.md"
   ],
   "cheap_default_modalities": ["fts"],
-  "full_default_modalities": ["fts", "dense"],
-  "dense_default_modalities": ["fts", "dense"],
+  "full_default_modalities": ["fts", "dense", "sparse"],
+  "dense_default_modalities": ["fts", "dense", "sparse"],
+  "sparse_default_decision": {
+    "state": "default_on",
+    "decided_at": "2026-05-01",
+    "reason": "Keep production runtime aligned with the R2 fts+dense+sparse artifact while sparse effect is measured explicitly.",
+    "next_gate": "sparse bottleneck/effect analysis",
+    "rollback_options_if_sparse_remains_neutral": [
+      "category-gated sparse",
+      "sparse weight reduction"
+    ]
+  },
   "dense_default_categories": [
     "database",
     "design-pattern",

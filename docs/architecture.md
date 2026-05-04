@@ -22,7 +22,7 @@
 - `state/repos/<repo>/actions/` — `coach-run.json` (canonical), `coach-response.json` (legacy peer-only reference), next-action bundles
 - `state/repos/<repo>/contexts/cs-augmentation.json` — optional CS search sidecar with full document bodies (present only when `cs_search_mode ∈ {cheap, full}` and `cs_readiness.state="ready"`)
 - `state/repos/<repo>/memory/` — `history.jsonl`, `summary.json`, `profile.json`, optional `drill-pending.json` (one open drill), optional `drill-history.jsonl` (append-only 4-dim results)
-- `state/cs_rag/` — shared CS index (`index.sqlite3`, `dense.npz`, `manifest.json`); gitignored, rebuilt by `bin/cs-index-build`
+- `state/cs_rag/` — shared CS index (`manifest.json` + LanceDB `lance/`; legacy v2 also had `index.sqlite3`/`dense.npz`); gitignored, rebuilt by `bin/cs-index-build`
 - `state/repos/<repo>/profiles/` — learner and reviewer profiles
 - `state/cache/` — global cache
 - `state/repo-registry.json` — registered mission repos
