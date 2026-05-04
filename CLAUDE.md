@@ -46,6 +46,13 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 활성화: `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` 또는 `off` (default off). Calibration 스크립트: `scripts/learning/rag/r3/eval/calibrate_refusal_threshold.py`. 회귀 테스트: `test_r3_refusal_threshold.py`, `test_integration_tier_downgrade.py`, `test_rag_ask_forces_tier_0_on_downgrade.py`, `test_cohort_eval_silent_failure.py`.
 
+**Phase 9.1 anaphora**: R3가 멀티턴 follow-up을 직접 처리한다.
+- AI 세션이 `--reformulated-query`를 넘기면 prior turn 맥락이 이미 fold됐다고 보고 verbatim 사용 (정상 흐름).
+- reformulation 없이 짧은 anaphora prompt ("그럼 IoC는?", "then?")가 들어오면 regex 매치 + `learner_context.recent_rag_ask_context`에서 직전 topic 최대 2개를 dense embed query에 fold (`이전 맥락: ...\n현재 질문: ...`).
+- prior topic 없으면 raw prompt — false-positive 방지 ("그럼 안녕" 같은 짧은 인사는 regex 매치되어도 fold 없이 통과).
+
+회귀 테스트: `tests/unit/test_r3_anaphora.py`.
+
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
 ### Query Reformulation (Pilot baseline 95.5%의 +5pp 책임)

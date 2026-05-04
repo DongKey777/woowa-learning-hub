@@ -11,6 +11,7 @@ import os
 import time
 from pathlib import Path
 
+from .anaphora import detect_follow_up
 from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
@@ -342,7 +343,16 @@ def search(
     the two at retrieval time.
     """
 
-    semantic_query = reformulated_query or prompt
+    # Phase 9.1 — multi-turn anaphora. detect_follow_up consults the
+    # AI-session reformulation first (verbatim use, regex suppressed)
+    # and falls back to regex + learner_context fold-in for short
+    # follow-up prompts. Lexical retriever still uses the raw prompt.
+    follow_up = detect_follow_up(
+        prompt=prompt,
+        reformulated_query=reformulated_query,
+        learner_context=learner_context,
+    )
+    semantic_query = follow_up.augmented_semantic_query
     stage_ms: dict[str, float] = {}
     started = time.perf_counter()
     config = R3Config.from_env()
@@ -574,6 +584,11 @@ def search(
             "reranker_skip_reason": reranker_skip_reason,
             "forbidden_filter": forbidden_filter_info,
             "refusal_sentinel": refusal_info if sentinel_emitted else None,
+            "anaphora": {
+                "detected_via": follow_up.detected_via,
+                "is_follow_up": follow_up.is_follow_up,
+                "prior_topics": list(follow_up.prior_topics),
+            },
             "catalog_channels_used": list(catalog_channels_used),
             "catalog_error": catalog_error,
         },
@@ -608,6 +623,11 @@ def search(
         debug["r3_refusal_sentinel"] = (
             dict(refusal_info) if sentinel_emitted and refusal_info else None
         )
+        debug["r3_anaphora"] = {
+            "detected_via": follow_up.detected_via,
+            "is_follow_up": follow_up.is_follow_up,
+            "prior_topics": list(follow_up.prior_topics),
+        }
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k

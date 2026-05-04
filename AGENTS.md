@@ -79,6 +79,12 @@ Role:
 
 활성화: `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` env var. Default off (production-safe). Calibration: `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`. 회귀 테스트: `tests/unit/test_r3_refusal_threshold.py`, `test_integration_tier_downgrade.py`, `test_rag_ask_forces_tier_0_on_downgrade.py`, `test_cohort_eval_silent_failure.py`.
 
+**Multi-turn anaphora** (Phase 9.1): R3가 두 종류 신호를 본다:
+1. AI 세션이 `--reformulated-query`를 emit하면 그게 우선 — 이미 prior turn 맥락이 fold됐다고 보고 verbatim 사용 (regex suppress).
+2. reformulation 없이 짧은 anaphora prompt ("그럼 IoC는?")가 들어오면 regex 매치 + `learner_context.recent_rag_ask_context`/`recent_topics`에서 직전 topic 최대 2개를 fold해 dense embed query를 `이전 맥락: ...\n현재 질문: ...`로 만든다. prior topic이 없으면 raw prompt 그대로 (false-positive 방지).
+
+학습자 입장: 짧은 follow-up 질문에서도 dense retrieval 정확. AI 세션이 reformulation을 잘 emit하는 한 fallback regex는 거의 발화 안 함. 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
+
 학습자가 `RAG로 깊게`, `그냥 답해` 같은 override 키워드를 포함하면 라우터가 자동 강제 분기. 일반 코딩 작업(미션 코칭이나 학습 세션 외)에는 헤더 표기 안 함.
 
 전체 명세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
