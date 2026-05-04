@@ -141,6 +141,60 @@ def test_run_one_reranker_rejects_empty_queries():
         )
 
 
+def test_run_one_reranker_uses_lance_backend_for_v3_index(monkeypatch, tmp_path):
+    from scripts.learning.rag import indexer, searcher
+
+    (tmp_path / indexer.MANIFEST_NAME).write_text(
+        json.dumps(
+            {
+                "index_version": indexer.LANCE_INDEX_VERSION,
+                "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+                "row_count": 1,
+                "corpus_hash": "v3-hash",
+                "corpus_root": "corpus",
+                "built_at": "2026-05-01T00:00:00Z",
+                "encoder": {
+                    "model_id": "BAAI/bge-m3",
+                    "model_version": "BAAI/bge-m3@test",
+                    "dense_dim": 1024,
+                    "max_length": 512,
+                },
+                "lancedb": {
+                    "version": "0.30.2",
+                    "table_name": indexer.LANCE_TABLE_NAME,
+                    "indices": {},
+                },
+                "modalities": ["fts", "dense", "sparse"],
+                "ingest": {"chunk_max_chars": 1600, "chunk_overlap": 0},
+            }
+        ),
+        encoding="utf-8",
+    )
+    calls: list[dict] = []
+
+    def fake_search(prompt, **kwargs):
+        calls.append(kwargs)
+        return [{"path": "a.md"}]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+
+    blob, _rss = RA.run_one_reranker(
+        _candidate(cid="mxbai-rerank-base-v1"),
+        [_query()],
+        embedding_index_root=tmp_path,
+        model_factory=lambda _id: object(),
+        device="cpu",
+    )
+
+    assert calls
+    assert calls[0]["backend"] == "lance"
+    assert calls[0]["index_root"] == tmp_path
+    assert blob["manifest"]["backend"] == "lance"
+    assert blob["manifest"]["embedding_model"] == "BAAI/bge-m3"
+    assert blob["manifest"]["embedding_dim"] == 1024
+    assert blob["manifest"]["modalities"] == ["fts", "dense", "sparse"]
+
+
 # ---------------------------------------------------------------------------
 # run_reranker_ab_sweep — fully mocked to avoid loading searcher / torch
 # ---------------------------------------------------------------------------

@@ -713,7 +713,7 @@ def incremental_lance_build_index(
     encoder,
     index_root,
     corpus_root=None,
-    modalities: tuple[str, ...] = ("dense", "sparse", "colbert", "fts"),
+    modalities: tuple[str, ...] = ("fts", "dense", "sparse"),
     progress=None,
     colbert_dtype: str = "float16",
 ) -> IncrementalBuildResult:

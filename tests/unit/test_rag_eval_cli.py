@@ -38,6 +38,25 @@ def test_parser_baseline_only_mode():
     args = parser.parse_args(["--baseline-only"])
     assert args.baseline_only is True
     assert args.fast is False
+    assert args.backend == "auto"
+    assert args.index_root == CLI.DEFAULT_EMBEDDING_INDEX_ROOT
+    assert args.legacy_archive is None
+    assert args.eval_split == "full"
+
+
+def test_parser_baseline_only_runtime_overrides(tmp_path):
+    parser = CLI.build_parser()
+    args = parser.parse_args([
+        "--baseline-only",
+        "--index-root", str(tmp_path / "idx"),
+        "--backend", "lance",
+        "--legacy-archive", str(tmp_path / "legacy"),
+        "--eval-split", "holdout",
+    ])
+    assert args.index_root == tmp_path / "idx"
+    assert args.backend == "lance"
+    assert args.legacy_archive == tmp_path / "legacy"
+    assert args.eval_split == "holdout"
 
 
 def test_parser_ablate_mode():
@@ -201,6 +220,150 @@ def test_resolve_device_auto_returns_string():
     the test machine."""
     resolved = CLI._resolve_device("auto")
     assert resolved in ("cpu", "mps")
+
+
+# ---------------------------------------------------------------------------
+# --baseline-only runtime wiring
+# ---------------------------------------------------------------------------
+
+def test_run_baseline_only_uses_explicit_legacy_index_root(tmp_path, monkeypatch):
+    from scripts.learning.rag import indexer, searcher
+
+    index_root = tmp_path / "legacy_idx"
+    index_root.mkdir()
+    (index_root / indexer.MANIFEST_NAME).write_text(
+        json.dumps(
+            {
+                "index_version": indexer.INDEX_VERSION,
+                "corpus_hash": "legacy-hash",
+                "embed_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "embed_dim": 384,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    calls: list[dict] = []
+
+    def fake_search(prompt, **kwargs):
+        calls.append(kwargs)
+        kwargs["debug"].update(
+            {
+                "backend": kwargs["backend"],
+                "modalities": ["fts", "dense"],
+                "reranker_enabled": True,
+                "rerank_top_n": 20,
+                "rerank_input_count": 1,
+                "stage_ms": {"legacy_candidate_pool": 1.25},
+            }
+        )
+        return [{"path": "contents/spring/bean.md"}]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    out_quality = tmp_path / "quality.json"
+    out_machine = tmp_path / "machine.json"
+    args = CLI.build_parser().parse_args([
+        "--baseline-only",
+        "--fixture", str(_legacy_fixture(tmp_path)),
+        "--index-root", str(index_root),
+        "--backend", "legacy",
+        "--out-quality", str(out_quality),
+        "--out-machine", str(out_machine),
+        "--device", "cpu",
+    ])
+
+    rc = CLI.run_baseline_only(args)
+
+    assert rc == 0
+    assert calls
+    assert all(call["backend"] == "legacy" for call in calls)
+    assert all(call["index_root"] == index_root for call in calls)
+
+    quality = json.loads(out_quality.read_text(encoding="utf-8"))
+    assert quality["manifest"]["backend"] == "legacy"
+    assert quality["manifest"]["modalities"] == ["fts", "dense"]
+    assert quality["manifest"]["embedding_dim"] == 384
+
+    machine = json.loads(out_machine.read_text(encoding="utf-8"))
+    assert machine["runtime"]["backend"] == "legacy"
+    assert machine["runtime"]["index_root"] == str(index_root)
+    assert machine["runtime_debug"][0]["rerank_input_count"] == 1
+    assert machine["runtime_summary"]["modalities"] == {"fts,dense": 2}
+    assert machine["runtime_summary"]["stage_ms"]["legacy_candidate_pool"]["count"] == 2
+    assert machine["runtime_summary"]["stage_ms"]["legacy_candidate_pool"]["p95_ms"] == 1.25
+
+
+def test_run_baseline_only_supports_lance_v3_manifest(tmp_path, monkeypatch):
+    from scripts.learning.rag import indexer, searcher
+
+    index_root = tmp_path / "lance_idx"
+    index_root.mkdir()
+    (index_root / indexer.MANIFEST_NAME).write_text(
+        json.dumps(
+            {
+                "index_version": indexer.LANCE_INDEX_VERSION,
+                "schema_uri": "https://woowa-learning-hub/schemas/cs-index-manifest-v3.json",
+                "row_count": 1,
+                "corpus_hash": "v3-hash",
+                "corpus_root": "corpus",
+                "built_at": "2026-05-01T00:00:00Z",
+                "encoder": {
+                    "model_id": "BAAI/bge-m3",
+                    "model_version": "BAAI/bge-m3@test",
+                    "dense_dim": 1024,
+                    "max_length": 512,
+                },
+                "lancedb": {
+                    "version": "0.30.2",
+                    "table_name": indexer.LANCE_TABLE_NAME,
+                    "indices": {},
+                },
+                "modalities": ["fts", "dense", "sparse"],
+                "ingest": {"chunk_max_chars": 1600, "chunk_overlap": 0},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    calls: list[dict] = []
+
+    def fake_search(prompt, **kwargs):
+        calls.append(kwargs)
+        kwargs["debug"].update(
+            {
+                "backend": "lance",
+                "modalities": ["fts", "dense", "sparse"],
+                "reranker_enabled": True,
+                "rerank_top_n": 20,
+                "rerank_input_count": 1,
+                "stage_ms": {"lance_candidate_plan": 2.5},
+            }
+        )
+        return [{"path": "contents/spring/bean.md"}]
+
+    monkeypatch.setattr(searcher, "search", fake_search)
+    out_quality = tmp_path / "quality.json"
+    args = CLI.build_parser().parse_args([
+        "--baseline-only",
+        "--fixture", str(_legacy_fixture(tmp_path)),
+        "--index-root", str(index_root),
+        "--backend", "auto",
+        "--out-quality", str(out_quality),
+        "--out-machine", str(tmp_path / "machine.json"),
+        "--device", "cpu",
+    ])
+
+    rc = CLI.run_baseline_only(args)
+
+    assert rc == 0
+    assert calls[0]["backend"] == "lance"
+    assert calls[0]["index_root"] == index_root
+
+    quality = json.loads(out_quality.read_text(encoding="utf-8"))
+    assert quality["manifest"]["backend"] == "lance"
+    assert quality["manifest"]["embedding_model"] == "BAAI/bge-m3"
+    assert quality["manifest"]["embedding_dim"] == 1024
+    assert quality["manifest"]["modalities"] == ["fts", "dense", "sparse"]
 
 
 # ---------------------------------------------------------------------------

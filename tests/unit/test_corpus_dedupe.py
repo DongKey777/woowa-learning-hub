@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 from scripts.learning.rag import dedupe as D
+from scripts.learning.rag import indexer
 
 
 # ---------------------------------------------------------------------------
@@ -209,6 +210,95 @@ def _build_synthetic_index(tmp_path: Path) -> Path:
     return index_root
 
 
+class FakeDedupeLanceEncoder:
+    model_id = "fake/bge-m3"
+    model_version = "fake/bge-m3@dedupe"
+    dense_dim = 4
+    colbert_dim = 4
+    sparse_vocab_size = 128
+    max_length = 512
+    batch_size = 32
+
+    def encode_corpus(
+        self,
+        texts,
+        *,
+        batch_size=16,
+        max_length=8192,
+        modalities=("dense", "sparse", "colbert"),
+        progress=None,
+    ):
+        dense = np.zeros((len(texts), self.dense_dim), dtype=np.float32)
+        sparse = []
+        colbert = []
+        for i, text in enumerate(texts):
+            if "Spring Bean" in text:
+                dense[i] = np.asarray([1.0, 0.0, 0.0, 0.0], dtype=np.float32)
+            else:
+                dense[i] = np.asarray([0.0, 1.0, 0.0, 0.0], dtype=np.float32)
+            sparse.append({i + 1: 1.0})
+            colbert.append(np.full((1, self.colbert_dim), float(i + 1), dtype=np.float16))
+        return {"dense": dense, "sparse": sparse, "colbert": colbert}
+
+    def encode_query(self, text, *, modalities=("dense", "sparse", "colbert")):
+        return self.encode_corpus([text], modalities=modalities)
+
+
+def _write_lance_doc(root: Path, category: str, slug: str, title: str, body: str) -> None:
+    path = root / "contents" / category / f"{slug}.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        f"""# {title}
+
+> 한 줄 요약: 테스트용 문서입니다.
+
+**난이도: 🟢 Beginner**
+
+retrieval-anchor-keywords:
+- {title} basics
+- {title} 처음 배우는데
+
+## 핵심 개념
+
+{body}
+""",
+        encoding="utf-8",
+    )
+
+
+def _build_synthetic_lance_index(tmp_path: Path) -> Path:
+    corpus_root = tmp_path / "lance-corpus"
+    _write_lance_doc(
+        corpus_root,
+        "spring",
+        "bean-basics",
+        "Spring Bean basics",
+        "Spring Bean은 컨테이너가 관리하는 객체입니다. " * 4,
+    )
+    _write_lance_doc(
+        corpus_root,
+        "spring",
+        "bean-lifecycle",
+        "Spring Bean lifecycle",
+        "Spring Bean lifecycle은 생성과 초기화 흐름을 다룹니다. " * 4,
+    )
+    _write_lance_doc(
+        corpus_root,
+        "algorithm",
+        "dfs",
+        "DFS basics",
+        "DFS는 그래프를 깊이 우선으로 탐색하는 알고리즘입니다. " * 4,
+    )
+
+    index_root = tmp_path / "lance-index"
+    indexer.build_lance_index(
+        index_root=index_root,
+        corpus_root=corpus_root,
+        encoder=FakeDedupeLanceEncoder(),
+    )
+    return index_root
+
+
 def test_runner_loads_paths_aligned_with_embeddings(tmp_path):
     from scripts.learning.rag import corpus_dedupe_runner as R
     idx = _build_synthetic_index(tmp_path)
@@ -216,6 +306,16 @@ def test_runner_loads_paths_aligned_with_embeddings(tmp_path):
     assert len(paths) == 3
     assert paths[0].endswith("/bean.md")
     assert embs.shape == (3, 3)
+
+
+def test_runner_loads_paths_aligned_with_lance_embeddings(tmp_path):
+    from scripts.learning.rag import corpus_dedupe_runner as R
+    idx = _build_synthetic_lance_index(tmp_path)
+    paths, embs = R.load_index_paths_and_embeddings(idx)
+    assert len(paths) >= 3
+    assert len(set(paths)) == 3
+    assert any(path.endswith("/bean-basics.md") for path in paths)
+    assert embs.shape == (len(paths), FakeDedupeLanceEncoder.dense_dim)
 
 
 def test_runner_finds_pair_in_synthetic_index(tmp_path):
@@ -230,6 +330,19 @@ def test_runner_finds_pair_in_synthetic_index(tmp_path):
     assert result.embedding_count == 3
     assert result.unique_path_count == 3
     assert result.threshold == 0.9
+
+
+def test_runner_finds_pair_in_synthetic_lance_index(tmp_path):
+    from scripts.learning.rag import corpus_dedupe_runner as R
+    idx = _build_synthetic_lance_index(tmp_path)
+    result = R.find_dedupe_candidates(
+        index_root=idx, threshold=0.99, same_category_only=True,
+    )
+    assert len(result.pairs) == 1
+    assert result.pairs[0].path_a.endswith("/bean-basics.md")
+    assert result.pairs[0].path_b.endswith("/bean-lifecycle.md")
+    assert result.embedding_count >= 3
+    assert result.unique_path_count == 3
 
 
 def test_runner_same_category_only_filters_cross_domain(tmp_path):

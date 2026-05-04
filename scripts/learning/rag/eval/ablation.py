@@ -9,6 +9,7 @@ bucket macro reporting, hard-regression checks, and scoped encoder binding.
 
 from __future__ import annotations
 
+import os
 import time
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -17,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.learning.rag import indexer
+from scripts.learning.rag.reranker import RERANK_MODEL
 
 from . import runner as R
 from .ab_retriever import ABRetriever
@@ -148,6 +150,11 @@ def run_modality_ablation(
     model_version = str(encoder_info.get("model_version") or "")
     if not model_id:
         raise ValueError("run_modality_ablation: index manifest missing encoder.model_id")
+    reranker_model = (
+        RERANK_MODEL
+        if mode == "full" and os.environ.get("WOOWA_RAG_NO_RERANK") != "1"
+        else None
+    )
 
     def _tick(stage: str, info: dict | None = None) -> None:
         if progress is not None:
@@ -185,7 +192,7 @@ def run_modality_ablation(
             model_revision=model_version or None,
             embedding_dim=embedding_dim,
             device=device,
-            reranker_model=None,
+            reranker_model=reranker_model,
             fusion_weights=FusionWeights.default(),
             top_k=top_k,
             mode=mode,

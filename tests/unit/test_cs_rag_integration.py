@@ -19,6 +19,7 @@ the real-index full-mode augment verification path.
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -26,6 +27,12 @@ from pathlib import Path
 from scripts.learning.rag import corpus_loader, indexer
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
+LEGACY_GOLDEN_INDEX_ROOT = Path(
+    os.environ.get(
+        "WOOWA_RAG_GOLDEN_INDEX_ROOT",
+        "state/cs_rag_archive/v2_current_20260502T1101Z",
+    )
+)
 
 
 def _load_fixture_payload() -> dict:
@@ -58,7 +65,7 @@ def _load_empty_learning_points_parity_contract() -> dict[str, str]:
 
 def _full_mode_index_ready() -> bool:
     try:
-        return indexer.is_ready(indexer.DEFAULT_INDEX_ROOT).state == "ready"
+        return indexer.is_ready(LEGACY_GOLDEN_INDEX_ROOT).state == "ready"
     except Exception:
         return False
 
@@ -102,10 +109,10 @@ def _require_live_full_mode_readiness(
     contract = _load_readiness_contract()
     if report is None:
         try:
-            report = indexer.is_ready(indexer.DEFAULT_INDEX_ROOT)
+            report = indexer.is_ready(LEGACY_GOLDEN_INDEX_ROOT)
         except Exception as exc:
             raise AssertionError(
-                "CS RAG readiness probe failed before integration smoke verification; "
+                "CS RAG legacy golden readiness probe failed before integration verification; "
                 "do not treat readiness errors as skippable."
             ) from exc
 
@@ -114,14 +121,18 @@ def _require_live_full_mode_readiness(
 
     next_command = report.next_command or "bin/cs-index-build"
     if contract.get(report.state, "fail") == "skip":
-        raise unittest.SkipTest(f"CS RAG index not built — run {next_command}")
+        raise unittest.SkipTest(
+            "CS RAG legacy golden index not built — restore "
+            f"{LEGACY_GOLDEN_INDEX_ROOT} or set WOOWA_RAG_GOLDEN_INDEX_ROOT. "
+            f"Suggested command: {next_command}"
+        )
 
     detail = ""
     if report.state == "stale":
         detail = _live_readiness_stale_diagnostic()
 
     raise AssertionError(
-        f"CS RAG index is not fresh enough for integration smoke verification "
+        f"CS RAG legacy golden index is not fresh enough for integration verification "
         f"(state={report.state}, reason={report.reason}).{detail} "
         "Stale or corrupt indexes can hide full-mode augment regressions after "
         "corpus churn; only a genuinely missing first-run index may skip. "
@@ -174,7 +185,7 @@ class CsRagAugmentReadinessGuardContract(unittest.TestCase):
             next_command="bin/cs-index-build",
         )
 
-        with self.assertRaisesRegex(AssertionError, "integration smoke verification"):
+        with self.assertRaisesRegex(AssertionError, "integration verification"):
             _require_live_full_mode_readiness(report)
 
     def test_corrupt_index_fails_fast_instead_of_skipping(self) -> None:
@@ -256,6 +267,52 @@ class CsRagAugmentReadinessGuardContract(unittest.TestCase):
             self.assertIsNone(ready_report.next_command)
             self.assertIs(_require_live_full_mode_readiness(ready_report), ready_report)
 
+    def test_indexed_corpus_hash_ignores_out_of_index_markdown(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            corpus_root = root / "corpus"
+            index_root = root / "index"
+            (corpus_root / "contents" / "spring").mkdir(parents=True)
+            index_root.mkdir()
+            (corpus_root / "contents" / "spring" / "bean.md").write_text(
+                "# Bean\n\nindexed content",
+                encoding="utf-8",
+            )
+            (corpus_root / "README.md").write_text(
+                "# Meta\n\nnot indexed",
+                encoding="utf-8",
+            )
+
+            sqlite_path, dense_path, manifest_path = indexer._paths(index_root)
+            sqlite_conn = indexer._open_sqlite(sqlite_path)
+            sqlite_conn.close()
+            dense_path.touch()
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "index_version": indexer.INDEX_VERSION,
+                        "embed_model": "fixture",
+                        "embed_dim": 0,
+                        "row_count": 1,
+                        "corpus_hash": corpus_loader.corpus_hash(corpus_root),
+                        "indexed_corpus_hash": corpus_loader.indexed_corpus_hash(corpus_root),
+                        "corpus_hash_scope": "indexed_contents_v1",
+                        "corpus_root": str(corpus_root),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            (corpus_root / "README.md").write_text(
+                "# Meta\n\nchanged but still not indexed",
+                encoding="utf-8",
+            )
+
+            ready_report = indexer.is_ready(index_root, corpus_root)
+
+            self.assertEqual(ready_report.state, "ready")
+            self.assertEqual(ready_report.corpus_hash, corpus_loader.indexed_corpus_hash(corpus_root))
+
 
 class CsRagAugmentLiveIndexContract(unittest.TestCase):
     def test_live_index_is_fresh_or_explicitly_missing(self) -> None:
@@ -282,7 +339,11 @@ class AugmentAgainstRealIndex(unittest.TestCase):
         cls.readiness = report
 
     def _augment(self, **kwargs):
-        return self.augment(readiness=self.readiness, **kwargs)
+        return self.augment(
+            readiness=self.readiness,
+            index_root=LEGACY_GOLDEN_INDEX_ROOT,
+            **kwargs,
+        )
 
     def test_skip_mode_returns_empty_without_search(self) -> None:
         result = self._augment(

@@ -19,7 +19,6 @@ module is import-cheap and unit-testable with fakes.
 
 from __future__ import annotations
 
-import json
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
@@ -40,6 +39,7 @@ from .manifest import FusionWeights, RunManifest
 from .precheck import get_process_rss_mb
 from .reranker_candidates import RerankerCandidate
 from .reranker_swap import RerankerSwap
+from .runtime_index import resolve_runtime_index_info
 
 
 DEFAULT_EMBEDDING_INDEX_ROOT = Path("state/cs_rag")
@@ -161,6 +161,8 @@ def run_one_reranker(
     # (which pulls torch at import time)
     from scripts.learning.rag import searcher
 
+    index_info = resolve_runtime_index_info(embedding_index_root, backend="auto")
+
     _tick("load_reranker", {"candidate": candidate.candidate_id})
     t0 = time.perf_counter()
 
@@ -180,6 +182,7 @@ def run_one_reranker(
                 mode=mode,
                 experience_level=query.experience_level,
                 index_root=embedding_index_root,
+                backend=index_info.backend,
             )
             return [h["path"] for h in hits]
 
@@ -199,18 +202,12 @@ def run_one_reranker(
         p50 = 0.0
         p95 = 0.0
 
-    # Read embedding manifest to fill in the manifest provenance
-    from scripts.learning.rag import indexer  # late import
-
-    embed_manifest_path = Path(embedding_index_root) / indexer.MANIFEST_NAME
-    embed_manifest = json.loads(embed_manifest_path.read_text(encoding="utf-8"))
-
     manifest = RunManifest(
-        corpus_hash=embed_manifest["corpus_hash"],
-        index_version=int(embed_manifest["index_version"]),
-        embedding_model=embed_manifest["embed_model"],
-        model_revision=None,
-        embedding_dim=int(embed_manifest["embed_dim"]),
+        corpus_hash=index_info.corpus_hash,
+        index_version=index_info.index_version,
+        embedding_model=index_info.embedding_model,
+        model_revision=index_info.model_revision,
+        embedding_dim=index_info.embedding_dim,
         device=device,
         reranker_model=candidate.hf_model_id,
         fusion_weights=FusionWeights.default(),
@@ -219,6 +216,10 @@ def run_one_reranker(
         latency_p50_warm=p50,
         latency_p95_warm=p95,
         cold_start_ms=cold_load_ms,
+        backend=index_info.backend,
+        modalities=index_info.modalities,
+        encoder=index_info.encoder,
+        lancedb=index_info.lancedb,
     )
     report = R.build_run_report(
         queries, per_query, regressions,

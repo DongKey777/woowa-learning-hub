@@ -24,12 +24,19 @@ session cannot hide full-mode golden regressions behind a skip.
 from __future__ import annotations
 
 import json
+import os
 import unittest
 from pathlib import Path
 
 from scripts.learning.rag import corpus_loader, indexer, signal_rules
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "fixtures" / "cs_rag_golden_queries.json"
+LEGACY_GOLDEN_INDEX_ROOT = Path(
+    os.environ.get(
+        "WOOWA_RAG_GOLDEN_INDEX_ROOT",
+        "state/cs_rag_archive/v2_20260501T063445Z",
+    )
+)
 _PROJECTION_BEGINNER_CONTRAST_QUERY_IDS = (
     "projection_freshness_intro_primer_vs_guardrail_compare",
     "projection_freshness_intro_primer_vs_rebuild_playbook_compare",
@@ -164,7 +171,7 @@ def _load_live_readiness_diagnostics_contract() -> dict[str, object]:
 
 def _full_mode_index_ready() -> bool:
     try:
-        return indexer.is_ready(indexer.DEFAULT_INDEX_ROOT).state == "ready"
+        return indexer.is_ready(LEGACY_GOLDEN_INDEX_ROOT).state == "ready"
     except Exception:
         return False
 
@@ -212,10 +219,10 @@ def _require_live_full_mode_readiness(
     contract = _load_readiness_contract()
     if report is None:
         try:
-            report = indexer.is_ready(indexer.DEFAULT_INDEX_ROOT)
+            report = indexer.is_ready(LEGACY_GOLDEN_INDEX_ROOT)
         except Exception as exc:
             raise AssertionError(
-                "CS RAG readiness probe failed before golden verification; "
+                "CS RAG legacy golden readiness probe failed before verification; "
                 "do not treat readiness errors as skippable."
             ) from exc
 
@@ -224,7 +231,11 @@ def _require_live_full_mode_readiness(
 
     next_command = report.next_command or "bin/cs-index-build"
     if contract.get(report.state, "fail") == "skip":
-        raise unittest.SkipTest(f"CS RAG index not built — run {next_command}")
+        raise unittest.SkipTest(
+            "CS RAG legacy golden index not built — restore "
+            f"{LEGACY_GOLDEN_INDEX_ROOT} or set WOOWA_RAG_GOLDEN_INDEX_ROOT. "
+            f"Suggested command: {next_command}"
+        )
 
     rationale = contract.get(
         "rationale",
@@ -239,7 +250,7 @@ def _require_live_full_mode_readiness(
         )
         detail += _live_readiness_stale_diagnostic()
     raise AssertionError(
-        f"CS RAG index is not fresh enough for golden verification "
+        f"CS RAG legacy golden index is not fresh enough for golden verification "
         f"(state={report.state}, reason={report.reason}).{detail} {rationale} "
         f"Next step: {next_command}"
     )
@@ -3723,6 +3734,7 @@ class CsRagGoldenQueries(unittest.TestCase):
                 learning_points=q.get("learning_points") or None,
                 top_k=self.top_k,
                 experience_level=q.get("experience_level"),
+                index_root=LEGACY_GOLDEN_INDEX_ROOT,
             )
             paths = [h["path"] for h in hits]
             accepted_paths = [q["expected_path"], *(q.get("acceptable_paths") or [])]
@@ -3825,6 +3837,7 @@ class CsRagGoldenQueries(unittest.TestCase):
                 learning_points=q.get("learning_points") or None,
                 top_k=self.top_k,
                 experience_level=q.get("experience_level"),
+                index_root=LEGACY_GOLDEN_INDEX_ROOT,
             )
             paths = [hit["path"] for hit in hits]
             top_family_hits = [path for path in paths[:family_top_k] if path in family_paths]
@@ -3873,6 +3886,7 @@ class CsRagGoldenQueries(unittest.TestCase):
                 learning_points=q.get("learning_points") or None,
                 top_k=self.top_k,
                 experience_level=q.get("experience_level"),
+                index_root=LEGACY_GOLDEN_INDEX_ROOT,
             )
             paths = [hit["path"] for hit in hits]
             top_family_paths = [path for path in paths[:family_top_k] if path in family_paths]
@@ -3915,6 +3929,7 @@ class CsRagGoldenQueries(unittest.TestCase):
                 learning_points=q.get("learning_points") or None,
                 top_k=self.top_k,
                 experience_level=q.get("experience_level"),
+                index_root=LEGACY_GOLDEN_INDEX_ROOT,
             )
             paths = [hit["path"] for hit in hits]
 
@@ -3971,6 +3986,7 @@ class CsRagGoldenQueries(unittest.TestCase):
                 learning_points=q.get("learning_points") or None,
                 top_k=self.top_k,
                 experience_level=q.get("experience_level"),
+                index_root=LEGACY_GOLDEN_INDEX_ROOT,
             )
             paths = [hit["path"] for hit in hits]
 

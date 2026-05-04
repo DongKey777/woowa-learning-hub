@@ -7,9 +7,9 @@ Modes (plan §P1.1, §8 PR-1 scope):
   that all 338 entries pass the dataclass + JSON Schema gates. No
   live retrieval, no ML deps required at runtime. CI fast contract.
 
-- ``--baseline-only``: live retrieval against the current production
-  searcher (MiniLM-L12 + existing reranker + RRF k=60). Emits two
-  artifacts (plan §P0.1):
+- ``--baseline-only``: live retrieval against the selected runtime index
+  (production LanceDB v3 by default, or an explicit archived legacy root).
+  Emits two artifacts (plan §P0.1):
     * reports/rag_eval/baseline_quality.json — graded nDCG, primary
       nDCG, MRR, hit/recall, bucket macro, run manifest. Repo-committed.
     * state/cs_rag/baseline_machine.json — latency P50/P95, cold start,
@@ -135,6 +135,42 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=DEFAULT_FIXTURE,
         help=f"Path to legacy or graded fixture (default: {DEFAULT_FIXTURE}).",
+    )
+    parser.add_argument(
+        "--index-root",
+        type=Path,
+        default=DEFAULT_EMBEDDING_INDEX_ROOT,
+        help=(
+            "Index root used by --baseline-only. Supports legacy v2 and "
+            f"LanceDB v3 manifests (default: {DEFAULT_EMBEDDING_INDEX_ROOT})."
+        ),
+    )
+    parser.add_argument(
+        "--backend",
+        choices=("auto", "legacy", "lance"),
+        default="auto",
+        help=(
+            "Backend used by --baseline-only. 'auto' derives it from "
+            "manifest.json (default: auto)."
+        ),
+    )
+    parser.add_argument(
+        "--legacy-archive",
+        type=Path,
+        default=None,
+        help=(
+            "Shortcut for --baseline-only legacy comparisons: evaluate this "
+            "archived v2 index root and force backend=legacy."
+        ),
+    )
+    parser.add_argument(
+        "--eval-split",
+        choices=("tune", "holdout", "full"),
+        default="full",
+        help=(
+            "Fixture split for --baseline-only. Default full preserves the "
+            "historical baseline artifact shape."
+        ),
     )
     parser.add_argument(
         "--top-k",
@@ -469,8 +505,95 @@ def _resolve_device(arg: str) -> str:
     return "cpu"
 
 
+def _select_eval_split(queries: Sequence[Any], *, split: str, seed: int) -> list[Any]:
+    """Select tune/holdout/full using the canonical deterministic splitter."""
+    if split == "full":
+        return list(queries)
+    from scripts.learning.rag.eval.split import split_tune_holdout
+
+    tune, holdout = split_tune_holdout(list(queries), seed=seed)
+    return tune if split == "tune" else holdout
+
+
+def _runtime_modalities_from_debug(records: Sequence[dict[str, Any]]) -> tuple[str, ...]:
+    """Return the first observed runtime modality set from search debug."""
+    for record in records:
+        modalities = record.get("modalities")
+        if isinstance(modalities, list) and modalities:
+            return tuple(str(m) for m in modalities)
+    return ()
+
+
+def _p50_p95(values: Sequence[float]) -> tuple[float, float]:
+    if not values:
+        return 0.0, 0.0
+    sorted_values = sorted(float(v) for v in values)
+    p50 = sorted_values[len(sorted_values) // 2]
+    p95_idx = max(
+        0,
+        min(len(sorted_values) - 1, int(round(0.95 * (len(sorted_values) - 1)))),
+    )
+    return p50, sorted_values[p95_idx]
+
+
+def _summarize_runtime_debug(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate per-query runtime debug into a compact machine summary."""
+    stage_values: dict[str, list[float]] = {}
+    modalities: dict[str, int] = {}
+    rerank_inputs: list[float] = []
+    hit_counts: list[float] = []
+    for record in records:
+        mods = record.get("modalities")
+        if isinstance(mods, list):
+            key = ",".join(str(m) for m in mods)
+            modalities[key] = modalities.get(key, 0) + 1
+        if isinstance(record.get("rerank_input_count"), (int, float)):
+            rerank_inputs.append(float(record["rerank_input_count"]))
+        if isinstance(record.get("hit_count"), (int, float)):
+            hit_counts.append(float(record["hit_count"]))
+        for stage, value in (record.get("stage_ms") or {}).items():
+            if isinstance(value, (int, float)):
+                stage_values.setdefault(str(stage), []).append(float(value))
+
+    stage_summary = {}
+    for stage, values in sorted(stage_values.items()):
+        p50, p95 = _p50_p95(values)
+        stage_summary[stage] = {
+            "count": len(values),
+            "p50_ms": round(p50, 3),
+            "p95_ms": round(p95, 3),
+            "mean_ms": round(sum(values) / len(values), 3),
+            "max_ms": round(max(values), 3),
+        }
+
+    out: dict[str, Any] = {
+        "modalities": modalities,
+        "stage_ms": stage_summary,
+    }
+    if rerank_inputs:
+        p50, p95 = _p50_p95(rerank_inputs)
+        out["rerank_input_count"] = {
+            "p50": p50,
+            "p95": p95,
+            "max": max(rerank_inputs),
+        }
+    if hit_counts:
+        p50, p95 = _p50_p95(hit_counts)
+        out["hit_count"] = {
+            "p50": p50,
+            "p95": p95,
+            "max": max(hit_counts),
+        }
+    return out
+
+
 def _live_retrieve_factory(
-    *, top_k: int, device: str
+    *,
+    top_k: int,
+    device: str,
+    backend: str,
+    index_root: Path | str,
+    debug_records: list[dict[str, Any]] | None = None,
 ) -> Callable[[Any], Sequence[str]]:
     """Build a retrieve_fn that calls scripts.learning.rag.searcher.search.
 
@@ -486,13 +609,27 @@ def _live_retrieve_factory(
     from scripts.learning.rag import searcher  # late import: heavy ML deps
 
     def retrieve(query) -> list[str]:
+        search_debug: dict[str, Any] = {}
         hits = searcher.search(
             query.prompt,
             learning_points=list(query.learning_points),
             top_k=top_k,
             mode=query.mode,
             experience_level=query.experience_level,
+            backend=backend,
+            index_root=index_root,
+            debug=search_debug,
         )
+        if debug_records is not None:
+            debug_records.append(
+                {
+                    "query_id": getattr(query, "query_id", None),
+                    "backend": backend,
+                    "mode": getattr(query, "mode", None),
+                    **search_debug,
+                    "hit_count": len(hits),
+                }
+            )
         return [h["path"] for h in hits]
 
     return retrieve
@@ -502,43 +639,56 @@ def run_baseline_only(args: argparse.Namespace) -> int:
     """Run live retrieval against the current stack and emit two
     artifacts. Returns 0 on success, 1 on hard regression failure
     (caller can flip to a non-blocking exit if desired)."""
-    from scripts.learning.rag import indexer
     from scripts.learning.rag.eval import runner as R
     from scripts.learning.rag.eval.manifest import (
         FusionWeights,
         RunManifest,
-        manifest_to_dict,
     )
+    from scripts.learning.rag.eval.runtime_index import resolve_runtime_index_info
+
+    backend_arg = "legacy" if args.legacy_archive is not None else args.backend
+    index_root = args.legacy_archive or args.index_root
+    try:
+        index_info = resolve_runtime_index_info(index_root, backend=backend_arg)
+    except (FileNotFoundError, KeyError, ValueError) as exc:
+        print(f"FAIL: index not usable at {index_root}: {exc}", file=sys.stderr)
+        return 2
 
     print(
         f"[rag-eval --baseline-only] fixture={args.fixture}",
         f"  top_k={args.top_k}  forbidden_window={args.forbidden_window}",
+        f"  backend={index_info.backend}  index_root={index_info.index_root}",
+        f"  eval_split={args.eval_split}  split_seed={args.ablation_seed}",
         sep="\n",
         file=sys.stderr,
     )
 
-    queries = load_queries(args.fixture)
-    print(f"  loaded {len(queries)} queries", file=sys.stderr)
-
-    # Index manifest → corpus_hash, embed_model identity
-    readiness = indexer.is_ready()
-    if readiness.state != "ready":
-        print(
-            f"FAIL: index not ready (state={readiness.state}, "
-            f"reason={readiness.reason}). Run bin/cs-index-build.",
-            file=sys.stderr,
-        )
+    queries_all = load_queries(args.fixture)
+    queries = _select_eval_split(
+        queries_all,
+        split=args.eval_split,
+        seed=args.ablation_seed,
+    )
+    print(
+        f"  loaded {len(queries_all)} queries  selected={len(queries)}",
+        file=sys.stderr,
+    )
+    if not queries:
+        print(f"FAIL: --eval-split {args.eval_split!r} produced 0 queries.", file=sys.stderr)
         return 2
 
-    # Pull manifest fields off disk (don't hardcode)
-    manifest_path = indexer.DEFAULT_INDEX_ROOT / indexer.MANIFEST_NAME
-    raw_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-
     device = _resolve_device(args.device)
+    debug_records: list[dict[str, Any]] = []
 
     # Cold start: time the first retrieval so we can record cold_start_ms
     cold_started_at = time.perf_counter()
-    retrieve = _live_retrieve_factory(top_k=args.top_k, device=device)
+    retrieve = _live_retrieve_factory(
+        top_k=args.top_k,
+        device=device,
+        backend=index_info.backend,
+        index_root=index_info.index_root,
+        debug_records=debug_records,
+    )
     # The factory itself is light; the heavy import happens here.
     # We still wait until the first retrieve_fn call inside evaluate_queries
     # to capture model load time.
@@ -567,11 +717,11 @@ def run_baseline_only(args: argparse.Namespace) -> int:
     from scripts.learning.rag.reranker import RERANK_MODEL
 
     manifest = RunManifest(
-        corpus_hash=raw_manifest["corpus_hash"],
-        index_version=int(raw_manifest["index_version"]),
-        embedding_model=raw_manifest["embed_model"],
-        model_revision=None,
-        embedding_dim=int(raw_manifest["embed_dim"]),
+        corpus_hash=index_info.corpus_hash,
+        index_version=index_info.index_version,
+        embedding_model=index_info.embedding_model,
+        model_revision=index_info.model_revision,
+        embedding_dim=index_info.embedding_dim,
         device=device,
         reranker_model=RERANK_MODEL,
         fusion_weights=FusionWeights.default(),
@@ -580,6 +730,10 @@ def run_baseline_only(args: argparse.Namespace) -> int:
         latency_p50_warm=p50,
         latency_p95_warm=p95,
         cold_start_ms=cold_start_ms,
+        backend=index_info.backend,
+        modalities=_runtime_modalities_from_debug(debug_records) or index_info.modalities,
+        encoder=index_info.encoder,
+        lancedb=index_info.lancedb,
     )
 
     report = R.build_run_report(
@@ -612,6 +766,14 @@ def run_baseline_only(args: argparse.Namespace) -> int:
             "latency_p95_warm": blob["manifest"]["latency_p95_warm"],
             "cold_start_ms": blob["manifest"]["cold_start_ms"],
         },
+        "runtime": {
+            "index_root": str(index_info.index_root),
+            "backend": index_info.backend,
+            "eval_split": args.eval_split,
+            "split_seed": args.ablation_seed,
+        },
+        "runtime_summary": _summarize_runtime_debug(debug_records),
+        "runtime_debug": debug_records,
         "timing_warm_per_query_ms": blob["timing_warm_per_query_ms"],
     }
 
@@ -904,7 +1066,15 @@ def run_reranker_ab(
         cands = list(RC.low_memory_only())
 
     # 3. Queries
-    queries = load_queries(args.fixture)
+    queries_all = load_queries(args.fixture)
+    queries = _select_eval_split(
+        queries_all,
+        split=args.eval_split,
+        seed=args.ablation_seed,
+    )
+    if not queries:
+        print(f"FAIL: --eval-split {args.eval_split!r} produced 0 queries.", file=sys.stderr)
+        return 2
 
     # 4. Factory + device
     device = _resolve_device(args.device)
@@ -914,6 +1084,7 @@ def run_reranker_ab(
         f"[rag-eval --reranker-ab] device={device}",
         f"  candidates: {[c.candidate_id for c in cands]}",
         f"  fixture: {args.fixture.name}  queries={len(queries)}",
+        f"  eval_split={args.eval_split}  split_seed={args.ablation_seed}",
         f"  embedding_index_root: {args.embedding_index_root}",
         f"  baseline primary_nDCG_macro={baseline.primary_ndcg_macro:.4f}",
         sep="\n",
