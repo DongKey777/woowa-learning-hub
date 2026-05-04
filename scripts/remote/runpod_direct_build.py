@@ -155,11 +155,12 @@ def create_pod(
     min_vcpu_count: int,
     name: str,
     pubkey_path: Path,
+    data_center_id: str | None = None,
 ) -> PodHandle:
     cloud_map = {"community": "COMMUNITY", "secure": "SECURE"}
     gpu_type_id = _resolve_gpu_type_id(runpod, gpu_type)
 
-    result = runpod.create_pod(
+    create_kwargs = dict(
         name=name,
         image_name=image,
         gpu_type_id=gpu_type_id,
@@ -172,6 +173,9 @@ def create_pod(
         start_ssh=True,
         support_public_ip=True,
     )
+    if data_center_id:
+        create_kwargs["data_center_id"] = data_center_id
+    result = runpod.create_pod(**create_kwargs)
     pod_id = result.get("id")
     if not pod_id:
         raise SystemExit(f"create_pod returned no id: {result}")
@@ -358,6 +362,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--min-vcpu-count", type=int, default=8)
     parser.add_argument("--container-disk-gb", type=int, default=80)
     parser.add_argument(
+        "--data-center-id",
+        default=None,
+        help="Pin pod to a specific RunPod datacenter (e.g. AP-JP-1 for "
+             "Japan, SEA-SG-1 for Singapore). Korea→Japan is ~50ms latency "
+             "vs Korea→US ~200ms — measured 9 Mbps over US, expecting "
+             "100Mbps+ over Japan. Default None lets RunPod auto-pick.",
+    )
+    parser.add_argument(
         "--image",
         default="runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
     )
@@ -435,6 +447,7 @@ def main(argv: list[str] | None = None) -> int:
             min_vcpu_count=args.min_vcpu_count,
             name=f"rag-{run_id}",
             pubkey_path=pubkey,
+            data_center_id=args.data_center_id,
         )
         # PodHandle's ssh_key_path = the privkey beside pubkey
         pod = PodHandle(pod_id=pod.pod_id, ssh_host=pod.ssh_host,
