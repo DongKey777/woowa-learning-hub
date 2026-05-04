@@ -13,8 +13,9 @@
 1. **다른 크루들의 PR + 리뷰** — upstream `woowacourse/<repo>`에서 같은 미션을 푼 다른
    학습자들의 PR, 리뷰, 멘토 코멘트를 SQLite 아카이브로 수집. 학습자 질문에 같은 단계
    peer PR과 멘토 리뷰 맥락에서 학습 포인트를 추출.
-2. **CS 지식 베이스** — 27,238 청크 / LanceDB v3 BGE-M3 1024-dim. 하이브리드 검색(FTS + dense + sparse + rerank + forbidden_filter)
-   + Tier 0~3 자동 라우팅 (정의 질문은 cheap, 비교/깊이는 full). Pilot baseline 95.5% (200q × 6 cohort, paraphrase 100% / forbidden 100% / corpus_gap 100%) — 자세한 측정은 [`reports/rag_eval/r3_phase4_6_closing_report.md`](reports/rag_eval/r3_phase4_6_closing_report.md). 학습자 자연어 query는 AI 세션이 corpus 친화적 형태로 reformulate한 뒤 retrieval — 자세한 contract는 [`docs/agent-query-reformulation-contract.md`](docs/agent-query-reformulation-contract.md).
+2. **CS 지식 베이스** — 학습자가 *"Bean이 뭐야?"*, *"MVCC랑 락 차이는?"* 같은 자연어 질문을
+   던지면 AI 세션이 관련 문서에서 답을 찾아 한국어로 설명. 정의 / 비교 / 깊이 단계에 따라
+   답변 깊이가 자동으로 조절되고, 학습자가 같은 표현을 안 써도 의미 매핑이 된다.
 3. **학습 테스트 결과** — `spring-learning-test` 모듈의 JUnit XML을 파싱해 모듈별 통과율
    과 concept 매핑을 누적.
 4. **Drill 채점** — 4차원(정확도 / 깊이 / 실전성 / 완결성) 채점으로 mastery / uncertainty
@@ -135,7 +136,7 @@ uncertain / underexplored 분석 + 다음 동선 추천.
 
 ```bash
 bin/doctor                          # Python / gh 인증 / 디렉터리 상태
-bin/cs-index-build                  # CS 인덱스 강제 재빌드 (기본 LanceDB v3)
+bin/cs-index-build                  # CS 인덱스 강제 재빌드
 bin/learner-profile clear --yes     # 학습 데이터 초기화 (privacy reset)
 bin/learner-profile redact "..."    # 특정 문자열 포함 이벤트 제거
 HF_HUB_OFFLINE=1 bin/rag-ask "..."  # HF 네트워크 차단 (cold latency 절약)
@@ -173,7 +174,7 @@ bin/                  명령어 래퍼 (AI가 호출 — 학습자가 직접 실
   doctor                 환경 점검
 scripts/workbench/    파이프라인 엔진
 schemas/              JSON 스키마
-knowledge/cs/         CS 지식 베이스 (27,238 청크 / LanceDB v3 BGE-M3 1024-dim)
+knowledge/cs/         CS 지식 베이스 (Spring / DB / 디자인 패턴 등 도메인별 markdown)
 docs/                 운영 문서
 .claude/, gemini-skills/, skills/   AI별 에이전트/스킬
 missions/             학습자 미션 저장소 (gitignored)
