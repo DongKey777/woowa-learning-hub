@@ -8,7 +8,7 @@
 > When this drifts out of date, fix it before working on plan items —
 > a stale progress doc is worse than no progress doc.
 >
-> Last updated: 2026-05-05.
+> Last updated: 2026-05-05 (Phase 9 closed loops + Phase 8 fleet built).
 
 ## Headline
 
@@ -33,8 +33,8 @@ The original Pilot target was 0.85.
 | 5 | System implementation alignment | ✅ done | corpus_loader v3 + indexer + R3 retrievers (lexical / dense / sparse / signal / mission_bridge / symptom_router) + post-rerank forbidden_filter |
 | 6 | Pilot baseline measurement | ✅ done | `reports/rag_eval/r3_phase4_6_closing_report.md` — OVERALL 95.5% |
 | 7 | Frontier model A/B (Qwen3 / gte-multilingual) | ⏳ deferred | user-flagged as "do this last after everything else"; load-bearing only if Phase 8 corpus expansion reveals encoder-bound limits |
-| 8 | Whole-corpus wave migration (51 → ~500 docs) | ⏳ deferred | user-flagged as "do this last"; pilot 50 docs already deliver the 95.5% headline; Phase 8 is breadth, not depth |
-| 9 | Multi-turn / personalization / safety | 🟡 partial | Query side reformulation runtime contract (`docs/agent-query-reformulation-contract.md`) covers natural-language ↔ corpus-vocab mapping + prior-turn context fold-in. The other Phase 9 items (multi-turn anaphora module, learner-profile-aware ranking) are not in scope yet. |
+| 8 | Whole-corpus wave migration (51 → ~500 docs) | 🟡 fleet built, unstarted | 30-worker `migration_v3` fleet + Pilot lock + corpus_lint --strict-v3 gate shipped (commits `e29ec9e`, `df7304f`, `c4c1639`). Fleet execution gated on token budget. Real corpus scale = 2,286 docs (2,217 unfrontmattered) — see Phase 8 plan in `~/.claude/plans/abundant-humming-lovelace.md`. |
+| 9 | Multi-turn / personalization / safety | ✅ closed | 4-loop closure: 9.4 citation block (`2a79548`), 9.3 refusal-as-tier-downgrade (`9c8dc33`, `52e0155`, `9199c06`), 9.1 anaphora in production R3 (`d2c6471`), 9.2 personalization-aware ranking default-off (`39b95de`). 62 new unit tests added; full regression 2395 pass. |
 | 10 | Production hardening + cutover | ✅ done | this cycle's Phase A items below |
 
 ## Phase A — production transfer hardening (this cycle)
@@ -48,6 +48,31 @@ The original Pilot target was 0.85.
 | A5 | unit + release-fetch test coverage | ✅ done | `85c8e98` `test(rag-r3): cover daemon reformulation forwarding + release fetch` |
 | A6 | user memory entry on local-build infeasibility | ✅ done | `memory/project_index_distribution.md` |
 | A7 | this progress doc | ✅ done | (this commit) |
+
+## Phase 9 — closed-loop wiring (this cycle)
+
+| Step | Goal | Status | Commit |
+|---|---|---|---|
+| 9.4 | pre-rendered `참고:` citation block in augment + rag-ask | ✅ done | `2a79548` `feat(rag-9.4): pre-rendered 참고: citation block in augment + rag-ask` |
+| 9.3-A | R3Config.refusal_threshold + cross-encoder confidence sentinel | ✅ done | `9c8dc33` `feat(rag-9.3): R3Config.refusal_threshold + cross-encoder confidence sentinel` |
+| 9.3-CD | augment detects sentinel + rag-ask forces tier 0 | ✅ done | `52e0155` `feat(rag-9.3): tier_downgrade contract — augment detects sentinel + rag-ask forces tier 0` |
+| 9.3-EF | cohort_eval reform + calibration script + agent docs | ✅ done | `9199c06` `feat(rag-9.3): cohort_eval reform (tier_downgraded vs silent_failure) + calibration script + agent docs` |
+| 9.1 | production R3 anaphora — reformulation primary, regex fallback | ✅ done | `d2c6471` `feat(rag-9.1): production R3 anaphora — reformulation primary, regex fallback` |
+| 9.2 | personalization-aware fusion-stage ranking (default off) | ✅ done | `39b95de` `feat(rag-9.2): personalization-aware fusion-stage ranking (default off)` |
+
+Activation knobs (default off — ship safe, opt in):
+- `WOOWA_RAG_REFUSAL_THRESHOLD=<float>` — calibrate first via `python -m scripts.learning.rag.r3.eval.calibrate_refusal_threshold`
+- `WOOWA_RAG_PERSONALIZATION_ENABLED=1` — flip on after Phase 8 corpus migration brings v3 concept_id coverage above ~30%
+
+## Phase 8 — migration fleet (built, unstarted, this cycle)
+
+| Step | Goal | Status | Commit |
+|---|---|---|---|
+| 8-tools | locked_pilot_paths.json + create_v3_frontmatter + synthesize_chunk_prefix | ✅ done | `e29ec9e` `feat(rag-r3): Phase 8 v3 migration tools — lock + frontmatter synth + prefix authoring helper` |
+| 8-fleet | 30-worker `migration_v3` fleet + Pilot lock gate + corpus_lint --strict-v3 branch | ✅ done | `df7304f` `feat(rag-r3): Phase 8 v3 migration worker fleet + Pilot lock gate` |
+| 8-tests | regression coverage (40 cases) | ✅ done | `c4c1639` `test(rag-r3): Phase 8 v3 migration regression coverage` |
+
+Fleet is callable via `bin/orchestrator fleet-start --profile migration_v3` but **must not run** until token budget allows. Phase 9.2 personalization activation is gated on this fleet's execution.
 
 ## What's locked in
 
