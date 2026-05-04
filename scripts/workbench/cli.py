@@ -794,6 +794,17 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
             hint_payload = result.get("response_hints") if isinstance(result, dict) else None
             if isinstance(hint_payload, dict):
                 out["response_hints"] = hint_payload
+                # Phase 9.3 — when augment flagged a tier downgrade
+                # (R3 emitted the no_confident_match sentinel), force
+                # decision.tier to 0 so the AI session reads a single
+                # unambiguous "training-knowledge fallback" signal.
+                # Original tier (1/2) and reason are preserved on the
+                # decision dict for telemetry only.
+                if hint_payload.get("tier_downgrade"):
+                    out["decision"]["tier"] = 0
+                    out["decision"]["mode"] = None
+                    out["decision"]["reason"] = hint_payload["tier_downgrade"]
+                    out["decision"]["blocked"] = False
 
     elif decision.tier == 3 and not decision.blocked:
         coach_run_path = str(ROOT / "bin" / "coach-run")

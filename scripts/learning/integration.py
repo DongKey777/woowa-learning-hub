@@ -80,6 +80,29 @@ def _empty_response_hints() -> dict[str, Any]:
     }
 
 
+# Phase 9.3 — tier-downgrade discriminator and Korean fallback line.
+TIER_DOWNGRADE_REASON = "corpus_gap_no_confident_match"
+TIER_DOWNGRADE_DISCLAIMER = (
+    "코퍼스에 이 주제의 신뢰할 만한 자료가 없어 일반 지식 기반으로 답한다."
+)
+
+
+def _is_refusal_sentinel(hits: list[dict[str, Any]] | None) -> bool:
+    """True when ``r3.search.search`` emitted a confidence-threshold
+    refusal sentinel (Phase 9.3 Step B).
+
+    The sentinel is the AI session's signal to abandon corpus-grounded
+    answering and fall back to training knowledge with the
+    ``TIER_DOWNGRADE_DISCLAIMER`` first line. We never let a sentinel
+    leak into the bucket population — once detected, the per-query
+    bucket is treated as if no hits were returned.
+    """
+    if not hits:
+        return False
+    head = hits[0]
+    return isinstance(head, dict) and head.get("sentinel") == "no_confident_match"
+
+
 def _render_citation_block(all_hits: list[dict[str, Any]], *, max_n: int = 3) -> tuple[str | None, list[str]]:
     """Build the paste-ready `참고:` markdown block from augment hits.
 
@@ -177,6 +200,8 @@ def augment(
     query_candidate_kinds: list[str] = []
     query_plans: list[dict[str, Any]] = []
     runtime_debug: dict[str, Any] = {}
+    refusal_sentinel_detected = False  # Phase 9.3 — set when any
+    # downstream search call returns the no_confident_match sentinel.
 
     def record_query_debug(bucket: str, search_debug: dict) -> None:
         raw_kinds = search_debug.get("query_candidate_kinds")
@@ -247,6 +272,14 @@ def augment(
                     category_filter_fallback = True
                 record_query_debug(f"learning_point:{lp}", lp_debug)
                 record_runtime_debug(lp_debug)
+                if _is_refusal_sentinel(hits):
+                    refusal_sentinel_detected = True
+                    # Sentinel for one bucket means corpus has no
+                    # confident match for this query — every other
+                    # bucket would emit the same sentinel. Stop the
+                    # per-LP loop and let the function fall through to
+                    # the post-loop tier-downgrade override.
+                    break
                 if hits:
                     by_lp[lp] = hits
                     for h in hits:
@@ -256,7 +289,7 @@ def augment(
 
         # If no peer learning point matched (cs_only turn) or all buckets
         # came back empty, fall back to signal-tag bucketing.
-        if not by_lp:
+        if not by_lp and not refusal_sentinel_detected:
             signals = signal_rules.detect_signals(prompt, topic_hints)
             fallback_reason = (
                 "cs_only_no_peer_learning_point"
@@ -285,6 +318,9 @@ def augment(
                         category_filter_fallback = True
                     record_query_debug(f"fallback:{key}", fallback_debug)
                     record_runtime_debug(fallback_debug)
+                    if _is_refusal_sentinel(hits):
+                        refusal_sentinel_detected = True
+                        break
                     if hits:
                         by_fallback[key] = hits
                         for h in hits:
@@ -315,7 +351,9 @@ def augment(
                     category_filter_fallback = True
                 record_query_debug(f"fallback:{key}", fallback_debug)
                 record_runtime_debug(fallback_debug)
-                if hits:
+                if _is_refusal_sentinel(hits):
+                    refusal_sentinel_detected = True
+                elif hits:
                     by_fallback[key] = hits
                     for h in hits:
                         if h["path"] not in seen_paths:
@@ -363,6 +401,20 @@ def augment(
         "citation_markdown": citation_markdown,
         "citation_paths": citation_paths,
     }
+
+    # Phase 9.3 — when R3 emitted a refusal sentinel for any of the
+    # search buckets, flip this turn into a tier-0 fallback. Citation
+    # is suppressed (no corpus hit to anchor on); the AI session reads
+    # `tier_downgrade` + `fallback_disclaimer` and responds from
+    # training knowledge with the disclaimer as the first line.
+    if refusal_sentinel_detected:
+        response_hints = {
+            "citation_markdown": None,
+            "citation_paths": [],
+            "tier_downgrade": TIER_DOWNGRADE_REASON,
+            "fallback_disclaimer": TIER_DOWNGRADE_DISCLAIMER,
+        }
+        meta["fallback_reason"] = TIER_DOWNGRADE_REASON
 
     return {
         "by_learning_point": by_lp,
