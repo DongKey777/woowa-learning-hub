@@ -34,6 +34,12 @@ expected_queries:
 - 로그인 됐는데 왜 403이 나와?
 - token valid인데 왜 forbidden이야?
 - 남의 주문 조회를 404로 숨기는 건 언제 써?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 로그인은 됐는데 어떤 작업이 막히면 그게 인증 실패인지
+  권한 실패인지 처음 가르는 chooser다. 401(인증 실패) vs 403(권한 실패)
+  vs 404(자원 은닉) 분기, token valid인데 forbidden, 로그인은 됐는데 작업
+  막힘, 인증 vs 인가 응답 코드 같은 자연어 paraphrase가 본 문서의 세 분기에
+  매핑된다.
 ---
 
 # Beginner Guide to Auth Failure Responses: `401` / `403` / `404`

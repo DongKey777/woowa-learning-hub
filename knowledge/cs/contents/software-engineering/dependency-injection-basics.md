@@ -24,6 +24,12 @@ expected_queries:
 - 왜 new 대신 주입받아?
 - 생성자 주입은 왜 써?
 - Spring 없이도 DI가 가능해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 필요한 도구(협력 객체)를 직접 만들지 않고 받아쓰면
+  코드가 어떻게 더 시험하기 쉬워지는지, 객체가 자기 의존성을 외부에서
+  받는 설계 원리를 처음 잡는 primer다. 필요한 도구 받아쓰기, 코드 시험
+  쉬워지는 이유, new 대신 주입, 객체 조립을 외부에서 하기, 테스트 더블
+  교체 같은 자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
 ---
 
 # 의존성 주입(DI) 기초 (Dependency Injection Basics)

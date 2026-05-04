@@ -34,6 +34,12 @@ expected_queries:
 - fetch가 login HTML 200을 받았는데 API 성공이 아닌 이유가 뭐야?
 - 쿠키는 있는데 왜 다시 로그인되는지 3단계로 어떻게 나눠?
 - SavedRequest bounce랑 cookie missing을 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 SavedRequest 흐름과 그냥 쿠키 누락을 어떻게 가리는지,
+  브라우저 fetch가 login HTML 200을 받아도 왜 API 성공이 아닌지 처음
+  잡는 chooser다. SavedRequest 흐름 vs 쿠키 누락, 401 대신 302, 쿠키는
+  있는데 다시 로그인, login HTML 200을 받았지만 API는 실패 같은 자연어
+  paraphrase가 본 문서의 분기 진단에 매핑된다.
 ---
 
 # Browser `401` vs `302` Login Redirect Guide

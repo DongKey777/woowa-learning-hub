@@ -30,6 +30,12 @@ expected_queries:
 - addFilterBefore와 addFilterAfter 기준 필터를 어떻게 고르지?
 - JWT filter를 UsernamePasswordAuthenticationFilter 앞에 둬야 하는지 헷갈려
 - ExceptionTranslationFilter와 AuthorizationFilter 순서를 어떻게 이해해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 여러 보안 검사가 있을 때 어느 게 먼저고 어느 게
+  뒤인지 정하는 규칙 — Spring Security filter chain ordering — 을 깊이
+  잡는 deep_dive다. 보안 검사 순서, 어느 검사 먼저 어느 게 뒤, 순서 정하는
+  규칙, addFilterBefore vs addFilterAfter, filter ordering 같은 자연어
+  paraphrase가 본 문서의 ordering 규칙에 매핑된다.
 ---
 
 # Spring Security Filter Chain Ordering

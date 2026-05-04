@@ -29,6 +29,12 @@ expected_queries:
 - write 직후 stale read가 실제로 있었는지 어떤 화면에서 봐?
 - primary fallback headroom을 stale dashboard에서 왜 같이 봐?
 - stale window 안에서 read source distribution을 어떻게 해석해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 관리자가 데이터 수정 직후 대시보드에서 값이 안 변해
+  보이면 그 헷갈림이 없어지도록 어떻게 dashboard를 설계해야 하는지 처음
+  잡는 primer다. 관리자가 수정 직후 값이 안 변해 보임, 헷갈림이 없어지는
+  설계, post-write stale 화면, primary fallback headroom 같은 자연어
+  paraphrase가 본 문서의 dashboard 설계에 매핑된다.
 ---
 
 # Post-Write Stale Dashboard Primer

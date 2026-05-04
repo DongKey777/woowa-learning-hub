@@ -37,6 +37,12 @@ expected_queries:
 - template method vs strategy 차이가 뭐야?
 - 부모가 흐름을 쥐는 패턴이랑 호출자가 구현을 고르는 패턴을 어떻게 나눠?
 - hook 하나 추가할지 strategy로 뺄지 어떻게 판단해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 Template Method랑 Strategy 패턴 둘 중 어느 게 부모
+  흐름을 잡는 거고 어느 게 호출자가 전략을 고르는 거인지 처음 가르는
+  chooser다. 부모가 흐름을 쥐는 패턴, 호출자가 구현 고르는 패턴, 흐름
+  주도권이 어디 있나, hook vs strategy, 상속 vs 구성 같은 자연어
+  paraphrase가 본 문서의 두 분기에 매핑된다.
 ---
 
 # 템플릿 메소드 vs 전략

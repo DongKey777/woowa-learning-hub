@@ -30,6 +30,12 @@ expected_queries:
 - read model freshness를 SLI/SLO로 운영하려면 뭐가 필요해?
 - strict fallback rate랑 projection lag를 같이 보는 이유가 뭐야?
 - projection error budget burn이 커지면 어떤 대응을 해야 해?
+contextual_chunk_prefix: |
+  이 문서는 사용자가 화면에서 보는 요약 데이터가 원본 변경에 얼마나
+  늦게 따라가는지를 SLI/SLO 지표로 정하고 운영하는 패턴을 깊이 잡는
+  deep_dive다. 요약 데이터가 원본 변경에 얼마나 늦게 따라가, 갱신 지연
+  목표, freshness budget, projection lag SLO, error budget burn 같은
+  자연어 paraphrase가 본 문서의 핵심 지표 설계에 매핑된다.
 ---
 
 # Projection Freshness SLO Pattern

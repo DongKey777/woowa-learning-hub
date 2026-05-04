@@ -29,6 +29,13 @@ expected_queries:
 - service bean not found는 왜 나?
 - Spring이 Bean을 못 찾는 이유가 뭐야?
 - SpringBootApplication 패키지 위치가 왜 중요해?
+contextual_chunk_prefix: |
+  이 문서는 Spring에서 404가 나거나 NoSuchBeanDefinitionException이 떨어지는데
+  컨트롤러는 분명히 등록돼 있는 것처럼 보이는 학습자 증상을, ComponentScan
+  경계 / 패키지 위치 / multi-module 구성 함정 등으로 가르는 playbook이다.
+  컨트롤러는 등록돼 있는데 404, Bean을 못 찾음, NoSuchBeanDefinitionException,
+  ComponentScan 경계, dispatcher 404 vs Bean 404 같은 자연어 paraphrase가
+  본 문서의 진단에 매핑된다.
 ---
 
 # Spring Component Scan 실패 패턴: `@SpringBootApplication`, 패키지 경계, Multi-Module 함정

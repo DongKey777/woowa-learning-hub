@@ -33,6 +33,12 @@ expected_queries:
 - 왜 로그인 상태가 유지돼?
 - JSESSIONID는 뭐고 JWT랑은 뭐가 달라?
 - cookie는 있는데 왜 다시 로그인되는지 보려면 어디서 시작해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 로그인 한 번에 누가 누군지 기억하는 방법이 두세 가지
+  있는데 뭐가 어떻게 다른지(server session vs signed cookie vs JWT) 처음
+  잡는 primer다. 로그인 한 번에 기억하는 방법, 로그인 상태 유지, 누가
+  누군지 기억, HTTP 상태 없음, JSESSIONID와 JWT 차이 같은 자연어
+  paraphrase가 본 문서의 세 갈래 비교에 매핑된다.
 ---
 
 # 세션·쿠키·JWT 기초

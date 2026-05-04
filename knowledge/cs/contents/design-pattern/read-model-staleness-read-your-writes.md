@@ -33,6 +33,13 @@ expected_queries:
 - read-your-writes 보장은 projection 구조에서 어떻게 설계해?
 - projection lag랑 cache staleness를 어떻게 구분해?
 - 방금 쓴 데이터가 조회에 안 보일 때 어떤 freshness 전략을 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 쓰기는 한 곳에서 하고 읽기는 다른 모델에서 한다고
+  했을 때 둘이 어긋나는 시간 — read model staleness — 을 어떻게 정의하고
+  read-your-writes 보장을 어떻게 설계하는지 잡는 bridge 문서다. 쓰기는
+  한 곳 읽기는 다른 모델, 어긋나는 시간, projection lag, freshness
+  budget, read model 정합성 같은 자연어 paraphrase가 본 문서의 비교
+  관점에 매핑된다.
 ---
 
 # Read Model Staleness and Read-Your-Writes

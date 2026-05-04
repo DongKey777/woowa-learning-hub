@@ -1,3 +1,45 @@
+---
+schema_version: 3
+title: Repository Interface Contract Primer
+concept_id: software-engineering/repository-interface-contract
+canonical: true
+category: software-engineering
+difficulty: beginner
+doc_role: primer
+level: beginner
+language: mixed
+source_priority: 90
+aliases:
+- repository interface
+- repository contract
+- 영속성 인터페이스 추상화
+- 도메인 객체 영속성
+- repository port
+- jparepository 인터페이스 차이
+- 왜 repository를 인터페이스로
+intents:
+- definition
+- design
+linked_paths:
+- contents/software-engineering/repository-dao-entity.md
+- contents/software-engineering/persistence-follow-up-question-guide.md
+- contents/software-engineering/persistence-adapter-mapping-checklist.md
+- contents/software-engineering/ports-and-adapters-beginner-primer.md
+- contents/spring/spring-data-jpa-basics.md
+expected_queries:
+- repository 인터페이스가 왜 필요해?
+- repository는 왜 interface로 만들어?
+- DAO랑 Repository는 뭐가 달라?
+- JpaRepository를 왜 그대로 노출하지 않아야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 도메인 객체의 영속성 처리를 인터페이스로 추상화하는
+  패턴이 무엇인지, 왜 application/domain이 직접 DB API를 쓰는 대신 저장소
+  계약을 두고 구현체를 갈아끼우는지 처음 이해하는 primer다. 도메인 객체
+  영속성 처리, 인터페이스로 추상화하는 패턴, 왜 repository를 interface로,
+  JPA/MyBatis 구현체 교체, ports & adapters 같은 자연어 paraphrase가 본
+  문서의 핵심 약속에 매핑된다.
+---
+
 # Repository Interface Contract Primer
 
 > 한 줄 요약: Repository 인터페이스는 "DB 코드를 감추는 장식"이 아니라 application/domain이 기대하는 저장 약속이고, JPA/MyBatis/JDBC 구현체는 그 약속을 맞춰 끼우는 교체 부품이다.

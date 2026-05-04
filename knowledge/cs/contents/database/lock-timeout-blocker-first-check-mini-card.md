@@ -1,3 +1,50 @@
+---
+schema_version: 3
+title: Lock Timeout 났을 때 blocker 먼저 보는 미니카드
+concept_id: database/lock-timeout-blocker-first-check
+canonical: false
+category: database
+difficulty: beginner
+doc_role: symptom_router
+level: beginner
+language: ko
+source_priority: 80
+aliases:
+- lock timeout blocker first check
+- who is blocking lock timeout
+- blocker 먼저 보는 미니카드
+- lock wait blocker
+- 갑자기 lock timeout
+- 누구를 기다렸나
+symptoms:
+- 갑자기 트랜잭션이 다 lock timeout으로 떨어지고 있다
+- 'Lock wait timeout exceeded' 에러가 특정 시간대에 자주 뜬다
+- lock timeout이 떨어지는데 그 SQL은 평소엔 빠르다
+- pg_blocking_pids에 다른 트랜잭션이 보인다
+intents:
+- symptom
+- troubleshooting
+linked_paths:
+- contents/database/postgresql-55p03-nowait-vs-lock-timeout-beginner-card.md
+- contents/database/connection-timeout-vs-lock-timeout-card.md
+- contents/database/statement-timeout-vs-lock-timeout-card.md
+- contents/database/pool-metrics-lock-wait-timeout-mini-bridge.md
+- contents/database/spring-jpa-lock-timeout-deadlock-exception-mapping.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+expected_queries:
+- lock timeout이 났을 때 뭐부터 봐야 해?
+- blocker가 누군지 어떻게 찾아?
+- pg_blocking_pids로 lock timeout 원인을 어떻게 추적해?
+- waiter와 blocker는 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 lock timeout 또는 'Lock wait timeout exceeded' 에러를
+  처음 만났을 때 SQL 자체보다 누가 막고 있었는지(blocker)를 먼저 찾는
+  triage 순서를 잡는 symptom_router 미니카드다. 갑자기 lock timeout으로
+  떨어진다, 트랜잭션이 다 막힌다, 특정 시간대 lock timeout, 누구를
+  기다렸나, blocker first check 같은 자연어 paraphrase가 본 문서의 진단
+  순서에 매핑된다.
+---
+
 # Lock Timeout 났을 때 blocker 먼저 보는 미니카드
 
 > 한 줄 요약: `lock timeout`이 났다면 초보자 첫 질문은 "이 SQL이 느렸나?"보다 **"지금 누구를 기다렸나?"** 에 가깝다.

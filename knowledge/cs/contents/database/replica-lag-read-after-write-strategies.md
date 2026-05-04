@@ -30,6 +30,12 @@ expected_queries:
 - 저장 직후 조회가 안 보일 때 replica lag와 cache 문제를 어떻게 나눠?
 - read-after-write 전략에서 primary fallback은 언제 써?
 - insert succeeded but select misses row면 어떤 freshness 문서를 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 DB를 여러 대로 복사해서 읽기 부담을 나누면 일관성이
+  어떻게 깨지는지, replica lag로 인한 read-after-write 불일치를 어떤
+  설계로 막는지 깊이 잡는 deep_dive다. DB 여러 대 복사, 읽기 부담 나누기,
+  복제 지연으로 인한 일관성 깨짐, write 직후 read stale, primary fallback
+  같은 자연어 paraphrase가 본 문서의 전략에 매핑된다.
 ---
 
 # Replica Lag and Read-after-write Strategies

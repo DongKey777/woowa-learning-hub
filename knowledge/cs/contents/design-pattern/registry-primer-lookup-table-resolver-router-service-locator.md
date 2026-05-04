@@ -31,6 +31,12 @@ expected_queries:
 - service locator랑 registry가 왜 다른 냄새야?
 - resolver router registry를 처음 구분하려면 어디서 봐야 해?
 - 이미 등록된 객체를 key로 찾는 코드는 무슨 이름이 좋아?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 등록된 것들 중에 키로 찾아 쓰는 패턴(registry / lookup
+  table / resolver / router)과 객체가 자기 의존성을 키로 꺼내가는 패턴
+  (service locator)을 처음 구분하는 chooser다. 등록된 것 중 키로 찾기,
+  자기 의존성을 키로 꺼내가기, lookup table 패턴, resolver 라우터 차이
+  같은 자연어 paraphrase가 본 문서의 분기에 매핑된다.
 ---
 
 # Registry Primer: lookup table, resolver, router, service locator를 처음 구분하기

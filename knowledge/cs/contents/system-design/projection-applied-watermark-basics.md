@@ -30,6 +30,12 @@ expected_queries:
 - required watermark랑 applied watermark는 어떻게 달라?
 - read model이 어디까지 반영됐는지 어떻게 판단해?
 - 방금 저장했는데 read model이 stale인지 watermark로 어떻게 봐?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 원본이 어디까지 처리됐는지 표식만 두고 화면 데이터를
+  갱신하는 방식 — applied watermark와 required watermark — 을 처음 잡는
+  primer다. 어디까지 처리됐는지 표식, watermark 기반 갱신, read model
+  checkpoint, projection 진행 기록 같은 자연어 paraphrase가 본 문서의
+  표식 메커니즘에 매핑된다.
 ---
 
 # Projection Applied Watermark Basics

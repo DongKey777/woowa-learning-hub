@@ -1,3 +1,48 @@
+---
+schema_version: 3
+title: Cache와 Replica가 갈라질 때의 Read Inconsistency
+concept_id: database/cache-replica-split-read-inconsistency
+canonical: false
+category: database
+difficulty: advanced
+doc_role: symptom_router
+level: intermediate
+language: ko
+source_priority: 80
+aliases:
+- cache replica split
+- cache vs replica stale
+- mixed stale source
+- 캐시 미스 후 리플리카 옛값
+- 목록과 상세가 서로 다른 상태
+- 방금 저장했는데 캐시인지 리플리카인지
+symptoms:
+- 수정은 됐는데 목록 화면에는 옛날 데이터가 보인다
+- 방금 저장한 게 목록에는 안 보이고 새로고침해야 보인다
+- 목록과 상세가 서로 다른 상태로 보인다
+- cache hit 때는 최신인데 miss 때는 옛값이다
+intents:
+- symptom
+- troubleshooting
+linked_paths:
+- contents/database/replica-lag-read-after-write-strategies.md
+- contents/database/replica-lag-observability-routing-slo.md
+- contents/database/replica-read-routing-anomalies.md
+- contents/database/read-your-writes-session-pinning.md
+- contents/system-design/caching-vs-read-replica-primer.md
+expected_queries:
+- 캐시랑 replica가 갈라져서 stale read가 나면 어디부터 봐?
+- cache miss 때만 옛값이 보이면 cache 문제야 replica 문제야?
+- 수정은 됐는데 목록 화면에는 옛날 데이터가 보일 때 원인 후보가 뭐야?
+- 같은 사용자가 detail에선 새 값, list에선 옛값을 보면 어디로 가?
+contextual_chunk_prefix: |
+  이 문서는 사용자가 수정 직후 목록 화면에서 옛 데이터를 보거나 detail/list가
+  서로 다른 상태로 보일 때 학습자가 원인을 cache stale, replica lag, mixed
+  source 세 갈래로 가르는 symptom_router다. 수정은 됐는데 목록에는 옛 데이터,
+  방금 저장했는데 새로고침해야 보임, cache miss 후 옛값, 목록과 상세 다른
+  상태 같은 자연어 paraphrase가 본 문서의 진단 분기에 매핑된다.
+---
+
 # Cache와 Replica가 갈라질 때의 Read Inconsistency
 
 > 한 줄 요약: 캐시와 replica가 서로 다른 시점을 들고 있으면, 둘 중 어느 쪽을 읽어도 맞는 것 같지만 둘 다 틀릴 수 있다.

@@ -24,6 +24,13 @@ expected_queries:
 - Service Locator랑 DI는 뭐가 달라?
 - 숨은 의존성이 왜 문제야?
 - 컨테이너에서 직접 꺼내 쓰면 왜 위험해?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 객체가 자기 의존성을 직접 어딘가에서 꺼내가면 왜
+  안 좋은지, Service Locator가 hidden dependency / 테스트 어려움 / 추적
+  곤란이라는 안티 패턴이 되는 이유를 잡는 bridge다. 객체가 자기 의존성을
+  직접 꺼냄, 컨테이너에서 직접 꺼내 쓰면 왜 안 좋아, hidden dependency,
+  숨은 의존성, Service Locator vs DI 같은 자연어 paraphrase가 본 문서의
+  핵심 비교에 매핑된다.
 ---
 
 # Service Locator Antipattern: 숨은 의존성을 만드는 조회 중심 설계

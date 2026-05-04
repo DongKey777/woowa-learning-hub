@@ -23,6 +23,13 @@ expected_queries:
 - waiting이 길면 서버가 느린 거야?
 - DNS connect SSL이 안 보이면 왜 그래?
 - Network 탭 timing은 어떻게 읽어?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 브라우저 개발자 도구에서 요청들이 가로 막대로 줄줄이
+  보이는 그 그림(waterfall)을 어떻게 읽어야 하는지, DNS / connect / SSL /
+  waiting / content download 시간 칸을 어떻게 분리해서 병목을 찾는지 처음
+  잡는 primer다. 가로 막대 줄줄이, 요청들이 막대로, 개발자 도구 그림 읽는
+  법, network 탭 timing, waterfall 시간표 같은 자연어 paraphrase가 본
+  문서의 칸별 의미에 매핑된다.
 ---
 
 # Browser DevTools Waterfall Primer: DNS, Connect, SSL, Waiting 읽기

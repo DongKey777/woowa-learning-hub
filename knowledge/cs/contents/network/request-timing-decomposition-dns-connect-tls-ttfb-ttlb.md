@@ -24,6 +24,13 @@ expected_queries:
 - 요청 latency를 DNS connect TLS로 어떻게 나눠?
 - latency breakdown은 어떻게 봐?
 - time_starttransfer는 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 한 HTTP 요청 시간이 DNS, 연결, 데이터 받기 같은 단계
+  들로 어떻게 쪼개지는지, 각 칸(DNS / connect / TLS / queue wait / TTFB /
+  TTLB)이 무엇을 답하고 어느 layer 병목을 가리키는지 깊이 분해하는
+  deep_dive다. 요청 시간 단계로 쪼개기, DNS 연결 데이터 받기, latency
+  breakdown, time_starttransfer, 각 단계별 병목 같은 자연어 paraphrase가
+  본 문서의 layer 분해에 매핑된다.
 ---
 
 # Request Timing Decomposition: DNS, Connect, TLS, TTFB, TTLB

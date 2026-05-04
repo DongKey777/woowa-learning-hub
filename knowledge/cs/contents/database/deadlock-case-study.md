@@ -1,3 +1,47 @@
+---
+schema_version: 3
+title: Deadlock Case Study
+concept_id: database/deadlock-case-study
+canonical: false
+category: database
+difficulty: advanced
+doc_role: playbook
+level: advanced
+language: mixed
+source_priority: 78
+aliases:
+- deadlock case study
+- deadlock log lock ordering
+- mysql deadlock log fix
+- deadlock 처음 incident
+- 인덱스 추가 직후 deadlock
+- 데드락 원인 분석
+symptoms:
+- 인덱스 추가 직후 deadlock이 자주 난다
+- mysql deadlock log를 보고 lock ordering을 어떻게 고쳐야 할지 모르겠다
+- 동시 booking 요청이 서로 막혀 deadlock으로 돌아간다
+intents:
+- troubleshooting
+- design
+linked_paths:
+- contents/database/deadlock-vs-lock-wait-timeout-primer.md
+- contents/database/lock-wait-deadlock-latch-triage-playbook.md
+- contents/database/transaction-isolation-locking.md
+- contents/database/transaction-timeout-vs-lock-timeout.md
+- contents/database/guard-row-scope-design-multi-day-bookings.md
+expected_queries:
+- mysql deadlock log를 어떻게 읽고 lock ordering을 어떻게 고쳐?
+- 인덱스 변경 직후 deadlock이 늘어나는 이유는 뭐야?
+- deadlock case study 어디서부터 읽어야 해?
+- circular wait를 어떻게 끊어?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 인덱스 변경, lock 순서, 동시 booking 같은 실제 incident
+  맥락에서 deadlock의 발생 원인과 대응 전략(retry, lock ordering 통일,
+  guard row 적용 등)을 잡는 playbook이다. 인덱스 추가 직후 deadlock 자주,
+  mysql deadlock log 보고 lock ordering 고치는 법, circular wait, deadlock
+  retry 같은 자연어 paraphrase가 본 문서의 사례 분석과 처방에 매핑된다.
+---
+
 # Deadlock Case Study
 
 **난이도: 🔴 Advanced**

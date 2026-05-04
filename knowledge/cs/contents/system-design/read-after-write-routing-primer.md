@@ -30,6 +30,13 @@ expected_queries:
 - write 직후 read를 replica로 보내면 왜 문제가 생겨?
 - primary fallback과 session pinning은 어떻게 다른 선택이야?
 - 주문 생성 직후 조회가 stale할 때 라우팅을 어떻게 잡아?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 방금 쓴 데이터를 같은 사용자가 바로 읽을 때 어디로
+  보내야 일관성이 깨지지 않는지, primary fallback / session pinning /
+  recent write window 같은 라우팅 전략을 처음 잡는 primer다. 방금 쓴 데이터
+  바로 읽기, 같은 사용자가 바로 읽을 때, 어디로 보내야 일관성, 주문 생성
+  직후 조회 stale, write→read 라우팅 같은 자연어 paraphrase가 본 문서의
+  큰 그림에 매핑된다.
 ---
 
 # Read-After-Write Routing Primer
