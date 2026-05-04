@@ -13,6 +13,7 @@
   "queries": [
     {
       "acceptable_paths": [
+        "contents/software-engineering/dependency-injection-basics.md",
         "contents/spring/ioc-di-container.md"
       ],
       "cohort_tag": "paraphrase_human",
@@ -472,8 +473,9 @@
     },
     {
       "acceptable_paths": [
+        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md",
         "contents/software-engineering/repository-interface-contract-primer.md",
-        "contents/software-engineering/dao-vs-query-model-entrypoint-primer.md"
+        "contents/software-engineering/roomescape-dao-vs-repository-bridge.md"
       ],
       "cohort_tag": "mission_bridge",
       "expected_concepts": [

@@ -38,10 +38,12 @@ expected_queries:
   - prototype Bean도 PreDestroy가 호출돼?
   - 스프링이 객체를 어떻게 만들어?
 contextual_chunk_prefix: |
-  이 문서는 Spring DI를 학습한 입문자가 "Bean이 언제 만들어지고 언제 사라지는가"라는
-  생명주기 감각을 처음 잡을 때 참고하는 primer다. 본 문서의 chunk는 컨테이너 시작
-  시 Bean 생성 → @PostConstruct 초기화 콜백 → 사용 → @PreDestroy 정리 콜백 →
-  컨테이너 종료 시 소멸 흐름의 일부를 설명한다.
+  이 문서는 Spring DI를 학습한 입문자가 스프링이 객체를 어떻게 만들어주는지
+  큰 그림을 잡을 때 — Bean이 언제 만들어지고 언제 사라지는지, 컨테이너가
+  객체 라이프사이클을 어떻게 관리하는지 — 처음 보는 primer다. 스프링이
+  객체를 어떻게 만들어주는지 큰 그림, 객체가 언제 생기고 사라지나, 컨테이너
+  시작 시 Bean 생성, @PostConstruct 초기화, @PreDestroy 정리, 객체 생성
+  ~소멸 큰 흐름 같은 자연어 paraphrase가 본 문서의 단계 흐름에 매핑된다.
 ---
 
 # Spring Bean 생명주기 기초: 생성부터 소멸까지

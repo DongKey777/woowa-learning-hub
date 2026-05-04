@@ -27,6 +27,12 @@ expected_queries:
 - 재고 차감은 어떤 트랜잭션 경계로 묶어야 해?
 - idempotency key랑 transaction은 어떻게 같이 봐?
 - 주문 생성 정합성은 어디까지 같은 트랜잭션이야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 동시 결제 / 동시 재고 차감 / 주문 생성 정합성 같은
+  실전 시나리오에서 데이터 깨지는 걸 막는 트랜잭션 경계 / idempotency
+  key / inventory race 처리 패턴을 잡는 playbook이다. 동시 결제 데이터
+  깨짐, 동시 재고 차감 충돌, 중복 결제 두 번 처리, 데이터 꼬임, 정합성
+  시나리오 같은 자연어 paraphrase가 본 문서의 사례별 처방에 매핑된다.
 ---
 
 # 트랜잭션 실전 시나리오

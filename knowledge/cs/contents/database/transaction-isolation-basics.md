@@ -23,6 +23,13 @@ expected_queries:
 - Read Committed랑 Repeatable Read는 뭐가 달라?
 - MVCC가 뭐야?
 - phantom read가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 트랜잭션이 서로 어디까지 보고 어디까지 못 보게 할지
+  단계가 있다는 것을 처음 만났을 때 격리 수준의 큰 그림을 잡는 primer다.
+  트랜잭션이 서로 어디까지 보고 어디까지 못 보게, 가시성 단계, 다른
+  트랜잭션이 본 값이 내 트랜잭션에 보이나, dirty read / non-repeatable
+  read / phantom read 갈래 같은 자연어 paraphrase가 본 문서의 격리 수준
+  네 단계에 매핑된다.
 ---
 
 # 트랜잭션 격리 수준 기초 (Transaction Isolation Level Basics)

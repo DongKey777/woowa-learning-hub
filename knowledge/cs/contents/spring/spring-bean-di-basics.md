@@ -46,11 +46,13 @@ expected_queries:
   - 처음 배우는데 DI가 뭐야?
   - 객체를 직접 만들지 않고 외부에서 받는 게 뭐야?
 contextual_chunk_prefix: |
-  이 문서는 Spring을 처음 배우는 학습자가 "내가 만든 객체 vs 컨테이너가 만들어 주는
-  객체"의 감각을 잡을 때 참고하는 primer다. 본 문서의 chunk는 Bean 등록 / component
-  scan / configuration / proxy 흐름의 일부를 설명한다. DI 원리 자체는 ioc-di-container
-  primer가 먼저 다루며, 본 문서는 Spring 컨테이너 wiring 관점에서 그 위에 한 단계
-  실무 감각을 얹는다.
+  이 문서는 Spring을 처음 배우는 학습자가 객체를 직접 만들지 않고 외부에서
+  받는 게 무엇인지, 객체끼리 연결할 때 그냥 "필요해"라고만 적으면 알아서
+  채워주는 컨테이너 동작이 무엇인지, new 대신 주입받는 이유는 무엇인지
+  처음 잡는 primer다. 객체를 직접 만들지 않고 외부에서 받음, 필요해라고만
+  적으면 알아서 채워줌, new 대신 주입, Spring이 객체끼리 연결, Bean 등록과
+  component scan, controller와 service를 누가 연결하나 같은 자연어
+  paraphrase가 본 문서의 핵심 wiring 동작에 매핑된다.
 ---
 
 # Spring Bean과 DI 기초: Component Scan, Configuration, Proxy 감각 잡기
