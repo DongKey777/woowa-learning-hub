@@ -89,6 +89,97 @@ def _forbidden_filter_enabled() -> bool:
     ) == "1"
 
 
+# ---------------------------------------------------------------------------
+# Phase 9.3 — refusal sentinel
+# ---------------------------------------------------------------------------
+
+_SENTINEL_PATH = "<sentinel:no_confident_match>"
+
+
+def _evaluate_refusal_sentinel(
+    *,
+    fused: list,
+    reranker_active: bool,
+    config: "R3Config",
+) -> tuple[bool, dict | None]:
+    """Decide whether to short-circuit retrieval with a refusal sentinel.
+
+    Returns ``(should_emit, info)``. ``info`` carries the diagnostic
+    payload used for trace metadata when ``should_emit`` is True; None
+    otherwise.
+
+    Conservative — never emits when:
+      * threshold is None (disabled — production default)
+      * reranker did not run (no cross-encoder score to threshold)
+      * fused is empty
+      * top-1 candidate has no ``cross_encoder_score`` in metadata
+        (upstream contract change must not silently start refusing)
+    """
+    threshold = config.refusal_threshold
+    if threshold is None:
+        return False, None
+    if not reranker_active:
+        return False, None
+    if not fused:
+        return False, None
+    top = fused[0]
+    metadata = getattr(top, "metadata", None) or {}
+    raw = metadata.get("cross_encoder_score")
+    if raw is None:
+        return False, None
+    try:
+        ce_score = float(raw)
+    except (TypeError, ValueError):
+        return False, None
+    if ce_score >= threshold:
+        return False, None
+    return True, {
+        "applied": True,
+        "reason": "no_confident_match",
+        "rejected_top_path": top.path,
+        "rejected_top_score": ce_score,
+        "threshold": float(threshold),
+    }
+
+
+def _make_refusal_sentinel(
+    *,
+    top_path: str,
+    top_score: float,
+    threshold: float,
+) -> dict:
+    """Build the single sentinel hit returned by ``r3.search.search``
+    when ``_evaluate_refusal_sentinel`` returns True.
+
+    Shape mirrors a normal hit (so downstream code reading required
+    keys still finds them) plus three discriminator fields:
+
+      * ``sentinel`` — the ID consumer code keys off of
+      * ``rejected_top`` / ``rejected_score`` — what would have
+        been returned, kept for telemetry / debugging
+      * ``threshold`` — config value at decision time, so trace
+        archives carry their own context
+    """
+    return {
+        "row_id": None,
+        "doc_id": None,
+        "chunk_id": None,
+        "path": _SENTINEL_PATH,
+        "title": "",
+        "category": "",
+        "section_title": "",
+        "section_path": [],
+        "score": float(top_score),
+        "snippet_preview": "",
+        "anchors": [],
+        "r3_sources": [],
+        "sentinel": "no_confident_match",
+        "rejected_top": top_path,
+        "rejected_score": float(top_score),
+        "threshold": float(threshold),
+    }
+
+
 def _load_path_to_forbidden(catalog_dir: Path | None) -> dict[str, frozenset[str]]:
     """Build a path -> forbidden_neighbors mapping from concepts.v3.json.
 
@@ -429,6 +520,25 @@ def search(
         )
         _record_stage(stage_ms, "rerank", started)
 
+    # Phase 9.3 — refusal sentinel. Evaluate before forbidden_filter so
+    # the threshold gate sees the *reranked* top-1, not a forbidden-
+    # filtered remainder. When triggered, fused is cleared so the
+    # downstream forbidden_filter / trace path becomes a no-op for
+    # candidates while still recording the decision in trace metadata.
+    sentinel_emitted, refusal_info = _evaluate_refusal_sentinel(
+        fused=fused,
+        reranker_active=reranker_active,
+        config=config,
+    )
+    sentinel_hit_payload: dict | None = None
+    if sentinel_emitted and refusal_info is not None:
+        sentinel_hit_payload = _make_refusal_sentinel(
+            top_path=str(refusal_info["rejected_top_path"]),
+            top_score=float(refusal_info["rejected_top_score"]),
+            threshold=float(refusal_info["threshold"]),
+        )
+        fused = []
+
     forbidden_filter_info: dict[str, str | int] = {"applied": False, "removed_count": 0, "removed_paths": []}
     if fused and _forbidden_filter_enabled():
         started = time.perf_counter()
@@ -463,6 +573,7 @@ def search(
             "rerank_policy": config.local_rerank_policy,
             "reranker_skip_reason": reranker_skip_reason,
             "forbidden_filter": forbidden_filter_info,
+            "refusal_sentinel": refusal_info if sentinel_emitted else None,
             "catalog_channels_used": list(catalog_channels_used),
             "catalog_error": catalog_error,
         },
@@ -494,6 +605,9 @@ def search(
         debug["r3_catalog_channels_used"] = list(catalog_channels_used)
         debug["r3_catalog_error"] = catalog_error
         debug["r3_forbidden_filter"] = dict(forbidden_filter_info)
+        debug["r3_refusal_sentinel"] = (
+            dict(refusal_info) if sentinel_emitted and refusal_info else None
+        )
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k
@@ -505,4 +619,6 @@ def search(
         debug["experience_level"] = experience_level
         debug["learner_context_present"] = learner_context is not None
 
+    if sentinel_hit_payload is not None:
+        return [sentinel_hit_payload]
     return [_hit_from_candidate(candidate) for candidate in fused[:top_k]]

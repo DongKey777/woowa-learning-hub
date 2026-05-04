@@ -17,6 +17,26 @@ RERANK_INPUT_WINDOW_ENV = "WOOWA_RAG_RERANK_INPUT_WINDOW"
 RerankPolicy = Literal["auto", "always", "off"]
 
 
+def _optional_float_from_env(name: str) -> float | None:
+    """Parse an optional float env var.
+
+    Returns ``None`` when the variable is unset, empty, the literal
+    string ``"off"`` (case-insensitive), or any non-numeric content —
+    so production deployments stay at the safe disabled default until
+    operators explicitly opt into the feature.
+    """
+    raw = os.environ.get(name)
+    if raw is None:
+        return None
+    cleaned = raw.strip()
+    if not cleaned or cleaned.lower() == "off":
+        return None
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
 def _int_from_env(name: str, default: int) -> int:
     raw = os.environ.get(name)
     if raw is None:
@@ -89,6 +109,13 @@ class R3Config:
     sparse_encoder_in_cheap_mode: bool = False
     lexical_sidecar_enabled: bool = True
     trace_dir: Path = Path("reports/rag_eval/r3_traces")
+    # Phase 9.3 — None disables refusal sentinel entirely (production-
+    # safe default until calibrate_refusal_threshold.py runs). Float
+    # value compares against ``cross_encoder_score`` of the top-1 fused
+    # candidate after rerank; when below threshold, R3 emits a single
+    # sentinel hit so ``integration.augment`` can downgrade the turn
+    # to tier 0 (training-knowledge fallback).
+    refusal_threshold: float | None = None
 
     @classmethod
     def from_env(cls) -> "R3Config":
@@ -137,6 +164,7 @@ class R3Config:
             trace_dir=Path(
                 os.environ.get("WOOWA_RAG_R3_TRACE_DIR", "reports/rag_eval/r3_traces")
             ),
+            refusal_threshold=_optional_float_from_env("WOOWA_RAG_REFUSAL_THRESHOLD"),
         )
 
     def rerank_input_window(self, *, offline: bool = False) -> int:
