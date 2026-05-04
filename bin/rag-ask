@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
-# Usage: bin/rag-ask "Spring Bean이 뭐야?" [--repo <name>]
+# Usage: bin/rag-ask "Spring Bean이 뭐야?" [--repo <name>] [--reformulated-query "..."]
 # Output: JSON {decision, hits, next_command}
+#
+# Daemon mode is the default — the wrapper appends --via-daemon so the
+# learner-side BGE-M3 + reranker stays warm across calls (cold ~25s,
+# warm ~1.3s). The daemon auto-spawns on first request via
+# ensure_daemon().
+#
+# Production R3 env defaults are sourced from bin/_rag_env.sh so an AI
+# session that forgets the AGENTS.md contract still gets the 95.5%
+# Pilot baseline behaviour. Override in the calling shell when
+# intentional.
+#
+# Opt-out:
+#   WOOWA_RAG_NO_DAEMON=1 bin/rag-ask "..."   # skip --via-daemon (CI / debug)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 if [[ -n "${PYTHON:-}" ]]; then
@@ -10,4 +23,13 @@ elif [[ -x "$ROOT/.venv/bin/python" ]]; then
 else
   PY="python3"
 fi
-exec "$PY" "$ROOT/scripts/workbench/cli.py" rag-ask "$@"
+
+# shellcheck disable=SC1091
+source "$ROOT/bin/_rag_env.sh"
+
+DAEMON_ARGS=()
+if [[ "${WOOWA_RAG_NO_DAEMON:-0}" != "1" ]]; then
+  DAEMON_ARGS+=("--via-daemon")
+fi
+
+exec "$PY" "$ROOT/scripts/workbench/cli.py" rag-ask "${DAEMON_ARGS[@]}" "$@"

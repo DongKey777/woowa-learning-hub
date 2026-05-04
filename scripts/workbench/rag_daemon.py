@@ -28,11 +28,13 @@ _REQUEST_LOCK = threading.Lock()
 
 
 def namespace_from_payload(payload: dict[str, Any]) -> argparse.Namespace:
+    reformulated = payload.get("reformulated_query")
     return argparse.Namespace(
         prompt=str(payload.get("prompt") or ""),
         repo=payload.get("repo"),
         module=payload.get("module"),
         rag_backend=payload.get("rag_backend"),
+        reformulated_query=(str(reformulated) if reformulated else None),
         via_daemon=False,
     )
 

@@ -807,6 +807,7 @@ def cmd_rag_ask(args: argparse.Namespace) -> int:
             "repo": args.repo,
             "module": args.module,
             "rag_backend": getattr(args, "rag_backend", None),
+            "reformulated_query": getattr(args, "reformulated_query", None),
         })
         print(json.dumps(out, ensure_ascii=False))
         return 0

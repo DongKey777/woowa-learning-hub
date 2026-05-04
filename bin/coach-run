@@ -8,4 +8,8 @@ elif [[ -x "$ROOT/.venv/bin/python" ]]; then
 else
   PY="python3"
 fi
+
+# shellcheck disable=SC1091
+source "$ROOT/bin/_rag_env.sh"
+
 exec "$PY" "$ROOT/scripts/workbench/cli.py" coach-run "$@"
