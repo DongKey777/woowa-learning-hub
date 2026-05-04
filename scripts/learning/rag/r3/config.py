@@ -116,6 +116,11 @@ class R3Config:
     # sentinel hit so ``integration.augment`` can downgrade the turn
     # to tier 0 (training-knowledge fallback).
     refusal_threshold: float | None = None
+    # Phase 9.2 — default off until Phase 8 corpus migration brings v3
+    # concept_id coverage above ~30%. When False, fusion stage applies
+    # no learner-profile-driven score adjustments and the dead-store
+    # learner_context behavior is preserved bit-for-bit.
+    personalization_enabled: bool = False
 
     @classmethod
     def from_env(cls) -> "R3Config":
@@ -165,6 +170,9 @@ class R3Config:
                 os.environ.get("WOOWA_RAG_R3_TRACE_DIR", "reports/rag_eval/r3_traces")
             ),
             refusal_threshold=_optional_float_from_env("WOOWA_RAG_REFUSAL_THRESHOLD"),
+            personalization_enabled=_bool_from_env(
+                "WOOWA_RAG_PERSONALIZATION_ENABLED", False,
+            ),
         )
 
     def rerank_input_window(self, *, offline: bool = False) -> int:

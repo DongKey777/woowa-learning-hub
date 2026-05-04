@@ -15,6 +15,7 @@ from .anaphora import detect_follow_up
 from .config import R3Config
 from .eval.trace import R3Trace
 from .fusion import fuse_candidates
+from .personalization import apply_score_adjustments
 from .index.lexical_sidecar import load_lexical_sidecar
 from .index.runtime_loader import (
     encode_runtime_query,
@@ -312,6 +313,11 @@ def _hit_from_candidate(candidate) -> dict:
         "snippet_preview": "",
         "anchors": [],
         "r3_sources": candidate.metadata.get("sources", []),
+        # Phase 9.2 — surface concept_id so personalization-aware
+        # consumers (and downstream tooling) can map hits back to
+        # learner profile entries. None when the corpus chunk
+        # carries no concept_id (pre-Phase-8 v3 migration docs).
+        "concept_id": candidate.metadata.get("concept_id"),
     }
 
 
@@ -514,6 +520,21 @@ def search(
         fused = fuse_candidates(candidates, limit=fusion_limit)
         _record_stage(stage_ms, "fuse_candidates", started)
 
+        # Phase 9.2 — personalization-aware ranking. Default off until
+        # Phase 8 corpus migration brings v3 concept_id coverage above
+        # ~30%. When enabled, mastered concepts are demoted and
+        # uncertain / underexplored concepts are boosted before rerank
+        # sees the candidates, so the cross-encoder works on a
+        # learner-relevant top-N.
+        if config.personalization_enabled:
+            started = time.perf_counter()
+            fused = apply_score_adjustments(
+                fused,
+                learner_context=learner_context,
+                enabled=True,
+            )
+            _record_stage(stage_ms, "personalization_adjust", started)
+
     reranker_model = None
     fused_paths = tuple(candidate.path for candidate in fused)
     rerank_input_paths: tuple[str, ...] = ()
@@ -589,6 +610,7 @@ def search(
                 "is_follow_up": follow_up.is_follow_up,
                 "prior_topics": list(follow_up.prior_topics),
             },
+            "personalization_enabled": config.personalization_enabled,
             "catalog_channels_used": list(catalog_channels_used),
             "catalog_error": catalog_error,
         },
@@ -628,6 +650,7 @@ def search(
             "is_follow_up": follow_up.is_follow_up,
             "prior_topics": list(follow_up.prior_topics),
         }
+        debug["r3_personalization_enabled"] = config.personalization_enabled
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k

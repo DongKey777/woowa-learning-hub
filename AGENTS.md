@@ -85,6 +85,15 @@ Role:
 
 학습자 입장: 짧은 follow-up 질문에서도 dense retrieval 정확. AI 세션이 reformulation을 잘 emit하는 한 fallback regex는 거의 발화 안 함. 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
 
+**Personalization-aware ranking** (Phase 9.2, default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 단계 후 rerank 전에 score 조정을 적용한다.
+- learner_context.mastered_concepts에 있는 concept_id를 가진 candidate → score -0.15 (학습자가 이미 알고 있으니 demote).
+- learner_context.uncertain_concepts / underexplored_in_current_stage에 있으면 → score +0.10 (약한 영역 boost).
+- `concept:` 접두사(`concept:spring/bean`)는 자동 strip해서 v3 corpus `concept_id`(`spring/bean`)와 매칭.
+- Default off — Phase 8 코퍼스 migration이 v3 `concept_id`를 ≥30% 채울 때까지는 매핑이 sparse해 의미 없음 (현 3%).
+- R3 hit dict에 `concept_id` 필드 노출 (downstream 도구가 hit ↔ profile 매핑할 때 사용).
+
+회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
+
 학습자가 `RAG로 깊게`, `그냥 답해` 같은 override 키워드를 포함하면 라우터가 자동 강제 분기. 일반 코딩 작업(미션 코칭이나 학습 세션 외)에는 헤더 표기 안 함.
 
 전체 명세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.

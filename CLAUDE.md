@@ -53,6 +53,14 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 회귀 테스트: `tests/unit/test_r3_anaphora.py`.
 
+**Phase 9.2 personalization-aware ranking** (default off): `WOOWA_RAG_PERSONALIZATION_ENABLED=1`로 켜면 R3가 fusion 후 rerank 전에 candidate score를 조정.
+- `mastered_concepts`의 concept_id 매칭 → -0.15 (이미 mastered된 개념 demote).
+- `uncertain_concepts` / `underexplored_in_current_stage` 매칭 → +0.10 (약한 영역 boost).
+- `concept:spring/bean` 접두사는 자동 strip → `spring/bean`으로 v3 frontmatter 매칭.
+- Phase 8 corpus migration이 ≥30% concept_id 채울 때까지 default off (현 3%, sparse 매핑은 효과 미미).
+
+회귀 테스트: `tests/unit/test_r3_personalization_ranking.py`.
+
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
 ### Query Reformulation (Pilot baseline 95.5%의 +5pp 책임)
