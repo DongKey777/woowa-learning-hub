@@ -86,6 +86,7 @@ def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
 def augment(
     *,
     prompt: str,
+    reformulated_query: str | None = None,
     learning_points: list[str] | None = None,
     topic_hints: list[str] | None = None,
     cs_search_mode: str = "full",
@@ -189,6 +190,7 @@ def augment(
                 lp_debug: dict = {}
                 hits = searcher.search(
                     prompt,
+                    reformulated_query=reformulated_query,
                     learning_points=[lp],
                     topic_hints=topic_hints,
                     mode=cs_search_mode,
@@ -226,6 +228,7 @@ def augment(
                     fallback_debug: dict = {}
                     hits = searcher.search(
                         prompt,
+                        reformulated_query=reformulated_query,
                         learning_points=None,
                         topic_hints=topic_hints,
                         mode=cs_search_mode,
@@ -255,6 +258,7 @@ def augment(
                 fallback_debug = {}
                 hits = searcher.search(
                     prompt,
+                    reformulated_query=reformulated_query,
                     learning_points=None,
                     topic_hints=topic_hints,
                     mode=cs_search_mode,

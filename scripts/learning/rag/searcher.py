@@ -1676,6 +1676,7 @@ def _detect_backend(index_root: Path | str) -> str:
 def search(
     prompt: str,
     *,
+    reformulated_query: str | None = None,
     learning_points: list[str] | None = None,
     topic_hints: list[str] | None = None,
     top_k: int = DEFAULT_TOP_K,
@@ -1710,6 +1711,7 @@ def search(
 
         return r3_search(
             prompt,
+            reformulated_query=reformulated_query,
             learning_points=learning_points,
             topic_hints=topic_hints,
             top_k=top_k,

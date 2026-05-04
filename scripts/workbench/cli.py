@@ -767,6 +767,7 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
         try:
             result = integration.augment(
                 prompt=args.prompt,
+                reformulated_query=getattr(args, "reformulated_query", None),
                 cs_search_mode=decision.mode,
                 top_k=3 if decision.tier == 1 else 5,
                 experience_level=decision.experience_level,
@@ -1777,6 +1778,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--via-daemon",
         action="store_true",
         help="Route through the local long-lived RAG runtime daemon.",
+    )
+    rag_ask_parser.add_argument(
+        "--reformulated-query",
+        default=None,
+        help=(
+            "Optional corpus-vocabulary reformulation of the learner's raw "
+            "prompt. AI sessions emit this before calling rag-ask so dense "
+            "BGE-M3 + cross-encoder map the query to the corpus's wording. "
+            "Lexical FTS still uses the raw prompt. See "
+            "docs/agent-query-reformulation-contract.md."
+        ),
     )
     rag_ask_parser.set_defaults(func=cmd_rag_ask)
 
