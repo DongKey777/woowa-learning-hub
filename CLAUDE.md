@@ -33,7 +33,9 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 ## Interactive Learning RAG Routing
 
-대화형 CS 학습 질문(미션 PR 코칭 외, 학습자가 개념을 묻거나 학습 테스트를 풀다 막혔을 때)에는 `bin/rag-ask "$prompt"`를 호출해 Tier 0~3을 결정한다. 매 응답 첫 줄에 `[RAG: tier-N — <reason>]` 헤더 표기, Tier 1+이면 답변 끝에 `참고:` 출처 인용. Tier 3이고 `blocked=false`면 `next_command` 별도 실행해 `bin/coach-run`으로 위임. 도구/빌드 질문(Tier 0)은 RAG 호출 없이 훈련 지식으로 답. 일반 dev 작업(학습 세션 외)에는 헤더 표기 안 함.
+대화형 CS 학습 질문(미션 PR 코칭 외, 학습자가 개념을 묻거나 학습 테스트를 풀다 막혔을 때)에는 `bin/rag-ask "$prompt"`를 호출해 Tier 0~3을 결정한다. 매 응답 첫 줄에 `[RAG: tier-N — <reason>]` 헤더 표기, Tier 1+이면 답변 끝에 출력의 `response_hints.citation_markdown`을 verbatim 복붙(스스로 `참고:` 작성 ❌). Tier 3이고 `blocked=false`면 `next_command` 별도 실행해 `bin/coach-run`으로 위임. 도구/빌드 질문(Tier 0)은 RAG 호출 없이 훈련 지식으로 답. 일반 dev 작업(학습 세션 외)에는 헤더 표기 안 함.
+
+**Phase 9.4 citation contract**: `bin/rag-ask` 출력 최상위에 `response_hints.citation_markdown`이 항상 존재한다. tier 1+에서 hits가 있으면 paste-ready `참고:\n- <path>\n- <path>` 문자열로 채워짐 (최대 3개). AI 세션은 이 문자열을 verbatim 복사 — 손으로 path 작성 ❌. null이면 인용 출력 ❌. 회귀 테스트: `tests/unit/test_citation_contract.py`.
 
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 

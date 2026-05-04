@@ -63,10 +63,12 @@ Role:
 대화형 CS 학습 질문(미션 PR 코칭 외, 학습자가 개념을 묻거나 학습 테스트를 풀다 막혔을 때)에는 `bin/rag-ask "$prompt"`를 호출해 Tier를 결정한다. 출력 JSON의 `decision.tier`를 매 응답 첫 줄에 `[RAG: tier-N — <reason>]` 형식으로 표기한다.
 
 - `tier 0`: RAG 호출 없음, 훈련 지식으로 답변. 도구/빌드 질문(Gradle, git, IDE 등).
-- `tier 1`: `hits.by_fallback_key`의 doc paths를 답변 끝에 `참고:` 인용. 정의/소개 질문.
-- `tier 2`: 마찬가지로 인용. 비교/깊이 질문.
+- `tier 1`: 답변 끝에 `response_hints.citation_markdown`을 verbatim 복붙(`참고:` 블록 사전 렌더링됨). 정의/소개 질문.
+- `tier 2`: 마찬가지로 `response_hints.citation_markdown` verbatim. 비교/깊이 질문.
 - `tier 3` + `blocked=false`: `next_command` 별도 실행 → `bin/coach-run`으로 위임. PR 코칭.
 - `tier 3` + `blocked=true`: RAG 호출 안 됨. 학습자에게 "PR/repo 미준비, 학습 단계용 cheap RAG로 답할까요?" 안내.
+
+**Citation contract** (Phase 9.4): `bin/rag-ask` 출력 최상위에 `response_hints` 객체가 항상 존재한다. tier 1+에서 hits가 있으면 `response_hints.citation_markdown`이 paste-ready `참고:\n- <path>\n- <path>` 형식으로 채워져 있다 (최대 3개). AI 세션은 이 문자열을 답변 끝에 verbatim 복사 — 스스로 인용을 작성하지 않는다. tier 0 / blocked / hits 비어있음에는 `citation_markdown=null`이고 인용 ❌.
 
 학습자가 `RAG로 깊게`, `그냥 답해` 같은 override 키워드를 포함하면 라우터가 자동 강제 분기. 일반 코딩 작업(미션 코칭이나 학습 세션 외)에는 헤더 표기 안 함.
 

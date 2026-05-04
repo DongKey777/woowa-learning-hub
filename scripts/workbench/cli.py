@@ -741,6 +741,11 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
         "hits": None,
         "next_command": None,
         "learner_context": None,
+        # Phase 9.4 citation contract — surfaced from
+        # integration.augment() when tier ∈ {1,2}; stays as a
+        # null-stub for tier 0 / blocked / tier 3 turns so the AI
+        # session can read the same key shape regardless of path.
+        "response_hints": {"citation_markdown": None, "citation_paths": []},
     }
     if build_learner_context is not None and learner_profile is not None:
         try:
@@ -782,6 +787,13 @@ def build_rag_ask_output(args: argparse.Namespace) -> dict:
             out["hits"] = {"error": f"{type(exc).__name__}: {exc}"}
         else:
             out["hits"] = result
+            # Surface response_hints (citation_markdown, citation_paths)
+            # from augment to the top-level rag-ask payload so the AI
+            # session can paste the `참고:` block verbatim per
+            # AGENTS.md / CLAUDE.md regulation. Phase 9.4 contract.
+            hint_payload = result.get("response_hints") if isinstance(result, dict) else None
+            if isinstance(hint_payload, dict):
+                out["response_hints"] = hint_payload
 
     elif decision.tier == 3 and not decision.blocked:
         coach_run_path = str(ROOT / "bin" / "coach-run")

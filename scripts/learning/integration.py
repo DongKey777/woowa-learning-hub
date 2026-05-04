@@ -66,6 +66,47 @@ VALID_SEARCH_BACKENDS = {"auto", "legacy", "lance", "r3"}
 R3_LEXICAL_SIDECAR_NAME = "r3_lexical_sidecar.json"
 
 
+def _empty_response_hints() -> dict[str, Any]:
+    """Default response_hints used by every augment() return path.
+
+    Carrier for paste-verbatim contract fields (Phase 9.4 citation,
+    Phase 9.3 refusal tier-downgrade). Always present so the AI session
+    contract can read the same shape regardless of whether RAG was
+    skipped, ready, or failed.
+    """
+    return {
+        "citation_markdown": None,
+        "citation_paths": [],
+    }
+
+
+def _render_citation_block(all_hits: list[dict[str, Any]], *, max_n: int = 3) -> tuple[str | None, list[str]]:
+    """Build the paste-ready `참고:` markdown block from augment hits.
+
+    Returns ``(markdown, paths)``. ``markdown`` is None when there are
+    no hits — the AI session reads None as "no corpus citation owed
+    for this turn". ``paths`` is the deduplicated list of repo-relative
+    paths in citation order, capped at ``max_n``.
+
+    The renderer is deterministic and side-effect-free; tier 0 callers
+    pass an empty hits list and receive (None, []).
+    """
+    seen: set[str] = set()
+    paths: list[str] = []
+    for hit in all_hits:
+        path = str(hit.get("path") or "").strip()
+        if not path or path in seen:
+            continue
+        seen.add(path)
+        paths.append(path)
+        if len(paths) >= max_n:
+            break
+    if not paths:
+        return None, []
+    body = "\n".join(f"- {p}" for p in paths)
+    return f"참고:\n{body}", paths
+
+
 def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
     return {
         "by_learning_point": {},
@@ -80,6 +121,7 @@ def _empty_result(reason: str, mode_used: str) -> dict[str, Any]:
             "mode_used": mode_used,
             "category_filter_fallback": False,
         },
+        "response_hints": _empty_response_hints(),
     }
 
 
@@ -316,6 +358,12 @@ def augment(
     if runtime_debug:
         meta["runtime_debug"] = runtime_debug
 
+    citation_markdown, citation_paths = _render_citation_block(all_hits)
+    response_hints = {
+        "citation_markdown": citation_markdown,
+        "citation_paths": citation_paths,
+    }
+
     return {
         "by_learning_point": by_lp,
         "by_fallback_key": by_fallback,
@@ -323,6 +371,7 @@ def augment(
         "cs_categories_hit": categories_hit,
         "sidecar": sidecar,
         "meta": meta,
+        "response_hints": response_hints,
     }
 
 
