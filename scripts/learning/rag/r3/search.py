@@ -79,6 +79,91 @@ def _record_stage(stage_ms: dict[str, float], name: str, started_at: float) -> N
     stage_ms[name] = round(stage_ms.get(name, 0.0) + elapsed_ms, 3)
 
 
+_FORBIDDEN_FILTER_DEFAULT_ON = "1"
+
+
+def _forbidden_filter_enabled() -> bool:
+    return os.environ.get(
+        "WOOWA_RAG_R3_FORBIDDEN_FILTER",
+        _FORBIDDEN_FILTER_DEFAULT_ON,
+    ) == "1"
+
+
+def _load_path_to_forbidden(catalog_dir: Path | None) -> dict[str, frozenset[str]]:
+    """Build a path -> forbidden_neighbors mapping from concepts.v3.json.
+
+    Catalog stores doc_path with no ``contents/`` prefix and
+    forbidden_neighbors with the prefix. We normalize both to the
+    full prefixed form so the lookup matches the candidate.path the
+    fusion stage emits.
+    """
+    if catalog_dir is None:
+        return {}
+    catalog_path = catalog_dir / "concepts.v3.json"
+    if not catalog_path.exists():
+        return {}
+    import json
+    try:
+        blob = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    out: dict[str, frozenset[str]] = {}
+    for entry in blob.get("concepts", {}).values():
+        doc_path = entry.get("doc_path")
+        forbidden = entry.get("forbidden_neighbors") or []
+        if not doc_path or not forbidden:
+            continue
+        full_path = doc_path if doc_path.startswith("contents/") else f"contents/{doc_path}"
+        out[full_path] = frozenset(forbidden)
+    return out
+
+
+def _apply_forbidden_filter(
+    fused: list,
+    path_to_forbidden: dict[str, frozenset[str]],
+) -> tuple[list, dict[str, str | int]]:
+    """Drop fused candidates whose path matches a forbidden_neighbor of
+    the current top-1.
+
+    The intent comes from the v3 corpus contract: each canonical doc
+    declares the docs that should *not* be primary for queries about
+    it. When the retrieval system surfaces such a doc inside top_k of
+    a query whose top-1 is the canonical, the forbidden doc is wrong-
+    bucket noise and should be demoted out of top_k.
+
+    This implementation removes the forbidden candidates entirely
+    rather than re-ranking them down. That matches how the cohort_eval
+    forbidden_neighbor cohort scores: forbidden_hit_rate is computed on
+    top_k membership, so removal == demotion past the boundary. We do
+    not touch top-1 itself.
+
+    Returns ``(filtered_fused, info)`` where info records the filter
+    decision for the trace metadata.
+    """
+    info: dict[str, str | int] = {
+        "applied": False,
+        "removed_count": 0,
+        "removed_paths": [],
+    }
+    if not fused or not path_to_forbidden:
+        return fused, info
+    top1_path = fused[0].path
+    forbidden_set = path_to_forbidden.get(top1_path)
+    if not forbidden_set:
+        return fused, info
+    info["applied"] = True
+    kept = [fused[0]]
+    removed: list[str] = []
+    for cand in fused[1:]:
+        if cand.path in forbidden_set:
+            removed.append(cand.path)
+            continue
+        kept.append(cand)
+    info["removed_count"] = len(removed)
+    info["removed_paths"] = removed
+    return kept, info
+
+
 def _cached_sparse_retriever(
     documents,
     *,
@@ -344,6 +429,14 @@ def search(
         )
         _record_stage(stage_ms, "rerank", started)
 
+    forbidden_filter_info: dict[str, str | int] = {"applied": False, "removed_count": 0, "removed_paths": []}
+    if fused and _forbidden_filter_enabled():
+        started = time.perf_counter()
+        catalog_dir_for_filter = _resolve_catalog_root(catalog_root)
+        path_to_forbidden = _load_path_to_forbidden(catalog_dir_for_filter)
+        fused, forbidden_filter_info = _apply_forbidden_filter(fused, path_to_forbidden)
+        _record_stage(stage_ms, "forbidden_filter", started)
+
     trace = R3Trace(
         trace_id=query_plan.normalized_query,
         query_plan=query_plan,
@@ -369,6 +462,7 @@ def search(
             "lexical_sidecar_error": lexical_sidecar_error,
             "rerank_policy": config.local_rerank_policy,
             "reranker_skip_reason": reranker_skip_reason,
+            "forbidden_filter": forbidden_filter_info,
             "catalog_channels_used": list(catalog_channels_used),
             "catalog_error": catalog_error,
         },
@@ -399,6 +493,7 @@ def search(
         debug["r3_lexical_sidecar_error"] = lexical_sidecar_error
         debug["r3_catalog_channels_used"] = list(catalog_channels_used)
         debug["r3_catalog_error"] = catalog_error
+        debug["r3_forbidden_filter"] = dict(forbidden_filter_info)
         debug["r3_stage_ms"] = dict(stage_ms)
         debug["rerank_input_window"] = config.rerank_input_window(offline=False)
         debug["top_k"] = top_k
