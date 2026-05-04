@@ -37,6 +37,16 @@ Use this repository as a Woowa mission **learning hub** — peer PR coaching + C
 
 상세: `docs/rag-runtime.md`. Latency 회피 위해 `export HF_HUB_OFFLINE=1` 권장.
 
+### Query Reformulation (Pilot baseline 95.5%의 +5pp 책임)
+
+학습자의 raw 자연어 prompt와 함께, AI 세션이 *corpus 친화적 표현으로 reformulate한 query*를 같이 넘기면 dense BGE-M3 + cross-encoder 매핑이 정확해진다. 200q × 6 cohort 측정에서 reformulation lever만으로 paraphrase 96 → 100%, symptom_to_cause 80 → 96.7%, OVERALL +5pp.
+
+- `bin/rag-ask "$prompt" --reformulated-query "$ref"` 형식
+- `$ref` 작성 규칙 + 적용/미적용 분기 + 이전 turn context fold-in: `docs/agent-query-reformulation-contract.md` (필수)
+- 적용 안 하면 graceful degradation — Pilot baseline 95.5% → 90.5%
+
+요지: AI 세션이 `bin/rag-ask` 호출 직전에 학습자 자연어 ↔ corpus 어휘 통역 한 번 emit. 학습자에게 보이는 답변 톤은 raw prompt 기준 유지.
+
 ## Adaptive Response (v3 closed loop)
 
 `bin/rag-ask` 출력에 `learner_context`가 들어 있으면 (cold-start가 아닐 때) **무시하지 말고** 다음 규약을 따른다:
