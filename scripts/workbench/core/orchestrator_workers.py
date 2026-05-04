@@ -14,6 +14,11 @@ from typing import Any
 
 from .file_lock import lock_exclusive, unlock
 from .orchestrator import Orchestrator, _isoformat, _pid_alive, _utc_now
+from .orchestrator_migration_workers import (
+    MIGRATION_V3_FLEET,
+    MIGRATION_V3_FLEET_SIZE,
+    MIGRATION_V3_WORKER_PENDING_CAP,
+)
 from .paths import ROOT, ensure_orchestrator_layout
 
 DEFAULT_WORKER_IDLE_SECONDS = 15
@@ -881,6 +886,10 @@ FLEET_PROFILES: dict[str, list[dict[str, Any]]] = {
     "quality": QUALITY_REPAIR_FLEET,
     "expansion": EXPANSION_FLEET,
     "expansion60": EXPANSION60_FLEET,
+    # migration_v3: 30-worker fleet that transforms 2,200+ legacy docs
+    # into the R3 v3 frontmatter contract. Created but intentionally
+    # unstarted — see docs/master-plan-progress.md Phase 8.
+    "migration_v3": MIGRATION_V3_FLEET,
 }
 
 WORKER_FLEET = QUALITY_REPAIR_FLEET
@@ -1251,6 +1260,60 @@ def _authoring_lint_targets(changed_files: list[str]) -> list[str]:
     return targets
 
 
+# ---------------------------------------------------------------------------
+# Migration v3 gate helpers (Phase 8)
+# ---------------------------------------------------------------------------
+
+PILOT_LOCK_PATH_REL = "config/migration_v3/locked_pilot_paths.json"
+
+
+def _is_migration_v3_worker(worker: str) -> bool:
+    return worker.startswith("migration-v3-")
+
+
+def _load_pilot_lock_paths() -> set[str]:
+    path = ROOT / PILOT_LOCK_PATH_REL
+    if not path.exists():
+        return set()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    paths = payload.get("locked_paths", [])
+    if not isinstance(paths, list):
+        return set()
+    return {str(p) for p in paths}
+
+
+def _pilot_lock_violations(changed_files: list[str]) -> list[str]:
+    """Return changed files that intersect the Pilot v3 lock list.
+
+    Pilot 50 + Phase 4 wave docs (69 total as of 2026-05-05) hold the
+    OVERALL 95.5% baseline. Migration workers writing to these paths
+    would corrupt the eval contract, so the gate fails fast before
+    spawning any subprocess.
+    """
+    locked = _load_pilot_lock_paths()
+    if not locked:
+        return []
+    return sorted(p for p in changed_files if p in locked)
+
+
+def _migration_v3_lint_targets(changed_files: list[str]) -> list[str]:
+    """Content docs touched by a migration_v3 worker.
+
+    Returned solely to gate-or-skip the v3 corpus_lint pass; the
+    actual ``corpus_lint`` invocation scans the whole corpus root, so
+    individual paths are not passed through.
+    """
+    return [
+        relpath for relpath in changed_files
+        if relpath.startswith(CONTENT_DOC_PREFIX)
+        and Path(relpath).suffix == ".md"
+        and Path(relpath).name != "README.md"
+    ]
+
+
 def _rag_pytest_args(worker: str, lane: str, changed_files: list[str]) -> list[list[str]]:
     tests: list[list[str]] = []
     changed = set(changed_files)
@@ -1333,11 +1396,36 @@ def _run_completion_gates(
             "commands": [],
         }
 
+    # Migration v3 pre-flight: Pilot lock guard. Fails fast (no
+    # subprocess) if the worker tried to write to a Pilot v3 doc, which
+    # would invalidate the OVERALL 95.5% baseline.
+    if _is_migration_v3_worker(worker):
+        violations = _pilot_lock_violations(changed_files)
+        if violations:
+            return {
+                "ok": False,
+                "summary": (
+                    f"pilot lock violation: {len(violations)} file(s) — "
+                    f"first: {violations[0]}"
+                ),
+                "changed_files": changed_files,
+                "commands": [],
+            }
+
     python = _project_python()
     commands: list[list[str]] = []
-    lint_targets = _authoring_lint_targets(changed_files)
-    if lint_targets:
-        commands.append([python, "scripts/lint_cs_authoring.py", "--strict", "--quiet", *lint_targets])
+    if _is_migration_v3_worker(worker):
+        # v3 contract uses corpus_lint, not lint_cs_authoring (legacy).
+        if _migration_v3_lint_targets(changed_files):
+            commands.append([
+                python, "-m", "scripts.learning.rag.corpus_lint",
+                "--strict", "--strict-v3",
+                "--corpus", "knowledge/cs/contents",
+            ])
+    else:
+        lint_targets = _authoring_lint_targets(changed_files)
+        if lint_targets:
+            commands.append([python, "scripts/lint_cs_authoring.py", "--strict", "--quiet", *lint_targets])
     for pytest_args in _rag_pytest_args(worker, lane, changed_files):
         commands.append([python, "-m", "pytest", *pytest_args, "-q"])
 
