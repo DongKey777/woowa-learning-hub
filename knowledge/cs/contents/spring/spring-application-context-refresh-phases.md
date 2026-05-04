@@ -25,6 +25,12 @@ expected_queries:
 - BeanFactoryPostProcessor는 언제 실행돼?
 - BeanPostProcessor는 언제 적용돼?
 - ApplicationContext 시작 과정을 단계별로 설명해줘
+contextual_chunk_prefix: |
+  이 문서는 학습자가 스프링이 시작할 때 환경설정 읽고, 객체 등록하고,
+  후처리까지 끝내는 부팅 순서를 단계별로 깊이 잡는 deep_dive다. 스프링이
+  시작할 때 어떤 순서, 환경설정 읽고 객체 등록 후처리, ApplicationContext
+  부팅 흐름, refresh phases 같은 자연어 paraphrase가 본 문서의 단계별
+  설명에 매핑된다.
 ---
 
 # Spring ApplicationContext Refresh Phases

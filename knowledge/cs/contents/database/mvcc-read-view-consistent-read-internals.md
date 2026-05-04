@@ -33,6 +33,13 @@ expected_queries:
 - InnoDB consistent read는 undo chain을 어떻게 따라가?
 - repeatable read에서 snapshot read가 왜 같은 결과를 보여?
 - m_low_limit_id랑 m_up_limit_id는 MVCC에서 어떤 경계야?
+contextual_chunk_prefix: |
+  이 문서는 동시에 여러 트랜잭션이 돌 때 각자 다른 시점의 데이터를 보게
+  하는 MVCC의 내부 구조 — read view가 어떤 버전을 볼 수 있는지 잘라내는
+  규칙과 undo chain 순회를 학습자가 깊이 이해하는 deep_dive다. 다른
+  시점 데이터, 트랜잭션마다 다른 스냅샷, 동시 실행 트랜잭션의 가시성,
+  consistent read 내부, snapshot read internals, undo chain traversal
+  같은 자연어 paraphrase가 본 문서의 핵심 메커니즘에 매핑된다.
 ---
 
 # MVCC Read View and Consistent Read Internals

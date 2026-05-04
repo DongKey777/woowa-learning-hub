@@ -28,6 +28,13 @@ expected_queries:
 - 내가 방금 수정한 값이 새로고침하면 옛값으로 보일 때 뭘 봐?
 - recent write가 있으면 primary로 pinning하는 기준은 뭐야?
 - sticky session과 causal token은 read-your-writes에서 어떻게 달라?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 방금 저장한 데이터를 바로 다시 읽었을 때 안 보이는
+  상황을 막기 위해 session pinning, sticky session, primary fallback 등
+  routing 전략을 깊이 잡는 deep_dive다. 방금 저장한 데이터가 안 보이는 상황
+  방지, recent write routing, 같은 사용자 본인 변경 즉시 반영, my update
+  disappeared after refresh 같은 자연어 paraphrase가 본 문서의 핵심
+  메커니즘에 매핑된다.
 ---
 
 # Read-Your-Writes와 Session Pinning 전략

@@ -33,6 +33,12 @@ expected_queries:
 - connection pool이 고갈되는 진짜 원인을 어떻게 진단해?
 - 커넥션 풀 사이즈를 늘리면 해결되는 거야?
 - pool exhausted가 떴는데 어디부터 봐야 해?
+contextual_chunk_prefix: |
+  이 문서는 CPU도 DB도 한가한데 API 응답만 느리고 가끔 timeout이 나는
+  학습자 증상을 connection pool 고갈 / leak / 긴 트랜잭션 / N+1 / 풀 사이즈
+  네 갈래로 가르는 symptom_router다. 부하 낮은데 응답 느림, pool exhausted,
+  HikariCP timed out, 커넥션 누수, leak, idle 트래픽에 응답 지연, 파이프
+  부족 같은 자연어 표현이 본 문서의 진단 분기에 매핑된다.
 ---
 
 # Connection pool 고갈 — 누수 / 긴 트랜잭션 / N+1 / 풀 사이즈 어디에 원인이 있나

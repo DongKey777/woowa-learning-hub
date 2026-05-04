@@ -31,6 +31,13 @@ expected_queries:
 - 새 객체를 만들지 않는데 Factory라고 불러도 돼?
 - selector naming이 헷갈릴 때 처음 어디서 봐야 해?
 - Map으로 하나 고르는 코드가 factory인지 selector인지 모르겠어
+contextual_chunk_prefix: |
+  이 문서는 객체를 새로 만드는 책임(Factory)과 이미 등록된 것 중 하나를
+  고르는 책임(Selector / Resolver)이 이름에서 헷갈릴 때 학습자가 어느
+  네이밍을 골라야 하는지 처음 만나는 chooser다. 새로 만들기 vs 고르기,
+  생성 책임 vs 선택 책임, Factory vs Selector vs Resolver, Map<String,
+  Strategy>를 selector라 불러야 하나 strategy라 불러야 하나 같은 자연어
+  paraphrase가 본 문서의 분기 질문에 매핑된다.
 ---
 
 # Factory vs Selector vs Resolver: 처음 배우는 네이밍 큰 그림

@@ -33,6 +33,12 @@ expected_queries:
 - lock timeout이면 무조건 retry해도 돼?
 - deadlock victim이 뭔지 처음 배우는데 어디서 봐?
 - lock wait timeout과 already exists를 어떻게 구분해?
+contextual_chunk_prefix: |
+  이 문서는 deadlock과 lock 대기 시간 초과를 학습자가 처음 만났을 때
+  어떻게 가르고 어떤 retry 정책이 맞는지 잡는 chooser primer다. 데드락이랑
+  락 대기 시간 초과 어떻게 구분해, deadlock 처음 배우는데, 락 wait timeout
+  의미, victim 선정, retry 가능 여부 같은 자연어 표현이 본 문서의 두 분기에
+  매핑된다.
 ---
 
 # Deadlock vs Lock Wait Timeout 입문 프라이머

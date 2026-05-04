@@ -25,6 +25,12 @@ expected_queries:
 - 공유 락과 배타 락은 뭐가 달라?
 - 낙관적 락과 비관적 락은 뭐가 달라?
 - lock wait은 왜 생겨?
+contextual_chunk_prefix: |
+  이 문서는 데이터베이스 학습자가 여러 사용자가 같은 데이터를 동시에 바꾸려
+  할 때 충돌을 어떻게 막는지, 동시성 제어 메커니즘으로서 lock이 무엇이고
+  왜 필요한지 처음 잡는 primer다. 동시 변경 충돌 방지, 동시성 충돌, 같은
+  데이터 동시에 수정, 락이 뭐야, optimistic vs pessimistic, shared vs
+  exclusive lock 같은 자연어 paraphrase가 본 문서의 핵심 개념에 매핑된다.
 ---
 
 # 락 기초 (Database Lock Basics)

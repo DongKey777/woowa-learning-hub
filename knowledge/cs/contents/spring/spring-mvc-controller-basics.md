@@ -24,6 +24,12 @@ expected_queries:
 - Controller는 요청을 어떻게 받아?
 - DispatcherServlet이 뭐야?
 - Controller랑 RestController 차이가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 URL과 메서드를 묶어 요청을 받아 응답을 돌려주는
+  Spring 클래스를 어떻게 만드는지, DispatcherServlet에서 컨트롤러까지의
+  요청 흐름을 처음 잡는 primer다. URL과 메서드 묶기, 요청 받아 응답 돌려주기,
+  컨트롤러 만드는 법, RestController vs Controller, @RequestMapping 자연어
+  paraphrase가 본 문서의 큰 그림에 매핑된다.
 ---
 
 # Spring MVC 컨트롤러 기초: 요청이 컨트롤러까지 오는 흐름

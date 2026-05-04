@@ -34,6 +34,13 @@ expected_queries:
 - Application에는 cookie가 있는데 request Cookie header가 비어 있으면 어디서 봐?
 - request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
 - login loop cookie splitter가 뭐야?
+contextual_chunk_prefix: |
+  이 문서는 로그인 후에도 쿠키가 있는데 계속 로그인 페이지로 튀거나, 쿠키가
+  분명히 찍혔는데 다음 요청에 안 붙거나, 요청에는 실렸는데 서버가 익명으로
+  보는 세 갈래 증상을 학습자가 처음 만났을 때 어떤 갈래인지 가르는 chooser다.
+  cookie debug, cookie 안 찍힘, cookie 안 보내짐, cookie sent but anonymous,
+  Set-Cookie blocked, login loop with cookie present 같은 자연어 표현이
+  본 문서의 세 갈래 가운데 하나에 매핑된다.
 ---
 
 # Cookie Failure Three-Way Splitter

@@ -25,6 +25,12 @@ expected_queries:
 - DispatcherServlet이랑 Bean Container는 무슨 관계야?
 - controller service repository 흐름이 뭐야?
 - 요청마다 Bean을 새로 만들어?
+contextual_chunk_prefix: |
+  이 문서는 학습자가 HTTP 요청이 컨트롤러까지 도착하기 전에 어떤 단계들을
+  거치는지, DispatcherServlet과 Bean Container가 controller-service-
+  repository 레이어를 어떻게 연결하는지 처음 잡는 primer다. 요청이 도착하기
+  전 흐름, 컨트롤러까지 어떤 단계, request pipeline, 레이어 흐름 같은
+  자연어 paraphrase가 본 문서의 큰 그림에 매핑된다.
 ---
 
 # Spring 요청 파이프라인과 Bean Container 기초: `DispatcherServlet`, 레이어 역할, Bean 등록, DI, 설정 읽기
