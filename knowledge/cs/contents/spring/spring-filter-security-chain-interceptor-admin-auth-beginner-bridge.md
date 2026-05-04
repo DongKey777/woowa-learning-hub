@@ -33,13 +33,14 @@ expected_queries:
 - jwt filter를 어디에 두는지 처음 보기 전에 어떤 큰 그림을 봐?
 - HandlerInterceptor에서 인증을 막아도 되는지 헷갈려
 contextual_chunk_prefix: |
-  이 문서는 학습자가 관리자 페이지 접근을 막는 코드를 컨트롤러 들어가기
-  전에 둘지 직전에 둘지 어떻게 정하는지, 일반 Filter 체인과 Spring Security
-  Filter Chain과 HandlerInterceptor 셋이 어디가 갈라지는지 처음 잡는
-  chooser bridge다. 컨트롤러 들어가기 전에 둘지 직전에 둘지, 관리자 페이지
-  접근 막는 코드 위치, 일반 Filter 체인 vs Security Filter Chain vs
-  HandlerInterceptor, 어디서 인증을 걸어야 하나, jwt filter 위치 같은
-  자연어 paraphrase가 본 문서의 세 갈래 비교에 매핑된다.
+  이 문서는 *세 가지를 가르는 chooser bridge* — 일반 servlet Filter 체인
+  vs Spring Security Filter Chain vs HandlerInterceptor — 가 처음 헷갈리는
+  학습자에게 어디가 어떻게 다른지 가르는 entrypoint다. Spring Security
+  filter chain만 깊이 다루는 deep_dive doc이 아니라 *세 갈래 중 어느 doc으로
+  갈지 결정하는 chooser*다. 일반 Filter 체인 vs Spring Security Filter Chain,
+  filter vs interceptor 차이, 관리자 페이지 접근 막는 코드를 컨트롤러
+  들어가기 전에 둘지 직전에 둘지, 세 갈래 entrypoint, jwt filter 위치 같은
+  자연어 paraphrase가 본 chooser bridge의 세 갈래 결정에 매핑된다.
 ---
 
 # Spring `Filter` vs Spring Security Filter Chain vs `HandlerInterceptor`: 관리자 인증 입문 브리지

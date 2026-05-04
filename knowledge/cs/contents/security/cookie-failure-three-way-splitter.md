@@ -35,12 +35,14 @@ expected_queries:
 - request Cookie는 있는데 서버가 anonymous면 어떤 문서를 봐?
 - login loop cookie splitter가 뭐야?
 contextual_chunk_prefix: |
-  이 문서는 로그인 후에도 쿠키가 있는데 계속 로그인 페이지로 튀거나, 쿠키가
-  분명히 찍혔는데 다음 요청에 안 붙거나, 요청에는 실렸는데 서버가 익명으로
-  보는 세 갈래 증상을 학습자가 처음 만났을 때 어떤 갈래인지 가르는 chooser다.
-  cookie debug, cookie 안 찍힘, cookie 안 보내짐, cookie sent but anonymous,
-  Set-Cookie blocked, login loop with cookie present 같은 자연어 표현이
-  본 문서의 세 갈래 가운데 하나에 매핑된다.
+  이 문서는 cookie 문제를 처음 진단할 때 *어느 갈래로 갈지를 먼저 결정하는*
+  three-way chooser/splitter다. cookie 한 가지 좁은 원인(예: SameSite, Path
+  scope mismatch, duplicate name shadowing)을 깊이 다루는 doc이 아니라,
+  쿠키는 있는데 자꾸 로그인 페이지로 튀는 상황 / Set-Cookie blocked /
+  stored not sent / sent but server anonymous 세 갈래를 *먼저 분기*해서
+  어느 specific doc으로 갈지 결정하는 entrypoint다. 쿠키 있는데 자꾸 로그인
+  페이지로 튀, cookie failure 처음 어디부터, three-way splitter, cookie
+  진단 entrypoint 같은 자연어 paraphrase가 본 문서의 세 분기 결정에 매핑된다.
 ---
 
 # Cookie Failure Three-Way Splitter

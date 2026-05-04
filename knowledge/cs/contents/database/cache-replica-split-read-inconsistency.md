@@ -36,11 +36,15 @@ expected_queries:
 - 수정은 됐는데 목록 화면에는 옛날 데이터가 보일 때 원인 후보가 뭐야?
 - 같은 사용자가 detail에선 새 값, list에선 옛값을 보면 어디로 가?
 contextual_chunk_prefix: |
-  이 문서는 사용자가 수정 직후 목록 화면에서 옛 데이터를 보거나 detail/list가
-  서로 다른 상태로 보일 때 학습자가 원인을 cache stale, replica lag, mixed
-  source 세 갈래로 가르는 symptom_router다. 수정은 됐는데 목록에는 옛 데이터,
-  방금 저장했는데 새로고침해야 보임, cache miss 후 옛값, 목록과 상세 다른
-  상태 같은 자연어 paraphrase가 본 문서의 진단 분기에 매핑된다.
+  이 문서는 *cache와 read replica가 서로 다른 시점의 데이터를 들고 있어*
+  사용자가 수정 직후 목록에서 옛 데이터를 보거나 detail/list가 서로 다른
+  상태로 보이는 stale read 증상을 cache stale, replica lag, mixed source
+  세 갈래로 가르는 symptom_router다 (트랜잭션 격리/locking 문제나 단순
+  cache invalidation 문제가 아니라 *cache 출처와 replica 출처가 갈라진*
+  inconsistency). 저장은 됐는데 목록 화면에는 옛날 데이터, 방금 저장한 게
+  목록에는 안 보이고 새로고침해야 보임, commit 후 select했는데 옛날 값,
+  cache miss 후 replica에서 옛값, 목록과 상세가 서로 다른 상태 같은
+  자연어 paraphrase가 본 문서의 cache+replica split 분기에 매핑된다.
 ---
 
 # Cache와 Replica가 갈라질 때의 Read Inconsistency
