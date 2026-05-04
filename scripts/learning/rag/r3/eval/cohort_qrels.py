@@ -55,6 +55,7 @@ class CohortQuery:
     expected_concepts: tuple[str, ...] = ()
     failure_focus: tuple[str, ...] = ()
     rationale: str = ""
+    reformulated_query: str | None = None
 
     def __post_init__(self) -> None:
         if not self.query_id:
@@ -84,7 +85,7 @@ class CohortQuery:
             )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "query_id": self.query_id,
             "prompt": self.prompt,
             "language": self.language,
@@ -98,6 +99,9 @@ class CohortQuery:
             "failure_focus": list(self.failure_focus),
             "rationale": self.rationale,
         }
+        if self.reformulated_query is not None:
+            out["reformulated_query"] = self.reformulated_query
+        return out
 
 
 @dataclass(frozen=True)
@@ -117,6 +121,8 @@ class CohortQrelSuite:
 
 
 def _record_to_query(record: dict[str, Any]) -> CohortQuery:
+    reformulated_raw = record.get("reformulated_query")
+    reformulated = str(reformulated_raw).strip() if reformulated_raw else None
     return CohortQuery(
         query_id=str(record["query_id"]),
         prompt=str(record["prompt"]),
@@ -130,6 +136,7 @@ def _record_to_query(record: dict[str, Any]) -> CohortQuery:
         expected_concepts=tuple(record.get("expected_concepts") or ()),
         failure_focus=tuple(record.get("failure_focus") or ()),
         rationale=str(record.get("rationale") or ""),
+        reformulated_query=reformulated or None,
     )
 
 

@@ -141,6 +141,7 @@ def _hit_from_candidate(candidate) -> dict:
 def search(
     prompt: str,
     *,
+    reformulated_query: str | None = None,
     learning_points: list[str] | None = None,
     topic_hints: list[str] | None = None,
     top_k: int = 5,
@@ -152,8 +153,20 @@ def search(
     learner_context: dict | None = None,
     debug: dict | None = None,
 ) -> list[dict]:
-    """Run the R3 skeleton and return no results until retrievers land."""
+    """Run the R3 skeleton and return no results until retrievers land.
 
+    ``prompt`` is the learner's raw natural-language query. When
+    ``reformulated_query`` is supplied (e.g. by the AI session that maps
+    the learner's paraphrase to corpus-friendly vocabulary), it is used
+    for the semantic channels — dense BGE-M3 encoding and cross-encoder
+    rerank — while the lexical retriever keeps the raw token form. This
+    is the corpus-agnostic equivalent of contextual_chunk_prefix on the
+    corpus side: the corpus stays as the author wrote it, the learner's
+    natural language stays as they typed it, and the AI session bridges
+    the two at retrieval time.
+    """
+
+    semantic_query = reformulated_query or prompt
     stage_ms: dict[str, float] = {}
     started = time.perf_counter()
     config = R3Config.from_env()
@@ -212,7 +225,7 @@ def search(
             started = time.perf_counter()
             query_encoding = encode_runtime_query(
                 index_root,
-                query_plan.raw_query,
+                semantic_query,
                 query_plan_version=query_plan.version,
             )
             _record_stage(stage_ms, "encode_runtime_query", started)
@@ -325,7 +338,7 @@ def search(
         rerank_window = min(len(fused), config.rerank_input_window(offline=False))
         rerank_input_paths = tuple(candidate.path for candidate in fused[:rerank_window])
         fused = reranker.rerank(
-            query_plan.raw_query,
+            semantic_query,
             fused,
             top_n=rerank_window,
         )
@@ -341,6 +354,8 @@ def search(
             "backend": "r3",
             "source_index": documents[0].metadata.get("index_backend") if documents else None,
             "reranker_model": reranker_model,
+            "reformulated_query": reformulated_query,
+            "semantic_query": semantic_query,
             "fused_paths": list(fused_paths),
             "rerank_input_paths": list(rerank_input_paths),
             "sparse_source": sparse_source,

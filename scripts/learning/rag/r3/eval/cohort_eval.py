@@ -274,11 +274,14 @@ def evaluate_cohort_query(
     *,
     top_k: int,
     search_kwargs: dict[str, Any] | None = None,
+    use_reformulated_query: bool = False,
 ) -> CohortQueryResult:
     debug: dict[str, Any] = {}
     started = time.perf_counter()
     search_call_kwargs = dict(search_kwargs or {})
     search_call_kwargs.setdefault("top_k", max(top_k, 5))
+    if use_reformulated_query and query.reformulated_query:
+        search_call_kwargs["reformulated_query"] = query.reformulated_query
     hits = search_fn(query.prompt, debug=debug, **search_call_kwargs)
     duration_ms = (time.perf_counter() - started) * 1000.0
     final_paths = tuple(h.get("path", "") for h in hits if h.get("path"))
@@ -330,6 +333,7 @@ def evaluate_suite(
     top_k: int = 5,
     qrel_path: str = "",
     search_kwargs: dict[str, Any] | None = None,
+    use_reformulated_query: bool = False,
 ) -> CohortEvalReport:
     per_query: list[CohortQueryResult] = []
     per_cohort: dict[str, CohortMetrics] = {
@@ -337,7 +341,10 @@ def evaluate_suite(
     }
     for query in suite.queries:
         result = evaluate_cohort_query(
-            query, search_fn, top_k=top_k, search_kwargs=search_kwargs,
+            query, search_fn,
+            top_k=top_k,
+            search_kwargs=search_kwargs,
+            use_reformulated_query=use_reformulated_query,
         )
         per_query.append(result)
         per_cohort[result.cohort_tag].add(result, top_k=top_k)
@@ -387,6 +394,13 @@ def main(argv: list[str] | None = None) -> int:
         default="full",
         help="R3 search mode (default: full).",
     )
+    parser.add_argument(
+        "--use-reformulated-query",
+        action="store_true",
+        help="Use the qrel's reformulated_query field for the semantic "
+             "channels (dense + reranker). Lexical FTS still uses the raw "
+             "prompt. Default: off (raw query for everything).",
+    )
     args = parser.parse_args(argv)
 
     suite = load_cohort_qrels(args.qrels)
@@ -400,6 +414,7 @@ def main(argv: list[str] | None = None) -> int:
         top_k=args.top_k,
         qrel_path=str(args.qrels),
         search_kwargs={"mode": args.mode},
+        use_reformulated_query=args.use_reformulated_query,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(

@@ -32,7 +32,8 @@
       ],
       "prompt": "객체를 직접 만들지 않고 외부에서 받는 게 뭐야?",
       "query_id": "paraphrase_human:spring_di:001",
-      "rationale": "학습자가 'DI', '의존성 주입' 단어를 모르고 *원리*만 paraphrase. alias 매칭으로 풀리면 안 됨."
+      "rationale": "학습자가 'DI', '의존성 주입' 단어를 모르고 *원리*만 paraphrase. alias 매칭으로 풀리면 안 됨.",
+      "reformulated_query": "Spring 의존성 주입 DI 의 정의 — 객체를 직접 new로 만들지 않고 외부에서 받는 wiring 방식"
     },
     {
       "acceptable_paths": [
@@ -54,7 +55,8 @@
         "contents/spring/spring-bean-lifecycle-basics.md"
       ],
       "prompt": "스프링이 객체를 어떻게 만들어주는지 큰 그림이 궁금해",
-      "query_id": "paraphrase_human:spring_bean:001"
+      "query_id": "paraphrase_human:spring_bean:001",
+      "reformulated_query": "Spring Bean 라이프사이클 큰 그림 — 컨테이너가 객체를 언제 만들고 초기화하고 소멸시키는지"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -72,7 +74,8 @@
         "contents/database/connection-pool-basics.md"
       ],
       "prompt": "DB 연결을 미리 만들어두고 빌려쓴다는 게 무슨 의미야?",
-      "query_id": "paraphrase_human:database_connection_pool:001"
+      "query_id": "paraphrase_human:database_connection_pool:001",
+      "reformulated_query": "DB connection pool 기초 — 미리 connection을 만들어두고 빌려쓰고 반환하는 자원 풀 패턴"
     },
     {
       "acceptable_paths": [
@@ -93,7 +96,8 @@
         "contents/database/lock-basics.md"
       ],
       "prompt": "여러 사람이 같은 데이터 동시에 바꾸려 할 때 충돌 어떻게 막아?",
-      "query_id": "paraphrase_human:database_lock:001"
+      "query_id": "paraphrase_human:database_lock:001",
+      "reformulated_query": "DB lock 기초 — 동시성 제어로 동시 update 충돌을 방지하는 데이터베이스 잠금 메커니즘"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -111,7 +115,8 @@
         "contents/database/transaction-isolation-basics.md"
       ],
       "prompt": "트랜잭션이 서로 어디까지 보고 어디까지 못 보게 할지 단계가 있다며",
-      "query_id": "paraphrase_human:database_isolation:001"
+      "query_id": "paraphrase_human:database_isolation:001",
+      "reformulated_query": "트랜잭션 격리 수준 isolation level — 동시 실행 트랜잭션 간 가시성 단계 (read uncommitted/committed/repeatable read/serializable)"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -129,7 +134,8 @@
         "contents/design-pattern/factory-basics.md"
       ],
       "prompt": "객체 생성 책임을 다른 클래스로 옮기는 방식 뭐 있어?",
-      "query_id": "paraphrase_human:design_pattern_factory:001"
+      "query_id": "paraphrase_human:design_pattern_factory:001",
+      "reformulated_query": "Factory 패턴 기초 — 객체 생성 책임을 별도 클래스로 분리하는 design pattern"
     },
     {
       "acceptable_paths": [
@@ -150,7 +156,8 @@
         "contents/software-engineering/repository-interface-contract-primer.md"
       ],
       "prompt": "도메인 객체 영속성 처리를 인터페이스로 추상화하는 패턴이 뭐야?",
-      "query_id": "paraphrase_human:repository_pattern:001"
+      "query_id": "paraphrase_human:repository_pattern:001",
+      "reformulated_query": "Repository 인터페이스 contract — 도메인 객체 영속성을 인터페이스로 추상화하고 구현체를 교체 가능하게 하는 패턴"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -168,7 +175,8 @@
         "contents/network/latency-bandwidth-throughput-basics.md"
       ],
       "prompt": "네트워크에서 응답이 느린 이유 어떤 종류로 나눠서 봐야 해?",
-      "query_id": "paraphrase_human:network_latency:001"
+      "query_id": "paraphrase_human:network_latency:001",
+      "reformulated_query": "네트워크 지연 latency 분해 — bandwidth, throughput, RTT, queue wait 같은 종류로 응답 지연을 나누어 보는 기초"
     },
     {
       "acceptable_paths": [
@@ -192,7 +200,8 @@
       ],
       "prompt": "스프링에서 컨테이너에서 직접 꺼내 쓰면 안 되는 이유 알려줘",
       "query_id": "confusable_pairs:di_vs_service_locator:001",
-      "rationale": "DI vs Service Locator 짝 — DI 쪽이 primary, locator 비교 doc는 acceptable. locator 자체의 antipattern doc은 forbidden 케이스에서 정의."
+      "rationale": "DI vs Service Locator 짝 — DI 쪽이 primary, locator 비교 doc는 acceptable. locator 자체의 antipattern doc은 forbidden 케이스에서 정의.",
+      "reformulated_query": "Spring DI vs Service Locator 비교 — 컨테이너에서 직접 lookup하면 hidden dependency가 생기는 안티패턴 이유"
     },
     {
       "acceptable_paths": [
@@ -215,7 +224,8 @@
         "contents/design-pattern/factory-vs-di-container-wiring.md"
       ],
       "prompt": "팩토리 메서드랑 스프링 DI 컨테이너가 같은 거야 다른 거야?",
-      "query_id": "confusable_pairs:factory_vs_di_container:001"
+      "query_id": "confusable_pairs:factory_vs_di_container:001",
+      "reformulated_query": "Factory 패턴 vs Spring DI container 차이 — 객체 생성 책임을 코드 쪽 Factory가 가지냐 컨테이너가 wiring하냐"
     },
     {
       "acceptable_paths": [
@@ -237,7 +247,8 @@
         "contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md"
       ],
       "prompt": "런타임에 알고리즘 갈아끼우는 게 strategy야 factory야?",
-      "query_id": "confusable_pairs:strategy_vs_factory:001"
+      "query_id": "confusable_pairs:strategy_vs_factory:001",
+      "reformulated_query": "Strategy vs Factory 패턴 비교 — 런타임 알고리즘 교체(Strategy) vs 객체 생성 책임 분리(Factory)"
     },
     {
       "acceptable_paths": [
@@ -259,7 +270,8 @@
         "contents/database/mvcc-snapshot-vs-locking-read-portability-note.md"
       ],
       "prompt": "스냅샷으로 읽는 거랑 락 걸어서 읽는 거 차이가 뭐야?",
-      "query_id": "confusable_pairs:mvcc_vs_lock:001"
+      "query_id": "confusable_pairs:mvcc_vs_lock:001",
+      "reformulated_query": "MVCC snapshot read vs locking read 비교 — 동시 실행 트랜잭션이 스냅샷으로 읽는 방식과 lock 잡고 읽는 방식의 portability 차이"
     },
     {
       "acceptable_paths": [
@@ -280,7 +292,8 @@
         "contents/database/deadlock-vs-lock-wait-timeout-primer.md"
       ],
       "prompt": "데드락이랑 락 대기 시간 초과 어떻게 구분해?",
-      "query_id": "confusable_pairs:deadlock_vs_lock_timeout:001"
+      "query_id": "confusable_pairs:deadlock_vs_lock_timeout:001",
+      "reformulated_query": "Deadlock vs lock wait timeout 비교 chooser — 순환 대기로 victim abort vs 단순 대기 한도 초과"
     },
     {
       "acceptable_paths": [
@@ -302,7 +315,8 @@
         "contents/software-engineering/repository-dao-entity.md"
       ],
       "prompt": "리포지토리랑 DAO가 같은 거야 다른 거야?",
-      "query_id": "confusable_pairs:repository_vs_dao:001"
+      "query_id": "confusable_pairs:repository_vs_dao:001",
+      "reformulated_query": "Repository 패턴 vs DAO 비교 — 도메인 영속성 추상화(Repository)와 SQL access object(DAO)의 책임 차이"
     },
     {
       "acceptable_paths": [
@@ -323,7 +337,8 @@
         "contents/design-pattern/injected-registry-vs-service-locator-checklist.md"
       ],
       "prompt": "주입받은 registry랑 service locator는 뭐가 달라?",
-      "query_id": "confusable_pairs:registry_vs_service_locator:001"
+      "query_id": "confusable_pairs:registry_vs_service_locator:001",
+      "reformulated_query": "Injected Registry vs Service Locator 비교 checklist — 주입받은 registry는 hidden dep 안 만들지만 service locator는 만든다"
     },
     {
       "acceptable_paths": [
@@ -344,7 +359,8 @@
         "contents/database/compare-and-swap-vs-pessimistic-locks.md"
       ],
       "prompt": "compare-and-swap이랑 비관적 락은 어떤 상황에서 갈리는 거야?",
-      "query_id": "confusable_pairs:cas_vs_pessimistic_lock:001"
+      "query_id": "confusable_pairs:cas_vs_pessimistic_lock:001",
+      "reformulated_query": "Compare-and-swap CAS vs pessimistic lock 비교 — 충돌 빈도와 retry 비용 따라 갈리는 동시성 제어 전략"
     },
     {
       "acceptable_paths": [
@@ -365,7 +381,8 @@
         "contents/database/cache-replica-split-read-inconsistency.md"
       ],
       "prompt": "수정은 됐는데 목록 화면에는 옛날 데이터가 보여",
-      "query_id": "symptom_to_cause:stale_list_after_update:001"
+      "query_id": "symptom_to_cause:stale_list_after_update:001",
+      "reformulated_query": "수정은 됐는데 목록 화면에 옛 데이터 — cache stale, replica lag, mixed source 세 갈래 symptom router"
     },
     {
       "acceptable_paths": [
@@ -387,7 +404,8 @@
         "contents/database/lock-timeout-blocker-first-check-mini-card.md"
       ],
       "prompt": "갑자기 트랜잭션이 다 lock timeout으로 떨어지고 있어",
-      "query_id": "symptom_to_cause:lock_timeout_outage:001"
+      "query_id": "symptom_to_cause:lock_timeout_outage:001",
+      "reformulated_query": "갑자기 트랜잭션이 다 lock timeout — blocker 먼저 보는 mini card, lock wait 진단"
     },
     {
       "acceptable_paths": [
@@ -408,7 +426,8 @@
         "contents/security/cookie-failure-three-way-splitter.md"
       ],
       "prompt": "쿠키는 있는데 자꾸 로그인 페이지로 튀겨",
-      "query_id": "symptom_to_cause:cookie_login_loop:001"
+      "query_id": "symptom_to_cause:cookie_login_loop:001",
+      "reformulated_query": "쿠키는 있는데 자꾸 로그인 페이지로 튀 — cookie failure three-way splitter (blocked / stored not sent / sent but anonymous) chooser"
     },
     {
       "acceptable_paths": [
@@ -430,7 +449,8 @@
         "contents/database/deadlock-case-study.md"
       ],
       "prompt": "인덱스 추가했더니 데드락이 늘었어",
-      "query_id": "symptom_to_cause:deadlock_after_index_change:001"
+      "query_id": "symptom_to_cause:deadlock_after_index_change:001",
+      "reformulated_query": "인덱스 추가 직후 deadlock — deadlock case study, lock ordering 변경"
     },
     {
       "acceptable_paths": [
@@ -451,7 +471,8 @@
         "contents/database/spring-cannotacquirelockexception-root-sql-code-card.md"
       ],
       "prompt": "Spring이 CannotAcquireLockException을 뱉었는데 진짜 문제가 뭔지 어떻게 봐?",
-      "query_id": "symptom_to_cause:cannot_acquire_lock_exception:001"
+      "query_id": "symptom_to_cause:cannot_acquire_lock_exception:001",
+      "reformulated_query": "Spring CannotAcquireLockException 진단 — root SQLSTATE 코드 매핑"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -469,7 +490,8 @@
         "contents/database/cache-replica-split-read-inconsistency.md"
       ],
       "prompt": "방금 저장한 게 목록에는 안 보이고 새로고침해야 보여",
-      "query_id": "symptom_to_cause:replica_lag_visible:001"
+      "query_id": "symptom_to_cause:replica_lag_visible:001",
+      "reformulated_query": "방금 저장한 게 목록에 안 보임, 새로고침해야 보임 — replica lag와 cache stale 분기"
     },
     {
       "acceptable_paths": [
@@ -494,7 +516,8 @@
       ],
       "prompt": "roomescape 미션에서 DAO 패턴 쓰라는데 그게 뭔 의미야?",
       "query_id": "mission_bridge:roomescape_dao_repository:001",
-      "rationale": "Pilot Phase 4에서 mission_bridge doc 신설 예정 (`contents/software-engineering/roomescape-dao-vs-repository-bridge.md`); 그 전까지는 기존 DAO/Repository primer로 라우팅."
+      "rationale": "Pilot Phase 4에서 mission_bridge doc 신설 예정 (`contents/software-engineering/roomescape-dao-vs-repository-bridge.md`); 그 전까지는 기존 DAO/Repository primer로 라우팅.",
+      "reformulated_query": "roomescape 미션 DAO 패턴 — repository-dao-entity bridge, 미션에서 DAO 의미"
     },
     {
       "acceptable_paths": [
@@ -516,7 +539,8 @@
         "contents/spring/spring-bean-di-basics.md"
       ],
       "prompt": "roomescape 미션 PR에서 멘토가 service locator 쓰지 말라는데 그게 뭐야?",
-      "query_id": "mission_bridge:roomescape_di_bean:001"
+      "query_id": "mission_bridge:roomescape_di_bean:001",
+      "reformulated_query": "roomescape 미션 service locator vs DI — Spring Bean DI bridge, mentor PR 코멘트 의미"
     },
     {
       "acceptable_paths": [
@@ -538,7 +562,8 @@
         "contents/design-pattern/bridge-strategy-vs-factory-runtime-selection.md"
       ],
       "prompt": "lotto 미션에서 당첨 등급 매기는 부분 strategy 패턴이 적합한가?",
-      "query_id": "mission_bridge:lotto_strategy_pattern:001"
+      "query_id": "mission_bridge:lotto_strategy_pattern:001",
+      "reformulated_query": "lotto 미션 당첨 등급 strategy — Strategy vs Factory runtime selection bridge"
     },
     {
       "acceptable_paths": [
@@ -560,7 +585,8 @@
         "contents/spring/spring-transactional-basics.md"
       ],
       "prompt": "roomescape 미션에서 예약/취소 메서드에 @Transactional 붙여야 하는 이유?",
-      "query_id": "mission_bridge:roomescape_transactional:001"
+      "query_id": "mission_bridge:roomescape_transactional:001",
+      "reformulated_query": "roomescape 예약/취소 @Transactional — Spring transactional boundary bridge"
     },
     {
       "acceptable_paths": [
@@ -582,7 +608,8 @@
         "contents/design-pattern/constructor-vs-static-factory-vs-factory-pattern.md"
       ],
       "prompt": "lotto 미션에서 LottoNumber 객체를 만드는 정적 팩토리 메서드 쓰는 이유?",
-      "query_id": "mission_bridge:lotto_factory_method:001"
+      "query_id": "mission_bridge:lotto_factory_method:001",
+      "reformulated_query": "lotto LottoNumber 정적 팩토리 메서드 — static factory bridge"
     },
     {
       "cohort_tag": "corpus_gap_probe",
@@ -690,7 +717,8 @@
       ],
       "prompt": "DI가 뭐야?",
       "query_id": "forbidden_neighbor:di_query_must_not_return_oop_basics:001",
-      "rationale": "OOP 기초 또는 Factory primer가 'DI가 뭐야?'에 top-K로 나오면 안 됨 — DI는 IoC/Spring 맥락 specific. 일반 OOP doc는 너무 broad."
+      "rationale": "OOP 기초 또는 Factory primer가 'DI가 뭐야?'에 top-K로 나오면 안 됨 — DI는 IoC/Spring 맥락 specific. 일반 OOP doc는 너무 broad.",
+      "reformulated_query": "Spring DI 의존성 주입 기초 primer — 객체 외부에서 받는 wiring 입문"
     },
     {
       "acceptable_paths": [
@@ -715,7 +743,8 @@
         "contents/spring/spring-transactional-basics.md"
       ],
       "prompt": "트랜잭션이 뭐야?",
-      "query_id": "forbidden_neighbor:transaction_must_not_return_isolation_levels:001"
+      "query_id": "forbidden_neighbor:transaction_must_not_return_isolation_levels:001",
+      "reformulated_query": "DB 트랜잭션 기초 primer — ACID, all-or-nothing 단위 입문"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -737,7 +766,8 @@
         "contents/database/lock-basics.md"
       ],
       "prompt": "락이 뭐야? 처음 배우는데",
-      "query_id": "forbidden_neighbor:lock_basic_must_not_return_xa_2pc:001"
+      "query_id": "forbidden_neighbor:lock_basic_must_not_return_xa_2pc:001",
+      "reformulated_query": "DB lock 기초 primer — 동시성 제어 잠금 메커니즘 입문"
     },
     {
       "acceptable_paths": [
@@ -763,7 +793,8 @@
         "contents/spring/spring-bean-lifecycle-basics.md"
       ],
       "prompt": "Spring Bean이 뭐야?",
-      "query_id": "forbidden_neighbor:bean_must_not_return_postprocessor:001"
+      "query_id": "forbidden_neighbor:bean_must_not_return_postprocessor:001",
+      "reformulated_query": "Spring Bean 기초 primer — 컨테이너 객체 등록 입문"
     },
     {
       "acceptable_paths": [
@@ -788,7 +819,8 @@
         "contents/design-pattern/factory-basics.md"
       ],
       "prompt": "Factory 패턴이 뭐야?",
-      "query_id": "forbidden_neighbor:factory_must_not_return_naming_smells:001"
+      "query_id": "forbidden_neighbor:factory_must_not_return_naming_smells:001",
+      "reformulated_query": "Factory 패턴 기초 primer — 객체 생성 책임 분리 design pattern 입문"
     },
     {
       "acceptable_paths": [
@@ -813,7 +845,8 @@
         "contents/software-engineering/repository-interface-contract-primer.md"
       ],
       "prompt": "Repository 패턴이 뭐야?",
-      "query_id": "forbidden_neighbor:repository_must_not_return_fake_design:001"
+      "query_id": "forbidden_neighbor:repository_must_not_return_fake_design:001",
+      "reformulated_query": "Repository 패턴 기초 primer — 도메인 영속성 인터페이스 입문"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -834,7 +867,8 @@
         "contents/database/transaction-isolation-basics.md"
       ],
       "prompt": "트랜잭션 격리 수준이 뭐야? 처음 배우는데",
-      "query_id": "forbidden_neighbor:isolation_level_must_not_return_anomaly_cheatsheet:001"
+      "query_id": "forbidden_neighbor:isolation_level_must_not_return_anomaly_cheatsheet:001",
+      "reformulated_query": "트랜잭션 격리 수준 기초 primer — read uncommitted/committed/repeatable read/serializable 입문"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -856,7 +890,8 @@
         "contents/database/connection-pool-basics.md"
       ],
       "prompt": "Connection pool이 뭐야?",
-      "query_id": "forbidden_neighbor:connection_pool_must_not_return_tuning:001"
+      "query_id": "forbidden_neighbor:connection_pool_must_not_return_tuning:001",
+      "reformulated_query": "Connection pool 기초 primer — DB 연결 풀 자원 관리 입문"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -875,7 +910,8 @@
       ],
       "prompt": "여러 SQL 작업을 하나로 묶어서 다 되거나 다 취소되게 하는 게 뭐야?",
       "query_id": "paraphrase_human:transaction_basics:001",
-      "rationale": "ACID/transaction 단어 없이 원리만 — atomicity 묘사"
+      "rationale": "ACID/transaction 단어 없이 원리만 — atomicity 묘사",
+      "reformulated_query": "DB 트랜잭션 기초 — 여러 SQL을 ACID atomicity로 all-or-nothing 처리하는 단위"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -894,7 +930,8 @@
       ],
       "prompt": "테이블이랑 행, 열을 말로 어떻게 나누고 관계를 표시해?",
       "query_id": "paraphrase_human:sql_basics:001",
-      "rationale": "관계형 모델링 알려줘가 아니라 schema/row/column 설명만"
+      "rationale": "관계형 모델링 알려줘가 아니라 schema/row/column 설명만",
+      "reformulated_query": "SQL 기초 — 테이블 row column 관계와 schema 정의"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -913,7 +950,8 @@
       ],
       "prompt": "DB를 여러 대로 복사해서 읽기 부담을 나누면 일관성이 어떻게 깨져?",
       "query_id": "paraphrase_human:replica_lag:001",
-      "rationale": "replica lag / read-after-write 단어 없이 증상만"
+      "rationale": "replica lag / read-after-write 단어 없이 증상만",
+      "reformulated_query": "DB replica lag와 read-after-write 일관성 깨짐 — primary와 replica 사이 복제 지연으로 인한 stale read"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -932,7 +970,8 @@
       ],
       "prompt": "동시에 여러 트랜잭션이 돌 때 각자 다른 시점의 데이터를 보게 하는 내부 구조가 어떻게 돼?",
       "query_id": "paraphrase_human:mvcc_internals:001",
-      "rationale": "MVCC 단어 없이 snapshot/read view 내부 구조 설명만"
+      "rationale": "MVCC 단어 없이 snapshot/read view 내부 구조 설명만",
+      "reformulated_query": "MVCC read view consistent read 내부 구조 — 동시 트랜잭션이 각자 snapshot에서 다른 시점의 데이터를 보는 multi-version concurrency control"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -951,7 +990,8 @@
       ],
       "prompt": "방금 내가 저장한 데이터를 바로 다시 읽었는데 안 보일 수 있는 상황을 어떻게 막아?",
       "query_id": "paraphrase_human:read_your_writes:001",
-      "rationale": "session pinning / read-your-writes 용어 없이 증상→해결만"
+      "rationale": "session pinning / read-your-writes 용어 없이 증상→해결만",
+      "reformulated_query": "Read-your-writes consistency와 session pinning — recent write 이후 같은 사용자가 즉시 다시 읽을 때 stale 방지 routing 전략"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -970,7 +1010,8 @@
       ],
       "prompt": "메서드 위에 짧은 표시 하나만 붙이면 그 안의 DB 작업이 묶여 처리된다는데 그게 뭐야?",
       "query_id": "paraphrase_human:transactional_basics:001",
-      "rationale": "@Transactional 단어 안 쓰고 동작만 묘사"
+      "rationale": "@Transactional 단어 안 쓰고 동작만 묘사",
+      "reformulated_query": "Spring @Transactional 기초 — 메서드 어노테이션으로 DB 트랜잭션 경계를 자동 관리하는 declarative transaction"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -989,7 +1030,8 @@
       ],
       "prompt": "스프링이 객체를 만들고, 의존성 채우고, 다 쓰면 정리하는 시점들이 어떻게 정해져?",
       "query_id": "paraphrase_human:bean_lifecycle:001",
-      "rationale": "lifecycle / bean 단어 안 쓰고 단계만 설명"
+      "rationale": "lifecycle / bean 단어 안 쓰고 단계만 설명",
+      "reformulated_query": "Spring Bean 생명주기 — Bean 생성, @PostConstruct 초기화, 사용, @PreDestroy 정리, 소멸 단계"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1008,7 +1050,8 @@
       ],
       "prompt": "여러 메서드에 공통으로 들어가는 로깅·권한 체크 같은 코드를 한 곳에 모아서 자동 적용하려면 뭘 써?",
       "query_id": "paraphrase_human:aop_basics:001",
-      "rationale": "AOP 단어 없이 cross-cutting concern 묘사만"
+      "rationale": "AOP 단어 없이 cross-cutting concern 묘사만",
+      "reformulated_query": "AOP aspect-oriented programming 기초 — cross-cutting concerns(로깅, 권한, 트랜잭션)를 aspect로 모아 자동 적용"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1027,7 +1070,8 @@
       ],
       "prompt": "내가 만든 객체가 아니라 다른 게 끼어들어서 메서드 호출을 가로채는 구조는 어떻게 돼?",
       "query_id": "paraphrase_human:aop_proxy:001",
-      "rationale": "proxy 단어 없이 인터셉션 동작만 묘사"
+      "rationale": "proxy 단어 없이 인터셉션 동작만 묘사",
+      "reformulated_query": "AOP proxy 메커니즘 — Spring이 만든 proxy가 메서드 호출을 가로채 advice를 적용하는 구조"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1046,7 +1090,8 @@
       ],
       "prompt": "URL과 메서드를 묶어 요청을 받아서 응답을 돌려주는 클래스를 어떻게 만들어?",
       "query_id": "paraphrase_human:mvc_controller:001",
-      "rationale": "Controller / @RestController 안 쓰고 역할만"
+      "rationale": "Controller / @RestController 안 쓰고 역할만",
+      "reformulated_query": "Spring MVC Controller 기초 — @Controller @RequestMapping URL routing 요청-응답 처리"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1065,7 +1110,8 @@
       ],
       "prompt": "객체를 누가 만드는지 통제권을 코드 밖에서 잡는다는 게 무슨 뜻이야?",
       "query_id": "paraphrase_human:ioc_container:001",
-      "rationale": "IoC 단어 없이 inversion of control 원리"
+      "rationale": "IoC 단어 없이 inversion of control 원리",
+      "reformulated_query": "IoC inversion of control과 DI container — 객체 생성 통제권을 코드에서 컨테이너로 위임하는 원리"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1084,7 +1130,8 @@
       ],
       "prompt": "HTTP 요청이 컨트롤러까지 도착하기 전에 어떤 단계들을 거쳐?",
       "query_id": "paraphrase_human:request_pipeline:001",
-      "rationale": "filter chain / dispatcher 단어 없이 단계만"
+      "rationale": "filter chain / dispatcher 단어 없이 단계만",
+      "reformulated_query": "Spring 요청 파이프라인 — HTTP 요청이 DispatcherServlet, Filter, HandlerInterceptor를 거쳐 controller에 도달하는 단계"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1103,7 +1150,8 @@
       ],
       "prompt": "스프링이 시작할 때 환경설정 읽고, 객체 등록하고, 후처리까지 끝내는 순서가 어떻게 돼?",
       "query_id": "paraphrase_human:application_context_refresh:001",
-      "rationale": "refresh 단어 없이 시작 phase 묘사"
+      "rationale": "refresh 단어 없이 시작 phase 묘사",
+      "reformulated_query": "Spring ApplicationContext refresh phases — 부팅 시 환경설정 로드, BeanDefinition 등록, BeanFactoryPostProcessor / BeanPostProcessor 후처리 단계"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1122,7 +1170,8 @@
       ],
       "prompt": "필요한 도구를 직접 만들지 않고 받아쓰면 코드가 어떻게 더 시험하기 쉬워져?",
       "query_id": "paraphrase_human:dependency_injection_se:001",
-      "rationale": "DI / dependency injection 단어 없이 testability 결과 묘사"
+      "rationale": "DI / dependency injection 단어 없이 testability 결과 묘사",
+      "reformulated_query": "의존성 주입 dependency injection 기초 — 객체가 의존성을 외부에서 받으면 mock 교체로 unit test 용이해지는 원리"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1141,7 +1190,8 @@
       ],
       "prompt": "코드를 화면, 비즈니스 로직, DB 처리 같은 층으로 나누는 이유가 뭐야?",
       "query_id": "paraphrase_human:layered_architecture:001",
-      "rationale": "layered / 계층 안 써도 의도 묘사"
+      "rationale": "layered / 계층 안 써도 의도 묘사",
+      "reformulated_query": "계층화 아키텍처 layered architecture — controller, service, repository 층으로 책임 분리하는 design"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1160,7 +1210,8 @@
       ],
       "prompt": "비즈니스 규칙은 컨트롤러나 DB 코드에 두지 말고 어디에 모아야 해?",
       "query_id": "paraphrase_human:service_layer:001",
-      "rationale": "service layer 단어 없이 결과만"
+      "rationale": "service layer 단어 없이 결과만",
+      "reformulated_query": "Service layer 패턴 — 비즈니스 규칙을 controller / repository 와 분리해 service에 모으는 layered architecture"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1179,7 +1230,8 @@
       ],
       "prompt": "객체를 어떻게 만들지 결정하는 책임을 따로 떼서 한 곳에 두는 패턴이 뭐야?",
       "query_id": "paraphrase_human:factory_basics:001",
-      "rationale": "Factory 단어 없이 책임 분리만"
+      "rationale": "Factory 단어 없이 책임 분리만",
+      "reformulated_query": "Factory 패턴 기초 — 객체 생성 책임을 별도 클래스로 추상화하는 design pattern"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1198,7 +1250,8 @@
       ],
       "prompt": "객체가 자기 의존성을 직접 어딘가에서 꺼내가면 왜 안 좋대?",
       "query_id": "paraphrase_human:service_locator_antipattern:001",
-      "rationale": "Service Locator 단어 없이 antipattern 결과 묘사"
+      "rationale": "Service Locator 단어 없이 antipattern 결과 묘사",
+      "reformulated_query": "Service Locator 안티패턴 — 객체가 직접 의존성을 lookup하면 hidden dependency가 생겨 테스트와 추적이 어려워짐"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1217,7 +1270,8 @@
       ],
       "prompt": "사용자가 화면에서 보는 요약 데이터가 원본 변경에 얼마나 늦게 따라가는지 어떻게 정해?",
       "query_id": "paraphrase_human:projection_freshness:001",
-      "rationale": "projection / freshness SLO 안 쓰고 사용자 관점만"
+      "rationale": "projection / freshness SLO 안 쓰고 사용자 관점만",
+      "reformulated_query": "Projection freshness SLO 패턴 — read model이 원본 write에 얼마나 빨리 반영되는지를 SLI/SLO로 정의하고 운영"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1236,7 +1290,8 @@
       ],
       "prompt": "쓰기는 한 곳에서 하고 읽기는 다른 모델에서 한다고 했을 때 둘이 어긋나는 시간을 뭐라고 봐?",
       "query_id": "paraphrase_human:read_model_staleness:001",
-      "rationale": "CQRS / read model 단어 없이 어긋남만"
+      "rationale": "CQRS / read model 단어 없이 어긋남만",
+      "reformulated_query": "CQRS read model staleness — write model과 projection이 어긋나는 freshness budget과 read-your-writes 보장"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1255,7 +1310,8 @@
       ],
       "prompt": "브라우저 개발자 도구에서 요청들이 가로 막대로 줄줄이 보이는 그 그림을 어떻게 읽어야 해?",
       "query_id": "paraphrase_human:devtools_waterfall:001",
-      "rationale": "waterfall 단어 없이 시각만 묘사"
+      "rationale": "waterfall 단어 없이 시각만 묘사",
+      "reformulated_query": "Browser DevTools Network waterfall — DNS, Connect, SSL, Waiting (TTFB), Content Download 시간을 막대로 표시한 timing graph 읽는 법"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1274,7 +1330,8 @@
       ],
       "prompt": "한 HTTP 요청 시간이 DNS, 연결, 데이터 받기 같은 단계들로 어떻게 쪼개져?",
       "query_id": "paraphrase_human:request_timing:001",
-      "rationale": "TTFB / TTLB 단어 없이 단계만"
+      "rationale": "TTFB / TTLB 단어 없이 단계만",
+      "reformulated_query": "HTTP request timing decomposition — DNS, connect, TLS handshake, queue wait, TTFB, TTLB로 latency breakdown"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1293,7 +1350,8 @@
       ],
       "prompt": "로그인 한 번에 누가 누군지 기억하는 방법이 두세 가지 있는데 뭐가 어떻게 달라?",
       "query_id": "paraphrase_human:session_cookie_jwt:001",
-      "rationale": "session vs cookie vs JWT 단어 없이 user-perspective만"
+      "rationale": "session vs cookie vs JWT 단어 없이 user-perspective만",
+      "reformulated_query": "세션 vs 쿠키 vs JWT — 로그인 상태 유지 방식 비교 (server session, signed cookie, stateless JWT) 입문"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1312,7 +1370,8 @@
       ],
       "prompt": "쿠키가 분명 저장됐는데 다른 페이지에선 안 따라가는 이유가 뭐야?",
       "query_id": "paraphrase_human:cookie_scope:001",
-      "rationale": "cookie scope 용어 없이 증상만"
+      "rationale": "cookie scope 용어 없이 증상만",
+      "reformulated_query": "Cookie scope mismatch (domain, path, samesite) — 저장된 쿠키가 다른 페이지 요청에 안 붙는 scope 문제"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1331,7 +1390,8 @@
       ],
       "prompt": "보안 검사를 어떤 순서로 줄세워서 요청마다 통과시키는지 그 흐름이 어떻게 돼?",
       "query_id": "paraphrase_human:spring_security_filter_chain:001",
-      "rationale": "filter chain 단어 없이 줄세움만"
+      "rationale": "filter chain 단어 없이 줄세움만",
+      "reformulated_query": "Spring Security Filter Chain — 인증, 인가, 예외 변환 filter들이 줄세워 순서대로 요청을 통과시키는 deep dive"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1350,7 +1410,8 @@
       ],
       "prompt": "여러 보안 검사가 있을 때 어느 게 먼저고 어느 게 뒤인지 정하는 규칙이 뭐야?",
       "query_id": "paraphrase_human:filter_chain_ordering:001",
-      "rationale": "ordering 용어 없이 우선순위만"
+      "rationale": "ordering 용어 없이 우선순위만",
+      "reformulated_query": "Spring Security Filter Chain Ordering — addFilterBefore, addFilterAfter로 filter 순서 정의하는 규칙"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1369,7 +1430,8 @@
       ],
       "prompt": "방금 쓴 데이터를 같은 사용자가 바로 읽을 때 어디로 보내야 일관성이 깨지지 않아?",
       "query_id": "paraphrase_human:read_after_write_routing:001",
-      "rationale": "read-after-write / routing 단어 없이 사용자 시점만"
+      "rationale": "read-after-write / routing 단어 없이 사용자 시점만",
+      "reformulated_query": "Read-after-write routing primer — 같은 사용자의 recent write 직후 read를 primary로 보내 일관성 보장하는 routing 전략"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1388,7 +1450,8 @@
       ],
       "prompt": "원본이 어디까지 처리됐는지 표식만 두고 화면 데이터를 갱신하는 방식이 뭐야?",
       "query_id": "paraphrase_human:projection_watermark:001",
-      "rationale": "watermark / applied 단어 없이 표식 묘사만"
+      "rationale": "watermark / applied 단어 없이 표식 묘사만",
+      "reformulated_query": "Projection applied watermark — read model이 원본 어디까지 반영했는지 표식(watermark, checkpoint)으로 추적하는 방식"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1407,7 +1470,8 @@
       ],
       "prompt": "관리자가 데이터 수정 직후 대시보드에서 값이 안 변해 보이면 어떻게 설계해야 그 헷갈림이 없어져?",
       "query_id": "paraphrase_human:post_write_stale_dashboard:001",
-      "rationale": "stale dashboard 단어 없이 admin UX만"
+      "rationale": "stale dashboard 단어 없이 admin UX만",
+      "reformulated_query": "Post-write stale dashboard primer — 관리자 수정 직후 대시보드 stale read를 다루는 화면 설계와 freshness 표시"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1426,7 +1490,8 @@
       ],
       "prompt": "두 트랜잭션이 서로 막혀서 시스템이 한쪽을 죽이는 경우랑, 그냥 너무 오래 기다려서 끝난 경우는 뭐가 달라?",
       "query_id": "paraphrase_human:deadlock_vs_lock_timeout_primer:001",
-      "rationale": "deadlock vs lock wait timeout 단어 없이 의미만"
+      "rationale": "deadlock vs lock wait timeout 단어 없이 의미만",
+      "reformulated_query": "Deadlock vs lock wait timeout 비교 — 순환 대기로 victim이 abort되는 deadlock vs 단순 대기 한도 초과 lock timeout"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1445,7 +1510,8 @@
       ],
       "prompt": "객체를 *만드는* 책임이랑 이미 있는 객체 중 *고르는* 책임을 이름으로 어떻게 나눠?",
       "query_id": "paraphrase_human:factory_selector_resolver:001",
-      "rationale": "Factory / Selector / Resolver 안 쓰고 책임만"
+      "rationale": "Factory / Selector / Resolver 안 쓰고 책임만",
+      "reformulated_query": "Factory vs Selector vs Resolver 네이밍 — 객체 생성 책임(Factory)과 선택/해석 책임(Selector, Resolver) 분리"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1464,7 +1530,8 @@
       ],
       "prompt": "등록된 것들 중에 키로 찾아 쓰는 패턴이랑, 객체가 자기 의존성을 키로 꺼내가는 패턴은 어떻게 달라?",
       "query_id": "paraphrase_human:registry_primer:001",
-      "rationale": "registry vs service locator 단어 없이 동작만"
+      "rationale": "registry vs service locator 단어 없이 동작만",
+      "reformulated_query": "Registry vs lookup table vs Service Locator 차이 — 키로 등록된 것을 조회하는 패턴들의 비교 입문"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1483,7 +1550,8 @@
       ],
       "prompt": "Map<String, X> 코드가 행동을 바꿔끼는 거인지 단순 조회인지 어떻게 구분해?",
       "query_id": "paraphrase_human:strategy_map_vs_registry:001",
-      "rationale": "strategy / registry 패턴명 없이 의도만"
+      "rationale": "strategy / registry 패턴명 없이 의도만",
+      "reformulated_query": "Strategy Map vs Registry 비교 — Map<String,X> 코드가 행동(Strategy) 교체인지 단순 lookup(Registry)인지 분기"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1502,7 +1570,8 @@
       ],
       "prompt": "부모가 큰 흐름 잡고 자식이 일부만 채우는 거랑, 외부가 통째로 한 가지 행동을 골라 끼는 건 어떻게 달라?",
       "query_id": "paraphrase_human:template_method_vs_strategy:001",
-      "rationale": "Template Method / Strategy 단어 없이 흐름만"
+      "rationale": "Template Method / Strategy 단어 없이 흐름만",
+      "reformulated_query": "Template Method vs Strategy 패턴 비교 — 부모 클래스가 흐름 잡는 inheritance(Template Method) vs 외부가 행동 주입하는 composition(Strategy)"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1521,7 +1590,8 @@
       ],
       "prompt": "로그인 안 한 거, 권한이 없는 거, 자원이 없는 거를 응답 코드로 어떻게 구분해?",
       "query_id": "paraphrase_human:auth_failure_response:001",
-      "rationale": "401/403/404 직접 안 쓰고 의미만"
+      "rationale": "401/403/404 직접 안 쓰고 의미만",
+      "reformulated_query": "인증 실패 응답 코드 401 vs 403 vs 404 — 비로그인(401), 권한 없음(403), 자원 없음/은닉(404) 분기"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1540,7 +1610,8 @@
       ],
       "prompt": "API는 분명 인증 실패라고 하는데 화면에는 갑자기 로그인 페이지로 옮겨지는 건 왜 그래?",
       "query_id": "paraphrase_human:browser_401_vs_302:001",
-      "rationale": "401/302 직접 안 쓰고 사용자 시점 증상만"
+      "rationale": "401/302 직접 안 쓰고 사용자 시점 증상만",
+      "reformulated_query": "Browser 401 vs 302 login redirect — API 응답은 401인데 브라우저는 302 /login으로 redirect되는 분기 가이드"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1559,7 +1630,8 @@
       ],
       "prompt": "쿠키가 안 찍힌 건지, 찍혔는데 안 보내진 건지, 보냈는데 서버가 못 읽은 건지 어떻게 나눠?",
       "query_id": "paraphrase_human:cookie_failure_three_way:001",
-      "rationale": "Set-Cookie / Cookie header 안 쓰고 3단계 분기만"
+      "rationale": "Set-Cookie / Cookie header 안 쓰고 3단계 분기만",
+      "reformulated_query": "Cookie failure three-way splitter — Set-Cookie blocked, stored not sent, sent but server anonymous 세 갈래 진단 chooser"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1578,7 +1650,8 @@
       ],
       "prompt": "fetch에 옵션 하나 줘서 쿠키 보내는 거랑, 쿠키가 그 도메인에 붙는 거랑 다른 거야?",
       "query_id": "paraphrase_human:fetch_credentials_vs_cookie_scope:001",
-      "rationale": "credentials: include / scope 정확한 단어 안 쓰고 의도만"
+      "rationale": "credentials: include / scope 정확한 단어 안 쓰고 의도만",
+      "reformulated_query": "fetch credentials vs cookie scope — fetch credentials:include 옵션과 cookie domain/path scope 매칭의 분리"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1597,7 +1670,8 @@
       ],
       "prompt": "DB가 진짜 락 걸려서 막힌 건지, 트랜잭션 표시가 잘못 붙어서 안 풀린 건지 어떻게 먼저 가려?",
       "query_id": "paraphrase_human:db_lock_vs_proxy_rollback:001",
-      "rationale": "lock wait / proxy / rollback-only 단어 없이 분기만"
+      "rationale": "lock wait / proxy / rollback-only 단어 없이 분기만",
+      "reformulated_query": "DB lock wait vs Spring proxy rollback chooser — DB lock으로 막혔는지 Spring @Transactional proxy / self-invocation 문제인지 분기표"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1616,7 +1690,8 @@
       ],
       "prompt": "관리자 페이지 접근을 막는 코드를 컨트롤러 들어가기 *전*에 둘지, *직전*에 둘지 어떻게 정해?",
       "query_id": "paraphrase_human:filter_security_chain_interceptor:001",
-      "rationale": "Filter / Interceptor 안 쓰고 위치 결정만"
+      "rationale": "Filter / Interceptor 안 쓰고 위치 결정만",
+      "reformulated_query": "Spring Filter vs Security Filter Chain vs HandlerInterceptor 비교 — 관리자 인증을 어디에 두는지 chooser bridge"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1635,7 +1710,8 @@
       ],
       "prompt": "동시 결제, 동시 재고 차감 같은 시나리오에서 데이터 깨지는 걸 어떻게 막아?",
       "query_id": "paraphrase_human:transaction_case_studies:001",
-      "rationale": "transaction boundary / atomicity 단어 없이 시나리오만"
+      "rationale": "transaction boundary / atomicity 단어 없이 시나리오만",
+      "reformulated_query": "트랜잭션 실전 시나리오 — 동시 결제 / 재고 차감 / 주문 정합성 같은 concurrent transaction case study와 idempotency"
     },
     {
       "cohort_tag": "paraphrase_human",
@@ -1654,7 +1730,8 @@
       ],
       "prompt": "Spring이 객체끼리 연결할 때 그냥 '필요해'라고만 적으면 알아서 채워주는 그게 뭐야?",
       "query_id": "paraphrase_human:bean_di_basics:002",
-      "rationale": "DI/주입 단어 안 쓰고 '알아서 채워주는' 행동만 — 둘째 paraphrase 변형"
+      "rationale": "DI/주입 단어 안 쓰고 '알아서 채워주는' 행동만 — 둘째 paraphrase 변형",
+      "reformulated_query": "Spring Bean DI 기초 — @Autowired로 의존성을 선언만 하면 컨테이너가 자동 wiring해주는 dependency injection"
     },
     {
       "acceptable_paths": [
@@ -1676,7 +1753,8 @@
       ],
       "prompt": "Service Locator로 의존성 가져오는 패턴은 어떤 단점이 있어?",
       "query_id": "confusable_pairs:di_vs_service_locator:002",
-      "rationale": "Service Locator 쪽이 primary, DI primer는 acceptable. DI primer가 primary로 나오면 의도와 어긋남."
+      "rationale": "Service Locator 쪽이 primary, DI primer는 acceptable. DI primer가 primary로 나오면 의도와 어긋남.",
+      "reformulated_query": "Service Locator 안티패턴 단점 — DI와 비교했을 때 hidden dependency, 테스트 어려움, 추적 곤란"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1695,7 +1773,8 @@
       ],
       "prompt": "객체 생성 책임을 따로 떼는 Factory랑, 행동을 끼워넣는 Strategy가 뭐가 달라?",
       "query_id": "confusable_pairs:factory_vs_strategy:001",
-      "rationale": "Factory 입장에서의 비교. Strategy 본 doc은 acceptable."
+      "rationale": "Factory 입장에서의 비교. Strategy 본 doc은 acceptable.",
+      "reformulated_query": "Factory vs Strategy 패턴 비교 — 객체 생성 책임 분리(Factory)와 행동(알고리즘) 주입(Strategy)의 의도 차이"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1714,7 +1793,8 @@
       ],
       "prompt": "Factory 메서드랑 Builder는 어떤 상황에서 갈리는 거야?",
       "query_id": "confusable_pairs:factory_vs_builder:001",
-      "rationale": "Factory primer가 두 패턴 갈리는 지점을 다룸"
+      "rationale": "Factory primer가 두 패턴 갈리는 지점을 다룸",
+      "reformulated_query": "Factory method vs Builder vs Abstract Factory 비교 — 객체 생성 패턴 갈래"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1733,7 +1813,8 @@
       ],
       "prompt": "Template Method랑 Strategy 패턴 둘 중 어느 게 부모 흐름을 잡는 거야?",
       "query_id": "confusable_pairs:template_vs_strategy:001",
-      "rationale": "chooser doc 자체가 primary"
+      "rationale": "chooser doc 자체가 primary",
+      "reformulated_query": "Template Method vs Strategy 패턴 비교 — 부모가 흐름 잡기 vs 외부가 행동 주입"
     },
     {
       "acceptable_paths": [
@@ -1755,7 +1836,8 @@
       ],
       "prompt": "상속으로 흐름 나누는 Template Method 대신 컴포지션으로 가는 게 왜 더 권장돼?",
       "query_id": "confusable_pairs:composition_vs_inheritance:001",
-      "rationale": "template/strategy chooser doc이 primary; composition-over-inheritance는 acceptable"
+      "rationale": "template/strategy chooser doc이 primary; composition-over-inheritance는 acceptable",
+      "reformulated_query": "Composition vs Template Method 상속 비교 — 컴포지션 over 상속 권장 이유 (composition over inheritance 원칙)"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1774,7 +1856,8 @@
       ],
       "prompt": "Factory랑 Selector랑 Resolver 이름은 어떤 책임 차이로 나눠?",
       "query_id": "confusable_pairs:factory_vs_selector:001",
-      "rationale": "naming chooser primer가 primary"
+      "rationale": "naming chooser primer가 primary",
+      "reformulated_query": "Factory vs Selector vs Resolver 네이밍 비교 — 생성 책임과 선택/해석 책임 분리"
     },
     {
       "acceptable_paths": [
@@ -1796,7 +1879,8 @@
       ],
       "prompt": "Map<String, Strategy> 코드를 Selector라고 불러야 해 Strategy라고 불러야 해?",
       "query_id": "confusable_pairs:selector_vs_strategy:001",
-      "rationale": "naming primer가 primary; strategy-map은 acceptable"
+      "rationale": "naming primer가 primary; strategy-map은 acceptable",
+      "reformulated_query": "Map<String, Strategy> selector vs strategy 네이밍 — Selector라 부를지 Strategy라 부를지 책임 분기"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1815,7 +1899,8 @@
       ],
       "prompt": "같은 Map<K,V> 모양인데 Strategy 모음인지 Registry인지 어떻게 구분해?",
       "query_id": "confusable_pairs:strategy_map_vs_registry:001",
-      "rationale": "strategy/registry chooser가 primary"
+      "rationale": "strategy/registry chooser가 primary",
+      "reformulated_query": "Strategy Map vs Registry 비교 — Map<K,V> 모양이 행동 교체(Strategy)인지 단순 lookup(Registry)인지 분기"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1834,7 +1919,8 @@
       ],
       "prompt": "Registry랑 그냥 lookup table은 어떻게 달라?",
       "query_id": "confusable_pairs:registry_vs_lookup_table:001",
-      "rationale": "registry primer가 primary"
+      "rationale": "registry primer가 primary",
+      "reformulated_query": "Registry vs lookup table primer — 키로 등록된 것을 조회하는 패턴들의 차이"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1853,7 +1939,8 @@
       ],
       "prompt": "Registry는 키로 찾고, Router는 입력 보고 보내는 거야?",
       "query_id": "confusable_pairs:registry_vs_router:001",
-      "rationale": "registry primer가 router 차이도 다룸"
+      "rationale": "registry primer가 router 차이도 다룸",
+      "reformulated_query": "Registry vs Router 차이 — 키로 찾기(Registry) vs 입력 보고 보내기(Router) 책임"
     },
     {
       "acceptable_paths": [
@@ -1875,7 +1962,8 @@
       ],
       "prompt": "주입된 registry랑 service locator가 정확히 어디서 갈리는 거야?",
       "query_id": "confusable_pairs:registry_vs_service_locator:002",
-      "rationale": "injected vs service locator 분리 doc이 primary; registry primer는 acceptable"
+      "rationale": "injected vs service locator 분리 doc이 primary; registry primer는 acceptable",
+      "reformulated_query": "Injected Registry vs Service Locator 차이 checklist — 의존성 주입 여부와 hidden dependency"
     },
     {
       "acceptable_paths": [
@@ -1897,7 +1985,8 @@
       ],
       "prompt": "lock wait timeout이랑 already exists 같은 SQL 에러는 왜 자꾸 헷갈려?",
       "query_id": "confusable_pairs:lock_wait_vs_already_exists:001",
-      "rationale": "deadlock/lock-wait chooser가 primary; lock-timeout-confusion-card는 acceptable"
+      "rationale": "deadlock/lock-wait chooser가 primary; lock-timeout-confusion-card는 acceptable",
+      "reformulated_query": "Lock wait timeout vs already exists 공통 오해 — 둘 다 SQL 에러지만 의미 분기"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1916,7 +2005,8 @@
       ],
       "prompt": "MVCC로 보는 거랑 lock 잡고 읽는 거랑 결과가 어떻게 달라?",
       "query_id": "confusable_pairs:mvcc_vs_lock_read:001",
-      "rationale": "MVCC vs locking 비교 bridge가 primary"
+      "rationale": "MVCC vs locking 비교 bridge가 primary",
+      "reformulated_query": "MVCC consistent read vs lock-based read 결과 차이 — 다른 트랜잭션 변경 가시성"
     },
     {
       "acceptable_paths": [
@@ -1938,7 +2028,8 @@
       ],
       "prompt": "로그인은 됐는데 어떤 작업은 막히면 그건 인증 실패야 권한 실패야?",
       "query_id": "confusable_pairs:authn_vs_authz:001",
-      "rationale": "401/403 chooser가 primary; authn vs authz primer는 acceptable"
+      "rationale": "401/403 chooser가 primary; authn vs authz primer는 acceptable",
+      "reformulated_query": "인증 authentication vs 인가 authorization 차이 — 401(인증 실패) vs 403(권한 실패) 응답 분기"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1957,7 +2048,8 @@
       ],
       "prompt": "403이랑 404 둘 중 뭐가 권한 부족이고 뭐가 자원 없음이야?",
       "query_id": "confusable_pairs:403_vs_404:001",
-      "rationale": "401/403/404 chooser가 직접 primary"
+      "rationale": "401/403/404 chooser가 직접 primary",
+      "reformulated_query": "403 vs 404 응답 비교 — 권한 부족(403) vs 자원 없음/은닉(404) 분기"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -1976,7 +2068,8 @@
       ],
       "prompt": "API는 401 같은데 브라우저는 302로 로그인 페이지로 가는 차이가 뭐야?",
       "query_id": "confusable_pairs:browser_401_vs_302:001",
-      "rationale": "401 vs 302 chooser가 primary"
+      "rationale": "401 vs 302 chooser가 primary",
+      "reformulated_query": "Browser 401 vs 302 login redirect 비교 — API 응답과 브라우저 redirect 분기 가이드"
     },
     {
       "acceptable_paths": [
@@ -1998,7 +2091,8 @@
       ],
       "prompt": "SavedRequest 흐름이랑 그냥 쿠키 누락이랑 어떻게 가려?",
       "query_id": "confusable_pairs:savedrequest_vs_cookie:001",
-      "rationale": "401 vs 302 chooser가 primary; cookie-failure splitter는 acceptable"
+      "rationale": "401 vs 302 chooser가 primary; cookie-failure splitter는 acceptable",
+      "reformulated_query": "SavedRequest 흐름 vs cookie missing 분기 — 로그인 후 redirect path 진단"
     },
     {
       "acceptable_paths": [
@@ -2021,7 +2115,8 @@
       ],
       "prompt": "쿠키가 처음부터 막힌 건지, 저장됐는데 안 보내는 건지 어떻게 구분해?",
       "query_id": "confusable_pairs:cookie_blocked_vs_scope:001",
-      "rationale": "cookie 3-way splitter가 primary; rejection / scope guide는 acceptable"
+      "rationale": "cookie 3-way splitter가 primary; rejection / scope guide는 acceptable",
+      "reformulated_query": "Cookie blocked vs cookie scope mismatch 분기 — Set-Cookie 막힌 거 vs 저장됐지만 안 보내짐"
     },
     {
       "acceptable_paths": [
@@ -2043,7 +2138,8 @@
       ],
       "prompt": "쿠키 스코프 안 맞는 거랑 fetch credentials 옵션 안 준 거랑 다른 문제야?",
       "query_id": "confusable_pairs:cookie_scope_vs_credentials:001",
-      "rationale": "fetch credentials chooser가 primary"
+      "rationale": "fetch credentials chooser가 primary",
+      "reformulated_query": "Cookie scope mismatch vs fetch credentials 분기 — 도메인/path 미일치 vs fetch credentials:include 누락"
     },
     {
       "acceptable_paths": [
@@ -2065,7 +2161,8 @@
       ],
       "prompt": "Cross-origin에서 쿠키 안 붙는 게 CORS 문제인지 cookie scope 문제인지 어떻게 가려?",
       "query_id": "confusable_pairs:cors_vs_cookie_scope:001",
-      "rationale": "fetch credentials chooser가 primary"
+      "rationale": "fetch credentials chooser가 primary",
+      "reformulated_query": "CORS vs cookie scope cross-origin 분기 — 쿠키 cross-origin 안 붙는 원인 진단"
     },
     {
       "acceptable_paths": [
@@ -2087,7 +2184,8 @@
       ],
       "prompt": "DB가 정말 락 잡은 건지, Spring 프록시가 트랜잭션 안 열어준 건지 어떻게 가려?",
       "query_id": "confusable_pairs:db_lock_vs_proxy:001",
-      "rationale": "분기표 chooser가 primary; self-invocation primer는 acceptable"
+      "rationale": "분기표 chooser가 primary; self-invocation primer는 acceptable",
+      "reformulated_query": "DB lock wait vs Spring @Transactional proxy 분기 — DB가 정말 락 잡았나 vs proxy/self-invocation 문제"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -2106,7 +2204,8 @@
       ],
       "prompt": "rollback-only 표시랑 lock wait timeout이 같이 보이면 어디부터 봐야 해?",
       "query_id": "confusable_pairs:rollback_only_vs_lock_wait:001",
-      "rationale": "분기표가 primary"
+      "rationale": "분기표가 primary",
+      "reformulated_query": "rollback-only marker vs lock wait timeout 분기 — Spring rollback-only flag와 DB lock 동시 발생 시 진단"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -2125,7 +2224,8 @@
       ],
       "prompt": "Spring Filter랑 HandlerInterceptor 둘 다 비슷한데 인증 체크는 어디에 둬야 해?",
       "query_id": "confusable_pairs:filter_vs_interceptor:001",
-      "rationale": "filter/interceptor chooser가 primary"
+      "rationale": "filter/interceptor chooser가 primary",
+      "reformulated_query": "Spring Filter vs HandlerInterceptor 비교 — 인증 체크를 어디에 두는지 분기"
     },
     {
       "acceptable_paths": [
@@ -2147,7 +2247,8 @@
       ],
       "prompt": "일반 Filter 체인이랑 Spring Security Filter Chain이 어떻게 다른 거야?",
       "query_id": "confusable_pairs:security_chain_vs_filter:001",
-      "rationale": "chooser가 primary; security chain primer는 acceptable"
+      "rationale": "chooser가 primary; security chain primer는 acceptable",
+      "reformulated_query": "일반 Filter chain vs Spring Security Filter Chain vs HandlerInterceptor 비교 chooser bridge"
     },
     {
       "acceptable_paths": [
@@ -2169,7 +2270,8 @@
       ],
       "prompt": "@Transactional이 안 먹어. self invocation 문제야 proxy 자체 문제야?",
       "query_id": "confusable_pairs:self_invocation_vs_proxy:001",
-      "rationale": "self-invocation primer가 primary; AOP proxy mechanism은 acceptable"
+      "rationale": "self-invocation primer가 primary; AOP proxy mechanism은 acceptable",
+      "reformulated_query": "Spring @Transactional self-invocation 함정 vs proxy 자체 문제 분기"
     },
     {
       "acceptable_paths": [
@@ -2191,7 +2293,8 @@
       ],
       "prompt": "DI랑 Factory 둘 다 객체 만들어주는 건데 같은 거야 다른 거야?",
       "query_id": "confusable_pairs:di_vs_factory:001",
-      "rationale": "DI primer가 primary; factory-vs-di bridge는 acceptable"
+      "rationale": "DI primer가 primary; factory-vs-di bridge는 acceptable",
+      "reformulated_query": "Spring DI vs Factory 패턴 비교 — DI container wiring과 Factory의 책임 차이"
     },
     {
       "acceptable_paths": [
@@ -2213,7 +2316,8 @@
       ],
       "prompt": "@Transactional이랑 AOP가 같은 거야? 둘이 어떻게 묶여?",
       "query_id": "confusable_pairs:transactional_vs_aop:001",
-      "rationale": "transactional primer가 primary; aop는 acceptable"
+      "rationale": "transactional primer가 primary; aop는 acceptable",
+      "reformulated_query": "Spring @Transactional과 AOP 관계 — declarative transaction이 AOP proxy로 동작하는 메커니즘"
     },
     {
       "acceptable_paths": [
@@ -2235,7 +2339,8 @@
       ],
       "prompt": "IoC랑 DI랑 같은 말이야 다른 말이야?",
       "query_id": "confusable_pairs:ioc_vs_di:001",
-      "rationale": "ioc-di primer가 primary; bean-di primer는 acceptable"
+      "rationale": "ioc-di primer가 primary; bean-di primer는 acceptable",
+      "reformulated_query": "IoC inversion of control vs DI dependency injection — 같은 원리의 다른 표현"
     },
     {
       "acceptable_paths": [
@@ -2257,7 +2362,8 @@
       ],
       "prompt": "replica lag랑 read-after-write 깨짐이 같은 문제야 다른 문제야?",
       "query_id": "confusable_pairs:replica_lag_vs_read_after_write:001",
-      "rationale": "replica-lag deep_dive가 primary; read-after-write routing primer는 acceptable"
+      "rationale": "replica-lag deep_dive가 primary; read-after-write routing primer는 acceptable",
+      "reformulated_query": "Replica lag vs read-after-write 일관성 비교 — 같은 stale read 문제의 다른 측면"
     },
     {
       "cohort_tag": "confusable_pairs",
@@ -2276,7 +2382,8 @@
       ],
       "prompt": "세션 쿠키랑 JWT 토큰 어느 게 안전해?",
       "query_id": "confusable_pairs:session_vs_jwt:001",
-      "rationale": "session-cookie-jwt primer가 primary"
+      "rationale": "session-cookie-jwt primer가 primary",
+      "reformulated_query": "세션 cookie vs JWT 안전성 비교 — server session과 stateless JWT 트레이드오프"
     },
     {
       "acceptable_paths": [
@@ -2298,7 +2405,8 @@
       ],
       "prompt": "AOP 개념이랑 그게 어떻게 동작하는 proxy 메커니즘은 같은 문서에서 다뤄?",
       "query_id": "confusable_pairs:aop_basics_vs_proxy:001",
-      "rationale": "AOP basics가 primary; proxy mechanism은 acceptable"
+      "rationale": "AOP basics가 primary; proxy mechanism은 acceptable",
+      "reformulated_query": "AOP 기초 개념 vs proxy 메커니즘 차이 — aspect 정의와 proxy 동작"
     },
     {
       "acceptable_paths": [
@@ -2320,7 +2428,8 @@
       ],
       "prompt": "Bean 라이프사이클 단계랑 컨테이너 내부 구조 둘 다 같은 거 다루는 거야?",
       "query_id": "confusable_pairs:bean_lifecycle_vs_container_internals:001",
-      "rationale": "bean-lifecycle primer가 primary; container internals는 acceptable"
+      "rationale": "bean-lifecycle primer가 primary; container internals는 acceptable",
+      "reformulated_query": "Spring Bean lifecycle 단계 vs container 내부 구조 차이"
     },
     {
       "acceptable_paths": [
@@ -2342,7 +2451,8 @@
       ],
       "prompt": "HikariPool에서 'Connection is not available, request timed out after 30000ms' 에러가 반복돼요",
       "query_id": "symptom_to_cause:hikari_timeout_30s:001",
-      "rationale": "정확한 에러 메시지 → starvation router로 라우팅"
+      "rationale": "정확한 에러 메시지 → starvation router로 라우팅",
+      "reformulated_query": "HikariPool Connection is not available 30000ms timeout — connection pool starvation symptom router (leak / 긴 트랜잭션 / N+1 / 풀 사이즈)"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2361,7 +2471,8 @@
       ],
       "prompt": "평소엔 멀쩡한데 트래픽이 늘면 응답 시간이 급격히 늘어요",
       "query_id": "symptom_to_cause:traffic_spike_response_time:001",
-      "rationale": "트래픽 증가 → 풀 고갈 패턴"
+      "rationale": "트래픽 증가 → 풀 고갈 패턴",
+      "reformulated_query": "트래픽 증가 시 응답 시간 폭주 — pool starvation, latency cliff 진단"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2380,7 +2491,8 @@
       ],
       "prompt": "CPU도 DB도 한가한데 API 응답만 느리고 가끔 timeout이 나요",
       "query_id": "symptom_to_cause:low_load_high_latency:001",
-      "rationale": "CPU/DB 한가한데 timeout → connection 누수/풀 고갈"
+      "rationale": "CPU/DB 한가한데 timeout → connection 누수/풀 고갈",
+      "reformulated_query": "CPU도 DB도 한가한데 API 응답 느림 — connection pool starvation (DB 풀 부족, 누수, 긴 트랜잭션) symptom router"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2399,7 +2511,8 @@
       ],
       "prompt": "중복 결제 요청이 두 번 처리됐어요. 어디 트랜잭션 경계가 잘못된 거예요?",
       "query_id": "symptom_to_cause:duplicate_payment:001",
-      "rationale": "중복 결제 = idempotency / atomicity 시나리오"
+      "rationale": "중복 결제 = idempotency / atomicity 시나리오",
+      "reformulated_query": "중복 결제 두 번 처리 — 트랜잭션 경계와 idempotency key 실전 시나리오"
     },
     {
       "acceptable_paths": [
@@ -2421,7 +2534,8 @@
       ],
       "prompt": "재고가 1개 남았는데 두 요청이 동시에 성공해서 -1이 됐어요",
       "query_id": "symptom_to_cause:inventory_race:001",
-      "rationale": "재고 동시성 = lock vs CAS vs serialization 시나리오"
+      "rationale": "재고 동시성 = lock vs CAS vs serialization 시나리오",
+      "reformulated_query": "재고 1개 남는데 두 요청 동시 성공으로 -1 — 동시성 race, lock 또는 CAS 시나리오"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2440,7 +2554,8 @@
       ],
       "prompt": "포인트는 차감됐는데 주문 생성이 실패해서 데이터가 꼬였어요",
       "query_id": "symptom_to_cause:partial_order_corrupt:001",
-      "rationale": "부분 실패 = atomicity boundary 결정 문제"
+      "rationale": "부분 실패 = atomicity boundary 결정 문제",
+      "reformulated_query": "포인트 차감됐는데 주문 생성 실패 — 트랜잭션 정합성 boundary, saga / outbox"
     },
     {
       "acceptable_paths": [
@@ -2462,7 +2577,8 @@
       ],
       "prompt": "관리자 권한 부여 직후에도 사용자가 403 Forbidden을 받아요",
       "query_id": "symptom_to_cause:role_change_403:001",
-      "rationale": "역할 변경 직후 403 = JWT TTL / 캐시 / role mapping"
+      "rationale": "역할 변경 직후 403 = JWT TTL / 캐시 / role mapping",
+      "reformulated_query": "관리자 권한 부여 후에도 403 — role change 후 403 symptom router (session refresh, security context 갱신)"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2481,7 +2597,8 @@
       ],
       "prompt": "역할을 바꿨는데 로그아웃하고 다시 로그인해야만 권한이 반영돼요",
       "query_id": "symptom_to_cause:relogin_required_for_role:001",
-      "rationale": "재로그인 필요 = JWT 캐싱 또는 SecurityContext 재발급 미실행"
+      "rationale": "재로그인 필요 = JWT 캐싱 또는 SecurityContext 재발급 미실행",
+      "reformulated_query": "역할 변경 후 재로그인해야 권한 반영 — security context cache, session refresh"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2500,7 +2617,8 @@
       ],
       "prompt": "DB user_roles는 바뀌었는데 API 호출 시 권한이 그대로예요",
       "query_id": "symptom_to_cause:db_role_changed_api_old:001",
-      "rationale": "DB 변경 vs API 권한 = role cache or token claim drift"
+      "rationale": "DB 변경 vs API 권한 = role cache or token claim drift",
+      "reformulated_query": "DB user_roles 변경됐는데 API에서 권한 그대로 — security context 또는 jwt claim 캐시"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2519,7 +2637,8 @@
       ],
       "prompt": "NoSuchBeanDefinitionException이 떠요. Bean을 못 찾는 거 같은데 왜죠?",
       "query_id": "symptom_to_cause:no_such_bean_definition:001",
-      "rationale": "예외 메시지 → component scan failure playbook"
+      "rationale": "예외 메시지 → component scan failure playbook",
+      "reformulated_query": "NoSuchBeanDefinitionException — Spring component scan 실패 패턴, 패키지 경계"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2538,7 +2657,8 @@
       ],
       "prompt": "@SpringBootApplication이 있는데 다른 모듈의 Bean이 안 떠요",
       "query_id": "symptom_to_cause:multi_module_bean_missing:001",
-      "rationale": "multi-module scan boundary"
+      "rationale": "multi-module scan boundary",
+      "reformulated_query": "@SpringBootApplication에서 다른 모듈 Bean 안 뜸 — multi-module ComponentScan 함정"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2557,7 +2677,8 @@
       ],
       "prompt": "package 구조는 맞는데 특정 환경에서만 Bean이 사라져요",
       "query_id": "symptom_to_cause:profile_dependent_bean_missing:001",
-      "rationale": "profile-conditional bean — scan 자체는 OK, conditional이 막음"
+      "rationale": "profile-conditional bean — scan 자체는 OK, conditional이 막음",
+      "reformulated_query": "특정 환경에서만 Bean 사라짐 — @Profile 조건부 Bean 등록"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2576,7 +2697,8 @@
       ],
       "prompt": "@Transactional이 붙었는데 같은 클래스 내부에서 호출하면 트랜잭션이 안 열려요",
       "query_id": "symptom_to_cause:transactional_inner_call:001",
-      "rationale": "self-invocation 정확한 증상"
+      "rationale": "self-invocation 정확한 증상",
+      "reformulated_query": "@Transactional 같은 클래스 내부 호출 시 트랜잭션 안 열림 — Spring self-invocation proxy 함정"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2595,7 +2717,8 @@
       ],
       "prompt": "this.method() 호출하면 @Async가 동기처럼 실행돼요",
       "query_id": "symptom_to_cause:async_acts_sync:001",
-      "rationale": "self-invocation은 @Async에도 동일"
+      "rationale": "self-invocation은 @Async에도 동일",
+      "reformulated_query": "this.method() 호출 시 @Async 동기 실행 — proxy 우회 self-invocation"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2614,7 +2737,8 @@
       ],
       "prompt": "프록시를 우회하니까 @Cacheable, @Validated 같은 기능이 안 먹어요",
       "query_id": "symptom_to_cause:cacheable_validated_skipped:001",
-      "rationale": "self-invocation 일반 — 모든 proxy-based 기능 영향"
+      "rationale": "self-invocation 일반 — 모든 proxy-based 기능 영향",
+      "reformulated_query": "프록시 우회 시 @Cacheable @Validated 무력화 — Spring AOP proxy 메커니즘"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2633,7 +2757,8 @@
       ],
       "prompt": "Application에는 쿠키가 있는데 서버 로그는 anonymous라고 떠요",
       "query_id": "symptom_to_cause:cookie_present_but_anonymous:001",
-      "rationale": "쿠키 splitter chooser가 정확한 분기 doc"
+      "rationale": "쿠키 splitter chooser가 정확한 분기 doc",
+      "reformulated_query": "Application에 쿠키 있는데 서버 anonymous — cookie failure three-way splitter, sent but server anonymous 분기"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2652,7 +2777,8 @@
       ],
       "prompt": "API 호출 후 갑자기 로그인 페이지 HTML로 redirect됐어요",
       "query_id": "symptom_to_cause:browser_redirects_to_login_after_api_call:001",
-      "rationale": "401 vs 302 chooser가 정확한 분기 doc"
+      "rationale": "401 vs 302 chooser가 정확한 분기 doc",
+      "reformulated_query": "API 호출 후 로그인 페이지 HTML로 redirect — 401 vs 302 login redirect 분기"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2671,7 +2797,8 @@
       ],
       "prompt": "credentials: 'include'를 줬는데도 cookie가 안 붙어요",
       "query_id": "symptom_to_cause:fetch_credentials_omitted:001",
-      "rationale": "credentials chooser가 정확한 진단 doc"
+      "rationale": "credentials chooser가 정확한 진단 doc",
+      "reformulated_query": "credentials:include 줬는데 cookie 안 붙음 — fetch credentials vs cookie scope 분기"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2690,7 +2817,8 @@
       ],
       "prompt": "Spring에서 404가 나는데 컨트롤러는 분명히 등록돼 있어요",
       "query_id": "symptom_to_cause:dispatcher_404_vs_bean_404:001",
-      "rationale": "404 / bean wiring confusion playbook"
+      "rationale": "404 / bean wiring confusion playbook",
+      "reformulated_query": "Spring 404인데 컨트롤러 등록됨 — component scan 또는 dispatcher 매핑 실패"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2709,7 +2837,8 @@
       ],
       "prompt": "정상 흐름인데 'Transaction rolled back because it has been marked as rollback-only' 메시지가 떠요",
       "query_id": "symptom_to_cause:rollback_only_on_existing_tx:001",
-      "rationale": "rollback-only 표시 = transaction propagation 문제 분기"
+      "rationale": "rollback-only 표시 = transaction propagation 문제 분기",
+      "reformulated_query": "Transaction rolled back marked rollback-only — Spring rollback-only marker traps, transaction propagation"
     },
     {
       "acceptable_paths": [
@@ -2731,7 +2860,8 @@
       ],
       "prompt": "분명 commit 후에 select했는데 옛날 값이 보여요",
       "query_id": "symptom_to_cause:dirty_read_after_commit:001",
-      "rationale": "commit 직후 stale = replica lag / split read"
+      "rationale": "commit 직후 stale = replica lag / split read",
+      "reformulated_query": "commit 후 select에 옛값 — cache replica split read inconsistency, mixed stale source"
     },
     {
       "cohort_tag": "symptom_to_cause",
@@ -2750,7 +2880,8 @@
       ],
       "prompt": "저장은 됐는데 목록 화면에는 옛날 데이터가 그대로 보여요",
       "query_id": "symptom_to_cause:list_view_stale_after_save:001",
-      "rationale": "list view stale = projection freshness / read-after-write"
+      "rationale": "list view stale = projection freshness / read-after-write",
+      "reformulated_query": "저장 후 목록 화면에 옛 데이터 — cache replica split read inconsistency, list-detail monotonicity"
     },
     {
       "acceptable_paths": [
@@ -2772,7 +2903,8 @@
       ],
       "prompt": "특정 시간대에만 'Lock wait timeout exceeded' 에러가 자주 떠요",
       "query_id": "symptom_to_cause:lock_wait_timeout_random:001",
-      "rationale": "lock wait timeout 단편적 — blocker 진단 카드 primary"
+      "rationale": "lock wait timeout 단편적 — blocker 진단 카드 primary",
+      "reformulated_query": "특정 시간대 Lock wait timeout 빈발 — lock timeout blocker first check, hot row contention 시간대 분석"
     },
     {
       "acceptable_paths": [
@@ -2794,7 +2926,8 @@
       ],
       "prompt": "인덱스 추가 직후 deadlock이 자주 나요",
       "query_id": "symptom_to_cause:deadlock_after_index_change:001",
-      "rationale": "인덱스 변경 → lock 순서 변경 → deadlock case study"
+      "rationale": "인덱스 변경 → lock 순서 변경 → deadlock case study",
+      "reformulated_query": "인덱스 추가 직후 deadlock — deadlock case study, lock ordering 변경"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2814,7 +2947,8 @@
       ],
       "prompt": "roomescape 미션 ReservationController에서 생성자로 받는 게 뭐야?",
       "query_id": "mission_bridge:roomescape_di_constructor:001",
-      "rationale": "roomescape 미션 + DI = 정확히 bridge doc"
+      "rationale": "roomescape 미션 + DI = 정확히 bridge doc",
+      "reformulated_query": "roomescape ReservationController 생성자 주입 — constructor injection bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2834,7 +2968,8 @@
       ],
       "prompt": "roomescape에서 @Autowired 없는데 어떻게 ReservationService가 주입되는 거야?",
       "query_id": "mission_bridge:roomescape_no_autowired:001",
-      "rationale": "Spring 4.3+ 단일 생성자 자동 주입을 미션 코드로 묻는 케이스"
+      "rationale": "Spring 4.3+ 단일 생성자 자동 주입을 미션 코드로 묻는 케이스",
+      "reformulated_query": "roomescape @Autowired 없이 ReservationService 주입 — Spring DI bean injection bridge"
     },
     {
       "acceptable_paths": [
@@ -2857,7 +2992,8 @@
       ],
       "prompt": "roomescape에서 예약 생성 메서드에 @Transactional 어디 붙여야 해?",
       "query_id": "mission_bridge:roomescape_transactional_create:001",
-      "rationale": "roomescape 예약 트랜잭션 경계 결정"
+      "rationale": "roomescape 예약 트랜잭션 경계 결정",
+      "reformulated_query": "roomescape 예약 생성 @Transactional 위치 — service layer 트랜잭션 boundary"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2877,7 +3013,8 @@
       ],
       "prompt": "룸이스케이프 ReservationService.delete가 @Transactional 필요한가?",
       "query_id": "mission_bridge:roomescape_transactional_delete:001",
-      "rationale": "단일 SQL = 트랜잭션 명시 여부 결정"
+      "rationale": "단일 SQL = 트랜잭션 명시 여부 결정",
+      "reformulated_query": "roomescape ReservationService.delete @Transactional 필요성 — write 작업 트랜잭션 경계"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2897,7 +3034,8 @@
       ],
       "prompt": "roomescape 4단계 계층 분리에서 DAO랑 Repository 어떻게 나눠?",
       "query_id": "mission_bridge:roomescape_dao_step4:001",
-      "rationale": "roomescape 단계 4 계층 분리"
+      "rationale": "roomescape 단계 4 계층 분리",
+      "reformulated_query": "roomescape 4단계 계층 분리 DAO Repository — DAO vs Repository bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2917,7 +3055,8 @@
       ],
       "prompt": "JdbcReservationRepository는 DAO야 Repository야?",
       "query_id": "mission_bridge:roomescape_jdbc_repo_naming:001",
-      "rationale": "실제 미션 코드 클래스명 → DAO/Repository 분류"
+      "rationale": "실제 미션 코드 클래스명 → DAO/Repository 분류",
+      "reformulated_query": "JdbcReservationRepository DAO vs Repository — naming bridge"
     },
     {
       "acceptable_paths": [
@@ -2940,7 +3079,8 @@
       ],
       "prompt": "roomescape에서 같은 날짜·시간에 두 사람이 동시에 예약하면 어떻게 막아?",
       "query_id": "mission_bridge:roomescape_same_time_reservation:001",
-      "rationale": "예약 동시성 = lock vs unique constraint vs CAS"
+      "rationale": "예약 동시성 = lock vs unique constraint vs CAS",
+      "reformulated_query": "roomescape 같은 시간 동시 예약 동시성 — reservation concurrency bridge, unique constraint or lock"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2960,7 +3100,8 @@
       ],
       "prompt": "룸이스케이프 예약 중복은 unique 제약으로 막아야 해 락으로 막아야 해?",
       "query_id": "mission_bridge:roomescape_unique_constraint_decision:001",
-      "rationale": "unique constraint vs pessimistic lock 결정"
+      "rationale": "unique constraint vs pessimistic lock 결정",
+      "reformulated_query": "roomescape 예약 중복 unique constraint vs lock — concurrency control 선택"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -2980,7 +3121,8 @@
       ],
       "prompt": "roomescape 예약 시간 검증을 Strategy로 만들어야 해 Factory로 만들어야 해?",
       "query_id": "mission_bridge:roomescape_strategy_or_factory:001",
-      "rationale": "roomescape 검증 = Strategy or Factory"
+      "rationale": "roomescape 검증 = Strategy or Factory",
+      "reformulated_query": "roomescape 검증 Strategy vs Factory — pattern selection bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3000,7 +3142,8 @@
       ],
       "prompt": "룸이스케이프에서 검증 정책 여러 개를 어떻게 갈아끼워?",
       "query_id": "mission_bridge:roomescape_validation_strategy:001",
-      "rationale": "갈아끼기 = Strategy"
+      "rationale": "갈아끼기 = Strategy",
+      "reformulated_query": "roomescape 검증 정책 여러 개 교체 — Strategy 패턴 적용"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3020,7 +3163,8 @@
       ],
       "prompt": "lotto에서 Lotto.from(numbers)랑 Lotto.auto() 쓰는 의도가 뭐야?",
       "query_id": "mission_bridge:lotto_static_factory_purpose:001",
-      "rationale": "Lotto.from / Lotto.auto = static factory method"
+      "rationale": "Lotto.from / Lotto.auto = static factory method",
+      "reformulated_query": "lotto Lotto.from / Lotto.auto 정적 팩토리 의도 — static factory method bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3040,7 +3184,8 @@
       ],
       "prompt": "로또에서 new Lotto(...) 쓰지 말고 Lotto.auto() 쓰라는 이유가 뭐야?",
       "query_id": "mission_bridge:lotto_constructor_vs_factory:001",
-      "rationale": "lotto에서 ctor vs static factory"
+      "rationale": "lotto에서 ctor vs static factory",
+      "reformulated_query": "lotto new Lotto vs Lotto.auto — constructor vs static factory bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3060,7 +3205,8 @@
       ],
       "prompt": "로또 당첨 등수 결정 로직을 Strategy로 만들어야 한다는데 왜?",
       "query_id": "mission_bridge:lotto_rank_strategy:001",
-      "rationale": "lotto 등수 = strategy 어울림"
+      "rationale": "lotto 등수 = strategy 어울림",
+      "reformulated_query": "lotto 당첨 등수 Strategy 패턴 — strategy rank decision bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3080,7 +3226,8 @@
       ],
       "prompt": "lotto에서 Rank enum으로 끝낼지 Strategy로 분리할지 어떻게 정해?",
       "query_id": "mission_bridge:lotto_rank_enum_or_strategy:001",
-      "rationale": "lotto Rank enum vs Strategy 결정"
+      "rationale": "lotto Rank enum vs Strategy 결정",
+      "reformulated_query": "lotto Rank enum vs Strategy — pattern decision bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3100,7 +3247,8 @@
       ],
       "prompt": "로또 번호 6개·중복 없음·1-45 범위 같은 규칙은 어디에서 보장해야 해?",
       "query_id": "mission_bridge:lotto_invariant_where:001",
-      "rationale": "로또 도메인 불변식 위치"
+      "rationale": "로또 도메인 불변식 위치",
+      "reformulated_query": "lotto 번호 invariant 6개·중복 없음·1-45 — domain invariant bridge"
     },
     {
       "acceptable_paths": [
@@ -3123,7 +3271,8 @@
       ],
       "prompt": "lotto 검증을 생성자에 두는 거랑 static factory에 두는 거랑 뭐가 달라?",
       "query_id": "mission_bridge:lotto_validation_in_constructor:001",
-      "rationale": "lotto 검증 위치 결정"
+      "rationale": "lotto 검증 위치 결정",
+      "reformulated_query": "lotto 검증 생성자 vs static factory — domain invariant 위치"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3143,7 +3292,8 @@
       ],
       "prompt": "baseball 미션 콘솔 입력을 Spring MVC Controller로 어떻게 옮겨?",
       "query_id": "mission_bridge:baseball_mvc_migration:001",
-      "rationale": "야구 콘솔 → Spring MVC"
+      "rationale": "야구 콘솔 → Spring MVC",
+      "reformulated_query": "baseball 미션 콘솔 → Spring MVC Controller 이전 — controller binding bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3163,7 +3313,8 @@
       ],
       "prompt": "baseball 추측 입력을 @RequestBody로 받을지 @RequestParam으로 받을지 어떻게 정해?",
       "query_id": "mission_bridge:baseball_request_binding:001",
-      "rationale": "Spring MVC binding 결정"
+      "rationale": "Spring MVC binding 결정",
+      "reformulated_query": "baseball @RequestBody vs @RequestParam 선택 — Spring MVC request binding"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3183,7 +3334,8 @@
       ],
       "prompt": "baseball 게임 상태를 매 요청마다 어떻게 유지해? 세션? DB?",
       "query_id": "mission_bridge:baseball_state_per_request:001",
-      "rationale": "stateless HTTP 상태 보존"
+      "rationale": "stateless HTTP 상태 보존",
+      "reformulated_query": "baseball 게임 상태 유지 — session vs DB, state per request"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3203,7 +3355,8 @@
       ],
       "prompt": "shopping-cart에서 동일 사용자 결제 중복 방지 어떻게 해?",
       "query_id": "mission_bridge:shopping_cart_rate_limit:001",
-      "rationale": "결제 중복 방지 = rate limit / idempotency key"
+      "rationale": "결제 중복 방지 = rate limit / idempotency key",
+      "reformulated_query": "shopping-cart 결제 중복 방지 — rate limit, idempotency key bridge"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3223,7 +3376,8 @@
       ],
       "prompt": "장바구니 같은 상품 여러 번 동시 클릭하면 수량이 어긋나는 거 어떻게 막아?",
       "query_id": "mission_bridge:shopping_cart_concurrent_add:001",
-      "rationale": "동시 추가 race"
+      "rationale": "동시 추가 race",
+      "reformulated_query": "shopping-cart 같은 상품 동시 클릭 수량 어긋남 — 동시성 제어, optimistic lock"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3243,7 +3397,8 @@
       ],
       "prompt": "shopping-cart 결제 API에 throttle 거는 게 좋아 idempotency key 쓰는 게 좋아?",
       "query_id": "mission_bridge:shopping_cart_throttle_endpoint:001",
-      "rationale": "rate limit vs idempotency"
+      "rationale": "rate limit vs idempotency",
+      "reformulated_query": "shopping-cart 결제 throttle vs idempotency key — rate limit 전략"
     },
     {
       "acceptable_paths": [
@@ -3266,7 +3421,8 @@
       ],
       "prompt": "roomescape-admin 미션 step1에서 어떤 작업이 있어?",
       "query_id": "mission_bridge:roomescape_admin_step:001",
-      "rationale": "roomescape admin step1 = 4단계 계층 분리 직전"
+      "rationale": "roomescape admin step1 = 4단계 계층 분리 직전",
+      "reformulated_query": "roomescape-admin 미션 step1 — DAO 도입과 데이터베이스 분리"
     },
     {
       "cohort_tag": "mission_bridge",
@@ -3286,7 +3442,8 @@
       ],
       "prompt": "lotto 미션에서 Money 같은 값 객체를 왜 별도 클래스로 만들어?",
       "query_id": "mission_bridge:lotto_money_class:001",
-      "rationale": "값 객체 = 도메인 불변식"
+      "rationale": "값 객체 = 도메인 불변식",
+      "reformulated_query": "lotto Money 값 객체 분리 이유 — value object, domain modeling"
     },
     {
       "acceptable_paths": [
@@ -3309,7 +3466,8 @@
       ],
       "prompt": "roomescape에서 컨트롤러가 직접 SQL 짜다가 4단계에서 분리하라는데 무슨 이득이 있어?",
       "query_id": "mission_bridge:roomescape_layer_separation_motivation:001",
-      "rationale": "roomescape 4단계 분리 동기 = layered architecture"
+      "rationale": "roomescape 4단계 분리 동기 = layered architecture",
+      "reformulated_query": "roomescape 4단계 계층 분리 이유 — controller에서 SQL 분리, 계층화 아키텍처 이득"
     },
     {
       "cohort_tag": "corpus_gap_probe",
@@ -3588,7 +3746,8 @@
       ],
       "prompt": "Hikari connection pool 처음 배우는데 어디부터 봐?",
       "query_id": "forbidden_neighbor:hikari_tuning_must_not_be_primer:001",
-      "rationale": "처음 배우는 사람에게 tuning doc가 top1이면 의도와 어긋남"
+      "rationale": "처음 배우는 사람에게 tuning doc가 top1이면 의도와 어긋남",
+      "reformulated_query": "Connection pool 기초 primer — Hikari connection pool 처음 배우는 큰 그림"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3610,7 +3769,8 @@
       ],
       "prompt": "connection pool starvation 어떻게 진단해?",
       "query_id": "forbidden_neighbor:pool_starvation_distinct_from_term_match:001",
-      "rationale": "term-matching card는 단어 카드일 뿐 — 진단 router로 가야 함"
+      "rationale": "term-matching card는 단어 카드일 뿐 — 진단 router로 가야 함",
+      "reformulated_query": "Connection pool starvation 진단 symptom router — leak/긴 트랜잭션/N+1/풀 사이즈 분기"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3632,7 +3792,8 @@
       ],
       "prompt": "deadlock vs lock wait timeout 차이가 뭐야?",
       "query_id": "forbidden_neighbor:deadlock_vs_lock_timeout_not_transactional:001",
-      "rationale": "@Transactional primer가 lock 비교 질문에 top1이면 안 됨"
+      "rationale": "@Transactional primer가 lock 비교 질문에 top1이면 안 됨",
+      "reformulated_query": "Deadlock vs lock wait timeout 비교 chooser primer — 두 갈래 차이"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3654,7 +3815,8 @@
       ],
       "prompt": "MVCC read view consistent read 내부 구조가 어떻게 돼?",
       "query_id": "forbidden_neighbor:mvcc_internals_not_transactional:001",
-      "rationale": "@Transactional은 MVCC 내부와 다른 영역"
+      "rationale": "@Transactional은 MVCC 내부와 다른 영역",
+      "reformulated_query": "MVCC read view consistent read 내부 구조 deep dive — undo chain, snapshot read 메커니즘"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3676,7 +3838,8 @@
       ],
       "prompt": "replica lag 처리 전략이 뭐가 있어?",
       "query_id": "forbidden_neighbor:replica_lag_not_jwt:001",
-      "rationale": "session/jwt primer가 replica lag 질문에 나오면 안 됨"
+      "rationale": "session/jwt primer가 replica lag 질문에 나오면 안 됨",
+      "reformulated_query": "DB Replica lag and read-after-write 전략 — primary fallback, session pinning"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3699,7 +3862,8 @@
       ],
       "prompt": "roomescape에서 동시 예약 어떻게 막아?",
       "query_id": "forbidden_neighbor:roomescape_concurrency_not_deadlock_primer:001",
-      "rationale": "deadlock primer가 mission_bridge 질문에 top1이면 안 됨"
+      "rationale": "deadlock primer가 mission_bridge 질문에 top1이면 안 됨",
+      "reformulated_query": "roomescape 미션 동시 예약 — reservation concurrency bridge, unique constraint or lock"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3722,7 +3886,8 @@
       ],
       "prompt": "Factory 패턴 처음 배우는데 어디부터 봐?",
       "query_id": "forbidden_neighbor:factory_primer_not_misnaming:001",
-      "rationale": "checklist/smell doc은 입문자에게 부담"
+      "rationale": "checklist/smell doc은 입문자에게 부담",
+      "reformulated_query": "Factory 패턴 기초 primer — 객체 생성 책임 분리 입문"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3745,7 +3910,8 @@
       ],
       "prompt": "lotto에서 Lotto.from / Lotto.auto 쓰는 의도?",
       "query_id": "forbidden_neighbor:lotto_factory_not_misnaming:001",
-      "rationale": "lotto bridge에 misnaming checklist가 끼면 mission framing 잃음"
+      "rationale": "lotto bridge에 misnaming checklist가 끼면 mission framing 잃음",
+      "reformulated_query": "lotto static factory method 의도 — Lotto.from Lotto.auto bridge"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3768,7 +3934,8 @@
       ],
       "prompt": "lotto 등수 결정에 Strategy가 어울리는 이유?",
       "query_id": "forbidden_neighbor:lotto_strategy_not_explosion_smell:001",
-      "rationale": "긍정 적용 질문에 negative smell doc가 끼면 안 됨"
+      "rationale": "긍정 적용 질문에 negative smell doc가 끼면 안 됨",
+      "reformulated_query": "lotto 등수 Strategy 패턴 — rank decision bridge"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3790,7 +3957,8 @@
       ],
       "prompt": "projection freshness SLO 어떻게 정해?",
       "query_id": "forbidden_neighbor:projection_freshness_not_browser_reload:001",
-      "rationale": "browser cache primer는 server projection 영역과 무관"
+      "rationale": "browser cache primer는 server projection 영역과 무관",
+      "reformulated_query": "Projection freshness SLO 패턴 — read model freshness SLI/SLO 운영"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3812,7 +3980,8 @@
       ],
       "prompt": "read-your-writes vs read model staleness 어떻게 봐?",
       "query_id": "forbidden_neighbor:read_model_staleness_not_browser_reload:001",
-      "rationale": "client browser cache는 CQRS staleness와 다름"
+      "rationale": "client browser cache는 CQRS staleness와 다름",
+      "reformulated_query": "Read-your-writes vs read model staleness 비교 — projection freshness budget"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3835,7 +4004,8 @@
       ],
       "prompt": "roomescape 검증에 Strategy 패턴 어떻게 적용해?",
       "query_id": "forbidden_neighbor:roomescape_strategy_not_misnaming:001",
-      "rationale": "mission bridge에 misnaming checklist가 끼면 안 됨"
+      "rationale": "mission bridge에 misnaming checklist가 끼면 안 됨",
+      "reformulated_query": "roomescape 검증 Strategy 패턴 — strategy vs factory bridge 적용"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3857,7 +4027,8 @@
       ],
       "prompt": "Template Method vs Strategy 차이",
       "query_id": "forbidden_neighbor:template_strategy_not_locator:001",
-      "rationale": "Service Locator antipattern은 Template/Strategy 비교와 무관"
+      "rationale": "Service Locator antipattern은 Template/Strategy 비교와 무관",
+      "reformulated_query": "Template Method vs Strategy 패턴 비교 — 부모 흐름 vs 외부 행동 주입"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3880,7 +4051,8 @@
       ],
       "prompt": "shopping-cart 결제 throttle 어떻게 해?",
       "query_id": "forbidden_neighbor:shopping_cart_rate_limit_not_retry_storm:001",
-      "rationale": "retry storm은 더 advanced 영역 — bridge 의도와 다름"
+      "rationale": "retry storm은 더 advanced 영역 — bridge 의도와 다름",
+      "reformulated_query": "shopping-cart 결제 throttle — rate limit bridge"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3902,7 +4074,8 @@
       ],
       "prompt": "401 403 404 차이",
       "query_id": "forbidden_neighbor:auth_failure_not_redirect_primer:001",
-      "rationale": "redirect/forward primer는 status code 의미와 영역이 다름"
+      "rationale": "redirect/forward primer는 status code 의미와 영역이 다름",
+      "reformulated_query": "401 vs 403 vs 404 응답 코드 차이 — 인증/인가/자원 분기"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3924,7 +4097,8 @@
       ],
       "prompt": "브라우저에서 401 대신 302가 보이면 어떻게 진단해?",
       "query_id": "forbidden_neighbor:browser_401_302_not_session_pinning:001",
-      "rationale": "session pinning은 DB 영역 — 인증 redirect와 무관"
+      "rationale": "session pinning은 DB 영역 — 인증 redirect와 무관",
+      "reformulated_query": "Browser 401 vs 302 login redirect 진단 — API 응답과 redirect 분기"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3946,7 +4120,8 @@
       ],
       "prompt": "cookie loop 디버깅 어떻게 시작해?",
       "query_id": "forbidden_neighbor:cookie_failure_not_jwt_deep_dive:001",
-      "rationale": "jwt deep dive는 cookie 진단 단계와 다름"
+      "rationale": "jwt deep dive는 cookie 진단 단계와 다름",
+      "reformulated_query": "Cookie failure three-way splitter — login loop 진단 chooser"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3968,7 +4143,8 @@
       ],
       "prompt": "cookie가 안 따라가는 이유 — domain/path 어떻게 봐?",
       "query_id": "forbidden_neighbor:cookie_scope_not_jwt:001",
-      "rationale": "cookie scope 문제에 jwt deep dive가 top1이면 안 됨"
+      "rationale": "cookie scope 문제에 jwt deep dive가 top1이면 안 됨",
+      "reformulated_query": "Cookie scope mismatch (domain, path, samesite) — 쿠키 안 붙는 scope 진단"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -3991,7 +4167,8 @@
       ],
       "prompt": "roomescape에서 DI 어떻게 적용?",
       "query_id": "forbidden_neighbor:roomescape_di_not_locator:001",
-      "rationale": "DI 긍정 적용 질문에 antipattern doc가 top1이면 안 됨"
+      "rationale": "DI 긍정 적용 질문에 antipattern doc가 top1이면 안 됨",
+      "reformulated_query": "roomescape DI bean injection bridge — 미션 적용"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -4014,7 +4191,8 @@
       ],
       "prompt": "roomescape에서 @Transactional 어디 붙여?",
       "query_id": "forbidden_neighbor:roomescape_transactional_not_self_invocation:001",
-      "rationale": "self-invocation 함정은 @Transactional 처음 배울 때 너무 어려움"
+      "rationale": "self-invocation 함정은 @Transactional 처음 배울 때 너무 어려움",
+      "reformulated_query": "roomescape @Transactional boundary bridge — 미션 service layer"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -4037,7 +4215,8 @@
       ],
       "prompt": "Spring DI 처음 배우는데",
       "query_id": "forbidden_neighbor:bean_di_not_postprocessor:001",
-      "rationale": "BeanFactoryPostProcessor는 입문 DI에 부담"
+      "rationale": "BeanFactoryPostProcessor는 입문 DI에 부담",
+      "reformulated_query": "Spring DI 기초 primer — 처음 배우는 객체 wiring 입문"
     },
     {
       "cohort_tag": "forbidden_neighbor",
@@ -4060,7 +4239,8 @@
       ],
       "prompt": "Spring Bean lifecycle 단계 알려줘",
       "query_id": "forbidden_neighbor:bean_lifecycle_not_postprocessor:001",
-      "rationale": "BeanPostProcessor는 advanced 분리 영역"
+      "rationale": "BeanPostProcessor는 advanced 분리 영역",
+      "reformulated_query": "Spring Bean 생명주기 기초 primer — 생성, 초기화, 사용, 소멸 단계 입문"
     }
   ],
   "schema_version": 1
