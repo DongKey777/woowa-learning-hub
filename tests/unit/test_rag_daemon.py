@@ -22,6 +22,36 @@ def test_rag_daemon_namespace_from_payload_preserves_runtime_fields():
     assert ns.module == "network"
     assert ns.rag_backend == "r3"
     assert ns.via_daemon is False
+    # default — caller did not supply a reformulation
+    assert ns.reformulated_query is None
+
+
+def test_rag_daemon_namespace_propagates_reformulated_query():
+    """The daemon HTTP path must forward the reformulated_query payload
+    field so query side reformulation (Pilot baseline +5pp lever) keeps
+    working when --via-daemon is in effect.
+    """
+    ns = rag_daemon.namespace_from_payload(
+        {
+            "prompt": "큰 그림이 궁금해",
+            "reformulated_query": "Spring Bean 라이프사이클 큰 그림",
+        }
+    )
+
+    assert ns.prompt == "큰 그림이 궁금해"
+    assert ns.reformulated_query == "Spring Bean 라이프사이클 큰 그림"
+
+
+def test_rag_daemon_namespace_treats_blank_reformulation_as_none():
+    """Empty / falsy reformulated_query payloads should not surface as
+    a search() argument. Otherwise an empty string would silently
+    replace the raw prompt in the dense + reranker path.
+    """
+    for blank in ("", None, False):
+        ns = rag_daemon.namespace_from_payload(
+            {"prompt": "Spring Bean이 뭐야?", "reformulated_query": blank}
+        )
+        assert ns.reformulated_query is None
 
 
 def test_rag_daemon_handler_delegates_to_rag_ask_builder(monkeypatch):
