@@ -33,6 +33,9 @@ def test_main_retries_on_transient_failure(monkeypatch):
     rcs = iter([1, -1, 0])  # rate-limit, then stall-killed, then success
     sleeps: list[int] = []
 
+    # Disable the SSH-keepalive heartbeat thread; otherwise its 5-second
+    # sleep ticks pollute the captured sleep list.
+    monkeypatch.setattr(W, "_start_parent_heartbeat", lambda: (None, [False]))
     monkeypatch.setattr(W, "_warm_attempt", lambda *_: next(rcs))
     monkeypatch.setattr(W.time, "sleep", lambda s: sleeps.append(s))
 
@@ -44,6 +47,7 @@ def test_main_retries_on_transient_failure(monkeypatch):
 
 def test_main_returns_1_after_all_attempts_exhausted(monkeypatch):
     sleeps: list[int] = []
+    monkeypatch.setattr(W, "_start_parent_heartbeat", lambda: (None, [False]))
     monkeypatch.setattr(W, "_warm_attempt", lambda *_: 1)
     monkeypatch.setattr(W.time, "sleep", lambda s: sleeps.append(s))
 
@@ -74,6 +78,7 @@ def test_main_does_not_overwrite_user_supplied_timeout(monkeypatch):
 
 def test_backoff_grows_linearly(monkeypatch):
     sleeps: list[int] = []
+    monkeypatch.setattr(W, "_start_parent_heartbeat", lambda: (None, [False]))
     monkeypatch.setattr(W, "_warm_attempt", mock.Mock(return_value=1))
     monkeypatch.setattr(W.time, "sleep", lambda s: sleeps.append(s))
 

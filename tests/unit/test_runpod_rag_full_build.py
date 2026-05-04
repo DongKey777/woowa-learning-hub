@@ -346,7 +346,7 @@ def test_remote_commands_for_r3_package_strict_artifact_metadata():
     assert "pyproject.toml:sha256:$(sha256sum pyproject.toml" in package_cmd
     assert "--qrel-hash" in package_cmd
     assert H.R3_QREL_PATH in package_cmd
-    assert "--local-runtime-machine 'M5 MacBook Air 13'" in package_cmd
+    assert "--local-runtime-machine 'M4 MacBook Air 13'" in package_cmd
     assert "--local-runtime-memory-gb 16" in package_cmd
     assert "--local-runtime-accelerator 'Apple Silicon MPS'" in package_cmd
 

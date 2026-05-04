@@ -64,6 +64,7 @@ def stub_indexer(monkeypatch, tmp_path):
         dense_num_partitions=None,
         dense_num_sub_vectors=None,
         write_batch_size=128,
+        **_extra_kwargs,
     ):
         state["build_lance_index_called"] = True
         state["build_lance_args"] = {
@@ -85,6 +86,18 @@ def stub_indexer(monkeypatch, tmp_path):
     monkeypatch.setattr(indexer, "is_ready", fake_is_ready)
     monkeypatch.setattr(indexer, "build_index", fake_build_index)
     monkeypatch.setattr(indexer, "build_lance_index", fake_build_lance_index)
+
+    # Disable the GitHub Releases pre-fetch path so these mode tests
+    # exercise the local build code path. Without this stub the tests
+    # would short-circuit on every config that has a release block,
+    # never reach build_lance_index / incremental_indexer.
+    from scripts.learning.rag import release_fetch
+
+    monkeypatch.setattr(
+        release_fetch,
+        "fetch_index_release",
+        lambda out_dir, *, repo_root=None, log=None, force=False: "no_release_configured",
+    )
     return state
 
 

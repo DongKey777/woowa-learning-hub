@@ -50,6 +50,37 @@ def _build_fake_index_root(
                 "row_count": 100,
                 "corpus_hash": "sha1:fake",
                 "lancedb": {"version": "0.30.2"},
+                # R3 strict-output contract requires a populated r3
+                # block in index_root_summary.r3 of the artifact
+                # manifest. The packager copies this through verbatim,
+                # so the fixture stamps the same shape the production
+                # build emits.
+                "r3": {
+                    "schema_version": 1,
+                    "query_plan_version": "r3.0",
+                    "corpus_schema_versions": ["2", "3"],
+                    "retrievers": {
+                        "lexical_sidecar": "metadata-bm25-v1",
+                        "dense": "bge-m3-dense:fake",
+                        "sparse_sidecar": "bge-m3-sparse:fake",
+                        "signal": "route-tags-v1",
+                        "fusion": "weighted-rrf-doc-diversity-v2",
+                        "reranker": "bge-reranker-v2-m3:auto-policy-v1",
+                        "body_fts_prefetch": "lancedb-tantivy-ngram-v1",
+                    },
+                    "concept_catalog": {
+                        "schema_version": "2",
+                        "concept_count": 1,
+                        "query_seed_count": 4,
+                        "sha256": "ceda03c543447a34ce02c12010d26701a6e55e87779f7d4dba60192e43d4f920",
+                    },
+                    "qrels": {
+                        "schema_version": "1",
+                        "path": "tests/fixtures/r3_qrels_real_v1.json",
+                        "query_count": 200,
+                        "sha256": "4ac410bea23bbbbc5036e7ec5b654f0880703c8bd01279d461a9add1e3ad06d1",
+                    },
+                },
             }),
             encoding="utf-8",
         )
@@ -323,7 +354,7 @@ def test_strict_r3_metadata_requires_all_fields():
         build_command="bin/cs-index-build --backend lance",
         package_lock=None,
         qrel_hash="sha256:qrels",
-        local_runtime_machine="M5 MacBook Air 13",
+        local_runtime_machine="M4 MacBook Air 13",
         local_runtime_memory_gb=16,
         local_runtime_accelerator="Apple Silicon MPS",
     )
@@ -356,7 +387,7 @@ def test_package_cli_strict_r3_output_passes_import_contract(tmp_path, capsys):
             "--qrel-hash",
             "sha256:qrels",
             "--local-runtime-machine",
-            "M5 MacBook Air 13",
+            "M4 MacBook Air 13",
             "--local-runtime-memory-gb",
             "16",
             "--local-runtime-accelerator",
@@ -401,7 +432,7 @@ def test_package_cli_strict_r3_requires_lexical_sidecar(tmp_path, capsys):
             "--qrel-hash",
             "sha256:qrels",
             "--local-runtime-machine",
-            "M5 MacBook Air 13",
+            "M4 MacBook Air 13",
             "--local-runtime-memory-gb",
             "16",
             "--local-runtime-accelerator",

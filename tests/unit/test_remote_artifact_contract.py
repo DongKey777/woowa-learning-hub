@@ -25,7 +25,7 @@ def _write_artifact(tmp_path: Path, *, strict: bool = True) -> Path:
             "package_lock": "requirements-lock:fake",
             "qrel_hash": "sha256:qrels",
             "local_runtime_profile": {
-                "machine": "M5 MacBook Air 13",
+                "machine": "M4 MacBook Air 13",
                 "memory_gb": 16,
                 "accelerator": "Apple Silicon MPS",
             },
