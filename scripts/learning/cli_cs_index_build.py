@@ -460,6 +460,15 @@ def main(
         default=None,
         help="Dense LanceDB IVF num_sub_vectors override for --backend lance full builds.",
     )
+    parser.add_argument(
+        "--no-release-fetch",
+        action="store_true",
+        help=(
+            "Skip the GitHub Releases pre-fetch and always build locally. "
+            "Local build on M4 16GB is 6-10h cold and OOMs frequently — "
+            "this flag is for CI and integrity audits, not learner sessions."
+        ),
+    )
     args = parser.parse_args(argv)
 
     # Make scripts.* importable when invoked as a script.
@@ -467,6 +476,34 @@ def main(
 
     from scripts.learning.rag import indexer  # noqa: WPS433
     from scripts.learning.rag import incremental_indexer  # noqa: WPS433
+    from scripts.learning.rag import release_fetch  # noqa: WPS433
+
+    # Try to fetch a pre-built index from GitHub Releases before doing
+    # any local work. Build path is the fallback, not the default —
+    # local M4 build of 27k chunks is 6-10h and often OOMs.
+    if not args.no_release_fetch and args.backend == "lance":
+        try:
+            outcome = release_fetch.fetch_index_release(
+                Path(args.out),
+                repo_root=repo_root,
+                log=lambda stage, info: _progress(stage, info),
+            )
+            if outcome in ("fetched", "already_current"):
+                print(
+                    f"[cs-index] release_fetch={outcome} — skipping local build",
+                    flush=True,
+                )
+                return 0
+            print(
+                f"[cs-index] release_fetch={outcome} — falling back to local build",
+                flush=True,
+            )
+        except Exception as exc:  # pragma: no cover - opportunistic fetch
+            print(
+                f"[cs-index] release_fetch failed: {type(exc).__name__}: {exc}; "
+                "falling back to local build",
+                flush=True,
+            )
 
     readiness = indexer.is_ready(args.out, args.corpus)
     print(

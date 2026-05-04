@@ -412,5 +412,13 @@
     "Use a stable/dedicated remote GPU provider for the next full rebuild when index-affecting files change.",
     "Continue corpus v2 expansion and Korean qrel calibration before interpreting old holdout ko-only ablation as final quality.",
     "Profile forced BAAI/bge-reranker-v2-m3 on Korean/mixed hard cohorts when a ranking failure is observed."
-  ]
+  ],
+  "release": {
+    "tag": "index-v1.0.0-corpus@029ec00",
+    "archive_url": "https://github.com/DongKey777/woowa-learning-hub/releases/download/index-v1.0.0-corpus@029ec00/cs_rag_index_root.tar.zst",
+    "archive_sha256": "fce0d36685fd0d1b08d1bc991aaca29a4a41a3f21b6478cd3a812927e5256c51",
+    "compressed_size_mb": 128.8,
+    "corpus_commit": "029ec009f4081b83592b8cf628798662399e7505",
+    "run_id": "r3-direct-029ec00-2026-05-04T0611Z"
+  }
 }
