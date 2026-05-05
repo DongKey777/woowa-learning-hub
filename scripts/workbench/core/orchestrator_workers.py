@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
 import re
@@ -1348,6 +1349,42 @@ def _pilot_lock_violations(changed_files: list[str]) -> list[str]:
     return sorted(p for p in changed_files if p in locked)
 
 
+def _pilot_paths_for_lane(target_paths: list[str]) -> list[str]:
+    """Return Pilot-locked paths whose globs the lane is allowed to write.
+
+    Each migration content lane carries a ``target_paths`` list with
+    glob patterns (``knowledge/cs/contents/network/**`` etc.). The
+    worker prompt only needs the Pilot subset that intersects its
+    own lane — a network worker should not see the 20 spring Pilot
+    paths, just the 4 in network. This shrinks the AVOID block
+    enough that the LLM keeps it in working memory rather than
+    skimming.
+
+    Empty list when:
+      * the lock file is missing (fresh checkout, smoke tests)
+      * the lane has no target_paths (qa/rag/ops lanes)
+      * no Pilot paths fall inside any of the lane globs
+    """
+    locked = _load_pilot_lock_paths()
+    if not locked or not target_paths:
+        return []
+    matched: set[str] = set()
+    for pattern in target_paths:
+        # ``fnmatch`` doesn't honour ``**`` — translate it to ``*``
+        # for matching purposes since our glob set only uses ``**``
+        # in the trailing position (e.g. ``knowledge/cs/contents/network/**``).
+        flat = pattern.replace("/**", "/*")
+        for path in locked:
+            if fnmatch.fnmatch(path, flat):
+                matched.add(path)
+            elif pattern.endswith("/**") and path.startswith(pattern[:-3] + "/"):
+                # Recursive match: the trailing ``/**`` should also
+                # cover deeply nested files, which fnmatch's ``*``
+                # translation misses for path segments containing ``/``.
+                matched.add(path)
+    return sorted(matched)
+
+
 def _migration_v3_lint_targets(changed_files: list[str]) -> list[str]:
     """Content docs touched by a migration_v3 worker.
 
@@ -1985,6 +2022,25 @@ def _build_migration_v3_prompt(
         goal=item.get("goal", ""),
         tags=tags or "none",
     )
+
+    pilot_paths = _pilot_paths_for_lane(target_paths)
+    if pilot_paths:
+        avoid_lines = "\n".join(f"  - {p}" for p in pilot_paths)
+        pilot_block = (
+            "\n==== PILOT LOCK PATHS IN YOUR LANE — NEVER MODIFY ====\n"
+            f"The following {len(pilot_paths)} doc(s) are inside your\n"
+            "lane's target_paths but are part of the Pilot 50 + Phase 4\n"
+            "wave 69 baseline. Modifying them invalidates the OVERALL\n"
+            "95.5%/94.0% eval contract. The completion gate fails fast\n"
+            "on any change to these — but you should not even propose a\n"
+            "next_candidate that targets one. If a queue item appears\n"
+            "to ask for a change to one of these, return changed_files=[]\n"
+            "and a summary explaining the conflict.\n\n"
+            f"{avoid_lines}\n"
+        )
+    else:
+        pilot_block = ""
+    header = header + pilot_block
 
     if mode == "migrate_v0_to_v3":
         body = _MIGRATION_V0_TO_V3_BODY
